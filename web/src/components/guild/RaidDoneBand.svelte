@@ -30,6 +30,7 @@
     guildTimezone,
     locale,
     officer,
+    nightLine = true,
     readOnly,
     gateId,
     loadCandidates,
@@ -44,6 +45,8 @@
     guildTimezone: string;
     locale: string;
     officer: boolean;
+    /** The came line; the report page draws the night in its own head and rail instead. */
+    nightLine?: boolean;
     readOnly: boolean;
     gateId: string;
     loadCandidates: () => Promise<MatchCandidates>;
@@ -114,7 +117,7 @@
   }
 </script>
 
-{#if night !== null}
+{#if night !== null && nightLine}
   <!-- One flow: the bar sits on the count's line and the clauses wrap whole, so the phone line is
        two lines at most (spec 7). -->
   <p class="leading-[22px]" data-testid="raid-night-line">

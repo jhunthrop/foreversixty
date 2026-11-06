@@ -4,7 +4,14 @@
 import { fetchMeFresh } from '../account/api';
 import { API_BASE_URL } from '../planner/config';
 import { fetchGuild } from '../rankings/api';
-import { clearMatch, fetchMatchCandidates, postReport, setExcused, setMatch } from './attendance-api';
+import {
+  clearAttendanceOverride,
+  clearMatch,
+  fetchMatchCandidates,
+  postReport,
+  setAttendanceOverride,
+  setMatch,
+} from './attendance-api';
 import { fetchGuildHome, fetchGuildRaids } from './api';
 import { pingRaid, resetCompTarget, setCompTarget } from './overview-api';
 import { browserStorage } from './reserve-keys';
@@ -24,8 +31,9 @@ export function liveRaidPageDeps(route: RaidRoute): RaidPageDeps {
     loadMatchCandidates: (guildId, raidId) => fetchMatchCandidates(guildId, raidId),
     putMatch: (guildId, raidId, reportId) => setMatch(guildId, raidId, reportId),
     deleteMatch: (guildId, raidId) => clearMatch(guildId, raidId),
-    putExcused: (guildId, raidId, key, excused) => setExcused(guildId, raidId, key, excused),
-    postReport: (guildId, raidId) => postReport(guildId, raidId),
+    putOverride: (guildId, raidId, key, status) => setAttendanceOverride(guildId, raidId, key, status),
+    deleteOverride: (guildId, raidId, key) => clearAttendanceOverride(guildId, raidId, key),
+    postReport: (guildId, raidId, repost) => postReport(guildId, raidId, repost),
     putCompTarget: (guildId, raidId, target) => setCompTarget(guildId, raidId, target),
     deleteCompTarget: (guildId, raidId) => resetCompTarget(guildId, raidId),
     pingRaid: (guildId, raidId) => pingRaid(guildId, raidId),

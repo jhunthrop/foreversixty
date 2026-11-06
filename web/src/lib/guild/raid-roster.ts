@@ -62,11 +62,6 @@ export interface RosterGroups {
   notSigned: RosterRow[];
 }
 
-/** The officer state select's id: focus returns to it after a change moves the row to another group. */
-export function rosterSelectId(characterKey: string): string {
-  return `raid-roster-state-${characterKey}`;
-}
-
 function roleRank(role: GuildRaidRole | null): number {
   const index = role === null ? -1 : ROLE_ORDER.indexOf(role);
   return index < 0 ? ROLE_ORDER.length : index;

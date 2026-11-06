@@ -1,4 +1,5 @@
-// The guild round's primitives (web layout spec 2026-11-05 §7.3): Segmented, Grid, Tally, Checklist.
+// The guild round's primitives (web layout spec 2026-11-05 §7.3): Segmented, Grid, Tally, Checklist,
+// Votes.
 import { render } from 'svelte/server';
 import type { Component } from 'svelte';
 import { describe, expect, it } from 'vitest';
@@ -6,6 +7,8 @@ import Checklist from './Checklist.svelte';
 import Grid from './Grid.svelte';
 import Segmented from './Segmented.svelte';
 import Tally from './Tally.svelte';
+import Votes from './Votes.svelte';
+import { nextVote, votersLine, votesLine } from '../../lib/ui/votes';
 
 function html<P extends Record<string, unknown>>(component: Component<P>, props: P): string {
   return render(component, { props }).body.replace(/<!--[^>]*-->/g, '');
@@ -101,5 +104,49 @@ describe('Checklist', () => {
     expect(body).toContain('aria-label="To do"');
     expect(body.match(/<a /g)).toHaveLength(1);
     expect(body).toContain('href="/bis/priest/holy"');
+  });
+});
+
+describe('Votes', () => {
+  it("reads a Tag pair and who can vote, the viewer's own vote marked", () => {
+    const body = html(Votes, { yes: 2, no: 1, voters: 4, mine: 'yes', subject: 'Seraphine' });
+    expect(body).toContain('title="2 yes · 1 no of 4 officers"');
+    expect(body).toMatch(/data-tone="success"[^>]*>.*2 yes/s);
+    expect(body).toMatch(/data-tone="danger"[^>]*>1 no/);
+    expect(body).toContain('of 4 officers');
+    expect(body.match(/data-testid="tag-dot"/g)).toHaveLength(1);
+    expect(body).not.toContain('<button');
+  });
+
+  it('mutes a choice with no votes', () => {
+    expect(html(Votes, { yes: 0, no: 0, voters: 1, subject: 'S' })).not.toContain('data-tone="success"');
+  });
+
+  it('makes the Tags the vote buttons when the viewer can vote', () => {
+    const body = html(Votes, {
+      yes: 1,
+      no: 0,
+      voters: 4,
+      mine: 'no',
+      subject: 'Seraphine',
+      onVote: () => {},
+      disabled: true,
+      describedBy: 'gate',
+      testid: 'v',
+    });
+    expect(body).toMatch(/aria-pressed="false"[^>]*aria-label="Vote yes for Seraphine"/);
+    expect(body).toMatch(
+      /aria-pressed="true"[^>]*aria-label="Vote no for Seraphine"[^>]*aria-describedby="gate"/,
+    );
+    expect(body).toContain('data-testid="v-yes"');
+    expect(body.match(/disabled/g)?.length).toBeGreaterThanOrEqual(2);
+  });
+
+  it("takes the viewer's vote back on a second press and words the count", () => {
+    expect(nextVote('yes', 'yes')).toBeNull();
+    expect(nextVote('yes', 'no')).toBe('no');
+    expect(nextVote(null, 'yes')).toBe('yes');
+    expect(votersLine(1)).toBe('of 1 officer');
+    expect(votesLine(0, 2, 3, 'officer')).toBe('0 yes · 2 no of 3 officers');
   });
 });

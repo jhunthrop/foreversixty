@@ -168,11 +168,11 @@ func TestAnAwardAfterALoggedNightFilesUnderItsReport(t *testing.T) {
 	if raidID != nil || reportID == nil || *reportID != "logged" {
 		t.Fatalf("award night = raid %v report %v, want the logged report", raidID, reportID)
 	}
-	var rows [][]string
-	if err := w.h.store.streamLoot(t.Context(), w.gid, func(r []string) error { rows = append(rows, r); return nil }); err != nil {
+	rows, err := w.h.store.lootHistory(t.Context(), w.gid, dateRange{})
+	if err != nil {
 		t.Fatal(err)
 	}
-	if len(rows) != 1 || rows[0][1] == lootNightUnknown {
+	if len(rows) != 1 || rows[0].Raid == lootNightUnknown {
 		t.Fatalf("CSV rows = %v, want the award dated by its logged night", rows)
 	}
 }

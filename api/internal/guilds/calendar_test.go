@@ -213,7 +213,7 @@ func TestRenderCalendarGolden(t *testing.T) {
 	}
 	raids := []CalendarRaid{
 		raid(31, raidZoneOny, time.Date(2026, 12, 20, 1, 0, 0, 0, time.UTC), 24, "in"),
-		raid(32, "raid:barrow-deeps", time.Date(2026, 12, 23, 1, 0, 0, 0, time.UTC), 11, ""),
+		raid(32, "raid:barrow-deeps", time.Date(2026, 12, 23, 1, 0, 0, 0, time.UTC), 9, ""),
 		raid(33, raidZoneOny, time.Date(2026, 12, 27, 2, 0, 0, 0, time.UTC), 19, "in"),
 	}
 	got := RenderCalendar(raids, "https://foreversixty.gg", stamp)

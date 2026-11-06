@@ -2,12 +2,14 @@
 // Attendance and the raid-night report acceptance (design/specs/2026-10-27-guild-attendance.md §9,
 // the E2E paragraph, plus the browser behaviours Tasks 7 and 8 left to this file): the ended band and
 // the poll that turns it done; the match picker's keyboard, races and closing; the clear confirm;
-// Excused and the summary; Show all; Your night and R-A1 for members; R-A3 (no "no-show"); Copy and
-// Post to Discord; officer-read-only; the roster chip; the readiness next-raid filter; axe; the 44 px
-// floor at 360. The API is stubbed by support/guild-attendance.ts.
+// the raid report (web layout spec 2026-11-05 §7.2): the answer figures, a pull's deaths, DPS and
+// HPS, consumables by pull, the attendance fix and the summary; Your night and a member's own rows;
+// R-A3 (no "no-show"); Copy, Post and Post again; officer-read-only; the roster chip; the readiness
+// next-raid filter; axe; the 44 px floor at 360. The API is stubbed by support/guild-attendance.ts.
 import type { Page } from '@playwright/test';
 import { expect, test, apiUnreachable, GUILD_OVERVIEW_READS } from './support/test';
 import { attendanceCopy } from '../../src/lib/guild/attendance-copy';
+import { reportNightCopy as copyOf } from '../../src/lib/guild/report-night-copy';
 import {
   AFTER_END,
   AFTER_WINDOW,
@@ -17,6 +19,7 @@ import {
   SECOND_REPORT,
   STALE_EXPORT,
   TAKEN_REPORT,
+  allAttendance,
   bareReport,
   expectedDiscordText,
   fixtureCandidates,
@@ -31,13 +34,14 @@ import {
 import { CHICAGO, GUILD_URL, NOW, ONYXIA_ID, keyOf, raidUrl, writesTo } from './support/guild-raids';
 import { gotoHydrated } from './support/hydrated';
 import { expectNoAxeViolations } from './support/officer-tools';
+import { choose } from './support/select';
 import { shortControls } from './support/short-controls';
 
 test.beforeEach(({ page }) => apiUnreachable(page, ...GUILD_OVERVIEW_READS));
 
 const POLL_MS = 10_000;
 const PHONE = { width: 360, height: 800 };
-const EXCUSE_DELAY_MS = 300;
+const FIX_DELAY_MS = 300;
 
 test.use({ timezoneId: CHICAGO });
 
@@ -92,7 +96,7 @@ test.describe('ended with no log, and the poll (§3.1, §4 "Poll")', () => {
     await expect(page.getByTestId('raid-live-region')).toHaveText('');
     stub.matchFromElsewhere(ONYXIA_ID);
     await page.clock.runFor(POLL_MS);
-    await expect(page.getByTestId('raid-night-line')).toContainText('13 of 14 came');
+    await expect(page.getByTestId('raid-attendance-summary')).toContainText('13 of 14 came');
     await expect(page.getByTestId('raid-live-region')).toHaveText(attendanceCopy.liveRegion);
     await expect(page.getByTestId('raid-report')).toBeVisible();
     await expect(page.getByTestId('raid-signup-strip')).toHaveCount(0);
@@ -206,58 +210,103 @@ test.describe('Not this log (§3.1 clear confirm)', () => {
   });
 });
 
-test.describe('the report and attendance, officer (§3.4, §3.5)', () => {
-  test('Excused ticks overlap and the summary counts both', async ({ page }) => {
-    const stub = await openRaid(page, officerDone({ excuseDelayMs: EXCUSE_DELAY_MS }));
+test.describe('the report and attendance, officer (web layout spec 2026-11-05 §7.2)', () => {
+  const fix = (page: Page, name: string) => page.getByTestId(`raid-attendance-fix-${keyOf(name)}`);
+  const attendanceRowOf = (page: Page, name: string) =>
+    page.getByTestId('raid-attendance-row').filter({ hasText: name });
+
+  test('the head answers kills, wipes, attempts and deaths', async ({ page }) => {
+    await openRaid(page, officerDone());
+    await expect(page.getByTestId('raid-report-figures')).toHaveText(
+      /Kills\s*1\s*Wipes\s*3\s*Attempts\s*4\s*Deaths\s*17/,
+    );
+  });
+
+  test('a fix to Bench reads Bench with the log muted, the summary moves, Back to the log restores', async ({
+    page,
+  }) => {
+    const stub = await openRaid(page, officerDone({ fixDelayMs: FIX_DELAY_MS }));
     const summary = page.getByTestId('raid-attendance-summary');
     await expect(summary).toHaveText('13 of 14 came · 1 late · 1 not in the log · 2 more joined');
-    await page.getByLabel('Excused, Hexbramble').check();
-    await page.getByLabel('Excused, Mendwhisper').check();
-    await expect(summary).toContainText(' · 2 excused');
-    await expect(page.getByLabel('Excused, Hexbramble')).toBeChecked();
-    await expect(page.getByLabel('Excused, Mendwhisper')).toBeChecked();
-    await expect.poll(() => writesTo(stub.raids, 'PUT', /\/attendance\//).length).toBe(2);
-    await page.waitForTimeout(EXCUSE_DELAY_MS * 2);
-    await expect(summary).toContainText(' · 2 excused');
-    await expect(page.getByLabel('Excused, Hexbramble')).toBeChecked();
-    expect(writesTo(stub.raids, 'PUT', /attendance\/us\/pvp\/hexbramble$/).map((w) => w.body)).toEqual([
-      { excused: true },
-    ]);
+    await choose(fix(page, 'Hexbramble'), 'bench');
+    await expect(attendanceRowOf(page, 'Hexbramble').getByTestId('raid-attendance-outcome')).toHaveText(
+      'Bench, set by Kraggor',
+    );
+    await expect(attendanceRowOf(page, 'Hexbramble').getByTestId('raid-attendance-auto')).toHaveText(
+      'The log said Not in the log',
+    );
+    await expect(summary).toHaveText('14 of 14 came · 1 late · 2 more joined');
+    expect(
+      writesTo(stub.raids, 'PUT', /attendance\/us\/pvp\/hexbramble\/override$/).map((w) => w.body),
+    ).toEqual([{ status: 'bench' }]);
+    await attendanceRowOf(page, 'Hexbramble').getByTestId('raid-attendance-back').click();
+    await expect(attendanceRowOf(page, 'Hexbramble').getByTestId('raid-attendance-outcome')).toHaveText(
+      'Not in the log',
+    );
+    await expect(summary).toHaveText('13 of 14 came · 1 late · 1 not in the log · 2 more joined');
+    expect(writesTo(stub.raids, 'DELETE', /hexbramble\/override$/)).toHaveLength(1);
   });
 
-  test('a refused tick reverts with the row line', async ({ page }) => {
-    // The refusal is held, so the optimistic tick is seen before it rolls back; `click`, not
-    // `check`, since check() itself fails when the box ends unticked.
-    const stub = await openRaid(page, officerDone({ excuseDelayMs: EXCUSE_DELAY_MS }));
-    stub.refuseNext = { excuse: { code: 'internal', status: 500 } };
-    const box = page.getByLabel('Excused, Hexbramble');
-    await box.click();
-    await expect(box).toBeChecked();
-    await expect(page.getByTestId('raid-attendance-line')).toHaveText(attendanceCopy.errors.rows);
-    await expect(box).not.toBeChecked();
+  test('a refused fix keeps the row and says so under it', async ({ page }) => {
+    const stub = await openRaid(page, officerDone());
+    stub.refuseNext = { fix: { code: 'internal', status: 500 } };
+    await choose(fix(page, 'Hexbramble'), 'present');
+    await expect(attendanceRowOf(page, 'Hexbramble').getByTestId('raid-attendance-line')).toHaveText(
+      attendanceCopy.errors.rows,
+    );
+    await expect(attendanceRowOf(page, 'Hexbramble').getByTestId('raid-attendance-outcome')).toHaveText(
+      'Not in the log',
+    );
   });
 
-  test('every group shows, with the Came as row', async ({ page }) => {
+  test('every raider has a row, the likely fixes first, the alt read as Came as', async ({ page }) => {
     await openRaid(page, officerDone());
-    for (const group of ['noShow', 'late', 'joined', 'present', 'benchOut']) {
-      await expect(page.getByTestId(`raid-attendance-${group}`)).toBeVisible();
+    const rows = page.getByTestId('raid-attendance-row');
+    await expect(rows).toHaveCount(allAttendance().length);
+    await expect(rows.first()).toContainText('Hexbramble');
+    await expect(attendanceRowOf(page, 'Felsnap')).toContainText('Came as Mirestalk');
+  });
+
+  test('a wipe opens its deaths: the killing blow and the last hits', async ({ page }) => {
+    await openRaid(page, officerDone());
+    const pulls = page.getByTestId('raid-pull-row');
+    await expect(pulls).toHaveCount(4);
+    const inspector = page.getByTestId('raid-pull-inspector');
+    const wide = (page.viewportSize()?.width ?? 0) >= 1024;
+    if (wide) {
+      // From 1024 the Inspector sits beside the plate on the first wipe with deaths.
+      await expect(inspector).toHaveAttribute('data-placement', 'side');
+    } else {
+      await expect(inspector).toHaveCount(0);
+      await pulls.first().getByTestId('raid-pull-open').click();
+      await expect(inspector).toHaveAttribute('data-placement', 'inline');
     }
-    await expect(page.getByTestId('raid-attendance-noShow')).toContainText('Hexbramble');
-    // Present rows are compact: the alt reads `Felsnap as Mirestalk` there.
-    await expect(page.getByTestId('raid-attendance-present')).toContainText('Felsnap as Mirestalk');
+    await expect(pulls.first().getByTestId('raid-pull-open')).toHaveAttribute('aria-expanded', 'true');
+    await expect(inspector.getByTestId('raid-pull-death')).toHaveCount(11);
+    await expect(inspector.getByTestId('raid-pull-killing-blow').first()).toContainText(
+      'Flame Breath from Onyxia, 4,210 (1,050 overkill)',
+    );
+    await expect(inspector.getByTestId('raid-pull-last-hit').first()).toContainText(
+      'Melee from Onyxian Whelp',
+    );
+    await pulls.nth(1).getByTestId('raid-pull-open').click();
+    await expect(inspector.getByTestId('raid-pull-death')).toHaveCount(3);
   });
 
-  test('Show all moves focus to the first revealed death row', async ({ page }) => {
+  test('DPS and HPS read the guild unit, and the consumables grid says why a pull is unknown', async ({
+    page,
+  }) => {
     await openRaid(page, officerDone());
-    const rows = page.getByTestId('raid-death-row');
-    await expect(rows).toHaveCount(10);
-    await page.getByTestId('raid-deaths-show-all').click();
-    await expect(rows).toHaveCount(11);
-    await expect(rows.nth(10)).toBeFocused();
-    await expect(page.getByTestId('raid-deaths-show-all')).toHaveCount(0);
+    await expect(page.getByTestId('raid-output-row')).toHaveCount(5);
+    await expect(page.getByTestId('raid-output')).toContainText(/291\s*DPS/);
+    await expect(page.getByTestId('raid-output')).toContainText(/443\s*HPS/);
+    await expect(page.getByTestId('raid-consumables-grid')).toBeVisible();
+    await expect(page.getByTestId('raid-consumables-unknown')).toHaveText(
+      'Onyxia, pull 1: the log carried no character sheet, so nothing can be said.',
+    );
   });
 
-  test('Copy for Discord writes the fixture text', async ({ page, context }) => {
+  test('Copy for Discord writes the fixture text, naming nobody for dying', async ({ page, context }) => {
     await context.grantPermissions(['clipboard-read', 'clipboard-write']);
     await openRaid(page, officerDone());
     const copy = page.getByTestId('raid-report-copy');
@@ -268,15 +317,23 @@ test.describe('the report and attendance, officer (§3.4, §3.5)', () => {
     expect(copied).toBe(expectedDiscordText(`${url.origin}${url.pathname}#report`));
     expect(copied.split('\n').length).toBeLessThanOrEqual(12);
     expect(copied).not.toContain('Hexbramble');
+    expect(copied).not.toContain('Most deaths');
   });
 
-  test('Post to Discord posts once and the stub sends one report_ready', async ({ page }) => {
+  test('Post to Discord posts once, then Post again reposts', async ({ page }) => {
     const stub = await openRaid(page, officerDone({ discordConnected: true }));
-    await page.getByTestId('raid-report-post').click();
+    const post = page.getByTestId('raid-report-post');
+    await expect(post).toHaveText(copyOf.discord.post);
+    await post.click();
     await expect(page.getByTestId('raid-report-posted')).toContainText('Posted to Discord at');
-    await expect(page.getByTestId('raid-report-post')).toHaveCount(0);
+    await expect(post).toHaveText(copyOf.discord.postAgain);
     expect(stub.reportReady).toBe(1);
-    expect(writesTo(stub.raids, 'POST', /\/report\/post$/)).toHaveLength(1);
+    await post.click();
+    await expect.poll(() => stub.reportReady).toBe(2);
+    expect(writesTo(stub.raids, 'POST', /\/report\/post$/).map((w) => w.body)).toEqual([
+      null,
+      { repost: true },
+    ]);
   });
 
   test('409 already_posted re-reads and shows the posted line', async ({ page }) => {
@@ -289,13 +346,14 @@ test.describe('the report and attendance, officer (§3.4, §3.5)', () => {
     expect(stub.reportReady).toBe(0);
   });
 
-  test('no buff data, no previous raid and no loot each read their line', async ({ page }) => {
+  test('no character sheets and no loot each read their line, never red', async ({ page }) => {
     await openRaid(page, officerDone({ nights: { [ONYXIA_ID]: storedNight({ report: bareReport() }) } }));
-    await expect(page.getByTestId('raid-consumables-no-buffs')).toHaveText(
+    await expect(page.getByTestId('raid-consumables-grid')).toHaveCount(0);
+    await expect(page.getByTestId('raid-consumables-unknown')).toHaveCount(4);
+    await expect(page.getByTestId('raid-consumables')).not.toContainText(
       attendanceCopy.consumables.noBuffData,
     );
-    await expect(page.getByTestId('raid-moves-first')).toContainText("First Onyxia's Lair raid logged.");
-    await expect(page.getByTestId('raid-loot-none')).toContainText('No loot awarded for this raid.');
+    await expect(page.getByTestId('raid-loot-empty')).toContainText('No loot awarded for this raid.');
   });
 });
 
@@ -317,19 +375,10 @@ test.describe('a done raid band and its closed sections (§3.1, R-A4)', () => {
     await expect(page.getByTestId('raid-match-open')).toBeVisible();
   });
 
-  test('Notes and Sign-ups sit closed below Attendance; opened, the selects are disabled', async ({
-    page,
-  }) => {
+  test('a done raid draws no sign-up strip and no sign-up roster', async ({ page }) => {
     await openRaid(page, officerDone());
-    for (const id of ['raid-notes-disclosure', 'raid-roster-disclosure']) {
-      await expect(page.getByTestId(id)).not.toHaveAttribute('open', '');
-    }
-    await expect(page.getByTestId('raid-roster')).toBeHidden();
-    await page.getByTestId('raid-roster-disclosure-summary').click();
-    await expect(page.getByTestId('raid-roster')).toBeVisible();
-    const selects = page.locator('select[data-testid^="raid-roster-select-"]');
-    expect(await selects.count()).toBeGreaterThan(0);
-    expect(await selects.evaluateAll((n) => n.every((s) => (s as HTMLSelectElement).disabled))).toBe(true);
+    await expect(page.getByTestId('raid-signup-strip')).toHaveCount(0);
+    await expect(page.getByTestId('raid-roster')).toHaveCount(0);
   });
 
   test('loot draws the client icons, a quest item too, and opens a tooltip for a quest item', async ({
@@ -337,11 +386,11 @@ test.describe('a done raid band and its closed sections (§3.1, R-A4)', () => {
   }) => {
     await openRaid(page, officerDone());
     const row = (name: string) => page.getByTestId('raid-loot-row').filter({ hasText: name });
-    await expect(row('Netherwind Crown').getByTestId('raid-loot-icon').locator('img')).toHaveAttribute(
+    await expect(row('Netherwind Crown').locator('img')).toHaveAttribute(
       'src',
       /icons\/inv_helmet_70\.webp$/,
     );
-    await expect(row('Head of Onyxia').getByTestId('raid-loot-icon').locator('img')).toHaveAttribute(
+    await expect(row('Head of Onyxia').locator('img')).toHaveAttribute(
       'src',
       /icons\/inv_misc_head_dragon_01\.webp$/,
     );
@@ -358,13 +407,17 @@ test.describe('a member (R-A1, R-A3)', () => {
     );
     await expect(page.getByTestId('raid-your-night-facts')).toContainText('0 deaths');
     await expect(page.getByTestId('raid-your-night-facts')).toContainText('up 16');
-    await expect(page.getByTestId('raid-attendance')).toHaveCount(0);
-    for (const block of ['raid-deaths', 'raid-consumables', 'raid-moves']) {
-      await expect(page.getByTestId(block)).toHaveCount(0);
-    }
-    await expect(page.getByTestId('raid-kill-row')).toHaveCount(1);
+    // Every pull, but only their own deaths, output and consumables; no one else's rows.
+    await expect(page.getByTestId('raid-report-figures')).toContainText('17');
+    await expect(page.getByTestId('raid-pull-row')).toHaveCount(4);
+    await expect(page.getByTestId('raid-pull-open')).toHaveCount(0);
+    await expect(page.getByTestId('raid-output-row')).toHaveCount(1);
+    await expect(page.getByTestId('raid-consumables-grid-row')).toHaveCount(1);
+    await expect(page.getByTestId('raid-attendance-row')).toHaveCount(0);
     await expect(page.getByTestId('raid-loot-row')).toHaveCount(4);
-    await expect(page.getByTestId('raid-report-copy')).toHaveCount(0);
+    for (const officerOnly of ['raid-discord', 'raid-report-copy']) {
+      await expect(page.getByTestId(officerOnly)).toHaveCount(0);
+    }
   });
 
   test('the no-show sentence renders and no text node says no-show', async ({ page }) => {
@@ -383,18 +436,20 @@ test.describe('a member (R-A1, R-A3)', () => {
   });
 });
 
-test('officer-read-only: match, clear, Excused and Post disabled; Copy live', async ({ page, context }) => {
+test('officer-read-only: match, clear, the fix and Post disabled; Copy live', async ({ page, context }) => {
   await context.grantPermissions(['clipboard-read', 'clipboard-write']);
   const stub = await openRaid(page, officerDone({ officerTools: false, discordConnected: true }));
   await expect(page.getByTestId('raid-not-this-log')).toBeDisabled();
   await expect(page.getByTestId('raid-report-post')).toBeDisabled();
-  const boxes = page.getByTestId('raid-attendance-excused');
-  await expect(boxes).toHaveCount(2);
-  // A done raid draws no officer row; the gate sentence shows once, under the Report header.
+  const fixes = page.locator('select[data-testid^="raid-attendance-fix-"]');
+  await expect(fixes).toHaveCount(allAttendance().length);
+  // A done raid draws no officer row; the gate sentence shows once, above the report.
   await expect(page.getByTestId('raid-officer-row')).toHaveCount(0);
   await expect(page.locator('#officer-tools-gate-raids')).toHaveCount(1);
   await expect(page.getByTestId('guild-raids-plan-gate-report')).toBeVisible();
-  for (const box of await boxes.all()) await expect(box).toBeDisabled();
+  expect(await fixes.evaluateAll((nodes) => nodes.every((n) => (n as HTMLSelectElement).disabled))).toBe(
+    true,
+  );
   await page.getByTestId('raid-report-copy').click();
   await expect(page.getByTestId('raid-report-copy')).toHaveText(attendanceCopy.report.copied);
   expect(stub.writes).toEqual([]);
@@ -514,9 +569,10 @@ test.describe('every control is at least 44 px tall at 360', () => {
     return page.setViewportSize(PHONE);
   });
 
-  test('the done page for the officer, deaths and consumables expanded', async ({ page }) => {
+  test('the done page for the officer, a pull opened', async ({ page }) => {
     await openRaid(page, officerDone({ discordConnected: true }));
-    await page.getByTestId('raid-deaths-show-all').click();
+    await page.getByTestId('raid-pull-open').first().click();
+    await expect(page.getByTestId('raid-pull-inspector')).toBeVisible();
     expect(await shortControls(page.getByTestId('raid-page'))).toEqual([]);
   });
 

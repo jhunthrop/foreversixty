@@ -6,7 +6,7 @@ import type { Me } from '../account/api';
 import type { CharacterPath } from '../characters';
 import type { GuildPage } from '../rankings/api';
 import type { GuildHome, GuildRaidView, GuildZoneView } from './api';
-import type { MatchCandidates, PostReportResult } from './attendance-contract';
+import type { AttendanceOverrideStatus, MatchCandidates, PostReportResult } from './attendance-contract';
 import type { GuildCompRole, GuildPingResult } from './overview-api';
 import type { RaidInput, RaidStatusAction, RaidStatusBody, SignupInput, SignupResult } from './raids-api';
 
@@ -38,15 +38,17 @@ export interface RaidPageDeps {
   loadMatchCandidates: (guildId: number, raidId: string) => Promise<MatchCandidates>;
   putMatch: (guildId: number, raidId: string, reportId: string) => Promise<GuildRaidView>;
   deleteMatch: (guildId: number, raidId: string) => Promise<GuildRaidView>;
-  /** The Excused tick; answers the raid view. */
-  putExcused: (
+  /** An officer's attendance fix over the log; answers the raid view. */
+  putOverride: (
     guildId: number,
     raidId: string,
     characterKey: string,
-    excused: boolean,
+    status: AttendanceOverrideStatus,
   ) => Promise<GuildRaidView>;
-  /** Post to Discord: 409 already_posted, 502 post_failed. */
-  postReport: (guildId: number, raidId: string) => Promise<PostReportResult>;
+  /** Back to what the log said; answers the raid view. */
+  deleteOverride: (guildId: number, raidId: string, characterKey: string) => Promise<GuildRaidView>;
+  /** Post to Discord (again, with `repost`): 409 already_posted, 502 post_failed. */
+  postReport: (guildId: number, raidId: string, repost: boolean) => Promise<PostReportResult>;
   /** The planner's comp target (officers); each answers the raid view. */
   putCompTarget: (
     guildId: number,

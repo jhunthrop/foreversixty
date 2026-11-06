@@ -6,7 +6,6 @@ import {
   BIGGEST_CHANGES_ROWS,
   DAY_MS,
   DISCORD_REPORT_MAX_LINES,
-  REPORT_ROWS_BEFORE_SHOW_ALL,
   SECONDS_PER_MINUTE,
   attendanceCopy,
   cameAsOutcome,
@@ -85,16 +84,6 @@ export function groupAttendance(rows: readonly RaidAttendanceRow[]): AttendanceG
     rows: inRosterOrder(rows.filter((row) => attendanceGroupOf(row) === key)),
     compact: COMPACT_GROUPS.has(key),
   })).filter((group) => group.rows.length > 0);
-}
-
-/** The Excused checkbox shows on `Not in the log` and `Late` rows only (spec 3.5). */
-export function canExcuse(row: RaidAttendanceRow): boolean {
-  return row.outcome === 'no_show' || row.outcome === 'late';
-}
-
-/** The first `REPORT_ROWS_BEFORE_SHOW_ALL` rows, or all of them once expanded. */
-export function visibleRows<T>(rows: readonly T[], expanded: boolean): readonly T[] {
-  return expanded ? rows : rows.slice(0, REPORT_ROWS_BEFORE_SHOW_ALL);
 }
 
 /** The viewer's own rows, the header character first (spec 3.3); the rest keep their order. */
@@ -218,7 +207,8 @@ function summaryLine(night: RaidNight): string {
     night.duration_ms > 0 ? durationLabel(night.duration_ms) : null,
   ].filter((part): part is string => part !== null);
   const head = figures.length === 0 ? '' : `${figures.join(', ')}. `;
-  return `${head}${cameRatio(night)}.`;
+  const died = night.deaths > 0 ? ` ${deaths(night.deaths)}.` : '';
+  return `${head}${cameRatio(night)}.${died}`;
 }
 
 type KilledEntry = RaidKill & { kill_ms: number };
@@ -232,19 +222,6 @@ function killsLine(report: RaidReport): string | null {
   if (killed.length === 0) return null;
   const parts = killed.map((k) => `${k.name} ${killTimeLabel(k.kill_ms)} (${killAfter(k.wipes_before)})`);
   return `${discordText.kills} ${parts.join(', ')}`;
-}
-
-const MOST_DEATHS_NAMED = 3;
-
-function deathsLine(report: RaidReport): string | null {
-  const ranked = report.deaths
-    .map((d) => ({ name: d.name, count: d.on_wipes + d.on_kills }))
-    .filter((d) => d.count > 0)
-    .sort((a, b) => b.count - a.count)
-    .slice(0, MOST_DEATHS_NAMED);
-  return ranked.length === 0
-    ? null
-    : `${discordText.mostDeaths} ${ranked.map((d) => `${d.name} ${d.count}`).join(', ')}`;
 }
 
 function lootLines(report: RaidReport): string[] {
@@ -278,7 +255,8 @@ function fitLoot(lines: readonly string[], room: number): string[] {
   return room === 0 ? [] : [...lines.slice(0, shown), discordText.more(lines.length - shown)];
 }
 
-/** Plain text in guild time, at most `DISCORD_REPORT_MAX_LINES` lines, no absentee names (R-A3).
+/** Plain text in guild time, at most `DISCORD_REPORT_MAX_LINES` lines, no absentee names (R-A3)
+ *  and nobody named for dying: the night's deaths are a count (web layout spec 2026-11-05 §7.2).
  *  Loot lines give way first when a night has more bosses than the cap leaves room for. */
 export function discordReportText(input: DiscordReportInput): string {
   const { report } = input;
@@ -287,7 +265,7 @@ export function discordReportText(input: DiscordReportInput): string {
     [input.title, dateLabel(new Date(input.startsAt), input.tz, locale), input.guildName].join(SEP),
     summaryLine(input.night),
   ];
-  const beforeLoot = present([...head, killsLine(report), deathsLine(report)]);
+  const beforeLoot = present([...head, killsLine(report)]);
   const afterLoot = present([changesLine(report), `${discordText.report} ${input.reportUrl}`]);
   const lootRoom = Math.max(0, DISCORD_REPORT_MAX_LINES - beforeLoot.length - afterLoot.length);
   return [...beforeLoot, ...fitLoot(lootLines(report), lootRoom), ...afterLoot].join('\n');

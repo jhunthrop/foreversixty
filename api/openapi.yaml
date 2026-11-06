@@ -2519,14 +2519,14 @@ components:
           type: [object, "null"]
           title: OfficerActionDrops
           description: >-
-            The last logged raid night; null with none. The logs carry no loot, so what dropped
-            is unknown: tracked is false and count null until a drop record exists. awarded is
-            the awards filed under that night.
+            The newest loot council night with drops (GET .../loot/nights: what the council
+            awarded, voted on or flagged); null when no night has any. count is its drops still
+            open; awarded is the awards filed under that night. tracked is always true.
           required: [tracked, count, raid_id, label, awarded]
           properties:
             tracked: { type: boolean }
             count: { type: [integer, "null"] }
-            raid_id: { type: [integer, "null"], format: int64 }
+            raid_id: { type: [integer, "null"], format: int64, description: The night's planned raid; null for a log or the live night. }
             label: { type: string, description: 'Zone and day in the guild''s raid timezone, "Onyxia''s Lair, Tue 8 Dec".' }
             awarded: { type: integer }
     GuildReadiness:
@@ -2824,9 +2824,30 @@ components:
               first_seen_offset_s: { type: integer }
               pulls_present: { type: integer }
               pulls_total: { type: integer }
-              excused: { type: boolean }
+              excused: { type: boolean, description: The effective excused flag (an officer's fix included). }
               own: { type: boolean }
-        report: { $ref: '#/components/schemas/OpenObject', description: "Go guilds.RaidReportView, the night's summary; v1 opens the full report on the web." }
+              auto_outcome:
+                type: string
+                enum: [present, late, absent, no_show]
+                description: >-
+                  What the log and the sign-ups said, before any officer's fix; outcome is the
+                  effective value every count reads (the roster's nights, the CSV export, the
+                  night's figures). Equal to outcome when there is no fix.
+              auto_excused: { type: boolean, description: The excused flag under the fix; equal to excused when there is no fix. }
+              override:
+                type: [object, "null"]
+                title: RaidAttendanceOverride
+                description: >-
+                  An officer's manual fix of this night (PUT …/attendance/{region}/{ruleset}/{name}/override),
+                  null for none. present and bench earn the night; absent is a no-show for a raider
+                  signed In or Late, else absent; excused keeps the log's outcome and counts the
+                  night for nobody.
+                required: [status, by_name, at]
+                properties:
+                  status: { type: string, enum: [present, absent, bench, excused] }
+                  by_name: { type: string, description: "The officer's main character name, or \"an officer\"." }
+                  at: { type: string, format: date-time }
+        report: { $ref: '#/components/schemas/OpenObject', description: "The night's report, shaped as RaidReport (Go guilds.ReportView); the apps carry it and open the full report on the web." }
         cover:
           type: [array, "null"]
           description: >-
@@ -2862,6 +2883,248 @@ components:
         providers_bench: { type: integer }
         likely: { type: integer }
         state: { type: string, enum: [ok, short, missing] }
+    RaidReport:
+      type: object
+      description: >-
+        A done raid's report (Go guilds.ReportView), in RaidView.report. An officer or leader reads
+        every row; a member reads the headline, every pull, kill and loot row, and only their own
+        characters' deaths (with causes), consumables, parses and moves. Death causes and the
+        consumables by pull are read once from each fight's stored summary (guild_report_pulls);
+        a fight not read yet carries death_causes null and a not_read reason.
+      required: [headline, pulls, parses, kill_order, unnamed, deaths, consumables, loot, moves, posted_at]
+      properties:
+        headline:
+          type: object
+          title: RaidReportHeadline
+          description: Attempts are boss pulls (kills plus wipes); deaths count every pull, trash included, so they add up to the pulls.
+          required: [kills, wipes, attempts, deaths]
+          properties:
+            kills: { type: integer }
+            wipes: { type: integer }
+            attempts: { type: integer }
+            deaths: { type: integer }
+        pulls:
+          type: array
+          description: Every fight of the night in order.
+          items:
+            type: object
+            title: RaidReportPull
+            required: [fight_index, encounter_id, name, attempt, result, duration_ms, deaths, death_causes]
+            properties:
+              fight_index: { type: integer }
+              encounter_id: { type: [integer, "null"], description: Null on trash. }
+              name: { type: string }
+              attempt: { type: [integer, "null"], description: The boss pull's number (1 for the first pull of that boss); null on trash. }
+              result: { type: string, enum: [kill, wipe, clear], description: clear is a trash pull the raid won. }
+              duration_ms: { type: integer, format: int64 }
+              deaths: { type: integer }
+              death_causes:
+                type: [array, "null"]
+                description: >-
+                  One per death, in order; null until the fight's summary has been read (deaths
+                  still counts them). A member reads their own characters' only.
+                items:
+                  type: object
+                  title: RaidReportDeath
+                  required: [character_key, name, class, at_ms, killing_blow, last_hits]
+                  properties:
+                    character_key: { type: string, description: Empty when the log name maps to no character of the night. }
+                    name: { type: string }
+                    class: { type: string, x-name: className }
+                    at_ms: { type: integer, format: int64, description: Time into the pull. }
+                    killing_blow:
+                      oneOf: [{ $ref: '#/components/schemas/RaidReportHit' }, { type: "null" }]
+                      description: The last hit that overkilled, else the last hit; null when the log showed no hit before the death.
+                    last_hits:
+                      type: array
+                      description: Up to the last 3 damage-taken events before the death, oldest first.
+                      items: { $ref: '#/components/schemas/RaidReportHit' }
+        parses:
+          type: array
+          description: >-
+            Per raider per boss kill: DPS, HPS for a healer (the guild's one parse rule), and the
+            fight's overall rating, null when none was computed. Ordered by kill, then damage before
+            healing, then best first.
+          items:
+            type: object
+            title: RaidReportParse
+            required: [character_key, name, class, role, encounter_id, encounter, fight_index, metric, value, rating]
+            properties:
+              character_key: { type: string }
+              name: { type: string }
+              class: { type: string, x-name: className }
+              role: { type: string }
+              encounter_id: { type: integer }
+              encounter: { type: string }
+              fight_index: { type: integer }
+              metric: { type: string, enum: [dps, hps] }
+              value: { type: number }
+              rating: { type: [number, "null"] }
+        kill_order:
+          type: array
+          items:
+            type: object
+            title: RaidReportKill
+            required: [encounter_id, name, fight_index, killed, kill_ms, wipes_before, deaths]
+            properties:
+              encounter_id: { type: integer }
+              name: { type: string }
+              fight_index: { type: integer }
+              killed: { type: boolean }
+              kill_ms: { type: [integer, "null"], format: int64 }
+              wipes_before: { type: integer }
+              deaths: { type: integer }
+        unnamed:
+          type: [object, "null"]
+          title: RaidReportUnnamed
+          required: [pulls, kills, wipes]
+          properties:
+            pulls: { type: integer }
+            kills: { type: integer }
+            wipes: { type: integer }
+        deaths:
+          type: array
+          items:
+            type: object
+            title: RaidReportDeathCount
+            required: [character_key, name, class, on_wipes, on_kills]
+            properties:
+              character_key: { type: string }
+              name: { type: string }
+              class: { type: string, x-name: className }
+              on_wipes: { type: integer }
+              on_kills: { type: integer }
+        consumables:
+          type: object
+          title: RaidReportConsumables
+          required: [log_has_buffs, rows, by_pull]
+          properties:
+            log_has_buffs: { type: boolean, description: True when at least one boss pull carried a character sheet to read. }
+            rows:
+              type: array
+              description: The bags pill per roster character (the readiness board's rule); flask, food and potions are always null here.
+              items:
+                type: object
+                title: RaidReportBagsRow
+                required: [character_key, name, class, before, flask, food, potions]
+                properties:
+                  character_key: { type: string }
+                  name: { type: string }
+                  class: { type: string, x-name: className }
+                  before: { type: string, enum: [short, unknown, stocked] }
+                  flask: { type: [boolean, "null"] }
+                  food: { type: [boolean, "null"] }
+                  potions: { type: [integer, "null"] }
+            by_pull:
+              type: array
+              description: >-
+                One per boss pull: what each raider brought, read from the pull's character sheet
+                (COMBATANT_INFO) against the curated consumables catalogue
+                (logs/engine/mechanics/consumables). rows is null with reason
+                no_character_sheet when the log carried no sheet for the pull (nothing can be
+                said: unknown, never missing), or not_read when the summary is not read yet.
+              items:
+                type: object
+                title: RaidReportPullConsumables
+                required: [fight_index, name, attempt, reason, rows]
+                properties:
+                  fight_index: { type: integer }
+                  name: { type: string }
+                  attempt: { type: integer }
+                  reason: { type: [string, "null"], enum: [no_character_sheet, not_read, null] }
+                  rows:
+                    type: [array, "null"]
+                    items:
+                      type: object
+                      title: RaidReportPullConsumable
+                      required: [character_key, name, class, flask, food, weapon_enchant, potions, brought]
+                      description: >-
+                        true: up at the pull (or applied within 10 s of it); false: proven missing
+                        (only where the catalogue's list is complete, which today is flasks); null:
+                        the log cannot say.
+                      properties:
+                        character_key: { type: string }
+                        name: { type: string }
+                        class: { type: string, x-name: className }
+                        flask: { type: [boolean, "null"] }
+                        food: { type: [boolean, "null"] }
+                        weapon_enchant: { type: [boolean, "null"] }
+                        potions: { type: integer, description: Combat potions used in the pull. }
+                        brought: { type: array, items: { type: string }, description: The names of what was up. }
+        loot:
+          type: array
+          items:
+            type: object
+            title: RaidReportLootBoss
+            required: [encounter_id, boss, awards]
+            properties:
+              encounter_id: { type: integer, format: int64 }
+              boss: { type: string }
+              awards:
+                type: array
+                items:
+                  type: object
+                  title: RaidReportLootAward
+                  required: [item_id, item_name, quality, icon, character_key, name, class, by_name, at]
+                  properties:
+                    item_id: { type: integer }
+                    item_name: { type: string }
+                    quality: { type: integer }
+                    icon: { type: string }
+                    character_key: { type: string }
+                    name: { type: string }
+                    class: { type: string, x-name: className }
+                    by_name: { type: string }
+                    at: { type: string, format: date-time }
+        moves:
+          type: object
+          title: RaidReportMoves
+          required: [previous, rows]
+          properties:
+            previous:
+              type: [object, "null"]
+              title: RaidReportPrevious
+              required: [id, title, starts_at]
+              properties:
+                id: { type: integer, format: int64 }
+                title: { type: string }
+                starts_at: { type: string, format: date-time }
+            rows:
+              type: array
+              items:
+                type: object
+                title: RaidReportMove
+                required: [character_key, name, class, metric, encounter, before, after]
+                properties:
+                  character_key: { type: string }
+                  name: { type: string }
+                  class: { type: string, x-name: className }
+                  metric: { type: string, enum: [dps, hps] }
+                  encounter: { type: string }
+                  before: { type: integer }
+                  after: { type: integer }
+        posted_at: { type: [string, "null"], format: date-time, description: When the summary was last posted to Discord. }
+    RaidReportHit:
+      type: object
+      description: One damage event on a raider before their death.
+      required: [at_ms, spell_id, ability, source, amount, overkill]
+      properties:
+        at_ms: { type: integer, format: int64, description: Time into the pull. }
+        spell_id: { type: integer, format: int64, description: 1 is a melee swing in the engine's convention. }
+        ability: { type: string }
+        source: { type: string }
+        amount: { type: integer, format: int64 }
+        overkill: { type: integer, format: int64 }
+    AttendanceOverrideRequest:
+      type: object
+      required: [status]
+      properties:
+        status: { type: string, enum: [present, absent, bench, excused] }
+    ReportPostRequest:
+      type: object
+      description: Optional; an empty body is a first post.
+      properties:
+        repost: { type: boolean, description: Post an already posted report again. }
     SignupRequest:
       type: object
       required: [state]
@@ -3098,6 +3361,212 @@ components:
                         icon: { type: string }
                         quality: { type: integer, minimum: 0, maximum: 5 }
                     items_won: { type: integer }
+
+    LootCouncilVotes:
+      type: object
+      description: One candidate's officer votes. voters is the guild's verified officers and leaders; mine is the viewing officer's own vote.
+      required: ["yes", "no", voters, mine]
+      properties:
+        "yes": { type: integer }
+        "no": { type: integer }
+        voters: { type: integer }
+        mine: { type: [string, "null"], enum: ["yes", "no", null] }
+    LootDecision:
+      type: object
+      description: >-
+        An award's decision record. ms_os, reason and the votes are what the award kept when it was
+        made (votes snapshotted at award time; votes_officers is how many officers could vote); all
+        null on an award made before the council recorded them. awarded_by is the officer's
+        character in the guild, "an officer" when it cannot be named, "" when no officer is recorded.
+      required: [award_id, item_id, item_name, icon, quality, character_key, name, class, ms_os, reason, votes_yes, votes_no, votes_officers, awarded_by, at]
+      properties:
+        award_id: { type: integer, format: int64 }
+        item_id: { type: integer }
+        item_name: { type: string }
+        icon: { type: string }
+        quality: { type: integer, minimum: 0, maximum: 5 }
+        character_key: { type: string }
+        name: { type: string }
+        class: { type: string }
+        ms_os: { type: [string, "null"], enum: [ms, os, null] }
+        reason: { type: [string, "null"], maxLength: 200 }
+        votes_yes: { type: [integer, "null"] }
+        votes_no: { type: [integer, "null"] }
+        votes_officers: { type: [integer, "null"] }
+        awarded_by: { type: string }
+        at: { type: string, format: date-time }
+    LootNights:
+      type: object
+      description: >-
+        GET /v1/guilds/{id}/loot/nights: the guild's Onyxia nights, newest first. A night's drops are
+        the items the council awarded, voted on or flagged on it (no record of what dropped exists
+        beyond that); the current night (where an award made now is filed) is always listed, first
+        when nothing else holds it, and the page offers the whole loot table on it (GET .../loot).
+      required: [officers, nights]
+      properties:
+        officers: { type: integer }
+        nights:
+          type: array
+          items:
+            type: object
+            title: LootNight
+            required: [night, raid_id, report_id, date, at, zone, current, drops, decisions]
+            properties:
+              night: { type: string, description: 'The key every council call takes: "raid:<id>", "report:<id>" or "live" (no night yet).' }
+              raid_id: { type: [integer, "null"], format: int64 }
+              report_id: { type: [string, "null"] }
+              date: { type: string, format: date, description: "The night's day in the guild's raid zone (UTC without one)." }
+              at: { type: string, format: date-time }
+              zone: { type: string }
+              current: { type: boolean }
+              drops:
+                type: array
+                items:
+                  type: object
+                  title: LootNightDrop
+                  required: [item_id, name, icon, quality, kind, encounter_id, boss, state, award]
+                  properties:
+                    item_id: { type: integer }
+                    name: { type: string }
+                    icon: { type: string }
+                    quality: { type: integer, minimum: 0, maximum: 5 }
+                    kind: { type: string, enum: [gear, quest, bag, skinned] }
+                    encounter_id: { type: integer, format: int64 }
+                    boss: { type: string }
+                    state: { type: string, enum: [open, awarded] }
+                    award: { oneOf: [{ $ref: '#/components/schemas/LootDecision' }, { type: "null" }] }
+              decisions:
+                type: array
+                description: The night's decision record, oldest first.
+                items: { $ref: '#/components/schemas/LootDecision' }
+    LootCouncilDrop:
+      type: object
+      description: >-
+        GET /v1/guilds/{id}/loot/drops/{item_id}/candidates. candidates are the Loot tab's (tier 0
+        with gain_dps, tier 1 with ilvl_delta; a quest drop or the bag lists its eligible characters
+        as tier 1) with: attendance over the last 4 raids (the last 4 reports before the guild has a
+        logged raid); items_won is loot this tier (every Onyxia award: the current raid phase);
+        bis_for_them, the drop is the pick for the slot in their BiS band (not an alternative);
+        ms_os, their declared flag (ms_os_source declared) else derived (ms when their spec's BiS
+        band names the drop, i.e. tier 0, os otherwise), null for a quest drop or the bag; votes.
+        closed is true once the drop is awarded on the night: votes and flags then answer 409.
+      required: [night, item_id, name, icon, quality, kind, officers, closed, award, candidates]
+      properties:
+        night: { type: string }
+        item_id: { type: integer }
+        name: { type: string }
+        icon: { type: string }
+        quality: { type: integer, minimum: 0, maximum: 5 }
+        kind: { type: string, enum: [gear, quest, bag, skinned] }
+        officers: { type: integer }
+        closed: { type: boolean }
+        award: { oneOf: [{ $ref: '#/components/schemas/LootDecision' }, { type: "null" }] }
+        candidates:
+          type: array
+          items:
+            type: object
+            title: LootCouncilCandidate
+            required: [character_key, name, class, spec, gain_dps, gain_unit, not_sim_checked, ilvl_delta, attendance, already_equivalent, replaces, replaces_item, items_won, tier, fills_empty_slot, bis_for_them, ms_os, ms_os_source, votes]
+            properties:
+              character_key: { type: string }
+              name: { type: string }
+              class: { type: string }
+              spec: { type: string }
+              gain_dps: { type: [number, "null"] }
+              gain_unit: { type: [string, "null"], enum: [dps, hps, tps, null] }
+              tier: { type: integer }
+              not_sim_checked: { type: boolean }
+              ilvl_delta: { type: [integer, "null"] }
+              attendance: { $ref: '#/components/schemas/GuildAttendance' }
+              already_equivalent: { type: boolean }
+              fills_empty_slot: { type: boolean }
+              replaces: { type: string }
+              replaces_item:
+                type: [object, "null"]
+                required: [item_id, name, icon, quality]
+                properties:
+                  item_id: { type: integer }
+                  name: { type: string }
+                  icon: { type: string }
+                  quality: { type: integer, minimum: 0, maximum: 5 }
+              items_won: { type: integer }
+              bis_for_them: { type: boolean }
+              ms_os: { type: [string, "null"], enum: [ms, os, null] }
+              ms_os_source: { type: [string, "null"], enum: [declared, derived, null] }
+              votes: { $ref: '#/components/schemas/LootCouncilVotes' }
+    LootDropTarget:
+      type: object
+      required: [item_id, character_key]
+      properties:
+        night: { type: string, description: 'A night key; omitted or "" is the current night.' }
+        item_id: { type: integer }
+        character_key: { type: string }
+    LootVoteRequest:
+      allOf:
+        - $ref: '#/components/schemas/LootDropTarget'
+        - type: object
+          required: [vote]
+          properties:
+            vote: { type: [string, "null"], enum: ["yes", "no", null], description: null removes the officer's vote. }
+    LootInterestRequest:
+      allOf:
+        - $ref: '#/components/schemas/LootDropTarget'
+        - type: object
+          required: [ms_os]
+          properties:
+            ms_os: { type: [string, "null"], enum: [ms, os, null], description: null removes the flag. }
+    LootInterest:
+      type: object
+      required: [night, flags]
+      properties:
+        night: { type: string }
+        flags:
+          type: array
+          items:
+            type: object
+            title: LootInterestFlag
+            required: [item_id, character_key, ms_os, set_by_officer]
+            properties:
+              item_id: { type: integer }
+              character_key: { type: string }
+              ms_os: { type: string, enum: [ms, os] }
+              set_by_officer: { type: boolean }
+    LootAwardRequest:
+      type: object
+      required: [encounter_id, item_id, character_key]
+      properties:
+        encounter_id: { type: integer, format: int64 }
+        item_id: { type: integer }
+        character_key: { type: string }
+        raid_id: { type: [integer, "null"], format: int64, description: A done raid of the guild. }
+        night: { type: string, description: A council night key, instead of raid_id. }
+        ms_os: { type: [string, "null"], enum: [ms, os, null], description: 'Omitted: the candidate''s flag, else the derivation rule.' }
+        reason: { type: [string, "null"], maxLength: 200 }
+    LootHistory:
+      type: object
+      required: [from, to, rows]
+      properties:
+        from: { type: [string, "null"], format: date }
+        to: { type: [string, "null"], format: date }
+        rows:
+          type: array
+          items:
+            type: object
+            title: LootHistoryRow
+            required: [date, raid, boss, item_id, item, character, class, ms_os, votes_yes, votes_no, reason, awarded_by]
+            properties:
+              date: { type: string, format: date }
+              raid: { type: string }
+              boss: { type: string }
+              item_id: { type: integer }
+              item: { type: string }
+              character: { type: string }
+              class: { type: string }
+              ms_os: { type: [string, "null"], enum: [ms, os, null] }
+              votes_yes: { type: [integer, "null"] }
+              votes_no: { type: [integer, "null"] }
+              reason: { type: [string, "null"] }
+              awarded_by: { type: string }
 
     # Reports and builds -------------------------------------------------------------------
     ReportList:
@@ -6546,6 +7015,126 @@ paths:
         '409':
           description: "conflict: the raid's status does not allow the move"
           content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  /v1/guilds/{id}/raids/{raid}/attendance/{region}/{ruleset}/{name}:
+    put:
+      summary: An officer excuses a raider for the night, or takes the excuse back
+      description: >-
+        Verified officer or leader of a guild with the plan, claim not frozen. The latest officer
+        word wins: a manual fix on the row is cleared first (its auto value restored).
+      operationId: excuseGuildRaidAttendance
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
+        - { name: raid, in: path, required: true, schema: { type: integer, format: int64 } }
+        - { name: region, in: path, required: true, schema: { type: string } }
+        - { name: ruleset, in: path, required: true, schema: { type: string } }
+        - { name: name, in: path, required: true, schema: { type: string } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { type: object, required: [excused], properties: { excused: { type: boolean } } }
+      responses:
+        '200':
+          description: The raid view as it now stands
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/RaidView' } } }
+        '403': { description: "forbidden or guild_plan_required", content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } } }
+        '404': { description: "No such raid or character", content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } } }
+        '409': { description: "claim_contested", content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } } }
+        '422': { description: "invalid: no excused, or no attendance row for the character", content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } } }
+  /v1/guilds/{id}/raids/{raid}/attendance/{region}/{ruleset}/{name}/override:
+    put:
+      summary: An officer fixes a raider's attendance for the night
+      description: >-
+        Marks the raider present, absent, bench or excused, over what the log said; who and when
+        are kept. The fix is stored apart from the auto value, survives every recompute of the
+        log, and every attendance reader (the raid view, the roster's nights, the CSV export, the
+        Discord reads) reads the effective value. A verified roster character with no row (not
+        signed up, not in the log) gets one. Verified officer or leader of a guild with the plan,
+        claim not frozen; budget shared with the other officer raid writes.
+      operationId: setGuildRaidAttendanceOverride
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
+        - { name: raid, in: path, required: true, schema: { type: integer, format: int64 } }
+        - { name: region, in: path, required: true, schema: { type: string } }
+        - { name: ruleset, in: path, required: true, schema: { type: string } }
+        - { name: name, in: path, required: true, schema: { type: string } }
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: '#/components/schemas/AttendanceOverrideRequest' } } }
+      responses:
+        '200':
+          description: The raid view, the row carrying auto_outcome, override and the effective outcome
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/RaidView' } } }
+        '400': { description: "invalid: the body is not JSON", content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } } }
+        '403': { description: "forbidden or guild_plan_required", content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } } }
+        '404': { description: "No such raid (also to a signed-out caller)", content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } } }
+        '409': { description: "conflict: the raid has no matched log; or claim_contested", content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } } }
+        '422': { description: "invalid: status, or the character is not a verified raider of the guild", content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } } }
+    delete:
+      summary: An officer clears a fix, restoring what the log said
+      description: Clearing a row with no fix is a no-op. Same gate as the PUT.
+      operationId: clearGuildRaidAttendanceOverride
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
+        - { name: raid, in: path, required: true, schema: { type: integer, format: int64 } }
+        - { name: region, in: path, required: true, schema: { type: string } }
+        - { name: ruleset, in: path, required: true, schema: { type: string } }
+        - { name: name, in: path, required: true, schema: { type: string } }
+      responses:
+        '200':
+          description: The raid view as it now stands
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/RaidView' } } }
+        '403': { description: "forbidden or guild_plan_required", content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } } }
+        '404': { description: "No such raid", content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } } }
+        '409': { description: "conflict: the raid has no matched log; or claim_contested", content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } } }
+  /v1/guilds/{id}/raids/{raid}/report/post:
+    post:
+      summary: An officer posts the night's summary to the guild's raid channel
+      description: >-
+        One post per report: a second press answers already_posted unless the body asks for a
+        repost. The summary (copy in api/internal/notify/report_embed.go) carries the raid and its
+        date, kills with times, wipes, the night's time, came of signed, the death count, the top
+        3 damage parses by name, the loot by item and winner, and a link to the report. It names
+        nobody for dying. A post that reaches no channel releases the claim (a repost puts the
+        earlier stamp back). Verified officer or leader with the plan, claim not frozen.
+      operationId: postGuildRaidReport
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
+        - { name: raid, in: path, required: true, schema: { type: integer, format: int64 } }
+      requestBody:
+        required: false
+        content: { application/json: { schema: { $ref: '#/components/schemas/ReportPostRequest' } } }
+      responses:
+        '200':
+          description: Posted
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data: { type: object, required: [posted_at], properties: { posted_at: { type: string, format: date-time } } }
+        '400': { description: "invalid: the body is not JSON", content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } } }
+        '403': { description: "forbidden or guild_plan_required", content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } } }
+        '404': { description: "No such raid", content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } } }
+        '409': { description: "conflict (not done, or the log is not public), already_posted, not_posted (a repost of a report never posted), or claim_contested", content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } } }
+        '502': { description: "post_failed: the post reached no channel; try again", content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } } }
   /v1/guilds/{id}/raids/{raid}/signups/{region}/{ruleset}/{name}:
     put:
       summary: Answer for one character (In, Late, Bench, Out)
@@ -6850,6 +7439,198 @@ paths:
         '404':
           description: "No such guild"
           content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  /v1/guilds/{id}/loot/nights:
+    get:
+      summary: The loot council's raid nights, newest first (verified members; officers see vote counts)
+      operationId: getGuildLootNights
+      tags: [web]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
+        - { name: limit, in: query, schema: { type: integer, minimum: 1, maximum: 30, default: 8 } }
+      responses:
+        '200':
+          description: "Nights with their drops (open or awarded) and decision record. Not plan-gated: history is never locked. A member's copy has votes_yes, votes_no and votes_officers null on every decision."
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/LootNights' } } }
+        '400': { description: "invalid limit", content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } } }
+        '403': { description: "Not a verified member", content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } } }
+        '404': { description: "No such guild", content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } } }
+  /v1/guilds/{id}/loot/drops/{item_id}/candidates:
+    get:
+      summary: The council's candidates for one drop of one night (verified officers)
+      operationId: getGuildLootDropCandidates
+      tags: [web]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
+        - { name: item_id, in: path, required: true, schema: { type: integer } }
+        - { name: night, in: query, schema: { type: string }, description: 'A night key ("raid:<id>", "report:<id>", "live"); omitted is the current night.' }
+      responses:
+        '200':
+          description: "The drop, whether it is awarded, and its ranked candidates with votes and MS/OS"
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/LootCouncilDrop' } } }
+        '400': { description: "invalid night", content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } } }
+        '403': { description: "Not a verified officer", content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } } }
+        '404': { description: "No such guild, or not an Onyxia drop", content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } } }
+  /v1/guilds/{id}/loot/votes:
+    put:
+      summary: An officer's yes or no on a candidate for a drop (verified officers, Raid guild plan)
+      description: One vote per officer per candidate per drop of a night; a new vote replaces the officer's earlier one, null removes it. Stops while the claim is contested.
+      operationId: putGuildLootVote
+      tags: [web]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: '#/components/schemas/LootVoteRequest' } } }
+      responses:
+        '200':
+          description: "The candidate's tally after the vote"
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        required: [night, item_id, character_key, votes]
+                        properties:
+                          night: { type: string }
+                          item_id: { type: integer }
+                          character_key: { type: string }
+                          votes: { $ref: '#/components/schemas/LootCouncilVotes' }
+        '400': { description: "invalid (body, night, item or character)", content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } } }
+        '403': { description: "forbidden (not an officer), guild_plan_required or raid_guild_required", content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } } }
+        '409': { description: "voting_closed (the drop is awarded on that night) or claim_contested", content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } } }
+  /v1/guilds/{id}/loot/interest:
+    get:
+      summary: The viewer's own MS/OS flags on a night (verified members)
+      operationId: getGuildLootInterest
+      tags: [web]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
+        - { name: night, in: query, schema: { type: string }, description: Omitted is the current night. }
+      responses:
+        '200':
+          description: "The flags on the viewer's own characters only"
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/LootInterest' } } }
+        '400': { description: "invalid night", content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } } }
+        '403': { description: "Not a verified member", content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } } }
+    put:
+      summary: Flag a drop main spec or off spec (own character; an officer for anyone)
+      description: A member sets their own characters' flags, no plan needed. Setting another character's flag takes a verified officer, the Raid guild plan and no contested claim. null removes the flag.
+      operationId: putGuildLootInterest
+      tags: [web]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: '#/components/schemas/LootInterestRequest' } } }
+      responses:
+        '200':
+          description: "The flag as stored"
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        required: [night, item_id, character_key, ms_os]
+                        properties:
+                          night: { type: string }
+                          item_id: { type: integer }
+                          character_key: { type: string }
+                          ms_os: { type: [string, "null"], enum: [ms, os, null] }
+        '400': { description: "invalid", content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } } }
+        '403': { description: "forbidden (not a member, or another's character), guild_plan_required or raid_guild_required", content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } } }
+        '409': { description: "voting_closed or claim_contested", content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } } }
+  /v1/guilds/{id}/loot/awards:
+    post:
+      summary: Award a drop with its decision record (verified officers, Raid guild plan)
+      description: Snapshots the candidate's votes and the officer count onto the award and closes voting on the drop for that night. Re-awarding the drop on the same night replaces the award.
+      operationId: createGuildLootAward
+      tags: [web]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: '#/components/schemas/LootAwardRequest' } } }
+      responses:
+        '200':
+          description: "Awarded"
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        required: [award_id, status]
+                        properties:
+                          award_id: { type: integer, format: int64 }
+                          status: { type: string, enum: [awarded] }
+        '400': { description: "invalid (item, character, raid, night, ms_os or a reason over 200 characters)", content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } } }
+        '403': { description: "forbidden, guild_plan_required or raid_guild_required", content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } } }
+        '409': { description: "claim_contested", content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } } }
+  /v1/guilds/{id}/export/loot.csv:
+    get:
+      summary: Loot history as CSV (officers by rank, any plan state)
+      description: >-
+        Columns date, raid, boss, item_id, item, character, class, ms_os, votes_yes, votes_no,
+        reason, awarded_by. date is the night's day in the guild's raid zone; from and to filter on
+        it, inclusive. Cells starting with a formula character get a leading apostrophe; a field an
+        award never recorded is empty. Anyone below officer rank gets 404.
+      operationId: exportGuildLootCSV
+      tags: [web]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
+        - { name: from, in: query, schema: { type: string, format: date } }
+        - { name: to, in: query, schema: { type: string, format: date } }
+      responses:
+        '200': { description: "The CSV file", content: { text/csv: { schema: { type: string } } } }
+        '400': { description: "invalid from or to", content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } } }
+        '404': { description: "No such guild, or not an officer", content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } } }
+  /v1/guilds/{id}/export/loot.json:
+    get:
+      summary: Loot history as JSON (officers by rank, any plan state)
+      description: The CSV's rows, with null for a field an award never recorded.
+      operationId: exportGuildLootJSON
+      tags: [web]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
+        - { name: from, in: query, schema: { type: string, format: date } }
+        - { name: to, in: query, schema: { type: string, format: date } }
+      responses:
+        '200':
+          description: "The history in range"
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/LootHistory' } } }
+        '400': { description: "invalid from or to", content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } } }
+        '404': { description: "No such guild, or not an officer", content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } } }
   /v1/auth/app/start:
     get:
       summary: Begin app sign-in in the system browser (dark, APP_SIGN_IN)

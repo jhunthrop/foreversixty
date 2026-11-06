@@ -173,6 +173,12 @@ func (s *Store) replaceAttendance(ctx context.Context, raidID int64, want *strin
 	if (current == nil) != (want == nil) || (current != nil && *current != *want) {
 		return nil
 	}
+	if want == nil {
+		// No log, no night: an officer's fixes go with the rows.
+		if err := dropOverrides(ctx, tx, raidID); err != nil {
+			return err
+		}
+	}
 	if err := writeAttendanceRows(ctx, tx, raidID, rows); err != nil {
 		return err
 	}
@@ -183,13 +189,17 @@ func (s *Store) replaceAttendance(ctx context.Context, raidID int64, want *strin
 }
 
 // writeAttendanceRows swaps raidID's rows for rows inside tx, keeping excused flags of the
-// characters that keep a row.
+// characters that keep a row and every officer's fix (applyOverrides): a fixed character keeps
+// a row even when the log and the sign-ups no longer name them.
 func writeAttendanceRows(ctx context.Context, tx pgx.Tx, raidID int64, rows []AttendanceRow) error {
 	keys := make([]string, len(rows))
 	for i, r := range rows {
 		keys[i] = r.CharacterKey
 	}
-	if _, err := tx.Exec(ctx, `delete from guild_raid_attendance where raid_id = $1 and not (character_key = any($2))`,
+	if _, err := tx.Exec(ctx, `
+		delete from guild_raid_attendance a where a.raid_id = $1 and not (a.character_key = any($2))
+		  and not exists (select 1 from guild_raid_attendance_overrides o
+		                  where o.raid_id = a.raid_id and o.character_key = a.character_key)`,
 		raidID, keys); err != nil {
 		return fmt.Errorf("guilds: attendance: prune: %w", err)
 	}
@@ -207,13 +217,26 @@ func writeAttendanceRows(ctx context.Context, tx pgx.Tx, raidID int64, rows []At
 			return fmt.Errorf("guilds: attendance: write: %w", err)
 		}
 	}
-	return nil
+	pullsTotal := 0
+	if len(rows) > 0 {
+		pullsTotal = rows[0].PullsTotal
+	}
+	return applyOverrides(ctx, tx, raidID, keys, pullsTotal)
 }
 
-// SetExcused sets the officer's excused flag on one attendance row. ErrNotFound when the raid
-// has no row for the character.
+// SetExcused sets the officer's excused flag on one attendance row. The latest officer word
+// wins: a manual fix on the row is cleared first (its auto value restored). ErrNotFound when the
+// raid has no row for the character.
 func (s *Store) SetExcused(ctx context.Context, raidID int64, characterKey string, excused bool) error {
-	tag, err := s.Pool.Exec(ctx,
+	tx, err := s.Pool.Begin(ctx)
+	if err != nil {
+		return fmt.Errorf("guilds: set excused: begin: %w", err)
+	}
+	defer func() { _ = tx.Rollback(ctx) }()
+	if err := clearOverride(ctx, tx, raidID, characterKey); err != nil {
+		return err
+	}
+	tag, err := tx.Exec(ctx,
 		`update guild_raid_attendance set excused = $3 where raid_id = $1 and character_key = $2`,
 		raidID, characterKey, excused)
 	if err != nil {
@@ -221,6 +244,9 @@ func (s *Store) SetExcused(ctx context.Context, raidID int64, characterKey strin
 	}
 	if tag.RowsAffected() == 0 {
 		return ErrNotFound
+	}
+	if err := tx.Commit(ctx); err != nil {
+		return fmt.Errorf("guilds: set excused: commit: %w", err)
 	}
 	return nil
 }

@@ -1,13 +1,14 @@
 // web/src/lib/guild/night-actions.test.ts
-// The done raid's officer writes (attendance spec 3.4, 3.5, 4): Excused is optimistic (row and summary
-// move at once) and reverts with the row line on a refusal; Post to Discord posts once, re-reads on
-// 409 already_posted, leaves the button live on 502 post_failed, and flips the plan on 403.
+// The done raid's officer writes (web layout spec 2026-11-05 §7.2): the attendance fix shows its pick
+// while it saves, applies the server's raid and keeps the row with its line on a refusal; Post to
+// Discord posts once (again with repost), re-reads on 409 already_posted, leaves the button live on
+// 502 post_failed, and flips the plan on 403.
 import { describe, expect, it, vi } from 'vitest';
 import type { Me } from '../account/api';
 import { deferred, deps, me, started, useControllerClock } from '../../test-support/raid-controller-fakes';
 import { doneRaid } from '../../test-support/raid-fixtures';
 import { attendanceRow, raidReport } from '../../test-support/report-fixtures';
-import { GuildApiError, type GuildHome, type GuildRaidView } from './api';
+import { GuildApiError, type GuildHome, type GuildRaidView, type RaidAttendanceRow } from './api';
 import { attendanceCopy } from './attendance-copy';
 
 useControllerClock();
@@ -22,79 +23,53 @@ const OFFICER = {
   loadHome: officerHome,
 };
 
-function night(excused = false): GuildRaidView {
+function night(override: RaidAttendanceRow['override'] = null): GuildRaidView {
   return doneRaid({
-    attendance: [attendanceRow({ character_key: KEY, name: 'Grimtotem', outcome: 'no_show', excused })],
+    attendance: [attendanceRow({ character_key: KEY, name: 'Grimtotem', outcome: 'no_show', override })],
     report: raidReport(),
   });
 }
 
-function withOnly(raid: GuildRaidView, key: string): GuildRaidView {
-  const attendance = (raid.attendance ?? []).map((r) =>
-    r.character_key === key ? { ...r, excused: true } : r,
-  );
-  return {
-    ...raid,
-    attendance,
-    night: raid.night && { ...raid.night, excused: attendance.filter((r) => r.excused).length },
-  };
-}
+const BENCH = { status: 'bench' as const, by_name: 'Kraggor', at: '2026-12-11T06:00:00Z' };
 
-describe('Excused', () => {
-  it('moves the row and the summary at once, then keeps the server answer', async () => {
+describe('the attendance fix', () => {
+  it('shows the pick while it saves, then keeps the server answer', async () => {
     const answer = deferred<GuildRaidView>();
-    const putExcused = vi.fn(() => answer.promise);
+    const putOverride = vi.fn(() => answer.promise);
     const { c, stop } = await started(
-      deps({ ...OFFICER, fetchRaid: () => Promise.resolve(night()), putExcused }),
+      deps({ ...OFFICER, fetchRaid: () => Promise.resolve(night()), putOverride }),
     );
-    const pending = c.night.excuse(KEY, true);
-    expect(c.raid?.attendance?.[0].excused).toBe(true);
-    expect(c.raid?.night?.excused).toBe(1);
-    expect(c.night.excuseBusy[KEY]).toBe(true);
-    answer.resolve(night(true));
+    const pending = c.night.fix(KEY, 'bench');
+    expect(c.night.fixing[KEY]).toBe('bench');
+    await expect(c.night.fix(KEY, 'present')).resolves.toBe(false);
+    answer.resolve(night(BENCH));
     await expect(pending).resolves.toBe(true);
-    expect(putExcused).toHaveBeenCalledWith(2, '7', KEY, true);
-    expect(c.night.excuseBusy[KEY]).toBeUndefined();
+    expect(putOverride).toHaveBeenCalledTimes(1);
+    expect(putOverride).toHaveBeenCalledWith(2, '7', KEY, 'bench');
+    expect(c.raid?.attendance?.[0].override).toEqual(BENCH);
+    expect(c.night.fixing).toEqual({});
     stop();
   });
 
-  it('keeps both ticks when two overlap and answers arrive out of order', async () => {
-    const a = deferred<GuildRaidView>();
-    const b = deferred<GuildRaidView>();
-    const answers = [a, b];
-    const putExcused = vi.fn(() => answers.shift()!.promise);
-    const two = doneRaid({
-      attendance: [
-        attendanceRow({ character_key: KEY, name: 'Grimtotem', outcome: 'no_show' }),
-        attendanceRow({ character_key: 'k2', name: 'Slow', outcome: 'late' }),
-      ],
-      report: raidReport(),
-    });
+  it('goes back to the log with a delete', async () => {
+    const deleteOverride = vi.fn(() => Promise.resolve(night()));
     const { c, stop } = await started(
-      deps({ ...OFFICER, fetchRaid: () => Promise.resolve(two), putExcused }),
+      deps({ ...OFFICER, fetchRaid: () => Promise.resolve(night(BENCH)), deleteOverride }),
     );
-    const first = c.night.excuse(KEY, true);
-    const second = c.night.excuse('k2', true);
-    // The first answer is stale (it predates the second tick): it must not overwrite.
-    a.resolve(withOnly(two, KEY));
-    await first;
-    expect(c.raid?.attendance?.map((r) => r.excused)).toEqual([true, true]);
-    b.resolve(withOnly(withOnly(two, KEY), 'k2'));
-    await second;
-    expect(c.raid?.attendance?.map((r) => r.excused)).toEqual([true, true]);
-    expect(c.raid?.night?.excused).toBe(2);
+    await expect(c.night.fix(KEY, null)).resolves.toBe(true);
+    expect(deleteOverride).toHaveBeenCalledWith(2, '7', KEY);
+    expect(c.raid?.attendance?.[0].override).toBeNull();
     stop();
   });
 
-  it('reverts and says it did not save on a refusal', async () => {
-    const putExcused = vi.fn(() => Promise.reject(new Error('down')));
+  it('keeps the row and says it did not save on a refusal', async () => {
+    const putOverride = vi.fn(() => Promise.reject(new Error('down')));
     const { c, stop } = await started(
-      deps({ ...OFFICER, fetchRaid: () => Promise.resolve(night()), putExcused }),
+      deps({ ...OFFICER, fetchRaid: () => Promise.resolve(night()), putOverride }),
     );
-    await expect(c.night.excuse(KEY, true)).resolves.toBe(false);
-    expect(c.raid?.attendance?.[0].excused).toBe(false);
-    expect(c.raid?.night?.excused).toBe(0);
-    expect(c.night.excuseLines[KEY]).toBe(attendanceCopy.errors.rows);
+    await expect(c.night.fix(KEY, 'present')).resolves.toBe(false);
+    expect(c.raid?.attendance?.[0].override).toBeNull();
+    expect(c.night.fixLines[KEY]).toBe(attendanceCopy.errors.rows);
     stop();
   });
 
@@ -104,11 +79,11 @@ describe('Excused', () => {
       deps({
         ...OFFICER,
         fetchRaid: () => Promise.resolve(night()),
-        putExcused: () => Promise.reject(refusal),
+        putOverride: () => Promise.reject(refusal),
       }),
     );
-    await c.night.excuse(KEY, true);
-    expect(c.night.excuseLines[KEY]).toBe(attendanceCopy.errors.officerToolsEnded);
+    await c.night.fix(KEY, 'excused');
+    expect(c.night.fixLines[KEY]).toBe(attendanceCopy.errors.officerToolsEnded);
     expect(c.officerTools).toBe(false);
     stop();
   });
@@ -116,6 +91,16 @@ describe('Excused', () => {
 
 describe('Post to Discord', () => {
   const POSTED_AT = '2026-12-11T05:58:00Z';
+
+  it('posts again with repost', async () => {
+    const postReport = vi.fn(() => Promise.resolve({ posted_at: POSTED_AT }));
+    const { c, stop } = await started(
+      deps({ ...OFFICER, fetchRaid: () => Promise.resolve(night()), postReport }),
+    );
+    await c.night.post(true);
+    expect(postReport).toHaveBeenCalledWith(2, '7', true);
+    stop();
+  });
 
   it('posts once and stamps the report', async () => {
     const answer = deferred<{ posted_at: string }>();

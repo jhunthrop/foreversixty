@@ -3,19 +3,16 @@
 // GET /v1/guilds/{id}/officer/actions (spec 2026-11-05-web-layout §7.1 "Action needed"): the
 // officer Overview's counts in one read. approvals are the characters waiting for an officer;
 // not_signed is the next raid's accounts that have not answered (raids_not_signed.go);
-// drops_to_award is the last logged night with its awards so far. The logs carry no loot, so
-// what dropped is not known: tracked is false and count null until a drop record exists.
+// drops_to_award is the newest loot council night with drops (the loot council nights: what the
+// council awarded, voted on or flagged) and how many of them are still open.
 // Applications arrive with their own slice.
 package guilds
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"net/http"
 	"time"
-
-	"github.com/jackc/pgx/v5"
 
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
@@ -34,8 +31,8 @@ type ActionNotSigned struct {
 	Names  []string `json:"names"`
 }
 
-// ActionDrops is the last logged night's loot: Count is the drops still to award, null while no
-// drop record exists (Tracked false); Awarded is the awards filed under that night so far.
+// ActionDrops is the newest council night with drops: Count is the drops still to award (Tracked
+// is always true now; Count stays a pointer for the contract); Awarded is the night's awards.
 type ActionDrops struct {
 	Tracked bool   `json:"tracked"`
 	Count   *int   `json:"count"`
@@ -74,7 +71,7 @@ func (s *Service) officerActionsOf(ctx context.Context, guildID, viewerID int64)
 	if out.NotSigned, err = s.nextNotSigned(ctx, guildID, viewerID); err != nil {
 		return out, err
 	}
-	out.DropsToAward, err = s.Store.lastNightDrops(ctx, guildID)
+	out.DropsToAward, err = s.Store.lastNightDrops(ctx, guildID, time.Now())
 	return out, err
 }
 
@@ -128,23 +125,42 @@ func (s *Service) nextNotSigned(ctx context.Context, guildID, viewerID int64) (A
 	return out, nil
 }
 
-// lastNightDrops is the guild's last logged raid with its awards so far; nil when it has none.
-func (s *Store) lastNightDrops(ctx context.Context, guildID int64) (*ActionDrops, error) {
-	var id int64
-	var startsAt time.Time
-	var zone, tz string
-	var awarded int
-	err := s.Pool.QueryRow(ctx, `
-		select g.id, g.starts_at, g.zone, coalesce(gu.raid_timezone, ''),
-		       (select count(*) from loot_awards la where la.raid_id = g.id)
-		from guild_raids g join guilds gu on gu.id = g.guild_id
-		where g.id in (`+loggedRaids+`)`, guildID, 1).Scan(&id, &startsAt, &zone, &tz, &awarded)
-	if errors.Is(err, pgx.ErrNoRows) {
-		return nil, nil
+// actionNightsScan is how many council nights Action needed looks back through for drops.
+const actionNightsScan = councilNightsDefault
+
+// lastNightDrops is the newest council night that has drops (awarded, voted on or flagged) with
+// its open ones to award; nil when no night has any. A drop is known only once the council
+// touched it, so a night nobody voted or flagged on has nothing to count.
+func (s *Store) lastNightDrops(ctx context.Context, guildID int64, now time.Time) (*ActionDrops, error) {
+	view, err := s.CouncilNights(ctx, guildID, actionNightsScan, now)
+	if err != nil {
+		return nil, err
 	}
+	for _, n := range view.Nights {
+		if len(n.Drops) == 0 {
+			continue
+		}
+		return s.nightDrops(ctx, guildID, n)
+	}
+	return nil, nil
+}
+
+// nightDrops is night n as Action needed counts it: the open drops, the awards, and its label.
+func (s *Store) nightDrops(ctx context.Context, guildID int64, n LootNight) (*ActionDrops, error) {
+	open := 0
+	for _, d := range n.Drops {
+		if d.State == dropOpen {
+			open++
+		}
+	}
+	tz, err := s.GuildRaidTimezone(ctx, guildID)
 	if err != nil {
 		return nil, fmt.Errorf("guilds: last night drops: %w", err)
 	}
-	label := zoneOf(zone).Name + ", " + raidDay(startsAt, tz)
-	return &ActionDrops{RaidID: &id, Label: label, Awarded: awarded}, nil
+	at, err := time.Parse(time.RFC3339, n.At)
+	if err != nil {
+		return nil, fmt.Errorf("guilds: last night drops: %w", err)
+	}
+	label := zoneOnyxia + ", " + raidDay(at, tz)
+	return &ActionDrops{Tracked: true, Count: &open, RaidID: n.RaidID, Label: label, Awarded: len(n.Decisions)}, nil
 }

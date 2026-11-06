@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { nightsLabel } from './nights';
-import { attendanceLabel } from './loot-view';
+import { raidsAttended as attendanceLabel } from './attendance-copy';
 
 describe('nightsLabel', () => {
   it('is singular when the denominator is 1', () => {

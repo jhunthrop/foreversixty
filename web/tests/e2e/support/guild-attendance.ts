@@ -16,6 +16,7 @@ import {
 } from '../../../src/fixtures/guild/mock-guild';
 import type { GuildRaidView, GuildReadinessPage } from '../../../src/lib/guild/api';
 import type {
+  AttendanceOverrideStatus,
   AttendanceSource,
   MatchCandidates,
   RaidAttendanceRow,
@@ -81,7 +82,7 @@ export interface AttendanceStubOptions extends RaidStubOptions {
   /** The roster's `attendance_source`; left out, the field is absent (report mode). */
   attendanceSource?: AttendanceSource;
   /** Holds each Excused write this long before it answers, so two ticks overlap. */
-  excuseDelayMs?: number;
+  fixDelayMs?: number;
 }
 
 /** The ids of the readiness board's stale and missing exports on the next-raid filter. */
@@ -114,18 +115,18 @@ export class AttendanceStub {
   nights: Map<number, StoredNight>;
   candidates: MatchCandidates;
   attendanceSource: AttendanceSource | undefined;
-  excuseDelayMs: number;
+  fixDelayMs: number;
   /** Every `report_ready` the API would post to Discord. */
   reportReady = 0;
   readonly readinessReads: (string | null)[] = [];
-  refuseNext: { match?: Refusal; clear?: Refusal; excuse?: Refusal; post?: Refusal } = {};
+  refuseNext: { match?: Refusal; clear?: Refusal; fix?: Refusal; post?: Refusal } = {};
 
   constructor(raids: RaidStub, options: AttendanceStubOptions) {
     this.raids = raids;
     this.nights = new Map(Object.entries(options.nights ?? {}).map(([id, n]) => [Number(id), n]));
     this.candidates = options.candidates ?? fixtureCandidates();
     this.attendanceSource = options.attendanceSource;
-    this.excuseDelayMs = options.excuseDelayMs ?? 0;
+    this.fixDelayMs = options.fixDelayMs ?? 0;
     for (const id of this.nights.keys()) this.markDone(id);
   }
 
@@ -154,6 +155,8 @@ export class AttendanceStub {
     const mine = <T extends { character_key: string }>(list: T[]): T[] =>
       officer ? list : list.filter((row) => own.has(row.character_key));
     const { report } = night;
+    const causes = (pull: RaidReport['pulls'][number]) =>
+      pull.death_causes === null ? null : mine(pull.death_causes);
     return {
       ...base,
       status: 'done',
@@ -163,8 +166,17 @@ export class AttendanceStub {
       attendance: mine(rows),
       report: {
         ...report,
+        pulls: report.pulls.map((pull) => ({ ...pull, death_causes: causes(pull) })),
+        parses: mine(report.parses),
         deaths: mine(report.deaths),
-        consumables: { ...report.consumables, rows: mine(report.consumables.rows) },
+        consumables: {
+          ...report.consumables,
+          rows: mine(report.consumables.rows),
+          by_pull: report.consumables.by_pull.map((pull) => ({
+            ...pull,
+            rows: pull.rows === null ? null : mine(pull.rows),
+          })),
+        },
         moves: { ...report.moves, rows: mine(report.moves.rows) },
       },
     };
@@ -188,19 +200,23 @@ export class AttendanceStub {
     return this.view(id);
   }
 
-  setExcused(id: number, key: string, excused: boolean): GuildRaidView {
+  /** PUT/DELETE …/attendance/{key}/override: the fix over the log, or back to it (`null`). The
+   *  effective outcome follows the API's rule: present and bench earn the night; absent is a
+   *  no-show for a raider signed In or Late; excused keeps the log's outcome and excuses it. */
+  setOverride(id: number, key: string, status: AttendanceOverrideStatus | null): GuildRaidView {
     const night = this.nights.get(id);
     if (night === undefined) throw new Error(`guild-attendance stub: raid ${id} has no night`);
-    const attendance = night.attendance.map((row) => (row.character_key === key ? { ...row, excused } : row));
+    const attendance = night.attendance.map((row) => (row.character_key === key ? fixed(row, status) : row));
     this.nights.set(id, { ...night, attendance });
     return this.view(id);
   }
 
-  /** POST …/report/post: once per raid (R-A6); the second press is 409 `already_posted`. */
-  post(id: number): { posted_at: string } | null {
+  /** POST …/report/post: once per raid (R-A6), a second press 409 `already_posted`, unless the
+   *  body asks for a repost. */
+  post(id: number, repost: boolean): { posted_at: string } | null {
     const night = this.nights.get(id);
-    if (night === undefined || night.report.posted_at !== null) return null;
-    const postedAt = '2026-12-11T06:05:00Z';
+    if (night === undefined || (night.report.posted_at !== null) !== repost) return null;
+    const postedAt = repost ? '2026-12-11T06:30:00Z' : '2026-12-11T06:05:00Z';
     this.nights.set(id, { ...night, report: { ...night.report, posted_at: postedAt } });
     this.reportReady += 1;
     return { posted_at: postedAt };
@@ -313,24 +329,58 @@ async function answerG2(stub: AttendanceStub, route: Route): Promise<void> {
     const body = method === 'PUT' ? (request.postDataJSON() as { report_id: string }) : null;
     return route.fulfill(envelope(body === null ? stub.clearMatch(id) : stub.setMatch(id, body.report_id)));
   }
-  if (method === 'PUT' && rest?.startsWith('attendance/') === true) {
+  if (
+    (method === 'PUT' || method === 'DELETE') &&
+    rest?.startsWith('attendance/') === true &&
+    rest.endsWith('/override')
+  ) {
     record();
-    await wait(stub.excuseDelayMs);
-    const refusal = stub.takeRefusal('excuse');
+    await wait(stub.fixDelayMs);
+    const refusal = stub.takeRefusal('fix');
     if (refusal !== undefined) return route.fulfill(refused(refusal));
-    const key = rest.slice('attendance/'.length).split('/').map(decodeURIComponent).join('/');
-    const { excused } = request.postDataJSON() as { excused: boolean };
-    return route.fulfill(envelope(stub.setExcused(id, key, excused)));
+    const key = rest
+      .slice('attendance/'.length, -'/override'.length)
+      .split('/')
+      .map(decodeURIComponent)
+      .join('/');
+    const status =
+      method === 'PUT' ? (request.postDataJSON() as { status: AttendanceOverrideStatus }).status : null;
+    return route.fulfill(envelope(stub.setOverride(id, key, status)));
   }
   if (method === 'POST' && rest === 'report/post') {
     record();
     const refusal = stub.takeRefusal('post');
     if (refusal !== undefined) return route.fulfill(refused(refusal));
-    const posted = stub.post(id);
-    if (posted === null) return route.fulfill(refused({ code: 'already_posted', status: 409 }));
+    const repost = (request.postDataJSON() as { repost?: boolean } | null)?.repost === true;
+    const posted = stub.post(id, repost);
+    if (posted === null) {
+      return route.fulfill(refused({ code: repost ? 'not_posted' : 'already_posted', status: 409 }));
+    }
     return route.fulfill(envelope(posted));
   }
   return route.fallback();
+}
+
+const FIXER = 'Kraggor';
+
+function fixedOutcome(
+  row: RaidAttendanceRow,
+  status: AttendanceOverrideStatus,
+): RaidAttendanceRow['outcome'] {
+  if (status === 'present' || status === 'bench') return 'present';
+  if (status === 'excused') return row.auto_outcome;
+  return row.signed === 'in' || row.signed === 'late' ? 'no_show' : 'absent';
+}
+
+function fixed(row: RaidAttendanceRow, status: AttendanceOverrideStatus | null): RaidAttendanceRow {
+  if (status === null)
+    return { ...row, outcome: row.auto_outcome, excused: row.auto_excused, override: null };
+  return {
+    ...row,
+    outcome: fixedOutcome(row, status),
+    excused: status === 'excused',
+    override: { status, by_name: FIXER, at: '2026-12-11T06:10:00Z' },
+  };
 }
 
 /** stubGuildRaids plus the G2 routes; the raid is guild-raids.ts's Onyxia's Lair (id 7). */
