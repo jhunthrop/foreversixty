@@ -22,15 +22,11 @@
 
   let {
     premium,
-    hideWhenNone = false,
     fetchRecent = () => fetchCoachRecent(),
     refreshDelayMs = 5000,
   }: {
     /** `me.entitlements.log_coach`. */
     premium: boolean;
-    /** Say nothing when there is no raid log to speak of (the account's Characters card: on
-     *  day one "no log in the last 14 days" reads as a stray line). */
-    hideWhenNone?: boolean;
     fetchRecent?: () => Promise<CoachRecent>;
     refreshDelayMs?: number;
   } = $props();
@@ -67,52 +63,49 @@
 
   const view = $derived(state.kind === 'ready' ? lastRaidLine(state.recent, premium) : null);
   const busy = $derived(state.kind === 'loading' || state.kind === 'retrying');
-  const hidden = $derived(hideWhenNone && state.kind === 'ready' && state.recent.last_raid === null);
 </script>
 
-{#if !hidden}
-  <div
-    class="border-line-soft flex min-h-[77px] items-start border-t px-5 py-2 text-[13px] leading-5 md:min-h-[57px]"
-    role="status"
-    aria-label={LAST_RAID_LABEL}
-    aria-live="polite"
-    aria-busy={busy}
-    data-testid="coach-last-raid"
-    data-state={state.kind}
-  >
-    {#if state.kind === 'loading'}
-      <span class="skeleton-block h-4 w-3/4" aria-hidden="true" data-testid="coach-last-raid-skeleton"></span>
-      <span class="sr-only">{uiCopy.loading}</span>
-    {:else if state.kind === 'error' || state.kind === 'retrying'}
-      <p class="text-muted">
-        {coachCopy.lastRaidError}
-        <button
-          type="button"
-          class={LAST_RAID_RETRY_CLASS}
-          data-testid="coach-last-raid-retry"
-          disabled={state.kind === 'retrying'}
-          aria-busy={state.kind === 'retrying'}
-          onclick={() => loader.retry()}>{coachCopy.rowRetry}</button
-        >
-      </p>
-    {:else if view !== null}
-      <p>
-        {#each view.segments as segment, index (index)}
-          {#if index > 0}<span class="text-muted">{COACH_SEPARATOR}</span>{/if}
-          {#if segment.role === 'link' && view.href !== null}
-            <a class={ROLE_CLASS.link} href={view.href} data-testid="coach-last-raid-link">{segment.text}</a>
-          {:else if view.stem !== null && segment.text.includes(view.stem)}
-            {@const [before, after] = segment.text.split(view.stem)}
-            <span class={ROLE_CLASS[segment.role]}
-              >{before}<span class="inline-block max-w-[24ch] truncate align-bottom" title={view.stem}
-                >{view.stem}</span
-              >{after}</span
-            >
-          {:else}
-            <span class={ROLE_CLASS[segment.role]}>{segment.text}</span>
-          {/if}
-        {/each}
-      </p>
-    {/if}
-  </div>
-{/if}
+<div
+  class="border-line-soft flex min-h-[77px] items-start border-t px-5 py-2 text-[13px] leading-5 md:min-h-[57px]"
+  role="status"
+  aria-label={LAST_RAID_LABEL}
+  aria-live="polite"
+  aria-busy={busy}
+  data-testid="coach-last-raid"
+  data-state={state.kind}
+>
+  {#if state.kind === 'loading'}
+    <span class="skeleton-block h-4 w-3/4" aria-hidden="true" data-testid="coach-last-raid-skeleton"></span>
+    <span class="sr-only">{uiCopy.loading}</span>
+  {:else if state.kind === 'error' || state.kind === 'retrying'}
+    <p class="text-muted">
+      {coachCopy.lastRaidError}
+      <button
+        type="button"
+        class={LAST_RAID_RETRY_CLASS}
+        data-testid="coach-last-raid-retry"
+        disabled={state.kind === 'retrying'}
+        aria-busy={state.kind === 'retrying'}
+        onclick={() => loader.retry()}>{coachCopy.rowRetry}</button
+      >
+    </p>
+  {:else if view !== null}
+    <p>
+      {#each view.segments as segment, index (index)}
+        {#if index > 0}<span class="text-muted">{COACH_SEPARATOR}</span>{/if}
+        {#if segment.role === 'link' && view.href !== null}
+          <a class={ROLE_CLASS.link} href={view.href} data-testid="coach-last-raid-link">{segment.text}</a>
+        {:else if view.stem !== null && segment.text.includes(view.stem)}
+          {@const [before, after] = segment.text.split(view.stem)}
+          <span class={ROLE_CLASS[segment.role]}
+            >{before}<span class="inline-block max-w-[24ch] truncate align-bottom" title={view.stem}
+              >{view.stem}</span
+            >{after}</span
+          >
+        {:else}
+          <span class={ROLE_CLASS[segment.role]}>{segment.text}</span>
+        {/if}
+      {/each}
+    </p>
+  {/if}
+</div>

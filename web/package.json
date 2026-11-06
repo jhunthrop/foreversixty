@@ -10,7 +10,7 @@
     "dev:local-api": "node scripts/dev-local-api.mjs",
     "build": "astro build",
     "build:island": "vite build --config vite.island.config.ts && vite build --config vite.report-island.config.ts && vite build --config vite.sim-island.config.ts && vite build --config vite.sim-tools-island.config.ts",
-    "postbuild": "npm run build:island && node scripts/check-island-size.mjs && node scripts/check-sim-engine-artifact.mjs && node scripts/check-no-removed-routes.mjs && node scripts/check-no-owner-links.mjs",
+    "postbuild": "npm run build:island && node scripts/check-island-size.mjs && node scripts/check-sim-engine-artifact.mjs && node scripts/check-no-removed-routes.mjs && node scripts/check-no-owner-links.mjs && node scripts/check-chunk-css.mjs",
     "preview": "astro preview",
     "check": "astro check",
     "check:glyphs": "node scripts/check-glyph-coverage.mjs",
