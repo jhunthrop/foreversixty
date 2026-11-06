@@ -22,7 +22,7 @@
   import { SPECS } from '../../lib/sim/specs';
   import { gridSize } from '../../lib/planner/grid';
   import { yieldToMain } from '../../lib/yield';
-  import { scrollFade, updateScrollFade } from '../../lib/scroll-fade';
+  import { revealInStrip, scrollFade, updateScrollFade } from '../../lib/scroll-fade';
   import TreeGrid from './TreeGrid.svelte';
 
   let {
@@ -82,7 +82,7 @@
   $effect(() => {
     if (tablist === undefined) return;
     const open = tablist.querySelectorAll<HTMLElement>('[role="tab"]')[activeTree];
-    open?.scrollIntoView({ inline: 'nearest', block: 'nearest' });
+    if (open !== undefined) revealInStrip(tablist, open);
     updateScrollFade(tablist);
   });
 
