@@ -42,7 +42,7 @@ func (w raidWorld) award(t *testing.T, raidID int64, key string) {
 // awardItem awards onyxiaLoot[item] to key for raidID.
 func (w raidWorld) awardItem(t *testing.T, raidID int64, key string, item int) {
 	t.Helper()
-	if _, err := w.h.store.CreateLootAward(t.Context(), w.gid, 1084, onyxiaLoot[item].ItemID, key, w.officer, &raidID); err != nil {
+	if _, err := w.h.store.CreateLootAward(t.Context(), w.gid, 1084, onyxiaLoot[item].ItemID, key, w.officer, &raidID, AwardDecision{}); err != nil {
 		t.Fatal(err)
 	}
 }
