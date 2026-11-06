@@ -23,10 +23,42 @@ func TestReportReadyEmbedMatchesTheCopyTable(t *testing.T) {
 	want := `{"title":"Report: Onyxia's Lair · Thursday 10 December","description":"Kill times, loot and the biggest changes on Forever Sixty.",` +
 		`"url":"https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/7#report",` +
 		`"fields":[{"name":"Kills","value":"Onyxia 1:42","inline":true},{"name":"Wipes","value":"3","inline":true},` +
-		`{"name":"Came","value":"22 of 23","inline":true},{"name":"Loot","value":"6 items","inline":true}],` +
+		`{"name":"Came","value":"22 of 23","inline":true},{"name":"Deaths","value":"0","inline":true},{"name":"Loot","value":"6 items","inline":true}],` +
 		raidFoot + `"color":8377482}`
 	if got := wireOf(t, ReportReadyEmbed(onyxiaReport(), fixedFinish)); got != wireHead+want+wireTail {
 		t.Fatalf("\n got %s\nwant %s", got, wireHead+want+wireTail)
+	}
+}
+
+// The night's summary: its time, its deaths as a count, the best parses and the loot by name.
+// Nobody is named for dying.
+func TestReportReadyEmbedSummarisesTheNight(t *testing.T) {
+	in := onyxiaReport()
+	in.Time, in.Deaths = 2*time.Hour+3*time.Minute+4*time.Second, 7
+	in.TopParses = []ReportParse{{Name: "Frostquill", Metric: "dps", Boss: "Onyxia", Value: 812},
+		{Name: "Doom_whisper", Metric: "dps", Boss: "Onyxia", Value: 744}}
+	in.Loot = []ReportLoot{{Item: "Ring of Binding", Winner: "Doomwhisper"}}
+	e := ReportReadyEmbed(in, fixedFinish)
+	got := map[string]EmbedField{}
+	for _, f := range e.Fields {
+		got[f.Name] = f
+	}
+	if got["Time"].Value != "2:03:04" || got["Deaths"].Value != "7" {
+		t.Fatalf("time %q deaths %q", got["Time"].Value, got["Deaths"].Value)
+	}
+	if v := got["Top parses"].Value; v != "Frostquill 812 DPS on Onyxia\nDoom\\_whisper 744 DPS on Onyxia" || got["Top parses"].Inline {
+		t.Fatalf("top parses = %q", v)
+	}
+	if l := got["Loot"]; l.Value != "Ring of Binding to Doomwhisper" || l.Inline {
+		t.Fatalf("loot = %+v", l)
+	}
+	in.Loot = nil
+	for i := 0; i < 7; i++ {
+		in.Loot = append(in.Loot, ReportLoot{Item: fmt.Sprintf("Item %d", i), Winner: "Kraggor"})
+	}
+	last := ReportReadyEmbed(in, fixedFinish).Fields
+	if lines := strings.Split(last[len(last)-1].Value, "\n"); len(lines) != 6 || lines[5] != "+2 more" {
+		t.Fatalf("loot lines = %q", lines)
 	}
 }
 
@@ -42,8 +74,8 @@ func TestReportReadyEmbedCapsKillsAndEscapes(t *testing.T) {
 	if len(lines) != 7 || lines[0] != `\*Boss\* 0 1:00:05` || lines[6] != "+2 more" {
 		t.Fatalf("kills = %q", lines)
 	}
-	if e.Fields[3].Value != "1 item" {
-		t.Fatalf("loot = %q", e.Fields[3].Value)
+	if loot := e.Fields[len(e.Fields)-1]; loot.Value != "1 item" {
+		t.Fatalf("loot = %q", loot.Value)
 	}
 }
 
