@@ -143,14 +143,14 @@ const linkCount = role === 'dps' ? 4 : 3;
   <main id="main" tabindex="-1" class="tier-page" data-testid="tier-page" data-role={role}>
     <Page layout="ledger" testid="tier-body">
       <PageHeader slot="header" title={tiersCopy.title} tone="strong">
-        <Fragment slot="meta">
-          <span>{tiersCopy.metaLine(data.presetLabel)}</span>
+        <span slot="meta">
+          {tiersCopy.metaLine(data.presetLabel)}
           {data.updated !== null && (
             <span title={stampTitle}>
-              <UpdatedStamp date={data.updated} />
+              · <UpdatedStamp date={data.updated} />
             </span>
           )}
-        </Fragment>
+        </span>
         <div slot="answer" class="tier-answer" id="tier-answer" data-signed-in-only data-testid="tier-answer">
           <div class="tier-answer-skeleton" role="status" aria-busy="true" data-answer-skeleton>
             <span class="sr-only">Loading</span>
@@ -424,8 +424,12 @@ const linkCount = role === 'dps' ? 4 : 3;
   }
   .tier-answer-text {
     display: flex;
+    flex: 1;
     flex-direction: column;
     min-width: 0;
+  }
+  .tier-answer :global(.ui-figure > span) {
+    white-space: nowrap;
   }
   .tier-answer-name {
     font: 700 18px/22px var(--font-body);
