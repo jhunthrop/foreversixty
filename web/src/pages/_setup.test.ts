@@ -291,9 +291,11 @@ describe('/setup: what it does in the game (L8.3)', () => {
     expect(source).toContain('addonCopy.commands');
     const expected = localeSettingsCommands();
     expect(addonCopy.commands.map((c) => `${c.command}: ${c.description}`)).toEqual(expected);
-    expect(addonCopy.commands).toHaveLength(13);
-    expect(addonCopy.commands.map((c) => c.command).slice(7, 10)).toEqual([
+    // Fourteen since the guild redesign added /fs job (raid assignments) after /fs ready.
+    expect(addonCopy.commands).toHaveLength(14);
+    expect(addonCopy.commands.map((c) => c.command).slice(7, 11)).toEqual([
       '/fs ready',
+      '/fs job',
       '/fs loot',
       '/fs floor N',
     ]);
