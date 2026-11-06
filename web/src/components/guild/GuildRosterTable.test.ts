@@ -162,9 +162,9 @@ describe('GuildRosterTable: the In game column (L8.3)', () => {
     expect(guildRosterAddonCopy.notSeenHover).toBe('Not seen by the addon in the last snapshot');
     expect(cell).toContain('>—<');
     expect(windtalon).not.toContain('data-testid="guild-roster-ingame"');
-    // A phone shows no lone "—": the whole slot is hidden below md.
+    // No lone "—" while the slot has a line of its own: the whole slot is hidden below xl.
     const slot = /<div[^>]*data-testid="guild-roster-ingame-slot"[^>]*>/.exec(windtalon)?.[0] ?? '';
-    expect(slot).toMatch(/class="[^"]*\bhidden\b[^"]*lg:block/);
+    expect(slot).toMatch(/class="[^"]*\bhidden\b[^"]*xl:block/);
     // A matched row's slot is shown on phones.
     const matched =
       /<div[^>]*data-testid="guild-roster-ingame-slot"[^>]*>/.exec(
@@ -180,8 +180,10 @@ describe('GuildRosterTable: the In game column (L8.3)', () => {
       expect(slotAt, name).toBeGreaterThan(-1);
       expect(actionsAt, `${name} actions`).toBeGreaterThan(slotAt);
       const slot = /<div[^>]*data-testid="guild-roster-ingame-slot"[^>]*>/.exec(part)?.[0] ?? '';
-      expect(slot).toContain('lg:basis-[260px]');
-      expect(slot).toContain('lg:shrink-0');
+      // On the row from xl; below it the slot takes a line of its own, so at 1024 the stats keep
+      // their room beside the 240 px name block and the actions.
+      expect(slot).toContain('xl:basis-[260px]');
+      expect(slot).toContain('xl:shrink-0');
       expect(slot).toContain('min-w-0');
       const actions = /<div[^>]*data-testid="guild-roster-actions"[^>]*>/.exec(part)?.[0] ?? '';
       expect(actions).toContain('flex-nowrap');
@@ -189,7 +191,6 @@ describe('GuildRosterTable: the In game column (L8.3)', () => {
       // Wide enough for `Open in simulator` on one line beside Remove (guild round 3).
       expect(actions).toContain('lg:w-[216px]');
       expect(actions).not.toMatch(/\bxl:/);
-      expect(slot).not.toMatch(/\bxl:/);
       // Nothing of the row sits between the slot and the actions but the slot's own content.
       expect(part.slice(actionsAt)).not.toContain('data-testid="guild-roster-ingame-slot"');
     }
