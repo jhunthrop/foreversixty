@@ -11,23 +11,16 @@ import { readCurrent } from '../current-character';
 import { classSlugFromName } from '../report/tree-sizes';
 import { decideBisDefault, decideBisFollow, type BisPageState, type SelectedTarget } from './follow-selector';
 import { MIN_BAND } from './hover';
+import { BIS_SHOW_EVENT, type BisShowDetail } from './show-event';
 import type { Faction } from './types';
 
-const FACTION_PARAM = 'faction';
-const BAND_HASH = /^#band-(?:alliance|horde)-(\d+)$/;
-
-function currentFaction(): Faction {
-  const horde = document.getElementById('faction-horde');
-  return horde instanceof HTMLInputElement && horde.checked ? 'horde' : 'alliance';
-}
-
-function currentBand(): number {
-  const match = BAND_HASH.exec(window.location.hash);
-  return match === null ? MIN_BAND : Number(match[1]);
-}
+/** The page's island publishes the shown faction and band on its root (`data-bis-faction`,
+ *  `data-bis-band`) and listens for `bis:show`, so this module never reaches into its markup. */
 
 function readPageState(root: HTMLElement): BisPageState {
-  return { specKey: root.dataset.bisSpec ?? '', faction: currentFaction(), band: currentBand() };
+  const faction: Faction = root.dataset.bisFaction === 'horde' ? 'horde' : 'alliance';
+  const band = Number(root.dataset.bisBand);
+  return { specKey: root.dataset.bisSpec ?? '', faction, band: Number.isFinite(band) && band > 0 ? band : MIN_BAND };
 }
 
 async function selectedTarget(): Promise<SelectedTarget | null> {
@@ -44,14 +37,8 @@ async function selectedTarget(): Promise<SelectedTarget | null> {
   };
 }
 
-/** The band tabs' own mechanism: the faction radio, then the band's hash (which `:target` reads). */
-function showBand(faction: Faction, band: number): void {
-  const radio = document.getElementById(`faction-${faction}`);
-  if (radio instanceof HTMLInputElement) radio.checked = true;
-  const url = new URL(window.location.href);
-  url.searchParams.set(FACTION_PARAM, faction);
-  window.history.replaceState(null, '', url);
-  window.location.hash = `band-${faction}-${band}`;
+function showBand(root: HTMLElement, faction: Faction, band: number): void {
+  root.dispatchEvent(new CustomEvent<BisShowDetail>(BIS_SHOW_EVENT, { detail: { faction, band } }));
 }
 
 export async function follow(root: HTMLElement): Promise<void> {
@@ -59,7 +46,7 @@ export async function follow(root: HTMLElement): Promise<void> {
   if (target === null) return;
   const action = decideBisFollow(readPageState(root), target);
   if (action.kind === 'navigate') window.location.assign(action.href);
-  else if (action.kind === 'update') showBand(action.faction, action.band);
+  else if (action.kind === 'update') showBand(root, action.faction, action.band);
 }
 
 /** At load with no band in the URL: the selected character's band and faction, never another page. */
@@ -67,5 +54,5 @@ export async function followDefault(root: HTMLElement): Promise<void> {
   const target = await selectedTarget();
   if (target === null) return;
   const action = decideBisDefault(readPageState(root), target);
-  if (action.kind === 'update') showBand(action.faction, action.band);
+  if (action.kind === 'update') showBand(root, action.faction, action.band);
 }

@@ -19,21 +19,14 @@ export function mountBisFollow(root: HTMLElement): () => void {
 const BAND_HASH = /^#band-(?:alliance|horde)-\d+$/;
 
 /**
- * The band a BiS page opens on when its URL names none: `?band=` first (a shared link), else the
+ * The band a BiS page opens on when its URL names none: a shared link's `?band=` (or the legacy
+ * `#band-<faction>-<band>` hash) is the island's own to read, so this does nothing then; else the
  * selected character's own band and faction. The character lookup waits for the page to finish
  * loading and go idle, for the same LCP reason as mountBisFollow above.
  */
 export function applyBisDefaultBand(root: HTMLElement, win: Window = window): void {
   if (BAND_HASH.test(win.location.hash)) return;
-  const fromParam = bandFromParam(new URLSearchParams(win.location.search).get('band'));
-  if (fromParam !== null) {
-    const horde = win.document.getElementById('faction-horde');
-    const faction = horde instanceof HTMLInputElement && horde.checked ? 'horde' : 'alliance';
-    win.location.hash = `band-${faction}-${fromParam}`;
-    return;
-  }
-  // Only the key's presence, here: the full read (current-character.ts) pulls in the sim's URL
-  // helpers, which this page's eager bundle does not need. The run module reads it properly.
+  if (bandFromParam(new URLSearchParams(win.location.search).get('band')) !== null) return;
   let stored: string | null = null;
   try {
     stored = win.localStorage.getItem(CURRENT_CHARACTER_STORAGE_KEY);
