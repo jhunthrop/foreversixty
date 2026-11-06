@@ -1,8 +1,12 @@
+// Your sims in the /sim rail (spec 2026-11-06-sim §4.3, §4.5, §5 "Rail rows"): the signed-in
+// player's newest saved sims as open link rows -- title, the kind (or a run's spec) and the
+// date, a run's DPS at the right -- under a character. The kind filter and Best per spec
+// retired; the account page keeps the full list ("All ›").
 import type { Page } from '@playwright/test';
 import { expect, test } from './support/test';
-import { simCopy } from '../../src/lib/sim/copy';
+import { KIND_TITLES } from '../../src/lib/sim/copy';
 import { assertNoHorizontalScroll } from './support/phone-scroll';
-import { choose } from './support/select';
+import { pasteAndRun } from './support/sim-page';
 
 const envelope = (data: unknown) => ({
   status: 200,
@@ -45,18 +49,24 @@ async function stubHistory(page: Page): Promise<void> {
   });
 }
 
-test('the history lists every kind and filters to one', async ({ page }) => {
+test('Your sims lists every kind, each row its kind or spec, its date and a link to it', async ({ page }) => {
   await stubHistory(page);
+  await pasteAndRun(page);
 
-  await page.goto('/sim');
-  await expect(page.getByTestId('sim-history')).toBeVisible();
-  await expect(page.getByTestId('sim-history-kind-aaaaaaaaaaaa')).toHaveText(simCopy.kindLabel.run);
-  await expect(page.getByTestId('sim-history-kind-bbbbbbbbbbbb')).toHaveText(simCopy.kindLabel.gear);
-  await expect(page.getByTestId('sim-history-headline-bbbbbbbbbbbb')).toHaveText('+41 DPS from Viskag');
-
-  await choose(page.getByTestId('sim-history-filter'), 'gear');
-  await expect(page.getByTestId('sim-history-bbbbbbbbbbbb')).toBeVisible();
-  await expect(page.getByTestId('sim-history-aaaaaaaaaaaa')).toHaveCount(0);
+  const history = page.getByTestId('sim-history');
+  await history.scrollIntoViewIfNeeded();
+  await expect(history).toBeVisible();
+  const run = page.getByTestId('sim-history-aaaaaaaaaaaa');
+  await expect(run).toContainText('Raid-buffed, 3:00, single target');
+  await expect(run).toContainText('Fury · 14 Sep');
+  await expect(run).toContainText('1,204');
+  await expect(run).toHaveAttribute('href', '/sim/aaaaaaaaaaaa');
+  // An untitled Top Gear result reads its spec as the title and its kind under it.
+  const gear = page.getByTestId('sim-history-bbbbbbbbbbbb');
+  await expect(gear).toContainText(`${KIND_TITLES.gear} · 15 Sep`);
+  await expect(gear).toHaveAttribute('href', '/sim/bbbbbbbbbbbb');
+  await expect(history.getByRole('link', { name: /All/ })).toHaveAttribute('href', '/account#sims');
+  await expect(page.getByTestId('sim-history-filter')).toHaveCount(0);
 });
 
 // sim-phone.spec.ts's own audit never signs in (no /v1/me stub), so it never renders this
@@ -65,11 +75,10 @@ test('the history lists every kind and filters to one', async ({ page }) => {
 test.describe('phone', () => {
   test.skip(() => test.info().project.name !== 'mobile', 'phone layout only');
 
-  test('the three-cell row wraps without a sideways scroll, and every row still clears 44px', async ({
-    page,
-  }) => {
+  test('a row wraps without a sideways scroll, and every row still clears 44px', async ({ page }) => {
     await stubHistory(page);
-    await page.goto('/sim');
+    await pasteAndRun(page);
+    await page.getByTestId('sim-history').scrollIntoViewIfNeeded();
     await expect(page.getByTestId('sim-history')).toBeVisible();
 
     const width = page.viewportSize()?.width ?? 412;
