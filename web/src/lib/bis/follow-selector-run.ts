@@ -20,7 +20,11 @@ import type { Faction } from './types';
 function readPageState(root: HTMLElement): BisPageState {
   const faction: Faction = root.dataset.bisFaction === 'horde' ? 'horde' : 'alliance';
   const band = Number(root.dataset.bisBand);
-  return { specKey: root.dataset.bisSpec ?? '', faction, band: Number.isFinite(band) && band > 0 ? band : MIN_BAND };
+  return {
+    specKey: root.dataset.bisSpec ?? '',
+    faction,
+    band: Number.isFinite(band) && band > 0 ? band : MIN_BAND,
+  };
 }
 
 async function selectedTarget(): Promise<SelectedTarget | null> {

@@ -17,16 +17,19 @@ function pageFor(spec: string, classSlug: string) {
 describe('buildBisPageData', () => {
   const page = pageFor('hunter-beast-mastery', 'hunter');
 
-  it.runIf(page !== undefined)('builds one model per faction, band and preset, with every item it names', () => {
-    const data = page!.data;
-    expect(data.models['alliance-20-bare']).toBeDefined();
-    expect(data.models['horde-60-raid']).toBeDefined();
-    for (const model of Object.values(data.models)) {
-      for (const row of model.rows) {
-        if (row.id !== undefined) expect(data.items[row.id]?.name).toBeTruthy();
+  it.runIf(page !== undefined)(
+    'builds one model per faction, band and preset, with every item it names',
+    () => {
+      const data = page!.data;
+      expect(data.models['alliance-20-bare']).toBeDefined();
+      expect(data.models['horde-60-raid']).toBeDefined();
+      for (const model of Object.values(data.models)) {
+        for (const row of model.rows) {
+          if (row.id !== undefined) expect(data.items[row.id]?.name).toBeTruthy();
+        }
       }
-    }
-  });
+    },
+  );
 
   it.runIf(page !== undefined)('stays small enough to inline', () => {
     const bytes = JSON.stringify(page!.data).length;

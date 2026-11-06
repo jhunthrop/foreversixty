@@ -12,16 +12,22 @@
 # tools/tests/test_land.sh (the integrator's land/** landing command),
 # tools/tests/test_prod_smoke.sh (smoke.yml's launch-mode production smoke),
 # tools/tests/test_go_test_shard.sh (api.yml's go test shards),
-# tools/tests/test_apl_check.py (apl-check and apl-sync ignore the curated-only notes) and
+# tools/tests/test_apl_check.py (apl-check and apl-sync ignore the curated-only notes),
+# tools/tests/test_revert_check.py (the merge revert check) and
 # tools/tests/play-upload.test.ts
 # (its Play upload, against a stub of the API), then
 # shellcheck over every script and actionlint over every workflow. Plain bash with stubs
 # and scratch git repositories: no network, no database, no secrets.
+#
+# On a land/** push, the revert-check job runs tools/revert_check.py on the pushed head:
+# when it is a merge, no card note or guide or coach sentence may come back to text our side
+# had and changed (a deliberate return is tagged in the merge message, see the tool). The
+# card note and guide paths are in the push filter for that job.
 name: tools
 on:
   push:
     branches: [main, 'land/**']
-    paths: ['tools/**', '.github/workflows/**', '.github/actions/**', '.github/actionlint.yaml']
+    paths: ['tools/**', '.github/workflows/**', '.github/actions/**', '.github/actionlint.yaml', 'data/curated/apl/**', 'data/curated/coach/**', 'web/src/content/guides/**']
   pull_request:
     paths: ['tools/**', '.github/workflows/**', '.github/actions/**', '.github/actionlint.yaml']
   workflow_dispatch:
@@ -87,6 +93,9 @@ jobs:
       - name: apl-check and apl-sync, notes curated-only
         if: vars.LAUNCH_MODE != 'true'
         run: python3 -m unittest discover -s tools/tests -p 'test_apl*.py'
+      - name: the merge revert check
+        if: vars.LAUNCH_MODE != 'true'
+        run: python3 -m unittest discover -s tools/tests -p 'test_revert*.py'
       # 24 runs the TypeScript directly, with no packages.
       - uses: actions/setup-node@v4
         with: { node-version: 24 }
@@ -102,3 +111,17 @@ jobs:
           # Every workflow, with .github/actionlint.yaml (the xcode-27 runner label and the
           # held data.yml's shellcheck findings).
           /tmp/actionlint
+  revert-check:
+    if: startsWith(github.ref, 'refs/heads/land/')
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      # The whole history without file contents: the tool reads trees for every commit it
+      # walks and fetches only the note and guide blobs it compares, in one round trip.
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          filter: blob:none
+          sparse-checkout: tools
+      - name: no merge brings back a card note or guide sentence we changed
+        run: python3 tools/revert_check.py

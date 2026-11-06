@@ -251,7 +251,7 @@
         }
       },
       {
-        "notes": "Fire Blast every time it is off cooldown: it is instant, and once you have Heating Up every hit is a stack. Both points of Improved Fire Blast make it a 6 second cooldown. Once you have Improved Scorch, the Scorches that build your 5 stacks go ahead of it, and once you have Heating Up so does a Pyroblast on 3 stacks. In raid gear it costs more mana for its damage than Scorch, Fireball or Pyroblast, but skipping it to save mana costs more damage than the mana buys.",
+        "notes": "Fire Blast every time it is off cooldown: it is instant, and once you have Heating Up every hit is a stack. With both points of Improved Fire Blast it is a 6 second cooldown. Once you have Improved Scorch, the Scorches that build your 5 stacks go ahead of it, and once you have Heating Up so does a Pyroblast on 3 stacks. In raid gear it costs more mana for its damage than Scorch, Fireball or Pyroblast, but skipping it to save mana costs more damage than the mana buys.",
         "action": {
           "castSpell": {
             "spellId": {

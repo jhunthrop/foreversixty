@@ -19,19 +19,15 @@ import shutil
 from pathlib import Path
 
 import pytest
+from test_loot import prepare_build, prepare_curated
 
 from pipeline.classic_sources import ClassicDbSourceRecord, write_classic_sources
 from pipeline.loot import LOOT, merge_loot_files, write_loot_files
-from pipeline.manifest import write_manifest
 
 HERE = Path(__file__).parent
 FIXTURES = HERE / "fixtures/loot"
 OVERLAY_FIXTURE = FIXTURES / "curated"
 BUILD = "1.60.1.69893"
-
-RAW_FILES = ("Map.csv", "ItemSparse.csv", "SpellMisc.csv", "Item.csv",
-             "ManifestInterfaceData.csv", "SpellEquippedItems.csv")
-JSON_FILES = ("zones.json", "items.json", "spells.json")
 
 
 # ---------------------------------------------------------------------------
@@ -73,41 +69,62 @@ def _augmented_engine(tmp_path: Path) -> Path:
 
 
 def _prepare_build(tmp_path: Path) -> Path:
-    """`tests/test_loot.py::prepare_build`'s own shape, plus the
+    """`tests/test_loot.py::prepare_build`, plus the
     synthetic dungeon's zone/map/item rows and a classic-db-only trash
     npc the fork's database above never names."""
-    root = tmp_path / "builds"
+    root = prepare_build(tmp_path)
     build_dir = root / BUILD
-    raw = build_dir / "raw"
-    raw.mkdir(parents=True)
-    for name in RAW_FILES:
-        shutil.copy(FIXTURES / name, raw / name)
-    for name in JSON_FILES:
-        shutil.copy(FIXTURES / name, build_dir / name)
-    write_manifest(
-        build_dir, build=BUILD, product="wow_classic_beta", fetched_at="2026-01-01T00:00:00Z"
-    )
 
     zones = json.loads((build_dir / "zones.json").read_text(encoding="utf-8"))
     zones += [
         # Published: what the fork's own drop.zoneId names -- a bare
         # continent map id, exactly Blackrock Depths' real shape.
-        {"id": 5001, "name": "Test Depths", "map_id": 0, "map_name": "Eastern Kingdoms",
-         "parent_id": None, "level_min": None, "level_max": None},
+        {
+            "id": 5001,
+            "name": "Test Depths",
+            "map_id": 0,
+            "map_name": "Eastern Kingdoms",
+            "parent_id": None,
+            "level_min": None,
+            "level_max": None,
+        },
         # Unpublished: the real DB2 instance zone, never a
         # LootSource.zone_id anywhere -- only `instance_types()` (raw
         # Map.csv) or this lane's committed-data backfill ever learns it.
-        {"id": 5002, "name": "Test Depths", "map_id": _TEST_DEPTHS_MAP_ID,
-         "map_name": "Test Depths", "parent_id": None, "level_min": None, "level_max": None},
+        {
+            "id": 5002,
+            "name": "Test Depths",
+            "map_id": _TEST_DEPTHS_MAP_ID,
+            "map_name": "Test Depths",
+            "parent_id": None,
+            "level_min": None,
+            "level_max": None,
+        },
     ]
     (build_dir / "zones.json").write_text(json.dumps(zones), encoding="utf-8")
 
     items = json.loads((build_dir / "items.json").read_text(encoding="utf-8"))
     items += [
-        {"id": 5010, "name": "Test Depths Relic", "quality": 3, "item_level": 60,
-         "required_level": 55, "class_id": 4, "subclass_id": 4, "inventory_type": 5},
-        {"id": 5011, "name": "Test Depths Boss Drop", "quality": 3, "item_level": 60,
-         "required_level": 55, "class_id": 4, "subclass_id": 4, "inventory_type": 5},
+        {
+            "id": 5010,
+            "name": "Test Depths Relic",
+            "quality": 3,
+            "item_level": 60,
+            "required_level": 55,
+            "class_id": 4,
+            "subclass_id": 4,
+            "inventory_type": 5,
+        },
+        {
+            "id": 5011,
+            "name": "Test Depths Boss Drop",
+            "quality": 3,
+            "item_level": 60,
+            "required_level": 55,
+            "class_id": 4,
+            "subclass_id": 4,
+            "inventory_type": 5,
+        },
     ]
     (build_dir / "items.json").write_text(json.dumps(items), encoding="utf-8")
 
@@ -134,14 +151,20 @@ def _prepare_build(tmp_path: Path) -> Path:
         {
             5010: [
                 ClassicDbSourceRecord(
-                    kind="creature_drop", npc_id=911, name="Test Depths Trash",
-                    map_id=_TEST_DEPTHS_MAP_ID, chance=10.0,
+                    kind="creature_drop",
+                    npc_id=911,
+                    name="Test Depths Trash",
+                    map_id=_TEST_DEPTHS_MAP_ID,
+                    chance=10.0,
                 )
             ],
             5011: [
                 ClassicDbSourceRecord(
-                    kind="creature_drop", npc_id=910, name="Test Depths Boss",
-                    map_id=_TEST_DEPTHS_MAP_ID, chance=50.0,
+                    kind="creature_drop",
+                    npc_id=910,
+                    name="Test Depths Boss",
+                    map_id=_TEST_DEPTHS_MAP_ID,
+                    chance=50.0,
                 )
             ],
         },
@@ -183,15 +206,14 @@ def test_loot_places_the_classicdb_only_trash_mob_inside_the_dungeon(tmp_path: P
     rescued trash mob (5010) land in `dungeon:test-depths`."""
     root = _prepare_build(tmp_path)
     engine_dir = _augmented_engine(tmp_path)
-    curated = tmp_path / "curated"
-    curated.mkdir()
-    shutil.copy(FIXTURES / "curated-simbuffs.json", curated / "simbuffs.json")
-    shutil.copy(FIXTURES / "curated-instance-levels.json", curated / "instance-levels.json")
-    for name in ("content-phases.json", "phases.json"):
-        shutil.copy(Path("curated") / name, curated / name)
+    curated = prepare_curated(tmp_path)
     write_loot_files(
-        BUILD, engine_dir=engine_dir, root=root, overlay_dir=tmp_path / "no-overlay",
-        curated_dir=curated, ids_md=FIXTURES / "IDS.md",
+        BUILD,
+        engine_dir=engine_dir,
+        root=root,
+        overlay_dir=tmp_path / "no-overlay",
+        curated_dir=curated,
+        ids_md=FIXTURES / "IDS.md",
     )
     document = json.loads((root / BUILD / LOOT).read_text(encoding="utf-8"))
     assert _dungeon_items(document, "dungeon:test-depths") == {5010, 5011}
@@ -209,27 +231,31 @@ def test_loot_merge_agrees_with_loot_on_the_same_committed_caches(tmp_path: Path
     real `map_id`)."""
     root = _prepare_build(tmp_path)
     engine_dir = _augmented_engine(tmp_path)
-    curated = tmp_path / "curated"
-    curated.mkdir()
-    shutil.copy(FIXTURES / "curated-simbuffs.json", curated / "simbuffs.json")
-    shutil.copy(FIXTURES / "curated-instance-levels.json", curated / "instance-levels.json")
-    for name in ("content-phases.json", "phases.json"):
-        shutil.copy(Path("curated") / name, curated / name)
+    curated = prepare_curated(tmp_path)
     write_loot_files(
-        BUILD, engine_dir=engine_dir, root=root, overlay_dir=tmp_path / "no-overlay",
-        curated_dir=curated, ids_md=FIXTURES / "IDS.md",
+        BUILD,
+        engine_dir=engine_dir,
+        root=root,
+        overlay_dir=tmp_path / "no-overlay",
+        curated_dir=curated,
+        ids_md=FIXTURES / "IDS.md",
     )
     full_document = json.loads((root / BUILD / LOOT).read_text(encoding="utf-8"))
 
-    merge_loot_files(BUILD, engine_dir=engine_dir, root=root, overlay_dir=tmp_path / "no-overlay")
+    merge_loot_files(
+        BUILD,
+        engine_dir=engine_dir,
+        root=root,
+        overlay_dir=tmp_path / "no-overlay",
+        curated_dir=curated,
+    )
     merged_document = json.loads((root / BUILD / LOOT).read_text(encoding="utf-8"))
 
     assert _dungeon_items(merged_document, "dungeon:test-depths") == {5010, 5011}
 
     def by_id(document: dict) -> dict[str, set[int]]:
         return {
-            source["id"]: _dungeon_items(document, source["id"])
-            for source in document["sources"]
+            source["id"]: _dungeon_items(document, source["id"]) for source in document["sources"]
         }
 
     assert by_id(merged_document) == by_id(full_document)
@@ -251,19 +277,24 @@ def test_loot_merge_agrees_on_source_shape_and_origin_labels(tmp_path: Path):
     doc) is promoted to `source_origin: "classic-db"` in BOTH."""
     root = _prepare_build(tmp_path)
     engine_dir = _augmented_engine(tmp_path)
-    curated = tmp_path / "curated"
-    curated.mkdir()
-    shutil.copy(FIXTURES / "curated-simbuffs.json", curated / "simbuffs.json")
-    shutil.copy(FIXTURES / "curated-instance-levels.json", curated / "instance-levels.json")
-    for name in ("content-phases.json", "phases.json"):
-        shutil.copy(Path("curated") / name, curated / name)
+    curated = prepare_curated(tmp_path)
     write_loot_files(
-        BUILD, engine_dir=engine_dir, root=root, overlay_dir=tmp_path / "no-overlay",
-        curated_dir=curated, ids_md=FIXTURES / "IDS.md",
+        BUILD,
+        engine_dir=engine_dir,
+        root=root,
+        overlay_dir=tmp_path / "no-overlay",
+        curated_dir=curated,
+        ids_md=FIXTURES / "IDS.md",
     )
     full_document = json.loads((root / BUILD / LOOT).read_text(encoding="utf-8"))
 
-    merge_loot_files(BUILD, engine_dir=engine_dir, root=root, overlay_dir=tmp_path / "no-overlay")
+    merge_loot_files(
+        BUILD,
+        engine_dir=engine_dir,
+        root=root,
+        overlay_dir=tmp_path / "no-overlay",
+        curated_dir=curated,
+    )
     merged_document = json.loads((root / BUILD / LOOT).read_text(encoding="utf-8"))
 
     def shapes(document: dict) -> dict[str, tuple]:
@@ -303,19 +334,48 @@ def _prepare_battleground_build(tmp_path: Path) -> Path:
     build_dir = root / BUILD
     zones = json.loads((build_dir / "zones.json").read_text(encoding="utf-8"))
     zones.append(
-        {"id": _AV_ZONE_ID, "name": "Alterac Valley", "map_id": _AV_MAP_ID,
-         "map_name": "Alterac Valley", "parent_id": None, "level_min": None, "level_max": None}
+        {
+            "id": _AV_ZONE_ID,
+            "name": "Alterac Valley",
+            "map_id": _AV_MAP_ID,
+            "map_name": "Alterac Valley",
+            "parent_id": None,
+            "level_min": None,
+            "level_max": None,
+        }
     )
     (build_dir / "zones.json").write_text(json.dumps(zones), encoding="utf-8")
 
-    tabard = {"quality": 1, "item_level": 20, "required_level": 0, "class_id": 4,
-              "subclass_id": 0, "inventory_type": 19}
+    tabard = {
+        "quality": 1,
+        "item_level": 20,
+        "required_level": 0,
+        "class_id": 4,
+        "subclass_id": 0,
+        "inventory_type": 19,
+    }
     items = json.loads((build_dir / "items.json").read_text(encoding="utf-8"))
     items += [
-        {"id": _AV_CREATURE_ITEM, "name": "Alterac Ram Hide", "quality": 1, "item_level": 55,
-         "required_level": 0, "class_id": 12, "subclass_id": 0, "inventory_type": 0},
-        {"id": _AV_OBJECT_ITEM, "name": "Coldtooth Supplies", "quality": 1, "item_level": 55,
-         "required_level": 0, "class_id": 12, "subclass_id": 0, "inventory_type": 0},
+        {
+            "id": _AV_CREATURE_ITEM,
+            "name": "Alterac Ram Hide",
+            "quality": 1,
+            "item_level": 55,
+            "required_level": 0,
+            "class_id": 12,
+            "subclass_id": 0,
+            "inventory_type": 0,
+        },
+        {
+            "id": _AV_OBJECT_ITEM,
+            "name": "Coldtooth Supplies",
+            "quality": 1,
+            "item_level": 55,
+            "required_level": 0,
+            "class_id": 12,
+            "subclass_id": 0,
+            "inventory_type": 0,
+        },
         {"id": _CLASSIC_TABARD, "name": "Private's Tabard", **tabard},
         {"id": _FOREVER_TABARD, "name": "Private's Tabard", **tabard},
     ]
@@ -332,33 +392,30 @@ def _prepare_battleground_build(tmp_path: Path) -> Path:
     records = load_classic_sources(build_dir)
     records[_AV_CREATURE_ITEM] = [
         ClassicDbSourceRecord(
-            kind="creature_drop", npc_id=10990, name="Alterac Ram", map_id=_AV_MAP_ID,
+            kind="creature_drop",
+            npc_id=10990,
+            name="Alterac Ram",
+            map_id=_AV_MAP_ID,
             chance=50.0,
         )
     ]
     records[_AV_OBJECT_ITEM] = [
         ClassicDbSourceRecord(
-            kind="object_drop", object_id=178785, name="Coldtooth Supplies",
-            map_id=_AV_MAP_ID, chance=100.0,
+            kind="object_drop",
+            object_id=178785,
+            name="Coldtooth Supplies",
+            map_id=_AV_MAP_ID,
+            chance=100.0,
         )
     ]
     write_classic_sources(build_dir, records)
     return root
 
 
-def _curated_dir(tmp_path: Path) -> Path:
-    curated = tmp_path / "curated"
-    curated.mkdir()
-    shutil.copy(FIXTURES / "curated-simbuffs.json", curated / "simbuffs.json")
-    shutil.copy(FIXTURES / "curated-instance-levels.json", curated / "instance-levels.json")
-    for name in ("content-phases.json", "phases.json"):
-        shutil.copy(Path("curated") / name, curated / name)
-    return curated
-
-
 def _items_anywhere(document: dict) -> set[int]:
-    return {item for source in document["sources"] for item in _dungeon_items(document,
-                                                                              source["id"])}
+    return {
+        item for source in document["sources"] for item in _dungeon_items(document, source["id"])
+    }
 
 
 @pytest.mark.parametrize("spawns_are_sources", [True, False])
@@ -370,22 +427,30 @@ def test_loot_and_loot_merge_write_byte_identical_loot_json(
     are byte-identical, whichever way the battleground switch is set, and
     the switch alone decides whether the spawns are sources."""
     monkeypatch.setattr(
-        "pipeline.loot.constants.BATTLEGROUND_SPAWNS_ARE_SOURCES", spawns_are_sources,
+        "pipeline.loot.constants.BATTLEGROUND_SPAWNS_ARE_SOURCES",
+        spawns_are_sources,
         raising=False,
     )
     root = _prepare_battleground_build(tmp_path)
     engine_dir = _augmented_engine(tmp_path)
-    curated = _curated_dir(tmp_path)
+    curated = prepare_curated(tmp_path)
     loot_path = root / BUILD / LOOT
     outputs = []
     for _ in range(2):
         write_loot_files(
-            BUILD, engine_dir=engine_dir, root=root, overlay_dir=tmp_path / "no-overlay",
-            curated_dir=curated, ids_md=FIXTURES / "IDS.md",
+            BUILD,
+            engine_dir=engine_dir,
+            root=root,
+            overlay_dir=tmp_path / "no-overlay",
+            curated_dir=curated,
+            ids_md=FIXTURES / "IDS.md",
         )
         outputs.append(loot_path.read_bytes())
         merge_loot_files(
-            BUILD, engine_dir=engine_dir, root=root, overlay_dir=tmp_path / "no-overlay",
+            BUILD,
+            engine_dir=engine_dir,
+            root=root,
+            overlay_dir=tmp_path / "no-overlay",
             curated_dir=curated,
         )
         outputs.append(loot_path.read_bytes())
@@ -411,8 +476,11 @@ def test_loot_merge_fails_fast_without_the_full_runs_classification(tmp_path: Pa
     engine_dir = _augmented_engine(tmp_path)
     with pytest.raises(SystemExit, match="python -m pipeline loot"):
         merge_loot_files(
-            BUILD, engine_dir=engine_dir, root=root, overlay_dir=tmp_path / "no-overlay",
-            curated_dir=_curated_dir(tmp_path),
+            BUILD,
+            engine_dir=engine_dir,
+            root=root,
+            overlay_dir=tmp_path / "no-overlay",
+            curated_dir=prepare_curated(tmp_path),
         )
 
 
@@ -440,7 +508,8 @@ def _copy_committed_build(tmp_path: Path, with_raw_tables: bool) -> Path:
     source = Path("builds") / ACTIVE_BUILD
     root = tmp_path / "builds"
     shutil.copytree(
-        source, root / ACTIVE_BUILD,
+        source,
+        root / ACTIVE_BUILD,
         ignore=None if with_raw_tables else shutil.ignore_patterns("*.csv", "*.txt"),
     )
     if not with_raw_tables:

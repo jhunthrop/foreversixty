@@ -38,7 +38,8 @@ test('Dungeon only re-picks every slot from dungeons, hides none, and labels the
   for (const [slot] of changed) {
     const cell = page.getByTestId(`bis-doll-slot-${slot}`);
     // Option C: a re-picked slot names the best overall pick under its gain; the why is in its detail.
-    if ((await cell.getAttribute('data-state')) === 'item') await expect(cell).toContainText(/vs best: \S|as \S/);
+    if ((await cell.getAttribute('data-state')) === 'item')
+      await expect(cell).toContainText(/vs best: \S|as \S/);
   }
   await expect(page.getByTestId('bis-answer-figure')).toContainText(
     /Set: Dungeon only|Best set, all sources/,

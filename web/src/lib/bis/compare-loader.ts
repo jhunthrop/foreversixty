@@ -48,8 +48,14 @@ export function comparable(character: MeCharacter | null, classSlug: string): ch
 }
 
 /** The doll's character for the shown band, or null when the band or file is unavailable. */
-export async function loadDollCharacter(character: MeCharacter, target: CompareTarget): Promise<DollCharacter | null> {
-  const [file, items] = await Promise.all([fetchBisFile(target.build, target.spec), itemsFor(target.classSlug)]);
+export async function loadDollCharacter(
+  character: MeCharacter,
+  target: CompareTarget,
+): Promise<DollCharacter | null> {
+  const [file, items] = await Promise.all([
+    fetchBisFile(target.build, target.spec),
+    itemsFor(target.classSlug),
+  ]);
   if (file === null) return null;
   const band = selectBand(file, target.band, target.faction, target.preset);
   if (band === undefined) return null;

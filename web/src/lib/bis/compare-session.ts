@@ -51,7 +51,8 @@ export function watchCompare(
       return;
     }
     const loaded = await loadDollCharacter(character, { ...page, ...band }).catch(() => null);
-    if (!stopped && band === shown) onCharacter(loaded ?? undefined, character.race?.toLowerCase().replace(/\s+/g, '-'));
+    if (!stopped && band === shown)
+      onCharacter(loaded ?? undefined, character.race?.toLowerCase().replace(/\s+/g, '-'));
   };
   afterLoad(() => {
     ready = true;

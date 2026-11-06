@@ -57,9 +57,9 @@ function sameKinds(a: readonly string[], b: readonly string[]): boolean {
 function parseSources(value: string | null, band: number): SourceFilterKind[] {
   if (value === null) return defaultSources(band);
   if (value === 'all') return [...SOURCE_FILTER_KINDS];
-  const picked = value.split(',').filter((kind): kind is SourceFilterKind =>
-    (SOURCE_FILTER_KINDS as readonly string[]).includes(kind),
-  );
+  const picked = value
+    .split(',')
+    .filter((kind): kind is SourceFilterKind => (SOURCE_FILTER_KINDS as readonly string[]).includes(kind));
   return SOURCE_FILTER_KINDS.filter((kind) => picked.includes(kind));
 }
 
@@ -87,7 +87,8 @@ export function parseState(search: string, hash: string, context: BisStateContex
       : defaultPreset(presets);
   const races = context.racesFor(faction);
   const raceParam = params.get('race');
-  const race = raceParam !== null && races.includes(raceParam) ? raceParam : context.simRaceFor(faction, band, preset);
+  const race =
+    raceParam !== null && races.includes(raceParam) ? raceParam : context.simRaceFor(faction, band, preset);
   const viewParam = params.get('view');
   const view: BisView = viewParam === 'slot' || viewParam === 'where' ? viewParam : defaultView(band);
   return { faction, band, preset, race, view, sources: parseSources(params.get('sources'), band) };
@@ -98,8 +99,10 @@ export function stateSearch(state: BisPageState, context: BisStateContext): stri
   const params = new URLSearchParams();
   if (state.band !== context.bands[0]) params.set('band', String(state.band));
   if (state.faction !== 'alliance') params.set('faction', state.faction);
-  if (state.preset !== defaultPreset(context.presetsFor(state.faction, state.band))) params.set('preset', state.preset);
-  if (state.race !== context.simRaceFor(state.faction, state.band, state.preset)) params.set('race', state.race);
+  if (state.preset !== defaultPreset(context.presetsFor(state.faction, state.band)))
+    params.set('preset', state.preset);
+  if (state.race !== context.simRaceFor(state.faction, state.band, state.preset))
+    params.set('race', state.race);
   if (state.view !== defaultView(state.band)) params.set('view', state.view);
   if (!sameKinds(state.sources, defaultSources(state.band))) {
     params.set('sources', sameKinds(state.sources, SOURCE_FILTER_KINDS) ? 'all' : state.sources.join(','));
@@ -122,8 +125,10 @@ export function withChange(
   const preset = presets.includes(next.preset) && !bandMoved ? next.preset : defaultPreset(presets);
   const races = context.racesFor(next.faction);
   const race =
-    factionMoved || !races.includes(next.race) ? context.simRaceFor(next.faction, next.band, preset) : next.race;
-  const crossesSixty = bandMoved && (state.band < MAX_BAND) !== (next.band < MAX_BAND);
+    factionMoved || !races.includes(next.race)
+      ? context.simRaceFor(next.faction, next.band, preset)
+      : next.race;
+  const crossesSixty = bandMoved && state.band < MAX_BAND !== next.band < MAX_BAND;
   return {
     ...next,
     preset,

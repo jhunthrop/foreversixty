@@ -15,7 +15,10 @@ function keyFor(band: number): string {
 /** Both buckets' keys (the head script checks them before the island loads). */
 export const SOURCES_STORAGE_KEYS: readonly string[] = [keyFor(0), keyFor(MAX_BAND)];
 
-export function readStoredSources(band: number, storage: Pick<Storage, 'getItem'> | undefined = globalThis.localStorage): SourceFilterKind[] | undefined {
+export function readStoredSources(
+  band: number,
+  storage: Pick<Storage, 'getItem'> | undefined = globalThis.localStorage,
+): SourceFilterKind[] | undefined {
   try {
     const raw = storage?.getItem(keyFor(band));
     if (raw === null || raw === undefined) return undefined;

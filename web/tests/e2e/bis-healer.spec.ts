@@ -26,7 +26,9 @@ async function expectHealerCells(page: Page): Promise<void> {
   await expect(panel.getByTestId('bis-healer-hpm')).toContainText(/\d+\.\d/);
 }
 
-test('the raid-ready healer answer shows HPS, overheal, mana, healing per mana and the profile', async ({ page }) => {
+test('the raid-ready healer answer shows HPS, overheal, mana, healing per mana and the profile', async ({
+  page,
+}) => {
   await open(page);
   await expectHealerCells(page);
   expect(PROFILE_LABEL).not.toBe('');
@@ -61,7 +63,9 @@ test('choosing Bare swaps the healer figures and ?preset=bare opens on them', as
   await expectHealerCells(page);
 });
 
-test('no band-level number on a healer band says DPS, and the simulator link is not offered', async ({ page }) => {
+test('no band-level number on a healer band says DPS, and the simulator link is not offered', async ({
+  page,
+}) => {
   await open(page);
   for (const preset of ['raid', 'bare'] as const) {
     await chooseControl(page, 'preset', preset);
@@ -103,6 +107,8 @@ test('the healer band has no horizontal scroll at 390px', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await open(page);
   await expect(answer(page).getByTestId('bis-answer-figure')).toBeVisible();
-  const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+  const overflow = await page.evaluate(
+    () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+  );
   expect(overflow).toBeLessThanOrEqual(0);
 });
