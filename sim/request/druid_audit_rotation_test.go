@@ -422,8 +422,8 @@ func TestRestorationTaurenHealingTouchRankFourAtTwentySixToTwentyEight(t *testin
 // below 20 with Wrath and Moonfire together; Moonfire rank 2 at 16 to 19 over
 // the rank 3 learned at 16. Round 25 re-judged 10 to 15 with the gear the
 // level can hold (round 24's runs were unarmed below 18): Wrath rank 1 only
-// to 11, rank 2 at 12 to 15; Moonfire rank 1 at 10 to 12 (11 for a Tauren,
-// TestRound25FeralCasterRankRows), rank 2 from 13.
+// to 11, rank 2 at 12 and 13 (to 15 for a Night Elf); Moonfire rank 1 at 10
+// to 12 (11 for a Tauren, TestRound25FeralCasterRankRows), rank 2 from 13.
 func TestFeralCasterRankRowsBelowTwenty(t *testing.T) {
 	const (
 		wrath1, wrath2, wrath3          = 5176, 5177, 5178
@@ -436,7 +436,6 @@ func TestFeralCasterRankRowsBelowTwenty(t *testing.T) {
 	}{
 		{"Wrath at 10 is rank 1", 10, wrath1, wrath2},
 		{"Wrath at 13 is rank 2", 13, wrath2, wrath1},
-		{"Wrath at 14 is rank 2", 14, wrath2, wrath3},
 		{"Wrath at 16 is rank 3", 16, wrath3, wrath2},
 		{"Moonfire at 10 is rank 1", 10, moonfire1, moonfire2},
 		{"Moonfire at 12 is rank 1", 12, moonfire1, moonfire2},

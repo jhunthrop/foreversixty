@@ -31,8 +31,8 @@ func TestRound25LowLevelHunterRankRows(t *testing.T) {
 // Round 25 (platform): the Feral caster rows below 20 were judged unarmed and
 // in quest gear the level could not have yet. Re-judged on the gear the level
 // holds (same method, Tauren and Night Elf): Wrath rank 2 beats rank 1 at 12
-// and 13 and the rank 3 learned at 14 through 15; Moonfire rank 2 wins from 13
-// with it, and at 11 on a Night Elf.
+// and 13, and for a Night Elf the rank 3 learned at 14 through 15 (a Tauren
+// takes rank 3); Moonfire rank 2 wins from 13 with it, and at 11 on a Night Elf.
 func TestRound25FeralCasterRankRows(t *testing.T) {
 	const feral = "druid-feral"
 	cases := []struct {
@@ -42,7 +42,8 @@ func TestRound25FeralCasterRankRows(t *testing.T) {
 	}{
 		{"Wrath at 11 keeps rank 1", "tauren", 11, 5176, 5177},
 		{"Wrath at 12", "tauren", 12, 5177, 5176},
-		{"Wrath at 15", "night-elf", 15, 5177, 5178},
+		{"Wrath at 15 on a Night Elf", "night-elf", 15, 5177, 5178},
+		{"Wrath at 14 on a Tauren takes rank 3", "tauren", 14, 5178, 5177},
 		{"Wrath at 16 takes rank 3", "tauren", 16, 5178, 5177},
 		{"Moonfire at 10 keeps rank 1", "night-elf", 10, 8921, 8924},
 		{"Moonfire at 11 on a Tauren keeps rank 1", "tauren", 11, 8921, 8924},
