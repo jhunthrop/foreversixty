@@ -62,6 +62,12 @@ function readFacts() {
     label: text(q("dt", f)),
     value: text(q("dd", f)),
   }));
+  const healer = qa('[data-testid="bis-healer-metrics"] > div').map((m) => ({
+    key: m.dataset.testid.replace("bis-healer-", ""),
+    label: text(q("dt", m)),
+    value: text(q("dd:not(.sr-only)", m)),
+    line: text(q("dd.sr-only", m)),
+  }));
   const trust = q('[data-testid="bis-trust-line"]');
   const doll = q('[data-testid="bis-doll"]');
   const summary = q('[data-testid="bis-summary"]');
@@ -73,6 +79,8 @@ function readFacts() {
     answer: {
       figure: figureOf(q('[data-testid="bis-answer-figure"]')),
       tank,
+      tankLine: text(q('[data-testid="bis-tank-secondary"]', answer)),
+      healer,
       trust: text(trust).replace(text(q("a", trust)), "").replace(/\s*·\s*$/, ""),
       rankingSim: text(q('[data-testid="bis-ranking-sim-link"]', answer)),
       simLink: text(q('[data-testid="bis-sim-link"]', answer)),

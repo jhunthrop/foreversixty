@@ -5,6 +5,7 @@ generator never writes a border, background, radius or shadow itself (`assert_no
 if it does). The names, props and token reads here are the contract the Svelte/Astro components implement.
 """
 import re
+from html import escape
 
 from mocklib import emblem
 from ws_lib import CSS as BASE_CSS, page as _page, header as _header, control_bar, seg, sel, crest_img, icon, QCOL, write, REGION, region_slug
@@ -505,3 +506,61 @@ def Sheet(title: str, body: str, actions: str) -> str:
     return (f'<div class="sheet-scrim" aria-hidden="true"></div><div class="sheet" role="dialog" aria-modal="true" aria-label="{title}">'
             f'<div class="sheet-h"><h2>{title}</h2><a class="x" href="#" aria-label="Close">&times;</a></div>'
             f'<div class="sheet-b">{body}</div><div class="sheet-f">{actions}</div></div>')
+# ------------------------------------------------ Paperdoll (moved from ws_bis.py 2026-11-06; the shipped `Paperdoll`, web/src/components/ui)
+# The slot cells on the page's one Plate: two columns of slots ("By slot"), or the slots grouped by where they drop
+# ("Where to go"). A cell is line 1 slot label and level flag, icon, name and short stats, the gain figure; line 2 the
+# full source alone (spec 5.13 option C). BiS is the first user; the character gear tab and the sim's gear panel next.
+PRIM_CSS += '''
+.doll-cols{display:grid;grid-template-columns:minmax(0,1fr)}
+@media(min-width:1024px){.doll-cols{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.doll-col+.doll-col{border-left:1px solid var(--line-soft)}
+ .doll[data-view="where"] .doll-cols{display:block;columns:2;column-gap:0}}
+.doll-grp{break-inside:avoid}.doll-grp-h{display:flex;align-items:baseline;gap:12px;padding:14px 16px 6px}
+.doll-grp-h b{font:700 18px/24px var(--font-body);color:var(--strong)}.doll-grp-h span{margin-left:auto;font-size:13px;color:var(--muted)}
+.cell{display:grid;grid-template-columns:64px 40px minmax(0,1fr) auto;column-gap:12px;align-items:start;min-height:58px;padding:9px 16px;border-bottom:1px solid var(--line-soft)}
+.cell .lb{display:flex;flex-direction:column;padding-top:1px;font:600 13px/18px var(--font-body);color:var(--muted)}
+.cell .lb .fl{font-size:12px;line-height:16px;font-weight:700}
+.cell .bd{display:flex;flex-direction:column;gap:1px;min-width:0}
+.cell .l1{display:flex;align-items:baseline;column-gap:10px;min-width:0}.cell .l1 .nm{flex:none;max-width:100%;font:700 15px/20px var(--font-body)}
+.cell .l1 .st{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13px;line-height:20px;color:var(--muted)}
+.cell .l2{font-size:13px;line-height:18px;color:var(--muted);overflow-wrap:anywhere}
+.cell .gn{display:flex;flex-direction:column;align-items:flex-end;width:144px;min-width:0;justify-self:end}
+.cell .gn .v{font:700 16px/20px var(--font-body);font-variant-numeric:tabular-nums;color:var(--strong)}.cell .gn .v small{font-size:13px;font-weight:600;color:var(--muted);margin-left:4px}
+.cell .gn .bs{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;line-height:16px;color:var(--muted);text-align:right}
+.cell .ic0{width:40px;height:40px;border-radius:5px;border:1px dashed var(--line-soft)}
+'''
+
+RARITY = {'poor': '#9d9d9d', 'common': '#ffffff', 'uncommon': '#1eff00', 'rare': '#3d94f0', 'epic': '#b866f5', 'legendary': '#ff8000'}
+_RARITY_ICON = {'poor': 'q0', 'uncommon': 'q2', 'rare': 'q3', 'epic': 'q4', 'legendary': 'q5'}
+
+
+def _colored(text: str, rarity: str) -> str:
+    return f'<span style="color:{RARITY.get(rarity, RARITY["common"])}">{escape(text)}</span>'
+
+
+def PaperdollCell(c: dict) -> str:
+    """One slot. c: slot facts (label, flag, state, name, quality, icon, stats, line2, gain, basis), as bis_facts.mjs reads them."""
+    flag = f'<span class="fl">{escape(c["flag"]["text"])}</span>' if c['flag'] else ''
+    lead = f'<span class="lb">{escape(c["label"])}{flag}</span>'
+    if c['state'] == 'empty':
+        return (f'<div class="cell" role="option" aria-disabled="true">{lead}<span class="ic0"></span><span class="bd">'
+                f'<span class="l1"><span class="nm muted" style="font-weight:400">{escape(c["name"])}</span></span><span class="l2">{escape(c["line2"])}</span></span><span></span></div>')
+    ic = icon(c['icon'], 40, _RARITY_ICON.get(c['quality'], '')) if c['icon'] else '<span class="ic0"></span>'
+    stats = f'<span class="st">{escape(c["stats"])}</span>' if c['stats'] else ''
+    g = c['gain'] or {'value': '', 'unit': ''}
+    unit = f'<small>{escape(g["unit"])}</small>' if g['unit'] else ''
+    b = c['basis']
+    basis = f'<span class="bs">{escape(b["prefix"])} {_colored(b["item"], b["quality"]) if b["item"] else ""}</span>' if b else ''
+    return (f'<div class="cell" role="option" aria-selected="false">{lead}{ic}<span class="bd"><span class="l1">'
+            f'<span class="nm" style="color:{RARITY.get(c["quality"], RARITY["common"])}">{escape(c["name"])}</span>{stats}</span>'
+            f'<span class="l2">{escape(c["line2"])}</span></span><span class="gn"><span class="v">{escape(g["value"])}{unit}</span>{basis}</span></div>')
+
+
+def Paperdoll(label: str, view: str, columns: tuple[list[dict], list[dict]] = ([], []), groups: list[dict] | None = None) -> str:
+    """The slot listbox. view 'where' renders groups (title, count, cells); any other view the two columns (left, right)."""
+    if view == 'where':
+        inner = ''.join(f'<div class="doll-grp" role="group" aria-label="{escape(g["title"])}"><div class="doll-grp-h"><b>{escape(g["title"])}</b>'
+                        f'<span>{escape(g["count"])}</span></div>{"".join(PaperdollCell(c) for c in g["cells"])}</div>' for g in groups or [])
+    else:
+        inner = ''.join(f'<div class="doll-col">{"".join(PaperdollCell(c) for c in side)}</div>' for side in columns)
+    return (f'<div class="doll" data-view="{view}" data-region="{REGION["slots"]}">'
+            f'<div class="doll-cols" role="listbox" aria-label="{escape(label)}">{inner}</div></div>')
