@@ -70,7 +70,10 @@ export interface BisCandidate {
 }
 
 /** The source-filter fields of one slot: the subset of `BisSlot` `source-filter.ts` reads. */
-export type BisFilterSlot = Pick<BisSlot, 'slot' | 'item_id' | 'source_kind' | 'kinds' | 'two_hand' | 'not_with' | 'by_kind' | 'standing'>;
+export type BisFilterSlot = Pick<
+  BisSlot,
+  'slot' | 'item_id' | 'source_kind' | 'kinds' | 'two_hand' | 'not_with' | 'by_kind' | 'standing'
+>;
 
 export interface BisRowModel {
   slot: string;
@@ -173,7 +176,10 @@ function sourceInfo(
 ): BisSourceInfo {
   const cell = resolveSourceCell(cand, faction, deps.loot, cand.source ?? cand.source_kind);
   return {
-    line: fullSourceLine(cell, { instanceLevels: deps.instanceLevels, bonding: deps.details.get(cand.item_id)?.bonding }),
+    line: fullSourceLine(cell, {
+      instanceLevels: deps.instanceLevels,
+      bonding: deps.details.get(cand.item_id)?.bonding,
+    }),
     kind: cell.kind === 'unknown' ? cand.source_kind : cell.kind,
     place: placeOf(cell),
     standing: standingOf(cell),
@@ -226,14 +232,27 @@ function enchantLabel(name: string): string {
   return name.replace(/^Enchant [\w ]+? - /, '');
 }
 
-function rowModel(row: RowView, raw: BisSlot | undefined, faction: Faction, deps: PageModelDeps, mainHand: BisSlot | undefined): BisRowModel {
+function rowModel(
+  row: RowView,
+  raw: BisSlot | undefined,
+  faction: Faction,
+  deps: PageModelDeps,
+  mainHand: BisSlot | undefined,
+): BisRowModel {
   const sources: Record<number, BisSourceInfo> = {};
   const base = { slot: row.slot, label: row.slotLabel, alts: [] as BisCandidate[], sources };
   const hasPick = raw !== undefined && typeof raw.item_id === 'number' && !row.empty;
   if (!hasPick) {
     const coveredBy =
-      row.slot === 'off_hand' && mainHand !== undefined && isTwoHand(mainHand, deps.details) ? mainHand.item_id : undefined;
-    return { ...base, empty: row.emptyCopy, coveredBy, filter: { slot: row.slot, item_id: 0, source_kind: '', by_kind: raw?.by_kind } };
+      row.slot === 'off_hand' && mainHand !== undefined && isTwoHand(mainHand, deps.details)
+        ? mainHand.item_id
+        : undefined;
+    return {
+      ...base,
+      empty: row.emptyCopy,
+      coveredBy,
+      filter: { slot: row.slot, item_id: 0, source_kind: '', by_kind: raw?.by_kind },
+    };
   }
   sources[raw.item_id] = sourceInfo(raw, faction, deps);
   for (const alt of raw.alternatives ?? []) sources[alt.item_id] = sourceInfo(alt, faction, deps);
@@ -247,14 +266,20 @@ function rowModel(row: RowView, raw: BisSlot | undefined, faction: Faction, deps
     );
   }
   for (const entry of raw.ranking ?? []) {
-    sources[entry.item_id] ??= sourceInfo({ item_id: entry.item_id, source_kind: entry.source_kind ?? '' }, faction, deps);
+    sources[entry.item_id] ??= sourceInfo(
+      { item_id: entry.item_id, source_kind: entry.source_kind ?? '' },
+      faction,
+      deps,
+    );
   }
   const enchant = raw.enchant_id === undefined ? undefined : deps.enchantName(raw.enchant_id, raw.slot);
   return {
     ...base,
     id: raw.item_id,
     alts: (raw.alternatives ?? []).map((alt) => ({ id: alt.item_id, delta: alt.dps_delta })),
-    ...(raw.ranking ? { ranking: raw.ranking.map((entry) => ({ id: entry.item_id, delta: entry.dps_delta })) } : {}),
+    ...(raw.ranking
+      ? { ranking: raw.ranking.map((entry) => ({ id: entry.item_id, delta: entry.dps_delta })) }
+      : {}),
     ...(enchant ? { enchant: enchantLabel(enchant) } : {}),
     ...(row.setBonus ? { setBonus: row.setBonus.line } : {}),
     filter: {
@@ -290,7 +315,10 @@ export function stackSentence(rows: readonly ScaleRow[]): string | undefined {
 }
 
 function trustFacts(file: BisFile, raw: BisBand, info: BandInfo): string[] {
-  const facts = [`Level ${bandTopLevel(raw.band)} ${capitalise(raw.race)}`, `${raw.talent_points} talent points`];
+  const facts = [
+    `Level ${bandTopLevel(raw.band)} ${capitalise(raw.race)}`,
+    `${raw.talent_points} talent points`,
+  ];
   const run = file.run;
   if (run !== undefined) {
     const target = run.target_type.replace(/_/g, ' ');
@@ -319,7 +347,9 @@ function answerModel(file: BisFile, raw: BisBand, info: BandInfo, deps: PageMode
     simHref: info.healer === undefined ? deps.simHrefFor(raw) : undefined,
     rankingSimHref: deps.rankingSimHrefFor(raw),
     plannerHref: deps.plannerHrefFor(raw),
-    ...(meta === undefined ? {} : { presetGroups: effectGroupsFor(meta), ...(meta.notes ? { presetNotes: meta.notes } : {}) }),
+    ...(meta === undefined
+      ? {}
+      : { presetGroups: effectGroupsFor(meta), ...(meta.notes ? { presetNotes: meta.notes } : {}) }),
   };
 }
 
@@ -329,7 +359,8 @@ export function bandModelFor(info: BandInfo, raw: BisBand, deps: PageModelDeps):
   const bySlot = new Map(raw.slots.map((slot) => [slot.slot, slot]));
   const mainHand = bySlot.get('main_hand');
   const rows = info.rows.map((row) => rowModel(row, bySlot.get(row.slot), faction, deps, mainHand));
-  const twoHander = mainHand !== undefined && typeof mainHand.item_id === 'number' && isTwoHand(mainHand, deps.details);
+  const twoHander =
+    mainHand !== undefined && typeof mainHand.item_id === 'number' && isTwoHand(mainHand, deps.details);
   return {
     key: bandModelKey(faction, raw.band, presetOf(raw)),
     faction,

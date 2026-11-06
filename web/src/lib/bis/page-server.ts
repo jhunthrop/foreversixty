@@ -27,7 +27,9 @@ function buildFor(spec: string, classSlug: string): BisServerPage | null {
   if (file === null) return null;
   const talentFile = loadTalentFile(build, classSlug);
   if (talentFile === undefined) {
-    throw new Error(`data/builds/${build}/talents/${classSlug}.json is missing; the sim link needs the trees`);
+    throw new Error(
+      `data/builds/${build}/talents/${classSlug}.json is missing; the sim link needs the trees`,
+    );
   }
   return buildBisPageData({ spec, classSlug, build, file, talentIndex: indexTalents(talentFile) });
 }

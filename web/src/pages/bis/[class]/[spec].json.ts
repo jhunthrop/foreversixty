@@ -5,7 +5,10 @@ import { readSpecCatalog } from '../../../lib/bis/load';
 import { bisServerPage } from '../../../lib/bis/page-server';
 
 export const getStaticPaths: GetStaticPaths = () =>
-  readSpecCatalog().map((spec) => ({ params: { class: spec.class_slug, spec: spec.spec_slug }, props: { spec } }));
+  readSpecCatalog().map((spec) => ({
+    params: { class: spec.class_slug, spec: spec.spec_slug },
+    props: { spec },
+  }));
 
 export const GET: APIRoute = ({ props }) => {
   const { spec } = props as { spec: ReturnType<typeof readSpecCatalog>[number] };

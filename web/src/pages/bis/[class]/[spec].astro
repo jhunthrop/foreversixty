@@ -71,12 +71,16 @@ const raceOptions: Record<Faction, { value: string; label: string }[]> = {
 ---
 
 <Base title={title} description={description} path={path} wide>
-  <script is:inline set:html={BIS_PENDING_SCRIPT} />
+  <script is:inline set:html={BIS_PENDING_SCRIPT}></script>
   <main id="main" tabindex="-1" class="bis-page">
     {server === undefined ? (
       <div class="bis-empty" data-testid="bis-empty-state">
         <PageHeader title={`${specEntry.name} ${className}`} tone={{ classSlug } as never} />
-        <Notice text={`${bisCopy.noDataYet} ${bisCopy.noDataYetBody}`} action={{ label: `${specEntry.name} guide`, href: guideHref }} tone="neutral" />
+        <Notice
+          text={`${bisCopy.noDataYet} ${bisCopy.noDataYetBody}`}
+          action={{ label: `${specEntry.name} guide`, href: guideHref }}
+          tone="neutral"
+        />
       </div>
     ) : (
       <Fragment>
@@ -99,8 +103,18 @@ const raceOptions: Record<Faction, { value: string; label: string }[]> = {
         />
         {/* The data the islands read at hydration sits after the markup, so the first paint never
             waits on it streaming in (the default state is already server-rendered above). */}
-        <script is:inline type="application/json" id="bis-tooltip-models" set:html={tooltipModelsJson} />
-        <script is:inline type="application/json" id={BIS_PAGE_DATA_ID} set:html={bisPageDataJson(inlineData!)} />
+        <script
+          is:inline
+          type="application/json"
+          id="bis-tooltip-models"
+          set:html={tooltipModelsJson}
+        ></script>
+        <script
+          is:inline
+          type="application/json"
+          id={BIS_PAGE_DATA_ID}
+          set:html={bisPageDataJson(inlineData!)}
+        ></script>
       </Fragment>
     )}
   </main>
