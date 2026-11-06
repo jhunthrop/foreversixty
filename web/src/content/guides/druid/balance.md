@@ -124,7 +124,7 @@ Tailoring makes some of the best early caster gear, and Enchanting puts spell po
 
 Wrath is yours from level 1, with new ranks at 6 and 14. Moonfire trains at 4, Entangling Roots at 8 to hold a second mob, Nature's Grasp at 10 and Faerie Fire at 18.
 
-Until Starfire at 20 the fight is simple: from 4, Moonfire the mob, then Wrath until it dies, and drink when the bar runs low. Never stand idle with Moonfire ticking and mana to spare; that is a Wrath you did not cast. On a long fight your mana runs out first, so the cheap old ranks do more than the new ones: Wrath rank 1 at 10 to 12 and rank 2 from 13 to 18, and Moonfire rank 2 at 16, then rank 1 from 17 to 19. Wrath rank 3 earns its cost at 19.
+Until Starfire at 20 the fight is simple: from 4, Moonfire the mob, then Wrath until it dies, and drink when the bar runs low. Never stand idle with Moonfire ticking and mana to spare; that is a Wrath you did not cast. On a long fight your mana runs out first, so the cheap old ranks do more than the new ones: Wrath rank 1 with Moonfire rank 1 from 12 to 16 (Wrath rank 1 from 10, and at 14 rank 2 of both), Wrath rank 2 with Moonfire rank 1 at 17, and rank 2 of both at 18. Wrath rank 3 earns its cost at 19, with Moonfire still on rank 2.
 
 Improved Wrath takes your points from 10 to 14: Wrath 0.5 sec faster for half the mana. Genesis at 15 and 16 adds 4% to Moonfire's ticks and Rejuvenation, and Moonglow from 17 to 19 makes damage spells 25% cheaper.
 
