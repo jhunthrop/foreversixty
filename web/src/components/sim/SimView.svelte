@@ -39,7 +39,8 @@
   import { simPageCopy as pageCopy } from '../../lib/sim/page-copy';
   import { createSavedSimState } from '../../lib/sim/saved-sim-state.svelte';
   import { SIM_SAVED_SKELETON_HTML } from '../../lib/sim/skeleton';
-  import { parseFightRef } from '../../lib/sim/sources';
+  import { parseBuildInput } from '../../lib/sim/build-input';
+  import { fightRefOf, parseFightRef } from '../../lib/sim/sources';
   import { isSimulatedSpec, specLabel } from '../../lib/sim/spec-label';
   import { mergeSpecRows, needsFidelityNote, specStateLabel, specStateNote } from '../../lib/sim/spec-state';
   import { createSimStore } from '../../lib/sim/store.svelte';
@@ -327,6 +328,15 @@
     runLoadedIfSimulated();
   }
 
+  /** "From a build": a saved link or id loads the saved build; an unsaved planner link (its
+   *  ?code=) or a bare code loads that code. */
+  function loadBuildInput(value: string): void {
+    const input = parseBuildInput(value);
+    if (input === null) return;
+    if (input.kind === 'code') void store.loadAddon(input.code);
+    else void store.loadBuild(input.id);
+  }
+
   function runLoadedIfSimulated(): void {
     if (store.character !== null && isSimulatedSpec(store.character.spec)) void store.run();
   }
@@ -537,8 +547,8 @@
         busy={store.phase === 'loading-character'}
         message={store.message}
         onpaste={(code) => void runPastedInput(code)}
-        onbuild={(id) => void store.loadBuild(id)}
-        onfight={(ref) => void store.loadFight(ref)}
+        onbuild={loadBuildInput}
+        onfight={(ref) => void store.loadFight(fightRefOf(ref))}
         onsignin={onSignIn}
       >
         {#snippet notice()}
