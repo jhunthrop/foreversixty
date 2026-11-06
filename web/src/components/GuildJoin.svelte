@@ -28,6 +28,7 @@
   import ClassCrestRing from './character/ClassCrestRing.svelte';
   import FactionCrest from './character/FactionCrest.svelte';
   import GuildJoinedBlock from './guild/GuildJoinedBlock.svelte';
+  import GuildJoinInvited from './guild/GuildJoinInvited.svelte';
   import GuildStatus from './GuildStatus.svelte';
   import EmptyState from './ui/EmptyState.svelte';
   import SettingsRow from './ui/SettingsRow.svelte';
@@ -141,9 +142,7 @@
         </div>
       </div>
       {#if showsInvitedLine(alreadyIn, joined !== null)}
-        <p class="text-text text-[15px]" data-testid="guild-join-invited">
-          {guildJoinCopy.invited(guild.name)}
-        </p>
+        <GuildJoinInvited guildName={guild.name} inviter={peek?.inviter ?? null} />
       {/if}
       {#if showJoining && joining !== null}
         <div class="border-line-soft -mx-5 border-b" data-testid="guild-join-as">

@@ -39,7 +39,7 @@ func guildAttendanceSchema(t *testing.T, url string) (columns, tables, indexes i
 }
 
 // 0052_guild_attendance carries Lane G2's whole schema; its down removes all of it and puts
-// back 0030's one-award-per-drop index; up again restores it.
+// back 0030's one-award-per-drop index; up again (to 52) restores it.
 func TestMigration0052AddsTheAttendanceSchemaAndDownReversesIt(t *testing.T) {
 	url := testURL(t)
 	if err := Migrate(url); err != nil {
@@ -50,6 +50,7 @@ func TestMigration0052AddsTheAttendanceSchemaAndDownReversesIt(t *testing.T) {
 			t.Errorf("restoring the latest migration: %v", err)
 		}
 	})
+	migrateTo(t, url, 52) // 0071 replaces loot_awards_drop_unmatched_idx; read 0052 as it left things
 	if c, tb, ix := guildAttendanceSchema(t, url); c != 9 || tb != 2 || ix != 4 {
 		t.Fatalf("after up: columns %d tables %d indexes %d, want 9 2 4", c, tb, ix)
 	}
@@ -73,9 +74,7 @@ func TestMigration0052AddsTheAttendanceSchemaAndDownReversesIt(t *testing.T) {
 		t.Fatal("the down migration did not restore 0030's loot_awards_drop_idx")
 	}
 
-	if err := Migrate(url); err != nil {
-		t.Fatalf("migrating up again: %v", err)
-	}
+	migrateTo(t, url, 52)
 	if c, tb, ix := guildAttendanceSchema(t, url); c != 9 || tb != 2 || ix != 4 {
 		t.Fatalf("after up again: columns %d tables %d indexes %d, want 9 2 4", c, tb, ix)
 	}

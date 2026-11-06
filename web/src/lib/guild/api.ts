@@ -377,7 +377,7 @@ export interface GuildSettingsData {
   claimed_by: ClaimHolder | null;
   claim_pending: ClaimPendingView | null;
   claim: ClaimStateView;
-  invite: { rotated_at: string | null };
+  invite: GuildInviteView;
   /** The guild's Discord channel (raids spec §3.8): present only for a verified officer when
    *  the deployment has connect on. */
   discord?: GuildSettingsDiscord;
@@ -453,10 +453,20 @@ export interface ClaimConfirmResult {
 export interface ClaimReleaseResult {
   status: 'released';
 }
+/** The guild's current invite link as settings reads it (api `guilds.InviteView`, spec 2026-11-05
+ *  §4.1). `url` is the site path, set only for a verified officer and only while the API kept the
+ *  link (it then shows again on a later visit); `made_by` is the maker's character on the roster. */
+export interface GuildInviteView {
+  rotated_at: string | null;
+  url: string | null;
+  made_by: ClaimHolder | null;
+}
 export interface InviteRotateResult {
   token: string;
   url: string;
   rotated_at: string;
+  /** The settings shape of the link just made: its `url` is null when it cannot be shown again. */
+  invite: GuildInviteView;
 }
 /** GET /v1/guild-invites/{token}: which guild a valid token opens, answered without joining
  *  and without a session, so the invite page can name the guild to a signed-out visitor too. */
@@ -466,6 +476,8 @@ export interface InvitePeekResult {
   members?: number;
   /** A signed-in viewer's character for this guild; null with none (and always, signed out). */
   joins_as?: InviteJoinsAs | null;
+  /** The officer who made the link, by their character on the roster; null when unknown. */
+  inviter?: ClaimHolder | null;
 }
 /** Which of the viewer's characters would join: on the guild's roster, or the one officers see
  *  until one of theirs shows on it. */

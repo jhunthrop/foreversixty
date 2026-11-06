@@ -20,7 +20,7 @@ const settings = (claim: ClaimStateView): GuildSettingsData =>
     claimed_by: null,
     claim_pending: null,
     claim,
-    invite: { rotated_at: null },
+    invite: { rotated_at: null, url: null, made_by: null },
   }) as GuildSettingsData;
 
 describe('claimView', () => {

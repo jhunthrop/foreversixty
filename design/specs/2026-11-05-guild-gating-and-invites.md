@@ -142,9 +142,9 @@ The e2e walk read `Waiting for approval 4` on the panel, `2 waiting for approval
 
 ## 4. API
 
-### 4.1 Invite links that can be shown again: HELD FOR OWNER
+### 4.1 Invite links that can be shown again (owner approved; built 2026-11-05, land/guild-migrations)
 
-Nothing ships a migration tonight. This section is the proposal for the owner; the interim in §3.3 and §3.4 is what builds now.
+Built as proposed below. Where the API cannot keep the link (no `NOTIFY_ENCRYPTION_KEY`, or a link made before 0070), `invite.url` is null and §3.3's interim states still apply. The just-made state of a kept link reads `Made {date} by {Name}.` with `Make a new link`, not `Copy it now...`. The rotate answer carries the same `invite` object. A moderator reads settings without `url`. The request log redacts the token on both invite routes.
 - Migration `0070_guild_invite_shown`: `alter table guilds add column invite_token_enc bytea, add column invite_rotated_by bigint references users(id) on delete set null;`
 - `RotateInvite` also stores the token encrypted with the webhook envelope (`api/internal/notify/crypto.go`, the same key) and the rotating user. The hash stays the lookup key.
 - Settings (officers only) gains `invite: {url|null, made_at, made_by: {name, class}|null}`. Members never receive it.
