@@ -20,7 +20,7 @@ import {
 import { GO_PREFIX } from './lib/golinks/config';
 import { serveGoLink, type ExecutionContext } from './lib/golinks/redirect';
 import { DOWNLOAD_PREFIX } from './lib/downloads/paths';
-import { serveDownload } from './lib/downloads/redirect';
+import { serveDownload } from './lib/downloads/serve';
 import { DUCKDB_RUNTIME_PREFIX, duckdbRuntimeKey } from './lib/report/duckdb-runtime';
 import {
   characterShellMeta,
@@ -44,15 +44,16 @@ import { serveSimWasm, SIM_WASM_PATH } from './lib/sim/wasm-serve';
 export interface Env {
   /** Origin of the Go API, from `vars` in wrangler.jsonc. */
   API_BASE_URL: string;
-  /** Where the /dl/ downloads redirect to, from `vars` in wrangler.jsonc (lib/downloads/redirect.ts). */
+  /** The pre-feed release host /dl/ falls back to, from `vars` in wrangler.jsonc (lib/downloads/serve.ts). */
   RELEASES_URL?: string;
   /** The static assets binding. */
   ASSETS: { fetch(request: Request): Promise<Response> };
   /**
-   * The foreversixty-logs bucket. It holds both a report's files and the two DuckDB
-   * engine modules. Optional because `astro preview` and the Playwright suite serve the
-   * static assets with no Worker and no bindings, and the checked-in report fixture under
-   * public/logs-data/ has to keep working there.
+   * The foreversixty-logs bucket. It holds a report's files, the two DuckDB engine
+   * modules and, under downloads/, the release feed (lib/downloads/serve.ts). Optional
+   * because `astro preview` and the Playwright suite serve the static assets with no Worker
+   * and no bindings, and the checked-in report fixture under public/logs-data/ has to keep
+   * working there.
    */
   LOGS?: R2Bucket;
 }
@@ -75,6 +76,8 @@ export interface R2ObjectBody {
   httpMetadata?: R2HttpMetadata;
   httpEtag: string;
   size: number;
+  /** The body as text; the download feed reads a family's latest.json with it. */
+  text?(): Promise<string>;
 }
 
 export interface R2Bucket {
@@ -564,7 +567,7 @@ export default {
     const url = new URL(request.url);
     // The tracked short links (lib/golinks/redirect.ts): a 302 now, the count after.
     if (url.pathname.startsWith(GO_PREFIX)) return serveGoLink(request, env, ctx);
-    // The site's downloads (lib/downloads/redirect.ts): a 302 to wherever the file is hosted.
+    // The site's downloads and release feed (lib/downloads/serve.ts), out of the bucket.
     if (url.pathname.startsWith(DOWNLOAD_PREFIX)) return serveDownload(request, env);
     // The sample's old database id: the link lives in cached pages and old shares.
     const legacy = SAMPLE_LEGACY_IDS.find((id) => url.pathname === `/reports/${id}`);

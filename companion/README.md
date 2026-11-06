@@ -7,9 +7,8 @@ It never modifies the game's log and never sees your Battle.net password.
 
 ## Install
 
-Download the binary for your machine from the
-[latest release](https://github.com/jhunthrop/foreversixty/releases?q=companion) and put it
-anywhere you like.
+Download the binary for your machine from [foreversixty.gg/setup](https://foreversixty.gg/setup)
+and put it anywhere you like.
 
 | Platform | Asset |
 |---|---|
@@ -25,9 +24,21 @@ Every asset is published beside a `.minisig` signature. To check one:
 minisign -Vm foreversixty-companion_windows_amd64.exe -P "$(cat MINISIGN_PUBLIC_KEY.txt)"
 ```
 
-The public key is in `MINISIGN_PUBLIC_KEY.txt` beside the assets on every release the project has
-signed. The companion verifies the same signature itself before it installs an update, so the
-check above is for the first download.
+The public key is at
+[foreversixty.gg/dl/companion/MINISIGN_PUBLIC_KEY.txt](https://foreversixty.gg/dl/companion/MINISIGN_PUBLIC_KEY.txt).
+The companion verifies the same signature itself before it installs an update, so the check above
+is for the first download.
+
+### How updates arrive
+
+At launch and every six hours the companion reads
+`https://foreversixty.gg/dl/companion/latest.json`, a small manifest that names the newest signed
+release and the files on it. If that release is newer than the running build and carries this
+platform's binary and its `.minisig`, the companion downloads both from the same address, checks
+the `sha256` the manifest lists, verifies the signature against the public key built into it, and
+stages the binary in `update/`. The signature is verified again at the next launch, just before
+the new binary takes the old one's place. A download from anywhere but foreversixty.gg is refused,
+nothing unverified is ever installed, and a build without a public key never updates itself.
 
 The Windows build is signed through Azure Artifact Signing in the name of Commish LLC, the
 company behind Forever Sixty, so that is the publisher Windows names in its prompts. A brand-new
@@ -126,13 +137,14 @@ may be replaced; the next pass puts it back.
 
 ### Keeping the addon up to date
 
-At launch and then every six hours the companion reads the repository's
-releases for a newer `addon-v*` release (the `ForeverSixty` and `ForeverSixtyInbox` folders) and
-the newest `data-v*` release (the nightly `ForeverSixtyData` folder), and installs them into every
-game folder that already has the addon. Both zips are signed with the same minisign key as the
-companion's own releases, and the companion installs nothing it cannot verify against the public
-key built into it: a release without a `.minisig` beside its zip is not a candidate, and a bad
-signature is logged and skipped. The installed version is the `## Version` line of
+At launch and then every six hours the companion reads the same feed's addon and data manifests
+(`https://foreversixty.gg/dl/addon/latest.json` and `.../dl/data/latest.json`) for a newer
+`addon-v*` release (the `ForeverSixty` and `ForeverSixtyInbox` folders) and the newest `data-v*`
+release (the nightly `ForeverSixtyData` folder), and installs them into every game folder that
+already has the addon. Both zips are signed with the same minisign key as the companion's own
+releases, and the companion installs nothing it cannot verify against the public key built into
+it: a manifest without a `.minisig` beside its zip offers nothing, a download off foreversixty.gg
+or one that misses the manifest's `sha256` is refused, and a bad signature is logged and skipped. The installed version is the `## Version` line of
 `Interface/AddOns/<folder>/<folder>.toc`.
 
 The companion never writes into `Interface/AddOns` while that install's game is running. It asks

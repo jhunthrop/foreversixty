@@ -2,8 +2,8 @@
 // Package addonupdater keeps the Forever Sixty addon and its data addon
 // current in every game folder the companion knows. It is the companion's
 // own updater (internal/updater) pointed at two more release families:
-// the same GitHub releases, the same minisign key compiled into the
-// binary, and nothing written that the key has not vouched for.
+// the same release feed, the same minisign key compiled into the binary,
+// and nothing written that the key has not vouched for.
 //
 // Two rules shape it. The game is never running while a folder under
 // Interface/AddOns changes (a release that arrives mid-session waits in

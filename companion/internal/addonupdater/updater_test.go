@@ -6,7 +6,10 @@ import (
 	"context"
 	"crypto/ed25519"
 	"crypto/rand"
+	"crypto/sha256"
 	"encoding/base64"
+	"encoding/hex"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"log/slog"
@@ -94,72 +97,106 @@ func dataZip(t *testing.T, date string) []byte {
 	})
 }
 
-// release is one row of the fake GitHub.
+// release is one release in the fake feed.
 type release struct {
-	tag        string
-	zipName    string
-	zip        []byte
-	sig        []byte // nil: no .minisig asset
-	prerelease bool
+	tag     string
+	zipName string
+	zip     []byte
+	sig     []byte // nil: the manifest names no .minisig
+	// zipURL and zipSHA, when set, replace what the manifest says for the zip.
+	zipURL, zipSHA string
 }
 
-// github serves a release list and the downloads behind it.
-type github struct {
+// feed serves one manifest per family, naming the newest release published
+// of it, and the downloads behind them. A family with nothing published
+// answers 404, as the real feed does before its first release.
+type feed struct {
 	*httptest.Server
 	mu       sync.Mutex
 	releases []release
-	pages    int
+	reads    int
+	// status, when set, is what every manifest read answers.
+	status int
 }
 
-func newGithub(t *testing.T) *github {
+func newFeed(t *testing.T) *feed {
 	t.Helper()
-	g := &github{}
+	f := &feed{}
 	mux := http.NewServeMux()
-	g.Server = httptest.NewServer(mux)
-	t.Cleanup(g.Close)
-	mux.HandleFunc("/repos/"+updater.Repo+"/releases", func(w http.ResponseWriter, r *http.Request) {
-		g.mu.Lock()
-		defer g.mu.Unlock()
-		g.pages++
-		page := 1
-		fmt.Sscan(r.URL.Query().Get("page"), &page)
-		var rows []string
-		for i, rel := range g.releases {
-			if i/updater.PerPage+1 != page {
-				continue
-			}
-			assets := []string{fmt.Sprintf(`{"name":%q,"browser_download_url":"%s/dl/%d/zip"}`, rel.zipName, g.URL, i)}
-			if rel.sig != nil {
-				assets = append(assets, fmt.Sprintf(`{"name":%q,"browser_download_url":"%s/dl/%d/sig"}`, rel.zipName+".minisig", g.URL, i))
-			}
-			rows = append(rows, fmt.Sprintf(`{"tag_name":%q,"draft":false,"prerelease":%v,"assets":[%s]}`,
-				rel.tag, rel.prerelease, strings.Join(assets, ",")))
+	f.Server = httptest.NewServer(mux)
+	t.Cleanup(f.Close)
+	mux.HandleFunc("GET /dl/{family}/latest.json", func(w http.ResponseWriter, r *http.Request) {
+		f.mu.Lock()
+		defer f.mu.Unlock()
+		f.reads++
+		if f.status != 0 {
+			http.Error(w, "feed down", f.status)
+			return
 		}
-		fmt.Fprintf(w, "[%s]", strings.Join(rows, ","))
-	})
-	mux.HandleFunc("/dl/", func(w http.ResponseWriter, r *http.Request) {
-		g.mu.Lock()
-		defer g.mu.Unlock()
-		var i int
-		var kind string
-		fmt.Sscanf(strings.TrimPrefix(r.URL.Path, "/dl/"), "%d/%s", &i, &kind)
-		if i < 0 || i >= len(g.releases) {
+		family := r.PathValue("family")
+		i, ok := f.newest(family)
+		if !ok {
 			http.NotFound(w, r)
 			return
 		}
-		if kind == "zip" {
-			w.Write(g.releases[i].zip)
+		json.NewEncoder(w).Encode(f.manifest(family, i))
+	})
+	mux.HandleFunc("GET /dl/{family}/{i}/{kind}", func(w http.ResponseWriter, r *http.Request) {
+		f.mu.Lock()
+		defer f.mu.Unlock()
+		var i int
+		if _, err := fmt.Sscan(r.PathValue("i"), &i); err != nil || i < 0 || i >= len(f.releases) {
+			http.NotFound(w, r)
+			return
+		}
+		if r.PathValue("kind") == "zip" {
+			w.Write(f.releases[i].zip)
 		} else {
-			w.Write(g.releases[i].sig)
+			w.Write(f.releases[i].sig)
 		}
 	})
-	return g
+	return f
 }
 
-func (g *github) publish(rel ...release) {
-	g.mu.Lock()
-	defer g.mu.Unlock()
-	g.releases = append(rel, g.releases...) // newest first
+// base is what an updater is pointed at.
+func (f *feed) base() string { return f.URL + "/dl" }
+
+// newest is the index of the newest release of family.
+func (f *feed) newest(family string) (int, bool) {
+	for i, rel := range f.releases {
+		if strings.HasPrefix(rel.tag, family+"-v") {
+			return i, true
+		}
+	}
+	return 0, false
+}
+
+func (f *feed) manifest(family string, i int) updater.Release {
+	rel := f.releases[i]
+	at := fmt.Sprintf("%s/%s/%d/", f.base(), family, i)
+	zip := updater.Asset{Name: rel.zipName, URL: at + "zip", SHA256: digest(rel.zip)}
+	if rel.zipURL != "" {
+		zip.URL = rel.zipURL
+	}
+	if rel.zipSHA != "" {
+		zip.SHA256 = rel.zipSHA
+	}
+	out := updater.Release{Schema: updater.ManifestSchema, Family: family, TagName: rel.tag, Assets: []updater.Asset{zip}}
+	if rel.sig != nil {
+		out.Assets = append(out.Assets, updater.Asset{Name: rel.zipName + ".minisig", URL: at + "sig", SHA256: digest(rel.sig)})
+	}
+	return out
+}
+
+func digest(b []byte) string {
+	sum := sha256.Sum256(b)
+	return hex.EncodeToString(sum[:])
+}
+
+func (f *feed) publish(rel ...release) {
+	f.mu.Lock()
+	defer f.mu.Unlock()
+	f.releases = append(rel, f.releases...) // newest first
 }
 
 func signedAddon(t *testing.T, sk minisign.PrivateKey, version string) release {
@@ -227,9 +264,9 @@ func (g *game) read(p string) string {
 	return string(b)
 }
 
-func (g *game) updater(gh *github, key string, installs ...string) *Updater {
+func (g *game) updater(fd *feed, key string, installs ...string) *Updater {
 	return New(Options{
-		Dir: filepath.Join(g.home, "addons"), APIBase: gh.URL, PublicKey: key,
+		Dir: filepath.Join(g.home, "addons"), FeedBase: fd.base(), PublicKey: key,
 		Log:      slog.New(slog.NewTextHandler(g.log, &slog.HandlerOptions{Level: slog.LevelDebug})),
 		Installs: func() []string { return installs },
 		Processes: func() ([]Proc, error) {
@@ -360,11 +397,11 @@ func TestGameRunningGate(t *testing.T) {
 
 func TestUpdatesWaitForTheGameToClose(t *testing.T) {
 	sk, key := keypair(t)
-	gh := newGithub(t)
-	gh.publish(signedAddon(t, sk, "2.0.16"))
+	fd := newFeed(t)
+	fd.publish(signedAddon(t, sk, "2.0.16"))
 	g := newGame(t)
 	in := g.install("_classic_era_", "2.0.15", "")
-	u := g.updater(gh, key, in)
+	u := g.updater(fd, key, in)
 
 	g.running[in] = true
 	u.Tick(context.Background(), t0)
@@ -404,12 +441,12 @@ func TestUpdatesWaitForTheGameToClose(t *testing.T) {
 
 func TestAProcessListThatFailsCountsAsRunning(t *testing.T) {
 	sk, key := keypair(t)
-	gh := newGithub(t)
-	gh.publish(signedAddon(t, sk, "2.0.16"))
+	fd := newFeed(t)
+	fd.publish(signedAddon(t, sk, "2.0.16"))
 	g := newGame(t)
 	in := g.install("_classic_era_", "2.0.15", "")
 	g.procErr = errors.New("access denied")
-	u := g.updater(gh, key, in)
+	u := g.updater(fd, key, in)
 	u.Tick(context.Background(), t0)
 	u.Tick(context.Background(), t0.Add(5*time.Minute))
 	if v := g.version(in, "ForeverSixty"); v != "2.0.15" {
@@ -421,13 +458,13 @@ func TestAProcessListThatFailsCountsAsRunning(t *testing.T) {
 
 func TestTickInstallsBothFamiliesIntoEveryInstall(t *testing.T) {
 	sk, key := keypair(t)
-	gh := newGithub(t)
-	gh.publish(signedData(t, sk, "2026.10.21"), signedAddon(t, sk, "2.0.16"))
+	fd := newFeed(t)
+	fd.publish(signedData(t, sk, "2026.10.21"), signedAddon(t, sk, "2.0.16"))
 	g := newGame(t)
 	era := g.install("_classic_era_", "2.0.15", "2026.10.20")
 	anni := g.install("_anniversary_", "2.0.16", "2026.10.21") // already current
 	bare := g.install("_classic_beta_", "", "")                // no addon: never automatic
-	u := g.updater(gh, key, era, anni, bare)
+	u := g.updater(fd, key, era, anni, bare)
 
 	u.Tick(context.Background(), t0)
 	if v := g.version(era, "ForeverSixty"); v != "2.0.16" {
@@ -459,24 +496,24 @@ func TestTickInstallsBothFamiliesIntoEveryInstall(t *testing.T) {
 		t.Error("a release nobody needs is still staged")
 	}
 	// The six-hour rule: no second list within the interval.
-	before := gh.pages
+	before := fd.reads
 	u.Tick(context.Background(), t0.Add(time.Hour))
-	if gh.pages != before {
-		t.Error("the release list was read again inside six hours")
+	if fd.reads != before {
+		t.Error("the feed was read again inside six hours")
 	}
 	u.Tick(context.Background(), t0.Add(7*time.Hour))
-	if gh.pages == before {
-		t.Error("the release list was not read after six hours")
+	if fd.reads == before {
+		t.Error("the feed was not read after six hours")
 	}
 }
 
 func TestDataAddonIsInstalledBesideAnExistingAddon(t *testing.T) {
 	sk, key := keypair(t)
-	gh := newGithub(t)
-	gh.publish(signedData(t, sk, "2026.10.21"), signedAddon(t, sk, "2.0.15"))
+	fd := newFeed(t)
+	fd.publish(signedData(t, sk, "2026.10.21"), signedAddon(t, sk, "2.0.15"))
 	g := newGame(t)
 	in := g.install("_classic_era_", "2.0.15", "")
-	u := g.updater(gh, key, in)
+	u := g.updater(fd, key, in)
 	u.Tick(context.Background(), t0)
 	if v := g.version(in, "ForeverSixtyData"); v != "2026.10.21" {
 		t.Errorf("data = %q; it should come with the next update when the addon is already there", v)
@@ -489,15 +526,15 @@ func TestDataAddonIsInstalledBesideAnExistingAddon(t *testing.T) {
 
 func TestSwitchOffDisablesChecksAndInstalls(t *testing.T) {
 	sk, key := keypair(t)
-	gh := newGithub(t)
-	gh.publish(signedAddon(t, sk, "2.0.16"))
+	fd := newFeed(t)
+	fd.publish(signedAddon(t, sk, "2.0.16"))
 	g := newGame(t)
 	in := g.install("_classic_era_", "2.0.15", "")
-	u := g.updater(gh, key, in)
+	u := g.updater(fd, key, in)
 	u.o.Enabled = func() bool { return false }
 	u.Tick(context.Background(), t0)
-	if gh.pages != 0 {
-		t.Error("the release list was read with the switch off")
+	if fd.reads != 0 {
+		t.Error("the feed was read with the switch off")
 	}
 	if v := g.version(in, "ForeverSixty"); v != "2.0.15" {
 		t.Errorf("installed with the switch off: %s", v)
@@ -515,13 +552,13 @@ func TestSwitchOffDisablesChecksAndInstalls(t *testing.T) {
 
 func TestNoKeyInstallsNothing(t *testing.T) {
 	sk, _ := keypair(t)
-	gh := newGithub(t)
-	gh.publish(signedAddon(t, sk, "2.0.16"))
+	fd := newFeed(t)
+	fd.publish(signedAddon(t, sk, "2.0.16"))
 	g := newGame(t)
 	in := g.install("_classic_era_", "2.0.15", "")
-	u := g.updater(gh, "", in)
+	u := g.updater(fd, "", in)
 	u.Tick(context.Background(), t0)
-	if gh.pages != 0 {
+	if fd.reads != 0 {
 		t.Error("an unkeyed build listed releases")
 	}
 	if err := u.Install(context.Background(), in); !errors.Is(err, ErrNoKey) {
@@ -531,11 +568,11 @@ func TestNoKeyInstallsNothing(t *testing.T) {
 
 func TestInstallButtonPutsTheAddonWhereItIsMissing(t *testing.T) {
 	sk, key := keypair(t)
-	gh := newGithub(t)
-	gh.publish(signedData(t, sk, "2026.10.21"), signedAddon(t, sk, "2.0.16"))
+	fd := newFeed(t)
+	fd.publish(signedData(t, sk, "2026.10.21"), signedAddon(t, sk, "2.0.16"))
 	g := newGame(t)
 	bare := g.install("_classic_era_", "", "")
-	u := g.updater(gh, key, bare)
+	u := g.updater(fd, key, bare)
 
 	// The game is running there: refused, nothing written.
 	g.running[bare] = true
@@ -571,7 +608,7 @@ func TestInstallButtonPutsTheAddonWhereItIsMissing(t *testing.T) {
 	}
 
 	// No release at all.
-	empty := newGithub(t)
+	empty := newFeed(t)
 	u2 := g.updater(empty, key, bare)
 	if err := u2.Install(context.Background(), bare); !errors.Is(err, ErrNoRelease) {
 		t.Errorf("Install with no release = %v", err)
@@ -580,15 +617,15 @@ func TestInstallButtonPutsTheAddonWhereItIsMissing(t *testing.T) {
 
 func TestInstalledRecordSurvivesARestart(t *testing.T) {
 	sk, key := keypair(t)
-	gh := newGithub(t)
-	gh.publish(signedAddon(t, sk, "2.0.16"))
+	fd := newFeed(t)
+	fd.publish(signedAddon(t, sk, "2.0.16"))
 	g := newGame(t)
 	bare := g.install("_classic_era_", "", "")
-	u := g.updater(gh, key, bare)
+	u := g.updater(fd, key, bare)
 	if err := u.Install(context.Background(), bare); err != nil {
 		t.Fatal(err)
 	}
-	again := g.updater(gh, key, bare)
+	again := g.updater(fd, key, bare)
 	if v := again.View(bare, time.Time{}); !v.Addon.Fresh {
 		t.Errorf("a new process forgot the install: %+v", v)
 	}
@@ -616,11 +653,11 @@ func TestSignatureRejection(t *testing.T) {
 		},
 	} {
 		t.Run(name, func(t *testing.T) {
-			gh := newGithub(t)
-			gh.publish(mk())
+			fd := newFeed(t)
+			fd.publish(mk())
 			g := newGame(t)
 			in := g.install("_classic_era_", "2.0.15", "")
-			u := g.updater(gh, key, in)
+			u := g.updater(fd, key, in)
 			u.Tick(context.Background(), t0)
 			if v := g.version(in, "ForeverSixty"); v != "2.0.15" {
 				t.Errorf("installed a zip that does not verify: %s", v)
@@ -644,11 +681,11 @@ func TestSignatureRejection(t *testing.T) {
 
 func TestAZipTamperedAfterStagingIsNotInstalled(t *testing.T) {
 	sk, key := keypair(t)
-	gh := newGithub(t)
-	gh.publish(signedAddon(t, sk, "2.0.16"))
+	fd := newFeed(t)
+	fd.publish(signedAddon(t, sk, "2.0.16"))
 	g := newGame(t)
 	in := g.install("_classic_era_", "2.0.15", "")
-	u := g.updater(gh, key, in)
+	u := g.updater(fd, key, in)
 	g.running[in] = true
 	u.Tick(context.Background(), t0)
 	// Someone swaps the staged file while the game runs.
@@ -668,65 +705,119 @@ func TestAZipTamperedAfterStagingIsNotInstalled(t *testing.T) {
 	}
 }
 
-func TestUnsignedReleasesAreNotCandidates(t *testing.T) {
+// ---- what the feed may and may not name ---------------------------------
+
+func TestAManifestWithoutASignatureIsNoCandidate(t *testing.T) {
 	sk, key := keypair(t)
-	gh := newGithub(t)
-	older := signedAddon(t, sk, "2.0.16")
-	newest := signedAddon(t, sk, "2.0.17")
-	newest.sig = nil // the newest release predates the signing step
-	gh.publish(older)
-	gh.publish(newest)
+	fd := newFeed(t)
+	unsigned := signedAddon(t, sk, "2.0.16")
+	unsigned.sig = nil
+	fd.publish(unsigned)
 	g := newGame(t)
 	in := g.install("_classic_era_", "2.0.15", "")
-	u := g.updater(gh, key, in)
+	u := g.updater(fd, key, in)
 	u.Tick(context.Background(), t0)
-	if v := g.version(in, "ForeverSixty"); v != "2.0.16" {
-		t.Errorf("addon = %s; the unsigned 2.0.17 is not a candidate, the signed 2.0.16 is", v)
-	}
-
-	// Only unsigned releases: nothing installed, and said so.
-	gh2 := newGithub(t)
-	only := signedAddon(t, sk, "2.0.18")
-	only.sig = nil
-	gh2.publish(only)
-	g2 := newGame(t)
-	in2 := g2.install("_classic_era_", "2.0.15", "")
-	u2 := g2.updater(gh2, key, in2)
-	u2.Tick(context.Background(), t0)
-	if v := g2.version(in2, "ForeverSixty"); v != "2.0.15" {
+	if v := g.version(in, "ForeverSixty"); v != "2.0.15" {
 		t.Errorf("installed an unsigned release: %s", v)
 	}
-	if !strings.Contains(g2.log.String(), "the update check skipped 1 unsigned release; newest signed: none") {
-		t.Errorf("the skip was not logged:\n%s", g2.log)
+	if !strings.Contains(g.log.String(), "the update check found no signed addon release") {
+		t.Errorf("the missing signature was not said:\n%s", g.log)
 	}
-	// Prereleases are skipped too.
-	gh3 := newGithub(t)
-	pre := signedAddon(t, sk, "2.0.19")
-	pre.prerelease = true
-	gh3.publish(pre)
-	g3 := newGame(t)
-	in3 := g3.install("_classic_era_", "2.0.15", "")
-	g3.updater(gh3, key, in3).Tick(context.Background(), t0)
-	if v := g3.version(in3, "ForeverSixty"); v != "2.0.15" {
-		t.Errorf("installed a prerelease: %s", v)
+	if strings.Contains(g.log.String(), "check failed") {
+		t.Errorf("a manifest without a signature was an error:\n%s", g.log)
+	}
+	g.untouched(in)
+}
+
+func TestNoManifestYetIsNoUpdateAndNoError(t *testing.T) {
+	_, key := keypair(t)
+	fd := newFeed(t) // every family answers 404
+	g := newGame(t)
+	in := g.install("_classic_era_", "2.0.15", "")
+	u := g.updater(fd, key, in)
+	u.Tick(context.Background(), t0)
+	out := g.log.String()
+	if strings.Contains(out, "check failed") {
+		t.Errorf("a 404 manifest was an error:\n%s", out)
+	}
+	for _, f := range Families {
+		if !strings.Contains(out, "the update check found no signed "+f.Key+" release") {
+			t.Errorf("the %s family's absence was not said:\n%s", f.Key, out)
+		}
+	}
+	if err := u.Install(context.Background(), in); !errors.Is(err, ErrNoRelease) {
+		t.Errorf("Install with no manifest = %v", err)
+	}
+	g.untouched(in)
+}
+
+func TestAManifestTheFeedCannotServeIsAnError(t *testing.T) {
+	sk, key := keypair(t)
+	fd := newFeed(t)
+	fd.publish(signedAddon(t, sk, "2.0.16"))
+	fd.status = http.StatusInternalServerError
+	g := newGame(t)
+	in := g.install("_classic_era_", "2.0.15", "")
+	g.updater(fd, key, in).Tick(context.Background(), t0)
+	if !strings.Contains(g.log.String(), "release feed answered 500 for the addon manifest") {
+		t.Errorf("the failure was not logged:\n%s", g.log)
+	}
+	if v := g.version(in, "ForeverSixty"); v != "2.0.15" {
+		t.Errorf("addon = %s", v)
 	}
 }
 
-func TestOldReleasesBeyondTheFirstPageAreFound(t *testing.T) {
+func TestAZipOffTheFeedsOriginIsRefused(t *testing.T) {
 	sk, key := keypair(t)
-	gh := newGithub(t)
-	gh.publish(signedAddon(t, sk, "2.0.16"))
-	var nightly []release
-	for d := 1; d <= 40; d++ {
-		nightly = append(nightly, signedData(t, sk, fmt.Sprintf("2026.09.%02d", d)))
-	}
-	gh.publish(nightly...) // 40 data releases newer than the addon release
+	hits := 0
+	elsewhere := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		hits++
+		w.Write(addonZip(t, "2.0.16"))
+	}))
+	t.Cleanup(elsewhere.Close)
+	rel := signedAddon(t, sk, "2.0.16")
+	rel.zipURL = elsewhere.URL + "/ForeverSixty.zip"
+	fd := newFeed(t)
+	fd.publish(rel)
 	g := newGame(t)
 	in := g.install("_classic_era_", "2.0.15", "")
-	g.updater(gh, key, in).Tick(context.Background(), t0)
-	if v := g.version(in, "ForeverSixty"); v != "2.0.16" {
-		t.Errorf("addon = %s; it sits on the second page", v)
+	u := g.updater(fd, key, in)
+	u.Tick(context.Background(), t0)
+	if err := u.Install(context.Background(), in); err == nil || !strings.Contains(err.Error(), "off the feed's origin") {
+		t.Errorf("Install = %v", err)
 	}
+	if hits != 0 {
+		t.Errorf("the other host was asked %d times", hits)
+	}
+	if !strings.Contains(g.log.String(), "off the feed's origin") {
+		t.Errorf("the refusal was not logged:\n%s", g.log)
+	}
+	if v := g.version(in, "ForeverSixty"); v != "2.0.15" {
+		t.Errorf("installed a zip from another host: %s", v)
+	}
+	g.untouched(in)
+}
+
+func TestAZipThatDoesNotMatchItsDigestIsRefused(t *testing.T) {
+	sk, key := keypair(t)
+	rel := signedAddon(t, sk, "2.0.16")
+	rel.zipSHA = digest([]byte("another zip"))
+	fd := newFeed(t)
+	fd.publish(rel)
+	g := newGame(t)
+	in := g.install("_classic_era_", "2.0.15", "")
+	u := g.updater(fd, key, in)
+	u.Tick(context.Background(), t0)
+	if _, ok := u.readStaged(Addon); ok {
+		t.Error("staged a zip that missed its digest")
+	}
+	if !strings.Contains(g.log.String(), "does not match the manifest's sha256") {
+		t.Errorf("the mismatch was not logged:\n%s", g.log)
+	}
+	if v := g.version(in, "ForeverSixty"); v != "2.0.15" {
+		t.Errorf("installed a zip that missed its digest: %s", v)
+	}
+	g.untouched(in)
 }
 
 // ---- the replace, and what it may touch ---------------------------------
@@ -796,11 +887,11 @@ func TestReplaceRollsBackWhenTheNewTocReadsBackWrong(t *testing.T) {
 
 func TestAFailedUpdateIsLoggedAndLeftAloneForAWhile(t *testing.T) {
 	sk, key := keypair(t)
-	gh := newGithub(t)
-	gh.publish(signedAddon(t, sk, "2.0.16"))
+	fd := newFeed(t)
+	fd.publish(signedAddon(t, sk, "2.0.16"))
 	g := newGame(t)
 	in := g.install("_classic_era_", "2.0.15", "")
-	u := g.updater(gh, key, in)
+	u := g.updater(fd, key, in)
 	real := rename
 	defer func() { rename = real }()
 	fails := 0
@@ -884,9 +975,9 @@ func TestOnlyTheNamedFoldersAreEverWritten(t *testing.T) {
 	for name, files := range bad {
 		t.Run(name, func(t *testing.T) {
 			z := mkZip(t, files)
-			gh := newGithub(t)
-			gh.publish(release{tag: "addon-v2.0.16", zipName: "ForeverSixty-addon-v2.0.16-forever.zip", zip: z, sig: sign(t, sk, z)})
-			u := g.updater(gh, key, in)
+			fd := newFeed(t)
+			fd.publish(release{tag: "addon-v2.0.16", zipName: "ForeverSixty-addon-v2.0.16-forever.zip", zip: z, sig: sign(t, sk, z)})
+			u := g.updater(fd, key, in)
 			u.Tick(context.Background(), t0)
 			if v := g.version(in, "ForeverSixty"); v != "2.0.15" {
 				t.Errorf("a zip with %s was installed (%s)", name, v)
@@ -899,9 +990,9 @@ func TestOnlyTheNamedFoldersAreEverWritten(t *testing.T) {
 	}
 
 	// A good run: the data addon swapped, the stranger and saved variables as they were.
-	gh := newGithub(t)
-	gh.publish(signedData(t, sk, "2026.10.21"), signedAddon(t, sk, "2.0.16"))
-	g.updater(gh, key, in).Tick(context.Background(), t0)
+	fd := newFeed(t)
+	fd.publish(signedData(t, sk, "2026.10.21"), signedAddon(t, sk, "2.0.16"))
+	g.updater(fd, key, in).Tick(context.Background(), t0)
 	if g.version(in, "ForeverSixty") != "2.0.16" || g.version(in, "ForeverSixtyData") != "2026.10.21" {
 		t.Fatal("the good run did not install")
 	}
@@ -911,11 +1002,11 @@ func TestOnlyTheNamedFoldersAreEverWritten(t *testing.T) {
 func TestAZipWhoseTocDisagreesWithItsTagIsRefused(t *testing.T) {
 	sk, key := keypair(t)
 	z := addonZip(t, "2.0.15") // the author forgot to bump the TOC
-	gh := newGithub(t)
-	gh.publish(release{tag: "addon-v2.0.16", zipName: "ForeverSixty-addon-v2.0.16-forever.zip", zip: z, sig: sign(t, sk, z)})
+	fd := newFeed(t)
+	fd.publish(release{tag: "addon-v2.0.16", zipName: "ForeverSixty-addon-v2.0.16-forever.zip", zip: z, sig: sign(t, sk, z)})
 	g := newGame(t)
 	in := g.install("_classic_era_", "2.0.14", "")
-	u := g.updater(gh, key, in)
+	u := g.updater(fd, key, in)
 	u.Tick(context.Background(), t0)
 	if v := g.version(in, "ForeverSixty"); v != "2.0.14" {
 		t.Errorf("installed a zip whose TOC says %s under a 2.0.16 tag", v)
@@ -928,13 +1019,13 @@ func TestAZipWhoseTocDisagreesWithItsTagIsRefused(t *testing.T) {
 
 func TestADeveloperCopyIsLeftAlone(t *testing.T) {
 	sk, key := keypair(t)
-	gh := newGithub(t)
-	gh.publish(signedAddon(t, sk, "2.0.16"))
+	fd := newFeed(t)
+	fd.publish(signedAddon(t, sk, "2.0.16"))
 	g := newGame(t)
 	in := g.install("_classic_era_", "2.0.15", "")
 	// A checkout of the source: a .git inside the folder.
 	g.write(filepath.Join(AddonsDir(in), "ForeverSixty", ".git", "HEAD"), "ref: refs/heads/main\n")
-	g.updater(gh, key, in).Tick(context.Background(), t0)
+	g.updater(fd, key, in).Tick(context.Background(), t0)
 	if v := g.version(in, "ForeverSixty"); v != "2.0.15" {
 		t.Errorf("replaced a source checkout: %s", v)
 	}
@@ -946,7 +1037,7 @@ func TestADeveloperCopyIsLeftAlone(t *testing.T) {
 	if err := os.Symlink(target, filepath.Join(AddonsDir(in2), "ForeverSixty")); err != nil {
 		t.Skipf("no symlinks here: %v", err)
 	}
-	g2.updater(gh, key, in2).Tick(context.Background(), t0)
+	g2.updater(fd, key, in2).Tick(context.Background(), t0)
 	if got := g2.read(filepath.Join(target, "ForeverSixty.toc")); got != "## Version: 1.0.0\n" {
 		t.Errorf("wrote through a link: %q", got)
 	}
@@ -976,59 +1067,35 @@ func TestWineClientPathsAreMapped(t *testing.T) {
 
 func TestDefaultsAreSane(t *testing.T) {
 	u := New(Options{})
-	if u.o.Every != 6*time.Hour || u.o.Repo != updater.Repo || u.o.APIBase != "https://api.github.com" {
+	if u.o.Every != 6*time.Hour || u.o.FeedBase != "https://foreversixty.gg/dl" || u.feed.Base != u.o.FeedBase {
 		t.Errorf("defaults = %+v", u.o)
 	}
 	u.Tick(context.Background(), t0) // no key: nothing, no panic
 }
 
-func TestManyUnsignedReleasesAreOneLogLine(t *testing.T) {
-	sk, key := keypair(t)
-	gh := newGithub(t)
-	for i := 1; i <= 24; i++ {
-		d := signedData(t, sk, fmt.Sprintf("2026.09.%02d", i))
-		d.sig = nil
-		gh.publish(d)
-	}
-	g := newGame(t)
-	in := g.install("_classic_beta_", "2.0.15", "")
-	u := g.updater(gh, key, in)
-	u.Tick(context.Background(), t0)
-	out := g.log.String()
-	if n := strings.Count(out, "unsigned"); n != 1 {
-		t.Errorf("%d lines mention unsigned releases, want 1:\n%s", n, out)
-	}
-	if !strings.Contains(out, "the update check skipped 24 unsigned releases; newest signed: none") {
-		t.Errorf("the summary line is missing:\n%s", out)
-	}
-	if strings.Contains(out, "no signed zip") {
-		t.Errorf("a per-tag line is still logged:\n%s", out)
-	}
-}
-
 // ---- the newest signed release goes in, never an older one --------------
 
 // stageWhileRunning stages 2.0.16 over a 2.0.15 folder while the game runs.
-func stageWhileRunning(t *testing.T, sk minisign.PrivateKey, gh *github, g *game) string {
+func stageWhileRunning(t *testing.T, sk minisign.PrivateKey, fd *feed, g *game) string {
 	t.Helper()
-	gh.publish(signedAddon(t, sk, "2.0.16"))
+	fd.publish(signedAddon(t, sk, "2.0.16"))
 	in := g.install("_classic_beta_", "2.0.15", "")
 	g.running[in] = true
 	return in
 }
 
-func TestTheCloseReReadsTheReleasesAndInstallsTheNewest(t *testing.T) {
+func TestTheCloseReReadsTheFeedAndInstallsTheNewest(t *testing.T) {
 	sk, key := keypair(t)
-	gh := newGithub(t)
+	fd := newFeed(t)
 	g := newGame(t)
-	in := stageWhileRunning(t, sk, gh, g)
-	u := g.updater(gh, key, in)
+	in := stageWhileRunning(t, sk, fd, g)
+	u := g.updater(fd, key, in)
 	u.Tick(context.Background(), t0)
 	if s, ok := u.readStaged(Addon); !ok || s.Version != "2.0.16" {
 		t.Fatalf("staged = %+v, %v", s, ok)
 	}
 
-	gh.publish(signedAddon(t, sk, "2.0.17"))
+	fd.publish(signedAddon(t, sk, "2.0.17"))
 	g.running[in] = false
 	u.Tick(context.Background(), t0.Add(2*time.Minute))
 	if v := g.version(in, "ForeverSixty"); v != "2.0.17" {
@@ -1048,10 +1115,10 @@ func TestTheCloseReReadsTheReleasesAndInstallsTheNewest(t *testing.T) {
 
 func TestAStagedReleaseOlderThanTheFolderIsDiscarded(t *testing.T) {
 	sk, key := keypair(t)
-	gh := newGithub(t)
+	fd := newFeed(t)
 	g := newGame(t)
-	in := stageWhileRunning(t, sk, gh, g)
-	u := g.updater(gh, key, in)
+	in := stageWhileRunning(t, sk, fd, g)
+	u := g.updater(fd, key, in)
 	u.Tick(context.Background(), t0)
 
 	// The folder moves on to 2.0.17 by another road while the game runs.
@@ -1076,20 +1143,20 @@ func TestAStagedReleaseOlderThanTheFolderIsDiscarded(t *testing.T) {
 	}
 }
 
-func TestAListingFailureFallsBackToTheStagedReleaseOnlyIfNewer(t *testing.T) {
+func TestAFeedFailureFallsBackToTheStagedReleaseOnlyIfNewer(t *testing.T) {
 	for _, tc := range []struct {
 		folder, want string
 	}{{"2.0.15", "2.0.16"}, {"2.0.17", "2.0.17"}} {
 		t.Run(tc.folder, func(t *testing.T) {
 			sk, key := keypair(t)
-			gh := newGithub(t)
+			fd := newFeed(t)
 			g := newGame(t)
-			in := stageWhileRunning(t, sk, gh, g)
-			u := g.updater(gh, key, in)
+			in := stageWhileRunning(t, sk, fd, g)
+			u := g.updater(fd, key, in)
 			u.Tick(context.Background(), t0)
 			g.write(filepath.Join(AddonsDir(in), "ForeverSixty", "ForeverSixty.toc"), "## Version: "+tc.folder+"\nCore.lua\n")
 
-			gh.Close() // the listing cannot be read at the moment of the close
+			fd.Close() // the feed cannot be read at the moment of the close
 			g.running[in] = false
 			u.Tick(context.Background(), t0.Add(2*time.Minute))
 			if v := g.version(in, "ForeverSixty"); v != tc.want {
@@ -1104,15 +1171,15 @@ func TestAListingFailureFallsBackToTheStagedReleaseOnlyIfNewer(t *testing.T) {
 
 func TestTheStagedLineNamesTheVersionAndFollowsANewerRelease(t *testing.T) {
 	sk, key := keypair(t)
-	gh := newGithub(t)
+	fd := newFeed(t)
 	g := newGame(t)
-	in := stageWhileRunning(t, sk, gh, g)
-	u := g.updater(gh, key, in)
+	in := stageWhileRunning(t, sk, fd, g)
+	u := g.updater(fd, key, in)
 	u.Tick(context.Background(), t0)
 	if r := u.View(in, time.Time{}).Addon.Ready; r != "2.0.16" {
 		t.Fatalf("ready = %q", r)
 	}
-	gh.publish(signedAddon(t, sk, "2.0.18"))
+	fd.publish(signedAddon(t, sk, "2.0.18"))
 	u.Tick(context.Background(), t0.Add(7*time.Hour)) // the six-hour check, game still up
 	if r := u.View(in, time.Time{}).Addon.Ready; r != "2.0.18" {
 		t.Errorf("ready after the next check = %q, want 2.0.18", r)

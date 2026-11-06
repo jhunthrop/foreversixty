@@ -1,16 +1,14 @@
 // companion/internal/updater/updater.go
-// Package updater keeps the companion current from GitHub Releases,
-// and refuses to run anything it cannot prove came from us: every
+// Package updater keeps the companion current from the release feed on
+// our own domain (feed.go), and refuses to run anything it cannot prove came from us: every
 // asset is verified against a minisign public key compiled into the
 // binary before it is staged, and again before it is swapped in.
 package updater
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
-	"io"
 	"io/fs"
 	"log/slog"
 	"net/http"
@@ -25,12 +23,8 @@ import (
 	minisign "github.com/jedisct1/go-minisign"
 )
 
-// Repo is where the releases live, and TagPrefix is what a companion
-// release tag starts with.
-const (
-	Repo      = "jhunthrop/foreversixty"
-	TagPrefix = "companion-v"
-)
+// TagPrefix is what a companion release tag starts with.
+const TagPrefix = "companion-v"
 
 // Every is how often the companion checks, per the contract: at start
 // and every six hours.
@@ -49,28 +43,14 @@ var PublicKey string
 // against the newest companion release tag.
 var Version = "0.0.0"
 
-// Asset is one file on a release.
-type Asset struct {
-	Name string `json:"name"`
-	URL  string `json:"browser_download_url"`
-}
-
-// Release is the part of the GitHub payload the updater reads.
-type Release struct {
-	TagName    string  `json:"tag_name"`
-	Draft      bool    `json:"draft"`
-	Prerelease bool    `json:"prerelease"`
-	Assets     []Asset `json:"assets"`
-}
-
 // Options configures an Updater.
 type Options struct {
 	// Dir is where downloads are staged.
 	Dir string
-	// APIBase is https://api.github.com unless a test says otherwise.
-	APIBase string
-	HTTP    *http.Client
-	Log     *slog.Logger
+	// FeedBase is DefaultFeedBase unless a test says otherwise.
+	FeedBase string
+	HTTP     *http.Client
+	Log      *slog.Logger
 	// Version and PublicKey default to the package variables.
 	Version   string
 	PublicKey string
@@ -82,13 +62,14 @@ type Options struct {
 // Updater checks and stages releases.
 type Updater struct {
 	o        Options
+	feed     Feed
 	lastPoll time.Time
 }
 
 // New builds an updater.
 func New(o Options) *Updater {
-	if o.APIBase == "" {
-		o.APIBase = "https://api.github.com"
+	if o.FeedBase == "" {
+		o.FeedBase = DefaultFeedBase
 	}
 	if o.HTTP == nil {
 		o.HTTP = &http.Client{Timeout: 5 * time.Minute}
@@ -108,7 +89,7 @@ func New(o Options) *Updater {
 	if o.GOARCH == "" {
 		o.GOARCH = runtime.GOARCH
 	}
-	return &Updater{o: o}
+	return &Updater{o: o, feed: Feed{Base: o.FeedBase, HTTP: o.HTTP}}
 }
 
 // AssetName is what the release workflow calls the binary for one
@@ -158,67 +139,30 @@ func part(s []string, i int) int {
 	return n
 }
 
-// PerPage is how many releases one check reads. The repository also
-// publishes a data release every night, so the newest companion release
-// is rarely the newest release of all; 30 rows cover a month of nightly
-// data releases plus the companion and addon releases between them, so
-// one page nearly always holds it.
-const PerPage = 30
-
-// Latest finds the newest companion release that carries this
-// platform's asset. It lists releases rather than asking for GitHub's
-// "latest": that is simply the newest non-prerelease of any kind, and
-// most days it is the nightly data release, which would hide every
-// companion release from the check. Drafts, prereleases, other tag
-// families and releases without this platform's binary are skipped. A
-// second page is read only when the first was full and held no match.
-// When nothing qualifies the zero Release comes back with no error:
-// that is "no update", not a failure.
+// Latest reads the companion manifest and returns its release when it is
+// a companion release carrying this platform's asset and its signature. A
+// feed with no companion release yet, or one without this platform's
+// signed binary, gives the zero Release and no error: that is "no update",
+// not a failure.
 func (u *Updater) Latest(ctx context.Context) (Release, error) {
-	want := AssetName(u.o.GOOS, u.o.GOARCH)
-	for page := 1; page <= 2; page++ {
-		rels, err := u.list(ctx, page)
-		if err != nil {
-			return Release{}, err
-		}
-		for _, rel := range rels {
-			if !strings.HasPrefix(rel.TagName, TagPrefix) || rel.Draft || rel.Prerelease {
-				continue
-			}
-			for _, a := range rel.Assets {
-				if a.Name == want {
-					return rel, nil
-				}
-			}
-		}
-		if len(rels) < PerPage {
-			break
-		}
+	rel, err := u.feed.Latest(ctx, FeedFamily)
+	if err != nil || !strings.HasPrefix(rel.TagName, TagPrefix) {
+		return Release{}, err
 	}
-	return Release{}, nil
+	want := AssetName(u.o.GOOS, u.o.GOARCH)
+	if !hasAsset(rel, want) || !hasAsset(rel, want+".minisig") {
+		return Release{}, nil
+	}
+	return rel, nil
 }
 
-// list reads one page of the repository's releases, newest first.
-func (u *Updater) list(ctx context.Context, page int) ([]Release, error) {
-	url := fmt.Sprintf("%s/repos/%s/releases?per_page=%d&page=%d", u.o.APIBase, Repo, PerPage, page)
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
-	if err != nil {
-		return nil, err
+func hasAsset(rel Release, name string) bool {
+	for _, a := range rel.Assets {
+		if a.Name == name {
+			return true
+		}
 	}
-	req.Header.Set("Accept", "application/vnd.github+json")
-	resp, err := u.o.HTTP.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("GitHub answered %d for the release list", resp.StatusCode)
-	}
-	var rels []Release
-	if err := json.NewDecoder(io.LimitReader(resp.Body, 4<<20)).Decode(&rels); err != nil {
-		return nil, err
-	}
-	return rels, nil
+	return false
 }
 
 // ErrNoKey says the build carries no public key, so updates are off.
@@ -232,23 +176,23 @@ func (u *Updater) Stage(ctx context.Context, rel Release) (bool, error) {
 		return false, ErrNoKey
 	}
 	want := AssetName(u.o.GOOS, u.o.GOARCH)
-	var bin, sig string
+	var bin, sig Asset
 	for _, a := range rel.Assets {
 		switch a.Name {
 		case want:
-			bin = a.URL
+			bin = a
 		case want + ".minisig":
-			sig = a.URL
+			sig = a
 		}
 	}
-	if bin == "" || sig == "" {
+	if bin.URL == "" || sig.URL == "" {
 		return false, fmt.Errorf("release %s carries no %s with a signature", rel.TagName, want)
 	}
-	body, err := u.fetch(ctx, bin)
+	body, err := u.feed.Fetch(ctx, bin)
 	if err != nil {
 		return false, err
 	}
-	sigBody, err := u.fetch(ctx, sig)
+	sigBody, err := u.feed.Fetch(ctx, sig)
 	if err != nil {
 		return false, err
 	}
@@ -267,29 +211,6 @@ func (u *Updater) Stage(ctx context.Context, rel Release) (bool, error) {
 	u.o.Log.Info("staged an update", "component", "updater",
 		"tag", rel.TagName, "bytes", len(body))
 	return true, nil
-}
-
-func (u *Updater) fetch(ctx context.Context, url string) ([]byte, error) {
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
-	if err != nil {
-		return nil, err
-	}
-	resp, err := u.o.HTTP.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("downloading %s: %d", url, resp.StatusCode)
-	}
-	b, err := io.ReadAll(io.LimitReader(resp.Body, MaxAsset+1))
-	if err != nil {
-		return nil, err
-	}
-	if len(b) > MaxAsset {
-		return nil, fmt.Errorf("downloading %s: over the %d byte ceiling", url, MaxAsset)
-	}
-	return b, nil
 }
 
 // Verify checks a minisign signature over body.
