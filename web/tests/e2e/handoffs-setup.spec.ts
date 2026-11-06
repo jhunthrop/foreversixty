@@ -1,6 +1,7 @@
 // web/tests/e2e/handoffs-setup.spec.ts
 import { apiUnreachable, expect, test } from './support/test';
 import { ACTIVE_BUILD } from './support/active-build';
+import { addonCopy } from '../../src/lib/addon/copy';
 
 // Reads this spec does not answer go unanswered, as the API out of reach (support/test.ts).
 test.beforeEach(({ page }) => apiUnreachable(page, '**/v1/builds?*'));
@@ -94,7 +95,7 @@ test.describe('What it does in the game (L8.3)', () => {
     await page.goto('/setup');
     await page.getByText('Everything the addon does').click();
     const commands = page.getByTestId('setup-commands').locator('li');
-    await expect(commands).toHaveCount(13);
+    await expect(commands).toHaveCount(addonCopy.commands.length);
     await expect(commands.first()).toHaveText('/fs: paste or copy a build');
     await expect(commands.last()).toHaveText('/fs help: every command');
     await expect(page.getByTestId('setup-handshake')).toContainText('Site has your save from');

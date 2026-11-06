@@ -64,6 +64,11 @@ async function cardBottom(page: Page): Promise<number> {
 }
 
 test.describe('free owner', () => {
+  /** The teaser's count, read from the coach's own output rather than restated. */
+  const SEVERAL = coachFixture<{ finding_count: number }>('fury-teaser-several').finding_count;
+  test('the several teaser counts more than one finding', () => {
+    expect(SEVERAL).toBeGreaterThan(1);
+  });
   test.beforeEach(async ({ page }) => {
     await signInAs(page, 'free');
     await routeCoach(page, STATES['teaser-several']);
@@ -72,7 +77,7 @@ test.describe('free owner', () => {
   test('the row line reads the free teaser and links to /premium', async ({ page }) => {
     await page.goto(ROWS_URL);
     await expect(page.getByTestId('coach-row-open')).toHaveText(
-      fill(coachCopy.rowFree, { n: 3, title: FIX_FIRST_TITLE }).replace(` · ${coachCopy.upgrade}`, ''),
+      fill(coachCopy.rowFree, { n: SEVERAL, title: FIX_FIRST_TITLE }).replace(` · ${coachCopy.upgrade}`, ''),
     );
     await expect(page.getByTestId('coach-row-premium')).toHaveAttribute('href', '/premium#coach');
     await expect(page.getByTestId('coach-row-premium')).toHaveText(coachCopy.upgrade);
@@ -82,7 +87,9 @@ test.describe('free owner', () => {
     await page.goto(ROWS_URL);
     await page.getByTestId('coach-row-open').click();
     await expect(page).toHaveURL(/tab=coach/);
-    await expect(page.getByTestId('coach-teaser-count')).toHaveText(fill(coachCopy.teaserCount, { n: 3 }));
+    await expect(page.getByTestId('coach-teaser-count')).toHaveText(
+      fill(coachCopy.teaserCount, { n: SEVERAL }),
+    );
     await expect(page.getByTestId('coach-teaser-first')).toHaveText(
       fill(coachCopy.teaserFirst, { title: FIX_FIRST_TITLE }),
     );

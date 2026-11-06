@@ -148,6 +148,19 @@ export async function stubCharacter(page: Page): Promise<void> {
   );
 }
 
+/** GET /v1/characters/search, which a not-found page asks once for the same name on another
+ *  ruleset or region ("Is it one of these?", CharacterNotFound.svelte). No rows by default: the
+ *  page then says the name is nowhere on the site. */
+export async function routeCharacterSearch(page: Page, rows: readonly unknown[] = []): Promise<void> {
+  await page.route('**/v1/characters/search*', (route) =>
+    route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({ ok: true, data: { rows }, error: null, request_id: 'r' }),
+    }),
+  );
+}
+
 /** A `/v1/me` answer whose one character is the fixture's own (Elyra Duskvale, hardcore US), so
  *  the page reads as the owner's: the 404 no-logs card with its upload action, not the visitor's
  *  "No character called ... yet" page. */

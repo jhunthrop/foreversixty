@@ -8,7 +8,13 @@ import type { Page } from '@playwright/test';
 import { expect, test } from './support/test';
 import labels from '../../../docs/contracts/fixtures/score-labels.json' with { type: 'json' };
 import { meAddonFixture } from '../../src/fixtures/me-addon';
-import { CHARACTER, CHARACTER_PATH, CHARACTER_URL, routeOwner } from './support/character-fixture';
+import {
+  CHARACTER,
+  CHARACTER_PATH,
+  CHARACTER_URL,
+  routeCharacterSearch,
+  routeOwner,
+} from './support/character-fixture';
 import { headerWired } from './support/header';
 
 const NOT_FOUND = {
@@ -28,6 +34,7 @@ async function stub(page: Page, character: { status: number; body: unknown } | '
         }),
   );
   await page.route(`${CHARACTER_URL}/rating`, (route) => route.fulfill(NOT_FOUND));
+  if (character === 'missing') await routeCharacterSearch(page);
 }
 
 const withScore = (fields: Record<string, unknown>) => ({
