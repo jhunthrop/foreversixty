@@ -23,7 +23,7 @@ export const checkoutGuildClaimErrors = {
 } as const;
 
 export const checkoutGuildCheckoutErrors = {
-  notOpen: 'Purchases are not open yet. Check back soon — nothing was charged.',
+  notOpen: 'Purchases are not open yet. Nothing was charged. Check back soon.',
   alreadyOnPlan: (guild: string): string => `${guild} is already on a plan.`,
   generic: 'That did not work; try again.',
   tryAgain: 'Try again',

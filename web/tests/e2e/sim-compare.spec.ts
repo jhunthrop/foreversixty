@@ -65,8 +65,7 @@ test('both tables and the footnote render', async ({ page }) => {
 
 test('the sentence and the ordinary results are gone in compare mode', async ({ page }) => {
   await openCompare(page);
-  await expect(page.getByTestId('sim-sentence')).toHaveCount(0);
-  await expect(page.getByTestId('sim-results')).toHaveCount(0);
+  await expect(page.getByTestId('sim-live-report')).toHaveCount(0);
 });
 
 test('the report links to compare mode on its own current fight', async ({ page }) => {

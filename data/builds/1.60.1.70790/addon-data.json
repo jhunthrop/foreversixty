@@ -9252,7 +9252,7 @@
           {
             "spell_id": 3044,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away or you are under a quarter of your mana.",
+            "condition": "Arcane Shot to fill a gap; from 18, only with the shared cooldown over a global away or under a quarter mana.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -9278,7 +9278,7 @@
           {
             "spell_id": 14281,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away or you are under a quarter of your mana.",
+            "condition": "Arcane Shot to fill a gap; from 18, only with the shared cooldown over a global away or under a quarter mana.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -9311,7 +9311,7 @@
           {
             "spell_id": 14281,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away or you are under a quarter of your mana.",
+            "condition": "Arcane Shot to fill a gap; from 18, only with the shared cooldown over a global away or under a quarter mana.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -9351,7 +9351,7 @@
           {
             "spell_id": 14282,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away or you are under a quarter of your mana.",
+            "condition": "Arcane Shot to fill a gap; from 18, only with the shared cooldown over a global away or under a quarter mana.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -9391,7 +9391,7 @@
           {
             "spell_id": 14282,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away or you are under a quarter of your mana.",
+            "condition": "Arcane Shot to fill a gap; from 18, only with the shared cooldown over a global away or under a quarter mana.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -9438,7 +9438,7 @@
           {
             "spell_id": 3044,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away or you are under a quarter of your mana.",
+            "condition": "Arcane Shot to fill a gap; from 18, only with the shared cooldown over a global away or under a quarter mana.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -9485,7 +9485,7 @@
           {
             "spell_id": 3044,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away or you are under a quarter of your mana.",
+            "condition": "Arcane Shot to fill a gap; from 18, only with the shared cooldown over a global away or under a quarter mana.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -9532,7 +9532,7 @@
           {
             "spell_id": 3044,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away or you are under a quarter of your mana.",
+            "condition": "Arcane Shot to fill a gap; from 18, only with the shared cooldown over a global away or under a quarter mana.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -9586,7 +9586,7 @@
           {
             "spell_id": 3044,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away or you are under a quarter of your mana.",
+            "condition": "Arcane Shot to fill a gap; from 18, only with the shared cooldown over a global away or under a quarter mana.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -9640,7 +9640,7 @@
           {
             "spell_id": 3044,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away or you are under a quarter of your mana.",
+            "condition": "Arcane Shot to fill a gap; from 18, only with the shared cooldown over a global away or under a quarter mana.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -9694,7 +9694,7 @@
           {
             "spell_id": 14282,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away or you are under a quarter of your mana.",
+            "condition": "Arcane Shot to fill a gap; from 18, only with the shared cooldown over a global away or under a quarter mana.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -9748,7 +9748,7 @@
           {
             "spell_id": 14282,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away or you are under a quarter of your mana.",
+            "condition": "Arcane Shot to fill a gap; from 18, only with the shared cooldown over a global away or under a quarter mana.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -9802,7 +9802,7 @@
           {
             "spell_id": 14287,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away or you are under a quarter of your mana.",
+            "condition": "Arcane Shot to fill a gap; from 18, only with the shared cooldown over a global away or under a quarter mana.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -9830,7 +9830,7 @@
           {
             "spell_id": 3044,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away or you are under a quarter of your mana.",
+            "condition": "Arcane Shot to fill a gap; from 18, only with the shared cooldown over a global away or under a quarter mana.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -9856,7 +9856,7 @@
           {
             "spell_id": 14281,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away or you are under a quarter of your mana.",
+            "condition": "Arcane Shot to fill a gap; from 18, only with the shared cooldown over a global away or under a quarter mana.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -9889,7 +9889,7 @@
           {
             "spell_id": 14281,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away or you are under a quarter of your mana.",
+            "condition": "Arcane Shot to fill a gap; from 18, only with the shared cooldown over a global away or under a quarter mana.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -9929,7 +9929,7 @@
           {
             "spell_id": 3044,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away or you are under a quarter of your mana.",
+            "condition": "Arcane Shot to fill a gap; from 18, only with the shared cooldown over a global away or under a quarter mana.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -9969,7 +9969,7 @@
           {
             "spell_id": 3044,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away or you are under a quarter of your mana.",
+            "condition": "Arcane Shot to fill a gap; from 18, only with the shared cooldown over a global away or under a quarter mana.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -10016,7 +10016,7 @@
           {
             "spell_id": 3044,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away or you are under a quarter of your mana.",
+            "condition": "Arcane Shot to fill a gap; from 18, only with the shared cooldown over a global away or under a quarter mana.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -10063,7 +10063,7 @@
           {
             "spell_id": 14282,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away or you are under a quarter of your mana.",
+            "condition": "Arcane Shot to fill a gap; from 18, only with the shared cooldown over a global away or under a quarter mana.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -10110,7 +10110,7 @@
           {
             "spell_id": 14282,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away or you are under a quarter of your mana.",
+            "condition": "Arcane Shot to fill a gap; from 18, only with the shared cooldown over a global away or under a quarter mana.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -10157,7 +10157,7 @@
           {
             "spell_id": 14282,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away or you are under a quarter of your mana.",
+            "condition": "Arcane Shot to fill a gap; from 18, only with the shared cooldown over a global away or under a quarter mana.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -10211,7 +10211,7 @@
           {
             "spell_id": 3044,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away or you are under a quarter of your mana.",
+            "condition": "Arcane Shot to fill a gap; from 18, only with the shared cooldown over a global away or under a quarter mana.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -10265,7 +10265,7 @@
           {
             "spell_id": 3044,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away or you are under a quarter of your mana.",
+            "condition": "Arcane Shot to fill a gap; from 18, only with the shared cooldown over a global away or under a quarter mana.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -10319,7 +10319,7 @@
           {
             "spell_id": 3044,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away or you are under a quarter of your mana.",
+            "condition": "Arcane Shot to fill a gap; from 18, only with the shared cooldown over a global away or under a quarter mana.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -10373,7 +10373,7 @@
           {
             "spell_id": 3044,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away or you are under a quarter of your mana.",
+            "condition": "Arcane Shot to fill a gap; from 18, only with the shared cooldown over a global away or under a quarter mana.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -10427,7 +10427,7 @@
           {
             "spell_id": 3044,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away or you are under a quarter of your mana.",
+            "condition": "Arcane Shot to fill a gap; from 18, only with the shared cooldown over a global away or under a quarter mana.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }
@@ -10481,7 +10481,7 @@
           {
             "spell_id": 14287,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot to fill a gap, and from 18 only when the shared cooldown is more than a global away or you are under a quarter of your mana.",
+            "condition": "Arcane Shot to fill a gap; from 18, only with the shared cooldown over a global away or under a quarter mana.",
             "icon": "ability_impalingbolt",
             "race_spell_ids": {}
           }

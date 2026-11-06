@@ -26,6 +26,16 @@ type lookupGuilds struct {
 	items     map[int]trees.Item
 	dir       string
 	readiness map[string]guilds.ReadinessFacts
+	// specs are the guild's specs by character key (GuildSpecOf); a key missing here reads the
+	// real service's.
+	specs map[string]string
+}
+
+func (l *lookupGuilds) GuildSpecOf(ctx context.Context, guildID int64, key string) (string, error) {
+	if sp, ok := l.specs[key]; ok {
+		return sp, nil
+	}
+	return l.pressGuilds.GuildSpecOf(ctx, guildID, key)
 }
 
 func (l *lookupGuilds) ActiveBuild() (string, bool) { return lookupBuild, true }
@@ -63,6 +73,7 @@ func (f *fakeGuilds) BotGuildFacts(context.Context, int64) (guilds.BotGuild, err
 func (f *fakeGuilds) PublicRosterNames(context.Context, int64, string, int) ([]string, error) {
 	return nil, nil
 }
+func (f *fakeGuilds) GuildSpecOf(context.Context, int64, string) (string, error) { return "", nil }
 func (f *fakeGuilds) CharacterReadinessFacts(context.Context, int64, string) (guilds.ReadinessFacts, error) {
 	return guilds.ReadinessFacts{}, nil
 }
@@ -127,7 +138,8 @@ func newLookupWorld(t *testing.T) *lookupWorld {
 		items[id] = trees.Item{ID: id, Name: "Item", Quality: 4, ItemLevel: 61, Icon: "inv_helmet_01"}
 	}
 	w := &lookupWorld{pressWorld: pw, cards: &fakeCards{cards: map[string]rankings.Character{"zulmara": zulmaraCard()}}}
-	w.lg = &lookupGuilds{pressGuilds: pw.port, items: items, dir: dir, readiness: map[string]guilds.ReadinessFacts{}}
+	w.lg = &lookupGuilds{pressGuilds: pw.port, items: items, dir: dir, readiness: map[string]guilds.ReadinessFacts{},
+		specs: map[string]string{keyZulmaraLookup: "hunter-marksmanship"}}
 	w.svc = New(Deps{Store: pw.st, REST: pw.rest, Guilds: w.lg, Characters: w.cards,
 		PublicBaseURL: pressPublic, APIBaseURL: pressAPI, Log: slog_(pw.log)})
 	return w
@@ -266,18 +278,19 @@ func TestCharCard(t *testing.T) {
 		head := headOf(t, m)
 		if head.Title != "Zulmara" || head.URL != pressPublic+"/character/"+keyZulmaraLookup || head.Color != 0xaad372 ||
 			head.Thumbnail != pressPublic+"/icons/hd/crests/hunter.webp" ||
-			head.Description != "Level 60 Marksmanship Hunter · Olympus XXVII\n-# Item level 56.0 · Readiness: Stocked · Synced <t:1700000000:R>" {
+			head.Description != "Level 60 Marksmanship Hunter · Olympus XXVII\n-# Item level 56 · Readiness: Stocked · Synced <t:1700000000:R>" {
 			t.Fatalf("header = %+v", head)
 		}
 		texts := textsOf(m)
 		if texts[1] != "**Top upgrades** · level 60\n"+panelCopy.UpgradesByScore {
 			t.Fatalf("lead = %q", texts[1])
 		}
-		// Nothing measured, so the list reads in points, in frame order by gap: head, hands, feet, wrist.
+		// Nothing measured, so the list reads in points, largest gap first: the top 3 of head, hands,
+		// feet, wrist, then the more line for the fourth.
 		want := []string{"**Pick head**\nHead · +9.0 points\n-# Epic · item level 61 · Source head",
 			"**Pick hands**\nHands · +7.0 points\n-# Epic · item level 61 · Source hands",
 			"**Pick feet**\nFeet · +5.0 points\n-# Epic · item level 61 · Source feet",
-			"**Pick wrist**\nWrist · +2.0 points\n-# Epic · item level 61 · Source wrist"}
+			panelCopy.UpgradesMoreOne}
 		if got := texts[2:]; strings.Join(got, "|") != strings.Join(want, "|") {
 			t.Fatalf("upgrades = %q", got)
 		}
@@ -331,8 +344,27 @@ func TestCharCard(t *testing.T) {
 	t.Run("a viewer outside the guild sees no readiness", func(t *testing.T) {
 		w := newLookupWorld(t)
 		m := w.command(t, "d-stranger", "char", map[string]string{"name": "Zulmara"}).Message
-		if got := headOf(t, m).Description; got != "Level 60 Marksmanship Hunter · Olympus XXVII\n-# Item level 56.0" {
+		if got := headOf(t, m).Description; got != "Level 60 Marksmanship Hunter · Olympus XXVII\n-# Item level 56" {
 			t.Fatalf("header = %q", got)
+		}
+	})
+	t.Run("no spec known says the bare class, as the site does", func(t *testing.T) {
+		w := newLookupWorld(t)
+		delete(w.lg.specs, keyZulmaraLookup) // the card's gear spec is Marksmanship; the guild knows none
+		m := w.command(t, "d-stranger", "char", map[string]string{"name": "Zulmara"}).Message
+		if got := headOf(t, m).Description; got != "Level 60 Hunter · Olympus XXVII\n-# Item level 56" {
+			t.Fatalf("header = %q", got)
+		}
+	})
+	t.Run("the more line counts the board's upgrades", func(t *testing.T) {
+		w := newLookupWorld(t)
+		w.port.candidates = []guilds.SignupCandidate{{CharacterKey: keyZulmaraLookup, Name: "Zulmara", Verified: true, Main: true}}
+		w.lg.readiness[keyZulmaraLookup] = guilds.ReadinessFacts{Word: "Short: 13 gear upgrades waiting", OnRoster: true,
+			GearChecked: true, GearUpgrades: 13}
+		// The panel measures one upgrade (the band's head); the board counts 13: one row, 12 more.
+		texts := textsOf(w.command(t, pressDiscord, "char", map[string]string{"name": "Zulmara"}).Message)
+		if got := texts[len(texts)-1]; got != "-# 12 more upgrades on the character page." {
+			t.Fatalf("more = %q (texts %q)", got, texts)
 		}
 	})
 	t.Run("tank specs rank by score", func(t *testing.T) {
@@ -340,9 +372,38 @@ func TestCharCard(t *testing.T) {
 		c := zulmaraCard()
 		c.Character.Class, c.GearSpec = "druid", ref("druid-feral-bear")
 		w.cards.cards["zulmara"] = c
+		delete(w.lg.specs, keyZulmaraLookup) // with no guild spec, the gear spec still ranks the list
 		texts := textsOf(w.command(t, pressDiscord, "char", map[string]string{"name": "Zulmara"}).Message)
 		if !strings.HasSuffix(texts[1], panelCopy.UpgradesByScore) || !strings.Contains(texts[2], "Head · +9.0 points") {
 			t.Fatalf("tank = %q", texts)
+		}
+	})
+	t.Run("healers rank by the BiS list and item level, never DPS", func(t *testing.T) {
+		w := newLookupWorld(t)
+		c := zulmaraCard()
+		c.Character.Class, c.GearSpec = "priest", ref("priest-holy")
+		w.cards.cards["zulmara"] = c
+		delete(w.lg.specs, keyZulmaraLookup)
+		slot := func(name string, pick int) map[string]any {
+			return map[string]any{"slot": name, "item_id": pick, "item_name": "Pick " + name,
+				"alternatives": []map[string]any{{"item_id": 999, "item_name": "Other", "dps_delta": -37.0}}}
+		}
+		writeBis(t, w.lg.dir, "priest-holy", []map[string]any{{"band": 60, "faction": "alliance", "preset": "raid", "slots": []map[string]any{
+			slot("head", 100), slot("feet", 201), slot("wrist", 180), slot("trinket2", 105),
+		}}})
+		texts := textsOf(w.command(t, pressDiscord, "char", map[string]string{"name": "Zulmara"}).Message)
+		if !strings.HasSuffix(texts[1], "\n"+panelCopy.UpgradesByLevel) {
+			t.Fatalf("lead = %q", texts[1])
+		}
+		// The empty trinket first, then the head 6 item levels up, then the wrist pick the build
+		// gives no item level for; the feet already wear the pick.
+		for i, want := range []string{"Trinket 2 · " + panelCopy.LevelEmpty, "Head · +6 item levels", "Wrist · " + panelCopy.LevelOnList} {
+			if !strings.Contains(texts[i+2], want) {
+				t.Fatalf("upgrade %d = %q, want %q", i, texts[i+2], want)
+			}
+		}
+		if joined := strings.Join(texts, "\n"); strings.Contains(joined, "DPS gained") || strings.Contains(joined, "+37") {
+			t.Fatalf("a healer list mentions DPS: %q", joined)
 		}
 	})
 	t.Run("no gear shared", func(t *testing.T) {
@@ -375,6 +436,33 @@ func TestCharAutocompleteListsPublicRoster(t *testing.T) {
 	got, err := w.svc.autocompleteChar(context.Background(), in)
 	if err != nil || len(got) != 1 || got[0].Value != "Zulmara" {
 		t.Fatalf("choices = %+v, %v", got, err)
+	}
+}
+
+// The "N more" counts the board's upgrades for a rostered character whose gear the board read,
+// never fewer than the panel lists; anyone else counts the panel's own list.
+func TestUpgradeTotal(t *testing.T) {
+	four := upgradeList{items: make([]upgrade, 4)}
+	board := func(checked bool, n int) *guilds.ReadinessFacts {
+		return &guilds.ReadinessFacts{GearChecked: checked, GearUpgrades: n}
+	}
+	for _, c := range []struct {
+		name  string
+		facts *guilds.ReadinessFacts
+		want  int
+	}{
+		{"the board's 13", board(true, 13), 13},
+		{"never fewer than listed", board(true, 2), 4},
+		{"the board read no gear", board(false, 0), 4},
+		{"off the roster", nil, 4},
+	} {
+		if got := upgradeTotal(charData{ups: four, facts: c.facts}); got != c.want {
+			t.Errorf("%s: total = %d, want %d", c.name, got, c.want)
+		}
+	}
+	// 13 upgrades, 3 rows: "10 more".
+	if got := moreText(upgradeTotal(charData{ups: four, facts: board(true, 13)}) - maxUpgrades); got != "-# 10 more upgrades on the character page." {
+		t.Errorf("more = %q", got)
 	}
 }
 

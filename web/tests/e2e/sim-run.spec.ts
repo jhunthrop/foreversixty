@@ -2,7 +2,6 @@ import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import type { Page } from '@playwright/test';
 import { expect, test } from './support/test';
-import { simCopy } from '../../src/lib/sim/copy';
 import { choose } from './support/select';
 
 // Same fixture as sim-settings.spec.ts and sim-sources.spec.ts: an addon export needs no
@@ -99,7 +98,7 @@ test('the server lane is not offered to a signed-out visitor', async ({ page }) 
   await expect(page.getByTestId('sim-server-run')).toHaveCount(0);
 });
 
-test('the precision select offers four choices and the details card states the run', async ({ page }) => {
+test('the precision select offers four choices and the report states the run', async ({ page }) => {
   await loadFury(page);
 
   const precision = page.getByTestId('sim-precision');
@@ -110,15 +109,15 @@ test('the precision select offers four choices and the details card states the r
   await choose(precision, 'target-error');
   await expect(page.getByTestId('sim-target-error')).toContainText('30,000');
 
-  // Fast keeps the browser suite quick; the card is the same card at every precision.
+  // Fast keeps the browser suite quick; the report is the same report at every precision.
   await choose(precision, 'fast');
   await page.getByTestId('sim-run-button').click();
-  await expect(page.getByTestId('sim-details-card')).toBeVisible({ timeout: 30_000 });
-  await expect(page.getByTestId('sim-details-iterations')).toHaveText('500');
-  await expect(page.getByTestId('sim-details-margin')).toContainText(simCopy.dps);
-  await expect(page.getByTestId('sim-details-margin')).toContainText('%');
-  await expect(page.getByTestId('sim-details-lane')).toHaveText(simCopy.detailsLaneBrowser);
-  await expect(page.getByTestId('sim-details-engine')).toHaveAttribute('href', '/sim/specs');
+  const report = page.getByTestId('sim-live-report');
+  await expect(report).toBeVisible({ timeout: 30_000 });
+  await expect(report.getByTestId('sim-fact-runs')).toContainText('500');
+  await expect(report.getByTestId('sim-report-error')).toContainText('%');
+  await expect(report.getByTestId('sim-result-eyebrow')).toHaveText('RUN IN YOUR BROWSER');
+  await expect(page.getByTestId('sim-engine-version')).toHaveAttribute('href', '/sim/specs');
   await expect(page.getByTestId('sim-progress')).toContainText('%');
 });
 
@@ -159,7 +158,7 @@ test('a finished run can be named, and the saved link opens in a new tab', async
   await expect(page.getByTestId('sim-run-button')).toHaveText('Run again', { timeout: 10_000 });
   await choose(page.getByTestId('sim-precision'), 'fast');
   await page.getByTestId('sim-run-button').click();
-  await expect(page.getByTestId('sim-details-card')).toBeVisible({ timeout: 30_000 });
+  await expect(page.getByTestId('sim-live-report')).toBeVisible({ timeout: 30_000 });
 
   const title = page.getByTestId('sim-report-title');
   await expect(title).toHaveValue('Bare, 3:00, single target');

@@ -60,9 +60,9 @@ type ReadinessRow struct {
 	ItemLevelDelta      *int            `json:"item_level_delta"`
 	LoggedAt            time.Time       `json:"logged_at"`
 	Failing             int             `json:"failing"`
-	// SyncedBeforeCutoff and NoExport are the raid-filtered read's: whether the export was
-	// synced within READINESS_FRESH_DAYS of the raid (null on the unfiltered read and on a
-	// no_export row), and a signed character with no export at all.
+	// SyncedBeforeCutoff is true when the export was synced more than READINESS_FRESH_DAYS ago,
+	// judged against now on the filtered and unfiltered read alike (stale; null only on a
+	// no_export row). NoExport is the raid-filtered read's signed character with no export.
 	SyncedBeforeCutoff *bool   `json:"synced_before_cutoff"`
 	NoExport           bool    `json:"no_export"`
 	NudgeText          *string `json:"nudge_text,omitempty"`
@@ -138,8 +138,12 @@ func (s *Store) Readiness(ctx context.Context, guildID int64, officerView bool, 
 		}
 	}
 
+	now := time.Now()
+	if scope != nil {
+		now = scope.now
+	}
 	median := medianItemLevel(roster)
-	view := ReadinessView{MedianItemLevel: median, GeneratedAt: time.Now().UTC(), Rows: []ReadinessRow{}}
+	view := ReadinessView{MedianItemLevel: median, GeneratedAt: now.UTC(), Rows: []ReadinessRow{}}
 	seen := map[string]bool{}
 	for _, row := range roster {
 		if !row.Verified || !scope.includes(row.CharacterKey) {
@@ -148,10 +152,10 @@ func (s *Store) Readiness(ctx context.Context, guildID int64, officerView bool, 
 		seen[row.CharacterKey] = true
 		cr := s.readinessOf(row, median)
 		rr := readinessRowOf(row, cr)
-		scope.apply(&rr)
+		markFreshness(&rr, now)
 		rr.readinessScore = float64(rr.Failing)*readinessFailWeight + cr.GearGap.GainDps
 		if officerView && !cr.Leveling {
-			text := nudgeText(row.Name, cr, nudgeDay, scope.staleFailure(rr)...)
+			text := nudgeText(row.Name, cr, nudgeDay, staleFailure(rr, now)...)
 			rr.NudgeText = &text
 		}
 		view.Rows = append(view.Rows, rr)
@@ -216,9 +220,10 @@ func sortReadinessRows(rows []ReadinessRow) {
 	})
 }
 
-// nudgeDay is the weekday the officer's nudge asks for a fix by: the raid the board is cut to,
-// else the guild's next planned raid, in the guild's raid timezone (UTC when it has none).
-// Empty when no raid is planned.
+// nudgeDay is the date the officer's nudge asks for a fix by ("Thu 10 Dec", the needs line's
+// own date): the raid the board is cut to, else the guild's next planned raid, in the guild's
+// raid timezone (UTC when it has none). Empty when no raid is planned. A bare weekday read
+// "Check before Thursday." for a raid five weeks out (guild round 3).
 func (s *Store) nudgeDay(ctx context.Context, guildID int64, raid *Raid) (string, error) {
 	if raid == nil {
 		next, ok, err := s.NextRaid(ctx, guildID, time.Now())
@@ -231,19 +236,26 @@ func (s *Store) nudgeDay(ctx context.Context, guildID int64, raid *Raid) (string
 	if err != nil {
 		return "", err
 	}
-	return raidWeekday(raid.StartsAt, tz), nil
+	return raidDay(raid.StartsAt, tz), nil
 }
 
-// raidWeekday is start's weekday ("Thursday") in the IANA zone tz, UTC when tz is empty or
-// unknown.
-func raidWeekday(start time.Time, tz string) string {
-	loc := time.UTC
+// raidDayLayout is a raid's date as the site's needs line names it (raid-time.ts dateLabel):
+// "Thu 10 Dec".
+const raidDayLayout = "Mon 2 Jan"
+
+// raidDay is start's date ("Thu 10 Dec") in the IANA zone tz, UTC when tz is empty or unknown.
+func raidDay(start time.Time, tz string) string {
+	return start.In(zoneOrUTC(tz)).Format(raidDayLayout)
+}
+
+// zoneOrUTC loads the IANA zone tz, UTC when tz is empty or unknown.
+func zoneOrUTC(tz string) *time.Location {
 	if tz != "" {
 		if l, err := time.LoadLocation(tz); err == nil {
-			loc = l
+			return l
 		}
 	}
-	return start.In(loc).Weekday().String()
+	return time.UTC
 }
 
 // nudgeText is the officer-only clipboard message (design spec §4.E): the character's own
@@ -277,6 +289,10 @@ const (
 	readinessStocked   = "Stocked"
 	readinessShort     = "Short: "
 	readinessNotShared = "Not shared"
+	// readinessReady and readinessNotChecked are the board's READINESS_READY (something read,
+	// nothing failing: passesEveryCheck) and NOT_CHECKED_YET (shared, nothing read yet).
+	readinessReady      = "Ready"
+	readinessNotChecked = "Not checked yet"
 	// readinessLeveling is a leveling character's word: its level, and that checks start at 60.
 	readinessLeveling = "Level %d, checks start at %d"
 	// readinessShortMax is how many failing checks follow "Short: ".
@@ -289,6 +305,14 @@ type ReadinessFacts struct {
 	Word     string
 	SyncedAt *time.Time
 	OnRoster bool
+	// ItemLevel is the roster's and the board's item level (equipped average, else the latest
+	// log's), so /char prints the same number; nil when neither is known.
+	ItemLevel *int
+	// GearUpgrades is the board's own gear upgrade count (the "N gear upgrades waiting" the word
+	// can carry), so /char's "N more upgrades" counts the same list; GearChecked is false when
+	// the board read no gear, and GearUpgrades is then 0.
+	GearUpgrades int
+	GearChecked  bool
 }
 
 // CharacterReadinessWord is the board's word for one character: Stocked, Short: and its
@@ -314,7 +338,9 @@ func (s *Service) CharacterReadinessFacts(ctx context.Context, guildID int64, ch
 }
 
 func (s *Store) readinessFactsOf(row RosterRow, median *int) ReadinessFacts {
-	facts := ReadinessFacts{Word: readinessWord(s.readinessOf(row, median)), OnRoster: true}
+	cr := s.readinessOf(row, median)
+	facts := ReadinessFacts{Word: readinessWord(cr, row.Consent), OnRoster: true, ItemLevel: row.ItemLevel,
+		GearChecked: cr.GearChecked, GearUpgrades: cr.GearGap.Upgrades}
 	if !row.LoggedAt.IsZero() {
 		synced := row.LoggedAt
 		facts.SyncedAt = &synced
@@ -322,15 +348,23 @@ func (s *Store) readinessFactsOf(row RosterRow, median *int) ReadinessFacts {
 	return facts
 }
 
-func readinessWord(cr CharacterReadiness) string {
+// readinessWord is the board's word for one row, the site's rule (readiness-view.ts
+// passesEveryCheck): leveling, else the failing checks, else Stocked or Ready when anything was
+// read, else Not shared for a roster-only consent and Not checked yet for one that shares.
+func readinessWord(cr CharacterReadiness, consent string) string {
 	if cr.Leveling {
 		return fmt.Sprintf(readinessLeveling, *cr.Level, raidLevel)
 	}
 	if fails := cr.Needs(readinessShortMax); len(fails) > 0 {
 		return readinessShort + strings.Join(fails, ", ")
 	}
-	if cr.ConsumablesState == consumablesStocked {
+	switch {
+	case cr.ConsumablesState == consumablesStocked:
 		return readinessStocked
+	case cr.GearChecked || cr.EnchantsChecked || cr.TalentsRead || cr.ConsumablesState != consumablesUnknown:
+		return readinessReady
+	case hasGearConsent(consent):
+		return readinessNotChecked
 	}
 	return readinessNotShared
 }

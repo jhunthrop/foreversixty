@@ -23,6 +23,9 @@ export function clock(seconds: number): string {
 
 export const bandCopy = {
   eyebrow: 'SAVED SIM',
+  /** A finished run on /sim: where it ran, which the saved band leaves to its Settings card. */
+  liveEyebrow: (lane: 'browser' | 'server') =>
+    lane === 'server' ? 'RUN ON OUR SERVERS' : 'RUN IN YOUR BROWSER',
   level: (level: number) => `Level ${level}`,
   talents: (split: string) => `${split} talents`,
   nextStep: 'Next: find the upgrade that adds the most.',

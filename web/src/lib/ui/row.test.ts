@@ -2,7 +2,7 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { ROW_BAND_MARK, ROW_BAND_OWN, ROW_BAND_REACH, ownRowBand, rowBand } from './row';
+import { ROW_BAND_MARK, ROW_BAND_OWN, ROW_BAND_REACH, ownRowBand, ownRowBandInside, rowBand } from './row';
 
 const GLOBAL_CSS = readFileSync(join(import.meta.dirname, '..', '..', 'styles', 'global.css'), 'utf8');
 
@@ -37,6 +37,12 @@ describe('row bands (row-band sweep 2026-11-01)', () => {
     expect(ownRowBand(true, 0)).toBe(`${ROW_BAND_OWN} ${ROW_BAND_REACH[0]}`);
     expect(ownRowBand(true, 0).split(' ')).toEqual(expect.arrayContaining(['row-band', 'row-band-own']));
     expect(ROW_BAND_MARK.split(' ')).toEqual(['row-band', 'row-band-mark']);
+  });
+
+  it('an inside band never reaches past its list: lit and unlit rows hold the same 12 px inset', () => {
+    expect(ownRowBandInside(false)).toBe('px-3');
+    expect(ownRowBandInside(true)).toBe(`${ROW_BAND_OWN} px-3`);
+    expect(ownRowBandInside(true)).not.toMatch(/-mx-/);
   });
 
   it('global.css rounds a lit band and steps back the rules beside a lit one', () => {

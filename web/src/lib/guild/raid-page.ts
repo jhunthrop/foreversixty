@@ -5,7 +5,7 @@
 import type { GuildRaidView } from './api';
 import { countLine, countRatio, countdown, yourTimeLine } from './raid-copy';
 import { raidBreakdownLine } from './raid-comp';
-import { clockText, zoneAbbreviation } from './raid-time';
+import { DEFAULT_LOCALE, clockText, zoneAbbreviation } from './raid-time';
 import { chipStatus, raidEndsAt, type RaidChipStatus } from './planned-row';
 import { RAID_DONE_KEY_PREFIX, RAID_ROWS_KEY } from './reserve-keys';
 
@@ -75,6 +75,17 @@ function longDate(d: Date, tz: string, locale: string): string {
   return `${part('weekday')} ${part('day')} ${part('month')}`;
 }
 
+/** The end clock: a raid that runs to midnight reads `midnight`, never `12:00 am` or `00:00`,
+ *  which reads as the start of the day it began (guild loop round 3). */
+export const MIDNIGHT = 'midnight';
+const MIDNIGHT_H23 = '00:00';
+
+function endClock(endsAt: Date, tz: string, locale: string): string {
+  return clockText(endsAt, tz, `${DEFAULT_LOCALE}-u-hc-h23`, true) === MIDNIGHT_H23
+    ? MIDNIGHT
+    : clockText(endsAt, tz, locale, true);
+}
+
 /** The band's when line (raid comp spec 3.1 line 4): the guild's date, times and zone first, then
  *  the viewer's own start when the offsets differ. */
 export function raidWhen(raid: GuildRaidView, now: Date, viewerTz: string, locale: string): RaidWhen {
@@ -84,7 +95,7 @@ export function raidWhen(raid: GuildRaidView, now: Date, viewerTz: string, local
   return {
     date: longDate(startsAt, guildTz, locale),
     start: clockText(startsAt, guildTz, locale, true),
-    end: `${clockText(endsAt, guildTz, locale, true)}${NO_BREAK_SPACE}${zoneAbbreviation(guildTz, startsAt)}`,
+    end: `${endClock(endsAt, guildTz, locale)}${NO_BREAK_SPACE}${zoneAbbreviation(guildTz, startsAt)}`,
     yourTime: yourTimeLine(startsAt, guildTz, viewerTz, locale),
     countdown: countdown(startsAt, endsAt, now),
   };

@@ -98,7 +98,7 @@ test('a guild event asks for a size and a title, and posts its sized key', async
   await expect(page.getByTestId('raid-form-create')).toHaveCount(0);
   const [post] = writesTo(stub, 'POST', /\/raids$/);
   expect(post?.body).toMatchObject({ zone: 'event:guild-10', title: 'Quest group' });
-  await expect(page.getByTestId(`planned-raid-${FIRST_NEW_ID}`)).toContainText('Guild event · 10');
+  await expect(page.getByTestId(`planned-raid-${FIRST_NEW_ID}`)).toContainText('Guild event · 10 players');
 });
 
 test('the form opens on the last planned key, an event with its size', async ({ page }) => {

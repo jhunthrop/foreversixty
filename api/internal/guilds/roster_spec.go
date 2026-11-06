@@ -48,6 +48,26 @@ func resolveSpec(class, spec *string, role string) (specFacts, bool) {
 	return specFacts{Role: s.Role, Name: fullSpecName(s), Icon: s.Icon}, true
 }
 
+// withRaidSpec is the row with the raid spec its player picked for the guild's raids as its
+// spec and role, over the newest logged fight's: the raid page's rule (raidRosterChar.specKey),
+// so the roster, the raid page and the bot name one spec. raidSpec is nil when the consent
+// withholds the spec; a key the catalogue does not name changes nothing.
+func (row RosterRow) withRaidSpec(raidSpec *string) RosterRow {
+	if raidSpec == nil {
+		return row
+	}
+	sp, ok := raidspec.ByKey(*raidSpec)
+	if !ok {
+		return row
+	}
+	row.Spec, row.Role = strp(sp.Name), strp(sp.Role)
+	row.specStr = sp.Name
+	if row.Class == nil {
+		row.Class, row.className = strp(sp.Class), sp.Class
+	}
+	return row
+}
+
 // describeRosterRows fills each roster row's spec_name and spec_icon, and its role when the
 // logs gave none. A row that does not resolve keeps what it had.
 func describeRosterRows(rows []RosterRow) {

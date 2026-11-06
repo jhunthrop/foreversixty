@@ -109,6 +109,19 @@ func zoneKeysForLog(logZone string) []string {
 	return keys
 }
 
+// openRaidForLog is the SQL condition that the guild_raids row aliased alias could take a log:
+// the guild's (guild), planned or locked with no log yet, of one of the zone keys (keys), its
+// window from lead hours before the start to tail hours after the end holding the log's anchor
+// (at), and not a raid an officer cleared this report (report) from. Each argument is a
+// placeholder. AutoMatch picks by it, and /report's logged night names the raid it finds.
+func openRaidForLog(alias, guild, keys, at, report, lead, tail string) string {
+	return alias + ".guild_id = " + guild + " and " + alias + ".status in ('planned','locked') and " +
+		alias + ".report_id is null and " + alias + ".zone = any(" + keys + ")" +
+		" and " + at + " >= " + alias + ".starts_at - make_interval(hours => " + lead + ")" +
+		" and " + at + " <= " + alias + ".starts_at + make_interval(mins => " + alias + ".duration_minutes) + make_interval(hours => " + tail + ")" +
+		" and not exists (select 1 from guild_raid_rejected_reports x where x.raid_id = " + alias + ".id and x.report_id = " + report + ")"
+}
+
 // AutoMatch ties a completed report to the guild's open raid it was for: a planned or locked
 // raid with no log, of the zone the log names, whose window (an hour before the start to six
 // after the end) holds the log's anchor, that an officer has not cleared this log from; the
@@ -137,11 +150,7 @@ func (s *Store) AutoMatch(ctx context.Context, reportID string) (Raid, bool, err
 			matched_by = $5, matched_at = now(), updated_at = now()
 		where id = (
 			select c.id from guild_raids c
-			where c.guild_id = $2 and c.status in ('planned','locked') and c.report_id is null
-			  and c.zone = any($3)
-			  and $4 >= c.starts_at - make_interval(hours => $6)
-			  and $4 <= c.starts_at + make_interval(mins => c.duration_minutes) + make_interval(hours => $7)
-			  and not exists (select 1 from guild_raid_rejected_reports x where x.raid_id = c.id and x.report_id = $1)
+			where `+openRaidForLog("c", "$2", "$3", "$4", "$1", "$6", "$7")+`
 			order by abs(extract(epoch from (c.starts_at - $4))), c.id limit 1
 			for update skip locked)
 		  and status in ('planned','locked') and report_id is null

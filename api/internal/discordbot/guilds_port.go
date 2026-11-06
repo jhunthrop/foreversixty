@@ -31,8 +31,9 @@ type GuildService interface {
 	GetRaid(ctx context.Context, guildID, raidID int64) (guilds.Raid, bool, error)
 	// MemberRaidView is the raid as a verified member sees it; found is false for anyone else.
 	MemberRaidView(ctx context.Context, guildID, viewerID, raidID int64) (guilds.RaidView, bool, error)
-	// NextRaidFor is the guild's next raid with the viewer's own sign-up; nil when none.
-	NextRaidFor(ctx context.Context, guildID, viewerID int64, headerKey *string, now time.Time) (*guilds.NextRaidView, error)
+	// NextRaidFirstFor is the guild's next raid (else its next run or event) with the viewer's
+	// own sign-up; nil when nothing is planned.
+	NextRaidFirstFor(ctx context.Context, guildID, viewerID int64, now time.Time) (*guilds.NextRaidView, error)
 	GuildName(ctx context.Context, guildID int64) (string, error)
 	// GuildRaidTimezone is the guild's IANA raid zone, "" when never set.
 	GuildRaidTimezone(ctx context.Context, guildID int64) (string, error)
@@ -40,6 +41,9 @@ type GuildService interface {
 	BotGuildFacts(ctx context.Context, guildID int64) (guilds.BotGuild, error)
 	// PublicRosterNames is the guild's verified characters with a public page, by name.
 	PublicRosterNames(ctx context.Context, guildID int64, typed string, limit int) ([]string, error)
+	// GuildSpecOf is the character's spec in the guild, the raid page's and roster's rule (a
+	// specs.json key; "" off the roster or unknown).
+	GuildSpecOf(ctx context.Context, guildID int64, characterKey string) (string, error)
 	// CharacterReadinessFacts is the readiness board's word and sync time for one character.
 	CharacterReadinessFacts(ctx context.Context, guildID int64, characterKey string) (guilds.ReadinessFacts, error)
 	// ActiveBuild is the client build the site serves; BuildItem one item of its tables.

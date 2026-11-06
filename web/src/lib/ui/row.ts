@@ -55,6 +55,16 @@ export function ownRowBand(own: boolean, pad: keyof typeof ROW_BAND_REACH): stri
   return rowBand(own ? ROW_BAND_OWN : null, pad);
 }
 
+/** The band's own content inset (12 px), as a row class. */
+const BAND_INSET = 'px-3';
+
+/** The viewer's own row in a list that must not grow past its edges (a grid column at the page's
+ *  content edge, guild round 3: the raid roster's band ran 4 px past 1344 at 1440). Every row,
+ *  lit or not, holds its content 12 px in, so the band fills the column and never reaches out. */
+export function ownRowBandInside(own: boolean): string {
+  return own ? `${ROW_BAND_OWN} ${BAND_INSET}` : BAND_INSET;
+}
+
 /** The label, sub and value classes of a row's text. */
 export const ROW_LABEL = 'text-[15px] font-semibold [overflow-wrap:anywhere]';
 export const ROW_SUB = 'text-muted text-[13px]';

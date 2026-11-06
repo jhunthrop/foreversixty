@@ -3,6 +3,7 @@
 // viewer can do about it. Part 1 depends on the feature, part 2 on the viewer and the guild's
 // billing, never on the tab. Pure, so every row of the spec's table is pinned without a page.
 import type { GuildCoveredView, GuildSubscribeView } from '../billing/contract';
+import communityLinks from '../../data/links.json';
 import type { ClaimHolder, ClaimStateView } from './api';
 import { guildGateCopy } from './copy';
 
@@ -24,6 +25,8 @@ export interface GateFacts {
   lapsed: boolean;
   /** The guild is on the Guild plan, so only the Raid guild features are gated. */
   guildTier: boolean;
+  /** Forever Sixty granted the plan (no Stripe billing contact): there is no Move to buy. */
+  granted: boolean;
   settingsHref: string;
   claimHref: string;
 }
@@ -32,13 +35,15 @@ export type GateAction =
   | { kind: 'link'; label: string; href: string }
   /** `Ask {crest}{name} to turn it on.`; a null holder has no character on the roster. */
   | { kind: 'ask'; holder: ClaimHolder | null }
-  | { kind: 'note'; text: string };
+  | { kind: 'note'; text: string }
+  /** A note with one outside link inside it: `{before}{link}{after}` (a granted plan's Move). */
+  | { kind: 'contact'; before: string; link: string; after: string; href: string };
 
 export interface GateFactsInput {
   claim: GateFacts['claim'];
   membership: {
     rank?: string;
-    covered?: Pick<GuildCoveredView, 'state'> | null;
+    covered?: (Pick<GuildCoveredView, 'state'> & Partial<Pick<GuildCoveredView, 'billed_by'>>) | null;
     subscribe?: Pick<GuildSubscribeView, 'trial_used'> | null;
   } | null;
   /** Both tools flags as the page holds them: on with Raid guild off is the Guild plan. */
@@ -51,12 +56,14 @@ export interface GateFactsInput {
 /** The gate's facts from what a guild page already reads: no request of its own. */
 export function gateFactsFrom(input: GateFactsInput): GateFacts {
   const { claim, membership, officerTools, raidGuildTools, settingsHref, claimHref } = input;
+  const covered = membership?.covered ?? null;
   return {
     claim,
     guildMaster: membership?.rank === 'leader',
     trialUsed: membership?.subscribe?.trial_used ?? null,
     lapsed: membership?.covered?.state === 'lapsed',
     guildTier: officerTools && !raidGuildTools,
+    granted: covered !== null && covered.state !== 'lapsed' && covered.billed_by === '',
     settingsHref,
     claimHref,
   };
@@ -65,6 +72,7 @@ export function gateFactsFrom(input: GateFactsInput): GateFacts {
 /** The holder's billing link: the plan preselected from a Raid guild feature. */
 function holderAction(feature: GateFeature, facts: GateFacts): GateAction {
   const raidGuildFeature = RAID_GUILD_FEATURES.has(feature);
+  if (raidGuildFeature && facts.guildTier && facts.granted) return grantedMove();
   if (raidGuildFeature && facts.guildTier) {
     return {
       kind: 'link',
@@ -78,6 +86,19 @@ function holderAction(feature: GateFeature, facts: GateFacts): GateAction {
     kind: 'link',
     label: trialOpen ? guildGateCopy.startTrial : guildGateCopy.subscribe,
     href: `${facts.settingsHref}${query}${BILLING_HASH}`,
+  };
+}
+
+/** A granted Guild plan has no upgrade to buy (settings shows no Move): ask us instead. */
+function grantedMove(): GateAction {
+  const { text, link } = guildGateCopy.grantedMove;
+  const at = text.indexOf(link);
+  return {
+    kind: 'contact',
+    before: text.slice(0, at),
+    link,
+    after: text.slice(at + link.length),
+    href: communityLinks.discordInvite,
   };
 }
 

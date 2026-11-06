@@ -12,6 +12,7 @@ import (
 // rosterCopy is the roster's words on the raid post (spec 2026-10-28 §P.7, the roster.* rows).
 var rosterCopy = struct {
 	Tanks, Healers, Melee, Ranged string // each takes %d
+	In                            string // a guild event's In list; takes %d
 	Late, Bench, Out              string // each takes %d
 	Continued                     string
 	Empty                         string
@@ -21,7 +22,7 @@ var rosterCopy = struct {
 	EmojiFormat                   string // %s the emoji name, %s its id, %s the name
 }{
 	Tanks: "Tanks · %d", Healers: "Healers · %d", Melee: "Melee · %d", Ranged: "Ranged · %d",
-	Late: "Late · %d", Bench: "Bench · %d", Out: "Out · %d",
+	In: "In · %d", Late: "Late · %d", Bench: "Bench · %d", Out: "Out · %d",
 	Continued: "​", Empty: "None yet", More: "and %d more", OutJoin: ", ", Sep: " · ",
 	EmojiFormat: "<:%s:%s> %s",
 }
@@ -84,10 +85,15 @@ func defaultLimits() rosterLimits {
 // rosterFields are the groups, Late, Bench and Out of the post (spec §P.9.2), with the guard
 // keeping the whole embed under Discord's 6000: while over 5900, the tail of Out, then Bench,
 // then the largest group becomes `and {n} more`.
-func rosterFields(roster []RosterLine, marks Marks, fixed int) []EmbedField {
+// noRoles draws a guild event's one plain list (eventRosterFields) instead.
+func rosterFields(roster []RosterLine, marks Marks, fixed int, noRoles bool) []EmbedField {
 	lim := defaultLimits()
+	within := rosterFieldsWithin
+	if noRoles {
+		within = eventRosterFields
+	}
 	for {
-		fields := rosterFieldsWithin(roster, marks, lim)
+		fields := within(roster, marks, lim)
 		if fixed+fieldsChars(fields) <= embedGuardChars || !lim.tighten(roster) {
 			return fields
 		}
@@ -150,6 +156,31 @@ func rosterFieldsWithin(roster []RosterLine, marks Marks, lim rosterLimits) []Em
 			fields = append(fields, groupFields(fmt.Sprintf(g.label, len(rows)), lines(rows, marks), lim.group[i])...)
 		}
 		fields = append(fields, listFields(roster, marks, lim)...)
+	}
+	if out := outNames(roster); len(out) > 0 {
+		fields = append(fields, EmbedField{Name: fmt.Sprintf(rosterCopy.Out, len(out)), Value: outValue(out, lim.outChars)})
+	}
+	return fields
+}
+
+// eventRosterFields are a guild event's sign-ups (events spec §3.5): no role groups and no spec,
+// one list grouped In, Late and Bench, each `{Name} · {Class}` and drawn only when someone is in
+// it, then Out by name as on a raid.
+func eventRosterFields(roster []RosterLine, _ Marks, lim rosterLimits) []EmbedField {
+	var fields []EmbedField
+	for _, list := range []struct {
+		label, state string
+		most         int
+	}{{rosterCopy.In, rosterIn, lim.group[0]}, {rosterCopy.Late, rosterLate, lim.late}, {rosterCopy.Bench, rosterBench, lim.bench}} {
+		rows := sortedState(roster, list.state)
+		if len(rows) == 0 {
+			continue
+		}
+		ls := make([]string, len(rows))
+		for i, r := range rows {
+			ls[i] = textLine(rosterName(r.Name), r.Class, raidspec.Spec{}, false)
+		}
+		fields = append(fields, groupFields(fmt.Sprintf(list.label, len(rows)), ls, list.most)...)
 	}
 	if out := outNames(roster); len(out) > 0 {
 		fields = append(fields, EmbedField{Name: fmt.Sprintf(rosterCopy.Out, len(out)), Value: outValue(out, lim.outChars)})

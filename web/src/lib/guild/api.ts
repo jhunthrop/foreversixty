@@ -127,6 +127,15 @@ export interface GuildHomeSummary {
   updated_at: string;
 }
 
+/** The raid the needs line means (`standing.needs_raid`, guild loop round 3). */
+export interface NeedsRaid {
+  title: string;
+  starts_at: string;
+  /** The character the viewer's account signed up for that raid (In, then Late, then Bench);
+   *  null with no such sign-up, when the line keeps the header character (guild round 3). */
+  character_key?: string | null;
+}
+
 /** `GET .../home`'s `standing` -- member and officer only; `null` when the viewer has no
  *  ranked peers to compare against (never a fabricated rank of 1 of 1). */
 export interface GuildHomeStanding {
@@ -140,6 +149,18 @@ export interface GuildHomeStanding {
    *  directly, never re-deriving its own phrasing from the Readiness endpoint (spec §8: no
    *  new round trip from Overview). */
   needs_before_next_raid: string[];
+  /** The raid those needs are for, raid-first like Readiness and /raid (guild loop round 3): the
+   *  needs line reads `before {Title}, {Thu 10 Dec}` with it. Absent on an older API. */
+  needs_raid?: NeedsRaid | null;
+}
+
+/** One row of `GET /v1/guilds/search` (`data.rows`, at most 5): a stranger's "Did you mean". */
+export interface GuildSearchRow {
+  name: string;
+  region: string;
+  ruleset: string;
+  /** The guild page's site path, `/guild/{region}/{ruleset}/{slug}`. */
+  path: string;
 }
 
 export interface ClaimPendingView {
@@ -219,6 +240,9 @@ export interface GuildRosterRow {
   item_level?: number;
   /** The export's level, else the addon roster's; null with neither or below gear consent. */
   level?: number | null;
+  /** The character the account marked as its main (`users.main_character_key`); absent on an API
+   *  that does not send it yet, which reads as unmarked (guild round 3). */
+  is_main?: boolean;
   consent: GuildConsent;
   attendance?: GuildRosterAttendance;
   /** Raid mode only: the same figure over the guild's last 30 logged raids. */
@@ -1163,6 +1187,11 @@ export interface GuildLootEncounter {
   name: string;
   zone: string;
   killed: boolean;
+  /** Separate nights with a kill (days in the guild's raid zone). Optional only for fixtures
+   *  written before guild round 3; the API always sends it. */
+  kill_nights?: number;
+  /** The API's rule: kill_nights >= 3 reads "on farm"; fewer kill nights read "down". */
+  on_farm?: boolean;
 }
 
 export interface GuildLootCandidate {
@@ -1186,6 +1215,8 @@ export interface GuildLootCandidate {
   ilvl_delta: number | null;
   attendance: GuildRosterAttendance;
   already_equivalent: boolean;
+  /** The drop fills an empty slot: say so, never the drop's item level as a gain (loot spec §3.2). */
+  fills_empty_slot?: boolean;
   /** The item they wear now in the drop's slot; empty when the slot is empty. */
   replaces: string;
   /** The same item for the shared item link; `null` for an empty slot. */

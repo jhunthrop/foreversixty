@@ -217,17 +217,23 @@ const ONYXIA = {
 } as unknown as GuildRaidView;
 
 describe('classRow', () => {
-  it('lists the API’s classes in the game’s order, zeros kept, with each class’s specs', () => {
+  it('lists the classes with someone In or Late in the game’s order, each with its specs, never a 0', () => {
     const row = classRow(ONYXIA);
-    expect(row.map((item) => `${item.name} ${item.count}`)).toEqual([
-      'Warrior 2',
-      'Hunter 2',
-      'Priest 2',
-      'Mage 0',
-    ]);
+    expect(row.map((item) => `${item.name} ${item.count}`)).toEqual(['Warrior 2', 'Hunter 2', 'Priest 2']);
     expect(row[0]?.specs).toBe('Fury (tank) 1, Protection 1');
     expect(row[2]?.accessibleName).toBe('Priest 2: Holy 2');
-    expect(row[3]?.accessibleName).toBe('Mage 0');
+  });
+
+  it('leaves out a class whose only player is benched (guild round 3)', () => {
+    const raid = {
+      ...ONYXIA,
+      counts: { ...ONYXIA.counts, classes: { paladin: 0, priest: 1 } },
+      signups: [
+        signup('Ash', 'paladin', 'paladin-holy', 'healer', 'bench', 'healer'),
+        signup('Quill', 'priest', 'priest-holy', 'healer', 'in', 'healer'),
+      ],
+    } as GuildRaidView;
+    expect(classRow(raid).map((item) => item.classSlug)).toEqual(['priest']);
   });
 
   it('puts the most played spec first, then catalogue order, an unresolved spec as Unknown', () => {
@@ -251,9 +257,7 @@ describe('classRow', () => {
     expect(items.map((item) => `${item.classSlug} ${item.count}`)).toEqual([
       'warrior 2',
       'hunter 2',
-      'rogue 0',
       'priest 2',
-      'mage 0',
     ]);
     expect(classRow({ ...ONYXIA, counts, signups: [], not_signed: [] })).toEqual([]);
   });
@@ -289,5 +293,25 @@ describe('signupListText (spec 4.2)', () => {
     expect(signupListText(none, CHICAGO).split('\n').slice(1)).toEqual([
       '0 signed up: 2 tanks, 1 healer, 1 melee, 1 ranged',
     ]);
+  });
+
+  describe('a guild event (guild round 3)', () => {
+    const EVENT = { ...ONYXIA, zone_kind: 'event' } as GuildRaidView;
+
+    it('says no role words in the count line: only the late count', () => {
+      expect(raidBreakdownParts({ ...EVENT, counts: { ...EVENT.counts, late: 0 } })).toEqual([]);
+      expect(raidBreakdownParts({ ...EVENT, counts: { ...EVENT.counts, late: 2 } })).toEqual(['2 late']);
+    });
+
+    it('draws no class row', () => {
+      expect(classRow(EVENT)).toEqual([]);
+    });
+
+    it('copies the In rows as one list, with no Classes line and no role groups', () => {
+      const list = signupListText(EVENT, 'America/Chicago', 'en-US');
+      expect(list).not.toContain('Classes:');
+      expect(list).not.toMatch(/^(Tanks|Healers|Melee|Ranged):/m);
+      expect(list).toMatch(/^In: /m);
+    });
   });
 });

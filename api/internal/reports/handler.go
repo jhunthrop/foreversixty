@@ -217,6 +217,9 @@ type Summary struct {
 	LoggingCharacter *LoggingCharacter `json:"logging_character"`
 	LastUploadAt     *time.Time        `json:"last_upload_at"`
 	HeartbeatAt      *time.Time        `json:"heartbeat_at"`
+	// StartedAt is the log's first fight (fights.start_ms), the night it was played: "Your
+	// reports" dates a row by it, not by the upload. Null before any fight arrives.
+	StartedAt *time.Time `json:"started_at"`
 }
 
 // MinePage is the body of GET /v1/reports?mine=1.

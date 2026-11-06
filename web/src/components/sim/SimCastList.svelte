@@ -1,7 +1,6 @@
 <!-- web/src/components/sim/SimCastList.svelte -->
 <!-- The timeline's cast list (spec 2026-11-04-sim-results 3.7): the presses in view, five rows
-     until "Show all". It is the table a screen reader reads. The live /sim page keeps SampleLog's
-     full per-resource table until that page adopts this layout. -->
+     until "Show all". It is the table a screen reader reads, on /sim/<id> and after a run on /sim alike. -->
 <script lang="ts">
   import { button } from '../../lib/ui/button';
   import type { ActionNames } from '../../lib/sim/action-names';

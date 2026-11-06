@@ -88,7 +88,7 @@ describe('the band', () => {
       size: 20,
     });
     const body = ready(event);
-    expect(text(between(body, 'raid-title', 'raid-when'))).toBe('Stormwind photo · Guild event · 20');
+    expect(text(between(body, 'raid-title', 'raid-when'))).toBe('Stormwind photo · Guild event · 20 players');
     expect(between(body, 'raid-title-zone', 'raid-when')).not.toBe('');
     expect(body).toMatch(/class="[^"]*normal-case[^"]*" data-testid="raid-title-zone"/);
   });
@@ -170,13 +170,12 @@ describe('the band', () => {
     });
     const row = between(ready(raid), 'raid-class-row', 'guild-tabs');
     expect(ready(raid)).toContain('aria-label="Classes signed up"');
-    expect(row.indexOf('raid-class-warrior')).toBeLessThan(row.indexOf('raid-class-mage'));
-    expect(row.indexOf('raid-class-mage')).toBeLessThan(row.indexOf('raid-class-druid'));
+    expect(row.indexOf('raid-class-warrior')).toBeLessThan(row.indexOf('raid-class-druid'));
     expect(row).toContain('title="Fury (tank) 1, Protection 1"');
     expect(row).toContain('<span class="sr-only">Warrior 2: Fury (tank) 1, Protection 1</span>');
-    expect(row).toContain('<span class="sr-only">Mage 0</span>');
+    // A class with nobody In or Late is left out (guild round 3), never a greyed `Mage 0`.
+    expect(row).not.toContain('raid-class-mage');
     expect(row).toMatch(/hidden text-\[13px\] font-semibold md:inline/);
-    expect(row).toMatch(/opacity-45/);
   });
 
   it('marks a raid still ahead in gold, and a cancelled or started one muted', () => {

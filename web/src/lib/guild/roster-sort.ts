@@ -161,10 +161,10 @@ export function orderRosterForTab(
 /**
  * Spec §4.B's main/alt grouping (`guild_characters.user_id`, `account_key` on the contract's
  * `RosterRow`): two or more characters sharing an `account_key` render a small "alt of
- * {main}" tag under the alt's own spec line, the main's own row unmarked. The API sends no
- * main/alt flag of its own, so this picks the highest-item-level row in each account as the
- * main (ties broken by name, for a stable result) -- a defensible default over an unordered
- * group, never a fabricated designation. Returns a map of every ALT's `character_key` to
+ * {main}" tag under the alt's own spec line, the main's own row unmarked. The main is the
+ * character the player marked (`is_main`, the account's `main_character_key`), else the highest
+ * level, then the highest item level, then the name, for a stable result (guild round 3: item
+ * level alone made a geared alt the main). Returns a map of every ALT's `character_key` to
  * its main's display name; a row absent from the map (a solo account, or the main itself)
  * renders no tag.
  */
@@ -180,7 +180,11 @@ export function altOfMainName(rows: readonly GuildRosterRow[]): ReadonlyMap<stri
   for (const group of byAccount.values()) {
     if (group.length < 2) continue;
     const [main] = [...group].sort(
-      (a, b) => (b.item_level ?? -1) - (a.item_level ?? -1) || a.name.localeCompare(b.name),
+      (a, b) =>
+        Number(b.is_main === true) - Number(a.is_main === true) ||
+        (b.level ?? -1) - (a.level ?? -1) ||
+        (b.item_level ?? -1) - (a.item_level ?? -1) ||
+        a.name.localeCompare(b.name),
     );
     for (const row of group) {
       if (row.character_key !== main.character_key) result.set(row.character_key, main.name);

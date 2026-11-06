@@ -581,6 +581,8 @@ func serve(log *slog.Logger) error {
 	// attribution (loot) resolve a user id to a battletag through this, the same
 	// Accounts dependency guilds.Service already takes below.
 	guildStore.Accounts = authStore
+	// A member who rejoins by invite gets his synced characters back through the addon sync.
+	guildStore.Exports = &addon.Store{Pool: pool, Log: log}
 	roleSyncer := linkedRoleSyncer(cfg, pool, log)
 	entStore := entitlementsStore(pool, roleSyncer)
 	authenticator := &auth.Authenticator{

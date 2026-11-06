@@ -18,7 +18,8 @@
     kind: 'status' | 'viewer';
     status?: ChipStatus;
     state?: GuildSignupState | null;
-    role?: GuildRaidRole;
+    /** `null`: the night counts no roles (a guild event), so the chip reads `In` alone. */
+    role?: GuildRaidRole | null;
     testid?: string;
   } = $props();
 
@@ -37,12 +38,12 @@
 
   function viewerChip(
     answer: GuildSignupState | null,
-    played: GuildRaidRole,
+    played: GuildRaidRole | null,
   ): { text: string; recipe: string } {
     if (answer === null) return { text: raidCopy.subheads.notSigned, recipe: SITE };
     const word = raidCopy.segments[answer];
     if (answer === 'in' || answer === 'late')
-      return { text: `${word} · ${raidCopy.roleLabels[played]}`, recipe: KILL };
+      return { text: played === null ? word : `${word} · ${raidCopy.roleLabels[played]}`, recipe: KILL };
     return { text: word, recipe: SAMPLE };
   }
 

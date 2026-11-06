@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { bisSourceBuild } from '../../../scripts/bis-source-build.mjs';
 import { loadBisFile, readSpecCatalog } from '../bis/load';
 import activeBuild from '../../data/active-build.json';
+import type { BisBand, SpecCatalogEntry } from '../bis/types';
 import { band, bisFile, catalogEntry } from './tier-test-support';
 import { buildTierData, loadTierData } from './tier-load';
 
@@ -41,6 +42,8 @@ const deps = (files: Record<string, ReturnType<typeof bisFile>>) => ({
   catalog: [FURY, ARMS, PROT],
   loadFile: (spec: string) => files[spec] ?? null,
   readBossSwingSeconds: () => 2,
+  rankingSimHref: (_entry: SpecCatalogEntry, entryBand: BisBand) =>
+    entryBand.role === 'tank' ? undefined : `/sim?code=${entryBand.spec}-${entryBand.faction}&run=1`,
 });
 
 describe('buildTierData', () => {
@@ -50,6 +53,16 @@ describe('buildTierData', () => {
     expect(data.lists.horde.dps.map((r) => r.name)).toEqual(['Arms', 'Fury']);
     expect(data.lists.alliance.dps[0]!.race).toBe('Night Elf');
     expect(data.lists.horde.dps[0]!.race).toBe('Troll');
+  });
+
+  it("links each row to its own faction's band's ranking sim, and a row the deps give none to without one", () => {
+    const data = buildTierData(deps(filesFor()));
+    expect(data.lists.alliance.dps.map((r) => r.simHref)).toEqual([
+      '/sim?code=warrior-fury-alliance&run=1',
+      '/sim?code=warrior-arms-alliance&run=1',
+    ]);
+    expect(data.lists.horde.dps[0]!.simHref).toBe('/sim?code=warrior-arms-horde&run=1');
+    expect(data.lists.alliance.tank[0]!.simHref).toBeUndefined();
   });
 
   it('reads the raid preset, never the bare entry', () => {
