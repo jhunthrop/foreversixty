@@ -1,6 +1,6 @@
 # Character page: experience spec
 
-Status: rulings recorded, mocks and build to follow on `lane/character`. Author: home lane, 2026-11-06. System: `2026-11-05-web-layout.md` (type §3.3, primitives §3A, the shared Paperdoll §4, BiS §5); pattern: `2026-11-06-home.md` (mock every state, build from `ui/` primitives, parity at 1440).
+Status: built on `lane/character-build` (mocks, build and parity gate; section 5 records the lane's calls). Author: home lane, 2026-11-06. System: `2026-11-05-web-layout.md` (type §3.3, primitives §3A, the shared Paperdoll §4, BiS §5); pattern: `2026-11-06-home.md` (mock every state, build from `ui/` primitives, parity at 1440).
 
 Route: `/character/<region>/<ruleset>/<slug>` (`pages/character/[...path].astro` and the `/character` shell, island `components/Character.svelte`). Out of scope: `/logs`, `/reports`, `/rankings`, `/ratings` (the redesign lane); this page only links to them.
 
@@ -31,3 +31,30 @@ C13. **Never:** a number without its unit, a slot name with no icon, a marketing
 ## 4. Data gaps
 - DPS per slot when the worn item is not a listed runner-up of a weapon slot (C2: shown as no number).
 - Drop chance for the inspector's pick comes from the BiS page's `loot.json` facts; the client does not load them today.
+
+## 5. Mocks, data and the gate (character lane, 2026-11-06)
+
+| What | Path |
+|---|---|
+| Generator | `design/mocks/ws_character.py` (only `ws_prims` primitives; `assert_no_surface_styles` holds; `ws_prims` gains `Disclosure`, the twin of the new `ui/Disclosure.svelte`) |
+| Mocks, one per state | `design/mocks/web/web-character-<state>.html` for the nine states of section 3 |
+| States the gate checks | `design/mocks/web/character-parity.json` (1440 x 1000) |
+| Shared data | `web/tests/e2e/fixtures/character/*.json` (`python3 design/mocks/character_fixtures.py`) plus the home fixtures for the level 34 hunter. Every worn item is the band's pick or a listed runner-up, so every gain is the ranker's own number. The fixture build prerenders `/character/us/normal/felsnap` and `/character/us/hardcore/thalrin` beside Elyra (`lib/report/shell-paths.ts`) |
+| Gate | `web/tests/e2e/parity-character.spec.ts` through `tests/e2e/support/character-page.ts`; side-by-sides in `web/test-results/parity/character-<state>.png`; the chrome captures in `design/mocks/data/chrome/web-character-*.json` |
+
+Build: `components/Character.svelte` (states), `character/CharacterGear.svelte` (Section `Gear`, the Plate, the shared Paperdoll in `worn` mode and its Inspector), `CharacterScore.svelte` (C5), `CharacterOwnerSections.svelte` (C8), `CharacterMissing.svelte` (C10); the words in `lib/character/page-view.ts`, the cells in `lib/character/doll.ts`, the reads in `lib/character/gear-context.ts`. Cut: `CharacterGearPanel`, `ProfileDescriptor`, `CharacterInGame`, `CharacterNotFound`, `CharacterUnlogged`, `HistoryMount`, `HistoryReserve`, `UpgradeRow`, `lib/gear/panel.ts`, `lib/character-prompt.ts`, `lib/character-layout.ts`, `lib/character/history-mount.ts`, the body render and the `Every ranked fight` table.
+
+Lane calls:
+- **Layout `ledger`, not `split`.** Below 1760 the rail would be an empty 340 px column (the Inspector lives in the Plate, as on BiS); one column keeps the doll's rows wide. The Inspector sits at the side from 1760, in place below, as the shared Paperdoll does everywhere.
+- **The Plate sits in a `Gear` Section** (meta `Level 60 raid` or `Levels 30 to 39`, action `Best in slot`), as home's upgrades do; the unread state titles it `Best in slot for level 30 to 39` and draws the band's picks with their sources.
+- **Head answer:** `Upgrades available`, `+128.9 HPS` (the band's unit: HPS for a healer), with the Forever Score as a small Figure beside it and `Open in simulator ›`, `Talents in planner ›`. No answer when nothing is priced or the export was not read.
+- **Spec fallback:** with no talents, builds or fights, the spec is the one the gear is priced for (`gear_spec`), so a leveler still reads `Beast Mastery Hunter` and gets a BiS link.
+- **C5:** the parts open in place under `Parts and trend` (rows of points against each ceiling); the trend chart stays in the owner's History.
+- **C8:** History and Coach history are Disclosures; their charts and list are read only when opened. A free owner gets one row to the plans.
+- **C10:** the lookup is the name field and `Look up` (to `/characters?q=<name>`); region and ruleset are answered by the `Same name elsewhere` rows, which come first. `Sign in to see your characters` shows only to a signed-out viewer; the addon row is `ctaCopy.getAddonAndCompanion`.
+- **`All ranked fights (N) ›`** goes to `/logs` until logs can filter by character (the redesign lane).
+
+Data gaps (named, not built):
+- **Enchants (C4):** the API's `CharacterGearSlot` carries no worn enchant, so the cell has no enchant mark and no red "missing" mark. It needs `worn.enchant_id` from the export (a migration and an API field).
+- **Drop chance** comes from the API's `pick.chance`, so the inspector shows it without `loot.json`; the BiS runners-up carry no chance.
+- **C12 phone order:** the sync line and the two head links stay in the head on a phone; moving them under the doll needs a PageHeader slot below the Plate.
