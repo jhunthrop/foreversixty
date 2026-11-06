@@ -101,7 +101,7 @@ def example_plate() -> str:
 def how_to_start() -> str:
     return sec('How to start', Rows([
         Row('Sign in with Battle.net', 'Imports your characters with their level, gear and item level.', rank='1'),
-        Row('Install the addon', 'Rates every item in your bags with your spec&rsquo;s weights.', rank='2'),
+        Row('Install the addon (optional)', 'Rates every item in your bags with your spec&rsquo;s weights.', rank='2'),
     ], open_=True))
 
 
@@ -179,10 +179,10 @@ def logs_section(reports: dict) -> str:
 
 
 def setup_section(me: dict, char: dict) -> str:
-    return sec('Set up', Checklist([
-        ('ok', 'Battle.net import', f"Imported {short_date(me['bnet_imported_at'])}", None),
-        ('ok', 'Addon export', f"Exported {short_date(char['build']['captured_at'])}", None),
-    ]))
+    """Battle.net is the gear source (owner correction 2026-11-06); the addon is an optional extra, no status."""
+    check = Checklist([('ok', 'Battle.net import', f"Imported {short_date(me['bnet_imported_at'])}", None)])
+    addon = Rows([Row('Addon (optional)', 'Rates every item in your bags with your weights.', trail='<span class="link">Get the addon &rsaquo;</span>')], open_=True)
+    return sec('Set up', check + addon)
 
 
 def guild_section(char: dict) -> str:

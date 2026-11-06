@@ -47,7 +47,6 @@
   let { me, character }: { me: Me; character: MeCharacter } = $props();
 
   const CREST_PX = 56;
-  const now = new Date();
   const viewerTz = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
   let upgradesStatus = $state<'loading' | 'ready' | 'failed' | 'none'>('loading');
@@ -144,7 +143,7 @@
     <HomeSummary text={step?.text} action={step?.action} />
   {/snippet}
   {#snippet rail()}
-    <HomeRail {me} {character} {logs} guildHref={links.guild} {now} />
+    <HomeRail {me} {character} {logs} guildHref={links.guild} />
   {/snippet}
   {#if raid !== null}
     <Section
