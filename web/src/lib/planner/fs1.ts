@@ -21,6 +21,7 @@
 // entries readable by a version 1 one.
 import { canAddPoint, withPoint, type TalentIndex } from './rules';
 import { SLOTS, type Gear, type Slot } from './types';
+import { decodePrepSection, isPrepSection, type FS1Prep } from './fs1-prep';
 
 export const FS1_PREFIX = 'FS1';
 const TREES = 3;
@@ -58,7 +59,7 @@ export interface FS1Loadout {
   treeRanks: number[][];
 }
 
-export interface FS1Build {
+export interface FS1Build extends FS1Prep {
   dataBuild: string;
   classSlug: string;
   raceSlug: string;
@@ -393,6 +394,8 @@ export function decodeFS1(code: string): FS1Result {
         name: decodeName(at === -1 ? field : field.slice(0, at)),
         realm: decodeName(at === -1 ? '' : field.slice(at + 1)),
       };
+    } else if (isPrepSection(name)) {
+      Object.assign(build, decodePrepSection(name, field));
     } else if (name !== '') {
       // Contract 7: unknown sections are ignored by the decoder and reported in its
       // result. An addon a version ahead of the site is a thing that will happen, and
