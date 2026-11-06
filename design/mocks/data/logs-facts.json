@@ -1,0 +1,1264 @@
+{
+ "encounters": [
+  {
+   "id": 9001,
+   "name": "Onyxia",
+   "slug": "onyxia"
+  },
+  {
+   "id": 9002,
+   "name": "Warden Kelthas",
+   "slug": "warden-kelthas"
+  }
+ ],
+ "board_signed_out": {
+  "rows": [
+   {
+    "rank": 1,
+    "player": {
+     "key": "us/normal/reglitch",
+     "name": "Reglitch",
+     "class": "Priest",
+     "spec": "Shadow"
+    },
+    "value": 888,
+    "size": 40,
+    "fought_at": "2026-11-05T20:39:23.284Z",
+    "duration_ms": 161000,
+    "talent_split": "31/20/0",
+    "build_id": "b1",
+    "trinkets": [],
+    "buff_count": 8,
+    "report_id": "report1",
+    "fight_index": 1,
+    "state": "ok",
+    "execution_score": 0.9
+   },
+   {
+    "rank": 2,
+    "player": {
+     "key": "us/normal/thorgrim-ashveil",
+     "name": "Thorgrim Ashveil",
+     "class": "Warrior",
+     "spec": "Fury"
+    },
+    "guild": {
+     "name": "Olympus XXVII",
+     "ruleset": "normal",
+     "region": "us"
+    },
+    "value": 876,
+    "size": 40,
+    "fought_at": "2026-11-04T20:39:23.285Z",
+    "duration_ms": 162000,
+    "talent_split": "31/20/0",
+    "build_id": "b2",
+    "trinkets": [],
+    "buff_count": 8,
+    "report_id": "report2",
+    "fight_index": 1,
+    "state": "ok",
+    "execution_score": 0.9
+   },
+   {
+    "rank": 3,
+    "player": {
+     "key": "us/normal/emberlyn",
+     "name": "Emberlyn",
+     "class": "Mage",
+     "spec": "Frost"
+    },
+    "value": 864,
+    "size": 40,
+    "fought_at": "2026-11-03T20:39:23.285Z",
+    "duration_ms": 163000,
+    "talent_split": "31/20/0",
+    "build_id": "b3",
+    "trinkets": [],
+    "buff_count": 8,
+    "report_id": "report3",
+    "fight_index": 1,
+    "state": "ok",
+    "execution_score": 0.9
+   }
+  ],
+  "total": 3,
+  "page": 1,
+  "per_page": 100,
+  "updated_at": "2026-12-13T09:00:00Z",
+  "deduped": true
+ },
+ "board_you": {
+  "rows": [
+   {
+    "rank": 1,
+    "player": {
+     "key": "us/normal/thorgrim-ashveil",
+     "name": "Thorgrim Ashveil",
+     "class": "Warrior",
+     "spec": "Fury"
+    },
+    "value": 888,
+    "size": 40,
+    "fought_at": "2026-11-05T20:39:23.285Z",
+    "duration_ms": 161000,
+    "talent_split": "31/20/0",
+    "build_id": "b1",
+    "trinkets": [],
+    "buff_count": 8,
+    "report_id": "report1",
+    "fight_index": 1,
+    "state": "ok",
+    "execution_score": 0.9
+   },
+   {
+    "rank": 2,
+    "player": {
+     "key": "us/normal/valkyra",
+     "name": "Valkyra",
+     "class": "Warrior",
+     "spec": "Fury"
+    },
+    "guild": {
+     "name": "Olympus XXVII",
+     "ruleset": "normal",
+     "region": "us"
+    },
+    "value": 876,
+    "size": 40,
+    "fought_at": "2026-11-04T20:39:23.285Z",
+    "duration_ms": 162000,
+    "talent_split": "31/20/0",
+    "build_id": "b2",
+    "trinkets": [],
+    "buff_count": 8,
+    "report_id": "report2",
+    "fight_index": 1,
+    "state": "ok",
+    "execution_score": 0.9
+   },
+   {
+    "rank": 3,
+    "player": {
+     "key": "us/normal/brannoch",
+     "name": "Brannoch",
+     "class": "Warrior",
+     "spec": "Fury"
+    },
+    "value": 864,
+    "size": 40,
+    "fought_at": "2026-11-03T20:39:23.285Z",
+    "duration_ms": 163000,
+    "talent_split": "31/20/0",
+    "build_id": "b3",
+    "trinkets": [],
+    "buff_count": 8,
+    "report_id": "report3",
+    "fight_index": 1,
+    "state": "ok",
+    "execution_score": 0.9
+   },
+   {
+    "rank": 4,
+    "player": {
+     "key": "us/normal/kaelith-rowe",
+     "name": "Kaelith Rowe",
+     "class": "Warrior",
+     "spec": "Fury"
+    },
+    "guild": {
+     "name": "Olympus XXVII",
+     "ruleset": "normal",
+     "region": "us"
+    },
+    "value": 852,
+    "size": 40,
+    "fought_at": "2026-11-02T20:39:23.285Z",
+    "duration_ms": 164000,
+    "talent_split": "31/20/0",
+    "build_id": "b4",
+    "trinkets": [],
+    "buff_count": 8,
+    "report_id": "report4",
+    "fight_index": 1,
+    "state": "ok",
+    "execution_score": 0.9
+   },
+   {
+    "rank": 5,
+    "player": {
+     "key": "us/normal/rhoswen",
+     "name": "Rhoswen",
+     "class": "Warrior",
+     "spec": "Fury"
+    },
+    "value": 840,
+    "size": 40,
+    "fought_at": "2026-11-01T20:39:23.285Z",
+    "duration_ms": 165000,
+    "talent_split": "31/20/0",
+    "build_id": "b5",
+    "trinkets": [],
+    "buff_count": 8,
+    "report_id": "report5",
+    "fight_index": 1,
+    "state": "ok",
+    "execution_score": 0.9
+   },
+   {
+    "rank": 6,
+    "player": {
+     "key": "us/normal/dunmar",
+     "name": "Dunmar",
+     "class": "Warrior",
+     "spec": "Fury"
+    },
+    "guild": {
+     "name": "Olympus XXVII",
+     "ruleset": "normal",
+     "region": "us"
+    },
+    "value": 828,
+    "size": 40,
+    "fought_at": "2026-10-31T20:39:23.285Z",
+    "duration_ms": 166000,
+    "talent_split": "31/20/0",
+    "build_id": "b6",
+    "trinkets": [],
+    "buff_count": 8,
+    "report_id": "report6",
+    "fight_index": 1,
+    "state": "ok",
+    "execution_score": 0.9
+   },
+   {
+    "rank": 7,
+    "player": {
+     "key": "us/normal/tessiel-vane",
+     "name": "Tessiel Vane",
+     "class": "Warrior",
+     "spec": "Fury"
+    },
+    "value": 816,
+    "size": 40,
+    "fought_at": "2026-10-30T20:39:23.285Z",
+    "duration_ms": 167000,
+    "talent_split": "31/20/0",
+    "build_id": "b7",
+    "trinkets": [],
+    "buff_count": 8,
+    "report_id": "report7",
+    "fight_index": 1,
+    "state": "ok",
+    "execution_score": 0.9
+   },
+   {
+    "rank": 8,
+    "player": {
+     "key": "us/normal/ironvow",
+     "name": "Ironvow",
+     "class": "Warrior",
+     "spec": "Fury"
+    },
+    "guild": {
+     "name": "Olympus XXVII",
+     "ruleset": "normal",
+     "region": "us"
+    },
+    "value": 804,
+    "size": 40,
+    "fought_at": "2026-10-29T20:39:23.285Z",
+    "duration_ms": 168000,
+    "talent_split": "31/20/0",
+    "build_id": "b8",
+    "trinkets": [],
+    "buff_count": 8,
+    "report_id": "report8",
+    "fight_index": 1,
+    "state": "ok",
+    "execution_score": 0.9
+   },
+   {
+    "rank": 9,
+    "player": {
+     "key": "us/normal/gaelwyn",
+     "name": "Gaelwyn",
+     "class": "Warrior",
+     "spec": "Fury"
+    },
+    "value": 792,
+    "size": 40,
+    "fought_at": "2026-10-28T20:39:23.285Z",
+    "duration_ms": 169000,
+    "talent_split": "31/20/0",
+    "build_id": "b9",
+    "trinkets": [],
+    "buff_count": 8,
+    "report_id": "report9",
+    "fight_index": 1,
+    "state": "ok",
+    "execution_score": 0.9
+   },
+   {
+    "rank": 10,
+    "player": {
+     "key": "us/normal/hrafnild",
+     "name": "Hrafnild",
+     "class": "Warrior",
+     "spec": "Fury"
+    },
+    "guild": {
+     "name": "Olympus XXVII",
+     "ruleset": "normal",
+     "region": "us"
+    },
+    "value": 780,
+    "size": 40,
+    "fought_at": "2026-10-27T20:39:23.285Z",
+    "duration_ms": 170000,
+    "talent_split": "31/20/0",
+    "build_id": "b10",
+    "trinkets": [],
+    "buff_count": 8,
+    "report_id": "report10",
+    "fight_index": 1,
+    "state": "ok",
+    "execution_score": 0.9
+   },
+   {
+    "rank": 11,
+    "player": {
+     "key": "us/normal/morvain-holt",
+     "name": "Morvain Holt",
+     "class": "Warrior",
+     "spec": "Fury"
+    },
+    "value": 768,
+    "size": 40,
+    "fought_at": "2026-10-26T20:39:23.285Z",
+    "duration_ms": 171000,
+    "talent_split": "31/20/0",
+    "build_id": "b11",
+    "trinkets": [],
+    "buff_count": 8,
+    "report_id": "report11",
+    "fight_index": 1,
+    "state": "ok",
+    "execution_score": 0.9
+   },
+   {
+    "rank": 12,
+    "player": {
+     "key": "us/normal/sellar",
+     "name": "Sellar",
+     "class": "Warrior",
+     "spec": "Fury"
+    },
+    "guild": {
+     "name": "Olympus XXVII",
+     "ruleset": "normal",
+     "region": "us"
+    },
+    "value": 756,
+    "size": 40,
+    "fought_at": "2026-10-25T20:39:23.285Z",
+    "duration_ms": 172000,
+    "talent_split": "31/20/0",
+    "build_id": "b12",
+    "trinkets": [],
+    "buff_count": 8,
+    "report_id": "report12",
+    "fight_index": 1,
+    "state": "ok",
+    "execution_score": 0.9
+   },
+   {
+    "rank": 13,
+    "player": {
+     "key": "us/normal/orsolya",
+     "name": "Orsolya",
+     "class": "Warrior",
+     "spec": "Fury"
+    },
+    "value": 744,
+    "size": 40,
+    "fought_at": "2026-10-24T20:39:23.285Z",
+    "duration_ms": 173000,
+    "talent_split": "31/20/0",
+    "build_id": "b13",
+    "trinkets": [],
+    "buff_count": 8,
+    "report_id": "report13",
+    "fight_index": 1,
+    "state": "ok",
+    "execution_score": 0.9
+   },
+   {
+    "rank": 14,
+    "player": {
+     "key": "us/normal/obnoxious-yell",
+     "name": "Obnoxious Yell",
+     "class": "Warrior",
+     "spec": "Fury"
+    },
+    "guild": {
+     "name": "Olympus XXVII",
+     "ruleset": "normal",
+     "region": "us"
+    },
+    "value": 732,
+    "size": 40,
+    "fought_at": "2026-10-23T20:39:23.285Z",
+    "duration_ms": 174000,
+    "talent_split": "31/20/0",
+    "build_id": "b14",
+    "trinkets": [],
+    "buff_count": 8,
+    "report_id": "report14",
+    "fight_index": 1,
+    "state": "ok",
+    "execution_score": 0.9
+   },
+   {
+    "rank": 15,
+    "player": {
+     "key": "us/normal/bladewick",
+     "name": "Bladewick",
+     "class": "Warrior",
+     "spec": "Fury"
+    },
+    "value": 720,
+    "size": 40,
+    "fought_at": "2026-10-22T20:39:23.285Z",
+    "duration_ms": 175000,
+    "talent_split": "31/20/0",
+    "build_id": "b15",
+    "trinkets": [],
+    "buff_count": 8,
+    "report_id": "report15",
+    "fight_index": 1,
+    "state": "ok",
+    "execution_score": 0.9
+   }
+  ],
+  "total": 212,
+  "page": 1,
+  "per_page": 100,
+  "updated_at": "2026-12-13T09:00:00Z",
+  "deduped": true,
+  "character_rank": {
+   "rank": 14,
+   "row": {
+    "rank": 14,
+    "player": {
+     "key": "us/normal/obnoxious-yell",
+     "name": "Obnoxious Yell",
+     "class": "Warrior",
+     "spec": "Fury"
+    },
+    "guild": {
+     "name": "Olympus XXVII",
+     "ruleset": "normal",
+     "region": "us"
+    },
+    "value": 732,
+    "size": 40,
+    "fought_at": "2026-10-23T20:39:23.285Z",
+    "duration_ms": 174000,
+    "talent_split": "31/20/0",
+    "build_id": "b14",
+    "trinkets": [],
+    "buff_count": 8,
+    "report_id": "report14",
+    "fight_index": 1,
+    "state": "ok",
+    "execution_score": 0.9
+   }
+  }
+ },
+ "board_you_off_page": {
+  "rows": [
+   {
+    "rank": 1,
+    "player": {
+     "key": "us/normal/thorgrim-ashveil",
+     "name": "Thorgrim Ashveil",
+     "class": "Warrior",
+     "spec": "Fury"
+    },
+    "value": 888,
+    "size": 40,
+    "fought_at": "2026-11-05T20:39:23.285Z",
+    "duration_ms": 161000,
+    "talent_split": "31/20/0",
+    "build_id": "b1",
+    "trinkets": [],
+    "buff_count": 8,
+    "report_id": "report1",
+    "fight_index": 1,
+    "state": "ok",
+    "execution_score": 0.9
+   },
+   {
+    "rank": 2,
+    "player": {
+     "key": "us/normal/valkyra",
+     "name": "Valkyra",
+     "class": "Warrior",
+     "spec": "Fury"
+    },
+    "guild": {
+     "name": "Olympus XXVII",
+     "ruleset": "normal",
+     "region": "us"
+    },
+    "value": 876,
+    "size": 40,
+    "fought_at": "2026-11-04T20:39:23.285Z",
+    "duration_ms": 162000,
+    "talent_split": "31/20/0",
+    "build_id": "b2",
+    "trinkets": [],
+    "buff_count": 8,
+    "report_id": "report2",
+    "fight_index": 1,
+    "state": "ok",
+    "execution_score": 0.9
+   },
+   {
+    "rank": 3,
+    "player": {
+     "key": "us/normal/brannoch",
+     "name": "Brannoch",
+     "class": "Warrior",
+     "spec": "Fury"
+    },
+    "value": 864,
+    "size": 40,
+    "fought_at": "2026-11-03T20:39:23.285Z",
+    "duration_ms": 163000,
+    "talent_split": "31/20/0",
+    "build_id": "b3",
+    "trinkets": [],
+    "buff_count": 8,
+    "report_id": "report3",
+    "fight_index": 1,
+    "state": "ok",
+    "execution_score": 0.9
+   },
+   {
+    "rank": 4,
+    "player": {
+     "key": "us/normal/kaelith-rowe",
+     "name": "Kaelith Rowe",
+     "class": "Warrior",
+     "spec": "Fury"
+    },
+    "guild": {
+     "name": "Olympus XXVII",
+     "ruleset": "normal",
+     "region": "us"
+    },
+    "value": 852,
+    "size": 40,
+    "fought_at": "2026-11-02T20:39:23.285Z",
+    "duration_ms": 164000,
+    "talent_split": "31/20/0",
+    "build_id": "b4",
+    "trinkets": [],
+    "buff_count": 8,
+    "report_id": "report4",
+    "fight_index": 1,
+    "state": "ok",
+    "execution_score": 0.9
+   },
+   {
+    "rank": 5,
+    "player": {
+     "key": "us/normal/rhoswen",
+     "name": "Rhoswen",
+     "class": "Warrior",
+     "spec": "Fury"
+    },
+    "value": 840,
+    "size": 40,
+    "fought_at": "2026-11-01T20:39:23.285Z",
+    "duration_ms": 165000,
+    "talent_split": "31/20/0",
+    "build_id": "b5",
+    "trinkets": [],
+    "buff_count": 8,
+    "report_id": "report5",
+    "fight_index": 1,
+    "state": "ok",
+    "execution_score": 0.9
+   },
+   {
+    "rank": 6,
+    "player": {
+     "key": "us/normal/dunmar",
+     "name": "Dunmar",
+     "class": "Warrior",
+     "spec": "Fury"
+    },
+    "guild": {
+     "name": "Olympus XXVII",
+     "ruleset": "normal",
+     "region": "us"
+    },
+    "value": 828,
+    "size": 40,
+    "fought_at": "2026-10-31T20:39:23.285Z",
+    "duration_ms": 166000,
+    "talent_split": "31/20/0",
+    "build_id": "b6",
+    "trinkets": [],
+    "buff_count": 8,
+    "report_id": "report6",
+    "fight_index": 1,
+    "state": "ok",
+    "execution_score": 0.9
+   },
+   {
+    "rank": 7,
+    "player": {
+     "key": "us/normal/tessiel-vane",
+     "name": "Tessiel Vane",
+     "class": "Warrior",
+     "spec": "Fury"
+    },
+    "value": 816,
+    "size": 40,
+    "fought_at": "2026-10-30T20:39:23.285Z",
+    "duration_ms": 167000,
+    "talent_split": "31/20/0",
+    "build_id": "b7",
+    "trinkets": [],
+    "buff_count": 8,
+    "report_id": "report7",
+    "fight_index": 1,
+    "state": "ok",
+    "execution_score": 0.9
+   },
+   {
+    "rank": 8,
+    "player": {
+     "key": "us/normal/ironvow",
+     "name": "Ironvow",
+     "class": "Warrior",
+     "spec": "Fury"
+    },
+    "guild": {
+     "name": "Olympus XXVII",
+     "ruleset": "normal",
+     "region": "us"
+    },
+    "value": 804,
+    "size": 40,
+    "fought_at": "2026-10-29T20:39:23.285Z",
+    "duration_ms": 168000,
+    "talent_split": "31/20/0",
+    "build_id": "b8",
+    "trinkets": [],
+    "buff_count": 8,
+    "report_id": "report8",
+    "fight_index": 1,
+    "state": "ok",
+    "execution_score": 0.9
+   },
+   {
+    "rank": 9,
+    "player": {
+     "key": "us/normal/gaelwyn",
+     "name": "Gaelwyn",
+     "class": "Warrior",
+     "spec": "Fury"
+    },
+    "value": 792,
+    "size": 40,
+    "fought_at": "2026-10-28T20:39:23.285Z",
+    "duration_ms": 169000,
+    "talent_split": "31/20/0",
+    "build_id": "b9",
+    "trinkets": [],
+    "buff_count": 8,
+    "report_id": "report9",
+    "fight_index": 1,
+    "state": "ok",
+    "execution_score": 0.9
+   },
+   {
+    "rank": 10,
+    "player": {
+     "key": "us/normal/hrafnild",
+     "name": "Hrafnild",
+     "class": "Warrior",
+     "spec": "Fury"
+    },
+    "guild": {
+     "name": "Olympus XXVII",
+     "ruleset": "normal",
+     "region": "us"
+    },
+    "value": 780,
+    "size": 40,
+    "fought_at": "2026-10-27T20:39:23.285Z",
+    "duration_ms": 170000,
+    "talent_split": "31/20/0",
+    "build_id": "b10",
+    "trinkets": [],
+    "buff_count": 8,
+    "report_id": "report10",
+    "fight_index": 1,
+    "state": "ok",
+    "execution_score": 0.9
+   },
+   {
+    "rank": 11,
+    "player": {
+     "key": "us/normal/morvain-holt",
+     "name": "Morvain Holt",
+     "class": "Warrior",
+     "spec": "Fury"
+    },
+    "value": 768,
+    "size": 40,
+    "fought_at": "2026-10-26T20:39:23.285Z",
+    "duration_ms": 171000,
+    "talent_split": "31/20/0",
+    "build_id": "b11",
+    "trinkets": [],
+    "buff_count": 8,
+    "report_id": "report11",
+    "fight_index": 1,
+    "state": "ok",
+    "execution_score": 0.9
+   },
+   {
+    "rank": 12,
+    "player": {
+     "key": "us/normal/sellar",
+     "name": "Sellar",
+     "class": "Warrior",
+     "spec": "Fury"
+    },
+    "guild": {
+     "name": "Olympus XXVII",
+     "ruleset": "normal",
+     "region": "us"
+    },
+    "value": 756,
+    "size": 40,
+    "fought_at": "2026-10-25T20:39:23.285Z",
+    "duration_ms": 172000,
+    "talent_split": "31/20/0",
+    "build_id": "b12",
+    "trinkets": [],
+    "buff_count": 8,
+    "report_id": "report12",
+    "fight_index": 1,
+    "state": "ok",
+    "execution_score": 0.9
+   },
+   {
+    "rank": 13,
+    "player": {
+     "key": "us/normal/orsolya",
+     "name": "Orsolya",
+     "class": "Warrior",
+     "spec": "Fury"
+    },
+    "value": 744,
+    "size": 40,
+    "fought_at": "2026-10-24T20:39:23.285Z",
+    "duration_ms": 173000,
+    "talent_split": "31/20/0",
+    "build_id": "b13",
+    "trinkets": [],
+    "buff_count": 8,
+    "report_id": "report13",
+    "fight_index": 1,
+    "state": "ok",
+    "execution_score": 0.9
+   },
+   {
+    "rank": 15,
+    "player": {
+     "key": "us/normal/bladewick",
+     "name": "Bladewick",
+     "class": "Warrior",
+     "spec": "Fury"
+    },
+    "value": 720,
+    "size": 40,
+    "fought_at": "2026-10-22T20:39:23.285Z",
+    "duration_ms": 175000,
+    "talent_split": "31/20/0",
+    "build_id": "b15",
+    "trinkets": [],
+    "buff_count": 8,
+    "report_id": "report15",
+    "fight_index": 1,
+    "state": "ok",
+    "execution_score": 0.9
+   }
+  ],
+  "total": 212,
+  "page": 1,
+  "per_page": 100,
+  "updated_at": "2026-12-13T09:00:00Z",
+  "deduped": true,
+  "character_rank": {
+   "rank": 204,
+   "row": {
+    "rank": 204,
+    "player": {
+     "key": "us/normal/obnoxious-yell",
+     "name": "Obnoxious Yell",
+     "class": "Warrior",
+     "spec": "Fury"
+    },
+    "guild": {
+     "name": "Olympus XXVII",
+     "ruleset": "normal",
+     "region": "us"
+    },
+    "value": -1548,
+    "size": 40,
+    "fought_at": "2026-04-16T20:39:23.285Z",
+    "duration_ms": 364000,
+    "talent_split": "31/20/0",
+    "build_id": "b204",
+    "trinkets": [],
+    "buff_count": 8,
+    "report_id": "report204",
+    "fight_index": 1,
+    "state": "ok",
+    "execution_score": 0.9
+   }
+  }
+ },
+ "character_page": {
+  "character": {
+   "name": "Obnoxious Yell",
+   "region": "us",
+   "ruleset": "normal",
+   "class": "Warrior"
+  },
+  "best": [
+   {
+    "encounter": "Onyxia",
+    "encounter_id": 9001,
+    "difficulty": 8,
+    "kill": true,
+    "metric": "dps",
+    "value": 612,
+    "fought_at": "2026-12-10T22:10:00Z",
+    "report_id": "report-own",
+    "fight_index": 1,
+    "execution_score": null
+   }
+  ],
+  "history": [
+   {
+    "encounter": "Onyxia",
+    "encounter_id": 9001,
+    "difficulty": 8,
+    "kill": true,
+    "metric": "dps",
+    "value": 612,
+    "fought_at": "2026-12-10T22:10:00Z",
+    "report_id": "report-own",
+    "fight_index": 1,
+    "execution_score": null
+   }
+  ],
+  "builds_seen": []
+ },
+ "own_key": "us/normal/obnoxious-yell",
+ "copy": {
+  "recentReportsCopy": {
+   "heading": "Recent public reports",
+   "placeholderLabel": "Recent reports",
+   "failed": "Recent reports did not load.",
+   "empty": "No public reports yet. The first raid logs land in December; dungeon logs are welcome now.",
+   "older": "Older reports"
+  },
+  "logsBandCopy": {
+   "eyebrow": "Combat logs",
+   "h1": "Logs",
+   "jobLine": "Upload a combat log or log live, then read every pull."
+  },
+  "logsCompanionCopy": {
+   "pointer": "Log live while you raid.",
+   "pointerLink": "Get the companion",
+   "pointerHref": "/setup#companion",
+   "pairLabel": "Pair it with your account",
+   "pairAnotherLabel": "Pair another device"
+  },
+  "pairingCopy": {
+   "signedOut": "Live logging needs a signed-in account.",
+   "companionFirst": "Using the companion? Press Sign in with Battle.net in it. The code below is only for the fallback.",
+   "success": "[fn]"
+  },
+  "myReportsCopy": {
+   "failed": "Your reports did not load.",
+   "empty": "No reports yet. Upload a log, or let the companion send your next raid.",
+   "signedOut": "Sign in to see your reports.",
+   "signInAction": "Sign in with Battle.net",
+   "uploadAction": "Upload a log"
+  },
+  "yourReportsPageCopy": {
+   "eyebrow": "Logs",
+   "title": "Your reports",
+   "job": "Every fight you logged, newest first.",
+   "cardTitle": "Reports",
+   "empty": "No logs yet.",
+   "signedOut": "Sign in to see every report you logged.",
+   "sessionFailed": "Your account did not load.",
+   "sampleAction": "Open the sample report"
+  },
+  "reportCopy": {
+   "showChart": "Show chart",
+   "more": "More",
+   "table": "Table",
+   "source": "Source",
+   "allFriendlies": "All friendlies",
+   "yourGroup": "Your group",
+   "yourRaid": "Your raid",
+   "everyoneInRange": "Everyone in range",
+   "allEnemies": "All enemies",
+   "sourceGroups": {
+    "tank": "Tanks",
+    "healer": "Healers",
+    "dps": "Damage"
+   },
+   "target": "Target",
+   "ability": "Ability",
+   "everyTarget": "Every target",
+   "everyAbility": "Every ability",
+   "compareWith": "Compare with",
+   "pickFight": "Pick a fight",
+   "bossPulls": "Boss pulls",
+   "trash": "Trash",
+   "orAPlayer": "Or a player",
+   "compareFightsInstead": "Compare fights instead",
+   "metric": "Metric",
+   "phase": "Phase",
+   "wholePull": "The whole pull",
+   "spec": "Spec",
+   "everySpec": "Every spec",
+   "window": "Window",
+   "yourUpload": "Your upload",
+   "parsing": "Parsing your log… this takes a minute or two for a long night",
+   "parseFailed": "This log could not be parsed.",
+   "parseFailedLink": "Check your logging setup",
+   "waiting": "Logging · waiting for the first fight. The companion uploads a fight when it ends; this page updates by itself.",
+   "quiet": "[fn]",
+   "quietBadge": "Quiet",
+   "eyebrow": "Report",
+   "sampleBadge": "Sample report",
+   "notCreditedTag": "Not credited",
+   "sampleNote": "A real beta night with the names changed. Level 10 to 30 players, so the numbers are small. Your own reports look like this."
+  },
+  "rankingsCopy": {
+   "eyebrow": "Characters",
+   "h1": "Rankings",
+   "jobSignedIn": "Where your character stands among characters like it.",
+   "jobSignedOut": "How characters rank on each encounter, kill by kill.",
+   "tierQuestion": "Comparing specs, not characters?",
+   "tierLink": "Tier list",
+   "tierHref": "/tiers",
+   "updated": "[fn]",
+   "answerLabel": "Your rank",
+   "action": "See your parses →",
+   "answerFailed": "Your rank did not load.",
+   "answerUnit": "[fn]",
+   "answerNote": "[fn]",
+   "answerUnranked": "[fn]",
+   "everyClassAndSpec": "Every class and spec",
+   "anotherBoard": "Another class or spec",
+   "showingNote": "[fn]",
+   "backTo": "[fn]",
+   "legendLead": "Rank colour is the percentile:",
+   "legendUnderLast": "under 25",
+   "ownBest": "Your best kill",
+   "removed": "Removed by a moderator",
+   "atRisk": "Under review by a moderator",
+   "filtersButton": "Filters",
+   "boardTabs": "Board",
+   "pickerHeading": "Choose an encounter",
+   "encounterLabel": "Encounter",
+   "classLabel": "Class",
+   "specLabel": "Spec",
+   "rulesetLabel": "Ruleset",
+   "regionLabel": "Region",
+   "phaseLabel": "Phase",
+   "factionLabel": "Faction",
+   "metricLabel": "Metric",
+   "boardLabel": "Board",
+   "allRulesets": "All rulesets",
+   "allRegions": "All regions",
+   "allPhases": "All phases",
+   "everyClass": "Every class",
+   "everySpec": "Every spec",
+   "bothFactions": "Both",
+   "todayOnly": "Today only",
+   "sizeMan": "[fn]"
+  },
+  "rankingsEmptyCopy": {
+   "message": "No ranked fights yet for this filter. Rankings fill in as reports are uploaded.",
+   "action": "Upload a log",
+   "href": "/logs"
+  },
+  "encounterPickerCopy": {
+   "heading": "Choose an encounter",
+   "failed": "Encounters did not load.",
+   "noneYet": "No encounters have been ranked yet.",
+   "tryGuildsProgress": "The Guilds board ranks guild progress across every encounter and needs none.",
+   "openGuildsBoard": "Open the Guilds board",
+   "openProgressBoard": "Open the Progress board",
+   "noEncountersOption": "No encounters yet"
+  },
+  "scoreCopy": {
+   "heading": "Forever Score",
+   "line": "[fn]",
+   "lineParts": "[fn]",
+   "asOf": "[fn]",
+   "separator": " · ",
+   "noLogs": "Forever Score: no logs yet",
+   "components": [
+    {
+     "key": "gear",
+     "label": "Gear",
+     "moves": "How close your gear is to your spec’s best set for your level (20, 30, 40, 50 or 60). Every upgrade for your spec moves it up."
+    },
+    {
+     "key": "experience",
+     "label": "Experience",
+     "moves": "25 for each different dungeon cleared and 40 for each different raid boss killed, across your main and the alts the site has linked to it."
+    },
+    {
+     "key": "parses",
+     "label": "Parses",
+     "moves": "How your best damage or healing on each boss ranks against others of your spec, averaged over the bosses you have killed."
+    },
+    {
+     "key": "attendance",
+     "label": "Attendance",
+     "moves": "How many of your guild’s raid nights in the last 90 days you were in the log for."
+    },
+    {
+     "key": "discipline",
+     "label": "Preparation",
+     "moves": "Flask, food and enchants on every logged pull: the share of your logged fights you started with all three."
+    }
+   ],
+   "ofMax": "[fn]",
+   "ofMaxShort": "[fn]",
+   "outOf": "[fn]",
+   "toNextTier": "[fn]",
+   "topTier": "Top tier",
+   "emptyPart": "–",
+   "caption": "[fn]",
+   "mostToGainLead": "Most to gain:",
+   "mostToGainRest": "[fn]",
+   "gainCue": "[fn]",
+   "gainCueLabel": "[fn]",
+   "gapsLine": "[fn]",
+   "experienceBreakdown": "[fn]",
+   "experienceCounts": "25 points a dungeon, 40 a raid boss, up to 700.",
+   "historyCaption": "Forever Score by date, oldest first",
+   "historyDate": "Date",
+   "historyScore": "Score",
+   "historyChange": "[fn]",
+   "historyLabel": "[fn]",
+   "historyReadings": "[fn]",
+   "historyFirst": "[fn]",
+   "explainLink": "What the score counts",
+   "explainHref": "/ratings#forever-score",
+   "tierStripLabel": "Forever Score tiers",
+   "currentTier": "this character’s tier",
+   "notFoundTitle": "Character not found",
+   "notFoundLine": "[fn]",
+   "notFoundLookupLabel": "Look up another character",
+   "notFoundElsewhere": "Is it one of these?",
+   "notFoundNewCharacter": "Lookup only finds characters someone has already brought to Forever Sixty, and Blizzard publishes a brand-new one only after it is played and logged out. If this is yours, sign in with Battle.net: all your characters are listed straight away, new ones too.",
+   "knownYours": "Is this your character? Sign in with Battle.net and it opens as yours, with its gear and talents.",
+   "notFoundSignIn": "Sign in with Battle.net",
+   "notFoundSignedIn": "Your own characters are in the character menu at the top of the page.",
+   "notFoundNowhere": "Not on any other ruleset or region either.",
+   "noDataLine": "[fn]",
+   "noDataAddon": "Get the addon",
+   "noLogsTitle": "No logs yet",
+   "noLogsRange": "[fn]",
+   "noLogsHint": "Log a raid with the companion and the score fills in.",
+   "noLogsCompanion": "Get the companion",
+   "noLogsCompanionHref": "/setup#companion",
+   "noLogsLookup": "Look up another character",
+   "lookupHref": "[fn]",
+   "noLogsOwner": "The companion uploads your fights automatically.",
+   "noLogsUpload": "Upload logs",
+   "noLogsUploadHref": "/setup",
+   "noLogsNext": {
+    "lead": "Your character?",
+    "addon": "Get the addon",
+    "addonHref": "/setup",
+    "upload": "Upload logs",
+    "uploadHref": "/logs#upload"
+   },
+   "inGameHeading": "In game",
+   "tooltipGuild": "[fn]",
+   "tooltipLevelLine": "[fn]",
+   "inGameShownOn": "Shown on this character’s tooltip when you have the Forever Sixty addon.",
+   "inGameSetupLink": "Get set up",
+   "inGameSetupHref": "/setup",
+   "inGamePlannerLead": "This page updates by itself each time you log out with the addon and the companion running. Without the companion: /fs copy in game, then",
+   "inGamePasteLink": "paste it on the setup page",
+   "inGamePasteHref": "/setup",
+   "explainerPageTitle": "Forever Score and ratings",
+   "explainerJumpLabel": "On this page",
+   "explainerHeading": "Forever Score",
+   "explainerRatingHeading": "Performance Rating",
+   "explainerScoreCaption": "Forever Score: your whole record, 0 to 2100.",
+   "explainerRatingCaption": "Performance Rating: one fight, 0 to 100.",
+   "explainerLead": "Use it to see how your character compares and which part to work on.",
+   "explainerWhat": "The Forever Score is one number for a character, made of five parts that add up to it. It comes only from the logs the site has: fights in public reports, and the gear those logs show. The addon shows the same number on the character’s tooltip in game, dated with the day of the newest fight it counts. A character with no logs here has no score, not a score of zero.",
+   "explainerLaunch": "Parses, attendance and raid bosses count once raids open.",
+   "samplePill": "Sample",
+   "explainerPartsHeading": "What moves each part",
+   "upTo": "[fn]",
+   "tierColumn": "Tier",
+   "rangeColumn": "Score",
+   "tierBelow": "[fn]",
+   "tierBetween": "[fn]",
+   "tierFrom": "[fn]",
+   "tierShort": "[fn]",
+   "tiersNote": "The tiers take the colours of item quality in game. The ranges may change as more players are logged.",
+   "explainerLogsHeading": "How to get your logs here",
+   "explainerLogsBody": "The companion uploads your fights automatically. The companion is a small desktop app that runs beside the game and sends the site your combat log and what the addon saved.",
+   "explainerLogsButton": "Get the companion",
+   "explainerLogsHref": "/setup",
+   "explainerRatingBridge": "A rating scores one fight. The Forever Score counts all of them.",
+   "explainerPreparationShared": "Both use the word Preparation for the same thing: the flask, food and enchants you bring to a pull."
+  },
+  "ratingCopy": {
+   "tabLabel": "Rating",
+   "headingFor": "[fn]",
+   "explainLink": "How is this calculated?",
+   "panelHeading": "Performance rating",
+   "panelCaption": "[fn]",
+   "outOf100": "of 100",
+   "weakestPart": "[fn]",
+   "weakestPartLead": "Weakest part of a fight:",
+   "weakestPartEnd": ".",
+   "verdictLead": "[fn]",
+   "verdictRated": "[fn]",
+   "verdictCount": "[fn]",
+   "verdictSeparator": " · ",
+   "verdict": "[fn]",
+   "parseVsRating": "A parse is your rank against other players; the rating is how well the fight was played.",
+   "trendLabel": "[fn]",
+   "trendTableCaption": "Performance Rating by fight, oldest first",
+   "trendTableDate": "Date",
+   "trendTableRating": "Rating",
+   "panelMore": "Rating tab",
+   "panelEmpty": "No ratings for this fight yet.",
+   "insufficient": "Not rated",
+   "insufficientNote": "[fn]",
+   "tabEmpty": "No ratings for this fight yet. Ratings are computed after a report finishes processing, and some encounters do not have a curated table yet.",
+   "noRatingForTrash": "No rating for trash. Ratings are made for boss fights.",
+   "fetchFailed": "Ratings did not load.",
+   "flagged": "This report is flagged and not rated.",
+   "nightNotOnePull": "Ratings are one pull’s. Pick a boss pull from the list to see one.",
+   "enemiesHaveNone": "Ratings are for your raid, not the enemy.",
+   "noMatchingRow": "This player has no rating for this fight.",
+   "percentileBasis": "[fn]",
+   "absoluteBasis": "Measured against the encounter’s own numbers — not enough logs yet to compare players.",
+   "excludedReason": "[fn]",
+   "threatNotModeled": "Threat — not modeled yet. This does not count for or against Utility.",
+   "cappedNote": "capped from a higher weighted average — a costly avoidable death outweighs the rest of the fight. See Survival.",
+   "cappedRule": "An avoidable death early in a fight caps the overall score at 40, because nothing else in the fight makes up for it.",
+   "trendTooFew": "[fn]",
+   "characterEmpty": "Nothing rated yet. Ratings appear after your first ranked fight.",
+   "characterEmptyAction": "Upload a log",
+   "componentDefinition": "[fn]"
+  }
+ },
+ "fns": {
+  "answerUnit": "of 212 Fury Warriors",
+  "answerNote": "On Onyxia, Normal ruleset",
+  "answerUnranked": "Not ranked yet on Onyxia. Upload a log of a kill to get on the board.",
+  "rating": {
+   "labels": {
+    "output": "Output",
+    "survival": "Survival",
+    "mechanics": "Mechanics",
+    "utility": "Utility",
+    "preparation": "Preparation",
+    "activity": "Activity"
+   },
+   "definitions": {
+    "output": "Output: damage or healing done, judged against what your gear could do where the simulator models the spec.",
+    "survival": "Survival: whether you died, and how much avoidable damage you took.",
+    "mechanics": "Mechanics: the interrupts and dispels you made, and how long you carried a debuff that should have been dispelled.",
+    "utility": "Utility: the average uptime of the buffs, debuffs and cooldowns your spec keeps running for the raid.",
+    "preparation": "Preparation: the flask, food, weapon oil or stone and world buffs at the pull, and potions in the fight.",
+    "activity": "Activity: the share of the fight you spent doing something rather than idle, leaving out the times the fight expects you to wait."
+   },
+   "excludedMechanics": "Mechanics — not scored. This fight’s encounter has no curated mechanics table yet.",
+   "headingElyra": "Elyra Duskvale’s rating",
+   "percentileBasisHolyPriest": "Compared with other Holy Priestss on this fight (40 logs)."
+  },
+  "score": {
+   "upTo": {
+    "gear": "up to 500",
+    "experience": "up to 700",
+    "parses": "up to 600",
+    "attendance": "up to 200",
+    "discipline": "up to 100"
+   },
+   "mostToGainRest": ", 88 below its top.",
+   "samplePill": "Sample",
+   "tierShort": {
+    "common": "0–499",
+    "uncommon": "500–999",
+    "rare": "1000–1499",
+    "epic": "1500–1999",
+    "legendary": "2000+"
+   }
+  },
+  "showing": "Showing Fury Warriors. Your rank is on the Fury Warriors board."
+ },
+ "score": {
+  "component_max": {
+   "gear": 500,
+   "experience": 700,
+   "parses": 600,
+   "attendance": 200,
+   "discipline": 100
+  },
+  "tiers": [
+   {
+    "tier": "common",
+    "range": "below 500"
+   },
+   {
+    "tier": "uncommon",
+    "range": "500 to 999"
+   },
+   {
+    "tier": "rare",
+    "range": "1000 to 1499"
+   },
+   {
+    "tier": "epic",
+    "range": "1500 to 1999"
+   },
+   {
+    "tier": "legendary",
+    "range": "2000 and up"
+   }
+  ]
+ }
+}
