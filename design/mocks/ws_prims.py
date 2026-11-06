@@ -349,9 +349,14 @@ PRIM_CSS += '''
 .fig.xl .v{font-size:56px;line-height:60px;letter-spacing:-.01em}.fig.xl .v small{font-size:18px;margin-left:8px}
 @media(max-width:767px){.fig.xl .v{font-size:44px;line-height:48px}}
 .fig .cap{font-size:13px;line-height:20px;color:var(--muted)}.fig .cap b{color:var(--text);font-weight:600}.fig .cap.kill{color:var(--kill)}.fig .cap.wipe{color:var(--wipe)}
-.st{--st-name:minmax(200px,1fr);--st-bar:minmax(72px,120px);--st-fig:62px;--n:5;min-width:0}
-@media(min-width:1760px){.st{--st-bar:280px;--st-fig:80px}}
-.st-h .t-label{letter-spacing:.06em}
+/* StatTable tracks (fixed 2026-11-06, the buffs grid overlap): the name and the bar share the free space 2 : 1 and may shrink to 0,
+   so no fixed minimum can push a column past the table's own edge; a figure column is never narrower than its widest figure
+   (minmax(max-content, n) resolves to max-content when that is wider), so a figure never spills into the next column. The table
+   clips nothing: it is as wide as its container, at every container width. */
+.st{--st-name:minmax(0,2fr);--st-bar:minmax(0,1fr);--st-fig:minmax(max-content,62px);--n:5;min-width:0;max-width:100%}
+@media(min-width:1760px){.st{--st-name:minmax(0,1fr);--st-bar:minmax(0,280px);--st-fig:minmax(max-content,80px)}}
+.st .br{min-width:0}.st .br .meter{max-width:280px;min-width:0}.st .nm b{overflow-wrap:anywhere}
+.st-h .t-label{letter-spacing:.06em;min-width:0}
 .st .stc{display:grid;column-gap:12px;align-items:center;grid-template-columns:28px var(--st-name) var(--st-bar) repeat(var(--n),var(--st-fig))}
 .st.nobar .stc{grid-template-columns:28px var(--st-name) repeat(var(--n),var(--st-fig))}
 .st-h{padding:12px 16px 10px;border-bottom:1px solid var(--line-soft)}.st-h .r{text-align:right}.st-h .on{color:var(--strong)}.st-h .on::after{content:" \\25BE";color:var(--gold)}
@@ -473,3 +478,28 @@ PRIM_CSS += '''
 @media(max-width:767px){.lanes .lg{padding-inline:var(--page-inset)}.tl .lbl .g{overflow:visible;font-size:12px}}
 @media(max-width:767px){.lanes{margin-inline:calc(-1 * var(--page-inset))}.tl{grid-template-columns:44px minmax(696px,1fr);width:max-content;min-width:100%}.tl .lbl{position:sticky;left:0;z-index:2;background:var(--bg);padding-left:var(--page-inset)}.tl .lbl .t{display:none}.tl .lbl .res small{display:none}}
 '''
+
+
+# ------------------------------------------------ Sheet (added by the sim round, ruling S7, 2026-11-06)
+# The shipped SettingsSheet as a primitive: an overlay panel over a scrim. Desktop (768 and up): a 480 px panel on the right,
+# full height, the page dimmed behind it. Phone: a bottom sheet, 88vh at most, the top 16 px rounded. Its head (title, close)
+# and foot (actions) stay put; the body scrolls. It is the one overlay surface: the page under it never moves (no layout shift).
+PRIM_CSS += '''
+.sheet-scrim{position:fixed;inset:0;background:#05070bcc;z-index:60}
+.sheet{position:fixed;z-index:61;display:flex;flex-direction:column;background:var(--raised);border:1px solid var(--line);
+right:0;left:0;bottom:0;max-height:88vh;border-radius:16px 16px 0 0}
+@media(min-width:768px){.sheet{top:0;left:auto;width:480px;max-height:none;border-radius:0;border-width:0 0 0 1px}}
+.sheet-h{display:flex;align-items:center;gap:12px;padding:16px 24px;border-bottom:1px solid var(--line-soft)}
+.sheet-h h2{font:700 20px/24px var(--font-body);color:var(--strong);margin:0;flex:1}
+.sheet-h .x{width:44px;height:44px;display:inline-flex;align-items:center;justify-content:center;color:var(--nav);font-size:22px}
+.sheet-b{flex:1;overflow:auto;padding:8px 24px 16px}
+.sheet-f{display:flex;gap:12px;justify-content:flex-end;padding:16px 24px;border-top:1px solid var(--line-soft)}
+.sheet-f .btn{flex:none}@media(max-width:767px){.sheet-f .btn{flex:1}}
+'''
+
+
+def Sheet(title: str, body: str, actions: str) -> str:
+    """An overlay panel: title and a close control, a scrolling body, a foot of actions. Rendered after the page body."""
+    return (f'<div class="sheet-scrim" aria-hidden="true"></div><div class="sheet" role="dialog" aria-modal="true" aria-label="{title}">'
+            f'<div class="sheet-h"><h2>{title}</h2><a class="x" href="#" aria-label="Close">&times;</a></div>'
+            f'<div class="sheet-b">{body}</div><div class="sheet-f">{actions}</div></div>')

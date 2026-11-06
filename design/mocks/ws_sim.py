@@ -5,11 +5,12 @@ a real forever-sim run of the published warrior-fury level 60 raid set (10,000 r
 rotation line, buff and figure is read at render time from that file and from data/builds/<active build>/ and data/curated/
 (spells.json, spelltips, spellicons.json, items/<class>.json, talents/<class>.json, simbuffs.json, apl/<spec>.json,
 engine-spell-names.json, extra-spell-icons.json). Figures follow the shipped rules (report/ability-table.ts, sim/warnings.ts,
-sim/gear-card.ts). Typed in, and marked SAMPLE: the signed-in character's name "Thandrel", the last-sim figure and the
-"Your sims" rows, because no public account exists to read them from.
+sim/gear-card.ts). Typed in, and marked SAMPLE: the signed-in character's name "Thandrel", the last sims, the live estimate and runs done
+mid-run, the engine-refusal reason and the "Your sims" rows, because no public account exists to read them from. Every
+error band is computed from the fixture's own spread (band()).
 
   FS_DATA_ROOT=<a checkout at the live build> python3 design/mocks/ws_sim.py
-  for p in web-sim web-sim-you web-sim-running web-sim-result web-sim-saved web-sim-bar web-sim-states; do
+  for p in web-sim web-sim-you web-sim-running web-sim-result web-sim-saved web-sim-bar web-sim-more web-sim-states; do
     node design/mocks/ws_shoot.mjs $p 390,1440,1920,2000; done
   python3 design/mocks/ws_sim.py compare
 """
@@ -22,7 +23,7 @@ from pathlib import Path
 
 from mocklib import CLASS_COLOR
 from ws_prims import (Button, Doll, Facts, Field, Figure, Figures, FormRow, Histogram, IconList, Lanes, Link, Meter, Notice,
-                      Page, PageHeader, Plate, Row, Rows, Section, Skeleton, StatRow, StatTable, TabStrip, Trees, build_page,
+                      Page, PageHeader, Plate, Row, Rows, Section, Sheet, Skeleton, StatRow, StatTable, TabStrip, Trees, build_page,
                       control_bar, crest_img, seg, sel, write)
 import ws_compose
 
@@ -53,11 +54,17 @@ SPEC_ROW = next(s for s in SPECS if s['spec'] == SPEC)
 SPEC_LABEL = f"{SPEC_ROW['name']} {CLASS_NAME[CLS]}"
 RACIAL_ICON = json.loads((B / 'racialicons.json').read_text())
 TALENT_ICON = {t['name']: t['icon'] for tr in TALENTS for t in tr['talents']}
+WEIGHTS = next(w['weights'] for w in json.loads((B / 'stat-weights.json').read_text()) if w['spec'] == SPEC)
 ITEM_BY_SPELL = {249469: 1249110}  # Frozen Heart of the Mountain and its use spell (engine-spell-names.json says so)
 QUALITY = {0: '#9d9d9d', 1: '#ffffff', 2: '#1eff00', 3: '#3d94f0', 4: '#b866f5', 5: '#ff8000'}  # AA-safe text colours
 
 YOU = ('Thandrel', CLS, f'{SPEC_LABEL} &middot; {CHAR["level"]}')     # SAMPLE signed-in character
-LAST_SIM = (899.6, '3 Nov')                                             # SAMPLE: the character's previous saved run
+LAST_SIM = (899.6, '3 Nov', 3000)                                       # SAMPLE: the previous saved run (DPS, date, runs)
+LAST_SIM_CLOSE = (903.5, '3 Nov', 3000)                                 # SAMPLE: a previous run inside the noise (states sheet)
+LIVE = (905.3, 1357)                                                    # SAMPLE: the live estimate and runs done mid-run
+HANDS = {'other:attack/1': ('Main hand', 'main_hand'), 'other:attack/2': ('Off hand', 'off_hand'), 'other:attack/3': ('Extra attacks', 'main_hand')}
+OFF_HAND_SPELLS = {462891}   # Whirlwind's off-hand strike, as lib/report/ability-table.ts and lib/sim/timeline.ts (Forever's
+                             # Whirlwind hits with both weapons: spelltips/warrior.json 1680)
 HISTORY = [('Thandrel', 'Fury, raid buffs', '3 Nov', '899.6'), ('Thandrel', 'Fury, no buffs', '1 Nov', '402.3'),
            ('Thandrel, Top Gear', '+41.2 DPS from Ironfoe', '31 Oct', '')]  # SAMPLE rows of GET /v1/sims
 
@@ -112,6 +119,22 @@ def act_name(key: str) -> str:
     return item_of(ident)['name'] if kind == 'item' else spell_name(ident)
 
 
+def display_name(key: str) -> str:
+    """The row and lane name: the action's name, with the shipped "(off hand)" suffix on an off-hand strike."""
+    if key in HANDS:
+        return HANDS[key][0]
+    kind, ident, _ = parse(key)
+    return f'{spell_name(ident)} (off hand)' if kind == 'spell' and ident in OFF_HAND_SPELLS else act_name(key)
+
+
+def lane_icon(key: str, size: int) -> str:
+    """A swing lane shows its weapon; every other lane its action's icon."""
+    if key in HANDS:
+        it = gear_item(HANDS[key][1])
+        return gicon(it['icon'], size, it['quality'])
+    return act_icon(key, size)
+
+
 def act_icon(key: str, size: int = 28) -> str:
     kind, ident, _ = parse(key)
     if kind == 'other':
@@ -143,10 +166,23 @@ def gear_item(slot: str):
 DUR = SUM['duration_ms'] / 1000
 CASTS = {c['spell_name']: c['succeeded'] for c in SUM['casts']}
 AURAS = {a['name']: a for a in SUM['auras']}
-MEAN, ERR = RES['dps']['mean'], RES['dps']['error']
-BAND = 1.96 * ERR                     # decision S2: one "±" everywhere, the confidence band (lib/sim/estimate.ts)
+MEAN, ERR, SIGMA = RES['dps']['mean'], RES['dps']['error'], RES['dps']['stddev']
+RUNS = RES['iterations_run']
+Z95 = 1.96                            # ruling S2: one "±" everywhere, the 95% confidence band (lib/sim/estimate.ts)
+
+
+def band(runs: int) -> float:
+    """The 95% band of a mean over `runs` runs of this set: 1.96 x stddev / sqrt(runs)."""
+    return Z95 * SIGMA / runs ** .5
+
+
+BAND = Z95 * ERR
 FIGURE = fnum(MEAN)
-ERR_LINE = f'<b>&plusmn; {BAND:.1f}</b> &middot; {BAND / MEAN * 100:.2f}% error'
+ERR_LINE = f'<b>&plusmn; {BAND:.1f} (95%)</b> &middot; {BAND / MEAN * 100:.2f}% error'   # the one place "(95%)" is written
+PRECISION = {500: 'Fast', 3000: 'Normal', 10000: 'High'}[REQ['iterations']]          # lib/sim/precision.ts PRECISION_ITERATIONS
+PRECISION_LABEL = f"{PRECISION}, {REQ['iterations']:,} runs"
+LANE_LABEL = {'server': 'run on our servers', 'browser': 'run in your browser'}[RES['lane']]
+DAMAGE_SCHOOLS = {'physical' if (a.get('school') or 1) & 1 else 'other' for a in SUM['damage_done'][0]['abilities'] if a['total'] > 0}
 SPLIT = '/'.join(str(sum(int(c) for c in part)) for part in CHAR['talents'].split('-'))
 RACE = CHAR['race'].replace('-', ' ').title()
 FIGHT = REQ['encounter']
@@ -155,7 +191,9 @@ FIGHT_LEN = f"{clock(FIGHT['duration_sec'])} &plusmn; {FIGHT['variation'] * 100:
 
 # ------------------------------------------------------------------------------------------------ the ability table (the Plate)
 TABLE_HEADS = [('', False), ('Ability', False), ('Share of damage', False), ('DPS', True), ('Share', True), ('Casts', True),
-               ('Avg hit', True), ('Crit', True), ('Uptime', True)]
+               ('Avg hit', True), ('Crit', True)]
+N_FIGS = len(TABLE_HEADS) - 3
+MULTI = re.compile(r'up to (\d+) enemies')   # a tooltip that hits several enemies earns "hits a cast" on its row
 
 
 def ability_rows(state: str = '') -> tuple[list[str], str]:
@@ -176,14 +214,13 @@ def ability_rows(state: str = '') -> tuple[list[str], str]:
             name = f'<b>{label}</b> <span class="wpn" style="color:{QUALITY[wpn["quality"]]}">&middot; {wpn["name"]}</span>'
         else:
             icon = act_icon(a['name'])
-            nm = 'Whirlwind (off hand)' if ident == 462891 else act_name(a['name'])   # the shipped label for the off-hand strike
+            nm = display_name(a['name'])
             rank = rank_of(ident)
             name = f'<b>{nm}</b>' + (f'<span class="rk">Rank {rank}</span>' if rank else '')
         if periodic:
             casts, avg, crit = '&ndash;', a['total'] / a['ticks'], a['crits'] / a['ticks'] * 100
-            sub = [f'{a["ticks"]} ticks', f'tick crit {crit:.1f}%']
             deb = AURAS.get(a['name'])
-            up = f"{deb['uptime_ms'] / SUM['duration_ms'] * 100:.1f}%" if deb else '&ndash;'
+            sub = [f'{a["ticks"]} ticks', f'tick crit {crit:.1f}%'] + ([f"up {deb['uptime_ms'] / SUM['duration_ms'] * 100:.1f}% of the fight"] if deb else [])
         else:
             casts = attempts if kind == 'other' else (CASTS.get(a['name']) or a['hits'])   # a proc strike with no cast row counts its landings
             avg = a['total'] / a['hits'] if a['hits'] else 0
@@ -194,24 +231,26 @@ def ability_rows(state: str = '') -> tuple[list[str], str]:
             if kind == 'other' and tag == 3:
                 src = ' &middot; '.join(f"{BUFFS[s['source']]['name'] if s['source'] in BUFFS else s['source']} {s['count']:.0f}" for s in RES.get('extra_attack_sources', []))
                 sub.append(f'From {src}')
-            up = '&ndash;'
+            cast_n = CASTS.get(a['name'])
+            if kind == 'spell' and cast_n and MULTI.search((TIPS.get(ident) or {}).get('description', '')):
+                sub.append(f'{attempts / cast_n:.1f} hits a cast, {REQ["encounter"]["targets"]} target')
         phone = [x for x in (f'{casts} {"swings" if kind == "other" else "casts"}' if casts != '&ndash;' else '', f'{avg:,.0f} avg hit', f'crit {crit:.1f}%') if x]
         sub_html = ' &middot; '.join(f'<span>{s}</span>' for s in sub)
         sub_html += ''.join(f' <span class="m">{"&middot; " if (sub or j) else ""}{p}</span>' for j, p in enumerate(phone))
         share = f'{a["total"] / total * 100:.1f}%'
-        out.append(StatRow(icon, name, sub_html, [fnum(a['total'] / DUR), share, str(casts), f'{avg:,.0f}', f'{crit:.1f}%', up],
+        out.append(StatRow(icon, name, sub_html, [fnum(a['total'] / DUR), share, str(casts), f'{avg:,.0f}', f'{crit:.1f}%'],
                            Meter(a['total'] / top), share, state='hover' if state == 'hover' and i == 2 else ''))
-    out.append(StatRow('', f'Total, {len(rows)} sources', '', [fnum(total / DUR), '100%', '', '', '', f'{total:,.0f} damage a fight'], total=True))
+    out.append(StatRow('', f'Total, {len(rows)} sources &middot; {total:,.0f} damage a fight', '', [fnum(total / DUR), '100%', '', '', ''], total=True))
     return out, f'{fnum(MEAN)} DPS over {clock(DUR)} on average'
 
 
 def ability_table(state: str = '') -> str:
-    return StatTable(TABLE_HEADS, ability_rows(state)[0], 6, sort='DPS')
+    return StatTable(TABLE_HEADS, ability_rows(state)[0], N_FIGS, sort='DPS')
 
 
 def table_skeleton(n: int = 11) -> str:
-    row = StatRow(Skeleton(28, 28), Skeleton(160, 16), Skeleton(200, 12), [Skeleton(56, 16)] + [Skeleton(44, 14)] * 5, Skeleton(140, 8))
-    return StatTable(TABLE_HEADS, [row] * n, 6, sort='DPS')
+    row = StatRow(Skeleton(28, 28), Skeleton(160, 16), Skeleton(200, 12), [Skeleton(56, 16)] + [Skeleton(44, 14)] * (N_FIGS - 1), Skeleton(120, 8))
+    return StatTable(TABLE_HEADS, [row] * n, N_FIGS, sort='DPS')
 
 
 # ------------------------------------------------------------------------------------------------ the rail
@@ -228,32 +267,56 @@ def spread_section() -> str:
     d = RES['dps']
     hist = Histogram(counts, start, bw, MEAN, lo, hi, f'DPS of each of {RES["iterations_run"]:,} runs, from {d["min"]:,.0f} to {d["max"]:,.0f}, most near {MEAN:,.0f}',
                      (f'{d["min"]:,.0f}', 'DPS per run', f'{d["max"]:,.0f}'))
-    figs = Figures([(fnum(MEAN), 'Mean', '', '', 'sm'), (f'&plusmn; {BAND:.1f}', 'Error', '', '', 'sm'), (f'&plusmn; {d["stddev"]:.1f}', 'Spread', '', '', 'sm'),
+    figs = Figures([(fnum(MEAN), 'Mean', '', '', 'sm'), (f'&plusmn; {BAND:.1f}', 'Error', '', '', 'sm'), (f'{d["stddev"]:.1f}', 'Std dev', '', '', 'sm'),
                     (f'{d["min"]:,.0f}', 'Lowest', '', '', 'sm'), (f'{d["max"]:,.0f}', 'Highest', '', '', 'sm'), (f'{RES["iterations_run"]:,}', 'Runs', '', '', 'sm')])
     cap = f'<p class="t-small rail-cap">Two runs in three land between {lo:,.0f} and {hi:,.0f} DPS.</p>'
     return Section('DPS spread', f'<div class="rail-body">{hist}{cap}{figs}</div>', meta=f'{RES["iterations_run"]:,} runs')
 
 
-def buff_items(keys: list[str], weight_stats: set[str]) -> list[tuple[str, str, bool]]:
+# "No effect on your damage": the shipped rule, lib/sim/buff-effect.ts hasNoDamageEffect, read from the data (ruling M4).
+# A buff is dimmed when nothing it changes can reach this spec's damage: it works through no weapon swing, raises no school
+# this run dealt damage in (school_damage against the run's schools), and every stat it adds (simbuffs.json `stats`, measured
+# on a level 60 sheet) weighs nothing for the spec (stat-weights.json) - target armor and melee haste count only when the run
+# dealt physical damage. An entry with no effect fields says nothing, so nothing is dimmed. Consumables are never judged.
+CASTER_STATS = {'spell_crit', 'spell_damage'}
+BUFF_BY_NAME = {e['name']: e for e in BUFFS.values()}
+
+
+def stat_counts(stat: str) -> bool:
+    if stat in ('target_armor', 'melee_haste'):
+        return 'physical' in DAMAGE_SCHOOLS
+    if stat in CASTER_STATS:
+        return WEIGHTS.get('spell_power', 0) > 0
+    return WEIGHTS.get(stat, 0) > 0
+
+
+def no_damage_effect(e: dict) -> bool:
+    if e.get('target') is None or e.get('melee_effect'):
+        return False
+    if set(e.get('school_damage') or []) & DAMAGE_SCHOOLS:
+        return False
+    return not any(stat_counts(st) for st in (e.get('stats') or {}))
+
+
+def buff_items(keys: list[str]) -> list[tuple[str, str, bool]]:
     out = []
     for k in keys:
         base, _, grade = k.partition(':')
         e = BUFFS.get(base)
         if not e:
             continue
-        stats = set((e.get('stats') or {}).keys())
-        dim = bool(stats) and not (stats & weight_stats) and not e.get('melee_effect')
-        out.append((gicon(e['icon'], 22), e['name'] + (', improved' if grade == 'improved' else ''), dim))
+        out.append((gicon(e['icon'], 22), e['name'] + (', improved' if grade == 'improved' else ''), no_damage_effect(e)))
     return sorted(out, key=lambda x: x[2])
 
 
 def consume_items() -> list[tuple[str, str, bool]]:
+    """Every consumable the request carries, one entry each (an imbue's simbuffs key is the whole `hand_imbue:item` id)."""
     out = []
     for k in CHAR['consumes']:
-        hand, _, base = k.partition(':') if ':' in k else ('', '', k)
-        e = BUFFS.get(base)
-        if e:
-            out.append((gicon(e['icon'], 22), e['name'] + {'main_hand_imbue': ' (main hand)', 'off_hand_imbue': ' (off hand)'}.get(hand, ''), False))
+        hand = k.partition(':')[0] if ':' in k else ''
+        e = BUFFS.get(k) or BUFFS.get(k.partition(':')[2])
+        assert e, f'consumable {k} has no simbuffs entry'
+        out.append((gicon(e['icon'], 22), e['name'] + {'main_hand_imbue': ' (main hand)', 'off_hand_imbue': ' (off hand)'}.get(hand, ''), False))
     return out
 
 
@@ -274,15 +337,16 @@ def this_run_section() -> str:
     lo, hi = FIGHT['duration_sec'] * (1 - FIGHT['variation']), FIGHT['duration_sec'] * (1 + FIGHT['variation'])
     facts = Facts([('Fight length', f"{clock(FIGHT['duration_sec'])}, &plusmn; {FIGHT['variation'] * 100:.0f}%<small>{clock(lo)} to {clock(hi)}</small>"),
                    ('Target', f"Level {ts.get('level', 63)} boss<small>{ts['armor']:,} armor, {ts['armor_after_debuffs']:,} after debuffs</small>" if ts else 'Level 63 boss'),
-                   ('Execute phase', f"Last {FIGHT['execute_ratio'] * 100:.0f}% of the fight<small>standing in for the boss under 20% health</small>"),
-                   ('Race', RACE), ('Runs', f"{RES['iterations_run']:,}"), ('Actions per minute', f'{apm():.1f}'),
+                   ('Execute phase', f"Last {FIGHT['execute_ratio'] * 100:.0f}% of the fight<small>{clock(FIGHT['duration_sec'] * FIGHT['execute_ratio'])} of a {clock(FIGHT['duration_sec'])} fight</small>"),
+                   ('Race', RACE), ('Runs', f"{RUNS:,}"), ('Actions per minute', f'{apm():.1f}'),
                    ('Engine', f'<span class="muted">{RES["engine_version"][:7]}</span>')])
-    ws = set(SPEC_ROW['weight_stats']) | {'attack_power', 'strength', 'agility', 'melee_crit', 'melee_hit', 'crit', 'hit', 'armor_penetration'}
     keys = raid_keys()
     on_you = [k for k in keys if not (BUFFS.get(k.split(':')[0]) or {}).get('target')]
     on_tgt = [k for k in keys if (BUFFS.get(k.split(':')[0]) or {}).get('target')]
-    lists = (IconList(buff_items(on_you, ws), f'On you &middot; {len(on_you)}') + IconList(buff_items(on_tgt, ws), f'On the target &middot; {len(on_tgt)}')
-             + IconList(consume_items(), f'Consumables &middot; {len(CHAR["consumes"])}'))
+    cons = consume_items()
+    you_l, tgt_l = buff_items(on_you), buff_items(on_tgt)
+    lists = (IconList(you_l, f'On you &middot; {len(you_l)}') + IconList(tgt_l, f'On the target &middot; {len(tgt_l)}')
+             + IconList(cons, f'Consumables &middot; {len(cons)}'))
     acts = (f'<div class="rail-acts">{Button("Copy for the game", small=True)}{Button("Copy JSON", small=True)}{Button("Download JSON", small=True)}</div>'
             '<p class="t-small rail-cap">The JSON is this whole result, request included.</p>')
     return Section('This run', f'<div class="rail-body">{facts}{lists}<p class="t-small rail-cap">Dimmed: no effect on your damage.</p>{acts}</div>', meta='Inputs and engine')
@@ -331,14 +395,19 @@ def history_section(state: str = 'ready') -> str:
 
 
 # ------------------------------------------------------------------------------------------------ main sections below the Plate
-def timeline_section() -> str:
+def timeline_section(swings_and_ticks: bool = False) -> str:
+    """The median run on one time axis. With Swings and ticks Off (the default) the Casts group holds casts only: no white
+    swing lane and no periodic tick lane (an action whose events carry outcome "tick", Deep Wounds here)."""
     T0, T1 = -2500, RES['sample_duration_ms']
     X = lambda ms: (ms - T0) / (T1 - T0) * 1000
     ev = RES['sample']
+    ticking = {e['action'] for e in ev if e.get('outcome') == 'tick'}
     cast_keys = []
     for e in ev:
         k = e['action']
-        if k.startswith('other:') or '/' in k or k in cast_keys:
+        if k in cast_keys or '/' in k and not k.startswith('other:'):
+            continue
+        if not swings_and_ticks and (k.startswith('other:') or k in ticking):
             continue
         cast_keys.append(k)
     whole = lambda a: len(a['segments']) == 1 and a['segments'][0][0] <= 0 and a['segments'][0][1] >= T1 * .99
@@ -355,7 +424,7 @@ def timeline_section() -> str:
 
     def lane(key, body):
         nonlocal y
-        labels.append(f'<span style="height:{LANE}px">{act_icon(key, 18)}<span class="t">{act_name(key)}</span></span>')
+        labels.append(f'<span style="height:{LANE}px">{lane_icon(key, 18)}<span class="t">{display_name(key)}</span></span>')
         rows.append(f'<line x1="0" x2="1000" y1="{y + LANE - .5}" y2="{y + LANE - .5}" stroke="#1c2230" vector-effect="non-scaling-stroke"/>' + body(y))
         y += LANE
 
@@ -403,9 +472,12 @@ def timeline_section() -> str:
     tl = (f'<div class="tl"><div class="lbl"><span style="height:30px"></span>{"".join(labels)}</div>'
           f'<div class="plot"><div class="axis">{ticks}</div>{washlab}{svg}</div></div>')
     legend = [('#c79c6e', 'Damage'), ('#f5d27a', 'Crit'), ('#9a9484', 'Missed'), ('#e9e4d8', 'Cooldown'), ('#e9e4d859', 'On you'), ('#8a6a2ac7', 'On the target'), ('#e5b955', 'Rage')]
-    tools = f'<div class="tl-tools">{seg([("Whole fight", True, None, ""), ("Close up", False, None, "")], "sm")}<span class="t-small">Swings and ticks <b class="strong">Off</b></span></div>'
-    n = sum(1 for e in ev if e['action'] in cast_keys)
-    foot = f'<p class="t-small tl-foot">Casts: {n} of {n}. Swings and Deep Wounds ticks are on the lanes above when Swings and ticks is on. {Link(f"Show all {n} &rsaquo;")}</p>'
+    tools = (f'<div class="tl-tools">{seg([("Whole fight", True, None, ""), ("Close up", False, None, "")], "sm")}'
+             f'<span class="t-small">Swings and ticks</span>{seg([("Off", not swings_and_ticks, None, ""), ("On", swings_and_ticks, None, "")], "sm")}</div>')
+    n = sum(1 for e in ev if e['action'] in cast_keys and e['action'] not in HANDS and e['action'] not in ticking and parse(e['action'])[1] not in OFF_HAND_SPELLS)
+    hidden = ' and '.join(['white swings'] + [display_name(k) + ' ticks' for k in sorted(ticking)])
+    foot = (f'<p class="t-small tl-foot">{n} casts in this run. '
+            + ('' if swings_and_ticks else f'Turn Swings and ticks on to add {hidden} as their own lanes. ') + f'{Link("List every cast &rsaquo;")}</p>')
     return Section('Timeline', tools + Lanes(tl, legend) + foot, meta=f'The median run &middot; {clock(T1 / 1000)} long')
 
 
@@ -447,7 +519,7 @@ def gear_section(with_stats: bool = True) -> str:
     stats = Figures([(f"{fs['attack_power']:,}", 'Attack power', '', '', 'sm'), (f"{fs['melee_hit_pct']:.1f}%", 'Hit', '', '', 'sm'),
                      (f"{fs['melee_crit_pct_vs_target']:.1f}%", 'Crit on the boss', '', '', 'sm'),
                      (f"{fs['weapon_skill']['main_hand']} &middot; {fs['weapon_skill']['off_hand']}", 'Weapon skill', '', '', 'sm'),
-                     (f"{fs['melee_haste_pct']:.0f}%", 'Haste', '', '', 'sm')])
+                     (f"{fs['melee_haste_pct']:.0f}%", 'Haste from gear', '', '', 'sm')])
     measured = (f'<p class="t-small">In the fight, against a level {RES["target_stats"]["level"]} boss. Missed in this run: {miss["sp"][0] / miss["sp"][1] * 100:.0f}% of specials '
                 f'&middot; {miss["w"][0] / miss["w"][1] * 100:.1f}% of white swings.</p>')
     foot = f'<div class="gear-foot"><span class="t-small">No set bonus is active: no two pieces share a set.</span>{Link("Upgrades for this character on Best in slot &rsaquo;")}</div>'
@@ -490,13 +562,17 @@ def buffs_section() -> str:
                 continue
             up = a['uptime_ms'] / SUM['duration_ms']
             if up >= .999:
-                upall.append((act_icon(a['name'], 20), act_name(a['name']) + (f' &times; {a["max_stacks"]}' if (a.get('max_stacks') or 0) > 1 else ''), False))
+                entry = BUFF_BY_NAME.get(act_name(a['name']))
+                upall.append((act_icon(a['name'], 20), act_name(a['name']) + (f' &times; {a["max_stacks"]}' if (a.get('max_stacks') or 0) > 1 else ''),
+                              bool(entry) and no_damage_effect(entry)))
             else:
-                rows.append((up, StatRow(act_icon(a['name'], 24), f'<b>{act_name(a["name"])}</b>', '', [f'{up * 100:.1f}%', f'{a["applications"]:.0f}&times;'], Meter(up, 'muted'))))
+                rows.append((up, StatRow(act_icon(a['name'], 24), f'<b>{display_name(a["name"])}</b>', '', [f'{up * 100:.1f}%', f'{a["applications"]:.0f}&times;'], Meter(up, 'muted'))))
+        upall.sort(key=lambda x: x[2])
         rows.sort(key=lambda x: -x[0])
         t = StatTable([('', False)] * 3 + [('', True), ('', True)], [r for _, r in rows], 2, open_=True) if rows else ''
         return f'<div><h3 class="t-label rot-l">{title} &middot; {len(rows)} that come and go</h3>{t}{IconList(upall, "Up all fight") if upall else ""}</div>'
-    return Section('Buffs and debuffs', f'<div class="two">{col("BUFF", "On you")}{col("DEBUFF", "On the target")}</div>', meta='Uptime, then times applied')
+    return Section('Buffs and debuffs', f'<div class="two">{col("BUFF", "On you")}{col("DEBUFF", "On the target")}</div>'
+                   '<p class="t-small rail-cap tl-foot">Dimmed: no effect on your damage.</p>', meta='Uptime, then times applied')
 
 
 def worth_knowing() -> str:
@@ -517,13 +593,23 @@ TOOLS = ['Quick sim', 'Top gear', 'Droptimizer', 'Talents', 'Weights', 'Spec sup
 
 
 def run_bar(state: str = 'ready', open_m: bool = False) -> str:
-    btn = {'ready': Button('Run sim', primary=True), 'done': Button('Run again', primary=True), 'running': Button('Stop'),
-           'engine': Button('Loading engine&hellip;'), 'server': Button('Running on our servers&hellip;'),
+    """The run line. `state` picks the one primary: ready (Run sim), done or any failed/stopped state (Run again: the one retry),
+    running (Stop), engine (Loading engine...), server (Running on our servers...), disabled (a spec the sim does not run)."""
+    btn = {'ready': Button('Run sim', primary=True), 'done': Button('Run again', primary=True), 'retry': Button('Try again', primary=True),
+           'running': Button('Stop'), 'engine': Button('Loading engine&hellip;'), 'server': Button('Running on our servers&hellip;'),
            'disabled': '<span class="btn primary is-off" aria-disabled="true">Run sim</span>'}[state]
+    off = state in ('running', 'engine', 'server')
     buffs = seg([('Raid', True, None, ''), ('None', False, None, ''), ('Custom', False, None, '')])
-    summary = f'<span class="sum-t">Patchwerk &middot; 3:00 &middot; 1 target &middot; Raid &middot; Normal</span><span class="run-m">{btn}</span>'
-    return control_bar([('Fight', sel('Patchwerk')), ('Length', sel('3:00')), ('Targets', sel('1')), ('Buffs', buffs),
-                        ('Precision', sel('Normal, 3,000 iterations'))], summary, end=btn, open_m=open_m)
+    summary = (f'<span class="sum-t"><b>{FIGHT_STYLE} {clock(FIGHT["duration_sec"])}</b> &middot; Raid</span>'
+               f'<span class="run-m">{btn}</span>')
+    end = f'<span class="bar-end">{Link("More settings")}{btn}</span>'
+    bar = control_bar([('Fight', sel(FIGHT_STYLE)), ('Length', sel(clock(FIGHT['duration_sec']))), ('Targets', sel(str(FIGHT['targets']))), ('Buffs', buffs),
+                       ('Precision', sel(PRECISION_LABEL))], summary, end=end, open_m=open_m)
+    bar = bar.replace('</div></details>', f'<span class="more-m">{Link("More settings")}</span></div></details>', 1)
+    return bar.replace('<div class="bar-d">', '<div class="bar-d is-run">', 1) if off else bar
+
+
+FIGHT_STYLE = 'Patchwerk'   # the request's profile is empty: the shipped styleLabel of the default style
 
 
 def you_header(answer: str) -> str:
@@ -532,22 +618,44 @@ def you_header(answer: str) -> str:
     return PageHeader('Thandrel', crest=crest_img(CLS, 56), meta=meta, answer=answer, tabs=TabStrip(TOOLS, 'Quick sim'))
 
 
-def answer_result() -> str:
-    d = MEAN - LAST_SIM[0]
-    return (f'<span class="t-label">{SPEC_LABEL} &middot; run in your browser</span>{Figure(FIGURE, unit="DPS", tone="gold", size="xl")}'
-            f'<span class="fig-cap">{ERR_LINE}</span><span class="fig-cap kill">+{d:.1f} DPS since your last sim ({LAST_SIM[1]})</span>'
-            f'<span class="ans-acts">{Button("Save this sim", small=True)}{Link("Find upgrades in Top Gear &rsaquo;")}</span>')
+def since_last(last: tuple = LAST_SIM) -> str:
+    """The change since the character's last sim, carrying the error of the gap: the two runs' 95% bands combined (root of the
+    sum of squares). A gap inside that band reads "within the noise", muted, never green or red."""
+    d = MEAN - last[0]
+    b = (BAND ** 2 + band(last[2]) ** 2) ** .5
+    sign = '+' if d >= 0 else '&minus;'
+    if abs(d) <= b:
+        return f'<span class="fig-cap">Within the noise of your last sim ({last[1]}): {sign}{abs(d):.1f} &plusmn; {b:.1f}</span>'
+    return f'<span class="fig-cap {"kill" if d > 0 else "wipe"}">{sign}{abs(d):.1f} &plusmn; {b:.1f} DPS since your last sim ({last[1]})</span>'
+
+
+def answer_result(signed_in: bool = True, last: tuple = LAST_SIM) -> str:
+    save = Button('Save this sim', small=True) if signed_in else Button('Sign in to save', small=True)
+    return (f'<span class="t-label">{SPEC_LABEL} &middot; {LANE_LABEL}</span>{Figure(FIGURE, unit="DPS", tone="gold", size="xl")}'
+            f'<span class="fig-cap">{ERR_LINE}</span>{since_last(last) if signed_in else ""}'
+            f'<span class="ans-acts">{save}{Link("Find upgrades in Top Gear &rsaquo;")}</span>')
 
 
 def answer_last() -> str:
     return (f'<span class="t-label">Your last sim &middot; {LAST_SIM[1]}</span>{Figure(fnum(LAST_SIM[0]), unit="DPS", size="xl")}'
-            f'<span class="fig-cap">Raid buffs, Patchwerk 3:00. Run sim for today&rsquo;s number.</span><span class="ans-acts">{Link("Open it &rsaquo;")}</span>')
+            f'<span class="fig-cap">Raid buffs, {FIGHT_STYLE} {clock(FIGHT["duration_sec"])}. Run sim for today&rsquo;s number.</span><span class="ans-acts">{Link("Open it &rsaquo;")}</span>')
 
 
 def answer_running() -> str:
-    done, total = 1357, 3000
-    return (f'<span class="t-label">Running in your browser</span>{Figure("979", unit="DPS", tone="gold", size="xl")}'
-            f'<span class="fig-cap"><b>&plusmn; 0.4</b> &middot; {done:,} of {total:,} iterations</span><span class="ans-meter">{Meter(done / total)}</span>')
+    est, done = LIVE
+    return (f'<span class="t-label">Running in your browser</span>{Figure(f"{est:,.0f}", unit="DPS", tone="gold", size="xl")}'
+            f'<span class="fig-cap"><b>&plusmn; {band(done):.1f} (95%)</b> &middot; {done:,} of {REQ["iterations"]:,} runs</span><span class="ans-meter">{Meter(done / REQ["iterations"])}</span>')
+
+
+def answer_stopped() -> str:
+    est, done = LIVE
+    return (f'<span class="t-label">Stopped at {done:,} of {REQ["iterations"]:,} runs</span>{Figure(f"about {est:,.0f}", unit="DPS", tone="muted", size="xl")}'
+            f'<span class="fig-cap">Stopped at {done:,} runs: about {est:,.0f} &plusmn; {band(done):.1f}. A stopped run is not saved.</span>')
+
+
+def answer_failed(label: str, reason: str, fix: str = '') -> str:
+    """A failed run: what failed, why, and what the player does about it. The retry is the bar's one primary, never a second button here."""
+    return f'<span class="t-label">{label}</span><span class="fig-cap wipe">{reason}</span>' + (f'<span class="fig-cap">{fix}</span>' if fix else '')
 
 
 def result_page_body(saved: bool) -> str:
@@ -559,7 +667,9 @@ def result_page_body(saved: bool) -> str:
 
 PAGE_CSS = '''<style>
 /* page-level layout only: no border, background, radius or shadow (the guard reads inline styles; this block keeps to layout too) */
-.head .ans{min-width:0}@media(min-width:900px){.head .ans{min-width:360px}}
+/* the answer slot keeps the result's size from the first state to the last (no layout shift): label, figure, error, change, actions */
+.head .ans{min-width:0;min-height:172px}@media(min-width:900px){.head .ans{min-width:360px;min-height:189px}}
+.statesheet .head .ans{min-height:0}
 .fig-cap{font-size:13px;line-height:20px;color:var(--muted)}.fig-cap b{color:var(--text);font-weight:600}.fig-cap.kill{color:var(--kill);font-weight:600}.fig-cap.wipe{color:var(--wipe)}
 .ans-acts{display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin-top:6px}@media(min-width:900px){.ans-acts{justify-content:flex-end}}
 .ans-meter{display:block;width:100%;max-width:360px;margin-top:6px}
@@ -579,9 +689,15 @@ PAGE_CSS = '''<style>
 .paste{display:flex;flex-direction:column;gap:12px;padding:16px}
 .way{display:flex;flex-direction:column;gap:10px;padding:16px 0}
 .cbar .grp>.t-label{display:none}@media(min-width:1920px){.cbar .grp>.t-label{display:block}}
-@media(max-width:1023px){.pc .layout-split{display:flex;flex-direction:column;gap:var(--section-gap)}.pc .layout-split>.main,.pc .layout-split>.rail{display:contents}[data-region=section-damage-by-ability]{order:1}[data-region=section-dps-spread]{order:2}[data-region=section-timeline]{order:3}[data-region=section-gear]{order:4}[data-region=section-talents]{order:5}[data-region=section-rage]{order:6}[data-region=section-buffs-and-debuffs]{order:7}[data-region=section-this-run]{order:8}[data-region=section-rotation]{order:9}[data-region=section-your-sims]{order:10}}
+@media(max-width:1023px){.pc .layout-split{display:flex;flex-direction:column;align-items:stretch;gap:var(--section-gap)}.pc .layout-split section{min-width:0;max-width:100%}.pc .layout-split>.main,.pc .layout-split>.rail{display:contents}[data-region=section-damage-by-ability]{order:1}[data-region=section-dps-spread]{order:2}[data-region=section-timeline]{order:3}[data-region=section-gear]{order:4}[data-region=section-talents]{order:5}[data-region=section-rage]{order:6}[data-region=section-buffs-and-debuffs]{order:7}[data-region=section-this-run]{order:8}[data-region=section-rotation]{order:9}[data-region=section-your-sims]{order:10}}
 .statesheet{display:grid;gap:40px;grid-template-columns:minmax(0,1fr)}.statesheet>section{min-width:0}.statesheet>section>h2{margin-bottom:8px}
 .cls-links{display:flex;gap:4px 16px;flex-wrap:wrap;padding-top:2px}.cls-links .link{font-size:14px}
+/* ruling SHOULD 3: one button case on the page, sentence case as the tabs (the system Button is caps; see spec section 13) */
+.btn{text-transform:none;letter-spacing:0;font-size:14px;font-weight:700}
+.bar-end{display:flex;gap:20px;align-items:center}.bar-end .link{font-size:14px}
+.bar-d.is-run .grp,.bar-d.is-run .bar-end .link{opacity:.5;pointer-events:none}
+.fig.muted .v{color:var(--muted)}
+.sheet .kv dd{display:flex;flex-direction:column;align-items:flex-end;gap:4px}
 </style>'''
 
 
@@ -606,7 +722,7 @@ def regions(html: str) -> str:
 
 NOTE = (f'Simulator mock (design/specs/2026-11-06-sim.md), built only from ws_prims. Run: web/src/fixtures/sim/result-full.json '
         f'(the published warrior-fury 60 raid set, 10,000 runs); names, icons, items, talents and rotation from build {BUILD}. '
-        'SAMPLE: the signed-in name Thandrel, the last-sim figure and the Your sims rows.')
+        'SAMPLE: the signed-in name Thandrel, the last sims, the live estimate, the engine-refusal reason and the Your sims rows.')
 
 
 def finish(title: str, body: str, who) -> str:
@@ -629,7 +745,7 @@ def landing_out() -> str:
         if specs:
             links = ''.join(f'<a class="link" href="#">{s["name"]} &rsaquo;</a>' for s in specs)
             rows.append(Row(c['name'], f'<span class="cls-links">{links}</span>', lead=crest_img(c['slug'], 32), title_color=CLASS_COLOR[c['slug']], link=False))
-    rail = Section('Sim a best-in-slot set', Rows(rows, open_=True), meta='Level 60, raid buffs')
+    rail = Section('Sim a best-in-slot set', Rows(rows, open_=True), meta='The published BiS gear, not yours')
     return finish('Simulator', head + Page('split', main, rail), None)
 
 
@@ -675,9 +791,16 @@ def states() -> str:
         blk('Engine loading (the first run on this device)', hdr(f'<span class="t-label">Loading the engine</span><span class="fig-cap">The engine is about 4 MB. It loads once and is cached after that.</span><span class="ans-meter">{Meter(.35)}</span>') + run_bar('engine')),
         blk('On our servers: queued (Premium)', hdr(f'<span class="t-label">On our servers</span><span class="fig-cap"><b>Starting</b></span><span class="ans-meter">{Meter(0, "muted")}</span>') + run_bar('server')),
         blk('On our servers: running', hdr(f'<span class="t-label">On our servers</span><span class="fig-cap"><b>Running</b> &middot; takes about 2 minutes</span><span class="ans-meter">{Meter(.4)}</span>') + run_bar('server')),
-        blk('On our servers: failed', hdr(f'<span class="t-label">On our servers</span><span class="fig-cap wipe">Failed: the engine could not run this character.</span><span class="ans-acts">{Link("Run again")}</span>') + run_bar()),
-        blk('In the browser: failed', hdr(f'<span class="t-label">Run sim</span><span class="fig-cap wipe">The engine could not run this character.</span><span class="ans-acts">{Link("Try again")}</span>') + run_bar()),
-        blk('Stopped', hdr('<span class="t-label">Run sim</span><span class="fig-cap">Stopped. A stopped run has nothing finished to save.</span>') + run_bar()),
+        blk('On our servers: stopped before it finished (job reason "stopped before completion")',
+            hdr(answer_failed('On our servers &middot; did not finish', 'Our server stopped this run before it finished.', f'Press Run again. If it stops again, choose Normal precision ({3000:,} runs): it finishes sooner.')) + run_bar('done')),
+        blk('On our servers: failed for any other reason (job reason "the run could not be completed")',
+            hdr(answer_failed('On our servers &middot; failed', 'Our server could not finish this run.', 'Press Run again. If it fails twice, run it in your browser: choose a precision under High.')) + run_bar('done')),
+        blk('In your browser: the engine did not download', hdr(answer_failed('In your browser &middot; engine not loaded', 'The engine did not download.', 'Check your connection, then press Try again.')) + run_bar('retry')),
+        blk('In your browser: the engine refused the character (SAMPLE reason: the engine names the id it cannot read)',
+            hdr(answer_failed('In your browser &middot; failed', 'The engine could not run this character: Finger 1 holds item 999999, which the engine does not know.', 'Paste a fresh addon export, or swap that item in Top gear, then press Run again.')) + run_bar('done')),
+        blk('Stopped by the player (the partial number stays, greyed)', hdr(answer_stopped()) + run_bar('done')),
+        blk('Result, signed out (Save needs an account)', hdr(answer_result(signed_in=False))),
+        blk('Result, the change since the last sim inside the noise', hdr(answer_result(last=LAST_SIM_CLOSE))),
         blk('A spec the sim does not run (Holy Priest)', hdr('<span class="t-label">Not simulated yet</span><span class="fig-cap">Holy Priest is not simulated yet; there is nothing to run.</span><span class="ans-acts"><a class="link" href="#">Spec support &rsaquo;</a></span>', 'Lightwell', 'priest', 'Human Holy Priest &middot; Level 60') + run_bar('disabled')),
         blk('Signed in, no characters yet', PageHeader('Simulator', meta=['Your character&rsquo;s DPS, simmed in your browser.']) + Notice('<span>' + 'No characters yet: they are on their way from Battle.net. Paste an export below meanwhile, or check <a class="link" href="#">your account.</a>' + '</span>', tone='neutral')),
         blk('The character could not be read', Notice('<span>' + 'That character could not be read. <a class="link" href="#">Try again</a>' + '</span>', tone='neutral')),
@@ -693,14 +816,29 @@ def states() -> str:
         blk('Talents saved on an older layout', Section('Talents', '<p class="empty-open">These talents were saved on an older talent layout. The point split above is as saved; the trees have changed since, so they are not drawn.</p>', meta='20 / 31 / 0')),
         blk('A lazy section failed', Section('Timeline', f'<p class="empty-open">This part of the page didn&rsquo;t load. {Link("Try again")}</p>')),
         blk('Your sims: empty, then failed', history_section('empty') + history_section('failed')),
-        blk('Ability table: row hover', Plate(StatTable(TABLE_HEADS, ability_rows('hover')[0][:4], 6, sort='DPS'))),
+        blk('Ability table: row hover', Plate(StatTable(TABLE_HEADS, ability_rows('hover')[0][:4], N_FIGS, sort='DPS'))),
+        blk('Timeline: Swings and ticks on', timeline_section(swings_and_ticks=True)),
+        blk('Buffs and debuffs at a narrow column (the primitive keeps every figure inside its column)', f'<div style="max-width:420px">{buffs_section()}</div>'),
     ]
     body = '<div class="pc" style="padding-top:24px"><h1 class="t-title">Simulator: states</h1></div>' + Page('ledger', f'<div class="statesheet">{"".join(sheet)}</div>')
     return finish('Simulator states', body, YOU)
 
 
+# ---- 8. More settings, the overlay sheet (ruling S7), over the live result
+def more_settings() -> str:
+    ts = RES['target_stats']
+    target = sel(f"Level {ts['level']} boss")
+    rows = Facts([('Execute phase', f"{seg([('On', True, None, ''), ('Off', False, None, '')], 'sm')}<small>Last {FIGHT['execute_ratio'] * 100:.0f}% of the fight</small>"),
+                  ('Target', f"{target}<small>{ts['armor']:,} armor</small>"),
+                  ('Rotation', sel(f"The {SPEC_ROW['name']} rotation"))])
+    body = (rows + IconList(consume_items(), f'Consumables &middot; {len(CHAR["consumes"])}') + f'<p class="t-small rail-cap">{Link("Change consumables &rsaquo;")}</p>'
+            + f'<h3 class="t-label il-l">Request</h3><p class="t-small rail-cap">The whole request this run sends, as JSON. {Link("Show it &rsaquo;")}</p>')
+    sheet = Sheet('More settings', body, Button('Back to the preset') + Button('Done', primary=True))
+    return finish('Simulator, more settings', you_header(answer_result()) + run_bar('done') + worth_knowing() + result_page_body(saved=False) + sheet, YOU)
+
+
 PAGES = {'web-sim': landing_out, 'web-sim-you': landing_you, 'web-sim-running': running, 'web-sim-result': result_live,
-         'web-sim-saved': result_saved, 'web-sim-bar': bar_open, 'web-sim-states': states}
+         'web-sim-saved': result_saved, 'web-sim-bar': bar_open, 'web-sim-more': more_settings, 'web-sim-states': states}
 
 
 def compare() -> None:
