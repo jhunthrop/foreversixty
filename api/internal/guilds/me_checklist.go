@@ -47,6 +47,12 @@ const (
 	reasonBagsNotShared     = "bags_not_shared"
 )
 
+// What an attunement item asks for.
+const (
+	attunementKey   = "key"
+	attunementQuest = "quest"
+)
+
 // ChecklistItem is one check. The detail fields carry only what that key reads.
 type ChecklistItem struct {
 	Key   string `json:"key"`
@@ -56,10 +62,10 @@ type ChecklistItem struct {
 	// level
 	Level         *int `json:"level,omitempty"`
 	RequiredLevel *int `json:"required_level,omitempty"`
-	// attunement: the zone's key, or the item its quest chain hands out; AttunedBy says
-	// how an ok reading was read ("item" or "quest").
-	KeyItem   *KeyItem `json:"key_item,omitempty"`
-	AttunedBy string   `json:"attuned_by,omitempty"`
+	// attunement: the zone's key, or the item its quest chain hands out; AttunementKind is
+	// what the zone asks for, "key" or "quest".
+	KeyItem        *KeyItem `json:"key_item,omitempty"`
+	AttunementKind string   `json:"attunement_kind,omitempty"`
 	// gear_gap, in the Readiness board's units
 	Upgrades *int     `json:"upgrades,omitempty"`
 	GainDps  *float64 `json:"gain_dps,omitempty"`
@@ -172,16 +178,11 @@ func levelCheck(in checklistInput) ChecklistItem {
 // attunementItem is the zone's attunement reading (raid_prep.go attunementOf) as a checklist
 // item, with the key or the chain's item it names.
 func attunementItem(zone Zone, r attunementReading) ChecklistItem {
-	it := ChecklistItem{Key: CheckAttunement, State: r.State, Reason: r.Reason, KeyItem: zone.KeyItem}
+	it := ChecklistItem{Key: CheckAttunement, State: r.State, Reason: r.Reason, KeyItem: zone.KeyItem,
+		AttunementKind: attunementKey}
 	if a, ok := attunementFor(zone); ok && zone.KeyItem == nil {
 		item := a.Item
-		it.KeyItem = &item
-	}
-	if r.State == CheckOK {
-		it.AttunedBy = "item"
-		if r.ByQuest {
-			it.AttunedBy = "quest"
-		}
+		it.KeyItem, it.AttunementKind = &item, attunementQuest
 	}
 	return it
 }

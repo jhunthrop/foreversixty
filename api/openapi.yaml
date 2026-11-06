@@ -2459,10 +2459,12 @@ components:
               unit: { type: string, enum: [dps] }
               slots: { type: array, items: { type: string }, description: The slots the BiS list names an upgrade for, in its order. }
               missing_slots: { type: array, items: { type: string } }
-              attuned_by:
+              attunement_kind:
                 type: string
-                enum: [item, quest]
-                description: An ok attunement's source, the key or chain item carried, or the quest flag.
+                enum: [key, quest]
+                description: >-
+                  What attunement asks for: the zone's key (key_item), or its quest chain (quest;
+                  key_item is then the item the chain hands out, Drakefire Amulet for Onyxia).
               supplies:
                 type: array
                 description: flask_food's counted stacks in the bags, flasks, then elixirs, then food.

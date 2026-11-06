@@ -96,8 +96,8 @@ func TestOnyxiaAttunementReadsTheQuestFlags(t *testing.T) {
 		want attunementReading
 	}{
 		"old export":       {prepRow(t, "gear_bags", ""), attunementReading{State: CheckNotTracked, Reason: reasonQuestsNotInExport}},
-		"alliance done":    {prepRow(t, "gear", "|quests=6502:1,6602:0"), attunementReading{State: CheckOK, ByQuest: true}},
-		"horde done":       {prepRow(t, "gear", "|quests=6502:0,6602:1"), attunementReading{State: CheckOK, ByQuest: true}},
+		"alliance done":    {prepRow(t, "gear", "|quests=6502:1,6602:0"), attunementReading{State: CheckOK}},
+		"horde done":       {prepRow(t, "gear", "|quests=6502:0,6602:1"), attunementReading{State: CheckOK}},
 		"asked, not done":  {prepRow(t, "gear", "|quests=6502:0,6602:0"), attunementReading{State: CheckFail}},
 		"asked only one":   {prepRow(t, "gear", "|quests=6502:0"), attunementReading{State: CheckNotTracked, Reason: reasonQuestsNotInExport}},
 		"amulet in bags":   {prepRow(t, "gear_bags", "|bags=16309|quests=6502:0,6602:0"), attunementReading{State: CheckOK}},
@@ -127,7 +127,7 @@ func TestChecklistFlaskFoodAndFireResistance(t *testing.T) {
 	if fr := itemOf(items, CheckFireResistance); fr.State != CheckOK || *fr.Resistance != 85 {
 		t.Fatalf("fire_resistance = %+v", fr)
 	}
-	if a := itemOf(items, CheckAttunement); a.State != CheckOK || a.AttunedBy != "quest" || a.KeyItem.ID != 16309 {
+	if a := itemOf(items, CheckAttunement); a.State != CheckOK || a.AttunementKind != attunementQuest || a.KeyItem.ID != 16309 {
 		t.Fatalf("attunement = %+v", a)
 	}
 

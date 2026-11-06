@@ -118,8 +118,6 @@ func resistancesOf(row RosterRow) *fs1.Resistances {
 type attunementReading struct {
 	State  string
 	Reason string
-	// ByQuest is true when an ok reading came from the quest flag rather than an item.
-	ByQuest bool
 }
 
 // attunementOf is the row's attunement for zone: its key item (KeyItem) or its quest chain
@@ -158,7 +156,7 @@ func questAttunement(a Attunement, row RosterRow) attunementReading {
 	for _, id := range a.Quests {
 		done, ok := row.prep.quests[id]
 		if done {
-			return attunementReading{State: CheckOK, ByQuest: true}
+			return attunementReading{State: CheckOK}
 		}
 		asked = asked && ok
 	}
