@@ -5,6 +5,7 @@
 // lane name sits over the plot, so every event at the pull can be seen.
 import type { Page, Route } from '@playwright/test';
 import { expect, test } from './support/test';
+import { gotoSavedSim } from './support/sim-page';
 
 const FIXTURES = ['simfullfixt1', 'simfixtureab'] as const;
 const WIDTHS = [390, 1440] as const;
@@ -82,7 +83,7 @@ for (const id of FIXTURES) {
 for (const width of [360, 390]) {
   test(`at ${width} every event at the pull shows, and no lane name covers the plot`, async ({ page }) => {
     await page.setViewportSize({ width, height: 800 });
-    await page.goto('/sim/simfullfixt1');
+    await gotoSavedSim(page, '/sim/simfullfixt1');
     await page.getByTestId('sim-section-timeline').scrollIntoViewIfNeeded();
     const plot = page.getByTestId('timeline-plot');
     await expect(plot.locator('g[data-row] rect').first()).toBeAttached();
@@ -150,7 +151,7 @@ test('the timeline loads under its ready head at its ready height', async ({ pag
     await gate;
     return 'serve';
   });
-  await page.goto('/sim/simfullfixt1');
+  await gotoSavedSim(page, '/sim/simfullfixt1');
   const section = page.getByTestId('sim-section-timeline');
   await section.scrollIntoViewIfNeeded();
   await expect(page.getByTestId('sim-section-timeline-skeleton')).toBeVisible();
@@ -179,7 +180,7 @@ test('the timeline loads under its ready head at its ready height', async ({ pag
 test('a timeline chunk that fails shows the compact error, with no reserve left behind', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await routeTimelineChunk(page, () => Promise.resolve('fail'));
-  await page.goto('/sim/simfullfixt1');
+  await gotoSavedSim(page, '/sim/simfullfixt1');
   await page.getByTestId('sim-section-timeline').scrollIntoViewIfNeeded();
   await expect(page.getByTestId('sim-section-timeline-error')).toBeVisible();
 

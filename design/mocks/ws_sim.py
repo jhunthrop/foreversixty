@@ -865,7 +865,7 @@ def result_live() -> str:
 def result_saved() -> str:
     meta = [f'{RACE} &middot; Level {CHAR["level"]} &middot; {SPLIT} talents &middot; {FIGHT_LEN} fight, raid buffs, {len(CHAR["consumes"])} consumables', 'Saved 4 Nov 2026']
     ans = (f'<span class="t-label">Saved sim &middot; {RES["iterations_run"]:,} runs</span>{Figure(FIGURE, unit="DPS", tone="gold", size="xl")}'
-           f'<span class="fig-cap">{ERR_LINE}</span><span class="ans-acts">{Button("Open in the sim", primary=True)}{Button("Copy link")}</span>')
+           f'<span class="fig-cap">{ERR_LINE}</span><span class="ans-acts">{_Button("Open in the sim", primary=True)}{Button("Copy link")}</span>')
     head = PageHeader(SPEC_LABEL, crest=crest_img(CLS, 56), meta=meta, answer=ans)
     return finish(f'{SPEC_LABEL}, saved sim', head + worth_knowing() + result_page_body(saved=True), None)
 

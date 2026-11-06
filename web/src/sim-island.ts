@@ -13,6 +13,7 @@ import { scheduleBoot } from './lib/islands/boot';
 import { simIdFrom } from './lib/sim/url';
 import type { SimResult } from './lib/sim/types';
 import type { BisSetClass } from './lib/sim/bis-set-rail';
+import type { PrerenderedNote } from './lib/sim/prerender-notes';
 import './styles/fonts.css';
 import './styles/global.css';
 
@@ -48,6 +49,18 @@ export function readBisSets(element: HTMLElement): BisSetClass[] {
   }
 }
 
+/** A prerendered saved run's Worth knowing (sim/[id].astro), or none. */
+export function readInitialNotes(element: HTMLElement): PrerenderedNote[] | undefined {
+  const raw = element.dataset.simNotes;
+  if (raw === undefined || raw === '') return undefined;
+  try {
+    return JSON.parse(raw) as PrerenderedNote[];
+  } catch (error) {
+    console.error('sim island: data-sim-notes is not valid JSON', error);
+    return undefined;
+  }
+}
+
 /** The mount element's min-height classes, at every breakpoint. */
 export function shellReservations(element: HTMLElement): string[] {
   return [...element.classList].filter((name) => /(^|:)min-h-\[/.test(name));
@@ -60,6 +73,7 @@ function boot(): void {
     simId: simIdFor(target, window.location.pathname),
     inlineResult: readInlineResult(target),
     bisSets: readBisSets(target),
+    initialNotes: readInitialNotes(target),
   };
   // The shell's no-JS paragraph lives inside the mount element; Svelte 5 appends rather
   // than replaces, so it has to go before the mount or it stays under the island.

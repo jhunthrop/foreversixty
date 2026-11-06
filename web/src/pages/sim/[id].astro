@@ -10,6 +10,11 @@ import fixtureResult from '../../fixtures/sim/result.json';
 import fixtureFullResult from '../../fixtures/sim/result-full.json';
 import { SIM_SAVED_SKELETON_HTML } from '../../lib/sim/skeleton';
 import IslandScript from '../../components/IslandScript.astro';
+import SavedSim from '../../components/sim/SavedSim.svelte';
+import type { SimResult } from '../../lib/sim/types';
+import activeBuild from '../../data/active-build.json';
+import { prerenderedNotes } from '../../lib/sim/prerender-notes';
+import path from 'node:path';
 
 export function getStaticPaths() {
   return fixtureSimPaths();
@@ -22,6 +27,15 @@ const FIXTURE_INLINE: Readonly<Record<string, unknown>> = {
 };
 const fixture = id === undefined ? undefined : FIXTURE_INLINE[id];
 const inline = fixture === undefined ? undefined : JSON.stringify(fixture);
+// Worth knowing at build time, so its lines paint with the page (lib/sim/prerender-notes.ts).
+const notes =
+  fixture === undefined
+    ? undefined
+    : await prerenderedNotes(
+        fixture as unknown as SimResult,
+        activeBuild.build,
+        path.join(process.cwd(), 'public'),
+      );
 ---
 
 <Base
@@ -45,16 +59,37 @@ const inline = fixture === undefined ? undefined : JSON.stringify(fixture);
       24px over each (the CI-fonts buffer): 8222/5393. sim-island.ts drops every min-h class once
       the island mounts, so a result shorter than this never keeps a hole above the footer.
     -->
+    <!--
+      A prerendered saved run (the fixture ids) renders the saved page itself here, the island's
+      first render of the same component, so the head and its figure paint with the page and the
+      island's mount moves nothing (spec 2026-11-06-sim §9; Lighthouse measures this page). Any
+      other id is served from sim.html by src/worker.ts and draws the skeleton below, at the
+      saved page's ready geometry, while its result loads (SIM_SAVED_SKELETON_HTML, the same string
+      SimView renders between mounting and the first byte). The reserve keeps the footer below
+      the fold until then; sim-island.ts drops every min-h class once the island mounts.
+    -->
     <div
       id="sim"
       data-sim-mount
       data-sim-id={id}
       data-sim-result={inline}
-      class="min-h-[8222px] md:min-h-[5393px]"
+      data-sim-notes={notes === undefined ? undefined : JSON.stringify(notes)}
+      class={fixture === undefined ? 'min-h-[8222px] md:min-h-[5393px]' : undefined}
     >
-      <div class={`flex flex-col ${VIEW_GAP}`}>
-        <Fragment set:html={SIM_SAVED_SKELETON_HTML} />
-      </div>
+      {fixture === undefined ? (
+        <div class={`flex flex-col ${VIEW_GAP}`}>
+          <Fragment set:html={SIM_SAVED_SKELETON_HTML} />
+        </div>
+      ) : (
+        <div class="flex flex-col">
+          <SavedSim
+            result={fixture as unknown as SimResult}
+            onrerun={() => {}}
+            simId={id}
+            initialNotes={notes}
+          />
+        </div>
+      )}
     </div>
     <IslandScript src="/sim-island.js" />
   </main>

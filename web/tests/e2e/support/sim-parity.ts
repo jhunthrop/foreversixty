@@ -154,7 +154,7 @@ export async function openSimState(page: Page, state: SimParityState): Promise<v
   }
   if (state === 'saved') {
     await page.goto(SAVED_SIM_PATH);
-    await expect(page.getByTestId('sim-saved')).toBeVisible();
+    await expect(page.getByTestId('sim-view')).toBeVisible();
     await drawWholeReport(page);
     return;
   }

@@ -26,6 +26,7 @@
   import { simAnswer, type StoppedSnapshot } from '../../lib/sim/answer';
   import { fetchSpecs, listMySims } from '../../lib/sim/api';
   import type { BisSetClass } from '../../lib/sim/bis-set-rail';
+  import type { PrerenderedNote } from '../../lib/sim/prerender-notes';
   import { codeForCharacterSpec } from '../../lib/sim/character';
   import { followCurrentCharacter, simHoldsWork } from '../../lib/sim/follow-current-character';
   import { decideBootstrap, RESTORE_BUSY_KEY, runBootstrapRestore } from '../../lib/sim/character-bootstrap';
@@ -74,7 +75,14 @@
     simId = '',
     inlineResult = null,
     bisSets = [],
-  }: { simId?: string; inlineResult?: SimResult | null; bisSets?: readonly BisSetClass[] } = $props();
+    initialNotes,
+  }: {
+    simId?: string;
+    inlineResult?: SimResult | null;
+    bisSets?: readonly BisSetClass[];
+    /** A prerendered saved run's Worth knowing, read at build time (sim/[id].astro). */
+    initialNotes?: readonly PrerenderedNote[];
+  } = $props();
 
   // /sim/<sim_id>, or the prerendered fixture page that inlines its result.
   const hasSavedSimId = untrack(() => simId !== '' || inlineResult !== null);
@@ -133,18 +141,10 @@
     if (hasSavedSimId && savedSim.result === null && simId !== '') savedSim.load(simId);
   });
 
-  /** "Open in the sim": /sim with this saved run's character and setup. */
+  /** "Open in the sim": the saved run's link (lib/sim/rerun-href.ts) carries the setup; the
+   *  click only asks /sim to focus Run once it has loaded. */
   function onRerunSaved(): void {
-    if (savedSim.result === null) return;
-    const { kind, ref } = savedSim.result.request.source;
-    const target =
-      ref !== ''
-        ? withSimState(defaultSimState(), { source: kind, ref })
-        : withSimState(defaultSimState(), {
-            code: codeForCharacterSpec(savedSim.result.request.character, bootstrap.treeVersion),
-          });
     askToFocusRun();
-    window.location.href = `/sim${simSearch(target)}`;
   }
 
   // The other half of "Open in the sim": the setup is loaded, so Enter starts the run.
@@ -518,8 +518,16 @@
 <div class="flex flex-col" data-testid="sim-view">
   {#if hasSavedSimId}
     {#if savedSim.result !== null}
-      <div class="reveal">
-        <SavedSim result={savedSim.result} onrerun={onRerunSaved} {simId} fidelity={savedSpecRow} />
+      <!-- No fade here: the saved head is the page's largest paint, and an element first painted at
+           opacity 0 is never an LCP candidate (Lighthouse reported no LCP on /sim/<id>). -->
+      <div>
+        <SavedSim
+          result={savedSim.result}
+          onrerun={onRerunSaved}
+          {simId}
+          fidelity={savedSpecRow}
+          {initialNotes}
+        />
       </div>
     {:else if savedSim.error === simCopy.notFound}
       <div class="sim-pad">

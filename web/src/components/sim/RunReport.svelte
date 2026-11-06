@@ -54,6 +54,7 @@
   import { timelineCopy } from '../../lib/sim/timeline-copy';
   import { timelineHeadMeta } from '../../lib/sim/timeline-lanes';
   import type { SimResult } from '../../lib/sim/types';
+  import type { PrerenderedNote } from '../../lib/sim/prerender-notes';
   import { simWarnings } from '../../lib/sim/warnings';
   import { REGION } from '../../lib/ui/regions';
   import { LINK } from '../../lib/ui/primitives';
@@ -72,6 +73,7 @@
     railTail,
     onrerun,
     simId = '',
+    initialNotes,
   }: {
     result: SimResult;
     /** A finished run on /sim rather than a saved one. */
@@ -82,6 +84,9 @@
     onrerun?: () => void;
     /** The saved sim's id, for the downloaded file's name. */
     simId?: string;
+    /** Worth knowing computed at build time for a prerendered run (lib/sim/prerender-notes.ts):
+     *  drawn until the names and spell facts load here, so the lines never arrive late. */
+    initialNotes?: readonly PrerenderedNote[];
   } = $props();
 
   const build = activeBuild.build;
@@ -96,6 +101,8 @@
 
   let names = $state<ActionNames | null>(null);
   let spells = $state<SpellInfo>(NO_SPELL_INFO);
+  let spellsLoaded = $state(false);
+  let namesSettled = $state(false);
   let items = $state<ReadonlyMap<number, Item>>(new Map());
   let buffNames = $state<BuffNames | null>(null);
 
@@ -113,12 +120,17 @@
 
   onMount(() => {
     loadQuietly('the action names', async () => {
-      const loaded = await loadActionNames(build, classSlug);
-      names = loaded;
-      names = await withShardNames(loaded, summaryActionKeys(summary));
+      try {
+        const loaded = await loadActionNames(build, classSlug);
+        names = loaded;
+        names = await withShardNames(loaded, summaryActionKeys(summary));
+      } finally {
+        namesSettled = true;
+      }
     });
     loadQuietly('the spell data', async () => {
       spells = await loadSpellInfo(build, classSlug);
+      spellsLoaded = true;
     });
     loadQuietly('the item file', async () => {
       const file = await loadItems(build, classSlug);
@@ -129,7 +141,15 @@
     });
   });
 
-  const notes = $derived(simWarnings({ result, names, fact: spells.fact }));
+  const computedNotes = $derived(
+    simWarnings({ result, names, fact: spells.fact }).map((note) => ({
+      ...note,
+      iconUrl: note.actionKey === undefined ? null : spells.iconUrl(note.actionKey),
+    })),
+  );
+  const notes = $derived(
+    initialNotes !== undefined && (!namesSettled || !spellsLoaded) ? initialNotes : computedNotes,
+  );
   const plannerHref = $derived(plannerHrefForSpec(character, build));
   const table = $derived(
     abilityTable({
@@ -264,7 +284,7 @@
   {#if notes.length > 0}
     <div class="px-[var(--page-inset)]" data-region={REGION.summary} data-testid="sim-worth-knowing">
       {#each notes as note (`${note.id}:${note.actionKey ?? ''}`)}
-        {@const icon = note.actionKey === undefined ? null : spells.iconUrl(note.actionKey)}
+        {@const icon = note.iconUrl}
         <Notice
           text={note.text}
           tone="neutral"

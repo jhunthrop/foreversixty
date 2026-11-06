@@ -98,13 +98,16 @@ describe('the shells', () => {
 
   // The cast is only for `astro check`: the route types its props from `getStaticPaths`, which
   // it never reads (it reads `Astro.params`).
-  it('sim/[id].astro renders the saved-sim skeleton, with no tool tabs and no spine bar', async () => {
-    const html = await container.renderToString(SimById as unknown as AstroComponentFactory, {
-      params: { id: FIXTURE_SIM_ID },
-    });
-    expect(html).toContain('data-testid="sim-saved-skeleton"');
-    expect(html).not.toContain('data-sim-tab');
-    expect(html).not.toContain('current-character-bar');
+  it('sim/[id].astro renders a prerendered run itself, and the skeleton for any other id', async () => {
+    const render = (id: string) =>
+      container.renderToString(SimById as unknown as AstroComponentFactory, { params: { id } });
+    const fixture = await render(FIXTURE_SIM_ID);
+    expect(fixture).toContain('data-testid="sim-saved"');
+    expect(fixture).toContain('data-sim-notes=');
+    expect(fixture).not.toContain('data-sim-tab');
+    expect(fixture).not.toContain('current-character-bar');
+    const other = await render('abcdefghijkl');
+    expect(other).toContain('data-testid="sim-saved-skeleton"');
   });
 });
 

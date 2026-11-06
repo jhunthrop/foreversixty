@@ -78,3 +78,13 @@ export async function closeMoreSettings(page: Page): Promise<void> {
   await page.getByTestId('sim-more-done').click();
   await expect(page.getByTestId('sim-more-settings')).toHaveCount(0);
 }
+
+/**
+ * A prerendered saved run (/sim/simfixtureab, /sim/simfullfixt1) paints the page in its HTML and
+ * the island mounts the same page over it: wait for the island before driving it, or a click lands
+ * on markup that is about to be replaced.
+ */
+export async function gotoSavedSim(page: Page, path: string): Promise<void> {
+  await page.goto(path);
+  await expect(page.getByTestId('sim-view')).toBeVisible();
+}

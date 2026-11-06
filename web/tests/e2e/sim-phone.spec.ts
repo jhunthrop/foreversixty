@@ -9,7 +9,7 @@ import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import type { Page } from '@playwright/test';
 import { expect, test } from './support/test';
-import { closeMoreSettings, gotoSim, openMoreSettings, pasteAndRun } from './support/sim-page';
+import { closeMoreSettings, gotoSim, openMoreSettings, pasteAndRun, gotoSavedSim } from './support/sim-page';
 import { assertNoHorizontalScroll } from './support/phone-scroll';
 import { fieldBox } from './support/select';
 
@@ -277,7 +277,7 @@ test('/sim/specs has no sideways scroll and every card clears 44px', async ({ pa
 test('a saved sim at /sim/simfixtureab has no sideways scroll and every target clears 44px', async ({
   page,
 }) => {
-  await page.goto('/sim/simfixtureab');
+  await gotoSavedSim(page, '/sim/simfixtureab');
   await expect(page.getByTestId('sim-saved')).toBeVisible();
   await expect(page.getByTestId('sim-damage-card')).toBeVisible();
 

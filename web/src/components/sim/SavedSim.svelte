@@ -8,7 +8,9 @@
 <script lang="ts">
   import { onDestroy, onMount } from 'svelte';
   import { createLazyComponent } from '../../lib/report/lazy-component.svelte';
+  import activeBuild from '../../data/active-build.json';
   import { resultAnswer } from '../../lib/sim/answer';
+  import { rerunHref } from '../../lib/sim/rerun-href';
   import { requestKind } from '../../lib/sim/bulk-types';
   import { raceWords } from '../../lib/sim/head-meta';
   import { markSimSeenOnOpen } from '../../lib/sim/mark-seen-on-open';
@@ -23,6 +25,7 @@
   } from '../../lib/sim/result-band';
   import { durationLabel } from '../../lib/sim/settings';
   import { specLabel } from '../../lib/sim/spec-label';
+  import type { PrerenderedNote } from '../../lib/sim/prerender-notes';
   import type { SimResult, SpecFidelity } from '../../lib/sim/types';
   import { createCopyFeedback, type CopyFeedbackState } from '../../lib/ui/copy-feedback';
   import Button from '../ui/Button.svelte';
@@ -36,12 +39,15 @@
     onrerun,
     simId = '',
     fidelity = null,
+    initialNotes,
   }: {
     result: SimResult;
     onrerun: () => void;
     simId?: string;
     /** The spec list's row for the run's spec: the answer's fidelity caption (§4.6). */
     fidelity?: SpecFidelity | null;
+    /** Worth knowing read at build time for a prerendered run (RunReport `initialNotes`). */
+    initialNotes?: readonly PrerenderedNote[];
   } = $props();
 
   onMount(() => {
@@ -49,6 +55,13 @@
   });
 
   const kind = $derived(requestKind(result.request));
+  /** "Open in the sim" as a link (it works before the island mounts); a Worth knowing line's own
+   *  "Open in the sim" button goes the same way. */
+  const openHref = $derived(rerunHref(result, activeBuild.build));
+  function openInSim(): void {
+    onrerun();
+    window.location.href = openHref;
+  }
   // A bulk or weights result is rare and carries its own view: a chunk of its own.
   const savedKindLazy = createLazyComponent(() => import('./SavedKind.svelte'));
   $effect(() => {
@@ -112,8 +125,12 @@
         <SimAnswer {model}>
           {#snippet extra()}<SimFidelityCaption {fidelity} />{/snippet}
           {#snippet actions()}
-            <Button tone="primary" size="sm" onclick={onrerun} testid="sim-run-yourself"
-              >{copy.answer.openInSim}</Button
+            <Button
+              tone="primary"
+              size="sm"
+              href={openHref}
+              onclick={onrerun}
+              testid="sim-run-yourself">{copy.answer.openInSim}</Button
             >
             <Button size="sm" onclick={() => void copier.copy(window.location.href)} testid="sim-saved-copy"
               ><span aria-live="polite">{copyLabel}</span></Button
@@ -122,10 +139,10 @@
         </SimAnswer>
       {/snippet}
     </SimCharacterHead>
-    <RunReport {result} {onrerun} />
+    <RunReport {result} onrerun={openInSim} {initialNotes} />
   </div>
 {:else}
   <div class="flex flex-col gap-[22px] pt-[22px] md:gap-8 md:pt-8">
-    {#if savedKindLazy.current}<savedKindLazy.current {result} {onrerun} />{/if}
+    {#if savedKindLazy.current}<savedKindLazy.current {result} onrerun={openInSim} />{/if}
   </div>
 {/if}
