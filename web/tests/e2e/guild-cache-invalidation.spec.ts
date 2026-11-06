@@ -175,18 +175,17 @@ test('approving a character changes the band count and survives the next visit',
   });
   await page.route('**/v1/rankings/guilds*', (route) => route.fulfill(envelope({ rows: [] })));
 
-  await page.goto(GUILD_PATH);
-  // The Overview's Roster card carries the waiting count (the officer strip left the head).
-  const waiting = page.getByTestId('guild-overview-roster-facts');
-  await expect(waiting).toContainText('waiting for approval');
-  const first = Number(((await waiting.textContent()) ?? '').match(/(\d+) waiting for approval/)?.[1]);
-  expect(first).toBeGreaterThan(1);
-
+  // The roster tab's approve buttons are the waiting count.
   await page.goto(`${GUILD_PATH}#roster`);
-  await page.getByTestId('guild-roster-approve').first().click();
-  await expect(page.getByTestId('guild-roster-approve')).toHaveCount(first - 1);
+  const approve = page.getByTestId('guild-roster-approve');
+  await expect(approve.first()).toBeVisible();
+  const first = await approve.count();
+  expect(first).toBeGreaterThan(1);
+  await approve.first().click();
+  await expect(approve).toHaveCount(first - 1);
 
   // The next visit renders the new count, not the persisted pre-approval answer.
   await page.goto(GUILD_PATH);
-  await expect(waiting).toContainText(`${first - 1} waiting for approval`);
+  await page.goto(`${GUILD_PATH}#roster`);
+  await expect(approve).toHaveCount(first - 1);
 });

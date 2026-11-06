@@ -1185,12 +1185,6 @@ test.describe('loot tab renders real data after Overview’s own prefetch', () =
     await stubDepthEndpoints(page);
     await page.goto(GUILD_URL);
     await expect(page.getByTestId('guild-overview-tab')).toBeVisible();
-    // The Overview's own Loot summary card prefetches GET .../loot before the tab exists.
-    await expect(page.getByTestId('guild-overview-card-loot')).toBeVisible();
-    const lootLine = page.getByTestId('guild-overview-loot-line');
-    await expect(lootLine).toContainText('Next open drop:');
-    await expect(lootLine.locator('[data-testid^="item-hover-"]')).toHaveCount(1);
-    await expect(lootLine).not.toContainText('Scale of Onyxia');
 
     await page.getByTestId('guild-tab-loot').click();
     await expect(page.getByTestId('guild-loot-tab')).toBeVisible();
@@ -1250,47 +1244,22 @@ test.describe('a 404 from an undeployed endpoint never crashes the page', () => 
   });
 });
 
-test.describe('the Overview raid-night row at 390 (round 8)', () => {
-  test('every fact is visible on its own line and the page does not scroll sideways', async ({ page }) => {
+test.describe('the Overview last raid at 390', () => {
+  test('every fact is visible and the page does not scroll sideways', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 900 });
     await stubCore(page, VIEWER_OFFICER, 'leader');
     await stubDepthEndpoints(page);
     await page.goto(GUILD_URL);
-    const row = page.getByTestId('guild-overview-raid-row').first();
-    await expect(row).toBeVisible();
-    const facts = row.getByTestId('guild-overview-raid-facts');
+    const facts = page.getByTestId('guild-overview-raid-facts');
     await expect(facts).toContainText('boss');
     const pieces = facts.locator(':scope > span');
     const n = await pieces.count();
     expect(n).toBeGreaterThanOrEqual(2);
     for (let i = 0; i < n; i++) {
-      await expect(pieces.nth(i)).toBeVisible();
       const box = await pieces.nth(i).boundingBox();
       expect(box && box.x >= 0 && box.x + box.width <= 390).toBe(true);
     }
-    // The facts sit on a line of their own under the title and the day.
-    const [title, factsBox] = await Promise.all([
-      row.getByTestId('guild-overview-raid-row-label').boundingBox(),
-      facts.boundingBox(),
-    ]);
-    expect(title && factsBox && factsBox.y >= title.y + title.height - 1).toBe(true);
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
-  });
-
-  test('at 1280 the row is a settings row: the title and facts at the left, the day at the right', async ({
-    page,
-  }) => {
-    await page.setViewportSize({ width: 1280, height: 900 });
-    await stubCore(page, VIEWER_OFFICER, 'leader');
-    await stubDepthEndpoints(page);
-    await page.goto(GUILD_URL);
-    const row = page.getByTestId('guild-overview-raid-row').first();
-    await expect(row).toBeVisible();
-    await expect(row.getByTestId('guild-overview-raid-facts')).toContainText(' · ');
-    const box = await row.boundingBox();
-    expect(box?.height ?? 99).toBeLessThan(80);
-    const day = await row.getByTestId('settings-row-value').boundingBox();
-    expect(day && box && day.x > box.x + box.width / 2).toBe(true);
   });
 });
 
@@ -1663,10 +1632,8 @@ test.describe('guild facts read as sentences (P.1)', () => {
       await page.goto(GUILD_URL);
       const header = page.getByTestId('guild-header-facts');
       await expect(header).toBeVisible();
-      expect(await words(header)).toMatch(/^PvP US · \d+ bosse?s? down · \d+ pulls?( · Updated .+)?$/);
-      const rosterFacts = page.getByTestId('guild-overview-roster-facts');
-      expect(await words(rosterFacts)).toMatch(
-        /^\d+ raiders? with gear on the site · \d+ waiting for approval · \d+ below the rating floor$/,
+      expect(await words(header)).toMatch(
+        /^PvP US · \d+ bosse?s? down · \d+ pulls?( · Updated [^·]+)?( · Next raid: .+)?$/,
       );
       const raidFacts = page.getByTestId('guild-overview-raid-facts').first();
       expect(await words(raidFacts)).toMatch(/ · /);
@@ -1730,7 +1697,7 @@ test.describe('guild facts read as sentences (P.1)', () => {
     await stubCore(page, VIEWER_OFFICER, 'leader');
     await stubDepthEndpoints(page);
     await page.goto(GUILD_URL);
-    await expect(page.getByTestId('guild-overview-card-progression')).toBeVisible();
-    await expect(page.getByTestId('guild-overview-card-progression')).not.toContainText('no encounter list');
+    await expect(page.getByTestId('guild-overview-last-raid')).toBeVisible();
+    await expect(page.getByTestId('guild-overview-tab')).not.toContainText('no encounter list');
   });
 });

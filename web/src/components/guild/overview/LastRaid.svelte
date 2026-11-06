@@ -22,7 +22,10 @@
     <p class="text-muted text-small">No raid logged yet.</p>
   {:else}
     <Row title={report.title === '' ? report.zone : report.title} href={`/reports/${report.id}`} open>
-      {#snippet subContent()}<FactLine facts={[report.day, ...facts]} />{/snippet}
+      {#snippet subContent()}<FactLine
+          facts={[report.day, ...facts]}
+          testid="guild-overview-raid-facts"
+        />{/snippet}
       {#snippet trail()}<span class="text-gold font-semibold">Report ›</span>{/snippet}
     </Row>
   {/if}

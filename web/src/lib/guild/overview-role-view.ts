@@ -114,8 +114,14 @@ function enchantsRow(item: ChecklistItem): ChecklistRow {
 export function checklistRows(list: GuildChecklist, race: string | null = null): ChecklistRow[] {
   const zone = list.raid?.zone_name ?? 'the raid';
   const bis = bisHref(list.character.class, list.character.spec || null, list.character.level, race);
+  // Gear and enchants both go unread when the export carries no gear: one row asks for it.
+  const asked = new Set<string>();
   return list.items.flatMap((item): ChecklistRow[] => {
-    if (item.state === 'not_tracked') return actionableRow(item);
+    if (item.state === 'not_tracked') {
+      if (item.reason === undefined || asked.has(item.reason)) return [];
+      asked.add(item.reason);
+      return actionableRow(item);
+    }
     switch (item.key) {
       case 'level':
         return [levelRow(item, zone)];
