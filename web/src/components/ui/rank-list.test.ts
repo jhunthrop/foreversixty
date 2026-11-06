@@ -34,9 +34,7 @@ const ROW = {
 describe('rankListStyle', () => {
   it('sets the figure count, the figure width and the link column from the shape', () => {
     expect(rankListStyle({ figures: 1, links: 4 })).toBe('--rl-n: 1; --rl-fig: 112px; --rl-links: 206px');
-    expect(rankListStyle({ figures: 3, links: 3, wideFigures: true })).toBe(
-      '--rl-n: 3; --rl-fig: 124px; --rl-links: 156px',
-    );
+    expect(rankListStyle({ figures: 3, links: 3 })).toBe('--rl-n: 3; --rl-fig: 112px; --rl-links: 156px');
     expect(rankListStyle({ figures: 1, links: 0 })).toContain('--rl-links: 0px');
   });
 

@@ -1,6 +1,6 @@
 <!-- web/src/components/ui/ColumnHeads.svelte -->
 <!-- A ranked list's one head row (tiers spec 2026-11-06 §4.4): 12 px caps labels on the RankList's
-     grid, one line each, numeric heads at the end. Hidden below 1024, where each figure carries its
+     grid, one line each, numeric heads at the end. Hidden below 1280, where each figure carries its
      unit. Decorative for assistive tech: every cell in a row names its own column. -->
 <script lang="ts">
   import type { RankHead } from '../../lib/ui/rank-list';

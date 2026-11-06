@@ -13,7 +13,6 @@
     heads,
     figures = 1,
     links = 0,
-    wideFigures = false,
     grouped = false,
     label,
     testid,
@@ -22,7 +21,6 @@
     heads?: readonly RankHead[];
     figures?: number;
     links?: number;
-    wideFigures?: boolean;
     /** The children are RankGroups (a letter column from 1100). */
     grouped?: boolean;
     /** The list's accessible name. */
@@ -35,7 +33,7 @@
 <div
   class="ui-rank-list"
   data-grouped={grouped ? 'true' : undefined}
-  style={rankListStyle({ figures, links, wideFigures })}
+  style={rankListStyle({ figures, links })}
   data-testid={testid}
 >
   {#if heads && heads.length > 0}<ColumnHeads cells={heads} />{/if}

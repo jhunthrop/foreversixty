@@ -52,8 +52,6 @@ export interface RankListShape {
   figures: number;
   /** How many links each row ends with (0 to 4). */
   links: number;
-  /** Wider figure columns, for figures with a long unit ("taken / s"). */
-  wideFigures?: boolean;
 }
 
 const MAX_FIGURES = 3;
@@ -61,7 +59,6 @@ const MAX_LINKS = 4;
 /** Each link column width fits that many links at 600 14 px, 16 px apart. */
 const LINK_COLUMN_PX: readonly number[] = [0, 56, 106, 156, 206];
 const FIGURE_COLUMN_PX = 112;
-const WIDE_FIGURE_COLUMN_PX = 124;
 
 /** The list's grid variables, as an inline style. Fails fast on a shape the grid cannot hold. */
 export function rankListStyle(shape: RankListShape): string {
@@ -72,6 +69,5 @@ export function rankListStyle(shape: RankListShape): string {
   if (!Number.isInteger(links) || links < 0 || links > MAX_LINKS) {
     throw new Error(`RankList: links must be 0 to ${MAX_LINKS}, got ${links}`);
   }
-  const figure = shape.wideFigures === true ? WIDE_FIGURE_COLUMN_PX : FIGURE_COLUMN_PX;
-  return `--rl-n: ${figures}; --rl-fig: ${figure}px; --rl-links: ${LINK_COLUMN_PX[links]}px`;
+  return `--rl-n: ${figures}; --rl-fig: ${FIGURE_COLUMN_PX}px; --rl-links: ${LINK_COLUMN_PX[links]}px`;
 }

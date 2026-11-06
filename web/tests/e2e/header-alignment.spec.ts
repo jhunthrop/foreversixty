@@ -27,13 +27,13 @@ test.describe('headers align with the body', () => {
       expect(await left(page.getByTestId('planner-facts'))).toBe(body);
     });
 
-    test(`/tiers at ${width}: the eyebrow and the title start where the body does`, async ({ page }) => {
+    test(`/tiers at ${width}: the title and the plate start where the body does`, async ({ page }) => {
       await page.setViewportSize({ width, height: 900 });
       await page.goto('/tiers');
-      const body = await left(page.locator('.tier-body'));
+      const body = await left(page.locator('[data-testid="tier-faction-panel-alliance"]'));
       expect(body).toBe(48);
-      expect(await left(page.getByTestId('tier-page').locator('p.text-gold'))).toBe(body);
       expect(await left(page.getByTestId('tier-page').locator('h1'))).toBe(body);
+      expect(await left(page.getByTestId('tier-page').getByTestId('tier-plate'))).toBe(body);
     });
   }
 
@@ -43,6 +43,6 @@ test.describe('headers align with the body', () => {
     await expect(page.getByTestId('planner-header-crest')).toBeVisible();
     expect(await left(page.getByTestId('planner-header-crest'))).toBe(18);
     await page.goto('/tiers');
-    expect(await left(page.getByTestId('tier-page').locator('p.text-gold'))).toBe(18);
+    expect(await left(page.getByTestId('tier-page').locator('h1'))).toBe(18);
   });
 });

@@ -1,7 +1,9 @@
 /* web/src/components/ui/rank-list.css
    The ranked list's one grid (tiers spec 2026-11-06 §4.4): RankList sets the columns, ColumnHeads
    and every RankRow lay out on them, RankGroup adds the letter column. Global, because the four
-   primitives are separate components that must share one template. */
+   primitives are separate components that must share one template.
+   The desktop row and the letter column start at 1280: a three-figure list (the tanks) needs about
+   1,140 px of row and the grouped DPS list about 1,100, more than a 1024 or 1100 column holds. */
 
 .ui-rank-list {
   --rl-group-w: 0px;
@@ -10,7 +12,7 @@
   --rl-gap: 88px;
   min-width: 0;
 }
-@media (min-width: 1100px) {
+@media (min-width: 1280px) {
   .ui-rank-list[data-grouped='true'] {
     --rl-group-w: 184px;
   }
@@ -245,8 +247,8 @@
   outline-offset: 2px;
 }
 
-/* Below 1100 the letter column is a header strip above its rows. */
-@media (max-width: 1099px) {
+/* Below 1280 the letter column is a header strip above its rows. */
+@media (max-width: 1279px) {
   .ui-rank-group {
     grid-template-columns: minmax(0, 1fr);
   }
@@ -267,8 +269,8 @@
   }
 }
 
-/* Below 1024 the heads go and each row is the four-area phone grid. */
-@media (max-width: 1023px) {
+/* Below 1280 the heads go and each row is the four-area stacked grid. */
+@media (max-width: 1279px) {
   .ui-rank-heads {
     display: none;
   }
