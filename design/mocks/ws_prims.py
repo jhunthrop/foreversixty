@@ -117,8 +117,10 @@ def Rows(rows: list[str], open_: bool = False) -> str:
     return f'<div class="rows{" open" if open_ else ""}">' + ''.join(rows) + '</div>'
 
 
-def Plate(inner: str) -> str:
-    return f'<div class="plate" data-region="{REGION["plate"]}">{inner}</div>'
+def Plate(inner: str, label: str = '') -> str:
+    """label: the Plate's accessible name (role region), as the built Plate's `label` prop."""
+    name = f' role="region" aria-label="{label}"' if label else ''
+    return f'<div class="plate" data-region="{REGION["plate"]}"{name}>{inner}</div>'
 
 
 def Section(title: str, body: str, action: str = '', meta: str = '') -> str:
@@ -135,7 +137,7 @@ def PageHeader(title: str, title_color: str = '', crest: str = '', meta: list[st
     m = f'<div class="ph-meta" data-region="{REGION["head_meta"]}">{"".join(f"<span class=\"t-small\">{x}</span>" for x in meta)}</div>' if meta else ''
     color = f' style="color:{title_color}"' if title_color else ''
     right = f'<div class="ans" data-region="{REGION["head_answer"]}">{answer}</div>' if answer else (f'<div class="ph-actions">{actions}</div>' if actions else '')
-    return (f'<div class="pc ph-wrap" data-region="{REGION["head"]}"><div class="head"><div class="ph-title" data-region="{REGION["head_title"]}">{crest}<div><h1 class="t-title"{color}>{title}</h1>{m}</div></div>{right}</div>{tabs}</div>')
+    return (f'<div class="pc ph-wrap"><div data-region="{REGION["head"]}"><div class="head"><div class="ph-title" data-region="{REGION["head_title"]}">{crest}<div><h1 class="t-title"{color}>{title}</h1>{m}</div></div>{right}</div>{tabs}</div></div>')
 
 
 def Page(layout: str, main: str = '', rail: str = '', sticky_rail: bool = False) -> str:

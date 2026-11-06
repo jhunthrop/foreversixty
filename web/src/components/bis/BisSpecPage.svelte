@@ -391,10 +391,12 @@
   .bis-stack {
     margin-top: 32px;
   }
+  /* The Page's section gap already sits above it (it is the ledger's last flex item). */
   .bis-guide-line {
     color: var(--color-muted);
     font-size: 13px;
-    margin: 24px 0 8px;
+    line-height: 20px;
+    margin: 0 0 8px;
   }
   :global(html[data-bis-pending]) .bis-pending-hide {
     visibility: hidden;

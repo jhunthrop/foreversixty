@@ -343,6 +343,11 @@
     color: var(--color-gold);
   }
   /* A two-hander covering the off hand: greyed in the socket, as the game's pane draws it. */
+  /* A flex box, so the 40 px icon is the cell's height and not a line box with a descender under
+     it (the strut added 7 px to every row; spec 5.13 rows sit on --row-h). */
+  .ui-doll-icon {
+    display: flex;
+  }
   .ui-doll-icon[data-covered='true'] {
     filter: grayscale(1);
     opacity: 0.45;
