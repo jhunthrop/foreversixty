@@ -304,13 +304,12 @@ test('an anonymised character is the 404 page for its entitled owner too', async
   expect(requests).toEqual([]);
 });
 
-test('with #history, opening the Disclosure lands on the charts', async ({ page }) => {
+test('with #history, the Disclosure opens by itself and lands on the charts', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 600 });
   await stubOwner(page, true);
   await stubCharacter(page);
   await routeCharacterHistory(page);
   await page.goto(`${CHARACTER_PATH}#history`);
-  await openHistoryDisclosure(page);
 
   await expect(page.getByTestId('history-score')).toBeVisible();
   await expect(chartsSection(page)).toBeInViewport();

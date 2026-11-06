@@ -90,12 +90,14 @@ test('a 404 is the not-found page for the owner too, without the sign-in row', a
   await expect(page.getByTestId('character-error')).toHaveCount(0);
 });
 
-test('a logged character whose score is null reads "No logs yet." and draws no Figure', async ({ page }) => {
+test('a character with ranked fights and no score yet says so and draws no Figure', async ({ page }) => {
   await stub(page, { ...CHARACTER.data, ...UNSCORED });
   await page.goto(CHARACTER_PATH);
 
   await expect(page.getByTestId('character')).toBeVisible();
-  await expect(page.getByTestId('character-no-logs')).toHaveText('No logs yet.');
+  await expect(page.getByTestId('character-no-logs')).toHaveText(
+    'No Forever Score yet. It is worked out from the rated fights below.',
+  );
   await expect(page.getByTestId('character-score-figure')).toHaveCount(0);
   await expect(page.getByTestId('character-score')).not.toContainText(/\b0\b/);
 });

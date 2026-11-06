@@ -58,7 +58,8 @@ async function serveOwner(page: Page, premium: boolean, history: HistoryStub, ha
 /** serveOwner, then, for a Premium owner, opens the Coach history Disclosure. */
 async function openOwner(page: Page, premium: boolean, history: HistoryStub, hash = ''): Promise<string[]> {
   const asked = await serveOwner(page, premium, history, hash);
-  if (premium) await openCoachDisclosure(page);
+  // A #coach address opens the Disclosure by itself; any other is opened by its summary.
+  if (premium && hash !== '#coach') await openCoachDisclosure(page);
   return asked;
 }
 
@@ -145,7 +146,9 @@ test('a free owner gets no list and no request', async ({ page }) => {
   expect(asked).toEqual([]);
 });
 
-test("with the Coach tab's #coach link, opening the Disclosure lands on the list", async ({ page }) => {
+test("with the Coach tab's #coach link, the Disclosure opens by itself and lands on the list", async ({
+  page,
+}) => {
   await openOwner(page, true, { first: HISTORY_PAGES.first }, '#coach');
   await expect(rows(page)).toHaveCount(20);
   await expect(list(page)).toBeInViewport();
