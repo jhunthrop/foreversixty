@@ -75,3 +75,12 @@ func TestRound26HolyPriestRenewAtSixteen(t *testing.T) {
 		{"17 rank 1", "human", 17, []int32{rn1}, []int32{rn2}},
 	})
 }
+
+func TestRound26DisciplineLesserHealAtSeventeen(t *testing.T) {
+	const lh2, lh3 = 2052, 2053
+	checkRankRows(t, "priest-discipline", "priest", []rankRowCase{
+		{"16 keeps rank 3", "human", 16, []int32{lh3}, []int32{lh2}},
+		{"17 rank 2", "undead", 17, []int32{lh2}, []int32{lh3}},
+		{"18 rank 3", "human", 18, []int32{lh3}, []int32{lh2}},
+	})
+}
