@@ -217,10 +217,22 @@ export function itemDetails(build: string, classSlug: string): Map<number, ItemD
   const parsed = itemsFile<{ items: ({ id: number } & ItemDetail)[] }>(build, classSlug);
   if (parsed === undefined) return new Map();
   return new Map(
-    parsed.items.map(({ id, name, quality, item_level, required_level, icon, stats }) => [
-      id,
-      { name, quality, item_level, required_level, icon, stats },
-    ]),
+    parsed.items.map(
+      ({ id, name, quality, item_level, required_level, icon, stats, bonding, effect_text, two_hand }) => [
+        id,
+        {
+          name,
+          quality,
+          item_level,
+          required_level,
+          icon,
+          stats,
+          ...(bonding ? { bonding } : {}),
+          ...(effect_text ? { effect_text } : {}),
+          ...(two_hand ? { two_hand } : {}),
+        },
+      ],
+    ),
   );
 }
 

@@ -585,6 +585,12 @@ export interface ItemDetail {
    *  value `ItemHover`'s own item model carries. */
   icon: string;
   stats: Record<string, number>;
+  /** The client's bind rule: `equip` (bind on equip), `pickup`, `use`, `quest`. Absent on an
+   *  item the data does not name it for. */
+  bonding?: string;
+  /** The item's on-use or on-equip text, when it has one. */
+  effect_text?: string;
+  two_hand?: boolean;
 }
 
 /** `loot.json`'s `quests` map: item id (as a string key) -> every quest that awards it,

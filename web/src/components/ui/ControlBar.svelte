@@ -9,9 +9,9 @@
      island passes `onchange`. -->
 <script lang="ts">
   import type { Snippet } from 'svelte';
-  import { checkRadio } from '../../lib/ui/control-bar';
-  import { controlSummary, type ControlGroup, type ControlOption } from '../../lib/ui/primitives';
+  import { controlSummary, type ControlGroup } from '../../lib/ui/primitives';
   import Glyph from './Glyph.svelte';
+  import Segmented from './Segmented.svelte';
   import Select from './Select.svelte';
 
   let {
@@ -19,6 +19,7 @@
     label,
     summary,
     end,
+    tail,
     sticky = true,
     staticField = false,
     onchange,
@@ -31,6 +32,8 @@
     /** The phone line; defaults to each group's chosen label joined with a middle dot. */
     summary?: string;
     end?: Snippet;
+    /** Groups the bar's own kinds do not cover (a multi-select), after the groups. */
+    tail?: Snippet;
     sticky?: boolean;
     /** Server-rendered for ControlBar.astro: its script wires the radios and selects. */
     staticField?: boolean;
@@ -42,18 +45,6 @@
   let open = $state(false);
   const line = $derived(summary ?? controlSummary(groups));
 
-  function href(group: ControlGroup, option: ControlOption): string {
-    return option.href ?? `?${new URLSearchParams({ [group.param]: option.value }).toString()}`;
-  }
-
-  function choose(event: MouseEvent, option: ControlOption): void {
-    if (onchange === undefined || option.href !== undefined) return;
-    event.preventDefault();
-    if (option.disabled) return;
-    const change = checkRadio(event.currentTarget as HTMLElement);
-    if (change) onchange(change.param, change.value);
-    open = false;
-  }
 </script>
 
 <div
@@ -86,41 +77,19 @@
             id={`${id}-${group.param}-label`}>{group.label}</span
           >
           {#if group.kind === 'segmented'}
-            <div
-              class="ui-seg"
-              role="radiogroup"
-              aria-labelledby={`${id}-${group.param}-label`}
-              data-param={group.param}
-              data-testid={`control-${group.param}`}
-            >
-              {#each group.options as option (option.value)}
-                {@const checked = option.value === group.value}
-                <a
-                  class="ui-seg-item"
-                  role="radio"
-                  href={href(group, option)}
-                  aria-checked={checked}
-                  aria-disabled={option.disabled ? 'true' : undefined}
-                  title={option.disabled ? (option.disabledReason ?? 'No data yet at this level') : undefined}
-                  tabindex={checked ? 0 : -1}
-                  data-value={option.value}
-                  data-navigate={option.href !== undefined ? 'true' : undefined}
-                  data-testid={`control-${group.param}-${option.value}`}
-                  onclick={(event) => choose(event, option)}
-                >
-                  {#if option.icon}<img
-                      src={option.icon}
-                      alt=""
-                      width="22"
-                      height="22"
-                      class="rounded-[4px]"
-                    />{/if}
-                  <span>{option.label}</span>
-                  {#if option.count !== undefined}<span class="ui-seg-count tabular-nums">{option.count}</span
-                    >{/if}
-                </a>
-              {/each}
-            </div>
+            <Segmented
+              param={group.param}
+              options={group.options}
+              value={group.value}
+              labelledby={`${id}-${group.param}-label`}
+              fill
+              onchange={onchange === undefined
+                ? undefined
+                : (param, value) => {
+                    onchange(param, value);
+                    open = false;
+                  }}
+            />
           {:else}
             <div class="ui-cbar-select" data-param={group.param}>
               <Select
@@ -147,6 +116,7 @@
           {/if}
         </div>
       {/each}
+      {#if tail}{@render tail()}{/if}
       {#if end}<div class="ui-cbar-end">{@render end()}</div>{/if}
     </div>
   </div>
@@ -196,60 +166,6 @@
     gap: 4px;
     min-width: 0;
   }
-  .ui-seg {
-    display: flex;
-    border: 1px solid var(--color-line);
-    border-radius: var(--radius-field);
-    overflow: hidden;
-  }
-  .ui-seg-item {
-    flex: 1;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    height: 44px;
-    padding: 0 14px;
-    font-size: 14px;
-    line-height: 16px;
-    font-weight: 600;
-    color: var(--color-nav);
-    white-space: nowrap;
-    border-left: 1px solid var(--color-line-soft);
-  }
-  .ui-seg-item:first-child {
-    border-left: 0;
-  }
-  .ui-seg-item:active {
-    background: var(--color-pressed);
-  }
-  .ui-seg-item:focus-visible {
-    outline: 2px solid var(--color-gold);
-    outline-offset: -2px;
-  }
-  .ui-seg-item[aria-checked='true'] {
-    background: var(--color-selected);
-    color: var(--color-gold);
-    box-shadow: inset 0 -2px 0 var(--color-gold);
-  }
-  .ui-seg-item[aria-disabled='true'] {
-    opacity: 0.5;
-    color: var(--color-muted);
-    cursor: not-allowed;
-  }
-  .ui-seg-count {
-    font-size: 12px;
-    color: var(--color-muted);
-  }
-  .ui-seg-item[aria-checked='true'] .ui-seg-count {
-    color: var(--color-gold);
-  }
-  @media (hover: hover) and (pointer: fine) {
-    .ui-seg-item:not([aria-checked='true']):not([aria-disabled='true']):hover {
-      background: var(--color-hover);
-      color: var(--color-strong);
-    }
-  }
   @media (min-width: 768px) {
     .ui-cbar-inner {
       display: flex;
@@ -277,13 +193,6 @@
     }
     .ui-cbar-label {
       display: none;
-    }
-    .ui-seg {
-      display: inline-flex;
-    }
-    .ui-seg-item {
-      flex: none;
-      height: 40px;
     }
     .ui-cbar-end {
       margin-left: auto;
