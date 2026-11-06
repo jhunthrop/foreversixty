@@ -1,6 +1,7 @@
 // api/internal/guilds/loot_council_handler.go
 //
-// The loot council routes. Nights, candidates and votes are officer-only; the officer writes
+// The loot council routes. Nights are for every verified member (a member's copy carries no
+// vote counts); candidates and votes are officer-only; the officer writes
 // (votes, an MS/OS flag on someone else's behalf) take the Raid guild plan and stop while the
 // claim is contested, like the award. A member reads and sets only their own MS/OS flags.
 package guilds
@@ -74,8 +75,13 @@ func (s *Service) councilOfficerWrite(w http.ResponseWriter, r *http.Request, gu
 
 // lootNights is GET /v1/guilds/{id}/loot/nights?limit=.
 func (s *Service) lootNights(w http.ResponseWriter, r *http.Request) {
-	guildID, ok := s.councilGuild(w, r, "loot_nights", councilReadFail, councilOfficerOnly)
+	guildID, ok := s.councilMember(w, r, "loot_nights", councilReadFail)
 	if !ok {
+		return
+	}
+	officer, err := s.verifiedOfficerOrLeader(r, guildID)
+	if err != nil {
+		s.fail(w, r, "loot_nights", err, councilReadFail)
 		return
 	}
 	limit := councilNightsDefault
@@ -91,6 +97,9 @@ func (s *Service) lootNights(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		s.fail(w, r, "loot_nights", err, councilReadFail)
 		return
+	}
+	if !officer {
+		view = view.withoutVotes()
 	}
 	httpx.CachePrivate(w)
 	httpx.WriteOK(w, r, http.StatusOK, view)

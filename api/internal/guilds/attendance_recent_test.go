@@ -3,6 +3,7 @@ package guilds
 import (
 	"fmt"
 	"net/http"
+	"strings"
 	"testing"
 	"time"
 )
@@ -109,7 +110,36 @@ func TestOfficerActions(t *testing.T) {
 
 	seedLoggedRaid(t, w, 0, time.Now().Add(-48*time.Hour), map[string][2]string{officerKey: {"in", OutcomePresent}})
 	w.h.data(w.h.do(http.MethodGet, w.path("/officer/actions"), ""), &a)
-	if d := a.DropsToAward; d == nil || d.Tracked || d.Count != nil || d.RaidID == nil || d.Awarded != 0 || d.Label == "" {
-		t.Fatalf("drops = %+v", a.DropsToAward)
+	if a.DropsToAward != nil {
+		t.Fatalf("drops before the council touched any = %+v", a.DropsToAward)
+	}
+}
+
+// Action needed counts the newest council night's drops still open: a vote or a flag opens a drop,
+// an award closes it.
+func TestOfficerActionsCountTheOpenDrops(t *testing.T) {
+	w := newRaidWorld(t, true)
+	w.as(w.officer)
+	if res := w.putVote("", memberKeyA, `"yes"`); res.StatusCode != http.StatusOK {
+		t.Fatalf("vote = %d: %s", res.StatusCode, readBody(res))
+	}
+	other := onyxiaLoot[1].ItemID
+	if res := w.h.do(http.MethodPost, w.path("/loot/awards"), fmt.Sprintf(
+		`{"encounter_id":1084,"item_id":%d,"character_key":%q}`, other, memberKeyB)); res.StatusCode != http.StatusOK {
+		t.Fatalf("award = %d: %s", res.StatusCode, readBody(res))
+	}
+	var a OfficerActions
+	w.h.data(w.h.do(http.MethodGet, w.path("/officer/actions"), ""), &a)
+	d := a.DropsToAward
+	if d == nil || !d.Tracked || d.Count == nil || *d.Count != 1 || d.Awarded != 1 || !strings.HasPrefix(d.Label, "Onyxia's Lair, ") {
+		t.Fatalf("drops = %+v", d)
+	}
+	if res := w.h.do(http.MethodPost, w.path("/loot/awards"), fmt.Sprintf(
+		`{"encounter_id":1084,"item_id":%d,"character_key":%q}`, councilItem, memberKeyA)); res.StatusCode != http.StatusOK {
+		t.Fatalf("award = %d: %s", res.StatusCode, readBody(res))
+	}
+	w.h.data(w.h.do(http.MethodGet, w.path("/officer/actions"), ""), &a)
+	if d := a.DropsToAward; d == nil || *d.Count != 0 || d.Awarded != 2 {
+		t.Fatalf("drops after awarding both = %+v", d)
 	}
 }

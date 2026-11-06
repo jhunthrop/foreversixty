@@ -2519,14 +2519,14 @@ components:
           type: [object, "null"]
           title: OfficerActionDrops
           description: >-
-            The last logged raid night; null with none. The logs carry no loot, so what dropped
-            is unknown: tracked is false and count null until a drop record exists. awarded is
-            the awards filed under that night.
+            The newest loot council night with drops (GET .../loot/nights: what the council
+            awarded, voted on or flagged); null when no night has any. count is its drops still
+            open; awarded is the awards filed under that night. tracked is always true.
           required: [tracked, count, raid_id, label, awarded]
           properties:
             tracked: { type: boolean }
             count: { type: [integer, "null"] }
-            raid_id: { type: [integer, "null"], format: int64 }
+            raid_id: { type: [integer, "null"], format: int64, description: The night's planned raid; null for a log or the live night. }
             label: { type: string, description: 'Zone and day in the guild''s raid timezone, "Onyxia''s Lair, Tue 8 Dec".' }
             awarded: { type: integer }
     GuildReadiness:
@@ -7058,7 +7058,7 @@ paths:
           content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
   /v1/guilds/{id}/loot/nights:
     get:
-      summary: The loot council's raid nights, newest first (verified officers)
+      summary: The loot council's raid nights, newest first (verified members; officers see vote counts)
       operationId: getGuildLootNights
       tags: [web]
       parameters:
@@ -7066,7 +7066,7 @@ paths:
         - { name: limit, in: query, schema: { type: integer, minimum: 1, maximum: 30, default: 8 } }
       responses:
         '200':
-          description: "Nights with their drops (open or awarded) and decision record. Not plan-gated: history is never locked."
+          description: "Nights with their drops (open or awarded) and decision record. Not plan-gated: history is never locked. A member's copy has votes_yes, votes_no and votes_officers null on every decision."
           content:
             application/json:
               schema:
@@ -7074,7 +7074,7 @@ paths:
                   - $ref: '#/components/schemas/Envelope'
                   - { type: object, properties: { data: { $ref: '#/components/schemas/LootNights' } } }
         '400': { description: "invalid limit", content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } } }
-        '403': { description: "Not a verified officer", content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } } }
+        '403': { description: "Not a verified member", content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } } }
         '404': { description: "No such guild", content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } } }
   /v1/guilds/{id}/loot/drops/{item_id}/candidates:
     get:

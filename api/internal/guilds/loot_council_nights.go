@@ -275,3 +275,30 @@ func (set councilActivitySet) night(n councilNightRow, current awardNight, loc *
 	sort.SliceStable(out.Decisions, func(i, j int) bool { return out.Decisions[i].At < out.Decisions[j].At })
 	return out
 }
+
+// withoutVotes is the member's copy of the nights: every decision keeps who, MS/OS, reason, by whom
+// and when, never the officers' vote counts.
+func (v LootNightsView) withoutVotes() LootNightsView {
+	out := LootNightsView{Officers: v.Officers, Nights: make([]LootNight, len(v.Nights))}
+	for i, n := range v.Nights {
+		n.Drops = append([]LootNightDrop(nil), n.Drops...)
+		n.Decisions = append([]LootDecision(nil), n.Decisions...)
+		for j := range n.Drops {
+			if n.Drops[j].Award != nil {
+				d := n.Drops[j].Award.withoutVotes()
+				n.Drops[j].Award = &d
+			}
+		}
+		for j := range n.Decisions {
+			n.Decisions[j] = n.Decisions[j].withoutVotes()
+		}
+		out.Nights[i] = n
+	}
+	return out
+}
+
+// withoutVotes is d with its vote counts cleared.
+func (d LootDecision) withoutVotes() LootDecision {
+	d.VotesYes, d.VotesNo, d.VotesOfficers = nil, nil, nil
+	return d
+}

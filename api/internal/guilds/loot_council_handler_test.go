@@ -23,9 +23,7 @@ func TestCouncilReadsAreOfficerOnly(t *testing.T) {
 	w := newRaidWorld(t, true)
 	reads := []string{w.path("/loot/nights"), w.path("/loot/drops/%d/candidates", councilItem)}
 	w.as(w.member)
-	for _, path := range reads {
-		expectError(t, w.h.do(http.MethodGet, path, ""), http.StatusForbidden, "forbidden")
-	}
+	expectError(t, w.h.do(http.MethodGet, reads[1], ""), http.StatusForbidden, "forbidden")
 	expectError(t, w.putVote("", memberKeyA, `"yes"`), http.StatusForbidden, "forbidden")
 	w.as(w.officer)
 	for _, path := range reads {
@@ -97,4 +95,31 @@ func TestAnOfficerFlagsOnARaidersBehalfWithThePlan(t *testing.T) {
 	if len(mine.Flags) != 0 {
 		t.Fatalf("flag not removed: %+v", mine.Flags)
 	}
+}
+
+// A member reads the nights and the decision record, never the officers' vote counts.
+func TestAMemberReadsTheNightsWithoutVotes(t *testing.T) {
+	w := newRaidWorld(t, true)
+	w.as(w.officer)
+	if res := w.putVote("", memberKeyA, `"yes"`); res.StatusCode != http.StatusOK {
+		t.Fatalf("vote = %d: %s", res.StatusCode, readBody(res))
+	}
+	if res := w.h.do(http.MethodPost, w.path("/loot/awards"), fmt.Sprintf(
+		`{"encounter_id":1084,"item_id":%d,"character_key":%q,"ms_os":"ms"}`, councilItem, memberKeyA)); res.StatusCode != http.StatusOK {
+		t.Fatalf("award = %d: %s", res.StatusCode, readBody(res))
+	}
+	var officerView, memberView LootNightsView
+	w.h.data(w.h.do(http.MethodGet, w.path("/loot/nights"), ""), &officerView)
+	if d := officerView.Nights[0].Decisions; len(d) != 1 || d[0].VotesYes == nil || *d[0].VotesYes != 1 {
+		t.Fatalf("officer decisions = %+v", d)
+	}
+	w.as(w.member)
+	w.h.data(w.h.do(http.MethodGet, w.path("/loot/nights"), ""), &memberView)
+	n := memberView.Nights[0]
+	if len(n.Decisions) != 1 || n.Decisions[0].VotesYes != nil || n.Decisions[0].VotesOfficers != nil ||
+		n.Decisions[0].MsOs == nil || len(n.Drops) != 1 || n.Drops[0].Award == nil || n.Drops[0].Award.VotesNo != nil {
+		t.Fatalf("member night = %+v", n)
+	}
+	w.as(seedUser(t, w.h.pool, "outsider@example.com"))
+	expectError(t, w.h.do(http.MethodGet, w.path("/loot/nights"), ""), http.StatusForbidden, "forbidden")
 }
