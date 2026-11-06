@@ -10,8 +10,8 @@ import { SOURCE_FILTER_KINDS } from './source-filter';
 import type { SourceChoice } from './doll-view';
 import type { SourceFilterKind } from './types';
 
-/** The checklist's words for each kind. Below 60 the Reputation row is the standing cap. */
-export function sourceKindLabel(kind: SourceFilterKind, band: number): string {
+/** The checklist's words for each kind. */
+export function sourceKindLabel(kind: SourceFilterKind): string {
   switch (kind) {
     case 'dungeon':
       return 'Dungeon';
@@ -24,7 +24,7 @@ export function sourceKindLabel(kind: SourceFilterKind, band: number): string {
     case 'crafted':
       return 'Crafted';
     case 'rep':
-      return band < MAX_BAND ? 'Reputation above Friendly' : 'Reputation';
+      return 'Reputation';
     case 'vendor':
       return 'Vendor';
     case 'pvp':
@@ -32,10 +32,12 @@ export function sourceKindLabel(kind: SourceFilterKind, band: number): string {
   }
 }
 
-/** The state's kinds as the filter resolves them: below 60 an unchecked Reputation keeps
- *  standings up to Friendly, the leveling default the ranker also measures. */
+/** The state's kinds as the filter resolves them. Only the leveling default (below 60, every
+ *  kind but Reputation) keeps standings up to Friendly, the set the ranker measures as
+ *  `leveling_default`; any other selection without Reputation turns it off entirely, so
+ *  "Dungeon only" is dungeon drops only at every band. */
 export function sourceChoiceFor(on: readonly SourceFilterKind[], band: number): SourceChoice {
-  return band < MAX_BAND && !on.includes('rep') ? { on, repCap: 'friendly' } : { on };
+  return isLevelingDefault(on, band) ? { on, repCap: 'friendly' } : { on };
 }
 
 function isLevelingDefault(on: readonly SourceFilterKind[], band: number): boolean {
@@ -46,7 +48,7 @@ function isLevelingDefault(on: readonly SourceFilterKind[], band: number): boole
 export function sourcesFieldLabel(on: readonly SourceFilterKind[], band: number): string {
   if (on.length === SOURCE_FILTER_KINDS.length) return 'All sources';
   if (isLevelingDefault(on, band)) return 'No rep above Friendly';
-  if (on.length === 1) return `${sourceKindLabel(on[0]!, band)} only`;
+  if (on.length === 1) return `${sourceKindLabel(on[0]!)} only`;
   if (on.length === 0) return 'No sources';
   return `${on.length} of ${SOURCE_FILTER_KINDS.length} sources`;
 }
@@ -54,12 +56,12 @@ export function sourcesFieldLabel(on: readonly SourceFilterKind[], band: number)
 /** The words inside "Re-picked (…)". */
 export function choiceWords(on: readonly SourceFilterKind[], band: number): string {
   if (isLevelingDefault(on, band)) return 'no reputation above Friendly';
-  if (on.length === 1) return `${sourceKindLabel(on[0]!, band).toLowerCase()} only`;
+  if (on.length === 1) return `${sourceKindLabel(on[0]!).toLowerCase()} only`;
   return 'your sources';
 }
 
 /** The default rule, stated once under the summary when it applies (§5.11 leveling defaults).
- *  Crafts are never gated: no recipe skill is in the data (spec §5.12). */
+ *  Crafts are not gated by skill (no rule for a leveler's likely skill is decided yet). */
 export function defaultRuleLine(on: readonly SourceFilterKind[], band: number): string | undefined {
   if (!isLevelingDefault(on, band)) return undefined;
   return 'Reputation above Friendly is off below level 60, so those slots are re-picked without it. Turn it on in Sources to include it.';
@@ -77,7 +79,7 @@ export interface SetFigure {
 function filteredKey(on: readonly SourceFilterKind[], band: number): 'all' | 'dungeon' | 'leveling_default' | undefined {
   if (on.length === SOURCE_FILTER_KINDS.length) return 'all';
   if (isLevelingDefault(on, band)) return 'leveling_default';
-  if (band >= MAX_BAND && on.length === 1 && on[0] === 'dungeon') return 'dungeon';
+  if (on.length === 1 && on[0] === 'dungeon') return 'dungeon';
   return undefined;
 }
 

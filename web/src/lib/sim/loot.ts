@@ -98,11 +98,16 @@ export interface LootSource {
   /** item id (string-keyed) -> percent drop chance (0-100), for a `world`/`zone` source's
    *  own flat `items`/`trash` list -- see `LootBoss.item_chances`'s own doc. */
   item_chances?: Record<string, number>;
-  /** `world_drop` kind only (world-drop-pool lane, 2026-09-29): the level range cmangos/
+  /** `world_drop` kind (world-drop-pool lane, 2026-09-29): the level range cmangos/
    *  classic-db's own dump states for this generic, bind-on-equip, auction-housable drop
-   *  pool. Either side absent when the dump names no level for the pool at all. */
+   *  pool. Either side absent when the dump names no level for the pool at all.
+   *  `dungeon` and `raid` kinds (2026-11-05): the instance's level range, the client's own
+   *  Group Finder row (`pipeline.loot.instance_levels`). Absent on a build generated before. */
   level_min?: number;
   level_max?: number;
+  /** `crafted` kind only (2026-11-05): item id (string-keyed) -> the profession skill its
+   *  recipe needs (`pipeline.loot.crafted_skill`). An item with no known skill is absent. */
+  required_skill?: Record<string, number>;
 }
 
 /** One quest that rewards an item, from loot.json's `quests` map (contract 10.4: item id,
@@ -113,6 +118,11 @@ export interface QuestReward {
   faction: string;
   min_level: number;
   level: number;
+  /** The zone the quest log files the quest under (AreaTable id) and its name, from
+   *  classic-db's `ZoneOrSort` (2026-11-05). Absent for a Forever-new quest, one filed under a
+   *  category (class, profession, holiday) or a build generated before. */
+  zone_id?: number;
+  zone?: string;
 }
 
 export interface LootFile {

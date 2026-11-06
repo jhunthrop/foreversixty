@@ -4,7 +4,8 @@
 // resolved `SourceCell` the rest of the page reads (`source-cell.ts`), plus the facts the build
 // data carries beside it: an instance's level range (the client's dungeon finder rows in
 // data/curated/raids/events.json) and the item's bind rule. A fact the data does not carry is
-// left out, never guessed: no craft skill, no quest zone (spec §5.12).
+// left out, never guessed: the craft skill and quest zone show only when loot.json carries them
+// (loot-fields lane), and a source's own level range wins over the curated instance table.
 import { describeSourceCell, type SourceCell } from './source-cell';
 
 /** An instance's level range, by its display name. */
@@ -37,21 +38,30 @@ export function fullSourceLine(cell: SourceCell, context: SourceLineContext): st
   switch (cell.kind) {
     case 'dungeon':
     case 'raid': {
-      const place = `${cell.instance}${levelsSuffix(context.instanceLevels.get(cell.instance))}`;
+      const own = cell.levelMin !== undefined && cell.levelMax !== undefined
+        ? { min: cell.levelMin, max: cell.levelMax }
+        : undefined;
+      const place = `${cell.instance}${levelsSuffix(own ?? context.instanceLevels.get(cell.instance))}`;
       return [cell.boss, place, cell.dropChance === undefined ? undefined : dropChanceText(cell.dropChance)]
         .filter(Boolean)
         .join(' · ');
     }
     case 'crafted':
-      return `Crafted · ${titleCase(cell.name)}`;
+      return cell.skill === undefined
+        ? `Crafted · ${titleCase(cell.name)}`
+        : `Crafted · ${titleCase(cell.name)} (skill ${cell.skill})`;
     case 'rep':
       return cell.standing === undefined
         ? `${cell.faction} reputation`
         : `${cell.faction} reputation · ${titleCase(cell.standing)}`;
     case 'quest':
-      return cell.minLevel > 0
-        ? `Quest: ${cell.questName} · requires level ${cell.minLevel}`
-        : `Quest: ${cell.questName}`;
+      return [
+        `Quest: ${cell.questName}`,
+        cell.zone,
+        cell.minLevel > 0 ? `requires level ${cell.minLevel}` : undefined,
+      ]
+        .filter(Boolean)
+        .join(' · ');
     case 'vendor':
       return `Vendor: ${cell.npc}`;
     case 'world_drop': {

@@ -605,6 +605,9 @@ export interface LootQuestOption {
   faction: Faction | 'both';
   min_level: number;
   level: number;
+  /** The quest log zone (loot-fields lane, 2026-11-05); absent on older builds and for
+   *  quests filed under a category. */
+  zone?: string;
 }
 
 /** `loot.json`'s shape beyond `sim/loot.ts`'s own `LootFile` (which only reads `sources`):

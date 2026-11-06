@@ -4,7 +4,7 @@
 // its default is left out of the URL. The legacy `#band-<faction>-<band>` hash (every link the
 // site and the header selector wrote before this page) still opens that band and faction.
 // Defaults follow the band (§5.10 item 10, §5.11): below 60 the page opens on Where to go with
-// Reputation above Friendly off; at 60 on By slot with every source on.
+// Reputation off (standings up to Friendly kept); at 60 on By slot with every source on.
 import { bandForLevel } from './hover';
 import { SOURCE_FILTER_KINDS } from './source-filter';
 import type { BisPresetId, Faction, SourceFilterKind } from './types';
