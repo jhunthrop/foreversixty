@@ -104,8 +104,8 @@ const PAGE_ISLAND_BUDGETS = [
   { component: 'BisTooltipHost', limitBytes: 8 * 1024 },
   // The BiS page island (web layout spec 2026-11-05 §5, slice 2): the page head's answer, the
   // control bar, the paperdoll with its inline/side detail, the Sources filter and What to stack,
-  // over one compact view model the page inlines as JSON. Measured 18,850 bytes gzipped on the
-  // fixture build of 2026-11-06 (the entry; the signed-in compare code is a lazy chunk). 20 KB
+  // over one compact view model the page inlines as JSON. Measured 19,156 bytes gzipped on the
+  // fixture build of 2026-11-06 (the entry; the compare code and the full data load lazily). 20 KB
   // keeps the page islands' slack and still trips an accidental heavy import.
   { component: 'BisSpecPage', limitBytes: 20 * 1024 },
   // The shared dropdown's lazy chunk (design/specs/2026-10-30-controls-charts.md §A11.2):
