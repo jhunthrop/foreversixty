@@ -38,10 +38,6 @@ type ClaimPendingView struct {
 	ExpiresAt time.Time       `json:"expires_at"`
 }
 
-type InviteView struct {
-	RotatedAt *time.Time `json:"rotated_at"`
-}
-
 type SettingsView struct {
 	DefaultVisibility   string            `json:"default_visibility"`
 	OfficerMaxRankIndex int               `json:"officer_max_rank_index"`
@@ -65,10 +61,13 @@ func (s *Store) Settings(ctx context.Context, guildID, viewerID int64) (Settings
 	if err != nil {
 		return SettingsView{}, err
 	}
+	invite, err := s.inviteView(ctx, g)
+	if err != nil {
+		return SettingsView{}, err
+	}
 	view := SettingsView{
 		DefaultVisibility: g.DefaultVisibility, OfficerMaxRankIndex: g.OfficerMaxRankIndex,
-		Invite: InviteView{RotatedAt: g.InviteTokenRotatedAt},
-		Claim:  claim, ClaimedBy: claim.ClaimedBy,
+		Invite: invite, Claim: claim, ClaimedBy: claim.ClaimedBy,
 	}
 	if g.pendingActive(now) {
 		by, err := s.claimHolderRef(ctx, guildID, *g.ClaimPendingBy)
@@ -171,6 +170,10 @@ func (s *Service) getSettings(w http.ResponseWriter, r *http.Request) {
 		s.fail(w, r, "settings", err, "could not read those settings just now")
 		return
 	}
+	if view, err = s.withInviteURL(r, guildID, view); err != nil {
+		s.fail(w, r, "settings", err, "could not read those settings just now")
+		return
+	}
 	httpx.CachePrivate(w)
 	httpx.WriteOK(w, r, http.StatusOK, view)
 }
@@ -221,6 +224,10 @@ func (s *Service) patchSettings(w http.ResponseWriter, r *http.Request) {
 	default:
 		s.logger().Info("guilds", "op", "settings_update", "guild_id", guildID, "user_id", actor.UserID)
 		if view.Discord, err = s.settingsDiscord(r, guildID); err != nil {
+			s.fail(w, r, "patch_settings", err, "could not change those settings just now")
+			return
+		}
+		if view, err = s.withInviteURL(r, guildID, view); err != nil {
 			s.fail(w, r, "patch_settings", err, "could not change those settings just now")
 			return
 		}

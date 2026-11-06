@@ -195,9 +195,9 @@ export const guildSettingsCopy = {
   membersHeading: 'Members and access',
   recordsHeading: 'Records and crest',
   recordsOnlyHeading: 'Records',
-  // The invite link (spec 2026-11-05 §3.3). The API keeps only a fingerprint of the token, so the
-  // link can be shown only right after it is made; the row says so instead of offering a "show
-  // current link" it cannot honour.
+  // The invite link (spec 2026-11-05 §3.3, §4.1). The API keeps the link sealed so it shows again
+  // on a later visit; where it could not keep it (no key on the server, or a link made before it
+  // could), the link shows only right after it is made and the row says so.
   newLinkButton: 'Make a new link',
   firstLinkButton: 'Make the invite link',
   making: 'Making…',
@@ -217,6 +217,9 @@ export const guildSettingsCopy = {
   inviteShareText: 'Use this link to join our guild on Forever Sixty.',
   currentLinkMade: (date: string): string =>
     `Made ${date}. It still works, but it cannot be shown again. Make a new one to copy it.`,
+  /** A kept link's line: `Made 12 Nov.`, or `Made 12 Nov by` + the maker's name + `.`. */
+  linkMade: (date: string): string => `Made ${date}.`,
+  linkMadeBy: (date: string): string => `Made ${date} by`,
   saved: 'Saved.',
   // Shown when a save or rotate action itself fails (as opposed to the initial load).
   actionFailed: 'That did not save; try again.',
@@ -247,6 +250,8 @@ export const guildJoinCopy = {
   guildLine: (realm: string, members: number | undefined): string =>
     members === undefined ? realm : `${realm} · ${counted(members, 'member')} on Forever Sixty`,
   invited: (guildName: string): string => `You are invited to join ${guildName}.`,
+  /** After the inviter's crest and name (spec 2026-11-05 §3.4 row 2). */
+  invitedBy: 'invited you to join.',
   joinAs: (name: string): string => `You join as ${name}`,
   level: (level: number): string => `Level ${level}`,
   noneOnRoster: (guildName: string): string => `None of your characters is in ${guildName} in game yet.`,

@@ -49,6 +49,8 @@ export const GLYPHS = {
   trophy:
     '<path d="M8 4h8v5a4 4 0 01-8 0V4z"/><path d="M8 6H4v1a4 4 0 004 4M16 6h4v1a4 4 0 01-4 4M12 13v4M8 21h8"/>',
   check: CHECK_GLYPH,
+  // The paperdoll's upgrade badge (web layout spec 2026-11-05 §4.3), filled.
+  upgrade: '<path stroke="none" d="M12 5L20 18H4z"/>',
   close: CLOSE_GLYPH,
   search: SEARCH_GLYPH,
   news: '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 8h10M7 12h10M7 16h6"/>',
@@ -72,4 +74,4 @@ export const GLYPHS = {
 export type GlyphName = keyof typeof GLYPHS;
 
 /** Glyphs drawn as a solid shape rather than a 2 px stroke. */
-export const FILLED_GLYPHS: ReadonlySet<GlyphName> = new Set<GlyphName>(['discord']);
+export const FILLED_GLYPHS: ReadonlySet<GlyphName> = new Set<GlyphName>(['discord', 'upgrade']);

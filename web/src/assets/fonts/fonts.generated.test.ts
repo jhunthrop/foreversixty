@@ -1,6 +1,6 @@
 // web/src/assets/fonts/fonts.generated.test.ts
-// Guards the seven committed font subsets (Cinzel 700, Barlow 400/600/700, Barlow Condensed
-// 700/800, JetBrains Mono 500) against web/fonts/glyphs.txt, the explicit inventory they are generated from (see
+// Guards the eight committed font subsets (Cinzel 700, Barlow 400/600/700, Barlow Condensed
+// 700/800, JetBrains Mono 500, Marcellus 400) against web/fonts/glyphs.txt, the explicit inventory they are generated from (see
 // web/fonts/README.md for the exact `pyftsubset` command and web/src/styles/fonts.css for
 // why self-authored @font-face rules replaced the @fontsource imports).
 //
@@ -37,6 +37,7 @@ const SUBSETS = [
   { label: 'Barlow Condensed 700', file: 'barlow-condensed-700-subset.woff2' },
   { label: 'Barlow Condensed 800', file: 'barlow-condensed-800-subset.woff2' },
   { label: 'JetBrains Mono 500', file: 'jetbrains-mono-500-subset.woff2' },
+  { label: 'Marcellus 400', file: 'marcellus-400-subset.woff2' },
 ];
 
 // Rightwards arrow, leftwards arrow, dagger, narrow no-break space: present in

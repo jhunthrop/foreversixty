@@ -44,6 +44,8 @@ const ALLOWED: Readonly<Record<string, readonly RegExp[]>> = {
   'styles/paperdoll.css': [/max-width: 960px/, /margin-inline: auto/],
   // The header bar's phone name clamp reads the viewport, not a page container.
   'styles/nav.css': [/calc\(100vw - 460px\)/],
+  // The wide column's own width (web layout spec 2026-11-05 §3.2): the token, not a container.
+  'styles/tokens.css': [/clamp\(1600px, 100vw - 160px, 1792px\)/],
   // The breakout itself, and the clip that keeps it from adding a scrollbar.
   'styles/global.css': [/100vw/, /margin-inline: auto/, /margin-inline: calc/],
 };

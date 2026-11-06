@@ -418,7 +418,7 @@ function claimSettings(claimed: boolean): unknown {
     claim: claimed
       ? { state: 'claimed', since: CLOCK, frozen: false }
       : { state: 'unclaimed', frozen: false },
-    invite: { rotated_at: null },
+    invite: { rotated_at: null, url: null, made_by: null },
   };
 }
 
@@ -600,7 +600,13 @@ atWidths('17 GuildInviteLink on guild settings', PAIR, async (page, width) => {
   await routeGuildSettingsPage(page);
   await page.route('**/v1/me', (route) => route.fulfill(envelope(meWithGuildPlan(null).data)));
   await page.route(`**/v1/guilds/${SETTINGS_GUILD.id}/invite/rotate`, (route) =>
-    route.fulfill(envelope({ token: ROTATED_TOKEN, rotated_at: ROTATED_AT })),
+    route.fulfill(
+      envelope({
+        token: ROTATED_TOKEN,
+        rotated_at: ROTATED_AT,
+        invite: { rotated_at: ROTATED_AT, url: null, made_by: null },
+      }),
+    ),
   );
   await page.goto(SETTINGS_GUILD_PATH);
   await settled(page, '[data-testid="guild-invite-block"]');

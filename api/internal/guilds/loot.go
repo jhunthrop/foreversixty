@@ -530,11 +530,11 @@ func validOnyxiaItem(itemID int) bool {
 	return ok
 }
 
-// CreateLootAward records (or replaces - the partial unique index
-// loot_awards_drop_unmatched_idx on (guild_id, encounter_id, item_id) where raid_id is null,
-// migration 0052, means a second Award for the same drop updates the first row rather than
-// leaving two) an officer's loot decision. raidID names the done raid it was for; nil files it
-// under the raid being played now (loot_raid.go), else no raid until a match attaches it.
+// CreateLootAward records an officer's loot decision. A second Award of the same drop on the same
+// night (a raid, or a logged night with no planned raid) replaces the first; an award with no night
+// yet is its own row, so the same item awarded on two such nights keeps both (migration 0071).
+// raidID names the done raid it was for; nil files it under the raid being played now
+// (loot_raid.go), else the latest night that killed the boss, else no night until a match attaches it.
 func (s *Store) CreateLootAward(ctx context.Context, guildID, encounterID int64, itemID int, characterKey string, awardedBy int64, raidID *int64) (int64, error) {
 	if encounterID != onyxiaEncounterID || !validOnyxiaItem(itemID) {
 		return 0, ErrInvalidAward

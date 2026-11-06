@@ -70,6 +70,9 @@ object FsColor {
     val rarityRareText = Color(0xFF3D94F0)
     val rarityEpicText = Color(0xFFB866F5)
     val lineCard = Color(0x2BE5B955)
+    val hover = Color(0xFF131824)
+    val pressed = Color(0xFF1A2030)
+    val selected = Color(0x1AE5B955)
 }
 
 object FsFontWeight {
@@ -101,10 +104,21 @@ object FsTextSize {
     val body = 15.sp
     val meta = 13.sp
     val micro = 11.sp
+    val title = 40.sp
+    val titlePhone = 32.sp
+    val section = 18.sp
+    val sectionReading = 22.sp
+    val item = 15.sp
+    val itemLg = 18.sp
+    val lead = 17.sp
+    val small = 13.sp
+    val label = 12.sp
     val bodyLineHeight = 22.sp
 }
 
 object FsTracking {
+    /** 0.12em, as a multiple of the font size. */
+    const val label = 0.12f
     /** 0.01em, as a multiple of the font size. */
     const val heading = 0.01f
     /** 0.07em, as a multiple of the font size. */
@@ -115,6 +129,8 @@ object FsRadius {
     val panel = 12.dp
     val control = 8.dp
     val pill = 6.dp
+    val plate = 6.dp
+    val field = 4.dp
 }
 
 object FsSpacing {

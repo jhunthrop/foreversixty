@@ -312,6 +312,63 @@ func checkPublishedBand(t *testing.T, path string, band bandReport, spec specInf
 	// alternative, never the slot's own pair-mate, and bounded at
 	// alternativesLimit.
 	checkAlternatives(t, slotLabel, spec.ClassSlug, byID, lootIdx, band, bySlot, active)
+	checkByKind(t, slotLabel, spec.ClassSlug, byID, lootIdx, band)
+}
+
+// checkByKind is the source-filter contract (source_filter.go): each
+// by_kind entry is a known filter kind the item really is obtainable
+// from at this band, under the source it names; it is never the pick; a
+// first or lone slot never repeats a kind its own pick belongs to; and a
+// next entry is the same kind.
+func checkByKind(t *testing.T, slotLabel func(string) string, classSlug string, byID map[int]candidate, lootIdx lootIndex, band bandReport) {
+	t.Helper()
+	known := make(map[string]bool, len(filterKindOrder))
+	for _, k := range filterKindOrder {
+		known[k] = true
+	}
+	for _, row := range band.Slots {
+		_, isSecond := pairSecondOf[row.Slot]
+		own := make(map[string]bool)
+		for _, k := range pickFilterKinds(row) {
+			own[k] = true
+		}
+		for kind, entry := range row.ByKind {
+			label := fmt.Sprintf("%s: by_kind.%s", slotLabel(row.Slot), kind)
+			if !known[kind] {
+				t.Errorf("%s: not a filter kind", label)
+				continue
+			}
+			if own[kind] && !isSecond {
+				t.Errorf("%s: repeats the pick's own kind", label)
+			}
+			for e := &entry; e != nil; e = e.Next {
+				checkByKindEntry(t, label, classSlug, kind, *e, row, byID, lootIdx, band)
+			}
+		}
+	}
+}
+
+func checkByKindEntry(t *testing.T, label, classSlug, kind string, e byKindRow, row slotRow, byID map[int]candidate, lootIdx lootIndex, band bandReport) {
+	t.Helper()
+	if e.ItemID == row.ItemID {
+		t.Errorf("%s: item %d is the pick itself", label, e.ItemID)
+	}
+	c, ok := byID[e.ItemID]
+	if !ok {
+		t.Errorf("%s: item %d is not in %s's item file at all", label, e.ItemID, classSlug)
+		return
+	}
+	got, ok := sourcesByFilterKind(obtainableSources(e.ItemID, band.Band, band.Faction, c.FactionRestriction, lootIdx), classSlug)[kind]
+	if !ok {
+		t.Errorf("%s: item %d has no %s source a %s character can use at level %d", label, e.ItemID, kind, band.Faction, band.Band)
+		return
+	}
+	if got.Kind != entrySourceKind(e, kind) {
+		t.Errorf("%s: item %d published source_kind %q, its %s source is %q", label, e.ItemID, entrySourceKind(e, kind), kind, got.Kind)
+	}
+	if e.DPSDelta != nil && *e.DPSDelta > 0 {
+		t.Errorf("%s: item %d published a positive dps_delta %.2f", label, e.ItemID, *e.DPSDelta)
+	}
 }
 
 // checkAlternatives applies check (9) to every filled slot's
