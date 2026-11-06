@@ -135,7 +135,8 @@ NAV = ['Tools', 'Logs', 'Guild', 'Guides', 'Get set up']
 def header(current: str = '', who: tuple | None = None) -> str:
     links = ''.join(f'<a class="{"cur" if n == current else ""}" href="#">{n}</a>' for n in NAV)
     if who:
-        chip = f'<span class="who">{crest_img(who[1], 32)}<span class="txt"><b>{who[0]}</b><small>{who[2]}</small></span></span>'
+        disc = crest_img(who[1], 32) if who[1] else '<i class="out"></i>'   # an account with no character yet: the empty disc
+        chip = f'<span class="who">{disc}<span class="txt"><b>{who[0]}</b><small>{who[2]}</small></span></span>'
     else:
         chip = '<span class="who"><i class="out"></i><span class="txt"><b>Sign in</b><small>to see your characters</small></span></span>'
     return (f'<header class="hdr full-bleed"><div class="pc"><a class="logo" href="#"><img src="{SEAL}" alt="">FOREVER SIXTY</a><nav class="navl">{links}</nav>'

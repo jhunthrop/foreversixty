@@ -1,0 +1,30 @@
+{
+ "_source": "REAL reports only (decision D1, ruled 2026-11-07). Row z2opt2x2gs5u is production's one public report, read from GET https://api.foreversixty.gg/v1/reports/recent and GET /v1/reports/z2opt2x2gs5u on 2026-11-06: uploaded 20 Oct 2026, 42 fights, 0 bosses, status complete, title and zone empty (engine 0.5.3 meta); its fights are the first 42 pulls of the 17 Sept 2026 beta night the bundled sample carries (same first pull start, 2026-09-17T20:54:38.383Z). It stands in for a signed-in player's own report until G8 serves a fixture (web/src/fixtures/reports/mine.json). The mock's clock is 2026-11-06.",
+ "now": "2026-11-06",
+ "signed_in": {
+  "user": {
+   "id": 1,
+   "battletag": "Fixture#1234"
+  },
+  "characters": [],
+  "guilds": []
+ },
+ "rows": [
+  {
+   "id": "z2opt2x2gs5u",
+   "title": "",
+   "zone": "",
+   "first_pull": "2026-09-17",
+   "status": "complete",
+   "visibility": "public",
+   "created_at": "2026-10-20",
+   "fight_count": 42,
+   "kill_count": 0,
+   "boss_count": 0,
+   "logging_character": null
+  }
+ ],
+ "recent_public": [
+  "z2opt2x2gs5u"
+ ]
+}
