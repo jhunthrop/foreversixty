@@ -99,12 +99,12 @@ describe('Header', () => {
       ['Planner', '/planner'],
       ['BiS', '/bis'],
       ['Simulator', '/sim'],
+      ['Tier list', '/tiers'],
     ]);
     expect(rowsOf('logs')).toEqual([
       ['Upload a log', '/logs'],
       ['Your reports', '/reports'],
       ['Rankings', '/rankings'],
-      ['Tier list', '/tiers'],
     ]);
     expect(rowsOf('guild')).toEqual([
       ['Your guild', '/guild'],
@@ -145,8 +145,8 @@ describe('Header', () => {
 
   it('marks the group whose row is the current page', async () => {
     const doc = await renderDoc('/tiers/healer');
-    expect(doc.querySelector('a.site-door[data-door="logs"]')?.getAttribute('aria-current')).toBe('page');
-    expect(doc.querySelector('a.site-door[data-door="tools"]')?.hasAttribute('aria-current')).toBe(false);
+    expect(doc.querySelector('a.site-door[data-door="tools"]')?.getAttribute('aria-current')).toBe('page');
+    expect(doc.querySelector('a.site-door[data-door="logs"]')?.hasAttribute('aria-current')).toBe(false);
   });
 
   it('lists the four groups as headed sections in the phone Menu', async () => {

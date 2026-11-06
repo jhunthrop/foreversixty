@@ -2,17 +2,21 @@
 <!-- One standing sentence under the page header (web layout spec 2026-11-05 §3A.2): a guild's
      standing line, a "before raids open" state. Text and one optional link, no box. -->
 <script lang="ts">
+  import type { Snippet } from 'svelte';
   import { LINK } from '../../lib/ui/primitives';
 
   let {
     text,
     action,
     tone = 'gold',
+    tail,
     testid,
   }: {
     text: string;
     action?: { label: string; href: string };
     tone?: 'gold' | 'neutral';
+    /** Words that finish the sentence after the text (a signed-out "Sign in to ..." clause). */
+    tail?: Snippet;
     testid?: string;
   } = $props();
 </script>
@@ -24,6 +28,8 @@
   ]}
   data-testid={testid}
 >
-  <span>{text}</span>
+  <span
+    >{#if tail}{`${text} `}{@render tail()}{:else}{text}{/if}</span
+  >
   {#if action}<a class={LINK} href={action.href}>{action.label} ›</a>{/if}
 </p>

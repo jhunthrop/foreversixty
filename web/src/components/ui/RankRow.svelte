@@ -57,6 +57,8 @@
     tag?: Snippet;
     nameTestid?: string;
     testid?: string;
+    /** Never rendered: an Astro caller's whitespace between named slots arrives as children. */
+    children?: Snippet;
   } = $props();
 
   const tone = $derived(classSlug === undefined ? 'var(--color-gold)' : titleColor({ classSlug }));

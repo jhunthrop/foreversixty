@@ -1,0 +1,28 @@
+---
+// web/src/components/tiers/TierRankRow.astro
+// One tier row: the ui/RankRow preset filled from lib/tiers/tier-row-view.ts, with the spec's
+// circular crest and the "Your spec" tag the page script shows on the visitor's own row.
+import ClassCrest from '../ClassCrest.astro';
+import RankRow from '../ui/RankRow.svelte';
+import Tag from '../ui/Tag.svelte';
+import { tiersCopy } from '../../lib/tiers/tier-copy';
+import type { TierRow } from '../../lib/tiers/tier-list';
+import { rankRowProps } from '../../lib/tiers/tier-row-view';
+
+interface Props {
+  row: TierRow;
+  /** How many rows the role's list has ("Best of the 3 tanks"). */
+  count: number;
+}
+
+const { row, count } = Astro.props;
+---
+
+<RankRow {...rankRowProps(row, count)}>
+  <ClassCrest slot="lead" slug={row.classSlug} size={36} />
+  <span slot="tag" data-you-tag hidden>
+    <Tag tone="gold" testid="tier-you-tag">
+      {tiersCopy.yourSpec}
+    </Tag>
+  </span>
+</RankRow>

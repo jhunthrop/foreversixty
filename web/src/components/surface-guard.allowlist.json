@@ -221,8 +221,6 @@
     "components/SourcesList.astro": 1,
     "components/SpecTableOfContents.astro": 1,
     "components/StatePanel.astro": 4,
-    "components/tiers/TierPage.astro": 13,
-    "components/tiers/TierRow.astro": 5,
     "components/TierStrip.svelte": 1,
     "components/ToolCard.astro": 2,
     "components/Upload.svelte": 6,

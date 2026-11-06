@@ -1,15 +1,16 @@
 // web/src/lib/tiers/tier-copy.ts
-// Every string the tier list shows (design/specs/2026-10-09-tier-list.md, section 6). The
+// Every string the tier list shows (design/specs/2026-11-06-tiers.md section 6, over the rules of
+// 2026-10-09-tier-list.md). The
 // strings describe the rules; a figure that moves nightly is passed in from the published
 // files, never written here (the owner's "prose never quotes nightly numbers" rule).
+import classes from '../../data/classes.json';
 import type { BisRole, Faction } from '../bis/types';
 import { TIE_MARGIN_PERCENT, TIER_BANDS, type TierLetter } from './tier-rules';
-import type { TierGroup, TierRow, TierTie } from './tier-list';
+import type { TierGroup, TierRow, TierTieMate } from './tier-list';
 
-/** One piece of a note: plain text, bold text or a link. */
+/** One piece of a note: plain text or a link. */
 export interface NoteSegment {
   text: string;
-  strong?: boolean;
   href?: string;
 }
 
@@ -18,6 +19,8 @@ const DPS_FIGHT_SECONDS = 180;
 /** The stand-in tank boss: the target the character already fights, three levels above a 60. */
 const TANK_BOSS_LEVEL = 63;
 const LEVELING_BANDS_HREF = '/bis';
+/** The log rankings: how specs do in real raid logs, the counterpart to this page's sim. */
+const LOG_RANKINGS_HREF = '/rankings';
 
 export const ROLE_LABELS: Readonly<Record<BisRole, string>> = {
   dps: 'DPS',
@@ -44,120 +47,225 @@ export const FACTION_LABELS: Readonly<Record<Faction, string>> = {
   horde: 'Horde',
 };
 
+/** What the notes and the caption read from the published files, never typed in. */
 export interface NoteContext {
   role: BisRole;
   faction: Faction;
   presetLabel: string;
-  /** `heal_profile.duration_sec`; healer notes only. */
+  /** `heal_profile.duration_sec`; healer copy only. */
   healSeconds?: number;
-  /** `tank-encounter.json` `boss.swing_speed_sec.value`; tank notes only. */
+  /** `tank-encounter.json` `boss.swing_speed_sec.value`; tank copy only. */
   bossSwingSeconds?: number;
-  /** Whether the healer list's order is measured (`TierData.healerOrderMeasured`); healer notes only. */
+  /** Whether the healer list's order is measured (`TierData.healerOrderMeasured`); healer copy only. */
   healerOrderMeasured?: boolean;
+  /** Whether any row on the list carries a tie: the healer caption explains ≈ tie only then. */
+  hasTie?: boolean;
 }
 
-function plain(text: string): NoteSegment[] {
-  return [{ text }];
+/** One column of "How to read this": a caps label over its sentences. */
+export interface ReadColumn {
+  label: string;
+  body: NoteSegment[];
 }
 
 function requireContext(value: number | undefined, name: string, role: BisRole): number {
-  if (value === undefined) throw new Error(`tier list: the ${role} notes need ${name}`);
+  if (value === undefined) throw new Error(`tier list: the ${role} copy needs ${name}`);
   return value;
 }
 
-function freshSixtyNote(presetLabel: string): NoteSegment[] {
+/**
+ * How a row's race was chosen, in one place so the wording can change in one edit: the ranker
+ * reads it from each guide's `recommendedRaces` frontmatter and does not sim the races (a ranker
+ * race sweep is a later lane; when it lands this reads "best" again).
+ */
+export function raceBasis(faction: Faction): string {
+  return `the guide's recommended ${FACTION_LABELS[faction]} race`;
+}
+
+function gearSentence(ctx: NoteContext): string {
+  return `Every spec is simmed in its best ${ctx.presetLabel} gear, with enchants a fresh level 60 can buy, raid buffs and consumables, as ${raceBasis(ctx.faction)}, named under it.`;
+}
+
+function freshSixty(): NoteSegment[] {
   return [
-    { text: `This is full ${presetLabel} gear. At a fresh 60 the order differs: ` },
+    { text: ' At a fresh 60 the order differs: ' },
     { text: 'see the leveling bands', href: LEVELING_BANDS_HREF },
     { text: '.' },
   ];
 }
 
-function raceSentence(faction: Faction): string {
-  return `Each spec is simmed as its best ${FACTION_LABELS[faction]} race, named under it.`;
-}
-
-/** "S is within 5% of the top, A within 10%, ..., D beyond; a ≈ tie across a line is a tie." */
+/** "S is within 5% of the top, A within 10%, ..., D beyond." */
 function tierLetterSentence(): string {
   const last = TIER_BANDS[TIER_BANDS.length - 1]!;
   const clauses = TIER_BANDS.slice(0, -1).map((band, index) => {
     const reach = `within ${TIER_BANDS[index + 1]!.from}%`;
     return index === 0 ? `${band.letter} is ${reach} of the top` : `${band.letter} ${reach}`;
   });
-  return `${[...clauses, `${last.letter} beyond`].join(', ')}; a ≈ tie across a line is a tie.`;
+  return `${[...clauses, `${last.letter} beyond`].join(', ')}.`;
 }
 
-function dpsNotes(ctx: NoteContext): NoteSegment[][] {
+function dpsColumns(ctx: NoteContext): ReadColumn[] {
   return [
-    plain(
-      `Damage per second from our own sim. What it counts and what it leaves out is in the box below. ${tierLetterSentence()}`,
-    ),
-    freshSixtyNote(ctx.presetLabel),
-    [
-      { text: `${raceSentence(ctx.faction)} ` },
-      { text: '≈ tie', strong: true },
-      { text: ` marks a spec within ${TIE_MARGIN_PERCENT}% of the one above.` },
-    ],
+    {
+      label: 'What the number is',
+      body: [
+        {
+          text: `Damage per second from our own sim against one target for ${DPS_FIGHT_SECONDS} seconds. ${gearSentence(ctx)}`,
+        },
+      ],
+    },
+    {
+      label: 'What it leaves out',
+      body: [
+        {
+          text: 'Cleave, add fights, movement and what a spec brings the raid are not counted, so a spec can sit lower here than it plays in your raid. For how specs do in real raid logs, see ',
+        },
+        { text: 'the log rankings', href: LOG_RANKINGS_HREF },
+        { text: '.' },
+        ...freshSixty(),
+      ],
+    },
+    {
+      label: 'Letters and ties',
+      body: [
+        {
+          text: `${tierLetterSentence()} ≈ tie names the specs within ${TIE_MARGIN_PERCENT}% of a spec; a tie across a line names the other letter, and the two are a tie.`,
+        },
+      ],
+    },
   ];
 }
 
 /** The healer list's rule in plain words: why a pair ties and how a shared rank counts, or,
  *  with no measured error published yet, that the ranks are still to come. */
-function healerOrderNote(measured: boolean): NoteSegment[] {
-  if (!measured) return [{ text: ' Ranks appear once the next ranking publishes the measured error.' }];
+function healerOrderNote(measured: boolean): string {
+  if (!measured) return ' Ranks appear once the next ranking publishes the measured error.';
+  return ' ≈ tie means the sim cannot order the pair: their order changes with the heal profile’s tuning, or their gap is within the measured error. Tied healers share a rank: =2, =2, then 4.';
+}
+
+function healerColumns(ctx: NoteContext): ReadColumn[] {
+  const seconds = requireContext(ctx.healSeconds, 'the heal profile duration', ctx.role);
   return [
-    { text: ' ' },
-    { text: '≈ tie', strong: true },
     {
-      text: ' means the sim cannot order the pair: their order changes with the heal profile’s tuning, or their gap is within the measured error. Tied healers share a rank: =2, =2, then 4.',
+      label: 'What the number is',
+      body: [
+        {
+          text: `Effective healing per second over ${seconds} seconds against a stand-in Phase 1 fight: tank hits and raid-wide pulses, not a named boss. Overhealing is not counted. ${gearSentence(ctx)}`,
+        },
+      ],
+    },
+    {
+      label: 'What it leaves out',
+      body: [
+        {
+          text: 'Mana and raid utility are not ranked here. No level-60 log is behind this order yet: it rests on the sim’s heal model until launch logs exist.',
+        },
+        ...freshSixty(),
+      ],
+    },
+    {
+      label: 'Ties and ranks',
+      body: [
+        {
+          text: `Gap to the top is less healing in this fight, not a verdict on the class.${healerOrderNote(ctx.healerOrderMeasured !== false)}`,
+        },
+      ],
     },
   ];
 }
 
-function healerNotes(ctx: NoteContext): NoteSegment[][] {
-  const seconds = requireContext(ctx.healSeconds, 'the heal profile duration', ctx.role);
-  return [
-    plain(
-      `Effective healing per second over ${seconds} seconds against a stand-in Phase 1 fight: tank hits and raid-wide pulses, not a named boss. Overhealing is not counted. Mana and raid utility are not ranked here. No level-60 log is behind this order yet: it rests on the sim’s heal model until launch logs exist.`,
-    ),
-    freshSixtyNote(ctx.presetLabel),
-    [
-      { text: `${raceSentence(ctx.faction)} ` },
-      { text: 'Gap to the top', strong: true },
-      { text: ' is less healing in this fight, not a verdict on the class.' },
-      ...healerOrderNote(ctx.healerOrderMeasured !== false),
-    ],
-  ];
-}
-
-function tankNotes(ctx: NoteContext): NoteSegment[][] {
+function tankColumns(ctx: NoteContext): ReadColumn[] {
   const swing = requireContext(ctx.bossSwingSeconds, 'the boss swing speed', ctx.role);
   return [
-    plain(
-      "Sorted by damage taken per second, lower is better: it is the sim's outcome against the boss, where effective health is only the hit-point pool going in. The best of each column is green.",
-    ),
-    plain(
-      `The boss is a stand-in level ${TANK_BOSS_LEVEL} target with one melee swing every ${swing} seconds, not a named boss.`,
-    ),
-    [...freshSixtyNote(ctx.presetLabel), { text: ` ${raceSentence(ctx.faction)}` }],
+    {
+      label: 'What the number is',
+      body: [
+        {
+          text: "Sorted by damage taken per second, lower is better: it is the sim's outcome against the boss, where effective health is only the hit-point pool going in. The best of each column is green.",
+        },
+      ],
+    },
+    {
+      label: 'The boss',
+      body: [
+        {
+          text: `A stand-in level ${TANK_BOSS_LEVEL} target with one melee swing every ${swing} seconds, not a named boss.`,
+        },
+      ],
+    },
+    { label: 'The gear', body: [{ text: gearSentence(ctx) }, ...freshSixty()] },
   ];
 }
 
-/** The three short lines above the list, one fact each, in the order a raider asks. */
-export function tierNotes(ctx: NoteContext): NoteSegment[][] {
-  if (ctx.role === 'tank') return tankNotes(ctx);
-  return ctx.role === 'healer' ? healerNotes(ctx) : dpsNotes(ctx);
+/** "How to read this": three columns per role, in the order a raider asks. */
+export function readColumns(ctx: NoteContext): ReadColumn[] {
+  if (ctx.role === 'tank') return tankColumns(ctx);
+  return ctx.role === 'healer' ? healerColumns(ctx) : dpsColumns(ctx);
 }
 
-/** The long-form box below the list (spec section 6): the gear the specs are simmed in, then
- *  what the number does and does not count. */
-export function howToReadBullets(role: BisRole, presetLabel: string): string[] {
-  return [
-    `Every spec is simmed in its best ${presetLabel} gear, with enchants a fresh level 60 can buy, raid buffs and consumables.`,
-    role === 'dps'
-      ? `One target for ${DPS_FIGHT_SECONDS} seconds. Cleave, add fights, movement and what a spec brings the raid are not counted, so a spec can sit lower here than it plays in your raid.`
-      : "Same boss profile as the BiS pages, so the number here is the number on the spec's page.",
-  ];
+/** The one sentence under the control bar: what the figure is, from the data. */
+export function caption(ctx: NoteContext): string {
+  if (ctx.role === 'tank') {
+    return `Damage taken per second against a stand-in level ${TANK_BOSS_LEVEL} boss, lower is better. The best of each column is green.`;
+  }
+  if (ctx.role === 'healer') {
+    const seconds = requireContext(ctx.healSeconds, 'the heal profile duration', ctx.role);
+    const tie = ctx.hasTie === true ? ' ≈ tie: the sim cannot order the pair.' : '';
+    return `Effective healing per second over ${seconds} seconds of a stand-in Phase 1 fight.${tie}`;
+  }
+  return `Damage per second, one target for ${DPS_FIGHT_SECONDS} seconds. The bar is the share of the top spec's damage; ≈ tie is within ${TIE_MARGIN_PERCENT}%.`;
+}
+
+/** "Warrior": a class slug as the game names it. Fails fast on a slug classes.json lacks. */
+export function classNameOf(classSlug: string): string {
+  const found = classes.find((c) => c.slug === classSlug);
+  if (found === undefined) throw new Error(`tier list: no class named ${classSlug} in classes.json`);
+  return found.name;
+}
+
+/** "Fury Warrior". */
+export function specFullName(spec: Pick<TierRow, 'name' | 'classSlug'>): string {
+  return `${spec.name} ${classNameOf(spec.classSlug)}`;
+}
+
+/** A row's name: the spec alone on the DPS list, where letters group twenty of them; the full
+ *  name on the short healer and tank lists, where "Holy" and "Protection" name two classes. */
+export function rowName(row: Pick<TierRow, 'name' | 'classSlug' | 'role'>): string {
+  return row.role === 'dps' ? row.name : specFullName(row);
+}
+
+/** The line under a row's name: class and race, or the race alone where the name has the class. */
+export function rowSub(row: Pick<TierRow, 'classSlug' | 'role' | 'race'>): string {
+  return row.role === 'dps' ? `${classNameOf(row.classSlug)} · ${row.race}` : row.race;
+}
+
+function joinNames(names: readonly string[]): string {
+  if (names.length <= 1) return names.join('');
+  return `${names.slice(0, -1).join(', ')} and ${names[names.length - 1]}`;
+}
+
+/** A partner as the row names it, with its letter when the tie crosses a line ("Beast Mastery (B)"). */
+function mateLabel(row: Pick<TierRow, 'role' | 'tier'>, mate: TierTieMate): string {
+  const name = rowName({ ...mate, role: row.role });
+  return mate.tier !== null && row.tier !== null && mate.tier !== row.tier ? `${name} (${mate.tier})` : name;
+}
+
+/** "≈ tie with Arms", "≈ tie with Survival, Beast Mastery and Feral"; `null` for an untied row. */
+export function tieText(row: Pick<TierRow, 'role' | 'tier' | 'tiedWith'>): string | null {
+  if (row.tiedWith.length === 0) return null;
+  return `≈ tie with ${joinNames(row.tiedWith.map((mate) => mateLabel(row, mate)))}`;
+}
+
+/** The tie's reason, naming the partners in full. */
+export function tieTitle(row: Pick<TierRow, 'role' | 'tier' | 'tiedWith'>): string | undefined {
+  if (row.tiedWith.length === 0) return undefined;
+  const names = joinNames(row.tiedWith.map(specFullName));
+  if (row.role === 'healer') {
+    return `The sim cannot order this healer and ${names}: the order changes with the heal profile’s tuning, or the gap is within the measured error`;
+  }
+  const crosses = row.tiedWith.some((mate) => mate.tier !== row.tier);
+  const line = crosses ? '; the letters differ by less than the sim can tell' : '';
+  return `Within ${TIE_MARGIN_PERCENT}% of ${names}: a tie${line}`;
 }
 
 const ORDINAL_SUFFIXES: Readonly<Record<number, string>> = { 1: 'st', 2: 'nd', 3: 'rd' };
@@ -169,15 +277,6 @@ const ORDINAL_DIGIT_BASE = 10;
 export function ordinal(n: number): string {
   const teen = n % ORDINAL_BASE >= ORDINAL_TEEN_FLOOR && n % ORDINAL_BASE <= ORDINAL_TEEN_CEILING;
   return `${n}${teen ? 'th' : (ORDINAL_SUFFIXES[n % ORDINAL_DIGIT_BASE] ?? 'th')}`;
-}
-
-function tieTitle(tie: TierTie, role: BisRole = 'dps'): string {
-  if (role === 'healer') {
-    const neighbour = tie === 'both' ? 'healers above and below' : `healer ${tie}`;
-    return `Tied with the ${neighbour}: the order changes with the heal profile’s tuning, or the gap is within the measured error`;
-  }
-  if (tie === 'both') return `Within ${TIE_MARGIN_PERCENT}% of the specs above and below: a tie`;
-  return `Within ${TIE_MARGIN_PERCENT}% of the spec ${tie}: a tie`;
 }
 
 /** "Within 5% of the top", "5 to 10% behind", "30% or more behind". */
@@ -193,19 +292,19 @@ export const tiersCopy = {
   /** Each role's meta description, unique per page for the same reason. */
   metaDescription: (role: BisRole): string =>
     `Where every ${ROLE_NOUNS[role]} spec stands at level 60 in WoW Forever, ranked by the Forever Sixty sim with the gap to the top.`,
-  eyebrow: (presetLabel: string): string => `Level 60 · ${presetLabel}`,
-  jobLine:
-    'Where every spec stands at level 60, from our own sim. Open yours for its best gear, guide and talents.',
-  roleTabsLabel: 'Role',
+  /** The PageHeader's fact line, before the Updated stamp. */
+  metaLine: (presetLabel: string | null): string =>
+    presetLabel === null ? 'Level 60' : `Level 60 · ${presetLabel}`,
+  controlsLabel: 'Tier list choices',
+  roleGroupLabel: 'Role',
   factionGroupLabel: 'Faction',
-  calloutButton: 'Your best in slot →',
+  signIn: 'Sign in',
+  signInSuffix: ' to see your spec marked.',
+  signInHref: (path: string): string => `/login?next=${encodeURIComponent(path)}`,
   yourSpec: 'Your spec',
-  pointerCta: 'See where it stands →',
   lowConfidence: 'Stat weights less certain',
   lowConfidenceTitle:
     "This spec's stat weights did not settle cleanly, so its gear pick and number are less firm.",
-  tie: '≈ tie',
-  tieTitle,
   /** The rank column: a tied healer's shared rank reads "=2"; every other row its plain rank. */
   rankLabel: (row: Pick<TierRow, 'rank' | 'role' | 'tie' | 'ranked'>): string => {
     if (!row.ranked) return '';
@@ -217,39 +316,59 @@ export const tiersCopy = {
   simLinkLabel: (specName: string): string => `View ranking sim: ${specName}`,
   simLinkTitle: (specName: string): string => `Run the ${specName} ranking sim behind this number`,
   plannerTitle: (specName: string): string => `Open the ${specName} level 60 build in the planner`,
+  bestTitle: (count: number, role: BisRole): string =>
+    `Best of the ${count} ${ROLE_LABELS[role].toLowerCase()}s`,
   tierBand,
   tierCount: (count: number): string => `${count} ${count === 1 ? 'spec' : 'specs'}`,
   tierLabel: (letter: TierLetter): string => `Tier ${letter}`,
+  listLabel: (role: BisRole, faction: Faction): string =>
+    `${ROLE_LABELS[role]} tier list, ${FACTION_LABELS[faction]}`,
   howToReadHeading: 'How to read this',
-  simChecksLink: 'How we check the sim →',
+  simChecksLink: 'How we check the sim',
   simChecksHref: '/sim/specs',
   emptyRole: (role: BisRole): string => `No ${ROLE_LABELS[role]} specs are simmed yet.`,
-  listTitle: (role: BisRole): string => `${ROLE_LABELS[role]} tier list`,
   noData: 'No tier list is published for this build yet.',
-  rowUnit: { dps: 'DPS', healer: 'HPS', tank: 'taken per second' } as const satisfies Record<BisRole, string>,
-  headers: {
-    rank: '#',
-    spec: 'Spec',
-    bar: {
-      dps: "Bar: share of the top spec's damage",
-      healer: "Bar: share of the top healer's healing",
-      tank: 'Bar: how close to the least damage taken',
-    } as const satisfies Record<BisRole, string>,
-    number: {
-      dps: 'Damage per second',
-      healer: 'Healing per second',
-      tank: 'Damage taken per second, lower is better',
-    } as const satisfies Record<BisRole, string>,
-    gap: {
-      dps: 'Gap to the top, %',
-      healer: 'Gap to the top, %',
-      tank: 'More taken than best',
-    } as const satisfies Record<BisRole, string>,
-    effectiveHealth: 'Effective health (HP)',
-    threat: 'Threat per second',
+  /** The unit after each figure: the sorted one, then a tank's health and threat. */
+  units: {
+    dps: 'DPS',
+    healer: 'HPS',
+    tank: 'taken / s',
+    effectiveHealth: 'HP',
+    threat: 'threat / s',
   },
-  effectiveHealthShort: 'Effective health',
-  threatShort: 'Threat per second',
+  /** What assistive tech hears before each figure, and the phone label of a tank's extras. */
+  figureLabels: {
+    dps: 'Damage per second',
+    healer: 'Healing per second',
+    tank: 'Damage taken per second',
+    effectiveHealth: 'Effective health',
+    threat: 'Threat',
+  },
+  gapLabel: {
+    dps: 'Gap to the top',
+    healer: 'Gap to the top',
+    tank: 'More taken than the least',
+  } as const satisfies Record<BisRole, string>,
+  /** The column heads, one line each from 1024 (owner MUST 2 on tank). */
+  heads: {
+    dps: ['#', '', 'Spec', "Share of the top spec's damage", 'DPS', 'Gap', ''],
+    healer: ['#', '', 'Spec', "Share of the top healer's healing", 'HPS', 'Gap', ''],
+    tank: ['#', '', 'Spec', 'Survival vs the best', 'Taken / s', 'Health', 'Threat / s', 'Gap', ''],
+  } as const satisfies Record<BisRole, readonly string[]>,
+  /** The signed-in answer in the PageHeader (spec 4.6). */
+  answer: {
+    label: (role: BisRole): string => `Your spec · ${ROLE_LABELS[role]}`,
+    bis: 'Your best in slot',
+    guide: 'Guide',
+    sim: 'Sim your character',
+    otherRole: (fullName: string, role: BisRole): string =>
+      `${fullName} is on the ${ROLE_LABELS[role]} list.`,
+    otherRoleLink: 'See where it stands',
+    unknown: (name: string): string => `${name}'s spec is not known yet.`,
+    unknownLink: 'Choose a character',
+    error: 'We could not load your character.',
+    retry: 'Try again',
+  },
 } as const;
 
 const WHOLE_NUMBER = new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 });

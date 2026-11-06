@@ -1,181 +1,178 @@
 // web/src/lib/tiers/tier-client.ts
-// The tier list page's browser behaviour: the faction pills, the arrow keys on the role tabs
-// and the signed-in answer (the callout on the visitor's own role, a pointer on the others,
-// and a mark on their row). The list itself is static HTML; nothing here is needed to read it.
+// The tier list page's browser behaviour: the faction choice (the ControlBar writes the URL and
+// announces it; this shows that faction's list and keeps it on the role links) and the signed-in
+// answer in the PageHeader (the visitor's spec, its place and its row marked, or a pointer to
+// the role list that has it). The lists are static HTML; nothing here is needed to read them.
 import type { Faction } from '../bis/types';
 import { onCurrentCharacterChange } from '../current-character';
 import { afterLoad, hasSessionHint } from '../page-load';
-import { hrefWithFaction, nextTabIndex, parseFaction } from './tier-controls';
+import { CONTROL_BAR_EVENT, type ControlBarChange } from '../ui/control-bar';
+import { hrefWithFaction } from './tier-controls';
 import type { TierSpecView } from './tier-callout';
+import type { TierMe } from './tier-me';
 import { tiersCopy } from './tier-copy';
 
 interface ClientConfig {
   role: string;
   views: Record<Faction, Record<string, TierSpecView>>;
-  paths: Record<string, string>;
   factionParam: string;
   factionAttribute: string;
 }
+
+/** The answer slot's parts, found once in the server-rendered template (TierPage.astro). */
+type AnswerField =
+  | 'label'
+  | 'crest'
+  | 'name'
+  | 'detail'
+  | 'place'
+  | 'figure'
+  | 'links'
+  | 'bis'
+  | 'guide'
+  | 'other'
+  | 'message'
+  | 'choose'
+  | 'retry';
 
 function readConfig(): ClientConfig | null {
   const node = document.getElementById('tier-client-config');
   return node?.textContent ? (JSON.parse(node.textContent) as ClientConfig) : null;
 }
 
-function element<K extends keyof HTMLElementTagNameMap>(
-  tag: K,
-  className: string,
-  text?: string,
-): HTMLElementTagNameMap[K] {
-  const node = document.createElement(tag);
-  node.className = className;
-  if (text !== undefined) node.textContent = text;
-  return node;
-}
-
-function crestImage(view: TierSpecView): HTMLImageElement {
-  const img = element('img', 'tier-callout-crest');
-  img.src = view.crestSrc;
-  img.alt = '';
-  img.width = 36;
-  img.height = 36;
-  img.style.cssText = `width:36px;height:36px;border-radius:999px;object-fit:cover;background:var(--color-raised);box-shadow:0 0 0 2px ${view.colorVar}`;
-  return img;
-}
-
-/** "Fury Warrior" in the class colour, then the rest of the sentence as plain text. */
-function titleNode(view: TierSpecView, tag: 'span'): HTMLElement {
-  const node = element(tag, 'tier-callout-title');
-  node.style.setProperty('--c', view.colorVar);
-  const name = document.createElement('b');
-  name.textContent = view.fullName;
-  node.append(name, view.title.slice(view.fullName.length));
-  return node;
-}
-
-function calloutNode(view: TierSpecView): HTMLElement {
-  const box = element('div', 'tier-callout');
-  box.dataset.testid = 'tier-callout';
-  const text = element('span', 'tier-callout-text');
-  text.append(titleNode(view, 'span'), element('span', 'tier-callout-detail', view.detail));
-  const who = element('span', 'tier-callout-who');
-  who.append(crestImage(view), text);
-  const button = element('a', 'tier-callout-button', tiersCopy.calloutButton);
-  button.setAttribute('href', view.bisHref);
-  button.dataset.testid = 'tier-callout-button';
-  box.append(who, button);
-  return box;
-}
-
-function pointerNode(view: TierSpecView, faction: Faction): HTMLElement {
-  const link = element('a', 'tier-pointer');
-  link.setAttribute('href', hrefWithFaction(view.rolePath, faction));
-  link.dataset.testid = 'tier-pointer';
-  link.style.setProperty('--c', view.colorVar);
-  const label = element('span', '');
-  const name = document.createElement('b');
-  name.textContent = view.fullName;
-  const lead = view.pointer.slice(view.fullName.length, view.pointer.length - tiersCopy.pointerCta.length);
-  label.append(name, lead, element('span', 'tier-pointer-cta', tiersCopy.pointerCta));
-  link.append(crestImage(view), label);
-  return link;
-}
-
-function markYourRows(key: string | undefined): void {
-  for (const row of document.querySelectorAll<HTMLElement>('.tier-row')) {
-    const mine = key !== undefined && row.dataset.specKey === key;
-    row.classList.toggle('is-you', mine);
-    const slot = row.querySelector<HTMLElement>('[data-you-slot]');
-    if (slot === null) continue;
-    if (!mine) {
-      slot.replaceChildren();
-      continue;
-    }
-    if (slot.childElementCount === 0) {
-      const pill = element('span', 'pill pill-site', tiersCopy.yourSpec);
-      pill.dataset.testid = 'tier-you-pill';
-      slot.append(pill);
-    }
-  }
-}
-
 function currentFaction(config: ClientConfig): Faction {
   return document.documentElement.getAttribute(config.factionAttribute) === 'horde' ? 'horde' : 'alliance';
 }
 
-function renderYou(config: ClientConfig, key: string | undefined): void {
-  const slot = document.getElementById('tier-you-slot');
-  if (slot === null) return;
-  const faction = currentFaction(config);
-  const view = key === undefined ? undefined : config.views[faction][key];
-  if (view === undefined) {
-    slot.replaceChildren();
-    slot.hidden = true;
-    return;
+function markRows(key: string | undefined): void {
+  for (const row of document.querySelectorAll<HTMLElement>('[data-rank-key]')) {
+    const mine = key !== undefined && row.dataset.rankKey === key;
+    if (mine) row.setAttribute('aria-current', 'true');
+    else row.removeAttribute('aria-current');
+    const tag = row.querySelector<HTMLElement>('[data-you-tag]');
+    if (tag !== null) tag.hidden = !mine;
   }
-  slot.hidden = false;
-  slot.replaceChildren(view.role === config.role ? calloutNode(view) : pointerNode(view, faction));
 }
 
 function applyFaction(config: ClientConfig, faction: Faction): void {
   if (faction === 'horde') document.documentElement.setAttribute(config.factionAttribute, 'horde');
   else document.documentElement.removeAttribute(config.factionAttribute);
-  for (const pill of document.querySelectorAll<HTMLElement>('[data-faction-pill]')) {
-    pill.setAttribute('aria-pressed', String(pill.dataset.factionPill === faction));
-  }
-  for (const tab of document.querySelectorAll<HTMLAnchorElement>('[data-role-tab]')) {
-    tab.setAttribute('href', hrefWithFaction(config.paths[tab.dataset.roleTab ?? ''] ?? '/tiers', faction));
+  for (const radio of document.querySelectorAll<HTMLAnchorElement>('[data-param="role"] [role="radio"]')) {
+    const path = radio.getAttribute('href')?.split('?')[0];
+    if (path !== undefined) radio.setAttribute('href', hrefWithFaction(path, faction));
   }
 }
 
-/** The address bar follows the pill, so a copied link shows the same list. */
-function followInAddressBar(faction: Faction): void {
-  const { pathname, hash } = location;
-  history.replaceState(null, '', `${hrefWithFaction(pathname, faction)}${hash}`);
+function fields(slot: HTMLElement): (name: AnswerField) => HTMLElement {
+  return (name) => {
+    const found = slot.querySelector<HTMLElement>(`[data-field="${name}"]`);
+    if (found === null) throw new Error(`tier answer: the template has no ${name}`);
+    return found;
+  };
 }
 
-function wireTabKeys(): void {
-  const tabs = [...document.querySelectorAll<HTMLAnchorElement>('[data-role-tab]')];
-  for (const [index, tab] of tabs.entries()) {
-    tab.addEventListener('keydown', (event) => {
-      const next = nextTabIndex(event.key, index, tabs.length);
-      if (next === null) return;
-      event.preventDefault();
-      tabs[next]?.focus();
-    });
+/** The figure's value is its first text node; its unit the span after it (ui/Figure.svelte). */
+function writeFigure(figure: HTMLElement, value: string, unit: string): void {
+  const line = figure.querySelector<HTMLElement>('.ui-figure > span');
+  if (line === null) return;
+  const text = [...line.childNodes].find((node) => node.nodeType === Node.TEXT_NODE);
+  if (text !== undefined) text.nodeValue = value;
+  const unitNode = line.querySelector('span');
+  if (unitNode !== null) unitNode.textContent = unit;
+}
+
+function showSpec(field: (name: AnswerField) => HTMLElement, view: TierSpecView, config: ClientConfig): void {
+  const ownRole = view.role === config.role;
+  const faction = currentFaction(config);
+  field('label').textContent = tiersCopy.answer.label(view.role);
+  const crest = field('crest') as HTMLImageElement;
+  crest.src = view.crestSrc;
+  crest.style.boxShadow = `0 0 0 2px ${view.colorVar}`;
+  crest.hidden = false;
+  field('name').textContent = view.fullName;
+  field('name').style.color = view.colorVar;
+  field('detail').textContent = ownRole ? view.detail : tiersCopy.answer.otherRole(view.fullName, view.role);
+  field('figure').hidden = !ownRole || view.place === '';
+  writeFigure(field('figure'), view.place, view.placeUnit);
+  field('links').hidden = !ownRole;
+  field('bis').setAttribute('href', view.bisHref);
+  field('guide').setAttribute('href', view.guideHref);
+  field('other').hidden = ownRole;
+  field('other').setAttribute('href', hrefWithFaction(view.rolePath, faction));
+  field('message').hidden = true;
+}
+
+function showMessage(
+  field: (name: AnswerField) => HTMLElement,
+  text: string,
+  action: 'choose' | 'retry',
+): void {
+  for (const name of ['crest', 'figure', 'links', 'other', 'choose', 'retry'] as const)
+    field(name).hidden = true;
+  field('label').textContent = '';
+  field('name').textContent = '';
+  field('detail').textContent = '';
+  field('message').hidden = false;
+  field('message').firstElementChild!.textContent = text;
+  field(action).hidden = false;
+}
+
+/** Paints the answer slot for one read of the account, and marks the visitor's row. */
+export function renderAnswer(config: ClientConfig, me: TierMe): void {
+  const slot = document.getElementById('tier-answer');
+  if (slot === null) return;
+  const body = slot.querySelector<HTMLElement>('[data-answer-body]');
+  const skeleton = slot.querySelector<HTMLElement>('[data-answer-skeleton]');
+  const view = me.kind === 'spec' ? config.views[currentFaction(config)][me.key] : undefined;
+  markRows(view !== undefined && view.role === config.role && me.kind === 'spec' ? me.key : undefined);
+  if (body === null) return;
+  if (me.kind === 'none' || (me.kind === 'spec' && view === undefined)) {
+    slot.hidden = true;
+    return;
   }
+  slot.hidden = false;
+  const field = fields(body);
+  if (me.kind === 'spec' && view !== undefined) showSpec(field, view, config);
+  else if (me.kind === 'unknown') showMessage(field, tiersCopy.answer.unknown(me.name), 'choose');
+  else showMessage(field, tiersCopy.answer.error, 'retry');
+  if (skeleton !== null) skeleton.hidden = true;
+  body.hidden = false;
+}
+
+function openCharacterSelector(): void {
+  const trigger = [...document.querySelectorAll<HTMLElement>('[data-testid="character-selector"]')].find(
+    (node) => node.offsetParent !== null,
+  );
+  trigger?.click();
 }
 
 export function mountTierPage(): void {
   const config = readConfig();
   if (config === null) return;
-  let characterKey: string | undefined;
-  const refresh = (): void => renderYou(config, characterKey);
-  applyFaction(config, parseFaction(location.search));
-  for (const pill of document.querySelectorAll<HTMLElement>('[data-faction-pill]')) {
-    pill.addEventListener('click', () => {
-      const faction = pill.dataset.factionPill === 'horde' ? 'horde' : 'alliance';
-      applyFaction(config, faction);
-      followInAddressBar(faction);
-      refresh();
-    });
-  }
-  wireTabKeys();
+  let me: TierMe = { kind: 'none' };
+  applyFaction(config, currentFaction(config));
+  document.addEventListener(CONTROL_BAR_EVENT, (event) => {
+    const change = (event as CustomEvent<ControlBarChange>).detail;
+    if (change.param !== config.factionParam) return;
+    applyFaction(config, change.value === 'horde' ? 'horde' : 'alliance');
+    renderAnswer(config, me);
+  });
   if (!hasSessionHint()) return;
   // The answer follows the header selector: asked once after load, and again on every pointer
   // change. Only the newest question may paint, so a slow older answer never wins.
   let latest = 0;
-  const answerForSelectedCharacter = async (): Promise<void> => {
+  const answer = async (): Promise<void> => {
     const asked = ++latest;
-    const { findCharacterKey } = await import('./tier-me');
-    const key = await findCharacterKey();
+    const { findTierMe } = await import('./tier-me');
+    const found = await findTierMe();
     if (asked !== latest) return;
-    characterKey = key;
-    markYourRows(characterKey);
-    refresh();
+    me = found;
+    renderAnswer(config, me);
   };
+  document.querySelector('[data-field="choose"]')?.addEventListener('click', openCharacterSelector);
+  document.querySelector('[data-field="retry"]')?.addEventListener('click', () => void answer());
   afterLoad(() => {
-    void answerForSelectedCharacter();
-    onCurrentCharacterChange(() => void answerForSelectedCharacter());
+    void answer();
+    onCurrentCharacterChange(() => void answer());
   });
 }

@@ -28,12 +28,12 @@ describe('nav groups', () => {
       ['Planner', '/planner'],
       ['BiS', '/bis'],
       ['Simulator', '/sim'],
+      ['Tier list', '/tiers'],
     ]);
     expect(rowPairs(logs)).toEqual([
       ['Upload a log', '/logs'],
       ['Your reports', '/reports'],
       ['Rankings', '/rankings'],
-      ['Tier list', '/tiers'],
     ]);
     expect(rowPairs(guild)).toEqual([
       ['Your guild', '/guild'],
@@ -69,7 +69,8 @@ describe('nav groups', () => {
 
 describe('isNavGroupCurrent', () => {
   it('marks a group when the page is one of its rows or a sub-path', () => {
-    expect(isNavGroupCurrent(logs, '/tiers/healer')).toBe(true);
+    expect(isNavGroupCurrent(tools, '/tiers/healer')).toBe(true);
+    expect(isNavGroupCurrent(logs, '/tiers/healer')).toBe(false);
     expect(isNavGroupCurrent(tools, '/sim/gear')).toBe(true);
     expect(isNavGroupCurrent(guild, '/guild/us/pvp/olympus-xxvii')).toBe(true);
     expect(isNavGroupCurrent(guides, '/guides/warrior')).toBe(true);
