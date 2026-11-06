@@ -1231,3 +1231,23 @@ def test_compute_spell_icons_adds_the_raid_cover_spells(tmp_path):
     (build_dir / "spellranks.json").write_text(json.dumps({"classes": {}}), encoding="utf-8")
     icons = compute_spell_icons(tmp_path, BUILD, curated_dir=tmp_path)
     assert raid_cover_spell_ids(Path("curated")) <= set(icons)
+
+
+def test_every_engine_only_spell_id_has_an_icon_source():
+    """Every id `engine-spell-names.json` names (an id the sim reports that no class
+    spellbook or client row names) has an icon on the result page: already in the
+    build's spellicons.json, or listed in extra-spell-icons.json (`spell_ids` for a
+    client row, `icon_rows` for an id the client carries no row for). Round 26 left
+    54 without one."""
+    curated = Path(__file__).resolve().parents[1] / "curated"
+    names = json.loads((curated / "engine-spell-names.json").read_text(encoding="utf-8"))
+    extra = json.loads((curated / "extra-spell-icons.json").read_text(encoding="utf-8"))
+    from pipeline.specs import active_build_dir
+
+    published = json.loads((active_build_dir() / "spellicons.json").read_text(encoding="utf-8"))
+    sources = (
+        {int(k) for k in published}
+        | set(extra["spell_ids"])
+        | {int(k) for k in extra["icon_rows"]}
+    )
+    assert sorted(int(k) for k in names["spells"] if int(k) not in sources) == []
