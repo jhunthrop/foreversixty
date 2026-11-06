@@ -25,7 +25,7 @@ This is the best Combat Rogue on Forever. Combat is the steadiest rogue in a rai
 - Ambush and Backstab from stealth both hit into armor that has no shred on it yet, and neither leaves a bleed behind.
 - Cheap Shot is for trash: bosses are immune to stuns.
 - Shank from twenty-four on cooldown, right behind any damage racial and your trinket. It is an off-hand stab for five energy that cannot miss and pays back more than it costs.
-- Slice and Dice whenever it drops, at one or two combo points.
+- At sixty, Slice and Dice whenever it drops, at one or two combo points.
 - Eviscerate at five combo points.
 - Backstab needs a dagger in the main hand and you behind the target; with any other weapon there, Sinister Strike is your builder.
 - Sinister Strike only when Backstab cannot be cast, because your main hand is not a dagger or the target is facing you.

@@ -3733,7 +3733,40 @@
         ]
       },
       {
-        "level": 13,
+        "level": 12,
+        "lines": [
+          {
+            "spell_id": 8921,
+            "name": "Moonfire",
+            "condition": "When less time is left than a Wrath takes to cast: only an instant lands in time, and Moonfire's hit is the best instant you have.",
+            "icon": "spell_nature_starfall",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 5176,
+            "name": "Wrath",
+            "condition": "When the next Starfire would not finish before the fight ends; before you have Starfire at 20, in the fight's last few seconds.",
+            "icon": "spell_nature_abolishmagic",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 8921,
+            "name": "Moonfire",
+            "condition": "When Moonfire is not ticking on the target.",
+            "icon": "spell_nature_starfall",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 5176,
+            "name": "Wrath",
+            "condition": "Before Starfire at 20 it is your filler; from 20 only while your mana is behind the fight, and from 40 only while Innervate is on cooldown.",
+            "icon": "spell_nature_abolishmagic",
+            "race_spell_ids": {}
+          }
+        ]
+      },
+      {
+        "level": 14,
         "lines": [
           {
             "spell_id": 8924,
@@ -3758,6 +3791,39 @@
           },
           {
             "spell_id": 5177,
+            "name": "Wrath",
+            "condition": "Before Starfire at 20 it is your filler; from 20 only while your mana is behind the fight, and from 40 only while Innervate is on cooldown.",
+            "icon": "spell_nature_abolishmagic",
+            "race_spell_ids": {}
+          }
+        ]
+      },
+      {
+        "level": 15,
+        "lines": [
+          {
+            "spell_id": 8921,
+            "name": "Moonfire",
+            "condition": "When less time is left than a Wrath takes to cast: only an instant lands in time, and Moonfire's hit is the best instant you have.",
+            "icon": "spell_nature_starfall",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 5176,
+            "name": "Wrath",
+            "condition": "When the next Starfire would not finish before the fight ends; before you have Starfire at 20, in the fight's last few seconds.",
+            "icon": "spell_nature_abolishmagic",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 8921,
+            "name": "Moonfire",
+            "condition": "When Moonfire is not ticking on the target.",
+            "icon": "spell_nature_starfall",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 5176,
             "name": "Wrath",
             "condition": "Before Starfire at 20 it is your filler; from 20 only while your mana is behind the fight, and from 40 only while Innervate is on cooldown.",
             "icon": "spell_nature_abolishmagic",
@@ -3799,10 +3865,43 @@
         ]
       },
       {
+        "level": 18,
+        "lines": [
+          {
+            "spell_id": 8924,
+            "name": "Moonfire",
+            "condition": "When less time is left than a Wrath takes to cast: only an instant lands in time, and Moonfire's hit is the best instant you have.",
+            "icon": "spell_nature_starfall",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 5177,
+            "name": "Wrath",
+            "condition": "When the next Starfire would not finish before the fight ends; before you have Starfire at 20, in the fight's last few seconds.",
+            "icon": "spell_nature_abolishmagic",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 8924,
+            "name": "Moonfire",
+            "condition": "When Moonfire is not ticking on the target.",
+            "icon": "spell_nature_starfall",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 5177,
+            "name": "Wrath",
+            "condition": "Before Starfire at 20 it is your filler; from 20 only while your mana is behind the fight, and from 40 only while Innervate is on cooldown.",
+            "icon": "spell_nature_abolishmagic",
+            "race_spell_ids": {}
+          }
+        ]
+      },
+      {
         "level": 19,
         "lines": [
           {
-            "spell_id": 8921,
+            "spell_id": 8924,
             "name": "Moonfire",
             "condition": "When less time is left than a Wrath takes to cast: only an instant lands in time, and Moonfire's hit is the best instant you have.",
             "icon": "spell_nature_starfall",
@@ -3816,7 +3915,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 8921,
+            "spell_id": 8924,
             "name": "Moonfire",
             "condition": "When Moonfire is not ticking on the target.",
             "icon": "spell_nature_starfall",
@@ -7057,6 +7156,78 @@
         "level": 10,
         "lines": [
           {
+            "spell_id": 774,
+            "name": "Rejuvenation",
+            "condition": "On the tank whenever it is not ticking, at rank 10 in a raid.",
+            "icon": "spell_nature_rejuvenation",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 5186,
+            "name": "Healing Touch",
+            "condition": "On the tank under 55%, only while your mana is ahead of the fight.",
+            "icon": "spell_nature_healingtouch",
+            "race_spell_ids": {
+              "high-order-skyborne": 5185,
+              "night-elf": 5185
+            }
+          },
+          {
+            "spell_id": 1058,
+            "name": "Rejuvenation",
+            "condition": "On a hurt party member under 70%, you included.",
+            "icon": "spell_nature_rejuvenation",
+            "race_spell_ids": {
+              "high-order-skyborne": 774,
+              "night-elf": 774
+            }
+          },
+          {
+            "spell_id": 1058,
+            "name": "Rejuvenation",
+            "condition": "",
+            "icon": "spell_nature_rejuvenation",
+            "race_spell_ids": {
+              "high-order-skyborne": 774,
+              "night-elf": 774
+            }
+          },
+          {
+            "spell_id": 1058,
+            "name": "Rejuvenation",
+            "condition": "",
+            "icon": "spell_nature_rejuvenation",
+            "race_spell_ids": {
+              "high-order-skyborne": 774,
+              "night-elf": 774
+            }
+          },
+          {
+            "spell_id": 1058,
+            "name": "Rejuvenation",
+            "condition": "",
+            "icon": "spell_nature_rejuvenation",
+            "race_spell_ids": {
+              "high-order-skyborne": 774,
+              "night-elf": 774
+            }
+          },
+          {
+            "spell_id": 1058,
+            "name": "Rejuvenation",
+            "condition": "",
+            "icon": "spell_nature_rejuvenation",
+            "race_spell_ids": {
+              "high-order-skyborne": 774,
+              "night-elf": 774
+            }
+          }
+        ]
+      },
+      {
+        "level": 11,
+        "lines": [
+          {
             "spell_id": 1058,
             "name": "Rejuvenation",
             "condition": "On the tank whenever it is not ticking, at rank 10 in a raid.",
@@ -7179,14 +7350,11 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 1058,
+            "spell_id": 774,
             "name": "Rejuvenation",
             "condition": "On the tank whenever it is not ticking, at rank 10 in a raid.",
             "icon": "spell_nature_rejuvenation",
-            "race_spell_ids": {
-              "high-order-skyborne": 774,
-              "night-elf": 774
-            }
+            "race_spell_ids": {}
           },
           {
             "spell_id": 5186,
@@ -7200,55 +7368,40 @@
             "name": "Rejuvenation",
             "condition": "On a hurt party member under 70%, you included.",
             "icon": "spell_nature_rejuvenation",
-            "race_spell_ids": {
-              "high-order-skyborne": 774,
-              "night-elf": 774
-            }
+            "race_spell_ids": {}
           },
           {
             "spell_id": 1058,
             "name": "Rejuvenation",
             "condition": "",
             "icon": "spell_nature_rejuvenation",
-            "race_spell_ids": {
-              "high-order-skyborne": 774,
-              "night-elf": 774
-            }
+            "race_spell_ids": {}
           },
           {
             "spell_id": 1058,
             "name": "Rejuvenation",
             "condition": "",
             "icon": "spell_nature_rejuvenation",
-            "race_spell_ids": {
-              "high-order-skyborne": 774,
-              "night-elf": 774
-            }
+            "race_spell_ids": {}
           },
           {
             "spell_id": 1058,
             "name": "Rejuvenation",
             "condition": "",
             "icon": "spell_nature_rejuvenation",
-            "race_spell_ids": {
-              "high-order-skyborne": 774,
-              "night-elf": 774
-            }
+            "race_spell_ids": {}
           },
           {
             "spell_id": 1058,
             "name": "Rejuvenation",
             "condition": "",
             "icon": "spell_nature_rejuvenation",
-            "race_spell_ids": {
-              "high-order-skyborne": 774,
-              "night-elf": 774
-            }
+            "race_spell_ids": {}
           }
         ]
       },
       {
-        "level": 14,
+        "level": 15,
         "lines": [
           {
             "spell_id": 8936,
@@ -7258,14 +7411,11 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 1058,
+            "spell_id": 774,
             "name": "Rejuvenation",
             "condition": "On the tank whenever it is not ticking, at rank 10 in a raid.",
             "icon": "spell_nature_rejuvenation",
-            "race_spell_ids": {
-              "high-order-skyborne": 774,
-              "night-elf": 774
-            }
+            "race_spell_ids": {}
           },
           {
             "spell_id": 5187,
@@ -7280,54 +7430,39 @@
             }
           },
           {
-            "spell_id": 1058,
+            "spell_id": 774,
             "name": "Rejuvenation",
             "condition": "On a hurt party member under 70%, you included.",
             "icon": "spell_nature_rejuvenation",
-            "race_spell_ids": {
-              "high-order-skyborne": 774,
-              "night-elf": 774
-            }
+            "race_spell_ids": {}
           },
           {
-            "spell_id": 1058,
+            "spell_id": 774,
             "name": "Rejuvenation",
             "condition": "",
             "icon": "spell_nature_rejuvenation",
-            "race_spell_ids": {
-              "high-order-skyborne": 774,
-              "night-elf": 774
-            }
+            "race_spell_ids": {}
           },
           {
-            "spell_id": 1058,
+            "spell_id": 774,
             "name": "Rejuvenation",
             "condition": "",
             "icon": "spell_nature_rejuvenation",
-            "race_spell_ids": {
-              "high-order-skyborne": 774,
-              "night-elf": 774
-            }
+            "race_spell_ids": {}
           },
           {
-            "spell_id": 1058,
+            "spell_id": 774,
             "name": "Rejuvenation",
             "condition": "",
             "icon": "spell_nature_rejuvenation",
-            "race_spell_ids": {
-              "high-order-skyborne": 774,
-              "night-elf": 774
-            }
+            "race_spell_ids": {}
           },
           {
-            "spell_id": 1058,
+            "spell_id": 774,
             "name": "Rejuvenation",
             "condition": "",
             "icon": "spell_nature_rejuvenation",
-            "race_spell_ids": {
-              "high-order-skyborne": 774,
-              "night-elf": 774
-            }
+            "race_spell_ids": {}
           }
         ]
       },
@@ -7342,14 +7477,11 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 1430,
+            "spell_id": 774,
             "name": "Rejuvenation",
             "condition": "On the tank whenever it is not ticking, at rank 10 in a raid.",
             "icon": "spell_nature_rejuvenation",
-            "race_spell_ids": {
-              "high-order-skyborne": 774,
-              "night-elf": 774
-            }
+            "race_spell_ids": {}
           },
           {
             "spell_id": 5187,
@@ -18128,42 +18260,7 @@
         ]
       },
       {
-        "level": 15,
-        "lines": [
-          {
-            "spell_id": 498,
-            "name": "Divine Protection",
-            "condition": "Below 20% health, the last resort once Forbearance allows it.",
-            "icon": "spell_holy_restoration",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 1311649,
-            "name": "Seal of Fury",
-            "condition": "Keep it up and recast it in its last 2 seconds, and once you have Holy Shield at 30, only with its mana left over.",
-            "icon": "spell_holy_retributionaura",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 678,
-            "name": "Holy Strike",
-            "condition": "On cooldown.",
-            "icon": "classicon_paladin",
-            "race_spell_ids": {
-              "undead": 679
-            }
-          },
-          {
-            "spell_id": 20271,
-            "name": "Judgement",
-            "condition": "On cooldown, and once you have Holy Shield at 30, only while its mana is safe.",
-            "icon": "spell_holy_righteousfury",
-            "race_spell_ids": {}
-          }
-        ]
-      },
-      {
-        "level": 16,
+        "level": 12,
         "lines": [
           {
             "spell_id": 498,
@@ -20812,7 +20909,7 @@
         ]
       },
       {
-        "level": 12,
+        "level": 13,
         "lines": [
           {
             "spell_id": 592,
@@ -20901,10 +20998,194 @@
         ]
       },
       {
-        "level": 16,
+        "level": 14,
+        "lines": [
+          {
+            "spell_id": 17,
+            "name": "Power Word: Shield",
+            "condition": "On the tank once he is hurt and Weakened Soul is off him, while your mana keeps pace with the fight: it soaks the next hit and costs a warrior no rage.",
+            "icon": "spell_holy_powerwordshield",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 139,
+            "name": "Renew",
+            "condition": "Keep Renew on the tank all fight; at 60 that means rank 7 or higher.",
+            "icon": "spell_holy_renew",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2053,
+            "name": "Lesser Heal",
+            "condition": "Lesser Heal rank 3 on the tank until you learn Heal at 16: your shield and Renew alone will not keep him up.",
+            "icon": "spell_holy_lesserheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2053,
+            "name": "Lesser Heal",
+            "condition": "Lesser Heal is the party's small top-up for little mana before 40.",
+            "icon": "spell_holy_lesserheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2053,
+            "name": "Lesser Heal",
+            "condition": "",
+            "icon": "spell_holy_lesserheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2053,
+            "name": "Lesser Heal",
+            "condition": "",
+            "icon": "spell_holy_lesserheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2053,
+            "name": "Lesser Heal",
+            "condition": "",
+            "icon": "spell_holy_lesserheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2053,
+            "name": "Lesser Heal",
+            "condition": "",
+            "icon": "spell_holy_lesserheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2053,
+            "name": "Lesser Heal",
+            "condition": "",
+            "icon": "spell_holy_lesserheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2053,
+            "name": "Lesser Heal",
+            "condition": "",
+            "icon": "spell_holy_lesserheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2053,
+            "name": "Lesser Heal",
+            "condition": "",
+            "icon": "spell_holy_lesserheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2053,
+            "name": "Lesser Heal",
+            "condition": "",
+            "icon": "spell_holy_lesserheal",
+            "race_spell_ids": {}
+          }
+        ]
+      },
+      {
+        "level": 15,
         "lines": [
           {
             "spell_id": 592,
+            "name": "Power Word: Shield",
+            "condition": "On the tank once he is hurt and Weakened Soul is off him, while your mana keeps pace with the fight: it soaks the next hit and costs a warrior no rage.",
+            "icon": "spell_holy_powerwordshield",
+            "race_spell_ids": {
+              "dwarf": 17,
+              "gnome": 17,
+              "human": 17,
+              "night-elf": 17,
+              "troll": 17
+            }
+          },
+          {
+            "spell_id": 139,
+            "name": "Renew",
+            "condition": "Keep Renew on the tank all fight; at 60 that means rank 7 or higher.",
+            "icon": "spell_holy_renew",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2053,
+            "name": "Lesser Heal",
+            "condition": "Lesser Heal rank 3 on the tank until you learn Heal at 16: your shield and Renew alone will not keep him up.",
+            "icon": "spell_holy_lesserheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2053,
+            "name": "Lesser Heal",
+            "condition": "Lesser Heal is the party's small top-up for little mana before 40.",
+            "icon": "spell_holy_lesserheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2053,
+            "name": "Lesser Heal",
+            "condition": "",
+            "icon": "spell_holy_lesserheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2053,
+            "name": "Lesser Heal",
+            "condition": "",
+            "icon": "spell_holy_lesserheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2053,
+            "name": "Lesser Heal",
+            "condition": "",
+            "icon": "spell_holy_lesserheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2053,
+            "name": "Lesser Heal",
+            "condition": "",
+            "icon": "spell_holy_lesserheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2053,
+            "name": "Lesser Heal",
+            "condition": "",
+            "icon": "spell_holy_lesserheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2053,
+            "name": "Lesser Heal",
+            "condition": "",
+            "icon": "spell_holy_lesserheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2053,
+            "name": "Lesser Heal",
+            "condition": "",
+            "icon": "spell_holy_lesserheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2053,
+            "name": "Lesser Heal",
+            "condition": "",
+            "icon": "spell_holy_lesserheal",
+            "race_spell_ids": {}
+          }
+        ]
+      },
+      {
+        "level": 16,
+        "lines": [
+          {
+            "spell_id": 17,
             "name": "Power Word: Shield",
             "condition": "On the tank once he is hurt and Weakened Soul is off him, while your mana keeps pace with the fight: it soaks the next hit and costs a warrior no rage.",
             "icon": "spell_holy_powerwordshield",
@@ -20990,6 +21271,95 @@
         ]
       },
       {
+        "level": 17,
+        "lines": [
+          {
+            "spell_id": 592,
+            "name": "Power Word: Shield",
+            "condition": "On the tank once he is hurt and Weakened Soul is off him, while your mana keeps pace with the fight: it soaks the next hit and costs a warrior no rage.",
+            "icon": "spell_holy_powerwordshield",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 139,
+            "name": "Renew",
+            "condition": "Keep Renew on the tank all fight; at 60 that means rank 7 or higher.",
+            "icon": "spell_holy_renew",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2054,
+            "name": "Heal",
+            "condition": "Heal rank 1 on the tank through 35 (36 as an Undead) and rank 3 from 36, until you learn Greater Heal at 40: rank 1 keeps your whole healing bonus until 33 and heals the most for its mana, and rank 4 costs more mana than its extra healing is worth.",
+            "icon": "spell_holy_heal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2052,
+            "name": "Lesser Heal",
+            "condition": "Lesser Heal is the party's small top-up for little mana before 40.",
+            "icon": "spell_holy_lesserheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2052,
+            "name": "Lesser Heal",
+            "condition": "",
+            "icon": "spell_holy_lesserheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2052,
+            "name": "Lesser Heal",
+            "condition": "",
+            "icon": "spell_holy_lesserheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2052,
+            "name": "Lesser Heal",
+            "condition": "",
+            "icon": "spell_holy_lesserheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2054,
+            "name": "Heal",
+            "condition": "",
+            "icon": "spell_holy_heal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2052,
+            "name": "Lesser Heal",
+            "condition": "",
+            "icon": "spell_holy_lesserheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2052,
+            "name": "Lesser Heal",
+            "condition": "",
+            "icon": "spell_holy_lesserheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2052,
+            "name": "Lesser Heal",
+            "condition": "",
+            "icon": "spell_holy_lesserheal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2052,
+            "name": "Lesser Heal",
+            "condition": "",
+            "icon": "spell_holy_lesserheal",
+            "race_spell_ids": {}
+          }
+        ]
+      },
+      {
         "level": 18,
         "lines": [
           {
@@ -20997,7 +21367,9 @@
             "name": "Power Word: Shield",
             "condition": "On the tank once he is hurt and Weakened Soul is off him, while your mana keeps pace with the fight: it soaks the next hit and costs a warrior no rage.",
             "icon": "spell_holy_powerwordshield",
-            "race_spell_ids": {}
+            "race_spell_ids": {
+              "human": 17
+            }
           },
           {
             "spell_id": 139,
@@ -25661,6 +26033,88 @@
       },
       {
         "level": 16,
+        "lines": [
+          {
+            "spell_id": 6074,
+            "name": "Renew",
+            "condition": "Keep Renew on the tank all fight; at 60 that means rank 7 or higher.",
+            "icon": "spell_holy_renew",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2054,
+            "name": "Heal",
+            "condition": "Heal is the step down when Greater Heal rank 1 costs more than you can spend, and your filler before Greater Heal at 40.",
+            "icon": "spell_holy_heal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2054,
+            "name": "Heal",
+            "condition": "",
+            "icon": "spell_holy_heal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2054,
+            "name": "Heal",
+            "condition": "",
+            "icon": "spell_holy_heal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2054,
+            "name": "Heal",
+            "condition": "",
+            "icon": "spell_holy_heal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2054,
+            "name": "Heal",
+            "condition": "",
+            "icon": "spell_holy_heal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2054,
+            "name": "Heal",
+            "condition": "When your mana falls behind the fight, only on a tank under 50% or a party member under 35%, so it waits for a deeper hole.",
+            "icon": "spell_holy_heal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2054,
+            "name": "Heal",
+            "condition": "",
+            "icon": "spell_holy_heal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2054,
+            "name": "Heal",
+            "condition": "",
+            "icon": "spell_holy_heal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2054,
+            "name": "Heal",
+            "condition": "",
+            "icon": "spell_holy_heal",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2054,
+            "name": "Heal",
+            "condition": "",
+            "icon": "spell_holy_heal",
+            "race_spell_ids": {}
+          }
+        ]
+      },
+      {
+        "level": 17,
         "lines": [
           {
             "spell_id": 139,
@@ -33961,13 +34415,6 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 5171,
-            "name": "Slice and Dice",
-            "condition": "Slice and Dice whenever it drops, at one or two combo points.",
-            "icon": "ability_rogue_slicedice",
-            "race_spell_ids": {}
-          },
-          {
             "spell_id": 53,
             "name": "Backstab",
             "condition": "Backstab from behind with a dagger in the main hand: once you have Puncturing Wounds it crits more often and can give a second combo point, and in the raid build Lethality from 54 and Opportunity from 56 land on it too.",
@@ -33991,13 +34438,6 @@
             "name": "Eviscerate",
             "condition": "Eviscerate at five combo points.",
             "icon": "ability_rogue_eviscerate",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 5171,
-            "name": "Slice and Dice",
-            "condition": "Slice and Dice whenever it drops, at one or two combo points.",
-            "icon": "ability_rogue_slicedice",
             "race_spell_ids": {}
           },
           {
@@ -34027,13 +34467,6 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 5171,
-            "name": "Slice and Dice",
-            "condition": "Slice and Dice whenever it drops, at one or two combo points.",
-            "icon": "ability_rogue_slicedice",
-            "race_spell_ids": {}
-          },
-          {
             "spell_id": 2589,
             "name": "Backstab",
             "condition": "Backstab from behind with a dagger in the main hand: once you have Puncturing Wounds it crits more often and can give a second combo point, and in the raid build Lethality from 54 and Opportunity from 56 land on it too.",
@@ -34057,13 +34490,6 @@
             "name": "Eviscerate",
             "condition": "Eviscerate at five combo points.",
             "icon": "ability_rogue_eviscerate",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 5171,
-            "name": "Slice and Dice",
-            "condition": "Slice and Dice whenever it drops, at one or two combo points.",
-            "icon": "ability_rogue_slicedice",
             "race_spell_ids": {}
           },
           {
@@ -34093,13 +34519,6 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 5171,
-            "name": "Slice and Dice",
-            "condition": "Slice and Dice whenever it drops, at one or two combo points.",
-            "icon": "ability_rogue_slicedice",
-            "race_spell_ids": {}
-          },
-          {
             "spell_id": 2590,
             "name": "Backstab",
             "condition": "Backstab from behind with a dagger in the main hand: once you have Puncturing Wounds it crits more often and can give a second combo point, and in the raid build Lethality from 54 and Opportunity from 56 land on it too.",
@@ -34123,13 +34542,6 @@
             "name": "Eviscerate",
             "condition": "Eviscerate at five combo points.",
             "icon": "ability_rogue_eviscerate",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 5171,
-            "name": "Slice and Dice",
-            "condition": "Slice and Dice whenever it drops, at one or two combo points.",
-            "icon": "ability_rogue_slicedice",
             "race_spell_ids": {}
           },
           {
@@ -34166,13 +34578,6 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 5171,
-            "name": "Slice and Dice",
-            "condition": "Slice and Dice whenever it drops, at one or two combo points.",
-            "icon": "ability_rogue_slicedice",
-            "race_spell_ids": {}
-          },
-          {
             "spell_id": 2590,
             "name": "Backstab",
             "condition": "Backstab from behind with a dagger in the main hand: once you have Puncturing Wounds it crits more often and can give a second combo point, and in the raid build Lethality from 54 and Opportunity from 56 land on it too.",
@@ -34203,13 +34608,6 @@
             "name": "Eviscerate",
             "condition": "Eviscerate at five combo points.",
             "icon": "ability_rogue_eviscerate",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 5171,
-            "name": "Slice and Dice",
-            "condition": "Slice and Dice whenever it drops, at one or two combo points.",
-            "icon": "ability_rogue_slicedice",
             "race_spell_ids": {}
           },
           {
@@ -34246,13 +34644,6 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 5171,
-            "name": "Slice and Dice",
-            "condition": "Slice and Dice whenever it drops, at one or two combo points.",
-            "icon": "ability_rogue_slicedice",
-            "race_spell_ids": {}
-          },
-          {
             "spell_id": 2591,
             "name": "Backstab",
             "condition": "Backstab from behind with a dagger in the main hand: once you have Puncturing Wounds it crits more often and can give a second combo point, and in the raid build Lethality from 54 and Opportunity from 56 land on it too.",
@@ -34283,13 +34674,6 @@
             "name": "Eviscerate",
             "condition": "Eviscerate at five combo points.",
             "icon": "ability_rogue_eviscerate",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 5171,
-            "name": "Slice and Dice",
-            "condition": "Slice and Dice whenever it drops, at one or two combo points.",
-            "icon": "ability_rogue_slicedice",
             "race_spell_ids": {}
           },
           {
@@ -34326,13 +34710,6 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 5171,
-            "name": "Slice and Dice",
-            "condition": "Slice and Dice whenever it drops, at one or two combo points.",
-            "icon": "ability_rogue_slicedice",
-            "race_spell_ids": {}
-          },
-          {
             "spell_id": 8721,
             "name": "Backstab",
             "condition": "Backstab from behind with a dagger in the main hand: once you have Puncturing Wounds it crits more often and can give a second combo point, and in the raid build Lethality from 54 and Opportunity from 56 land on it too.",
@@ -34366,13 +34743,6 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 5171,
-            "name": "Slice and Dice",
-            "condition": "Slice and Dice whenever it drops, at one or two combo points.",
-            "icon": "ability_rogue_slicedice",
-            "race_spell_ids": {}
-          },
-          {
             "spell_id": 8721,
             "name": "Backstab",
             "condition": "Backstab from behind with a dagger in the main hand: once you have Puncturing Wounds it crits more often and can give a second combo point, and in the raid build Lethality from 54 and Opportunity from 56 land on it too.",
@@ -34403,60 +34773,6 @@
             "name": "Eviscerate",
             "condition": "Eviscerate at five combo points.",
             "icon": "ability_rogue_eviscerate",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 5171,
-            "name": "Slice and Dice",
-            "condition": "Slice and Dice whenever it drops, at one or two combo points.",
-            "icon": "ability_rogue_slicedice",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 8721,
-            "name": "Backstab",
-            "condition": "Backstab from behind with a dagger in the main hand: once you have Puncturing Wounds it crits more often and can give a second combo point, and in the raid build Lethality from 54 and Opportunity from 56 land on it too.",
-            "icon": "ability_backstab",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 13750,
-            "name": "Adrenaline Rush",
-            "condition": "Adrenaline Rush on cooldown, with your damage racial if your race has one, a trinket and a potion.",
-            "icon": "spell_shadow_shadowworddominate",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 8621,
-            "name": "Sinister Strike",
-            "condition": "Sinister Strike only when Backstab cannot be cast, because your main hand is not a dagger or the target is facing you.",
-            "icon": "spell_shadow_ritualofsacrifice",
-            "race_spell_ids": {}
-          }
-        ]
-      },
-      {
-        "level": 42,
-        "lines": [
-          {
-            "spell_id": 1329283,
-            "name": "Shank",
-            "condition": "Shank on cooldown: an off-hand stab that cannot miss and pays back more energy than it costs, every 10 seconds, and every 8 with five points of Flash of Steel.",
-            "icon": "ability_theblackarrow",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 8624,
-            "name": "Eviscerate",
-            "condition": "Eviscerate at five combo points.",
-            "icon": "ability_rogue_eviscerate",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 6774,
-            "name": "Slice and Dice",
-            "condition": "Slice and Dice whenever it drops, at one or two combo points.",
-            "icon": "ability_rogue_slicedice",
             "race_spell_ids": {}
           },
           {
@@ -34500,13 +34816,6 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 6774,
-            "name": "Slice and Dice",
-            "condition": "Slice and Dice whenever it drops, at one or two combo points.",
-            "icon": "ability_rogue_slicedice",
-            "race_spell_ids": {}
-          },
-          {
             "spell_id": 11279,
             "name": "Backstab",
             "condition": "Backstab from behind with a dagger in the main hand: once you have Puncturing Wounds it crits more often and can give a second combo point, and in the raid build Lethality from 54 and Opportunity from 56 land on it too.",
@@ -34544,13 +34853,6 @@
             "name": "Eviscerate",
             "condition": "Eviscerate at five combo points.",
             "icon": "ability_rogue_eviscerate",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 6774,
-            "name": "Slice and Dice",
-            "condition": "Slice and Dice whenever it drops, at one or two combo points.",
-            "icon": "ability_rogue_slicedice",
             "race_spell_ids": {}
           },
           {
@@ -34594,13 +34896,6 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 6774,
-            "name": "Slice and Dice",
-            "condition": "Slice and Dice whenever it drops, at one or two combo points.",
-            "icon": "ability_rogue_slicedice",
-            "race_spell_ids": {}
-          },
-          {
             "spell_id": 11279,
             "name": "Backstab",
             "condition": "Backstab from behind with a dagger in the main hand: once you have Puncturing Wounds it crits more often and can give a second combo point, and in the raid build Lethality from 54 and Opportunity from 56 land on it too.",
@@ -34638,13 +34933,6 @@
             "name": "Eviscerate",
             "condition": "Eviscerate at five combo points.",
             "icon": "ability_rogue_eviscerate",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 6774,
-            "name": "Slice and Dice",
-            "condition": "Slice and Dice whenever it drops, at one or two combo points.",
-            "icon": "ability_rogue_slicedice",
             "race_spell_ids": {}
           },
           {
@@ -34688,13 +34976,6 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 6774,
-            "name": "Slice and Dice",
-            "condition": "Slice and Dice whenever it drops, at one or two combo points.",
-            "icon": "ability_rogue_slicedice",
-            "race_spell_ids": {}
-          },
-          {
             "spell_id": 11280,
             "name": "Backstab",
             "condition": "Backstab from behind with a dagger in the main hand: once you have Puncturing Wounds it crits more often and can give a second combo point, and in the raid build Lethality from 54 and Opportunity from 56 land on it too.",
@@ -34735,13 +35016,6 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 6774,
-            "name": "Slice and Dice",
-            "condition": "Slice and Dice whenever it drops, at one or two combo points.",
-            "icon": "ability_rogue_slicedice",
-            "race_spell_ids": {}
-          },
-          {
             "spell_id": 11280,
             "name": "Backstab",
             "condition": "Backstab from behind with a dagger in the main hand: once you have Puncturing Wounds it crits more often and can give a second combo point, and in the raid build Lethality from 54 and Opportunity from 56 land on it too.",
@@ -34779,13 +35053,6 @@
             "name": "Eviscerate",
             "condition": "Eviscerate at five combo points.",
             "icon": "ability_rogue_eviscerate",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 6774,
-            "name": "Slice and Dice",
-            "condition": "Slice and Dice whenever it drops, at one or two combo points.",
-            "icon": "ability_rogue_slicedice",
             "race_spell_ids": {}
           },
           {
@@ -34831,7 +35098,7 @@
           {
             "spell_id": 6774,
             "name": "Slice and Dice",
-            "condition": "Slice and Dice whenever it drops, at one or two combo points.",
+            "condition": "At 60, Slice and Dice whenever it drops, at one or two combo points.",
             "icon": "ability_rogue_slicedice",
             "race_spell_ids": {}
           },
@@ -36422,49 +36689,7 @@
             "condition": "Flame Shock whenever it is not on the target: from 25, with all three points of Call of Flame, it ticks for 21 seconds, and nothing else wants the shock cooldown.",
             "icon": "spell_fire_flameshock",
             "race_spell_ids": {
-              "troll": 8050
-            }
-          },
-          {
-            "spell_id": 3599,
-            "name": "Searing Totem",
-            "condition": "Searing Totem on a single target, and in the pack until Magma Totem at 26: until then it is your only Fire totem that does damage, and from 12 it is the one Fire Nova bursts from.",
-            "icon": "spell_fire_searingtotem",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 408341,
-            "name": "Fire Nova",
-            "condition": "Fire Nova on two or more targets: it bursts from your Fire totem, so drop that totem in the pack first (Searing Totem until 26, Magma Totem from then on).",
-            "icon": "spell_fire_sealoffire",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 548,
-            "name": "Lightning Bolt",
-            "condition": "Lightning Bolt at the top rank while your mana is ahead of the fight: your mana percent above the share of the fight still to go.",
-            "icon": "spell_nature_lightning",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 548,
-            "name": "Lightning Bolt",
-            "condition": "Lightning Bolt for everything else, at the rank your mana can carry to the end of the fight.",
-            "icon": "spell_nature_lightning",
-            "race_spell_ids": {}
-          }
-        ]
-      },
-      {
-        "level": 19,
-        "lines": [
-          {
-            "spell_id": 8052,
-            "name": "Flame Shock",
-            "condition": "Flame Shock whenever it is not on the target: from 25, with all three points of Call of Flame, it ticks for 21 seconds, and nothing else wants the shock cooldown.",
-            "icon": "spell_fire_flameshock",
-            "race_spell_ids": {
-              "orc": 8050
+              "dwarf": 8050
             }
           },
           {
@@ -141754,12 +141979,12 @@
           ],
           [
             3,
-            2,
-            2
+            3,
+            1
           ],
           [
             3,
-            4,
+            3,
             1
           ],
           [
@@ -141769,18 +141994,18 @@
           ],
           [
             3,
-            2,
-            2
-          ],
-          [
-            3,
-            2,
-            2
-          ],
-          [
-            3,
             3,
             1
+          ],
+          [
+            3,
+            2,
+            2
+          ],
+          [
+            3,
+            2,
+            2
           ],
           [
             3,
@@ -141789,12 +142014,12 @@
           ],
           [
             3,
-            3,
-            1
+            2,
+            2
           ],
           [
             3,
-            3,
+            4,
             1
           ],
           [
@@ -142014,12 +142239,12 @@
           ],
           [
             3,
-            2,
-            2
+            3,
+            1
           ],
           [
             3,
-            4,
+            3,
             1
           ],
           [
@@ -142029,18 +142254,18 @@
           ],
           [
             3,
-            2,
-            2
-          ],
-          [
-            3,
-            2,
-            2
-          ],
-          [
-            3,
             3,
             1
+          ],
+          [
+            3,
+            2,
+            2
+          ],
+          [
+            3,
+            2,
+            2
           ],
           [
             3,
@@ -142049,12 +142274,12 @@
           ],
           [
             3,
-            3,
-            1
+            2,
+            2
           ],
           [
             3,
-            3,
+            4,
             1
           ],
           [
@@ -145363,6 +145588,16 @@
           ],
           [
             1,
+            2,
+            4
+          ],
+          [
+            1,
+            2,
+            4
+          ],
+          [
+            1,
             1,
             3
           ],
@@ -145395,16 +145630,6 @@
             1,
             2,
             2
-          ],
-          [
-            1,
-            2,
-            4
-          ],
-          [
-            1,
-            2,
-            4
           ],
           [
             1,
@@ -145623,6 +145848,16 @@
           ],
           [
             1,
+            2,
+            4
+          ],
+          [
+            1,
+            2,
+            4
+          ],
+          [
+            1,
             1,
             3
           ],
@@ -145640,16 +145875,6 @@
             1,
             2,
             2
-          ],
-          [
-            1,
-            2,
-            4
-          ],
-          [
-            1,
-            2,
-            4
           ],
           [
             1,
@@ -146918,26 +147143,26 @@
         },
         "40": {
           "reference": "spell_power",
-          "dps": 0.4385,
+          "dps": 0.4374,
           "weapon_dps": 0.0
         },
         "50": {
           "reference": "spell_power",
-          "dps": 0.4746,
+          "dps": 0.4713,
           "weapon_dps": 0.0
         },
         "60": {
           "reference": "spell_power",
-          "dps": 0.486,
+          "dps": 0.4888,
           "weapon_dps": 0.0
         }
       }
     },
     "druid-feral": {
       "reference": "attack_power",
-      "dps": 0.2486,
+      "dps": 0.2487,
       "healing": false,
-      "weapon_dps": 2.8589,
+      "weapon_dps": 2.859,
       "bands": {
         "20": {
           "reference": "attack_power",
@@ -146974,7 +147199,7 @@
       "bands": {
         "20": {
           "reference": "healing_power",
-          "dps": 0.0478,
+          "dps": 0.0648,
           "weapon_dps": 0.0
         },
         "30": {
@@ -147001,9 +147226,9 @@
     },
     "hunter-beast-mastery": {
       "reference": "ranged_attack_power",
-      "dps": 0.2199,
+      "dps": 0.2183,
       "healing": false,
-      "weapon_dps": 1.9707,
+      "weapon_dps": 1.9527,
       "bands": {
         "20": {
           "reference": "ranged_attack_power",
@@ -147050,26 +147275,26 @@
         },
         "40": {
           "reference": "ranged_attack_power",
-          "dps": 0.1205,
-          "weapon_dps": 1.1341
+          "dps": 0.1222,
+          "weapon_dps": 1.1334
         },
         "50": {
           "reference": "ranged_attack_power",
-          "dps": 0.1266,
-          "weapon_dps": 1.1273
+          "dps": 0.1314,
+          "weapon_dps": 1.1257
         },
         "60": {
           "reference": "ranged_attack_power",
-          "dps": 0.1439,
-          "weapon_dps": 1.2981
+          "dps": 0.1445,
+          "weapon_dps": 1.3219
         }
       }
     },
     "hunter-survival": {
       "reference": "attack_power",
-      "dps": 0.2763,
+      "dps": 0.2747,
       "healing": false,
-      "weapon_dps": 3.0662,
+      "weapon_dps": 3.0508,
       "bands": {
         "20": {
           "reference": "attack_power",
@@ -147100,7 +147325,7 @@
     },
     "mage-arcane": {
       "reference": "spell_power",
-      "dps": 0.5471,
+      "dps": 0.5538,
       "healing": false,
       "weapon_dps": 0.0,
       "bands": {
@@ -147116,24 +147341,24 @@
         },
         "40": {
           "reference": "spell_power",
-          "dps": 0.3248,
+          "dps": 0.3252,
           "weapon_dps": 0.0
         },
         "50": {
           "reference": "spell_power",
-          "dps": 0.3662,
+          "dps": 0.3684,
           "weapon_dps": 0.0
         },
         "60": {
           "reference": "spell_power",
-          "dps": 0.4042,
+          "dps": 0.4006,
           "weapon_dps": 0.0
         }
       }
     },
     "mage-fire": {
       "reference": "spell_power",
-      "dps": 0.5879,
+      "dps": 0.5969,
       "healing": false,
       "weapon_dps": 0.0,
       "bands": {
@@ -147144,22 +147369,22 @@
         },
         "30": {
           "reference": "spell_power",
-          "dps": 0.317,
+          "dps": 0.3264,
           "weapon_dps": 0.0
         },
         "40": {
           "reference": "spell_power",
-          "dps": 0.3739,
+          "dps": 0.3692,
           "weapon_dps": 0.0
         },
         "50": {
           "reference": "spell_power",
-          "dps": 0.3103,
+          "dps": 0.3071,
           "weapon_dps": 0.0
         },
         "60": {
           "reference": "spell_power",
-          "dps": 0.4173,
+          "dps": 0.4108,
           "weapon_dps": 0.0
         }
       }
@@ -147187,45 +147412,45 @@
         },
         "50": {
           "reference": "spell_power",
-          "dps": 0.4091,
+          "dps": 0.4061,
           "weapon_dps": 0.0
         },
         "60": {
           "reference": "spell_power",
-          "dps": 0.4169,
+          "dps": 0.4142,
           "weapon_dps": 0.0
         }
       }
     },
     "paladin-holy": {
       "reference": "healing_power",
-      "dps": 0.2932,
+      "dps": 0.3513,
       "healing": true,
       "weapon_dps": 0.0,
       "bands": {
         "20": {
           "reference": "healing_power",
-          "dps": 0.1205,
+          "dps": 0.1126,
           "weapon_dps": 0.0
         },
         "30": {
           "reference": "healing_power",
-          "dps": 0.1532,
+          "dps": 0.1881,
           "weapon_dps": 0.0
         },
         "40": {
           "reference": "healing_power",
-          "dps": 0.201,
+          "dps": 0.2158,
           "weapon_dps": 0.0
         },
         "50": {
           "reference": "healing_power",
-          "dps": 0.1719,
+          "dps": 0.2484,
           "weapon_dps": 0.0
         },
         "60": {
           "reference": "healing_power",
-          "dps": 0.2232,
+          "dps": 0.2581,
           "weapon_dps": 0.0
         }
       }
@@ -147239,12 +147464,12 @@
         "20": {
           "reference": "attack_power",
           "dps": 0.042,
-          "weapon_dps": 0.5857
+          "weapon_dps": 0.5859
         },
         "30": {
           "reference": "attack_power",
-          "dps": 0.0563,
-          "weapon_dps": 0.73
+          "dps": 0.0566,
+          "weapon_dps": 0.7347
         },
         "40": {
           "reference": "attack_power",
@@ -147253,8 +147478,8 @@
         },
         "50": {
           "reference": "attack_power",
-          "dps": 0.058,
-          "weapon_dps": 0.794
+          "dps": 0.0563,
+          "weapon_dps": 0.7713
         },
         "60": {
           "reference": "attack_power",
@@ -147265,33 +147490,33 @@
     },
     "priest-discipline": {
       "reference": "healing_power",
-      "dps": 0.2687,
+      "dps": 0.2564,
       "healing": true,
       "weapon_dps": 0.0,
       "bands": {
         "20": {
           "reference": "healing_power",
-          "dps": 0.1216,
+          "dps": 0.123,
           "weapon_dps": 0.0
         },
         "30": {
           "reference": "healing_power",
-          "dps": 0.142,
+          "dps": 0.1553,
           "weapon_dps": 0.0
         },
         "40": {
           "reference": "healing_power",
-          "dps": 0.1234,
+          "dps": 0.1247,
           "weapon_dps": 0.0
         },
         "50": {
           "reference": "healing_power",
-          "dps": 0.1426,
+          "dps": 0.1478,
           "weapon_dps": 0.0
         },
         "60": {
           "reference": "healing_power",
-          "dps": 0.1634,
+          "dps": 0.1628,
           "weapon_dps": 0.0
         }
       }
@@ -147347,12 +147572,12 @@
         },
         "40": {
           "reference": "spell_power",
-          "dps": 0.2196,
+          "dps": 0.2325,
           "weapon_dps": 0.0
         },
         "50": {
           "reference": "spell_power",
-          "dps": 0.2512,
+          "dps": 0.249,
           "weapon_dps": 0.0
         },
         "60": {
@@ -147404,22 +147629,22 @@
         "20": {
           "reference": "attack_power",
           "dps": 0.0785,
-          "weapon_dps": 0.7295
+          "weapon_dps": 0.7152
         },
         "30": {
           "reference": "attack_power",
-          "dps": 0.0977,
-          "weapon_dps": 0.8222
+          "dps": 0.0966,
+          "weapon_dps": 0.8131
         },
         "40": {
           "reference": "attack_power",
-          "dps": 0.1161,
-          "weapon_dps": 0.983
+          "dps": 0.1114,
+          "weapon_dps": 0.9448
         },
         "50": {
           "reference": "attack_power",
-          "dps": 0.1325,
-          "weapon_dps": 0.981
+          "dps": 0.1263,
+          "weapon_dps": 0.9276
         },
         "60": {
           "reference": "attack_power",
@@ -147436,23 +147661,23 @@
       "bands": {
         "20": {
           "reference": "attack_power",
-          "dps": 0.0847,
-          "weapon_dps": 0.7008
+          "dps": 0.0844,
+          "weapon_dps": 0.705
         },
         "30": {
           "reference": "attack_power",
-          "dps": 0.11,
+          "dps": 0.1092,
           "weapon_dps": 0.8264
         },
         "40": {
           "reference": "attack_power",
-          "dps": 0.1362,
-          "weapon_dps": 0.9481
+          "dps": 0.1357,
+          "weapon_dps": 0.9484
         },
         "50": {
           "reference": "attack_power",
-          "dps": 0.1624,
-          "weapon_dps": 0.9956
+          "dps": 0.1639,
+          "weapon_dps": 0.9945
         },
         "60": {
           "reference": "attack_power",
@@ -147463,7 +147688,7 @@
     },
     "shaman-elemental": {
       "reference": "spell_power",
-      "dps": 0.5615,
+      "dps": 0.5796,
       "healing": false,
       "weapon_dps": 0.0,
       "bands": {
@@ -147474,7 +147699,7 @@
         },
         "30": {
           "reference": "spell_power",
-          "dps": 0.2584,
+          "dps": 0.2613,
           "weapon_dps": 0.0
         },
         "40": {
@@ -147489,16 +147714,16 @@
         },
         "60": {
           "reference": "spell_power",
-          "dps": 0.3264,
+          "dps": 0.3307,
           "weapon_dps": 0.0
         }
       }
     },
     "shaman-enhancement": {
       "reference": "attack_power",
-      "dps": 0.1933,
+      "dps": 0.1891,
       "healing": false,
-      "weapon_dps": 2.7973,
+      "weapon_dps": 2.7358,
       "bands": {
         "20": {
           "reference": "attack_power",
@@ -147529,33 +147754,33 @@
     },
     "shaman-restoration": {
       "reference": "healing_power",
-      "dps": 0.4196,
+      "dps": 0.564,
       "healing": true,
       "weapon_dps": 0.0,
       "bands": {
         "20": {
           "reference": "healing_power",
-          "dps": 0.0684,
+          "dps": 0.066,
           "weapon_dps": 0.0
         },
         "30": {
           "reference": "healing_power",
-          "dps": 0.1952,
+          "dps": 0.1899,
           "weapon_dps": 0.0
         },
         "40": {
           "reference": "healing_power",
-          "dps": 0.2295,
+          "dps": 0.2455,
           "weapon_dps": 0.0
         },
         "50": {
           "reference": "healing_power",
-          "dps": 0.2092,
+          "dps": 0.2595,
           "weapon_dps": 0.0
         },
         "60": {
           "reference": "healing_power",
-          "dps": 0.2058,
+          "dps": 0.2257,
           "weapon_dps": 0.0
         }
       }
@@ -147595,7 +147820,7 @@
     },
     "warlock-demonology": {
       "reference": "spell_power",
-      "dps": 0.6272,
+      "dps": 0.6296,
       "healing": false,
       "weapon_dps": 0.0,
       "bands": {
@@ -147616,7 +147841,7 @@
         },
         "50": {
           "reference": "spell_power",
-          "dps": 0.3691,
+          "dps": 0.3684,
           "weapon_dps": 0.0
         },
         "60": {
@@ -147628,7 +147853,7 @@
     },
     "warlock-destruction": {
       "reference": "spell_power",
-      "dps": 0.6951,
+      "dps": 0.7042,
       "healing": false,
       "weapon_dps": 0.0,
       "bands": {
@@ -147654,7 +147879,7 @@
         },
         "60": {
           "reference": "spell_power",
-          "dps": 0.5466,
+          "dps": 0.5384,
           "weapon_dps": 0.0
         }
       }
@@ -147694,9 +147919,9 @@
     },
     "warrior-fury": {
       "reference": "attack_power",
-      "dps": 0.2774,
+      "dps": 0.2786,
       "healing": false,
-      "weapon_dps": 2.8533,
+      "weapon_dps": 2.7266,
       "bands": {
         "20": {
           "reference": "attack_power",
@@ -148118,6 +148343,7 @@
     "1866": 6,
     "1943": 20,
     "1978": 4,
+    "2052": 1,
     "2053": 1,
     "2054": 16,
     "2055": 16,

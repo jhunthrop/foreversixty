@@ -100,12 +100,12 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 00000000000000000-1000000000000000000-000000000000000000 | main_hand:1926 off_hand:1287 | 12.3 | 5 | other:attack/2=154.0, other:attack/1=98.2, spell:1757=37.3, spell:5171/2=12.4, spell:5171/1=2.7 | {SpellID: 13750} |
-| 20 | 00000000000000000-3152000000000000000-000000000000000000 | main_hand:2194 off_hand:2236 | 26.6 | 6 | other:attack/2=140.5, other:attack/1=84.5, spell:1758=38.1, spell:5171/2=8.4, spell:5171/1=5.2 | {SpellID: 13750} |
-| 30 | 00000000000000000-3153030000012300000-000000000000000000 | main_hand:7687 off_hand:23168 | 51.5 | 7 | other:attack/2=147.7, other:attack/1=86.4, spell:1760=42.5, spell:1329283=18.3, spell:5171/2=6.4 | {SpellID: 13750} |
-| 38 | 00000000000000000-3153030000012321500-000000000000000000 | main_hand:868 off_hand:6829 | 78.4 | 8 | other:attack/1=102.6, other:attack/2=97.9, spell:8621=41.2, spell:1329283=18.3, spell:5171/2=6.8 | {SpellID: 13750} |
-| 40 | 00000000000000000-3153030000012321511-000000000000000000 | main_hand:868 off_hand:2164 | 91.0 | 9 | other:attack/2=119.0, other:attack/1=102.1, spell:8621=46.1, spell:1329283=19.0, spell:5171/1=6.8 | - |
-| 50 | 32200000000000000-3153030000012321541-000000000000000000 | main_hand:810 off_hand:2163 | 144.9 | 9 | other:attack/2=160.4, other:attack/1=107.2, spell:11293=55.9, spell:1329549=21.6, spell:6774/1=8.0 | - |
+| 10 | 00000000000000000-1000000000000000000-000000000000000000 | main_hand:1926 off_hand:1287 | 13.0 | 3 | other:attack/2=130.0, other:attack/1=82.9, spell:1757=40.7, spell:6760/5=7.6, spell:1784=1.0 | {SpellID: 13750} |
+| 20 | 00000000000000000-3152000000000000000-000000000000000000 | main_hand:2194 off_hand:2236 | 27.8 | 4 | other:attack/2=121.3, other:attack/1=73.0, spell:1758=42.1, spell:6761/5=8.0, spell:1785=1.0 | {SpellID: 13750} |
+| 30 | 00000000000000000-3153030000012300000-000000000000000000 | main_hand:7687 off_hand:23168 | 54.8 | 5 | other:attack/2=129.9, other:attack/1=76.0, spell:1760=47.6, spell:1329283=18.4, spell:6762/5=9.3 | {SpellID: 13750} |
+| 38 | 00000000000000000-3153030000012321500-000000000000000000 | main_hand:868 off_hand:6829 | 82.7 | 6 | other:attack/1=89.7, other:attack/2=85.6, spell:8621=46.6, spell:1329283=18.3, spell:8623/5=9.0 | {SpellID: 13750} |
+| 40 | 00000000000000000-3153030000012321511-000000000000000000 | main_hand:868 off_hand:2164 | 97.6 | 7 | other:attack/2=104.5, other:attack/1=89.7, spell:8621=51.6, spell:1329283=18.9, spell:8624/5=10.1 | - |
+| 50 | 32200000000000000-3153030000012321541-000000000000000000 | main_hand:810 off_hand:2163 | 151.4 | 7 | other:attack/2=134.2, other:attack/1=89.7, spell:11293=61.4, spell:1329549=21.5, spell:11299/5=11.9 | - |
 | 60 | 32530100000000000-3153030000012321541-030000000000000000 | main_hand:22736 off_hand:23054 | 304.5 | 9 | other:attack/2=84.5, other:attack/1=80.2, spell:11294=54.9, spell:1329549=21.5, spell:11300/5=10.3 | - |
 
 ## Learned but unused (informational)
@@ -178,4 +178,9 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
-None.
+- rogue-combat level=10 kind=zero_casts spell="Slice and Dice" id=5171 authored=6774
+- rogue-combat level=20 kind=zero_casts spell="Slice and Dice" id=5171 authored=6774
+- rogue-combat level=30 kind=zero_casts spell="Slice and Dice" id=5171 authored=6774
+- rogue-combat level=38 kind=zero_casts spell="Slice and Dice" id=5171 authored=6774
+- rogue-combat level=40 kind=zero_casts spell="Slice and Dice" id=5171 authored=6774
+- rogue-combat level=50 kind=zero_casts spell="Slice and Dice" id=6774 authored=6774
