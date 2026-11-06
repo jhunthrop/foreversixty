@@ -21,7 +21,7 @@ import {
 const CONFIG = readParityConfig('bis-parity.json');
 
 /**
- * Known drift another lane is removing: these regions (and the regions that contain them) are
+ * Known drift, dated in its entry: these regions (and the regions that contain them) are
  * expected to differ, the regions below them are compared after the drifted height is taken out,
  * and the test fails the day the drift is gone so the entry is deleted with it.
  */
@@ -36,21 +36,28 @@ interface ExpectedDrift {
   why: string;
 }
 
-const HEAD_ANSWER_DRIFT: ExpectedDrift = {
+/** The head answer and what it pushes: the title sits on the head's bottom edge. */
+const HEAD_ANSWER = {
   regions: ['head-answer'],
   containers: ['head'],
   moved: ['head-title', 'head-meta'],
-  // TODO(2026-11-06, land/bis-header): BisAnswer.svelte grew the head disclosures ("What this
-  // profile assumes", "What is included"), the healer metrics list and caption, and the tank's
-  // four-figure list; the approved head is one figure, its trust line and links. Delete each
-  // entry when land/bis-header lands and the state matches.
-  why: 'BisAnswer head drift, being removed on land/bis-header (2026-11-06)',
-};
+} as const;
 
+// land/bis-header (merged 2026-11-06, eb335cb7e) removed the head disclosures. What is left in
+// BisAnswer.svelte, each entry dated; delete an entry the day its state matches (the test fails
+// then, so it cannot outlive the drift).
 const EXPECTED_DRIFT: Readonly<Record<string, ExpectedDrift>> = {
-  'dps-60': HEAD_ANSWER_DRIFT,
-  'healer-60': HEAD_ANSWER_DRIFT,
-  'tank-60': HEAD_ANSWER_DRIFT,
+  // TODO(2026-11-06): the trust line and links drop the space before each middot
+  // ("consumables.· View ranking sim", "simulator ·Talents"), so the build's trust line fits one
+  // line where the mock's wraps (16 px). Fix the spacing in BisAnswer.svelte.
+  'dps-60': { ...HEAD_ANSWER, why: 'BisAnswer middot spacing (2026-11-06)' },
+  // TODO(2026-11-06): the healer metrics list (Overheal, Mana lasts, Healing per mana: 3 terms,
+  // 6 definitions) under the figure. Not in the approved head (one figure, trust line, links);
+  // owner decision: drop it, or approve it and add it to the mock (ws_bis.py answer()).
+  'healer-60': { ...HEAD_ANSWER, why: 'healer metrics list in the head, decision pending (2026-11-06)' },
+  // TODO(2026-11-06): the tank head is four figures (effective health, DTPS, chance of death, TPS)
+  // and a TMI line; the mock shows one (DTPS). Owner decision as for the healer metrics.
+  'tank-60': { ...HEAD_ANSWER, why: 'tank four-figure head, decision pending (2026-11-06)' },
 };
 
 /** The build's regions below the drifted container, moved up by the height the drift added. */
@@ -109,6 +116,7 @@ test.describe('BiS mock parity at 1440', () => {
         [],
       );
       if (drift !== undefined) {
+        test.info().annotations.push({ type: 'expected drift', description: formatFailures(expected) });
         expect(
           expected.length,
           `${state.id}: the expected drift (${drift.why}) is gone; delete its EXPECTED_DRIFT entry`,

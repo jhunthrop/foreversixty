@@ -579,7 +579,52 @@
   "weights": {
    "title": "What to stack",
    "sentence": "Stack agility, then crit rating, then intellect.",
-   "fold": "Show the weights and their error",
+   "caption": "Normalized to Agility = 1.00. Per point of stat, normalized to Agility = 1.00, with DPS per point and the sim error. Haste: 6.64 per 1%, not in the table because no item at this level range has it",
+   "rows": [
+    {
+     "name": "Agility",
+     "scale": "1.00",
+     "bar": 1,
+     "line": "0.874 DPS per point",
+     "faint": false
+    },
+    {
+     "name": "Crit rating",
+     "scale": "0.84",
+     "bar": 0.836,
+     "line": "0.731 DPS per point",
+     "faint": false
+    },
+    {
+     "name": "Intellect",
+     "scale": "0.36",
+     "bar": 0.363,
+     "line": "0.317 DPS per point",
+     "faint": false
+    },
+    {
+     "name": "Ranged attack power",
+     "scale": "0.30",
+     "bar": 0.303,
+     "line": "0.264 DPS per point",
+     "faint": false
+    },
+    {
+     "name": "Hit rating",
+     "scale": "",
+     "bar": 0,
+     "line": "Not significant",
+     "faint": true
+    },
+    {
+     "name": "Spell power",
+     "scale": "",
+     "bar": 0,
+     "line": "Not significant",
+     "faint": true
+    }
+   ],
+   "expertise": "",
    "addon": "The Forever Sixty addon rates every item in your bags and tooltips with these weights.",
    "addonLink": "Use these weights in the addon ›"
   },
@@ -1170,7 +1215,45 @@
   "weights": {
    "title": "What to stack",
    "sentence": "Stack mp5, then healing power, then spirit.",
-   "fold": "Show the weights and their error",
+   "caption": "Normalized to MP5 = 1.00. Per point of stat, normalized to MP5 = 1.00, with HPS per point and the sim error. Haste: not significant",
+   "rows": [
+    {
+     "name": "MP5",
+     "scale": "1.00",
+     "bar": 1,
+     "line": "0.569 HPS per point",
+     "faint": false
+    },
+    {
+     "name": "Healing power",
+     "scale": "0.73",
+     "bar": 0.732,
+     "line": "0.417 HPS per point",
+     "faint": false
+    },
+    {
+     "name": "Spirit",
+     "scale": "0.55",
+     "bar": 0.5479999999999999,
+     "line": "0.312 HPS per point",
+     "faint": false
+    },
+    {
+     "name": "Intellect",
+     "scale": "0.38",
+     "bar": 0.376,
+     "line": "0.214 HPS per point",
+     "faint": false
+    },
+    {
+     "name": "Crit rating",
+     "scale": "0.30",
+     "bar": 0.3,
+     "line": "0.171 HPS per point",
+     "faint": false
+    }
+   ],
+   "expertise": "",
    "addon": "The Forever Sixty addon rates every item in your bags and tooltips with these weights.",
    "addonLink": "Use these weights in the addon ›"
   },
@@ -1789,7 +1872,94 @@
   "weights": {
    "title": "What to stack",
    "sentence": "Stack defense rating, then stamina, then dodge rating.",
-   "fold": "Show the weights and their error",
+   "caption": "Normalized to Defense rating = 1.00. Per point of stat, normalized to Defense = 1.00, with score per point and the sim error. Expertise: 5.77 per 1%",
+   "rows": [
+    {
+     "name": "Defense rating",
+     "scale": "1.00",
+     "bar": 1,
+     "line": "200.065 score per point",
+     "faint": false
+    },
+    {
+     "name": "Stamina",
+     "scale": "0.67",
+     "bar": 0.665,
+     "line": "133.084 score per point",
+     "faint": false
+    },
+    {
+     "name": "Dodge rating",
+     "scale": "0.64",
+     "bar": 0.636,
+     "line": "127.223 score per point",
+     "faint": false
+    },
+    {
+     "name": "Agility",
+     "scale": "0.54",
+     "bar": 0.5379999999999999,
+     "line": "107.543 score per point",
+     "faint": false
+    },
+    {
+     "name": "Parry rating",
+     "scale": "0.51",
+     "bar": 0.51,
+     "line": "101.934 score per point",
+     "faint": false
+    },
+    {
+     "name": "Block value",
+     "scale": "0.50",
+     "bar": 0.499,
+     "line": "99.856 score per point",
+     "faint": false
+    },
+    {
+     "name": "Hit rating",
+     "scale": "0.18",
+     "bar": 0.17800000000000002,
+     "line": "35.598 score per point",
+     "faint": false
+    },
+    {
+     "name": "Strength",
+     "scale": "0.09",
+     "bar": 0.087,
+     "line": "17.389 score per point",
+     "faint": false
+    },
+    {
+     "name": "Crit rating",
+     "scale": "0.06",
+     "bar": 0.057999999999999996,
+     "line": "11.565 score per point",
+     "faint": false
+    },
+    {
+     "name": "Armor",
+     "scale": "0.04",
+     "bar": 0.04,
+     "line": "7.506 score per point",
+     "faint": false
+    },
+    {
+     "name": "Attack power",
+     "scale": "0.03",
+     "bar": 0.04,
+     "line": "5.395 score per point",
+     "faint": false
+    },
+    {
+     "name": "Block rating",
+     "scale": "",
+     "bar": 0,
+     "line": "Not significant",
+     "faint": true
+    }
+   ],
+   "expertise": "Expertise to cap: 4.5% for dodge, 12% for parry",
    "addon": "Expertise to cap: 4.5% for dodge, 12% for parry",
    "addonLink": "Use these weights in the addon ›"
   },
@@ -2328,7 +2498,52 @@
   "weights": {
    "title": "What to stack",
    "sentence": "Stack agility, then intellect, then hit rating.",
-   "fold": "Show the weights and their error",
+   "caption": "Normalized to Agility = 1.00. Per point of stat, normalized to Agility = 1.00, with DPS per point and the sim error. Haste: 1.68 per 1%, not in the table because no item at this level range has it",
+   "rows": [
+    {
+     "name": "Agility",
+     "scale": "1.00",
+     "bar": 1,
+     "line": "0.290 DPS per point",
+     "faint": false
+    },
+    {
+     "name": "Intellect",
+     "scale": "0.49",
+     "bar": 0.491,
+     "line": "0.142 DPS per point",
+     "faint": false
+    },
+    {
+     "name": "Hit rating",
+     "scale": "0.35",
+     "bar": 0.34600000000000003,
+     "line": "0.101 DPS per point",
+     "faint": false
+    },
+    {
+     "name": "Ranged attack power",
+     "scale": "0.31",
+     "bar": 0.312,
+     "line": "0.091 DPS per point",
+     "faint": false
+    },
+    {
+     "name": "Crit rating",
+     "scale": "0.22",
+     "bar": 0.221,
+     "line": "0.064 DPS per point",
+     "faint": false
+    },
+    {
+     "name": "Spell power",
+     "scale": "",
+     "bar": 0,
+     "line": "Not significant",
+     "faint": true
+    }
+   ],
+   "expertise": "",
    "addon": "The Forever Sixty addon rates every item in your bags and tooltips with these weights.",
    "addonLink": "Use these weights in the addon ›"
   },

@@ -19,7 +19,7 @@ from pathlib import Path
 
 from mocklib import CLASS_COLOR
 from ws_lib import REGION, control_bar, crest_img, icon, sel, seg
-from ws_prims import PageHeader, Plate, Section, build_page, write
+from ws_prims import Meter, PageHeader, Plate, Section, build_page, write
 
 HERE = Path(__file__).resolve().parent
 CONFIG = json.loads((HERE / 'web/bis-parity.json').read_text())
@@ -59,7 +59,9 @@ BIS_CSS = '''
 .cell .gn .bs{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;line-height:16px;color:var(--muted);text-align:right}
 .cell .ic0{width:40px;height:40px;border-radius:5px;border:1px dashed var(--line-soft)}
 .bis-stack{margin-top:32px}
-.wt-s{font-size:15px;line-height:24px}.wt-f summary{cursor:pointer;color:var(--gold);font-weight:600;margin-top:8px}
+.wt-s{font-size:15px;line-height:24px}
+.wt-cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:16px;margin-top:12px}
+.wt{display:flex;flex-direction:column;gap:6px;min-width:0;font-size:14px;line-height:1.5}.wt.faint{opacity:.6}.wt-n{font-size:15px;font-weight:600}.wt .fig.sm .v{font-size:16px;line-height:20px}
 .wt-l{font-size:13px;line-height:20px;margin-top:8px;color:var(--muted)}.wt-l a{font-weight:600}
 .bis-guide{color:var(--muted);font-size:13px;line-height:20px;margin:var(--section-gap) 0 8px}.bis-guide a{font-weight:600}
 .sec-h+.sec-b{padding-top:12px}
@@ -143,9 +145,19 @@ def doll(f: dict) -> str:
             f'<div class="doll-cols" role="listbox" aria-label="{escape(d["label"])}">{inner}</div></div>')
 
 
+def weight(r: dict) -> str:
+    if r['faint']:
+        return f'<li class="wt faint"><span class="wt-n">{escape(r["name"])}</span><span class="muted">{escape(r["line"])}</span></li>'
+    return (f'<li class="wt"><span class="wt-n">{escape(r["name"])}</span><span class="fig sm"><span class="v">{escape(r["scale"])}</span></span>'
+            f'{Meter(r["bar"])}<span class="muted">{escape(r["line"])}</span></li>')
+
+
 def weights(f: dict) -> str:
+    """Always open, one column per stat (spec 5.3 item 6; the 5.10 fold retired on main 2026-11-06)."""
     w = f['weights']
-    body = (f'<div class="sec-b"><p class="wt-s">{escape(w["sentence"])}</p><details class="wt-f"><summary>{escape(w["fold"])}</summary></details>'
+    cols = f'<p class="wt-l">{escape(w["caption"])}</p><ul class="wt-cols" aria-label="Stat weights">{"".join(weight(r) for r in w["rows"])}</ul>' if w['rows'] else ''
+    exp = f'<p class="wt-l">{escape(w["expertise"])}</p>' if w['expertise'] else ''
+    body = (f'<div class="sec-b"><p class="wt-s">{escape(w["sentence"])}</p>{cols}{exp}'
             f'<p class="wt-l">{escape(w["addon"])} <a href="#">{escape(w["addonLink"])}</a></p></div>')
     return f'<div class="bis-stack">{Section(w["title"], body)}</div>'
 

@@ -114,7 +114,15 @@ function readFacts() {
     weights: {
       title: text(q("h2, h3", weights)),
       sentence: text(q('[data-testid="bis-weights-sentence"]', weights)),
-      fold: text(q("summary", weights)),
+      caption: text(q(".bis-weights-caption", weights)),
+      rows: qa(".bis-weight", weights).map((w) => ({
+        name: text(q(".bis-weight-name", w)),
+        scale: text(q(".ui-figure", w)),
+        bar: Number.parseFloat(q(".bar [style*='width']", w)?.style.width ?? "0") / 100,
+        line: text(q(":scope > .muted", w)),
+        faint: w.classList.contains("faint"),
+      })),
+      expertise: text(q('[data-testid$="-expertise-cap"]', weights)),
       addon: text(q(".bis-weights-line", weights)).replace(text(q(".bis-weights-line a", weights)), "").trim(),
       addonLink: text(q(".bis-weights-line a", weights)),
     },
