@@ -84,6 +84,9 @@ describe('home view', () => {
   });
 
   it('lists the known facts and leaves the unknown out', () => {
+    expect(metaFacts(hunter({ class: 'hunter', spec: 'Beast Mastery' }))[0]).toBe(
+      'Level 34 Beast Mastery Hunter',
+    );
     expect(metaFacts(hunter())).toEqual(['Level 34 Beast Mastery Hunter', 'Alliance Dwarf', 'Item level 31']);
     expect(metaFacts(hunter({ item_level: undefined, race: undefined, faction: undefined }))).toEqual([
       'Level 34 Beast Mastery Hunter',

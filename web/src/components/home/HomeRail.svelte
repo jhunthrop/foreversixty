@@ -51,14 +51,8 @@
 <Section title={homeCopy.setUp} testid="home-set-up">
   <Checklist items={setUp.checks} testid="home-set-up-list" />
   {#if setUp.addonOptional}
-    <Row
-      title={homeCopy.addonOptional}
-      sub={homeCopy.addonOptionalSub}
-      href={homeHrefs.addon}
-      open
-      testid="home-addon-optional"
-    >
-      {#snippet trail()}<span class={LINK}>{homeCopy.addonOptionalLink} ›</span>{/snippet}
+    <Row title={homeCopy.addonOptional} sub={homeCopy.addonOptionalSub} open testid="home-addon-optional">
+      {#snippet foot()}<a class={LINK} href={homeHrefs.addon}>{homeCopy.addonOptionalLink} ›</a>{/snippet}
     </Row>
   {/if}
 </Section>

@@ -101,7 +101,7 @@ def example_plate() -> str:
 def how_to_start() -> str:
     return sec('How to start', Rows([
         Row('Sign in with Battle.net', 'Imports your characters with their level, gear and item level.', rank='1'),
-        Row('Install the addon (optional)', 'Rates every item in your bags with your spec&rsquo;s weights.', rank='2'),
+        Row('Install the addon and the companion', 'The addon rates every item in your bags; the companion uploads your logs as you play.', rank='2'),
     ], open_=True))
 
 
@@ -181,7 +181,7 @@ def logs_section(reports: dict) -> str:
 def setup_section(me: dict, char: dict) -> str:
     """Battle.net is the gear source (owner correction 2026-11-06); the addon is an optional extra, no status."""
     check = Checklist([('ok', 'Battle.net import', f"Imported {short_date(me['bnet_imported_at'])}", None)])
-    addon = Rows([Row('Addon (optional)', 'Rates every item in your bags with your weights.', trail='<span class="link">Get the addon &rsaquo;</span>')], open_=True)
+    addon = Rows([Row('Addon and companion (optional)', 'Rates every item in your bags with your weights, and uploads your logs as you play.', link=False, foot='<a class="link" href="#">Get the addon and companion &rsaquo;</a>')], open_=True)
     return sec('Set up', check + addon)
 
 
@@ -236,7 +236,7 @@ def state_new() -> str:
     rows = Rows([
         Row('Check again', 'Battle.net lists a character after you play it and log out.', trail='<button type="button" class="btn primary sm">Check again</button>', link=False),
         Row('Paste an addon export', 'Your gear and talents, straight from the game.'),
-        Row('Get the addon', 'Rates every item in your bags with your spec&rsquo;s weights.'),
+        Row('Get the addon and companion', 'The addon rates every item in your bags; the companion uploads your logs as you play.'),
     ], open_=True)
     return (head + summary('No character yet. Battle.net lists a character after you play it and log out.')
             + Page('ledger', sec('Get your character in', rows) + '<div class="gap-sec"></div>' + class_picker()))

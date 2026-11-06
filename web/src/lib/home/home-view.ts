@@ -35,7 +35,10 @@ export const homeCopy = {
       title: 'Sign in with Battle.net',
       sub: 'Imports your characters with their level, gear and item level.',
     },
-    { title: 'Install the addon (optional)', sub: "Rates every item in your bags with your spec's weights." },
+    {
+      title: 'Install the addon and the companion',
+      sub: 'The addon rates every item in your bags; the companion uploads your logs as you play.',
+    },
   ],
   firstRaids: (date: string) => `First raids ${date}`,
   answerLabel: (band: string) => `Upgrades at ${band}`,
@@ -73,9 +76,9 @@ export const homeCopy = {
   noGear: 'No gear yet',
   noGearSub: 'Sign in with Battle.net again to import your characters, or paste an addon export.',
   noGearFix: 'Get set up',
-  addonOptional: 'Addon (optional)',
-  addonOptionalSub: 'Rates every item in your bags with your weights.',
-  addonOptionalLink: 'Get the addon',
+  addonOptional: 'Addon and companion (optional)',
+  addonOptionalSub: 'Rates every item in your bags with your weights, and uploads your logs as you play.',
+  addonOptionalLink: 'Get the addon and companion',
   noCharacter: 'No character yet. Battle.net lists a character after you play it and log out.',
   signedInAs: (tag: string) => `Signed in as ${tag}`,
   getIn: 'Get your character in',
@@ -83,8 +86,8 @@ export const homeCopy = {
   checkAgainSub: 'Battle.net lists a character after you play it and log out.',
   paste: 'Paste an addon export',
   pasteSub: 'Your gear and talents, straight from the game.',
-  getAddon: 'Get the addon',
-  getAddonSub: "Rates every item in your bags with your spec's weights.",
+  getAddon: 'Get the addon and companion',
+  getAddonSub: 'The addon rates every item in your bags; the companion uploads your logs as you play.',
   openRaid: 'Open the raid',
   openPlanner: 'Open the planner',
 } as const;
@@ -119,7 +122,11 @@ export function shortDate(iso: string, locale = 'en-GB'): string {
 /** The head's one fact line: level, spec and class; faction and race; item level. Unknown facts
  *  are left out, never a placeholder. */
 export function metaFacts(character: MeCharacter): string[] {
-  const who = [character.spec, character.class].filter(Boolean).join(' ');
+  // The API may send the class in lower case ("hunter"); the page names it as a title.
+  const who = [character.spec, character.class]
+    .filter(Boolean)
+    .map((part) => titleCase(part ?? ''))
+    .join(' ');
   const level = character.level === undefined ? who : `Level ${character.level} ${who}`.trim();
   const faction = character.faction === undefined ? '' : capitalise(character.faction);
   const origin = [faction, character.race ?? ''].filter(Boolean).join(' ');
@@ -310,6 +317,10 @@ export function guildLinks(
   if (entry === undefined) return { guild: null, raid: null };
   const guild = guildHref(entry.region, entry.ruleset, entry.name);
   return { guild, raid: raidId === null ? guild : guildRaidHref(guild, raidId) };
+}
+
+function titleCase(words: string): string {
+  return words.split(' ').map(capitalise).join(' ');
 }
 
 function capitalise(word: string): string {

@@ -37,6 +37,7 @@ PRIM_CSS = '''
 .row .b{min-width:0}.row .ttl{font:700 15px/20px var(--font-body);color:var(--strong)}
 .row .sub{font-size:13px;line-height:18px;color:var(--muted)}
 .row .trail{display:flex;gap:12px;align-items:center;justify-self:end}
+.row .foot{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;padding-top:8px}
 a.row:hover,.row.hov{background:var(--hover)}
 .row.cur{background:#e5b9551a;box-shadow:inset 3px 0 0 var(--gold)}
 .row .rank{width:24px;text-align:right;font:700 15px/20px var(--font-body);font-variant-numeric:tabular-nums;color:var(--muted)}
@@ -103,7 +104,7 @@ def Field(label: str, grow: bool = False) -> str:
     return f'<span class="field{" grow" if grow else ""}">{label}</span>'
 
 
-def Row(title: str, sub: str = '', lead: str = '', trail: str = '', title_color: str = '', rank: str = '', link: bool = True, selected: bool = False) -> str:
+def Row(title: str, sub: str = '', lead: str = '', trail: str = '', title_color: str = '', rank: str = '', link: bool = True, selected: bool = False, foot: str = '') -> str:
     cls = 'row' + ('' if lead or rank else ' nolead') + (' cur' if selected else '')
     tag = 'a' if link else 'div'
     href = ' href="#"' if link else ''
@@ -111,7 +112,8 @@ def Row(title: str, sub: str = '', lead: str = '', trail: str = '', title_color:
     lead_html = (f'<span class="rank">{rank}</span>' if rank else '') + lead
     lead_cell = f'<span style="display:flex;gap:12px;align-items:center">{lead_html}</span>' if (lead or rank) else ''
     return (f'<{tag} class="{cls}"{href}>{lead_cell}<div class="b"><div class="ttl"{color}>{title}</div>' + (f'<div class="sub">{sub}</div>' if sub else '') + f'</div>'
-            + (f'<div class="trail">{trail}</div>' if trail else '<span></span>') + f'</{tag}>')
+            + (f'<div class="trail">{trail}</div>' if trail else '<span></span>')
+            + (f'<div class="foot">{foot}</div>' if foot else '') + f'</{tag}>')
 
 
 def Rows(rows: list[str], open_: bool = False) -> str:
