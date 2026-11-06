@@ -13,6 +13,8 @@ import {
   nudgeButtons,
   stubGuildCentre,
   undoButtons,
+  unawardedItem,
+  awardedItemId,
   type GuildCentreStub,
 } from './support/officer-tools';
 
@@ -45,8 +47,13 @@ for (const tab of ['loot', 'readiness'] as const) {
 
 test('Guild tier: every Award, Undo and Nudge is in place and disabled', async ({ page }) => {
   await openTab(page, 'loot', GUILD_TIER);
-  for (const controls of [awardButtons(page), undoButtons(page)]) {
-    expect(await controls.count()).toBeGreaterThan(0);
+  // The council's controls live on the picked drop: an open one carries Award, the awarded one Undo.
+  for (const [itemId, controls] of [
+    [unawardedItem().itemId, awardButtons(page)],
+    [awardedItemId(), undoButtons(page)],
+  ] as const) {
+    await page.getByTestId(`guild-loot-drop-${itemId}`).click();
+    await expect.poll(() => controls.count()).toBeGreaterThan(0);
     await expect(controls.first()).toBeDisabled();
     expect(await controls.evaluateAll((nodes) => nodes.every((n) => (n as HTMLButtonElement).disabled))).toBe(
       true,
@@ -64,6 +71,7 @@ test('Guild tier: every Award, Undo and Nudge is in place and disabled', async (
 test('Raid guild: no sentence and every control live', async ({ page }) => {
   await openTab(page, 'loot', { viewer: 'officer', officerTools: true, raidGuildTools: true });
   await expect(page.getByTestId('guild-loot-plan-gate')).toHaveCount(0);
+  await page.getByTestId(`guild-loot-drop-${unawardedItem().itemId}`).click();
   await expect(awardButtons(page).first()).toBeEnabled();
 });
 

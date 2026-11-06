@@ -46,7 +46,7 @@
     <h2 id="guild-loot-drops-head" class="text-strong text-[18px] leading-6 font-bold">{heading}</h2>
     <span class="text-small text-muted" data-testid="guild-loot-night-summary">{meta}</span>
   </div>
-  <Plate label={heading}>
+  <Plate>
     {#each rows as row (row.itemId)}
       <ItemRow
         item={{

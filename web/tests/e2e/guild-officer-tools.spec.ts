@@ -24,6 +24,7 @@ import {
   envelope,
   expectNoAxeViolations,
   nudgeButtons,
+  pickDrop,
   refuseAwards,
   stubAccountGuildRows,
   stubGuildCentre,
@@ -71,11 +72,23 @@ async function expectAllDisabled(controls: Locator, expected: number): Promise<v
   expect(new Set(described).size).toBe(1);
 }
 
+/** The council's Award buttons sit on the picked open drop, its one Undo on the awarded drop. */
+async function lootCounts(page: Page, kind: 'award' | 'undo'): Promise<[number, number]> {
+  await pickDrop(page, kind === 'award' ? unawardedItem().itemId : awardedItemId());
+  return counts(kind === 'award' ? awardButtons(page) : undoButtons(page));
+}
+
+/** As expectAllDisabled, on the drop that carries the family. */
+async function expectLootDisabled(page: Page, kind: 'award' | 'undo', expected: number): Promise<void> {
+  await pickDrop(page, kind === 'award' ? unawardedItem().itemId : awardedItemId());
+  await expectAllDisabled(kind === 'award' ? awardButtons(page) : undoButtons(page), expected);
+}
+
 /** What the officer with tools on sees enabled (state 1): the baseline the disabled counts match. */
 async function enabledCounts(page: Page): Promise<{ award: number; undo: number; nudge: number }> {
   await openTab(page, 'loot', { viewer: 'officer', officerTools: true });
-  const [award, awardEnabled] = await counts(awardButtons(page));
-  const [undo, undoEnabled] = await counts(undoButtons(page));
+  const [award, awardEnabled] = await lootCounts(page, 'award');
+  const [undo, undoEnabled] = await lootCounts(page, 'undo');
   expect(award).toBe(awardEnabled);
   expect(undo).toBe(undoEnabled);
   await page.getByTestId('guild-tab-readiness').click();
@@ -107,7 +120,7 @@ test.describe('officer-read-only: every control in place and disabled (§3.4)', 
   test('an older API without the field keeps the tools on', async ({ page }) => {
     await openTab(page, 'loot', { viewer: 'officer' });
     await expect(gate(page, 'loot')).toHaveCount(0);
-    expect((await counts(awardButtons(page)))[1]).toBeGreaterThan(0);
+    expect((await lootCounts(page, 'award'))[1]).toBeGreaterThan(0);
   });
 
   test('states 2 and 7: the counts equal state 1, each disabled and described by the sentence', async ({
@@ -122,9 +135,13 @@ test.describe('officer-read-only: every control in place and disabled (§3.4)', 
     await expect(gate(page, 'loot')).toHaveText(SENTENCE);
     // Loot spec §3.1: the Read-only label is for members; the gate sentence covers the officer.
     await expect(page.getByTestId('guild-loot-tab').getByText(guildGateCopy.readOnly)).toHaveCount(0);
-    await expectAllDisabled(awardButtons(page), expected.award);
-    await expectAllDisabled(undoButtons(page), expected.undo);
-    await expect(awardButtons(page).first()).toHaveAttribute('aria-describedby', 'officer-tools-gate-loot');
+    await expectLootDisabled(page, 'undo', expected.undo);
+    await expectLootDisabled(page, 'award', expected.award);
+    // The Award is a native disabled button; the votes beside it name the sentence.
+    await expect(page.getByTestId('guild-loot-votes-yes').first()).toHaveAttribute(
+      'aria-describedby',
+      'officer-tools-gate-loot',
+    );
 
     await page.getByTestId('guild-tab-readiness').click();
     await expect(gate(page, 'readiness')).toHaveText(SENTENCE);
@@ -152,10 +169,11 @@ test.describe('officer-read-only: every control in place and disabled (§3.4)', 
       return route.fulfill(envelope({ award_id: 1, status: 'awarded' }));
     });
     await openTab(page, 'loot', { viewer: 'officer', officerTools: false });
-    const { itemId, characterKey } = unawardedItem();
-    await page.getByTestId(`guild-loot-award-${itemId}-${characterKey}`).click({ force: true });
-    await page.getByTestId(`guild-loot-row-undo-${awardedItemId()}`).click({ force: true });
-    await expect(page.locator('[data-testid^="guild-loot-award-confirm-"]')).toHaveCount(0);
+    await pickDrop(page, unawardedItem().itemId);
+    await awardButtons(page).first().click({ force: true });
+    await expect(page.getByTestId('guild-loot-award-confirm')).toHaveCount(0);
+    await pickDrop(page, awardedItemId());
+    await undoButtons(page).first().click({ force: true });
     expect(posts).toEqual([]);
   });
 
