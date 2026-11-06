@@ -113,7 +113,7 @@
   const nextBand = $derived(data.bands[data.bands.indexOf(state.band) + 1]);
 
   /** Fits "Night Elf"; the rare long race name ("High Order Skyborne") truncates in the field only. */
-  const RACE_FIELD_PX = 120;
+  const RACE_FIELD_PX = 112;
 
   const groupsBar = $derived.by((): ControlGroup[] => {
     const presets = context.presetsFor(state.faction, state.band);

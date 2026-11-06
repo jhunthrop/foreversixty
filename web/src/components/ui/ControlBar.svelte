@@ -247,6 +247,11 @@
       flex: none;
       height: 40px;
     }
+    /* With its labels hidden, a bar's groups sit closer: the gap was there to part a label from
+       the group before it. */
+    .ui-cbar[data-labels-from='1920'] .ui-cbar-groups {
+      column-gap: 12px;
+    }
     .ui-cbar-select[data-fixed-width='true'] {
       width: var(--cbar-field-w);
     }
@@ -265,6 +270,9 @@
   @media (min-width: 1920px) {
     .ui-cbar[data-labels-from='1920'] .ui-cbar-label {
       display: block;
+    }
+    .ui-cbar[data-labels-from='1920'] .ui-cbar-groups {
+      column-gap: 20px;
     }
   }
 </style>
