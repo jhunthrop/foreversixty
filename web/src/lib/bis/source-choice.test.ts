@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { BisBandModel } from './page-model';
-import { defaultRuleLine, setFigureFor, sourceChoiceFor, sourcesFieldLabel } from './source-choice';
+import { defaultRuleLine, setFigureFor, sourceChoiceFor, sourcesButtonLabel, sourcesFieldLabel } from './source-choice';
 import { SOURCE_FILTER_KINDS } from './source-filter';
 
 const ALL = SOURCE_FILTER_KINDS;
@@ -65,6 +65,12 @@ describe('labels', () => {
     expect(sourcesFieldLabel(ALL, 60)).toBe('All sources');
     expect(sourcesFieldLabel(['dungeon'], 20)).toBe('Dungeon only');
     expect(sourcesFieldLabel(['dungeon', 'quest'], 20)).toBe('2 of 8 sources');
+  });
+
+  it('counts the kinds on for the compact button', () => {
+    expect(sourcesButtonLabel(ALL)).toBe('All sources');
+    expect(sourcesButtonLabel(NO_REP)).toBe('Sources (7)');
+    expect(sourcesButtonLabel(['dungeon'])).toBe('Sources (1)');
   });
 
   it('states the default rule only for the leveling default', () => {

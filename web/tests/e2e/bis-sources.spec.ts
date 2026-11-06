@@ -38,6 +38,33 @@ test('Dungeon only re-picks every slot from dungeons, hides none, and labels the
   await expect(page.getByTestId('bis-answer-figure')).toContainText(/Set: Dungeon only|Best set, all sources/);
 });
 
+test('from 768 the Sources button opens a checklist popover; Escape closes it and focus returns', async ({
+  page,
+  isMobile,
+}) => {
+  test.skip(isMobile, 'the phone keeps the chips in the expanded control stack');
+  await openBis(page, PAGE);
+  const button = page.getByTestId('bis-sources-button');
+  await expect(button).toHaveText('All sources');
+  await button.click();
+  await expect(button).toHaveAttribute('aria-expanded', 'true');
+  const popover = page.getByTestId('bis-sources-popover');
+  await expect(popover).toBeVisible();
+  await expect(popover.getByRole('checkbox')).toHaveCount(8);
+  await expect(popover).toContainText('Counts are slots with a ranked option');
+
+  const quest = page.getByTestId('bis-source-check-quest').getByRole('checkbox');
+  await quest.uncheck();
+  await expect(page).toHaveURL(/[?&]sources=/);
+  await expect(button).toHaveText('Sources (7)');
+  await expect(popover).toBeVisible();
+
+  await page.keyboard.press('Escape');
+  await expect(popover).toBeHidden();
+  await expect(button).toHaveAttribute('aria-expanded', 'false');
+  await expect(button).toBeFocused();
+});
+
 test.describe('on a phone', () => {
   test.use({ viewport: { width: 390, height: 844 } });
 

@@ -53,6 +53,11 @@ export function sourcesFieldLabel(on: readonly SourceFilterKind[], band: number)
   return `${on.length} of ${SOURCE_FILTER_KINDS.length} sources`;
 }
 
+/** The control bar's compact Sources button: the count of kinds on, or "All sources". */
+export function sourcesButtonLabel(on: readonly SourceFilterKind[]): string {
+  return on.length === SOURCE_FILTER_KINDS.length ? 'All sources' : `Sources (${on.length})`;
+}
+
 /** The words inside "Re-picked (…)". */
 export function choiceWords(on: readonly SourceFilterKind[], band: number): string {
   if (isLevelingDefault(on, band)) return 'no reputation above Friendly';
