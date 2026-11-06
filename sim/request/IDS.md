@@ -183,6 +183,10 @@ lets the two share a weapon, and the engine refuses anything else there.
 | `fire_toasted_bun` | Consumes.hit_consumable |
 | `flask_of_chromatic_resistance` | Consumes.flask |
 | `flask_of_distilled_wisdom` | Consumes.flask |
+| `flask_of_natural_accuracy` | Consumes.flask |
+| `flask_of_natural_aggression` | Consumes.flask |
+| `flask_of_natural_precision` | Consumes.flask |
+| `flask_of_natural_swiftness` | Consumes.flask |
 | `flask_of_supreme_power` | Consumes.flask |
 | `flask_of_the_titans` | Consumes.flask |
 | `food_baked_salmon` | Consumes.food |
