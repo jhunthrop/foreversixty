@@ -134,7 +134,7 @@
 {#snippet header()}
   <!-- One block, so the shell's gap sits under the header, not between the back link and it. -->
   <div>
-    <div class="px-[var(--page-inset)]">
+    <div>
       <a
         href={`${guildPath}#raids`}
         class="text-muted inline-flex min-h-11 items-center text-[13px] underline"
