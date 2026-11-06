@@ -33,7 +33,7 @@
       }
     },
     {
-      "notes": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29, at 33, and at 46 and 47, and to 49 on most Horde characters. Most of its hit is your weapon, so an older rank does nearly the same damage for less mana, and the mana goes into traps: keep rank 3 at 26 to 29 (rank 2 for most Horde hunters at 26 and 27, and a Tauren at 28), rank 1 at 33 while only the first point of Resourcefulness is in, and rank 5 at 46 and 47, when the new Immolation Trap rank costs more. At 48 move to rank 7; an Orc, Troll or Tauren keeps rank 5 through 49, a Windshaper Skyborne at 48. It replaces your next melee swing and does not use the global cooldown, so keep it queued; once Resourcefulness is in at 33 and 34 it costs 60% less, so never hold it back for mana after that.",
+      "notes": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29, at 33, and at 46 and 47, and to 49 on most Horde characters. Most of its hit is your weapon, so an older rank does nearly the same damage for less mana, and the mana goes into traps: keep rank 3 at 26 to 29 (rank 2 for most Horde hunters at 26 and 27, and a Tauren at 28), rank 1 at 33 while only the first point of Resourcefulness is in, and rank 5 at 46 and 47, when the Immolation Trap rank you train at 46 costs more. At 48 move to rank 7; an Orc, Troll or Tauren keeps rank 5 through 49, a Windshaper Skyborne at 48. It replaces your next melee swing and does not use the global cooldown, so keep it queued; once Resourcefulness is in at 33 and 34 it costs 60% less, so never hold it back for mana after that.",
       "action": {
         "castSpell": {
           "spellId": {

@@ -11,7 +11,7 @@ import { fileURLToPath } from 'node:url';
 import { canApplyBetween, knownAtFor } from './apl-level-gate';
 import { loadAplSteps, spellFamilyOf, type AplStep } from './apl-steps';
 import { collapseRuns, type CollapsedLine, type StepLine } from './rotation-collapse';
-import { aplGates, type AplGate } from './apl-gates';
+import { aplGates, endsAtTalentRank, type AplGate } from './apl-gates';
 import { buildIconExists, spellIcons } from '../data/build-files';
 import { isRealIcon } from '../icons/placeholder';
 
@@ -156,7 +156,12 @@ export function alignNoteRank(note: string, name: string, bandRank: number | und
  *  The published lines are nightly-owned and trail a curated change by up to a day. A spell
  *  that only one side casts at all (an ability the curated list just dropped or added) is
  *  set aside: it cannot shift another spell's words, so the rest must still match one to
- *  one, in order, ability by ability. A set-aside line keeps its note and gets no words. */
+ *  one, in order, ability by ability. A set-aside line keeps its note and gets no words.
+ *
+ *  The pipeline also leaves out a step whose talent-rank gate the published build rules out
+ *  at the band (`pipeline.addonrotation._talents_allow`: Arcane's Missiles until Missile
+ *  Barrage rank 2 is gone at 60), so a step that ends at a talent rank (`endsAtTalentRank`)
+ *  may have no line: it is skipped. Any other step without its line still breaks the match. */
 function stepsAlignedWith(
   entry: RotationEntry,
   spec: string,
@@ -174,19 +179,23 @@ function stepsAlignedWith(
   const stepSpells = new Set(steps.map(stepKey));
   const lineSpells = new Set(entry.lines.map((line) => lineKey(line.spell_id)));
   const sharedSteps = steps.filter((step) => lineSpells.has(stepKey(step)));
-  const sharedLineCount = entry.lines.filter((line) => stepSpells.has(lineKey(line.spell_id))).length;
-  if (sharedSteps.length !== sharedLineCount) return undefined;
+  const skippable = (step: AplStep): boolean => endsAtTalentRank(step.condition);
   const aligned: (AplStep | null)[] = [];
+  let next = 0;
   for (const line of entry.lines) {
-    if (!stepSpells.has(lineKey(line.spell_id))) {
+    const key = lineKey(line.spell_id);
+    if (!stepSpells.has(key)) {
       aligned.push(null);
       continue;
     }
-    const step = sharedSteps[aligned.filter((slot) => slot !== null).length];
-    if (stepKey(step) !== lineKey(line.spell_id)) return undefined;
+    while (next < sharedSteps.length && stepKey(sharedSteps[next]!) !== key && skippable(sharedSteps[next]!))
+      next += 1;
+    const step = sharedSteps[next];
+    if (step === undefined || stepKey(step) !== key) return undefined;
     aligned.push(step);
+    next += 1;
   }
-  return aligned;
+  return sharedSteps.slice(next).every(skippable) ? aligned : undefined;
 }
 
 /** Every row of `entry`, ready to render -- reads `spellranks.json` once per line rather

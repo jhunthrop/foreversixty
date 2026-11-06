@@ -3,7 +3,14 @@ import { readdirSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
-import { CONDITION_NODES, aplGates, conditionNodeNames, gateWords, type AplGate } from './apl-gates';
+import {
+  CONDITION_NODES,
+  aplGates,
+  conditionNodeNames,
+  endsAtTalentRank,
+  gateWords,
+  type AplGate,
+} from './apl-gates';
 
 const APL_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../../data/curated/apl');
 
@@ -103,5 +110,22 @@ describe('aplGates', () => {
     expect(gateWords({ kind: 'active', spellId: 7, positive: true, onTarget: false }, 'Heating Up')).toBe(
       'while Heating Up is up',
     );
+  });
+});
+
+describe('endsAtTalentRank', () => {
+  const rank2 = { auraIsKnown: { auraId: { spellId: 400588, tag: 2 } } };
+  const untagged = { auraIsKnown: { auraId: { spellId: 400588 } } };
+
+  it('is true for a negated rank-tagged known gate, alone or under a top-level and', () => {
+    expect(endsAtTalentRank({ not: { val: rank2 } })).toBe(true);
+    expect(endsAtTalentRank({ and: { vals: [{ spellIsReady: {} }, { not: { val: rank2 } }] } })).toBe(true);
+  });
+
+  it('is false for an untagged negation, a positive rank gate or no condition', () => {
+    expect(endsAtTalentRank({ not: { val: untagged } })).toBe(false);
+    expect(endsAtTalentRank(rank2)).toBe(false);
+    expect(endsAtTalentRank(undefined)).toBe(false);
+    expect(endsAtTalentRank({ or: { vals: [{ not: { val: rank2 } }] } })).toBe(false);
   });
 });
