@@ -78,6 +78,16 @@ def Button(label: str, primary: bool = False, small: bool = False) -> str:
     return _Button(label, primary, small).replace('<a ', '<button type="button" ', 1).replace(' href="#"', '', 1).replace('</a>', '</button>')
 
 
+def Form(label: str, fields: list[tuple[str, str, bool]], submit: str) -> str:
+    """ws_prims.FormRow as the build renders it (ui/FormRow, ui/Field): a named <form> whose fields are text inputs."""
+    return FormRow(fields, submit).replace('<div class="formrow">', f'<form class="formrow" aria-label="{label}">', 1)[:-len('</div>')] + '</form>'
+
+
+def Input(placeholder: str, label: str, grow: bool = False) -> str:
+    """ws_prims.Field as a real <input> (the build's ui/Field): the parity gate counts a textbox."""
+    return f'<input class="field{" grow" if grow else ""}" placeholder="{placeholder}" aria-label="{label}">'
+
+
 def gicon(name, size: int = 28, q=None) -> str:
     """A real game icon from the build's icon set; the dark socket (never an invented icon) when the data has none."""
     cls = f'ic q{q}' if q else 'ic'
@@ -199,6 +209,7 @@ FIGHT_LEN = f"{clock(FIGHT['duration_sec'])} &plusmn; {FIGHT['variation'] * 100:
 TABLE_HEADS = [('', False), ('Ability', False), ('Share of damage', False), ('DPS', True), ('Share', True), ('Casts', True),
                ('Avg hit', True), ('Crit', True)]
 N_FIGS = len(TABLE_HEADS) - 3
+SORTABLE = tuple(t for t, _ in TABLE_HEADS[3:])   # the shipped table sorts by every figure column (heads are buttons)
 MULTI = re.compile(r'up to (\d+) enemies')   # a tooltip that hits several enemies earns "hits a cast" on its row
 
 
@@ -251,12 +262,12 @@ def ability_rows(state: str = '') -> tuple[list[str], str]:
 
 
 def ability_table(state: str = '') -> str:
-    return StatTable(TABLE_HEADS, ability_rows(state)[0], N_FIGS, sort='DPS')
+    return StatTable(TABLE_HEADS, ability_rows(state)[0], N_FIGS, sort='DPS', sortable=SORTABLE)
 
 
 def table_skeleton(n: int = 11) -> str:
     row = StatRow(Skeleton(28, 28), Skeleton(160, 16), Skeleton(200, 12), [Skeleton(56, 16)] + [Skeleton(44, 14)] * (N_FIGS - 1), Skeleton(120, 8))
-    return StatTable(TABLE_HEADS, [row] * n, N_FIGS, sort='DPS')
+    return StatTable(TABLE_HEADS, [row] * n, N_FIGS, sort='DPS', sortable=SORTABLE)
 
 
 # ------------------------------------------------------------------------------------------------ the rail
@@ -472,18 +483,20 @@ def timeline_section(swings_and_ticks: bool = False) -> str:
     grid = ''.join(f'<line x1="{X(t * 1000):.1f}" x2="{X(t * 1000):.1f}" y1="0" y2="{y}" stroke="#1c2230" vector-effect="non-scaling-stroke"/>' for t in secs)
     wash = f'<rect x="{X(exe):.1f}" y="0" width="{1000 - X(exe):.1f}" height="{y}" fill="#d66e2812"/>' if exe else ''
     pull = f'<line x1="{X(0):.1f}" x2="{X(0):.1f}" y1="0" y2="{y}" stroke="#e5b955" stroke-dasharray="3 3" vector-effect="non-scaling-stroke"/>'
-    svg = f'<svg viewBox="0 0 1000 {y}" preserveAspectRatio="none" style="height:{y}px">{wash}{grid}{pull}{"".join(rows)}</svg>'
+    svg = f'<svg viewBox="0 0 1000 {y}" preserveAspectRatio="none" aria-hidden="true" style="height:{y}px">{wash}{grid}{pull}{"".join(rows)}</svg>'
     ticks = ''.join(f'<span class="{"pull" if t == 0 else ""}" style="left:{X(t * 1000) / 10:.2f}%">{"Pull" if t == 0 else clock(t)}</span>' for t in secs)
     washlab = f'<span class="wash" style="left:{X(exe) / 10:.2f}%">EXECUTE PHASE</span>' if exe else ''
     tl = (f'<div class="tl"><div class="lbl"><span style="height:30px"></span>{"".join(labels)}</div>'
-          f'<div class="plot"><div class="axis">{ticks}</div>{washlab}{svg}</div></div>')
+          f'<div class="plot" role="application" aria-label="Fight timeline, {clock(T1 / 1000)} long. Arrow keys move between casts.">'
+          f'<div class="axis">{ticks}</div>{washlab}{svg}</div></div>')
     legend = [('#c79c6e', 'Damage'), ('#f5d27a', 'Crit'), ('#9a9484', 'Missed'), ('#e9e4d8', 'Cooldown'), ('#e9e4d859', 'On you'), ('#8a6a2ac7', 'On the target'), ('#e5b955', 'Rage')]
     tools = (f'<div class="tl-tools">{seg([("Whole fight", True, None, ""), ("Close up", False, None, "")], "sm")}'
              f'<span class="t-small">Swings and ticks</span>{seg([("Off", not swings_and_ticks, None, ""), ("On", swings_and_ticks, None, "")], "sm")}</div>')
     n = sum(1 for e in ev if e['action'] in cast_keys and e['action'] not in HANDS and e['action'] not in ticking and parse(e['action'])[1] not in OFF_HAND_SPELLS)
     hidden = ' and '.join(['white swings'] + [display_name(k) + ' ticks' for k in sorted(ticking)])
     foot = (f'<p class="t-small tl-foot">{n} casts in this run. '
-            + ('' if swings_and_ticks else f'Turn Swings and ticks on to add {hidden} as their own lanes. ') + f'{Link("List every cast &rsaquo;")}</p>')
+            + ('' if swings_and_ticks else f'Turn Swings and ticks on to add {hidden} as their own lanes. ')
+            + '<button type="button" class="tl-list" aria-expanded="false">List every cast &rsaquo;</button></p><p class="sr" aria-live="polite"></p>')
     return Section('Timeline', tools + Lanes(tl, legend) + foot, meta=f'The median run &middot; {clock(T1 / 1000)} long')
 
 
@@ -615,10 +628,11 @@ def run_bar(state: str = 'ready', open_m: bool = False) -> str:
     buffs = seg([('Raid', True, None, ''), ('None', False, None, ''), ('Custom', False, None, '')])
     summary = (f'<span class="sum-t"><b>{FIGHT_STYLE} {clock(FIGHT["duration_sec"])}</b> &middot; Raid</span>'
                f'<span class="run-m">{btn}</span>')
-    end = f'<span class="bar-end">{Link("More settings")}{btn}</span>'
+    more = '<button type="button" class="link">More settings</button>'   # it opens the sheet: a button, as the build
+    end = f'<span class="bar-end">{more}{btn}</span>'
     bar = control_bar([('Fight', sel(FIGHT_STYLE)), ('Length', sel(clock(FIGHT['duration_sec']))), ('Targets', sel(str(FIGHT['targets']))), ('Buffs', buffs),
                        ('Precision', sel(PRECISION_LABEL))], summary, end=end, open_m=open_m)
-    bar = bar.replace('</div></details>', f'<span class="more-m">{Link("More settings")}</span></div></details>', 1)
+    bar = bar.replace('</div></details>', f'<span class="more-m">{more}</span></div></details>', 1)
     return bar.replace('<div class="bar-d">', '<div class="bar-d is-run">', 1) if off else bar
 
 
@@ -698,6 +712,9 @@ PAGE_CSS = '''<style>
 .rail .figs{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:14px 16px}
 .rot-l{padding:16px 0 4px}.dim{opacity:.5}.pre-t{width:40px;font-size:13px;color:var(--muted)}.cnt{font-size:13px;color:var(--muted);font-weight:600;white-space:nowrap}
 .rk-s{font-size:13px;color:var(--muted);font-weight:400}
+.st-h .st-sort{all:unset;cursor:pointer}
+.tl-list{all:unset;cursor:pointer;color:var(--gold);font-weight:600}.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.lanes ul.lg{list-style:none;margin:0}
 .rail .rows.open .row{align-items:start}.rail .row .sub{color:var(--text);font-size:13px;line-height:20px}
 .two{display:grid;gap:var(--gap);grid-template-columns:minmax(0,1fr);padding-top:8px}@media(min-width:1024px){.two{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .layout-split .main>section>.figs{padding-top:12px}
@@ -705,6 +722,7 @@ PAGE_CSS = '''<style>
 .gear-stats{display:flex;flex-direction:column;gap:8px;padding-top:16px}.gear-foot{display:flex;justify-content:space-between;gap:8px 16px;flex-wrap:wrap;padding-top:12px}
 .empty-open{padding:12px 0;color:var(--muted);font-size:14px}
 .btn.is-off{opacity:.45;pointer-events:none}
+input.field{font:400 14px/20px var(--font-body);color:var(--strong)}input.field::placeholder{color:var(--muted)}
 .bar-m summary{gap:8px}.bar-m summary>span:first-child{display:contents}.bar-m summary .sum-t{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.bar-m summary .chg{order:2;flex:none;margin-left:0}.bar-m summary .run-m{order:3;flex:none}.bar-m summary .run-m .btn{height:36px;padding:0 12px;font-size:12px}
 .paste{display:flex;flex-direction:column;gap:12px;padding:16px}
 .way{display:flex;flex-direction:column;gap:10px;padding:16px 0}
@@ -723,7 +741,7 @@ def regions(html: str) -> str:
     """The one region ws_prims leaves to the page: `summary` (Worth knowing, the Notice lines under the bar). Every other region
     (head, head-title, head-meta, head-answer, controls, plate, slots, section-<slug>) is emitted by the primitives themselves,
     once, as the built ui/ components emit it (design/parity.md)."""
-    return html.replace('<div class="pc"><p class="notice', '<div class="pc" data-region="summary"><p class="notice', 1)
+    return html.replace('<div class="pc"><p class="notice', '<div class="pc"><p data-region="summary" class="notice', 1)
 
 
 NOTE = (f'Simulator mock (design/specs/2026-11-06-sim.md), built only from ws_prims. Run: web/src/fixtures/sim/result-full.json '
@@ -739,11 +757,11 @@ def finish(title: str, body: str, who) -> str:
 def landing_out() -> str:
     head = PageHeader('Simulator', meta=['Your character&rsquo;s DPS, simmed in your browser. Damage specs only; nothing is uploaded until you save.'],
                       tabs=TabStrip(TOOLS, 'Quick sim'))
-    paste = Plate('<div class="paste">' + FormRow([('Addon export or build code', Field('FS1:&hellip;', grow=True), True)], Button('Run', primary=True))
-                  + f'<p class="t-small">In game, type /fs copy, press Ctrl+C, then paste it here. {Link("Get set up &rsaquo;")}</p></div>')
+    paste = Plate('<div class="paste">' + Form('Addon export or build code', [('Addon export or build code', Input('FS1:&hellip;', 'Addon export or build code', grow=True), True)], Button('Run', primary=True))
+                  + f'<p class="t-small">In game, type /fs copy, press Ctrl+C, then paste it here. {Link("Get set up &rsaquo;")}</p></div>', label='Sim your character')
     ways = Rows([Row('Your characters', 'Sign in with Battle.net to find your characters, with their gear and talents ready to sim.', trail=Button('Sign in with Battle.net'), link=False),
-                 Row('From a build', 'A planner link, saved or not, or a saved build id.', trail=FormRow([('', Field('foreversixty.gg/b/&hellip;'), False)], Button('Load')), link=False),
-                 Row('From a logged fight', 'A report link, or open a fight from a report and choose Sim this fight.', trail=FormRow([('', Field('foreversixty.gg/reports/&hellip;?fight=2'), False)], Button('Load')), link=False)], open_=True)
+                 Row('From a build', 'A planner link, saved or not, or a saved build id.', trail=Form('From a build', [('', Input('foreversixty.gg/b/&hellip;', 'From a build'), False)], Button('Load')), link=False),
+                 Row('From a logged fight', 'A report link, or open a fight from a report and choose Sim this fight.', trail=Form('From a logged fight', [('', Input('foreversixty.gg/reports/&hellip;?fight=2', 'From a logged fight'), False)], Button('Load')), link=False)], open_=True)
     main = Section('Sim your character', paste) + Section('Other ways in', ways)
     rows = []
     for c in CLASSES:

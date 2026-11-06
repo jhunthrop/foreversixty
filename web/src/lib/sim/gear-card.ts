@@ -39,11 +39,22 @@ export function gearSlots({ gear, items, failed, enchants }: SlotSources): Paper
   });
 }
 
-/** "17 of 17 slots · no enchants". Counts every enchanted slot, named by the client or not. */
-export function gearMeta(gear: readonly GearSlot[]): string {
+/** The worn items' mean item level, over the items the items file knows; null before it loads. */
+export function averageItemLevel(gear: readonly GearSlot[], items: ReadonlyMap<number, Item>): number | null {
+  const levels = gear.flatMap((row) => {
+    const item = row.item_id > 0 ? items.get(row.item_id) : undefined;
+    return item === undefined ? [] : [item.item_level];
+  });
+  return levels.length === 0 ? null : levels.reduce((sum, level) => sum + level, 0) / levels.length;
+}
+
+/** "17 of 17 slots · no enchants · item level 59.9". Counts every enchanted slot, named by the
+ *  client or not; the item level joins once the items file has loaded. */
+export function gearMeta(gear: readonly GearSlot[], itemLevel: number | null = null): string {
   const worn = gear.filter((row) => row.item_id > 0);
   const enchanted = worn.filter((row) => (row.enchant ?? 0) > 0).length;
-  return copy.meta(worn.length, SLOTS.length, enchanted);
+  const counts = copy.meta(worn.length, SLOTS.length, enchanted);
+  return itemLevel === null ? counts : `${counts} · ${copy.itemLevel(oneDecimal(itemLevel))}`;
 }
 
 export interface SetLine {

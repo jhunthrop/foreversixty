@@ -46,8 +46,10 @@
   {#if label}<span class="text-label tracking-label text-muted font-bold uppercase">{label}</span>{/if}
   <span class={['font-bold tabular-nums', SIZE[size], TONE_TEXT[tone]]}
     >{value}{#if unit}<span
-        class={['text-muted font-semibold tracking-normal', size === 'xl' ? 'ml-2 text-[18px]' : 'ml-1 text-[13px]']}
-        >{unit}</span
+        class={[
+          'text-muted font-semibold tracking-normal',
+          size === 'xl' ? 'ml-2 text-[18px]' : 'ml-1 text-[13px]',
+        ]}>{unit}</span
       >{/if}</span
   >
   {#if caption}<span class="text-muted text-[12px] leading-4">{caption}</span>{/if}

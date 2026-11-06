@@ -93,7 +93,8 @@ async function orEmpty<T>(load: Promise<T>, empty: T): Promise<T> {
 
 /** The build's tables for this result's class. */
 export async function loadVisualTables(
-  result: SimResult,
+  /** Only the request is read (the class and the worn weapons), so a page before its run can ask. */
+  result: Pick<SimResult, 'request'>,
   build: string = activeBuild.build,
 ): Promise<VisualTables> {
   const classSlug = result.request.character.class;

@@ -7,6 +7,7 @@
 <script lang="ts">
   import type { BuffNames } from '../../lib/sim/buff-names';
   import { simPageCopy as copy } from '../../lib/sim/page-copy';
+  import { LANE_ITERATION_CEILING } from '../../lib/sim/precision';
   import type { RequestValidation } from '../../lib/sim/engine';
   import {
     TARGET_LEVELS,
@@ -23,6 +24,7 @@
   import { fightStyle } from '../../lib/sim/styles';
   import type { SimRequest } from '../../lib/sim/types';
   import Button from '../ui/Button.svelte';
+  import Facts from '../ui/Facts.svelte';
   import Segmented from '../ui/Segmented.svelte';
   import Select from '../ui/Select.svelte';
   import Sheet from '../ui/Sheet.svelte';
@@ -42,6 +44,8 @@
     disabled,
     notifier = false,
     notifyWanted = false,
+    premium = false,
+    onserver,
     onclose,
     onchange,
     onnotify,
@@ -62,6 +66,9 @@
     /** The browser can notify (a payer's server runs finish while the tab is away). */
     notifier?: boolean;
     notifyWanted?: boolean;
+    /** A payer: this request on our servers (the server lane), from here. */
+    premium?: boolean;
+    onserver?: () => void;
     onclose: () => void;
     onchange: (next: SimSettings) => void;
     onnotify?: (wanted: boolean) => void;
@@ -87,9 +94,8 @@
 </script>
 
 <Sheet {open} title={copy.more.title} closeLabel={copy.more.close} {onclose} testid="sim-more-settings">
-  <dl class="sim-more-facts">
-    <dt>{copy.more.execute}</dt>
-    <dd>
+  {#snippet executeControl()}
+    <span class="inline-flex flex-col items-end gap-1">
       <Segmented
         options={[
           { value: 'on', label: copy.more.on },
@@ -102,10 +108,10 @@
         testid="sim-execute"
         onChange={(value) => onchange(withExecutePhase(settings, value === 'on'))}
       />
-      {#if executeOn}<small>{copy.more.executeSub(executePct)}</small>{/if}
-    </dd>
-    <dt>{copy.more.target}</dt>
-    <dd>
+    </span>
+  {/snippet}
+  {#snippet targetControl()}
+    <span class="inline-flex justify-end">
       <Select
         id="sim-target-level"
         label={copy.more.target}
@@ -121,13 +127,28 @@
         onchange={(event) =>
           onchange(withTargetLevel(settings, Number((event.currentTarget as HTMLSelectElement).value)))}
       />
-      {#if TARGET_ARMOR_BY_LEVEL[targetLevel] !== undefined}<small
-          >{copy.more.armorSub(TARGET_ARMOR_BY_LEVEL[targetLevel].toLocaleString('en-US'))}</small
-        >{/if}
-    </dd>
-    <dt>Rotation</dt>
-    <dd>The {specDisplayName(spec)} rotation</dd>
-  </dl>
+    </span>
+  {/snippet}
+  <Facts
+    items={[
+      {
+        id: 'execute',
+        label: copy.more.execute,
+        content: executeControl,
+        sub: executeOn ? copy.more.executeSub(executePct) : undefined,
+      },
+      {
+        id: 'target',
+        label: copy.more.target,
+        content: targetControl,
+        sub:
+          TARGET_ARMOR_BY_LEVEL[targetLevel] === undefined
+            ? undefined
+            : copy.more.armorSub(TARGET_ARMOR_BY_LEVEL[targetLevel].toLocaleString('en-US')),
+      },
+      { id: 'rotation', label: copy.more.rotation, value: copy.more.rotationValue(specDisplayName(spec)) },
+    ]}
+  />
 
   {#if settings.preset === 'custom'}
     <div class="pt-4">
@@ -163,42 +184,17 @@
     </div>
   {/if}
 
+  {#if premium && onserver}
+    <div class="flex items-center justify-between gap-4 pt-5">
+      <span class="text-text text-[14px]"
+        >{copy.more.serverLine(LANE_ITERATION_CEILING.server.toLocaleString('en-US'))}</span
+      >
+      <Button size="sm" {disabled} onclick={onserver} testid="sim-server-run">{copy.bar.runOnServers}</Button>
+    </div>
+  {/if}
+
   {#snippet foot()}
     <Button {disabled} onclick={backToPreset} testid="sim-more-reset">{copy.more.backToPreset}</Button>
     <Button tone="primary" onclick={onclose} testid="sim-more-done">{copy.more.done}</Button>
   {/snippet}
 </Sheet>
-
-<style>
-  .sim-more-facts {
-    display: grid;
-    grid-template-columns: minmax(0, auto) minmax(0, 1fr);
-    margin: 0;
-  }
-  .sim-more-facts dt,
-  .sim-more-facts dd {
-    padding: 10px 0;
-    border-bottom: 1px solid var(--color-line-soft);
-    font-size: 14px;
-    line-height: 20px;
-    margin: 0;
-  }
-  .sim-more-facts dt {
-    color: var(--color-muted);
-    padding-right: 16px;
-    align-self: center;
-  }
-  .sim-more-facts dd {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 4px;
-    color: var(--color-strong);
-    font-weight: 600;
-  }
-  .sim-more-facts dd small {
-    font-weight: 400;
-    color: var(--color-muted);
-    font-size: 13px;
-  }
-</style>

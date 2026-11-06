@@ -1,7 +1,9 @@
-<!-- web/src/components/sim/SimTalentsCard.svelte -->
-<!-- The run's talents as the planner's own read-only trees (spec 2026-11-04-sim-results 3.9, 4.7):
-     three panels, one tab at a time on a phone, the game tooltip on every cell. A string that does
-     not fit today's trees keeps its split and says why nothing is drawn. -->
+<!-- web/src/components/sim/SimTalentsSection.svelte -->
+<!-- The character's talents as the planner's own read-only trees (sim spec 2026-11-06 §4.5; spec
+     2026-11-04-sim-results 3.9, 4.7): an open Section with the split as its meta and Open in
+     planner as its action, three trees (one tab at a time on a phone), the game tooltip on every
+     cell. It reads the request only, so the landing shows it before a run. A string that does not
+     fit today's trees keeps its split and says why nothing is drawn. -->
 <script lang="ts">
   import activeBuild from '../../data/active-build.json';
   import { guideTreeStore } from '../../lib/guides/tree-store';
@@ -11,21 +13,19 @@
   import type { PlannerStore } from '../../lib/planner/store.svelte';
   import { treeRowColumnsClass } from '../../lib/planner/styles';
   import type { TalentFile } from '../../lib/planner/types';
-  import type { ActionNames } from '../../lib/sim/action-names';
   import { plannerHrefForSpec, ranksFromTalentsString } from '../../lib/sim/character';
   import { talentsCardCopy as copy } from '../../lib/sim/input-cards-copy';
   import { SPACED_SPLIT, talentSplit } from '../../lib/sim/result-band';
   import { setResultTalentTips } from '../../lib/sim/result-tips';
   import { fullestTree, talentsFit } from '../../lib/sim/talents-fit';
-  import type { SimResult } from '../../lib/sim/types';
+  import type { SimRequest } from '../../lib/sim/types';
   import TreeTabs from '../planner/TreeTabs.svelte';
-  import ActionLink from '../ui/ActionLink.svelte';
-  import Card from '../ui/Card.svelte';
   import LoadError from '../ui/LoadError.svelte';
+  import Section from '../ui/Section.svelte';
   import Skeleton from '../ui/Skeleton.svelte';
 
-  const props: { result: SimResult; names: ActionNames | null } = $props();
-  const character = $derived(props.result.request.character);
+  let { request }: { request: SimRequest } = $props();
+  const character = $derived(request.character);
 
   type View =
     | { kind: 'loading' }
@@ -37,7 +37,7 @@
 
   /** The build the request names when that build is still published, else today's. */
   async function talentFile(): Promise<{ file: TalentFile; treeVersion: string }> {
-    const saved = props.result.request.data_build;
+    const saved = request.data_build;
     if (saved !== undefined && saved !== activeBuild.build) {
       const file = await loadOptional<TalentFile | null>(
         dataUrl(saved, `talents/${character.class}.json`),
@@ -98,28 +98,25 @@
   const plannerHref = $derived(plannerHrefForSpec(character, activeBuild.build));
 </script>
 
-<Card
-  glyph="tree"
-  label={copy.label}
+<Section
   title={copy.title}
   meta={split}
-  body="none"
-  class="mx-[18px] md:mx-0"
+  action={{ label: copy.planner, href: plannerHref }}
   testid="sim-talents-card"
 >
-  <div class="border-line-soft border-t">
+  <div>
     {#if view.kind === 'loading'}
-      <div class="p-5">
+      <div>
         <Skeleton lines={3} rowHeight="h-12" minHeight="min-h-[440px]" testid="sim-talents-skeleton" />
       </div>
     {:else if view.kind === 'failed'}
-      <div class="p-5">
+      <div>
         <LoadError message={copy.failed} onRetry={() => void load()} testid="sim-talents-error" />
       </div>
     {:else if view.kind === 'unfit'}
-      <p class="text-text px-5 py-4 text-[15px]" data-testid="sim-talents-unfit">{copy.doesNotFit}</p>
+      <p class="text-text text-[15px]" data-testid="sim-talents-unfit">{copy.doesNotFit}</p>
     {:else}
-      <div class="sim-trees flex flex-col gap-3 py-4 md:p-5" data-testid="sim-talents-trees">
+      <div class="sim-trees flex flex-col gap-3" data-testid="sim-talents-trees">
         <TreeTabs
           store={view.store}
           talentIndex={view.index}
@@ -131,15 +128,11 @@
     {/if}
   </div>
   {#if view.kind === 'ready' || view.kind === 'loading'}
-    <div class="border-line-soft flex flex-wrap items-center justify-between gap-x-4 border-t px-5 py-1.5">
-      <p class="text-muted text-[13px]">
-        <span class="md:hidden">{copy.footPhone}</span><span class="hidden md:inline">{copy.footDesktop}</span
-        >
-      </p>
-      <ActionLink href={plannerHref}>{copy.planner}</ActionLink>
-    </div>
+    <p class="text-muted pt-[10px] text-[13px] leading-5">
+      <span class="md:hidden">{copy.footPhone}</span><span class="hidden md:inline">{copy.footDesktop}</span>
+    </p>
   {/if}
-</Card>
+</Section>
 
 <style>
   /* Phone tabs read "Fury 32" (spec 3.9): the spec icons leave no room for three names at 360 px. */

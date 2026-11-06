@@ -3,6 +3,7 @@
 // level, talent split and average item level, and where the gear came from and when; the saved
 // head's fight facts. Pure, so each line is a unit test.
 import { simPageCopy as copy } from './page-copy';
+import { PLACEHOLDER_CHARACTER_NAMES } from './character';
 import { talentSplit } from './result-band';
 import { specLabel } from './spec-label';
 import type { CharacterSource } from './types';
@@ -54,4 +55,10 @@ export function characterMeta(character: HeadCharacter, itemLevel: string | null
       : copy.head.meta(race, spec, character.level, split, itemLevel);
   const from = copy.head.sourceKind[character.source.kind] ?? copy.head.sourceKind.manual;
   return [line1.trim(), copy.head.source(from, dayMonth(character.source.captured_at))];
+}
+
+/** The title (ruling S1): the character's name, or the spec when the source carried none (a
+ *  published set's code, a placeholder name), the saved page's own rule (`bandHeading`). */
+export function characterTitle(name: string, spec: string): string {
+  return name !== '' && !PLACEHOLDER_CHARACTER_NAMES.has(name) ? name : specLabel(spec);
 }

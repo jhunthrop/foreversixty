@@ -94,7 +94,7 @@
 </script>
 
 {#if kind === 'run'}
-  <div data-testid="sim-saved-run">
+  <div data-testid="sim-saved">
     <SimCharacterHead name={bandHeading(result)} classSlug={result.request.character.class} {lines}>
       {#snippet answer()}
         <SimAnswer {model}>

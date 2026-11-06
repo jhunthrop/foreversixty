@@ -1,5 +1,6 @@
 // web/src/lib/sim/settings-rows.ts
-// The Settings card as data (spec 2026-11-04-sim-results 3.12): the key and value rows, and the
+// This run's inputs as data (sim spec 2026-11-06 §4.5 "This run"; spec 2026-11-04-sim-results
+// 3.12): the key and value rows with their small lines, and the
 // buff, debuff and consumable chips with the rule that files a buff under "No effect on your
 // damage". Pure, so the figures are pinned by a test.
 import { raceRows } from '../planner/reference';
@@ -24,6 +25,8 @@ export interface SettingsRow {
   id: 'fight' | 'target' | 'execute' | 'race' | 'runs' | 'apm';
   label: string;
   value: string;
+  /** The small muted line under the value. */
+  sub?: string;
 }
 
 export interface SettingsChip {
@@ -57,8 +60,8 @@ export function actionsPerMinute(result: SimResult): number {
   return presses / minutes;
 }
 
-/** "Level 63 boss · 3,731 armor, 1,471 after debuffs"; a part the run does not know is left out. */
-export function targetLabel(result: SimResult): string {
+/** "Level 63 boss" over "3,731 armor, 1,471 after debuffs"; a part the run does not know is left out. */
+export function targetFact(result: SimResult): { value: string; sub?: string } {
   const { encounter } = result.request;
   const stats = result.target_stats;
   const level = stats?.level ?? encounter.target_level ?? 63;
@@ -68,8 +71,8 @@ export function targetLabel(result: SimResult): string {
     ...(armor === undefined ? [] : [settingsCopy.armor(grouped(armor))]),
     ...(after === undefined ? [] : [settingsCopy.afterDebuffs(grouped(after))]),
   ];
-  const boss = settingsCopy.target(level);
-  return parts.length === 0 ? boss : `${boss} · ${parts.join(', ')}`;
+  const value = settingsCopy.target(level);
+  return parts.length === 0 ? { value } : { value, sub: parts.join(', ') };
 }
 
 export function settingsRows(result: SimResult): SettingsRow[] {
@@ -80,15 +83,26 @@ export function settingsRows(result: SimResult): SettingsRow[] {
   const low = durationLabel(Math.round(seconds * (1 - encounter.variation)));
   const high = durationLabel(Math.round(seconds * (1 + encounter.variation)));
   const race = raceRows.find((row) => row.slug === character.race)?.name;
+  const length = durationLabel(seconds);
   return [
-    { id: 'fight', label: keys.fight, value: settingsCopy.fight(durationLabel(seconds), percent, low, high) },
-    { id: 'target', label: keys.target, value: targetLabel(result) },
+    {
+      id: 'fight',
+      label: keys.fight,
+      value: settingsCopy.fight(length, percent),
+      sub: settingsCopy.range(low, high),
+    },
+    { id: 'target', label: keys.target, ...targetFact(result) },
     ...(encounter.execute_ratio > 0
       ? [
           {
             id: 'execute' as const,
             label: keys.execute,
             value: settingsCopy.execute(Math.round(encounter.execute_ratio * 100)),
+            // The request's own share of the fight, no claim about boss health (spec flag A7).
+            sub: settingsCopy.executeLength(
+              durationLabel(Math.round(seconds * encounter.execute_ratio)),
+              length,
+            ),
           },
         ]
       : []),

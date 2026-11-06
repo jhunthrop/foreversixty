@@ -35,11 +35,9 @@
     level,
     primary,
     busy,
-    premium = false,
     onsettings,
     onprecision,
     onprimary,
-    onserver,
     onmore,
   }: {
     settings: SimSettings;
@@ -49,12 +47,9 @@
     primary: PrimaryAction;
     /** A run is in flight on either lane. */
     busy: boolean;
-    /** A payer: the server lane's own Button beside the primary. */
-    premium?: boolean;
     onsettings: (next: SimSettings) => void;
     onprecision: (value: PrecisionId) => void;
     onprimary: () => void;
-    onserver?: () => void;
     onmore: () => void;
   } = $props();
 
@@ -172,11 +167,6 @@
     <button type="button" class="sim-more text-gold" onclick={onmore} data-testid="sim-settings-more"
       >{copy.bar.moreSettings}</button
     >
-    {#if premium}
-      <Button size="sm" disabled={busy} onclick={onserver} testid="sim-server-run"
-        >{copy.bar.runOnServers}</Button
-      >
-    {/if}
   {/snippet}
   {#snippet action()}
     <Button tone={primaryTone} disabled={primaryDisabled} onclick={onprimary} testid="sim-run-button"

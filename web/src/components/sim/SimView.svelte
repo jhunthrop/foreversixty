@@ -31,7 +31,7 @@
   import { decideBootstrap, RESTORE_BUSY_KEY, runBootstrapRestore } from '../../lib/sim/character-bootstrap';
   import { compareSummaries } from '../../lib/sim/compare';
   import { simCopy } from '../../lib/sim/copy';
-  import { averageWornItemLevel, characterMeta } from '../../lib/sim/head-meta';
+  import { averageWornItemLevel, characterMeta, characterTitle } from '../../lib/sim/head-meta';
   import { landingCopy } from '../../lib/sim/landing-copy';
   import { createServerRunsController } from '../../lib/sim/server-runs-controller.svelte';
   import { browserNotifier, enableNotifications, notifyFinished } from '../../lib/sim/notify';
@@ -572,7 +572,11 @@
     {/if}
   {:else}
     {@const character = store.character}
-    <SimCharacterHead name={character.name} classSlug={character.class_slug} lines={headLines}>
+    <SimCharacterHead
+      name={characterTitle(character.name, character.spec)}
+      classSlug={character.class_slug}
+      lines={headLines}
+    >
       {#snippet tabs()}<SimToolTabs source={tabSource} {fallbackCode} />{/snippet}
       {#snippet answer()}
         <SimAnswer model={answerModel}>
@@ -619,11 +623,9 @@
       level={character.level}
       primary={store.needsRace && !busy ? 'disabled' : answerModel.primary}
       {busy}
-      premium={store.premium}
       onsettings={(next) => store.setSettings(next)}
       onprecision={(value) => store.setPrecisionId(value)}
       onprimary={onPrimary}
-      onserver={runServer}
       onmore={() => (moreOpen = true)}
     />
     {#if moreSheetLazy.current}
@@ -638,6 +640,11 @@
         {request}
         disabled={busy}
         notifier={notifier !== null && store.premium}
+        premium={store.premium}
+        onserver={() => {
+          moreOpen = false;
+          runServer();
+        }}
         {notifyWanted}
         onclose={() => (moreOpen = false)}
         onchange={(next) => store.setSettings(next)}

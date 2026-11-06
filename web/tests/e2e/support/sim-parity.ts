@@ -1,13 +1,14 @@
 // web/tests/e2e/support/sim-parity.ts
 // The simulator's parity states (parity-sim.spec.ts, design/mocks/web/sim-parity.json), each the
 // mock's data on the built page: the fixture run (web/src/fixtures/sim/result-full.json) and its
-// character. The character reaches /sim the way a player's does from a saved run: "Open in the
-// sim" on /sim/simfullfixt1, which carries the whole character in `?code=`. The session is
+// character. The character reaches /sim the way a cold visitor's does: the landing rail's link to
+// the published Fury set, the mock's spec at 60 with every slot filled. The session is
 // stubbed (one character, three saved sims, as the mock); the live result is that character's
 // server run, answered with the fixture itself (it ran on our servers, as the mock's label says).
-import { readFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { expect, type Page } from '@playwright/test';
+import { writeSimNames } from '../../../scripts/sync-data.mjs';
 
 export type SimParityState = 'landing-out' | 'landing-in' | 'result' | 'saved';
 
@@ -17,6 +18,16 @@ const FIXTURE = JSON.parse(
     'utf8',
   ),
 ) as { request: { spec: string } };
+
+const WEB_ROOT = path.join(import.meta.dirname, '..', '..', '..');
+const BUILD = (
+  JSON.parse(readFileSync(path.join(WEB_ROOT, 'src', 'data', 'active-build.json'), 'utf8')) as {
+    build: string;
+  }
+).build;
+/** The build the mocks read (ws_sim.py: data/builds/<build>), and the names the site derives from it. */
+const REAL_BUILD_DIR = path.join(WEB_ROOT, '..', 'data', 'builds', BUILD);
+const DERIVED_DIR = path.join(WEB_ROOT, 'test-results', 'sim-parity-data', BUILD);
 
 /** The saved run the mocks draw, prerendered under FOREVER_DATA=fixture. */
 export const SAVED_SIM_PATH = '/sim/simfullfixt1';
@@ -63,11 +74,17 @@ async function stubSession(page: Page, serverSims: boolean): Promise<void> {
   await page.route('**/v1/sims/server*', (route) => route.fulfill(envelope({ rows: [] })));
 }
 
-/** /sim with the fixture's character, through the saved run's own "Open in the sim". */
-async function openFixtureCharacter(page: Page): Promise<void> {
-  await page.goto(SAVED_SIM_PATH);
-  await page.getByTestId('sim-run-yourself').click();
-  await page.waitForURL(/\/sim\?code=/);
+/**
+ * /sim with a level 60 Fury warrior's full raid set: the landing rail's own "Fury ›" link (the
+ * published BiS set, the mock's spec), without its `run=1`, so the page stops at "No sim yet".
+ */
+async function openFuryWarrior(page: Page): Promise<void> {
+  await page.goto('/sim');
+  const href = await page
+    .locator('[data-region="section-sim-a-best-in-slot-set"] a', { hasText: 'Fury' })
+    .getAttribute('href');
+  expect(href).not.toBeNull();
+  await page.goto((href ?? '').replace(/[&?]run=1\b/, ''));
   await expect(page.getByTestId('sim-run-button')).toBeEnabled({ timeout: 15_000 });
   await expect(page.locator('[data-region="slots"]')).toBeVisible();
 }
@@ -102,23 +119,50 @@ async function drawWholeReport(page: Page): Promise<void> {
   await expect(page.locator('[aria-busy="true"]')).toHaveCount(0, { timeout: 15_000 });
 }
 
+let derived: Promise<void> | undefined;
+
+/**
+ * The mock's data on the page: every /data/<build>/ file the fixture build serves is answered from
+ * the committed build the mocks are generated from (the fixture build's planner data is a small
+ * stand-in: seven warrior items, a fixture talent tree), and the simnames files the site derives
+ * at sync time are derived from it the same way (scripts/sync-data.mjs `writeSimNames`).
+ */
+async function serveMockData(page: Page): Promise<void> {
+  derived ??= (async () => {
+    mkdirSync(DERIVED_DIR, { recursive: true });
+    await writeSimNames(REAL_BUILD_DIR, DERIVED_DIR);
+  })();
+  await derived;
+  await page.route(`**/data/${BUILD}/**`, async (route) => {
+    const rel = decodeURIComponent(new URL(route.request().url()).pathname).replace(`/data/${BUILD}/`, '');
+    const file = [path.join(DERIVED_DIR, rel), path.join(REAL_BUILD_DIR, rel)].find((candidate) =>
+      existsSync(candidate),
+    );
+    if (file === undefined) return route.continue();
+    return route.fulfill({ path: file });
+  });
+}
+
 export async function openSimState(page: Page, state: SimParityState): Promise<void> {
+  await serveMockData(page);
   if (state === 'landing-out') {
     await page.goto('/sim');
+    await expect(page.getByTestId('sim-view')).toBeVisible();
     await expect(page.locator('[data-region="section-sim-a-best-in-slot-set"]')).toBeVisible();
     return;
   }
   if (state === 'saved') {
     await page.goto(SAVED_SIM_PATH);
-    await expect(page.getByTestId('sim-saved-run')).toBeVisible();
+    await expect(page.getByTestId('sim-saved')).toBeVisible();
     await drawWholeReport(page);
     return;
   }
   await stubSession(page, state === 'result');
   if (state === 'result') await stubServerRun(page);
-  await openFixtureCharacter(page);
+  await openFuryWarrior(page);
   await expect(page.getByTestId('sim-history')).toBeVisible();
   if (state === 'result') {
+    await page.getByTestId('sim-settings-more').click();
     await page.getByTestId('sim-server-run').click();
     await expect(page.getByTestId('sim-answer')).toHaveAttribute('data-state', 'result', { timeout: 15_000 });
     await drawWholeReport(page);

@@ -257,7 +257,7 @@ describe('gear card', () => {
   it('reads every stat from final_stats: 0 haste reads 0%', () => {
     const block = statsBlock(full)!;
     const stats = full.final_stats!;
-    expect(block.head).toBe('Character stats in the fight, against a level 63 boss');
+    expect(block.head).toBe('In the fight, against a level 63 boss.');
     expect(block.hit?.value).toBe(`${stats.melee_hit_pct!.toFixed(1)}%`);
     const value = (id: string) => block.cells.find((cell) => cell.id === id)?.value;
     expect(value('attack-power')).toBe(stats.attack_power!.toLocaleString('en-US'));
@@ -269,7 +269,7 @@ describe('gear card', () => {
   it('puts the run’s own measured miss rate under hit, never a fixed cap', () => {
     // Specials: 0 MISS in the fixture's yellow rows. White: 12 + 7 + 4 misses over 63 + 82 + 21 swings.
     expect(statsBlock(full)?.hit?.reference?.note).toBe(
-      'Missed in this run: 0% of specials · 13.9% of white swings',
+      'Missed in this run: 0% of specials · 13.9% of white swings.',
     );
   });
 

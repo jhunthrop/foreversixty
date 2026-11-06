@@ -385,20 +385,33 @@ PRIM_CSS += '''
 '''
 
 
-def StatTable(heads: list[tuple[str, bool]], rows: list[str], n_figs: int, bar: bool = True, open_: bool = False, sort: str = '') -> str:
-    """A numeric table. heads: (label, right_aligned) for icon, name, [bar], figures; `sort` names the sorted head."""
-    h = ''.join(f'<span class="t-label{" r" if r else ""}{" on" if t == sort and t else ""}">{t}</span>' for t, r in heads)
+def StatTable(heads: list[tuple[str, bool]], rows: list[str], n_figs: int, bar: bool = True, open_: bool = False, sort: str = '',
+              sortable: tuple[str, ...] = ()) -> str:
+    """A numeric table. heads: (label, right_aligned) for icon, name, [bar], figures; `sort` names the sorted head and
+    `sortable` the heads that are sort buttons. An ARIA table (as the built ui/StatTable): the heads are columnheaders, a
+    sortable one holds a button and carries aria-sort; the icon and bar cells are decorative (aria-hidden). A table whose
+    heads are all empty (the open Rage and aura lists) draws no head row."""
+    def head(i, t, r):
+        if i == 0 or not t:
+            return f'<span class="t-label" aria-hidden="true">{t}</span>'
+        srt = f' aria-sort="{"descending" if t == sort else "none"}"' if t in sortable else ''
+        inner = f'<button type="button" class="st-sort">{t}</button>' if t in sortable else t
+        return f'<span class="t-label{" r" if r else ""}{" on" if t == sort and t else ""}" role="columnheader"{srt}>{inner}</span>'
+    h = ''.join(head(i, t, r) for i, (t, r) in enumerate(heads))
+    head_row = f'<div class="st-h stc" role="row">{h}</div>' if any(t for t, _ in heads) else ''
     cls = 'st' + ('' if bar else ' nobar') + (' open' if open_ else '')
-    return f'<div class="{cls}" style="--n:{n_figs}" data-n="{n_figs}"><div class="st-h stc" aria-hidden="true">{h}</div>{"".join(rows)}</div>'
+    return f'<div class="{cls}" style="--n:{n_figs}" data-n="{n_figs}" role="table">{head_row}{"".join(rows)}</div>'
 
 
-def StatRow(icon_html: str, name: str, sub: str, figures: list[str], meter: str = '', primary_phone: str = '', state: str = '', total: bool = False) -> str:
+def StatRow(icon_html: str, name: str, sub: str, figures: list[str], meter: str = '', primary_phone: str = '', state: str = '', total: bool = False,
+            bar: bool = True) -> str:
     """One table row. figures: html of each figure cell; the first is the sorted, primary figure (stays on phone with
-    `primary_phone` under it). `sub` may carry `<span class="m">` parts shown only on phone."""
-    figs = ''.join(f'<span class="f{" p" if i == 0 else ""}{" d" if f in ("&ndash;", "") else ""}">{f}{f"<span class=m>{primary_phone}</span>" if i == 0 and primary_phone else ""}</span>' for i, f in enumerate(figures))
-    br = f'<span class="br">{meter}</span>' if meter else ''
-    return (f'<div class="st-r stc{" hov" if state == "hover" else ""}{" tot" if total else ""}">{icon_html or "<span></span>"}'
-            f'<div class="nm">{name}' + (f'<div class="sub">{sub}</div>' if sub else '') + f'</div>{br}{figs}</div>')
+    `primary_phone` under it). `sub` may carry `<span class="m">` parts shown only on phone. `bar`: the table has a bar
+    column (the Total row keeps its empty cell so its figures stay under their heads)."""
+    figs = ''.join(f'<span class="f{" p" if i == 0 else ""}{" d" if f in ("&ndash;", "") else ""}" role="cell">{f}{f"<span class=m>{primary_phone}</span>" if i == 0 and primary_phone else ""}</span>' for i, f in enumerate(figures))
+    br = f'<span class="br" aria-hidden="true">{meter}</span>' if (meter or bar) else ''
+    return (f'<div class="st-r stc{" hov" if state == "hover" else ""}{" tot" if total else ""}" role="row"><span aria-hidden="true">{icon_html}</span>'
+            f'<div class="nm" role="cell">{name}' + (f'<div class="sub">{sub}</div>' if sub else '') + f'</div>{br}{figs}</div>')
 
 
 def Facts(items: list[tuple[str, str]]) -> str:
@@ -428,8 +441,9 @@ def Histogram(counts: list[int], start: float, bin_dps: float, mean: float, lo: 
 
 
 def Lanes(svg: str, legend: list[tuple[str, str]]) -> str:
-    lg = ''.join(f'<span><i style="--k:{c}" class="k"></i>{t}</span>' for c, t in legend)
-    return f'<div class="lanes"><div class="lg">{lg}</div>{svg}</div>'
+    """The legend is a list (the shipped SimTimeline's `ul`); the caller's plot carries the shipped plot's role."""
+    lg = ''.join(f'<li><i style="--k:{c}" class="k"></i>{t}</li>' for c, t in legend)
+    return f'<div class="lanes"><ul class="lg">{lg}</ul>{svg}</div>'
 
 
 PRIM_CSS += '.lanes .lg i.k{background:var(--k)}\n'

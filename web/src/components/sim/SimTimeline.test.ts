@@ -37,7 +37,6 @@ describe('SimTimeline', () => {
     const body = html(full);
     expect(body).not.toContain('id="timeline"');
     expect(body).toContain(timelineCopy.title);
-    expect(body).toContain(timelineCopy.label);
     expect(body).toContain('The median run · 2:53 long');
     expect(body).toContain(timelineCopy.wholeFight);
     expect(body).toContain(timelineCopy.closeUp);
@@ -46,10 +45,8 @@ describe('SimTimeline', () => {
 
   it('starts on Whole fight with Swings and ticks off', () => {
     const body = html(full);
-    expect(body).toMatch(/aria-pressed="true"[^>]*data-testid="timeline-whole"/);
-    expect(body).toMatch(
-      /aria-checked="false"[^>]*data-testid="timeline-swings"|data-testid="timeline-swings"[^>]*aria-checked="false"/,
-    );
+    expect(body).toMatch(/aria-checked="true"[^>]*>(?:<!--[^>]*-->)*Whole fight/);
+    expect(body).toMatch(/aria-checked="true"[^>]*>(?:<!--[^>]*-->)*Off</);
     expect(body).not.toContain('Main hand');
   });
 
@@ -84,11 +81,13 @@ describe('SimTimeline', () => {
     expect(html(full)).not.toMatch(/>[^<]*\b(spell|item|other):[^<]*</);
   });
 
-  it('shows the cast list collapsed, with the swings sentence', () => {
-    const body = html(full);
-    expect(count(body, 'data-testid="sim-cast-row"')).toBe(5);
-    expect(body).toMatch(/Casts: (\d+) of \1\. Swings and .+ ticks are on the lanes above\./);
-    expect(body).toMatch(/Show all \d+/);
+  it('folds the cast list behind List every cast, and says what Swings and ticks adds', () => {
+    const body = html(full).replace(/<!--[^>]*-->/g, '');
+    expect(count(body, 'data-testid="sim-cast-row"')).toBe(0);
+    expect(body).toMatch(
+      /\d+ casts in this run\. Turn Swings and ticks on to add white swings and .+ ticks as their own lanes\./,
+    );
+    expect(body).toMatch(/aria-expanded="false"[^>]*>List every cast ›/);
   });
 
   it('says the run has no fight when the result has no sample', () => {

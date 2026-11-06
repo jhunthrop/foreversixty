@@ -22,7 +22,6 @@ const OUTCOME_LABEL = {
 } as const;
 
 export const timelineCopy = {
-  label: 'ONE FIGHT',
   title: 'Timeline',
   meta: (length: string): string => `The median run · ${length} long`,
   noSample: 'This run has no recorded fight to draw.',
@@ -31,6 +30,8 @@ export const timelineCopy = {
   closeUp: 'Close up',
   zoomLabel: 'Zoom',
   swingsAndTicks: 'Swings and ticks',
+  off: 'Off',
+  on: 'On',
 
   legend: {
     damage: 'Damage',
@@ -74,14 +75,15 @@ export const timelineCopy = {
   tipOutcome: (outcome: keyof typeof OUTCOME_LABEL, amount: string | null): string =>
     amount === null ? OUTCOME_LABEL[outcome] : `${OUTCOME_LABEL[outcome]} · ${amount} damage`,
 
-  castsAll: (shown: number, total: number): string => `Casts: ${shown} of ${total}`,
-  castsInView: (shown: number, total: number): string => `Casts in view: ${shown} of ${total}`,
+  castsInRun: (total: number): string => `${total} casts in this run.`,
+  castsInView: (shown: number, total: number): string => `Casts in view: ${shown} of ${total}.`,
+  /** With Swings and ticks Off: what turning it on adds (sim spec 2026-11-06 §6). */
   castsTail: (periodic: string | null): string =>
     periodic === null
-      ? 'Swings are on the lanes above.'
-      : `Swings and ${periodic} ticks are on the lanes above.`,
-  showAll: (count: number): string => `Show all ${count}`,
-  showFewer: 'Show fewer',
+      ? 'Turn Swings and ticks on to add white swings as their own lane.'
+      : `Turn Swings and ticks on to add white swings and ${periodic} ticks as their own lanes.`,
+  listEvery: 'List every cast',
+  hideList: 'Hide the list',
   queued: (name: string): string => `${name} queued`,
 
   plotLabel: (length: string, casts: number): string =>
