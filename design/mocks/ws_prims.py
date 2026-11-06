@@ -8,7 +8,7 @@ import re
 from html import escape
 
 from mocklib import emblem
-from ws_lib import CSS as BASE_CSS, page as _page, header as _header, control_bar, seg, sel, crest_img, icon, QCOL, write, REGION, region_slug
+from ws_lib import CSS as BASE_CSS, page as _page, control_bar, seg, sel, crest_img, icon, QCOL, write, REGION, region_slug
 
 PRIM_CSS = '''
 /* ---- Page: one column, four layouts ---- */

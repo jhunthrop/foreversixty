@@ -762,6 +762,7 @@ def result_page_body(saved: bool) -> str:
 
 
 PAGE_CSS = '''<style>
+main{padding-bottom:40px}  /* the page's own bottom space (sim.astro .sim-page), above the site footer */
 /* page-level layout only: no border, background, radius or shadow (the guard reads inline styles; this block keeps to layout too) */
 /* the answer slot keeps the result's size from the first state to the last (no layout shift): label, figure, error, change, actions */
 .head .ans{min-width:0;min-height:172px}@media(min-width:900px){.head .ans{min-width:360px;min-height:189px}}

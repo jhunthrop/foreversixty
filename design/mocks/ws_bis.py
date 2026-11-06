@@ -28,6 +28,7 @@ FACTS = json.loads((HERE / 'data/bis-facts.json').read_text())
 
 # The page's own rules (the built BisAnswer, BisWeights and summary measure the same; the Paperdoll's are ws_prims').
 BIS_CSS = '''
+main{padding-bottom:40px}  /* the page's own bottom space ([spec].astro .bis-page), above the site footer */
 /* The BiS head keeps a fixed floor from 1024 so the title and the controls hold their y across specs
    (one figure, a healer's metrics, a tank's four): BisSpecPage HEAD_ROW_MIN_HEIGHT, b66cf09b8. */
 @media(min-width:1024px){.head{min-height:calc(165px + 36px)}} /* row floor plus the head padding 20/16; the mock .head is the row and is border-box */

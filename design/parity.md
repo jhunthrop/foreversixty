@@ -8,6 +8,8 @@ The mock library (`design/mocks/ws_lib.py` `REGION`, emitted by `ws_lib` and `ws
 
 | Region | Built by | What it holds |
 |---|---|---|
+| `site-header` | `Header.astro` | The site header: wordmark, the doors, search, the account chip |
+| `site-footer` | `Footer.astro` | The site footer |
 | `head` | `PageHeader` | The whole page head |
 | `head-title` | `PageHeader` | Crest, title, meta line |
 | `head-meta` | `PageHeader` | The one meta line under the title |
@@ -41,6 +43,13 @@ The data on both sides is the same: `node design/mocks/bis_facts.mjs http://loca
 ## The home states
 
 `design/mocks/web/home-parity.json`: `out` (signed out), `34` (a level 34 leveler, no guild), `60` (a level 60 raider with a raid planned), `new` (signed in, no character), `loading` (the session hinted, `/v1/me` in flight), `error` (the upgrades failed). Mocks `web-home-<state>.html` from `design/mocks/ws_home.py` (spec `design/specs/2026-11-06-home.md`). The signed-in data is committed in `web/tests/e2e/fixtures/home/` (`python3 design/mocks/home_fixtures.py` writes it); `tests/e2e/support/home-page.ts` routes the same files, so the parity job needs no `data/builds`.
+
+## The site chrome
+
+Every mock's header and footer are the shipped ones, not drawings: `web/tests/e2e/chrome-capture.spec.ts` (a tool, skipped unless `CHROME_CAPTURE=1`) opens each parity state as its spec does and writes `design/mocks/data/chrome/<mock>.json` (the header and footer markup, scripts removed, links to `#`, images pointing at `web/public`) and `chrome.css` (the site CSS that styles them, scoped under `.fs-chrome`). `ws_lib.write` fills each mock from its own capture, or from a template (`template-out`, `template-in` with the mock's character, `template-new`, `template-pending`). After a change to the header or footer, rebuild and recapture, then regenerate the mocks:
+
+    cd web && npm run build && CHROME_CAPTURE=1 E2E_SKIP_BUILD=1 npx playwright test tests/e2e/chrome-capture.spec.ts --project=desktop
+    python3 design/mocks/ws_bis.py && python3 design/mocks/ws_tiers.py && python3 design/mocks/ws_sim.py && python3 design/mocks/ws_home.py
 
 ## When it fails
 

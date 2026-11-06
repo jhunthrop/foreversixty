@@ -6,6 +6,10 @@
 // region as a string literal.
 
 export const REGION = {
+  /** The site header (Header.astro): wordmark, search, account chip, the doors. */
+  siteHeader: 'site-header',
+  /** The site footer (Footer.astro). */
+  siteFooter: 'site-footer',
   /** PageHeader: the whole page head. */
   head: 'head',
   /** PageHeader: crest, title and meta line. */
