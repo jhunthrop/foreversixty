@@ -242,10 +242,9 @@ test.describe('the 40-player threat chart (spec §B12, capture 9)', () => {
     await expect(page.getByTestId('chart-tooltip')).toContainText('Share');
     // The table's leader is the legend's first chip.
     const leader = (await page
-      .locator('li[data-testid^="threat-Player"]')
+      .locator('[role="row"][data-testid^="threat-Player"]')
       .first()
-      .locator('span')
-      .first()
+      .getByTestId('threat-name')
       .textContent())!.trim();
     await expect(chart.getByTestId('legend-chip').filter({ hasText: leader })).toBeVisible();
   });
