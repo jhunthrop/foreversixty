@@ -6,9 +6,23 @@ System: `design/specs/2026-11-05-web-layout.md` (2 principles; 3.1 to 3.5 tokens
 Memory rules applied: pricing direction (Premium $6/$50, Guild $15/$150, Raid guild $25/$250; founder $5/$40, $12/$120, $20/$200 until 6 Jan 2027: every figure here comes from `lib/billing/plans.ts`, none is typed), stripe-billing (Stripe is merchant of record; the card never reaches us), owner-account-grant (a grant is a real Premium source with its own words), one-way-to-switch (no character switch on these pages; the account's main is a setting, the header selector is the switch), blizzard-profile-import (Battle.net is the primary character source; the addon is detail), one-crest-language, one-job-per-page, provenance-quiet, wide-screen-check, visual-quality-2026-10-28 (no empty example card; nothing plain), legal-entity (Commish LLC, `help@foreversixty.gg`), design-work-lives-in-repo.
 Type: Marcellus once per page (the H1: `--color-strong` on Plans, checkout and account; the class colour on a shared build), Barlow everywhere else, no condensed face, no caps headings (12 px caps labels only). Mono only for literal text a player types or matches (the pairing code). One Plate per page.
 
-## 0A. Rulings
+## 0A. Rulings 2026-11-08 (owner delegated; the wow-player persona ruled, SHIP WITH FIXES)
 
-Pending: the coordinator records the wow-player rulings on section 17 here.
+- **YES:** PR1, PR3, PR4 (once MUST 2 is fixed), PR5, A1, A2, A3, A5, B1, B3, P1.
+- **PR2 YES with change:** founder is said once: the Premium column's `Founder` Tag goes (the notice and the price line stay).
+- **K1 YES with change:** a guild checkout in its free trial never says `Stripe took the payment.`; it reads `Card saved. First charge {date}.` A paid Premium checkout keeps `Stripe took the payment.`
+- **K2 YES with change:** above the three next-step links, the renewal line `{price} a year · renews {date} · receipt from Stripe by email`.
+- **A4 YES with change:** an account that already has Premium reads `Link it and the role turns on.` (MUST 3).
+- **A6 YES with change:** the deletion sentence per MUST 4.
+- **B2 YES with change:** Fork moves into the first screen and is named `Edit a copy`.
+- **Q8:** the claim rule and the sample disagree (`Only a guild's guild master can claim it` vs an Officer holding the claim): the build checks the API's real rule and fixes whichever is wrong. **Q10:** show `Shared by {name}` when the share record has the sharer. **Q12:** the not-found page adds `Ask whoever sent it for a fresh link.` beside `Talent builds in the class guides ›`.
+- **MUST 1:** the founder line reads `Founder price for anyone who subscribes by 6 Jan 2027. $50 after that.` (and the same shape on Guild and Raid guild), never `then $50` beside `the price stays`.
+- **MUST 2:** the guild-plan rules and refunds.md say the same thing. refunds.md is final legal text (owner, 2026-10-24), so `plans-page-copy.ts`'s `Ask within 14 days of a first charge for a refund.` changes to match it, not the other way round.
+- **MUST 3:** the Premium role sentence per A4.
+- **MUST 4:** `Email help@foreversixty.gg with your BattleTag and we delete your account and everything on it, within thirty days.`; the pseudonym note `Reports themselves are never deleted or rewritten` is checked against privacy.md and matched to it.
+- **MUST 5:** on /b/:id, a build of another class is one plain line above `Copy for the game` (no greyed caps box), inside the rail.
+- **SHOULD:** the guild checkout button reads `Start 7 free days · then {price} a year`; the shared build rail heading `Guide build`; HPS without a decimal.
+- **For the owner (not decided here; the build leaves the shipped wording):** who is on the card statement under Managed Payments (`Commish LLC d/b/a Forever Sixty` vs Stripe as merchant of record), and which address the 7-day renewal email goes to when Battle.net gives no email.
 
 ## 0. Files
 
