@@ -80,7 +80,6 @@ export default {
   code,
   connect: strip(connectCopy),
   connect_fns: {
-    codeLabel: connectCopy.codeLabel(code),
     pendingTitle: connectCopy.pendingTitle(lookup.name, me34.user.battletag),
     signedOutLeadNamed: connectCopy.signedOutLeadNamed(lookup.name),
   },
