@@ -20,6 +20,16 @@
       "faction": "alliance",
       "item_level": 62,
       "source": "bnet",
+      "guild": {
+        "id": 2,
+        "name": "Cx66 Olympus",
+        "rank": "Officer",
+        "verified": true,
+        "attendance": {
+          "present": 3,
+          "nights": 4
+        }
+      },
       "build": {
         "source": "addon",
         "captured_at": "2026-11-04T19:30:00Z",
@@ -50,7 +60,19 @@
       }
     }
   ],
-  "guilds": [],
+  "guilds": [
+    {
+      "id": 2,
+      "name": "Cx66 Olympus",
+      "region": "us",
+      "ruleset": "hardcore",
+      "slug": "cx66-olympus",
+      "rank": "Officer",
+      "verified": true,
+      "verified_count": 14,
+      "faction": "alliance"
+    }
+  ],
   "bnet_imported_at": "2026-11-06T09:00:00Z",
   "main_character_key": "us/hardcore/elyra-duskvale",
   "entitlements": {

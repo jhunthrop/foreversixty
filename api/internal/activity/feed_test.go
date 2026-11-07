@@ -81,6 +81,32 @@ func TestFeedSpecFilterAndOwnRowsFirst(t *testing.T) {
 	}
 }
 
+// The character page's activity: one character's rows only, under any filter, and still never
+// another guild's row.
+func TestFeedCharacterFilter(t *testing.T) {
+	s := testStore(t)
+	sim := ev(KindGuildSim, "her guild sim", testNow.Add(-time.Minute))
+	sim.CharacterKey, sim.GuildID = "us/hardcore/elyra-duskvale", guild(t, s, "Cx66 Olympus")
+	mustAppend(t, s, sim)
+	upload := ev(KindLogUpload, "her upload", testNow.Add(-2*time.Minute))
+	upload.CharacterKey = "us/hardcore/elyra-duskvale"
+	mustAppend(t, s, upload)
+	other := ev(KindLogUpload, "someone else", testNow.Add(-3*time.Minute))
+	other.CharacterKey = "us/normal/thalrin"
+	mustAppend(t, s, other)
+
+	if got := texts(read(t, s, Query{Filter: FilterAll, Character: "us/hardcore/elyra-duskvale"})); len(got) != 1 || got[0] != "her upload" {
+		t.Fatalf("signed out: %v", got)
+	}
+	mine := read(t, s, Query{Filter: FilterAll, Character: "us/hardcore/elyra-duskvale", GuildIDs: []int64{sim.GuildID}})
+	if got := texts(mine); len(got) != 2 || got[0] != "her guild sim" {
+		t.Fatalf("her guild: %v", got)
+	}
+	if got := texts(read(t, s, Query{Filter: FilterLogs, Character: "us/normal/thalrin"})); len(got) != 1 || got[0] != "someone else" {
+		t.Fatalf("logs filter: %v", got)
+	}
+}
+
 // Pages follow on from their cursor with no row twice; the feed reads 7 days back; a dedupe
 // key writes once.
 func TestFeedPagesWindowAndDedupe(t *testing.T) {

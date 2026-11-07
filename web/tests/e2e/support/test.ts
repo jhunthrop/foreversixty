@@ -45,6 +45,10 @@ const AMBIENT_READS: readonly AmbientRead[] = [
   { path: /^\/v1\/reports\/[a-z0-9]+\/fights\/\d+\/ratings$/, answer: unreachable },
   // The home and logs feeds, the header's finished-sim line and the coach's recent list.
   { path: /^\/v1\/(reports|reports\/recent|rankings\/guilds|sims|me\/coach\/recent)$/, answer: unreachable },
+  // The character page's activity and the owner's standing line (character spec section 6):
+  // below the page's own answer, each left out when it does not load.
+  { path: /^\/v1\/(feed|home)$/, answer: unreachable },
+  { path: /^\/v1\/guilds\/\d+\/home$/, answer: unreachable },
 ];
 
 function ambientAnswer(route: Route): AmbientAnswer | null {

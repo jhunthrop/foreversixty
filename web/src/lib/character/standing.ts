@@ -1,0 +1,75 @@
+// web/src/lib/character/standing.ts
+// The owner's standing line and the character's activity (design/specs/2026-11-06-character.md
+// section 6, rulings C14 to C22): the character's place in its guild's sim ladder, its spec's
+// grade this week as a link to the tier list (never home's tile), the next guild raid as a
+// short clock, and its own rows of the site feed (GET /v1/feed?character=).
+import { requestEnvelope } from '../account/api';
+import { query } from '../data/query';
+import type { NextRaidView } from '../guild/api';
+import type { FeedPage } from '../home/feed';
+import type { GuildSims, SpecWeek } from '../home/home-answer';
+import { API_BASE_URL } from '../planner/config';
+import { clockLabel, clockParts } from '../ui/countdown';
+
+/** C18: the activity rows the page shows. */
+export const ACTIVITY_ROWS = 5;
+const FEED_TTL_MS = 60_000;
+const MAX_LEVEL = 60;
+
+const ROLE_WORD = { dps: 'DPS', healer: 'healers', tank: 'tanks' } as const;
+
+export const standingCopy = {
+  activity: 'Activity',
+  failed: 'We could not load this character’s activity.',
+} as const;
+
+export function activityPath(characterKey: string, limit = ACTIVITY_ROWS): string {
+  const params = new URLSearchParams({ character: characterKey, limit: String(limit) });
+  return `/v1/feed?${params.toString()}`;
+}
+
+/** The character's own feed rows, cached a minute; a session adds its guild's rows. */
+export function fetchActivity(
+  characterKey: string,
+  signedIn: boolean,
+  apiBase: string = API_BASE_URL,
+): Promise<FeedPage> {
+  const path = activityPath(characterKey);
+  return query<FeedPage>(
+    `${apiBase}${path}`,
+    async () => {
+      const { data } = await requestEnvelope<FeedPage>(path, apiBase, {
+        credentials: signedIn ? 'include' : 'omit',
+      });
+      return data ?? { rows: [], next_cursor: null };
+    },
+    { scope: signedIn ? 'private' : 'public', ttlMs: FEED_TTL_MS },
+  );
+}
+
+/** C16: "#3 of 14 DPS in Olympus XXVII, 60 raid"; null with no own row on the ladder. */
+export function guildRankLine(sims: GuildSims | null): string | null {
+  if (sims === null) return null;
+  const own = sims.you ?? sims.rows.find((row) => row.you) ?? null;
+  if (own === null) return null;
+  const band = sims.band >= MAX_LEVEL ? String(MAX_LEVEL) : `${sims.band} to ${sims.band + 9}`;
+  const preset = sims.preset === 'raid' ? ' raid' : '';
+  return `#${own.rank} of ${sims.of} ${ROLE_WORD[sims.role]} in ${sims.guild_name}, ${band}${preset}`;
+}
+
+/** C19: "Holy is graded A this week"; a tank or healer list has no letter: "Holy is #4 of 9 this week". */
+export function gradeLine(week: SpecWeek | null, specName: string | null): string | null {
+  if (week === null || specName === null) return null;
+  return week.grade === null
+    ? `${specName} is #${week.place} of ${week.of} this week`
+    : `${specName} is graded ${week.grade} this week`;
+}
+
+/** C21: "Onyxia's Lair in 33 days, 8 hours, 0 min, 18 in"; null once it has started. */
+export function raidLine(raid: NextRaidView | null, now: Date): string | null {
+  if (raid === null) return null;
+  const parts = clockParts(new Date(raid.starts_at), now);
+  if (parts === null) return null;
+  const signed = raid.counts.in > 0 ? `, ${raid.counts.in} in` : '';
+  return `${raid.title} in ${clockLabel(parts)}${signed}`;
+}

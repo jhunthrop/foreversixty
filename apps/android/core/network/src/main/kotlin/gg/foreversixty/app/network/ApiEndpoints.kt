@@ -80,8 +80,8 @@ import kotlinx.serialization.builtins.serializer
 /** Every API call the apps make, one function per operation of api/openapi.yaml. */
 object ApiEndpoints {
     /** GET /v1/feed: The site feed, "Forever right now" */
-    fun getFeed(filter: String? = null, spec: String? = null, band: Int? = null, cursor: String? = null, limit: Int? = null): Endpoint<FeedPage> =
-        Endpoint(HttpMethod.Get, "/v1/feed", FeedPage.serializer(), query = listOfNotNull(filter?.let { "filter" to it }, spec?.let { "spec" to it }, band?.let { "band" to it.toString() }, cursor?.let { "cursor" to it }, limit?.let { "limit" to it.toString() }))
+    fun getFeed(filter: String? = null, spec: String? = null, band: Int? = null, character: String? = null, cursor: String? = null, limit: Int? = null): Endpoint<FeedPage> =
+        Endpoint(HttpMethod.Get, "/v1/feed", FeedPage.serializer(), query = listOfNotNull(filter?.let { "filter" to it }, spec?.let { "spec" to it }, band?.let { "band" to it.toString() }, character?.let { "character" to it }, cursor?.let { "cursor" to it }, limit?.let { "limit" to it.toString() }))
 
     /** GET /v1/home: The signed-in home's blocks for one of the caller's characters */
     fun getHome(character: String): Endpoint<HomeBlocks> =

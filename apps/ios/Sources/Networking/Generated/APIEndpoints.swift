@@ -5,11 +5,12 @@ import Models
 
 public extension Endpoint where Response == FeedPage {
     /// GET /v1/feed: The site feed, "Forever right now"
-    static func getFeed(filter: String? = nil, spec: String? = nil, band: Int? = nil, cursor: String? = nil, limit: Int? = nil) -> Endpoint {
+    static func getFeed(filter: String? = nil, spec: String? = nil, band: Int? = nil, character: String? = nil, cursor: String? = nil, limit: Int? = nil) -> Endpoint {
         Endpoint(method: .get, path: "/v1/feed", query: [
             filter.map { URLQueryItem(name: "filter", value: "\($0)") },
             spec.map { URLQueryItem(name: "spec", value: "\($0)") },
             band.map { URLQueryItem(name: "band", value: "\($0)") },
+            character.map { URLQueryItem(name: "character", value: "\($0)") },
             cursor.map { URLQueryItem(name: "cursor", value: "\($0)") },
             limit.map { URLQueryItem(name: "limit", value: "\($0)") },
         ].compactMap { $0 })

@@ -60,3 +60,19 @@ Data gaps (named, not built):
 - **Enchants (C4):** the API's `CharacterGearSlot` carries no worn enchant, so the cell has no enchant mark and no red "missing" mark. It needs `worn.enchant_id` from the export (a migration and an API field).
 - **Drop chance** comes from the API's `pick.chance`, so the inspector shows it without `loot.json`; the BiS runners-up carry no chance.
 - **C12 phone order:** the sync line and the two head links stay in the head on a phone; moving them under the doll needs a PageHeader slot below the Plate.
+
+## 6. Home B carried to the character page (2026-11-07, ship mode)
+
+Owner: carry home direction B ("the world is moving", `2026-11-07-home-b.md`) to the character page, the paperdoll still the one framed object. Persona rulings (wow-player, 2026-11-07), and what was built:
+
+- C14. The page answers "how is this character doing and what do I do next". The character's own activity, its guild rank and its next guild raid belong; the world (site feed, raid phase countdown, the guild sims ladder, the GradeTile, top movers) stays on home, linked, never restated.
+- C15. A visitor sees the character's public activity. The owner also sees the standing line and their guild's rows. Guild-only rows reach the guild's members only (the API's rule).
+- C16, C19, C21. The owner's standing line, one line of links under the Next line in the `summary` region: `#3 of 14 healers in Cx66 Olympus, 60 raid ›` (`/v1/home` `guild_sims`, to the guild page), `Holy is graded A this week ›` (`spec_week`, to the tier list; a list with no letter reads `Holy is #4 of 9 this week`) and `Onyxia's Lair in 33 days, 8 hours, 0 min, 18 in ›` (the guild's next raid, to its raid page). Each piece shows only when true; with none the line is left out. **Owner over persona, overruled for now:** the owner asked for the GradeTile; the persona ruled the grade a spec fact that belongs to home and the tier list, so the page carries it as one link. Swapping the link for `GradeTile` is a one-line change if the owner insists.
+- C17, C18, C20. Section `Activity` below Builds seen, above the owner's History: the character's rows of the site feed (`GET /v1/feed?character=<key>&limit=5`), newest first, each a `FeedRow` (crest, the API's sentence, its age, its tag). No rows, or a failed read: the section is left out, never an empty box or a made-up row.
+- API: `/v1/feed` takes `character=<region>/<ruleset>/<slug>` with any filter (guild rows still need the viewer in the guild; an anonymised owner's uploads carry no key, so they never show); migration 0080 indexes `activity_events (character_key, occurred_at desc)`; `api/openapi.yaml` updated and the mobile clients regenerated (`web/scripts/gen-mobile-api.mjs`).
+- Mocks: `ws_character.py` draws Activity in visitor-60 and owner-60-premium and the standing line in the owner states, from `fixtures/character/{feed-60,feed-60-owner,home-60,home-34}.json` and home's `guild-home-60.json`; the parity spec routes the same files.
+
+Named, not built:
+- Row copy in the character's own voice (`Simmed Holy: 912 HPS, up 31 from last sim`): the API writes one sentence per event for every reader, naming the character; a per-page rewording needs the facts as fields, not segments.
+- The pending import sim row (`Sim running, about 2 min`): `/v1/home` `import_sim.state` has it, the feed does not; left for a follow-up.
+- A visitor's view of the guild rank: the ladder is members only.

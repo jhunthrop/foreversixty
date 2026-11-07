@@ -1,20 +1,25 @@
 {
   "comment": "The character states the parity gate checks (web/tests/e2e/parity-character.spec.ts) at 1440 x 1000. ws_character.py renders one mock per state from web/tests/e2e/fixtures/character/ and fixtures/home (character_fixtures.py), the files the spec routes.",
-  "viewport": { "width": 1440, "height": 1000 },
+  "viewport": {
+    "width": 1440,
+    "height": 1000
+  },
   "states": [
     {
       "id": "visitor-60",
       "mock": "web-character-visitor-60.html",
       "path": "/character/us/hardcore/elyra-duskvale",
       "character": "character-60.json",
-      "rating": "rating-60.json"
+      "rating": "rating-60.json",
+      "feed": "feed-60.json"
     },
     {
       "id": "owner-34",
       "mock": "web-character-owner-34.html",
       "path": "/character/us/normal/felsnap",
       "character": "character-34.json",
-      "me": "me-34.json"
+      "me": "me-34.json",
+      "home": "home-34.json"
     },
     {
       "id": "owner-60-premium",
@@ -22,7 +27,10 @@
       "path": "/character/us/hardcore/elyra-duskvale",
       "character": "character-60.json",
       "rating": "rating-60.json",
-      "me": "me-60.json"
+      "me": "me-60.json",
+      "feed": "feed-60-owner.json",
+      "home": "home-60.json",
+      "guild": "guild-home-60.json"
     },
     {
       "id": "no-score",
@@ -35,7 +43,8 @@
       "mock": "web-character-unread.html",
       "path": "/character/us/normal/felsnap",
       "character": "character-34-unread.json",
-      "me": "me-34-unread.json"
+      "me": "me-34-unread.json",
+      "home": "home-34.json"
     },
     {
       "id": "not-found",
