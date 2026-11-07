@@ -351,7 +351,11 @@ jobs:
   build-mac:
     needs: [test, version]
     if: ${{ !cancelled() && needs.test.result == 'success' && needs.version.outputs.release == 'true' }}
-    runs-on: macos-14
+    # macos-latest, the standard Apple silicon image: macos-14 is gone ("The configuration
+    # 'macos-14-arm64-us-default' is not supported", 0.2.37's first run, 2026-11-07). Only Xcode's
+    # command line tools are used (clang, lipo, codesign, notarytool, stapler, hdiutil), so any
+    # image's Xcode does.
+    runs-on: macos-latest
     timeout-minutes: 60
     defaults: { run: { shell: bash, working-directory: companion } }
     env:
