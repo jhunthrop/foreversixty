@@ -237,12 +237,12 @@ label:has(input[type='checkbox']:disabled) {
   }
 }
 
-/* The button label, direction B: uppercase 13px 700 .07em in the body face. */
+/* The button label: 13px 700 in the body face, in sentence case (web layout spec 2026-11-05 §3.5;
+   owner 2026-11-07: uppercase letter-spaced buttons are the old style). */
 @utility button-label {
   font-size: 13px;
   font-weight: 700;
-  letter-spacing: var(--tracking-button);
-  text-transform: uppercase;
+  letter-spacing: 0.01em;
 }
 
 /* The band's ember sky (polish spec 4.4, direction B). */

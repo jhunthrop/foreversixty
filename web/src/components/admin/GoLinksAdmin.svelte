@@ -153,7 +153,7 @@
 {#snippet copyButton(rowSlug: string)}
   <button
     type="button"
-    class="{button('secondary', 'sm', true)} min-w-[76px] shrink-0"
+    class="{button('secondary', 'sm')} min-w-[76px] shrink-0"
     aria-label={copy.copyLabel(rowSlug)}
     onclick={() => copyLink(rowSlug)}
     data-testid={`links-copy-${rowSlug}`}

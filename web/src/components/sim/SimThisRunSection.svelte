@@ -148,15 +148,14 @@
   <div class="flex flex-wrap gap-2 pt-5">
     <Button
       size="sm"
-      sentence
       disabled={gameCode === ''}
       onclick={() => void gameCopier.copy(gameCode)}
       testid="sim-saved-copy-for-game">{copyForGameLabel(gameState)}</Button
     >
-    <Button size="sm" sentence onclick={() => void jsonCopier.copy(resultJson())} testid="sim-copy-json"
+    <Button size="sm" onclick={() => void jsonCopier.copy(resultJson())} testid="sim-copy-json"
       ><span aria-live="polite">{jsonLabel}</span></Button
     >
-    <Button size="sm" sentence onclick={downloadJson} testid="sim-download-json">{copy.downloadJson}</Button>
+    <Button size="sm" onclick={downloadJson} testid="sim-download-json">{copy.downloadJson}</Button>
   </div>
   {#if gameState === 'failed'}
     <p class="text-muted pt-2 text-[13px]" role="status" data-testid="sim-saved-copy-for-game-failed">
