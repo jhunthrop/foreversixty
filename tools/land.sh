@@ -6,6 +6,12 @@
 # which the remote refuses unless it is a fast-forward), then deletes the land branch. The
 # push to main starts main's own runs and deploys like any other push.
 #
+# Every workflow the batch should start (tools/land_workflows.py: its push branches match
+# the land branch and its paths admit a changed file) must have a run. One that never
+# started, as when the land branch's head sha was already on the remote and the push carried
+# no commits for the path filters to see, is started with workflow_dispatch and waited for;
+# the landing never passes on the workflows that happened to start.
+#
 #   tools/land.sh land/7
 #
 # Exit status: 0 landed; 1 a check failed, timed out or the push failed; 2 main moved since
@@ -23,6 +29,7 @@ readonly REMOTE=${REMOTE:-origin}
 readonly POLL=${LAND_POLL_SECONDS:-30}
 readonly SETTLE=${LAND_SETTLE_SECONDS:-90}
 readonly TIMEOUT=${LAND_TIMEOUT_SECONDS:-5400}
+readonly EXPECTED=${LAND_EXPECTED:-"$(dirname "$0")/land_workflows.py"}
 # A completed job or run with any other conclusion failed the landing.
 readonly GREEN_CONCLUSIONS='["success","skipped","neutral"]'
 
@@ -56,10 +63,40 @@ retry() {
 	return 1
 }
 
-# runs_json <branch> <sha>: every push run on the branch for the sha, as gh prints them.
+# runs_json <branch> <sha>: every push or workflow_dispatch run on the branch for the sha.
 runs_json() {
-	"$GH" run list --branch "$1" --commit "$2" --event push --limit 200 \
-		--json databaseId,name,status,conclusion
+	"$GH" run list --branch "$1" --commit "$2" --limit 200 \
+		--json databaseId,name,status,conclusion,event |
+		jq '[.[] | select(.event == "push" or .event == "workflow_dispatch")]'
+}
+
+# expected_workflows <branch> <sha>: "<file>\t<name>" per workflow the batch should start.
+expected_workflows() {
+	"$GIT" fetch -q "$REMOTE" main &&
+		"$EXPECTED" "$2" "$1" FETCH_HEAD
+}
+
+# missing_workflows <expected> <runs json>: the expected lines no run carries the name of.
+missing_workflows() {
+	local file name names
+	names=$(jq -r '.[].name' <<<"$2")
+	while IFS=$'\t' read -r file name; do
+		[[ -n $file ]] || continue
+		grep -qxF -- "$name" <<<"$names" || printf '%s\t%s\n' "$file" "$name"
+	done <<<"$1"
+}
+
+# dispatch_missing <branch> <missing>: starts each missing workflow on the branch.
+dispatch_missing() {
+	local file name
+	while IFS=$'\t' read -r file name; do
+		[[ -n $file ]] || continue
+		log "$name never started on $1 (no push run for its paths); dispatching $file"
+		"$GH" workflow run "$file" --ref "$1" || {
+			log "could not dispatch $file on $1"
+			return 1
+		}
+	done <<<"$2"
 }
 
 # run_jobs_json <id>: the run's name, status and conclusion and its jobs'.
@@ -83,6 +120,11 @@ failed_lines() {
 # job failed (1, the failed jobs listed) or the timeout passed (1).
 wait_for_checks() {
 	local branch=$1 sha=$2 start now runs id jobs lines failed pending count stable_since=-1 last_count=-1
+	local expected missing dispatched=''
+	expected=$(expected_workflows "$branch" "$sha") || {
+		log "could not work out which workflows $sha should start"
+		return 1
+	}
 	start=$SECONDS
 	while :; do
 		runs=$(retry runs_json "$branch" "$sha")
@@ -108,12 +150,18 @@ wait_for_checks() {
 			stable_since=$now
 			last_count=$count
 		fi
-		if ((count > 0 && pending == 0 && now - stable_since >= SETTLE)); then
+		missing=$(missing_workflows "$expected" "$runs")
+		if ((pending == 0 && now - stable_since >= SETTLE)) && [[ -n $missing && -z $dispatched ]]; then
+			dispatch_missing "$branch" "$missing" || return 1
+			dispatched=1
+			stable_since=$now
+		elif ((count > 0 && pending == 0 && now - stable_since >= SETTLE)) && [[ -z $missing ]]; then
 			log "all $count check workflows green on $sha"
 			return 0
 		fi
 		if ((now - start >= TIMEOUT)); then
 			log "timed out after ${TIMEOUT}s: $count runs, $pending still running on $sha"
+			[[ -z $missing ]] || log "never started: $(cut -f2 <<<"$missing" | paste -sd, -)"
 			return 1
 		fi
 		log "$count runs, $pending running; waiting"
