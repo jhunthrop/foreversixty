@@ -97,6 +97,16 @@
   .is-pending .checkout-plan {
     visibility: hidden;
   }
+  /* checkout.astro's head script marks a guild checkout before first paint: its title, size line
+     and trial (the LCP text) show from the static render; only the price waits for the URL read
+     (Raid guild's differs). */
+  :global(html[data-checkout-step='guild']) .is-pending :global(h1),
+  :global(html[data-checkout-step='guild']) .is-pending .checkout-plan {
+    visibility: visible;
+  }
+  :global(html[data-checkout-step='guild']) .is-pending .checkout-plan-fig {
+    visibility: hidden;
+  }
   @media (min-width: 900px) {
     .checkout-plan {
       align-items: flex-end;

@@ -8,7 +8,6 @@
 <script lang="ts">
   import {
     ACCOUNT_FAILED,
-    battlenetStartUrl,
     companionsOf,
     fetchMeOnce,
     listDevices,
@@ -35,7 +34,6 @@
   import { premiumRowLinked, premiumRowValue, premiumRowVisible } from '../../lib/account/notifications';
   import { accountPlanLine, onPremium } from '../../lib/account/plan-line';
   import { compareSnapshot, takeSnapshot, type RefreshResult } from '../../lib/account/refresh-snapshot';
-  import { accountSignInCopy } from '../../lib/account/signin-copy';
   import { openPortal } from '../../lib/billing/api';
   import { checkoutCopy } from '../../lib/billing/copy';
   import type { MeSeatOffer } from '../../lib/billing/contract';
@@ -52,7 +50,6 @@
   import { leaveGuild, updateConsent, type GuildConsent } from '../../lib/guild/api';
   import { API_BASE_URL } from '../../lib/planner/config';
   import { createPairingPoll, type PairingPoll } from '../../lib/reports/pairing-poll';
-  import { myReportsCopy } from '../../lib/reports/my-reports-copy';
   import { button } from '../../lib/ui/button';
   import Notice from '../ui/Notice.svelte';
   import Page from '../ui/Page.svelte';
@@ -64,13 +61,13 @@
   import AccountGuildBlock from './AccountGuildBlock.svelte';
   import AccountHead from './AccountHead.svelte';
   import AccountLoading from './AccountLoading.svelte';
+  import AccountOut from './AccountOut.svelte';
   import AccountPremiumBlock from './AccountPremiumBlock.svelte';
   import AccountSeatOffer from './AccountSeatOffer.svelte';
   import AccountYou from './AccountYou.svelte';
   import CharacterList from './CharacterList.svelte';
 
   /** Where a sign-in from this page comes back to. */
-  const SIGN_IN_NEXT = '/account?signed_in=1';
   const CONSENT_SAVED_MS = 3000;
 
   // One `/v1/me` read, shared with every other island through the client cache (lib/data/query.ts).
@@ -364,17 +361,7 @@
       </Section>
     </Page>
   {:else if me === null}
-    <Page layout="form" testid="account-form">
-      {#snippet header()}<PageHeader title={accountPageCopy.title} testid="account-head" />{/snippet}
-      <Plate label="Sign in">
-        <div class="flex flex-col items-start gap-3 px-5 pt-4 pb-5" data-testid="account-signin">
-          <p class="text-[15px] leading-6">{accountSignInCopy.reason}</p>
-          <a class={button('primary')} href={battlenetStartUrl(SIGN_IN_NEXT)} data-testid="battlenet"
-            >{myReportsCopy.signInAction}</a
-          >
-        </div>
-      </Plate>
-    </Page>
+    <AccountOut />
   {:else}
     <Page layout="split" testid="account-grid">
       {#snippet header()}

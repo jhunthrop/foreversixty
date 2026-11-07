@@ -92,26 +92,8 @@ const HEIGHT = 1000;
 const MOCK_HEAD_INSET =
   'below 768 the mock puts the 18 px page inset outside the head region (.pc), PageHeader inside it; ' +
   'a primitive/mock-library question, the same drift parity-planner.spec.ts and parity-setup.spec.ts list';
-const SECTION_HEAD_GAP =
-  "ws_premium.py's page CSS (`section>.sec-h+*{margin-top:12px}`, the premium and account pages' own " +
-  'rhythm) also reaches the planner Sections b_page borrows from ws_planner.py, 12 px under each head ' +
-  'that the planner mocks (web-planner*) and the built ui/Section do not have; the regions below them ' +
-  'move by the sum. A mock-library difference: scoping that rule away from the planner blocks clears it';
 const EXPECTED_DRIFT: Readonly<Record<string, { failures: readonly string[]; why: string }>> = {
-  'b-1440': {
-    failures: ['section-in-the-game:box', 'section-guide-build:box'],
-    why: SECTION_HEAD_GAP,
-  },
-  'b-390': {
-    failures: [
-      'head:box',
-      'section-point-order:box',
-      'section-in-the-game:box',
-      'section-guide-build:box',
-      'site-footer:box',
-    ],
-    why: `${MOCK_HEAD_INSET}; ${SECTION_HEAD_GAP}`,
-  },
+  'b-390': { failures: ['head:box'], why: MOCK_HEAD_INSET },
   'b-missing-390': { failures: ['head:box'], why: MOCK_HEAD_INSET },
 };
 
