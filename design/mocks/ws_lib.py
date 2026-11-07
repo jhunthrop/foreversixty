@@ -72,10 +72,10 @@ h1,h2,h3,p,ul,dl,dd{margin:0}ul{padding:0;list-style:none}
 .sh{display:flex;align-items:baseline;gap:12px;padding-bottom:12px;border-bottom:1px solid var(--line-soft);margin-bottom:16px}
 .sh .t-small{margin-left:auto}
 /* buttons: one primary per view */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:44px;padding:0 18px;border:1px solid var(--line);border-radius:4px;background:transparent;color:var(--strong);font:700 13px/16px var(--font-body);letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:44px;padding:0 18px;border:1px solid var(--line);border-radius:4px;background:transparent;color:var(--strong);font:700 13px/16px var(--font-body);letter-spacing:.01em;white-space:nowrap}
 .btn:hover{border-color:var(--gold);color:var(--gold-hover)}
 .btn.primary{background:var(--gold);border-color:var(--gold);color:#17110a}.btn.primary:hover{background:var(--gold-hover);color:#17110a}
-.btn.sm{height:36px;padding:0 12px;font-size:12px}
+.btn.sm{height:36px;padding:0 18px}
 .link{font-weight:600}
 .pill{display:inline-flex;align-items:center;height:20px;padding:0 6px;border-radius:3px;font:700 12px/16px var(--font-body);letter-spacing:.06em;text-transform:uppercase;border:1px solid var(--gold);color:var(--gold)}
 .ic{border-radius:5px;border:1px solid #4a4030;background:#10141d;flex:none;display:inline-block;object-fit:cover}
