@@ -1,18 +1,24 @@
 // web/src/lib/setup/state.ts
-// The one read /setup's islands share: who is signed in and which companions the account holds.
-// The progress chips and the three done lines all ask for it; the answer is fetched once.
+// The one read /setup's island makes: who is signed in and which companions the account holds.
+// A 401 is signed out; any other failure is `error`, never "signed out" (setup spec B1).
 import { fetchMeOnce, listCompanions, type Device, type Me } from '../account/api';
-import type { SetupState } from './progress';
+import type { SessionState } from './steps';
 
-let pending: Promise<SetupState> | null = null;
+export interface SetupRead {
+  session: Exclude<SessionState, 'loading'>;
+  me: Me | null;
+  /** Null when the device list did not load: no companion line is claimed. */
+  devices: readonly Device[] | null;
+}
 
-/** Signed out is `{ me: null, devices: [] }`; a device list that would not load stays null, so no companion line is claimed. */
-export function loadSetupState(): Promise<SetupState> {
-  pending ??= (async (): Promise<SetupState> => {
-    const me: Me | null = await fetchMeOnce().catch(() => null);
-    if (me === null) return { me: null, devices: [] };
-    const devices: Device[] | null = await listCompanions().catch(() => null);
-    return { me, devices };
-  })();
-  return pending;
+export async function loadSetupState(fetchMe: () => Promise<Me | null> = fetchMeOnce): Promise<SetupRead> {
+  let me: Me | null;
+  try {
+    me = await fetchMe();
+  } catch {
+    return { session: 'error', me: null, devices: null };
+  }
+  if (me === null) return { session: 'out', me: null, devices: [] };
+  const devices = await listCompanions().catch(() => null);
+  return { session: 'in', me, devices };
 }

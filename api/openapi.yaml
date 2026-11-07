@@ -1546,6 +1546,19 @@ components:
           description: >-
             When the Battle.net import last ran. Every Battle.net sign-in imports the account's
             Forever characters (us, eu, tw); omitted when it never ran.
+        bnet_import:
+          type: object
+          title: BnetImport
+          description: >-
+            The last Battle.net import's state, omitted until a sign-in has tracked one. Sign-in
+            records running when its import starts; the import ends inside the sign-in's 5 s
+            budget or in a background run of up to 2 minutes, then records done (no error) or
+            failed. A running state older than 3 minutes 5 seconds reads as failed: the instance
+            running it stopped. Poll /v1/me while it reads running.
+          required: [state, at]
+          properties:
+            state: { type: string, enum: [running, done, failed] }
+            at: { type: string, format: date-time, description: When this state was recorded. }
         server_sims:
           type: object
           title: ServerSimsUsage

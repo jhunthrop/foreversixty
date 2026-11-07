@@ -168,34 +168,28 @@ for (const size of SIZES) {
 test.describe('/setup picture at 390', () => {
   test.use({ viewport: { width: 390, height: 844 } });
 
-  test('is the title and sub only, readable, and labelled Example when signed out', async ({ page }) => {
+  test('is the whole Status capture at its aspect, labelled Example when signed out', async ({ page }) => {
     await signedOut(page);
     await page.goto('/setup');
     const frame = page.getByTestId('setup-companion-capture');
     await frame.scrollIntoViewIfNeeded();
-    await expect(page.getByTestId('setup-companion-capture-label')).toHaveText('Example');
+    await expect(frame.getByText('Example')).toBeVisible();
     const img = frame.locator('img');
     await expect
       .poll(() => img.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0))
       .toBe(true);
-    const info = await img.evaluate((el: HTMLImageElement) => ({
-      src: el.currentSrc,
-      width: el.getBoundingClientRect().width,
-    }));
-    expect(info.src).toContain('companion-status-phone');
-    // The sub line is 26 px tall in the 734 px crop.
-    expect((26 * info.width) / 734).toBeGreaterThanOrEqual(11);
+    const box = await img.evaluate((el: HTMLImageElement) => el.getBoundingClientRect().toJSON());
+    expect(box.width).toBeLessThanOrEqual(390);
+    expect(box.width / box.height).toBeCloseTo(1600 / 436, 0);
     await page.waitForLoadState('networkidle');
     await shot(page, 'setup-signed-out-390', true);
   });
 
-  test('step notes balance their last line', async ({ page }) => {
+  test('step lines wrap pretty: the body text balances its last line', async ({ page }) => {
     await signedOut(page);
     await page.goto('/setup');
-    for (const id of ['setup-how-it-arrives', 'setup-companion-note']) {
-      expect(await page.getByTestId(id).evaluate((el) => getComputedStyle(el).textWrap)).toMatch(
-        /pretty|balance/,
-      );
-    }
+    expect(
+      await page.getByTestId('setup-companion-lead').evaluate((el) => getComputedStyle(el).textWrap),
+    ).toMatch(/pretty|balance/);
   });
 });

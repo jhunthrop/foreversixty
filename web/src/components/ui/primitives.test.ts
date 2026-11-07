@@ -49,6 +49,18 @@ describe('Page', () => {
     });
     expect(ledger).not.toContain('ui-page-rail');
   });
+
+  it('form: one main column and no rail, whatever the caller passes', () => {
+    const form = html(Page, {
+      layout: 'form',
+      header: text('<header>H</header>'),
+      rail: text('<div>R</div>'),
+      children: text('<div>M</div>'),
+    });
+    expect(form).toContain('data-layout="form"');
+    expect(form).toMatch(/<div class="ui-page-main[^"]*"><div>M<\/div>/);
+    expect(form).not.toContain('ui-page-rail');
+  });
 });
 
 describe('PageHeader', () => {

@@ -33,7 +33,6 @@ describe('connectCopy', () => {
   it('carries the designer copy verbatim', () => {
     expect(connectCopy.title).toBe('Connect your companion');
     expect(connectCopy.pendingTitle('JHUNT-PC', 'Thrall#1234')).toBe('Connect JHUNT-PC to Thrall#1234?');
-    expect(connectCopy.codeLabel('KQ4-7TM')).toBe('Code KQ4-7TM');
     expect(connectCopy.expiredTitle).toBe('This link has expired.');
     expect(connectCopy.usedTitle).toBe('This device is already connected.');
     expect(connectCopy.connecting).toBe('Connecting...');

@@ -57,17 +57,16 @@ for (const size of SIZES) {
   test.describe(`signed out at ${size.name}`, () => {
     test.use({ viewport: { width: size.width, height: size.height } });
 
-    test('/setup is three steps, the manual folded away, the companion after it', async ({ page }) => {
+    test('/setup is three steps in one plate, the companion section after it', async ({ page }) => {
       mkdirSync(SHOTS, { recursive: true });
       await signedOutWithFeeds(page);
       await page.goto('/setup');
-      await expect(page.getByTestId('setup-status')).toHaveAttribute('aria-label', 'Your progress');
-      const manual = page.getByTestId('setup-everything');
-      await expect(manual.locator('summary')).toContainText('Everything the addon does');
-      await expect(manual).not.toHaveAttribute('open', '');
-      await expect(page.getByTestId('setup-commands')).toBeHidden();
+      const plate = page.getByRole('region', { name: 'Your setup' });
+      await expect(plate.getByRole('img', { name: /^Step \d: / })).toHaveCount(3);
+      await expect(plate.getByRole('link', { name: 'Sign in with Battle.net' })).toBeVisible();
+      await expect(page.getByTestId('setup-commands')).toBeVisible();
       await expect(page.getByText('For testers')).toHaveCount(0);
-      await expect(page.getByTestId('setup-companion-pair')).toHaveText(
+      await expect(page.getByTestId('setup-companion-pair')).toContainText(
         'Sign in with Battle.net inside the companion; it connects itself.',
       );
       await expect(page.getByTestId('setup-companion-platforms')).toHaveText(

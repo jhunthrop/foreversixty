@@ -46,6 +46,6 @@ describe('AddonPasteSave', () => {
     const { body } = render(AddonPasteSave, { props: { signedIn: true, code: CODE } });
     const match = /<button[^>]*data-testid="addon-paste-save-button"[^>]*>/.exec(body);
     if (match === null) throw new Error('save button not rendered');
-    expect(match[0]).not.toContain('disabled');
+    expect(match[0]).not.toMatch(/\sdisabled(?=[\s=>])/);
   });
 });

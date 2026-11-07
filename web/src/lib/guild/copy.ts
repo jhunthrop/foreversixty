@@ -162,6 +162,8 @@ export const guildClaimCopy = {
     `You are a member of ${guildName}, so only its guild master can claim it. Send them this page's link.`,
   // After a save on /setup that came from a claim link (spec section 9.3).
   backToClaim: (guildName: string): string => `Back to ${possessive(guildName)} claim`,
+  // /setup's Notice over that link, once the account knows a character in the guild (setup spec 4.6).
+  setupClaimReady: (guildName: string): string => `The site knows a character of yours in ${guildName}.`,
   // Signed in, but no character of theirs in this guild as far as the site knows.
   notAMember:
     'The site does not know a character of yours in this guild. Save one on Get set up and this page will know your rank.',

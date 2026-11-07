@@ -13,6 +13,8 @@ const b = await chromium.launch();
 for (const w of widths.split(",").map(Number)) {
   const pg = await (await b.newContext({ viewport: { width: w, height: Number(vh) || (w < 500 ? 844 : 1000) } })).newPage();
   await pg.goto(`file://${SRC}${name}.html`, { waitUntil: "networkidle" });
+  // every image painted before the capture (a tall page's last captures were caught blank)
+  await pg.evaluate(() => Promise.all([...document.images].map((i) => i.decode().catch(() => null))));
   await pg.waitForTimeout(400);
   await pg.screenshot({ path: `${OUT}${name}-${w}.png`, fullPage: true });
   await pg.screenshot({ path: `${OUT}${name}-${w}-fold.png`, fullPage: false });

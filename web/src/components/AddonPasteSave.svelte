@@ -16,8 +16,9 @@
   import { missingPasteSaveField, type PasteSaveField } from '../lib/addon/paste-save';
   import { REGIONS, RULESETS, rulesetFromRealm } from '../lib/characters';
   import type { FS1Build } from '../lib/planner/fs1';
-  import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
   import { BUSY_CLASS } from '../lib/ui/busy';
+  import Button from './ui/Button.svelte';
+  import Field from './ui/Field.svelte';
   import Select from './ui/Select.svelte';
 
   let { signedIn, code, character }: { signedIn: boolean; code: string; character?: FS1Build['character'] } =
@@ -69,15 +70,14 @@
 </script>
 
 {#if signedIn}
-  <div class="flex flex-col gap-2" data-testid="addon-paste-save">
-    <label class="quiet-label" for="addon-paste-name">{addonCopy.pasteNameLabel}</label>
-    <input
+  <div class="flex flex-col items-start gap-3" data-testid="addon-paste-save">
+    <Field
       id={FIELD_IDS.name}
-      class="border-line-warm bg-raised rounded-control text-text h-11 border px-3 text-[14px]"
+      label={addonCopy.pasteNameLabel}
       bind:value={name}
-      aria-invalid={missing === 'name' ? 'true' : undefined}
+      invalid={missing === 'name'}
       disabled={saved}
-      data-testid="addon-paste-name"
+      testid="addon-paste-name"
     />
     <div class="flex flex-wrap gap-3">
       <Select
@@ -105,20 +105,17 @@
         testid="addon-paste-ruleset"
       />
     </div>
-    <button
-      type="button"
-      class={`${SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong w-fit px-4 ${busy ? BUSY_CLASS : ''}`}
-      disabled={busy || saved}
-      aria-busy={busy}
-      onclick={onSave}
-      data-testid="addon-paste-save-button"
-    >
-      {saved ? addonCopy.pasteSaved : addonCopy.pasteSaveAction}
-    </button>
+    <span class={busy ? BUSY_CLASS : ''} aria-busy={busy}>
+      <Button disabled={busy || saved} onclick={() => void onSave()} testid="addon-paste-save-button">
+        {saved ? addonCopy.pasteSaved : addonCopy.pasteSaveAction}
+      </Button>
+    </span>
     {#if error !== ''}
-      <p class="text-strong text-[13px]" role="alert" data-testid="addon-paste-save-error">{error}</p>
+      <p class="text-strong text-[14px] leading-5" role="alert" data-testid="addon-paste-save-error">
+        {error}
+      </p>
     {/if}
   </div>
 {:else}
-  <p class="text-muted text-[13px]" data-testid="addon-paste-signin-hint">{addonCopy.pasteSignInHint}</p>
+  <p class="text-small text-muted" data-testid="addon-paste-signin-hint">{addonCopy.pasteSignInHint}</p>
 {/if}
