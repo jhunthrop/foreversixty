@@ -87,7 +87,7 @@
       }
     },
     {
-      "notes": "Until it has five stacks, and again when it has under 3 seconds left. Each stack makes the next cast hit harder, and from 41 the bleed turns on Rend and Tear.",
+      "notes": "Until it has five stacks, and again when it has under 3 seconds left. Each stack makes the next cast hit harder, and from 36 the bleed turns on Rend and Tear.",
       "action": {
         "castSpell": {
           "spellId": {

@@ -15,19 +15,23 @@ var ladderFirstSpecs = map[string]struct {
 	"druid-feral":          {"druid", "feral", 1},
 	"druid-feral-bear":     {"druid", "feral-bear", 1},
 	"druid-restoration":    {"druid", "restoration", 2},
+	"druid-balance":        {"druid", "balance", 0},
 	"hunter-beast-mastery": {"hunter", "beast-mastery", 0},
+	"hunter-marksmanship":  {"hunter", "marksmanship", 1},
 	"hunter-survival":      {"hunter", "survival", 2},
 	"mage-arcane":          {"mage", "arcane", 0},
 	"mage-fire":            {"mage", "fire", 1},
 	"mage-frost":           {"mage", "frost", 2},
 	"paladin-holy":         {"paladin", "holy", 0},
 	"paladin-protection":   {"paladin", "protection", 1},
+	"paladin-retribution":  {"paladin", "retribution", 2},
 	"priest-discipline":    {"priest", "discipline", 0},
 	"priest-holy":          {"priest", "holy", 1},
 	"priest-shadow":        {"priest", "shadow", 2},
 	"rogue-assassination":  {"rogue", "assassination", 0},
 	"rogue-combat":         {"rogue", "combat", 1},
 	"rogue-subtlety":       {"rogue", "subtlety", 2},
+	"shaman-elemental":     {"shaman", "elemental", 0},
 	"shaman-enhancement":   {"shaman", "enhancement", 1},
 	"shaman-restoration":   {"shaman", "restoration", 2},
 	"warlock-affliction":   {"warlock", "affliction", 0},
@@ -35,6 +39,7 @@ var ladderFirstSpecs = map[string]struct {
 	"warlock-destruction":  {"warlock", "destruction", 2},
 	"warrior-arms":         {"warrior", "arms", 0},
 	"warrior-fury":         {"warrior", "fury", 1},
+	"warrior-protection":   {"warrior", "protection", 2},
 }
 
 // spineCapstoneNotDefining names a spec whose guide build's deepest talent is a filler point
@@ -76,24 +81,23 @@ func TestCuratedLadderFirstIsSound(t *testing.T) {
 		for _, node := range own.Talents {
 			byName[node.Name] = node
 		}
-		// Another tree's first-row talent with no prerequisite may be reserved too
-		// (reserveOffTree): Shadow's Wand Specialization.
+		// Another tree's talent may be reserved too (reserveOffTree): Shadow's Wand
+		// Specialization, and since sim-accuracy round 29 a deeper one once the reservation
+		// pays its row (Balance's Naturalist). The legality check below holds every level.
 		for ti, tree := range trees {
 			if ti == info.tree {
 				continue
 			}
 			for _, node := range tree.Talents {
-				if node.Tier == 0 && node.PrereqTalentID == 0 {
-					if _, taken := byName[node.Name]; !taken {
-						byName[node.Name] = node
-					}
+				if _, taken := byName[node.Name]; !taken {
+					byName[node.Name] = node
 				}
 			}
 		}
 		for _, r := range row.First {
 			node, ok := byName[r.Talent]
 			if !ok {
-				t.Errorf("%s: %q is neither a talent of its own tree (%s) nor another tree's first-row talent", spec, r.Talent, own.Name)
+				t.Errorf("%s: %q is not a talent of this class (own tree %s)", spec, r.Talent, own.Name)
 				continue
 			}
 			if targets[node.ID] < r.Rank {
@@ -194,7 +198,8 @@ func TestBeastMasteryTakesFocusedFireBeforeEnduranceTraining(t *testing.T) {
 	for _, node := range trees[0].Talents {
 		byName[node.Name] = node.ID
 	}
-	for level, want := range map[int][2]int{15: {1, 0}, 16: {2, 0}, 17: {2, 1}, 20: {2, 4}} {
+	// Sim-accuracy round 29 (walks-dps): Unleashed Fury takes 20 ahead of the fourth point.
+	for level, want := range map[int][2]int{15: {1, 0}, 16: {2, 0}, 17: {2, 1}, 20: {2, 3}} {
 		ranks, err := TalentRanksFromString(trees, LadderTalentString(trees, targets, 0, level, ForSpec("hunter-beast-mastery")))
 		if err != nil {
 			t.Fatal(err)

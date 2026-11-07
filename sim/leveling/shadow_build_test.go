@@ -79,7 +79,8 @@ func TestShadowLevelsWithWandSpecializationThenSpiritTap(t *testing.T) {
 		40: wand + "52542001201300040",
 		41: wand + "52542001201300050",
 		42: wand + "52542001201300051",
-		50: "025102000000000000-00000000000000000-52542001201300051",
+		// Sim-accuracy round 29 (walks-dps): Mental Strength before Silent Resolve's threat point.
+		50: "025003000000000000-00000000000000000-52542001201300051",
 	}
 	for level, w := range want {
 		got := LadderTalentString(trees, targets, shadowTree, level, ForSpec("priest-shadow"))

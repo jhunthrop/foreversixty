@@ -1,6 +1,83 @@
 {
   "notes": "Per-spec leveling reservations (sim-accuracy round 10). Below 60 a band's talent build is the guide's level-60 build cut down by the top-row-down walk (sim/leveling LadderTalentString). A spec listed here takes these ranks of its own tree first, in order, each once the build can legally hold it and never past the guide's own rank for that talent, then walks as before; so the ladder only ever adds points and its level-60 build is the guide's. A row is adopted only where the band builds it makes beat the plain walk's beyond error at seeds 1 and 50001 (10,000 iterations, the band's own heal profile, both factions), keep every talent the engine models only by a probe as zero, drop nothing the rotation casts and lose at no band. The evidence is in design/reviews/2026-11-03-sim-audit-round10/healprofile.md and design/reviews/2026-11-03-sim-audit-round11/healprofile.md. sim/leveling embeds a copy (make ladder-first-sync); TestEmbeddedLadderFirstMatchesCurated holds it to this file. An order-only row (owner, 2026-11-04) moves no published band: where the bands tie, real leveling play decides the order, and its reason says why in one line.",
   "specs": {
+    "druid-balance": {
+      "reason": "After Moonkin Form, Heart of the Wild 42 to 46, Naturalist (2% damage a point) 47 to 51 and Reflection 52 to 54 before Nature's Focus, which only saves casts from pushback on a target that never hits you; Subtlety (threat) last. Gains at every level 42 to 58 (sim-accuracy round 29, walks-dps lane; bare band gear, 10,000 iterations, seeds 1 and 50001, design/reviews/2026-11-07-sim-audit-round29/walksdps.md).",
+      "first": [
+        {
+          "talent": "Improved Wrath",
+          "rank": 5
+        },
+        {
+          "talent": "Genesis",
+          "rank": 2
+        },
+        {
+          "talent": "Moonglow",
+          "rank": 3
+        },
+        {
+          "talent": "Improved Moonfire",
+          "rank": 2
+        },
+        {
+          "talent": "Nature's Majesty",
+          "rank": 2
+        },
+        {
+          "talent": "Nature's Reach",
+          "rank": 2
+        },
+        {
+          "talent": "Nature's Splendor",
+          "rank": 1
+        },
+        {
+          "talent": "Insect Swarm",
+          "rank": 1
+        },
+        {
+          "talent": "Vengeance",
+          "rank": 5
+        },
+        {
+          "talent": "Improved Starfire",
+          "rank": 1
+        },
+        {
+          "talent": "Nature's Grace",
+          "rank": 1
+        },
+        {
+          "talent": "Eclipse",
+          "rank": 1
+        },
+        {
+          "talent": "Moonfury",
+          "rank": 4
+        },
+        {
+          "talent": "Moonkin Form",
+          "rank": 1
+        },
+        {
+          "talent": "Moonfury",
+          "rank": 5
+        },
+        {
+          "talent": "Heart of the Wild",
+          "rank": 5
+        },
+        {
+          "talent": "Naturalist",
+          "rank": 5
+        },
+        {
+          "talent": "Reflection",
+          "rank": 3
+        }
+      ]
+    },
     "druid-feral": {
       "reason": "The plain walk spends Savage Fury at 23 and 24 while Sharpened Claws (3% crit a point in Cat Form) waits for 26, and Predatory Discipline, which only changes Ferocious Bite (the cat Bites little before raid gear, and the ladder's bare fight never does), at 31 ahead of Leader of the Pack, Blood Frenzy, Natural Instinct and Rend and Tear. This order takes Shredding Attacks at 20 to 22 (its first point does nothing alone, but taking Sharpened Claws first at 20 costs 1.9 to 3.0% at 21 and 22, where the second point makes Shred the builder), Sharpened Claws at 23 and 24, Feral Charge at 25 (in Forever it is also a Cat Form leap behind the target, the only way a solo cat Shreds a mob that faces it), Savage Fury, Predatory Strikes, then Leader of the Pack, Blood Frenzy, Natural Instinct and Rend and Tear, with Predatory Discipline at 39 to open Shifting Power. Bare band 20 and 30 gear, 10,000 iterations, seeds 1 and 50001, both factions: 23 +1.4%, 24 +2.7%, 26 +1.3%, 31 to 33 +3.0 to 3.4%, 34 and 35 +0.7 to 0.9%, 36 to 38 +0.5%; levels 20, 25, 27 to 30 and 40 do not change (sim-accuracy round 28, hybrids lane).",
       "first": [
@@ -55,23 +132,83 @@
       ]
     },
     "druid-feral-bear": {
-      "reason": "The rotation casts Lacerate (the 15-point row, rank 1 at 25, behind Savage Fury 2) and Primal Bite (the 30-point row, rank 1 at 40, behind Leader of the Pack). A level 30 druid's 21 points hold Lacerate and a level 40 druid's 31 hold Primal Bite, but the plain walk spends them on Shredding Attacks and Blood Frenzy. Taking each as soon as it fits raises threat on the tank fight beyond error at bands 20 (Savage Fury's first rank for Feral Swiftness's, about 5%), 30 (about 41%) and 40 (about 19%), both factions, seeds 1 and 50001 (sim-accuracy round 13, hybrids); damage taken rises about 1 to 2% without the dodge points. Bands 50 and 60 already carry both and do not change.",
+      "reason": "The 10-point row is paid with Thick Hide 3 and Feral Swiftness 1 instead of Feral Swiftness 2 and Feral Instinct 2 (Swipe is a two-target line): threat ties at 16 to 20 and chance of death at 20 falls by half. Savage Fury, Sharpened Claws, Shredding Attacks, Lacerate at 25, Blood Frenzy, Leader of the Pack at 30, Predatory Strikes, Natural Instinct, Rend and Tear from 36 and Primal Bite at 40 (round 13's reservations kept), then Heart of the Wild and Naturalist (10% damage, so threat) before Natural Reaction; Feral Instinct last. Threat gains at every level 21 to 59 on the tank fight (sim-accuracy round 29, walks-dps lane; bare band gear, 10,000 iterations, seeds 1 and 50001, design/reviews/2026-11-07-sim-audit-round29/walksdps.md).",
       "first": [
+        {
+          "talent": "Ferocity",
+          "rank": 5
+        },
+        {
+          "talent": "Furor",
+          "rank": 1
+        },
+        {
+          "talent": "Thick Hide",
+          "rank": 3
+        },
+        {
+          "talent": "Feral Swiftness",
+          "rank": 1
+        },
         {
           "talent": "Savage Fury",
           "rank": 2
+        },
+        {
+          "talent": "Sharpened Claws",
+          "rank": 2
+        },
+        {
+          "talent": "Shredding Attacks",
+          "rank": 1
         },
         {
           "talent": "Lacerate",
           "rank": 1
         },
         {
+          "talent": "Shredding Attacks",
+          "rank": 3
+        },
+        {
+          "talent": "Blood Frenzy",
+          "rank": 2
+        },
+        {
           "talent": "Leader of the Pack",
           "rank": 1
         },
         {
+          "talent": "Predatory Strikes",
+          "rank": 3
+        },
+        {
+          "talent": "Natural Instinct",
+          "rank": 2
+        },
+        {
+          "talent": "Rend and Tear",
+          "rank": 4
+        },
+        {
           "talent": "Primal Bite",
           "rank": 1
+        },
+        {
+          "talent": "Rend and Tear",
+          "rank": 5
+        },
+        {
+          "talent": "Heart of the Wild",
+          "rank": 5
+        },
+        {
+          "talent": "Naturalist",
+          "rank": 5
+        },
+        {
+          "talent": "Natural Reaction",
+          "rank": 5
         }
       ]
     },
@@ -97,8 +234,85 @@
       ]
     },
     "hunter-beast-mastery": {
-      "reason": "Order only (owner, 2026-11-04; sim-accuracy round 15, hunter): Focused Fire, 2% more damage for you and the pet, opens at 15 and outvalues the last Endurance Training points (pet health and armor) on every pull from 15 to 18; the published bands hold the same points either way.",
+      "reason": "Focused Fire at 15 and 16 (round 15, order only), then Unleashed Fury 20 to 24 and Ferocity 25 to 29 before Endurance Training's fourth point and Bestial Swiftness (pet health and run speed); Bestial Discipline 30 and 31, Bestial Swiftness and Intimidation 32 and 33 for Bestial Wrath, Frenzy 35 to 39. Gains at every level 20 to 33 (sim-accuracy round 29, walks-dps lane; bare band gear, 10,000 iterations, seeds 1 and 50001, design/reviews/2026-11-07-sim-audit-round29/walksdps.md).",
       "first": [
+        {
+          "talent": "Focused Fire",
+          "rank": 2
+        },
+        {
+          "talent": "Unleashed Fury",
+          "rank": 5
+        },
+        {
+          "talent": "Ferocity",
+          "rank": 5
+        },
+        {
+          "talent": "Bestial Discipline",
+          "rank": 2
+        },
+        {
+          "talent": "Bestial Swiftness",
+          "rank": 1
+        },
+        {
+          "talent": "Intimidation",
+          "rank": 1
+        },
+        {
+          "talent": "Frenzy",
+          "rank": 5
+        },
+        {
+          "talent": "Bestial Wrath",
+          "rank": 1
+        }
+      ]
+    },
+    "hunter-marksmanship": {
+      "reason": "Careful Aim (Intellect as attack power) before Efficiency at 15 to 19, and after Ranged Weapon Specialization, Deadly Aspects then Focused Fire (2% all damage) at 46 and 47 before the Endurance Training points that only open Unleashed Fury. Gains at every level 15 to 23 and 46 to 49 (sim-accuracy round 29, walks-dps lane; bare band gear, 10,000 iterations, seeds 1 and 50001, design/reviews/2026-11-07-sim-audit-round29/walksdps.md).",
+      "first": [
+        {
+          "talent": "Lethal Attacks",
+          "rank": 5
+        },
+        {
+          "talent": "Careful Aim",
+          "rank": 5
+        },
+        {
+          "talent": "Efficiency",
+          "rank": 5
+        },
+        {
+          "talent": "Rapid Killing",
+          "rank": 2
+        },
+        {
+          "talent": "Trueshot Aura",
+          "rank": 1
+        },
+        {
+          "talent": "Mortal Shots",
+          "rank": 5
+        },
+        {
+          "talent": "Rapid Recuperation",
+          "rank": 2
+        },
+        {
+          "talent": "Barrage",
+          "rank": 1
+        },
+        {
+          "talent": "Ranged Weapon Specialization",
+          "rank": 5
+        },
+        {
+          "talent": "Deadly Aspects",
+          "rank": 5
+        },
         {
           "talent": "Focused Fire",
           "rank": 2
@@ -139,8 +353,16 @@
       ]
     },
     "mage-arcane": {
-      "reason": "The rotation casts Arcane Blast (the 10-point row, learned at 20). The plain walk spends level 20's eleventh point on Arcane Resilience's armor and reaches Arcane Blast only at 27. Taking Arcane Concentration's five ranks and then Arcane Blast as soon as they fit puts Blast at 20 in place of that armor point: +0.2% at band 20 and +17 to +21% at 25, at seeds 1 and 50001, both factions; the other bands do not change (sim-accuracy round 15, mage wave 2).",
+      "reason": "Arcane Resilience (armor) and Arcane Geometry (range) are tolls Arcane Power needs by 40, not points to take at 21 and 24: Missile Barrage 21 and 22, Arcane Impact 23 to 25, Arcane Meditation 26 to 28, Arcane Resilience 29, Presence of Mind 30, Arcane Mind, Arcane Instability, Arcane Geometry 39, Arcane Power 40. From 41 Precision first (6% spell hit), then Incineration and Improved Frostbolt. Round 15's Arcane Concentration and Arcane Blast at 20 stay. Gains at every level 21 to 51 (sim-accuracy round 29, walks-dps lane; bare band gear, 10,000 iterations, seeds 1 and 50001, design/reviews/2026-11-07-sim-audit-round29/walksdps.md).",
       "first": [
+        {
+          "talent": "Wand Specialization",
+          "rank": 1
+        },
+        {
+          "talent": "Improved Channeling",
+          "rank": 4
+        },
         {
           "talent": "Arcane Concentration",
           "rank": 5
@@ -148,11 +370,51 @@
         {
           "talent": "Arcane Blast",
           "rank": 1
+        },
+        {
+          "talent": "Missile Barrage",
+          "rank": 2
+        },
+        {
+          "talent": "Arcane Impact",
+          "rank": 3
+        },
+        {
+          "talent": "Arcane Meditation",
+          "rank": 3
+        },
+        {
+          "talent": "Arcane Resilience",
+          "rank": 1
+        },
+        {
+          "talent": "Presence of Mind",
+          "rank": 1
+        },
+        {
+          "talent": "Arcane Mind",
+          "rank": 5
+        },
+        {
+          "talent": "Arcane Instability",
+          "rank": 3
+        },
+        {
+          "talent": "Arcane Geometry",
+          "rank": 1
+        },
+        {
+          "talent": "Arcane Power",
+          "rank": 1
+        },
+        {
+          "talent": "Precision",
+          "rank": 3
         }
       ]
     },
     "mage-fire": {
-      "reason": "The level 60 build carries Accelerant 5/5 and Burning Soul 2/3 (sim-accuracy round 23, from the raid build's +2.3% at bare 60), and the plain walk spends Accelerant's first-row ranks at 16 to 19, ahead of Ignite, which puts Pyroblast at 20 but Heating Up at 33 and Combustion at 43 (band 30 about -13%, 40 about -6%). This list keeps the old order for everything the rotation casts: Incineration 5, Accelerant 1, Ignite 4, Pyroblast at 20 (sim-accuracy round 13: about +2% at band 20 over Ignite's fifth rank), Ignite 5, then Accelerant 2 to 4 at 22 to 24 in place of Flame Throwing and Burning Soul (a faster Fireball, your filler below 30), Improved Fire Blast, Improved Scorch, Heating Up at 30, Master of Elements, Critical Mass, Fire Power and Combustion at 40; Accelerant 5 and Burning Soul 2 follow at 41 to 43. Against the old ladder at 10,000 iterations, seeds 1 and 50001, both factions: +0.7 to +1.0% at 22, +1.4 to +2.7% at 24 and 25, +0.8 to +1.0% at 27, +1.4 to +1.6% at 50, +1.5 to +1.8% at 57, +2.3 to +3.8% at 60; 10, 20, 30, 35, 38, 40, 45 and 55 unchanged. Levels 41 to 43 lose 0.2 to 0.6% (Wand Specialization moves from 41 and 42 to 44 and 45: the walk spends the own tree first); no checkpoint loses.",
+      "reason": "Round 23's order through Combustion at 40 stays. After it, Precision 41 to 43 (6% spell hit), Wand Specialization 44 and 45 (round 24's wand row, moved here from ladder-order.json), Improved Channeling (the Arcane row toll), Arcane Concentration and Arcane Blast at 54, which makes Fireball the filler again, then Missile Barrage; Accelerant 5 (Fireball only), Burning Soul (pushback and threat) and Arcane Subtlety (resistance the target lacks) come last. Gains at every level 41 to 59 (sim-accuracy round 29, walks-dps lane; bare band gear, 10,000 iterations, seeds 1 and 50001, design/reviews/2026-11-07-sim-audit-round29/walksdps.md).",
       "first": [
         {
           "talent": "Incineration",
@@ -205,6 +467,30 @@
         {
           "talent": "Combustion",
           "rank": 1
+        },
+        {
+          "talent": "Precision",
+          "rank": 3
+        },
+        {
+          "talent": "Wand Specialization",
+          "rank": 2
+        },
+        {
+          "talent": "Improved Channeling",
+          "rank": 3
+        },
+        {
+          "talent": "Arcane Concentration",
+          "rank": 5
+        },
+        {
+          "talent": "Arcane Blast",
+          "rank": 1
+        },
+        {
+          "talent": "Missile Barrage",
+          "rank": 2
         }
       ]
     },
@@ -311,6 +597,63 @@
         }
       ]
     },
+    "paladin-retribution": {
+      "reason": "Vindication only lowers the target's attack power, so one point pays the row with Seal of Command: Vindication 1 at 23, Seal of Command 24, Sacred Arbiter 25, Two-Handed Weapon Specialization 26 to 28, Vindication 2 at 29, Vengeance 30 to 32, Vindication 3 at 33 and Repentance 34 as Champion of the Light's tolls. Gains at every level 25 to 33; 24 ties (sim-accuracy round 29, walks-dps lane; bare band gear, 10,000 iterations, seeds 1 and 50001, design/reviews/2026-11-07-sim-audit-round29/walksdps.md).",
+      "first": [
+        {
+          "talent": "Benediction",
+          "rank": 5
+        },
+        {
+          "talent": "Improved Judgement",
+          "rank": 2
+        },
+        {
+          "talent": "Conviction",
+          "rank": 3
+        },
+        {
+          "talent": "Sanctified Judgement",
+          "rank": 3
+        },
+        {
+          "talent": "Vindication",
+          "rank": 1
+        },
+        {
+          "talent": "Seal of Command",
+          "rank": 1
+        },
+        {
+          "talent": "Sacred Arbiter",
+          "rank": 1
+        },
+        {
+          "talent": "Two-Handed Weapon Specialization",
+          "rank": 3
+        },
+        {
+          "talent": "Vindication",
+          "rank": 2
+        },
+        {
+          "talent": "Vengeance",
+          "rank": 3
+        },
+        {
+          "talent": "Vindication",
+          "rank": 3
+        },
+        {
+          "talent": "Repentance",
+          "rank": 1
+        },
+        {
+          "talent": "Champion of the Light",
+          "rank": 5
+        }
+      ]
+    },
     "priest-discipline": {
       "reason": "On band 20's own fight, Meditation ahead of Mental Agility's first rank beats the plain walk beyond error, both factions; on band 30's, Penance (which the rotation casts) ahead of Soul Warding does too; no other band changes.",
       "first": [
@@ -338,7 +681,7 @@
       ]
     },
     "priest-shadow": {
-      "reason": "Wand Specialization 2/2 at 10-11, then Spirit Tap 5/5, the order every Forever guide that orders them gives (Icy Veins Forever Shadow leveling https://www.icy-veins.com/wow-forever/shadow-priest-leveling, 2026-11-02: 'Your first priority is to pick up Wand Specialization'; Kargoz's Forever 1-60 guide on Mobalytics). The wand is 37 to 41% of a leveling priest's damage on the band fight: +10.1% at band 20 and +5.7% at band 30, seeds 1 and 50001. A ladder only adds points, so Shadowform moves from 40 to 42 (band 40 -36%); a priest spends thirty levels before 40 and two after it, and the guides take the same trade (sim-accuracy round 15 wave 6, an owner call the lane decided). Spirit Tap changes no number on the band fight (no kills). Shadow Focus, Improved Mind Blast, Improved Shadow Word: Pain, Mind Flay and Improved Mind Flay follow ahead of Blackout, which the band fight does not model, so band 30 holds Improved Mind Flay (+5.9% alliance, +4.8% horde over the Wand-first walk's band 30, which lacked it and lost 1.8 to 2.4%). Mind Flay is not reserved: on the band-20 fight a rank-1 Mind Flay loses to wanding (the fight runs out of mana), so it lands at 28.",
+      "reason": "Round 15's order (Wand Specialization 2, Spirit Tap 5, then the Shadow damage talents) stays. Then Shadow Weaving 31 to 33 before Blackout (a stun proc) and Vampiric Embrace (a global spent on healing, which loses damage the level it is taken), both tolls for Darkness at 37; Shadowform still at 42. In Discipline, Mental Strength, Mental Agility, Inner Focus and Meditation before Silent Resolve (threat), which takes the last point. Gains at every level 31 to 35 and 48 to 59 (sim-accuracy round 29, walks-dps lane; bare band gear, 10,000 iterations, seeds 1 and 50001, design/reviews/2026-11-07-sim-audit-round29/walksdps.md).",
       "first": [
         {
           "talent": "Wand Specialization",
@@ -367,6 +710,46 @@
         {
           "talent": "Improved Mind Flay",
           "rank": 2
+        },
+        {
+          "talent": "Shadow Weaving",
+          "rank": 3
+        },
+        {
+          "talent": "Blackout",
+          "rank": 2
+        },
+        {
+          "talent": "Vampiric Embrace",
+          "rank": 1
+        },
+        {
+          "talent": "Darkness",
+          "rank": 5
+        },
+        {
+          "talent": "Shadowform",
+          "rank": 1
+        },
+        {
+          "talent": "Twin Disciplines",
+          "rank": 5
+        },
+        {
+          "talent": "Mental Strength",
+          "rank": 5
+        },
+        {
+          "talent": "Mental Agility",
+          "rank": 3
+        },
+        {
+          "talent": "Inner Focus",
+          "rank": 1
+        },
+        {
+          "talent": "Meditation",
+          "rank": 3
         }
       ]
     },
@@ -461,16 +844,121 @@
         }
       ]
     },
-    "shaman-enhancement": {
-      "reason": "The rotation casts Stormstrike, which sits in the 15-point row. Its spell is a level 40 spell, but the talent teaches it whenever the row is open: beta logs (foreverlogs.gg reports 2712, 2717, 2753, 2805) show Enhancement shamans of level 25 to 35 casting it. The plain walk spent a level 30 shaman's 21 points on Flurry's fourth rank instead; holding Stormstrike as soon as it fits takes that point and gains about 25% at band 30, seeds 1 and 50001, both factions (sim-accuracy round 15, shaman lane). Rage of the Farseer (the 30-point row, used on cooldown) is held next so band 40 keeps the plain walk's point in it; bands 40 to 60 already carry both and do not change.",
+    "shaman-elemental": {
+      "reason": "Elemental Alacrity 15 to 17 before Concussion; Elemental Warding and Trial by Fire (damage taken; Fire Nova and Magma Totem are two-target lines) only pay the 20-point row, so Call of Thunder comes at 30 and Lightning Overload 31 to 33 before Trial by Fire's second point; after Lightning Mastery, Tidal Focus (5% spell hit) before Thundering Strikes. Gains at every level that moves, 15 to 20, 30 to 33 and 41 to 49; 21 ties (sim-accuracy round 29, walks-dps lane; bare band gear, 10,000 iterations, seeds 1 and 50001, design/reviews/2026-11-07-sim-audit-round29/walksdps.md).",
       "first": [
+        {
+          "talent": "Convection",
+          "rank": 5
+        },
+        {
+          "talent": "Elemental Alacrity",
+          "rank": 3
+        },
+        {
+          "talent": "Concussion",
+          "rank": 5
+        },
+        {
+          "talent": "Call of Flame",
+          "rank": 3
+        },
+        {
+          "talent": "Elemental Focus",
+          "rank": 1
+        },
+        {
+          "talent": "Elemental Warding",
+          "rank": 2
+        },
+        {
+          "talent": "Trial by Fire",
+          "rank": 1
+        },
+        {
+          "talent": "Call of Thunder",
+          "rank": 1
+        },
+        {
+          "talent": "Lightning Overload",
+          "rank": 3
+        },
+        {
+          "talent": "Trial by Fire",
+          "rank": 2
+        },
+        {
+          "talent": "Elemental Fury",
+          "rank": 5
+        },
+        {
+          "talent": "Lightning Mastery",
+          "rank": 1
+        },
+        {
+          "talent": "Tidal Focus",
+          "rank": 5
+        }
+      ]
+    },
+    "shaman-enhancement": {
+      "reason": "Mental Dexterity (attack power from Intellect) 15 to 17 before Ancestral Knowledge; Stormstrike as soon as its row opens and Rage of the Farseer at 40 (round 15). Improved Ghost Wolf (travel) waits for 41: Mental Quickness 33 and 34 and Maelstrom Weapon 35 to 39, so the instant Lightning Bolt the rotation waits for at five points comes at 39 instead of 42. After one point of Convection, Tidal Focus (5% hit for your swings) at 44 to 48. Gains at every level that moves except 36 to 38 and 44, which tie (sim-accuracy round 29, walks-dps lane; bare band gear, 10,000 iterations, seeds 1 and 50001, design/reviews/2026-11-07-sim-audit-round29/walksdps.md).",
+      "first": [
+        {
+          "talent": "Thundering Strikes",
+          "rank": 5
+        },
+        {
+          "talent": "Mental Dexterity",
+          "rank": 3
+        },
+        {
+          "talent": "Ancestral Knowledge",
+          "rank": 5
+        },
+        {
+          "talent": "Elemental Weapons",
+          "rank": 2
+        },
         {
           "talent": "Stormstrike",
           "rank": 1
         },
         {
+          "talent": "Elemental Weapons",
+          "rank": 3
+        },
+        {
+          "talent": "Shamanistic Focus",
+          "rank": 1
+        },
+        {
+          "talent": "Flurry",
+          "rank": 5
+        },
+        {
+          "talent": "Mental Quickness",
+          "rank": 2
+        },
+        {
+          "talent": "Maelstrom Weapon",
+          "rank": 5
+        },
+        {
           "talent": "Rage of the Farseer",
           "rank": 1
+        },
+        {
+          "talent": "Improved Ghost Wolf",
+          "rank": 2
+        },
+        {
+          "talent": "Convection",
+          "rank": 1
+        },
+        {
+          "talent": "Tidal Focus",
+          "rank": 5
         }
       ]
     },
@@ -492,15 +980,71 @@
       ]
     },
     "warlock-affliction": {
-      "reason": "The rotation casts Siphon Life (the 20-point row, learned at 30). A level 30 warlock's 21 points hold it, but the plain walk spends the last one on Pandemic. Taking Siphon Life as soon as it fits gains about 1.3% at band 30, beyond error at seeds 1 and 50001, both factions (sim-accuracy round 13, walk lane). Wrack, the walk's own capstone from 40, is held after it so the reservation never costs it.",
+      "reason": "Grim Reach (range), Soul Harvest (a Drain Soul kill) and Improved Drains (the rotation never channels a drain) wait: Amplify Curse 22, Pandemic 23 to 25 and Malevolence 26 and 27 (their rows are already paid), Grim Reach as Siphon Life's toll, Siphon Life 30 (round 13), Soul Siphon 31 to 33 as Shadow Mastery's toll and ready for Wrack, Shadow Mastery 35 to 39, Wrack 40. From 45, Unholy Power (the Imp) and Bane (Immolate) before Improved Health Funnel, Demonic Aegis and Improved Voidwalker. Gains at every level that moves, 22 to 59 (sim-accuracy round 29, walks-dps lane; bare band gear, 10,000 iterations, seeds 1 and 50001, design/reviews/2026-11-07-sim-audit-round29/walksdps.md).",
       "first": [
+        {
+          "talent": "Improved Life Tap",
+          "rank": 2
+        },
+        {
+          "talent": "Suppression",
+          "rank": 5
+        },
+        {
+          "talent": "Improved Corruption",
+          "rank": 5
+        },
+        {
+          "talent": "Amplify Curse",
+          "rank": 1
+        },
+        {
+          "talent": "Pandemic",
+          "rank": 3
+        },
+        {
+          "talent": "Malevolence",
+          "rank": 2
+        },
+        {
+          "talent": "Grim Reach",
+          "rank": 2
+        },
         {
           "talent": "Siphon Life",
           "rank": 1
         },
         {
+          "talent": "Soul Siphon",
+          "rank": 3
+        },
+        {
+          "talent": "Soul Harvest",
+          "rank": 1
+        },
+        {
+          "talent": "Shadow Mastery",
+          "rank": 5
+        },
+        {
           "talent": "Wrack",
           "rank": 1
+        },
+        {
+          "talent": "Soul Harvest",
+          "rank": 2
+        },
+        {
+          "talent": "Improved Drains",
+          "rank": 3
+        },
+        {
+          "talent": "Unholy Power",
+          "rank": 5
+        },
+        {
+          "talent": "Bane",
+          "rank": 5
         }
       ]
     },
@@ -612,15 +1156,148 @@
       ]
     },
     "warrior-fury": {
-      "reason": "The rotation casts Death Wish (the 20-point row). A level 30 warrior's 21 points hold it, but the plain walk spends the last one on Enrage. Taking Death Wish as soon as it fits gains about 3.8% at band 30, seeds 1 and 50001, both factions (sim-accuracy round 13, walk lane). Bloodthirst, the walk's own capstone from 40, is held after it so the reservation never costs it.",
+      "reason": "Berserker Rage joins the rotation only at 36, so Improved Berserker Rage's first point at 34 is Flurry's row toll and its second waits for 41: Flurry 35 to 37, Improved Whirlwind 38 and 39 (Whirlwind trains at 36), Bloodthirst 40 (Death Wish still at 30). In Arms, Improved Charge's second point (Fury never Charges in a fight) is only Impale's toll, so Improved Tactical Mastery, Anger Management and Deep Wounds come first; Improved Bloodrage stays last. Gains at every level that moves, 35 to 40 and 52 to 55; 49 to 51 tie (both dead) (sim-accuracy round 29, walks-dps lane; bare band gear, 10,000 iterations, seeds 1 and 50001, design/reviews/2026-11-07-sim-audit-round29/walksdps.md).",
       "first": [
+        {
+          "talent": "Cruelty",
+          "rank": 5
+        },
+        {
+          "talent": "Unbridled Wrath",
+          "rank": 5
+        },
+        {
+          "talent": "Furious Precision",
+          "rank": 3
+        },
+        {
+          "talent": "Enrage",
+          "rank": 2
+        },
+        {
+          "talent": "Dual Wield Specialization",
+          "rank": 5
+        },
         {
           "talent": "Death Wish",
           "rank": 1
         },
         {
+          "talent": "Reckless Swings",
+          "rank": 1
+        },
+        {
+          "talent": "Improved Execute",
+          "rank": 2
+        },
+        {
+          "talent": "Improved Berserker Rage",
+          "rank": 1
+        },
+        {
+          "talent": "Flurry",
+          "rank": 3
+        },
+        {
+          "talent": "Improved Whirlwind",
+          "rank": 2
+        },
+        {
           "talent": "Bloodthirst",
           "rank": 1
+        },
+        {
+          "talent": "Improved Berserker Rage",
+          "rank": 2
+        },
+        {
+          "talent": "Improved Heroic Strike",
+          "rank": 3
+        },
+        {
+          "talent": "Improved Rend",
+          "rank": 3
+        },
+        {
+          "talent": "Improved Charge",
+          "rank": 1
+        },
+        {
+          "talent": "Improved Tactical Mastery",
+          "rank": 3
+        },
+        {
+          "talent": "Anger Management",
+          "rank": 1
+        },
+        {
+          "talent": "Deep Wounds",
+          "rank": 3
+        },
+        {
+          "talent": "Improved Charge",
+          "rank": 2
+        },
+        {
+          "talent": "Impale",
+          "rank": 2
+        },
+        {
+          "talent": "Improved Bloodrage",
+          "rank": 2
+        }
+      ]
+    },
+    "warrior-protection": {
+      "reason": "Defiance (20% more threat with a shield) opens at 20 once Improved Bloodrage, Shield Specialization and Improved Revenge pay its row, so Anticipation's Defense waits: Improved Revenge 17 to 19, Defiance 20 to 22, Master of Defense, Improved Sunder Armor, Improved Thunder Clap, Focused Rage, Anticipation 34 to 38 (before Bastion, so the band 30 boss's chance of death stays near the old order's), Concussion Blow 39 for Shield Slam at 40, Bastion 41 to 45. Threat gains at every level 17 to 45 on the tank fight (sim-accuracy round 29, walks-dps lane; bare band gear, 10,000 iterations, seeds 1 and 50001, design/reviews/2026-11-07-sim-audit-round29/walksdps.md).",
+      "first": [
+        {
+          "talent": "Improved Bloodrage",
+          "rank": 2
+        },
+        {
+          "talent": "Shield Specialization",
+          "rank": 5
+        },
+        {
+          "talent": "Improved Revenge",
+          "rank": 3
+        },
+        {
+          "talent": "Defiance",
+          "rank": 3
+        },
+        {
+          "talent": "Master of Defense",
+          "rank": 2
+        },
+        {
+          "talent": "Improved Sunder Armor",
+          "rank": 3
+        },
+        {
+          "talent": "Improved Thunder Clap",
+          "rank": 3
+        },
+        {
+          "talent": "Focused Rage",
+          "rank": 3
+        },
+        {
+          "talent": "Anticipation",
+          "rank": 5
+        },
+        {
+          "talent": "Concussion Blow",
+          "rank": 1
+        },
+        {
+          "talent": "Shield Slam",
+          "rank": 1
+        },
+        {
+          "talent": "Bastion",
+          "rank": 5
         }
       ]
     }

@@ -126,10 +126,10 @@ Charge and Rend train at 4, Thunder Clap at 6 and Hamstring at 8. At 10, Bloodra
 
 Shield Bash comes at 12, Revenge and Demoralizing Shout at 14, and Shield Block at 16: two attacks blocked, and every block lights Revenge.
 
-The first two points, at 10 and 11, are Improved Bloodrage for half again the Rage. Shield Specialization takes 12 to 16: more block, and from the fifth point every block gives 5 Rage. Anticipation starts at 17 for Defense.
+The first two points, at 10 and 11, are Improved Bloodrage for half again the Rage. Shield Specialization takes 12 to 16: more block, and from the fifth point every block gives 5 Rage. Improved Revenge takes 17 to 19, so Revenge hits 60% harder.
 
 Take quest rewards over vendor gear: a one-hander and the best shield you can find beat the starter weapon. You wear mail until plate at 40.
 
 ### Levels 20 to 60
 
-Solo, Arms or Fury levels faster; keep a shield in your bags, because with one on you can tank every dungeon on the way up, even in damage talents. Shield Slam is the 31st point, so it arrives at 40. The last point of Focused Rage comes at 41, then Bastion, and the levels after that go to Improved Heroic Strike, Deflection, Improved Rend and Deep Wounds in Arms.
+Solo, Arms or Fury levels faster; keep a shield in your bags, because with one on you can tank every dungeon on the way up, even in damage talents. Defiance comes at 20 to 22, the moment its row opens: 20% more threat on everything you do with a shield on. Master of Defense follows at 23 and 24, then Improved Sunder Armor at 25 to 27, Improved Thunder Clap at 28 to 30 and Focused Rage at 31 to 33. Anticipation's Defense comes at 34 to 38, as the dungeons start to hit harder, and Concussion Blow at 39 opens Shield Slam, the 31st point, at 40. Bastion takes 41 to 45 and Last Stand 46, and the levels after that go to Improved Heroic Strike, Deflection, Improved Rend and Deep Wounds in Arms.
