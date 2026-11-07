@@ -21,6 +21,10 @@ const { slug } = Astro.params;
   wide
 >
   <main id="main" tabindex="-1" class="flex w-full flex-col">
-    <Rankings client:load slug={slug ?? ''} />
+    <!-- `client:after-paint`, not `client:load` (src/directives/after-paint.ts): the island's
+         server-rendered header and board skeleton are the page's largest contentful paint, and
+         `client:load` put its ~60-module chain ahead of that first paint, so Lighthouse's
+         simulation charged it to LCP (2026-11-06: 3.5 s, performance 0.88). -->
+    <Rankings client:after-paint slug={slug ?? ''} />
   </main>
 </Base>
