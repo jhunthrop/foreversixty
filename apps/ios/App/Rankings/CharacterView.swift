@@ -177,7 +177,7 @@ struct CharacterView: View {
                 HStack(spacing: 12) {
                     Image(systemName: "point.3.connected.trianglepath.dotted").font(.system(size: 16))
                         .foregroundStyle(FSColor.goldHover).frame(width: 36, height: 36)
-                        .background(GameColors.controlFill, in: .rect(cornerRadius: FSRadius.control))
+                        .background(GameColors.controlFill, in: .rect(cornerRadius: FSRadius.legacyControl))
                         .accessibilityHidden(true)
                     VStack(alignment: .leading, spacing: 2) {
                         Text(build.trees).font(ScaledType.mono.weight(.bold)).foregroundStyle(FSColor.strong)
@@ -426,8 +426,8 @@ struct CharacterSkeleton: View {
                 Circle().fill(FSColor.cardTop).frame(width: RankingsLayout.headCrest, height: RankingsLayout.headCrest)
                 VStack(alignment: .leading, spacing: 8) { SkeletonBar(width: 160, height: 24); SkeletonBar(width: 220, height: 12) }
             }
-            RoundedRectangle(cornerRadius: FSRadius.panel).fill(FSColor.cardTop).frame(height: 240)
-            RoundedRectangle(cornerRadius: FSRadius.panel).fill(FSColor.cardTop).frame(height: RankingsLayout.bestRow * 2)
+            RoundedRectangle(cornerRadius: FSRadius.legacyPanel).fill(FSColor.cardTop).frame(height: 240)
+            RoundedRectangle(cornerRadius: FSRadius.legacyPanel).fill(FSColor.cardTop).frame(height: RankingsLayout.bestRow * 2)
         }
         .padding(16)
         .accessibilityElement(children: .ignore)

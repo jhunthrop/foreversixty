@@ -192,8 +192,8 @@ struct RaidPageContent: View {
             }
             .padding(16)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(GameColors.sheet, in: .rect(cornerRadius: FSRadius.panel))
-            .overlay(RoundedRectangle(cornerRadius: FSRadius.panel).stroke(FSColor.line))
+            .background(GameColors.sheet, in: .rect(cornerRadius: FSRadius.legacyPanel))
+            .overlay(RoundedRectangle(cornerRadius: FSRadius.legacyPanel).stroke(FSColor.line))
             .padding(16)
             .transition(.move(edge: .bottom).combined(with: .opacity))
             .onAppear { AccessibilityNotification.Announcement(text).post() }

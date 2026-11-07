@@ -236,13 +236,13 @@ fun TalentCellView(cell: TalentCellModel, build: String, isSelected: Boolean, ed
             .scale(if (pressed) PRESSED_SCALE else 1f),
     ) {
         if (isSelected) {
-            Box(Modifier.requiredSize(TalentGeometry.CELL + 18.dp).align(Alignment.Center).border(2.dp, FsColor.gold, RoundedCornerShape(FsRadius.control + 9.dp)))
+            Box(Modifier.requiredSize(TalentGeometry.CELL + 18.dp).align(Alignment.Center).border(2.dp, FsColor.gold, RoundedCornerShape(FsRadius.legacyControl + 9.dp)))
         }
         if (cell.delta != null) {
             Box(Modifier.requiredSize(TalentGeometry.CELL + 6.dp).align(Alignment.Center).dashedBorder(deltaColor, 12.dp))
         }
         TalentIconTile(cell.talent, cell.state, build)
-        if (pressed) Box(Modifier.size(TalentGeometry.CELL).background(GameColors.pressedWash, RoundedCornerShape(FsRadius.control)))
+        if (pressed) Box(Modifier.size(TalentGeometry.CELL).background(GameColors.pressedWash, RoundedCornerShape(FsRadius.legacyControl)))
         TalentBadge(
             cell.badge,
             TalentColors.border(cell.state),
@@ -295,12 +295,12 @@ fun TalentIconTile(talent: Talent, state: TalentCellState, build: String, size: 
     Box(
         Modifier
             .size(size)
-            .background(FsColor.cardTop, RoundedCornerShape(FsRadius.control))
-            .border(TalentGeometry.BORDER, TalentColors.border(state), RoundedCornerShape(FsRadius.control))
+            .background(FsColor.cardTop, RoundedCornerShape(FsRadius.legacyControl))
+            .border(TalentGeometry.BORDER, TalentColors.border(state), RoundedCornerShape(FsRadius.legacyControl))
             .clearAndSetSemantics {},
         contentAlignment = Alignment.Center,
     ) {
-        Box(Modifier.size(inner).clip(RoundedCornerShape(FsRadius.pill)).alpha(if (state == TalentCellState.Locked) LOCKED_ALPHA else 1f)) {
+        Box(Modifier.size(inner).clip(RoundedCornerShape(FsRadius.legacyPill)).alpha(if (state == TalentCellState.Locked) LOCKED_ALPHA else 1f)) {
             GameIconImage(talent.icon, build, inner, fallback = talent.name.take(2))
         }
     }

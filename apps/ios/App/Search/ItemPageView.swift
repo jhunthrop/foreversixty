@@ -405,8 +405,8 @@ struct ItemSourceRowView: View {
             glyph
                 .foregroundStyle(FSColor.gold)
                 .frame(width: SearchLayout.rowIcon, height: SearchLayout.rowIcon)
-                .background(FSColor.cardTop, in: .rect(cornerRadius: FSRadius.pill))
-                .overlay(RoundedRectangle(cornerRadius: FSRadius.pill).stroke(FSColor.lineSoft))
+                .background(FSColor.cardTop, in: .rect(cornerRadius: FSRadius.legacyPill))
+                .overlay(RoundedRectangle(cornerRadius: FSRadius.legacyPill).stroke(FSColor.lineSoft))
                 .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: 2) {
                 SearchRowName(text: row.title)

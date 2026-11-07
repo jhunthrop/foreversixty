@@ -148,9 +148,9 @@ private struct BisRowsCard: View {
                 }
             }
         }
-        .background(FSColor.raised, in: .rect(cornerRadius: FSRadius.panel))
-        .overlay(RoundedRectangle(cornerRadius: FSRadius.panel).stroke(FSColor.lineSoft))
-        .clipShape(.rect(cornerRadius: FSRadius.panel))
+        .background(FSColor.raised, in: .rect(cornerRadius: FSRadius.legacyPanel))
+        .overlay(RoundedRectangle(cornerRadius: FSRadius.legacyPanel).stroke(FSColor.lineSoft))
+        .clipShape(.rect(cornerRadius: FSRadius.legacyPanel))
     }
 }
 
@@ -225,7 +225,7 @@ private struct BisEmptyRow: View {
 
     var body: some View {
         HStack(alignment: .center, spacing: Theme.Spacing.sm + Theme.Spacing.xs) {
-            RoundedRectangle(cornerRadius: FSRadius.pill)
+            RoundedRectangle(cornerRadius: FSRadius.legacyPill)
                 .strokeBorder(FSColor.line, style: StrokeStyle(lineWidth: 1, dash: [3, 3]))
                 .frame(width: 44, height: 44)
                 .accessibilityHidden(true)
@@ -250,7 +250,7 @@ private struct BisSkeleton: View {
             ForEach(0..<Self.rows, id: \.self) { index in
                 if index > 0 { Rectangle().fill(FSColor.lineSoft).frame(height: 1) }
                 HStack(alignment: .top, spacing: Theme.Spacing.sm + Theme.Spacing.xs) {
-                    RoundedRectangle(cornerRadius: FSRadius.pill).fill(FSColor.cardTop).frame(width: 44, height: 44)
+                    RoundedRectangle(cornerRadius: FSRadius.legacyPill).fill(FSColor.cardTop).frame(width: 44, height: 44)
                     VStack(alignment: .leading, spacing: 6) {
                         Capsule().fill(FSColor.cardTop).frame(width: 170, height: 12)
                         Capsule().fill(FSColor.cardTop).frame(width: 220, height: 10)
@@ -263,7 +263,7 @@ private struct BisSkeleton: View {
                 .frame(minHeight: BisPickRow.minHeight)
             }
         }
-        .background(FSColor.raised, in: .rect(cornerRadius: FSRadius.panel))
+        .background(FSColor.raised, in: .rect(cornerRadius: FSRadius.legacyPanel))
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Copy.bisLoading)
         .onAppear { AccessibilityNotification.Announcement(Copy.bisLoading).post() }

@@ -156,7 +156,7 @@ struct ItemTooltipPanel: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
             Text(model.look.name ?? Copy.itemsNotInData).foregroundStyle(ItemQuality(value: model.look.quality).text)
-                .font(FSFont.bodyBold(17))
+                .font(Font.custom(FSFont.bodyBold, size: 17))
             if !model.known {
                 line(Copy.itemsNotInData, color: FSColor.muted)
             }
@@ -201,8 +201,8 @@ struct ItemTooltipPanel: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.vertical, 12)
         .padding(.horizontal, 14)
-        .background(GameColors.tooltipPanel, in: .rect(cornerRadius: FSRadius.control))
-        .overlay(RoundedRectangle(cornerRadius: FSRadius.control).stroke(GameColors.iconLine))
+        .background(GameColors.tooltipPanel, in: .rect(cornerRadius: FSRadius.legacyControl))
+        .overlay(RoundedRectangle(cornerRadius: FSRadius.legacyControl).stroke(GameColors.iconLine))
         .accessibilityElement(children: .combine)
     }
 

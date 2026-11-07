@@ -21,18 +21,18 @@ struct OfflineDataView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: FSSpacing.space4) {
+            VStack(alignment: .leading, spacing: FSSpace.space4) {
                 SimsTitle(text: Copy.offlineDataTitle).padding(.horizontal, -16)
                 SectionLabel(text: Copy.offlineDataSection(size: OfflineWords.size(report.totalBytes)))
                 if report.isEmpty { empty } else { rows }
-                SectionLabel(text: Copy.offlineDataUpdates).padding(.top, FSSpacing.space2)
+                SectionLabel(text: Copy.offlineDataUpdates).padding(.top, FSSpace.space2)
                 switches
                 actions
                 Text(words.footer(checkedAt: checkedAt, now: now))
                     .font(ScaledType.meta).foregroundStyle(FSColor.muted)
                     .fixedSize(horizontal: false, vertical: true)
             }
-            .padding(FSSpacing.space4)
+            .padding(FSSpace.space4)
         }
         .background(FSColor.bg)
         .alert(Copy.offlineDataRemoveConfirm, isPresented: $confirmingRemove) {
@@ -52,13 +52,13 @@ struct OfflineDataView: View {
     }
 
     private var empty: some View {
-        VStack(alignment: .leading, spacing: FSSpacing.space1) {
+        VStack(alignment: .leading, spacing: FSSpace.space1) {
             Text(Copy.offlineDataEmpty).font(ScaledType.bodyStrong).foregroundStyle(FSColor.strong)
             Text(Copy.offlineDataEmptySub).font(ScaledType.meta).foregroundStyle(FSColor.muted)
         }
         .fixedSize(horizontal: false, vertical: true)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(FSSpacing.space4)
+        .padding(FSSpace.space4)
         .quietCard()
     }
 
@@ -72,7 +72,7 @@ struct OfflineDataView: View {
     }
 
     private var actions: some View {
-        VStack(alignment: .leading, spacing: FSSpacing.space3) {
+        VStack(alignment: .leading, spacing: FSSpace.space3) {
             Button(action: updateNow) {
                 Label(update == .updating ? Copy.offlineDataUpdating : Copy.offlineDataUpdateNow, systemImage: "arrow.clockwise")
             }
@@ -107,12 +107,12 @@ private struct OfflineDataRow: View {
     private static let tile: CGFloat = 40
 
     var body: some View {
-        HStack(alignment: .top, spacing: FSSpacing.space3) {
+        HStack(alignment: .top, spacing: FSSpace.space3) {
             Image(systemName: row.category.systemImage)
                 .font(.system(size: 16))
                 .foregroundStyle(FSColor.gold)
                 .frame(width: Self.tile, height: Self.tile)
-                .background(FSColor.gold.opacity(0.12), in: .rect(cornerRadius: FSRadius.pill))
+                .background(FSColor.gold.opacity(0.12), in: .rect(cornerRadius: FSRadius.legacyPill))
                 .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: 2) {
                 Text(row.category.title).font(ScaledType.bodyStrong).foregroundStyle(FSColor.strong)
@@ -121,8 +121,8 @@ private struct OfflineDataRow: View {
             .fixedSize(horizontal: false, vertical: true)
             Spacer(minLength: 0)
         }
-        .padding(.horizontal, FSSpacing.space4)
-        .padding(.vertical, FSSpacing.space3)
+        .padding(.horizontal, FSSpace.space4)
+        .padding(.vertical, FSSpace.space3)
         .accessibilityElement(children: .combine)
     }
 }
@@ -159,8 +159,8 @@ private struct OfflineToggle: View {
             }
         }
         .tint(FSColor.gold)
-        .padding(.horizontal, FSSpacing.space4)
-        .padding(.vertical, FSSpacing.space3)
+        .padding(.horizontal, FSSpace.space4)
+        .padding(.vertical, FSSpace.space3)
         .frame(minHeight: 56)
     }
 }

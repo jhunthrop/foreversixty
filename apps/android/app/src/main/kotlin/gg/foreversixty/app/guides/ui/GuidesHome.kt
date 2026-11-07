@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.dp
 import gg.foreversixty.app.R
 import gg.foreversixty.app.common.ClassCrest
 import gg.foreversixty.app.designsystem.FsColor
-import gg.foreversixty.app.designsystem.FsType
+import gg.foreversixty.app.designsystem.ScaledType
 import gg.foreversixty.app.designsystem.MicroLabel
 import gg.foreversixty.app.designsystem.classColor
 import gg.foreversixty.app.designsystem.primaryCard
@@ -63,7 +63,7 @@ class GuidesHomeActions(
 fun GuidesHome(state: GuidesHomeState, actions: GuidesHomeActions) {
     when (val index = state.index) {
         Loadable.Loading -> GuidesHomeSkeleton()
-        Loadable.NotCached -> Text(stringResource(R.string.guides_listNotCached), style = FsType.body, color = FsColor.muted, modifier = Modifier.screenMargins().padding(top = GuideSpace.section))
+        Loadable.NotCached -> Text(stringResource(R.string.guides_listNotCached), style = ScaledType.body, color = FsColor.muted, modifier = Modifier.screenMargins().padding(top = GuideSpace.section))
         Loadable.Failed -> ErrorRegion(stringResource(R.string.guides_error), actions.retry)
         is Loadable.Loaded -> Column(Modifier.screenMargins()) {
             state.yours?.let { spec ->
@@ -72,7 +72,7 @@ fun GuidesHome(state: GuidesHomeState, actions: GuidesHomeActions) {
             }
             GuideSectionBlock(stringResource(R.string.guides_classes)) { ClassGrid(Guides.classCells(index.value), actions.openClass) }
             val copy = GuidesCopy(LocalResources.current)
-            Text(copy.footer(Guides.footer(index.value, state.saved)), style = FsType.meta, color = FsColor.muted, modifier = Modifier.padding(top = GuideSpace.rowGap, bottom = GuideSpace.section))
+            Text(copy.footer(Guides.footer(index.value, state.saved)), style = ScaledType.meta, color = FsColor.muted, modifier = Modifier.padding(top = GuideSpace.rowGap, bottom = GuideSpace.section))
         }
     }
 }
@@ -89,8 +89,8 @@ private fun YourGuideCard(spec: GuideIndexSpec, classSlug: String?, className: S
             SpecIcon(spec.icon, build, scaledSize(HEAD_ICON, HEAD_ICON_CAP))
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
                 MicroLabel(stringResource(R.string.guides_yours), color = FsColor.gold)
-                Text(specTitle(spec.specName, className).uppercase(Locale.ROOT), style = FsType.h2.copy(fontSize = FsType.cardHead.fontSize), color = classColor(classSlug))
-                Text(copy.cardMeta(spec.role, GuideDates.long(spec.updated)), style = FsType.meta, color = FsColor.muted)
+                Text(specTitle(spec.specName, className).uppercase(Locale.ROOT), style = ScaledType.h2.copy(fontSize = ScaledType.cardHead.fontSize), color = classColor(classSlug))
+                Text(copy.cardMeta(spec.role, GuideDates.long(spec.updated)), style = ScaledType.meta, color = FsColor.muted)
             }
             Chevron(CHEVRON)
         }
@@ -121,7 +121,7 @@ private fun ClassCellView(cell: ClassCell, modifier: Modifier, open: (String) ->
         verticalArrangement = Arrangement.spacedBy(6.dp),
     ) {
         ClassCrest(cell.classSlug, CREST)
-        Text(cell.className, style = FsType.meta.copy(fontWeight = androidx.compose.ui.text.font.FontWeight.SemiBold), color = classColor(cell.classSlug))
+        Text(cell.className, style = ScaledType.meta.copy(fontWeight = androidx.compose.ui.text.font.FontWeight.SemiBold), color = classColor(cell.classSlug))
     }
 }
 
@@ -135,7 +135,7 @@ private fun GuidesHomeSkeleton() {
             SkeletonBar(160.dp, 12.dp)
         }
         Box(Modifier.fillMaxWidth().quietCard().height(GRID_SKELETON))
-        Text(stringResource(R.string.guides_loading), style = FsType.meta, color = FsColor.muted)
+        Text(stringResource(R.string.guides_loading), style = ScaledType.meta, color = FsColor.muted)
     }
 }
 

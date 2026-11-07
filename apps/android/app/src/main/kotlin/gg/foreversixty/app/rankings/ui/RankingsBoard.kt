@@ -62,7 +62,7 @@ import gg.foreversixty.app.common.OfflineStamp
 import gg.foreversixty.app.designsystem.BrandButton
 import gg.foreversixty.app.designsystem.BrandButtonKind
 import gg.foreversixty.app.designsystem.FsColor
-import gg.foreversixty.app.designsystem.FsType
+import gg.foreversixty.app.designsystem.ScaledType
 import gg.foreversixty.app.designsystem.MicroLabel
 import gg.foreversixty.app.designsystem.Tag
 import gg.foreversixty.app.designsystem.classColor
@@ -145,7 +145,7 @@ private fun Loaded(board: Board, filters: RankingsFilters, state: RankingsScreen
     FilterLine(filters, state, copy, actions)
     if (board.rows.isEmpty()) {
         Text(
-            stringResource(R.string.rank_empty), style = FsType.body, color = FsColor.text,
+            stringResource(R.string.rank_empty), style = ScaledType.body, color = FsColor.text,
             modifier = Modifier.fillMaxWidth().quietCard().padding(16.dp),
         )
         return
@@ -153,7 +153,7 @@ private fun Loaded(board: Board, filters: RankingsFilters, state: RankingsScreen
     val own = Rankings.placement(board.rows, board.characterRank)
     if (own is OwnRow.InPlace) {
         Text(
-            copy.jump(own.rank), style = FsType.bodyStrong, color = FsColor.gold,
+            copy.jump(own.rank), style = ScaledType.bodyStrong, color = FsColor.gold,
             modifier = Modifier.heightIn(min = 48.dp).clickable(role = Role.Button, onClick = actions.jump).padding(vertical = 12.dp),
         )
     }
@@ -185,20 +185,20 @@ private fun AnswerCard(board: Board, filters: RankingsFilters, state: RankingsSc
         MicroLabel(stringResource(R.string.rank_label))
         val placed = board.characterRank
         if (placed == null) {
-            Text(copy.unranked(filters, state.encounterNames), style = FsType.lead, color = FsColor.strong)
-            Text(stringResource(R.string.rank_noneMeta), style = FsType.meta, color = FsColor.muted)
+            Text(copy.unranked(filters, state.encounterNames), style = ScaledType.lead, color = FsColor.strong)
+            Text(stringResource(R.string.rank_noneMeta), style = ScaledType.meta, color = FsColor.muted)
             return@Column
         }
         val unit = copy.answerUnit(board.total, filters.cohort, board.deduped)
         val ordinal = Rankings.ordinal(placed.rank)
         val tier = parseColor(Rankings.rankTier(placed.rank, board.total))
         if (isLargeText()) {
-            Text(ordinal, style = FsType.stat, color = tier)
-            Text(unit, style = FsType.body, color = FsColor.text)
+            Text(ordinal, style = ScaledType.stat, color = tier)
+            Text(unit, style = ScaledType.body, color = FsColor.text)
         } else {
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                Text(ordinal, style = FsType.stat, color = tier, modifier = Modifier.alignByBaseline())
-                Text(unit, style = FsType.body, color = FsColor.text, modifier = Modifier.alignByBaseline())
+                Text(ordinal, style = ScaledType.stat, color = tier, modifier = Modifier.alignByBaseline())
+                Text(unit, style = ScaledType.body, color = FsColor.text, modifier = Modifier.alignByBaseline())
             }
         }
         val meta = copy.answerMeta(placed.row, filters, state.encounterNames)
@@ -207,7 +207,7 @@ private fun AnswerCard(board: Board, filters: RankingsFilters, state: RankingsSc
                 withStyle(SpanStyle(color = FsColor.gold, fontWeight = FontWeight.SemiBold)) { append(meta.name) }
                 append(meta.text.removePrefix(meta.name))
             },
-            style = FsType.meta, color = FsColor.muted,
+            style = ScaledType.meta, color = FsColor.muted,
         )
     }
 }
@@ -221,11 +221,11 @@ private fun FilterLine(filters: RankingsFilters, state: RankingsScreenState, cop
             if (!state.viewer.signedIn) {
                 val pick = filters.cohort?.let(copy::cohortName)?.ifEmpty { null } ?: stringResource(R.string.rank_chooseSpec)
                 Text(
-                    pick, style = FsType.bodyStrong, color = FsColor.gold,
+                    pick, style = ScaledType.bodyStrong, color = FsColor.gold,
                     modifier = Modifier.heightIn(min = 48.dp).clickable(role = Role.Button, onClick = actions.chooseSpec).padding(vertical = 12.dp),
                 )
             }
-            Text(line, style = FsType.body, color = FsColor.text)
+            Text(line, style = ScaledType.body, color = FsColor.text)
         }
     }
     val button = @Composable {
@@ -296,13 +296,13 @@ private fun RankRow(
             if (isLargeText()) {
                 Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
                     Name(row, yours)
-                    Text(copy.rowMeta(row, now), style = FsType.meta, color = FsColor.muted)
+                    Text(copy.rowMeta(row, now), style = ScaledType.meta, color = FsColor.muted)
                     Value(row, filters, copy, Alignment.Start)
                 }
             } else {
                 Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
                     Name(row, yours)
-                    Text(copy.rowMeta(row, now), style = FsType.meta, color = FsColor.muted)
+                    Text(copy.rowMeta(row, now), style = ScaledType.meta, color = FsColor.muted)
                 }
                 Value(row, filters, copy, Alignment.End)
             }
@@ -315,7 +315,7 @@ private fun RankRow(
 @Composable
 private fun Name(row: RankingRow, yours: Boolean) {
     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-        Text(row.player.name, style = FsType.bodyStrong, color = classColor(row.player.className))
+        Text(row.player.name, style = ScaledType.bodyStrong, color = classColor(row.player.className))
         if (yours) Tag(stringResource(R.string.rank_you), FsColor.gold)
     }
 }
@@ -323,8 +323,8 @@ private fun Name(row: RankingRow, yours: Boolean) {
 @Composable
 private fun Value(row: RankingRow, filters: RankingsFilters, copy: RankingsCopy, align: Alignment.Horizontal) {
     Column(horizontalAlignment = align) {
-        Text(Rankings.valueText(row, filters.measure), style = FsType.mono.copy(fontSize = 17.sp), color = FsColor.strong)
-        Text(copy.unit(filters.measure), style = FsType.micro.copy(letterSpacing = 0.sp), color = FsColor.muted)
+        Text(Rankings.valueText(row, filters.measure), style = ScaledType.mono.copy(fontSize = 17.sp), color = FsColor.strong)
+        Text(copy.unit(filters.measure), style = ScaledType.micro.copy(letterSpacing = 0.sp), color = FsColor.muted)
     }
 }
 
@@ -356,7 +356,7 @@ private fun RowMenu(expanded: Boolean, items: List<RowAction>, close: () -> Unit
     ) {
         items.forEach { item ->
             DropdownMenuItem(
-                text = { Text(item.name, style = FsType.body, color = FsColor.strong) },
+                text = { Text(item.name, style = ScaledType.body, color = FsColor.strong) },
                 leadingIcon = { Icon(item.icon, contentDescription = null, tint = FsColor.muted, modifier = Modifier.size(20.dp)) },
                 onClick = { close(); item.run() },
             )
@@ -368,7 +368,7 @@ private fun RowMenu(expanded: Boolean, items: List<RowAction>, close: () -> Unit
 private fun Footer(board: Board, pageFailed: Boolean, actions: RankingsActions) {
     when {
         pageFailed -> Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-            Text(stringResource(R.string.rank_error), style = FsType.meta, color = FsColor.wipe, modifier = Modifier.weight(1f))
+            Text(stringResource(R.string.rank_error), style = ScaledType.meta, color = FsColor.wipe, modifier = Modifier.weight(1f))
             BrandButton(stringResource(R.string.common_tryAgain), BrandButtonKind.Secondary, actions.loadMore, height = 48.dp, fill = false)
         }
         board.hasMore -> {
@@ -414,4 +414,4 @@ private fun Skeleton(signedIn: Boolean) {
 /** The rank numeral: mono 700. */
 private val MENU_OFFSET = DpOffset(56.dp, 0.dp)
 
-private val RankNumeral = FsType.mono.copy(fontWeight = FontWeight.Bold, fontSize = 16.sp)
+private val RankNumeral = ScaledType.mono.copy(fontWeight = FontWeight.Bold, fontSize = 16.sp)

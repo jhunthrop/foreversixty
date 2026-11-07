@@ -3,7 +3,7 @@ package gg.foreversixty.app.raids.ui
 import android.content.ClipData
 import gg.foreversixty.app.designsystem.GameColors
 import gg.foreversixty.app.designsystem.classColor
-import gg.foreversixty.app.designsystem.FsType
+import gg.foreversixty.app.designsystem.ScaledType
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -98,10 +98,10 @@ fun OfficerRow(controller: SignupController, clock: RaidClock) {
                     else -> R.string.officer_lockNote
                 },
             ),
-            style = FsType.meta,
+            style = ScaledType.meta,
             color = FsColor.muted,
         )
-        controller.officerError?.let { Text(it, style = FsType.meta, color = FsColor.wipe) }
+        controller.officerError?.let { Text(it, style = ScaledType.meta, color = FsColor.wipe) }
     }
 }
 
@@ -117,8 +117,8 @@ fun Roster(controller: SignupController, facts: RaidFacts) {
     val move: (RosterRow, SignupState) -> Unit = { row, state -> scope.launch { controller.move(row, state) } }
     Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.Bottom) {
-            Text(stringResource(R.string.raid_signups).uppercase(), style = FsType.h2, color = FsColor.strong, modifier = Modifier.semantics { heading() })
-            Text(facts.ratio, style = FsType.mono, color = FsColor.muted, modifier = Modifier.padding(bottom = 4.dp))
+            Text(stringResource(R.string.raid_signups).uppercase(), style = ScaledType.h2, color = FsColor.strong, modifier = Modifier.semantics { heading() })
+            Text(facts.ratio, style = ScaledType.mono, color = FsColor.muted, modifier = Modifier.padding(bottom = 4.dp))
         }
         val res = androidx.compose.ui.platform.LocalResources.current
         gg.foreversixty.app.raids.logic.CompositionRead.of(controller.raid.composition, res)?.let { CompositionBlock(it) }
@@ -127,7 +127,7 @@ fun Roster(controller: SignupController, facts: RaidFacts) {
                 SectionLabel(stringResource(group.kind.label), trailing = "${group.rows.size}")
                 val empty = group.kind.emptyLine
                 if (group.rows.isEmpty() && empty != null) {
-                    Text(stringResource(empty), style = FsType.meta, color = FsColor.muted, modifier = Modifier.raidQuietCard().padding(14.dp))
+                    Text(stringResource(empty), style = ScaledType.meta, color = FsColor.muted, modifier = Modifier.raidQuietCard().padding(14.dp))
                 } else {
                     Rows(group.rows, officer, controller, move)
                 }
@@ -146,7 +146,7 @@ fun Roster(controller: SignupController, facts: RaidFacts) {
                                 withStyle(SpanStyle(color = classColor(row.className))) { append(row.name) }
                             }
                         },
-                        style = FsType.meta,
+                        style = ScaledType.meta,
                     )
                 }
             }
@@ -181,13 +181,13 @@ fun RosterRowView(row: RosterRow, officer: Boolean, error: String?, move: (Signu
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically) {
             GameIcon(row.specIcon, 28.dp)
             Column(Modifier.weight(1f).clearAndSetSemantics { contentDescription = label }) {
-                NameText(row.name, FsType.bodyStrong, classColor(row.className))
-                if (row.specName.isNotEmpty()) Text(row.specName, style = FsType.meta, color = FsColor.muted)
-                if (row.note.isNotEmpty()) Text(row.note, style = FsType.meta, color = FsColor.text)
+                NameText(row.name, ScaledType.bodyStrong, classColor(row.className))
+                if (row.specName.isNotEmpty()) Text(row.specName, style = ScaledType.meta, color = FsColor.muted)
+                if (row.note.isNotEmpty()) Text(row.note, style = ScaledType.meta, color = FsColor.text)
             }
             if (officer) PlaceMenu(row, move)
         }
-        error?.let { Text(it, style = FsType.meta, color = FsColor.wipe) }
+        error?.let { Text(it, style = ScaledType.meta, color = FsColor.wipe) }
     }
 }
 
@@ -212,13 +212,13 @@ fun PlaceMenu(row: RosterRow, move: (SignupState) -> Unit, initiallyOpen: Boolea
             modifier = Modifier
                 .widthIn(min = 56.dp)
                 .heightIn(min = 48.dp)
-                .background(FsColor.bg.copy(alpha = 0.4f), RoundedCornerShape(FsRadius.control))
-                .border(1.dp, if (open) FsColor.gold else FsColor.line, RoundedCornerShape(FsRadius.control))
+                .background(FsColor.bg.copy(alpha = 0.4f), RoundedCornerShape(FsRadius.legacyControl))
+                .border(1.dp, if (open) FsColor.gold else FsColor.line, RoundedCornerShape(FsRadius.legacyControl))
                 .clickable { open = true }
                 .padding(horizontal = 12.dp)
                 .clearAndSetSemantics { contentDescription = a11y },
         ) {
-            Text(place, style = FsType.segment, color = FsColor.strong)
+            Text(place, style = ScaledType.segment, color = FsColor.strong)
             Icon(Icons.Filled.KeyboardArrowDown, contentDescription = null, tint = FsColor.strong, modifier = Modifier.size(16.dp))
         }
         DropdownMenu(expanded = open, onDismissRequest = { open = false }, containerColor = GameColors.sheet) {
@@ -229,13 +229,13 @@ fun PlaceMenu(row: RosterRow, move: (SignupState) -> Unit, initiallyOpen: Boolea
                     row.state?.let { stringResource(it.label) } ?: stringResource(R.string.raid_chip_notSigned),
                     stringResource(roleLabel(row.role)),
                 ),
-                style = FsType.meta,
+                style = ScaledType.meta,
                 color = FsColor.muted,
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
             )
             placeMenuItems(row.state).forEach { (label, state, destructive) ->
                 DropdownMenuItem(
-                    text = { Text(stringResource(label), style = FsType.body, color = if (destructive) FsColor.wipe else FsColor.strong) },
+                    text = { Text(stringResource(label), style = ScaledType.body, color = if (destructive) FsColor.wipe else FsColor.strong) },
                     onClick = {
                         open = false
                         move(state)

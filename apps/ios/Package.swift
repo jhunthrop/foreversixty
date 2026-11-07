@@ -30,8 +30,8 @@ let package = Package(
         ),
         // Generated/DeepLink.swift is generated from apps/shared/links.json.
         .target(name: "Routing", path: "Sources/Routing", swiftSettings: strictSettings),
-        // Shared/DesignTokens.swift is generated from web/src/styles/tokens.css
-        // (lane T); it is its own target so the generator owns the whole folder.
+        // Shared/DesignTokens.swift is generated from design/tokens/tokens.json
+        // (design/tokens/build.mjs); it is its own target so the generator owns the whole folder.
         .target(name: "DesignTokens", path: "Shared", swiftSettings: strictSettings),
         .target(
             name: "DesignSystem",

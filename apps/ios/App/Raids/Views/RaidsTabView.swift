@@ -65,7 +65,7 @@ struct RaidsTabContentView: View {
                 .font(.system(size: 20))
                 .foregroundStyle(FSColor.gold)
                 .frame(width: 44, height: 44)
-                .background(FSColor.gold.opacity(0.12), in: .rect(cornerRadius: FSRadius.control))
+                .background(FSColor.gold.opacity(0.12), in: .rect(cornerRadius: FSRadius.legacyControl))
                 .accessibilityHidden(true)
             Text(title.uppercased()).font(ScaledType.h2).foregroundStyle(FSColor.strong)
                 .accessibilityAddTraits(.isHeader)
@@ -98,7 +98,7 @@ struct RaidsTabContentView: View {
                     : AnyLayout(HStackLayout(spacing: 12))) {
                     Image(systemName: "person.badge.clock").foregroundStyle(FSColor.gold)
                         .frame(width: 36, height: 36)
-                        .background(FSColor.gold.opacity(0.12), in: .rect(cornerRadius: FSRadius.control))
+                        .background(FSColor.gold.opacity(0.12), in: .rect(cornerRadius: FSRadius.legacyControl))
                         .accessibilityHidden(true)
                     VStack(alignment: .leading, spacing: 2) {
                         Text(Copy.raidsPending(n: waiting)).font(ScaledType.bodyStrong).foregroundStyle(FSColor.strong)
@@ -345,11 +345,11 @@ struct RaidsTabSkeleton: View {
             }
             VStack(alignment: .leading, spacing: 14) {
                 HStack(alignment: .top, spacing: 12) {
-                    RoundedRectangle(cornerRadius: FSRadius.control).frame(width: 52, height: 56)
+                    RoundedRectangle(cornerRadius: FSRadius.legacyControl).frame(width: 52, height: 56)
                     VStack(alignment: .leading, spacing: 6) { bar(70, 11); bar(180, 22); bar(200, 15); bar(150, 15) }
                 }
                 bar(240, 15)
-                RoundedRectangle(cornerRadius: FSRadius.control).frame(height: 48)
+                RoundedRectangle(cornerRadius: FSRadius.legacyControl).frame(height: 48)
                 bar(90, 20)
             }
             .raidCardBox(16).primaryCard()

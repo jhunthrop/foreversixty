@@ -52,7 +52,7 @@ import gg.foreversixty.app.common.ClassCrest
 import gg.foreversixty.app.common.FactionMark
 import gg.foreversixty.app.common.OfflineStamp
 import gg.foreversixty.app.designsystem.FsColor
-import gg.foreversixty.app.designsystem.FsType
+import gg.foreversixty.app.designsystem.ScaledType
 import gg.foreversixty.app.designsystem.GameColors
 import gg.foreversixty.app.designsystem.HeadingFamily
 import gg.foreversixty.app.designsystem.MicroLabel
@@ -99,7 +99,7 @@ fun TierListContent(state: TierListState, now: Instant, actions: TierListActions
             Chips(state.choice, actions.choose, actions.share)
             when (val tiers = state.tiers) {
                 Loadable.Loading -> TierSkeleton()
-                Loadable.NotCached -> Text(stringResource(R.string.guides_listNotCached), style = FsType.body, color = FsColor.muted, modifier = Modifier.padding(top = GuideSpace.rowGap))
+                Loadable.NotCached -> Text(stringResource(R.string.guides_listNotCached), style = ScaledType.body, color = FsColor.muted, modifier = Modifier.padding(top = GuideSpace.rowGap))
                 Loadable.Failed -> ErrorRegion(stringResource(R.string.tiers_error), actions.retry, inset = false)
                 is Loadable.Loaded -> Loaded(tiers.value, state, actions)
             }
@@ -161,11 +161,11 @@ private fun Callout(callout: TierCallout, build: String) {
             SpecTile(callout.row.icon, callout.row.classSlug, build, CALLOUT_ICON)
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
                 MicroLabel(stringResource(R.string.tiers_yours), color = FsColor.gold)
-                Text(callout.row.title, style = FsType.bodyStrong, color = FsColor.strong)
-                Text(callout.row.detail, style = FsType.meta, color = FsColor.muted)
+                Text(callout.row.title, style = ScaledType.bodyStrong, color = FsColor.strong)
+                Text(callout.row.detail, style = ScaledType.meta, color = FsColor.muted)
             }
         }
-        callout.note?.let { Text(it, style = FsType.meta, color = FsColor.muted) }
+        callout.note?.let { Text(it, style = ScaledType.meta, color = FsColor.muted) }
     }
 }
 
@@ -192,14 +192,14 @@ private fun TierRowView(model: TierRowModel, count: Int, build: String, open: ()
         horizontalArrangement = Arrangement.spacedBy(GuideSpace.rowGap),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Text(row.rank.toString(), style = FsType.mono, color = FsColor.muted, modifier = Modifier.widthIn(min = RANK_WIDTH))
+        Text(row.rank.toString(), style = ScaledType.mono, color = FsColor.muted, modifier = Modifier.widthIn(min = RANK_WIDTH))
         SpecTile(row.icon, row.classSlug, build, ROW_ICON)
         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
-                Text(row.name, style = FsType.bodyStrong, color = classColor(row.classSlug), modifier = Modifier.weight(1f, fill = false))
+                Text(row.name, style = ScaledType.bodyStrong, color = classColor(row.classSlug), modifier = Modifier.weight(1f, fill = false))
                 if (model.isYours) Tag(stringResource(R.string.tiers_yoursTag), FsColor.gold)
             }
-            Text(row.race, style = FsType.meta, color = FsColor.muted)
+            Text(row.race, style = ScaledType.meta, color = FsColor.muted)
             Bar(row.fraction.toFloat(), toneColor(model.tone) ?: classColor(row.classSlug))
             if (stacked) Figure(model, inline = true)
         }
@@ -218,10 +218,10 @@ private fun Figure(model: TierRowModel, inline: Boolean) {
         val tone = model.tone
         if (tone != null && row.tier != null) {
             TierChip(row.tier.orEmpty(), tone)
-            Text(model.gap, style = FsType.mono, color = FsColor.text, textAlign = TextAlign.End)
+            Text(model.gap, style = ScaledType.mono, color = FsColor.text, textAlign = TextAlign.End)
         } else {
-            Text(row.metricText, style = FsType.mono, color = FsColor.text)
-            Text(row.unit, style = FsType.meta, color = FsColor.muted)
+            Text(row.metricText, style = ScaledType.mono, color = FsColor.text)
+            Text(row.unit, style = ScaledType.meta, color = FsColor.muted)
         }
     }
     if (inline) {
@@ -239,7 +239,7 @@ private fun TierChip(letter: String, tone: TierTone) {
     val shape = RoundedCornerShape(percent = PILL_PERCENT)
     // 28 dp, growing with the letter at large text so it is never cut.
     Box(Modifier.defaultMinSize(CHIP, CHIP).border(1.5.dp, color, shape).padding(horizontal = 4.dp), contentAlignment = Alignment.Center) {
-        Text(letter, style = FsType.bodyStrong.copy(fontFamily = HeadingFamily), color = color)
+        Text(letter, style = ScaledType.bodyStrong.copy(fontFamily = HeadingFamily), color = color)
     }
 }
 
@@ -283,7 +283,7 @@ private fun TierSkeleton() {
                 }
             }
         }
-        Text(stringResource(R.string.tiers_loading), style = FsType.meta, color = FsColor.muted, modifier = Modifier.cardInside())
+        Text(stringResource(R.string.tiers_loading), style = ScaledType.meta, color = FsColor.muted, modifier = Modifier.cardInside())
     }
 }
 

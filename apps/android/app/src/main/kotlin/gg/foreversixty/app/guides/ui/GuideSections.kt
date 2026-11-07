@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
 import gg.foreversixty.app.R
 import gg.foreversixty.app.common.FactionMark
 import gg.foreversixty.app.designsystem.FsColor
-import gg.foreversixty.app.designsystem.FsType
+import gg.foreversixty.app.designsystem.ScaledType
 import gg.foreversixty.app.designsystem.MicroLabel
 import gg.foreversixty.app.designsystem.Tag
 import gg.foreversixty.app.designsystem.quietCard
@@ -59,7 +59,7 @@ internal fun GuideSectionView(section: GuideSection, guide: GuideFile, actions: 
 private fun Overview(guide: GuideFile) {
     val overview = guide.overview
     Column(Modifier.fillMaxWidth().quietCard().cardInside(), verticalArrangement = Arrangement.spacedBy(GuideSpace.rowGap)) {
-        Text(guide.summary, style = FsType.body, color = FsColor.text)
+        Text(guide.summary, style = ScaledType.body, color = FsColor.text)
         LabelledLines(stringResource(R.string.guides_strengths), overview.strengths)
         LabelledLines(stringResource(R.string.guides_weaknesses), overview.weaknesses)
         LabelledLines(stringResource(R.string.guides_inRaid), overview.raid)
@@ -95,7 +95,7 @@ private fun OpenInPlannerRow(open: () -> Unit) {
         horizontalArrangement = Arrangement.spacedBy(GuideSpace.rowGap),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Text(stringResource(R.string.plan_openInPlanner), style = FsType.bodyStrong, color = FsColor.gold, modifier = Modifier.weight(1f))
+        Text(stringResource(R.string.plan_openInPlanner), style = ScaledType.bodyStrong, color = FsColor.gold, modifier = Modifier.weight(1f))
         Chevron(CHEVRON)
     }
 }
@@ -104,8 +104,8 @@ private fun OpenInPlannerRow(open: () -> Unit) {
 private fun TalentRow(talent: GuideKeyTalent, build: String, copy: GuidesCopy) {
     IconRow(talent.icon, build) {
         NameAndFigure(talent.name, copy.ranks(talent.maxRank))
-        talent.text?.let { Text(it, style = FsType.meta, color = FsColor.muted) }
-        talent.why?.let { Text(it, style = FsType.meta, color = FsColor.text) }
+        talent.text?.let { Text(it, style = ScaledType.meta, color = FsColor.muted) }
+        talent.why?.let { Text(it, style = ScaledType.meta, color = FsColor.text) }
     }
 }
 
@@ -116,9 +116,9 @@ private fun BuildRowView(row: BuildRow, copy: GuidesCopy) {
         horizontalArrangement = Arrangement.spacedBy(GuideSpace.rowGap),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Text(copy.build(row.kind), style = FsType.bodyStrong, color = FsColor.strong, modifier = Modifier.weight(1f))
-        Text(row.totals, style = FsType.mono, color = FsColor.text)
-        if (row.kind == BuildKind.Raid) Text(stringResource(R.string.guides_buildLevel), style = FsType.meta, color = FsColor.muted)
+        Text(copy.build(row.kind), style = ScaledType.bodyStrong, color = FsColor.strong, modifier = Modifier.weight(1f))
+        Text(row.totals, style = ScaledType.mono, color = FsColor.text)
+        if (row.kind == BuildKind.Raid) Text(stringResource(R.string.guides_buildLevel), style = ScaledType.meta, color = FsColor.muted)
     }
 }
 
@@ -127,7 +127,7 @@ private fun BuildRowView(row: BuildRow, copy: GuidesCopy) {
 private fun Rotation(rotation: GuideRotation?, build: String, copy: GuidesCopy) {
     Column(verticalArrangement = Arrangement.spacedBy(GuideSpace.labelGap)) {
         Guides.rotation(rotation).forEach { group -> RotationGroupView(group, build, copy) }
-        Text(stringResource(R.string.guides_rotationFooter), style = FsType.meta, color = FsColor.muted)
+        Text(stringResource(R.string.guides_rotationFooter), style = ScaledType.meta, color = FsColor.muted)
     }
 }
 
@@ -137,7 +137,7 @@ private fun RotationGroupView(group: RotationGroup, build: String, copy: GuidesC
         MicroLabel(copy.rotation(group.kind))
         QuietRows(group.rows) { row ->
             Row(Modifier.fillMaxWidth().padding(start = GuideSpace.margin), verticalAlignment = Alignment.CenterVertically) {
-                Text(row.number.toString(), style = FsType.mono, color = FsColor.muted, modifier = Modifier.widthIn(min = NUMBER_WIDTH))
+                Text(row.number.toString(), style = ScaledType.mono, color = FsColor.muted, modifier = Modifier.widthIn(min = NUMBER_WIDTH))
                 SpellRow(row.spell, build, copy)
             }
         }
@@ -148,7 +148,7 @@ private fun RotationGroupView(group: RotationGroup, build: String, copy: GuidesC
 private fun SpellRow(spell: GuideSpell, build: String, copy: GuidesCopy) {
     IconRow(spell.icon, build, inset = false, tile = Guides.hasTile(spell)) {
         NameAndFigure(spell.name, copy.rank(spell.rank))
-        Text(spell.clause, style = FsType.meta, color = FsColor.muted)
+        Text(spell.clause, style = ScaledType.meta, color = FsColor.muted)
     }
 }
 
@@ -157,7 +157,7 @@ private fun SpellRow(spell: GuideSpell, build: String, copy: GuidesCopy) {
 private fun Stats(guide: GuideFile, copy: GuidesCopy) {
     Column(Modifier.fillMaxWidth().quietCard().cardInside(), verticalArrangement = Arrangement.spacedBy(GuideSpace.rowGap)) {
         NumberedChips(guide.statPriority, copy::statLabel)
-        guide.hitCap?.let { Text(it, style = FsType.body, color = FsColor.text) }
+        guide.hitCap?.let { Text(it, style = ScaledType.body, color = FsColor.text) }
     }
 }
 
@@ -169,7 +169,7 @@ private fun Gear(guide: GuideFile, actions: GuideReaderActions) {
         Modifier.fillMaxWidth().quietCard().heightIn(min = TARGET).clickable(role = Role.Button) { actions.openBis(guide) }.cardInside(),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Text(stringResource(R.string.guides_gearRow, guide.specName, gear.presetLabel), style = FsType.bodyStrong, color = FsColor.gold, modifier = Modifier.weight(1f))
+        Text(stringResource(R.string.guides_gearRow, guide.specName, gear.presetLabel), style = ScaledType.bodyStrong, color = FsColor.gold, modifier = Modifier.weight(1f))
         Chevron(CHEVRON)
     }
 }
@@ -181,10 +181,10 @@ private fun Races(races: List<GuideRaceRow>) {
         Column(Modifier.fillMaxWidth().cardInside(), verticalArrangement = Arrangement.spacedBy(6.dp)) {
             FlowRow(horizontalArrangement = Arrangement.spacedBy(GuideSpace.labelGap), verticalArrangement = Arrangement.spacedBy(6.dp), itemVerticalAlignment = Alignment.CenterVertically) {
                 FactionMark(race.faction, FACTION)
-                Text(race.name, style = FsType.bodyStrong, color = FsColor.strong)
+                Text(race.name, style = ScaledType.bodyStrong, color = FsColor.strong)
                 if (race.recommended) Tag(stringResource(R.string.guides_recommended), FsColor.kill)
             }
-            race.racials.forEach { racial -> Text("${racial.name}: ${racial.effect}", style = FsType.meta, color = FsColor.muted) }
+            race.racials.forEach { racial -> Text("${racial.name}: ${racial.effect}", style = ScaledType.meta, color = FsColor.muted) }
         }
     }
 }
@@ -210,8 +210,8 @@ private fun IconRow(icon: String?, build: String, inset: Boolean = true, tile: B
 @Composable
 private fun NameAndFigure(name: String, figure: String?) {
     FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), itemVerticalAlignment = Alignment.Bottom) {
-        Text(name, style = FsType.bodyStrong, color = FsColor.strong)
-        figure?.let { Text(it, style = FsType.monoMeta, color = FsColor.muted) }
+        Text(name, style = ScaledType.bodyStrong, color = FsColor.strong)
+        figure?.let { Text(it, style = ScaledType.monoMeta, color = FsColor.muted) }
     }
 }
 

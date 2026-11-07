@@ -51,8 +51,8 @@ import gg.foreversixty.app.designsystem.BrandButton
 import gg.foreversixty.app.designsystem.BrandButtonKind
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.FsRadius
-import gg.foreversixty.app.designsystem.FsSpacing
-import gg.foreversixty.app.designsystem.FsType
+import gg.foreversixty.app.designsystem.FsSpace
+import gg.foreversixty.app.designsystem.ScaledType
 import gg.foreversixty.app.designsystem.MicroLabel
 import gg.foreversixty.app.designsystem.quietCard
 import gg.foreversixty.app.guild.ui.GuildTopBar
@@ -116,8 +116,8 @@ fun OfflineDataScreen(state: OfflineDataState, now: Instant, actions: OfflineDat
     Column(Modifier.fillMaxSize().background(FsColor.bg)) {
         GuildTopBar(stringResource(R.string.offlineData_title), actions.back)
         Column(
-            Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal = FsSpacing.space4).padding(bottom = FsSpacing.space6),
-            verticalArrangement = Arrangement.spacedBy(FsSpacing.space4),
+            Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal = FsSpace.space4).padding(bottom = FsSpace.space6),
+            verticalArrangement = Arrangement.spacedBy(FsSpace.space4),
         ) {
             val report = state.report
             when {
@@ -127,7 +127,7 @@ fun OfflineDataScreen(state: OfflineDataState, now: Instant, actions: OfflineDat
             }
             Updates(state, actions)
             UpdateButtons(state, report?.isEmpty != false, actions)
-            Text(copy.footer(state.checkedAt, now), style = FsType.meta, color = FsColor.muted)
+            Text(copy.footer(state.checkedAt, now), style = ScaledType.meta, color = FsColor.muted)
         }
     }
     if (state.confirmingRemove) RemoveDialog(actions)
@@ -142,20 +142,20 @@ private fun RemoveDialog(actions: OfflineDataActions) {
     val large = LocalDensity.current.fontScale >= STACK_BUTTONS_SCALE
     val remove = @Composable { modifier: Modifier ->
         TextButton(actions.remove, modifier.heightIn(min = 48.dp)) {
-            Text(stringResource(R.string.offlineData_removeAction), style = FsType.bodyStrong, color = FsColor.wipe, textAlign = TextAlign.Center)
+            Text(stringResource(R.string.offlineData_removeAction), style = ScaledType.bodyStrong, color = FsColor.wipe, textAlign = TextAlign.Center)
         }
     }
     val cancel = @Composable { modifier: Modifier ->
         TextButton(actions.cancelRemove, modifier.heightIn(min = 48.dp)) {
-            Text(stringResource(R.string.common_cancel), style = FsType.bodyStrong, color = FsColor.nav, textAlign = TextAlign.Center)
+            Text(stringResource(R.string.common_cancel), style = ScaledType.bodyStrong, color = FsColor.nav, textAlign = TextAlign.Center)
         }
     }
     AlertDialog(
         onDismissRequest = actions.cancelRemove,
         properties = DialogProperties(usePlatformDefaultWidth = false),
-        modifier = Modifier.padding(horizontal = FsSpacing.space6),
+        modifier = Modifier.padding(horizontal = FsSpace.space6),
         containerColor = FsColor.raised,
-        text = { Text(stringResource(R.string.offlineData_removeConfirm), style = FsType.body, color = FsColor.strong) },
+        text = { Text(stringResource(R.string.offlineData_removeConfirm), style = ScaledType.body, color = FsColor.strong) },
         confirmButton = {
             if (large) {
                 Column(Modifier.fillMaxWidth()) {
@@ -176,7 +176,7 @@ private const val STACK_BUTTONS_SCALE = 1.3f
 
 @Composable
 private fun Saved(report: OfflineReport, copy: OfflineDataCopy, now: Instant) {
-    Column(verticalArrangement = Arrangement.spacedBy(FsSpacing.space2)) {
+    Column(verticalArrangement = Arrangement.spacedBy(FsSpace.space2)) {
         MicroLabel(copy.section(report))
         Card {
             report.rows.forEachIndexed { index, row ->
@@ -190,16 +190,16 @@ private fun Saved(report: OfflineReport, copy: OfflineDataCopy, now: Instant) {
 @Composable
 private fun EmptyCard() {
     Card {
-        Column(Modifier.padding(FsSpacing.space4), verticalArrangement = Arrangement.spacedBy(FsSpacing.space1)) {
-            Text(stringResource(R.string.offlineData_empty), style = FsType.bodyStrong, color = FsColor.strong)
-            Text(stringResource(R.string.offlineData_emptySub), style = FsType.meta, color = FsColor.muted)
+        Column(Modifier.padding(FsSpace.space4), verticalArrangement = Arrangement.spacedBy(FsSpace.space1)) {
+            Text(stringResource(R.string.offlineData_empty), style = ScaledType.bodyStrong, color = FsColor.strong)
+            Text(stringResource(R.string.offlineData_emptySub), style = ScaledType.meta, color = FsColor.muted)
         }
     }
 }
 
 @Composable
 private fun Updates(state: OfflineDataState, actions: OfflineDataActions) {
-    Column(verticalArrangement = Arrangement.spacedBy(FsSpacing.space2)) {
+    Column(verticalArrangement = Arrangement.spacedBy(FsSpace.space2)) {
         MicroLabel(stringResource(R.string.offlineData_updates))
         Card {
             SwitchRow(stringResource(R.string.offlineData_keep), stringResource(R.string.offlineData_keepNote), state.keepClassesReady, actions.keep)
@@ -211,7 +211,7 @@ private fun Updates(state: OfflineDataState, actions: OfflineDataActions) {
 
 @Composable
 private fun UpdateButtons(state: OfflineDataState, empty: Boolean, actions: OfflineDataActions) {
-    Column(verticalArrangement = Arrangement.spacedBy(FsSpacing.space2)) {
+    Column(verticalArrangement = Arrangement.spacedBy(FsSpace.space2)) {
         val label = stringResource(if (state.updating) R.string.offlineData_updating else R.string.offlineData_updateNow)
         BrandButton(
             label, BrandButtonKind.Primary, actions.updateNow,
@@ -225,7 +225,7 @@ private fun UpdateButtons(state: OfflineDataState, empty: Boolean, actions: Offl
         }
         reason?.let {
             Text(
-                it, style = FsType.meta, color = if (state.note == UpdateNote.Failed) FsColor.wipe else FsColor.muted,
+                it, style = ScaledType.meta, color = if (state.note == UpdateNote.Failed) FsColor.wipe else FsColor.muted,
                 modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite },
             )
         }
@@ -242,17 +242,17 @@ private fun Card(content: @Composable ColumnScope.() -> Unit) {
 @Composable
 private fun DataRow(@DrawableRes icon: Int, title: String, meta: String) {
     Row(
-        Modifier.fillMaxWidth().heightIn(min = 56.dp).padding(horizontal = FsSpacing.space4, vertical = FsSpacing.space2),
+        Modifier.fillMaxWidth().heightIn(min = 56.dp).padding(horizontal = FsSpace.space4, vertical = FsSpace.space2),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(FsSpacing.space3),
+        horizontalArrangement = Arrangement.spacedBy(FsSpace.space3),
     ) {
         Box(
-            Modifier.size(32.dp).background(FsColor.gold.copy(alpha = TILE_ALPHA), RoundedCornerShape(FsRadius.pill)),
+            Modifier.size(32.dp).background(FsColor.gold.copy(alpha = TILE_ALPHA), RoundedCornerShape(FsRadius.legacyPill)),
             contentAlignment = Alignment.Center,
         ) { Icon(painterResource(icon), contentDescription = null, tint = FsColor.gold, modifier = Modifier.size(18.dp)) }
         Column(Modifier.weight(1f)) {
-            Text(title, style = FsType.bodyStrong, color = FsColor.strong)
-            Text(meta, style = FsType.meta, color = FsColor.muted)
+            Text(title, style = ScaledType.bodyStrong, color = FsColor.strong)
+            Text(meta, style = ScaledType.meta, color = FsColor.muted)
         }
     }
 }
@@ -262,13 +262,13 @@ private fun SwitchRow(title: String, note: String, checked: Boolean, onChange: (
     Row(
         Modifier.fillMaxWidth().heightIn(min = 56.dp)
             .toggleable(value = checked, role = Role.Switch, onValueChange = onChange)
-            .padding(horizontal = FsSpacing.space4, vertical = FsSpacing.space2),
+            .padding(horizontal = FsSpace.space4, vertical = FsSpace.space2),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(FsSpacing.space3),
+        horizontalArrangement = Arrangement.spacedBy(FsSpace.space3),
     ) {
         Column(Modifier.weight(1f)) {
-            Text(title, style = FsType.bodyStrong, color = FsColor.strong)
-            Text(note, style = FsType.meta, color = FsColor.muted)
+            Text(title, style = ScaledType.bodyStrong, color = FsColor.strong)
+            Text(note, style = ScaledType.meta, color = FsColor.muted)
         }
         Switch(checked = checked, onCheckedChange = null, colors = SwitchDefaults.colors(checkedTrackColor = FsColor.gold, checkedThumbColor = FsColor.bg))
     }

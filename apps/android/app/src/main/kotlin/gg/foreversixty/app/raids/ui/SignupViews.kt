@@ -4,7 +4,7 @@ import androidx.compose.foundation.background
 import gg.foreversixty.app.common.ClassCrest
 import gg.foreversixty.app.designsystem.GameColors
 import gg.foreversixty.app.designsystem.classColor
-import gg.foreversixty.app.designsystem.FsType
+import gg.foreversixty.app.designsystem.ScaledType
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -89,7 +89,7 @@ private const val GRID_FONT_SCALE = 1.5f
 fun Segments(characterName: String, block: SignupBlock, enabled: Boolean, press: (SignupState) -> Unit) {
     val grid = LocalDensity.current.fontScale >= GRID_FONT_SCALE
     val label = stringResource(R.string.raids_a11y_segments, characterName)
-    val shape = RoundedCornerShape(FsRadius.control)
+    val shape = RoundedCornerShape(FsRadius.legacyControl)
     Column(
         Modifier
             .fillMaxWidth()
@@ -157,7 +157,7 @@ private fun RowScope.Segment(state: SignupState, block: SignupBlock, enabled: Bo
                 }
             },
     ) {
-        Text(stringResource(state.label), style = FsType.segment, color = if (checked) FsColor.strong else FsColor.muted, maxLines = 1, softWrap = false)
+        Text(stringResource(state.label), style = ScaledType.segment, color = if (checked) FsColor.strong else FsColor.muted, maxLines = 1, softWrap = false)
     }
 }
 
@@ -175,7 +175,7 @@ fun StatusLineText(status: StatusLine?, reserves: Boolean = true) {
     }
     Text(
         status?.text ?: " ",
-        style = FsType.meta,
+        style = ScaledType.meta,
         color = color,
         modifier = Modifier.fillMaxWidth().heightIn(min = 20.dp).semantics { liveRegion = LiveRegionMode.Polite },
     )
@@ -193,13 +193,13 @@ fun WhoLine(
 ) {
     val labels = @Composable { modifier: Modifier ->
         Column(modifier.semantics(mergeDescendants = true) {}) {
-            NameText(name, FsType.name, classColor(className))
+            NameText(name, ScaledType.name, classColor(className))
             Row(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalAlignment = Alignment.CenterVertically) {
                 GameIcon(specIcon, 18.dp)
                 val roleText = if (role.isEmpty()) "" else stringResource(roleLabel(role))
                 Text(
                     specName?.let { stringResource(R.string.raids_who, it, roleText) } ?: roleText,
-                    style = FsType.meta,
+                    style = ScaledType.meta,
                     color = FsColor.muted,
                 )
             }
@@ -253,7 +253,7 @@ fun SignupBlockView(
             StatusLineText(controller.restingStatus(key), reservesStatus)
             if (showsNote && block.shown != null) NoteField(controller, key, block)
         } else {
-            Text(stringResource(R.string.raid_waitingCharacter), style = FsType.meta, color = FsColor.muted)
+            Text(stringResource(R.string.raid_waitingCharacter), style = ScaledType.meta, color = FsColor.muted)
         }
     }
 }
@@ -275,7 +275,7 @@ private fun NoteField(controller: SignupController, key: String, block: SignupBl
             onValueChange = { controller.editNote(key, it) },
             enabled = enabled,
             singleLine = true,
-            textStyle = FsType.body.copy(color = FsColor.text),
+            textStyle = ScaledType.body.copy(color = FsColor.text),
             cursorBrush = SolidColor(FsColor.gold),
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
             keyboardActions = KeyboardActions(onDone = { scope.launch { controller.saveNote(key) } }),
@@ -291,21 +291,21 @@ private fun NoteField(controller: SignupController, key: String, block: SignupBl
                     modifier = Modifier
                         .fillMaxWidth()
                         .heightIn(min = 48.dp)
-                        .background(androidx.compose.ui.graphics.Color.Black.copy(alpha = 0.35f), RoundedCornerShape(FsRadius.control))
-                        .border(1.dp, borderColor, RoundedCornerShape(FsRadius.control))
+                        .background(androidx.compose.ui.graphics.Color.Black.copy(alpha = 0.35f), RoundedCornerShape(FsRadius.legacyControl))
+                        .border(1.dp, borderColor, RoundedCornerShape(FsRadius.legacyControl))
                         .padding(horizontal = 14.dp),
                 ) {
-                    if (text.isEmpty()) Text(stringResource(R.string.raid_note_placeholder), style = FsType.body, color = FsColor.muted)
+                    if (text.isEmpty()) Text(stringResource(R.string.raid_note_placeholder), style = ScaledType.body, color = FsColor.muted)
                     inner()
                 }
             },
         )
         when {
-            block.noteBusy -> Text(stringResource(R.string.raids_note_saving), style = FsType.meta, color = FsColor.muted)
-            block.noteFailed -> Text(stringResource(R.string.raid_note_failed), style = FsType.meta, color = FsColor.wipe)
+            block.noteBusy -> Text(stringResource(R.string.raids_note_saving), style = ScaledType.meta, color = FsColor.muted)
+            block.noteFailed -> Text(stringResource(R.string.raid_note_failed), style = ScaledType.meta, color = FsColor.wipe)
             text.length >= SignupController.NOTE_COUNTER_FROM -> Text(
                 stringResource(R.string.raid_note_left, SignupController.NOTE_LIMIT - text.length),
-                style = FsType.monoMeta,
+                style = ScaledType.monoMeta,
                 color = FsColor.muted,
             )
         }
@@ -318,18 +318,18 @@ fun ReminderAsk(turnOn: () -> Unit, notNow: () -> Unit) {
     Row(horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.raidQuietCard().padding(14.dp)) {
         Box(
             contentAlignment = Alignment.Center,
-            modifier = Modifier.size(32.dp).background(FsColor.gold.copy(alpha = 0.12f), RoundedCornerShape(FsRadius.control)),
+            modifier = Modifier.size(32.dp).background(FsColor.gold.copy(alpha = 0.12f), RoundedCornerShape(FsRadius.legacyControl)),
         ) {
             Icon(Icons.Filled.Notifications, contentDescription = null, tint = FsColor.gold, modifier = Modifier.size(18.dp))
         }
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Text(stringResource(R.string.ask_raid_title), style = FsType.bodyStrong, color = FsColor.strong)
-            Text(stringResource(R.string.ask_raid_body), style = FsType.meta, color = FsColor.muted)
+            Text(stringResource(R.string.ask_raid_title), style = ScaledType.bodyStrong, color = FsColor.strong)
+            Text(stringResource(R.string.ask_raid_body), style = ScaledType.meta, color = FsColor.muted)
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically) {
                 RaidSecondaryButton(stringResource(R.string.ask_turnOn_raid), turnOn, kind = BrandButtonKind.Accent)
                 Text(
                     stringResource(R.string.ask_notNow),
-                    style = FsType.button,
+                    style = ScaledType.button,
                     color = FsColor.nav,
                     modifier = Modifier.heightIn(min = 48.dp).clickable(onClick = notNow).padding(vertical = 15.dp),
                 )
@@ -364,13 +364,13 @@ fun SpecSheetContent(ask: SpecAsk, character: RaidViewerCharacter, raidTitle: St
             append(sentence)
         } else {
             append(sentence.substring(0, at))
-            withStyle(SpanStyle(color = FsColor.strong, fontWeight = FsType.bodyStrong.fontWeight)) { append(character.name) }
+            withStyle(SpanStyle(color = FsColor.strong, fontWeight = ScaledType.bodyStrong.fontWeight)) { append(character.name) }
             append(sentence.substring(at + character.name.length))
         }
     }
     Column(verticalArrangement = Arrangement.spacedBy(14.dp), modifier = Modifier.padding(16.dp)) {
-        Text(stringResource(R.string.spec_title).uppercase(), style = FsType.sec, color = FsColor.strong, modifier = Modifier.semantics { heading() })
-        Text(lead, style = FsType.body, color = FsColor.text)
+        Text(stringResource(R.string.spec_title).uppercase(), style = ScaledType.sec, color = FsColor.strong, modifier = Modifier.semantics { heading() })
+        Text(lead, style = ScaledType.body, color = FsColor.text)
         Column(Modifier.raidQuietCard()) {
             val options = character.specOptions.orEmpty()
             options.forEachIndexed { index, option ->
@@ -387,8 +387,8 @@ fun SpecSheetContent(ask: SpecAsk, character: RaidViewerCharacter, raidTitle: St
                 ) {
                     GameIcon(option.icon, 40.dp)
                     Column(Modifier.weight(1f)) {
-                        Text(option.name, style = FsType.bodyStrong, color = FsColor.strong)
-                        Text(stringResource(roleLabel(option.role)), style = FsType.meta, color = FsColor.muted)
+                        Text(option.name, style = ScaledType.bodyStrong, color = FsColor.strong)
+                        Text(stringResource(roleLabel(option.role)), style = ScaledType.meta, color = FsColor.muted)
                     }
                     Icon(
                         if (checked) Icons.Filled.Check else Icons.AutoMirrored.Filled.KeyboardArrowRight,
@@ -398,7 +398,7 @@ fun SpecSheetContent(ask: SpecAsk, character: RaidViewerCharacter, raidTitle: St
                 }
             }
         }
-        Text(stringResource(R.string.spec_closeNote), style = FsType.meta, color = FsColor.muted)
+        Text(stringResource(R.string.spec_closeNote), style = ScaledType.meta, color = FsColor.muted)
         Spacer(Modifier.height(8.dp))
     }
 }

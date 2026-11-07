@@ -42,7 +42,7 @@ import gg.foreversixty.app.auth.session.me
 import gg.foreversixty.app.designsystem.BrandButton
 import gg.foreversixty.app.designsystem.BrandButtonKind
 import gg.foreversixty.app.designsystem.FsColor
-import gg.foreversixty.app.designsystem.FsType
+import gg.foreversixty.app.designsystem.ScaledType
 import gg.foreversixty.app.items.ItemCatalog
 import gg.foreversixty.app.items.ItemLook
 import gg.foreversixty.app.items.ItemTooltipModel
@@ -202,12 +202,12 @@ private fun HomeFromMe(dependencies: HomeDependencies, openBis: () -> Unit, sign
         when (answer) {
             null -> HomeSkeleton()
             is ApiResult.Failure -> Column(Modifier.padding(16.dp)) {
-                Text(stringResource(R.string.home_answer_failed), style = FsType.lead, color = FsColor.wipe)
+                Text(stringResource(R.string.home_answer_failed), style = ScaledType.lead, color = FsColor.wipe)
                 BrandButton(stringResource(R.string.common_tryAgain), BrandButtonKind.Secondary, { attempt++ }, height = 48.dp, fill = false, leadingIcon = Icons.Filled.Refresh)
             }
             is ApiResult.Success -> Column(Modifier.padding(16.dp)) {
-                Text(stringResource(R.string.signin_noChars_title), style = FsType.sec, color = FsColor.strong)
-                Text(stringResource(R.string.signin_noChars_body), style = FsType.body, color = FsColor.muted)
+                Text(stringResource(R.string.signin_noChars_title), style = ScaledType.sec, color = FsColor.strong)
+                Text(stringResource(R.string.signin_noChars_body), style = ScaledType.body, color = FsColor.muted)
             }
         }
     }

@@ -13,7 +13,7 @@ struct NewDataStrip: View {
     private static let groundOpacity = 0.10
 
     var body: some View {
-        HStack(spacing: FSSpacing.space2) {
+        HStack(spacing: FSSpace.space2) {
             Image(systemName: "arrow.down.circle").font(.system(size: 14)).accessibilityHidden(true)
             Text(text).font(ScaledType.meta).fixedSize(horizontal: false, vertical: true)
             Spacer(minLength: 0)
@@ -24,7 +24,7 @@ struct NewDataStrip: View {
                 .contentShape(Rectangle())
         }
         .foregroundStyle(FSColor.text)
-        .padding(.horizontal, FSSpacing.space4)
+        .padding(.horizontal, FSSpace.space4)
         .frame(minHeight: Self.height)
         .background(FSColor.gold.opacity(Self.groundOpacity))
         .overlay(alignment: .bottom) { FSColor.line.frame(height: 1) }
@@ -56,7 +56,7 @@ struct StaleStrip: View {
 
     var body: some View {
         let text = Copy.offlineStale(time: time)
-        HStack(spacing: FSSpacing.space2) {
+        HStack(spacing: FSSpace.space2) {
             Image(systemName: "icloud.slash").font(.system(size: 14)).accessibilityHidden(true)
             Text(text).font(ScaledType.meta).fixedSize(horizontal: false, vertical: true)
             Spacer(minLength: 0)
@@ -67,7 +67,7 @@ struct StaleStrip: View {
                 .contentShape(Rectangle())
         }
         .foregroundStyle(FSColor.nav)
-        .padding(.horizontal, FSSpacing.space4)
+        .padding(.horizontal, FSSpace.space4)
         .frame(minHeight: Self.height)
         .background(GameColors.offlineGround)
         .overlay(alignment: .bottom) { FSColor.line.frame(height: 1) }

@@ -5,12 +5,17 @@ the two never drift from the site.
 
 ## Design tokens
 
-`web/src/styles/tokens.css` is the source of truth. `node web/scripts/gen-mobile-tokens.mjs`
-writes `apps/ios/Shared/DesignTokens.swift` and
-`apps/android/core/designsystem/src/main/kotlin/gg/foreversixty/app/designsystem/Tokens.kt`
-(colours including class, item-quality and parse colours, type scale, radii, spacing). Never edit
-the outputs; `web/src/styles/mobile-tokens.test.ts` fails CI when they differ from a fresh run.
-The site is dark only, so the apps are dark only.
+`design/tokens/tokens.json` (W3C design tokens) is the one hand-edited token file for the site
+and both apps (spec `design/specs/2026-11-07-mobile-redesign.md` section 2.1).
+`node design/tokens/build.mjs` writes `web/src/styles/tokens.css`,
+`apps/ios/Shared/DesignTokens.swift` and
+`apps/android/core/designsystem/src/main/kotlin/gg/foreversixty/app/designsystem/Tokens.kt`:
+colours (class, quality, quality text, faction, tier, parse, school), the faces, the type roles
+(`FSType` / `FsType`: face, size, line, tracking, the Dynamic Type style), space, size, the touch
+target, radius (and `FsShape`), stroke, elevation and motion. Never edit the outputs; each opens
+with a GENERATED line, and `node --test design/tokens/tokens.test.mjs` (the web unit job and `mobile-codegen.yml`)
+fails when one differs from a fresh run or lost that line. The site is dark only, so the apps are
+dark only.
 
 ## Fonts (`fonts/`)
 

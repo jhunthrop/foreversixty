@@ -3,7 +3,7 @@ package gg.foreversixty.app.raids.ui
 import androidx.compose.foundation.layout.Arrangement
 import gg.foreversixty.app.common.ClassCrest
 import gg.foreversixty.app.designsystem.classColor
-import gg.foreversixty.app.designsystem.FsType
+import gg.foreversixty.app.designsystem.ScaledType
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
@@ -47,24 +47,24 @@ fun CompositionBlock(read: CompositionRead) {
                     ClassCrest(line.className, 24.dp)
                     Text(
                         line.name,
-                        style = FsType.meta,
+                        style = ScaledType.meta,
                         color = if (line.count == 0) FsColor.muted else classColor(line.className),
                         maxLines = 1,
                         softWrap = false,
                     )
-                    Text("${line.count}", style = FsType.monoMeta, color = if (line.count == 0) FsColor.muted else FsColor.strong)
+                    Text("${line.count}", style = ScaledType.monoMeta, color = if (line.count == 0) FsColor.muted else FsColor.strong)
                 }
             }
         }
         FlowRow(horizontalArrangement = Arrangement.spacedBy(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-            read.roles.forEach { Text(it, style = FsType.bodyStrong, color = FsColor.strong) }
+            read.roles.forEach { Text(it, style = ScaledType.bodyStrong, color = FsColor.strong) }
         }
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             SectionLabel(stringResource(R.string.raids_comp_buffs))
             FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 read.buffs.forEach { BuffTile(it) }
             }
-            Text(read.buffSummary, style = FsType.meta, color = if (read.allCovered) FsColor.kill else FsColor.muted)
+            Text(read.buffSummary, style = ScaledType.meta, color = if (read.allCovered) FsColor.kill else FsColor.muted)
         }
     }
 }

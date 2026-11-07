@@ -38,7 +38,7 @@ import androidx.compose.ui.unit.dp
 import gg.foreversixty.app.R
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.FsRadius
-import gg.foreversixty.app.designsystem.FsType
+import gg.foreversixty.app.designsystem.ScaledType
 import gg.foreversixty.app.designsystem.Tag
 import gg.foreversixty.app.guild.logic.HistoryCopy
 import gg.foreversixty.app.guild.logic.Loadable
@@ -102,7 +102,7 @@ private fun LazyListScope.nights(
     item {
         Text(
             stringResource(R.string.history_footer),
-            style = FsType.meta,
+            style = ScaledType.meta,
             color = FsColor.muted,
             modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 10.dp, bottom = 24.dp),
         )
@@ -116,8 +116,8 @@ fun NightRow(facts: NightFacts, copy: HistoryCopy, clock: RaidClock, open: (Nigh
     val label = copy.a11y(facts)
     val text = @Composable { modifier: Modifier ->
         Column(verticalArrangement = Arrangement.spacedBy(2.dp), modifier = modifier) {
-            Text(facts.row.zone, style = FsType.bodyStrong, color = FsColor.strong)
-            Text(copy.fights(facts), style = FsType.meta, color = FsColor.muted, maxLines = if (large) Int.MAX_VALUE else 1, softWrap = large)
+            Text(facts.row.zone, style = ScaledType.bodyStrong, color = FsColor.strong)
+            Text(copy.fights(facts), style = ScaledType.meta, color = FsColor.muted, maxLines = if (large) Int.MAX_VALUE else 1, softWrap = large)
             SizeLine(facts, copy, large)
             if (facts.wasThere) Box(Modifier.padding(top = 4.dp)) { Tag(stringResource(R.string.history_there), FsColor.kill) }
         }
@@ -165,7 +165,7 @@ private fun SizeLine(facts: NightFacts, copy: HistoryCopy, large: Boolean) {
         append(HistoryCopy.SEPARATOR)
         withStyle(SpanStyle(color = FsColor.text)) { append(copy.length(facts)) }
     }
-    Text(line, style = FsType.meta.copy(fontFeatureSettings = TABULAR), color = FsColor.muted, maxLines = if (large) Int.MAX_VALUE else 1, softWrap = large)
+    Text(line, style = ScaledType.meta.copy(fontFeatureSettings = TABULAR), color = FsColor.muted, maxLines = if (large) Int.MAX_VALUE else 1, softWrap = large)
 }
 
 @Composable
@@ -183,14 +183,14 @@ private fun MoreRow(more: MoreState, loadMore: () -> Unit) {
                 .padding(horizontal = 16.dp)
                 .semantics(mergeDescendants = true) { role = Role.Button },
         ) {
-            Text(stringResource(R.string.history_more), style = FsType.bodyStrong, color = FsColor.gold)
+            Text(stringResource(R.string.history_more), style = ScaledType.bodyStrong, color = FsColor.gold)
             if (more == MoreState.Loading) CircularProgressIndicator(color = FsColor.gold, strokeWidth = 2.dp, modifier = Modifier.size(16.dp))
         }
         MoreState.Failed -> Column(
             verticalArrangement = Arrangement.spacedBy(10.dp),
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp).padding(horizontal = 16.dp),
         ) {
-            Text(stringResource(R.string.history_moreError), style = FsType.meta, color = FsColor.wipe)
+            Text(stringResource(R.string.history_moreError), style = ScaledType.meta, color = FsColor.wipe)
             RaidSecondaryButton(stringResource(R.string.common_tryAgain), loadMore)
         }
     }
@@ -202,8 +202,8 @@ private fun Empty() {
         verticalArrangement = Arrangement.spacedBy(4.dp),
         modifier = Modifier.padding(16.dp).raidQuietCard().padding(16.dp),
     ) {
-        Text(stringResource(R.string.history_empty_title), style = FsType.lead, color = FsColor.strong)
-        Text(stringResource(R.string.history_empty_body), style = FsType.meta, color = FsColor.muted)
+        Text(stringResource(R.string.history_empty_title), style = ScaledType.lead, color = FsColor.strong)
+        Text(stringResource(R.string.history_empty_body), style = ScaledType.meta, color = FsColor.muted)
     }
 }
 
@@ -218,7 +218,7 @@ private fun LazyListScope.skeleton() {
                 .padding(horizontal = 16.dp, vertical = 12.dp)
                 .clearAndSetSemantics {},
         ) {
-            Box(Modifier.size(48.dp, 52.dp).background(FsColor.lineSoft, RoundedCornerShape(FsRadius.control)))
+            Box(Modifier.size(48.dp, 52.dp).background(FsColor.lineSoft, RoundedCornerShape(FsRadius.legacyControl)))
             Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 SkeletonBar(160.dp, 15.dp)
                 SkeletonBar(190.dp, 12.dp)

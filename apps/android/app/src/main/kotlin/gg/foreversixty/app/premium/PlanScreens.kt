@@ -38,8 +38,8 @@ import gg.foreversixty.app.R
 import gg.foreversixty.app.account.AccountPage
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.FsRadius
-import gg.foreversixty.app.designsystem.FsSpacing
-import gg.foreversixty.app.designsystem.FsType
+import gg.foreversixty.app.designsystem.FsSpace
+import gg.foreversixty.app.designsystem.ScaledType
 import gg.foreversixty.app.designsystem.GameColors
 import gg.foreversixty.app.designsystem.MicroLabel
 import gg.foreversixty.app.designsystem.Tag
@@ -72,12 +72,12 @@ fun PlanRow(plan: PlanSummary, mayLink: Boolean, onSeePlans: () -> Unit, onPlan:
                 contentDescription = label
                 if (click != null) role = Role.Button
             }
-            .padding(horizontal = FsSpacing.space4, vertical = FsSpacing.space2),
+            .padding(horizontal = FsSpace.space4, vertical = FsSpace.space2),
         verticalAlignment = if (stacked) Alignment.Top else Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(FsSpacing.space3),
+        horizontalArrangement = Arrangement.spacedBy(FsSpace.space3),
     ) {
         Box(
-            Modifier.size(32.dp).background(FsColor.gold.copy(alpha = 0.12f), RoundedCornerShape(FsRadius.pill)),
+            Modifier.size(32.dp).background(FsColor.gold.copy(alpha = 0.12f), RoundedCornerShape(FsRadius.legacyPill)),
             contentAlignment = Alignment.Center,
         ) { Icon(Icons.Filled.Star, contentDescription = null, tint = FsColor.gold, modifier = Modifier.size(20.dp)) }
         if (stacked) Stacked(plan, action == PlanRowAction.SeePlans, Modifier.weight(1f)) else Inline(plan, action == PlanRowAction.SeePlans, Modifier.weight(1f))
@@ -87,22 +87,22 @@ fun PlanRow(plan: PlanSummary, mayLink: Boolean, onSeePlans: () -> Unit, onPlan:
 
 @Composable
 private fun Inline(plan: PlanSummary, seePlans: Boolean, modifier: Modifier) {
-    Row(modifier, verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(FsSpacing.space2)) {
+    Row(modifier, verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(FsSpace.space2)) {
         Column(Modifier.weight(1f)) {
-            Text(stringResource(R.string.you_plan), style = FsType.bodyStrong, color = FsColor.strong)
-            if (plan.isPremium) Text(PlanCopy.line(plan.row), style = FsType.meta, color = FsColor.muted)
+            Text(stringResource(R.string.you_plan), style = ScaledType.bodyStrong, color = FsColor.strong)
+            if (plan.isPremium) Text(PlanCopy.line(plan.row), style = ScaledType.meta, color = FsColor.muted)
         }
         if (plan.founder) Tag(stringResource(R.string.plan_founder), FsColor.gold)
-        if (!plan.isPremium) Text(stringResource(R.string.you_plan_free), style = FsType.meta, color = FsColor.muted)
+        if (!plan.isPremium) Text(stringResource(R.string.you_plan_free), style = ScaledType.meta, color = FsColor.muted)
         if (seePlans) SeePlans()
     }
 }
 
 @Composable
 private fun Stacked(plan: PlanSummary, seePlans: Boolean, modifier: Modifier) {
-    Column(modifier, verticalArrangement = Arrangement.spacedBy(FsSpacing.space1)) {
-        Text(stringResource(R.string.you_plan), style = FsType.bodyStrong, color = FsColor.strong)
-        Text(PlanCopy.line(plan.row), style = FsType.meta, color = FsColor.muted)
+    Column(modifier, verticalArrangement = Arrangement.spacedBy(FsSpace.space1)) {
+        Text(stringResource(R.string.you_plan), style = ScaledType.bodyStrong, color = FsColor.strong)
+        Text(PlanCopy.line(plan.row), style = ScaledType.meta, color = FsColor.muted)
         if (plan.founder) Tag(stringResource(R.string.plan_founder), FsColor.gold)
         if (seePlans) SeePlans()
     }
@@ -111,7 +111,7 @@ private fun Stacked(plan: PlanSummary, seePlans: Boolean, modifier: Modifier) {
 @Composable
 private fun SeePlans() {
     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-        Text(stringResource(R.string.you_seePlans), style = FsType.bodyStrong, color = FsColor.gold)
+        Text(stringResource(R.string.you_seePlans), style = ScaledType.bodyStrong, color = FsColor.gold)
         Icon(painterResource(R.drawable.ic_open_external), contentDescription = null, tint = FsColor.gold, modifier = Modifier.size(18.dp))
     }
 }
@@ -121,45 +121,45 @@ private fun SeePlans() {
 fun PlanScreen(plan: PlanSummary, mayLink: Boolean, onManageBilling: () -> Unit) {
     AccountPage(stringResource(R.string.you_plan)) {
         Column(
-            Modifier.fillMaxWidth().primaryCard().padding(FsSpacing.space4),
-            verticalArrangement = Arrangement.spacedBy(FsSpacing.space3),
+            Modifier.fillMaxWidth().primaryCard().padding(FsSpace.space4),
+            verticalArrangement = Arrangement.spacedBy(FsSpace.space3),
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
                     stringResource(R.string.plan_premium).uppercase(Locale.ROOT),
-                    style = FsType.h2,
+                    style = ScaledType.h2,
                     color = FsColor.strong,
                     modifier = Modifier.weight(1f).semantics { heading() },
                 )
                 if (plan.founder) Tag(stringResource(R.string.plan_founder), FsColor.gold)
             }
-            Column(verticalArrangement = Arrangement.spacedBy(FsSpacing.space1)) {
-                Text(PlanCopy.line(plan.line), style = FsType.body, color = FsColor.text)
-                plan.line2?.let { Text(PlanCopy.given(it), style = FsType.meta, color = FsColor.muted) }
-                if (plan.founder) Text(stringResource(R.string.plan_founderNote), style = FsType.meta, color = FsColor.muted)
+            Column(verticalArrangement = Arrangement.spacedBy(FsSpace.space1)) {
+                Text(PlanCopy.line(plan.line), style = ScaledType.body, color = FsColor.text)
+                plan.line2?.let { Text(PlanCopy.given(it), style = ScaledType.meta, color = FsColor.muted) }
+                if (plan.founder) Text(stringResource(R.string.plan_founderNote), style = ScaledType.meta, color = FsColor.muted)
             }
             if (plan.includes.isNotEmpty()) Includes(plan.includes)
             when (plan.billingLine(mayLink)) {
                 PlanBillingLine.ManageButton -> ManageBilling(onManageBilling)
-                PlanBillingLine.ManagedOnWeb -> Text(stringResource(R.string.plan_managedOnWeb), style = FsType.meta, color = FsColor.muted)
+                PlanBillingLine.ManagedOnWeb -> Text(stringResource(R.string.plan_managedOnWeb), style = ScaledType.meta, color = FsColor.muted)
                 PlanBillingLine.Nothing -> Unit
             }
         }
-        Text(stringResource(R.string.plan_freeForAll), style = FsType.meta, color = FsColor.muted)
+        Text(stringResource(R.string.plan_freeForAll), style = ScaledType.meta, color = FsColor.muted)
     }
 }
 
 @Composable
 private fun Includes(features: List<PlanFeature>) {
-    Column(verticalArrangement = Arrangement.spacedBy(FsSpacing.space2)) {
+    Column(verticalArrangement = Arrangement.spacedBy(FsSpace.space2)) {
         HorizontalDivider(color = FsColor.lineSoft)
         MicroLabel(stringResource(R.string.plan_includes))
         // The tick grows with the text, up to the scale where the row stacks.
         val tick = 16.dp * LocalDensity.current.fontScale.coerceAtMost(STACK_FONT_SCALE)
         features.forEach { feature ->
-            Row(horizontalArrangement = Arrangement.spacedBy(FsSpacing.space2)) {
+            Row(horizontalArrangement = Arrangement.spacedBy(FsSpace.space2)) {
                 Icon(Icons.Filled.Check, contentDescription = null, tint = FsColor.kill, modifier = Modifier.padding(top = 2.dp).size(tick))
-                Text(PlanCopy.feature(feature), style = FsType.body, color = FsColor.text)
+                Text(PlanCopy.feature(feature), style = ScaledType.body, color = FsColor.text)
             }
         }
     }
@@ -171,12 +171,12 @@ private fun ManageBilling(onClick: () -> Unit) {
     val label = stringResource(R.string.plan_a11y_manage)
     OutlinedButton(
         onClick = onClick,
-        shape = RoundedCornerShape(FsRadius.control),
+        shape = RoundedCornerShape(FsRadius.legacyControl),
         border = BorderStroke(1.dp, FsColor.lineCard),
         colors = ButtonDefaults.outlinedButtonColors(containerColor = GameColors.controlFill, contentColor = FsColor.nav),
         modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).semantics { contentDescription = label },
     ) {
-        Text(stringResource(R.string.plan_manage), style = FsType.button)
-        Icon(painterResource(R.drawable.ic_open_external), contentDescription = null, modifier = Modifier.padding(start = FsSpacing.space2).size(16.dp))
+        Text(stringResource(R.string.plan_manage), style = ScaledType.button)
+        Icon(painterResource(R.drawable.ic_open_external), contentDescription = null, modifier = Modifier.padding(start = FsSpace.space2).size(16.dp))
     }
 }

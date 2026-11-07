@@ -290,7 +290,7 @@ struct NextRowView: View {
                 .font(.system(size: 16))
                 .foregroundStyle(FSColor.goldHover)
                 .frame(width: 36, height: 36)
-                .background(FSColor.gold.opacity(0.12), in: .rect(cornerRadius: FSRadius.pill))
+                .background(FSColor.gold.opacity(0.12), in: .rect(cornerRadius: FSRadius.legacyPill))
                 .accessibilityHidden(true)
             // From AX1 the tag sits above the words, so the line keeps the row's width (spec §10).
             if typeSize >= .accessibility1 {
@@ -356,7 +356,7 @@ struct HomeSkeleton: View {
             VStack(spacing: 0) {
                 ForEach(0..<HomePresenter.visibleRows, id: \.self) { _ in
                     HStack(alignment: .top, spacing: 12) {
-                        RoundedRectangle(cornerRadius: FSRadius.pill).fill(FSColor.cardTop).frame(width: 44, height: 44)
+                        RoundedRectangle(cornerRadius: FSRadius.legacyPill).fill(FSColor.cardTop).frame(width: 44, height: 44)
                         VStack(alignment: .leading, spacing: 6) {
                             bar(width: 180, height: 14)
                             bar(width: 140, height: 11)

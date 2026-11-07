@@ -24,7 +24,7 @@ struct GameIcon: View {
     @Environment(\.raidIconBuild) private var build
 
     var body: some View {
-        let shape = RoundedRectangle(cornerRadius: FSRadius.pill)
+        let shape = RoundedRectangle(cornerRadius: FSRadius.legacyPill)
         GameIconImage(icon: stem, build: build, fallback: fallback, dimmed: dimmed)
             .id("\(build ?? "")/\(stem ?? "")")
             .frame(width: size, height: size)
@@ -91,8 +91,8 @@ struct DateBlock: View {
         .padding(.horizontal, 2)
         .frame(width: width)
         .frame(minHeight: height)
-        .background(FSColor.bg.opacity(0.5), in: .rect(cornerRadius: FSRadius.control))
-        .overlay(RoundedRectangle(cornerRadius: FSRadius.control).stroke(FSColor.line))
+        .background(FSColor.bg.opacity(0.5), in: .rect(cornerRadius: FSRadius.legacyControl))
+        .overlay(RoundedRectangle(cornerRadius: FSRadius.legacyControl).stroke(FSColor.line))
         .accessibilityHidden(true)
     }
 }
@@ -198,8 +198,8 @@ struct WrappingTag: View {
         Text(text.uppercased()).font(ScaledType.micro).tracking(1)
             .fixedSize(horizontal: false, vertical: true)
             .foregroundStyle(color)
-            .padding(.horizontal, FSSpacing.space2).padding(.vertical, 2)
-            .background(color.opacity(0.12), in: .rect(cornerRadius: FSRadius.pill))
-            .overlay(RoundedRectangle(cornerRadius: FSRadius.pill).stroke(color.opacity(0.35)))
+            .padding(.horizontal, FSSpace.space2).padding(.vertical, 2)
+            .background(color.opacity(0.12), in: .rect(cornerRadius: FSRadius.legacyPill))
+            .overlay(RoundedRectangle(cornerRadius: FSRadius.legacyPill).stroke(color.opacity(0.35)))
     }
 }

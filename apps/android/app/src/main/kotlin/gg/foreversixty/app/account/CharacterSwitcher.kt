@@ -52,8 +52,8 @@ import gg.foreversixty.app.common.ClassCrest
 import gg.foreversixty.app.auth.session.SessionManager
 import gg.foreversixty.app.auth.session.me
 import gg.foreversixty.app.designsystem.FsColor
-import gg.foreversixty.app.designsystem.FsSpacing
-import gg.foreversixty.app.designsystem.FsType
+import gg.foreversixty.app.designsystem.FsSpace
+import gg.foreversixty.app.designsystem.ScaledType
 import gg.foreversixty.app.designsystem.classColor
 import gg.foreversixty.app.model.AccountCharacter
 import gg.foreversixty.app.model.Me
@@ -80,15 +80,15 @@ fun CharacterSelector(character: AccountCharacter, open: Boolean, onClick: () ->
                 contentDescription = label
                 customActions = listOf(CustomAccessibilityAction(action) { onClick(); true })
             }
-            .padding(start = 4.dp, end = FsSpacing.space3, top = 4.dp, bottom = 4.dp),
+            .padding(start = 4.dp, end = FsSpace.space3, top = 4.dp, bottom = 4.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(FsSpacing.space2),
+        horizontalArrangement = Arrangement.spacedBy(FsSpace.space2),
     ) {
         ClassCrest(character.className, 34.dp)
         Column {
-            Text(character.name, style = FsType.cappedName(), color = classColor(character.className), softWrap = false)
+            Text(character.name, style = ScaledType.cappedName(), color = classColor(character.className), softWrap = false)
             val detail = AccountCopy.selectorDetail(character)
-            if (detail != null) Text(detail, style = FsType.cappedMeta(), color = FsColor.muted, softWrap = false)
+            if (detail != null) Text(detail, style = ScaledType.cappedMeta(), color = FsColor.muted, softWrap = false)
         }
         Icon(Icons.Filled.KeyboardArrowDown, contentDescription = null, tint = FsColor.muted)
     }
@@ -98,15 +98,15 @@ fun CharacterSelector(character: AccountCharacter, open: Boolean, onClick: () ->
 @Composable
 fun SwitcherSheetContent(me: Me, currentKey: String?, onPick: (AccountCharacter) -> Unit) {
     Column(Modifier.fillMaxWidth().verticalScroll(rememberScrollState())) {
-        Column(Modifier.padding(FsSpacing.space4), verticalArrangement = Arrangement.spacedBy(FsSpacing.space1)) {
+        Column(Modifier.padding(FsSpace.space4), verticalArrangement = Arrangement.spacedBy(FsSpace.space1)) {
             Text(
                 stringResource(R.string.switcher_title).uppercase(),
-                style = FsType.sec,
+                style = ScaledType.sec,
                 color = FsColor.strong,
                 modifier = Modifier.semantics { heading() },
             )
             me.user.battletag?.let {
-                Text(stringResource(R.string.switcher_who, it), style = FsType.meta, color = FsColor.muted)
+                Text(stringResource(R.string.switcher_who, it), style = ScaledType.meta, color = FsColor.muted)
             }
         }
         me.characters.forEach { character ->
@@ -115,9 +115,9 @@ fun SwitcherSheetContent(me: Me, currentKey: String?, onPick: (AccountCharacter)
         }
         Text(
             stringResource(R.string.switcher_footer),
-            style = FsType.meta,
+            style = ScaledType.meta,
             color = FsColor.muted,
-            modifier = Modifier.padding(FsSpacing.space4),
+            modifier = Modifier.padding(FsSpace.space4),
         )
     }
 }
@@ -130,9 +130,9 @@ private fun SwitcherRow(character: AccountCharacter, current: Boolean, onClick: 
             .heightIn(min = 68.dp)
             .background(if (current) Color.White.copy(alpha = 0.04f) else Color.Transparent)
             .selectable(selected = current, role = Role.RadioButton, onClick = onClick)
-            .padding(horizontal = FsSpacing.space4, vertical = FsSpacing.space2),
+            .padding(horizontal = FsSpace.space4, vertical = FsSpace.space2),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(FsSpacing.space3),
+        horizontalArrangement = Arrangement.spacedBy(FsSpace.space3),
     ) {
         ClassCrest(character.className, 44.dp)
         Column(Modifier.weight(1f)) {
@@ -141,12 +141,12 @@ private fun SwitcherRow(character: AccountCharacter, current: Boolean, onClick: 
             Text(
                 buildAnnotatedString {
                     withStyle(SpanStyle(color = classColor(character.className))) { append(character.name) }
-                    withStyle(FsType.meta.toSpanStyle().copy(color = FsColor.muted)) { append(" · $place") }
+                    withStyle(ScaledType.meta.toSpanStyle().copy(color = FsColor.muted)) { append(" · $place") }
                 },
-                style = FsType.name.copy(lineBreak = LineBreak.Simple, hyphens = Hyphens.None),
+                style = ScaledType.name.copy(lineBreak = LineBreak.Simple, hyphens = Hyphens.None),
             )
-            Text(AccountCopy.switcherDetail(character), style = FsType.meta, color = FsColor.text)
-            Text(character.guild?.name ?: stringResource(R.string.switcher_noGuild), style = FsType.meta, color = FsColor.muted)
+            Text(AccountCopy.switcherDetail(character), style = ScaledType.meta, color = FsColor.text)
+            Text(character.guild?.name ?: stringResource(R.string.switcher_noGuild), style = ScaledType.meta, color = FsColor.muted)
         }
         if (current) Icon(Icons.Filled.Check, contentDescription = null, tint = FsColor.gold)
     }
@@ -202,7 +202,7 @@ fun CharacterSelectorBar(session: SessionManager, modifier: Modifier = Modifier)
     Row(
         modifier
             .fillMaxWidth()
-            .padding(horizontal = FsSpacing.space4, vertical = FsSpacing.space2)
+            .padding(horizontal = FsSpace.space4, vertical = FsSpace.space2)
             .heightIn(min = SELECTOR_ROW_HEIGHT),
         verticalAlignment = Alignment.CenterVertically,
     ) {

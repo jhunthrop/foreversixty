@@ -135,7 +135,7 @@ struct SearchTalentIcon: View {
     var size: CGFloat = SearchLayout.rowIcon
 
     var body: some View {
-        let shape = RoundedRectangle(cornerRadius: FSRadius.pill)
+        let shape = RoundedRectangle(cornerRadius: FSRadius.legacyPill)
         GameIconImage(icon: icon, build: build, fallback: String(name.prefix(2)))
             .id("\(build)/\(icon)")
             .frame(width: size, height: size)
@@ -234,8 +234,8 @@ enum SearchRows {
                 .font(.system(size: 14, weight: .semibold))
                 .foregroundStyle(FSColor.gold)
                 .frame(width: SearchLayout.linkTile, height: SearchLayout.linkTile)
-                .background(FSColor.cardTop, in: .rect(cornerRadius: FSRadius.pill))
-                .overlay(RoundedRectangle(cornerRadius: FSRadius.pill).stroke(FSColor.lineSoft))
+                .background(FSColor.cardTop, in: .rect(cornerRadius: FSRadius.legacyPill))
+                .overlay(RoundedRectangle(cornerRadius: FSRadius.legacyPill).stroke(FSColor.lineSoft))
                 .accessibilityHidden(true)
         } title: {
             SearchRowName(text: title)
@@ -267,7 +267,7 @@ struct SearchCard<Content: View>: View {
                 }
             }
         }
-        .clipShape(.rect(cornerRadius: FSRadius.panel))
+        .clipShape(.rect(cornerRadius: FSRadius.legacyPanel))
         .quietCard()
     }
 }

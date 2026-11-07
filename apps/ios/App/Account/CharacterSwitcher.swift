@@ -14,7 +14,7 @@ struct CharacterSelector: View {
 
     var body: some View {
         Button(action: action) {
-            HStack(spacing: FSSpacing.space2) {
+            HStack(spacing: FSSpace.space2) {
                 ClassCrest(className: character.className, size: 34)
                 VStack(alignment: .leading, spacing: 0) {
                     Text(character.name)
@@ -32,9 +32,9 @@ struct CharacterSelector: View {
                 }
                 Image(systemName: "chevron.down").font(.footnote.weight(.semibold)).foregroundStyle(FSColor.muted)
             }
-            .padding(.vertical, FSSpacing.space1)
-            .padding(.leading, FSSpacing.space1)
-            .padding(.trailing, FSSpacing.space3)
+            .padding(.vertical, FSSpace.space1)
+            .padding(.leading, FSSpace.space1)
+            .padding(.trailing, FSSpace.space3)
             .background(FSColor.raised, in: .capsule)
             .overlay(Capsule().strokeBorder(isOpen ? FSColor.gold : FSColor.gold.opacity(0.17)))
             .shadow(color: isOpen ? FSColor.gold.opacity(0.4) : .clear, radius: 8)
@@ -57,7 +57,7 @@ struct SwitcherSheet: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
-                VStack(alignment: .leading, spacing: FSSpacing.space1) {
+                VStack(alignment: .leading, spacing: FSSpace.space1) {
                     Text(Copy.switcherTitle)
                         .font(ScaledType.sec)
                         .dynamicTypeSize(...DynamicTypeSize.accessibility2)
@@ -68,7 +68,7 @@ struct SwitcherSheet: View {
                         Text(Copy.switcherWho(battletag: battletag)).font(ScaledType.meta).foregroundStyle(FSColor.muted)
                     }
                 }
-                .padding(FSSpacing.space4)
+                .padding(FSSpace.space4)
                 ForEach(me.characters) { character in
                     row(character)
                     Divider().overlay(FSColor.lineSoft)
@@ -76,7 +76,7 @@ struct SwitcherSheet: View {
                 Text(Copy.switcherFooter)
                     .font(ScaledType.meta)
                     .foregroundStyle(FSColor.muted)
-                    .padding(FSSpacing.space4)
+                    .padding(FSSpace.space4)
             }
         }
         .background(FSColor.raised)
@@ -87,7 +87,7 @@ struct SwitcherSheet: View {
     private func row(_ character: AccountCharacter) -> some View {
         let isCurrent = character.key == currentKey
         return Button { onPick(character) } label: {
-            HStack(spacing: FSSpacing.space3) {
+            HStack(spacing: FSSpace.space3) {
                 ClassCrest(className: character.className, size: 44)
                 VStack(alignment: .leading, spacing: 2) {
                     // `Thrall · US · PvP`: same-named characters differ by region and ruleset.
@@ -102,7 +102,7 @@ struct SwitcherSheet: View {
                     Image(systemName: "checkmark").foregroundStyle(FSColor.gold)
                 }
             }
-            .padding(.horizontal, FSSpacing.space4)
+            .padding(.horizontal, FSSpace.space4)
             .frame(minHeight: 68)
             .background(isCurrent ? Color.white.opacity(0.04) : .clear)
             .contentShape(.rect)

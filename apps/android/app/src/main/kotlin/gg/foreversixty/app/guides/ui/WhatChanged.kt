@@ -30,7 +30,7 @@ import gg.foreversixty.app.R
 import gg.foreversixty.app.common.OfflineStamp
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.FsRadius
-import gg.foreversixty.app.designsystem.FsType
+import gg.foreversixty.app.designsystem.ScaledType
 import gg.foreversixty.app.designsystem.OfflineStrip
 import gg.foreversixty.app.designsystem.Tag
 import gg.foreversixty.app.designsystem.quietCard
@@ -84,7 +84,7 @@ private fun <T> Region(title: String, phase: Loadable<T>, retry: () -> Unit, con
                 SkeletonBar(200.dp, 14.dp)
                 SkeletonBar(260.dp, 14.dp)
             }
-            Loadable.NotCached -> Text(stringResource(R.string.guides_listNotCached), style = FsType.body, color = FsColor.muted)
+            Loadable.NotCached -> Text(stringResource(R.string.guides_listNotCached), style = ScaledType.body, color = FsColor.muted)
             Loadable.Failed -> ErrorRegion(stringResource(R.string.changes_error), retry, inset = false)
             is Loadable.Loaded -> content(phase.value)
         }
@@ -101,17 +101,17 @@ private fun DateRow(row: KeyDateRow) {
     ) {
         Box(
             Modifier.widthIn(min = BLOCK_WIDTH).heightIn(min = BLOCK_HEIGHT)
-                .background(FsColor.bg.copy(alpha = BLOCK_GROUND), RoundedCornerShape(FsRadius.control))
-                .border(1.dp, FsColor.line, RoundedCornerShape(FsRadius.control))
+                .background(FsColor.bg.copy(alpha = BLOCK_GROUND), RoundedCornerShape(FsRadius.legacyControl))
+                .border(1.dp, FsColor.line, RoundedCornerShape(FsRadius.legacyControl))
                 .padding(6.dp),
             contentAlignment = Alignment.Center,
         ) {
-            Text(date.key, style = FsType.mono, color = FsColor.strong, textAlign = TextAlign.Center)
+            Text(date.key, style = ScaledType.mono, color = FsColor.strong, textAlign = TextAlign.Center)
         }
         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-            Text(date.value, style = FsType.bodyStrong, color = FsColor.strong)
-            row.note?.let { Text(it, style = FsType.meta, color = FsColor.muted) }
-            row.running?.let { Text(it, style = FsType.meta, color = FsColor.gold) }
+            Text(date.value, style = ScaledType.bodyStrong, color = FsColor.strong)
+            row.note?.let { Text(it, style = ScaledType.meta, color = FsColor.muted) }
+            row.running?.let { Text(it, style = ScaledType.meta, color = FsColor.gold) }
         }
     }
 }
@@ -124,8 +124,8 @@ private fun ChangeRow(entry: ChangelogEntry, open: () -> Unit) {
         horizontalArrangement = Arrangement.spacedBy(GuideSpace.inCard),
         verticalAlignment = Alignment.Top,
     ) {
-        Text(GuideDates.monthDay(entry.date), style = FsType.monoMeta, color = FsColor.muted, modifier = Modifier.padding(top = 2.dp))
-        Text(entry.title, style = FsType.bodyStrong, color = FsColor.strong, modifier = Modifier.weight(1f))
+        Text(GuideDates.monthDay(entry.date), style = ScaledType.monoMeta, color = FsColor.muted, modifier = Modifier.padding(top = 2.dp))
+        Text(entry.title, style = ScaledType.bodyStrong, color = FsColor.strong, modifier = Modifier.weight(1f))
         Tag(copy.tag(Changes.tag(entry)), FsColor.muted)
     }
 }
@@ -137,8 +137,8 @@ fun ChangeReader(entry: ChangelogEntry?, back: () -> Unit) {
         ReportsBar(stringResource(R.string.changes_list), stringResource(R.string.guides_title), back)
         if (entry == null) return@Column
         Column(Modifier.verticalScroll(rememberScrollState()).screenMargins().padding(bottom = GuideSpace.section), verticalArrangement = Arrangement.spacedBy(GuideSpace.rowGap)) {
-            Text(GuideDates.long(entry.date), style = FsType.meta, color = FsColor.muted)
-            Text(entry.title, style = FsType.h2, color = FsColor.strong, modifier = Modifier.semantics { heading() })
+            Text(GuideDates.long(entry.date), style = ScaledType.meta, color = FsColor.muted)
+            Text(entry.title, style = ScaledType.h2, color = FsColor.strong, modifier = Modifier.semantics { heading() })
             entry.blocks.forEach { Block(it) }
             SourcesDisclosure(entry.sources)
         }
@@ -148,9 +148,9 @@ fun ChangeReader(entry: ChangelogEntry?, back: () -> Unit) {
 @Composable
 private fun Block(block: ChangelogBlock) {
     when (block.kind) {
-        BLOCK_HEADING -> Text(block.text, style = FsType.sec, color = FsColor.strong, modifier = Modifier.padding(top = GuideSpace.labelGap).semantics { heading() })
+        BLOCK_HEADING -> Text(block.text, style = ScaledType.sec, color = FsColor.strong, modifier = Modifier.padding(top = GuideSpace.labelGap).semantics { heading() })
         BLOCK_ITEM -> Lines(listOf(block.text), bulleted = true)
-        else -> Text(block.text, style = FsType.body, color = FsColor.text)
+        else -> Text(block.text, style = ScaledType.body, color = FsColor.text)
     }
 }
 

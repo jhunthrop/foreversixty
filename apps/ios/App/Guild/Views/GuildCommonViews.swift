@@ -99,7 +99,7 @@ struct GuildSkeletonRows: View {
         VStack(spacing: 0) {
             ForEach(0..<count, id: \.self) { index in
                 HStack(spacing: 12) {
-                    RoundedRectangle(cornerRadius: FSRadius.pill).frame(width: 32, height: 32)
+                    RoundedRectangle(cornerRadius: FSRadius.legacyPill).frame(width: 32, height: 32)
                     VStack(alignment: .leading, spacing: 6) {
                         RoundedRectangle(cornerRadius: 4).frame(width: 120, height: 15)
                         RoundedRectangle(cornerRadius: 4).frame(width: 180, height: 12)

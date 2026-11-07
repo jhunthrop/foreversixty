@@ -98,7 +98,7 @@ struct RankingsView: View {
         VStack(alignment: .leading, spacing: 6) {
             MicroLabel(Copy.rankPin)
             rowButton(row, content: content, filters: filters, mine: true, crests: RankingsBoard.showsCrests(content.rows))
-                .clipShape(RoundedRectangle(cornerRadius: FSRadius.panel))
+                .clipShape(RoundedRectangle(cornerRadius: FSRadius.legacyPanel))
                 .quietCard()
             FSColor.lineSoft.frame(height: 1).padding(.top, 8)
         }
@@ -116,7 +116,7 @@ struct RankingsView: View {
             }
             pageFooter(content)
         }
-        .clipShape(RoundedRectangle(cornerRadius: FSRadius.panel))
+        .clipShape(RoundedRectangle(cornerRadius: FSRadius.legacyPanel))
         .quietCard()
     }
 

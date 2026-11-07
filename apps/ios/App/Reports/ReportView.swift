@@ -307,8 +307,8 @@ struct ReportSkeleton: View {
         VStack(alignment: .leading, spacing: 16) {
             SkeletonBar(width: 220, height: 30)
             SkeletonBar(width: 260, height: 12)
-            RoundedRectangle(cornerRadius: FSRadius.panel).fill(FSColor.cardTop).frame(height: ReportsLayout.parseRow + 40)
-            RoundedRectangle(cornerRadius: FSRadius.panel).fill(FSColor.cardTop).frame(height: ReportsLayout.fightRow * 4)
+            RoundedRectangle(cornerRadius: FSRadius.legacyPanel).fill(FSColor.cardTop).frame(height: ReportsLayout.parseRow + 40)
+            RoundedRectangle(cornerRadius: FSRadius.legacyPanel).fill(FSColor.cardTop).frame(height: ReportsLayout.fightRow * 4)
         }
         .padding(16)
         .accessibilityElement(children: .ignore)

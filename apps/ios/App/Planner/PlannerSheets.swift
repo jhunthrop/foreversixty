@@ -132,8 +132,8 @@ struct PlannerShareSheet: View {
             }
             .padding(.horizontal, 12)
             .frame(minHeight: 48)
-            .background(FSColor.raised, in: .rect(cornerRadius: FSRadius.control))
-            .overlay(RoundedRectangle(cornerRadius: FSRadius.control).stroke(FSColor.gold, lineWidth: 1))
+            .background(FSColor.raised, in: .rect(cornerRadius: FSRadius.legacyControl))
+            .overlay(RoundedRectangle(cornerRadius: FSRadius.legacyControl).stroke(FSColor.gold, lineWidth: 1))
         }
     }
 

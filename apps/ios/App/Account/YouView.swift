@@ -72,7 +72,7 @@ struct YouView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: FSSpacing.space5) {
+            VStack(alignment: .leading, spacing: FSSpace.space5) {
                 accountHead
                 VStack(spacing: 0) {
                     PlanRow(plan: summary.plan, mayLink: mayLink)
@@ -123,12 +123,12 @@ struct YouView: View {
                         .frame(maxWidth: .infinity, minHeight: 44)
                         .contentShape(.rect)
                 }
-                .padding(.top, FSSpacing.space2)
+                .padding(.top, FSSpace.space2)
                 Text(summary.version).font(ScaledType.micro).foregroundStyle(FSColor.muted)
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(.plain)
-            .padding(FSSpacing.space4)
+            .padding(FSSpace.space4)
         }
         .background(FSColor.bg)
         .navigationTitle(Copy.youTitle)
@@ -143,7 +143,7 @@ struct YouView: View {
     }
 
     private func characterRow(_ character: YouSummary.CharacterLine) -> some View {
-        HStack(spacing: FSSpacing.space3) {
+        HStack(spacing: FSSpace.space3) {
             ClassCrest(className: character.className, size: 32)
             VStack(alignment: .leading, spacing: 2) {
                 Text(Copy.accountYouCharacter).font(ScaledType.bodyStrong).foregroundStyle(FSColor.strong)
@@ -152,7 +152,7 @@ struct YouView: View {
             }
             Spacer(minLength: 0)
         }
-        .padding(.horizontal, FSSpacing.space4)
+        .padding(.horizontal, FSSpace.space4)
         .frame(minHeight: 56)
         .accessibilityElement(children: .combine)
     }
@@ -160,12 +160,12 @@ struct YouView: View {
     /// Lane F8: the gold Premium tag sits beside the name, or under it when the name needs the room.
     private var accountHead: some View {
         ViewThatFits(in: .horizontal) {
-            HStack(spacing: FSSpacing.space2) {
+            HStack(spacing: FSSpace.space2) {
                 identity
-                Spacer(minLength: FSSpacing.space2)
+                Spacer(minLength: FSSpace.space2)
                 premiumTag
             }
-            VStack(alignment: .leading, spacing: FSSpacing.space2) {
+            VStack(alignment: .leading, spacing: FSSpace.space2) {
                 identity
                 premiumTag
             }
@@ -179,12 +179,12 @@ struct YouView: View {
     }
 
     private var identity: some View {
-        HStack(spacing: FSSpacing.space3) {
+        HStack(spacing: FSSpace.space3) {
             Image(systemName: "person")
                 .font(.title3)
                 .foregroundStyle(FSColor.gold)
                 .frame(width: 44, height: 44)
-                .background(FSColor.gold.opacity(0.12), in: .rect(cornerRadius: FSRadius.control))
+                .background(FSColor.gold.opacity(0.12), in: .rect(cornerRadius: FSRadius.legacyControl))
                 .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: 2) {
                 Text(summary.battletag).font(ScaledType.name).foregroundStyle(FSColor.strong)
@@ -200,7 +200,7 @@ struct AboutView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: FSSpacing.space4) {
+            VStack(alignment: .leading, spacing: FSSpace.space4) {
                 Seal(size: 64)
                 Text(Copy.appName).font(ScaledType.wordmark).textCase(.uppercase).tracking(2).foregroundStyle(FSColor.strong)
                 Text(version).font(ScaledType.body).foregroundStyle(FSColor.text)
@@ -208,7 +208,7 @@ struct AboutView: View {
                     .fixedSize(horizontal: false, vertical: true)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(FSSpacing.space4)
+            .padding(FSSpace.space4)
         }
         .background(FSColor.bg)
         .navigationTitle(Copy.youAbout)
@@ -231,17 +231,17 @@ struct AccountRow: View {
     @Environment(\.dynamicTypeSize) private var typeSize
 
     var body: some View {
-        HStack(spacing: FSSpacing.space3) {
+        HStack(spacing: FSSpace.space3) {
             // Accessibility sizes: the tile sits above the words, so they keep the row's width
             // and never break inside a word.
             (typeSize.isAccessibilitySize
-                ? AnyLayout(VStackLayout(alignment: .leading, spacing: FSSpacing.space2))
-                : AnyLayout(HStackLayout(spacing: FSSpacing.space3))) {
+                ? AnyLayout(VStackLayout(alignment: .leading, spacing: FSSpace.space2))
+                : AnyLayout(HStackLayout(spacing: FSSpace.space3))) {
                 Image(systemName: icon)
                     .font(.callout)
                     .foregroundStyle(tint == FSColor.strong ? FSColor.gold : tint)
                     .frame(width: tile, height: tile)
-                    .background(FSColor.gold.opacity(0.12), in: .rect(cornerRadius: FSRadius.pill))
+                    .background(FSColor.gold.opacity(0.12), in: .rect(cornerRadius: FSRadius.legacyPill))
                     .accessibilityHidden(true)
                 VStack(alignment: .leading, spacing: 2) {
                     Text(title).font(ScaledType.bodyStrong).foregroundStyle(tint)
@@ -250,7 +250,7 @@ struct AccountRow: View {
                     }
                 }
             }
-            Spacer(minLength: FSSpacing.space2)
+            Spacer(minLength: FSSpace.space2)
             if let tag { TagView(text: tag, color: FSColor.gold) }
             if let trailing {
                 Text(trailing).font(ScaledType.meta).foregroundStyle(FSColor.muted).multilineTextAlignment(.trailing)
@@ -264,8 +264,8 @@ struct AccountRow: View {
                     .accessibilityHidden(true)
             }
         }
-        .padding(.horizontal, FSSpacing.space4)
-        .padding(.vertical, FSSpacing.space2)
+        .padding(.horizontal, FSSpace.space4)
+        .padding(.vertical, FSSpace.space2)
         .frame(minHeight: 56)
         .contentShape(.rect)
         .accessibilityElement(children: .combine)

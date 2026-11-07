@@ -47,7 +47,7 @@ import gg.foreversixty.app.R
 import gg.foreversixty.app.designsystem.BrandButton
 import gg.foreversixty.app.designsystem.BrandButtonKind
 import gg.foreversixty.app.designsystem.FsColor
-import gg.foreversixty.app.designsystem.FsType
+import gg.foreversixty.app.designsystem.ScaledType
 import gg.foreversixty.app.designsystem.GameColors
 import gg.foreversixty.app.guild.logic.CalendarAlert
 import gg.foreversixty.app.guild.logic.CalendarLinkNotice
@@ -101,7 +101,7 @@ fun CalendarContent(state: CalendarScreenState, actions: CalendarActions, back: 
             LinkCard(state, actions.copy) { confirming = true }
             Text(
                 stringResource(R.string.calendar_footer),
-                style = FsType.meta,
+                style = ScaledType.meta,
                 color = FsColor.muted,
                 modifier = Modifier.padding(top = 6.dp, bottom = 16.dp),
             )
@@ -129,13 +129,13 @@ private fun ResetDialog(onReset: () -> Unit, onDismiss: () -> Unit) {
     BasicAlertDialog(onDismissRequest = onDismiss) {
         Surface(shape = RoundedCornerShape(DIALOG_RADIUS), color = FsColor.raised, tonalElevation = 6.dp) {
             Column(Modifier.padding(start = 24.dp, end = 24.dp, top = 24.dp, bottom = 8.dp)) {
-                Text(stringResource(R.string.calendar_resetAsk), style = FsType.lead, color = FsColor.strong)
+                Text(stringResource(R.string.calendar_resetAsk), style = ScaledType.lead, color = FsColor.strong)
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.End),
                     modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
                 ) {
-                    TextButton(onDismiss) { Text(stringResource(R.string.common_cancel), style = FsType.bodyStrong, color = FsColor.nav) }
-                    TextButton(onReset) { Text(stringResource(R.string.calendar_resetConfirm), style = FsType.bodyStrong, color = FsColor.wipe) }
+                    TextButton(onDismiss) { Text(stringResource(R.string.common_cancel), style = ScaledType.bodyStrong, color = FsColor.nav) }
+                    TextButton(onReset) { Text(stringResource(R.string.calendar_resetConfirm), style = ScaledType.bodyStrong, color = FsColor.wipe) }
                 }
             }
         }
@@ -145,8 +145,8 @@ private fun ResetDialog(onReset: () -> Unit, onDismiss: () -> Unit) {
 @Composable
 private fun AccessOffCard(openSettings: () -> Unit) {
     Column(verticalArrangement = Arrangement.spacedBy(10.dp), modifier = Modifier.raidQuietCard().padding(16.dp)) {
-        Text(stringResource(R.string.calendar_off), style = FsType.bodyStrong, color = FsColor.wipe)
-        Text(stringResource(R.string.calendar_offBody), style = FsType.meta, color = FsColor.muted)
+        Text(stringResource(R.string.calendar_off), style = ScaledType.bodyStrong, color = FsColor.wipe)
+        Text(stringResource(R.string.calendar_offBody), style = ScaledType.meta, color = FsColor.muted)
         RaidSecondaryButton(stringResource(R.string.calendar_openSettings), openSettings)
     }
 }
@@ -162,11 +162,11 @@ private fun SyncCard(state: CalendarScreenState, actions: CalendarActions) {
             modifier = Modifier.fillMaxWidth().heightIn(min = 64.dp).padding(horizontal = 16.dp, vertical = 12.dp),
         ) {
             Column(verticalArrangement = Arrangement.spacedBy(2.dp), modifier = Modifier.weight(1f)) {
-                Text(stringResource(R.string.calendar_switch), style = FsType.body, color = FsColor.strong)
-                Text(stringResource(R.string.calendar_switchNote), style = FsType.meta, color = FsColor.muted)
+                Text(stringResource(R.string.calendar_switch), style = ScaledType.body, color = FsColor.strong)
+                Text(stringResource(R.string.calendar_switchNote), style = ScaledType.meta, color = FsColor.muted)
                 when (state.status) {
-                    CalendarStatus.Removed -> Text(stringResource(R.string.calendar_removed), style = FsType.meta, color = FsColor.gold)
-                    CalendarStatus.Failed -> Text(stringResource(R.string.calendar_syncFailed), style = FsType.meta, color = FsColor.wipe)
+                    CalendarStatus.Removed -> Text(stringResource(R.string.calendar_removed), style = ScaledType.meta, color = FsColor.gold)
+                    CalendarStatus.Failed -> Text(stringResource(R.string.calendar_syncFailed), style = ScaledType.meta, color = FsColor.wipe)
                     else -> Unit
                 }
             }
@@ -226,19 +226,19 @@ private fun <T> ValueMenu(label: String, current: T, options: List<T>, word: @Co
         if (large) {
             // Largest text: the value under the label.
             Column(verticalArrangement = Arrangement.spacedBy(2.dp), modifier = modifier) {
-                Text(label, style = FsType.body, color = FsColor.strong)
+                Text(label, style = ScaledType.body, color = FsColor.strong)
                 MenuValue(value)
             }
         } else {
             Row(verticalAlignment = Alignment.CenterVertically, modifier = modifier) {
-                Text(label, style = FsType.body, color = FsColor.strong, modifier = Modifier.weight(1f))
+                Text(label, style = ScaledType.body, color = FsColor.strong, modifier = Modifier.weight(1f))
                 MenuValue(value)
             }
         }
         DropdownMenu(expanded = open, onDismissRequest = { open = false }, containerColor = GameColors.sheet) {
             options.forEach { option ->
                 DropdownMenuItem(
-                    text = { Text(word(option), style = FsType.body, color = FsColor.strong) },
+                    text = { Text(word(option), style = ScaledType.body, color = FsColor.strong) },
                     trailingIcon = if (option == current) {
                         { Icon(Icons.Filled.Check, contentDescription = null, tint = FsColor.gold) }
                     } else {
@@ -257,7 +257,7 @@ private fun <T> ValueMenu(label: String, current: T, options: List<T>, word: @Co
 @Composable
 private fun MenuValue(value: String) {
     Row(horizontalArrangement = Arrangement.spacedBy(4.dp), verticalAlignment = Alignment.CenterVertically) {
-        Text(value, style = FsType.body, color = FsColor.muted)
+        Text(value, style = ScaledType.body, color = FsColor.muted)
         Icon(Icons.Filled.KeyboardArrowDown, contentDescription = null, tint = FsColor.muted, modifier = Modifier.size(16.dp))
     }
 }
@@ -270,12 +270,12 @@ private fun LinkCard(state: CalendarScreenState, copy: () -> Unit, askReset: () 
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically) {
             GoldTile(painterResource(R.drawable.ic_link))
             Column(verticalArrangement = Arrangement.spacedBy(2.dp), modifier = Modifier.weight(1f)) {
-                Text(stringResource(R.string.calendar_link), style = FsType.bodyStrong, color = FsColor.strong)
-                Text(stringResource(R.string.calendar_linkNote), style = FsType.meta, color = FsColor.muted)
+                Text(stringResource(R.string.calendar_link), style = ScaledType.bodyStrong, color = FsColor.strong)
+                Text(stringResource(R.string.calendar_linkNote), style = ScaledType.meta, color = FsColor.muted)
             }
         }
         if (state.link == CalendarLinkState.Elsewhere) {
-            Text(stringResource(R.string.calendar_linkElsewhere), style = FsType.meta, color = FsColor.text)
+            Text(stringResource(R.string.calendar_linkElsewhere), style = ScaledType.meta, color = FsColor.text)
         }
         val buttons = @Composable { modifier: Modifier ->
             if (shown) {
@@ -302,7 +302,7 @@ private fun LinkCard(state: CalendarScreenState, copy: () -> Unit, askReset: () 
                 CalendarLinkNotice.LoadFailed -> R.string.calendar_linkError to FsColor.wipe
                 CalendarLinkNotice.ResetFailed -> R.string.calendar_resetError to FsColor.wipe
             }
-            Text(stringResource(text), style = FsType.meta, color = color)
+            Text(stringResource(text), style = ScaledType.meta, color = color)
         }
     }
 }

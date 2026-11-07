@@ -61,7 +61,7 @@ import gg.foreversixty.app.common.ClassCrest
 import gg.foreversixty.app.designsystem.BrandButton
 import gg.foreversixty.app.designsystem.BrandButtonKind
 import gg.foreversixty.app.designsystem.FsColor
-import gg.foreversixty.app.designsystem.FsType
+import gg.foreversixty.app.designsystem.ScaledType
 import gg.foreversixty.app.planner.logic.EditorPhase
 import gg.foreversixty.app.planner.logic.EditorView
 import gg.foreversixty.app.planner.logic.PlannerCells
@@ -125,7 +125,7 @@ private fun EditorBar(canUndo: Boolean, actions: EditorActions) {
     TopAppBar(
         title = {
             Text(
-                stringResource(R.string.plan_title).uppercase(Locale.ROOT), style = FsType.sec, color = FsColor.strong,
+                stringResource(R.string.plan_title).uppercase(Locale.ROOT), style = ScaledType.sec, color = FsColor.strong,
                 modifier = Modifier.semantics { heading() },
             )
         },
@@ -164,7 +164,7 @@ private fun EditorBody(view: EditorView, page: EditorPageState, actions: EditorA
         view.shareProblem?.let { problem ->
             Text(
                 shareProblemText(problem, res),
-                style = FsType.body, color = FsColor.wipe,
+                style = ScaledType.body, color = FsColor.wipe,
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp).semantics { liveRegion = LiveRegionMode.Polite },
             )
         }
@@ -241,7 +241,7 @@ private fun PointsLeft(left: Int) {
     val spoken = stringResource(R.string.plan_a11yLeft, left)
     Text(
         stringResource(R.string.plan_left, left),
-        style = FsType.monoDay,
+        style = ScaledType.monoDay,
         color = if (left == 0) FsColor.kill else FsColor.gold,
         modifier = Modifier.clearAndSetSemantics {
             contentDescription = spoken
@@ -272,18 +272,18 @@ private fun StepperStrip(strip: StripModel, build: String, copy: PlannerCopy, ac
                     buildAnnotatedString {
                         append(talent.name)
                         append(NBSP)
-                        withStyle(SpanStyle(fontFamily = FsType.mono.fontFamily, color = FsColor.text)) { append(rank) }
+                        withStyle(SpanStyle(fontFamily = ScaledType.mono.fontFamily, color = FsColor.text)) { append(rank) }
                     },
-                    style = FsType.bodyStrong, color = FsColor.strong,
+                    style = ScaledType.bodyStrong, color = FsColor.strong,
                 )
                 if (refusal != null) {
                     Text(
-                        refusal, style = FsType.meta, color = FsColor.wipe,
+                        refusal, style = ScaledType.meta, color = FsColor.wipe,
                         maxLines = if (large) REFUSAL_LINES_LARGE else REFUSAL_LINES, overflow = TextOverflow.Ellipsis,
                         modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite },
                     )
                 } else {
-                    strip.text?.let { Text(it, style = FsType.meta, color = FsColor.muted, maxLines = TEXT_LINES, overflow = TextOverflow.Ellipsis) }
+                    strip.text?.let { Text(it, style = ScaledType.meta, color = FsColor.muted, maxLines = TEXT_LINES, overflow = TextOverflow.Ellipsis) }
                 }
             }
         }

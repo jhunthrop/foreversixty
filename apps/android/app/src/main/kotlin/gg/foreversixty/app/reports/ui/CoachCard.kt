@@ -17,7 +17,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import gg.foreversixty.app.R
 import gg.foreversixty.app.designsystem.FsColor
-import gg.foreversixty.app.designsystem.FsType
+import gg.foreversixty.app.designsystem.ScaledType
 import gg.foreversixty.app.designsystem.MicroLabel
 import gg.foreversixty.app.designsystem.Tag
 import gg.foreversixty.app.designsystem.quietCard
@@ -53,20 +53,20 @@ private fun CoachBody(phase: CoachPhase, copy: ReportsCopy, retry: () -> Unit) {
 
 @Composable
 private fun Line(text: String) {
-    Text(text, style = FsType.body, color = FsColor.text, modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite })
+    Text(text, style = ScaledType.body, color = FsColor.text, modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite })
 }
 
 @Composable
 private fun Review(review: CoachReview, copy: ReportsCopy) {
     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
         Text(
-            stringResource(R.string.coach_title, review.spec).uppercase(Locale.ROOT), style = FsType.sec, color = FsColor.strong,
+            stringResource(R.string.coach_title, review.spec).uppercase(Locale.ROOT), style = ScaledType.sec, color = FsColor.strong,
             modifier = Modifier.weight(1f).semantics { heading() },
         )
         Tag(stringResource(R.string.coach_premium), FsColor.gold)
     }
     CoachSection.of(review).forEach { section -> Section(section) }
-    Text(copy.coachFooter(review.reviewedAt, review.basisLabels), style = FsType.meta, color = FsColor.muted)
+    Text(copy.coachFooter(review.reviewedAt, review.basisLabels), style = ScaledType.meta, color = FsColor.muted)
 }
 
 @Composable
@@ -75,27 +75,27 @@ private fun Section(section: CoachSection) {
         when (section) {
             is CoachSection.FixFirst -> {
                 MicroLabel(stringResource(R.string.coach_fixFirst))
-                Text(section.title, style = FsType.bodyStrong, color = FsColor.strong)
-                Text(section.why, style = FsType.body, color = FsColor.text)
+                Text(section.title, style = ScaledType.bodyStrong, color = FsColor.strong)
+                Text(section.why, style = ScaledType.body, color = FsColor.text)
             }
             is CoachSection.Practice -> {
                 MicroLabel(stringResource(R.string.coach_practice))
-                Text(section.text, style = FsType.body, color = FsColor.text)
+                Text(section.text, style = ScaledType.body, color = FsColor.text)
             }
             is CoachSection.Then -> {
                 MicroLabel(stringResource(R.string.coach_then))
                 section.items.forEach { (title, why) ->
-                    Text(title, style = FsType.bodyStrong, color = FsColor.strong)
-                    Text(why, style = FsType.body, color = FsColor.text)
+                    Text(title, style = ScaledType.bodyStrong, color = FsColor.strong)
+                    Text(why, style = ScaledType.body, color = FsColor.text)
                 }
             }
             is CoachSection.DoingWell -> {
                 MicroLabel(stringResource(R.string.coach_doingWell))
-                section.lines.forEach { Text(it, style = FsType.body, color = FsColor.text) }
+                section.lines.forEach { Text(it, style = ScaledType.body, color = FsColor.text) }
             }
             is CoachSection.CouldntCheck -> {
                 MicroLabel(stringResource(R.string.coach_couldntCheck))
-                section.lines.forEach { Text(it, style = FsType.body, color = FsColor.muted) }
+                section.lines.forEach { Text(it, style = ScaledType.body, color = FsColor.muted) }
             }
         }
     }

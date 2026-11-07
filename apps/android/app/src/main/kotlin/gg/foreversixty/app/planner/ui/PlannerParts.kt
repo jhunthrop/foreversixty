@@ -32,7 +32,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.FsRadius
-import gg.foreversixty.app.designsystem.FsType
+import gg.foreversixty.app.designsystem.ScaledType
 import gg.foreversixty.app.model.TalentsFile
 import gg.foreversixty.app.planner.logic.PlannerCells
 import gg.foreversixty.app.planner.logic.TalentIndex
@@ -81,7 +81,7 @@ fun PlannerTree(
 /** A planner chip (`Orc ▾`, `Level 60 ▾`): 36 visible inside a 48 target. */
 @Composable
 fun PlannerChip(label: String, description: String, onClick: () -> Unit) {
-    val shape = RoundedCornerShape(FsRadius.pill)
+    val shape = RoundedCornerShape(FsRadius.legacyPill)
     Box(
         Modifier
             .heightIn(min = 48.dp)
@@ -98,7 +98,7 @@ fun PlannerChip(label: String, description: String, onClick: () -> Unit) {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(4.dp),
         ) {
-            Text(label, style = FsType.bodyStrong, color = FsColor.strong)
+            Text(label, style = ScaledType.bodyStrong, color = FsColor.strong)
             Icon(Icons.Filled.KeyboardArrowDown, contentDescription = null, tint = FsColor.muted, modifier = Modifier.size(18.dp))
         }
     }
@@ -127,7 +127,7 @@ fun StepButton(icon: Painter, description: String, enabled: Boolean, onClick: ()
 fun headLine(text: String, totals: String): AnnotatedString = buildAnnotatedString {
     append(text)
     val at = text.lastIndexOf(totals)
-    if (totals.isNotEmpty() && at >= 0) addStyle(SpanStyle(fontFamily = FsType.mono.fontFamily), at, at + totals.length)
+    if (totals.isNotEmpty() && at >= 0) addStyle(SpanStyle(fontFamily = ScaledType.mono.fontFamily), at, at + totals.length)
 }
 
 /** The tree a file opens on: the most points (F6's rule). */

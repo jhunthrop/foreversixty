@@ -34,8 +34,8 @@ public struct BrandButtonStyle: ButtonStyle {
             .frame(maxWidth: fullWidth ? .infinity : nil, minHeight: height)
             .padding(.horizontal, Self.horizontalPadding)
             .foregroundStyle(foreground)
-            .background(background, in: .rect(cornerRadius: FSRadius.control))
-            .overlay(RoundedRectangle(cornerRadius: FSRadius.control).stroke(border))
+            .background(background, in: .rect(cornerRadius: FSRadius.legacyControl))
+            .overlay(RoundedRectangle(cornerRadius: FSRadius.legacyControl).stroke(border))
             .scaleEffect(Self.scale(pressed: configuration.isPressed, reduceMotion: reduceMotion, enabled: isEnabled))
             .animation(.easeOut(duration: Self.pressDuration), value: configuration.isPressed)
     }
@@ -106,7 +106,7 @@ public struct SecondaryButton: View {
 
     public var body: some View {
         Button(action: action) {
-            HStack(spacing: FSSpacing.space2) {
+            HStack(spacing: FSSpace.space2) {
                 if let systemImage { Image(systemName: systemImage).accessibilityHidden(true) }
                 Text(title)
             }

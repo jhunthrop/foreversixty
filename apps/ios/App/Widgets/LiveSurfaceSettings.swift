@@ -56,8 +56,8 @@ struct LiveSurfaceSettingsView: View {
             .foregroundStyle(FSColor.text)
             .tint(FSColor.kill)
             .padding(.horizontal, 16)
-            .background(FSColor.raised, in: .rect(cornerRadius: FSRadius.control))
-            .overlay(RoundedRectangle(cornerRadius: FSRadius.control).stroke(FSColor.line))
+            .background(FSColor.raised, in: .rect(cornerRadius: FSRadius.legacyControl))
+            .overlay(RoundedRectangle(cornerRadius: FSRadius.legacyControl).stroke(FSColor.line))
             .padding(.horizontal, 16)
             .padding(.top, 22)
         }

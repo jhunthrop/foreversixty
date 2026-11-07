@@ -22,8 +22,8 @@ struct SegmentsView: View {
             }
         }
         .background(FSColor.raised)
-        .clipShape(RoundedRectangle(cornerRadius: FSRadius.control))
-        .overlay(RoundedRectangle(cornerRadius: FSRadius.control).stroke(FSColor.line))
+        .clipShape(RoundedRectangle(cornerRadius: FSRadius.legacyControl))
+        .overlay(RoundedRectangle(cornerRadius: FSRadius.legacyControl).stroke(FSColor.line))
         .opacity(enabled ? 1 : 0.5)
         .accessibilityElement(children: .contain)
         .accessibilityLabel(Copy.raidsA11ySegments(name: characterName))
@@ -45,7 +45,7 @@ struct SegmentsView: View {
                 }
                 .overlay {
                     if pending {
-                        RoundedRectangle(cornerRadius: FSRadius.control - 2)
+                        RoundedRectangle(cornerRadius: FSRadius.legacyControl - 2)
                             .strokeBorder(FSColor.gold, style: StrokeStyle(lineWidth: 1.5, dash: [4, 3]))
                             .padding(4)
                     }
@@ -194,8 +194,8 @@ struct SignupBlockView: View {
             }
             .padding(.horizontal, 14)
             .frame(minHeight: 48)
-            .background(Color.black.opacity(0.35), in: .rect(cornerRadius: FSRadius.control))
-            .overlay(RoundedRectangle(cornerRadius: FSRadius.control).stroke(
+            .background(Color.black.opacity(0.35), in: .rect(cornerRadius: FSRadius.legacyControl))
+            .overlay(RoundedRectangle(cornerRadius: FSRadius.legacyControl).stroke(
                 block.noteFailed ? FSColor.wipe : noteFocused ? FSColor.gold : FSColor.lineCard
             ))
             .disabled(!controller.segmentsEnabled(key))
@@ -220,7 +220,7 @@ struct ReminderAskView: View {
             Image(systemName: "bell")
                 .foregroundStyle(FSColor.gold)
                 .frame(width: 32, height: 32)
-                .background(FSColor.gold.opacity(0.12), in: .rect(cornerRadius: FSRadius.control))
+                .background(FSColor.gold.opacity(0.12), in: .rect(cornerRadius: FSRadius.legacyControl))
                 .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: 8) {
                 Text(Copy.askRaidTitle).font(ScaledType.bodyStrong).foregroundStyle(FSColor.strong)

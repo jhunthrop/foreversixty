@@ -44,7 +44,7 @@ import gg.foreversixty.app.designsystem.BrandButton
 import gg.foreversixty.app.designsystem.BrandButtonKind
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.FsRadius
-import gg.foreversixty.app.designsystem.FsType
+import gg.foreversixty.app.designsystem.ScaledType
 import gg.foreversixty.app.items.SpecIcon
 import gg.foreversixty.app.model.SimProgress
 import gg.foreversixty.app.model.SimRow
@@ -88,7 +88,7 @@ fun SimSpecMark(icon: String?, build: String?, size: Dp) {
     if (icon != null && build != null) {
         SpecIcon(icon, build, size)
     } else {
-        Box(Modifier.size(size).background(FsColor.cardTop, RoundedCornerShape(FsRadius.pill)))
+        Box(Modifier.size(size).background(FsColor.cardTop, RoundedCornerShape(FsRadius.legacyPill)))
     }
 }
 
@@ -96,7 +96,7 @@ fun SimSpecMark(icon: String?, build: String?, size: Dp) {
 private fun SimRowTitle(face: SimRowFace) {
     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         if (face.isUnseen) Box(Modifier.size(8.dp).background(FsColor.gold, CircleShape))
-        Text(face.title, style = FsType.bodyStrong, color = FsColor.strong, maxLines = 2)
+        Text(face.title, style = ScaledType.bodyStrong, color = FsColor.strong, maxLines = 2)
     }
 }
 
@@ -107,25 +107,25 @@ fun SimStateText(face: SimRowFace, copy: SimsCopy, singleLine: Boolean = false, 
     when (face.state) {
         ServerRunState.Queued -> Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
             Box(Modifier.size(8.dp).background(FsColor.gold, CircleShape))
-            Text(stringResource(R.string.sims_queued), style = FsType.meta, color = FsColor.strong, maxLines = lines, onTextLayout = layout)
+            Text(stringResource(R.string.sims_queued), style = ScaledType.meta, color = FsColor.strong, maxLines = lines, onTextLayout = layout)
         }
         ServerRunState.Running, ServerRunState.RunningOverdue, ServerRunState.RunningNoEstimate -> Text(
             buildAnnotatedString {
                 withStyle(SpanStyle(color = FsColor.gold)) { append(stringResource(R.string.sims_running)) }
                 withStyle(SpanStyle(color = FsColor.muted)) { append(copy.stateSuffix(face.row, face.state)) }
             },
-            style = FsType.meta, maxLines = lines, softWrap = !singleLine, onTextLayout = layout,
+            style = ScaledType.meta, maxLines = lines, softWrap = !singleLine, onTextLayout = layout,
         )
         ServerRunState.Done, ServerRunState.DoneUnseen ->
-            Text(face.headline, style = if (SimsLayout.isFigure(face.headline)) FsType.mono else FsType.bodyStrong, color = FsColor.strong, maxLines = lines, softWrap = !singleLine, onTextLayout = layout)
-        ServerRunState.Failed -> Text(copy.failedLine(face.row), style = FsType.meta, color = FsColor.wipe, maxLines = lines, softWrap = !singleLine, onTextLayout = layout)
+            Text(face.headline, style = if (SimsLayout.isFigure(face.headline)) ScaledType.mono else ScaledType.bodyStrong, color = FsColor.strong, maxLines = lines, softWrap = !singleLine, onTextLayout = layout)
+        ServerRunState.Failed -> Text(copy.failedLine(face.row), style = ScaledType.meta, color = FsColor.wipe, maxLines = lines, softWrap = !singleLine, onTextLayout = layout)
     }
 }
 
 /** State left and age right; at large text the age stacks under the state. */
 @Composable
 private fun SimStateLine(face: SimRowFace, copy: SimsCopy, now: Instant) {
-    val age = @Composable { Text(copy.ageLine(face.row, face.state, now), style = FsType.monoMeta, color = FsColor.muted) }
+    val age = @Composable { Text(copy.ageLine(face.row, face.state, now), style = ScaledType.monoMeta, color = FsColor.muted) }
     // The age drops under the state when the two do not fit on one line (spec F5.1 item 3).
     var overflows by remember(face.row, now) { mutableStateOf(false) }
     if (overflows || LocalDensity.current.fontScale >= SimsLayout.STACK_SCALE) {
@@ -153,7 +153,7 @@ private fun SimProgressBar(progress: SimProgress) {
             gapSize = 0.dp,
             drawStopIndicator = {},
         )
-        Text(words, style = FsType.monoMeta, color = FsColor.muted)
+        Text(words, style = ScaledType.monoMeta, color = FsColor.muted)
     }
 }
 
@@ -186,7 +186,7 @@ fun ServerRunRowView(
         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
             Column(Modifier.semantics(mergeDescendants = true) { contentDescription = label }) {
                 SimRowTitle(face)
-                Text(face.meta, style = FsType.meta, color = FsColor.muted)
+                Text(face.meta, style = ScaledType.meta, color = FsColor.muted)
                 Box(Modifier.padding(top = 2.dp)) { SimStateLine(face, copy, now) }
             }
             if (progress != null && face.state.isInFlight) SimProgressBar(progress)
@@ -213,8 +213,8 @@ private fun FailedControls(face: SimRowFace, rerun: RerunStatus, offline: Boolea
             enabled = !rerun.isLocked && !offline, height = SimsLayout.runAgainHeight,
         )
         when {
-            offline -> Text(stringResource(R.string.sims_offline), style = FsType.meta, color = FsColor.muted)
-            rerun == RerunStatus.Failed -> Text(stringResource(R.string.sims_runAgainFailed), style = FsType.meta, color = FsColor.wipe)
+            offline -> Text(stringResource(R.string.sims_offline), style = ScaledType.meta, color = FsColor.muted)
+            rerun == RerunStatus.Failed -> Text(stringResource(R.string.sims_runAgainFailed), style = ScaledType.meta, color = FsColor.wipe)
             rerun == RerunStatus.Lapsed -> LapsedLine(mayLinkToPlans, actions.openPlans)
         }
     }
@@ -223,11 +223,11 @@ private fun FailedControls(face: SimRowFace, rerun: RerunStatus, offline: Boolea
 @Composable
 private fun LapsedLine(mayLinkToPlans: Boolean, openPlans: () -> Unit) {
     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-        Text(stringResource(R.string.sims_premiumLine), style = FsType.meta, color = FsColor.wipe, modifier = Modifier.weight(1f, fill = false))
+        Text(stringResource(R.string.sims_premiumLine), style = ScaledType.meta, color = FsColor.wipe, modifier = Modifier.weight(1f, fill = false))
         if (mayLinkToPlans) {
             Text(
                 buildAnnotatedString { withStyle(SpanStyle(textDecoration = TextDecoration.Underline)) { append(stringResource(R.string.you_seePlans)) } },
-                style = FsType.meta.copy(fontWeight = FsType.bodyStrong.fontWeight),
+                style = ScaledType.meta.copy(fontWeight = ScaledType.bodyStrong.fontWeight),
                 color = FsColor.gold,
                 modifier = Modifier.heightIn(min = SimsLayout.runAgainHeight).clickable(onClick = openPlans).padding(vertical = 14.dp),
             )
@@ -248,7 +248,7 @@ fun MySimRowView(face: SimRowFace, copy: SimsCopy, build: String?, open: (SimRow
         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
             SimRowTitle(face)
             SimStateText(face, copy)
-            Text(copy.origin(face.row), style = FsType.meta, color = FsColor.muted)
+            Text(copy.origin(face.row), style = ScaledType.meta, color = FsColor.muted)
         }
         if (face.state.isDone) Box(Modifier.heightIn(min = 36.dp), contentAlignment = Alignment.Center) { SimChevron() }
     }

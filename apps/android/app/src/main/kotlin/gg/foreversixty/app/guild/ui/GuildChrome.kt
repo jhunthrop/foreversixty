@@ -40,14 +40,14 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.FsRadius
-import gg.foreversixty.app.designsystem.FsType
+import gg.foreversixty.app.designsystem.ScaledType
 
 /** The pushed screen's bar: back, the title in the heading face, trailing actions. */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GuildTopBar(title: String, back: () -> Unit, actions: @Composable () -> Unit = {}) {
     TopAppBar(
-        title = { Text(title.uppercase(), style = FsType.sec, color = FsColor.strong, modifier = Modifier.semantics { heading() }) },
+        title = { Text(title.uppercase(), style = ScaledType.sec, color = FsColor.strong, modifier = Modifier.semantics { heading() }) },
         navigationIcon = {
             IconButton(onClick = back) { Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, tint = FsColor.strong) }
         },
@@ -63,7 +63,7 @@ fun GuildTopBar(title: String, back: () -> Unit, actions: @Composable () -> Unit
  * card's top corners and border, the last its bottom, and every other row ends in the divider.
  */
 fun Modifier.cardSegment(first: Boolean, last: Boolean): Modifier {
-    val radius = FsRadius.panel
+    val radius = FsRadius.legacyPanel
     val shape = RoundedCornerShape(
         topStart = if (first) radius else 0.dp,
         topEnd = if (first) radius else 0.dp,
@@ -114,8 +114,8 @@ fun GuildLinkRow(icon: Painter, title: String, subtitle: String?, onClick: () ->
     ) {
         GoldTile(icon)
         Column(Modifier.weight(1f)) {
-            Text(title, style = FsType.bodyStrong, color = FsColor.strong)
-            subtitle?.let { Text(it, style = FsType.meta, color = FsColor.muted) }
+            Text(title, style = ScaledType.bodyStrong, color = FsColor.strong)
+            subtitle?.let { Text(it, style = ScaledType.meta, color = FsColor.muted) }
         }
         Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null, tint = FsColor.muted, modifier = Modifier.clearAndSetSemantics {})
     }
@@ -126,6 +126,6 @@ fun GuildLinkRow(icon: Painter, title: String, subtitle: String?, onClick: () ->
 fun GoldTile(icon: Painter) {
     Box(
         contentAlignment = Alignment.Center,
-        modifier = Modifier.size(36.dp).background(FsColor.gold.copy(alpha = 0.12f), RoundedCornerShape(FsRadius.control)),
+        modifier = Modifier.size(36.dp).background(FsColor.gold.copy(alpha = 0.12f), RoundedCornerShape(FsRadius.legacyControl)),
     ) { Icon(icon, contentDescription = null, tint = FsColor.gold, modifier = Modifier.size(18.dp)) }
 }

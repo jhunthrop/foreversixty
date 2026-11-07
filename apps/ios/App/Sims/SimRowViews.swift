@@ -40,7 +40,7 @@ struct SimSpecMark: View {
         if let icon, let build {
             SpecIcon(icon: icon, build: build, size: size)
         } else {
-            RoundedRectangle(cornerRadius: FSRadius.pill).fill(FSColor.cardTop).frame(width: size, height: size)
+            RoundedRectangle(cornerRadius: FSRadius.legacyPill).fill(FSColor.cardTop).frame(width: size, height: size)
         }
     }
 }

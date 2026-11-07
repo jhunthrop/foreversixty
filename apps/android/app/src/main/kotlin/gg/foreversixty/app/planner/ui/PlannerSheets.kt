@@ -45,7 +45,7 @@ import gg.foreversixty.app.R
 import gg.foreversixty.app.designsystem.BrandButton
 import gg.foreversixty.app.designsystem.BrandButtonKind
 import gg.foreversixty.app.designsystem.FsColor
-import gg.foreversixty.app.designsystem.FsType
+import gg.foreversixty.app.designsystem.ScaledType
 import gg.foreversixty.app.designsystem.MicroLabel
 import gg.foreversixty.app.model.RaceInfo
 import gg.foreversixty.app.planner.logic.PlannerEditor
@@ -64,7 +64,7 @@ fun PlannerSheet(onDismiss: () -> Unit, content: @Composable () -> Unit) {
 
 @Composable
 private fun SheetTitle(text: String) {
-    Text(text.uppercase(Locale.ROOT), style = FsType.sec, color = FsColor.strong, modifier = Modifier.semantics { heading() })
+    Text(text.uppercase(Locale.ROOT), style = ScaledType.sec, color = FsColor.strong, modifier = Modifier.semantics { heading() })
 }
 
 /** The Race chip's sheet: the class's legal races (combos.json), the current one ticked. */
@@ -79,7 +79,7 @@ fun RaceSheetContent(races: List<RaceInfo>, current: String?, choose: (String) -
                     Modifier.fillMaxWidth().heightIn(min = 52.dp).selectable(selected, role = Role.RadioButton) { choose(race.slug) },
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    Text(race.name, style = FsType.body, color = if (selected) FsColor.strong else FsColor.text, modifier = Modifier.weight(1f))
+                    Text(race.name, style = ScaledType.body, color = if (selected) FsColor.strong else FsColor.text, modifier = Modifier.weight(1f))
                     if (selected) Icon(Icons.Filled.Check, contentDescription = null, tint = FsColor.gold, modifier = Modifier.size(20.dp))
                 }
             }
@@ -94,10 +94,10 @@ fun LevelSheetContent(level: Int, minLevel: Int, change: (Int) -> Unit) {
         SheetTitle(stringResource(R.string.plan_levelSheet))
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(20.dp)) {
             StepButton(painterResource(R.drawable.ic_minus), stringResource(R.string.plan_level, level - 1), level > minLevel, { change(level - 1) })
-            Text(level.toString(), style = FsType.monoDay, color = FsColor.strong)
+            Text(level.toString(), style = ScaledType.monoDay, color = FsColor.strong)
             StepButton(rememberVectorPainter(Icons.Filled.Add), stringResource(R.string.plan_level, level + 1), level < PlannerEditor.MAX_LEVEL, { change(level + 1) })
         }
-        Text(stringResource(R.string.plan_levelSheetLine, PlannerRules.pointsAvailable(level)), style = FsType.meta, color = FsColor.muted)
+        Text(stringResource(R.string.plan_levelSheetLine, PlannerRules.pointsAvailable(level)), style = ScaledType.meta, color = FsColor.muted)
     }
 }
 
@@ -116,10 +116,10 @@ fun ResetDialog(points: Int, clear: () -> Unit, cancel: () -> Unit) {
             Column(
                 Modifier.width(IntrinsicSize.Max).padding(start = DIALOG_PADDING, end = DIALOG_PADDING, top = DIALOG_PADDING, bottom = 16.dp),
             ) {
-                Text(stringResource(R.string.plan_resetConfirm, points), style = FsType.lead, color = FsColor.strong, modifier = Modifier.semantics { heading() })
+                Text(stringResource(R.string.plan_resetConfirm, points), style = ScaledType.lead, color = FsColor.strong, modifier = Modifier.semantics { heading() })
                 Row(Modifier.fillMaxWidth().padding(top = DIALOG_PADDING - BUTTON_INSET), horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.End)) {
-                    TextButton(onClick = cancel) { Text(stringResource(R.string.common_cancel), style = FsType.bodyStrong, color = FsColor.text) }
-                    TextButton(onClick = clear) { Text(stringResource(R.string.plan_resetProceed), style = FsType.bodyStrong, color = FsColor.wipe) }
+                    TextButton(onClick = cancel) { Text(stringResource(R.string.common_cancel), style = ScaledType.bodyStrong, color = FsColor.text) }
+                    TextButton(onClick = clear) { Text(stringResource(R.string.plan_resetProceed), style = ScaledType.bodyStrong, color = FsColor.wipe) }
                 }
             }
         }
@@ -148,7 +148,7 @@ fun ShareSheetContent(state: ShareSheetState, onTitle: (String) -> Unit, proceed
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         SheetTitle(stringResource(R.string.plan_shareTitle))
-        Text(stringResource(R.string.plan_shareIntro), style = FsType.body, color = FsColor.text)
+        Text(stringResource(R.string.plan_shareIntro), style = ScaledType.body, color = FsColor.text)
         val title = PlannerShare.cleanTitle(state.title)
         Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
             Bullet(stringResource(R.string.plan_shareFieldClassRace))
@@ -160,12 +160,12 @@ fun ShareSheetContent(state: ShareSheetState, onTitle: (String) -> Unit, proceed
             value = state.title,
             onValueChange = { onTitle(it.take(PlannerShare.TITLE_MAX)) },
             singleLine = true,
-            textStyle = FsType.body,
+            textStyle = ScaledType.body,
             label = null,
             trailingIcon = {
                 Text(
                     stringResource(R.string.plan_shareTitleCount, state.title.length, PlannerShare.TITLE_MAX),
-                    style = FsType.monoMeta, color = FsColor.muted, modifier = Modifier.padding(end = 12.dp),
+                    style = ScaledType.monoMeta, color = FsColor.muted, modifier = Modifier.padding(end = 12.dp),
                 )
             },
             colors = OutlinedTextFieldDefaults.colors(
@@ -176,16 +176,16 @@ fun ShareSheetContent(state: ShareSheetState, onTitle: (String) -> Unit, proceed
         )
         BrandButton(stringResource(R.string.plan_shareProceed), BrandButtonKind.Primary, proceed, busy = state.sharing, height = 48.dp)
         BrandButton(stringResource(R.string.common_cancel), BrandButtonKind.Secondary, cancel, enabled = !state.sharing, height = 48.dp)
-        if (state.signedIn) Text(stringResource(R.string.plan_shareSignedIn), style = FsType.meta, color = FsColor.muted)
+        if (state.signedIn) Text(stringResource(R.string.plan_shareSignedIn), style = ScaledType.meta, color = FsColor.muted)
     }
 }
 
 @Composable
 private fun Bullet(text: String) {
     Row {
-        Text(BULLET, style = FsType.body, color = FsColor.muted)
+        Text(BULLET, style = ScaledType.body, color = FsColor.muted)
         Spacer(Modifier.width(6.dp))
-        Text(text, style = FsType.body, color = FsColor.text)
+        Text(text, style = ScaledType.body, color = FsColor.text)
     }
 }
 

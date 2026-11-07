@@ -14,7 +14,7 @@ struct SpecOrCrest: View {
     var body: some View {
         Group {
             if let image = shown {
-                let shape = RoundedRectangle(cornerRadius: FSRadius.pill)
+                let shape = RoundedRectangle(cornerRadius: FSRadius.legacyPill)
                 Image(uiImage: image).resizable().scaledToFill()
                     .frame(width: size, height: size)
                     .clipShape(shape)

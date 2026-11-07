@@ -263,7 +263,7 @@
       bottom: auto;
       left: 50%;
       width: 560px;
-      max-width: calc(100vw - 48px);
+      max-width: calc(100% - 48px);
       max-height: calc(100vh - 64px);
       transform: translate(-50%, -50%);
     }

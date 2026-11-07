@@ -59,7 +59,7 @@ import gg.foreversixty.app.designsystem.BrandButton
 import gg.foreversixty.app.designsystem.BrandButtonKind
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.FsRadius
-import gg.foreversixty.app.designsystem.FsType
+import gg.foreversixty.app.designsystem.ScaledType
 import gg.foreversixty.app.designsystem.Tag
 import gg.foreversixty.app.designsystem.classColor
 import gg.foreversixty.app.designsystem.primaryCard
@@ -110,7 +110,7 @@ fun ItemPage(
         Box(Modifier.weight(1f)) {
             when (phase) {
                 ItemPagePhase.Unknown -> Text(
-                    stringResource(R.string.itemPage_unknown), style = FsType.lead, color = FsColor.strong,
+                    stringResource(R.string.itemPage_unknown), style = ScaledType.lead, color = FsColor.strong,
                     modifier = Modifier.padding(SearchLayout.margin),
                 )
                 is ItemPagePhase.Loading -> LoadingBody(phase, build)
@@ -132,7 +132,7 @@ private fun titleOf(phase: ItemPagePhase): String? = when (phase) {
 @Composable
 private fun ItemBar(title: String?, backLabel: String, onBack: () -> Unit) {
     TopAppBar(
-        title = { title?.let { Text(it, style = FsType.sec, color = FsColor.strong, maxLines = 2) } },
+        title = { title?.let { Text(it, style = ScaledType.sec, color = FsColor.strong, maxLines = 2) } },
         navigationIcon = {
             IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = backLabel, tint = FsColor.strong) }
         },
@@ -182,8 +182,8 @@ private fun LoadedBody(
                     val stacked = isLargeText()
                     ClassCrest(pick.className, 40.dp)
                     Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                        Text(pick.title, style = FsType.bodyStrong, color = FsColor.strong)
-                        Text(pick.meta, style = FsType.body, color = FsColor.muted)
+                        Text(pick.title, style = ScaledType.bodyStrong, color = FsColor.strong)
+                        Text(pick.meta, style = ScaledType.body, color = FsColor.muted)
                         if (stacked) Tag(stringResource(R.string.itemPage_yours), FsColor.gold)
                     }
                     if (!stacked) Tag(stringResource(R.string.itemPage_yours), FsColor.gold)
@@ -231,8 +231,8 @@ private fun Head(look: ItemLook, meta: String?, build: String) {
     ) {
         ItemIcon(look.icon, look.quality, build, 64.dp)
         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-            Text(look.name ?: stringResource(R.string.items_notInData), style = FsType.h2, color = ItemQuality(look.quality).text)
-            meta?.let { Text(it, style = FsType.body, color = FsColor.muted) }
+            Text(look.name ?: stringResource(R.string.items_notInData), style = ScaledType.h2, color = ItemQuality(look.quality).text)
+            meta?.let { Text(it, style = ScaledType.body, color = FsColor.muted) }
         }
     }
 }
@@ -276,14 +276,14 @@ private fun FailedBody(look: ItemLook, build: String, onRetry: () -> Unit) {
 @Composable
 private fun RegionError(text: String, onRetry: () -> Unit) {
     Column(Modifier.padding(horizontal = SearchLayout.margin, vertical = 8.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        Text(text, style = FsType.body, color = FsColor.wipe)
+        Text(text, style = ScaledType.body, color = FsColor.wipe)
         BrandButton(stringResource(R.string.search_tryAgain), BrandButtonKind.Secondary, onRetry, height = 48.dp, fill = false, leadingIcon = Icons.Filled.Refresh)
     }
 }
 
 @Composable
 private fun Foot(text: String) {
-    Text(text, style = FsType.body, color = FsColor.muted, modifier = Modifier.padding(horizontal = SearchLayout.margin, vertical = 12.dp))
+    Text(text, style = ScaledType.body, color = FsColor.muted, modifier = Modifier.padding(horizontal = SearchLayout.margin, vertical = 12.dp))
 }
 
 @Composable
@@ -314,14 +314,14 @@ private fun SourceRow(line: ItemSourceLine) {
         horizontalArrangement = Arrangement.spacedBy(14.dp),
     ) {
         Box(
-            Modifier.size(SearchLayout.itemIcon).background(FsColor.cardTop, RoundedCornerShape(FsRadius.control)),
+            Modifier.size(SearchLayout.itemIcon).background(FsColor.cardTop, RoundedCornerShape(FsRadius.legacyControl)),
             contentAlignment = Alignment.Center,
         ) {
             Icon(painterResource(sourceGlyph(line.kind)), contentDescription = null, tint = FsColor.gold, modifier = Modifier.size(20.dp))
         }
         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-            Text(line.title, style = FsType.bodyStrong, color = FsColor.strong)
-            if (line.meta.isNotEmpty()) Text(line.meta, style = FsType.body, color = FsColor.muted)
+            Text(line.title, style = ScaledType.bodyStrong, color = FsColor.strong)
+            if (line.meta.isNotEmpty()) Text(line.meta, style = ScaledType.body, color = FsColor.muted)
         }
     }
 }
@@ -390,8 +390,8 @@ private fun SpecRow(line: ItemSpecLine, build: String, onClick: () -> Unit) {
         val tagColor = if (line.isPick) FsColor.kill else FsColor.muted
         line.icon?.let { SpecIcon(it, build, SearchLayout.icon) } ?: ClassCrest(line.classSlug, SearchLayout.icon)
         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-            Text(line.title, style = FsType.bodyStrong, color = classColor(line.classSlug))
-            Text(line.meta, style = FsType.body, color = FsColor.muted)
+            Text(line.title, style = ScaledType.bodyStrong, color = classColor(line.classSlug))
+            Text(line.meta, style = ScaledType.body, color = FsColor.muted)
             // At large text the tag goes under the meta so the name keeps the width (§9).
             if (stacked) Tag(line.tag, tagColor)
         }
@@ -405,7 +405,7 @@ private fun MoreSpecs(count: Int, onExpand: () -> Unit) {
     Box(Modifier.padding(top = 10.dp)) {
         RowCard(1) {
             TappableRow(onExpand, minHeight = 56.dp) {
-                Text(pluralStringResource(R.plurals.itemPage_moreSpecs, count, count), style = FsType.bodyStrong, color = FsColor.gold, modifier = Modifier.weight(1f))
+                Text(pluralStringResource(R.plurals.itemPage_moreSpecs, count, count), style = ScaledType.bodyStrong, color = FsColor.gold, modifier = Modifier.weight(1f))
                 Icon(Icons.Filled.KeyboardArrowDown, contentDescription = null, tint = FsColor.muted)
             }
         }

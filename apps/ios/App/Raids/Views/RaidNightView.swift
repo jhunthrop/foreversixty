@@ -106,8 +106,8 @@ struct RaidNightView: View {
         case .loading:
             VStack(alignment: .leading, spacing: 14) {
                 RoundedRectangle(cornerRadius: 4).frame(width: 220, height: 13)
-                RoundedRectangle(cornerRadius: FSRadius.panel).frame(height: 110)
-                RoundedRectangle(cornerRadius: FSRadius.panel).frame(height: 160)
+                RoundedRectangle(cornerRadius: FSRadius.legacyPanel).frame(height: 110)
+                RoundedRectangle(cornerRadius: FSRadius.legacyPanel).frame(height: 160)
             }
             .foregroundStyle(FSColor.lineSoft)
             .accessibilityHidden(true)

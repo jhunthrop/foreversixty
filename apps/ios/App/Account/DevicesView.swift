@@ -21,11 +21,11 @@ struct DevicesView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: FSSpacing.space4) {
+            VStack(alignment: .leading, spacing: FSSpace.space4) {
                 content
                 Text(Copy.devicesFooter).font(ScaledType.meta).foregroundStyle(FSColor.muted)
             }
-            .padding(FSSpacing.space4)
+            .padding(FSSpace.space4)
         }
         .background(FSColor.bg)
         .navigationTitle(Copy.devicesTitle)
@@ -61,7 +61,7 @@ struct DevicesView: View {
             }
             .quietCard()
         case .failed:
-            VStack(alignment: .leading, spacing: FSSpacing.space3) {
+            VStack(alignment: .leading, spacing: FSSpace.space3) {
                 Text(Copy.accountDevicesLoadFailed)
                     .font(ScaledType.body)
                     .foregroundStyle(FSColor.wipe)
@@ -72,7 +72,7 @@ struct DevicesView: View {
     }
 
     private func deviceRow(_ row: DeviceRow) -> some View {
-        VStack(alignment: .leading, spacing: FSSpacing.space1) {
+        VStack(alignment: .leading, spacing: FSSpace.space1) {
             HStack {
                 AccountRow(
                     icon: row.isCompanion ? "desktopcomputer" : "iphone",
@@ -83,14 +83,14 @@ struct DevicesView: View {
                     Button(Copy.devicesRevoke) { confirming = row }
                         .buttonStyle(BrandButtonStyle(.destructive, height: 44))
                         .fixedSize()
-                        .padding(.trailing, FSSpacing.space4)
+                        .padding(.trailing, FSSpace.space4)
                 }
             }
             if failedRevoke == row.id {
                 Text(Copy.devicesRevokeFailed)
                     .font(ScaledType.meta)
                     .foregroundStyle(FSColor.wipe)
-                    .padding([.horizontal, .bottom], FSSpacing.space4)
+                    .padding([.horizontal, .bottom], FSSpace.space4)
             }
         }
     }

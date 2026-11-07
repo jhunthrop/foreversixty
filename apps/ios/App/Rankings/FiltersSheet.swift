@@ -104,8 +104,8 @@ struct FiltersView: View {
             }
             .padding(.horizontal, 14)
             .frame(minHeight: 52)
-            .background(GameColors.controlFill, in: .rect(cornerRadius: FSRadius.control))
-            .overlay(RoundedRectangle(cornerRadius: FSRadius.control).stroke(FSColor.line))
+            .background(GameColors.controlFill, in: .rect(cornerRadius: FSRadius.legacyControl))
+            .overlay(RoundedRectangle(cornerRadius: FSRadius.legacyControl).stroke(FSColor.line))
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)

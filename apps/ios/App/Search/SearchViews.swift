@@ -362,8 +362,8 @@ struct SearchOfflineNote: View {
         }
         .foregroundStyle(FSColor.nav)
         .padding(12)
-        .background(GameColors.offlineGround, in: .rect(cornerRadius: FSRadius.control))
-        .overlay(RoundedRectangle(cornerRadius: FSRadius.control).stroke(FSColor.line))
+        .background(GameColors.offlineGround, in: .rect(cornerRadius: FSRadius.legacyControl))
+        .overlay(RoundedRectangle(cornerRadius: FSRadius.legacyControl).stroke(FSColor.line))
         .accessibilityElement(children: .combine)
         .onAppear { AccessibilityNotification.Announcement(Copy.searchOffline).post() }
     }

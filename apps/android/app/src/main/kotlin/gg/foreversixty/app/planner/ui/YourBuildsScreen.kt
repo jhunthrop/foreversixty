@@ -40,7 +40,7 @@ import androidx.compose.ui.unit.dp
 import gg.foreversixty.app.R
 import gg.foreversixty.app.common.ClassCrest
 import gg.foreversixty.app.designsystem.FsColor
-import gg.foreversixty.app.designsystem.FsType
+import gg.foreversixty.app.designsystem.ScaledType
 import gg.foreversixty.app.designsystem.MicroLabel
 import gg.foreversixty.app.designsystem.quietCard
 import gg.foreversixty.app.planner.logic.BuildRow
@@ -89,7 +89,7 @@ fun YourBuildsPage(state: BuildsPageState, actions: BuildsActions, snackbar: Sna
 private fun BuildsList(phase: YourBuildsPhase.Loaded, state: BuildsPageState, actions: BuildsActions) {
     LazyColumn(Modifier.fillMaxSize(), contentPadding = androidx.compose.foundation.layout.PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
         if (phase.rows.isEmpty()) {
-            item { Text(stringResource(R.string.plan_builds_empty), style = FsType.body, color = FsColor.muted) }
+            item { Text(stringResource(R.string.plan_builds_empty), style = ScaledType.body, color = FsColor.muted) }
         }
         items(phase.rows, key = { it.build.id }) { row -> SwipeRow(row, state.zone, actions) }
         phase.problem?.let { problem ->
@@ -98,11 +98,11 @@ private fun BuildsList(phase: YourBuildsPhase.Loaded, state: BuildsPageState, ac
                     BuildsProblem.RemoveFailed -> R.string.plan_removeFailed
                     BuildsProblem.UndoFailed -> R.string.common_failed
                 }
-                Text(stringResource(text), style = FsType.body, color = FsColor.wipe)
+                Text(stringResource(text), style = ScaledType.body, color = FsColor.wipe)
             }
         }
         if (phase.rows.isNotEmpty()) {
-            item { Text(stringResource(R.string.plan_builds_footer), style = FsType.meta, color = FsColor.muted, modifier = Modifier.padding(top = 4.dp)) }
+            item { Text(stringResource(R.string.plan_builds_footer), style = ScaledType.meta, color = FsColor.muted, modifier = Modifier.padding(top = 4.dp)) }
         }
         state.newBuild?.let { new ->
             item { MicroLabel(stringResource(R.string.plan_builds_newHeader), Modifier.padding(top = 18.dp)) }
@@ -124,11 +124,11 @@ private fun SwipeRow(row: BuildRow, zone: ZoneId, actions: BuildsActions) {
             // Drawn only while a swipe is under way, so nothing shows round a resting card's corners.
             if (swipe.dismissDirection == SwipeToDismissBoxValue.EndToStart) {
                 Box(Modifier.fillMaxSize().background(FsColor.wipe.copy(alpha = REMOVE_ALPHA)).padding(end = 20.dp), contentAlignment = Alignment.CenterEnd) {
-                    Text(removeLabel, style = FsType.bodyStrong, color = FsColor.strong)
+                    Text(removeLabel, style = ScaledType.bodyStrong, color = FsColor.strong)
                 }
             }
         },
-        modifier = Modifier.clip(RoundedCornerShape(FsRadius.panel)).semantics { customActions = listOf(CustomAccessibilityAction(removeLabel) { actions.remove(row); true }) },
+        modifier = Modifier.clip(RoundedCornerShape(FsRadius.legacyPanel)).semantics { customActions = listOf(CustomAccessibilityAction(removeLabel) { actions.remove(row); true }) },
     ) {
         BuildRowView(row, zone) { actions.open(row) }
     }
@@ -157,15 +157,15 @@ private fun BuildRowView(row: BuildRow, zone: ZoneId, open: () -> Unit) {
         ClassCrest(row.classSlug, 36.dp)
         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
             val title = row.build.title
-            if (title != null) Text(title, style = FsType.bodyStrong, color = FsColor.strong)
-            else Text(heading, style = FsType.bodyStrong, color = FsColor.strong)
+            if (title != null) Text(title, style = ScaledType.bodyStrong, color = FsColor.strong)
+            else Text(heading, style = ScaledType.bodyStrong, color = FsColor.strong)
             // An untitled row's heading already names the race, class and totals: its meta is the date.
             val meta = if (title != null) stringResource(R.string.plan_builds_meta, row.raceName, row.className, totals, date) else date
             // Each `·` keeps to the part after it, so no line ends on a dangling dot.
-            Text(meta.replace(SEPARATOR, SEPARATOR_KEPT), style = FsType.meta, color = FsColor.muted)
-            if (large) Text(viewsText, style = FsType.monoMeta, color = FsColor.text)
+            Text(meta.replace(SEPARATOR, SEPARATOR_KEPT), style = ScaledType.meta, color = FsColor.muted)
+            if (large) Text(viewsText, style = ScaledType.monoMeta, color = FsColor.text)
         }
-        if (!large) Text(viewsText, style = FsType.monoMeta, color = FsColor.text)
+        if (!large) Text(viewsText, style = ScaledType.monoMeta, color = FsColor.text)
         Chevron(20.dp)
     }
 }
@@ -183,7 +183,7 @@ private fun NewBuild(new: NewBuildRow, actions: BuildsActions) {
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         Icon(Icons.Filled.Add, contentDescription = null, tint = FsColor.gold, modifier = Modifier.size(22.dp))
-        Text(stringResource(R.string.plan_builds_newRow, new.className, new.level), style = FsType.bodyStrong, color = FsColor.strong, modifier = Modifier.weight(1f))
+        Text(stringResource(R.string.plan_builds_newRow, new.className, new.level), style = ScaledType.bodyStrong, color = FsColor.strong, modifier = Modifier.weight(1f))
         Chevron(20.dp)
     }
 }

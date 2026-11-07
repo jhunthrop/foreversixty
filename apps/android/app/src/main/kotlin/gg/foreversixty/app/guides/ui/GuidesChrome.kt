@@ -47,7 +47,7 @@ import androidx.compose.ui.unit.sp
 import gg.foreversixty.app.R
 import gg.foreversixty.app.account.AccountLinks
 import gg.foreversixty.app.designsystem.FsColor
-import gg.foreversixty.app.designsystem.FsType
+import gg.foreversixty.app.designsystem.ScaledType
 import gg.foreversixty.app.designsystem.GameColors
 import gg.foreversixty.app.designsystem.Tag
 import gg.foreversixty.app.designsystem.pillSurface
@@ -100,7 +100,7 @@ internal fun EqualSegments(labels: List<String>, selected: Int, onSelect: (Int) 
                     inactiveBorderColor = FsColor.line,
                 ),
             ) {
-                Text(label, style = FsType.segment, maxLines = 2, overflow = TextOverflow.Clip)
+                Text(label, style = ScaledType.segment, maxLines = 2, overflow = TextOverflow.Clip)
             }
         }
     }
@@ -127,7 +127,7 @@ internal fun PillChip(label: String, selected: Boolean, description: String = la
             verticalAlignment = Alignment.CenterVertically,
         ) {
             leading()
-            Text(label, style = FsType.bodyStrong, color = if (selected) FsColor.gold else FsColor.text)
+            Text(label, style = ScaledType.bodyStrong, color = if (selected) FsColor.gold else FsColor.text)
             trailing()
         }
     }
@@ -150,9 +150,9 @@ internal fun NumberedChips(items: List<String>, label: (Int, String) -> String) 
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Box(Modifier.size(scaledSize(DISC, DISC_CAP)).background(FsColor.cardTop, CircleShape), contentAlignment = Alignment.Center) {
-                    Text((index + 1).toString(), style = FsType.mono.copy(fontSize = DISC_TEXT), color = FsColor.gold)
+                    Text((index + 1).toString(), style = ScaledType.mono.copy(fontSize = DISC_TEXT), color = FsColor.gold)
                 }
-                Text(item, style = FsType.body, color = FsColor.text)
+                Text(item, style = ScaledType.body, color = FsColor.text)
             }
         }
     }
@@ -170,7 +170,7 @@ internal fun SavedMark(saved: Boolean, long: Boolean = false) {
     } else {
         Row(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalAlignment = Alignment.CenterVertically) {
             Icon(painterResource(R.drawable.ic_cloud_download), contentDescription = null, tint = FsColor.muted, modifier = Modifier.size(18.dp))
-            Text(stringResource(R.string.guides_notSaved), style = FsType.meta, color = FsColor.muted)
+            Text(stringResource(R.string.guides_notSaved), style = ScaledType.meta, color = FsColor.muted)
         }
     }
 }
@@ -208,14 +208,14 @@ internal fun SourcesDisclosure(sources: List<GuideSourceLink>) {
                 .padding(horizontal = GuideSpace.margin),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Text(stringResource(R.string.guides_sources), style = FsType.bodyStrong, color = FsColor.text, modifier = Modifier.weight(1f))
+            Text(stringResource(R.string.guides_sources), style = ScaledType.bodyStrong, color = FsColor.text, modifier = Modifier.weight(1f))
             Icon(if (open) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown, contentDescription = null, tint = FsColor.muted)
         }
         if (open) {
             sources.forEach { source ->
                 HorizontalDivider(color = FsColor.lineSoft)
                 Text(
-                    source.label, style = FsType.body, color = FsColor.gold,
+                    source.label, style = ScaledType.body, color = FsColor.gold,
                     modifier = Modifier.fillMaxWidth().heightIn(min = TARGET).clickable(role = Role.Button) { AccountLinks.open(context, source.url) }
                         .padding(horizontal = GuideSpace.margin, vertical = GuideSpace.rowGap),
                 )
@@ -231,11 +231,11 @@ internal fun Lines(lines: List<String>, bulleted: Boolean = false) {
         lines.forEach { line ->
             if (bulleted) {
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Text(BULLET, style = FsType.body, color = FsColor.muted)
-                    Text(line, style = FsType.body, color = FsColor.text)
+                    Text(BULLET, style = ScaledType.body, color = FsColor.muted)
+                    Text(line, style = ScaledType.body, color = FsColor.text)
                 }
             } else {
-                Text(line, style = FsType.body, color = FsColor.text)
+                Text(line, style = ScaledType.body, color = FsColor.text)
             }
         }
     }

@@ -25,8 +25,8 @@ import androidx.compose.ui.unit.dp
 import gg.foreversixty.app.R
 import gg.foreversixty.app.account.AccountCard
 import gg.foreversixty.app.designsystem.FsColor
-import gg.foreversixty.app.designsystem.FsSpacing
-import gg.foreversixty.app.designsystem.FsType
+import gg.foreversixty.app.designsystem.FsSpace
+import gg.foreversixty.app.designsystem.ScaledType
 import gg.foreversixty.app.widgets.data.LiveKind
 import kotlinx.coroutines.launch
 
@@ -52,8 +52,8 @@ fun LiveSurfacesCard(settings: LiveSurfaceSettings) {
 fun LiveSurfacesSection(raidOn: Boolean, simOn: Boolean, showsSim: Boolean, onRaid: (Boolean) -> Unit, onSim: (Boolean) -> Unit) {
     Column {
         Text(
-            stringResource(R.string.live_settings).uppercase(), style = FsType.micro, color = FsColor.muted,
-            modifier = Modifier.padding(start = FsSpacing.space4, bottom = FsSpacing.space2),
+            stringResource(R.string.live_settings).uppercase(), style = ScaledType.micro, color = FsColor.muted,
+            modifier = Modifier.padding(start = FsSpace.space4, bottom = FsSpace.space2),
         )
         AccountCard {
             SwitchRow(stringResource(R.string.live_raidSetting), raidOn, onRaid)
@@ -70,10 +70,10 @@ private fun SwitchRow(title: String, checked: Boolean, onChange: (Boolean) -> Un
     Row(
         Modifier.fillMaxWidth().heightIn(min = 56.dp)
             .toggleable(value = checked, role = Role.Switch, onValueChange = onChange)
-            .padding(horizontal = FsSpacing.space4, vertical = FsSpacing.space2),
+            .padding(horizontal = FsSpace.space4, vertical = FsSpace.space2),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Text(title, style = FsType.bodyStrong, color = FsColor.strong, modifier = Modifier.weight(1f))
+        Text(title, style = ScaledType.bodyStrong, color = FsColor.strong, modifier = Modifier.weight(1f))
         Switch(
             checked = checked, onCheckedChange = null,
             colors = SwitchDefaults.colors(checkedTrackColor = FsColor.gold, checkedThumbColor = FsColor.bg),

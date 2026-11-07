@@ -59,7 +59,7 @@ import gg.foreversixty.app.common.OfflineStamp
 import gg.foreversixty.app.designsystem.BrandButton
 import gg.foreversixty.app.designsystem.BrandButtonKind
 import gg.foreversixty.app.designsystem.FsColor
-import gg.foreversixty.app.designsystem.FsType
+import gg.foreversixty.app.designsystem.ScaledType
 import gg.foreversixty.app.designsystem.MicroLabel
 import gg.foreversixty.app.designsystem.Tag
 import gg.foreversixty.app.designsystem.classColor
@@ -186,8 +186,8 @@ private fun Profile(profile: CharacterProfile, state: CharacterScreenState, spec
             profile.buildsSeen.forEachIndexed { i, b ->
                 Divided(i) {
                     Column(Modifier.fillMaxWidth().heightIn(min = 56.dp).padding(horizontal = 16.dp, vertical = 10.dp)) {
-                        Text(b.talentSplit, style = FsType.mono, color = FsColor.strong)
-                        Text(copy.buildMeta(b.spec, b.firstSeen), style = FsType.meta, color = FsColor.muted)
+                        Text(b.talentSplit, style = ScaledType.mono, color = FsColor.strong)
+                        Text(copy.buildMeta(b.spec, b.firstSeen), style = ScaledType.meta, color = FsColor.muted)
                     }
                 }
             }
@@ -199,7 +199,7 @@ private fun Profile(profile: CharacterProfile, state: CharacterScreenState, spec
                         Modifier.fillMaxWidth().clickable(role = Role.Button) { open(link) }.heightIn(min = 52.dp).padding(horizontal = 16.dp),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
-                        Text(stringResource(R.string.char_openPlanner), style = FsType.bodyStrong, color = FsColor.gold, modifier = Modifier.weight(1f))
+                        Text(stringResource(R.string.char_openPlanner), style = ScaledType.bodyStrong, color = FsColor.gold, modifier = Modifier.weight(1f))
                         Chevron(20.dp)
                     }
                 }
@@ -211,7 +211,7 @@ private fun Profile(profile: CharacterProfile, state: CharacterScreenState, spec
             Modifier.fillMaxWidth().quietCard().clickable(role = Role.Button, onClick = actions.openHistory).heightIn(min = 56.dp).padding(horizontal = 16.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Text(stringResource(R.string.char_parseHistory), style = FsType.bodyStrong, color = FsColor.strong, modifier = Modifier.weight(1f))
+            Text(stringResource(R.string.char_parseHistory), style = ScaledType.bodyStrong, color = FsColor.strong, modifier = Modifier.weight(1f))
             Icon(painterResource(R.drawable.ic_open_external), contentDescription = null, tint = FsColor.muted, modifier = Modifier.size(18.dp))
         }
     }
@@ -225,7 +225,7 @@ private fun Head(profile: CharacterProfile, state: CharacterScreenState, specNam
         Row(horizontalArrangement = Arrangement.spacedBy(14.dp), verticalAlignment = Alignment.CenterVertically) {
             ClassCrest(c.className?.lowercase(), CharacterLayout.crest)
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                Text(c.name.uppercase(), style = FsType.h2, color = classColor(c.className), modifier = Modifier.semantics { heading() })
+                Text(c.name.uppercase(), style = ScaledType.h2, color = classColor(c.className), modifier = Modifier.semantics { heading() })
                 val tags = CharacterCard.isYours(profile, state.viewer) || profile.supporter
                 if (tags) {
                     Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
@@ -233,13 +233,13 @@ private fun Head(profile: CharacterProfile, state: CharacterScreenState, specNam
                         if (profile.supporter) Tag(stringResource(R.string.char_supporter), FsColor.rarityEpicText)
                     }
                 }
-                Text(copy.descriptor(profile, specName), style = FsType.body, color = FsColor.muted)
-                Text(copy.where(profile), style = FsType.body, color = FsColor.muted)
+                Text(copy.descriptor(profile, specName), style = ScaledType.body, color = FsColor.muted)
+                Text(copy.where(profile), style = ScaledType.body, color = FsColor.muted)
             }
         }
         if (state.watch?.failed == true) {
             Text(
-                stringResource(R.string.char_watchFailed, c.name), style = FsType.meta, color = FsColor.wipe,
+                stringResource(R.string.char_watchFailed, c.name), style = ScaledType.meta, color = FsColor.wipe,
                 modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite },
             )
         }
@@ -252,8 +252,8 @@ private fun ScoreCard(profile: CharacterProfile, copy: CharacterCopy, actions: C
     val score = profile.score
     if (score == null) {
         Column(Modifier.fillMaxWidth().quietCard().padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-            Text(stringResource(R.string.char_noLogs), style = FsType.lead, color = FsColor.strong)
-            Text(stringResource(R.string.char_noScore, profile.character.name), style = FsType.meta, color = FsColor.muted)
+            Text(stringResource(R.string.char_noLogs), style = ScaledType.lead, color = FsColor.strong)
+            Text(stringResource(R.string.char_noScore, profile.character.name), style = ScaledType.meta, color = FsColor.muted)
         }
         return
     }
@@ -267,10 +267,10 @@ private fun ScoreCard(profile: CharacterProfile, copy: CharacterCopy, actions: C
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
                 MicroLabel(stringResource(R.string.char_score))
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                    Text(copy.score(score), style = FsType.mono.copy(fontSize = CharacterLayout.scoreSize, fontWeight = FontWeight.Bold, letterSpacing = SCORE_TRACKING), color = FsColor.strong)
+                    Text(copy.score(score), style = ScaledType.mono.copy(fontSize = CharacterLayout.scoreSize, fontWeight = FontWeight.Bold, letterSpacing = SCORE_TRACKING), color = FsColor.strong)
                     Tag(copy.tier(profile.tier), ItemQuality(CharacterCard.tierQuality(profile.tier)).text)
                 }
-                copy.asOf(profile.asOf)?.let { Text(it, style = FsType.meta, color = FsColor.muted) }
+                copy.asOf(profile.asOf)?.let { Text(it, style = ScaledType.meta, color = FsColor.muted) }
             }
             if (!isLargeText()) Sparkline(CharacterCard.sparkline(profile.scoreHistory), ItemQuality(CharacterCard.tierQuality(profile.tier)).text)
         }
@@ -278,7 +278,7 @@ private fun ScoreCard(profile: CharacterProfile, copy: CharacterCopy, actions: C
             CharacterCard.bars(profile.components, profile.componentCaps).forEach { ComponentBar(it) }
         }
         Text(
-            stringResource(R.string.char_how), style = FsType.bodyStrong, color = FsColor.gold,
+            stringResource(R.string.char_how), style = ScaledType.bodyStrong, color = FsColor.gold,
             modifier = Modifier.heightIn(min = 48.dp).clickable(role = Role.Button, onClick = actions.openHow).wrapContentHeight(Alignment.CenterVertically),
         )
     }
@@ -294,14 +294,14 @@ private fun ComponentBar(bar: ScoreBar) {
     }
     if (isLargeText()) {
         Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-            Row { Text(name, style = FsType.body, color = FsColor.muted, modifier = Modifier.weight(1f)); Text(bar.value.toString(), style = FsType.mono, color = FsColor.strong) }
+            Row { Text(name, style = ScaledType.body, color = FsColor.muted, modifier = Modifier.weight(1f)); Text(bar.value.toString(), style = ScaledType.mono, color = FsColor.strong) }
             track(Modifier.fillMaxWidth())
         }
     } else {
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            Text(name, style = FsType.body, color = FsColor.muted, modifier = Modifier.width(CharacterLayout.barLabel))
+            Text(name, style = ScaledType.body, color = FsColor.muted, modifier = Modifier.width(CharacterLayout.barLabel))
             track(Modifier.weight(1f))
-            Text(bar.value.toString(), style = FsType.mono, color = FsColor.strong, modifier = Modifier.width(36.dp), textAlign = TextAlign.End)
+            Text(bar.value.toString(), style = ScaledType.mono, color = FsColor.strong, modifier = Modifier.width(36.dp), textAlign = TextAlign.End)
         }
     }
 }
@@ -325,16 +325,16 @@ private fun Sparkline(points: List<Float>, color: Color) {
 private fun BestRow(profile: CharacterProfile, fight: CharacterFight, now: Instant, copy: CharacterCopy) {
     Row(Modifier.fillMaxWidth().heightIn(min = 64.dp).padding(horizontal = 16.dp, vertical = 10.dp), verticalAlignment = Alignment.CenterVertically) {
         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-            Text(fight.encounter, style = FsType.bodyStrong, color = FsColor.strong)
-            Text(copy.bestMeta(profile, fight, now), style = FsType.meta, color = FsColor.muted)
+            Text(fight.encounter, style = ScaledType.bodyStrong, color = FsColor.strong)
+            Text(copy.bestMeta(profile, fight, now), style = ScaledType.meta, color = FsColor.muted)
         }
         Column(horizontalAlignment = Alignment.End, verticalArrangement = Arrangement.spacedBy(2.dp)) {
             FigureWithUnit(copy.value(fight), copy.unit(fight.metric))
             fight.percentile?.let { p ->
                 val n = p.roundToInt()
                 Row(horizontalArrangement = Arrangement.spacedBy(4.dp), verticalAlignment = Alignment.CenterVertically) {
-                    Text(n.toString(), style = FsType.mono.copy(fontWeight = FontWeight.Bold), color = parseColor(ParseTier.of(n)))
-                    Text(stringResource(R.string.char_percentile), style = FsType.meta, color = FsColor.muted)
+                    Text(n.toString(), style = ScaledType.mono.copy(fontWeight = FontWeight.Bold), color = parseColor(ParseTier.of(n)))
+                    Text(stringResource(R.string.char_percentile), style = ScaledType.meta, color = FsColor.muted)
                 }
             }
         }
@@ -351,8 +351,8 @@ private fun RecentRow(fight: CharacterFight, now: Instant, copy: CharacterCopy, 
     ) {
         OutcomeDot(if (fight.kill == false) FsColor.wipe else FsColor.kill)
         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-            Text(fight.encounter, style = FsType.bodyStrong, color = FsColor.strong)
-            Text(copy.fightMeta(fight, now), style = FsType.meta, color = FsColor.muted)
+            Text(fight.encounter, style = ScaledType.bodyStrong, color = FsColor.strong)
+            Text(copy.fightMeta(fight, now), style = ScaledType.meta, color = FsColor.muted)
         }
         FigureWithUnit(copy.value(fight), copy.unit(fight.metric))
         if (reportsOn) Chevron(20.dp)
@@ -362,8 +362,8 @@ private fun RecentRow(fight: CharacterFight, now: Instant, copy: CharacterCopy, 
 @Composable
 private fun FigureWithUnit(value: String, unit: String) {
     Row(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalAlignment = Alignment.CenterVertically) {
-        Text(value, style = FsType.mono.copy(fontSize = 17.sp), color = FsColor.strong)
-        Text(unit, style = FsType.monoMeta, color = FsColor.muted)
+        Text(value, style = ScaledType.mono.copy(fontSize = 17.sp), color = FsColor.strong)
+        Text(unit, style = ScaledType.monoMeta, color = FsColor.muted)
     }
 }
 
@@ -374,7 +374,7 @@ private fun GearSection(profile: CharacterProfile, state: CharacterScreenState, 
         MicroLabel(stringResource(R.string.char_gear))
         if (profile.gear.isEmpty()) {
             Text(
-                stringResource(R.string.char_noGear, profile.character.name), style = FsType.body, color = FsColor.text,
+                stringResource(R.string.char_noGear, profile.character.name), style = ScaledType.body, color = FsColor.text,
                 modifier = Modifier.fillMaxWidth().quietCard().padding(16.dp),
             )
             return@Column
@@ -382,12 +382,12 @@ private fun GearSection(profile: CharacterProfile, state: CharacterScreenState, 
         val slots = Paperdoll.fromProfile(profile.gear, state.items, LocalResources.current, profile.character.className?.lowercase())
         Column(Modifier.fillMaxWidth().quietCard().padding(12.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
             PaperdollFrame(slots, state.build, actions.openSocket)
-            if (slots.any { it.better }) Text(stringResource(R.string.char_goldDot), style = FsType.meta, color = FsColor.muted)
+            if (slots.any { it.better }) Text(stringResource(R.string.char_goldDot), style = ScaledType.meta, color = FsColor.muted)
         }
         profile.gearGapTotal?.let { gap ->
             Row(Modifier.fillMaxWidth().quietCard().heightIn(min = 56.dp).padding(horizontal = 16.dp), verticalAlignment = Alignment.CenterVertically) {
-                Text(stringResource(R.string.char_gap), style = FsType.bodyStrong, color = FsColor.strong, modifier = Modifier.weight(1f))
-                Text(stringResource(R.string.char_gapPoints, ItemNumbers.tenths(gap)), style = FsType.mono, color = FsColor.strong)
+                Text(stringResource(R.string.char_gap), style = ScaledType.bodyStrong, color = FsColor.strong, modifier = Modifier.weight(1f))
+                Text(stringResource(R.string.char_gapPoints, ItemNumbers.tenths(gap)), style = ScaledType.mono, color = FsColor.strong)
             }
         }
     }
@@ -397,8 +397,8 @@ private fun GearSection(profile: CharacterProfile, state: CharacterScreenState, 
 @Composable
 private fun NotFound(name: String, actions: CharacterActions) {
     Column(Modifier.fillMaxWidth().quietCard().padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        Text(stringResource(R.string.char_notFound, name), style = FsType.lead, color = FsColor.strong)
-        Text(stringResource(R.string.char_notFoundHelp), style = FsType.meta, color = FsColor.muted)
+        Text(stringResource(R.string.char_notFound, name), style = ScaledType.lead, color = FsColor.strong)
+        Text(stringResource(R.string.char_notFoundHelp), style = ScaledType.meta, color = FsColor.muted)
         BrandButton(stringResource(R.string.char_searchAgain), BrandButtonKind.Secondary, actions.searchAgain, height = 48.dp, fill = false)
     }
 }

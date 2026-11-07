@@ -33,7 +33,7 @@ import androidx.compose.ui.unit.sp
 import gg.foreversixty.app.R
 import gg.foreversixty.app.common.OfflineStamp
 import gg.foreversixty.app.designsystem.FsColor
-import gg.foreversixty.app.designsystem.FsType
+import gg.foreversixty.app.designsystem.ScaledType
 import gg.foreversixty.app.designsystem.MicroLabel
 import gg.foreversixty.app.designsystem.classColor
 import gg.foreversixty.app.items.ItemIcon
@@ -90,17 +90,17 @@ private fun Loaded(model: SimResultModel, looks: Map<Int, SimGearLook>, build: S
                 withStyle(SpanStyle(color = classColor(model.classSlug))) { append(model.className) }
                 model.level?.let { append(" · " + res.getString(R.string.sims_level, it)) }
             },
-            style = FsType.meta, color = FsColor.muted, modifier = Modifier.padding(top = 4.dp),
+            style = ScaledType.meta, color = FsColor.muted, modifier = Modifier.padding(top = 4.dp),
         )
         Answer(model.answer)
-        Text(model.errorLine, style = FsType.monoMeta, color = FsColor.muted, modifier = Modifier.padding(top = 4.dp))
+        Text(model.errorLine, style = ScaledType.monoMeta, color = FsColor.muted, modifier = Modifier.padding(top = 4.dp))
         if (model.gear.isNotEmpty()) Gear(model, looks, build, openItem)
         Row(
             Modifier.padding(top = 8.dp).heightIn(min = 48.dp).clickable { openBreakdown(model.breakdownUrl) },
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(6.dp),
         ) {
-            Text(stringResource(R.string.sims_breakdown), style = FsType.bodyStrong, color = FsColor.gold, modifier = Modifier.weight(1f, fill = false))
+            Text(stringResource(R.string.sims_breakdown), style = ScaledType.bodyStrong, color = FsColor.gold, modifier = Modifier.weight(1f, fill = false))
             Icon(painterResource(R.drawable.ic_open_external), contentDescription = null, tint = FsColor.gold, modifier = Modifier.size(16.dp))
         }
     }
@@ -116,10 +116,10 @@ private fun Answer(answer: SimResultModel.Answer) {
                 horizontalArrangement = Arrangement.spacedBy(6.dp),
                 itemVerticalAlignment = Alignment.Bottom,
             ) {
-                Text(answer.value, style = FsType.title.copy(fontSize = SimResultLayout.figureSize), color = FsColor.strong)
-                Text(stringResource(R.string.bis_unit_dps), style = FsType.body, color = FsColor.muted, modifier = Modifier.padding(bottom = 8.dp))
+                Text(answer.value, style = ScaledType.title.copy(fontSize = SimResultLayout.figureSize), color = FsColor.strong)
+                Text(stringResource(R.string.bis_unit_dps), style = ScaledType.body, color = FsColor.muted, modifier = Modifier.padding(bottom = 8.dp))
             }
-            is SimResultModel.Answer.Sentence -> Text(answer.text, style = FsType.stat, color = FsColor.strong)
+            is SimResultModel.Answer.Sentence -> Text(answer.text, style = ScaledType.stat, color = FsColor.strong)
         }
     }
 }
@@ -147,7 +147,7 @@ private fun Gear(model: SimResultModel, looks: Map<Int, SimGearLook>, build: Str
                 }
             }
         }
-        if (model.showsChangedLegend) Text(stringResource(R.string.sims_changed), style = FsType.meta, color = FsColor.muted)
+        if (model.showsChangedLegend) Text(stringResource(R.string.sims_changed), style = ScaledType.meta, color = FsColor.muted)
     }
 }
 

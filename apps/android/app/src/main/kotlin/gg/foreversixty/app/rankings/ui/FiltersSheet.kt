@@ -52,7 +52,7 @@ import gg.foreversixty.app.designsystem.BrandButton
 import gg.foreversixty.app.designsystem.BrandButtonKind
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.FsRadius
-import gg.foreversixty.app.designsystem.FsType
+import gg.foreversixty.app.designsystem.ScaledType
 import gg.foreversixty.app.designsystem.GameColors
 import gg.foreversixty.app.model.RankedEncounter
 import gg.foreversixty.app.rankings.logic.Measure
@@ -133,20 +133,20 @@ fun FiltersSheetContent(state: FiltersSheetState, actions: FiltersActions, scrol
 
 @Composable
 private fun Title(text: String) {
-    Text(text.uppercase(Locale.ROOT), style = FsType.sec, color = FsColor.strong, modifier = Modifier.semantics { heading() })
+    Text(text.uppercase(Locale.ROOT), style = ScaledType.sec, color = FsColor.strong, modifier = Modifier.semantics { heading() })
 }
 
 /** The Encounter row: the current encounter and a chevron, opening the list. */
 @Composable
 private fun EncounterField(filters: RankingsFilters, encounters: List<RankedEncounter>, actions: FiltersActions) {
     val name = encounters.firstOrNull { it.slug == filters.encounter }?.name ?: filters.encounter
-    val shape = RoundedCornerShape(FsRadius.control)
+    val shape = RoundedCornerShape(FsRadius.legacyControl)
     Row(
         Modifier.fillMaxWidth().heightIn(min = 56.dp).border(1.dp, FsColor.line, shape)
             .clickable(role = Role.Button) { actions.chooseEncounter(true) }.padding(horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Text(name, style = FsType.bodyStrong, color = FsColor.strong, modifier = Modifier.weight(1f))
+        Text(name, style = ScaledType.bodyStrong, color = FsColor.strong, modifier = Modifier.weight(1f))
         Icon(Icons.Filled.KeyboardArrowDown, contentDescription = null, tint = FsColor.muted)
     }
 }
@@ -157,7 +157,7 @@ private fun TodayOnly(on: Boolean, set: (Boolean) -> Unit) {
         Modifier.fillMaxWidth().heightIn(min = 48.dp).toggleable(value = on, role = Role.Switch, onValueChange = set),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Text(stringResource(R.string.rank_filter_today), style = FsType.body, color = FsColor.text, modifier = Modifier.weight(1f))
+        Text(stringResource(R.string.rank_filter_today), style = ScaledType.body, color = FsColor.text, modifier = Modifier.weight(1f))
         Switch(
             checked = on, onCheckedChange = null,
             colors = SwitchDefaults.colors(checkedTrackColor = FsColor.gold, checkedThumbColor = FsColor.bg, uncheckedTrackColor = FsColor.raised, uncheckedBorderColor = FsColor.line),
@@ -191,8 +191,8 @@ private fun EncounterList(state: FiltersSheetState, actions: FiltersActions) {
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
                     Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                        Text(encounter.name, style = FsType.bodyStrong, color = if (current) FsColor.goldHover else FsColor.strong)
-                        Text(copy.encounterMeta(encounter), style = FsType.meta, color = FsColor.muted)
+                        Text(encounter.name, style = ScaledType.bodyStrong, color = if (current) FsColor.goldHover else FsColor.strong)
+                        Text(copy.encounterMeta(encounter), style = ScaledType.meta, color = FsColor.muted)
                     }
                     if (current) Icon(Icons.Filled.Check, contentDescription = null, tint = FsColor.gold, modifier = Modifier.size(20.dp))
                 }

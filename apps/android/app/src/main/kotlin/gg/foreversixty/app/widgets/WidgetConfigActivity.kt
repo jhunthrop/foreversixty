@@ -30,8 +30,8 @@ import gg.foreversixty.app.R
 import gg.foreversixty.app.auth.session.me
 import gg.foreversixty.app.designsystem.ForeverTheme
 import gg.foreversixty.app.designsystem.FsColor
-import gg.foreversixty.app.designsystem.FsSpacing
-import gg.foreversixty.app.designsystem.FsType
+import gg.foreversixty.app.designsystem.FsSpace
+import gg.foreversixty.app.designsystem.ScaledType
 import gg.foreversixty.app.widgets.data.WidgetStore
 import kotlinx.coroutines.launch
 
@@ -83,12 +83,12 @@ class WidgetConfigActivity : ComponentActivity() {
 
 @Composable
 fun CharacterPicker(choices: List<CharacterChoice>, onPick: (CharacterChoice) -> Unit) {
-    Column(Modifier.fillMaxSize().background(FsColor.bg).statusBarsPadding().verticalScroll(rememberScrollState()).padding(FsSpacing.space4)) {
-        Text(stringResource(R.string.widget_characterSetting), style = FsType.title, color = FsColor.strong)
+    Column(Modifier.fillMaxSize().background(FsColor.bg).statusBarsPadding().verticalScroll(rememberScrollState()).padding(FsSpace.space4)) {
+        Text(stringResource(R.string.widget_characterSetting), style = ScaledType.title, color = FsColor.strong)
         choices.forEachIndexed { index, choice ->
             if (index > 0) HorizontalDivider(color = FsColor.lineSoft)
             Text(
-                choice.name, style = FsType.bodyStrong, color = FsColor.strong,
+                choice.name, style = ScaledType.bodyStrong, color = FsColor.strong,
                 modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp).clickable { onPick(choice) }.padding(vertical = 16.dp),
             )
         }

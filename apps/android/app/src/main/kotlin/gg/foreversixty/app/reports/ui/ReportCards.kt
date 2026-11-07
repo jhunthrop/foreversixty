@@ -29,7 +29,7 @@ import java.util.Locale
 import gg.foreversixty.app.R
 import gg.foreversixty.app.common.ClassCrest
 import gg.foreversixty.app.designsystem.FsColor
-import gg.foreversixty.app.designsystem.FsType
+import gg.foreversixty.app.designsystem.ScaledType
 import gg.foreversixty.app.designsystem.MicroLabel
 import gg.foreversixty.app.designsystem.Tag
 import gg.foreversixty.app.designsystem.primaryCard
@@ -68,7 +68,7 @@ fun ParsesCard(phase: ParsesPhase, copy: ReportsCopy, retry: () -> Unit) {
             is ParsesPhase.Loaded -> {
                 val rows = Parses.rows(phase.me)
                 if (rows.isEmpty()) {
-                    Text(stringResource(R.string.report_noKills), style = FsType.body, color = FsColor.text, modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp))
+                    Text(stringResource(R.string.report_noKills), style = ScaledType.body, color = FsColor.text, modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp))
                 }
                 rows.forEachIndexed { index, row ->
                     if (index > 0) HorizontalDivider(color = FsColor.lineSoft)
@@ -91,8 +91,8 @@ private fun ParseRowView(row: ParseRow, copy: ReportsCopy) {
     ) {
         ClassCrest(row.className, scaledSize(ReportCardLayout.crest, ReportCardLayout.crestCap))
         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-            Text(row.fight.encounter, style = FsType.bodyStrong.copy(fontWeight = FontWeight.Bold), color = FsColor.strong)
-            Text(copy.parseMeta(row), style = FsType.meta, color = FsColor.muted)
+            Text(row.fight.encounter, style = ScaledType.bodyStrong.copy(fontWeight = FontWeight.Bold), color = FsColor.strong)
+            Text(copy.parseMeta(row), style = ScaledType.meta, color = FsColor.muted)
             if (row.fight.newBest) Row(Modifier.padding(top = 4.dp)) { Tag(stringResource(R.string.report_newBest), FsColor.gold) }
             if (stacked) Figure(row, copy, Alignment.Start)
         }
@@ -108,19 +108,19 @@ private fun Figure(row: ParseRow, copy: ReportsCopy, alignment: Alignment.Horizo
         Text(
             buildAnnotatedString {
                 append(Parses.figure(fight.value))
-                withStyle(SpanStyle(fontSize = FsType.meta.fontSize, color = FsColor.muted)) { append(" " + copy.unit(fight.unit)) }
+                withStyle(SpanStyle(fontSize = ScaledType.meta.fontSize, color = FsColor.muted)) { append(" " + copy.unit(fight.unit)) }
             },
-            style = FsType.mono.copy(fontSize = ReportCardLayout.figureSize), color = FsColor.strong,
+            style = ScaledType.mono.copy(fontSize = ReportCardLayout.figureSize), color = FsColor.strong,
         )
         fight.percentile?.let { percentile ->
             Text(
                 buildAnnotatedString {
-                    withStyle(SpanStyle(color = parseColor(ParseTier.of(percentile)), fontFamily = FsType.mono.fontFamily, fontWeight = FontWeight.Bold)) {
+                    withStyle(SpanStyle(color = parseColor(ParseTier.of(percentile)), fontFamily = ScaledType.mono.fontFamily, fontWeight = FontWeight.Bold)) {
                         append(percentile.toString())
                     }
                     append(" " + stringResource(R.string.report_percentile))
                 },
-                style = FsType.meta, color = FsColor.muted,
+                style = ScaledType.meta, color = FsColor.muted,
             )
         }
     }
@@ -136,7 +136,7 @@ fun FightsCard(report: Report, copy: ReportsCopy, open: (MetersTarget) -> Unit) 
         if (isLargeText()) {
             Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                 MicroLabel(stringResource(R.string.report_fights))
-                Text(count.uppercase(Locale.ROOT), style = FsType.micro, color = FsColor.muted, maxLines = 1, softWrap = false)
+                Text(count.uppercase(Locale.ROOT), style = ScaledType.micro, color = FsColor.muted, maxLines = 1, softWrap = false)
             }
         } else {
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -179,11 +179,11 @@ private fun FightRowView(title: String, meta: String, dot: Color, label: String?
         verticalAlignment = if (large) Alignment.Top else Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(14.dp),
     ) {
-        val line = if (large) Modifier.height(firstLine(FsType.bodyStrong)) else Modifier
+        val line = if (large) Modifier.height(firstLine(ScaledType.bodyStrong)) else Modifier
         Box(line, contentAlignment = Alignment.Center) { OutcomeDot(dot) }
         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-            Text(title, style = FsType.bodyStrong, color = FsColor.strong)
-            Text(meta, style = FsType.meta, color = FsColor.muted)
+            Text(title, style = ScaledType.bodyStrong, color = FsColor.strong)
+            Text(meta, style = ScaledType.meta, color = FsColor.muted)
         }
         if (open != null) Box(line, contentAlignment = Alignment.Center) { Chevron(scaledSize(24.dp, ReportsLayout.glyphCap)) }
     }
