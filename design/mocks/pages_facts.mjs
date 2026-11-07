@@ -55,6 +55,8 @@ import { notFoundCopy } from ${src("src/lib/not-found/copy.ts")};
 import { knownPages, suggestPage } from ${src("src/lib/not-found/suggest.ts")};
 import { splitDocument } from ${src("src/lib/content-pages/sections.ts")};
 import { contentPagesCopy } from ${src("src/lib/content-pages/copy.ts")};
+import { accountSignInCopy } from ${src("src/lib/account/signin-copy.ts")};
+import { myReportsCopy } from ${src("src/lib/reports/my-reports-copy.ts")};
 const h2s = (html) => splitDocument(html).sections.map((s) => ({ id: s.id, title: s.title }));
 const bySlug = (slug) => classes.find((c) => c.slug === slug);
 export async function run(changelog, pages) {
@@ -88,6 +90,7 @@ export async function run(changelog, pages) {
       changelog: { ...changelogCopy, summary: Object.fromEntries(SHOWS.map((s) => [s, changelogCopy.summary(s, counts[s])])) },
       notFound: { ...notFoundCopy },
       legalTabsLabel: contentPagesCopy.legalTabsLabel,
+      login: { ...accountSignInCopy, action: myReportsCopy.signInAction },
     },
     classes: classes.map((k) => ({ ...k, specs: specs.filter((s) => s.class_slug === k.slug).sort((a, b) => a.tree_index - b.tree_index).map((s) => ({ name: s.name, slug: s.spec_slug, icon: s.icon })) })),
     me: { name: c.name, class: c.class, spec: c.spec, level: c.level, identity: d.identity, level_line: d.level, href: characterHref(c.region, c.ruleset, c.name) },

@@ -143,45 +143,6 @@ export function componentGaps(
   return gaps.sort((a, b) => b.gap - a.gap);
 }
 
-/**
- * The one colour for the part to work on (fix round 2 item 2): the bar "Most to gain" names,
- * never a tier colour, so it cannot be read as a tier. The design system's `--gold-hover`
- * amber, which the "+88" cue beside the bar repeats in words.
- */
-export const NEEDS_WORK_COLOR = '#f5d27a';
-
-/** The five tiers as the strip draws them: label, exact colour, name colour, short range. */
-export function tierStrip(): {
-  tier: Tier;
-  label: string;
-  color: string;
-  textColor: string;
-  range: string;
-}[] {
-  return TIERS.map((tier, index) => {
-    const next = TIERS[index + 1];
-    return {
-      tier,
-      label: labels.tiers[tier].label,
-      color: labels.tiers[tier].color,
-      textColor: TIER_TEXT[tier] ?? labels.tiers[tier].color,
-      range: scoreCopy.tierShort(TIER_FROM[tier], next === undefined ? null : TIER_FROM[next] - 1),
-    };
-  });
-}
-
-/**
- * The line under the score (L8.4 fix round 4 item 1): the points to the next tier's line and
- * that tier, "170 to Legendary (2000)", or "Top tier" at or past the top tier's line. From the
- * score and the tier lines alone, so it reads the same wherever the tier came from.
- */
-export function nextTierLine(score: number): string {
-  const next = TIERS.find((tier) => TIER_FROM[tier] > score);
-  return next === undefined
-    ? scoreCopy.topTier
-    : scoreCopy.toNextTier(TIER_FROM[next] - score, labels.tiers[next].label, TIER_FROM[next]);
-}
-
 /** The score fields off a character page; a page that predates them reads as no score. */
 export function foreverOf(page: Partial<ForeverScore> | null | undefined): ForeverScore {
   return {

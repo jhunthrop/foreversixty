@@ -1,7 +1,7 @@
 // web/tests/e2e/parity-pages.spec.ts
-// The changelog, a legal page and the 404 against their mocks (design/parity.md,
+// The changelog, a legal page, the 404 and sign in against their mocks (design/parity.md,
 // design/specs/2026-11-08-pages.md section 10): the changelog (All and Game), privacy, the 404
-// signed out and as Felsnap, at 1440 and 390, each region (head, head-title, head-meta,
+// signed out and as Felsnap, and /login signed out, at 1440 and 390, each region (head, head-title, head-meta,
 // head-answer signed in, controls, plate, every section and month) compared for its blocks and
 // box (support/parity.ts). The mocks are rendered before the tests from the content collections,
 // the copy modules, the changelog model and the fixture this spec serves (support/pages-page.ts).
@@ -27,6 +27,7 @@ const STATES: readonly { id: string; path: string; state: PagesState; mock: stri
   { id: 'legal-privacy', path: '/privacy', state: 'out', mock: 'web-legal-privacy' },
   { id: '404', path: '/this-page-does-not-exist', state: 'out', mock: 'web-404' },
   { id: '404-in', path: '/this-page-does-not-exist', state: 'in', mock: 'web-404-in' },
+  { id: 'login', path: '/login', state: 'out', mock: 'web-login' },
 ];
 const WIDTHS = [1440, 390] as const;
 const HEIGHT = 1000;
