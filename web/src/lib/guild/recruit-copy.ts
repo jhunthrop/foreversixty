@@ -12,6 +12,7 @@ export const recruitCopy = {
   },
   card: {
     label: 'Public guild card',
+    heading: (guild: string, open: boolean) => (open ? `${guild} is recruiting` : guild),
     recruiting: 'Recruiting',
     closed: 'Not recruiting',
     members: (n: number) => (n === 1 ? '1 member' : `${n} members`),
@@ -114,6 +115,8 @@ export const applicationsCopy = {
   card: {
     heading: 'Your public card',
     viewPublic: 'See it as a visitor',
+    edit: 'Edit',
+    noNights: 'Raid nights not posted yet',
     open: 'Taking applications',
     pitch: 'Why this guild',
     pitchHint: 'What you offer a raider, in a sentence or two.',

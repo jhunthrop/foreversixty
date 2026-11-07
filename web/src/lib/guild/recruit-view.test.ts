@@ -32,7 +32,7 @@ import {
   progressLine,
   recruitState,
   upcomingNights,
-  wantedRows,
+  wantedLine,
   wantedSummary,
 } from './recruit-view';
 
@@ -69,11 +69,10 @@ describe('the public card', () => {
   });
 
   it('names what they look for, a class alone reading any spec', () => {
-    expect(wantedRows(card.wanted).map((row) => row.title)).toEqual([
-      'Holy Paladin',
-      'Protection Warrior',
-      'Mage, any spec',
-    ]);
+    expect(wantedLine(card.wanted)).toBe(
+      'Holy Paladin (Two for the heal rotation); Protection Warrior (Off tank); Mage, any spec',
+    );
+    expect(wantedLine([])).toBe('Every class and spec welcome');
     expect(wantedSummary(card.wanted)).toBe('Holy Paladin, Protection Warrior, Mage');
     expect(wantedSummary([])).toBe('Every class and spec welcome');
   });

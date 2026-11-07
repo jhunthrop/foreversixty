@@ -28,7 +28,9 @@ test.describe('the recruiting card', () => {
     await expect(page.getByTestId('guild-recruit-nights')).toContainText(
       'Tue and Thu, 8 to 11 pm server time',
     );
-    await expect(page.getByTestId('guild-recruit-wanted')).toHaveCount(3);
+    await expect(page.getByTestId('guild-recruit-wanted')).toContainText(
+      'Holy Paladin (Two for the heal rotation); Protection Warrior (Off tank); Mage, any spec',
+    );
     await expect(page.getByTestId('guild-recruit-officers')).toContainText(
       'Protection Warrior · Guild master',
     );
@@ -127,6 +129,7 @@ test.describe('applications, officers', () => {
   test('edits the card: closes it and sets the Discord role', async ({ page }) => {
     const writes = await stubRecruit(page, { viewer: 'officer' });
     await gotoHydrated(page, APPLICATIONS_URL, 'guild-recruit-edit');
+    await page.getByTestId('guild-recruit-edit-wanted-open').click();
     await page.getByTestId('guild-recruit-edit-role').fill('12');
     await expect(page.getByTestId('guild-recruit-edit-save')).toBeDisabled();
     await page.getByTestId('guild-recruit-edit-role').fill('987654321098765432');

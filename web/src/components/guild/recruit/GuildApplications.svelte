@@ -1,9 +1,9 @@
 <!-- web/src/components/guild/recruit/GuildApplications.svelte -->
 <!-- /guild/{region}/{ruleset}/{slug}/applications (web layout spec 2026-11-05 §7.2 Applications, "Do
-     we take them?"), officers only. The one Plate holds the open applications; a decision made here
-     says what happened on Discord in a Notice above them; the record of recent decisions follows.
-     The rail is the public card's edit. GuildShell loads this file as its own chunk;
-     lib/guild/applications-page.svelte.ts owns the reads and writes. -->
+     we take them?"; mock web-guild-applications), officers only. The one Plate holds the open
+     applications; a decision made here says what happened on Discord in a Notice above them. The
+     rail is the public card (its fields, each opening the edit) and the record of recent decisions.
+     GuildShell loads this file as its own chunk; lib/guild/applications-page.svelte.ts owns the reads and writes. -->
 <script lang="ts">
   import { untrack } from 'svelte';
   import { guildHref, guildRecruitHref, type CharacterPath } from '../../../lib/characters';
@@ -36,82 +36,90 @@
   const decided = $derived(p.lastDecision);
 </script>
 
-{#if p.load === 'failed'}
-  <LoadError message={copy.page.loadError} onRetry={() => void p.start()} testid="guild-applications-error" />
-{:else if p.load === 'forbidden' && p.context !== null}
-  {@const context = p.context}
-  {#snippet forbiddenHeader()}
-    <GuildViewHeader
-      guild={context.guild}
-      {guildPath}
-      title={copy.page.title}
-      testid="guild-applications-head"
+<!-- One root: GuildShell lays its views out in a gapped flex column, and the head and the Page
+     below it are one block with the Page's own gap. -->
+<div>
+  {#if p.load === 'failed'}
+    <LoadError
+      message={copy.page.loadError}
+      onRetry={() => void p.start()}
+      testid="guild-applications-error"
     />
-  {/snippet}
-  <Page layout="split" header={forbiddenHeader} testid="guild-applications-page">
-    <Notice text={copy.page.officersOnly} tone="neutral" testid="guild-applications-forbidden" />
-  </Page>
-{:else if p.load !== 'ready' || p.context === null || p.card === null || p.list === null || split === null}
-  <div class="min-h-[640px]" data-testid="guild-applications-loading">
-    <Skeleton lines={6} label={copy.page.loading} testid="guild-applications-skeleton" />
-  </div>
-{:else}
-  {@const context = p.context}
-  {@const card = p.card}
-  {@const list = p.list}
-  {#snippet header()}
-    <GuildViewHeader
-      guild={context.guild}
-      {guildPath}
-      title={copy.page.title}
-      facts={[copy.openMeta(list.pending), copy.roleNote]}
-      tabRole="officer"
-      testid="guild-applications-head"
-    />
-  {/snippet}
-  {#snippet rail()}
-    <RecruitEdit
-      {card}
-      roleId={list.discord_role_id}
-      recruitHref={guildRecruitHref(guildPath)}
-      saving={p.saving}
-      line={p.saveLine}
-      onSave={(draft) => void p.saveCard(draft)}
-    />
-  {/snippet}
-  <Page layout="split" {header} {rail} testid="guild-applications-page">
-    {#if decided !== null}
-      <Notice
-        text={[decisionTitle(decided), ...discordLines(decided)].join('. ') + '.'}
-        tone="neutral"
-        testid="guild-applications-outcome"
+  {:else if p.load === 'forbidden' && p.context !== null}
+    {@const context = p.context}
+    {#snippet forbiddenHeader()}
+      <GuildViewHeader
+        guild={context.guild}
+        {guildPath}
+        title={copy.page.title}
+        testid="guild-applications-head"
       />
-    {/if}
-    <Section title={copy.open} meta={copy.openMeta(split.pending.length)} testid="guild-applications-open">
-      {#if split.pending.length === 0}
-        <p class="text-muted text-[14px]" data-testid="guild-applications-none">{copy.none}</p>
-      {:else}
-        <Plate label={copy.open} testid="guild-applications-plate">
-          {#each split.pending as application (application.id)}
-            <ApplicantRow
-              {application}
-              busy={p.busyId === application.id}
-              error={p.rowError?.id === application.id ? p.rowError.text : ''}
-              onVote={(vote) => void p.vote(application.id, vote)}
-              onDecide={(decision) => void p.decide(application.id, decision)}
-            />
+    {/snippet}
+    <Page layout="split" header={forbiddenHeader} testid="guild-applications-page">
+      <Notice text={copy.page.officersOnly} tone="neutral" testid="guild-applications-forbidden" />
+    </Page>
+  {:else if p.load !== 'ready' || p.context === null || p.card === null || p.list === null || split === null}
+    <div class="min-h-[640px]" data-testid="guild-applications-loading">
+      <Skeleton lines={6} label={copy.page.loading} testid="guild-applications-skeleton" />
+    </div>
+  {:else}
+    {@const context = p.context}
+    {@const card = p.card}
+    {@const list = p.list}
+    {#snippet header()}
+      <GuildViewHeader
+        guild={context.guild}
+        {guildPath}
+        title={copy.page.title}
+        facts={[copy.openMeta(list.pending), copy.roleNote]}
+        tabRole="officer"
+        testid="guild-applications-head"
+      />
+    {/snippet}
+    {#snippet rail()}
+      <RecruitEdit
+        {card}
+        roleId={list.discord_role_id}
+        recruitHref={guildRecruitHref(guildPath)}
+        saving={p.saving}
+        line={p.saveLine}
+        onSave={(draft) => void p.saveCard(draft)}
+      />
+      <Section title={copy.recent} testid="guild-applications-recent">
+        {#if split.decided.length === 0}
+          <p class="text-muted text-[14px]">{copy.noRecent}</p>
+        {:else}
+          {#each split.decided as application (application.id)}
+            <DecisionRow {application} />
           {/each}
-        </Plate>
+        {/if}
+      </Section>
+    {/snippet}
+    <Page layout="split" {header} {rail} testid="guild-applications-page">
+      {#if decided !== null}
+        <Notice
+          text={[decisionTitle(decided), ...discordLines(decided)].join('. ') + '.'}
+          tone="neutral"
+          testid="guild-applications-outcome"
+        />
       {/if}
-    </Section>
-    <Section title={copy.recent} testid="guild-applications-recent">
-      {#if split.decided.length === 0}
-        <p class="text-muted text-[14px]">{copy.noRecent}</p>
-      {:else}
-        {#each split.decided as application (application.id)}
-          <DecisionRow {application} />
-        {/each}
-      {/if}
-    </Section>
-  </Page>
-{/if}
+      <Section title={copy.open} meta={copy.openMeta(split.pending.length)} testid="guild-applications-open">
+        {#if split.pending.length === 0}
+          <p class="text-muted text-[14px]" data-testid="guild-applications-none">{copy.none}</p>
+        {:else}
+          <Plate label={copy.open} testid="guild-applications-plate">
+            {#each split.pending as application (application.id)}
+              <ApplicantRow
+                {application}
+                busy={p.busyId === application.id}
+                error={p.rowError?.id === application.id ? p.rowError.text : ''}
+                onVote={(vote) => void p.vote(application.id, vote)}
+                onDecide={(decision) => void p.decide(application.id, decision)}
+              />
+            {/each}
+          </Plate>
+        {/if}
+      </Section>
+    </Page>
+  {/if}
+</div>

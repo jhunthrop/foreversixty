@@ -1,7 +1,8 @@
 <!-- web/src/components/guild/recruit/GuildViewHeader.svelte -->
-<!-- The head of a view under a guild page (recruit, applications, a member profile): the back
-     link to the guild, then the one PageHeader with the guild's mark and faction-colour title, its
-     fact line and, for a member or officer, the guild's tab strip linking back to the page. -->
+<!-- The head of a view under a guild page (recruit, applications, a member profile): the one
+     PageHeader with the guild's mark and faction-colour title, its fact line and, for a member or
+     officer, the guild's tab strip linking back to the page (the mocks carry no separate back link;
+     the site header's Guild door and the tabs lead back). -->
 <script lang="ts">
   import type { Snippet } from 'svelte';
   import type { GuildViewGuild } from '../../../lib/guild/guild-view-load';
@@ -51,19 +52,12 @@
 {#snippet meta()}<FactLine facts={facts.map((text) => ({ text }))} />{/snippet}
 {#snippet tabs()}<GuildTabs active={activeTab} role={tabRole ?? 'member'} hrefBase={guildPath} />{/snippet}
 
-<div>
-  <a
-    href={guildPath}
-    class="text-muted inline-flex min-h-11 items-center text-[13px] underline"
-    data-testid={`${testid}-back`}>← {guild.name}</a
-  >
-  <PageHeader
-    title={title ?? guild.name}
-    {tone}
-    {crest}
-    meta={facts.length > 0 ? meta : undefined}
-    {answer}
-    tabs={tabRole === undefined ? undefined : tabs}
-    {testid}
-  />
-</div>
+<PageHeader
+  title={title ?? guild.name}
+  {tone}
+  {crest}
+  meta={facts.length > 0 ? meta : undefined}
+  {answer}
+  tabs={tabRole === undefined ? undefined : tabs}
+  {testid}
+/>

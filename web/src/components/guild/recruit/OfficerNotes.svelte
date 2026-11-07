@@ -1,7 +1,8 @@
 <!-- web/src/components/guild/recruit/OfficerNotes.svelte -->
-<!-- Officer notes, the profile's rail for officers only (web layout spec 2026-11-05 §7.2): each note
-     a Row with an "Officers only" Tag, who wrote it and when, and Delete on the viewer's own (the
-     guild master on any); a FormRow adds one. Never mounted for a member. -->
+<!-- Officer notes, the profile's rail for officers only (web layout spec 2026-11-05 §7.2; mock
+     web-guild-profile): each note a Row, who wrote it and when, and under it (the rail is narrow) its
+     "Officers only" Tag and Delete on the viewer's own (the guild master on any); a one-line FormRow
+     adds one. Never mounted for a member. -->
 <script lang="ts">
   import { NOTE_MAX, noteSub } from '../../../lib/guild/profile-view';
   import type { MemberNote } from '../../../lib/guild/recruit-api';
@@ -66,20 +67,23 @@
   {/each}
   <div class="pt-3">
     <FormRow label={copy.addNote} onsubmit={(event) => void add(event)} testid="guild-profile-note-form">
-      <div class="w-full">
+      <!-- The field takes what the rail leaves beside the Save button (a Field's own grow floor is 220). -->
+      <div class="min-w-0 flex-1">
         <Field
           id="guild-profile-note-body"
           label={copy.addNote}
-          hint={copy.addNoteHint}
+          placeholder={copy.addNoteHint}
           maxlength={NOTE_MAX}
-          rows={3}
           bind:value={body}
           testid="guild-profile-note-body"
         />
       </div>
       {#snippet submit()}
-        <Button type="submit" disabled={saving || body.trim() === ''} testid="guild-profile-note-save"
-          >{saving ? copy.saving : copy.saveNote}</Button
+        <Button
+          size="sm"
+          type="submit"
+          disabled={saving || body.trim() === ''}
+          testid="guild-profile-note-save">{saving ? copy.saving : copy.saveNote}</Button
         >
       {/snippet}
     </FormRow>

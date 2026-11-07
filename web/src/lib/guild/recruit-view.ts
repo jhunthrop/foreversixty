@@ -38,27 +38,22 @@ export function progressLine(card: RecruitCard): string {
   return name === '' ? head : `${head}${SEP}${name}`;
 }
 
-export interface WantedRow {
-  key: string;
-  classSlug: string;
-  /** "Holy Paladin", or "Paladin, any spec". */
-  title: string;
-  note: string;
-}
-
-export function wantedRows(wanted: readonly RecruitWanted[]): WantedRow[] {
-  return wanted.map((line, i) => ({
-    key: `${line.class}:${line.spec ?? ''}:${i}`,
-    classSlug: line.class,
-    title: line.spec_name ?? `${classDisplayName(line.class)}, ${copy.card.anySpec}`,
-    note: line.note,
-  }));
-}
-
 /** "1 tank, 2 healers" is the officers' own note; the card's summary is the classes it names. */
 export function wantedSummary(wanted: readonly RecruitWanted[]): string {
   if (wanted.length === 0) return copy.card.nobodyListed;
   return wanted.map((line) => line.spec_name ?? classDisplayName(line.class)).join(', ');
+}
+
+/** The card's one Looking for line: each class or spec with the officers' note in brackets,
+ *  "Protection Warrior (Off tank), Holy Priest". */
+export function wantedLine(wanted: readonly RecruitWanted[]): string {
+  if (wanted.length === 0) return copy.card.nobodyListed;
+  return wanted
+    .map((line) => {
+      const who = line.spec_name ?? `${classDisplayName(line.class)}, ${copy.card.anySpec}`;
+      return line.note === '' ? who : `${who} (${line.note})`;
+    })
+    .join('; ');
 }
 
 export interface OfficerRow {
