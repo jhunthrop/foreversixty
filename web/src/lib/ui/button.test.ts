@@ -13,7 +13,7 @@ const ALL = [BUTTON_PRIMARY, BUTTON_SECONDARY, BUTTON_GHOST, BUTTON_DANGER];
 
 describe('button recipes', () => {
   it.each(ALL)(
-    'every tone shares the label (13 px 700 uppercase), the ring and the 45 % disabled look',
+    'every tone shares the label (13 px 700, sentence case), the ring and the 45 % disabled look',
     (recipe) => {
       expect(recipe).toContain('button-label');
       expect(recipe).toContain('focus-visible:outline-gold');
@@ -76,12 +76,5 @@ describe('button recipes', () => {
   it('button() composes a tone and a size, md by default', () => {
     expect(button('danger')).toBe(`${BUTTON_DANGER} ${BUTTON_MD}`);
     expect(button('primary', 'sm')).toBe(`${BUTTON_PRIMARY} ${BUTTON_SM}`);
-  });
-
-  it('sentence case swaps the uppercase label for a sentence-case one', () => {
-    const sentence = button('secondary', 'sm', true);
-    expect(sentence).not.toContain('button-label');
-    expect(sentence).toContain('text-[13px] font-bold');
-    expect(button('secondary', 'sm')).toContain('button-label');
   });
 });
