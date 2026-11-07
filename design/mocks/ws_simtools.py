@@ -125,7 +125,7 @@ def consumables() -> str:
     table = json.loads((DATA_ROOT / 'sim/request/raid-consumes.json').read_text())['specs'][SPEC]
     ids = list(dict.fromkeys([r for r in table if r['from_level'] <= LEVEL][-1]['consumes']))
     rows = ''.join(f'<li><label class="opt">{check()}{x.replace("_", " ")}</label></li>' for x in ids)
-    return Section('Try each', f'<p class="t-small">Try each of these as a candidate rather than a setting.</p><ul class="opts">{rows}</ul>')
+    return Section('Try each', f'<p class="t-small">Try each of these as a candidate rather than a setting.</p><ul class="opts ce">{rows}</ul>')
 
 
 def whole_sets() -> str:
@@ -261,7 +261,7 @@ TOOL_CSS = '''<style>
 .hover-name{all:unset;cursor:pointer}.num{font-variant-numeric:tabular-nums}
 .search-f{display:flex;flex-wrap:wrap;align-items:flex-end;gap:12px}.search-f .fl{display:flex;flex-direction:column;gap:6px}.sw-l{display:flex;align-items:center;gap:8px;font-size:14px}
 .hit{display:flex;align-items:center;gap:10px;min-height:44px}.hit-n{flex:1;min-width:0}
-.wbody{padding-top:10px}.wbody p{margin:0}.opts{list-style:none;margin:0;padding:0}.opts.two{display:grid;grid-template-columns:1fr 1fr;gap:0 16px}
+.wbody{padding-top:10px}.wbody p{margin:0}.opts{list-style:none;margin:0;padding:0}.opts.ce{padding-top:16px}.opts.two{display:grid;grid-template-columns:1fr 1fr;gap:0 16px}
 .sets-f{display:flex;flex-wrap:wrap;align-items:flex-end;gap:12px;padding-top:19px}.pad{padding:16px}.kinds{display:flex;flex-wrap:wrap;gap:0 20px}
 .src-g{display:flex;flex-direction:column;gap:4px;padding-top:16px}.src{display:flex;flex-direction:column;padding:4px 0}.indent{padding-left:28px}.grow-n{flex:1}.src p.indent{margin:0;line-height:19.5px}.src .disc>summary{display:flex;align-items:center;height:44px;box-sizing:border-box}.src-g .t-h4{margin:0;font-size:15px;line-height:20px}
 .gated{display:flex;flex-direction:column;gap:4px;margin:0;padding-left:12px;list-style:none}.gated li{line-height:19.5px}.gb{padding-top:4px}</style>'''

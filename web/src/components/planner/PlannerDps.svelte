@@ -74,12 +74,7 @@
 
 {#snippet askButton()}
   <!-- The same 44px the figure occupies, so asking moves nothing. -->
-  <button
-    type="button"
-    class={button('secondary', 'md', true)}
-    onclick={onshow}
-    data-testid="planner-dps-show"
-  >
+  <button type="button" class={button('secondary', 'md')} onclick={onshow} data-testid="planner-dps-show">
     {plannerScoreCopy.show(unit)}
   </button>
 {/snippet}
@@ -118,7 +113,7 @@
            (build review round 1, finding 5), a real action rather than an underlined link.
            The md size, a fixed 44 px: no other control in this lane shrinks its target on
            desktop. -->
-    <a class={button('primary', 'md', true)} {href} data-testid="planner-sim-link">
+    <a class={button('primary', 'md')} {href} data-testid="planner-sim-link">
       {simCopy.simThisBuild}
     </a>
   </div>

@@ -1036,6 +1036,8 @@ export const bulkCopy = {
   sourcesProfessionsUnknown:
     'Nothing has recorded this character’s professions, so every profession is listed.',
   sourcesTrash: 'Trash and chests',
+  /** A run asked for with no character loaded (bulk-store-request.ts). */
+  needCharacter: 'Load a character first.',
   sourcesWholeRaid: 'Every boss',
   /** A dungeon's folded boss list (mock design/mocks/ws_simtools.py). */
   sourcesBosses: 'Bosses',
