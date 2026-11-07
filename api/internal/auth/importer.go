@@ -43,6 +43,19 @@ type Importer interface {
 	ImportAccount(ctx context.Context, userID int64, userToken string) (ImportSummary, error)
 }
 
+// TokenKeeper is an Importer that keeps the sign-in's access token, until expiresAt, for
+// the automatic refreshes that follow (bnetimport.Service satisfies it). runImport hands the
+// token over before the import starts; the keeper seals it and never logs it.
+type TokenKeeper interface {
+	KeepToken(ctx context.Context, userID int64, token string, expiresAt time.Time)
+}
+
+// VisitHook hears every signed-in request's account (bnetimport.Service satisfies it, to
+// refresh a stale account from Battle.net). It must return at once: the request is waiting.
+type VisitHook interface {
+	Visited(u User)
+}
+
 // importBudget bounds how long bnetCallback waits for the import before
 // redirecting anyway (spec §4.1: "with a 5 second budget").
 const importBudget = 5 * time.Second

@@ -15,11 +15,17 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/synclog"
 )
 
-// refreshWindow is spec §4.4's staleness threshold: a 'bnet'-sourced
-// character not refreshed within this window is due for another look.
-const refreshWindow = 20 * time.Hour
+// The refresh windows (spec §4.4, widened 2026-11-07): a 'bnet'-sourced character is due
+// for another look once it has gone this long unrefreshed. An account active within
+// activeAccountWithin (users.bnet_synced_at, which every sign-in and every visit refresh
+// stamps) gets the short window; every other account keeps the nightly one.
+const (
+	activeRefreshWindow = 3 * time.Hour
+	idleRefreshWindow   = 20 * time.Hour
+	activeAccountWithin = 14 * 24 * time.Hour
+)
 
-// refreshRateLimit bounds Blizzard calls during the nightly refresh
+// refreshRateLimit bounds Blizzard calls during a refresh batch
 // (spec §4.4: "at most 4 Blizzard calls per second").
 const refreshRateLimit = 4
 
@@ -43,47 +49,100 @@ type staleCharacter struct {
 	UserID          int64
 }
 
-// staleBnetCharacters lists every 'bnet'-sourced character not refreshed
-// within refreshWindow.
+// refreshWindowFor is how long a character of an account whose last sync started at
+// lastSync may go unrefreshed: activeRefreshWindow inside activeAccountWithin, else
+// idleRefreshWindow. staleBnetCharacters' SQL is this rule; the two are tested together.
+func refreshWindowFor(lastSync *time.Time, now time.Time) time.Duration {
+	if lastSync != nil && now.Sub(*lastSync) < activeAccountWithin {
+		return activeRefreshWindow
+	}
+	return idleRefreshWindow
+}
+
+// intervalArg renders d as a Postgres interval argument.
+func intervalArg(d time.Duration) string {
+	return fmt.Sprintf("%d seconds", int(d.Seconds()))
+}
+
+// staleBnetCharacters lists every 'bnet'-sourced character due under refreshWindowFor,
+// oldest refresh first.
 func (s *Service) staleBnetCharacters(ctx context.Context) ([]staleCharacter, error) {
-	rows, err := s.Pool.Query(ctx,
+	return s.queryCharacters(ctx,
+		`select coalesce(c.bnet_character_id, 0), coalesce(c.realm_slug, ''), c.user_id
+		 from characters c left join users u on u.id = c.user_id
+		 where c.source = 'bnet' and c.user_id is not null and c.refreshed_at < now() -
+		   (case when u.bnet_synced_at > now() - $3::interval then $1::interval else $2::interval end)
+		 order by c.refreshed_at`,
+		intervalArg(activeRefreshWindow), intervalArg(idleRefreshWindow), intervalArg(activeAccountWithin))
+}
+
+// accountBnetCharacters lists one account's 'bnet'-sourced characters, highest level
+// first: the visit refresh's public-profile fallback.
+func (s *Service) accountBnetCharacters(ctx context.Context, userID int64) ([]staleCharacter, error) {
+	return s.queryCharacters(ctx,
 		`select coalesce(bnet_character_id, 0), coalesce(realm_slug, ''), user_id from characters
-		 where source = 'bnet' and refreshed_at < now() - $1::interval
-		 order by refreshed_at`,
-		fmt.Sprintf("%d seconds", int(refreshWindow.Seconds())))
+		 where source = 'bnet' and user_id = $1
+		 order by level desc nulls last, key`, userID)
+}
+
+func (s *Service) queryCharacters(ctx context.Context, sql string, args ...any) ([]staleCharacter, error) {
+	rows, err := s.Pool.Query(ctx, sql, args...)
 	if err != nil {
-		return nil, fmt.Errorf("bnetimport: stale characters: %w", err)
+		return nil, fmt.Errorf("bnetimport: list characters: %w", err)
 	}
 	defer rows.Close()
 	var out []staleCharacter
 	for rows.Next() {
 		var sc staleCharacter
 		if err := rows.Scan(&sc.BnetCharacterID, &sc.RealmSlug, &sc.UserID); err != nil {
-			return nil, fmt.Errorf("bnetimport: stale characters: %w", err)
+			return nil, fmt.Errorf("bnetimport: list characters: %w", err)
 		}
 		out = append(out, sc)
 	}
 	return out, rows.Err()
 }
 
-// RunRefresh re-syncs every stale 'bnet' character's guild membership
-// with the app token (no user token needed — a character profile and a
-// guild roster are public data), at most refreshRateLimit Blizzard calls
-// per second, stopping on the first rate limit (spec §4.4). It then runs
-// the namespace probe (spec §5), logging one line per game and a WARN
-// for any game other than the configured one that answers 200.
+// RunRefresh is the bnet-refresh job: every due 'bnet' character (staleBnetCharacters) is
+// re-synced through refreshBatch, then the namespace probe runs (spec §5), logging one line
+// per game and a WARN for any game other than the configured one that answers 200.
 func (s *Service) RunRefresh(ctx context.Context, probeGames []string) (RefreshResult, error) {
-	stale, err := s.staleBnetCharacters(ctx)
+	result, err := s.RefreshDue(ctx)
+	if err != nil {
+		return result, err
+	}
+	s.runProbe(ctx, probeGames)
+	return result, nil
+}
+
+// RefreshDue re-syncs every due 'bnet' character: the job's work and each pass of the
+// API's in-process RefreshLoop.
+func (s *Service) RefreshDue(ctx context.Context) (RefreshResult, error) {
+	due, err := s.staleBnetCharacters(ctx)
 	if err != nil {
 		return RefreshResult{}, err
 	}
-	result := RefreshResult{Considered: len(stale)}
+	return s.refreshBatch(ctx, due)
+}
 
+// refreshBatch re-syncs each character with the app token (no user token needed: a
+// character profile and a guild roster are public data), at most refreshRateLimit
+// characters per second. A 429 stops the batch and backs every later batch in this process
+// off (rateBackoff); a batch that starts inside a backoff refreshes nothing and reports
+// RateLimited.
+func (s *Service) refreshBatch(ctx context.Context, chars []staleCharacter) (RefreshResult, error) {
+	result := RefreshResult{Considered: len(chars)}
+	if len(chars) == 0 {
+		return result, nil
+	}
+	if s.backoff.blocked(time.Now()) {
+		result.RateLimited = true
+		return result, nil
+	}
 	rosterCache := map[string]bnetapi.Roster{}
 	realmCache := map[string][]bnetapi.Realm{}
 	ticker := time.NewTicker(time.Second / refreshRateLimit)
 	defer ticker.Stop()
-	for _, sc := range stale {
+	for _, sc := range chars {
 		select {
 		case <-ctx.Done():
 			return result, ctx.Err()
@@ -92,8 +151,10 @@ func (s *Service) RunRefresh(ctx context.Context, probeGames []string) (RefreshR
 		if err := s.refreshOneCharacter(ctx, sc, rosterCache, realmCache); err != nil {
 			if errors.Is(err, bnetapi.ErrRateLimited) {
 				result.RateLimited = true
-				s.logger().Warn("bnetimport", "op", "refresh", "err", "rate limited by Blizzard, stopping this run")
-				break
+				wait := s.backoff.hit(time.Now())
+				s.logger().Warn("bnetimport", "op", "refresh", "err", "rate limited by Blizzard, stopping this run",
+					"backoff", wait.String())
+				return result, nil
 			}
 			s.logger().Warn("bnetimport", "op", "refresh_character", "bnet_character_id", sc.BnetCharacterID, "err", err)
 			s.recordRefreshFailure(ctx, sc)
@@ -102,8 +163,7 @@ func (s *Service) RunRefresh(ctx context.Context, probeGames []string) (RefreshR
 		}
 		result.Refreshed++
 	}
-
-	s.runProbe(ctx, probeGames)
+	s.backoff.reset()
 	return result, nil
 }
 
@@ -148,6 +208,10 @@ func (s *Service) refreshOneCharacter(ctx context.Context, sc staleCharacter, ro
 	var guildWritten, unavailable bool
 	if err := s.enrichInTx(ctx, tx, ref, rosterCache, &guildWritten, &unavailable); err != nil {
 		return err
+	}
+	// The account's "Updated from Battle.net" stamp (GET /v1/me's bnet_imported_at).
+	if _, err := tx.Exec(ctx, `update users set bnet_imported_at = now() where id = $1`, sc.UserID); err != nil {
+		return fmt.Errorf("bnetimport: refresh stamp account %s: %w", key, err)
 	}
 	if err := tx.Commit(ctx); err != nil {
 		return fmt.Errorf("bnetimport: refresh commit %s: %w", key, err)

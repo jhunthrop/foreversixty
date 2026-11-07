@@ -542,13 +542,39 @@ Like `parse-report`, `sim-run` and `sim-validate`, `data-addon` is in `.github/w
 
 ### The bnet-refresh job
 
-`bnet-refresh` (`api/internal/bnetimport`) re-syncs every `characters` row with
-`source = 'bnet'` and `refreshed_at` older than 20 hours against Blizzard's public profile and
-guild-roster data (the app's own client-credentials token — no user's OAuth token is needed,
-or kept, for this job), at most 4 Blizzard calls per second, stopping the run on the first
-`429`. It then runs the namespace probe (`BNET_PROBE_GAMES`), logging one line per game and a
-WARN for any game other than `BNET_PROFILE_GAME` that answers 200. It needs the same Battle.net credentials the service itself
-does (`BNET_CLIENT_ID`, `BNET_CLIENT_SECRET`) and is a no-op with none configured.
+`bnet-refresh` (`api/internal/bnetimport`) re-syncs every due `characters` row with
+`source = 'bnet'` against Blizzard's public profile and guild-roster data (the app's own
+client-credentials token; no user token is needed for this job). A row is due once its
+`refreshed_at` is older than 3 hours for an account active in the last 14 days
+(`users.bnet_synced_at`), or 20 hours for everyone else. It runs at most 4 characters per
+second and stops on the first `429`. It then runs the namespace probe (`BNET_PROBE_GAMES`),
+logging one line per game and a WARN for any game other than `BNET_PROFILE_GAME` that answers
+200. It needs the same Battle.net credentials the service itself does (`BNET_CLIENT_ID`,
+`BNET_CLIENT_SECRET`) and is a no-op with none configured.
+
+The API runs the same refresh itself (2026-11-07), so the job and its nightly schedule are the
+safety net, runnable by hand at any time:
+
+- **The in-process loop** (`bnetimport.RefreshLoop`): at startup and then hourly, the one
+  instance holding advisory lock `79_000_002` refreshes every due character. Each pass logs
+  `msg="bnetimport" op="refresh_loop"` with `considered`, `refreshed`, `skipped` and
+  `rate_limited`.
+- **Refresh on visit** (`bnetimport.Service.Visited`): any signed-in browser or app request
+  whose account last synced more than an hour ago starts a background refresh; the request
+  never waits. The visit claims `users.bnet_synced_at` with a compare-and-set, which is the
+  per-account cooldown and the dedupe across instances. While the sign-in's access token is
+  still valid (Battle.net tokens last 24 hours and come with no refresh token) the refresh
+  re-runs the sign-in import with it, sealed at rest in `users.bnet_token_box` with
+  `NOTIFY_ENCRYPTION_KEY`; once it has expired, or Battle.net refuses it, the token is
+  forgotten and the account's characters are refreshed one by one from public profiles.
+  Signing out forgets the token too. The token is never logged and no endpoint returns it.
+  Each visit logs `op="visit_refresh"` with `path` (`account` or `public`).
+- **429 backoff**: a rate limit pauses this process's automatic refreshes for 30 s, doubling
+  per further 429 up to 15 minutes, and resets after a batch that finishes clean.
+
+Every refresh stamps `users.bnet_imported_at`, which the site shows as "Updated 2 h ago from
+Battle.net". A refresh that brings new gear writes a new Blizzard build, and the auto-sim on
+import (`ImportSimmer`, deduped per gear) queues a run for it.
 
     gcloud run jobs create bnet-refresh \
       --image us-east1-docker.pkg.dev/foreversixty/api/api:latest \

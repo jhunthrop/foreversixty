@@ -38,9 +38,13 @@ const RefreshJobCommand = "bnet-refresh"
 // §4.1).
 var ErrBudget = errors.New("bnetimport: import budget exceeded")
 
+// ErrTokenRejected is ImportAccount's answer when Battle.net refused the user token (401):
+// it expired early or the player revoked it. Nothing was written for that region.
+var ErrTokenRejected = errors.New("bnetimport: battle.net refused the user token")
+
 // enrichFreshness is how recently a row must have been enriched for a run
 // to skip it: long enough to cover the sign-in run and its background
-// continuation, far shorter than the nightly refreshWindow.
+// continuation, far shorter than activeRefreshWindow.
 const enrichFreshness = 10 * time.Minute
 
 // Service runs the Battle.net import and the nightly refresh.
@@ -75,6 +79,14 @@ type Service struct {
 
 	enrichSlotsOnce sync.Once
 	enrichSlots     chan struct{}
+
+	// Sealer seals the sign-in's access token at rest (KeepToken); nil keeps none, and every
+	// visit refresh then reads public profiles.
+	Sealer TokenSealer
+	// backoff pauses automatic refreshes after a 429 (backoff.go).
+	backoff rateBackoff
+	// visiting holds the user ids whose visit refresh is running in this process.
+	visiting sync.Map
 }
 
 // EnrichmentSlotsFor is the sign-in enrichment cap for a process whose pool is
@@ -130,11 +142,28 @@ func (s *Service) ImportAccount(ctx context.Context, userID int64, userToken str
 		}
 	}
 
-	if _, err := s.Pool.Exec(context.Background(),
-		`update users set bnet_imported_at = now() where id = $1`, userID); err != nil {
+	if summary.RateLimited {
+		s.backoff.hit(time.Now())
+	}
+	s.stampAccountSync(userID)
+	return summary, runErr
+}
+
+// stampAccountSync records an account import's end: bnet_imported_at and bnet_synced_at,
+// and, when the account has no main yet, its highest-level character as the main, so the
+// site opens on it after the first import. A failed write is logged, never the import's.
+func (s *Service) stampAccountSync(userID int64) {
+	ctx := context.Background()
+	if _, err := s.Pool.Exec(ctx,
+		`update users set bnet_imported_at = now(), bnet_synced_at = now() where id = $1`, userID); err != nil {
 		s.logger().Warn("bnetimport", "op", "stamp_imported_at", "user_id", userID, "err", err)
 	}
-	return summary, runErr
+	if _, err := s.Pool.Exec(ctx,
+		`update users u set main_character_key = c.key
+		 from (select key from characters where user_id = $1 order by level desc nulls last, key limit 1) c
+		 where u.id = $1 and u.main_character_key is null`, userID); err != nil {
+		s.logger().Warn("bnetimport", "op", "pick_main", "user_id", userID, "err", err)
+	}
 }
 
 // importRegion imports every character the account has in one region, in
@@ -148,7 +177,7 @@ func (s *Service) ImportAccount(ctx context.Context, userID int64, userToken str
 //
 // A soft failure (no account in this region, a single character's profile
 // unreadable) is logged and does not stop the run; only ErrBudget (the
-// context deadline) propagates, with summary.Pending counting the rows the
+// context deadline) and ErrTokenRejected (a 401) propagate, with summary.Pending counting the rows the
 // second pass did not reach.
 func (s *Service) importRegion(ctx context.Context, userID int64, userToken, region string,
 	summary *auth.ImportSummary, rosterCache map[string]bnetapi.Roster, realmCache map[string][]bnetapi.Realm) error {
@@ -159,6 +188,9 @@ func (s *Service) importRegion(ctx context.Context, userID int64, userToken, reg
 		}
 		if errors.Is(err, bnetapi.ErrForbidden) || errors.Is(err, bnetapi.ErrNotFound) {
 			return nil // no WoW account under this namespace in this region
+		}
+		if errors.Is(err, bnetapi.ErrUnauthorized) {
+			return ErrTokenRejected
 		}
 		s.logger().Warn("bnetimport", "op", "account_characters", "region", region, "user_id", userID, "err", err)
 		return nil

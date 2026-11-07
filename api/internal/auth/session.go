@@ -74,6 +74,15 @@ type Authenticator struct {
 	// never be sent back.
 	Secure bool
 	Log    *slog.Logger
+	// Visits hears every signed-in browser or app request's account; nil hears none.
+	Visits VisitHook
+}
+
+// visited tells Visits about a signed-in request's account.
+func (a *Authenticator) visited(u User) {
+	if a.Visits != nil {
+		a.Visits.Visited(u)
+	}
 }
 
 func (a *Authenticator) logger() *slog.Logger {
@@ -94,6 +103,9 @@ func (a *Authenticator) Middleware(next http.Handler) http.Handler {
 			if err == nil {
 				u, uerr := a.Store.User(r.Context(), d.UserID)
 				if uerr == nil {
+					if d.Kind == DeviceKindApp {
+						a.visited(u)
+					}
 					next.ServeHTTP(w, r.WithContext(WithActor(r.Context(),
 						Actor{UserID: u.ID, Role: u.Role, Method: "device", DeviceID: d.ID, DeviceKind: d.Kind})))
 					return
@@ -156,6 +168,7 @@ func (a *Authenticator) Middleware(next http.Handler) http.Handler {
 				"this request needs the X-CSRF-Token header to match the fs_csrf cookie", nil)
 			return
 		}
+		a.visited(u)
 		next.ServeHTTP(w, r.WithContext(WithActor(r.Context(),
 			Actor{UserID: u.ID, Role: u.Role, Method: "session"})))
 	})

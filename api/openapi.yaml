@@ -1544,8 +1544,11 @@ components:
           type: string
           format: date-time
           description: >-
-            When the Battle.net import last ran. Every Battle.net sign-in imports the account's
-            Forever characters (us, eu, tw); omitted when it never ran.
+            When the account was last updated from Battle.net: a sign-in import, a refresh on a
+            signed-in visit (at most hourly) or the background refresh of any of its characters
+            (every 3 h for an account active in the last 14 days, else nightly). Every Battle.net
+            sign-in imports the account's Forever characters (us, eu, tw) at any level; omitted
+            when it never ran.
         bnet_import:
           type: object
           title: BnetImport

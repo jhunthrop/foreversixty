@@ -137,7 +137,7 @@ test('a signed-in visitor sees imported characters, refreshes, and is told what 
   await expect(rows.filter({ hasText: 'Elyra Duskvale' }).getByTestId('character-guild')).toHaveCount(0);
 
   // The result line gives way, after a few seconds, to the import time and the refresh link.
-  await expect(page.getByTestId('account-characters')).toContainText('Imported from Battle.net', {
+  await expect(page.getByTestId('account-characters')).toContainText(/Updated .* from Battle\.net/, {
     timeout: 12_000,
   });
   await expect(page.getByTestId('bnet-refresh')).toHaveAttribute(

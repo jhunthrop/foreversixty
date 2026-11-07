@@ -127,7 +127,8 @@ func (s *Service) appContinue(w http.ResponseWriter, r *http.Request) {
 
 // finishAppSignIn is the app half of the Battle.net callback: the account is confirmed, so
 // the flow gets its one-time code and the browser goes to the app link.
-func (s *Service) finishAppSignIn(w http.ResponseWriter, r *http.Request, state string, userID int64, accessToken string) {
+func (s *Service) finishAppSignIn(w http.ResponseWriter, r *http.Request, state string, userID int64, accessToken string,
+	accessTokenExpiry time.Time) {
 	code := NewSessionID()
 	f, err := s.Store.IssueAppCode(r.Context(), TokenHash(state), userID, TokenHash(code))
 	if errors.Is(err, ErrNotFound) {
@@ -138,7 +139,7 @@ func (s *Service) finishAppSignIn(w http.ResponseWriter, r *http.Request, state 
 		s.fail(w, r, "app_callback", err, "could not sign you in just now")
 		return
 	}
-	s.runImport(r, userID, accessToken)
+	s.runImport(r, userID, accessToken, accessTokenExpiry)
 	q := url.Values{"code": {code}, "state": {f.AppState}}
 	http.Redirect(w, r, s.PublicBaseURL+appLinkPath+"?"+q.Encode(), http.StatusFound)
 }

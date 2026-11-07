@@ -314,9 +314,17 @@ func (s *Service) logout(w http.ResponseWriter, r *http.Request) {
 
 // endSignIn is every generic sign-out: a browser's session ends, and an app calling it
 // revokes its own device rather than hearing success while its token stays live.
+// Signing out also forgets the account's sealed Battle.net token: the next automatic refresh
+// reads public profiles until the player signs in with Battle.net again.
 func (s *Service) endSignIn(w http.ResponseWriter, r *http.Request) error {
-	if a := ActorFrom(r.Context()); a.IsApp() {
+	a := ActorFrom(r.Context())
+	if a.IsApp() {
 		if _, err := s.Store.RevokeDeviceByID(r.Context(), a.DeviceID); err != nil {
+			return err
+		}
+	}
+	if a.Signed() {
+		if err := s.Store.ForgetBnetToken(r.Context(), a.UserID); err != nil {
 			return err
 		}
 	}

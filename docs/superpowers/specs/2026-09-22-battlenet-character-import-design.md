@@ -240,6 +240,16 @@ re-runs steps 4 and 5 of 4.2 with the app token (no user token needed: character
 and roster are public data), at most 4 Blizzard calls per second, and stops the run on the
 first `ErrRateLimited`. It also runs the namespace probe (section 5).
 
+**Amended 2026-11-07 (automatic refresh).** A row is due after 3 hours when its account was
+active in the last 14 days (`users.bnet_synced_at`, migration 0081), else after 20 hours. The
+API runs the same refresh in-process (`bnetimport.RefreshLoop`, hourly, advisory lock
+`79_000_002`) and on a signed-in visit to an account last synced over an hour ago
+(`Service.Visited`, a compare-and-set on `bnet_synced_at` as the cooldown). The visit re-runs
+4.2 with the sign-in's access token, now kept sealed until it expires, and falls back to the
+public per-character refresh once it has expired or is refused. A 429 backs automatic
+refreshes off for 30 s, doubling to 15 minutes. The job and its nightly schedule stay as the
+safety net. See api/README.md "The bnet-refresh job".
+
 ### 4.5 The companion's export and the signed-in paste also write `characters`
 
 `putOneExport` upserts `characters (key, region, ruleset, name, class, user_id, source='export',

@@ -34,7 +34,7 @@ describe('setupAnswer', () => {
       name: 'Felsnap',
       classSlug: 'hunter',
       levelLine: 'Level 34 Beast Mastery Hunter',
-      imported: 'Imported from Battle.net 1 hour ago.',
+      imported: 'Updated 1 h ago from Battle.net',
       open: { label: addonCopy.setupOpenCharacter('Felsnap') },
     });
     expect(answer?.open.href).toContain('felsnap');

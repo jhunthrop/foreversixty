@@ -9,7 +9,7 @@
 //    discord-role-copy.ts, notifications-copy.ts, lib/guild/copy.ts guildConsentCopy, lib/billing/account-plan-copy.ts; the models
 //    accountPlanLine and guildRowPlanLine (plan-line.ts), guildPlanTag / notVerifiedMark / guildRowNextStep (guild-row-line.ts),
 //    characterDescriptor, mainCharacter, setupAnswer (the head answer), deviceStatusLine, premiumRowValue / premiumRowLinked /
-//    blockState (notifications.ts), offerStatusLine, relativeTime; the planner's shared-link copy for /b/:id.
+//    blockState (notifications.ts), offerStatusLine; the planner's shared-link copy for /b/:id.
 // Every state's account is a fixture (web/tests/e2e/fixtures/home/me-34.json Felsnap, me-60.json Thandrel, me-new.json) with
 // the billing, seat, guild and Discord fields of that state set here: DERIVED, marked per state below. The clock is pinned to
 // 2026-11-08T10:00Z and the zone to UTC, so every date and "ago" is reproducible.
@@ -64,7 +64,6 @@ import { settingsWords } from ${src("src/lib/guild/settings-view.ts")};
 import { plannerCopy, bandCompareCopy } from ${src("src/lib/planner/copy.ts")};
 import { utcDayMonthYear } from ${src("src/lib/dates.ts")};
 import { READ_ONLY_REASON } from ${src("src/lib/planner/store.svelte.ts")};
-import { relativeTime } from ${src("src/lib/dates.ts")};
 import icons from ${spellIcons};
 import me34 from ${src("tests/e2e/fixtures/home/me-34.json")};
 import me60 from ${src("tests/e2e/fixtures/home/me-60.json")};
@@ -154,7 +153,7 @@ const view = (me, key) => {
     answer: setupAnswer(me, null, NOW),
     characters: me.characters.map((c) => ({ name: c.name, cls: (c.class ?? '').toLowerCase(), descriptor: characterDescriptor(c), guild: c.guild?.name ?? null,
       main: main?.key === c.key, source: c.build ? c.build.source : null, level: c.level ?? null })),
-    imported: me.bnet_imported_at ? characterListCopy.importedFrom(relativeTime(new Date(me.bnet_imported_at), NOW)) : null,
+    imported: me.bnet_imported_at ? characterListCopy.updatedFrom(me.bnet_imported_at, NOW) : null,
     guilds: me.guilds.map((g) => ({ name: g.name, rank: g.rank ?? null, consent: g.consent ?? 'gear', tag: guildPlanTag(g), mark: notVerifiedMark(g), next: guildRowNextStep(g),
       planLine: g.plan ? guildRowPlanLine(g.plan, Z) : null, can: g.can ?? [], claim: g.claim ?? null, step: g.subscribe?.step ?? null,
       leaveLine: guildConsentCopy.leaveConfirmLine(g.name, me.characters.filter((c) => c.guild?.id === g.id).length || 1),

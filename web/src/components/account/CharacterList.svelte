@@ -14,7 +14,7 @@
   import { characterListCopy } from '../../lib/account/character-list-copy';
   import { saveSnapshot, snapshotOf, type RefreshResult } from '../../lib/account/refresh-snapshot';
   import { characterHref } from '../../lib/characters';
-  import { relativeTime } from '../../lib/dates';
+  import { lowLevelCopy, splitByLevel } from '../../lib/account/level-filter';
   import { classTone, LINK } from '../../lib/ui/primitives';
   import ClassCrestRing from '../character/ClassCrestRing.svelte';
   import Button from '../ui/Button.svelte';
@@ -118,12 +118,14 @@
     // The empty Plate says where characters come from; the head keeps only its Refresh (spec 7.2).
     if (refreshing || result?.kind === 'error' || characters.length === 0) return undefined;
     if (result !== null) return announcement;
-    return bnetImportedAt === undefined
-      ? undefined
-      : characterListCopy.importedFrom(relativeTime(new Date(bnetImportedAt), now));
+    return bnetImportedAt === undefined ? undefined : characterListCopy.updatedFrom(bnetImportedAt, now);
   });
   /** Refresh is offered once there is something to refresh, or Battle.net is the account's way in. */
   const canRefresh = $derived(bnetImportedAt !== undefined || (viaBattlenet && characters.length === 0));
+
+  let showLow = $state(false);
+  /** Level 10 and up by default; the current character and the main always show. */
+  const listed = $derived(splitByLevel(characters, showLow, [currentKey, mainKey]));
 
   const sourceOf = (character: MeCharacter): string => {
     if (character.build === undefined) return characterListCopy.noBuildYet;
@@ -181,7 +183,7 @@
           </div>
         </div>
       {:else}
-        {#each characters as character (character.key)}
+        {#each listed.shown as character (character.key)}
           {@const isMain = mainKey === character.key}
           <Row
             title={character.name}
@@ -225,6 +227,18 @@
             {/snippet}
           </Row>
         {/each}
+        {#if listed.lowCount > 0}
+          <div class="px-5 py-2">
+            <button
+              type="button"
+              class="{LINK} text-[14px] [@media(pointer:coarse)]:-my-3 [@media(pointer:coarse)]:py-3"
+              aria-expanded={showLow}
+              onclick={() => (showLow = !showLow)}
+              data-testid="account-low-level-toggle"
+              >{showLow ? lowLevelCopy.hide : lowLevelCopy.show(listed.lowCount)}</button
+            >
+          </div>
+        {/if}
         <CoachLastRaidLine premium={logCoach} />
       {/if}
     </div>

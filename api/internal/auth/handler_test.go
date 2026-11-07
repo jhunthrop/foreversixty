@@ -454,6 +454,31 @@ func TestLogoutEndsTheSession(t *testing.T) {
 	}
 }
 
+func TestLogoutForgetsTheSealedBattlenetToken(t *testing.T) {
+	h := newHarness(t)
+	h.signIn(t, "sealed@example.com")
+	ctx := context.Background()
+	if _, err := h.svc.Store.Pool.Exec(ctx,
+		`update users set bnet_token_box = 'sealed', bnet_token_expires_at = now() + interval '1 day'
+		 where email = 'sealed@example.com'`); err != nil {
+		t.Fatal(err)
+	}
+	res := h.do(t, http.MethodPost, "/v1/auth/logout", "")
+	res.Body.Close()
+	if res.StatusCode != http.StatusOK {
+		t.Fatalf("logout = %d", res.StatusCode)
+	}
+	var kept bool
+	if err := h.svc.Store.Pool.QueryRow(ctx,
+		`select bnet_token_box is not null or bnet_token_expires_at is not null from users where email = 'sealed@example.com'`).
+		Scan(&kept); err != nil {
+		t.Fatal(err)
+	}
+	if kept {
+		t.Fatal("the sealed Battle.net token survived sign-out")
+	}
+}
+
 // fakeBattleNet is an OAuth provider: the token endpoint and the
 // userinfo endpoint, enough for the callback to complete.
 func fakeBattleNet(t *testing.T, sub, battletag string) *httptest.Server {

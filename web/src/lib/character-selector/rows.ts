@@ -11,6 +11,7 @@ import type { CurrentCharacter } from '../current-character';
 import { relativeTime } from '../dates';
 import type { Faction } from '../faction-mark';
 import { characterSpecName } from '../character-spec';
+import { splitByLevel } from '../account/level-filter';
 import { specName } from '../guild/spec-name';
 import { orderCharacters } from './order';
 import { selectorCopy } from './copy';
@@ -224,6 +225,24 @@ export function buildSelectorModel(input: ModelInput): SelectorModel {
 export function filterRows(rows: readonly SelectorRow[], query: string): SelectorRow[] {
   const needle = query.trim().toLowerCase();
   return needle === '' ? [...rows] : rows.filter((row) => row.name.toLowerCase().includes(needle));
+}
+
+export interface ListRows {
+  rows: SelectorRow[];
+  /** Low-level rows the list folds or could fold: the "Show low-level characters" toggle shows when non-zero. */
+  lowCount: number;
+}
+
+/**
+ * The rows the list draws: a name filter searches every row; otherwise the low-level rule
+ * (`account/level-filter.ts`) folds characters below level 10 unless `showLow`, and the
+ * current row always stays.
+ */
+export function listRows(rows: readonly SelectorRow[], query: string, showLow: boolean): ListRows {
+  const current = rows.filter((row) => row.current).map((row) => row.key);
+  const split = splitByLevel(rows, showLow, current);
+  if (query.trim() !== '') return { rows: filterRows(rows, query), lowCount: 0 };
+  return { rows: split.shown, lowCount: split.lowCount };
 }
 
 /** `{Spec} {Class} · {level}`, or `{Spec} · {level}` when `withClass` is false; absent parts are dropped. */

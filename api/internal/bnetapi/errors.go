@@ -20,14 +20,20 @@ var ErrForbidden = errors.New("bnetapi: forbidden")
 // and log it, per spec §3.
 var ErrRateLimited = errors.New("bnetapi: rate limited")
 
-// statusError classifies a non-200 response into one of the three typed
-// errors above, or a generic wrapped status for anything else.
+// ErrUnauthorized is a 401: the bearer token was refused (a user token that expired or
+// was revoked). A caller holding a stored user token forgets it on this.
+var ErrUnauthorized = errors.New("bnetapi: unauthorized")
+
+// statusError classifies a non-200 response into one of the typed errors
+// above, or a generic wrapped status for anything else.
 func statusError(op string, status int) error {
 	switch status {
 	case http.StatusNotFound:
 		return fmt.Errorf("bnetapi: %s: %w", op, ErrNotFound)
 	case http.StatusForbidden:
 		return fmt.Errorf("bnetapi: %s: %w", op, ErrForbidden)
+	case http.StatusUnauthorized:
+		return fmt.Errorf("bnetapi: %s: %w", op, ErrUnauthorized)
 	case http.StatusTooManyRequests:
 		return fmt.Errorf("bnetapi: %s: %w", op, ErrRateLimited)
 	default:

@@ -1,5 +1,6 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import {
+  compactAgo,
   dateOnlyWord,
   dayWord,
   formatDate,
@@ -223,5 +224,21 @@ describe('zoned day helpers', () => {
   it('renders an unreadable instant as nothing and defaults to the resolved zone', () => {
     expect(zonedDayMonthYear('nope', 'UTC')).toBe('');
     expect(zonedDayMonthYear(instant)).toBe(zonedDayMonthYear(instant, viewerZone()));
+  });
+});
+
+describe('compactAgo', () => {
+  const now = new Date('2026-11-07T12:00:00Z');
+  const ago = (ms: number) => new Date(now.getTime() - ms);
+  it('reads the freshness stamp compactly, then the date past 30 days', () => {
+    expect(compactAgo(ago(20_000), now)).toBe('just now');
+    expect(compactAgo(ago(5 * 60_000), now)).toBe('5 min ago');
+    expect(compactAgo(ago(2 * 3_600_000 + 60_000), now)).toBe('2 h ago');
+    expect(compactAgo(ago(3 * 86_400_000), now)).toBe('3 d ago');
+    expect(compactAgo(new Date('2026-09-25T00:00:00Z'), now)).toBe('25 Sept');
+  });
+  it('reads a timestamp ahead of the clock as just now, and an invalid one as nothing', () => {
+    expect(compactAgo(new Date(now.getTime() + 60_000), now)).toBe('just now');
+    expect(compactAgo(new Date('nope'), now)).toBe('');
   });
 });

@@ -4801,7 +4801,7 @@ public struct Me: Codable, Sendable, Equatable {
     public let discordLinkSuggested: String?
     /// Omitted until the account picks a main.
     public let mainCharacterKey: String?
-    /// When the Battle.net import last ran. Every Battle.net sign-in imports the account's Forever characters (us, eu, tw); omitted when it never ran.
+    /// When the account was last updated from Battle.net: a sign-in import, a refresh on a signed-in visit (at most hourly) or the background refresh of any of its characters (every 3 h for an account active in the last 14 days, else nightly). Every Battle.net sign-in imports the account's Forever characters (us, eu, tw) at any level; omitted when it never ran.
     public let bnetImportedAt: Date?
     /// The last Battle.net import's state, omitted until a sign-in has tracked one. Sign-in records running when its import starts; the import ends inside the sign-in's 5 s budget or in a background run of up to 2 minutes, then records done (no error) or failed. A running state older than 3 minutes 5 seconds reads as failed: the instance running it stopped. Poll /v1/me while it reads running.
     public let bnetImport: BnetImport?
