@@ -1,0 +1,1483 @@
+{
+ "changelog": {
+  "updated": "5 Nov",
+  "entries": [
+   {
+    "id": "2026-11-05-guild-events",
+    "iso": "2026-11-05",
+    "date": "5 Nov",
+    "title": "Guilds can now post dungeon runs and guild events.",
+    "kind": "site",
+    "kindLabel": "This site",
+    "note": null,
+    "html": "<p>Officers can now post dungeon runs and guild events as well as raids. Members sign up the same way.</p>\n",
+    "sources": [
+     {
+      "label": "This site, Guild",
+      "url": "https://foreversixty.gg/guild",
+      "kind": "site",
+      "kindLabel": "This site"
+     }
+    ]
+   },
+   {
+    "id": "2026-11-05-guild-raid-comp",
+    "iso": "2026-11-05",
+    "date": "5 Nov",
+    "title": "Raid sign-ups show spec, class and a class count.",
+    "kind": "site",
+    "kindLabel": "This site",
+    "note": null,
+    "html": "<p>Sign-ups now show spec and class, a class count for buffs, and Melee and Ranged like the Discord post. Times read in the guild’s clock first.</p>\n",
+    "sources": [
+     {
+      "label": "This site, Guild",
+      "url": "https://foreversixty.gg/guild",
+      "kind": "site",
+      "kindLabel": "This site"
+     }
+    ]
+   },
+   {
+    "id": "2026-10-28-log-coach",
+    "iso": "2026-10-28",
+    "date": "28 Oct",
+    "title": "The log coach is here.",
+    "kind": "site",
+    "kindLabel": "This site",
+    "note": null,
+    "html": "<p>Added the log coach for Premium. After every logged raid it tells you what to fix first: the casts you missed, the buffs you let drop and the consumables you skipped, learned from the engine and from the top logs on the site. It reviews every spec; damage specs get the most findings.</p>\n",
+    "sources": [
+     {
+      "label": "This site, Plans",
+      "url": "https://foreversixty.gg/premium",
+      "kind": "site",
+      "kindLabel": "This site"
+     }
+    ]
+   },
+   {
+    "id": "2026-10-27-discord-bot",
+    "iso": "2026-10-27",
+    "date": "27 Oct",
+    "title": "The Forever Sixty Discord bot is here.",
+    "kind": "site",
+    "kindLabel": "This site",
+    "note": null,
+    "html": "<p>Added the Forever Sixty Discord bot. Raid posts carry In, Late, Bench and Out buttons, and /raid, /bis, /char and more answer in your guild’s Discord. Officers add it from guild settings; members link Discord on the account page.</p>\n",
+    "sources": [
+     {
+      "label": "This site, Guild",
+      "url": "https://foreversixty.gg/guild",
+      "kind": "site",
+      "kindLabel": "This site"
+     }
+    ]
+   },
+   {
+    "id": "2026-10-27-guild-attendance",
+    "iso": "2026-10-27",
+    "date": "27 Oct",
+    "title": "Raid pages now show who came and how the night went.",
+    "kind": "site",
+    "kindLabel": "This site",
+    "note": null,
+    "html": "<p>Added attendance and raid-night reports. A raid’s log is matched when it is uploaded, and the raid page shows who came, kill times, deaths, loot and the biggest changes since last time.</p>\n",
+    "sources": [
+     {
+      "label": "This site, Guild",
+      "url": "https://foreversixty.gg/guild",
+      "kind": "site",
+      "kindLabel": "This site"
+     }
+    ]
+   },
+   {
+    "id": "2026-10-27-guild-raids",
+    "iso": "2026-10-27",
+    "date": "27 Oct",
+    "title": "Guilds can now plan raids and members sign up in one tap.",
+    "kind": "site",
+    "kindLabel": "This site",
+    "note": null,
+    "html": "<p>Added raid sign-ups. Officers plan raids on the guild’s Raids tab and members sign up in one tap, from the raid page or the guild page.</p>\n",
+    "sources": [
+     {
+      "label": "This site, Guild",
+      "url": "https://foreversixty.gg/guild",
+      "kind": "site",
+      "kindLabel": "This site"
+     }
+    ]
+   },
+   {
+    "id": "2026-10-27-launch-pricing",
+    "iso": "2026-10-27",
+    "date": "27 Oct",
+    "title": "Premium, Guild and Raid guild: the launch plans and founder prices.",
+    "kind": "site",
+    "kindLabel": "This site",
+    "note": null,
+    "html": "<p>Premium is $6 a month or $50 a year, one price for everyone. Guilds pick Guild, $15 a month or $150 a year for up to 25 verified members with one Premium seat, or Raid guild, $25 a month or $250 a year for any size with three seats, the loot council helper, the readiness board and consumables. Officers give seats to any verified member and can move each one once every 30 days. A guild’s first 7 days are free. Subscribe before 6 January 2027 and you keep the founder price. A guild’s history is never locked: a lapsed plan keeps its raids and logs readable and downloadable, and the plan can be handed to another officer.</p>\n",
+    "sources": [
+     {
+      "label": "This site, Premium",
+      "url": "https://foreversixty.gg/premium",
+      "kind": "site",
+      "kindLabel": "This site"
+     }
+    ]
+   },
+   {
+    "id": "2026-10-26-officer-tools-gate",
+    "iso": "2026-10-26",
+    "date": "26 Oct",
+    "title": "Officer tools are now part of the guild plan.",
+    "kind": "site",
+    "kindLabel": "This site",
+    "note": null,
+    "html": "<p>Award and Undo on the loot council helper and Nudge on the raid readiness board are part of the guild plan. Every guild claimed before today keeps them through the first raid nights, until 12 December.</p>\n<p>The guild settings page shows what your guild has and until when. An officer of a guild without the plan sees the tools read-only, with a sentence saying how to subscribe.</p>\n",
+    "sources": [
+     {
+      "label": "This site, Account",
+      "url": "https://foreversixty.gg/account",
+      "kind": "site",
+      "kindLabel": "This site"
+     }
+    ]
+   },
+   {
+    "id": "2026-10-25-character-history",
+    "iso": "2026-10-25",
+    "date": "25 Oct",
+    "title": "Premium members can now see their score and parses over time on their character page.",
+    "kind": "site",
+    "kindLabel": "This site",
+    "note": null,
+    "html": "<p>Premium members now see a History section on their own character page, between the Forever Score card and Gear. Score over time draws each day’s last rated fight as a dated point on the tier bands, with a labelled gap wherever no fight was rated, and lists the fights behind the selected point. Parse by boss draws the parse of every kill of a boss you pick, with its kills listed underneath. The section includes your private and guild reports, and only you see it.</p>\n<p>Free members and visitors keep the sparkline on the Forever Score card, and a free owner sees one line pointing to the plans. The account page’s History row now reads Open on your main character for Premium members and Sparkline only for everyone else.</p>\n",
+    "sources": [
+     {
+      "label": "This site, Character",
+      "url": "https://foreversixty.gg/character",
+      "kind": "site",
+      "kindLabel": "This site"
+     }
+    ]
+   },
+   {
+    "id": "2026-10-25-discord-notifications",
+    "iso": "2026-10-25",
+    "date": "25 Oct",
+    "title": "Premium members can now get a Discord message when a server sim or a log upload finishes.",
+    "kind": "site",
+    "kindLabel": "This site",
+    "note": null,
+    "html": "<p>Added Discord notifications. Premium members can paste a Discord webhook on the account page and get a message when a server sim finishes or a log finishes parsing. Pick which of the two you want, and send a test message to see it arrive. The link is encrypted and never shown again; the page shows the webhook’s own name (the one you gave it in Discord) and the channel’s id.</p>\n<p>If Discord refuses five posts in a row, the messages switch off and the account page says why. Fix the channel, press Test and switch on, and they resume. If your plan ends, your webhook is kept and posts start again when you are back on Premium. You can remove the webhook at any time. Free members see one line pointing to the plans, and the Premium rows on the account page now show whether Discord messages are on.</p>\n<p>Private logs are your choice. New webhooks leave them off; a webhook saved before today keeps posting them until you untick Include private logs on the account page. You can also connect a channel in one click from the account page: pick the server and channel in Discord and the webhook is made for you, with the paste form still there if you prefer it.</p>\n",
+    "sources": [
+     {
+      "label": "This site, Account",
+      "url": "https://foreversixty.gg/account",
+      "kind": "site",
+      "kindLabel": "This site"
+     }
+    ]
+   },
+   {
+    "id": "2026-10-24-premium-page-truth",
+    "iso": "2026-10-24",
+    "date": "24 Oct",
+    "title": "The Premium page now lists only what is live, and logs are kept for everyone.",
+    "kind": "site",
+    "kindLabel": "This site",
+    "note": null,
+    "html": "<p>The Premium page now lists only what is live today, with the month beside what is coming: character history charts are marked November and Discord notifications December. The guild plan’s officer tools read as the loot council helper and the raid readiness board, with more as they ship.</p>\n<p>Uploaded logs, the reports parsed from them and saved sims are kept for everyone, with no retention tier on any plan. The terms and the privacy policy now say the same, and the FAQ entry about long-retention logs is gone. The line about comparing more than two builds is retired.</p>\n",
+    "sources": [
+     {
+      "label": "This site, Premium",
+      "url": "https://foreversixty.gg/premium",
+      "kind": "site",
+      "kindLabel": "This site"
+     }
+    ]
+   },
+   {
+    "id": "2026-10-24-server-runs",
+    "iso": "2026-10-24",
+    "date": "24 Oct",
+    "title": "Server sims keep going after you close the tab, and the site tells you when they finish.",
+    "kind": "site",
+    "kindLabel": "This site",
+    "note": null,
+    "html": "<p>Premium members now see their server runs at the top of the Simulator: each run’s name, spec and state, with an estimate for a running one drawn from the last ten finished runs of that spec, the result for a finished one, and the plain reason for a failed one with a Run again button. Runs start the moment they are sent, so there is no queue and nothing to cancel.</p>\n<p>A run that finishes while no tab is open is announced once in the character band on the next page load, with a link to the result. Opening the result or dismissing the line clears it. The account page’s Server sims row now counts this month’s runs.</p>\n",
+    "sources": [
+     {
+      "label": "This site, Simulator",
+      "url": "https://foreversixty.gg/sim",
+      "kind": "site",
+      "kindLabel": "This site"
+     }
+    ]
+   },
+   {
+    "id": "2026-10-16-stress-test-october-21",
+    "iso": "2026-10-16",
+    "date": "16 Oct",
+    "title": "Blizzard moves the Forever stress test to October 21, open to everyone.",
+    "kind": "blizzard",
+    "kindLabel": "Blizzard",
+    "note": null,
+    "html": "<p>Blizzard’s stress test of World of Warcraft: Forever is now on October 21, moved from October 19, and starts at 2:00 p.m. PDT in North America (19:00 CEST in Europe). It may end early or run late. The beta is taken offline shortly before it begins and is expected to return shortly after it ends.</p>\n<p>When the test ends, every character, name and guild made on the test servers is wiped, ahead of name reservations opening on October 27 for pre-purchasers, through November 3.</p>\n",
+    "sources": [
+     {
+      "label": "Blizzard, Join the World of Warcraft: Forever Stress Test (updated Oct 16)",
+      "url": "https://news.blizzard.com/en-us/article/24302072/updated-oct-16-join-the-world-of-warcraft-forever-stress-test",
+      "kind": "blizzard",
+      "kindLabel": "Blizzard"
+     }
+    ]
+   },
+   {
+    "id": "2026-09-20-simulator-tools-are-live",
+    "iso": "2026-09-20",
+    "date": "20 Sept",
+    "title": "The simulator now runs Top Gear, Droptimizer, talent compare and stat weights for damage specs.",
+    "kind": "site",
+    "kindLabel": "This site",
+    "note": "Damage specs only, not healers or tanks. Every one of those specs is still \"not yet\" measured, and raid drops are thin until the re-itemised tier is curated.",
+    "html": "<p>/sim gained three tools for damage specs, beside the plain run. Top Gear ranks gear and consumable combinations against your current set, one slot or several at once. Droptimizer ranks every drop from the bosses you pick, boss by boss. Talent compare ranks loadouts against each other, your own saved builds included. A fourth tool, stat weights, turns a finished run into the per-point numbers some addons ask for, with the same caution attached everywhere it appears on this site: it holds near the gear you have now and stops holding the moment a set bonus, a proc, or a cap changes. Sim the actual items in Top Gear instead, when you can.</p>\n<p>Every tool shares what a plain run already had: fight style, three precision levels, the full buff panel, and the same sample log on /sim. All four run free in the browser; a run past the browser lane’s own cap runs on the server instead, for premium accounts.</p>\n<p>None of it is graded yet. <a href=\"/sim/specs\">Spec support</a> still reads “Not yet” for every damage spec — nothing has been checked against a real parse, because there are no real parses yet. And Droptimizer can only rank what the re-itemised raid tier actually has: a large share of the fork’s own sourced item ids do not exist in the 1.60 client, so a boss can show fewer upgrades than it will once that tier is fully curated.</p>\n",
+    "sources": [
+     {
+      "label": "This site, spec support",
+      "url": "https://foreversixty.gg/sim/specs",
+      "kind": "site",
+      "kindLabel": "This site"
+     }
+    ]
+   },
+   {
+    "id": "2026-09-14-dev-qa-september-17",
+    "iso": "2026-09-14",
+    "date": "14 Sept",
+    "title": "Blizzard confirms a live developer Q&A on Sept 17 at 10:00 a.m. PDT.",
+    "kind": "blizzard",
+    "kindLabel": "Blizzard",
+    "note": null,
+    "html": "<p>Blizzard is hosting a live Q&amp;A with members of the World of Warcraft development team on Thursday, Sept 17 at 10:00 a.m. PDT, on the official Warcraft Twitch and YouTube channels, with a VOD afterwards. Questions are collected in a World of Warcraft forum thread.</p>\n<p>It is a World of Warcraft Q&amp;A rather than a Forever-only one, and it falls on the same day the beta opens.</p>\n",
+    "sources": [
+     {
+      "label": "Blizzard, submit your questions for the Sept 17 live Q&A",
+      "url": "https://news.blizzard.com/en-us/article/24303312/submit-your-questions-for-the-world-of-warcraft-live-q-a-september-17",
+      "kind": "blizzard",
+      "kindLabel": "Blizzard"
+     }
+    ]
+   },
+   {
+    "id": "2026-09-14-dungeon-level-ranges-revised",
+    "iso": "2026-09-14",
+    "date": "14 Sept",
+    "title": "Two dungeon level ranges revised: City of Dalaran 28 to 30, Krol'dok Stronghold 40 to 55.",
+    "kind": "community",
+    "kindLabel": "Community",
+    "note": "Both the old and the new ranges come from a single outlet. Blizzard has never published dungeon level ranges.",
+    "html": "<p>A second outlet logged the What’s Next panel live and recorded level ranges off the slides as they appeared. Seven of its nine ranges match the roundup we used on Sept 12. Two do not.</p>\n<p>City of Dalaran is given as levels 28 to 30, where the earlier roundup said roughly 20 to 35. Krol’dok Stronghold is given as levels 40 to 55, where the earlier roundup said 35 to 40; the same log describes it as an outdoor dungeon sitting in the Riverglades zone.</p>\n<p>Both figures are single-source either way. We have switched to the panel log, because it records what was on screen at the time.</p>\n",
+    "sources": [
+     {
+      "label": "Output Lag, live log of the What's Next panel",
+      "url": "https://outputlag.com/news/everything-new-world-of-warcraft-forever/",
+      "kind": "community",
+      "kindLabel": "Community"
+     }
+    ]
+   },
+   {
+    "id": "2026-09-14-talent-calculators-live",
+    "iso": "2026-09-14",
+    "date": "14 Sept",
+    "title": "Three Forever talent calculators are live, all built from demo footage.",
+    "kind": "community",
+    "kindLabel": "Community",
+    "note": "Rank scaling in all three calculators is estimated in places.",
+    "html": "<p>Wowhead, Icy Veins and the fan site talentsforever.com all published Forever talent calculators within two days of the announcement, built from panel slides and BlizzCon demo footage rather than from a game client.</p>\n<p>All three come with caveats. Wowhead’s own disclaimer says the data is “mostly” accurate, that talent rank scaling is potentially wrong, and that some new Forever talents have no icons yet; it will be rebuilt from the beta client. talentsforever.com marks which rank values were read verbatim and which are estimated, and publishes its whole dataset under CC BY 4.0.</p>\n<p>None of them should be treated as final until the beta client is datamined after Sept 17.</p>\n",
+    "sources": [
+     {
+      "label": "Wowhead, Forever talent calculator now live",
+      "url": "https://www.wowhead.com/forever/news/wow-forever-talent-calculator-now-live-382870",
+      "kind": "community",
+      "kindLabel": "Community"
+     },
+     {
+      "label": "Icy Veins, Forever talent calculator",
+      "url": "https://www.icy-veins.com/wow-forever/news/start-planning-your-wow-forever-character-with-our-new-talent-calculator/",
+      "kind": "community",
+      "kindLabel": "Community"
+     },
+     {
+      "label": "Talents Forever (demo transcription)",
+      "url": "https://talentsforever.com/data.json",
+      "kind": "community",
+      "kindLabel": "Community"
+     }
+    ]
+   },
+   {
+    "id": "2026-09-14-talent-milestones-and-structure",
+    "iso": "2026-09-14",
+    "date": "14 Sept",
+    "title": "Talent trees keep seven rows and 51 points, with a new one-point talent at 16.",
+    "kind": "blizzard",
+    "kindLabel": "Blizzard",
+    "note": null,
+    "html": "<p>Talent trees keep the familiar layout: seven rows per tree, 51 points to spend, and the one-point “gold medal” talents at 11, 21 and 31 points. Forever adds a fourth, at the 16-point mark, so every tree has four of them.</p>\n<p>Principal Designer Kris Zierhut put it plainly in an interview: “We still have what we call them gold medal talents. 11, 21, 31 point, one point talents. Those are all still there. We did add a new one point talent at the 16 point mark.”</p>\n<p>Talents that existed mainly to unlock a group buff are becoming baseline abilities instead: Divine Spirit, Blessing of Kings, Improved Mark of the Wild and Improved Battle Shout among them. Some talents are unchanged from 1.12.</p>\n",
+    "sources": [
+     {
+      "label": "Blizzard, Deep Dive panel recap",
+      "url": "https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap",
+      "kind": "blizzard",
+      "kindLabel": "Blizzard"
+     },
+     {
+      "label": "Icy Veins, Forever talent calculator",
+      "url": "https://www.icy-veins.com/wow-forever/news/start-planning-your-wow-forever-character-with-our-new-talent-calculator/",
+      "kind": "community",
+      "kindLabel": "Community"
+     },
+     {
+      "label": "guided.news, Deep Dive roundup",
+      "url": "https://guided.news/en/news/wow-forever-deep-dive-600-new-recipes-a-realm-free-azeroth-and-the-legacy-system/",
+      "kind": "community",
+      "kindLabel": "Community"
+     }
+    ]
+   },
+   {
+    "id": "2026-09-13-beta-opt-in-is-free",
+    "iso": "2026-09-13",
+    "date": "13 Sept",
+    "title": "The Forever beta has a free opt-in; the packs only guarantee a seat.",
+    "kind": "community",
+    "kindLabel": "Community",
+    "note": "Reported by press coverage of the Battle.net page rather than by a Blizzard news post.",
+    "html": "<p>Blizzard opened a Beta Opt-In button on the Forever page on Battle.net on Sept 13. Anyone signed in can opt in at no cost, which puts them in the pool without guaranteeing anything.</p>\n<p>Guaranteed access still sits with the Skyborne Epic Pack, the Warcraft Forever Collection and the Collector’s Edition. The $29.99 Skyborne Heroic Pack does not include beta access.</p>\n",
+    "sources": [
+     {
+      "label": "Wowhead, opt in for the Forever beta",
+      "url": "https://www.wowhead.com/forever/news/opt-in-for-the-world-of-warcraft-forever-beta-382860",
+      "kind": "community",
+      "kindLabel": "Community"
+     },
+     {
+      "label": "gamefragger, beta opt-in is live",
+      "url": "https://gamefragger.com/pc/warcraft/world-of-warcraft-forever-beta-opt-in-is-live-now-ahead-of-thursdays-test-a29780",
+      "kind": "community",
+      "kindLabel": "Community"
+     },
+     {
+      "label": "Insider Gaming, how to access the Forever beta",
+      "url": "https://insider-gaming.com/how-to-access-wow-forever-beta-explained/",
+      "kind": "community",
+      "kindLabel": "Community"
+     }
+    ]
+   },
+   {
+    "id": "2026-09-13-camping-details",
+    "iso": "2026-09-13",
+    "date": "13 Sept",
+    "title": "Camping: three objects per campfire, one per player, first learned at skill 20.",
+    "kind": "blizzard",
+    "kindLabel": "Blizzard",
+    "note": null,
+    "html": "<p>A Basic Campfire creates a campsite that gives vendors, repairs, profession workspaces and one-hour buffs. You have to sit for a few moments and become rested before the buffs apply, and some parts of Azeroth are better suited to a quiet rest than others.</p>\n<p>Up to three crafted objects can be added to a Basic Campfire, one per player, sharing a one-hour cooldown. Every profession has three objects at different skill levels: a Blacksmith’s Sharpening Wheel raises Attack Power, a Tailor’s Faction Banner raises Spirit, and a Herbalist’s Incense Candle raises Intellect. These are variants of the equivalent class buffs and do not stack with them.</p>\n<p>The first objects are learned at profession skill 20, from profession trainers or from camping NPCs; advanced objects come from Blueprint recipes that drop from specific dungeon bosses. Alchemists place an Alchemy Lab, Leatherworkers a Tanning Rack needed for advanced recipes, and Cooks can learn upgraded campfires that hold five or ten objects.</p>\n",
+    "sources": [
+     {
+      "label": "Blizzard, Deep Dive panel recap",
+      "url": "https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap",
+      "kind": "blizzard",
+      "kindLabel": "Blizzard"
+     },
+     {
+      "label": "MMO-Champion, Deep Dive panel",
+      "url": "https://www.mmo-champion.com/content/14512-BlizzCon-2026-World-of-Warcraft-Forever-Deep-Dive-Panel",
+      "kind": "community",
+      "kindLabel": "Community"
+     },
+     {
+      "label": "Wowhead, Deep Dive liveblog",
+      "url": "https://www.wowhead.com/forever/news/world-of-warcraft-forever-deep-dive-liveblog-382862",
+      "kind": "community",
+      "kindLabel": "Community"
+     }
+    ]
+   },
+   {
+    "id": "2026-09-13-hardcore-panel",
+    "iso": "2026-09-13",
+    "date": "13 Sept",
+    "title": "Hardcore is coming to Forever after launch, with a safe layer refresh and one-way Legacy.",
+    "kind": "community",
+    "kindLabel": "Community",
+    "note": "Blizzard's written recap covers the ruleset and the transfer rule. The layer-refresh system, the one-way Legacy detail and the Mak'gora tease come from panel coverage, not from a Blizzard post.",
+    "html": "<p>The Hardcore panel on Sept 13 confirmed Hardcore for Forever but gave no date beyond the roadmap’s “winter.” Production Director Clayton Stone announced it; Senior Game Designer Josh Greenfield covered the history.</p>\n<p>A character that dies in Hardcore can transfer to any other ruleset, including PvP and Roleplaying, rather than being forced into PvE as in Classic Hardcore. A new layer-refresh system warns you before a refresh, lets you move somewhere safe and then click a button to trigger it; one outlet reports this applies to every version of the game, not only Hardcore.</p>\n<p>Legacy runs one way. You earn Legacy points in Hardcore and each death leaves account-wide bonuses that make the next run easier, and Hardcore will have its own challenges and perks, but points, mounts, pets, appearances and achievements earned outside Hardcore do not carry in. Everything earned inside does carry out.</p>\n<p>Greenfield also teased a “dedicated space” for Mak’gora and said the team is thinking about Mak’gora tournaments.</p>\n",
+    "sources": [
+     {
+      "label": "Wowhead, Hardcore panel liveblog",
+      "url": "https://www.wowhead.com/forever/news/whats-next-hardcore-panel-liveblog-382875",
+      "kind": "community",
+      "kindLabel": "Community"
+     },
+     {
+      "label": "MMO-Champion, The Past, Present, and Future of Hardcore",
+      "url": "https://www.mmo-champion.com/content/14518-BlizzCon-2026-World-of-Warcraft-The-Past-Present-and-Future-of-Hardcore",
+      "kind": "community",
+      "kindLabel": "Community"
+     },
+     {
+      "label": "Warcraft Tavern, Forever was designed with Hardcore in mind",
+      "url": "https://www.warcrafttavern.com/forever/news/world-of-warcraft-forever-was-designed-with-hardcore-in-mind/",
+      "kind": "community",
+      "kindLabel": "Community"
+     },
+     {
+      "label": "Blizzard, Deep Dive panel recap",
+      "url": "https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap",
+      "kind": "blizzard",
+      "kindLabel": "Blizzard"
+     }
+    ]
+   },
+   {
+    "id": "2026-09-13-item-and-loot-pass",
+    "iso": "2026-09-13",
+    "date": "13 Sept",
+    "title": "Every dungeon drop re-examined; unique boss items are rare quality.",
+    "kind": "blizzard",
+    "kindLabel": "Blizzard",
+    "note": "The four item names from the live panel log are reported by one outlet only.",
+    "html": "<p>Blizzard says every dungeon drop has been re-examined, hundreds of new drops have been added, unique dungeon boss items are now rare quality, and set bonuses have been improved. Quest rewards were expanded so long questlines stop handing casters two-handed swords: Mor’ladim in Duskwood now also grants the Ladimore Heirloom Ring, and Hemet Nesingwary’s quests add the Master Hunter’s Spellsword.</p>\n<p>Trinkets are being pushed toward situational effects, with the Worgenbane Talisman given as an example, and some items now work in specific biomes such as Woodlands, Mountains or Deserts, or against specific creature types. World-drop epics have been improved and hundreds of new rare-creature drops added.</p>\n<p>One outlet’s live log of the panel also names the Graverobber’s Shovel and Sharpened Cutlery as new items, plus updated versions of the Tidal Charm and Whitemane’s Chapeau.</p>\n",
+    "sources": [
+     {
+      "label": "Blizzard, Deep Dive panel recap",
+      "url": "https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap",
+      "kind": "blizzard",
+      "kindLabel": "Blizzard"
+     },
+     {
+      "label": "MMO-Champion, Deep Dive panel",
+      "url": "https://www.mmo-champion.com/content/14512-BlizzCon-2026-World-of-Warcraft-Forever-Deep-Dive-Panel",
+      "kind": "community",
+      "kindLabel": "Community"
+     },
+     {
+      "label": "PC Gamer, 10 big Forever details from BlizzCon",
+      "url": "https://www.pcgamer.com/games/world-of-warcraft/10-big-world-of-warcraft-forever-details-from-blizzcon-no-separate-realms-optional-transmog-and-massively-improved-items/",
+      "kind": "community",
+      "kindLabel": "Community"
+     },
+     {
+      "label": "Output Lag, live log of the What's Next panel",
+      "url": "https://outputlag.com/news/everything-new-world-of-warcraft-forever/",
+      "kind": "community",
+      "kindLabel": "Community"
+     }
+    ]
+   },
+   {
+    "id": "2026-09-13-legacy-points-and-trees",
+    "iso": "2026-09-13",
+    "date": "13 Sept",
+    "title": "Legacy: 65 points earnable at launch, 16 spendable per character, three trees.",
+    "kind": "blizzard",
+    "kindLabel": "Blizzard",
+    "note": "The point totals and tree names are Blizzard's. The individual perks, their ranks, and the Merchant Favor crate economy come from one demo transcription.",
+    "html": "<p>Legacy points come from completing challenges while levelling, such as levelling a particular class or profession. Sixty-five are earnable at launch and each character can spend sixteen of them. Points are earned across the account but spent per character, so a Warrior need not pay for a perk that only a caster wants.</p>\n<p>The three launch trees are Adventure, Professions and Resourcefulness. Named perks include Well Rested, Bountiful Harvest and Reagent Economy, which removes the vendor reagent cost from class abilities. A separate Legacy Reward Track grants cosmetics such as a Spectral Bear Cub, and mounts are granted when you learn riding. Blizzard says more trees will follow.</p>\n<p>The perk list transcribed from the demo runs to twenty entries and includes two Professions slots whose tooltip reads “To be added in future patch content.” It also names a crate turn-in currency called Merchant Favor and two organisations, the Azeroth Commerce Authority and Durotar Supply and Logistics, that Blizzard has not described anywhere.</p>\n",
+    "sources": [
+     {
+      "label": "Blizzard, Deep Dive panel recap",
+      "url": "https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap",
+      "kind": "blizzard",
+      "kindLabel": "Blizzard"
+     },
+     {
+      "label": "Wowhead, Deep Dive liveblog",
+      "url": "https://www.wowhead.com/forever/news/world-of-warcraft-forever-deep-dive-liveblog-382862",
+      "kind": "community",
+      "kindLabel": "Community"
+     },
+     {
+      "label": "guided.news, Deep Dive roundup",
+      "url": "https://guided.news/en/news/wow-forever-deep-dive-600-new-recipes-a-realm-free-azeroth-and-the-legacy-system/",
+      "kind": "community",
+      "kindLabel": "Community"
+     },
+     {
+      "label": "Talents Forever (demo transcription)",
+      "url": "https://talentsforever.com/data.json",
+      "kind": "community",
+      "kindLabel": "Community"
+     }
+    ]
+   },
+   {
+    "id": "2026-09-13-name-reservation-three-characters",
+    "iso": "2026-09-13",
+    "date": "13 Sept",
+    "title": "Name reservation covers up to three characters, first come first served.",
+    "kind": "community",
+    "kindLabel": "Community",
+    "note": "The three-character figure is reported by one outlet and is not in Blizzard's own pre-purchase post.",
+    "html": "<p>Early Name Reservation, which runs Oct 27 to Nov 3 for anyone who owns an upgrade pack, lets a player create and customise up to three characters to hold their names. It is first come, first served, and Blizzard warns that a desired name is not guaranteed.</p>\n",
+    "sources": [
+     {
+      "label": "Insider Gaming, how to access the Forever beta",
+      "url": "https://insider-gaming.com/how-to-access-wow-forever-beta-explained/",
+      "kind": "community",
+      "kindLabel": "Community"
+     }
+    ]
+   },
+   {
+    "id": "2026-09-13-new-classes-not-ruled-out",
+    "iso": "2026-09-13",
+    "date": "13 Sept",
+    "title": "Blizzard has not ruled out a new class, correcting announcement-day coverage.",
+    "kind": "community",
+    "kindLabel": "Community",
+    "note": "The survey numbers and the quote come from live coverage of the panel, not from a Blizzard post.",
+    "html": "<p>This corrects what we published on Sept 12. One outlet reported that no new classes were being added. On the What’s Next panel, Associate Production Director Clay Stone said nothing is off the table, not even a new class, next to a fan survey of 35,305 responses in which 42.2 percent wanted no new class and 47.3 percent wanted one in some form.</p>\n<p>No new class is in the launch game. The point is that Blizzard has left the door open rather than closed it.</p>\n",
+    "sources": [
+     {
+      "label": "Output Lag, live log of the What's Next panel",
+      "url": "https://outputlag.com/news/everything-new-world-of-warcraft-forever/",
+      "kind": "community",
+      "kindLabel": "Community"
+     },
+     {
+      "label": "Wowhead, What's Next liveblog",
+      "url": "https://www.wowhead.com/forever/news/world-of-warcraft-forever-whats-next-liveblog-382824",
+      "kind": "community",
+      "kindLabel": "Community"
+     }
+    ]
+   },
+   {
+    "id": "2026-09-13-professions-600-recipes",
+    "iso": "2026-09-13",
+    "date": "13 Sept",
+    "title": "Over 600 new profession recipes; crafted food grants experience.",
+    "kind": "blizzard",
+    "kindLabel": "Blizzard",
+    "note": null,
+    "html": "<p>Blizzard says there are over 600 new recipes across professions and level ranges, plus overhauls to existing ones. Fishing and cooking were updated alongside camping, and almost all crafted food now grants a stat boost; Blizzard’s recap adds that crafted food can also grant a small experience bonus.</p>\n",
+    "sources": [
+     {
+      "label": "Blizzard, Deep Dive panel recap",
+      "url": "https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap",
+      "kind": "blizzard",
+      "kindLabel": "Blizzard"
+     },
+     {
+      "label": "MMO-Champion, Deep Dive panel",
+      "url": "https://www.mmo-champion.com/content/14512-BlizzCon-2026-World-of-Warcraft-Forever-Deep-Dive-Panel",
+      "kind": "community",
+      "kindLabel": "Community"
+     },
+     {
+      "label": "PC Gamer, 10 big Forever details from BlizzCon",
+      "url": "https://www.pcgamer.com/games/world-of-warcraft/10-big-world-of-warcraft-forever-details-from-blizzcon-no-separate-realms-optional-transmog-and-massively-improved-items/",
+      "kind": "community",
+      "kindLabel": "Community"
+     }
+    ]
+   },
+   {
+    "id": "2026-09-13-racials-reworked",
+    "iso": "2026-09-13",
+    "date": "13 Sept",
+    "title": "Every race gets two active and two passive racials; weapon-skill racials now give crit.",
+    "kind": "blizzard",
+    "kindLabel": "Blizzard",
+    "note": "Blizzard confirmed the structure and the Dwarf and Undead examples. The per-race numbers are demo transcriptions by Icy Veins and Talents Forever, and the two differ on Gnome, Night Elf and Troll values.",
+    "html": "<p>Blizzard reworked every race’s abilities so each has two actives and two passives, tuned for similar offensive power. Racials that used to grant Weapon Skill now grant critical strike chance with the matching weapon type, which makes them useful to casters as well as melee.</p>\n<p>Blizzard’s own worked examples are Dwarf and Undead. Stoneform now reduces physical damage taken rather than raising armour, Find Treasure stacks with other tracking, Mace Specialization grants crit, and Big Game Hunter adds damage against Beasts. Will of the Forsaken removes Charm, Fear and Sleep but no longer grants immunity, Cannibalize restores mana as well as health, and Touch of the Grave is new.</p>\n<p>The numbers for the other seven races come from outlets that played the BlizzCon demo rather than from Blizzard, and they disagree on a few values.</p>\n",
+    "sources": [
+     {
+      "label": "Blizzard, Deep Dive panel recap",
+      "url": "https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap",
+      "kind": "blizzard",
+      "kindLabel": "Blizzard"
+     },
+     {
+      "label": "Icy Veins, the racial rework",
+      "url": "https://www.icy-veins.com/wow-forever/news/the-racial-rework-gives-every-race-a-reason-to-matter-in-warcraft-forever/",
+      "kind": "community",
+      "kindLabel": "Community"
+     },
+     {
+      "label": "Talents Forever (demo transcription)",
+      "url": "https://talentsforever.com/data.json",
+      "kind": "community",
+      "kindLabel": "Community"
+     }
+    ]
+   },
+   {
+    "id": "2026-09-13-rulesets-replace-realms",
+    "iso": "2026-09-13",
+    "date": "13 Sept",
+    "title": "Forever has no realms. Players pick one of four rulesets instead.",
+    "kind": "blizzard",
+    "kindLabel": "Blizzard",
+    "note": null,
+    "html": "<p>At the Deep Dive panel Blizzard said Forever is realmless. Instead of choosing from a realm list, a player picks one of four rulesets: Normal, where player-versus-player combat requires mutual consent; PvP; Roleplaying; and Hardcore, which arrives after launch.</p>\n<p>Each ruleset is its own large ecosystem rather than a single realm, and it is not one giant realm for everyone. You can only group, run dungeons and raid with players who chose the same ruleset, and Horde and Alliance still cannot group together. Hardcore is fully enclosed, but a Hardcore character that dies can transfer to another ruleset, including PvP.</p>\n<p>Collections and Legacy Points are account-wide across rulesets, with Hardcore as the exception: what you earn in Hardcore can become available elsewhere, but progress made elsewhere never flows into Hardcore. The PvP ruleset will carry faction-balance systems along the lines of Season of Discovery.</p>\n",
+    "sources": [
+     {
+      "label": "Blizzard, Deep Dive panel recap",
+      "url": "https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap",
+      "kind": "blizzard",
+      "kindLabel": "Blizzard"
+     },
+     {
+      "label": "Wowhead, Deep Dive liveblog",
+      "url": "https://www.wowhead.com/forever/news/world-of-warcraft-forever-deep-dive-liveblog-382862",
+      "kind": "community",
+      "kindLabel": "Community"
+     },
+     {
+      "label": "PC Gamer, 10 big Forever details from BlizzCon",
+      "url": "https://www.pcgamer.com/games/world-of-warcraft/10-big-world-of-warcraft-forever-details-from-blizzcon-no-separate-realms-optional-transmog-and-massively-improved-items/",
+      "kind": "community",
+      "kindLabel": "Community"
+     }
+    ]
+   },
+   {
+    "id": "2026-09-13-six-new-race-class-combos",
+    "iso": "2026-09-13",
+    "date": "13 Sept",
+    "title": "Six new race and class combinations, with more planned.",
+    "kind": "blizzard",
+    "kindLabel": "Blizzard",
+    "note": null,
+    "html": "<p>The Deep Dive gave the full launch list: Gnome Priest, Human Hunter, Dwarf Shaman, Orc Mage, Troll Warlock and Undead Paladin. Blizzard says more are planned for future updates.</p>\n<p>This supersedes announcement-day coverage, which had only Undead Paladin confirmed by cinematic and Dwarf Shaman reported from the demo floor. Night Elf Paladin belongs to retail Patch 12.2 and is not a Forever combination.</p>\n",
+    "sources": [
+     {
+      "label": "Blizzard, Deep Dive panel recap",
+      "url": "https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap",
+      "kind": "blizzard",
+      "kindLabel": "Blizzard"
+     },
+     {
+      "label": "PC Gamer, 10 big Forever details from BlizzCon",
+      "url": "https://www.pcgamer.com/games/world-of-warcraft/10-big-world-of-warcraft-forever-details-from-blizzcon-no-separate-realms-optional-transmog-and-massively-improved-items/",
+      "kind": "community",
+      "kindLabel": "Community"
+     },
+     {
+      "label": "guided.news, Deep Dive roundup",
+      "url": "https://guided.news/en/news/wow-forever-deep-dive-600-new-recipes-a-realm-free-azeroth-and-the-legacy-system/",
+      "kind": "community",
+      "kindLabel": "Community"
+     }
+    ]
+   },
+   {
+    "id": "2026-09-13-skyborne-are-not-neutral",
+    "iso": "2026-09-13",
+    "date": "13 Sept",
+    "title": "Blizzard says the Skyborne are not a neutral race, and the two factions differ.",
+    "kind": "blizzard",
+    "kindLabel": "Blizzard",
+    "note": "The faction-specific second racial comes from one demo transcription and is not in any Blizzard post.",
+    "html": "<p>The announcement-day comparison to Pandaren was ours, not Blizzard’s. The panel transcript is explicit: “the Skyborne are not a neutral race. At character creation, players will choose whether their Skyborne joins the Horde or the Alliance.”</p>\n<p>The distinction matters because the two halves are not the same race with a different tabard. Horde-aligned Skyborne work with the Earthen Ring and gain Shaman; Alliance-aligned Skyborne work with the Kirin Tor and gain Mage. A demo transcription also records different second active racials for each: Skysight on the Horde side, Read Ley Line on the Alliance side.</p>\n",
+    "sources": [
+     {
+      "label": "Blizzplanet, What's Next panel transcript",
+      "url": "https://warcraft.blizzplanet.com/blog/comments/blizzcon-2026-world-of-warcraft-whats-next-panel-transcript/4",
+      "kind": "community",
+      "kindLabel": "Community"
+     },
+     {
+      "label": "Blizzard, Deep Dive panel recap",
+      "url": "https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap",
+      "kind": "blizzard",
+      "kindLabel": "Blizzard"
+     },
+     {
+      "label": "Talents Forever (demo transcription)",
+      "url": "https://talentsforever.com/data.json",
+      "kind": "community",
+      "kindLabel": "Community"
+     }
+    ]
+   },
+   {
+    "id": "2026-09-13-transmog-appearance-rules",
+    "iso": "2026-09-13",
+    "date": "13 Sept",
+    "title": "Dungeon drops grant their appearance to every eligible looter.",
+    "kind": "blizzard",
+    "kindLabel": "Blizzard",
+    "note": null,
+    "html": "<p>When a bind-on-pickup uncommon or rare item drops in a dungeon, its appearance is granted to every eligible looter, so nobody has to roll against an upgrade just to collect the look. Epic raid drops are the exception: only the player the item binds to gets the appearance.</p>\n<p>Poor and common items grant their appearance as soon as they are looted, without binding. Armour type rules apply, so plate transmogs to plate and cloth to cloth, and low-level characters cannot use high-level appearances until 60, when level restrictions lift. PvP gear still requires its rank. Cosmetic-only items exist but will be rare.</p>\n",
+    "sources": [
+     {
+      "label": "Blizzard, Deep Dive panel recap",
+      "url": "https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap",
+      "kind": "blizzard",
+      "kindLabel": "Blizzard"
+     },
+     {
+      "label": "MMO-Champion, Deep Dive panel",
+      "url": "https://www.mmo-champion.com/content/14512-BlizzCon-2026-World-of-Warcraft-Forever-Deep-Dive-Panel",
+      "kind": "community",
+      "kindLabel": "Community"
+     },
+     {
+      "label": "Inven Global, Deep Dive details",
+      "url": "https://www.invenglobal.com/articles/25897/world-of-warcraft-forever-details-revealed-major-overhaul-for-gear-and-classes",
+      "kind": "community",
+      "kindLabel": "Community"
+     }
+    ]
+   },
+   {
+    "id": "2026-09-13-transmog-is-opt-out",
+    "iso": "2026-09-13",
+    "date": "13 Sept",
+    "title": "Transmog is opt-out, not opt-in: it is on by default and can be disabled.",
+    "kind": "blizzard",
+    "kindLabel": "Blizzard",
+    "note": "Supersedes the Sept 12 entry that recorded transmog as opt-in.",
+    "html": "<p>This corrects what we published on Sept 12. One outlet reported transmog as opt-in; Blizzard’s own Deep Dive recap describes a system that is on by default and can be turned off.</p>\n<p>A mode selector appears the first time you log in, and choosing Classic Mode disables transmog automatically when you enter the world. You can change the setting later by talking to an NPC, and configure outfits at a transmogrifier in certain cities. Turning it off means you see everyone in the gear they are actually wearing.</p>\n<p>With the system disabled you still collect appearances, you can still hide your own helm or cloak and display your own transmog, and you still see other players’ hidden helm and cloak settings.</p>\n",
+    "sources": [
+     {
+      "label": "Blizzard, Deep Dive panel recap",
+      "url": "https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap",
+      "kind": "blizzard",
+      "kindLabel": "Blizzard"
+     },
+     {
+      "label": "MMO-Champion, Deep Dive panel",
+      "url": "https://www.mmo-champion.com/content/14512-BlizzCon-2026-World-of-Warcraft-Forever-Deep-Dive-Panel",
+      "kind": "community",
+      "kindLabel": "Community"
+     },
+     {
+      "label": "Wowhead, Deep Dive liveblog",
+      "url": "https://www.wowhead.com/forever/news/world-of-warcraft-forever-deep-dive-liveblog-382862",
+      "kind": "community",
+      "kindLabel": "Community"
+     }
+    ]
+   },
+   {
+    "id": "2026-09-13-two-part-character-names",
+    "iso": "2026-09-13",
+    "date": "13 Sept",
+    "title": "Characters get two-part names, unique per region.",
+    "kind": "blizzard",
+    "kindLabel": "Blizzard",
+    "note": null,
+    "html": "<p>Because there are no realms to scope a name to, Forever characters have a first and a last name, and the pair is unique per region. Blizzard’s example is “Ana Forever.”</p>\n<p>Players also choose a language preference at creation, which the game uses along with faction to lean toward grouping and phasing you with players who share it.</p>\n<p>Blizzard frames two-part names as more room for an original name. Wowhead’s read of the same change is the opposite, that a region-wide namespace means more competition for any given name. Both follow from the same rule.</p>\n",
+    "sources": [
+     {
+      "label": "Blizzard, Deep Dive panel recap",
+      "url": "https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap",
+      "kind": "blizzard",
+      "kindLabel": "Blizzard"
+     },
+     {
+      "label": "Wowhead, Deep Dive liveblog",
+      "url": "https://www.wowhead.com/forever/news/world-of-warcraft-forever-deep-dive-liveblog-382862",
+      "kind": "community",
+      "kindLabel": "Community"
+     }
+    ]
+   },
+   {
+    "id": "2026-09-13-unified-hit-and-crit",
+    "iso": "2026-09-13",
+    "date": "13 Sept",
+    "title": "Spell, melee and ranged hit become one stat, and so do crit; expertise is added.",
+    "kind": "blizzard",
+    "kindLabel": "Blizzard",
+    "note": null,
+    "html": "<p>Forever combines spell, melee and ranged hit chance into a single hit stat, and does the same for critical strike chance. Blizzard says this helps hybrids such as Retribution Paladins and Enhancement Shaman, and also makes Taunts, Poisons and Traps more reliable for Warriors, Hunters and Rogues.</p>\n<p>A new stat reduces the chance for your attacks to be parried or dodged. Weapon skill still works the way it did, but individual items carry less of it so it is no longer the automatic best choice. Bonus healing now also carries one third as much bonus damage and appears on gear as early as level 10, and caster weapons grant spell damage and healing.</p>\n",
+    "sources": [
+     {
+      "label": "Blizzard, Deep Dive panel recap",
+      "url": "https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap",
+      "kind": "blizzard",
+      "kindLabel": "Blizzard"
+     },
+     {
+      "label": "Wowhead, Deep Dive liveblog",
+      "url": "https://www.wowhead.com/forever/news/world-of-warcraft-forever-deep-dive-liveblog-382862",
+      "kind": "community",
+      "kindLabel": "Community"
+     },
+     {
+      "label": "Inven Global, Deep Dive details",
+      "url": "https://www.invenglobal.com/articles/25897/world-of-warcraft-forever-details-revealed-major-overhaul-for-gear-and-classes",
+      "kind": "community",
+      "kindLabel": "Community"
+     }
+    ]
+   },
+   {
+    "id": "2026-09-12-dungeon-level-ranges",
+    "iso": "2026-09-12",
+    "date": "12 Sept",
+    "title": "Added reported level ranges for all nine new dungeons.",
+    "kind": "site",
+    "kindLabel": "This site",
+    "note": "Reported by one outlet, not yet confirmed.",
+    "html": "",
+    "sources": [
+     {
+      "label": "guided.news roundup (level ranges)",
+      "url": "https://guided.news/en/news/wow-classic-launches-in-november-everything-you-need-to-know-about-world-of-warcraft-forever/",
+      "kind": "community",
+      "kindLabel": "Community"
+     }
+    ]
+   },
+   {
+    "id": "2026-09-12-forever-announced",
+    "iso": "2026-09-12",
+    "date": "12 Sept",
+    "title": "Forever announced at BlizzCon. Beta Sept 17, launch Nov 4, level 60 forever.",
+    "kind": "blizzard",
+    "kindLabel": "Blizzard",
+    "note": "Four new zones, nine dungeons, two raids, Darkspear Islands battleground, 1,000+ quests.",
+    "html": "",
+    "sources": [
+     {
+      "label": "Blizzard, World of Warcraft at BlizzCon 2026",
+      "url": "https://news.blizzard.com/en-us/article/24301145/world-of-warcraft-at-blizzcon-2026-discover-whats-next",
+      "kind": "blizzard",
+      "kindLabel": "Blizzard"
+     }
+    ]
+   },
+   {
+    "id": "2026-09-12-skyborne-pack-price",
+    "iso": "2026-09-12",
+    "date": "12 Sept",
+    "title": "Skyborne Heroic Pack priced at $29.99, Epic Pack at $59.99.",
+    "kind": "blizzard",
+    "kindLabel": "Blizzard",
+    "note": "Pack contents are from Blizzard's own post; the USD prices are press-reported and consistent across outlets, not stated verbatim in Blizzard's copy.",
+    "html": "",
+    "sources": [
+     {
+      "label": "gamefragger, pre-order pricing",
+      "url": "https://gamefragger.com/pc/warcraft/world-of-warcraft-forever-pre-orders-are-live-ranging-from-30-race-pack-to-a-150-collector-box-a29775",
+      "kind": "community",
+      "kindLabel": "Community"
+     },
+     {
+      "label": "Warcraft Tavern, editions and prices",
+      "url": "https://www.warcrafttavern.com/forever/news/world-of-warcraft-forever-editions-skyborne-race-unlock-beta-access/",
+      "kind": "community",
+      "kindLabel": "Community"
+     }
+    ]
+   },
+   {
+    "id": "2026-09-12-transmog-opt-in",
+    "iso": "2026-09-12",
+    "date": "12 Sept",
+    "title": "Transmog reported as opt-in; disabling it shows everyone's real gear.",
+    "kind": "community",
+    "kindLabel": "Community",
+    "note": "Reported from the What's Next panel by one outlet. Superseded on Sept 13: Blizzard's own Deep Dive recap describes transmog as on by default and opt-out. Kept as a record of what was reported on the day.",
+    "html": "",
+    "sources": [
+     {
+      "label": "Out of Games, What's Next at BlizzCon 2026 recap",
+      "url": "https://outof.games/news/9946-world-of-warcraft-forever-whats-next-at-blizzcon-2026-ended/",
+      "kind": "community",
+      "kindLabel": "Community"
+     }
+    ]
+   }
+  ]
+ },
+ "pages": {
+  "about": {
+   "id": "about",
+   "title": "About Forever Sixty",
+   "description": "Who runs this site, how facts are checked, and how to help.",
+   "updated": "24 Oct",
+   "confidence": null,
+   "sources": [
+    {
+     "label": "This site",
+     "url": "https://foreversixty.gg/about",
+     "kind": "site"
+    }
+   ],
+   "html": "<p>Forever Sixty helps you play your class better in World of Warcraft: Forever. It is built and run by Commish LLC, an Arkansas company founded by players, and written and checked by players.</p>\n<p>Every fact on the site carries the date it was last checked and where it came from. A source pill says whether a fact comes from Blizzard, from the game client, from verified player reports, or from this site’s own work. When only one outlet reports something, the page says so.</p>\n<p>The site is not affiliated with or endorsed by Blizzard Entertainment.</p>\n<p>To report an error or write a guide, use the links in the footer.</p>\n",
+   "headings": []
+  },
+  "privacy": {
+   "id": "privacy",
+   "title": "Privacy policy",
+   "description": "What Forever Sixty collects, how it is used, and how long it is kept.",
+   "updated": "3 Nov",
+   "confidence": null,
+   "sources": [
+    {
+     "label": "This site",
+     "url": "https://foreversixty.gg/privacy",
+     "kind": "site"
+    }
+   ],
+   "html": "<h2 id=\"what-is-collected\">What is collected</h2>\n<p>Your Battle.net sign-in identity; an email address only for an account first opened with the\nemail sign-in link, which we no longer offer; combat logs and addon exports you upload; and, if you subscribe, a Stripe Customer id. We\nnever collect, see, or store your card number, its expiry, or your CVC — Stripe holds all of\nthat directly.</p>\n<p>We count visits and clicks on our links without cookies or any personal data, and record\nwhich of our links, if any, an account first arrived from.</p>\n<h2 id=\"how-battlenet-data-is-used\">How Battle.net data is used</h2>\n<p>Anything sourced from Blizzard’s Developer API is kept for at most thirty days, per\nBlizzard’s own Developer API Terms of Use, and is never sold or placed behind a paywall.</p>\n<h2 id=\"stripe\">Stripe</h2>\n<p>Stripe is our payment processor. Checkout and the billing portal are hosted by Stripe; see\n<a href=\"https://stripe.com/privacy\">Stripe’s own privacy policy</a> for what Stripe itself collects\nduring that process.</p>\n<h2>Log coach</h2><p>When a Premium player or an officer opens a coach review, one fight's numbers — spec, class, role, boss, raid size, kill or wipe, duration, level and the spells cast — are sent through the Vercel AI Gateway, which keeps nothing, to DeepSeek, which writes the review. It carries no character name, account, guild, realm or Battle.net data. What DeepSeek keeps, and whether it trains on it, is set by its Open Platform terms and privacy policy, and we do not control that. If the model is switched off, reviews fall back to the log-only text. Anonymising your account in its settings does not turn this off: a review is written when you, one of your guild's officers or a site moderator opens it, and anonymising stops only the moderator.</p><ul><li><a href=\"https://vercel.com/docs/ai-gateway/security-and-compliance/zdr\">Vercel AI Gateway data retention</a></li><li><a href=\"https://cdn.deepseek.com/policies/en-US/deepseek-open-platform-terms-of-service.html\">DeepSeek Open Platform terms</a></li><li><a href=\"https://cdn.deepseek.com/policies/en-US/deepseek-privacy-policy.html\">DeepSeek privacy policy</a></li></ul><h2 id=\"cookies\">Cookies</h2>\n<p><code>fs_session</code> and <code>fs_csrf</code> are functional cookies only — they keep you signed in and protect\nstate-changing requests. There are no tracking or advertising cookies, consistent with this\nsite never running ads, for anyone, ever.</p>\n<h2 id=\"data-retention\">Data retention</h2>\n<p>Uploaded combat logs, the reports parsed from them, saved sims and the ratings derived from\nthem are kept until you delete them or your account; the rankings and a character’s history\nare built from that record and would be wrong without it. Session rows expire with the\nsession. If a storage limit ever becomes necessary it will be announced on the changelog\nwith dates before anything is removed.</p>\n<h2 id=\"who-is-responsible\">Who is responsible</h2>\n<p>This service is operated by Commish LLC d/b/a Forever Sixty, an Arkansas limited liability\ncompany, which is the party responsible for the data described on this page. Mail reaches it at Commish LLC, c/o\nNorthwest Registered Agent, LLC, 701 South St., STE 100, Mountain Home, AR 72653, United\nStates.</p>\n<h2 id=\"requests-and-contact\">Requests and contact</h2>\n<p>To see, export, correct or delete what the site holds about you, email\n<a href=\"mailto:help@foreversixty.gg\">help@foreversixty.gg</a> from the address or Battle.net account the\nrequest is about. You get an answer within thirty days, and usually much sooner. Those rights\nare yours wherever you live; the site runs no advertising, sells no data and builds no\nprofiles, so there is nothing to opt out of beyond deleting your account.</p>\n",
+   "headings": [
+    {
+     "id": "what-is-collected",
+     "title": "What is collected"
+    },
+    {
+     "id": "how-battlenet-data-is-used",
+     "title": "How Battle.net data is used"
+    },
+    {
+     "id": "stripe",
+     "title": "Stripe"
+    },
+    {
+     "id": null,
+     "title": "Log coach"
+    },
+    {
+     "id": "cookies",
+     "title": "Cookies"
+    },
+    {
+     "id": "data-retention",
+     "title": "Data retention"
+    },
+    {
+     "id": "who-is-responsible",
+     "title": "Who is responsible"
+    },
+    {
+     "id": "requests-and-contact",
+     "title": "Requests and contact"
+    }
+   ]
+  },
+  "refunds": {
+   "id": "refunds",
+   "title": "Refund policy",
+   "description": "How refunds work and what happens to your subscription when one is issued.",
+   "updated": "24 Oct",
+   "confidence": null,
+   "sources": [
+    {
+     "label": "This site",
+     "url": "https://foreversixty.gg/refunds",
+     "kind": "site"
+    }
+   ],
+   "html": "<h2 id=\"asking-for-a-refund\">Asking for a refund</h2>\n<p>Email <a href=\"mailto:help@foreversixty.gg\">help@foreversixty.gg</a> from the account the subscription is\non and we will sort it out.</p>\n<h2 id=\"what-happens-to-your-subscription\">What happens to your subscription</h2>\n<p>When a refund is approved, the owner cancels the subscription in the same action as issuing\nthe refund — access ends at that point, not automatically the instant the refund is issued,\nsince the two happen together. This is not an automated instant cutoff; it is a short manual\nstep the owner takes personally.</p>\n<h2 id=\"partial-period-refunds\">Partial-period refunds</h2>\n<p>A subscription is paid up front for its period. Cancelling stops the renewal and your access\nruns to the end of the period you paid for; we do not refund part of a period. If something\nwent wrong on our side — you were charged twice, or paid for something that did not work —\nemail us and we will put it right.</p>\n<h2 id=\"who-processes-the-refund\">Who processes the refund</h2>\n<p>Commish LLC d/b/a Forever Sixty, the Arkansas company that operates this service, issues the refund through\nStripe to the card you paid with. Stripe’s own timing applies from there, usually five to ten\nbusiness days.</p>\n",
+   "headings": [
+    {
+     "id": "asking-for-a-refund",
+     "title": "Asking for a refund"
+    },
+    {
+     "id": "what-happens-to-your-subscription",
+     "title": "What happens to your subscription"
+    },
+    {
+     "id": "partial-period-refunds",
+     "title": "Partial-period refunds"
+    },
+    {
+     "id": "who-processes-the-refund",
+     "title": "Who processes the refund"
+    }
+   ]
+  },
+  "roadmap": {
+   "id": "roadmap",
+   "title": "Roadmap",
+   "description": "Every dated milestone announced for World of Warcraft: Forever, from the Sept 17 beta through Summer 2027.",
+   "updated": "14 Sept",
+   "confidence": null,
+   "sources": [
+    {
+     "label": "Blizzard, What's Next panel recap",
+     "url": "https://news.blizzard.com/en-gb/article/24303862/world-of-warcraft-forever-whats-next-panel-recap",
+     "kind": "blizzard"
+    },
+    {
+     "label": "Blizzard, Deep Dive panel recap",
+     "url": "https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap",
+     "kind": "blizzard"
+    },
+    {
+     "label": "Blizzard, pre-purchase and beta dates",
+     "url": "https://news.blizzard.com/en-us/article/24301508/pre-purchase-world-of-warcraft-forever-upgrades-and-begin-your-next-journey-in-azeroth",
+     "kind": "blizzard"
+    },
+    {
+     "label": "Blizzard, live Q&A on September 17",
+     "url": "https://news.blizzard.com/en-us/article/24303312/submit-your-questions-for-the-world-of-warcraft-live-q-a-september-17",
+     "kind": "blizzard"
+    },
+    {
+     "label": "Icy Veins, Forever roadmap",
+     "url": "https://www.icy-veins.com/wow-forever/news/warcraft-forever-roadmap-unveils-raid-unlocks-and-major-updates/",
+     "kind": "community"
+    },
+    {
+     "label": "Output Lag, live log of the What's Next panel",
+     "url": "https://outputlag.com/news/everything-new-world-of-warcraft-forever/",
+     "kind": "community"
+    },
+    {
+     "label": "Wowhead, opt in for the Forever beta",
+     "url": "https://www.wowhead.com/forever/news/opt-in-for-the-world-of-warcraft-forever-beta-382860",
+     "kind": "community"
+    },
+    {
+     "label": "mmos.com, BlizzCon 2026 schedule",
+     "url": "https://mmos.com/news/mmorpg-news/blizzcon-2026-schedule",
+     "kind": "community"
+    }
+   ],
+   "html": "<p>Every dated milestone Blizzard has announced for World of Warcraft: Forever, in order.</p>\n<table>\n<thead>\n<tr>\n<th>Date</th>\n<th>Content</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>Sept 13</td>\n<td>Deep Dive panel at 10:00 a.m. PDT and Hardcore panel at 4:15 p.m. PDT, both held</td>\n</tr>\n<tr>\n<td>Sept 17, 10:00 a.m. PDT</td>\n<td>Live developer Q&amp;A on the Warcraft Twitch and YouTube channels, with a VOD afterwards</td>\n</tr>\n<tr>\n<td>Sept 17 – Oct 21</td>\n<td>Beta, with a level cap of 30</td>\n</tr>\n<tr>\n<td>Oct 20</td>\n<td>Invite-a-Friend launch codes begin going out by email</td>\n</tr>\n<tr>\n<td>Oct 27 – Nov 3</td>\n<td>Early name reservation for pack owners, up to three characters</td>\n</tr>\n<tr>\n<td>Nov 4, 3:00 p.m. PST</td>\n<td>Launch</td>\n</tr>\n<tr>\n<td>Nov 4 – Nov 11</td>\n<td>Invite-a-Friend launch week access</td>\n</tr>\n<tr>\n<td>Dec 9</td>\n<td>Barrow Deeps, Hyjal Summit, and Onyxia’s Lair open</td>\n</tr>\n<tr>\n<td>Winter 2026/27</td>\n<td>The Hardcore ruleset, exact date not yet announced</td>\n</tr>\n<tr>\n<td>Spring 2027</td>\n<td>Two raids, two dungeons, new quests and a zone, a legendary questline, and a PvP season</td>\n</tr>\n<tr>\n<td>Summer 2027</td>\n<td>A revamped iconic raid plus one new raid, two dungeons, a PvP season, and professions and Legacy updates</td>\n</tr>\n</tbody>\n</table>\n<h2 id=\"notes-on-these-dates\">Notes on these dates</h2>\n<p><strong>There are no realms, so there is no realm list to publish.</strong> Forever is realmless: players pick a ruleset — Normal, PvP, Roleplaying, or Hardcore — rather than a realm. Oct 27 is name reservation only. Names are two-part and unique per region.</p>\n<p><strong>Hardcore is a ruleset, not a set of realms</strong>, and the Sept 13 Hardcore panel gave no date beyond the roadmap’s “winter.”</p>\n<p><strong>The beta end date is reported two ways.</strong> Blizzard’s pre-purchase post says the beta runs through Oct 21, 2026 PST. The roadmap slide shown at BlizzCon reads Oct 22, and Icy Veins reproduces that. Exact start and end times were never given, so the test may run into Oct 22 in other time zones. We list Blizzard’s own date.</p>\n<p><strong>Beta access is not paywalled.</strong> A free opt-in is open on the Forever page on Battle.net; it puts you in the pool without guaranteeing a seat. The Skyborne Epic Pack, the Warcraft Forever Collection, and the Collector’s Edition guarantee access.</p>\n<p>The beta level cap of 30 is reported by press coverage and has not been restated directly in Blizzard’s own text; the rest of this table comes from Blizzard’s panel recaps and posts.</p>\n",
+   "headings": [
+    {
+     "id": "notes-on-these-dates",
+     "title": "Notes on these dates"
+    }
+   ]
+  },
+  "sources": {
+   "id": "sources",
+   "title": "How sources are classified",
+   "description": "How this site labels where a fact comes from, what each pill means, and what \"single-source\" means.",
+   "updated": "14 Sept",
+   "confidence": null,
+   "sources": [
+    {
+     "label": "This site",
+     "url": "https://foreversixty.gg/sources",
+     "kind": "site"
+    }
+   ],
+   "html": "<p>Every fact on this site carries a pill that says where it came from, and a note that says how confident we are in it.</p>\n<h2 id=\"the-four-pill-kinds\">The four pill kinds</h2>\n<ul>\n<li><strong>Blizzard</strong> — stated in an official Blizzard post, panel, or in-game text.</li>\n<li><strong>Datamined</strong> — pulled directly from the beta or live game client, such as with wago.tools.</li>\n<li><strong>Community</strong> — reported by press outlets, streamers, or other players, and not yet confirmed by Blizzard or the client.</li>\n<li><strong>This site</strong> — written or compiled by this site, such as a guide or a methodology page like this one.</li>\n</ul>\n<h2 id=\"what-single-source-means\">What “single-source” means</h2>\n<p>A page or fact marked single-source has been reported by exactly one outlet, and has not been confirmed by Blizzard, by the game client, or by a second independent outlet. Single-source facts can turn out to be wrong, incomplete, or superseded once the beta client is available. Pages marked confirmed are backed either by Blizzard’s own words or by two or more independent outlets agreeing. Pages marked inferred are this site’s own reasoning about what is likely true, based on what has been said elsewhere, and are the least certain of the three.</p>\n<h2 id=\"when-we-get-something-wrong\">When we get something wrong</h2>\n<p>We correct it in place, say so on the page, and add a dated entry to the <a href=\"/changelog\">changelog</a> explaining what changed. We do not delete the original changelog entry, because the record of what was reported on the day is itself worth keeping. Two corrections have been made so far: transmog turned out to be opt-out rather than opt-in, and new classes turned out not to be ruled out.</p>\n<h2 id=\"primary-sources-this-site-checks\">Primary sources this site checks</h2>\n<ul>\n<li><a href=\"https://news.blizzard.com/en-us/\">Blizzard’s official news hub</a> for Blizzard’s own posts.</li>\n<li><a href=\"https://wago.tools/builds\">wago.tools</a> for datamined build data once the beta client is available.</li>\n</ul>\n<h2 id=\"panel-recaps-and-transcripts\">Panel recaps and transcripts</h2>\n<ul>\n<li><a href=\"https://news.blizzard.com/en-gb/article/24303862/world-of-warcraft-forever-whats-next-panel-recap\">Blizzard’s What’s Next panel recap</a> and <a href=\"https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap\">Deep Dive panel recap</a>, Sept 12 and 13.</li>\n<li><a href=\"https://warcraft.blizzplanet.com/blog/comments/blizzcon-2026-world-of-warcraft-whats-next-panel-transcript/4\">Blizzplanet’s What’s Next panel transcript</a>, which quotes the stage directly where Blizzard’s recap paraphrases.</li>\n<li>Wowhead’s liveblogs of the <a href=\"https://www.wowhead.com/forever/news/world-of-warcraft-forever-whats-next-liveblog-382824\">What’s Next</a>, <a href=\"https://www.wowhead.com/forever/news/world-of-warcraft-forever-deep-dive-liveblog-382862\">Deep Dive</a>, and <a href=\"https://www.wowhead.com/forever/news/whats-next-hardcore-panel-liveblog-382875\">Hardcore</a> panels.</li>\n<li>MMO-Champion’s write-ups of the <a href=\"https://www.mmo-champion.com/content/14512-BlizzCon-2026-World-of-Warcraft-Forever-Deep-Dive-Panel\">Deep Dive</a> and <a href=\"https://www.mmo-champion.com/content/14518-BlizzCon-2026-World-of-Warcraft-The-Past-Present-and-Future-of-Hardcore\">Hardcore</a> panels.</li>\n<li><a href=\"https://outputlag.com/news/everything-new-world-of-warcraft-forever/\">Output Lag’s timestamped live log</a> of the What’s Next panel, which recorded slide detail other recaps skipped, including dungeon level ranges.</li>\n</ul>\n<h2 id=\"developer-interviews\">Developer interviews</h2>\n<ul>\n<li><a href=\"https://sea.ign.com/world-of-warcraft-forever/248775/world-of-warcraft-forever-devs-explain-why-the-game-makes-wow-2-unlikely\">IGN with Kris Zierhut and Mike Nuthals</a>.</li>\n<li><a href=\"https://www.invenglobal.com/articles/25888/why-was-world-of-warcraft-forever-created\">Inven Global with Ana Resendes</a>.</li>\n<li><a href=\"https://butwhytho.net/2026/09/wow-classic-devs-world-of-warcraft-forever/\">But Why Tho with Anna Resendez and Clayton Stone</a>.</li>\n<li><a href=\"https://screenrant.com/world-of-warcraft-forever-interview-controller-support-future-development/\">ScreenRant with Tim Jones and Nora Valletta</a>.</li>\n</ul>\n<h2 id=\"community-data-we-credit-and-reuse\">Community data we credit and reuse</h2>\n<p>The BlizzCon demo was playable on the show floor and streamed, so a lot of what is known about abilities, racials, and Legacy perks was transcribed off footage before any client existed.</p>\n<ul>\n<li><strong><a href=\"https://talentsforever.com\">Talents Forever</a></strong> publishes its whole dataset at <a href=\"https://talentsforever.com/data.json\">talentsforever.com/data.json</a> under <a href=\"https://creativecommons.org/licenses/by/4.0/\">CC BY 4.0</a>. Where this site uses its ability, racial, or Legacy data, it is credited as “Talents Forever (demo transcription)” with a link, as the licence requires. Its talent trees include estimated rank values and we do not reuse those.</li>\n<li><strong><a href=\"https://www.icy-veins.com/wow-forever/\">Icy Veins</a></strong> transcribed all nine races’ racials from the demo.</li>\n<li><strong><a href=\"https://powerupgaming.co.uk/2026/09/14/new-wow-forever-talents-changes-vs-classic-guide/\">Power Up Gaming</a></strong> counted the talent trees and published a per-class breakdown of what is new, changed, and unchanged.</li>\n</ul>\n<p>Demo transcriptions are marked community, and single-source unless two outlets independently read the same number. They will be replaced with datamined values once the beta client is available after Sept 17.</p>\n",
+   "headings": [
+    {
+     "id": "the-four-pill-kinds",
+     "title": "The four pill kinds"
+    },
+    {
+     "id": "what-single-source-means",
+     "title": "What “single-source” means"
+    },
+    {
+     "id": "when-we-get-something-wrong",
+     "title": "When we get something wrong"
+    },
+    {
+     "id": "primary-sources-this-site-checks",
+     "title": "Primary sources this site checks"
+    },
+    {
+     "id": "panel-recaps-and-transcripts",
+     "title": "Panel recaps and transcripts"
+    },
+    {
+     "id": "developer-interviews",
+     "title": "Developer interviews"
+    },
+    {
+     "id": "community-data-we-credit-and-reuse",
+     "title": "Community data we credit and reuse"
+    }
+   ]
+  },
+  "terms": {
+   "id": "terms",
+   "title": "Subscription terms",
+   "description": "What Premium and the guild plan are, how billing works, and how to cancel.",
+   "updated": "24 Oct",
+   "confidence": null,
+   "sources": [
+    {
+     "label": "This site",
+     "url": "https://foreversixty.gg/terms",
+     "kind": "site"
+    }
+   ],
+   "html": "<h2 id=\"what-premium-and-the-guild-plan-are\">What Premium and the guild plan are</h2>\n<p>Premium and the guild plan sell server compute and storage: running simulations on our\nservers, keeping raw logs and saved sims longer, and (for the guild plan) tools for a raid\ngroup. Nothing from Battle.net — your characters, your sign-in, anything the game itself\ntells us about you — is ever sold or gated behind a subscription.</p>\n<h2 id=\"billing-and-auto-renewal\">Billing and auto-renewal</h2>\n<p>Premium is $6 a month or $50 a year; Guild is $15 a month or $150 a year; Raid guild is $25 a\nmonth or $250 a year. Founder prices apply until 6 January 2027, as stated on the pricing page. A subscription renews automatically at the end of each billing period until you\ncancel. Stripe processes every payment; we never see or store your card.</p>\n<h2 id=\"cancelling\">Cancelling</h2>\n<p>Cancelling stops the renewal and keeps your access through the end of the period you already\npaid for; a period is paid up front and is not refunded in part (see the\n<a href=\"/refunds\">refund policy</a>). After that, the account works exactly like a free one — nothing is\ndeleted.</p>\n<h2 id=\"price-changes\">Price changes</h2>\n<p>If a price changes, you are told before it affects you, and the new price applies only from\nyour next renewal after that notice. Nothing you have already paid for is repriced.</p>\n<h2 id=\"account-termination-for-abuse\">Account termination for abuse</h2>\n<p>An account or guild found to be abusing the guild plan (for example, an inflated or\nfabricated roster meant to split one subscription among unrelated players) may have its\nentitlement revoked.</p>\n<h2 id=\"the-company\">The company</h2>\n<p>This service is provided by Commish LLC d/b/a Forever Sixty: Commish LLC, an Arkansas limited\nliability company, doing business as Forever Sixty, a fictitious name registered in Arkansas.</p>\n<ul>\n<li>Email: <a href=\"mailto:help@foreversixty.gg\">help@foreversixty.gg</a></li>\n<li>Phone: (479) 227-2208</li>\n<li>Mail: Commish LLC, c/o Northwest Registered Agent, LLC, 701 South St., STE 100, Mountain\nHome, AR 72653, United States</li>\n</ul>\n<p>These terms are governed by the laws of the State of Arkansas. Any dispute that cannot be\nsettled by email is heard in the state or federal courts located in Arkansas.</p>\n<h2 id=\"battlenet-sourced-data\">Battle.net-sourced data</h2>\n<p>Battle.net-sourced data is never sold. Blizzard’s Developer API Terms of Use\nforbid paywalling data or features that come from their API, and this site would keep that\nrule even if it did not have to.</p>\n",
+   "headings": [
+    {
+     "id": "what-premium-and-the-guild-plan-are",
+     "title": "What Premium and the guild plan are"
+    },
+    {
+     "id": "billing-and-auto-renewal",
+     "title": "Billing and auto-renewal"
+    },
+    {
+     "id": "cancelling",
+     "title": "Cancelling"
+    },
+    {
+     "id": "price-changes",
+     "title": "Price changes"
+    },
+    {
+     "id": "account-termination-for-abuse",
+     "title": "Account termination for abuse"
+    },
+    {
+     "id": "the-company",
+     "title": "The company"
+    },
+    {
+     "id": "battlenet-sourced-data",
+     "title": "Battle.net-sourced data"
+    }
+   ]
+  }
+ },
+ "copy": {
+  "answerLabel": "Your character",
+  "noCharacter": "No character on this account yet.",
+  "tocBarLabel": "On this page",
+  "sources": "Sources",
+  "callout": "Your guide: Beast Mastery Hunter ›",
+  "answer": {
+   "bis": "Your best in slot",
+   "sim": "Sim your character",
+   "unknownLink": "Choose a character",
+   "error": "We could not load your character.",
+   "retry": "Try again"
+  },
+  "setupTitle": "Get set up",
+  "lookup": {
+   "heading": "Look up a character",
+   "aside": "See any character’s Forever Score.",
+   "nameLabel": "Character name",
+   "namePlaceholder": "Character name",
+   "hint": "Type the name, then pick the region and ruleset.",
+   "regionLabel": "Region",
+   "rulesetLabel": "Ruleset",
+   "submit": "Look up",
+   "empty": "Type a character’s name.",
+   "invalid": "No character can have that name.",
+   "slashKey": "/",
+   "slashHint": "Press / to search",
+   "typeaheadLabel": "Characters"
+  },
+  "legalLinks": [
+   {
+    "label": "Terms",
+    "href": "/terms"
+   },
+   {
+    "label": "Privacy",
+    "href": "/privacy"
+   },
+   {
+    "label": "Refunds",
+    "href": "/refunds"
+   }
+  ],
+  "aboutLinks": [
+   {
+    "label": "Premium",
+    "href": "/premium"
+   },
+   {
+    "label": "About",
+    "href": "/about"
+   },
+   {
+    "label": "Changelog",
+    "href": "/changelog"
+   },
+   {
+    "label": "Data sources",
+    "href": "/sources"
+   }
+  ],
+  "rulesets": [
+   {
+    "id": "normal",
+    "label": "Normal"
+   },
+   {
+    "id": "pvp",
+    "label": "PvP"
+   },
+   {
+    "id": "rp",
+    "label": "Roleplay"
+   },
+   {
+    "id": "hardcore",
+    "label": "Hardcore"
+   }
+  ],
+  "regions": [
+   "us",
+   "eu",
+   "kr",
+   "tw",
+   "cn"
+  ],
+  "sourceLabels": {
+   "blizzard": "Blizzard",
+   "datamined": "Datamined",
+   "community": "Community",
+   "site": "This site"
+  }
+ },
+ "classes": [
+  {
+   "name": "Warrior",
+   "slug": "warrior",
+   "color": "#c69b6d",
+   "specs": [
+    {
+     "name": "Arms",
+     "slug": "arms",
+     "icon": "ability_rogue_eviscerate"
+    },
+    {
+     "name": "Fury",
+     "slug": "fury",
+     "icon": "ability_warrior_innerrage"
+    },
+    {
+     "name": "Protection",
+     "slug": "protection",
+     "icon": "inv_shield_06"
+    }
+   ]
+  },
+  {
+   "name": "Paladin",
+   "slug": "paladin",
+   "color": "#f48cba",
+   "specs": [
+    {
+     "name": "Holy",
+     "slug": "holy",
+     "icon": "spell_holy_holybolt"
+    },
+    {
+     "name": "Protection",
+     "slug": "protection",
+     "icon": "spell_holy_devotionaura"
+    },
+    {
+     "name": "Retribution",
+     "slug": "retribution",
+     "icon": "spell_holy_auraoflight"
+    }
+   ]
+  },
+  {
+   "name": "Hunter",
+   "slug": "hunter",
+   "color": "#aad372",
+   "specs": [
+    {
+     "name": "Beast Mastery",
+     "slug": "beast-mastery",
+     "icon": "ability_hunter_beasttaming"
+    },
+    {
+     "name": "Marksmanship",
+     "slug": "marksmanship",
+     "icon": "ability_marksmanship"
+    },
+    {
+     "name": "Survival",
+     "slug": "survival",
+     "icon": "ability_hunter_swiftstrike"
+    }
+   ]
+  },
+  {
+   "name": "Rogue",
+   "slug": "rogue",
+   "color": "#fff468",
+   "specs": [
+    {
+     "name": "Assassination",
+     "slug": "assassination",
+     "icon": "ability_rogue_eviscerate"
+    },
+    {
+     "name": "Combat",
+     "slug": "combat",
+     "icon": "ability_backstab"
+    },
+    {
+     "name": "Subtlety",
+     "slug": "subtlety",
+     "icon": "ability_stealth"
+    }
+   ]
+  },
+  {
+   "name": "Priest",
+   "slug": "priest",
+   "color": "#ffffff",
+   "specs": [
+    {
+     "name": "Discipline",
+     "slug": "discipline",
+     "icon": "spell_holy_wordfortitude"
+    },
+    {
+     "name": "Holy",
+     "slug": "holy",
+     "icon": "spell_holy_guardianspirit"
+    },
+    {
+     "name": "Shadow",
+     "slug": "shadow",
+     "icon": "spell_shadow_shadowwordpain"
+    }
+   ]
+  },
+  {
+   "name": "Shaman",
+   "slug": "shaman",
+   "color": "#3f8fe0",
+   "specs": [
+    {
+     "name": "Elemental",
+     "slug": "elemental",
+     "icon": "spell_nature_lightning"
+    },
+    {
+     "name": "Enhancement",
+     "slug": "enhancement",
+     "icon": "spell_nature_lightningshield"
+    },
+    {
+     "name": "Restoration",
+     "slug": "restoration",
+     "icon": "spell_nature_magicimmunity"
+    }
+   ]
+  },
+  {
+   "name": "Mage",
+   "slug": "mage",
+   "color": "#3fc7eb",
+   "specs": [
+    {
+     "name": "Arcane",
+     "slug": "arcane",
+     "icon": "spell_holy_magicalsentry"
+    },
+    {
+     "name": "Fire",
+     "slug": "fire",
+     "icon": "spell_fire_firebolt02"
+    },
+    {
+     "name": "Frost",
+     "slug": "frost",
+     "icon": "spell_frost_frostbolt02"
+    }
+   ]
+  },
+  {
+   "name": "Warlock",
+   "slug": "warlock",
+   "color": "#8788ee",
+   "specs": [
+    {
+     "name": "Affliction",
+     "slug": "affliction",
+     "icon": "spell_shadow_deathcoil"
+    },
+    {
+     "name": "Demonology",
+     "slug": "demonology",
+     "icon": "spell_shadow_metamorphosis"
+    },
+    {
+     "name": "Destruction",
+     "slug": "destruction",
+     "icon": "spell_shadow_rainoffire"
+    }
+   ]
+  },
+  {
+   "name": "Druid",
+   "slug": "druid",
+   "color": "#ff7c0a",
+   "specs": [
+    {
+     "name": "Balance",
+     "slug": "balance",
+     "icon": "spell_nature_starfall"
+    },
+    {
+     "name": "Feral",
+     "slug": "feral",
+     "icon": "ability_druid_catform"
+    },
+    {
+     "name": "Feral Bear",
+     "slug": "feral-bear",
+     "icon": "ability_racial_bearform"
+    },
+    {
+     "name": "Restoration",
+     "slug": "restoration",
+     "icon": "spell_nature_healingtouch"
+    }
+   ]
+  }
+ ],
+ "me": {
+  "name": "Felsnap",
+  "class": "Hunter",
+  "spec": "Beast Mastery",
+  "level": 34,
+  "identity": "Dwarf Beast Mastery Hunter",
+  "level_line": "Level 34"
+ },
+ "markup": {
+  "changelog": {
+   "title": "Changelog",
+   "description": "Everything that changed in World of Warcraft: Forever and on this site, dated and sourced.",
+   "h1": "What changed"
+  },
+  "notFound": {
+   "docTitle": "Page not found",
+   "description": "No page exists at this address.",
+   "eyebrow": "NOT FOUND",
+   "h1": "No page here",
+   "job": "Nothing exists at this address. It may have moved as the game changes.",
+   "pick": "Pick your class"
+  },
+  "unavailable": {
+   "docTitle": "Build unavailable",
+   "description": "This shared build cannot be loaded right now.",
+   "h1": "Build unavailable",
+   "paragraphs": [
+    "Shared builds are stored by the Forever Sixty API, which is not answering right now. The build itself is not lost; the link will work again once the API is back.",
+    "In the meantime, <a href=\"/planner\">the build planner</a> works without it."
+   ]
+  }
+ }
+}

@@ -1,0 +1,1890 @@
+{
+ "changelog-390": {
+  "status": 200,
+  "height": 6235,
+  "title": {
+   "x": 18,
+   "y": 96,
+   "w": 354,
+   "h": 34
+  },
+  "titleFont": "Barlow",
+  "titleText": "What changed",
+  "eyebrow": null,
+  "main": {
+   "x": 0,
+   "y": 56,
+   "w": 390,
+   "h": 5230
+  },
+  "textLeft": null,
+  "textRight": null,
+  "h2": [],
+  "framed": 1,
+  "framedBoxes": [
+   {
+    "x": 18,
+    "y": 176,
+    "w": 354,
+    "h": 5070
+   }
+  ],
+  "entries": 38,
+  "entriesInFold": 6,
+  "firstEntry": {
+   "x": 19,
+   "y": 177,
+   "w": 352,
+   "h": 111
+  },
+  "fonts": {
+   "Barlow 700 34px caps": 1,
+   "Barlow 400 12px": 1,
+   "Barlow 400 13px": 54,
+   "Barlow 700 11px caps": 38,
+   "Barlow 600 15px": 38
+  },
+  "links": 38,
+  "imgs": 0,
+  "paragraphs": 0
+ },
+ "changelog-1440": {
+  "status": 200,
+  "height": 3325,
+  "title": {
+   "x": 270,
+   "y": 121,
+   "w": 900,
+   "h": 44
+  },
+  "titleFont": "Barlow",
+  "titleText": "What changed",
+  "eyebrow": null,
+  "main": {
+   "x": 270,
+   "y": 81,
+   "w": 900,
+   "h": 2856
+  },
+  "textLeft": null,
+  "textRight": null,
+  "h2": [],
+  "framed": 1,
+  "framedBoxes": [
+   {
+    "x": 270,
+    "y": 211,
+    "w": 900,
+    "h": 2686
+   }
+  ],
+  "entries": 38,
+  "entriesInFold": 13,
+  "firstEntry": {
+   "x": 271,
+   "y": 212,
+   "w": 898,
+   "h": 58
+  },
+  "fonts": {
+   "Barlow 700 44px caps": 1,
+   "Barlow 400 12px": 1,
+   "Barlow 400 13px": 54,
+   "Barlow 700 11px caps": 38,
+   "Barlow 600 15px": 38
+  },
+  "links": 38,
+  "imgs": 0,
+  "paragraphs": 0
+ },
+ "changelog-1920": {
+  "status": 200,
+  "height": 3325,
+  "title": {
+   "x": 510,
+   "y": 121,
+   "w": 900,
+   "h": 44
+  },
+  "titleFont": "Barlow",
+  "titleText": "What changed",
+  "eyebrow": null,
+  "main": {
+   "x": 510,
+   "y": 81,
+   "w": 900,
+   "h": 2856
+  },
+  "textLeft": null,
+  "textRight": null,
+  "h2": [],
+  "framed": 1,
+  "framedBoxes": [
+   {
+    "x": 510,
+    "y": 211,
+    "w": 900,
+    "h": 2686
+   }
+  ],
+  "entries": 38,
+  "entriesInFold": 13,
+  "firstEntry": {
+   "x": 511,
+   "y": 212,
+   "w": 898,
+   "h": 58
+  },
+  "fonts": {
+   "Barlow 700 44px caps": 1,
+   "Barlow 400 12px": 1,
+   "Barlow 400 13px": 54,
+   "Barlow 700 11px caps": 38,
+   "Barlow 600 15px": 38
+  },
+  "links": 38,
+  "imgs": 0,
+  "paragraphs": 0
+ },
+ "changelog-2000": {
+  "status": 200,
+  "height": 3325,
+  "title": {
+   "x": 550,
+   "y": 121,
+   "w": 900,
+   "h": 44
+  },
+  "titleFont": "Barlow",
+  "titleText": "What changed",
+  "eyebrow": null,
+  "main": {
+   "x": 550,
+   "y": 81,
+   "w": 900,
+   "h": 2856
+  },
+  "textLeft": null,
+  "textRight": null,
+  "h2": [],
+  "framed": 1,
+  "framedBoxes": [
+   {
+    "x": 550,
+    "y": 211,
+    "w": 900,
+    "h": 2686
+   }
+  ],
+  "entries": 38,
+  "entriesInFold": 13,
+  "firstEntry": {
+   "x": 551,
+   "y": 212,
+   "w": 898,
+   "h": 58
+  },
+  "fonts": {
+   "Barlow 700 44px caps": 1,
+   "Barlow 400 12px": 1,
+   "Barlow 400 13px": 54,
+   "Barlow 700 11px caps": 38,
+   "Barlow 600 15px": 38
+  },
+  "links": 38,
+  "imgs": 0,
+  "paragraphs": 0
+ },
+ "changelog-in-390": {
+  "status": 200,
+  "height": 6235,
+  "title": {
+   "x": 18,
+   "y": 96,
+   "w": 354,
+   "h": 34
+  },
+  "titleFont": "Barlow",
+  "titleText": "What changed",
+  "eyebrow": null,
+  "main": {
+   "x": 0,
+   "y": 56,
+   "w": 390,
+   "h": 5230
+  },
+  "textLeft": null,
+  "textRight": null,
+  "h2": [],
+  "framed": 1,
+  "framedBoxes": [
+   {
+    "x": 18,
+    "y": 176,
+    "w": 354,
+    "h": 5070
+   }
+  ],
+  "entries": 38,
+  "entriesInFold": 6,
+  "firstEntry": {
+   "x": 19,
+   "y": 177,
+   "w": 352,
+   "h": 111
+  },
+  "fonts": {
+   "Barlow 700 34px caps": 1,
+   "Barlow 400 12px": 1,
+   "Barlow 400 13px": 54,
+   "Barlow 700 11px caps": 38,
+   "Barlow 600 15px": 38
+  },
+  "links": 38,
+  "imgs": 0,
+  "paragraphs": 0
+ },
+ "changelog-in-1440": {
+  "status": 200,
+  "height": 3325,
+  "title": {
+   "x": 270,
+   "y": 121,
+   "w": 900,
+   "h": 44
+  },
+  "titleFont": "Barlow",
+  "titleText": "What changed",
+  "eyebrow": null,
+  "main": {
+   "x": 270,
+   "y": 81,
+   "w": 900,
+   "h": 2856
+  },
+  "textLeft": null,
+  "textRight": null,
+  "h2": [],
+  "framed": 1,
+  "framedBoxes": [
+   {
+    "x": 270,
+    "y": 211,
+    "w": 900,
+    "h": 2686
+   }
+  ],
+  "entries": 38,
+  "entriesInFold": 13,
+  "firstEntry": {
+   "x": 271,
+   "y": 212,
+   "w": 898,
+   "h": 58
+  },
+  "fonts": {
+   "Barlow 700 44px caps": 1,
+   "Barlow 400 12px": 1,
+   "Barlow 400 13px": 54,
+   "Barlow 700 11px caps": 38,
+   "Barlow 600 15px": 38
+  },
+  "links": 38,
+  "imgs": 0,
+  "paragraphs": 0
+ },
+ "privacy-390": {
+  "status": 200,
+  "height": 3559,
+  "title": {
+   "x": 18,
+   "y": 91,
+   "w": 354,
+   "h": 34
+  },
+  "titleFont": "Barlow",
+  "titleText": "Privacy policy",
+  "eyebrow": "LEGAL",
+  "main": {
+   "x": 0,
+   "y": 56,
+   "w": 390,
+   "h": 2554
+  },
+  "textLeft": 18,
+  "textRight": 372,
+  "h2": [
+   {
+    "t": "What is collected",
+    "x": 18,
+    "y": 213,
+    "w": 354,
+    "h": 42
+   },
+   {
+    "t": "How Battle.net data is used",
+    "x": 18,
+    "y": 563,
+    "w": 354,
+    "h": 83
+   },
+   {
+    "t": "Stripe",
+    "x": 18,
+    "y": 786,
+    "w": 354,
+    "h": 42
+   },
+   {
+    "t": "Log coach",
+    "x": 18,
+    "y": 968,
+    "w": 354,
+    "h": 42
+   },
+   {
+    "t": "Cookies",
+    "x": 18,
+    "y": 1522,
+    "w": 354,
+    "h": 42
+   },
+   {
+    "t": "Data retention",
+    "x": 18,
+    "y": 1731,
+    "w": 354,
+    "h": 42
+   },
+   {
+    "t": "Who is responsible",
+    "x": 18,
+    "y": 2041,
+    "w": 354,
+    "h": 42
+   },
+   {
+    "t": "Requests and contact",
+    "x": 18,
+    "y": 2300,
+    "w": 354,
+    "h": 42
+   }
+  ],
+  "framed": 0,
+  "framedBoxes": [],
+  "entries": 0,
+  "entriesInFold": 0,
+  "firstEntry": null,
+  "fonts": {
+   "Barlow 700 11px caps": 1,
+   "Barlow 700 34px caps": 1,
+   "Barlow 400 12px": 1,
+   "Barlow 700 26px caps": 8,
+   "Barlow 400 16px": 14,
+   "JetBrains Mono 400 16px": 2
+  },
+  "links": 5,
+  "imgs": 0,
+  "paragraphs": 11
+ },
+ "privacy-1440": {
+  "status": 200,
+  "height": 2337,
+  "title": {
+   "x": 96,
+   "y": 128,
+   "w": 327,
+   "h": 44
+  },
+  "titleFont": "Barlow",
+  "titleText": "Privacy policy",
+  "eyebrow": "LEGAL",
+  "main": {
+   "x": 96,
+   "y": 81,
+   "w": 1248,
+   "h": 1869
+  },
+  "textLeft": 96,
+  "textRight": 711,
+  "h2": [
+   {
+    "t": "What is collected",
+    "x": 96,
+    "y": 260,
+    "w": 720,
+    "h": 42
+   },
+   {
+    "t": "How Battle.net data is used",
+    "x": 96,
+    "y": 507,
+    "w": 720,
+    "h": 42
+   },
+   {
+    "t": "Stripe",
+    "x": 96,
+    "y": 638,
+    "w": 720,
+    "h": 42
+   },
+   {
+    "t": "Log coach",
+    "x": 96,
+    "y": 769,
+    "w": 720,
+    "h": 42
+   },
+   {
+    "t": "Cookies",
+    "x": 96,
+    "y": 1169,
+    "w": 720,
+    "h": 42
+   },
+   {
+    "t": "Data retention",
+    "x": 96,
+    "y": 1327,
+    "w": 720,
+    "h": 42
+   },
+   {
+    "t": "Who is responsible",
+    "x": 96,
+    "y": 1534,
+    "w": 720,
+    "h": 42
+   },
+   {
+    "t": "Requests and contact",
+    "x": 96,
+    "y": 1716,
+    "w": 720,
+    "h": 42
+   }
+  ],
+  "framed": 0,
+  "framedBoxes": [],
+  "entries": 0,
+  "entriesInFold": 0,
+  "firstEntry": null,
+  "fonts": {
+   "Barlow 700 11px caps": 1,
+   "Barlow 700 44px caps": 1,
+   "Barlow 400 12px": 1,
+   "Barlow 700 26px caps": 8,
+   "Barlow 400 16px": 14,
+   "JetBrains Mono 400 16px": 2
+  },
+  "links": 5,
+  "imgs": 0,
+  "paragraphs": 11
+ },
+ "privacy-1920": {
+  "status": 200,
+  "height": 2337,
+  "title": {
+   "x": 336,
+   "y": 128,
+   "w": 327,
+   "h": 44
+  },
+  "titleFont": "Barlow",
+  "titleText": "Privacy policy",
+  "eyebrow": "LEGAL",
+  "main": {
+   "x": 336,
+   "y": 81,
+   "w": 1248,
+   "h": 1869
+  },
+  "textLeft": 336,
+  "textRight": 951,
+  "h2": [
+   {
+    "t": "What is collected",
+    "x": 336,
+    "y": 260,
+    "w": 720,
+    "h": 42
+   },
+   {
+    "t": "How Battle.net data is used",
+    "x": 336,
+    "y": 507,
+    "w": 720,
+    "h": 42
+   },
+   {
+    "t": "Stripe",
+    "x": 336,
+    "y": 638,
+    "w": 720,
+    "h": 42
+   },
+   {
+    "t": "Log coach",
+    "x": 336,
+    "y": 769,
+    "w": 720,
+    "h": 42
+   },
+   {
+    "t": "Cookies",
+    "x": 336,
+    "y": 1169,
+    "w": 720,
+    "h": 42
+   },
+   {
+    "t": "Data retention",
+    "x": 336,
+    "y": 1327,
+    "w": 720,
+    "h": 42
+   },
+   {
+    "t": "Who is responsible",
+    "x": 336,
+    "y": 1534,
+    "w": 720,
+    "h": 42
+   },
+   {
+    "t": "Requests and contact",
+    "x": 336,
+    "y": 1716,
+    "w": 720,
+    "h": 42
+   }
+  ],
+  "framed": 0,
+  "framedBoxes": [],
+  "entries": 0,
+  "entriesInFold": 0,
+  "firstEntry": null,
+  "fonts": {
+   "Barlow 700 11px caps": 1,
+   "Barlow 700 44px caps": 1,
+   "Barlow 400 12px": 1,
+   "Barlow 700 26px caps": 8,
+   "Barlow 400 16px": 14,
+   "JetBrains Mono 400 16px": 2
+  },
+  "links": 5,
+  "imgs": 0,
+  "paragraphs": 11
+ },
+ "privacy-2000": {
+  "status": 200,
+  "height": 2337,
+  "title": {
+   "x": 376,
+   "y": 128,
+   "w": 327,
+   "h": 44
+  },
+  "titleFont": "Barlow",
+  "titleText": "Privacy policy",
+  "eyebrow": "LEGAL",
+  "main": {
+   "x": 376,
+   "y": 81,
+   "w": 1248,
+   "h": 1869
+  },
+  "textLeft": 376,
+  "textRight": 991,
+  "h2": [
+   {
+    "t": "What is collected",
+    "x": 376,
+    "y": 260,
+    "w": 720,
+    "h": 42
+   },
+   {
+    "t": "How Battle.net data is used",
+    "x": 376,
+    "y": 507,
+    "w": 720,
+    "h": 42
+   },
+   {
+    "t": "Stripe",
+    "x": 376,
+    "y": 638,
+    "w": 720,
+    "h": 42
+   },
+   {
+    "t": "Log coach",
+    "x": 376,
+    "y": 769,
+    "w": 720,
+    "h": 42
+   },
+   {
+    "t": "Cookies",
+    "x": 376,
+    "y": 1169,
+    "w": 720,
+    "h": 42
+   },
+   {
+    "t": "Data retention",
+    "x": 376,
+    "y": 1327,
+    "w": 720,
+    "h": 42
+   },
+   {
+    "t": "Who is responsible",
+    "x": 376,
+    "y": 1534,
+    "w": 720,
+    "h": 42
+   },
+   {
+    "t": "Requests and contact",
+    "x": 376,
+    "y": 1716,
+    "w": 720,
+    "h": 42
+   }
+  ],
+  "framed": 0,
+  "framedBoxes": [],
+  "entries": 0,
+  "entriesInFold": 0,
+  "firstEntry": null,
+  "fonts": {
+   "Barlow 700 11px caps": 1,
+   "Barlow 700 44px caps": 1,
+   "Barlow 400 12px": 1,
+   "Barlow 700 26px caps": 8,
+   "Barlow 400 16px": 14,
+   "JetBrains Mono 400 16px": 2
+  },
+  "links": 5,
+  "imgs": 0,
+  "paragraphs": 11
+ },
+ "terms-390": {
+  "status": 200,
+  "height": 3008,
+  "title": {
+   "x": 18,
+   "y": 91,
+   "w": 354,
+   "h": 34
+  },
+  "titleFont": "Barlow",
+  "titleText": "Subscription terms",
+  "eyebrow": "LEGAL",
+  "main": {
+   "x": 0,
+   "y": 56,
+   "w": 390,
+   "h": 2003
+  },
+  "textLeft": 18,
+  "textRight": 372,
+  "h2": [
+   {
+    "t": "What Premium and the guild plan are",
+    "x": 18,
+    "y": 213,
+    "w": 354,
+    "h": 83
+   },
+   {
+    "t": "Billing and auto-renewal",
+    "x": 18,
+    "y": 513,
+    "w": 354,
+    "h": 42
+   },
+   {
+    "t": "Cancelling",
+    "x": 18,
+    "y": 772,
+    "w": 354,
+    "h": 42
+   },
+   {
+    "t": "Price changes",
+    "x": 18,
+    "y": 1005,
+    "w": 354,
+    "h": 42
+   },
+   {
+    "t": "Account termination for abuse",
+    "x": 18,
+    "y": 1187,
+    "w": 354,
+    "h": 83
+   },
+   {
+    "t": "The company",
+    "x": 18,
+    "y": 1411,
+    "w": 354,
+    "h": 42
+   },
+   {
+    "t": "Battle.net-sourced data",
+    "x": 18,
+    "y": 1851,
+    "w": 354,
+    "h": 42
+   }
+  ],
+  "framed": 0,
+  "framedBoxes": [],
+  "entries": 0,
+  "entriesInFold": 0,
+  "firstEntry": null,
+  "fonts": {
+   "Barlow 700 11px caps": 1,
+   "Barlow 700 34px caps": 1,
+   "Barlow 400 12px": 1,
+   "Barlow 700 26px caps": 7,
+   "Barlow 400 16px": 13
+  },
+  "links": 2,
+  "imgs": 0,
+  "paragraphs": 10
+ },
+ "terms-1440": {
+  "status": 200,
+  "height": 1975,
+  "title": {
+   "x": 96,
+   "y": 128,
+   "w": 446,
+   "h": 44
+  },
+  "titleFont": "Barlow",
+  "titleText": "Subscription terms",
+  "eyebrow": "LEGAL",
+  "main": {
+   "x": 96,
+   "y": 81,
+   "w": 1248,
+   "h": 1507
+  },
+  "textLeft": 96,
+  "textRight": 711,
+  "h2": [
+   {
+    "t": "What Premium and the guild plan are",
+    "x": 96,
+    "y": 260,
+    "w": 720,
+    "h": 42
+   },
+   {
+    "t": "Billing and auto-renewal",
+    "x": 96,
+    "y": 442,
+    "w": 720,
+    "h": 42
+   },
+   {
+    "t": "Cancelling",
+    "x": 96,
+    "y": 624,
+    "w": 720,
+    "h": 42
+   },
+   {
+    "t": "Price changes",
+    "x": 96,
+    "y": 780,
+    "w": 720,
+    "h": 42
+   },
+   {
+    "t": "Account termination for abuse",
+    "x": 96,
+    "y": 911,
+    "w": 720,
+    "h": 42
+   },
+   {
+    "t": "The company",
+    "x": 96,
+    "y": 1067,
+    "w": 720,
+    "h": 42
+   },
+   {
+    "t": "Battle.net-sourced data",
+    "x": 96,
+    "y": 1405,
+    "w": 720,
+    "h": 42
+   }
+  ],
+  "framed": 0,
+  "framedBoxes": [],
+  "entries": 0,
+  "entriesInFold": 0,
+  "firstEntry": null,
+  "fonts": {
+   "Barlow 700 11px caps": 1,
+   "Barlow 700 44px caps": 1,
+   "Barlow 400 12px": 1,
+   "Barlow 700 26px caps": 7,
+   "Barlow 400 16px": 13
+  },
+  "links": 2,
+  "imgs": 0,
+  "paragraphs": 10
+ },
+ "refunds-390": {
+  "status": 200,
+  "height": 2127,
+  "title": {
+   "x": 18,
+   "y": 91,
+   "w": 354,
+   "h": 34
+  },
+  "titleFont": "Barlow",
+  "titleText": "Refund policy",
+  "eyebrow": "LEGAL",
+  "main": {
+   "x": 0,
+   "y": 56,
+   "w": 390,
+   "h": 1122
+  },
+  "textLeft": 18,
+  "textRight": 372,
+  "h2": [
+   {
+    "t": "Asking for a refund",
+    "x": 18,
+    "y": 213,
+    "w": 354,
+    "h": 42
+   },
+   {
+    "t": "What happens to your subscription",
+    "x": 18,
+    "y": 344,
+    "w": 354,
+    "h": 83
+   },
+   {
+    "t": "Partial-period refunds",
+    "x": 18,
+    "y": 644,
+    "w": 354,
+    "h": 42
+   },
+   {
+    "t": "Who processes the refund",
+    "x": 18,
+    "y": 903,
+    "w": 354,
+    "h": 83
+   }
+  ],
+  "framed": 0,
+  "framedBoxes": [],
+  "entries": 0,
+  "entriesInFold": 0,
+  "firstEntry": null,
+  "fonts": {
+   "Barlow 700 11px caps": 1,
+   "Barlow 700 34px caps": 1,
+   "Barlow 400 12px": 1,
+   "Barlow 700 26px caps": 4,
+   "Barlow 400 16px": 5
+  },
+  "links": 1,
+  "imgs": 0,
+  "paragraphs": 6
+ },
+ "refunds-1440": {
+  "status": 200,
+  "height": 1299,
+  "title": {
+   "x": 96,
+   "y": 128,
+   "w": 319,
+   "h": 44
+  },
+  "titleFont": "Barlow",
+  "titleText": "Refund policy",
+  "eyebrow": "LEGAL",
+  "main": {
+   "x": 96,
+   "y": 81,
+   "w": 1248,
+   "h": 831
+  },
+  "textLeft": 96,
+  "textRight": 711,
+  "h2": [
+   {
+    "t": "Asking for a refund",
+    "x": 96,
+    "y": 260,
+    "w": 720,
+    "h": 42
+   },
+   {
+    "t": "What happens to your subscription",
+    "x": 96,
+    "y": 365,
+    "w": 720,
+    "h": 42
+   },
+   {
+    "t": "Partial-period refunds",
+    "x": 96,
+    "y": 547,
+    "w": 720,
+    "h": 42
+   },
+   {
+    "t": "Who processes the refund",
+    "x": 96,
+    "y": 729,
+    "w": 720,
+    "h": 42
+   }
+  ],
+  "framed": 0,
+  "framedBoxes": [],
+  "entries": 0,
+  "entriesInFold": 0,
+  "firstEntry": null,
+  "fonts": {
+   "Barlow 700 11px caps": 1,
+   "Barlow 700 44px caps": 1,
+   "Barlow 400 12px": 1,
+   "Barlow 700 26px caps": 4,
+   "Barlow 400 16px": 5
+  },
+  "links": 1,
+  "imgs": 0,
+  "paragraphs": 6
+ },
+ "about-390": {
+  "status": 200,
+  "height": 1622,
+  "title": {
+   "x": 18,
+   "y": 91,
+   "w": 354,
+   "h": 68
+  },
+  "titleFont": "Barlow",
+  "titleText": "About Forever Sixty",
+  "eyebrow": "ABOUT",
+  "main": {
+   "x": 0,
+   "y": 56,
+   "w": 390,
+   "h": 617
+  },
+  "textLeft": 18,
+  "textRight": 372,
+  "h2": [],
+  "framed": 0,
+  "framedBoxes": [],
+  "entries": 0,
+  "entriesInFold": 0,
+  "firstEntry": null,
+  "fonts": {
+   "Barlow 700 11px caps": 1,
+   "Barlow 700 34px caps": 1,
+   "Barlow 400 12px": 1,
+   "Barlow 400 16px": 4
+  },
+  "links": 0,
+  "imgs": 0,
+  "paragraphs": 6
+ },
+ "about-1440": {
+  "status": 200,
+  "height": 1000,
+  "title": {
+   "x": 96,
+   "y": 128,
+   "w": 467,
+   "h": 44
+  },
+  "titleFont": "Barlow",
+  "titleText": "About Forever Sixty",
+  "eyebrow": "ABOUT",
+  "main": {
+   "x": 96,
+   "y": 81,
+   "w": 1248,
+   "h": 477
+  },
+  "textLeft": 96,
+  "textRight": 711,
+  "h2": [],
+  "framed": 0,
+  "framedBoxes": [],
+  "entries": 0,
+  "entriesInFold": 0,
+  "firstEntry": null,
+  "fonts": {
+   "Barlow 700 11px caps": 1,
+   "Barlow 700 44px caps": 1,
+   "Barlow 400 12px": 1,
+   "Barlow 400 16px": 4
+  },
+  "links": 0,
+  "imgs": 0,
+  "paragraphs": 6
+ },
+ "about-1920": {
+  "status": 200,
+  "height": 1000,
+  "title": {
+   "x": 336,
+   "y": 128,
+   "w": 467,
+   "h": 44
+  },
+  "titleFont": "Barlow",
+  "titleText": "About Forever Sixty",
+  "eyebrow": "ABOUT",
+  "main": {
+   "x": 336,
+   "y": 81,
+   "w": 1248,
+   "h": 477
+  },
+  "textLeft": 336,
+  "textRight": 951,
+  "h2": [],
+  "framed": 0,
+  "framedBoxes": [],
+  "entries": 0,
+  "entriesInFold": 0,
+  "firstEntry": null,
+  "fonts": {
+   "Barlow 700 11px caps": 1,
+   "Barlow 700 44px caps": 1,
+   "Barlow 400 12px": 1,
+   "Barlow 400 16px": 4
+  },
+  "links": 0,
+  "imgs": 0,
+  "paragraphs": 6
+ },
+ "about-2000": {
+  "status": 200,
+  "height": 1000,
+  "title": {
+   "x": 376,
+   "y": 128,
+   "w": 467,
+   "h": 44
+  },
+  "titleFont": "Barlow",
+  "titleText": "About Forever Sixty",
+  "eyebrow": "ABOUT",
+  "main": {
+   "x": 376,
+   "y": 81,
+   "w": 1248,
+   "h": 477
+  },
+  "textLeft": 376,
+  "textRight": 991,
+  "h2": [],
+  "framed": 0,
+  "framedBoxes": [],
+  "entries": 0,
+  "entriesInFold": 0,
+  "firstEntry": null,
+  "fonts": {
+   "Barlow 700 11px caps": 1,
+   "Barlow 700 44px caps": 1,
+   "Barlow 400 12px": 1,
+   "Barlow 400 16px": 4
+  },
+  "links": 0,
+  "imgs": 0,
+  "paragraphs": 6
+ },
+ "sources-390": {
+  "status": 200,
+  "height": 3909,
+  "title": {
+   "x": 18,
+   "y": 91,
+   "w": 354,
+   "h": 68
+  },
+  "titleFont": "Barlow",
+  "titleText": "How sources are classified",
+  "eyebrow": "ABOUT",
+  "main": {
+   "x": 0,
+   "y": 56,
+   "w": 390,
+   "h": 2904
+  },
+  "textLeft": 18,
+  "textRight": 372,
+  "h2": [
+   {
+    "t": "The four pill kinds",
+    "x": 18,
+    "y": 324,
+    "w": 354,
+    "h": 42
+   },
+   {
+    "t": "What “single-source” means",
+    "x": 18,
+    "y": 634,
+    "w": 354,
+    "h": 83
+   },
+   {
+    "t": "When we get something wrong",
+    "x": 18,
+    "y": 1062,
+    "w": 354,
+    "h": 83
+   },
+   {
+    "t": "Primary sources this site checks",
+    "x": 18,
+    "y": 1388,
+    "w": 354,
+    "h": 83
+   },
+   {
+    "t": "Panel recaps and transcripts",
+    "x": 18,
+    "y": 1612,
+    "w": 354,
+    "h": 83
+   },
+   {
+    "t": "Developer interviews",
+    "x": 18,
+    "y": 2040,
+    "w": 354,
+    "h": 42
+   },
+   {
+    "t": "Community data we credit and reuse",
+    "x": 18,
+    "y": 2247,
+    "w": 354,
+    "h": 83
+   }
+  ],
+  "framed": 0,
+  "framedBoxes": [],
+  "entries": 0,
+  "entriesInFold": 0,
+  "firstEntry": null,
+  "fonts": {
+   "Barlow 700 11px caps": 1,
+   "Barlow 700 34px caps": 1,
+   "Barlow 400 12px": 1,
+   "Barlow 400 16px": 41,
+   "Barlow 700 26px caps": 7,
+   "Barlow 700 16px": 7
+  },
+  "links": 21,
+  "imgs": 0,
+  "paragraphs": 7
+ },
+ "sources-1440": {
+  "status": 200,
+  "height": 2436,
+  "title": {
+   "x": 96,
+   "y": 128,
+   "w": 633,
+   "h": 44
+  },
+  "titleFont": "Barlow",
+  "titleText": "How sources are classified",
+  "eyebrow": "ABOUT",
+  "main": {
+   "x": 96,
+   "y": 81,
+   "w": 1248,
+   "h": 1967
+  },
+  "textLeft": 96,
+  "textRight": 729,
+  "h2": [
+   {
+    "t": "The four pill kinds",
+    "x": 96,
+    "y": 311,
+    "w": 720,
+    "h": 42
+   },
+   {
+    "t": "What “single-source” means",
+    "x": 96,
+    "y": 544,
+    "w": 720,
+    "h": 42
+   },
+   {
+    "t": "When we get something wrong",
+    "x": 96,
+    "y": 803,
+    "w": 720,
+    "h": 42
+   },
+   {
+    "t": "Primary sources this site checks",
+    "x": 96,
+    "y": 1011,
+    "w": 720,
+    "h": 42
+   },
+   {
+    "t": "Panel recaps and transcripts",
+    "x": 96,
+    "y": 1141,
+    "w": 720,
+    "h": 42
+   },
+   {
+    "t": "Developer interviews",
+    "x": 96,
+    "y": 1400,
+    "w": 720,
+    "h": 42
+   },
+   {
+    "t": "Community data we credit and reuse",
+    "x": 96,
+    "y": 1582,
+    "w": 720,
+    "h": 42
+   }
+  ],
+  "framed": 0,
+  "framedBoxes": [],
+  "entries": 0,
+  "entriesInFold": 0,
+  "firstEntry": null,
+  "fonts": {
+   "Barlow 700 11px caps": 1,
+   "Barlow 700 44px caps": 1,
+   "Barlow 400 12px": 1,
+   "Barlow 400 16px": 41,
+   "Barlow 700 26px caps": 7,
+   "Barlow 700 16px": 7
+  },
+  "links": 21,
+  "imgs": 0,
+  "paragraphs": 7
+ },
+ "roadmap-390": {
+  "status": 200,
+  "height": 2810,
+  "title": {
+   "x": 18,
+   "y": 91,
+   "w": 354,
+   "h": 34
+  },
+  "titleFont": "Barlow",
+  "titleText": "Roadmap",
+  "eyebrow": "ABOUT",
+  "main": {
+   "x": 0,
+   "y": 56,
+   "w": 390,
+   "h": 1805
+  },
+  "textLeft": 18,
+  "textRight": 372,
+  "h2": [
+   {
+    "t": "Notes on these dates",
+    "x": 18,
+    "y": 1085,
+    "w": 354,
+    "h": 42
+   }
+  ],
+  "framed": 0,
+  "framedBoxes": [],
+  "entries": 0,
+  "entriesInFold": 0,
+  "firstEntry": null,
+  "fonts": {
+   "Barlow 700 11px caps": 1,
+   "Barlow 700 34px caps": 1,
+   "Barlow 400 12px": 1,
+   "Barlow 400 16px": 6,
+   "Barlow 600 13px": 2,
+   "Barlow 400 14px": 22,
+   "Barlow 700 26px caps": 1,
+   "Barlow 700 16px": 4
+  },
+  "links": 0,
+  "imgs": 0,
+  "paragraphs": 8
+ },
+ "roadmap-1440": {
+  "status": 200,
+  "height": 1723,
+  "title": {
+   "x": 96,
+   "y": 128,
+   "w": 201,
+   "h": 44
+  },
+  "titleFont": "Barlow",
+  "titleText": "Roadmap",
+  "eyebrow": "ABOUT",
+  "main": {
+   "x": 96,
+   "y": 81,
+   "w": 1248,
+   "h": 1254
+  },
+  "textLeft": 96,
+  "textRight": 711,
+  "h2": [
+   {
+    "t": "Notes on these dates",
+    "x": 96,
+    "y": 815,
+    "w": 720,
+    "h": 42
+   }
+  ],
+  "framed": 0,
+  "framedBoxes": [],
+  "entries": 0,
+  "entriesInFold": 0,
+  "firstEntry": null,
+  "fonts": {
+   "Barlow 700 11px caps": 1,
+   "Barlow 700 44px caps": 1,
+   "Barlow 400 12px": 1,
+   "Barlow 400 16px": 6,
+   "Barlow 600 13px": 2,
+   "Barlow 400 14px": 22,
+   "Barlow 700 26px caps": 1,
+   "Barlow 700 16px": 4
+  },
+  "links": 0,
+  "imgs": 0,
+  "paragraphs": 8
+ },
+ "404-390": {
+  "status": 404,
+  "height": 1918,
+  "title": {
+   "x": 18,
+   "y": 91,
+   "w": 354,
+   "h": 34
+  },
+  "titleFont": "Barlow",
+  "titleText": "No page here",
+  "eyebrow": "NOT FOUND",
+  "main": {
+   "x": 0,
+   "y": 56,
+   "w": 390,
+   "h": 913
+  },
+  "textLeft": 18,
+  "textRight": 372,
+  "h2": [
+   {
+    "t": "Pick your class",
+    "x": 87,
+    "y": 222,
+    "w": 195,
+    "h": 24
+   },
+   {
+    "t": "Look up a character",
+    "x": 87,
+    "y": 507,
+    "w": 257,
+    "h": 24
+   }
+  ],
+  "framed": 2,
+  "framedBoxes": [
+   {
+    "x": 18,
+    "y": 199,
+    "w": 354,
+    "h": 263
+   },
+   {
+    "x": 18,
+    "y": 484,
+    "w": 354,
+    "h": 445
+   }
+  ],
+  "entries": 0,
+  "entriesInFold": 0,
+  "firstEntry": null,
+  "fonts": {
+   "Barlow 700 11px caps": 1,
+   "Barlow 700 34px caps": 1,
+   "Barlow 400 15px": 1,
+   "Barlow 700 24px caps": 2,
+   "Barlow 700 10px": 9,
+   "Barlow 400 14px": 3,
+   "Barlow 600 13px": 3,
+   "Barlow 600 15px": 2,
+   "Barlow 700 13px caps": 1,
+   "Barlow 400 13px": 1
+  },
+  "links": 9,
+  "imgs": 9,
+  "paragraphs": 5
+ },
+ "404-1440": {
+  "status": 404,
+  "height": 1156,
+  "title": {
+   "x": 96,
+   "y": 128,
+   "w": 461,
+   "h": 44
+  },
+  "titleFont": "Barlow",
+  "titleText": "No page here",
+  "eyebrow": "NOT FOUND",
+  "main": {
+   "x": 96,
+   "y": 81,
+   "w": 1248,
+   "h": 687
+  },
+  "textLeft": 96,
+  "textRight": 1323,
+  "h2": [
+   {
+    "t": "Pick your class",
+    "x": 165,
+    "y": 257,
+    "w": 195,
+    "h": 24
+   },
+   {
+    "t": "Look up a character",
+    "x": 165,
+    "y": 464,
+    "w": 257,
+    "h": 24
+   }
+  ],
+  "framed": 2,
+  "framedBoxes": [
+   {
+    "x": 96,
+    "y": 234,
+    "w": 1248,
+    "h": 175
+   },
+   {
+    "x": 96,
+    "y": 441,
+    "w": 1248,
+    "h": 287
+   }
+  ],
+  "entries": 0,
+  "entriesInFold": 0,
+  "firstEntry": null,
+  "fonts": {
+   "Barlow 700 11px caps": 1,
+   "Barlow 700 44px caps": 1,
+   "Barlow 400 15px": 1,
+   "Barlow 700 24px caps": 2,
+   "Barlow 700 10px": 9,
+   "Barlow 400 14px": 3,
+   "Barlow 600 13px": 3,
+   "JetBrains Mono 400 12px": 1,
+   "Barlow 600 15px": 2,
+   "Barlow 700 13px caps": 1,
+   "Barlow 400 13px": 1
+  },
+  "links": 9,
+  "imgs": 9,
+  "paragraphs": 5
+ },
+ "404-1920": {
+  "status": 404,
+  "height": 1156,
+  "title": {
+   "x": 336,
+   "y": 128,
+   "w": 461,
+   "h": 44
+  },
+  "titleFont": "Barlow",
+  "titleText": "No page here",
+  "eyebrow": "NOT FOUND",
+  "main": {
+   "x": 336,
+   "y": 81,
+   "w": 1248,
+   "h": 687
+  },
+  "textLeft": 336,
+  "textRight": 1563,
+  "h2": [
+   {
+    "t": "Pick your class",
+    "x": 405,
+    "y": 257,
+    "w": 195,
+    "h": 24
+   },
+   {
+    "t": "Look up a character",
+    "x": 405,
+    "y": 464,
+    "w": 257,
+    "h": 24
+   }
+  ],
+  "framed": 2,
+  "framedBoxes": [
+   {
+    "x": 336,
+    "y": 234,
+    "w": 1248,
+    "h": 175
+   },
+   {
+    "x": 336,
+    "y": 441,
+    "w": 1248,
+    "h": 287
+   }
+  ],
+  "entries": 0,
+  "entriesInFold": 0,
+  "firstEntry": null,
+  "fonts": {
+   "Barlow 700 11px caps": 1,
+   "Barlow 700 44px caps": 1,
+   "Barlow 400 15px": 1,
+   "Barlow 700 24px caps": 2,
+   "Barlow 700 10px": 9,
+   "Barlow 400 14px": 3,
+   "Barlow 600 13px": 3,
+   "JetBrains Mono 400 12px": 1,
+   "Barlow 600 15px": 2,
+   "Barlow 700 13px caps": 1,
+   "Barlow 400 13px": 1
+  },
+  "links": 9,
+  "imgs": 9,
+  "paragraphs": 5
+ },
+ "404-2000": {
+  "status": 404,
+  "height": 1156,
+  "title": {
+   "x": 376,
+   "y": 128,
+   "w": 461,
+   "h": 44
+  },
+  "titleFont": "Barlow",
+  "titleText": "No page here",
+  "eyebrow": "NOT FOUND",
+  "main": {
+   "x": 376,
+   "y": 81,
+   "w": 1248,
+   "h": 687
+  },
+  "textLeft": 376,
+  "textRight": 1603,
+  "h2": [
+   {
+    "t": "Pick your class",
+    "x": 445,
+    "y": 257,
+    "w": 195,
+    "h": 24
+   },
+   {
+    "t": "Look up a character",
+    "x": 445,
+    "y": 464,
+    "w": 257,
+    "h": 24
+   }
+  ],
+  "framed": 2,
+  "framedBoxes": [
+   {
+    "x": 376,
+    "y": 234,
+    "w": 1248,
+    "h": 175
+   },
+   {
+    "x": 376,
+    "y": 441,
+    "w": 1248,
+    "h": 287
+   }
+  ],
+  "entries": 0,
+  "entriesInFold": 0,
+  "firstEntry": null,
+  "fonts": {
+   "Barlow 700 11px caps": 1,
+   "Barlow 700 44px caps": 1,
+   "Barlow 400 15px": 1,
+   "Barlow 700 24px caps": 2,
+   "Barlow 700 10px": 9,
+   "Barlow 400 14px": 3,
+   "Barlow 600 13px": 3,
+   "JetBrains Mono 400 12px": 1,
+   "Barlow 600 15px": 2,
+   "Barlow 700 13px caps": 1,
+   "Barlow 400 13px": 1
+  },
+  "links": 9,
+  "imgs": 9,
+  "paragraphs": 5
+ },
+ "404-in-390": {
+  "status": 404,
+  "height": 1918,
+  "title": {
+   "x": 18,
+   "y": 91,
+   "w": 354,
+   "h": 34
+  },
+  "titleFont": "Barlow",
+  "titleText": "No page here",
+  "eyebrow": "NOT FOUND",
+  "main": {
+   "x": 0,
+   "y": 56,
+   "w": 390,
+   "h": 913
+  },
+  "textLeft": 18,
+  "textRight": 372,
+  "h2": [
+   {
+    "t": "Pick your class",
+    "x": 87,
+    "y": 222,
+    "w": 195,
+    "h": 24
+   },
+   {
+    "t": "Look up a character",
+    "x": 87,
+    "y": 507,
+    "w": 257,
+    "h": 24
+   }
+  ],
+  "framed": 2,
+  "framedBoxes": [
+   {
+    "x": 18,
+    "y": 199,
+    "w": 354,
+    "h": 263
+   },
+   {
+    "x": 18,
+    "y": 484,
+    "w": 354,
+    "h": 445
+   }
+  ],
+  "entries": 0,
+  "entriesInFold": 0,
+  "firstEntry": null,
+  "fonts": {
+   "Barlow 700 11px caps": 1,
+   "Barlow 700 34px caps": 1,
+   "Barlow 400 15px": 1,
+   "Barlow 700 24px caps": 2,
+   "Barlow 700 10px": 9,
+   "Barlow 400 14px": 3,
+   "Barlow 600 13px": 3,
+   "Barlow 600 15px": 2,
+   "Barlow 700 13px caps": 1,
+   "Barlow 400 13px": 1
+  },
+  "links": 9,
+  "imgs": 9,
+  "paragraphs": 5
+ },
+ "404-in-1440": {
+  "status": 404,
+  "height": 1156,
+  "title": {
+   "x": 96,
+   "y": 128,
+   "w": 461,
+   "h": 44
+  },
+  "titleFont": "Barlow",
+  "titleText": "No page here",
+  "eyebrow": "NOT FOUND",
+  "main": {
+   "x": 96,
+   "y": 81,
+   "w": 1248,
+   "h": 687
+  },
+  "textLeft": 96,
+  "textRight": 1323,
+  "h2": [
+   {
+    "t": "Pick your class",
+    "x": 165,
+    "y": 257,
+    "w": 195,
+    "h": 24
+   },
+   {
+    "t": "Look up a character",
+    "x": 165,
+    "y": 464,
+    "w": 257,
+    "h": 24
+   }
+  ],
+  "framed": 2,
+  "framedBoxes": [
+   {
+    "x": 96,
+    "y": 234,
+    "w": 1248,
+    "h": 175
+   },
+   {
+    "x": 96,
+    "y": 441,
+    "w": 1248,
+    "h": 287
+   }
+  ],
+  "entries": 0,
+  "entriesInFold": 0,
+  "firstEntry": null,
+  "fonts": {
+   "Barlow 700 11px caps": 1,
+   "Barlow 700 44px caps": 1,
+   "Barlow 400 15px": 1,
+   "Barlow 700 24px caps": 2,
+   "Barlow 700 10px": 9,
+   "Barlow 400 14px": 3,
+   "Barlow 600 13px": 3,
+   "JetBrains Mono 400 12px": 1,
+   "Barlow 600 15px": 2,
+   "Barlow 700 13px caps": 1,
+   "Barlow 400 13px": 1
+  },
+  "links": 9,
+  "imgs": 9,
+  "paragraphs": 5
+ },
+ "b-unavailable-390": {
+  "status": 200,
+  "height": 1241,
+  "title": {
+   "x": 18,
+   "y": 96,
+   "w": 354,
+   "h": 34
+  },
+  "titleFont": "Barlow",
+  "titleText": "Build unavailable",
+  "eyebrow": null,
+  "main": {
+   "x": 0,
+   "y": 56,
+   "w": 390,
+   "h": 236
+  },
+  "textLeft": 18,
+  "textRight": 372,
+  "h2": [],
+  "framed": 0,
+  "framedBoxes": [],
+  "entries": 0,
+  "entriesInFold": 0,
+  "firstEntry": null,
+  "fonts": {
+   "Barlow 700 34px caps": 1,
+   "Barlow 400 15px": 3
+  },
+  "links": 1,
+  "imgs": 0,
+  "paragraphs": 2
+ },
+ "b-unavailable-1440": {
+  "status": 200,
+  "height": 1000,
+  "title": {
+   "x": 360,
+   "y": 121,
+   "w": 720,
+   "h": 44
+  },
+  "titleFont": "Barlow",
+  "titleText": "Build unavailable",
+  "eyebrow": null,
+  "main": {
+   "x": 360,
+   "y": 81,
+   "w": 720,
+   "h": 224
+  },
+  "textLeft": 360,
+  "textRight": 1080,
+  "h2": [],
+  "framed": 0,
+  "framedBoxes": [],
+  "entries": 0,
+  "entriesInFold": 0,
+  "firstEntry": null,
+  "fonts": {
+   "Barlow 700 44px caps": 1,
+   "Barlow 400 15px": 3
+  },
+  "links": 1,
+  "imgs": 0,
+  "paragraphs": 2
+ }
+}

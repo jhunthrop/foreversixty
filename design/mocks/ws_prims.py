@@ -1171,3 +1171,81 @@ def CodeField(text: str, placeholder: bool = False, bad: bool = False, label: st
 def ClassPicker(classes: list[tuple[str, str, bool]]) -> str:
     """The ControlBar's class choice: (crest_html, name, current). Crests always; names from 1280 and in the phone stack."""
     return seg([(f'<span class="lbl">{n}</span>', on, None, c) for c, n, on in classes], 'clsp', 'Class').replace('<a href="#" role="radio"', '<a href="#" role="radio" title=""', 0)
+
+# ------------------------------------------------ primitives added by the pages round (2026-11-08; design/specs/2026-11-08-pages.md section 3A)
+# Additive only: no earlier mock changes (Page is redefined as a superset; at its defaults it emits exactly what it did).
+# `Page('reading', toc_from=1024)` is a document with no lanes (the legal and About pages): the contents rail at the left from
+# 1024 instead of 1760; `toc_from=0` is a document with no contents (About). `Prose` gains a ruled table (the roadmap) and
+# inline code (a cookie name) in the one mono face. `Dated` is one entry of a dated log (the changelog): the date (a permalink)
+# and its tags in a 120 px column, the entry (title 18/24, body 16/26 at 720) and its lane (sources, a caveat) side by side
+# from 1280, stacked below. `DatedGroup` is a reading section of entries (a month). `CharacterAnswer` is the guides' signed-in
+# answer drawn as a primitive (the strings are lib/account/answer-copy.ts and guidesCopy; guides gap G2), reused by the 404.
+PRIM_CSS += '''
+@media(min-width:1024px){.layout-reading.toc-lg{grid-template-columns:var(--toc-w) minmax(0,1fr)}.layout-reading.toc-lg>.toc{display:block;position:sticky;top:24px}}
+.layout-reading.toc-none>.toc{display:none}
+@media(min-width:1760px){.layout-reading.toc-none{grid-template-columns:minmax(0,1fr)}.layout-reading.toc-none>.toc{display:none}}
+.rsec{scroll-margin-top:24px}
+.layout-reading.toc-lg .rsec>.sec-h,.layout-reading.toc-none .rsec>.sec-h{max-width:var(--measure-reading)}
+.rprose table{width:100%;border-collapse:collapse;margin:0 0 18px;font-size:15px;line-height:22px}
+.rprose th{text-align:left;font:700 12px/16px var(--font-body);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);padding:0 16px 8px 0;border-bottom:1px solid var(--line-soft)}
+.rprose td{padding:10px 16px 10px 0;border-bottom:1px solid var(--line-soft);vertical-align:top}
+.rprose td:first-child{width:1%;white-space:nowrap;font-weight:600;color:var(--strong)}
+@media(max-width:767px){.rprose thead{display:none}.rprose tr{display:grid;gap:2px;padding:10px 0;border-bottom:1px solid var(--line-soft)}.rprose td{padding:0;border:0}.rprose td:first-child{width:auto;white-space:normal}}
+.rprose code{font:600 14px/20px ui-monospace,'SF Mono',Menlo,monospace;color:var(--strong)}
+.dated{display:grid;grid-template-columns:minmax(0,1fr);gap:10px var(--gap);padding:24px 0;border-bottom:1px solid var(--line-soft);scroll-margin-top:72px}
+.dated:first-child{padding-top:20px}.dated:last-child{border-bottom:0}
+.dated-w{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px}
+.dated-w .d{font:700 15px/20px var(--font-body);font-variant-numeric:tabular-nums;color:var(--strong)}.dated-w .d:hover{color:var(--gold-hover)}
+.dated-b{min-width:0;max-width:var(--measure-reading)}
+.dated-b>h3{font:700 18px/24px var(--font-body);color:var(--strong);margin:0 0 8px}
+.dated-n{font-size:16px;line-height:26px;color:var(--text);margin:0}
+.dated-l{min-width:0;display:flex;flex-direction:column;gap:10px}
+.dated-c{font-size:13px;line-height:20px;color:var(--muted);margin:0}
+@media(min-width:1280px){.dated{grid-template-columns:120px var(--measure-reading) minmax(0,1fr)}.dated-w{flex-direction:column;align-items:flex-start;gap:8px}.dated-l{padding-top:2px}}
+.dated-g>.sec-h>.t-small{margin-left:auto}
+.cans-row{display:flex;align-items:center;gap:12px}.cans-who{display:flex;flex-direction:column;min-width:0}.cans-name{font:700 18px/22px var(--font-body)}
+.cans-links{display:flex;gap:4px 16px;flex-wrap:wrap}
+@media(min-width:900px){.cans-row{flex-direction:row-reverse}.cans-who{align-items:flex-end}.cans-links{justify-content:flex-end}}
+'''
+
+_Page3 = Page
+
+
+def Page(layout: str, main: str = '', rail: str = '', sticky_rail: bool = False, toc_from: int = 1760, toc_label: str = '') -> str:
+    """Page with `toc_from` on the reading layout: 1760 (guides, the changelog), 1024 (a document: legal, Data sources), 0 (no contents)."""
+    html = _Page3(layout, main, rail, sticky_rail)
+    if layout != 'reading':
+        return html
+    if toc_from != 1760:
+        html = html.replace('class="layout-reading"', f'class="layout-reading toc-{"lg" if toc_from == 1024 else "none"}"', 1)
+    if toc_label:
+        html = html.replace('aria-label="Sections in this guide"', f'aria-label="{escape(toc_label)}"', 1)
+    return html
+
+
+def Dated(anchor: str, iso: str, date: str, tags: str, title: str, body: str, lane: str = '') -> str:
+    """One entry of a dated log: the date (a permalink to the entry) over its tags, the entry, its lane (sources, a caveat)."""
+    lane_html = f'<div class="dated-l">{lane}</div>' if lane else ''
+    return (f'<article class="dated" id="{anchor}"><div class="dated-w"><a class="d" href="#{anchor}"><time datetime="{iso}">{date}</time></a>{tags}</div>'
+            f'<div class="dated-b"><h3>{title}</h3>{body}</div>{lane_html}</article>')
+
+
+def DatedGroup(title: str, meta: str, anchor: str, entries: str) -> str:
+    """A reading section of dated entries (a month): the reading head (22/28) with its count at the right."""
+    return (f'<section class="rsec dated-g" data-region="{region_slug(title)}" id="{anchor}"><div class="sec-h"><h2>{title}</h2>'
+            f'<span class="t-small">{meta}</span></div><div class="dated-list">{entries}</div></section>')
+
+
+def CharacterAnswer(label: str, state: str, crest: str = '', name: str = '', color: str = '', line: str = '', links: list[str] | None = None,
+                    text: str = '', action: str = '') -> str:
+    """PageHeader.answer for 'your character'. state: who | loading | message | error (message with role="alert")."""
+    lab = f'<span class="t-label">{label}</span>'
+    if state == 'loading':
+        return (f'<div class="ans-box" aria-busy="true">{lab}<span class="cans-row">{Skeleton(40, 40, True)}<span class="cans-who">{Skeleton(150, 22)}'
+                f'{Skeleton(190, 16)}</span></span>{Skeleton(220, 20)}</div>')
+    if state in ('message', 'error'):
+        role = ' role="alert"' if state == 'error' else ''
+        return f'<div class="ans-box">{lab}<span class="t-small"{role}>{text}</span>{action}</div>'
+    who = (f'<span class="cans-row">{crest}<span class="cans-who"><b class="cans-name" style="color:{color}">{name}</b>'
+           f'<span class="t-small">{line}</span></span></span>')
+    return f'<div class="ans-box">{lab}{who}<span class="cans-links">{"".join(links or [])}</span></div>'
