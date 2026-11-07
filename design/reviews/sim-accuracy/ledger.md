@@ -30,6 +30,7 @@ The owner's goal (2026-10-31): repeat audit and fix rounds over every spec until
 | 24 | 2026-11-05 to 2026-11-06 | design/reviews/2026-11-05-sim-audit-round24/ (platform, items, data, healbisect, one lane per class or pair, integration) | 70 fixed; the measuring tool judged rank rows on band-floor talents (fixed; 193 rows re-judged); the 70790 hotfix push layered for the first time (Defiance 7/13/20, Natural flasks); manaSpentPerSecond; healer bare-band drops traced to round 15's level-gap penalty (correct) | bf727699f | no |
 | 25 | 2026-11-06 | design/reviews/2026-11-06-sim-audit-round25/ (coach, platform, race, shadow, healers-bare, integration) | 23 fixed: 14 old, 7 R21, 2 R24; below 20 the band gear had dropped weapons, bows and wands (now refilled from the client tables, faction-filtered); coach F1 counts on the player's own talent cooldowns and F7 offers melee-only defensives only at physical deaths; the ranker sweeps every legal race (Protection warrior Horde is Undead on threat); healer bare-band drops are round 15's penalty (correct); Shadowform at 40 loses to the current order | f871a65ae | no |
 | 26 | 2026-11-06 | design/reviews/2026-11-06-sim-audit-round26/ (platform, melee, ranks, integration) | 19 fixed: 11 old, 6 R24, 1 R21, 1 R25; below-20 gear faction-filtered with armor refilled, the caster and healer rank rows at 10 to 19 re-judged on it; Ghostly Strike on normalized weapon damage (Subtlety raid -0.57%); Combat holds Slice and Dice until 60; Subtlety and Arms leveling orders | 227d95bd1 | no |
+| 27 | 2026-11-06 to 2026-11-07 | design/reviews/2026-11-07-sim-audit-round27/ (orders, tools, integration) | 9 fixed: 7 old, 2 R26; four melee leveling orders stop spending early points on talents that do nothing (Subtlety, Arms, Assassination, Combat); Skyborne druid rows below 20; spec-breakdown refuses impossible races; every engine-only spell id has an icon source (icon regen waits on wago) | 978e4c8aa | no |
 
 ## Loop structure
 
@@ -86,6 +87,7 @@ Picks and deltas that only a full re-rank can show. Each row is checked in the v
 | MR33 | Protection warrior Horde on Undead | warrior-protection, Horde, every band; then drop its knownStaleBISFiles entry | guide race moved on threat (Touch of the Grave) | round 25 race |
 | MR34 | Shadow's published band 20 to 40 talents and Alliance race | priest-shadow | they should follow the leveling order (Shadowform at 42) and Human | round 25 shadow |
 | MR35 | Combat bare bands and Subtlety picks | rogue-combat bare 20 to 50; rogue-subtlety every band; warrior-arms band 20 | Slice and Dice waits for 60; Ghostly Strike normalized; Arms leveling order | round 26 ranks, melee |
+| MR36 | Combat and Assassination band 20 on the round 27 orders; the 54 engine-only icons | rogue-combat, rogue-assassination band 20; spellicons.json | leveling orders changed; icon regen held for wago | round 27 orders, tools |
 
 ## Round 13 at a glance
 
