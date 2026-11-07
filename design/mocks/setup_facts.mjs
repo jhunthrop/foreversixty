@@ -7,10 +7,9 @@
 //    addonLine, companionLine, companionPlatformsLine), lib/reports/device-status.ts, lib/account/connect-flow.ts;
 //  - data: web/src/data/companion.json, active-build.json, lib/downloads/paths.ts;
 //  - fixtures: web/tests/e2e/fixtures/home/me-34.json, me-new.json, web/tests/e2e/fixtures/setup/*.json.
-// Three strings still live inside components, not a copy module (gap G6): LogsCompanion.svelte's pairing action,
-// failure and code lines are read from that file's source here, verbatim.
+//  - the plate's rows and the head answer: lib/setup/steps.ts and lib/setup/answer.ts, the page's own models.
 import { createRequire } from "node:module";
-import { mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import { mkdtempSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { pathToFileURL } from "node:url";
@@ -32,6 +31,8 @@ import { yourReportsPageCopy } from ${src("src/lib/reports/my-reports-copy.ts")}
 import { signInLine, addonLine, companionLine, companionPlatformsLine } from ${src("src/lib/setup/progress.ts")};
 import { deviceStatusLine } from ${src("src/lib/reports/device-status.ts")};
 import { displayCode } from ${src("src/lib/account/connect-flow.ts")};
+import { setupSteps } from ${src("src/lib/setup/steps.ts")};
+import { setupAnswer } from ${src("src/lib/setup/answer.ts")};
 import { relativeTime } from ${src("src/lib/dates.ts")};
 import { ADDON_DOWNLOAD_PATH, DATA_DOWNLOAD_PATH, companionDownloadPath } from ${src("src/lib/downloads/paths.ts")};
 import companion from ${src("src/data/companion.json")};
@@ -47,9 +48,24 @@ const strip = (o) => JSON.parse(JSON.stringify(o, (k, v) => (typeof v === 'funct
 const meBnet = { ...me34, characters: me34.characters.map((c) => ({ ...c, build: { ...c.build, source: 'blizzard' } })) };
 const lines = (me, devs) => ({ signin: signInLine(me), addon: addonLine(me, NOW), companion: companionLine(me, devs, NOW) });
 const ch = me34.characters[0];
+// The import still running (the API's /v1/me bnet_import, setup spec G1): me-new with the field set.
+const meImporting = { ...meNew, bnet_import: { state: 'running', at: '2026-11-06T09:59:30Z' } };
+const platforms = companion.downloads.map((d) => d.platform);
+const steps = (session, me, devs, extra = {}) => setupSteps({ session, me, devices: devs, platform: 'windows', now: NOW, ...extra }, platforms);
+// Every mocked state's plate rows, from lib/setup/steps.ts itself (the page's island draws the same rows).
+const STATES = {
+  out: steps('out', null, []), mac: steps('out', null, [], { platform: 'mac' }), export: steps('out', null, [], { pointer: true }),
+  'paste-error': steps('out', null, []), 'signin-failed': steps('out', null, [], { signinFailed: true }), error: steps('error', null, null),
+  loading: steps('loading', null, null), none: steps('in', meNew, []), importing: steps('in', meImporting, []),
+  failed: steps('in', meNew, [], { refreshFailed: true }), bnet: steps('in', meBnet, []), addon: steps('in', me34, []),
+  pairing: steps('in', me34, [], { pairingCode: pairCode.code }), done: steps('in', me34, devices),
+};
 const code = displayCode('kq47tm');
 export default {
   now: NOW.toISOString(),
+  rows: STATES,
+  answer: setupAnswer(me34, null, NOW),
+  answer_bnet: setupAnswer(meBnet, null, NOW),
   me: { addon: me34, bnet: meBnet, none: meNew },
   devices, lookup, pair_code: pairCode,
   lines: { out: lines(null, []), none: lines(meNew, []), bnet: lines(meBnet, []), addon: lines(me34, []), done: lines(me34, devices) },
@@ -69,7 +85,7 @@ export default {
     signedOutLeadNamed: connectCopy.signedOutLeadNamed(lookup.name),
   },
   addon: strip(addonCopy), cta: ctaCopy, characters: strip(characterListCopy),
-  pairing: { ...strip(pairingCopy), success_line: pairingCopy.success(devices[0].name) }, logs_companion: logsCompanionCopy, session_failed: yourReportsPageCopy.sessionFailed,
+  pairing: { ...strip(pairingCopy), success_line: pairingCopy.success(devices[0].name), code_line: pairingCopy.codeLine(Math.round(pairCode.expires_in / 60)) }, logs_companion: logsCompanionCopy, session_failed: yourReportsPageCopy.sessionFailed,
   wrong_prefix: addonCopy.wrongPrefix('FS2', 'FS1'),
 };`;
 const dir = mkdtempSync(join(tmpdir(), "setup-facts-"));
@@ -77,15 +93,5 @@ const outfile = join(dir, "facts.mjs");
 await esbuild.build({ stdin: { contents: entry, resolveDir: WEB, loader: "ts" }, bundle: true, platform: "node", format: "esm",
   outfile, logLevel: "error", define: { "import.meta.env": "{}" }, loader: { ".json": "json" } });
 const facts = (await import(pathToFileURL(outfile).href)).default;
-// LogsCompanion.svelte keeps three strings of its own (gap G6): read verbatim from the source.
-const lc = readFileSync(join(WEB, "src/components/logs/LogsCompanion.svelte"), "utf8");
-const grab = (re) => (re.exec(lc) ?? [])[1] ?? null;
-const minutes = Math.round(facts.pair_code.expires_in / 60);
-facts.pairing_component = {
-  action: grab(/PAIR_ACTION = '([^']+)'/),
-  failed: grab(/PAIR_FAILED = '([^']+)'/),
-  code_line: (grab(/(Type this into the companion within[\s\S]*?cannot be reused\.)/) ?? "")
-    .replace(/\{Math\.round\([^}]+\)\}/, String(minutes)).replace(/\s+/g, " "),
-};
 writeFileSync(OUT, JSON.stringify(facts, null, 1) + "\n");
 console.log(OUT.pathname);

@@ -52,7 +52,7 @@ export function addonLine(me: Me | null, now: Date = new Date()): StepLine | nul
   if (me === null) return null;
   const arrived = newestAddonCharacter(me.characters);
   if (arrived === null) {
-    const text = me.characters.length > 0 ? addonCopy.setupAddonOptional : addonCopy.setupAddonWaiting;
+    const text = me.characters.length > 0 ? addonCopy.setupAddonOptional : addonCopy.setupAddonNote;
     return { done: false, text };
   }
   return {

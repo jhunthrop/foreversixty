@@ -71,7 +71,7 @@ test('not signed in: the code, the Battle.net hand-off with next, then pending a
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Connected.');
   await expect(
     page.getByText(
-      'Connected. Go back to the companion; it is ready. Now log out once in game, and your characters appear on the site within a minute.',
+      'Go back to the companion; it is ready. Now log out once in game, and your characters appear on the site within a minute.',
     ),
   ).toBeVisible();
   await expect(page.getByTestId('connect-account')).toHaveText('Your account');

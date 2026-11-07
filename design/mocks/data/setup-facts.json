@@ -1,5 +1,730 @@
 {
  "now": "2026-11-06T10:00:00.000Z",
+ "rows": {
+  "out": [
+   {
+    "n": 1,
+    "title": "Sign in",
+    "mark": "next",
+    "lines": [
+     {
+      "text": "Brings your Forever characters in from Battle.net, and saves your builds, sims and logs.",
+      "tone": "muted"
+     }
+    ],
+    "action": {
+     "id": "signin",
+     "label": "Sign in with Battle.net",
+     "kind": "link-button",
+     "primary": true
+    }
+   },
+   {
+    "n": 2,
+    "title": "The addon",
+    "mark": "todo",
+    "lines": [
+     {
+      "text": "Optional. Gear tips on every tooltip, talent marks, bags and bank.",
+      "tone": "muted"
+     }
+    ],
+    "action": {
+     "id": "curseforge",
+     "label": "Install from CurseForge",
+     "kind": "link-button",
+     "primary": false
+    }
+   },
+   {
+    "n": 3,
+    "title": "The companion",
+    "mark": "todo",
+    "lines": [
+     {
+      "text": "Optional. Sends bags, bank and live logs after every session.",
+      "tone": "muted"
+     }
+    ],
+    "action": {
+     "id": "download",
+     "label": "Download for Windows",
+     "kind": "link-button",
+     "primary": false
+    }
+   }
+  ],
+  "mac": [
+   {
+    "n": 1,
+    "title": "Sign in",
+    "mark": "next",
+    "lines": [
+     {
+      "text": "Brings your Forever characters in from Battle.net, and saves your builds, sims and logs.",
+      "tone": "muted"
+     }
+    ],
+    "action": {
+     "id": "signin",
+     "label": "Sign in with Battle.net",
+     "kind": "link-button",
+     "primary": true
+    }
+   },
+   {
+    "n": 2,
+    "title": "The addon",
+    "mark": "todo",
+    "lines": [
+     {
+      "text": "Optional. Gear tips on every tooltip, talent marks, bags and bank.",
+      "tone": "muted"
+     }
+    ],
+    "action": {
+     "id": "curseforge",
+     "label": "Install from CurseForge",
+     "kind": "link-button",
+     "primary": false
+    }
+   },
+   {
+    "n": 3,
+    "title": "The companion",
+    "mark": "todo",
+    "lines": [
+     {
+      "text": "Windows only; Mac is not supported yet. On a Mac, paste an export instead.",
+      "tone": "muted"
+     }
+    ],
+    "action": {
+     "id": "paste",
+     "label": "Try an export",
+     "kind": "link",
+     "primary": false
+    }
+   }
+  ],
+  "export": [
+   {
+    "n": 1,
+    "title": "Sign in",
+    "mark": "next",
+    "lines": [
+     {
+      "text": "Brings your Forever characters in from Battle.net, and saves your builds, sims and logs.",
+      "tone": "muted"
+     }
+    ],
+    "action": {
+     "id": "signin",
+     "label": "Sign in with Battle.net",
+     "kind": "link-button",
+     "primary": true
+    }
+   },
+   {
+    "n": 2,
+    "title": "The addon",
+    "mark": "ok",
+    "lines": [
+     {
+      "text": "An export is loaded; the site is pointed at that character.",
+      "tone": "ok"
+     }
+    ],
+    "action": null
+   },
+   {
+    "n": 3,
+    "title": "The companion",
+    "mark": "todo",
+    "lines": [
+     {
+      "text": "Optional. Sends bags, bank and live logs after every session.",
+      "tone": "muted"
+     }
+    ],
+    "action": {
+     "id": "download",
+     "label": "Download for Windows",
+     "kind": "link-button",
+     "primary": false
+    }
+   }
+  ],
+  "paste-error": [
+   {
+    "n": 1,
+    "title": "Sign in",
+    "mark": "next",
+    "lines": [
+     {
+      "text": "Brings your Forever characters in from Battle.net, and saves your builds, sims and logs.",
+      "tone": "muted"
+     }
+    ],
+    "action": {
+     "id": "signin",
+     "label": "Sign in with Battle.net",
+     "kind": "link-button",
+     "primary": true
+    }
+   },
+   {
+    "n": 2,
+    "title": "The addon",
+    "mark": "todo",
+    "lines": [
+     {
+      "text": "Optional. Gear tips on every tooltip, talent marks, bags and bank.",
+      "tone": "muted"
+     }
+    ],
+    "action": {
+     "id": "curseforge",
+     "label": "Install from CurseForge",
+     "kind": "link-button",
+     "primary": false
+    }
+   },
+   {
+    "n": 3,
+    "title": "The companion",
+    "mark": "todo",
+    "lines": [
+     {
+      "text": "Optional. Sends bags, bank and live logs after every session.",
+      "tone": "muted"
+     }
+    ],
+    "action": {
+     "id": "download",
+     "label": "Download for Windows",
+     "kind": "link-button",
+     "primary": false
+    }
+   }
+  ],
+  "signin-failed": [
+   {
+    "n": 1,
+    "title": "Sign in",
+    "mark": "miss",
+    "lines": [
+     {
+      "text": "Battle.net sign-in did not finish. Nothing was saved.",
+      "tone": "miss",
+      "alert": true
+     }
+    ],
+    "action": {
+     "id": "signin",
+     "label": "Sign in with Battle.net",
+     "kind": "link-button",
+     "primary": true
+    }
+   },
+   {
+    "n": 2,
+    "title": "The addon",
+    "mark": "todo",
+    "lines": [
+     {
+      "text": "Optional. Gear tips on every tooltip, talent marks, bags and bank.",
+      "tone": "muted"
+     }
+    ],
+    "action": {
+     "id": "curseforge",
+     "label": "Install from CurseForge",
+     "kind": "link-button",
+     "primary": false
+    }
+   },
+   {
+    "n": 3,
+    "title": "The companion",
+    "mark": "todo",
+    "lines": [
+     {
+      "text": "Optional. Sends bags, bank and live logs after every session.",
+      "tone": "muted"
+     }
+    ],
+    "action": {
+     "id": "download",
+     "label": "Download for Windows",
+     "kind": "link-button",
+     "primary": false
+    }
+   }
+  ],
+  "error": [
+   {
+    "n": 1,
+    "title": "Sign in",
+    "mark": "miss",
+    "lines": [
+     {
+      "text": "Your account did not load.",
+      "tone": "miss",
+      "alert": true
+     }
+    ],
+    "action": {
+     "id": "retry",
+     "label": "Try again",
+     "kind": "button",
+     "primary": true
+    }
+   },
+   {
+    "n": 2,
+    "title": "The addon",
+    "mark": "todo",
+    "lines": [
+     {
+      "text": "Optional. Gear tips on every tooltip, talent marks, bags and bank.",
+      "tone": "muted"
+     }
+    ],
+    "action": {
+     "id": "curseforge",
+     "label": "Install from CurseForge",
+     "kind": "link-button",
+     "primary": false
+    }
+   },
+   {
+    "n": 3,
+    "title": "The companion",
+    "mark": "todo",
+    "lines": [
+     {
+      "text": "Optional. Sends bags, bank and live logs after every session.",
+      "tone": "muted"
+     }
+    ],
+    "action": {
+     "id": "download",
+     "label": "Download for Windows",
+     "kind": "link-button",
+     "primary": false
+    }
+   }
+  ],
+  "loading": [
+   {
+    "n": 1,
+    "title": "Sign in",
+    "mark": "ok",
+    "lines": [
+     {
+      "text": "",
+      "tone": "muted",
+      "skeleton": true
+     }
+    ],
+    "action": null
+   },
+   {
+    "n": 2,
+    "title": "The addon",
+    "mark": "todo",
+    "lines": [
+     {
+      "text": "",
+      "tone": "muted",
+      "skeleton": true
+     }
+    ],
+    "action": null
+   },
+   {
+    "n": 3,
+    "title": "The companion",
+    "mark": "todo",
+    "lines": [
+     {
+      "text": "",
+      "tone": "muted",
+      "skeleton": true
+     }
+    ],
+    "action": null
+   }
+  ],
+  "none": [
+   {
+    "n": 1,
+    "title": "Sign in",
+    "mark": "warn",
+    "lines": [
+     {
+      "text": "Signed in as Hunthrop#1894",
+      "tone": "text"
+     },
+     {
+      "text": "No Forever characters on this Battle.net account yet. Make one in game, then refresh from Battle.net.",
+      "tone": "warn"
+     },
+     {
+      "text": "Playing in Korea? Install the addon and the companion, or paste an export.",
+      "tone": "muted"
+     }
+    ],
+    "action": {
+     "id": "refresh",
+     "label": "Refresh from Battle.net",
+     "kind": "button",
+     "primary": true
+    }
+   },
+   {
+    "n": 2,
+    "title": "The addon",
+    "mark": "todo",
+    "lines": [
+     {
+      "text": "Optional. Gear tips on every tooltip, talent marks, bags and bank.",
+      "tone": "muted"
+     }
+    ],
+    "action": {
+     "id": "curseforge",
+     "label": "Install from CurseForge",
+     "kind": "link-button",
+     "primary": false
+    }
+   },
+   {
+    "n": 3,
+    "title": "The companion",
+    "mark": "todo",
+    "lines": [
+     {
+      "text": "No companion signed in yet",
+      "tone": "muted"
+     }
+    ],
+    "action": {
+     "id": "download",
+     "label": "Download for Windows",
+     "kind": "link-button",
+     "primary": false
+    }
+   }
+  ],
+  "importing": [
+   {
+    "n": 1,
+    "title": "Sign in",
+    "mark": "busy",
+    "lines": [
+     {
+      "text": "Signed in as Hunthrop#1894",
+      "tone": "text"
+     },
+     {
+      "text": "Your characters can take up to two minutes to arrive.",
+      "tone": "muted"
+     }
+    ],
+    "action": null
+   },
+   {
+    "n": 2,
+    "title": "The addon",
+    "mark": "todo",
+    "lines": [
+     {
+      "text": "Optional. Gear tips on every tooltip, talent marks, bags and bank.",
+      "tone": "muted"
+     }
+    ],
+    "action": {
+     "id": "curseforge",
+     "label": "Install from CurseForge",
+     "kind": "link-button",
+     "primary": false
+    }
+   },
+   {
+    "n": 3,
+    "title": "The companion",
+    "mark": "todo",
+    "lines": [
+     {
+      "text": "No companion signed in yet",
+      "tone": "muted"
+     }
+    ],
+    "action": {
+     "id": "download",
+     "label": "Download for Windows",
+     "kind": "link-button",
+     "primary": false
+    }
+   }
+  ],
+  "failed": [
+   {
+    "n": 1,
+    "title": "Sign in",
+    "mark": "miss",
+    "lines": [
+     {
+      "text": "Signed in as Hunthrop#1894",
+      "tone": "text"
+     },
+     {
+      "text": "Battle.net did not answer. Nothing changed.",
+      "tone": "miss",
+      "alert": true
+     }
+    ],
+    "action": {
+     "id": "refresh",
+     "label": "Try again",
+     "kind": "button",
+     "primary": true
+    }
+   },
+   {
+    "n": 2,
+    "title": "The addon",
+    "mark": "todo",
+    "lines": [
+     {
+      "text": "Optional. Gear tips on every tooltip, talent marks, bags and bank.",
+      "tone": "muted"
+     }
+    ],
+    "action": {
+     "id": "curseforge",
+     "label": "Install from CurseForge",
+     "kind": "link-button",
+     "primary": false
+    }
+   },
+   {
+    "n": 3,
+    "title": "The companion",
+    "mark": "todo",
+    "lines": [
+     {
+      "text": "No companion signed in yet",
+      "tone": "muted"
+     }
+    ],
+    "action": {
+     "id": "download",
+     "label": "Download for Windows",
+     "kind": "link-button",
+     "primary": false
+    }
+   }
+  ],
+  "bnet": [
+   {
+    "n": 1,
+    "title": "Sign in",
+    "mark": "ok",
+    "lines": [
+     {
+      "text": "Signed in as Hunthrop#1894 · Imported from Battle.net 1 hour ago.",
+      "tone": "ok"
+     }
+    ],
+    "action": null
+   },
+   {
+    "n": 2,
+    "title": "The addon",
+    "mark": "next",
+    "lines": [
+     {
+      "text": "Your characters are in from Battle.net. The addon saves bags and bank when you log out; the companion sends them.",
+      "tone": "muted"
+     }
+    ],
+    "action": {
+     "id": "curseforge",
+     "label": "Install from CurseForge",
+     "kind": "link-button",
+     "primary": true
+    }
+   },
+   {
+    "n": 3,
+    "title": "The companion",
+    "mark": "todo",
+    "lines": [
+     {
+      "text": "No companion signed in yet",
+      "tone": "muted"
+     }
+    ],
+    "action": {
+     "id": "download",
+     "label": "Download for Windows",
+     "kind": "link-button",
+     "primary": false
+    }
+   }
+  ],
+  "addon": [
+   {
+    "n": 1,
+    "title": "Sign in",
+    "mark": "ok",
+    "lines": [
+     {
+      "text": "Signed in as Hunthrop#1894 · Imported from Battle.net 1 hour ago.",
+      "tone": "ok"
+     }
+    ],
+    "action": null
+   },
+   {
+    "n": 2,
+    "title": "The addon",
+    "mark": "ok",
+    "lines": [
+     {
+      "text": "Felsnap arrived from the addon 1 day ago",
+      "tone": "ok"
+     }
+    ],
+    "action": null
+   },
+   {
+    "n": 3,
+    "title": "The companion",
+    "mark": "next",
+    "lines": [
+     {
+      "text": "No companion signed in yet",
+      "tone": "muted"
+     }
+    ],
+    "action": {
+     "id": "download",
+     "label": "Download for Windows",
+     "kind": "link-button",
+     "primary": true
+    }
+   }
+  ],
+  "pairing": [
+   {
+    "n": 1,
+    "title": "Sign in",
+    "mark": "ok",
+    "lines": [
+     {
+      "text": "Signed in as Hunthrop#1894 · Imported from Battle.net 1 hour ago.",
+      "tone": "ok"
+     }
+    ],
+    "action": null
+   },
+   {
+    "n": 2,
+    "title": "The addon",
+    "mark": "ok",
+    "lines": [
+     {
+      "text": "Felsnap arrived from the addon 1 day ago",
+      "tone": "ok"
+     }
+    ],
+    "action": null
+   },
+   {
+    "n": 3,
+    "title": "The companion",
+    "mark": "busy",
+    "lines": [
+     {
+      "text": "Waiting for the companion to use the code",
+      "tone": "muted",
+      "code": "4821-9930"
+     }
+    ],
+    "action": null
+   }
+  ],
+  "done": [
+   {
+    "n": 1,
+    "title": "Sign in",
+    "mark": "ok",
+    "lines": [
+     {
+      "text": "Signed in as Hunthrop#1894 · Imported from Battle.net 1 hour ago.",
+      "tone": "ok"
+     }
+    ],
+    "action": null
+   },
+   {
+    "n": 2,
+    "title": "The addon",
+    "mark": "ok",
+    "lines": [
+     {
+      "text": "Felsnap arrived from the addon 1 day ago",
+      "tone": "ok"
+     }
+    ],
+    "action": null
+   },
+   {
+    "n": 3,
+    "title": "The companion",
+    "mark": "ok",
+    "lines": [
+     {
+      "text": "Companion signed in on JHUNT-PC · last seen 3 minutes ago",
+      "tone": "ok"
+     }
+    ],
+    "action": null
+   }
+  ]
+ },
+ "answer": {
+  "name": "Felsnap",
+  "classSlug": "hunter",
+  "levelLine": "Level 34 Beast Mastery Hunter",
+  "imported": "Imported from Battle.net 1 hour ago.",
+  "open": {
+   "label": "Open Felsnap",
+   "href": "/character/us/normal/felsnap"
+  },
+  "bis": {
+   "label": "Best in slot",
+   "href": "/bis/hunter/beast-mastery?faction=alliance#band-alliance-30"
+  }
+ },
+ "answer_bnet": {
+  "name": "Felsnap",
+  "classSlug": "hunter",
+  "levelLine": "Level 34 Beast Mastery Hunter",
+  "imported": "Imported from Battle.net 1 hour ago.",
+  "open": {
+   "label": "Open Felsnap",
+   "href": "/character/us/normal/felsnap"
+  },
+  "bis": {
+   "label": "Best in slot",
+   "href": "/bis/hunter/beast-mastery?faction=alliance#band-alliance-30"
+  }
+ },
  "me": {
   "addon": {
    "user": {
@@ -171,7 +896,7 @@
    },
    "addon": {
     "done": false,
-    "text": "No character yet. Refresh from Battle.net, or install the addon and the companion, then paste an export."
+    "text": "Optional. Gear tips on every tooltip, talent marks, bags and bank."
    },
    "companion": {
     "done": false,
@@ -185,7 +910,7 @@
    },
    "addon": {
     "done": false,
-    "text": "Your characters are in from Battle.net. The addon adds bags, bank and live sync."
+    "text": "Your characters are in from Battle.net. The addon saves bags and bank when you log out; the companion sends them."
    },
    "companion": {
     "done": false,
@@ -222,7 +947,7 @@
   }
  },
  "device_status": [
-  "JHUNT-PC · windows/amd64 · last seen 3 minutes ago"
+  "JHUNT-PC · Windows · last seen 3 minutes ago"
  ],
  "imported": "Imported from Battle.net 1 hour ago.",
  "platforms_line": "Windows only; Mac is not supported yet. On a Mac, paste an export instead.",
@@ -264,7 +989,9 @@
   "connecting": "Connecting...",
   "cancel": "Cancel",
   "successTitle": "Connected.",
-  "successBody": "Connected. Go back to the companion; it is ready. Now log out once in game, and your characters appear on the site within a minute.",
+  "successBody": "Go back to the companion; it is ready. Now log out once in game, and your characters appear on the site within a minute.",
+  "connectedTag": "Connected",
+  "afterSignIn": "Shown once you sign in",
   "yourAccount": "Your account",
   "getSetUp": "Get set up",
   "openReports": "Open my reports",
@@ -355,7 +1082,7 @@
   "setupHowItArrives": "Your characters come in from Battle.net when you sign in. The addon adds bags and bank when you log out, and the companion sends them. No companion? Paste an export instead (see Try an export below).",
   "setupCompanionNote": "Optional. Sends bags, bank and live logs after every session.",
   "setupSubline": "Signing in with Battle.net brings your characters. The addon and companion are optional.",
-  "setupCompanionBody": "The companion logs live from your desktop. Turn on Options > Network > Advanced Combat Logging once, then restart the game. Type /combatlog in game, and every fight appears under Your reports within seconds of the pull ending.",
+  "setupCompanionBody": "The companion logs live from your desktop. Turn on Options > Network > Advanced Combat Logging once. Type /combatlog each time you log in, and every fight appears under Your reports within seconds of the pull ending.",
   "setupPageTitle": "Get set up",
   "setupEyebrow": "Addon and companion",
   "setupProgressLabel": "Your progress",
@@ -384,7 +1111,17 @@
   "setupSignedInAs": "[fn]",
   "setupAddonArrived": "[fn]",
   "setupAddonWaiting": "No character yet. Refresh from Battle.net, or install the addon and the companion, then paste an export.",
-  "setupAddonOptional": "Your characters are in from Battle.net. The addon adds bags, bank and live sync.",
+  "setupAddonOptional": "Your characters are in from Battle.net. The addon saves bags and bank when you log out; the companion sends them.",
+  "setupAddonNote": "Optional. Gear tips on every tooltip, talent marks, bags and bank.",
+  "setupImportWait": "Your characters can take up to two minutes to arrive.",
+  "setupSignInFailed": "Battle.net sign-in did not finish. Nothing was saved.",
+  "setupLevelLine": "[fn]",
+  "setupOpenCharacter": "[fn]",
+  "setupBis": "Best in slot",
+  "setupHandInstall": "Installing by hand",
+  "setupHandInstallBody": "Unzip both into World of Warcraft\\<your Forever game folder>\\Interface\\AddOns: the addon zip holds ForeverSixty and ForeverSixtyInbox, the data zip holds ForeverSixtyData.",
+  "setupDownloadAnother": "Download for another PC",
+  "pasteFieldLabel": "Addon export",
   "setupCompanionLine": "[fn]",
   "setupCompanionWaiting": "No companion signed in yet",
   "setupHowItWorks": "How the addon works",
@@ -405,6 +1142,7 @@
   "setupTryExport": "Try an export",
   "setupTryExportBody": "Paste what the addon saved (type /fs copy in game) to see your character without the companion.",
   "surfacesTitle": "What it does in the game",
+  "surfacesShow": "Show every surface, with pictures from the game",
   "surfaces": [
    {
     "section": "4.1",
@@ -537,11 +1275,10 @@
       "alt": "The build dialog for a hunter on Paste a build: “Following: Beast Mastery / Marksmanship build · Hunter · 51 po…”, “Next talent: Take Lethal Attacks (Marksmanship, 1 of 5)”, and the empty box “Paste a build code from foreversixty.gg (Ctrl+V)”, with “Tab to switch” at the bottom."
      },
      {
-      "src": "/addon/build-dialog-copy.jpg",
-      "tall": true,
+      "src": "/addon/build-dialog-copy-tab.jpg",
       "width": 770,
-      "height": 550,
-      "alt": "The build dialog on Copy my character with the hunter’s export string selected (FS1:1.60.1.70291:hunter:…), then “No companion found.”, “The companion is a small app on your computer that sends this when you log out.” and “Or paste it on the site at foreversixty.gg.”"
+      "height": 100,
+      "alt": "The build dialog’s head, “Forever Sixty”, with its two tabs, Paste a build and Copy my character, the second one selected."
      }
     ]
    },
@@ -639,6 +1376,8 @@
  "characters": {
   "heading": "Characters",
   "empty": "No Forever characters on this Battle.net account yet. Make one in game, then refresh from Battle.net. Playing in Korea? Install the addon and the companion, or paste an export.",
+  "emptyLead": "No Forever characters on this Battle.net account yet. Make one in game, then refresh from Battle.net.",
+  "emptyKorea": "Playing in Korea? Install the addon and the companion, or paste an export.",
   "emptyByEmail": "No characters yet. Sign in with Battle.net to bring your Forever characters here, or install the addon and the companion.",
   "getSetUp": "Get set up",
   "getSetUpHref": "/setup",
@@ -672,7 +1411,12 @@
   "signedOut": "Live logging needs a signed-in account.",
   "companionFirst": "Using the companion? Press Sign in with Battle.net in it. The code below is only for the fallback.",
   "success": "[fn]",
-  "success_line": "JHUNT-PC paired. It starts uploading as soon as you are logging."
+  "action": "Get a pairing code",
+  "failed": "The pairing code did not load. Try again.",
+  "codeLine": "[fn]",
+  "waiting": "Waiting for the companion to use the code",
+  "success_line": "JHUNT-PC paired. It starts uploading as soon as you are logging.",
+  "code_line": "Type this into the companion within 10 minutes. It pairs one device and cannot be reused."
  },
  "logs_companion": {
   "pointer": "Log live while you raid.",
@@ -682,10 +1426,5 @@
   "pairAnotherLabel": "Pair another device"
  },
  "session_failed": "Your account did not load.",
- "wrong_prefix": "That code is FS2; this site reads FS1.",
- "pairing_component": {
-  "action": "Get a pairing code",
-  "failed": "The pairing code did not load. Try again.",
-  "code_line": "Type this into the companion within 10 minutes. It pairs one device and cannot be reused."
- }
+ "wrong_prefix": "That code is FS2; this site reads FS1."
 }

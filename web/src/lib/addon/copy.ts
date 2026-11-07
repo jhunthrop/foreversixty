@@ -153,8 +153,10 @@ export const addonCopy = {
   /** Under the step 3 title: which of the three steps can be skipped. */
   setupCompanionNote: 'Optional. Sends bags, bank and live logs after every session.',
   setupSubline: 'Signing in with Battle.net brings your characters. The addon and companion are optional.',
+  /** Advanced Combat Logging is a setting that applies at once (no restart); /combatlog turns off
+   *  when you log out, so it is typed each time you log in (setup rulings 2026-11-07). */
   setupCompanionBody:
-    'The companion logs live from your desktop. Turn on Options > Network > Advanced Combat Logging once, then restart the game. Type /combatlog in game, and every fight appears under Your reports within seconds of the pull ending.',
+    'The companion logs live from your desktop. Turn on Options > Network > Advanced Combat Logging once. Type /combatlog each time you log in, and every fight appears under Your reports within seconds of the pull ending.',
   /** The page as a checklist (design loop, setup round): its own title, a status row
    *  under it, a done line for each step a visitor has already finished, the addon's
    *  how-it-works cards behind one disclosure, and the companion's downloads. */
@@ -183,7 +185,29 @@ export const addonCopy = {
     `${character} arrived from the addon ${when}`,
   setupAddonWaiting: `No character yet. Refresh from Battle.net, or ${ctaCopy.installAddonAndCompanionInline}, then paste an export.`,
   /** Step 2 for an account whose characters came from Battle.net and none from the addon. */
-  setupAddonOptional: 'Your characters are in from Battle.net. The addon adds bags, bank and live sync.',
+  setupAddonOptional:
+    'Your characters are in from Battle.net. The addon saves bags and bank when you log out; the companion sends them.',
+  /** Step 2 before the account shows the addon: the parallel of `setupCompanionNote`. */
+  setupAddonNote: 'Optional. Gear tips on every tooltip, talent marks, bags and bank.',
+  /** Step 1 while the Battle.net import runs or finished under two minutes ago (`/v1/me` `bnet_import`). */
+  setupImportWait: 'Your characters can take up to two minutes to arrive.',
+  /** Step 1 after `?signin=failed` (the API's callback redirect). */
+  setupSignInFailed: 'Battle.net sign-in did not finish. Nothing was saved.',
+  /** The head's character line, the client's own order ("Level 34 Hunter"). */
+  setupLevelLine: (level: number, spec: string, cls: string): string =>
+    `Level ${level} ${spec ? `${spec} ` : ''}${cls}`,
+  setupOpenCharacter: (name: string): string => `Open ${name}`,
+  /** The nav's own label for the BiS page. */
+  setupBis: 'Best in slot',
+  /** The hand install under The addon: the folders each zip holds (addon-release.yml ships
+   *  ForeverSixty and ForeverSixtyInbox; addon-data-release.yml ForeverSixtyData). */
+  setupHandInstall: 'Installing by hand',
+  setupHandInstallBody:
+    'Unzip both into World of Warcraft\\<your Forever game folder>\\Interface\\AddOns: the addon zip holds ForeverSixty and ForeverSixtyInbox, the data zip holds ForeverSixtyData.',
+  /** The companion's download once row 3 is done: a second PC still installs (rulings U4). */
+  setupDownloadAnother: 'Download for another PC',
+  /** The paste field's label (the Section title is `setupTryExport`). */
+  pasteFieldLabel: 'Addon export',
   setupCompanionLine: (device: string, seen: string): string =>
     `Companion signed in on ${device} · last seen ${seen}`,
   setupCompanionWaiting: 'No companion signed in yet',
@@ -225,6 +249,8 @@ export const addonCopy = {
    *  screen in it; a surface with no capture yet (messaging) has none, and says nothing
    *  about it. `width`/`height` are the files' own pixel sizes, for the fixed aspect box. */
   surfacesTitle: 'What it does in the game',
+  /** On a phone the surfaces fold behind this one row (setup rulings U5); open from 768. */
+  surfacesShow: 'Show every surface, with pictures from the game',
   surfaces: [
     {
       section: '4.1',
@@ -357,11 +383,12 @@ export const addonCopy = {
           alt: 'The build dialog for a hunter on Paste a build: “Following: Beast Mastery / Marksmanship build · Hunter · 51 po…”, “Next talent: Take Lethal Attacks (Marksmanship, 1 of 5)”, and the empty box “Paste a build code from foreversixty.gg (Ctrl+V)”, with “Tab to switch” at the bottom.',
         },
         {
-          src: '/addon/build-dialog-copy.jpg',
-          tall: true,
+          /** Cropped to the window's head and tabs (setup rulings 2026-11-07): the full capture's
+           *  selected export read as a broken pink image at grid size. */
+          src: '/addon/build-dialog-copy-tab.jpg',
           width: 770,
-          height: 550,
-          alt: 'The build dialog on Copy my character with the hunter’s export string selected (FS1:1.60.1.70291:hunter:…), then “No companion found.”, “The companion is a small app on your computer that sends this when you log out.” and “Or paste it on the site at foreversixty.gg.”',
+          height: 100,
+          alt: 'The build dialog’s head, “Forever Sixty”, with its two tabs, Paste a build and Copy my character, the second one selected.',
         },
       ],
     },

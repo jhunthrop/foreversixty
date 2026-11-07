@@ -25,8 +25,13 @@ export const connectCopy = {
   connecting: 'Connecting...',
   cancel: 'Cancel',
   successTitle: 'Connected.',
+  /** The title says Connected; the body never repeats it (setup spec B3). */
   successBody:
-    'Connected. Go back to the companion; it is ready. Now log out once in game, and your characters appear on the site within a minute.',
+    'Go back to the companion; it is ready. Now log out once in game, and your characters appear on the site within a minute.',
+  /** The Code row's Tag once the device is connected. */
+  connectedTag: 'Connected',
+  /** Device and Platform while signed out: the rows keep their place (rulings C2). */
+  afterSignIn: 'Shown once you sign in',
   yourAccount: 'Your account',
   getSetUp: 'Get set up',
   openReports: 'Open my reports',

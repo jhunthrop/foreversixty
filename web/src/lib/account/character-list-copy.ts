@@ -7,12 +7,19 @@ function characterCount(count: number): string {
   return `${count} ${count === 1 ? 'character' : 'characters'}`;
 }
 
+const EMPTY_LEAD =
+  'No Forever characters on this Battle.net account yet. Make one in game, then refresh from Battle.net.';
+const EMPTY_KOREA = `Playing in Korea? ${ctaCopy.installAddonAndCompanion}, or paste an export.`;
+
 export const characterListCopy = {
   heading: 'Characters',
   /** Battle.net is the primary path (2026-11-03): a Battle.net sign-in imports every Forever
    *  character, so an empty list means no Forever character on that account yet, an email
    *  sign-in, or a region Blizzard does not serve (KR); the addon covers the last two. */
-  empty: `No Forever characters on this Battle.net account yet. Make one in game, then refresh from Battle.net. Playing in Korea? ${ctaCopy.installAddonAndCompanion}, or paste an export.`,
+  empty: `${EMPTY_LEAD} ${EMPTY_KOREA}`,
+  /** /setup splits the line: the lead in the warning colour, the Korea route muted (rulings Q2). */
+  emptyLead: EMPTY_LEAD,
+  emptyKorea: EMPTY_KOREA,
   emptyByEmail: `No characters yet. Sign in with Battle.net to bring your Forever characters here, or ${ctaCopy.installAddonAndCompanionInline}.`,
   getSetUp: 'Get set up',
   getSetUpHref: '/setup',

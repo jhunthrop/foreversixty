@@ -8,7 +8,8 @@ Spec: design/specs/2026-11-07-setup.md. Data and copy, read at render time, neve
     pinned clock 2026-11-06T10:00Z; web/src/data/companion.json and active-build.json;
   - the fixtures those lines read: web/tests/e2e/fixtures/home/me-34.json (Felsnap), me-new.json (no character) and
     web/tests/e2e/fixtures/setup/*.json (the companion JHUNT-PC, the connect lookup, a pairing code).
-PROPOSED copy (no copy module carries it yet) is marked P in PROPOSED below and listed in the spec, section 10.
+The plate's rows and the head answer are lib/setup/steps.ts and lib/setup/answer.ts run on those fixtures (FACTS['rows'],
+FACTS['answer']): the page's island draws the same rows.
 
   node design/mocks/setup_facts.mjs && python3 design/mocks/ws_setup.py
   for p in $(python3 design/mocks/ws_setup.py --list); do node design/mocks/ws_shoot.mjs $p 390,1440,1920,2000; done
@@ -32,21 +33,6 @@ A, C, CH, PC = FACTS['addon'], FACTS['connect'], FACTS['characters'], FACTS['pai
 PUBLIC = os.path.relpath(ROOT / 'web' / 'public', OUT)
 ME = FACTS['me']['addon']['characters'][0]
 WHO = (ME['name'], ME['class'].lower(), str(ME['level']))
-
-# Strings no copy module carries yet: the spec's section 10 proposes each one, with its key.
-PROPOSED = {
-    'setupAddonNote': 'Optional. Gear tips on every tooltip, talent marks, bags and bank.',
-    'setupImporting': 'Bringing your Forever characters in from Battle.net. This takes up to two minutes.',
-    'setupSignInFailed': 'Battle.net sign-in did not finish. Nothing was saved.',
-    'setupHandInstall': 'Installing by hand',
-    'setupOpenCharacter': 'Open {name}',
-    'setupBis': 'Best in slot',
-    'connectAfterSignIn': 'Shown once you sign in',
-    'connectConnected': 'Connected',
-    'pasteFieldLabel': 'Addon export',
-    'setupPairWaiting': 'Waiting for the companion to use the code',
-}
-
 
 def LinkButton(label: str, primary: bool = False, small: bool = False) -> str:
     return _Button(label, primary, small)
@@ -84,7 +70,9 @@ section>.sec-h+*{margin-top:12px}
 .kv code.c{font-size:14px}.kv dd .t-small{font-weight:400}
 .surf .row{align-items:start;align-content:start}.surf .row .foot{padding-top:12px}.surf .cap{--mh:240px!important}
 .cmds .kv dt{color:var(--text)}
-.alert{color:var(--strong)}
+.alert{color:var(--strong)}.steps .row .sub .tx{color:var(--text)}
+.surf-fold{display:none}.surf-fold summary{cursor:pointer;min-height:44px;display:flex;align-items:center;color:var(--gold)}
+@media(max-width:767px){.surf-fold{display:block}.surf{display:none}}
 @media(max-width:600px){.steps .row{align-items:start}}
 .tm{display:inline-flex;align-items:center;gap:12px}
 .mark-ok{width:40px;height:40px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font:700 20px/40px var(--font-body);color:#07090d;flex:none}
@@ -97,73 +85,61 @@ def render(title: str, body: str, nav: str, who, chrome_state: str, note: str) -
 
 
 # ------------------------------------------------------------------------------------------------ /setup: the plate
+def _line(l: dict) -> str:
+    if l.get('skeleton'):
+        return Skeleton(240, 14)
+    tone = {'muted': '', 'text': ' class="tx"', 'ok': ' class="ok"', 'warn': ' class="warn"', 'miss': ' class="miss"'}[l['tone']]
+    role = ' role="alert"' if l.get('alert') else ''
+    code = (' ' + Code(l['code'])) if l.get('code') else ''
+    return f'<span{tone}{role}>{escape(l["text"])}</span>{code}'
+
+
+def _action(a: dict | None) -> str:
+    if a is None:
+        return ''
+    if a['kind'] == 'link':
+        return arrow(a['label'])
+    if a['kind'] == 'button':
+        return Button(a['label'], primary=a['primary'])
+    return LinkButton(a['label'], primary=a['primary'])
+
+
 def step_rows(state: str) -> list[tuple]:
-    """The three steps for a state. Lines are lib/setup/progress.ts's on the fixtures (FACTS['lines'])."""
-    L = FACTS['lines']
-    curseforge, download = A['installCurseForge'], FACTS['download']['label']
-    signin_out = ('next', 1, A['setupStep1Title'], escape(A['setupSignInBody']), LinkButton(A['setupSignInAction'], primary=True))
-    addon_out = ('todo', 2, A['setupStep2Title'], escape(PROPOSED['setupAddonNote']), LinkButton(curseforge))
-    comp_out = ('todo', 3, A['setupStep3Title'], escape(A['setupCompanionNote']), LinkButton(download))
-    if state in ('out', 'mac', 'export', 'error'):
-        rows = [signin_out, addon_out, comp_out]
-        if state == 'mac':
-            rows[2] = ('todo', 3, A['setupStep3Title'], escape(FACTS['platforms_line']), arrow(A['setupTryExport']))
-        if state == 'export':
-            rows[1] = ('ok', 2, A['setupStep2Title'], f'<span class="ok">{escape(A["setupAddonDoneLine"])}</span>', '')
-        if state == 'error':
-            rows[0] = ('miss', 1, A['setupStep1Title'], f'<span class="alert" role="alert">{escape(FACTS["session_failed"])}</span>', Button(CH['tryAgain'], primary=True))
-        return rows
-    signed = escape(L['none']['signin']['text'])
-    if state == 'loading':
-        sk = Skeleton(240, 14)
-        return [('ok', 1, A['setupStep1Title'], sk, ''), ('todo', 2, A['setupStep2Title'], sk, ''), ('todo', 3, A['setupStep3Title'], sk, '')]
-    comp_wait = ('todo', 3, A['setupStep3Title'], escape(L['none']['companion']['text']), LinkButton(download))
-    if state == 'none':
-        return [('warn', 1, A['setupStep1Title'], f'{signed}<br><span class="warn">{escape(CH["empty"])}</span>', LinkButton(CH['refreshFromBattlenet'], primary=True)),
-                addon_out, comp_wait]
-    if state == 'importing':
-        return [('busy', 1, A['setupStep1Title'], f'{signed}<br>{escape(PROPOSED["setupImporting"])}', ''), addon_out, comp_wait]
-    if state == 'failed':
-        return [('miss', 1, A['setupStep1Title'], f'{signed}<br><span class="miss" role="alert">{escape(CH["refreshError"])}</span>', Button(CH['tryAgain'], primary=True)),
-                addon_out, comp_wait]
-    if state == 'signin-failed':
-        return [('miss', 1, A['setupStep1Title'], f'<span class="miss" role="alert">{escape(PROPOSED["setupSignInFailed"])}</span>', LinkButton(A['setupSignInAction'], primary=True)),
-                addon_out, comp_out]
-    signin_ok = ('ok', 1, A['setupStep1Title'], f'<span class="ok">{signed} &middot; {escape(FACTS["imported"])}</span>', '')
-    if state == 'bnet':
-        return [signin_ok, ('next', 2, A['setupStep2Title'], escape(L['bnet']['addon']['text']), LinkButton(curseforge, primary=True)), comp_wait]
-    addon_ok = ('ok', 2, A['setupStep2Title'], f'<span class="ok">{escape(L["addon"]["addon"]["text"])}</span>', '')
-    if state == 'addon':
-        return [signin_ok, addon_ok, ('next', 3, A['setupStep3Title'], escape(L['addon']['companion']['text']), LinkButton(download, primary=True))]
-    if state == 'pairing':
-        return [signin_ok, addon_ok, ('busy', 3, A['setupStep3Title'], escape(PROPOSED['setupPairWaiting']) + ' ' + Code(FACTS['pair_code']['code']), '')]
-    if state == 'done':
-        return [signin_ok, addon_ok, ('ok', 3, A['setupStep3Title'], f'<span class="ok">{escape(L["done"]["companion"]["text"])}</span>', '')]
-    raise ValueError(state)
+    """The three steps for a state: lib/setup/steps.ts's rows on the fixtures (FACTS['rows'])."""
+    return [(r['mark'], r['n'], r['title'], '<br>'.join(_line(l) for l in r['lines']), _action(r['action'])) for r in FACTS['rows'][state]]
 
 
 def answer(state: str) -> str:
-    """Signed in with a character: the character, and where to take it next (tenet 14)."""
+    """Signed in with a character: the character, and where to take it next (tenet 14). lib/setup/answer.ts on me-34."""
     if state not in ('bnet', 'addon', 'pairing', 'done'):
         return ''
-    cls = ME['class'].lower()
-    return (f'<span class="ans-who">{crest_img(cls, 40)}<span><b style="color:{CLASS_COLOR[cls]}">{escape(ME["name"])}</b>'
-            f'<span class="t-small" style="display:block">{escape(ME["spec"])} {escape(ME["class"])} &middot; {ME["level"]}</span></span></span>'
-            f'<span class="t-small">{escape(FACTS["imported"])}</span>'
-            f'<span class="ans-links">{arrow(PROPOSED["setupOpenCharacter"].format(name=ME["name"]))}{arrow(PROPOSED["setupBis"])}</span>')
+    a = FACTS['answer_bnet' if state == 'bnet' else 'answer']
+    cls = a['classSlug']
+    links = arrow(a['open']['label']) + (arrow(a['bis']['label']) if a['bis'] else '')
+    return (f'<span class="ans-who">{crest_img(cls, 40)}<span><b style="color:{CLASS_COLOR[cls]}">{escape(a["name"])}</b>'
+            f'<span class="t-small" style="display:block">{escape(a["levelLine"])}</span></span></span>'
+            f'<span class="t-small">{escape(a["imported"] or "")}</span>'
+            f'<span class="ans-links">{links}</span>')
+
+
+def row_done(state: str, n: int) -> bool:
+    return FACTS['rows'][state][n - 1]['mark'] == 'ok'
 
 
 # ------------------------------------------------------------------------------------------------ /setup: the sections
-def addon_section() -> str:
-    hand = (f'<div class="hand"><span class="t-label">{escape(PROPOSED["setupHandInstall"])}</span><p class="t-small">{escape(A["installDataLead"])}</p>'
+def addon_section(state: str) -> str:
+    hand = (f'<div class="hand"><span class="t-label">{escape(A["setupHandInstall"])}</span><p class="t-small">{escape(A["installDataLead"])}</p>'
+            f'<p class="t-small">{escape(A["setupHandInstallBody"])}</p>'
             f'<div class="acts">{arrow(A["installZip"])}{arrow(A["installDataRelease"])}</div><p class="t-small">{escape(FACTS["data_build"])}</p></div>')
-    body = (f'<div class="body" id="addon"><p class="t-small">{escape(A["installDataHint"])}</p><div class="acts">{LinkButton(A["installWago"])}</div>{hand}</div>')
+    # U4 (rulings): once row 2 is ticked its button is gone; CurseForge stays here for a second PC.
+    again = arrow(A['installCurseForge']) if row_done(state, 2) else ''
+    body = (f'<div class="body" id="addon"><p class="t-small">{escape(A["installDataHint"])}</p><div class="acts">{again}{LinkButton(A["installWago"])}</div>{hand}</div>')
     return Section(A['setupStep2Title'], body)
 
 
 def companion_section(state: str) -> str:
     comp = FACTS['companion']['downloads'][0]
-    steps = sentences(A['setupCompanionBody'])   # [what it is, the setting, the restart is in it, /combatlog]
+    steps = sentences(A['setupCompanionBody'])   # [what it is, the setting, /combatlog each time you log in]
     lead_sentence, rest = steps[0], steps[1:]
     howto = [A['setupCompanionPair']] + rest
     def withcode(s: str) -> str:
@@ -176,15 +152,17 @@ def companion_section(state: str) -> str:
         lc = FACTS['logs_companion']
         if state == 'done':
             status = ''.join(f'<p class="t-small" style="color:var(--text)">{escape(x)}</p>' for x in FACTS['device_status'])
-            pair = f'<div class="pair">{status}<span class="t-label">{escape(lc["pairAnotherLabel"])}</span><p class="t-small">{escape(PC["companionFirst"])}</p><div class="acts">{Button(FACTS["pairing_component"]["action"], small=True)}</div></div>'
+            pair = f'<div class="pair">{status}<span class="t-label">{escape(lc["pairAnotherLabel"])}</span><p class="t-small">{escape(PC["companionFirst"])}</p><div class="acts">{Button(PC["action"], small=True)}</div></div>'
         elif state == 'pairing':
             pair = (f'<div class="pair"><span class="t-label">{escape(lc["pairLabel"])}</span>{Code(FACTS["pair_code"]["code"], big=True)}'
-                    f'<p class="t-small">{escape(FACTS["pairing_component"]["code_line"])}</p></div>')
+                    f'<p class="t-small">{escape(PC["code_line"])}</p></div>')
         else:
-            pair = f'<div class="pair"><span class="t-label">{escape(lc["pairLabel"])}</span><p class="t-small">{escape(PC["companionFirst"])}</p><div class="acts">{Button(FACTS["pairing_component"]["action"], small=True)}</div></div>'
-    plat = state == 'mac'
-    body = (f'<div class="body" id="companion"><p>{escape(lead_sentence)}</p>'
-            f'<p class="t-small"{" style=\"color:var(--gold)\"" if plat else ""}>{escape(FACTS["platforms_line"])}</p><p class="t-small">{escape(comp["firstRun"])}</p>'
+            pair = f'<div class="pair"><span class="t-label">{escape(lc["pairLabel"])}</span><p class="t-small">{escape(PC["companionFirst"])}</p><div class="acts">{Button(PC["action"], small=True)}</div></div>'
+    # On a Mac row 3 says "Windows only" once; the section drops that line and the SmartScreen one (U7, rulings).
+    plat = '' if state == 'mac' else f'<p class="t-small">{escape(FACTS["platforms_line"])}</p><p class="t-small">{escape(comp["firstRun"])}</p>'
+    # U4 (rulings): once row 3 is ticked, the download stays here for another PC.
+    another = f'<div class="acts">{arrow(A["setupDownloadAnother"])}</div>' if row_done(state, 3) else ''
+    body = (f'<div class="body" id="companion"><p>{escape(lead_sentence)}</p>{plat}{another}'
             f'{rows}{pic}{pair}</div>')
     return Section(A['setupStep3Title'], body, meta=escape(A['setupCompanionNote']))
 
@@ -194,13 +172,15 @@ def surfaces_section() -> str:
     for s in A['surfaces']:
         caps = ''.join(Capture(img(i['src']), i['width'], i['height'], i['alt'], lazy=False) for i in s['images'])
         rows.append(Row(escape(s['title']), escape(s['body']), link=False, foot=caps))
-    return Section(A['surfacesTitle'], f'<div class="surf">{RowGrid(rows, 3)}</div>')
+    # U5 (rulings): open from 768, folded on a phone behind one summary row.
+    fold = f'<details class="surf-fold"><summary class="t-label">{escape(A["surfacesShow"])}</summary></details>'
+    return Section(A['surfacesTitle'], f'{fold}<div class="surf">{RowGrid(rows, 3)}</div>')
 
 
 def paste_section(state: str) -> str:
     field = '<textarea class="field grow" aria-label="{0}" placeholder="{1}">{2}</textarea>'
     filled = {'export': 'FS1:1.60.1.70790:hunter:dwarf:…', 'paste-error': 'FS2:nope'}.get(state, '')
-    form = FormRow([(escape(PROPOSED['pasteFieldLabel']), field.format(escape(A['pasteTitle']), escape(A['pastePlaceholder']), filled), True)], Button(A['pasteAction']))
+    form = FormRow([(escape(A['pasteFieldLabel']), field.format(escape(A['pasteTitle']), escape(A['pastePlaceholder']), filled), True)], Button(A['pasteAction']))
     after = ''
     if state == 'paste-error':
         after = f'<p class="alert" role="alert">{escape(FACTS["wrong_prefix"])}</p>'
@@ -231,7 +211,7 @@ def setup_page(state: str) -> str:
     paste_state = state if state in ('export', 'paste-error') else ''
     plate_state = 'out' if state == 'paste-error' else state
     head = PageHeader(escape(A['setupPageTitle']), meta=[escape(A['setupSubline'])], answer=answer(state))
-    main = Plate(Steps(step_rows(plate_state)), 'Your setup') + addon_section() + companion_section(plate_state) + surfaces_section()
+    main = Plate(Steps(step_rows(plate_state)), 'Your setup') + addon_section(plate_state) + companion_section(plate_state) + surfaces_section()
     rail = paste_section(paste_state) + commands_section() + handshake_section() + flows_section()
     body = head + Page('split', main, rail)
     who = WHO if state in ('bnet', 'addon', 'pairing', 'done') else None
@@ -244,8 +224,9 @@ def setup_page(state: str) -> str:
 def connect_page(state: str) -> str:
     L = FACTS['lookup']
     code = Code(FACTS['code'])
-    after = f'<span class="t-small">{escape(PROPOSED["connectAfterSignIn"])}</span>'
-    device = [(escape(C['deviceLabel']), escape(L['name'])), (escape(C['platformLabel']), escape(L['platform'])), (escape(C['codeRowLabel']), code)]
+    after = f'<span class="t-small">{escape(C["afterSignIn"])}</span>'
+    # One order in every state (rulings MUST 3): the code the player checks never moves.
+    device = [(escape(C['codeRowLabel']), code), (escape(C['deviceLabel']), escape(L['name'])), (escape(C['platformLabel']), escape(L['platform']))]
     title, meta, crest = C['title'], '', ''
     facts, lines, acts = device, [], ''
     consent = f'<p class="t-small">{escape(C["consent"])}</p>'
@@ -267,7 +248,7 @@ def connect_page(state: str) -> str:
     elif state == 'success':
         title, meta = C['successTitle'], C['successBody']
         crest = '<span class="mark-ok sm ok" role="img" aria-label="Done">&#10003;</span>'
-        facts = device[:2] + [(escape(C['codeRowLabel']), code + ' ' + Tag(PROPOSED['connectConnected'], 'kill'))]
+        facts = [(escape(C['codeRowLabel']), code + ' ' + Tag(C['connectedTag'], 'kill'))] + device[1:]
         acts = f'<div class="acts">{LinkButton(C["getSetUp"], primary=True)}{LinkButton(C["yourAccount"])}</div>'
     elif state == 'cancelled':
         title, meta = C['cancelledTitle'], C['cancelledBody']
