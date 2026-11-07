@@ -13,7 +13,7 @@ The flat web system (`design/specs/2026-11-05-web-layout.md`) is on every player
 | Home (A) `/` | `2026-11-06-home.md` | `parity-home.spec.ts` | `0672edbce` (added) |
 | Home B: countdowns, feed, grades | `2026-11-07-home-b.md` | `parity-home.spec.ts` | `9776ce728` |
 | Character `/character/...` | `2026-11-06-character.md` | `parity-character.spec.ts` | `102134418` (added) |
-| Guild pages | `2026-11-05-guild-*.md` | none | guild-summary lane (see its land log) |
+| Guild pages | `2026-11-05-guild-*.md` | none | guildx-1 `ca9f0c710`, -2 `be1cd0a40`, -3 `26abdb297`, -4 `70c4045b3`, raid route `556ed120f`, -5 `b0c3bab9f`, -6 `49357b28c`, -7 `c4e4a5de2` |
 | Logs, reports list, rankings, ratings | `2026-11-07-logs-reports.md` | `parity-logs.spec.ts` | `e3a9f5d2c`, rankings LCP `8e9f4a519` |
 | Setup `/setup`, `/connect` | `2026-11-07-setup.md` | `parity-setup.spec.ts`, `parity-connect.spec.ts` | `263536f9f` |
 | Guides `/guides`, `/guides/[class]`, `/guides/[class]/[spec]` | `2026-11-08-guides.md` | `parity-guides.spec.ts` | `be1acd26a` |
@@ -33,7 +33,7 @@ The flat web system (`design/specs/2026-11-05-web-layout.md`) is on every player
 
 ## Open after the rollout
 
-- The tier list and guild pages have no parity spec.
+- The tier list and guild pages have no parity spec (a later follow-up).
 - `/b/:id` is still rendered by the API's Go template; moving it to the web needs a Worker route.
 - At 390 several parity specs carry expected drift for the head inset (the mock library draws the page inset outside the head region).
 - `Coming up` season rows leave only when a changelog entry `covers` them.
