@@ -36,7 +36,8 @@ contains() { [[ $1 == *"$2"* ]]; }
 lacks() { [[ $1 != *"$2"* ]]; }
 
 # stub <dir> <name>: a command that appends its arguments, and the Play token it saw in its
-# environment, to <dir>/calls; the Play upload also keeps the notes file it was given, and
+# environment, to <dir>/calls; the Play upload also keeps the notes file it was given,
+# xcodebuild keeps the export options and the App Store Connect key it was pointed at, and
 # gcloud prints a minted token (or fails, when <dir>/gcloud-fails exists).
 stub() {
 	local dir=$1 name=$2
@@ -47,6 +48,11 @@ echo "$name \$* [token:\${PLAY_ACCESS_TOKEN:-none}]" >>"$dir/calls"
 prev=
 for arg in "\$@"; do
   [ "\$prev" = --notes ] && cat "\$arg" >"$dir/play-notes"
+  [ "\$prev" = -exportOptionsPlist ] && cat "\$arg" >"$dir/export-options"
+  if [ "\$prev" = -authenticationKeyPath ]; then
+    echo "\$arg" >>"$dir/key-paths"
+    [ -f "\$arg" ] && cat "\$arg" >"$dir/key-seen"
+  fi
   prev=\$arg
 done
 if [ "$name" = gcloud ]; then
@@ -58,11 +64,13 @@ EOF
 	chmod +x "$dir/$name"
 }
 
-# repo <name> <notes>: a scratch git repository with apps/VERSION at 1.4.2 (17) and a
-# changelog whose Unreleased section holds <notes>; prints its path.
+# repo <name> <notes>: a scratch git repository with apps/VERSION at 1.4.2 (17), a
+# changelog whose Unreleased section holds <notes> and the real iOS export options; prints
+# its path.
 repo() {
 	local dir=$SCRATCH/$1 notes=$2
-	mkdir -p "$dir/apps"
+	mkdir -p "$dir/apps/ios"
+	cp "$HERE/../../apps/ios/ExportOptions.plist" "$dir/apps/ios/"
 	printf '%s\n' '// comment line' 'APP_VERSION = 1.4.2' 'APP_BUILD = 17' >"$dir/apps/VERSION"
 	printf '%s\n' '# Notes' '' '## Unreleased' '' "$notes" '' '## 1.4.2 (16), 2026-10-01' '' '- Older.' >"$dir/apps/CHANGELOG.md"
 	git -C "$dir" init -q
@@ -172,15 +180,49 @@ release "$dir" --platform ios --execute
 assert "iOS alone without Apple fails" equal $? 1
 assert "and leaves VERSION alone" contains "$(version_file "$dir")" "APP_BUILD = 17"
 
-# With the Apple account, iOS archives, exports and goes to TestFlight.
+# With the Apple account, iOS archives, exports and goes to TestFlight, signed automatically
+# with the App Store Connect key.
+with_apple() {
+	APPLE_TEAM_ID=ABCDE12345 ASC_KEY_ID=K ASC_ISSUER_ID=I ASC_KEY_P8='-----BEGIN PRIVATE KEY-----' "$@"
+}
 dir=$(repo apple '- A fix.')
-APPLE_TEAM_ID=T ASC_KEY_ID=K ASC_ISSUER_ID=I ASC_KEY_P8='-----BEGIN PRIVATE KEY-----' \
-	release "$dir" --platform ios --execute
+with_apple release "$dir" --platform ios --execute
 assert "iOS release exits 0" equal $? 0
-assert "xcodebuild archives" contains "$(calls "$dir")" "xcodebuild archive"
-assert "xcodebuild exports" contains "$(calls "$dir")" "xcodebuild -exportArchive"
+archive=$(grep 'xcodebuild archive' "$dir/stubs/calls")
+export_call=$(grep 'xcodebuild -exportArchive' "$dir/stubs/calls")
+assert "xcodebuild archives" contains "$archive" "-scheme ForeverSixty -configuration Release"
+assert "the archive signs automatically for the team" contains "$archive" "DEVELOPMENT_TEAM=ABCDE12345 CODE_SIGN_STYLE=Automatic"
+assert "the archive keeps the identity automatic signing expects" contains "$archive" "CODE_SIGN_IDENTITY=Apple Development"
+assert "no manual distribution identity anywhere" lacks "$(calls "$dir")" "Apple Distribution"
+assert "the archive may provision with the key" contains "$archive" "-allowProvisioningUpdates -authenticationKeyPath "
+assert "the archive names the key and issuer" contains "$archive" "-authenticationKeyID K -authenticationKeyIssuerID I"
+assert "xcodebuild exports" contains "$export_call" "-exportArchive"
+assert "the export may provision with the key" contains "$export_call" "-allowProvisioningUpdates -authenticationKeyPath "
+assert "the export names the key and issuer" contains "$export_call" "-authenticationKeyID K -authenticationKeyIssuerID I"
+options=$(cat "$dir/stubs/export-options")
+assert "the export is for App Store Connect" contains "$options" "<string>app-store-connect</string>"
+assert "the export signs automatically" contains "$options" "<string>automatic</string>"
+assert "the export names the team" contains "$options" "<key>teamID</key>
+	<string>ABCDE12345</string>"
+assert "the committed export options keep the placeholder" contains "$(cat "$dir/apps/ios/ExportOptions.plist")" "__APPLE_TEAM_ID__"
+assert "xcodebuild found the .p8 written" equal "$(cat "$dir/stubs/key-seen")" "-----BEGIN PRIVATE KEY-----"
+assert "the .p8 is gone after the run" equal "$(while read -r p; do [ -e "$p" ] && echo "$p"; done <"$dir/stubs/key-paths")" ""
+assert "the .p8 never lands in the repository" equal "$(find "$dir" -name 'asc-key*')" ""
 assert "fastlane uploads to TestFlight with the notes" contains "$(calls "$dir")" "upload_to_testflight"
 assert "the .p8 key is never an argument" lacks "$(calls "$dir")" "BEGIN PRIVATE KEY"
+
+# A spent build number is never reused: the next release cuts the next build.
+with_apple release "$dir" --platform ios --execute
+assert "a second iOS release exits 0" equal $? 0
+assert "and cuts the next build" equal "$(git -C "$dir" log -1 --format=%s)" "chore(apps): release 1.4.2 (19)"
+assert "with its own tag" contains "$(git -C "$dir" tag)" "apps-v1.4.2-19"
+
+# A malformed Team ID fails before anything changes.
+dir=$(repo badteam '- A fix.')
+APPLE_TEAM_ID=T ASC_KEY_ID=K ASC_ISSUER_ID=I ASC_KEY_P8=x release "$dir" --platform ios --execute
+assert "a malformed Team ID fails" equal $? 1
+assert "and says so" contains "$(cat "$dir/out")" "is not a 10-character Team ID"
+assert "and leaves VERSION alone" contains "$(version_file "$dir")" "APP_BUILD = 17"
 
 # Android without its signing secrets fails before anything changes.
 dir=$(repo nokeys '- A fix.')
