@@ -141,9 +141,11 @@ Survival levels in melee. Keep a pet out while you level: Lone Wolf is the last 
 
 Open with Hunter's Mark, send the pet, then walk in and queue Raptor Strike. Press Mongoose Bite whenever it lights up, and from 30 keep Lacerate on anything that will live long enough to bleed. Wing Clip a runner. Wear Aspect of the Monkey until 30: its dodges open Mongoose Bite. At 30 switch to Aspect of the Beast and keep it up. Throw Immolation Trap under anything that will live long enough to burn. Feign Death at 30 resets a bad pull. Aspect of the Cheetah at 20 is your run speed between quests, but it dazes you when you are hit, so never wear it into a fight.
 
-At 26 Immolation Trap rank 2 arrives, and with a trap on every pull your mana runs short. From 26 to 29 keep Raptor Strike rank 3 on your bar instead of rank 4: most of the hit is your weapon, so it does nearly what rank 4 does for less mana, and the mana it saves goes into traps. On a Horde character rank 2 is better again: an Orc at 26, a Troll or a Windshaper Skyborne at 26 and 27, a Tauren at 26 to 28. Drag the lower rank onto your bar from the spellbook at 26 and put rank 4 back at 30.
+Spend 25 to 29 on Predator's Edge and take Strider Kick at 30, then Resourcefulness, Expose Prey, Survivalist's Discipline and a point of Lightning Reflexes. Deterrence and Counterattack wait for 38 and 39: one is an emergency button and the other needs a parry, and while your pet holds the mob neither adds damage.
 
-At 33 you have only the first point of Resourcefulness, and for that one level Raptor Strike rank 1 is the better button: it costs almost nothing, and the mana goes into traps. Drag it onto the bar at 33 and put rank 5 back at 34, when the second point makes every rank cheap.
+At 26 Immolation Trap rank 2 arrives, and with a trap on every pull your mana runs short. From 26 to 29 keep Raptor Strike rank 3 on your bar instead of rank 4: most of the hit is your weapon, so it does nearly what rank 4 does for less mana, and the mana it saves goes into traps. On a Horde character rank 2 is better again: an Orc, a Troll or a Windshaper Skyborne at 26 and 27, a Tauren at 26 to 28. Drag the lower rank onto your bar from the spellbook at 26 and put rank 4 back at 30.
+
+At 31 you have only the first point of Resourcefulness, and for that one level Raptor Strike rank 1 is the better button: it costs almost nothing, and the mana goes into traps. Drag it onto the bar at 31 and put rank 5 on at 32, when you train it and the second point makes every rank cheap.
 
 Mail at 40 is the biggest armor upgrade you will get, and from 20 you can carry two weapons.
 

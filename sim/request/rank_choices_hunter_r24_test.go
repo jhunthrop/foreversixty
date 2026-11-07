@@ -82,14 +82,23 @@ func TestRound24BeastMasterySerpentStingRankRows(t *testing.T) {
 	})
 }
 
-// Round 24: Survival at 33 has only the first point of Resourcefulness, and
-// Raptor Strike rank 1 beats rank 5 there by 1.4% for both races; at 34 the
-// second point is in and rank 5 wins by over 2%. At 40 a Troll gains about
-// 0.2% with rank 5 over rank 6; a Dwarf ties.
+// Round 24: Survival with only the first point of Resourcefulness casts Raptor
+// Strike rank 1; with the second point in the newest rank wins by over 2%.
+// Round 28 moved Resourcefulness to 31 and 32 (ahead of Deterrence and
+// Counterattack), so the rank 1 level is now 31 (+0.7 to +1.1% over rank 4,
+// every race, seeds 1 and 50001) and 33 keeps rank 5 (rank 1 loses 2.2 to
+// 2.4%). At 40 a Troll gains about 0.2% with rank 5 over rank 6; a Dwarf ties.
 func TestRound24SurvivalRaptorStrikeRankRows(t *testing.T) {
 	checkHunterRankCases(t, []hunterRankCase{
-		{"at 33", hSV, BarePreset, "troll", 33, 2973, 14263},
+		{"at 31", hSV, BarePreset, "troll", 31, 2973, 14262},
+		{"Dwarf at 31", hSV, BarePreset, "dwarf", 31, 2973, 14262},
+		{"at 32 keeps the default", hSV, BarePreset, "troll", 32, 14263, 2973},
+		{"at 33 keeps the default", hSV, BarePreset, "troll", 33, 14263, 2973},
 		{"at 34 keeps the default", hSV, BarePreset, "dwarf", 34, 14263, 2973},
+		// Round 28: with Predator's Edge in place of Deterrence an Orc at 27 gains
+		// 0.2% with rank 2 over rank 3 at seeds 1 and 50001.
+		{"Orc at 27", hSV, BarePreset, "orc", 27, 14260, 14261},
+		{"Dwarf at 27 keeps rank 3", hSV, BarePreset, "dwarf", 27, 14261, 14260},
 		{"Troll at 40", hSV, BarePreset, "troll", 40, 14263, 14264},
 		{"Dwarf at 40 keeps the default", hSV, BarePreset, "dwarf", 40, 14264, 14263},
 		{"Troll at 41 keeps the default", hSV, BarePreset, "troll", 41, 14264, 14263},

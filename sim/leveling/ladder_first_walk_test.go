@@ -21,7 +21,9 @@ func TestBandBuildsTakeTheCastTalentsThatFit(t *testing.T) {
 		tree, level       int
 		talent, want      string
 	}{
-		{"hunter-survival", "hunter", "survival", 2, 30, "Strider Kick", "0000000000000000-0000000000000000-500230231040000100"},
+		// Sim-accuracy round 28 (hybrids): Predator's Edge 5 before Deterrence
+		// (TestSurvivalTakesPredatorsEdgeBeforeDeterrence).
+		{"hunter-survival", "hunter", "survival", 2, 30, "Strider Kick", "0000000000000000-0000000000000000-500230230050000100"},
 		{"mage-fire", "mage", "fire", 1, 20, "Pyroblast", "000000000000000000-51400001000000000-000000000000000000"},
 		{"rogue-assassination", "rogue", "assassination", 0, 40, "Mutilate", "32530200251511001-0000000000000000000-000000000000000000"},
 		// Sim-accuracy round 26 (melee): Initiative 3 now comes before Camouflage's last
