@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import gg.foreversixty.app.R
 import gg.foreversixty.app.common.OfflineStamp
 import gg.foreversixty.app.designsystem.FsColor
-import gg.foreversixty.app.designsystem.FsType
+import gg.foreversixty.app.designsystem.ScaledType
 import gg.foreversixty.app.designsystem.OfflineStrip
 import gg.foreversixty.app.designsystem.classColor
 import gg.foreversixty.app.guides.logic.GuideDates
@@ -45,7 +45,7 @@ fun ClassPage(classSlug: String, index: Loadable<GuideIndex>, saved: Map<String,
                 QuietRows(cls.specs) { spec -> SpecRow(spec, loaded.value.build, spec.spec in saved) { open(spec.spec) } }
                 // Offline with a guide not on the phone: say so under the card (board F9.6).
                 if (loaded.offlineSince != null && cls.specs.any { it.spec !in saved }) {
-                    Text(stringResource(R.string.guides_notCached), style = FsType.meta, color = FsColor.muted)
+                    Text(stringResource(R.string.guides_notCached), style = ScaledType.meta, color = FsColor.muted)
                 }
             }
         }
@@ -57,8 +57,8 @@ private fun SpecRow(spec: GuideIndexSpec, build: String, saved: Boolean, open: (
     val copy = GuidesCopy(LocalResources.current)
     val words = @Composable { modifier: Modifier ->
         Column(modifier, verticalArrangement = Arrangement.spacedBy(2.dp)) {
-            Text(spec.specName, style = FsType.bodyStrong, color = FsColor.strong)
-            Text(copy.cardMeta(spec.role, GuideDates.short(spec.updated)), style = FsType.meta, color = FsColor.muted)
+            Text(spec.specName, style = ScaledType.bodyStrong, color = FsColor.strong)
+            Text(copy.cardMeta(spec.role, GuideDates.short(spec.updated)), style = ScaledType.meta, color = FsColor.muted)
         }
     }
     Row(

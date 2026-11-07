@@ -148,7 +148,7 @@ struct CalendarContentView: View {
                     .font(.callout)
                     .foregroundStyle(FSColor.gold)
                     .frame(width: 32, height: 32)
-                    .background(FSColor.gold.opacity(0.12), in: .rect(cornerRadius: FSRadius.pill))
+                    .background(FSColor.gold.opacity(0.12), in: .rect(cornerRadius: FSRadius.legacyPill))
                     .fixedSize()
                     .accessibilityHidden(true)
                 VStack(alignment: .leading, spacing: 2) {

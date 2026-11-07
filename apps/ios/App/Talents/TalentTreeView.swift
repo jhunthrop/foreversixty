@@ -183,7 +183,7 @@ struct TalentCellView: View {
             .overlay(alignment: .topLeading) { chip.offset(x: -8, y: -8) }
             .overlay {
                 if isSelected {
-                    RoundedRectangle(cornerRadius: FSRadius.control + 9)
+                    RoundedRectangle(cornerRadius: FSRadius.legacyControl + 9)
                         .stroke(FSColor.gold, lineWidth: 2)
                         .padding(-9)
                 }
@@ -260,11 +260,11 @@ struct TalentIconTile: View {
         GameIconImage(icon: talent.icon, build: build, fallback: String(talent.name.prefix(2)))
             .id("\(build)/\(talent.icon)")
             .frame(width: inner, height: inner)
-            .clipShape(.rect(cornerRadius: FSRadius.pill))
+            .clipShape(.rect(cornerRadius: FSRadius.legacyPill))
             .opacity(state == .locked ? 0.4 : 1)
             .frame(width: size, height: size)
-            .background(FSColor.cardTop, in: .rect(cornerRadius: FSRadius.control))
-            .overlay(RoundedRectangle(cornerRadius: FSRadius.control).stroke(TalentColors.border(state), lineWidth: TalentGeometry.border))
+            .background(FSColor.cardTop, in: .rect(cornerRadius: FSRadius.legacyControl))
+            .overlay(RoundedRectangle(cornerRadius: FSRadius.legacyControl).stroke(TalentColors.border(state), lineWidth: TalentGeometry.border))
             .accessibilityHidden(true)
     }
 }
@@ -297,7 +297,7 @@ private struct CellPressStyle: ButtonStyle {
         configuration.label
             .overlay {
                 if configuration.isPressed {
-                    RoundedRectangle(cornerRadius: FSRadius.control).fill(GameColors.pressedWash)
+                    RoundedRectangle(cornerRadius: FSRadius.legacyControl).fill(GameColors.pressedWash)
                 }
             }
             .scaleEffect(configuration.isPressed ? 0.96 : 1)

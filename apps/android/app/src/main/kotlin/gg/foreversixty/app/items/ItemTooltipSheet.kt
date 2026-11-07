@@ -49,7 +49,7 @@ import gg.foreversixty.app.designsystem.BrandButtonKind
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.FsRadius
 import gg.foreversixty.app.designsystem.GameColors
-import gg.foreversixty.app.designsystem.FsType
+import gg.foreversixty.app.designsystem.ScaledType
 import gg.foreversixty.app.designsystem.MicroLabel
 
 /** The sheet's phases: the fallback header while the static files load, then the model. */
@@ -113,11 +113,11 @@ fun ItemTooltipContent(
         when (phase) {
             ItemTooltipPhase.Loading -> {
                 Header(request.fallback, fallbackMeta, request.build)
-                Text(stringResource(R.string.items_loading), style = FsType.meta, color = FsColor.muted)
+                Text(stringResource(R.string.items_loading), style = ScaledType.meta, color = FsColor.muted)
             }
             ItemTooltipPhase.Failed -> {
                 Header(request.fallback, fallbackMeta, request.build)
-                Text(stringResource(R.string.items_failed), style = FsType.body, color = FsColor.wipe)
+                Text(stringResource(R.string.items_failed), style = ScaledType.body, color = FsColor.wipe)
                 BrandButton(stringResource(R.string.common_tryAgain), BrandButtonKind.Secondary, retry, height = 48.dp, fill = false, leadingIcon = Icons.Filled.Refresh)
             }
             is ItemTooltipPhase.Loaded -> {
@@ -136,7 +136,7 @@ private fun Loaded(model: ItemTooltipModel, build: String) {
     model.source?.let { source ->
         Column(Modifier.semantics(mergeDescendants = true) {}, verticalArrangement = Arrangement.spacedBy(6.dp)) {
             MicroLabel(stringResource(R.string.tooltip_source))
-            Text(source, style = FsType.body, color = FsColor.strong)
+            Text(source, style = ScaledType.body, color = FsColor.strong)
         }
     }
     if (model.pickFooter != null || model.alternatives.isNotEmpty()) {
@@ -144,7 +144,7 @@ private fun Loaded(model: ItemTooltipModel, build: String) {
             MicroLabel(stringResource(R.string.tooltip_nextBest))
             Spacer(Modifier.height(8.dp))
             if (model.alternatives.isEmpty()) {
-                Text(stringResource(R.string.tooltip_nothingElse), style = FsType.meta, color = FsColor.muted)
+                Text(stringResource(R.string.tooltip_nothingElse), style = ScaledType.meta, color = FsColor.muted)
             }
             model.alternatives.forEach { alt ->
                 Row(
@@ -154,16 +154,16 @@ private fun Loaded(model: ItemTooltipModel, build: String) {
                 ) {
                     ItemIcon(alt.look.icon, alt.look.quality, build, 36.dp)
                     Column {
-                        Text(alt.look.name ?: stringResource(R.string.items_notInData), style = FsType.body, color = ItemQuality(alt.look.quality).text)
-                        Text(alt.meta, style = FsType.meta, color = FsColor.muted)
-                        alt.source?.let { Text(it, style = FsType.meta, color = FsColor.muted) }
+                        Text(alt.look.name ?: stringResource(R.string.items_notInData), style = ScaledType.body, color = ItemQuality(alt.look.quality).text)
+                        Text(alt.meta, style = ScaledType.meta, color = FsColor.muted)
+                        alt.source?.let { Text(it, style = ScaledType.meta, color = FsColor.muted) }
                     }
                 }
                 HorizontalDivider(color = FsColor.lineSoft)
             }
         }
     }
-    model.pickFooter?.let { Text(it, style = FsType.meta, color = FsColor.muted) }
+    model.pickFooter?.let { Text(it, style = ScaledType.meta, color = FsColor.muted) }
 }
 
 /** `More about this item`: opens the item page (spec §3.1, F12.4). */
@@ -174,7 +174,7 @@ private fun MoreAboutRow(onClick: () -> Unit) {
             .semantics(mergeDescendants = true) {},
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Text(stringResource(R.string.itemPage_moreAbout), style = FsType.bodyStrong, color = FsColor.gold, modifier = Modifier.weight(1f))
+        Text(stringResource(R.string.itemPage_moreAbout), style = ScaledType.bodyStrong, color = FsColor.gold, modifier = Modifier.weight(1f))
         Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null, tint = FsColor.muted)
     }
 }
@@ -189,9 +189,9 @@ private fun Header(look: ItemLook, meta: String, build: String, showsName: Boole
         ItemIcon(look.icon, look.quality, build, 56.dp)
         Column {
             if (showsName) {
-                Text(look.name ?: stringResource(R.string.items_notInData), style = FsType.sec, color = ItemQuality(look.quality).text)
+                Text(look.name ?: stringResource(R.string.items_notInData), style = ScaledType.sec, color = ItemQuality(look.quality).text)
             }
-            Text(meta, style = FsType.meta, color = FsColor.muted)
+            Text(meta, style = ScaledType.meta, color = FsColor.muted)
         }
     }
 }
@@ -199,7 +199,7 @@ private fun Header(look: ItemLook, meta: String, build: String, showsName: Boole
 /** The game-tooltip panel: near-black, `#3a4256` hairline, the client's line order. */
 @Composable
 fun ItemTooltipPanel(model: ItemTooltipModel) {
-    val shape = RoundedCornerShape(FsRadius.control)
+    val shape = RoundedCornerShape(FsRadius.legacyControl)
     Column(
         Modifier.fillMaxWidth().background(GameColors.tooltipPanel, shape).border(1.dp, GameColors.iconLine, shape)
             .padding(horizontal = 14.dp, vertical = 12.dp).semantics(mergeDescendants = true) {},
@@ -207,7 +207,7 @@ fun ItemTooltipPanel(model: ItemTooltipModel) {
     ) {
         Text(
             model.look.name ?: stringResource(R.string.items_notInData),
-            style = FsType.tooltip.copy(fontWeight = FontWeight.Bold, fontSize = 17.sp),
+            style = ScaledType.tooltip.copy(fontWeight = FontWeight.Bold, fontSize = 17.sp),
             color = ItemQuality(model.look.quality).text,
         )
         if (!model.known) Line(stringResource(R.string.items_notInData), FsColor.muted)
@@ -240,13 +240,13 @@ fun ItemTooltipPanel(model: ItemTooltipModel) {
 @Composable
 private fun Split(left: String, right: String) {
     FlowRow(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-        Text(left, style = FsType.tooltip, color = FsColor.strong)
-        Text(right, style = FsType.tooltip, color = FsColor.strong)
+        Text(left, style = ScaledType.tooltip, color = FsColor.strong)
+        Text(right, style = ScaledType.tooltip, color = FsColor.strong)
     }
 }
 
 @Composable
 private fun Line(text: String, color: Color = FsColor.strong) {
-    Text(text, style = FsType.tooltip, color = color)
+    Text(text, style = ScaledType.tooltip, color = color)
 }
 

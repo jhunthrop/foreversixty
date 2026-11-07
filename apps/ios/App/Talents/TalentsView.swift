@@ -237,8 +237,8 @@ struct TalentCompareBar: View {
             segment(.yours, words?.yours ?? Copy.talentsYours)
         }
         .background(FSColor.raised)
-        .clipShape(.rect(cornerRadius: FSRadius.control))
-        .overlay(RoundedRectangle(cornerRadius: FSRadius.control).stroke(FSColor.line, lineWidth: 1))
+        .clipShape(.rect(cornerRadius: FSRadius.legacyControl))
+        .overlay(RoundedRectangle(cornerRadius: FSRadius.legacyControl).stroke(FSColor.line, lineWidth: 1))
     }
 
     private func segment(_ kind: TalentBuildKind, _ title: String) -> some View {
@@ -304,8 +304,8 @@ struct TalentCompareBar: View {
             }
         }
         .background(FSColor.raised)
-        .clipShape(.rect(cornerRadius: FSRadius.control))
-        .overlay(RoundedRectangle(cornerRadius: FSRadius.control).stroke(FSColor.line, lineWidth: 1))
+        .clipShape(.rect(cornerRadius: FSRadius.legacyControl))
+        .overlay(RoundedRectangle(cornerRadius: FSRadius.legacyControl).stroke(FSColor.line, lineWidth: 1))
     }
 
     private func tabLabel(_ tab: TalentTabModel) -> some View {
@@ -349,12 +349,12 @@ struct TalentsSkeleton: View {
         VStack(alignment: .leading, spacing: 8) {
             bar(72, 22)
             bar(220, 14)
-            RoundedRectangle(cornerRadius: FSRadius.control).fill(FSColor.cardTop).frame(height: 44).padding(.top, 12)
+            RoundedRectangle(cornerRadius: FSRadius.legacyControl).fill(FSColor.cardTop).frame(height: 44).padding(.top, 12)
             HStack { bar(100, 14); Spacer(); bar(100, 14); Spacer(); bar(100, 14) }.frame(height: 44)
             GeometryReader { proxy in
                 ForEach(Array(Self.pattern.enumerated()), id: \.offset) { _, cell in
                     let origin = TalentGeometry.origin(cell, width: proxy.size.width + 32)
-                    RoundedRectangle(cornerRadius: FSRadius.control).fill(FSColor.cardTop)
+                    RoundedRectangle(cornerRadius: FSRadius.legacyControl).fill(FSColor.cardTop)
                         .frame(width: TalentGeometry.cell, height: TalentGeometry.cell)
                         .offset(x: origin.x - 16, y: origin.y)
                 }

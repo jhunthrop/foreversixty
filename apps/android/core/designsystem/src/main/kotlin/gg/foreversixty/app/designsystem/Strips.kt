@@ -78,22 +78,22 @@ private fun StripRow(ground: Color, shape: Shape?, @DrawableRes icon: Int, text:
             .fillMaxWidth()
             .heightIn(min = 36.dp)
             .then(surface)
-            .padding(start = FsSpacing.space4, end = if (action == null) FsSpacing.space4 else 0.dp)
+            .padding(start = FsSpace.space4, end = if (action == null) FsSpace.space4 else 0.dp)
             .semantics { liveRegion = LiveRegionMode.Polite },
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(FsSpacing.space2),
+        horizontalArrangement = Arrangement.spacedBy(FsSpace.space2),
     ) {
         Icon(painterResource(icon), contentDescription = null, tint = FsColor.nav, modifier = Modifier.size(16.dp))
-        Text(text, style = FsType.meta, color = ink, modifier = Modifier.weight(1f).padding(vertical = FsSpacing.space2))
+        Text(text, style = ScaledType.meta, color = ink, modifier = Modifier.weight(1f).padding(vertical = FsSpace.space2))
         action?.let {
             Text(
                 it.label,
-                style = FsType.bodyStrong,
+                style = ScaledType.bodyStrong,
                 color = FsColor.gold,
                 modifier = Modifier
                     .heightIn(min = 48.dp)
                     .clickable(role = Role.Button, onClick = it.onClick)
-                    .padding(horizontal = FsSpacing.space4)
+                    .padding(horizontal = FsSpace.space4)
                     .wrapContentHeight(Alignment.CenterVertically),
             )
         }

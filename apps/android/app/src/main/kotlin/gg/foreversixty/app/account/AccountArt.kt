@@ -20,8 +20,8 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.FsRadius
-import gg.foreversixty.app.designsystem.FsSpacing
-import gg.foreversixty.app.designsystem.FsType
+import gg.foreversixty.app.designsystem.FsSpace
+import gg.foreversixty.app.designsystem.ScaledType
 
 /** The toast at the top of F1.1: failures in wipe red, a finished deletion neutral. */
 @Composable
@@ -30,17 +30,17 @@ fun NoticeToast(text: String, modifier: Modifier = Modifier, isFailure: Boolean 
     Row(
         modifier
             .fillMaxWidth()
-            .background(FsColor.raised, RoundedCornerShape(FsRadius.panel))
-            .border(1.dp, border, RoundedCornerShape(FsRadius.panel))
-            .padding(FsSpacing.space4)
+            .background(FsColor.raised, RoundedCornerShape(FsRadius.legacyPanel))
+            .border(1.dp, border, RoundedCornerShape(FsRadius.legacyPanel))
+            .padding(FsSpace.space4)
             .semantics { liveRegion = LiveRegionMode.Assertive },
-        horizontalArrangement = Arrangement.spacedBy(FsSpacing.space3),
+        horizontalArrangement = Arrangement.spacedBy(FsSpace.space3),
     ) {
         Icon(
             if (isFailure) Icons.Outlined.Info else Icons.Outlined.CheckCircle,
             contentDescription = null,
             tint = if (isFailure) FsColor.wipe else FsColor.gold,
         )
-        Text(text, style = FsType.body, color = FsColor.strong)
+        Text(text, style = ScaledType.body, color = FsColor.strong)
     }
 }

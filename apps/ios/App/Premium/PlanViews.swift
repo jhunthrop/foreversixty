@@ -36,32 +36,32 @@ private struct PlanRowContent: View {
     @Environment(\.dynamicTypeSize) private var typeSize
 
     var body: some View {
-        HStack(alignment: typeSize.isAccessibilitySize ? .top : .center, spacing: FSSpacing.space3) {
+        HStack(alignment: typeSize.isAccessibilitySize ? .top : .center, spacing: FSSpace.space3) {
             Image(systemName: "crown")
                 .font(.callout)
                 .dynamicTypeSize(...DynamicTypeSize.xxxLarge) // the glyph stays inside its 32 pt tile
                 .foregroundStyle(FSColor.gold)
                 .frame(width: 32, height: 32)
-                .background(FSColor.gold.opacity(0.12), in: .rect(cornerRadius: FSRadius.pill))
+                .background(FSColor.gold.opacity(0.12), in: .rect(cornerRadius: FSRadius.legacyPill))
             if typeSize.isAccessibilitySize { stacked } else { inline }
             if plan.isPremium {
                 Image(systemName: "chevron.right").font(.footnote.weight(.semibold)).foregroundStyle(FSColor.muted)
             }
         }
-        .padding(.horizontal, FSSpacing.space4)
-        .padding(.vertical, FSSpacing.space2)
+        .padding(.horizontal, FSSpace.space4)
+        .padding(.vertical, FSSpace.space2)
         .frame(minHeight: 56)
         .contentShape(.rect)
         .accessibilityElement(children: .ignore)
     }
 
     private var inline: some View {
-        HStack(spacing: FSSpacing.space2) {
+        HStack(spacing: FSSpace.space2) {
             VStack(alignment: .leading, spacing: 2) {
                 Text(Copy.youPlan).font(ScaledType.bodyStrong).foregroundStyle(FSColor.strong)
                 if plan.isPremium { Text(plan.row).font(ScaledType.meta).foregroundStyle(FSColor.muted) }
             }
-            Spacer(minLength: FSSpacing.space2)
+            Spacer(minLength: FSSpace.space2)
             if plan.founder { TagView(text: Copy.planFounder, color: FSColor.gold) }
             if !plan.isPremium { Text(Copy.youPlanFree).font(ScaledType.meta).foregroundStyle(FSColor.muted) }
             if seePlans { seePlansLabel }
@@ -69,7 +69,7 @@ private struct PlanRowContent: View {
     }
 
     private var stacked: some View {
-        VStack(alignment: .leading, spacing: FSSpacing.space1) {
+        VStack(alignment: .leading, spacing: FSSpace.space1) {
             Text(Copy.youPlan).font(ScaledType.bodyStrong).foregroundStyle(FSColor.strong)
             Text(plan.row).font(ScaledType.meta).foregroundStyle(FSColor.muted)
             if plan.founder { TagView(text: Copy.planFounder, color: FSColor.gold) }
@@ -95,32 +95,32 @@ struct PlanView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: FSSpacing.space4) {
+            VStack(alignment: .leading, spacing: FSSpace.space4) {
                 card
                 Text(Copy.planFreeForAll).font(ScaledType.meta).foregroundStyle(FSColor.muted)
                     .fixedSize(horizontal: false, vertical: true)
             }
-            .padding(FSSpacing.space4)
+            .padding(FSSpace.space4)
         }
         .background(FSColor.bg)
         .navigationTitle(Copy.youPlan)
     }
 
     private var card: some View {
-        VStack(alignment: .leading, spacing: FSSpacing.space3) {
+        VStack(alignment: .leading, spacing: FSSpace.space3) {
             // The Founder tag beside the heading, or under it when the heading needs the room.
             ViewThatFits(in: .horizontal) {
                 HStack(alignment: .firstTextBaseline) {
                     heading
-                    Spacer(minLength: FSSpacing.space2)
+                    Spacer(minLength: FSSpace.space2)
                     founderTag
                 }
-                VStack(alignment: .leading, spacing: FSSpacing.space2) {
+                VStack(alignment: .leading, spacing: FSSpace.space2) {
                     heading
                     founderTag
                 }
             }
-            VStack(alignment: .leading, spacing: FSSpacing.space1) {
+            VStack(alignment: .leading, spacing: FSSpace.space1) {
                 Text(plan.line).font(ScaledType.body).foregroundStyle(FSColor.text)
                 if let line2 = plan.line2 { muted(line2) }
                 if plan.founder { muted(Copy.planFounderNote) }
@@ -128,7 +128,7 @@ struct PlanView: View {
             if !plan.includes.isEmpty { includes }
             billing
         }
-        .padding(FSSpacing.space4)
+        .padding(FSSpace.space4)
         .frame(maxWidth: .infinity, alignment: .leading)
         .primaryCard()
     }
@@ -144,11 +144,11 @@ struct PlanView: View {
     }
 
     private var includes: some View {
-        VStack(alignment: .leading, spacing: FSSpacing.space2) {
+        VStack(alignment: .leading, spacing: FSSpace.space2) {
             Divider().overlay(FSColor.lineSoft)
             MicroLabel(Copy.planIncludes)
             ForEach(plan.includes, id: \.self) { line in
-                HStack(alignment: .firstTextBaseline, spacing: FSSpacing.space2) {
+                HStack(alignment: .firstTextBaseline, spacing: FSSpace.space2) {
                     Image(systemName: "checkmark").font(.footnote.weight(.bold)).foregroundStyle(FSColor.kill)
                         .accessibilityHidden(true)
                     Text(line).font(ScaledType.body).foregroundStyle(FSColor.text)
@@ -164,7 +164,7 @@ struct PlanView: View {
         case .manageButton:
             // Spec 5.8.1: the quiet outline, the least loud control on the card.
             Button { openURL(AccountLinks.billing) } label: {
-                HStack(spacing: FSSpacing.space2) {
+                HStack(spacing: FSSpace.space2) {
                     Text(Copy.planManage)
                     Image(systemName: "arrow.up.right.square")
                 }

@@ -101,7 +101,7 @@ struct ItemIconView: View {
 
     var body: some View {
         let color = ItemQuality(value: quality).border
-        let shape = RoundedRectangle(cornerRadius: FSRadius.pill)
+        let shape = RoundedRectangle(cornerRadius: FSRadius.legacyPill)
         GameIconImage(icon: icon, build: build)
             // A new icon is a new image: a reused row never keeps the last one's art.
             .id("\(build)/\(icon ?? "")")
@@ -123,7 +123,7 @@ struct SpecIcon: View {
     var size: CGFloat = 28
 
     var body: some View {
-        let shape = RoundedRectangle(cornerRadius: FSRadius.pill)
+        let shape = RoundedRectangle(cornerRadius: FSRadius.legacyPill)
         GameIconImage(icon: icon, build: build)
             // A new icon is a new image: a reused row never keeps the last one's art.
             .id("\(build)/\(icon ?? "")")

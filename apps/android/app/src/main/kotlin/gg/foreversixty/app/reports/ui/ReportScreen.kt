@@ -29,7 +29,7 @@ import androidx.compose.ui.unit.dp
 import gg.foreversixty.app.R
 import gg.foreversixty.app.common.OfflineStamp
 import gg.foreversixty.app.designsystem.FsColor
-import gg.foreversixty.app.designsystem.FsType
+import gg.foreversixty.app.designsystem.ScaledType
 import gg.foreversixty.app.designsystem.MicroLabel
 import gg.foreversixty.app.designsystem.Tag
 import gg.foreversixty.app.designsystem.quietCard
@@ -103,7 +103,7 @@ private fun Loaded(report: Report, state: ReportScreenState, now: Instant, copy:
                 MicroLabel(stringResource(R.string.report_tag), color = FsColor.gold)
                 Tag(copy.visibility(report.visibility), FsColor.nav)
             }
-            Text(copy.reportMeta(report), style = FsType.meta, color = FsColor.muted)
+            Text(copy.reportMeta(report), style = ScaledType.meta, color = FsColor.muted)
         }
         when (ReportState.of(report.status)) {
             ReportState.Processing -> {
@@ -123,7 +123,7 @@ private fun Loaded(report: Report, state: ReportScreenState, now: Instant, copy:
         ParsesCard(state.parses, copy, actions.retryParses)
         FightsCard(report, copy, actions.openMeters)
         CoachCard(state.coach, copy, actions.retryCoach)
-        Text(stringResource(R.string.report_footer), style = FsType.meta, color = FsColor.muted)
+        Text(stringResource(R.string.report_footer), style = ScaledType.meta, color = FsColor.muted)
     }
 }
 
@@ -132,8 +132,8 @@ private fun Loaded(report: Report, state: ReportScreenState, now: Instant, copy:
 fun Notice(title: String, body: String, color: Color, inset: Boolean = true) {
     val outer = if (inset) Modifier.padding(16.dp) else Modifier
     Column(outer.fillMaxWidth().quietCard().padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-        Text(title, style = FsType.lead, color = color)
-        Text(body, style = FsType.meta, color = FsColor.muted)
+        Text(title, style = ScaledType.lead, color = color)
+        Text(body, style = ScaledType.meta, color = FsColor.muted)
     }
 }
 
@@ -142,7 +142,7 @@ private fun ReportSkeleton() {
     Column(Modifier.padding(16.dp).clearAndSetSemantics {}, verticalArrangement = Arrangement.spacedBy(14.dp)) {
         SkeletonBar(80.dp, 18.dp)
         SkeletonBar(260.dp, 12.dp)
-        Box(Modifier.fillMaxWidth().height(96.dp).background(FsColor.cardTop, RoundedCornerShape(FsRadius.panel)))
-        Box(Modifier.fillMaxWidth().height(220.dp).background(FsColor.cardTop, RoundedCornerShape(FsRadius.panel)))
+        Box(Modifier.fillMaxWidth().height(96.dp).background(FsColor.cardTop, RoundedCornerShape(FsRadius.legacyPanel)))
+        Box(Modifier.fillMaxWidth().height(220.dp).background(FsColor.cardTop, RoundedCornerShape(FsRadius.legacyPanel)))
     }
 }

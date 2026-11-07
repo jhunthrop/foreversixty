@@ -31,8 +31,8 @@ import gg.foreversixty.app.auth.session.DeletionConsequence
 import gg.foreversixty.app.designsystem.BrandButton
 import gg.foreversixty.app.designsystem.BrandButtonKind
 import gg.foreversixty.app.designsystem.FsColor
-import gg.foreversixty.app.designsystem.FsSpacing
-import gg.foreversixty.app.designsystem.FsType
+import gg.foreversixty.app.designsystem.FsSpace
+import gg.foreversixty.app.designsystem.ScaledType
 import gg.foreversixty.app.designsystem.MicroLabel
 
 private val DELETED_ITEMS = listOf(
@@ -70,21 +70,21 @@ fun DeleteAccountScreen(
     val lines = consequences.map { AccountCopy.consequence(it) }
     val canDelete = !deleting && DeletionConfirmation.matches(typed, battleTag)
     AccountPage(stringResource(R.string.account_delete_title)) {
-        Text(stringResource(R.string.account_delete_intro), style = FsType.body, color = FsColor.text)
+        Text(stringResource(R.string.account_delete_intro), style = ScaledType.body, color = FsColor.text)
         BulletGroup(stringResource(R.string.account_delete_deleted_title), DELETED_ITEMS.map { stringResource(it) }, Icons.Filled.Close)
         BulletGroup(stringResource(R.string.account_delete_kept_title), KEPT_ITEMS.map { stringResource(it) }, Icons.Filled.Check, FsColor.muted)
         if (lines.isNotEmpty()) BulletGroup(stringResource(R.string.account_delete_lose_title), lines, Icons.Outlined.Info)
         ConfirmField(battleTag, typed, onTyped, enabled = !deleting, mismatch = outcome == AccountActionOutcome.ConfirmMismatch)
-        AccountCopy.deletionFailure(outcome)?.let { Text(it, style = FsType.body, color = FsColor.wipe) }
+        AccountCopy.deletionFailure(outcome)?.let { Text(it, style = ScaledType.body, color = FsColor.wipe) }
         BrandButton(stringResource(R.string.account_delete_button), BrandButtonKind.Destructive, onDelete, busy = deleting, enabled = canDelete)
-        Text(stringResource(R.string.account_delete_email), style = FsType.meta, color = FsColor.muted)
+        Text(stringResource(R.string.account_delete_email), style = ScaledType.meta, color = FsColor.muted)
     }
 }
 
 @Composable
 private fun ConfirmField(battleTag: String?, typed: String, onTyped: (String) -> Unit, enabled: Boolean, mismatch: Boolean) {
     val label = AccountCopy.deletionPrompt(battleTag)
-    Column(Modifier.padding(top = FsSpacing.space2), verticalArrangement = Arrangement.spacedBy(FsSpacing.space2)) {
+    Column(Modifier.padding(top = FsSpace.space2), verticalArrangement = Arrangement.spacedBy(FsSpace.space2)) {
         MicroLabel(label)
         OutlinedTextField(
             value = typed,
@@ -100,21 +100,21 @@ private fun ConfirmField(battleTag: String?, typed: String, onTyped: (String) ->
             modifier = Modifier.fillMaxWidth().semantics { contentDescription = label },
         )
         if (mismatch) {
-            Text(stringResource(R.string.account_delete_confirm_mismatch), style = FsType.meta, color = FsColor.wipe)
+            Text(stringResource(R.string.account_delete_confirm_mismatch), style = ScaledType.meta, color = FsColor.wipe)
         }
     }
 }
 
 @Composable
 private fun BulletGroup(title: String, lines: List<String>, glyph: ImageVector, tint: Color = FsColor.wipe) {
-    Column(verticalArrangement = Arrangement.spacedBy(FsSpacing.space2)) {
+    Column(verticalArrangement = Arrangement.spacedBy(FsSpace.space2)) {
         MicroLabel(title)
         AccountCard {
-            Column(Modifier.padding(FsSpacing.space4), verticalArrangement = Arrangement.spacedBy(FsSpacing.space3)) {
+            Column(Modifier.padding(FsSpace.space4), verticalArrangement = Arrangement.spacedBy(FsSpace.space3)) {
                 lines.forEach { line ->
-                    Row(horizontalArrangement = Arrangement.spacedBy(FsSpacing.space3)) {
+                    Row(horizontalArrangement = Arrangement.spacedBy(FsSpace.space3)) {
                         Icon(glyph, contentDescription = null, tint = tint, modifier = Modifier.size(16.dp))
-                        Text(line, style = FsType.body, color = FsColor.strong)
+                        Text(line, style = ScaledType.body, color = FsColor.strong)
                     }
                 }
             }

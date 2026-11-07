@@ -43,8 +43,8 @@ struct KeyDateRowView: View {
                 .multilineTextAlignment(.center)
                 .minimumScaleFactor(0.7)
                 .frame(minWidth: GuidesLayout.dateBlock.width, minHeight: GuidesLayout.dateBlock.height)
-                .background(FSColor.cardTop, in: .rect(cornerRadius: FSRadius.control))
-                .overlay(RoundedRectangle(cornerRadius: FSRadius.control).stroke(FSColor.line))
+                .background(FSColor.cardTop, in: .rect(cornerRadius: FSRadius.legacyControl))
+                .overlay(RoundedRectangle(cornerRadius: FSRadius.legacyControl).stroke(FSColor.line))
             VStack(alignment: .leading, spacing: 3) {
                 Text(row.label).font(ScaledType.name).foregroundStyle(FSColor.strong)
                 if let note = row.note { Text(note).font(ScaledType.meta).foregroundStyle(FSColor.muted) }

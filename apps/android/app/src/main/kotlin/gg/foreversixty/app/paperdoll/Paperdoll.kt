@@ -38,7 +38,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import gg.foreversixty.app.designsystem.FsColor
-import gg.foreversixty.app.designsystem.FsType
+import gg.foreversixty.app.designsystem.ScaledType
 import gg.foreversixty.app.items.GameIconImage
 import gg.foreversixty.app.items.ItemQuality
 import gg.foreversixty.app.reports.ui.isLargeText
@@ -164,8 +164,8 @@ object PaperdollLayout {
     val cellHeight = 48.dp
     val ground = Color(0xFF14171F)
     const val NAME_LINES = 3
-    val name = FsType.meta.copy(fontWeight = FsType.bodyStrong.fontWeight, fontSize = 13.sp, lineHeight = 16.sp)
-    val detail = FsType.meta.copy(fontSize = 12.sp, lineHeight = 15.sp)
+    val name = ScaledType.meta.copy(fontWeight = ScaledType.bodyStrong.fontWeight, fontSize = 13.sp, lineHeight = 16.sp)
+    val detail = ScaledType.meta.copy(fontSize = 12.sp, lineHeight = 15.sp)
 }
 
 /** Below this screen width the sockets drop to 36 dp (spec W3 §9). */

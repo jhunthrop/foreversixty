@@ -43,7 +43,7 @@ import gg.foreversixty.app.R
 import gg.foreversixty.app.bis.SpecCatalog
 import gg.foreversixty.app.common.ClassCrest
 import gg.foreversixty.app.designsystem.FsColor
-import gg.foreversixty.app.designsystem.FsType
+import gg.foreversixty.app.designsystem.ScaledType
 import gg.foreversixty.app.designsystem.GameColors
 import gg.foreversixty.app.designsystem.classColor
 import gg.foreversixty.app.items.SpecIcon
@@ -102,7 +102,7 @@ fun MetersSheetContent(state: MetersSheetState, specs: SpecCatalog, build: Strin
     Column(Modifier.fillMaxWidth().padding(bottom = 24.dp)) {
         Column(Modifier.padding(horizontal = 16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
             Text(
-                copy.metersTitleFor(state.target, state.metric).uppercase(Locale.ROOT), style = FsType.sec, color = FsColor.strong,
+                copy.metersTitleFor(state.target, state.metric).uppercase(Locale.ROOT), style = ScaledType.sec, color = FsColor.strong,
                 modifier = Modifier.semantics { heading() },
             )
             Head(state.target, copy)
@@ -130,15 +130,15 @@ private fun Head(target: MetersTarget, copy: ReportsCopy) {
     val fight = (target as? MetersTarget.Pull)?.fight
     val name = copy.headName(target)
     Row(verticalAlignment = Alignment.Top, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-        Box(Modifier.height(firstLine(FsType.bodyStrong)), contentAlignment = Alignment.Center) {
+        Box(Modifier.height(firstLine(ScaledType.bodyStrong)), contentAlignment = Alignment.Center) {
             OutcomeDot(if (fight == null) FsColor.muted else if (fight.kill) FsColor.kill else FsColor.wipe)
         }
         Text(
             buildAnnotatedString {
-                if (name != null) withStyle(SpanStyle(fontWeight = FsType.bodyStrong.fontWeight, color = FsColor.strong)) { append("$name  ") }
-                withStyle(SpanStyle(fontSize = FsType.meta.fontSize, color = FsColor.muted)) { append(copy.metersHead(target)) }
+                if (name != null) withStyle(SpanStyle(fontWeight = ScaledType.bodyStrong.fontWeight, color = FsColor.strong)) { append("$name  ") }
+                withStyle(SpanStyle(fontSize = ScaledType.meta.fontSize, color = FsColor.muted)) { append(copy.metersHead(target)) }
             },
-            style = FsType.bodyStrong,
+            style = ScaledType.bodyStrong,
         )
     }
 }
@@ -163,7 +163,7 @@ private fun Segments(selected: Metric, copy: ReportsCopy, select: (Metric) -> Un
                     inactiveBorderColor = FsColor.line,
                 ),
             ) {
-                Text(copy.segment(metric), style = FsType.segment, maxLines = 2, overflow = TextOverflow.Clip)
+                Text(copy.segment(metric), style = ScaledType.segment, maxLines = 2, overflow = TextOverflow.Clip)
             }
         }
     }
@@ -179,7 +179,7 @@ private fun Rows(rows: List<MeterRow>, state: MetersSheetState, specs: SpecCatal
         if (Meters.hasMore(rows, cut, state.showAll)) {
             HorizontalDivider(color = FsColor.lineSoft)
             Text(
-                stringResource(R.string.meters_showAll, rows.size), style = FsType.bodyStrong, color = FsColor.gold,
+                stringResource(R.string.meters_showAll, rows.size), style = ScaledType.bodyStrong, color = FsColor.gold,
                 modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).clickable(onClick = actions.showAll).padding(horizontal = 16.dp, vertical = 14.dp),
             )
         }
@@ -207,15 +207,15 @@ private fun MeterRowView(row: MeterRow, metric: Metric, specs: SpecCatalog, buil
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(10.dp),
         ) {
-            Text(row.rank.toString(), style = FsType.monoMeta, color = FsColor.muted, modifier = Modifier.widthIn(min = 20.dp))
+            Text(row.rank.toString(), style = ScaledType.monoMeta, color = FsColor.muted, modifier = Modifier.widthIn(min = 20.dp))
             PlayerMark(player.spec, player.className, specs, build)
             if (stacked) {
                 Column(Modifier.weight(1f)) {
-                    Text(player.name, style = FsType.bodyStrong, color = color)
+                    Text(player.name, style = ScaledType.bodyStrong, color = color)
                     Figure(row, metric, copy)
                 }
             } else {
-                Text(player.name, style = FsType.bodyStrong, color = color, modifier = Modifier.weight(1f), maxLines = 1, overflow = TextOverflow.Clip)
+                Text(player.name, style = ScaledType.bodyStrong, color = color, modifier = Modifier.weight(1f), maxLines = 1, overflow = TextOverflow.Clip)
                 Figure(row, metric, copy)
             }
         }
@@ -225,8 +225,8 @@ private fun MeterRowView(row: MeterRow, metric: Metric, specs: SpecCatalog, buil
 @Composable
 private fun Figure(row: MeterRow, metric: Metric, copy: ReportsCopy) {
     Row(verticalAlignment = Alignment.Bottom, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-        Text(Parses.figure(row.value), style = FsType.mono, color = FsColor.strong)
-        Text(copy.unit(metric.unit), style = FsType.micro, color = FsColor.muted, modifier = Modifier.padding(bottom = 2.dp))
+        Text(Parses.figure(row.value), style = ScaledType.mono, color = FsColor.strong)
+        Text(copy.unit(metric.unit), style = ScaledType.micro, color = FsColor.muted, modifier = Modifier.padding(bottom = 2.dp))
     }
 }
 
@@ -253,5 +253,5 @@ private fun SkeletonMeterRow() {
 
 @Composable
 private fun Message(text: String) {
-    Text(text, style = FsType.body, color = FsColor.text, modifier = Modifier.padding(16.dp))
+    Text(text, style = ScaledType.body, color = FsColor.text, modifier = Modifier.padding(16.dp))
 }

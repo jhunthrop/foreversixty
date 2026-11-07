@@ -51,8 +51,8 @@ import gg.foreversixty.app.designsystem.BrandButton
 import gg.foreversixty.app.designsystem.BrandButtonKind
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.FsRadius
-import gg.foreversixty.app.designsystem.FsSpacing
-import gg.foreversixty.app.designsystem.FsType
+import gg.foreversixty.app.designsystem.FsSpace
+import gg.foreversixty.app.designsystem.ScaledType
 import gg.foreversixty.app.designsystem.Tag
 import gg.foreversixty.app.designsystem.classColor
 import gg.foreversixty.app.designsystem.quietCard
@@ -109,11 +109,11 @@ fun YouScreen(
 ) {
     var confirming by rememberSaveable { mutableStateOf(confirmingSignOut) }
     AccountPage(stringResource(R.string.you_title)) {
-        Row(horizontalArrangement = Arrangement.spacedBy(FsSpacing.space3), verticalAlignment = Alignment.CenterVertically) {
+        Row(horizontalArrangement = Arrangement.spacedBy(FsSpace.space3), verticalAlignment = Alignment.CenterVertically) {
             Tile(rememberVectorPainter(Icons.Filled.Person), 44.dp)
             Column(Modifier.weight(1f)) {
-                Text(summary.battletag, style = FsType.name, color = FsColor.strong)
-                Text(stringResource(R.string.you_signedInWith), style = FsType.meta, color = FsColor.muted)
+                Text(summary.battletag, style = ScaledType.name, color = FsColor.strong)
+                Text(stringResource(R.string.you_signedInWith), style = ScaledType.meta, color = FsColor.muted)
             }
             if (summary.plan.isPremium) Tag(stringResource(R.string.plan_premium), FsColor.gold)
         }
@@ -156,9 +156,9 @@ fun YouScreen(
         }
         BrandButton(stringResource(R.string.you_signOut), BrandButtonKind.Quiet, { confirming = true }, height = 48.dp)
         TextButton(actions.onDeleteAccount, Modifier.fillMaxWidth().heightIn(min = 48.dp)) {
-            Text(stringResource(R.string.account_delete_row), style = FsType.bodyStrong, color = FsColor.wipe)
+            Text(stringResource(R.string.account_delete_row), style = ScaledType.bodyStrong, color = FsColor.wipe)
         }
-        Text(summary.version, style = FsType.micro, color = FsColor.muted, modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
+        Text(summary.version, style = ScaledType.micro, color = FsColor.muted, modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
     }
     if (confirming) {
         ConfirmDialog(
@@ -177,19 +177,19 @@ fun YouScreen(
 @Composable
 private fun CharacterRow(character: CharacterLine) {
     Row(
-        Modifier.fillMaxWidth().heightIn(min = 56.dp).padding(horizontal = FsSpacing.space4, vertical = FsSpacing.space2),
+        Modifier.fillMaxWidth().heightIn(min = 56.dp).padding(horizontal = FsSpace.space4, vertical = FsSpace.space2),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(FsSpacing.space3),
+        horizontalArrangement = Arrangement.spacedBy(FsSpace.space3),
     ) {
         ClassCrest(character.className, 32.dp)
         Column {
-            Text(stringResource(R.string.account_you_character), style = FsType.bodyStrong, color = FsColor.strong)
+            Text(stringResource(R.string.account_you_character), style = ScaledType.bodyStrong, color = FsColor.strong)
             Text(
                 buildAnnotatedString {
                     withStyle(SpanStyle(color = classColor(character.className))) { append(character.name) }
                     withStyle(SpanStyle(color = FsColor.muted)) { append(" · ${character.place}") }
                 },
-                style = FsType.meta,
+                style = ScaledType.meta,
             )
         }
     }
@@ -200,9 +200,9 @@ private fun CharacterRow(character: CharacterLine) {
 fun AboutScreen(version: String) {
     AccountPage(stringResource(R.string.you_about)) {
         Seal(64.dp)
-        Text(stringResource(R.string.app_name).uppercase(), style = FsType.wordmark, color = FsColor.strong)
-        Text(version, style = FsType.body, color = FsColor.text)
-        Text(stringResource(R.string.about_notAffiliated), style = FsType.meta, color = FsColor.muted)
+        Text(stringResource(R.string.app_name).uppercase(), style = ScaledType.wordmark, color = FsColor.strong)
+        Text(version, style = ScaledType.body, color = FsColor.text)
+        Text(stringResource(R.string.about_notAffiliated), style = ScaledType.meta, color = FsColor.muted)
     }
 }
 
@@ -214,10 +214,10 @@ fun AccountPage(title: String, content: @Composable ColumnScope.() -> Unit) {
             .fillMaxSize()
             .background(FsColor.bg)
             .verticalScroll(rememberScrollState())
-            .padding(FsSpacing.space4),
-        verticalArrangement = Arrangement.spacedBy(FsSpacing.space5),
+            .padding(FsSpace.space4),
+        verticalArrangement = Arrangement.spacedBy(FsSpace.space5),
     ) {
-        Text(title.uppercase(), style = FsType.title, color = FsColor.strong, modifier = Modifier.semantics { heading() })
+        Text(title.uppercase(), style = ScaledType.title, color = FsColor.strong, modifier = Modifier.semantics { heading() })
         content()
     }
 }
@@ -230,7 +230,7 @@ fun AccountCard(content: @Composable ColumnScope.() -> Unit) {
 @Composable
 private fun Tile(icon: Painter, size: androidx.compose.ui.unit.Dp, tint: Color = FsColor.gold) {
     Box(
-        Modifier.size(size).background(FsColor.gold.copy(alpha = 0.12f), RoundedCornerShape(FsRadius.pill)),
+        Modifier.size(size).background(FsColor.gold.copy(alpha = 0.12f), RoundedCornerShape(FsRadius.legacyPill)),
         contentAlignment = Alignment.Center,
     ) { Icon(icon, contentDescription = null, tint = tint, modifier = Modifier.size(20.dp)) }
 }
@@ -255,17 +255,17 @@ fun AccountRow(
             .fillMaxWidth()
             .heightIn(min = 56.dp)
             .let { if (onClick != null) it.clickable(onClick = onClick) else it }
-            .padding(horizontal = FsSpacing.space4, vertical = FsSpacing.space2),
+            .padding(horizontal = FsSpace.space4, vertical = FsSpace.space2),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(FsSpacing.space3),
+        horizontalArrangement = Arrangement.spacedBy(FsSpace.space3),
     ) {
         Tile(icon, 32.dp, if (tint == FsColor.strong) FsColor.gold else tint)
         Column(Modifier.weight(1f)) {
-            Text(title, style = FsType.bodyStrong, color = tint)
-            subtitle?.let { Text(it, style = FsType.meta, color = FsColor.muted) }
+            Text(title, style = ScaledType.bodyStrong, color = tint)
+            subtitle?.let { Text(it, style = ScaledType.meta, color = FsColor.muted) }
         }
         tag?.let { Tag(it, FsColor.gold) }
-        trailing?.let { Text(it, style = FsType.meta, color = FsColor.muted) }
+        trailing?.let { Text(it, style = ScaledType.meta, color = FsColor.muted) }
         end()
         if (external) Icon(painterResource(R.drawable.ic_open_external), contentDescription = null, tint = FsColor.muted, modifier = Modifier.size(18.dp))
         if (chevron) Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null, tint = FsColor.muted)
@@ -278,9 +278,9 @@ fun ConfirmDialog(title: String, body: String?, action: String, onConfirm: () ->
     AlertDialog(
         onDismissRequest = onDismiss,
         containerColor = FsColor.raised,
-        title = { Text(title, style = FsType.sec, color = FsColor.strong) },
-        text = body?.let { { Text(it, style = FsType.body, color = FsColor.text) } },
-        confirmButton = { TextButton(onConfirm) { Text(action, style = FsType.bodyStrong, color = FsColor.wipe) } },
-        dismissButton = { TextButton(onDismiss) { Text(stringResource(R.string.common_cancel), style = FsType.bodyStrong, color = FsColor.nav) } },
+        title = { Text(title, style = ScaledType.sec, color = FsColor.strong) },
+        text = body?.let { { Text(it, style = ScaledType.body, color = FsColor.text) } },
+        confirmButton = { TextButton(onConfirm) { Text(action, style = ScaledType.bodyStrong, color = FsColor.wipe) } },
+        dismissButton = { TextButton(onDismiss) { Text(stringResource(R.string.common_cancel), style = ScaledType.bodyStrong, color = FsColor.nav) } },
     )
 }

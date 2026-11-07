@@ -49,7 +49,7 @@ struct TalentRankContent: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(EdgeInsets(top: 10, leading: 12, bottom: 10, trailing: 12))
                         .overlay(
-                            RoundedRectangle(cornerRadius: FSRadius.control)
+                            RoundedRectangle(cornerRadius: FSRadius.legacyControl)
                                 .stroke(model.isOver ? FSColor.wipe : FSColor.gold, style: StrokeStyle(lineWidth: 1.5, dash: [4, 3]))
                         )
                 }
@@ -96,7 +96,7 @@ struct TalentRankContent: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(EdgeInsets(top: 12, leading: 14, bottom: 12, trailing: 14))
-        .background(GameColors.tooltipPanel, in: .rect(cornerRadius: FSRadius.control))
-        .overlay(RoundedRectangle(cornerRadius: FSRadius.control).stroke(GameColors.iconLine, lineWidth: 1))
+        .background(GameColors.tooltipPanel, in: .rect(cornerRadius: FSRadius.legacyControl))
+        .overlay(RoundedRectangle(cornerRadius: FSRadius.legacyControl).stroke(GameColors.iconLine, lineWidth: 1))
     }
 }

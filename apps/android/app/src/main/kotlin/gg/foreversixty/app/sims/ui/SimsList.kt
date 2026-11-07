@@ -36,7 +36,7 @@ import gg.foreversixty.app.common.OfflineStamp
 import gg.foreversixty.app.designsystem.BrandButton
 import gg.foreversixty.app.designsystem.BrandButtonKind
 import gg.foreversixty.app.designsystem.FsColor
-import gg.foreversixty.app.designsystem.FsType
+import gg.foreversixty.app.designsystem.ScaledType
 import gg.foreversixty.app.designsystem.MicroLabel
 import gg.foreversixty.app.designsystem.quietCard
 import gg.foreversixty.app.model.SimProgress
@@ -87,7 +87,7 @@ fun SimsList(phase: SimsPhase, state: SimsListState, specs: SpecCatalog, build: 
 @Composable
 fun ScreenTitle(text: String = stringResource(R.string.sims_title)) {
     Text(
-        text.uppercase(Locale.ROOT), style = FsType.title, color = FsColor.strong,
+        text.uppercase(Locale.ROOT), style = ScaledType.title, color = FsColor.strong,
         modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 4.dp).semantics { heading() },
     )
 }
@@ -102,7 +102,7 @@ private fun Loaded(content: SimsContent, state: SimsListState, specs: SpecCatalo
         if (content.mine.isNotEmpty()) {
             Text(
                 stringResource(if (state.entitled) R.string.sims_footer_premium else R.string.sims_footer_free),
-                style = FsType.meta, color = FsColor.muted,
+                style = ScaledType.meta, color = FsColor.muted,
             )
         }
     }
@@ -128,7 +128,7 @@ private fun ServerSection(content: SimsContent, state: SimsListState, specs: Spe
                         )
                     }
                     if (hasMore) {
-                        Text(stringResource(R.string.sims_overflow), style = FsType.meta, color = FsColor.muted, modifier = Modifier.padding(16.dp))
+                        Text(stringResource(R.string.sims_overflow), style = ScaledType.meta, color = FsColor.muted, modifier = Modifier.padding(16.dp))
                     }
                 }
             }
@@ -158,7 +158,7 @@ private fun MineSection(content: SimsContent, state: SimsListState, specs: SpecC
 private fun MineFooter(content: SimsContent, state: SimsListState, actions: SimsActions) {
     when {
         state.pageFailed -> Row(Modifier.fillMaxWidth().padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
-            Text(stringResource(R.string.sims_failedLoad), style = FsType.meta, color = FsColor.wipe, modifier = Modifier.weight(1f))
+            Text(stringResource(R.string.sims_failedLoad), style = ScaledType.meta, color = FsColor.wipe, modifier = Modifier.weight(1f))
             BrandButton(stringResource(R.string.common_tryAgain), BrandButtonKind.Secondary, actions.loadMore, height = 48.dp, fill = false)
         }
         content.hasMorePages && content.offlineSince == null -> {
@@ -173,13 +173,13 @@ private fun MineFooter(content: SimsContent, state: SimsListState, actions: Sims
 
 @Composable
 private fun EmptyCard(text: String) {
-    Text(text, style = FsType.meta, color = FsColor.muted, modifier = Modifier.fillMaxWidth().quietCard().padding(16.dp))
+    Text(text, style = ScaledType.meta, color = FsColor.muted, modifier = Modifier.fillMaxWidth().quietCard().padding(16.dp))
 }
 
 @Composable
 fun ErrorBlock(text: String, retry: () -> Unit) {
     Column(Modifier.fillMaxWidth().padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        Text(text, style = FsType.lead, color = FsColor.wipe, modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite })
+        Text(text, style = ScaledType.lead, color = FsColor.wipe, modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite })
         BrandButton(stringResource(R.string.common_tryAgain), BrandButtonKind.Secondary, retry, height = 48.dp, fill = false, leadingIcon = Icons.Filled.Refresh)
     }
 }

@@ -87,7 +87,7 @@ fun ClassSpecSections(context: BisContext, catalog: SpecCatalog, build: String, 
         FlowRow(Modifier.selectableGroup(), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             catalog.specsOf(selection.classSlug).forEach { spec ->
                 val current = spec.spec == selection.spec
-                val shape = RoundedCornerShape(FsRadius.control)
+                val shape = RoundedCornerShape(FsRadius.legacyControl)
                 Row(
                     Modifier
                         .heightIn(min = 48.dp)
@@ -117,7 +117,7 @@ private fun ClassGrid(context: BisContext, catalog: SpecCatalog, onSelect: (BisS
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 row.forEach { slug ->
                     val current = slug == selection.classSlug
-                    val shape = RoundedCornerShape(FsRadius.control)
+                    val shape = RoundedCornerShape(FsRadius.legacyControl)
                     Column(
                         Modifier
                             .weight(1f)

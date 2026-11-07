@@ -2,7 +2,7 @@ package gg.foreversixty.app.raids.ui
 
 import androidx.compose.foundation.background
 import gg.foreversixty.app.designsystem.Tag
-import gg.foreversixty.app.designsystem.FsType
+import gg.foreversixty.app.designsystem.ScaledType
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -95,7 +95,7 @@ fun RaidsTabContentView(
                             }
                             Tag(stringResource(R.string.raids_waitingTag), FsColor.gold)
                         }
-                        Text(stringResource(R.string.raids_waiting), style = FsType.body, color = FsColor.text)
+                        Text(stringResource(R.string.raids_waiting), style = ScaledType.body, color = FsColor.text)
                     }
                 }
                 RaidsTabState.Failed -> ErrorRegion(stringResource(R.string.raids_failed), retry)
@@ -115,11 +115,11 @@ private fun Message(title: String, body: String, note: String?) {
     Column(verticalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.padding(top = 24.dp)) {
         Box(
             contentAlignment = Alignment.Center,
-            modifier = Modifier.size(44.dp).background(FsColor.gold.copy(alpha = 0.12f), RoundedCornerShape(FsRadius.control)),
+            modifier = Modifier.size(44.dp).background(FsColor.gold.copy(alpha = 0.12f), RoundedCornerShape(FsRadius.legacyControl)),
         ) { Icon(Icons.Filled.DateRange, contentDescription = null, tint = FsColor.gold) }
-        Text(title.uppercase(), style = FsType.h2, color = FsColor.strong, modifier = Modifier.semantics { heading() })
-        Text(body, style = FsType.body, color = FsColor.text)
-        note?.let { Text(it, style = FsType.meta, color = FsColor.muted) }
+        Text(title.uppercase(), style = ScaledType.h2, color = FsColor.strong, modifier = Modifier.semantics { heading() })
+        Text(body, style = ScaledType.body, color = FsColor.text)
+        note?.let { Text(it, style = ScaledType.meta, color = FsColor.muted) }
     }
 }
 
@@ -140,8 +140,8 @@ private fun Loaded(
         NextRaidCard(nextController, clock, now, content.character.key, requestPermission) { roster -> openRaid(nextController.raid, roster) }
     } else if (next == null) {
         Column(verticalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.raidPrimaryCard()) {
-            Text(stringResource(R.string.raids_empty), style = FsType.bodyStrong, color = FsColor.strong)
-            Text(stringResource(R.string.raids_emptyNote), style = FsType.meta, color = FsColor.muted)
+            Text(stringResource(R.string.raids_empty), style = ScaledType.bodyStrong, color = FsColor.strong)
+            Text(stringResource(R.string.raids_emptyNote), style = ScaledType.meta, color = FsColor.muted)
         }
     }
     content.waiting?.let { waiting ->
@@ -152,11 +152,11 @@ private fun Loaded(
         ) {
             Box(
                 contentAlignment = Alignment.Center,
-                modifier = Modifier.size(36.dp).background(FsColor.gold.copy(alpha = 0.12f), RoundedCornerShape(FsRadius.control)),
+                modifier = Modifier.size(36.dp).background(FsColor.gold.copy(alpha = 0.12f), RoundedCornerShape(FsRadius.legacyControl)),
             ) { Icon(Icons.Filled.Person, contentDescription = null, tint = FsColor.gold) }
             Column {
-                Text(androidx.compose.ui.res.pluralStringResource(R.plurals.raids_pending, waiting, waiting), style = FsType.bodyStrong, color = FsColor.strong)
-                Text(stringResource(R.string.raids_pendingLine), style = FsType.meta, color = FsColor.muted)
+                Text(androidx.compose.ui.res.pluralStringResource(R.plurals.raids_pending, waiting, waiting), style = ScaledType.bodyStrong, color = FsColor.strong)
+                Text(stringResource(R.string.raids_pendingLine), style = ScaledType.meta, color = FsColor.muted)
             }
         }
     }
@@ -199,8 +199,8 @@ fun GuildHeadView(head: GuildHead) {
     }
     val text = @Composable {
         Column {
-            Text(head.name.uppercase(), style = FsType.cardHead, color = FsColor.strong, modifier = Modifier.semantics { heading() })
-            head.line?.let { Text(it, style = FsType.meta, color = FsColor.muted) }
+            Text(head.name.uppercase(), style = ScaledType.cardHead, color = FsColor.strong, modifier = Modifier.semantics { heading() })
+            head.line?.let { Text(it, style = ScaledType.meta, color = FsColor.muted) }
         }
     }
     if (isLargeText()) {
@@ -231,7 +231,7 @@ fun NextRaidCard(
             val heading = @Composable {
                 Column(verticalArrangement = Arrangement.spacedBy(4.dp), modifier = Modifier.semantics(mergeDescendants = true) { contentDescription = a11y }) {
                     SectionLabel(stringResource(R.string.raids_next), color = FsColor.gold)
-                    Text(raid.title.uppercase(), style = FsType.cardHead, color = FsColor.strong)
+                    Text(raid.title.uppercase(), style = ScaledType.cardHead, color = FsColor.strong)
                     TimesLine(facts, clock, showsEnd = false)
                     CountdownLine(facts, clock, now)
                 }
@@ -281,10 +281,10 @@ fun PlannedRow(raid: RaidView, clock: RaidClock, now: Instant, currentKey: Strin
         // The date block keeps its width; the text column takes the rest.
         DateBlock(facts.startsAt, clock, if (large) 56.dp else 48.dp, 52.dp)
         Column(verticalArrangement = Arrangement.spacedBy(4.dp), modifier = Modifier.weight(1f)) {
-            Text(raid.title, style = FsType.bodyStrong, color = FsColor.strong, maxLines = 2)
-            Text(clock.whenPhrase(facts.startsAt, now), style = FsType.meta, color = FsColor.muted)
+            Text(raid.title, style = ScaledType.bodyStrong, color = FsColor.strong, maxLines = 2)
+            Text(clock.whenPhrase(facts.startsAt, now), style = ScaledType.meta, color = FsColor.muted)
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
-                Text(if (raid.size == null) facts.countLine(res) else facts.ratio, style = FsType.monoMeta, color = FsColor.strong)
+                Text(if (raid.size == null) facts.countLine(res) else facts.ratio, style = ScaledType.monoMeta, color = FsColor.strong)
                 if (!large) facts.fill?.let { FillBar(it, 64.dp) }
             }
             // Large text: the chip moves under the title.
@@ -325,8 +325,8 @@ private fun NightRow(night: RaidNightRow, clock: RaidClock, open: () -> Unit) {
         modifier = Modifier.fillMaxWidth().clickable(onClick = open).heightIn(min = 56.dp).padding(14.dp).semantics(mergeDescendants = true) {},
     ) {
         Column(Modifier.weight(1f)) {
-            Text(night.title, style = FsType.bodyStrong, color = FsColor.strong)
-            Text(meta, style = FsType.meta, color = FsColor.muted)
+            Text(night.title, style = ScaledType.bodyStrong, color = FsColor.strong)
+            Text(meta, style = ScaledType.meta, color = FsColor.muted)
         }
         Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null, tint = FsColor.muted)
     }
@@ -345,11 +345,11 @@ private fun Skeleton() {
         }
         Column(verticalArrangement = Arrangement.spacedBy(14.dp), modifier = Modifier.raidPrimaryCard()) {
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                Box(Modifier.size(52.dp, 56.dp).background(FsColor.lineSoft, RoundedCornerShape(FsRadius.control)))
+                Box(Modifier.size(52.dp, 56.dp).background(FsColor.lineSoft, RoundedCornerShape(FsRadius.legacyControl)))
                 Column(verticalArrangement = Arrangement.spacedBy(6.dp)) { bar(70, 11); bar(180, 22); bar(200, 15); bar(150, 15) }
             }
             bar(240, 15)
-            Box(Modifier.fillMaxWidth().height(48.dp).background(FsColor.lineSoft, RoundedCornerShape(FsRadius.control)))
+            Box(Modifier.fillMaxWidth().height(48.dp).background(FsColor.lineSoft, RoundedCornerShape(FsRadius.legacyControl)))
             Spacer(Modifier.height(4.dp))
             bar(90, 20)
         }

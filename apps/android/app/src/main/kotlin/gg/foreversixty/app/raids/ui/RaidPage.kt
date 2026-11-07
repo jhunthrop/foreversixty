@@ -2,7 +2,7 @@ package gg.foreversixty.app.raids.ui
 
 import android.content.Intent
 import gg.foreversixty.app.designsystem.GameColors
-import gg.foreversixty.app.designsystem.FsType
+import gg.foreversixty.app.designsystem.ScaledType
 import android.provider.CalendarContract
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -106,7 +106,7 @@ fun RaidPageScreen(
         }
         RaidPageModel.State.NotAvailable -> PageMessage(back) {
             Column(verticalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.raidQuietCard().padding(16.dp)) {
-                Text(stringResource(R.string.raid_notAvailable), style = FsType.body, color = FsColor.text)
+                Text(stringResource(R.string.raid_notAvailable), style = ScaledType.body, color = FsColor.text)
                 RaidSecondaryButton(stringResource(R.string.raid_back), back)
             }
         }
@@ -164,7 +164,7 @@ fun RaidPageContent(
     Box(Modifier.fillMaxSize().background(FsColor.bg)) {
         Column(Modifier.fillMaxSize()) {
             TopAppBar(
-                title = { Text(raid.title.uppercase(), style = FsType.sec, color = FsColor.strong) },
+                title = { Text(raid.title.uppercase(), style = ScaledType.sec, color = FsColor.strong) },
                 navigationIcon = { BackButton(back) },
                 actions = {
                     IconButton(onClick = addToCalendar) {
@@ -220,21 +220,21 @@ fun RaidHead(raid: RaidView, facts: RaidFacts, clock: RaidClock, now: () -> Inst
     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
         val large = isLargeText()
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
-            Text(stringResource(R.string.raid_eyebrow).uppercase(), style = FsType.micro, color = FsColor.gold, maxLines = 1, softWrap = false)
+            Text(stringResource(R.string.raid_eyebrow).uppercase(), style = ScaledType.micro, color = FsColor.gold, maxLines = 1, softWrap = false)
             ChipTag(facts.chip)
-            if (!large) guildName?.takeIf { it.isNotEmpty() }?.let { Text(it, style = FsType.meta, color = FsColor.muted, maxLines = 1) }
+            if (!large) guildName?.takeIf { it.isNotEmpty() }?.let { Text(it, style = ScaledType.meta, color = FsColor.muted, maxLines = 1) }
         }
         // Large text: the guild name drops to its own line.
-        if (large) guildName?.takeIf { it.isNotEmpty() }?.let { Text(it, style = FsType.meta, color = FsColor.muted) }
+        if (large) guildName?.takeIf { it.isNotEmpty() }?.let { Text(it, style = ScaledType.meta, color = FsColor.muted) }
         if (raid.title != raid.zoneName) {
-            Text(stringResource(R.string.raids_zoneSuffix, raid.zoneName).trim(), style = FsType.body, color = FsColor.muted)
+            Text(stringResource(R.string.raids_zoneSuffix, raid.zoneName).trim(), style = ScaledType.body, color = FsColor.muted)
         }
-        Text(clock.longDate(facts.startsAt), style = FsType.body, color = FsColor.text)
+        Text(clock.longDate(facts.startsAt), style = ScaledType.body, color = FsColor.text)
         TimesLine(facts, clock, showsEnd = true)
         CountdownLine(facts, clock, now)
         val guildZone = runCatching { ZoneId.of(raid.guildTimezone) }.getOrNull()
         if (guildZone != null && clock.offsetDiffers(facts.startsAt, guildZone)) {
-            Text(stringResource(R.string.raid_guildTime, clock.guildClock(facts.startsAt, guildZone)), style = FsType.meta, color = FsColor.muted)
+            Text(stringResource(R.string.raid_guildTime, clock.guildClock(facts.startsAt, guildZone)), style = ScaledType.meta, color = FsColor.muted)
         }
     }
 }
@@ -256,12 +256,12 @@ fun TimesLine(facts: RaidFacts, clock: RaidClock, showsEnd: Boolean) {
                 withStyle(androidx.compose.ui.text.SpanStyle(color = FsColor.muted)) { append(head) }
                 // Only the digits are mono; `pm` stays in Barlow (UX should 2).
                 val digits = time.substringBefore(' ')
-                withStyle(FsType.mono.toSpanStyle().copy(color = FsColor.strong)) { append(digits) }
+                withStyle(ScaledType.mono.toSpanStyle().copy(color = FsColor.strong)) { append(digits) }
                 withStyle(androidx.compose.ui.text.SpanStyle(color = FsColor.strong)) { append(time.removePrefix(digits)) }
                 withStyle(androidx.compose.ui.text.SpanStyle(color = FsColor.muted)) { append(tail) }
             }
         },
-        style = FsType.body,
+        style = ScaledType.body,
     )
 }
 
@@ -284,10 +284,10 @@ fun CountdownLine(facts: RaidFacts, clock: RaidClock, now: () -> Instant) {
     Text(
         buildAnnotatedString {
             append(head)
-            withStyle(FsType.bodyStrong.toSpanStyle().copy(color = if (running) FsColor.gold else FsColor.muted)) { append(countdown) }
+            withStyle(ScaledType.bodyStrong.toSpanStyle().copy(color = if (running) FsColor.gold else FsColor.muted)) { append(countdown) }
             append(tail)
         },
-        style = FsType.body,
+        style = ScaledType.body,
         color = FsColor.text,
         modifier = Modifier.clearAndSetSemantics { contentDescription = a11y },
     )
@@ -297,14 +297,14 @@ fun CountdownLine(facts: RaidFacts, clock: RaidClock, now: () -> Instant) {
 @Composable
 fun SignupCard(controller: SignupController, facts: RaidFacts, clock: RaidClock, currentKey: String?, requestPermission: () -> Unit) {
     Column(verticalArrangement = Arrangement.spacedBy(14.dp), modifier = Modifier.raidPrimaryCard()) {
-        Text(stringResource(R.string.raid_yourSignup).uppercase(), style = FsType.sec, color = FsColor.strong, modifier = Modifier.semantics { heading() })
+        Text(stringResource(R.string.raid_yourSignup).uppercase(), style = ScaledType.sec, color = FsColor.strong, modifier = Modifier.semantics { heading() })
         when (facts.chip) {
             RaidChip.Cancelled -> {
-                Text(stringResource(R.string.raid_cancelled), style = FsType.body, color = FsColor.text)
+                Text(stringResource(R.string.raid_cancelled), style = ScaledType.body, color = FsColor.text)
                 facts.viewerCharacters(currentKey).firstNotNullOfOrNull { c -> SignupState.of(c.state)?.let { it to c.role } }?.let { (state, role) ->
                     Text(
                         stringResource(R.string.raid_cancelledYou, stringResource(state.label), stringResource(gg.foreversixty.app.raids.logic.roleLabel(role))),
-                        style = FsType.meta,
+                        style = ScaledType.meta,
                         color = FsColor.muted,
                     )
                 }
@@ -339,7 +339,7 @@ private fun NightRow(open: () -> Unit) {
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.raidQuietCard().clickable(onClick = open).heightIn(min = 56.dp).padding(horizontal = 16.dp),
     ) {
-        Text(stringResource(R.string.night_title), style = FsType.bodyStrong, color = FsColor.strong, modifier = Modifier.weight(1f))
+        Text(stringResource(R.string.night_title), style = ScaledType.bodyStrong, color = FsColor.strong, modifier = Modifier.weight(1f))
         Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null, tint = FsColor.muted)
     }
 }
@@ -347,11 +347,11 @@ private fun NightRow(open: () -> Unit) {
 @Composable
 private fun Notes(raid: RaidView) {
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        Text(stringResource(R.string.raid_notes).uppercase(), style = FsType.h2, color = FsColor.strong, modifier = Modifier.semantics { heading() })
+        Text(stringResource(R.string.raid_notes).uppercase(), style = ScaledType.h2, color = FsColor.strong, modifier = Modifier.semantics { heading() })
         if (raid.notesHtml.isBlank()) {
-            Text(stringResource(R.string.raid_notesEmpty), style = FsType.body, color = FsColor.muted)
+            Text(stringResource(R.string.raid_notesEmpty), style = ScaledType.body, color = FsColor.muted)
         } else {
-            Text(NotesText.annotated(raid.notesHtml, FsColor.gold), style = FsType.body, color = FsColor.text)
+            Text(NotesText.annotated(raid.notesHtml, FsColor.gold), style = ScaledType.body, color = FsColor.text)
         }
     }
 }
@@ -364,13 +364,13 @@ private fun Toast(text: String, modifier: Modifier) {
         modifier = modifier
             .padding(16.dp)
             .fillMaxWidth()
-            .background(GameColors.sheet, RoundedCornerShape(FsRadius.panel))
-            .border(1.dp, FsColor.line, RoundedCornerShape(FsRadius.panel))
+            .background(GameColors.sheet, RoundedCornerShape(FsRadius.legacyPanel))
+            .border(1.dp, FsColor.line, RoundedCornerShape(FsRadius.legacyPanel))
             .padding(16.dp)
             .semantics { liveRegion = androidx.compose.ui.semantics.LiveRegionMode.Polite },
     ) {
         Icon(Icons.Filled.Lock, contentDescription = null, tint = FsColor.kill)
-        Text(text, style = FsType.body, color = FsColor.strong)
+        Text(text, style = ScaledType.body, color = FsColor.strong)
     }
 }
 

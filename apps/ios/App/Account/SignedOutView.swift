@@ -21,22 +21,22 @@ struct SignedOutView: View {
             Color.clear.surfaceBand(bottomLine: false).ignoresSafeArea()
             ScrollView {
                 content
-                    .padding(.horizontal, FSSpacing.space4)
+                    .padding(.horizontal, FSSpace.space4)
                     .padding(.top, notice == nil ? 60 : 120)
-                    .padding(.bottom, FSSpacing.space6)
+                    .padding(.bottom, FSSpace.space6)
             }
             .scrollBounceBehavior(.basedOnSize)
             if let notice {
                 NoticeToast(text: notice, isFailure: noticeIsFailure)
-                    .padding(.horizontal, FSSpacing.space4)
-                    .padding(.top, FSSpacing.space3)
+                    .padding(.horizontal, FSSpace.space4)
+                    .padding(.top, FSSpace.space3)
                     .accessibilitySortPriority(1)
             }
         }
     }
 
     private var content: some View {
-        VStack(alignment: .leading, spacing: FSSpacing.space4) {
+        VStack(alignment: .leading, spacing: FSSpace.space4) {
             Seal(size: 64)
             Text(Copy.appName)
                 .font(ScaledType.wordmark)
@@ -52,12 +52,12 @@ struct SignedOutView: View {
                 .font(ScaledType.body)
                 .foregroundStyle(FSColor.text)
                 .fixedSize(horizontal: false, vertical: true)
-            VStack(spacing: FSSpacing.space3) {
+            VStack(spacing: FSSpace.space3) {
                 signInButton
                 Button(Copy.signinPickClass, action: onPickClass)
                     .buttonStyle(BrandButtonStyle(.secondary))
             }
-            .padding(.top, FSSpacing.space2)
+            .padding(.top, FSSpace.space2)
             Text(Copy.signinPickClassNote)
                 .font(ScaledType.meta)
                 .foregroundStyle(FSColor.muted)
@@ -98,7 +98,7 @@ struct ImportView: View {
     var body: some View {
         ZStack {
             Color.clear.surfaceBand(bottomLine: false).ignoresSafeArea()
-            VStack(spacing: FSSpacing.space4) {
+            VStack(spacing: FSSpace.space4) {
                 Seal(size: 64)
                 Text(Copy.signinImportTitle)
                     .font(ScaledType.h2)
@@ -115,7 +115,7 @@ struct ImportView: View {
                     .frame(width: 160)
                     .accessibilityHidden(true)
             }
-            .padding(.horizontal, FSSpacing.space4)
+            .padding(.horizontal, FSSpace.space4)
         }
     }
 }
@@ -125,7 +125,7 @@ struct NoCharactersView: View {
     let onGetAddon: () -> Void
 
     var body: some View {
-        VStack(alignment: .leading, spacing: FSSpacing.space4) {
+        VStack(alignment: .leading, spacing: FSSpace.space4) {
             Text(Copy.signinNoCharsTitle)
                 .font(ScaledType.h2)
                 .textCase(.uppercase)
@@ -138,7 +138,7 @@ struct NoCharactersView: View {
             Button(Copy.signinGetAddon, action: onGetAddon)
                 .buttonStyle(BrandButtonStyle(.secondary))
         }
-        .padding(FSSpacing.space4)
+        .padding(FSSpace.space4)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .background(FSColor.bg)
     }

@@ -42,7 +42,7 @@ import gg.foreversixty.app.R
 import gg.foreversixty.app.designsystem.BrandButton
 import gg.foreversixty.app.designsystem.BrandButtonKind
 import gg.foreversixty.app.designsystem.FsColor
-import gg.foreversixty.app.designsystem.FsType
+import gg.foreversixty.app.designsystem.ScaledType
 import gg.foreversixty.app.designsystem.GameColors
 import gg.foreversixty.app.reports.logic.ParseTier
 import gg.foreversixty.app.reports.logic.Visibility
@@ -71,7 +71,7 @@ fun ReportsBar(
     TopAppBar(
         title = {
             Text(
-                title.uppercase(Locale.ROOT), style = FsType.h2, color = titleColor, maxLines = 2, overflow = TextOverflow.Clip,
+                title.uppercase(Locale.ROOT), style = ScaledType.h2, color = titleColor, maxLines = 2, overflow = TextOverflow.Clip,
                 modifier = Modifier.semantics { heading() },
             )
         },
@@ -100,7 +100,7 @@ class BarAction(val label: String, val icon: @Composable () -> Painter, val run:
 @Composable
 fun ErrorRegion(text: String, retry: () -> Unit, inset: Boolean = true) {
     Column(Modifier.fillMaxWidth().padding(if (inset) 16.dp else 0.dp),verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        Text(text, style = FsType.lead, color = FsColor.wipe, modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite })
+        Text(text, style = ScaledType.lead, color = FsColor.wipe, modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite })
         BrandButton(stringResource(R.string.common_tryAgain), BrandButtonKind.Secondary, retry, height = 48.dp, fill = false, leadingIcon = Icons.Filled.Refresh)
     }
 }

@@ -37,38 +37,38 @@ import java.util.Locale
 /** The site's uppercase section label (`micro`, .14em), read as a heading. */
 @Composable
 fun MicroLabel(text: String, modifier: Modifier = Modifier, color: Color = FsColor.muted) {
-    Text(text.uppercase(Locale.ROOT), modifier.semantics { heading() }, style = FsType.micro, color = color)
+    Text(text.uppercase(Locale.ROOT), modifier.semantics { heading() }, style = ScaledType.micro, color = color)
 }
 
 /** A tag (`.pill`): 22 dp, 11 sp 700 uppercase, tinted ground and border; [checked] leads with a tick. */
 @Composable
 fun Tag(text: String, color: Color, modifier: Modifier = Modifier, checked: Boolean = false) {
-    val shape = RoundedCornerShape(FsRadius.pill)
+    val shape = RoundedCornerShape(FsRadius.legacyPill)
     Row(
         modifier
             .heightIn(min = 22.dp)
             .background(color.copy(alpha = 0.12f), shape)
             .border(1.dp, color.copy(alpha = 0.35f), shape)
-            .padding(horizontal = FsSpacing.space2, vertical = 4.dp),
+            .padding(horizontal = FsSpace.space2, vertical = 4.dp),
         horizontalArrangement = Arrangement.spacedBy(4.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         if (checked) Icon(Icons.Filled.Check, contentDescription = null, tint = color, modifier = Modifier.size(11.dp))
-        Text(text.uppercase(Locale.ROOT), style = FsType.micro.copy(letterSpacing = 0.08.em), color = color)
+        Text(text.uppercase(Locale.ROOT), style = ScaledType.micro.copy(letterSpacing = 0.08.em), color = color)
     }
 }
 
 /** The primary card (`--surface-card`): the warm gradient and its gold border. */
 fun Modifier.primaryCard(): Modifier = this
-    .clip(RoundedCornerShape(FsRadius.panel))
-    .background(Brush.verticalGradient(listOf(Color(0xFF16130E), FsColor.raised)), RoundedCornerShape(FsRadius.panel))
-    .border(1.dp, FsColor.lineCard, RoundedCornerShape(FsRadius.panel))
+    .clip(RoundedCornerShape(FsRadius.legacyPanel))
+    .background(Brush.verticalGradient(listOf(Color(0xFF16130E), FsColor.raised)), RoundedCornerShape(FsRadius.legacyPanel))
+    .border(1.dp, FsColor.lineCard, RoundedCornerShape(FsRadius.legacyPanel))
 
 /** A quiet list card: raised ground, soft line. */
 fun Modifier.quietCard(): Modifier = this
-    .clip(RoundedCornerShape(FsRadius.panel))
-    .background(FsColor.raised, RoundedCornerShape(FsRadius.panel))
-    .border(1.dp, FsColor.lineSoft, RoundedCornerShape(FsRadius.panel))
+    .clip(RoundedCornerShape(FsRadius.legacyPanel))
+    .background(FsColor.raised, RoundedCornerShape(FsRadius.legacyPanel))
+    .border(1.dp, FsColor.lineSoft, RoundedCornerShape(FsRadius.legacyPanel))
 
 /**
  * The band ground (`--surface-band`, spec §4.1): the ember radial from the top centre over

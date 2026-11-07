@@ -39,7 +39,7 @@ import gg.foreversixty.app.designsystem.BrandButton
 import gg.foreversixty.app.designsystem.BrandButtonKind
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.FsRadius
-import gg.foreversixty.app.designsystem.FsType
+import gg.foreversixty.app.designsystem.ScaledType
 import gg.foreversixty.app.designsystem.MicroLabel
 import gg.foreversixty.app.designsystem.Tag
 import gg.foreversixty.app.designsystem.pillSurface
@@ -91,7 +91,7 @@ fun ReportsList(
             ReportsPhase.Loading -> Skeleton()
             ReportsPhase.Failed -> ErrorRegion(stringResource(R.string.reports_failed), actions.refresh)
             ReportsPhase.SignedOut -> Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
-                Text(stringResource(R.string.reports_signedOut), style = FsType.lead, color = FsColor.strong)
+                Text(stringResource(R.string.reports_signedOut), style = ScaledType.lead, color = FsColor.strong)
                 BrandButton(stringResource(R.string.signin_button), BrandButtonKind.Primary, actions.signIn)
             }
             is ReportsPhase.Loaded -> {
@@ -106,7 +106,7 @@ fun ReportsList(
 private fun Loaded(content: ReportsContent, pageFailed: Boolean, viewer: ReportsViewer, now: Instant, copy: ReportsCopy, actions: ReportsListActions) {
     if (content.rows.isEmpty()) {
         Column(Modifier.padding(16.dp).fillMaxWidth().quietCard().padding(16.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
-            Text(stringResource(R.string.reports_empty), style = FsType.body, color = FsColor.text)
+            Text(stringResource(R.string.reports_empty), style = ScaledType.body, color = FsColor.text)
             BrandButton(stringResource(R.string.reports_getCompanion), BrandButtonKind.Secondary, actions.getCompanion, height = 48.dp, fill = false)
         }
         return
@@ -116,7 +116,7 @@ private fun Loaded(content: ReportsContent, pageFailed: Boolean, viewer: Reports
         Section(stringResource(R.string.reports_thisWeek), sections.thisWeek, viewer, now, copy, actions)
         Section(stringResource(R.string.reports_earlier), sections.earlier, viewer, now, copy, actions)
         Footer(content, pageFailed, actions)
-        Text(stringResource(R.string.reports_footer), style = FsType.meta, color = FsColor.muted)
+        Text(stringResource(R.string.reports_footer), style = ScaledType.meta, color = FsColor.muted)
     }
 }
 
@@ -138,7 +138,7 @@ private fun Section(title: String, rows: List<ReportRow>, viewer: ReportsViewer,
 private fun Footer(content: ReportsContent, pageFailed: Boolean, actions: ReportsListActions) {
     when {
         pageFailed -> Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-            Text(stringResource(R.string.reports_failed), style = FsType.meta, color = FsColor.wipe, modifier = Modifier.weight(1f))
+            Text(stringResource(R.string.reports_failed), style = ScaledType.meta, color = FsColor.wipe, modifier = Modifier.weight(1f))
             BrandButton(stringResource(R.string.common_tryAgain), BrandButtonKind.Secondary, actions.loadMore, height = 48.dp, fill = false)
         }
         content.hasMorePages && content.offlineSince == null -> {
@@ -191,7 +191,7 @@ private fun LargeReportRow(row: ReportRow, viewer: ReportsViewer, now: Instant, 
                 }
             }
         }
-        Row(Modifier.height(firstLine(FsType.bodyStrong)), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        Row(Modifier.height(firstLine(ScaledType.bodyStrong)), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             if (tag == null) VisibilityGlyph(Visibility.of(row.visibility), glyph)
             Chevron(glyph)
         }
@@ -201,8 +201,8 @@ private fun LargeReportRow(row: ReportRow, viewer: ReportsViewer, now: Instant, 
 @Composable
 private fun Words(row: ReportRow, now: Instant, copy: ReportsCopy, modifier: Modifier) {
     Column(modifier, verticalArrangement = Arrangement.spacedBy(2.dp)) {
-        Text(Reports.name(row), style = FsType.bodyStrong, color = FsColor.strong)
-        Text(copy.rowMeta(row, now), style = FsType.meta, color = FsColor.muted)
+        Text(Reports.name(row), style = ScaledType.bodyStrong, color = FsColor.strong)
+        Text(copy.rowMeta(row, now), style = ScaledType.meta, color = FsColor.muted)
     }
 }
 
@@ -224,7 +224,7 @@ private fun StateTag(state: ReportState, text: String) {
 /** The live tag: the kill-green pill led by its 7 dp dot (spec F10.1). */
 @Composable
 private fun LiveTag(text: String) {
-    val shape = RoundedCornerShape(FsRadius.pill)
+    val shape = RoundedCornerShape(FsRadius.legacyPill)
     Row(
         Modifier.heightIn(min = 22.dp).pillSurface(FsColor.kill.copy(alpha = TAG_FILL), FsColor.kill.copy(alpha = TAG_LINE), shape)
             .padding(horizontal = 8.dp, vertical = 4.dp),
@@ -232,7 +232,7 @@ private fun LiveTag(text: String) {
         horizontalArrangement = Arrangement.spacedBy(5.dp),
     ) {
         Box(Modifier.size(7.dp).background(FsColor.kill, CircleShape))
-        Text(text.uppercase(Locale.ROOT), style = FsType.micro.copy(letterSpacing = 0.08.em), color = FsColor.kill)
+        Text(text.uppercase(Locale.ROOT), style = ScaledType.micro.copy(letterSpacing = 0.08.em), color = FsColor.kill)
     }
 }
 

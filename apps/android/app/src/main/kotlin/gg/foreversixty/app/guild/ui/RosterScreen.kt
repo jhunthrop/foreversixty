@@ -57,7 +57,7 @@ import androidx.compose.ui.unit.dp
 import gg.foreversixty.app.R
 import gg.foreversixty.app.common.ClassCrest
 import gg.foreversixty.app.designsystem.FsColor
-import gg.foreversixty.app.designsystem.FsType
+import gg.foreversixty.app.designsystem.ScaledType
 import gg.foreversixty.app.designsystem.GameColors
 import gg.foreversixty.app.designsystem.Tag
 import gg.foreversixty.app.designsystem.classColor
@@ -127,9 +127,9 @@ private fun SearchField(controls: RosterControls) {
         value = controls.query.search,
         onValueChange = { controls.query = controls.query.copy(search = it) },
         singleLine = true,
-        placeholder = { Text(stringResource(R.string.roster_search), style = FsType.body, color = FsColor.muted) },
+        placeholder = { Text(stringResource(R.string.roster_search), style = ScaledType.body, color = FsColor.muted) },
         leadingIcon = { Icon(Icons.Filled.Search, contentDescription = null, tint = FsColor.muted) },
-        textStyle = FsType.body.copy(color = FsColor.strong),
+        textStyle = ScaledType.body.copy(color = FsColor.strong),
         colors = OutlinedTextFieldDefaults.colors(
             focusedBorderColor = FsColor.gold,
             unfocusedBorderColor = FsColor.line,
@@ -165,7 +165,7 @@ private fun LazyListScope.loaded(
         item {
             Text(
                 stringResource(R.string.roster_footer),
-                style = FsType.meta,
+                style = ScaledType.meta,
                 color = FsColor.muted,
                 modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 12.dp, bottom = 24.dp),
             )
@@ -182,8 +182,8 @@ private fun CountsCard(counts: GuildMemberCounts) {
     )
     val figure = @Composable { value: Int, caption: String, modifier: Modifier ->
         Column(modifier.semantics(mergeDescendants = true) {}) {
-            Text("$value", style = FsType.stat, color = FsColor.strong)
-            Text(caption, style = FsType.meta, color = FsColor.muted)
+            Text("$value", style = ScaledType.stat, color = FsColor.strong)
+            Text(caption, style = ScaledType.meta, color = FsColor.muted)
         }
     }
     val card = Modifier.padding(start = 16.dp, end = 16.dp, top = 14.dp).raidQuietCard().padding(horizontal = 16.dp, vertical = 14.dp)
@@ -235,7 +235,7 @@ private fun SortMenu(controls: RosterControls) {
         RosterSort.entries.forEach { sort ->
             val current = controls.query.sort == sort
             DropdownMenuItem(
-                text = { Text(stringResource(sort.label), style = FsType.body, color = FsColor.strong) },
+                text = { Text(stringResource(sort.label), style = ScaledType.body, color = FsColor.strong) },
                 trailingIcon = if (current) {
                     { Icon(Icons.Filled.Check, contentDescription = null, tint = FsColor.gold) }
                 } else {
@@ -271,7 +271,7 @@ private fun Chip(text: String, selected: Boolean, trailing: Boolean = false, onC
                 this.selected = selected
             },
     ) {
-        Text(text, style = FsType.meta, color = if (selected) FsColor.strong else FsColor.text, maxLines = 1)
+        Text(text, style = ScaledType.meta, color = if (selected) FsColor.strong else FsColor.text, maxLines = 1)
         if (trailing) Icon(Icons.Filled.KeyboardArrowDown, contentDescription = null, tint = FsColor.muted, modifier = Modifier.size(16.dp))
     }
 }
@@ -297,12 +297,12 @@ fun RosterRowView(entry: RosterEntry, copy: RosterCopy, open: (RosterEntry) -> U
         }
         Column(verticalArrangement = Arrangement.spacedBy(2.dp), modifier = Modifier.weight(1f).clearAndSetSemantics {}) {
             Row(horizontalArrangement = Arrangement.spacedBy(4.dp), verticalAlignment = Alignment.CenterVertically) {
-                NameText(entry.name, FsType.bodyStrong, classColor(entry.className), Modifier.weight(1f, fill = false))
+                NameText(entry.name, ScaledType.bodyStrong, classColor(entry.className), Modifier.weight(1f, fill = false))
                 if (entry.supporter) {
                     Icon(painterResource(R.drawable.ic_supporter), contentDescription = null, tint = FsColor.gold, modifier = Modifier.size(13.dp))
                 }
             }
-            Text(copy.meta(entry), style = FsType.meta, color = FsColor.muted)
+            Text(copy.meta(entry), style = ScaledType.meta, color = FsColor.muted)
             // Largest text: the number only, under the name (spec 9).
             if (large) Standing(entry.standing, copy, showsBar = false, alignment = Alignment.Start)
         }
@@ -320,11 +320,11 @@ private fun Standing(standing: RosterStanding, copy: RosterCopy, showsBar: Boole
     when (standing) {
         is RosterStanding.Attended -> Column(horizontalAlignment = alignment, verticalArrangement = Arrangement.spacedBy(4.dp)) {
             if (showsBar) AttendanceBar(standing)
-            Text(copy.attendance(standing), style = FsType.meta.copy(fontFeatureSettings = TABULAR), color = FsColor.strong)
+            Text(copy.attendance(standing), style = ScaledType.meta.copy(fontFeatureSettings = TABULAR), color = FsColor.strong)
         }
         RosterStanding.NoNights -> Text(
             stringResource(R.string.roster_noNights),
-            style = FsType.meta,
+            style = ScaledType.meta,
             color = FsColor.muted,
             textAlign = if (alignment == Alignment.End) TextAlign.End else TextAlign.Start,
             modifier = Modifier.widthIn(max = 120.dp),
@@ -354,8 +354,8 @@ private fun NoMatch() {
         verticalArrangement = Arrangement.spacedBy(4.dp),
         modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp).raidQuietCard().padding(16.dp),
     ) {
-        Text(stringResource(R.string.roster_empty_title), style = FsType.lead, color = FsColor.strong)
-        Text(stringResource(R.string.roster_empty_body), style = FsType.meta, color = FsColor.muted)
+        Text(stringResource(R.string.roster_empty_title), style = ScaledType.lead, color = FsColor.strong)
+        Text(stringResource(R.string.roster_empty_body), style = ScaledType.meta, color = FsColor.muted)
     }
 }
 

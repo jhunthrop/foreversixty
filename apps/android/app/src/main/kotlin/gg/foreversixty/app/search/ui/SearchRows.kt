@@ -35,7 +35,7 @@ import gg.foreversixty.app.R
 import gg.foreversixty.app.common.ClassCrest
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.FsRadius
-import gg.foreversixty.app.designsystem.FsType
+import gg.foreversixty.app.designsystem.ScaledType
 import gg.foreversixty.app.designsystem.GameColors
 import gg.foreversixty.app.designsystem.MicroLabel
 import gg.foreversixty.app.designsystem.Tag
@@ -116,7 +116,7 @@ fun TargetIcon(target: SearchTarget, build: String) {
 /** A talent's icon on its tile, with the name's first letters while the art loads. */
 @Composable
 fun TalentIcon(icon: String, name: String, build: String, size: Dp) {
-    val shape = RoundedCornerShape(FsRadius.pill)
+    val shape = RoundedCornerShape(FsRadius.legacyPill)
     Box(Modifier.size(size).clip(shape).background(FsColor.cardTop).border(1.dp, GameColors.iconLine, shape)) {
         GameIconImage(icon, build, size, fallback = name.take(2))
     }
@@ -138,10 +138,10 @@ fun TargetRow(
         TargetIcon(target, build)
         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
             FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.Center) {
-                Text(title, style = FsType.lead.copy(fontWeight = FontWeight.Medium), color = titleColor)
+                Text(title, style = ScaledType.lead.copy(fontWeight = FontWeight.Medium), color = titleColor)
                 youTag?.let { Tag(it, FsColor.gold, Modifier.align(Alignment.CenterVertically)) }
             }
-            Text(meta, style = FsType.body, color = FsColor.muted)
+            Text(meta, style = ScaledType.body, color = FsColor.muted)
         }
         Trailing(trailing)
     }
@@ -152,12 +152,12 @@ fun TargetRow(
 fun LinkRow(@DrawableRes icon: Int, label: String, trailing: RowTrailing = RowTrailing.Chevron, onClick: () -> Unit) {
     TappableRow(onClick, minHeight = SearchLayout.linkRowHeight) {
         Box(
-            Modifier.size(SearchLayout.tile).background(FsColor.cardTop, RoundedCornerShape(FsRadius.control)),
+            Modifier.size(SearchLayout.tile).background(FsColor.cardTop, RoundedCornerShape(FsRadius.legacyControl)),
             contentAlignment = Alignment.Center,
         ) {
             Icon(painterResource(icon), contentDescription = null, tint = FsColor.gold, modifier = Modifier.size(18.dp))
         }
-        Text(label, style = FsType.lead.copy(fontWeight = FontWeight.Medium), color = FsColor.strong, modifier = Modifier.weight(1f))
+        Text(label, style = ScaledType.lead.copy(fontWeight = FontWeight.Medium), color = FsColor.strong, modifier = Modifier.weight(1f))
         Trailing(trailing)
     }
 }

@@ -39,10 +39,10 @@ public struct TagView: View {
             Text(text.uppercased()).font(ScaledType.micro).tracking(1)
         }
         .foregroundStyle(color)
-        .padding(.horizontal, FSSpacing.space2)
+        .padding(.horizontal, FSSpace.space2)
         .frame(minHeight: 22)
-        .background(color.opacity(0.12), in: .rect(cornerRadius: FSRadius.pill))
-        .overlay(RoundedRectangle(cornerRadius: FSRadius.pill).stroke(color.opacity(0.35)))
+        .background(color.opacity(0.12), in: .rect(cornerRadius: FSRadius.legacyPill))
+        .overlay(RoundedRectangle(cornerRadius: FSRadius.legacyPill).stroke(color.opacity(0.35)))
         .fixedSize()
     }
 }
@@ -57,13 +57,13 @@ public struct OfflineStrip: View {
     }
 
     public var body: some View {
-        HStack(spacing: FSSpacing.space2) {
+        HStack(spacing: FSSpace.space2) {
             Image(systemName: "wifi.slash").font(.system(size: 14)).accessibilityHidden(true)
             Text(text).font(ScaledType.meta)
             Spacer(minLength: 0)
         }
         .foregroundStyle(FSColor.nav)
-        .padding(.horizontal, FSSpacing.space4)
+        .padding(.horizontal, FSSpace.space4)
         .frame(minHeight: 36)
         .background(GameColors.offlineGround)
         .overlay(alignment: .bottom) { FSColor.line.frame(height: 1) }
@@ -78,9 +78,9 @@ struct PrimaryCard: ViewModifier {
         content
             .background(
                 LinearGradient(colors: [Color(tokenHex: 0x16130E), FSColor.raised], startPoint: .top, endPoint: .bottom),
-                in: .rect(cornerRadius: FSRadius.panel)
+                in: .rect(cornerRadius: FSRadius.legacyPanel)
             )
-            .overlay(RoundedRectangle(cornerRadius: FSRadius.panel).stroke(FSColor.lineCard))
+            .overlay(RoundedRectangle(cornerRadius: FSRadius.legacyPanel).stroke(FSColor.lineCard))
     }
 }
 
@@ -88,8 +88,8 @@ struct PrimaryCard: ViewModifier {
 struct QuietCard: ViewModifier {
     func body(content: Content) -> some View {
         content
-            .background(FSColor.raised, in: .rect(cornerRadius: FSRadius.panel))
-            .overlay(RoundedRectangle(cornerRadius: FSRadius.panel).stroke(FSColor.lineSoft))
+            .background(FSColor.raised, in: .rect(cornerRadius: FSRadius.legacyPanel))
+            .overlay(RoundedRectangle(cornerRadius: FSRadius.legacyPanel).stroke(FSColor.lineSoft))
     }
 }
 

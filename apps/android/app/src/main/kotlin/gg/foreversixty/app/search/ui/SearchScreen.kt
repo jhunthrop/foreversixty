@@ -51,7 +51,7 @@ import gg.foreversixty.app.R
 import gg.foreversixty.app.designsystem.BrandButton
 import gg.foreversixty.app.designsystem.BrandButtonKind
 import gg.foreversixty.app.designsystem.FsColor
-import gg.foreversixty.app.designsystem.FsType
+import gg.foreversixty.app.designsystem.ScaledType
 import gg.foreversixty.app.designsystem.OfflineStrip
 import gg.foreversixty.app.designsystem.quietCard
 import gg.foreversixty.app.search.logic.CharacterPhase
@@ -136,7 +136,7 @@ private fun SearchField(query: String, actions: SearchActions, focus: Boolean) {
             expanded = true,
             onExpandedChange = {},
             modifier = Modifier.fillMaxWidth().focusRequester(focusRequester),
-            placeholder = { Text(stringResource(R.string.search_placeholder), style = FsType.lead.copy(fontWeight = FontWeight.Normal), color = FsColor.muted, maxLines = 3) },
+            placeholder = { Text(stringResource(R.string.search_placeholder), style = ScaledType.lead.copy(fontWeight = FontWeight.Normal), color = FsColor.muted, maxLines = 3) },
             leadingIcon = {
                 IconButton(onClick = actions.onBack) {
                     Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.search_cancel), tint = FsColor.strong)
@@ -194,7 +194,7 @@ fun ScopeChip(label: String, selected: Boolean, onClick: () -> Unit) {
         ) {
             Text(
                 label,
-                style = FsType.body.copy(fontSize = CHIP_TEXT, fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal),
+                style = ScaledType.body.copy(fontSize = CHIP_TEXT, fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal),
                 color = if (selected) FsColor.gold else FsColor.text,
             )
         }
@@ -242,7 +242,7 @@ private fun LazyListScope.emptyState(state: SearchScreenState, copy: SearchCopy,
         item(key = "recent") {
             SectionLabel(stringResource(R.string.search_group_recent)) {
                 TextButton(onClick = actions.onClearRecent, modifier = Modifier.heightIn(min = 48.dp)) {
-                    Text(stringResource(R.string.search_recent_clear), style = FsType.bodyStrong, color = FsColor.gold)
+                    Text(stringResource(R.string.search_recent_clear), style = ScaledType.bodyStrong, color = FsColor.gold)
                 }
             }
             RowCard(state.recents.size) { i ->
@@ -284,7 +284,7 @@ private fun LazyListScope.results(state: SearchScreenState, copy: SearchCopy, ac
     if (state.characterPhase == CharacterPhase.Failed && state.scope in setOf(SearchScope.All, SearchScope.Characters)) {
         item(key = "charactersFailed") {
             Text(
-                stringResource(R.string.search_charactersFailed), style = FsType.body, color = FsColor.wipe,
+                stringResource(R.string.search_charactersFailed), style = ScaledType.body, color = FsColor.wipe,
                 modifier = Modifier.padding(horizontal = SearchLayout.margin, vertical = 14.dp),
             )
         }
@@ -305,7 +305,7 @@ private fun ResultRow(target: SearchTarget, copy: SearchCopy, state: SearchScree
 @Composable
 private fun ShowAllRow(total: Int, onClick: () -> Unit) {
     TappableRow(onClick, minHeight = 52.dp) {
-        Text(stringResource(R.string.search_showAll, total), style = FsType.bodyStrong, color = FsColor.gold, modifier = Modifier.weight(1f))
+        Text(stringResource(R.string.search_showAll, total), style = ScaledType.bodyStrong, color = FsColor.gold, modifier = Modifier.weight(1f))
         Chevron()
     }
 }
@@ -315,13 +315,13 @@ private fun LazyListScope.indexState(phase: IndexPhase, actions: SearchActions) 
     when (phase) {
         IndexPhase.Loading -> item(key = "indexLoading") {
             Text(
-                stringResource(R.string.search_indexLoading), style = FsType.body, color = FsColor.muted,
+                stringResource(R.string.search_indexLoading), style = ScaledType.body, color = FsColor.muted,
                 modifier = Modifier.padding(horizontal = SearchLayout.margin, vertical = 14.dp),
             )
         }
         IndexPhase.Failed -> item(key = "indexFailed") {
             Column(Modifier.padding(horizontal = SearchLayout.margin, vertical = 14.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                Text(stringResource(R.string.search_indexFailed), style = FsType.body, color = FsColor.wipe)
+                Text(stringResource(R.string.search_indexFailed), style = ScaledType.body, color = FsColor.wipe)
                 BrandButton(stringResource(R.string.search_tryAgain), BrandButtonKind.Secondary, actions.onRetryIndex, height = 48.dp, fill = false, leadingIcon = Icons.Filled.Refresh)
             }
         }
@@ -335,8 +335,8 @@ private fun NoResults(query: String) {
         Modifier.padding(horizontal = SearchLayout.margin).padding(top = 16.dp).fillMaxWidth().quietCard().padding(SearchLayout.margin),
         verticalArrangement = Arrangement.spacedBy(6.dp),
     ) {
-        Text(stringResource(R.string.search_noResults_title, query), style = FsType.lead.copy(fontWeight = FontWeight.Normal), color = FsColor.strong)
-        Text(stringResource(R.string.search_noResults_body), style = FsType.body, color = FsColor.muted)
+        Text(stringResource(R.string.search_noResults_title, query), style = ScaledType.lead.copy(fontWeight = FontWeight.Normal), color = FsColor.strong)
+        Text(stringResource(R.string.search_noResults_body), style = ScaledType.body, color = FsColor.muted)
     }
 }
 
@@ -345,7 +345,7 @@ private fun NoResults(query: String) {
 private fun InsetStrip() {
     // All four corners round, as on iOS.
     Box(Modifier.padding(horizontal = SearchLayout.margin).padding(top = 16.dp)) {
-        OfflineStrip(stringResource(R.string.search_offline), RoundedCornerShape(FsRadius.panel))
+        OfflineStrip(stringResource(R.string.search_offline), RoundedCornerShape(FsRadius.legacyPanel))
     }
 }
 

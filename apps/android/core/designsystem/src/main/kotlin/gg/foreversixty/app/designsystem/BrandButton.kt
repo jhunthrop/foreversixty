@@ -50,7 +50,7 @@ fun BrandButton(
     iconScalesWithText: Boolean = false,
 ) {
     val iconSize = if (iconScalesWithText) with(LocalDensity.current) { ICON_TEXT_SIZE.toDp() } else ICON_SIZE
-    val shape = RoundedCornerShape(FsRadius.control)
+    val shape = RoundedCornerShape(FsRadius.legacyControl)
     val size = if (fill) modifier.fillMaxWidth().heightIn(min = height) else modifier.heightIn(min = height)
     // The vertical padding keeps a wrapped label off the border at large text; one line still sits at [height].
     val padding = PaddingValues(horizontal = HORIZONTAL_PADDING, vertical = VERTICAL_PADDING)
@@ -60,9 +60,9 @@ fun BrandButton(
         } else {
             if (leadingIcon != null) {
                 Icon(leadingIcon, contentDescription = null, modifier = Modifier.size(iconSize))
-                Spacer(Modifier.width(FsSpacing.space2))
+                Spacer(Modifier.width(FsSpace.space2))
             }
-            Text(caseOf(kind, label), style = FsType.button, textAlign = TextAlign.Center)
+            Text(caseOf(kind, label), style = ScaledType.button, textAlign = TextAlign.Center)
         }
     }
     // A busy button keeps its colours; a disabled one dims.

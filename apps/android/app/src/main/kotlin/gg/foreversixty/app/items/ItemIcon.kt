@@ -2,7 +2,7 @@ package gg.foreversixty.app.items
 
 import android.content.Context
 import androidx.compose.foundation.Image
-import gg.foreversixty.app.designsystem.FsType
+import gg.foreversixty.app.designsystem.ScaledType
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.graphics.ColorFilter
@@ -123,12 +123,12 @@ object ItemIconLoader {
 @Composable
 fun ItemIcon(icon: String?, quality: Int?, build: String, size: Dp, modifier: Modifier = Modifier, dashed: Boolean = false) {
     val color = ItemQuality(quality).border
-    val shape = RoundedCornerShape(FsRadius.pill)
+    val shape = RoundedCornerShape(FsRadius.legacyPill)
     val frame = if (dashed) {
         Modifier.drawBehind {
             drawRoundRect(
                 color = FsColor.line,
-                cornerRadius = CornerRadius(FsRadius.pill.toPx()),
+                cornerRadius = CornerRadius(FsRadius.legacyPill.toPx()),
                 style = Stroke(width = 1.5.dp.toPx(), pathEffect = PathEffect.dashPathEffect(floatArrayOf(8f, 6f))),
             )
         }
@@ -151,7 +151,7 @@ fun ItemIcon(icon: String?, quality: Int?, build: String, size: Dp, modifier: Mo
  */
 @Composable
 fun SpecIcon(icon: String?, build: String, size: Dp, modifier: Modifier = Modifier) {
-    val shape = RoundedCornerShape(FsRadius.pill)
+    val shape = RoundedCornerShape(FsRadius.legacyPill)
     Box(modifier.size(size).clip(shape).background(FsColor.cardTop).border(1.dp, GameColors.iconLine, shape)) {
         GameIconImage(icon, build, size)
     }
@@ -200,7 +200,7 @@ fun GameIconLabel(text: String, dimmed: Boolean) {
     val size = with(LocalDensity.current) { FALLBACK_SIZE.toSp() }
     Text(
         text,
-        style = FsType.micro.copy(letterSpacing = 0.sp, fontSize = size),
+        style = ScaledType.micro.copy(letterSpacing = 0.sp, fontSize = size),
         color = if (dimmed) FsColor.muted else FsColor.strong,
         maxLines = 1,
         softWrap = false,

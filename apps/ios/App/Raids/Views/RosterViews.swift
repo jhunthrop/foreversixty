@@ -191,8 +191,8 @@ struct PlaceMenu: View {
             .foregroundStyle(FSColor.strong)
             .padding(.horizontal, 12)
             .frame(minWidth: 56, minHeight: 44)
-            .background(FSColor.bg.opacity(0.4), in: .rect(cornerRadius: FSRadius.control))
-            .overlay(RoundedRectangle(cornerRadius: FSRadius.control).stroke(FSColor.line))
+            .background(FSColor.bg.opacity(0.4), in: .rect(cornerRadius: FSRadius.legacyControl))
+            .overlay(RoundedRectangle(cornerRadius: FSRadius.legacyControl).stroke(FSColor.line))
         }
         .accessibilityLabel(Copy.raidsA11yPlace(name: row.name, state: place))
     }

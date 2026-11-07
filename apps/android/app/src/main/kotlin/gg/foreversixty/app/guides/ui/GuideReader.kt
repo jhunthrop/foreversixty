@@ -36,7 +36,7 @@ import androidx.compose.ui.unit.dp
 import gg.foreversixty.app.R
 import gg.foreversixty.app.common.OfflineStamp
 import gg.foreversixty.app.designsystem.FsColor
-import gg.foreversixty.app.designsystem.FsType
+import gg.foreversixty.app.designsystem.ScaledType
 import gg.foreversixty.app.designsystem.MicroLabel
 import gg.foreversixty.app.designsystem.NewDataStrip
 import gg.foreversixty.app.designsystem.OfflineStrip
@@ -98,7 +98,7 @@ fun GuideReader(state: GuideReaderState, now: Instant, actions: GuideReaderActio
         state.newData?.let { NewDataStrip(stringResource(if (it.failed) R.string.offline_updateFailed else R.string.offline_newData), stringResource(R.string.offline_update), actions.update, it.failed) }
         when (val phase = state.phase) {
             Loadable.Loading -> ReaderSkeleton()
-            Loadable.NotCached -> Text(stringResource(R.string.guides_notCached), style = FsType.body, color = FsColor.muted, modifier = Modifier.padding(GuideSpace.margin))
+            Loadable.NotCached -> Text(stringResource(R.string.guides_notCached), style = ScaledType.body, color = FsColor.muted, modifier = Modifier.padding(GuideSpace.margin))
             Loadable.Failed -> ErrorRegion(stringResource(R.string.guides_error), actions.retry)
             is Loadable.Loaded -> {
                 phase.offlineSince?.let { OfflineStrip(stringResource(R.string.offline_strip, OfflineStamp.format(it, now))) }
@@ -154,8 +154,8 @@ private fun Head(guide: GuideFile) {
     ) {
         SpecIcon(guide.icon, guide.build, scaledSize(HEAD_ICON, HEAD_ICON_CAP))
         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-            Text(specTitle(guide.specName, guide.className).uppercase(Locale.ROOT), style = FsType.h2, color = classColor(guide.classSlug))
-            Text(copy.headMeta(guide), style = FsType.meta, color = FsColor.nav)
+            Text(specTitle(guide.specName, guide.className).uppercase(Locale.ROOT), style = ScaledType.h2, color = classColor(guide.classSlug))
+            Text(copy.headMeta(guide), style = ScaledType.meta, color = FsColor.nav)
         }
     }
 }
@@ -192,7 +192,7 @@ private fun Glance(guide: GuideFile) {
     ) {
         guide.roleLine?.let { line ->
             MicroLabel(stringResource(R.string.guides_role))
-            Text(line, style = FsType.lead.copy(fontWeight = FsType.body.fontWeight), color = FsColor.strong)
+            Text(line, style = ScaledType.lead.copy(fontWeight = ScaledType.body.fontWeight), color = FsColor.strong)
         }
         if (guide.statPriority.isNotEmpty()) {
             MicroLabel(stringResource(R.string.guides_statPriority), Modifier.padding(top = 6.dp))

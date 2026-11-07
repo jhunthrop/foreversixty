@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.dp
 import gg.foreversixty.app.R
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.FsRadius
-import gg.foreversixty.app.designsystem.FsType
+import gg.foreversixty.app.designsystem.ScaledType
 import gg.foreversixty.app.designsystem.GameColors
 import gg.foreversixty.app.designsystem.MicroLabel
 
@@ -66,32 +66,32 @@ fun TalentRankContent(model: TalentSheetModel, build: String) {
             val face = if (model.state == TalentCellState.Locked) TalentCellState.Open else model.state
             TalentIconTile(model.talent, face, build, size = 56.dp)
             Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                Text(model.talent.name, style = FsType.name, color = FsColor.strong, modifier = Modifier.semantics { heading() })
-                Text(stringResource(R.string.talents_rank, model.rank, model.talent.maxRank), style = FsType.monoMeta, color = FsColor.muted)
+                Text(model.talent.name, style = ScaledType.name, color = FsColor.strong, modifier = Modifier.semantics { heading() })
+                Text(stringResource(R.string.talents_rank, model.rank, model.talent.maxRank), style = ScaledType.monoMeta, color = FsColor.muted)
             }
         }
-        val panel = RoundedCornerShape(FsRadius.control)
+        val panel = RoundedCornerShape(FsRadius.legacyControl)
         Column(
             Modifier.fillMaxWidth().background(GameColors.tooltipPanel, panel).border(1.dp, GameColors.iconLine, panel).padding(horizontal = 14.dp, vertical = 12.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            model.current?.let { Text(it, style = FsType.body, color = FsColor.text) }
+            model.current?.let { Text(it, style = ScaledType.body, color = FsColor.text) }
             model.next?.let { next ->
                 Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                     MicroLabel(stringResource(R.string.talents_nextRank))
-                    Text(next, style = FsType.body, color = FsColor.muted)
+                    Text(next, style = ScaledType.body, color = FsColor.muted)
                 }
             }
-            model.requirements.forEach { Text(it, style = FsType.body, color = FsColor.wipe) }
+            model.requirements.forEach { Text(it, style = ScaledType.body, color = FsColor.wipe) }
         }
         model.guideLine?.let { line ->
             Text(
                 line,
-                style = FsType.bodyStrong,
+                style = ScaledType.bodyStrong,
                 color = FsColor.strong,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .dashedBorder(if (model.isOver) FsColor.wipe else FsColor.gold, FsRadius.control, 1.5.dp)
+                    .dashedBorder(if (model.isOver) FsColor.wipe else FsColor.gold, FsRadius.legacyControl, 1.5.dp)
                     .padding(horizontal = 12.dp, vertical = 10.dp),
             )
         }

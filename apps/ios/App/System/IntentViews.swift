@@ -14,8 +14,8 @@ struct UpgradeSnippetView: View {
     var body: some View {
         // Accessibility sizes: the icon sits above the words, so names wrap at word boundaries.
         let layout = typeSize.isAccessibilitySize
-            ? AnyLayout(VStackLayout(alignment: .leading, spacing: FSSpacing.space3))
-            : AnyLayout(HStackLayout(alignment: .top, spacing: FSSpacing.space3))
+            ? AnyLayout(VStackLayout(alignment: .leading, spacing: FSSpace.space3))
+            : AnyLayout(HStackLayout(alignment: .top, spacing: FSSpace.space3))
         layout {
             WidgetItemIcon(icon: answer.icon ?? "", quality: answer.quality ?? 1, size: Self.iconSize, icons: WidgetIcons { _ in image })
             VStack(alignment: .leading, spacing: 4) {
@@ -28,7 +28,7 @@ struct UpgradeSnippetView: View {
             .fixedSize(horizontal: false, vertical: true)
             Spacer(minLength: 0)
         }
-        .padding(FSSpacing.space4)
+        .padding(FSSpace.space4)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(FSColor.raised)
         .accessibilityElement(children: .combine)
@@ -48,8 +48,8 @@ struct IntentAnswerCard: View {
     var options: [String] = []
 
     var body: some View {
-        VStack(alignment: .leading, spacing: FSSpacing.space3) {
-            HStack(spacing: FSSpacing.space2) {
+        VStack(alignment: .leading, spacing: FSSpace.space3) {
+            HStack(spacing: FSSpace.space2) {
                 Image(uiImage: BrandImages.seal ?? UIImage()).resizable().frame(width: 20, height: 20).clipShape(.circle).accessibilityHidden(true)
                 Text(Copy.appName).font(ScaledType.meta).foregroundStyle(FSColor.muted)
             }
@@ -62,20 +62,20 @@ struct IntentAnswerCard: View {
             ForEach(options, id: \.self) { option in
                 Text(option).font(ScaledType.bodyStrong).foregroundStyle(FSColor.strong)
                     .fixedSize(horizontal: false, vertical: true)
-                    .padding(.horizontal, FSSpacing.space4).padding(.vertical, FSSpacing.space3)
+                    .padding(.horizontal, FSSpace.space4).padding(.vertical, FSSpace.space3)
                     .frame(maxWidth: .infinity, minHeight: Self.buttonHeight, alignment: .leading)
                     .background(FSColor.line.opacity(0.6), in: .rect(cornerRadius: 14))
             }
             if let buttons {
                 // Side by side while they fit; stacked at the largest sizes, never clipped.
                 ViewThatFits(in: .horizontal) {
-                    HStack(spacing: FSSpacing.space2) { choice(buttons.deny, accept: false); choice(buttons.accept, accept: true) }
-                    VStack(spacing: FSSpacing.space2) { choice(buttons.accept, accept: true); choice(buttons.deny, accept: false) }
+                    HStack(spacing: FSSpace.space2) { choice(buttons.deny, accept: false); choice(buttons.accept, accept: true) }
+                    VStack(spacing: FSSpace.space2) { choice(buttons.accept, accept: true); choice(buttons.deny, accept: false) }
                 }
                 .font(ScaledType.bodyStrong)
             }
         }
-        .padding(FSSpacing.space4)
+        .padding(FSSpace.space4)
         .background(.ultraThinMaterial, in: .rect(cornerRadius: 24))
         .environment(\.colorScheme, .dark)
     }
@@ -85,8 +85,8 @@ struct IntentAnswerCard: View {
         Text(title)
             .multilineTextAlignment(.center)
             .fixedSize(horizontal: false, vertical: true)
-            .padding(.horizontal, FSSpacing.space4)
-            .padding(.vertical, FSSpacing.space2)
+            .padding(.horizontal, FSSpace.space4)
+            .padding(.vertical, FSSpace.space2)
             .frame(maxWidth: .infinity, minHeight: Self.buttonHeight)
             .background(accept ? FSColor.gold : FSColor.line, in: .capsule)
             .foregroundStyle(accept ? FSColor.bg : FSColor.strong)

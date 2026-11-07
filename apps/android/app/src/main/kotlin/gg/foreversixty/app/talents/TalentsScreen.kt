@@ -75,7 +75,7 @@ import gg.foreversixty.app.designsystem.BrandButton
 import gg.foreversixty.app.designsystem.BrandButtonKind
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.FsRadius
-import gg.foreversixty.app.designsystem.FsType
+import gg.foreversixty.app.designsystem.ScaledType
 import gg.foreversixty.app.designsystem.OfflineStrip
 import gg.foreversixty.app.designsystem.Tag
 import gg.foreversixty.app.home.HomeCharacter
@@ -174,7 +174,7 @@ fun TalentsPage(
 ) {
     Column(Modifier.fillMaxSize().background(FsColor.bg)) {
         TopAppBar(
-            title = { Text(title.uppercase(Locale.ROOT), style = FsType.sec, color = FsColor.strong) },
+            title = { Text(title.uppercase(Locale.ROOT), style = ScaledType.sec, color = FsColor.strong) },
             navigationIcon = {
                 IconButton(onClick = back) { Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, tint = FsColor.strong) }
             },
@@ -221,7 +221,7 @@ private fun TalentsContent(
             TalentsPhase.Loading -> item { TalentsSkeleton() }
             TalentsPhase.Failed -> item {
                 Column(Modifier.padding(start = 16.dp, end = 16.dp, top = 8.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                    Text(stringResource(R.string.talents_failed), style = FsType.body, color = FsColor.wipe, modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite })
+                    Text(stringResource(R.string.talents_failed), style = ScaledType.body, color = FsColor.wipe, modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite })
                     BrandButton(stringResource(R.string.common_tryAgain), BrandButtonKind.Secondary, retry, height = 48.dp, fill = false, leadingIcon = Icons.Filled.Refresh)
                 }
             }
@@ -244,7 +244,7 @@ private fun TalentsContent(
                         )
                     }
                     item {
-                        Text(presenter.legend(shown, res), style = FsType.meta, color = FsColor.muted, modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 8.dp))
+                        Text(presenter.legend(shown, res), style = ScaledType.meta, color = FsColor.muted, modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 8.dp))
                     }
                 }
             }
@@ -268,7 +268,7 @@ fun TalentStatusBlock(status: TalentStatusLine, notes: List<String>, retry: () -
             TalentTagKind.Muted -> FsColor.muted
         }
         val sentence = @Composable { modifier: Modifier ->
-            Text(status.sentence, style = FsType.body, color = if (status.isError) FsColor.wipe else FsColor.strong, modifier = modifier)
+            Text(status.sentence, style = ScaledType.body, color = if (status.isError) FsColor.wipe else FsColor.strong, modifier = modifier)
         }
         val described = Modifier.heightIn(min = 28.dp).semantics(mergeDescendants = true) {
             contentDescription = status.accessibilityLabel
@@ -288,7 +288,7 @@ fun TalentStatusBlock(status: TalentStatusLine, notes: List<String>, retry: () -
         if (status.isError) {
             BrandButton(stringResource(R.string.common_tryAgain), BrandButtonKind.Secondary, retry, height = 48.dp, fill = false, leadingIcon = Icons.Filled.Refresh)
         }
-        notes.forEach { Text(it, style = FsType.meta, color = FsColor.muted) }
+        notes.forEach { Text(it, style = ScaledType.meta, color = FsColor.muted) }
     }
 }
 
@@ -325,7 +325,7 @@ fun TalentCompareBar(
 
 @Composable
 private fun Segments(shown: TalentBuildKind, large: Boolean, against: CompareAgainst, onShow: (TalentBuildKind) -> Unit) {
-    val shape = RoundedCornerShape(if (large) FsRadius.control else SEGMENT_PILL)
+    val shape = RoundedCornerShape(if (large) FsRadius.legacyControl else SEGMENT_PILL)
     val items = listOf(TalentBuildKind.Guide to against.side, TalentBuildKind.Yours to against.yours)
     val content = @Composable { kind: TalentBuildKind, label: Int, modifier: Modifier ->
         val checked = shown == kind
@@ -341,7 +341,7 @@ private fun Segments(shown: TalentBuildKind, large: Boolean, against: CompareAga
                 Icon(Icons.Filled.Check, contentDescription = null, tint = FsColor.strong, modifier = Modifier.size(16.dp))
                 Spacer(Modifier.width(6.dp))
             }
-            Text(stringResource(label), style = FsType.segment, color = if (checked) FsColor.strong else FsColor.muted)
+            Text(stringResource(label), style = ScaledType.segment, color = if (checked) FsColor.strong else FsColor.muted)
         }
     }
     val frame = Modifier.fillMaxWidth().border(1.dp, FsColor.line, shape).clip(shape).selectableGroup()
@@ -362,8 +362,8 @@ private fun FittingTabs(tabs: List<TalentTabModel>, tree: Int, onTree: (Int) -> 
     val density = LocalDensity.current
     BoxWithConstraints(Modifier.fillMaxWidth()) {
         val widths = tabs.map { tab ->
-            val name = measurer.measure(tab.name, if (tab.index == tree) FsType.bodyStrong else FsType.body).size.width
-            val points = measurer.measure(tab.points.toString(), FsType.mono).size.width
+            val name = measurer.measure(tab.name, if (tab.index == tree) ScaledType.bodyStrong else ScaledType.body).size.width
+            val points = measurer.measure(tab.points.toString(), ScaledType.mono).size.width
             val dot = if (tab.differing > 0) with(density) { (DOT_GAP + DOT_SIZE).roundToPx() } else 0
             name + points + dot + with(density) { (LABEL_GAP + TAB_PADDING * 2).roundToPx() }
         }
@@ -405,8 +405,8 @@ private fun Modifier.drawLine(): Modifier = drawBehind {
 private fun TabLabel(tab: TalentTabModel, selected: Boolean) {
     val color = if (selected) FsColor.strong else FsColor.nav
     Row(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalAlignment = Alignment.CenterVertically) {
-        Text(tab.name, style = if (selected) FsType.bodyStrong else FsType.body, color = color, softWrap = false)
-        Text(tab.points.toString(), style = FsType.mono, color = color, softWrap = false)
+        Text(tab.name, style = if (selected) ScaledType.bodyStrong else ScaledType.body, color = color, softWrap = false)
+        Text(tab.points.toString(), style = ScaledType.mono, color = color, softWrap = false)
         if (tab.differing > 0) DiffDot()
     }
 }
@@ -414,7 +414,7 @@ private fun TabLabel(tab: TalentTabModel, selected: Boolean) {
 @Composable
 private fun StackedTabs(tabs: List<TalentTabModel>, tree: Int, onTree: (Int) -> Unit, rowHeight: Dp) {
     val res = LocalResources.current
-    val shape = RoundedCornerShape(FsRadius.control)
+    val shape = RoundedCornerShape(FsRadius.legacyControl)
     Column(Modifier.fillMaxWidth().border(1.dp, FsColor.line, shape).background(FsColor.raised, shape).selectableGroup()) {
         tabs.forEach { tab ->
             val selected = tab.index == tree
@@ -433,11 +433,11 @@ private fun StackedTabs(tabs: List<TalentTabModel>, tree: Int, onTree: (Int) -> 
                 Box(Modifier.width(3.dp).height(rowHeight).background(if (selected) FsColor.gold else FsColor.raised))
                 Text(
                     tab.name,
-                    style = FsType.bodyStrong,
+                    style = ScaledType.bodyStrong,
                     color = if (selected) FsColor.strong else FsColor.nav,
                     modifier = Modifier.weight(1f).padding(start = 11.dp, end = 8.dp, top = 8.dp, bottom = 8.dp),
                 )
-                Text(tab.points.toString(), style = FsType.mono, color = if (selected) FsColor.strong else FsColor.nav)
+                Text(tab.points.toString(), style = ScaledType.mono, color = if (selected) FsColor.strong else FsColor.nav)
                 if (tab.differing > 0) {
                     Spacer(Modifier.width(6.dp))
                     DiffDot()
@@ -457,7 +457,7 @@ private fun DiffDot() {
 @Composable
 private fun TalentsFooter(openPlanner: () -> Unit, planner: TalentsPlannerLinks?) {
     Column(Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 32.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-        Text(stringResource(R.string.talents_footer), style = FsType.meta, color = FsColor.muted)
+        Text(stringResource(R.string.talents_footer), style = ScaledType.meta, color = FsColor.muted)
         if (planner != null) {
             PlannerLinkRow(stringResource(R.string.plan_planBuild), planner.plan)
             planner.builds?.let { PlannerLinkRow(stringResource(R.string.plan_yourBuilds), it) }
@@ -468,7 +468,7 @@ private fun TalentsFooter(openPlanner: () -> Unit, planner: TalentsPlannerLinks?
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(6.dp),
         ) {
-            Text(stringResource(R.string.talents_planLink), style = FsType.bodyStrong, color = FsColor.gold, modifier = Modifier.weight(1f, fill = false))
+            Text(stringResource(R.string.talents_planLink), style = ScaledType.bodyStrong, color = FsColor.gold, modifier = Modifier.weight(1f, fill = false))
             Icon(painterResource(R.drawable.ic_open_external), contentDescription = null, tint = FsColor.gold, modifier = Modifier.size(16.dp))
         }
     }
@@ -478,7 +478,7 @@ private fun TalentsFooter(openPlanner: () -> Unit, planner: TalentsPlannerLinks?
 @Composable
 private fun SharedFooter(against: CompareAgainst.Shared) {
     Text(
-        stringResource(R.string.plan_cmp_on, against.yourName), style = FsType.meta, color = FsColor.muted,
+        stringResource(R.string.plan_cmp_on, against.yourName), style = ScaledType.meta, color = FsColor.muted,
         modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 32.dp),
     )
 }
@@ -491,7 +491,7 @@ private fun PlannerLinkRow(label: String, onClick: () -> Unit) {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(6.dp),
     ) {
-        Text(label, style = FsType.bodyStrong, color = FsColor.gold, modifier = Modifier.weight(1f))
+        Text(label, style = ScaledType.bodyStrong, color = FsColor.gold, modifier = Modifier.weight(1f))
         Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null, tint = FsColor.gold, modifier = Modifier.size(20.dp))
     }
 }
@@ -516,10 +516,10 @@ fun TalentsSkeleton() {
         BoxWithConstraints(Modifier.padding(top = 16.dp).fillMaxWidth().height(TalentGeometry.height)) {
             SKELETON_CELLS.forEach { cell ->
                 val (x, y) = TalentGeometry.origin(cell, maxWidth + 32.dp)
-                Box(Modifier.offset(x - 16.dp, y).size(TalentGeometry.CELL).background(FsColor.cardTop, RoundedCornerShape(FsRadius.control)))
+                Box(Modifier.offset(x - 16.dp, y).size(TalentGeometry.CELL).background(FsColor.cardTop, RoundedCornerShape(FsRadius.legacyControl)))
             }
         }
-        Text(loading, style = FsType.meta, color = FsColor.muted, modifier = Modifier.clearAndSetSemantics {})
+        Text(loading, style = ScaledType.meta, color = FsColor.muted, modifier = Modifier.clearAndSetSemantics {})
     }
 }
 

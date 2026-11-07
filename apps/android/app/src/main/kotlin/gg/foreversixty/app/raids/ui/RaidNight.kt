@@ -4,7 +4,7 @@ import androidx.compose.foundation.background
 import gg.foreversixty.app.items.ItemQuality
 import gg.foreversixty.app.designsystem.GameColors
 import gg.foreversixty.app.designsystem.classColor
-import gg.foreversixty.app.designsystem.FsType
+import gg.foreversixty.app.designsystem.ScaledType
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.Box
@@ -64,7 +64,7 @@ fun RaidNightScreen(model: RaidNightModel, clock: RaidClock, now: () -> Instant,
     LaunchedEffect(model) { model.load() }
     Column(Modifier.fillMaxSize().background(FsColor.bg)) {
         TopAppBar(
-            title = { Text(stringResource(R.string.night_title).uppercase(), style = FsType.sec, color = FsColor.strong) },
+            title = { Text(stringResource(R.string.night_title).uppercase(), style = ScaledType.sec, color = FsColor.strong) },
             navigationIcon = {
                 IconButton(onClick = back) { Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, tint = FsColor.strong) }
             },
@@ -78,8 +78,8 @@ fun RaidNightScreen(model: RaidNightModel, clock: RaidClock, now: () -> Instant,
                 when (val state = model.state) {
                     RaidNightModel.State.Loading -> Column(verticalArrangement = Arrangement.spacedBy(14.dp), modifier = Modifier.clearAndSetSemantics {}) {
                         Box(Modifier.width(220.dp).height(13.dp).background(FsColor.lineSoft, RoundedCornerShape(4.dp)))
-                        Box(Modifier.fillMaxWidth().height(110.dp).background(FsColor.lineSoft, RoundedCornerShape(FsRadius.panel)))
-                        Box(Modifier.fillMaxWidth().height(160.dp).background(FsColor.lineSoft, RoundedCornerShape(FsRadius.panel)))
+                        Box(Modifier.fillMaxWidth().height(110.dp).background(FsColor.lineSoft, RoundedCornerShape(FsRadius.legacyPanel)))
+                        Box(Modifier.fillMaxWidth().height(160.dp).background(FsColor.lineSoft, RoundedCornerShape(FsRadius.legacyPanel)))
                     }
                     RaidNightModel.State.Failed -> ErrorRegion(stringResource(R.string.night_failed)) { scope.launch { model.load() } }
                     is RaidNightModel.State.Loaded -> NightContent(state.night, clock, openReport)
@@ -95,7 +95,7 @@ private fun NightContent(night: RaidNightSummary, clock: RaidClock, openReport: 
     val startsAt = Instant.parse(night.startsAt)
     Text(
         stringResource(R.string.night_meta, night.zoneName, clock.weekday(startsAt), clock.dayMonth(startsAt), night.guildName),
-        style = FsType.meta,
+        style = ScaledType.meta,
         color = FsColor.muted,
     )
     val figures = @Composable {
@@ -105,10 +105,10 @@ private fun NightContent(night: RaidNightSummary, clock: RaidClock, openReport: 
     }
     val who = @Composable { alignment: Alignment.Horizontal, modifier: Modifier ->
         Column(horizontalAlignment = alignment, modifier = modifier) {
-            NameText(night.character.name, FsType.name, classColor(night.character.className))
+            NameText(night.character.name, ScaledType.name, classColor(night.character.className))
             Text(
                 stringResource(R.string.raids_who, night.character.specName, stringResource(roleLabel(night.character.role))),
-                style = FsType.meta,
+                style = ScaledType.meta,
                 color = FsColor.muted,
             )
         }
@@ -132,8 +132,8 @@ private fun NightContent(night: RaidNightSummary, clock: RaidClock, openReport: 
             notes.forEachIndexed { index, note ->
                 if (index > 0) Divider()
                 Row(horizontalArrangement = Arrangement.spacedBy(10.dp), modifier = Modifier.padding(14.dp)) {
-                    Text("${index + 1}", style = FsType.mono, color = FsColor.gold)
-                    Text(note, style = FsType.body, color = FsColor.text)
+                    Text("${index + 1}", style = ScaledType.mono, color = FsColor.gold)
+                    Text(note, style = ScaledType.body, color = FsColor.text)
                 }
             }
         }
@@ -153,8 +153,8 @@ private fun Divider() = HorizontalDivider(color = FsColor.lineSoft)
 @Composable
 private fun Figure(value: Int, words: String) {
     Column(Modifier.clearAndSetSemantics { contentDescription = words }) {
-        Text("$value", style = FsType.stat, color = FsColor.strong)
-        Text(words.removePrefix("$value ").trim(), style = FsType.meta, color = FsColor.muted)
+        Text("$value", style = ScaledType.stat, color = FsColor.strong)
+        Text(words.removePrefix("$value ").trim(), style = ScaledType.meta, color = FsColor.muted)
     }
 }
 
@@ -173,14 +173,14 @@ private fun LootRow(loot: RaidNightLoot) {
         horizontalArrangement = Arrangement.spacedBy(12.dp),
         modifier = Modifier.fillMaxWidth().heightIn(min = 72.dp).padding(14.dp).semantics(mergeDescendants = true) {},
     ) {
-        Box(Modifier.shadow(5.dp, RoundedCornerShape(FsRadius.pill), ambientColor = quality, spotColor = quality)) {
+        Box(Modifier.shadow(5.dp, RoundedCornerShape(FsRadius.legacyPill), ambientColor = quality, spotColor = quality)) {
             GameIcon(loot.icon, 44.dp, border = quality, borderWidth = 1.5.dp)
         }
         Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-            Text(loot.name, style = FsType.bodyStrong, color = ItemQuality(loot.quality).text)
-            Text(stringResource(R.string.night_lootLine, loot.slot, loot.boss, loot.awardedBy), style = FsType.meta, color = FsColor.muted)
+            Text(loot.name, style = ScaledType.bodyStrong, color = ItemQuality(loot.quality).text)
+            Text(stringResource(R.string.night_lootLine, loot.slot, loot.boss, loot.awardedBy), style = ScaledType.meta, color = FsColor.muted)
             loot.replaces?.let {
-                Text(stringResource(R.string.home_upgrades_replaces, it.name, it.itemLevel), style = FsType.meta, color = FsColor.muted)
+                Text(stringResource(R.string.home_upgrades_replaces, it.name, it.itemLevel), style = ScaledType.meta, color = FsColor.muted)
             }
         }
     }
@@ -190,12 +190,12 @@ private fun LootRow(loot: RaidNightLoot) {
 private fun BestRow(best: RaidNightBest) {
     Row(Modifier.fillMaxWidth().padding(14.dp).semantics(mergeDescendants = true) {}) {
         Column(Modifier.weight(1f)) {
-            Text(best.boss, style = FsType.bodyStrong, color = FsColor.strong)
-            Text(stringResource(R.string.night_bestLine, killTime(best.killMs)), style = FsType.meta, color = FsColor.muted)
+            Text(best.boss, style = ScaledType.bodyStrong, color = FsColor.strong)
+            Text(stringResource(R.string.night_bestLine, killTime(best.killMs)), style = ScaledType.meta, color = FsColor.muted)
         }
         Column(horizontalAlignment = Alignment.End) {
-            Text(stringResource(R.string.raids_night_dps, String.format(Locale.US, "%.1f", best.dps)), style = FsType.mono, color = FsColor.strong)
-            Text(stringResource(R.string.night_percentile, ordinal(best.percentile)), style = FsType.meta, color = GameColors.parse(best.percentile))
+            Text(stringResource(R.string.raids_night_dps, String.format(Locale.US, "%.1f", best.dps)), style = ScaledType.mono, color = FsColor.strong)
+            Text(stringResource(R.string.night_percentile, ordinal(best.percentile)), style = ScaledType.meta, color = GameColors.parse(best.percentile))
         }
     }
 }

@@ -1,7 +1,8 @@
-# The native apps' generated code must match its sources: the design tokens (tokens.css), the API
-# models and endpoints (api/openapi.yaml), the copy catalog and the deep-link table
-# (apps/shared). Each generator lives in web/scripts and has a vitest drift check in web; this
-# runs only those checks, on any change to a source, an output or a generator, so a hand edit to
+# The native apps' generated code must match its sources: the design tokens
+# (design/tokens/tokens.json), the API models and endpoints (api/openapi.yaml), the copy catalog
+# and the deep-link table (apps/shared). The tokens' generator and its node:test drift check live
+# in design/tokens; the others live in web/scripts with a vitest drift check in web. This runs
+# only those checks, on any change to a source, an output or a generator, so a hand edit to
 # a generated file or a source change without a regeneration fails here. The web workflow runs
 # the same tests with the rest of the unit suite.
 name: mobile-codegen
@@ -14,8 +15,8 @@ on:
       - web/scripts/gen-mobile-*.mjs
       - web/scripts/mobile-codegen/**
       - web/src/lib/mobile/**
+      - design/tokens/**
       - web/src/styles/tokens.css
-      - web/src/styles/mobile-tokens.test.ts
       - .github/workflows/mobile-codegen.yml
   pull_request:
     paths:
@@ -24,8 +25,8 @@ on:
       - web/scripts/gen-mobile-*.mjs
       - web/scripts/mobile-codegen/**
       - web/src/lib/mobile/**
+      - design/tokens/**
       - web/src/styles/tokens.css
-      - web/src/styles/mobile-tokens.test.ts
       - .github/workflows/mobile-codegen.yml
   workflow_dispatch:
 permissions: { contents: read }
@@ -65,4 +66,6 @@ jobs:
           cache-dependency-path: web/package-lock.json
       - run: npm ci
       - name: Generated mobile code matches its sources
-        run: npx vitest run src/lib/mobile src/styles/mobile-tokens.test.ts
+        run: npx vitest run src/lib/mobile
+      - name: Generated design tokens match tokens.json
+        run: node --test ../design/tokens/

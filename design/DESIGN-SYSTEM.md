@@ -1,6 +1,6 @@
 # Forever Sixty design system
 
-Derived from the approved "Cinematic" direction and the live-game homepage mockup in this folder. Source of truth for tokens once the site exists is `web/src/styles/tokens.css`; keep this document and that file in sync.
+Derived from the approved "Cinematic" direction and the live-game homepage mockup in this folder. Source of truth for tokens is `design/tokens/tokens.json` (W3C design tokens); `node design/tokens/build.mjs` generates `web/src/styles/tokens.css` and both apps' token files from it. Keep this document and that file in sync.
 
 ## Principles
 

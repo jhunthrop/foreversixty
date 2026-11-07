@@ -221,10 +221,10 @@ struct LiveTag: View {
             Text(Copy.reportsStateLive.uppercased()).font(ScaledType.micro).tracking(1)
         }
         .foregroundStyle(FSColor.kill)
-        .padding(.horizontal, FSSpacing.space2)
+        .padding(.horizontal, FSSpace.space2)
         .frame(minHeight: 22)
-        .background(FSColor.kill.opacity(0.12), in: .rect(cornerRadius: FSRadius.pill))
-        .overlay(RoundedRectangle(cornerRadius: FSRadius.pill).stroke(FSColor.kill.opacity(0.35)))
+        .background(FSColor.kill.opacity(0.12), in: .rect(cornerRadius: FSRadius.legacyPill))
+        .overlay(RoundedRectangle(cornerRadius: FSRadius.legacyPill).stroke(FSColor.kill.opacity(0.35)))
         .fixedSize()
     }
 }

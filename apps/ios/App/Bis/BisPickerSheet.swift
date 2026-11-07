@@ -98,8 +98,8 @@ struct BisPickerSheet: View {
                             .minimumScaleFactor(0.7)
                     }
                     .frame(maxWidth: .infinity, minHeight: 88)
-                    .background(isCurrent ? GameColors.pressedWash : .clear, in: .rect(cornerRadius: FSRadius.control))
-                    .overlay(RoundedRectangle(cornerRadius: FSRadius.control).stroke(isCurrent ? FSColor.gold : .clear))
+                    .background(isCurrent ? GameColors.pressedWash : .clear, in: .rect(cornerRadius: FSRadius.legacyControl))
+                    .overlay(RoundedRectangle(cornerRadius: FSRadius.legacyControl).stroke(isCurrent ? FSColor.gold : .clear))
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel(context.className(slug))
@@ -122,8 +122,8 @@ struct BisPickerSheet: View {
                     }
                     .padding(.horizontal, Theme.Spacing.sm + 2)
                     .frame(minHeight: 48)
-                    .background(isCurrent ? GameColors.pressedWash : GameColors.controlFill, in: .rect(cornerRadius: FSRadius.control))
-                    .overlay(RoundedRectangle(cornerRadius: FSRadius.control).stroke(isCurrent ? FSColor.gold : FSColor.lineCard))
+                    .background(isCurrent ? GameColors.pressedWash : GameColors.controlFill, in: .rect(cornerRadius: FSRadius.legacyControl))
+                    .overlay(RoundedRectangle(cornerRadius: FSRadius.legacyControl).stroke(isCurrent ? FSColor.gold : FSColor.lineCard))
                 }
                 .buttonStyle(.plain)
                 .accessibilityElement(children: .combine)

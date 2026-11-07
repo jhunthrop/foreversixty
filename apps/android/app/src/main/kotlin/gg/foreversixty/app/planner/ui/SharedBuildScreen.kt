@@ -25,7 +25,7 @@ import gg.foreversixty.app.common.ClassCrest
 import gg.foreversixty.app.designsystem.BrandButton
 import gg.foreversixty.app.designsystem.BrandButtonKind
 import gg.foreversixty.app.designsystem.FsColor
-import gg.foreversixty.app.designsystem.FsType
+import gg.foreversixty.app.designsystem.ScaledType
 import gg.foreversixty.app.designsystem.OfflineStrip
 import gg.foreversixty.app.planner.logic.PlannerCopy
 import gg.foreversixty.app.planner.logic.SharedBuildPhase
@@ -91,7 +91,7 @@ fun SharedBuildPage(state: SharedPageState, actions: SharedActions) {
 @Composable
 private fun Message(text: String, retry: (() -> Unit)? = null) {
     Column(Modifier.fillMaxWidth().padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        Text(text, style = FsType.body, color = FsColor.muted)
+        Text(text, style = ScaledType.body, color = FsColor.muted)
         retry?.let {
             BrandButton(
                 stringResource(R.string.common_tryAgain), BrandButtonKind.Secondary, it,
@@ -117,9 +117,9 @@ private fun SharedHead(view: SharedBuildView, state: SharedPageState) {
         ClassCrest(view.classSlug, 44.dp)
         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
             // The totals sit on their own line, as on iOS (review round 2): `Orc Shaman`, then `30 / 3 / 18`.
-            Text(stringResource(R.string.plan_shared_head, view.raceName, view.className, "").trimEnd(), style = FsType.bodyStrong, color = FsColor.strong)
-            Text(headLine(totals, totals), style = FsType.bodyStrong, color = FsColor.strong)
-            Text(meta, style = FsType.meta, color = FsColor.muted)
+            Text(stringResource(R.string.plan_shared_head, view.raceName, view.className, "").trimEnd(), style = ScaledType.bodyStrong, color = FsColor.strong)
+            Text(headLine(totals, totals), style = ScaledType.bodyStrong, color = FsColor.strong)
+            Text(meta, style = ScaledType.meta, color = FsColor.muted)
         }
     }
 }

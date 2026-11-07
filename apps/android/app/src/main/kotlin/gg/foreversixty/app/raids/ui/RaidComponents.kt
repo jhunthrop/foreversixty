@@ -3,7 +3,7 @@ package gg.foreversixty.app.raids.ui
 import androidx.compose.foundation.Image
 import gg.foreversixty.app.designsystem.Tag
 import gg.foreversixty.app.designsystem.GameColors
-import gg.foreversixty.app.designsystem.FsType
+import gg.foreversixty.app.designsystem.ScaledType
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -64,7 +64,6 @@ import gg.foreversixty.app.designsystem.primaryCard
 import gg.foreversixty.app.designsystem.BodyFamily
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.FsRadius
-import gg.foreversixty.app.designsystem.FsTextSize
 import gg.foreversixty.app.designsystem.HeadingFamily
 import gg.foreversixty.app.raids.logic.RaidChip
 import gg.foreversixty.app.raids.logic.RaidClock
@@ -108,7 +107,7 @@ fun GameIcon(
     fallback: String? = null,
     dimmed: Boolean = false,
 ) {
-    val shape = RoundedCornerShape(FsRadius.pill)
+    val shape = RoundedCornerShape(FsRadius.legacyPill)
     Box(Modifier.size(size).clip(shape).background(FsColor.cardTop).border(borderWidth, border, shape)) {
         GameIconImage(stem, LocalRaidIconBuild.current, size, fallback, dimmed)
     }
@@ -117,10 +116,10 @@ fun GameIcon(
 /** `micro` uppercase section label, with an optional mono count. */
 @Composable
 fun SectionLabel(text: String, color: Color = FsColor.muted, trailing: String? = null) {
-    val tracking = if (isLargeText()) 0.sp else FsType.micro.letterSpacing
+    val tracking = if (isLargeText()) 0.sp else ScaledType.micro.letterSpacing
     Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.semantics { heading() }) {
-        Text(text.uppercase(), style = FsType.micro.copy(letterSpacing = tracking), color = color, maxLines = 1, softWrap = false)
-        trailing?.let { Text(it, style = FsType.monoMeta, color = color) }
+        Text(text.uppercase(), style = ScaledType.micro.copy(letterSpacing = tracking), color = color, maxLines = 1, softWrap = false)
+        trailing?.let { Text(it, style = ScaledType.monoMeta, color = color) }
     }
 }
 
@@ -146,14 +145,14 @@ fun DateBlock(at: Instant, clock: RaidClock, width: Dp = 52.dp, height: Dp = 56.
         modifier = Modifier
             .widthIn(min = width)
             .heightIn(min = height)
-            .background(FsColor.bg.copy(alpha = 0.5f), RoundedCornerShape(FsRadius.control))
-            .border(1.dp, FsColor.line, RoundedCornerShape(FsRadius.control))
+            .background(FsColor.bg.copy(alpha = 0.5f), RoundedCornerShape(FsRadius.legacyControl))
+            .border(1.dp, FsColor.line, RoundedCornerShape(FsRadius.legacyControl))
             .padding(vertical = 4.dp, horizontal = 4.dp)
             .clearAndSetSemantics {},
     ) {
-        Text(weekday, style = FsType.micro.copy(letterSpacing = 0.sp), color = FsColor.muted)
-        Text(day, style = FsType.monoDay, color = FsColor.strong)
-        Text(month, style = FsType.micro.copy(letterSpacing = 0.sp), color = FsColor.muted)
+        Text(weekday, style = ScaledType.micro.copy(letterSpacing = 0.sp), color = FsColor.muted)
+        Text(day, style = ScaledType.monoDay, color = FsColor.strong)
+        Text(month, style = ScaledType.micro.copy(letterSpacing = 0.sp), color = FsColor.muted)
     }
 }
 
@@ -176,15 +175,15 @@ fun CountBlock(facts: RaidFacts, muted: Boolean = false) {
     Column(verticalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.clearAndSetSemantics { contentDescription = a11y }) {
         if (isLargeText()) {
             // Large text: the count above a full-width bar (spec 10).
-            Text(line, style = FsType.bodyStrong, color = FsColor.strong)
+            Text(line, style = ScaledType.bodyStrong, color = FsColor.strong)
             facts.fill?.let { FillBar(it, null, muted) }
         } else {
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically) {
                 facts.fill?.let { FillBar(it, 120.dp, muted) }
-                Text(line, style = FsType.bodyStrong, color = FsColor.strong)
+                Text(line, style = ScaledType.bodyStrong, color = FsColor.strong)
             }
         }
-        Text(breakdown, style = FsType.meta, color = FsColor.muted)
+        Text(breakdown, style = ScaledType.meta, color = FsColor.muted)
     }
 }
 
@@ -214,7 +213,7 @@ fun GoldLink(text: String, onClick: () -> Unit, trailing: Boolean = false) {
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.heightIn(min = 48.dp).clickable(onClick = onClick),
     ) {
-        Text(text + if (trailing) " ›" else "", style = FsType.bodyStrong, color = FsColor.gold, maxLines = 1, softWrap = false)
+        Text(text + if (trailing) " ›" else "", style = ScaledType.bodyStrong, color = FsColor.gold, maxLines = 1, softWrap = false)
     }
 }
 
@@ -222,7 +221,7 @@ fun GoldLink(text: String, onClick: () -> Unit, trailing: Boolean = false) {
 @Composable
 fun ErrorRegion(message: String, retry: () -> Unit) {
     Column(verticalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.raidQuietCard().padding(16.dp)) {
-        Text(message, style = FsType.body, color = FsColor.wipe)
+        Text(message, style = ScaledType.body, color = FsColor.wipe)
         RaidSecondaryButton(stringResource(R.string.common_tryAgain), retry)
     }
 }

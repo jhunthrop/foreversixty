@@ -211,7 +211,7 @@ private fun SetDpsLine(line: String) {
 /** One cell of the quiet card: the card's ground, rounded at its ends, divided between rows. */
 @Composable
 private fun RowCell(index: Int, count: Int, content: @Composable () -> Unit) {
-    val radius = FsRadius.panel
+    val radius = FsRadius.legacyPanel
     val shape = RoundedCornerShape(
         topStart = if (index == 0) radius else 0.dp,
         topEnd = if (index == 0) radius else 0.dp,
@@ -307,7 +307,7 @@ private fun DashedBox(size: Dp) {
         Modifier.size(size).drawBehind {
             drawRoundRect(
                 color = line,
-                cornerRadius = androidx.compose.ui.geometry.CornerRadius(FsRadius.pill.toPx()),
+                cornerRadius = androidx.compose.ui.geometry.CornerRadius(FsRadius.legacyPill.toPx()),
                 style = Stroke(width = 1.dp.toPx(), pathEffect = PathEffect.dashPathEffect(floatArrayOf(6f, 6f))),
             )
         },
@@ -321,7 +321,7 @@ private fun Skeleton() {
     Column(
         Modifier
             .fillMaxWidth()
-            .background(FsColor.raised, RoundedCornerShape(FsRadius.panel))
+            .background(FsColor.raised, RoundedCornerShape(FsRadius.legacyPanel))
             .semantics(mergeDescendants = true) {
                 contentDescription = loading
                 liveRegion = LiveRegionMode.Polite
@@ -333,7 +333,7 @@ private fun Skeleton() {
                 Modifier.fillMaxWidth().heightIn(min = ROW_MIN).padding(horizontal = 16.dp, vertical = 12.dp),
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
             ) {
-                Box(Modifier.size(ICON).background(FsColor.cardTop, RoundedCornerShape(FsRadius.pill)))
+                Box(Modifier.size(ICON).background(FsColor.cardTop, RoundedCornerShape(FsRadius.legacyPill)))
                 Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
                     Bar(170.dp, 12.dp)
                     Bar(220.dp, 10.dp)

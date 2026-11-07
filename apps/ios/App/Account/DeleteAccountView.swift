@@ -36,7 +36,7 @@ struct DeleteAccountView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: FSSpacing.space4) {
+            VStack(alignment: .leading, spacing: FSSpace.space4) {
                 Text(Copy.accountDeleteIntro).font(ScaledType.body).foregroundStyle(FSColor.text)
                 group(Copy.accountDeleteDeletedTitle, Self.deletedItems, glyph: "minus")
                 group(Copy.accountDeleteKeptTitle, Self.keptItems, glyph: "checkmark", tint: FSColor.muted)
@@ -60,7 +60,7 @@ struct DeleteAccountView: View {
                 .accessibilityLabel(Copy.accountDeleteButton)
                 Text(Copy.accountDeleteEmail).font(ScaledType.meta).foregroundStyle(FSColor.muted)
             }
-            .padding(FSSpacing.space4)
+            .padding(FSSpace.space4)
         }
         .background(FSColor.bg)
         .navigationTitle(Copy.accountDeleteTitle)
@@ -69,7 +69,7 @@ struct DeleteAccountView: View {
     private var confirmLabel: String { AccountCopy.deletionPrompt(battleTag: battleTag) }
 
     private var confirmField: some View {
-        VStack(alignment: .leading, spacing: FSSpacing.space2) {
+        VStack(alignment: .leading, spacing: FSSpace.space2) {
             MicroLabel(confirmLabel)
             TextField("", text: $typed)
                 .font(ScaledType.body)
@@ -80,8 +80,8 @@ struct DeleteAccountView: View {
                 .disabled(isDeleting)
                 .padding(.horizontal, 14)
                 .frame(minHeight: 48)
-                .background(Color.black.opacity(0.35), in: .rect(cornerRadius: FSRadius.control))
-                .overlay(RoundedRectangle(cornerRadius: FSRadius.control).stroke(
+                .background(Color.black.opacity(0.35), in: .rect(cornerRadius: FSRadius.legacyControl))
+                .overlay(RoundedRectangle(cornerRadius: FSRadius.legacyControl).stroke(
                     outcome == .confirmMismatch ? FSColor.wipe : FSColor.lineCard
                 ))
                 .accessibilityLabel(confirmLabel)
@@ -89,22 +89,22 @@ struct DeleteAccountView: View {
                 Text(Copy.accountDeleteConfirmMismatch).font(ScaledType.meta).foregroundStyle(FSColor.wipe)
             }
         }
-        .padding(.top, FSSpacing.space2)
+        .padding(.top, FSSpace.space2)
     }
 
     private func group(_ title: String, _ lines: [String], glyph: String, tint: Color = FSColor.wipe) -> some View {
-        VStack(alignment: .leading, spacing: FSSpacing.space2) {
+        VStack(alignment: .leading, spacing: FSSpace.space2) {
             MicroLabel(title)
-            VStack(alignment: .leading, spacing: FSSpacing.space3) {
+            VStack(alignment: .leading, spacing: FSSpace.space3) {
                 ForEach(lines, id: \.self) { line in
-                    HStack(alignment: .firstTextBaseline, spacing: FSSpacing.space3) {
+                    HStack(alignment: .firstTextBaseline, spacing: FSSpace.space3) {
                         Image(systemName: glyph).foregroundStyle(tint).accessibilityHidden(true)
                         Text(line).font(ScaledType.body).foregroundStyle(FSColor.strong)
                             .fixedSize(horizontal: false, vertical: true)
                     }
                 }
             }
-            .padding(FSSpacing.space4)
+            .padding(FSSpace.space4)
             .frame(maxWidth: .infinity, alignment: .leading)
             .quietCard()
         }

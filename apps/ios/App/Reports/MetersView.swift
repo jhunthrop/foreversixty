@@ -132,8 +132,8 @@ struct MeterSegments: View {
             }
         }
         .background(FSColor.raised)
-        .clipShape(.rect(cornerRadius: FSRadius.control))
-        .overlay(RoundedRectangle(cornerRadius: FSRadius.control).stroke(FSColor.line, lineWidth: 1))
+        .clipShape(.rect(cornerRadius: FSRadius.legacyControl))
+        .overlay(RoundedRectangle(cornerRadius: FSRadius.legacyControl).stroke(FSColor.line, lineWidth: 1))
         .haptic(.selection, trigger: metric)
     }
 }

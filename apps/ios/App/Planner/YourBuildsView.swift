@@ -50,7 +50,7 @@ struct YourBuildsView: View {
         switch phase {
         case .loading:
             ForEach(0..<3, id: \.self) { _ in
-                RoundedRectangle(cornerRadius: FSRadius.control).fill(FSColor.cardTop).frame(height: 64)
+                RoundedRectangle(cornerRadius: FSRadius.legacyControl).fill(FSColor.cardTop).frame(height: 64)
                     .plainRow(EdgeInsets(top: 4, leading: 16, bottom: 4, trailing: 16))
             }
             .accessibilityHidden(true)
@@ -100,8 +100,8 @@ struct YourBuildsView: View {
             }
             .padding(.horizontal, 14)
             .frame(minHeight: 60)
-            .background(FSColor.raised, in: .rect(cornerRadius: FSRadius.control))
-            .overlay(RoundedRectangle(cornerRadius: FSRadius.control).stroke(FSColor.line, lineWidth: 1))
+            .background(FSColor.raised, in: .rect(cornerRadius: FSRadius.legacyControl))
+            .overlay(RoundedRectangle(cornerRadius: FSRadius.legacyControl).stroke(FSColor.line, lineWidth: 1))
             .contentShape(.rect)
         }
         .buttonStyle(.plain)
@@ -119,8 +119,8 @@ struct YourBuildsView: View {
             }
             .padding(.horizontal, 16)
             .frame(minHeight: 52)
-            .background(FSColor.raised, in: .rect(cornerRadius: FSRadius.control))
-            .overlay(RoundedRectangle(cornerRadius: FSRadius.control).stroke(FSColor.line, lineWidth: 1))
+            .background(FSColor.raised, in: .rect(cornerRadius: FSRadius.legacyControl))
+            .overlay(RoundedRectangle(cornerRadius: FSRadius.legacyControl).stroke(FSColor.line, lineWidth: 1))
             .padding(.horizontal, 16)
             .padding(.bottom, 8)
         }
