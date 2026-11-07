@@ -2,13 +2,15 @@
 <!-- The raid cooldowns used this fight, with when: the first thing a raid leader reads
      on the Buffs tab. One lane per cooldown, a tick per use, the caster named on hover,
      a time axis under the lanes and every death drawn across them, so "Ardent Defender
-     at 48s, tank dead at 1:04" is one picture. -->
+     at 48s, tank dead at 1:04" is one picture. An open Section after the Buffs table (logs spec
+     2026-11-07 section 6.2: the tab's one Plate is AuraTable's), no card chrome. -->
 <script lang="ts">
   import { splitUnitName } from '../../lib/characters';
   import { clearChartCursor, setChartCursor } from '../../lib/chart/cursor.svelte';
   import { clockLabel, timeTicks } from '../../lib/chart/time-axis';
   import { formatDuration } from '../../lib/report/format';
   import SyncedCrosshair from '../chart/SyncedCrosshair.svelte';
+  import Section from '../ui/Section.svelte';
   import { isRaidCooldown } from '../../lib/report/raid-cooldowns';
   import type { AuraTrack, CastRow, Death, PullMark } from '../../lib/report/types';
   import type { TimeWindow } from '../../lib/report/window';
@@ -151,34 +153,34 @@
 </script>
 
 {#if rows.length > 0}
-  <section
-    class="border-line rounded-panel bg-raised flex flex-col gap-2 border p-3"
-    data-testid="raid-cooldowns"
+  <Section
+    title="Raid cooldowns"
+    meta={`${rows.length} used${pulls.length > 0 ? `, ${pulls.length} pulls` : ''}`}
+    testid="raid-cooldowns"
   >
-    <h2 class="quiet-label flex flex-wrap items-center gap-x-3">
-      Raid cooldowns
+    {#snippet head()}
       {#if shownDeaths.length > 0}
-        <span class="text-death tracking-normal normal-case" data-testid="raid-cooldowns-deaths"
-          >| {shownDeaths.length} {shownDeaths.length === 1 ? 'death' : 'deaths'} marked</span
+        <span class="text-death text-[13px]" data-testid="raid-cooldowns-deaths"
+          >{shownDeaths.length} {shownDeaths.length === 1 ? 'death' : 'deaths'} marked</span
         >
       {/if}
-    </h2>
-    <p class="quiet-label h-5 truncate" data-testid="raid-cooldowns-readout">
-      {#if hovered !== ''}<span class="text-strong normal-case">{hovered}</span
-        >{:else if pulls.length > 0}hover or tap a lane for the pull and the nearest use · alternate shading
-        is one pull each · a red top edge is a wipe{:else}hover or tap a lane for the nearest use{/if}
+    {/snippet}
+    <p class="text-muted h-5 truncate text-[13px]" data-testid="raid-cooldowns-readout">
+      {#if hovered !== ''}<span class="text-strong">{hovered}</span>{:else if pulls.length > 0}Hover or tap a
+        lane for the pull and the nearest use · alternate shading is one pull each · a red top edge is a wipe{:else}Hover
+        or tap a lane for the nearest use{/if}
     </p>
-    <ul class="flex flex-col">
+    <ul class="mt-2 flex flex-col gap-1">
       {#each rows as row (row.name)}
         {@const across = pullsUsed(row.uses)}
         <li
-          class="border-line-soft grid min-h-9 grid-cols-[minmax(0,1fr)_56px] items-center gap-x-3 gap-y-1 border-b py-1 text-[13px] md:grid-cols-[minmax(110px,160px)_56px_minmax(0,1fr)]"
+          class="grid min-h-9 grid-cols-[minmax(0,1fr)_56px] items-center gap-x-3 gap-y-1 py-1 text-[14px] md:grid-cols-[minmax(110px,160px)_56px_minmax(0,1fr)]"
           data-testid={`raid-cooldown-${row.name}`}
         >
-          <span class="truncate font-semibold">{row.name}</span>
+          <span class="text-strong truncate font-semibold">{row.name}</span>
           {#if pulls.length > 0}
             <span
-              class="numeric text-right text-[12px]"
+              class="text-right text-[13px] tabular-nums"
               class:text-wipe={across.used < pulls.length}
               class:text-muted={across.used === pulls.length}
               title={across.missed.length === 0
@@ -187,11 +189,12 @@
               data-testid="raid-cooldown-pulls">{across.used}/{pulls.length}</span
             >
           {:else}
-            <span class="text-muted numeric text-right text-[12px]" title="Times used">{row.uses.length}</span
+            <span class="text-muted text-right text-[13px] tabular-nums" title="Times used"
+              >{row.uses.length}</span
             >
           {/if}
           <span
-            class="bg-line-soft relative col-span-2 block h-6 w-full touch-none md:col-span-1 md:h-[14px]"
+            class="bg-line-soft relative col-span-2 block h-6 w-full touch-none rounded-[3px] md:col-span-1 md:h-[14px]"
             data-lane={row.name}
             onpointermove={readAt}
             onpointerdown={readAt}
@@ -242,7 +245,7 @@
         </li>
       {/each}
       <li
-        class="text-muted numeric grid grid-cols-[minmax(0,1fr)] gap-3 py-1 text-[11px] md:grid-cols-[minmax(110px,160px)_56px_minmax(0,1fr)]"
+        class="text-muted grid grid-cols-[minmax(0,1fr)] gap-3 py-1 text-[12px] tabular-nums md:grid-cols-[minmax(110px,160px)_56px_minmax(0,1fr)]"
         data-testid="raid-cooldowns-axis"
       >
         <span class="relative block h-7 md:col-start-3" bind:clientWidth={axisWidth}>
@@ -261,16 +264,18 @@
       </li>
     </ul>
     {#if pulls.length > 0 && rows.some((row) => pullsUsed(row.uses).missed.length > 0)}
-      <details class="text-[12px]" data-testid="raid-cooldowns-missed">
-        <summary class="quiet-label min-h-11 cursor-pointer md:min-h-0"
+      <details class="text-muted text-[13px]" data-testid="raid-cooldowns-missed">
+        <summary class="text-text min-h-11 cursor-pointer font-semibold md:min-h-0"
           >Pulls each cooldown was not used on</summary
         >
         <ul class="mt-1 flex flex-col gap-1">
           {#each rows.filter((row) => pullsUsed(row.uses).missed.length > 0) as row (row.name)}
-            <li><span class="font-semibold">{row.name}</span>: {pullsUsed(row.uses).missed.join(', ')}</li>
+            <li>
+              <span class="text-text font-semibold">{row.name}</span>: {pullsUsed(row.uses).missed.join(', ')}
+            </li>
           {/each}
         </ul>
       </details>
     {/if}
-  </section>
+  </Section>
 {/if}

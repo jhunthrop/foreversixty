@@ -1,22 +1,29 @@
 <!-- web/src/components/report/AuraTable.svelte -->
-<!-- Buffs and Debuffs. The uptime bar is the aura's own segments drawn to scale, not a
-     percentage bar: where the buff dropped is the thing a raid leader is looking for, and
-     a single filled bar hides exactly that.
+<!-- Buffs and Debuffs (logs spec 2026-11-07 section 6.2): the tab's one Plate, a StatTable of
+     the aura's icon, its name over `on {target} · from {applier}`, an uptime Meter (muted on
+     Debuffs), Up and Applied. Over the night a second, open Section reads each spell's uptime
+     across every target that had it.
 
-     Every figure here is exact under any window, not scaled: window.ts's
-     scopeAuraTrack clips each segment to the window's own bounds and recomputes
-     `uptime_ms` and `applications` from those clipped segments, rather than taking the
-     whole fight's numbers and scaling them by a ratio the way the per-ability and
-     per-target splits are. So this table carries neither the `~` nor the `†` mark. The
-     one field on AuraTrack that IS whole-fight -- `max_stacks` -- is not rendered here. -->
+     Every figure here is exact under any window, not scaled: window.ts's scopeAuraTrack clips
+     each segment to the window's own bounds and recomputes `uptime_ms` and `applications`
+     from those clipped segments, rather than taking the whole fight's numbers and scaling
+     them by a ratio the way the per-ability and per-target splits are. So this table carries
+     neither the `~` nor the `†` mark. The one field on AuraTrack that IS whole-fight,
+     `max_stacks`, is not rendered here. -->
 <script lang="ts">
   import { splitUnitName } from '../../lib/characters';
-  import { formatDuration, formatPercent, schoolName, schoolToken } from '../../lib/report/format';
+  import { formatPercent, schoolName } from '../../lib/report/format';
   import activeBuild from '../../data/active-build.json';
   import { loadSharedSpellNames, nameAuras, type SpellNames } from '../../lib/report/aura-names';
+  import { SpellIcons } from '../../lib/report/spell-icons.svelte';
   import type { AuraTrack } from '../../lib/report/types';
-  import type { AuraColumn } from '../../lib/sim/aura-card';
-  import type { CardTables } from '../../lib/sim/card-tables.svelte';
+  import type { StatColumn, StatSort } from '../../lib/ui/stat-table';
+  import Meter from '../ui/Meter.svelte';
+  import Plate from '../ui/Plate.svelte';
+  import Section from '../ui/Section.svelte';
+  import SpellIcon from '../ui/SpellIcon.svelte';
+  import StatRow from '../ui/StatRow.svelte';
+  import StatTable from '../ui/StatTable.svelte';
   import CopyCsv from './CopyCsv.svelte';
 
   let {
@@ -27,15 +34,11 @@
     bossNames = new Set<string>(),
     names = new Map<string, string>(),
     emptyMessage,
-    variant = 'table',
-    bars,
-    heading = '',
-    tables,
-    note,
+    windowed,
   }: {
     tracks: AuraTrack[];
     durationMs: number;
-    /** Where the window starts on the fight's clock, so a brushed window's bars start at its left edge. */
+    /** Where the window starts on the fight's clock. */
     startMs?: number;
     kind: 'BUFF' | 'DEBUFF';
     /** GUID to unit name, so a debuff can say who applied it. */
@@ -48,31 +51,87 @@
      * unset; a caller whose empty list means something else passes its own honest message.
      */
     emptyMessage?: string;
-    /** `bars` is the saved sim's one column of uptime bars; the logs report keeps `table`. */
-    variant?: 'table' | 'bars';
-    /** The `bars` variant's rows, already filed (lib/sim/aura-card.ts). */
-    bars?: AuraColumn;
-    heading?: string;
-    tables?: CardTables;
-    note?: string;
+    /** Whether a window is brushed (the meta says what the uptime is over); by default a window
+     *  that does not start at the pull. */
+    windowed?: boolean;
   } = $props();
 
+  const title = $derived(kind === 'BUFF' ? 'Buffs' : 'Debuffs');
+  const icons = new SpellIcons();
+
+  /** The build's spell names, for auras the log never named (B2); empty until read. */
+  let spellNames = $state<SpellNames>({});
+  $effect(() => {
+    void loadSharedSpellNames(activeBuild.build).then((loaded) => {
+      spellNames = loaded;
+    });
+  });
+
+  const pct = (ms: number): number => (durationMs === 0 ? 0 : (ms / durationMs) * 100);
   /**
-   * Over the night, one line per debuff across every boss: uptime on the bosses over the
-   * time the bosses were up. Only for folded tracks (those carrying their own time), and
-   * only for spells on a boss, since adds come and go.
+   * Uptime over the time the track's target was in: the figure the row shows. Clamped to
+   * 100 here, once, as a last line of defence (2026-09-21 result-page review round 3, E8: a
+   * combined sim result's aura rows read up to 100.9%), so a future source of the same shape
+   * of bug reads as an honest 100%, never a number over it.
+   */
+  const shareOf = (track: AuraTrack): number =>
+    Math.min(
+      track.time_ms === undefined ? pct(track.uptime_ms) : (track.uptime_ms / track.time_ms) * 100,
+      100,
+    );
+
+  type AuraSortColumn = 'up' | 'applied';
+  let sort = $state<StatSort>({ column: 'up', direction: 'desc' });
+  const columns: readonly StatColumn[] = [
+    { id: 'up', label: 'Up', sortable: true },
+    { id: 'applied', label: 'Applied', sortable: true },
+  ];
+  function onsort(column: string): void {
+    sort =
+      sort.column === column
+        ? { column, direction: sort.direction === 'desc' ? 'asc' : 'desc' }
+        : { column, direction: 'desc' };
+  }
+  const keyOf = (track: AuraTrack, column: AuraSortColumn): number =>
+    column === 'up' ? shareOf(track) : track.applications;
+
+  const rows = $derived(
+    nameAuras(tracks, spellNames)
+      .filter((track) => track.type === kind)
+      .sort((a, b) => {
+        const column = sort.column as AuraSortColumn;
+        const order = keyOf(b, column) - keyOf(a, column);
+        return (sort.direction === 'desc' ? order : -order) || a.name.localeCompare(b.name);
+      }),
+  );
+
+  /**
+   * Over the night, one line per spell across every target: uptime over the time the
+   * targets were up. Only for folded tracks (those carrying their own time), and for
+   * debuffs only those on a boss, since adds come and go.
    */
   const bySpell = $derived.by(() => {
     if (kind === 'DEBUFF' && bossNames.size === 0) return [];
     // eslint-disable-next-line svelte/prefer-svelte-reactivity
-    const totals = new Map<string, { name: string; uptime: number; time: number; targets: number }>();
+    const totals = new Map<
+      string,
+      { name: string; spellId: number; uptime: number; time: number; targets: number }
+    >();
     for (const track of rows) {
       if (track.time_ms === undefined || (kind === 'DEBUFF' && !bossNames.has(track.target_name))) continue;
-      const found = totals.get(track.name) ?? { name: track.name, uptime: 0, time: 0, targets: 0 };
-      found.uptime += track.uptime_ms;
-      found.time += track.time_ms;
-      found.targets += 1;
-      totals.set(track.name, found);
+      const found = totals.get(track.name) ?? {
+        name: track.name,
+        spellId: track.spell_id,
+        uptime: 0,
+        time: 0,
+        targets: 0,
+      };
+      totals.set(track.name, {
+        ...found,
+        uptime: found.uptime + track.uptime_ms,
+        time: found.time + track.time_ms,
+        targets: found.targets + 1,
+      });
     }
     return [...totals.values()]
       .filter((entry) => entry.targets > 1)
@@ -80,22 +139,31 @@
       .sort((a, b) => b.pct - a.pct);
   });
 
-  /** The build's spell names, for auras the log never named (B2); empty until read. */
-  let spellNames = $state<SpellNames>({});
-  $effect(() => {
-    if (variant !== 'table') return;
-    void loadSharedSpellNames(activeBuild.build).then((names) => {
-      spellNames = names;
-    });
+  /** Names that two different spells share on one target: shown with their spell id. */
+  const ambiguous = $derived.by(() => {
+    // eslint-disable-next-line svelte/prefer-svelte-reactivity
+    const seen = new Map<string, Set<number>>();
+    for (const track of rows) {
+      const key = `${track.target_guid}|${track.name}`;
+      seen.set(key, new Set([...(seen.get(key) ?? []), track.spell_id]));
+    }
+    return new Set([...seen.entries()].filter(([, ids]) => ids.size > 1).map(([key]) => key));
   });
 
-  const rows = $derived(
-    nameAuras(tracks, spellNames)
-      .filter((track) => track.type === kind)
-      .sort((a, b) => shareOf(b) - shareOf(a) || a.name.localeCompare(b.name)),
-  );
+  const applierNames = (track: AuraTrack): string =>
+    track.appliers
+      .map((guid) => splitUnitName(names.get(guid) ?? '').name)
+      .filter(Boolean)
+      .slice(0, 2)
+      .join(', ') || 'an unnamed source';
+  /** A buff the target gave itself says nothing new by naming its applier. */
+  const showApplier = (track: AuraTrack): boolean =>
+    track.appliers.length > 0 &&
+    (kind === 'DEBUFF' || track.appliers.some((guid) => guid !== track.target_guid));
 
-  const pct = (ms: number): number => (durationMs === 0 ? 0 : (ms / durationMs) * 100);
+  const over = $derived((windowed ?? startMs > 0) ? 'this window' : 'the whole fight');
+  const meta = $derived(`${rows.length} on players · uptime over ${over}`);
+
   /** The table as lines: one per aura on one target, uptime in seconds and as a share. */
   function csvLines(): string[][] {
     return [
@@ -111,181 +179,80 @@
       ]),
     ];
   }
-  /**
-   * Uptime over the time the track's target was in: the figure the row shows. Clamped to
-   * 100 here, once, rather than at each of this function's callers -- a last line of
-   * defence (2026-09-21 result-page review round 3, E8: a combined sim result's aura rows
-   * read up to 100.9%, sim/combine's own bug, now fixed at the source by rescaling
-   * UptimeMS to the summary's own re-derived duration) so a future source of the same
-   * shape of bug reads as an honest 100%, never a number over it, without this component
-   * needing to know why the source disagreed.
-   */
-  const shareOf = (track: AuraTrack): number =>
-    Math.min(
-      track.time_ms === undefined ? pct(track.uptime_ms) : (track.uptime_ms / track.time_ms) * 100,
-      100,
-    );
 
-  /** Names that two different spells share on one target: shown with their spell id. */
-  const ambiguous = $derived.by(() => {
-    // Plain collections: built once inside the derived and never read reactively by key.
-    // eslint-disable-next-line svelte/prefer-svelte-reactivity
-    const seen = new Map<string, Set<number>>();
-    for (const track of rows) {
-      const key = `${track.target_guid}|${track.name}`;
-      // eslint-disable-next-line svelte/prefer-svelte-reactivity
-      const ids = seen.get(key) ?? new Set<number>();
-      ids.add(track.spell_id);
-      seen.set(key, ids);
-    }
-    return new Set([...seen.entries()].filter(([, ids]) => ids.size > 1).map(([key]) => key));
-  });
+  const SEPARATOR = ' · ';
 </script>
 
-{#if variant === 'bars' && bars !== undefined && tables !== undefined}
-  <!-- Its own chunk: the logs report's island never carries the saved sim's bars. -->
-  {#await import('./AuraBars.svelte') then { default: AuraBars }}
-    <AuraBars column={bars} {heading} side={kind === 'BUFF' ? 'player' : 'target'} {tables} {note} />
-  {/await}
-{:else if rows.length === 0}
-  <p class="text-muted text-[14px]" data-testid="table-empty">
-    {emptyMessage ?? `No ${kind === 'BUFF' ? 'buffs' : 'debuffs'} in this window.`}
-  </p>
-{:else}
-  {#if bySpell.length > 0}
-    <div class="flex flex-col gap-1" data-testid="aura-by-spell">
-      <h2 class="quiet-label">
-        {kind === 'DEBUFF' ? 'On the bosses, across the night' : 'Across the night, over everyone who had it'}
-      </h2>
-      <ul class="flex flex-col">
-        {#each bySpell as entry (entry.name)}
-          <li
-            class="border-line-soft grid min-h-9 grid-cols-[minmax(120px,1.2fr)_minmax(0,3fr)_80px] items-center gap-x-3 border-b px-2 py-1 text-[14px]"
+<Section {title} {meta} testid="aura-section">
+  <Plate label={title}>
+    {#if rows.length === 0}
+      <p class="text-muted px-4 py-4 text-[14px]" data-testid="table-empty">
+        {emptyMessage ?? `No ${kind === 'BUFF' ? 'buffs' : 'debuffs'} in this window.`}
+      </p>
+    {:else}
+      <StatTable {columns} nameHead="Aura" barHead="Uptime" {sort} {onsort} label={title} testid="aura-table">
+        {#each rows as track (`${track.target_guid}-${track.spell_id}`)}
+          <StatRow
+            figures={[
+              { value: formatPercent(shareOf(track)), testid: 'aura-uptime' },
+              { value: String(track.applications), testid: 'aura-applied' },
+            ]}
+            testid={`aura-${track.spell_id}-${track.target_guid}`}
           >
-            <span class="truncate font-semibold">{entry.name}</span>
-            <span class="bg-line-soft block h-[6px] w-full"
-              ><span
-                class="block h-full {kind === 'BUFF' ? 'bg-kill' : 'bg-ember'}"
-                style={`width: ${entry.pct}%`}
-              ></span></span
-            >
-            <span
-              class="numeric text-right"
-              title={`Uptime on ${entry.targets} bosses over the time they were up`}
-              >{formatPercent(entry.pct)}</span
-            >
-          </li>
-        {/each}
-      </ul>
-    </div>
-  {/if}
-  <div class="flex flex-col" data-testid="aura-table">
-    <div
-      class="quiet-label hidden grid-cols-[minmax(160px,1.4fr)_minmax(160px,1.4fr)_minmax(0,2fr)_80px_64px] gap-x-3 px-2 pb-1 md:grid"
-    >
-      <span>Aura</span>
-      <span>On</span>
-      <span title="When the aura was up, drawn on the fight's timeline. A gap is where it dropped."
-        >Uptime</span
-      >
-      <span class="text-right" title="Share of the window the aura was up">Total</span>
-      <span
-        class="text-right"
-        title="How many times it went up when it was not already up; a refresh while up does not count"
-        >Applied</span
-      >
-    </div>
-    <ul class="flex flex-col">
-      {#each rows as track (`${track.target_guid}-${track.spell_id}`)}
-        <li
-          class="border-line-soft grid min-h-11 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1 border-b px-2 py-2 text-[14px] md:grid-cols-[minmax(160px,1.4fr)_minmax(160px,1.4fr)_minmax(0,2fr)_80px_64px]"
-          data-testid={`aura-${track.spell_id}-${track.target_guid}`}
-          id={`aura-${track.target_guid}-${track.spell_id}`}
-        >
-          <span class="flex min-w-0 items-center gap-1">
-            <span class="truncate font-semibold" title={track.name}
-              ><span
-                title={track.name.startsWith('Spell #')
-                  ? 'Already up at the pull, and no line of the log ever named this spell; the number is its spell id'
-                  : track.name}>{track.name}</span
-              >{#if track.name.startsWith('Spell #')}
-                <span class="text-muted ml-1 text-[11px] font-normal">unnamed in the log</span
-                >{/if}{#if ambiguous.has(`${track.target_guid}|${track.name}`)}
-                <span
-                  class="text-muted numeric ml-1 text-[11px]"
+            {#snippet icon()}<SpellIcon
+                url={icons.of(track.spell_id)}
+                spellId={track.spell_id}
+                tip
+              />{/snippet}
+            {#snippet name()}
+              <!-- The anchor a rating moment's link lands on (lib/rating/moments.ts). -->
+              <span id={`aura-${track.target_guid}-${track.spell_id}`} class="scroll-mt-24">{track.name}</span
+              >{#if track.name.startsWith('Spell #')}<span class="text-muted ml-1 text-[13px] font-normal"
+                  >unnamed in the log</span
+                >{/if}{#if ambiguous.has(`${track.target_guid}|${track.name}`)}<span
+                  class="text-muted ml-1 text-[13px] font-normal tabular-nums"
                   title="Two spells share this name; this is spell id {track.spell_id}"
                   >#{track.spell_id}</span
-                >{/if}</span
-            >
-            {#if kind === 'DEBUFF' && schoolName(track.school)}
-              <span
-                class="shrink-0 rounded-[2px] px-1 text-[10px] font-normal tracking-[0.04em] uppercase"
-                style={`background: ${schoolToken(track.school)}; color: var(--color-bg)`}
-                title="The spell's school. Whether a debuff can be dispelled is not in the log; the Dispels tab shows which ones were."
-                data-testid="aura-school">{schoolName(track.school)}</span
-              >
-            {/if}
-          </span>
-          <span
-            class="text-muted truncate text-[13px]"
-            title={`${splitUnitName(track.target_name).name}${
-              track.appliers.length > 0
-                ? ` · from ${
-                    track.appliers
-                      .map((guid) => splitUnitName(names.get(guid) ?? '').name)
-                      .filter(Boolean)
-                      .join(', ') || 'an unnamed source'
-                  }`
-                : ''
-            }`}
-            >{splitUnitName(track.target_name)
-              .name}{#if track.appliers.length > 0 && (kind === 'DEBUFF' || track.appliers.some((guid) => guid !== track.target_guid))}
-              <span class="text-[11px]" title="Who applied it">
-                · from {track.appliers
-                  .map((guid) => splitUnitName(names.get(guid) ?? '').name)
-                  .filter(Boolean)
-                  .slice(0, 2)
-                  .join(', ') || 'an unnamed source'}</span
-              >{/if}</span
-          >
-          <span class="bg-line-soft relative col-span-2 block h-[6px] w-full md:col-span-1">
-            <!-- Keyed by index as well as start: a stack refreshed on the tick it was
-                 applied gives two segments the same start_ms, and a bare timestamp key
-                 threw on the duplicate and left the whole tab on "Loading the report." -->
-            {#if track.time_ms !== undefined}
-              <!-- Over the night the number is uptime over the target's own time in combat,
-                   so the bar is that share, not the segments laid on the whole night. -->
-              <span
-                class="absolute top-0 h-full {kind === 'BUFF' ? 'bg-kill' : 'bg-ember'}"
-                style={`width: ${Math.min(shareOf(track), 100)}%`}
-                title={`Up ${formatDuration(track.uptime_ms)} of the ${formatDuration(track.time_ms)} this unit was in`}
-              ></span>
-            {:else}
-              {#each track.segments as segment, i (`${segment.start_ms}-${i}`)}
-                <span
-                  class="absolute top-0 h-full {kind === 'BUFF' ? 'bg-kill' : 'bg-ember'}"
-                  style={`left: ${pct(segment.start_ms - startMs)}%; width: ${Math.max(pct(segment.end_ms - segment.start_ms), 0.4)}%; opacity: ${Math.min(0.4 + segment.stacks * 0.2, 1)}`}
-                  title={`${formatDuration(segment.start_ms)} to ${formatDuration(segment.end_ms)}${segment.stacks > 1 ? ` · ${segment.stacks} stacks` : ''}`}
-                ></span>
-              {/each}
-            {/if}
-          </span>
-          <!-- The heading row above is `hidden` below `md`, so each figure carries the word
-               it was filed under. The testid stays on the number alone: it is the figure
-               report-tables.spec.ts pins, not the word beside it. -->
-          <span class="numeric text-right">
-            <span data-testid="aura-uptime">{formatPercent(shareOf(track))}</span><span
-              class="quiet-label ml-1.5 md:hidden">uptime</span
-            >
-          </span>
-          <span class="text-muted numeric text-right text-[13px]"
-            ><span data-testid="aura-applied">{track.applications}</span><span
-              class="quiet-label ml-1.5 md:hidden">applied</span
-            ></span
-          >
-        </li>
+                >{/if}
+            {/snippet}
+            {#snippet sub()}
+              <span>on {splitUnitName(track.target_name).name}</span>{#if showApplier(track)}{SEPARATOR}<span
+                  >from {applierNames(track)}</span
+                >{/if}{#if kind === 'DEBUFF' && schoolName(track.school)}{SEPARATOR}<span
+                  title="The spell's school. Whether a debuff can be dispelled is not in the log; the Dispels tab shows which ones were."
+                  data-testid="aura-school">{schoolName(track.school)}</span
+                >{/if}<span class="ui-st-phone">{SEPARATOR}applied {track.applications}</span>
+            {/snippet}
+            {#snippet meter()}<Meter
+                value={shareOf(track) / 100}
+                tone={kind === 'BUFF' ? 'gold' : 'muted'}
+              />{/snippet}
+          </StatRow>
+        {/each}
+      </StatTable>
+    {/if}
+  </Plate>
+  {#if rows.length > 0}<CopyCsv lines={csvLines} />{/if}
+</Section>
+
+{#if bySpell.length > 0}
+  <Section
+    title={kind === 'DEBUFF' ? 'On the bosses, across the night' : 'Across the night'}
+    meta={kind === 'DEBUFF' ? 'Uptime over the time the bosses were up' : 'Over everyone who had it'}
+    testid="aura-by-spell"
+  >
+    <StatTable columns={[{ id: 'up', label: 'Up' }]} open label="Uptime across the night">
+      {#each bySpell as entry (entry.name)}
+        <StatRow figures={[{ value: formatPercent(entry.pct) }]}>
+          {#snippet icon()}<SpellIcon url={icons.of(entry.spellId)} spellId={entry.spellId} />{/snippet}
+          {#snippet name()}{entry.name}{/snippet}
+          {#snippet sub()}<span>on {entry.targets} {kind === 'DEBUFF' ? 'bosses' : 'players'}</span>{/snippet}
+          {#snippet meter()}<Meter
+              value={entry.pct / 100}
+              tone={kind === 'BUFF' ? 'gold' : 'muted'}
+            />{/snippet}
+        </StatRow>
       {/each}
-    </ul>
-    <CopyCsv lines={csvLines} />
-  </div>
+    </StatTable>
+  </Section>
 {/if}

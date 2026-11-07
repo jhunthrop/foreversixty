@@ -260,12 +260,9 @@ test('compare puts two fights side by side with a per-player difference', async 
   await page.goto('/reports/fixture2abcd?fight=3&mode=compare');
   await expect(page.getByTestId('compare-mode')).toContainText('Pick a second fight');
   await choose(page.getByTestId('compare-with'), { index: 1 });
-  // A phone gets one card per player instead of the table.
-  const phone = (page.viewportSize()?.width ?? 1280) < 768;
-  await expect(page.getByTestId(phone ? 'compare-cards' : 'compare-table')).toBeVisible();
-  await expect(page.getByTestId(phone ? 'compare-card-delta' : 'compare-delta').first()).toContainText(
-    /[+-]/,
-  );
+  // One table at every width: a phone folds the other figures under the name.
+  await expect(page.getByTestId('compare-table')).toBeVisible();
+  await expect(page.getByTestId('compare-delta').first()).toContainText(/[+\u2212]/);
 });
 
 // Picking a second fight does not cancel the request for the one picked before it, so two
@@ -285,10 +282,7 @@ test('a stale compare answer does not overwrite the fight actually selected', as
 
   // The visitor changes their mind before fight 1's summary has even arrived.
   await choose(page.getByTestId('compare-with'), '2');
-  const phone = (page.viewportSize()?.width ?? 1280) < 768;
-  const delta = phone
-    ? page.getByTestId('compare-card-Player-4184-000000A3').getByTestId('compare-card-delta')
-    : page.getByTestId('compare-Player-4184-000000A3').getByTestId('compare-delta');
+  const delta = page.getByTestId('compare-Player-4184-000000A3').getByTestId('compare-delta');
   await expect(delta).toHaveText('+3,110');
 
   const answered = page.waitForResponse((response) =>
@@ -481,7 +475,7 @@ test('a night death card keeps its own span', async ({ page }) => {
   await expect(cards.first()).toContainText(`over ${onPull}`);
 });
 
-test('the full event stream lists aura refreshes under Auras applied', async ({ page }) => {
+test('the full event stream lists aura refreshes under the Auras chip', async ({ page }) => {
   test.slow();
   await serveDuckdbRuntime(page);
   await page.goto('/reports/fixture2abcd?fight=3&view=events');
@@ -489,8 +483,8 @@ test('the full event stream lists aura refreshes under Auras applied', async ({ 
   await expect(page.getByTestId('event-list')).toContainText('refreshed Power Word: Fortitude', {
     timeout: 60_000,
   });
-  // The "Auras applied" toggle governs it: off, the refresh goes with the applications.
-  await page.getByLabel('Auras applied').uncheck();
+  // The Auras chip governs it: off, the refresh goes with the applications.
+  await page.getByLabel('Auras', { exact: true }).uncheck();
   await expect(page.getByTestId('event-list')).not.toContainText('refreshed Power Word: Fortitude');
 });
 

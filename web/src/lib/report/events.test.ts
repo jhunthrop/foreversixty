@@ -3,8 +3,12 @@ import { describe, expect, it } from 'vitest';
 import fixtureSummary from '../../fixtures/report/fights/3/summary.json';
 import type { Summary } from './types';
 import {
+  EVENT_CHIPS,
   EVENT_KINDS,
+  chipOn,
   filterEvents,
+  sentenceParts,
+  toggleChip,
   streamEvents,
   summaryEvents,
   type EventKind,
@@ -204,5 +208,54 @@ describe('aura refreshes in the full stream', () => {
       },
     ]);
     expect(line.text).toBe('Rend refreshed on Baelgrim');
+  });
+});
+
+describe('the Show chips', () => {
+  const auras = EVENT_CHIPS.find((chip) => chip.id === 'auras')!;
+
+  it('cover every kind once', () => {
+    expect(EVENT_CHIPS.flatMap((chip) => chip.kinds).sort()).toEqual(
+      EVENT_KINDS.map((kind) => kind.id).sort(),
+    );
+  });
+
+  it('switch every kind they hold together, keeping the url ids', () => {
+    expect(chipOn(auras, [])).toBe(true);
+    expect(toggleChip(auras, ['cast'])).toEqual(['cast', 'aura-applied', 'aura-removed']);
+    // Half off reads as off; pressing it turns the whole chip back on.
+    expect(chipOn(auras, ['aura-removed'])).toBe(false);
+    expect(toggleChip(auras, ['aura-removed', 'death'])).toEqual(['death']);
+  });
+});
+
+describe('sentenceParts', () => {
+  it('cuts the line at each name, the longest first', () => {
+    expect(
+      sentenceParts({
+        text: 'Kel hit Kelthas with Melee',
+        actors: [
+          { guid: 'a', name: 'Kel' },
+          { guid: 'b', name: 'Kelthas' },
+        ],
+      }),
+    ).toEqual([
+      { text: 'Kel', guid: 'a' },
+      { text: ' hit ' },
+      { text: 'Kelthas', guid: 'b' },
+      { text: ' with Melee' },
+    ]);
+  });
+
+  it('names the units of the summary’s own lines', () => {
+    const death = summaryEvents(summary).find((event) => event.kind === 'death')!;
+    const parts = sentenceParts(death);
+    expect(parts[0].guid).toBe(death.guid);
+    expect(parts.map((part) => part.text).join('')).toBe(death.text);
+  });
+
+  it('gives a cast its spell id for the icon', () => {
+    const cast = summaryEvents(summary).find((event) => event.kind === 'cast')!;
+    expect(cast.spellId).toBe(summary.casts.find((row) => row.sequence.includes(cast.atMs))?.spell_id);
   });
 });

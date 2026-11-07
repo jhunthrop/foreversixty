@@ -216,18 +216,13 @@ test('buffs and debuffs each show only their own kind, with a real uptime', asyn
   await expect(page.getByTestId('aura-table')).not.toContainText('Power Word: Fortitude');
 });
 
-test('a brushed window draws the uptime bars from its own start, inside the track', async ({ page }) => {
-  // A window starting at 20 s: a bar positioned on the fight's clock would sit past the
-  // track's right edge and stretch the page sideways.
+test('a brushed window reads the uptime over the window, inside the page', async ({ page }) => {
+  // A window starting at 20 s: the uptime is the window's own share, and nothing in the
+  // row stretches the page sideways.
   await page.goto(`${FIGHT}&tab=buffs&start=20000&end=40000`);
   const row = page.getByTestId('aura-1243-Player-4184-000000A1');
   await expect(row).toBeVisible();
-  const lefts = await row
-    .locator('span[style*="left:"]')
-    .evaluateAll((spans) => spans.map((span) => Number.parseFloat((span as HTMLElement).style.left)));
-  expect(lefts.length).toBeGreaterThan(0);
-  for (const left of lefts) expect(left).toBeGreaterThanOrEqual(0);
-  for (const left of lefts) expect(left).toBeLessThan(100);
+  await expect(page.getByTestId('aura-section')).toContainText('uptime over this window');
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
   expect(overflow).toBeLessThanOrEqual(0);
 });
@@ -354,5 +349,5 @@ test('a resource with no reported cap draws no cap line and no cap figures', asy
 
 test('a resource series copies as a CSV of second, reading and at cap', async ({ page }) => {
   await page.goto(`${FIGHT}&tab=resources`);
-  await expect(page.getByTestId('resource-Player-4184-000000A1-1').getByTestId('copy-csv')).toBeVisible();
+  await expect(page.locator('[data-region="section-resources"]').getByTestId('copy-csv')).toBeVisible();
 });

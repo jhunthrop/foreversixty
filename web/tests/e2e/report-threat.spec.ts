@@ -32,7 +32,7 @@ test('every enemy keeps the totals table, and picking one swaps in that enemy’
   await expect(page.getByTestId('threat-on-target')).toHaveCount(0);
 
   await choose(page.getByTestId('threat-target'), { label: 'Warden Kelthas' });
-  const rows = page.getByTestId('threat-on-target').locator('li');
+  const rows = page.getByTestId('threat-on-target').locator('[role="row"][data-testid^="threat-"]');
   // The four players who built threat on the boss, largest first; the boss itself is not
   // one of its own attackers, so it has no row here.
   await expect(rows).toHaveCount(4);
@@ -47,7 +47,7 @@ test('a source scope narrows the rows but not the share they are measured agains
   // 49.2% he holds of every player's threat on it, not 100% of himself. The threat the
   // other three built is off screen, not gone.
   await page.goto(`${FIGHT}&source=Player-4184-000000A1&target=${KELTHAS}`);
-  const rows = page.getByTestId('threat-on-target').locator('li');
+  const rows = page.getByTestId('threat-on-target').locator('[role="row"][data-testid^="threat-"]');
   await expect(rows).toHaveCount(1);
   await expect(rows.first()).toContainText('Baelgrim');
   await expect(rows.first().getByTestId('threat-share')).toContainText('49.2%');
@@ -144,12 +144,12 @@ test('a brushed window reads standing and built from the series, measured', asyn
   await page.goto(`${FIGHT}&start=3000&end=14000&target=${KELTHAS}`);
   await expect(page.getByTestId('threat-approximate-note')).toHaveCount(0);
   await expect(page.getByTestId('threat-window-note')).toContainText('Standing');
-  const rows = page.getByTestId('threat-on-target').locator('li');
+  const rows = page.getByTestId('threat-on-target').locator('[role="row"][data-testid^="threat-"]');
   await expect(rows.first()).toContainText('Baelgrim');
   await expect(rows.first().getByTestId('threat-standing')).not.toContainText('~');
   await expect(rows.first().getByTestId('threat-built')).toBeVisible();
   await expect(page.getByTestId('threat-share')).not.toHaveCount(0);
-  await expect(page.getByTestId('threat-table').locator('ul[data-ranked="true"]')).toHaveCount(1);
+  await expect(page.getByTestId('threat-table').locator('[role="table"][data-bar="true"]')).toHaveCount(1);
   // Shares are of the players' standings, so no row reads past 100% and the top row reads less
   // than everyone put together.
   const shares = await page.getByTestId('threat-share').allTextContents();
@@ -160,7 +160,7 @@ test('a brushed window reads standing and built from the series, measured', asyn
 
 test('the whole fight is unchanged: standing at the end is the total', async ({ page }) => {
   await page.goto(`${FIGHT}&target=${KELTHAS}`);
-  const rows = page.getByTestId('threat-on-target').locator('li');
+  const rows = page.getByTestId('threat-on-target').locator('[role="row"][data-testid^="threat-"]');
   await expect(rows.first().getByTestId('threat-share')).toContainText('49.2%');
   // No second figure when there is no window: the whole fight has only one number.
   await expect(page.getByTestId('threat-built')).toHaveCount(0);

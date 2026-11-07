@@ -113,7 +113,7 @@ test('the Summary dashboard shows a rating row that opens the Rating tab', async
 
   await expect(page).toHaveURL(/tab=rating/);
   await expect(page.getByTestId('rating-tab')).toBeVisible();
-  await expect(page.getByTestId('rating-overall')).toHaveText('70');
+  await expect(page.getByTestId('rating-overall')).toHaveText(/^\s*70\s*of 100\s*$/);
 });
 
 test('an excluded component states why, and a moment link jumps to its tab', async ({ page }) => {

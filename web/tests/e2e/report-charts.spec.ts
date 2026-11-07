@@ -242,10 +242,9 @@ test.describe('the 40-player threat chart (spec §B12, capture 9)', () => {
     await expect(page.getByTestId('chart-tooltip')).toContainText('Share');
     // The table's leader is the legend's first chip.
     const leader = (await page
-      .locator('li[data-testid^="threat-Player"]')
+      .locator('[role="row"][data-testid^="threat-Player"]')
       .first()
-      .locator('span')
-      .first()
+      .getByTestId('threat-name')
       .textContent())!.trim();
     await expect(chart.getByTestId('legend-chip').filter({ hasText: leader })).toBeVisible();
   });
@@ -291,8 +290,8 @@ test('on a phone every head field shows its value whole, one field to a row', as
 test('the Resources tab draws no damage chart and heads its rows', async ({ page }) => {
   await page.goto(`${FIXTURE}&tab=resources`);
   await expect(page.getByTestId('resource-graphs')).toBeVisible();
-  await expect(page.getByTestId('resource-head')).toContainText('Player');
-  await expect(page.getByTestId('resource-head')).toContainText('Time empty');
+  await expect(page.getByRole('columnheader', { name: 'Player' })).toBeAttached();
+  await expect(page.getByRole('columnheader', { name: 'Time empty' })).toBeAttached();
   await expect(page.getByTestId('time-chart')).toHaveCount(0);
   await expect(page.getByTestId('chart-toggle')).toHaveCount(0);
 });

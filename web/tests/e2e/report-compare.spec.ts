@@ -8,15 +8,11 @@ import { choose } from './support/select';
 const COMPARE = '/reports/fixture2abcd?fight=3&mode=compare';
 
 /**
- * CompareMode.svelte renders a player's row twice at once -- the desktop `<tr>`
- * (`compare-<guid>`) and the phone `<li>` card (`compare-card-<guid>`) -- and hides
- * whichever the current width does not use with a `display` class rather than removing it
- * from the DOM, so both its own "Abilities" button and its own expansion panel
- * (`compare-abilities-<guid>` on the row, `compare-abilities-card-<guid>` on the card)
- * exist on the page regardless of project. This opens whichever one a viewer at the
- * current width can actually see and returns that panel, so the three ability-expansion
- * tests below exercise the phone card under `--project=mobile` the same way they exercise
- * the desktop row under `--project=desktop`, instead of only ever driving the row.
+ * CompareMode.svelte draws one StatTable row per player: `compare-<guid>` comparing two pulls,
+ * `compare-card-<guid>` comparing two players, each with its own "Abilities" button and its
+ * expansion panel (`compare-abilities-<guid>` / `compare-abilities-card-<guid>`). The same row
+ * serves every width (the table folds its figures under the name on a phone), so this opens
+ * whichever row the mode drew and returns its panel.
  */
 async function openAbilities(
   page: import('@playwright/test').Page,
@@ -44,7 +40,7 @@ test('a player row expands to that player’s abilities in both pulls', async ({
 test('an ability only one pull has shows a dash on the other side', async ({ page }) => {
   await page.goto(`${COMPARE}&with=1`);
   const diff = await openAbilities(page, 'Player-4184-000000A1');
-  await expect(diff).toContainText('—');
+  await expect(diff).toContainText('–');
 });
 
 test('threat has no ability split, and the row says so rather than opening empty', async ({ page }) => {
@@ -58,7 +54,7 @@ test('picking a player compares the two inside this pull, and rides in the url',
   await choose(page.getByTestId('compare-vs'), 'Player-4184-000000A3');
   await expect(page).toHaveURL(/vs=Player-4184-000000A3/);
   // The player table collapses to the two of them.
-  const rows = page.getByTestId('compare-cards').locator('li');
+  const rows = page.locator('[data-testid^="compare-card-Player"]');
   await expect(rows).toHaveCount(2);
   // And the ability diff below is Slam against Frostbolt.
   const diff = page.getByTestId('compare-players');
@@ -69,7 +65,7 @@ test('picking a player compares the two inside this pull, and rides in the url',
 // Fight 3's DPS, rounded the way the cards round it: Baelgrim 73, Morrowlyn 52, Elyra 11.
 test('the two cards read the two players’ own totals, against each other', async ({ page }) => {
   await page.goto(`${COMPARE}&vs=Player-4184-000000A3`);
-  const cards = page.getByTestId('compare-cards').locator('li');
+  const cards = page.locator('[data-testid^="compare-card-Player"]');
   await expect(cards).toHaveCount(2);
   // The base is the metric's leader when Source names nobody.
   const base = page.getByTestId('compare-card-Player-4184-000000A1');
