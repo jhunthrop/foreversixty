@@ -8,6 +8,11 @@ import { OVERVIEW_OPENERS } from './guild-parity/overview';
 import { RAID_OPENERS } from './guild-parity/raid';
 import { RECRUIT_OPENERS } from './guild-parity/recruit';
 import { openReport } from './guild-parity/report';
+import { DIRECTORY_OPENERS } from './guild-parity/directory';
+import { RAIDS_OPENERS } from './guild-parity/raids';
+import { SETTINGS_OPENERS } from './guild-parity/settings';
+import { STATES_OPENERS } from './guild-parity/states';
+import { TABS_OPENERS } from './guild-parity/tabs';
 
 export type GuildStateOpener = (page: Page) => Promise<void>;
 
@@ -16,6 +21,11 @@ const OPENERS: Readonly<Record<string, GuildStateOpener>> = {
   ...RAID_OPENERS,
   report: openReport,
   ...RECRUIT_OPENERS,
+  ...STATES_OPENERS,
+  ...TABS_OPENERS,
+  ...RAIDS_OPENERS,
+  ...SETTINGS_OPENERS,
+  ...DIRECTORY_OPENERS,
 };
 
 export async function openGuildState(page: Page, id: string): Promise<void> {
