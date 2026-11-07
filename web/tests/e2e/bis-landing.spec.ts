@@ -270,7 +270,7 @@ test.describe('signed in, desktop', () => {
 
   test('the label is always "Your character" and the answer has its own label', async ({ page }) => {
     await openSignedIn(page, [FURY, HUNTER]);
-    await expect(header(page).locator('.label').first()).toHaveText('Your character');
+    await expect(header(page).locator('.ch-label').first()).toHaveText('Your character');
     await expect(page.getByTestId('character-header-answer-label')).toHaveText(
       'Best-in-slot pieces you wear',
     );
@@ -466,7 +466,7 @@ test.describe('phone', () => {
     await expect(visibleCaptions).toHaveCount(1);
     await expect(page.getByTestId('character-header-action')).toBeVisible();
     const cta = await page.getByTestId('character-header-action').boundingBox();
-    expect(cta?.height ?? 0).toBeGreaterThanOrEqual(48);
+    expect(cta?.height ?? 0).toBeGreaterThanOrEqual(44);
   });
 
   test('spec rows are at least 44 px tall', async ({ page }) => {

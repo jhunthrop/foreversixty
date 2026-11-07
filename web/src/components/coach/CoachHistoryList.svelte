@@ -1,6 +1,6 @@
 <!-- web/src/components/coach/CoachHistoryList.svelte -->
 <!-- The character page's coach history (experience spec 3.5, 4.3 and 10.3): the Coach tab's
-     History link lands here (`#coach`), inside the page's `Coach history` Disclosure. Slim Rows,
+     History link lands here (`#coach`), inside the page's `Coach history` Disclosure. Rows,
      newest first (the pull's facts muted under its title, Wipe and Log only as Tags), each a link to
      that pull's Coach tab; twenty, then a ghost `Show older` that reads the next page. Mounted only for the owner on
      Premium (Character.svelte); absent while the first page is read and with no history. -->
@@ -19,8 +19,8 @@
   } from '../../lib/coach/history-list';
   import { scrollBehavior } from '../../lib/character/history-layout';
   import type { CharacterPath } from '../../lib/characters';
+  import { button } from '../../lib/ui/button';
   import { ROW_ITEM } from '../../lib/ui/primitives';
-  import Button from '../ui/Button.svelte';
   import LoadError from '../ui/LoadError.svelte';
   import Row from '../ui/Row.svelte';
   import Tag from '../ui/Tag.svelte';
@@ -88,7 +88,6 @@
               title={row.title}
               sub={row.lead.join(COACH_SEPARATOR)}
               href={row.href}
-              density="slim"
               open
               testid="coach-history-row"
             >
@@ -109,12 +108,14 @@
       </ul>
       {#if list.cursor !== null}
         <span class="pt-2">
-          <Button
-            tone="ghost"
-            size="sm"
+          <!-- The shared ghost recipe on a plain button: it is aria-busy while the next page reads. -->
+          <button
+            type="button"
+            class={button('ghost', 'md')}
             disabled={list.olderLoading}
+            aria-busy={list.olderLoading}
             onclick={showOlder}
-            testid="coach-history-older">{coachCopy.historyOlder}</Button
+            data-testid="coach-history-older">{coachCopy.historyOlder}</button
           >
         </span>
       {/if}
