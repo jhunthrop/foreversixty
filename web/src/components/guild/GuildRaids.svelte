@@ -1,6 +1,6 @@
 <!-- web/src/components/guild/GuildRaids.svelte -->
 <!-- Guild control-centre spec §4.C: every raid night, one expandable in place (no
-     navigation). A night in Barrow Deeps or Hyjal Summit shows "Pull N — no named
+     navigation). A night in Barrow Deeps or Hyjal Summit shows "Pull N: no named
      encounter published" rather than inventing a boss name (§12.1). Shown to every role
      (public sees public reports only, per the existing report-visibility rule server
      side) -- this component renders whatever `rows` it is given.
