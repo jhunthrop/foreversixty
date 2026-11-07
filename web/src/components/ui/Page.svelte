@@ -4,6 +4,8 @@
      a container of its own). `ledger` (BiS, tiers, rankings): one column. `split` (sim, guild,
      reports): main and a 340 px rail from 1024, --rail-w from 1760. `reading` (guides): a full-width
      `top` (the plate), then the ReadingSections, a 200 px contents rail left of them from 1760. `overview` (home): a 12-column grid.
+     `tocFrom` (pages spec 2026-11-08 §3A): a document with no lanes shows its rail from 1024 (the
+     legal pages, Data sources), or never (`0`: About, one block of prose); `tocLabel` names it.
      `form` (/connect; setup spec 2026-11-07 section 3A): one 560 px column at the page column's left.
      `workbench` (planner; planner spec 2026-11-08 section 3A): main and a 340 px rail from 1280
      (--rail-w from 1760); below 1280 main and rail give their regions to one flow ordered by each
@@ -21,6 +23,8 @@
     top,
     rail,
     stickyRail = false,
+    tocFrom,
+    tocLabel = 'Contents',
     testid,
     children,
   }: {
@@ -37,6 +41,12 @@
     rail?: Snippet;
     /** The rail sticks below the bar from 1024. */
     stickyRail?: boolean;
+    /** `reading` only, a document (the changelog, the content pages): the width the contents rail
+     *  shows from (1760, 1024), or 0 for never, with the document's section gap above it. The
+     *  guides leave it out (the rail from 1760 under their plate). */
+    tocFrom?: 1760 | 1024 | 0;
+    /** `reading` only: the contents rail's accessible name. */
+    tocLabel?: string;
     testid?: string;
     children: Snippet;
   } = $props();
@@ -44,10 +54,15 @@
 
 {#if header}{@render header()}{/if}
 {#if bar}{@render bar()}{/if}
-<div class="ui-page" data-layout={layout} data-testid={testid}>
+<div
+  class="ui-page"
+  data-layout={layout}
+  data-toc-from={layout === 'reading' ? tocFrom : undefined}
+  data-testid={testid}
+>
   {#if layout === 'reading'}
     {#if top}<div class="ui-page-top">{@render top()}</div>{/if}
-    {#if toc}<nav class="ui-page-toc" aria-label="Contents">{@render toc()}</nav>{/if}
+    {#if toc && tocFrom !== 0}<nav class="ui-page-toc" aria-label={tocLabel}>{@render toc()}</nav>{/if}
     <div class="ui-page-main">{@render children()}</div>
   {:else if layout === 'split' || layout === 'workbench'}
     <div class="ui-page-main">{@render children()}</div>
@@ -149,6 +164,26 @@
     }
     .ui-page[data-layout='overview'] > .ui-page-main > :global([data-span='4']) {
       grid-column: span 4;
+    }
+  }
+  /* A document (pages spec 2026-11-08 §3A): the rail at the left from 1024, sticky 24 under the
+     top; with no rail (`0`) one column at every width. */
+  .ui-page[data-toc-from] {
+    padding-top: var(--section-gap);
+  }
+  @media (min-width: 1024px) {
+    .ui-page[data-toc-from='1024'] {
+      grid-template-columns: var(--toc-w) minmax(0, 1fr);
+    }
+    .ui-page[data-toc-from='1024'] > .ui-page-toc {
+      display: block;
+      position: sticky;
+      top: 24px;
+    }
+  }
+  @media (min-width: 1760px) {
+    .ui-page[data-toc-from='0'] {
+      grid-template-columns: minmax(0, 1fr);
     }
   }
   @media (min-width: 1760px) {

@@ -3,7 +3,8 @@
 // "after paint" rule W.16 set: nothing here is needed for first paint, and the page works
 // without it): it lights the contents rail's current section, `aria-current="location"` on the
 // link whose heading is the last one above the upper part of the viewport, recomputed whenever
-// a heading crosses it (IntersectionObserver). The Best in slot band follows the answer's
+// a heading crosses it (IntersectionObserver); a heading a filter hides is skipped (the
+// changelog's months). The Best in slot band follows the answer's
 // character instead (bis-lane.ts).
 export const pageScript = `(function () {
   var run = function () {
@@ -13,8 +14,8 @@ export const pageScript = `(function () {
       var heads = Object.keys(links).map(function (id) { return document.getElementById(id); }).filter(Boolean);
       if (!heads.length || !('IntersectionObserver' in window)) return;
       var mark = function () {
-        var current = heads[0];
-        heads.forEach(function (h) { if (h.getBoundingClientRect().top <= window.innerHeight * 0.35) current = h; });
+        var current = heads.filter(function (h) { return h.offsetParent !== null; })[0] || heads[0];
+        heads.forEach(function (h) { if (h.offsetParent !== null && h.getBoundingClientRect().top <= window.innerHeight * 0.35) current = h; });
         Object.keys(links).forEach(function (id) {
           if (id === current.id) links[id].setAttribute('aria-current', 'location');
           else links[id].removeAttribute('aria-current');

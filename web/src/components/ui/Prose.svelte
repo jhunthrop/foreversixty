@@ -152,6 +152,64 @@
     content: '\2212';
     color: var(--color-wipe);
   }
+  /* The ruled table and inline code (pages spec 2026-11-08 §3A): 12 px caps heads over a hairline,
+     15/22 cells, the first column 600 --strong; below 768 each row stacks, heads hidden. Code in
+     the one mono face 600 14/20 --strong, no box. */
+  .ui-prose :global(table) {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0 0 18px;
+    font-size: 15px;
+    line-height: 22px;
+  }
+  .ui-prose :global(th) {
+    text-align: left;
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+    padding: 0 16px 8px 0;
+    border-bottom: 1px solid var(--color-line-soft);
+  }
+  .ui-prose :global(td) {
+    padding: 10px 16px 10px 0;
+    border-bottom: 1px solid var(--color-line-soft);
+    vertical-align: top;
+  }
+  .ui-prose :global(td:first-child) {
+    width: 1%;
+    white-space: nowrap;
+    font-weight: 600;
+    color: var(--color-strong);
+  }
+  .ui-prose :global(code) {
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 20px;
+    color: var(--color-strong);
+  }
+  @media (max-width: 767px) {
+    .ui-prose :global(thead) {
+      display: none;
+    }
+    .ui-prose :global(tr) {
+      display: grid;
+      gap: 2px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--color-line-soft);
+    }
+    .ui-prose :global(td) {
+      padding: 0;
+      border: 0;
+    }
+    .ui-prose :global(td:first-child) {
+      width: auto;
+      white-space: normal;
+    }
+  }
   @media (min-width: 1024px) {
     .ui-prose--cols {
       max-width: none;

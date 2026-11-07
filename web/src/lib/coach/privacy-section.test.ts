@@ -1,7 +1,12 @@
 // web/src/lib/coach/privacy-section.test.ts
+import { readFileSync } from 'node:fs';
+import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 import {
+  COACH_PRIVACY_ID,
+  coachPrivacyHtml,
   coachPrivacySection,
+  withCoachSection,
   PROVIDER_PRIVACY_URL,
   PROVIDER_TERMS_URL,
   VERCEL_GATEWAY_URL,
@@ -45,5 +50,37 @@ describe('the privacy page Log coach section', () => {
     const section = coachPrivacySection('Kimi');
     expect(section.paragraphs.join('')).not.toContain(COACH_MODEL_PROVIDER);
     expect(section.links[1]?.label).toContain('Kimi');
+  });
+});
+
+describe('the privacy page body with its Log coach section', () => {
+  const HTML = '<h2 id="stripe">Stripe</h2><p>pay</p><h2 id="cookies">Cookies</h2><p>c</p>';
+
+  it('/privacy shows Log coach, anchored, between Stripe and Cookies', () => {
+    const out = withCoachSection('privacy', HTML, coachPrivacySection());
+    expect(out).toContain(`<h2 id="${COACH_PRIVACY_ID}">Log coach</h2>`);
+    expect(out.indexOf('Stripe')).toBeLessThan(out.indexOf('Log coach'));
+    expect(out.indexOf('Log coach')).toBeLessThan(out.indexOf('Cookies'));
+  });
+
+  it.each(['terms', 'refunds', 'about'])('/%s never carries the section', (slug) => {
+    expect(withCoachSection(slug, HTML, coachPrivacySection())).toBe(HTML);
+  });
+
+  it('escapes the section into HTML', () => {
+    const out = coachPrivacyHtml({
+      heading: 'A & B',
+      paragraphs: ['<x>'],
+      links: [{ label: 'L', href: 'https://a.b/?q="1"' }],
+    });
+    expect(out).toBe(
+      '<h2 id="log-coach">A &amp; B</h2><p>&lt;x&gt;</p><ul><li><a href="https://a.b/?q=&quot;1&quot;">L</a></li></ul>',
+    );
+  });
+
+  it('privacy.md has the headings the section is placed between', () => {
+    const md = readFileSync(path.resolve(import.meta.dirname, '../../content/pages/privacy.md'), 'utf8');
+    expect(md).toMatch(/^## Stripe$/m);
+    expect(md).toMatch(/^## Cookies$/m);
   });
 });

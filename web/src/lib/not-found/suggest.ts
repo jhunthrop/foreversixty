@@ -63,7 +63,7 @@ export function suggestPage(path: string, pages: readonly KnownPage[]): KnownPag
   let bestDistance = MAX_SUGGEST_DISTANCE + 1;
   for (const page of pages) {
     const distance = editDistance(wanted, page[0], MAX_SUGGEST_DISTANCE);
-    if (distance < bestDistance && distance > 0) {
+    if (distance < bestDistance && page[0] !== path) {
       best = page;
       bestDistance = distance;
     }

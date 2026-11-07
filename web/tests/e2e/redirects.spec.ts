@@ -20,6 +20,7 @@ const EXPECTED_ROWS: ReadonlyArray<readonly [string, string]> = [
   ['/skyborne', '/changelog'],
   ['/everything-we-know', '/changelog'],
   ['/editions', '/changelog'],
+  ['/roadmap', '/changelog'],
   ['/addon', '/setup'],
 ];
 

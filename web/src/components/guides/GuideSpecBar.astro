@@ -69,29 +69,9 @@ const groups: ControlGroup[] = [
 
 <script>
   // On this page jumps to a section: the select below 1760, the open phone bar's rows below 768.
-  // The phone bar closes, so the section lands below it, and focus moves to the section, as a
-  // link to its anchor would.
-  import { closeControlBar } from '../../lib/ui/control-bar';
+  import { wireTocJump } from '../../lib/ui/toc-jump';
 
-  function jump(from: HTMLElement, id: string): void {
-    const section = id === '' ? null : document.getElementById(id);
-    if (section === null) return;
-    const bar = from.closest<HTMLElement>('[data-control-bar]');
-    if (bar !== null) closeControlBar(bar);
-    history.replaceState(null, '', `#${section.id}`);
-    section.scrollIntoView();
-    if (!section.hasAttribute('tabindex')) section.setAttribute('tabindex', '-1');
-    section.focus({ preventScroll: true });
-  }
-
-  const field = document.getElementById('guide-toc') as HTMLSelectElement | null;
-  field?.addEventListener('change', () => jump(field, field.value));
-  document.querySelector('[data-testid="guide-toc-phone"]')?.addEventListener('click', (event) => {
-    const link = (event.target as HTMLElement).closest<HTMLAnchorElement>('a[href^="#"]');
-    if (link === null) return;
-    event.preventDefault();
-    jump(link, link.hash.slice(1));
-  });
+  wireTocJump('guide-toc', '[data-testid="guide-toc-phone"]');
 </script>
 
 <style>

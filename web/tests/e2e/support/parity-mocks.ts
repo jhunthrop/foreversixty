@@ -107,3 +107,17 @@ export function renderPlannerMocks(mocks: readonly string[]): string {
   });
   return dir;
 }
+
+/**
+ * The changelog, content-page and 404 mocks named (ws_pages.py --list), from this checkout's
+ * content collections, copy modules, the changelog model and the fixture account
+ * support/pages-page.ts serves: pages_facts.mjs bundles them, ws_pages.py draws just those mocks.
+ * Returns the folder that holds them.
+ */
+export function renderPagesMocks(mocks: readonly string[]): string {
+  const dir = freshDir('pages');
+  const facts = path.join(dir, 'pages-facts.json');
+  run('node', [path.join(GENERATORS, 'pages_facts.mjs'), facts]);
+  run(PYTHON, [path.join(GENERATORS, 'ws_pages.py'), ...mocks], { FS_PAGES_FACTS: facts, FS_MOCK_OUT: dir });
+  return dir;
+}

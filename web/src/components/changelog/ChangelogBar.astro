@@ -1,0 +1,104 @@
+---
+// web/src/components/changelog/ChangelogBar.astro
+// The changelog's ControlBar (pages spec 2026-11-08 §4.1): Show All, Game or Site with each
+// one's count (`?show=`, absent is All), and at the end, below 1760, an On this page select of
+// the months (from 1760 the contents rail does it). On a phone one line, `All changes · 39`,
+// that opens in place onto Show and the months as slim rows with their count in the filter.
+// A pre-paint inline script right after it applies `?show=` before the list paints (5.2).
+import ControlBar from '../ui/ControlBar.astro';
+import Row from '../ui/Row.svelte';
+import Select from '../ui/Select.astro';
+import { changelogCopy } from '../../lib/changelog/copy';
+import { SHOW_PARAM, SHOWS, type ChangelogMonth, type ChangelogShow } from '../../lib/changelog/entries';
+import { guidesCopy } from '../../lib/guides/copy';
+import type { ControlGroup } from '../../lib/ui/primitives';
+
+interface Props {
+  counts: Record<ChangelogShow, number>;
+  months: readonly ChangelogMonth[];
+}
+const { counts, months } = Astro.props;
+const groups: ControlGroup[] = [
+  {
+    label: changelogCopy.showLabel,
+    param: SHOW_PARAM,
+    kind: 'segmented',
+    value: 'all',
+    defaultValue: 'all',
+    options: SHOWS.map((show) => ({ value: show, label: changelogCopy.show[show], count: counts[show] })),
+  },
+];
+---
+
+<ControlBar
+  id="changelog-bar"
+  label={changelogCopy.barLabel}
+  groups={groups}
+  summary={changelogCopy.summary('all', counts.all)}
+  testid="changelog-bar"
+>
+  <Fragment slot="end">
+    {months.length > 0 && (
+      <span class="cl-toc-select" data-testid="changelog-toc-select">
+        <Select
+          id="changelog-toc"
+          label={guidesCopy.tocBarLabel}
+          placeholder={guidesCopy.tocBarLabel}
+          size="dense"
+          fit
+          align="end"
+          options={months.map((month) => ({ value: month.anchor, label: month.title }))}
+        />
+      </span>
+    )}
+    <nav class="cl-toc-phone" aria-label={guidesCopy.tocBarLabel} data-testid="changelog-toc-phone">
+      <span class="text-label tracking-label text-muted block pb-1 font-bold uppercase">
+        {guidesCopy.tocBarLabel}
+      </span>
+      {months.map((month) => (
+        <Row
+          title={month.title}
+          href={`#${month.anchor}`}
+          density="slim"
+          open
+          testid={`cl-month-${month.anchor}`}
+        >
+          <span slot="trail" class="text-small text-muted">
+            {SHOWS.map((show) => (
+              <span data-cl-for={show}>{changelogCopy.changes(month.counts[show])}</span>
+            ))}
+          </span>
+        </Row>
+      ))}
+    </nav>
+  </Fragment>
+</ControlBar>
+
+<script>
+  import { wireTocJump } from '../../lib/ui/toc-jump';
+
+  wireTocJump('changelog-toc', '[data-testid="changelog-toc-phone"]');
+</script>
+
+<style>
+  .cl-toc-select {
+    display: none;
+  }
+  .cl-toc-phone {
+    display: flex;
+    flex-direction: column;
+  }
+  @media (min-width: 768px) {
+    .cl-toc-select {
+      display: inline-flex;
+    }
+    .cl-toc-phone {
+      display: none;
+    }
+  }
+  @media (min-width: 1760px) {
+    .cl-toc-select {
+      display: none;
+    }
+  }
+</style>

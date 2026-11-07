@@ -1,28 +1,23 @@
 ---
 // web/src/pages/[...slug].astro
+// One page per `pages` collection entry (the legal pages, About, Data sources), drawn by
+// layouts/Content.astro. The privacy page gains its Log coach section before Cookies.
 import { getCollection } from 'astro:content';
 import Content from '../layouts/Content.astro';
-import LegalBody from '../components/LegalBody.astro';
-import { coachPrivacySection } from '../lib/coach/privacy-section';
+import { coachPrivacySection, withCoachSection } from '../lib/coach/privacy-section';
 export async function getStaticPaths() {
   const pages = await getCollection('pages');
   return pages.map((p) => ({ params: { slug: p.id }, props: { page: p } }));
 }
-const LEGAL_SLUGS = new Set(['terms', 'privacy', 'refunds']);
 const { page } = Astro.props;
 const html = page.rendered?.html;
 if (html === undefined) throw new Error(`page ${page.id} has no rendered body`);
 ---
 
 <Content
+  slug={page.id}
   title={page.data.title}
   description={page.data.description}
-  path={`/${page.id}`}
   updated={page.data.updated}
-  confidence={page.data.confidence}
-  sources={page.data.sources}
-  showSources={page.data.confidence !== undefined}
-  eyebrow={LEGAL_SLUGS.has(page.id) ? 'Legal' : 'About'}
->
-  <LegalBody slug={page.id} html={html} section={coachPrivacySection()} />
-</Content>
+  html={withCoachSection(page.id, html, coachPrivacySection())}
+/>

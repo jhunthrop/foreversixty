@@ -4,6 +4,7 @@
 // (Blizzard's What's Next panel recap). Edit a row when Blizzard dates a window; drop it once
 // it has happened and has its own changelog entry.
 import type { Source } from '../sources';
+import { escapeHtml } from '../html';
 
 export interface ComingUpRow {
   /** As Blizzard dates it: a day ("Dec 9") or a season ("Spring 2027"). */
@@ -32,3 +33,12 @@ export const COMING_UP_SOURCE: Source = {
   url: 'https://news.blizzard.com/en-gb/article/24303862/world-of-warcraft-forever-whats-next-panel-recap',
   kind: 'blizzard',
 };
+
+/** The rows as the ruled table `Prose` draws (roadmap.md's own table, its rows ahead only). */
+export function comingUpHtml(rows: readonly ComingUpRow[] = COMING_UP): string {
+  const head = COMING_UP_HEADS.map((cell) => `<th>${escapeHtml(cell)}</th>`).join('');
+  const body = rows
+    .map((row) => `<tr><td>${escapeHtml(row.when)}</td><td>${escapeHtml(row.what)}</td></tr>`)
+    .join('');
+  return `<table><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table>`;
+}

@@ -36,6 +36,9 @@ export const REGION = {
   inspectorInline: 'inspector-inline',
   /** The page's closing one-liner (BiS: the guide line). */
   footerNote: 'footer-note',
+  /** A document's prose before its first heading (About's text, Data sources' first line; pages
+   *  spec 2026-11-08 section 3A). */
+  intro: 'intro',
 } as const;
 
 export type RegionName = (typeof REGION)[keyof typeof REGION];

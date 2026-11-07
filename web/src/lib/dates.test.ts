@@ -6,6 +6,7 @@ import {
   formatDayMonthYear,
   isPast,
   latest,
+  monthHeading,
   nightDate,
   nightDateOnly,
   relativeDay,
@@ -30,6 +31,14 @@ describe('formatDate', () => {
     expect(formatDate(new Date('2026-09-17T00:00:00Z'))).toBe('17 Sept');
     expect(formatDate(new Date('2026-11-04T00:00:00Z'))).toBe('4 Nov');
     expect(formatDate(new Date('2027-06-01T00:00:00Z'))).toBe('1 June');
+  });
+});
+
+describe('monthHeading', () => {
+  it('names the month in full with its year, in UTC', () => {
+    expect(monthHeading(new Date('2026-11-05T00:00:00Z'))).toBe('November 2026');
+    expect(monthHeading(new Date('2026-09-30T23:30:00Z'))).toBe('September 2026');
+    expect(monthHeading(new Date('nope'))).toBe('');
   });
 });
 

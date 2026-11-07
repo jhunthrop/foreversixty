@@ -8,9 +8,9 @@ for (const path of ['/guides', '/changelog']) {
 }
 
 test('changelog scopes the simulator tools entry to damage specs, not every spec', async ({ page }) => {
-  await page.goto('/changelog');
-  const entry = page
-    .getByText(/Top Gear, Droptimizer, talent compare and stat weights/)
-    .locator('xpath=ancestor::article');
-  await expect(entry).toContainText('damage specs');
+  // A pre-launch entry is a title row; its permalink opens it in place (pages spec 2026-11-08 CL1).
+  await page.goto('/changelog#2026-09-20-simulator-tools-are-live');
+  const entry = page.locator('[id="2026-09-20-simulator-tools-are-live"]');
+  await expect(entry).toHaveAttribute('open', '');
+  await expect(entry.getByText(/damage specs/).first()).toBeVisible();
 });

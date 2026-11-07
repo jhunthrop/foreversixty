@@ -1209,7 +1209,7 @@ PRIM_CSS += '''
 .cans-links .cans-sm{font-size:13px;line-height:20px;align-self:center}
 .dated-f{padding:0;scroll-margin-top:72px;border-bottom:1px solid var(--line-soft)}.dated-f:last-child{border-bottom:0}
 .dated-f>summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:auto minmax(0,1fr);grid-template-areas:'d g' 'h h';align-items:center;gap:4px 10px;padding:14px 0;min-height:44px}
-.dated-f>summary>.d{grid-area:d}.dated-f>summary>.dated-k{grid-area:g;display:flex;gap:6px}.dated-f>summary>h3{grid-area:h}
+.dated-f>summary>.d{grid-area:d}.dated-f>summary>.dated-k{grid-area:g;display:flex;gap:6px;align-items:center;min-height:22px}.dated-f>summary>h3{grid-area:h}
 .dated-f>summary::-webkit-details-marker{display:none}
 .dated-f>summary h3{font:700 16px/22px var(--font-body);color:var(--strong);margin:0;display:flex;gap:8px;align-items:baseline}
 .dated-f>summary h3::before{content:'\\25B8';font-size:11px;color:var(--muted);flex:none}.dated-f[open]>summary h3::before{content:'\\25BE'}

@@ -1,66 +1,120 @@
 ---
 // web/src/layouts/Content.astro
-// A `pages` collection entry (About, the legal pages): the page head with its eyebrow, title,
-// Updated stamp and confidence sentence, the reading-measure body, then the Sources footer.
+// A `pages` collection entry (the legal pages, About, Data sources) in the flat system
+// (design/specs/2026-11-08-pages.md §4.2, §4.3): a reading page with no Plate. The PageHeader
+// (the title, the one Updated stamp; the description as the lead only when the body opens on a
+// heading, L3; the legal tabs on Terms, Privacy and Refunds, L2), then the prose before the first
+// heading (`intro`) and one ReadingSection per heading at the reading measure. With two sections
+// or more, the contents rail from 1024 and a closed On this page Disclosure below it. The text is
+// the markdown as written; only its frame is this layout's.
 import Base from './Base.astro';
-import SourcesList from '../components/SourcesList.astro';
-import PageHead from '../components/ui/PageHead.astro';
-import UpdatedStamp from '../components/UpdatedStamp.astro';
-import type { Source } from '../lib/sources';
+import Disclosure from '../components/ui/Disclosure.svelte';
+import Page from '../components/ui/Page.svelte';
+import PageHeader from '../components/ui/PageHeader.svelte';
+import Prose from '../components/ui/Prose.svelte';
+import ReadingSection from '../components/ui/ReadingSection.svelte';
+import Row from '../components/ui/Row.svelte';
+import TabStrip from '../components/ui/TabStrip.astro';
+import Toc from '../components/ui/Toc.svelte';
+import { contentPagesCopy } from '../lib/content-pages/copy';
+import { LEGAL_SLUGS, splitDocument, tocFromFor } from '../lib/content-pages/sections';
+import { formatDate } from '../lib/dates';
+import { FOOTER_LEGAL_LINKS } from '../lib/footer-copy';
+import { guidesCopy } from '../lib/guides/copy';
+import { pageScript } from '../lib/guides/page-script';
 import { articleLd, breadcrumbLd } from '../lib/seo';
+import { REGION } from '../lib/ui/regions';
 
-type Confidence = 'confirmed' | 'single-source' | 'inferred';
 interface Props {
+  slug: string;
   title: string;
   description?: string;
-  path: string;
   updated: Date;
-  /** Absent for a page with no provenance claim (the legal pages): the layout then draws
-   *  neither the confidence sentence nor its separator. */
-  confidence?: Confidence;
-  sources: Source[];
-  /** False for the legal pages: they state no fact about the world, so no Sources footer. */
-  showSources?: boolean;
-  /** The page head's eyebrow (site alignment spec 2026-10-29 §5.15): ABOUT, or LEGAL on the legal pages. */
-  eyebrow?: string;
+  /** The rendered body (the privacy page's with its Log coach section). */
+  html: string;
 }
-const {
-  title,
-  description = '',
-  path,
-  updated,
-  confidence,
-  sources,
-  showSources = true,
-  eyebrow = 'About',
-} = Astro.props;
+const { slug, title, description = '', updated, html } = Astro.props;
+const path = `/${slug}`;
 const jsonLd = [articleLd({ title, description, path, updated }), breadcrumbLd(path, title)];
-const confidenceCopy: Record<Confidence, string> = {
-  confirmed: 'Confirmed by Blizzard or by multiple sources',
-  'single-source': 'Reported by one outlet, not yet confirmed',
-  inferred: 'Our inference from what has been said; may change',
-};
+const { intro, sections } = splitDocument(html);
+const tocFrom = tocFromFor(sections.length);
+const legal = LEGAL_SLUGS.includes(slug);
+const tabs = FOOTER_LEGAL_LINKS.map((link) => ({ id: link.href, label: link.label, href: link.href }));
+const tocItems = sections.map((section) => ({ title: section.title, id: section.id }));
 ---
 
-<Base title={title} description={description} path={path} jsonLd={jsonLd}>
+<Base title={title} description={description} path={path} jsonLd={jsonLd} wide>
   <meta slot="head" property="article:modified_time" content={updated.toISOString()} />
-  <main id="main" tabindex="-1" class="flex w-full flex-col gap-8 px-[18px] pt-4 pb-10 md:px-0 md:pt-7">
-    <PageHead eyebrow={eyebrow.toUpperCase()} title={title}>
-      <Fragment slot="meta">
-        <UpdatedStamp date={updated} />
-        {confidence !== undefined && (
-          <>
-            <span> · </span>
-            <span>{confidenceCopy[confidence]}</span>
-          </>
+  <main id="main" tabindex="-1" class="pb-(--section-gap)" data-testid="content-page">
+    <Page layout="reading" tocFrom={tocFrom} tocLabel={guidesCopy.tocBarLabel} testid="content-body">
+      <PageHeader slot="header" title={title} lead={intro === '' ? description : undefined}>
+        <span slot="meta" data-testid="updated-stamp">
+          Updated {formatDate(updated)}
+        </span>
+        {legal && (
+          <TabStrip
+            slot="tabs"
+            tabs={tabs}
+            active={path}
+            label={contentPagesCopy.legalTabsLabel}
+            testid="legal-tabs"
+          />
         )}
-      </Fragment>
-    </PageHead>
-    <div class="flex max-w-(--measure-reading) flex-col gap-6">
-      <div class="prose-forever text-[16px] leading-[1.6]">
-        <slot />
-      </div>
-      {showSources && <SourcesList sources={sources} />}
-    </div>
+      </PageHeader>
+      {tocFrom !== 0 && (
+        <Toc
+          slot="toc"
+          label={guidesCopy.tocBarLabel}
+          items={tocItems}
+          current={tocItems[0]?.id}
+          testid="content-toc"
+        />
+      )}
+      {tocFrom !== 0 && (
+        <div class="doc-toc-m" data-testid="content-toc-phone">
+          <Disclosure
+            summary={guidesCopy.tocBarLabel}
+            meta={contentPagesCopy.sections(sections.length)}
+            eager
+          >
+            <div class="flex flex-col">
+              {tocItems.map((item) => (
+                <Row title={item.title} href={`#${item.id}`} density="slim" open />
+              ))}
+            </div>
+          </Disclosure>
+        </div>
+      )}
+      {intro !== '' && (
+        <div data-region={REGION.intro} data-testid="content-intro">
+          <Prose html={intro} />
+        </div>
+      )}
+      {sections.map((section) => (
+        <ReadingSection title={section.title} anchor={section.id}>
+          <Prose html={section.html} />
+        </ReadingSection>
+      ))}
+    </Page>
   </main>
+  <script is:inline set:html={pageScript}></script>
+  <script>
+    // The phone contents close on a choice, so the section lands with the list out of the way.
+    document.querySelector('[data-testid="content-toc-phone"]')?.addEventListener('click', (event) => {
+      const link = (event.target as HTMLElement).closest('a[href^="#"]');
+      if (link !== null) link.closest('details')?.removeAttribute('open');
+    });
+  </script>
 </Base>
+
+<style>
+  /* The phone contents sit 12 px under the head (ruling SHOULD: no empty gap above it). */
+  .doc-toc-m {
+    margin: calc(12px - var(--section-gap)) 0 8px;
+  }
+  @media (min-width: 1024px) {
+    .doc-toc-m {
+      display: none;
+    }
+  }
+</style>

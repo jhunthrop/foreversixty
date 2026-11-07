@@ -8,6 +8,7 @@
 // nothing inside a heading, a link, code or an already marked name is touched. Every mention
 // is marked, as a game guide's links are.
 import { rarityClassFor } from '../planner/items';
+import { escapeHtml } from '../html';
 
 export type ProseTarget = { key: string } | { itemId: number; quality: number };
 
@@ -44,14 +45,10 @@ function canonical(text: string): string {
   return text.replace(/’|&#39;|&#x27;|&apos;|&rsquo;/g, "'").replace(/&amp;/g, '&');
 }
 
-function escapeAttribute(value: string): string {
-  return value.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-}
-
 /** The marked span for one mention. */
 export function markFor(target: ProseTarget, text: string): string {
   if ('key' in target) {
-    return `<span class="${MARK_CLASS}" tabindex="0" data-game-tip="${escapeAttribute(target.key)}">${text}</span>`;
+    return `<span class="${MARK_CLASS}" tabindex="0" data-game-tip="${escapeHtml(target.key)}">${text}</span>`;
   }
   const quality = rarityClassFor(target.quality);
   return `<span class="${MARK_CLASS} ${MARK_CLASS}-item ${quality}" tabindex="0" data-bis-item="${target.itemId}">${text}</span>`;

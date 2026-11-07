@@ -24,6 +24,8 @@ export const MUST_NOT_EXIST = [
   'addon.html',
   // /pricing is an edge 301 to /premium (public/_redirects), not a built page.
   'pricing.html',
+  // /roadmap folded into the changelog (pages spec 2026-11-08 ruling Q7): an edge 301 to /changelog.
+  'roadmap.html',
 ];
 
 /** Dynamic sections that build one file per entry under their own directory. */

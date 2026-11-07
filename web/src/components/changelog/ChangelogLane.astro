@@ -1,0 +1,63 @@
+---
+// web/src/components/changelog/ChangelogLane.astro
+// A changelog entry's lane (pages spec 2026-11-08 §4.1, ruling Q5): its sources as slim gold link
+// rows (a source tagged with its kind only when that differs from the entry's), this site's own
+// pages as action links (`Open the guild page ›`), then the entry's note when it has a body.
+import LaneBlock from '../ui/LaneBlock.svelte';
+import Row from '../ui/Row.svelte';
+import Tag from '../ui/Tag.svelte';
+import type { ChangelogEntry } from '../../lib/changelog/entries';
+import { guidesCopy } from '../../lib/guides/copy';
+import { LINK } from '../../lib/ui/primitives';
+
+interface Props {
+  entry: ChangelogEntry;
+}
+const { entry } = Astro.props;
+---
+
+{entry.sources.length > 0 && (
+  <LaneBlock label={guidesCopy.sources}>
+    <div class="flex flex-col">
+      {entry.sources.map((source) =>
+        source.tag === undefined ? (
+          <Row title={source.label} href={source.url} density="slim" open>
+            <span slot="titleContent" class="text-gold font-semibold">
+              {source.label}
+            </span>
+          </Row>
+        ) : (
+          <Row title={source.label} href={source.url} density="slim" open>
+            <Tag slot="lead" tone="muted">
+              {source.tag}
+            </Tag>
+            <span slot="titleContent" class="text-gold font-semibold">
+              {source.label}
+            </span>
+          </Row>
+        ),
+      )}
+    </div>
+  </LaneBlock>
+)}
+{entry.actions.map((action) => (
+  <p class="cl-action">
+    <a class={LINK} href={action.href}>
+      {action.label}
+    </a>
+  </p>
+))}
+{entry.caveat !== undefined && <p class="text-muted cl-caveat">{entry.caveat}</p>}
+
+<style>
+  .cl-action {
+    margin: 0;
+    font-size: 15px;
+    line-height: 24px;
+  }
+  .cl-caveat {
+    margin: 0;
+    font-size: 13px;
+    line-height: 20px;
+  }
+</style>

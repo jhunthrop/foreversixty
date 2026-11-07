@@ -28,6 +28,41 @@ test.describe('legal pages', () => {
     await expect(page.getByText('fs_session', { exact: false })).toBeVisible();
   });
 
+  test('the three legal pages link each other in tabs, the current one marked', async ({ page }) => {
+    await page.goto('/refunds');
+    const tabs = page.getByRole('navigation', { name: 'Legal pages' });
+    await expect(tabs.getByRole('link')).toHaveText(['Terms', 'Privacy', 'Refunds']);
+    await expect(tabs.getByRole('link', { name: 'Refunds' })).toHaveAttribute('aria-current', 'page');
+    await tabs.getByRole('link', { name: 'Privacy' }).click();
+    await expect(page).toHaveURL(/\/privacy$/);
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Privacy policy');
+  });
+
+  test('/privacy lists every section in its contents rail, the Log coach section anchored', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1440, height: 1000 });
+    await page.goto('/privacy#log-coach');
+    const rail = page.getByTestId('content-toc');
+    await expect(rail.getByRole('link')).toHaveCount(8);
+    await expect(rail.getByRole('link', { name: 'Log coach' })).toHaveAttribute('href', '#log-coach');
+    await expect(page.locator('#log-coach')).toBeInViewport();
+    await expect(rail.getByRole('link', { name: 'Log coach' })).toHaveAttribute('aria-current', 'location');
+  });
+
+  test('on a phone the contents are one closed line that opens onto the sections and closes on a choice', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto('/privacy');
+    const contents = page.getByTestId('content-toc-phone').locator('details');
+    await expect(contents).not.toHaveAttribute('open', '');
+    await contents.locator('summary').click();
+    await contents.getByRole('link', { name: 'Cookies' }).click();
+    await expect(contents).not.toHaveAttribute('open', '');
+    await expect(page).toHaveURL(/#cookies$/);
+  });
+
   test('/refunds says a period is never refunded in part and who issues a refund', async ({ page }) => {
     await page.goto('/refunds');
     await expect(page.getByText('we do not refund part of a period', { exact: false })).toBeVisible();

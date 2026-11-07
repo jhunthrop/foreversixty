@@ -3,6 +3,8 @@
      the 1 px --color-line edge and the field radius; an error sentence under it in --color-wipe,
      tied to the input by aria-describedby. Lookup, paste and login forms use it through FormRow. -->
 <script lang="ts">
+  import { FIELD_CONTROL, FIELD_FOCUS, FIELD_HEIGHT, FIELD_LABEL, fieldEdge } from '../../lib/ui/field';
+
   let {
     label,
     value = $bindable(''),
@@ -49,8 +51,6 @@
     testid?: string;
   } = $props();
 
-  const CONTROL = 'rounded-field bg-bg text-strong placeholder:text-muted w-full border px-3 text-[14px]';
-  const FOCUS = 'focus-visible:outline-gold focus-visible:outline-2 focus-visible:outline-offset-2';
   const describedBy = $derived(
     [error ? `${id}-error` : '', hint ? `${id}-hint` : ''].filter((part) => part !== '').join(' ') ||
       undefined,
@@ -58,9 +58,7 @@
 </script>
 
 <label class={['ui-field flex min-w-0 flex-col gap-[6px]', grow ? 'min-w-[220px] flex-1' : '']} for={id}>
-  <span class={labelHidden ? 'sr-only' : 'text-label tracking-label text-muted font-bold uppercase'}
-    >{label}</span
-  >
+  <span class={labelHidden ? 'sr-only' : FIELD_LABEL}>{label}</span>
   {#if rows === undefined}
     <input
       {id}
@@ -73,7 +71,7 @@
       {maxlength}
       {disabled}
       bind:value
-      class={[CONTROL, 'h-11 md:h-10', FOCUS, error || invalid ? 'border-wipe' : 'border-line']}
+      class={[FIELD_CONTROL, FIELD_HEIGHT, FIELD_FOCUS, fieldEdge(Boolean(error) || invalid)]}
       aria-invalid={error || invalid ? 'true' : undefined}
       aria-describedby={describedBy}
       data-testid={testid}
@@ -88,7 +86,7 @@
       {rows}
       {disabled}
       bind:value
-      class={[CONTROL, 'resize-y py-2 leading-5', FOCUS, error || invalid ? 'border-wipe' : 'border-line']}
+      class={[FIELD_CONTROL, 'resize-y py-2 leading-5', FIELD_FOCUS, fieldEdge(Boolean(error) || invalid)]}
       aria-invalid={error || invalid ? 'true' : undefined}
       aria-describedby={describedBy}
       data-testid={testid}></textarea>

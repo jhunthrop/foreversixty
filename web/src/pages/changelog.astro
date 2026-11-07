@@ -1,39 +1,183 @@
 ---
 // web/src/pages/changelog.astro
+// The changelog in the flat system (design/specs/2026-11-08-pages.md §4.1 and rulings 0A): a
+// reading page with no Plate. The PageHeader (What changed, the one Updated stamp, the lead),
+// the bar (Show All, Game or Site as `?show=`, the months below 1760), Coming up (the roadmap's
+// dates ahead), then one DatedGroup per month, newest first: each entry a Dated with its full
+// text from launch on, a title row that opens in place before it (CL1), its sources or the
+// action that opens the page it changed (Q5). From 1760 the months' contents rail. The filter
+// is CSS keyed off `html[data-cl-show]`, set before paint (lib/changelog/page-scripts.ts).
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
-import FeedRow from '../components/FeedRow.astro';
-import UpdatedStamp from '../components/UpdatedStamp.astro';
-import { latest } from '../lib/dates';
-const entries = (await getCollection('changelog')).sort(
-  (a, b) => b.data.date.getTime() - a.data.date.getTime(),
+import ChangelogBar from '../components/changelog/ChangelogBar.astro';
+import ChangelogLane from '../components/changelog/ChangelogLane.astro';
+import Dated from '../components/ui/Dated.svelte';
+import DatedGroup from '../components/ui/DatedGroup.svelte';
+import LaneBlock from '../components/ui/LaneBlock.svelte';
+import Page from '../components/ui/Page.svelte';
+import PageHeader from '../components/ui/PageHeader.svelte';
+import Prose from '../components/ui/Prose.svelte';
+import ReadingSection from '../components/ui/ReadingSection.svelte';
+import Row from '../components/ui/Row.svelte';
+import Tag from '../components/ui/Tag.svelte';
+import Toc from '../components/ui/Toc.svelte';
+import { changelogCopy } from '../lib/changelog/copy';
+import { COMING_UP_SOURCE, comingUpHtml } from '../lib/changelog/coming-up';
+import {
+  changelogMonths,
+  showCounts,
+  sortedEntries,
+  SHOWS,
+  type ChangelogShow,
+} from '../lib/changelog/entries';
+import { barSyncScript, seenScript, SHOW_HEAD_SCRIPT } from '../lib/changelog/page-scripts';
+import { formatDate, latest } from '../lib/dates';
+import { guidesCopy } from '../lib/guides/copy';
+import { pageScript } from '../lib/guides/page-script';
+import { REGION } from '../lib/ui/regions';
+
+const collection = await getCollection('changelog');
+const entries = sortedEntries(
+  collection.map((entry) => ({ id: entry.id, data: entry.data, html: entry.rendered?.html ?? '' })),
 );
-const updated = latest(entries.map((e) => e.data.updated));
+const months = changelogMonths(entries);
+const counts = showCounts(entries);
+const updated = latest(collection.map((entry) => entry.data.updated));
+const empty = SHOWS.filter((show) => counts[show] === 0);
+/** A month (and its contents links) a filter leaves empty, hidden under that filter. */
+const hideCss = (['game', 'site'] as const satisfies readonly ChangelogShow[])
+  .flatMap((show) =>
+    months
+      .filter((month) => month.counts[show] === 0)
+      .map(
+        (month) =>
+          `html[data-cl-show='${show}'] :is([id='${month.anchor}'], li:has(> [data-toc-link='${month.anchor}']), [data-testid='cl-month-${month.anchor}'])`,
+      ),
+  )
+  .join(',');
 ---
 
-<Base
-  title="Changelog"
-  description="Everything that changed in World of Warcraft: Forever and on this site, dated and sourced."
-  path="/changelog"
->
-  <main id="main" tabindex="-1" class="measure-wide px-[18px] md:px-0 py-10 flex flex-col gap-5">
-    <header class="flex flex-col gap-2">
-      <h1 class="heading-page">What changed</h1>
-      <UpdatedStamp date={updated} />
-    </header>
-    <div class="bg-raised border border-line rounded-panel">
-      {entries.map((e, i) => (
-        <div id={e.id}>
-          <FeedRow
-            date={e.data.date}
-            kind={e.data.kind}
-            title={e.data.title}
-            href={e.data.sources[0].url}
-            note={e.data.note}
-            last={i === entries.length - 1}
-          />
-        </div>
+<Base title={changelogCopy.docTitle} description={changelogCopy.description} path="/changelog" wide>
+  <script slot="head" is:inline set:html={SHOW_HEAD_SCRIPT}></script>
+  {hideCss !== '' && <style slot="head" is:inline set:html={`${hideCss}{display:none}`}></style>}
+  <main id="main" tabindex="-1" class="pb-(--section-gap)" data-testid="changelog">
+    <Page layout="reading" tocFrom={1760} tocLabel={guidesCopy.tocBarLabel} testid="changelog-body">
+      <PageHeader slot="header" title={changelogCopy.title} lead={changelogCopy.description}>
+        <span slot="meta" data-testid="updated-stamp">
+          Updated {formatDate(updated)}
+        </span>
+      </PageHeader>
+      <Fragment slot="bar">
+        <ChangelogBar counts={counts} months={months} />
+        <script is:inline set:html={barSyncScript(counts)}></script>
+      </Fragment>
+      {months.length > 0 && (
+        <Toc
+          slot="toc"
+          label={guidesCopy.tocBarLabel}
+          items={months.map((month) => ({ title: month.title, id: month.anchor }))}
+          current={months[0]?.anchor}
+          testid="changelog-toc"
+        />
+      )}
+
+      <ReadingSection title={changelogCopy.comingUp} anchor="coming-up" testid="changelog-coming-up">
+        <LaneBlock slot="lane" label={guidesCopy.sources}>
+          <div class="flex flex-col">
+            <Row title={COMING_UP_SOURCE.label} href={COMING_UP_SOURCE.url} density="slim" open>
+              <span slot="titleContent" class="text-gold font-semibold">
+                {COMING_UP_SOURCE.label}
+              </span>
+            </Row>
+          </div>
+        </LaneBlock>
+        <Prose html={comingUpHtml()} />
+      </ReadingSection>
+
+      {months.map((month) => (
+        <DatedGroup title={month.title} anchor={month.anchor} testid={`changelog-month-${month.anchor}`}>
+          <Fragment slot="metaContent">
+            {SHOWS.map((show) => (
+              <span data-cl-for={show}>{changelogCopy.changes(month.counts[show])}</span>
+            ))}
+          </Fragment>
+          {month.entries.map((entry) => (
+            <Dated
+              anchor={entry.id}
+              iso={entry.iso}
+              date={entry.date}
+              title={entry.title}
+              folded={entry.folded}
+              show={entry.show}
+            >
+              <Fragment slot="tags">
+                <Tag tone="muted">{entry.kindLabel}</Tag>
+                <span class="cl-new" data-cl-new hidden>
+                  <Tag>{changelogCopy.newTag}</Tag>
+                </span>
+              </Fragment>
+              <Fragment slot="lane">
+                <ChangelogLane entry={entry} />
+              </Fragment>
+              {entry.html !== '' ? <Prose html={entry.html} /> : <p class="cl-note">{entry.noteAsBody}</p>}
+            </Dated>
+          ))}
+        </DatedGroup>
       ))}
-    </div>
+      {empty.map((show) => (
+        <p class="text-muted cl-empty" data-cl-empty={show} data-region={REGION.notes}>
+          {changelogCopy.empty[show]}
+        </p>
+      ))}
+    </Page>
   </main>
+  <script is:inline set:html={seenScript(entries[0]?.iso ?? '')}></script>
+  <script is:inline set:html={pageScript}></script>
+  <script is:inline type="application/json" id="changelog-counts" set:html={JSON.stringify(counts)}></script>
+  <script>
+    import { afterPaint } from '../lib/after-paint';
+
+    afterPaint(() => {
+      const counts = JSON.parse(document.getElementById('changelog-counts')?.textContent ?? '{}');
+      void import('../lib/changelog/page-scripts').then((m) => m.bootChangelog(counts));
+    });
+  </script>
 </Base>
+
+<style>
+  /* The filter (pages spec 2026-11-08 §5.2): the other side's entries and their counts. */
+  :global([data-cl-for]) {
+    display: none;
+  }
+  :global(
+    html:not([data-cl-show]) [data-cl-for='all'],
+    html[data-cl-show='all'] [data-cl-for='all'],
+    html[data-cl-show='game'] [data-cl-for='game'],
+    html[data-cl-show='site'] [data-cl-for='site']
+  ) {
+    display: inline;
+  }
+  :global(html[data-cl-show='game'] [data-show='site']),
+  :global(html[data-cl-show='site'] [data-show='game']),
+  :global(html[data-cl-show='site'] #coming-up),
+  :global(html:not([data-cl-show='all']) [data-cl-empty='all']),
+  :global(html:not([data-cl-show='game']) [data-cl-empty='game']),
+  :global(html:not([data-cl-show='site']) [data-cl-empty='site']) {
+    display: none;
+  }
+  .cl-note {
+    margin: 0;
+    font-size: 16px;
+    line-height: 26px;
+    color: var(--color-text);
+  }
+  .cl-new[hidden] {
+    display: none;
+  }
+  .cl-empty {
+    margin: 0;
+    padding: 24px 0;
+    font-size: 16px;
+    line-height: 26px;
+  }
+</style>

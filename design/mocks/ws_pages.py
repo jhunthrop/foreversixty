@@ -180,9 +180,15 @@ def class_picker() -> str:
 def lookup() -> str:
     L = C['lookup']
     ruleset = next(r['label'] for r in C['rulesets'] if r['id'] == 'normal') if isinstance(C['rulesets'][0], dict) else 'Normal'
-    form = FormRow([(e(L['nameLabel']), Field(e(L['namePlaceholder']), True), True), (e(L['regionLabel']), Select(C['regions'][0].upper()), False),
-                    (e(L['rulesetLabel']), Select(e(ruleset)), False)], Button(e(L['submit']), primary=True))
-    return Section(e(L['heading']), f'<p class="t-small nf-aside">{e(L["aside"])}</p>{form}<p class="t-small nf-hint">{e(L["hint"])}</p>')
+    # FormRow as the shipped lookup is built: a form, the name a combobox (the typeahead), a submit button, then the hint and
+    # the status line its two validation sentences are written into (empty until a submit)
+    name = f'<span class="field grow" role="combobox" aria-label="{e(L["nameLabel"])}">{e(L["namePlaceholder"])}</span>'
+    form = (FormRow([(e(L['nameLabel']), name, True), (e(L['regionLabel']), Select(C['regions'][0].upper()), False),
+                     (e(L['rulesetLabel']), Select(e(ruleset)), False)], Button(e(L['submit']), primary=True))
+            .replace('<div class="formrow">', f'<form class="formrow" aria-label="{e(L["heading"])}">', 1).removesuffix('</div>') + '</form>')
+    form = form.replace('<a class="btn primary" href="#">', '<button type="submit" class="btn primary">', 1).replace(f'{e(L["submit"])}</a>', f'{e(L["submit"])}</button>', 1)
+    return Section(e(L['heading']), f'<p class="t-small nf-aside">{e(L["aside"])}</p>{form}<p class="t-small nf-hint">{e(L["hint"])}</p>'
+                   '<p class="t-small nf-status" role="status"></p>')
 
 
 SUGGEST = (F['suggest']['from'], F['suggest']['page'][1])   # SAMPLE address (pages_facts.mjs); its match is lib/not-found/suggest.ts's
@@ -260,7 +266,8 @@ main{padding-bottom:var(--section-gap)}
 .cl-empty{padding:24px 0}
 .doc-toc-m{margin:calc(12px - var(--section-gap)) 0 8px}@media(min-width:1024px){.doc-toc-m{display:none}}
 .doc-intro+.rsec{margin-top:0}
-.nf-aside{margin:12px 0 16px}.nf-hint{margin-top:10px}
+.nf-aside{margin:12px 0 16px}.nf-hint{margin-top:10px}.nf-status{min-height:20px;margin:0}
+@media(max-width:767px){.formrow .sel,.formrow .field{height:44px}}
 .nf-cls{font:700 15px/20px var(--font-body)}.nf-cls:hover{text-decoration:underline}
 .nf-specs{display:block;font-size:13px;line-height:18px;color:var(--muted)}.nf-spec{color:var(--muted)}.nf-spec:hover,.nf-spec.hov{color:var(--gold-hover)}
 .nf-cls.fv,.nf-spec.fv{outline:2px solid var(--gold);outline-offset:2px}
