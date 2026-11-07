@@ -137,3 +137,30 @@ func TestAssassinationTakesMaliceBeforeGouge(t *testing.T) {
 		}
 	}
 }
+
+// Sim-accuracy round 27: a leveling Combat rogue takes Precision (+1% hit a point) at 15
+// to 17 and Puncturing Wounds (Backstab crit) at 18 to 20 before Lightning Reflexes
+// past the one point the 5-point row toll needs. Its dodge does nothing while the
+// target hits someone else. Lightning Reflexes finishes at 21 to 24, where the order
+// rejoins the old one.
+func TestCombatTakesPrecisionBeforeLightningReflexes(t *testing.T) {
+	const combatTree = 1
+	const head = "00000000000000000-"
+	const tail = "-000000000000000000"
+	want := map[int]string{
+		10: "1000000000000000000",
+		14: "3110000000000000000",
+		15: "3110010000000000000",
+		17: "3110030000000000000",
+		18: "3111030000000000000",
+		20: "3113030000000000000",
+		21: "3123030000000000000",
+		24: "3153030000000000000",
+		25: "3153030000010000000",
+	}
+	for level, w := range want {
+		if got := ladderAt(t, "rogue", "combat", combatTree, level); got != head+w+tail {
+			t.Errorf("level %d Combat build %q, want %q", level, got, head+w+tail)
+		}
+	}
+}
