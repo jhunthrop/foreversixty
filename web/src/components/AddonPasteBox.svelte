@@ -1,46 +1,38 @@
 <!-- web/src/components/AddonPasteBox.svelte -->
-<!-- /addon's own paste box: prove a pasted export decodes with the same decoder the
-     planner uses (planner/fs1.ts, read-only import — this component never writes to that
-     module) and hand back the two places it goes next. Unlike the planner's own
-     ImportBox.svelte, this page never builds a talent draft: it only proves the string is
-     readable and links on with the raw code, so it needs no TalentIndex and no active
-     build to reconcile against. -->
+<!-- /setup's paste box (setup spec 2026-11-07 section 4, rail "Try an export"): prove a pasted
+     export decodes with the same decoder the planner uses (planner/fs1.ts, read-only import) and
+     hand back the two places it goes next. Never builds a talent draft: it only proves the string
+     is readable and links on with the raw code. Drawn in the flat system: a FormRow with the mono
+     export Field and a secondary Load, the decoder's own refusal under it (role="alert"), then the
+     two links and the save block (AddonPasteSave) once an export loads. -->
 <script lang="ts">
-  import { fetchMeOnce } from '../lib/account/api';
   import { addonCopy } from '../lib/addon/copy';
   import { ADDON_PASTE_STATUS_MIN_H } from '../lib/addon/paste-layout';
   import { decodeFS1, type FS1Build } from '../lib/planner/fs1';
-  import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
   import { recordPastedExport } from '../lib/character-selector/paste';
   import { plannerCodeHref, simExportHref } from '../lib/handoff-links';
+  import { LINK } from '../lib/ui/primitives';
   import AddonPasteSave from './AddonPasteSave.svelte';
+  import Button from './ui/Button.svelte';
+  import Field from './ui/Field.svelte';
+  import FormRow from './ui/FormRow.svelte';
   import Skeleton from './ui/Skeleton.svelte';
 
-  /** False where the mounting page already titles the box (the /setup disclosure's own summary). */
-  let { heading = true }: { heading?: boolean } = $props();
+  const FIELD_ROWS = 2;
+
+  /** Whether the visitor is signed in; null while the page's session read is in flight. */
+  let { signedIn }: { signedIn: boolean | null } = $props();
 
   let code = $state('');
   let error = $state<string | null>(null);
   let loaded = $state<string | null>(null);
   // The `who=` section of the loaded code, when it carries one: the save form starts from it.
   let loadedCharacter = $state<FS1Build['character']>(undefined);
-  // null while fetchMeOnce is still resolving -- the save/hint block renders nothing until
-  // it is known, rather than flashing the signed-out hint first (same idiom as Account.svelte's
-  // own status: 'loading' | 'ready' | 'failed', simplified to the one fact this needs).
-  let signedIn = $state<boolean | null>(null);
 
-  $effect(() => {
-    void fetchMeOnce()
-      .then((me) => {
-        signedIn = me !== null;
-      })
-      .catch(() => {
-        signedIn = false;
-      });
-  });
-
-  function submit(): void {
+  function load(event: SubmitEvent): void {
+    event.preventDefault();
     const trimmed = code.trim();
+    if (trimmed === '') return;
     const result = decodeFS1(trimmed);
     if (!result.ok) {
       error = result.message;
@@ -57,60 +49,42 @@
   }
 </script>
 
-<section
-  id="paste"
-  class="border-line bg-raised rounded-panel flex flex-col gap-3 border p-4"
-  data-testid="addon-paste-box"
->
-  {#if heading}<h2 class="section-title">{addonCopy.pasteTitle}</h2>{/if}
-  <textarea
-    class="border-line rounded-control bg-card-top min-h-11 w-full border px-2 py-1 font-mono text-[13px]"
-    rows="2"
-    placeholder={addonCopy.pastePlaceholder}
-    aria-label={addonCopy.pasteTitle}
-    bind:value={code}
-    data-testid="addon-paste-code"></textarea>
-  <button
-    type="button"
-    class="{SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong self-start px-4"
-    disabled={code.trim() === ''}
-    onclick={submit}
-    data-testid="addon-paste-submit"
-  >
-    {addonCopy.pasteAction}
-  </button>
+<div class="addon-paste flex flex-col gap-3" data-testid="addon-paste-box">
+  <FormRow label={addonCopy.setupTryExport} onsubmit={load}>
+    <Field
+      id="addon-paste-code"
+      label={addonCopy.pasteFieldLabel}
+      placeholder={addonCopy.pastePlaceholder}
+      rows={FIELD_ROWS}
+      grow
+      bind:value={code}
+      testid="addon-paste-code"
+    />
+    {#snippet submit()}
+      <Button type="submit" disabled={code.trim() === ''} testid="addon-paste-submit"
+        >{addonCopy.pasteAction}</Button
+      >
+    {/snippet}
+  </FormRow>
   {#if error !== null}
-    <p class="text-strong text-[13px]" data-testid="addon-paste-error" role="alert">{error}</p>
+    <p class="text-strong text-[14px] leading-5" data-testid="addon-paste-error" role="alert">{error}</p>
   {/if}
   {#if loaded !== null}
-    <!-- The ready state of this box: a pasted export that decoded, so the two places it
-         goes next and the save block below it. `.reveal` goes on this wrapper rather than
-         the <section>, which is present from first paint and never fades (design
-         2026-09-22 spec section 1.4). It repeats the section's `flex flex-col gap-3` so
-         the two children keep the spacing they had as the section's own children. -->
     <div class="reveal flex flex-col gap-3">
-      <div class="flex flex-wrap gap-3">
+      <div class="flex flex-wrap gap-x-4 gap-y-1">
         <a
-          class="text-gold inline-flex min-h-11 items-center text-[13px] font-semibold md:min-h-0"
+          class="{LINK} inline-flex min-h-11 items-center md:min-h-0"
           href={plannerCodeHref(loaded)}
-          data-testid="addon-paste-planner"
+          data-testid="addon-paste-planner">{addonCopy.pasteOpenPlanner} ›</a
         >
-          {addonCopy.pasteOpenPlanner}
-        </a>
         <a
-          class="text-gold inline-flex min-h-11 items-center text-[13px] font-semibold md:min-h-0"
+          class="{LINK} inline-flex min-h-11 items-center md:min-h-0"
           href={simExportHref(loaded)}
-          data-testid="addon-paste-sim"
+          data-testid="addon-paste-sim">{addonCopy.pasteOpenSim} ›</a
         >
-          {addonCopy.pasteOpenSim}
-        </a>
       </div>
       {#if signedIn === null}
-        <!-- One row, not the ui default of three: ADDON_PASTE_STATUS_MIN_H reserves the
-           shorter (sign-in hint) branch's real height, and Skeleton's own row content
-           would otherwise dominate that min-height once more than one row is stacked
-           (two h-4 rows plus their gap already exceed 19.5px on their own), silently
-           reopening the shrink this constant exists to prevent. -->
+        <!-- One row: ADDON_PASTE_STATUS_MIN_H reserves the shorter (sign-in hint) branch's height. -->
         <Skeleton lines={1} minHeight={ADDON_PASTE_STATUS_MIN_H} testid="addon-paste-status-skeleton" />
       {:else}
         {#key loaded}
@@ -119,4 +93,12 @@
       {/if}
     </div>
   {/if}
-</section>
+</div>
+
+<style>
+  /* The export is literal text a player pastes: the code face (polish spec 4.4). */
+  .addon-paste :global(textarea) {
+    min-height: 72px;
+    font: 600 14px/20px var(--font-mono);
+  }
+</style>

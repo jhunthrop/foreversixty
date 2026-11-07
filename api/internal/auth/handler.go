@@ -224,111 +224,6 @@ func (s *Service) setBnetState(w http.ResponseWriter, state, next string) {
 	})
 }
 
-// bnetCallback finishes every Battle.net sign-in. A web sign-in starts a session and goes
-// to next; an app sign-in (next is appFlowNext) hands a one-time code to the app link.
-func (s *Service) bnetCallback(w http.ResponseWriter, r *http.Request) {
-	httpx.CachePrivate(w)
-	state, next, ok := s.checkBnetState(w, r)
-	if !ok {
-		return
-	}
-	bu, u, ok := s.identifyBnet(w, r)
-	if !ok {
-		return
-	}
-	if next == appFlowNext {
-		s.finishAppSignIn(w, r, state, u.ID, bu.AccessToken)
-		return
-	}
-	if _, err := s.Auth.StartSession(r.Context(), w, u.ID, "battlenet"); err != nil {
-		s.fail(w, r, "battlenet", err, "could not sign you in just now")
-		return
-	}
-	s.runImport(r, u.ID, bu.AccessToken)
-	http.Redirect(w, r, s.PublicBaseURL+safeNext(next), http.StatusFound)
-}
-
-// checkBnetState reads and clears the state cookie and checks Battle.net echoed its state.
-// It answers the request itself when it reports false.
-func (s *Service) checkBnetState(w http.ResponseWriter, r *http.Request) (state, next string, ok bool) {
-	c, err := r.Cookie(bnetStateCookie)
-	if err != nil || c.Value == "" {
-		httpx.WriteError(w, r, http.StatusBadRequest, "invalid", "this sign-in has expired; start again", nil)
-		return "", "", false
-	}
-	state, next = decodeState(c.Value)
-	http.SetCookie(w, &http.Cookie{Name: bnetStateCookie, Value: "", Path: "/",
-		Domain: s.Auth.CookieDomain, HttpOnly: true, Secure: s.Auth.Secure, MaxAge: -1})
-	if state == "" || !SameToken(state, r.URL.Query().Get("state")) {
-		httpx.WriteError(w, r, http.StatusBadRequest, "invalid", "this sign-in could not be verified; start again", nil)
-		return "", "", false
-	}
-	return state, next, true
-}
-
-// identifyBnet spends Battle.net's authorization code and upserts the account behind it.
-// It answers the request itself when it reports false.
-func (s *Service) identifyBnet(w http.ResponseWriter, r *http.Request) (BnetUser, User, bool) {
-	code := r.URL.Query().Get("code")
-	if code == "" {
-		httpx.WriteError(w, r, http.StatusBadRequest, "invalid", "Battle.net sent no authorization code", nil)
-		return BnetUser{}, User{}, false
-	}
-	bu, err := s.BNet.Identify(r.Context(), code)
-	if err != nil {
-		s.logger().Error("auth", "id", httpx.RequestIDFrom(r.Context()), "op", "battlenet", "err", err)
-		httpx.WriteError(w, r, http.StatusBadGateway, "upstream", "Battle.net could not confirm that sign-in", nil)
-		return BnetUser{}, User{}, false
-	}
-	u, err := s.Store.UpsertBnetUser(r.Context(), bu.Sub, bu.Battletag)
-	if err != nil {
-		s.fail(w, r, "battlenet", err, "could not sign you in just now")
-		return BnetUser{}, User{}, false
-	}
-	return bu, u, true
-}
-
-// runImport calls the Battle.net importer, bounded by importBudget, and
-// logs the outcome. It never fails the login (spec §4.1): an error is
-// logged at WARN and the caller redirects exactly as it would have with
-// no importer at all.
-func (s *Service) runImport(r *http.Request, userID int64, accessToken string) {
-	if s.Importer == nil || accessToken == "" {
-		return
-	}
-	ctx, cancel := context.WithTimeout(r.Context(), importBudget)
-	defer cancel()
-	summary, err := s.Importer.ImportAccount(ctx, userID, accessToken)
-	id := httpx.RequestIDFrom(r.Context())
-	s.logImport(id, "battlenet_import", userID, summary, err)
-	if summary.Pending > 0 && !summary.RateLimited {
-		s.continueImport(id, userID, accessToken)
-	}
-}
-
-// continueImport finishes, in the background, an import the sign-in budget
-// cut short (importContinueBudget). The access token lives only in this
-// goroutine's memory until it returns, and is never persisted or logged.
-func (s *Service) continueImport(id string, userID int64, accessToken string) {
-	go func() {
-		ctx, cancel := context.WithTimeout(context.Background(), importContinueBudget)
-		defer cancel()
-		summary, err := s.Importer.ImportAccount(ctx, userID, accessToken)
-		s.logImport(id, "battlenet_import_continued", userID, summary, err)
-	}()
-}
-
-func (s *Service) logImport(id, op string, userID int64, summary ImportSummary, err error) {
-	if err != nil {
-		s.logger().Warn("auth", "id", id, "op", op, "user_id", userID, "pending", summary.Pending,
-			"rate_limited", summary.RateLimited, "err", err)
-		return
-	}
-	s.logger().Info("auth", "id", id, "op", op, "user_id", userID,
-		"regions", summary.Regions, "characters", summary.Characters,
-		"guilds", summary.Guilds, "skipped", summary.Skipped, "unavailable", summary.Unavailable)
-}
-
 type emailRequest struct {
 	Next  string `json:"next"`
 	Email string `json:"email"`
@@ -561,6 +456,7 @@ func (s *Service) loadMe(ctx context.Context, userID int64, moderator bool) (Me,
 	return Me{
 		User: u, Characters: chars, Guilds: guilds, Entitlements: ev,
 		BnetImportedAt: rfc3339Ptr(u.BnetImportedAt), MainCharacterKey: u.MainCharacterKey,
+		BnetImport:   bnetImportViewOf(u, time.Now()),
 		FinishedSims: finished, ServerSims: serverSims, Notifications: notifications,
 		DiscordLinkAvailable: link.available, DiscordLink: link.block, DiscordLinkSuggested: link.suggested,
 		SeatViews: seatViewsOf(facts, ev.Billing),

@@ -33,6 +33,9 @@ type Me struct {
 	// BnetImportedAt is when the Battle.net import last ran for this
 	// account, omitted when it never has (spec §6).
 	BnetImportedAt *string `json:"bnet_imported_at,omitempty"`
+	// BnetImport is the last tracked Battle.net import's state, omitted when none has been
+	// tracked (design/specs/2026-11-07-setup.md G1). /setup polls while it reads running.
+	BnetImport *BnetImportView `json:"bnet_import,omitempty"`
 	// MainCharacterKey is the account's chosen main, omitted until chosen.
 	MainCharacterKey *string `json:"main_character_key,omitempty"`
 	// FinishedSims are the caller's unseen finished server runs, newest first, at most three.

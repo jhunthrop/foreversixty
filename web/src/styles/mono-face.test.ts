@@ -18,7 +18,6 @@ const ALLOWED = new Map<string, number>([
   ['components/Guild.svelte', 1], // <code> a guild address
   ['components/CharacterSearch.astro', 1], // the "/" key hint
   ['components/CopyForGame.svelte', 1], // the copy-for-the-game string field
-  ['components/Connect.svelte', 2], // the pairing code the companion asks for
   ['components/Account.svelte', 2], // the pairing code the companion asks for
   ['components/Upload.svelte', 8], // file and folder names, /combatlog, the chosen file name, both drop zones
   ['components/AddonPasteBox.svelte', 1], // the addon export paste box
@@ -34,9 +33,7 @@ const ALLOWED = new Map<string, number>([
   ['components/guild/report/ReportDiscord.svelte', 1], // the copy fallback box
   ['components/guild/RaidOfficerRow.svelte', 1], // the copy fallback box
   ['components/guild/GuildDiscordChannel.svelte', 1], // the channel id
-  ['pages/setup.astro', 1], // the slash commands to type
   ['components/admin/GoLinksAdmin.svelte', 2], // a link's /go/ path and the slug field
-  ['components/logs/LogsCompanion.svelte', 1], // the pairing code the companion types in
 ]);
 
 /** `var(--font-mono)`, or the `font-mono` class. */

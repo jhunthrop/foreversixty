@@ -756,12 +756,12 @@ def Disclosure(summary: str, body: str, open_: bool = False, meta: str = '') -> 
 # at --measure-form (560 px), left-aligned in the page column, for a page that is one task (connect, sign in, checkout).
 PRIM_CSS += '''
 .steps .row{min-height:64px;padding-block:12px}
-.sm{width:26px;height:26px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;flex:none;font:700 13px/26px var(--font-body);font-variant-numeric:tabular-nums}
-.sm.ok{background:var(--kill);color:#07090d}.sm.next{background:var(--gold);color:#17110a}.sm.todo{box-shadow:inset 0 0 0 1.5px var(--line);color:var(--muted)}
-.sm.warn{background:var(--gold);color:#17110a}.sm.miss{background:var(--wipe);color:#07090d}
-.sm.busy{box-shadow:inset 0 0 0 2px var(--line);color:var(--muted);position:relative}
-.sm.busy::after{content:"";position:absolute;inset:0;border-radius:50%;border:2px solid transparent;border-top-color:var(--gold);animation:sm-spin 1s linear infinite}
-@keyframes sm-spin{to{transform:rotate(360deg)}}@media(prefers-reduced-motion:reduce){.sm.busy::after{animation:none}}
+.smk{width:26px;height:26px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;flex:none;font:700 13px/26px var(--font-body);font-variant-numeric:tabular-nums}
+.smk.ok{background:var(--kill);color:#07090d}.smk.next{background:var(--gold);color:#17110a}.smk.todo{box-shadow:inset 0 0 0 1.5px var(--line);color:var(--muted)}
+.smk.warn{background:var(--gold);color:#17110a}.smk.miss{background:var(--wipe);color:#07090d}
+.smk.busy{box-shadow:inset 0 0 0 2px var(--line);color:var(--muted);position:relative}
+.smk.busy::after{content:"";position:absolute;inset:0;border-radius:50%;border:2px solid transparent;border-top-color:var(--gold);animation:sm-spin 1s linear infinite}
+@keyframes sm-spin{to{transform:rotate(360deg)}}@media(prefers-reduced-motion:reduce){.smk.busy::after{animation:none}}
 .steps .row .sub{font-size:14px;line-height:20px;margin-top:2px}.steps .row .sub .warn{color:var(--gold)}.steps .row .sub .miss{color:var(--wipe)}
 .steps .row .sub .ok{color:var(--text)}
 .steps .row .trail .btn{min-width:0}
@@ -781,7 +781,7 @@ def Steps(items: list[tuple]) -> str:
     rows = []
     for mark, n, title, sub, action in items:
         glyph = {'ok': '&#10003;', 'warn': '!', 'miss': '&times;', 'busy': ''}.get(mark, str(n))
-        lead = f'<span class="sm {mark}" role="img" aria-label="Step {n}: {word[mark]}">{glyph}</span>'
+        lead = f'<span class="smk {mark}" role="img" aria-label="Step {n}: {word[mark]}">{glyph}</span>'
         rows.append(Row(title, sub, lead=lead, trail=action, link=False))
     return f'<div class="steps">{Rows(rows)}</div>'
 

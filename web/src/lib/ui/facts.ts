@@ -10,6 +10,8 @@ export interface Fact {
   /** The value as text; `content` replaces it with markup (a control in the More settings sheet). */
   value?: string;
   content?: Snippet;
+  /** Literal text a player types (a slash command): drawn as `Code` in place of the value. */
+  code?: string;
   /** A small muted line under the value ("2:24 to 3:36"). */
   sub?: string;
   /** The value itself is quiet (an engine build string). */

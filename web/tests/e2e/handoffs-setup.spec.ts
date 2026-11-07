@@ -9,7 +9,6 @@ test.beforeEach(({ page }) => apiUnreachable(page, '**/v1/builds?*'));
 
 test('the /setup paste box offers the planner and the simulator once an export decodes', async ({ page }) => {
   await page.goto('/setup');
-  await page.getByTestId('setup-try-export').locator('summary').click();
   await page.getByTestId('addon-paste-code').fill(`FS1:${ACTIVE_BUILD}:warrior:human:0/0/0:`);
   await page.getByTestId('addon-paste-submit').click();
 
@@ -28,22 +27,19 @@ test('the /setup paste box offers the planner and the simulator once an export d
 
 test('a code from another format is refused by name, not silently dropped', async ({ page }) => {
   await page.goto('/setup');
-  await page.getByTestId('setup-try-export').locator('summary').click();
   await page.getByTestId('addon-paste-code').fill('FS2:nope');
   await page.getByTestId('addon-paste-submit').click();
   await expect(page.getByTestId('addon-paste-error')).toHaveText('That code is FS2; this site reads FS1.');
   await expect(page.getByTestId('addon-paste-planner')).toHaveCount(0);
 });
 
-// Task L8.3 replaced "ships no screenshot of it": the page now shows real client captures,
-// one section per surface, every one lazy, sized and described.
-test('the page says the in-game UI is in beta testing and points at the surfaces section', async ({
-  page,
-}) => {
+// The in-game window's own card retired (U9): the surfaces section is the evidence, with real
+// client captures; How the addon works keeps its two flows.
+test('How the addon works keeps two flows and never says the addon ships no screenshot', async ({ page }) => {
   await page.goto('/setup');
-  // The how-it-works cards sit inside the one closed "Everything the addon does" disclosure.
-  await page.getByText('Everything the addon does').click();
-  await expect(page.getByText('in beta testing in game')).toBeVisible();
+  const flows = page.getByTestId('setup-flows');
+  await expect(flows.getByText(addonCopy.flowOutTitle)).toBeVisible();
+  await expect(flows.getByText(addonCopy.flowInTitle)).toBeVisible();
   await expect(page.getByText('no screenshot', { exact: false })).toHaveCount(0);
 });
 
@@ -54,22 +50,15 @@ test.describe('What it does in the game (L8.3)', () => {
     }) => {
       await page.setViewportSize({ width, height: 900 });
       await page.goto('/setup');
-      await page.getByText('Everything the addon does').click();
-      const surfaces = page.getByTestId('setup-surfaces').locator('[data-surface]');
+      // Below 768 the grid folds behind one summary row (U5); open from 768.
+      if (width < 768) await page.getByTestId('setup-surfaces').locator('summary').click();
+      const surfaces = page.getByTestId('setup-surfaces').locator('[data-testid^="setup-surface-"]');
       await expect(surfaces).toHaveCount(11);
-      expect(await surfaces.evaluateAll((els) => els.map((el) => el.getAttribute('data-surface')))).toEqual([
-        '4.1',
-        '4.2',
-        '4.3',
-        '4.4',
-        '4.5',
-        '4.6',
-        '4.7',
-        '4.8',
-        '4.9',
-        '4.10',
-        '4.11',
-      ]);
+      expect(
+        await surfaces.evaluateAll((els) =>
+          els.map((el) => el.getAttribute('data-testid')?.replace('setup-surface-', '')),
+        ),
+      ).toEqual(['4.1', '4.2', '4.3', '4.4', '4.5', '4.6', '4.7', '4.8', '4.9', '4.10', '4.11']);
       const images = page.getByTestId('setup-surfaces').locator('img');
       const count = await images.count();
       expect(count).toBe(12);
@@ -92,13 +81,15 @@ test.describe('What it does in the game (L8.3)', () => {
     });
   }
 
-  test('the commands and the companion handshake follow the surfaces', async ({ page }) => {
+  test('the commands, as a key-binding list, and the companion handshake sit in the rail', async ({
+    page,
+  }) => {
     await page.goto('/setup');
-    await page.getByText('Everything the addon does').click();
-    const commands = page.getByTestId('setup-commands').locator('li');
-    await expect(commands).toHaveCount(addonCopy.commands.length);
-    await expect(commands.first()).toHaveText('/fs: paste or copy a build');
-    await expect(commands.last()).toHaveText('/fs help: every command');
+    const commands = page.getByTestId('setup-commands');
+    await expect(commands.locator('dt')).toHaveCount(addonCopy.commands.length);
+    await expect(commands.locator('dt').first()).toHaveText('paste or copy a build');
+    await expect(commands.locator('dd code').first()).toHaveText('/fs');
+    await expect(commands.locator('dd code').last()).toHaveText('/fs help');
     await expect(page.getByTestId('setup-handshake')).toContainText('Site has your save from');
   });
 });
@@ -109,15 +100,13 @@ test('an export pasted on /setup becomes the current character on the simulator 
   page,
 }) => {
   await page.goto('/setup');
-  await page.getByTestId('setup-try-export').locator('summary').click();
   await page
     .getByTestId('addon-paste-code')
     .fill(`FS1:${ACTIVE_BUILD}:warrior:human:0/0/0:|who=Simfury:Realm`);
   await page.getByTestId('addon-paste-submit').click();
 
-  // The bar under the paste box shows it at once, without a reload.
-  const chip = page.getByTestId('current-character-chip');
-  await expect(chip).toContainText('Simfury');
+  // The header selector shows it at once, without a reload (the selector is the one character control).
+  await expect(page.getByTestId('selector-name')).toHaveText('Simfury', { timeout: 15_000 });
 
   // A bare simulator URL (no ?code=) restores it and says so; so does a tool tab.
   await page.goto('/sim');
@@ -127,28 +116,18 @@ test('an export pasted on /setup becomes the current character on the simulator 
   await expect(page.getByTestId('selector-name')).toHaveText('Simfury', { timeout: 15_000 });
 
   // Forget means forgotten everywhere.
-  await page.goto('/setup');
-  await page
-    .getByTestId('current-character-chip')
-    .getByRole('button', { name: /forget/i })
-    .click();
+  await page.evaluate(() => {
+    window.localStorage.removeItem('fs.currentCharacter');
+    window.dispatchEvent(new Event('fs:current-character'));
+  });
   await gotoSim(page);
   await expect(page.getByTestId('sim-landing')).toBeVisible();
   await expect(simCharacter(page)).toHaveCount(0);
 });
 
-// The planner/sim links (data-testid="addon-paste-planner") sit ABOVE the reserved
-// skeleton/hint block in the DOM (AddonPasteBox.svelte), so nothing below them moving can
-// ever move their own boundingBox, which made an earlier version of this test
-// tautological: it could not fail even when the reservation was sized wrong. This
-// version instead measures two things that DO
-// move when the reserved slot's height changes: the addon-paste-box section's own total
-// height, and the top of current-character-chip (CurrentCharacterBar.svelte, rendered by
-// setup.astro immediately after AddonPasteBox), which has a fixed height of its own
-// (CHIP_HEIGHT) and so only shifts when something above it does.
-test('a pending session check reserves the signed-out branch height, so the section and the chip below it never shrink once it resolves', async ({
-  page,
-}) => {
+// A visitor with no session hint is signed out from the first paint: a loaded export shows the
+// sign-in hint at once, and the paste box never shrinks when the account read answers later.
+test('a slow session check never moves the loaded paste box', async ({ page }) => {
   let resolveMe: (() => void) | undefined;
   await page.route('**/v1/me', (route) => {
     void new Promise<void>((resolve) => {
@@ -162,38 +141,28 @@ test('a pending session check reserves the signed-out branch height, so the sect
     );
   });
   await page.goto('/setup');
-  await page.getByTestId('setup-try-export').locator('summary').click();
   await page
     .getByTestId('addon-paste-code')
     .fill(`FS1:${ACTIVE_BUILD}:warrior:human:0/0/0:|who=Simfury:Realm`);
   await page.getByTestId('addon-paste-submit').click();
 
-  // The pasted export is already the current character (writeCurrent() runs synchronously
-  // in submit(), independent of the /v1/me held pending below), so the chip is already on
-  // the page while the skeleton is still showing.
-  const chip = page.getByTestId('current-character-chip');
-  await expect(chip).toBeVisible();
-  await expect(page.getByTestId('addon-paste-status-skeleton')).toBeVisible();
-  const sectionHeightBefore = await page
-    .getByTestId('addon-paste-box')
+  await expect(page.getByTestId('addon-paste-signin-hint')).toBeVisible();
+  const box = page.getByTestId('addon-paste-box');
+  const heightBefore = await box.boundingBox().then((b) => b?.height);
+  const commandsTopBefore = await page
+    .getByTestId('setup-commands')
     .boundingBox()
-    .then((box) => box?.height);
-  const chipTopBefore = await chip.boundingBox().then((box) => box?.y);
-  expect(sectionHeightBefore).toBeDefined();
-  expect(chipTopBefore).toBeDefined();
+    .then((b) => b?.y);
+  expect(heightBefore).toBeDefined();
 
   resolveMe?.();
+  await page.waitForTimeout(300);
   await expect(page.getByTestId('addon-paste-signin-hint')).toBeVisible();
-  const sectionHeightAfter = await page
-    .getByTestId('addon-paste-box')
-    .boundingBox()
-    .then((box) => box?.height);
-  const chipTopAfter = await chip.boundingBox().then((box) => box?.y);
-
-  // Before the fix, ADDON_PASTE_STATUS_MIN_H reserved the taller signed-in form's height
-  // (168px) for every pending check, so landing on the much shorter signed-out hint (this
-  // test's route always answers 401) shrank the section by ~148.5px and pulled the chip up
-  // by the same amount -- these two assertions catch exactly that regression.
-  expect(sectionHeightAfter).toBeGreaterThanOrEqual(sectionHeightBefore as number);
-  expect(chipTopAfter).toBeGreaterThanOrEqual(chipTopBefore as number);
+  expect(await box.boundingBox().then((b) => b?.height)).toBeGreaterThanOrEqual(heightBefore as number);
+  expect(
+    await page
+      .getByTestId('setup-commands')
+      .boundingBox()
+      .then((b) => b?.y),
+  ).toBe(commandsTopBefore);
 });

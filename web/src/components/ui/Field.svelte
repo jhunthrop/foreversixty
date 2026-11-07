@@ -19,6 +19,8 @@
     rows,
     hint,
     labelHidden = false,
+    invalid = false,
+    disabled = false,
     testid,
   }: {
     label: string;
@@ -41,6 +43,9 @@
     hint?: string;
     /** The label for assistive tech only: a field whose row already names it ("From a build"). */
     labelHidden?: boolean;
+    /** Marked invalid without its own error line (a form that says why once, under its button). */
+    invalid?: boolean;
+    disabled?: boolean;
     testid?: string;
   } = $props();
 
@@ -66,9 +71,10 @@
       {inputmode}
       {required}
       {maxlength}
+      {disabled}
       bind:value
-      class={[CONTROL, 'h-11 md:h-10', FOCUS, error ? 'border-wipe' : 'border-line']}
-      aria-invalid={error ? 'true' : undefined}
+      class={[CONTROL, 'h-11 md:h-10', FOCUS, error || invalid ? 'border-wipe' : 'border-line']}
+      aria-invalid={error || invalid ? 'true' : undefined}
       aria-describedby={describedBy}
       data-testid={testid}
     />
@@ -80,9 +86,10 @@
       {required}
       {maxlength}
       {rows}
+      {disabled}
       bind:value
-      class={[CONTROL, 'resize-y py-2 leading-5', FOCUS, error ? 'border-wipe' : 'border-line']}
-      aria-invalid={error ? 'true' : undefined}
+      class={[CONTROL, 'resize-y py-2 leading-5', FOCUS, error || invalid ? 'border-wipe' : 'border-line']}
+      aria-invalid={error || invalid ? 'true' : undefined}
       aria-describedby={describedBy}
       data-testid={testid}></textarea>
   {/if}
