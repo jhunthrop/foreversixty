@@ -8,7 +8,9 @@ Forever unifies melee, ranged and spell hit into one stat. An item's crit rating
 
 ### Band 20 (human, 00000000000000000-00000000000000000-05231000000000000)
 
-Set DPS (verified): 46.7. Weights run: 5.4s. Verify run: 14.6s. 281 eligible items had no known source.
+Set DPS (verified): 46.7. Weights run: 6.9s. Verify run: 19.7s. 281 eligible items had no known source.
+
+Race sweep: human 46.7 ± 0.0, dwarf 46.1 ± 0.0 (dps); the guide race human is best.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.000 ± 0.003, agility=1.319 ± 0.020, crit=0.796 ± 0.018 per rating point (14 rating = 1%, 11.139 per %), hit=1.450 ± 0.050 per rating point (10 rating = 1%, 14.503 per %), melee_haste=5.157 ± 0.678, intellect=1.066 ± 0.026, spell_power=2.415 ± 0.003
 
@@ -36,29 +38,31 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 
 No-known-source sample (15 of 281, see the JSON for more): 1189 Overseer's Ring; 2273 Guerrilla Armor; 2314 Toughened Leather Armor; 2543 Militia Pants; 2952 Fine Light Hide Jerkin; 3579 Ornate Copper Shoulders; 4642 Star of Xil'yeh; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4800 Mighty Chain Pants; 4816 Legionnaire's Leggings; 4964 Goblin Smasher; 5255 Quilboar Tomahawk; 5821 Darkstalker Boots
 
-### Band 30 (human, 00000000000000000-00000000000000000-05233301001300000)
+### Band 30 (human, 00000000000000000-00000000000000000-05233201001300100)
 
-Set DPS (verified): 82.1. Weights run: 5.9s. Verify run: 14.9s. 504 eligible items had no known source.
+Set DPS (verified): 84.9. Weights run: 7.7s. Verify run: 15.3s. 504 eligible items had no known source.
 
-Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.000 ± 0.003, agility=1.561 ± 0.026, crit=1.183 ± 0.027 per rating point (14 rating = 1%, 16.559 per %), hit=1.966 ± 0.076 per rating point (10 rating = 1%, 19.662 per %), melee_haste=11.026 ± 0.885, intellect=0.912 ± 0.034, spell_power=2.522 ± 0.003
+Race sweep: human 84.9 ± 0.1, dwarf 83.5 ± 0.1 (dps); the guide race human is best.
+
+Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.000 ± 0.004, agility=1.802 ± 0.029, crit=1.414 ± 0.031 per rating point (14 rating = 1%, 19.801 per %), hit=1.764 ± 0.073 per rating point (10 rating = 1%, 17.644 per %), melee_haste=7.617 ± 0.971, intellect=1.344 ± 0.035, spell_power=2.604 ± 0.003
 
 | Slot | Item | Source | Score (attack_power points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Crusader's Chain Helm (250502) | Blacksmithing [crafted] | 57.3 attack_power points (2.65 DPS) | yes | Totemic Leather Helm (252456, -1.25 DPS) [crafted]; Holy Shroud (2721, -1.37 DPS) [world_drop]; Barbaric Iron Helm (7915, -1.70 DPS, sim-verified) [crafted] |
-| neck | Kaleidoscope Chain (13084) | World drop [world_drop] | 17.9 attack_power points (0.83 DPS) | yes | Archmagister's Faceted Pendant (273049, -0.02 DPS) [world]; Sentinel's Medallion (19541, -0.25 DPS) [rep] |
-| shoulder | Bloodmage Mantle (7684) | Scarlet Monastery: Bloodmage Thalnos [dungeon] | 30.9 attack_power points (1.43 DPS) | yes | Death Speaker Mantle (6685, -0.27 DPS) [dungeon]; Invoker's Mantle (215365, -0.40 DPS) [crafted]; Forest Tracker Epaulets (2278, -0.86 DPS, sim-verified) [world_drop] |
-| back | Sergeant Major's Cape (16315) | PvP rank 5 · Sergeant Major · Alliance [pvp] | sim-decided (no score - a real sim tournament chose this pick) | yes | Hillman's Cloak (3719, -0.24 DPS) [crafted]; Vine Pruner's Cloak (279835, -0.24 DPS) [quest]; Hawkeye's Cloak (14593, -0.29 DPS, sim-verified) [world_drop] |
-| chest | Crusader's Silvered Chain Shirt (250522) | Blacksmithing [crafted] | 42.3 attack_power points (1.95 DPS) | yes | Totemic Leather Tunic (252451, -0.19 DPS) [crafted]; Hard Gold Cuirass (250533, -0.24 DPS) [crafted]; Green Silk Armor (7065, -0.36 DPS) [crafted] |
-| wrist | Spidertank Oilrag (9448) | Gnomeregan: Electrocutioner 6000 [dungeon] | 22.7 attack_power points (1.05 DPS) | yes | Yorgen Bracers (13012, -0.28 DPS) [world_drop]; Pugilist Bracers (4438, -0.31 DPS) [dungeon]; Hawkeye's Bracers (14590, -1.31 DPS, sim-verified) [world_drop] |
-| hands | Serpent Gloves (5970) | Wailing Caverns: Lord Serpentis [dungeon] | 27.0 attack_power points (1.25 DPS) | yes | Mail Combat Gauntlets (4075, -0.22 DPS) [world_drop]; Gauntlets of Ogre Strength (3341, -0.23 DPS) [world]; Insignia Gloves (6408, -0.34 DPS, sim-verified) [world_drop] |
-| waist | Justicar's Belt (250560) | Blacksmithing [crafted] | 42.3 attack_power points (1.95 DPS) | yes | Skirmisher's Leather Belt (252461, -0.14 DPS) [crafted]; Prowler's Leather Belt (252459, -0.52 DPS) [crafted]; Skycaller's Leather Belt (252522, -0.53 DPS) [crafted] |
-| legs | Crusader's Silvered Chain Leggings (250527) | Blacksmithing [crafted] | 46.8 attack_power points (2.16 DPS) | yes | Totemic Leather Leggings (252458, -0.14 DPS) [crafted]; Totemic Leather Pants (252446, -0.35 DPS) [crafted]; Ferine Leggings (6690, -0.45 DPS) [dungeon] |
-| feet | Hard Gold Boots (250534) | Blacksmithing [crafted] | 31.7 attack_power points (1.46 DPS) | yes | Disjointed Shoes (277226, -0.33 DPS) [quest]; Gilded Slippers (254001, -0.35 DPS) [crafted]; Totemic Leather Boots (252442, -0.36 DPS, sim-verified) [crafted] |
-| finger1 | Protector's Band (19517) | Silverwing Sentinels [rep] | 21.4 attack_power points (0.99 DPS) | yes | Lorekeeper's Ring (19525, -0.17 DPS) [rep]; Ring of Power Regulation (273030, -0.29 DPS) [dungeon]; Thunderbrow Ring (13097, -1.03 DPS, sim-verified) [world_drop] |
-| finger2 | Snake Hoop (6750) | Willix the Importer [quest] | sim-verified (82.1 DPS) | yes | Lorekeeper's Ring (19525, -0.09 DPS) [rep]; Ring of Power Regulation (273030, -0.21 DPS) [dungeon]; Thunderbrow Ring (13097, -0.26 DPS, sim-verified) [world_drop] |
+| head | Crusader's Chain Helm (250502) | Blacksmithing [crafted] | 58.5 attack_power points (2.90 DPS) | yes | Totemic Leather Helm (252456, -1.35 DPS) [crafted]; Enchanter's Cowl (4322, -1.46 DPS) [crafted]; Barbaric Iron Helm (7915, -1.66 DPS, sim-verified) [crafted] |
+| neck | Kaleidoscope Chain (13084) | World drop [world_drop] | 20.6 attack_power points (1.02 DPS) | yes | Archmagister's Faceted Pendant (273049, -0.03 DPS) [world]; Sentinel's Medallion (19541, -0.31 DPS) [rep] |
+| shoulder | Bloodmage Mantle (7684) | Scarlet Monastery: Bloodmage Thalnos [dungeon] | 35.5 attack_power points (1.77 DPS) | yes | Forest Tracker Epaulets (2278, -0.28 DPS) [world_drop]; Death Speaker Mantle (6685, -0.46 DPS, sim-verified) [dungeon]; Magician's Mantle (12998, -0.52 DPS) [world_drop] |
+| back | Sergeant Major's Cape (16315) | PvP rank 5 · Sergeant Major · Alliance [pvp] | sim-decided (no score - a real sim tournament chose this pick) | yes | Hawkeye's Cloak (14593, -0.10 DPS) [world_drop]; Tigerstrike Mantle (13108, -0.31 DPS) [world_drop]; Vine Pruner's Cloak (279835, -0.38 DPS) [quest] |
+| chest | Crusader's Silvered Chain Shirt (250522) | Blacksmithing [crafted] | 43.2 attack_power points (2.15 DPS) | yes | Green Silk Armor (7065, -0.12 DPS) [crafted]; Beguiler Robes (7728, -0.18 DPS) [dungeon]; Totemic Leather Tunic (252451, -0.37 DPS, sim-verified) [crafted] |
+| wrist | Spidertank Oilrag (9448) | Gnomeregan: Electrocutioner 6000 [dungeon] | 23.4 attack_power points (1.16 DPS) | yes | Yorgen Bracers (13012, -0.30 DPS) [world_drop]; Glowing Magical Bracelets (13106, -0.33 DPS) [world_drop]; Hawkeye's Bracers (14590, -0.98 DPS, sim-verified) [world_drop] |
+| hands | Serpent Gloves (5970) | Wailing Caverns: Lord Serpentis [dungeon] | 29.0 attack_power points (1.44 DPS) | yes | Mail Combat Gauntlets (4075, -0.29 DPS) [world_drop]; Toughened Leather Gloves (4253, -0.31 DPS) [crafted]; Insignia Gloves (6408, -0.37 DPS, sim-verified) [world_drop] |
+| waist | Justicar's Belt (250560) | Blacksmithing [crafted] | 43.2 attack_power points (2.15 DPS) | yes | Skirmisher's Leather Belt (252461, -0.08 DPS) [crafted]; Prowler's Leather Belt (252459, -0.45 DPS) [crafted]; Skycaller's Leather Belt (252522, -0.45 DPS) [crafted] |
+| legs | Crusader's Silvered Chain Leggings (250527) | Blacksmithing [crafted] | 47.9 attack_power points (2.38 DPS) | yes | Ferine Leggings (6690, -0.28 DPS) [dungeon]; Totemic Leather Pants (252446, -0.31 DPS) [crafted]; Totemic Leather Leggings (252458, -0.31 DPS, sim-verified) [crafted] |
+| feet | Hard Gold Boots (250534) | Blacksmithing [crafted] | 32.2 attack_power points (1.60 DPS) | yes | Totemic Leather Boots (252442, -0.33 DPS) [crafted]; Gilded Slippers (254001, -0.35 DPS, sim-verified) [crafted]; Disjointed Shoes (277226, -0.36 DPS) [quest] |
+| finger1 | Protector's Band (19517) | Silverwing Sentinels [rep] | 22.8 attack_power points (1.13 DPS) | yes | Thunderbrow Ring (13097, -0.07 DPS) [world_drop]; Lorekeeper's Ring (19525, -0.23 DPS) [rep]; Seal of Wrynn (2933, -0.30 DPS) [quest] |
+| finger2 | Snake Hoop (6750) | Willix the Importer [quest] | 22.3 attack_power points (1.11 DPS) | yes | Thunderbrow Ring (13097, -0.05 DPS) [world_drop]; Lorekeeper's Ring (19525, -0.20 DPS) [rep]; Seal of Wrynn (2933, -0.28 DPS) [quest] |
 | trinket1 | - | - |  |  |  |
 | trinket2 | - | - |  |  |  |
-| main_hand | Manual Crowd Pummeler (9449) | Gnomeregan: Crowd Pummeler 9-60 [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Felbough Arm (273037, -0.32 DPS) [world]; Corpsemaker (6687, -0.49 DPS) [dungeon]; Viscous Hammer (13045, -5.43 DPS, sim-verified) [world_drop] |
+| main_hand | Manual Crowd Pummeler (9449) | Gnomeregan: Crowd Pummeler 9-60 [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Felbough Arm (273037, -0.38 DPS) [world]; Corpsemaker (6687, -0.58 DPS) [dungeon]; Viscous Hammer (13045, -6.35 DPS, sim-verified) [world_drop] |
 | off_hand | - | - |  |  |  |
 | ranged | - | - |  |  |  |
 
@@ -68,7 +72,9 @@ No-known-source sample (15 of 504, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 40 (human, 01000000000000000-00000000000000000-05233301001301350)
 
-Set DPS (verified): 135.3. Weights run: 6.0s. Verify run: 16.2s. 691 eligible items had no known source.
+Set DPS (verified): 135.3. Weights run: 7.6s. Verify run: 21.9s. 691 eligible items had no known source.
+
+Race sweep: human 135.3 ± 0.2, dwarf 132.7 ± 0.2 (dps); the guide race human is best.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.040 ± 0.004, agility=2.655 ± 0.055, crit=2.676 ± 0.065 per rating point (14 rating = 1%, 37.471 per %), hit=2.983 ± 0.129 per rating point (10 rating = 1%, 29.826 per %), melee_haste=12.380 ± 1.556, intellect=3.126 ± 0.046, spell_power=2.813 ± 0.004
 
@@ -98,7 +104,9 @@ No-known-source sample (15 of 691, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 50 (human, 05024000000000000-00000000000000000-05233301001301350)
 
-Set DPS (verified): 191.3. Weights run: 5.7s. Verify run: 30.7s. 883 eligible items had no known source.
+Set DPS (verified): 191.3. Weights run: 7.6s. Verify run: 40.0s. 883 eligible items had no known source.
+
+Race sweep: human 191.3 ± 0.2, dwarf 188.5 ± 0.2 (dps); the guide race human is best.
 
 2 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -130,7 +138,9 @@ No-known-source sample (15 of 883, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 60 (human, 05025000200000000-50200000000000000-05233301001301350)
 
-Set DPS (verified): 337.7. Weights run: 5.7s. Verify run: 88.1s. 2115 eligible items had no known source.
+Set DPS (verified): 337.7. Weights run: 7.6s. Verify run: 113.3s. 2115 eligible items had no known source.
+
+Race sweep: human 337.7 ± 0.2, dwarf 334.6 ± 0.2 (dps); the guide race human is best.
 
 2 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -162,7 +172,9 @@ No-known-source sample (15 of 2115, see the JSON for more): 913 Huge Ogre Sword;
 
 ### Band 60, raid preset (human, 05005000200000000-50300000000000000-05233301001301351)
 
-Set DPS (verified): 853.7. Weights run: 6.1s. Verify run: 88.3s. 2115 eligible items had no known source.
+Set DPS (verified): 853.7. Weights run: 7.8s. Verify run: 110.3s. 2115 eligible items had no known source.
+
+Race sweep: human 853.7 ± 1.1, dwarf 846.4 ± 1.1 (dps); the guide race human is best.
 
 2 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -196,7 +208,9 @@ No-known-source sample (15 of 2115, see the JSON for more): 913 Huge Ogre Sword;
 
 ### Band 20 (undead, 00000000000000000-00000000000000000-05231000000000000)
 
-Set DPS (verified): 43.6. Weights run: 5.4s. Verify run: 14.1s. 268 eligible items had no known source.
+Set DPS (verified): 43.6. Weights run: 6.9s. Verify run: 17.5s. 268 eligible items had no known source.
+
+Race sweep: undead 43.6 ± 0.0 (dps); the guide race undead is best.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.000 ± 0.003, agility=1.319 ± 0.020, crit=0.796 ± 0.018 per rating point (14 rating = 1%, 11.139 per %), hit=1.450 ± 0.050 per rating point (10 rating = 1%, 14.503 per %), melee_haste=5.157 ± 0.678, intellect=1.066 ± 0.026, spell_power=2.415 ± 0.003
 
@@ -224,39 +238,43 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 
 No-known-source sample (15 of 268, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2273 Guerrilla Armor; 2314 Toughened Leather Armor; 2543 Militia Pants; 2952 Fine Light Hide Jerkin; 3579 Ornate Copper Shoulders; 4642 Star of Xil'yeh; 5255 Quilboar Tomahawk; 5821 Darkstalker Boots; 5822 Hedgeseed Gauntlets; 5968 Rugged Boots; 6189 Durable Chain Shoulders; 6478 Rat Stompers; 7187 VanCleef's Boots
 
-### Band 30 (undead, 00000000000000000-00000000000000000-05233301001300000)
+### Band 30 (undead, 00000000000000000-00000000000000000-05233201001300100)
 
-Set DPS (verified): 83.0. Weights run: 5.9s. Verify run: 16.2s. 491 eligible items had no known source.
+Set DPS (verified): 85.5. Weights run: 7.7s. Verify run: 15.4s. 491 eligible items had no known source.
 
-Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.000 ± 0.003, agility=1.548 ± 0.026, crit=1.198 ± 0.026 per rating point (14 rating = 1%, 16.778 per %), hit=1.911 ± 0.072 per rating point (10 rating = 1%, 19.107 per %), melee_haste=8.565 ± 0.931, intellect=1.530 ± 0.031, spell_power=2.697 ± 0.003
+Race sweep: undead 85.5 ± 0.1 (dps); the guide race undead is best.
+
+Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.000 ± 0.004, agility=1.802 ± 0.029, crit=1.414 ± 0.031 per rating point (14 rating = 1%, 19.801 per %), hit=1.764 ± 0.073 per rating point (10 rating = 1%, 17.644 per %), melee_haste=7.617 ± 0.971, intellect=1.344 ± 0.035, spell_power=2.604 ± 0.003
 
 | Slot | Item | Source | Score (attack_power points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Crusader's Chain Helm (250502) | Blacksmithing [crafted] | 59.8 attack_power points (2.82 DPS) | yes | Totemic Leather Helm (252456, -1.12 DPS, sim-verified) [crafted]; Barbaric Iron Helm (7915, -1.31 DPS) [crafted]; Enchanter's Cowl (4322, -1.34 DPS) [crafted] |
-| neck | Kaleidoscope Chain (13084) | World drop [world_drop] | sim-verified (+0.1 DPS vs the runner-up, not corroborated against the finished set) | yes | Archmagister's Faceted Pendant (273049, -0.15 DPS, sim-verified) [world]; Scout's Medallion (19537, -0.37 DPS) [rep] |
-| shoulder | Bloodmage Mantle (7684) | Scarlet Monastery: Bloodmage Thalnos [dungeon] | 38.0 attack_power points (1.80 DPS) | yes | Death Speaker Mantle (6685, -0.24 DPS) [dungeon]; Magician's Mantle (12998, -0.51 DPS) [world_drop]; Forest Tracker Epaulets (2278, -0.52 DPS) [world_drop] |
-| back | Hawkeye's Cloak (14593) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Hillman's Cloak (3719, -0.16 DPS) [crafted]; Windsong Drape (15468, -0.16 DPS) [quest]; Tigerstrike Mantle (13108, -0.21 DPS) [world_drop] |
-| chest | Crusader's Silvered Chain Shirt (250522) | Blacksmithing [crafted] | 44.4 attack_power points (2.10 DPS) | yes | Green Silk Armor (7065, -0.01 DPS) [crafted]; Beguiler Robes (7728, -0.08 DPS) [dungeon]; Totemic Leather Tunic (252451, -0.09 DPS) [crafted] |
-| wrist | Spidertank Oilrag (9448) | Gnomeregan: Electrocutioner 6000 [dungeon] | 24.3 attack_power points (1.15 DPS) | yes | Hawkeye's Bracers (14590, -0.33 DPS) [world_drop]; Yorgen Bracers (13012, -0.36 DPS) [world_drop]; Glowing Magical Bracelets (13106, -0.85 DPS, sim-verified) [world_drop] |
-| hands | Serpent Gloves (5970) | Wailing Caverns: Lord Serpentis [dungeon] | 28.2 attack_power points (1.33 DPS) | yes | Oilrag Handwraps (16741, -0.04 DPS) [quest]; Jutebraid Gloves (10654, -0.20 DPS) [quest]; Insignia Gloves (6408, -0.23 DPS) [world_drop] |
-| waist | Justicar's Belt (250560) | Blacksmithing [crafted] | 44.4 attack_power points (2.10 DPS) | yes | Skirmisher's Leather Belt (252461, -0.10 DPS, sim-verified) [crafted]; Skycaller's Leather Belt (252522, -0.39 DPS) [crafted]; Defiler's Cloth Girdle (20164, -0.48 DPS) [rep] |
-| legs | Crusader's Silvered Chain Leggings (250527) | Blacksmithing [crafted] | 49.1 attack_power points (2.32 DPS) | yes | Totemic Leather Leggings (252458, -0.01 DPS) [crafted]; Ferine Leggings (6690, -0.22 DPS) [dungeon]; Totemic Leather Pants (252446, -0.29 DPS) [crafted] |
-| feet | Hard Gold Boots (250534) | Blacksmithing [crafted] | 32.9 attack_power points (1.55 DPS) | yes | Gilded Slippers (254001, -0.16 DPS) [crafted]; Totemic Leather Boots (252442, -0.32 DPS) [crafted]; Acidic Walkers (9454, -0.34 DPS) [dungeon] |
-| finger1 | Snake Hoop (6750) | Willix the Importer [quest] | 23.8 attack_power points (1.13 DPS) | yes | Thunderbrow Ring (13097, -0.15 DPS) [world_drop]; Advisor's Ring (19521, -0.23 DPS) [rep]; Ring of Power Regulation (273030, -0.36 DPS) [dungeon] |
-| finger2 | Legionnaire's Band (19513) | Warsong Outriders [rep] | 21.3 attack_power points (1.01 DPS) | yes | Thunderbrow Ring (13097, -0.03 DPS) [world_drop]; Advisor's Ring (19521, -0.11 DPS) [rep]; Ring of Power Regulation (273030, -0.24 DPS) [dungeon] |
+| head | Crusader's Chain Helm (250502) | Blacksmithing [crafted] | 58.5 attack_power points (2.90 DPS) | yes | Totemic Leather Helm (252456, -1.35 DPS) [crafted]; Enchanter's Cowl (4322, -1.46 DPS) [crafted]; Barbaric Iron Helm (7915, -1.58 DPS, sim-verified) [crafted] |
+| neck | Kaleidoscope Chain (13084) | World drop [world_drop] | 20.6 attack_power points (1.02 DPS) | yes | Archmagister's Faceted Pendant (273049, -0.03 DPS) [world]; Scout's Medallion (19537, -0.31 DPS) [rep] |
+| shoulder | Bloodmage Mantle (7684) | Scarlet Monastery: Bloodmage Thalnos [dungeon] | 35.5 attack_power points (1.77 DPS) | yes | Death Speaker Mantle (6685, -0.25 DPS) [dungeon]; Forest Tracker Epaulets (2278, -0.28 DPS) [world_drop]; Magician's Mantle (12998, -0.52 DPS) [world_drop] |
+| back | Hawkeye's Cloak (14593) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Tigerstrike Mantle (13108, -0.21 DPS) [world_drop]; Hillman's Cloak (3719, -0.28 DPS) [crafted]; Windsong Drape (15468, -0.28 DPS) [quest] |
+| chest | Crusader's Silvered Chain Shirt (250522) | Blacksmithing [crafted] | 43.2 attack_power points (2.15 DPS) | yes | Totemic Leather Tunic (252451, -0.11 DPS) [crafted]; Green Silk Armor (7065, -0.12 DPS) [crafted]; Beguiler Robes (7728, -0.18 DPS) [dungeon] |
+| wrist | Spidertank Oilrag (9448) | Gnomeregan: Electrocutioner 6000 [dungeon] | 23.4 attack_power points (1.16 DPS) | yes | Yorgen Bracers (13012, -0.30 DPS) [world_drop]; Glowing Magical Bracelets (13106, -0.33 DPS) [world_drop]; Hawkeye's Bracers (14590, -0.77 DPS, sim-verified) [world_drop] |
+| hands | Serpent Gloves (5970) | Wailing Caverns: Lord Serpentis [dungeon] | 29.0 attack_power points (1.44 DPS) | yes | Oilrag Handwraps (16741, -0.14 DPS) [quest]; Insignia Gloves (6408, -0.21 DPS) [world_drop]; Mail Combat Gauntlets (4075, -0.29 DPS) [world_drop] |
+| waist | Justicar's Belt (250560) | Blacksmithing [crafted] | 43.2 attack_power points (2.15 DPS) | yes | Skirmisher's Leather Belt (252461, -0.08 DPS) [crafted]; Prowler's Leather Belt (252459, -0.45 DPS) [crafted]; Skycaller's Leather Belt (252522, -0.45 DPS) [crafted] |
+| legs | Crusader's Silvered Chain Leggings (250527) | Blacksmithing [crafted] | 47.9 attack_power points (2.38 DPS) | yes | Totemic Leather Leggings (252458, -0.05 DPS) [crafted]; Ferine Leggings (6690, -0.28 DPS) [dungeon]; Totemic Leather Pants (252446, -0.31 DPS) [crafted] |
+| feet | Hard Gold Boots (250534) | Blacksmithing [crafted] | 32.2 attack_power points (1.60 DPS) | yes | Gilded Slippers (254001, -0.23 DPS) [crafted]; Totemic Leather Boots (252442, -0.33 DPS) [crafted]; Acidic Walkers (9454, -0.42 DPS) [dungeon] |
+| finger1 | Legionnaire's Band (19513) | Warsong Outriders [rep] | 22.8 attack_power points (1.13 DPS) | yes | Thunderbrow Ring (13097, -0.07 DPS) [world_drop]; Advisor's Ring (19521, -0.23 DPS) [rep]; Ring of Power Regulation (273030, -0.36 DPS) [dungeon] |
+| finger2 | Snake Hoop (6750) | Willix the Importer [quest] | 22.3 attack_power points (1.11 DPS) | yes | Thunderbrow Ring (13097, -0.14 DPS, sim-verified) [world_drop]; Advisor's Ring (19521, -0.20 DPS) [rep]; Ring of Power Regulation (273030, -0.33 DPS) [dungeon] |
 | trinket1 | - | - |  |  |  |
 | trinket2 | - | - |  |  |  |
-| main_hand | Manual Crowd Pummeler (9449) | Gnomeregan: Crowd Pummeler 9-60 [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Felbough Arm (273037, -0.35 DPS) [world]; Corpsemaker (6687, -0.50 DPS) [dungeon]; Viscous Hammer (13045, -5.79 DPS, sim-verified) [world_drop] |
+| main_hand | Manual Crowd Pummeler (9449) | Gnomeregan: Crowd Pummeler 9-60 [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Felbough Arm (273037, -0.38 DPS) [world]; Corpsemaker (6687, -0.58 DPS) [dungeon]; Viscous Hammer (13045, -6.48 DPS, sim-verified) [world_drop] |
 | off_hand | - | - |  |  |  |
 | ranged | - | - |  |  |  |
 
-**New at 30:** head: Crusader's Chain Helm; neck: Kaleidoscope Chain; shoulder: Bloodmage Mantle; back: Hawkeye's Cloak; chest: Crusader's Silvered Chain Shirt; wrist: Spidertank Oilrag; waist: Justicar's Belt; legs: Crusader's Silvered Chain Leggings; feet: Hard Gold Boots; finger1: Snake Hoop; finger2: Legionnaire's Band; main_hand: Manual Crowd Pummeler
+**New at 30:** head: Crusader's Chain Helm; neck: Kaleidoscope Chain; shoulder: Bloodmage Mantle; back: Hawkeye's Cloak; chest: Crusader's Silvered Chain Shirt; wrist: Spidertank Oilrag; waist: Justicar's Belt; legs: Crusader's Silvered Chain Leggings; feet: Hard Gold Boots; finger1: Legionnaire's Band; finger2: Snake Hoop; main_hand: Manual Crowd Pummeler
 
 No-known-source sample (15 of 491, see the JSON for more): 913 Huge Ogre Sword; 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2314 Toughened Leather Armor; 2543 Militia Pants; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3579 Ornate Copper Shoulders; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 5000 Coral Band; 5004 Mark of the Kirin Tor
 
 ### Band 40 (undead, 01000000000000000-00000000000000000-05233301001301350)
 
-Set DPS (verified): 133.8. Weights run: 6.0s. Verify run: 16.1s. 675 eligible items had no known source.
+Set DPS (verified): 133.8. Weights run: 7.6s. Verify run: 21.0s. 675 eligible items had no known source.
+
+Race sweep: undead 133.8 ± 0.2 (dps); the guide race undead is best.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.040 ± 0.004, agility=2.655 ± 0.055, crit=2.676 ± 0.065 per rating point (14 rating = 1%, 37.471 per %), hit=2.983 ± 0.129 per rating point (10 rating = 1%, 29.826 per %), melee_haste=12.380 ± 1.556, intellect=3.126 ± 0.046, spell_power=2.813 ± 0.004
 
@@ -286,7 +304,9 @@ No-known-source sample (15 of 675, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 50 (undead, 05024000000000000-00000000000000000-05233301001301350)
 
-Set DPS (verified): 188.5. Weights run: 5.7s. Verify run: 26.0s. 883 eligible items had no known source.
+Set DPS (verified): 188.5. Weights run: 7.6s. Verify run: 34.1s. 883 eligible items had no known source.
+
+Race sweep: undead 188.5 ± 0.2 (dps); the guide race undead is best.
 
 1 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -318,7 +338,9 @@ No-known-source sample (15 of 883, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 60 (undead, 05025000200000000-50200000000000000-05233301001301350)
 
-Set DPS (verified): 339.0. Weights run: 5.7s. Verify run: 81.7s. 2141 eligible items had no known source.
+Set DPS (verified): 339.0. Weights run: 7.6s. Verify run: 103.9s. 2141 eligible items had no known source.
+
+Race sweep: undead 339.0 ± 0.3 (dps); the guide race undead is best.
 
 3 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -350,7 +372,9 @@ No-known-source sample (15 of 2141, see the JSON for more): 913 Huge Ogre Sword;
 
 ### Band 60, raid preset (undead, 05005000200000000-50300000000000000-05233301001301351)
 
-Set DPS (verified): 847.2. Weights run: 6.1s. Verify run: 90.6s. 2141 eligible items had no known source.
+Set DPS (verified): 847.2. Weights run: 7.8s. Verify run: 111.4s. 2141 eligible items had no known source.
+
+Race sweep: undead 847.2 ± 1.0 (dps); the guide race undead is best.
 
 8 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 

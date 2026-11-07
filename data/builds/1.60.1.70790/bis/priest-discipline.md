@@ -8,7 +8,9 @@ Forever unifies melee, ranged and spell hit into one stat. An item's crit rating
 
 ### Band 20 (human, 005005000010000000-00000000000000000-00000000000000000)
 
-Set DPS (verified): 46.4. Weights run: 10.9s. Verify run: 53.6s. 186 eligible items had no known source.
+Set DPS (verified): 46.4. Weights run: 13.2s. Verify run: 71.9s. 186 eligible items had no known source.
+
+Race sweep: human 46.4 ± 0.0, gnome 45.9 ± 0.0, night-elf 44.8 ± 0.0, dwarf 44.5 ± 0.0 (heal_score); the guide race human is best.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.027, intellect=0.700 ± 0.005, spirit=0.609 ± 0.006, mp5=2.069 ± 0.017, crit=0.056 ± 0.003 per rating point (14 rating = 1%, 0.781 per %), spell_haste=not significant (0.013 ± 0.043)
 
@@ -38,7 +40,9 @@ No-known-source sample (15 of 186, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (human, 005005031330001000-00000000000000000-00000000000000000)
 
-Set DPS (verified): 93.1. Weights run: 12.1s. Verify run: 59.8s. 308 eligible items had no known source.
+Set DPS (verified): 93.1. Weights run: 15.1s. Verify run: 80.8s. 308 eligible items had no known source.
+
+Race sweep: human 93.1 ± 0.0, gnome 89.7 ± 0.0, night-elf 87.9 ± 0.0, dwarf 87.2 ± 0.0 (heal_score); the guide race human is best.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.036, intellect=0.715 ± 0.008, spirit=1.155 ± 0.009, mp5=2.499 ± 0.009, crit=0.087 ± 0.004 per rating point (14 rating = 1%, 1.217 per %), spell_haste=not significant (0.226 ± 0.085)
 
@@ -66,39 +70,43 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 
 No-known-source sample (15 of 308, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 3222 Wicked Dagger; 3738 Brewing Rod; 4642 Star of Xil'yeh; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 5000 Coral Band; 5004 Mark of the Kirin Tor; 5005 Emberspark Pendant; 5971 Feathered Cape; 6478 Rat Stompers
 
-### Band 40 (human, 005005031330011430-20000000000000000-00000000000000000)
+### Band 40 (human, 005005031330011000-33300000000000000-00000000000000000)
 
-Set DPS (verified): 135.3. Weights run: 19.9s. Verify run: 73.0s. 402 eligible items had no known source.
+Set DPS (verified): 141.9. Weights run: 25.3s. Verify run: 161.8s. 402 eligible items had no known source.
 
-Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.240, intellect=1.687 ± 0.039, spirit=2.653 ± 0.045, mp5=4.469 ± 0.040, crit=0.499 ± 0.032 per rating point (14 rating = 1%, 6.990 per %), spell_haste=4.567 ± 0.699
+Race sweep: human 141.9 ± 0.1, gnome 138.4 ± 0.0, night-elf 136.2 ± 0.0, dwarf 135.1 ± 0.0 (heal_score); the guide race human is best.
+
+Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.152, intellect=1.632 ± 0.029, spirit=1.991 ± 0.031, mp5=3.897 ± 0.029, crit=0.336 ± 0.020 per rating point (14 rating = 1%, 4.710 per %), spell_haste=2.787 ± 0.501
 
 | Slot | Item | Source | Score (healing_power points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Papal Fez (9431) | Uldaman [dungeon] | 74.6 healing_power points (7.74 DPS) | yes | Whitemane's Chapeau (7720, -0.83 DPS, sim-verified) [dungeon]; Miner's Hat of the Deep (9429, -2.01 DPS) [dungeon]; Holy Shroud (2721, -2.66 DPS) [world_drop] |
-| neck | Glowing Eye of Mordresh (10769) | Razorfen Downs: Mordresh Fire Eye [dungeon] | 33.5 healing_power points (3.48 DPS) | yes | Triune Amulet (7722, -0.72 DPS) [dungeon]; Amberglow Talisman (10824, -0.72 DPS) [quest]; Necklace of Calisea (1714, -1.59 DPS, sim-verified) [dungeon] |
-| shoulder | Inquisitor's Shawl (19507) | Scarlet Monastery: High Inquisitor Fairbanks [dungeon] | 43.9 healing_power points (4.56 DPS) | yes | Mantle of Doan (7712, -0.58 DPS) [dungeon]; Crimson Silk Shoulders (7059, -1.23 DPS) [crafted]; Earthen Silk Shoulders (254033, -1.42 DPS, sim-verified) [crafted] |
-| back | Caretaker's Cape (19532) | Silverwing Sentinels [rep] | sim-decided (no score - a real sim tournament chose this pick) | yes | Glowing Thresher Cape (6901, -0.32 DPS) [dungeon]; Ceremonial Centaur Blanket (6789, -0.42 DPS) [quest]; Expeditionary's Cape (271922, -0.82 DPS, sim-verified) [rep] |
-| chest | Stormcloth Vest (10020) | Tailoring [crafted] | 79.2 healing_power points (8.22 DPS) | yes | Doomsayer's Robe (4746, -1.61 DPS) [quest]; Civinad Robes (9623, -2.22 DPS) [quest]; Dreamweave Vest (10021, -2.60 DPS, sim-verified) [crafted] |
-| wrist | Earthen Silk Cuffs (254019) | Tailoring [crafted] | 23.3 healing_power points (2.41 DPS) | yes | Spidertank Oilrag (9448, -0.09 DPS) [dungeon]; Mindthrust Bracers (1974, -0.15 DPS) [dungeon]; Silkstream Cuffs (16791, -0.44 DPS) [quest] |
-| hands | Dreamweave Gloves (10019) | Tailoring [crafted] | 43.3 healing_power points (4.50 DPS) | yes | Earthen Silk Gloves (254017, -0.43 DPS) [crafted]; Windchaser Handguards (14431, -0.92 DPS) [world_drop]; Gloves of Old (9395, -1.49 DPS, sim-verified) [world_drop] |
-| waist | Gilded Cord (254037) | Tailoring [crafted] | 51.4 healing_power points (5.34 DPS) | yes | Sutarn's Ring (13105, -1.93 DPS) [world_drop]; Deathmage Sash (10771, -1.98 DPS) [dungeon]; Windchaser Cinch (14435, -2.33 DPS, sim-verified) [world_drop] |
-| legs | Stoneweaver Leggings (9407) | Uldaman: Ironaya [dungeon] | 65.3 healing_power points (6.78 DPS) | yes | Stormcloth Pants (10010, -1.58 DPS, sim-verified) [crafted]; Pristine Leggings (253987, -1.90 DPS) [crafted]; Black Mageweave Leggings (9999, -2.10 DPS) [crafted] |
-| feet | Furen's Boots (13100) | World drop [world_drop] | 54.3 healing_power points (5.63 DPS) | yes | Thoughtcast Boots (10578, -0.85 DPS, sim-verified) [dungeon]; Gilded Slippers (254001, -1.23 DPS) [crafted]; Earthen Silk Slippers (254013, -1.84 DPS) [crafted] |
-| finger1 | Electrocutioner Lagnut (9447) (or Runemender's Seal (273031)) | Gnomeregan: Electrocutioner 6000 [dungeon] | 27.6 healing_power points (2.86 DPS) | yes | Welken Ring (5011, -0.06 DPS) [world_drop]; The Queen's Jewel (13094, -0.31 DPS) [world_drop]; Lorekeeper's Ring (19524, -0.54 DPS) [rep] |
-| finger2 | Runemender's Seal (273031) | Arcane Anomaly [world] | 27.6 healing_power points (2.86 DPS) | yes | The Queen's Jewel (13094, -0.31 DPS) [world_drop]; Welken Ring (5011, -0.44 DPS, sim-verified) [world_drop]; Lorekeeper's Ring (19524, -0.54 DPS) [rep] |
-| trinket1 | Ankh of Life (1713) | World drop [world_drop] | sim-verified (+5.0 DPS vs the runner-up, not corroborated against the finished set) | yes | - |
+| head | Papal Fez (9431) | Uldaman [dungeon] | 67.7 healing_power points (8.26 DPS) | yes | Whitemane's Chapeau (7720, -1.07 DPS, sim-verified) [dungeon]; Miner's Hat of the Deep (9429, -2.44 DPS) [dungeon]; Holy Shroud (2721, -2.77 DPS) [world_drop] |
+| neck | Glowing Eye of Mordresh (10769) | Razorfen Downs: Mordresh Fire Eye [dungeon] | 33.1 healing_power points (4.04 DPS) | yes | Necklace of Calisea (1714, -1.27 DPS, sim-verified) [dungeon]; Triune Amulet (7722, -1.36 DPS) [dungeon]; Amberglow Talisman (10824, -1.61 DPS) [quest] |
+| shoulder | Inquisitor's Shawl (19507) | Scarlet Monastery: High Inquisitor Fairbanks [dungeon] | 43.2 healing_power points (5.28 DPS) | yes | Earthen Silk Shoulders (254033, -0.75 DPS, sim-verified) [crafted]; Mantle of Doan (7712, -1.28 DPS) [dungeon]; Mistscape Mantle (4734, -1.87 DPS) [dungeon] |
+| back | Caretaker's Cape (19532) | Silverwing Sentinels [rep] | sim-decided (no score - a real sim tournament chose this pick) | yes | Glowing Thresher Cape (6901, -0.61 DPS) [dungeon]; Sergeant Major's Cape (16336, -0.76 DPS) [pvp]; Expeditionary's Cape (271922, -0.96 DPS, sim-verified) [rep] |
+| chest | Stormcloth Vest (10020) | Tailoring [crafted] | 73.9 healing_power points (9.03 DPS) | yes | Doomsayer's Robe (4746, -2.70 DPS) [quest]; Civinad Robes (9623, -2.93 DPS) [quest]; Dreamweave Vest (10021, -3.01 DPS, sim-verified) [crafted] |
+| wrist | Spidertank Oilrag (9448) | Gnomeregan: Electrocutioner 6000 [dungeon] | 20.7 healing_power points (2.53 DPS) | yes | Mindthrust Bracers (1974, -0.10 DPS) [dungeon]; Earthen Silk Cuffs (254019, -0.25 DPS, sim-verified) [crafted]; Silkstream Cuffs (16791, -0.56 DPS) [quest] |
+| hands | Dreamweave Gloves (10019) | Tailoring [crafted] | 38.5 healing_power points (4.70 DPS) | yes | Gilded Handwraps (254021, -0.62 DPS) [crafted]; Earthen Silk Gloves (254017, -0.62 DPS, sim-verified) [crafted]; Gloves of Old (9395, -0.78 DPS) [world_drop] |
+| waist | Gilded Cord (254037) | Tailoring [crafted] | 47.0 healing_power points (5.74 DPS) | yes | Windchaser Cinch (14435, -1.96 DPS) [world_drop]; Sutarn's Ring (13105, -2.29 DPS) [world_drop]; Deathmage Sash (10771, -2.48 DPS, sim-verified) [dungeon] |
+| legs | Stoneweaver Leggings (9407) | Uldaman: Ironaya [dungeon] | 56.9 healing_power points (6.95 DPS) | yes | Pristine Leggings (253987, -1.66 DPS) [crafted]; Stormcloth Pants (10010, -1.89 DPS, sim-verified) [crafted]; Aurora Pants (4044, -2.33 DPS) [world_drop] |
+| feet | Gilded Slippers (254001) | Tailoring [crafted] | sim-verified (+0.3 DPS vs the runner-up, not corroborated against the finished set) | yes | Thoughtcast Boots (10578, -0.06 DPS) [dungeon]; Furen's Boots (13100, -0.33 DPS, sim-verified) [world_drop]; Earthen Silk Slippers (254013, -0.91 DPS) [crafted] |
+| finger1 | Electrocutioner Lagnut (9447) (or Runemender's Seal (273031)) | Gnomeregan: Electrocutioner 6000 [dungeon] | 22.9 healing_power points (2.80 DPS) | yes | Welken Ring (5011, -0.10 DPS) [world_drop]; Lorekeeper's Ring (19524, -0.27 DPS) [rep]; The Queen's Jewel (13094, -0.46 DPS) [world_drop] |
+| finger2 | Runemender's Seal (273031) | Arcane Anomaly [world] | 22.9 healing_power points (2.80 DPS) | yes | Lorekeeper's Ring (19524, -0.27 DPS) [rep]; Welken Ring (5011, -0.43 DPS, sim-verified) [world_drop]; The Queen's Jewel (13094, -0.46 DPS) [world_drop] |
+| trinket1 | Ankh of Life (1713) | World drop [world_drop] | sim-verified (+5.3 DPS vs the runner-up, not corroborated against the finished set) | yes | - |
 | trinket2 | Enriched Seal (271905) | Theramore Expeditionary Force [rep] | sim-decided (no score - a real sim tournament chose this pick) | yes | - |
-| main_hand | Hand of Righteousness (7721) | Scarlet Monastery: High Inquisitor Whitemane [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Staff of the Friar (3415, -2.73 DPS) [dungeon]; Odo's Ley Staff (6318, -3.26 DPS) [dungeon]; Staff of Jordan (873, -4.43 DPS, sim-verified) [world_drop] |
-| off_hand | Beacon of Hope (9393) | Uldaman [dungeon] | 32.6 healing_power points (3.38 DPS) | yes | Orb of Lorica (11262, -0.39 DPS) [quest]; Silksand Star (15964, -0.91 DPS) [world_drop]; Orb of Souls (249395, -1.01 DPS, sim-verified) [crafted] |
-| ranged | Jaina's Firestarter (13064) | World drop [world_drop] | 18.1 healing_power points (1.88 DPS) | yes | Wand of Mana Concentration (273043, -0.31 DPS, sim-verified) [world]; Flash Wand (5248, -0.35 DPS) [quest]; Goblin Igniter (5253, -0.35 DPS) [quest] |
+| main_hand | Hand of Righteousness (7721) | Scarlet Monastery: High Inquisitor Whitemane [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Staff of the Friar (3415, -3.56 DPS) [dungeon]; Odo's Ley Staff (6318, -4.16 DPS) [dungeon]; Staff of Jordan (873, -5.04 DPS, sim-verified) [world_drop] |
+| off_hand | Beacon of Hope (9393) | Uldaman [dungeon] | 30.0 healing_power points (3.66 DPS) | yes | Orb of Souls (249395, -0.61 DPS) [crafted]; Orb of Lorica (11262, -0.84 DPS, sim-verified) [quest]; Aurora Sphere (7610, -1.29 DPS) [dungeon] |
+| ranged | Jaina's Firestarter (13064) | World drop [world_drop] | 15.8 healing_power points (1.92 DPS) | yes | Wand of Mana Concentration (273043, -0.18 DPS) [world]; Flash Wand (5248, -0.40 DPS) [quest]; Goblin Igniter (5253, -0.40 DPS) [quest] |
 
-**New at 40:** head: Papal Fez; neck: Glowing Eye of Mordresh; shoulder: Inquisitor's Shawl; back: Caretaker's Cape; chest: Stormcloth Vest; wrist: Earthen Silk Cuffs; hands: Dreamweave Gloves; waist: Gilded Cord; legs: Stoneweaver Leggings; feet: Furen's Boots; trinket1: Ankh of Life; trinket2: Enriched Seal; main_hand: Hand of Righteousness; off_hand: Beacon of Hope; ranged: Jaina's Firestarter
+**New at 40:** head: Papal Fez; neck: Glowing Eye of Mordresh; shoulder: Inquisitor's Shawl; back: Caretaker's Cape; chest: Stormcloth Vest; hands: Dreamweave Gloves; waist: Gilded Cord; legs: Stoneweaver Leggings; trinket1: Ankh of Life; trinket2: Enriched Seal; main_hand: Hand of Righteousness; off_hand: Beacon of Hope; ranged: Jaina's Firestarter
 
 No-known-source sample (15 of 402, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 3222 Wicked Dagger; 3738 Brewing Rod; 4642 Star of Xil'yeh; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 5000 Coral Band; 5004 Mark of the Kirin Tor; 5005 Emberspark Pendant; 5008 Quicksilver Ring; 5010 Inscribed Gold Ring
 
 ### Band 50 (human, 005005031330011430-33501000000000000-00000000000000000)
 
-Set DPS (verified): 198.5. Weights run: 20.8s. Verify run: 187.3s. 517 eligible items had no known source.
+Set DPS (verified): 198.5. Weights run: 26.5s. Verify run: 242.0s. 517 eligible items had no known source.
+
+Race sweep: human 198.6 ± 0.1, gnome 190.6 ± 0.1, night-elf 187.4 ± 0.1, dwarf 186.1 ± 0.1 (heal_score); the guide race human is best.
 
 1 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -130,7 +138,9 @@ No-known-source sample (15 of 517, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (human, 005005031330011430-33505003030000000-00000000000000000)
 
-Set DPS (verified): 287.7. Weights run: 22.1s. Verify run: 669.0s. 1359 eligible items had no known source.
+Set DPS (verified): 287.7. Weights run: 27.3s. Verify run: 836.3s. 1359 eligible items had no known source.
+
+Race sweep: human 287.5 ± 0.2, gnome 286.8 ± 0.2, night-elf 274.6 ± 0.2, dwarf 270.8 ± 0.2 (heal_score); the guide race human is best.
 
 2 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -162,7 +172,9 @@ No-known-source sample (15 of 1359, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (human, 005005031330011430-33505003030000000-00000000000000000)
 
-Set DPS (verified): 600.0. Weights run: 15.3s. Verify run: 469.8s. 1359 eligible items had no known source.
+Set DPS (verified): 600.0. Weights run: 18.6s. Verify run: 592.5s. 1359 eligible items had no known source.
+
+Race sweep: human 599.7 ± 0.3, gnome 596.3 ± 0.3, night-elf 582.2 ± 0.3, dwarf 579.2 ± 0.3 (heal_score); the guide race human is best.
 
 4 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -196,7 +208,9 @@ No-known-source sample (15 of 1359, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 20 (undead, 005005000010000000-00000000000000000-00000000000000000)
 
-Set DPS (verified): 45.4. Weights run: 10.9s. Verify run: 54.9s. 179 eligible items had no known source.
+Set DPS (verified): 45.4. Weights run: 13.2s. Verify run: 69.1s. 179 eligible items had no known source.
+
+Race sweep: undead 45.4 ± 0.0, troll 43.4 ± 0.0 (heal_score); the guide race undead is best.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.027, intellect=0.700 ± 0.005, spirit=0.609 ± 0.006, mp5=2.069 ± 0.017, crit=0.056 ± 0.003 per rating point (14 rating = 1%, 0.781 per %), spell_haste=not significant (0.013 ± 0.043)
 
@@ -226,7 +240,9 @@ No-known-source sample (15 of 179, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (undead, 005005031330001000-00000000000000000-00000000000000000)
 
-Set DPS (verified): 94.6. Weights run: 12.1s. Verify run: 59.9s. 301 eligible items had no known source.
+Set DPS (verified): 94.6. Weights run: 15.1s. Verify run: 77.3s. 301 eligible items had no known source.
+
+Race sweep: undead 94.6 ± 0.0, troll 87.1 ± 0.0 (heal_score); the guide race undead is best.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.036, intellect=0.715 ± 0.008, spirit=1.155 ± 0.009, mp5=2.499 ± 0.009, crit=0.087 ± 0.004 per rating point (14 rating = 1%, 1.217 per %), spell_haste=not significant (0.226 ± 0.085)
 
@@ -254,31 +270,33 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 
 No-known-source sample (15 of 301, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 3222 Wicked Dagger; 3738 Brewing Rod; 4642 Star of Xil'yeh; 5000 Coral Band; 5004 Mark of the Kirin Tor; 5005 Emberspark Pendant; 5971 Feathered Cape; 6478 Rat Stompers; 9362 Brilliant Gold Ring; 14389 Durability Shoulderpads
 
-### Band 40 (undead, 005005031330011430-20000000000000000-00000000000000000)
+### Band 40 (undead, 005005031330011000-33300000000000000-00000000000000000)
 
-Set DPS (verified): 140.7. Weights run: 19.9s. Verify run: 77.2s. 395 eligible items had no known source.
+Set DPS (verified): 146.9. Weights run: 25.3s. Verify run: 160.2s. 395 eligible items had no known source.
 
-Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.089, intellect=1.493 ± 0.026, spirit=2.557 ± 0.027, mp5=4.366 ± 0.035, crit=0.219 ± 0.015 per rating point (14 rating = 1%, 3.067 per %), spell_haste=4.127 ± 0.434
+Race sweep: undead 146.9 ± 0.1, troll 134.3 ± 0.0 (heal_score); the guide race undead is best.
+
+Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.152, intellect=1.632 ± 0.029, spirit=1.991 ± 0.031, mp5=3.897 ± 0.029, crit=0.336 ± 0.020 per rating point (14 rating = 1%, 4.710 per %), spell_haste=2.787 ± 0.501
 
 | Slot | Item | Source | Score (healing_power points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Papal Fez (9431) | Uldaman [dungeon] | 70.4 healing_power points (6.48 DPS) | yes | Whitemane's Chapeau (7720, -0.44 DPS) [dungeon]; Miner's Hat of the Deep (9429, -1.79 DPS) [dungeon]; Holy Shroud (2721, -2.03 DPS) [world_drop] |
-| neck | Glowing Eye of Mordresh (10769) | Razorfen Downs: Mordresh Fire Eye [dungeon] | 31.9 healing_power points (2.94 DPS) | yes | Necklace of Calisea (1714, -0.33 DPS) [dungeon]; Triune Amulet (7722, -0.56 DPS) [dungeon]; Amberglow Talisman (10824, -0.59 DPS) [quest] |
-| shoulder | Inquisitor's Shawl (19507) | Scarlet Monastery: High Inquisitor Fairbanks [dungeon] | 41.4 healing_power points (3.81 DPS) | yes | Earthen Silk Shoulders (254033, -0.27 DPS) [crafted]; Mantle of Doan (7712, -0.46 DPS) [dungeon]; Crimson Silk Shoulders (7059, -1.07 DPS) [crafted] |
-| back | Battle Healer's Cloak (19528) | Warsong Outriders [rep] | sim-decided (no score - a real sim tournament chose this pick) | yes | Cloak of Blight (6832, +0.00 DPS) [quest]; Glowing Thresher Cape (6901, -0.31 DPS) [dungeon]; Darkspear Raider's Cloak (272077, -0.38 DPS) [vendor] |
-| chest | Stormcloth Vest (10020) | Tailoring [crafted] | 78.5 healing_power points (7.23 DPS) | yes | Dreamweave Vest (10021, -1.03 DPS) [crafted]; Doomsayer's Robe (4746, -1.51 DPS) [quest]; Civinad Robes (9623, -2.01 DPS) [quest] |
-| wrist | Spidertank Oilrag (9448) | Gnomeregan: Electrocutioner 6000 [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Earthen Silk Cuffs (254019, +0.00 DPS) [crafted]; Mindthrust Bracers (1974, -0.14 DPS) [dungeon]; Silkstream Cuffs (16791, -0.41 DPS) [quest] |
-| hands | Gilded Handwraps (254021) | Tailoring [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Gloves of Old (9395, +0.00 DPS) [world_drop]; Dreamweave Gloves (10019, +0.00 DPS) [crafted]; Earthen Silk Gloves (254017, +0.00 DPS) [crafted] |
-| waist | Gilded Cord (254037) | Tailoring [crafted] | 49.3 healing_power points (4.54 DPS) | yes | Windchaser Cinch (14435, -1.32 DPS) [world_drop]; Sutarn's Ring (13105, -1.75 DPS) [world_drop]; Deathmage Sash (10771, -1.83 DPS) [dungeon] |
-| legs | Stoneweaver Leggings (9407) | Uldaman: Ironaya [dungeon] | 62.6 healing_power points (5.77 DPS) | yes | Stormcloth Pants (10010, -0.85 DPS) [crafted]; Pristine Leggings (253987, -1.60 DPS) [crafted]; Black Mageweave Leggings (9999, -1.73 DPS) [crafted] |
-| feet | Gilded Slippers (254001) | Tailoring [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Thoughtcast Boots (10578, +0.00 DPS) [dungeon]; Furen's Boots (13100, +0.00 DPS) [world_drop]; Earthen Silk Slippers (254013, -0.44 DPS) [crafted] |
-| finger1 | Darkspear Signet (272070) | Creeg Bothunk [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Electrocutioner Lagnut (9447, +0.00 DPS) [dungeon]; Runemender's Seal (273031, +0.00 DPS) [world]; Welken Ring (5011, -0.08 DPS) [world_drop] |
+| head | Papal Fez (9431) | Uldaman [dungeon] | 67.7 healing_power points (8.26 DPS) | yes | Whitemane's Chapeau (7720, -0.91 DPS) [dungeon]; Miner's Hat of the Deep (9429, -2.44 DPS) [dungeon]; Holy Shroud (2721, -2.77 DPS) [world_drop] |
+| neck | Glowing Eye of Mordresh (10769) | Razorfen Downs: Mordresh Fire Eye [dungeon] | 33.1 healing_power points (4.04 DPS) | yes | Necklace of Calisea (1714, -0.94 DPS) [dungeon]; Triune Amulet (7722, -1.36 DPS) [dungeon]; Amberglow Talisman (10824, -1.61 DPS) [quest] |
+| shoulder | Inquisitor's Shawl (19507) | Scarlet Monastery: High Inquisitor Fairbanks [dungeon] | 43.2 healing_power points (5.28 DPS) | yes | Earthen Silk Shoulders (254033, -1.13 DPS) [crafted]; Mantle of Doan (7712, -1.28 DPS) [dungeon]; Mistscape Mantle (4734, -1.87 DPS) [dungeon] |
+| back | Battle Healer's Cloak (19528) | Warsong Outriders [rep] | sim-decided (no score - a real sim tournament chose this pick) | yes | Darkspear Raider's Cloak (272077, -0.25 DPS) [vendor]; Cloak of Blight (6832, -0.25 DPS) [quest]; Glowing Thresher Cape (6901, -0.61 DPS) [dungeon] |
+| chest | Stormcloth Vest (10020) | Tailoring [crafted] | 73.9 healing_power points (9.03 DPS) | yes | Dreamweave Vest (10021, -1.63 DPS) [crafted]; Doomsayer's Robe (4746, -2.70 DPS) [quest]; Civinad Robes (9623, -2.93 DPS) [quest] |
+| wrist | Spidertank Oilrag (9448) | Gnomeregan: Electrocutioner 6000 [dungeon] | 20.7 healing_power points (2.53 DPS) | yes | Earthen Silk Cuffs (254019, -0.09 DPS) [crafted]; Mindthrust Bracers (1974, -0.10 DPS) [dungeon]; Radiant Silver Bracers (4545, -0.44 DPS) [quest] |
+| hands | Gilded Handwraps (254021) | Tailoring [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Dreamweave Gloves (10019, +0.00 DPS) [crafted]; Earthen Silk Gloves (254017, +0.00 DPS) [crafted]; Gloves of Old (9395, -0.17 DPS) [world_drop] |
+| waist | Gilded Cord (254037) | Tailoring [crafted] | 47.0 healing_power points (5.74 DPS) | yes | Deathmage Sash (10771, -1.90 DPS) [dungeon]; Windchaser Cinch (14435, -1.96 DPS) [world_drop]; Sutarn's Ring (13105, -2.29 DPS) [world_drop] |
+| legs | Stoneweaver Leggings (9407) | Uldaman: Ironaya [dungeon] | 56.9 healing_power points (6.95 DPS) | yes | Stormcloth Pants (10010, -1.48 DPS) [crafted]; Pristine Leggings (253987, -1.66 DPS) [crafted]; Aurora Pants (4044, -2.33 DPS) [world_drop] |
+| feet | Gilded Slippers (254001) | Tailoring [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Furen's Boots (13100, +0.00 DPS) [world_drop]; Thoughtcast Boots (10578, -0.06 DPS) [dungeon]; Earthen Silk Slippers (254013, -0.91 DPS) [crafted] |
+| finger1 | Darkspear Signet (272070) | Creeg Bothunk [vendor] | 23.4 healing_power points (2.86 DPS) | yes | Electrocutioner Lagnut (9447, -0.05 DPS) [dungeon]; Runemender's Seal (273031, -0.05 DPS) [world]; Welken Ring (5011, -0.16 DPS) [world_drop] |
 | finger2 | Advisor's Ring (19520) | Warsong Outriders [rep] | sim-decided (no score - a real sim tournament chose this pick) | yes | Welken Ring (5011, +0.00 DPS) [world_drop]; Electrocutioner Lagnut (9447, +0.00 DPS) [dungeon]; Runemender's Seal (273031, +0.00 DPS) [world] |
 | trinket1 | Ankh of Life (1713) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | - |
 | trinket2 | Darkspear Voodoo Seal (272059) | Creeg Bothunk [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | - |
-| main_hand | Hand of Righteousness (7721) | Scarlet Monastery: High Inquisitor Whitemane [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Staff of Jordan (873, +0.00 DPS) [world_drop]; Staff of the Friar (3415, -2.51 DPS) [dungeon]; Odo's Ley Staff (6318, -2.93 DPS) [dungeon] |
-| off_hand | Beacon of Hope (9393) | Uldaman [dungeon] | 32.2 healing_power points (2.97 DPS) | yes | Orb of Souls (249395, -0.36 DPS) [crafted]; Silksand Star (15964, -0.85 DPS) [world_drop]; Omega Orb (7749, -0.93 DPS) [quest] |
-| ranged | Jaina's Firestarter (13064) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Wand of Mana Concentration (273043, -0.18 DPS) [world]; Captain Rackmore's Tiller (16789, -0.27 DPS) [quest]; Goblin Igniter (5253, -0.28 DPS) [quest] |
+| main_hand | Hand of Righteousness (7721) | Scarlet Monastery: High Inquisitor Whitemane [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Staff of Jordan (873, +0.00 DPS) [world_drop]; Staff of the Friar (3415, -3.56 DPS) [dungeon]; Odo's Ley Staff (6318, -4.16 DPS) [dungeon] |
+| off_hand | Beacon of Hope (9393) | Uldaman [dungeon] | 30.0 healing_power points (3.66 DPS) | yes | Orb of Souls (249395, -0.61 DPS) [crafted]; Omega Orb (7749, -1.13 DPS) [quest]; Prophetic Cane (6803, -1.27 DPS) [quest] |
+| ranged | Jaina's Firestarter (13064) | World drop [world_drop] | 15.8 healing_power points (1.92 DPS) | yes | Wand of Mana Concentration (273043, -0.18 DPS) [world]; Flash Wand (5248, -0.40 DPS) [quest]; Goblin Igniter (5253, -0.40 DPS) [quest] |
 
 **New at 40:** head: Papal Fez; neck: Glowing Eye of Mordresh; shoulder: Inquisitor's Shawl; back: Battle Healer's Cloak; chest: Stormcloth Vest; hands: Gilded Handwraps; waist: Gilded Cord; legs: Stoneweaver Leggings; finger1: Darkspear Signet; finger2: Advisor's Ring; trinket1: Ankh of Life; trinket2: Darkspear Voodoo Seal; main_hand: Hand of Righteousness; off_hand: Beacon of Hope; ranged: Jaina's Firestarter
 
@@ -286,7 +304,9 @@ No-known-source sample (15 of 395, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (undead, 005005031330011430-33501000000000000-00000000000000000)
 
-Set DPS (verified): 202.5. Weights run: 20.8s. Verify run: 189.7s. 510 eligible items had no known source.
+Set DPS (verified): 202.5. Weights run: 26.5s. Verify run: 238.3s. 510 eligible items had no known source.
+
+Race sweep: undead 202.5 ± 0.1, troll 184.6 ± 0.1 (heal_score); the guide race undead is best.
 
 1 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -318,7 +338,9 @@ No-known-source sample (15 of 510, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (undead, 005005031330011430-33505003030000000-00000000000000000)
 
-Set DPS (verified): 288.4. Weights run: 22.1s. Verify run: 682.1s. 1354 eligible items had no known source.
+Set DPS (verified): 288.4. Weights run: 27.3s. Verify run: 844.9s. 1354 eligible items had no known source.
+
+Race sweep: undead 288.4 ± 0.2, troll 271.3 ± 0.2 (heal_score); the guide race undead is best.
 
 1 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -350,7 +372,9 @@ No-known-source sample (15 of 1354, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (undead, 005005031330011430-33505003030000000-00000000000000000)
 
-Set DPS (verified): 592.7. Weights run: 15.3s. Verify run: 467.5s. 1354 eligible items had no known source.
+Set DPS (verified): 592.7. Weights run: 18.6s. Verify run: 578.5s. 1354 eligible items had no known source.
+
+Race sweep: undead 592.5 ± 0.4, troll 578.1 ± 0.3 (heal_score); the guide race undead is best.
 
 4 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 

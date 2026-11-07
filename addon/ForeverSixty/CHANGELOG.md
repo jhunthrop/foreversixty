@@ -1,5 +1,12 @@
 # Forever Sixty
 
+## 2.0.34
+
+- New leveling best in slot lists for 19 specs, ranked on talent orders that no longer spend early points on talents that do nothing in a fight.
+- Healers: Restoration druid, Holy paladin, Holy and Discipline priests and Restoration shaman reach their healing talents sooner.
+- Tanks: Protection warrior and Feral bear orders gain threat without giving up survival while you level.
+- Survival: the raid build trades Deterrence and Counterattack for Rapid Killing.
+
 ## 2.0.33
 
 - Destruction: Bane first, Conflagrate with Fire and Brimstone, and new best in slot lists for levels 20 to 40.

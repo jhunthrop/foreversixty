@@ -8,7 +8,9 @@ Forever unifies melee, ranged and spell hit into one stat. An item's crit rating
 
 ### Band 20 (night-elf, 5231000000000000-00000000000000000000-0000000000000000)
 
-Set DPS (verified): 46.3. Weights run: 3.3s. Verify run: 4.8s. 228 eligible items had no known source.
+Set DPS (verified): 46.3. Weights run: 4.1s. Verify run: 6.2s. 228 eligible items had no known source.
+
+Race sweep: high-order-skyborne 46.4 ± 0.1, night-elf 46.3 ± 0.1 (dps); high-order-skyborne beats the guide race night-elf by 0.0 (0.09%) ± 0.1, inside error.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.001, intellect=0.523 ± 0.009, crit=0.052 ± 0.001 per rating point (14 rating = 1%, 0.729 per %), hit=0.201 ± 0.006 per rating point (10 rating = 1%, 2.012 per %), spell_haste=0.521 ± 0.064, spell_penetration=not significant (0.000 ± 0.000), nature_power=0.792 ± 0.001, arcane_power=0.208 ± 0.001, spirit=-0.078 ± 0.016, mp5=0.794 ± 0.081
 
@@ -38,7 +40,9 @@ No-known-source sample (15 of 228, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (night-elf, 5232220113000000-00000000000000000000-0000000000000000)
 
-Set DPS (verified): 82.2. Weights run: 3.4s. Verify run: 5.4s. 400 eligible items had no known source.
+Set DPS (verified): 82.2. Weights run: 4.3s. Verify run: 6.8s. 400 eligible items had no known source.
+
+Race sweep: night-elf 82.2 ± 0.1, high-order-skyborne 81.8 ± 0.1 (dps); the guide race night-elf is best.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.001, intellect=0.489 ± 0.010, crit=0.115 ± 0.002 per rating point (14 rating = 1%, 1.610 per %), hit=0.242 ± 0.009 per rating point (10 rating = 1%, 2.419 per %), spell_haste=0.649 ± 0.081, spell_penetration=not significant (0.000 ± 0.000), nature_power=0.818 ± 0.001, arcane_power=0.182 ± 0.001, spirit=not significant (-0.008 ± 0.010), mp5=0.894 ± 0.098
 
@@ -68,7 +72,9 @@ No-known-source sample (15 of 400, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (night-elf, 5232220115101141-00000000000000000000-0000000000000000)
 
-Set DPS (verified): 169.4. Weights run: 3.7s. Verify run: 6.9s. 526 eligible items had no known source.
+Set DPS (verified): 169.4. Weights run: 4.5s. Verify run: 8.4s. 526 eligible items had no known source.
+
+Race sweep: night-elf 169.4 ± 0.2, high-order-skyborne 168.8 ± 0.2 (dps); the guide race night-elf is best.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.002, intellect=0.579 ± 0.017, crit=0.233 ± 0.010 per rating point (14 rating = 1%, 3.267 per %), hit=0.448 ± 0.023 per rating point (10 rating = 1%, 4.482 per %), spell_haste=1.506 ± 0.203, spell_penetration=not significant (0.000 ± 0.000), nature_power=0.618 ± 0.002, arcane_power=0.382 ± 0.002, spirit=0.571 ± 0.133, mp5=1.174 ± 0.171
 
@@ -96,41 +102,45 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 
 No-known-source sample (15 of 526, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 2314 Toughened Leather Armor; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 3738 Brewing Rod; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4964 Goblin Smasher; 5000 Coral Band
 
-### Band 50 (night-elf, 5232220115101151-00000000000000000000-5400000000000000)
+### Band 50 (night-elf, 5232220115101151-00000000000000000000-0540000000000000)
 
-Set DPS (verified): 221.0. Weights run: 3.6s. Verify run: 10.1s. 690 eligible items had no known source.
+Set DPS (verified): 238.8. Weights run: 4.6s. Verify run: 10.6s. 690 eligible items had no known source.
+
+Race sweep: night-elf 238.8 ± 0.3, high-order-skyborne 237.5 ± 0.3 (dps); the guide race night-elf is best.
 
 1 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
-Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.003, intellect=0.613 ± 0.012, crit=0.129 ± 0.006 per rating point (14 rating = 1%, 1.810 per %), hit=0.283 ± 0.015 per rating point (10 rating = 1%, 2.831 per %), spell_haste=0.493 ± 0.078, spell_penetration=not significant (0.000 ± 0.000), nature_power=0.737 ± 0.002, arcane_power=0.263 ± 0.001, spirit=0.484 ± 0.073, mp5=0.804 ± 0.086
+Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.003, intellect=0.626 ± 0.011, crit=0.125 ± 0.006 per rating point (14 rating = 1%, 1.752 per %), hit=0.293 ± 0.015 per rating point (10 rating = 1%, 2.929 per %), spell_haste=0.503 ± 0.080, spell_penetration=not significant (0.000 ± 0.000), nature_power=0.732 ± 0.002, arcane_power=0.268 ± 0.001, spirit=0.477 ± 0.071, mp5=0.742 ± 0.071
 
 | Slot | Item | Source | Score (spell_power points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Soothsayer's Headdress (17740) | Maraudon: Celebras the Cursed [dungeon] | 36.1 spell_power points (10.82 DPS) | yes | Dreamweave Circlet (10041, -0.94 DPS) [crafted]; Red Mageweave Headband (10033, -1.44 DPS) [crafted]; Knight-Lieutenant's Crackling Leather Helmet (220872, -2.64 DPS) [vendor] |
-| neck | Glowing Eye of Mordresh (10769) | Razorfen Downs: Mordresh Fire Eye [dungeon] | sim-verified (+0.8 DPS vs the runner-up, not corroborated against the finished set) | yes | Triune Amulet (7722, -0.15 DPS) [dungeon]; Horizon Choker (13085, -0.42 DPS) [world_drop]; Mindburst Medallion (11196, -0.76 DPS, sim-verified) [quest] |
-| shoulder | Ironfeather Shoulders (15067) | Leatherworking [crafted] | 31.1 spell_power points (9.34 DPS) | yes | Kentic Amice (11624, -1.51 DPS, sim-verified) [dungeon]; Rotgrip Mantle (17732, -2.13 DPS) [dungeon]; Skycaller's Leather Shoulders (252537, -2.91 DPS) [crafted] |
-| back | Spritecaster Cape (11623) | Blackrock Depths: High Interrogator Gerstahn  [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Runecloth Cloak (13860, -2.38 DPS, sim-verified) [crafted]; Expeditionary's Cape (271921, -2.87 DPS) [rep]; Big Voodoo Cloak (8216, -3.02 DPS) [crafted] |
-| chest | Feathered Breastplate (8349) | Leatherworking [crafted] | 36.8 spell_power points (11.03 DPS) | yes | Acumen Robes (17775, -1.65 DPS) [quest]; Dreamweave Vest (10021, -1.94 DPS) [crafted]; Flamestrider Robes (11747, -1.97 DPS) [dungeon] |
-| wrist | Skycaller's Leather Bracers (252542) | Leatherworking [crafted] | 16.7 spell_power points (5.01 DPS) | yes | Runic Leather Bracers (15092, -0.17 DPS) [crafted]; Nethergeld Cuffs (254061, -0.90 DPS) [crafted]; Mender's Leather Bracers (252543, -1.05 DPS) [crafted] |
-| hands | Gloves of the Greatfather (17721) | Leatherworking [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Skycaller's Leather Gauntlets (252550, -2.08 DPS) [crafted]; Dreamweave Gloves (10019, -2.26 DPS) [crafted]; Bloodfire Talons (12464, -3.84 DPS, sim-verified) [dungeon] |
-| waist | Skycaller's Leather Waistguard (252476) | Leatherworking [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Ban'thok Sash (11662, -0.53 DPS) [dungeon]; Satyrmane Sash (17755, -0.97 DPS) [dungeon]; Tooled Leather Belt (252544, -1.12 DPS) [crafted] |
-| legs | Spellshock Leggings (9484) | Zul'Farrak [dungeon] | 29.1 spell_power points (8.74 DPS) | yes | Jinxed Hoodoo Kilt (9474, -1.74 DPS) [dungeon]; Knight's Crackling Leather Leggings (220864, -1.91 DPS) [vendor]; Senior Designer's Pantaloons (11841, -3.98 DPS, sim-verified) [dungeon] |
-| feet | Earthen Silk Slippers (254013) | Tailoring [crafted] | 27.4 spell_power points (8.22 DPS) | yes | Skycaller's Leather Boots (252471, -1.67 DPS, sim-verified) [crafted]; Sergeant Major's Crackling Leather Boots (220862, -2.23 DPS) [vendor]; Stormcloth Boots (10039, -2.28 DPS) [crafted] |
-| finger1 | Cyclopean Band (11824) | Blackrock Depths: Ok'thor the Breaker [dungeon] | 15.2 spell_power points (4.57 DPS) | yes | Philanthropist's Ring (281635, -0.65 DPS) [quest]; Band of the Unicorn (7553, -0.67 DPS) [world_drop]; Brainlash (6440, -1.08 DPS) [dungeon] |
-| finger2 | Lorekeeper's Ring (19523) | Silverwing Sentinels [rep] | 15.2 spell_power points (4.57 DPS) | yes | Band of the Unicorn (7553, -0.67 DPS) [world_drop]; Brainlash (6440, -1.08 DPS) [dungeon]; Philanthropist's Ring (281635, -1.30 DPS, sim-verified) [quest] |
-| trinket1 | Thunderbrew's Boot Flask (744) | Sweet Amber [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Ankh of Life (1713, +0.00 DPS) [world_drop]; Evonice's Landin' Pilla (18951, +0.00 DPS) [quest]; Enriched Seal (271903, -1.98 DPS, sim-verified) [rep] |
-| trinket2 | Uther's Strength (11302) | World drop [world_drop] | sim-verified (+1.4 DPS vs the runner-up, not corroborated against the finished set) | yes | Ankh of Life (1713, -0.06 DPS) [world_drop]; Evonice's Landin' Pilla (18951, -0.35 DPS) [quest]; Enriched Seal (271903, -1.43 DPS, sim-verified) [rep] |
-| main_hand | Staff of Jordan (873) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Kindling Stave (11750, -1.78 DPS, sim-verified) [dungeon]; Glowing Brightwood Staff (812, -2.76 DPS) [world_drop]; Spire of Hakkar (10844, -3.48 DPS) [world] |
+| head | Soothsayer's Headdress (17740) | Maraudon: Celebras the Cursed [dungeon] | 36.2 spell_power points (11.73 DPS) | yes | Dreamweave Circlet (10041, -1.04 DPS) [crafted]; Red Mageweave Headband (10033, -1.52 DPS) [crafted]; Knight-Lieutenant's Crackling Leather Helmet (220872, -2.87 DPS) [vendor] |
+| neck | Mindburst Medallion (11196) | Tremors of the Earth [quest] | 12.1 spell_power points (3.93 DPS) | yes | Glowing Eye of Mordresh (10769, -0.04 DPS) [dungeon]; Triune Amulet (7722, -0.26 DPS) [dungeon]; Horizon Choker (13085, -0.48 DPS) [world_drop] |
+| shoulder | Ironfeather Shoulders (15067) | Leatherworking [crafted] | 31.3 spell_power points (10.15 DPS) | yes | Kentic Amice (11624, -1.40 DPS, sim-verified) [dungeon]; Rotgrip Mantle (17732, -2.29 DPS) [dungeon]; Skycaller's Leather Shoulders (252537, -3.19 DPS) [crafted] |
+| back | Spritecaster Cape (11623) | Blackrock Depths: High Interrogator Gerstahn  [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Runecloth Cloak (13860, -2.35 DPS, sim-verified) [crafted]; Expeditionary's Cape (271921, -3.07 DPS) [rep]; Big Voodoo Cloak (8216, -3.23 DPS) [crafted] |
+| chest | Feathered Breastplate (8349) | Leatherworking [crafted] | 36.7 spell_power points (11.89 DPS) | yes | Acumen Robes (17775, -1.68 DPS) [quest]; Dreamweave Vest (10021, -2.07 DPS) [crafted]; Flamestrider Robes (11747, -2.13 DPS) [dungeon] |
+| wrist | Skycaller's Leather Bracers (252542) | Leatherworking [crafted] | 16.8 spell_power points (5.43 DPS) | yes | Runic Leather Bracers (15092, -0.16 DPS) [crafted]; Nethergeld Cuffs (254061, -0.97 DPS) [crafted]; Mender's Leather Bracers (252543, -1.14 DPS) [crafted] |
+| hands | Gloves of the Greatfather (17721) | Leatherworking [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Skycaller's Leather Gauntlets (252550, -2.21 DPS) [crafted]; Dreamweave Gloves (10019, -2.42 DPS) [crafted]; Bloodfire Talons (12464, -3.52 DPS, sim-verified) [dungeon] |
+| waist | Skycaller's Leather Waistguard (252476) | Leatherworking [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Ban'thok Sash (11662, -0.55 DPS) [dungeon]; Satyrmane Sash (17755, -1.05 DPS) [dungeon]; Tooled Leather Belt (252544, -1.23 DPS) [crafted] |
+| legs | Spellshock Leggings (9484) | Zul'Farrak [dungeon] | 29.3 spell_power points (9.48 DPS) | yes | Jinxed Hoodoo Kilt (9474, -1.92 DPS) [dungeon]; Knight's Crackling Leather Leggings (220864, -2.05 DPS) [vendor]; Senior Designer's Pantaloons (11841, -4.86 DPS, sim-verified) [dungeon] |
+| feet | Earthen Silk Slippers (254013) | Tailoring [crafted] | 27.3 spell_power points (8.86 DPS) | yes | Skycaller's Leather Boots (252471, -1.47 DPS, sim-verified) [crafted]; Sergeant Major's Crackling Leather Boots (220862, -2.32 DPS) [vendor]; Skycaller's Leather Shoes (252532, -2.45 DPS) [crafted] |
+| finger1 | Cyclopean Band (11824) | Blackrock Depths: Ok'thor the Breaker [dungeon] | 15.3 spell_power points (4.95 DPS) | yes | Philanthropist's Ring (281635, -0.70 DPS) [quest]; Band of the Unicorn (7553, -0.74 DPS) [world_drop]; Brainlash (6440, -1.14 DPS) [dungeon] |
+| finger2 | Lorekeeper's Ring (19523) | Silverwing Sentinels [rep] | 15.0 spell_power points (4.85 DPS) | yes | Philanthropist's Ring (281635, -0.60 DPS) [quest]; Band of the Unicorn (7553, -0.64 DPS) [world_drop]; Brainlash (6440, -1.03 DPS) [dungeon] |
+| trinket1 | Thunderbrew's Boot Flask (744) | Sweet Amber [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Ankh of Life (1713, +0.00 DPS) [world_drop]; Uther's Strength (11302, +0.00 DPS) [world_drop]; Enriched Seal (271905, +0.00 DPS) [rep] |
+| trinket2 | Frozen Heart of the Mountain (249469) | Enchanting [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Ankh of Life (1713, +0.00 DPS) [world_drop]; Uther's Strength (11302, +0.00 DPS) [world_drop]; Evonice's Landin' Pilla (18951, +0.00 DPS) [quest] |
+| main_hand | Staff of Jordan (873) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Kindling Stave (11750, -2.33 DPS, sim-verified) [dungeon]; Glowing Brightwood Staff (812, -2.99 DPS) [world_drop]; Spire of Hakkar (10844, -3.90 DPS) [world] |
 | off_hand | - | - |  |  |  |
 | ranged | Talons of Wrath (249441) | Enchanting [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | - |
 
-**New at 50:** head: Soothsayer's Headdress; shoulder: Ironfeather Shoulders; back: Spritecaster Cape; chest: Feathered Breastplate; wrist: Skycaller's Leather Bracers; waist: Skycaller's Leather Waistguard; legs: Spellshock Leggings; finger1: Cyclopean Band; finger2: Lorekeeper's Ring; trinket1: Thunderbrew's Boot Flask; trinket2: Uther's Strength
+**New at 50:** head: Soothsayer's Headdress; neck: Mindburst Medallion; shoulder: Ironfeather Shoulders; back: Spritecaster Cape; chest: Feathered Breastplate; wrist: Skycaller's Leather Bracers; waist: Skycaller's Leather Waistguard; legs: Spellshock Leggings; finger1: Cyclopean Band; finger2: Lorekeeper's Ring; trinket1: Thunderbrew's Boot Flask; trinket2: Frozen Heart of the Mountain
 
 No-known-source sample (15 of 690, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 2314 Toughened Leather Armor; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 3738 Brewing Rod; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4964 Goblin Smasher; 4988 Burning Obsidian Band
 
 ### Band 60 (night-elf, 5232220115101151-00000000000000000000-5553010000000000)
 
-Set DPS (verified): 371.3. Weights run: 3.2s. Verify run: 34.4s. 1755 eligible items had no known source.
+Set DPS (verified): 371.3. Weights run: 3.8s. Verify run: 36.0s. 1755 eligible items had no known source.
+
+Race sweep: night-elf 371.3 ± 0.4, high-order-skyborne 370.5 ± 0.4 (dps); the guide race night-elf is best.
 
 3 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -162,7 +172,9 @@ No-known-source sample (15 of 1755, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (night-elf, 5232220115501351-00000000000000000000-5050030000000000)
 
-Set DPS (verified): 725.5. Weights run: 3.1s. Verify run: 32.1s. 1755 eligible items had no known source.
+Set DPS (verified): 725.5. Weights run: 3.5s. Verify run: 34.0s. 1755 eligible items had no known source.
+
+Race sweep: high-order-skyborne 726.3 ± 0.7, night-elf 725.5 ± 0.7 (dps); high-order-skyborne beats the guide race night-elf by 0.8 (0.11%) ± 1.0, inside error.
 
 5 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -196,7 +208,9 @@ No-known-source sample (15 of 1755, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 20 (tauren, 5231000000000000-00000000000000000000-0000000000000000)
 
-Set DPS (verified): 44.0. Weights run: 3.3s. Verify run: 5.3s. 224 eligible items had no known source.
+Set DPS (verified): 44.0. Weights run: 4.1s. Verify run: 6.6s. 224 eligible items had no known source.
+
+Race sweep: windshaper-skyborne 44.8 ± 0.0, tauren 44.0 ± 0.0 (dps); windshaper-skyborne beats the guide race tauren by 0.9 (2.01%) ± 0.1, beyond error.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.001, intellect=0.523 ± 0.009, crit=0.052 ± 0.001 per rating point (14 rating = 1%, 0.729 per %), hit=0.201 ± 0.006 per rating point (10 rating = 1%, 2.012 per %), spell_haste=0.521 ± 0.064, spell_penetration=not significant (0.000 ± 0.000), nature_power=0.792 ± 0.001, arcane_power=0.208 ± 0.001, spirit=-0.078 ± 0.016, mp5=0.794 ± 0.081
 
@@ -226,7 +240,9 @@ No-known-source sample (15 of 224, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (tauren, 5232220113000000-00000000000000000000-0000000000000000)
 
-Set DPS (verified): 81.8. Weights run: 3.4s. Verify run: 5.4s. 401 eligible items had no known source.
+Set DPS (verified): 81.8. Weights run: 4.3s. Verify run: 6.8s. 401 eligible items had no known source.
+
+Race sweep: windshaper-skyborne 82.9 ± 0.1, tauren 81.8 ± 0.1 (dps); windshaper-skyborne beats the guide race tauren by 1.1 (1.28%) ± 0.1, beyond error.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.001, intellect=0.489 ± 0.010, crit=0.115 ± 0.002 per rating point (14 rating = 1%, 1.610 per %), hit=0.242 ± 0.009 per rating point (10 rating = 1%, 2.419 per %), spell_haste=0.649 ± 0.081, spell_penetration=not significant (0.000 ± 0.000), nature_power=0.818 ± 0.001, arcane_power=0.182 ± 0.001, spirit=not significant (-0.008 ± 0.010), mp5=0.894 ± 0.098
 
@@ -256,7 +272,9 @@ No-known-source sample (15 of 401, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (tauren, 5232220115101141-00000000000000000000-0000000000000000)
 
-Set DPS (verified): 167.3. Weights run: 3.7s. Verify run: 6.7s. 525 eligible items had no known source.
+Set DPS (verified): 167.3. Weights run: 4.5s. Verify run: 8.1s. 525 eligible items had no known source.
+
+Race sweep: windshaper-skyborne 169.0 ± 0.2, tauren 167.3 ± 0.2 (dps); windshaper-skyborne beats the guide race tauren by 1.7 (1.02%) ± 0.2, beyond error.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.003, intellect=0.634 ± 0.011, crit=0.100 ± 0.005 per rating point (14 rating = 1%, 1.404 per %), hit=0.197 ± 0.011 per rating point (10 rating = 1%, 1.971 per %), spell_haste=not significant (0.383 ± 0.104), spell_penetration=not significant (0.000 ± 0.000), nature_power=0.709 ± 0.002, arcane_power=0.291 ± 0.001, spirit=0.342 ± 0.076, mp5=0.711 ± 0.070
 
@@ -284,41 +302,45 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 
 No-known-source sample (15 of 525, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2314 Toughened Leather Armor; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 3738 Brewing Rod; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 5000 Coral Band; 5004 Mark of the Kirin Tor; 5005 Emberspark Pendant; 5008 Quicksilver Ring
 
-### Band 50 (tauren, 5232220115101151-00000000000000000000-5400000000000000)
+### Band 50 (tauren, 5232220115101151-00000000000000000000-0540000000000000)
 
-Set DPS (verified): 217.2. Weights run: 3.6s. Verify run: 10.4s. 689 eligible items had no known source.
+Set DPS (verified): 236.0. Weights run: 4.6s. Verify run: 10.0s. 689 eligible items had no known source.
 
-1 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
+Race sweep: windshaper-skyborne 238.4 ± 0.3, tauren 236.0 ± 0.3 (dps); windshaper-skyborne beats the guide race tauren by 2.4 (1.01%) ± 0.4, beyond error.
 
-Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.003, intellect=0.613 ± 0.012, crit=0.129 ± 0.006 per rating point (14 rating = 1%, 1.810 per %), hit=0.283 ± 0.015 per rating point (10 rating = 1%, 2.831 per %), spell_haste=0.493 ± 0.078, spell_penetration=not significant (0.000 ± 0.000), nature_power=0.737 ± 0.002, arcane_power=0.263 ± 0.001, spirit=0.484 ± 0.073, mp5=0.804 ± 0.086
+3 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
+
+Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.002, intellect=0.688 ± 0.020, crit=0.319 ± 0.013 per rating point (14 rating = 1%, 4.472 per %), hit=0.632 ± 0.029 per rating point (10 rating = 1%, 6.320 per %), spell_haste=1.646 ± 0.226, spell_penetration=not significant (0.000 ± 0.000), nature_power=0.648 ± 0.002, arcane_power=0.352 ± 0.002, spirit=not significant (0.403 ± 0.154), mp5=1.551 ± 0.201
 
 | Slot | Item | Source | Score (spell_power points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Soothsayer's Headdress (17740) | Maraudon: Celebras the Cursed [dungeon] | 36.1 spell_power points (10.82 DPS) | yes | Red Mageweave Headband (10033, -1.44 DPS) [crafted]; Dreamweave Circlet (10041, -1.51 DPS, sim-verified) [crafted]; Blood Guard's Crackling Leather Helmet (220873, -2.64 DPS) [vendor] |
-| neck | Mindburst Medallion (11196) | Broken Alliances [quest] | 12.1 spell_power points (3.63 DPS) | yes | Glowing Eye of Mordresh (10769, -0.06 DPS) [dungeon]; Triune Amulet (7722, -0.21 DPS) [dungeon]; Horizon Choker (13085, -0.47 DPS) [world_drop] |
-| shoulder | Ironfeather Shoulders (15067) | Leatherworking [crafted] | 31.1 spell_power points (9.34 DPS) | yes | Rotgrip Mantle (17732, -2.13 DPS) [dungeon]; Kentic Amice (11624, -2.15 DPS, sim-verified) [dungeon]; Skycaller's Leather Shoulders (252537, -2.91 DPS) [crafted] |
-| back | Spritecaster Cape (11623) | Blackrock Depths: High Interrogator Gerstahn  [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Deep Woodlands Cloak (19121, -0.92 DPS) [quest]; Runecloth Cloak (13860, -2.00 DPS) [crafted]; Darkspear Raider's Cloak (272076, -2.87 DPS) [vendor] |
-| chest | Feathered Breastplate (8349) | Leatherworking [crafted] | 36.8 spell_power points (11.03 DPS) | yes | Acumen Robes (17775, -1.65 DPS) [quest]; Dreamweave Vest (10021, -1.94 DPS) [crafted]; Flamestrider Robes (11747, -1.97 DPS) [dungeon] |
-| wrist | Skycaller's Leather Bracers (252542) | Leatherworking [crafted] | 16.7 spell_power points (5.01 DPS) | yes | Runic Leather Bracers (15092, -0.17 DPS) [crafted]; Nethergeld Cuffs (254061, -0.90 DPS) [crafted]; Mender's Leather Bracers (252543, -1.05 DPS) [crafted] |
-| hands | Gloves of the Greatfather (17721) | Leatherworking [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Skycaller's Leather Gauntlets (252550, -2.08 DPS) [crafted]; Dreamweave Gloves (10019, -2.26 DPS) [crafted]; Bloodfire Talons (12464, -3.63 DPS, sim-verified) [dungeon] |
-| waist | Skycaller's Leather Waistguard (252476) | Leatherworking [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Ban'thok Sash (11662, -0.53 DPS) [dungeon]; Satyrmane Sash (17755, -0.97 DPS) [dungeon]; Tooled Leather Belt (252544, -1.12 DPS) [crafted] |
-| legs | Spellshock Leggings (9484) | Zul'Farrak [dungeon] | 29.1 spell_power points (8.74 DPS) | yes | Jinxed Hoodoo Kilt (9474, -1.74 DPS) [dungeon]; Stone Guard's Crackling Leather Leggings (220865, -1.91 DPS) [vendor]; Senior Designer's Pantaloons (11841, -5.11 DPS, sim-verified) [dungeon] |
-| feet | Earthen Silk Slippers (254013) | Tailoring [crafted] | 27.4 spell_power points (8.22 DPS) | yes | Skycaller's Leather Boots (252471, -2.13 DPS, sim-verified) [crafted]; First Sergeant's Crackling Leather Boots (220863, -2.23 DPS) [vendor]; Stormcloth Boots (10039, -2.28 DPS) [crafted] |
-| finger1 | Cyclopean Band (11824) | Blackrock Depths: Ok'thor the Breaker [dungeon] | 15.2 spell_power points (4.57 DPS) | yes | Philanthropist's Ring (281635, -0.65 DPS) [quest]; Band of the Unicorn (7553, -0.67 DPS) [world_drop]; Brainlash (6440, -1.08 DPS) [dungeon] |
-| finger2 | Advisor's Ring (19519) | Warsong Outriders [rep] | 15.2 spell_power points (4.57 DPS) | yes | Band of the Unicorn (7553, -0.67 DPS) [world_drop]; Brainlash (6440, -1.08 DPS) [dungeon]; Philanthropist's Ring (281635, -1.20 DPS, sim-verified) [quest] |
-| trinket1 | Frozen Heart of the Mountain (249469) | Enchanting [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Ankh of Life (1713, +0.00 DPS) [world_drop]; Evonice's Landin' Pilla (18951, +0.00 DPS) [quest]; Darkspear Voodoo Seal (272061, +0.00 DPS) [vendor] |
-| trinket2 | Uther's Strength (11302) | World drop [world_drop] | sim-verified (+0.7 DPS vs the runner-up, not corroborated against the finished set) | yes | Ankh of Life (1713, -0.06 DPS) [world_drop]; Evonice's Landin' Pilla (18951, -0.35 DPS) [quest]; Rune of the Guard Captain (19120, -0.73 DPS, sim-verified) [quest] |
-| main_hand | Staff of Jordan (873) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Spire of Hakkar (10844, -3.48 DPS) [world]; Kindling Stave (11750, -3.66 DPS) [dungeon]; Glowing Brightwood Staff (812, -6.56 DPS, sim-verified) [world_drop] |
+| head | Soothsayer's Headdress (17740) | Maraudon: Celebras the Cursed [dungeon] | 36.5 spell_power points (16.47 DPS) | yes | Red Mageweave Headband (10033, -1.43 DPS, sim-verified) [crafted]; Dreamweave Circlet (10041, -1.73 DPS) [crafted]; Blood Guard's Crackling Leather Helmet (220873, -4.22 DPS) [vendor] |
+| neck | Glowing Eye of Mordresh (10769) | Razorfen Downs: Mordresh Fire Eye [dungeon] | 12.5 spell_power points (5.64 DPS) | yes | Horizon Choker (13085, -0.57 DPS) [world_drop]; Triune Amulet (7722, -0.76 DPS) [dungeon]; Mindburst Medallion (11196, -1.15 DPS, sim-verified) [quest] |
+| shoulder | Ironfeather Shoulders (15067) | Leatherworking [crafted] | 32.0 spell_power points (14.42 DPS) | yes | Rotgrip Mantle (17732, -2.75 DPS, sim-verified) [dungeon]; Kentic Amice (11624, -2.98 DPS) [dungeon]; Blood Guard's Crackling Leather Spaulders (220871, -3.06 DPS) [vendor] |
+| back | Spritecaster Cape (11623) | Blackrock Depths: High Interrogator Gerstahn  [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Deep Woodlands Cloak (19121, -1.06 DPS) [quest]; Runecloth Cloak (13860, -2.72 DPS) [crafted]; Darkspear Raider's Cloak (272076, -4.01 DPS) [vendor] |
+| chest | Feathered Breastplate (8349) | Leatherworking [crafted] | 35.6 spell_power points (16.03 DPS) | yes | Acumen Robes (17775, -1.26 DPS) [quest]; Dreamweave Vest (10021, -2.58 DPS) [crafted]; Ghostweave Vest (14141, -2.74 DPS) [crafted] |
+| wrist | Runic Leather Bracers (15092) | Leatherworking [crafted] | 16.9 spell_power points (7.61 DPS) | yes | Skycaller's Leather Bracers (252542, -0.02 DPS) [crafted]; Nethergeld Cuffs (254061, -1.37 DPS) [crafted]; Spidertank Oilrag (9448, -1.45 DPS) [dungeon] |
+| hands | Gloves of the Greatfather (17721) | Leatherworking [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Skycaller's Leather Gauntlets (252550, -2.64 DPS) [crafted]; Dreamweave Gloves (10019, -3.11 DPS) [crafted]; Bloodfire Talons (12464, -4.79 DPS, sim-verified) [dungeon] |
+| waist | Skycaller's Leather Waistguard (252476) | Leatherworking [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Ban'thok Sash (11662, +0.00 DPS) [dungeon]; Satyrmane Sash (17755, -1.52 DPS) [dungeon]; Tooled Leather Belt (252544, -2.01 DPS) [crafted] |
+| legs | Stone Guard's Crackling Leather Leggings (220865) | Lady Palanseer [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Spellshock Leggings (9484, +0.00 DPS) [dungeon]; Senior Designer's Pantaloons (11841, -2.53 DPS) [dungeon]; Kilt of the Atal'ai Prophet (10807, -3.17 DPS) [dungeon] |
+| feet | Earthen Silk Slippers (254013) | Tailoring [crafted] | 26.8 spell_power points (12.09 DPS) | yes | Skycaller's Leather Boots (252471, -1.92 DPS) [crafted]; Skycaller's Leather Shoes (252532, -3.15 DPS) [crafted]; First Sergeant's Crackling Leather Boots (220863, -3.75 DPS, sim-verified) [vendor] |
+| finger1 | Advisor's Ring (19519) | Warsong Outriders [rep] | 18.2 spell_power points (8.21 DPS) | yes | Band of the Unicorn (7553, -2.35 DPS) [world_drop]; Brainlash (6440, -2.65 DPS) [dungeon]; Cyclopean Band (11824, -7.59 DPS, sim-verified) [dungeon] |
+| finger2 | Philanthropist's Ring (281635) | Greater Friend of the Library [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Cyclopean Band (11824, +0.00 DPS) [dungeon]; Band of the Unicorn (7553, -0.20 DPS) [world_drop]; Brainlash (6440, -0.50 DPS) [dungeon] |
+| trinket1 | Frozen Heart of the Mountain (249469) | Enchanting [crafted] | sim-verified (+3.5 DPS vs the runner-up, not corroborated against the finished set) | yes | Ankh of Life (1713, -0.38 DPS) [world_drop]; Darkspear Voodoo Seal (272059, -0.47 DPS) [vendor] |
+| trinket2 | Uther's Strength (11302) | World drop [world_drop] | sim-verified (+0.9 DPS vs the runner-up, not corroborated against the finished set) | yes | Ankh of Life (1713, -0.52 DPS) [world_drop]; Darkspear Voodoo Seal (272059, -0.61 DPS) [vendor] |
+| main_hand | Staff of Jordan (873) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Kindling Stave (11750, -3.03 DPS, sim-verified) [dungeon]; Glowing Brightwood Staff (812, -6.17 DPS) [world_drop]; Spellshifter Rod (9527, -7.86 DPS) [quest] |
 | off_hand | - | - |  |  |  |
 | ranged | Talons of Wrath (249441) | Enchanting [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | - |
 
-**New at 50:** head: Soothsayer's Headdress; neck: Mindburst Medallion; shoulder: Ironfeather Shoulders; back: Spritecaster Cape; chest: Feathered Breastplate; wrist: Skycaller's Leather Bracers; waist: Skycaller's Leather Waistguard; legs: Spellshock Leggings; finger1: Cyclopean Band; finger2: Advisor's Ring; trinket1: Frozen Heart of the Mountain; trinket2: Uther's Strength
+**New at 50:** head: Soothsayer's Headdress; shoulder: Ironfeather Shoulders; back: Spritecaster Cape; chest: Feathered Breastplate; wrist: Runic Leather Bracers; waist: Skycaller's Leather Waistguard; legs: Stone Guard's Crackling Leather Leggings; finger1: Advisor's Ring; finger2: Philanthropist's Ring; trinket1: Frozen Heart of the Mountain; trinket2: Uther's Strength
 
 No-known-source sample (15 of 689, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2314 Toughened Leather Armor; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 3738 Brewing Rod; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 4990 Scorched Bands; 5000 Coral Band
 
 ### Band 60 (tauren, 5232220115101151-00000000000000000000-5553010000000000)
 
-Set DPS (verified): 367.9. Weights run: 3.2s. Verify run: 34.6s. 1759 eligible items had no known source.
+Set DPS (verified): 367.9. Weights run: 3.8s. Verify run: 35.7s. 1759 eligible items had no known source.
+
+Race sweep: windshaper-skyborne 372.1 ± 0.4, tauren 367.9 ± 0.4 (dps); windshaper-skyborne beats the guide race tauren by 4.2 (1.13%) ± 0.5, beyond error.
 
 4 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -350,7 +372,9 @@ No-known-source sample (15 of 1759, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (tauren, 5232220115501351-00000000000000000000-5050030000000000)
 
-Set DPS (verified): 715.7. Weights run: 3.1s. Verify run: 31.9s. 1759 eligible items had no known source.
+Set DPS (verified): 715.7. Weights run: 3.5s. Verify run: 34.4s. 1759 eligible items had no known source.
+
+Race sweep: windshaper-skyborne 724.5 ± 0.7, tauren 715.7 ± 0.7 (dps); windshaper-skyborne beats the guide race tauren by 8.8 (1.22%) ± 0.9, beyond error.
 
 4 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 

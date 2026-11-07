@@ -6,73 +6,73 @@ Forever unifies melee, ranged and spell hit into one stat. An item's crit rating
 
 ## Alliance
 
-### Band 20 (night-elf, 00000000000000000-000000000000000000-250400000000000000)
+### Band 20 (night-elf, 00000000000000000-000000000000000000-250030000100000000)
 
-Set DPS (verified): 19.7. Weights run: 9.7s. Verify run: 15.0s. 349 eligible items had no known source.
+Set DPS (verified): 23.2. Weights run: 9.5s. Verify run: 16.1s. 349 eligible items had no known source.
 
-Race sweep: human 96.0 ± 0.1, dwarf 95.5 ± 0.1, night-elf 95.2 ± 0.1, high-order-skyborne 95.0 ± 0.1, gnome 94.3 ± 0.1 (threat_per_second); human beats the guide race night-elf by 0.7 (0.75%) ± 0.1, beyond error.
+Race sweep: human 117.7 ± 0.1, dwarf 117.3 ± 0.1, night-elf 116.7 ± 0.1, high-order-skyborne 116.4 ± 0.1, gnome 115.6 ± 0.1 (threat_per_second); human beats the guide race night-elf by 1.0 (0.86%) ± 0.2, beyond error.
 
-Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.000, armor=0.028 ± 0.005, defense=0.194 ± 0.040 per rating point (1 rating = 1%, 0.194 per %), dodge=0.104 ± 0.008 per rating point (12 rating = 1%, 1.247 per %), parry=0.083 ± 0.006 per rating point (15 rating = 1%, 1.247 per %), block=not significant (0.006 ± 0.011) per rating point (5 rating = 1%, 0.028 per %), block_value=0.624 ± 0.093, strength=0.112 ± 0.005, agility=0.152 ± 0.006, attack_power=0.040 ± 0.000, hit=0.058 ± 0.011 per rating point (10 rating = 1%, 0.581 per %), crit=0.019 ± 0.004 per rating point (14 rating = 1%, 0.265 per %), expertise=1.227 ± 0.112
+Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.000, armor=0.032 ± 0.005, defense=0.179 ± 0.041 per rating point (1 rating = 1%, 0.179 per %), dodge=0.124 ± 0.009 per rating point (12 rating = 1%, 1.487 per %), parry=0.098 ± 0.007 per rating point (15 rating = 1%, 1.463 per %), block=0.056 ± 0.013 per rating point (5 rating = 1%, 0.280 per %), block_value=0.716 ± 0.099, strength=0.128 ± 0.005, agility=0.160 ± 0.006, attack_power=0.046 ± 0.000, hit=0.051 ± 0.011 per rating point (10 rating = 1%, 0.511 per %), crit=not significant (0.015 ± 0.005) per rating point (14 rating = 1%, 0.209 per %), expertise=1.279 ± 0.118
 
 | Slot | Item | Source | Score (stamina points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Guard's Silvered Chain Helm (250529) | Blacksmithing [crafted] | sim-verified (+9.8 DPS vs the runner-up, not corroborated against the finished set) | yes | Protector's Silvered Chain Helm (250530, -4.53 DPS) [crafted]; Lucky Fishing Hat (19972, -9.77 DPS, sim-verified) [quest]; Veteran's Silvered Chain Helm (250528, -11.34 DPS) [crafted] |
-| neck | Tarnished Locket (279870) | Remember That I Love You [quest] | 5.7 stamina points (161.08 DPS) | yes | Erudite's Amulet (277204, -48.29 DPS, sim-verified) [quest]; Scholarly Pendant (277203, -75.76 DPS) [quest]; Sentinel's Medallion (20444, -78.26 DPS) [rep] |
-| shoulder | Durable Chain Shoulders (6189) | WANTED: Chok'sul [quest] | 9.8 stamina points (279.55 DPS) | yes | Rough Bronze Shoulders (3480, -36.77 DPS, sim-verified) [crafted]; Silvered Bronze Shoulders (3481, -74.14 DPS) [crafted]; Forest Leather Mantle (4709, -114.16 DPS) [world_drop] |
-| back | Sporid Cape (6629) | Wailing Caverns: Verdan the Everliving [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Sentry Cloak (2059, -12.52 DPS, sim-verified) [world_drop]; Firebane Cloak (12979, -29.25 DPS) [world_drop]; Caretaker's Cape (20428, -56.88 DPS) [rep] |
-| chest | Guard's Chain Shirt (250489) | Blacksmithing [crafted] | 13.6 stamina points (387.92 DPS) | yes | Rough Bronze Cuirass (2866, -17.60 DPS) [crafted]; Protector's Chain Shirt (250490, -23.81 DPS) [crafted]; Blackened Defias Armor (10399, -36.11 DPS, sim-verified) [dungeon] |
-| wrist | Rift Bracers (5943) | Shadowfang Keep: Arugal's Voidwalker [dungeon] | 6.3 stamina points (178.30 DPS) | yes | Rough Bronze Bracers (2867, -2.42 DPS) [crafted]; Bear Bracers (4795, -6.25 DPS) [vendor]; Hulking Bands (14743, -31.67 DPS) [world_drop] |
-| hands | Guard's Gloves (250509) | Blacksmithing [crafted] | 9.4 stamina points (267.50 DPS) | yes | Veteran's Gloves (250508, -3.62 DPS) [crafted]; Protector's Gloves (250510, -15.94 DPS) [crafted]; Crusader's Gloves (250512, -22.96 DPS) [crafted] |
-| waist | Deviate Scale Belt (6468) | Leatherworking [crafted] | 8.5 stamina points (242.96 DPS) | yes | Guard's Chain Belt (250514, -20.80 DPS) [crafted]; Veteran's Chain Belt (250513, -24.42 DPS) [crafted]; Protector's Chain Belt (250515, -39.08 DPS) [crafted] |
-| legs | Guard's Chain Leggings (250494) | Blacksmithing [crafted] | 15.9 stamina points (452.58 DPS) | yes | Protector's Chain Leggings (250495, -26.16 DPS, sim-verified) [crafted]; Veteran's Chain Leggings (250493, -61.21 DPS) [crafted]; Crusader's Chain Leggings (250497, -101.95 DPS) [crafted] |
-| feet | Nat Pagle's Extreme Anglin' Boots (19969) | Rare Fish - Brownell's Blue Striped Racer [quest] | 13.0 stamina points (370.33 DPS) | yes | Silver-linked Footguards (12982, -39.35 DPS, sim-verified) [world_drop]; Surfer Shoes (276274, -62.53 DPS) [vendor]; Savage Trodders (6459, -63.14 DPS) [dungeon] |
-| finger1 | Blood Ring (4998) | World drop [world_drop] | 5.0 stamina points (142.20 DPS) | yes | Slain Baron's Signet (279867, -51.35 DPS) [quest]; Ring of the Moon (12052, -53.69 DPS) [world_drop]; Protector's Band (20439, -55.28 DPS) [rep] |
-| finger2 | Sustaining Ring (6743) | Knowledge in the Deeps [quest] | 4.0 stamina points (113.76 DPS) | yes | Slain Baron's Signet (279867, -22.91 DPS) [quest]; Ring of the Moon (12052, -25.25 DPS) [world_drop]; Protector's Band (20439, -26.84 DPS) [rep] |
+| head | Guard's Silvered Chain Helm (250529) | Blacksmithing [crafted] | sim-verified (+52.7 DPS vs the runner-up, not corroborated against the finished set) | yes | Veteran's Silvered Chain Helm (250528, -9.18 DPS) [crafted]; Protector's Silvered Chain Helm (250530, -10.00 DPS) [crafted]; Lucky Fishing Hat (19972, -52.73 DPS, sim-verified) [quest] |
+| neck | Tarnished Locket (279870) | Remember That I Love You [quest] | 5.6 stamina points (163.31 DPS) | yes | Erudite's Amulet (277204, -56.53 DPS, sim-verified) [quest]; Scholarly Pendant (277203, -76.06 DPS) [quest]; Sentinel's Medallion (20444, -77.27 DPS) [rep] |
+| shoulder | Durable Chain Shoulders (6189) | WANTED: Chok'sul [quest] | 10.3 stamina points (300.57 DPS) | yes | Rough Bronze Shoulders (3480, -52.39 DPS, sim-verified) [crafted]; Silvered Bronze Shoulders (3481, -74.19 DPS) [crafted]; Forest Leather Mantle (4709, -124.47 DPS) [world_drop] |
+| back | Sporid Cape (6629) | Wailing Caverns: Verdan the Everliving [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Sentry Cloak (2059, -9.56 DPS) [world_drop]; Firebane Cloak (12979, -30.02 DPS) [world_drop]; Caretaker's Cape (20428, -58.16 DPS) [rep] |
+| chest | Guard's Chain Shirt (250489) | Blacksmithing [crafted] | 14.3 stamina points (416.37 DPS) | yes | Rough Bronze Cuirass (2866, -18.40 DPS) [crafted]; Protector's Chain Shirt (250490, -25.33 DPS) [crafted]; Blackened Defias Armor (10399, -33.37 DPS, sim-verified) [dungeon] |
+| wrist | Rift Bracers (5943) | Shadowfang Keep: Arugal's Voidwalker [dungeon] | 6.6 stamina points (191.04 DPS) | yes | Rough Bronze Bracers (2867, -7.69 DPS, sim-verified) [crafted]; Bear Bracers (4795, -11.08 DPS) [vendor]; Hulking Bands (14743, -32.82 DPS) [world_drop] |
+| hands | Guard's Gloves (250509) | Blacksmithing [crafted] | 9.9 stamina points (287.07 DPS) | yes | Veteran's Gloves (250508, -1.69 DPS) [crafted]; Protector's Gloves (250510, -18.64 DPS) [crafted]; Crusader's Gloves (250512, -23.08 DPS) [crafted] |
+| waist | Deviate Scale Belt (6468) | Leatherworking [crafted] | 8.8 stamina points (256.53 DPS) | yes | Guard's Chain Belt (250514, -18.15 DPS) [crafted]; Veteran's Chain Belt (250513, -19.83 DPS) [crafted]; Crusader's Chain Belt (250517, -37.50 DPS) [crafted] |
+| legs | Guard's Chain Leggings (250494) | Blacksmithing [crafted] | 16.5 stamina points (481.20 DPS) | yes | Protector's Chain Leggings (250495, -40.46 DPS, sim-verified) [crafted]; Veteran's Chain Leggings (250493, -56.48 DPS) [crafted]; Crusader's Chain Leggings (250497, -102.07 DPS) [crafted] |
+| feet | Nat Pagle's Extreme Anglin' Boots (19969) | Rare Fish - Brownell's Blue Striped Racer [quest] | 13.2 stamina points (382.60 DPS) | yes | Silver-linked Footguards (12982, -27.65 DPS, sim-verified) [world_drop]; Savage Trodders (6459, -53.88 DPS) [dungeon]; Surfer Shoes (276274, -64.70 DPS) [vendor] |
+| finger1 | Blood Ring (4998) | World drop [world_drop] | 5.0 stamina points (145.41 DPS) | yes | Slain Baron's Signet (279867, -52.96 DPS) [quest]; Protector's Band (20439, -53.75 DPS) [rep]; Ring of the Moon (12052, -54.44 DPS) [world_drop] |
+| finger2 | Sustaining Ring (6743) | Knowledge in the Deeps [quest] | 4.0 stamina points (116.33 DPS) | yes | Slain Baron's Signet (279867, -20.70 DPS, sim-verified) [quest]; Protector's Band (20439, -24.67 DPS) [rep]; Ring of the Moon (12052, -25.35 DPS) [world_drop] |
 | trinket1 | Rune of Perfection (21566) | Silverwing Sentinels [rep] | sim-decided (no score - a real sim tournament chose this pick) | yes | Rune of Duty (21568, +0.00 DPS) [rep] |
 | trinket2 | - | - |  |  |  |
-| main_hand | Diamond Hammer (2194) | World drop [world_drop] | 13.5 stamina points (383.70 DPS) | yes | Butcher's Slicer (6633, -50.40 DPS) [dungeon]; Night Watch Shortsword (935, -53.58 DPS) [world_drop]; Buzz Saw (1937, -53.81 DPS, sim-verified) [dungeon] |
-| off_hand | Redbeard Crest (12997) | World drop [world_drop] | 19.2 stamina points (545.75 DPS) | yes | Guardian Buckler (4820, -61.08 DPS) [vendor]; Bear Buckler (4821, -78.95 DPS) [vendor]; Thornwoven Shield (276889, -91.04 DPS, sim-verified) [quest] |
-| ranged | Calibrated Blunderbuss (279894) | Old Ironforge Incursion [quest] | 3.0 stamina points (85.32 DPS) | yes | Satchel of Copper Bombs (285275, -25.47 DPS, sim-verified) [crafted]; Harvester's Pestslayer (276695, -52.56 DPS) [quest]; Compact Shotgun (4577, -56.88 DPS) [world_drop] |
+| main_hand | Diamond Hammer (2194) | World drop [world_drop] | 14.8 stamina points (431.64 DPS) | yes | Buzz Saw (1937, -44.77 DPS) [dungeon]; Butcher's Slicer (6633, -54.75 DPS) [dungeon]; Night Watch Shortsword (935, -62.59 DPS) [world_drop] |
+| off_hand | Redbeard Crest (12997) | World drop [world_drop] | 21.3 stamina points (620.49 DPS) | yes | Guardian Buckler (4820, -70.93 DPS) [vendor]; Thornwoven Shield (276889, -89.31 DPS, sim-verified) [quest]; Bear Buckler (4821, -91.50 DPS) [vendor] |
+| ranged | Calibrated Blunderbuss (279894) | Old Ironforge Incursion [quest] | 3.0 stamina points (87.24 DPS) | yes | Satchel of Copper Bombs (285275, -25.62 DPS, sim-verified) [crafted]; Harvester's Pestslayer (276695, -53.52 DPS) [quest]; Compact Shotgun (4577, -58.16 DPS) [world_drop] |
 
 **New at 20:** head: Guard's Silvered Chain Helm; neck: Tarnished Locket; shoulder: Durable Chain Shoulders; back: Sporid Cape; chest: Guard's Chain Shirt; wrist: Rift Bracers; hands: Guard's Gloves; waist: Deviate Scale Belt; legs: Guard's Chain Leggings; feet: Nat Pagle's Extreme Anglin' Boots; finger1: Blood Ring; finger2: Sustaining Ring; trinket1: Rune of Perfection; main_hand: Diamond Hammer; off_hand: Redbeard Crest; ranged: Calibrated Blunderbuss
 
 No-known-source sample (15 of 349, see the JSON for more): 1189 Overseer's Ring; 2273 Guerrilla Armor; 2314 Toughened Leather Armor; 2543 Militia Pants; 2664 Spinner Fang; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 3579 Ornate Copper Shoulders; 3738 Brewing Rod; 4642 Star of Xil'yeh; 4763 Blackwood Recurve Bow; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4800 Mighty Chain Pants
 
-### Band 30 (night-elf, 00000000000000000-000000000000000000-250533120000000000)
+### Band 30 (night-elf, 00000000000000000-000000000000000000-250530120300000000)
 
-Set DPS (verified): 35.9. Weights run: 8.9s. Verify run: 9.5s. 596 eligible items had no known source.
+Set DPS (verified): 35.7. Weights run: 9.1s. Verify run: 14.0s. 596 eligible items had no known source.
 
-Race sweep: human 189.3 ± 0.2, night-elf 188.4 ± 0.2, high-order-skyborne 188.4 ± 0.2, dwarf 188.2 ± 0.2, gnome 187.1 ± 0.2 (threat_per_second); human beats the guide race night-elf by 1.0 (0.51%) ± 0.3, beyond error.
+Race sweep: human 220.7 ± 0.2, night-elf 220.0 ± 0.2, high-order-skyborne 219.9 ± 0.2, dwarf 219.7 ± 0.2, gnome 218.6 ± 0.2 (threat_per_second); human beats the guide race night-elf by 0.8 (0.35%) ± 0.3, beyond error.
 
-Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.015, armor=0.042 ± 0.008, defense=0.364 ± 0.078 per rating point (1 rating = 1%, 0.364 per %), dodge=0.187 ± 0.015 per rating point (12 rating = 1%, 2.239 per %), parry=0.147 ± 0.011 per rating point (15 rating = 1%, 2.202 per %), block=not significant (0.028 ± 0.021) per rating point (5 rating = 1%, 0.142 per %), block_value=0.576 ± 0.137, strength=0.124 ± 0.007, agility=0.214 ± 0.010, attack_power=0.048 ± 0.000, hit=not significant (0.070 ± 0.020) per rating point (10 rating = 1%, 0.703 per %), crit=not significant (0.025 ± 0.007) per rating point (14 rating = 1%, 0.344 per %), expertise=2.505 ± 0.208
+Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.026, armor=0.042 ± 0.008, defense=not significant (0.278 ± 0.079) per rating point (1 rating = 1%, 0.278 per %), dodge=0.171 ± 0.015 per rating point (12 rating = 1%, 2.047 per %), parry=0.142 ± 0.011 per rating point (15 rating = 1%, 2.135 per %), block=not significant (0.016 ± 0.023) per rating point (5 rating = 1%, 0.079 per %), block_value=not significant (0.515 ± 0.157), strength=0.122 ± 0.008, agility=0.218 ± 0.011, attack_power=0.048 ± 0.000, hit=0.085 ± 0.019 per rating point (10 rating = 1%, 0.852 per %), crit=not significant (0.027 ± 0.007) per rating point (14 rating = 1%, 0.376 per %), expertise=2.170 ± 0.209
 
 | Slot | Item | Source | Score (stamina points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Frostreaver Crown (13127) | World drop [world_drop] | 23.2 stamina points (768.33 DPS) | yes | Protector's Chain Helm (250500, -71.57 DPS) [crafted]; Guard's Chain Helm (250499, -83.78 DPS, sim-verified) [crafted]; Veteran's Chain Helm (250498, -106.54 DPS) [crafted] |
-| neck | River Pride Choker (13087) | World drop [world_drop] | 9.5 stamina points (314.34 DPS) | yes | Master Sergeant's Insignia (18442, -16.44 DPS) [vendor]; Seal of the Expedition (271920, -49.54 DPS) [rep]; Sentinel's Medallion (19541, -92.10 DPS) [rep] |
-| shoulder | Sparkleshell Mantle (13131) | World drop [world_drop] | 17.7 stamina points (585.30 DPS) | yes | Azure Skyforged Pauldrons (277049, -79.43 DPS) [crafted]; Cloudy Skyforged Pauldrons (277041, -83.94 DPS, sim-verified) [crafted]; Watchman Pauldrons (7727, -96.60 DPS) [dungeon] |
-| back | Sergeant's Cape (18440) | PvP rank 3 · Sergeant · Alliance [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Mourning Shawl (6751, -38.71 DPS) [quest]; Tigerstrike Mantle (13108, -46.22 DPS, sim-verified) [world_drop]; Enduring Cape (14763, -49.41 DPS) [world_drop] |
-| chest | Fire Hardened Hauberk (6972) | Furen's Armor [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Guard's Silvered Chain Shirt (250519, -66.56 DPS, sim-verified) [crafted]; Protector's Silvered Chain Shirt (250520, -82.69 DPS) [crafted]; Glimmering Mail Breastplate (4071, -131.37 DPS) [world_drop] |
-| wrist | Mail Combat Armguards (6403) | World drop [world_drop] | 10.3 stamina points (340.48 DPS) | yes | Beastial Manacles (6722, -15.69 DPS) [quest]; Enduring Bracers (14759, -19.37 DPS) [world_drop]; Green Iron Bracers (3835, -30.85 DPS) [crafted] |
-| hands | Enduring Gauntlets (14764) | World drop [world_drop] | 12.2 stamina points (402.18 DPS) | yes | Fire Hardened Gauntlets (6974, -2.11 DPS) [quest]; Green Iron Gauntlets (3485, -9.02 DPS) [crafted]; Algae Fists (6906, -18.57 DPS) [dungeon] |
-| waist | Sentinel's Belt (250557) | Blacksmithing [crafted] | 18.9 stamina points (625.18 DPS) | yes | Warder's Belt (250558, -24.66 DPS) [crafted]; Officer's Belt (250556, -124.60 DPS) [crafted]; Thorn Protecting Girdle (279836, -170.22 DPS) [quest] |
-| legs | Guard's Silvered Chain Leggings (250524) | Blacksmithing [crafted] | 22.9 stamina points (757.22 DPS) | yes | Protector's Silvered Chain Leggings (250525, -28.77 DPS) [crafted]; Guard's Chain Leggings (250494, -107.51 DPS) [crafted]; Veteran's Silvered Chain Leggings (250523, -129.55 DPS) [crafted] |
-| feet | Scarlet Boots (10332) | Scarlet Monastery [dungeon] | 19.9 stamina points (658.59 DPS) | yes | Ravasaur Scale Boots (13124, -56.23 DPS) [world_drop]; Caverndeep Trudgers (9510, -95.05 DPS) [dungeon]; Mail Combat Boots (4076, -142.08 DPS) [world_drop] |
-| finger1 | Theramore Signet (271911) | Theramore Expeditionary Force [rep] | 8.4 stamina points (279.02 DPS) | yes | Plains Ring (2039, -14.22 DPS) [dungeon]; Defias Renegade Ring (1076, -52.05 DPS) [dungeon]; Protector's Band (19517, -79.41 DPS) [rep] |
-| finger2 | Militant's Band (271916) (or Plains Ring (2039)) | Theramore Expeditionary Force [rep] | 8.0 stamina points (264.80 DPS) | yes | Plains Ring (2039, +0.00 DPS) [dungeon]; Defias Renegade Ring (1076, -37.83 DPS) [dungeon]; Protector's Band (19517, -65.19 DPS) [rep] |
-| trinket1 | Talisman of Arathor (21119) | The League of Arathor [rep] | sim-verified (+190.3 DPS vs the runner-up, not corroborated against the finished set) | yes | - |
+| head | Frostreaver Crown (13127) | World drop [world_drop] | 23.1 stamina points (786.19 DPS) | yes | Guard's Chain Helm (250499, -48.54 DPS, sim-verified) [crafted]; Protector's Chain Helm (250500, -93.73 DPS) [crafted]; Veteran's Chain Helm (250498, -110.00 DPS) [crafted] |
+| neck | River Pride Choker (13087) | World drop [world_drop] | 9.5 stamina points (323.00 DPS) | yes | Master Sergeant's Insignia (18442, -16.64 DPS) [vendor]; Seal of the Expedition (271920, -50.68 DPS) [rep]; Sentinel's Medallion (19541, -93.46 DPS) [rep] |
+| shoulder | Sparkleshell Mantle (13131) | World drop [world_drop] | 17.6 stamina points (599.15 DPS) | yes | Azure Skyforged Pauldrons (277049, -81.29 DPS) [crafted]; Cloudy Skyforged Pauldrons (277041, -82.12 DPS, sim-verified) [crafted]; Watchman Pauldrons (7727, -98.40 DPS) [dungeon] |
+| back | Sergeant's Cape (18440) | PvP rank 3 · Sergeant · Alliance [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Mourning Shawl (6751, -39.73 DPS) [quest]; Enduring Cape (14763, -50.62 DPS) [world_drop]; Tigerstrike Mantle (13108, -76.81 DPS, sim-verified) [world_drop] |
+| chest | Fire Hardened Hauberk (6972) | Furen's Armor [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Protector's Silvered Chain Shirt (250520, -105.00 DPS) [crafted]; Guard's Silvered Chain Shirt (250519, -116.63 DPS, sim-verified) [crafted]; Glimmering Mail Breastplate (4071, -134.63 DPS) [world_drop] |
+| wrist | Mail Combat Armguards (6403) | World drop [world_drop] | 10.2 stamina points (348.55 DPS) | yes | Beastial Manacles (6722, -16.37 DPS) [quest]; Enduring Bracers (14759, -20.14 DPS) [world_drop]; Barbaric Bracers (18948, -31.13 DPS) [crafted] |
+| hands | Enduring Gauntlets (14764) | World drop [world_drop] | 12.1 stamina points (410.80 DPS) | yes | Fire Hardened Gauntlets (6974, -2.33 DPS) [quest]; Green Iron Gauntlets (3485, -9.34 DPS) [crafted]; Algae Fists (6906, -19.52 DPS) [dungeon] |
+| waist | Sentinel's Belt (250557) | Blacksmithing [crafted] | 18.2 stamina points (619.36 DPS) | yes | Warder's Belt (250558, -24.96 DPS) [crafted]; Officer's Belt (250556, -107.16 DPS) [crafted]; Thorn Protecting Girdle (279836, -153.81 DPS) [quest] |
+| legs | Guard's Silvered Chain Leggings (250524) | Blacksmithing [crafted] | 22.1 stamina points (750.96 DPS) | yes | Protector's Silvered Chain Leggings (250525, -29.11 DPS) [crafted]; Guard's Chain Leggings (250494, -107.20 DPS) [crafted]; Veteran's Silvered Chain Leggings (250523, -109.20 DPS) [crafted] |
+| feet | Scarlet Boots (10332) | Scarlet Monastery [dungeon] | 19.8 stamina points (674.65 DPS) | yes | Ravasaur Scale Boots (13124, -58.65 DPS) [world_drop]; Caverndeep Trudgers (9510, -98.49 DPS) [dungeon]; Mail Combat Boots (4076, -146.65 DPS) [world_drop] |
+| finger1 | Theramore Signet (271911) | Theramore Expeditionary Force [rep] | 8.4 stamina points (287.05 DPS) | yes | Plains Ring (2039, -14.73 DPS) [dungeon]; Defias Renegade Ring (1076, -53.14 DPS) [dungeon]; Protector's Band (19517, -81.43 DPS) [rep] |
+| finger2 | Militant's Band (271916) (or Plains Ring (2039)) | Theramore Expeditionary Force [rep] | 8.0 stamina points (272.32 DPS) | yes | Plains Ring (2039, +0.00 DPS) [dungeon]; Defias Renegade Ring (1076, -38.41 DPS) [dungeon]; Protector's Band (19517, -66.70 DPS) [rep] |
+| trinket1 | Talisman of Arathor (21119) | The League of Arathor [rep] | sim-verified (+204.5 DPS vs the runner-up, not corroborated against the finished set) | yes | - |
 | trinket2 | Rune of Perfection (21566) | Silverwing Sentinels [rep] | sim-decided (no score - a real sim tournament chose this pick) | yes | Rune of Duty (21568, +0.00 DPS) [rep] |
-| main_hand | Looming Gavel (13048) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | The Butcher (8226, -42.59 DPS, sim-verified) [dungeon]; Headsplitter (7786, -61.48 DPS) [dungeon]; Sentinel's Blade (212583, -99.44 DPS) [vendor] |
-| off_hand | Bonepile Gaze (273055) | Lyn the Ignored [world] | 40.7 stamina points (1346.01 DPS) | yes | Heart of Agamaggan (6694, -52.03 DPS) [dungeon]; Resplendent Guardian (7787, -155.38 DPS) [dungeon]; Crest of Darkshire (6223, -178.53 DPS) [quest] |
-| ranged | Chesterfall Musket (7729) | Scarlet Monastery [dungeon] | 6.0 stamina points (198.60 DPS) | yes | Ironweaver (13137, -49.93 DPS, sim-verified) [world_drop]; Whipwood Recurve Bow (3037, -66.20 DPS) [world_drop]; Long Redwood Bow (15286, -66.20 DPS) [world_drop] |
+| main_hand | The Butcher (8226) | Scarlet Monastery [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Looming Gavel (13048, +0.00 DPS) [world_drop]; Headsplitter (7786, -7.29 DPS) [dungeon]; Sentinel's Blade (212583, -45.39 DPS) [vendor] |
+| off_hand | Bonepile Gaze (273055) | Lyn the Ignored [world] | 39.7 stamina points (1352.89 DPS) | yes | Heart of Agamaggan (6694, -17.79 DPS, sim-verified) [dungeon]; Resplendent Guardian (7787, -144.42 DPS) [dungeon]; Crest of Darkshire (6223, -165.81 DPS) [quest] |
+| ranged | Chesterfall Musket (7729) | Scarlet Monastery [dungeon] | 6.0 stamina points (204.24 DPS) | yes | Ironweaver (13137, -39.72 DPS) [world_drop]; Whipwood Recurve Bow (3037, -68.08 DPS) [world_drop]; Long Redwood Bow (15286, -68.08 DPS) [world_drop] |
 
-**New at 30:** head: Frostreaver Crown; neck: River Pride Choker; shoulder: Sparkleshell Mantle; back: Sergeant's Cape; chest: Fire Hardened Hauberk; wrist: Mail Combat Armguards; hands: Enduring Gauntlets; waist: Sentinel's Belt; legs: Guard's Silvered Chain Leggings; feet: Scarlet Boots; finger1: Theramore Signet; finger2: Militant's Band; trinket1: Talisman of Arathor; trinket2: Rune of Perfection; main_hand: Looming Gavel; off_hand: Bonepile Gaze; ranged: Chesterfall Musket
+**New at 30:** head: Frostreaver Crown; neck: River Pride Choker; shoulder: Sparkleshell Mantle; back: Sergeant's Cape; chest: Fire Hardened Hauberk; wrist: Mail Combat Armguards; hands: Enduring Gauntlets; waist: Sentinel's Belt; legs: Guard's Silvered Chain Leggings; feet: Scarlet Boots; finger1: Theramore Signet; finger2: Militant's Band; trinket1: Talisman of Arathor; trinket2: Rune of Perfection; main_hand: The Butcher; off_hand: Bonepile Gaze; ranged: Chesterfall Musket
 
 No-known-source sample (15 of 596, see the JSON for more): 913 Huge Ogre Sword; 1189 Overseer's Ring; 1216 Frost Bracers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2314 Toughened Leather Armor; 2543 Militia Pants; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 3579 Ornate Copper Shoulders; 3738 Brewing Rod; 4196 Feathered Mantle; 4642 Star of Xil'yeh
 
 ### Band 40 (night-elf, 00000000000000000-000000000000000000-250533120330001201)
 
-Set DPS (verified): 94.6. Weights run: 9.0s. Verify run: 17.7s. 815 eligible items had no known source.
+Set DPS (verified): 94.6. Weights run: 8.5s. Verify run: 16.0s. 815 eligible items had no known source.
 
 Race sweep: dwarf 525.6 ± 0.5, human 522.3 ± 0.5, high-order-skyborne 522.1 ± 0.5, night-elf 521.5 ± 0.5, gnome 520.7 ± 0.5 (threat_per_second); dwarf beats the guide race night-elf by 4.1 (0.79%) ± 0.7, beyond error.
 
@@ -106,7 +106,7 @@ No-known-source sample (15 of 815, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 50 (night-elf, 31000000000000000-000000000000000000-250533120330001351)
 
-Set DPS (verified): 147.5. Weights run: 8.8s. Verify run: 24.0s. 1030 eligible items had no known source.
+Set DPS (verified): 147.5. Weights run: 8.6s. Verify run: 23.4s. 1030 eligible items had no known source.
 
 Race sweep: human 744.0 ± 0.6, high-order-skyborne 742.8 ± 0.6, night-elf 742.7 ± 0.6, gnome 742.3 ± 0.6, dwarf 739.8 ± 0.6 (threat_per_second); human beats the guide race night-elf by 1.3 (0.18%) ± 0.9, beyond error.
 
@@ -140,7 +140,7 @@ No-known-source sample (15 of 1030, see the JSON for more): 913 Huge Ogre Sword;
 
 ### Band 60 (night-elf, 35300003000000000-000000000000000000-250533120330001351)
 
-Set DPS (verified): 209.0. Weights run: 8.0s. Verify run: 76.2s. 2366 eligible items had no known source.
+Set DPS (verified): 209.0. Weights run: 7.9s. Verify run: 71.9s. 2366 eligible items had no known source.
 
 Race sweep: dwarf 978.4 ± 0.8, human 975.5 ± 0.8, night-elf 974.2 ± 0.8, high-order-skyborne 973.3 ± 0.8, gnome 972.0 ± 0.8 (threat_per_second); dwarf beats the guide race night-elf by 4.2 (0.43%) ± 1.1, beyond error.
 
@@ -174,7 +174,7 @@ No-known-source sample (15 of 2366, see the JSON for more): 913 Huge Ogre Sword;
 
 ### Band 60, raid preset (night-elf, 35300003000000000-000000000000000000-250533120330001351)
 
-Set DPS (verified): 455.4. Weights run: 9.0s. Verify run: 82.9s. 2366 eligible items had no known source.
+Set DPS (verified): 455.4. Weights run: 9.1s. Verify run: 78.5s. 2366 eligible items had no known source.
 
 Race sweep: dwarf 1784.8 ± 1.6, gnome 1779.2 ± 1.7, night-elf 1777.6 ± 1.6, human 1777.4 ± 1.7, high-order-skyborne 1773.8 ± 1.7 (threat_per_second); dwarf beats the guide race night-elf by 7.3 (0.41%) ± 2.3, beyond error.
 
@@ -208,73 +208,73 @@ No-known-source sample (15 of 2366, see the JSON for more): 913 Huge Ogre Sword;
 
 ## Horde
 
-### Band 20 (undead, 00000000000000000-000000000000000000-250400000000000000)
+### Band 20 (undead, 00000000000000000-000000000000000000-250030000100000000)
 
-Set DPS (verified): 22.7. Weights run: 9.7s. Verify run: 15.0s. 332 eligible items had no known source.
+Set DPS (verified): 26.4. Weights run: 9.5s. Verify run: 15.9s. 332 eligible items had no known source.
 
-Race sweep: undead 101.5 ± 0.1, orc 98.4 ± 0.1, tauren 98.3 ± 0.1, troll 97.8 ± 0.1, windshaper-skyborne 97.1 ± 0.1 (threat_per_second); the guide race undead is best.
+Race sweep: undead 124.1 ± 0.1, orc 121.4 ± 0.1, tauren 121.2 ± 0.1, troll 120.5 ± 0.1, windshaper-skyborne 119.2 ± 0.1 (threat_per_second); the guide race undead is best.
 
-Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.000, armor=0.028 ± 0.005, defense=0.194 ± 0.040 per rating point (1 rating = 1%, 0.194 per %), dodge=0.104 ± 0.008 per rating point (12 rating = 1%, 1.247 per %), parry=0.083 ± 0.006 per rating point (15 rating = 1%, 1.247 per %), block=not significant (0.006 ± 0.011) per rating point (5 rating = 1%, 0.028 per %), block_value=0.624 ± 0.093, strength=0.112 ± 0.005, agility=0.152 ± 0.006, attack_power=0.040 ± 0.000, hit=0.058 ± 0.011 per rating point (10 rating = 1%, 0.581 per %), crit=0.019 ± 0.004 per rating point (14 rating = 1%, 0.265 per %), expertise=1.227 ± 0.112
+Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.000, armor=0.032 ± 0.005, defense=0.179 ± 0.041 per rating point (1 rating = 1%, 0.179 per %), dodge=0.124 ± 0.009 per rating point (12 rating = 1%, 1.487 per %), parry=0.098 ± 0.007 per rating point (15 rating = 1%, 1.463 per %), block=0.056 ± 0.013 per rating point (5 rating = 1%, 0.280 per %), block_value=0.716 ± 0.099, strength=0.128 ± 0.005, agility=0.160 ± 0.006, attack_power=0.046 ± 0.000, hit=0.051 ± 0.011 per rating point (10 rating = 1%, 0.511 per %), crit=not significant (0.015 ± 0.005) per rating point (14 rating = 1%, 0.209 per %), expertise=1.279 ± 0.118
 
 | Slot | Item | Source | Score (stamina points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Guard's Silvered Chain Helm (250529) | Blacksmithing [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Lucky Fishing Hat (19972, +0.00 DPS) [quest]; Protector's Silvered Chain Helm (250530, -4.53 DPS) [crafted]; Veteran's Silvered Chain Helm (250528, -11.34 DPS) [crafted] |
-| neck | Erudite's Amulet (277204) | Friend of the Library [quest] | 3.3 stamina points (93.96 DPS) | yes | Scholarly Pendant (277203, -8.64 DPS) [quest]; Scout's Medallion (20442, -11.15 DPS) [rep] |
-| shoulder | Rough Bronze Shoulders (3480) | Blacksmithing [crafted] | 8.0 stamina points (228.21 DPS) | yes | Silvered Bronze Shoulders (3481, -22.79 DPS) [crafted]; Forest Leather Mantle (4709, -62.81 DPS) [world_drop]; Prospector's Pads (14566, -62.81 DPS) [world_drop] |
-| back | Sporid Cape (6629) | Wailing Caverns: Verdan the Everliving [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Sentry Cloak (2059, -10.35 DPS) [world_drop]; Firebane Cloak (12979, -29.25 DPS) [world_drop]; Battle Healer's Cloak (20427, -56.88 DPS) [rep] |
-| chest | Guard's Chain Shirt (250489) | Blacksmithing [crafted] | 13.6 stamina points (387.92 DPS) | yes | Blackened Defias Armor (10399, -5.99 DPS) [dungeon]; Rough Bronze Cuirass (2866, -17.60 DPS) [crafted]; Protector's Chain Shirt (250490, -23.81 DPS) [crafted] |
-| wrist | Rift Bracers (5943) | Shadowfang Keep: Arugal's Voidwalker [dungeon] | 6.3 stamina points (178.30 DPS) | yes | Rough Bronze Bracers (2867, -2.42 DPS) [crafted]; Bear Bracers (4795, -6.25 DPS) [vendor]; Hulking Bands (14743, -31.67 DPS) [world_drop] |
-| hands | Guard's Gloves (250509) | Blacksmithing [crafted] | 9.4 stamina points (267.50 DPS) | yes | Veteran's Gloves (250508, -3.62 DPS) [crafted]; Protector's Gloves (250510, -15.94 DPS) [crafted]; Crusader's Gloves (250512, -22.96 DPS) [crafted] |
-| waist | Deviate Scale Belt (6468) | Leatherworking [crafted] | 8.5 stamina points (242.96 DPS) | yes | Guard's Chain Belt (250514, -20.80 DPS) [crafted]; Veteran's Chain Belt (250513, -24.42 DPS) [crafted]; Protector's Chain Belt (250515, -39.08 DPS) [crafted] |
-| legs | Guard's Chain Leggings (250494) | Blacksmithing [crafted] | 15.9 stamina points (452.58 DPS) | yes | Protector's Chain Leggings (250495, -27.00 DPS) [crafted]; Veteran's Chain Leggings (250493, -61.21 DPS) [crafted]; Crusader's Chain Leggings (250497, -101.95 DPS) [crafted] |
-| feet | Nat Pagle's Extreme Anglin' Boots (19969) | Rare Fish - Brownell's Blue Striped Racer [quest] | 13.0 stamina points (370.33 DPS) | yes | Silver-linked Footguards (12982, -57.61 DPS) [world_drop]; Surfer Shoes (276274, -62.53 DPS) [vendor]; Savage Trodders (6459, -63.14 DPS) [dungeon] |
-| finger1 | Blood Ring (4998) | World drop [world_drop] | 5.0 stamina points (142.20 DPS) | yes | Slain Baron's Signet (279867, -51.35 DPS) [quest]; Ring of the Moon (12052, -53.69 DPS) [world_drop]; Legionnaire's Band (20429, -55.28 DPS) [rep] |
-| finger2 | Ring of Scorn (3235) | A Husband's Revenge [quest] | 4.0 stamina points (113.76 DPS) | yes | Slain Baron's Signet (279867, -22.91 DPS) [quest]; Ring of the Moon (12052, -25.25 DPS) [world_drop]; Legionnaire's Band (20429, -26.84 DPS) [rep] |
+| head | Guard's Silvered Chain Helm (250529) | Blacksmithing [crafted] | sim-verified (+30.7 DPS vs the runner-up, not corroborated against the finished set) | yes | Veteran's Silvered Chain Helm (250528, -9.18 DPS) [crafted]; Protector's Silvered Chain Helm (250530, -10.00 DPS) [crafted]; Lucky Fishing Hat (19972, -30.73 DPS, sim-verified) [quest] |
+| neck | Erudite's Amulet (277204) | Friend of the Library [quest] | 3.3 stamina points (96.54 DPS) | yes | Scout's Medallion (20442, -10.50 DPS) [rep]; Scholarly Pendant (277203, -20.96 DPS, sim-verified) [quest] |
+| shoulder | Rough Bronze Shoulders (3480) | Blacksmithing [crafted] | 8.6 stamina points (248.92 DPS) | yes | Silvered Bronze Shoulders (3481, -22.54 DPS) [crafted]; Criminal's Pauldrons (276720, -69.35 DPS) [quest]; Forest Leather Mantle (4709, -72.82 DPS) [world_drop] |
+| back | Sporid Cape (6629) | Wailing Caverns: Verdan the Everliving [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Sentry Cloak (2059, -9.56 DPS) [world_drop]; Firebane Cloak (12979, -30.02 DPS) [world_drop]; Battle Healer's Cloak (20427, -58.16 DPS) [rep] |
+| chest | Guard's Chain Shirt (250489) | Blacksmithing [crafted] | 14.3 stamina points (416.37 DPS) | yes | Rough Bronze Cuirass (2866, -18.40 DPS) [crafted]; Protector's Chain Shirt (250490, -25.33 DPS) [crafted]; Blackened Defias Armor (10399, -47.81 DPS, sim-verified) [dungeon] |
+| wrist | Rift Bracers (5943) | Shadowfang Keep: Arugal's Voidwalker [dungeon] | 6.6 stamina points (191.04 DPS) | yes | Rough Bronze Bracers (2867, -2.80 DPS) [crafted]; Bear Bracers (4795, -11.08 DPS) [vendor]; Hulking Bands (14743, -32.82 DPS) [world_drop] |
+| hands | Guard's Gloves (250509) | Blacksmithing [crafted] | 9.9 stamina points (287.07 DPS) | yes | Veteran's Gloves (250508, -1.69 DPS) [crafted]; Protector's Gloves (250510, -18.64 DPS) [crafted]; Crusader's Gloves (250512, -23.08 DPS) [crafted] |
+| waist | Deviate Scale Belt (6468) | Leatherworking [crafted] | 8.8 stamina points (256.53 DPS) | yes | Guard's Chain Belt (250514, -18.15 DPS) [crafted]; Veteran's Chain Belt (250513, -19.83 DPS) [crafted]; Crusader's Chain Belt (250517, -37.50 DPS) [crafted] |
+| legs | Guard's Chain Leggings (250494) | Blacksmithing [crafted] | 16.5 stamina points (481.20 DPS) | yes | Protector's Chain Leggings (250495, -41.30 DPS, sim-verified) [crafted]; Veteran's Chain Leggings (250493, -56.48 DPS) [crafted]; Crusader's Chain Leggings (250497, -102.07 DPS) [crafted] |
+| feet | Nat Pagle's Extreme Anglin' Boots (19969) | Rare Fish - Brownell's Blue Striped Racer [quest] | 13.2 stamina points (382.60 DPS) | yes | Silver-linked Footguards (12982, -31.95 DPS, sim-verified) [world_drop]; Savage Trodders (6459, -53.88 DPS) [dungeon]; Surfer Shoes (276274, -64.70 DPS) [vendor] |
+| finger1 | Blood Ring (4998) | World drop [world_drop] | 5.0 stamina points (145.41 DPS) | yes | Slain Baron's Signet (279867, -52.96 DPS) [quest]; Legionnaire's Band (20429, -53.75 DPS) [rep]; Ring of the Moon (12052, -54.44 DPS) [world_drop] |
+| finger2 | Ring of Scorn (3235) | A Husband's Revenge [quest] | 4.0 stamina points (116.33 DPS) | yes | Slain Baron's Signet (279867, -23.87 DPS) [quest]; Legionnaire's Band (20429, -24.67 DPS) [rep]; Ring of the Moon (12052, -25.35 DPS) [world_drop] |
 | trinket1 | Rune of Perfection (21566) | Warsong Outriders [rep] | sim-decided (no score - a real sim tournament chose this pick) | yes | Rune of Duty (21568, +0.00 DPS) [rep] |
 | trinket2 | - | - |  |  |  |
-| main_hand | Diamond Hammer (2194) | World drop [world_drop] | 13.5 stamina points (383.70 DPS) | yes | Buzz Saw (1937, -40.83 DPS) [dungeon]; Butcher's Slicer (6633, -50.40 DPS) [dungeon]; Wingblade (6504, -53.16 DPS) [quest] |
-| off_hand | Redbeard Crest (12997) | World drop [world_drop] | 19.2 stamina points (545.75 DPS) | yes | Thornwoven Shield (276889, -46.36 DPS) [quest]; Guardian Buckler (4820, -61.08 DPS) [vendor]; Bear Buckler (4821, -78.95 DPS) [vendor] |
-| ranged | Satchel of Copper Bombs (285275) | Engineering [crafted] | 2.0 stamina points (56.88 DPS) | yes | Misplaced Shooter (277255, -25.25 DPS) [quest]; Rough Boomstick (4362, -28.44 DPS) [crafted]; Compact Shotgun (4577, -28.44 DPS) [world_drop] |
+| main_hand | Diamond Hammer (2194) | World drop [world_drop] | 14.8 stamina points (431.64 DPS) | yes | Buzz Saw (1937, -23.95 DPS, sim-verified) [dungeon]; Butcher's Slicer (6633, -54.75 DPS) [dungeon]; Wingblade (6504, -55.84 DPS) [quest] |
+| off_hand | Redbeard Crest (12997) | World drop [world_drop] | 21.3 stamina points (620.49 DPS) | yes | Guardian Buckler (4820, -70.93 DPS) [vendor]; Bear Buckler (4821, -91.50 DPS) [vendor]; Thornwoven Shield (276889, -93.41 DPS, sim-verified) [quest] |
+| ranged | Satchel of Copper Bombs (285275) | Engineering [crafted] | 2.0 stamina points (58.16 DPS) | yes | Misplaced Shooter (277255, -20.63 DPS, sim-verified) [quest]; Rough Boomstick (4362, -29.08 DPS) [crafted]; Compact Shotgun (4577, -29.08 DPS) [world_drop] |
 
 **New at 20:** head: Guard's Silvered Chain Helm; neck: Erudite's Amulet; shoulder: Rough Bronze Shoulders; back: Sporid Cape; chest: Guard's Chain Shirt; wrist: Rift Bracers; hands: Guard's Gloves; waist: Deviate Scale Belt; legs: Guard's Chain Leggings; feet: Nat Pagle's Extreme Anglin' Boots; finger1: Blood Ring; finger2: Ring of Scorn; trinket1: Rune of Perfection; main_hand: Diamond Hammer; off_hand: Redbeard Crest; ranged: Satchel of Copper Bombs
 
 No-known-source sample (15 of 332, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2273 Guerrilla Armor; 2314 Toughened Leather Armor; 2543 Militia Pants; 2664 Spinner Fang; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 3579 Ornate Copper Shoulders; 3738 Brewing Rod; 4642 Star of Xil'yeh; 4763 Blackwood Recurve Bow; 5255 Quilboar Tomahawk; 5748 Centaur Longbow; 5821 Darkstalker Boots
 
-### Band 30 (undead, 00000000000000000-000000000000000000-250533120000000000)
+### Band 30 (undead, 00000000000000000-000000000000000000-250530120300000000)
 
-Set DPS (verified): 40.6. Weights run: 8.9s. Verify run: 9.5s. 581 eligible items had no known source.
+Set DPS (verified): 39.9. Weights run: 9.1s. Verify run: 13.9s. 581 eligible items had no known source.
 
-Race sweep: undead 197.5 ± 0.2, orc 192.0 ± 0.2, tauren 191.6 ± 0.2, troll 191.1 ± 0.2, windshaper-skyborne 190.7 ± 0.2 (threat_per_second); the guide race undead is best.
+Race sweep: undead 230.3 ± 0.2, orc 223.8 ± 0.2, tauren 222.9 ± 0.2, troll 222.7 ± 0.2, windshaper-skyborne 222.1 ± 0.2 (threat_per_second); the guide race undead is best.
 
-Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.015, armor=0.042 ± 0.008, defense=0.364 ± 0.078 per rating point (1 rating = 1%, 0.364 per %), dodge=0.187 ± 0.015 per rating point (12 rating = 1%, 2.239 per %), parry=0.147 ± 0.011 per rating point (15 rating = 1%, 2.202 per %), block=not significant (0.028 ± 0.021) per rating point (5 rating = 1%, 0.142 per %), block_value=0.576 ± 0.137, strength=0.124 ± 0.007, agility=0.214 ± 0.010, attack_power=0.048 ± 0.000, hit=not significant (0.070 ± 0.020) per rating point (10 rating = 1%, 0.703 per %), crit=not significant (0.025 ± 0.007) per rating point (14 rating = 1%, 0.344 per %), expertise=2.505 ± 0.208
+Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.026, armor=0.042 ± 0.008, defense=not significant (0.278 ± 0.079) per rating point (1 rating = 1%, 0.278 per %), dodge=0.171 ± 0.015 per rating point (12 rating = 1%, 2.047 per %), parry=0.142 ± 0.011 per rating point (15 rating = 1%, 2.135 per %), block=not significant (0.016 ± 0.023) per rating point (5 rating = 1%, 0.079 per %), block_value=not significant (0.515 ± 0.157), strength=0.122 ± 0.008, agility=0.218 ± 0.011, attack_power=0.048 ± 0.000, hit=0.085 ± 0.019 per rating point (10 rating = 1%, 0.852 per %), crit=not significant (0.027 ± 0.007) per rating point (14 rating = 1%, 0.376 per %), expertise=2.170 ± 0.209
 
 | Slot | Item | Source | Score (stamina points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Frostreaver Crown (13127) | World drop [world_drop] | 23.2 stamina points (768.33 DPS) | yes | Guard's Chain Helm (250499, -60.99 DPS, sim-verified) [crafted]; Protector's Chain Helm (250500, -71.57 DPS) [crafted]; Veteran's Chain Helm (250498, -106.54 DPS) [crafted] |
-| neck | River Pride Choker (13087) | World drop [world_drop] | 9.5 stamina points (314.34 DPS) | yes | Senior Sergeant's Insignia (15200, -16.44 DPS) [vendor]; Darkspear Warding Pendant (272075, -49.54 DPS) [vendor]; Scout's Medallion (19537, -92.10 DPS) [rep] |
-| shoulder | Sparkleshell Mantle (13131) | World drop [world_drop] | 17.7 stamina points (585.30 DPS) | yes | Cloudy Skyforged Pauldrons (277041, -57.86 DPS, sim-verified) [crafted]; Azure Skyforged Pauldrons (277049, -79.43 DPS) [crafted]; Watchman Pauldrons (7727, -96.60 DPS) [dungeon] |
-| back | Sergeant's Cloak (18427) | PvP rank 3 · Sergeant · Horde [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Enduring Cape (14763, -49.41 DPS) [world_drop]; Grimsteel Cape (4643, -56.23 DPS) [quest]; Tigerstrike Mantle (13108, -61.80 DPS, sim-verified) [world_drop] |
-| chest | Brutal Hauberk (7133) | Brutal Hauberk [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Protector's Silvered Chain Shirt (250520, -82.69 DPS) [crafted]; Guard's Silvered Chain Shirt (250519, -89.61 DPS, sim-verified) [crafted]; Glimmering Mail Breastplate (4071, -131.37 DPS) [world_drop] |
-| wrist | Undead Knight's Bracers (251965) | The Grave Knight [quest] | 10.4 stamina points (344.24 DPS) | yes | Mail Combat Armguards (6403, -3.76 DPS) [world_drop]; Enduring Bracers (14759, -23.13 DPS) [world_drop]; Green Iron Bracers (3835, -34.60 DPS) [crafted] |
-| hands | Enduring Gauntlets (14764) | World drop [world_drop] | 12.2 stamina points (402.18 DPS) | yes | Brutal Gauntlets (7129, -2.11 DPS) [quest]; Green Iron Gauntlets (3485, -9.02 DPS) [crafted]; Algae Fists (6906, -18.57 DPS) [dungeon] |
-| waist | Sentinel's Belt (250557) | Blacksmithing [crafted] | 18.9 stamina points (625.18 DPS) | yes | Warder's Belt (250558, -24.66 DPS) [crafted]; Officer's Belt (250556, -124.60 DPS) [crafted]; Warden's Leather Belt (252460, -171.66 DPS) [crafted] |
-| legs | Guard's Silvered Chain Leggings (250524) | Blacksmithing [crafted] | 22.9 stamina points (757.22 DPS) | yes | Protector's Silvered Chain Leggings (250525, -28.77 DPS) [crafted]; Guard's Chain Leggings (250494, -107.51 DPS) [crafted]; Veteran's Silvered Chain Leggings (250523, -129.55 DPS) [crafted] |
-| feet | Scarlet Boots (10332) | Scarlet Monastery [dungeon] | 19.9 stamina points (658.59 DPS) | yes | Ravasaur Scale Boots (13124, -42.83 DPS, sim-verified) [world_drop]; Caverndeep Trudgers (9510, -95.05 DPS) [dungeon]; Mail Combat Boots (4076, -142.08 DPS) [world_drop] |
-| finger1 | Insurgent's Band (272067) | Creeg Bothunk [vendor] | 8.4 stamina points (279.02 DPS) | yes | Plains Ring (2039, -14.22 DPS) [dungeon]; Darkspear Signet (272071, -14.22 DPS) [vendor]; Defias Renegade Ring (1076, -52.05 DPS) [dungeon] |
-| finger2 | Seal of Sylvanas (6414) | Arugal Must Die [quest] | 8.3 stamina points (274.28 DPS) | yes | Plains Ring (2039, -9.48 DPS) [dungeon]; Darkspear Signet (272071, -9.48 DPS) [vendor]; Defias Renegade Ring (1076, -47.31 DPS) [dungeon] |
-| trinket1 | Defiler's Talisman (21120) | The Defilers [rep] | sim-verified (+198.3 DPS vs the runner-up, not corroborated against the finished set) | yes | - |
+| head | Frostreaver Crown (13127) | World drop [world_drop] | 23.1 stamina points (786.19 DPS) | yes | Guard's Chain Helm (250499, -90.79 DPS, sim-verified) [crafted]; Protector's Chain Helm (250500, -93.73 DPS) [crafted]; Veteran's Chain Helm (250498, -110.00 DPS) [crafted] |
+| neck | River Pride Choker (13087) | World drop [world_drop] | 9.5 stamina points (323.00 DPS) | yes | Senior Sergeant's Insignia (15200, -16.64 DPS) [vendor]; Darkspear Warding Pendant (272075, -50.68 DPS) [vendor]; Scout's Medallion (19537, -93.46 DPS) [rep] |
+| shoulder | Sparkleshell Mantle (13131) | World drop [world_drop] | 17.6 stamina points (599.15 DPS) | yes | Cloudy Skyforged Pauldrons (277041, -76.54 DPS, sim-verified) [crafted]; Azure Skyforged Pauldrons (277049, -81.29 DPS) [crafted]; Watchman Pauldrons (7727, -98.40 DPS) [dungeon] |
+| back | Sergeant's Cloak (18427) | PvP rank 3 · Sergeant · Horde [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Enduring Cape (14763, -50.62 DPS) [world_drop]; Grimsteel Cape (4643, -57.51 DPS) [quest]; Tigerstrike Mantle (13108, -118.04 DPS, sim-verified) [world_drop] |
+| chest | Brutal Hauberk (7133) | Brutal Hauberk [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Protector's Silvered Chain Shirt (250520, -105.00 DPS) [crafted]; Glimmering Mail Breastplate (4071, -134.63 DPS) [world_drop]; Guard's Silvered Chain Shirt (250519, -178.67 DPS, sim-verified) [crafted] |
+| wrist | Undead Knight's Bracers (251965) | The Grave Knight [quest] | 10.3 stamina points (351.89 DPS) | yes | Mail Combat Armguards (6403, -3.33 DPS) [world_drop]; Enduring Bracers (14759, -23.47 DPS) [world_drop]; Barbaric Bracers (18948, -34.47 DPS) [crafted] |
+| hands | Brutal Gauntlets (7129) | Brutal Gauntlets [quest] | sim-verified (+23.8 DPS vs the runner-up, not corroborated against the finished set) | yes | Green Iron Gauntlets (3485, -7.00 DPS) [crafted]; Algae Fists (6906, -17.18 DPS) [dungeon]; Enduring Gauntlets (14764, -23.77 DPS, sim-verified) [world_drop] |
+| waist | Sentinel's Belt (250557) | Blacksmithing [crafted] | 18.2 stamina points (619.36 DPS) | yes | Warder's Belt (250558, -39.81 DPS, sim-verified) [crafted]; Officer's Belt (250556, -107.16 DPS) [crafted]; Warden's Leather Belt (252460, -153.90 DPS) [crafted] |
+| legs | Guard's Silvered Chain Leggings (250524) | Blacksmithing [crafted] | 22.1 stamina points (750.96 DPS) | yes | Protector's Silvered Chain Leggings (250525, -57.71 DPS, sim-verified) [crafted]; Guard's Chain Leggings (250494, -107.20 DPS) [crafted]; Veteran's Silvered Chain Leggings (250523, -109.20 DPS) [crafted] |
+| feet | Scarlet Boots (10332) | Scarlet Monastery [dungeon] | 19.8 stamina points (674.65 DPS) | yes | Ravasaur Scale Boots (13124, -64.76 DPS, sim-verified) [world_drop]; Caverndeep Trudgers (9510, -98.49 DPS) [dungeon]; Mail Combat Boots (4076, -146.65 DPS) [world_drop] |
+| finger1 | Insurgent's Band (272067) | Creeg Bothunk [vendor] | 8.4 stamina points (287.05 DPS) | yes | Plains Ring (2039, -14.73 DPS) [dungeon]; Darkspear Signet (272071, -14.73 DPS) [vendor]; Defias Renegade Ring (1076, -53.14 DPS) [dungeon] |
+| finger2 | Seal of Sylvanas (6414) | Arugal Must Die [quest] | 8.3 stamina points (282.14 DPS) | yes | Plains Ring (2039, -9.82 DPS) [dungeon]; Darkspear Signet (272071, -9.82 DPS) [vendor]; Defias Renegade Ring (1076, -48.23 DPS) [dungeon] |
+| trinket1 | Defiler's Talisman (21120) | The Defilers [rep] | sim-verified (+198.9 DPS vs the runner-up, not corroborated against the finished set) | yes | - |
 | trinket2 | Rune of Perfection (21566) | Warsong Outriders [rep] | sim-decided (no score - a real sim tournament chose this pick) | yes | Rune of Duty (21568, +0.00 DPS) [rep] |
-| main_hand | The Butcher (8226) | Scarlet Monastery [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Looming Gavel (13048, +0.00 DPS) [world_drop]; Headsplitter (7786, -6.17 DPS) [dungeon]; Scout's Blade (212587, -44.13 DPS) [vendor] |
-| off_hand | Bonepile Gaze (273055) | Lyn the Ignored [world] | 40.7 stamina points (1346.01 DPS) | yes | Heart of Agamaggan (6694, -52.03 DPS) [dungeon]; Resplendent Guardian (7787, -155.38 DPS) [dungeon]; Arctic Buckler (7002, -180.31 DPS) [quest] |
-| ranged | Chesterfall Musket (7729) | Scarlet Monastery [dungeon] | 6.0 stamina points (198.60 DPS) | yes | Ironweaver (13137, -30.08 DPS) [world_drop]; Whipwood Recurve Bow (3037, -66.20 DPS) [world_drop]; Long Redwood Bow (15286, -66.20 DPS) [world_drop] |
+| main_hand | Looming Gavel (13048) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | The Butcher (8226, -56.65 DPS) [dungeon]; Headsplitter (7786, -63.94 DPS) [dungeon]; Scout's Blade (212587, -102.05 DPS) [vendor] |
+| off_hand | Bonepile Gaze (273055) | Lyn the Ignored [world] | 39.7 stamina points (1352.89 DPS) | yes | Heart of Agamaggan (6694, -58.83 DPS, sim-verified) [dungeon]; Resplendent Guardian (7787, -144.42 DPS) [dungeon]; Arctic Buckler (7002, -167.12 DPS) [quest] |
+| ranged | Chesterfall Musket (7729) | Scarlet Monastery [dungeon] | 6.0 stamina points (204.24 DPS) | yes | Ironweaver (13137, -49.08 DPS, sim-verified) [world_drop]; Whipwood Recurve Bow (3037, -68.08 DPS) [world_drop]; Long Redwood Bow (15286, -68.08 DPS) [world_drop] |
 
-**New at 30:** head: Frostreaver Crown; neck: River Pride Choker; shoulder: Sparkleshell Mantle; back: Sergeant's Cloak; chest: Brutal Hauberk; wrist: Undead Knight's Bracers; hands: Enduring Gauntlets; waist: Sentinel's Belt; legs: Guard's Silvered Chain Leggings; feet: Scarlet Boots; finger1: Insurgent's Band; finger2: Seal of Sylvanas; trinket1: Defiler's Talisman; trinket2: Rune of Perfection; main_hand: The Butcher; off_hand: Bonepile Gaze; ranged: Chesterfall Musket
+**New at 30:** head: Frostreaver Crown; neck: River Pride Choker; shoulder: Sparkleshell Mantle; back: Sergeant's Cloak; chest: Brutal Hauberk; wrist: Undead Knight's Bracers; hands: Brutal Gauntlets; waist: Sentinel's Belt; legs: Guard's Silvered Chain Leggings; feet: Scarlet Boots; finger1: Insurgent's Band; finger2: Seal of Sylvanas; trinket1: Defiler's Talisman; trinket2: Rune of Perfection; main_hand: Looming Gavel; off_hand: Bonepile Gaze; ranged: Chesterfall Musket
 
 No-known-source sample (15 of 581, see the JSON for more): 913 Huge Ogre Sword; 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2314 Toughened Leather Armor; 2543 Militia Pants; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 3579 Ornate Copper Shoulders; 3738 Brewing Rod; 4196 Feathered Mantle
 
 ### Band 40 (undead, 00000000000000000-000000000000000000-250533120330001201)
 
-Set DPS (verified): 97.9. Weights run: 9.0s. Verify run: 18.5s. 797 eligible items had no known source.
+Set DPS (verified): 97.9. Weights run: 8.5s. Verify run: 17.0s. 797 eligible items had no known source.
 
 Race sweep: undead 527.0 ± 0.5, orc 516.4 ± 0.5, troll 515.7 ± 0.5, tauren 515.7 ± 0.5, windshaper-skyborne 515.6 ± 0.5 (threat_per_second); the guide race undead is best.
 
@@ -306,7 +306,7 @@ No-known-source sample (15 of 797, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 50 (undead, 31000000000000000-000000000000000000-250533120330001351)
 
-Set DPS (verified): 153.9. Weights run: 8.8s. Verify run: 20.5s. 1011 eligible items had no known source.
+Set DPS (verified): 153.9. Weights run: 8.6s. Verify run: 19.8s. 1011 eligible items had no known source.
 
 Race sweep: undead 749.5 ± 0.7, orc 734.8 ± 0.7, windshaper-skyborne 734.2 ± 0.7, troll 734.2 ± 0.6, tauren 732.2 ± 0.6 (threat_per_second); the guide race undead is best.
 
@@ -340,7 +340,7 @@ No-known-source sample (15 of 1011, see the JSON for more): 913 Huge Ogre Sword;
 
 ### Band 60 (undead, 35300003000000000-000000000000000000-250533120330001351)
 
-Set DPS (verified): 204.8. Weights run: 8.0s. Verify run: 77.8s. 2356 eligible items had no known source.
+Set DPS (verified): 204.8. Weights run: 7.9s. Verify run: 73.5s. 2356 eligible items had no known source.
 
 Race sweep: undead 936.4 ± 0.8, windshaper-skyborne 919.2 ± 0.8, orc 919.0 ± 0.9, troll 918.0 ± 0.8, tauren 915.7 ± 0.8 (threat_per_second); the guide race undead is best.
 
@@ -372,7 +372,7 @@ No-known-source sample (15 of 2356, see the JSON for more): 913 Huge Ogre Sword;
 
 ### Band 60, raid preset (undead, 35300003000000000-000000000000000000-250533120330001351)
 
-Set DPS (verified): 454.3. Weights run: 9.0s. Verify run: 84.1s. 2356 eligible items had no known source.
+Set DPS (verified): 454.3. Weights run: 9.1s. Verify run: 80.6s. 2356 eligible items had no known source.
 
 Race sweep: undead 1758.2 ± 1.7, orc 1740.9 ± 1.7, windshaper-skyborne 1735.5 ± 1.6, troll 1734.8 ± 1.7, tauren 1725.7 ± 1.6 (threat_per_second); the guide race undead is best.
 
