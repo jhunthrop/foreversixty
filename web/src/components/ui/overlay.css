@@ -32,7 +32,8 @@
   /* The client's tooltip: a dark translucent ground and its thin light edge. */
   .ui-overlay[data-kind='tooltip'] {
     border-color: rgb(196 203 218 / 0.4);
-    background: rgb(8 11 20 / 0.94);
+    background: rgb(8 11 20 / 0.97);
+    backdrop-filter: blur(3px);
   }
 
   .ui-overlay .ui-overlay-rule-t {
