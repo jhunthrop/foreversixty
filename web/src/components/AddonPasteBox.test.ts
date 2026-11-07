@@ -5,20 +5,21 @@ import AddonPasteBox from './AddonPasteBox.svelte';
 import { addonCopy } from '../lib/addon/copy';
 
 describe('AddonPasteBox', () => {
-  it('renders the paste box at the #paste anchor, with no decode result yet', () => {
-    const { body } = render(AddonPasteBox);
-    expect(body).toContain('id="paste"');
+  it('is a FormRow: the labelled export field and Load, with no decode result yet', () => {
+    const { body } = render(AddonPasteBox, { props: { signedIn: null } });
     expect(body).toContain('data-testid="addon-paste-box"');
-    expect(body).toContain(addonCopy.pasteTitle);
+    expect(body).toContain(`aria-label="${addonCopy.setupTryExport}"`);
+    expect(body).toContain(addonCopy.pasteFieldLabel);
+    expect(body).toContain(`placeholder="${addonCopy.pastePlaceholder}"`);
+    expect(body).toMatch(/<button[^>]*type="submit"[^>]*disabled/);
     expect(body).not.toContain('data-testid="addon-paste-save"');
     expect(body).not.toContain('data-testid="addon-paste-signin-hint"');
   });
 
-  it('reserves the signed-in block height while fetchMeOnce is still pending', () => {
-    const { body } = render(AddonPasteBox, { props: {} });
-    // Before any decode: loaded is null, so the whole signedIn block (including its
-    // skeleton) is absent -- this proves the reservation only appears once a decode exists,
-    // matching the component's existing pre-effect contract.
+  it('draws no card surface (the flat system)', () => {
+    const { body } = render(AddonPasteBox, { props: { signedIn: true } });
+    expect(body).not.toMatch(/bg-raised|rounded-panel|border-line-warm/);
+    // Before any decode the status block (and its skeleton) is absent.
     expect(body).not.toContain('addon-paste-status-skeleton');
   });
 });

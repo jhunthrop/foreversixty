@@ -74,8 +74,9 @@ section>.sec-h+*{margin-top:12px}
 .surf-fold{display:none}.surf-fold summary{cursor:pointer;min-height:44px;display:flex;align-items:center;color:var(--gold)}
 @media(max-width:767px){.surf-fold{display:block}.surf{display:none}}
 @media(max-width:600px){.steps .row{align-items:start}}
+/* the built sm Button is a 44 px target below 1024 (web/src/lib/ui/button.ts BUTTON_SM) */@media(max-width:1023px){.btn.sm{height:44px}}
 .tm{display:inline-flex;align-items:center;gap:12px}
-.mark-ok{width:40px;height:40px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font:700 20px/40px var(--font-body);color:#07090d;flex:none}
+.mark-ok{width:40px;height:40px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font:700 20px/40px var(--font-body);color:#07090d;background:var(--kill);flex:none}
 </style>'''
 
 
@@ -181,6 +182,8 @@ def paste_section(state: str) -> str:
     field = '<textarea class="field grow" aria-label="{0}" placeholder="{1}">{2}</textarea>'
     filled = {'export': 'FS1:1.60.1.70790:hunter:dwarf:…', 'paste-error': 'FS2:nope'}.get(state, '')
     form = FormRow([(escape(A['pasteFieldLabel']), field.format(escape(A['pasteTitle']), escape(A['pastePlaceholder']), filled), True)], Button(A['pasteAction']))
+    # The built FormRow is a named <form> (ui/FormRow.svelte): the mock's row is that form too.
+    form = form.replace('<div class="formrow">', f'<form class="formrow" aria-label="{escape(A["setupTryExport"])}">', 1)[:-len('</div>')] + '</form>'
     after = ''
     if state == 'paste-error':
         after = f'<p class="alert" role="alert">{escape(FACTS["wrong_prefix"])}</p>'
@@ -247,7 +250,7 @@ def connect_page(state: str) -> str:
                 f'<p class="t-small">{escape(C["notYou"])} {Link(escape(C["signOut"]) + ".")}</p>')
     elif state == 'success':
         title, meta = C['successTitle'], C['successBody']
-        crest = '<span class="mark-ok sm ok" role="img" aria-label="Done">&#10003;</span>'
+        crest = '<span class="mark-ok ok" role="img" aria-label="Done">&#10003;</span>'
         facts = [(escape(C['codeRowLabel']), code + ' ' + Tag(C['connectedTag'], 'kill'))] + device[1:]
         acts = f'<div class="acts">{LinkButton(C["getSetUp"], primary=True)}{LinkButton(C["yourAccount"])}</div>'
     elif state == 'cancelled':

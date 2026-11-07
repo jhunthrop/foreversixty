@@ -20,20 +20,33 @@ export interface SetupAnswer {
   bis: { label: string; href: string } | null;
 }
 
-export function setupAnswer(me: Me | null, current: CurrentCharacter | null, now: Date = new Date()): SetupAnswer | null {
+export function setupAnswer(
+  me: Me | null,
+  current: CurrentCharacter | null,
+  now: Date = new Date(),
+): SetupAnswer | null {
   if (me === null || me.characters.length === 0) return null;
   const character = selectedCharacter(current, me);
   if (character === null) return null;
   const cls = character.class ?? '';
   const level = character.level ?? character.build?.level;
-  const levelLine = typeof level === 'number' ? addonCopy.setupLevelLine(level, character.spec ?? '', cls) : `${character.spec ?? ''} ${cls}`.trim();
+  const levelLine =
+    typeof level === 'number'
+      ? addonCopy.setupLevelLine(level, character.spec ?? '', cls)
+      : `${character.spec ?? ''} ${cls}`.trim();
   const bis = bisHref(character.class, character.spec ?? null, level, character.race);
   return {
     name: character.name,
     classSlug: cls === '' ? null : cls.toLowerCase(),
     levelLine,
-    imported: me.bnet_imported_at === undefined ? null : characterListCopy.importedFrom(relativeTime(new Date(me.bnet_imported_at), now)),
-    open: { label: addonCopy.setupOpenCharacter(character.name), href: characterHref(character.region, character.ruleset, character.name) },
+    imported:
+      me.bnet_imported_at === undefined
+        ? null
+        : characterListCopy.importedFrom(relativeTime(new Date(me.bnet_imported_at), now)),
+    open: {
+      label: addonCopy.setupOpenCharacter(character.name),
+      href: characterHref(character.region, character.ruleset, character.name),
+    },
     bis: bis === null ? null : { label: addonCopy.setupBis, href: bis },
   };
 }

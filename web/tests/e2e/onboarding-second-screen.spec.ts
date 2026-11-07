@@ -10,7 +10,7 @@ import { expect, test } from './support/test';
 import { CHARACTER, CHARACTER_PATH, CHARACTER_URL, routeCharacterSearch } from './support/character-fixture';
 import { expectFixtureNotFound } from './support/character-not-found';
 import { routeSampleReportMeta } from './support/logs-sample-fixture';
-import { ctaCopy } from '../../src/lib/addon/cta-copy';
+import { addonCopy } from '../../src/lib/addon/copy';
 
 const SHOTS = process.env.W9_SHOTS ?? 'test-results/w9';
 const SIZES = [
@@ -68,7 +68,9 @@ for (const size of SIZES) {
     test.use({ viewport: { width: size.width, height: size.height } });
     test.beforeEach(() => mkdirSync(SHOTS, { recursive: true }));
 
-    test('/setup signed out: three steps, one gold button each, the manual folded', async ({ page }) => {
+    test('/setup signed out: three steps in one plate, one gold button, the hand install open', async ({
+      page,
+    }) => {
       await signedOut(page);
       await page.goto('/setup');
       await settle(page);
@@ -79,16 +81,14 @@ for (const size of SIZES) {
       await expect(
         page.getByText('Windows only; Mac is not supported yet. On a Mac, paste an export instead.'),
       ).toBeVisible();
-      await expect(page.getByTestId('setup-line-signin')).toBeHidden();
-      for (const id of ['setup-try-export', 'setup-everything']) {
-        await expect(page.getByTestId(id)).not.toHaveAttribute('open', '');
-      }
-      await expect(page.getByTestId('setup-manual-install')).toHaveAttribute('open', '');
+      await expect(page.getByTestId('setup-steps-step-1')).not.toContainText('Signed in as');
+      await expect(page.getByTestId('addon-paste-box')).toBeVisible();
+      await expect(page.getByTestId('setup-hand-install')).toBeVisible();
       await expect(page.getByText('Current data build')).toBeVisible();
       await page.screenshot({ path: join(SHOTS, `w9-setup-signed-out-${size.name}.png`), fullPage: true });
     });
 
-    test('/setup signed in, everything done: a line and a gold chip per step', async ({ page }) => {
+    test('/setup signed in, everything done: a done line and a tick per step', async ({ page }) => {
       await signedIn(page, ME_DONE, [
         {
           id: 'd1',
@@ -100,14 +100,14 @@ for (const size of SIZES) {
       ]);
       await page.goto('/setup');
       await settle(page);
-      await expect(page.getByTestId('setup-line-signin')).toHaveText('Signed in as hunthrop#1894');
-      await expect(page.getByTestId('setup-line-addon')).toHaveText(
+      await expect(page.getByTestId('setup-steps-step-1')).toContainText('Signed in as hunthrop#1894');
+      await expect(page.getByTestId('setup-steps-step-2')).toContainText(
         'Bow Jackzon arrived from the addon 1 hour ago',
       );
-      await expect(page.getByTestId('setup-line-companion')).toHaveText(
+      await expect(page.getByTestId('setup-steps-step-3')).toContainText(
         'Companion signed in on JH-DESKTOP · last seen 3 minutes ago',
       );
-      await expect(page.locator('.setup-chip[data-done="true"]')).toHaveCount(3);
+      await expect(page.getByRole('img', { name: /^Step \d: Done$/ })).toHaveCount(3);
       await expect(page.getByRole('link', { name: 'Sign in with Battle.net' })).toBeHidden();
       await page.screenshot({
         path: join(SHOTS, `w9-setup-signed-in-done-${size.name}.png`),
@@ -119,24 +119,23 @@ for (const size of SIZES) {
       await signedIn(page, ME_NEW, []);
       await page.goto('/setup');
       await settle(page);
-      await expect(page.getByTestId('setup-line-signin')).toHaveText('Signed in as hunthrop#1894');
-      await expect(page.getByTestId('setup-line-addon')).toHaveText(
-        `No character yet. Refresh from Battle.net, or ${ctaCopy.installAddonAndCompanionInline}, then paste an export.`,
-      );
-      await expect(page.getByTestId('setup-line-companion')).toHaveText('No companion signed in yet');
-      await expect(page.locator('.setup-chip[data-done="true"]')).toHaveCount(1);
+      // No character: row 1 owns it, Refresh from Battle.net its gold button (B2).
+      await expect(page.getByTestId('setup-steps-step-1')).toContainText('Signed in as hunthrop#1894');
+      await expect(page.getByRole('img', { name: 'Step 1: To do' })).toBeVisible();
+      await expect(page.getByTestId('setup-action-refresh')).toBeVisible();
+      await expect(page.getByTestId('setup-steps-step-2')).toContainText(addonCopy.setupAddonNote);
+      await expect(page.getByTestId('setup-steps-step-3')).toContainText('No companion signed in yet');
       await page.screenshot({
         path: join(SHOTS, `w9-setup-signed-in-pending-${size.name}.png`),
         fullPage: true,
       });
     });
 
-    test('#paste opens the export disclosure that holds it', async ({ page }) => {
+    test('#paste lands on the open export box', async ({ page }) => {
       await signedOut(page);
       await page.goto('/setup#paste');
       await settle(page);
-      await expect(page.getByTestId('setup-try-export')).toHaveAttribute('open', '');
-      await expect(page.getByTestId('addon-paste-box')).toBeVisible();
+      await expect(page.getByTestId('addon-paste-box')).toBeInViewport();
     });
 
     test('/logs: one row style, the sample dated like its page, the sign-in button', async ({ page }) => {

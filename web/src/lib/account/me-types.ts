@@ -227,14 +227,9 @@ export interface Me {
   /** RFC3339; spec 2026-09-22 §6, omitted when this account has never imported from
    *  Battle.net. */
   bnet_imported_at?: string;
-<<<<<<< HEAD
-  /** The Battle.net import's last state (setup spec G1): `running` while sign-in's import or its
-   *  background continuation runs. Absent on an older API or before any tracked import. */
-=======
   /** The last Battle.net import's state and when it was recorded (RFC3339); omitted until a
    *  sign-in has tracked one. A stale running state already reads as failed. Poll while
    *  running (design/specs/2026-11-07-setup.md G1). */
->>>>>>> origin/lane/setup-api
   bnet_import?: { state: 'running' | 'done' | 'failed'; at: string };
   /** The account's chosen main character's key; omitted until chosen. Every other
    *  character is an alt. */

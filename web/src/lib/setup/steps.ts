@@ -9,7 +9,13 @@ import { pairingCopy } from '../reports/copy';
 import { yourReportsPageCopy } from '../reports/my-reports-copy';
 import { addonCopy } from '../addon/copy';
 import { relativeTime } from '../dates';
-import { addonLine, companionLine, companionPlatformsLine, newestAddonCharacter, signInLine } from './progress';
+import {
+  addonLine,
+  companionLine,
+  companionPlatformsLine,
+  newestAddonCharacter,
+  signInLine,
+} from './progress';
 import type { VisitorPlatform } from './visitor-platform';
 
 /** `ok` done, `next` the first step not done (the page's one primary), `todo` optional or later,
@@ -96,7 +102,12 @@ function downloadLabel(platform: string): string {
 }
 
 /** Row 3 not done: the download on Windows, the export route on a Mac (U10). */
-function companionTodo(platform: VisitorPlatform, text: string, downloadPlatform: string, platforms: readonly string[]): StepRow {
+function companionTodo(
+  platform: VisitorPlatform,
+  text: string,
+  downloadPlatform: string,
+  platforms: readonly string[],
+): StepRow {
   if (platform === 'mac') {
     const macLine = companionPlatformsLine(platforms) ?? text;
     return row(3, 'todo', [line(macLine)], act('paste', addonCopy.setupTryExport, 'link'));
@@ -128,20 +139,30 @@ function primary(action: StepAction): StepAction {
 /** Signed out, failed or loading: no account to read. */
 function anonymousRows(input: SetupInputs, platforms: readonly string[]): StepRow[] {
   const download = platforms[0] ?? 'Windows';
-  const addon = input.pointer === true
-    ? row(2, 'ok', [line(addonCopy.setupAddonDoneLine, 'ok')], null)
-    : row(2, 'todo', [line(addonCopy.setupAddonNote)], CURSEFORGE);
+  const addon =
+    input.pointer === true
+      ? row(2, 'ok', [line(addonCopy.setupAddonDoneLine, 'ok')], null)
+      : row(2, 'todo', [line(addonCopy.setupAddonNote)], CURSEFORGE);
   const companion = companionTodo(input.platform, addonCopy.setupCompanionNote, download, platforms);
   if (input.session === 'loading') {
-    return [row(1, 'ok', [SKELETON], null), row(2, 'todo', [SKELETON], null), row(3, 'todo', [SKELETON], null)];
+    return [
+      row(1, 'ok', [SKELETON], null),
+      row(2, 'todo', [SKELETON], null),
+      row(3, 'todo', [SKELETON], null),
+    ];
   }
   if (input.session === 'error') {
     const retry = primary(act('retry', characterListCopy.tryAgain, 'button'));
-    return [row(1, 'miss', [line(yourReportsPageCopy.sessionFailed, 'miss', { alert: true })], retry), addon, companion];
+    return [
+      row(1, 'miss', [line(yourReportsPageCopy.sessionFailed, 'miss', { alert: true })], retry),
+      addon,
+      companion,
+    ];
   }
-  const signIn = input.signinFailed === true
-    ? row(1, 'miss', [line(addonCopy.setupSignInFailed, 'miss', { alert: true })], primary(SIGN_IN))
-    : row(1, 'next', [line(addonCopy.setupSignInBody)], primary(SIGN_IN));
+  const signIn =
+    input.signinFailed === true
+      ? row(1, 'miss', [line(addonCopy.setupSignInFailed, 'miss', { alert: true })], primary(SIGN_IN))
+      : row(1, 'next', [line(addonCopy.setupSignInBody)], primary(SIGN_IN));
   return [signIn, addon, companion];
 }
 
@@ -149,9 +170,10 @@ function anonymousRows(input: SetupInputs, platforms: readonly string[]): StepRo
 function signInRow(me: Me, input: SetupInputs, now: Date): StepRow {
   const signed = signInLine(me)?.text ?? '';
   if (me.characters.length > 0) {
-    const imported = me.bnet_imported_at === undefined
-      ? ''
-      : ` · ${characterListCopy.importedFrom(relativeTime(new Date(me.bnet_imported_at), now))}`;
+    const imported =
+      me.bnet_imported_at === undefined
+        ? ''
+        : ` · ${characterListCopy.importedFrom(relativeTime(new Date(me.bnet_imported_at), now))}`;
     return row(1, 'ok', [line(`${signed}${imported}`, 'ok')], null);
   }
   if (me.bnet_import?.state === 'running') {
@@ -159,13 +181,23 @@ function signInRow(me: Me, input: SetupInputs, now: Date): StepRow {
   }
   if (input.refreshFailed === true) {
     const retry = primary(act('refresh', characterListCopy.tryAgain, 'button'));
-    return row(1, 'miss', [line(signed, 'text'), line(characterListCopy.refreshError, 'miss', { alert: true })], retry);
+    return row(
+      1,
+      'miss',
+      [line(signed, 'text'), line(characterListCopy.refreshError, 'miss', { alert: true })],
+      retry,
+    );
   }
   const wait = importPending(me, now) ? [line(addonCopy.setupImportWait, 'warn')] : [];
   return row(
     1,
     'warn',
-    [line(signed, 'text'), ...wait, line(characterListCopy.emptyLead, 'warn'), line(characterListCopy.emptyKorea)],
+    [
+      line(signed, 'text'),
+      ...wait,
+      line(characterListCopy.emptyLead, 'warn'),
+      line(characterListCopy.emptyKorea),
+    ],
     primary(act('refresh', characterListCopy.refreshFromBattlenet, 'button')),
   );
 }

@@ -436,8 +436,9 @@ section>.sec-h+*{margin-top:12px}
 .surf-fold{display:none}.surf-fold summary{cursor:pointer;min-height:44px;display:flex;align-items:center;color:var(--gold)}
 @media(max-width:767px){.surf-fold{display:block}.surf{display:none}}
 @media(max-width:600px){.steps .row{align-items:start}}
+/* the built sm Button is a 44 px target below 1024 (web/src/lib/ui/button.ts BUTTON_SM) */@media(max-width:1023px){.btn.sm{height:44px}}
 .tm{display:inline-flex;align-items:center;gap:12px}
-.mark-ok{width:40px;height:40px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font:700 20px/40px var(--font-body);color:#07090d;flex:none}
+.mark-ok{width:40px;height:40px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font:700 20px/40px var(--font-body);color:#07090d;background:var(--kill);flex:none}
 </style><style>
 /* ---- Page: one column, four layouts ---- */
 .layout-split{display:grid;gap:var(--gap);grid-template-columns:minmax(0,1fr);align-items:start}
@@ -685,7 +686,7 @@ right:0;left:0;bottom:0;max-height:88vh;border-radius:16px 16px 0 0}
 .steps .row .sub .ok{color:var(--text)}
 .steps .row .trail .btn{min-width:0}
 .btn.is-off{opacity:.45;pointer-events:none}
-.cap{position:relative;width:100%;max-width:var(--w);max-height:var(--mh,420px);aspect-ratio:var(--ar);border:1px solid var(--line-soft);border-radius:4px;background:var(--raised);overflow:hidden}
+.cap{display:block;position:relative;width:100%;max-width:var(--w);max-height:var(--mh,420px);aspect-ratio:var(--ar);border:1px solid var(--line-soft);border-radius:4px;background:var(--raised);overflow:hidden}
 .cap img{display:block;width:100%;height:100%;object-fit:contain}
 .cap-wrap{display:flex;flex-direction:column;gap:8px;align-items:flex-start;min-width:0}
 code.c{font:600 14px/20px ui-monospace,'SF Mono',Menlo,monospace;color:var(--strong);letter-spacing:.02em}

@@ -4,6 +4,7 @@
      a container of its own). `ledger` (BiS, tiers, rankings): one column. `split` (sim, guild,
      reports): main and a 340 px rail from 1024, --rail-w from 1760. `reading` (guides): a 200 px
      contents rail, the 720 px measure and a lane from 1760. `overview` (home): a 12-column grid.
+     `form` (/connect; setup spec 2026-11-07 section 3A): one 560 px column at the page column's left.
      Sections in main and rail are --section-gap apart; nothing here draws a surface. -->
 <script lang="ts">
   import type { Snippet } from 'svelte';
@@ -70,6 +71,11 @@
   }
   .ui-page-toc {
     display: none;
+  }
+  .ui-page[data-layout='form'] > .ui-page-main {
+    /* The form measure (spec 3A, the proposed --measure-form at 560): the full width on a phone. */
+    width: 100%;
+    max-width: 560px;
   }
   .ui-page[data-layout='overview'] > .ui-page-main {
     display: grid;

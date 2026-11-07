@@ -766,7 +766,7 @@ PRIM_CSS += '''
 .steps .row .sub .ok{color:var(--text)}
 .steps .row .trail .btn{min-width:0}
 .btn.is-off{opacity:.45;pointer-events:none}
-.cap{position:relative;width:100%;max-width:var(--w);max-height:var(--mh,420px);aspect-ratio:var(--ar);border:1px solid var(--line-soft);border-radius:4px;background:var(--raised);overflow:hidden}
+.cap{display:block;position:relative;width:100%;max-width:var(--w);max-height:var(--mh,420px);aspect-ratio:var(--ar);border:1px solid var(--line-soft);border-radius:4px;background:var(--raised);overflow:hidden}
 .cap img{display:block;width:100%;height:100%;object-fit:contain}
 .cap-wrap{display:flex;flex-direction:column;gap:8px;align-items:flex-start;min-width:0}
 code.c{font:600 14px/20px ui-monospace,'SF Mono',Menlo,monospace;color:var(--strong);letter-spacing:.02em}
@@ -790,8 +790,9 @@ def Capture(src: str, w: int, h: int, alt: str, tag: str = '', tall: bool = Fals
     """A client screenshot at its own aspect, capped at its native width and 420 px high (900 for a portrait capture)."""
     t = f'{Tag(tag, "muted")}' if tag else ''
     lz = ' loading="lazy"' if lazy else ''
-    return (f'<div class="cap-wrap"><div class="cap" style="--w:{w}px;--ar:{w} / {h};--mh:{900 if tall else 420}px">'
-            f'<img src="{src}" width="{w}" height="{h}" alt="{escape(alt, quote=True)}"{lz} decoding="async"></div>{t}</div>')
+    # The picture links to its own file (spec 3A), as the built Capture does.
+    return (f'<div class="cap-wrap"><a class="cap" href="{src}" style="--w:{w}px;--ar:{w} / {h};--mh:{900 if tall else 420}px">'
+            f'<img src="{src}" width="{w}" height="{h}" alt="{escape(alt, quote=True)}"{lz} decoding="async"></a>{t}</div>')
 
 
 def Code(text: str, big: bool = False) -> str:

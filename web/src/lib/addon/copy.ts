@@ -23,14 +23,6 @@ export interface AddonSurface {
   images: readonly AddonSurfaceImage[];
 }
 
-interface SetupChip {
-  readonly step: number;
-  readonly href: string;
-  readonly label: string;
-  /** The reading once the step is done, when it differs from `label`. */
-  readonly labelDone?: string;
-}
-
 export const addonCopy = {
   // --- codec refusals. Each names what is wrong; never a generic failure. ---
   wrongPrefix: (found: string, wanted: string): string => `That code is ${found}; this site reads ${wanted}.`,
@@ -120,8 +112,6 @@ export const addonCopy = {
   /** The one quiet line under the install buttons (UX review r5, finding 2). */
   installDataHint:
     'Forever Sixty Data adds the item scores the addon uses, updated nightly. CurseForge and Wago install it for you.',
-  /** The disclosure that holds the data addon's own links and the build number. */
-  setupManualInstall: 'Manual install',
   installDataRelease: 'Latest data release',
   currentDataBuild: (build: string): string => `Current data build: ${build}`,
   flowOutTitle: 'Out of the game',
@@ -131,11 +121,6 @@ export const addonCopy = {
     'In game, type /fs copy, press Ctrl+C, then paste it into the planner’s Import from addon box.',
   flowInTitle: 'Into the game',
   flowInBody: 'Save a build here, press Copy for the game, then type /fs in game and paste it.',
-  inGameTitle: 'The in-game window',
-  /** L8.3: the surfaces now have their own section with captures from the client, so this
-   *  card points at it rather than saying none exists. */
-  inGameBody:
-    'The addon is in beta testing in game. Every surface it draws is listed above under What it does in the game, with a capture from the client where we have one.',
 
   // --- /setup page's three steps (spec 2026-09-25 §3.4) ---
   setupStep1Title: 'Sign in',
@@ -146,10 +131,6 @@ export const addonCopy = {
    *  every visible string on this page comes from `addonCopy`, matching this page's own
    *  copy-module convention rather than reaching into the home page's module. */
   setupSignInAction: 'Sign in with Battle.net',
-  /** The truth of how a character reaches the site, said once and the way the addon's welcome says
-   *  it (addon/ForeverSixty/Locale.lua): the addon saves, the companion sends. */
-  setupHowItArrives:
-    'Your characters come in from Battle.net when you sign in. The addon adds bags and bank when you log out, and the companion sends them. No companion? Paste an export instead (see Try an export below).',
   /** Under the step 3 title: which of the three steps can be skipped. */
   setupCompanionNote: 'Optional. Sends bags, bank and live logs after every session.',
   setupSubline: 'Signing in with Battle.net brings your characters. The addon and companion are optional.',
@@ -157,33 +138,14 @@ export const addonCopy = {
    *  when you log out, so it is typed each time you log in (setup rulings 2026-11-07). */
   setupCompanionBody:
     'The companion logs live from your desktop. Turn on Options > Network > Advanced Combat Logging once. Type /combatlog each time you log in, and every fight appears under Your reports within seconds of the pull ending.',
-  /** The page as a checklist (design loop, setup round): its own title, a status row
-   *  under it, a done line for each step a visitor has already finished, the addon's
-   *  how-it-works cards behind one disclosure, and the companion's downloads. */
+  /** The page's title, and its one H1 (setup spec 2026-11-07 section 4). */
   setupPageTitle: 'Get set up',
-  setupEyebrow: 'Addon and companion',
-  /** The label over the status chips: they report progress, they are not tabs. */
-  setupProgressLabel: 'Your progress',
-  /** The three chips, each an anchor to its step. Addon and Companion keep one label whatever
-   *  their state (the tick says done, W.10); step 1 asks `Sign in` until the session is signed in,
-   *  then reads `labelDone` -- a signed-out visitor is never told `Signed in`. */
-  /** The state tag in each step card's head. */
-  setupTagDone: 'Done',
-  setupTagTodo: 'To do',
-  /** Steps 2 and 3 once Battle.net brings the characters: worth doing, never required. */
-  setupTagOptional: 'Optional',
-  setupChips: [
-    { step: 1, href: '#signin', label: 'Sign in', labelDone: 'Signed in' },
-    { step: 2, href: '#addon', label: 'Addon' },
-    { step: 3, href: '#companion', label: 'Companion' },
-  ] as readonly SetupChip[],
   /** A signed-out visitor who pasted an export: the one done line a step can show without a session. */
   setupAddonDoneLine: 'An export is loaded; the site is pointed at that character.',
   /** The done and not-done lines of each step for a signed-in account (W.9). */
   setupSignedInAs: (name: string): string => `Signed in as ${name}`,
   setupAddonArrived: (character: string, when: string): string =>
     `${character} arrived from the addon ${when}`,
-  setupAddonWaiting: `No character yet. Refresh from Battle.net, or ${ctaCopy.installAddonAndCompanionInline}, then paste an export.`,
   /** Step 2 for an account whose characters came from Battle.net and none from the addon. */
   setupAddonOptional:
     'Your characters are in from Battle.net. The addon saves bags and bank when you log out; the companion sends them.',
@@ -212,8 +174,6 @@ export const addonCopy = {
     `Companion signed in on ${device} · last seen ${seen}`,
   setupCompanionWaiting: 'No companion signed in yet',
   setupHowItWorks: 'How the addon works',
-  /** The one disclosure that holds the manual: what the addon does, its commands, the handshake and the flows. */
-  setupEverything: 'Everything the addon does',
   setupCompanionPair: 'Sign in with Battle.net inside the companion; it connects itself.',
   /** Said under the download while the release carries no Mac bundle (companion.yml has the
    *  darwin targets off): the repo declines a "macOS next". */

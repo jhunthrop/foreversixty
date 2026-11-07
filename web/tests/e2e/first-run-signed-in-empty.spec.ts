@@ -80,8 +80,8 @@ test.describe('/setup and /logs first-run copy', () => {
   test('/setup says the companion connects itself', async ({ page }) => {
     await signInWith(page, []);
     await page.goto('/setup');
-    await expect(page.getByTestId('setup-line-signin')).toContainText('Signed in as Fixture#1');
-    await expect(page.getByTestId('setup-companion-pair')).toHaveText(
+    await expect(page.getByTestId('setup-steps-step-1')).toContainText('Signed in as Fixture#1');
+    await expect(page.getByTestId('setup-companion-pair')).toContainText(
       'Sign in with Battle.net inside the companion; it connects itself.',
     );
   });

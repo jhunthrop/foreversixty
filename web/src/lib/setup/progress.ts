@@ -1,17 +1,11 @@
 // web/src/lib/setup/progress.ts
-// What /setup says under each step once the account is signed in, and which of the three
-// progress chips are done. Pure reads of GET /v1/me (the account's name and the characters the
+// What /setup says under each step once the account is signed in (lib/setup/steps.ts draws the
+// rows from these lines). Pure reads of GET /v1/me (the account's name and the characters the
 // addon has synced) and GET /v1/devices (the companions signed in), so the page never claims a
 // step the account does not show.
 import type { Device, Me, MeCharacter } from '../account/api';
 import { addonCopy } from '../addon/copy';
 import { relativeTime } from '../dates';
-
-/** What the three steps know about the visitor: `me` null is signed out, `devices` null is not read yet. */
-export interface SetupState {
-  me: Me | null;
-  devices: readonly Device[] | null;
-}
 
 /** A step's line under its action: `done` draws the check, otherwise the line is muted waiting text. */
 export interface StepLine {
@@ -80,19 +74,6 @@ export function companionLine(
       relativeTime(new Date(device.last_seen_at ?? device.created_at), now),
     ),
   };
-}
-
-/** Which <html> hint each step's chip and tag follow until the reads answer: the session cookie,
- *  the stored character, or none (the companion has no hint). */
-export const STEP_HINTS = ['session', 'pointer', 'none'] as const;
-
-/** The three chips: signed in, an addon character arrived, a companion signed in; null until it is known. */
-export function chipsDone(state: SetupState): [boolean, boolean, boolean] {
-  return [
-    state.me !== null,
-    state.me !== null && newestAddonCharacter(state.me.characters) !== null,
-    state.devices !== null && state.devices.length > 0,
-  ];
 }
 
 /** "Windows. Mac is not supported yet." while the release carries no Mac bundle; nothing once it does. */
