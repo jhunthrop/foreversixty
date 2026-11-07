@@ -1,5 +1,5 @@
 <!-- web/src/components/ui/SettingsRow.svelte -->
-<!-- One settings row (polish spec 4.2): optional IconTile, label, optional sub, a trailing value,
+<!-- One settings row (polish spec 4.2): optional glyph (open, no tile), label, optional sub, a trailing value,
      a trailing control (a Switch or a button) and a chevron when it navigates. An `a` with an
      `href`, a `button` with `onclick`, else a `div`. Below 480 px the value moves under the
      label so the two never collide. A `nested` row indents its text to 70 px. States: muted
@@ -11,9 +11,15 @@
   import type { GlyphName } from '../../lib/ui/glyphs';
   import { ROW, ROW_INTERACTIVE, ROW_OPEN, ROW_LABEL, ROW_SUB } from '../../lib/ui/row';
   import Glyph from './Glyph.svelte';
-  import IconTile, { type TileTone } from './IconTile.svelte';
 
   const uid = $props.id();
+  type GlyphTone = 'gold' | 'discord' | 'muted';
+  /** The glyph's ink, open on the row (no tile ground: the card look retired 2026-11-07). */
+  const GLYPH_INK: Readonly<Record<GlyphTone, string>> = {
+    gold: 'text-gold',
+    discord: 'text-[#9aa4ff]',
+    muted: 'text-muted',
+  };
 
   let {
     label,
@@ -50,7 +56,7 @@
     icon?: Snippet;
     /** The label's colour when it names a character (a class colour). */
     labelColor?: string;
-    tone?: TileTone;
+    tone?: GlyphTone;
     /** The icon slot for something other than a glyph tile (a 24 px class crest). */
     lead?: Snippet;
     href?: string;
@@ -105,11 +111,10 @@
   class="{open ? ROW_OPEN : ROW} {interactive ? ROW_INTERACTIVE : ''}"
   style:padding-left={nested ? (glyph === undefined ? '70px' : '46px') : undefined}
 >
-  {#if icon !== undefined}{@render icon()}{:else if glyph !== undefined}<IconTile
-      {glyph}
-      size={32}
-      {tone}
-    />{/if}
+  {#if icon !== undefined}{@render icon()}{:else if glyph !== undefined}<span
+      class="inline-flex h-8 w-8 shrink-0 items-center justify-center {GLYPH_INK[tone]}"
+      aria-hidden="true"><Glyph name={glyph} size={16} /></span
+    >{/if}
   {@render lead?.()}
   <span class="flex min-w-0 flex-1 flex-col">
     <span

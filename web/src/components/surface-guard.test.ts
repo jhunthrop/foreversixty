@@ -17,6 +17,8 @@
 // the 11 px `label` micro-caps, the PageHead eyebrow and the Card primitives, uppercase type under
 // the 12 px Label size, and uppercase display type (a heading face, a heading size or a button's
 // tracking). The 12 px caps Label role (group labels, column heads) is the one caps type allowed.
+// ui/Card, CardHead and IconTile are deleted and any import of them fails, as does a class
+// constant in lib/ (outside the primitives' own lib/ui/ recipes) that rebuilds the card look.
 import { readdirSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -71,9 +73,15 @@ export function surfaceUses(): Record<string, number> {
 /** Retired recipes by name: the caps heading and card utilities and the 11 px micro-caps label. */
 const RETIRED_UTILITY =
   /(?<![\w-])(?:heading-hero|heading-page|heading-section|section-title|heading-plan|gold-text|surface-band|card-surface(?:-quiet)?)(?![\w-])/g;
-/** The retired primitives: PageHead (the eyebrow) and the gold-edged Card family. */
+/** The retired primitives: PageHead (the eyebrow), the gold-edged Card family and the IconTile chip. */
 const RETIRED_PRIMITIVE =
-  /(?:ui|\.)\/(?:PageHead|Card|CardHead)\.(?:astro|svelte)['"]|lib\/ui\/(?:page-head|card)['"]/g;
+  /(?:ui|\.)\/(?:PageHead|Card|CardHead|IconTile)\.(?:astro|svelte)['"]|lib\/ui\/(?:page-head|card)['"]/g;
+/** A class string in lib/ that rebuilds the card look: a card utility or token, or a raised
+ *  ground with an edge. lib/ui/ holds the primitives' own recipes (PLATE_SURFACE, the field). */
+const CARD_LOOK_TOKEN =
+  /(?<![\w-])(?:card-surface(?:-quiet)?|shadow-card|bg-tile|rounded-panel|rounded-plate)(?![\w-])|--surface-card/;
+const RAISED_GROUND = /(?<![\w-])(?:bg-raised|bg-card-top)(?![\w-])/;
+const EDGE = /(?<![\w-])border(?:-[trblxy])?(?:-line[\w-]*)?(?![\w-])/;
 /** An element's class attribute (static, template, list or quoted expression). */
 const CLASS_ATTRIBUTE = /\bclass(?::list)?=(?:"([^"]*)"|\{`([^`]*)`\}|\{\[([^\]]*)\]\}|\{'([^']*)'\})/g;
 /** A CSS rule body that sets uppercase. */
@@ -84,19 +92,6 @@ const UPPERCASE_CLASSES = /["'`]([^"'`\n]*\buppercase\b[^"'`\n]*)["'`]/g;
 const LABEL_PX = 12;
 /** What makes caps a display heading or a button: the heading face, a heading or hero size, the button tracking. */
 const DISPLAY_TOKENS = /--font-heading|--text-h\d|--text-hero|--text-card-title|--tracking-button/;
-/** The component sheet (/design-sheet, noindex, the ui-components e2e's page) is an internal tool:
- *  it keeps the retired Card family on show beside the flat sheet. */
-const INTERNAL = new Set([
-  'pages/design-sheet.astro',
-  'components/ui/UiSheet.svelte',
-  'components/ui/SelectSheet.svelte',
-  'components/ui/card.css',
-  'components/ui/Card.astro',
-  'components/ui/Card.svelte',
-  'components/ui/CardHead.svelte',
-  'lib/ui/card.ts',
-]);
-
 function typeScannedFiles(dir: string): string[] {
   return readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
     const full = path.join(dir, entry.name);
@@ -104,10 +99,17 @@ function typeScannedFiles(dir: string): string[] {
       return entry.name === 'data' || entry.name === 'fixtures' ? [] : typeScannedFiles(full);
     if (entry.name.includes('.test.')) return [];
     const rel = relative(full);
-    if (INTERNAL.has(rel)) return [];
     if (/\.(astro|svelte|css)$/.test(entry.name)) return [full];
     return rel.startsWith('lib/') && entry.name.endsWith('.ts') ? [full] : [];
   });
+}
+
+/** Quoted class strings in a lib/ module (outside lib/ui/) that draw a card. */
+export function cardLookOffences(text: string): string[] {
+  return [...text.matchAll(/["'`]([^"'`\n]+)["'`]/g)]
+    .map(([, classes]) => classes!)
+    .filter((classes) => CARD_LOOK_TOKEN.test(classes) || (RAISED_GROUND.test(classes) && EDGE.test(classes)))
+    .map((classes) => `card look "${classes.slice(0, 48)}"`);
 }
 
 function uppercaseOffences(text: string): string[] {
@@ -134,6 +136,7 @@ export function oldTypeUses(): Record<string, string[]> {
       ...[...text.matchAll(RETIRED_UTILITY)].map(([name]) => name),
       ...[...text.matchAll(RETIRED_PRIMITIVE)].map(([name]) => `import ${name}`),
       ...uppercaseOffences(text),
+      ...(/^lib\/(?!ui\/)/.test(relative(file)) ? cardLookOffences(text) : []),
     ];
     if (/\.(astro|svelte)$/.test(file)) {
       for (const match of text.matchAll(CLASS_ATTRIBUTE)) {
@@ -173,5 +176,8 @@ describe('the surface guard', () => {
     expect(uppercaseOffences("'text-label tracking-label font-bold uppercase'")).toEqual([]);
     expect('<h1 class="heading-page">'.match(RETIRED_UTILITY)).toEqual(['heading-page']);
     expect("import PageHead from '../ui/PageHead.astro';".match(RETIRED_PRIMITIVE)).toHaveLength(1);
+    expect("import IconTile from '../ui/IconTile.svelte';".match(RETIRED_PRIMITIVE)).toHaveLength(1);
+    expect(cardLookOffences("const BOX = 'bg-raised border-line rounded-control border';")).toHaveLength(1);
+    expect(cardLookOffences("const ROW = 'border-b border-line-soft';")).toEqual([]);
   });
 });

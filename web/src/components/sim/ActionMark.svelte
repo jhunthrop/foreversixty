@@ -2,14 +2,13 @@
 <!-- One action as the saved run's lower cards draw it: its icon in a fixed box and its name, opening
      the shared tooltip when the build has one. A spell reads the game tooltip, an item the item
      tooltip. A key with no icon keeps the blank cell and never an empty box (build ruling R1). The
-     engine's rage refund has no client icon: in the 24 px icon column it takes a muted IconTile with
-     the design system's refresh glyph, so it reads as deliberate, never as a missing icon. -->
+     engine's rage refund has no client icon: in the 24 px icon column it takes the design system's
+     muted refresh glyph, centred in the column, so it reads as deliberate, never as a missing icon. -->
 <script lang="ts">
   import type { Snippet } from 'svelte';
   import type { CardTables } from '../../lib/sim/card-tables.svelte';
   import { actionTip, resolveIconUrl, REFUND_KEY } from '../../lib/sim/action-mark';
   import Glyph from '../ui/Glyph.svelte';
-  import IconTile from '../ui/IconTile.svelte';
 
   /** The refund row's tile size: the 24 px icon column of the Resource card. */
   const REFUND_TILE = 24;
@@ -61,7 +60,13 @@
         class="h-full w-full"
       />
     {:else if action === REFUND_KEY && size === REFUND_TILE}
-      <IconTile glyph="refresh" size={REFUND_TILE} tone="muted" />
+      <span
+        class="text-muted inline-flex shrink-0 items-center justify-center"
+        style:width="{REFUND_TILE}px"
+        style:height="{REFUND_TILE}px"
+        aria-hidden="true"
+        data-testid="refund-glyph"><Glyph name="refresh" size={14} /></span
+      >
     {:else if action === REFUND_KEY}
       <Glyph name="refresh" size={Math.round(size * 0.7)} class="text-muted" />
     {/if}

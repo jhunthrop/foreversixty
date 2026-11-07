@@ -1,5 +1,5 @@
 // web/src/lib/ui/glyphs.ts
-// The site's UI glyphs on one 24 px grid, 2 px stroke, round caps (polish spec 4.2: IconTile,
+// The site's UI glyphs on one 24 px grid, 2 px stroke, round caps (polish spec 4.2:
 // SettingsRow, Button and ActionLink all draw from this one table). Each value is the inner SVG
 // markup, so a glyph is drawn by ui/Glyph.svelte and nowhere else. The Discord mark is a solid
 // shape, listed in FILLED_GLYPHS.

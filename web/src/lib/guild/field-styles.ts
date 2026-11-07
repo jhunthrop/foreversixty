@@ -1,9 +1,11 @@
 // web/src/lib/guild/field-styles.ts
-// The guild forms' native field chrome (raids spec 3.5): a 44 px warm border on a date, time,
-// text or textarea field. Selects are the shared ui/Select.
+// The guild forms' native field chrome (raids spec 3.5): a 44 px field for a date, time, text or
+// textarea. Selects are the shared ui/Select.
+import { FIELD_CONTROL, FIELD_FOCUS, fieldEdge } from '../ui/field';
 
-const FIELD_SKIN =
-  'border-line-warm bg-raised text-text rounded-control placeholder:text-muted hover:border-line-warm-strong focus-visible:outline-gold aria-invalid:border-wipe w-full min-w-0 border text-[13px] transition-colors duration-[120ms] focus-visible:outline-2 disabled:cursor-not-allowed';
+// The skin is the shared Field's (lib/ui/field.ts): the page ground, the line edge, the gold focus
+// ring; the warm-bordered raised field it replaced was the old card look.
+const FIELD_SKIN = `${FIELD_CONTROL} ${FIELD_FOCUS} ${fieldEdge(false)} aria-invalid:border-wipe min-w-0 disabled:cursor-not-allowed`;
 
 /** A one-line field, 44 px. */
 export const FIELD_CHROME = `${FIELD_SKIN} h-11 px-3`;

@@ -160,3 +160,7 @@ export interface GainBasis {
 export function basisText(basis: GainBasis): string {
   return basis.item ? `${basis.prefix} ${basis.item.name}` : basis.prefix;
 }
+
+/** The Plate's surface (ui/Plate.svelte), for a static skeleton that draws the page's plate before
+ *  its island mounts. The only place outside the component that may name it. */
+export const PLATE_SURFACE = 'ui-plate bg-raised border-line rounded-plate min-w-0 border';

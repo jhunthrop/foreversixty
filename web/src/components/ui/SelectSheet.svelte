@@ -257,7 +257,7 @@
         >
         <dialog
           bind:this={dialog}
-          class="card-surface text-text m-auto w-[360px] p-5 backdrop:bg-black/60"
+          class="bg-raised border-line rounded-plate text-text m-auto w-[360px] border p-5 backdrop:bg-black/60"
           aria-labelledby="sheet-dialog-title"
           data-testid="sheet-dialog"
         >

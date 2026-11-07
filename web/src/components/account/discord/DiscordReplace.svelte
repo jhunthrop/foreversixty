@@ -11,7 +11,6 @@
   import { notificationsCopy } from '../../../lib/account/notifications-copy';
   import { ROW, ROW_INTERACTIVE, ROW_LABEL, ROW_SUB } from '../../../lib/ui/row';
   import Glyph from '../../ui/Glyph.svelte';
-  import IconTile from '../../ui/IconTile.svelte';
   import SettingsRow from '../../ui/SettingsRow.svelte';
   import DiscordConnectLink from './DiscordConnectLink.svelte';
 
@@ -49,7 +48,9 @@
     {onStuck}
   >
     {#snippet content(text)}
-      <IconTile glyph="refresh" size={32} />
+      <span class="text-muted inline-flex h-8 w-8 shrink-0 items-center justify-center" aria-hidden="true"
+        ><Glyph name="refresh" size={16} /></span
+      >
       <span class="flex min-w-0 flex-1 flex-col">
         <span class="text-strong {ROW_LABEL}">{text}</span>
         <span class={ROW_SUB} data-testid="discord-replace-note">{notificationsCopy.reconnectNote}</span>

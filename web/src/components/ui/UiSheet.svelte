@@ -7,8 +7,8 @@
      all; on a real page they come from the pointer and the keyboard. -->
 <script lang="ts">
   import { button, type ButtonTone } from '../../lib/ui/button';
+  import { PLATE_SURFACE } from '../../lib/ui/primitives';
   import ActionLink from './ActionLink.svelte';
-  import CardHead from './CardHead.svelte';
   import Glyph from './Glyph.svelte';
   import SettingsRow from './SettingsRow.svelte';
   import SelectSheet from './SelectSheet.svelte';
@@ -118,7 +118,7 @@
     <div class="grid gap-6 md:grid-cols-2">
       <div class="flex flex-col gap-2">
         {@render label('default, hover, focus-visible, active')}
-        <div class="card-surface overflow-hidden" data-testid="sheet-rows">
+        <div class="{PLATE_SURFACE} overflow-hidden" data-testid="sheet-rows">
           <SettingsRow label="Server sims" glyph="server" value="On · 3 runs this month" href="#sim" />
           <div data-force="hover">
             <SettingsRow
@@ -138,7 +138,7 @@
       </div>
       <div class="flex flex-col gap-2">
         {@render label('muted, loading, empty, error, disabled')}
-        <div class="card-surface overflow-hidden">
+        <div class="{PLATE_SURFACE} overflow-hidden">
           <SettingsRow label="Quiet value" glyph="bell" value="Premium only" muted />
           <SettingsRow label="Loading value" glyph="star" loading />
           <SettingsRow label="Empty value" glyph="star" empty />
@@ -148,7 +148,7 @@
       </div>
       <div class="flex flex-col gap-2">
         {@render label('with switches, nested')}
-        <div class="card-surface overflow-hidden">
+        <div class="{PLATE_SURFACE} overflow-hidden">
           <SettingsRow label="A server sim finishes" glyph="server">
             {#snippet control(labelId)}
               <Switch
@@ -224,16 +224,6 @@
   </section>
 
   <SelectSheet />
-
-  <section class="flex flex-col gap-4" aria-labelledby="sheet-head">
-    <h2 id="sheet-head" class="text-strong text-[22px] leading-7 font-bold">Card head</h2>
-    <div class="card-surface max-w-[520px]" data-testid="sheet-card-head">
-      <CardHead glyph="crown" label="Plan" title="Premium">
-        {#snippet titleSnippet()}<Tag>Founder</Tag>{/snippet}
-        {#snippet aside()}<Tag tone="success" dot>On · 2 events</Tag>{/snippet}
-      </CardHead>
-    </div>
-  </section>
 </div>
 
 <style>

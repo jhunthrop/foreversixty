@@ -171,18 +171,10 @@
   --tracking-heading: 0.01em;
   --tracking-button: 0.07em;
 
-  /* Surfaces, direction B (polish spec 4.2). The card is a warm gradient over near-black with
-     a gold-tinted border, a 1px inset top highlight on primary cards, and a deep shadow;
-     `surface-card` and `surface-band` in global.css paint them. The spec's own names
-     (--surface-card, --card-highlight, --glow-gold, --row-hover, --tile, --tile-ink) are the
-     values; the Tailwind-namespaced twins below (border-line-card, bg-tile, text-tile-ink,
-     bg-row-hover, shadow-card, shadow-glow-gold) read them, so there is one value each. */
-  --surface-card: linear-gradient(180deg, rgba(229, 185, 85, 0.075), rgba(229, 185, 85, 0.012) 45%), #0d0f15;
-  /* The band: an ember radial glow over a warm near-black, the sky the home hero sits in. */
-  --surface-band:
-    radial-gradient(1100px 380px at 72% -10%, rgba(214, 110, 40, 0.28), transparent 70%),
-    linear-gradient(180deg, #14100b, #07090d);
-  --card-highlight: rgba(245, 210, 122, 0.45);
+  /* Direction B's remaining values (polish spec 4.2). The card look (its gradient, inset top
+     highlight and deep shadow) and the tile retired with ui/Card and ui/IconTile on 2026-11-07;
+     the flat surfaces are below. The Tailwind-namespaced twins (border-line-card, bg-row-hover,
+     shadow-glow-gold) read these, so there is one value each. */
   --glow-gold: 0 0 26px rgba(229, 185, 85, 0.32);
   --row-hover: rgba(229, 185, 85, 0.06);
   /* A link row's hover band (global.css .row-band-hover): a raised ground with a hairline ring,
@@ -192,11 +184,9 @@
   --tile: rgba(229, 185, 85, 0.12);
   --tile-ink: #f5d27a;
   --color-line-card: rgba(229, 185, 85, 0.17);
-  --color-card-highlight: var(--card-highlight);
   --color-row-hover: var(--row-hover);
   --color-tile: var(--tile);
   --color-tile-ink: var(--tile-ink);
-  --shadow-card: 0 16px 38px rgba(0, 0, 0, 0.55);
   --shadow-glow-gold: var(--glow-gold);
 
   /* The flat system's three surfaces (spec P1): S0 is --color-bg, S1 the Plate (--color-raised),
