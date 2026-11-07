@@ -9,6 +9,7 @@
      none did. Past six deaths each block folds to its Row. -->
 <script lang="ts">
   import EmptyLine from './EmptyLine.svelte';
+  import CopyCsv from './CopyCsv.svelte';
   import { splitUnitName } from '../../lib/characters';
   import { unitLabel } from '../../lib/report/names.svelte';
   import {
@@ -64,6 +65,21 @@
   } = $props();
 
   const ordered = $derived([...deaths].sort((a, b) => a.at_ms - b.at_ms));
+  /** One line per death: when, who, what killed them and from whom, and the pull over a night. */
+  function csvLines(): string[][] {
+    return [
+      ['At', 'Player', 'Killing blow', 'From', 'Amount', 'Overkill', 'Pull'],
+      ...ordered.map((death) => [
+        formatDurationPrecise(inPull(death)),
+        death.name,
+        death.killing_blow === undefined ? '' : death.killing_blow.spell_name || 'Melee',
+        death.killing_blow === undefined ? '' : splitUnitName(death.killing_blow.source_name).name,
+        death.killing_blow === undefined ? '' : String(death.killing_blow.amount),
+        death.killing_blow?.overkill === undefined ? '' : String(death.killing_blow.overkill),
+        death.label ?? '',
+      ]),
+    ];
+  }
   const FOLD_ABOVE = 6;
   /** Cards the reader has opened by hand; every card is open while there are few. */
   /** The cards opened by hand, from the url, so a pasted link opens the same ones. */
@@ -323,6 +339,7 @@
 </script>
 
 <Section title="Deaths" meta={`${ordered.length} in this fight`} testid="deaths-tab">
+  {#snippet head()}{#if ordered.length > 0}<CopyCsv lines={csvLines} inHead />{/if}{/snippet}
   <Plate label="Deaths">
     {#if ordered.length === 0}
       <EmptyLine text="Nobody died." testid="table-empty" />

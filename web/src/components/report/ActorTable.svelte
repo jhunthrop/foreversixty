@@ -17,6 +17,7 @@
   import StatRow from '../ui/StatRow.svelte';
   import StatTable from '../ui/StatTable.svelte';
   import ActorRow from './ActorRow.svelte';
+  import CopyCsv from './CopyCsv.svelte';
 
   type ActorTab = 'damage-done' | 'healing' | 'damage-taken';
 
@@ -30,6 +31,7 @@
     parseFallback = '',
     showParse = false,
     amountApproximate = false,
+    approximate = false,
     absent = [],
     windowIsWhole = true,
     deadAt = new Map<string, number>(),
@@ -50,6 +52,8 @@
     showParse?: boolean;
     /** The amounts are prorated: a window met by a target or boss filter. */
     amountApproximate?: boolean;
+    /** The splits are prorated (a window or a filter): the mitigated line cannot be summed bare. */
+    approximate?: boolean;
     /** Players with no row in this window, and when they died if they were dead. */
     absent?: readonly { name: string; deadSince: number | null }[];
     windowIsWhole?: boolean;
@@ -147,6 +151,84 @@
     { value: '100%' },
     { value: '' },
   ]);
+  /** Damage taken's mitigated line (tanks read it first): what was absorbed, blocked and avoided. */
+  const mitigatedLine = $derived.by(() => {
+    if (tab !== 'damage-taken') return '';
+    let absorbed = 0;
+    let blocked = 0;
+    let prorated = false;
+    // eslint-disable-next-line svelte/prefer-svelte-reactivity
+    const avoided = new Map<string, number>();
+    const addMisses = (misses: Readonly<Record<string, number>> | undefined): void => {
+      for (const [type, count] of Object.entries(misses ?? {}))
+        avoided.set(type, (avoided.get(type) ?? 0) + count);
+    };
+    for (const actor of actors) {
+      // A measured row carries its own figures; otherwise the per-ability ones, prorated with them.
+      if (actor.mitigated !== undefined) {
+        absorbed += actor.mitigated.absorbed;
+        blocked += actor.mitigated.blocked;
+        addMisses(actor.mitigated.misses);
+        continue;
+      }
+      prorated ||= approximate;
+      for (const ability of actor.abilities) {
+        absorbed += ability.absorbed ?? 0;
+        blocked += ability.blocked ?? 0;
+        addMisses(ability.misses);
+      }
+    }
+    if (prorated)
+      return 'Mitigated: not split under this filter over this window; open a pull to measure it.';
+    const hits = [...avoided.values()].reduce((sum, count) => sum + count, 0);
+    if (absorbed === 0 && blocked === 0 && hits === 0) return '';
+    // Alphabetical: the same numbers read in one order under every filter.
+    const byType = [...avoided.entries()]
+      .sort((a, b) => a[0].localeCompare(b[0]))
+      .map(([type, count]) => `${count} ${type.toLowerCase()}`)
+      .join(', ');
+    const parts = [
+      ...(absorbed > 0 ? [`${formatAmount(absorbed)} absorbed`] : []),
+      ...(blocked > 0 ? [`${formatAmount(blocked)} blocked`] : []),
+      ...(hits > 0 ? [`${hits} hits avoided (${byType})`] : []),
+    ];
+    return `Mitigated: ${parts.join(' · ')}`;
+  });
+
+  /** The table as it stands, for a spreadsheet: name, share, amount, overheal, per second, active. */
+  function csvLines(): string[][] {
+    const healing = tab === 'healing';
+    const lines = [
+      [
+        'Rank',
+        'Name',
+        'Share',
+        'Amount',
+        ...(healing ? ['Overheal', 'Overheal %'] : []),
+        'Per second',
+        'Active %',
+      ],
+    ];
+    rows.forEach((actor, index) => {
+      const overheal = actor.overheal ?? 0;
+      const gross = actor.effective + overheal;
+      const overhealCells =
+        actor.overheal === undefined
+          ? ['', '']
+          : [String(overheal), gross === 0 ? '0' : ((overheal / gross) * 100).toFixed(1)];
+      lines.push([
+        String(index + 1),
+        actor.name,
+        total === 0 ? '0' : ((actor.effective / total) * 100).toFixed(2),
+        String(actor.effective),
+        ...(healing ? overhealCells : []),
+        timeOf(actor) === 0 ? '0' : (actor.effective / (timeOf(actor) / 1000)).toFixed(1),
+        actor.active_unknown === true ? '' : activeOf(actor).toFixed(1),
+      ]);
+    });
+    return lines;
+  }
+
   const absentLine = $derived(
     absent.length === 0
       ? ''
@@ -161,9 +243,13 @@
 </script>
 
 {#snippet totalName()}Total, {actors.length} {actors.length === 1 ? 'player' : 'players'}{/snippet}
-{#snippet absentSub()}<span data-testid="actor-absent">{absentLine}</span>{/snippet}
+{#snippet absentSub()}{#if mitigatedLine !== ''}<span class="block" data-testid="actor-mitigated"
+      >{mitigatedLine}</span
+    >{/if}{#if absentLine !== ''}<span class="block" data-testid="actor-absent">{absentLine}</span
+    >{/if}{/snippet}
 
 <Section title={TITLE[tab]} meta="Click a player to see their abilities" testid="report-table-card">
+  {#snippet head()}{#if actors.length > 0}<CopyCsv lines={csvLines} inHead />{/if}{/snippet}
   <Plate label={TITLE[tab]}>
     {#if actors.length === 0}
       <EmptyLine text="Nothing in this window." testid="table-empty" />
@@ -185,7 +271,7 @@
           figures={totalFigures}
           total
           name={totalName}
-          sub={absentLine === '' ? undefined : absentSub}
+          sub={absentLine === '' && mitigatedLine === '' ? undefined : absentSub}
           testid="actor-total"
         />
       </StatTable>

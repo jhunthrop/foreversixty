@@ -247,6 +247,12 @@ def fight_menu(R: Report, fi: int) -> str:
     killed = [f for f in fights if f['kind'] == 'trash' and f.get('mob_deaths', 0) > 0]
     idle = [f for f in fights if f['kind'] == 'trash' and not f.get('mob_deaths', 0)]
     trash = [(fight_label(f), f'{clock(f["start"])} &middot; {plural(f["mob_deaths"], "mob")} died', '', '', f['index'] == fi) for f in killed]
+    # Each zone's trash folds into one entry first (lib/report/frame.ts fightOptions): the night view over its pulls.
+    zones: dict[str, int] = {}
+    for f in fights:
+        if f['kind'] == 'trash' and f.get('zone'):
+            zones[f['zone']] = zones.get(f['zone'], 0) + 1
+    trash = [(f'All trash in {escape(z)}', plural(n, 'pull'), '', '', False) for z, n in zones.items() if n > 1] + trash
     boss_group = ([('All boss pulls', plural(len(bosses), 'pull'), '', '', False)] + bosses) if bosses else []
     menu = Menu('Fights', [('Boss pulls', boss_group), (f'Trash &middot; {plural(len(killed), "pull")}', trash)])
     if not bosses:
@@ -320,7 +326,9 @@ def chart(R: Report, fi: int, metric: str, source: str) -> str:
 def notices(lines: list[str]) -> str:
     if not lines:
         return ''
-    return '<div data-region="summary">' + ''.join(Notice(l, tone='neutral') for l in lines) + '</div>'
+    # The region is the page column's (the build's notices sit in the column under the full-bleed bar).
+    inner = ''.join(Notice(l, tone='neutral').removeprefix('<div class="pc">').removesuffix('</div>') for l in lines)
+    return f'<div class="pc"><div data-region="summary">{inner}</div></div>'
 
 
 # Boss pulls only. The phone reads one line (ruled SHOULD): the short form; 768 px and up the full sentence.

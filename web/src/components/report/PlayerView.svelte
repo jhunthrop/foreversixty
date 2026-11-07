@@ -8,12 +8,19 @@
      with no gear in the log (every trash pull) the one line that says why. -->
 <script lang="ts">
   import EmptyLine from './EmptyLine.svelte';
+  import CopyCsv from './CopyCsv.svelte';
   import { unitLabel } from '../../lib/report/names.svelte';
-  import { formatAmount, formatPercent } from '../../lib/report/format';
+  import { formatAmount, formatPercent, schoolName } from '../../lib/report/format';
   import { formatRate } from '../../lib/report/frame';
   import type { ExactSplit } from '../../lib/report/exact';
   import type { SpellIconOf } from '../../lib/guild/report-spell-icons';
-  import type { Ability, Actor, CombatantRow, RosterRow } from '../../lib/report/types';
+  import {
+    abilityKey,
+    type Ability,
+    type Actor,
+    type CombatantRow,
+    type RosterRow,
+  } from '../../lib/report/types';
   import type { StatColumn, StatFigure, StatSort } from '../../lib/ui/stat-table';
   import Meter from '../ui/Meter.svelte';
   import Plate from '../ui/Plate.svelte';
@@ -37,6 +44,8 @@
     spellIcon,
     dataBuild,
     plannerHref,
+    onChart,
+    charted = '',
   }: {
     part?: 'abilities' | 'gear';
     tab: ActorTab;
@@ -50,6 +59,10 @@
     dataBuild: string;
     /** The worn set at the pull as a planner build; null when the class has no planner data. */
     plannerHref?: string | null;
+    /** Puts this ability's line on the chart under the table, or takes it off. */
+    onChart?: (actor: Actor, ability: Ability) => void;
+    /** `${guid}|${abilityKey(ability)}` of the ability on the chart; '' for none. */
+    charted?: string;
   } = $props();
 
   const NOUN: Readonly<Record<ActorTab, string>> = {
@@ -133,17 +146,82 @@
       { value: hits === 0 ? '–' : `${Math.round((ability.crits / hits) * 100)}%`, muted: hits === 0 },
     ];
   }
+  /** What did not land, or how much of a heal was over: the old row expansion's notes column. */
+  function notesOf(ability: Ability): string[] {
+    const notes: string[] = [];
+    if (ability.absorbed) notes.push(`${formatAmount(ability.absorbed)} absorbed`);
+    if (ability.overheal !== undefined && ability.total > 0) {
+      if (ability.overheal > 0)
+        notes.push(
+          `${formatPercent((ability.overheal / ability.total) * 100)} over · ${formatAmount(ability.overheal)}`,
+        );
+      return notes;
+    }
+    if (ability.blocked) notes.push(`${formatAmount(ability.blocked)} blocked`);
+    for (const [type, count] of Object.entries(ability.misses ?? {}).sort(([a], [b]) => a.localeCompare(b)))
+      notes.push(`${count} ${type.toLowerCase()}`);
+    return notes;
+  }
+  /** Names two spell ids share: each such row carries its id to tell them apart. */
+  const sameName = $derived.by(() => {
+    // eslint-disable-next-line svelte/prefer-svelte-reactivity
+    const seen = new Map<string, Set<number>>();
+    for (const ability of abilities)
+      // eslint-disable-next-line svelte/prefer-svelte-reactivity
+      seen.set(ability.name, (seen.get(ability.name) ?? new Set<number>()).add(ability.spell_id));
+    return new Set([...seen].filter(([, ids]) => ids.size > 1).map(([name]) => name));
+  });
+  /** The player's amount by spell school ("Physical 80% · Fire 20%"), when it has more than one. */
+  const schools = $derived.by(() => {
+    // eslint-disable-next-line svelte/prefer-svelte-reactivity
+    const sums = new Map<string, number>();
+    for (const ability of abilities) {
+      if (ability.effective <= 0) continue;
+      const name = schoolName(ability.school) || 'Physical';
+      sums.set(name, (sums.get(name) ?? 0) + ability.effective);
+    }
+    if (sums.size < 2 || total === 0) return '';
+    return [...sums]
+      .sort((a, b) => b[1] - a[1])
+      .map(([name, amount]) => `${name} ${Math.round((amount / total) * 100)}%`)
+      .join(' · ');
+  });
   function subOf(ability: Ability): string {
     const hits = landed(ability);
     return [
       `${hits} ${hits === 1 ? 'hit' : 'hits'}`,
       `${ability.crits} ${ability.crits === 1 ? 'crit' : 'crits'}`,
       ability.max > 0 ? `${formatAmount(ability.min)}–${formatAmount(ability.max)}` : '',
-      ability.via ?? '',
+      hits > 0 && ability.effective > 0 ? `${formatAmount(ability.effective / hits)} each` : '',
+      ability.via ? `via ${ability.via}` : '',
+      ...notesOf(ability),
     ]
       .filter((part) => part !== '')
       .join(' · ');
   }
+  /** The abilities table as lines, the notes as words. */
+  function abilityCsv(): string[][] {
+    return [
+      ['Ability', 'Spell id', 'Via', 'Amount', 'Share %', 'Hits', 'Crit %', 'Avg', 'Max', 'Notes'],
+      ...rows.map((ability) => {
+        const hits = landed(ability);
+        return [
+          ability.name,
+          String(ability.spell_id),
+          ability.via ?? '',
+          String(ability.effective),
+          total === 0 ? '0' : ((ability.effective / total) * 100).toFixed(1),
+          String(hits),
+          hits === 0 ? '0' : ((ability.crits / hits) * 100).toFixed(1),
+          hits === 0 ? '0' : Math.round(ability.effective / hits).toString(),
+          String(ability.max),
+          notesOf(ability).join('; '),
+        ];
+      }),
+    ];
+  }
+  const chartKey = (ability: Ability): string => `${actor?.guid ?? ''}|${abilityKey(ability)}`;
+
   const gearMeta = $derived(
     [row?.spec, row?.item_level ? `item level ${row.item_level}` : ''].filter(Boolean).join(' · '),
   );
@@ -152,9 +230,15 @@
 {#if part === 'abilities'}
   <Section
     title={`${name}’s ${NOUN[tab]}`}
-    meta={`${mark}${formatAmount(total)} ${NOUN[tab]} · ${formatRate(total / seconds)} ${RATE[tab]}`}
+    meta={[
+      `${mark}${formatAmount(total)} ${NOUN[tab]} · ${formatRate(total / seconds)} ${RATE[tab]}`,
+      schools,
+    ]
+      .filter((part) => part !== '')
+      .join(' · ')}
     testid="report-table-card"
   >
+    {#snippet head()}{#if rows.length > 0}<CopyCsv lines={abilityCsv} inHead />{/if}{/snippet}
     <Plate label="Abilities">
       {#if rows.length === 0}
         <EmptyLine text="Nothing in this window." testid="table-empty" />
@@ -174,7 +258,18 @@
             >
               {#snippet icon()}<SpellIcon url={spellIcon(ability.spell_id)} size={28} />{/snippet}
               {#snippet name()}<b class="text-strong">{ability.name === '' ? 'Melee' : ability.name}</b
-                >{/snippet}
+                >{#if sameName.has(ability.name)}<span class="text-muted ml-1 text-[12px]"
+                    >{ability.spell_id === 0 ? 'swing' : `#${ability.spell_id}`}</span
+                  >{/if}{#if onChart !== undefined && actor !== undefined}<button
+                    type="button"
+                    class="text-gold ml-2 text-[13px] font-semibold [@media(pointer:coarse)]:-my-3 [@media(pointer:coarse)]:py-3"
+                    title="Draw this ability's amount per second on the chart below"
+                    aria-pressed={charted === chartKey(ability)}
+                    data-testid="ability-chart"
+                    onclick={() => {
+                      if (actor !== undefined) onChart(actor, ability);
+                    }}>{charted === chartKey(ability) ? 'Off the chart' : 'On the chart'}</button
+                  >{/if}{/snippet}
               {#snippet sub()}{subOf(ability)}{/snippet}
               {#snippet meter()}<Meter value={top === 0 ? 0 : ability.effective / top} />{/snippet}
             </StatRow>

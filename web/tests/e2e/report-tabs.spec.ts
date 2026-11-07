@@ -309,3 +309,22 @@ test('the fight list says nothing about a phase on a kill', async ({ page }) => 
   await page.goto('/reports/fixture2abcd?fight=3');
   await expect(page.locator(`${FIGHT_SELECT} option[value="3"]`)).toHaveText(/· Kill ·/);
 });
+
+test('a zone’s trash folds into one entry, and an old trash link still opens it', async ({ page }) => {
+  await page.goto(REPORT);
+  const zone = page.locator(`${FIGHT_SELECT} option[value="-2"]`);
+  await expect(zone).toHaveText('All trash in Sanguine Depths');
+  await expect(zone).toHaveAttribute('data-description', '2 pulls');
+  await page.goto(`${REPORT}?fight=trash-1`);
+  await expect(page.locator(FIGHT_SELECT)).toHaveValue('-2');
+  await expect(page.getByTestId('night-view')).toBeVisible();
+  await expect(page.getByTestId('night-summary')).toContainText('2 trash pulls');
+});
+
+test('the glossary is one quiet line that opens the words the tables use', async ({ page }) => {
+  await page.goto(`${REPORT}?fight=3`);
+  const glossary = page.getByTestId('glossary');
+  await glossary.locator('summary').click();
+  await expect(glossary).toContainText('Standing threat');
+  await expect(glossary).toContainText('Threat built in a window');
+});

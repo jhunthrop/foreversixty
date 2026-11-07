@@ -66,6 +66,8 @@ export const reportCopy = {
   tryAgain: 'Try again',
   /** The night view's line on a tab that is one pull's (section 6.3). */
   onePullOnly: 'This tab is one pull’s. Pick a pull from the Fight list to see it.',
+  /** A pull the logger's group was not in (the scope falls back to everyone in range). */
+  groupMissing: 'Your group wasn’t in this pull.',
   ratingNight: 'Ratings are one pull’s. Pick a boss pull from the list to see one.',
   /** The Parse column's one line when the rankings did not answer (boss pulls only). */
   parsesUnknown:

@@ -5,9 +5,9 @@
 import type { SelectOption } from '../ui/listbox-model';
 import type { Fact } from '../ui/facts';
 import { formatClock, formatDuration, joinFacts, outcomeLabel } from './format';
-import { pullNumbers } from './fights';
+import { pullNumbers, trashGroups } from './fights';
 import type { FightEntry } from './types';
-import { ALL_FIGHTS, type Tab } from './url';
+import { ALL_FIGHTS, trashScope, type Tab } from './url';
 
 /** Every tab in the strip's order (decision R3); the modes and views of old are tabs here. */
 export const REPORT_TABS: readonly { id: Tab; label: string }[] = [
@@ -119,6 +119,16 @@ export function fightOptions(
     (fight) => fight.kind !== 'encounter' && (showIdle || fight.mob_deaths !== 0 || fight.index === selected),
   );
   const trashGroup = `Trash · ${plural(trash.length, 'pull')}`;
+  // Each zone's trash folds into one entry first (the night's trash, the way Warcraft Logs
+  // collapses it): its pulls read together, the night view's Summary and tables over them.
+  const zoneRows = trashGroups(fights)
+    .filter((group) => group.fights.length > 1)
+    .map((group) => ({
+      value: String(trashScope(group.key)),
+      label: `All trash in ${group.zone}`,
+      description: plural(group.fights.length, 'pull'),
+      group: trashGroup,
+    }));
   // A pull indexed before engine 0.6.0 has no true kill count: its row says when, never a count.
   const trashRows = trash.map((fight) => ({
     value: String(fight.index),
@@ -129,7 +139,7 @@ export function fightOptions(
         : `${formatClock(fight.start)} · ${plural(fight.mob_deaths, 'mob')} died`,
     group: trashGroup,
   }));
-  return [...bossRows, ...trashRows];
+  return [...bossRows, ...zoneRows, ...trashRows];
 }
 
 /** The head's answer (decision R1 as ruled). A trash pull leads with its mobs and length, never a DPS. */

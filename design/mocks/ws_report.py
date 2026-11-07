@@ -18,6 +18,7 @@ from html import escape
 
 from ws_report_lib import *  # noqa: F401,F403  (data, names, icons, head, bar, chart, this_pull)
 from ws_report_lib import _Button  # noqa: F401
+from ws_lib import REGION
 
 
 # ------------------------------------------------------------------------------------------------ tabs
@@ -29,6 +30,30 @@ def player_sub(r: dict, extra: str = '') -> str:
 def plink(r: dict | None, name: str = '') -> str:
     """A player's name in a table row: the link that opens their view (Source = that player, spec 9 "StatTable row")."""
     return f'<a href="#" class="nm-l">{pname(r, name)}</a>'
+
+
+# Copy CSV, the tables' one quiet text action in the Section head (coordinator ruling 2026-11-07: a restyle keeps
+# every working feature; components/report/CopyCsv.svelte `inHead`).
+COPY_CSV = '<button type="button" class="link">Copy CSV</button>'
+
+
+def mitigated_line(s: dict, fr: set[str]) -> str:
+    """Damage taken's Mitigated line (ActorTable.svelte): absorbed, blocked and the hits avoided by type, alphabetical."""
+    absorbed = blocked = 0
+    misses: dict[str, int] = {}
+    for a in s['damage_taken']:
+        if a['guid'] in fr and a['effective'] > 0:
+            for ab in a['abilities']:
+                absorbed += ab.get('absorbed', 0)
+                blocked += ab.get('blocked', 0)
+                for k, v in (ab.get('misses') or {}).items():
+                    misses[k] = misses.get(k, 0) + v
+    hits = sum(misses.values())
+    if not (absorbed or blocked or hits):
+        return ''
+    by = ', '.join(f'{v} {k.lower()}' for k, v in sorted(misses.items()))
+    parts = ([f'{n0(absorbed)} absorbed'] if absorbed else []) + ([f'{n0(blocked)} blocked'] if blocked else []) + ([f'{hits} hits avoided ({by})'] if hits else [])
+    return 'Mitigated: ' + ' &middot; '.join(parts)
 
 
 def melee(sid: int, logged: str) -> str:
@@ -117,7 +142,7 @@ def actor_table(R, fi, source, key, unit, head_amt):
         rows.append(StatRow(crest(r, 28), plink(r, a['name']), player_sub(r, extra) or '&nbsp;', figs, MeterClass(a['effective'] / top, colour(r)),
                             primary_phone=f'{figs[1]} {unit}'))
     if acts:
-        rows.append(StatRow('', f'Total, {plural(len(acts), "player")}', '', [n0(sum(a['effective'] for a in acts)), rate(sum(a['effective'] for a in acts) / dur), '100%', ''], total=True))
+        rows.append(StatRow('', f'Total, {plural(len(acts), "player")}', mitigated_line(s, fr) if key == 'damage_taken' else '', [n0(sum(a['effective'] for a in acts)), rate(sum(a['effective'] for a in acts) / dur), '100%', ''], total=True))
     heads = [('', False), ('Player', False), ('', False), (head_amt, True), (unit, True), ('Share', True), ('Active', True)]
     return StatTable(heads, rows, 4, sort=head_amt, sortable=(head_amt, unit, 'Share', 'Active')) if acts else '<p class="empty">Nothing in this window.</p>'
 
@@ -127,7 +152,9 @@ def tab_actor(R, fi, source, which):
     key, unit, amt, metric, title = {'Damage done': ('damage_done', 'DPS', 'Amount', 'damage', 'Damage done'),
                                      'Healing': ('healing', 'HPS', 'Effective', 'healing', 'Healing'),
                                      'Damage taken': ('damage_taken', 'Taken / s', 'Amount', 'taken', 'Damage taken')}[which]
-    plate = Section(title, Plate(actor_table(R, fi, source, key, unit, amt), title), meta='Click a player to see their abilities')
+    has_rows = any(a['guid'] in friendlies(R, s, source) and a['effective'] > 0 for a in s[key])
+    plate = Section(title, Plate(actor_table(R, fi, source, key, unit, amt), title), meta='Click a player to see their abilities',
+                    action=COPY_CSV if has_rows else '')
     fr = friendlies(R, s, source)
     side: dict[str, float] = {}
     for a in s[key]:
@@ -149,13 +176,21 @@ def tab_player(R, fi, guid):
     r = roster(s)[guid]
     dur = s['duration_ms'] / 1000
     top = max(ab['effective'] for ab in a['abilities'])
-    rows = [StatRow(sicon(ab['spell_id']), f'<b>{escape(melee(ab["spell_id"], ab["name"]))}</b>',
-                    f'<span>{plural(ab["hits"], "hit")}</span> &middot; <span>{plural(ab["crits"], "crit")}</span> &middot; <span>{n0(ab["min"])}&ndash;{n0(ab["max"])}</span>',
+    def notes(ab):
+        out = [f'{n0(ab["absorbed"])} absorbed'] if ab.get('absorbed') else []
+        out += [f'{n0(ab["blocked"])} blocked'] if ab.get('blocked') else []
+        out += [f'{v} {k.lower()}' for k, v in sorted((ab.get('misses') or {}).items())]
+        return ''.join(f' &middot; {x}' for x in out)
+    toggle = '<button type="button" class="link chart-t" aria-pressed="false">On the chart</button>'   # PlayerView.svelte: one ability's line on the chart
+    rows = [StatRow(sicon(ab['spell_id']), f'<b>{escape(melee(ab["spell_id"], ab["name"]))}</b>{toggle}',
+                    f'<span>{plural(ab["hits"], "hit")}</span> &middot; <span>{plural(ab["crits"], "crit")}</span> &middot; <span>{n0(ab["min"])}&ndash;{n0(ab["max"])}</span>'
+                    + (f' &middot; {n0(ab["effective"] / ab["hits"])} each' if ab['hits'] else '') + notes(ab),
                     [n0(ab['effective']), rate(ab['effective'] / dur), f'{ab["effective"] / a["effective"] * 100:.1f}%', str(ab['hits']), f'{ab["crits"] / max(ab["hits"], 1) * 100:.0f}%'],
                     Meter(ab['effective'] / top), primary_phone=f'{rate(ab["effective"] / dur)} DPS') for ab in sorted(a['abilities'], key=lambda x: -x['effective'])]
     table = StatTable([('', False), ('Ability', False), ('', False), ('Amount', True), ('DPS', True), ('Share', True), ('Hits', True), ('Crit', True)], rows, 5,
                       sort='Amount', sortable=('Amount', 'DPS', 'Share', 'Hits', 'Crit'))
-    plate = Section(f'{split_name(r["name"])[0]}&rsquo;s damage', Plate(table, 'Abilities'), meta=f'{n0(a["effective"])} damage &middot; {rate(a["effective"] / dur)} DPS')
+    plate = Section(f'{split_name(r["name"])[0]}&rsquo;s damage', Plate(table, 'Abilities'), meta=f'{n0(a["effective"])} damage &middot; {rate(a["effective"] / dur)} DPS',
+                    action=COPY_CSV)
     comb = next((c for c in s.get('combatants', []) if c['guid'] == guid), None)
     doll = Section('Gear at the pull', f'<p class="empty">{NO_GEAR}</p>' if not comb else '', meta=escape(player_sub(r)))
     agg: dict[str, float] = {}
@@ -241,7 +276,8 @@ def tab_deaths(R, fi, source):
         foot = ' '.join(x for x in (f'Holding: {held}.' if held else '', '' if healed else 'No healing landed in the last 10 seconds.') if x)
         body = StatTable([('', False), ('Last hits and heals', False), ('Health after', False), ('Amount', True), ('Health', True)], lines, 2, sort='', sortable=())
         blocks.append(f'<div class="dblock">{Rows([head_row])}{body}' + (f'<p class="t-small dfoot">{foot}</p>' if foot else '') + '</div>')
-    plate = Section('Deaths', Plate(''.join(blocks), 'Deaths') if blocks else Plate('<p class="empty">Nobody died.</p>', 'Deaths'), meta=f'{len(blocks)} in this fight')
+    plate = Section('Deaths', Plate(''.join(blocks), 'Deaths') if blocks else Plate('<p class="empty">Nobody died.</p>', 'Deaths'), meta=f'{len(blocks)} in this fight',
+                    action=COPY_CSV if blocks else '')
     return plate + chart(R, fi, 'taken', source), this_pull(R, fi, source), []
 
 
@@ -443,6 +479,8 @@ FACTS_CHART = {'threatCaveat': 'An estimate: 1 threat per point of damage and 0.
 
 PAGE_CSS = '''<style>
 button.sel{background:none;cursor:pointer}
+.gloss>summary{list-style:none;cursor:pointer;min-height:36px;display:inline-flex;align-items:center;font-size:14px;font-weight:600}.gloss>summary::-webkit-details-marker{display:none}
+.chart-t{margin-left:8px;font-size:13px;font-weight:600}
 .ans-act{display:flex;gap:8px;margin-top:6px}@media(min-width:900px){.ans-act{justify-content:flex-end}}
 .ans-more{display:none}
 .head .ans{min-width:0}@media(min-width:900px){.head .ans{min-width:360px}}
@@ -500,7 +538,7 @@ DATA_NOTE = 'web/public/sample-report/sample (the real 17 Sept 2026 beta night, 
 
 
 def report_page(tab: str, fi: int = DEFAULT_PULL, source: str = 'Your group', viewer: str = '', sample: bool = False,
-                open_m: bool = False, menu: bool = False, player: str = '') -> str:
+                open_m: bool = False, menu: bool = False, player: str = '', extra_notices: list[str] | None = None) -> str:
     R = Report()
     bar_source = source
     if player:   # the answer keeps the group's scope; the bar's Source names the player
@@ -508,6 +546,8 @@ def report_page(tab: str, fi: int = DEFAULT_PULL, source: str = 'Your group', vi
         bar_source = split_name(roster(R.summary(fi))[player]['name'])[0]
     else:
         main, rail, nts = body_for(R, fi, tab, source, viewer)
+    nts = (extra_notices or []) + nts
+    main += GLOSSARY
     compare = fight_label(R.fight(COMPARE_PULL)) if tab == 'Compare' else ''
     menu_html = fight_menu(R, fi) if menu else ''
     who = None
@@ -519,6 +559,13 @@ def report_page(tab: str, fi: int = DEFAULT_PULL, source: str = 'Your group', vi
     note = (f'Report mock (design/specs/2026-11-07-logs-reports.md), built only from ws_prims. Data: {DATA_NOTE}, pull {fi}, source {escape(source)}'
             + ('; SAMPLE viewer: an owner of Soren Everhart' if viewer else '') + f'; build {BUILD} names and icons.')
     return build_page(f'{R.title}: {tab}', body, 'Logs', who, note)
+
+
+# The report's help, last in the main column (coordinator ruling 2026-11-07: the glossary stays): a quiet "What these
+# mean ›" line opening the words the tables use in place; the terms are lib/report/glossary.ts's, folded here.
+GLOSSARY = (f'<div data-region="{REGION["footer_note"]}"><details class="gloss"><summary class="link">What these mean &rsaquo;</summary>'
+            '<dl><dt>Parse</dt><dd>Where a kill sits among every ranked kill of the same boss by the same spec: the shipped glossary, '
+            'lib/report/glossary.ts.</dd></dl></details></div>')
 
 
 def sample_page() -> str:
@@ -545,7 +592,9 @@ def state_page(state: str) -> str:
         act = Button('Try again', small=True) if state == 'error' else Link('Open your reports &rsaquo;')
         body = PageHeader('Report') + Page('ledger', Plate(f'<p class="empty" role="alert">{msg}. {act}</p>', 'Report'))
     elif state == 'empty':
-        return report_page('Damage done', fi=EMPTY_PULL)
+        # Pull 13 ran without the logger's group: the scope falls back to everyone in range (lib/report/group.ts) and
+        # one muted line says so (coordinator ruling 2026-11-07).
+        return report_page('Damage done', fi=EMPTY_PULL, source='Everyone in range', extra_notices=['Your group wasn&rsquo;t in this pull.'])
     elif state in ('processing', 'waiting', 'failed'):
         line = {'processing': rc['parsing'], 'waiting': rc['waiting'], 'failed': f'{rc["parseFailed"]} <a class="link" href="#">{rc["parseFailedLink"]}</a>'}[state]
         title = rc['yourUpload'] if state != 'waiting' else escape(R.zone)

@@ -38,7 +38,7 @@
     sampleFightIndex,
   } from '../../lib/report/fights';
   import { aggregateNight, nightSummary, type Night } from '../../lib/report/night';
-  import { formatClock, TRASH_PARSE } from '../../lib/report/format';
+  import { formatClock, schoolToken, TRASH_PARSE } from '../../lib/report/format';
   import {
     FLAG_LETTERS,
     MISSING_FIGHT,
@@ -55,6 +55,8 @@
     type ReportState,
   } from '../../lib/report/url';
   import {
+    abilityKey,
+    type Ability,
     type Actor,
     type FightEntry,
     type ReportFile,
@@ -81,6 +83,7 @@
   import ReportHead from './ReportHead.svelte';
   import SummaryPanels from './SummaryPanels.svelte';
   import TargetsRail from './TargetsRail.svelte';
+  import Glossary from './Glossary.svelte';
   import EventsRail from './EventsRail.svelte';
   import MechanicsRail from './MechanicsRail.svelte';
   import QueriesRail from './QueriesRail.svelte';
@@ -463,6 +466,68 @@
     }
   }
 
+  /**
+   * The one ability drawn behind the main chart's series: a look, not a view, so it is
+   * not in the url. Measured over the whole fight once and sliced by the brush like every
+   * other line, and dropped whenever the fight, the tab or the source scope changes,
+   * because it answered a question about the table that was on screen then. A window is
+   * not one of those: reading the line against a stretch is the whole point of it, and
+   * the brush only slices a series that is already measured over the whole fight.
+   */
+  let chartedAbility = $state<{ key: string; label: string; token: string; series: number[] } | null>(null);
+  let chartedError = $state('');
+  /** The measure that is wanted now; an answer for an older pick is dropped. */
+  let chartedToken = 0;
+  /**
+   * What the pick belongs to, as one string. `patch` replaces the whole `state` object on
+   * every url change, brushing included, so an effect that reads `state.fight` directly
+   * woke on every pointer move of a drag and cleared the line the reader had just asked
+   * for. Comparing the three values against the last ones they were dropped for keeps the
+   * clearing to a real change of fight, tab or source scope.
+   */
+  const chartedScope = $derived(`${state.fight}|${state.tab}|${state.source}|${String(nightMode)}`);
+  let chartedFor = chartedScope;
+  $effect(() => {
+    if (chartedScope === chartedFor) return;
+    chartedFor = chartedScope;
+    chartedAbility = null;
+    chartedError = '';
+    chartedToken += 1;
+  });
+  async function toggleAbilityOnChart(actor: Actor, ability: Ability): Promise<void> {
+    const key = `${actor.guid}|${abilityKey(ability)}`;
+    if (chartedAbility?.key === key) {
+      chartedAbility = null;
+      return;
+    }
+    const token = ++chartedToken;
+    chartedError = '';
+    try {
+      const { measureAbilitySeries, sharedQueryLayer } = await import('../../lib/report/exact');
+      const series = await measureAbilitySeries(
+        sharedQueryLayer(),
+        eventsUrl(dataBase, state.fight, engineVersion),
+        tableKind,
+        actor.guid,
+        ability.spell_id,
+        ability.via ?? '',
+        base?.duration_ms ?? 0,
+        measureOptions,
+      );
+      if (token !== chartedToken) return;
+      chartedAbility = {
+        key,
+        label: `${splitUnitName(actor.name).name} · ${ability.name}`,
+        token: schoolToken(ability.school),
+        series,
+      };
+    } catch (thrown) {
+      if (token !== chartedToken) return;
+      chartedError = `That ability's line did not load${thrown instanceof Error ? ` (${thrown.message})` : ''}.`;
+    }
+  }
+  /** True where there is a chart to put an ability on: one pull, one player's own view. */
+  const abilityChartAvailable = $derived(!nightMode && playerView);
   /** The zero-height mark above the tab's table, for the phone to scroll to on a tab change. */
   let tabAnchor = $state<HTMLElement | undefined>(undefined);
   let shownTab = state.tab;
@@ -1488,11 +1553,22 @@
               ? `This report has no trash group starting at fight ${trashScopeKey(missingFight)}, so the first fight is showing.`
               : `This report has no fight ${missingFight}, so the first fight is showing.`,
       });
+    // A pull the logger's group was not in reads everyone in range (lib/report/group.ts), and
+    // says so, so the scope word over the table is never a surprise.
+    if (groupMissing) out.push({ id: 'report-group-missing', text: reportCopy.groupMissing });
     if (error !== '') out.push({ id: 'report-fight-error', text: error });
     if (percentilesUnavailable && showParse && fight?.kind === 'encounter')
       out.push({ id: 'parse-unavailable-line', text: '' });
     return out.filter((notice) => notice.text !== '' || notice.id === 'parse-unavailable-line');
   });
+  /** The report has a logger's group, and this pull ran without any of it. */
+  const groupMissing = $derived(
+    !nightMode &&
+      fight !== null &&
+      state.source === SOURCE_FRIENDLIES &&
+      groupScopeNow.noun === 'everyone' &&
+      (fights.some((entry) => (entry.group?.length ?? 0) > 0) || (meta?.group?.length ?? 0) > 0),
+  );
   /** "2 minutes ago": how long a report has been processing. */
   const uploadedAge = $derived.by(() => {
     const at = Date.parse(meta?.created_at ?? '');
@@ -1672,6 +1748,7 @@
         : splitUnitName(unitNames.get(state.target) ?? state.target).name}
       syncKey={chartSyncKey}
       onOpenDeath={openDeaths}
+      extra={chartedAbility === null ? null : { label: chartedAbility.label, series: chartedAbility.series }}
       {noun}
     />
   {/if}
@@ -1988,7 +2065,12 @@
             measure={nightMode ? undefined : measureRow}
             {spellIcon}
             dataBuild={activeBuild.build}
+            onChart={abilityChartAvailable ? toggleAbilityOnChart : undefined}
+            charted={chartedAbility?.key ?? ''}
           />
+          {#if chartedError !== ''}
+            <p class="text-small text-wipe" role="alert" data-testid="ability-chart-error">{chartedError}</p>
+          {/if}
           {#if tabActors[0] !== undefined}
             <!-- The coach's line for this player (components/coach, placed as shipped): the row is open. -->
             <CoachRowLine actor={tabActors[0]} rowOpen />
@@ -2016,6 +2098,7 @@
             parseFallback={tableParseFallback}
             showParse={showParse && fight?.kind === 'encounter'}
             amountApproximate={(filtersScale && !windowIsWhole && tableExact === null) || nightProrates}
+            approximate={actorTableApproximate && tableExact === null}
             absent={absentPlayers}
             {windowIsWhole}
             deadAt={deadRows}
@@ -2308,6 +2391,8 @@
       {:else if state.tab === 'mechanics' && nightMode && nightLoading}
         <p class="text-muted text-[14px]" data-testid="mechanics-night-loading">Folding the night’s pulls…</p>
       {/if}
+      <!-- Last in the column: a glossary is a footnote, read when a word stops someone. -->
+      <Glossary />
     </Page>
   </div>
 {/if}

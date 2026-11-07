@@ -105,22 +105,25 @@
     {#if takenByAbility.length === 0}
       <EmptyLine text="Nobody took damage in this window." section />
     {:else}
-      <StatTable columns={COLUMNS} nameHead="Ability" open label="Damage taken by ability">
-        {#each takenByAbility as row (row.name)}
-          <StatRow
-            figures={[
-              { value: `${(row.share * 100).toFixed(1)}%` },
-              { value: `${approximate ? '~' : ''}${formatAmount(row.total)}` },
-              { value: formatRate(row.total / seconds) },
-            ]}
-            phone={`${(row.share * 100).toFixed(1)}%`}
-          >
-            {#snippet icon()}<SpellIcon url={spellIcon(row.spellId)} />{/snippet}
-            {#snippet name()}<b class="text-strong">{row.name}</b>{/snippet}
-            {#snippet meter()}<Meter value={row.share} />{/snippet}
-          </StatRow>
-        {/each}
-      </StatTable>
+      <!-- The open table starts on the head's hairline, as the mock library's open StatTable does. -->
+      <div class="-mt-3">
+        <StatTable columns={COLUMNS} nameHead="Ability" open label="Damage taken by ability">
+          {#each takenByAbility as row (row.name)}
+            <StatRow
+              figures={[
+                { value: `${(row.share * 100).toFixed(1)}%` },
+                { value: `${approximate ? '~' : ''}${formatAmount(row.total)}` },
+                { value: formatRate(row.total / seconds) },
+              ]}
+              phone={`${(row.share * 100).toFixed(1)}%`}
+            >
+              {#snippet icon()}<SpellIcon url={spellIcon(row.spellId)} />{/snippet}
+              {#snippet name()}<b class="text-strong">{row.name}</b>{/snippet}
+              {#snippet meter()}<Meter value={row.share} />{/snippet}
+            </StatRow>
+          {/each}
+        </StatTable>
+      </div>
       <p class="text-small text-muted pt-2" data-testid="panel-share-note">
         Share is of everything every player took in this window, whatever the source scope shows.
       </p>

@@ -1,6 +1,7 @@
 // web/tests/e2e/report-tables.spec.ts
 import { expect, test } from './support/test';
 import { serveDuckdbRuntime } from './support/duckdb-runtime';
+import { openChartIfCollapsed } from './support/report-chart';
 
 import { choose } from './support/select';
 import { checkFilter } from './support/report-frame';
@@ -284,4 +285,30 @@ test('a resource with no reported cap draws no cap line and no cap figures', asy
 test('a resource series copies as a CSV of second, reading and at cap', async ({ page }) => {
   await page.goto(`${FIGHT}&tab=resources`);
   await expect(page.locator('[data-region="section-resources"]').getByTestId('copy-csv')).toBeVisible();
+});
+
+test('one ability goes on the chart from the player’s own view, and comes off again', async ({ page }) => {
+  test.slow();
+  await serveDuckdbRuntime(page);
+  await page.goto(`${FIGHT}&tab=damage-done&source=Player-4184-000000A1`);
+  const control = page.getByTestId('row-abilities').getByTestId('ability-chart').first();
+  await control.click();
+  await expect(control).toHaveText('Off the chart', { timeout: 60_000 });
+  await openChartIfCollapsed(page);
+  await expect(page.getByTestId('time-chart').getByTestId('chart-legend')).toContainText('Baelgrim ·');
+  await control.click();
+  await expect(control).toHaveText('On the chart');
+});
+
+test('the damage tables and the player view copy as CSV from their Section head', async ({ page }) => {
+  await page.goto(`${FIGHT}&tab=damage-taken`);
+  await expect(page.getByTestId('report-table-card').getByTestId('copy-csv')).toBeVisible();
+  // The sample's pull 6: the group's dodges and misses (the fixture's fight took none).
+  await page.goto('/reports/sample?tab=damage-taken');
+  await expect(page.getByTestId('actor-mitigated')).toContainText(
+    /^Mitigated: \d+ hits avoided \(\d+ dodge, \d+ miss\)$/,
+  );
+  await page.goto(`${FIGHT}&tab=damage-done&source=Player-4184-000000A1`);
+  await expect(page.getByTestId('report-table-card').getByTestId('copy-csv')).toBeVisible();
+  await expect(page.getByTestId('row-abilities')).toContainText(/hits? · \d+ crits?/);
 });
