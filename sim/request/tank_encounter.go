@@ -163,16 +163,37 @@ func (b TankBoss) weaponMinDamage(attackPower float64) float64 {
 	return b.MinBaseDamage / (1 + attackPower*core.EnemyAutoAttackAPCoefficient)
 }
 
+// tankFirstBand and tankBandWidth are the leveling bands a tank's gear is
+// published for (20, 30, 40, 50 and the reference 60), the bands
+// data/curated/heal-profile.json's rows and the BiS ranker use.
+const (
+	tankFirstBand = 20
+	tankBandWidth = 10
+)
+
+// tankBandLevel is the level whose fight a character of level fights: the
+// band at or below it, as the heal profile's band rule has it ("a level
+// between two bands fights the band at or below it"), because between two
+// bands the character wears the lower band's gear. Below the first band
+// there is no band to fight, and a level keeps its own.
+func tankBandLevel(level, referenceLevel int) int {
+	if level < tankFirstBand {
+		return level
+	}
+	return min(level/tankBandWidth*tankBandWidth, referenceLevel)
+}
+
 // TankProfileForLevel is the tank fight for a character of characterLevel:
-// the curated numbers, with damage and healing scaled by the character's
-// level over the reference level (data/curated/tank-encounter.json's
-// level_scaling).
+// the curated numbers, with damage and healing scaled by the level of the
+// band the character fights (tankBandLevel) over the reference level
+// (data/curated/tank-encounter.json's level_scaling).
 func TankProfileForLevel(characterLevel int) (TankProfile, error) {
 	f, err := loadTankEncounter()
 	if err != nil {
 		return TankProfile{}, err
 	}
-	levelRatio := float64(characterLevel) / float64(f.LevelScaling.ReferenceLevel)
+	bandLevel := tankBandLevel(characterLevel, f.LevelScaling.ReferenceLevel)
+	levelRatio := float64(bandLevel) / float64(f.LevelScaling.ReferenceLevel)
 	damageScale := math.Pow(levelRatio, f.LevelScaling.Exponent.Value)
 	healingScale := math.Pow(levelRatio, f.LevelScaling.HealingExponent.Value)
 	return TankProfile{
