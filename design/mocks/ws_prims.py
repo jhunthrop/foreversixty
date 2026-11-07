@@ -1171,3 +1171,44 @@ def CodeField(text: str, placeholder: bool = False, bad: bool = False, label: st
 def ClassPicker(classes: list[tuple[str, str, bool]]) -> str:
     """The ControlBar's class choice: (crest_html, name, current). Crests always; names from 1280 and in the phone stack."""
     return seg([(f'<span class="lbl">{n}</span>', on, None, c) for c, n, on in classes], 'clsp', 'Class').replace('<a href="#" role="radio"', '<a href="#" role="radio" title=""', 0)
+
+
+# ------------------------------------------------ primitives added by the premium and account round (2026-11-08; design/specs/2026-11-08-premium-account.md section 3A)
+# Additive only. `Columns` is PlateColumns without the Plate: labelled columns split by hairlines, open on S0 (the guild plans
+# under the player's Plate, the How it works and Questions grids). `Button(tone='danger')` is the shipped button('danger'):
+# a destructive confirm (Leave guild, Revoke, Unlink), wipe text and a wipe hairline, never filled. `PlanHead` is the price
+# block a plan column opens with: the name in Barlow 700 22/28, a Tag, the audience, the price Figure (gold on the one plan
+# the page sells, strong elsewhere) and its two small lines; the column's one Button sits under it.
+PRIM_CSS += '''
+.pcols.open .pcol{padding:16px 0 0}.pcols.open .pcol+.pcol{padding-left:0}
+@media(min-width:1024px){.pcols.open .pcol{padding:4px 24px 0}.pcols.open .pcol:first-child{padding-left:0}.pcols.open .pcol:last-child{padding-right:0}}
+.btn.danger{color:var(--wipe);border-color:#f0736b66}.btn.danger:hover{border-color:var(--wipe);color:#ff8f88}
+@media(max-width:1023px){.pcols.swap{display:flex;flex-direction:column}.pcols.swap>.pcol:nth-child(2){order:-1;border-top:0}.pcols.swap>.pcol:first-child{border-top:1px solid var(--line-soft)}}
+.plh{display:flex;flex-direction:column;gap:4px;min-width:0}.plh .nm{display:flex;align-items:center;gap:10px;font:700 22px/28px var(--font-body);color:var(--strong)}
+.plh .au{font-size:14px;line-height:20px;color:var(--muted)}.plh .fig{margin-top:8px}.plh .pl2{font-size:13px;line-height:20px;color:var(--muted)}.plh .pl2.gold{color:var(--gold)}
+'''
+
+
+def Columns(cols: list[tuple[str, str, str, str]], open_: bool = True, second_first: bool = False) -> str:
+    """PlateColumns' columns: (label, meta, body, foot), hairlines between, stacked below 1024. open_ (default): no Plate, no
+    side padding; open_=False: the padded columns a caller puts in its own Plate when the columns carry their own heads.
+    second_first: below 1024 the second column stacks first (the plan a page sells leads on a phone)."""
+    inner = ''.join(f'<div class="pcol">{f"<div class=pcol-h><h3 class=t-label>{lab}</h3>{meta}</div>" if lab or meta else ""}{body}'
+                    + (f'<div class="pcol-f">{foot}</div>' if foot else '') + '</div>' for lab, meta, body, foot in cols)
+    return f'<div class="pcols{" open" if open_ else ""}{" swap" if second_first else ""}" style="--n:{len(cols)}">{inner}</div>'
+
+
+_Button0 = Button
+
+
+def Button(label: str, primary: bool = False, small: bool = False, tone: str = '') -> str:
+    """The system Button; tone 'danger' is the destructive confirm (button('danger'))."""
+    html = _Button0(label, primary, small)
+    return html.replace('class="btn', 'class="btn danger', 1) if tone == 'danger' else html
+
+
+def PlanHead(name: str, audience: str, value: str, unit: str, lines: list[tuple[str, str]], tag: str = '', gold: bool = False, level: int = 3) -> str:
+    """A plan column's head: name (+ Tag), audience, the price Figure, then (text, tone) small lines."""
+    sm = ''.join(f'<span class="pl2{" " + t if t else ""}">{x}</span>' for x, t in lines)
+    return (f'<div class="plh"><h{level} class="nm">{name}{tag}</h{level}><span class="au">{audience}</span>'
+            f'{Figure(value, unit=unit, tone="gold" if gold else "", size="big")}{sm}</div>')
