@@ -4,22 +4,17 @@
 // web/src/components/ui/, is a page inventing its own box: use Plate, Section, Row or Overlay.
 // It scans every .astro and .svelte file under src/ and every styles/*.css file.
 //
-// It ships as a ratchet: surface-guard.allowlist.json names each file that still draws a surface
-// and how many times. The test fails when a file not on the list draws one, when a listed file
-// draws more than its allowance, and when a listed file draws fewer (lower or delete its entry:
-// the list only ever shrinks, and ALLOWLIST_CEILING below only ever goes down). Each page lane
-// deletes its files from the list as it adopts the primitives; the last one deletes the list.
+// It shipped as a ratchet (an allowlist of files still drawing, 168 on 2026-11-05) and every page
+// lane deleted its files as it adopted the primitives; the restyle-rest round emptied the list on
+// 2026-11-07, so the allowance is gone and any surface outside the primitives is a hard fail.
 import { readdirSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
-import allowlist from './surface-guard.allowlist.json';
 
 const SRC = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 /** The primitives themselves, the one place a surface may be drawn. */
 const PRIMITIVES = 'components/ui/';
-/** The number of allowlisted files (168 when this ratchet landed 2026-11-05; 153 after the premium and account round, 149 after the changelog, legal and 404 round, 115 after the guild round, 68 after the sim-tools round, 41 after the report round, 17 after the character, coach and billing round); lower it, never raise it. */
-const ALLOWLIST_CEILING = 17;
 
 /** Surface classes: the card, the panel radius, the line borders, the raised and hover grounds. */
 const SURFACE_CLASS =
@@ -63,30 +58,11 @@ export function surfaceUses(): Record<string, number> {
   return uses;
 }
 
-const allowed: Readonly<Record<string, number>> = allowlist.files;
-
 describe('the surface guard', () => {
   const uses = surfaceUses();
 
-  it('no file outside the primitives draws a surface it is not allowed', () => {
-    const over = Object.entries(uses)
-      .filter(([file, count]) => count > (allowed[file] ?? 0))
-      .map(([file, count]) => `${file}: ${count} (allowed ${allowed[file] ?? 0})`);
-    expect(over, 'draw it with a ui/ primitive (Plate, Section, Row, Overlay) instead').toEqual([]);
-  });
-
-  it('the allowlist only shrinks: a file that draws less lowers or deletes its entry', () => {
-    const stale = Object.entries(allowed)
-      .filter(([file, count]) => (uses[file] ?? 0) < count)
-      .map(([file, count]) => `${file}: allowed ${count}, draws ${uses[file] ?? 0}`);
-    expect(stale, 'lower these entries in surface-guard.allowlist.json').toEqual([]);
-  });
-
-  it('never grows past its ceiling', () => {
-    expect(Object.keys(allowed).length).toBeLessThanOrEqual(ALLOWLIST_CEILING);
-  });
-
-  it('lets the primitives draw their surfaces', () => {
-    expect(Object.keys(uses).some((file) => file.startsWith(PRIMITIVES))).toBe(false);
+  it('no file outside the primitives draws a surface', () => {
+    const drawn = Object.entries(uses).map(([file, count]) => `${file}: ${count}`);
+    expect(drawn, 'draw it with a ui/ primitive (Plate, Section, Row, Overlay) instead').toEqual([]);
   });
 });

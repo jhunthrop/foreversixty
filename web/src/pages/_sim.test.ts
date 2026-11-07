@@ -9,7 +9,6 @@ import type { experimental_AstroContainer as AstroContainer } from 'astro/contai
 import type { AstroComponentFactory } from 'astro/runtime/server/index.js';
 import { createPageContainer } from '../test-support/page-container';
 import { beforeAll, describe, expect, it } from 'vitest';
-import { VIEW_GAP } from '../lib/current-character-layout';
 import { FIXTURE_SIM_ID } from '../lib/report/shell-paths';
 import Sim from './sim.astro';
 import SimById from './sim/[id].astro';
@@ -88,9 +87,11 @@ describe('the shells', () => {
     expect(html).not.toContain('current-character-bar');
   });
 
-  it('sim/specs.astro wraps the grids in the view gap, with no spine bar slot', async () => {
+  // The page is the tool head and the grid's mount on the flat primitives (b6ab00174): no view-gap
+  // wrapper of its own any more.
+  it('sim/specs.astro is the tool head and the grid mount, with no spine bar slot', async () => {
     const html = await container.renderToString(Specs);
-    expect(html).toContain(`<div class="flex flex-col ${VIEW_GAP}">`);
+    expect(html).toContain('data-sim-view="specs"');
     expect(html).not.toContain('current-character-bar');
   });
 

@@ -8,8 +8,6 @@
 <script lang="ts">
   import { formatSyncStamp } from '../../lib/dates';
   import { notReadCopy } from '../../lib/gear/copy';
-  import { CARD_BODY, CARD_HEAD, cardClass } from '../../lib/ui/card';
-  import IconTile from '../ui/IconTile.svelte';
 
   let {
     capturedAt = null,
@@ -20,21 +18,16 @@
   const stamp = $derived(capturedAt === null ? '' : formatSyncStamp(new Date(capturedAt)));
 </script>
 
-<!-- A quiet card (site alignment §5.5): a muted `device` tile, the sentence as the head in its own
-     case (it is a sentence, not a title), the two lines as the body. -->
-<div class="{cardClass(true)} text-[14px]" role="status" data-testid={testid}>
-  <div class={CARD_HEAD.root}>
-    <IconTile glyph="device" tone="muted" />
-    <p class="text-strong flex-1 font-semibold" data-testid="export-not-read-lead">
-      {owned ? notReadCopy.lead : notReadCopy.visitorLead}
-    </p>
-  </div>
-  <div class="{CARD_BODY.text} gap-1">
-    {#if owned}
-      <p class="text-muted">{notReadCopy.synced(stamp)}</p>
-      <p class="text-muted">{notReadCopy.steps}</p>
-    {:else}
-      <p class="text-muted">{notReadCopy.visitorSynced}</p>
-    {/if}
-  </div>
+<!-- No frame (web layout spec 2026-11-05 §3A): the sentence leads in the body face 600, the two
+     lines under it muted; it sits inside the section that would have held the slots. -->
+<div class="flex flex-col gap-1 py-2 text-[14px]" role="status" data-testid={testid}>
+  <p class="text-strong text-[15px] font-semibold" data-testid="export-not-read-lead">
+    {owned ? notReadCopy.lead : notReadCopy.visitorLead}
+  </p>
+  {#if owned}
+    <p class="text-muted">{notReadCopy.synced(stamp)}</p>
+    <p class="text-muted">{notReadCopy.steps}</p>
+  {:else}
+    <p class="text-muted">{notReadCopy.visitorSynced}</p>
+  {/if}
 </div>

@@ -91,7 +91,7 @@ Then commit `design/mocks/web` (and `design/mocks/data/bis-facts.json`).
 
 ## The changelog, legal and 404 states
 
-`web/tests/e2e/parity-pages.spec.ts`: `changelog` (All), `changelog-game` (`?show=game`), `legal-privacy`, `404` (signed out) and `404-in` (Felsnap, `fixtures/home/me-34.json`), at 1440 and 390. Mocks `web-changelog*.html`, `web-legal-privacy.html`, `web-404*.html` from `design/mocks/ws_pages.py` (spec `design/specs/2026-11-08-pages.md`). Test-time render: `node design/mocks/pages_facts.mjs <out>/pages-facts.json`, then `ws_pages.py` with `FS_PAGES_FACTS` and `FS_MOCK_OUT` (`renderPagesMocks` in `support/parity-mocks.ts`); the facts bundle the content collections, the copy modules and `lib/changelog/entries.ts`, and need no `src/data/generated`.
+`web/tests/e2e/parity-pages.spec.ts`: `changelog` (All), `changelog-game` (`?show=game`), `legal-privacy`, `404` (signed out), `404-in` (Felsnap, `fixtures/home/me-34.json`) and `login` (signed out), at 1440 and 390. Mocks `web-changelog*.html`, `web-legal-privacy.html`, `web-404*.html`, `web-login.html` from `design/mocks/ws_pages.py` (spec `design/specs/2026-11-08-pages.md`). Test-time render: `node design/mocks/pages_facts.mjs <out>/pages-facts.json`, then `ws_pages.py` with `FS_PAGES_FACTS` and `FS_MOCK_OUT` (`renderPagesMocks` in `support/parity-mocks.ts`); the facts bundle the content collections, the copy modules and `lib/changelog/entries.ts`, and need no `src/data/generated`.
 
 ## The tier list states
 

@@ -8,6 +8,9 @@
      lazy-loads this component and mounts it only while open, so its weight never rides on a
      page's base bundle.
 
+     The frame is the Overlay primitive's tooltip kind (the in-game tooltip frame); the source block
+     is its foot, under the overlay's own hairline, and the icon is ui/ItemIcon in its quality frame.
+
      The name is never truncated (tooltip-polish brief item 1): it wraps instead, inside a
      panel that clamps between 280px and 360px wide (full width minus 32px on a phone). The
      panel's own vertical and horizontal placement -- flip above the anchor, clamp and scroll
@@ -16,9 +19,11 @@
      positions it. -->
 <script lang="ts">
   import type { ItemTooltipModel } from '../lib/items/tooltip';
+  import { TOOLTIP_PANEL_PLACEMENT } from '../lib/items/tooltip-position';
   import { bisCopy } from '../lib/bis/copy';
   import { rarityClassFor } from '../lib/planner/items';
-  import { dataUrl } from '../lib/planner/load';
+  import ItemIcon from './ui/ItemIcon.svelte';
+  import Overlay from './ui/Overlay.svelte';
 
   let {
     model,
@@ -40,124 +45,99 @@
   const equipStats = $derived(model.stats.filter((line) => line.startsWith(EQUIP_PREFIX)));
 
   // The item pipeline's own placeholder for an id it has no real icon for is the client's
-  // red-bordered "?" texture; the letter mark below is the tooltip's fallback for it, the
-  // same way the BiS rows never draw it (tenet: never a red "?").
-  let iconBroken = $state(model.icon === 'inv_misc_questionmark' || model.icon === '');
+  // red-bordered "?" texture; ItemIcon's empty socket stands in for it, the same way the BiS rows
+  // never draw it (tenet: never a red "?").
+  const icon = $derived(model.icon === 'inv_misc_questionmark' || model.icon === '' ? undefined : model.icon);
 </script>
 
-<div
+<Overlay
+  kind="tooltip"
   {id}
-  role="tooltip"
-  data-testid="item-tooltip"
-  class="border-line bg-raised rounded-panel text-strong absolute z-30 flex w-[clamp(280px,calc(100vw_-_32px),360px)] flex-col gap-2 border p-3 text-[13px] shadow-[0_12px_30px_rgba(0,0,0,.45)]"
-  style:position="var(--item-tooltip-position, absolute)"
-  style:left="var(--item-tooltip-shift, 0px)"
-  style:top="var(--item-tooltip-top, 100%)"
-  style:bottom="var(--item-tooltip-bottom, auto)"
-  style:margin-top="var(--item-tooltip-mt, 8px)"
-  style:margin-bottom="var(--item-tooltip-mb, 0px)"
-  style:max-height="var(--item-tooltip-max-h, none)"
-  style:overflow-y="var(--item-tooltip-overflow-y, visible)"
+  testid="item-tooltip"
+  class="text-strong absolute z-30 flex w-[clamp(280px,calc(100vw_-_32px),360px)] flex-col text-[13px]"
+  style={TOOLTIP_PANEL_PLACEMENT}
+  foot={model.sourceLines.length > 0 ? sources : undefined}
 >
-  <div class="flex items-start gap-2">
-    {#if iconBroken}
-      <span
-        class="rounded-control border-line bg-card-top text-muted flex h-10 w-10 shrink-0 items-center justify-center border text-[11px] font-bold"
-        aria-hidden="true"
-      >
-        {model.name.slice(0, 2)}
-      </span>
-    {:else}
-      <img
-        src={dataUrl(build, `icons/${model.icon}.webp`)}
-        alt=""
-        width="40"
-        height="40"
-        loading="lazy"
-        decoding="async"
-        class="rounded-control border-line h-10 w-10 shrink-0 border object-cover"
-        onerror={() => (iconBroken = true)}
-        onload={(event) => {
-          if (event.currentTarget.naturalWidth <= 1) iconBroken = true;
-        }}
-      />
+  <div class="flex flex-col gap-2 px-[14px] py-3">
+    <div class="flex items-start gap-2">
+      <ItemIcon {icon} quality={model.quality} {build} size={40} />
+      <div class="flex min-w-0 flex-1 flex-col gap-0.5">
+        <span class={`text-[15px] font-bold ${rarityClassFor(model.quality)}`}>
+          {model.name}
+        </span>
+        {#if model.itemLevel > 0}
+          <span class="text-muted numeric text-[12px]">Item Level {model.itemLevel}</span>
+        {/if}
+        {#if model.bindLabel}
+          <span class="text-[12px]" data-testid="item-tooltip-bind">{model.bindLabel}</span>
+        {/if}
+        {#if model.unique}
+          <span class="text-muted text-[12px]">Unique</span>
+        {/if}
+        {#if model.clientUnconfirmed}
+          <span class="text-muted text-[12px]">{bisCopy.clientUnconfirmedTitle}</span>
+        {/if}
+      </div>
+    </div>
+
+    {#if model.slotLabel !== '' || model.typeLabel}
+      <div class="text-muted flex flex-wrap justify-between gap-x-2 text-[12px]">
+        <span>{model.slotLabel}</span>
+        {#if model.typeLabel}<span>{model.typeLabel}</span>{/if}
+      </div>
     {/if}
-    <div class="flex min-w-0 flex-1 flex-col gap-0.5">
-      <span class={`text-[15px] font-semibold ${rarityClassFor(model.quality)}`}>
-        {model.name}
-      </span>
-      {#if model.itemLevel > 0}
-        <span class="text-muted numeric text-[11px]">Item Level {model.itemLevel}</span>
-      {/if}
-      {#if model.bindLabel}
-        <span class="text-[11px]" data-testid="item-tooltip-bind">{model.bindLabel}</span>
-      {/if}
-      {#if model.unique}
-        <span class="text-muted text-[11px]">Unique</span>
-      {/if}
-      {#if model.clientUnconfirmed}
-        <span class="text-muted text-[11px]">{bisCopy.clientUnconfirmedTitle}</span>
-      {/if}
-    </div>
+
+    {#if model.armor !== null}
+      <span class="text-[12px]">{model.armor} Armor</span>
+    {/if}
+
+    {#if model.weapon}
+      <div class="flex flex-col text-[12px]">
+        <span>{model.weapon.damageRange}</span>
+        <span>{model.weapon.speed}</span>
+        <span class="text-muted">{model.weapon.dps}</span>
+      </div>
+    {/if}
+
+    {#if whiteStats.length > 0}
+      <div class="flex flex-col text-[12px]" data-testid="item-tooltip-stats">
+        {#each whiteStats as line (line)}
+          <!-- The client paints a negative stat red. -->
+          <span class:text-death={line.startsWith('-')}>{line}</span>
+        {/each}
+      </div>
+    {/if}
+
+    {#if enchant !== undefined && enchant !== ''}
+      <span class="text-rarity-uncommon text-[12px]" data-testid="item-tooltip-enchant">{enchant}</span>
+    {/if}
+
+    {#if equipStats.length > 0}
+      <div class="text-rarity-uncommon flex flex-col text-[12px]">
+        {#each equipStats as line (line)}
+          <span>{line}</span>
+        {/each}
+      </div>
+    {/if}
+
+    {#if model.effectText}
+      <p class="text-rarity-uncommon text-[12px] leading-snug">{model.effectText}</p>
+    {/if}
+
+    {#if model.setName}
+      <span class="text-rarity-uncommon text-[12px] font-semibold">{model.setName}</span>
+    {/if}
+
+    {#if model.requiredLevel > 0}
+      <span class="text-muted text-[12px]">Requires Level {model.requiredLevel}</span>
+    {/if}
   </div>
+</Overlay>
 
-  {#if model.slotLabel !== '' || model.typeLabel}
-    <div class="text-muted flex flex-wrap justify-between gap-x-2 text-[12px]">
-      <span>{model.slotLabel}</span>
-      {#if model.typeLabel}<span>{model.typeLabel}</span>{/if}
-    </div>
-  {/if}
-
-  {#if model.armor !== null}
-    <span class="text-[12px]">{model.armor} Armor</span>
-  {/if}
-
-  {#if model.weapon}
-    <div class="flex flex-col text-[12px]">
-      <span>{model.weapon.damageRange}</span>
-      <span>{model.weapon.speed}</span>
-      <span class="text-muted">{model.weapon.dps}</span>
-    </div>
-  {/if}
-
-  {#if whiteStats.length > 0}
-    <div class="flex flex-col text-[12px]" data-testid="item-tooltip-stats">
-      {#each whiteStats as line (line)}
-        <!-- The client paints a negative stat red. -->
-        <span class:text-death={line.startsWith('-')}>{line}</span>
-      {/each}
-    </div>
-  {/if}
-
-  {#if enchant !== undefined && enchant !== ''}
-    <span class="text-rarity-uncommon text-[12px]" data-testid="item-tooltip-enchant">{enchant}</span>
-  {/if}
-
-  {#if equipStats.length > 0}
-    <div class="text-rarity-uncommon flex flex-col text-[12px]">
-      {#each equipStats as line (line)}
-        <span>{line}</span>
-      {/each}
-    </div>
-  {/if}
-
-  {#if model.effectText}
-    <p class="text-rarity-uncommon text-[12px] leading-snug">{model.effectText}</p>
-  {/if}
-
-  {#if model.setName}
-    <span class="text-rarity-uncommon text-[12px] font-semibold">{model.setName}</span>
-  {/if}
-
-  {#if model.requiredLevel > 0}
-    <span class="text-muted text-[11px]">Requires Level {model.requiredLevel}</span>
-  {/if}
-
-  {#if model.sourceLines.length > 0}
-    <div class="border-line-soft text-muted flex flex-col gap-0.5 border-t pt-2 text-[11px]">
-      {#each model.sourceLines as line (line)}
-        <span>{line}</span>
-      {/each}
-    </div>
-  {/if}
-</div>
+{#snippet sources()}
+  <div class="flex flex-col gap-0.5">
+    {#each model.sourceLines as line (line)}
+      <span>{line}</span>
+    {/each}
+  </div>
+{/snippet}

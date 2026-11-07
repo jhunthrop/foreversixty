@@ -67,6 +67,10 @@ describe('button recipes', () => {
       expect(recipe).toContain('[@media(hover:hover)_and_(pointer:fine)]:hover:');
   });
 
+  it('writes each hover class whole, with one hover variant, so Tailwind emits it', () => {
+    for (const recipe of ALL) expect(recipe).not.toContain('hover:hover:');
+  });
+
   it('md is 44 px; sm is 44 px until a fine pointer at 1024 and up, then 36 px', () => {
     expect(BUTTON_MD).toBe('h-11');
     expect(BUTTON_SM).toContain('h-11');

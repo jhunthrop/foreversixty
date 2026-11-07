@@ -10,27 +10,29 @@ const BASE =
   'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold ' +
   'disabled:cursor-not-allowed disabled:not-aria-busy:opacity-45 aria-disabled:cursor-not-allowed aria-disabled:not-aria-busy:opacity-45';
 
-/** Hover only where a pointer can hover, so a tap never leaves a stuck hover look. */
-const HOVER = '[@media(hover:hover)_and_(pointer:fine)]:hover:';
+// Hover applies only where a pointer can hover, so a tap never leaves a stuck hover look. Each
+// hover class is written out whole, `[@media(hover:hover)_and_(pointer:fine)]:hover:<utility>`:
+// Tailwind finds classes by scanning source text, so a class joined from pieces in a template
+// string is never emitted.
 
 export const BUTTON_PRIMARY =
   `${BASE} border-transparent text-bg bg-[linear-gradient(180deg,#f0cc6c,#c99a3a)] ` +
   'shadow-[inset_0_0_0_1px_var(--color-gold-deep),0_6px_20px_rgba(229,185,85,.22)] ' +
-  `${HOVER}hover:brightness-[1.08] active:translate-y-px active:brightness-[.92] disabled:shadow-none aria-disabled:shadow-none`;
+  '[@media(hover:hover)_and_(pointer:fine)]:hover:brightness-[1.08] active:translate-y-px active:brightness-[.92] disabled:shadow-none aria-disabled:shadow-none';
 
 export const BUTTON_SECONDARY =
   `${BASE} border-line-card text-strong bg-white/[.045] ` +
-  `${HOVER}hover:border-gold/30 ${HOVER}hover:bg-white/[.08] active:bg-card-top`;
+  '[@media(hover:hover)_and_(pointer:fine)]:hover:border-gold/30 [@media(hover:hover)_and_(pointer:fine)]:hover:bg-white/[.08] active:bg-card-top';
 
 export const BUTTON_GHOST =
   `${BASE} text-gold border-transparent bg-transparent px-[10px] ` +
-  `${HOVER}hover:text-gold-hover ${HOVER}hover:bg-gold/[.06] active:text-gold-hover`;
+  '[@media(hover:hover)_and_(pointer:fine)]:hover:text-gold-hover [@media(hover:hover)_and_(pointer:fine)]:hover:bg-gold/[.06] active:text-gold-hover';
 
 /** A destructive confirm (premium spec 2026-11-08 section 3A): wipe ink and a 40 % wipe hairline,
  *  never filled; hover takes the full wipe border and the lighter wipe ink. */
 export const BUTTON_DANGER =
   `${BASE} text-wipe border-wipe/40 bg-transparent ` +
-  `${HOVER}hover:border-wipe ${HOVER}hover:text-[#ff8f88] active:translate-y-px`;
+  '[@media(hover:hover)_and_(pointer:fine)]:hover:border-wipe [@media(hover:hover)_and_(pointer:fine)]:hover:text-[#ff8f88] active:translate-y-px';
 
 /** 44 px everywhere. */
 export const BUTTON_MD = 'h-11';

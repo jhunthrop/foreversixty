@@ -1,9 +1,11 @@
-/* web/src/styles/select.css
-   The shared dropdown (design/specs/2026-10-30-controls-charts.md §A4, §A5): the closed field
-   (`.sel`, the face over the native control or the listbox trigger, identical in both modes so
-   the swap moves nothing) and the open list (`.sel-pop`, shown in the top layer by listbox.ts).
-   The field takes the /account trigger's hover, open and pressed states (nav.css .csel-btn) on
-   an 8 px input radius; the list takes the account panel's surface. Tokens only. */
+/* web/src/components/ui/select.css
+   The Select primitive's own styles (Select.svelte, Select.astro, SelectSheet and the listbox
+   modules in lib/ui; design/specs/2026-10-30-controls-charts.md §A4, §A5, restyled to the flat
+   system of design/specs/2026-11-05-web-layout.md §3.4): the closed field (`.sel`, the face over
+   the native control or the listbox trigger, identical in both modes so the swap moves nothing)
+   and the open list (`.sel-pop`, shown in the top layer by listbox.ts). The field is the
+   segmented control's outline (1 px --color-line, the field radius); the list is the overlay
+   surface (ui/overlay.css). Imported by global.css, so static pages carry it. Tokens only. */
 
 @layer components {
   /* ------------------------------------------------------------------ the field */
@@ -67,7 +69,7 @@
     margin: 0;
     padding: 0;
     border: 0;
-    border-radius: var(--radius-control);
+    border-radius: var(--radius-field);
     background: transparent;
     color: transparent;
   }
@@ -86,9 +88,9 @@
     align-items: center;
     gap: 8px;
     padding: 0 40px 0 var(--sel-pad);
-    border: 1px solid var(--color-line-card);
-    border-radius: var(--radius-control);
-    background: rgb(255 255 255 / 0.045);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-field);
+    background: transparent;
     color: var(--color-strong);
     font-size: var(--sel-text);
     font-weight: 600;
@@ -156,10 +158,9 @@
     translate: 0 -50%;
   }
 
-  /* Hover, focus, pressed, open: the /account trigger's states (§A5). */
+  /* Hover, focus, pressed, open: the control bar's states (layout spec §3.4). */
   .sel:not([data-blocked='true']):hover > .sel-face {
-    border-color: rgb(229 185 85 / 0.45);
-    background: rgb(255 255 255 / 0.06);
+    background: var(--color-hover);
   }
   .sel:not([data-blocked='true']):hover > .sel-face .sel-chev {
     color: var(--color-strong);
@@ -169,13 +170,11 @@
     outline-offset: 2px;
   }
   .sel:has(> .sel-native:active:not(:disabled), > .sel-trigger:active:not(:disabled)) > .sel-face {
-    border-color: var(--color-gold);
-    background: #101624;
+    background: var(--color-pressed);
   }
   .sel[data-open='true'] > .sel-face {
     border-color: var(--color-gold);
-    background: rgb(255 255 255 / 0.06);
-    box-shadow: var(--glow-gold);
+    background: var(--color-hover);
   }
   .sel[data-open='true'] > .sel-face .sel-chev {
     rotate: 180deg;
@@ -223,12 +222,10 @@
     max-height: var(--popover-room, none);
     padding: 0;
     overflow: hidden;
-    border: 1px solid var(--color-line-card);
-    border-radius: var(--radius-panel);
-    background: var(--surface-card);
-    box-shadow:
-      inset 0 1px 0 var(--card-highlight),
-      var(--shadow-card);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-plate);
+    background: var(--color-raised);
+    box-shadow: var(--shadow-overlay);
     color: var(--color-strong);
     font-family: var(--font-body);
     text-align: left;
@@ -287,11 +284,11 @@
   }
   .sel-fade-top {
     top: 0;
-    background: linear-gradient(0deg, rgb(13 15 21 / 0), #0d0f15);
+    background: linear-gradient(0deg, rgb(13 17 26 / 0), var(--color-raised));
   }
   .sel-fade-bottom {
     bottom: 0;
-    background: linear-gradient(180deg, rgb(13 15 21 / 0), #0d0f15);
+    background: linear-gradient(180deg, rgb(13 17 26 / 0), var(--color-raised));
   }
   .sel-pop[data-fade-top='true'] .sel-fade-top,
   .sel-pop[data-fade-bottom='true'] .sel-fade-bottom {
@@ -402,7 +399,7 @@
     justify-content: center;
     width: 16px;
     height: 16px;
-    border: 1px solid var(--color-line-warm-strong);
+    border: 1px solid var(--color-line);
     border-radius: 4px;
     color: transparent;
   }
@@ -423,7 +420,7 @@
     top: -4px;
     z-index: 1;
     padding: 10px 12px 4px;
-    background: #0e1016;
+    background: var(--color-raised);
     color: var(--color-muted);
     font-size: 11px;
     font-weight: 700;
@@ -520,7 +517,7 @@
     align-items: center;
     min-height: 32px;
     padding: 0 10px;
-    border: 1px solid var(--color-line-card);
+    border: 1px solid var(--color-line);
     border-radius: var(--radius-pill);
     background: transparent;
     color: var(--color-text);

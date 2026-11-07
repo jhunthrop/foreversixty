@@ -28,7 +28,14 @@ const itemRole = inBar ? 'menuitem' : undefined;
 
 const Shell = 'div';
 const shellProps: HTMLAttributes<'div'> = inBar
-  ? { id: `site-panel-${key}`, class: 'site-panel', role: 'menu', 'aria-label': group.label, hidden: true }
+  ? {
+      id: `site-panel-${key}`,
+      class: 'site-panel ui-overlay',
+      'data-kind': 'menu',
+      role: 'menu',
+      'aria-label': group.label,
+      hidden: true,
+    }
   : { class: 'site-menu-list', 'data-menu-list': key };
 
 /** The tab a Guild row opens: the hash, or the overview for the bare /guild row. */
@@ -112,7 +119,7 @@ const swapOf = (tab: string | undefined) => (tab === undefined ? undefined : GUI
   {group.foot && (
     <a
       href={group.foot.href}
-      class="site-panel-foot"
+      class="site-panel-foot ui-overlay-rule-t"
       role={itemRole}
       data-testid={`${testScope}-foot-${navKey(group.label)}`}
       data-guild-tab={isGuild ? 'settings' : undefined}
