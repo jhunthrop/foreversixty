@@ -1,8 +1,0 @@
-{
-  "specs": [
-    "druid-feral-bear",
-    "rogue-assassination",
-    "rogue-combat"
-  ],
-  "reason": "MythicSim adopt (2026-11-07): the bear's Lacerate filler, Assassination's Slice and Dice rule and Combat's Shank, Eviscerate and Slice and Dice rules change these three rotations, so their picks re-rank on engine 0e04b1284. Beast Mastery is unchanged: Summon Hawk was not an engine bug."
-}
