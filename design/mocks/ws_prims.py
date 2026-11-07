@@ -864,6 +864,8 @@ PRIM_CSS += '''
 .lvl .rg .fl{position:absolute;left:0;height:4px;border-radius:2px;background:var(--gold)}
 .lvl .rg .th{position:absolute;width:20px;height:20px;margin-left:-10px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 4px #e5b95533}
 .rows.slim .row{min-height:44px;padding-block:6px}
+/* MUST 5 (guides): the open phone bar wraps a segmented control that does not fit, so the current choice is never cut off */
+.bar-m .seg{flex-wrap:wrap}.bar-m .seg a{min-width:max-content}
 .ans-box{display:flex;flex-direction:column;gap:6px;min-width:0}
 @media(min-width:900px){.ans-box{min-width:380px;min-height:96px;justify-content:flex-end;align-items:flex-end;text-align:right}}
 '''

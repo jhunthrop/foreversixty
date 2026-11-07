@@ -29,18 +29,11 @@ C = F['copy']
 TA = F['tier_answer']
 FACTION = {'alliance': '#6fb1ff', 'horde': '#ff6b5c'}
 FACTION_NAME = {'alliance': 'Alliance', 'horde': 'Horde'}
-ROLE = {'dps': 'DPS', 'healer': 'Healer', 'tank': 'Tank'}   # guidesCopy.roleLabel, evaluated
+TAG = C['specRowTag']   # guidesCopy.specRowTag: a healer, a tank, the melee spec of a ranged class (glance.ts specRowTag)
 QUAL = {2: 'q2', 3: 'q3', 4: 'q4', 5: 'q5'}
 
-# Strings no module carries yet: proposed by this round (spec 8.2); the build adds them to lib/guides/copy.ts.
-PROPOSED = {
-    'answerLabel': 'Your character',
-    'talentsAtLevel': 'Talents at level {level}',
-    'noCharacter': 'No character on this account yet.',
-    'glance': 'At a glance',
-    'builds': 'Builds',
-    'sources': 'Sources',
-}
+# The strings this round proposed (spec 6.2) now live in lib/guides/copy.ts; read from there.
+PROPOSED = {k: C[k] for k in ('answerLabel', 'noCharacter', 'glance', 'builds', 'sources')}
 
 
 def e(text: str) -> str:
@@ -76,9 +69,11 @@ def answer(kind: str, me: dict | None = None, page: dict | None = None) -> str:
     who = (f'<span class="ans-row">{crest_img(cls, 40)}<span class="ans-who"><b class="ans-name" style="color:{CLASS_COLOR[cls]}">{e(me["name"])}</b>'
            f'<span class="t-small">{e(me["level_line"])} &middot; {e(me["identity"])}</span></span></span>')
     if kind == 'same':
-        first = PROPOSED['talentsAtLevel'].format(level=me['level']) if me['level'] < 60 else TA['bis']
+        first = me['talents_at'] if me['level'] < 60 else TA['bis']
         second = TA['bis'] if me['level'] < 60 else TA['sim']
         links = Link(rsaquo(first)) + Link(rsaquo(second))
+        if me['level'] < 60 and me.get('next'):   # Q5: the ladder's next point, beside the level link
+            links = f'<span class="t-small ans-next">{e(me["next"])}</span>' + links
     else:
         key = {'Beast Mastery': 'bm', 'Survival': 'survival', 'Fury': 'fury'}[me['spec']]
         links = Link(e(F['fns']['signedInCallout'][key]))
@@ -86,7 +81,7 @@ def answer(kind: str, me: dict | None = None, page: dict | None = None) -> str:
 
 
 def spell_row(item: dict, n: str = '') -> str:
-    rank = f' <span class="t-small">Rank {item["rank"]}</span>' if item.get('rank') else ''
+    rank = f' <span class="t-small">{e(item["rankText"])}</span>' if item.get('rankText') else ''
     tag = ' ' + Tag(e(C['raidBuildTag']), 'muted') if item.get('raidBuildOnly') else ''
     return Row(f'{e(item["name"])}{rank}{tag}', e(item.get('clause', '')), lead=icon(item['icon'], 28) if item.get('icon') else '<span class="ic-spacer" style="width:28px;height:28px"></span>', rank=n, link=False)
 
@@ -114,11 +109,15 @@ def band(g: dict) -> str:
         cols.append((e(C['raidBuild'] if b['isRaidBuild'] else C['buildRailLabel']), '', TalentTrees(trees_of(b['trees'])),
                      Button(e(C['loadThisBuild']), primary=True) + Button(e(C['simThisBuild']))))
     if b['rotation']:
-        cols.append((e(C['rotationRailTitle']), e(F['fns']['levelRangeLabel']['60']), RowsSlim([spell_row(x) for x in b['rotation']]), Link(e(C['fullPriorityLink']))))
+        filler = f'<p class="t-small gl-fill">{e(b["filler"])}</p>' if b.get('filler') else ''   # MUST 1
+        cols.append((e(b['rotationTitle']), e(F['fns']['levelRangeLabel']['60']), RowsSlim([spell_row(x) for x in b['rotation']]) + filler,
+                     Link(e(C['fullPriorityLink']))))
     if b['stats']:
-        anchor = g['stats']['table']['anchor'] or ''
+        cap = b.get('hitCap')
+        lines = (f'<p class="t-small"><b class="strong">{e(cap["cap"])}</b>' + (f' &middot; {e(cap["detail"])}' if cap.get('detail') else '') + '</p>') if cap else ''
+        lines += f'<p class="t-small">{e(b["unitLine"])}</p>' if b.get('unitLine') else ''   # MUST 4
         cols.append((e(C['statPriorityRailLabel']), e(g['stats']['table']['weightHead']),
-                     StatTable([('', False), ('', False), ('', False), ('', True)], stat_rows(b['stats'], True, False), 1, open_=True), ''))
+                     StatTable([('', False), ('', False), ('', False), ('', True)], stat_rows(b['stats'], True, False), 1, open_=True) + lines, ''))
     return f'<div class="pc glance">{PlateColumns(cols, PROPOSED["glance"])}</div>'
 
 
@@ -195,7 +194,8 @@ def extras(g: dict, data: bool = True) -> str:
     x = g['extras']
     lane = ''
     if data and x['data']:
-        ench = Facts([(e(r['slotLabel']), f'{e(r["name"])}<small>{e(r["gives"])}</small>') for r in x['data']['enchants']])
+        ench = RowsSlim([Row(e(r['name']), f'{e(r["slotLabel"])} &middot; {e(r["gives"])}', lead=icon(r.get('icon') or '', 28), link=False)
+                         for r in x['data']['enchants']])   # MUST 6: the same icon rows as Consumables
         rows = []
         for line in x['data']['lines']:
             if 'header' in line:
@@ -210,13 +210,17 @@ def extras(g: dict, data: bool = True) -> str:
 
 def races(g: dict) -> str:
     r = g['races']
-    rows = []
-    for x in r['rows']:
-        foot = ''.join(f'<span class="racial">{icon(z["icon"], 20)}<span><b>{e(z["name"])}</b> {e(z["effect"])}</span></span>' for z in x['racials'])
-        rows.append(Row(e(x['name']), e(FACTION_NAME[x['faction']]), title_color=FACTION[x['faction']],
-                        trail=Tag(e(C['recommendedTag'])) if x['recommended'] else '', link=False, foot=foot))
+    body = ''
+    for grp in r['groups']:   # Alliance then Horde, Recommended first (glance.ts racesByFaction)
+        rows = []
+        for x in grp['rows']:
+            foot = ''.join(f'<span class="racial">{icon(z["icon"], 20)}<span><b>{e(z["name"])}</b> {e(z["effect"])}</span></span>' for z in x['racials'])
+            rows.append(Row(e(x['name']), title_color=FACTION[x['faction']],
+                            trail=Tag(e(C['recommendedTag'])) if x['recommended'] else '', link=False, foot=foot))
+        head = C['alliancePicksHeading'] if grp['faction'] == 'alliance' else C['hordePicksHeading']
+        body += f'<h4 class="t-label sub-h">{e(head)}</h4>' + Rows(rows, True)
     lines = ''.join(f'<p class="t-small">{e(t)}</p>' for t in r['lines'])
-    return ReadingSection('Races', Prose(r['prose']), LaneBlock(e(C['racialsColumn']), Rows(rows, True) + lines), 'races')
+    return ReadingSection('Races', Prose(r['prose']), LaneBlock(e(C['racialsColumn']), body + lines), 'races')
 
 
 def leveling(g: dict, level: int = 60, data: bool = True) -> str:
@@ -281,7 +285,7 @@ def class_page(cls: str, kind: str = 'out', me_key: str = '') -> str:
     rows = []
     for c in L['cards']:
         you = bool(mine and me['spec'] == c['name'])
-        tags = ' ' + Tag(ROLE[c['role']], 'muted') + (' ' + Tag(e(C['yourSpecPill'])) if you else '')
+        tags = (' ' + Tag(e(TAG[c['tag']]), 'muted') if c['tag'] else '') + (' ' + Tag(e(C['yourSpecPill'])) if you else '')
         rows.append(Row(e(c['name']) + tags, e(c['line']), lead=icon(c['icon'], 40), title_color=CLASS_COLOR[cls], selected=you,
                         foot=f'<span class="link">{rsaquo(C["readTheGuide"])}</span>'))
     plate = f'<div class="specs">{Plate(RowGrid(rows, len(rows)), e(C["classLandingSpecsHeading"]))}</div>'
@@ -303,7 +307,7 @@ def index_page(kind: str = 'out', me_key: str = '') -> str:
         specs = []
         for s in c['specs']:
             you = bool(me and me['class'].lower() == c['slug'] and me['spec'] == s['name'])
-            trail = (Tag(e(C['yourSpecPill'])) + ' ' if you else '') + (Tag(ROLE[s['role']], 'muted') if s['role'] != 'dps' else '')
+            trail = (Tag(e(C['yourSpecPill'])) + ' ' if you else '') + (Tag(e(TAG[s['tag']]), 'muted') if s['tag'] else '')
             specs.append(Row(e(s['name']), lead=icon(s['icon'], 28), trail=trail, selected=you))
         groups.append(f'<div class="cgrp">{Row(e(c["name"]), lead=crest_img(c["slug"], 40), title_color=c["color"])}{RowsSlim(specs, open_=False)}</div>')
     plate = Plate(RowGrid(groups, 3), F['markup']['indexTitle'])
@@ -321,7 +325,7 @@ def states_page() -> str:
     def block(title, html):
         blocks.append(f'<section class="st-b"><h2 class="t-h3">{title}</h2>{html}</section>')
     for t, k, m in (('Answer: loading (reserved at its final size; the session is hinted)', 'loading', None),
-                    ('Answer: this spec, level 34', 'same', me['survival34']), ('Answer: this spec, level 60', 'same', me['mage60']),
+                    ('Answer: this spec, level 34', 'same', me['survival34']), ('Answer: this spec, level 60', 'same', me['survival60']),
                     ('Answer: another spec or class', 'other', me['warrior60']), ('Answer: the spec is not known yet', 'unknown', None),
                     ('Answer: no character on the account', 'nochar', None), ('Answer: the account read failed', 'error', None)):
         block(t, PageHeader(e(g['title']), CLASS_COLOR['hunter'], crest_img('hunter', 56), [e(g['meta'])], answer(k, m, g)))
@@ -360,7 +364,8 @@ PAGE_CSS = '''<style>
 .racial{display:flex;gap:8px;align-items:flex-start;font-size:13px;line-height:18px;color:var(--muted);width:100%}.racial b{color:var(--text);font-weight:600}
 .sub-h{padding:12px 0 2px}
 .items{display:flex;flex-direction:column}
-.foot-note{padding-top:16px}.ic-spacer{display:inline-block;flex:none}
+.foot-note{padding-top:16px}.gl-fill{padding-top:8px}.ans-next{align-self:center}
+@media(min-width:900px){.ans-next{flex-basis:100%;text-align:right}}.ic-spacer{display:inline-block;flex:none}
 .cgrp{padding-bottom:20px;min-width:0}
 .toc-sel{display:inline-flex}@media(min-width:1760px){.toc-sel{display:none}}
 .statesheet{display:grid;gap:40px}.st-b>h2{margin-bottom:12px}.st-pair{display:flex;gap:48px;flex-wrap:wrap;align-items:flex-start}.st-menu{position:relative;width:360px;height:440px}.st-menu .menu{position:static}

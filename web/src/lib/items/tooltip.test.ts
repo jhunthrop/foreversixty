@@ -356,7 +356,7 @@ describe('itemTooltipModel', () => {
     };
     const sources: ItemTooltipSources = { loot, sets: [] };
     expect(itemTooltipModel(item({ id: 1 }), sources).sourceLines).toEqual([
-      'World drop (BoE) · levels 20-30',
+      'World drop (BoE) · mob levels 20-30',
     ]);
   });
 
@@ -616,7 +616,7 @@ describe('world-drop sources', () => {
       quests: {},
     };
     const model = itemTooltipModel(item({ id: 1 }), { loot, sets: [] });
-    expect(model.sourceLines).toEqual(['World drop (BoE) · levels 19-29']);
+    expect(model.sourceLines).toEqual(['World drop (BoE) · mob levels 19-29']);
     expect(itemTooltipModel(item({ id: 2 }), { loot, sets: [] }).sourceLines).toEqual([]);
   });
 });

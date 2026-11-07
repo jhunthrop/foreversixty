@@ -414,7 +414,7 @@ describe('describeSourceCell', () => {
 
   it('formats a world_drop cell with and without a known level range', () => {
     expect(describeSourceCell({ kind: 'world_drop', levelMin: 18, levelMax: 25 })).toBe(
-      'World drop (BoE) · levels 18-25',
+      'World drop (BoE) · mob levels 18-25',
     );
     expect(describeSourceCell({ kind: 'world_drop' })).toBe('World drop (BoE)');
   });

@@ -22,8 +22,8 @@ export const guidesCopy = {
   /** `ClassHeader`'s own eyebrow row, all three guide surfaces (spec §6's copy table). */
   eyebrow: 'Guides',
   /** `/guides` index's own signed-in callout (spec §4.A/§6): `{specName}` and `{className}`
-   *  come from the visitor's own character, e.g. "Your guide: Fury Warrior →". */
-  signedInCallout: (specName: string, className: string): string => `Your guide: ${specName} ${className} →`,
+   *  come from the visitor's own character, e.g. "Your guide: Fury Warrior ›". */
+  signedInCallout: (specName: string, className: string): string => `Your guide: ${specName} ${className} ›`,
   /** The /guides index line, under the title: what every guide gives, for launch day on. */
   indexLine: 'Talents, rotation and gear for every spec, from your first talent point to the raid at 60.',
   roleLabel: (role: 'dps' | 'healer' | 'tank'): string =>
@@ -200,6 +200,31 @@ export const guidesCopy = {
   hordePicksHeading: 'Horde',
   factionGroup: 'Faction',
   alsoUsed: 'Food, oil and potions',
+  // --- the flat system (design/specs/2026-11-08-guides.md, rulings 0A) -----------------------
+  /** The signed-in answer's label, all three guide pages. */
+  answerLabel: 'Your character',
+  /** The answer's link on the guide of the character's own spec below 60 (to #leveling). */
+  talentsAtLevel: (level: number): string => `Talents at level ${level}`,
+  /** Beside it: the ladder's next point (Q5), "Next point at 35: Expose Prey". */
+  nextPointAt: (level: number, name: string): string => `Next point at ${level}: ${name}`,
+  noCharacter: 'No character on this account yet.',
+  /** The At a glance plate's accessible name. */
+  glance: 'At a glance',
+  /** A healer's At a glance rotation column (MUST 2). */
+  healingPriorityRailTitle: 'Healing priority',
+  /** The At a glance filler line when the filler is below the first four (MUST 1). */
+  glanceFiller: (spell: string): string => `Filler: ${spell}`,
+  /** A row cast below its top rank on purpose: "Rank 7 (cheap rank)". */
+  rankLabel: (rank: number, cheap = false): string => `Rank ${rank}${cheap ? ' (cheap rank)' : ''}`,
+  /** The Talents and builds lane's label over the build rows. */
+  builds: 'Builds',
+  sources: 'Sources',
+  statColumn: 'Stat',
+  indexTitle: 'Guides',
+  indexDescription:
+    'Class and spec guides for World of Warcraft: Forever: talents, rotation, stat weights and best in slot for every spec.',
+  /** The muted Tag on a spec row (glance.ts specRowTag): a healer, a tank, the melee spec of a ranged class. */
+  specRowTag: { healer: 'Healer', tank: 'Tank', melee: 'Melee' } as const,
   recommendedRacesLine: (name: string, faction: string, article: string, racials: string): string =>
     `${name} is ${article} ${faction} pick: ${racials}.`,
 } as const;

@@ -5,6 +5,7 @@ spec: survival
 role: dps
 build: 'FS1:1.60.1.70790:hunter:night-elf:5/005005001/500230231051222151:'
 recommendedRaces: [night-elf, orc]
+alsoRecommendedRaces: [troll]
 statPriority: [Hit, Critical strike, Agility, Intellect, Strength, Attack power, Attack speed]
 description: 'How to play a melee Survival Hunter in Forever: talents, the Raptor Strike and Mongoose Bite priority, Lone Wolf, stats, consumables and race picks.'
 updated: 2026-11-04

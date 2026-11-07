@@ -107,6 +107,24 @@
   "hordePicksHeading": "Horde",
   "factionGroup": "Faction",
   "alsoUsed": "Food, oil and potions",
+  "answerLabel": "Your character",
+  "talentsAtLevel": "[fn]",
+  "nextPointAt": "[fn]",
+  "noCharacter": "No character on this account yet.",
+  "glance": "At a glance",
+  "healingPriorityRailTitle": "Healing priority",
+  "glanceFiller": "[fn]",
+  "rankLabel": "[fn]",
+  "builds": "Builds",
+  "sources": "Sources",
+  "statColumn": "Stat",
+  "indexTitle": "Guides",
+  "indexDescription": "Class and spec guides for World of Warcraft: Forever: talents, rotation, stat weights and best in slot for every spec.",
+  "specRowTag": {
+   "healer": "Healer",
+   "tank": "Tank",
+   "melee": "Melee"
+  },
   "recommendedRacesLine": "[fn]"
  },
  "tier_answer": {
@@ -171,19 +189,22 @@
       "slug": "arms",
       "name": "Arms",
       "icon": "ability_rogue_eviscerate",
-      "role": "dps"
+      "role": "dps",
+      "tag": null
      },
      {
       "slug": "fury",
       "name": "Fury",
       "icon": "ability_warrior_innerrage",
-      "role": "dps"
+      "role": "dps",
+      "tag": null
      },
      {
       "slug": "protection",
       "name": "Protection",
       "icon": "inv_shield_06",
-      "role": "tank"
+      "role": "tank",
+      "tag": "tank"
      }
     ]
    },
@@ -196,19 +217,22 @@
       "slug": "holy",
       "name": "Holy",
       "icon": "spell_holy_holybolt",
-      "role": "healer"
+      "role": "healer",
+      "tag": "healer"
      },
      {
       "slug": "protection",
       "name": "Protection",
       "icon": "spell_holy_devotionaura",
-      "role": "tank"
+      "role": "tank",
+      "tag": "tank"
      },
      {
       "slug": "retribution",
       "name": "Retribution",
       "icon": "spell_holy_auraoflight",
-      "role": "dps"
+      "role": "dps",
+      "tag": null
      }
     ]
    },
@@ -221,19 +245,22 @@
       "slug": "beast-mastery",
       "name": "Beast Mastery",
       "icon": "ability_hunter_beasttaming",
-      "role": "dps"
+      "role": "dps",
+      "tag": null
      },
      {
       "slug": "marksmanship",
       "name": "Marksmanship",
       "icon": "ability_marksmanship",
-      "role": "dps"
+      "role": "dps",
+      "tag": null
      },
      {
       "slug": "survival",
       "name": "Survival",
       "icon": "ability_hunter_swiftstrike",
-      "role": "dps"
+      "role": "dps",
+      "tag": "melee"
      }
     ]
    },
@@ -246,19 +273,22 @@
       "slug": "assassination",
       "name": "Assassination",
       "icon": "ability_rogue_eviscerate",
-      "role": "dps"
+      "role": "dps",
+      "tag": null
      },
      {
       "slug": "combat",
       "name": "Combat",
       "icon": "ability_backstab",
-      "role": "dps"
+      "role": "dps",
+      "tag": null
      },
      {
       "slug": "subtlety",
       "name": "Subtlety",
       "icon": "ability_stealth",
-      "role": "dps"
+      "role": "dps",
+      "tag": null
      }
     ]
    },
@@ -271,19 +301,22 @@
       "slug": "discipline",
       "name": "Discipline",
       "icon": "spell_holy_wordfortitude",
-      "role": "healer"
+      "role": "healer",
+      "tag": "healer"
      },
      {
       "slug": "holy",
       "name": "Holy",
       "icon": "spell_holy_guardianspirit",
-      "role": "healer"
+      "role": "healer",
+      "tag": "healer"
      },
      {
       "slug": "shadow",
       "name": "Shadow",
       "icon": "spell_shadow_shadowwordpain",
-      "role": "dps"
+      "role": "dps",
+      "tag": null
      }
     ]
    },
@@ -296,19 +329,22 @@
       "slug": "elemental",
       "name": "Elemental",
       "icon": "spell_nature_lightning",
-      "role": "dps"
+      "role": "dps",
+      "tag": null
      },
      {
       "slug": "enhancement",
       "name": "Enhancement",
       "icon": "spell_nature_lightningshield",
-      "role": "dps"
+      "role": "dps",
+      "tag": null
      },
      {
       "slug": "restoration",
       "name": "Restoration",
       "icon": "spell_nature_magicimmunity",
-      "role": "healer"
+      "role": "healer",
+      "tag": "healer"
      }
     ]
    },
@@ -321,19 +357,22 @@
       "slug": "arcane",
       "name": "Arcane",
       "icon": "spell_holy_magicalsentry",
-      "role": "dps"
+      "role": "dps",
+      "tag": null
      },
      {
       "slug": "fire",
       "name": "Fire",
       "icon": "spell_fire_firebolt02",
-      "role": "dps"
+      "role": "dps",
+      "tag": null
      },
      {
       "slug": "frost",
       "name": "Frost",
       "icon": "spell_frost_frostbolt02",
-      "role": "dps"
+      "role": "dps",
+      "tag": null
      }
     ]
    },
@@ -346,19 +385,22 @@
       "slug": "affliction",
       "name": "Affliction",
       "icon": "spell_shadow_deathcoil",
-      "role": "dps"
+      "role": "dps",
+      "tag": null
      },
      {
       "slug": "demonology",
       "name": "Demonology",
       "icon": "spell_shadow_metamorphosis",
-      "role": "dps"
+      "role": "dps",
+      "tag": null
      },
      {
       "slug": "destruction",
       "name": "Destruction",
       "icon": "spell_shadow_rainoffire",
-      "role": "dps"
+      "role": "dps",
+      "tag": null
      }
     ]
    },
@@ -371,25 +413,29 @@
       "slug": "balance",
       "name": "Balance",
       "icon": "spell_nature_starfall",
-      "role": "dps"
+      "role": "dps",
+      "tag": null
      },
      {
       "slug": "feral",
       "name": "Feral",
       "icon": "ability_druid_catform",
-      "role": "dps"
+      "role": "dps",
+      "tag": null
      },
      {
       "slug": "feral-bear",
       "name": "Feral Bear",
       "icon": "ability_racial_bearform",
-      "role": "tank"
+      "role": "tank",
+      "tag": "tank"
      },
      {
       "slug": "restoration",
       "name": "Restoration",
       "icon": "spell_nature_healingtouch",
-      "role": "healer"
+      "role": "healer",
+      "tag": "healer"
      }
     ]
    }
@@ -418,6 +464,7 @@
      "slug": "beast-mastery",
      "name": "Beast Mastery",
      "role": "dps",
+     "tag": null,
      "icon": "ability_hunter_beasttaming",
      "line": "Beast Mastery is the pet spec: your cat does a big share of the damage, Bestial Wrath is the burst, and your shots fill every gap."
     },
@@ -425,6 +472,7 @@
      "slug": "marksmanship",
      "name": "Marksmanship",
      "role": "dps",
+     "tag": null,
      "icon": "ability_marksmanship",
      "line": "Marksmanship's damage is your own shots: Aimed Shot and Multi-Shot on their shared cooldown, Sniper Shot in a raid, Serpent Sting rolling. In a raid, no pet: Lone Wolf."
     },
@@ -432,6 +480,7 @@
      "slug": "survival",
      "name": "Survival",
      "role": "dps",
+     "tag": "melee",
      "icon": "ability_hunter_swiftstrike",
      "line": "Survival is a melee spec in Forever: two weapons, Raptor Strike queued every time it comes off cooldown, Mongoose Bite whenever it lights up, and no pet in a raid."
     }
@@ -498,6 +547,7 @@
      "slug": "arcane",
      "name": "Arcane",
      "role": "dps",
+     "tag": null,
      "icon": "spell_holy_magicalsentry",
      "line": "Arcane stacks Arcane Blast for spell damage, fires free Missiles on Missile Barrage and saves its burst for Arcane Power. In a raid it fills with Fireball; leveling, with Frostbolt."
     },
@@ -505,6 +555,7 @@
      "slug": "fire",
      "name": "Fire",
      "role": "dps",
+     "tag": null,
      "icon": "spell_fire_firebolt02",
      "line": "Fire casts a 3 second Fireball, keeps its own Improved Scorch stacks up, turns crits into fast Pyroblasts with Heating Up, and cashes Combustion into a run of Ignites."
     },
@@ -512,6 +563,7 @@
      "slug": "frost",
      "name": "Frost",
      "role": "dps",
+     "tag": null,
      "icon": "spell_frost_frostbolt02",
      "line": "Frost casts Frostbolt behind Ice Barrier, spends Fingers of Frost on Ice Lance, fires free Missiles on Missile Barrage, and has Ice Block when things go wrong."
     }
@@ -562,6 +614,7 @@
      "slug": "discipline",
      "name": "Discipline",
      "role": "healer",
+     "tag": "healer",
      "icon": "spell_holy_wordfortitude",
      "line": "Discipline heals the tank with Penance on cooldown, a shield to open Renewed Hope, and crits that leave Divine Aegis shields behind."
     },
@@ -569,6 +622,7 @@
      "slug": "holy",
      "name": "Holy",
      "role": "healer",
+     "tag": "healer",
      "icon": "spell_holy_guardianspirit",
      "line": "Holy is the priest who heals everything: Prayer of Mending and Renew on the tank, Greater Heal as the filler, and Prayer of Healing for a hurt group."
     },
@@ -576,6 +630,7 @@
      "slug": "shadow",
      "name": "Shadow",
      "role": "dps",
+     "tag": null,
      "icon": "spell_shadow_shadowwordpain",
      "line": "Shadow keeps two DoTs ticking, hits Mind Blast and Shadow Word: Death on cooldown, and fills with Mind Flay, all from Shadowform."
     }
@@ -1956,22 +2011,25 @@
      }
     ],
     "rotationBand": "60",
+    "rotationTitle": "Rotation",
     "rotation": [
      {
       "spellId": 14325,
       "name": "Hunter's Mark",
       "rank": 4,
       "icon": "ability_hunter_snipershot",
-      "clause": "Whenever the target is not marked, and from 35 Expose Prey needs it",
-      "tipKey": "spell:14325"
+      "clause": "Whenever the target is not marked",
+      "tipKey": "spell:14325",
+      "rankText": "Rank 4"
      },
      {
       "spellId": 14266,
       "name": "Raptor Strike",
       "rank": 8,
       "icon": "ability_meleedamage",
-      "clause": "On every swing it is ready, with an older rank on your bar at 26 to 29, at 33, and at 46 and 47, and to 49 on most Horde characters",
-      "tipKey": "spell:14266"
+      "clause": "On every swing it is ready",
+      "tipKey": "spell:14266",
+      "rankText": "Rank 8"
      },
      {
       "spellId": 20910,
@@ -1979,7 +2037,8 @@
       "rank": 4,
       "icon": "ability_warrior_challange",
       "clause": "The moment it lights up after you parry",
-      "tipKey": "spell:20910"
+      "tipKey": "spell:20910",
+      "rankText": "Rank 4"
      },
      {
       "spellId": 14271,
@@ -1987,9 +2046,11 @@
       "rank": 4,
       "icon": "ability_hunter_swiftstrike",
       "clause": "The moment it lights up",
-      "tipKey": "spell:14271"
+      "tipKey": "spell:14271",
+      "rankText": "Rank 4"
      }
     ],
+    "filler": null,
     "stats": [
      {
       "label": "Hit",
@@ -2034,15 +2095,15 @@
       "value": 0.19154162646409417,
       "perPoint": 0.21696225247310985,
       "valueText": "0.19"
-     },
-     {
-      "label": "Attack speed",
-      "perPercent": "haste",
-      "reading": "not-on-items",
-      "value": 8.414883149361616,
-      "valueText": "Not on any item"
      }
-    ]
+    ],
+    "hitCap": {
+     "text": "Hit cap: reached (special attacks), 28% (white swings), 16% (spells) · 6.2% hit from BiS gear and buffs, 3% from Surefooted, 6.8% still to find for spells",
+     "title": "Hit is worth its full weight until the cap and nothing past it for your weapon attacks. Your damage spells miss until 16% against a boss three levels up, so past the weapon cap the same hit still lands more of them. The weights above are per rating point: 10 hit rating and 14 crit rating are 1%.",
+     "cap": "Hit cap: reached (special attacks), 28% (white swings), 16% (spells)",
+     "detail": "6.2% hit from BiS gear and buffs, 3% from Surefooted, 6.8% still to find for spells"
+    },
+    "unitLine": "1 hit rating = 1.13 DPS at level 60."
    },
    "overview": {
     "strengths": "<ul>\n<li>Lone Wolf’s 20% damage on every attack, with no pet to keep alive</li>\n<li><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:104985:2\">Expose Prey</span> opens <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14271\">Mongoose Bite</span> off your own hits on a marked target, so it fires even on a boss that never swings at you</li>\n<li><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:104983:2\">Resourcefulness</span> takes 60% off your melee and trap costs, so you do not run dry</li>\n<li><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:3045\">Rapid Fire</span> speeds your melee swings as well as your shots</li>\n</ul>\n",
@@ -3508,7 +3569,8 @@
        "rank": 4,
        "icon": "ability_hunter_snipershot",
        "clause": "20 s before the pull",
-       "tipKey": "spell:14325"
+       "tipKey": "spell:14325",
+       "rankText": "Rank 4"
       },
       {
        "spellId": 1299447,
@@ -3516,7 +3578,8 @@
        "rank": 4,
        "icon": "ability_mount_pinktiger",
        "clause": "10 s before the pull",
-       "tipKey": "spell:1299447"
+       "tipKey": "spell:1299447",
+       "rankText": "Rank 4"
       }
      ],
      "priority": [
@@ -3526,7 +3589,8 @@
        "rank": 4,
        "icon": "ability_hunter_snipershot",
        "clause": "Whenever the target is not marked, and from 35 Expose Prey needs it",
-       "tipKey": "spell:14325"
+       "tipKey": "spell:14325",
+       "rankText": "Rank 4"
       },
       {
        "spellId": 14266,
@@ -3534,7 +3598,8 @@
        "rank": 8,
        "icon": "ability_meleedamage",
        "clause": "On every swing it is ready, with an older rank on your bar at 26 to 29, at 33, and at 46 and 47, and to 49 on most Horde characters",
-       "tipKey": "spell:14266"
+       "tipKey": "spell:14266",
+       "rankText": "Rank 8"
       },
       {
        "spellId": 20910,
@@ -3542,7 +3607,8 @@
        "rank": 4,
        "icon": "ability_warrior_challange",
        "clause": "The moment it lights up after you parry",
-       "tipKey": "spell:20910"
+       "tipKey": "spell:20910",
+       "rankText": "Rank 4"
       },
       {
        "spellId": 14271,
@@ -3550,7 +3616,8 @@
        "rank": 4,
        "icon": "ability_hunter_swiftstrike",
        "clause": "The moment it lights up",
-       "tipKey": "spell:14271"
+       "tipKey": "spell:14271",
+       "rankText": "Rank 4"
       },
       {
        "spellId": 1299332,
@@ -3558,7 +3625,8 @@
        "rank": 4,
        "icon": "ability_gouge",
        "clause": "Whenever its bleed is not on the target",
-       "tipKey": "spell:1299332"
+       "tipKey": "spell:1299332",
+       "rankText": "Rank 4"
       },
       {
        "spellId": 1317257,
@@ -3573,7 +3641,8 @@
        "rank": 5,
        "icon": "spell_fire_flameshock",
        "clause": "On cooldown",
-       "tipKey": "spell:14305"
+       "tipKey": "spell:14305",
+       "rankText": "Rank 5"
       },
       {
        "spellId": 14268,
@@ -3581,7 +3650,8 @@
        "rank": 3,
        "icon": "ability_rogue_trip",
        "clause": "On any free global under a Windfury Totem, as a cheap melee special that can proc Windfury",
-       "tipKey": "spell:14268"
+       "tipKey": "spell:14268",
+       "rankText": "Rank 3"
       }
      ],
      "cooldowns": [
@@ -3591,7 +3661,8 @@
        "rank": 5,
        "icon": "spell_fire_flameshock",
        "clause": "30 s cooldown",
-       "tipKey": "spell:14305"
+       "tipKey": "spell:14305",
+       "rankText": "Rank 5"
       },
       {
        "spellId": 19263,
@@ -3810,7 +3881,7 @@
          "quality": 2,
          "icon": "inv_bracer_06",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 20-26",
+         "sourceDetail": "World drop (BoE) · mob levels 20-26",
          "notSimChecked": false,
          "typeLabel": "Leather"
         },
@@ -3862,7 +3933,7 @@
          "quality": 3,
          "icon": "inv_boots_wolf",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 20-27",
+         "sourceDetail": "World drop (BoE) · mob levels 20-27",
          "notSimChecked": false,
          "typeLabel": "Leather"
         },
@@ -3939,7 +4010,7 @@
          "quality": 3,
          "icon": "inv_weapon_rifle_08",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 18-25",
+         "sourceDetail": "World drop (BoE) · mob levels 18-25",
          "notSimChecked": false,
          "typeLabel": "Gun"
         }
@@ -3988,7 +4059,7 @@
          "quality": 3,
          "icon": "inv_shoulder_18",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 27-34",
+         "sourceDetail": "World drop (BoE) · mob levels 27-34",
          "notSimChecked": false,
          "typeLabel": "Leather"
         },
@@ -4001,7 +4072,7 @@
          "quality": 2,
          "icon": "inv_misc_cape_03",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 31-37",
+         "sourceDetail": "World drop (BoE) · mob levels 31-37",
          "notSimChecked": false,
          "typeLabel": "Cloth"
         },
@@ -4027,7 +4098,7 @@
          "quality": 2,
          "icon": "inv_bracer_04",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 31-37",
+         "sourceDetail": "World drop (BoE) · mob levels 31-37",
          "notSimChecked": false,
          "typeLabel": "Leather"
         },
@@ -4040,7 +4111,7 @@
          "quality": 2,
          "icon": "inv_gauntlets_21",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 30-36",
+         "sourceDetail": "World drop (BoE) · mob levels 30-36",
          "notSimChecked": false,
          "typeLabel": "Leather"
         },
@@ -4079,7 +4150,7 @@
          "quality": 3,
          "icon": "inv_boots_wolf",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 20-27",
+         "sourceDetail": "World drop (BoE) · mob levels 20-27",
          "notSimChecked": false,
          "typeLabel": "Leather"
         },
@@ -4104,7 +4175,7 @@
          "quality": 3,
          "icon": "inv_jewelry_ring_09",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 25-32",
+         "sourceDetail": "World drop (BoE) · mob levels 25-32",
          "notSimChecked": false
         },
         {
@@ -4205,7 +4276,7 @@
          "quality": 3,
          "icon": "inv_shoulder_18",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 27-34",
+         "sourceDetail": "World drop (BoE) · mob levels 27-34",
          "notSimChecked": false,
          "typeLabel": "Leather"
         },
@@ -4231,7 +4302,7 @@
          "quality": 4,
          "icon": "inv_chest_plate06",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 40-48",
+         "sourceDetail": "World drop (BoE) · mob levels 40-48",
          "notSimChecked": false,
          "typeLabel": "Mail"
         },
@@ -4257,7 +4328,7 @@
          "quality": 4,
          "icon": "inv_gauntlets_06",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 38-46",
+         "sourceDetail": "World drop (BoE) · mob levels 38-46",
          "notSimChecked": false,
          "typeLabel": "Leather"
         },
@@ -4283,7 +4354,7 @@
          "quality": 3,
          "icon": "inv_pants_06",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 40-47",
+         "sourceDetail": "World drop (BoE) · mob levels 40-47",
          "notSimChecked": false,
          "typeLabel": "Leather"
         },
@@ -4321,7 +4392,7 @@
          "quality": 3,
          "icon": "inv_jewelry_ring_12",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 32-39",
+         "sourceDetail": "World drop (BoE) · mob levels 32-39",
          "notSimChecked": false
         },
         {
@@ -4333,7 +4404,7 @@
          "quality": 3,
          "icon": "spell_holy_prayerofhealing02",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 42-49",
+         "sourceDetail": "World drop (BoE) · mob levels 42-49",
          "notSimChecked": false
         },
         {
@@ -4352,7 +4423,7 @@
          "quality": 4,
          "icon": "inv_sword_13",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 41-49",
+         "sourceDetail": "World drop (BoE) · mob levels 41-49",
          "notSimChecked": false,
          "typeLabel": "Dagger"
         },
@@ -4378,7 +4449,7 @@
          "quality": 3,
          "icon": "inv_weapon_crossbow_04",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 36-44",
+         "sourceDetail": "World drop (BoE) · mob levels 36-44",
          "notSimChecked": false,
          "typeLabel": "Crossbow"
         }
@@ -4415,7 +4486,7 @@
          "quality": 3,
          "icon": "inv_jewelry_amulet_07",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 45-53",
+         "sourceDetail": "World drop (BoE) · mob levels 45-53",
          "notSimChecked": false
         },
         {
@@ -4440,7 +4511,7 @@
          "quality": 3,
          "icon": "inv_misc_cape_21",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 51-59",
+         "sourceDetail": "World drop (BoE) · mob levels 51-59",
          "notSimChecked": false,
          "typeLabel": "Cloth"
         },
@@ -4453,7 +4524,7 @@
          "quality": 4,
          "icon": "inv_chest_plate06",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 40-48",
+         "sourceDetail": "World drop (BoE) · mob levels 40-48",
          "notSimChecked": false,
          "typeLabel": "Mail"
         },
@@ -4466,7 +4537,7 @@
          "quality": 3,
          "icon": "inv_bracer_07",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 51-59",
+         "sourceDetail": "World drop (BoE) · mob levels 51-59",
          "notSimChecked": false,
          "typeLabel": "Leather"
         },
@@ -4479,7 +4550,7 @@
          "quality": 4,
          "icon": "inv_gauntlets_06",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 38-46",
+         "sourceDetail": "World drop (BoE) · mob levels 38-46",
          "notSimChecked": false,
          "typeLabel": "Leather"
         },
@@ -4579,7 +4650,7 @@
          "quality": 4,
          "icon": "inv_sword_28",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 47-54",
+         "sourceDetail": "World drop (BoE) · mob levels 47-54",
          "notSimChecked": false,
          "typeLabel": "Sword"
         },
@@ -4605,7 +4676,7 @@
          "quality": 4,
          "icon": "inv_weapon_rifle_06",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 44-52",
+         "sourceDetail": "World drop (BoE) · mob levels 44-52",
          "notSimChecked": false,
          "typeLabel": "Gun"
         }
@@ -4706,7 +4777,7 @@
          "quality": 4,
          "icon": "inv_gauntlets_06",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 38-46",
+         "sourceDetail": "World drop (BoE) · mob levels 38-46",
          "notSimChecked": false,
          "typeLabel": "Leather"
         },
@@ -4806,7 +4877,7 @@
          "quality": 4,
          "icon": "inv_sword_22",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · level 62",
+         "sourceDetail": "World drop (BoE) · mob level 62",
          "notSimChecked": false,
          "typeLabel": "Sword"
         },
@@ -4832,7 +4903,7 @@
          "quality": 4,
          "icon": "inv_weapon_rifle_06",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 44-52",
+         "sourceDetail": "World drop (BoE) · mob levels 44-52",
          "notSimChecked": false,
          "typeLabel": "Gun"
         }
@@ -4920,7 +4991,7 @@
          "quality": 2,
          "icon": "inv_bracer_06",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 20-26",
+         "sourceDetail": "World drop (BoE) · mob levels 20-26",
          "notSimChecked": false,
          "typeLabel": "Leather"
         },
@@ -5049,7 +5120,7 @@
          "quality": 3,
          "icon": "inv_weapon_rifle_08",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 18-25",
+         "sourceDetail": "World drop (BoE) · mob levels 18-25",
          "notSimChecked": false,
          "typeLabel": "Gun"
         }
@@ -5098,7 +5169,7 @@
          "quality": 3,
          "icon": "inv_shoulder_18",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 27-34",
+         "sourceDetail": "World drop (BoE) · mob levels 27-34",
          "notSimChecked": false,
          "typeLabel": "Leather"
         },
@@ -5111,7 +5182,7 @@
          "quality": 2,
          "icon": "inv_misc_cape_03",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 31-37",
+         "sourceDetail": "World drop (BoE) · mob levels 31-37",
          "notSimChecked": false,
          "typeLabel": "Cloth"
         },
@@ -5137,7 +5208,7 @@
          "quality": 2,
          "icon": "inv_bracer_04",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 31-37",
+         "sourceDetail": "World drop (BoE) · mob levels 31-37",
          "notSimChecked": false,
          "typeLabel": "Leather"
         },
@@ -5150,7 +5221,7 @@
          "quality": 2,
          "icon": "inv_gauntlets_21",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 30-36",
+         "sourceDetail": "World drop (BoE) · mob levels 30-36",
          "notSimChecked": false,
          "typeLabel": "Leather"
         },
@@ -5189,7 +5260,7 @@
          "quality": 3,
          "icon": "inv_boots_wolf",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 20-27",
+         "sourceDetail": "World drop (BoE) · mob levels 20-27",
          "notSimChecked": false,
          "typeLabel": "Leather"
         },
@@ -5214,7 +5285,7 @@
          "quality": 3,
          "icon": "inv_jewelry_ring_09",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 25-32",
+         "sourceDetail": "World drop (BoE) · mob levels 25-32",
          "notSimChecked": false
         },
         {
@@ -5315,7 +5386,7 @@
          "quality": 3,
          "icon": "inv_shoulder_18",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 27-34",
+         "sourceDetail": "World drop (BoE) · mob levels 27-34",
          "notSimChecked": false,
          "typeLabel": "Leather"
         },
@@ -5328,7 +5399,7 @@
          "quality": 2,
          "icon": "inv_misc_cape_03",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 31-37",
+         "sourceDetail": "World drop (BoE) · mob levels 31-37",
          "notSimChecked": false,
          "typeLabel": "Cloth"
         },
@@ -5341,7 +5412,7 @@
          "quality": 4,
          "icon": "inv_chest_plate06",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 40-48",
+         "sourceDetail": "World drop (BoE) · mob levels 40-48",
          "notSimChecked": false,
          "typeLabel": "Mail"
         },
@@ -5367,7 +5438,7 @@
          "quality": 4,
          "icon": "inv_gauntlets_06",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 38-46",
+         "sourceDetail": "World drop (BoE) · mob levels 38-46",
          "notSimChecked": false,
          "typeLabel": "Leather"
         },
@@ -5393,7 +5464,7 @@
          "quality": 3,
          "icon": "inv_pants_06",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 40-47",
+         "sourceDetail": "World drop (BoE) · mob levels 40-47",
          "notSimChecked": false,
          "typeLabel": "Leather"
         },
@@ -5431,7 +5502,7 @@
          "quality": 3,
          "icon": "inv_jewelry_ring_12",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 32-39",
+         "sourceDetail": "World drop (BoE) · mob levels 32-39",
          "notSimChecked": false
         },
         {
@@ -5443,7 +5514,7 @@
          "quality": 3,
          "icon": "spell_holy_prayerofhealing02",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 42-49",
+         "sourceDetail": "World drop (BoE) · mob levels 42-49",
          "notSimChecked": false
         },
         {
@@ -5462,7 +5533,7 @@
          "quality": 4,
          "icon": "inv_sword_13",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 41-49",
+         "sourceDetail": "World drop (BoE) · mob levels 41-49",
          "notSimChecked": false,
          "typeLabel": "Dagger"
         },
@@ -5488,7 +5559,7 @@
          "quality": 3,
          "icon": "inv_weapon_crossbow_04",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 36-44",
+         "sourceDetail": "World drop (BoE) · mob levels 36-44",
          "notSimChecked": false,
          "typeLabel": "Crossbow"
         }
@@ -5525,7 +5596,7 @@
          "quality": 3,
          "icon": "inv_jewelry_amulet_07",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 45-53",
+         "sourceDetail": "World drop (BoE) · mob levels 45-53",
          "notSimChecked": false
         },
         {
@@ -5550,7 +5621,7 @@
          "quality": 3,
          "icon": "inv_misc_cape_21",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 51-59",
+         "sourceDetail": "World drop (BoE) · mob levels 51-59",
          "notSimChecked": false,
          "typeLabel": "Cloth"
         },
@@ -5563,7 +5634,7 @@
          "quality": 4,
          "icon": "inv_chest_plate06",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 40-48",
+         "sourceDetail": "World drop (BoE) · mob levels 40-48",
          "notSimChecked": false,
          "typeLabel": "Mail"
         },
@@ -5576,7 +5647,7 @@
          "quality": 3,
          "icon": "inv_bracer_07",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 51-59",
+         "sourceDetail": "World drop (BoE) · mob levels 51-59",
          "notSimChecked": false,
          "typeLabel": "Leather"
         },
@@ -5589,7 +5660,7 @@
          "quality": 4,
          "icon": "inv_gauntlets_06",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 38-46",
+         "sourceDetail": "World drop (BoE) · mob levels 38-46",
          "notSimChecked": false,
          "typeLabel": "Leather"
         },
@@ -5689,7 +5760,7 @@
          "quality": 4,
          "icon": "inv_sword_28",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 47-54",
+         "sourceDetail": "World drop (BoE) · mob levels 47-54",
          "notSimChecked": false,
          "typeLabel": "Sword"
         },
@@ -5715,7 +5786,7 @@
          "quality": 4,
          "icon": "inv_weapon_rifle_06",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 44-52",
+         "sourceDetail": "World drop (BoE) · mob levels 44-52",
          "notSimChecked": false,
          "typeLabel": "Gun"
         }
@@ -5816,7 +5887,7 @@
          "quality": 4,
          "icon": "inv_gauntlets_06",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 38-46",
+         "sourceDetail": "World drop (BoE) · mob levels 38-46",
          "notSimChecked": false,
          "typeLabel": "Leather"
         },
@@ -5916,7 +5987,7 @@
          "quality": 4,
          "icon": "inv_sword_22",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · level 62",
+         "sourceDetail": "World drop (BoE) · mob level 62",
          "notSimChecked": false,
          "typeLabel": "Sword"
         },
@@ -5963,6 +6034,7 @@
        "slot": "back",
        "slotLabel": "Back",
        "name": "Enchant Cloak - Agility",
+       "icon": "spell_holy_greaterheal",
        "gives": "+5 agility"
       },
       {
@@ -5970,6 +6042,7 @@
        "slot": "chest",
        "slotLabel": "Chest",
        "name": "Enchant Chest - Greater Stats",
+       "icon": "spell_holy_greaterheal",
        "gives": "+4 to all stats"
       },
       {
@@ -5977,6 +6050,7 @@
        "slot": "wrist",
        "slotLabel": "Wrist",
        "name": "Enchant Bracer - Superior Intellect",
+       "icon": "spell_holy_greaterheal",
        "gives": "+9 intellect"
       },
       {
@@ -5984,6 +6058,7 @@
        "slot": "hands",
        "slotLabel": "Hands",
        "name": "Enchant Gloves - Greater Agility",
+       "icon": "spell_holy_greaterheal",
        "gives": "+10 agility"
       },
       {
@@ -5991,6 +6066,7 @@
        "slot": "feet",
        "slotLabel": "Feet",
        "name": "Enchant Boots - Greater Agility",
+       "icon": "spell_holy_greaterheal",
        "gives": "+7 agility"
       },
       {
@@ -5998,6 +6074,7 @@
        "slot": "main_hand",
        "slotLabel": "Weapon",
        "name": "Enchant Weapon - Agility",
+       "icon": "spell_holy_greaterheal",
        "gives": "+15 agility"
       },
       {
@@ -6005,6 +6082,7 @@
        "slot": "off_hand",
        "slotLabel": "Off hand",
        "name": "Enchant Weapon - Agility",
+       "icon": "spell_holy_greaterheal",
        "gives": "+15 agility"
       }
      ],
@@ -6238,7 +6316,7 @@
       "slug": "troll",
       "name": "Troll",
       "faction": "horde",
-      "recommended": false,
+      "recommended": true,
       "racials": [
        {
         "name": "Berserking",
@@ -6274,6 +6352,127 @@
       ]
      }
     ],
+    "groups": [
+     {
+      "faction": "alliance",
+      "rows": [
+       {
+        "slug": "night-elf",
+        "name": "Night Elf",
+        "faction": "alliance",
+        "recommended": true,
+        "racials": [
+         {
+          "name": "Elune's Light",
+          "effect": "Grants 10% critical strike chance for 15 seconds on a 3 minute cooldown",
+          "icon": "spell_nature_moonglow"
+         }
+        ]
+       },
+       {
+        "slug": "human",
+        "name": "Human",
+        "faction": "alliance",
+        "recommended": false,
+        "racials": [
+         {
+          "name": "Ruthless",
+          "effect": "Increases critical strike chance with all spells and attacks by 1%",
+          "icon": "ability_rogue_eviscerate"
+         }
+        ]
+       },
+       {
+        "slug": "dwarf",
+        "name": "Dwarf",
+        "faction": "alliance",
+        "recommended": false,
+        "racials": [
+         {
+          "name": "Artisan's Precision",
+          "effect": "Increases hit chance with spells and attacks by 1%",
+          "icon": "inv_hammer_09"
+         }
+        ]
+       },
+       {
+        "slug": "high-order-skyborne",
+        "name": "High Order Skyborne",
+        "faction": "alliance",
+        "recommended": false,
+        "racials": [
+         {
+          "name": "Wind Blessed",
+          "effect": "2% haste",
+          "icon": "inv_misc_volatileair"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "faction": "horde",
+      "rows": [
+       {
+        "slug": "orc",
+        "name": "Orc",
+        "faction": "horde",
+        "recommended": true,
+        "racials": [
+         {
+          "name": "Blood Fury",
+          "effect": "Increases Attack Power, Ranged Attack Power and Spell Power by 10% for 15 seconds on a 2 minute cooldown",
+          "icon": "racial_orc_berserkerstrength"
+         },
+         {
+          "name": "Command",
+          "effect": "Increases the damage dealt by Hunter and Warlock pets by 5%",
+          "icon": "ability_warrior_warcry"
+         }
+        ]
+       },
+       {
+        "slug": "troll",
+        "name": "Troll",
+        "faction": "horde",
+        "recommended": true,
+        "racials": [
+         {
+          "name": "Berserking",
+          "effect": "Increases casting and attack speed by 10% for 15 seconds on a 3 minute cooldown",
+          "icon": "racial_troll_berserk"
+         }
+        ]
+       },
+       {
+        "slug": "tauren",
+        "name": "Tauren",
+        "faction": "horde",
+        "recommended": false,
+        "racials": [
+         {
+          "name": "Endurance",
+          "effect": "Increases Health by 5%",
+          "icon": "spell_nature_unyeildingstamina"
+         }
+        ]
+       },
+       {
+        "slug": "windshaper-skyborne",
+        "name": "Windshaper Skyborne",
+        "faction": "horde",
+        "recommended": false,
+        "racials": [
+         {
+          "name": "Wind Blessed",
+          "effect": "2% haste",
+          "icon": "inv_misc_volatileair"
+         }
+        ]
+       }
+      ]
+     }
+    ],
     "lines": [],
     "prose": "<p>Night Elf for the Alliance: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Elune's Light\">Elune’s Light</span> is 10% crit for 15 seconds, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:110861:5\">Predator’s Edge</span> makes your special crits hit harder, so press it with <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:3045\">Rapid Fire</span> on the pull. Human’s <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Ruthless\">Ruthless</span> is next, and Dwarf’s 1% hit comes last even for a dual-wielder. Humans can be Hunters for the first time in Forever.</p>\n<p>Orc and Troll are level for the Horde. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Blood Fury\">Blood Fury</span> is 10% attack power for 15 seconds every two minutes, so it goes on the pull with <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:3045\">Rapid Fire</span> and again at two and four minutes. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Berserking\">Berserking</span> is 10% attack speed for 15 seconds every three minutes and stacks with <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:3045\">Rapid Fire</span> on your swings.</p>\n<p>Skyborne, a paid unlock with the Heroic Pack, can be Hunters on either faction: Wind Blessed’s 2% haste speeds both of your weapons, and it lands in the middle of the pack, so it is the paid option, never the pick.</p>\n"
    },
@@ -6283,6 +6482,212 @@
     "stripHeading": "Levels 20 to 60",
     "late": "<p>Survival levels in melee. Keep a pet out while you level: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105007:1\">Lone Wolf</span> is the last point this build takes, at 60, and until then the pet holds aggro and adds damage. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105007:1\">Lone Wolf</span> pays off in a raid, where you get the raid buffs and your pet gets none, so your own hits carry more of the damage. Out in the world at 60 a pet still adds a little more damage than <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105007:1\">Lone Wolf</span> does and takes the hits for you, so keep it out while you quest and farm. The talent does nothing while your pet is out, so dismiss the pet before a raid pull and call it back afterwards.</p>\n<p>Open with <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14325\">Hunter’s Mark</span>, send the pet, then walk in and queue <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14266\">Raptor Strike</span>. Press <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14271\">Mongoose Bite</span> whenever it lights up, and from 30 keep <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1299332\">Lacerate</span> on anything that will live long enough to bleed. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14268\">Wing Clip</span> a runner. Wear <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:13163\">Aspect of the Monkey</span> until 30: its dodges open <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14271\">Mongoose Bite</span>. At 30 switch to <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1299447\">Aspect of the Beast</span> and keep it up. Throw <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14305\">Immolation Trap</span> under anything that will live long enough to burn. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:5384\">Feign Death</span> at 30 resets a bad pull. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:5118\">Aspect of the Cheetah</span> at 20 is your run speed between quests, but it dazes you when you are hit, so never wear it into a fight.</p>\n<p>At 26 <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14305\">Immolation Trap</span> rank 2 arrives, and with a trap on every pull your mana runs short. From 26 to 29 keep <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14266\">Raptor Strike</span> rank 3 on your bar instead of rank 4: most of the hit is your weapon, so it does nearly what rank 4 does for less mana, and the mana it saves goes into traps. On a Horde character rank 2 is better again: an Orc at 26, a Troll or a Windshaper Skyborne at 26 and 27, a Tauren at 26 to 28. Drag the lower rank onto your bar from the spellbook at 26 and put rank 4 back at 30.</p>\n<p>At 33 you have only the first point of <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:104983:2\">Resourcefulness</span>, and for that one level <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14266\">Raptor Strike</span> rank 1 is the better button: it costs almost nothing, and the mana goes into traps. Drag it onto the bar at 33 and put rank 5 back at 34, when the second point makes every rank cheap.</p>\n<p>Mail at 40 is the biggest armor upgrade you will get, and from 20 you can carry two weapons.</p>\n<p>At 46 the new <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14305\">Immolation Trap</span> rank costs more, and with a trap on every pull your mana starts to run short over a chain of them. Rank 6 of <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14266\">Raptor Strike</span>, trained at 40, is the one to use until then, though a Troll does a touch better keeping rank 5 at 40 itself. For 46 and 47, keep rank 5 on your bar instead: most of the hit is your weapon, so it does nearly what rank 6 does for less mana, and the mana it saves goes into traps. Drag rank 5 back from the spellbook as you did at 26. At 48 put rank 7 on the bar. On a Horde character rank 5 is still the better button: an Orc, Troll or Tauren at 48 and 49, a Windshaper Skyborne at 48.</p>\n",
     "steps": 51,
+    "ladder": [
+     {
+      "level": 10,
+      "name": "Improved Tracking"
+     },
+     {
+      "level": 11,
+      "name": "Improved Tracking"
+     },
+     {
+      "level": 12,
+      "name": "Improved Tracking"
+     },
+     {
+      "level": 13,
+      "name": "Improved Tracking"
+     },
+     {
+      "level": 14,
+      "name": "Improved Tracking"
+     },
+     {
+      "level": 15,
+      "name": "Savage Strikes"
+     },
+     {
+      "level": 16,
+      "name": "Savage Strikes"
+     },
+     {
+      "level": 17,
+      "name": "Survivalist"
+     },
+     {
+      "level": 18,
+      "name": "Survivalist"
+     },
+     {
+      "level": 19,
+      "name": "Survivalist"
+     },
+     {
+      "level": 20,
+      "name": "Clever Traps"
+     },
+     {
+      "level": 21,
+      "name": "Clever Traps"
+     },
+     {
+      "level": 22,
+      "name": "Surefooted"
+     },
+     {
+      "level": 23,
+      "name": "Surefooted"
+     },
+     {
+      "level": 24,
+      "name": "Surefooted"
+     },
+     {
+      "level": 25,
+      "name": "Deterrence"
+     },
+     {
+      "level": 26,
+      "name": "Predator's Edge"
+     },
+     {
+      "level": 27,
+      "name": "Predator's Edge"
+     },
+     {
+      "level": 28,
+      "name": "Predator's Edge"
+     },
+     {
+      "level": 29,
+      "name": "Predator's Edge"
+     },
+     {
+      "level": 30,
+      "name": "Strider Kick"
+     },
+     {
+      "level": 31,
+      "name": "Predator's Edge"
+     },
+     {
+      "level": 32,
+      "name": "Counterattack"
+     },
+     {
+      "level": 33,
+      "name": "Resourcefulness"
+     },
+     {
+      "level": 34,
+      "name": "Resourcefulness"
+     },
+     {
+      "level": 35,
+      "name": "Expose Prey"
+     },
+     {
+      "level": 36,
+      "name": "Expose Prey"
+     },
+     {
+      "level": 37,
+      "name": "Survivalist's Discipline"
+     },
+     {
+      "level": 38,
+      "name": "Survivalist's Discipline"
+     },
+     {
+      "level": 39,
+      "name": "Lightning Reflexes"
+     },
+     {
+      "level": 40,
+      "name": "Lacerating Strikes"
+     },
+     {
+      "level": 41,
+      "name": "Lightning Reflexes"
+     },
+     {
+      "level": 42,
+      "name": "Lightning Reflexes"
+     },
+     {
+      "level": 43,
+      "name": "Lightning Reflexes"
+     },
+     {
+      "level": 44,
+      "name": "Lightning Reflexes"
+     },
+     {
+      "level": 45,
+      "name": "Deadly Aspects"
+     },
+     {
+      "level": 46,
+      "name": "Deadly Aspects"
+     },
+     {
+      "level": 47,
+      "name": "Deadly Aspects"
+     },
+     {
+      "level": 48,
+      "name": "Deadly Aspects"
+     },
+     {
+      "level": 49,
+      "name": "Deadly Aspects"
+     },
+     {
+      "level": 50,
+      "name": "Lethal Attacks"
+     },
+     {
+      "level": 51,
+      "name": "Lethal Attacks"
+     },
+     {
+      "level": 52,
+      "name": "Lethal Attacks"
+     },
+     {
+      "level": 53,
+      "name": "Lethal Attacks"
+     },
+     {
+      "level": 54,
+      "name": "Lethal Attacks"
+     },
+     {
+      "level": 55,
+      "name": "Careful Aim"
+     },
+     {
+      "level": 56,
+      "name": "Careful Aim"
+     },
+     {
+      "level": 57,
+      "name": "Careful Aim"
+     },
+     {
+      "level": 58,
+      "name": "Careful Aim"
+     },
+     {
+      "level": 59,
+      "name": "Careful Aim"
+     },
+     {
+      "level": 60,
+      "name": "Lone Wolf"
+     }
+    ],
     "at": {
      "34": {
       "level": 34,
@@ -10348,6 +10753,7 @@
      }
     ],
     "rotationBand": "60",
+    "rotationTitle": "Rotation",
     "rotation": [
      {
       "spellId": 12051,
@@ -10369,7 +10775,8 @@
       "rank": 7,
       "icon": "spell_fire_soulburn",
       "clause": "To build Improved Scorch to 5 stacks, or to refresh it with 5 seconds or less left",
-      "tipKey": "spell:10207"
+      "tipKey": "spell:10207",
+      "rankText": "Rank 7"
      },
      {
       "spellId": 18809,
@@ -10380,9 +10787,11 @@
       "needs": [
        "Heating Up"
       ],
-      "tipKey": "spell:18809"
+      "tipKey": "spell:18809",
+      "rankText": "Rank 8"
      }
     ],
+    "filler": "Filler: Fireball",
     "stats": [
      {
       "label": "Hit",
@@ -10422,17 +10831,18 @@
       "valueText": "0.50"
      },
      {
-      "label": "Spell haste",
-      "perPercent": "haste",
-      "reading": "not-on-items",
-      "valueText": "Not on any item"
-     },
-     {
       "label": "Spell penetration",
       "reading": "not-significant",
       "valueText": "Not significant"
      }
-    ]
+    ],
+    "hitCap": {
+     "text": "Hit cap: 16% · 4% hit from BiS gear and buffs, 6% from Precision, 6% still to find",
+     "title": "Spell hit is worth its full weight until the cap and nothing past it: spells miss 17% of the time against a boss three levels up, and 1% always remains. School talents such as Shadow Focus add hit to their own spells only. The weights above are per rating point: 10 hit rating is 1%.",
+     "cap": "Hit cap: 16%",
+     "detail": "4% hit from BiS gear and buffs, 6% from Precision, 6% still to find"
+    },
+    "unitLine": "1 hit rating = 0.62 DPS at level 60."
    },
    "overview": {
     "strengths": "<ul>\n<li>Five points of <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105795:5\">Accelerant</span> make <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25306\">Fireball</span> a 3 second cast, and with <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105809:2\">Missile Barrage</span> every <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25306\">Fireball</span> has a 20% chance at a free, fast <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25345\">Arcane Missiles</span></li>\n<li>Every <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25306\">Fireball</span>, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10207\">Scorch</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10199\">Fire Blast</span> crit pays twice, once through <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105794:5\">Ignite</span> and once through <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105786:1\">Heating Up</span></li>\n<li><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105782:3\">Fire Power</span> rewards you for every burn you keep on the boss</li>\n<li><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10199\">Fire Blast</span> is instant and a 3-stack <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:18809\">Pyroblast</span> is short enough to cast between steps, so you keep doing damage through movement</li>\n</ul>\n",
@@ -13308,7 +13718,8 @@
        "rank": 8,
        "icon": "spell_fire_fireball02",
        "clause": "6 s before the pull",
-       "tipKey": "spell:18809"
+       "tipKey": "spell:18809",
+       "rankText": "Rank 8"
       }
      ],
      "priority": [
@@ -13332,7 +13743,8 @@
        "rank": 7,
        "icon": "spell_fire_soulburn",
        "clause": "To build Improved Scorch to 5 stacks, or to refresh it with 5 seconds or less left",
-       "tipKey": "spell:10207"
+       "tipKey": "spell:10207",
+       "rankText": "Rank 7"
       },
       {
        "spellId": 18809,
@@ -13343,7 +13755,8 @@
        "needs": [
         "Heating Up"
        ],
-       "tipKey": "spell:18809"
+       "tipKey": "spell:18809",
+       "rankText": "Rank 8"
       },
       {
        "spellId": 10199,
@@ -13351,7 +13764,8 @@
        "rank": 7,
        "icon": "spell_fire_fireball",
        "clause": "Every time it is off cooldown",
-       "tipKey": "spell:10199"
+       "tipKey": "spell:10199",
+       "rankText": "Rank 7"
       },
       {
        "spellId": 10212,
@@ -13362,7 +13776,8 @@
        "needs": [
         "Missile Barrage"
        ],
-       "tipKey": "spell:10212"
+       "tipKey": "spell:10212",
+       "rankText": "Rank 7"
       },
       {
        "spellId": 1239700,
@@ -13373,7 +13788,8 @@
        "needs": [
         "Arcane Blast"
        ],
-       "tipKey": "spell:1239700"
+       "tipKey": "spell:1239700",
+       "rankText": "Rank 5"
       },
       {
        "spellId": 10207,
@@ -13384,7 +13800,8 @@
        "needs": [
         "Arcane Blast"
        ],
-       "tipKey": "spell:10207"
+       "tipKey": "spell:10207",
+       "rankText": "Rank 7"
       },
       {
        "spellId": 10151,
@@ -13395,7 +13812,8 @@
        "needs": [
         "Arcane Blast"
        ],
-       "tipKey": "spell:10151"
+       "tipKey": "spell:10151",
+       "rankText": "Rank 11"
       }
      ],
      "cooldowns": [
@@ -13575,7 +13993,7 @@
          "quality": 3,
          "icon": "inv_shoulder_13",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 21-29",
+         "sourceDetail": "World drop (BoE) · mob levels 21-29",
          "notSimChecked": false,
          "typeLabel": "Cloth"
         },
@@ -13730,7 +14148,7 @@
          "quality": 3,
          "icon": "inv_wand_04",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 18-25",
+         "sourceDetail": "World drop (BoE) · mob levels 18-25",
          "notSimChecked": false
         },
         {
@@ -13946,7 +14364,7 @@
          "quality": 3,
          "icon": "inv_spear_01",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 31-39",
+         "sourceDetail": "World drop (BoE) · mob levels 31-39",
          "notSimChecked": false
         },
         {
@@ -13958,7 +14376,7 @@
          "quality": 2,
          "icon": "inv_wand_06",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 31-37",
+         "sourceDetail": "World drop (BoE) · mob levels 31-37",
          "notSimChecked": false,
          "typeLabel": "Wand"
         }
@@ -14135,7 +14553,7 @@
          "quality": 3,
          "icon": "spell_holy_prayerofhealing02",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 42-49",
+         "sourceDetail": "World drop (BoE) · mob levels 42-49",
          "notSimChecked": false
         },
         {
@@ -14159,7 +14577,7 @@
          "quality": 4,
          "icon": "inv_staff_13",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 38-43",
+         "sourceDetail": "World drop (BoE) · mob levels 38-43",
          "notSimChecked": false,
          "typeLabel": "Staff"
         },
@@ -14203,7 +14621,7 @@
          "quality": 4,
          "icon": "inv_helmet_44",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 51-59",
+         "sourceDetail": "World drop (BoE) · mob levels 51-59",
          "notSimChecked": false,
          "typeLabel": "Cloth"
         },
@@ -14380,7 +14798,7 @@
          "quality": 4,
          "icon": "inv_staff_13",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 38-43",
+         "sourceDetail": "World drop (BoE) · mob levels 38-43",
          "notSimChecked": false,
          "typeLabel": "Staff"
         },
@@ -14424,7 +14842,7 @@
          "quality": 4,
          "icon": "inv_helmet_44",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 51-59",
+         "sourceDetail": "World drop (BoE) · mob levels 51-59",
          "notSimChecked": false,
          "typeLabel": "Cloth"
         },
@@ -14540,7 +14958,7 @@
          "quality": 3,
          "icon": "inv_boots_05",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 55-62",
+         "sourceDetail": "World drop (BoE) · mob levels 55-62",
          "notSimChecked": false,
          "typeLabel": "Cloth"
         },
@@ -14670,7 +15088,7 @@
          "quality": 3,
          "icon": "inv_shoulder_13",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 21-29",
+         "sourceDetail": "World drop (BoE) · mob levels 21-29",
          "notSimChecked": false,
          "typeLabel": "Cloth"
         },
@@ -14825,7 +15243,7 @@
          "quality": 3,
          "icon": "inv_wand_04",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 18-25",
+         "sourceDetail": "World drop (BoE) · mob levels 18-25",
          "notSimChecked": false
         },
         {
@@ -15041,7 +15459,7 @@
          "quality": 3,
          "icon": "inv_spear_01",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 31-39",
+         "sourceDetail": "World drop (BoE) · mob levels 31-39",
          "notSimChecked": false
         },
         {
@@ -15053,7 +15471,7 @@
          "quality": 2,
          "icon": "inv_wand_06",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 31-37",
+         "sourceDetail": "World drop (BoE) · mob levels 31-37",
          "notSimChecked": false,
          "typeLabel": "Wand"
         }
@@ -15242,7 +15660,7 @@
          "quality": 3,
          "icon": "spell_holy_prayerofhealing02",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 42-49",
+         "sourceDetail": "World drop (BoE) · mob levels 42-49",
          "notSimChecked": false
         },
         {
@@ -15254,7 +15672,7 @@
          "quality": 4,
          "icon": "inv_staff_13",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 38-43",
+         "sourceDetail": "World drop (BoE) · mob levels 38-43",
          "notSimChecked": false,
          "typeLabel": "Staff"
         },
@@ -15298,7 +15716,7 @@
          "quality": 4,
          "icon": "inv_helmet_44",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 51-59",
+         "sourceDetail": "World drop (BoE) · mob levels 51-59",
          "notSimChecked": false,
          "typeLabel": "Cloth"
         },
@@ -15451,7 +15869,7 @@
          "quality": 3,
          "icon": "spell_holy_prayerofhealing02",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 42-49",
+         "sourceDetail": "World drop (BoE) · mob levels 42-49",
          "notSimChecked": false
         },
         {
@@ -15475,7 +15893,7 @@
          "quality": 4,
          "icon": "inv_staff_13",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 38-43",
+         "sourceDetail": "World drop (BoE) · mob levels 38-43",
          "notSimChecked": false,
          "typeLabel": "Staff"
         },
@@ -15519,7 +15937,7 @@
          "quality": 4,
          "icon": "inv_helmet_44",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 51-59",
+         "sourceDetail": "World drop (BoE) · mob levels 51-59",
          "notSimChecked": false,
          "typeLabel": "Cloth"
         },
@@ -15635,7 +16053,7 @@
          "quality": 3,
          "icon": "inv_boots_05",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 55-62",
+         "sourceDetail": "World drop (BoE) · mob levels 55-62",
          "notSimChecked": false,
          "typeLabel": "Cloth"
         },
@@ -15737,6 +16155,7 @@
        "slot": "chest",
        "slotLabel": "Chest",
        "name": "Enchant Chest - Greater Stats",
+       "icon": "spell_holy_greaterheal",
        "gives": "+4 to all stats"
       },
       {
@@ -15744,6 +16163,7 @@
        "slot": "wrist",
        "slotLabel": "Wrist",
        "name": "Enchant Bracer - Greater Spellpower",
+       "icon": "spell_holy_greaterheal",
        "gives": "+16 spell power"
       },
       {
@@ -15751,6 +16171,7 @@
        "slot": "main_hand",
        "slotLabel": "Weapon",
        "name": "Enchant 2H Weapon - Spellblasting",
+       "icon": "spell_holy_greaterheal",
        "gives": "+65 spell power"
       }
      ],
@@ -15988,6 +16409,111 @@
       ]
      }
     ],
+    "groups": [
+     {
+      "faction": "alliance",
+      "rows": [
+       {
+        "slug": "human",
+        "name": "Human",
+        "faction": "alliance",
+        "recommended": true,
+        "racials": [
+         {
+          "name": "Ruthless",
+          "effect": "Increases critical strike chance with all spells and attacks by 1%",
+          "icon": "ability_rogue_eviscerate"
+         },
+         {
+          "name": "The Human Spirit",
+          "effect": "Increases Spirit by 10%",
+          "icon": "inv_enchant_shardbrilliantsmall"
+         }
+        ]
+       },
+       {
+        "slug": "gnome",
+        "name": "Gnome",
+        "faction": "alliance",
+        "recommended": false,
+        "racials": [
+         {
+          "name": "Eureka!",
+          "effect": "Makes your damaging abilities cost 10% less Mana and deal 10% more damage for 8 seconds on a 2 minute cooldown",
+          "icon": "inv_gnometoy"
+         },
+         {
+          "name": "Expansive Mind",
+          "effect": "Grants 5% Mana, Rage and Energy",
+          "icon": "inv_enchant_essenceeternallarge"
+         }
+        ]
+       },
+       {
+        "slug": "high-order-skyborne",
+        "name": "High Order Skyborne",
+        "faction": "alliance",
+        "recommended": false,
+        "racials": [
+         {
+          "name": "Wind Blessed",
+          "effect": "2% haste",
+          "icon": "inv_misc_volatileair"
+         },
+         {
+          "name": "Read Leyline",
+          "effect": "50% health and mana regeneration for 15 seconds on a 2 minute cooldown",
+          "icon": "ability_mage_incantersabsorbtion"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "faction": "horde",
+      "rows": [
+       {
+        "slug": "undead",
+        "name": "Undead",
+        "faction": "horde",
+        "recommended": true,
+        "racials": [
+         {
+          "name": "Touch of the Grave",
+          "effect": "Gives spells and attacks a chance to drain Health from the target, up to 5% of your maximum Health, at most once every 15 seconds",
+          "icon": "spell_shadow_fingerofdeath"
+         }
+        ]
+       },
+       {
+        "slug": "orc",
+        "name": "Orc",
+        "faction": "horde",
+        "recommended": false,
+        "racials": [
+         {
+          "name": "Blood Fury",
+          "effect": "Increases Attack Power, Ranged Attack Power and Spell Power by 10% for 15 seconds on a 2 minute cooldown",
+          "icon": "racial_orc_berserkerstrength"
+         }
+        ]
+       },
+       {
+        "slug": "troll",
+        "name": "Troll",
+        "faction": "horde",
+        "recommended": false,
+        "racials": [
+         {
+          "name": "Berserking",
+          "effect": "Increases casting and attack speed by 10% for 15 seconds on a 3 minute cooldown",
+          "icon": "racial_troll_berserk"
+         }
+        ]
+       }
+      ]
+     }
+    ],
     "lines": [],
     "prose": "<p><strong>Human</strong> is the Alliance pick for Fire, a hair ahead of Gnome: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Ruthless\">Ruthless</span> adds 1% crit with all spells, which Fire turns into <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105794:5\">Ignite</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105786:1\">Heating Up</span>, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:The Human Spirit\">The Human Spirit</span> adds 10% Spirit. <strong>Gnome</strong> is just behind: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Eureka!\">Eureka!</span> makes your damage spells hit 10% harder and cost 10% less for 8 seconds on a 2 minute cooldown, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Expansive Mind\">Expansive Mind</span> adds 5% mana, so press <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Eureka!\">Eureka!</span> with <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:11129\">Combustion</span> on the pull and again the moment it is back. On the Horde, <strong>Undead</strong> is the pick: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Touch of the Grave\">Touch of the Grave</span> gives your spells a 30% chance to drain 5% of your maximum health from the boss, at most once every 15 seconds, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Will of the Forsaken\">Will of the Forsaken</span> breaks fears. <strong>Orc</strong> is next: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Blood Fury\">Blood Fury</span> adds 10% spell power for 15 seconds every 2 minutes, so press it with <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:11129\">Combustion</span> on the pull and on cooldown after that. <strong>Troll</strong> <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Berserking\">Berserking</span> adds 10% cast speed for 15 seconds every 3 minutes and lines up with every <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:11129\">Combustion</span>, but falls behind both. <strong>Skyborne</strong> is a paid unlock and only Alliance for mages, and played without <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Read Leyline\">Read Leyline</span> it does the least Fire damage of the lot.</p>\n"
    },
@@ -15997,6 +16523,212 @@
     "stripHeading": "Levels 20 to 60",
     "late": "<p><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:18809\">Pyroblast</span> comes at 20 and Ignite’s last point at 21, then three more points of <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105795:5\">Accelerant</span> at 22 to 24 make <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25306\">Fireball</span> a 3.1 second cast. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25306\">Fireball</span> stays your nuke through the 20s, with <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10199\">Fire Blast</span> on cooldown: at the ranks you have in the 20s <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25306\">Fireball</span> does more damage for its mana than <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10207\">Scorch</span>, and mana is what runs out first. Improved Scorch’s first point at 27 lands a stack only one <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10207\">Scorch</span> in three, so at 27 build the stacks only on a mob or elite that lives a minute or more. From 28, with two points, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10207\">Scorch</span> to 5 stacks first on anything that lives 20 seconds. From 30, with <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105786:1\">Heating Up</span> in, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10207\">Scorch</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10199\">Fire Blast</span> take over on single targets: every <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10207\">Scorch</span> crit is a <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105786:1\">Heating Up</span> stack, two Scorches roll twice the crits of one <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25306\">Fireball</span>, and every few crits turn into a fast <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:18809\">Pyroblast</span>. On leveling mana the cheap ranks win here, because each one earns the same <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105786:1\">Heating Up</span> stack for less: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10207\">Scorch</span> rank 1 from 28 to 39, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10199\">Fire Blast</span> rank 2 to 35 and rank 3 from 36 to 39, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:18809\">Pyroblast</span> rank 2 to 37, except rank 3 at 34 and 35. Open on a mob with <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:18809\">Pyroblast</span> from range, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25306\">Fireball</span> (<span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10207\">Scorch</span> from 30) as it closes, and finish it with <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10199\">Fire Blast</span>. Keep <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10230\">Frost Nova</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1953\">Blink</span> for anything that reaches you, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25304\">Frostbolt</span> for kiting: none of your Fire spells slow until <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1237313\">Frostfire Bolt</span> at 40, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25304\">Frostbolt</span> is still the cheaper slow after that. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10216\">Flamestrike</span> into <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10202\">Arcane Explosion</span> clears packs once you have the Stamina for it. Train <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:22783\">Mage Armor</span> at 34 and wear it for the mana; switch to <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10220\">Ice Armor</span> when you are taking melee hits in the open world.</p>\n<p>After <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:11129\">Combustion</span> at 40, <strong><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105815:0\">Wand Specialization</span></strong> at 41 and 42 adds a quarter to the wand you finish mobs with. Accelerant’s last point at 43 and two points of <strong><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105789:2\">Burning Soul</span></strong> at 44 and 45 keep a mob’s hits from pushing back half your Fire casts, then <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105813:5\">Improved Channeling</span>, a point of <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105812:1\">Arcane Subtlety</span>, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105810:5\">Arcane Concentration</span> from 50 and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105809:2\">Missile Barrage</span> at 55 and 56, which procs off <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25306\">Fireball</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1239700\">Arcane Blast</span> and so waits for 57. <strong><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1239700\">Arcane Blast</span></strong> at 57 changes the loop: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25306\">Fireball</span> is the filler again, as in a raid, with the <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1239700\">Arcane Blast</span> buff kept up and every <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105809:2\">Missile Barrage</span> proc spent on a fast <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25345\">Arcane Missiles</span>. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105778:3\">Precision</span> takes the last three points for 6% hit.</p>\n",
     "steps": 51,
+    "ladder": [
+     {
+      "level": 10,
+      "name": "Incineration"
+     },
+     {
+      "level": 11,
+      "name": "Incineration"
+     },
+     {
+      "level": 12,
+      "name": "Incineration"
+     },
+     {
+      "level": 13,
+      "name": "Incineration"
+     },
+     {
+      "level": 14,
+      "name": "Incineration"
+     },
+     {
+      "level": 15,
+      "name": "Accelerant"
+     },
+     {
+      "level": 16,
+      "name": "Ignite"
+     },
+     {
+      "level": 17,
+      "name": "Ignite"
+     },
+     {
+      "level": 18,
+      "name": "Ignite"
+     },
+     {
+      "level": 19,
+      "name": "Ignite"
+     },
+     {
+      "level": 20,
+      "name": "Pyroblast"
+     },
+     {
+      "level": 21,
+      "name": "Ignite"
+     },
+     {
+      "level": 22,
+      "name": "Accelerant"
+     },
+     {
+      "level": 23,
+      "name": "Accelerant"
+     },
+     {
+      "level": 24,
+      "name": "Accelerant"
+     },
+     {
+      "level": 25,
+      "name": "Improved Fire Blast"
+     },
+     {
+      "level": 26,
+      "name": "Improved Fire Blast"
+     },
+     {
+      "level": 27,
+      "name": "Improved Scorch"
+     },
+     {
+      "level": 28,
+      "name": "Improved Scorch"
+     },
+     {
+      "level": 29,
+      "name": "Improved Scorch"
+     },
+     {
+      "level": 30,
+      "name": "Heating Up"
+     },
+     {
+      "level": 31,
+      "name": "Master of Elements"
+     },
+     {
+      "level": 32,
+      "name": "Master of Elements"
+     },
+     {
+      "level": 33,
+      "name": "Master of Elements"
+     },
+     {
+      "level": 34,
+      "name": "Critical Mass"
+     },
+     {
+      "level": 35,
+      "name": "Critical Mass"
+     },
+     {
+      "level": 36,
+      "name": "Critical Mass"
+     },
+     {
+      "level": 37,
+      "name": "Fire Power"
+     },
+     {
+      "level": 38,
+      "name": "Fire Power"
+     },
+     {
+      "level": 39,
+      "name": "Fire Power"
+     },
+     {
+      "level": 40,
+      "name": "Combustion"
+     },
+     {
+      "level": 41,
+      "name": "Wand Specialization"
+     },
+     {
+      "level": 42,
+      "name": "Wand Specialization"
+     },
+     {
+      "level": 43,
+      "name": "Accelerant"
+     },
+     {
+      "level": 44,
+      "name": "Burning Soul"
+     },
+     {
+      "level": 45,
+      "name": "Burning Soul"
+     },
+     {
+      "level": 46,
+      "name": "Improved Channeling"
+     },
+     {
+      "level": 47,
+      "name": "Improved Channeling"
+     },
+     {
+      "level": 48,
+      "name": "Improved Channeling"
+     },
+     {
+      "level": 49,
+      "name": "Arcane Subtlety"
+     },
+     {
+      "level": 50,
+      "name": "Arcane Concentration"
+     },
+     {
+      "level": 51,
+      "name": "Arcane Concentration"
+     },
+     {
+      "level": 52,
+      "name": "Arcane Concentration"
+     },
+     {
+      "level": 53,
+      "name": "Arcane Concentration"
+     },
+     {
+      "level": 54,
+      "name": "Arcane Concentration"
+     },
+     {
+      "level": 55,
+      "name": "Missile Barrage"
+     },
+     {
+      "level": 56,
+      "name": "Missile Barrage"
+     },
+     {
+      "level": 57,
+      "name": "Arcane Blast"
+     },
+     {
+      "level": 58,
+      "name": "Precision"
+     },
+     {
+      "level": 59,
+      "name": "Precision"
+     },
+     {
+      "level": 60,
+      "name": "Precision"
+     }
+    ],
     "at": {
      "34": {
       "level": 34,
@@ -20066,22 +20798,16 @@
      }
     ],
     "rotationBand": "60",
+    "rotationTitle": "Healing priority",
     "rotation": [
-     {
-      "spellId": 1277328,
-      "name": "Dark Sacrifice",
-      "rank": 5,
-      "icon": "spell_holy_powerinfusion_shadow",
-      "clause": "Undead only, once you are under 70% mana and still healthy",
-      "tipKey": "spell:1277328"
-     },
      {
       "spellId": 1240827,
       "name": "Prayer of Mending",
       "rank": 3,
       "icon": "spell_holy_prayerofmendingtga",
       "clause": "On the tank every time it is ready",
-      "tipKey": "spell:1240827"
+      "tipKey": "spell:1240827",
+      "rankText": "Rank 3"
      },
      {
       "spellId": 10927,
@@ -20089,7 +20815,9 @@
       "rank": 7,
       "icon": "spell_holy_renew",
       "clause": "Keep Renew on the tank all fight",
-      "tipKey": "spell:10927"
+      "tipKey": "spell:10927",
+      "cheapRank": true,
+      "rankText": "Rank 7 (cheap rank)"
      },
      {
       "spellId": 10917,
@@ -20097,9 +20825,20 @@
       "rank": 7,
       "icon": "spell_holy_flashheal",
       "clause": "On a tank who is really low or on anyone about to die",
-      "tipKey": "spell:10917"
+      "tipKey": "spell:10917",
+      "rankText": "Rank 7"
+     },
+     {
+      "spellId": 10917,
+      "name": "Flash Heal",
+      "rank": 7,
+      "icon": "spell_holy_flashheal",
+      "clause": "On a party member under 30%",
+      "tipKey": "spell:10917",
+      "rankText": "Rank 7"
      }
     ],
+    "filler": "Filler: Greater Heal",
     "stats": [
      {
       "label": "MP5",
@@ -20137,7 +20876,8 @@
       "perPoint": 0.1707797324542585,
       "valueText": "0.30"
      }
-    ]
+    ],
+    "unitLine": "1 point of mp5 = 0.57 HPS at level 60"
    },
    "overview": {
     "strengths": "<ul>\n<li><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1240827\">Prayer of Mending</span> is the cheapest healing you can cast all fight: up to five heals for one cast</li>\n<li><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25316\">Prayer of Healing</span> heals any five-player group at once, not only your own</li>\n<li><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105853:4\">Spiritual Guidance</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105843:3\">Meditation</span> turn Spirit into both healing and mana</li>\n<li><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:27871\">Lightwell</span> heals the melee while you heal the tank, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105856:1\">Holy Binding</span> heals you every time you <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10917\">Flash Heal</span> someone else</li>\n</ul>\n",
@@ -21716,7 +22456,8 @@
        "rank": 3,
        "icon": "spell_holy_summonlightwell",
        "clause": "2.5 s before the pull",
-       "tipKey": "spell:27871"
+       "tipKey": "spell:27871",
+       "rankText": "Rank 3"
       }
      ],
      "priority": [
@@ -21726,7 +22467,8 @@
        "rank": 5,
        "icon": "spell_holy_powerinfusion_shadow",
        "clause": "Undead only, once you are under 70% mana and still healthy",
-       "tipKey": "spell:1277328"
+       "tipKey": "spell:1277328",
+       "rankText": "Rank 5"
       },
       {
        "spellId": 1240827,
@@ -21734,7 +22476,8 @@
        "rank": 3,
        "icon": "spell_holy_prayerofmendingtga",
        "clause": "On the tank every time it is ready",
-       "tipKey": "spell:1240827"
+       "tipKey": "spell:1240827",
+       "rankText": "Rank 3"
       },
       {
        "spellId": 10927,
@@ -21742,7 +22485,9 @@
        "rank": 7,
        "icon": "spell_holy_renew",
        "clause": "Keep Renew on the tank all fight",
-       "tipKey": "spell:10927"
+       "tipKey": "spell:10927",
+       "cheapRank": true,
+       "rankText": "Rank 7 (cheap rank)"
       },
       {
        "spellId": 10917,
@@ -21750,7 +22495,8 @@
        "rank": 7,
        "icon": "spell_holy_flashheal",
        "clause": "On a tank who is really low or on anyone about to die",
-       "tipKey": "spell:10917"
+       "tipKey": "spell:10917",
+       "rankText": "Rank 7"
       },
       {
        "spellId": 10917,
@@ -21758,7 +22504,8 @@
        "rank": 7,
        "icon": "spell_holy_flashheal",
        "clause": "On a party member under 30%",
-       "tipKey": "spell:10917"
+       "tipKey": "spell:10917",
+       "rankText": "Rank 7"
       },
       {
        "spellId": 10961,
@@ -21766,7 +22513,8 @@
        "rank": 4,
        "icon": "spell_holy_prayerofhealing02",
        "clause": "Once three of your four party members are under 85%",
-       "tipKey": "spell:10961"
+       "tipKey": "spell:10961",
+       "rankText": "Rank 4"
       },
       {
        "spellId": 10965,
@@ -21774,7 +22522,8 @@
        "rank": 4,
        "icon": "spell_holy_greaterheal",
        "clause": "The filler while your mana keeps pace with the fight",
-       "tipKey": "spell:10965"
+       "tipKey": "spell:10965",
+       "rankText": "Rank 4"
       },
       {
        "spellId": 10965,
@@ -21782,7 +22531,8 @@
        "rank": 4,
        "icon": "spell_holy_greaterheal",
        "clause": "When your mana falls behind the fight, only on a tank under 50% or a party member under 35%, so it waits for a deeper hole",
-       "tipKey": "spell:10965"
+       "tipKey": "spell:10965",
+       "rankText": "Rank 4"
       },
       {
        "spellId": 2060,
@@ -21790,7 +22540,9 @@
        "rank": 1,
        "icon": "spell_holy_greaterheal",
        "clause": "Once you have higher ranks, when the top rank would overheal or your mana runs short",
-       "tipKey": "spell:2060"
+       "tipKey": "spell:2060",
+       "cheapRank": true,
+       "rankText": "Rank 1 (cheap rank)"
       },
       {
        "spellId": 2060,
@@ -21798,7 +22550,9 @@
        "rank": 1,
        "icon": "spell_holy_greaterheal",
        "clause": "When your mana falls behind the fight, only on a tank under 50% or a party member under 35%, so it waits for a deeper hole too",
-       "tipKey": "spell:2060"
+       "tipKey": "spell:2060",
+       "cheapRank": true,
+       "rankText": "Rank 1 (cheap rank)"
       },
       {
        "spellId": 6064,
@@ -21806,7 +22560,8 @@
        "rank": 4,
        "icon": "spell_holy_heal02",
        "clause": "The step down when Greater Heal rank 1 costs more than you can spend, and your filler before Greater Heal at 40",
-       "tipKey": "spell:6064"
+       "tipKey": "spell:6064",
+       "rankText": "Rank 4"
       },
       {
        "spellId": 6064,
@@ -21814,7 +22569,8 @@
        "rank": 4,
        "icon": "spell_holy_heal02",
        "clause": "When your mana falls behind the fight, only on a tank under 50% or a party member under 35%, so it waits for a deeper hole",
-       "tipKey": "spell:6064"
+       "tipKey": "spell:6064",
+       "rankText": "Rank 4"
       }
      ],
      "cooldowns": [
@@ -21824,7 +22580,8 @@
        "rank": 3,
        "icon": "spell_holy_summonlightwell",
        "clause": "10 min cooldown",
-       "tipKey": "spell:27871"
+       "tipKey": "spell:27871",
+       "rankText": "Rank 3"
       },
       {
        "spellId": 1277328,
@@ -21832,7 +22589,8 @@
        "rank": 5,
        "icon": "spell_holy_powerinfusion_shadow",
        "clause": "10 min cooldown. Undead only, once you are under 70% mana and still healthy",
-       "tipKey": "spell:1277328"
+       "tipKey": "spell:1277328",
+       "rankText": "Rank 5"
       },
       {
        "spellId": 14751,
@@ -21988,7 +22746,7 @@
          "quality": 3,
          "icon": "inv_shoulder_13",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 21-29",
+         "sourceDetail": "World drop (BoE) · mob levels 21-29",
          "notSimChecked": false,
          "typeLabel": "Cloth"
         },
@@ -22174,7 +22932,7 @@
          "quality": 3,
          "icon": "inv_helmet_16",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 28-35",
+         "sourceDetail": "World drop (BoE) · mob levels 28-35",
          "notSimChecked": false,
          "typeLabel": "Cloth"
         },
@@ -22187,7 +22945,7 @@
          "quality": 3,
          "icon": "inv_jewelry_amulet_07",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 31-38",
+         "sourceDetail": "World drop (BoE) · mob levels 31-38",
          "notSimChecked": false
         },
         {
@@ -22251,7 +23009,7 @@
          "quality": 3,
          "icon": "inv_gauntlets_24",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 30-37",
+         "sourceDetail": "World drop (BoE) · mob levels 30-37",
          "notSimChecked": false,
          "typeLabel": "Cloth"
         },
@@ -22543,7 +23301,7 @@
          "quality": 3,
          "icon": "spell_holy_prayerofhealing02",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 42-49",
+         "sourceDetail": "World drop (BoE) · mob levels 42-49",
          "notSimChecked": false
         },
         {
@@ -22616,7 +23374,7 @@
          "quality": 3,
          "icon": "inv_jewelry_ring_03",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 44-52",
+         "sourceDetail": "World drop (BoE) · mob levels 44-52",
          "notSimChecked": false,
          "typeLabel": "Cloth"
         },
@@ -22769,7 +23527,7 @@
          "quality": 3,
          "icon": "spell_holy_prayerofhealing02",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 42-49",
+         "sourceDetail": "World drop (BoE) · mob levels 42-49",
          "notSimChecked": false
         },
         {
@@ -22793,7 +23551,7 @@
          "quality": 4,
          "icon": "inv_staff_29",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 50-57",
+         "sourceDetail": "World drop (BoE) · mob levels 50-57",
          "notSimChecked": false,
          "typeLabel": "Staff"
         },
@@ -23014,7 +23772,7 @@
          "quality": 4,
          "icon": "inv_staff_29",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 50-57",
+         "sourceDetail": "World drop (BoE) · mob levels 50-57",
          "notSimChecked": false,
          "typeLabel": "Staff"
         },
@@ -23083,7 +23841,7 @@
          "quality": 3,
          "icon": "inv_shoulder_13",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 21-29",
+         "sourceDetail": "World drop (BoE) · mob levels 21-29",
          "notSimChecked": false,
          "typeLabel": "Cloth"
         },
@@ -23269,7 +24027,7 @@
          "quality": 3,
          "icon": "inv_helmet_16",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 28-35",
+         "sourceDetail": "World drop (BoE) · mob levels 28-35",
          "notSimChecked": false,
          "typeLabel": "Cloth"
         },
@@ -23638,7 +24396,7 @@
          "quality": 3,
          "icon": "spell_holy_prayerofhealing02",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 42-49",
+         "sourceDetail": "World drop (BoE) · mob levels 42-49",
          "notSimChecked": false
         },
         {
@@ -23711,7 +24469,7 @@
          "quality": 3,
          "icon": "inv_jewelry_ring_03",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 44-52",
+         "sourceDetail": "World drop (BoE) · mob levels 44-52",
          "notSimChecked": false,
          "typeLabel": "Cloth"
         },
@@ -23864,7 +24622,7 @@
          "quality": 3,
          "icon": "spell_holy_prayerofhealing02",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 42-49",
+         "sourceDetail": "World drop (BoE) · mob levels 42-49",
          "notSimChecked": false
         },
         {
@@ -23888,7 +24646,7 @@
          "quality": 4,
          "icon": "inv_staff_29",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 50-57",
+         "sourceDetail": "World drop (BoE) · mob levels 50-57",
          "notSimChecked": false,
          "typeLabel": "Staff"
         },
@@ -24109,7 +24867,7 @@
          "quality": 4,
          "icon": "inv_staff_29",
          "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · levels 50-57",
+         "sourceDetail": "World drop (BoE) · mob levels 50-57",
          "notSimChecked": false,
          "typeLabel": "Staff"
         },
@@ -24150,6 +24908,7 @@
        "slot": "chest",
        "slotLabel": "Chest",
        "name": "Enchant Chest - Greater Stats",
+       "icon": "spell_holy_greaterheal",
        "gives": "+4 to all stats"
       },
       {
@@ -24157,6 +24916,7 @@
        "slot": "wrist",
        "slotLabel": "Wrist",
        "name": "Enchant Bracer - Healing Power",
+       "icon": "spell_holy_greaterheal",
        "gives": "+24 healing power"
       },
       {
@@ -24164,6 +24924,7 @@
        "slot": "feet",
        "slotLabel": "Feet",
        "name": "Enchant Boots - Spirit",
+       "icon": "spell_holy_greaterheal",
        "gives": "+5 spirit"
       },
       {
@@ -24171,6 +24932,7 @@
        "slot": "main_hand",
        "slotLabel": "Weapon",
        "name": "Enchant 2H Weapon - Mighty Healing Power",
+       "icon": "spell_holy_greaterheal",
        "gives": "+34 spell power, +100 healing power"
       }
      ],
@@ -24419,6 +25181,106 @@
       ]
      }
     ],
+    "groups": [
+     {
+      "faction": "alliance",
+      "rows": [
+       {
+        "slug": "human",
+        "name": "Human",
+        "faction": "alliance",
+        "recommended": true,
+        "racials": [
+         {
+          "name": "Ruthless",
+          "effect": "Increases critical strike chance with all spells and attacks by 1%",
+          "icon": "ability_rogue_eviscerate"
+         },
+         {
+          "name": "The Human Spirit",
+          "effect": "Increases Spirit by 10%",
+          "icon": "inv_enchant_shardbrilliantsmall"
+         }
+        ]
+       },
+       {
+        "slug": "dwarf",
+        "name": "Dwarf",
+        "faction": "alliance",
+        "recommended": false,
+        "racials": [
+         {
+          "name": "Stoneform",
+          "effect": "Removes and grants immunity to Bleed, Poison and Disease effects and reduces physical damage taken by 10% for 8 seconds on a 3 minute cooldown",
+          "icon": "spell_shadow_unholystrength"
+         }
+        ]
+       },
+       {
+        "slug": "night-elf",
+        "name": "Night Elf",
+        "faction": "alliance",
+        "recommended": false,
+        "racials": [
+         {
+          "name": "Elune's Light",
+          "effect": "Grants 10% critical strike chance for 15 seconds on a 3 minute cooldown",
+          "icon": "spell_nature_moonglow"
+         }
+        ]
+       },
+       {
+        "slug": "gnome",
+        "name": "Gnome",
+        "faction": "alliance",
+        "recommended": false,
+        "racials": [
+         {
+          "name": "Eureka!",
+          "effect": "Makes your non-periodic damaging and healing abilities cost 10% less Mana and deal 10% more damage or healing for 8 seconds on a 2 minute cooldown",
+          "icon": "inv_gnometoy"
+         },
+         {
+          "name": "Expansive Mind",
+          "effect": "Grants 5% Mana, Rage and Energy",
+          "icon": "inv_enchant_essenceeternallarge"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "faction": "horde",
+      "rows": [
+       {
+        "slug": "undead",
+        "name": "Undead",
+        "faction": "horde",
+        "recommended": true,
+        "racials": [
+         {
+          "name": "Will of the Forsaken",
+          "effect": "Removes Charm, Fear and Sleep on a 2 minute cooldown",
+          "icon": "spell_shadow_raisedead"
+         }
+        ]
+       },
+       {
+        "slug": "troll",
+        "name": "Troll",
+        "faction": "horde",
+        "recommended": false,
+        "racials": [
+         {
+          "name": "Berserking",
+          "effect": "Increases casting and attack speed by 10% for 15 seconds on a 3 minute cooldown",
+          "icon": "racial_troll_berserk"
+         }
+        ]
+       }
+      ]
+     }
+    ],
     "lines": [],
     "prose": "<p><strong>Human</strong> is the Alliance pick. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:The Human Spirit\">The Human Spirit</span> adds 10% Spirit, which <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105853:4\">Spiritual Guidance</span> turns into healing, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1277378\">Divine Grace</span> is a free instant heal on an ally under 50% every 10 minutes. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:19275\">Feedback</span> is a PvP spell.</p>\n<p><strong>Undead</strong> is the Horde pick, and the best Holy priest of all, for <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1277328\">Dark Sacrifice</span>: once a fight, trade your own health for well over a thousand mana while the raid is quiet, then heal yourself back. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Will of the Forsaken\">Will of the Forsaken</span> breaks fears.</p>\n<p><strong>Gnome</strong> is close behind Human. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Eureka!\">Eureka!</span> makes your direct heals 10% stronger and 10% cheaper for 8 seconds every 2 minutes (never <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25315\">Renew</span>), and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Expansive Mind\">Expansive Mind</span> adds 5% mana. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1277640\">Contingency Plan</span> is a ward that shields and heals an ally who drops under 35%: put it on the tank before a hard hit. <strong>Night Elf</strong> has <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Elune's Light\">Elune’s Light</span>, 10% crit for 15 seconds, <strong>Troll</strong> <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Berserking\">Berserking</span>, 10% cast speed, and <strong>Dwarf</strong> <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Stoneform\">Stoneform</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:19243\">Desperate Prayer</span>, a free self heal. Those three heal clearly less.</p>\n"
    },
@@ -24428,6 +25290,212 @@
     "stripHeading": "Levels 20 to 60",
     "late": "<p>From 20 you can keep leveling Holy in groups, or respec to Shadow at the trainer for faster solo questing and come back to Holy at 60. Solo, Holy is slow: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10934\">Smite</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:15261\">Holy Fire</span> hit hard, but they cost so much mana that you drink after every pull. If you level Holy, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:15261\">Holy Fire</span> opens, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10934\">Smite</span> finishes, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10901\">Power Word: Shield</span> keeps you casting. In dungeons, keep <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25315\">Renew</span> on the tank, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:6064\">Heal</span> as the filler from level 16, and learn to downrank early.</p>\n<p><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:6064\">Heal</span> rank 1 is the filler through most of your twenties and early thirties: it keeps your whole healing bonus until 33 and heals more for its mana than any later rank, so a long pull ends with mana to spare. A later rank takes over at a few levels: rank 2 at 27 for a Human, Gnome or Night Elf (a Human stays on it at 28), rank 3 at 28 for a Dwarf, Gnome, Night Elf or Troll, rank 3 at 30 and 31 for an Undead or Troll, and rank 2 or 3 at 32 for everyone but a Troll. From 34 rank 1 has started to lose its bonus, and rank 4 costs more mana than its extra healing is worth in its first levels, so keep rank 3 from 34 to 37 before you move to rank 4, and to 38 as an Undead. A Troll stays on rank 1 at 34 and casts rank 2 at 38 and 39, and an Undead casts rank 2 at 39.</p>\n<p><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25315\">Renew</span> steps down too: through your twenties the tank’s <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25315\">Renew</span> is rank 1, a fraction of the top rank’s cost that still keeps most of your healing bonus. Rank 2 and then rank 3 take over between 28 and 36, at levels that differ a little by race, so you finish the dungeon with mana to spare. From there <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25315\">Renew</span> keeps stepping: rank 4 from 40, rank 5 from 45 and rank 6 from about 52 cost far less and keep all or nearly all of your healing bonus, so you can keep <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25315\">Renew</span> up all dungeon; rank 7 takes over at 59, already at 58 as a Human.</p>\n<p><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25314\">Greater Heal</span> is the same story: keep rank 1 as the filler all the way to 60, even after rank 4 arrives at 58. A dungeon tank rarely needs the bigger ranks, so the mana they cost is better spent on more casts. At 60, rank 3 and rank 4 heal about the same for their mana.</p>\n",
     "steps": 51,
+    "ladder": [
+     {
+      "level": 10,
+      "name": "Twilight Focus"
+     },
+     {
+      "level": 11,
+      "name": "Twilight Focus"
+     },
+     {
+      "level": 12,
+      "name": "Twilight Focus"
+     },
+     {
+      "level": 13,
+      "name": "Improved Renew"
+     },
+     {
+      "level": 14,
+      "name": "Improved Renew"
+     },
+     {
+      "level": 15,
+      "name": "Improved Renew"
+     },
+     {
+      "level": 16,
+      "name": "Holy Specialization"
+     },
+     {
+      "level": 17,
+      "name": "Holy Specialization"
+     },
+     {
+      "level": 18,
+      "name": "Holy Specialization"
+     },
+     {
+      "level": 19,
+      "name": "Holy Specialization"
+     },
+     {
+      "level": 20,
+      "name": "Holy Specialization"
+     },
+     {
+      "level": 21,
+      "name": "Divine Fury"
+     },
+     {
+      "level": 22,
+      "name": "Divine Fury"
+     },
+     {
+      "level": 23,
+      "name": "Divine Fury"
+     },
+     {
+      "level": 24,
+      "name": "Divine Fury"
+     },
+     {
+      "level": 25,
+      "name": "Divine Fury"
+     },
+     {
+      "level": 26,
+      "name": "Inspiration"
+     },
+     {
+      "level": 27,
+      "name": "Inspiration"
+     },
+     {
+      "level": 28,
+      "name": "Inspiration"
+     },
+     {
+      "level": 29,
+      "name": "Improved Healing"
+     },
+     {
+      "level": 30,
+      "name": "Improved Healing"
+     },
+     {
+      "level": 31,
+      "name": "Improved Healing"
+     },
+     {
+      "level": 32,
+      "name": "Holy Binding"
+     },
+     {
+      "level": 33,
+      "name": "Litany of Light"
+     },
+     {
+      "level": 34,
+      "name": "Litany of Light"
+     },
+     {
+      "level": 35,
+      "name": "Spiritual Healing"
+     },
+     {
+      "level": 36,
+      "name": "Spiritual Healing"
+     },
+     {
+      "level": 37,
+      "name": "Spiritual Healing"
+     },
+     {
+      "level": 38,
+      "name": "Spirit of Redemption"
+     },
+     {
+      "level": 39,
+      "name": "Spiritual Guidance"
+     },
+     {
+      "level": 40,
+      "name": "Prayer of Mending"
+     },
+     {
+      "level": 41,
+      "name": "Spiritual Guidance"
+     },
+     {
+      "level": 42,
+      "name": "Spiritual Guidance"
+     },
+     {
+      "level": 43,
+      "name": "Spiritual Guidance"
+     },
+     {
+      "level": 44,
+      "name": "Twin Disciplines"
+     },
+     {
+      "level": 45,
+      "name": "Twin Disciplines"
+     },
+     {
+      "level": 46,
+      "name": "Twin Disciplines"
+     },
+     {
+      "level": 47,
+      "name": "Twin Disciplines"
+     },
+     {
+      "level": 48,
+      "name": "Twin Disciplines"
+     },
+     {
+      "level": 49,
+      "name": "Mental Strength"
+     },
+     {
+      "level": 50,
+      "name": "Mental Strength"
+     },
+     {
+      "level": 51,
+      "name": "Mental Strength"
+     },
+     {
+      "level": 52,
+      "name": "Mental Strength"
+     },
+     {
+      "level": 53,
+      "name": "Mental Strength"
+     },
+     {
+      "level": 54,
+      "name": "Mental Agility"
+     },
+     {
+      "level": 55,
+      "name": "Mental Agility"
+     },
+     {
+      "level": 56,
+      "name": "Mental Agility"
+     },
+     {
+      "level": 57,
+      "name": "Inner Focus"
+     },
+     {
+      "level": 58,
+      "name": "Meditation"
+     },
+     {
+      "level": 59,
+      "name": "Meditation"
+     },
+     {
+      "level": 60,
+      "name": "Meditation"
+     }
+    ],
     "at": {
      "34": {
       "level": 34,
@@ -27532,7 +28600,8 @@
    "race": "Dwarf",
    "faction": "alliance",
    "identity": "Dwarf Beast Mastery Hunter",
-   "level_line": "Level 34"
+   "level_line": "Level 34",
+   "talents_at": "Talents at level 34"
   },
   "survival34": {
    "name": "Felsnap",
@@ -27542,7 +28611,20 @@
    "race": "Dwarf",
    "faction": "alliance",
    "identity": "Dwarf Survival Hunter",
-   "level_line": "Level 34"
+   "level_line": "Level 34",
+   "talents_at": "Talents at level 34",
+   "next": "Next point at 35: Expose Prey"
+  },
+  "survival60": {
+   "name": "Thandrel",
+   "class": "Hunter",
+   "spec": "Survival",
+   "level": 60,
+   "race": "Night Elf",
+   "faction": "alliance",
+   "identity": "Night Elf Survival Hunter",
+   "level_line": "Level 60",
+   "talents_at": "Talents at level 60"
   },
   "warrior60": {
    "name": "Thandrel",
@@ -27552,7 +28634,8 @@
    "race": "Human",
    "faction": "alliance",
    "identity": "Human Fury Warrior",
-   "level_line": "Level 60"
+   "level_line": "Level 60",
+   "talents_at": "Talents at level 60"
   },
   "mage60": {
    "name": "Thandrel",
@@ -27562,7 +28645,8 @@
    "race": "Human",
    "faction": "alliance",
    "identity": "Human Fire Mage",
-   "level_line": "Level 60"
+   "level_line": "Level 60",
+   "talents_at": "Talents at level 60"
   }
  },
  "source_labels": {
@@ -27574,9 +28658,9 @@
  "setup_title": "Get set up",
  "fns": {
   "signedInCallout": {
-   "bm": "Your guide: Beast Mastery Hunter →",
-   "survival": "Your guide: Survival Hunter →",
-   "fury": "Your guide: Fury Warrior →"
+   "bm": "Your guide: Beast Mastery Hunter ›",
+   "survival": "Your guide: Survival Hunter ›",
+   "fury": "Your guide: Fury Warrior ›"
   },
   "dataSourceLine": "Numbers from client build 1.60.1.70790, checked against launch logs as they come in.",
   "unknown": "Felsnap's spec is not known yet.",

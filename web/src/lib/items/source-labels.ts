@@ -101,11 +101,12 @@ export function pvpSourceLabel(rank: number | undefined, faction: 'alliance' | '
     : `PvP rank ${inGameRank} · ${title} · ${factionLabel}`;
 }
 
-/** "World drop (BoE) · levels 48-55", or "· level 62" when the mobs that drop it share one
- *  level (Teebu's Blazing Longsword, the Silithus colossi), never "levels 62-62". */
+/** "World drop (BoE) · mob levels 48-55", or "· mob level 62" when the mobs that drop it share
+ *  one level (Teebu's Blazing Longsword, the Silithus colossi), never "levels 62-62". The levels
+ *  are the mobs', so the line says so (guides ruling 0A: a source line says what a level is). */
 export function worldDropLevelsLabel(levelMin?: number, levelMax?: number): string {
   if (levelMin === undefined || levelMax === undefined) return 'World drop (BoE)';
-  const levels = levelMin === levelMax ? `level ${levelMin}` : `levels ${levelMin}-${levelMax}`;
+  const levels = levelMin === levelMax ? `mob level ${levelMin}` : `mob levels ${levelMin}-${levelMax}`;
   return `World drop (BoE) · ${levels}`;
 }
 

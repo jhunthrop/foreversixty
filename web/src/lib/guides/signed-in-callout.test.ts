@@ -14,7 +14,7 @@ describe('signedInCalloutView', () => {
       href: '/guides/warrior/fury',
       crestSrc: '/icons/hd/crests/warrior.webp',
       crestColorVar: 'var(--color-class-warrior)',
-      text: 'Your guide: Fury Warrior →',
+      text: 'Your guide: Fury Warrior ›',
     });
   });
 
