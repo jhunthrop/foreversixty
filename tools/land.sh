@@ -73,7 +73,7 @@ runs_json() {
 # expected_workflows <branch> <sha>: "<file>\t<name>" per workflow the batch should start.
 expected_workflows() {
 	"$GIT" fetch -q "$REMOTE" main &&
-		"$EXPECTED" "$2" "$1" FETCH_HEAD
+		python3 "$EXPECTED" "$2" "$1" FETCH_HEAD
 }
 
 # missing_workflows <expected> <runs json>: the expected lines no run carries the name of.

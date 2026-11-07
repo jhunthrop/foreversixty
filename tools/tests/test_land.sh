@@ -243,6 +243,16 @@ land "$c" land/1
 assert "a failed dispatch fails the landing" equal $? 1
 assert "it names the workflow it could not dispatch" contains "$(cat "$c/out")" 'could not dispatch api.yml'
 
+# --- the expected-workflow script runs through python3, whatever its file mode ---
+c=$(setup nomode)
+with_workflows "$c"
+cp "$HERE/../land_workflows.py" "$c/land_workflows.py"
+chmod -x "$c/land_workflows.py"
+fixture "$c" 1 "$(run_json 91 api completed success test:completed:success)"
+(cd "$c" && GH="$c/gh/gh" LAND_POLL_SECONDS=0 LAND_SETTLE_SECONDS=0 LAND_TIMEOUT_SECONDS=60 \
+	LAND_EXPECTED="$c/land_workflows.py" bash "$LAND" land/1) >"$c/out" 2>&1
+assert "a non-executable land_workflows.py still lands" equal $? 0
+
 # --- a branch origin does not have ---
 c=$(setup missing)
 land "$c" land/404
