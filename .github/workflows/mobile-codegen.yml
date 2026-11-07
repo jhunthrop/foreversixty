@@ -68,4 +68,4 @@ jobs:
       - name: Generated mobile code matches its sources
         run: npx vitest run src/lib/mobile
       - name: Generated design tokens match tokens.json
-        run: node --test ../design/tokens/
+        run: node --test ../design/tokens/tokens.test.mjs

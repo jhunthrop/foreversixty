@@ -120,7 +120,7 @@ jobs:
         run: npm test
       # tokens.css and both apps' token files against design/tokens/tokens.json (node:test).
       - name: the generated design tokens
-        run: node --test ../design/tokens/
+        run: node --test ../design/tokens/tokens.test.mjs
       # LAUNCH MODE (docs/runbooks/landing.md, "Launch mode"): the guide prose test alone.
       - name: the guide prose test (launch mode)
         if: vars.LAUNCH_MODE == 'true'

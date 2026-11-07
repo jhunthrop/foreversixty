@@ -13,7 +13,7 @@ and both apps (spec `design/specs/2026-11-07-mobile-redesign.md` section 2.1).
 colours (class, quality, quality text, faction, tier, parse, school), the faces, the type roles
 (`FSType` / `FsType`: face, size, line, tracking, the Dynamic Type style), space, size, the touch
 target, radius (and `FsShape`), stroke, elevation and motion. Never edit the outputs; each opens
-with a GENERATED line, and `node --test design/tokens/` (the web unit job and `mobile-codegen.yml`)
+with a GENERATED line, and `node --test design/tokens/tokens.test.mjs` (the web unit job and `mobile-codegen.yml`)
 fails when one differs from a fresh run or lost that line. The site is dark only, so the apps are
 dark only.
 
