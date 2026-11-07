@@ -650,7 +650,7 @@
    "title": "Survival Hunter",
    "description": "How to play a melee Survival Hunter in Forever: talents, the Raptor Strike and Mongoose Bite priority, Lone Wolf, stats, consumables and race picks.",
    "summary": "Survival is a melee spec in Forever: two weapons, Raptor Strike queued every time it comes off cooldown, Mongoose Bite whenever it lights up, and no pet in a raid.",
-   "meta": "DPS · Updated 6 Nov",
+   "meta": "DPS · Updated 7 Nov",
    "tabs": [
     {
      "slug": "beast-mastery",
@@ -28464,9 +28464,9 @@
     "priority": 8,
     "cooldowns": 2
    },
-   "stat_rows": 0,
-   "bis": 0,
-   "extras": null,
+   "stat_rows": 7,
+   "bis": 5,
+   "extras": "4/7",
    "ranked": true
   },
   "shaman/enhancement": {
@@ -28477,9 +28477,9 @@
     "priority": 7,
     "cooldowns": 2
    },
-   "stat_rows": 0,
-   "bis": 0,
-   "extras": null,
+   "stat_rows": 8,
+   "bis": 5,
+   "extras": "6/7",
    "ranked": true
   },
   "shaman/restoration": {
@@ -28490,9 +28490,9 @@
     "priority": 10,
     "cooldowns": 3
    },
-   "stat_rows": 0,
-   "bis": 0,
-   "extras": null,
+   "stat_rows": 5,
+   "bis": 5,
+   "extras": "4/9",
    "ranked": true
   },
   "warlock/affliction": {
