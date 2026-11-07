@@ -1,10 +1,11 @@
 """Web-layout mocks: the changelog (/changelog), the content pages (/terms, /privacy, /refunds, /about, /sources, /roadmap), the
 404 page and the build-unavailable page, composed ONLY from ws_prims primitives.
 
-Spec: design/specs/2026-11-08-pages.md. Every word is read from design/mocks/data/pages-facts.json, which
-design/mocks/pages_facts.mjs writes from the collections the pages read (the markdown rendered by the processor Astro uses),
-the copy modules and the pages' own markup literals. Nothing is typed in except the strings this round proposes (PROPOSED below,
-listed in spec section 6.2) and the layout. The legal text is never edited: only its frame.
+Spec: design/specs/2026-11-08-pages.md (section 0A: the rulings). Every word is read from design/mocks/data/pages-facts.json,
+which design/mocks/pages_facts.mjs writes from the collections the pages read (the markdown rendered by the processor Astro
+uses), the pages' copy modules (lib/changelog/copy.ts, lib/not-found/copy.ts) and their models (lib/changelog/entries.ts: the
+order, months, counts, folded pre-launch entries and the site entries' action links). Nothing is typed in except the SAMPLE
+returning visitor's last visit and the layout. The legal text is never edited: only its frame.
 
   node design/mocks/pages_facts.mjs && python3 design/mocks/ws_pages.py
   python3 design/mocks/ws_pages.py [mock ...]                 (every mock, or just those named)
@@ -28,26 +29,12 @@ from ws_prims import (Button, CharacterAnswer, Dated, DatedGroup, Disclosure, Fi
 HERE = Path(__file__).resolve().parent
 F = json.loads(Path(os.environ.get('FS_PAGES_FACTS') or HERE / 'data' / 'pages-facts.json').read_text())
 C = F['copy']
+CL = C['changelog']
+NF = C['notFound']
 M = F['markup']
 LOG = F['changelog']
 ME = F['me']
 SPEC_DOC = 'design/specs/2026-11-08-pages.md'
-
-# The strings this round proposes (spec 6.2). The build adds them to lib/changelog/copy.ts and lib/not-found/copy.ts.
-PROPOSED = {
-    'showLabel': 'Show',
-    'all': 'All', 'game': 'Game', 'site': 'Site',
-    'summary': {'all': 'All changes', 'game': 'Game changes', 'site': 'Site changes'},
-    'barLabel': 'Changelog choices',
-    'changes': lambda n: f'{n} change' if n == 1 else f'{n} changes',
-    'new': 'New',
-    'empty': {'game': 'No game changes yet.', 'site': 'No site changes yet.'},
-    'sections': lambda n: f'{n} sections',
-    'didYouMean': 'Did you mean',
-    'legalTabsLabel': 'Legal pages',
-}
-MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-GAME = {'blizzard', 'community', 'datamined'}
 
 
 def e(text: str) -> str:
@@ -59,83 +46,82 @@ def rsaquo(text: str) -> str:
 
 
 # ------------------------------------------------------------------------------------------------ the changelog
-def month_of(iso: str) -> tuple[str, str]:
-    d = date.fromisoformat(iso)
-    return f'{MONTHS[d.month - 1]} {d.year}', f'{d.year}-{d.month:02d}'
+def lane_html(x: dict) -> str:
+    """The sources (a source tagged only when its kind differs from the entry's), this site's pages as action links (ruling
+    Q5), then the caveat (the note of an entry with a body)."""
+    parts = []
+    if x['sources']:
+        rows = [Row(f'<span class="gold link">{e(s["label"])}</span>', lead=Tag(e(s['tag']), 'muted') if s.get('tag') else '', slim=True)
+                for s in x['sources']]
+        parts.append(LaneBlock(e(C['sources']), RowsSlim(rows)))
+    parts += [f'<p class="dated-a">{Link(e(a["label"]))}</p>' for a in x['actions']]
+    if x.get('caveat'):
+        parts.append(f'<p class="dated-c">{e(x["caveat"])}</p>')
+    return ''.join(parts)
 
 
 def entry_html(x: dict, new: bool = False) -> str:
-    tags = Tag(e(x['kindLabel']), 'muted') + (Tag(PROPOSED['new']) if new else '')
-    body = x['html'].strip()
-    # An entry with no body reads its note as its text; an entry with a body keeps the note as the caveat beside its sources.
-    text = Prose(body) if body else (f'<p class="dated-n">{e(x["note"])}</p>' if x['note'] else '')
-    seen, rows = set(), []
-    for s in x['sources']:
-        if s['url'] in seen:
-            continue
-        seen.add(s['url'])
-        # a source of the entry's own kind carries no tag (the date column already says it)
-        tag = Tag(e(s['kindLabel']), 'muted') if s['kind'] != x['kind'] else ''
-        rows.append(Row(f'<span class="gold link">{e(s["label"])}</span>', lead=tag, slim=True))
-    caveat = f'<p class="dated-c">{e(x["note"])}</p>' if body and x['note'] else ''
-    lane = LaneBlock(e(C['sources']), RowsSlim(rows)) + caveat
-    return Dated(x['id'], x['iso'], e(x['date']), tags, e(x['title']), text, lane)
+    tags = Tag(e(x['kindLabel']), 'muted') + (Tag(e(CL['newTag'])) if new else '')
+    text = Prose(x['html']) if x['html'] else f'<p class="dated-n">{e(x.get("noteAsBody") or "")}</p>'
+    return Dated(x['id'], x['iso'], e(x['date']), tags, e(x['title']), text, lane_html(x), x['folded'])
 
 
-def months(entries: list[dict], new_after: str = '') -> list[tuple[str, str, list[dict]]]:
-    out: list[tuple[str, str, list[dict]]] = []
-    for x in entries:
-        title, anchor = month_of(x['iso'])
-        if not out or out[-1][1] != anchor:
-            out.append((title, anchor, []))
-        out[-1][2].append(x)
-    return out
+def shown_months(show: str) -> list[tuple[str, str, list[dict], str]]:
+    return [(m['title'], m['anchor'], [x for x in m['entries'] if show == 'all' or x['show'] == show], m['meta'][show])
+            for m in LOG['months'] if m['counts'][show] > 0]
+
+
+def coming_up() -> str:
+    """Roadmap's dates still ahead (ruling Q7), its table in Prose, the source in the lane."""
+    cu = LOG['comingUp']
+    rows = ''.join(f'<tr><td>{e(r["when"])}</td><td>{e(r["what"])}</td></tr>' for r in cu['rows'])
+    table = f'<table><thead><tr>{"".join(f"<th>{e(h)}</th>" for h in cu["heads"])}</tr></thead><tbody>{rows}</tbody></table>'
+    lane = LaneBlock(e(C['sources']), RowsSlim([Row(f'<span class="gold link">{e(cu["source"]["label"])}</span>', slim=True)]))
+    return ReadingSection(e(CL['comingUp']), Prose(table), lane, 'coming-up')
 
 
 def changelog_bar(show: str, groups: list, counts: dict, open_m: bool = False) -> str:
-    items = [(PROPOSED[k], k == show, counts[k], '') for k in ('all', 'game', 'site')]
-    lab = PROPOSED['showLabel']
+    items = [(e(CL['show'][k]), k == show, counts[k], '') for k in ('all', 'game', 'site')]
+    lab = e(CL['showLabel'])
+    # the phone stack's months carry their count in the filter (ruling SHOULD)
     toc_m = ('<span class="t-label" style="display:block;margin:8px 0 4px">' + e(C['tocBarLabel']) + '</span>'
-             + RowsSlim([Row(e(t)) for t, _, _ in groups]))
+             + RowsSlim([Row(e(t), trail=f'<span class="t-small">{e(meta)}</span>') for t, _, _, meta in groups]))
     end = f'<span class="toc-sel">{sel(e(C["tocBarLabel"]))}</span>' if groups else ''
+    summary = CL['summary'][show] if counts[show] else f'{CL["summaryWords"][show]} &middot; 0'
     return control_bar([(lab, seg(items, label=lab), seg(items, label=lab) + (toc_m if groups else ''))],
-                       f'{PROPOSED["summary"][show]} &middot; {counts[show]}', end=end, open_m=open_m, label=PROPOSED['barLabel'])
+                       e(summary).replace(' · ', ' &middot; '), end=end, open_m=open_m, label=e(CL['barLabel']))
 
 
 def changelog_page(show: str = 'all', new_after: str = '', open_m: bool = False, force_empty: bool = False, who: tuple | None = None) -> str:
-    entries = LOG['entries']
-    counts = {'all': len(entries), 'game': sum(x['kind'] in GAME for x in entries), 'site': sum(x['kind'] == 'site' for x in entries)}
-    shown = [x for x in entries if show == 'all' or (x['kind'] in GAME) == (show == 'game')]
+    counts = dict(LOG['counts'])
+    groups = shown_months(show)
     if force_empty:   # FORCED (spec 5.1): no filter is empty at this content; the state exists for a kind with no entry yet
-        shown, counts = [], {**counts, show: 0}
-    groups = months(shown)
-    head = PageHeader(e(M['changelog']['h1']), meta=[f'Updated {e(LOG["updated"])}'], lead=e(M['changelog']['description']))
+        groups, counts = [], {**counts, show: 0}
+    head = PageHeader(e(CL['title']), meta=[f'Updated {e(LOG["updated"])}'], lead=e(CL['description']))
+    upcoming = coming_up() if show != 'site' else ''
     if groups:
-        body = ''.join(DatedGroup(t, PROPOSED['changes'](len(xs)), a, ''.join(entry_html(x, bool(new_after) and x['iso'] > new_after) for x in xs))
-                       for t, a, xs in groups)
+        body = upcoming + ''.join(DatedGroup(e(t), e(meta), a, ''.join(entry_html(x, bool(new_after) and x['iso'] > new_after) for x in xs))
+                                  for t, a, xs, meta in groups)
     else:
-        body = f'<p class="empty cl-empty" data-region="{REGION["notes"]}">{PROPOSED["empty"][show]}</p>'
-    toc = Toc(e(C['tocBarLabel']), [(t, a) for t, a, _ in groups], groups[0][1] if groups else '') if groups else ''
+        body = upcoming + f'<p class="empty cl-empty" data-region="{REGION["notes"]}">{e(CL["empty"][show])}</p>'
+    toc = Toc(e(C['tocBarLabel']), [(t, a) for t, a, _, _ in groups], groups[0][1] if groups else '') if groups else ''
     html = head + changelog_bar(show, groups, counts, open_m) + Page('reading', body, toc, toc_label=C['tocBarLabel']) + PAGE_CSS
-    note = (f'Changelog mock ({SPEC_DOC}), built only from ws_prims; every entry is web/src/content/changelog read through pages-facts.json. '
-            f'Filter: {show}.' + (f' Returning visitor: entries after {new_after} carry New (localStorage, proposed CL4).' if new_after else '')
+    note = (f'Changelog mock ({SPEC_DOC}), built only from ws_prims; every entry is web/src/content/changelog read through pages-facts.json '
+            f'(lib/changelog/entries.ts). Filter: {show}. Entries before launch (4 Nov) are title rows that open in place (ruling CL1).'
+            + (f' Returning visitor (SAMPLE last visit {new_after}): later entries carry New (localStorage, CL4).' if new_after else '')
             + (' Empty state FORCED.' if force_empty else ''))
-    return build_page(M['changelog']['title'], html, '', who, note)
+    return build_page(CL['docTitle'], html, '', who, note)
 
 
 # ------------------------------------------------------------------------------------------------ the content pages
-H2 = re.compile(r'<h2(?: id="([^"]*)")?>(.*?)</h2>', re.S)
-COACH_ANCHOR = 'log-coach'   # PROPOSED (gap PG3): CoachPrivacySection's h2 carries no id; the build adds this one
+H2 = re.compile(r'<h2 id="([^"]*)">(.*?)</h2>', re.S)
 
 
 def split_sections(html: str) -> tuple[str, list[tuple[str, str, str]]]:
+    """lib/content-pages/sections.ts splitDocument: every h2 carries its id (the Log coach section's too, gap PG3 closed)."""
     parts = H2.split(html)
     intro, rest = parts[0], parts[1:]
-    out = []
-    for i in range(0, len(rest), 3):
-        anchor, title, inner = rest[i], rest[i + 1], rest[i + 2]
-        out.append((anchor or re.sub(r'[^a-z0-9]+', '-', re.sub(r'<[^>]+>', '', title).lower()).strip('-') or COACH_ANCHOR, title, inner))
-    return intro.strip(), out
+    return intro.strip(), [(rest[i], rest[i + 1], rest[i + 2].strip()) for i in range(0, len(rest), 3)]
 
 
 LEGAL = ('terms', 'privacy', 'refunds')
@@ -148,7 +134,7 @@ def content_page(pid: str, current: str = '', open_toc: bool = False, scroll_to:
     if pid in LEGAL:
         labels = [l['label'] for l in C['legalLinks']]
         active = next(l['label'] for l in C['legalLinks'] if l['href'] == f'/{pid}')
-        tabs = TabStrip(labels, active).replace('<nav class="strip-tabs ph-tabs">', f'<nav class="strip-tabs ph-tabs" aria-label="{PROPOSED["legalTabsLabel"]}">', 1)
+        tabs = TabStrip(labels, active).replace('<nav class="strip-tabs ph-tabs">', f'<nav class="strip-tabs ph-tabs" aria-label="{e(C["legalTabsLabel"])}">', 1)
     # The description is the lead only when the body opens on a heading (the legal pages); a page that opens on a paragraph
     # leads with it (About, Data sources, Roadmap), so the head never says the same thing twice (decision L3).
     head = PageHeader(e(p['title']), meta=[f'Updated {e(p["updated"])}'], tabs=tabs, lead='' if intro else e(p['description']))
@@ -156,7 +142,7 @@ def content_page(pid: str, current: str = '', open_toc: bool = False, scroll_to:
     contents = ''
     if len(secs) > 1:
         contents = ('<div class="doc-toc-m">' + Disclosure(e(C['tocBarLabel']), RowsSlim([Row(t) for _, t, _ in secs]), open_toc,
-                                                          PROPOSED['sections'](len(secs))) + '</div>')
+                                                          e(p['sectionsMeta'])) + '</div>')
     body = contents + body + ''.join(ReadingSection(t, Prose(inner), '', a) for a, t, inner in secs)
     toc_from = 1024 if len(secs) > 1 else 0
     toc = Toc(e(C['tocBarLabel']), [(t, a) for a, t, _ in secs], current or (secs[0][0] if secs else '')) if len(secs) > 1 else ''
@@ -176,13 +162,19 @@ def answer(kind: str) -> str:
     if kind == 'nochar':
         return CharacterAnswer(C['answerLabel'], 'message', text=e(C['noCharacter']), action=Link(rsaquo(C['setupTitle'])))
     cls = ME['class'].lower()
+    # your guide and your best in slot, then the smaller Your character (ruling Q6)
     return CharacterAnswer(C['answerLabel'], 'who', crest_img(cls, 40), e(ME['name']), CLASS_COLOR[cls], f'{e(ME["level_line"])} &middot; {e(ME["identity"])}',
-                           [Link(e(C['callout'])), Link(rsaquo(C['answer']['bis']))])
+                           [Link(e(C['callout'])), Link(rsaquo(C['answer']['bis'])), f'<a class="link cans-sm" href="#">{rsaquo(NF["yourCharacter"])}</a>'])
+
+
+def class_row(c: dict) -> str:
+    """A class row of the 404 picker: crest, the class (its landing) in its colour, each spec a link to its guide (SHOULD)."""
+    specs = '<span class="nf-specs">' + ', '.join(f'<a class="nf-spec" href="#">{e(s["name"])}</a>' for s in c['specs']) + '</span>'
+    return Row(f'<a class="nf-cls" href="#" style="color:{c["color"]}">{e(c["name"])}</a>', specs, lead=crest_img(c['slug'], 44), link=False)
 
 
 def class_picker() -> str:
-    rows = [Row(e(c['name']), ', '.join(e(s['name']) for s in c['specs']), lead=crest_img(c['slug'], 44), title_color=c['color']) for c in F['classes']]
-    return Section(e(M['notFound']['pick']), Plate(RowGrid(rows, 3), e(M['notFound']['pick'])))
+    return Section(e(NF['pick']), Plate(RowGrid([class_row(c) for c in F['classes']], 3), e(NF['pick'])))
 
 
 def lookup() -> str:
@@ -193,19 +185,22 @@ def lookup() -> str:
     return Section(e(L['heading']), f'<p class="t-small nf-aside">{e(L["aside"])}</p>{form}<p class="t-small nf-hint">{e(L["hint"])}</p>')
 
 
-SUGGEST = ('/guides/hunter/beastmastery', 'Beast Mastery Hunter guide')   # SAMPLE (spec 4.3 N3): a mistyped guide address
+SUGGEST = (F['suggest']['from'], F['suggest']['page'][1])   # SAMPLE address (pages_facts.mjs); its match is lib/not-found/suggest.ts's
+CHARACTER_PATH = '/character/us/normal'   # SAMPLE: a dead character address (no name), signed out
 
 
-def not_found_page(kind: str = 'out', suggest: bool = False) -> str:
-    nf = M['notFound']
-    path = SUGGEST[0] if suggest else '/this-page-does-not-exist'
-    head = PageHeader(e(nf['h1']), meta=[e(path)], answer='' if kind == 'out' else answer(kind), lead=e(nf['job']))
-    did = (f'<div data-region="{REGION["notes"]}">' + Notice(PROPOSED['didYouMean'], Link(rsaquo(SUGGEST[1])), 'neutral') + '</div>') if suggest else ''
-    main = class_picker() + f'<div class="section">{lookup()}</div>'
+def not_found_page(kind: str = 'out', suggest: bool = False, character: bool = False) -> str:
+    path = SUGGEST[0] if suggest else (CHARACTER_PATH if character else '/this-page-does-not-exist')
+    head = PageHeader(e(NF['title']), meta=[e(path)], answer='' if kind == 'out' else answer(kind), lead=e(NF['job']))
+    did = (f'<div data-region="{REGION["notes"]}">' + Notice(e(NF['didYouMean']), Link(rsaquo(SUGGEST[1])), 'neutral') + '</div>') if suggest else ''
+    # signed out on a dead /character/ address the lookup comes first (SHOULD)
+    picker, look = class_picker(), f'<div class="section">{lookup()}</div>'
+    main = (look + picker) if character and kind == 'out' else (picker + look)
     who = (ME['name'], ME['class'].lower(), ME['level_line']) if kind != 'out' else None
     html = head + did + Page('ledger', main) + PAGE_CSS
-    note = f'404 mock ({SPEC_DOC}); copy from 404.astro and the copy modules (pages-facts.json). State: {kind}' + (', did-you-mean (proposed N3).' if suggest else '.')
-    return build_page(nf['docTitle'], html, '', who, note)
+    note = (f'404 mock ({SPEC_DOC}); copy from lib/not-found/copy.ts and the shared copy modules (pages-facts.json). State: {kind}'
+            + (', did-you-mean (N3).' if suggest else '') + (', a dead /character/ address: the lookup first.' if character else '.'))
+    return build_page(NF['docTitle'], html, '', who, note)
 
 
 def unavailable_page() -> str:
@@ -221,24 +216,24 @@ def states_page() -> str:
 
     def block(title: str, html: str) -> None:
         blocks.append(f'<section class="st-b"><h2 class="t-h3">{title}</h2>{html}</section>')
-    c = {'all': 38, 'game': 24, 'site': 14}
-    segs = [seg([(PROPOSED[k], k == 'all', c[k], '') for k in c], label='Show'),
-            seg([(PROPOSED[k], k == 'all', c[k], '') for k in c], label='Show').replace('<a href="#" role="radio" aria-checked="false" class="">', '<a href="#" role="radio" aria-checked="false" class="hov">', 1),
-            seg([(PROPOSED[k], k == 'all', c[k], '') for k in c], label='Show').replace('<a href="#" role="radio" aria-checked="false" class="">', '<a href="#" role="radio" aria-checked="false" class="fv">', 1)]
+    c = LOG['counts']
+    segs = [seg([(e(CL['show'][k]), k == 'all', c[k], '') for k in c], label='Show'),
+            seg([(e(CL['show'][k]), k == 'all', c[k], '') for k in c], label='Show').replace('<a href="#" role="radio" aria-checked="false" class="">', '<a href="#" role="radio" aria-checked="false" class="hov">', 1),
+            seg([(e(CL['show'][k]), k == 'all', c[k], '') for k in c], label='Show').replace('<a href="#" role="radio" aria-checked="false" class="">', '<a href="#" role="radio" aria-checked="false" class="fv">', 1)]
     block('Show (changelog bar): selected All; hover on Game; focus-visible on Game', '<div class="st-row">' + ''.join(segs) + '</div>')
-    x = LOG['entries']
+    x = [y for m in LOG['months'] for y in m['entries']]
     block('Entry: default; a returning visitor&rsquo;s New entry; the permalink date hovered (gold)', '<div class="st-entries">'
           + entry_html(x[2]) + entry_html(x[0], True) + entry_html(x[1]).replace('class="d"', 'class="d st-hov"', 1) + '</div>')
     block('Entry: a game entry with three sources and its caveat; an entry whose only text is its note',
           '<div class="st-entries">' + entry_html(next(y for y in x if y['id'] == '2026-09-13-item-and-loot-pass'))
           + entry_html(next(y for y in x if y['id'] == '2026-09-12-forever-announced')) + '</div>')
-    block('Filtered to a kind with no entry (FORCED)', f'<p class="empty cl-empty">{PROPOSED["empty"]["site"]}</p>')
+    block('Filtered to a kind with no entry (FORCED)', f'<p class="empty cl-empty">{e(CL["empty"]["site"])}</p>')
     privacy = F['pages']['privacy']
     _, secs = split_sections(privacy['html'])
     block('Contents rail: the current section (gold, aria-current); a hovered link', '<nav class="toc st-toc">'
           + Toc(e(C['tocBarLabel']), [(t, a) for a, t, _ in secs], 'cookies').replace('<a href="#data-retention"', '<a class="st-hov2" href="#data-retention"', 1) + '</nav>')
-    block('Contents on a phone: closed; open', '<div class="st-row st-col">' + Disclosure(e(C['tocBarLabel']), '', False, PROPOSED['sections'](len(secs)))
-          + Disclosure(e(C['tocBarLabel']), RowsSlim([Row(t) for _, t, _ in secs]), True, PROPOSED['sections'](len(secs))) + '</div>')
+    block('Contents on a phone: closed; open', '<div class="st-row st-col">' + Disclosure(e(C['tocBarLabel']), '', False, e(privacy['sectionsMeta']))
+          + Disclosure(e(C['tocBarLabel']), RowsSlim([Row(t) for _, t, _ in secs]), True, e(privacy['sectionsMeta'])) + '</div>')
     labels = [l['label'] for l in C['legalLinks']]
     block('Legal tabs: Privacy current; Terms hovered; Refunds focus-visible', TabStrip(labels, 'Privacy').replace('<a href="#" class="">', '<a href="#" class="st-tab-h">', 1)
           .replace('<a href="#" class="">', '<a href="#" class="st-tab-f">', 1))
@@ -247,10 +242,12 @@ def states_page() -> str:
         block(t, '<div class="st-ans">' + answer(k) + '</div>')
     L = C['lookup']
     block('Look up: the empty name submitted; a name no character can have', f'<p class="t-small wipe" role="alert">{e(L["empty"])}</p><p class="t-small wipe" role="alert">{e(L["invalid"])}</p>')
-    block('Did you mean (404, proposed N3)', Notice(PROPOSED['didYouMean'], Link(rsaquo(SUGGEST[1])), 'neutral'))
-    block('Class row (404 plate): focus-visible; hover; default', '<div class="st-rows">' + RowGrid([
-        Row(e(cc['name']), ', '.join(e(s['name']) for s in cc['specs']), lead=crest_img(cc['slug'], 44), title_color=cc['color']) for cc in F['classes'][:3]], 3)
-        .replace('<a class="row"', '<a class="row hov"', 2).replace('<a class="row hov"', '<a class="row"', 1).replace('<a class="row"', '<a class="row fv"', 1) + '</div>')
+    block('Did you mean (404, proposed N3)', Notice(e(NF['didYouMean']), Link(rsaquo(SUGGEST[1])), 'neutral'))
+    block('Class row (404 plate): the class link focus-visible; a spec link hovered; default', '<div class="st-rows">' + RowGrid([class_row(cc) for cc in F['classes'][:3]], 3)
+        .replace('class="nf-cls"', 'class="nf-cls fv"', 1).replace('class="nf-spec"', 'class="nf-spec"', 3).replace('<a class="nf-spec" href="#">', '<a class="nf-spec hov" href="#">', 4)
+        .replace('<a class="nf-spec hov" href="#">', '<a class="nf-spec" href="#">', 3) + '</div>')
+    block('Entry before launch: folded (a title row); opened in place', '<div class="st-entries">' + entry_html(x[-1])
+          + entry_html(x[-2]).replace('<details class="dated-f"', '<details open class="dated-f"', 1) + '</div>')
     body = '<div class="pc" style="padding-top:24px"><h1 class="t-title">Changelog, content pages and 404: element states</h1></div>' + Page('ledger', f'<div class="statesheet">{"".join(blocks)}</div>') + PAGE_CSS
     return build_page('Pages states', body, '', None, f'States sheet ({SPEC_DOC}); data as the page mocks.')
 
@@ -261,9 +258,13 @@ main{padding-bottom:var(--section-gap)}
 .toc-sel{display:inline-flex}@media(min-width:1760px){.toc-sel{display:none}}
 @media(max-width:767px){.cbar .pc{padding-block:0;min-height:0}}
 .cl-empty{padding:24px 0}
-.doc-toc-m{margin-bottom:8px}@media(min-width:1024px){.doc-toc-m{display:none}}
+.doc-toc-m{margin:calc(12px - var(--section-gap)) 0 8px}@media(min-width:1024px){.doc-toc-m{display:none}}
 .doc-intro+.rsec{margin-top:0}
 .nf-aside{margin:12px 0 16px}.nf-hint{margin-top:10px}
+.nf-cls{font:700 15px/20px var(--font-body)}.nf-cls:hover{text-decoration:underline}
+.nf-specs{display:block;font-size:13px;line-height:18px;color:var(--muted)}.nf-spec{color:var(--muted)}.nf-spec:hover,.nf-spec.hov{color:var(--gold-hover)}
+.nf-cls.fv,.nf-spec.fv{outline:2px solid var(--gold);outline-offset:2px}
+.dated-a{margin:0}
 .statesheet{display:grid;gap:40px}.st-b>h2{margin-bottom:12px}.st-row{display:flex;gap:24px;flex-wrap:wrap;align-items:flex-start}.st-col{flex-direction:column;max-width:420px}
 .st-entries{max-width:1248px}.st-toc{display:block;width:220px}.st-ans{max-width:520px}.st-rows{max-width:1248px}
 .seg a.hov{background:var(--hover);color:var(--strong)}.seg a.fv{outline:2px solid var(--gold);outline-offset:-2px}
@@ -287,13 +288,13 @@ PAGES = {
     'web-legal-refunds': lambda: content_page('refunds'),
     'web-about': lambda: content_page('about'),
     'web-about-sources': lambda: content_page('sources'),
-    'web-about-roadmap': lambda: content_page('roadmap'),
     'web-404': lambda: not_found_page(),
     'web-404-in': lambda: not_found_page('who'),
     'web-404-loading': lambda: not_found_page('loading'),
     'web-404-error': lambda: not_found_page('error'),
     'web-404-nochar': lambda: not_found_page('nochar'),
     'web-404-suggest': lambda: not_found_page(suggest=True),
+    'web-404-character': lambda: not_found_page(character=True),
     'web-b-unavailable': unavailable_page,
     'web-pages-states': states_page,
 }
@@ -309,7 +310,7 @@ def compare(before: Path) -> None:
         for w, sc in ((1440, .5), (1920, .42), (2000, .4), (390, .8)):
             print(ws_compose.compose(name, live, mock, w, sc, max_h=6000))
     for name, live, mock in (('404-in', '404-in', 'web-404-in'), ('terms', 'terms', 'web-legal-terms'), ('refunds', 'refunds', 'web-legal-refunds'),
-                             ('sources', 'sources', 'web-about-sources'), ('roadmap', 'roadmap', 'web-about-roadmap'), ('b-unavailable', 'b-unavailable', 'web-b-unavailable')):
+                             ('sources', 'sources', 'web-about-sources'), ('b-unavailable', 'b-unavailable', 'web-b-unavailable')):
         for w, sc in ((1440, .5), (390, .8)):
             print(ws_compose.compose(name, live, mock, w, sc, max_h=6000))
 

@@ -1205,7 +1205,19 @@ PRIM_CSS += '''
 .dated-g>.sec-h>.t-small{margin-left:auto}
 .cans-row{display:flex;align-items:center;gap:12px}.cans-who{display:flex;flex-direction:column;min-width:0}.cans-name{font:700 18px/22px var(--font-body)}
 .cans-links{display:flex;gap:4px 16px;flex-wrap:wrap}
-@media(min-width:900px){.cans-row{flex-direction:row-reverse}.cans-who{align-items:flex-end}.cans-links{justify-content:flex-end}}
+@media(min-width:900px){.cans-row{justify-content:flex-end}.cans-who{align-items:flex-start;text-align:left}.cans-links{justify-content:flex-end}}
+.cans-links .cans-sm{font-size:13px;line-height:20px;align-self:center}
+.dated-f{padding:0;scroll-margin-top:72px;border-bottom:1px solid var(--line-soft)}.dated-f:last-child{border-bottom:0}
+.dated-f>summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:auto minmax(0,1fr);grid-template-areas:'d g' 'h h';align-items:center;gap:4px 10px;padding:14px 0;min-height:44px}
+.dated-f>summary>.d{grid-area:d}.dated-f>summary>.dated-k{grid-area:g;display:flex;gap:6px}.dated-f>summary>h3{grid-area:h}
+.dated-f>summary::-webkit-details-marker{display:none}
+.dated-f>summary h3{font:700 16px/22px var(--font-body);color:var(--strong);margin:0;display:flex;gap:8px;align-items:baseline}
+.dated-f>summary h3::before{content:'\\25B8';font-size:11px;color:var(--muted);flex:none}.dated-f[open]>summary h3::before{content:'\\25BE'}
+.dated-f>summary:hover h3{color:var(--gold-hover)}
+.dated-f>summary>.d{font:600 14px/20px var(--font-body);font-variant-numeric:tabular-nums;color:var(--muted)}
+.dated-o{display:grid;grid-template-columns:minmax(0,1fr);gap:10px var(--gap);padding:0 0 24px}
+@media(min-width:1280px){.dated-f>summary,.dated-o{grid-template-columns:120px var(--measure-reading) minmax(0,1fr);column-gap:var(--gap)}.dated-f>summary{grid-template-areas:'d h g'}.dated-o>.dated-b{grid-column:2}}
+.dated-g>.sec-h+.dated-list>.dated-f:first-child>summary{padding-top:20px}
 '''
 
 _Page3 = Page
@@ -1223,9 +1235,13 @@ def Page(layout: str, main: str = '', rail: str = '', sticky_rail: bool = False,
     return html
 
 
-def Dated(anchor: str, iso: str, date: str, tags: str, title: str, body: str, lane: str = '') -> str:
-    """One entry of a dated log: the date (a permalink to the entry) over its tags, the entry, its lane (sources, a caveat)."""
+def Dated(anchor: str, iso: str, date: str, tags: str, title: str, body: str, lane: str = '', folded: bool = False) -> str:
+    """One entry of a dated log: the date (a permalink to the entry) over its tags, the entry, its lane (sources, a caveat).
+    folded (ruling CL1, entries before launch): a title row (date, tags, title) that opens in place onto the body and lane."""
     lane_html = f'<div class="dated-l">{lane}</div>' if lane else ''
+    if folded:
+        return (f'<details class="dated-f" id="{anchor}"><summary><time class="d" datetime="{iso}">{date}</time>'
+                f'<h3>{title}</h3><span class="dated-k">{tags}</span></summary><div class="dated-o"><div class="dated-b">{body}</div>{lane_html}</div></details>')
     return (f'<article class="dated" id="{anchor}"><div class="dated-w"><a class="d" href="#{anchor}"><time datetime="{iso}">{date}</time></a>{tags}</div>'
             f'<div class="dated-b"><h3>{title}</h3>{body}</div>{lane_html}</article>')
 

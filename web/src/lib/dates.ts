@@ -7,6 +7,27 @@ export function formatDate(d: Date): string {
   return `${d.getUTCDate()} ${MONTHS[d.getUTCMonth()]}`;
 }
 
+const FULL_MONTHS = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
+];
+
+/** "November 2026" in UTC: a dated log's month heading (the changelog). */
+export function monthHeading(d: Date): string {
+  if (Number.isNaN(d.getTime())) return '';
+  return `${FULL_MONTHS[d.getUTCMonth()]} ${d.getUTCFullYear()}`;
+}
+
 export function isPast(d: Date, now: Date = new Date()): boolean {
   return d.getTime() < now.getTime();
 }

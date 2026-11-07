@@ -4,6 +4,8 @@
 import { COACH_MODEL_PROVIDER } from './provider';
 
 export const COACH_PRIVACY_HEADING = 'Log coach';
+/** The section's anchor (pages spec 2026-11-08 gap PG3): the contents rail links it like any heading. */
+export const COACH_PRIVACY_ID = 'log-coach';
 export const PRIVACY_SLUG = 'privacy';
 // The section sits after "Stripe", so it goes in front of the next heading.
 export const COACH_SECTION_BEFORE = '<h2 id="cookies">';
@@ -42,4 +44,23 @@ export function splitBeforeHeading(html: string, heading: string): [string, stri
   if (at < 0)
     throw new Error(`the privacy page has no ${heading} heading to place the Log coach section before`);
   return [html.slice(0, at), html.slice(at)];
+}
+
+const escapeHtml = (text: string): string =>
+  text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
+/** The section as HTML, in the rendered markdown's own shape (an `h2` with its id, paragraphs, a list). */
+export function coachPrivacyHtml(section: CoachPrivacySection): string {
+  const paragraphs = section.paragraphs.map((text) => `<p>${escapeHtml(text)}</p>`).join('');
+  const links = section.links
+    .map((link) => `<li><a href="${escapeHtml(link.href)}">${escapeHtml(link.label)}</a></li>`)
+    .join('');
+  return `<h2 id="${COACH_PRIVACY_ID}">${escapeHtml(section.heading)}</h2>${paragraphs}<ul>${links}</ul>`;
+}
+
+/** A content page's body: the privacy page gains its Log coach section before Cookies. */
+export function withCoachSection(slug: string, html: string, section: CoachPrivacySection): string {
+  if (slug !== PRIVACY_SLUG) return html;
+  const [head, tail] = splitBeforeHeading(html, COACH_SECTION_BEFORE);
+  return head + coachPrivacyHtml(section) + tail;
 }

@@ -4,12 +4,14 @@
 //  - the collections the pages read: web/src/content/changelog/*.md and web/src/content/pages/*.md (frontmatter through
 //    `yaml`, the body rendered by lib/guides/markdown.ts, the processor Astro's own markdown pipeline uses, so the heading
 //    ids are the built page's); the changelog in changelog.astro's own order (date, newest first; ties in collection order);
-//  - the privacy page's Log coach section: lib/coach/privacy-section.ts (coachPrivacySection, splitBeforeHeading), placed
-//    as LegalBody.astro places it, in CoachPrivacySection.astro's markup;
+//  - the changelog's model: lib/changelog/entries.ts (sortedEntries, changelogMonths, showCounts: the order, months, counts,
+//    folded pre-launch entries, the sources lane and the site entries' action links) and lib/changelog/coming-up.ts;
+//  - the privacy page's Log coach section: lib/coach/privacy-section.ts (withCoachSection, its h2 carries its id);
 //  - copy: lib/guides/copy.ts (the answer's label, the guide callout, no character, the contents label),
 //    lib/account/answer-copy.ts, lib/addon/copy.ts (setupPageTitle), lib/home-landing-copy.ts (the character lookup),
-//    lib/footer-copy.ts (the legal links), lib/sources.ts (pillLabelFor), lib/dates.ts (formatDate, latest), lib/characters.ts;
-//  - strings that live in markup (gap PG1): changelog.astro, 404.astro, b-unavailable.astro, read from the files verbatim;
+//    lib/footer-copy.ts (the legal links), lib/sources.ts (pillLabelFor), lib/dates.ts (formatDate, latest), lib/characters.ts,
+//    lib/changelog/copy.ts and lib/not-found/copy.ts (the pages' own strings, gap PG1), lib/not-found/suggest.ts (knownPages);
+//  - strings that live in markup: b-unavailable.astro (the Premium lane's page), read from the file verbatim;
 //  - data: src/data/classes.json, specs.json; the signed-in fixture web/tests/e2e/fixtures/home/me-34.json (descriptorLines).
 import { createRequire } from "node:module";
 import { existsSync, mkdtempSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
@@ -32,16 +34,10 @@ function collection(dir) {
   });
 }
 const read = (p) => readFileSync(join(WEB, p), "utf8");
-// Markup literals, verbatim from their files (gap PG1: no copy module carries them yet).
+// Markup literals, verbatim from their file (b-unavailable.astro is the Premium lane's page; its copy stays in markup).
 const attr = (text, name) => new RegExp(`${name}="([^"]*)"`).exec(text)?.[1];
-const changelogAstro = read("src/pages/changelog.astro");
-const notFoundAstro = read("src/pages/404.astro");
 const unavailableAstro = read("src/pages/b-unavailable.astro");
 const markup = {
-  changelog: { title: attr(changelogAstro, "title"), description: attr(changelogAstro, "description"),
-    h1: /<h1[^>]*>([^<]+)<\/h1>/.exec(changelogAstro)[1].trim() },
-  notFound: { docTitle: attr(notFoundAstro, "title"), description: attr(notFoundAstro, "description"), eyebrow: attr(notFoundAstro, "eyebrow"),
-    h1: /<PageHead[\s\S]*?title="([^"]+)"/.exec(notFoundAstro)[1], job: attr(notFoundAstro, "job"), pick: /<Card[^>]*title="([^"]+)"/.exec(notFoundAstro)[1] },
   unavailable: { docTitle: attr(unavailableAstro, "title"), description: attr(unavailableAstro, "description"),
     h1: /<h1[^>]*>([^<]+)<\/h1>/.exec(unavailableAstro)[1].trim(),
     paragraphs: [...unavailableAstro.matchAll(/<p[^>]*>([\s\S]*?)<\/p>/g)].map((m) => m[1].replace(/\s+/g, " ").trim()) },
@@ -52,7 +48,7 @@ import classes from ${src("src/data/classes.json")};
 import specs from ${src("src/data/specs.json")};
 import me34 from ${src("tests/e2e/fixtures/home/me-34.json")};
 import { renderGuideMarkdown } from ${src("src/lib/guides/markdown.ts")};
-import { coachPrivacySection, splitBeforeHeading, COACH_SECTION_BEFORE, PRIVACY_SLUG } from ${src("src/lib/coach/privacy-section.ts")};
+import { coachPrivacySection, withCoachSection } from ${src("src/lib/coach/privacy-section.ts")};
 import { formatDate, latest } from ${src("src/lib/dates.ts")};
 import { pillLabelFor } from ${src("src/lib/sources.ts")};
 import { guidesCopy } from ${src("src/lib/guides/copy.ts")};
@@ -60,45 +56,52 @@ import { answerCopy } from ${src("src/lib/account/answer-copy.ts")};
 import { addonCopy } from ${src("src/lib/addon/copy.ts")};
 import { homeCharacterSearchCopy } from ${src("src/lib/home-landing-copy.ts")};
 import { FOOTER_LEGAL_LINKS, FOOTER_COLUMNS } from ${src("src/lib/footer-copy.ts")};
-import { RULESETS, REGIONS } from ${src("src/lib/characters.ts")};
+import { RULESETS, REGIONS, characterHref } from ${src("src/lib/characters.ts")};
 import { descriptorLines } from ${src("src/lib/character-header/descriptor.ts")};
-const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-// CoachPrivacySection.astro's markup (its h2 carries no id: gap PG3).
-function coachHtml(s) {
-  return '<h2>' + esc(s.heading) + '</h2>' + s.paragraphs.map((p) => '<p>' + esc(p) + '</p>').join('')
-    + '<ul>' + s.links.map((l) => '<li><a href="' + esc(l.href) + '">' + esc(l.label) + '</a></li>').join('') + '</ul>';
-}
-const h2s = (html) => [...html.matchAll(/<h2(?: id="([^"]*)")?>([\\s\\S]*?)<\\/h2>/g)].map((m) => ({ id: m[1] ?? null, title: m[2].replace(/<[^>]+>/g, '') }));
+import { changelogCopy } from ${src("src/lib/changelog/copy.ts")};
+import { changelogMonths, showCounts, sortedEntries, SHOWS } from ${src("src/lib/changelog/entries.ts")};
+import { COMING_UP, COMING_UP_HEADS, COMING_UP_SOURCE } from ${src("src/lib/changelog/coming-up.ts")};
+import { notFoundCopy } from ${src("src/lib/not-found/copy.ts")};
+import { knownPages, suggestPage } from ${src("src/lib/not-found/suggest.ts")};
+import { splitDocument } from ${src("src/lib/content-pages/sections.ts")};
+import { contentPagesCopy } from ${src("src/lib/content-pages/copy.ts")};
+const h2s = (html) => splitDocument(html).sections.map((s) => ({ id: s.id, title: s.title }));
+const bySlug = (slug) => classes.find((c) => c.slug === slug);
 export async function run(changelog, pages) {
-  // changelog.astro: sorted by date, newest first; Updated is the newest entry's updated.
-  const sorted = [...changelog].sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
-  const entries = [];
-  for (const e of sorted) {
-    const date = new Date(e.data.date);
-    entries.push({ id: e.id, iso: date.toISOString().slice(0, 10), date: formatDate(date), title: e.data.title, kind: e.data.kind,
-      kindLabel: pillLabelFor(e.data.kind), note: e.data.note ?? null, html: await renderGuideMarkdown(e.body),
-      sources: e.data.sources.map((s) => ({ ...s, kindLabel: pillLabelFor(s.kind) })) });
-  }
+  // changelog.astro: the collection through lib/changelog/entries.ts, each body rendered as the build renders it.
+  const inputs = [];
+  for (const e of changelog) inputs.push({ id: e.id, data: { ...e.data, date: new Date(e.data.date) }, html: await renderGuideMarkdown(e.body) });
+  const entries = sortedEntries(inputs);
+  const counts = showCounts(entries);
+  const months = changelogMonths(entries).map((m) => ({ ...m, meta: Object.fromEntries(SHOWS.map((s) => [s, changelogCopy.changes(m.counts[s])])) }));
   const content = {};
   for (const p of pages) {
-    let html = await renderGuideMarkdown(p.body);
-    if (p.id === PRIVACY_SLUG) { const [head, tail] = splitBeforeHeading(html, COACH_SECTION_BEFORE); html = head + coachHtml(coachPrivacySection()) + tail; }
+    const html = withCoachSection(p.id, await renderGuideMarkdown(p.body), coachPrivacySection());
     content[p.id] = { id: p.id, title: p.data.title, description: p.data.description ?? '', updated: formatDate(new Date(p.data.updated)),
-      confidence: p.data.confidence ?? null, sources: p.data.sources, html, headings: h2s(html) };
+      confidence: p.data.confidence ?? null, sources: p.data.sources, html, headings: h2s(html),
+      sectionsMeta: contentPagesCopy.sections(h2s(html).length) };
   }
   const c = me34.characters[0];
   const d = descriptorLines(c);
+  const specPages = specs.map((s) => ({ classSlug: s.class_slug, className: bySlug(s.class_slug)?.name ?? s.class_slug, specSlug: s.spec_slug, specName: s.name }));
+  const known = knownPages(classes, specPages);
+  const SUGGEST_FROM = '/guides/hunter/beastmastery';   // SAMPLE (spec 4.4 N3): a mistyped guide address
   return {
-    changelog: { updated: formatDate(latest(changelog.map((e) => new Date(e.data.updated)))), entries },
+    changelog: { updated: formatDate(latest(changelog.map((e) => new Date(e.data.updated)))), counts, months,
+      comingUp: { heads: COMING_UP_HEADS, rows: COMING_UP, source: { ...COMING_UP_SOURCE, kindLabel: pillLabelFor(COMING_UP_SOURCE.kind) } } },
     pages: content,
     copy: {
       answerLabel: guidesCopy.answerLabel, noCharacter: guidesCopy.noCharacter, tocBarLabel: guidesCopy.tocBarLabel, sources: guidesCopy.sources,
       callout: guidesCopy.signedInCallout(c.spec, c.class), answer: answerCopy, setupTitle: addonCopy.setupPageTitle,
       lookup: homeCharacterSearchCopy, legalLinks: FOOTER_LEGAL_LINKS, aboutLinks: FOOTER_COLUMNS.find((x) => x.heading === 'About').links,
       rulesets: RULESETS, regions: REGIONS, sourceLabels: Object.fromEntries(['blizzard', 'datamined', 'community', 'site'].map((k) => [k, pillLabelFor(k)])),
+      changelog: { ...changelogCopy, summary: Object.fromEntries(SHOWS.map((s) => [s, changelogCopy.summary(s, counts[s])])) },
+      notFound: { ...notFoundCopy },
+      legalTabsLabel: contentPagesCopy.legalTabsLabel,
     },
     classes: classes.map((k) => ({ ...k, specs: specs.filter((s) => s.class_slug === k.slug).sort((a, b) => a.tree_index - b.tree_index).map((s) => ({ name: s.name, slug: s.spec_slug, icon: s.icon })) })),
-    me: { name: c.name, class: c.class, spec: c.spec, level: c.level, identity: d.identity, level_line: d.level },
+    me: { name: c.name, class: c.class, spec: c.spec, level: c.level, identity: d.identity, level_line: d.level, href: characterHref(c.region, c.ruleset, c.name) },
+    suggest: { from: SUGGEST_FROM, page: suggestPage(SUGGEST_FROM, known), known: known.length },
   };
 }`;
 const generatedFallback = {
