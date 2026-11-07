@@ -9,9 +9,9 @@
 //  - fixtures: web/tests/e2e/fixtures/home/me-34.json, me-new.json, web/tests/e2e/fixtures/setup/*.json.
 //  - the plate's rows and the head answer: lib/setup/steps.ts and lib/setup/answer.ts, the page's own models.
 import { createRequire } from "node:module";
-import { mkdtempSync, writeFileSync } from "node:fs";
+import { existsSync, mkdtempSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { basename, join } from "node:path";
 import { pathToFileURL } from "node:url";
 
 const WEB = new URL("../../web/", import.meta.url).pathname;
@@ -87,10 +87,22 @@ export default {
   pairing: { ...strip(pairingCopy), success_line: pairingCopy.success(devices[0].name), code_line: pairingCopy.codeLine(Math.round(pairCode.expires_in / 60)) }, logs_companion: logsCompanionCopy, session_failed: yourReportsPageCopy.sessionFailed,
   wrong_prefix: addonCopy.wrongPrefix('FS2', 'FS1'),
 };`;
+// CI's parity job serves a downloaded dist and never runs sync:data, so src/data/generated is absent
+// there; the head answer's BiS link reads it. Fall back to the fixture the fixture build publishes.
+const generatedFallback = {
+  name: "generated-fallback",
+  setup(build) {
+    build.onResolve({ filter: /data\/generated\/[^/]+\.json$/ }, (args) => {
+      const wanted = join(args.resolveDir, args.path);
+      if (existsSync(wanted)) return { path: wanted };
+      return { path: join(WEB, "src/fixtures/planner", basename(args.path)) };
+    });
+  },
+};
 const dir = mkdtempSync(join(tmpdir(), "setup-facts-"));
 const outfile = join(dir, "facts.mjs");
 await esbuild.build({ stdin: { contents: entry, resolveDir: WEB, loader: "ts" }, bundle: true, platform: "node", format: "esm",
-  outfile, logLevel: "error", define: { "import.meta.env": "{}" }, loader: { ".json": "json" } });
+  outfile, logLevel: "error", define: { "import.meta.env": "{}" }, loader: { ".json": "json" }, plugins: [generatedFallback] });
 const facts = (await import(pathToFileURL(outfile).href)).default;
 writeFileSync(OUT, JSON.stringify(facts, null, 1) + "\n");
 console.log(OUT.pathname);
