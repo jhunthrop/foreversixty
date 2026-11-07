@@ -3773,28 +3773,42 @@
             "name": "Moonfire",
             "condition": "When less time is left than a Wrath takes to cast: only an instant lands in time, and Moonfire's hit is the best instant you have.",
             "icon": "spell_nature_starfall",
-            "race_spell_ids": {}
+            "race_spell_ids": {
+              "windshaper-skyborne": 8921
+            }
           },
           {
-            "spell_id": 5177,
+            "spell_id": 5178,
             "name": "Wrath",
             "condition": "When the next Starfire would not finish before the fight ends; before you have Starfire at 20, in the fight's last few seconds.",
             "icon": "spell_nature_abolishmagic",
-            "race_spell_ids": {}
+            "race_spell_ids": {
+              "high-order-skyborne": 5177,
+              "night-elf": 5177,
+              "tauren": 5177,
+              "windshaper-skyborne": 5176
+            }
           },
           {
             "spell_id": 8924,
             "name": "Moonfire",
             "condition": "When Moonfire is not ticking on the target.",
             "icon": "spell_nature_starfall",
-            "race_spell_ids": {}
+            "race_spell_ids": {
+              "windshaper-skyborne": 8921
+            }
           },
           {
-            "spell_id": 5177,
+            "spell_id": 5178,
             "name": "Wrath",
             "condition": "Before Starfire at 20 it is your filler; from 20 only while your mana is behind the fight, and from 40 only while Innervate is on cooldown.",
             "icon": "spell_nature_abolishmagic",
-            "race_spell_ids": {}
+            "race_spell_ids": {
+              "high-order-skyborne": 5177,
+              "night-elf": 5177,
+              "tauren": 5177,
+              "windshaper-skyborne": 5176
+            }
           }
         ]
       },
@@ -3868,32 +3882,48 @@
         "level": 18,
         "lines": [
           {
-            "spell_id": 8924,
+            "spell_id": 8925,
             "name": "Moonfire",
             "condition": "When less time is left than a Wrath takes to cast: only an instant lands in time, and Moonfire's hit is the best instant you have.",
             "icon": "spell_nature_starfall",
-            "race_spell_ids": {}
+            "race_spell_ids": {
+              "high-order-skyborne": 8921,
+              "night-elf": 8924,
+              "tauren": 8924,
+              "windshaper-skyborne": 8921
+            }
           },
           {
-            "spell_id": 5177,
+            "spell_id": 5178,
             "name": "Wrath",
             "condition": "When the next Starfire would not finish before the fight ends; before you have Starfire at 20, in the fight's last few seconds.",
             "icon": "spell_nature_abolishmagic",
-            "race_spell_ids": {}
+            "race_spell_ids": {
+              "night-elf": 5177,
+              "tauren": 5177
+            }
           },
           {
-            "spell_id": 8924,
+            "spell_id": 8925,
             "name": "Moonfire",
             "condition": "When Moonfire is not ticking on the target.",
             "icon": "spell_nature_starfall",
-            "race_spell_ids": {}
+            "race_spell_ids": {
+              "high-order-skyborne": 8921,
+              "night-elf": 8924,
+              "tauren": 8924,
+              "windshaper-skyborne": 8921
+            }
           },
           {
-            "spell_id": 5177,
+            "spell_id": 5178,
             "name": "Wrath",
             "condition": "Before Starfire at 20 it is your filler; from 20 only while your mana is behind the fight, and from 40 only while Innervate is on cooldown.",
             "icon": "spell_nature_abolishmagic",
-            "race_spell_ids": {}
+            "race_spell_ids": {
+              "night-elf": 5177,
+              "tauren": 5177
+            }
           }
         ]
       },
@@ -7156,11 +7186,14 @@
         "level": 10,
         "lines": [
           {
-            "spell_id": 774,
+            "spell_id": 1058,
             "name": "Rejuvenation",
             "condition": "On the tank whenever it is not ticking, at rank 10 in a raid.",
             "icon": "spell_nature_rejuvenation",
-            "race_spell_ids": {}
+            "race_spell_ids": {
+              "night-elf": 774,
+              "tauren": 774
+            }
           },
           {
             "spell_id": 5186,
@@ -7168,7 +7201,6 @@
             "condition": "On the tank under 55%, only while your mana is ahead of the fight.",
             "icon": "spell_nature_healingtouch",
             "race_spell_ids": {
-              "high-order-skyborne": 5185,
               "night-elf": 5185
             }
           },
@@ -7178,7 +7210,6 @@
             "condition": "On a hurt party member under 70%, you included.",
             "icon": "spell_nature_rejuvenation",
             "race_spell_ids": {
-              "high-order-skyborne": 774,
               "night-elf": 774
             }
           },
@@ -7188,7 +7219,6 @@
             "condition": "",
             "icon": "spell_nature_rejuvenation",
             "race_spell_ids": {
-              "high-order-skyborne": 774,
               "night-elf": 774
             }
           },
@@ -7198,7 +7228,6 @@
             "condition": "",
             "icon": "spell_nature_rejuvenation",
             "race_spell_ids": {
-              "high-order-skyborne": 774,
               "night-elf": 774
             }
           },
@@ -7208,7 +7237,6 @@
             "condition": "",
             "icon": "spell_nature_rejuvenation",
             "race_spell_ids": {
-              "high-order-skyborne": 774,
               "night-elf": 774
             }
           },
@@ -7218,7 +7246,6 @@
             "condition": "",
             "icon": "spell_nature_rejuvenation",
             "race_spell_ids": {
-              "high-order-skyborne": 774,
               "night-elf": 774
             }
           }
@@ -7293,7 +7320,9 @@
             "name": "Rejuvenation",
             "condition": "On the tank whenever it is not ticking, at rank 10 in a raid.",
             "icon": "spell_nature_rejuvenation",
-            "race_spell_ids": {}
+            "race_spell_ids": {
+              "high-order-skyborne": 774
+            }
           },
           {
             "spell_id": 5186,
@@ -7361,42 +7390,130 @@
             "name": "Healing Touch",
             "condition": "On the tank under 55%, only while your mana is ahead of the fight.",
             "icon": "spell_nature_healingtouch",
-            "race_spell_ids": {}
+            "race_spell_ids": {
+              "windshaper-skyborne": 5185
+            }
           },
           {
             "spell_id": 1058,
             "name": "Rejuvenation",
             "condition": "On a hurt party member under 70%, you included.",
             "icon": "spell_nature_rejuvenation",
-            "race_spell_ids": {}
+            "race_spell_ids": {
+              "windshaper-skyborne": 774
+            }
           },
           {
             "spell_id": 1058,
             "name": "Rejuvenation",
             "condition": "",
             "icon": "spell_nature_rejuvenation",
-            "race_spell_ids": {}
+            "race_spell_ids": {
+              "windshaper-skyborne": 774
+            }
           },
           {
             "spell_id": 1058,
             "name": "Rejuvenation",
             "condition": "",
             "icon": "spell_nature_rejuvenation",
-            "race_spell_ids": {}
+            "race_spell_ids": {
+              "windshaper-skyborne": 774
+            }
           },
           {
             "spell_id": 1058,
             "name": "Rejuvenation",
             "condition": "",
             "icon": "spell_nature_rejuvenation",
-            "race_spell_ids": {}
+            "race_spell_ids": {
+              "windshaper-skyborne": 774
+            }
           },
           {
             "spell_id": 1058,
             "name": "Rejuvenation",
             "condition": "",
             "icon": "spell_nature_rejuvenation",
+            "race_spell_ids": {
+              "windshaper-skyborne": 774
+            }
+          }
+        ]
+      },
+      {
+        "level": 14,
+        "lines": [
+          {
+            "spell_id": 8936,
+            "name": "Regrowth",
+            "condition": "On the tank whenever it is not ticking.",
+            "icon": "spell_nature_resistnature",
             "race_spell_ids": {}
+          },
+          {
+            "spell_id": 774,
+            "name": "Rejuvenation",
+            "condition": "On the tank whenever it is not ticking, at rank 10 in a raid.",
+            "icon": "spell_nature_rejuvenation",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 5187,
+            "name": "Healing Touch",
+            "condition": "On the tank under 55%, only while your mana is ahead of the fight.",
+            "icon": "spell_nature_healingtouch",
+            "race_spell_ids": {
+              "high-order-skyborne": 5186,
+              "night-elf": 5186,
+              "tauren": 5186,
+              "windshaper-skyborne": 5185
+            }
+          },
+          {
+            "spell_id": 1058,
+            "name": "Rejuvenation",
+            "condition": "On a hurt party member under 70%, you included.",
+            "icon": "spell_nature_rejuvenation",
+            "race_spell_ids": {
+              "windshaper-skyborne": 774
+            }
+          },
+          {
+            "spell_id": 1058,
+            "name": "Rejuvenation",
+            "condition": "",
+            "icon": "spell_nature_rejuvenation",
+            "race_spell_ids": {
+              "windshaper-skyborne": 774
+            }
+          },
+          {
+            "spell_id": 1058,
+            "name": "Rejuvenation",
+            "condition": "",
+            "icon": "spell_nature_rejuvenation",
+            "race_spell_ids": {
+              "windshaper-skyborne": 774
+            }
+          },
+          {
+            "spell_id": 1058,
+            "name": "Rejuvenation",
+            "condition": "",
+            "icon": "spell_nature_rejuvenation",
+            "race_spell_ids": {
+              "windshaper-skyborne": 774
+            }
+          },
+          {
+            "spell_id": 1058,
+            "name": "Rejuvenation",
+            "condition": "",
+            "icon": "spell_nature_rejuvenation",
+            "race_spell_ids": {
+              "windshaper-skyborne": 774
+            }
           }
         ]
       },
@@ -7426,7 +7543,7 @@
               "high-order-skyborne": 5185,
               "night-elf": 5185,
               "tauren": 5186,
-              "windshaper-skyborne": 5186
+              "windshaper-skyborne": 5185
             }
           },
           {
@@ -7492,7 +7609,7 @@
               "high-order-skyborne": 5185,
               "night-elf": 5185,
               "tauren": 5186,
-              "windshaper-skyborne": 5186
+              "windshaper-skyborne": 5185
             }
           },
           {
@@ -7502,7 +7619,8 @@
             "icon": "spell_nature_rejuvenation",
             "race_spell_ids": {
               "high-order-skyborne": 774,
-              "night-elf": 774
+              "night-elf": 774,
+              "windshaper-skyborne": 774
             }
           },
           {
@@ -7512,7 +7630,8 @@
             "icon": "spell_nature_rejuvenation",
             "race_spell_ids": {
               "high-order-skyborne": 774,
-              "night-elf": 774
+              "night-elf": 774,
+              "windshaper-skyborne": 774
             }
           },
           {
@@ -7522,7 +7641,8 @@
             "icon": "spell_nature_rejuvenation",
             "race_spell_ids": {
               "high-order-skyborne": 774,
-              "night-elf": 774
+              "night-elf": 774,
+              "windshaper-skyborne": 774
             }
           },
           {
@@ -7532,7 +7652,8 @@
             "icon": "spell_nature_rejuvenation",
             "race_spell_ids": {
               "high-order-skyborne": 774,
-              "night-elf": 774
+              "night-elf": 774,
+              "windshaper-skyborne": 774
             }
           },
           {
@@ -7542,7 +7663,8 @@
             "icon": "spell_nature_rejuvenation",
             "race_spell_ids": {
               "high-order-skyborne": 774,
-              "night-elf": 774
+              "night-elf": 774,
+              "windshaper-skyborne": 774
             }
           }
         ]
@@ -140866,31 +140988,6 @@
           [
             1,
             1,
-            1
-          ],
-          [
-            1,
-            1,
-            1
-          ],
-          [
-            1,
-            1,
-            1
-          ],
-          [
-            1,
-            1,
-            2
-          ],
-          [
-            1,
-            1,
-            2
-          ],
-          [
-            1,
-            1,
             3
           ],
           [
@@ -140947,6 +141044,31 @@
             1,
             3,
             3
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            2
+          ],
+          [
+            1,
+            1,
+            2
           ],
           [
             1,
@@ -141175,6 +141297,16 @@
           ],
           [
             1,
+            3,
+            3
+          ],
+          [
+            1,
+            3,
+            3
+          ],
+          [
+            1,
             2,
             4
           ],
@@ -141187,16 +141319,6 @@
             1,
             3,
             2
-          ],
-          [
-            1,
-            3,
-            3
-          ],
-          [
-            1,
-            3,
-            3
           ],
           [
             1,
@@ -141412,22 +141534,17 @@
           ],
           [
             2,
-            1,
+            2,
             3
           ],
           [
             2,
-            1,
+            2,
             3
           ],
           [
             2,
-            1,
-            3
-          ],
-          [
             2,
-            1,
             3
           ],
           [
@@ -141447,17 +141564,22 @@
           ],
           [
             2,
-            2,
+            1,
             3
           ],
           [
             2,
-            2,
+            1,
             3
           ],
           [
             2,
+            1,
+            3
+          ],
+          [
             2,
+            1,
             3
           ],
           [
@@ -141672,42 +141794,42 @@
           ],
           [
             2,
+            2,
+            3
+          ],
+          [
+            2,
+            2,
+            3
+          ],
+          [
+            2,
+            2,
+            3
+          ],
+          [
+            2,
+            2,
+            1
+          ],
+          [
+            2,
+            2,
+            1
+          ],
+          [
+            2,
+            2,
+            1
+          ],
+          [
+            2,
             1,
             3
           ],
           [
             2,
             1,
-            3
-          ],
-          [
-            2,
-            2,
-            1
-          ],
-          [
-            2,
-            2,
-            1
-          ],
-          [
-            2,
-            2,
-            1
-          ],
-          [
-            2,
-            2,
-            3
-          ],
-          [
-            2,
-            2,
-            3
-          ],
-          [
-            2,
-            2,
             3
           ],
           [
@@ -141910,6 +142032,31 @@
           [
             3,
             1,
+            3
+          ],
+          [
+            3,
+            1,
+            3
+          ],
+          [
+            3,
+            1,
+            3
+          ],
+          [
+            3,
+            1,
+            3
+          ],
+          [
+            3,
+            1,
+            3
+          ],
+          [
+            3,
+            1,
             2
           ],
           [
@@ -141921,31 +142068,6 @@
             3,
             1,
             2
-          ],
-          [
-            3,
-            1,
-            3
-          ],
-          [
-            3,
-            1,
-            3
-          ],
-          [
-            3,
-            1,
-            3
-          ],
-          [
-            3,
-            1,
-            3
-          ],
-          [
-            3,
-            1,
-            3
           ],
           [
             3,
@@ -142170,6 +142292,31 @@
           [
             3,
             1,
+            3
+          ],
+          [
+            3,
+            1,
+            3
+          ],
+          [
+            3,
+            1,
+            3
+          ],
+          [
+            3,
+            1,
+            3
+          ],
+          [
+            3,
+            1,
+            3
+          ],
+          [
+            3,
+            1,
             2
           ],
           [
@@ -142181,31 +142328,6 @@
             3,
             1,
             2
-          ],
-          [
-            3,
-            1,
-            3
-          ],
-          [
-            3,
-            1,
-            3
-          ],
-          [
-            3,
-            1,
-            3
-          ],
-          [
-            3,
-            1,
-            3
-          ],
-          [
-            3,
-            1,
-            3
           ],
           [
             3,
@@ -145564,6 +145686,21 @@
           [
             1,
             1,
+            3
+          ],
+          [
+            1,
+            1,
+            3
+          ],
+          [
+            1,
+            1,
+            3
+          ],
+          [
+            1,
+            1,
             1
           ],
           [
@@ -145573,21 +145710,6 @@
           ],
           [
             1,
-            1,
-            2
-          ],
-          [
-            1,
-            1,
-            2
-          ],
-          [
-            1,
-            1,
-            3
-          ],
-          [
-            1,
             2,
             4
           ],
@@ -145599,12 +145721,12 @@
           [
             1,
             1,
-            3
+            2
           ],
           [
             1,
             1,
-            3
+            2
           ],
           [
             1,
@@ -145824,17 +145946,7 @@
           [
             1,
             1,
-            1
-          ],
-          [
-            1,
-            1,
-            1
-          ],
-          [
-            1,
-            1,
-            1
+            3
           ],
           [
             1,
@@ -145845,6 +145957,16 @@
             1,
             1,
             3
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
           ],
           [
             1,
@@ -145859,7 +145981,7 @@
           [
             1,
             1,
-            3
+            1
           ],
           [
             1,
@@ -147595,8 +147717,8 @@
       "bands": {
         "20": {
           "reference": "attack_power",
-          "dps": 0.0785,
-          "weapon_dps": 0.7387
+          "dps": 0.0787,
+          "weapon_dps": 0.7419
         },
         "30": {
           "reference": "attack_power",

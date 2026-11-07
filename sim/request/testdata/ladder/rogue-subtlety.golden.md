@@ -100,7 +100,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 00000000000000000-0000000000000000000-010000000000000000 | main_hand:1287 off_hand:2088 | 11.8 | 3 | other:attack/1=147.7, other:attack/2=129.3, spell:53=31.5, spell:5171/3=8.6, spell:1784=1.0 | {SpellID: 11275}, {SpellID: 1325758}, {SpellID: 1329326}, {SpellID: 14183}, {SpellID: 14278}, {SpellID: 16511} |
+| 10 | 00000000000000000-0000000000000000000-001000000000000000 | main_hand:1287 off_hand:2088 | 12.0 | 3 | other:attack/1=147.7, other:attack/2=129.3, spell:53=31.5, spell:5171/3=8.6, spell:1784=1.0 | {SpellID: 11275}, {SpellID: 1325758}, {SpellID: 1329326}, {SpellID: 14183}, {SpellID: 14278}, {SpellID: 16511} |
 | 20 | 00000000000000000-0000000000000000000-035200001000000000 | main_hand:2236 off_hand:2194 | 30.7 | 8 | other:attack/1=123.2, other:attack/2=74.1, spell:2590=31.1, spell:1943/4=7.7, spell:14183=2.0 | {SpellID: 1325758}, {SpellID: 1329326}, {SpellID: 14278}, {SpellID: 16511} |
 | 30 | 00000000000000000-0000000000000000000-035220031301000100 | main_hand:23168 off_hand:7687 | 66.7 | 13 | other:attack/1=143.8, other:attack/2=84.1, spell:16511=36.4, spell:1329283=18.1, spell:14278=8.9 | {SpellID: 1325758} |
 | 38 | 00000000000000000-0000000000000000000-035230031321001140 | main_hand:6831 off_hand:6829 | 92.0 | 15 | other:attack/1=136.2, other:attack/2=93.0, spell:16511=30.2, spell:1329283=18.8, spell:14278=9.7 | {SpellID: 1325758} |
