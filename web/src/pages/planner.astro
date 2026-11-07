@@ -9,6 +9,14 @@ import Base from '../layouts/Base.astro';
 import Planner from '../components/planner/Planner.svelte';
 import activeBuild from '../data/active-build.json';
 import { DEFAULT_CLASS_SLUG } from '../lib/planner/config';
+import { loadTalentFile } from '../lib/guides/build-tree';
+
+// The opening class's tree art, painted by the loading Plate (the page's largest paint).
+const openingArt = (loadTalentFile(activeBuild.build, DEFAULT_CLASS_SLUG)?.trees ?? [])
+  .slice()
+  .sort((a, b) => a.position - b.position)
+  .filter((tree) => tree.background)
+  .map((tree) => `trees/${tree.background}.webp`);
 ---
 
 <Base
@@ -22,6 +30,6 @@ import { DEFAULT_CLASS_SLUG } from '../lib/planner/config';
          server-rendered head is the page's largest contentful paint, and `client:load` put its
          whole chain ahead of that first paint (2026-11-02: a median score of 0.84 and LCP 4.1 s
          on a quiet machine, against the 0.90 budget). -->
-    <Planner client:after-paint treeVersion={activeBuild.build} classSlug={DEFAULT_CLASS_SLUG} />
+    <Planner client:after-paint treeVersion={activeBuild.build} classSlug={DEFAULT_CLASS_SLUG} {openingArt} />
   </main>
 </Base>

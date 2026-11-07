@@ -92,6 +92,7 @@
     gear,
     oncode,
     standalone = true,
+    openingArt = [],
   }: {
     treeVersion: string;
     classSlug?: string;
@@ -112,6 +113,9 @@
     oncode?: (code: string) => void;
     /** False only for Top Gear's inline "add a build" (Task 10): no chip, no restore, no write. */
     standalone?: boolean;
+    /** The opening class's tree art (`trees/<background>.webp`, tab order): the loading Plate
+     *  paints it so the largest paint is in the server render (planner.astro reads it). */
+    openingArt?: readonly string[];
   } = $props();
 
   // The page is static, so ?class= and ?race= can only be read in the browser. A record
@@ -1119,7 +1123,21 @@
             {#each [0, 1, 2] as tree (tree)}
               <div class="pl-skt">
                 <span class="skeleton-block block" style="width:180px;height:24px"></span>
-                <span class="skeleton-block block max-w-full" style="width:216px;height:384px"></span>
+                {#if openingArt[tree] !== undefined && store.classSlug === classSlug}
+                  <!-- The opening class's tree art in the server render: the page's largest paint
+                       arrives with the first paint instead of after the island and the trees. -->
+                  <img
+                    class="pl-art"
+                    src={dataUrl(store.treeVersion, openingArt[tree])}
+                    alt=""
+                    width="216"
+                    height="384"
+                    loading="eager"
+                    fetchpriority={tree === 0 ? 'high' : 'auto'}
+                  />
+                {:else}
+                  <span class="skeleton-block block max-w-full" style="width:216px;height:384px"></span>
+                {/if}
               </div>
             {/each}
           </div>
@@ -1224,7 +1242,8 @@
         testid="planner-bar"
         id="planner-bar"
       >
-        {#snippet end()}<span class="text-small text-muted">{plannerHeaderCopy.factionFollowsRace}</span
+        {#snippet end()}<span class="text-small text-muted max-md:hidden"
+            >{plannerHeaderCopy.factionFollowsRace}</span
           >{/snippet}
       </ControlBar>
       {@render notes()}
@@ -1320,6 +1339,14 @@
     .pl-skt + .pl-skt {
       display: none;
     }
+  }
+  .pl-art {
+    display: block;
+    max-width: 100%;
+    height: 384px;
+    object-fit: cover;
+    border-radius: 4px;
+    opacity: 0.5;
   }
   .pl-err {
     display: flex;
