@@ -55,8 +55,8 @@ func TestBearTakesLacerateAtThirtyAndPrimalBiteAtForty(t *testing.T) {
 		t.Errorf("level 40 bear build has Lacerate %d and Primal Bite %d, want 1 and 1", got[lacerate], got[primalBite])
 	}
 
-	// Level 60 is the guide build's. (Band 50 moved in sim-accuracy round 29: Heart of the
-	// Wild and Naturalist come before Natural Reaction, TestBearTakesNaturalistBeforeNaturalReaction.)
+	// Level 60 is the guide build's. (Band 50 moved in sim-accuracy round 29: Thick Hide pays
+	// the 10-point row and Feral Instinct comes last, TestBearPaysItsRowWithThickHide.)
 	got := LadderTalentString(trees, targets, feralTree, 60, ForSpec("druid-feral-bear"))
 	if want := LadderTalentString(trees, targets, feralTree, 60); got != want {
 		t.Errorf("level 60 bear build %q, want the plain walk's %q", got, want)

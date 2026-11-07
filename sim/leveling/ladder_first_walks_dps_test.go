@@ -16,20 +16,21 @@ func TestFuryTakesFlurryBeforeImprovedBerserkerRage(t *testing.T) {
 	})
 }
 
-// Sim-accuracy round 29 (walks-dps): a leveling Protection warrior takes Improved Revenge at 17 to 19 and Defiance (20% more
-// threat with a shield) at 20 to 22, the moment its row opens, then Master of Defense, Improved
-// Sunder Armor, Improved Thunder Clap and Focused Rage, before Anticipation's Defense at 34 to
-// 38. Concussion Blow at 39 opens Shield Slam at 40, and Bastion follows at 41 to 45.
+// Sim-accuracy round 29 (walks-dps): a leveling Protection warrior takes Improved Revenge at 17 to 19, Defiance at
+// 20 to 22 and Master of Defense at 23 and 24 before Anticipation, but Anticipation 25 to 27,
+// Last Stand 28 and Anticipation 29 and 30 come before Improved Sunder Armor, so the band 20
+// boss's chance of death at 28 and 29 rises less than 5 points (the round 29 tank rule).
+// Concussion Blow 39, Shield Slam 40 and Bastion are unchanged.
 func TestProtectionWarriorTakesDefianceBeforeAnticipation(t *testing.T) {
 	checkLadder(t, "warrior", "protection", 2, map[int]string{
 		17: "00000000000000000-000000000000000000-250010000000000000",
 		20: "00000000000000000-000000000000000000-250030000100000000",
-		25: "00000000000000000-000000000000000000-250030020310000000",
-		30: "00000000000000000-000000000000000000-250033020330000000",
-		35: "00000000000000000-000000000000000000-250233020330000300",
-		38: "00000000000000000-000000000000000000-250533020330000300",
-		40: "00000000000000000-000000000000000000-250533020330001301",
-		45: "00000000000000000-000000000000000000-250533020330001351",
+		25: "00000000000000000-000000000000000000-250130020300000000",
+		28: "00000000000000000-000000000000000000-250330120300000000",
+		29: "00000000000000000-000000000000000000-250430120300000000",
+		30: "00000000000000000-000000000000000000-250530120300000000",
+		35: "00000000000000000-000000000000000000-250532120330000000",
+		38: "00000000000000000-000000000000000000-250533120330000200",
 	})
 }
 
@@ -122,20 +123,24 @@ func TestBalanceTakesNaturalistBeforeNaturesFocus(t *testing.T) {
 
 // Sim-accuracy round 29 (walks-dps): a leveling bear pays the 10-point row with Thick Hide and one point of
 // Feral Swiftness, so Feral Instinct (Swipe, which a single target never sees) waits for 58 to
-// 60; Sharpened Claws comes at 22 and 23, Rend and Tear before Primal Bite at 40, and Heart of the
-// Wild and Naturalist (10% more damage, so threat) before Natural Reaction.
-func TestBearTakesNaturalistBeforeNaturalReaction(t *testing.T) {
+// 60; Sharpened Claws comes at 22 and 23 and Rend and Tear from 36. Feral Swiftness's second
+// point at 39 and Natural Reaction before Heart of the Wild and Naturalist hold the tank fight's
+// chance of death within 5 points of the old order at every level (the round 29 tank rule).
+func TestBearPaysItsRowWithThickHide(t *testing.T) {
 	checkLadder(t, "druid", "feral-bear", 1, map[int]string{
 		16: "0000000000000000-51000100000000000000-0000000000000000",
 		20: "0000000000000000-51100301000000000000-0000000000000000",
 		25: "0000000000000000-51100312020100000000-0000000000000000",
+		28: "0000000000000000-51100332020101000000-0000000000000000",
+		29: "0000000000000000-51100332020102000000-0000000000000000",
 		30: "0000000000000000-51100332020102100000-0000000000000000",
 		35: "0000000000000000-51100332023102120000-0000000000000000",
 		38: "0000000000000000-51100332023102123000-0000000000000000",
-		40: "0000000000000000-51100332023102124010-0000000000000000",
-		45: "0000000000000000-51100332023102125010-0400000000000000",
-		50: "0000000000000000-51100332023102125010-0540000000000000",
-		55: "0000000000000000-51100332023102125410-0550000000000000",
+		39: "0000000000000000-51200332023102123000-0000000000000000",
+		40: "0000000000000000-51200332023102123010-0000000000000000",
+		45: "0000000000000000-51200332023102125310-0000000000000000",
+		50: "0000000000000000-51200332023102125510-0300000000000000",
+		55: "0000000000000000-51200332023102125510-0530000000000000",
 		59: "0000000000000000-51220332023102125510-0550000000000000",
 	})
 }
