@@ -3,7 +3,7 @@
 // whose curated table lists one ability of every kind. Anima Lash is avoidable and killed
 // Thalgrit (Player-4184-000000A4, the tank); Anima Surge is interruptible and went through;
 // Wrack Soul is dispellable and ran its course; Anima Cascade never went out and Necrotic
-// Wound is unavoidable, so both sit under "also in the table". Fight 4 is encounter 9002,
+// Wound is unavoidable, so both say "Nothing to answer for" in the table. Fight 4 is encounter 9002,
 // which has no table at all.
 import { expect, test } from './support/test';
 
@@ -40,7 +40,8 @@ test('the death outranks the interrupt and the dispel, and each links to its own
 
 test('the mechanics nobody failed are listed rather than hidden', async ({ page }) => {
   await page.goto(`${FIGHT}&mode=mechanics`);
-  const clean = page.getByTestId('mechanics-clean');
+  // Every row of the table is in the Plate; the ones nobody failed say so with a muted tag.
+  const clean = page.getByTestId('mechanics-table');
   await expect(clean).toContainText('Anima Cascade');
   await expect(clean).toContainText('Necrotic Wound');
   await expect(clean).toContainText('unavoidable, the fight’s own damage');

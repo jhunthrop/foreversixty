@@ -133,6 +133,12 @@
   font-weight: 400;
   color: var(--color-muted);
 }
+.ui-st-f[data-tone='kill'] {
+  color: var(--color-kill);
+}
+.ui-st-f[data-tone='wipe'] {
+  color: var(--color-wipe);
+}
 .ui-st-r[data-total='true'] .ui-st-f,
 .ui-st-r[data-total='true'] .ui-st-name {
   font-size: 13px;
