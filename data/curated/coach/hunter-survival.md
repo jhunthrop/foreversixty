@@ -22,7 +22,7 @@ This is the best Survival Hunter on Forever. Survival is a melee spec in Forever
 **The priority, in words.** Your buttons, in the order you press them. Where a button has a reason or a condition, it follows the name.
 
 - Hunter's Mark on the boss first, so the mana is back by the pull. Wear Aspect of the Monkey until thirty, then Aspect of the Beast, and leave it up.
-- Raptor Strike on every swing it is ready, with an older rank on your bar at twenty-six to twenty-nine, at thirty-three, and at forty-six and forty-seven, and to forty-nine on most Horde characters.
+- Raptor Strike on every swing it is ready, with an older rank on your bar at twenty-six to twenty-nine, at thirty-one, and at forty-six and forty-seven, and to forty-nine on most Horde characters.
 - Counterattack from thirty-two the moment it lights up after you parry. It cannot be blocked, dodged or parried.
 - Mongoose Bite the moment it lights up after a dodge. From thirty-five, Expose Prey also opens it off your hits on a marked target.
 - Lacerate from thirty whenever its bleed has fallen off.

@@ -382,12 +382,12 @@ func TestRound24CasterRankRows(t *testing.T) {
 		{"Human Frost Frostbolt at 30", "mage-frost", "mage", BarePreset, "human", 30, 7322, 8406},
 		{"Gnome Frost Frostbolt at 30", "mage-frost", "mage", BarePreset, "gnome", 30, 8406, 7322},
 		// Destruction's Shadow Bolt rank 2 (695) at 20 to 23; rank 3 (705) at 24 for a Gnome or
-		// Human; rank 4 (1088) at 28 for a Troll.
+		// Human; rank 4 (1088) at 28 (a Troll in round 24, every race since round 28).
 		{"Orc Destruction Shadow Bolt at 20", "warlock-destruction", "warlock", BarePreset, "orc", 20, 695, 705},
 		{"Human Destruction Shadow Bolt at 24", "warlock-destruction", "warlock", BarePreset, "human", 24, 705, 1088},
 		{"Troll Destruction Shadow Bolt at 24", "warlock-destruction", "warlock", BarePreset, "troll", 24, 1088, 705},
 		{"Troll Destruction Shadow Bolt at 28", "warlock-destruction", "warlock", BarePreset, "troll", 28, 1088, 1106},
-		{"Orc Destruction Shadow Bolt at 28", "warlock-destruction", "warlock", BarePreset, "orc", 28, 1106, 1088},
+		{"Orc Destruction Shadow Bolt at 28", "warlock-destruction", "warlock", BarePreset, "orc", 28, 1088, 1106}, // every race since round 28
 		// Demonology's Shadow Bolt rank 5 (1106) at 36 and 37, when rank 6 (7641) arrives.
 		{"Undead Demonology Shadow Bolt at 36", "warlock-demonology", "warlock", BarePreset, "undead", 36, 1106, 7641},
 		// Fire's Fireball rank 10 (10150) at bare 60; the raid set keeps rank 11 (10151).

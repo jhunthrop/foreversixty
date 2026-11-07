@@ -12,6 +12,7 @@ var ladderFirstSpecs = map[string]struct {
 	class, slug string
 	tree        int
 }{
+	"druid-feral":          {"druid", "feral", 1},
 	"druid-feral-bear":     {"druid", "feral-bear", 1},
 	"druid-restoration":    {"druid", "restoration", 2},
 	"hunter-beast-mastery": {"hunter", "beast-mastery", 0},
@@ -31,6 +32,7 @@ var ladderFirstSpecs = map[string]struct {
 	"shaman-restoration":   {"shaman", "restoration", 2},
 	"warlock-affliction":   {"warlock", "affliction", 0},
 	"warlock-demonology":   {"warlock", "demonology", 1},
+	"warlock-destruction":  {"warlock", "destruction", 2},
 	"warrior-arms":         {"warrior", "arms", 0},
 	"warrior-fury":         {"warrior", "fury", 1},
 }

@@ -11576,14 +11576,14 @@
           {
             "spell_id": 1130,
             "name": "Hunter's Mark",
-            "condition": "Hunter's Mark whenever the target is not marked, and from 35 Expose Prey needs it.",
+            "condition": "Hunter's Mark whenever the target is not marked, and from 33 Expose Prey needs it.",
             "icon": "ability_hunter_snipershot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14260,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29, at 33, and at 46 and 47, and to 49 on most Horde characters.",
+            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29, at 31, and at 46 and 47, and to 49 on most Horde characters.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           }
@@ -11595,14 +11595,14 @@
           {
             "spell_id": 1130,
             "name": "Hunter's Mark",
-            "condition": "Hunter's Mark whenever the target is not marked, and from 35 Expose Prey needs it.",
+            "condition": "Hunter's Mark whenever the target is not marked, and from 33 Expose Prey needs it.",
             "icon": "ability_hunter_snipershot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14260,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29, at 33, and at 46 and 47, and to 49 on most Horde characters.",
+            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29, at 31, and at 46 and 47, and to 49 on most Horde characters.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -11621,14 +11621,14 @@
           {
             "spell_id": 1130,
             "name": "Hunter's Mark",
-            "condition": "Hunter's Mark whenever the target is not marked, and from 35 Expose Prey needs it.",
+            "condition": "Hunter's Mark whenever the target is not marked, and from 33 Expose Prey needs it.",
             "icon": "ability_hunter_snipershot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14261,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29, at 33, and at 46 and 47, and to 49 on most Horde characters.",
+            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29, at 31, and at 46 and 47, and to 49 on most Horde characters.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -11661,14 +11661,14 @@
           {
             "spell_id": 1130,
             "name": "Hunter's Mark",
-            "condition": "Hunter's Mark whenever the target is not marked, and from 35 Expose Prey needs it.",
+            "condition": "Hunter's Mark whenever the target is not marked, and from 33 Expose Prey needs it.",
             "icon": "ability_hunter_snipershot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14261,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29, at 33, and at 46 and 47, and to 49 on most Horde characters.",
+            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29, at 31, and at 46 and 47, and to 49 on most Horde characters.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -11701,14 +11701,14 @@
           {
             "spell_id": 14323,
             "name": "Hunter's Mark",
-            "condition": "Hunter's Mark whenever the target is not marked, and from 35 Expose Prey needs it.",
+            "condition": "Hunter's Mark whenever the target is not marked, and from 33 Expose Prey needs it.",
             "icon": "ability_hunter_snipershot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14261,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29, at 33, and at 46 and 47, and to 49 on most Horde characters.",
+            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29, at 31, and at 46 and 47, and to 49 on most Horde characters.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -11741,14 +11741,14 @@
           {
             "spell_id": 14323,
             "name": "Hunter's Mark",
-            "condition": "Hunter's Mark whenever the target is not marked, and from 35 Expose Prey needs it.",
+            "condition": "Hunter's Mark whenever the target is not marked, and from 33 Expose Prey needs it.",
             "icon": "ability_hunter_snipershot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14262,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29, at 33, and at 46 and 47, and to 49 on most Horde characters.",
+            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29, at 31, and at 46 and 47, and to 49 on most Horde characters.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -11781,14 +11781,14 @@
           {
             "spell_id": 14323,
             "name": "Hunter's Mark",
-            "condition": "Hunter's Mark whenever the target is not marked, and from 35 Expose Prey needs it.",
+            "condition": "Hunter's Mark whenever the target is not marked, and from 33 Expose Prey needs it.",
             "icon": "ability_hunter_snipershot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14262,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29, at 33, and at 46 and 47, and to 49 on most Horde characters.",
+            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29, at 31, and at 46 and 47, and to 49 on most Horde characters.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {
               "dwarf": 14261,
@@ -11825,68 +11825,19 @@
         ]
       },
       {
-        "level": 27,
-        "lines": [
-          {
-            "spell_id": 14323,
-            "name": "Hunter's Mark",
-            "condition": "Hunter's Mark whenever the target is not marked, and from 35 Expose Prey needs it.",
-            "icon": "ability_hunter_snipershot",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 14262,
-            "name": "Raptor Strike",
-            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29, at 33, and at 46 and 47, and to 49 on most Horde characters.",
-            "icon": "ability_meleedamage",
-            "race_spell_ids": {
-              "dwarf": 14261,
-              "high-order-skyborne": 14261,
-              "human": 14261,
-              "night-elf": 14261,
-              "orc": 14261,
-              "tauren": 14260,
-              "troll": 14260,
-              "windshaper-skyborne": 14260
-            }
-          },
-          {
-            "spell_id": 1495,
-            "name": "Mongoose Bite",
-            "condition": "Mongoose Bite the moment it lights up.",
-            "icon": "ability_hunter_swiftstrike",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 14302,
-            "name": "Immolation Trap",
-            "condition": "Immolation Trap on cooldown.",
-            "icon": "spell_fire_flameshock",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 2974,
-            "name": "Wing Clip",
-            "condition": "Wing Clip on any free global under a Windfury Totem, as a cheap melee special that can proc Windfury.",
-            "icon": "ability_rogue_trip",
-            "race_spell_ids": {}
-          }
-        ]
-      },
-      {
         "level": 28,
         "lines": [
           {
             "spell_id": 14323,
             "name": "Hunter's Mark",
-            "condition": "Hunter's Mark whenever the target is not marked, and from 35 Expose Prey needs it.",
+            "condition": "Hunter's Mark whenever the target is not marked, and from 33 Expose Prey needs it.",
             "icon": "ability_hunter_snipershot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14262,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29, at 33, and at 46 and 47, and to 49 on most Horde characters.",
+            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29, at 31, and at 46 and 47, and to 49 on most Horde characters.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {
               "dwarf": 14261,
@@ -11928,14 +11879,14 @@
           {
             "spell_id": 14323,
             "name": "Hunter's Mark",
-            "condition": "Hunter's Mark whenever the target is not marked, and from 35 Expose Prey needs it.",
+            "condition": "Hunter's Mark whenever the target is not marked, and from 33 Expose Prey needs it.",
             "icon": "ability_hunter_snipershot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14261,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29, at 33, and at 46 and 47, and to 49 on most Horde characters.",
+            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29, at 31, and at 46 and 47, and to 49 on most Horde characters.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -11968,14 +11919,68 @@
           {
             "spell_id": 14323,
             "name": "Hunter's Mark",
-            "condition": "Hunter's Mark whenever the target is not marked, and from 35 Expose Prey needs it.",
+            "condition": "Hunter's Mark whenever the target is not marked, and from 33 Expose Prey needs it.",
             "icon": "ability_hunter_snipershot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14262,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29, at 33, and at 46 and 47, and to 49 on most Horde characters.",
+            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29, at 31, and at 46 and 47, and to 49 on most Horde characters.",
+            "icon": "ability_meleedamage",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 14269,
+            "name": "Mongoose Bite",
+            "condition": "Mongoose Bite the moment it lights up.",
+            "icon": "ability_hunter_swiftstrike",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 24118,
+            "name": "Lacerate",
+            "condition": "Lacerate whenever its bleed is not on the target.",
+            "icon": "ability_gouge",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1317257,
+            "name": "Strider Kick",
+            "condition": "Strider Kick on its 8 second cooldown once the bleed is rolling: a full weapon hit for a sliver of mana.",
+            "icon": "ability_hunter_pet_tallstrider",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 14302,
+            "name": "Immolation Trap",
+            "condition": "Immolation Trap on cooldown.",
+            "icon": "spell_fire_flameshock",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2974,
+            "name": "Wing Clip",
+            "condition": "Wing Clip on any free global under a Windfury Totem, as a cheap melee special that can proc Windfury.",
+            "icon": "ability_rogue_trip",
+            "race_spell_ids": {}
+          }
+        ]
+      },
+      {
+        "level": 31,
+        "lines": [
+          {
+            "spell_id": 14323,
+            "name": "Hunter's Mark",
+            "condition": "Hunter's Mark whenever the target is not marked, and from 33 Expose Prey needs it.",
+            "icon": "ability_hunter_snipershot",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2973,
+            "name": "Raptor Strike",
+            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29, at 31, and at 46 and 47, and to 49 on most Horde characters.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -12022,144 +12027,15 @@
           {
             "spell_id": 14323,
             "name": "Hunter's Mark",
-            "condition": "Hunter's Mark whenever the target is not marked, and from 35 Expose Prey needs it.",
+            "condition": "Hunter's Mark whenever the target is not marked, and from 33 Expose Prey needs it.",
             "icon": "ability_hunter_snipershot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14263,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29, at 33, and at 46 and 47, and to 49 on most Horde characters.",
+            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29, at 31, and at 46 and 47, and to 49 on most Horde characters.",
             "icon": "ability_meleedamage",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 1242634,
-            "name": "Counterattack",
-            "condition": "Counterattack the moment it lights up after you parry.",
-            "icon": "ability_warrior_challange",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 14269,
-            "name": "Mongoose Bite",
-            "condition": "Mongoose Bite the moment it lights up.",
-            "icon": "ability_hunter_swiftstrike",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 24118,
-            "name": "Lacerate",
-            "condition": "Lacerate whenever its bleed is not on the target.",
-            "icon": "ability_gouge",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 1317257,
-            "name": "Strider Kick",
-            "condition": "Strider Kick on its 8 second cooldown once the bleed is rolling: a full weapon hit for a sliver of mana.",
-            "icon": "ability_hunter_pet_tallstrider",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 14302,
-            "name": "Immolation Trap",
-            "condition": "Immolation Trap on cooldown.",
-            "icon": "spell_fire_flameshock",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 2974,
-            "name": "Wing Clip",
-            "condition": "Wing Clip on any free global under a Windfury Totem, as a cheap melee special that can proc Windfury.",
-            "icon": "ability_rogue_trip",
-            "race_spell_ids": {}
-          }
-        ]
-      },
-      {
-        "level": 33,
-        "lines": [
-          {
-            "spell_id": 14323,
-            "name": "Hunter's Mark",
-            "condition": "Hunter's Mark whenever the target is not marked, and from 35 Expose Prey needs it.",
-            "icon": "ability_hunter_snipershot",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 2973,
-            "name": "Raptor Strike",
-            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29, at 33, and at 46 and 47, and to 49 on most Horde characters.",
-            "icon": "ability_meleedamage",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 1242634,
-            "name": "Counterattack",
-            "condition": "Counterattack the moment it lights up after you parry.",
-            "icon": "ability_warrior_challange",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 14269,
-            "name": "Mongoose Bite",
-            "condition": "Mongoose Bite the moment it lights up.",
-            "icon": "ability_hunter_swiftstrike",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 24118,
-            "name": "Lacerate",
-            "condition": "Lacerate whenever its bleed is not on the target.",
-            "icon": "ability_gouge",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 1317257,
-            "name": "Strider Kick",
-            "condition": "Strider Kick on its 8 second cooldown once the bleed is rolling: a full weapon hit for a sliver of mana.",
-            "icon": "ability_hunter_pet_tallstrider",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 14302,
-            "name": "Immolation Trap",
-            "condition": "Immolation Trap on cooldown.",
-            "icon": "spell_fire_flameshock",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 2974,
-            "name": "Wing Clip",
-            "condition": "Wing Clip on any free global under a Windfury Totem, as a cheap melee special that can proc Windfury.",
-            "icon": "ability_rogue_trip",
-            "race_spell_ids": {}
-          }
-        ]
-      },
-      {
-        "level": 34,
-        "lines": [
-          {
-            "spell_id": 14323,
-            "name": "Hunter's Mark",
-            "condition": "Hunter's Mark whenever the target is not marked, and from 35 Expose Prey needs it.",
-            "icon": "ability_hunter_snipershot",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 14263,
-            "name": "Raptor Strike",
-            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29, at 33, and at 46 and 47, and to 49 on most Horde characters.",
-            "icon": "ability_meleedamage",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 1242634,
-            "name": "Counterattack",
-            "condition": "Counterattack the moment it lights up after you parry.",
-            "icon": "ability_warrior_challange",
             "race_spell_ids": {}
           },
           {
@@ -12205,22 +12081,15 @@
           {
             "spell_id": 14323,
             "name": "Hunter's Mark",
-            "condition": "Hunter's Mark whenever the target is not marked, and from 35 Expose Prey needs it.",
+            "condition": "Hunter's Mark whenever the target is not marked, and from 33 Expose Prey needs it.",
             "icon": "ability_hunter_snipershot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14263,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29, at 33, and at 46 and 47, and to 49 on most Horde characters.",
+            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29, at 31, and at 46 and 47, and to 49 on most Horde characters.",
             "icon": "ability_meleedamage",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 1242634,
-            "name": "Counterattack",
-            "condition": "Counterattack the moment it lights up after you parry.",
-            "icon": "ability_warrior_challange",
             "race_spell_ids": {}
           },
           {
@@ -12266,14 +12135,68 @@
           {
             "spell_id": 14323,
             "name": "Hunter's Mark",
-            "condition": "Hunter's Mark whenever the target is not marked, and from 35 Expose Prey needs it.",
+            "condition": "Hunter's Mark whenever the target is not marked, and from 33 Expose Prey needs it.",
             "icon": "ability_hunter_snipershot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14263,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29, at 33, and at 46 and 47, and to 49 on most Horde characters.",
+            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29, at 31, and at 46 and 47, and to 49 on most Horde characters.",
+            "icon": "ability_meleedamage",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 14269,
+            "name": "Mongoose Bite",
+            "condition": "Mongoose Bite the moment it lights up.",
+            "icon": "ability_hunter_swiftstrike",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 24118,
+            "name": "Lacerate",
+            "condition": "Lacerate whenever its bleed is not on the target.",
+            "icon": "ability_gouge",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1317257,
+            "name": "Strider Kick",
+            "condition": "Strider Kick on its 8 second cooldown once the bleed is rolling: a full weapon hit for a sliver of mana.",
+            "icon": "ability_hunter_pet_tallstrider",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 14303,
+            "name": "Immolation Trap",
+            "condition": "Immolation Trap on cooldown.",
+            "icon": "spell_fire_flameshock",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 14267,
+            "name": "Wing Clip",
+            "condition": "Wing Clip on any free global under a Windfury Totem, as a cheap melee special that can proc Windfury.",
+            "icon": "ability_rogue_trip",
+            "race_spell_ids": {}
+          }
+        ]
+      },
+      {
+        "level": 39,
+        "lines": [
+          {
+            "spell_id": 14323,
+            "name": "Hunter's Mark",
+            "condition": "Hunter's Mark whenever the target is not marked, and from 33 Expose Prey needs it.",
+            "icon": "ability_hunter_snipershot",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 14263,
+            "name": "Raptor Strike",
+            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29, at 31, and at 46 and 47, and to 49 on most Horde characters.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -12327,14 +12250,14 @@
           {
             "spell_id": 14324,
             "name": "Hunter's Mark",
-            "condition": "Hunter's Mark whenever the target is not marked, and from 35 Expose Prey needs it.",
+            "condition": "Hunter's Mark whenever the target is not marked, and from 33 Expose Prey needs it.",
             "icon": "ability_hunter_snipershot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14264,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29, at 33, and at 46 and 47, and to 49 on most Horde characters.",
+            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29, at 31, and at 46 and 47, and to 49 on most Horde characters.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {
               "troll": 14263
@@ -12390,14 +12313,14 @@
           {
             "spell_id": 14324,
             "name": "Hunter's Mark",
-            "condition": "Hunter's Mark whenever the target is not marked, and from 35 Expose Prey needs it.",
+            "condition": "Hunter's Mark whenever the target is not marked, and from 33 Expose Prey needs it.",
             "icon": "ability_hunter_snipershot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14264,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29, at 33, and at 46 and 47, and to 49 on most Horde characters.",
+            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29, at 31, and at 46 and 47, and to 49 on most Horde characters.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -12451,14 +12374,14 @@
           {
             "spell_id": 14324,
             "name": "Hunter's Mark",
-            "condition": "Hunter's Mark whenever the target is not marked, and from 35 Expose Prey needs it.",
+            "condition": "Hunter's Mark whenever the target is not marked, and from 33 Expose Prey needs it.",
             "icon": "ability_hunter_snipershot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14264,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29, at 33, and at 46 and 47, and to 49 on most Horde characters.",
+            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29, at 31, and at 46 and 47, and to 49 on most Horde characters.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -12512,14 +12435,14 @@
           {
             "spell_id": 14324,
             "name": "Hunter's Mark",
-            "condition": "Hunter's Mark whenever the target is not marked, and from 35 Expose Prey needs it.",
+            "condition": "Hunter's Mark whenever the target is not marked, and from 33 Expose Prey needs it.",
             "icon": "ability_hunter_snipershot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14264,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29, at 33, and at 46 and 47, and to 49 on most Horde characters.",
+            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29, at 31, and at 46 and 47, and to 49 on most Horde characters.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -12573,14 +12496,14 @@
           {
             "spell_id": 14324,
             "name": "Hunter's Mark",
-            "condition": "Hunter's Mark whenever the target is not marked, and from 35 Expose Prey needs it.",
+            "condition": "Hunter's Mark whenever the target is not marked, and from 33 Expose Prey needs it.",
             "icon": "ability_hunter_snipershot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14263,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29, at 33, and at 46 and 47, and to 49 on most Horde characters.",
+            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29, at 31, and at 46 and 47, and to 49 on most Horde characters.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -12634,14 +12557,14 @@
           {
             "spell_id": 14324,
             "name": "Hunter's Mark",
-            "condition": "Hunter's Mark whenever the target is not marked, and from 35 Expose Prey needs it.",
+            "condition": "Hunter's Mark whenever the target is not marked, and from 33 Expose Prey needs it.",
             "icon": "ability_hunter_snipershot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14265,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29, at 33, and at 46 and 47, and to 49 on most Horde characters.",
+            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29, at 31, and at 46 and 47, and to 49 on most Horde characters.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {
               "orc": 14263,
@@ -12700,14 +12623,14 @@
           {
             "spell_id": 14324,
             "name": "Hunter's Mark",
-            "condition": "Hunter's Mark whenever the target is not marked, and from 35 Expose Prey needs it.",
+            "condition": "Hunter's Mark whenever the target is not marked, and from 33 Expose Prey needs it.",
             "icon": "ability_hunter_snipershot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14265,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29, at 33, and at 46 and 47, and to 49 on most Horde characters.",
+            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29, at 31, and at 46 and 47, and to 49 on most Horde characters.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {
               "orc": 14263,
@@ -12765,14 +12688,14 @@
           {
             "spell_id": 14324,
             "name": "Hunter's Mark",
-            "condition": "Hunter's Mark whenever the target is not marked, and from 35 Expose Prey needs it.",
+            "condition": "Hunter's Mark whenever the target is not marked, and from 33 Expose Prey needs it.",
             "icon": "ability_hunter_snipershot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14265,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29, at 33, and at 46 and 47, and to 49 on most Horde characters.",
+            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29, at 31, and at 46 and 47, and to 49 on most Horde characters.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -12826,14 +12749,14 @@
           {
             "spell_id": 14324,
             "name": "Hunter's Mark",
-            "condition": "Hunter's Mark whenever the target is not marked, and from 35 Expose Prey needs it.",
+            "condition": "Hunter's Mark whenever the target is not marked, and from 33 Expose Prey needs it.",
             "icon": "ability_hunter_snipershot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14265,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29, at 33, and at 46 and 47, and to 49 on most Horde characters.",
+            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29, at 31, and at 46 and 47, and to 49 on most Horde characters.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -12887,14 +12810,14 @@
           {
             "spell_id": 14324,
             "name": "Hunter's Mark",
-            "condition": "Hunter's Mark whenever the target is not marked, and from 35 Expose Prey needs it.",
+            "condition": "Hunter's Mark whenever the target is not marked, and from 33 Expose Prey needs it.",
             "icon": "ability_hunter_snipershot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14266,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29, at 33, and at 46 and 47, and to 49 on most Horde characters.",
+            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29, at 31, and at 46 and 47, and to 49 on most Horde characters.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -12948,14 +12871,14 @@
           {
             "spell_id": 14325,
             "name": "Hunter's Mark",
-            "condition": "Hunter's Mark whenever the target is not marked, and from 35 Expose Prey needs it.",
+            "condition": "Hunter's Mark whenever the target is not marked, and from 33 Expose Prey needs it.",
             "icon": "ability_hunter_snipershot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14266,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29, at 33, and at 46 and 47, and to 49 on most Horde characters.",
+            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29, at 31, and at 46 and 47, and to 49 on most Horde characters.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -13009,14 +12932,14 @@
           {
             "spell_id": 14325,
             "name": "Hunter's Mark",
-            "condition": "Hunter's Mark whenever the target is not marked, and from 35 Expose Prey needs it.",
+            "condition": "Hunter's Mark whenever the target is not marked, and from 33 Expose Prey needs it.",
             "icon": "ability_hunter_snipershot",
             "race_spell_ids": {}
           },
           {
             "spell_id": 14266,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29, at 33, and at 46 and 47, and to 49 on most Horde characters.",
+            "condition": "Raptor Strike on every swing it is ready, with an older rank on your bar at 26 to 29, at 31, and at 46 and 47, and to 49 on most Horde characters.",
             "icon": "ability_meleedamage",
             "race_spell_ids": {}
           },
@@ -15862,6 +15785,7 @@
             "condition": "Frostbolt is the filler, and you never stop casting it to wait on a proc.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {
+              "high-order-skyborne": 7322,
               "human": 7322,
               "troll": 7322
             }
@@ -15879,12 +15803,53 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 400640,
+            "name": "Ice Lance",
+            "condition": "Ice Lance while Fingers of Frost is up and its 8 second cooldown is ready.",
+            "icon": "spell_frost_frostblast",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 8406,
             "name": "Frostbolt",
             "condition": "Frostbolt is the filler, and you never stop casting it to wait on a proc.",
             "icon": "spell_frost_frostbolt02",
             "race_spell_ids": {
-              "human": 7322
+              "high-order-skyborne": 7322,
+              "human": 7322,
+              "troll": 7322
+            }
+          }
+        ]
+      },
+      {
+        "level": 31,
+        "lines": [
+          {
+            "spell_id": 12051,
+            "name": "Evocation",
+            "condition": "Evocation when you are nearly dry and more than 30 seconds of the fight remain.",
+            "icon": "spell_nature_purge",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 400640,
+            "name": "Ice Lance",
+            "condition": "Ice Lance while Fingers of Frost is up and its 8 second cooldown is ready.",
+            "icon": "spell_frost_frostblast",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 8406,
+            "name": "Frostbolt",
+            "condition": "Frostbolt is the filler, and you never stop casting it to wait on a proc.",
+            "icon": "spell_frost_frostbolt02",
+            "race_spell_ids": {
+              "high-order-skyborne": 7322,
+              "human": 7322,
+              "orc": 7322,
+              "troll": 7322,
+              "undead": 7322
             }
           }
         ]
@@ -15900,16 +15865,30 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 8406,
+            "spell_id": 400640,
+            "name": "Ice Lance",
+            "condition": "Ice Lance while Fingers of Frost is up and its 8 second cooldown is ready.",
+            "icon": "spell_frost_frostblast",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 8407,
             "name": "Frostbolt",
             "condition": "Frostbolt is the filler, and you never stop casting it to wait on a proc.",
             "icon": "spell_frost_frostbolt02",
-            "race_spell_ids": {}
+            "race_spell_ids": {
+              "gnome": 8406,
+              "high-order-skyborne": 7322,
+              "human": 7322,
+              "orc": 7322,
+              "troll": 7322,
+              "undead": 7322
+            }
           }
         ]
       },
       {
-        "level": 34,
+        "level": 33,
         "lines": [
           {
             "spell_id": 12051,
@@ -15919,16 +15898,30 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 400640,
+            "name": "Ice Lance",
+            "condition": "Ice Lance while Fingers of Frost is up and its 8 second cooldown is ready.",
+            "icon": "spell_frost_frostblast",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 8407,
             "name": "Frostbolt",
             "condition": "Frostbolt is the filler, and you never stop casting it to wait on a proc.",
             "icon": "spell_frost_frostbolt02",
-            "race_spell_ids": {}
+            "race_spell_ids": {
+              "gnome": 8406,
+              "high-order-skyborne": 7322,
+              "human": 7322,
+              "orc": 8406,
+              "troll": 7322,
+              "undead": 8406
+            }
           }
         ]
       },
       {
-        "level": 36,
+        "level": 34,
         "lines": [
           {
             "spell_id": 12051,
@@ -18502,6 +18495,67 @@
         ]
       },
       {
+        "level": 25,
+        "lines": [
+          {
+            "spell_id": 1311015,
+            "name": "Templar's Bulwark",
+            "condition": "Below 35% health, as the first panic button.",
+            "icon": "ability_paladin_shieldofthetemplar",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 5573,
+            "name": "Divine Protection",
+            "condition": "Below 20% health, the last resort once Forbearance allows it.",
+            "icon": "spell_holy_restoration",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1311656,
+            "name": "Seal of Fury",
+            "condition": "Keep it up and recast it in its last 2 seconds, and once you have Holy Shield at 30, only with its mana left over.",
+            "icon": "spell_holy_retributionaura",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1866,
+            "name": "Holy Strike",
+            "condition": "On cooldown.",
+            "icon": "classicon_paladin",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1310994,
+            "name": "Swift Judgement",
+            "condition": "Whenever it is ready.",
+            "icon": "ability_paladin_judgementred",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 20271,
+            "name": "Judgement",
+            "condition": "On cooldown, and once you have Holy Shield at 30, only while its mana is safe.",
+            "icon": "spell_holy_righteousfury",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 879,
+            "name": "Exorcism",
+            "condition": "On Undead and Demons only, and once you have Holy Shield at 30, only while its mana is safe.",
+            "icon": "spell_holy_excorcism_02",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 26573,
+            "name": "Consecration",
+            "condition": "Last, while what you hold plus what you regain, less what you spend, over the rest of the fight still pays for it, or once you drop below 35% health.",
+            "icon": "spell_holy_innerfire",
+            "race_spell_ids": {}
+          }
+        ]
+      },
+      {
         "level": 26,
         "lines": [
           {
@@ -18533,6 +18587,13 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 1310994,
+            "name": "Swift Judgement",
+            "condition": "Whenever it is ready.",
+            "icon": "ability_paladin_judgementred",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 20271,
             "name": "Judgement",
             "condition": "On cooldown, and once you have Holy Shield at 30, only while its mana is safe.",
@@ -18557,60 +18618,6 @@
       },
       {
         "level": 28,
-        "lines": [
-          {
-            "spell_id": 1311015,
-            "name": "Templar's Bulwark",
-            "condition": "Below 35% health, as the first panic button.",
-            "icon": "ability_paladin_shieldofthetemplar",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 5573,
-            "name": "Divine Protection",
-            "condition": "Below 20% health, the last resort once Forbearance allows it.",
-            "icon": "spell_holy_restoration",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 20163,
-            "name": "Seal of Fury",
-            "condition": "Keep it up and recast it in its last 2 seconds, and once you have Holy Shield at 30, only with its mana left over.",
-            "icon": "spell_holy_retributionaura",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 680,
-            "name": "Holy Strike",
-            "condition": "On cooldown.",
-            "icon": "classicon_paladin",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 20271,
-            "name": "Judgement",
-            "condition": "On cooldown, and once you have Holy Shield at 30, only while its mana is safe.",
-            "icon": "spell_holy_righteousfury",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 5614,
-            "name": "Exorcism",
-            "condition": "On Undead and Demons only, and once you have Holy Shield at 30, only while its mana is safe.",
-            "icon": "spell_holy_excorcism_02",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 26573,
-            "name": "Consecration",
-            "condition": "Last, while what you hold plus what you regain, less what you spend, over the rest of the fight still pays for it, or once you drop below 35% health.",
-            "icon": "spell_holy_innerfire",
-            "race_spell_ids": {}
-          }
-        ]
-      },
-      {
-        "level": 29,
         "lines": [
           {
             "spell_id": 1311015,
@@ -42437,7 +42444,9 @@
             "name": "Shadow Bolt",
             "condition": "Shadow Bolt for every other cast.",
             "icon": "spell_shadow_shadowbolt",
-            "race_spell_ids": {}
+            "race_spell_ids": {
+              "gnome": 705
+            }
           }
         ]
       },
@@ -43633,6 +43642,13 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 17877,
+            "name": "Shadowburn",
+            "condition": "Shadowburn on cooldown, at any boss health.",
+            "icon": "spell_shadow_scourgebuild",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 695,
             "name": "Shadow Bolt",
             "condition": "Shadow Bolt before you learn Incinerate at 40.",
@@ -43677,6 +43693,13 @@
             "name": "Immolate",
             "condition": "Immolate with 3 seconds or less left on it.",
             "icon": "spell_fire_immolation",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 18867,
+            "name": "Shadowburn",
+            "condition": "Shadowburn on cooldown, at any boss health.",
+            "icon": "spell_shadow_scourgebuild",
             "race_spell_ids": {}
           },
           {
@@ -43730,6 +43753,13 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 18867,
+            "name": "Shadowburn",
+            "condition": "Shadowburn on cooldown, at any boss health.",
+            "icon": "spell_shadow_scourgebuild",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 1088,
             "name": "Shadow Bolt",
             "condition": "Shadow Bolt before you learn Incinerate at 40.",
@@ -43774,6 +43804,13 @@
             "name": "Immolate",
             "condition": "Immolate with 3 seconds or less left on it.",
             "icon": "spell_fire_immolation",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 18867,
+            "name": "Shadowburn",
+            "condition": "Shadowburn on cooldown, at any boss health.",
+            "icon": "spell_shadow_scourgebuild",
             "race_spell_ids": {}
           },
           {
@@ -43824,13 +43861,18 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 1106,
+            "spell_id": 18867,
+            "name": "Shadowburn",
+            "condition": "Shadowburn on cooldown, at any boss health.",
+            "icon": "spell_shadow_scourgebuild",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1088,
             "name": "Shadow Bolt",
             "condition": "Shadow Bolt before you learn Incinerate at 40.",
             "icon": "spell_shadow_shadowbolt",
-            "race_spell_ids": {
-              "troll": 1088
-            }
+            "race_spell_ids": {}
           }
         ]
       },
@@ -43870,6 +43912,13 @@
             "name": "Immolate",
             "condition": "Immolate with 3 seconds or less left on it.",
             "icon": "spell_fire_immolation",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 18867,
+            "name": "Shadowburn",
+            "condition": "Shadowburn on cooldown, at any boss health.",
+            "icon": "spell_shadow_scourgebuild",
             "race_spell_ids": {}
           },
           {
@@ -43936,6 +43985,67 @@
         ]
       },
       {
+        "level": 31,
+        "lines": [
+          {
+            "spell_id": 1311676,
+            "name": "Curse of the Elements",
+            "condition": "Curse of the Elements when no warlock's is on the target.",
+            "icon": "warlock_curse_shadow",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 6223,
+            "name": "Corruption",
+            "condition": "Corruption whenever it has fallen off.",
+            "icon": "spell_shadow_abominationexplosion",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1456,
+            "name": "Life Tap",
+            "condition": "Life Tap below 10% mana.",
+            "icon": "spell_shadow_burningspirit",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 6217,
+            "name": "Bane of Agony",
+            "condition": "Bane of Agony whenever Bane of Doom is not on the target: all fight before 60, and the last minute at 60, once Doom has fired.",
+            "icon": "spell_shadow_curseofsargeras",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2941,
+            "name": "Immolate",
+            "condition": "Immolate with 3 seconds or less left on it.",
+            "icon": "spell_fire_immolation",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1293817,
+            "name": "Conflagrate",
+            "condition": "Conflagrate once Immolate has 6 seconds or less left, until you take Shadow and Flame.",
+            "icon": "spell_fire_fireball",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 18867,
+            "name": "Shadowburn",
+            "condition": "Shadowburn on cooldown, at any boss health.",
+            "icon": "spell_shadow_scourgebuild",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1088,
+            "name": "Shadow Bolt",
+            "condition": "Shadow Bolt before you learn Incinerate at 40.",
+            "icon": "spell_shadow_shadowbolt",
+            "race_spell_ids": {}
+          }
+        ]
+      },
+      {
         "level": 32,
         "lines": [
           {
@@ -43971,6 +44081,13 @@
             "name": "Immolate",
             "condition": "Immolate with 3 seconds or less left on it.",
             "icon": "spell_fire_immolation",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1293818,
+            "name": "Conflagrate",
+            "condition": "Conflagrate once Immolate has 6 seconds or less left, until you take Shadow and Flame.",
+            "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
           {
@@ -44051,6 +44168,67 @@
         ]
       },
       {
+        "level": 35,
+        "lines": [
+          {
+            "spell_id": 1311676,
+            "name": "Curse of the Elements",
+            "condition": "Curse of the Elements when no warlock's is on the target.",
+            "icon": "warlock_curse_shadow",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 7648,
+            "name": "Corruption",
+            "condition": "Corruption whenever it has fallen off.",
+            "icon": "spell_shadow_abominationexplosion",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1456,
+            "name": "Life Tap",
+            "condition": "Life Tap below 10% mana.",
+            "icon": "spell_shadow_burningspirit",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 6217,
+            "name": "Bane of Agony",
+            "condition": "Bane of Agony whenever Bane of Doom is not on the target: all fight before 60, and the last minute at 60, once Doom has fired.",
+            "icon": "spell_shadow_curseofsargeras",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 2941,
+            "name": "Immolate",
+            "condition": "Immolate with 3 seconds or less left on it.",
+            "icon": "spell_fire_immolation",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1293818,
+            "name": "Conflagrate",
+            "condition": "Conflagrate once Immolate has 6 seconds or less left, until you take Shadow and Flame, then on cooldown while Immolate is up.",
+            "icon": "spell_fire_fireball",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 18868,
+            "name": "Shadowburn",
+            "condition": "Shadowburn on cooldown, at any boss health.",
+            "icon": "spell_shadow_scourgebuild",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1106,
+            "name": "Shadow Bolt",
+            "condition": "Shadow Bolt before you learn Incinerate at 40.",
+            "icon": "spell_shadow_shadowbolt",
+            "race_spell_ids": {}
+          }
+        ]
+      },
+      {
         "level": 36,
         "lines": [
           {
@@ -44091,7 +44269,7 @@
           {
             "spell_id": 1293818,
             "name": "Conflagrate",
-            "condition": "Conflagrate once Immolate has 6 seconds or less left, until you take Shadow and Flame.",
+            "condition": "Conflagrate once Immolate has 6 seconds or less left, until you take Shadow and Flame, then on cooldown while Immolate is up.",
             "icon": "spell_fire_fireball",
             "race_spell_ids": {}
           },
@@ -44113,67 +44291,6 @@
       },
       {
         "level": 38,
-        "lines": [
-          {
-            "spell_id": 1311676,
-            "name": "Curse of the Elements",
-            "condition": "Curse of the Elements when no warlock's is on the target.",
-            "icon": "warlock_curse_shadow",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 7648,
-            "name": "Corruption",
-            "condition": "Corruption whenever it has fallen off.",
-            "icon": "spell_shadow_abominationexplosion",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 11687,
-            "name": "Life Tap",
-            "condition": "Life Tap below 10% mana.",
-            "icon": "spell_shadow_burningspirit",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 11711,
-            "name": "Bane of Agony",
-            "condition": "Bane of Agony whenever Bane of Doom is not on the target: all fight before 60, and the last minute at 60, once Doom has fired.",
-            "icon": "spell_shadow_curseofsargeras",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 2941,
-            "name": "Immolate",
-            "condition": "Immolate with 3 seconds or less left on it.",
-            "icon": "spell_fire_immolation",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 1293818,
-            "name": "Conflagrate",
-            "condition": "Conflagrate once Immolate has 6 seconds or less left, until you take Shadow and Flame.",
-            "icon": "spell_fire_fireball",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 18868,
-            "name": "Shadowburn",
-            "condition": "Shadowburn on cooldown, at any boss health.",
-            "icon": "spell_shadow_scourgebuild",
-            "race_spell_ids": {}
-          },
-          {
-            "spell_id": 7641,
-            "name": "Shadow Bolt",
-            "condition": "Shadow Bolt before you learn Incinerate at 40.",
-            "icon": "spell_shadow_shadowbolt",
-            "race_spell_ids": {}
-          }
-        ]
-      },
-      {
-        "level": 39,
         "lines": [
           {
             "spell_id": 1311676,
@@ -44265,7 +44382,7 @@
             "race_spell_ids": {}
           },
           {
-            "spell_id": 2941,
+            "spell_id": 11665,
             "name": "Immolate",
             "condition": "Immolate with 3 seconds or less left on it.",
             "icon": "spell_fire_immolation",
@@ -97411,10 +97528,10 @@
         "weights": {
           "attack_power": 1.0,
           "strength": 1.0,
-          "agility": 1.717,
-          "crit": 0.435,
-          "hit": 0.598,
-          "melee_haste": 3.643
+          "agility": 1.735,
+          "crit": 0.445,
+          "hit": 0.599,
+          "melee_haste": 3.565
         }
       },
       {
@@ -100053,14 +100170,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 12054,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
-                },
-                {
                   "item_id": 1156,
                   "source_kind": "dungeon",
                   "source": "The Deadmines: Gilnid"
+                },
+                {
+                  "item_id": 8350,
+                  "source_kind": "world",
+                  "source": "Fishing"
                 }
               ]
             },
@@ -100215,14 +100332,14 @@
               "chance": 0.0234,
               "alternatives": [
                 {
-                  "item_id": 252494,
-                  "source_kind": "crafted",
-                  "source": "Leatherworking"
-                },
-                {
                   "item_id": 14572,
                   "source_kind": "world_drop",
                   "source": "World drop"
+                },
+                {
+                  "item_id": 252494,
+                  "source_kind": "crafted",
+                  "source": "Leatherworking"
                 }
               ]
             },
@@ -100305,14 +100422,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 5351,
-                  "source_kind": "quest",
-                  "source": "Hezrul Bloodmark"
-                },
-                {
                   "item_id": 12054,
                   "source_kind": "world_drop",
                   "source": "World drop"
+                },
+                {
+                  "item_id": 1156,
+                  "source_kind": "dungeon",
+                  "source": "The Deadmines: Gilnid"
                 }
               ]
             },
@@ -100406,10 +100523,10 @@
         "weights": {
           "attack_power": 1.0,
           "strength": 1.0,
-          "agility": 1.785,
-          "crit": 0.467,
-          "hit": 0.597,
-          "melee_haste": 2.869
+          "agility": 1.767,
+          "crit": 0.458,
+          "hit": 0.574,
+          "melee_haste": 3.295
         }
       },
       {
@@ -133230,12 +133347,12 @@
           [
             2,
             3,
-            2
+            4
           ],
           [
             2,
             3,
-            2
+            4
           ],
           [
             2,
@@ -133245,12 +133362,12 @@
           [
             2,
             3,
-            4
+            2
           ],
           [
             2,
             3,
-            4
+            2
           ],
           [
             2,
@@ -133266,21 +133383,6 @@
             2,
             4,
             1
-          ],
-          [
-            2,
-            4,
-            3
-          ],
-          [
-            2,
-            4,
-            4
-          ],
-          [
-            2,
-            4,
-            4
           ],
           [
             2,
@@ -133289,7 +133391,7 @@
           ],
           [
             2,
-            5,
+            4,
             4
           ],
           [
@@ -133299,8 +133401,13 @@
           ],
           [
             2,
-            6,
-            1
+            5,
+            4
+          ],
+          [
+            2,
+            4,
+            4
           ],
           [
             2,
@@ -133311,6 +133418,16 @@
             2,
             6,
             1
+          ],
+          [
+            2,
+            6,
+            1
+          ],
+          [
+            2,
+            4,
+            3
           ],
           [
             2,
@@ -133490,22 +133607,22 @@
           [
             2,
             3,
-            2
-          ],
-          [
-            2,
-            3,
-            2
-          ],
-          [
-            2,
-            3,
             4
           ],
           [
             2,
             3,
             4
+          ],
+          [
+            2,
+            3,
+            2
+          ],
+          [
+            2,
+            3,
+            2
           ],
           [
             2,
@@ -133520,52 +133637,52 @@
           [
             2,
             4,
+            1
+          ],
+          [
+            2,
+            5,
+            2
+          ],
+          [
+            2,
+            4,
+            4
+          ],
+          [
+            2,
+            5,
+            4
+          ],
+          [
+            2,
+            5,
+            4
+          ],
+          [
+            2,
+            4,
+            4
+          ],
+          [
+            2,
+            6,
+            1
+          ],
+          [
+            2,
+            6,
+            1
+          ],
+          [
+            2,
+            6,
             1
           ],
           [
             2,
             4,
             3
-          ],
-          [
-            2,
-            4,
-            4
-          ],
-          [
-            2,
-            4,
-            4
-          ],
-          [
-            2,
-            5,
-            2
-          ],
-          [
-            2,
-            5,
-            4
-          ],
-          [
-            2,
-            5,
-            4
-          ],
-          [
-            2,
-            6,
-            1
-          ],
-          [
-            2,
-            6,
-            1
-          ],
-          [
-            2,
-            6,
-            1
           ],
           [
             2,
@@ -135849,8 +135966,8 @@
           ],
           [
             3,
-            3,
-            3
+            4,
+            2
           ],
           [
             3,
@@ -135876,16 +135993,6 @@
             3,
             5,
             4
-          ],
-          [
-            3,
-            4,
-            2
-          ],
-          [
-            3,
-            4,
-            3
           ],
           [
             3,
@@ -135920,6 +136027,16 @@
           [
             3,
             6,
+            3
+          ],
+          [
+            3,
+            3,
+            3
+          ],
+          [
+            3,
+            4,
             3
           ],
           [
@@ -136109,8 +136226,8 @@
           ],
           [
             3,
-            3,
-            3
+            4,
+            2
           ],
           [
             3,
@@ -136136,16 +136253,6 @@
             3,
             5,
             4
-          ],
-          [
-            3,
-            4,
-            2
-          ],
-          [
-            3,
-            4,
-            3
           ],
           [
             3,
@@ -136180,6 +136287,16 @@
           [
             3,
             6,
+            3
+          ],
+          [
+            3,
+            3,
+            3
+          ],
+          [
+            3,
+            4,
             3
           ],
           [
@@ -137366,16 +137483,6 @@
           [
             3,
             1,
-            1
-          ],
-          [
-            3,
-            1,
-            1
-          ],
-          [
-            3,
-            1,
             3
           ],
           [
@@ -137396,6 +137503,21 @@
           [
             3,
             2,
+            1
+          ],
+          [
+            3,
+            3,
+            1
+          ],
+          [
+            3,
+            3,
+            1
+          ],
+          [
+            3,
+            3,
             1
           ],
           [
@@ -137420,63 +137542,58 @@
           ],
           [
             3,
+            4,
+            4
+          ],
+          [
+            3,
+            4,
+            4
+          ],
+          [
+            3,
+            3,
+            3
+          ],
+          [
+            3,
+            5,
+            3
+          ],
+          [
+            3,
+            5,
+            3
+          ],
+          [
+            3,
+            4,
+            4
+          ],
+          [
+            3,
+            1,
+            1
+          ],
+          [
+            3,
+            1,
+            1
+          ],
+          [
+            3,
             2,
             4
           ],
           [
             3,
-            3,
-            1
-          ],
-          [
-            3,
-            3,
-            1
-          ],
-          [
-            3,
-            3,
-            1
-          ],
-          [
-            3,
-            3,
-            3
-          ],
-          [
-            3,
             4,
             2
           ],
           [
             3,
-            4,
-            4
-          ],
-          [
-            3,
-            4,
-            4
-          ],
-          [
-            3,
-            4,
-            4
-          ],
-          [
-            3,
             5,
             2
-          ],
-          [
-            3,
-            5,
-            3
-          ],
-          [
-            3,
-            5,
-            3
           ],
           [
             3,
@@ -137626,16 +137743,6 @@
           [
             3,
             1,
-            1
-          ],
-          [
-            3,
-            1,
-            1
-          ],
-          [
-            3,
-            1,
             3
           ],
           [
@@ -137656,6 +137763,21 @@
           [
             3,
             2,
+            1
+          ],
+          [
+            3,
+            3,
+            1
+          ],
+          [
+            3,
+            3,
+            1
+          ],
+          [
+            3,
+            3,
             1
           ],
           [
@@ -137680,63 +137802,58 @@
           ],
           [
             3,
+            4,
+            4
+          ],
+          [
+            3,
+            4,
+            4
+          ],
+          [
+            3,
+            3,
+            3
+          ],
+          [
+            3,
+            5,
+            3
+          ],
+          [
+            3,
+            5,
+            3
+          ],
+          [
+            3,
+            4,
+            4
+          ],
+          [
+            3,
+            1,
+            1
+          ],
+          [
+            3,
+            1,
+            1
+          ],
+          [
+            3,
             2,
             4
           ],
           [
             3,
-            3,
-            1
-          ],
-          [
-            3,
-            3,
-            1
-          ],
-          [
-            3,
-            3,
-            1
-          ],
-          [
-            3,
-            3,
-            3
-          ],
-          [
-            3,
             4,
             2
           ],
           [
             3,
-            4,
-            4
-          ],
-          [
-            3,
-            4,
-            4
-          ],
-          [
-            3,
-            4,
-            4
-          ],
-          [
-            3,
             5,
             2
-          ],
-          [
-            3,
-            5,
-            3
-          ],
-          [
-            3,
-            5,
-            3
           ],
           [
             3,
@@ -138439,11 +138556,6 @@
           ],
           [
             2,
-            2,
-            4
-          ],
-          [
-            2,
             3,
             3
           ],
@@ -138454,22 +138566,7 @@
           ],
           [
             2,
-            3,
-            4
-          ],
-          [
             2,
-            3,
-            4
-          ],
-          [
-            2,
-            3,
-            4
-          ],
-          [
-            2,
-            3,
             4
           ],
           [
@@ -138481,6 +138578,26 @@
             2,
             4,
             1
+          ],
+          [
+            2,
+            3,
+            4
+          ],
+          [
+            2,
+            3,
+            4
+          ],
+          [
+            2,
+            3,
+            4
+          ],
+          [
+            2,
+            3,
+            4
           ],
           [
             2,
@@ -138699,11 +138816,6 @@
           ],
           [
             2,
-            2,
-            4
-          ],
-          [
-            2,
             3,
             3
           ],
@@ -138714,22 +138826,7 @@
           ],
           [
             2,
-            3,
-            4
-          ],
-          [
             2,
-            3,
-            4
-          ],
-          [
-            2,
-            3,
-            4
-          ],
-          [
-            2,
-            3,
             4
           ],
           [
@@ -138741,6 +138838,26 @@
             2,
             4,
             1
+          ],
+          [
+            2,
+            3,
+            4
+          ],
+          [
+            2,
+            3,
+            4
+          ],
+          [
+            2,
+            3,
+            4
+          ],
+          [
+            2,
+            3,
+            4
           ],
           [
             2,
@@ -144649,6 +144766,51 @@
           [
             2,
             1,
+            4
+          ],
+          [
+            2,
+            1,
+            4
+          ],
+          [
+            2,
+            1,
+            4
+          ],
+          [
+            2,
+            1,
+            4
+          ],
+          [
+            2,
+            1,
+            4
+          ],
+          [
+            2,
+            2,
+            3
+          ],
+          [
+            2,
+            2,
+            3
+          ],
+          [
+            2,
+            2,
+            3
+          ],
+          [
+            2,
+            2,
+            4
+          ],
+          [
+            2,
+            1,
             1
           ],
           [
@@ -144670,31 +144832,6 @@
             2,
             1,
             3
-          ],
-          [
-            2,
-            1,
-            4
-          ],
-          [
-            2,
-            1,
-            4
-          ],
-          [
-            2,
-            1,
-            4
-          ],
-          [
-            2,
-            1,
-            4
-          ],
-          [
-            2,
-            1,
-            4
           ],
           [
             2,
@@ -144705,26 +144842,6 @@
             2,
             2,
             2
-          ],
-          [
-            2,
-            2,
-            3
-          ],
-          [
-            2,
-            2,
-            3
-          ],
-          [
-            2,
-            2,
-            3
-          ],
-          [
-            2,
-            2,
-            4
           ],
           [
             2,
@@ -144753,23 +144870,23 @@
           ],
           [
             2,
+            5,
+            3
+          ],
+          [
+            2,
+            5,
+            3
+          ],
+          [
+            2,
+            5,
+            3
+          ],
+          [
+            2,
             4,
             1
-          ],
-          [
-            2,
-            5,
-            3
-          ],
-          [
-            2,
-            5,
-            3
-          ],
-          [
-            2,
-            5,
-            3
           ],
           [
             2,
@@ -144909,6 +145026,46 @@
           [
             2,
             1,
+            4
+          ],
+          [
+            2,
+            1,
+            4
+          ],
+          [
+            2,
+            1,
+            4
+          ],
+          [
+            2,
+            1,
+            4
+          ],
+          [
+            2,
+            1,
+            4
+          ],
+          [
+            2,
+            2,
+            3
+          ],
+          [
+            2,
+            2,
+            3
+          ],
+          [
+            2,
+            2,
+            3
+          ],
+          [
+            2,
+            1,
             1
           ],
           [
@@ -144933,48 +145090,8 @@
           ],
           [
             2,
-            1,
-            4
-          ],
-          [
-            2,
-            1,
-            4
-          ],
-          [
-            2,
-            1,
-            4
-          ],
-          [
-            2,
-            1,
-            4
-          ],
-          [
-            2,
-            1,
-            4
-          ],
-          [
-            2,
             2,
             1
-          ],
-          [
-            2,
-            2,
-            3
-          ],
-          [
-            2,
-            2,
-            3
-          ],
-          [
-            2,
-            2,
-            3
           ],
           [
             2,
@@ -145013,23 +145130,23 @@
           ],
           [
             2,
+            5,
+            3
+          ],
+          [
+            2,
+            5,
+            3
+          ],
+          [
+            2,
+            5,
+            3
+          ],
+          [
+            2,
             4,
             1
-          ],
-          [
-            2,
-            5,
-            3
-          ],
-          [
-            2,
-            5,
-            3
-          ],
-          [
-            2,
-            5,
-            3
           ],
           [
             2,
@@ -145171,16 +145288,6 @@
           [
             3,
             1,
-            1
-          ],
-          [
-            3,
-            1,
-            1
-          ],
-          [
-            3,
-            1,
             3
           ],
           [
@@ -145206,27 +145313,7 @@
           [
             3,
             2,
-            1
-          ],
-          [
-            3,
-            2,
-            1
-          ],
-          [
-            3,
-            2,
-            1
-          ],
-          [
-            3,
-            2,
-            2
-          ],
-          [
-            3,
-            2,
-            2
+            3
           ],
           [
             3,
@@ -145241,6 +145328,16 @@
           [
             3,
             2,
+            2
+          ],
+          [
+            3,
+            2,
+            2
+          ],
+          [
+            3,
+            3,
             3
           ],
           [
@@ -145262,16 +145359,6 @@
             3,
             3,
             2
-          ],
-          [
-            3,
-            3,
-            2
-          ],
-          [
-            3,
-            3,
-            3
           ],
           [
             3,
@@ -145290,13 +145377,23 @@
           ],
           [
             3,
-            4,
-            3
+            3,
+            2
+          ],
+          [
+            3,
+            1,
+            1
           ],
           [
             3,
             5,
             2
+          ],
+          [
+            3,
+            4,
+            3
           ],
           [
             3,
@@ -145317,6 +145414,26 @@
             3,
             6,
             3
+          ],
+          [
+            3,
+            6,
+            3
+          ],
+          [
+            3,
+            6,
+            3
+          ],
+          [
+            3,
+            6,
+            3
+          ],
+          [
+            3,
+            1,
+            1
           ],
           [
             3,
@@ -145325,18 +145442,18 @@
           ],
           [
             3,
-            6,
-            3
+            2,
+            1
           ],
           [
             3,
-            6,
-            3
+            2,
+            1
           ],
           [
             3,
-            6,
-            3
+            2,
+            1
           ],
           [
             3,
@@ -145456,6 +145573,21 @@
           [
             3,
             2,
+            3
+          ],
+          [
+            3,
+            2,
+            3
+          ],
+          [
+            3,
+            2,
+            3
+          ],
+          [
+            3,
+            2,
             2
           ],
           [
@@ -145465,32 +145597,7 @@
           ],
           [
             3,
-            2,
-            2
-          ],
-          [
             3,
-            2,
-            3
-          ],
-          [
-            3,
-            2,
-            3
-          ],
-          [
-            3,
-            2,
-            3
-          ],
-          [
-            3,
-            2,
-            3
-          ],
-          [
-            3,
-            2,
             3
           ],
           [
@@ -145512,16 +145619,6 @@
             3,
             3,
             2
-          ],
-          [
-            3,
-            3,
-            2
-          ],
-          [
-            3,
-            3,
-            3
           ],
           [
             3,
@@ -145536,6 +145633,16 @@
           [
             3,
             4,
+            2
+          ],
+          [
+            3,
+            3,
+            2
+          ],
+          [
+            3,
+            2,
             2
           ],
           [
@@ -145576,6 +145683,16 @@
           [
             3,
             6,
+            3
+          ],
+          [
+            3,
+            6,
+            3
+          ],
+          [
+            3,
+            2,
             3
           ],
           [
@@ -145585,7 +145702,7 @@
           ],
           [
             3,
-            6,
+            2,
             3
           ],
           [
@@ -147295,13 +147412,13 @@
       "bands": {
         "20": {
           "reference": "attack_power",
-          "dps": 0.0749,
-          "weapon_dps": 0.8605
+          "dps": 0.0774,
+          "weapon_dps": 0.8855
         },
         "30": {
           "reference": "attack_power",
-          "dps": 0.0906,
-          "weapon_dps": 1.0351
+          "dps": 0.0913,
+          "weapon_dps": 1.041
         },
         "40": {
           "reference": "attack_power",
@@ -147427,13 +147544,13 @@
       "bands": {
         "20": {
           "reference": "attack_power",
-          "dps": 0.0463,
-          "weapon_dps": 0.4472
+          "dps": 0.0478,
+          "weapon_dps": 0.448
         },
         "30": {
           "reference": "attack_power",
-          "dps": 0.0733,
-          "weapon_dps": 0.7241
+          "dps": 0.0776,
+          "weapon_dps": 0.7833
         },
         "40": {
           "reference": "attack_power",
@@ -147526,12 +147643,12 @@
       "bands": {
         "20": {
           "reference": "spell_power",
-          "dps": 0.2563,
+          "dps": 0.285,
           "weapon_dps": 0.0
         },
         "30": {
           "reference": "spell_power",
-          "dps": 0.2847,
+          "dps": 0.3054,
           "weapon_dps": 0.0
         },
         "40": {
@@ -147772,8 +147889,8 @@
         },
         "50": {
           "reference": "attack_power",
-          "dps": 0.1263,
-          "weapon_dps": 0.9276
+          "dps": 0.1256,
+          "weapon_dps": 1.0517
         },
         "60": {
           "reference": "attack_power",
@@ -147795,8 +147912,8 @@
         },
         "30": {
           "reference": "attack_power",
-          "dps": 0.1092,
-          "weapon_dps": 0.8264
+          "dps": 0.1097,
+          "weapon_dps": 0.7837
         },
         "40": {
           "reference": "attack_power",
@@ -147988,12 +148105,12 @@
       "bands": {
         "20": {
           "reference": "spell_power",
-          "dps": 0.309,
+          "dps": 0.3077,
           "weapon_dps": 0.0
         },
         "30": {
           "reference": "spell_power",
-          "dps": 0.313,
+          "dps": 0.3151,
           "weapon_dps": 0.0
         },
         "40": {
