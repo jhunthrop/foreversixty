@@ -1,0 +1,68 @@
+{
+  "rows": [
+    {
+      "id": "g1",
+      "kind": "guild_sim",
+      "at": "2026-11-07T21:22:00Z",
+      "tag": "your_guild",
+      "icon": null,
+      "crest": "rogue",
+      "quality": null,
+      "href": "/character/us/pvp/shiverknife",
+      "date_only": false,
+      "segments": [
+        {
+          "text": "Shiverknife",
+          "style": "name",
+          "class": "rogue"
+        },
+        {
+          "text": " simmed 486.2 DPS, #1 of 4 damage dealers in Olympus XXVII (Assassination Rogue, 60)"
+        }
+      ]
+    },
+    {
+      "id": "g2",
+      "kind": "guild_sim",
+      "at": "2026-11-07T17:00:00Z",
+      "tag": "your_guild",
+      "icon": null,
+      "crest": "paladin",
+      "quality": null,
+      "href": "/character/us/pvp/ironbrand",
+      "date_only": false,
+      "segments": [
+        {
+          "text": "Ironbrand",
+          "style": "name",
+          "class": "paladin"
+        },
+        {
+          "text": " simmed 402.7 HPS, #1 of 2 healers in Olympus XXVII (Holy Paladin, 60)"
+        }
+      ]
+    },
+    {
+      "id": "g3",
+      "kind": "guild_sim",
+      "at": "2026-11-06T20:00:00Z",
+      "tag": "your_guild",
+      "icon": null,
+      "crest": "warrior",
+      "quality": null,
+      "href": "/character/us/pvp/thornwicke",
+      "date_only": false,
+      "segments": [
+        {
+          "text": "Thornwicke",
+          "style": "name",
+          "class": "warrior"
+        },
+        {
+          "text": " simmed 311.0 DPS, #2 of 4 tanks in Olympus XXVII (Protection Warrior, 60)"
+        }
+      ]
+    }
+  ],
+  "next_cursor": null
+}

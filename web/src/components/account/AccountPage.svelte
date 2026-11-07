@@ -455,9 +455,10 @@
 
 <style>
   /* The page starts 28 px under the head at every width (the mock's split page); the primitive
-     tightens to 20 below 1024. */
-  :global(.ui-page[data-testid='account-grid']),
-  :global(.ui-page[data-testid='account-loading']) {
+     tightens to 20 below 1024. The doubled class outranks the primitive's own rule whatever
+     order the bundles load the two in. */
+  :global(.ui-page.ui-page[data-testid='account-grid']),
+  :global(.ui-page.ui-page[data-testid='account-loading']) {
     padding-top: 28px;
   }
 </style>

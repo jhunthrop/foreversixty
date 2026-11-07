@@ -5,9 +5,9 @@
      section's keydown). `disabled` is the frozen claim; `busy` is the call in flight. -->
 <script lang="ts">
   import { guildBotCopy } from '../../lib/guild/discord-bot-copy';
-  import { SECONDARY_BUTTON_FIXED } from '../../lib/planner/styles';
+  import { button } from '../../lib/ui/button';
 
-  const OUTLINE = `${SECONDARY_BUTTON_FIXED} border-line-warm text-text px-4`;
+  const OUTLINE = button('secondary');
   const DIM = 'cursor-not-allowed opacity-50';
 
   let {

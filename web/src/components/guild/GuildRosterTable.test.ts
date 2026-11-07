@@ -369,7 +369,7 @@ describe('GuildRosterTable: everyone the addon saw, with a word beside each', ()
   it('gives every account row a rank word, Member included', () => {
     const byName = rows(asOfficer);
     const rank = (name: string) =>
-      text(/data-testid="guild-roster-rank"[^>]*>([^<]*)</.exec(byName.get(name) ?? '')?.[1] ?? '');
+      text(/data-testid="guild-roster-rank"[^>]*>(.*?)<\/span>/.exec(byName.get(name) ?? '')?.[1] ?? '');
     expect(rank('Kraggor')).toBe('Leader');
     expect(rank('Sunderfel')).toBe('Officer');
     expect(rank('Zulmara')).toBe('Member');

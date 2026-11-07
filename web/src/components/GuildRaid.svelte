@@ -155,7 +155,7 @@
     </GuildBandFrame>
     {#if !doneReserve}
       <div
-        class="bg-raised border-line rounded-panel border {RAID_STRIP_RESERVE}"
+        class={RAID_STRIP_RESERVE}
         style:--strip-rows={reserveRows}
         aria-hidden="true"
         data-testid="raid-strip-reserve"
@@ -163,7 +163,7 @@
     {:else}
       {#if !officer}
         <div
-          class="bg-raised border-line rounded-panel border {YOUR_NIGHT_RESERVE}"
+          class={YOUR_NIGHT_RESERVE}
           style:--strip-rows={doneRows}
           aria-hidden="true"
           data-testid="raid-your-night-reserve"

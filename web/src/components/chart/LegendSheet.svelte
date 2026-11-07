@@ -94,7 +94,7 @@
           <span class="text-muted numeric mr-auto text-[13px]"
             >{chartCopy.sheetMeta(drawnCount, entries.length)}</span
           >
-          <Button tone="ghost" sentence onclick={onClose} testid="legend-sheet-done">{chartCopy.done}</Button>
+          <Button tone="ghost" onclick={onClose} testid="legend-sheet-done">{chartCopy.done}</Button>
         </div>
         <div class="px-[18px] pb-2"><PresetChips {presets} {choice} {onPreset} testid="sheet-presets" /></div>
         <div class="px-[18px] pt-1 pb-2.5">

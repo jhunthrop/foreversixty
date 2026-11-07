@@ -79,8 +79,8 @@ describe('GuildReadiness', () => {
     for (const tag of tags) {
       expect(tag).toMatch(/\sdisabled(=""|\s|>)/);
       expect(tag).toContain('aria-describedby="officer-tools-gate-readiness"');
-      expect(tag).toContain('disabled:opacity-50');
-      expect(tag).toContain('disabled:cursor-default');
+      expect(tag).toContain('disabled:not-aria-busy:opacity-45');
+      expect(tag).toContain('disabled:cursor-not-allowed');
     }
     expect(text(markup)).toContain('Nudge copies a message you can paste to them.');
   });

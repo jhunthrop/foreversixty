@@ -1,6 +1,6 @@
 <!-- web/src/components/guild/GuildRaids.svelte -->
 <!-- Guild control-centre spec §4.C: every raid night, one expandable in place (no
-     navigation). A night in Barrow Deeps or Hyjal Summit shows "Pull N — no named
+     navigation). A night in Barrow Deeps or Hyjal Summit shows "Pull N: no named
      encounter published" rather than inventing a boss name (§12.1). Shown to every role
      (public sees public reports only, per the existing report-visibility rule server
      side) -- this component renders whatever `rows` it is given.
@@ -22,10 +22,13 @@
   import { NO_PUBLIC_RAID_NIGHTS, raidNightDay } from '../../lib/guild/overview-view';
   import { nightTops, outputFigure, topOutputLabel } from '../../lib/guild/output-figure';
   import { TRASH_LABEL, bossIdsOf, nightFights, raidTallyParts } from '../../lib/guild/raid-view';
-  import Card from '../ui/Card.svelte';
+  import Page from '../ui/Page.svelte';
+  import Section from '../ui/Section.svelte';
+  import Tag from '../ui/Tag.svelte';
+  import { LINK, ROW_ITEM } from '../../lib/ui/primitives';
   import FactLine from './FactLine.svelte';
   import { attendanceCopy } from '../../lib/guild/attendance-copy';
-  import { raidCopy } from '../../lib/guild/raid-copy';
+  import { SEP, raidCopy } from '../../lib/guild/raid-copy';
   import { nightFromHash } from '../../lib/guild/raids-hash';
   import { guildRaidHref } from '../../lib/characters';
   import { RAID_CAP, lastPlannedRaid, openRaidCount, type RaidSubmitResult } from '../../lib/guild/raid-form';
@@ -189,27 +192,35 @@
   }
 </script>
 
-<section class="flex flex-col gap-[22px] lg:gap-6" data-testid="guild-raids-tab">
-  <Card glyph="chart" title="Raids" body="none" testid="guild-raids-header">
-    {#snippet aside()}
-      <!-- Hidden while the form is open, so the form's own submit is the screen's one fill (3.1). -->
-      {#if officer && showPlanned && !formOpen}
-        <button
-          type="button"
-          bind:this={planButton}
-          class={button(readOnly ? 'secondary' : 'primary', 'md')}
-          disabled={readOnly}
-          aria-describedby={planDescribedBy}
-          onclick={() => (formOpen = true)}
-          data-testid="guild-raids-plan">{raidCopy.planButton}</button
-        >
-      {/if}
-    {/snippet}
-    {#if officer && showPlanned && (readOnly || atCap || (formOpen && planned !== undefined))}
-      <div class="border-line-soft flex flex-col gap-3 border-t px-5 py-4">
-        {#if officer && showPlanned && readOnly}
+<!-- Two open Sections (web layout spec 2026-11-05 §3A.2): Planned, whose rows are the tab's one
+     Plate, with the officer's Plan an event at the head's right and the form open under it; then
+     the logged raid nights as open rows, each opening its pulls in place. -->
+<Page layout="ledger" testid="guild-raids-tab">
+  {#if showPlanned}
+    <Section
+      title={raidCopy.subheads.planned}
+      meta={(planned?.length ?? 0) > 0 ? String(planned?.length) : undefined}
+      metaTestid="guild-planned-count"
+      testid="guild-planned"
+    >
+      {#snippet head()}
+        <!-- Hidden while the form is open, so the form's own submit is the screen's one fill (3.1). -->
+        {#if officer && !formOpen}
+          <button
+            type="button"
+            bind:this={planButton}
+            class={button(readOnly ? 'secondary' : 'primary', 'sm')}
+            disabled={readOnly}
+            aria-describedby={planDescribedBy}
+            onclick={() => (formOpen = true)}
+            data-testid="guild-raids-plan">{raidCopy.planButton}</button
+          >
+        {/if}
+      {/snippet}
+      <div class="flex flex-col gap-4">
+        {#if officer && readOnly}
           <GuildPlanGate tab="raids" facts={gateFacts} />
-        {:else if officer && showPlanned && atCap}
+        {:else if officer && atCap}
           <p id={CAP_ID} class="text-muted text-[13px]" data-testid="guild-raids-cap">{raidCopy.cap}</p>
         {/if}
         {#if formOpen && officer && planned !== undefined}
@@ -226,37 +237,34 @@
             onCancel={() => void closeForm()}
           />
         {/if}
+        {#if showPlannedPanel && planned !== undefined}
+          <GuildPlannedRaids {planned} {officer} {guildPath} now={rowClock.now} {viewerTimezone} />
+        {/if}
       </div>
-    {/if}
-  </Card>
-  {#if showPlannedPanel && planned !== undefined}
-    <GuildPlannedRaids {planned} {officer} {guildPath} now={rowClock.now} {viewerTimezone} />
+    </Section>
   {/if}
-  <Card
-    glyph="chart"
-    title={raidCopy.subheads.raidNights}
-    titleTestid="guild-raid-nights-heading"
-    body="none"
-    testid="guild-raid-nights"
-  >
+  <Section title={raidCopy.subheads.raidNights} testid="guild-raid-nights">
     {#if rows.length === 0}
-      <p class="border-line-soft text-muted border-t px-5 py-4 text-[14px]" data-testid="guild-raids-empty">
+      <p class="text-muted text-[14px] leading-[22px]" data-testid="guild-raids-empty">
         {publicView ? NO_PUBLIC_RAID_NIGHTS : 'No raid nights logged yet. Upload a raid log to get started.'}
       </p>
     {:else}
-      <div class="border-line-soft flex flex-col border-t px-5" data-testid="guild-raids-rows">
+      <div class="flex flex-col" data-testid="guild-raids-rows">
         {#each rows as row (row.id)}
           {@const isOpen = expanded === row.id}
-          <div class="border-line-soft border-b" id={`guild-raid-night-${row.id}`}>
+          <div class={ROW_ITEM} id={`guild-raid-night-${row.id}`}>
             <button
-              class="flex w-full flex-wrap items-center gap-3 py-2 text-left"
+              class="flex min-h-[var(--row-h)] w-full flex-wrap items-center gap-x-3 gap-y-1 py-[10px] text-left"
               onclick={() => (expanded = isOpen ? null : row.id)}
               aria-expanded={isOpen}
               data-testid={`guild-raid-row-${row.id}`}
             >
-              <span class="min-w-[140px] text-[14px] font-semibold">{row.zone}</span>
-              <span class="text-muted tabular text-[13px]">{raidNightDay(row.created_at)}</span>
-              <span class="text-muted numeric text-[13px]">{minutes(row.duration_ms)}</span>
+              <span class="min-w-0">
+                <span class="text-strong block text-[15px] leading-5 font-bold">{row.zone}</span>
+                <span class="text-muted tabular block text-[13px] leading-[18px]"
+                  >{raidNightDay(row.created_at)}{SEP}{minutes(row.duration_ms)}</span
+                >
+              </span>
               <FactLine
                 facts={raidTallyParts(row, bossIds)}
                 class="text-muted tabular ml-auto text-right text-[13px]"
@@ -267,18 +275,20 @@
                 {#if row.raid_id !== undefined && row.raid_id !== null}
                   <a
                     href={guildRaidHref(guildPath, row.raid_id)}
-                    class="text-gold inline-flex min-h-11 items-center self-start text-[13px] font-bold"
+                    class="{LINK} inline-flex min-h-11 items-center self-start text-[14px]"
                     data-testid={`guild-raid-link-${row.id}`}>{attendanceCopy.match.openRaid}</a
                   >
                 {/if}
-                <div class="flex flex-wrap items-center gap-1">
-                  {#each row.present.slice(0, 20) as p (p.character_key)}
-                    <ClassCrestRing characterClass={p.class} size={22} />
-                  {/each}
-                  <span class="text-muted ml-2 text-[12px]"
-                    >{row.present.length} of {row.raiders} present</span
-                  >
-                </div>
+                {#if row.present.length > 0}
+                  <div class="flex flex-wrap items-center gap-1">
+                    {#each row.present.slice(0, 20) as p (p.character_key)}
+                      <ClassCrestRing characterClass={p.class} size={22} />
+                    {/each}
+                    <span class="text-muted ml-2 text-[12px]"
+                      >{row.present.length} of {row.raiders} present</span
+                    >
+                  </div>
+                {/if}
                 {#if nightTops(row).length > 0}
                   <!-- Healing then damage, worded and laid out as Progression's per-role line. -->
                   <p class="text-[13px]" data-testid={`guild-raid-top-${row.id}`}>
@@ -293,41 +303,35 @@
                     {/each}
                   </p>
                 {/if}
-                <div class="flex flex-col" data-testid={`guild-raid-fights-${row.id}`}>
+                <ul class="flex flex-col" data-testid={`guild-raid-fights-${row.id}`}>
                   {#each nightFights(row, bossIds) as fight (fight.index)}
-                    <div
-                      class="border-line-soft flex items-center gap-3 border-b py-1.5"
+                    <li
+                      class="{ROW_ITEM} flex min-h-11 items-center gap-3 py-1.5"
                       data-testid={fight.trash ? 'guild-raid-fight-trash' : 'guild-raid-fight'}
                     >
                       {#if fight.trash}
                         <!-- Trash: named, quiet, no pull number and no badge (guild round 2, WP-12). -->
-                        <span class="text-muted min-w-[120px] text-[13px]">{fight.label}</span>
-                        <span class="text-muted numeric text-[12px]">{clock(fight.duration_ms)}</span>
-                        <span class="text-muted text-[12px]">{TRASH_LABEL}</span>
+                        <span class="text-muted min-w-[160px] text-[13px]">{fight.label}</span>
+                        <span class="text-muted numeric text-[13px]">{clock(fight.duration_ms)}</span>
+                        <span class="text-muted ml-auto text-[13px]">{TRASH_LABEL}</span>
                       {:else if !fight.unnamed}
-                        <span class="min-w-[120px] text-[13px]">{fight.label}</span>
-                        <span class="text-muted numeric text-[12px]">{clock(fight.duration_ms)}</span>
-                        <span
-                          class="pill"
-                          class:pill-kill={fight.kill}
-                          style={fight.kill
-                            ? 'color:#7bff5c;background:rgba(30,255,0,.10);border-color:rgba(30,255,0,.25)'
-                            : ''}
-                        >
-                          {fight.kill ? 'Kill' : 'Wipe'}
+                        <span class="text-strong min-w-[160px] text-[14px] font-semibold">{fight.label}</span>
+                        <span class="text-muted numeric text-[13px]">{clock(fight.duration_ms)}</span>
+                        <span class="ml-auto">
+                          <Tag tone={fight.kill ? 'success' : 'danger'}>{fight.kill ? 'Kill' : 'Wipe'}</Tag>
                         </span>
                       {:else}
-                        <span class="min-w-[120px] text-[13px]">{fight.label}</span>
-                        <span class="text-muted text-[12px]">no named encounter published</span>
+                        <span class="min-w-[160px] text-[14px]">{fight.label}</span>
+                        <span class="text-muted text-[13px]">no named encounter published</span>
                       {/if}
-                    </div>
+                    </li>
                   {/each}
-                </div>
+                </ul>
               </div>
             {/if}
           </div>
         {/each}
       </div>
     {/if}
-  </Card>
-</section>
+  </Section>
+</Page>
