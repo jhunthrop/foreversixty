@@ -15,6 +15,9 @@ import { canAddPoint, type TalentIndex } from './rules';
 import { cellState } from './styles';
 import { MAX_POINTS } from './types';
 
+/** The talent frame's tiers: every class's trees fill seven. */
+export const GAME_TIERS = 7;
+
 const STATE: Record<ReturnType<typeof cellState>, TalentCellState> = {
   available: 'avail',
   filled: 'part',
@@ -51,7 +54,9 @@ export function editorTrees({
     if (characterLevel !== null && i >= available) planned.set(id, (planned.get(id) ?? 0) + 1);
   });
   return index.trees.map((tree, treeIndex) => {
-    const size = gridSize(tree);
+    // Every tree is drawn at the game frame's seven tiers (a trimmed tree too), so the Plate's
+    // ready height is the one its loading reserve holds (spec 5.2).
+    const size = { ...gridSize(tree), tiers: Math.max(GAME_TIERS, gridSize(tree).tiers) };
     const icon = SPECS.find((row) => row.class_slug === classSlug && row.tree_index === treeIndex)?.icon;
     const cells: EditorCell[] = gridCells(tree).map(({ talent, tier, column }) => {
       const rank = ranks.get(talent.id) ?? 0;

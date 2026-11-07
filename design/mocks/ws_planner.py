@@ -104,7 +104,7 @@ def tree_foot(st: dict, status: str = '', status_tone: str = '', reset_open: boo
 def answer(st: dict, score: tuple | None, loading: bool = False) -> str:
     """The head answer: Points left (gold) and the role's live score, then Sim this build."""
     if loading:
-        ans = f'<div class="ans-box pl-ans">{Skeleton(150, 64)}{Skeleton(150, 64)}</div>'
+        ans = f'<div class="ans-box pl-ans ld">{Skeleton(150, 64)}{Skeleton(150, 64)}</div>'
     else:
         left = f'<div class="pl-fig">{Figure(str(st["left"]), e(P["pointsLeft"]), tone="gold", size="big")}<span class="t-small">{e(st["spent_line"])}</span></div>'
         if score is None:
@@ -345,6 +345,7 @@ PAGE_CSS = '''<style>
 .pl-notes .notice{padding-top:4px;color:var(--text)}
 @media(max-width:899px){.pl-fig .t-small{min-height:40px}}
 @media(max-width:767px){main .btn.sm{height:44px}}
+.pl-ans.ld{flex-direction:row;gap:24px;min-height:130px}@media(min-width:900px){.pl-ans.ld{min-height:110px}}
 .pl-sec{display:flex;flex-direction:column;gap:12px;padding-top:14px}.pl-pad{padding-top:14px}
 .pl-acts{display:flex;flex-wrap:wrap;gap:10px;align-items:center}.pl-acts.pl-end{align-items:flex-end}
 .pl-line{font-size:15px;line-height:22px}.pl-note{font-size:14px;line-height:20px}.pl-note.muted{color:var(--muted)}

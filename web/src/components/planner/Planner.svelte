@@ -55,7 +55,7 @@
   import { importFromAddon } from '../../lib/addon/import';
   import type { BisBand } from '../../lib/bis/types';
   import { bandCompareCopy, plannerCharacterCardCopy, plannerHeaderCopy } from '../../lib/planner/copy';
-  import { editorTrees } from '../../lib/planner/editor-trees';
+  import { editorTrees, GAME_TIERS } from '../../lib/planner/editor-trees';
   import { bandCodeGear, earnedOrder, estimateCharacter } from '../../lib/planner/estimate';
   import { scoreUnitForBuild } from '../../lib/planner/score-unit';
   import type { LadderOrderFor, LadderOrderForRanks } from '../../lib/planner/ladder-load';
@@ -925,15 +925,7 @@
   };
   const TREES_LABEL = 'Talent trees';
   /** The reserve's tier count (spec 5.2): the loaded trees', or the seven every class has. */
-  const reserveTiers = $derived(
-    store.talentIndex === null
-      ? 7
-      : Math.max(
-          ...store.talentIndex.trees.map((tree) =>
-            tree.talents.reduce((top, t) => Math.max(top, t.tier + 1), 0),
-          ),
-        ),
-  );
+  const reserveTiers = GAME_TIERS;
 
   /** False in the server render and the hydration pass; the crest re-renders once true. */
   let mounted = $state(false);
@@ -1090,11 +1082,13 @@
 
 {#snippet plate()}
   {#if status === 'ready' && store.talentIndex}
+    <!-- Never the editor's readOnly: a shared build's press reaches the store, which refuses and
+         says why in the status line (fork it to edit). -->
     <TalentEditor
       trees={editorTreeList}
       bind:active={activeTree}
       copy={EDITOR_COPY}
-      readOnly={store.readOnly}
+      readOnly={false}
       onadd={(id) => store.addPoint(id)}
       onremove={(id) => store.removePoint(id)}
       onresettree={store.readOnly ? undefined : (i) => store.resetTree(i)}
@@ -1281,22 +1275,30 @@
 
 <style>
   .pl-reserve {
-    /* The ready trees' height from the tier count and the cell size (spec 5.2): loading, failed
-       and ready stand the same height, so nothing under the Plate moves when the trees arrive. */
+    /* The ready trees' height (spec 5.2): seven tiers of cells (GAME_TIERS) plus the tree head,
+       the grid's padding and the foot, measured per breakpoint, so loading, failed and ready
+       stand the same height and nothing under the Plate moves when the trees arrive. */
     --cell: 44px;
     --cgap: 8px;
-    min-height: calc(var(--tiers) * (var(--cell) + var(--cgap)) + 160px);
+    --chrome: 209px;
+    min-height: calc(var(--tiers) * (var(--cell) + var(--cgap)) + var(--chrome));
   }
   @media (min-width: 768px) {
     .pl-reserve {
       --cell: 48px;
-      min-height: calc(var(--tiers) * (var(--cell) + var(--cgap)) + 112px);
+      --chrome: 149px;
+    }
+  }
+  @media (min-width: 1280px) {
+    .pl-reserve {
+      --chrome: 153px;
     }
   }
   @media (min-width: 1760px) {
     .pl-reserve {
       --cell: 56px;
       --cgap: 10px;
+      --chrome: 151px;
     }
   }
   .pl-skel {
@@ -1325,11 +1327,18 @@
     gap: 8px;
     padding: 20px;
   }
+  /* The ready answer's height (spec 5.2): the trees arriving move nothing under the head. */
   .pl-ans-skel {
     display: flex;
     gap: 24px;
-    min-height: 96px;
-    align-items: flex-end;
+    min-height: 130px;
+    align-items: flex-start;
+  }
+  @media (min-width: 900px) {
+    .pl-ans-skel {
+      min-height: 110px;
+      align-items: flex-end;
+    }
   }
   .pl-notes {
     padding-inline: var(--page-inset);
