@@ -34,6 +34,8 @@ The owner's goal (2026-10-31): repeat audit and fix rounds over every spec until
 | 28 | 2026-11-07 | design/reviews/2026-11-07-sim-audit-round28/ (casters, hybrids, integration) | 17 fixed, all old: six leveling orders (Destruction, Demonology, Frost, Feral, Survival, Protection paladin) stop spending points on talents that do nothing ahead of live ones; Fingers of Frost six levels sooner, Conflagrate with Fire and Brimstone, Swift Judgement at 25 | 276ecc361 | no |
 | 29 | 2026-11-07 | design/reviews/2026-11-07-sim-audit-round29/ (walks-dps, walks-heal, integration) | 23 fixed: 22 old, 1 R28; the leveling-walk sweep finishes over the last 18 specs (every spec's order now walked); Survival raid drops Deterrence and Counterattack; tanks between bands fight the lower band's boss; tank leveling orders take a threat talent only if the sim chance of death rises under 5 points (coordinator ruling) | fe29dfbd2 | no |
 
+Rounds stopped by owner after r29; open items listed in design/reviews/2026-11-07-sim-audit-round29/integration.md ("Open, for round 30"). The round 29 re-rank shipped as addon 2.0.34.
+
 ## Loop structure
 
 The owner set this structure on 2026-11-02 (round 11). It replaces the round-by-round practice of re-ranking locally.
