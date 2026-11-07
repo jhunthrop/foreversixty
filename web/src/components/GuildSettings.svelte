@@ -31,8 +31,9 @@
   import GuildInviteLink from './guild/GuildInviteLink.svelte';
   import GuildRecords from './guild/billing/GuildRecords.svelte';
   import GuildStatus from './GuildStatus.svelte';
-  import Card from './ui/Card.svelte';
-  import PageHead from './ui/PageHead.svelte';
+  import Page from './ui/Page.svelte';
+  import PageHeader from './ui/PageHeader.svelte';
+  import Section from './ui/Section.svelte';
   import type { SelectOption } from '../lib/ui/listbox-model';
   import Select from './ui/Select.svelte';
   import SettingsRow from './ui/SettingsRow.svelte';
@@ -71,6 +72,8 @@
   /** This account's /v1/me guild entry: its rank and whether the trial is open, for the gate. */
   let myEntry = $state<MeGuild | null>(null);
   let guildName = $state('');
+  /** The guild's faction: the standalone page's title takes its colour (D8). */
+  let faction = $state<'alliance' | 'horde' | null>(null);
   let settings = $state<GuildSettingsData | null>(null);
   let status = $state<'loading' | 'ready' | 'forbidden' | 'failed'>('loading');
   let notice = $state('');
@@ -90,6 +93,7 @@
       const page = await fetchGuild(path);
       guildId = page.guild.id;
       guildName = page.guild.name;
+      faction = page.guild.faction ?? null;
       settings = await fetchGuildSettings(page.guild.id, undefined, (fresh) => (settings = fresh));
       status = 'ready';
     } catch (thrown) {
@@ -217,8 +221,9 @@
   {/if}
 {/snippet}
 
-{#snippet membersCard(current: GuildSettingsData)}
-  <Card glyph="lock" title={guildSettingsCopy.membersHeading} body="rows" testid="guild-settings-members">
+{#snippet membersSection(current: GuildSettingsData)}
+  <Section title={guildSettingsCopy.membersHeading} testid="guild-settings-members">
+    {@render notes()}
     {#if guildId !== null}
       <GuildInviteLink
         {guildId}
@@ -232,7 +237,7 @@
         }}
       />
     {/if}
-    <SettingsRow label={settingsWords.officerRank} sub={settingsWords.officerRankHelp} controlBelow>
+    <SettingsRow open label={settingsWords.officerRank} sub={settingsWords.officerRankHelp} controlBelow>
       {#snippet control(labelId)}
         <div class="flex items-center gap-3">
           <input
@@ -240,7 +245,7 @@
             type="number"
             min="0"
             aria-labelledby={labelId}
-            class="border-line-card rounded-control text-strong h-11 w-[72px] border bg-white/[.045] px-3 text-[15px] font-semibold disabled:opacity-45 {busy
+            class="rounded-control text-strong h-11 w-[72px] border border-white/15 bg-white/[.045] px-3 text-[15px] font-semibold disabled:opacity-45 {busy
               ? BUSY_CLASS
               : ''}"
             bind:value={rankDraft}
@@ -267,7 +272,12 @@
         {/if}
       {/snippet}
     </SettingsRow>
-    <SettingsRow label={guildSettingsCopy.defaultVisibility} sub={settingsWords.visibilityHelp} controlBelow>
+    <SettingsRow
+      open
+      label={guildSettingsCopy.defaultVisibility}
+      sub={settingsWords.visibilityHelp}
+      controlBelow
+    >
       {#snippet control()}
         <div class="w-40">
           <Select
@@ -284,29 +294,30 @@
         </div>
       {/snippet}
     </SettingsRow>
-  </Card>
+  </Section>
 {/snippet}
 
-{#snippet recordsCard(id: number)}
-  <Card
-    glyph="download"
+{#snippet recordsSection(id: number)}
+  <Section
     title={crest === undefined ? guildSettingsCopy.recordsOnlyHeading : guildSettingsCopy.recordsHeading}
-    body="rows"
     testid="guild-settings-records"
   >
     <GuildRecords guildId={id} />
     {@render crest?.()}
-  </Card>
+  </Section>
 {/snippet}
 
-<div class="reveal {embedded ? '' : GUILD_BANDLESS_TOP} flex flex-col gap-6" data-testid="guild-settings">
+<div class="reveal {embedded ? '' : GUILD_BANDLESS_TOP} flex flex-col" data-testid="guild-settings">
   {#if embedded}
     <h2 class="sr-only">{guildSettingsCopy.heading}</h2>
   {:else}
-    <PageHead
-      eyebrow={guildSettingsCopy.eyebrow}
-      title={guildName === '' ? guildSettingsCopy.heading : `${guildName} · ${guildSettingsCopy.heading}`}
-    />
+    <PageHeader
+      title={guildName === '' ? guildSettingsCopy.heading : guildName}
+      tone={faction === null ? 'strong' : { faction }}
+      testid="guild-settings-header"
+    >
+      {#snippet meta()}<span>{guildSettingsCopy.heading}</span>{/snippet}
+    </PageHeader>
   {/if}
   {#if status === 'loading' || status === 'failed'}
     <GuildStatus
@@ -319,46 +330,44 @@
     />
     <!-- The crest does not wait on the settings read: a failed read leaves it usable. -->
     {#if status === 'failed' && guildId !== null && crest !== undefined}
-      <div class="max-w-[440px]">{@render recordsCard(guildId)}</div>
+      <div class="max-w-[440px]">{@render recordsSection(guildId)}</div>
     {/if}
   {:else if status === 'forbidden'}
     <p class="text-[14px]" data-testid="guild-settings-forbidden">{guildSettingsCopy.forbidden}</p>
   {:else if settings !== null}
-    {@render notes()}
-    <div class="flex flex-col gap-[22px] lg:grid lg:grid-cols-[minmax(0,1fr)_440px] lg:items-start lg:gap-8">
-      <div class="flex min-w-0 flex-col gap-[22px] lg:gap-6">
-        {#if guildId !== null}
-          <GuildBillingSection {guildId} {path} {guildName} />
+    {@const current = settings}
+    <Page layout="split" testid="guild-settings-page">
+      {#if guildId !== null}
+        <GuildBillingSection {guildId} {path} {guildName} />
+      {/if}
+      {#if settings.discord !== undefined && guildId !== null}
+        {#if discordLazy.current}
+          <discordLazy.current
+            {guildId}
+            discord={settings.discord}
+            {frozen}
+            {officerTools}
+            {gateFacts}
+            {onPlanRefused}
+            onDiscord={(discord) => {
+              if (settings !== null) settings = { ...settings, discord };
+            }}
+            onSettings={(fresh) => (settings = fresh)}
+          />
+        {:else}
+          <div
+            id="discord"
+            class="scroll-mt-20 {guildDiscordReserve(settings.discord, window.location.search)}"
+            data-testid="guild-settings-discord-reserve"
+          ></div>
         {/if}
-        {#if settings.discord !== undefined && guildId !== null}
-          {#if discordLazy.current}
-            <discordLazy.current
-              {guildId}
-              discord={settings.discord}
-              {frozen}
-              {officerTools}
-              {gateFacts}
-              {onPlanRefused}
-              onDiscord={(discord) => {
-                if (settings !== null) settings = { ...settings, discord };
-              }}
-              onSettings={(fresh) => (settings = fresh)}
-            />
-          {:else}
-            <div
-              id="discord"
-              class="scroll-mt-20 {guildDiscordReserve(settings.discord, window.location.search)}"
-              data-testid="guild-settings-discord-reserve"
-            ></div>
-          {/if}
-        {/if}
-      </div>
-      <div class="flex min-w-0 flex-col gap-[22px] lg:gap-6">
-        {@render membersCard(settings)}
-        {#if guildId !== null}{@render recordsCard(guildId)}{/if}
-      </div>
-    </div>
-    <div class="min-h-[21px]">
+      {/if}
+      {#snippet rail()}
+        {@render membersSection(current)}
+        {#if guildId !== null}{@render recordsSection(guildId)}{/if}
+      {/snippet}
+    </Page>
+    <div class="min-h-[21px] px-(--page-inset) pt-3">
       {#if error !== ''}<p class="text-[14px]" role="alert" data-testid="guild-settings-action-error">
           {error}
         </p>{:else if notice !== ''}<p class="text-[14px]" data-testid="guild-settings-notice">

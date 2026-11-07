@@ -1,5 +1,6 @@
 <!-- web/src/components/GuildJoin.svelte -->
-<!-- /guild/invite/<token> (spec 2026-11-05 §3.4): one card, centred. Which guild, which of the
+<!-- /guild/invite/<token> (spec 2026-11-05 §3.4; web layout spec 2026-11-05 §3A): the guild's PageHeader, then one Section
+     on the form measure, no card. Which guild, which of the
      viewer's characters joins, one `Join`. The token is looked up (GET /v1/guild-invites/{token},
      public: it names the guild without joining). Signed out, the card carries the sign-in button;
      an unknown or rotated token says so plainly with no button; a member of the guild already is
@@ -7,7 +8,6 @@
      guild's plan line, then `Open the guild`. The inviter is not named until the link records who
      made it (§4.1, held). -->
 <script lang="ts">
-  import { GUILD_BANDLESS_TOP } from '../lib/guild/raid-layout';
   import { battlenetStartUrl, fetchMeOnce, forgetSession, type Me } from '../lib/account/api';
   import { guildHref, guildInviteHref, rulesetLabel } from '../lib/characters';
   import {
@@ -22,7 +22,7 @@
   import { holdsErrorRoom, joiningRow, previewAfterJoin, showsInvitedLine } from '../lib/guild/join-view';
   import { GUILD_LOADING } from '../lib/guild/layout';
   import { guildMarkSrc } from '../lib/guild/mark';
-  import { classColorVar } from '../lib/report/format';
+  import { classTone } from '../lib/ui/primitives';
   import { BUSY_CLASS } from '../lib/ui/busy';
   import { button } from '../lib/ui/button';
   import ClassCrestRing from './character/ClassCrestRing.svelte';
@@ -31,10 +31,12 @@
   import GuildJoinInvited from './guild/GuildJoinInvited.svelte';
   import GuildStatus from './GuildStatus.svelte';
   import EmptyState from './ui/EmptyState.svelte';
-  import SettingsRow from './ui/SettingsRow.svelte';
+  import Button from './ui/Button.svelte';
+  import Page from './ui/Page.svelte';
+  import PageHeader from './ui/PageHeader.svelte';
+  import Row from './ui/Row.svelte';
+  import Section from './ui/Section.svelte';
   import Skeleton from './ui/Skeleton.svelte';
-
-  const CARD = 'card-surface measure-form flex w-full flex-col gap-4 rounded-panel p-5';
 
   let { token }: { token: string } = $props();
 
@@ -114,9 +116,9 @@
   }
 </script>
 
-<div class="reveal {GUILD_BANDLESS_TOP} flex flex-col gap-4" data-testid="guild-join">
+<div class="reveal" data-testid="guild-join">
   {#if status === 'loading'}
-    <div class="{CARD} min-h-[380px] md:min-h-[320px]" data-testid="guild-join-loading">
+    <div class="min-h-[380px] md:min-h-[320px]" data-testid="guild-join-loading">
       <Skeleton lines={6} testid="guild-join-skeleton" />
     </div>
   {:else if status === 'failed'}
@@ -131,96 +133,110 @@
   {:else if status === 'invalid' || guild === null}
     <EmptyState message={guildJoinCopy.invalid} testid="guild-join-invalid" />
   {:else}
-    <div class={CARD} data-testid="guild-join-card">
-      <div class="flex items-center gap-3">
-        <FactionCrest faction={guild.faction} src={guildMarkSrc(guild)} small testid="guild-join-crest" />
-        <div class="flex min-w-0 flex-col">
-          <h1 class="heading-plan" data-testid="guild-join-name">{guild.name}</h1>
-          <p class="text-muted text-[13px]" data-testid="guild-join-realm">
-            {guildJoinCopy.guildLine(realm, peek?.members)}
-          </p>
-        </div>
-      </div>
-      {#if showsInvitedLine(alreadyIn, joined !== null)}
-        <GuildJoinInvited guildName={guild.name} inviter={peek?.inviter ?? null} />
-      {/if}
-      {#if showJoining && joining !== null}
-        <div class="border-line-soft -mx-5 border-b" data-testid="guild-join-as">
-          <SettingsRow
-            label={joining.label}
-            labelColor={joining.labelClass === null ? undefined : classColorVar(joining.labelClass)}
-            sub={joining.sub}
-          >
-            {#snippet icon()}
-              <ClassCrestRing characterClass={joining.crestClass} size={32} />
-            {/snippet}
-          </SettingsRow>
-        </div>
-      {/if}
-      {#if joined !== null}
-        <GuildJoinedBlock
-          {planLine}
-          openHref={guildHref(joined.guild.region, joined.guild.ruleset, joined.guild.name)}
-        />
-      {:else if !signedIn}
-        <p class="text-[14px]" data-testid="guild-join-signin-line">{guildJoinCopy.signInLine}</p>
-        <a
-          class="{button('primary', 'md')} w-full md:w-fit"
-          href={battlenetStartUrl(guildInviteHref(token))}
-          data-testid="guild-join-signin"
-        >
-          {guildJoinCopy.signInButton}
-        </a>
-      {:else if alreadyIn}
-        <p class="text-[14px]" data-testid="guild-join-already">{guildJoinCopy.alreadyIn(guild.name)}</p>
-        <a
-          class="{button('primary', 'md')} w-full md:w-fit"
-          href={guildHref(guild.region, guild.ruleset, guild.name)}
-          data-testid="guild-join-open"
-        >
-          {guildJoinCopy.openGuild}
-        </a>
-      {:else}
-        <div class="flex flex-col gap-1">
-          <p class="text-muted text-[13px]" data-testid="guild-join-verified">
-            {guildJoinCopy.verifiedAtOnce}
-          </p>
-          <p class="text-muted text-[13px]" data-testid="guild-join-consequence">
-            {guildJoinCopy.consequence}
-          </p>
-        </div>
-        <div class="flex flex-col gap-3 md:flex-row md:items-center">
-          <button
-            class="{button('primary', 'md')} w-full md:w-fit {busy ? BUSY_CLASS : ''}"
-            onclick={() => void onJoin()}
-            disabled={busy}
-            aria-busy={busy}
-            data-testid="guild-join-button"
-          >
-            {busy ? guildJoinCopy.joining : guildJoinCopy.joinButton(guild.name)}
-          </button>
-          <a
-            class="{button('ghost', 'md')} w-full md:w-fit"
-            href={guildHref(guild.region, guild.ruleset, guild.name)}
-            data-testid="guild-join-not-now"
-          >
-            {guildJoinCopy.notNow}
-          </a>
-        </div>
-        <!-- The error line's room is held only while a join is in flight (or failed), so a card at
-             rest ends at its buttons with no dead space under them (guild round 2). -->
-        {#if holdsErrorRoom(busy, error)}
-          <div class="min-h-[21px]" data-testid="guild-join-error-slot">
-            {#if error !== ''}<p
-                class="text-wipe text-[14px]"
-                role="alert"
-                data-testid="guild-join-action-error"
+    {#snippet header()}
+      <PageHeader
+        title={guild.name}
+        tone={guild.faction === 'alliance' || guild.faction === 'horde'
+          ? { faction: guild.faction }
+          : 'strong'}
+        testid="guild-join-head"
+      >
+        {#snippet crest()}
+          <FactionCrest faction={guild.faction} src={guildMarkSrc(guild)} testid="guild-join-crest" />
+        {/snippet}
+        {#snippet meta()}
+          <span data-testid="guild-join-realm">{guildJoinCopy.guildLine(realm, peek?.members)}</span>
+        {/snippet}
+      </PageHeader>
+    {/snippet}
+    <Page layout="form" {header} testid="guild-join-card">
+      <Section title={guildJoinCopy.sectionHeading} testid="guild-join-section">
+        <div class="flex flex-col items-start gap-4">
+          {#if showsInvitedLine(alreadyIn, joined !== null)}
+            <GuildJoinInvited guildName={guild.name} inviter={peek?.inviter ?? null} />
+          {/if}
+          {#if showJoining && joining !== null}
+            <div class="w-full" data-testid="guild-join-as">
+              <Row
+                title={joining.label}
+                titleTone={joining.labelClass === null ? undefined : classTone(joining.labelClass)}
+                sub={joining.sub}
+                open
               >
-                {error}
-              </p>{/if}
-          </div>
-        {/if}
-      {/if}
-    </div>
+                {#snippet lead()}<ClassCrestRing characterClass={joining.crestClass} size={32} />{/snippet}
+              </Row>
+            </div>
+          {/if}
+          {#if joined !== null}
+            <GuildJoinedBlock
+              {planLine}
+              openHref={guildHref(joined.guild.region, joined.guild.ruleset, joined.guild.name)}
+            />
+          {:else if !signedIn}
+            <p class="text-text text-[14px]" data-testid="guild-join-signin-line">
+              {guildJoinCopy.signInLine}
+            </p>
+            <Button
+              tone="primary"
+              href={battlenetStartUrl(guildInviteHref(token))}
+              testid="guild-join-signin"
+            >
+              {guildJoinCopy.signInButton}
+            </Button>
+          {:else if alreadyIn}
+            <p class="text-text text-[14px]" data-testid="guild-join-already">
+              {guildJoinCopy.alreadyIn(guild.name)}
+            </p>
+            <Button
+              tone="primary"
+              href={guildHref(guild.region, guild.ruleset, guild.name)}
+              testid="guild-join-open"
+            >
+              {guildJoinCopy.openGuild}
+            </Button>
+          {:else}
+            <div class="flex flex-col gap-1">
+              <p class="text-muted text-[13px]" data-testid="guild-join-verified">
+                {guildJoinCopy.verifiedAtOnce}
+              </p>
+              <p class="text-muted text-[13px]" data-testid="guild-join-consequence">
+                {guildJoinCopy.consequence}
+              </p>
+            </div>
+            <div class="flex w-full flex-col gap-3 md:flex-row md:items-center">
+              <button
+                class="{button('primary', 'md')} w-full md:w-fit {busy ? BUSY_CLASS : ''}"
+                onclick={() => void onJoin()}
+                disabled={busy}
+                aria-busy={busy}
+                data-testid="guild-join-button"
+              >
+                {busy ? guildJoinCopy.joining : guildJoinCopy.joinButton(guild.name)}
+              </button>
+              <Button
+                tone="ghost"
+                href={guildHref(guild.region, guild.ruleset, guild.name)}
+                testid="guild-join-not-now"
+              >
+                {guildJoinCopy.notNow}
+              </Button>
+            </div>
+            <!-- The error line's room is held only while a join is in flight (or failed), so the
+                 section at rest ends at its buttons (guild round 2). -->
+            {#if holdsErrorRoom(busy, error)}
+              <div class="min-h-[21px]" data-testid="guild-join-error-slot">
+                {#if error !== ''}<p
+                    class="text-wipe text-[14px]"
+                    role="alert"
+                    data-testid="guild-join-action-error"
+                  >
+                    {error}
+                  </p>{/if}
+              </div>
+            {/if}
+          {/if}
+        </div>
+      </Section>
+    </Page>
   {/if}
 </div>

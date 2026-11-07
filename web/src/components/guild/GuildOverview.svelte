@@ -95,7 +95,8 @@
     /** The viewer's own roster row (their raid character), for Your numbers. */
     myRow?: GuildRosterRow | null;
     onSelectTab: (tab: GuildTabId) => void;
-    /** The first block on the tab, when the page has one to lead with (Before raids open). */
+    /** The first block on the tab, when the page has one to lead with (Before raids open, which then
+     *  carries the next step: no "No raid planned" line and no numbers before the first raid). */
     lead?: Snippet;
     /** The viewer's own sign-up row for the next raid (the band line). */
     you?: Snippet;
@@ -195,7 +196,7 @@
 {#snippet plate()}
   {#if nextRaid !== null}
     <NextRaidPlate next={nextRaid} {raid} {officer} {planHref} {viewerTz} now={clock.now} {you} />
-  {:else if member}
+  {:else if member && lead === undefined}
     <Notice
       text="No raid planned yet."
       action={officer ? { label: 'Plan one', href: '#raids' } : undefined}
@@ -252,7 +253,7 @@
           <MemberChecklist {rows} verdict={verdictWord(checklist.verdict)} />
         </div>
       {/if}
-      {#if myRow !== null}<YourNumbers row={myRow} />{/if}
+      {#if myRow !== null && lead === undefined}<YourNumbers row={myRow} />{/if}
       {#snippet rail()}
         {#if raid?.comp_target}<CompTally {raid} target={raid.comp_target} title="The raid's comp" />{/if}
         {@render lastRaid()}

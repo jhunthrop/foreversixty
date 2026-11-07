@@ -9,7 +9,6 @@
   import { lineTwoState, type BillingViewState } from '../../../lib/guild/billing-state';
   import { OPENER_PRESSED } from '../../../lib/guild/billing-styles';
   import { button } from '../../../lib/ui/button';
-  import { CARD_FOOT } from '../../../lib/ui/card';
   import SettingsRow from '../../ui/SettingsRow.svelte';
   import Tag from '../../ui/Tag.svelte';
   import { canManageBilling, officerToolsExplanation, settingsWords } from '../../../lib/guild/settings-view';
@@ -73,14 +72,14 @@
 </script>
 
 <div data-testid="guild-billing-planline">
-  <SettingsRow label={planText} testid="guild-billing-plan">
+  <SettingsRow open label={planText} testid="guild-billing-plan">
     {#snippet control()}
       {#if plan.founder && lineState.kind !== 'lapsed'}
         <Tag testid="guild-billing-founder">{guildBillingCopy.founderPill}</Tag>
       {/if}
     {/snippet}
   </SettingsRow>
-  <SettingsRow label={lineTwo} testid="guild-billing-contact">
+  <SettingsRow open label={lineTwo} testid="guild-billing-contact">
     {#snippet below()}
       {#if payer && plan.status === 'past_due'}
         <span class="text-strong text-[13px]" role="alert">{billingBlockCopy.pastDueBanner}</span>
@@ -93,7 +92,7 @@
     {/snippet}
   </SettingsRow>
   {#if manageable || (payer && showMove)}
-    <div class={CARD_FOOT}>
+    <div class="flex flex-wrap items-center gap-3 pt-3">
       {#if manageable}
         <button
           type="button"

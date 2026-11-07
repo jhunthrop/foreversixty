@@ -54,7 +54,8 @@
     whatValueOf,
   } from '../../lib/guild/zone-catalogue';
   import type { RaidInput } from '../../lib/guild/raids-api';
-  import { PRIMARY_BUTTON_FIXED } from '../../lib/planner/styles';
+  import { button } from '../../lib/ui/button';
+  import { FIELD_LABEL } from '../../lib/ui/field';
   import RaidFormDiscord from './RaidFormDiscord.svelte';
   import { selectCopy } from '../../lib/ui/copy';
   import Select from '../ui/Select.svelte';
@@ -222,11 +223,11 @@
 {/snippet}
 
 {#snippet label(field: string, text: string)}
-  <label class="quiet-label" for={id(field)}>{text}</label>
+  <label class={FIELD_LABEL} for={id(field)}>{text}</label>
 {/snippet}
 
 <form
-  class="bg-raised border-line rounded-panel flex flex-col gap-4 border p-4 shadow-[inset_0_1px_0_rgba(229,185,85,.35)] md:p-5"
+  class="flex flex-col gap-4"
   novalidate
   aria-busy={busy}
   onsubmit={(event) => void submit(event)}
@@ -415,7 +416,7 @@
     <div class="flex flex-wrap items-center gap-4">
       <button
         type="submit"
-        class="{PRIMARY_BUTTON_FIXED} focus-visible:outline-gold px-4 focus-visible:outline-2 focus-visible:outline-offset-2 active:bg-[#cfa64a]"
+        class={button('primary', 'md')}
         disabled={busy || planEnded}
         aria-describedby={errors.form !== undefined ? errorId('form') : undefined}
         data-testid="raid-form-submit">{submitLabel}</button

@@ -7,9 +7,11 @@ import {
   levelSpread,
   professionFacts,
   raidsOpenDay,
-  raidsOpenLine,
+  levelTally,
+  raidsCountdownTarget,
   spreadIsEmpty,
   weekOneStep,
+  weekOneMeta,
   weekOneTitle,
   type WeekOneInput,
 } from './week-one';
@@ -50,21 +52,31 @@ function input(overrides: Partial<WeekOneInput> = {}): WeekOneInput {
   };
 }
 
-describe('the raids line', () => {
-  it('reads phases.json for the date and counts down in the raid words', () => {
+describe('the raids opening', () => {
+  it('reads phases.json for the date and counts down to it until it passes', () => {
     expect(raidsOpenDay('en-US')).toBe('Wed 9 Dec');
-    expect(raidsOpenLine(new Date('2026-12-07T00:00:00Z'), 'en-US')).toBe(
-      "Barrow Deeps, Hyjal Summit and Onyxia's Lair open Wed 9 Dec, in 2 days.",
-    );
-    expect(raidsOpenLine(new Date('2026-12-07T20:00:00Z'), 'en-US')).toContain('in 1 day 4 h.');
+    expect(raidsCountdownTarget(BEFORE)).toBe('2026-12-09T00:00:00.000Z');
+    expect(raidsCountdownTarget(AFTER)).toBeNull();
   });
 
-  it('turns over on 9 Dec, title and line both', () => {
+  it('turns over on 9 Dec, title and meta both', () => {
     expect(weekOneTitle(BEFORE)).toBe('Before raids open');
     expect(weekOneTitle(AFTER)).toBe('Your first raid');
-    expect(raidsOpenLine(AFTER)).toBe(
-      'Raids are open. Your first logged night starts the progression board.',
-    );
+    expect(weekOneMeta(BEFORE)).toBeUndefined();
+    expect(weekOneMeta(AFTER)).toBe('Your first logged night starts the progression board.');
+  });
+});
+
+describe('levelTally', () => {
+  it('counts each band against everyone counted, the lower bands muted', () => {
+    const items = levelTally({ at60: 3, fifties: 2, forties: 1, under40: 4, noLevel: 5 });
+    expect(items.map((item) => [item.label, item.have, item.want, item.tone])).toEqual([
+      ['At 60', 3, 10, 'warn'],
+      ['50 to 59', 2, 10, 'none'],
+      ['40 to 49', 1, 10, 'none'],
+      ['Under 40', 4, 10, 'none'],
+    ]);
+    expect(levelTally({ at60: 2, fifties: 0, forties: 0, under40: 0, noLevel: 0 })[0].tone).toBeUndefined();
   });
 });
 
@@ -202,6 +214,13 @@ describe('the raider step', () => {
       href: '/bis/hunter/survival',
       label: 'Open your best in slot',
     });
+  });
+
+  it('at 60 once the raids are open, the gear check is before the first raid', () => {
+    const step = weekOneStep(
+      input({ now: AFTER, character: { name: 'A', class: 'hunter', level: 60, spec: 'Survival' } }),
+    );
+    expect(step.text).toBe(' is level 60. Check your gear before the first raid.');
   });
 });
 

@@ -3,16 +3,17 @@
      seat here, the payer note when a member who pays for Premium is chosen, focus on the select,
      Escape is handled by the row. Presentational: the row loads the candidates and sends the choice. -->
 <script lang="ts">
+  import { button } from '../../../lib/ui/button';
   import type { SeatCandidate } from '../../../lib/billing/contract';
   import { seatsCopy as copy } from '../../../lib/billing/seats-copy';
   import {
     BILLING_SAFE_TEXT_BUTTON,
     CONFIRM_ACTION_WIDTH,
     CONFIRM_ACTIONS,
+    CONFIRM_BLOCK,
   } from '../../../lib/guild/billing-styles';
   import { focusOnMount } from '../../../lib/guild/focus-now';
   import { sortedByName } from '../../../lib/guild/seat-view';
-  import { PRIMARY_BUTTON_FIXED } from '../../../lib/planner/styles';
   import { BUSY_CLASS } from '../../../lib/ui/busy';
   import Skeleton from '../../ui/Skeleton.svelte';
   import Select from '../../ui/Select.svelte';
@@ -51,7 +52,7 @@
 </script>
 
 <div
-  class="border-line-soft flex flex-col gap-3 border p-4"
+  class={CONFIRM_BLOCK}
   role="group"
   aria-labelledby={`${selectId}-label`}
   aria-busy={candidates === null || busy}
@@ -66,7 +67,9 @@
     </button>
   {:else}
     <div class="flex flex-col gap-1">
-      <label id={`${selectId}-label`} class="quiet-label" for={selectId}>{title}</label>
+      <label id={`${selectId}-label`} class="text-muted text-[13px] font-semibold" for={selectId}
+        >{title}</label
+      >
       <Select
         id={selectId}
         value={chosen === null ? '' : String(chosen.user_id)}
@@ -93,7 +96,7 @@
     <div class={CONFIRM_ACTIONS}>
       <button
         type="button"
-        class="{PRIMARY_BUTTON_FIXED} {CONFIRM_ACTION_WIDTH} px-4 {busy ? BUSY_CLASS : ''}"
+        class="{button('primary')} {CONFIRM_ACTION_WIDTH} {busy ? BUSY_CLASS : ''}"
         disabled={busy || chosen === null}
         aria-busy={busy}
         onclick={() => chosen !== null && onSubmit(chosen)}
