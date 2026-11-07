@@ -29,7 +29,7 @@ const ALLOWED = new Map<string, number>([
   ['components/guild/report/ReportDiscord.svelte', 1], // the copy fallback box
   ['components/guild/RaidOfficerRow.svelte', 1], // the copy fallback box
   ['components/guild/GuildDiscordChannel.svelte', 1], // the channel id
-  ['components/admin/GoLinksAdmin.svelte', 2], // a link's /go/ path and the slug field
+  ['components/admin/GoLinksAdmin.svelte', 1], // a link's /go/ path (the slug is a Field now)
 ]);
 
 /** `var(--font-mono)`, or the `font-mono` class. */
