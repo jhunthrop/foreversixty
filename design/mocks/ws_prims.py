@@ -1005,7 +1005,7 @@ def GradeTile(letter: str) -> str:
 # `TalentTip` is the talent tooltip (Overlay kind 'tooltip'). `PointOrder` is the build's spend order in rows of ten levels
 # with a socket per level. `Switch` is the shipped ui/Switch. `CodeField` is the paste box for a code a player copies out
 # of the game (mono, the one face for literal codes). `ClassPicker` is the ControlBar's class choice: nine crests, the
-# class names from 1760 (and in the phone stack).
+# class names from 1280 (ruling P10) and in the phone stack.
 PRIM_CSS += '''
 .layout-wb{display:grid;grid-template-columns:minmax(0,1fr);gap:var(--section-gap) var(--gap);align-items:start}
 .layout-wb>.main,.layout-wb>.rail{display:contents}
@@ -1045,6 +1045,12 @@ PRIM_CSS += '''
 .tc2:hover:not(.lock),.tc2.hov{filter:brightness(1.15)}.tc2.hov::after{box-shadow:inset 0 0 0 2px var(--gold-hover)}
 .tc2:focus-visible,.tc2.fv{outline:2px solid var(--gold);outline-offset:2px}
 .tc2.act{transform:translateY(1px)}
+.tc2.plan .rk{opacity:.6;border-style:dashed}
+.tedit-h .trs{font:600 13px/18px var(--font-body);color:var(--gold)}.tedit-h .trs:hover{color:var(--gold-hover)}
+.porder-m{display:grid;grid-template-columns:120px minmax(0,1fr);column-gap:16px;padding-top:4px}
+.porder-m .porder-s>span{height:auto;text-align:center;font-size:11px;line-height:14px;color:#5d6577;font-variant-numeric:tabular-nums}
+@media(max-width:767px){.porder-m{grid-template-columns:minmax(0,1fr)}.porder-m>span:first-child{display:none}}
+.txt-s{display:none}@media(max-width:767px){.txt-l{display:none}.txt-s{display:inline}}
 .tedit-g path{fill:none;stroke-linecap:round;vector-effect:non-scaling-stroke}.tedit-g path.halo{stroke:var(--bg);stroke-width:5}.tedit-g path.on{stroke:var(--gold);stroke-width:2}.tedit-g path.off{stroke:#3a4256;stroke-width:2}
 .tedit-f{display:flex;flex-wrap:wrap;align-items:center;gap:6px 16px;padding:12px 16px;border-top:1px solid var(--line-soft)}
 .tedit-f .st2{flex-basis:100%;min-height:20px;font-size:14px;line-height:20px;color:var(--strong)}.tedit-f .st2.wipe{color:var(--wipe)}
@@ -1071,7 +1077,7 @@ PRIM_CSS += '''
 .codef{display:block;width:100%;min-height:68px;padding:10px 12px;border:1px solid var(--line);border-radius:4px;background:#0a0d14;color:var(--strong);font:500 13px/20px ui-monospace,'SF Mono',Menlo,monospace;overflow-wrap:anywhere;white-space:pre-wrap}
 .codef.ph{color:var(--muted)}.codef.bad{border-color:var(--wipe)}.codef.short{min-height:44px;display:flex;align-items:center}
 .clsp a{padding:0 10px}.clsp a .lbl{display:none}
-@media(min-width:1760px){.clsp a .lbl{display:inline}.clsp a{padding:0 12px}}
+@media(min-width:1280px){.clsp a .lbl{display:inline}}@media(min-width:1760px){.clsp a{padding:0 12px}}
 .bar-m .clsp a .lbl{display:inline}.bar-m .clsp a{flex:1 1 30%;justify-content:flex-start}
 '''
 
@@ -1095,6 +1101,11 @@ def TalentCell2(icon_html: str, name: str, rank: int, mx: int, state: str, diffe
     return f'<button type="button" class="{cls}" aria-label="{escape(name)}, rank {rank} of {mx}"{dis}>{icon_html}<span class="rk" aria-hidden="true">{rank}/{mx}</span></button>'
 
 
+def TextFor(long: str, short: str) -> str:
+    """One sentence in two lengths: the long one from 768, the short one on a phone (one line)."""
+    return f'<span class="txt-l">{long}</span><span class="txt-s">{short}</span>'
+
+
 def TalentEditor(trees: list[dict], active: int = 0, foot: str = '', label: str = 'Talent trees') -> str:
     """trees: {name, icon_html, points, art_src, cols, tiers, viewbox, connectors [(d, met)], cells [(tier, col, cell_html)]}.
     The Plate's content: tree tabs (below 768), the tree columns, then the foot (status line, source line, Reset)."""
@@ -1112,7 +1123,8 @@ def TalentEditor(trees: list[dict], active: int = 0, foot: str = '', label: str 
         paths = ''.join(f'<path class="halo" d="{d}"/><path class="{"on" if met else "off"}" d="{d}"/>' for d, met in t['connectors'])
         art = f'<img class="art" src="{t["art_src"]}" alt="" aria-hidden="true">' if t.get('art_src') else ''
         pts = f'<b class="num{" zero" if not t["points"] else ""}">{t["points"]}</b>'
-        cols += (f'<div class="tedit-tree{" on" if i == active else ""}" role="tabpanel" aria-label="{escape(t["name"])}"><div class="tedit-h">{t["icon_html"]}<h2>{escape(t["name"])}</h2>{pts}</div>'
+        rs = t.get('reset', '')
+        cols += (f'<div class="tedit-tree{" on" if i == active else ""}" role="tabpanel" aria-label="{escape(t["name"])}"><div class="tedit-h">{t["icon_html"]}<h2>{escape(t["name"])}</h2>{pts}{rs}</div>'
                  f'<div class="tedit-g" role="grid" aria-label="{escape(t["name"])} talents" style="--cols:{t["cols"]}">{art}<svg viewBox="{t["viewbox"]}" preserveAspectRatio="none" aria-hidden="true">{paths}</svg>{rows}</div></div>')
     f = f'<div class="tedit-f">{foot}</div>' if foot else ''
     return Plate(f'<div class="tedit"><div class="tedit-tabs" role="tablist" aria-label="Talent trees">{tabs}</div><div class="tedit-cols" style="--n:{len(trees)}">{cols}</div>{f}</div>', label)
@@ -1128,8 +1140,9 @@ def TalentTip(name: str, rank: int, mx: int, now: str, nxt: str, req: str = '', 
 
 def PointOrder(rows: list[tuple[str, list[str]]], cap_after: int = -1, cap_text: str = '') -> str:
     """rows: (label, slots html). A slot: an icon with its rank, an empty socket, the next socket (gold). `cap_after`: the row
-    index after which the character's level line sits (points past it are planned ahead)."""
-    out = ''
+    index after which the character's level line sits (points past it are planned ahead). A faint 0 to 9 marker sits over
+    the first row: the last digit of each socket's level."""
+    out = '<div class="porder-m" aria-hidden="true"><span></span><div class="porder-s">' + ''.join(f'<span>{d}</span>' for d in range(10)) + '</div></div>'
     for i, (lab, slots) in enumerate(rows):
         out += f'<div class="porder-r"><span class="t-small">{lab}</span><div class="porder-s" role="list">{"".join(slots)}</div></div>'
         if i == cap_after and cap_text:
@@ -1140,8 +1153,8 @@ def PointOrder(rows: list[tuple[str, list[str]]], cap_after: int = -1, cap_text:
 def OrderSlot(icon_html: str = '', name: str = '', rank: str = '', kind: str = '') -> str:
     """kind: '' (spent), 'pl' (spent past the character's level), 'em' (empty), 'nx' (the next point), 'past' (beyond 60: none)."""
     if kind in ('em', 'nx', 'past'):
-        return f'<span role="listitem" aria-label="{escape(name)}"><span class="em {kind if kind != "em" else ""}"></span></span>'
-    return f'<span role="listitem" class="{kind}" aria-label="{escape(name)}">{icon_html}<b>{rank}</b></span>'
+        return f'<span role="listitem" aria-label="{escape(name)}" title="{escape(name)}"><span class="em {kind if kind != "em" else ""}"></span></span>'
+    return f'<span role="listitem" class="{kind}" aria-label="{escape(name)}" title="{escape(name)}">{icon_html}<b>{rank}</b></span>'
 
 
 def Switch(label: str, on: bool = True, disabled: bool = False) -> str:
@@ -1154,5 +1167,5 @@ def CodeField(text: str, placeholder: bool = False, bad: bool = False, label: st
 
 
 def ClassPicker(classes: list[tuple[str, str, bool]]) -> str:
-    """The ControlBar's class choice: (crest_html, name, current). Crests always; names from 1760 and in the phone stack."""
+    """The ControlBar's class choice: (crest_html, name, current). Crests always; names from 1280 and in the phone stack."""
     return seg([(f'<span class="lbl">{n}</span>', on, None, c) for c, n, on in classes], 'clsp', 'Class').replace('<a href="#" role="radio"', '<a href="#" role="radio" title=""', 0)

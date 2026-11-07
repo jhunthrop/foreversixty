@@ -2,8 +2,8 @@
 
 Spec: design/specs/2026-11-08-planner.md. Every talent, tree, rank, description, arrow, point order, compare line and
 string is read from design/mocks/data/planner-facts.json, which design/mocks/planner_facts.mjs writes by running the
-planner's own models (lib/planner/*, its copy modules) on build 1.60.1.70790. Typed in: the strings this round proposes
-(PROPOSED, spec section 6.2), the live estimate's figures (SAMPLE: it runs the engine in the browser), and the layout.
+planner's own models (lib/planner/*, its copy modules) on build 1.60.1.70790. Typed in: the live estimate's figures
+(SAMPLE: it runs the engine in the browser), the saved link id, and the layout. Rulings 0A (2026-11-08) applied.
 
   node design/mocks/planner_facts.mjs && python3 design/mocks/ws_planner.py
   python3 design/mocks/ws_planner.py [mock ...]                 (every mock, or just those named)
@@ -20,7 +20,7 @@ from pathlib import Path
 
 from mocklib import CLASS_COLOR, ROOT
 from ws_prims import (Button, Field, ClassPicker, CodeField, Figure, Link, Notice, OrderSlot, Ordered, Page, PageHeader, PointOrder,
-                      Section, Skeleton, Switch, Tag, TalentCell2, TalentEditor, TalentTip, build_page, control_bar, crest_img,
+                      Section, Skeleton, Switch, Tag, TalentCell2, TalentEditor, TalentTip, TextFor, build_page, control_bar, crest_img,
                       icon, sel, REGION)
 
 HERE = Path(__file__).resolve().parent
@@ -29,21 +29,9 @@ S = F['states']
 C = F['copy']
 WHO = ('Felsnap', 'hunter', 'Level 34')
 
-# The strings this round proposes (spec section 6.2); the build adds them to lib/planner/copy.ts.
-PROPOSED = {
-    'inGame': 'In the game',
-    'pointsLeft': 'Points left',
-    'spentOf': lambda spent, avail: f'{spent} of {avail} spent',
-    'spentAtLevel': lambda spent, avail, level: f'{spent} of {avail} spent at level {level}',
-    'linkedNote': 'Opened from a link. The game does not record the order points were spent in, so this is one way to level into it: the main tree first, each talent as soon as its row opens.',
-    'levelLine': lambda name, level: f'{name} is level {level}: points after level {level} are planned ahead.',
-    'decade': lambda lo: 'Level 60' if lo == 60 else f'Levels {lo} to {lo + 9}',
-    'nextPoint': lambda level, name: f'Next point at {level}',
-    'resetAsk': 'Clear every point in this build?',   # today a literal in PlannerToolbar.svelte (gap G3)
-    'resetYes': 'Clear all points', 'resetNo': 'Keep the build', 'reset': 'Reset…',
-    'scoreBasis': lambda band: f'with the {band} gear set',   # band: bandPhrase(label).toLowerCase()
-    'copyLink': 'Copy link', 'copied': 'Copied', 'retry': 'Retry', 'title': 'Title', 'optional': 'Optional',
-}
+# Every string is the committed copy (lib/planner/copy.ts plannerCopy, read through the facts); the function keys arrive
+# evaluated per state (spent_line, score_basis, order_rows, next_point, level_line, the notes).
+P = C['planner']
 # SAMPLE: the live estimate (PlannerDps runs the engine in the browser; no file carries a figure).
 SAMPLE_SCORE = {'guide': ('612', '± 4'), 'holy': ('418.6', '± 1.2'), 'fire': ('655', '± 5'), 'you_cap': ('171', '± 2')}
 
@@ -70,20 +58,19 @@ def art(bg: str) -> str:
 STATE = {'available': 'avail', 'filled': 'part', 'maxed': 'max', 'locked': 'lock'}
 
 
-def trees(st: dict, compare: bool = True, cap: bool = False, hover: int | None = None, focus: int | None = None) -> list[dict]:
-    """The facts' trees as TalentEditor columns. `cap`: the character's points are all spent (decision P3: the unspent cells
-    read locked, as the game's frame does with no points left)."""
+def trees(st: dict, compare: bool = True, hover: int | None = None, focus: int | None = None, readonly: bool = False) -> list[dict]:
+    """The facts' trees as TalentEditor columns. A cell's state is the facts' own (cellState, with decision P3 at a character's
+    level cap); a cell holding points past the character's level carries the planned mark (ruling P4)."""
     diff = set(st['compare']['differs']) if compare and st.get('compare') and st['spent'] else set()
     out = []
     for t in st['trees']:
         cells = []
         for c in t['cells']:
-            state = STATE[c['state']]
-            if cap and state == 'avail':
-                state = 'lock'
-            extra = 'hov' if c['id'] == hover else ('fv' if c['id'] == focus else '')
-            cells.append((c['tier'], c['column'], TalentCell2(icon(c['icon'], 48), c['name'], c['rank'], c['max'], state, c['id'] in diff, extra)))
-        out.append({'name': t['name'], 'icon_html': icon(t['icon'], 28), 'points': t['points'], 'art_src': art(t['background']),
+            extra = ' '.join(x for x in ['hov' if c['id'] == hover else ('fv' if c['id'] == focus else ''), 'plan' if c['planned'] else ''] if x)
+            name = c['name'] + (f', {st["planned_cell"]}' if c['planned'] else '')
+            cells.append((c['tier'], c['column'], TalentCell2(icon(c['icon'], 48), name, c['rank'], c['max'], STATE[c['state']], c['id'] in diff, extra)))
+        reset = '' if readonly or not t['points'] else f'<a class="trs" href="#" aria-label="Reset {e(t["name"])}">{e(P["resetTree"])}</a>'
+        out.append({'name': t['name'], 'icon_html': icon(t['icon'], 28), 'points': t['points'], 'art_src': art(t['background']), 'reset': reset,
                     'cols': t['columns'], 'tiers': t['tiers'], 'viewbox': t['viewBox'], 'connectors': [(x['d'], x['met']) for x in t['connectors']], 'cells': cells})
     return out
 
@@ -91,9 +78,9 @@ def trees(st: dict, compare: bool = True, cap: bool = False, hover: int | None =
 def tree_foot(st: dict, status: str = '', status_tone: str = '', reset_open: bool = False) -> str:
     s = f'<p class="st2{" " + status_tone if status_tone else ""}" role="status" aria-live="polite">{e(status)}</p>'
     if reset_open:
-        rs = f'<span class="t-small">{PROPOSED["resetAsk"]}</span>{Button(PROPOSED["resetYes"], small=True)}{Button(PROPOSED["resetNo"], small=True)}'
+        rs = f'<span class="t-small">{e(P["resetAsk"])}</span>{Button(e(P["resetYes"]), small=True)}{Button(e(P["resetNo"]), small=True)}'
     else:
-        rs = Link(PROPOSED['reset']) if st['spent'] else ''
+        rs = Link(e(P['reset'])) if st['spent'] else ''
     return s + f'<span class="t-small">{e(C["tree_source"])}</span><span class="rs">{rs}</span>'
 
 
@@ -102,14 +89,12 @@ def answer(st: dict, score: tuple | None, loading: bool = False) -> str:
     if loading:
         ans = f'<div class="ans-box pl-ans">{Skeleton(150, 64)}{Skeleton(150, 64)}</div>'
     else:
-        cap = PROPOSED['spentAtLevel'](st['spent'], st['available'], st['char_level']) if st['char_level'] else PROPOSED['spentOf'](st['spent'], st['available'])
-        left = f'<div class="pl-fig">{Figure(str(st["left"]), PROPOSED["pointsLeft"], tone="gold", size="big")}<span class="t-small">{cap}</span></div>'
+        left = f'<div class="pl-fig">{Figure(str(st["left"]), e(P["pointsLeft"]), tone="gold", size="big")}<span class="t-small">{e(st["spent_line"])}</span></div>'
         if score is None:
             sc = f'<div class="pl-fig">{Figure("&mdash;", e(st["unit_label"]), size="big")}<span class="t-small">{e(C["score"]["waiting"])}</span></div>'
         else:
             v, err = score
-            band = ('level 60' if st['band']['label'] == '60' else f"levels {st['band']['label']}")
-            sc = f'<div class="pl-fig">{Figure(v, e(st["unit_label"]), size="big")}<span class="t-small">{err} &middot; {PROPOSED["scoreBasis"](band)}</span></div>'
+            sc = f'<div class="pl-fig">{Figure(v, e(st["unit_label"]), size="big")}<span class="t-small">{err} &middot; {e(st["score_basis"])}</span></div>'
         sim = Link(r(C['sim']['simThisBuild'])) if st['spent'] else ''
         ans = f'<div class="ans-box pl-ans"><div class="pl-figs">{left}{sc}</div>{sim}</div>'
     return ans
@@ -130,11 +115,12 @@ def bar(st: dict, open_m: bool = False) -> str:
     return control_bar([('Class', picks), ('Race', race)], f'{e(st["className"])} &middot; {e(st["race"])}', end, open_m=open_m, label='Planner choices')
 
 
-def notes(text: str, lead: str = '') -> str:
-    if not text and not lead:
+def notes(text: str, short: str = '') -> str:
+    """The one note line. `short`: the same note on a phone, one line (ruling: the arrival note)."""
+    if not text:
         return ''
-    l = f'<b class="strong">{e(lead)}</b> ' if lead else ''
-    return f'<div data-region="{REGION["notes"]}" class="pl-notes">{Notice(l + e(text), tone="neutral")}</div>'
+    body = TextFor(e(text), e(short)) if short else e(text)
+    return f'<div data-region="{REGION["notes"]}" class="pl-notes">{Notice(body, tone="neutral")}</div>'
 
 
 def compare(st: dict, confirm: bool = False, loaded: str = '', readonly: bool = False) -> str:
@@ -142,15 +128,17 @@ def compare(st: dict, confirm: bool = False, loaded: str = '', readonly: bool = 
     if cmp is None:
         return Section(e(b['heading']), f'<p class="t-small pl-pad">{e(b["none"])}</p>')
     s = cmp['status']
-    if s['kind'] == 'matches':
+    if cmp['kind'] == 'matches':
         line = f'<p class="pl-line"><b class="kill">{e(cmp["line"])}</b></p>'
+    elif cmp['kind'] == 'sentence':
+        line = f'<p class="pl-line">{e(cmp["line"])}</p>'
     else:
         line = f'<p class="pl-line"><b class="gold num">{s["count"]}</b> {e(cmp["line"])}</p>'
     beyond = f'<p class="t-small">{e(cmp["beyond"])}</p>' if cmp['beyond'] else ''
     if confirm:
         acts = f'<p class="t-small">{e(C["band"]["loadConfirmMessage"])}</p><div class="pl-acts">{Button(e(C["band"]["loadConfirmProceed"]))}{Button(e(C["band"]["loadConfirmCancel"]))}</div>'
     else:
-        see = Button(e(C['band']['seeWhatDiffers'])) if s['kind'] != 'matches' else ''
+        see = Button(e(C['band']['seeWhatDiffers'])) if s['kind'] == 'differs' else ''
         acts = f'<div class="pl-acts">{"" if readonly else Button(e(b["load"]))}{see}</div>'
     ld = f'<p class="t-small">{e(loaded)}</p>' if loaded else ''
     gear = f'<p class="pl-gear"><span class="t-small">{e(b["gear"])}</span>{Link(r(C["band"]["bestInSlotList"]))}</p>'
@@ -160,14 +148,14 @@ def compare(st: dict, confirm: bool = False, loaded: str = '', readonly: bool = 
 def in_game(st: dict, send: dict | None, copy_state: str = 'idle') -> str:
     """The addon handoff. send: a sendActionFor result (signed in) or None (signed out: Copy for the game is the primary)."""
     copy_label = {'idle': C['addon']['copyForGame'], 'copied': C['addon']['copiedForGame'], 'failed': C['addon']['copyForGame']}[copy_state]
-    send_live = send is not None and not send.get('disabled')
-    copy_btn = Button(e(copy_label), primary=not send_live).replace('class="btn', 'class="btn is-off' if st['spent'] == 0 else 'class="btn', 1)
+    # Q6: signed in, Send is the gold primary and Copy sits under it; Copy is the primary signed out or on another class's build.
+    copy_btn = Button(e(copy_label), primary=send is None or bool(send.get('otherClass'))).replace('class="btn', 'class="btn is-off' if st['spent'] == 0 else 'class="btn', 1)
     failed = ''
     if copy_state == 'failed':
         failed = f'<p class="t-small" role="status">{e(C["addon"]["copyFailed"])}</p>{CodeField("FSB1:hunter:5/005005201/500230230050222151", label=C["addon"]["buildCodeLabel"], short=True)}'
     body = ''
     if send is not None:
-        btn = Button(e(send['label']), primary=send_live).replace('class="btn', 'class="btn is-off' if send.get('disabled') else 'class="btn', 1)
+        btn = Button(e(send['label']), primary=not send.get('otherClass')).replace('class="btn', 'class="btn is-off' if send.get('disabled') else 'class="btn', 1)
         sec = send.get('secondary') or {}
         sec_btn = Button(e(sec['label'])) if sec.get('testid') == 'planner-send-cancel' else ''
         note = ''
@@ -182,13 +170,12 @@ def in_game(st: dict, send: dict | None, copy_state: str = 'idle') -> str:
     else:
         body += f'<div class="pl-acts">{copy_btn}</div>{failed}<p class="t-small">{e(C["addon"]["addonCodeHint"])}</p>'
         body += f'<p>{Link(r(C["cta"]["getAddonAndCompanion"]))}</p>'
-    return Section(PROPOSED['inGame'], f'<div class="pl-sec">{body}</div>')
+    return Section(e(P['inGameTitle']), f'<div class="pl-sec">{body}</div>')
 
 
 def share(st: dict, mode: str = 'idle') -> str:
     """Share this build: title, Share, Copy as text, the sim on the card. mode: idle | confirm | saved | failed | ratelimit."""
-    P = C['planner']
-    title = f'<label class="pl-field"><span class="t-label">{PROPOSED["title"]}</span>{Field(PROPOSED["optional"])}</label>'
+    title = f'<label class="pl-field"><span class="t-label">{e(P["shareTitleLabel"])}</span>{Field(e(P["shareTitlePlaceholder"]))}</label>'
     off = st['spent'] == 0
     share_btn = Button(e(P['share'])).replace('class="btn', 'class="btn is-off' if off else 'class="btn', 1)
     body = f'<div class="pl-acts pl-end">{title}{share_btn}</div>'
@@ -199,11 +186,11 @@ def share(st: dict, mode: str = 'idle') -> str:
         body += (f'<div class="pl-confirm" role="group" aria-label="{e(P["shareConfirmTitle"])}"><p class="strong">{e(P["shareConfirmTitle"])}</p><p class="t-small">{e(P["shareConfirmIntro"])}</p>'
                  f'<ul class="pl-list t-small">{items}</ul><div class="pl-acts">{Button(e(P["shareConfirmProceed"]))}{Button(e(P["shareConfirmCancel"]))}{Button(e(P["shareConfirmCopyUnsaved"]))}</div></div>')
     elif mode == 'saved':
-        body += (f'<div class="pl-confirm"><div class="pl-acts"><span class="pl-url">foreversixty.gg/b/k7Qm2xa</span>{Button(PROPOSED["copyLink"], small=True)}</div>'
+        body += (f'<div class="pl-confirm"><div class="pl-acts"><span class="pl-url">foreversixty.gg/b/k7Qm2xa</span>{Button(e(P["copyLink"]), small=True)}</div>'
                  f'<p class="t-small">{e(C["sim_done"])}</p></div>')
     elif mode in ('failed', 'ratelimit'):
         msg = C['save_failed'] if mode == 'failed' else C['rate_limit']
-        body += f'<div class="pl-confirm" role="alert"><p class="wipe">{e(msg)}</p><div class="pl-acts">{Button(PROPOSED["retry"], small=True)}</div></div>'
+        body += f'<div class="pl-confirm" role="alert"><p class="wipe">{e(msg)}</p><div class="pl-acts">{Button(e(P["retry"]), small=True)}</div></div>'
     return Section(e(P['shareTitle']), f'<div class="pl-sec">{body}</div>')
 
 
@@ -221,53 +208,45 @@ def importer(st: dict, mode: str = 'idle') -> str:
     return Section(e(A['importTitle']), f'<div class="pl-sec">{body}</div>')
 
 
-def pointsAt(level: int) -> int:
-    return max(0, min(51, level - 9))
-
-
 def order(st: dict) -> str:
-    """Point order: rows of ten levels (10 to 19 ... 60), a socket per level, the next point's socket gold; past a character's
-    level the points read as planned ahead."""
-    pts = st['points']
-    cap = st['char_level']
-    top = 60 if cap is None else 60
+    """Point order: rows of ten levels (10 to 19 ... 60), a socket per level, the next point's socket gold with its tooltip
+    (`Next point: level 31`); past a character's level the points read as planned ahead under the level line."""
+    pts, cap = st['points'], st['char_level']
     rows, cap_after = [], -1
-    for lo in range(10, top + 1, 10):
+    for r, lo in enumerate(range(10, 61, 10)):
         slots = []
         for lvl in range(lo, min(lo + 9, 60) + 1):
             i = lvl - 10
             if i < len(pts):
                 p = pts[i]
-                kind = 'pl' if cap is not None and lvl > cap else ''
-                slots.append(OrderSlot(icon(p['icon'], 36), f'Level {lvl}: {p["name"]}', f'{p["rank"]}', kind))
-            elif i == len(pts) and (cap is None or lvl <= cap):
-                slots.append(OrderSlot(name=f'Level {lvl}: next point', kind='nx'))
+                slots.append(OrderSlot(icon(p['icon'], 36), p['tip'], f'{p["rank"]}', 'pl' if p['planned'] else ''))
+            elif i == len(pts) and st['next_point']:
+                slots.append(OrderSlot(name=st['next_point'], kind='nx'))
             else:
                 slots.append(OrderSlot(name=f'Level {lvl}', kind='em'))
-        rows.append((PROPOSED['decade'](lo), slots))
+        rows.append((e(st['order_rows'][r]), slots))
         if cap is not None and lo <= cap <= lo + 9:
             cap_after = len(rows) - 1
-    # the character's level line: shown once the build reaches the level (points past it are planned ahead, decision P4)
-    cap_text = PROPOSED['levelLine'](F['felsnap']['name'], cap) if cap is not None and st['spent'] >= pointsAt(cap) else ''
-    body = PointOrder(rows, cap_after, cap_text) if pts else f'<p class="t-small pl-pad">No points spent yet.</p>' + PointOrder(rows)
-    return Section(e(C['planner']['pointOrderTitle']), body, meta=e(st['point_meta']))
+    body = PointOrder(rows, cap_after, e(st['level_line'])) if pts else f'<p class="t-small pl-pad">{e(P["noPointsYet"])}</p>' + PointOrder(rows)
+    return Section(e(P['pointOrderTitle']), body, meta=e(st['point_meta']))
 
 
-def planner(key: str, *, signed: str = 'out', send_key: str | None = None, note: str = '', note_lead: str = '', origin: bool = False,
+def planner(key: str, *, signed: str = 'out', send_key: str | None = None, note: str = '', note_short: str = '', origin: bool = False,
             share_mode: str = 'idle', import_mode: str = 'idle', copy_state: str = 'idle', reset_open: bool = False, confirm: bool = False,
-            loaded: str = '', open_m: bool = False, cap: bool = False, status: str = '', status_tone: str = '', active: int | None = None,
+            loaded: str = '', open_m: bool = False, status: str = '', status_tone: str = '', active: int | None = None,
             title_note: str = '') -> str:
     st = S[key]
     score = SAMPLE_SCORE.get(key) if st['left'] == 0 or key in SAMPLE_SCORE else None
     if key == 'you_cap':
         score = SAMPLE_SCORE['you_cap']
     lead_tree = active if active is not None else max(range(len(st['split'])), key=lambda i: st['split'][i]) if st['spent'] else 0
-    plate = TalentEditor(trees(st, cap=cap), lead_tree, tree_foot(st, status, status_tone, reset_open))
+    plate = TalentEditor(trees(st), lead_tree, tree_foot(st, status, status_tone, reset_open))
     send = F['send'][send_key] if send_key else None
     main = Ordered(plate, 1, span=True) + Ordered(order(st), 6, span=True)
     rail = (Ordered(compare(st, confirm, loaded), 2) + Ordered(in_game(st, send, copy_state), 3) + Ordered(share(st, share_mode), 7)
             + Ordered(importer(st, import_mode), 8))
-    body = (head(st, score, signed != 'out', st.get('origin', '') if origin else '') + bar(st, open_m) + notes(note, note_lead)
+    # Ruling MUST 1: the build's origin is said once; the gold origin line drops whenever the note shows.
+    body = (head(st, score, signed != 'out', st.get('origin', '') if origin and not note else '') + bar(st, open_m) + notes(note, note_short)
             + Page('workbench', main, rail) + PAGE_CSS)
     who = WHO if signed == 'in' else None
     return build_page(f'{st["title"]} · Forever Sixty', body, 'Tools', who,
@@ -278,7 +257,7 @@ def loading_page(failed: bool = False) -> str:
     st = S['empty']
     if failed:
         inner = (f'<div class="pl-err" role="alert"><p class="strong">{e(C["load_failed"])}</p><p class="t-small">{e(C["load_failed_detail"])}</p>'
-                 f'<div class="pl-acts">{Button(PROPOSED["retry"])}</div></div>')
+                 f'<div class="pl-acts">{Button(e(P["retry"]))}</div></div>')
     else:
         inner = '<div class="pl-skel" role="status" aria-busy="true" aria-label="Loading talent data">' + ''.join(
             f'<div class="pl-skt">{Skeleton(180, 24)}{Skeleton(216, 384)}</div>' for _ in range(3)) + '</div>'
@@ -286,7 +265,7 @@ def loading_page(failed: bool = False) -> str:
     plate = Plate(inner, 'Talent trees')
     rail_sk = lambda t: Section(t, f'<div class="pl-sec">{Skeleton(260, 20)}{Skeleton(200, 44)}</div>')
     main = Ordered(plate, 1, span=True)
-    rail = Ordered(rail_sk(e(st['band']['heading'])), 2) + Ordered(rail_sk(PROPOSED['inGame']), 3)
+    rail = Ordered(rail_sk(e(st['band']['heading'])), 2) + Ordered(rail_sk(e(P['inGameTitle'])), 3)
     body = head(st, None, False, loading=not failed) + bar(st) + Page('workbench', main, rail) + PAGE_CSS
     return build_page('Warrior talents · Forever Sixty', body, 'Tools', None, f'Planner mock ({"error" if failed else "loading"}). Spec: design/specs/2026-11-08-planner.md.')
 
@@ -312,7 +291,7 @@ def states_page() -> str:
     block('Talent tooltip: hover or focus (150 ms); a locked talent names what it needs; after a band load, the band&rsquo;s rank',
           '<div class="st-row">' + TalentTip(av['name'], av['rank'], av['max'], av['now'], av['next']) + TalentTip(lk['name'], 0, lk['max'], '', lk['next'], lk['refusal'])
           + TalentTip(pc['filled']['name'], pc['filled']['rank'], pc['filled']['max'], pc['filled']['now'], pc['filled']['next'], band=F['band_tip']) + '</div>')
-    block('Status line under the trees (role="status"): a refusal, then empty', '<div class="st-stack">' + ''.join(
+    block('Status line under the trees (role="status"): every refusal, read from the real talents', '<div class="st-stack">' + ''.join(
         f'<p class="pl-note wipe">{e(x)}</p>' for x in F['refusals'].values()) + '</div>')
     sends = ''
     for k, lab in [('signed_out', 'Signed out'), ('empty', 'Signed in, nothing spent'), ('idle', 'Ready'), ('sending', 'Sending'), ('sent', 'Sent'), ('others', 'Another player&rsquo;s build'),
@@ -322,9 +301,9 @@ def states_page() -> str:
         sends += f'<div class="st-cell"><span class="t-label">{lab}</span>{in_game(g, None if k == "signed_out" else s)}</div>'
     block('In the game: every send state (sendActionFor on Felsnap), and Copy for the game', f'<div class="st-grid">{sends}</div>')
     block('Copy for the game: copied (3 s), then the clipboard refused', '<div class="st-grid">' + f'<div class="st-cell">{in_game(g, None, "copied")}</div><div class="st-cell">{in_game(g, None, "failed")}</div></div>')
-    block('Level build: the load confirm (a build in progress), the loaded line, matches, no build for this level', '<div class="st-grid">'
+    block('Level build: the load confirm (a build in progress), covers fewer points than the character has (loaded), matches, a named difference', '<div class="st-grid">'
           + f'<div class="st-cell">{compare(prog, confirm=True)}</div><div class="st-cell">{compare(S["you"], loaded=F["felsnap"]["loaded_line"])}</div>'
-          + f'<div class="st-cell">{compare(S["holy"])}</div><div class="st-cell">{compare({**S["empty"], "compare": None, "band": {**S["empty"]["band"], "none": F["no_level_example"]}})}</div></div>')
+          + f'<div class="st-cell">{compare(S["holy"])}</div><div class="st-cell">{compare(g)}</div></div>')
     block('Share: the confirm, saved, failed, rate limited; nothing spent (Share off)', '<div class="st-grid">' + ''.join(f'<div class="st-cell">{share(g, m)}</div>' for m in ('confirm', 'saved', 'failed', 'ratelimit'))
           + f'<div class="st-cell">{share(S["empty"])}</div></div>')
     block('Import from addon: empty, a code for another class (the planner switches), an unreadable code', '<div class="st-grid">' + ''.join(f'<div class="st-cell">{importer(g, m)}</div>' for m in ('idle', 'switch', 'bad')) + '</div>')
@@ -341,7 +320,7 @@ def states_page() -> str:
 PAGE_CSS = '''<style>
 /* page-level layout only (no surfaces): the answer's figures, rail section spacing, rows of actions */
 .pl-ans{gap:10px}.pl-figs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}.pl-fig{display:flex;flex-direction:column;gap:2px;min-width:0}
-@media(min-width:900px){.pl-figs{display:flex;gap:32px}.pl-fig{max-width:220px}}
+@media(min-width:900px){.pl-figs{display:flex;gap:32px}.pl-fig{max-width:300px}}
 @media(min-width:900px){.pl-figs{justify-content:flex-end}.pl-fig{align-items:flex-end}}
 .pl-notes .notice{padding-top:4px;color:var(--text)}
 .pl-sec{display:flex;flex-direction:column;gap:12px;padding-top:14px}.pl-pad{padding-top:14px}
@@ -363,18 +342,22 @@ PAGE_CSS = '''<style>
 </style>'''
 
 
+LINKED = dict(note=F['notes']['linked'], note_short=F['notes']['linked_short'], origin=True)
+# The guide's own link names its spec: the build arrives in the guide's levelling order (the facts check the ladder reaches it).
+GUIDE_NOTE = dict(note=F['notes']['guide'], origin=True) if F['notes']['guide'] else LINKED
+
 PAGES = {
     'web-planner': lambda: planner('empty'),
     'web-planner-progress': lambda: planner('progress'),
-    'web-planner-guide': lambda: planner('guide', note=PROPOSED['linkedNote'], origin=True),
-    'web-planner-holy': lambda: planner('holy', note=PROPOSED['linkedNote'], origin=True),
-    'web-planner-fire': lambda: planner('fire', note=PROPOSED['linkedNote'], origin=True),
+    'web-planner-guide': lambda: planner('guide', **GUIDE_NOTE),
+    'web-planner-holy': lambda: planner('holy', **LINKED),
+    'web-planner-fire': lambda: planner('fire', **LINKED),
     'web-planner-you': lambda: planner('you', signed='in', send_key='idle', note=F['felsnap']['loaded_line']),
-    'web-planner-you-cap': lambda: planner('you_cap', signed='in', send_key='idle', cap=True),
+    'web-planner-you-cap': lambda: planner('you_cap', signed='in', send_key='idle'),
     'web-planner-you-empty': lambda: planner('you_empty', signed='in', send_key='empty'),
-    'web-planner-other': lambda: planner('holy', signed='in', send_key='other_class', note=PROPOSED['linkedNote'], origin=True),
+    'web-planner-other': lambda: planner('holy', signed='in', send_key='other_class', **LINKED),
     'web-planner-invalid': lambda: planner('invalid', note=F['notes']['invalid']),
-    'web-planner-share': lambda: planner('guide', share_mode='confirm', note=PROPOSED['linkedNote'], origin=True),
+    'web-planner-share': lambda: planner('guide', share_mode='confirm', **GUIDE_NOTE),
     'web-planner-loading': lambda: loading_page(),
     'web-planner-error': lambda: loading_page(True),
     'web-planner-bar': lambda: planner('progress', open_m=True),

@@ -5,6 +5,12 @@
 import { itemNotInDataLine } from '../items/unknown-item-copy';
 import { ctaCopy } from '../addon/cta-copy';
 
+/** "Level 60" or "Levels 20 to 29": the band's label (`60`, `20 to 29`) as a phrase that reads in a sentence. */
+export const bandPhrase = (bandLabel: string): string =>
+  /^\d+$/.test(bandLabel) ? `Level ${bandLabel}` : `Levels ${bandLabel}`;
+
+const lowerBandPhrase = (bandLabel: string): string => bandPhrase(bandLabel).toLowerCase();
+
 export const plannerCopy = {
   /** A slot an import names with an item this build's data does not carry; see
    *  simCopy.unknownItem, the same line on the simulator's strip. */
@@ -51,16 +57,72 @@ export const plannerCopy = {
   /** The record carries more points than any legal order reaches: name what the planner kept. */
   keptNote: (kept: number, total: number, name: string): string =>
     `Loaded ${kept} of ${name}'s ${total} points; the rest cannot be reached in any legal order. The order is a reconstruction: the game does not record the order points were spent in.`,
+  /** A character's export or an addon import: the game records ranks, never the order. */
+  reconstructedNote:
+    'Talents loaded from a character. The order points were spent in is not recorded in game, so this is one way to level into the same tree: the main tree first, each talent as soon as its row opens.',
+  reconstructedDroppedNote: (dropped: number): string =>
+    `Talents loaded from a character, minus ${dropped} that no legal order reaches. The order is a reconstruction: the game does not record the order points were spent in.`,
+  olderBuildNote: 'This code is from an older client build; check the talents.',
+  /** A code that names no character (a guide's Load this build, a shared ?code=), bug B1: the
+   *  long sentence from 768, the short one on a phone, where the note is one line. */
+  linkedNote:
+    'Opened from a link. The game does not record the order points were spent in, so this is one way to level into it: the main tree first, each talent as soon as its row opens.',
+  linkedNoteShort: 'Opened from a link; the order below is one way to level into it.',
+  /** A guide's link that names its spec: the build is spent in that guide's own levelling order. */
+  guideOrderNote: (specName: string): string => `Loaded in the ${specName} guide's levelling order.`,
+  /** A code for a class the planner has no talent data for. */
+  noClassNote: (slug: string): string => `That code names a class this planner does not have: ${slug}.`,
+  inGameTitle: 'In the game',
+  pointsLeft: 'Points left',
+  /** Under Points left with no character: "20 of 51 spent · level 29" (the level once a point is spent). */
+  spentOf: (spent: number, available: number, level: number | null): string =>
+    level === null ? `${spent} of ${available} spent` : `${spent} of ${available} spent · level ${level}`,
+  /** Under Points left for a character: "21 of 25 spent at level 34". */
+  spentAtLevel: (spent: number, available: number, level: number): string =>
+    `${spent} of ${available} spent at level ${level}`,
+  /** Points spent past a character's level (decision P4). */
+  plannedAhead: (n: number): string => `${n} planned ahead`,
+  /** Point order's line after the character's level row (decision P4). */
+  levelLine: (name: string, level: number): string =>
+    `${name} is level ${level}: points after level ${level} are planned ahead.`,
+  /** A talent cell whose last points are planned past the character's level: its accessible name's tail. */
+  plannedCell: (level: number): string => `planned past level ${level}`,
+  /** Point order's row labels: "Levels 20 to 29", "Level 60". */
+  decade: (lo: number): string => (lo >= 60 ? 'Level 60' : `Levels ${lo} to ${lo + 9}`),
+  /** The next socket's tooltip in Point order. */
+  nextPoint: (level: number): string => `Next point: level ${level}`,
+  /** A spent socket's tooltip in Point order. */
+  pointAt: (level: number, name: string, rank: number): string => `Level ${level}: ${name} ${rank}`,
+  /** An empty socket in Point order. */
+  levelSocket: (level: number): string => `Level ${level}`,
+  noPointsYet: 'No points spent yet.',
+  /** A locked cell's tooltip at a character's level cap (decision P3). */
+  noPointsLeft: (level: number): string => `No points left at level ${level}.`,
+  rankOf: (rank: number, max: number): string => `Rank ${rank} of ${max}`,
+  nextRank: 'Next rank',
+  reset: 'Reset…',
+  resetAsk: 'Clear every point in this build?',
+  resetYes: 'Clear all points',
+  resetNo: 'Keep the build',
+  /** The small reset link in each tree head (Q9). */
+  resetTree: 'Reset',
+  resetTreeLabel: (treeName: string): string => `Reset ${treeName}`,
+  sharedLinkNote: 'This build was shared as a link. Fork it to spend points of your own.',
+  fork: 'Fork',
+  shareTitleLabel: 'Title',
+  shareTitlePlaceholder: 'Optional',
+  copyLink: 'Copy link',
+  copied: 'Copied',
+  retry: 'Retry',
+  loadFailedDetail: (build: string): string => `Build ${build} did not return the files the planner needs.`,
+  reloadTalents: 'Reload talents',
+  /** The score's caption after its error: the gear the estimate runs on (decision P1). */
+  scoreBasis: (bandLabel: string): string => `with the ${lowerBandPhrase(bandLabel)} gear set`,
 } as const;
 
 /** Rebuild spec §4.A: the header's own copy -- crest, h1, suffix. */
 export const plannerHeaderCopy = {
-  eyebrow: 'Build planner',
   h1: (className: string): string => `${className} talents`,
-  /** Fix round 1, item 2.a (the approved mock, `day3/shots/boards/Planner.png`): one line
-   *  under the h1, always the same sentence -- never computed, this page has one job. */
-  description:
-    "Spend your points, compare them with the level range's build, and send the result to the addon or the simulator.",
   /** Sits beside the race select: the planner has no separate FactionToggle (§4.A's own
    *  reasoning -- a second faction control would ask the visitor to agree with their race
    *  twice), and the mock names that choice explicitly rather than leaving it unsaid. */
@@ -144,17 +206,17 @@ const leftOutSlotPhrase: Record<string, string> = {
   ranged: 'the piece in your ranged slot',
 };
 
+/** "A", "A and B", "A, B and C". */
+function listOf(parts: readonly string[]): string {
+  return parts.length < 3 ? parts.join(' and ') : `${parts.slice(0, -1).join(', ')} and ${parts.at(-1)}`;
+}
+
 function article(word: string): string {
   return /^[aeiou]/i.test(word) ? 'an' : 'a';
 }
 
 /** Rebuild spec §4.D: `BandCompare`, the new rail panel comparing a build against its own
  *  level band's published build. */
-/** "Level 60" or "Levels 20 to 29": the band's label (`60`, `20 to 29`) as a phrase that reads in a sentence. */
-export const bandPhrase = (bandLabel: string): string =>
-  /^\d+$/.test(bandLabel) ? `Level ${bandLabel}` : `Levels ${bandLabel}`;
-
-const lowerBandPhrase = (bandLabel: string): string => bandPhrase(bandLabel).toLowerCase();
 
 export const bandCompareCopy = {
   heading: (bandLabel: string): string => `${bandPhrase(bandLabel)} build`,
@@ -166,18 +228,25 @@ export const bandCompareCopy = {
     const names = otherSpecs.length === 1 ? last : `${otherSpecs.slice(0, -1).join(', ')} or ${last}`;
     return `${head} Pick ${names}.`;
   },
-  setDpsCaption: (bandLabel: string): string =>
-    `Preview: the ${lowerBandPhrase(bandLabel)} gear set, fully equipped. Not your DPS.`,
-  differs: (n: number): string => `${n} of your points differ from this build`,
-  /** The same sentence as `differs`, minus its own leading number -- `BandCompare.svelte`
-   *  renders the count in its own mono/gold span and this text beside it, rather than
-   *  string-surgery on `differs`' own output. */
+  /** The count leads in gold, this text follows it. */
   differsSuffix: 'of your points differ from this build',
   /** A build inside the band's, only short of it: the count leads, this text follows it. */
   toTakeSuffix: "of this build's points still to take",
   matches: 'Matches',
   /** The quiet note under the line when the build holds points past the band's own total. */
-  beyondGuide: (n: number): string => `+${n} beyond the guide`,
+  beyondGuide: (n: number): string => `+${n} beyond the build`,
+  /** The difference named, not counted (ruling Q1): "Differs by 2 points: this build takes
+   *  Rapid Killing 2/2; the level 60 build takes Deterrence and Counterattack." */
+  differsNamed: (count: number, mine: readonly string[], theirs: readonly string[], bandLabel: string): string => {
+    const sides = [
+      mine.length > 0 ? `this build takes ${listOf(mine)}` : '',
+      theirs.length > 0 ? `the ${lowerBandPhrase(bandLabel)} build takes ${listOf(theirs)}` : '',
+    ].filter(Boolean);
+    return `Differs by ${count} point${count === 1 ? '' : 's'}: ${sides.join('; ')}.`;
+  },
+  /** A band build that covers fewer points than the character has (ruling MUST 3): never "Matches". */
+  coversFewer: (covered: number, total: number, nextBandLabel: string): string =>
+    `This build covers ${covered} of your ${total} points; the next ${total - covered} follow the ${lowerBandPhrase(nextBandLabel)} build.`,
   loadButton: (bandLabel: string): string => `Load the ${lowerBandPhrase(bandLabel)} build`,
   /** The line under the panel after a load: cut at a character's level, or the band's whole build. */
   loadedLine: (level: number, points: number, of: number): string =>
