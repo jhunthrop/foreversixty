@@ -181,7 +181,7 @@ class HomePresenter(
     private fun synced(home: CharacterHome): String? {
         val at = parseInstant(home.syncedAt) ?: return null
         val age = time.age(at, res)
-        return res.getString(if (home.syncedFrom == "blizzard") R.string.home_answer_synced_bnet else R.string.home_answer_synced_addon, age)
+        return res.getString(if (home.syncedFrom == "blizzard") R.string.shared_characters_updatedFrom else R.string.home_answer_synced_addon, age)
     }
 
     private fun body(home: CharacterHome): HomeAnswerBody {
@@ -191,7 +191,7 @@ class HomePresenter(
             "no_gear" -> HomeAnswerBody.Message(
                 res.getString(R.string.home_answer_noGear),
                 listOf(
-                    HomeAction(HomeAction.Kind.GetAddon, res.getString(R.string.signin_getAddon), primary = true),
+                    HomeAction(HomeAction.Kind.GetAddon, res.getString(R.string.shared_cta_getAddonAndCompanion), primary = true),
                     HomeAction(HomeAction.Kind.OpenList, res.getString(R.string.home_answer_listButton, spec, band), primary = false),
                 ),
                 res.getString(R.string.home_answer_noGearNote),

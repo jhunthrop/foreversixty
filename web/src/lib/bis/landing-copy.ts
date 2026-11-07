@@ -4,6 +4,7 @@
 // the spec page's much larger copy object.
 import { bandLabel } from './landing-bands';
 import { ctaCopy } from '../addon/cta-copy';
+import { sharedText } from '../copy/shared';
 
 export const landingCopy = {
   title: 'Best in slot',
@@ -17,28 +18,29 @@ export const landingCopy = {
   tierHref: '/tiers',
 
   /** The head's answer (ui/CharacterAnswer with a figure). */
-  answerLabel: 'Your character',
+  answerLabel: sharedText('shared.bisLanding.answerLabel'),
   /** The caption under the count: how many of the band's best-in-slot pieces the character wears. */
-  countLabel: 'Best-in-slot pieces you wear',
-  countLabelStale: 'Pieces you wore at the last sync',
-  countFailed: 'Your gear count did not load.',
+  countLabel: sharedText('shared.bisLanding.countLabel'),
+  countLabelStale: sharedText('shared.bisLanding.countLabelStale'),
+  countFailed: sharedText('shared.bisLanding.countFailed'),
   retry: 'Try again',
-  noSync: 'Add the addon to see how many of these slots you already wear.',
+  noSync: sharedText('shared.bisLanding.noSync'),
   noSyncLink: ctaCopy.getAddonAndCompanion,
   noSyncHref: '/setup',
-  under20: 'Best in slot starts at 20.',
-  noCharacter: 'No character on this account yet.',
-  setupLink: 'Set up your character',
+  under20: sharedText('shared.bisLanding.under20'),
+  noCharacter: sharedText('shared.bisLanding.noCharacter'),
+  setupLink: sharedText('shared.bisLanding.setupLink'),
   setupHref: '/setup',
   /** `of 17 slots`: the muted unit after the figure. */
-  countUnit: (total: number): string => `of ${total} slots`,
+  countUnit: (total: number): string => sharedText('shared.bisLanding.countUnit', { total }),
   /** `Trinkets have no pick at this level range.` / `Neck has no pick at this level range.` */
   excludedNote: (slots: string, plural: boolean): string =>
-    `${slots} ${plural ? 'have' : 'has'} no pick at this level range.`,
+    sharedText(plural ? 'shared.bisLanding.excludedMany' : 'shared.bisLanding.excludedOne', { slots }),
   /** The one button, sentence case: `Fury gear for 40 to 49`, `Fury gear for 60`. */
-  leadButton: (specName: string, band: number): string => `${specName} gear for ${bandLabel(band)}`,
+  leadButton: (specName: string, band: number): string =>
+    sharedText('shared.bisLanding.leadButton', { spec: specName, band: bandLabel(band) }),
   /** A character whose class the site does not know: the action points at the classes below. */
-  fallbackAction: 'Every class and spec',
+  fallbackAction: sharedText('shared.bisLanding.fallbackAction'),
   fallbackHref: '#bis-classes',
 
   /** The ControlBar's one group. */

@@ -1,8 +1,10 @@
+import { sharedText } from '../copy/shared';
+
 /** The one wording for "get the addon", so every call to action names the desktop companion too
  *  (it uploads logs and syncs the addon's data; both downloads are on /setup). */
 export const ctaCopy = {
-  getAddonAndCompanion: 'Get the addon and companion',
-  installAddonAndCompanion: 'Install the addon and the companion',
+  getAddonAndCompanion: sharedText('shared.cta.getAddonAndCompanion'),
+  installAddonAndCompanion: sharedText('shared.cta.installAddonAndCompanion'),
   /** Mid-sentence form of installAddonAndCompanion. */
-  installAddonAndCompanionInline: 'install the addon and the companion',
+  installAddonAndCompanionInline: sharedText('shared.cta.installAddonAndCompanionInline'),
 } as const;

@@ -222,7 +222,7 @@ struct GuildRosterRowView: View {
                 .lineLimit(1).minimumScaleFactor(0.6)
             if entry.supporter {
                 Image(systemName: "crown.fill").font(.system(size: 10, weight: .bold)).foregroundStyle(FSColor.gold)
-                    .accessibilityLabel(Copy.rosterSupporter)
+                    .accessibilityLabel(Copy.sharedPremiumSupporterChip)
             }
         }
     }

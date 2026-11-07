@@ -17,18 +17,18 @@ struct DeleteAccountView: View {
     let onDelete: () -> Void
 
     static let deletedItems = [
-        Copy.accountDeleteDeletedSubscription,
-        Copy.accountDeleteDeletedIdentity,
-        Copy.accountDeleteDeletedDiscord,
-        Copy.accountDeleteDeletedPrivate,
-        Copy.accountDeleteDeletedGuild,
+        Copy.sharedAccountDeleteDeletedSubscription,
+        Copy.sharedAccountDeleteDeletedIdentity,
+        Copy.sharedAccountDeleteDeletedDiscord,
+        Copy.sharedAccountDeleteDeletedPrivate,
+        Copy.sharedAccountDeleteDeletedGuild,
     ]
 
     static let keptItems = [
-        Copy.accountDeleteKeptBilling,
-        Copy.accountDeleteKeptReports,
-        Copy.accountDeleteKeptCharacters,
-        Copy.accountDeleteKeptBuilds,
+        Copy.sharedAccountDeleteKeptBilling,
+        Copy.sharedAccountDeleteKeptReports,
+        Copy.sharedAccountDeleteKeptCharacters,
+        Copy.sharedAccountDeleteKeptBuilds,
     ]
 
     private var consequenceLines: [String] { consequences.map(AccountCopy.consequence) }
@@ -37,11 +37,11 @@ struct DeleteAccountView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: FSSpace.space4) {
-                Text(Copy.accountDeleteIntro).font(ScaledType.body).foregroundStyle(FSColor.text)
-                group(Copy.accountDeleteDeletedTitle, Self.deletedItems, glyph: "minus")
-                group(Copy.accountDeleteKeptTitle, Self.keptItems, glyph: "checkmark", tint: FSColor.muted)
+                Text(Copy.sharedAccountDeleteIntro).font(ScaledType.body).foregroundStyle(FSColor.text)
+                group(Copy.sharedAccountDeleteDeletedTitle, Self.deletedItems, glyph: "minus")
+                group(Copy.sharedAccountDeleteKeptTitle, Self.keptItems, glyph: "checkmark", tint: FSColor.muted)
                 if !consequenceLines.isEmpty {
-                    group(Copy.accountDeleteLoseTitle, consequenceLines, glyph: "exclamationmark.circle")
+                    group(Copy.sharedAccountDeleteLoseTitle, consequenceLines, glyph: "exclamationmark.circle")
                 }
                 confirmField
                 if let failure = AccountCopy.deletionFailure(outcome) {
@@ -52,18 +52,18 @@ struct DeleteAccountView: View {
                     if isDeleting {
                         ProgressView().tint(FSColor.wipe).frame(width: 20, height: 20)
                     } else {
-                        Text(Copy.accountDeleteButton)
+                        Text(Copy.sharedAccountDeleteButton)
                     }
                 }
                 .buttonStyle(BrandButtonStyle(.destructive))
                 .disabled(!canDelete)
-                .accessibilityLabel(Copy.accountDeleteButton)
-                Text(Copy.accountDeleteEmail).font(ScaledType.meta).foregroundStyle(FSColor.muted)
+                .accessibilityLabel(Copy.sharedAccountDeleteButton)
+                Text(Copy.sharedAccountDeleteEmail).font(ScaledType.meta).foregroundStyle(FSColor.muted)
             }
             .padding(FSSpace.space4)
         }
         .background(FSColor.bg)
-        .navigationTitle(Copy.accountDeleteTitle)
+        .navigationTitle(Copy.sharedAccountDeleteTitle)
     }
 
     private var confirmLabel: String { AccountCopy.deletionPrompt(battleTag: battleTag) }
@@ -86,7 +86,7 @@ struct DeleteAccountView: View {
                 ))
                 .accessibilityLabel(confirmLabel)
             if outcome == .confirmMismatch {
-                Text(Copy.accountDeleteConfirmMismatch).font(ScaledType.meta).foregroundStyle(FSColor.wipe)
+                Text(AccountCopy.deletionMismatch(battleTag: battleTag)).font(ScaledType.meta).foregroundStyle(FSColor.wipe)
             }
         }
         .padding(.top, FSSpace.space2)

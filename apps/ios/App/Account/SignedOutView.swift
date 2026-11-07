@@ -135,7 +135,7 @@ struct NoCharactersView: View {
                 .font(ScaledType.body)
                 .foregroundStyle(FSColor.text)
                 .fixedSize(horizontal: false, vertical: true)
-            Button(Copy.signinGetAddon, action: onGetAddon)
+            Button(Copy.sharedCtaGetAddonAndCompanion, action: onGetAddon)
                 .buttonStyle(BrandButtonStyle(.secondary))
         }
         .padding(FSSpace.space4)

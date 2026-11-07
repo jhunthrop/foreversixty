@@ -4,6 +4,7 @@
 // discounts. Prices are never written here as literals -- they come from ./plans.
 import { priceFor } from './plan-costs';
 import { PLANS, formatPrice, type Interval, type PlanKey } from './plans';
+import { sharedText } from '../copy/shared';
 
 export const checkoutCopy = {
   redirecting: 'Redirecting to secure checkout…',
@@ -81,6 +82,6 @@ export const premiumBlockCopy = {
     notifications: { label: 'Discord notifications' },
     supporter: { label: 'Supporter mark', on: 'Shown on your characters', off: 'Not shown' },
   },
-  supporterChip: 'Supporter',
+  supporterChip: sharedText('shared.premium.supporterChip'),
   supporterTooltip: 'Supports Forever Sixty (Premium or guild plan)',
 } as const;

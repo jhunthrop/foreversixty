@@ -11,6 +11,7 @@
      `data-bis-item`, so the page's one tooltip host opens the real item. -->
 <script lang="ts">
   import type { Snippet } from 'svelte';
+  import { sharedText } from '../../lib/copy/shared';
   import { REGION } from '../../lib/ui/regions';
   import { onMount } from 'svelte';
   import { rarityClassFor } from '../../lib/planner/items';
@@ -26,6 +27,8 @@
   import Figure from './Figure.svelte';
   import ItemIcon from './ItemIcon.svelte';
   import LoadError from './LoadError.svelte';
+
+  const NOTHING_BETTER = sharedText('shared.paperdoll.nothingBetter');
 
   let {
     cells,
@@ -159,7 +162,7 @@
               >{cell.stats}</span
             >{/if}
         {:else}
-          <span class="text-muted text-[15px] leading-5">{cell.emptyTitle ?? 'Nothing better yet'}</span>
+          <span class="text-muted text-[15px] leading-5">{cell.emptyTitle ?? NOTHING_BETTER}</span>
         {/if}
       </span>
       <span class="ui-doll-line2 text-muted text-[13px] leading-[18px]">

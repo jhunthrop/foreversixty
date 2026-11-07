@@ -24,283 +24,6 @@
         }
       }
     },
-    "account.delete.button": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Delete account"
-          }
-        }
-      }
-    },
-    "account.delete.confirm.battletag": {
-      "comment": "Arguments: 1 battletag (string)",
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Type %1$@ to confirm"
-          }
-        }
-      }
-    },
-    "account.delete.confirm.mismatch": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "That doesn't match. Type your BattleTag or delete."
-          }
-        }
-      }
-    },
-    "account.delete.confirm.word": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Type delete to confirm"
-          }
-        }
-      }
-    },
-    "account.delete.deleted.discord": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Your Discord link and Premium role, notification settings and watch list."
-          }
-        }
-      }
-    },
-    "account.delete.deleted.guild": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Your guild memberships, applications and raid sign-ups."
-          }
-        }
-      }
-    },
-    "account.delete.deleted.identity": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Your BattleTag, email and Battle.net sign-in. Every browser, companion and app is signed out."
-          }
-        }
-      }
-    },
-    "account.delete.deleted.private": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Your private reports, saved sims, addon exports, and characters known only from your addon."
-          }
-        }
-      }
-    },
-    "account.delete.deleted.subscription": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Any Premium subscription is cancelled at once. There is no automatic refund; the refund policy applies."
-          }
-        }
-      }
-    },
-    "account.delete.deleted.title": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Deleted"
-          }
-        }
-      }
-    },
-    "account.delete.done": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Your account is deleted. Thanks for playing with us."
-          }
-        }
-      }
-    },
-    "account.delete.email": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "You can also ask by email at help@foreversixty.gg."
-          }
-        }
-      }
-    },
-    "account.delete.failed": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Could not delete your account just now. Try again."
-          }
-        }
-      }
-    },
-    "account.delete.intro": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "This can't be undone."
-          }
-        }
-      }
-    },
-    "account.delete.kept.billing": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Stripe billing records, which we must keep for tax and legal reasons. Your link to them is removed."
-          }
-        }
-      }
-    },
-    "account.delete.kept.builds": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Builds you shared, as anonymous links."
-          }
-        }
-      }
-    },
-    "account.delete.kept.characters": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Character data from public sources, such as the Battle.net profile and public logs, no longer linked to you."
-          }
-        }
-      }
-    },
-    "account.delete.kept.reports": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Public and guild reports, with your name removed."
-          }
-        }
-      }
-    },
-    "account.delete.kept.title": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Kept"
-          }
-        }
-      }
-    },
-    "account.delete.lose.founder": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Your founder price is gone for good. A plan taken later is billed at the full price."
-          }
-        }
-      }
-    },
-    "account.delete.lose.premium": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Your Premium plan is cancelled and does not renew."
-          }
-        }
-      }
-    },
-    "account.delete.lose.seat": {
-      "comment": "Arguments: 1 guild (string)",
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Your Premium seat from %1$@ ends."
-          }
-        }
-      }
-    },
-    "account.delete.lose.title": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Billing and seats"
-          }
-        }
-      }
-    },
-    "account.delete.row": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Delete account"
-          }
-        }
-      }
-    },
-    "account.delete.title": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Delete account"
-          }
-        }
-      }
-    },
     "account.devices.loadFailed": {
       "extractionState": "manual",
       "localizations": {
@@ -1900,17 +1623,6 @@
         }
       }
     },
-    "char.supporter": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Supporter"
-          }
-        }
-      }
-    },
     "char.tier.common": {
       "extractionState": "manual",
       "localizations": {
@@ -3449,18 +3161,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Synced %1$@ from the addon"
-          }
-        }
-      }
-    },
-    "home.answer.synced.bnet": {
-      "comment": "Arguments: 1 age (string)",
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Synced %1$@ from Battle.net"
           }
         }
       }
@@ -7696,17 +7396,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "%1$@ · ilvl %2$lld"
-          }
-        }
-      }
-    },
-    "paperdoll.twoHand": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Two-hand in main hand"
           }
         }
       }
@@ -12602,17 +12291,6 @@
         }
       }
     },
-    "roster.supporter": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Supporter"
-          }
-        }
-      }
-    },
     "roster.title": {
       "extractionState": "manual",
       "localizations": {
@@ -13193,6 +12871,1596 @@
         }
       }
     },
+    "shared.account.delete.busy": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deleting"
+          }
+        }
+      }
+    },
+    "shared.account.delete.button": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete account"
+          }
+        }
+      }
+    },
+    "shared.account.delete.confirmLabel": {
+      "comment": "Arguments: 1 word (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Type %1$@ to confirm"
+          }
+        }
+      }
+    },
+    "shared.account.delete.confirmWord": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "delete"
+          }
+        }
+      }
+    },
+    "shared.account.delete.deleted.discord": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your Discord link and Premium role, notification settings and watch list."
+          }
+        }
+      }
+    },
+    "shared.account.delete.deleted.guild": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your guild memberships, applications and raid sign-ups."
+          }
+        }
+      }
+    },
+    "shared.account.delete.deleted.identity": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your BattleTag, email and Battle.net sign-in. Every browser, companion and app is signed out."
+          }
+        }
+      }
+    },
+    "shared.account.delete.deleted.private": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your private reports, saved sims, addon exports, and characters known only from your addon."
+          }
+        }
+      }
+    },
+    "shared.account.delete.deleted.refundPolicy": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "refund policy"
+          }
+        }
+      }
+    },
+    "shared.account.delete.deleted.subscription": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Any Premium subscription is cancelled at once. There is no automatic refund; the refund policy applies."
+          }
+        }
+      }
+    },
+    "shared.account.delete.deleted.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deleted"
+          }
+        }
+      }
+    },
+    "shared.account.delete.done": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your account is deleted. Thanks for playing with us."
+          }
+        }
+      }
+    },
+    "shared.account.delete.email": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You can also ask by email at help@foreversixty.gg."
+          }
+        }
+      }
+    },
+    "shared.account.delete.failed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Could not delete your account just now. Try again."
+          }
+        }
+      }
+    },
+    "shared.account.delete.intro": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This can't be undone."
+          }
+        }
+      }
+    },
+    "shared.account.delete.kept.billing": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stripe billing records, which we must keep for tax and legal reasons. Your link to them is removed."
+          }
+        }
+      }
+    },
+    "shared.account.delete.kept.builds": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Builds you shared, as anonymous links."
+          }
+        }
+      }
+    },
+    "shared.account.delete.kept.characters": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Character data from public sources, such as the Battle.net profile and public logs, no longer linked to you."
+          }
+        }
+      }
+    },
+    "shared.account.delete.kept.reports": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Public and guild reports, with your name removed."
+          }
+        }
+      }
+    },
+    "shared.account.delete.kept.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kept"
+          }
+        }
+      }
+    },
+    "shared.account.delete.line": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete your account and the data that is only yours. The next step lists exactly what goes and what stays."
+          }
+        }
+      }
+    },
+    "shared.account.delete.lose.founder": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your founder price is gone for good. A plan taken later is billed at the full price."
+          }
+        }
+      }
+    },
+    "shared.account.delete.lose.premium": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your Premium plan is cancelled and does not renew."
+          }
+        }
+      }
+    },
+    "shared.account.delete.lose.seat": {
+      "comment": "Arguments: 1 guild (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your Premium seat from %1$@ ends."
+          }
+        }
+      }
+    },
+    "shared.account.delete.lose.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Billing and seats"
+          }
+        }
+      }
+    },
+    "shared.account.delete.mismatch": {
+      "comment": "Arguments: 1 battletag (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Type %1$@ to confirm."
+          }
+        }
+      }
+    },
+    "shared.account.delete.question": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete your account?"
+          }
+        }
+      }
+    },
+    "shared.account.delete.storeWarning": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your Premium ends when the account is deleted. Cancel the subscription in the App Store or Google Play first, or you are billed again."
+          }
+        }
+      }
+    },
+    "shared.account.delete.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete account"
+          }
+        }
+      }
+    },
+    "shared.bisLanding.answerLabel": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your character"
+          }
+        }
+      }
+    },
+    "shared.bisLanding.countFailed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your gear count did not load."
+          }
+        }
+      }
+    },
+    "shared.bisLanding.countLabel": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Best-in-slot pieces you wear"
+          }
+        }
+      }
+    },
+    "shared.bisLanding.countLabelStale": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pieces you wore at the last sync"
+          }
+        }
+      }
+    },
+    "shared.bisLanding.countUnit": {
+      "comment": "Arguments: 1 total (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "of %1$lld slots"
+          }
+        }
+      }
+    },
+    "shared.bisLanding.excludedMany": {
+      "comment": "Arguments: 1 slots (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ have no pick at this level range."
+          }
+        }
+      }
+    },
+    "shared.bisLanding.excludedOne": {
+      "comment": "Arguments: 1 slots (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ has no pick at this level range."
+          }
+        }
+      }
+    },
+    "shared.bisLanding.fallbackAction": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Every class and spec"
+          }
+        }
+      }
+    },
+    "shared.bisLanding.leadButton": {
+      "comment": "Arguments: 1 spec (string), 2 band (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ gear for %2$@"
+          }
+        }
+      }
+    },
+    "shared.bisLanding.noCharacter": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No character on this account yet."
+          }
+        }
+      }
+    },
+    "shared.bisLanding.noSync": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add the addon to see how many of these slots you already wear."
+          }
+        }
+      }
+    },
+    "shared.bisLanding.setupLink": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Set up your character"
+          }
+        }
+      }
+    },
+    "shared.bisLanding.under20": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Best in slot starts at 20."
+          }
+        }
+      }
+    },
+    "shared.character.activity": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Activity"
+          }
+        }
+      }
+    },
+    "shared.character.activityFailed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "We could not load this character’s activity."
+          }
+        }
+      }
+    },
+    "shared.characters.updatedFrom": {
+      "comment": "Arguments: 1 ago (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Updated %1$@ from Battle.net"
+          }
+        }
+      }
+    },
+    "shared.cta.getAddonAndCompanion": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Get the addon and companion"
+          }
+        }
+      }
+    },
+    "shared.cta.installAddonAndCompanion": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Install the addon and the companion"
+          }
+        }
+      }
+    },
+    "shared.cta.installAddonAndCompanionInline": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "install the addon and the companion"
+          }
+        }
+      }
+    },
+    "shared.feed.failed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "We could not load what is happening on Forever."
+          }
+        }
+      }
+    },
+    "shared.feed.filter.all": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "All"
+          }
+        }
+      }
+    },
+    "shared.feed.filter.guild": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your guild"
+          }
+        }
+      }
+    },
+    "shared.feed.filter.logs": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Logs"
+          }
+        }
+      }
+    },
+    "shared.feed.filter.spec": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your spec"
+          }
+        }
+      }
+    },
+    "shared.feed.filterLabel": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Show"
+          }
+        }
+      }
+    },
+    "shared.feed.guildEmpty": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your guild has nothing posted yet."
+          }
+        }
+      }
+    },
+    "shared.feed.logsEmpty": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No public logs in the last 7 days."
+          }
+        }
+      }
+    },
+    "shared.feed.tag.bestInSlot": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Best in slot"
+          }
+        }
+      }
+    },
+    "shared.feed.tag.guides": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guides"
+          }
+        }
+      }
+    },
+    "shared.feed.tag.logs": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Logs"
+          }
+        }
+      }
+    },
+    "shared.feed.tag.patch": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Patch"
+          }
+        }
+      }
+    },
+    "shared.feed.tag.rankings": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rankings"
+          }
+        }
+      }
+    },
+    "shared.feed.tag.yourGuild": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your guild"
+          }
+        }
+      }
+    },
+    "shared.feed.tag.yourSpec": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your spec"
+          }
+        }
+      }
+    },
+    "shared.feed.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Forever right now"
+          }
+        }
+      }
+    },
+    "shared.feed.uploadLog": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Upload a log"
+          }
+        }
+      }
+    },
+    "shared.home.bisLink": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Best in slot"
+          }
+        }
+      }
+    },
+    "shared.home.checkAgain": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Check again"
+          }
+        }
+      }
+    },
+    "shared.home.checkAgainSub": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Battle.net lists a character after you play it and log out."
+          }
+        }
+      }
+    },
+    "shared.home.findGuild": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Find a guild"
+          }
+        }
+      }
+    },
+    "shared.home.findGuildSub": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Raid with a guild that plans its nights here."
+          }
+        }
+      }
+    },
+    "shared.home.firstRaids": {
+      "comment": "Arguments: 1 date (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "First raids %1$@"
+          }
+        }
+      }
+    },
+    "shared.home.getIn": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Get your character in"
+          }
+        }
+      }
+    },
+    "shared.home.guildEyebrow": {
+      "comment": "Arguments: 1 guild (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · next guild event"
+          }
+        }
+      }
+    },
+    "shared.home.guildNone": {
+      "comment": "Arguments: 1 guild (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@: no raid planned"
+          }
+        }
+      }
+    },
+    "shared.home.guildPage": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guild page"
+          }
+        }
+      }
+    },
+    "shared.home.guildSims": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guild sims"
+          }
+        }
+      }
+    },
+    "shared.home.guildsLink": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guilds"
+          }
+        }
+      }
+    },
+    "shared.home.howToStart": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "How to start"
+          }
+        }
+      }
+    },
+    "shared.home.importCharacter": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Import your character"
+          }
+        }
+      }
+    },
+    "shared.home.inCount": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld in"
+          }
+        }
+      }
+    },
+    "shared.home.levels": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "levels"
+          }
+        }
+      }
+    },
+    "shared.home.movers": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Top movers"
+          }
+        }
+      }
+    },
+    "shared.home.noCharacter": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No character yet. Battle.net lists a character after you play it and log out."
+          }
+        }
+      }
+    },
+    "shared.home.noGear": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No gear imported"
+          }
+        }
+      }
+    },
+    "shared.home.notSigned": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "not signed"
+          }
+        }
+      }
+    },
+    "shared.home.ofSlots": {
+      "comment": "Arguments: 1 n (int), 2 slots (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld of %2$lld"
+          }
+        }
+      }
+    },
+    "shared.home.onBis": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "On best in slot"
+          }
+        }
+      }
+    },
+    "shared.home.openBis": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open best in slot"
+          }
+        }
+      }
+    },
+    "shared.home.paste": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Paste an addon export"
+          }
+        }
+      }
+    },
+    "shared.home.pasteSub": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your gear and talents, straight from the game."
+          }
+        }
+      }
+    },
+    "shared.home.pickClass": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pick your class"
+          }
+        }
+      }
+    },
+    "shared.home.raidPageLink": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Raid page"
+          }
+        }
+      }
+    },
+    "shared.home.raidsEyebrow": {
+      "comment": "Arguments: 1 day (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "First raids open · %1$@"
+          }
+        }
+      }
+    },
+    "shared.home.raidsOpen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Raids open now"
+          }
+        }
+      }
+    },
+    "shared.home.rankings": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rankings"
+          }
+        }
+      }
+    },
+    "shared.home.runItYourself": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Run it yourself"
+          }
+        }
+      }
+    },
+    "shared.home.runSim": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Run a sim"
+          }
+        }
+      }
+    },
+    "shared.home.signedInAs": {
+      "comment": "Arguments: 1 tag (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Signed in as %1$@"
+          }
+        }
+      }
+    },
+    "shared.home.signedOutMeta": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pick your class."
+          }
+        }
+      }
+    },
+    "shared.home.signedOutTitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Play your class better."
+          }
+        }
+      }
+    },
+    "shared.home.signIn": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sign in with Battle.net"
+          }
+        }
+      }
+    },
+    "shared.home.signUpLink": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sign up on the raid page"
+          }
+        }
+      }
+    },
+    "shared.home.simFailed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sim failed"
+          }
+        }
+      }
+    },
+    "shared.home.simmed": {
+      "comment": "Arguments: 1 date (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Simmed %1$@"
+          }
+        }
+      }
+    },
+    "shared.home.simmedOnImport": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Simmed on import"
+          }
+        }
+      }
+    },
+    "shared.home.simPending": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sim pending"
+          }
+        }
+      }
+    },
+    "shared.home.specWeek": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your spec this week"
+          }
+        }
+      }
+    },
+    "shared.home.stepAddonSub": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The addon rates every item in your bags; the companion uploads your logs as you play."
+          }
+        }
+      }
+    },
+    "shared.home.stepSignInSub": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Imports your characters with their level, gear and item level."
+          }
+        }
+      }
+    },
+    "shared.home.tierList": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tier list"
+          }
+        }
+      }
+    },
+    "shared.home.toBand": {
+      "comment": "Arguments: 1 band (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "To band %1$lld"
+          }
+        }
+      }
+    },
+    "shared.home.topThree": {
+      "comment": "Arguments: 1 spec (string), 2 band (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Top 3 for %1$@, %2$@"
+          }
+        }
+      }
+    },
+    "shared.home.upgrades": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your upgrades"
+          }
+        }
+      }
+    },
+    "shared.home.upgradesCount": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "1 upgrade"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%1$lld upgrades"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "shared.home.vsEmpty": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "empty slot"
+          }
+        }
+      }
+    },
+    "shared.home.vsWorn": {
+      "comment": "Arguments: 1 name (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "vs your %1$@"
+          }
+        }
+      }
+    },
+    "shared.home.you": {
+      "comment": "Arguments: 1 state (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "you: %1$@"
+          }
+        }
+      }
+    },
+    "shared.home.youNoSim": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You: no sim yet"
+          }
+        }
+      }
+    },
+    "shared.lowLevel.hide": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hide low-level characters"
+          }
+        }
+      }
+    },
+    "shared.lowLevel.show": {
+      "comment": "Arguments: 1 count (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Show low-level characters (%1$lld)"
+          }
+        }
+      }
+    },
+    "shared.paperdoll.best": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Best in slot"
+          }
+        }
+      }
+    },
+    "shared.paperdoll.empty": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Empty"
+          }
+        }
+      }
+    },
+    "shared.paperdoll.nothingBetter": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nothing better yet"
+          }
+        }
+      }
+    },
+    "shared.paperdoll.notScored": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not scored"
+          }
+        }
+      }
+    },
+    "shared.paperdoll.notSimChecked": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not sim-checked"
+          }
+        }
+      }
+    },
+    "shared.paperdoll.same": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Same"
+          }
+        }
+      }
+    },
+    "shared.paperdoll.twoHand": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Two-hand in main hand"
+          }
+        }
+      }
+    },
+    "shared.paperdoll.versus": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "vs"
+          }
+        }
+      }
+    },
+    "shared.paperdoll.versusYour": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "vs your"
+          }
+        }
+      }
+    },
+    "shared.paperdoll.worn": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Worn"
+          }
+        }
+      }
+    },
+    "shared.paperdoll.youHaveThis": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You have this"
+          }
+        }
+      }
+    },
+    "shared.premium.supporterChip": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Supporter"
+          }
+        }
+      }
+    },
+    "shared.selector.refreshing": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Refreshing from Battle.net"
+          }
+        }
+      }
+    },
+    "shared.standing.graded": {
+      "comment": "Arguments: 1 spec (string), 2 grade (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ is graded %2$@ this week"
+          }
+        }
+      }
+    },
+    "shared.standing.place": {
+      "comment": "Arguments: 1 spec (string), 2 place (int), 3 of (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ is #%2$lld of %3$lld this week"
+          }
+        }
+      }
+    },
+    "shared.standing.raid": {
+      "comment": "Arguments: 1 raid (string), 2 clock (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ in %2$@"
+          }
+        }
+      }
+    },
+    "shared.standing.raidSigned": {
+      "comment": "Arguments: 1 raid (string), 2 clock (string), 3 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ in %2$@, %3$lld in"
+          }
+        }
+      }
+    },
+    "shared.standing.rank": {
+      "comment": "Arguments: 1 rank (int), 2 of (int), 3 role (string), 4 guild (string), 5 band (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "#%1$lld of %2$lld %3$@ in %4$@, %5$@"
+          }
+        }
+      }
+    },
+    "shared.standing.role.dps": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "DPS"
+          }
+        }
+      }
+    },
+    "shared.standing.role.healer": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "healers"
+          }
+        }
+      }
+    },
+    "shared.standing.role.tank": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "tanks"
+          }
+        }
+      }
+    },
     "shell.arrivesNext": {
       "comment": "Arguments: 1 tab (string)",
       "extractionState": "manual",
@@ -13345,17 +14613,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "No connection. Signing in needs the internet."
-          }
-        }
-      }
-    },
-    "signin.getAddon": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Get the addon"
           }
         }
       }

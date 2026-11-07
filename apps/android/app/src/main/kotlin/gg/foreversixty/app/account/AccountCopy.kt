@@ -25,7 +25,7 @@ object AccountCopy {
     fun notice(notice: SignedOutNotice): String = when (notice) {
         is SignedOutNotice.SignInFailed -> signInFailure(notice.failure)
         SignedOutNotice.SessionEnded -> stringResource(R.string.signin_signedOut)
-        SignedOutNotice.AccountDeleted -> stringResource(R.string.account_delete_done)
+        SignedOutNotice.AccountDeleted -> stringResource(R.string.shared_account_delete_done)
     }
 
     /** Red is for failures only (spec §5.0): a completed deletion reads neutral. */
@@ -55,14 +55,13 @@ object AccountCopy {
 
     /** The confirm field's label: the account's BattleTag, or the word when it has none. */
     @Composable
-    fun deletionPrompt(battleTag: String?): String {
-        val expected = DeletionConfirmation.expected(battleTag)
-        return if (expected == DeletionConfirmation.WORD) {
-            stringResource(R.string.account_delete_confirm_word)
-        } else {
-            stringResource(R.string.account_delete_confirm_battletag, expected)
-        }
-    }
+    fun deletionPrompt(battleTag: String?): String =
+        stringResource(R.string.shared_account_delete_confirmLabel, DeletionConfirmation.expected(battleTag))
+
+    /** Under the field after the server refused what was typed: the site's words, the BattleTag (or the word) filled in. */
+    @Composable
+    fun deletionMismatch(battleTag: String?): String =
+        stringResource(R.string.shared_account_delete_mismatch, DeletionConfirmation.expected(battleTag))
 
     /**
      * The line under the field after a deletion that did not happen: the API's own sentence for a
@@ -71,15 +70,15 @@ object AccountCopy {
     @Composable
     fun deletionFailure(outcome: AccountActionOutcome?): String? = when (outcome) {
         is AccountActionOutcome.Refused -> outcome.message
-        AccountActionOutcome.Failed -> stringResource(R.string.account_delete_failed)
+        AccountActionOutcome.Failed -> stringResource(R.string.shared_account_delete_failed)
         null, AccountActionOutcome.Done, AccountActionOutcome.NeedsBrowser, AccountActionOutcome.ConfirmMismatch -> null
     }
 
     @Composable
     fun consequence(consequence: DeletionConsequence): String = when (consequence) {
-        DeletionConsequence.PremiumPlan -> stringResource(R.string.account_delete_lose_premium)
-        DeletionConsequence.FounderPrice -> stringResource(R.string.account_delete_lose_founder)
-        is DeletionConsequence.Seat -> stringResource(R.string.account_delete_lose_seat, consequence.guild)
+        DeletionConsequence.PremiumPlan -> stringResource(R.string.shared_account_delete_lose_premium)
+        DeletionConsequence.FounderPrice -> stringResource(R.string.shared_account_delete_lose_founder)
+        is DeletionConsequence.Seat -> stringResource(R.string.shared_account_delete_lose_seat, consequence.guild)
     }
 
     /** `Version 0.1.0 (1) · data 1.60.1.70658`, without the data part before the config answers. */

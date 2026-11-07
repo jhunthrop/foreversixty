@@ -156,7 +156,7 @@ fun YouScreen(
         }
         BrandButton(stringResource(R.string.you_signOut), BrandButtonKind.Quiet, { confirming = true }, height = 48.dp)
         TextButton(actions.onDeleteAccount, Modifier.fillMaxWidth().heightIn(min = 48.dp)) {
-            Text(stringResource(R.string.account_delete_row), style = ScaledType.bodyStrong, color = FsColor.wipe)
+            Text(stringResource(R.string.shared_account_delete_title), style = ScaledType.bodyStrong, color = FsColor.wipe)
         }
         Text(summary.version, style = ScaledType.micro, color = FsColor.muted, modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
     }

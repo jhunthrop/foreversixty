@@ -1,4 +1,5 @@
 import { ctaCopy } from '../addon/cta-copy';
+import { sharedText } from '../copy/shared';
 // web/src/lib/account/account-page-copy.ts
 // Every visible string /account's head and sections use (premium spec 2026-11-08 sections 7, 10)
 // that character-list-copy.ts and signin-copy.ts do not already carry.
@@ -35,50 +36,44 @@ export const accountPageCopy = {
   reportsLink: 'Your reports',
   /** The rail's last Section (gap G6, closed by the account-delete lane 2026-11-07). */
   deleteSection: {
-    title: 'Delete account',
-    line: 'Delete your account and the data that is only yours. The next step lists exactly what goes and what stays.',
-    button: 'Delete account',
+    title: sharedText('shared.account.delete.title'),
+    line: sharedText('shared.account.delete.line'),
+    button: sharedText('shared.account.delete.button'),
   },
   /** The confirm dialog the Section opens (DELETE /v1/me, operation deleteAccount). */
   deleteDialog: {
-    title: 'Delete your account?',
-    intro: "This can't be undone.",
-    deletedLabel: 'Deleted',
+    title: sharedText('shared.account.delete.question'),
+    intro: sharedText('shared.account.delete.intro'),
+    deletedLabel: sharedText('shared.account.delete.deleted.title'),
     /** Each line, and the words in it that link (the refund policy). */
     deleted: [
       {
-        text: 'Any Premium subscription is cancelled at once. There is no automatic refund; the refund policy applies.',
-        link: { label: 'refund policy', href: '/refunds' },
+        text: sharedText('shared.account.delete.deleted.subscription'),
+        link: { label: sharedText('shared.account.delete.deleted.refundPolicy'), href: '/refunds' },
       },
-      {
-        text: 'Your BattleTag, email and Battle.net sign-in. Every browser, companion and app is signed out.',
-      },
-      { text: 'Your Discord link and Premium role, notification settings and watch list.' },
-      { text: 'Your private reports, saved sims, addon exports, and characters known only from your addon.' },
-      { text: 'Your guild memberships, applications and raid sign-ups.' },
+      { text: sharedText('shared.account.delete.deleted.identity') },
+      { text: sharedText('shared.account.delete.deleted.discord') },
+      { text: sharedText('shared.account.delete.deleted.private') },
+      { text: sharedText('shared.account.delete.deleted.guild') },
     ],
-    keptLabel: 'Kept',
+    keptLabel: sharedText('shared.account.delete.kept.title'),
     kept: [
-      {
-        text: 'Stripe billing records, which we must keep for tax and legal reasons. Your link to them is removed.',
-      },
-      { text: 'Public and guild reports, with your name removed.' },
-      {
-        text: 'Character data from public sources, such as the Battle.net profile and public logs, no longer linked to you.',
-      },
-      { text: 'Builds you shared, as anonymous links.' },
+      { text: sharedText('shared.account.delete.kept.billing') },
+      { text: sharedText('shared.account.delete.kept.reports') },
+      { text: sharedText('shared.account.delete.kept.characters') },
+      { text: sharedText('shared.account.delete.kept.builds') },
     ],
     /** The field's label: the account's BattleTag, or the word for an account with none. */
-    confirmLabel: (word: string): string => `Type ${word} to confirm`,
+    confirmLabel: (word: string): string => sharedText('shared.account.delete.confirmLabel', { word }),
     /** What an account without a BattleTag types (the server takes it from every account). */
-    confirmWord: 'delete',
+    confirmWord: sharedText('shared.account.delete.confirmWord'),
     /** Under the field after the server refused what was typed (400 confirm_mismatch, invalid). */
-    mismatch: (word: string): string => `Type ${word} to confirm.`,
-    confirm: 'Delete account',
-    busy: 'Deleting',
+    mismatch: (word: string): string => sharedText('shared.account.delete.mismatch', { battletag: word }),
+    confirm: sharedText('shared.account.delete.button'),
+    busy: sharedText('shared.account.delete.busy'),
     cancel: 'Cancel',
   },
   /** The home page's one-time notice after a deletion (`/?deleted=1`, read once). */
-  deletedNotice: 'Your account is deleted. Thanks for playing with us.',
+  deletedNotice: sharedText('shared.account.delete.done'),
   signOutAsk: 'Sign out of Forever Sixty on this browser?',
 } as const;

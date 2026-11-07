@@ -124,7 +124,7 @@ class HomePresenterTest {
         val body = model.body as HomeAnswerBody.Message
         assertEquals("Add the addon to see which slots you can upgrade.", body.text)
         assertEquals(listOf(HomeAction.Kind.GetAddon, HomeAction.Kind.OpenList), body.buttons.map { it.kind })
-        assertEquals(listOf("Get the addon", "Beast Mastery 60 list"), body.buttons.map { it.title })
+        assertEquals(listOf("Get the addon and companion", "Beast Mastery 60 list"), body.buttons.map { it.title })
         assertTrue(body.note.orEmpty().startsWith("The addon sends your gear"))
         assertEquals(
             "Not available yet: no talent export for this character. Open the addon once to send it.",

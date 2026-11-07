@@ -1,5 +1,7 @@
 // web/scripts/gen-mobile-copy.mjs
-// Generates both apps' strings from apps/shared/copy/en.json, the one copy catalog:
+// Generates both apps' strings from apps/shared/copy/en.json, the app catalog, and
+// apps/shared/copy/shared.json, the words the site shows too (keys shared.*, read by the web
+// through src/lib/copy/shared.ts):
 //   apps/ios/App/Localizable.xcstrings      the String Catalog (plurals as variations)
 //   apps/ios/App/Generated/Copy.swift       typed accessors, one per key
 //   apps/android/app/src/main/res/values/strings.xml   <string> and <plurals>, keyed with _ for .
@@ -23,6 +25,8 @@ import {
 } from './mobile-codegen/shared.mjs';
 
 export const SOURCE = 'apps/shared/copy/en.json';
+export const SHARED_SOURCE = 'apps/shared/copy/shared.json';
+const SHARED_PREFIX = 'shared.';
 const SCRIPT = 'web/scripts/gen-mobile-copy.mjs';
 const PLATFORMS = ['ios', 'android'];
 const PLACEHOLDER = /\{([a-zA-Z][a-zA-Z0-9]*)\}/g;
@@ -91,9 +95,16 @@ export function parseEntry(key, value) {
   return { key, forms, args, plural: raw.count ?? null, notPlural: raw.notPlural === true };
 }
 
-export function buildCatalog(json) {
-  const parsed = JSON.parse(json);
-  const entries = Object.entries(parsed.strings ?? {}).map(([k, v]) => parseEntry(k, v));
+/** en.json's entries then shared.json's. Every shared key starts shared. and no app key does, so a
+ *  word is in exactly one of the two files. */
+export function buildCatalog(json, sharedJson = '{"strings":{}}') {
+  const own = Object.entries(JSON.parse(json).strings ?? {});
+  const shared = Object.entries(JSON.parse(sharedJson).strings ?? {});
+  for (const [key] of own)
+    if (key.startsWith(SHARED_PREFIX)) fail(`${key}: shared.* keys live in ${SHARED_SOURCE}`);
+  for (const [key] of shared)
+    if (!key.startsWith(SHARED_PREFIX)) fail(`${key}: ${SHARED_SOURCE} keys start shared.`);
+  const entries = [...own, ...shared].map(([k, v]) => parseEntry(k, v));
   const androidNames = new Map();
   for (const e of entries) {
     const name = androidName(e.key);
@@ -162,7 +173,7 @@ export function renderSwift(entries, banner) {
     '',
     'import Foundation',
     '',
-    `/// Every on-screen string, from ${SOURCE} through Localizable.xcstrings. Plurals resolve`,
+    `/// Every on-screen string, from ${SOURCE} and ${SHARED_SOURCE} through Localizable.xcstrings. Plurals resolve`,
     '/// through the catalog\'s variations, so a count reads "1 point" and "3 points".',
     'enum Copy {',
     entries.map(swiftAccessor).join('\n\n'),
@@ -219,9 +230,9 @@ export function renderAndroid(entries, banner) {
   ].join('\n');
 }
 
-export function generate(json = readRepoFile(SOURCE)) {
-  const entries = buildCatalog(json);
-  const banner = header(SCRIPT, [SOURCE]);
+export function generate(json = readRepoFile(SOURCE), sharedJson = readRepoFile(SHARED_SOURCE)) {
+  const entries = buildCatalog(json, sharedJson);
+  const banner = header(SCRIPT, [SOURCE, SHARED_SOURCE]);
   return {
     [OUTPUTS.xcstrings]: renderXcstrings(entries),
     [OUTPUTS.swift]: renderSwift(entries, banner),

@@ -9,6 +9,7 @@ import { bisHref } from '../character-profile';
 import { guildHref, guildRaidHref } from '../characters';
 import type { SlotUpgrade } from './upgrades';
 import { slotSourceLine } from './source-line';
+import { sharedText } from '../copy/shared';
 
 /** How many upgrades home lists (ruling R1). */
 export const UPGRADES_SHOWN = 3;
@@ -16,34 +17,34 @@ const MAX_LEVEL = 60;
 const BAND_SPAN = 9;
 
 export const homeCopy = {
-  signedOutTitle: 'Play your class better.',
-  signedOutMeta: 'Pick your class.',
-  signIn: 'Sign in with Battle.net',
-  pickClass: 'Pick your class',
-  howToStart: 'How to start',
+  signedOutTitle: sharedText('shared.home.signedOutTitle'),
+  signedOutMeta: sharedText('shared.home.signedOutMeta'),
+  signIn: sharedText('shared.home.signIn'),
+  pickClass: sharedText('shared.home.pickClass'),
+  howToStart: sharedText('shared.home.howToStart'),
   steps: [
     {
-      title: 'Sign in with Battle.net',
-      sub: 'Imports your characters with their level, gear and item level.',
+      title: sharedText('shared.home.signIn'),
+      sub: sharedText('shared.home.stepSignInSub'),
     },
     {
       title: ctaCopy.installAddonAndCompanion,
-      sub: 'The addon rates every item in your bags; the companion uploads your logs as you play.',
+      sub: sharedText('shared.home.stepAddonSub'),
     },
   ],
-  firstRaids: (date: string) => `First raids ${date}`,
-  openBis: 'Open best in slot',
-  vsWorn: (name: string) => `vs your ${name}`,
-  vsEmpty: 'empty slot',
-  noCharacter: 'No character yet. Battle.net lists a character after you play it and log out.',
-  signedInAs: (tag: string) => `Signed in as ${tag}`,
-  getIn: 'Get your character in',
-  checkAgain: 'Check again',
-  checkAgainSub: 'Battle.net lists a character after you play it and log out.',
-  paste: 'Paste an addon export',
-  pasteSub: 'Your gear and talents, straight from the game.',
+  firstRaids: (date: string) => sharedText('shared.home.firstRaids', { date }),
+  openBis: sharedText('shared.home.openBis'),
+  vsWorn: (name: string) => sharedText('shared.home.vsWorn', { name }),
+  vsEmpty: sharedText('shared.home.vsEmpty'),
+  noCharacter: sharedText('shared.home.noCharacter'),
+  signedInAs: (tag: string) => sharedText('shared.home.signedInAs', { tag }),
+  getIn: sharedText('shared.home.getIn'),
+  checkAgain: sharedText('shared.home.checkAgain'),
+  checkAgainSub: sharedText('shared.home.checkAgainSub'),
+  paste: sharedText('shared.home.paste'),
+  pasteSub: sharedText('shared.home.pasteSub'),
   getAddon: ctaCopy.getAddonAndCompanion,
-  getAddonSub: 'The addon rates every item in your bags; the companion uploads your logs as you play.',
+  getAddonSub: sharedText('shared.home.stepAddonSub'),
 } as const;
 
 export const homeHrefs = {

@@ -36,18 +36,18 @@ import gg.foreversixty.app.designsystem.ScaledType
 import gg.foreversixty.app.designsystem.MicroLabel
 
 private val DELETED_ITEMS = listOf(
-    R.string.account_delete_deleted_subscription,
-    R.string.account_delete_deleted_identity,
-    R.string.account_delete_deleted_discord,
-    R.string.account_delete_deleted_private,
-    R.string.account_delete_deleted_guild,
+    R.string.shared_account_delete_deleted_subscription,
+    R.string.shared_account_delete_deleted_identity,
+    R.string.shared_account_delete_deleted_discord,
+    R.string.shared_account_delete_deleted_private,
+    R.string.shared_account_delete_deleted_guild,
 )
 
 private val KEPT_ITEMS = listOf(
-    R.string.account_delete_kept_billing,
-    R.string.account_delete_kept_reports,
-    R.string.account_delete_kept_characters,
-    R.string.account_delete_kept_builds,
+    R.string.shared_account_delete_kept_billing,
+    R.string.shared_account_delete_kept_reports,
+    R.string.shared_account_delete_kept_characters,
+    R.string.shared_account_delete_kept_builds,
 )
 
 /**
@@ -69,15 +69,15 @@ fun DeleteAccountScreen(
 ) {
     val lines = consequences.map { AccountCopy.consequence(it) }
     val canDelete = !deleting && DeletionConfirmation.matches(typed, battleTag)
-    AccountPage(stringResource(R.string.account_delete_title)) {
-        Text(stringResource(R.string.account_delete_intro), style = ScaledType.body, color = FsColor.text)
-        BulletGroup(stringResource(R.string.account_delete_deleted_title), DELETED_ITEMS.map { stringResource(it) }, Icons.Filled.Close)
-        BulletGroup(stringResource(R.string.account_delete_kept_title), KEPT_ITEMS.map { stringResource(it) }, Icons.Filled.Check, FsColor.muted)
-        if (lines.isNotEmpty()) BulletGroup(stringResource(R.string.account_delete_lose_title), lines, Icons.Outlined.Info)
+    AccountPage(stringResource(R.string.shared_account_delete_title)) {
+        Text(stringResource(R.string.shared_account_delete_intro), style = ScaledType.body, color = FsColor.text)
+        BulletGroup(stringResource(R.string.shared_account_delete_deleted_title), DELETED_ITEMS.map { stringResource(it) }, Icons.Filled.Close)
+        BulletGroup(stringResource(R.string.shared_account_delete_kept_title), KEPT_ITEMS.map { stringResource(it) }, Icons.Filled.Check, FsColor.muted)
+        if (lines.isNotEmpty()) BulletGroup(stringResource(R.string.shared_account_delete_lose_title), lines, Icons.Outlined.Info)
         ConfirmField(battleTag, typed, onTyped, enabled = !deleting, mismatch = outcome == AccountActionOutcome.ConfirmMismatch)
         AccountCopy.deletionFailure(outcome)?.let { Text(it, style = ScaledType.body, color = FsColor.wipe) }
-        BrandButton(stringResource(R.string.account_delete_button), BrandButtonKind.Destructive, onDelete, busy = deleting, enabled = canDelete)
-        Text(stringResource(R.string.account_delete_email), style = ScaledType.meta, color = FsColor.muted)
+        BrandButton(stringResource(R.string.shared_account_delete_button), BrandButtonKind.Destructive, onDelete, busy = deleting, enabled = canDelete)
+        Text(stringResource(R.string.shared_account_delete_email), style = ScaledType.meta, color = FsColor.muted)
     }
 }
 
@@ -100,7 +100,7 @@ private fun ConfirmField(battleTag: String?, typed: String, onTyped: (String) ->
             modifier = Modifier.fillMaxWidth().semantics { contentDescription = label },
         )
         if (mismatch) {
-            Text(stringResource(R.string.account_delete_confirm_mismatch), style = ScaledType.meta, color = FsColor.wipe)
+            Text(AccountCopy.deletionMismatch(battleTag), style = ScaledType.meta, color = FsColor.wipe)
         }
     }
 }

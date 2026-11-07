@@ -4,6 +4,7 @@
 import { accountPlanCopy } from '../billing/account-plan-copy';
 import { PREMIUM_LINKS } from '../billing/premium-links';
 import { ctaCopy } from '../addon/cta-copy';
+import { sharedText } from '../copy/shared';
 
 export const selectorCopy = {
   listHeading: 'Your characters',
@@ -51,7 +52,7 @@ export const selectorCopy = {
   forgotten: (name: string): string => `Forgot ${name}.`,
   retry: 'Retry',
   retrying: 'Trying',
-  refreshing: 'Refreshing from Battle.net',
+  refreshing: sharedText('shared.selector.refreshing'),
   staleAddonTail: 'Log in to the game to update',
   staleBnetTail: 'Refresh from your account',
   sourceAddon: 'Addon',

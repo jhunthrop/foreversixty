@@ -205,7 +205,7 @@ struct HomePresenter {
     private func synced(_ home: CharacterHome) -> String? {
         guard let at = home.syncedAt else { return nil }
         let age = time.age(since: at)
-        return home.syncedFrom == "blizzard" ? Copy.homeAnswerSyncedBnet(age: age) : Copy.homeAnswerSyncedAddon(age: age)
+        return home.syncedFrom == "blizzard" ? Copy.sharedCharactersUpdatedFrom(ago: age) : Copy.homeAnswerSyncedAddon(age: age)
     }
 
     private func body(_ home: CharacterHome) -> HomeAnswerBody {
@@ -214,7 +214,7 @@ struct HomePresenter {
         switch home.state {
         case "no_gear":
             return .message(Copy.homeAnswerNoGear, buttons: [
-                HomeAction(kind: .getAddon, title: Copy.signinGetAddon, primary: true),
+                HomeAction(kind: .getAddon, title: Copy.sharedCtaGetAddonAndCompanion, primary: true),
                 HomeAction(kind: .openList, title: Copy.homeAnswerListButton(spec: spec, band: band), primary: false),
             ], note: Copy.homeAnswerNoGearNote)
         case "under_20":

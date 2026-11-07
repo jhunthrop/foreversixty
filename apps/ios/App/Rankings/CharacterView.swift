@@ -243,7 +243,7 @@ struct CharacterHead: View {
                         .fixedSize(horizontal: false, vertical: true)
                         .accessibilityAddTraits(.isHeader)
                     if yours { TagView(text: Copy.charYou, color: FSColor.gold) }
-                    if profile.supporter { TagView(text: Copy.charSupporter, color: FSColor.goldHover, systemImage: "heart.fill") }
+                    if profile.supporter { TagView(text: Copy.sharedPremiumSupporterChip, color: FSColor.goldHover, systemImage: "heart.fill") }
                 }
                 Text(CharacterPage.descriptor(profile, specs: specs)).font(ScaledType.meta).foregroundStyle(FSColor.muted)
                     .fixedSize(horizontal: false, vertical: true)

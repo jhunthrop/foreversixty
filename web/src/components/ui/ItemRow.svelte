@@ -9,6 +9,7 @@
      longer a tab stop of its own. -->
 <script lang="ts">
   import type { Snippet } from 'svelte';
+  import { sharedText } from '../../lib/copy/shared';
   import { rarityClassFor } from '../../lib/planner/items';
   import type { GainFigure, ItemRef } from '../../lib/ui/primitives';
   import Figure from './Figure.svelte';
@@ -26,7 +27,7 @@
     worn,
     badge,
     iconSize = 40,
-    emptyText = 'Nothing better yet',
+    emptyText = sharedText('shared.paperdoll.nothingBetter'),
     emptyDetail,
     unknown = false,
     eager = false,

@@ -91,7 +91,7 @@ struct HomePresenterTests {
         guard case let .message(text, buttons, note) = model.body else { Issue.record("no message"); return }
         #expect(text == "Add the addon to see which slots you can upgrade.")
         #expect(buttons.map(\.kind) == [.getAddon, .openList])
-        #expect(buttons.map(\.title) == ["Get the addon", "Beast Mastery 60 list"])
+        #expect(buttons.map(\.title) == ["Get the addon and companion", "Beast Mastery 60 list"])
         #expect(note?.hasPrefix("The addon sends your gear") == true)
         #expect(model.next.first?.line == "Not available yet: no talent export for this character. Open the addon once to send it.")
         #expect(model.next.last?.line == "No sim yet.")

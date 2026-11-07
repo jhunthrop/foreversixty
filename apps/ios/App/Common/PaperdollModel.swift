@@ -122,7 +122,7 @@ enum PaperdollModel {
         case let .item(look): look.name ?? Copy.itemsUnknownItem(slot: slot.label, id: String(look.id))
         case let .unknown(id): Copy.itemsUnknownItem(slot: slot.label, id: String(id))
         case .empty: Copy.gearEmptySlot
-        case .twoHandOff: Copy.paperdollTwoHand
+        case .twoHandOff: Copy.sharedPaperdollTwoHand
         }
     }
 
@@ -148,7 +148,7 @@ enum PaperdollModel {
         case .empty:
             Copy.paperdollA11yEmpty(slot: slot.label)
         case .twoHandOff:
-            "\(slot.label), \(Copy.paperdollTwoHand)."
+            "\(slot.label), \(Copy.sharedPaperdollTwoHand)."
         }
         return slot.better ? "\(base) \(Copy.paperdollA11yBetter)" : base
     }

@@ -56,7 +56,7 @@ object Paperdoll {
             slotName = row.slotName,
             item = row.worn,
             name = if (row.offHandBlocked) row.slotName else row.wornName,
-            detail = if (row.offHandBlocked) res.getString(R.string.paperdoll_twoHand) else detail(row.slotName, row.worn, res),
+            detail = if (row.offHandBlocked) res.getString(R.string.shared_paperdoll_twoHand) else detail(row.slotName, row.worn, res),
             better = row.pick != null && row.pick.id != row.worn?.id,
         )
     }
@@ -91,7 +91,7 @@ object Paperdoll {
                     item == null -> res.getString(R.string.gear_emptySlot)
                     else -> item.name ?: unknownName(slotName, item.id, res)
                 },
-                detail = if (blocked) res.getString(R.string.paperdoll_twoHand) else detail(slotName, item, res),
+                detail = if (blocked) res.getString(R.string.shared_paperdoll_twoHand) else detail(slotName, item, res),
                 better = entry.isBetter(),
             )
         }

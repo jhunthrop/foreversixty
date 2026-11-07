@@ -109,6 +109,6 @@ fun NoCharactersScreen(onGetAddon: () -> Unit) {
             modifier = Modifier.semantics { heading() },
         )
         Text(stringResource(R.string.signin_noChars_body), style = ScaledType.body, color = FsColor.text)
-        BrandButton(stringResource(R.string.signin_getAddon), BrandButtonKind.Secondary, onGetAddon, Modifier.fillMaxWidth())
+        BrandButton(stringResource(R.string.shared_cta_getAddonAndCompanion), BrandButtonKind.Secondary, onGetAddon, Modifier.fillMaxWidth())
     }
 }

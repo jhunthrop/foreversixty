@@ -7,9 +7,13 @@
 import type { DollCell, DollFlag, DollNote } from '../ui/paperdoll';
 import type { GainFigure, ItemRef } from '../ui/primitives';
 import { signedFigure } from '../ui/primitives';
+import { gearCopy } from '../gear/copy';
 import type { BisBandModel, BisCandidate, BisItem, BisRowModel, GainUnit } from './page-model';
 import { filterKindOfSource, filteredBand, pickKinds, type FilteredPick } from './source-filter';
 import type { BisByKindEntry, SourceFilterKind } from './types';
+
+/** The paperdoll cell words the site and the apps share (apps/shared/copy/shared.json). */
+const DOLL = gearCopy.paperdoll;
 
 export type { GainUnit } from './page-model';
 
@@ -148,7 +152,7 @@ function leadGain(row: BisRowModel, deps: DollViewDeps): GainFigure {
     return {
       value: signedFigure(-next.delta),
       unit,
-      basis: { prefix: 'vs', item: itemRef(next.id, deps) },
+      basis: { prefix: DOLL.versus, item: itemRef(next.id, deps) },
       tone: 'strong',
     };
   }
@@ -159,9 +163,9 @@ function leadGain(row: BisRowModel, deps: DollViewDeps): GainFigure {
       undefined,
     );
   if (different === undefined)
-    return { value: 'Same', basis: { prefix: 'No close alternative' }, tone: 'muted' };
+    return { value: DOLL.same, basis: { prefix: 'No close alternative' }, tone: 'muted' };
   return {
-    value: 'Same',
+    value: DOLL.same,
 
     basis: { prefix: `next: ${signedFigure(different.delta)} vs`, item: itemRef(different.id, deps) },
     tone: 'muted',
@@ -188,7 +192,7 @@ function compareWith(
   const worn = itemRef(wornId, deps);
   if (wornId === pickId || (gain !== null && gain !== undefined && isTie(gain))) {
     return {
-      gain: { value: 'Worn', basis: { prefix: 'You have this' }, tone: 'kill' },
+      gain: { value: DOLL.worn, basis: { prefix: DOLL.youHaveThis }, tone: 'kill' },
       badge: 'worn',
       worn: undefined,
       note: undefined,
@@ -209,11 +213,11 @@ function compareWith(
   return {
     gain:
       gain === null || gain === undefined
-        ? { value: '\u2014', basis: { prefix: 'Not sim-checked' }, tone: 'muted' }
+        ? { value: '\u2014', basis: { prefix: DOLL.notSimChecked }, tone: 'muted' }
         : {
             value: signedFigure(gain),
             unit: unitWord(deps.unit),
-            basis: { prefix: 'vs your', item: worn },
+            basis: { prefix: DOLL.versusYour, item: worn },
             tone: 'gold',
           },
     badge: 'upgrade',
@@ -304,7 +308,7 @@ function repickedCell(
             tone: 'muted',
           },
     gain: isTie(gap)
-      ? { value: 'Same', basis: best && { prefix: 'as', item: best }, tone: 'muted' }
+      ? { value: DOLL.same, basis: best && { prefix: 'as', item: best }, tone: 'muted' }
       : {
           value: signedFigure(-gap),
           unit: unitWord(deps.unit),

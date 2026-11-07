@@ -5,6 +5,7 @@
 import { requestEnvelope } from '../account/api';
 import { query } from '../data/query';
 import { API_BASE_URL } from '../planner/config';
+import { sharedText } from '../copy/shared';
 
 export type FeedFilter = 'all' | 'spec' | 'guild' | 'logs';
 /** The API's tags (one per event kind, api/internal/activity KindTag) plus `guides`, which only
@@ -72,25 +73,27 @@ const HOUR_MINUTES = 60;
 const DAY_HOURS = 24;
 
 export const feedCopy = {
-  title: 'Forever right now',
-  filters: { all: 'All', spec: 'Your spec', guild: 'Your guild', logs: 'Logs' } satisfies Record<
-    FeedFilter,
-    string
-  >,
-  filterLabel: 'Show',
+  title: sharedText('shared.feed.title'),
+  filters: {
+    all: sharedText('shared.feed.filter.all'),
+    spec: sharedText('shared.feed.filter.spec'),
+    guild: sharedText('shared.feed.filter.guild'),
+    logs: sharedText('shared.feed.filter.logs'),
+  } satisfies Record<FeedFilter, string>,
+  filterLabel: sharedText('shared.feed.filterLabel'),
   tags: {
-    your_spec: 'Your spec',
-    logs: 'Logs',
-    rankings: 'Rankings',
-    best_in_slot: 'Best in slot',
-    guides: 'Guides',
-    your_guild: 'Your guild',
-    patch: 'Patch',
+    your_spec: sharedText('shared.feed.tag.yourSpec'),
+    logs: sharedText('shared.feed.tag.logs'),
+    rankings: sharedText('shared.feed.tag.rankings'),
+    best_in_slot: sharedText('shared.feed.tag.bestInSlot'),
+    guides: sharedText('shared.feed.tag.guides'),
+    your_guild: sharedText('shared.feed.tag.yourGuild'),
+    patch: sharedText('shared.feed.tag.patch'),
   } satisfies Record<FeedTag, string>,
-  failed: 'We could not load what is happening on Forever.',
-  guildEmpty: 'Your guild has nothing posted yet.',
-  logsEmpty: 'No public logs in the last 7 days.',
-  uploadLog: 'Upload a log',
+  failed: sharedText('shared.feed.failed'),
+  guildEmpty: sharedText('shared.feed.guildEmpty'),
+  logsEmpty: sharedText('shared.feed.logsEmpty'),
+  uploadLog: sharedText('shared.feed.uploadLog'),
 } as const;
 
 /** The feed filters a viewer gets: signed out none (All only, no bar); Your guild only in a guild. */

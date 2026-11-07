@@ -34,7 +34,7 @@ enum GearModel {
             if let upgrade = upgrades[slot] { return upgradeRow(upgrade, slotName: name) }
             if let item = best[slot]?.item { return bestRow(item, slot: slot, slotName: name) }
             if slot == offHand, gear[slot] == nil, offHandBlockedBy != nil {
-                return GearRow(slot: slot, slotName: name, worn: nil, wornName: Copy.paperdollTwoHand,
+                return GearRow(slot: slot, slotName: name, worn: nil, wornName: Copy.sharedPaperdollTwoHand,
                                wornLevel: nil, pick: nil, isBestInSlot: false, blockedByTwoHand: true)
             }
             return exportRow(gear[slot], slot: slot, slotName: name, items: items)

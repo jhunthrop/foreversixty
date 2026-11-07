@@ -10,17 +10,22 @@ import type { FeedPage } from '../home/feed';
 import type { GuildSims, SpecWeek } from '../home/home-answer';
 import { API_BASE_URL } from '../planner/config';
 import { clockLabel, clockParts } from '../ui/countdown';
+import { sharedText } from '../copy/shared';
 
 /** C18: the activity rows the page shows. */
 export const ACTIVITY_ROWS = 5;
 const FEED_TTL_MS = 60_000;
 const MAX_LEVEL = 60;
 
-const ROLE_WORD = { dps: 'DPS', healer: 'healers', tank: 'tanks' } as const;
+const ROLE_WORD = {
+  dps: sharedText('shared.standing.role.dps'),
+  healer: sharedText('shared.standing.role.healer'),
+  tank: sharedText('shared.standing.role.tank'),
+} as const;
 
 export const standingCopy = {
-  activity: 'Activity',
-  failed: 'We could not load this character’s activity.',
+  activity: sharedText('shared.character.activity'),
+  failed: sharedText('shared.character.activityFailed'),
 } as const;
 
 export function activityPath(characterKey: string, limit = ACTIVITY_ROWS): string {
@@ -54,15 +59,21 @@ export function guildRankLine(sims: GuildSims | null): string | null {
   if (own === null) return null;
   const band = sims.band >= MAX_LEVEL ? String(MAX_LEVEL) : `${sims.band} to ${sims.band + 9}`;
   const preset = sims.preset === 'raid' ? ' raid' : '';
-  return `#${own.rank} of ${sims.of} ${ROLE_WORD[sims.role]} in ${sims.guild_name}, ${band}${preset}`;
+  return sharedText('shared.standing.rank', {
+    rank: own.rank,
+    of: sims.of,
+    role: ROLE_WORD[sims.role],
+    guild: sims.guild_name,
+    band: `${band}${preset}`,
+  });
 }
 
 /** C19: "Holy is graded A this week"; a tank or healer list has no letter: "Holy is #4 of 9 this week". */
 export function gradeLine(week: SpecWeek | null, specName: string | null): string | null {
   if (week === null || specName === null) return null;
   return week.grade === null
-    ? `${specName} is #${week.place} of ${week.of} this week`
-    : `${specName} is graded ${week.grade} this week`;
+    ? sharedText('shared.standing.place', { spec: specName, place: week.place, of: week.of })
+    : sharedText('shared.standing.graded', { spec: specName, grade: week.grade });
 }
 
 /** C21: "Onyxia's Lair in 33 days, 8 hours, 0 min, 18 in"; null once it has started. */
@@ -70,6 +81,8 @@ export function raidLine(raid: NextRaidView | null, now: Date): string | null {
   if (raid === null) return null;
   const parts = clockParts(new Date(raid.starts_at), now);
   if (parts === null) return null;
-  const signed = raid.counts.in > 0 ? `, ${raid.counts.in} in` : '';
-  return `${raid.title} in ${clockLabel(parts)}${signed}`;
+  const values = { raid: raid.title, clock: clockLabel(parts) };
+  return raid.counts.in > 0
+    ? sharedText('shared.standing.raidSigned', { ...values, n: raid.counts.in })
+    : sharedText('shared.standing.raid', values);
 }

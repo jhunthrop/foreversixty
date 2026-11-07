@@ -230,7 +230,7 @@ private fun Head(profile: CharacterProfile, state: CharacterScreenState, specNam
                 if (tags) {
                     Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                         if (CharacterCard.isYours(profile, state.viewer)) Tag(stringResource(R.string.char_you), FsColor.gold)
-                        if (profile.supporter) Tag(stringResource(R.string.char_supporter), FsColor.rarityEpicText)
+                        if (profile.supporter) Tag(stringResource(R.string.shared_premium_supporterChip), FsColor.rarityEpicText)
                     }
                 }
                 Text(copy.descriptor(profile, specName), style = ScaledType.body, color = FsColor.muted)

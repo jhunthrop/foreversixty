@@ -117,7 +117,7 @@ struct YouView: View {
                 Button(Copy.youSignOut) { confirmingSignOut = true }
                     .buttonStyle(BrandButtonStyle(.quiet, height: 48))
                 NavigationLink(value: YouRoute.deleteAccount) {
-                    Text(Copy.accountDeleteRow)
+                    Text(Copy.sharedAccountDeleteTitle)
                         .font(ScaledType.bodyStrong)
                         .foregroundStyle(FSColor.wipe)
                         .frame(maxWidth: .infinity, minHeight: 44)

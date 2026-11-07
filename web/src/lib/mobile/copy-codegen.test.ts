@@ -5,6 +5,7 @@ import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import {
   OUTPUTS,
+  buildCatalog,
   generate,
   parseEntry,
   renderAndroid,
@@ -45,6 +46,16 @@ describe('mobile copy codegen', () => {
   it('keeps edge spaces and escapes apostrophes for aapt', () => {
     const android = renderAndroid([parseEntry('a.b', " · it's {x}")], '// x');
     expect(android).toContain(`<string name="a_b">" · it\\'s %1$s"</string>`);
+  });
+
+  it('keeps shared.* keys in shared.json and only there', () => {
+    const app = (key: string) => JSON.stringify({ strings: { [key]: 'x' } });
+    expect(buildCatalog(app('a.b'), app('shared.a.b')).map((e: { key: string }) => e.key)).toEqual([
+      'a.b',
+      'shared.a.b',
+    ]);
+    expect(() => buildCatalog(app('shared.a.b'))).toThrow(/live in apps\/shared\/copy\/shared.json/);
+    expect(() => buildCatalog(app('a.b'), app('a.c'))).toThrow(/keys start shared\./);
   });
 
   it('refuses mismatched placeholders, stray plural args and banned words', () => {

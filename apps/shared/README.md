@@ -17,6 +17,15 @@ with a GENERATED line, and `node --test design/tokens/tokens.test.mjs` (the web 
 fails when one differs from a fresh run or lost that line. The site is dark only, so the apps are
 dark only.
 
+## Copy (`copy/`)
+
+`copy/en.json` is the apps' catalog; `copy/shared.json` holds the words the site shows too (keys
+`shared.*`, the same value grammar). `node web/scripts/gen-mobile-copy.mjs` generates both into
+`Localizable.xcstrings` + `Copy.swift` (`Copy.shared*`) and `strings.xml` (`R.string.shared_*`);
+the web copy modules read `shared.json` through `web/src/lib/copy/shared.ts`, so a word the site
+and an app both show is edited once. A key lives in exactly one of the two files (the generator
+fails otherwise).
+
 ## Fonts (`fonts/`)
 
 The OFL faces the site self-hosts, as TTF (converted from the site's own Latin subsets in

@@ -10,7 +10,7 @@ enum AccountCopy {
         switch notice {
         case let .signInFailed(failure): signInFailure(failure)
         case .sessionEnded: Copy.signinSignedOut
-        case .accountDeleted: Copy.accountDeleteDone
+        case .accountDeleted: Copy.sharedAccountDeleteDone
         }
     }
 
@@ -40,18 +40,21 @@ enum AccountCopy {
 
     static func consequence(_ consequence: DeletionConsequence) -> String {
         switch consequence {
-        case .premiumPlan: Copy.accountDeleteLosePremium
-        case .founderPrice: Copy.accountDeleteLoseFounder
-        case let .seat(guild): Copy.accountDeleteLoseSeat(guild: guild)
+        case .premiumPlan: Copy.sharedAccountDeleteLosePremium
+        case .founderPrice: Copy.sharedAccountDeleteLoseFounder
+        case let .seat(guild): Copy.sharedAccountDeleteLoseSeat(guild: guild)
         }
     }
 
     /// The field's label: the account's BattleTag, or the word when it has none.
     static func deletionPrompt(battleTag: String?) -> String {
-        let expected = DeletionConfirmation.expected(battleTag: battleTag)
-        return expected == DeletionConfirmation.word
-            ? Copy.accountDeleteConfirmWord
-            : Copy.accountDeleteConfirmBattletag(battletag: expected)
+        Copy.sharedAccountDeleteConfirmLabel(word: DeletionConfirmation.expected(battleTag: battleTag))
+    }
+
+    /// Under the field after the server refused what was typed: the site's words, the BattleTag
+    /// (or the word) filled in.
+    static func deletionMismatch(battleTag: String?) -> String {
+        Copy.sharedAccountDeleteMismatch(battletag: DeletionConfirmation.expected(battleTag: battleTag))
     }
 
     /// The line under the button after a deletion that did not happen: the API's own sentence for
@@ -59,7 +62,7 @@ enum AccountCopy {
     static func deletionFailure(_ outcome: AccountActionOutcome?) -> String? {
         switch outcome {
         case let .refused(message): message
-        case .failed: Copy.accountDeleteFailed
+        case .failed: Copy.sharedAccountDeleteFailed
         case .none, .done, .needsBrowser, .confirmMismatch: nil
         }
     }
