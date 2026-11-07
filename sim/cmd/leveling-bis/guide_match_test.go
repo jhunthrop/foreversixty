@@ -65,7 +65,11 @@ func TestGuideDivergencesNameAStaleRaceAndAStaleRaidBuild(t *testing.T) {
 // each with the reason. It exists only while a split ranking lands one
 // shard at a time; the run that lands the last shard empties it, and it
 // never carries a spec past that landing.
-var knownStaleBISFiles = map[string]string{}
+var knownStaleBISFiles = map[string]string{
+	"druid-feral-bear":    "the MythicSim adopt gave the bear a Lacerate filler; the bis-adopt-rerank run empties this",
+	"rogue-assassination": "the MythicSim adopt moved the Slice and Dice rule; the bis-adopt-rerank run empties this",
+	"rogue-combat":        "the MythicSim adopt moved Shank, Eviscerate and Slice and Dice; the bis-adopt-rerank run empties this",
+}
 
 // TestPublishedBISMatchesGuides: the active build's committed bis files
 // wear the races and talents their guides name. Not gated like
