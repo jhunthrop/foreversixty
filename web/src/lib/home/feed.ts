@@ -7,7 +7,9 @@ import { query } from '../data/query';
 import { API_BASE_URL } from '../planner/config';
 
 export type FeedFilter = 'all' | 'spec' | 'guild' | 'logs';
-export type FeedTag = 'your_spec' | 'logs' | 'guides' | 'your_guild' | 'patch';
+/** The API's tags (one per event kind, api/internal/activity KindTag) plus `guides`, which only
+ *  the floor's guide-update rows carry. */
+export type FeedTag = 'your_spec' | 'logs' | 'rankings' | 'best_in_slot' | 'guides' | 'your_guild' | 'patch';
 export type FeedKind =
   | 'log_upload'
   | 'boss_kill'
@@ -79,6 +81,8 @@ export const feedCopy = {
   tags: {
     your_spec: 'Your spec',
     logs: 'Logs',
+    rankings: 'Rankings',
+    best_in_slot: 'Best in slot',
     guides: 'Guides',
     your_guild: 'Your guild',
     patch: 'Patch',

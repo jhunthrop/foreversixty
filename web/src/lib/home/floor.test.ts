@@ -32,6 +32,12 @@ describe('floor', () => {
     expect(bis?.spec).toBe('warrior-fury');
   });
 
+  it('tags a BiS refresh Best in slot, the same tag the API gives a bis_change row', () => {
+    const floor = buildFloor(inputs);
+    expect(floor.find((row) => row.id === 'floor:bis:warrior-fury')?.tag).toBe('best_in_slot');
+    expect(floor.find((row) => row.id === 'floor:guide:warrior-fury')?.tag).toBe('guides');
+  });
+
   it('drops the raid row once raids are open', () => {
     expect(buildFloor({ ...inputs, raidsOpen: null })[0]?.id).toBe('floor:bis:warrior-fury');
   });

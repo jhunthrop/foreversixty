@@ -145,12 +145,12 @@ def feed_row(i: str, kind: str, minutes: int, tag: str, segments: list[dict], ic
 # The public rows every state shares (P1, P2, P4, P5): uploads, a ranking climb, a BiS change.
 PUBLIC = [
     feed_row('e1', 'log_upload', 4, 'logs', [seg('Nightfall', 'name', **{'class': 'warlock'}), seg(' uploaded a full Shadowfang Keep, 8 bosses in 41 min')], crest='warlock'),
-    feed_row('e2', 'ranking_climb', 17, 'logs', [seg('Fury Warrior, 20 to 29:', 'strong'), seg(' '), seg('Grukk', 'name', **{'class': 'warrior'}), seg(' climbed 6 places to #3')], crest='warrior', href='/rankings'),
-    feed_row('e3', 'bis_change', 62, 'guides', [seg('Best in slot changed', 'strong'), seg(' for Fury Warrior 20 to 29: '), seg('Blackened Defias Armor', 'item', quality=3, item_id=10399), seg(' is the new chest')], icon='inv_chest_leather_08', quality=3, href='/bis/warrior/fury'),
+    feed_row('e2', 'ranking_climb', 17, 'rankings', [seg('Fury Warrior, 20 to 29:', 'strong'), seg(' '), seg('Grukk', 'name', **{'class': 'warrior'}), seg(' climbed 6 places to #3')], crest='warrior', href='/rankings'),
+    feed_row('e3', 'bis_change', 62, 'best_in_slot', [seg('Best in slot changed', 'strong'), seg(' for Fury Warrior 20 to 29: '), seg('Blackened Defias Armor', 'item', quality=3, item_id=10399), seg(' is the new chest')], icon='inv_chest_leather_08', quality=3, href='/bis/warrior/fury'),
     feed_row('e4', 'log_upload', 95, 'logs', [seg('Ellowen', 'name', **{'class': 'hunter'}), seg(' uploaded Razorfen Kraul, 5 bosses in 52 min')], crest='hunter'),
-    feed_row('e5', 'ranking_top', 140, 'logs', [seg('Brakka', 'name', **{'class': 'warrior'}), seg(' took #1 for Arms Warrior, 30 to 39')], crest='warrior', href='/rankings'),
+    feed_row('e5', 'ranking_top', 140, 'rankings', [seg('Brakka', 'name', **{'class': 'warrior'}), seg(' took #1 for Arms Warrior, 30 to 39')], crest='warrior', href='/rankings'),
     feed_row('e6', 'log_upload', 205, 'logs', [seg('Saelis', 'name', **{'class': 'priest'}), seg(' uploaded The Deadmines, 6 bosses in 38 min')], crest='priest'),
-    feed_row('e7', 'bis_change', 300, 'guides', [seg('Best in slot refreshed', 'strong'), seg(' for Fire Mage 40 to 49: 3 new picks')], icon='spell_fire_flamebolt', href='/bis/mage/fire'),
+    feed_row('e7', 'bis_change', 300, 'best_in_slot', [seg('Best in slot refreshed', 'strong'), seg(' for Fire Mage 40 to 49: 3 new picks')], icon='spell_fire_flamebolt', href='/bis/mage/fire'),
 ]
 
 

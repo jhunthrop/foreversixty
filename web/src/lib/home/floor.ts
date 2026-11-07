@@ -48,7 +48,7 @@ function specRows(inputs: FloorInputs): FeedRow[] {
       id: `floor:bis:${file.spec}`,
       kind: 'site',
       at: file.generatedAt,
-      tag: 'guides',
+      tag: 'best_in_slot',
       icon: file.icon,
       href: file.href,
       spec: file.spec,

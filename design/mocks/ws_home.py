@@ -31,7 +31,7 @@ SLOT_LABELS = {'head': 'Head', 'neck': 'Neck', 'shoulder': 'Shoulder', 'back': '
                'waist': 'Waist', 'legs': 'Legs', 'feet': 'Feet', 'finger1': 'Finger 1', 'finger2': 'Finger 2', 'trinket1': 'Trinket 1',
                'trinket2': 'Trinket 2', 'main_hand': 'Main hand', 'off_hand': 'Off hand', 'ranged': 'Ranged'}
 RAIDS = [('Barrow Deeps', 'spell_shadow_raisedead'), ('Hyjal Summit', 'spell_nature_timestop'), ("Onyxia's Lair", 'inv_misc_head_dragon_black')]
-TAGS = {'your_spec': 'Your spec', 'logs': 'Logs', 'guides': 'Guides', 'your_guild': 'Your guild', 'patch': 'Patch'}
+TAGS = {'your_spec': 'Your spec', 'logs': 'Logs', 'rankings': 'Rankings', 'best_in_slot': 'Best in slot', 'guides': 'Guides', 'your_guild': 'Your guild', 'patch': 'Patch'}
 FLOOR_MIN, FEED_ROWS, UPGRADES_SHOWN, GUILD_SHOWN = 5, 7, 3, 5
 HOME_CSS = '''
 .sec-b{padding-top:12px}
