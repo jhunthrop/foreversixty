@@ -7,4 +7,6 @@ characters; TestFlight's "What to Test" at 4,000.
 
 ## Unreleased
 
+## 0.1.0 (2), 2026-11-07
+
 - The first build of Forever Sixty for iPhone and Android.
