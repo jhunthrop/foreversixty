@@ -442,6 +442,7 @@ FACTS_CHART = {'threatCaveat': 'An estimate: 1 threat per point of damage and 0.
 
 
 PAGE_CSS = '''<style>
+button.sel{background:none;cursor:pointer}
 .ans-act{display:flex;gap:8px;margin-top:6px}@media(min-width:900px){.ans-act{justify-content:flex-end}}
 .ans-more{display:none}
 .head .ans{min-width:0}@media(min-width:900px){.head .ans{min-width:360px}}
@@ -533,7 +534,8 @@ def state_page(state: str) -> str:
     R = Report()
     rc = COPY['reportCopy']
     if state == 'loading':
-        head_html = PageHeader(Skeleton(520, 40), meta=[Skeleton(320, 16)], answer=f'{Skeleton(200, 16)}{Skeleton(160, 40)}{Skeleton(220, 16)}',
+        # The sample's shell knows its title (the parity render, FS_REPORT_SAMPLE): the heading is the text, not a block.
+        head_html = PageHeader(escape(R.title) if AS_SAMPLE else Skeleton(520, 40), meta=[Skeleton(320, 16)], answer=f'{Skeleton(200, 16)}{Skeleton(160, 40)}{Skeleton(220, 16)}',
                                tabs=TabStripMore(['Summary'], '', 1, 1).replace('>Summary<', ' aria-disabled="true">Summary<'))
         main = Section('Players', Plate(f'<div class="st" style="--n:4">{skeleton_rows(6)}</div>', 'Players'))
         rail = Section('This pull', ''.join(f'<p>{Skeleton(300, 16)}</p>' for _ in range(5)))

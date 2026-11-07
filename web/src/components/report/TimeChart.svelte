@@ -263,7 +263,7 @@
     domainMs={durationMs}
     window={current}
     {onWindow}
-    plotHeights={{ base: 140, md: 160, lg: 160, xl: 180 }}
+    plotHeights={{ base: 140, md: 140, lg: 140, xl: 140 }}
     scale={logScale ? 'log' : 'linear'}
     labelFloorS={model.bucket.labelFloorS}
     {syncKey}

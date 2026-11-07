@@ -72,7 +72,7 @@
   <span data-testid="report-subtitle"
     >{where}<span class="max-md:hidden">{where === '' ? '' : ' · '}{fightCount}</span></span
   >
-  <span role="status" aria-live="polite" class="contents">
+  <span aria-live="polite" class="contents">
     {#if sample}
       <Tag tone="muted" testid="report-sample-badge">{reportCopy.sampleBadge}</Tag>
     {:else if live !== null}

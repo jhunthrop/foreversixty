@@ -29,6 +29,9 @@ COACH_TRASH = _COACH_GO.split('NotReviewableTrash = "', 1)[1].split('"', 1)[0]  
 SPELL_NAME = {s['id']: s['name'] for s in json.loads((B / 'spells.json').read_text())}
 SPELL_ICON = json.loads((B / 'spellicons.json').read_text())
 POWER = {0: 'Mana', 1: 'Rage', 2: 'Focus', 3: 'Energy'}
+# FS_REPORT_SAMPLE=1 (the parity spec's test-time render): every report mock is drawn as /reports/sample, the page the
+# spec serves on this same log (its Sample report Tag and note in place of Not credited).
+AS_SAMPLE = os.environ.get('FS_REPORT_SAMPLE') == '1'
 DEFAULT_PULL = 6       # the sample's default pull as the live page opens it (Trash, 12:43, 177 mobs died)
 EMPTY_PULL = 13        # 4 s, nobody of the group in it: the pull with no data
 COMPARE_PULL = 3       # the other pull the whole group is in
@@ -217,6 +220,7 @@ def answer(R: Report, fi: int, source: str, viewer: str = '') -> str:
 
 
 def head(R: Report, fi: int, tab: str, source: str, viewer: str = '', sample: bool = False, tabs: bool = True) -> str:
+    sample = sample or AS_SAMPLE
     f = R.fight(fi)
     y, m, d = f['start'][:10].split('-')
     months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec']
@@ -254,14 +258,19 @@ def fight_menu(R: Report, fi: int) -> str:
 
 
 TABLE_FILTERS = {'Damage done', 'Damage taken', 'Healing'}
+SEARCHABLE_OVER = 15   # ReportBar.svelte: a Source list longer than this gets the filter field
 
 
 def bar(R: Report, fi: int, tab: str, source: str, open_m: bool = False, compare: str = '') -> str:
     f = R.fight(fi)
-    groups = [('Fight', sel(fight_label(f))), ('Source', sel(source)), ('Window', sel('Whole fight'))]
+    # The Source list is the scope's players; past 15 it gains a filter field, and the shipped Select draws a
+    # button trigger with aria-expanded for it in place of the native combobox (lib/ui/listbox.ts).
+    many = len(in_scope(R, R.summary(fi), source if source in SOURCES else 'Your group')) > SEARCHABLE_OVER
+    src = f'<button type="button" class="sel" aria-expanded="false" aria-label="Source">{escape(source)}</button>' if many else sel(source)
+    groups = [('Fight', sel(fight_label(f))), ('Source', src), ('Window', sel('Whole fight'))]
     if tab in TABLE_FILTERS:
         groups += [('Target', sel('Every target')), ('Ability', sel('Every ability')),
-                   ('Filters', '<span class="sel" role="button" aria-haspopup="dialog" aria-expanded="false">Filters</span>')]
+                   ('Filters', '<button type="button" class="sel" aria-haspopup="dialog" aria-expanded="false">Filters</button>')]
     if tab == 'Threat':
         groups.append(('Enemy', sel('Every enemy')))
     if tab == 'Compare':

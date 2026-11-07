@@ -45,6 +45,9 @@ export const reportCopy = {
   fight: 'Fight',
   /** The tab strip's accessible name. */
   tabsLabel: 'Report tabs',
+  /** The Plate's names on the state screens. */
+  fightsLabel: 'Fights',
+  onePullLabel: 'One pull only',
   /** The head's two actions, and the phone's one menu button that holds them. */
   copyLink: 'Copy link',
   copied: 'Copied',

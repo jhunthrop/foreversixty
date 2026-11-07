@@ -258,7 +258,7 @@
           fit
           value={filters.ability === null ? '' : String(filters.ability)}
           options={abilityChoices}
-          searchable
+          searchable={abilityChoices.length > SEARCHABLE_OVER}
           searchPlaceholder={selectCopy.filterAbilities}
           testid="filter-ability"
           onchange={(event) => {

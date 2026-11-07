@@ -6,6 +6,7 @@
      on a ranked boss kill; a Total row foots it. Every figure head sorts. An empty window reads
      the tab's own line inside the Plate. -->
 <script lang="ts">
+  import EmptyLine from './EmptyLine.svelte';
   import type { Placement } from '../../lib/report/percentile';
   import { formatAmount, formatDuration, formatPercent } from '../../lib/report/format';
   import { formatRate } from '../../lib/report/frame';
@@ -163,7 +164,7 @@
 <Section title={TITLE[tab]} meta="Click a player to see their abilities" testid="report-table-card">
   <Plate label={TITLE[tab]}>
     {#if actors.length === 0}
-      <p class="text-muted px-4 py-4 text-[14px]" data-testid="table-empty">Nothing in this window.</p>
+      <EmptyLine text="Nothing in this window." testid="table-empty" />
     {:else}
       <StatTable {columns} nameHead="Player" {sort} {onsort} label={TITLE[tab]} testid="actor-table">
         {#each rows as actor (actor.guid)}

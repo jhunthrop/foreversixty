@@ -6,6 +6,7 @@
      `part="deaths"` (the rail) Deaths: one Row per death in time order (the time, the crest, the
      name, "{ability} · {source} · {amount}", a melee swing reads Melee) with the Deaths › link. -->
 <script lang="ts">
+  import EmptyLine from './EmptyLine.svelte';
   import { splitUnitName } from '../../lib/characters';
   import { classColorVar, formatAmount, formatDuration } from '../../lib/report/format';
   import { formatRate } from '../../lib/report/frame';
@@ -101,7 +102,7 @@
     testid="panel-taken"
   >
     {#if takenByAbility.length === 0}
-      <p class="text-muted text-[14px]">Nobody took damage in this window.</p>
+      <EmptyLine text="Nobody took damage in this window." section />
     {:else}
       <StatTable columns={COLUMNS} nameHead="Ability" open label="Damage taken by ability">
         {#each takenByAbility as row (row.name)}
@@ -125,9 +126,13 @@
     {/if}
   </Section>
 {:else}
-  <Section title="Deaths" action={{ label: 'Deaths', href: tabHref('deaths') }} testid="panel-deaths">
+  <Section
+    title="Deaths"
+    action={deaths.length === 0 ? undefined : { label: 'Deaths', href: tabHref('deaths') }}
+    testid="panel-deaths"
+  >
     {#if deaths.length === 0}
-      <p class="text-muted text-[14px]">Nobody died.</p>
+      <EmptyLine text="Nobody died." section />
     {:else}
       {#each deaths as death, i (`${death.guid}-${death.at_ms}-${i}`)}
         <Row title={splitUnitName(death.name).name} sub={cause(death)} open>

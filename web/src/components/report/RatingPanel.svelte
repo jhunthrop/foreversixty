@@ -5,6 +5,7 @@
      ratingCopy.noRatingForTrash. A rating is not part of summary.json, so the panel fetches its
      own (docs/superpowers/plans/2026-09-21-rating-web.md Ruling 8). -->
 <script lang="ts">
+  import EmptyLine from './EmptyLine.svelte';
   import { unitLabel } from '../../lib/report/names.svelte';
   import { classColorVar } from '../../lib/report/format';
   import { createReportRatingsFetch } from '../../lib/rating/report-ratings.svelte';
@@ -49,17 +50,17 @@
   testid="rating-panel"
 >
   {#if trash}
-    <p class="text-muted text-[14px]" data-testid="rating-panel-none">{ratingCopy.noRatingForTrash}</p>
+    <EmptyLine text={ratingCopy.noRatingForTrash} section testid="rating-panel-none" />
   {:else if fetcher.status === 'loading' || fetcher.status === 'idle'}
     <div data-testid="rating-panel-loading" aria-hidden="true"><Skeleton minHeight="min-h-[58px]" /></div>
   {:else if fetcher.status === 'flagged'}
-    <p class="text-muted text-[14px]" data-testid="rating-panel-flagged">{ratingCopy.flagged}</p>
+    <EmptyLine text={ratingCopy.flagged} section testid="rating-panel-flagged" />
   {:else if fetcher.status === 'none'}
-    <p class="text-muted text-[14px]" data-testid="rating-panel-none">{ratingCopy.noRatingForTrash}</p>
+    <EmptyLine text={ratingCopy.noRatingForTrash} section testid="rating-panel-none" />
   {:else if fetcher.status === 'failed'}
-    <p class="text-muted text-[14px]" role="alert" data-testid="rating-panel-error">{ratingCopy.fetchFailed}</p>
+    <EmptyLine text={ratingCopy.fetchFailed} section role="alert" testid="rating-panel-error" />
   {:else if rows.length === 0}
-    <p class="text-muted text-[14px]" data-testid="rating-panel-empty">{ratingCopy.panelEmpty}</p>
+    <EmptyLine text={ratingCopy.panelEmpty} section testid="rating-panel-empty" />
   {:else}
     <div data-testid="rating-panel-rows">
       {#each rows as { player, guid } (player.player_key)}

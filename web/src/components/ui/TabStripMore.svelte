@@ -45,7 +45,11 @@
 
   function choose(tab: TabItem, event: MouseEvent): void {
     open = null;
-    if (onSelect === undefined || tab.disabled === true) return;
+    if (tab.disabled === true) {
+      event.preventDefault();
+      return;
+    }
+    if (onSelect === undefined) return;
     if (event.metaKey || event.ctrlKey || event.shiftKey || event.button !== 0) return;
     event.preventDefault();
     onSelect(tab.id);
