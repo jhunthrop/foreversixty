@@ -39,6 +39,8 @@ export const REGION = {
   /** A document's prose before its first heading (About's text, Data sources' first line; pages
    *  spec 2026-11-08 section 3A). */
   intro: 'intro',
+  /** A modal confirm over the page (the account deletion dialog; mock ws_prims `Dialog`). */
+  dialog: 'dialog',
 } as const;
 
 export type RegionName = (typeof REGION)[keyof typeof REGION];

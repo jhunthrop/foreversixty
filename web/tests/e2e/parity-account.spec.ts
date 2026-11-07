@@ -2,10 +2,12 @@
 // /account against its mocks (design/parity.md, design/specs/2026-11-08-premium-account.md section
 // 14): a free account with one character, an account with none, and Thandrel on Premium with a
 // guild, a device and Discord linked, at 1440 and 390, each region (head, head-title, head-meta,
-// head-answer with a character, the Characters plate and every Section) compared for its blocks and
+// head-answer with a character, the Characters plate and every Section, Delete account last in the
+// rail) compared for its blocks and
 // box (support/parity.ts). The mocks are rendered before the tests from the copy modules and the
 // fixtures this spec serves (support/account-page.ts), at the mocks' pinned clock. A side-by-side
-// per state and width lands in test-results/parity/account-<state>-<width>.png. Desktop project
+// per state and width lands in test-results/parity/account-<state>-<width>.png. `account-delete`
+// is the free account with the Delete account dialog open over it (region `dialog`). Desktop project
 // only: the 390 run is a 390 px desktop viewport, as the mock renders are.
 import { test, expect } from './support/test';
 import {
@@ -18,12 +20,25 @@ import {
   settleParityPage,
   writeSideBySide,
 } from './support/parity';
-import { openAccountState, renderAccountMocks, type AccountPageState } from './support/account-page';
+import type { Page } from '@playwright/test';
+import {
+  openAccountDeleteDialog,
+  openAccountState,
+  renderAccountMocks,
+  type AccountPageState,
+} from './support/account-page';
 
-const STATES: readonly { id: string; state: AccountPageState; mock: string }[] = [
+const STATES: readonly {
+  id: string;
+  state: AccountPageState;
+  mock: string;
+  /** What the viewer does on the page before it is measured (opens a dialog). */
+  act?: (page: Page) => Promise<void>;
+}[] = [
   { id: 'account', state: 'account', mock: 'web-account' },
   { id: 'account-new', state: 'account-new', mock: 'web-account-new' },
   { id: 'account-premium', state: 'account-premium', mock: 'web-account-premium' },
+  { id: 'account-delete', state: 'account', mock: 'web-account-delete', act: openAccountDeleteDialog },
 ];
 const WIDTHS = [1440, 390] as const;
 const HEIGHT = 1000;
@@ -40,7 +55,7 @@ const HEIGHT = 1000;
  *    keeps them links (middle-click, long-press; DiscordConnectLink); the mock draws buttons.
  *  - Discord with a channel (Premium): the shipped block keeps `Open in Discord ›`, the private
  *    logs note, Remove beside Send test message and the reconnect note, which the mock leaves out;
- *    the section is taller, and You and the footer under it move down.
+ *    the section is taller, and You, Delete account and the footer under it move down.
  *  - At 1440 the site header of a Premium account has no Premium link; the mock's chrome draws one.
  */
 const DEVICES_ACTION = 'section-devices:inventory';
@@ -49,6 +64,7 @@ const DISCORD_SAVED = [
   'section-discord:inventory',
   'section-discord:box',
   'section-you:box',
+  'section-delete-account:box',
   'site-footer:box',
 ];
 const WHY =
@@ -67,6 +83,7 @@ const EXPECTED_DRIFT: Readonly<Record<string, { failures: readonly string[]; why
     WIDTHS.flatMap((width) => [
       [`account-${width}`, drift([DEVICES_ACTION, DISCORD_LINKS], width)],
       [`account-new-${width}`, drift([DEVICES_ACTION, DISCORD_LINKS], width)],
+      [`account-delete-${width}`, drift([DEVICES_ACTION, DISCORD_LINKS], width)],
       [
         `account-premium-${width}`,
         drift(
@@ -88,7 +105,7 @@ test.describe('/account mock parity', () => {
   });
 
   for (const width of WIDTHS) {
-    for (const { id, state, mock: mockName } of STATES) {
+    for (const { id, state, mock: mockName, act } of STATES) {
       test(`${id} at ${width} matches ${mockName}`, async ({ page, browser }) => {
         test.slow();
         const viewport = { width, height: HEIGHT };
@@ -100,6 +117,7 @@ test.describe('/account mock parity', () => {
         await prepareParityPage(page);
         await openAccountState(page, state);
         await settleParityPage(page);
+        await act?.(page);
         const built = await captureRegions(page);
 
         await writeSideBySide(
