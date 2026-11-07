@@ -19,13 +19,13 @@ import { SAMPLE_REPORT_ID, SAMPLE_REPORT_PATH } from '../../lib/report/sample';
 >
   <link rel="stylesheet" href="/report-island.css" slot="head" />
   <main id="main" tabindex="-1" class="flex w-full flex-col pb-10">
-    <!-- The same reserves as reports/[id].astro, measured on the same four-fight report. -->
+    <!-- The same reserves as reports/[id].astro, measured on this page and the fixture. -->
     <div
       id="report"
       data-report-mount
       data-report-id={SAMPLE_REPORT_ID}
       data-report={JSON.stringify(sampleMeta)}
-      class="min-h-[2460px] md:min-h-[1556px] lg:min-h-[1325px]"
+      class="min-h-[1900px] md:min-h-[2200px] lg:min-h-[1420px]"
     >
       <ReportSkeleton title={sampleMeta.title} />
     </div>

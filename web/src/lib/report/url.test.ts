@@ -20,7 +20,7 @@ describe('the report URL state', () => {
     expect(parseReportState('?view=timelines', 1).tab).toBe('timeline');
     expect(parseReportState('?view=events', 1).tab).toBe('events');
     expect(parseReportState('?view=queries&tab=deaths', 1).tab).toBe('deaths');
-    expect(reportSearch(withState(defaultState(1), { mode: 'mechanics' }), 1)).toBe('');
+    expect(reportSearch(withState(defaultState(1), { mode: 'mechanics' }), 1)).toBe('?tab=mechanics');
     expect(reportSearch(withState(defaultState(1), { tab: 'mechanics' }), 1)).toBe('?tab=mechanics');
   });
 

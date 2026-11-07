@@ -7,7 +7,6 @@ import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import type { Page } from '@playwright/test';
 import { expect, test } from './support/test';
-import { pickFight } from './support/report-frame';
 
 const FIXTURES = path.resolve(process.cwd(), 'src/fixtures/report');
 const ID = 'fixture2live';
@@ -188,7 +187,8 @@ test.describe('a beta-log report', () => {
     await serveBetaReport(page, { zone: '' });
     await page.goto(`/reports/${ID}?fight=3`);
     await expect(page.getByTestId('report-title')).toHaveText(/^26 Sept? 2026 · 4 fights$/);
-    const option = (index: number) => page.locator(`select[data-testid="report-fight"] option[value="${index}"]`);
+    const option = (index: number) =>
+      page.locator(`select[data-testid="report-fight"] option[value="${index}"]`);
     await expect(option(1)).toHaveText('Trash · 0:06');
     await expect(option(1)).toHaveAttribute('data-description', /· 115 mobs died$/);
     await expect(option(3)).toContainText('Warden Kelthas');

@@ -3,7 +3,7 @@ import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 
 import { expect, test } from './support/test';
-import { choose } from './support/select';
+
 import { pickFight, openTab } from './support/report-frame';
 
 const FIXTURES = path.resolve(process.cwd(), 'src/fixtures/report');
@@ -74,7 +74,9 @@ test('the whole night folds every boss pull into one table, and each pull opens 
   await expect(page.getByTestId('night-view')).toBeVisible();
   await expect(page.getByTestId('night-summary')).toContainText('2 boss pulls');
   await expect(page.getByTestId('night-bosses').locator('[data-testid^="night-boss-"]')).toHaveCount(2);
-  await expect(page.getByTestId('night-players').locator('[data-testid^="night-player-"]').first()).toBeVisible();
+  await expect(
+    page.getByTestId('night-players').locator('[data-testid^="night-player-"]').first(),
+  ).toBeVisible();
   // The whole night keeps the tables and drops the chart: nothing draws a chart over a night.
   await expect(page.getByTestId('time-chart')).toHaveCount(0);
   await openTab(page, 'damage-done');

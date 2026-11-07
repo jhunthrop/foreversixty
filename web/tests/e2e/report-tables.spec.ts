@@ -1,7 +1,7 @@
 // web/tests/e2e/report-tables.spec.ts
 import { expect, test } from './support/test';
 import { serveDuckdbRuntime } from './support/duckdb-runtime';
-import { openChartIfCollapsed } from './support/report-chart';
+
 import { choose } from './support/select';
 import { checkFilter } from './support/report-frame';
 
@@ -23,7 +23,11 @@ test('damage done ranks rows, colours names by class and expands to abilities', 
   // here at all: this is the raid's own damage ranking, the same table Warcraft Logs shows
   // by default. Baelgrim is the raid's top damage dealer in the fixture (4,400 vs.
   // Morrowlyn's 3,110), so the top row is theirs.
-  const rows = page.getByTestId('actor-table').locator('[role="row"][data-testid^="actor-Player"], [role="row"][data-testid^="actor-Creature"], [role="row"][data-testid^="actor-Pet"]');
+  const rows = page
+    .getByTestId('actor-table')
+    .locator(
+      '[role="row"][data-testid^="actor-Player"], [role="row"][data-testid^="actor-Creature"], [role="row"][data-testid^="actor-Pet"]',
+    );
   await expect(rows.first()).toContainText('Baelgrim');
   const name = page.getByTestId('actor-Player-4184-000000A1').getByTestId('row-name');
   await expect(name).toHaveCSS('color', 'rgb(198, 155, 109)');
@@ -38,7 +42,11 @@ test('damage done ranks rows, colours names by class and expands to abilities', 
 test('the ability filter narrows every row to that ability', async ({ page }) => {
   await page.goto(`${FIGHT}&tab=damage-done`);
   await choose(page.getByTestId('filter-ability'), { label: 'Slam' });
-  const rows = page.getByTestId('actor-table').locator('[role="row"][data-testid^="actor-Player"], [role="row"][data-testid^="actor-Creature"], [role="row"][data-testid^="actor-Pet"]');
+  const rows = page
+    .getByTestId('actor-table')
+    .locator(
+      '[role="row"][data-testid^="actor-Player"], [role="row"][data-testid^="actor-Creature"], [role="row"][data-testid^="actor-Pet"]',
+    );
   await expect(rows).toHaveCount(1);
   await expect(rows.first()).toContainText('Baelgrim');
 });
@@ -58,7 +66,7 @@ test('a brushed window measures the table and each opened row from the fight’s
 
   // Amount is `actor.effective`: window.ts measures it directly from the one-second
   // series, so it is exact under a bare window and never carries the `~` mark.
-  await expect(page.getByTestId('actor-Player-4184-000000A1').getByTestId('row-amount')).not.toContainText(
+  await expect(page.getByTestId('actor-Player-4184-000000A1').getByRole('cell').nth(1)).not.toContainText(
     '~',
   );
 
@@ -80,7 +88,7 @@ test('boss damage only marks the split as approximate even at a whole-fight wind
   // window does (filters.ts's `targetShare`), so the page measures the table from the
   // events -- and Amount, exact at a whole-fight window, never carries the mark.
   await expect(page.getByTestId('table-measured')).toBeVisible({ timeout: 60_000 });
-  await expect(page.getByTestId('actor-Player-4184-000000A1').getByTestId('row-amount')).not.toContainText(
+  await expect(page.getByTestId('actor-Player-4184-000000A1').getByRole('cell').nth(1)).not.toContainText(
     '~',
   );
 });

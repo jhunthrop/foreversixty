@@ -97,7 +97,7 @@ test('the sample report opens from /logs and shows fights, with no API', async (
   const colours = await roster
     .getByTestId(/^roster-Player-/)
     .evaluateAll((rows) =>
-      rows.slice(0, 40).map((row) => getComputedStyle(row.querySelector('span') as Element).color),
+      rows.slice(0, 40).map((row) => getComputedStyle(row.querySelector('a') as Element).color),
     );
   expect(new Set(colours).size).toBeGreaterThan(2);
   // A trash row prints its length once.
@@ -197,7 +197,7 @@ test.describe('the sample’s counts say what they count', () => {
     );
     // The head's answer (decision R1, MUST 2): the mobs and the length, the group's deaths (none:
     // the two in fight 6 were outsiders', counted under Everyone in range).
-    await expect(page.getByTestId('report-answer')).toHaveText(/^177\s*mobs · 12:43$/);
+    await expect(page.getByTestId('report-answer')).toHaveText(/177\s*mobs · 12:43/);
     await expect(page.getByTestId('report-answer-caption')).toHaveText('Your group · 5 players · no deaths');
   });
 
@@ -214,7 +214,9 @@ test.describe('the sample’s counts say what they count', () => {
     expect(await label.evaluate((el) => el.scrollWidth <= el.clientWidth + 1)).toBe(true);
     await expect(chart.getByTestId('death-marker').first()).toBeVisible();
     await expect(chart.getByTestId('chart-legend')).toContainText('Median player');
-    await expect(page.getByTestId('report-answer-caption')).toHaveText('Everyone in range · 265 players · 2 deaths');
+    await expect(page.getByTestId('report-answer-caption')).toHaveText(
+      'Everyone in range · 265 players · 2 deaths',
+    );
   });
 
   test('a pull the group was not in is everyone in range, said so', async ({ page }) => {

@@ -39,18 +39,17 @@ const STATES = [
   'tab=casts',
   'tab=resources',
   'tab=threat',
-  'view=timelines',
-  'view=events',
-  'view=queries',
-  'mode=compare',
-  'mode=rankings',
-  'mode=mechanics',
+  'tab=timeline',
+  'tab=events',
+  'tab=queries',
+  'tab=compare',
+  'tab=mechanics',
 ];
 
 test('nothing scrolls sideways on any tab or view', async ({ page }) => {
   for (const query of STATES) {
     await page.goto(`${REPORT}&${query}`);
-    await expect(page.getByTestId('mode-bar')).toBeVisible();
+    await expect(page.getByTestId('report-bar')).toBeVisible();
     // Against PHONE_WIDTH, not window.innerWidth -- see support/phone-scroll.ts's header
     // note: content wider than the phone widens the emulated layout viewport with it, so
     // `scrollWidth > innerWidth` moves its own goal posts and silently passes over exactly
@@ -59,25 +58,25 @@ test('nothing scrolls sideways on any tab or view', async ({ page }) => {
   }
 });
 
-test('a damage row is a card with every field labelled', async ({ page }) => {
+test('a damage row keeps its name, its amount and the rate under it', async ({ page }) => {
   await page.goto(`${REPORT}&tab=damage-done`);
   const row = page.getByTestId('actor-Player-4184-000000A1');
   await expect(row.getByTestId('row-name')).toBeVisible();
-  await expect(row.getByTestId('row-amount')).toBeVisible();
-  await expect(row.getByTestId('row-per-second')).toBeVisible();
-  await expect(row.getByTestId('phone-labels')).toBeVisible();
+  // Below 1024 a StatRow keeps its primary figure with the rate under it (logs spec 12).
+  await expect(row.getByRole('cell').nth(1)).toBeVisible();
+  await expect(row.getByRole('cell').nth(1)).toContainText('DPS');
 
   const box = (await row.boundingBox())!;
   expect(box.width).toBeLessThanOrEqual(PHONE_WIDTH);
 });
 
-// The sideways-scroll sweep above visits `mode=compare` with no second fight picked, so
+// The sideways-scroll sweep above visits `tab=compare` with no second fight picked, so
 // it never sees the table -- and a table is the one thing on the page that grows past its
 // container rather than wrapping inside it. Picked here, and measured against the gutter
 // rather than the viewport: eating the 18px gutter does not lengthen the page's own
 // scrollWidth, so the sweep would pass with the table flush to the screen edge.
 test('the compare table stays inside the page gutter once a second fight is picked', async ({ page }) => {
-  await page.goto(`${REPORT}&mode=compare`);
+  await page.goto(`${REPORT}&tab=compare`);
   await choose(page.getByTestId('compare-with'), '1');
   // One table at every width; a phone folds the other figures under the name.
   await expect(page.getByTestId('compare-table')).toBeVisible();
@@ -96,23 +95,23 @@ test('the compare table stays inside the page gutter once a second fight is pick
   await expect(page.getByTestId('compare-Player-4184-000000A1')).toContainText(/[+\u2212]/);
 });
 
-test('the chart sits above the table, as the spec asks', async ({ page }) => {
+test('the table leads and the chart follows it, as the spec asks (decision R4)', async ({ page }) => {
   await page.goto(`${REPORT}&tab=damage-done`);
   await openChartIfCollapsed(page);
   const chart = (await page.getByTestId('time-chart').boundingBox())!;
   const table = (await page.getByTestId('actor-table').boundingBox())!;
-  expect(chart.y).toBeLessThan(table.y);
+  expect(table.y).toBeLessThan(chart.y);
 });
 
 // The strips once stuck to the top of a phone screen; at 263px they covered every table's
 // headings, so they scroll with the page now. Spec 2026-09-25 section 6 replaced the
 // thirteen-pill strip below lg with a single select, which cannot itself wrap past the
 // right edge the way the pill row once could -- so this now guards the select the same way.
-test('every tab is visible on a phone without scrolling sideways', async ({ page }) => {
+test('the tab strip is one line that scrolls inside itself, never the page', async ({ page }) => {
   await page.goto(`${REPORT}&tab=damage-done`);
-  const select = (await page.getByTestId('tab-select').boundingBox())!;
-  expect(select.x + select.width).toBeLessThanOrEqual(390);
-  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
+  const strip = (await page.getByTestId('report-tabs').boundingBox())!;
+  expect(strip.height).toBeLessThanOrEqual(48);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(PHONE_WIDTH);
 });
 
 test('every interactive control clears 44px', async ({ page }) => {
@@ -122,7 +121,7 @@ test('every interactive control clears 44px', async ({ page }) => {
   test.slow();
   for (const query of STATES) {
     await page.goto(`${REPORT}&${query}`);
-    await expect(page.getByTestId('mode-bar')).toBeVisible();
+    await expect(page.getByTestId('report-bar')).toBeVisible();
     let measured = 0;
     const controls = await page
       .locator('button:visible, select:visible, a[href]:visible, input:visible')
@@ -198,19 +197,14 @@ test('a resource row’s cap figures sit beside the line at 360px', async ({ pag
   expect(box?.width ?? 0).toBeLessThanOrEqual(PHONE_WIDTH);
 });
 
-test('the window select and the chart toggle are 44px targets on a phone', async ({ page }) => {
+test('the chart folds to a 44px line on a phone, and the Window select is a 44px field', async ({ page }) => {
   await page.goto(`${REPORT}`);
-  // Collapsed by default (design review 2026-09-26 finding 1): the toggle is the only
-  // chart-block control on screen until it is pressed.
-  const toggle = page.getByTestId('chart-toggle');
-  await expect(toggle).toBeVisible();
-  expect((await toggle.boundingBox())?.height ?? 0).toBeGreaterThanOrEqual(44);
-
-  // The six-button preset row is one select now (finding 4), which replaces this test's
-  // old "a phase preset chip clears 44px" question with the select's own box.
-  await toggle.click();
+  const fold = page.getByTestId('chart-collapsed').locator('summary');
+  await expect(fold).toBeVisible();
+  expect((await fold.boundingBox())?.height ?? 0).toBeGreaterThanOrEqual(44);
+  await page.getByTestId('report-bar').locator('[data-control-bar-toggle]').click();
   const select = page.getByTestId('window-select');
   await expect(select).toContainText('Phase 2');
-  const box = await select.boundingBox();
+  const box = await page.locator('.sel:has(> select[data-testid="window-select"])').boundingBox();
   expect(box?.height ?? 0).toBeGreaterThanOrEqual(44);
 });

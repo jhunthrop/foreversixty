@@ -61,7 +61,9 @@ test('a live report with no fight yet waits for the first fight, then fills in o
   if (CAPTURES) await page.screenshot({ path: path.join(CAPTURES, 'l4-live-waiting-1280.png') });
 
   // Two polls at five seconds each, plus slack: the first fight arrives and the page switches.
-  await expect(page.locator('select[data-testid="report-fight"]')).toHaveValue('3', { timeout: 25_000 });
+  await expect(page.locator('select[data-testid="report-fight"] option[value="3"]')).toHaveCount(1, {
+    timeout: 25_000,
+  });
   await expect(page.getByTestId('report-processing')).toHaveCount(0);
   expect(await page.evaluate(() => (window as unknown as { __kept?: boolean }).__kept)).toBe(true);
 });

@@ -6,7 +6,12 @@ import { choose } from './select';
 
 /** Picks a pull (or 'all', the night's boss pulls) on the bar's Fight select. */
 export async function pickFight(page: Page, index: number | 'all'): Promise<void> {
-  await choose(page.locator('select[data-testid="report-fight"]'), index === 'all' ? '0' : String(index));
+  const select = page.locator('select[data-testid="report-fight"]');
+  const value = index === 'all' ? '0' : String(index);
+  await select.waitFor({ state: 'attached' });
+  // A trash pull that killed nothing is behind the list's last row until it is shown.
+  if ((await select.locator(`option[value="${value}"]`).count()) === 0) await choose(select, 'idle');
+  await choose(select, value);
 }
 
 /** Opens a tab: from the strip when it shows, else from the More menu. */
@@ -28,6 +33,12 @@ export async function pickSource(page: Page, value: string): Promise<void> {
 /** Turns on one of the Filters switches: in the popover from 768 px, in the open bar's stack below. */
 export async function checkFilter(page: Page, which: 'boss'): Promise<void> {
   const button = page.getByTestId('report-filters-button');
+  await page
+    .locator(
+      '[data-testid="report-filters-button"]:visible, [data-testid="report-bar"] [data-control-bar-toggle]:visible',
+    )
+    .first()
+    .waitFor();
   if (await button.isVisible()) {
     await button.click();
     await page.getByTestId(`filter-${which}`).check();

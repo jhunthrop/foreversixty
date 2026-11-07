@@ -4,7 +4,6 @@
 // "who took the boss off me, and when" in one click.
 import { expect, test } from './support/test';
 import { choose, fieldBox } from './support/select';
-import { openTab } from './support/report-frame';
 
 const FIGHT = '/reports/fixture2abcd?fight=3&tab=threat';
 
@@ -106,7 +105,14 @@ test('the timeline marks the taunt on the taunter’s lane and names it on hover
 
 test('the link alone carries the night’s named enemy into Damage Done', async ({ page }) => {
   await page.goto('/reports/fixture2abcd?fight=all&tab=damage-done&target=Warden+Kelthas');
-  await expect(page.getByTestId('actor-table').locator('[role="row"][data-testid^="actor-Player"], [role="row"][data-testid^="actor-Creature"], [role="row"][data-testid^="actor-Pet"]').first()).toBeVisible();
+  await expect(
+    page
+      .getByTestId('actor-table')
+      .locator(
+        '[role="row"][data-testid^="actor-Player"], [role="row"][data-testid^="actor-Creature"], [role="row"][data-testid^="actor-Pet"]',
+      )
+      .first(),
+  ).toBeVisible();
   await expect(page.locator('#filter-target').locator('option:checked')).toHaveText('Warden Kelthas');
 });
 

@@ -116,8 +116,7 @@ export function fightOptions(
           })),
         ];
   const trash = fights.filter(
-    (fight) =>
-      fight.kind !== 'encounter' && (showIdle || fight.mob_deaths !== 0 || fight.index === selected),
+    (fight) => fight.kind !== 'encounter' && (showIdle || fight.mob_deaths !== 0 || fight.index === selected),
   );
   const trashGroup = `Trash · ${plural(trash.length, 'pull')}`;
   // A pull indexed before engine 0.6.0 has no true kill count: its row says when, never a count.

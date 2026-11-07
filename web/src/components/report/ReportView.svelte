@@ -114,6 +114,7 @@
   import { REPORT_LAZY_MIN_H } from '../../lib/report/layout';
   import { provideCoachRow } from '../../lib/coach/report-context';
   import CoachTabHost from '../coach/CoachTabHost.svelte';
+  import CoachRowLine from '../coach/CoachRowLine.svelte';
   import { createLazyComponent, type LazyLoadState } from '../../lib/report/lazy-component.svelte';
   // Compare, Mechanics, Rankings, Timelines, Events and Queries are not the landing mode or
   // view (Analyze / tables / summary is), so each ships as its own chunk fetched the first
@@ -1268,7 +1269,7 @@
     if (status === 'processing' || status === 'waiting' || status === 'unparsed') {
       document
         .getElementById('report')
-        ?.classList.remove('min-h-[2460px]', 'md:min-h-[1556px]', 'lg:min-h-[1325px]');
+        ?.classList.remove('min-h-[1900px]', 'md:min-h-[2200px]', 'lg:min-h-[1420px]');
     }
   });
 
@@ -1590,8 +1591,12 @@
     if (combatant === undefined) return null;
     const className = classOf.get(combatant.guid);
     return (
-      plannerLinkFor({ dataBuild: activeBuild.build, className, treeSizes: treeSizesFor(className), combatant })
-        ?.href ?? null
+      plannerLinkFor({
+        dataBuild: activeBuild.build,
+        className,
+        treeSizes: treeSizesFor(className),
+        combatant,
+      })?.href ?? null
     );
   }
   /** The tabs the sibling lane draws: their main content in the main column, This pull in the rail. */
@@ -1682,7 +1687,22 @@
     {/snippet}
     {#snippet tabs()}
       <TabStripMore
-        tabs={[{ id: 'summary', label: 'Summary', href: '#', disabled: true }]}
+        tabs={[
+          {
+            id: 'summary',
+            label: 'Summary',
+            href: '#',
+            disabled: true,
+            attrs: {
+              title:
+                status === 'processing'
+                  ? reportCopy.parsing
+                  : status === 'waiting'
+                    ? reportCopy.waiting
+                    : reportCopy.parseFailed,
+            },
+          },
+        ]}
         active=""
         md={1}
         xl={1}
@@ -1695,7 +1715,7 @@
 
 {#if status === 'failed'}
   <Page layout="ledger" testid="report-failed">
-    {#snippet header()}<PageHeader title={reportCopy.eyebrow} titleTestid="report-title" />{/snippet}
+    {#snippet header()}<PageHeader title={reportCopy.eyebrow} />{/snippet}
     <Plate label={reportCopy.eyebrow}>
       <div
         class="flex flex-wrap items-center gap-3 px-4 py-4 text-[14px]"
@@ -1863,7 +1883,7 @@
                   >
                     {#snippet lead()}<ClassIcon className={classOf.get(combatant.guid)} size={28} />{/snippet}
                     {#snippet trail()}<a
-                        class="text-gold text-[14px] font-semibold"
+                        class="text-gold text-[14px] font-semibold [@media(pointer:coarse)]:-my-3 [@media(pointer:coarse)]:inline-block [@media(pointer:coarse)]:py-3"
                         href={playerHref(combatant.guid)}>Gear ›</a
                       >{/snippet}
                   </Row>
@@ -1872,7 +1892,7 @@
             {/if}
             {#if rankingsHref !== null}
               <a
-                class="text-gold text-[14px] font-semibold"
+                class="text-gold text-[14px] font-semibold [@media(pointer:coarse)]:-my-3 [@media(pointer:coarse)]:inline-block [@media(pointer:coarse)]:py-3"
                 href={rankingsHref}
                 data-testid="report-rankings-link">Rankings for {fight?.name} ›</a
               >
@@ -1962,6 +1982,10 @@
             {spellIcon}
             dataBuild={activeBuild.build}
           />
+          {#if tabActors[0] !== undefined}
+            <!-- The coach's line for this player (components/coach, placed as shipped): the row is open. -->
+            <CoachRowLine actor={tabActors[0]} rowOpen />
+          {/if}
           {@render chart(chartMetric)}
           <PlayerView
             part="gear"
@@ -1998,7 +2022,8 @@
             <p class="text-small text-muted" data-testid="approximate-note">
               {#if tableExact !== null}<span class="text-kill" data-testid="table-measured"
                   >Measured from the fight’s events for this window and filter.</span
-                >{:else if tableMeasureError !== ''}<span class="text-wipe" role="alert">{tableMeasureError}</span
+                >{:else if tableMeasureError !== ''}<span class="text-wipe" role="alert"
+                  >{tableMeasureError}</span
                 >{:else}Measuring this window from the fight’s events… a tilde marks a figure still prorated.{/if}
             </p>
           {/if}
@@ -2232,7 +2257,10 @@
           {/if}
         {:else if state.tab === 'queries'}
           {#if queriesViewLazy.current}
-            <queriesViewLazy.current dataBaseUrl={dataBase} fightIndex={state.fight} window={timeWindow} />
+            <!-- The Starting points wrap inside the column (the mock's `.qstarts`), never under the rail. -->
+            <div class="report-queries min-w-0">
+              <queriesViewLazy.current dataBaseUrl={dataBase} fightIndex={state.fight} window={timeWindow} />
+            </div>
           {:else}
             {@render lazyFallback(queriesViewLazy, REPORT_LAZY_MIN_H.queries)}
           {/if}
@@ -2276,3 +2304,12 @@
     </Page>
   </div>
 {/if}
+
+<style>
+  .report-queries :global(.ui-seg) {
+    flex-wrap: wrap;
+  }
+  .report-queries :global(.ui-seg-item) {
+    min-width: 0;
+  }
+</style>

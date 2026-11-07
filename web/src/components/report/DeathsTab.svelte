@@ -343,7 +343,7 @@
             {#if foldAll}
               <button
                 type="button"
-                class="text-nav text-[14px] font-semibold"
+                class="text-nav text-[14px] font-semibold [@media(pointer:coarse)]:-my-3 [@media(pointer:coarse)]:py-3"
                 aria-expanded={isOpen(death)}
                 data-testid="death-toggle"
                 onclick={() => toggle(death)}>{isOpen(death) ? 'Fold' : 'Open'}</button
@@ -351,7 +351,7 @@
             {/if}
             <button
               type="button"
-              class="text-gold text-[14px] font-semibold whitespace-nowrap"
+              class="text-gold text-[14px] font-semibold whitespace-nowrap [@media(pointer:coarse)]:-my-3 [@media(pointer:coarse)]:py-3"
               data-testid="death-window"
               onclick={() => onWindow(deathWindow(death.at_ms, durationMs))}>The 20 s before it ›</button
             >

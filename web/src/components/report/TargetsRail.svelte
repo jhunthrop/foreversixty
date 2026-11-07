@@ -37,10 +37,11 @@
       {#each units.slice(0, SHOWN) as [name, amount] (name)}
         <Row
           title={splitUnitName(name).name}
-          sub={`${total === 0 ? "0.0" : ((amount / total) * 100).toFixed(1)}% · ${formatAmount(amount)}`}
+          sub={`${total === 0 ? '0.0' : ((amount / total) * 100).toFixed(1)}% · ${formatAmount(amount)}`}
           open
         >
-          {#snippet trail()}<span class="block w-24"><Meter value={total === 0 ? 0 : amount / total} /></span>{/snippet}
+          {#snippet trail()}<span class="block w-24"><Meter value={total === 0 ? 0 : amount / total} /></span
+            >{/snippet}
         </Row>
       {/each}
     </div>

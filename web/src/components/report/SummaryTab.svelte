@@ -163,7 +163,7 @@
           {#snippet icon()}<ClassIcon className={cell.class} size={28} />{/snippet}
           {#snippet name()}<a
               href={playerHref(row.guid)}
-              class="font-bold hover:underline"
+              class="font-bold hover:underline [@media(pointer:coarse)]:-my-[13px] [@media(pointer:coarse)]:inline-block [@media(pointer:coarse)]:py-[13px]"
               style:color={classColorVar(cell.class)}
               title={display.title}
               data-testid="roster-name"

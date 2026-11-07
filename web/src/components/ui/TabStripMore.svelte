@@ -100,6 +100,7 @@
         class={[tabClass(current, tab.disabled === true), index >= md && 'ui-tsm-xl']}
         data-tab-id={tab.id}
         data-testid={tab.testid}
+        {...tab.attrs}
         onclick={(event) => choose(tab, event)}>{tab.label}</a
       >
     {/each}

@@ -32,37 +32,21 @@ const inline = id === FIXTURE_REPORT_ID ? JSON.stringify(fixtureMeta) : undefine
   <link rel="stylesheet" href="/report-island.css" slot="head" />
   <main id="main" tabindex="-1" class="flex w-full flex-col pb-10">
     <!--
-      Reserves the report's space before the island mounts. Without it the placeholder is
-      one line tall, the footer sits inside the viewport, and rendering the report shoves
-      the footer down by roughly the report's own height -- a layout shift every bit as
-      real whether the box grows into the reservation or past it, so a reservation smaller
-      than the eventual content still costs the CLS budget. Re-measured on the fixture at
-      360px (the Lighthouse profile, 360x640) after the design review 2026-09-26 loop
-      collapsed the phone chart block to a one-line strip by default: the island's default
-      view (first fight, the collapsed chart, Summary tab) now settles at ~2967px, up from
-      an earlier round's ~1288px because Summary has grown a rating panel and a longer
-      combatants list since that measurement, not because this round grew the page --
-      collapsing the chart is a net reduction against what this same build would measure
-      with it open. 468svh reserves ~2995px, 28px above the measured height: CI's Linux
-      fonts wrap a little wider than a Mac's, so the reserve carries headroom the Mac
-      measurement itself does not need. A real report's default view will not match this
-      fixture's height exactly, but it lands far closer than a guess -- re-measure and move
-      this number whenever the default view's content changes materially.
-    
-      Review round 2 (design loop): one svh figure measured on a phone was applied at every
-      width, and at 1280x900 it reserved 4212px for a report that settles at 1301px -- a
-      screen and a half of black above the footer. Pixel reserves per breakpoint instead,
-      measured with the reserve removed in-page on the fixture's default view: 2436 at
-      360x640 (Lighthouse's phone), 1532 at 800 wide, 1301 at 1280 wide; each reserve is 24px
-      above its natural for the CI runner's fonts. svh would scale with a viewport the
-      content does not scale with, so px is the honest unit here.
+      Reserves the report's space before the island mounts, so the footer does not jump when the
+      report replaces its skeleton (a shift is a shift whether the box grows into the reservation
+      or past it). Re-measured 2026-11-07 on the rebuilt frame (logs spec 2026-11-07 section 13:
+      the Summary leads with its Plate, the chart under it, the rail beside it from 1024), with
+      the reserve removed in-page, on the fixture's and the sample's default views: 2038 / 1909 at
+      360, 2385 / 2222 at 800 (one column: the rail under main), 1436 / 1483 at 1280. Each
+      reserve is the lower of the two, a little under, so a short report never stands over a gap;
+      px, not svh, because the content does not scale with the viewport.
     -->
     <div
       id="report"
       data-report-mount
       data-report-id={id}
       data-report={inline}
-      class="min-h-[2460px] md:min-h-[1556px] lg:min-h-[1325px]"
+      class="min-h-[1900px] md:min-h-[2200px] lg:min-h-[1420px]"
     >
       <ReportSkeleton title={id === FIXTURE_REPORT_ID ? fixtureMeta.title : undefined} />
     </div>

@@ -295,4 +295,3 @@ test('the Resources tab draws no damage chart and heads its rows', async ({ page
   await expect(page.getByTestId('time-chart')).toHaveCount(0);
   await expect(page.getByTestId('chart-toggle')).toHaveCount(0);
 });
-

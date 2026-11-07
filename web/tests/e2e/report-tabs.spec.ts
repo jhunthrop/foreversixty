@@ -3,7 +3,7 @@ import { expect, test } from './support/test';
 import { serveDuckdbRuntime } from './support/duckdb-runtime';
 import { heldRoute } from './support/held-route';
 import { openChartIfCollapsed } from './support/report-chart';
-import { choose, fieldBox } from './support/select';
+import { choose } from './support/select';
 import { pickFight, openTab } from './support/report-frame';
 
 const REPORT = '/reports/fixture2abcd';
@@ -75,7 +75,8 @@ test('every control the spec names writes itself into the URL and reads back', a
   await expect(page.locator(FIGHT_SELECT)).toHaveValue('3');
   // An old link's view lands on its tab.
   await page.goto(`${REPORT}?fight=3&view=queries`);
-  await expect(page.getByTestId('report-tabs').locator('[aria-current="page"]:visible')).toHaveText(/Queries/);
+  await expect(page.getByTestId('report-tabs')).toContainText(/Queries/);
+  await expect(page.getByTestId('queries-view')).toBeVisible();
 });
 
 test('the tabs past the first seven sit in More, which names the open one', async ({ page }) => {

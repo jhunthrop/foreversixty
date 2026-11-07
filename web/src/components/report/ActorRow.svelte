@@ -52,7 +52,7 @@
   {#snippet icon()}<ClassIcon className={actor.class} size={28} />{/snippet}
   {#snippet name()}{#if href !== undefined}<a
         {href}
-        class="font-bold hover:underline"
+        class="font-bold hover:underline [@media(pointer:coarse)]:-my-[13px] [@media(pointer:coarse)]:inline-block [@media(pointer:coarse)]:py-[13px]"
         style:color={colour}
         title={label.title}
         aria-current={selected ? 'true' : undefined}

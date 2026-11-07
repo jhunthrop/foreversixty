@@ -9,7 +9,7 @@ import { DEAD_API_BASE } from '../hermetic';
 import { DUCKDB_WASM_VERSION } from '../../src/lib/report/duckdb-runtime';
 import { serveDuckdbRuntime } from './support/duckdb-runtime';
 import { readFileSync } from 'node:fs';
-import { choose } from './support/select';
+
 import { pickFight, openTab } from './support/report-frame';
 
 /** The lines of fight 3 (Warden Kelthas, encounter 9001) in the fixture log, boundaries included. */
