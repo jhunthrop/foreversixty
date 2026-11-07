@@ -1,6 +1,59 @@
 {
   "notes": "Per-spec leveling reservations (sim-accuracy round 10). Below 60 a band's talent build is the guide's level-60 build cut down by the top-row-down walk (sim/leveling LadderTalentString). A spec listed here takes these ranks of its own tree first, in order, each once the build can legally hold it and never past the guide's own rank for that talent, then walks as before; so the ladder only ever adds points and its level-60 build is the guide's. A row is adopted only where the band builds it makes beat the plain walk's beyond error at seeds 1 and 50001 (10,000 iterations, the band's own heal profile, both factions), keep every talent the engine models only by a probe as zero, drop nothing the rotation casts and lose at no band. The evidence is in design/reviews/2026-11-03-sim-audit-round10/healprofile.md and design/reviews/2026-11-03-sim-audit-round11/healprofile.md. sim/leveling embeds a copy (make ladder-first-sync); TestEmbeddedLadderFirstMatchesCurated holds it to this file. An order-only row (owner, 2026-11-04) moves no published band: where the bands tie, real leveling play decides the order, and its reason says why in one line.",
   "specs": {
+    "druid-feral": {
+      "reason": "The plain walk spends Savage Fury at 23 and 24 while Sharpened Claws (3% crit a point in Cat Form) waits for 26, and Predatory Discipline, which only changes Ferocious Bite (the cat Bites little before raid gear, and the ladder's bare fight never does), at 31 ahead of Leader of the Pack, Blood Frenzy, Natural Instinct and Rend and Tear. This order takes Shredding Attacks at 20 to 22 (its first point does nothing alone, but taking Sharpened Claws first at 20 costs 1.9 to 3.0% at 21 and 22, where the second point makes Shred the builder), Sharpened Claws at 23 and 24, Feral Charge at 25 (in Forever it is also a Cat Form leap behind the target, the only way a solo cat Shreds a mob that faces it), Savage Fury, Predatory Strikes, then Leader of the Pack, Blood Frenzy, Natural Instinct and Rend and Tear, with Predatory Discipline at 39 to open Shifting Power. Bare band 20 and 30 gear, 10,000 iterations, seeds 1 and 50001, both factions: 23 +1.4%, 24 +2.7%, 26 +1.3%, 31 to 33 +3.0 to 3.4%, 34 and 35 +0.7 to 0.9%, 36 to 38 +0.5%; levels 20, 25, 27 to 30 and 40 do not change (sim-accuracy round 28, hybrids lane).",
+      "first": [
+        {
+          "talent": "Shredding Attacks",
+          "rank": 3
+        },
+        {
+          "talent": "Sharpened Claws",
+          "rank": 2
+        },
+        {
+          "talent": "Feral Charge",
+          "rank": 1
+        },
+        {
+          "talent": "Savage Fury",
+          "rank": 2
+        },
+        {
+          "talent": "Predatory Strikes",
+          "rank": 3
+        },
+        {
+          "talent": "Leader of the Pack",
+          "rank": 1
+        },
+        {
+          "talent": "Blood Frenzy",
+          "rank": 1
+        },
+        {
+          "talent": "Natural Instinct",
+          "rank": 2
+        },
+        {
+          "talent": "Blood Frenzy",
+          "rank": 2
+        },
+        {
+          "talent": "Rend and Tear",
+          "rank": 3
+        },
+        {
+          "talent": "Predatory Discipline",
+          "rank": 1
+        },
+        {
+          "talent": "Shifting Power",
+          "rank": 1
+        }
+      ]
+    },
     "druid-feral-bear": {
       "reason": "The rotation casts Lacerate (the 15-point row, rank 1 at 25, behind Savage Fury 2) and Primal Bite (the 30-point row, rank 1 at 40, behind Leader of the Pack). A level 30 druid's 21 points hold Lacerate and a level 40 druid's 31 hold Primal Bite, but the plain walk spends them on Shredding Attacks and Blood Frenzy. Taking each as soon as it fits raises threat on the tank fight beyond error at bands 20 (Savage Fury's first rank for Feral Swiftness's, about 5%), 30 (about 41%) and 40 (about 19%), both factions, seeds 1 and 50001 (sim-accuracy round 13, hybrids); damage taken rises about 1 to 2% without the dodge points. Bands 50 and 60 already carry both and do not change.",
       "first": [
@@ -53,10 +106,30 @@
       ]
     },
     "hunter-survival": {
-      "reason": "The rotation casts Strider Kick (the 20-point row, learned at 30). A level 30 hunter's 21 points hold it, but the plain walk spends the last one on Predator's Edge's fifth rank. Taking Strider Kick as soon as it fits gains about 10% at band 30, seeds 1 and 50001, both factions (sim-accuracy round 13, walk lane); the other bands do not change. Lacerating Strikes, the walk's own capstone from 40, is held after it so the reservation never costs it.",
+      "reason": "The rotation casts Strider Kick (the 20-point row, learned at 30). A level 30 hunter's 21 points hold it, but the plain walk spends the last one on Predator's Edge's fifth rank. Taking Strider Kick as soon as it fits gains about 10% at band 30, seeds 1 and 50001, both factions (sim-accuracy round 13, walk lane); the other bands do not change. Lacerating Strikes, the walk's own capstone from 40, is held after it so the reservation never costs it. Predator's Edge is held at 25 to 29 and Resourcefulness, Expose Prey, Survivalist's Discipline and Lightning Reflexes's first point after Strider Kick, ahead of Deterrence and Counterattack, which come at 38 and 39 to pay Lacerating Strikes's toll: Deterrence is never pressed and Counterattack needs a parry, which a target hitting someone else (or your pet) never gives. Bare band 20 and 30 gear, 10,000 iterations, seeds 1 and 50001, both factions: 25 to 29 +1.3 to 1.5%, 30 +1.5%, 31 +2.0 to 2.5%, 32 to 35 +4.9 to 5.7%, 37 +4.0%, 38 +0.7% (sim-accuracy round 28, hybrids lane).",
       "first": [
         {
+          "talent": "Predator's Edge",
+          "rank": 5
+        },
+        {
           "talent": "Strider Kick",
+          "rank": 1
+        },
+        {
+          "talent": "Resourcefulness",
+          "rank": 2
+        },
+        {
+          "talent": "Expose Prey",
+          "rank": 2
+        },
+        {
+          "talent": "Survivalist's Discipline",
+          "rank": 2
+        },
+        {
+          "talent": "Lightning Reflexes",
           "rank": 1
         },
         {
@@ -174,10 +247,18 @@
       ]
     },
     "paladin-protection": {
-      "reason": "Holy Shield, which the rotation casts from rank 1 at 30, sits on the 21-point row; a level 30 paladin's 21 points hold it, but the plain walk spends the 21st on Improved Righteous Fury. Taking Holy Shield as soon as it fits (and Shieldsworn as soon as it fits, the capstone the spine already gave band 40) raises band 30's threat beyond error on the tank fight, both factions, seeds 1 and 50001 (sim-accuracy round 12, hybrids); damage taken rises about 2% with the Improved Righteous Fury point gone. No other band changes. Templar's Bulwark (the 10-point row, no level gate since the 70707 hotfix) is reserved ahead of them by owner ruling (first, because the walk takes the longest legal prefix of the list and Holy Shield cannot fit below 30) (sim-accuracy round 14): at band 20 it takes the second Sacred Duty point, which shortens only Divine Shield, Divine Protection and Bulwark itself. On the tank fight chance of death falls from about 77% to 66% for about 2% less threat; survival wins for a tank at this band, a stated exception to the threat metric that is not generalised to other bands or specs. Bands 25 and up already hold Bulwark and do not change.",
+      "reason": "Holy Shield, which the rotation casts from rank 1 at 30, sits on the 21-point row; a level 30 paladin's 21 points hold it, but the plain walk spends the 21st on Improved Righteous Fury. Taking Holy Shield as soon as it fits (and Shieldsworn as soon as it fits, the capstone the spine already gave band 40) raises band 30's threat beyond error on the tank fight, both factions, seeds 1 and 50001 (sim-accuracy round 12, hybrids); damage taken rises about 2% with the Improved Righteous Fury point gone. No other band changes. Templar's Bulwark (the 10-point row, no level gate since the 70707 hotfix) is reserved ahead of them by owner ruling (first, because the walk takes the longest legal prefix of the list and Holy Shield cannot fit below 30) (sim-accuracy round 14): at band 20 it takes the second Sacred Duty point, which shortens only Divine Shield, Divine Protection and Bulwark itself. On the tank fight chance of death falls from about 77% to 66% for about 2% less threat; survival wins for a tank at this band, a stated exception to the threat metric that is not generalised to other bands or specs. Bands 25 and up already hold Bulwark and do not change. Shield Specialization (a block returns 4% mana) is held at 21 and 22 ahead of Sacred Duty's second point, and Swift Judgement (a second Judgement, from the 15-point row) at 25, the first level the row opens, ahead of Toughness's last four points, which only add armor. Tank fight, 10,000 iterations, seeds 1 and 50001, both factions: threat at 21 and 22 +2.3 to 3.2% with chance of death no higher, 25 to 28 +5.2 to 6.2%; levels 20, 23, 24 and 30 do not change (sim-accuracy round 28, hybrids lane).",
       "first": [
         {
           "talent": "Templar's Bulwark",
+          "rank": 1
+        },
+        {
+          "talent": "Shield Specialization",
+          "rank": 2
+        },
+        {
+          "talent": "Swift Judgement",
           "rank": 1
         },
         {

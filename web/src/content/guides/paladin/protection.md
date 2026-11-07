@@ -136,7 +136,7 @@ Take quest rewards over vendor gear. To tank, pair a one-hander with a shield as
 
 ### Levels 20 to 60
 
-Level as Retribution and tank dungeons in it: Righteous Fury and Seal of Fury are enough to hold a dungeon group from Ragefire Chasm and the Deadmines on. Switch to Protection when you are tanking more than you are questing. Holy Shield comes at 30, with new ranks at 40, 50 and 60, and Hammer of the Righteous at 40. If you tank in Protection at 20, take Templar's Bulwark before a second point of Sacred Duty: a full health bar of absorb keeps a low-level tank alive far more often than a shorter cooldown on it.
+Level as Retribution and tank dungeons in it: Righteous Fury and Seal of Fury are enough to hold a dungeon group from Ragefire Chasm and the Deadmines on. Switch to Protection when you are tanking more than you are questing. Holy Shield comes at 30, with new ranks at 40, 50 and 60, and Hammer of the Righteous at 40. If you tank in Protection at 20, take Templar's Bulwark before a second point of Sacred Duty: a full health bar of absorb keeps a low-level tank alive far more often than a shorter cooldown on it. Shield Specialization follows at 21 and 22, since your blocks are your mana, then the second point of Sacred Duty and a point of Toughness. Swift Judgement comes at 25, the first level its row opens: a second Judgement and a second taunt are worth more threat than the rest of Toughness, which fills 26 to 29.
 
 Common mistakes:
 

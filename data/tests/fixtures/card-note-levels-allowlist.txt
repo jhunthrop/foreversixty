@@ -4,7 +4,6 @@
 # The test prints the line to copy; a line that matches no note any more fails the test.
 druid-balance Starfire 92a85f985675  the row's own condition; the next clause covers the bands before Starfire at 20
 druid-feral Cat Form 0c5cb3ccea51  conditional: "in Cat Form" applies only once you have it
-druid-feral Rend and Tear 50b0dc7e4762  the clause says "once you have Rend and Tear"; the comma inside its parentheses splits it
 druid-feral-bear Primal Bite 0521f76d6f72  the clause opens "in your forties and early fifties", after Primal Bite at 40
 hunter-survival Mongoose Bite ef096649bb13  Hunter's Mark mechanic: why marking matters, true whenever Mongoose Bite is trained
 mage-arcane Arcane Power 6db11e38d193  conditional: "inside Arcane Power" applies only once you have it

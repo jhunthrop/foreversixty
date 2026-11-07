@@ -861,11 +861,12 @@
             "to_level": 27,
             "rank": 2,
             "races": [
+              "orc",
               "tauren",
               "troll",
               "windshaper-skyborne"
             ],
-            "note": "Sim-accuracy round 21, level by level at 24-29 (spec-breakdown -level, bare band 20, 10,000 iterations, seeds 1 and 50001, all eight hunter races): Immolation Trap rank 2 arrives at 26 and the mana runs short. Rank 3 (learned at 16) beats the top rank, 4, by 0.5 to 1.7% at 26 to 29 for every race; Orc, Tauren, Troll and Windshaper Skyborne gain 0.3 to 0.9% more with rank 2 at 26 (Tauren, Troll and Windshaper also at 27, Tauren at 28), where the other races lose with it. The top rank wins at 20 to 25 and from 30. A gain counts at 0.1% or more at both seeds."
+            "note": "Sim-accuracy round 21, level by level at 24-29 (spec-breakdown -level, bare band 20, 10,000 iterations, seeds 1 and 50001, all eight hunter races): Immolation Trap rank 2 arrives at 26 and the mana runs short. Rank 3 (learned at 16) beats the top rank, 4, by 0.5 to 1.7% at 26 to 29 for every race; Orc, Tauren, Troll and Windshaper Skyborne gain 0.3 to 0.9% more with rank 2 at 26 (Tauren, Troll and Windshaper also at 27, Tauren at 28), where the other races lose with it. The top rank wins at 20 to 25 and from 30. A gain counts at 0.1% or more at both seeds. Sim-accuracy round 28 (hybrids): the leveling order now takes Predator's Edge at 25 to 29 in place of Deterrence; re-judged at 26 to 29 on it (spec-breakdown -level, bare band 20, 10,000 iterations, all eight races, seeds 1 and 50001), an Orc at 27 now gains 0.2% with rank 2 over rank 3; every other row holds (a Windshaper Skyborne at 28 ties, 0.03%)."
           },
           {
             "from_level": 27,
@@ -873,12 +874,11 @@
             "rank": 3,
             "races": [
               "human",
-              "orc",
               "dwarf",
               "night-elf",
               "high-order-skyborne"
             ],
-            "note": "Sim-accuracy round 21, level by level at 24-29 (spec-breakdown -level, bare band 20, 10,000 iterations, seeds 1 and 50001, all eight hunter races): Immolation Trap rank 2 arrives at 26 and the mana runs short. Rank 3 (learned at 16) beats the top rank, 4, by 0.5 to 1.7% at 26 to 29 for every race; Orc, Tauren, Troll and Windshaper Skyborne gain 0.3 to 0.9% more with rank 2 at 26 (Tauren, Troll and Windshaper also at 27, Tauren at 28), where the other races lose with it. The top rank wins at 20 to 25 and from 30. A gain counts at 0.1% or more at both seeds."
+            "note": "Sim-accuracy round 21, level by level at 24-29 (spec-breakdown -level, bare band 20, 10,000 iterations, seeds 1 and 50001, all eight hunter races): Immolation Trap rank 2 arrives at 26 and the mana runs short. Rank 3 (learned at 16) beats the top rank, 4, by 0.5 to 1.7% at 26 to 29 for every race; Orc, Tauren, Troll and Windshaper Skyborne gain 0.3 to 0.9% more with rank 2 at 26 (Tauren, Troll and Windshaper also at 27, Tauren at 28), where the other races lose with it. The top rank wins at 20 to 25 and from 30. A gain counts at 0.1% or more at both seeds. Sim-accuracy round 28 (hybrids): the leveling order now takes Predator's Edge at 25 to 29 in place of Deterrence; re-judged at 26 to 29 on it (spec-breakdown -level, bare band 20, 10,000 iterations, all eight races, seeds 1 and 50001), an Orc at 27 now gains 0.2% with rank 2 over rank 3; every other row holds (a Windshaper Skyborne at 28 ties, 0.03%)."
           },
           {
             "from_level": 28,
@@ -911,10 +911,10 @@
             "note": "Sim-accuracy round 21, level by level at 24-29 (spec-breakdown -level, bare band 20, 10,000 iterations, seeds 1 and 50001, all eight hunter races): Immolation Trap rank 2 arrives at 26 and the mana runs short. Rank 3 (learned at 16) beats the top rank, 4, by 0.5 to 1.7% at 26 to 29 for every race; Orc, Tauren, Troll and Windshaper Skyborne gain 0.3 to 0.9% more with rank 2 at 26 (Tauren, Troll and Windshaper also at 27, Tauren at 28), where the other races lose with it. The top rank wins at 20 to 25 and from 30. A gain counts at 0.1% or more at both seeds."
           },
           {
-            "from_level": 33,
-            "to_level": 33,
+            "from_level": 31,
+            "to_level": 31,
             "rank": 1,
-            "note": "Sim-accuracy round 24, level by level on the talents the leveling order gives at the level (spec-breakdown -level, bare bands, 10,000 iterations, seeds 1 and 50001, Troll and Dwarf): at 33 only the first point of Resourcefulness is in, and rank 1 beats rank 5 by 1.4% for both races; at 34 the second point is in and rank 5 wins by over 2%."
+            "note": "Sim-accuracy round 24, level by level on the talents the leveling order gives at the level (spec-breakdown -level, bare bands, 10,000 iterations, seeds 1 and 50001, Troll and Dwarf): at 33 only the first point of Resourcefulness is in, and rank 1 beats rank 5 by 1.4% for both races; at 34 the second point is in and rank 5 wins by over 2%. Sim-accuracy round 28 (hybrids): the leveling order now takes Resourcefulness at 31 and 32, ahead of Deterrence and Counterattack, so the level with only the first point is 31: rank 1 beats rank 4 there by 0.7 to 1.1% (rank 2 by 0.4 to 0.6%), all eight races, seeds 1 and 50001; at 32 and 33 rank 5 wins (rank 1 loses 2.2 to 2.4% at 33)."
           },
           {
             "from_level": 40,
