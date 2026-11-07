@@ -76,13 +76,16 @@
     {#if sample}
       <Tag tone="muted" testid="report-sample-badge">{reportCopy.sampleBadge}</Tag>
     {:else if live !== null}
-      <Tag tone="success" testid="report-live">{live === 'live' ? reportCopy.liveTag : reportCopy.quietBadge}</Tag>
+      <Tag tone="success" testid="report-live"
+        >{live === 'live' ? reportCopy.liveTag : reportCopy.quietBadge}</Tag
+      >
     {/if}
   </span>
   {#if !sample}
     {#if credit.credited}
       <span data-testid="report-credit"
-        >Logged by {#if credit.href}<a class={LINK} href={credit.href}>{credit.name}</a>{:else}{credit.name}{/if}</span
+        >Logged by {#if credit.href}<a class={LINK} href={credit.href}>{credit.name}</a
+          >{:else}{credit.name}{/if}</span
       >
     {:else}
       <Tag tone="muted" title={credit.prefix} testid="report-not-credited">{reportCopy.notCreditedTag}</Tag>

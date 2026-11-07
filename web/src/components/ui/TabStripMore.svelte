@@ -58,8 +58,7 @@
   function close(refocus: boolean): void {
     const which = open;
     open = null;
-    if (refocus && which !== null)
-      root?.querySelector<HTMLElement>(`[data-more="${which}"]`)?.focus();
+    if (refocus && which !== null) root?.querySelector<HTMLElement>(`[data-more="${which}"]`)?.focus();
   }
 
   function onKey(event: KeyboardEvent): void {

@@ -93,7 +93,8 @@
         {disabled}
         title={disabled ? 'Over the whole night a death’s span cannot be read; open a pull' : undefined}
         data-testid={item.key === 'bossOnly' ? `${prefix}filter-boss` : undefined}
-        onchange={(event) => onChange({ ...filters, [item.key]: (event.currentTarget as HTMLInputElement).checked })}
+        onchange={(event) =>
+          onChange({ ...filters, [item.key]: (event.currentTarget as HTMLInputElement).checked })}
       />
       {item.label}
     </label>

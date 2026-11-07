@@ -33,20 +33,12 @@
   } from '../../lib/report/load';
   import {
     combinedFights,
-    combinedLabel,
     defaultFightIndex,
     resolveFightIndex,
     sampleFightIndex,
   } from '../../lib/report/fights';
   import { aggregateNight, nightSummary, type Night } from '../../lib/report/night';
-  import {
-    formatClock,
-    formatDuration,
-    outcomeLabel,
-    phaseReached,
-    schoolToken,
-    TRASH_PARSE,
-  } from '../../lib/report/format';
+  import { formatClock, TRASH_PARSE } from '../../lib/report/format';
   import {
     FLAG_LETTERS,
     MISSING_FIGHT,
@@ -63,8 +55,6 @@
     type ReportState,
   } from '../../lib/report/url';
   import {
-    abilityKey,
-    type Ability,
     type Actor,
     type FightEntry,
     type ReportFile,
@@ -80,7 +70,6 @@
     windowMs,
     windowOf,
     windowPresets,
-    windowSummaryLabel,
     type TimeWindow,
   } from '../../lib/report/window';
   import ActorTable from '../coach/GatedActorTable.svelte';
@@ -152,7 +141,6 @@
   import { inSource, scopeSource } from '../../lib/report/source';
   import { fightGroupScope, groupScope, raidFlaggedPlayers, scopeNoun } from '../../lib/report/group';
   import { splitUnitName } from '../../lib/characters';
-  import { simCopy } from '../../lib/sim/copy';
   import { reportCopy } from '../../lib/report/copy';
   import { justUploadedAt } from '../../lib/reports/just-uploaded';
   import {
@@ -318,16 +306,6 @@
   const scopePlayers = $derived(
     state.source === SOURCE_FRIENDLIES && groupScopeNow.scoped ? groupScopeNow.group : playerSet,
   );
-  /**
-   * The subtitle's deaths: the fight's own count, or under the group scope the group's deaths in
-   * the fight's summary, the same list the Deaths tab shows below it (the fight list's mark reads
-   * the engine's group_deaths, which also takes back a hunter's Feign Death).
-   */
-  const subtitleDeaths = $derived(
-    !groupScopeNow.scoped || state.source !== SOURCE_FRIENDLIES
-      ? (fight?.deaths ?? 0)
-      : (base?.deaths ?? []).filter((death) => groupScopeNow.group.has(death.guid)).length,
-  );
   /** What the scope's players are called on the chart and the tables. */
   const noun = $derived(scopeNoun(groupScopeNow, state.source));
   /** The players and their pets and totems: what the enemies scope leaves out. */
@@ -379,7 +357,6 @@
    * it: the summary can only prorate the one by the other.
    */
   let tableExact = $state<Map<string, ExactTotals> | null>(null);
-  let tableMeasuring = $state(false);
   let tableMeasureError = $state('');
   /** The measure that is wanted now; an answer for an older question is dropped. */
   let measureToken = 0;
@@ -388,10 +365,7 @@
     // measure is the default the moment the table is prorated: every reviewer read a
     // prorated window as fact, and one read the wrong killer off it. The delay lets a
     // drag settle before the events are asked.
-    const wanted =
-      actorTableApproximate &&
-      !nightMode &&
-      ACTOR_TABS.has(state.tab);
+    const wanted = actorTableApproximate && !nightMode && ACTOR_TABS.has(state.tab);
     void [tableKind, cutWindow, tableScope, filters.countOverkill, ignoringDead, state.fight];
     tableExact = null;
     tableMeasureError = '';
@@ -424,7 +398,6 @@
     return null;
   });
   async function runTableMeasure(token = measureToken): Promise<void> {
-    tableMeasuring = true;
     tableMeasureError = '';
     try {
       const { measureTable, sharedQueryLayer } = await import('../../lib/report/exact');
@@ -442,8 +415,6 @@
         tableMeasureError = `The measure did not run, so these are the summary’s prorated figures${
           thrown instanceof Error ? ` (${thrown.message})` : ''
         }.`;
-    } finally {
-      if (token === measureToken) tableMeasuring = false;
     }
   }
 
@@ -504,10 +475,6 @@
       bringIntoView(sourceRow);
     } else bringIntoView(tabAnchor);
   });
-  /** The dead spans the window meets: the note lists these, and says nothing when there are none. */
-  const windowedDeadSpans = $derived(
-    deadSpans.filter((span) => span.endMs > cutWindow.startMs && span.startMs < cutWindow.endMs),
-  );
   /** The window, cut at the last death when the filter asks for it. */
   // The window itself is never cut: "ignore events after a death" leaves each player's own
   // dead spans out of the measure instead (see `deadSpans`), since a raised player fights on.
@@ -549,18 +516,6 @@
   const presets = $derived(
     scoped === null ? [] : windowPresets(scoped, base?.duration_ms ?? scoped.duration_ms),
   );
-  /**
-   * Per fight index, the phase that pull reached. Over the night every pull's summary is
-   * folded, so the whole list can say; on a single pull only the one on screen is loaded,
-   * and the others' rows say nothing rather than guessing.
-   */
-  const phaseOf = $derived.by(() => {
-    // eslint-disable-next-line svelte/prefer-svelte-reactivity
-    const out = new Map<number, string>(night?.phaseReached ?? []);
-    const own = phaseReached(summary?.phases);
-    if (own !== '' && fight !== null) out.set(fight.index, own);
-    return out;
-  });
   /** The main chart's metric: the table's own on the three rate tabs, damage done elsewhere (spec §B5.2). */
   const chartMetric = $derived<'damage-done' | 'healing' | 'damage-taken'>(
     state.tab === 'damage-taken' ? 'damage-taken' : state.tab === 'healing' ? 'healing' : 'damage-done',
@@ -664,10 +619,6 @@
     ),
   );
   const chartSyncKey = $derived(`${reportId}:${state.fight}`);
-  /** The tabs whose table is itself a time chart: the shared damage chart is not drawn above them. */
-  const tabDrawsOwnChart = $derived(
-    state.tab === 'threat' || state.tab === 'resources',
-  );
   // The chart chunk loads in parallel with the summary, so a chart never waits on it (spec §B11).
   $effect(() => {
     loadChartChunk().catch(() => {
@@ -773,14 +724,6 @@
    * leaves the night's amounts bare.
    */
   const nightProrates = $derived(nightMode && (filters.target !== '' || filters.bossOnly));
-  /** The night's split note names the filter that is on, not a filter that is not. */
-  const nightFilterWords = $derived.by(() => {
-    const words = [
-      ...(filters.target !== '' || filters.bossOnly ? ['a target or boss filter'] : []),
-      ...(filters.ability !== null ? ['an ability filter'] : []),
-    ];
-    return words.join(' and ');
-  });
   const actorTableApproximate = $derived(
     !windowIsWhole || filtersScale || ignoringDead || filters.countOverkill,
   );
@@ -951,8 +894,6 @@
       .filter((actor) => actor.total > 0 || actor.effective > 0)
       .sort((a, b) => b.effective - a.effective);
   });
-
-  const metricLabel = $derived(state.tab === 'healing' ? 'Healing' : 'Damage');
 
   /**
    * Players with no row in this table: under a death window that is usually someone who
@@ -1588,13 +1529,19 @@
           players: scopeRoster.length,
           deaths: scopeDeaths.length,
           groupDps:
-            scopeRoster.reduce((sum, row) => sum + row.damage_done, 0) / (Math.max(summary.duration_ms, 1) / 1000),
+            scopeRoster.reduce((sum, row) => sum + row.damage_done, 0) /
+            (Math.max(summary.duration_ms, 1) / 1000),
         }),
   );
   const pullFacts = $derived(
     fight === null || nightMode
       ? []
-      : thisPullFacts({ fight, players: scopeRoster.length, deaths: scopeDeaths.length, phases: summary?.phases ?? [] }),
+      : thisPullFacts({
+          fight,
+          players: scopeRoster.length,
+          deaths: scopeDeaths.length,
+          phases: summary?.phases ?? [],
+        }),
   );
   const isTrashPull = $derived(fight !== null && fight.kind !== 'encounter');
   const live = $derived<'live' | 'quiet' | null>(fightIsLive ? (quiet === null ? 'live' : 'quiet') : null);
@@ -1603,7 +1550,9 @@
       ? null
       : `/sim?source=fight&ref=${encodeURIComponent(`${reportId}:${state.fight}`)}&mode=compare`,
   );
-  const where = $derived([facts.zone, fights.length > 0 ? facts.date : ''].filter((part) => part !== '').join(' · '));
+  const where = $derived(
+    [facts.zone, fights.length > 0 ? facts.date : ''].filter((part) => part !== '').join(' · '),
+  );
   /** One player as the Source on an actor tab: the player's own view (decision R5). */
   const playerView = $derived(sourcePlayer !== undefined && ACTOR_TABS.has(state.tab) && !nightMode);
   const playerRow = $derived(base?.roster.find((row) => row.guid === sourcePlayer));
@@ -1622,7 +1571,8 @@
   });
   /** A same-page link (`?tab=…`, `?source=…`) moves in place: no reload, Back still undoes it. */
   function followInPage(event: MouseEvent): void {
-    if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey) return;
+    if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey)
+      return;
     const anchor = (event.target as Element | null)?.closest('a');
     const href = anchor?.getAttribute('href') ?? '';
     if (anchor === null || anchor === undefined || anchor.target !== '') return;
@@ -1633,7 +1583,6 @@
     patch({ ...parsed, start: parsed.start, end: parsed.end });
   }
 </script>
-
 
 {#snippet lazyFallback(lazy: LazyLoadState, minHeight: string)}
   <!-- While a tab's chunk is in flight a Skeleton holds its place; a failed chunk says so inside
@@ -1680,7 +1629,9 @@
       onPreset={(preset) => patch({ players: null, playersPreset: preset === 'split' ? null : preset })}
       logScale={state.logScale}
       onLogScale={(logScale) => patch({ logScale })}
-      targetName={state.target === '' ? undefined : splitUnitName(unitNames.get(state.target) ?? state.target).name}
+      targetName={state.target === ''
+        ? undefined
+        : splitUnitName(unitNames.get(state.target) ?? state.target).name}
       syncKey={chartSyncKey}
       onOpenDeath={openDeaths}
       {noun}
@@ -1714,7 +1665,11 @@
   <Page layout="ledger" testid="report-failed">
     {#snippet header()}<PageHeader title={reportCopy.eyebrow} titleTestid="report-title" />{/snippet}
     <Plate label={reportCopy.eyebrow}>
-      <div class="flex flex-wrap items-center gap-3 px-4 py-4 text-[14px]" role="alert" data-testid="report-error">
+      <div
+        class="flex flex-wrap items-center gap-3 px-4 py-4 text-[14px]"
+        role="alert"
+        data-testid="report-error"
+      >
         {#if error === REPORT_NOT_FOUND}
           <span class="text-muted">{reportCopy.reportMissing}</span>
           <a class="text-gold font-semibold" href="/reports">{reportCopy.openYourReports} ›</a>
@@ -1735,8 +1690,14 @@
     <Page layout="ledger">
       {#snippet header()}
         {@render stateHead(
-          status === 'waiting' && meta !== null ? heading : meta?.title || meta?.zone || reportCopy.yourUpload,
-          status === 'processing' ? `Uploaded ${uploadedAge}` : status === 'unparsed' ? (meta?.zone ?? '') : '',
+          status === 'waiting' && meta !== null
+            ? heading
+            : meta?.title || meta?.zone || reportCopy.yourUpload,
+          status === 'processing'
+            ? `Uploaded ${uploadedAge}`
+            : status === 'unparsed'
+              ? (meta?.zone ?? '')
+              : '',
         )}
       {/snippet}
       <Plate label={reportCopy.fightsLabel}>
@@ -1747,7 +1708,9 @@
               role="status"
               data-testid={status === 'waiting' ? 'report-waiting' : 'report-parsing'}
             >
-              {#if !(status === 'waiting' && quiet !== null)}<span data-testid="report-spinner"><Spinner /></span>{/if}
+              {#if !(status === 'waiting' && quiet !== null)}<span data-testid="report-spinner"
+                  ><Spinner /></span
+                >{/if}
               {status === 'waiting'
                 ? quiet === null
                   ? reportCopy.waiting
@@ -1865,16 +1828,19 @@
                     open
                   >
                     {#snippet lead()}<ClassIcon className={classOf.get(combatant.guid)} size={28} />{/snippet}
-                    {#snippet trail()}<a class="text-gold text-[14px] font-semibold" href={playerHref(combatant.guid)}
-                        >Gear ›</a
+                    {#snippet trail()}<a
+                        class="text-gold text-[14px] font-semibold"
+                        href={playerHref(combatant.guid)}>Gear ›</a
                       >{/snippet}
                   </Row>
                 {/each}
               </Section>
             {/if}
             {#if rankingsHref !== null}
-              <a class="text-gold text-[14px] font-semibold" href={rankingsHref} data-testid="report-rankings-link"
-                >Rankings for {fight?.name} ›</a
+              <a
+                class="text-gold text-[14px] font-semibold"
+                href={rankingsHref}
+                data-testid="report-rankings-link">Rankings for {fight?.name} ›</a
               >
             {/if}
           {:else if ACTOR_TABS.has(state.tab)}
@@ -1883,10 +1849,12 @@
         {/if}
       {/snippet}
 
-      <div bind:this={tabAnchor} class="scroll-mt-2 -mb-[var(--section-gap)]" aria-hidden="true"></div>
+      <div bind:this={tabAnchor} class="-mb-[var(--section-gap)] scroll-mt-2" aria-hidden="true"></div>
       {#if onePullTab}
         <Plate label={reportCopy.onePullLabel}>
-          <p class="text-muted px-4 py-4 text-[14px]" data-testid="night-tables-only">{reportCopy.onePullOnly}</p>
+          <p class="text-muted px-4 py-4 text-[14px]" data-testid="night-tables-only">
+            {reportCopy.onePullOnly}
+          </p>
         </Plate>
       {:else if scoped !== null}
         {#if state.tab === 'summary' && nightMode}
@@ -1965,7 +1933,9 @@
             onSelectPlayer={(guid) => patch({ source: guid })}
           />
           {#if actorTableApproximate && tableMeasureError !== ''}
-            <p class="text-small text-wipe" role="alert" data-testid="approximate-note">{tableMeasureError}</p>
+            <p class="text-small text-wipe" role="alert" data-testid="approximate-note">
+              {tableMeasureError}
+            </p>
           {/if}
           {@render chart(chartMetric)}
         {:else if state.tab === 'buffs'}
@@ -2028,7 +1998,10 @@
             tracks={scoped.resources}
             durationMs={scoped.duration_ms}
             windowed={!windowIsWhole}
-            deaths={scoped.deaths.map((death) => ({ guid: death.guid, at_ms: death.at_ms - timeWindow.startMs }))}
+            deaths={scoped.deaths.map((death) => ({
+              guid: death.guid,
+              at_ms: death.at_ms - timeWindow.startMs,
+            }))}
             syncKey={nightMode ? '' : chartSyncKey}
             windowStartMs={timeWindow.startMs}
           />
@@ -2155,7 +2128,11 @@
               onPatch={patch}
               loadStream={async () => {
                 const { loadEventStream, sharedQueryLayer } = await import('../../lib/report/exact');
-                return loadEventStream(sharedQueryLayer(), eventsUrl(dataBase, state.fight, engineVersion), cutWindow);
+                return loadEventStream(
+                  sharedQueryLayer(),
+                  eventsUrl(dataBase, state.fight, engineVersion),
+                  cutWindow,
+                );
               }}
             />
           {:else}

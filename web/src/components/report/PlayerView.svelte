@@ -94,7 +94,9 @@
 
   const landed = (ability: Ability): number => ability.hits + ability.ticks;
   const abilities = $derived(
-    (exact?.abilities ?? actor?.abilities ?? []).filter((ability) => ability.effective > 0 || landed(ability) > 0),
+    (exact?.abilities ?? actor?.abilities ?? []).filter(
+      (ability) => ability.effective > 0 || landed(ability) > 0,
+    ),
   );
   const total = $derived(abilities.reduce((sum, ability) => sum + ability.effective, 0));
   const top = $derived(abilities.reduce((most, ability) => Math.max(most, ability.effective), 0));
@@ -154,14 +156,22 @@
       {#if rows.length === 0}
         <EmptyLine text="Nothing in this window." testid="table-empty" />
       {:else}
-        <StatTable columns={COLUMNS} nameHead="Ability" {sort} {onsort} label="Abilities" testid="row-abilities">
+        <StatTable
+          columns={COLUMNS}
+          nameHead="Ability"
+          {sort}
+          {onsort}
+          label="Abilities"
+          testid="row-abilities"
+        >
           {#each rows as ability (`${ability.spell_id}|${ability.via ?? ''}|${ability.name}`)}
             <StatRow
               figures={figures(ability)}
               phone={`${formatRate(ability.effective / seconds)} ${RATE[tab]}`}
             >
               {#snippet icon()}<SpellIcon url={spellIcon(ability.spell_id)} size={28} />{/snippet}
-              {#snippet name()}<b class="text-strong">{ability.name === '' ? 'Melee' : ability.name}</b>{/snippet}
+              {#snippet name()}<b class="text-strong">{ability.name === '' ? 'Melee' : ability.name}</b
+                >{/snippet}
               {#snippet sub()}{subOf(ability)}{/snippet}
               {#snippet meter()}<Meter value={top === 0 ? 0 : ability.effective / top} />{/snippet}
             </StatRow>

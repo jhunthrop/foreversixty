@@ -63,7 +63,8 @@
       for (const ability of actor.abilities) {
         const key = ability.name === '' ? 'Melee' : ability.name;
         const found = totals.get(key);
-        if (found === undefined) totals.set(key, { name: key, spellId: ability.spell_id, total: ability.effective });
+        if (found === undefined)
+          totals.set(key, { name: key, spellId: ability.spell_id, total: ability.effective });
         else found.total += ability.effective;
       }
     }
@@ -136,7 +137,8 @@
     {:else}
       {#each deaths as death, i (`${death.guid}-${death.at_ms}-${i}`)}
         <Row title={splitUnitName(death.name).name} sub={cause(death)} open>
-          {#snippet lead()}<span class="text-muted tabular-nums text-[13px]">{formatDuration(death.at_ms)}</span
+          {#snippet lead()}<span class="text-muted text-[13px] tabular-nums"
+              >{formatDuration(death.at_ms)}</span
             ><ClassIcon className={death.class} size={28} />{/snippet}
           {#snippet titleContent()}<span style:color={classColorVar(death.class)}
               >{splitUnitName(death.name).name}</span

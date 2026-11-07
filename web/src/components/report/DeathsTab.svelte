@@ -261,10 +261,13 @@
 
   /** "74 / 114" after a hit or a heal; '' when the log carries no health reading. */
   function healthText(after: number | undefined, max: number | undefined): string {
-    return after === undefined || max === undefined || max === 0 ? '' : `${formatAmount(after)} / ${formatAmount(max)}`;
+    return after === undefined || max === undefined || max === 0
+      ? ''
+      : `${formatAmount(after)} / ${formatAmount(max)}`;
   }
   function hitFigures(death: Death, hit: DamageRef, lethal: boolean): StatFigure[] {
-    const health = lethal && !lethalHitMissing(death, cardHealth(death)) ? 'dead' : healthText(hit.hp_after, hit.max_hp);
+    const health =
+      lethal && !lethalHitMissing(death, cardHealth(death)) ? 'dead' : healthText(hit.hp_after, hit.max_hp);
     return [
       { value: `−${formatAmount(landed(hit))}`, muted: landed(hit) === 0 },
       { value: health || '–', muted: health === '' },
@@ -272,7 +275,10 @@
   }
   function healFigures(heal: HealRef): StatFigure[] {
     const health = healthText(heal.hp_after, heal.max_hp);
-    return [{ value: `+${formatAmount(heal.amount - (heal.overheal ?? 0))}` }, { value: health || '–', muted: health === '' }];
+    return [
+      { value: `+${formatAmount(heal.amount - (heal.overheal ?? 0))}` },
+      { value: health || '–', muted: health === '' },
+    ];
   }
   function maxHealth(death: Death): number {
     return Math.max(0, ...death.last.map((hit) => hit.max_hp ?? 0), death.killing_blow?.max_hp ?? 0);
@@ -329,7 +335,8 @@
       <div class="death-block" data-testid={`death-${death.guid}`} id={`death-${death.guid}-${death.at_ms}`}>
         <Row title={unitLabel(death.name).text} sub={killedBy(death, card)}>
           {#snippet lead()}<span class="text-muted text-[13px] tabular-nums" data-testid="death-label"
-              >{#if death.label}{death.label} · {/if}{formatDuration(inPull(death))}</span
+              >{#if death.label}{death.label} ·
+              {/if}{formatDuration(inPull(death))}</span
             ><ClassIcon className={death.class ?? classOf.get(death.guid)} size={32} />{/snippet}
           {#snippet titleContent()}<span style:color={colour}>{unitLabel(death.name).text}</span>{/snippet}
           {#snippet trail()}
@@ -360,11 +367,19 @@
             {#each card.events as event, i (`${event.at_ms}-${i}`)}
               {#if event.kind === 'heal'}
                 {@const heal = event.heal}
-                <StatRow figures={healFigures(heal)} phone={`+${formatAmount(heal.amount)}`} testid="death-heal">
+                <StatRow
+                  figures={healFigures(heal)}
+                  phone={`+${formatAmount(heal.amount)}`}
+                  testid="death-heal"
+                >
                   {#snippet icon()}<SpellIcon url={spellIcon(heal.spell_id)} />{/snippet}
                   {#snippet name()}<b class="text-kill">{heal.spell_name}</b>{/snippet}
-                  {#snippet sub()}{formatDurationPrecise(heal.at_ms)} · from {splitUnitName(heal.source_name).name}{/snippet}
-                  {#snippet meter()}{#if card.pcts[i] !== null}<Meter value={(card.pcts[i] ?? 0) / 100} tone="kill" />{/if}{/snippet}
+                  {#snippet sub()}{formatDurationPrecise(heal.at_ms)} · from {splitUnitName(heal.source_name)
+                      .name}{/snippet}
+                  {#snippet meter()}{#if card.pcts[i] !== null}<Meter
+                        value={(card.pcts[i] ?? 0) / 100}
+                        tone="kill"
+                      />{/if}{/snippet}
                 </StatRow>
               {:else}
                 {@const hit = event.hit}
@@ -372,8 +387,13 @@
                 {@const pct = lethal && !lethalHitMissing(death, card) ? 0 : card.pcts[i]}
                 <StatRow figures={hitFigures(death, hit, lethal)} phone={`−${formatAmount(landed(hit))}`}>
                   {#snippet icon()}<SpellIcon url={spellIcon(hit.spell_id)} />{/snippet}
-                  {#snippet name()}<b class="text-strong">{hit.spell_name === '' ? 'Melee' : hit.spell_name}</b>{/snippet}
-                  {#snippet sub()}{formatDurationPrecise(hit.at_ms)} · from {sourceName(hit.source_guid, hit.source_name)}{/snippet}
+                  {#snippet name()}<b class="text-strong"
+                      >{hit.spell_name === '' ? 'Melee' : hit.spell_name}</b
+                    >{/snippet}
+                  {#snippet sub()}{formatDurationPrecise(hit.at_ms)} · from {sourceName(
+                      hit.source_guid,
+                      hit.source_name,
+                    )}{/snippet}
                   {#snippet meter()}{#if pct !== null}<Meter value={pct / 100} tone="kill" />{/if}{/snippet}
                 </StatRow>
               {/if}
@@ -382,7 +402,8 @@
           {#if footLine !== '' || link}
             <p class="text-small text-muted px-4 pt-2 pb-3" data-testid="death-shape">
               {footLine}{#if link}
-                <a class="text-gold ml-1" href={link.href} data-testid="death-build-link">{link.label} ›</a>{/if}
+                <a class="text-gold ml-1" href={link.href} data-testid="death-build-link">{link.label} ›</a
+                >{/if}
             </p>
           {/if}
         {/if}
@@ -390,4 +411,3 @@
     {/each}
   </Plate>
 </Section>
-

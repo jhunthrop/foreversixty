@@ -66,13 +66,18 @@
       {#each rows as { player, guid } (player.player_key)}
         {@const colour = classColorVar(classForPlayer(guid, player.class, roster))}
         <Row title={unitLabel(player.player_name).text} open>
-          {#snippet lead()}<ClassIcon className={classForPlayer(guid, player.class, roster)} size={28} />{/snippet}
-          {#snippet titleContent()}<span style:color={colour}>{unitLabel(player.player_name).text}</span>{/snippet}
+          {#snippet lead()}<ClassIcon
+              className={classForPlayer(guid, player.class, roster)}
+              size={28}
+            />{/snippet}
+          {#snippet titleContent()}<span style:color={colour}>{unitLabel(player.player_name).text}</span
+            >{/snippet}
           {#snippet trail()}<span
               class="text-[15px] font-bold tabular-nums {player.insufficient ? 'text-muted' : 'text-gold'}"
               data-testid="rating-panel-overall"
-              title={player.insufficient ? ratingCopy.insufficientNote(player.insufficient_reason) : undefined}
-              >{player.insufficient ? '–' : `${Math.round(player.overall)} of 100`}</span
+              title={player.insufficient
+                ? ratingCopy.insufficientNote(player.insufficient_reason)
+                : undefined}>{player.insufficient ? '–' : `${Math.round(player.overall)} of 100`}</span
             >{/snippet}
         </Row>
       {/each}

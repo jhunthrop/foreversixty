@@ -51,8 +51,6 @@ const PROPS = {
   roster,
   durationMs: 60_000,
   window: { startMs: 0, endMs: 60_000 },
-  presets: [{ label: 'Whole fight', window: null }],
-  onSelectPreset: () => undefined,
   onWindow: () => undefined,
   chosen: null,
   onChoose: () => undefined,
@@ -63,9 +61,10 @@ const PROPS = {
 };
 
 describe('TimeChart (controls and charts spec §B5)', () => {
-  it('heads the card with the metric and the raid figure, the sum of every player’s rounded DPS', () => {
+  it('heads its Section with the metric and the raid figure, the sum of every player’s rounded DPS', () => {
     const { body } = render(TimeChart, { props: PROPS });
-    expect(body).toContain('Damage done');
+    expect(body).toContain('Damage over the fight');
+    expect(body).toContain('data-region="section-damage-over-the-fight"');
     const perPlayer = actors.map((actor) =>
       Math.round(actor.series.reduce((sum, value) => sum + value, 0) / 60),
     );
@@ -98,11 +97,9 @@ describe('TimeChart (controls and charts spec §B5)', () => {
     expect(body).toContain('YOU');
   });
 
-  it('keeps the sample report’s strip at 96 px with no legend or brush', () => {
-    const { body } = render(TimeChart, { props: { ...PROPS, compact: true } });
-    expect(body).toContain('data-compact="true"');
-    expect(body).toContain('height: 96px');
-    expect(body).not.toContain('data-testid="chart-legend"');
-    expect(body).not.toContain('data-testid="overview-brush"');
+  it('draws no card: the chart is an open Section (logs spec 6.1, the mock library’s LineChart)', () => {
+    const { body } = render(TimeChart, { props: PROPS });
+    expect(body).not.toContain('card-surface');
+    expect(body).not.toContain('window-select');
   });
 });

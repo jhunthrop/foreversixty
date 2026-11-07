@@ -12,12 +12,7 @@
 <script lang="ts">
   import { unitLabel } from '../../lib/report/names.svelte';
   import { specCell, type UnitClass } from '../../lib/report/roster-class';
-  import {
-    classColorVar,
-    formatAmount,
-    formatPercent,
-    wholeFightMark,
-  } from '../../lib/report/format';
+  import { classColorVar, formatAmount, formatPercent, wholeFightMark } from '../../lib/report/format';
   import { formatRate, pullLength } from '../../lib/report/frame';
   import type { Placement } from '../../lib/report/percentile';
   import type { RosterRow, Summary } from '../../lib/report/types';
@@ -101,7 +96,8 @@
   const rows = $derived.by(() => {
     const sign = sort.direction === 'desc' ? -1 : 1;
     return [...summary.roster].sort(
-      (a, b) => sign * (sortValue(a, sort.column) - sortValue(b, sort.column)) || a.name.localeCompare(b.name),
+      (a, b) =>
+        sign * (sortValue(a, sort.column) - sortValue(b, sort.column)) || a.name.localeCompare(b.name),
     );
   });
   let showEveryone = $state(false);
@@ -111,7 +107,11 @@
   function figures(row: RosterRow): StatFigure[] {
     const placed = percentiles.get(row.guid);
     const parse: StatFigure[] = showParse
-      ? [placed === undefined ? { value: parseFallback || '–', muted: true } : { value: String(Math.floor(placed.percentile)) }]
+      ? [
+          placed === undefined
+            ? { value: parseFallback || '–', muted: true }
+            : { value: String(Math.floor(placed.percentile)) },
+        ]
       : [];
     return [
       ...parse,
@@ -185,8 +185,8 @@
   </Plate>
   {#if approximate}
     <p class="text-small text-muted pt-2" data-testid="summary-wholefight-note">
-      Active is marked {activeMark} because the summary does not track it over time: it is the whole fight's
-      figure even inside a shorter window. Damage, healing, taken and deaths are this window's own numbers.
+      Active is marked {activeMark} because the summary does not track it over time: it is the whole fight's figure
+      even inside a shorter window. Damage, healing, taken and deaths are this window's own numbers.
     </p>
   {/if}
 </Section>

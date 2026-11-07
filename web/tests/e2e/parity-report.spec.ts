@@ -49,7 +49,9 @@ function withoutChartHeight(mock: RegionSnapshot[], build: RegionSnapshot[]): Re
 }
 
 function unexpected(failures: ParityFailure[]): ParityFailure[] {
-  return failures.filter((f) => !CHART_DRIFT.test(f.region) && !(f.region === 'site-footer' && f.kind === 'box'));
+  return failures.filter(
+    (f) => !CHART_DRIFT.test(f.region) && !(f.region === 'site-footer' && f.kind === 'box'),
+  );
 }
 
 test.describe('Report mock parity at 1440', () => {

@@ -58,7 +58,9 @@
   const wipes = $derived(night.bosses.reduce((sum, boss) => sum + boss.wipes, 0));
   const meta = $derived(
     [
-      trash ? `${night.expected} trash ${night.expected === 1 ? 'pull' : 'pulls'}` : `${night.expected} boss pulls`,
+      trash
+        ? `${night.expected} trash ${night.expected === 1 ? 'pull' : 'pulls'}`
+        : `${night.expected} boss pulls`,
       ...(trash ? [] : [`${kills} kills`, `${wipes} wipes`]),
       `${formatDuration(night.time_ms)} in combat`,
       `${night.deaths} deaths`,
@@ -131,7 +133,12 @@
   <Section title="Bosses" testid="night-bosses">
     <StatTable columns={BOSS_COLUMNS} nameHead="Boss" bar={false} open label="Bosses">
       {#each night.bosses as boss (boss.name)}
-        <StatRow bar={false} figures={bossFigures(boss)} phone={bossSub(boss)} testid={`night-boss-${boss.name}`}>
+        <StatRow
+          bar={false}
+          figures={bossFigures(boss)}
+          phone={bossSub(boss)}
+          testid={`night-boss-${boss.name}`}
+        >
           {#snippet name()}<b class="text-strong">{boss.name}</b>{/snippet}
           {#snippet sub()}{bossSub(boss)} · {#each boss.fights as index, i (index)}<button
                 type="button"

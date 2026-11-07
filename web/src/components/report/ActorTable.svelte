@@ -152,7 +152,9 @@
       ? ''
       : `No row of their own ${windowIsWhole ? 'under this filter' : 'in this window'}: ${absent
           .map((entry) =>
-            entry.deadSince === null ? entry.name : `${entry.name} (dead since ${formatDuration(entry.deadSince)})`,
+            entry.deadSince === null
+              ? entry.name
+              : `${entry.name} (dead since ${formatDuration(entry.deadSince)})`,
           )
           .join(', ')}.`,
   );

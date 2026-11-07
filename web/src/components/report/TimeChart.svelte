@@ -14,7 +14,6 @@
   import { LegendState } from '../../lib/chart/legend-state.svelte';
   import { entityStyle } from '../../lib/chart/palette';
   import { buildRateModel, classMedianInfo, RAID_MEDIAN_ID, type RatePlayer } from '../../lib/chart/rate';
-  import { clockLabel } from '../../lib/chart/time-axis';
   import type { ChartEvent, ChartPhase, ChartSeries, PlayerEntry } from '../../lib/chart/types';
   import { formatAmount } from '../../lib/report/format';
   import type { ScopeNoun } from '../../lib/report/group';
@@ -209,7 +208,6 @@
   const notDrawn = $derived(model.entries.filter((entry: PlayerEntry) => !entry.drawn).length);
 </script>
 
-
 {#snippet controls()}
   <!-- On a phone the head wraps (fix round 2 ruling): the title on its row, then each field on
        its own full-width row, so every field shows its value whole. -->
@@ -279,7 +277,12 @@
   />
 {/snippet}
 
-<Section title={SECTION_TITLE[metric]} meta={wide.current ? meta : undefined} metaTestid="chart-head-meta" {testid}>
+<Section
+  title={SECTION_TITLE[metric]}
+  meta={wide.current ? meta : undefined}
+  metaTestid="chart-head-meta"
+  {testid}
+>
   {#snippet head()}{#if wide.current}{@render controls()}{/if}{/snippet}
   {#if wide.current}
     {@render plot()}

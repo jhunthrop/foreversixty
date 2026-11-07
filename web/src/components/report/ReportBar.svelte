@@ -12,7 +12,12 @@
   import { createCoachViewerState } from '../../lib/coach/viewer-state.svelte';
   import { ownedKey } from '../../lib/coach/viewer';
   import { reportCopy } from '../../lib/report/copy';
-  import { abilityOptions, targetOptionId, targetOptions, type ReportFilters } from '../../lib/report/filters';
+  import {
+    abilityOptions,
+    targetOptionId,
+    targetOptions,
+    type ReportFilters,
+  } from '../../lib/report/filters';
   import { fightLabel, fightOptions, idleToggleLabel, pullLength } from '../../lib/report/frame';
   import { pullNumbers } from '../../lib/report/fights';
   import type { GroupScope } from '../../lib/report/group';
@@ -177,8 +182,9 @@
 </script>
 
 {#snippet group(label: string, id: string)}
-  <span class="report-bar-label text-label tracking-label text-muted font-bold uppercase" id={`${id}-bar-label`}
-    >{label}</span
+  <span
+    class="report-bar-label text-label tracking-label text-muted font-bold uppercase"
+    id={`${id}-bar-label`}>{label}</span
   >
 {/snippet}
 

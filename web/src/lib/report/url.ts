@@ -73,7 +73,9 @@ const LEGACY_TAB: Readonly<Record<string, Tab>> = {
  * A patch in the old words (`{ mode: 'analyze', view: 'tables', tab: 'interrupts' }`, `{ view:
  * 'queries' }`) in the new: the tab it names, the mode and view dropped.
  */
-export function legacyTab<T extends { mode?: Mode; view?: View; tab?: Tab }>(patch: T): Omit<T, 'mode' | 'view'> {
+export function legacyTab<T extends { mode?: Mode; view?: View; tab?: Tab }>(
+  patch: T,
+): Omit<T, 'mode' | 'view'> {
   const { mode, view, ...rest } = patch;
   const named = LEGACY_TAB[view ?? ''] ?? LEGACY_TAB[mode ?? ''];
   if (rest.tab !== undefined || named === undefined) return rest;
@@ -169,7 +171,6 @@ export interface ReportState {
   /** The rate charts' log scale (`scale=log`). */
   logScale: boolean;
 }
-
 
 export function defaultState(firstFight: number): ReportState {
   return {
