@@ -7,7 +7,8 @@
 <script lang="ts">
   import { selectorCopy } from '../../lib/character-selector/copy';
   import { FILTER_AFTER_CHARACTERS, VISIBLE_ROWS } from '../../lib/character-selector/config';
-  import { filterRows, type SelectorModel, type SelectorRow as Row } from '../../lib/character-selector/rows';
+  import { listRows, type SelectorModel, type SelectorRow as Row } from '../../lib/character-selector/rows';
+  import { lowLevelCopy } from '../../lib/account/level-filter';
   import type { LoadStatus } from '../../lib/character-selector/selector-state.svelte';
   import { battlenetStartUrl } from '../../lib/account/api';
   import type { AccountPanel } from '../../lib/character-selector/account-panel';
@@ -67,6 +68,7 @@
   } = $props();
 
   let query = $state('');
+  let showLow = $state(false);
   let pasteOpen = $state(false);
   let rovingIndex = $state(0);
   let scrolledToEnd = $state(false);
@@ -80,8 +82,9 @@
   const showNone = $derived(model.session === 'signed-in' && model.rows.length === 0);
   const showList = $derived(!signedOutEmpty && !showSkeleton && !showLoadError && model.rows.length > 0);
   const heading = $derived(signedOutEmpty ? selectorCopy.signedOutHeading : selectorCopy.listHeading);
-  const visibleRows = $derived(filterRows(model.rows, query));
-  const scrolls = $derived(model.rows.length > VISIBLE_ROWS);
+  const listed = $derived(listRows(model.rows, query, showLow));
+  const visibleRows = $derived(listed.rows);
+  const scrolls = $derived(visibleRows.length > VISIBLE_ROWS);
   const showFilter = $derived(model.rows.length > FILTER_AFTER_CHARACTERS);
   const offerAddon = $derived(
     !showNone && (signedOutEmpty || (model.session === 'signed-in' && !model.hasAddonCharacter)),
@@ -411,6 +414,18 @@
           data-testid="selector-fade"
         ></div>{/if}
     </div>
+    {#if listed.lowCount > 0}
+      <div class="csel-note csel-low ui-overlay-rule-t">
+        <button
+          type="button"
+          class="csel-manage"
+          aria-expanded={showLow}
+          onclick={() => (showLow = !showLow)}
+          data-testid="selector-low-level-toggle"
+          >{showLow ? lowLevelCopy.hide : lowLevelCopy.show(listed.lowCount)}</button
+        >
+      </div>
+    {/if}
   {/if}
 
   {#if model.session === 'signed-out' && model.rows.length > 0}

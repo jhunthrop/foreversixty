@@ -8,7 +8,6 @@ import { addonCopy } from '../addon/copy';
 import { bisHref } from '../character-profile';
 import { characterHref } from '../characters';
 import type { CurrentCharacter } from '../current-character';
-import { relativeTime } from '../dates';
 
 export interface SetupAnswer {
   name: string;
@@ -40,9 +39,7 @@ export function setupAnswer(
     classSlug: cls === '' ? null : cls.toLowerCase(),
     levelLine,
     imported:
-      me.bnet_imported_at === undefined
-        ? null
-        : characterListCopy.importedFrom(relativeTime(new Date(me.bnet_imported_at), now)),
+      me.bnet_imported_at === undefined ? null : characterListCopy.updatedFrom(me.bnet_imported_at, now),
     open: {
       label: addonCopy.setupOpenCharacter(character.name),
       href: characterHref(character.region, character.ruleset, character.name),

@@ -173,20 +173,39 @@ describe('CharacterList', () => {
     expect(body.split('href="/setup"').length - 1).toBe(1);
   });
 
-  it('shows the imported-from line and the refresh link only when bnetImportedAt is set', () => {
+  it('shows the updated-from-Battle.net line and the refresh link only when bnetImportedAt is set', () => {
     const withImport = render(CharacterList, {
       props: { characters: [GUILDED], bnetImportedAt: '2026-09-20T00:00:00Z' },
     });
-    expect(withImport.body).toContain('Imported from Battle.net');
+    expect(withImport.body).toMatch(/Updated [^<]* from Battle\.net/);
     expect(withImport.body).toContain(characterListCopy.refreshFromBattlenet);
 
     const without = render(CharacterList, { props: { characters: [GUILDED] } });
-    expect(without.body).not.toContain('Imported from Battle.net');
+    expect(without.body).not.toMatch(/Updated [^<]* from Battle\.net/);
     expect(without.body).not.toContain(characterListCopy.refreshFromBattlenet);
   });
 
   it('never draws the Supporter chip on a row: the mark belongs to the person, not the character', () => {
     const body = render(CharacterList, { props: { characters: [GUILDED, UNGUILDED] } }).body;
     expect(body).not.toContain('supporter-chip');
+  });
+
+  it('folds characters below level 10 behind the toggle but keeps the current one', () => {
+    const at = (name: string, level: number): MeCharacter => ({
+      ...UNGUILDED,
+      key: `us/normal/${name.toLowerCase()}`,
+      name,
+      level,
+    });
+    const body = render(CharacterList, {
+      props: {
+        characters: [at('Raider', 60), at('Bankalt', 1), at('Fresh', 5)],
+        currentKey: 'us/normal/fresh',
+      },
+    }).body;
+    expect(body).toContain('Raider');
+    expect(body).toContain('Fresh');
+    expect(body).not.toContain('Bankalt');
+    expect(body).toContain('Show low-level characters (1)');
   });
 });

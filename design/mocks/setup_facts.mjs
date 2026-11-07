@@ -70,7 +70,7 @@ export default {
   devices, lookup, pair_code: pairCode,
   lines: { out: lines(null, []), none: lines(meNew, []), bnet: lines(meBnet, []), addon: lines(me34, []), done: lines(me34, devices) },
   device_status: devices.map((d) => deviceStatusLine(d, NOW)),
-  imported: characterListCopy.importedFrom(relativeTime(new Date(me34.bnet_imported_at), NOW)),
+  imported: characterListCopy.updatedFrom(me34.bnet_imported_at, NOW),
   platforms_line: companionPlatformsLine(companion.downloads.map((d) => d.platform)),
   companion,
   download: { label: addonCopy.setupCompanionDownload(companion.downloads[0].platform), href: companionDownloadPath(companion.downloads[0].asset) },

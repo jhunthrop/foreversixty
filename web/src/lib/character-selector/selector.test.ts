@@ -14,6 +14,7 @@ import {
   closedAriaLabel,
   closedSecondLine,
   filterRows,
+  listRows,
   ringMarkOf,
   rowLineThree,
   rowLineTwo,
@@ -389,6 +390,53 @@ describe('row copy', () => {
         .sort(),
     ).toEqual(['Alphonse', 'Alpha'].sort());
     expect(filterRows(rows, '')).toHaveLength(3);
+  });
+});
+
+describe('the level filter', () => {
+  const account = me(
+    [
+      character('Main', { level: 60 }),
+      character('Twink', { level: 19 }),
+      character('Bankalt', { level: 1 }),
+      character('Fresh', { level: 4 }),
+      character('Unknown', { level: undefined }),
+    ],
+    'us/normal/main',
+  );
+  const rowsFor = (pointer: CurrentCharacter | null) =>
+    buildSelectorModel({ me: account, pointer, chosenKeys: [], nowMs: NOW.getTime() }).rows;
+
+  it('shows level 10 and up by default and counts the low-level rest', () => {
+    const listed = listRows(rowsFor(null), '', false);
+    expect(listed.rows.map((r) => r.name).sort()).toEqual(['Main', 'Twink', 'Unknown']);
+    expect(listed.lowCount).toBe(2);
+  });
+
+  it('reveals the low-level characters on request', () => {
+    const listed = listRows(rowsFor(null), '', true);
+    expect(listed.rows).toHaveLength(5);
+    expect(listed.lowCount).toBe(2);
+  });
+
+  it('keeps a low-level current character in the list', () => {
+    const pointer: CurrentCharacter = {
+      source: 'armory',
+      ref: 'us/normal/fresh',
+      label: 'Fresh · Fury Warrior',
+      classSlug: 'warrior',
+      savedAt: NOW.toISOString(),
+    };
+    const listed = listRows(rowsFor(pointer), '', false);
+    expect(listed.rows.map((r) => r.name)).toContain('Fresh');
+    expect(listed.rows.map((r) => r.name)).not.toContain('Bankalt');
+    expect(listed.lowCount).toBe(1);
+  });
+
+  it('searches every character by name, low level included, with no toggle', () => {
+    const listed = listRows(rowsFor(null), 'bank', false);
+    expect(listed.rows.map((r) => r.name)).toEqual(['Bankalt']);
+    expect(listed.lowCount).toBe(0);
   });
 });
 

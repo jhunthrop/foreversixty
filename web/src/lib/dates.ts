@@ -65,6 +65,21 @@ export function relativeTime(d: Date, now: Date = new Date()): string {
   return formatDate(d);
 }
 
+/**
+ * The compact age of a freshness stamp: "just now", "5 min ago", "2 h ago", "3 d ago", then the
+ * date past 30 days ("6 Nov"). Like `relativeTime`, a timestamp ahead of the clock is "just now".
+ */
+export function compactAgo(d: Date, now: Date = new Date()): string {
+  if (Number.isNaN(d.getTime())) return '';
+  const elapsed = Math.max(0, now.getTime() - d.getTime());
+  if (elapsed < MINUTE_MS) return 'just now';
+  if (elapsed < HOUR_MS) return `${Math.floor(elapsed / MINUTE_MS)} min ago`;
+  if (elapsed < DAY_MS) return `${Math.floor(elapsed / HOUR_MS)} h ago`;
+  const days = Math.floor(elapsed / DAY_MS);
+  if (days < RELATIVE_TIME_CEILING_DAYS) return `${days} d ago`;
+  return formatDate(d);
+}
+
 const RELATIVE_DAY_CEILING_DAYS = 14;
 const SHORT_MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 

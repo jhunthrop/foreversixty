@@ -154,7 +154,7 @@ describe('setupSteps: signed in', () => {
   it('web-setup-bnet: Battle.net brought the character, CurseForge is the gold step (rulings Q1)', () => {
     const rows = steps({ me: meBnet });
     expect(marks(rows)).toEqual(['ok', 'next', 'todo']);
-    expect(texts(rows[0])).toEqual(['Signed in as Hunthrop#1894 · Imported from Battle.net 1 hour ago.']);
+    expect(texts(rows[0])).toEqual(['Signed in as Hunthrop#1894 · Updated 1 h ago from Battle.net']);
     expect(texts(rows[1])).toEqual([addonCopy.setupAddonOptional]);
     expect(primaries(rows)).toEqual(['curseforge']);
   });

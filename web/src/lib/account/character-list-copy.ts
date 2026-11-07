@@ -1,4 +1,5 @@
 import { ctaCopy } from '../addon/cta-copy';
+import { compactAgo } from '../dates';
 // web/src/lib/account/character-list-copy.ts
 // Every visible string CharacterList.svelte and Account.svelte's ?refreshed=1 toast use.
 // Voice, per design/DESIGN-SYSTEM.md: reference, not pitch. State the thing and stop.
@@ -26,7 +27,9 @@ export const characterListCopy = {
   pasteAnExport: 'Paste an export',
   pasteHref: '/setup#paste',
   refreshFromBattlenet: 'Refresh from Battle.net',
-  importedFrom: (relative: string): string => `Imported from Battle.net ${relative}.`,
+  /** The account's Battle.net freshness: "Updated 2 h ago from Battle.net" (users.bnet_imported_at,
+   *  which every sign-in, visit refresh and background refresh moves). */
+  updatedFrom: (at: string, now?: Date): string => `Updated ${compactAgo(new Date(at), now)} from Battle.net`,
   verified: 'Verified',
   /** The main character's pill, and the control on every alt. */
   main: 'Main',
@@ -44,9 +47,8 @@ export const characterListCopy = {
   updatedJustNow: (count: number, added: number): string =>
     `Updated just now · ${characterCount(count)}${added > 0 ? ` · ${added} new` : ''}`,
   noChanges: (count: number): string => `No changes · ${characterCount(count)}`,
-  importedJustNow: 'Imported from Battle.net just now.',
   /** spec 2026-09-22 §3.3: the export "how" explained once, here, for every row. */
-  introBattlenetLine: 'Your characters come from Battle.net each time you sign in.',
+  introBattlenetLine: 'Your characters come from Battle.net and update on their own.',
   introInstallAddonLink: ctaCopy.installAddonAndCompanion,
   introAddonTail: 'for bags, bank and live sync. In Korea, or Battle.net is down?',
   introPasteLink: 'Paste an export',

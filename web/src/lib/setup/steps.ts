@@ -8,7 +8,6 @@ import { characterListCopy } from '../account/character-list-copy';
 import { pairingCopy } from '../reports/copy';
 import { yourReportsPageCopy } from '../reports/my-reports-copy';
 import { addonCopy } from '../addon/copy';
-import { relativeTime } from '../dates';
 import {
   addonLine,
   companionLine,
@@ -173,7 +172,7 @@ function signInRow(me: Me, input: SetupInputs, now: Date): StepRow {
     const imported =
       me.bnet_imported_at === undefined
         ? ''
-        : ` · ${characterListCopy.importedFrom(relativeTime(new Date(me.bnet_imported_at), now))}`;
+        : ` · ${characterListCopy.updatedFrom(me.bnet_imported_at, now)}`;
     return row(1, 'ok', [line(`${signed}${imported}`, 'ok')], null);
   }
   if (me.bnet_import?.state === 'running') {

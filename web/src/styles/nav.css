@@ -1139,6 +1139,10 @@
     gap: 12px;
     padding-block: 0;
   }
+  /* "Show low-level characters (N)": the Manage link's quiet action, its 44px row the height. */
+  .csel-low {
+    padding-block: 0;
+  }
   .csel-message {
     padding: 16px 14px;
   }
