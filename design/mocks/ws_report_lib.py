@@ -29,6 +29,9 @@ COACH_TRASH = _COACH_GO.split('NotReviewableTrash = "', 1)[1].split('"', 1)[0]  
 SPELL_NAME = {s['id']: s['name'] for s in json.loads((B / 'spells.json').read_text())}
 SPELL_ICON = json.loads((B / 'spellicons.json').read_text())
 POWER = {0: 'Mana', 1: 'Rage', 2: 'Focus', 3: 'Energy'}
+# FS_REPORT_SAMPLE=1 (the parity spec's test-time render): every report mock is drawn as /reports/sample, the page the
+# spec serves on this same log (its Sample report Tag and note in place of Not credited).
+AS_SAMPLE = os.environ.get('FS_REPORT_SAMPLE') == '1'
 DEFAULT_PULL = 6       # the sample's default pull as the live page opens it (Trash, 12:43, 177 mobs died)
 EMPTY_PULL = 13        # 4 s, nobody of the group in it: the pull with no data
 COMPARE_PULL = 3       # the other pull the whole group is in
@@ -210,12 +213,14 @@ def answer(R: Report, fi: int, source: str, viewer: str = '') -> str:
         label = f'{escape(f["name"])} #{f.get("attempt", 1)} &middot; {"Kill" if f.get("kill") else "Wipe"} &middot; {mmss(f["duration_ms"])}'
         fig = Figure(n0(group_dps(R, s, source)), unit='DPS', size='big')
         cap = f'{scope} damage &middot; {plural(nd, "death")}'
-    acts = (f'<span class="ans-act">{Button("Sim this fight", small=True)}{Button("Copy link", small=True)}</span>'
+    # Sim this fight opens the simulator (a link styled as a button); Copy link acts in place (a button).
+    acts = (f'<span class="ans-act">{_Button("Sim this fight", small=True)}{Button("Copy link", small=True)}</span>'
             f'<span class="ans-more"><button type="button" class="btn sm" aria-haspopup="menu" aria-expanded="false" aria-label="Report actions">&middot;&middot;&middot;</button></span>')
     return f'<span class="t-label">{label}</span>{fig}<span class="t-small">{cap}</span>{acts}'
 
 
 def head(R: Report, fi: int, tab: str, source: str, viewer: str = '', sample: bool = False, tabs: bool = True) -> str:
+    sample = sample or AS_SAMPLE
     f = R.fight(fi)
     y, m, d = f['start'][:10].split('-')
     months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec']
@@ -242,6 +247,12 @@ def fight_menu(R: Report, fi: int) -> str:
     killed = [f for f in fights if f['kind'] == 'trash' and f.get('mob_deaths', 0) > 0]
     idle = [f for f in fights if f['kind'] == 'trash' and not f.get('mob_deaths', 0)]
     trash = [(fight_label(f), f'{clock(f["start"])} &middot; {plural(f["mob_deaths"], "mob")} died', '', '', f['index'] == fi) for f in killed]
+    # Each zone's trash folds into one entry first (lib/report/frame.ts fightOptions): the night view over its pulls.
+    zones: dict[str, int] = {}
+    for f in fights:
+        if f['kind'] == 'trash' and f.get('zone'):
+            zones[f['zone']] = zones.get(f['zone'], 0) + 1
+    trash = [(f'All trash in {escape(z)}', plural(n, 'pull'), '', '', False) for z, n in zones.items() if n > 1] + trash
     boss_group = ([('All boss pulls', plural(len(bosses), 'pull'), '', '', False)] + bosses) if bosses else []
     menu = Menu('Fights', [('Boss pulls', boss_group), (f'Trash &middot; {plural(len(killed), "pull")}', trash)])
     if not bosses:
@@ -253,14 +264,19 @@ def fight_menu(R: Report, fi: int) -> str:
 
 
 TABLE_FILTERS = {'Damage done', 'Damage taken', 'Healing'}
+SEARCHABLE_OVER = 15   # ReportBar.svelte: a Source list longer than this gets the filter field
 
 
 def bar(R: Report, fi: int, tab: str, source: str, open_m: bool = False, compare: str = '') -> str:
     f = R.fight(fi)
-    groups = [('Fight', sel(fight_label(f))), ('Source', sel(source)), ('Window', sel('Whole fight'))]
+    # The Source list is the scope's players; past 15 it gains a filter field, and the shipped Select draws a
+    # button trigger with aria-expanded for it in place of the native combobox (lib/ui/listbox.ts).
+    many = len(in_scope(R, R.summary(fi), source if source in SOURCES else 'Your group')) > SEARCHABLE_OVER
+    src = f'<button type="button" class="sel" aria-expanded="false" aria-label="Source">{escape(source)}</button>' if many else sel(source)
+    groups = [('Fight', sel(fight_label(f))), ('Source', src), ('Window', sel('Whole fight'))]
     if tab in TABLE_FILTERS:
         groups += [('Target', sel('Every target')), ('Ability', sel('Every ability')),
-                   ('Filters', '<span class="sel" role="button" aria-haspopup="dialog">Filters</span>')]
+                   ('Filters', '<button type="button" class="sel" aria-haspopup="dialog" aria-expanded="false">Filters</button>')]
     if tab == 'Threat':
         groups.append(('Enemy', sel('Every enemy')))
     if tab == 'Compare':
@@ -310,7 +326,9 @@ def chart(R: Report, fi: int, metric: str, source: str) -> str:
 def notices(lines: list[str]) -> str:
     if not lines:
         return ''
-    return '<div data-region="summary">' + ''.join(Notice(l, tone='neutral') for l in lines) + '</div>'
+    # The region is the page column's (the build's notices sit in the column under the full-bleed bar).
+    inner = ''.join(Notice(l, tone='neutral').removeprefix('<div class="pc">').removesuffix('</div>') for l in lines)
+    return f'<div class="pc"><div data-region="summary">{inner}</div></div>'
 
 
 # Boss pulls only. The phone reads one line (ruled SHOULD): the short form; 768 px and up the full sentence.

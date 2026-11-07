@@ -48,12 +48,16 @@ Each run writes `web/test-results/parity/<page>-<state>.png`: mock | build at th
 
 `design/mocks/web/sim-parity.json`: `landing-out`, `landing-in`, `result`, `saved`. `design/mocks/ws_sim.py` draws them from `web/src/fixtures/sim/result-full.json` and `data/builds/<active build>`, the files `web/tests/e2e/support/sim-parity.ts` serves to the fixture build.
 
+## The simulator tool states
+
+`design/mocks/web/simtools-parity.json`: `gear` (Top gear with a character), `gear-empty` (no character: the source switcher), `talents`, `drops` (the Droptimizer), `weights` and `specs` (Spec support, no parse measured yet). `design/mocks/ws_simtools.py` draws them in the quick sim's grammar from `data/builds/<active build>` (items, loot, stat weights), `sim/request/raid-consumes.json` and `web/src/data/phases.json`; the spec (`web/tests/e2e/parity-sim-tools.spec.ts`) loads the same character by `?code=` (`support/sim-parity.ts` `TOOL_CHARACTER`: a level 60 Orc Fury Warrior wearing Lionheart Helm and Arcanite Reaper) and serves the same build files. The Droptimizer's gates read the clock on both sides (`lib/sim/phase.ts` `hasOpened`, `ws_simtools.is_open`).
+
 ## Test-time mocks
 
 Before its tests each spec renders its mocks into `web/test-results/parity/mocks/<page>/` (`web/tests/e2e/support/parity-mocks.ts`) and compares against those:
 
 - **BiS:** `node design/mocks/bis_facts.mjs <the spec's own baseURL> <out>/bis-facts.json`, then `ws_bis.py` with `FS_BIS_FACTS` and `FS_MOCK_OUT` pointing there. The URL is the spec's preview (`E2E_PORT`), never whatever holds another port; `bis_facts.mjs` without a URL stops with the exact command.
-- **Simulator:** `ws_sim.py` with `FS_DATA_ROOT` at the checkout and `FS_MOCK_OUT` there.
+- **Simulator:** `ws_sim.py` with `FS_DATA_ROOT` at the checkout and `FS_MOCK_OUT` there; the tool pages the same with `ws_simtools.py`.
 
 The generators need `python3` (standard library only; Pillow is only for `ws_sim.py compare` and `ws_compose.py`). Rendering takes under a second for the simulator and a few seconds of page reads for BiS.
 
@@ -68,7 +72,7 @@ The committed `design/mocks/web/*.html` are what a reviewer reads and what the s
 npm run build && npm run preview -- --port 4500
 # from the repo root
 node design/mocks/bis_facts.mjs http://localhost:4500 && python3 design/mocks/ws_bis.py
-python3 design/mocks/ws_sim.py
+python3 design/mocks/ws_sim.py && python3 design/mocks/ws_simtools.py
 ```
 
 Then commit `design/mocks/web` (and `design/mocks/data/bis-facts.json`).

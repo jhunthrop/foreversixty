@@ -233,6 +233,11 @@ export const simCopy = {
   // Task 18: the signed-in account card, once the switcher is reopened from the landing
   // state below, returns to it rather than showing the Task 11 placeholder it used to.
   backToCharacters: 'Back to your characters',
+  /** The source switcher's account row, signed in (mock design/mocks/ws_simtools.py). */
+  backToCharactersSub: 'Sim one of your characters, with their gear and talents from Battle.net.',
+  /** The source switcher's Load buttons and its open section's title. */
+  sourceLoad: 'Load',
+  sourceOtherWays: 'Other ways in',
 
   // --- Task 18: the signed-in landing state (design 4.6). A member who opens /sim sees
   // their characters and one button each, and no form until they ask for one. ---
@@ -662,7 +667,7 @@ export const simCopy = {
   specsUnsimulatedHeading: 'Healers and tanks',
   /** Exact body text task-2-brief.md specifies, verbatim, for every card in that second
    *  group -- no fidelity pill, no engine stamp, no "Not yet" badge link. */
-  specsUnsimulatedBody: 'Not simulated yet — damage specs first; healers and tanks come later',
+  specsUnsimulatedBody: 'Not simulated yet: damage specs first; healers and tanks come later',
   /**
    * Fix round 1, Finding B: the `<Base description="...">` strings are what a healer or
    * tank reads in a search result or a link preview -- the first place the DPS-only claim
@@ -873,6 +878,8 @@ export const bulkCopy = {
    * that silently vanished would look like data loss rather than a known limitation.
    */
   notInSimulator: 'Not in the simulator’s item table',
+  /** The Top gear candidates block's title. */
+  candidatesTitle: 'Candidates',
   lockSlot: 'Lock to equipped',
   lockedSlot: 'Locked',
   copyAndModify: 'Copy and modify',
@@ -927,6 +934,8 @@ export const bulkCopy = {
 
   // --- talents and sets ---
   talentsOwn: 'Your current build',
+  /** The /sim/talents candidates block's title. */
+  talentBuildsTitle: 'Talent builds',
   talentsSaved: 'Your saved builds',
   talentsLoadouts: 'In-game loadouts',
   talentsAddCustom: 'Add a build',
@@ -971,6 +980,8 @@ export const bulkCopy = {
     `This device reports four cores or fewer, so the limit here is ${cap.toLocaleString('en-US')} combinations.`,
 
   // --- results ---
+  /** The Top gear, talents and Droptimizer results block's title. */
+  resultsTitle: 'Results',
   resultsEquipped: 'What you have on',
   resultsRank: '#',
   resultsChange: 'Change',
@@ -1005,6 +1016,8 @@ export const bulkCopy = {
       .join(' · '),
 
   // --- droptimizer ---
+  /** The Droptimizer source picker's title. */
+  sourcesTitle: 'Sources',
   sourcesRaids: 'Raids',
   sourcesDungeons: 'Dungeons',
   sourcesWorld: 'World bosses',
@@ -1023,7 +1036,11 @@ export const bulkCopy = {
   sourcesProfessionsUnknown:
     'Nothing has recorded this character’s professions, so every profession is listed.',
   sourcesTrash: 'Trash and chests',
+  /** A run asked for with no character loaded (bulk-store-request.ts). */
+  needCharacter: 'Load a character first.',
   sourcesWholeRaid: 'Every boss',
+  /** A dungeon's folded boss list (mock design/mocks/ws_simtools.py). */
+  sourcesBosses: 'Bosses',
   showUpcoming: 'Show unreleased content',
   opensOn: (label: string, date: string): string => `${label}, ${date}`,
   notOpenYet: 'Not open yet',
@@ -1044,6 +1061,8 @@ export const bulkCopy = {
   weightsWeight: 'Weight',
   weightsReference: 'Reference',
   weightsPick: 'Stats to weigh',
+  /** The weights page's results section (mock design/mocks/ws_simtools.py). */
+  weightsResultsTitle: 'Scale factors',
   /**
    * Task 8, sub-item 1: contract 10.9 documents `StatWeight.Error` as a standard error that
    * is a lower bound, not the true uncertainty -- an 8-seed check found the real run-to-run
@@ -1153,7 +1172,6 @@ export const bulkCopy = {
    * string for the error it swallows, and that string lives here like every other one.
    */
   phasesFailed: 'The phase table could not be read.',
-  needCharacter: 'Load a character first.',
   needAddonForBags: 'Paste your addon export to see your bags and bank here.',
   /**
    * `addSearchItem`'s miss path (fix round 2, the player-visible half of fix round 1's

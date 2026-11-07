@@ -208,97 +208,23 @@ test.describe('the simulator tab strip at phone width', () => {
     }
   });
 
-  test('a tool page scrolls its strip sideways within itself rather than the page, and every tab clears 44x44', async ({
-    page,
-  }) => {
-    await page.goto('/sim/gear');
-    await assertNoHorizontalScroll(page, 390);
-
-    for (const tab of SIM_TABS) {
-      const box = await page.getByTestId(`sim-nav-tab-${tab.id}`).boundingBox();
-      // design/DESIGN-SYSTEM.md's "44px minimum hit targets" is both dimensions, not just
-      // height (fix round 1, Finding B) -- a tab this short in either one is not a real
-      // 44x44 target even where the other clears it.
-      expect(box?.height ?? 0, `${tab.id} height`).toBeGreaterThanOrEqual(44);
-      expect(box?.width ?? 0, `${tab.id} width`).toBeGreaterThanOrEqual(44);
-    }
-
-    const strip = await page.evaluate(() => {
-      const nav = document.querySelector('[data-testid="sim-nav-tabs"]');
-      return { scrollWidth: nav?.scrollWidth ?? 0, clientWidth: nav?.clientWidth ?? 0 };
+  // The tool pages carry the same head and strip as /sim (SimToolHead over SimToolTabs): the
+  // tabs wrap inside the head, so there is no sideways scroll, edge fade or overscroll to prove.
+  for (const route of ['/sim/gear', '/sim/drops', '/sim/talents', '/sim/weights', '/sim/specs']) {
+    test(`${route} wraps its tabs inside the head, with no page scroll, every tab 44x44`, async ({
+      page,
+    }) => {
+      await page.goto(route);
+      await assertNoHorizontalScroll(page, 390);
+      const stripBox = await page.getByTestId('sim-nav-tabs').boundingBox();
+      for (const tab of SIM_TABS) {
+        const box = await page.getByTestId(`sim-nav-tab-${tab.id}`).boundingBox();
+        expect(box?.height ?? 0, `${tab.id} height`).toBeGreaterThanOrEqual(44);
+        expect(box?.width ?? 0, `${tab.id} width`).toBeGreaterThanOrEqual(44);
+        expect((box?.x ?? 0) + (box?.width ?? 0), `${tab.id} inside the strip`).toBeLessThanOrEqual(
+          (stripBox?.x ?? 0) + (stripBox?.width ?? 0) + 1,
+        );
+      }
     });
-    expect(strip.scrollWidth, 'tab strip does not scroll').toBeGreaterThan(strip.clientWidth);
-
-    // The strip's own overflow never becomes the page's: re-checked after reading the
-    // strip's scrollWidth above, the same double-check sim-phone.spec.ts's own result-tab
-    // sweep performs for the identical reason (its header comment: Chromium's mobile
-    // shrink-to-fit quirk can hide exactly this class of overflow from a single check).
-    await assertNoHorizontalScroll(page, 390);
-  });
-
-  // night-sim-tabs: the scroll itself was never the problem -- nothing told a visitor at
-  // 390px that Weights and Spec support existed past the right edge. These four tests prove
-  // the edge fade, the active-tab scroll-into-view, and overscroll containment SimTabs.astro
-  // now carries.
-  async function fadeOpacity(page: import('@playwright/test').Page, side: 'start' | 'end'): Promise<string> {
-    return page.evaluate((testId) => {
-      const el = document.querySelector(`[data-testid="${testId}"]`);
-      return el ? getComputedStyle(el).opacity : '';
-    }, `sim-nav-tabs-fade-${side}`);
   }
-
-  test('on load, the last tab is off-screen and a right-edge fade is present, with no left-edge fade', async ({
-    page,
-  }) => {
-    await page.goto('/sim/gear');
-
-    const lastTab = SIM_TABS[SIM_TABS.length - 1];
-    const box = await page.getByTestId(`sim-nav-tab-${lastTab.id}`).boundingBox();
-    expect(box, `${lastTab.id} is rendered`).not.toBeNull();
-    expect((box?.x ?? 0) + (box?.width ?? 0), `${lastTab.id} clears the 390px viewport`).toBeGreaterThan(390);
-
-    await expect.poll(() => fadeOpacity(page, 'end')).toBe('1');
-    // Gear is the second tab, scrolled into view on load; back at the strip's start there is no
-    // left fade.
-    await page.evaluate(() => {
-      const nav = document.querySelector('[data-testid="sim-nav-tabs"]');
-      if (nav) nav.scrollLeft = 0;
-    });
-    await expect.poll(() => fadeOpacity(page, 'start'), { message: 'at the start: no left fade' }).toBe('0');
-  });
-
-  test('scrolling the strip to its end removes the right fade and shows the left one', async ({ page }) => {
-    await page.goto('/sim/gear');
-    await expect.poll(() => fadeOpacity(page, 'end')).toBe('1');
-
-    await page.evaluate(() => {
-      const nav = document.querySelector('[data-testid="sim-nav-tabs"]');
-      if (nav) nav.scrollLeft = nav.scrollWidth;
-    });
-
-    await expect.poll(() => fadeOpacity(page, 'end')).toBe('0');
-    await expect.poll(() => fadeOpacity(page, 'start')).toBe('1');
-  });
-
-  test('the active tab is scrolled into view on load, even when it is the last one', async ({ page }) => {
-    // Spec support is SIM_TABS' last entry and, with none of this fix, would sit past the
-    // right edge exactly like the previous test's Quick-Sim-active case shows for it.
-    await page.goto('/sim/specs');
-
-    const box = await page.getByTestId('sim-nav-tab-specs').boundingBox();
-    expect(box?.x ?? -1, 'the active tab itself is on-screen').toBeGreaterThanOrEqual(0);
-    // +1 covers sub-pixel rounding: tab widths are fractional and a browser that scrolls in whole
-    // pixels rounds the last tab's scroll position down, leaving up to a pixel of it past the edge.
-    expect((box?.x ?? 0) + (box?.width ?? 0), 'the active tab itself is on-screen').toBeLessThanOrEqual(391);
-
-    // It was scrolled all the way to its own end to get there, so the right fade is gone
-    // and the left one (everything before it) is showing.
-    await expect.poll(() => fadeOpacity(page, 'end')).toBe('0');
-    await expect.poll(() => fadeOpacity(page, 'start')).toBe('1');
-  });
-
-  test('the strip contains its own overscroll rather than bouncing the page', async ({ page }) => {
-    await page.goto('/sim/gear');
-    await expect(page.getByTestId('sim-nav-tabs')).toHaveCSS('overscroll-behavior-x', 'contain');
-  });
 });

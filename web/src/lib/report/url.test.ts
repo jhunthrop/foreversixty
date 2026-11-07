@@ -2,62 +2,34 @@
 import { describe, expect, it } from 'vitest';
 import {
   ALL_FIGHTS,
-  MODES,
-  TABS,
-  VIEWS,
   defaultState,
+  legacyTab,
   parseReportState,
   reportSearch,
   withState,
   MISSING_FIGHT,
   trashScope,
   trashScopeKey,
+  type ReportState,
 } from './url';
 
 describe('the report URL state', () => {
-  it('offers the five modes, with only Replay disabled', () => {
-    expect(MODES.map((m) => m.id)).toEqual(['analyze', 'compare', 'rankings', 'mechanics', 'replay']);
-    expect(MODES.filter((m) => !m.enabled).map((m) => m.label)).toEqual(['Replay']);
-    expect(MODES.filter((m) => !m.enabled).every((m) => m.note === 'later')).toBe(true);
-    expect(MODES.filter((m) => m.enabled).every((m) => m.note === undefined)).toBe(true);
-    expect(parseReportState('?mode=mechanics', 1).mode).toBe('mechanics');
-    expect(reportSearch(withState(defaultState(1), { mode: 'mechanics' }), 1)).toBe('?mode=mechanics');
+  it('folds an old mode or view into the tab it meant, and never writes either back (logs spec R3)', () => {
+    expect(parseReportState('?mode=mechanics', 1).tab).toBe('mechanics');
+    expect(parseReportState('?mode=compare', 1).tab).toBe('compare');
+    expect(parseReportState('?mode=rankings', 1).tab).toBe('summary');
+    expect(parseReportState('?view=timelines', 1).tab).toBe('timeline');
+    expect(parseReportState('?view=events', 1).tab).toBe('events');
+    expect(parseReportState('?view=queries&tab=deaths', 1).tab).toBe('deaths');
+    expect(reportSearch(withState(defaultState(1), { mode: 'mechanics' }), 1)).toBe('?tab=mechanics');
+    expect(reportSearch(withState(defaultState(1), { tab: 'mechanics' }), 1)).toBe('?tab=mechanics');
   });
 
-  it('offers the four views and the fourteen tabs in the spec’s order', () => {
-    expect(VIEWS.map((v) => v.id)).toEqual(['tables', 'timelines', 'events', 'queries']);
-    expect(TABS.map((t) => t.id)).toEqual([
-      'summary',
-      'rating',
-      'coach',
-      'damage-done',
-      'damage-taken',
-      'healing',
-      'threat',
-      'buffs',
-      'debuffs',
-      'deaths',
-      'interrupts',
-      'dispels',
-      'resources',
-      'casts',
-    ]);
-    expect(TABS.map((t) => t.label)).toEqual([
-      'Summary',
-      'Rating',
-      'Coach',
-      'Damage Done',
-      'Damage Taken',
-      'Healing',
-      'Threat',
-      'Buffs',
-      'Debuffs',
-      'Deaths',
-      'Interrupts',
-      'Dispels',
-      'Resources',
-      'Casts',
-    ]);
+  it('reads a patch in the old words as the tab it names', () => {
+    expect(legacyTab({ mode: 'analyze', view: 'tables', tab: 'interrupts' })).toEqual({ tab: 'interrupts' });
+    expect(legacyTab({ view: 'queries' })).toEqual({ tab: 'queries' });
+    const sourceOnly: Partial<ReportState> = { source: 'enemies' };
+    expect(legacyTab(sourceOnly)).toEqual({ source: 'enemies' });
   });
 
   it('rating is a real tab: it parses from the url and serialises back', () => {
@@ -93,14 +65,11 @@ describe('the report URL state', () => {
   });
 
   it('parses every field out of a full query string', () => {
-    const state = parseReportState(
-      '?fight=3&mode=compare&view=events&tab=deaths&source=Player-4184-000000A1&start=4000&end=12000',
-      1,
-    );
+    const state = parseReportState('?fight=3&tab=deaths&source=Player-4184-000000A1&start=4000&end=12000', 1);
     expect(state).toEqual({
       fight: 3,
-      mode: 'compare',
-      view: 'events',
+      mode: 'analyze',
+      view: 'tables',
       tab: 'deaths',
       source: 'Player-4184-000000A1',
       start: 4000,
@@ -167,8 +136,6 @@ describe('the report URL state', () => {
   it('serialises the fields in the contract’s order', () => {
     const state = withState(defaultState(1), {
       fight: 3,
-      mode: 'rankings',
-      view: 'queries',
       tab: 'casts',
       source: 'enemies',
       start: 10,
@@ -189,9 +156,7 @@ describe('the report URL state', () => {
       playersPreset: null,
       logScale: false,
     });
-    expect(reportSearch(state, 1)).toBe(
-      '?fight=3&mode=rankings&view=queries&tab=casts&source=enemies&start=10&end=20',
-    );
+    expect(reportSearch(state, 1)).toBe('?fight=3&tab=casts&source=enemies&start=10&end=20');
   });
 
   it('round-trips through parse', () => {

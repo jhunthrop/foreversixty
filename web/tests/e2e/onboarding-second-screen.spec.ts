@@ -214,21 +214,18 @@ for (const size of SIZES) {
 
 test.describe('the sample report on a phone', () => {
   test.use({ viewport: { width: 390, height: 844 } });
-  test('folds the fight list to one row, so the damage rows start on the first screen', async ({ page }) => {
+  test('puts the first player row on the first screen: the bar is one summary line', async ({ page }) => {
     await signedOut(page);
     await page.goto('/reports/sample');
     await settle(page);
-    const toggle = page.getByTestId('fight-selector-toggle');
-    await expect(toggle).toBeVisible();
-    await expect(page.getByTestId('fight-selector-body')).toBeHidden();
+    // The control bar is one 48 px line on a phone (logs spec 6.1), the fight list behind Change.
+    await expect(page.getByTestId('report-bar').locator('[data-control-bar-toggle]')).toBeVisible();
     const table = page.getByTestId('roster-name').first();
     await expect(table).toBeVisible();
     const top = await table.evaluate((el) => el.getBoundingClientRect().top + window.scrollY);
     expect(top).toBeLessThan(844);
     mkdirSync(SHOTS, { recursive: true });
     await page.screenshot({ path: join(SHOTS, 'w9-sample-report-390.png'), fullPage: false });
-    await toggle.click();
-    await expect(page.getByTestId('fight-selector-body')).toBeVisible();
   });
 });
 

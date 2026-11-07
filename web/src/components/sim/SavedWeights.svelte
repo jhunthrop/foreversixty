@@ -6,11 +6,13 @@
 
      The table is the one the live tool draws (WeightsScaleTable.svelte over weights.ts's
      `toolScaleView`): the published weights' SimulationCraft form, no Pawn string (owner,
-     2026-09-30, round 11). -->
+     2026-09-30, round 11), the page's one Plate (sim spec 2026-11-06 §4.5 grammar). -->
 <script lang="ts">
   import type { WeightsResult } from '../../lib/sim/bulk-types';
   import { bulkCopy } from '../../lib/sim/copy';
   import { toolScaleView } from '../../lib/sim/weights';
+  import Notice from '../ui/Notice.svelte';
+  import Plate from '../ui/Plate.svelte';
   import WeightsScaleTable from './WeightsScaleTable.svelte';
 
   let { result }: { result: WeightsResult } = $props();
@@ -20,19 +22,18 @@
   );
 </script>
 
-<section
-  class="border-line-warm rounded-panel mx-[18px] border p-4 md:mx-0"
-  data-testid="sim-weights-warning"
->
-  <p class="text-strong text-[14px]">{bulkCopy.weightsWarning}</p>
-  <a class="text-nav underline" href="/sim/gear">{bulkCopy.weightsWarningLink}</a>
-</section>
-
-<section class="mx-[18px] flex flex-col gap-3 md:mx-0" data-testid="sim-weights">
+<div class="flex flex-col gap-3" data-testid="sim-weights">
+  <Notice
+    text={bulkCopy.weightsWarning}
+    action={{ label: bulkCopy.weightsWarningLink, href: '/sim/gear' }}
+    testid="sim-weights-warning"
+  />
   <!-- Task 8, sub-item 1: the same caveat as the live page (StatWeights.svelte), in the
        same words, right before the numbers it caveats -- see that file's own comment. -->
-  <p class="text-muted text-[12px]" data-testid="sim-weights-error-caveat">
+  <p class="text-muted text-[13px] leading-5" data-testid="sim-weights-error-caveat">
     {bulkCopy.weightsErrorCaveat(result.weights.map((row) => row.stat))}
   </p>
-  <WeightsScaleTable {view} />
-</section>
+  <Plate flush={false} label={bulkCopy.weightsTitle}>
+    <WeightsScaleTable {view} />
+  </Plate>
+</div>

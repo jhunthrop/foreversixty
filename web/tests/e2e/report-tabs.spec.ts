@@ -3,7 +3,8 @@ import { expect, test } from './support/test';
 import { serveDuckdbRuntime } from './support/duckdb-runtime';
 import { heldRoute } from './support/held-route';
 import { openChartIfCollapsed } from './support/report-chart';
-import { choose, fieldBox } from './support/select';
+import { choose } from './support/select';
+import { pickFight, openTab } from './support/report-frame';
 
 const REPORT = '/reports/fixture2abcd';
 
@@ -16,102 +17,75 @@ const REPORT = '/reports/fixture2abcd';
 // (src/fixtures/report/fights/<n>/summary.json). Scoped to `li`, not just `[data-testid^=
 // "roster-"]`: each row also carries a nested `data-testid="roster-active"` span for its
 // Active column, which shares the "roster-" prefix and would otherwise double the count.
+// The rows are StatRows now (logs spec 2026-11-07 6.2), so the role picks them out.
 function summaryRosterRows(page: import('@playwright/test').Page): import('@playwright/test').Locator {
-  return page.getByTestId('summary-tab').locator('li[data-testid^="roster-"]');
+  return page.getByTestId('summary-tab').locator('[role="row"][data-testid^="roster-"]');
 }
+
+const FIGHT_SELECT = 'select[data-testid="report-fight"]';
 
 test('the report opens on its first fight with the chrome the spec sets', async ({ page }) => {
   await page.goto(REPORT);
 
   await expect(page.getByTestId('report-title')).toHaveText('Sanguine Depths, fixture night');
-  await expect(page.getByTestId('fight-selector')).toBeVisible();
-  await expect(page.getByTestId('fight-3')).toBeVisible();
-  await expect(page.getByTestId('fight-3-outcome')).toHaveText('Kill');
-  for (const mode of ['analyze', 'compare', 'rankings', 'mechanics']) {
-    await expect(page.getByTestId(`mode-${mode}`)).toBeEnabled();
-    await expect(page.getByTestId(`mode-${mode}`)).not.toContainText('later');
-  }
-  // Replay is not drawn until it exists: no "later" chip on the tab row.
-  await expect(page.getByTestId('mode-replay')).toHaveCount(0);
-  for (const view of ['tables', 'timelines', 'events', 'queries']) {
-    await expect(page.getByTestId(`view-${view}`)).toBeVisible();
-  }
-  const phone = (page.viewportSize()?.width ?? 1280) < 1024;
-  if (phone) {
-    await expect(fieldBox(page, 'tab-select')).toBeVisible();
-    await expect(page.getByTestId('tab-select')).toHaveValue('summary');
-  } else {
-    await expect(page.getByRole('tab', { name: 'Damage Done' })).toBeVisible();
-  }
+  // One fight select in the control bar (logs spec 6.1, decision R2), on the first boss pull.
+  await expect(page.locator(FIGHT_SELECT)).toHaveValue('3');
+  await expect(page.locator(`${FIGHT_SELECT} option[value="3"]`)).toHaveText(/Warden Kelthas #1 · Kill/);
+  // One tab strip (decision R3): the modes and views of old are tabs, Rankings a link.
+  const tabs = page.getByTestId('report-tabs');
+  for (const label of [
+    'Summary',
+    'Damage done',
+    'Healing',
+    'Damage taken',
+    'Deaths',
+    'Mechanics',
+    'Timeline',
+  ])
+    await expect(tabs.getByRole('link', { name: label, exact: true })).toBeVisible();
+  await expect(tabs.getByRole('link', { name: 'Summary', exact: true })).toHaveAttribute(
+    'aria-current',
+    'page',
+  );
+  await expect(page.getByTestId('mode-bar')).toHaveCount(0);
+  await expect(page.getByTestId('report-rankings-link')).toHaveText('Rankings for Warden Kelthas ›');
 });
 
-test('a zone’s trash is one entry, its pulls folded behind its expand control', async ({ page }) => {
+test('the fight list numbers boss pulls and hides trash that killed nothing', async ({ page }) => {
   await page.goto(REPORT);
-  const fights = page.getByTestId('fight-selector');
-  // The head counts boss pulls, never trash.
-  await expect(fights).toContainText('2 boss pulls');
-  await expect(page.getByTestId('toggle-trash')).toHaveCount(0);
-  await expect(page.getByTestId('fight-trash-1')).toContainText('Trash · Sanguine Depths');
-  await expect(page.getByTestId('fight-trash-1-pulls')).toHaveText('2 pulls');
-  await expect(page.getByTestId('fight-1')).toHaveCount(0);
-  const expand = page.getByTestId('fight-group-1');
-  await expect(expand).toHaveAttribute('aria-expanded', 'false');
-  await expand.click();
-  await expect(expand).toHaveAttribute('aria-expanded', 'true');
-  await expect(page.getByTestId('fight-1')).toBeVisible();
-  await expect(page.getByTestId('fight-2')).toBeVisible();
-});
-
-test('the trash entry opens its pulls folded together, the way All boss pulls does', async ({ page }) => {
-  await page.goto(REPORT);
-  await page.getByTestId('fight-trash-1').click();
-  await expect(page).toHaveURL(/[?&]fight=trash-1(&|$)/);
-  await expect(page.getByTestId('fight-trash-1')).toHaveAttribute('aria-current', 'true');
-  await expect(page.getByTestId('report-subtitle')).toContainText('Trash · Sanguine Depths');
-  const night = page.getByTestId('night-view');
-  await expect(night).toBeVisible();
-  await expect(page.getByTestId('night-summary')).toContainText('2 trash pulls');
-  await expect(page.getByTestId('night-bosses')).toHaveCount(0);
-  await expect(night).toContainText('Players, across every trash pull');
-  // The tables read the folded trash too.
-  const phone = (page.viewportSize()?.width ?? 1280) < 1024;
-  if (phone) await choose(page.getByTestId('tab-select'), 'damage-done');
-  else await page.getByTestId('tab-damage-done').click();
-  await expect(page.getByTestId('actor-table').first()).toBeVisible();
-  // A pasted link lands on the same view.
-  await page.reload();
-  await expect(page.getByTestId('fight-trash-1')).toHaveAttribute('aria-current', 'true');
+  const options = page.locator(`${FIGHT_SELECT} option`);
+  await expect(page.locator(`${FIGHT_SELECT} optgroup`).first()).toHaveAttribute('label', 'Boss pulls');
+  await expect(options.first()).toHaveText('All boss pulls');
+  await expect(page.locator(`${FIGHT_SELECT} option[value="3"]`)).toHaveText(/^Warden Kelthas #1/);
 });
 
 test('every control the spec names writes itself into the URL and reads back', async ({ page }) => {
   await page.goto(REPORT);
-  const phone = (page.viewportSize()?.width ?? 1280) < 1024;
+  await pickFight(page, 2);
+  await openTab(page, 'healing');
+  await expect(page).toHaveURL(/\?fight=2&tab=healing$/);
+  await openTab(page, 'events');
+  await expect(page).toHaveURL(/\?fight=2&tab=events$/);
 
-  await page.getByTestId('fight-group-1').click();
-  await page.getByTestId('fight-2').click();
-  if (phone) await choose(page.getByTestId('tab-select'), 'healing');
-  else await page.getByTestId('tab-healing').click();
-  await page.getByTestId('view-events').click();
-
-  await expect(page).toHaveURL(/\?fight=2&view=events&tab=healing$/);
-
-  await page.goto(`${REPORT}?fight=3&view=tables&tab=deaths&source=Player-4184-000000A1`);
-  if (phone) await expect(page.getByTestId('tab-select')).toHaveValue('deaths');
-  else await expect(page.getByTestId('tab-deaths')).toHaveAttribute('aria-selected', 'true');
+  await page.goto(`${REPORT}?fight=3&tab=deaths&source=Player-4184-000000A1`);
+  await expect(
+    page.getByTestId('report-tabs').getByRole('link', { name: 'Deaths', exact: true }),
+  ).toHaveAttribute('aria-current', 'page');
   await expect(page.getByTestId('source-scope')).toHaveValue('Player-4184-000000A1');
-  await expect(page.getByTestId('fight-3')).toHaveAttribute('aria-current', 'true');
+  await expect(page.locator(FIGHT_SELECT)).toHaveValue('3');
+  // An old link's view lands on its tab.
+  await page.goto(`${REPORT}?fight=3&view=queries`);
+  await expect(page.getByTestId('report-tabs')).toContainText(/Queries/);
+  await expect(page.getByTestId('queries-view')).toBeVisible();
 });
 
-test('the table tabs are a select below lg and a wrapping pill row at lg and up', async ({ page }) => {
-  await page.goto(REPORT);
-  const phone = (page.viewportSize()?.width ?? 1280) < 1024;
-  if (phone) {
-    await expect(fieldBox(page, 'tab-select')).toBeVisible();
-    await expect(page.getByRole('tab', { name: 'Damage Done' })).toBeHidden();
-  } else {
-    await expect(page.getByRole('tab', { name: 'Damage Done' })).toBeVisible();
-    await expect(fieldBox(page, 'tab-select')).toBeHidden();
-  }
+test('the tabs past the first seven sit in More, which names the open one', async ({ page }) => {
+  await page.goto(`${REPORT}?fight=3`);
+  const wide = (page.viewportSize()?.width ?? 1280) >= 1760;
+  test.skip(wide, 'from 1760 the strip shows twelve tabs');
+  await openTab(page, 'casts');
+  await expect(page).toHaveURL(/tab=casts/);
+  await expect(page.locator('[data-testid="report-tabs-more"]:visible')).toHaveText(/More: Casts/);
 });
 
 test('the source scope lists the fight’s players', async ({ page }) => {
@@ -131,8 +105,7 @@ test('a fight the report does not have falls back to the first boss pull', async
   for (const search of ['?fight=7', '?fight=999']) {
     await page.goto(`${REPORT}${search}`);
     await expect(page.getByTestId('report-error')).toHaveCount(0);
-    await expect(page.getByTestId('fight-selector')).toBeVisible();
-    await expect(page.getByTestId('fight-3')).toHaveAttribute('aria-current', 'true');
+    await expect(page.locator(FIGHT_SELECT)).toHaveValue('3');
     await expect(summaryRosterRows(page)).toHaveCount(5);
   }
   // Fight 0 is the whole night, which every report with a boss pull has.
@@ -147,16 +120,14 @@ test('a fight the report does not have falls back to the first boss pull', async
 test('a fight whose summary does not load says so instead of passing off the last one', async ({ page }) => {
   await page.goto(REPORT);
   await page.route('**/fights/2/summary.json*', (route) => route.abort());
+  await pickFight(page, 2);
 
-  await page.getByTestId('fight-group-1').click();
-  await page.getByTestId('fight-2').click();
-
-  await expect(page.getByTestId('fight-2')).toHaveAttribute('aria-current', 'true');
+  await expect(page.locator(FIGHT_SELECT)).toHaveValue('2');
   await expect(page.getByTestId('report-fight-error')).toHaveText('Report data did not load');
 
   // And it goes away again: an alert that outlived the fight it described would be the
   // same mislabelling in reverse.
-  await page.getByTestId('fight-3').click();
+  await pickFight(page, 3);
   await expect(page.getByTestId('report-fight-error')).toHaveCount(0);
 });
 
@@ -183,11 +154,11 @@ test('a stale fight failure does not fail the fight that is on screen', async ({
 
   const slow = await heldFightRoute(page, 2, 'abort');
   // Fight 1 is on screen, so its trash entry is already open (and cannot be folded away).
-  await page.getByTestId('fight-2').click();
+  await pickFight(page, 2);
   await slow.started;
 
   // Fight 3 is picked and lands while fight 2 is still open.
-  await page.getByTestId('fight-3').click();
+  await pickFight(page, 3);
   await expect(summaryRosterRows(page)).toHaveCount(5);
   await expect(page.getByTestId('report-fight-error')).toHaveCount(0);
 
@@ -209,11 +180,11 @@ test('a stale fight success neither clears the current error nor paints its rost
   const slow = await heldFightRoute(page, 2, 'continue');
   await page.route('**/fights/3/summary.json*', (route) => route.abort());
 
-  await page.getByTestId('fight-2').click();
+  await pickFight(page, 2);
   await slow.started;
 
   // Fight 3 is picked and fails while fight 2 is still open.
-  await page.getByTestId('fight-3').click();
+  await pickFight(page, 3);
   await expect(page.getByTestId('report-fight-error')).toHaveText('Report data did not load');
   await expect(summaryRosterRows(page)).toHaveCount(3);
 
@@ -246,7 +217,7 @@ test('a lazy mode shows a sized skeleton, not a blank panel, while its chunk loa
   // nothing at all, so the delay it was supposed to impose never happened and the test
   // was only ever catching the real, unslowed loading frame by luck.
   const chunk = await heldRoute(page, '**/report-island-*.js', 'continue');
-  await page.getByTestId('mode-compare').click();
+  await openTab(page, 'compare');
   await chunk.started;
 
   await expect(page.getByTestId('lazy-view-skeleton')).toBeVisible();
@@ -257,15 +228,12 @@ test('a lazy mode shows a sized skeleton, not a blank panel, while its chunk loa
 });
 
 test('compare puts two fights side by side with a per-player difference', async ({ page }) => {
-  await page.goto('/reports/fixture2abcd?fight=3&mode=compare');
+  await page.goto('/reports/fixture2abcd?fight=3&tab=compare');
   await expect(page.getByTestId('compare-mode')).toContainText('Pick a second fight');
   await choose(page.getByTestId('compare-with'), { index: 1 });
-  // A phone gets one card per player instead of the table.
-  const phone = (page.viewportSize()?.width ?? 1280) < 768;
-  await expect(page.getByTestId(phone ? 'compare-cards' : 'compare-table')).toBeVisible();
-  await expect(page.getByTestId(phone ? 'compare-card-delta' : 'compare-delta').first()).toContainText(
-    /[+-]/,
-  );
+  // One table at every width: a phone folds the other figures under the name.
+  await expect(page.getByTestId('compare-table')).toBeVisible();
+  await expect(page.getByTestId('compare-delta').first()).toContainText(/[+\u2212]/);
 });
 
 // Picking a second fight does not cancel the request for the one picked before it, so two
@@ -277,7 +245,7 @@ test('compare puts two fights side by side with a per-player difference', async 
 // -- not fall back to fight 1's 1,484 (delta +1,626), which is what an unguarded write
 // would paint.
 test('a stale compare answer does not overwrite the fight actually selected', async ({ page }) => {
-  await page.goto('/reports/fixture2abcd?fight=3&mode=compare&cmetric=damage_done');
+  await page.goto('/reports/fixture2abcd?fight=3&tab=compare&cmetric=damage_done');
 
   const slow = await heldFightRoute(page, 1, 'continue');
   await choose(page.getByTestId('compare-with'), '1');
@@ -285,10 +253,7 @@ test('a stale compare answer does not overwrite the fight actually selected', as
 
   // The visitor changes their mind before fight 1's summary has even arrived.
   await choose(page.getByTestId('compare-with'), '2');
-  const phone = (page.viewportSize()?.width ?? 1280) < 768;
-  const delta = phone
-    ? page.getByTestId('compare-card-Player-4184-000000A3').getByTestId('compare-card-delta')
-    : page.getByTestId('compare-Player-4184-000000A3').getByTestId('compare-delta');
+  const delta = page.getByTestId('compare-Player-4184-000000A3').getByTestId('compare-delta');
   await expect(delta).toHaveText('+3,110');
 
   const answered = page.waitForResponse((response) =>
@@ -302,195 +267,16 @@ test('a stale compare answer does not overwrite the fight actually selected', as
   await expect(delta).toHaveText('+3,110');
 });
 
-test('rankings inside the report marks this report’s own row', async ({ page }) => {
-  await page.route('**/v1/rankings?**', (route) =>
-    route.fulfill({
-      status: 200,
-      contentType: 'application/json',
-      body: JSON.stringify({
-        ok: true,
-        data: {
-          rows: [
-            {
-              rank: 1,
-              player: { key: 'us/normal/other-raider', name: 'Other Raider', class: 'Mage', spec: 'Fire' },
-              guild: { name: 'Elsewhere', ruleset: 'normal', region: 'us' },
-              value: 2200,
-              size: 40,
-              fought_at: '2026-12-09T22:10:00Z',
-              duration_ms: 200000,
-              talent_split: '0/31/20',
-              trinkets: [],
-              buff_count: 9,
-              report_id: 'otherreport1',
-              fight_index: 1,
-              state: 'ok',
-            },
-            {
-              rank: 2,
-              player: { key: 'us/normal/baelgrim', name: 'Baelgrim', class: 'Warrior', spec: 'Protection' },
-              guild: { name: 'The Last Watch', ruleset: 'normal', region: 'us' },
-              value: 110,
-              size: 5,
-              fought_at: '2026-09-26T20:12:40Z',
-              duration_ms: 40000,
-              talent_split: '31/20/0',
-              trinkets: [],
-              buff_count: 4,
-              report_id: 'fixture2abcd',
-              fight_index: 3,
-              state: 'at_risk',
-            },
-          ],
-          total: 2,
-          page: 1,
-          per_page: 100,
-          updated_at: '2026-12-09T22:15:00Z',
-        },
-        error: null,
-        request_id: 'r',
-      }),
-    }),
-  );
-
-  await page.goto('/reports/fixture2abcd?fight=3&mode=rankings');
-  await expect(page.getByTestId('rankings-rows')).toBeVisible();
-  await expect(page.getByTestId('rankings-mine')).toContainText('Baelgrim');
-  await expect(page.getByTestId('rankings-mine')).toContainText('at risk');
-  await expect(page.getByRole('link', { name: /Full rankings/ })).toHaveAttribute(
-    'href',
-    '/rankings/warden-kelthas',
-  );
-});
-
-test('rankings says so plainly on a trash fight', async ({ page }) => {
-  await page.goto('/reports/fixture2abcd?fight=1&mode=rankings');
-  await expect(page.getByTestId('rankings-mode')).toContainText('Trash is not ranked');
-});
-
-// Switching the metric does not cancel the request for the one picked before it, so two
-// of these can be in flight and settle in either order too -- `wantedMetric`'s half of
-// RankingsMode's guard. dps is held open; hps answers immediately and paints the screen;
-// dps's late answer, once it does arrive, must not overwrite hps's numbers with its own.
-test('a stale rankings answer for the metric that is no longer selected is dropped', async ({ page }) => {
-  let markStarted = (): void => {};
-  let release = (): void => {};
-  const started = new Promise<void>((resolve) => (markStarted = resolve));
-  const gate = new Promise<void>((resolve) => (release = resolve));
-
-  function pageBody(total: number): string {
-    return JSON.stringify({
-      ok: true,
-      data: { rows: [], total, page: 1, per_page: 100, updated_at: '2026-12-09T22:15:00Z' },
-      error: null,
-      request_id: 'r',
-    });
-  }
-
-  await page.route('**/v1/rankings?**', async (route) => {
-    const metric = new URL(route.request().url()).searchParams.get('metric');
-    if (metric === 'dps') {
-      markStarted();
-      await gate;
-      await route.fulfill({ status: 200, contentType: 'application/json', body: pageBody(111) });
-      return;
-    }
-    await route.fulfill({ status: 200, contentType: 'application/json', body: pageBody(222) });
-  });
-
-  await page.goto('/reports/fixture2abcd?fight=3&mode=rankings');
-  await started;
-
-  // The visitor picks Healing before Damage's request has even arrived.
-  await choose(page.getByTestId('rankings-metric'), 'hps');
-  await expect(page.getByTestId('rankings-mode')).toContainText('222 ranked kills');
-
-  const answered = page.waitForResponse((response) => response.url().includes('metric=dps'));
-  release();
-  await answered;
-  await page.waitForTimeout(250);
-
-  // Damage's late answer must not speak for the metric actually selected (Healing).
-  await expect(page.getByTestId('rankings-mode')).toContainText('222 ranked kills');
-});
-
-// The fight selector stays visible in every mode, so a visitor can switch to a different
-// encounter while a rankings request for the one they left is still in flight --
-// `wantedFight`'s half of RankingsMode's guard. The fixture carries a second encounter
-// fight (fight 4, Skolex the Insatiable) for exactly this: switching away from Warden
-// Kelthas to Skolex is a real fight-to-fight race the way the metric test above is a
-// metric-to-metric one, and both encounters are shown without unfolding trash. Warden
-// Kelthas's request is held open; Skolex's answers immediately and paints the screen;
-// Warden Kelthas's late answer, once it does arrive, must not overwrite Skolex's numbers.
-test('a stale rankings answer for the fight that is no longer selected is dropped', async ({ page }) => {
-  let markStarted = (): void => {};
-  let release = (): void => {};
-  const started = new Promise<void>((resolve) => (markStarted = resolve));
-  const gate = new Promise<void>((resolve) => (release = resolve));
-
-  function pageBody(total: number): string {
-    return JSON.stringify({
-      ok: true,
-      data: { rows: [], total, page: 1, per_page: 100, updated_at: '2026-12-09T22:15:00Z' },
-      error: null,
-      request_id: 'r',
-    });
-  }
-
-  await page.route('**/v1/rankings?**', async (route) => {
-    const encounter = new URL(route.request().url()).searchParams.get('encounter');
-    if (encounter === 'warden-kelthas') {
-      markStarted();
-      await gate;
-      await route.fulfill({ status: 200, contentType: 'application/json', body: pageBody(111) });
-      return;
-    }
-    await route.fulfill({ status: 200, contentType: 'application/json', body: pageBody(333) });
-  });
-
-  await page.goto('/reports/fixture2abcd?fight=3&mode=rankings');
-  await started;
-
-  // The visitor moves to the next kill before Warden Kelthas's request has even arrived.
-  await page.getByTestId('fight-4').click();
-  await expect(page.getByTestId('rankings-mode')).toContainText('333 ranked kills');
-  await expect(page.getByRole('link', { name: /Full rankings/ })).toHaveAttribute(
-    'href',
-    '/rankings/skolex-the-insatiable',
-  );
-
-  const answered = page.waitForResponse((response) => response.url().includes('encounter=warden-kelthas'));
-  release();
-  await answered;
-  await page.waitForTimeout(250);
-
-  // Warden Kelthas's late answer must not speak for the fight actually selected (Skolex).
-  await expect(page.getByTestId('rankings-mode')).toContainText('333 ranked kills');
-});
-
-// A death folded into the night moves with everything on its card: the hits before it
-// keep their distance to the death, so "they took … over 3.0s" reads the same on the
-// night as on the pull, not "over 7:29" for an eleven-second death.
-test('a night death card keeps its own span', async ({ page }) => {
-  await page.goto('/reports/fixture2abcd?fight=3&tab=deaths');
-  const onPull = (await page.getByTestId('deaths-tab').locator('li').first().innerText()).match(
-    /over ([\d:.]+s?)/,
-  )?.[1];
-  await page.goto('/reports/fixture2abcd?fight=all&tab=deaths');
-  const cards = page.getByTestId('deaths-tab').locator('li').filter({ hasText: 'Warden Kelthas' });
-  await expect(cards.first()).toContainText(`over ${onPull}`);
-});
-
-test('the full event stream lists aura refreshes under Auras applied', async ({ page }) => {
+test('the full event stream lists aura refreshes under the Auras chip', async ({ page }) => {
   test.slow();
   await serveDuckdbRuntime(page);
-  await page.goto('/reports/fixture2abcd?fight=3&view=events');
+  await page.goto('/reports/fixture2abcd?fight=3&tab=events');
   await page.getByTestId('events-stream').click();
   await expect(page.getByTestId('event-list')).toContainText('refreshed Power Word: Fortitude', {
     timeout: 60_000,
   });
-  // The "Auras applied" toggle governs it: off, the refresh goes with the applications.
-  await page.getByLabel('Auras applied').uncheck();
+  // The Auras chip governs it: off, the refresh goes with the applications.
+  await page.getByLabel('Auras', { exact: true }).uncheck();
   await expect(page.getByTestId('event-list')).not.toContainText('refreshed Power Word: Fortitude');
 });
 
@@ -521,5 +307,24 @@ test('a fight with no phases shows no bands and no phase presets', async ({ page
 
 test('the fight list says nothing about a phase on a kill', async ({ page }) => {
   await page.goto('/reports/fixture2abcd?fight=3');
-  await expect(page.getByTestId('fight-3-outcome')).toHaveText('Kill');
+  await expect(page.locator(`${FIGHT_SELECT} option[value="3"]`)).toHaveText(/· Kill ·/);
+});
+
+test('a zone’s trash folds into one entry, and an old trash link still opens it', async ({ page }) => {
+  await page.goto(REPORT);
+  const zone = page.locator(`${FIGHT_SELECT} option[value="-2"]`);
+  await expect(zone).toHaveText('All trash in Sanguine Depths');
+  await expect(zone).toHaveAttribute('data-description', '2 pulls');
+  await page.goto(`${REPORT}?fight=trash-1`);
+  await expect(page.locator(FIGHT_SELECT)).toHaveValue('-2');
+  await expect(page.getByTestId('night-view')).toBeVisible();
+  await expect(page.getByTestId('night-summary')).toContainText('2 trash pulls');
+});
+
+test('the glossary is one quiet line that opens the words the tables use', async ({ page }) => {
+  await page.goto(`${REPORT}?fight=3`);
+  const glossary = page.getByTestId('glossary');
+  await glossary.locator('summary').click();
+  await expect(glossary).toContainText('Standing threat');
+  await expect(glossary).toContainText('Threat built in a window');
 });

@@ -1,0 +1,49 @@
+{
+  "comment": "The report states the parity gate checks (web/tests/e2e/parity-report.spec.ts) at 1440 x 1000, on the bundled real log (web/public/sample-report/sample, the 17 Sept 2026 Zephras Isle night). ws_report.py renders each mock from the same files at test time (support/parity-mocks.ts renderReportMocks); tests/e2e/support/report-parity.ts opens /reports/sample on the matching tab, fight and source. Spec design/specs/2026-11-07-logs-reports.md section 14.",
+  "viewport": {
+    "width": 1440,
+    "height": 1000
+  },
+  "states": [
+    {
+      "id": "report-summary",
+      "path": "/reports/sample?tab=summary",
+      "mock": "web-report-summary.html"
+    },
+    {
+      "id": "report-damage-done",
+      "path": "/reports/sample?tab=damage-done",
+      "mock": "web-report-damage-done.html"
+    },
+    {
+      "id": "report-healing",
+      "path": "/reports/sample?tab=healing",
+      "mock": "web-report-healing.html"
+    },
+    {
+      "id": "report-damage-taken",
+      "path": "/reports/sample?tab=damage-taken",
+      "mock": "web-report-damage-taken.html"
+    },
+    {
+      "id": "report-deaths",
+      "path": "/reports/sample?tab=deaths&source=everyone",
+      "mock": "web-report-deaths.html"
+    },
+    {
+      "id": "report-empty",
+      "path": "/reports/sample?fight=13&tab=damage-done",
+      "mock": "web-report-empty.html"
+    },
+    {
+      "id": "report-loading",
+      "path": "/reports/sample",
+      "mock": "web-report-loading.html"
+    },
+    {
+      "id": "report-sample",
+      "path": "/reports/sample",
+      "mock": "web-report-sample.html"
+    }
+  ]
+}

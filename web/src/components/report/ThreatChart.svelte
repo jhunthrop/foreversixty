@@ -18,8 +18,9 @@
   import LegendSheet from '../chart/LegendSheet.svelte';
   import PlayersControl from '../chart/PlayersControl.svelte';
   import TimeSeriesChart from '../chart/TimeSeriesChart.svelte';
-  import Card from '../ui/Card.svelte';
+  import Button from '../ui/Button.svelte';
   import Glyph from '../ui/Glyph.svelte';
+  import Section from '../ui/Section.svelte';
 
   let {
     enemyName,
@@ -108,18 +109,10 @@
   }
 </script>
 
-{#snippet headMeta()}
-  <!-- On a phone the title takes the head's one row (it names the enemy, fix round 2); the brush
-       under the plot carries the window's edges there. -->
-  <span class="text-muted numeric text-[13px] max-md:hidden" data-testid="chart-head-meta"
-    >{chartCopy.threatMeta(current.startMs, current.endMs, whole)}</span
-  >
-{/snippet}
-
 {#snippet controls()}
   <div class="flex flex-wrap items-center justify-end gap-x-2 gap-y-2">
     {#if !phone}
-      <span class="quiet-label">{chartCopy.players}</span>
+      <span class="text-small text-muted">{chartCopy.players}</span>
       <PlayersControl
         id="threat-players"
         entries={model.entries}
@@ -133,28 +126,30 @@
       {@render enemyPicker()}
     {/if}
     {#if !whole}
-      <button
-        type="button"
-        class="reset inline-flex items-center gap-1.5"
-        onclick={() => onWindow(null)}
-        data-testid="window-reset"
-      >
+      <Button tone="ghost" size="sm" onclick={() => onWindow(null)} testid="window-reset">
         <Glyph name="close" size={14} />{chartCopy.wholeFight}
-      </button>
+      </Button>
     {/if}
   </div>
 {/snippet}
 
 {#snippet caveat()}
-  <p class="text-muted text-[12px] leading-4" data-testid="threat-caveat">
+  <p class="text-small text-muted pt-2" data-testid="threat-caveat">
     {phone ? chartCopy.threatCaveatPhone : chartCopy.threatCaveat}
     <a class="caveat-link whitespace-nowrap" href="#glossary-threat">{chartCopy.threatCaveatLink}</a>
   </p>
 {/snippet}
 
-<Card quiet compact body="none" {title} titleSnippet={headMeta} aside={controls} testid="threat-chart">
+<!-- An open Section under the table's Plate (spec 6.1, R6): the chart is never a second box. -->
+<Section
+  {title}
+  meta={phone ? undefined : chartCopy.threatMeta(current.startMs, current.endMs, whole)}
+  metaTestid="chart-head-meta"
+  head={controls}
+  testid="threat-chart"
+>
   {#if phone}
-    <div class="px-4 pb-2">{@render enemyPicker()}</div>
+    <div class="pb-2">{@render enemyPicker()}</div>
   {/if}
   <ChartLegend
     series={model.series}
@@ -193,8 +188,8 @@
     {onOpenDeath}
     testid="threat-time-chart"
   />
-  <div class="border-line-soft flex min-h-7 items-center border-t px-4 py-1">{@render caveat()}</div>
-</Card>
+  {@render caveat()}
+</Section>
 <LegendSheet
   open={legend.sheetOpen}
   entries={model.entries}
@@ -207,20 +202,6 @@
 />
 
 <style>
-  .reset {
-    min-height: 44px;
-    padding: 0 8px;
-    color: var(--color-gold);
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-  }
-  @media (min-width: 768px) {
-    .reset {
-      min-height: 32px;
-    }
-  }
   .caveat-link {
     color: var(--color-gold);
     text-decoration: underline;

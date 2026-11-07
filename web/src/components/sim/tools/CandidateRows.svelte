@@ -4,9 +4,10 @@
      rather than hiding the rows -- the player has to see what they locked away. -->
 <script lang="ts">
   import ItemHover from '../../ItemHover.svelte';
+  import ItemIcon from '../../ui/ItemIcon.svelte';
+  import Row from '../../ui/Row.svelte';
   import { rarityClassFor } from '../../../lib/planner/items';
-  import { dataUrl } from '../../../lib/planner/load';
-  import { SECONDARY_BUTTON } from '../../../lib/planner/styles';
+  import { button } from '../../../lib/ui/button';
   import type { Slot } from '../../../lib/planner/types';
   import { candidateKey, type CandidateRow } from '../../../lib/sim/candidates';
   import { bulkCopy } from '../../../lib/sim/copy';
@@ -70,101 +71,96 @@
   }
 </script>
 
-<ul class="flex flex-col">
+<div class="flex flex-col">
   {#each rows as row (candidateKey(row))}
-    <li
-      class="border-line-soft flex flex-wrap items-center gap-2 border-b px-2 py-1 last:border-b-0"
-      data-testid={testId(row)}
-    >
-      <label class="flex min-h-11 flex-1 items-center gap-3">
-        <input
-          type="checkbox"
-          class="h-5 w-5"
-          checked={row.checked}
-          disabled={locked || !row.known}
-          onchange={() => ontoggle(candidateKey(row))}
-        />
-        <ItemHover itemId={row.item.id} {classSlug} build={treeVersion}>
-          <img
-            src={dataUrl(treeVersion, `icons/${row.item.icon}.webp`)}
-            alt=""
-            width="28"
-            height="28"
-            loading="lazy"
-            decoding="async"
-            class="rounded-control border-line h-7 w-7 border object-cover"
+    {@const key = candidateKey(row)}
+    <Row title={row.item.name} open wrapTrail testid={testId(row)}>
+      {#snippet lead()}
+        <!-- The label is the 44 px hit target around the 20 px mark. -->
+        <label class="-mx-3 inline-flex min-h-11 min-w-11 items-center justify-center">
+          <input
+            type="checkbox"
+            class="accent-gold h-5 w-5"
+            aria-label={row.item.name}
+            checked={row.checked}
+            disabled={locked || !row.known}
+            onchange={() => ontoggle(key)}
           />
-          <span class={`text-[14px] font-semibold ${rarityClassFor(row.item.quality)}`}>
-            {row.item.name}
-          </span>
+        </label>
+        <ItemIcon icon={row.item.icon} quality={row.item.quality} build={treeVersion} size={32} />
+      {/snippet}
+      {#snippet titleContent()}
+        <ItemHover itemId={row.item.id} {classSlug} build={treeVersion}>
+          <span class={rarityClassFor(row.item.quality)}>{row.item.name}</span>
         </ItemHover>
-        <span class="text-muted text-[12px]">{originLabel(row.origin)}</span>
+      {/snippet}
+      {#snippet subContent()}
+        {originLabel(row.origin)}
         <!-- The engine's SimDatabase does not carry this item id (sim-items.ts's
-             `isKnownItem`, set on the row when it was added). The checkbox above is
-             disabled rather than the row hidden -- the item is real, and vanishing it would
-             look like data loss rather than naming a known limitation. -->
+             `isKnownItem`, set on the row when it was added). The checkbox is disabled
+             rather than the row hidden -- the item is real, and vanishing it would look like
+             data loss rather than naming a known limitation. -->
         {#if !row.known}
-          <span
-            class="text-muted text-[12px]"
-            data-testid={`sim-candidate-unknown-${row.slot}-${row.item.id}`}
-          >
-            {bulkCopy.notInSimulator}
+          <span data-testid={`sim-candidate-unknown-${row.slot}-${row.item.id}`}>
+            · {bulkCopy.notInSimulator}
           </span>
         {/if}
-        <span class="text-muted numeric ml-auto text-[12px]">{row.item.item_level}</span>
-      </label>
-      <button
-        type="button"
-        class="{SECONDARY_BUTTON} border-line-warm text-nav px-3 disabled:opacity-50"
-        aria-expanded={openKey === candidateKey(row)}
-        disabled={locked || !row.known}
-        onclick={() => (openKey = openKey === candidateKey(row) ? null : candidateKey(row))}
-      >
-        {bulkCopy.copyAndModify}
-      </button>
-      <!-- A locked slot's checkbox is disabled and `toCandidates` drops anything ticked on
+      {/snippet}
+      {#snippet trail()}
+        <span class="text-muted text-[13px] tabular-nums">{row.item.item_level}</span>
+        <button
+          type="button"
+          class={button('secondary', 'sm')}
+          aria-expanded={openKey === key}
+          disabled={locked || !row.known}
+          onclick={() => (openKey = openKey === key ? null : key)}
+        >
+          {bulkCopy.copyAndModify}
+        </button>
+      {/snippet}
+    </Row>
+    <!-- A locked slot's checkbox is disabled and `toCandidates` drops anything ticked on
            it, so a copy made here would be checked-but-inert with nothing telling the
-           player. The trigger above is disabled for the same reason; this closes the panel
-           too, for the case where a slot is locked while it is already open. -->
-      {#if openKey === candidateKey(row) && !locked}
-        {@const itemSuffixes = suffixesForItem(suffixes, row.item)}
-        <div class="flex w-full flex-col gap-2 pb-2 md:flex-row">
-          <div class="flex-1">
-            <p class="text-muted px-2 text-[12px]">{bulkCopy.withEnchant}</p>
-            <EnchantList
-              rows={enchants}
-              {slot}
-              {classSlug}
-              item={row.item}
-              {treeVersion}
-              onpick={(enchant) => {
-                oncopy(candidateKey(row), { enchant });
-                openKey = null;
-              }}
-            />
-          </div>
-          {#if itemSuffixes.length > 0}
-            <div class="flex-1">
-              <p class="text-muted px-2 text-[12px]">{bulkCopy.withSuffix}</p>
-              <ul class="border-line bg-raised rounded-panel flex flex-col border p-2">
-                {#each itemSuffixes as suffix (suffix.id)}
-                  <li>
-                    <button
-                      type="button"
-                      class="text-text flex min-h-11 w-full items-center px-2 text-left text-[13px]"
-                      data-testid={`sim-suffix-${row.slot}-${row.item.id}-${suffix.id}`}
-                      onclick={() => {
-                        oncopy(candidateKey(row), { suffix: suffix.id });
-                        openKey = null;
-                      }}>{suffix.name}</button
-                    >
-                  </li>
-                {/each}
-              </ul>
-            </div>
-          {/if}
+           player. The trigger is disabled for the same reason; this closes the panel too,
+           for the case where a slot is locked while it is already open. -->
+    {#if openKey === key && !locked}
+      {@const itemSuffixes = suffixesForItem(suffixes, row.item)}
+      <div class="flex w-full flex-col gap-4 pb-2 md:flex-row">
+        <div class="flex-1">
+          <p class="text-muted text-[13px] font-bold">{bulkCopy.withEnchant}</p>
+          <EnchantList
+            rows={enchants}
+            {slot}
+            {classSlug}
+            item={row.item}
+            {treeVersion}
+            onpick={(enchant) => {
+              oncopy(key, { enchant });
+              openKey = null;
+            }}
+          />
         </div>
-      {/if}
-    </li>
+        {#if itemSuffixes.length > 0}
+          <div class="flex-1">
+            <p class="text-muted text-[13px] font-bold">{bulkCopy.withSuffix}</p>
+            <ul class="flex flex-col">
+              {#each itemSuffixes as suffix (suffix.id)}
+                <li>
+                  <button
+                    type="button"
+                    class="text-text hover:text-gold flex min-h-11 w-full items-center text-left text-[14px]"
+                    data-testid={`sim-suffix-${row.slot}-${row.item.id}-${suffix.id}`}
+                    onclick={() => {
+                      oncopy(key, { suffix: suffix.id });
+                      openKey = null;
+                    }}>{suffix.name}</button
+                  >
+                </li>
+              {/each}
+            </ul>
+          </div>
+        {/if}
+      </div>
+    {/if}
   {/each}
-</ul>
+</div>

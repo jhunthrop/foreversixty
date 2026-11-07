@@ -23,6 +23,10 @@ export interface StatFigure {
   value: string;
   /** A dash or a missing figure, drawn muted. */
   muted?: boolean;
+  /** A signed difference: a gain in the kill colour, a loss in the wipe colour. */
+  tone?: 'kill' | 'wipe';
+  /** The cell's testid, for a test that reads one figure. */
+  testid?: string;
 }
 
 const ARIA_SORT: Readonly<Record<SortDirection, 'descending' | 'ascending'>> = {

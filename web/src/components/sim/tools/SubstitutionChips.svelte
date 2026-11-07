@@ -1,5 +1,6 @@
 <!-- web/src/components/sim/tools/SubstitutionChips.svelte -->
-<!-- What a combination changed, as icon chips.
+<!-- What a combination changed, as plain inline item names with their icons (no pill boxes; a
+     Tag only for the emptied off-hand, which is a state, not an item).
      The NAME always comes off the substitution -- contract 10.1 A6 fills it for items too,
      from simdb -- so a chip is legible even where the per-class item file has not loaded.
      The item map is consulted for the icon and the rarity colour only, which are the two
@@ -30,11 +31,12 @@
 <script lang="ts">
   import ItemHover from '../../ItemHover.svelte';
   import { rarityClassFor } from '../../../lib/planner/items';
-  import { dataUrl } from '../../../lib/planner/load';
   import type { Item } from '../../../lib/planner/types';
   import type { Substitution } from '../../../lib/sim/bulk-types';
   import { isEmptiedOffHand, substitutionChipLabel } from '../../../lib/sim/combos';
   import { bulkCopy } from '../../../lib/sim/copy';
+  import ItemIcon from '../../ui/ItemIcon.svelte';
+  import Tag from '../../ui/Tag.svelte';
 
   let {
     substitutions,
@@ -51,50 +53,32 @@
   } = $props();
 </script>
 
-<span class="flex flex-wrap items-center gap-1">
+<span class="flex flex-wrap items-center gap-x-4 gap-y-1">
   {#each substitutions as sub, index (`${sub.kind}-${sub.slot ?? ''}-${sub.item_id ?? sub.name ?? index}`)}
     {#if isEmptiedOffHand(sub)}
-      <span
-        class="border-line-soft text-muted rounded-pill inline-flex items-center gap-1 border border-dashed px-2 py-[2px] text-[12px]"
-      >
-        {bulkCopy.offHandEmptied}
-      </span>
+      <Tag tone="muted">{bulkCopy.offHandEmptied}</Tag>
     {:else}
       {@const item = sub.item_id === undefined ? undefined : items.get(sub.item_id)}
-      <span class="border-line rounded-pill inline-flex items-center gap-1 border px-2 py-[2px] text-[12px]">
+      <span class="inline-flex items-center gap-2 text-[15px] leading-5 font-bold">
         {#if item !== undefined && classSlug !== undefined}
-          <ItemHover itemId={item.id} {classSlug} build={treeVersion}>
-            <img
-              src={dataUrl(treeVersion, `icons/${item.icon}.webp`)}
-              alt=""
-              width="16"
-              height="16"
-              loading="lazy"
-              decoding="async"
-              class="rounded-control h-4 w-4 object-cover"
-            />
+          <ItemHover itemId={item.id} {classSlug} build={treeVersion} class="gap-2">
+            <ItemIcon icon={item.icon} quality={item.quality} build={treeVersion} size={28} />
             <span class={rarityClassFor(item.quality)}>{substitutionChipLabel(sub)}</span>
           </ItemHover>
         {:else}
           {#if item !== undefined}
-            <img
-              src={dataUrl(treeVersion, `icons/${item.icon}.webp`)}
-              alt=""
-              width="16"
-              height="16"
-              loading="lazy"
-              decoding="async"
-              class="rounded-control h-4 w-4 object-cover"
-            />
+            <ItemIcon icon={item.icon} quality={item.quality} build={treeVersion} size={28} />
           {/if}
-          <span class={item === undefined ? 'text-text' : rarityClassFor(item.quality)}>
+          <span class={item === undefined ? 'text-strong' : rarityClassFor(item.quality)}>
             {substitutionChipLabel(sub)}
           </span>
         {/if}
         <!-- Task 7: the source name used to be hidden in a title= (never fires on touch).
              Shown inline, muted, only when the substitution actually carries one. -->
         {#if sub.source_name !== undefined && sub.source_name !== ''}
-          <span class="text-muted" data-testid="sim-substitution-source">· {sub.source_name}</span>
+          <span class="text-muted text-[13px] font-normal" data-testid="sim-substitution-source"
+            >· {sub.source_name}</span
+          >
         {/if}
       </span>
     {/if}

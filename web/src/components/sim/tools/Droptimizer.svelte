@@ -1,5 +1,6 @@
 <!-- web/src/components/sim/tools/Droptimizer.svelte -->
-<!-- /sim/drops. It is the same store, the same run bar and the same stage loop as Top Gear;
+<!-- /sim/drops (mock design/mocks/ws_simtools.py): the run line, the results grouped by boss once a
+     run finishes, then the source picker on the page's one Plate. It is the same store, the same run bar and the same stage loop as Top Gear;
      the source picker replaces the slot grid and the results group by boss instead of
      ranking one flat list.
      "Pin into Top Gear" leaves this page with the item in the query string, because the two
@@ -13,13 +14,15 @@
   import type { BulkResult } from '../../../lib/sim/bulk-types';
   import { bulkCopy } from '../../../lib/sim/copy';
   import { pickedWithNothingTried } from '../../../lib/sim/drop-picks';
+  import type { Snippet } from 'svelte';
+  import Page from '../../ui/Page.svelte';
   import BulkRunBar from './BulkRunBar.svelte';
   import DropResults from './DropResults.svelte';
   import SourcePicker from './SourcePicker.svelte';
 
   // `me` is part of the pinned prop shape ToolsView.svelte passes to every tool view (see
   // TopGear.svelte's identical comment); this page has no use for it itself.
-  let { store }: { store: BulkStore; me: Me | null } = $props();
+  let { store, lead }: { store: BulkStore; me: Me | null; lead?: Snippet } = $props();
 
   /**
    * Top Gear with this item already ticked, and its drop provenance carried along so the
@@ -54,9 +57,21 @@
   );
 </script>
 
-<div class="flex flex-col gap-[22px] md:gap-8" data-testid="sim-droptimizer">
+<Page layout="ledger" testid="sim-droptimizer">
+  {#snippet bar()}<BulkRunBar {store} />{/snippet}
+  {#if lead}{@render lead()}{/if}
+  {#if store.result !== null}
+    <DropResults
+      result={store.result as BulkResult}
+      items={store.items}
+      treeVersion={store.character?.tree_version ?? ''}
+      {untried}
+      onpin={pin}
+    />
+  {/if}
   {#if store.character !== null}
     <SourcePicker
+      plate
       loot={store.loot}
       phases={store.phases}
       shownKinds={store.shownKinds}
@@ -71,18 +86,7 @@
       ontoggle={(sourceId, bossId) => store.toggleSource(sourceId, bossId)}
     />
   {/if}
-
-  <BulkRunBar {store} />
-
-  {#if store.result !== null}
-    <DropResults
-      result={store.result as BulkResult}
-      items={store.items}
-      treeVersion={store.character?.tree_version ?? ''}
-      {untried}
-      onpin={pin}
-    />
-  {:else if store.pickedBosses.length === 0}
-    <p class="text-muted px-[18px] text-[13px] md:px-0">{bulkCopy.dropsNothing}</p>
+  {#if store.result === null && store.pickedBosses.length === 0}
+    <p class="text-small text-muted m-0" data-testid="sim-drops-nothing">{bulkCopy.dropsNothing}</p>
   {/if}
-</div>
+</Page>

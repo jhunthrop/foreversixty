@@ -2,6 +2,7 @@
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { expect, test } from './support/test';
+import { pickFight } from './support/report-frame';
 
 const FIXTURES = path.resolve(process.cwd(), 'src/fixtures/report');
 const DATA = '/logs-data/reports/fixture2live';
@@ -78,7 +79,7 @@ test('a live fight polls, then settles when it closes', async ({ page }) => {
   await page.goto('/reports/fixture2live');
 
   await expect(page.getByTestId('report-live')).toBeVisible();
-  await expect(page.getByTestId('fight-3-outcome')).toHaveText('Live');
+  await expect(page.locator('select[data-testid="report-fight"] option[value="3"]')).toHaveText(/· Live ·/);
   // The open fight rendered from live.json, without ever asking for a summary that cannot
   // exist yet.
   await expect(summaryRosterRows(page)).toHaveCount(5);
@@ -87,7 +88,9 @@ test('a live fight polls, then settles when it closes', async ({ page }) => {
   expect(percentileCalls).toBe(0);
 
   // Two polls at five seconds each, plus slack.
-  await expect(page.getByTestId('fight-3-outcome')).toHaveText('Kill', { timeout: 20_000 });
+  await expect(page.locator('select[data-testid="report-fight"] option[value="3"]')).toHaveText(/· Kill ·/, {
+    timeout: 20_000,
+  });
   await expect(page.getByTestId('report-live')).toHaveCount(0);
   expect(reportCalls).toBeGreaterThanOrEqual(3);
 
@@ -166,7 +169,7 @@ async function heldRoute(
 }
 
 function summaryRosterRows(page: import('@playwright/test').Page): import('@playwright/test').Locator {
-  return page.getByTestId('summary-tab').locator('li[data-testid^="roster-"]');
+  return page.getByTestId('summary-tab').locator('[role="row"][data-testid^="roster-"]');
 }
 
 // The poll can be mid-fetchLive for the fight on screen at the exact moment the visitor
@@ -240,10 +243,8 @@ test('a stale live response does not trigger a second fetch for the fight the vi
 
   // Wait for the poll's first tick to actually reach fetchLive for fight 3 before moving.
   await livePolled;
-
-  await page.getByTestId('fight-group-1').click();
-  await page.getByTestId('fight-2').click();
-  await expect(page.getByTestId('fight-2')).toHaveAttribute('aria-current', 'true');
+  await pickFight(page, 2);
+  await expect(page.locator('select[data-testid="report-fight"]')).toHaveValue('2');
   // Fight 2's own summary request has started (held, uncached) but not yet resolved.
   await fight2.started;
   expect(fight2.callCount()).toBe(1);
@@ -333,9 +334,7 @@ test('an expired signed base is re-signed and the same request retried', async (
 
   // Ten minutes pass. The page is still open and the base it holds no longer signs.
   live.delete(1);
-
-  await page.getByTestId('fight-group-1').click();
-  await page.getByTestId('fight-2').click();
+  await pickFight(page, 2);
 
   // Fight 2 renders from a freshly signed base rather than "That report is not public".
   await expect(summaryRosterRows(page)).toHaveCount(1);
@@ -350,8 +349,8 @@ test('an expired signed base is re-signed and the same request retried', async (
 
   // And the fresh base is kept: going back to a fight that is no longer cached does not
   // re-sign a second time.
-  await page.getByTestId('fight-1').click();
-  await expect(page.getByTestId('fight-1')).toHaveAttribute('aria-current', 'true');
+  await pickFight(page, 1);
+  await expect(page.locator('select[data-testid="report-fight"]')).toHaveValue('1');
   await expect(page.getByTestId('report-fight-error')).toHaveCount(0);
   expect(accessCalls).toBe(2);
 });
@@ -390,13 +389,11 @@ test('a stale fight error is cleared by the live poll', async ({ page }) => {
 
   await page.goto('/reports/fixture2live?fight=3');
   await expect(page.getByTestId('report-live')).toBeVisible();
-
-  await page.getByTestId('fight-group-1').click();
-  await page.getByTestId('fight-2').click();
+  await pickFight(page, 2);
   await expect(page.getByTestId('report-fight-error')).toBeVisible();
 
-  await page.getByTestId('fight-3').click();
-  await expect(page.getByTestId('fight-3')).toHaveAttribute('aria-current', 'true');
+  await pickFight(page, 3);
+  await expect(page.locator('select[data-testid="report-fight"]')).toHaveValue('3');
 
   // One poll tick, plus slack: the fight on screen is live and being updated, so an alert
   // about a different fight must not outlive the next update.
@@ -405,7 +402,7 @@ test('a stale fight error is cleared by the live poll', async ({ page }) => {
 });
 
 test('the timelines and events views render from the summary', async ({ page }) => {
-  await page.goto('/reports/fixture2abcd?fight=3&view=timelines');
+  await page.goto('/reports/fixture2abcd?fight=3&tab=timeline');
   await expect(page.getByTestId('timelines')).toContainText('Baelgrim');
   await expect(page.getByTestId('lane-Player-4184-000000A4')).toBeVisible();
 

@@ -9,6 +9,7 @@
   import { canAddPoint } from '../../lib/planner/rules';
   import { CELL_BORDER, CELL_PILL, cellState, CELL_FACE } from '../../lib/planner/styles';
   import { talentTipKey } from '../../lib/tooltips/game-tip';
+  import Overlay from '../ui/Overlay.svelte';
   import type { PlannerStore } from '../../lib/planner/store.svelte';
   import type { Talent } from '../../lib/planner/types';
 
@@ -207,32 +208,34 @@
     bind:this={tip}
     style:left={`${placement.left}px`}
     style:max-height={placement.maxHeightPx === null ? undefined : `${placement.maxHeightPx}px`}
-    class="border-line bg-raised rounded-panel absolute z-30 flex {placement.below
+    class="absolute z-30 w-[260px] {placement.below
       ? 'top-full mt-2'
-      : 'bottom-full mb-2'} {placement.maxHeightPx === null
-      ? ''
-      : 'overflow-y-auto'} w-[260px] flex-col gap-2 border p-3 shadow-[0_12px_30px_rgba(0,0,0,.45)]"
+      : 'bottom-full mb-2'} {placement.maxHeightPx === null ? '' : 'overflow-y-auto'}"
   >
-    <span class="text-strong heading-name text-[14px]">{talent.name}</span>
-    <span class="text-muted numeric text-[12px]">
-      Rank {rank} of {talent.max_rank}
-    </span>
-    {#if rank > 0}
-      <p class="text-text text-[13px] leading-snug">{talent.ranks[rank - 1].description}</p>
-    {/if}
-    {#if rank < talent.max_rank}
-      <p class="text-muted text-[13px] leading-snug">
-        <span class="label text-muted">Next rank</span>
-        {talent.ranks[rank].description}
-      </p>
-    {/if}
-    {#if bandRankLine !== null}
-      <!-- Rebuild spec §4.E.4: one more line in the cell's own existing tooltip, never
-         a second tooltip mechanism (tenet 10). -->
-      <span class="text-gold text-[12px] font-semibold" data-testid={`talent-band-line-${talent.id}`}>
-        {bandRankLine}
-      </span>
-    {/if}
+    <Overlay kind="tooltip" role="none">
+      <div class="flex flex-col gap-2 p-3">
+        <span class="text-strong heading-name text-[14px]">{talent.name}</span>
+        <span class="text-muted numeric text-[12px]">
+          Rank {rank} of {talent.max_rank}
+        </span>
+        {#if rank > 0}
+          <p class="text-text text-[13px] leading-snug">{talent.ranks[rank - 1].description}</p>
+        {/if}
+        {#if rank < talent.max_rank}
+          <p class="text-muted text-[13px] leading-snug">
+            <span class="label text-muted">Next rank</span>
+            {talent.ranks[rank].description}
+          </p>
+        {/if}
+        {#if bandRankLine !== null}
+          <!-- Rebuild spec §4.E.4: one more line in the cell's own existing tooltip, never
+             a second tooltip mechanism (tenet 10). -->
+          <span class="text-gold text-[12px] font-semibold" data-testid={`talent-band-line-${talent.id}`}>
+            {bandRankLine}
+          </span>
+        {/if}
+      </div>
+    </Overlay>
   </div>
 {/snippet}
 
@@ -252,7 +255,7 @@
       data-testid={`talent-${talent.id}`}
       data-rank={rank}
       data-state={state}
-      class={`rounded-control bg-card-top relative flex h-11 w-11 items-center justify-center border md:h-12 md:w-12 lg:h-14 lg:w-14 ${CELL_BORDER[state]}`}
+      class={`rounded-control relative flex h-11 w-11 items-center justify-center border bg-white/[.04] md:h-12 md:w-12 lg:h-14 lg:w-14 ${CELL_BORDER[state]}`}
       onfocus={onfocuscell}
     >
       {@render face()}
@@ -266,7 +269,7 @@
       data-testid={`talent-${talent.id}`}
       data-rank={rank}
       data-state={state}
-      class={`rounded-control bg-card-top relative flex h-11 w-11 items-center justify-center border md:h-12 md:w-12 lg:h-14 lg:w-14 ${CELL_BORDER[state]}`}
+      class={`rounded-control relative flex h-11 w-11 items-center justify-center border bg-white/[.04] md:h-12 md:w-12 lg:h-14 lg:w-14 ${CELL_BORDER[state]}`}
       onclick={add}
       oncontextmenu={removeOnContextMenu}
       onfocus={() => {

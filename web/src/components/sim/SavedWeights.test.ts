@@ -14,15 +14,20 @@ import type { WeightsResult } from '../../lib/sim/bulk-types';
 import SavedWeights from './SavedWeights.svelte';
 
 const result = fixture as unknown as WeightsResult;
+/** A greyed weight's name (WeightsScaleTable's StatRow): muted. */
+const GREYED = '<span class="text-muted">';
 
 function renderWeights(next: WeightsResult): string {
   const { body } = render(SavedWeights, { props: { result: next } });
   return body;
 }
 
-/** The whole `<div data-testid="sim-weight-<stat>">…</div>` row element for one stat. */
+/** One stat's StatRow markup: from its own row up to the next row (or the end of the page). */
 function rowFor(body: string, stat: string): string {
-  const match = new RegExp(`<div[^>]*data-testid="sim-weight-${stat}"[^>]*>.*?</div>`, 's').exec(body);
+  const match = new RegExp(
+    `<div[^>]*data-testid="sim-weight-${stat}"[^>]*>.*?(?=data-testid="sim-weight-|$)`,
+    's',
+  ).exec(body);
   if (match === null) throw new Error(`no row rendered for stat "${stat}"`);
   return match[0];
 }
@@ -32,9 +37,9 @@ describe('SavedWeights: the greyed row and its label (D45)', () => {
     const body = renderWeights(result);
     const agilityRow = rowFor(body, 'agility');
     const strengthRow = rowFor(body, 'strength');
-    expect(agilityRow).toContain('opacity-50');
+    expect(agilityRow).toContain(GREYED);
     expect(agilityRow).toContain(bisCopy.weightsNotSignificant);
-    expect(strengthRow).not.toContain('opacity-50');
+    expect(strengthRow).not.toContain(GREYED);
     expect(strengthRow).not.toContain(bisCopy.weightsNotSignificant);
   });
 
@@ -58,7 +63,7 @@ describe('SavedWeights: the greyed row and its label (D45)', () => {
       })),
     };
     const body = renderWeights(allSignificant);
-    expect(body).not.toContain('opacity-50');
+    expect(body).not.toContain(GREYED);
     expect(body).not.toContain(bisCopy.weightsNotSignificant);
   });
 });

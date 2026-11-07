@@ -6,9 +6,12 @@
      gets the identical flow rather than a second, drifting copy of the same six pieces of
      state -- Top Gear, talents, drops and weights all save through this one component now. -->
 <script lang="ts">
-  import { SECONDARY_BUTTON } from '../../../lib/planner/styles';
   import { simCopy } from '../../../lib/sim/copy';
   import { BUSY_CLASS } from '../../../lib/ui/busy';
+  import { button } from '../../../lib/ui/button';
+  import { FIELD_CONTROL, FIELD_FOCUS, FIELD_HEIGHT, fieldEdge } from '../../../lib/ui/field';
+  import Button from '../../ui/Button.svelte';
+  import Field from '../../ui/Field.svelte';
 
   let {
     onsave,
@@ -68,7 +71,7 @@
   }
 </script>
 
-<div class="flex flex-wrap items-center gap-3" data-testid="sim-save">
+<div class="flex flex-wrap items-end gap-3" data-testid="sim-save">
   {#if savedUrl !== null}
     <label class="sr-only" for="sim-save-link">{simCopy.savedLinkLabel}</label>
     <input
@@ -76,40 +79,32 @@
       type="text"
       readonly
       value={savedUrl}
-      class="border-line-warm rounded-control bg-raised text-text h-11 min-w-0 flex-1 border px-3 text-[14px] md:max-w-[420px]"
+      class={[FIELD_CONTROL, FIELD_HEIGHT, FIELD_FOCUS, fieldEdge(false), 'min-w-0 flex-1 md:max-w-[420px]']}
       data-testid="sim-save-link"
       onclick={(event) => event.currentTarget.select()}
     />
-    <button
-      type="button"
-      class="{SECONDARY_BUTTON} border-line-warm text-nav px-4"
-      onclick={() => void copySavedLink()}
-      data-testid="sim-save-copy"
+    <Button size="sm" testid="sim-save-copy" onclick={() => void copySavedLink()}
+      >{savedLinkCopied ? simCopy.copied : simCopy.copyLink}</Button
     >
-      {savedLinkCopied ? simCopy.copied : simCopy.copyLink}
-    </button>
     <a
-      class="{SECONDARY_BUTTON} border-line-warm text-nav px-4"
+      class={button('secondary', 'sm')}
       href={savedUrl}
       target="_blank"
       rel="noopener"
-      data-testid="sim-open-new-tab"
+      data-testid="sim-open-new-tab">{simCopy.openInNewTab}</a
     >
-      {simCopy.openInNewTab}
-    </a>
   {:else if saveOpen}
-    <label class="flex flex-col gap-1">
-      <span class="quiet-label">{simCopy.saveTitleLabel}</span>
-      <input
-        type="text"
+    <div class="w-[260px]">
+      <Field
+        id="sim-save-title"
+        label={simCopy.saveTitleLabel}
+        testid="sim-save-title"
         bind:value={saveTitle}
-        class="border-line-warm rounded-control bg-raised text-text h-11 w-[260px] border px-3 text-[14px]"
-        data-testid="sim-save-title"
       />
-    </label>
+    </div>
     <button
       type="button"
-      class={`${SECONDARY_BUTTON} border-line-warm text-nav px-5 disabled:opacity-50 ${saving ? BUSY_CLASS : ''}`}
+      class={[button('secondary', 'sm'), saving ? BUSY_CLASS : '']}
       disabled={saving}
       aria-busy={saving}
       onclick={() => void confirmSave()}
@@ -117,33 +112,20 @@
     >
       {simCopy.saveAction}
     </button>
-    <button
-      type="button"
-      class="{SECONDARY_BUTTON} border-line-warm text-nav px-4"
-      onclick={cancelSave}
-      data-testid="sim-save-cancel"
-    >
-      {simCopy.cancel}
-    </button>
+    <Button tone="ghost" size="sm" testid="sim-save-cancel" onclick={cancelSave}>{simCopy.cancel}</Button>
     {#if saveFailed}
-      <span role="alert" class="text-strong text-[13px]" data-testid="sim-save-error">
+      <span role="alert" class="text-wipe text-[13px]" data-testid="sim-save-error">
         {simCopy.saveFailed}
       </span>
     {/if}
   {:else}
-    <button
-      type="button"
-      class="{SECONDARY_BUTTON} border-line-warm text-nav px-5 disabled:opacity-50"
-      disabled={!canSave}
-      onclick={openSaveForm}
-      data-testid="sim-save-open"
+    <Button size="sm" testid="sim-save-open" disabled={!canSave} onclick={openSaveForm}
+      >{simCopy.saveThisSim}</Button
     >
-      {simCopy.saveThisSim}
-    </button>
     <!-- Task 7: the disabled reason, said plainly rather than in a title= that never fires
          on touch -- the same pattern Task 3 used for a disabled Run. -->
     {#if !canSave}
-      <p class="text-muted text-[12px]" data-testid="sim-save-disabled-note">{simCopy.saveAbortedDisabled}</p>
+      <p class="text-muted text-[13px]" data-testid="sim-save-disabled-note">{simCopy.saveAbortedDisabled}</p>
     {/if}
   {/if}
 </div>

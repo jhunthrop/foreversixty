@@ -14,9 +14,12 @@ import { KIND_TITLES, simCopy } from './copy';
 import type { SourceKind } from './types';
 import { defaultSimState, MAX_CODE, simSearch, withSimState, type SimState } from './url';
 
+/** The simulator's tool tabs, by id. */
+export type SimTabId = 'quick-sim' | 'gear' | 'drops' | 'talents' | 'weights' | 'specs';
+
 /** One entry in the tab strip every simulator page carries. */
 export interface SimTabEntry {
-  readonly id: 'quick-sim' | 'gear' | 'drops' | 'talents' | 'weights' | 'specs';
+  readonly id: SimTabId;
   readonly label: string;
   readonly href: string;
   /**

@@ -14,6 +14,7 @@
     open = $bindable(false),
     eager = false,
     testid,
+    summaryTestid,
     children,
   }: {
     summary: string;
@@ -23,12 +24,15 @@
     /** Render the body before it is opened (static markup, opened by the browser). */
     eager?: boolean;
     testid?: string;
+    /** The summary's own testid (a test that presses the trigger and reads its words). */
+    summaryTestid?: string;
     children: Snippet;
   } = $props();
 </script>
 
 <details class="ui-disclosure" bind:open data-testid={testid}>
   <summary
+    data-testid={summaryTestid}
     class="text-nav focus-visible:outline-gold flex min-h-11 cursor-pointer list-none items-center gap-2 text-[14px] leading-5 font-semibold select-none focus-visible:outline-2 focus-visible:-outline-offset-2 [&::-webkit-details-marker]:hidden"
   >
     {summary}{#if meta}<span class="text-small text-muted ml-1 font-normal">{meta}</span>{/if}

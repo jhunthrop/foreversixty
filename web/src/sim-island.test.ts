@@ -6,7 +6,8 @@
 // dropping the pre-hydration shell's min-h reservation once the island takes over the
 // element's own height.
 import { afterAll, afterEach, describe, expect, it, vi } from 'vitest';
-import { readInlineResult, shellReservations, simIdFor } from './sim-island';
+import { shellReservations } from './lib/islands/reservations';
+import { readInlineResult, simIdFor } from './sim-island';
 import fixtureResult from './fixtures/sim/result.json';
 
 // boot() self-invokes at module load and is not exported, so driving it means importing a

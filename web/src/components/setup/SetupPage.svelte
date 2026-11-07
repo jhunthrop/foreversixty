@@ -229,7 +229,7 @@
 <style>
   /* The plate starts 28 px under the head at every width (the mock's split page); the primitive
      tightens to 20 below 1024. */
-  :global(.ui-page[data-testid='setup-grid']) {
+  :global(.ui-page.ui-page[data-testid='setup-grid']) {
     padding-top: 28px;
   }
   /* The pre-paint swap: signed out (with or without a stored character) or session hinted. */

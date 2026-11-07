@@ -108,12 +108,12 @@ test('the Summary dashboard shows a rating row that opens the Rating tab', async
   await page.goto(`${REPORT}?fight=3`);
 
   await expect(page.getByTestId('rating-panel')).toBeVisible();
-  await expect(page.getByTestId('rating-panel-overall')).toHaveText('70');
-  await page.getByRole('button', { name: 'Rating tab' }).click();
+  await expect(page.getByTestId('rating-panel-overall')).toHaveText('70 of 100');
+  await page.getByRole('link', { name: 'Rating tab ›' }).click();
 
   await expect(page).toHaveURL(/tab=rating/);
   await expect(page.getByTestId('rating-tab')).toBeVisible();
-  await expect(page.getByTestId('rating-overall')).toHaveText('70');
+  await expect(page.getByTestId('rating-overall')).toHaveText(/^\s*70\s*of 100\s*$/);
 });
 
 test('an excluded component states why, and a moment link jumps to its tab', async ({ page }) => {
@@ -190,7 +190,7 @@ test('a flagged report: the panel and the tab say it is flagged and not rated, n
   await expect(page.getByTestId('rating-panel-error')).toHaveCount(0);
   await expect(page.getByTestId('rating-panel').getByRole('alert')).toHaveCount(0);
 
-  await page.getByRole('button', { name: 'Rating tab' }).click();
+  await page.getByRole('link', { name: 'Rating tab ›' }).click();
   const tab = page.getByTestId('rating-tab-flagged');
   await expect(tab).toHaveText('This report is flagged and not rated.');
   await expect(tab).toHaveCSS('color', 'rgb(154, 148, 132)');

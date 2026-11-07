@@ -85,7 +85,7 @@ for (const width of WIDTHS) {
     test(`timelines and resources ${width}`, async ({ page }) => {
       // Resources draws no damage chart above its own lines (fix round 2).
       await page.goto('/reports/fixture2abcd?fight=3&tab=resources');
-      await expect(page.getByTestId('resource-head')).toBeVisible();
+      await expect(page.getByTestId('resource-graphs')).toBeVisible();
       await page.screenshot({ path: join(OUT, `build-charts-resources-${width}.png`), fullPage: true });
       await page.goto('/reports/fixture2abcd?fight=3&view=timelines');
       await expect(page.getByTestId('timelines')).toBeVisible();

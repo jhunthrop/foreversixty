@@ -132,6 +132,5 @@ test('a session that fails to load says so, and Try again asks again', async ({ 
 test('/reports/<id> still opens the report', async ({ page }) => {
   await page.goto(`/reports/${FIXTURE_REPORT_ID}`);
   await expect(page.getByTestId('report-title')).toHaveText('Sanguine Depths, fixture night');
-  await expect(page.getByTestId('fight-selector')).toBeVisible();
   await expect(page.getByTestId('your-reports')).toHaveCount(0);
 });

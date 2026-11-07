@@ -46,7 +46,11 @@
         class="ui-notice-short">{short}</span
       >{:else}{text}{/if}</span
   >
-  {#if action}<a class={LINK} href={action.href}>{action.label} ›</a>{/if}
+  <!-- On a touch screen the link's hit area is 44 px tall, taken back by the same negative margin (Section's action). -->
+  {#if action}<a
+      class="{LINK} [@media(pointer:coarse)]:-my-3 [@media(pointer:coarse)]:inline-block [@media(pointer:coarse)]:py-3"
+      href={action.href}>{action.label} ›</a
+    >{/if}
 </p>
 
 <style>

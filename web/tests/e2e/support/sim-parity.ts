@@ -188,3 +188,49 @@ export async function openSimState(page: Page, state: SimParityState): Promise<v
     await drawWholeReport(page);
   }
 }
+
+/** The tool pages' parity states (parity-sim-tools.spec.ts, design/mocks/web/simtools-parity.json). */
+export type ToolParityState = 'gear' | 'gear-empty' | 'talents' | 'drops' | 'weights' | 'specs';
+
+/**
+ * The tool mocks' character (design/mocks/ws_simtools.py `CODE`): a level 60 Orc Fury Warrior
+ * entered by hand, wearing Lionheart Helm and Arcanite Reaper, handed to the tool by `?code=` as
+ * a tab carries it. Two worn items keep every candidate the mock draws readable from the build's
+ * item file alone.
+ */
+export const TOOL_CHARACTER = (build: string): string =>
+  `FS1:${build}:warrior:orc:0/5530515/0:head=12640,main_hand=12784|level=60`;
+
+async function openToolWithFury(page: Page, tool: string): Promise<void> {
+  const params = new URLSearchParams({ code: TOOL_CHARACTER(BUILD) });
+  await page.goto(`/sim/${tool}?${params.toString()}`);
+  await expect(page.getByTestId('sim-character')).toBeVisible({ timeout: 15_000 });
+  await expect(page.getByTestId('sim-run-bulk')).toBeVisible();
+}
+
+export async function openToolState(page: Page, state: ToolParityState): Promise<void> {
+  await serveMockData(page);
+  if (state === 'specs') {
+    // No parse has been measured yet: every damage spec reads "Not yet", as production does.
+    await page.route('**/v1/specs**', (route) => route.fulfill(envelope({ specs: [] })));
+    await page.goto('/sim/specs');
+    await expect(page.getByTestId('spec-warrior-fury')).toBeVisible({ timeout: 15_000 });
+    return;
+  }
+  if (state === 'gear-empty') {
+    await page.goto('/sim/gear');
+    await expect(page.getByTestId('sim-addon-input')).toBeVisible({ timeout: 15_000 });
+    return;
+  }
+  // Signed out, the saved-builds read is out of reach: the talent builds say so and go on.
+  await page.route('**/v1/builds?*', (route) => route.abort('connectionrefused'));
+  await openToolWithFury(page, state);
+  const ready: Record<Exclude<ToolParityState, 'specs' | 'gear-empty'>, string> = {
+    gear: 'sim-slot-grid',
+    talents: 'sim-talent-candidates',
+    drops: 'sim-source-picker',
+    weights: 'sim-weights-pick',
+  };
+  await expect(page.getByTestId(ready[state])).toBeVisible({ timeout: 15_000 });
+  await expect(page.locator('[aria-busy="true"]')).toHaveCount(0, { timeout: 15_000 });
+}

@@ -42,7 +42,10 @@ export async function pasteAndRun(
 
 /** Opens the run line's groups when they are folded behind "Change" (phone). */
 export async function openRunLine(page: Page): Promise<void> {
-  const toggle = page.getByTestId('sim-settings').locator('[data-control-bar-toggle]');
+  // The quick sim's run line, or a tool page's (BulkRunBar on the same SimRunBar).
+  const toggle = page
+    .locator('[data-testid="sim-settings"], [data-testid="sim-run-bulk-bar"]')
+    .locator('[data-control-bar-toggle]');
   if ((await toggle.isVisible()) && (await toggle.getAttribute('aria-expanded')) !== 'true') {
     await toggle.click();
   }

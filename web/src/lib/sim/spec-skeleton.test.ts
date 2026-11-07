@@ -37,7 +37,7 @@ describe('the /sim/specs grid split', () => {
 
   it('is exactly the copy task-2-brief.md specifies for the unsimulated card', () => {
     expect(simCopy.specsUnsimulatedBody).toBe(
-      'Not simulated yet — damage specs first; healers and tanks come later',
+      'Not simulated yet: damage specs first; healers and tanks come later',
     );
   });
 });

@@ -22,12 +22,15 @@
     className,
     dataBuild,
     name = '',
+    framed = true,
   }: {
     gear: GearItem[];
     className: string | undefined;
     dataBuild: string;
     /** The combatant, for the doll's accessible name. */
     name?: string;
+    /** In its own Plate; false draws the doll open, in a Section beside a page's one Plate (the report's player view). */
+    framed?: boolean;
   } = $props();
 
   let items = $state<Map<number, Item> | null>(null);
@@ -76,7 +79,7 @@
     {gearCopy.paperdoll.averageItemLevel(itemLevel)}
   </p>
 {/if}
-<Plate label={gearCopy.paperdoll.atPullLabel} testid="gear-list">
+{#snippet doll()}
   <GearDoll
     {slots}
     mode="report"
@@ -89,5 +92,10 @@
       : `${name}: ${gearCopy.paperdoll.atPullLabel.toLowerCase()}`}
     testid="paperdoll"
   />
-</Plate>
+{/snippet}
+{#if framed}
+  <Plate label={gearCopy.paperdoll.atPullLabel} testid="gear-list">{@render doll()}</Plate>
+{:else}
+  <div data-testid="gear-list">{@render doll()}</div>
+{/if}
 <BisTooltipHost build={dataBuild} modelsElementId="report-gear-tooltip-models" resolve={resolveItem} />

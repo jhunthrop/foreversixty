@@ -172,7 +172,6 @@
     position: relative;
     min-height: 42px;
     padding: 8px 12px 6px;
-    border-top: 1px solid var(--color-line-soft);
     align-items: center;
     overflow: hidden;
   }
@@ -267,7 +266,7 @@
     transform: translateY(-50%);
     padding: 2px 4px;
     border-radius: 4px;
-    background: var(--color-raised);
+    background: rgb(255 255 255 / 0.06);
     color: var(--color-gold);
     font-size: 12px;
     font-weight: 600;
@@ -278,8 +277,6 @@
     color: var(--color-gold);
     font-size: 13px;
     font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
     white-space: nowrap;
   }
 </style>

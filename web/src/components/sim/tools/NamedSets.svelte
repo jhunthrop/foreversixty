@@ -4,22 +4,28 @@
      FS1 v2 `sets=` section) or from a second export string pasted here. -->
 <script lang="ts">
   import { decodeFS1, type FS1GearSlot, type FS1Set } from '../../../lib/planner/fs1';
-  import { SECONDARY_BUTTON } from '../../../lib/planner/styles';
   import type { GearSet } from '../../../lib/sim/bulk-types';
   import type { SimCharacter } from '../../../lib/sim/character';
   import { bulkCopy } from '../../../lib/sim/copy';
   import { dedupeByName } from '../../../lib/sim/dedupe';
+  import Button from '../../ui/Button.svelte';
+  import Field from '../../ui/Field.svelte';
+  import Row from '../../ui/Row.svelte';
+  import ToolSection from './ToolSection.svelte';
 
   let {
     character,
     sets,
     onadd,
     onremove,
+    plate = false,
   }: {
     character: SimCharacter;
     sets: readonly GearSet[];
     onadd: (set: GearSet) => void;
     onremove: (name: string) => void;
+    /** The block sits on the page's one Plate. */
+    plate?: boolean;
   } = $props();
 
   let code = $state('');
@@ -80,51 +86,39 @@
   }
 </script>
 
-<section
-  class="border-line rounded-panel mx-[18px] flex flex-col gap-2 border p-3 md:mx-0"
-  data-testid="sim-named-sets"
->
-  <h3 class="section-title">{bulkCopy.setsTitle}</h3>
-  <p class="text-muted text-[12px]">{bulkCopy.setsIntro}</p>
+<ToolSection title={bulkCopy.setsTitle} testid="sim-named-sets" {plate}>
+  <p class="text-muted text-[13px]">{bulkCopy.setsIntro}</p>
 
-  {#each rows as set (set.name)}
-    <div class="flex min-h-11 items-center gap-2 text-[13px]" data-testid={`sim-set-${set.name}`}>
-      <span class="text-text flex-1">{set.name}</span>
-      <button
-        type="button"
-        class="{SECONDARY_BUTTON} border-line-warm text-nav px-3"
-        onclick={() => (isAdded(set.name) ? onremove(set.name) : onadd(set))}
-      >
-        {isAdded(set.name) ? bulkCopy.setsRemove : bulkCopy.setsAdd}
-      </button>
+  {#if rows.length > 0}
+    <div class="pt-1">
+      {#each rows as set (set.name)}
+        <Row title={set.name} open density="slim" testid={`sim-set-${set.name}`}>
+          {#snippet trail()}
+            <Button size="sm" onclick={() => (isAdded(set.name) ? onremove(set.name) : onadd(set))}
+              >{isAdded(set.name) ? bulkCopy.setsRemove : bulkCopy.setsAdd}</Button
+            >
+          {/snippet}
+        </Row>
+      {/each}
     </div>
-  {/each}
+  {/if}
 
-  <div class="flex flex-wrap gap-2">
-    <input
-      type="text"
-      bind:value={name}
-      placeholder="Name"
-      aria-label="Set name"
-      data-testid="sim-set-name"
-      class="border-line-warm rounded-control bg-bg text-text placeholder:text-muted h-11 w-40 border px-3 text-[14px]"
-    />
-    <input
-      type="text"
-      bind:value={code}
+  <div class="flex flex-wrap items-end gap-3 pt-3">
+    <div class="w-40">
+      <Field id="sim-set-name" label="Name" placeholder="Name" testid="sim-set-name" bind:value={name} />
+    </div>
+    <Field
+      id="sim-set-input"
+      label={bulkCopy.setsPaste}
       placeholder={bulkCopy.setsPaste}
-      aria-label={bulkCopy.setsPaste}
-      data-testid="sim-set-input"
-      class="border-line-warm rounded-control bg-bg text-text placeholder:text-muted h-11 min-w-[200px] flex-1 border px-3 text-[14px]"
+      grow
+      invalid={error !== ''}
+      testid="sim-set-input"
+      bind:value={code}
     />
-    <button
-      type="button"
-      class="{SECONDARY_BUTTON} border-line-warm text-nav px-3"
-      data-testid="sim-set-add"
-      onclick={add}>{bulkCopy.setsAdd}</button
-    >
+    <Button size="md" testid="sim-set-add" onclick={add}>{bulkCopy.setsAdd}</Button>
   </div>
   {#if error !== ''}
-    <p class="text-muted text-[13px]" role="alert" data-testid="sim-set-error">{error}</p>
+    <p class="text-wipe pt-2 text-[13px]" role="alert" data-testid="sim-set-error">{error}</p>
   {/if}
-</section>
+</ToolSection>

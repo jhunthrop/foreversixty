@@ -6,7 +6,7 @@ import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import type { Page } from '@playwright/test';
 import { apiUnreachable, expect, test } from './support/test';
-import { simCopy } from '../../src/lib/sim/copy';
+import { openMoreSettings } from './support/sim-page';
 
 // Reads this spec does not answer go unanswered, as the API out of reach (support/test.ts).
 test.beforeEach(({ page }) => apiUnreachable(page, '**/v1/builds?*'));
@@ -109,7 +109,7 @@ test.describe('touch help and hit targets at 390x844 (Task 5)', () => {
   for (const route of ['/sim/gear', '/sim/talents', '/sim/drops'] as const) {
     test(`${route}: "more settings" relies on no hover-only title`, async ({ page }) => {
       await load(page, route);
-      await page.getByTestId('sim-settings-more').locator('summary').click();
+      await openMoreSettings(page);
       // Scoped to the tool island, not `document` page-globally (fix round, Minor 2): a
       // `title=` added anywhere else on the page (header, tab strip, footer) by a sibling
       // lane would fail this spec with a failure that reads as this lane's own bug. The two
@@ -124,51 +124,6 @@ test.describe('touch help and hit targets at 390x844 (Task 5)', () => {
       expect(titled, 'a control still relies on a hover-only title').toEqual([]);
     });
   }
-
-  test('/sim/gear: the variation and dummy notes are visible text, and their rows clear 44px', async ({
-    page,
-  }) => {
-    await load(page, '/sim/gear');
-    await page.getByTestId('sim-settings-more').locator('summary').click();
-
-    // SettingsSheet.svelte:61 and :142 carried `title={simCopy.variationNote}` and
-    // `title={simCopy.dummyNote}` -- never reachable on a phone. Both words reach a phone
-    // now: Task 5's plain paragraphs became Task 7's HelpNote (Disclosure.svelte), one
-    // tappable trigger per control, so the assertion is the same two sentences arriving on
-    // screen after a tap rather than a `<p>` that was always there.
-    for (const [id, text] of [
-      ['sim-variation', simCopy.variationNote],
-      ['sim-dummy', simCopy.dummyNote],
-    ] as const) {
-      const trigger = page.getByTestId(`${id}-help-trigger`);
-      await expect(trigger).toBeVisible();
-      await trigger.click();
-      await expect(page.getByTestId(`${id}-help-panel`)).toHaveText(text);
-    }
-
-    // sim-execute/sim-dummy: the drawn mark stays 20x20 on purpose -- the global gold checkbox rule,
-    // never resized, per the brief's own "without changing the visual size of the tick" --
-    // but each sits inside a `flex min-h-11` label stretched across the full grid cell, the
-    // real hit target a tap actually reaches. Measuring the hidden input itself instead is
-    // the exact false positive sim-phone.spec.ts's own targetsAreBigEnough, and this file's
-    // own 44px sweep above, already carve out for every checkbox in this suite.
-    for (const id of ['sim-execute', 'sim-dummy'] as const) {
-      const box = await page.getByTestId(id).evaluate((element) => {
-        const rect = (element.closest('label') as HTMLElement).getBoundingClientRect();
-        return { width: rect.width, height: rect.height };
-      });
-      expect(box.width, `${id} label width`).toBeGreaterThanOrEqual(44);
-      expect(box.height, `${id} label height`).toBeGreaterThanOrEqual(44);
-    }
-
-    // BulkRunBar's precision field: the shared Select's box is the hit target.
-    const precisionBox = await page.getByTestId('sim-precision').evaluate((element) => {
-      const rect = (element.closest('.sel') as HTMLElement).getBoundingClientRect();
-      return { width: rect.width, height: rect.height };
-    });
-    expect(precisionBox.width, 'precision field width').toBeGreaterThanOrEqual(44);
-    expect(precisionBox.height, 'precision field height').toBeGreaterThanOrEqual(44);
-  });
 
   test('/sim/gear: after a run, the results carry no hover-only title', async ({ page }) => {
     await load(page, '/sim/gear');

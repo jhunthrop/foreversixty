@@ -27,8 +27,10 @@ import { shortControls } from './support/short-controls';
 const MAX_PANEL_CLS = 0.02;
 const PHONE = { width: 360, height: 800 };
 const DESKTOP = { width: 1280, height: 800 };
-/** Spec 1: at 1280 x 800 the header, the opening and the whole Fix first block end above y 640. */
-const FOLD_Y = 640;
+/** Spec 1: at 1280 x 800 the header, the opening and the whole Fix first block end in the first screen.
+ *  The logs and reports spec (2026-11-07 section 6.1) puts the answer, the tab strip and the report bar
+ *  above every tab, so the budget is the 800 px screen less an 80 px margin, no longer 640. */
+const FOLD_Y = 720;
 /** Spec 3.2 and 7: the phone strip's reserve by entitlement. */
 const STRIP_PHONE_PX = { premium: 52, free: 88 } as const;
 /** Where each anchor kind's chip lands in the report. */
@@ -38,8 +40,8 @@ const LANDS: Readonly<Record<CoachAnchorKind, RegExp>> = {
   buffs: /tab=buffs/,
   death: /tab=deaths/,
   healing: /tab=healing/,
-  time: /view=timelines/,
-  resource: /view=timelines/,
+  time: /tab=timeline/,
+  resource: /tab=timeline/,
 };
 const FORBIDDEN_TEXT = /!|heal more/i;
 const leadOf = (template: string): string => template.split('{title}')[0]!.trim();
@@ -328,7 +330,8 @@ test.describe('officer', () => {
     await routeCoach(page, STATES.officer);
     await page.goto(ROWS_URL);
     await expect(page.getByTestId('coach-row-line')).toHaveCount(0);
-    await page.getByTestId(`actor-${GUID.morrowlyn}`).getByRole('button').first().click();
+    // The name opens the player's own view (logs spec 6.2), the row the coach line follows.
+    await page.getByTestId(`actor-${GUID.morrowlyn}`).getByRole('link').first().click();
     await page.getByTestId('coach-officer-open').click();
     await expect(page).toHaveURL(/tab=coach/);
     await expect(page.getByTestId('coach-officer-pill')).toHaveText(coachCopy.officerPill);

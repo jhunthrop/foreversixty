@@ -198,7 +198,7 @@
 <style>
   .strip {
     background: rgba(255, 255, 255, 0.025);
-    border-color: var(--color-line-soft);
+    border-color: color-mix(in srgb, var(--color-muted) 18%, transparent);
   }
   .shape {
     fill: color-mix(in srgb, var(--color-muted) 22%, transparent);
