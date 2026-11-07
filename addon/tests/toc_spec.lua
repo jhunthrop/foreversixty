@@ -7,7 +7,9 @@
 describe("the TOC", function()
 	local EXPECTED = {
 		"Locale.lua", "Data.lua", "Compat.lua", "Rules.lua", "Codec.lua", "Talents.lua", "Prefs.lua",
-		"Theme.lua", "Widgets.lua", "Cards.lua",
+		"Theme.lua", "Widgets.lua",
+		-- The secure talent click (TalentClick): the chip and the panel cover their buttons with it.
+		"TalentClick.lua", "Cards.lua",
 		-- The raid-prep reads (D14): Export writes them into the code.
 		"RaidPrep.lua",
 		-- What dropped in a raid (guild slice 7): Export writes it into the code as drops=.

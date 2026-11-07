@@ -29,11 +29,16 @@ local Score = ns.Score or require("Score")
 local TalentGlow = ns.TalentGlow or require("TalentGlow")
 local ItemTooltip = ns.ItemTooltip or require("ItemTooltip")
 local RaidAssign = ns.RaidAssign or require("RaidAssign")
+local TalentClick = ns.TalentClick or require("TalentClick")
 
 local Chip = {}
 
 
 Chip.FRAME_NAME = "ForeverSixtyChip"
+--- The secure cover that opens the talent window from the chip (Chip.syncTalentButton).
+Chip.TALENT_BUTTON_NAME = "ForeverSixtyChipTalents"
+--- How far over the chip the secure button sits: above the "+N" badge, so the whole chip clicks.
+Chip.TALENT_BUTTON_RAISE = 20
 Chip.CARD_NAME = "ForeverSixtyChipPath"
 
 --- Seconds the point ring pulses before it holds still (spec section 4.1).
@@ -1139,7 +1144,7 @@ end
 function Chip.handlerFor(chosen)
 	local action = chosen ~= nil and chosen.action or nil
 	if action == "talents" then
-		return Theme.toggleTalents
+		return TalentClick.open
 	elseif action == "equip" then
 		return function()
 			if not (Chip.combat or Theme.inCombat()) then
@@ -1244,6 +1249,8 @@ function Chip.setCombat(inCombat)
 		Chip.closePath()
 		Chip.stopPulse()
 	end
+	-- Combat is starting and the lockdown is not on yet: the last moment the secure button can go.
+	Chip.syncTalentButton()
 end
 
 local function copyList(list)
@@ -1438,6 +1445,86 @@ function Chip.savePosition()
 	return true
 end
 
+--- The chip's hover and drag, on the chip's own frame whichever button took the mouse.
+function Chip.onEnter(frame)
+	Chip.paintEdge(true)
+	Chip.markSeen()
+	if Chip.current ~= nil then
+		local shortened = Chip.lastDraw ~= nil and Chip.lastDraw.shortened or false
+		Theme.showLines(frame, Chip.tooltipLines(Chip.current, shortened), "ANCHOR_BOTTOMLEFT")
+	end
+end
+
+function Chip.onLeave()
+	Chip.paintEdge(false)
+	Theme.hideTooltip()
+end
+
+function Chip.onDragStart(frame)
+	if Theme.shiftDown() then
+		Chip.dragging = true
+		Theme.hideTooltip()
+		frame:StartMoving()
+	end
+end
+
+function Chip.onDragStop(frame)
+	if Chip.dragging then
+		Chip.dragging = false
+		frame:StopMovingOrSizing()
+		Chip.savePosition()
+	end
+end
+
+-- The talent click ------------------------------------------------------------
+-- The talent window opens through a secure cover (TalentClick), never from the chip's own code.
+-- With the panel registered the chip's click opens the panel, whose Talents button has its own
+-- cover, so the chip's cover is only over a chip whose click is the talent window itself.
+
+--- After the cover's click. The left click was the client's own; the right click has no secure
+--- action and hides the chip as on the chip itself.
+function Chip.onTalentCoverPostClick(_, mouseButton)
+	if mouseButton == "RightButton" then
+		Chip.onClick(nil, mouseButton)
+	else
+		Theme.hideTooltip()
+		Chip.markSeen()
+	end
+end
+
+Chip.talentCover = TalentClick.new(Chip.TALENT_BUTTON_NAME, { "LeftButtonUp", "RightButtonUp" }, {
+	PostClick = function(self, mouseButton)
+		Chip.onTalentCoverPostClick(self, mouseButton)
+	end,
+	OnEnter = function()
+		Chip.onEnter(Chip.frame)
+	end,
+	OnLeave = function()
+		Chip.onLeave()
+	end,
+	OnDragStart = function()
+		Chip.onDragStart(Chip.frame)
+	end,
+	OnDragStop = function()
+		Chip.onDragStop(Chip.frame)
+	end,
+})
+
+--- Whether the cover belongs over the chip now: the chip is up, takes the mouse, its click is the
+--- talent window (no panel to open), and combat is not on.
+local function talentCoverWanted()
+	local frame, model = Chip.frame, Chip.current
+	return frame ~= nil and frame:IsShown() == true and model ~= nil and model.chosen ~= nil
+		and model.chosen.action == "talents" and model.mouse ~= false and Chip.openPanel == nil
+		and not (Chip.combat or Chip.disabled or Chip.inCinematic)
+end
+
+--- Put the cover over the chip, or take it away (TalentClick.sync: never in the lockdown).
+function Chip.syncTalentButton()
+	local target = talentCoverWanted() and Chip.frame or nil
+	return TalentClick.sync(Chip.talentCover, target, Chip.TALENT_BUTTON_RAISE)
+end
+
 local function onEvent(_, event)
 	if event == "CINEMATIC_START" then
 		Chip.inCinematic = true
@@ -1445,6 +1532,7 @@ local function onEvent(_, event)
 			Chip.frame:Hide()
 		end
 		Chip.closePath()
+		Chip.syncTalentButton()
 	elseif event == "CINEMATIC_STOP" then
 		Chip.inCinematic = false
 		Chip.refresh()
@@ -1531,32 +1619,10 @@ function Chip.ensure()
 	Chip.badge, Chip.badgeDigits = buildBadge(frame)
 
 	frame:SetScript("OnClick", Chip.onClick)
-	frame:SetScript("OnEnter", function(self)
-		Chip.paintEdge(true)
-		Chip.markSeen()
-		if Chip.current ~= nil then
-			local shortened = Chip.lastDraw ~= nil and Chip.lastDraw.shortened or false
-			Theme.showLines(self, Chip.tooltipLines(Chip.current, shortened), "ANCHOR_BOTTOMLEFT")
-		end
-	end)
-	frame:SetScript("OnLeave", function()
-		Chip.paintEdge(false)
-		Theme.hideTooltip()
-	end)
-	frame:SetScript("OnDragStart", function(self)
-		if Theme.shiftDown() then
-			Chip.dragging = true
-			Theme.hideTooltip()
-			self:StartMoving()
-		end
-	end)
-	frame:SetScript("OnDragStop", function(self)
-		if Chip.dragging then
-			Chip.dragging = false
-			self:StopMovingOrSizing()
-			Chip.savePosition()
-		end
-	end)
+	frame:SetScript("OnEnter", Chip.onEnter)
+	frame:SetScript("OnLeave", Chip.onLeave)
+	frame:SetScript("OnDragStart", Chip.onDragStart)
+	frame:SetScript("OnDragStop", Chip.onDragStop)
 	frame:SetScript("OnEvent", onEvent)
 	Theme.registerEvent(frame, "CINEMATIC_START")
 	Theme.registerEvent(frame, "CINEMATIC_STOP")
@@ -1802,12 +1868,14 @@ function Chip.refresh(data)
 		end
 		Chip.closePath()
 		noteLastNight(model, false)
+		Chip.syncTalentButton()
 		return state
 	end
 	draw(model)
 	Chip.startPulse(model)
 	noteLastNight(model, true)
 	Chip.selfCheck()
+	Chip.syncTalentButton()
 	return state
 end
 

@@ -58,6 +58,7 @@ local L = {
 	diagNoEquipApi = "This client has no equip function; the Equip buttons are off.",
 	diagNoTooltipApi = "This client has no %s; the item tooltip could not be shown.",
 	diagNoTalentButton = "No talent button matched the next point; the Forever Sixty line still names it.",
+	diagNoTalentCover = "This client refused the Talents click; press N to open your talents.",
 	diagTalentTabUnknown = "This client does not say which talent tab is open; "
 		.. "the glow may be on the wrong tree.",
 	diagNoSettingsPanel = "This client has no Settings page API; right-click prints the commands instead.",

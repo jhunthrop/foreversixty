@@ -41,6 +41,7 @@ local Chip = ns.Chip or require("Chip")
 local BuildDialog = ns.BuildDialog or require("BuildDialog")
 local PanelTab = ns.PanelTab or require("PanelTab")
 local Prefs = ns.Prefs or require("Prefs")
+local TalentClick = ns.TalentClick or require("TalentClick")
 
 local Panel = {}
 
@@ -74,6 +75,9 @@ Panel.CLAUSE_MAX_LINES = 2
 --- The body's side padding, and the gap between two buttons side by side.
 Panel.PAD = 14
 Panel.BUTTON_GAP = 6
+--- The secure cover over the Talents button (TalentClick), and how far above the button it sits.
+Panel.TALENTS_COVER_NAME = "ForeverSixtyPanelTalents"
+Panel.TALENTS_COVER_RAISE = 5
 
 -- The pure model --------------------------------------------------------------------------------
 
@@ -848,8 +852,12 @@ function Panel.ensure()
 	if type(UISpecialFrames) == "table" then
 		table.insert(UISpecialFrames, Panel.FRAME_NAME)
 	end
+	frame:SetScript("OnShow", function()
+		Panel.syncTalentButton()
+	end)
 	frame:SetScript("OnHide", function()
 		Theme.hideTooltip()
+		Panel.syncTalentButton()
 	end)
 	Panel.frame = frame
 	return frame
@@ -1093,7 +1101,10 @@ local function drawTalents(content, region, y, width)
 	end
 	local mark = icon(content, region.icon, 28)
 	mark:SetPoint("TOPLEFT", content, "TOPLEFT", 0, -y)
-	local open = button(content, L.panelTalentsButton, Theme.toggleTalents)
+	-- Its own click opens the window only on a client without the micro button; elsewhere the
+	-- secure cover over it takes the click (Panel.syncTalentButton).
+	local open = button(content, L.panelTalentsButton, TalentClick.open)
+	Panel.talentsButton = open
 	open:SetPoint("TOPRIGHT", content, "TOPRIGHT", 0, -y - 4)
 	local change = button(content, L.panelChange, Panel.change)
 	change:SetPoint("RIGHT", open, "LEFT", -Panel.BUTTON_GAP, 0)
@@ -1200,6 +1211,7 @@ function Panel.draw(model)
 	local frame = Panel.ensure()
 	local content = Panel.content
 	reset()
+	Panel.talentsButton = nil
 	local width = Panel.WIDTH - 2 * Panel.PAD
 	Widgets.setTitleBand(Panel.band, model.head)
 	local y = 0
@@ -1211,7 +1223,38 @@ function Panel.draw(model)
 	end
 	frame:SetHeight(math.min(Panel.MAX_HEIGHT, Panel.H.head + y + Panel.H.foot))
 	Panel.current = model
+	Panel.syncTalentButton()
 	return model
+end
+
+-- The Talents click (TalentClick): a secure cover over the Talents button while the panel is open.
+-- The panel closes as combat starts, before the lockdown, and its OnHide takes the cover away.
+
+--- The Talents button's own hover look, under the cover that takes the mouse.
+local function highlightTalents(on)
+	local open = Panel.talentsButton
+	local method = open ~= nil and open[on and "LockHighlight" or "UnlockHighlight"] or nil
+	if type(method) == "function" then
+		method(open)
+	end
+end
+
+Panel.talentCover = TalentClick.new(Panel.TALENTS_COVER_NAME, { "LeftButtonUp" }, {
+	PostClick = function()
+		Theme.hideTooltip()
+	end,
+	OnEnter = function()
+		highlightTalents(true)
+	end,
+	OnLeave = function()
+		highlightTalents(false)
+	end,
+})
+
+--- Put the cover over the Talents button, or take it away (TalentClick.sync: never in the lockdown).
+function Panel.syncTalentButton()
+	local wanted = Panel.isOpen() and not Chip.combat and Panel.talentsButton ~= nil
+	return TalentClick.sync(Panel.talentCover, wanted and Panel.talentsButton or nil, Panel.TALENTS_COVER_RAISE)
 end
 
 -- Opening and closing -----------------------------------------------------------------------------

@@ -15,6 +15,7 @@
 - Rotation lines sit under the spell name and wrap to a second line instead of being cut.
 - The character pane's flyout is gone: its button opens the same panel, docked to the pane. Drag the top of the panel to move it; Reset positions puts it back.
 - Rotation lines say when to press each button in plain words, and never name a spell you do not have yet.
+- Opening the talent window from the panel or the line beside the minimap no longer drops your action bars in the next fight.
 
 ## 2.0.36
 
