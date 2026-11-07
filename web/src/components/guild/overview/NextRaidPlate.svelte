@@ -48,7 +48,12 @@
 >
   <Plate>
     <Row title={next.zone_name} open={false}>
-      {#snippet lead()}<ItemIcon icon={raidZoneIcon(next.zone_name)} quality={5} {build} size={40} />{/snippet}
+      {#snippet lead()}<ItemIcon
+          icon={raidZoneIcon(next.zone_name)}
+          quality={5}
+          {build}
+          size={40}
+        />{/snippet}
       {#snippet subContent()}<span data-testid="guild-next-raid-time"
           >{raidTimeLine(next.starts_at, guildTz, viewerTz)}</span
         >{/snippet}

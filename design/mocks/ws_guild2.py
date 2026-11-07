@@ -5,7 +5,7 @@ In / Late / Bench, loot candidates, readiness, attendance, raid report). Modules
 from ws_prims import *  # noqa: F403
 from ws_prims import (Page, PageHeader, Section, Plate, Rows, Row, Figures, Figure, Tag, Button, Link, TabStrip, Select, Notice, Segmented, Grid, Tally,
                       Checklist, Votes, Gap, build_page, crest_img, icon, write, Emblem, RowGroup, Prose, control_bar, seg, BackLink, SignupRow, ButtonRow,
-                      SpellIcon, DisclosureButton)
+                      SpellIcon, DisclosureButton, VoteButtons)
 
 from datetime import datetime
 from zoneinfo import ZoneInfo
@@ -17,7 +17,7 @@ import guild_data as gd
 import guild_raid
 from ws_prims import ItemRow
 
-# Figures under a Section head sit 12 px below its hairline, as the built Section body does (padding-top on a layout div).
+# Figures and rows under a Section head sit 12 px below its hairline, as the built Section body does (padding-top on a layout div).
 # Lane A's words (the built page's own): the raid's icon (lib/first-raids.ts), the sign-up role words by roster group
 # (raidCopy.roleLabels), the BiS slot words (readiness-view enchantSlotLabel) and the loot table's slot lines (slotLine).
 RAID_ICON = 'inv_misc_head_dragon_black'
@@ -43,6 +43,17 @@ def hdr(title_suffix='', tabs_active='Overview', actions='', notice='', officer=
     tabs = TABS if officer else [t for t in TABS if t != 'Settings']
     return PageHeader(GUILD, ALLIANCE, Emblem('alliance', 64), meta=[' &middot; '.join(head_facts())] + claim, actions=actions,
                       tabs=TabStrip(tabs, tabs_active, tablist=True)) + notice
+
+
+def pad(html: str) -> str:
+    """A Section body's 12 px under the head's hairline (the built Section body's padding)."""
+    return f'<div style="padding-top:12px">{html}</div>'
+
+
+def hdr_view(tabs_active='Overview'):
+    """The head a guild view off the guild page draws (lane D's GuildViewHeader): its tabs are links to the guild page, a nav."""
+    return PageHeader(GUILD, ALLIANCE, Emblem('alliance', 56), meta=['<b class="strong">US</b> &middot; PvP', '24 raiders', 'Next raid: Onyxia&rsquo;s Lair, Thu 10 Dec'],
+                      tabs=TabStrip(TABS, tabs_active))
 
 
 def head_facts() -> list[str]:
@@ -106,7 +117,7 @@ def last_raid(meta_line: str) -> str:
     at = guild_time(O.LAST_RAID_AT)
     facts = [day_label(at), f'{counts["kills"]} boss ({O.BOSS})', f'{counts["kills"]} kill', f'{counts["wipes"]} wipe']
     row = Row(f'{O.ZONE_NAME} &middot; raid night', ' &middot; '.join(facts), trail='<span class="gold" style="font-weight:600">Report &rsaquo;</span>')
-    return Section('Last raid', Rows([row], open_=True), meta=meta_line)
+    return Section('Last raid', pad(Rows([row], open_=True)), meta=meta_line)
 
 
 def progression_line() -> str:
@@ -146,7 +157,7 @@ def landing_member():
     notice = Notice(f'Almost there: {words[open_]} things before {weekday}.', Link('See your checklist &rsaquo;'))
     me = next(r for r in F.home(O.MEMBER, False)['roster'] if r['name'] == O.MEMBER)
     nums = Figures([(f"{me['attendance']['present']} of {me['attendance']['nights']}", 'Raids attended', '', '', 'sm'), (str(me['item_level']), 'Your item level', '', '', 'sm')])
-    main = Section('Next raid', next_raid(False)) + Section('Before the raid', Checklist(rows), meta='Private to you &middot; Almost there') + Section('Your numbers', f'<div style="padding-top:12px">{nums}</div>')
+    main = Section('Next raid', next_raid(False)) + Section('Before the raid', pad(Checklist(rows)), meta='Private to you &middot; Almost there') + Section('Your numbers', pad(nums))
     rail = Section("The raid's comp", comp_tally(), meta=comp_meta()) + last_raid(progression_line())
     return build_page('Guild, member', _view(hdr(officer=False) + notice + Page('split', main, rail, sticky_rail=True)), 'Guild', ('Hollowmend', 'priest', 'Holy Priest &middot; 60'))
 
@@ -175,7 +186,7 @@ def raid_ready() -> str:
     label = (f'<div style="display:flex;gap:12px;align-items:baseline;padding-top:8px"><span class="t-label">Fire resistance on tanks</span>'
              f'<span class="t-small">{len(tanks)} tank signed</span></div>')
     trows = Rows([Row(t['name'], trail=f"<b>{O.TANK_FIRE.get(t['name'], 0)} fire resistance</b>", title_color=C[t['class']], slim=True, link=False) for t in tanks], open_=True)
-    return f'<div style="padding-top:12px">{figs}</div>' + label + trows
+    return pad(figs) + label + trows
 
 
 def attendance_grid() -> str:
@@ -201,11 +212,11 @@ def landing_officer():
     Debuffs, every entry; Raid-ready counts attunement and flask and food and lists each signed tank's fire resistance; the
     rail closes with Recruitment (slice 5)."""
     rec = Rows([Row('Taking applications', 'Applications, votes and your public card')], open_=True)
-    main = (Section('Action needed', action_rows()) + Section('Next raid', next_raid(True), Link('Open the planner &rsaquo;'))
+    main = (Section('Action needed', pad(action_rows())) + Section('Next raid', next_raid(True), Link('Open the planner &rsaquo;'))
             + Section('Comp against the target', comp_tally(), Link('Edit target &rsaquo;'), meta=comp_meta()))
     rail = (Section('Buff and debuff cover', cover_grids(), meta='Signed-up raiders') + Section('Raid-ready', raid_ready(), meta='Signed-up raiders')
             + Section(f'Attendance, last {len(O.RECENT_RAIDS)} raids', attendance_grid(), Link('Roster &rsaquo;')) + last_raid(progression_line())
-            + Section('Recruitment', rec))
+            + Section('Recruitment', pad(rec)))
     return build_page('Guild, officer', _view(hdr(actions=Button('Invite link', small=True)) + Page('split', main, rail, sticky_rail=True)), 'Guild', ('Dunmaro', 'hunter', 'Beast Mastery Hunter &middot; 60'))
 
 
@@ -313,7 +324,8 @@ def raid_planner():
 
 def band_line(viewer: str) -> str:
     """The guild band's raid line under the head on every tab but the Overview (raids spec 3.4): the sentence with the state
-    word, the four sign-up buttons, the raid's link."""
+    word, the four sign-up buttons, the raid's link. Its padding is the built band's own room: the header's 12 px gap above,
+    and below the role line's and the guild view's gaps before the ControlBar."""
     nxt = F.next_raid(viewer)
     at = guild_time(O.NEXT_RAID_AT)
     _, _, _, role, _, state = ch(viewer)
@@ -321,7 +333,7 @@ def band_line(viewer: str) -> str:
     n = nxt['counts']['in'] + nxt['counts']['late']
     sentence = f"<p class=\"t-small\">{at.strftime('%A')} {clock_label(at)}, you are <strong>{word}</strong> as {GROUP_ROLE_WORD[role]}, {n} of {nxt['size']} signed up.</p>"
     segs = Segmented([(w, w.lower() == state) for w in ('In', 'Late', 'Bench', 'Out')], small=True).replace('<a href="#" role="radio"', '<button type="button" role="radio"').replace('</a>', '</button>')
-    return (f'<div class="pc"><div style="display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:44px;padding-top:12px">'
+    return (f'<div class="pc"><div style="display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:44px;padding:12px 0 25px">'
             f'{sentence}<span style="display:flex;align-items:center;gap:16px">{segs}{Link(f"{O.ZONE_NAME} &rarr;")}</span></div></div>')
 
 
@@ -351,14 +363,13 @@ def loot_council():
         won = f"{c['items_won']} item{'' if c['items_won'] == 1 else 's'} this tier"
         sub = f"+{c['gain_dps']} DPS over {c['replaces']} &middot; {c['attendance']['present']} of {c['attendance']['nights']} raid nights &middot; {won}"
         foot = (Tag(c['ms_os'].upper(), 'gold') + (Tag('BiS for them', 'gold') if c['bis_for_them'] else '')
-                + Button(f"{c['votes']['yes']} yes", small=True, act=True) + Button(f"{c['votes']['no']} no", small=True, act=True)
-                + f'<span class="t-small">of {c["votes"]["voters"]} officers</span>' + Button('Award', small=True, act=True))
+                + VoteButtons(c['votes']['yes'], c['votes']['no'], c['votes']['voters']) + f'<span style="margin-left:auto">{Button("Award", small=True, act=True)}</span>')
         cands.append(Row(c['name'], sub, lead=crest_img(c['class'], 32), title_color=C[c['class']], foot=foot, link=False))
     record = Rows([Row(f"{d['item_name']} to {d['name']}",
                        f"Main spec &middot; {d['votes_yes']} yes, {d['votes_no']} no of {d['votes_officers']} &middot; by {d['awarded_by']} &middot; {day_label(guild_time(d['at']))}",
                        lead=icon(d['icon'], 32, f"q{d['quality']}"), link=False) for d in F.decisions()], open_=True)
-    rail = (Section(f"Candidates for {drop['name']}", Rows(cands, open_=True), meta='Gain as on the BiS page')
-            + Section('Decision record', record, DisclosureButton('Export history')))
+    rail = (Section(f"Candidates for {drop['name']}", pad(Rows(cands, open_=True)), meta='Gain as on the BiS page')
+            + Section('Decision record', pad(record), DisclosureButton('Export history')))
     bar = control_bar([('Raid night', seg([(day_label(guild_time(n['at'])), n is night, None, '') for n in nights]))], day_label(guild_time(night['at'])), label='Loot council choices')
     return build_page('Loot council', _view(hdr(tabs_active='Loot', actions=Button('Invite link', small=True)) + band_line(O.OFFICER) + bar + Page('split', main, rail, sticky_rail=True)), 'Guild', ('Dunmaro', 'hunter', 'Beast Mastery Hunter &middot; 60'))
 
@@ -477,7 +488,7 @@ def applications():
     decided = Rows([Row(f'{name} accepted', f'{y} yes, 0 no of {gd.VOTERS} officers &middot; by {by} &middot; Discord role granted &middot; No Discord message: they did not ask for one', link=False, slim=True)
                     for _i, name, _c, _s, y, by, _r, _d in gd.DECIDED], open_=True)
     rail = Section('Your public card', _body(card), Link('See it as a visitor')) + Section('Recent decisions', _body(decided))
-    return build_page('Applications', _view(hdr(tabs_active='Roster') + Page('split', main, rail)) + _ROLE_CSS, 'Guild', (gd.VIEWER, 'hunter', 'Beast Mastery Hunter &middot; 60'))
+    return build_page('Applications', _view(hdr_view(tabs_active='Roster') + Page('split', main, rail)) + _ROLE_CSS, 'Guild', (gd.VIEWER, 'hunter', 'Beast Mastery Hunter &middot; 60'))
 
 
 def member_profile():

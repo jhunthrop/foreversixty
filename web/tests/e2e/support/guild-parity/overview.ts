@@ -38,7 +38,10 @@ function guildAnswers(viewer: Viewer): ReadonlyArray<[RegExp, (url: URL) => stri
     [/^\/raids$/, () => 'overview-raids.json'],
     [/^\/raids\/\d+$/, () => `overview-raid-${viewer}.json`],
     [/^\/progression$/, () => 'overview-progression.json'],
-    [/^\/readiness$/, (url) => (url.searchParams.has('raid') ? 'overview-readiness-raid.json' : 'overview-readiness.json')],
+    [
+      /^\/readiness$/,
+      (url) => (url.searchParams.has('raid') ? 'overview-readiness-raid.json' : 'overview-readiness.json'),
+    ],
     [/^\/me\/checklist$/, () => 'overview-checklist.json'],
     [/^\/officer\/actions$/, () => 'overview-actions.json'],
     [/^\/attendance\/recent$/, () => 'overview-attendance.json'],

@@ -68,11 +68,3 @@
   </div>
   <div class="ui-section-body pt-3">{@render children()}</div>
 </section>
-
-<style>
-  /* Rows start on the head's hairline: a Row carries its own padding (the mock's `.sec-h + .rows`). */
-  .ui-section-body:has(> :global(.ui-row:first-child)),
-  .ui-section-body:has(> :global(:first-child:not(.ui-plate) > .ui-row:first-child)) {
-    padding-top: 0;
-  }
-</style>

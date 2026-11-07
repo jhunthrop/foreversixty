@@ -1437,11 +1437,19 @@ def SpellIcon(name: str, stem: str) -> str:
 
 
 def DisclosureButton(label: str, expanded: bool = False) -> str:
-    """A Button that opens a block under it in place (Export history): the built <button aria-expanded>."""
-    return Button(label, small=True, act=True).replace('<button type="button" ', f'<button type="button" aria-expanded="{"true" if expanded else "false"}" ', 1)
+    """A gold text button that opens a block under it in place (Export history): the built <button aria-expanded>."""
+    return f'<button type="button" class="link tbtn" aria-expanded="{"true" if expanded else "false"}">{label}</button>'
+
+
+def VoteButtons(yes: int, no: int, voters: int) -> str:
+    """The built Votes an officer can press: each count a Tag inside a <button>, then who votes."""
+    pill = ''.join(f'<button type="button" class="vote">{Tag(f"{n} {w}", tone if n else "muted")}</button>' for n, w, tone in ((yes, 'yes', 'kill'), (no, 'no', 'wipe')))
+    return f'<span class="votes">{pill}<span class="t-small">of {voters} officers</span></span>'
 
 
 PRIM_CSS += '''
 .sicon{width:24px;height:24px;border:1px solid var(--line-soft);border-radius:3px;flex:none}
 .strip-tabs[role=tablist] a{text-decoration:none}
+button.tbtn{background:none;border:0;padding:0;font:600 14px/20px var(--font-body);cursor:pointer}
+button.vote{background:none;border:0;padding:0;cursor:pointer}.votes{display:inline-flex;flex-wrap:wrap;align-items:center;gap:6px}
 '''

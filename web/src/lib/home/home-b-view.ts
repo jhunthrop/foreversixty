@@ -15,7 +15,6 @@ export const BIS_SLOTS = 17;
 /** The guild ladder's rows above the viewer's pinned row (ruling R2). */
 export const GUILD_SIMS_SHOWN = 5;
 
-
 export const homeBCopy = {
   simmedOnImport: 'Simmed on import',
   simmed: (date: string) => `Simmed ${date}`,
