@@ -29,7 +29,7 @@ export const accountPageCopy = {
   pairADevice: 'Use a pairing code instead',
   pseudonymLabel: 'Show a pseudonym instead of my character names',
   pseudonymNote:
-    'Applies everywhere your characters appear, on reports and rankings alike. Reports themselves are never deleted or rewritten.',
+    'Applies everywhere your characters appear, on reports and rankings alike. Your reports are kept until you delete them or your account.',
   planKey: 'Plan',
   /** spec 2026-09-22 §3.1: the hero band's Logs action, always shown beside the
    *  handoff links (Open in simulator/planner or the paste fallback). */
@@ -44,6 +44,13 @@ export const accountPageCopy = {
     viaBattlenet
       ? `Signed in as ${who}. Battle.net lists no Forever character on this account yet; make one in game, then refresh from Battle.net.`
       : `Signed in as ${who}. Sign in with Battle.net to bring your Forever characters here, or ${ctaCopy.installAddonAndCompanionInline}.`,
+  /** Under the Characters Plate: the one link to the reports page (ruling A3). */
+  reportsLink: 'Your reports',
+  deleteTitle: 'Delete your account',
+  /** Ruling MUST 4, matched to the privacy page's requests section. */
+  deleteBody:
+    'Email help@foreversixty.gg with your BattleTag and we delete your account and everything on it, within thirty days.',
+  signOutAsk: 'Sign out of Forever Sixty on this browser?',
   /** "Your ratings" panel heading (spec §3.1). */
   yourRatingsLabel: 'Your ratings',
 } as const;

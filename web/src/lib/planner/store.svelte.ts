@@ -44,7 +44,7 @@ import type {
 import { MAX_POINTS } from './types';
 
 /** Shown when someone tries to edit a build opened from a share link. */
-export const READ_ONLY_REASON = 'This build was opened from a share link; fork it to edit';
+export const READ_ONLY_REASON = 'This build was opened from a share link; edit a copy to change it';
 /** The contract caps a title at 60 characters. */
 export const MAX_TITLE_LENGTH = 60;
 

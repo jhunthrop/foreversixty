@@ -38,28 +38,12 @@ A = F['accounts']
 
 # Strings the copy modules do not carry yet (spec 8.2). Each becomes a key in the module named beside it.
 PROPOSED = {
-    'yourPlan': 'Your plan',                                            # plansPageCopy.yourPlanTag
-    'stepSignIn': 'Sign in', 'stepPay': 'Pay with Stripe', 'stepOn': 'Premium on',   # checkoutCopy.steps
-    'signedInAs': 'Signed in as {who}',                                 # checkoutCopy.signedInAs (the setup line's words)
-    'paid': 'Stripe took the payment.',                                 # checkoutCopy.paid
-    'checkAgain': 'Check again',                                        # checkoutCopy.checkAgain (checkoutGuildCopy has it)
-    'nextSim': 'Run a server sim',                                      # checkoutCopy.nextSim
-    'nextCoach': 'Upload a log for the coach',                          # checkoutCopy.nextCoach
-    'redirectingSub': 'Stripe handles the card; we never see it.',      # checkoutCopy.stripeLine (the FAQ's own fact)
-    'charactersTitle': 'Characters',                                    # (characterListCopy.heading, kept)
-    'yourReports': 'Your reports',                                      # accountPageCopy.reportsLink
-    'deleteTitle': 'Delete your account',                               # accountPageCopy.deleteTitle
-    'deleteBody': 'Email help@foreversixty.gg from the address on your Battle.net account and we delete it with everything on it. Reports you made public stay anonymous.',
-    'signOutAsk': 'Sign out of Forever Sixty on this browser?',         # accountPageCopy.signOutAsk
-    'claimPending': 'Claim pending',                                    # accountPlanCopy.guildRow.claimPending
-    'sharedMeta': 'Shared build',                                       # the API page's meta lead (page.go)
-    'sharedViews': '{n} views',                                         # the API page's meta (record.views)
-    'getAddon': 'Get the addon and companion',                          # ctaCopy (setup's words)
-    'guideLink': 'Talent builds in the class guides',                   # the API message page's second link
-    'open': 'Open',                                                    # CharacterRowLink's label (the row link)
-    'faqTitle': 'Questions',                                            # premium.astro's literal, to plansPageCopy.faqTitle
-    'pastDueNotice': 'Your last payment failed. Update your card to keep access.',  # billingBlockCopy.pastDueBanner (kept)
+    'guideLink': 'Talent builds in the class guides',                   # the API message page's second link (page.go)
+    'askSender': 'Ask whoever sent it for a fresh link.',               # the API not-found page's line (ruling Q12, page.go)
 }
+# The 2026-11-08 rulings' strings now live in the copy modules; these are their keys in the facts.
+YOUR_PLAN, FAQ_TITLE = F['plans']['yourPlanTag'], F['plans']['faqTitle']
+STEPS = F['checkout']['steps']
 
 
 def e(t) -> str:
@@ -138,9 +122,8 @@ def premium_column(st: dict) -> tuple:
     c = pc['cell']
     lines = [(e(c['secondLine']), '')] + ([(e(c['founderLine']), 'gold')] if c['founderLine'] else [])
     owned = st.get('owned')
-    tag = Tag(e(P['founder']['label'])) if st['founder'] else ''
-    if owned:
-        tag = Tag(e(PROPOSED['yourPlan']), 'kill')
+    # Ruling PR2: founder is said once (the notice and the price line); the column carries only `Your plan`.
+    tag = Tag(e(YOUR_PLAN), 'kill') if owned else ''
     head = PlanHead(e(P['premium']['name']), e(P['premium']['audience']), e(c['amount']), e(c['suffix'].strip()), lines, tag, gold=True)
     if owned:
         act = f'<p class="lede strong">{e(SRC["premiumCard"][owned])}</p>{LinkBtn(e(SRC["buttons"]["seePlan"]))}'
@@ -153,7 +136,7 @@ def premium_column(st: dict) -> tuple:
 
 def free_column(st: dict) -> tuple:
     mine = st.get('signed') and not st.get('owned')
-    tag = Tag(e(PROPOSED['yourPlan']), 'kill') if mine else ''
+    tag = Tag(e(YOUR_PLAN), 'kill') if mine else ''
     head = PlanHead(e(P['free']['name']), e(P['free']['audience']), e(P['free']['price']), '', [(e(P['free']['note']), '')], tag)
     foot = '' if st.get('signed') else r(F['my_reports']['signInAction'])
     body = f'<div class="stack">{head}{ruled(P["free"]["features"])}</div>'
@@ -242,7 +225,7 @@ def premium_page(state: str) -> str:
     guild = Section(e(gr['heading']), f'<div class="stack" id="guild-leaders"><p class="lede">{e(gr["lede"])}</p><p class="t-small">{e(gr["members"])}</p>'
                     + Columns([guild_column('guild', st), guild_column('raid_guild', st)]) + f'<p class="t-small">{e(P["historyPromise"])}</p></div>')
     rules = Section(e(P['howItWorks']), RowGrid([Row(e(x['term']), e(x['sentence']), link=False) for x in P['rules']], 2))
-    faq = Section(e(PROPOSED['faqTitle']), RowGrid([Row(e(x['question']), e(x['answer']), link=False) for x in P['faq']], 2), meta=e(P['foot']))
+    faq = Section(e(FAQ_TITLE), RowGrid([Row(e(x['question']), e(x['answer']), link=False) for x in P['faq']], 2), meta=e(P['foot']))
     body = head + bar + notes + Page('split', plate + guild + rules + faq, coach_rail())
     note = f'/premium mock, {state}. Data: premium-facts.json (plans-page-copy.ts, components/premium/model.ts on plans.ts; accounts DERIVED from home fixtures at 2026-11-08T10:00Z).'
     return render(f'{P["title"]} · Forever Sixty', body, 'Premium', who_of(key), chrome_of(key), note)
@@ -256,24 +239,24 @@ def band(plan: str, founder: bool = True, change: bool = True) -> str:
         return f'<div class="ans-plan"><span class="fd">{Figure(e(pc["cell"]["amount"]), unit=e(pc["cell"]["suffix"].strip()), tone="gold")}{Tag(e(GC["planSummary"]["founder"])) if founder else ""}</span><span class="t-small">{e(pc["cell"]["secondLine"])}</span>{r(GC["planSummary"]["changePlan"]) if change else ""}</div>'
     pc = price_key('guild', 'yearly', founder)
     return (f'<div class="ans-plan"><span class="fd">{Figure(e(pc["cell"]["amount"]), "Guild", e(pc["cell"]["suffix"].strip()), tone="gold")}{Tag(e(GC["planSummary"]["founder"]))}</span>'
-            f'<span class="t-small">{e(GC["sizeLine"]["guild"])}</span><span class="t-small"><b class="strong">{e(GC["planSummary"]["trial"])}</b></span>{r(GC["planSummary"]["changePlan"])}</div>')
+            f'<span class="t-small">{e(GC["sizeLine"]["guild"])}</span><span class="t-small"><b class="strong">{e(GC["planSummary"]["trial"])}</b></span>{r(GC["planSummary"]["changePlan"]) if change else ""}</div>')
 
 
 def checkout_steps(state: str) -> str:
-    who = PROPOSED['signedInAs'].format(who=A['premium']['battletag'])
-    s1 = ('ok', 1, e(PROPOSED['stepSignIn']), f'<span class="tx">{e(who)}</span>', '')
+    s1 = ('ok', 1, e(STEPS['signIn']), f'<span class="tx">{e(F["checkout_signed_in"])}</span>', '')
+    pay, on, paid = e(STEPS['pay']), e(F['plan_table']['premium']['name'] + ' on'), e(CK['paid'])
     if state == 'redirecting':
-        rows = [s1, ('busy', 2, e(PROPOSED['stepPay']), f'<span class="tx" role="status">{e(CK["redirecting"])}</span><br>{e(PROPOSED["redirectingSub"])}', ''), ('todo', 3, e(PROPOSED['stepOn']), '', '')]
+        rows = [s1, ('busy', 2, pay, f'<span class="tx" role="status">{e(CK["redirecting"])}</span><br>{e(CK["stripeLine"])}', ''), ('todo', 3, on, '', '')]
     elif state == 'processing':
-        rows = [s1, ('ok', 2, e(PROPOSED['stepPay']), e(PROPOSED['paid']), ''), ('busy', 3, e(PROPOSED['stepOn']), f'<span class="tx" role="status">{e(CK["processing"])}</span>', '')]
+        rows = [s1, ('ok', 2, pay, paid, ''), ('busy', 3, on, f'<span class="tx" role="status">{e(CK["processing"])}</span>', '')]
     elif state == 'confirmed':
-        rows = [s1, ('ok', 2, e(PROPOSED['stepPay']), e(PROPOSED['paid']), ''), ('ok', 3, e(PROPOSED['stepOn']), f'<span class="tx" role="status">{e(CK["confirmed"])}</span>', '')]
+        rows = [s1, ('ok', 2, pay, paid, ''), ('ok', 3, on, f'<span class="tx" role="status">{e(CK["confirmed"])}</span>', '')]
     elif state == 'slow':
-        rows = [s1, ('ok', 2, e(PROPOSED['stepPay']), e(PROPOSED['paid']), ''), ('warn', 3, e(PROPOSED['stepOn']), f'<span class="warn" role="status">{e(CK["confirmationSlow"])}</span>', Btn(e(PROPOSED['checkAgain']), primary=True))]
+        rows = [s1, ('ok', 2, pay, paid, ''), ('warn', 3, on, f'<span class="warn" role="status">{e(CK["confirmationSlow"])}</span>', Btn(e(CK['checkAgain']), primary=True))]
     elif state == 'error':
-        rows = [s1, ('miss', 2, e(PROPOSED['stepPay']), f'<span class="miss" role="alert">{e(CK["genericFailure"])}</span>', Btn(e(CK['retry']), primary=True)), ('todo', 3, e(PROPOSED['stepOn']), '', '')]
+        rows = [s1, ('miss', 2, pay, f'<span class="miss" role="alert">{e(CK["genericFailure"])}</span>', Btn(e(CK['retry']), primary=True)), ('todo', 3, on, '', '')]
     else:  # notopen
-        rows = [s1, ('miss', 2, e(PROPOSED['stepPay']), f'<span class="miss" role="alert">{e(CK["notOpenYet"])}</span>', ''), ('todo', 3, e(PROPOSED['stepOn']), '', '')]
+        rows = [s1, ('miss', 2, pay, f'<span class="miss" role="alert">{e(CK["notOpenYet"])}</span>', ''), ('todo', 3, on, '', '')]
     return Plate(Steps(rows), 'Checkout')
 
 
@@ -284,8 +267,17 @@ def checkout_page(state: str) -> str:
         head = PageHeader(e(F['plan_table']['premium']['name']), answer=band('premium', change=state in ('redirecting', 'error', 'notopen')))
         plate = checkout_steps(state)
         if state == 'confirmed':
-            after = f'<div class="acts" style="padding-top:16px">{r(PROPOSED["nextSim"])}{r(PROPOSED["nextCoach"])}{r(SRC["buttons"]["seePlan"])}</div>'
+            # Ruling K2: the renewal line above the three next steps.
+            after = (f'<p class="t-small" style="padding-top:16px">{e(F["checkout_renewal"])}</p>'
+                     f'<div class="acts" style="padding-top:8px">{r(CK["nextSim"])}{r(CK["nextCoach"])}{r(SRC["buttons"]["seePlan"])}</div>')
         body = head + PageForm(plate + after)
+    elif state == 'trial':
+        # Ruling K1: a guild checkout in its free trial took no payment; row 2 says the card was saved.
+        head = PageHeader(e(GC['band']['title']), answer=band('guild', change=False))
+        rows = [('ok', 1, e(STEPS['signIn']), f'<span class="tx">{e(F["checkout_signed_in"])}</span>', ''),
+                ('ok', 2, e(STEPS['pay']), e(F['checkout_trial_saved']), ''),
+                ('ok', 3, e(F['plan_table']['guild']['name'] + ' on'), f'<span class="tx" role="status">{e(CK["confirmed"])}</span>', '')]
+        body = head + PageForm(Plate(Steps(rows), 'Checkout'))
     elif state == 'owned':
         o = A['seat']['owned']
         who = WHO['free']
@@ -297,7 +289,7 @@ def checkout_page(state: str) -> str:
         fn = F['guild_checkout_fns']
         head = PageHeader(e(GC['band']['title']), answer=band('guild'), lead=e(GC['lead']['someClaimed']))
         g1 = Row('Olympus XXVII', f'{e(fn["holdsClaim"])}<br>{e(fn["verified"])} · {e(fn["onRoster"])} · {e(fn["noPlan"])}', lead=Emblem('alliance', 40),
-                 trail=Btn(e(fn['subscribe']), primary=True), link=False)
+                 trail=Btn(e(fn['startTrial']), primary=True), link=False)
         g2 = Row('Pinefeather Lodge', f'{e(fn["askLeader"])}<br>{e(fn["verified4"])} · {e(fn["onRoster4"])} · {e(fn["noPlan"])}', lead=Emblem('alliance', 40),
                  trail=Btn(e(GC['copyField']['copy']), small=True), link=False)
         foot = f'<p class="t-small" style="padding-top:14px">{e(GC["foot"]["missingGuild"])} {r(GC["foot"]["getSetUp"])}</p><p class="t-small">{e(fn["footPremium"])} {r(GC["foot"]["getPremium"])}</p>'
@@ -328,14 +320,14 @@ def characters_section(a: dict, refreshing: bool = False) -> str:
         setmain = '' if c['main'] else Btn(e(CL['setAsMain']), small=True)
         sub = e(c['descriptor']) + (f'<br>{e(c["guild"])}' if c['guild'] else '')
         rows.append(Row(f'<span class="fd"><span style="color:{CLASS_COLOR.get(c["cls"], "#f2eee4")}">{e(c["name"])}</span>{tags}</span>', sub, lead=crest_img(c['cls'], 40),
-                        trail=f'{src}{setmain}{r(PROPOSED['open'])}', link=False))
+                        trail=f'{src}{setmain}{r(CL['open'])}', link=False))
     refresh = f'<span class="t-small">{e(CL["refreshing"])}</span>' if refreshing else r(CL['refreshFromBattlenet'])
     if not rows:
         inner = (f'<div class="stack" style="padding:16px 20px 20px"><p class="lede warn-t" style="color:var(--gold)">{e(CL["empty"])}</p>'
                  f'<div class="acts">{LinkBtn(e(CL["getSetUp"]), primary=True)}{LinkBtn(e(CL["pasteAnExport"]))}</div></div>')
         return Section(e(CL['heading']), Plate(inner, e(CL['heading'])), action=refresh)
     foot = (f'<p class="t-small" style="padding-top:12px">{e(CL["introBattlenetLine"])} {Link(e(CL["introInstallAddonLink"]))} {e(CL["introAddonTail"])} '
-            f'{Link(e(CL["introPasteLink"]))} {e(CL["introPasteTail"])}</p><p style="padding-top:8px">{r(PROPOSED["yourReports"])}</p>')
+            f'{Link(e(CL["introPasteLink"]))} {e(CL["introPasteTail"])}</p><p style="padding-top:8px">{r(ACC["reportsLink"])}</p>')
     return Section(e(CL['heading']), Plate(Rows(rows), e(CL['heading'])) + foot, action=refresh, meta=e(a['imported'] or ''))
 
 
@@ -393,8 +385,8 @@ def guilds_section(a: dict, asking: bool = False) -> str:
     blocks = []
     for i, g in enumerate(a['guilds']):
         tags = (Tag(e(g['tag']), 'gold' if g['planLine'] else 'muted') if g['tag'] else '') + (Tag(e(g['mark']), 'muted') if g['mark'] else '') \
-            + (Tag(e(PROPOSED['claimPending'])) if g['claimLine'] else '')
-        rows = [Row(f'<span class="fd">{e(g["name"])}{tags}</span>', e(g['rank'] or ''), lead=Emblem('alliance', 32), trail=r(PROPOSED['open']), link=False)]
+            + (Tag(e(AP['guildRow']['claimPending'])) if g['claimLine'] else '')
+        rows = [Row(f'<span class="fd">{e(g["name"])}{tags}</span>', e(g['rank'] or ''), lead=Emblem('alliance', 32), trail=r(CL['open']), link=False)]
         rows.append(Row(e(CON['shareLabel']), trail=sel(e({'roster': CON['roster'], 'gear': CON['gear'], 'gear_bags': CON['gearBags']}[g['consent']])), link=False, slim=True))
         if g['planLine']:
             rows.append(Row(e(F['guild_settings']), trail=r(g['planLine']), link=False, slim=True))
@@ -437,7 +429,9 @@ def discord_section(a: dict, unlinking: bool = False) -> str:
         top = Row(f'{e(DL["linkedLead"])} <b class="strong">{e(link["display_name"])}</b>', trail=Btn(e(DL['unlink']), small=True), link=False)
     else:
         top = Row(e(DL['lead']), trail=Btn(e(DL['link']), small=True), link=False)
-    role = Row(e(DR['label']), e(DR['lead']), trail=Btn(e(DR['link']), small=True), link=False)
+    # Ruling A4 / MUST 3: an account that already has Premium is told the role turns on as soon as it links.
+    lead = DR['leadOwned'] if a['source'] != 'none' else DR['lead']
+    role = Row(e(DR['label']), e(lead), trail=Btn(e(DR['link']), small=True), link=False)
     st = a['discord']['state']
     if st == 'saved':
         nt = (f'<div class="stack tight"><span class="t-label">{e(NC["headLabel"])}</span><p class="lede">{e(NC["destinationChannel"])}</p>'
@@ -450,7 +444,7 @@ def discord_section(a: dict, unlinking: bool = False) -> str:
 
 def you_section(a: dict) -> str:
     sw = Switch(e(ACC['pseudonymLabel']), on=False)
-    rows = [Row(e(PROPOSED['deleteTitle']), e(PROPOSED['deleteBody']), link=False)]
+    rows = [Row(e(ACC['deleteTitle']), e(ACC['deleteBody']), link=False)]
     return Section(e(ACC['youLabel']), f'<div class="stack">{sw}<p class="t-small">{e(ACC["pseudonymNote"])}</p>{Rows(rows, True)}</div>')
 
 
@@ -501,7 +495,7 @@ def account_states() -> str:
         cells.append(f'<div class="st-cell"><span class="t-label">Seat offer {o}</span>{plan_section(A["offer"], o)}</div>')
     cells.append(f'<div class="st-cell"><span class="t-label">Devices: pairing code shown</span>{devices_section("one", pairing=True)}</div>')
     cells.append(f'<div class="st-cell"><span class="t-label">Characters: refreshing from Battle.net</span>{characters_section(A["free"], refreshing=True)}</div>')
-    cells.append(f'<div class="st-cell"><span class="t-label">Sign out asks first</span><p class="lede">{e(PROPOSED["signOutAsk"])}</p><div class="acts">{Btn(e(ACC["signOut"]), tone="danger")}{Btn(e(DC["cancel"]))}</div></div>')
+    cells.append(f'<div class="st-cell"><span class="t-label">Sign out asks first</span><p class="lede">{e(ACC["signOutAsk"])}</p><div class="acts">{Btn(e(ACC["signOut"]), tone="danger")}{Btn(e(DC["cancel"]))}</div></div>')
     body = '<div class="pc" style="padding-top:24px"><h1 class="t-title">Account: element states</h1></div>' + Page('ledger', f'<div class="st-grid">{"".join(cells)}</div>')
     return render('Account states', body, '', WHO['free'], '', 'Account states sheet; data as the account mocks.')
 
@@ -521,7 +515,8 @@ def b_page(state: str) -> str:
             title = re.search(r'<h1[^>]*>([^<]+)</h1>', astro).group(1)
             text = ' '.join(re.sub(r'\s+', ' ', re.sub(r'<[^>]+>', '', p)).strip() for p in re.findall(r'<p[^>]*>([\s\S]*?)</p>', astro))
         planner = re.search(r'class="[^"]*">([^<]+)</a></p>', (ROOT / 'api/internal/site/page.go').read_text()).group(1)
-        body = PageHeader(e(title), meta=[e(text)]) + PageForm(f'<div class="acts">{LinkBtn(e(planner), primary=True)}{r(PROPOSED["guideLink"])}</div>')
+        ask = f'<p class="t-small">{e(PROPOSED["askSender"])}</p>' if state == 'missing' else ''
+        body = PageHeader(e(title), meta=[e(text)]) + PageForm(f'<div class="stack">{ask}<div class="acts">{LinkBtn(e(planner), primary=True)}{r(PROPOSED["guideLink"])}</div></div>')
         return render(f'{title} · Forever Sixty', body, '', None, '', f'/b/:id mock, {state}: the API message page (api/internal/site/handler.go, page.go messagePage).')
     cfg = {'shared': ('guide', 'Survival raid build', None, 41), 'you': ('guide', 'Survival raid build', 'others', 41),
            'holy': ('holy', 'Holy raid healing', 'other_class', 7), 'fire': ('fire', '', None, 12)}[state]
@@ -531,23 +526,25 @@ def b_page(state: str) -> str:
     h1 = title or heading
     score = WP.SAMPLE_SCORE.get(key)
     split = '/'.join(str(x) for x in st['split'])
-    meta = [e(PROPOSED['sharedMeta']), e(st['meta']), e(split), e(PROPOSED['sharedViews'].format(n=views))]
-    head = PageHeader(e(h1), CLASS_COLOR[st['cls']], crest_img(st['cls'], 56), meta, WP.answer(st, score))
     SH = F['shared']
+    # Ruling Q10: `Shared by {name}` only when the share record names the sharer; the record carries no sharer today.
+    meta = [e(SH['meta']), e(st['meta']), e(split), e(SH['views'][str(views)])]
+    head = PageHeader(e(h1), CLASS_COLOR[st['cls']], crest_img(st['cls'], 56), meta, WP.answer(st, score))
     send = WP.F['send'][send_key] if send_key else None
     fork = f'{Btn(e(SH["fork"]))}'
     note = f'<div class="pc"><div data-region="{REGION["notes"]}"><p class="notice neutral">{e(SH["note"])} {fork}</p></div></div>'
     foot = WP.tree_foot({**st, 'spent': 0})
     plate = WP.TalentEditor(WP.trees(st, readonly=True), max(range(3), key=lambda i: st['split'][i]), foot)
     main = WP.Ordered(plate, 1, span=True) + WP.Ordered(WP.order(st), 6, span=True)
-    rail = WP.Ordered(WP.in_game(st, send), 2) + WP.Ordered(WP.compare(st, readonly=True), 3)
+    # Ruling MUST 5: another class's build says so in one plain line above Copy for the game, inside the rail.
+    rail = WP.Ordered(WP.in_game(st, send, plain_block=True), 2) + WP.Ordered(WP.compare(st, readonly=True, heading=SH['guideBuild']), 3)
     who = WHO['free'] if send_key else None
     body = head + note + Page('workbench', main, rail) + WP.PAGE_CSS
     return render(f'{h1} · {split} · Forever Sixty', body, 'Tools', who, '', f'/b/:id mock ({state}): the API page mounting the planner read-only. Data: planner-facts.json ({key}); SAMPLE live score.')
 
 
 PAGES = {('web-premium' if s == 'out' else f'web-premium-{s}'): (lambda s=s: premium_page(s)) for s in PREMIUM_STATES}
-PAGES |= {f'web-checkout-{s}': (lambda s=s: checkout_page(s)) for s in ('redirecting', 'processing', 'confirmed', 'slow', 'error', 'notopen', 'owned', 'guild', 'invalid')}
+PAGES |= {f'web-checkout-{s}': (lambda s=s: checkout_page(s)) for s in ('redirecting', 'processing', 'confirmed', 'slow', 'error', 'notopen', 'owned', 'guild', 'trial', 'invalid')}
 PAGES |= {('web-account' if s == 'free' else f'web-account-{s}'): (lambda s=s: account_page(s)) for s in ['free', 'out', 'loading', 'error', *[k for k in ACCOUNT_STATES if k != 'free']]}
 PAGES['web-account-states'] = account_states
 PAGES |= {('web-b' if s == 'shared' else f'web-b-{s}'): (lambda s=s: b_page(s)) for s in ('shared', 'you', 'holy', 'fire', 'missing', 'error', 'unavailable')}

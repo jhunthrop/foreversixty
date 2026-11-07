@@ -61,7 +61,8 @@ import { ACCOUNT_FAILED } from ${src("src/lib/account/api.ts")};
 import { pairingCopy } from ${src("src/lib/reports/copy.ts")};
 import { myReportsCopy } from ${src("src/lib/reports/my-reports-copy.ts")};
 import { settingsWords } from ${src("src/lib/guild/settings-view.ts")};
-import { plannerCopy } from ${src("src/lib/planner/copy.ts")};
+import { plannerCopy, bandCompareCopy } from ${src("src/lib/planner/copy.ts")};
+import { utcDayMonthYear } from ${src("src/lib/dates.ts")};
 import { READ_ONLY_REASON } from ${src("src/lib/planner/store.svelte.ts")};
 import { relativeTime } from ${src("src/lib/dates.ts")};
 import icons from ${spellIcons};
@@ -182,7 +183,7 @@ export default {
   guild_checkout: strip(checkoutGuildCopy),
   guild_checkout_fns: {
     holdsClaim: checkoutGuildCopy.ready.holdsClaim(olympus.name),
-    subscribe: checkoutGuildCopy.ready.subscribe(formatPrice(priceFor('guild', 'yearly', true), 'yearly')),
+    startTrial: checkoutGuildCopy.ready.startTrial(formatPrice(priceFor('guild', 'yearly', true), 'yearly')),
     verified: checkoutGuildCopy.facts.verified(18), noPlan: checkoutGuildCopy.facts.noPlan, onRoster: checkoutGuildCopy.facts.onRoster(31),
     askLeader: checkoutGuildCopy.askLeader('Pinefeather Lodge'), verified4: checkoutGuildCopy.facts.verified(4), onRoster4: checkoutGuildCopy.facts.onRoster(9),
     footPremium: checkoutGuildCopy.foot.premium(formatPrice(priceFor('premium', 'yearly', true), 'yearly')),
@@ -194,8 +195,14 @@ export default {
   discord_link: strip(discordLinkCopy), discord_role: discordRoleCopy, notifications: strip(notificationsCopy), premium_row: strip(premiumRowCopy),
   consent: strip(guildConsentCopy), account_failed: ACCOUNT_FAILED, pairing: strip(pairingCopy), my_reports: myReportsCopy,
   accounts, devices,
+  // Ruling K1: a guild checkout in its trial saved a card and charges at the trial's end (7 days from now).
+  checkout_trial_saved: checkoutCopy.trialSaved(utcDayMonthYear(days(7))),
+  // Ruling K2: the renewal line above the next steps, on the paid Premium account's own renewal date.
+  checkout_renewal: checkoutCopy.renewalLine(formatPrice(priceFor('premium', 'yearly', true), 'yearly'), accounts.premium.plan.head.when.date),
+  checkout_signed_in: checkoutCopy.signedInAs(me60.user.battletag),
   guild_on_line: checkoutGuildCopy.onPlan.youPay(olympus.name, 'guild'), guild_settings: settingsWords.guildSettingsLink,
-  shared: { note: plannerCopy.sharedLinkNote, fork: plannerCopy.fork, readOnly: READ_ONLY_REASON, shareTitle: plannerCopy.shareTitle },
+  shared: { note: plannerCopy.sharedLinkNote, fork: plannerCopy.fork, readOnly: READ_ONLY_REASON, shareTitle: plannerCopy.shareTitle, meta: plannerCopy.sharedMeta,
+    views: { 41: plannerCopy.sharedViews(41), 7: plannerCopy.sharedViews(7), 12: plannerCopy.sharedViews(12) }, guideBuild: bandCompareCopy.sharedHeading },
 };`;
 const generatedFallback = {
   name: "generated-fallback",

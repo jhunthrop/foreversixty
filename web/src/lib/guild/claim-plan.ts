@@ -44,7 +44,7 @@ export function claimLinkFor(path: CharacterPath, claimPlan: ClaimPlan | null, o
 /** The `ready` button's label: the trial while it is unused, else the price. */
 export function subscribeLabel(claimPlan: ClaimPlan, trialUsed: boolean | null, founder: boolean): string {
   return trialUsed === false
-    ? checkoutGuildCopy.ready.startTrial
+    ? checkoutGuildCopy.ready.startTrial(priceText(claimPlan, founder))
     : checkoutGuildCopy.ready.subscribe(priceText(claimPlan, founder));
 }
 

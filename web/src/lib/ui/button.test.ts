@@ -53,12 +53,13 @@ describe('button recipes', () => {
     expect(BUTTON_GHOST).toContain('hover:text-gold-hover');
   });
 
-  it('danger is wipe ink on a 6 % ground with a 32 % border, 12 % on hover, 16 % pressed', () => {
+  it('danger is wipe ink on a 40 % wipe hairline, never filled; hover takes the full border and lighter ink', () => {
     expect(BUTTON_DANGER).toContain('text-wipe');
-    expect(BUTTON_DANGER).toContain('bg-wipe/[.06]');
-    expect(BUTTON_DANGER).toContain('border-wipe/30');
-    expect(BUTTON_DANGER).toContain('hover:bg-wipe/[.12]');
-    expect(BUTTON_DANGER).toContain('active:bg-wipe/[.16]');
+    expect(BUTTON_DANGER).toContain('bg-transparent');
+    expect(BUTTON_DANGER).toContain('border-wipe/40');
+    expect(BUTTON_DANGER).toContain('hover:border-wipe');
+    expect(BUTTON_DANGER).toContain('hover:text-[#ff8f88]');
+    expect(BUTTON_DANGER).not.toMatch(/bg-wipe/);
   });
 
   it('hover applies only where a pointer can hover', () => {

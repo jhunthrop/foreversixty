@@ -109,8 +109,11 @@ export const plannerCopy = {
   /** The small reset link in each tree head (Q9). */
   resetTree: 'Reset',
   resetTreeLabel: (treeName: string): string => `Reset ${treeName}`,
-  sharedLinkNote: 'This build was shared as a link. Fork it to spend points of your own.',
-  fork: 'Fork',
+  sharedLinkNote: 'This build was shared as a link. Edit a copy to spend points of your own.',
+  fork: 'Edit a copy',
+  /** The shared page's meta lead and its view count (spec 2026-11-08 section 8). */
+  sharedMeta: 'Shared build',
+  sharedViews: (views: number): string => `${views.toLocaleString('en-US')} ${views === 1 ? 'view' : 'views'}`,
   shareTitleLabel: 'Title',
   shareTitlePlaceholder: 'Optional',
   copyLink: 'Copy link',
@@ -222,6 +225,8 @@ function article(word: string): string {
 
 export const bandCompareCopy = {
   heading: (bandLabel: string): string => `${bandPhrase(bandLabel)} build`,
+  /** The same panel on a shared build (ruling SHOULD, 2026-11-08): the guide build it is set against. */
+  sharedHeading: 'Guide build',
   /** "No level 9 build for Arms. Pick Fury or Protection." -- the level and the class's other specs come from data. */
   noLevelBuild: (level: number, specName: string, otherSpecs: readonly string[]): string => {
     const head = `No level ${level} build for ${specName}.`;

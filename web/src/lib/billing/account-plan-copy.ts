@@ -59,6 +59,7 @@ export const accountPlanCopy = {
   guildRow: {
     youHoldSeat: ' · you hold a seat',
     notVerified: 'Not verified',
+    claimPending: 'Claim pending',
     /** The plan tag in a guild block's name line. */
     planTag: { guild: PLANS.guild.name, raid_guild: PLANS.raid_guild.name, none: 'No plan' },
     noPlan: (guild: string): string => `${guild} has no plan.`,

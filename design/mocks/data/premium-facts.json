@@ -3,6 +3,8 @@
  "build": "1.60.1.70790",
  "plans": {
   "title": "Plans",
+  "yourPlanTag": "Your plan",
+  "faqTitle": "Questions",
   "description": "What is free on Forever Sixty for good, what Premium, Guild and Raid guild add, and what each costs.",
   "band": {
    "eyebrow": "PLANS",
@@ -168,7 +170,7 @@
    },
    {
     "term": "Refunds",
-    "sentence": "Ask within 14 days of a first charge for a refund. After that there are no part-year refunds."
+    "sentence": "Email help@foreversixty.gg for a refund. Cancelling stops the renewal and the plan runs to the end of the period you paid for; there are no part-period refunds. If you were charged twice, or paid for something that did not work, we put it right."
    }
   ],
   "foot": "Prices in US dollars. Cancel any time; you keep the plan to the end of the period you paid for.",
@@ -239,7 +241,7 @@
     "amount": "$40",
     "suffix": " /year",
     "secondLine": "$3.33 a month, billed yearly",
-    "founderLine": "Founder price until 6 Jan 2027, then $50."
+    "founderLine": "Founder price for anyone who subscribes by 6 Jan 2027. $50 after that."
    },
    "button": "Subscribe · $40 a year",
    "cost": null,
@@ -263,7 +265,7 @@
     "amount": "$5",
     "suffix": " /month",
     "secondLine": "Or $40 a year.",
-    "founderLine": "Founder price until 6 Jan 2027, then $6 a month."
+    "founderLine": "Founder price for anyone who subscribes by 6 Jan 2027. $6 a month after that."
    },
    "button": "Subscribe · $5 a month",
    "cost": null,
@@ -287,7 +289,7 @@
     "amount": "$120",
     "suffix": " /year",
     "secondLine": "$10 a month, billed yearly",
-    "founderLine": "Founder price until 6 Jan 2027, then $150."
+    "founderLine": "Founder price for anyone who subscribes by 6 Jan 2027. $150 after that."
    },
    "button": "Subscribe a guild · $120 a year",
    "cost": "$4.80 per member a year at 25 members.",
@@ -311,7 +313,7 @@
     "amount": "$12",
     "suffix": " /month",
     "secondLine": "Or $120 a year.",
-    "founderLine": "Founder price until 6 Jan 2027, then $15 a month."
+    "founderLine": "Founder price for anyone who subscribes by 6 Jan 2027. $15 a month after that."
    },
    "button": "Subscribe a guild · $12 a month",
    "cost": "$0.48 per member a month at 25 members.",
@@ -335,7 +337,7 @@
     "amount": "$200",
     "suffix": " /year",
     "secondLine": "$16.67 a month, billed yearly",
-    "founderLine": "Founder price until 6 Jan 2027, then $250."
+    "founderLine": "Founder price for anyone who subscribes by 6 Jan 2027. $250 after that."
    },
    "button": "Subscribe a guild · $200 a year",
    "cost": "$5 per raider a year in a 40-person raid, $10 in a 20, $20 in a 10.",
@@ -359,7 +361,7 @@
     "amount": "$20",
     "suffix": " /month",
     "secondLine": "Or $200 a year.",
-    "founderLine": "Founder price until 6 Jan 2027, then $25 a month."
+    "founderLine": "Founder price for anyone who subscribes by 6 Jan 2027. $25 a month after that."
    },
    "button": "Subscribe a guild · $20 a month",
    "cost": "$0.50 per raider a month in a 40-person raid, $1 in a 20, $2 in a 10.",
@@ -468,7 +470,20 @@
   "noBillableGuild": "You can subscribe a guild you lead or have claimed.",
   "findYourGuild": "Find your guild",
   "guildsDidNotLoad": "Your guilds did not load.",
-  "tryAgain": "Try again"
+  "tryAgain": "Try again",
+  "steps": {
+   "signIn": "Sign in",
+   "pay": "Pay with Stripe",
+   "on": "[fn]"
+  },
+  "signedInAs": "[fn]",
+  "stripeLine": "Stripe handles the card; we never see it.",
+  "paid": "Stripe took the payment.",
+  "trialSaved": "[fn]",
+  "checkAgain": "Check again",
+  "renewalLine": "[fn]",
+  "nextSim": "Run a server sim",
+  "nextCoach": "Upload a log for the coach"
  },
  "billing_block": {
   "notSubscribed": "Not on Premium.",
@@ -553,9 +568,9 @@
   "lead": {
    "ready": "Choose the guild this plan is for.",
    "allUnclaimed": "[fn]",
-   "someClaimed": "Only a guild's guild master can claim it here and subscribe it. Here is the next step for each of your guilds.",
+   "someClaimed": "A guild's guild master claims it here, or an officer once a second officer confirms; whoever holds the claim subscribes it. Here is the next step for each of your guilds.",
    "canClaim": "You can claim a guild here. Each card below has its next step.",
-   "allClaimed": "The guild master who holds a guild's claim subscribes it. Here is where each of your guilds stands."
+   "allClaimed": "Whoever holds a guild's claim subscribes it. Here is where each of your guilds stands."
   },
   "rank": {
    "leader": "Guild master",
@@ -580,7 +595,7 @@
   "ready": {
    "holdsClaim": "[fn]",
    "lapsed": "[fn]",
-   "startTrial": "Start the 7-day trial",
+   "startTrial": "[fn]",
    "subscribe": "[fn]",
    "subscribeAgain": "[fn]"
   },
@@ -720,11 +735,11 @@
  },
  "guild_checkout_fns": {
   "holdsClaim": "You hold Olympus XXVII's claim.",
-  "subscribe": "Subscribe · $120 a year",
+  "startTrial": "Start 7 free days · then $120 a year",
   "verified": "18 verified members",
   "noPlan": "No plan",
   "onRoster": "31 characters on the roster",
-  "askLeader": "Only Pinefeather Lodge's guild master can claim it and subscribe it. Send them this link.",
+  "askLeader": "Pinefeather Lodge's guild master can claim it, or an officer with a second officer's confirmation. Send them this link.",
   "verified4": "4 verified members",
   "onRoster4": "9 characters on the roster",
   "footPremium": "Or Premium for yourself, $40 a year.",
@@ -777,6 +792,7 @@
   "guildRow": {
    "youHoldSeat": " · you hold a seat",
    "notVerified": "Not verified",
+   "claimPending": "Claim pending",
    "planTag": {
     "guild": "Guild",
     "raid_guild": "Raid guild",
@@ -811,11 +827,15 @@
   "downloadCompanionHref": "/setup#companion",
   "pairADevice": "Use a pairing code instead",
   "pseudonymLabel": "Show a pseudonym instead of my character names",
-  "pseudonymNote": "Applies everywhere your characters appear, on reports and rankings alike. Reports themselves are never deleted or rewritten.",
+  "pseudonymNote": "Applies everywhere your characters appear, on reports and rankings alike. Your reports are kept until you delete them or your account.",
   "planKey": "Plan",
   "heroLogs": "Logs",
   "signedInBanner": "[fn]",
   "signedInBannerEmpty": "[fn]",
+  "reportsLink": "Your reports",
+  "deleteTitle": "Delete your account",
+  "deleteBody": "Email help@foreversixty.gg with your BattleTag and we delete your account and everything on it, within thirty days.",
+  "signOutAsk": "Sign out of Forever Sixty on this browser?",
   "yourRatingsLabel": "Your ratings"
  },
  "characters_copy": {
@@ -833,6 +853,7 @@
   "verified": "Verified",
   "main": "Main",
   "current": "Current",
+  "open": "Open",
   "setAsMain": "Set as main",
   "setAsMainFailed": "Could not set your main just now.",
   "levelPrefix": "[fn]",
@@ -884,6 +905,7 @@
  "discord_role": {
   "label": "Premium role in Discord",
   "lead": "Gives you the Premium role in the Forever Sixty Discord while you have Premium. Link now and it turns on when you subscribe.",
+  "leadOwned": "Link it and the role turns on.",
   "link": "Link Premium role",
   "returnLinked": "Linked. Your Discord Premium role now follows your Forever Sixty Premium.",
   "returnDenied": "Cancelled in Discord. Nothing was linked.",
@@ -2103,12 +2125,22 @@
    ]
   }
  },
+ "checkout_trial_saved": "Card saved. First charge 15 Nov 2026.",
+ "checkout_renewal": "$40 a year · renews 4 Nov 2027 · receipt from Stripe by email",
+ "checkout_signed_in": "Signed in as Hunthrop#1894",
  "guild_on_line": "Olympus XXVII is on the Guild plan. You pay for it.",
  "guild_settings": "Guild settings",
  "shared": {
-  "note": "This build was shared as a link. Fork it to spend points of your own.",
-  "fork": "Fork",
+  "note": "This build was shared as a link. Edit a copy to spend points of your own.",
+  "fork": "Edit a copy",
   "readOnly": "This build was opened from a share link; fork it to edit",
-  "shareTitle": "Share this build"
+  "shareTitle": "Share this build",
+  "meta": "Shared build",
+  "views": {
+   "7": "7 views",
+   "12": "12 views",
+   "41": "41 views"
+  },
+  "guideBuild": "Guide build"
  }
 }
