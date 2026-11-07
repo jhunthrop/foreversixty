@@ -24,6 +24,8 @@ export interface PairingPollOptions {
   intervalMs?: number;
   /** Stops the poll with no success once this elapses -- the code's own `expires_in`, in ms. */
   expiresInMs?: number;
+  /** Fires once when `expiresInMs` elapses with no success: the code is dead, the button returns. */
+  onExpire?: () => void;
 }
 
 /** Wraps `findNewDevice` in an interval timer. `onPaired` fires at most once and ends the
@@ -64,6 +66,7 @@ export function createPairingPoll(
         expiry = setTimeout(() => {
           stopped = true;
           clear();
+          options.onExpire?.();
         }, options.expiresInMs);
       }
     },

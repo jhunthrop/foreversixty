@@ -1,6 +1,6 @@
 // web/tests/e2e/onboarding-round6.spec.ts
-// W.10: onboarding round 6 -- /setup gold on the first undone step only, one label per progress chip
-// that never wraps at 390, the companion picture's phone source; the landing card's label and its
+// W.10: onboarding round 6 -- /setup gold on the first undone step only (setup spec 2026-11-07: the
+// steps are one Plate, no progress chips), the companion picture shown; the landing card's label and its
 // live dot; one prompt on an empty character page. Captured at 1280 and 390 after networkidle plus
 // 500 ms (W10_SHOTS names the folder).
 import { mkdirSync } from 'node:fs';
@@ -101,103 +101,72 @@ async function routeEmptyCharacter(page: Page): Promise<void> {
   );
 }
 
-/** The visible step buttons drawn as the primary recipe (the gold gradient), by step number. */
+/** The steps carrying the page's one primary (the gold step, W.10), by step number. */
 async function goldSteps(page: Page): Promise<string[]> {
+  const plate = page.getByRole('region', { name: 'Your setup' });
   const found: string[] = [];
-  for (const button of await page.locator('.setup-btn').all()) {
-    if (!(await button.isVisible())) continue;
-    const image = await button.evaluate((el) => getComputedStyle(el).backgroundImage);
-    if (image.includes('linear-gradient')) found.push((await button.getAttribute('data-step')) ?? '?');
+  for (const n of ['1', '2', '3']) {
+    const action = plate.getByTestId(`setup-steps-step-${n}`).locator('a, button');
+    if ((await action.count()) === 0) continue;
+    // The primary Button is the gold gradient; a secondary is a flat ground.
+    const image = await action.first().evaluate((el) => getComputedStyle(el).backgroundImage);
+    if (image.includes('linear-gradient')) found.push(n);
   }
   return found;
 }
 
-async function chipRowIsOneLine(page: Page): Promise<void> {
-  const tops = await page
-    .locator('.setup-chip-link')
-    .evaluateAll((links) => links.map((el) => Math.round(el.getBoundingClientRect().top)));
-  expect(new Set(tops).size, `chip tops ${tops.join(',')}`).toBe(1);
-  const labels = await page.locator('[data-testid="setup-chip-label"]:visible').allTextContents();
-  expect(labels[1]).toBe('Addon');
-  expect(labels[2]).toBe('Companion');
-  expect(['Sign in', 'Signed in']).toContain(labels[0]);
-  const height = await page
-    .locator('.setup-chip-link')
-    .first()
-    .evaluate((el) => el.getBoundingClientRect().height);
-  expect(height).toBeLessThanOrEqual(48);
-}
-
-async function pictureShowsPhoneCrop(page: Page, phone: boolean): Promise<void> {
+/** The companion's Status capture: loaded at its own aspect, never a blank box. */
+async function pictureShown(page: Page): Promise<void> {
   const frame: Locator = page.getByTestId('setup-companion-capture');
   await frame.scrollIntoViewIfNeeded();
   const img = frame.locator('img');
   await expect
     .poll(() => img.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0))
     .toBe(true);
-  const info = await img.evaluate((el: HTMLImageElement) => ({
-    src: el.currentSrc,
-    box: el.getBoundingClientRect().toJSON(),
-  }));
-  expect(info.src.includes('companion-status-phone')).toBe(phone);
-  expect(info.box.height).toBeGreaterThan(60);
-  if (phone) {
-    // 100% of the panel's content width, about 314 px at 390.
-    expect(info.box.width).toBeGreaterThan(300);
-    expect(info.box.width / info.box.height).toBeCloseTo(734 / 172, 0);
-    // The sub line is 26 px tall in the 734 px crop, so at this width it is at least 11 px.
-    expect((26 * info.box.width) / 734).toBeGreaterThanOrEqual(11);
-  }
+  const box = await img.evaluate((el: HTMLImageElement) => el.getBoundingClientRect().toJSON());
+  expect(box.height).toBeGreaterThan(60);
+  expect(box.width / box.height).toBeCloseTo(1600 / 436, 0);
 }
 
 for (const size of SIZES) {
-  const phone = size.width < 640;
   test.describe(`at ${size.name}`, () => {
     test.use({ viewport: { width: size.width, height: size.height } });
 
-    test('/setup signed out: gold on Sign in only, the chips on one row, the picture shown', async ({
+    test('/setup signed out: gold on Sign in only, the picture shown with its Example tag', async ({
       page,
     }) => {
       await signedOut(page);
       await page.goto('/setup');
       await settle(page);
       expect(await goldSteps(page)).toEqual(['1']);
-      await chipRowIsOneLine(page);
-      await expect(page.getByTestId('setup-how-it-arrives')).toHaveText(addonCopy.setupHowItArrives);
-      await page.getByTestId('setup-how-it-arrives').getByRole('link', { name: 'Try an export' }).click();
-      await expect(page.getByTestId('setup-try-export')).toHaveJSProperty('open', true);
-      await expect(page.getByTestId('setup-try-export')).toBeInViewport();
-      await expect(page.getByTestId('setup-companion-note')).toHaveText(addonCopy.setupCompanionNote);
-      await pictureShowsPhoneCrop(page, phone);
-      await expect(page.getByTestId('setup-companion-capture-label')).toHaveText('Example');
-      await expect(page.getByTestId('setup-companion-capture-label')).toBeVisible();
+      await expect(page.getByTestId('setup-steps-step-3')).toContainText(addonCopy.setupCompanionNote);
+      await expect(page.getByTestId('setup-companion')).toContainText(addonCopy.setupCompanionNote);
+      await pictureShown(page);
+      await expect(page.getByTestId('setup-companion-capture').getByText('Example')).toBeVisible();
       await settle(page);
       await shot(page, `setup-signed-out-${size.name}`);
     });
 
-    test('/setup signed in, addon and companion pending: gold on the addon step only', async ({ page }) => {
+    test('/setup signed in with no character: gold on Refresh from Battle.net only (B2)', async ({
+      page,
+    }) => {
       await signedIn(page, ME_NEW, []);
       await page.goto('/setup');
       await settle(page);
-      await expect(page.getByTestId('setup-line-addon')).toHaveText(addonCopy.setupAddonWaiting);
-      expect(await goldSteps(page)).toEqual(['2']);
-      await chipRowIsOneLine(page);
-      await pictureShowsPhoneCrop(page, phone);
-      await expect(page.getByTestId('setup-companion-capture-label')).toBeVisible();
+      await expect(page.getByTestId('setup-steps-step-2')).toContainText(addonCopy.setupAddonNote);
+      expect(await goldSteps(page)).toEqual(['1']);
+      await pictureShown(page);
       await settle(page);
       await shot(page, `setup-signed-in-pending-${size.name}`);
     });
 
-    test('/setup signed in, everything done: no gold, the chips still one row with one label each', async ({
-      page,
-    }) => {
+    test('/setup signed in, everything done: three ticks and no gold', async ({ page }) => {
       await signedIn(page, ME_DONE, [DEVICE]);
       await page.goto('/setup');
       await settle(page);
-      await expect(page.locator('.setup-chip[data-done="true"]')).toHaveCount(3);
+      await expect(page.getByRole('img', { name: /^Step \d: Done$/ })).toHaveCount(3);
       expect(await goldSteps(page)).toEqual([]);
-      await chipRowIsOneLine(page);
-      await pictureShowsPhoneCrop(page, phone);
+      await pictureShown(page);
       await settle(page);
       await shot(page, `setup-signed-in-done-${size.name}`);
     });

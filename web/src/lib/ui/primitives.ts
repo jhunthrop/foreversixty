@@ -56,8 +56,8 @@ export const TONE_TEXT: Readonly<Record<FigureTone, string>> = {
   muted: 'text-muted',
 };
 
-/** The Page primitive's four compositions (spec 3.7). */
-export type PageLayout = 'ledger' | 'split' | 'reading' | 'overview';
+/** The Page primitive's compositions (spec 3.7; `form`: setup spec 2026-11-07 section 3A). */
+export type PageLayout = 'ledger' | 'split' | 'reading' | 'overview' | 'form';
 
 /** One choice in a ControlBar group (spec 3.4). */
 export interface ControlOption {

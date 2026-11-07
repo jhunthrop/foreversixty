@@ -1,5 +1,12 @@
 # Forever Sixty
 
+## 2.0.32
+
+- Assassination: Malice comes at 10 to 14, and the level 20 best in slot list follows the new build.
+- Combat: one point of Lightning Reflexes at 14, then Precision and Puncturing Wounds by 20; the level 20 list follows it.
+- Subtlety and Arms: Opportunity and Improved Rend come first in the leveling order.
+- Druids of the Skyborne races get their own low-level ranks for Wrath, Moonfire, Rejuvenation and Healing Touch.
+
 ## 2.0.31
 
 - Subtlety: new best in slot lists. Ghostly Strike now hits with normalized weapon damage, so your weapon picks can change. Initiative comes at 24, 25 and 27.

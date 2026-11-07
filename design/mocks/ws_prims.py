@@ -744,3 +744,61 @@ PRIM_CSS += '''
 def Disclosure(summary: str, body: str, open_: bool = False, meta: str = '') -> str:
     m = f'<span class="t-small">{meta}</span>' if meta else ''
     return f'<details class="disc"{" open" if open_ else ""}><summary>{summary}{m}</summary><div class="disc-b">{body}</div></details>'
+
+# ------------------------------------------------ primitives added by the setup round (2026-11-07; design/specs/2026-11-07-setup.md section 3A)
+# Additive only. `Steps` is the shipped ui/Checklist with numbered marks and an action in the trail (a setup or onboarding
+# list: the first step not done carries the page's one primary Button). Marks: ok (done, the kill check), next (the first
+# step not done: gold disc with its number), todo (not done, optional or later: an outlined ring with its number), warn
+# (needs the player: gold "!"), miss (failed: wipe "×"), busy (in progress: a gold ring turning). `Capture` is a client
+# screenshot at its own aspect in a quiet frame (the one image frame on the site: /setup's surfaces and the companion,
+# later the guides' in-game shots), with an optional muted Tag under it. `Code` is literal text a player copies or matches
+# (slash commands, pairing and device codes): the one use of a mono face. `PageForm` is Page layout 'form': one column
+# at --measure-form (560 px), left-aligned in the page column, for a page that is one task (connect, sign in, checkout).
+PRIM_CSS += '''
+.steps .row{min-height:64px;padding-block:12px}
+.smk{width:26px;height:26px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;flex:none;font:700 13px/26px var(--font-body);font-variant-numeric:tabular-nums}
+.smk.ok{background:var(--kill);color:#07090d}.smk.next{background:var(--gold);color:#17110a}.smk.todo{box-shadow:inset 0 0 0 1.5px var(--line);color:var(--muted)}
+.smk.warn{background:var(--gold);color:#17110a}.smk.miss{background:var(--wipe);color:#07090d}
+.smk.busy{box-shadow:inset 0 0 0 2px var(--line);color:var(--muted);position:relative}
+.smk.busy::after{content:"";position:absolute;inset:0;border-radius:50%;border:2px solid transparent;border-top-color:var(--gold);animation:sm-spin 1s linear infinite}
+@keyframes sm-spin{to{transform:rotate(360deg)}}@media(prefers-reduced-motion:reduce){.smk.busy::after{animation:none}}
+.steps .row .sub{font-size:14px;line-height:20px;margin-top:2px}.steps .row .sub .warn{color:var(--gold)}.steps .row .sub .miss{color:var(--wipe)}
+.steps .row .sub .ok{color:var(--text)}
+.steps .row .trail .btn{min-width:0}
+.btn.is-off{opacity:.45;pointer-events:none}
+.cap{display:block;position:relative;width:100%;max-width:var(--w);max-height:var(--mh,420px);aspect-ratio:var(--ar);border:1px solid var(--line-soft);border-radius:4px;background:var(--raised);overflow:hidden}
+.cap img{display:block;width:100%;height:100%;object-fit:contain}
+.cap-wrap{display:flex;flex-direction:column;gap:8px;align-items:flex-start;min-width:0}
+code.c{font:600 14px/20px ui-monospace,'SF Mono',Menlo,monospace;color:var(--strong);letter-spacing:.02em}
+code.c.big{font-size:24px;line-height:30px;letter-spacing:.06em}
+.layout-form{max-width:560px}
+'''
+
+
+def Steps(items: list[tuple]) -> str:
+    """items: (mark, number, title, sub_html, action_html). mark: ok | next | todo | warn | miss | busy."""
+    word = {'ok': 'Done', 'next': 'Next', 'todo': 'Not done', 'warn': 'To do', 'miss': 'Failed', 'busy': 'In progress'}
+    rows = []
+    for mark, n, title, sub, action in items:
+        glyph = {'ok': '&#10003;', 'warn': '!', 'miss': '&times;', 'busy': ''}.get(mark, str(n))
+        lead = f'<span class="smk {mark}" role="img" aria-label="Step {n}: {word[mark]}">{glyph}</span>'
+        rows.append(Row(title, sub, lead=lead, trail=action, link=False))
+    return f'<div class="steps">{Rows(rows)}</div>'
+
+
+def Capture(src: str, w: int, h: int, alt: str, tag: str = '', tall: bool = False, lazy: bool = True) -> str:
+    """A client screenshot at its own aspect, capped at its native width and 420 px high (900 for a portrait capture)."""
+    t = f'{Tag(tag, "muted")}' if tag else ''
+    lz = ' loading="lazy"' if lazy else ''
+    # The picture links to its own file (spec 3A), as the built Capture does.
+    return (f'<div class="cap-wrap"><a class="cap" href="{src}" style="--w:{w}px;--ar:{w} / {h};--mh:{900 if tall else 420}px">'
+            f'<img src="{src}" width="{w}" height="{h}" alt="{escape(alt, quote=True)}"{lz} decoding="async"></a>{t}</div>')
+
+
+def Code(text: str, big: bool = False) -> str:
+    return f'<code class="c{" big" if big else ""}">{escape(text)}</code>'
+
+
+def PageForm(main: str) -> str:
+    """Page layout 'form': one column at 560 px under the page header, left-aligned in the page column."""
+    return f'<div class="pc" style="padding-top:20px"><div class="layout-form">{main}</div></div>'

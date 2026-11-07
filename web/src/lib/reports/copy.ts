@@ -41,4 +41,10 @@ export const pairingCopy = {
     'Using the companion? Press Sign in with Battle.net in it. The code below is only for the fallback.',
   success: (deviceName: string): string =>
     `${deviceName} paired. It starts uploading as soon as you are logging.`,
+  action: 'Get a pairing code',
+  failed: 'The pairing code did not load. Try again.',
+  codeLine: (minutes: number): string =>
+    `Type this into the companion within ${minutes} minutes. It pairs one device and cannot be reused.`,
+  /** /setup's row 3 while a code is out and unused. */
+  waiting: 'Waiting for the companion to use the code',
 } as const;

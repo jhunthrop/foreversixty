@@ -10,6 +10,7 @@
     size = 'md',
     sentence = false,
     href,
+    rel,
     type = 'button',
     disabled = false,
     onclick,
@@ -20,6 +21,8 @@
     size?: ButtonSize;
     sentence?: boolean;
     href?: string;
+    /** A link's rel (`noopener` on every install and download link). */
+    rel?: string;
     type?: 'button' | 'submit';
     disabled?: boolean;
     onclick?: (event: MouseEvent) => void;
@@ -31,7 +34,7 @@
 </script>
 
 {#if href !== undefined && !disabled}
-  <a class={classes} {href} data-testid={testid}>{@render children()}</a>
+  <a class={classes} {href} {rel} data-testid={testid}>{@render children()}</a>
 {:else}
   <button class={classes} {type} {disabled} {onclick} data-testid={testid}>{@render children()}</button>
 {/if}
