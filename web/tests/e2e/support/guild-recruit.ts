@@ -73,7 +73,7 @@ function meFor(viewer: RecruitViewer) {
 }
 
 /** Serves the guild page's prerendered shell at a view under it (the Worker's job in production). */
-async function serveShell(route: Route): Promise<void> {
+export async function serveShell(route: Route): Promise<void> {
   if (route.request().resourceType() !== 'document') return route.fallback();
   const response = await route.fetch({ url: new URL(GUILD_URL, route.request().url()).toString() });
   return route.fulfill({ response });
