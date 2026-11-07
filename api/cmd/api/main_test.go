@@ -6,6 +6,7 @@ import (
 	"log/slog"
 	"testing"
 
+	"github.com/jhunthrop/foreversixty/api/internal/activity"
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/config"
 	"github.com/jhunthrop/foreversixty/api/internal/guilds"
@@ -43,8 +44,14 @@ func TestNewReportsServiceWiresGuilds(t *testing.T) {
 func TestNewParseDepsWiresTheCompletionHook(t *testing.T) {
 	quiet := slog.New(slog.NewTextHandler(io.Discard, nil))
 	deps := newParseDeps(config.Config{}, nil, nil, &trees.Data{}, quiet)
-	g, ok := deps.Completed.(*guilds.Service)
-	if !ok || g == nil || g.Store == nil {
-		t.Fatalf("parse.Deps.Completed = %#v, want a guilds.Service with a store", deps.Completed)
+	hooks, ok := deps.Completed.(reports.CompletedAll)
+	if !ok || len(hooks) != 2 {
+		t.Fatalf("parse.Deps.Completed = %#v, want the guilds service and the feed's writer", deps.Completed)
+	}
+	if g, ok := hooks[0].(*guilds.Service); !ok || g == nil || g.Store == nil {
+		t.Fatalf("parse.Deps.Completed[0] = %#v, want a guilds.Service with a store", hooks[0])
+	}
+	if w, ok := hooks[1].(*activity.ReportWriter); !ok || w.Store == nil {
+		t.Fatalf("parse.Deps.Completed[1] = %#v, want the feed's report writer", hooks[1])
 	}
 }

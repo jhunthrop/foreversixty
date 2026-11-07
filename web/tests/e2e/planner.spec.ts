@@ -3,8 +3,16 @@ import { collectPageErrors } from './support/console';
 
 import { treeSourceNotice } from '../../src/lib/planner/tree-source';
 import { ACTIVE_BUILD } from './support/active-build';
-import { openOrderStrip } from './support/planner';
-import { choose, nativeSelect } from './support/select';
+import {
+  bareSpentLine,
+  chooseClass,
+  chooseRace,
+  expectClass,
+  pointsLeft,
+  raceSelect,
+  spentLine,
+  treePanel,
+} from './support/planner';
 
 // tree-source.ts carries no import.meta.env dependency (unlike its neighbour config.ts,
 // which reads PUBLIC_API_BASE_URL at module scope and cannot be imported under
@@ -14,79 +22,82 @@ const ACTIVE_BUILD_NOTICE = treeSourceNotice(ACTIVE_BUILD);
 test('the planner opens on the default class with an empty build', async ({ page }) => {
   const errors = collectPageErrors(page);
   await page.goto('/planner');
-  // Rebuild spec §4.C, review finding 2: Level is now always shown -- it needs no
-  // character, only `levelReached(order)`, which a bare build already computes (9, the
-  // base level, before any point is spent).
-  await expect(page.getByTestId('planner-level')).toHaveText('9');
-  await expect(page.getByTestId('planner-spent')).toHaveText('0/51');
-  await expect(nativeSelect(page, 'Class')).toHaveValue('warrior');
+  // The level is always shown -- it needs no character, only `levelReached(order)`, which a
+  // bare build already computes (9, the base level, before any point is spent). Spec
+  // 2026-11-08 4.1: it lives in the head's meta line, the spent count under Points left.
+  await expect(page.getByTestId('planner-meta')).toContainText('Level 9');
+  await expect(spentLine(page)).toHaveText(bareSpentLine(0));
+  await expectClass(page, 'warrior');
   await expect(page.getByText(ACTIVE_BUILD_NOTICE)).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'Arms' })).toBeVisible();
+  await expect(treePanel(page, 'Arms')).toBeVisible();
   // Both trees render, but below the md breakpoint only the selected tab's panel is on screen,
   // so Fury is in the document rather than visible -- tests/e2e/planner-phone.spec.ts owns the
-  // one-tree-at-a-time rule, and this project runs at a phone width.
-  await expect(page.getByRole('heading', { name: 'Fury', includeHidden: true })).toBeAttached();
+  // one-tree-at-a-time rule, and the mobile project runs at a phone width.
+  await expect(treePanel(page, 'Fury', true)).toBeAttached();
   expect(errors).toEqual([]);
 });
 
 test('Level climbs with the points spent in a build opened from an addon code', async ({ page }) => {
   await page.goto('/planner?code=FS1%3A1.15.9.69722%3Awarrior%3Ahuman%3A3%2F0%2F0%3A');
-  await expect(page.getByTestId('planner-level')).toBeVisible();
-  await expect(page.getByTestId('planner-level')).toHaveText('12');
+  await expect(page.getByTestId('planner-meta')).toContainText('Level 12');
+  await expect(spentLine(page)).toHaveText(bareSpentLine(3));
 });
 
 test('a prerequisite link is drawn and turns gold when the rank is met', async ({ page }) => {
   await page.goto('/planner');
-  // Tactical Mastery (1004) needs Deflection (1002) at rank 2.
-  const link = page.getByTestId('connector-1002-1004');
+  // Tactical Mastery (1004) needs Deflection (1002) at rank 2. Arms draws two links, sorted by
+  // their prerequisite's id (lib/planner/connectors.ts): 1002 -> 1004 first, 1003 -> 1005 second.
+  const link = page.getByTestId('tree-161').locator('path[data-met]').first();
   await expect(link).toHaveAttribute('data-met', 'false');
-  await expect(page.getByTestId('talent-1004')).toHaveAttribute('data-state', 'locked');
+  await expect(page.getByTestId('talent-1004')).toHaveAttribute('data-state', 'lock');
 
   await page.getByTestId('talent-1002').click();
   await expect(link).toHaveAttribute('data-met', 'false');
   await page.getByTestId('talent-1002').click();
   await expect(link).toHaveAttribute('data-met', 'true');
-  await expect(page.getByTestId('talent-1002')).toHaveAttribute('data-state', 'filled');
+  // Two of Deflection's five ranks: partly spent (the game's green, spec decision P2).
+  await expect(page.getByTestId('talent-1002')).toHaveAttribute('data-state', 'part');
   // Meeting the prerequisite is not enough on its own: tier 1 still needs
   // POINTS_PER_TIER (5) points somewhere in Arms before it opens at all. Three more in
   // Improved Heroic Strike (1001) get there without disturbing the prerequisite above.
   for (let i = 0; i < 3; i += 1) await page.getByTestId('talent-1001').click();
-  await expect(page.getByTestId('talent-1004')).toHaveAttribute('data-state', 'available');
+  await expect(page.getByTestId('talent-1004')).toHaveAttribute('data-state', 'avail');
 });
 
 test('reset says it will ask before it clears the build', async ({ page }) => {
   await page.goto('/planner');
   await page.getByTestId('talent-1001').click();
-  await page.getByRole('button', { name: 'Reset…' }).click();
+  await expect(page.getByTestId('planner-reset')).toHaveText('Reset…');
+  await page.getByTestId('planner-reset').click();
   await expect(page.getByText('Clear every point in this build?')).toBeVisible();
-  await page.getByRole('button', { name: 'Keep the build' }).click();
-  await expect(page.getByTestId('planner-spent')).toHaveText('1/51');
+  await page.getByTestId('planner-reset-keep').click();
+  await expect(spentLine(page)).toHaveText(bareSpentLine(1));
 });
 
 test('?class and ?race preselect the build', async ({ page }) => {
   await page.goto('/planner?class=warrior&race=dwarf');
-  await expect(nativeSelect(page, 'Class')).toHaveValue('warrior');
-  await expect(nativeSelect(page, 'Race')).toHaveValue('dwarf');
+  await expectClass(page, 'warrior');
+  await expect(raceSelect(page)).toHaveValue('dwarf');
 });
 
 test('switching class and race rewrites the address, so a refresh keeps the choice', async ({ page }) => {
   await page.goto('/planner?class=warrior&race=dwarf');
-  await expect(nativeSelect(page, 'Class')).toHaveValue('warrior');
-  await choose(nativeSelect(page, 'Class'), 'mage');
+  await expectClass(page, 'warrior');
+  await chooseClass(page, 'mage');
   await expect(page).toHaveURL(/\/planner\?class=mage(&race=[a-z]+)?$/);
-  await choose(nativeSelect(page, 'Race'), 'gnome');
+  await chooseRace(page, 'gnome');
   await expect(page).toHaveURL(/\/planner\?class=mage&race=gnome$/);
   await page.reload();
-  await expect(nativeSelect(page, 'Class')).toHaveValue('mage');
-  await expect(nativeSelect(page, 'Race')).toHaveValue('gnome');
+  await expectClass(page, 'mage');
+  await expect(raceSelect(page)).toHaveValue('gnome');
 });
 
 test('a code stays in the address until its class or race is left', async ({ page }) => {
   const code = 'FS1%3A1.15.9.69722%3Awarrior%3Ahuman%3A3%2F0%2F0%3A';
   await page.goto(`/planner?code=${code}`);
-  await expect(nativeSelect(page, 'Class')).toHaveValue('warrior');
+  await expectClass(page, 'warrior');
   await expect(page).toHaveURL(new RegExp(`/planner\\?code=${code}$`));
-  await choose(nativeSelect(page, 'Race'), 'dwarf');
+  await chooseRace(page, 'dwarf');
   await expect(page).toHaveURL(/\/planner\?class=warrior&race=dwarf$/);
 });
 
@@ -100,7 +111,7 @@ test('a failed talent fetch shows the reason and a working retry', async ({ page
   await page.goto('/planner');
   await expect(page.getByText('Talent data did not load', { exact: true })).toBeVisible();
   await page.getByRole('button', { name: 'Reload talents' }).click();
-  await expect(page.getByRole('heading', { name: 'Arms' })).toBeVisible();
+  await expect(treePanel(page, 'Arms')).toBeVisible();
 });
 
 test('a slow class switch cannot leave one class holding another class trees', async ({ page }) => {
@@ -155,8 +166,8 @@ test('a slow class switch cannot leave one class holding another class trees', a
 
   await page.goto('/planner');
   await expect(page.getByTestId('planner-talent-skeleton')).toBeVisible();
-  await choose(nativeSelect(page, 'Class'), 'paladin');
-  await expect(page.getByRole('heading', { name: 'Holy' })).toBeVisible();
+  await chooseClass(page, 'paladin');
+  await expect(treePanel(page, 'Holy')).toBeVisible();
 
   const warriorResponse = page.waitForResponse('**/data/*/talents/warrior.json');
   release();
@@ -166,10 +177,10 @@ test('a slow class switch cannot leave one class holding another class trees', a
   // nothing and so raises no event to wait on, which is what this settle stands in for.
   await page.waitForTimeout(500);
 
-  await expect(nativeSelect(page, 'Class')).toHaveValue('paladin');
-  await expect(page.getByRole('heading', { name: 'Holy' })).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'Arms', includeHidden: true })).toHaveCount(0);
-  await expect(page.getByRole('heading', { name: 'Fury', includeHidden: true })).toHaveCount(0);
+  await expectClass(page, 'paladin');
+  await expect(treePanel(page, 'Holy')).toBeVisible();
+  await expect(treePanel(page, 'Arms', true)).toHaveCount(0);
+  await expect(treePanel(page, 'Fury', true)).toHaveCount(0);
 });
 
 test('clicking a talent spends points and the counters follow', async ({ page }) => {
@@ -179,26 +190,28 @@ test('clicking a talent spends points and the counters follow', async ({ page })
   await improvedHeroicStrike.click();
   await improvedHeroicStrike.click();
   await expect(improvedHeroicStrike).toHaveAttribute('data-rank', '3');
-  await expect(page.getByTestId('planner-spent')).toHaveText('3/51');
-  // Rebuild spec §4.C/§4.E.1: the unlabelled Split field is gone -- the same three numbers
-  // now live, correctly labelled, on each tree's own header.
+  await expect(spentLine(page)).toHaveText(bareSpentLine(3));
+  await expect(pointsLeft(page)).toHaveText('48');
+  // The split lives, labelled, on each tree's own head.
   await expect(page.getByTestId('tree-points-161')).toHaveText('3');
-  // Level is always shown now (review finding 2) and climbs by one per point.
-  await expect(page.getByTestId('planner-level')).toHaveText('12');
+  // The level is always shown (the head's meta line) and climbs by one per point.
+  await expect(page.getByTestId('planner-meta')).toContainText('Level 12');
 });
 
 test('a locked tier refuses the point and says why', async ({ page }) => {
   await page.goto('/planner');
-  await page.getByTestId('talent-1003').click();
-  await expect(page.getByTestId('planner-refusal')).toHaveText('Needs 5 points in Arms. You have 0.');
+  // A locked cell is aria-disabled, but its click still reaches the planner, which refuses and
+  // says why (TalentButton): `force` clicks it as a player would, past Playwright's enabled check.
+  await page.getByTestId('talent-1003').click({ force: true });
+  await expect(page.getByTestId('planner-status')).toHaveText('Needs 5 points in Arms. You have 0.');
   await expect(page.getByTestId('talent-1003')).toHaveAttribute('data-rank', '0');
-  await expect(page.getByTestId('planner-spent')).toHaveText('0/51');
+  await expect(spentLine(page)).toHaveText(bareSpentLine(0));
 });
 
 test('a full talent refuses a fourth point with its own reason', async ({ page }) => {
   await page.goto('/planner');
   for (let i = 0; i < 4; i += 1) await page.getByTestId('talent-1001').click();
-  await expect(page.getByTestId('planner-refusal')).toHaveText(
+  await expect(page.getByTestId('planner-status')).toHaveText(
     'Improved Heroic Strike is already at 3 of 3 points',
   );
   await expect(page.getByTestId('talent-1001')).toHaveAttribute('data-rank', '3');
@@ -219,7 +232,7 @@ test('removal is refused when a later point depends on it', async ({ page }) => 
   await page.getByTestId('talent-1002').click();
   await page.getByTestId('talent-1003').click();
   await page.getByTestId('talent-1001').click({ button: 'right' });
-  await expect(page.getByTestId('planner-refusal')).toHaveText('Needs 5 points in Arms. You have 4.');
+  await expect(page.getByTestId('planner-status')).toHaveText('Needs 5 points in Arms. You have 4.');
   await expect(page.getByTestId('talent-1001')).toHaveAttribute('data-rank', '3');
 });
 
@@ -246,7 +259,7 @@ test('a keyboard-only visitor can spend and remove points', async ({ page }) => 
   await expect(page.getByTestId('talent-1002')).toHaveAttribute('data-rank', '1');
   await page.keyboard.press('Backspace');
   await expect(page.getByTestId('talent-1002')).toHaveAttribute('data-rank', '0');
-  await expect(page.getByTestId('planner-spent')).toHaveText('2/51');
+  await expect(spentLine(page)).toHaveText(bareSpentLine(2));
 });
 
 // Touch-and-hold raises a native contextmenu at roughly the same 500ms threshold as the
@@ -283,69 +296,85 @@ test('a long press that also raises a context menu removes one point, not two', 
   await talent.dispatchEvent('contextmenu');
   await talent.dispatchEvent('pointerup', { button: 2 });
   await expect(talent).toHaveAttribute('data-rank', '0');
-  await expect(page.getByTestId('planner-spent')).toHaveText('0/51');
+  await expect(spentLine(page)).toHaveText(bareSpentLine(0));
 });
 
-test('the order strip lists every point with the level it was spent at', async ({ page }) => {
+// Spec 2026-11-08 4.5: Point order is rows of ten levels, a socket per level; a spent socket
+// is its talent's icon, named (title and accessible name) by the level and the rank it reached.
+test('point order lists every point with the level it was spent at', async ({ page }) => {
   await page.goto('/planner');
   for (let i = 0; i < 3; i += 1) await page.getByTestId('talent-1001').click();
-  await openOrderStrip(page);
-  const points = page.getByTestId('order-strip').getByRole('listitem');
-  await expect(points).toHaveCount(3);
-  await expect(points.nth(0)).toContainText('10');
-  await expect(points.nth(1)).toContainText('11');
-  await expect(points.nth(2)).toContainText('12');
-  await expect(points.nth(0)).toContainText('Improved Heroic Strike');
+  const order = page.getByTestId('planner-order');
+  await expect(order.locator('[data-kind="spent"]')).toHaveCount(3);
+  await expect(page.getByTestId('order-point-0')).toHaveAccessibleName('Level 10: Improved Heroic Strike 1');
+  await expect(page.getByTestId('order-point-1')).toHaveAccessibleName('Level 11: Improved Heroic Strike 2');
+  await expect(page.getByTestId('order-point-2')).toHaveAccessibleName('Level 12: Improved Heroic Strike 3');
+  await expect(page.getByTestId('order-point-2')).toContainText('3');
 });
 
-// Rebuild spec §4.F (review findings 2 and 10): Point order is the planner's primary
-// leveling lens now -- never collapsed on any viewport, with no collapse control at all,
-// desktop or phone.
+// Point order is the planner's primary leveling lens -- never collapsed on any viewport, with
+// no collapse control at all, desktop or phone.
 test('point order has no collapse control and is always open, on every viewport', async ({ page }) => {
   await page.goto('/planner');
   await page.getByTestId('talent-1001').click();
   await expect(page.getByRole('button', { name: /point order/i })).toHaveCount(0);
-  const strip = page.getByTestId('order-strip');
-  expect(await strip.evaluate((el) => el.tagName)).not.toBe('DETAILS');
-  await expect(strip.getByRole('list')).toBeVisible();
+  const section = page.getByTestId('planner-point-order');
+  expect(await section.evaluate((el) => el.tagName)).not.toBe('DETAILS');
+  await expect(section.locator('details')).toHaveCount(0);
+  await expect(page.getByTestId('planner-order').getByRole('list').first()).toBeVisible();
 });
 
 test('reset asks before it clears the build', async ({ page }) => {
   await page.goto('/planner');
   for (let i = 0; i < 2; i += 1) await page.getByTestId('talent-1001').click();
-  await page.getByRole('button', { name: 'Reset' }).click();
-  await expect(page.getByTestId('planner-spent')).toHaveText('2/51');
+  await page.getByTestId('planner-reset').click();
+  await expect(spentLine(page)).toHaveText(bareSpentLine(2));
   // The safe answer takes the focus, so a second Enter out of habit keeps the build.
-  await expect(page.getByRole('button', { name: 'Keep the build' })).toBeFocused();
-  await page.getByRole('button', { name: 'Keep the build' }).click();
-  await expect(page.getByTestId('planner-spent')).toHaveText('2/51');
+  await expect(page.getByTestId('planner-reset-keep')).toBeFocused();
+  await page.getByTestId('planner-reset-keep').click();
+  await expect(spentLine(page)).toHaveText(bareSpentLine(2));
 
-  await page.getByRole('button', { name: 'Reset' }).click();
-  await page.getByRole('button', { name: 'Clear all points' }).click();
-  await expect(page.getByTestId('planner-spent')).toHaveText('0/51');
+  await page.getByTestId('planner-reset').click();
+  await page.getByTestId('planner-reset-confirm').click();
+  await expect(spentLine(page)).toHaveText(bareSpentLine(0));
   await expect(page.getByTestId('talent-1001')).toHaveAttribute('data-rank', '0');
-  await expect(page.getByTestId('order-strip').getByRole('listitem')).toHaveCount(0);
+  await expect(page.getByTestId('planner-order').locator('[data-kind="spent"]')).toHaveCount(0);
+  await expect(page.getByTestId('planner-point-order')).toContainText('No points spent yet.');
 });
 
-// The strip is the one part of the planner that grows without bound, and the phone layout
-// budget (tests/e2e/layout.spec.ts) allows no sideways page scroll at 360px.
-test('a long point order scrolls inside the strip, not across the page', async ({ page }) => {
+// The order is the one part of the planner that grows without bound, and the phone layout
+// budget (tests/e2e/layout.spec.ts) allows no sideways page scroll at 360px. Spec 2026-11-08
+// 4.5 (ruling Q5): every point is visible in rows of ten levels, and nothing scrolls at all.
+test('every point is visible in rows of ten, and nothing scrolls sideways', async ({ page }) => {
   await page.setViewportSize({ width: 360, height: 800 });
   await page.goto('/planner');
   for (let i = 0; i < 3; i += 1) await page.getByTestId('talent-1001').click();
   for (let i = 0; i < 5; i += 1) await page.getByTestId('talent-1002').click();
-  await openOrderStrip(page);
-  await expect(page.getByTestId('order-strip').getByRole('listitem')).toHaveCount(8);
+  const order = page.getByTestId('planner-order');
+  await expect(order.locator('[data-kind="spent"]')).toHaveCount(8);
+  // Six rows (10 to 19 ... 60), a socket per level: 51 in all, none past ten in a row.
+  const rows = order.getByRole('list');
+  await expect(rows).toHaveCount(6);
+  await expect(order.getByRole('listitem')).toHaveCount(51);
+  for (const row of await rows.all()) {
+    expect(await row.getByRole('listitem').count()).toBeLessThanOrEqual(10);
+  }
+  for (let i = 0; i < 8; i += 1) {
+    const point = page.getByTestId(`order-point-${i}`);
+    await expect(point).toBeVisible();
+    const box = await point.boundingBox();
+    expect((box?.x ?? -1) >= 0 && (box?.x ?? 0) + (box?.width ?? 0) <= 360).toBe(true);
+  }
   const widths = await page.evaluate(() => {
-    const list = document.querySelector('[data-testid="order-strip"] ol');
+    const strip = document.querySelector('[data-testid="planner-order"]');
     return {
       pageScroll: document.documentElement.scrollWidth,
       pageClient: document.documentElement.clientWidth,
-      listScroll: list?.scrollWidth ?? 0,
-      listClient: list?.clientWidth ?? 0,
+      orderScroll: strip?.scrollWidth ?? 0,
+      orderClient: strip?.clientWidth ?? 0,
     };
   });
-  expect(widths.listScroll).toBeGreaterThan(widths.listClient);
+  expect(widths.orderScroll).toBeLessThanOrEqual(widths.orderClient);
   expect(widths.pageScroll).toBeLessThanOrEqual(widths.pageClient);
 });
 
@@ -354,19 +383,22 @@ test('a long point order scrolls inside the strip, not across the page', async (
 test('a class switch drops a reset confirm that is still open', async ({ page }) => {
   await page.goto('/planner');
   await page.getByTestId('talent-1001').click();
-  await page.getByRole('button', { name: 'Reset' }).click();
-  await expect(page.getByRole('button', { name: 'Clear all points' })).toBeVisible();
+  await page.getByTestId('planner-reset').click();
+  await expect(page.getByTestId('planner-reset-confirm')).toBeVisible();
 
   // Warrior is the only class with talent data on this build, so the way back to a ready
   // planner under a different class is out and back again.
-  await choose(nativeSelect(page, 'Class'), 'paladin');
+  await chooseClass(page, 'paladin');
   await expect(page.getByText('Talent data did not load', { exact: true })).toBeVisible();
-  await choose(nativeSelect(page, 'Class'), 'warrior');
-  await expect(page.getByRole('heading', { name: 'Arms' })).toBeVisible();
+  await chooseClass(page, 'warrior');
+  await expect(treePanel(page, 'Arms')).toBeVisible();
 
-  await expect(page.getByTestId('planner-spent')).toHaveText('0/51');
-  await expect(page.getByRole('button', { name: 'Clear all points' })).toBeHidden();
-  await expect(page.getByRole('button', { name: 'Reset' })).toBeVisible();
+  await expect(spentLine(page)).toHaveText(bareSpentLine(0));
+  await expect(page.getByTestId('planner-reset-confirm')).toBeHidden();
+  // Reset hides at 0 spent (spec 4.4), so a point brings it back: the plain link, not the confirm.
+  await page.getByTestId('talent-1001').click();
+  await expect(page.getByTestId('planner-reset')).toBeVisible();
+  await expect(page.getByTestId('planner-reset-confirm')).toBeHidden();
 });
 
 test('a build opens from an addon code in the URL, with the order noted as reconstructed', async ({
@@ -386,18 +418,14 @@ test('a code from another format is refused by name rather than ignored', async 
   await expect(page.getByTestId('planner-code-note')).toHaveText('That code is FS2; this site reads FS1.');
 });
 
-test('a code that spends a locked tier drops it, and the dropped count renders as a wrapped number', async ({
-  page,
-}) => {
+test('a code that spends a locked tier drops it, and the note counts what it dropped', async ({ page }) => {
   // Warrior's talent 1005 sits at tier 2 of Arms; asking for a point there with nothing spent
   // in the lower tiers is not reachable by any legal order, so orderFromRanks drops it. "00001"
   // is talent 1005's tab position (the fifth of Arms's seven talents) encoded as base-36 digits
   // with the trailing zeros trimmed; see src/fixtures/planner/talents/warrior.json.
   await page.goto('/planner?code=FS1%3A1.15.9.69722%3Awarrior%3Ahuman%3A00001%2F0%2F0%3A');
 
-  const note = page.getByTestId('planner-code-note');
-  await expect(note).toContainText('minus 1 that no legal order reaches');
-  await expect(note.locator('span.numeric')).toHaveText('1');
+  await expect(page.getByTestId('planner-code-note')).toContainText('minus 1 that no legal order reaches');
 });
 
 test('a code naming a class with no talent data fails clean, and switching class does not replay it', async ({
@@ -417,9 +445,9 @@ test('a code naming a class with no talent data fails clean, and switching class
   // ranks onto it: codeApplied is armed the moment the first load began, not only once that
   // load succeeds, so warrior comes up with an empty build rather than paladin's digits
   // reinterpreted against warrior's own talent tab positions.
-  await choose(nativeSelect(page, 'Class'), 'warrior');
-  await expect(page.getByRole('heading', { name: 'Arms' })).toBeVisible();
-  await expect(page.getByTestId('planner-spent')).toHaveText('0/51');
+  await chooseClass(page, 'warrior');
+  await expect(treePanel(page, 'Arms')).toBeVisible();
+  await expect(spentLine(page)).toHaveText(bareSpentLine(0));
 
   // The paladin message is now stale and, worse, no longer true -- warrior's build is working
   // fine -- so switching class must clear it rather than leave it sitting under the new build.
@@ -456,18 +484,18 @@ test('each tree draws its own art and counts its own points', async ({ page }) =
   await expect.poll(() => art.evaluate((node: HTMLImageElement) => node.naturalWidth)).toBeGreaterThan(0);
 
   await expect(page.getByTestId('tree-points-161')).toHaveText('0');
-  await expect(page.getByTestId('planner-remaining')).toHaveText('51');
+  await expect(pointsLeft(page)).toHaveText('51');
   await page.getByTestId('talent-1001').click();
   await expect(page.getByTestId('tree-points-161')).toHaveText('1');
-  await expect(page.getByTestId('planner-remaining')).toHaveText('50');
+  await expect(pointsLeft(page)).toHaveText('50');
 });
 
 test('opening /planner bare with a stored, non-restorable (armory) pointer still loads cleanly', async ({
   page,
 }) => {
-  // Rebuild spec §3: the shared character header leads this page -- this pointer is not one of the
-  // two sources ('code'/'addon') the planner ever restores from, so the only real
-  // assertion left is that the page still loads cleanly rather than erroring on it.
+  // This pointer is not one of the two sources ('code'/'addon') the planner ever restores
+  // from, so the only real assertion is that the page still loads cleanly rather than
+  // erroring on it.
   await page.addInitScript(() => {
     window.localStorage.setItem(
       'fs.currentCharacter',
@@ -483,7 +511,7 @@ test('opening /planner bare with a stored, non-restorable (armory) pointer still
   const errors = collectPageErrors(page);
   await page.goto('/planner');
   await expect(page.getByTestId('planner')).toBeVisible();
-  await expect(page.getByTestId('planner-header')).toBeVisible();
+  await expect(page.getByTestId('planner-head')).toBeVisible();
   expect(errors).toEqual([]);
 });
 
@@ -493,10 +521,11 @@ test('focusing a talent cell opens its tooltip, and Escape dismisses it without 
   await page.goto('/planner');
   const cell = page.getByTestId('talent-1001');
   await cell.focus();
-  const tooltipId = await cell.getAttribute('aria-describedby');
-  expect(tooltipId).not.toBeNull();
-  const tooltip = page.locator(`#${tooltipId}`);
+  // The tooltip opens a beat after focus (150 ms) and the cell points at it while it is open.
+  await expect(cell).toHaveAttribute('aria-describedby', 'talent-tip-1001');
+  const tooltip = page.getByTestId('talent-tip-1001');
   await expect(tooltip).toBeVisible();
+  await expect(tooltip).toHaveAttribute('id', 'talent-tip-1001');
 
   await page.keyboard.press('Escape');
   await expect(tooltip).toBeHidden();

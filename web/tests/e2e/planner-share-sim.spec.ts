@@ -1,5 +1,12 @@
 import { expect, test } from './support/test';
-import { LAST_TALENT, NEARLY_FINISHED_BUILD, finishBuild, shareBuild, showTree } from './support/planner';
+import {
+  LAST_TALENT,
+  NEARLY_FINISHED_BUILD,
+  finishBuild,
+  scoreFigure,
+  shareBuild,
+  showTree,
+} from './support/planner';
 
 import { heldRoute } from './support/held-route';
 
@@ -34,7 +41,7 @@ test('a saved build sims itself for the card, without blocking the link', async 
 
   await page.goto(NEARLY_FINISHED_BUILD);
   await finishBuild(page);
-  await expect(page.getByTestId('planner-dps')).not.toHaveText('—', { timeout: 3000 });
+  await expect(scoreFigure(page)).not.toHaveText('—', { timeout: 3000 });
 
   const checkbox = page.getByLabel('Include a simmed DPS on the card');
   await expect(checkbox).toBeChecked();
@@ -73,7 +80,7 @@ test('a failed card sim never breaks the share link', async ({ page }) => {
 
   await page.goto(NEARLY_FINISHED_BUILD);
   await finishBuild(page);
-  await expect(page.getByTestId('planner-dps')).not.toHaveText('—', { timeout: 3000 });
+  await expect(scoreFigure(page)).not.toHaveText('—', { timeout: 3000 });
 
   await shareBuild(page);
 
@@ -99,7 +106,7 @@ test('unchecking the box skips the card sim entirely', async ({ page }) => {
 
   await page.goto(NEARLY_FINISHED_BUILD);
   await finishBuild(page);
-  await expect(page.getByTestId('planner-dps')).not.toHaveText('—', { timeout: 3000 });
+  await expect(scoreFigure(page)).not.toHaveText('—', { timeout: 3000 });
 
   const checkbox = page.getByLabel('Include a simmed DPS on the card');
   await expect(checkbox).toBeChecked();
@@ -139,7 +146,7 @@ test('unticking the box after a failed save drops Retry and reopens a fresh conf
 
   await page.goto(NEARLY_FINISHED_BUILD);
   await finishBuild(page);
-  await expect(page.getByTestId('planner-dps')).not.toHaveText('—', { timeout: 3000 });
+  await expect(scoreFigure(page)).not.toHaveText('—', { timeout: 3000 });
 
   const checkbox = page.getByLabel('Include a simmed DPS on the card');
   await expect(checkbox).toBeChecked();
@@ -222,7 +229,7 @@ test("a second save while the first build's sim is still running never overwrite
 
   await page.goto(NEARLY_FINISHED_BUILD);
   await finishBuild(page);
-  await expect(page.getByTestId('planner-dps')).not.toHaveText('—', { timeout: 3000 });
+  await expect(scoreFigure(page)).not.toHaveText('—', { timeout: 3000 });
 
   await shareBuild(page);
   await expect(page.getByTestId('share-link')).toHaveText(`https://foreversixty.gg/b/${firstBuildId}`);

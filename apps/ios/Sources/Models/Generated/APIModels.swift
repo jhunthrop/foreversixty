@@ -1994,6 +1994,117 @@ public struct Estimate: Codable, Sendable, Equatable {
     }
 }
 
+public struct FeedPage: Codable, Sendable, Equatable {
+    public let rows: [FeedRow]
+    /// Pass back as ?cursor= for the next page; null on the last
+    public let nextCursor: String?
+
+    public init(
+        rows: [FeedRow] = [],
+        nextCursor: String? = nil
+    ) {
+        self.rows = rows
+        self.nextCursor = nextCursor
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        rows = try c.decodeIfPresent([FeedRow].self, forKey: .rows) ?? []
+        nextCursor = try c.decodeIfPresent(String.self, forKey: .nextCursor)
+    }
+}
+
+public struct FeedRow: Codable, Sendable, Equatable {
+    public let id: String
+    public let kind: String
+    public let at: Date
+    /// For this viewer: the kind's tag (log_upload and boss_kill logs, ranking_top and ranking_climb rankings, bis_change best_in_slot, guild rows your_guild), or your_spec on the viewer's spec and band
+    public let tag: String
+    /// An HD icon stem under /data/<build>/icons/
+    public let icon: String?
+    /// A class slug: the row shows that class crest
+    public let crest: String?
+    /// The icon's item quality, for its border
+    public let quality: Int?
+    /// A site path the row links to
+    public let href: String
+    /// Show the date, not a relative time
+    public let dateOnly: Bool
+    public let segments: [FeedSegment]
+
+    public init(
+        id: String,
+        kind: String,
+        at: Date,
+        tag: String,
+        icon: String? = nil,
+        crest: String? = nil,
+        quality: Int? = nil,
+        href: String,
+        dateOnly: Bool,
+        segments: [FeedSegment] = []
+    ) {
+        self.id = id
+        self.kind = kind
+        self.at = at
+        self.tag = tag
+        self.icon = icon
+        self.crest = crest
+        self.quality = quality
+        self.href = href
+        self.dateOnly = dateOnly
+        self.segments = segments
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        id = try c.decode(String.self, forKey: .id)
+        kind = try c.decode(String.self, forKey: .kind)
+        at = try c.decode(Date.self, forKey: .at)
+        tag = try c.decode(String.self, forKey: .tag)
+        icon = try c.decodeIfPresent(String.self, forKey: .icon)
+        crest = try c.decodeIfPresent(String.self, forKey: .crest)
+        quality = try c.decodeIfPresent(Int.self, forKey: .quality)
+        href = try c.decode(String.self, forKey: .href)
+        dateOnly = try c.decode(Bool.self, forKey: .dateOnly)
+        segments = try c.decodeIfPresent([FeedSegment].self, forKey: .segments) ?? []
+    }
+}
+
+/// One run of a feed row's sentence. Plain text has no style.
+public struct FeedSegment: Codable, Sendable, Equatable {
+    public let text: String
+    /// name carries class; item carries quality and item_id
+    public let style: String?
+    /// A class slug, for a name in its class colour
+    public let className: String?
+    /// An item's quality, 0 poor to 5 legendary
+    public let quality: Int?
+    public let itemId: Int?
+
+    public init(
+        text: String,
+        style: String? = nil,
+        className: String? = nil,
+        quality: Int? = nil,
+        itemId: Int? = nil
+    ) {
+        self.text = text
+        self.style = style
+        self.className = className
+        self.quality = quality
+        self.itemId = itemId
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case text
+        case style
+        case className = "class"
+        case quality
+        case itemId
+    }
+}
+
 /// The engine's store.FightEntry plus whether the ingest verified the fight
 public struct FightEntry: Codable, Sendable, Equatable {
     public let index: Int
@@ -3421,6 +3532,94 @@ public struct HomeAlreadyBest: Codable, Sendable, Equatable {
     }
 }
 
+/// The signed-in home's own blocks; each is null when it has nothing true to say.
+public struct HomeBlocks: Codable, Sendable, Equatable {
+    public let importSim: HomeImportSim?
+    public let specWeek: HomeSpecWeek?
+    public let movers: HomeMovers?
+    public let guildSims: HomeGuildSims?
+
+    public init(
+        importSim: HomeImportSim? = nil,
+        specWeek: HomeSpecWeek? = nil,
+        movers: HomeMovers? = nil,
+        guildSims: HomeGuildSims? = nil
+    ) {
+        self.importSim = importSim
+        self.specWeek = specWeek
+        self.movers = movers
+        self.guildSims = guildSims
+    }
+}
+
+/// The character's guild ladder for its role, band and preset; members only, three or more.
+public struct HomeGuildSims: Codable, Sendable, Equatable {
+    public let guildId: Int64
+    public let guildName: String
+    public let role: String
+    public let band: Int
+    public let preset: String
+    public let unit: String
+    public let of: Int
+    public let rows: [HomeLadderRow]
+    public let you: HomeLadderRow?
+
+    public init(
+        guildId: Int64,
+        guildName: String,
+        role: String,
+        band: Int,
+        preset: String,
+        unit: String,
+        of: Int,
+        rows: [HomeLadderRow] = [],
+        you: HomeLadderRow? = nil
+    ) {
+        self.guildId = guildId
+        self.guildName = guildName
+        self.role = role
+        self.band = band
+        self.preset = preset
+        self.unit = unit
+        self.of = of
+        self.rows = rows
+        self.you = you
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        guildId = try c.decode(Int64.self, forKey: .guildId)
+        guildName = try c.decode(String.self, forKey: .guildName)
+        role = try c.decode(String.self, forKey: .role)
+        band = try c.decode(Int.self, forKey: .band)
+        preset = try c.decode(String.self, forKey: .preset)
+        unit = try c.decode(String.self, forKey: .unit)
+        of = try c.decode(Int.self, forKey: .of)
+        rows = try c.decodeIfPresent([HomeLadderRow].self, forKey: .rows) ?? []
+        you = try c.decodeIfPresent(HomeLadderRow.self, forKey: .you)
+    }
+}
+
+/// The character's latest auto-sim on import (bare preset, default iterations).
+public struct HomeImportSim: Codable, Sendable, Equatable {
+    public let state: String
+    public let dps: Double?
+    public let simmedAt: Date?
+    public let simId: String?
+
+    public init(
+        state: String,
+        dps: Double? = nil,
+        simmedAt: Date? = nil,
+        simId: String? = nil
+    ) {
+        self.state = state
+        self.dps = dps
+        self.simmedAt = simmedAt
+        self.simId = simId
+    }
+}
+
 /// An item read from the build's table; every field but id is null when the table lacks it.
 public struct HomeItem: Codable, Sendable, Equatable {
     public let id: Int
@@ -3441,6 +3640,111 @@ public struct HomeItem: Codable, Sendable, Equatable {
         self.quality = quality
         self.icon = icon
         self.itemLevel = itemLevel
+    }
+}
+
+public struct HomeLadderRow: Codable, Sendable, Equatable {
+    public let rank: Int
+    public let name: String
+    public let className: String
+    public let key: String
+    public let value: Double
+    public let delta: Int?
+    public let simmedAt: Date
+    public let simId: String
+    public let you: Bool
+
+    public init(
+        rank: Int,
+        name: String,
+        className: String,
+        key: String,
+        value: Double,
+        delta: Int? = nil,
+        simmedAt: Date,
+        simId: String,
+        you: Bool
+    ) {
+        self.rank = rank
+        self.name = name
+        self.className = className
+        self.key = key
+        self.value = value
+        self.delta = delta
+        self.simmedAt = simmedAt
+        self.simId = simId
+        self.you = you
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case rank
+        case name
+        case className = "class"
+        case key
+        case value
+        case delta
+        case simmedAt
+        case simId
+        case you
+    }
+}
+
+public struct HomeMoverRow: Codable, Sendable, Equatable {
+    public let rank: Int
+    public let name: String
+    public let className: String
+    public let key: String
+    /// Places gained since last week; null with no baseline
+    public let delta: Int?
+
+    public init(
+        rank: Int,
+        name: String,
+        className: String,
+        key: String,
+        delta: Int? = nil
+    ) {
+        self.rank = rank
+        self.name = name
+        self.className = className
+        self.key = key
+        self.delta = delta
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case rank
+        case name
+        case className = "class"
+        case key
+        case delta
+    }
+}
+
+public struct HomeMovers: Codable, Sendable, Equatable {
+    public let spec: String
+    public let band: Int
+    /// false: no last-week board yet, rows are the top 3 with no movement
+    public let baseline: Bool
+    public let rows: [HomeMoverRow]
+
+    public init(
+        spec: String,
+        band: Int,
+        baseline: Bool,
+        rows: [HomeMoverRow] = []
+    ) {
+        self.spec = spec
+        self.band = band
+        self.baseline = baseline
+        self.rows = rows
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        spec = try c.decode(String.self, forKey: .spec)
+        band = try c.decode(Int.self, forKey: .band)
+        baseline = try c.decode(Bool.self, forKey: .baseline)
+        rows = try c.decodeIfPresent([HomeMoverRow].self, forKey: .rows) ?? []
     }
 }
 
@@ -3471,6 +3775,40 @@ public struct HomePick: Codable, Sendable, Equatable {
         self.itemLevel = itemLevel
         self.sourceLine = sourceLine
         self.dropChance = dropChance
+    }
+}
+
+/// The spec on the tier list's rules at the character's band and faction this reset week.
+public struct HomeSpecWeek: Codable, Sendable, Equatable {
+    public let spec: String
+    public let band: Int
+    public let faction: String
+    public let role: String
+    /// S to D for a damage spec; null for tanks and healers
+    public let grade: String?
+    /// null until last week's grade exists
+    public let lastWeekGrade: String?
+    public let place: Int
+    public let of: Int
+
+    public init(
+        spec: String,
+        band: Int,
+        faction: String,
+        role: String,
+        grade: String? = nil,
+        lastWeekGrade: String? = nil,
+        place: Int,
+        of: Int
+    ) {
+        self.spec = spec
+        self.band = band
+        self.faction = faction
+        self.role = role
+        self.grade = grade
+        self.lastWeekGrade = lastWeekGrade
+        self.place = place
+        self.of = of
     }
 }
 

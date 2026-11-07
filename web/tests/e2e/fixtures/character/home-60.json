@@ -1,0 +1,61 @@
+{
+  "import_sim": {
+    "state": "done",
+    "dps": 912.4,
+    "simmed_at": "2026-11-06T17:30:00Z",
+    "sim_id": "s_1"
+  },
+  "spec_week": {
+    "spec": "priest-holy",
+    "band": 60,
+    "faction": "alliance",
+    "role": "healer",
+    "grade": "A",
+    "last_week_grade": null,
+    "place": 2,
+    "of": 9
+  },
+  "movers": null,
+  "guild_sims": {
+    "guild_id": 2,
+    "guild_name": "Cx66 Olympus",
+    "role": "healer",
+    "band": 60,
+    "preset": "raid",
+    "unit": "HPS",
+    "of": 14,
+    "rows": [
+      {
+        "rank": 1,
+        "name": "Thalrin",
+        "class": "paladin",
+        "key": "us/hardcore/thalrin",
+        "value": 1001.2,
+        "delta": null,
+        "simmed_at": "2026-11-06T17:30:00Z",
+        "you": false
+      },
+      {
+        "rank": 2,
+        "name": "Mirelle",
+        "class": "druid",
+        "key": "us/hardcore/mirelle",
+        "value": 955.0,
+        "delta": null,
+        "simmed_at": "2026-11-06T17:30:00Z",
+        "you": false
+      },
+      {
+        "rank": 3,
+        "name": "Elyra Duskvale",
+        "class": "priest",
+        "key": "us/hardcore/elyra-duskvale",
+        "value": 912.4,
+        "delta": null,
+        "simmed_at": "2026-11-06T17:30:00Z",
+        "you": true
+      }
+    ],
+    "you": null
+  }
+}

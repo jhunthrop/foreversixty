@@ -17,6 +17,7 @@ const SELECTOR_MOUNT_MARGIN_MS = 1500;
 const KEY = 'us/hardcore/obnoxious-yell';
 const WORN_RING = `FS1:${ACTIVE_BUILD}:warrior:orc:0/5530515/0:head=12640,finger1=264908`;
 const SAVED = { id: 'k7x2qm4a', url: 'https://foreversixty.gg/b/k7x2qm4a' };
+const SENT_DETAIL = 'The companion checks every 10 minutes, and again when you log out.';
 
 function me() {
   const own = meAddonFixture.characters[0];
@@ -61,7 +62,7 @@ async function signIn(page: Page, devices: unknown[] = [{ id: 'd1', name: 'Desk'
 }
 
 test.describe('Send this build to the addon', () => {
-  test.skip(({ isMobile }) => isMobile, 'The card is asserted at desktop width');
+  test.skip(({ isMobile }) => isMobile, 'In the game is asserted at desktop width');
 
   test('saves the build, queues it for the character, and reads Sent', async ({ page }) => {
     await signIn(page);
@@ -83,20 +84,20 @@ test.describe('Send this build to the addon', () => {
       route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(ARMS_LIST) }),
     );
     await page.goto('/planner');
-    const action = page.getByTestId('character-header-action');
+    const action = page.getByTestId('planner-send');
     await expect(action).toHaveText('Send this build to Obnoxious Yell');
-    await page.getByTestId('planner-header-band').screenshot({
+    await page.getByTestId('planner-in-game').screenshot({
       path: process.env.W2_CAPTURES ? `${process.env.W2_CAPTURES}/send-build-before.png` : undefined,
     });
 
     // An empty build is never sent: the button is disabled until points are spent.
     await expect(action).toBeDisabled();
-    await expect(page.getByTestId('character-header-note')).toHaveText(
+    await expect(page.getByTestId('planner-send-note')).toHaveText(
       "Spend some points first, or load the level range's build.",
     );
     await page.getByTestId('band-compare-load').click();
     await expect(action).toBeEnabled();
-    await expect(page.getByTestId('character-header-note')).toHaveText(
+    await expect(page.getByTestId('planner-send-note')).toHaveText(
       plannerCharacterCardCopy.shorterThanSpend(3, 'Obnoxious Yell', 9),
     );
 
@@ -104,15 +105,13 @@ test.describe('Send this build to the addon', () => {
 
     await expect(action).toHaveText('Sent');
     await expect(action).toBeDisabled();
-    await expect(page.getByTestId('character-header-note')).toContainText(
+    await expect(page.getByTestId('planner-send-note')).toContainText(
       'Sent to Obnoxious Yell. Log out to the character screen and back in to see it. /reload will not show it.',
     );
-    await expect(page.getByTestId('character-header-note-detail')).toHaveText(
-      'The companion checks every 10 minutes, and again when you log out.',
-    );
+    await expect(page.getByTestId('planner-in-game').getByText(SENT_DETAIL, { exact: true })).toBeVisible();
     expect(saves).toHaveLength(1);
     expect(queued).toEqual([{ build_id: SAVED.id, character_key: KEY }]);
-    await page.getByTestId('planner-header-band').screenshot({
+    await page.getByTestId('planner-in-game').screenshot({
       path: process.env.W2_CAPTURES ? `${process.env.W2_CAPTURES}/send-build-after.png` : undefined,
     });
 
@@ -137,7 +136,7 @@ test.describe('Send this build to the addon', () => {
       route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(ARMS_LIST) }),
     );
     await page.goto('/planner');
-    const action = page.getByTestId('character-header-action');
+    const action = page.getByTestId('planner-send');
     await expect(action).toHaveText('Send this build to Obnoxious Yell');
     await page.getByTestId('talent-1001').click();
     await expect(action).toBeEnabled();
@@ -151,7 +150,7 @@ test.describe('Send this build to the addon', () => {
     await signIn(page);
     await page.setViewportSize({ width: 1280, height: 900 });
     await page.goto('/planner');
-    const action = page.getByTestId('character-header-action');
+    const action = page.getByTestId('planner-send');
     // The main's own build arrives with the heal: points are spent, so the send is on.
     await expect(action).toBeEnabled();
 
@@ -178,12 +177,12 @@ test.describe('Send this build to the addon', () => {
     // The heal has fired and the main's code is on its way: edit now, while it is in flight.
     await page.waitForFunction(() => window.sessionStorage.getItem('fs.pointerHealed') === '1');
     await page.getByTestId('talent-1001').click();
-    await expect(page.getByTestId('character-header-action')).toBeEnabled();
+    await expect(page.getByTestId('planner-send')).toBeEnabled();
     await page.waitForTimeout(SELECTOR_MOUNT_MARGIN_MS + 500);
     await expect(page.getByTestId('talent-1001')).toHaveAttribute('data-rank', '1');
   });
 
-  test('a worn item outside the planner list never reaches the body, and the card says so', async ({
+  test('a worn item outside the planner list never reaches the body, and In the game says so', async ({
     page,
   }) => {
     await signIn(page);
@@ -198,7 +197,7 @@ test.describe('Send this build to the addon', () => {
     await expect(page.getByTestId('planner-left-out')).toHaveText(
       'Left out: the ring in your first ring slot (not a planner item).',
     );
-    const action = page.getByTestId('character-header-action');
+    const action = page.getByTestId('planner-send');
     await expect(action).toBeEnabled();
     await action.click();
     // Another player's build asks once before it goes out.
@@ -229,8 +228,8 @@ test.describe('Send this build to the addon', () => {
     );
     await page.goto('/planner');
     await page.getByTestId('talent-1001').click();
-    await page.getByTestId('character-header-action').click();
-    await expect(page.getByTestId('character-header-note')).toHaveText(
+    await page.getByTestId('planner-send').click();
+    await expect(page.getByTestId('planner-send-note')).toHaveText(
       'The site refused this build: Item 264908 is not available to Hunter.',
     );
   });
@@ -244,11 +243,14 @@ test.describe('Send this build to the addon', () => {
     });
     await page.goto('/planner');
     await page.getByTestId('talent-1001').click();
-    await page.getByTestId('character-header-action').click();
-    await expect(page.getByTestId('character-header-note')).toContainText(
+    await page.getByTestId('planner-send').click();
+    await expect(page.getByTestId('planner-send-note')).toContainText(
       'Run the companion once so builds can reach your addon.',
     );
-    await expect(page.getByTestId('character-header-note-link')).toHaveAttribute('href', '/setup#companion');
+    await expect(page.getByTestId('planner-send-note').getByRole('link')).toHaveAttribute(
+      'href',
+      '/setup#companion',
+    );
     expect(saved).toBe(false);
   });
 
@@ -265,23 +267,24 @@ test.describe('Send this build to the addon', () => {
     );
     await page.goto('/planner');
     await page.getByTestId('talent-1001').click();
-    const action = page.getByTestId('character-header-action');
+    const action = page.getByTestId('planner-send');
     await action.click();
-    await expect(page.getByTestId('character-header-note')).toContainText(
+    await expect(page.getByTestId('planner-send-note')).toContainText(
       'Sign in to send builds to your addon.',
     );
-    await expect(page.getByTestId('character-header-note-link')).toHaveAttribute('href', '/login');
+    await expect(page.getByTestId('planner-send-note').getByRole('link')).toHaveAttribute('href', '/login');
 
     status = 500;
     await action.click();
-    await expect(page.getByTestId('character-header-note')).toHaveText('Could not send just now. Try again.');
+    await expect(page.getByTestId('planner-send-note')).toHaveText('Could not send just now. Try again.');
   });
 
   test('signed out there is no send button, only the way to the addon setup', async ({ page }) => {
     await page.goto('/planner');
-    await expect(page.getByTestId('planner-header-band')).toBeVisible();
+    await expect(page.getByTestId('planner-in-game')).toBeVisible();
     await expect(page.getByRole('button', { name: /send this build/i })).toHaveCount(0);
     await expect(page.getByText('Send this build to')).toHaveCount(0);
-    await expect(page.getByTestId('character-header-action')).toHaveCount(0);
+    await expect(page.getByTestId('planner-send')).toHaveCount(0);
+    await expect(page.getByTestId('planner-get-addon')).toHaveAttribute('href', '/setup#addon');
   });
 });

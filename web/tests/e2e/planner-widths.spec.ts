@@ -6,8 +6,8 @@
 // stretched facts rail, the site nav's own `flex-nowrap`) pushed the document wider than
 // the viewport. Asserts the one invariant that actually matters for all of that at once:
 // the page never scrolls sideways, at every width this lane was asked to check, signed out
-// and signed in (the signed-in card is the right column of a two-column grid from 1024px,
-// the one state the designer's own screenshot caught).
+// and signed in (the state the designer's own screenshot caught; signed in, the rail's
+// In the game section holds the send, spec 2026-11-08 4.7).
 import { expect, test } from './support/test';
 import { meAddonFixture } from '../../src/fixtures/me-addon';
 
@@ -41,9 +41,9 @@ test.describe('the planner never scrolls sideways', () => {
 
     test(`signed in at ${width}px`, async ({ page }) => {
       await page.setViewportSize({ width, height: 1000 });
-      // meAddonFixture's own `main_character_key` names Zulmara -- `createCharacterCardState`'s
-      // `mainCharacter()` fallback finds her with no stored pointer at all, the same way a
-      // signed-in visitor with no current-character pointer yet still sees their own card.
+      // meAddonFixture's own `main_character_key` names Zulmara -- the `mainCharacter()`
+      // fallback finds her with no stored pointer at all, the same way a signed-in visitor with
+      // no current-character pointer yet still has a character to send to.
       await page.route('**/v1/me', (route) =>
         route.fulfill({
           status: 200,
@@ -53,10 +53,10 @@ test.describe('the planner never scrolls sideways', () => {
       );
       await page.goto('/planner');
       await page.getByTestId('band-compare').waitFor();
-      // The card is the whole point of this width/mode combination -- confirms the
-      // two-column grid (not the one-column, signed-out shape) is actually what got
-      // measured below, not a fallback that happened to also pass.
-      await page.getByTestId('character-header').waitFor();
+      // The send is the whole point of this width/mode combination -- confirms the signed-in
+      // shape (not the signed-out one) is actually what got measured below, not a fallback
+      // that happened to also pass.
+      await page.getByTestId('planner-send').waitFor();
       await noHorizontalScroll(page);
     });
   }

@@ -17,6 +17,7 @@ The mock library (`design/mocks/ws_lib.py` `REGION`, emitted by `ws_lib` and `ws
 | `head-meta` | `PageHeader` | The one meta line under the title |
 | `head-answer` | `PageHeader` (its `answer` slot) | BiS: one figure with its unit, the trust line, the links. Nothing else |
 | `controls` | `ControlBar` | The control bar |
+| `countdowns` | the page (home) | The countdown panels under the head: the first raids and the guild's next event |
 | `summary` | the page (BiS: `BisSpecPage`) | The summary line and the view toggle |
 | `notes` | the page (BiS) | One-line standing notes over the Plate (source rule, hit cap, weapon) |
 | `plate` | `Plate` | The page's one primary object |
@@ -75,7 +76,7 @@ Then commit `design/mocks/web` (and `design/mocks/data/bis-facts.json`).
 
 ## The home states
 
-`design/mocks/web/home-parity.json`: `out` (signed out), `34` (a level 34 leveler, no guild), `60` (a level 60 raider with a raid planned), `new` (signed in, no character), `loading` (the session hinted, `/v1/me` in flight), `error` (the upgrades failed). Mocks `web-home-<state>.html` from `design/mocks/ws_home.py` (spec `design/specs/2026-11-06-home.md`). The signed-in data is committed in `web/tests/e2e/fixtures/home/` (`python3 design/mocks/home_fixtures.py` writes it); `tests/e2e/support/home-page.ts` routes the same files, so the parity job needs no `data/builds`.
+`design/mocks/web/home-parity.json`, layout B (spec `design/specs/2026-11-07-home-b.md`): `out` (signed out), `34` (a level 34 leveler, no guild), `60` (a level 60 raider in a guild with a raid planned and the guild's sims), `new` (signed in, no character), `feed-empty` (the feed floored with real site events), `feed-loading`, `loading` (the session hinted, `/v1/me` in flight), `error` (the feed failed). Mocks `web-home-<state>.html` from `design/mocks/ws_home.py`. The data is committed in `web/tests/e2e/fixtures/home/` (`python3 design/mocks/home_fixtures.py` writes the `/v1/me`, `/v1/feed`, `/v1/home` and guild answers); `tests/e2e/support/home-page.ts` routes the same files, so the parity job needs no `data/builds`.
 
 ## The site chrome
 

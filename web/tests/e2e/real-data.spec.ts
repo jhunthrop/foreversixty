@@ -8,13 +8,20 @@
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import type { Page } from '@playwright/test';
+import type { Locator, Page } from '@playwright/test';
 import { expect, test } from './support/test';
 import { collectPageErrors } from './support/console';
 import { ACTIVE_BUILD } from './support/active-build';
-import { shareBuild } from './support/planner';
+import {
+  bareSpentLine,
+  chooseClass,
+  classRadio,
+  expectClass,
+  pointsLeft,
+  shareBuild,
+  spentLine,
+} from './support/planner';
 import { POINTS_PER_TIER } from '../../src/lib/planner/types';
-import { choose, nativeSelect } from './support/select';
 
 const WEB_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 
@@ -40,7 +47,7 @@ function readJson<T>(file: string): T {
 /** The tree names the planner currently has laid out, in column order. */
 function renderedTreeNames(page: Page): Promise<string[]> {
   return page
-    .locator('[data-testid="tree-columns"] [role="grid"]')
+    .locator('[data-testid="planner-trees"] [role="grid"]')
     .evaluateAll((nodes) =>
       nodes.map((node) => (node.getAttribute('aria-label') ?? '').replace(/ talents$/, '')),
     );
@@ -53,17 +60,28 @@ function syncedTreeNames(slug: string): string[] {
 }
 
 /**
- * Opens /planner and waits for the reference data to land, returning the class it opened on.
- * The class <select> carries no options until `store.classes` is populated, so reading its
- * value straight after the navigation can come back empty -- the trees appearing is the
- * signal that the reference and talent fetches have both resolved.
+ * Opens /planner and waits for the talent data to land, returning the class it opened on (the
+ * ControlBar's checked crest). The trees appearing is the signal that the reference and talent
+ * fetches have both resolved.
  */
 async function openPlanner(page: Page): Promise<string> {
   await page.goto('/planner');
   await expect.poll(() => renderedTreeNames(page)).toHaveLength(TREES_PER_CLASS);
-  const slug = await nativeSelect(page, 'Class').inputValue();
+  const slug =
+    (await page
+      .getByTestId('control-class')
+      .locator('[role="radio"][aria-checked="true"]')
+      .getAttribute('data-value')) ?? '';
   expect(slug).not.toBe('');
   return slug;
+}
+
+/**
+ * The prerequisite links a tree draws (TalentEditor), one per prerequisite, sorted by the
+ * prerequisite's id then the talent's (lib/planner/connectors.ts) -- they carry no id of their own.
+ */
+function treeLinks(page: Page, treeId: number): Locator {
+  return page.getByTestId(`tree-${treeId}`).locator('path[data-met]');
 }
 
 test('the planner opens on the default class with its three real trees', async ({ page }) => {
@@ -92,8 +110,8 @@ test('switching class lays out the new class real trees', async ({ page }) => {
     );
   expect(to, 'no second class with a distinguishable set of tree names').toBeDefined();
 
-  await choose(nativeSelect(page, 'Class'), to!);
-  await expect(nativeSelect(page, 'Class')).toHaveValue(to!);
+  await chooseClass(page, to!);
+  await expectClass(page, to!);
   await expect.poll(() => renderedTreeNames(page)).toEqual(syncedTreeNames(to!));
 });
 
@@ -129,7 +147,7 @@ function syncedTrees(slug: string): SyncedTree[] {
 
 /**
  * Spends `points` in a tree by always taking the leftmost cell that is open. "Open" means
- * addable -- `available` (untouched) or `filled` (already ranked, but not yet maxed) -- not
+ * addable -- `avail` (untouched) or `part` (already ranked, but not yet maxed) -- not
  * only untouched: the real client's trees mix in authentic multi-rank talents (Arms' tier 0
  * alone is Improved Heroic Strike/3, Deflection/5, Improved Rend/3), and a tier needs
  * POINTS_PER_TIER points spent in the tree as a whole before the next one unlocks. Clicking
@@ -141,7 +159,7 @@ function syncedTrees(slug: string): SyncedTree[] {
 async function spend(page: Page, treeId: number, points: number): Promise<void> {
   for (let i = 0; i < points; i += 1) {
     await page
-      .locator(`[data-testid="tree-${treeId}"] :is([data-state="available"], [data-state="filled"])`)
+      .locator(`[data-testid="tree-${treeId}"] :is([data-state="avail"], [data-state="part"])`)
       .first()
       .click();
   }
@@ -149,7 +167,7 @@ async function spend(page: Page, treeId: number, points: number): Promise<void> 
 
 test('the trees are laid out in the order the client draws them', async ({ page }) => {
   await openPlanner(page);
-  await choose(nativeSelect(page, 'Class'), 'warrior');
+  await chooseClass(page, 'warrior');
   await expect.poll(() => renderedTreeNames(page)).toEqual(['Arms', 'Fury', 'Protection']);
   expect(syncedTrees('warrior').map((tree) => tree.name)).toEqual(['Arms', 'Fury', 'Protection']);
 });
@@ -163,31 +181,32 @@ test('the banner names the build the trees were read from', async ({ page }) => 
 
 test('a 31/20/0 warrior is spent and read back as 31/20/0', async ({ page }) => {
   await openPlanner(page);
-  await choose(nativeSelect(page, 'Class'), 'warrior');
+  await chooseClass(page, 'warrior');
   await expect.poll(() => renderedTreeNames(page)).toEqual(['Arms', 'Fury', 'Protection']);
   const [arms, fury] = syncedTrees('warrior');
 
   await spend(page, arms.id, 31);
   await spend(page, fury.id, 20);
 
-  await expect(page.getByTestId('planner-spent')).toHaveText('51/51');
-  await expect(page.getByTestId('planner-remaining')).toHaveText('0');
-  // Level is always shown now (review finding 2) and reads the base level plus every point.
-  await expect(page.getByTestId('planner-level')).toHaveText('60');
+  await expect(spentLine(page)).toHaveText(bareSpentLine(51));
+  await expect(pointsLeft(page)).toHaveText('0');
+  // The level is always shown (the head's meta line): the base level plus every point.
+  await expect(page.getByTestId('planner-meta')).toContainText('Level 60');
   await expect(page.getByTestId(`tree-points-${arms.id}`)).toHaveText('31');
   await expect(page.getByTestId(`tree-points-${fury.id}`)).toHaveText('20');
 });
 
 test('a prerequisite link is drawn for every prerequisite the client has', async ({ page }) => {
   await openPlanner(page);
-  await choose(nativeSelect(page, 'Class'), 'warrior');
+  await chooseClass(page, 'warrior');
   await expect.poll(() => renderedTreeNames(page)).toEqual(['Arms', 'Fury', 'Protection']);
   const pairs = syncedTrees('warrior').flatMap((tree) =>
     tree.talents.filter((talent) => talent.prereq_talent_id !== null).map((talent) => ({ tree, talent })),
   );
   expect(pairs.length).toBeGreaterThan(0);
-  for (const { talent } of pairs) {
-    await expect(page.getByTestId(`connector-${talent.prereq_talent_id}-${talent.id}`)).toBeAttached();
+  for (const tree of syncedTrees('warrior')) {
+    const count = pairs.filter((pair) => pair.tree.id === tree.id).length;
+    await expect(treeLinks(page, tree.id), tree.name).toHaveCount(count);
   }
 
   // The first one turns gold once its prerequisite is maxed. The prerequisite's own tier
@@ -195,14 +214,18 @@ test('a prerequisite link is drawn for every prerequisite the client has', async
   // tier -- before its talent cell will even accept a click.
   const { tree, talent } = pairs[0];
   const prereq = tree.talents.find((t) => t.id === talent.prereq_talent_id)!;
-  const link = page.getByTestId(`connector-${prereq.id}-${talent.id}`);
+  const sorted = pairs
+    .filter((pair) => pair.tree.id === tree.id)
+    .map((pair) => pair.talent)
+    .sort((a, b) => a.prereq_talent_id! - b.prereq_talent_id! || a.id - b.id);
+  const link = treeLinks(page, tree.id).nth(sorted.findIndex((t) => t.id === talent.id));
   await expect(link).toHaveAttribute('data-met', 'false');
   await spend(page, tree.id, POINTS_PER_TIER * prereq.tier);
   for (let i = 0; i < prereq.max_rank; i += 1) {
     await page.getByTestId(`talent-${prereq.id}`).click();
   }
   await expect(link).toHaveAttribute('data-met', 'true');
-  await expect(page.getByTestId(`talent-${prereq.id}`)).toHaveAttribute('data-state', 'maxed');
+  await expect(page.getByTestId(`talent-${prereq.id}`)).toHaveAttribute('data-state', 'max');
 });
 
 test('every tree ships its own processed art', async ({ page }) => {
@@ -233,7 +256,7 @@ test('a build shared on the new trees reopens from its link, on desktop and on a
   });
 
   await openPlanner(page);
-  await choose(nativeSelect(page, 'Class'), 'warrior');
+  await chooseClass(page, 'warrior');
   await expect.poll(() => renderedTreeNames(page)).toEqual(['Arms', 'Fury', 'Protection']);
   const [arms, fury] = syncedTrees('warrior');
   await spend(page, arms.id, 31);
@@ -272,7 +295,7 @@ test('a build shared on the new trees reopens from its link, on desktop and on a
   await page.goto('/b/real1234');
   await expect(page.getByTestId(`tree-points-${arms.id}`)).toHaveText('31');
   await expect(page.getByTestId(`tree-points-${fury.id}`)).toHaveText('20');
-  await expect(nativeSelect(page, 'Class')).toBeDisabled();
+  await expect(classRadio(page, 'warrior')).toHaveAttribute('aria-disabled', 'true');
 
   await page.setViewportSize({ width: 390, height: 800 });
   await page.reload();

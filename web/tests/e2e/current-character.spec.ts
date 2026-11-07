@@ -6,8 +6,7 @@
 import { expect, test } from './support/test';
 import { addonCopy } from '../../src/lib/addon/copy';
 import { ACTIVE_BUILD } from './support/active-build';
-import { shareBuild } from './support/planner';
-import { nativeSelect } from './support/select';
+import { expectClass, raceSelect, shareBuild } from './support/planner';
 import { gotoSim, simCharacter } from './support/sim-page';
 import { simPageCopy } from '../../src/lib/sim/page-copy';
 
@@ -39,8 +38,8 @@ test.describe('current character', () => {
     // dropped (sim-saved.spec.ts's own fixture result carries the identical final string,
     // "0-5530515-").
     await page.goto('/planner');
-    await expect(nativeSelect(page, 'Class')).toHaveValue('warrior');
-    await expect(nativeSelect(page, 'Race')).toHaveValue('orc');
+    await expectClass(page, 'warrior');
+    await expect(raceSelect(page)).toHaveValue('orc');
     await expect(page.getByTestId('tree-points-164')).toHaveText('24');
   });
 
@@ -89,7 +88,7 @@ test.describe('current character', () => {
     ).toHaveAttribute('href', /^\/setup(#|$)/);
 
     await page.goto('/planner');
-    await expect(page.getByTestId('import-get-addon')).toHaveAttribute('href', '/setup');
+    await expect(page.getByTestId('import-get-addon')).toHaveAttribute('href', /^\/setup(#|$)/);
   });
 
   // The scope caveat is the landing head's one meta line now (spec 2026-11-06-sim §4.2, §6).
@@ -228,8 +227,10 @@ test.describe('current character', () => {
     await page.getByTestId('share-open').click();
     await expect(page.getByTestId('share-confirm')).toBeVisible();
 
-    await page.getByTestId('share-confirm-copy-code').click();
-    await expect(page.getByTestId('share-confirm-copy-code')).toHaveText(addonCopy.copiedForGame);
+    // Copy for the game left the confirm for In the game (spec 2026-11-08 4.7, 4.8): it still
+    // copies the build without writing anything.
+    await page.getByTestId('copy-for-game').click();
+    await expect(page.getByTestId('copy-for-game')).toHaveText(addonCopy.copiedForGame);
 
     await page.getByTestId('share-confirm-copy-unsaved').click();
     await expect(page.getByTestId('share-confirm-copy-unsaved')).toHaveText('Copied');

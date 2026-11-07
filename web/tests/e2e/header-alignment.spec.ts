@@ -15,16 +15,18 @@ test.describe('headers align with the body', () => {
   test.skip(({ isMobile }) => isMobile, 'Widths are set by the test');
 
   for (const width of WIDTHS) {
-    test(`/planner at ${width}: the crest and the facts start where the trees do`, async ({ page }) => {
+    // Spec 2026-11-08 4.1: the head's answer (the old facts) sits at the right from 900, so the
+    // crest is the head's left edge; the body's is the trees' Plate (the tree-source line it was
+    // measured by now sits inside the Plate's foot).
+    test(`/planner at ${width}: the crest starts where the trees do`, async ({ page }) => {
       await page.setViewportSize({ width, height: 900 });
       await page.goto('/planner');
-      const eyebrow = page.getByTestId('planner-header-crest');
-      await expect(eyebrow).toBeVisible();
-      await expect(page.getByTestId('planner-tree-source')).toBeVisible();
-      const body = await left(page.getByTestId('planner-tree-source'));
+      const crest = page.getByTestId('planner-header-crest');
+      await expect(crest).toBeVisible();
+      await expect(page.getByTestId('planner-trees')).toBeVisible();
+      const body = await left(page.getByTestId('planner-trees'));
       expect(body).toBe(48);
-      expect(await left(eyebrow)).toBe(body);
-      expect(await left(page.getByTestId('planner-facts'))).toBe(body);
+      expect(await left(crest)).toBe(body);
     });
 
     test(`/tiers at ${width}: the title and the plate start where the body does`, async ({ page }) => {

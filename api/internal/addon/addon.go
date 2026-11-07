@@ -516,6 +516,9 @@ type Service struct {
 	// sims.Service satisfies it. Nil answers every request
 	// "unavailable"; the export it rode in with is still stored.
 	SimRequests SimRequester
+	// ImportSims queues the auto-sim of each synced character whose gear changed
+	// (sims.Service; it dedupes per gear itself); nil queues none.
+	ImportSims ImportSimmer
 	// Events publishes character.linked and band.entered after a sync; nil publishes nothing.
 	Events events.Publisher
 	// PublicBaseURL is the site origin the notifications link to.
@@ -632,6 +635,7 @@ func (s *Service) putExports(w http.ResponseWriter, r *http.Request) {
 	err := s.Store.PutExports(r.Context(), userID, in.Characters)
 	if err == nil {
 		s.afterSync(r.Context(), notifier, in.Characters)
+		s.simImports(r.Context(), userID, in.Characters)
 	}
 	if err == nil && hasOutbox {
 		var key string

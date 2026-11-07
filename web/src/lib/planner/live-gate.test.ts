@@ -9,6 +9,13 @@ describe('liveGate', () => {
     expect(liveGate({ spent: MAX_POINTS - 1, constrained: false, optedIn: true })).toBe('unfinished');
   });
 
+  it("counts a character build finished once its level's points are spent (gap G7)", () => {
+    expect(liveGate({ spent: 24, needed: 25, constrained: false, optedIn: false })).toBe('unfinished');
+    expect(liveGate({ spent: 25, needed: 25, constrained: false, optedIn: false })).toBe('run');
+    expect(liveGate({ spent: 27, needed: 25, constrained: false, optedIn: false })).toBe('run');
+    expect(liveGate({ spent: 0, needed: 0, constrained: false, optedIn: false })).toBe('unfinished');
+  });
+
   it('sims a finished build on a desktop without being asked', () => {
     expect(liveGate({ spent: MAX_POINTS, constrained: false, optedIn: false })).toBe('run');
   });

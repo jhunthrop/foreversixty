@@ -9,8 +9,11 @@
 import { SIM_TABS, tabHref } from '../sim/tabs';
 import { defaultSimState, withSimState } from '../sim/url';
 
-export function loadBuildHref(code: string): string {
-  return `/planner?code=${encodeURIComponent(code)}`;
+/** `spec` (`hunter-survival`) tells the planner the link is the guide's: it then spends the build
+ *  in the guide's own levelling order (planner spec 2026-11-08, ruling SHOULD). */
+export function loadBuildHref(code: string, spec?: string): string {
+  const base = `/planner?code=${encodeURIComponent(code)}`;
+  return spec === undefined ? base : `${base}&spec=${encodeURIComponent(spec)}`;
 }
 
 export function simBuildHref(code: string): string {

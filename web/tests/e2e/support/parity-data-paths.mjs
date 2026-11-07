@@ -1,7 +1,8 @@
 // web/tests/e2e/support/parity-data-paths.mjs
 // The files of data/builds/<active build> that the simulator parity spec serves to the fixture
 // build (support/sim-parity.ts) and that design/mocks/ws_sim.py draws its mocks from at test time
-// (support/parity-mocks.ts), and the inputs the derived names read (scripts/sync-data.mjs
+// (support/parity-mocks.ts), the files design/mocks/guides_facts.mjs reads for the guides parity
+// mocks, the planner's tree art (support/planner-page.ts), and the inputs the derived names read (scripts/sync-data.mjs
 // `writeSimNames`). The CI parity job checks out only these
 // (`git sparse-checkout add $(node tests/e2e/support/parity-data-paths.mjs)`), so the job keeps
 // its light checkout and the spec reads the same files it reads locally.
@@ -28,6 +29,16 @@ const FILES = [
   'racialicons.json',
   'simconsumes.json',
   'spelltips/',
+  // Read by design/mocks/guides_facts.mjs (the guides parity spec's test-time mocks) through the
+  // guide libs: the rotation lines, the ranked BiS files, the loot, the spell ranks, the trainables.
+  'addon-data.json',
+  'bis/',
+  'loot.json',
+  'spellranks.json',
+  'trainables/',
+  // Read by design/mocks/planner_facts.mjs and served by support/planner-page.ts (the planner
+  // parity spec): the client's tree art behind each talent grid.
+  'trees/',
 ];
 
 const { build } = JSON.parse(

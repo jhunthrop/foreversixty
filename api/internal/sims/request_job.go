@@ -18,6 +18,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/jhunthrop/foreversixty/api/internal/activity"
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/character"
 	"github.com/jhunthrop/foreversixty/api/internal/entitlements"
@@ -233,6 +234,10 @@ func (s *Store) QueueAddonRequest(ctx context.Context, id string, userID int64, 
 		return false, !same, nil
 	}
 	if err := queueRow(ctx, tx, id, userID, req); err != nil {
+		return false, false, err
+	}
+	if err := recordCharacterSim(ctx, tx, id, characterKey, userID, "addon", req.Spec,
+		activity.BandOf(req.Character.Level), presetOf(req), ""); err != nil {
 		return false, false, err
 	}
 	if _, err := tx.Exec(ctx,

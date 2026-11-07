@@ -6,7 +6,9 @@
      and collapses on a choice. A segmented group is a radio group of links (`?param=value`, or the
      option's own href for a path choice such as the spec), so it works before any script; the URL
      is the truth (lib/ui/control-bar.ts). Static pages use ControlBar.astro, which boots it; an
-     island passes `onchange`. -->
+     island passes `onchange`. A `compact` group (the class picker, ruling P10) shows its option
+     icons (round ringed crests with `ring`) and its labels only from 1280 and in the open phone
+     stack, where it lays out as a 3 × 3 grid. -->
 <script lang="ts">
   import type { Snippet } from 'svelte';
   import { REGION } from '../../lib/ui/regions';
@@ -114,7 +116,7 @@
           >
           {#if group.kind === 'segmented'}
             <div
-              class="ui-seg"
+              class={['ui-seg', group.compact && 'ui-seg--compact']}
               role="radiogroup"
               aria-labelledby={`${id}-${group.param}-label`}
               data-param={group.param}
@@ -128,22 +130,36 @@
                   role="radio"
                   href={href(group, option)}
                   aria-checked={checked}
+                  aria-label={group.compact ? option.label : undefined}
                   aria-disabled={option.disabled ? 'true' : undefined}
-                  title={option.disabled ? (option.disabledReason ?? 'No data yet at this level') : undefined}
+                  title={option.disabled
+                    ? (option.disabledReason ?? 'No data yet at this level')
+                    : group.compact
+                      ? option.label
+                      : undefined}
                   tabindex={checked ? 0 : -1}
                   data-value={option.value}
                   data-navigate={option.href !== undefined ? 'true' : undefined}
                   data-testid={`control-${group.param}-${option.value}`}
                   onclick={(event) => choose(event, option)}
                 >
-                  {#if option.icon}<img
+                  {#if option.icon && option.ring}<img
+                      src={option.icon}
+                      alt=""
+                      width="22"
+                      height="22"
+                      class="ui-seg-crest"
+                      style:--ring={option.ring}
+                    />{:else if option.icon}<img
                       src={option.icon}
                       alt=""
                       width="22"
                       height="22"
                       class="rounded-[4px]"
                     />{/if}
-                  <span>{option.label}</span>
+                  {#if group.compact}<span class="ui-seg-lbl">{option.label}</span>{:else}<span
+                      >{option.label}</span
+                    >{/if}
                   {#if option.count !== undefined}<span class="ui-seg-count tabular-nums">{option.count}</span
                     >{/if}
                 </a>
@@ -238,6 +254,14 @@
   .ui-cbar-groups[data-busy] {
     opacity: 0.5;
   }
+  /* The open phone bar wraps a segmented group that does not fit (guides ruling 0A MUST 5): the
+     chosen item is never cut off. Items keep their equal share while they fit. */
+  .ui-seg {
+    flex-wrap: wrap;
+  }
+  .ui-seg-item {
+    min-width: max-content;
+  }
   /* With a primary: the summary line and the primary share the phone's first row, the groups open
      under them. */
   .ui-cbar-inner[data-has-action] {
@@ -291,6 +315,7 @@
     }
     .ui-seg {
       display: inline-flex;
+      flex-wrap: nowrap;
     }
     .ui-seg-item {
       flex: none;

@@ -66,6 +66,25 @@ describe('level', () => {
     expect(store.pointsAvailable).toBe(51);
   });
 
+  it('never counts points past the character level as spendable (bug B2): they are planned ahead', () => {
+    const store = loaded();
+    store.setCharacterLevel(10);
+    expect(store.pointsAvailable).toBe(1);
+    expect(store.pointsLeft).toBe(1);
+    expect(store.atCap).toBe(false);
+    store.addPoint(1001);
+    expect(store.atCap).toBe(true);
+    expect(store.pointsLeft).toBe(0);
+    store.addPoint(1001);
+    expect(store.spent).toBe(2);
+    expect(store.pointsAvailable).toBe(1);
+    expect(store.pointsLeft).toBe(0);
+    expect(store.plannedAhead).toBe(1);
+    store.setCharacterLevel(null);
+    expect(store.plannedAhead).toBe(0);
+    expect(store.atCap).toBe(false);
+  });
+
   it('works on a read-only build too -- it is not a mutation `editable()` can refuse', () => {
     const store = loaded({ treeVersion: BUILD, classSlug: 'warrior', raceSlug: 'human', readOnly: true });
     store.setCharacterLevel(24);
@@ -115,6 +134,17 @@ describe('followRace', () => {
     store.followRace('Gnome');
     store.selectClass('mage');
     expect(store.raceSlug).toBe('gnome');
+  });
+});
+
+describe('resetTree', () => {
+  it('clears one tree and keeps the other trees in their order', () => {
+    const store = loaded();
+    for (const id of [1001, 2001, 1001]) store.addPoint(id);
+    store.resetTree(0);
+    expect(store.order).toEqual([2001]);
+    store.resetTree(5);
+    expect(store.order).toEqual([2001]);
   });
 });
 

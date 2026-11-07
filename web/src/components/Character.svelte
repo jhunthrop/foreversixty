@@ -7,7 +7,7 @@
      who have never signed in: a public report is enough to have one. -->
 <script lang="ts">
   import activeBuild from '../data/active-build.json';
-  import { fetchMeOnce, type MeCharacter } from '../lib/account/api';
+  import { fetchMeOnce, type Me, type MeCharacter } from '../lib/account/api';
   import { slotsHaveGear } from '../lib/addon-export';
   import { bandForLevel } from '../lib/bis/hover';
   import { scoreUnitWord, slotScoreUnitFor } from '../lib/bis/tank-view';
@@ -43,10 +43,12 @@
   import { signedFigure, LINK, type ClassSlug } from '../lib/ui/primitives';
   import { REGION } from '../lib/ui/regions';
   import BisTooltipHost from './BisTooltipHost.svelte';
+  import CharacterActivity from './character/CharacterActivity.svelte';
   import CharacterGear from './character/CharacterGear.svelte';
   import CharacterMissing from './character/CharacterMissing.svelte';
   import CharacterOwnerSections from './character/CharacterOwnerSections.svelte';
   import CharacterScore from './character/CharacterScore.svelte';
+  import CharacterStanding from './character/CharacterStanding.svelte';
   import ClassCrestRing from './character/ClassCrestRing.svelte';
   import Figure from './ui/Figure.svelte';
   import LoadError from './ui/LoadError.svelte';
@@ -96,6 +98,8 @@
   let own = $state<MeCharacter | null>(null);
   let owned = $state(false);
   let signedIn = $state(false);
+  /** The viewer's /v1/me, for the owner's standing line (its guild links). */
+  let meRead = $state<Me | null>(null);
   let historyEntitled = $state(false);
   let coachEntitled = $state(false);
 
@@ -131,6 +135,7 @@
       .then((me) => {
         if (resolved !== requested) return;
         signedIn = me !== null && me !== undefined;
+        meRead = me ?? null;
         own = ownCharacter(me?.characters, requested);
         historyEntitled = me?.entitlements?.history === true;
         coachEntitled = viewerFromMe(me).premium;
@@ -309,9 +314,14 @@
       </PageHeader>
     {/snippet}
     {#snippet bar()}
-      {#if step !== null}
-        <div class="character-summary" data-region={REGION.summary} data-testid="character-next-step">
-          <Notice text={step.text} action={step.action ?? undefined} tone={step.tone} />
+      {#if step !== null || (own !== null && meRead !== null)}
+        <div class="character-summary" data-region={REGION.summary}>
+          {#if step !== null}<div data-testid="character-next-step">
+              <Notice text={step.text} action={step.action ?? undefined} tone={step.tone} />
+            </div>{/if}
+          {#if own !== null && meRead !== null}
+            <CharacterStanding me={meRead} {own} specName={pageSpec(data, own)} {now} />
+          {/if}
         </div>
       {/if}
     {/snippet}
@@ -363,6 +373,12 @@
         {/each}
       </Section>
     {/if}
+    <CharacterActivity
+      characterKey={characterKey(resolved.region, resolved.ruleset, resolved.slug)}
+      {signedIn}
+      {build}
+      {now}
+    />
     {#if own !== null && scored}
       <CharacterOwnerSections path={resolved} history={historyEntitled} coach={coachEntitled} />
     {/if}

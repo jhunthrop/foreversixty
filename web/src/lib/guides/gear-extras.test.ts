@@ -270,14 +270,20 @@ describe('consumableKind', () => {
 });
 
 describe('enchant icons', () => {
-  it('drops an icon the data shares among many enchants, keeps one an enchant owns', () => {
+  it('keeps the enchant spell icon the client shares among enchants, drops one the build lacks', () => {
     const shared = Array.from({ length: 4 }, (_, i) =>
-      enchant({ id: i + 10, name: `Stand-in ${i}`, icon: 'generic', stats: { intellect: 1 } }),
+      enchant({ id: i + 10, name: `Shared ${i}`, icon: 'spell_holy_greaterheal', stats: { intellect: 1 } }),
     );
-    const own = enchant({ id: 1, name: 'Own', icon: 'own_icon', slots: ['feet'], stats: { intellect: 5 } });
-    const rows = pickEnchants([...shared, own], WEIGHTS, CONTEXT);
-    expect(rows.find((row) => row.name === 'Own')?.icon).toBe('own_icon');
-    expect(rows.find((row) => row.slot === 'wrist')?.icon).toBeUndefined();
+    const missing = enchant({
+      id: 1,
+      name: 'Missing',
+      icon: 'gone',
+      slots: ['feet'],
+      stats: { intellect: 5 },
+    });
+    const rows = pickEnchants([...shared, missing], WEIGHTS, CONTEXT, (icon) => icon !== 'gone');
+    expect(rows.find((row) => row.slot === 'wrist')?.icon).toBe('spell_holy_greaterheal');
+    expect(rows.find((row) => row.name === 'Missing')?.icon).toBeUndefined();
   });
 });
 

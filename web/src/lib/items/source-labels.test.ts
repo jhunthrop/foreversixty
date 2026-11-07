@@ -55,8 +55,8 @@ describe('pvpSourceLabel', () => {
 
 describe('worldDropLevelsLabel', () => {
   it('names one level when the dropping mobs share it, a range otherwise', () => {
-    expect(worldDropLevelsLabel(62, 62)).toBe('World drop (BoE) · level 62');
-    expect(worldDropLevelsLabel(61, 62)).toBe('World drop (BoE) · levels 61-62');
+    expect(worldDropLevelsLabel(62, 62)).toBe('World drop (BoE) · mob level 62');
+    expect(worldDropLevelsLabel(61, 62)).toBe('World drop (BoE) · mob levels 61-62');
     expect(worldDropLevelsLabel()).toBe('World drop (BoE)');
   });
 });

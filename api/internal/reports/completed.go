@@ -69,6 +69,18 @@ type Completed interface {
 	ReportCompleted(ctx context.Context, reportID string)
 }
 
+// CompletedAll tells every hook in order: the guilds service and the site feed's writer.
+type CompletedAll []Completed
+
+// ReportCompleted implements Completed.
+func (all CompletedAll) ReportCompleted(ctx context.Context, reportID string) {
+	for _, h := range all {
+		if h != nil {
+			h.ReportCompleted(ctx, reportID)
+		}
+	}
+}
+
 // GuildMoved is told when an officer's PATCH sets a report's guild, before the completion hook,
 // so a raid of another guild still holding the report lets it go. guilds.Service satisfies it.
 type GuildMoved interface {

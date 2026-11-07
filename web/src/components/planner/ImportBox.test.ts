@@ -14,17 +14,27 @@ import ImportBox from './ImportBox.svelte';
 const talents = indexTalents(fixtureTalents as TalentFile);
 
 describe('ImportBox', () => {
-  it('links to /addon, with the shared "get the addon" copy', () => {
+  it('links to the addon setup, with the shared "get the addon" copy', () => {
     const { body } = render(ImportBox, { props: { talents, activeBuild: '1', onimport: () => {} } });
-    expect(body).toContain('href="/setup"');
+    expect(body).toContain('href="/setup#addon"');
     expect(body).toContain(addonCopy.importNoExport);
     expect(body).toContain(addonCopy.importGetAddon);
   });
 
-  it('gives the /addon link a 44px hit target', () => {
+  it('gives the addon link a 44px hit target on a touch screen', () => {
     const { body } = render(ImportBox, { props: { talents, activeBuild: '1', onimport: () => {} } });
-    const match = /<a[^>]*href="\/setup"[^>]*>/.exec(body);
-    if (match === null) throw new Error('no /addon anchor rendered');
+    const match = /<a[^>]*href="\/setup#addon"[^>]*>/.exec(body);
+    if (match === null) throw new Error('no addon anchor rendered');
     expect(match[0]).toContain('min-h-11');
+  });
+
+  it('is an open section with the paste box and Import off while empty', () => {
+    const { body } = render(ImportBox, { props: { talents, activeBuild: '1', onimport: () => {} } });
+    expect(body).toContain('data-region="section-import-from-addon"');
+    expect(body).not.toContain('<details');
+    expect(body).toMatch(/<textarea[^>]*data-testid="import-code"/);
+    expect(body).toMatch(
+      /<button[^>]*disabled[^>]*data-testid="import-submit"|<button[^>]*data-testid="import-submit"[^>]*disabled/,
+    );
   });
 });

@@ -1,0 +1,139 @@
+---
+// web/src/components/guides/GuideExtrasLane.astro
+// The Enchants and consumables lane (guides spec 2026-11-08 §4.3, MUST 6): each slot's enchant
+// and every consumable as the same slim icon rows, the enchant opening its spell tooltip and a
+// consumable its item tooltip when the guide's tooltip data carries them.
+import LaneBlock from '../ui/LaneBlock.svelte';
+import Row from '../ui/Row.svelte';
+import { dataUrl } from '../../lib/planner/load';
+import { guidesCopy } from '../../lib/guides/copy';
+import { consumableLines, type GearExtras } from '../../lib/guides/gear-extras';
+import { consumableItemId } from '../../lib/guides/guide-tips';
+import { enchantTipKey, type GuideTipBundle } from '../../lib/tooltips/game-tip';
+
+interface Props {
+  build: string;
+  extras: GearExtras;
+  tips: GuideTipBundle;
+}
+const { build, extras, tips } = Astro.props;
+const enchantKey = (id: number): string | undefined =>
+  tips.tips[enchantTipKey(id)] === undefined ? undefined : enchantTipKey(id);
+const consumableItem = (id: string): number | undefined => {
+  const itemId = consumableItemId(build, id);
+  return itemId !== undefined && tips.items[String(itemId)] !== undefined ? itemId : undefined;
+};
+const lines = consumableLines(extras.consumables);
+---
+
+{extras.enchants.length > 0 && (
+  <LaneBlock label={guidesCopy.enchants} testid="guide-enchants">
+    <p class="text-small text-muted m-0">{guidesCopy.enchantsNote}</p>
+    <div class="guide-extras-rows">
+      {extras.enchants.map((row) => (
+        <Row
+          title={row.name}
+          sub={`${row.slotLabel} · ${row.gives}`}
+          density="slim"
+          open
+          testid={`guide-enchant-${row.slot}`}
+        >
+          <Fragment slot="lead">
+            {row.icon !== undefined ? (
+              <img
+                src={dataUrl(build, `icons/${row.icon}.webp`)}
+                alt=""
+                width="28"
+                height="28"
+                loading="lazy"
+                decoding="async"
+                class="guide-extras-icon"
+              />
+            ) : (
+              <span class="guide-extras-icon" aria-hidden="true" />
+            )}
+          </Fragment>
+          <span
+            slot="titleContent"
+            class:list={[enchantKey(row.id) !== undefined && 'gtip guide-extras-tip']}
+            tabindex={enchantKey(row.id) !== undefined ? 0 : undefined}
+            data-game-tip={enchantKey(row.id)}
+          >
+            {row.name}
+          </span>
+        </Row>
+      ))}
+    </div>
+  </LaneBlock>
+)}
+{extras.consumables.length > 0 && (
+  <LaneBlock label={guidesCopy.consumables} testid="guide-consumables">
+    <p class="text-small text-muted m-0">{guidesCopy.consumablesNote}</p>
+    <div class="guide-extras-rows">
+      {lines.map((line) =>
+        'header' in line ? (
+          <h4 class="text-label tracking-label text-muted guide-extras-sub font-bold uppercase">
+            {line.header}
+          </h4>
+        ) : (
+          <Row
+            title={line.row.name}
+            sub={line.row.gives}
+            density="slim"
+            open
+            testid={`guide-consumable-${line.row.id}`}
+          >
+            <Fragment slot="lead">
+              {line.row.icon !== undefined ? (
+                <img
+                  src={dataUrl(build, `icons/${line.row.icon}.webp`)}
+                  alt=""
+                  width="28"
+                  height="28"
+                  loading="lazy"
+                  decoding="async"
+                  class="guide-extras-icon"
+                />
+              ) : (
+                <span class="guide-extras-icon" aria-hidden="true" />
+              )}
+            </Fragment>
+            <span
+              slot="titleContent"
+              class:list={[consumableItem(line.row.id) !== undefined && 'gtip guide-extras-tip']}
+              tabindex={consumableItem(line.row.id) !== undefined ? 0 : undefined}
+              data-bis-item={consumableItem(line.row.id)}
+            >
+              {line.row.name}
+            </span>
+          </Row>
+        ),
+      )}
+    </div>
+  </LaneBlock>
+)}
+
+<style>
+  .guide-extras-rows {
+    display: flex;
+    flex-direction: column;
+  }
+  .guide-extras-icon {
+    display: block;
+    width: 28px;
+    height: 28px;
+    border-radius: 4px;
+  }
+  .guide-extras-sub {
+    margin: 0;
+    padding: 12px 0 2px;
+  }
+  .guide-extras-tip {
+    position: relative;
+    cursor: pointer;
+  }
+  .guide-extras-tip:focus-visible {
+    outline: 2px solid var(--color-gold);
+    outline-offset: 2px;
+  }
+</style>

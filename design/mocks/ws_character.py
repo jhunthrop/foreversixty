@@ -17,7 +17,7 @@ from pathlib import Path
 
 from mocklib import CLASS_COLOR
 from ws_lib import REGION
-from ws_prims import (Disclosure, Figure, Link, Tag, PageHeader, Paperdoll, Plate, Row, Rows, Section,
+from ws_prims import (Disclosure, FeedRow, Figure, Link, Tag, PageHeader, Paperdoll, Plate, Row, Rows, Section,
                       Skeleton, build_page, crest_img, write)
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -43,6 +43,8 @@ CHAR_CSS = '''
 .err{display:flex;flex-wrap:wrap;align-items:center;gap:12px;min-height:44px;font-size:14px;color:var(--muted)}
 .cell.sk{align-items:center}.cell.sk .bd{gap:8px}
 .line{font-size:15px;line-height:24px;color:var(--text);padding-block:6px}
+.stand{display:flex;flex-wrap:wrap;gap:4px 20px;padding-bottom:4px;font-size:15px;line-height:24px}
+.frow .st{color:var(--strong)}
 '''
 
 
@@ -59,9 +61,65 @@ def sec(title: str, body: str, action: str = '', meta: str = '') -> str:
     return Section(title, f'<div class="sec-b">{body}</div>', Link(f'{action} &rsaquo;') if action else '', meta)
 
 
-def summary(text: str, action: str = '', tone: str = 'gold') -> str:
+def summary(text: str, action: str = '', tone: str = 'gold', standing: list[str] | None = None) -> str:
     act = f'<a class="link" href="#">{action} &rsaquo;</a>' if action else ''
-    return f'<div class="pc"><div data-region="{REGION["summary"]}"><p class="notice {tone}">{text}{act}</p></div></div>'
+    stand = ('<p class="stand">' + ''.join(f'<a class="link" href="#">{t} &rsaquo;</a>' for t in standing) + '</p>') if standing else ''
+    return f'<div class="pc"><div data-region="{REGION["summary"]}"><p class="notice {tone}">{text}{act}</p>{stand}</div></div>'
+
+
+# ------------------------------------------------------------------------------------------------ the alive pass (section 6)
+TAGS = {'your_guild': 'Your guild', 'logs': 'Logs', 'rankings': 'Rankings', 'your_spec': 'Your spec'}
+ROLE_WORD = {'dps': 'DPS', 'healer': 'healers', 'tank': 'tanks'}
+
+
+def ago(iso: str) -> str:
+    minutes = int((NOW - datetime.fromisoformat(iso.replace('Z', '+00:00'))).total_seconds() // 60)
+    if minutes < 60:
+        return f'{minutes} min ago'
+    return f'{minutes // 60} h ago' if minutes < 1440 else f'{minutes // 1440} d ago'
+
+
+def sentence(segments: list[dict]) -> str:
+    out = ''
+    for seg in segments:
+        if seg.get('style') == 'name':
+            out += f'<b style="color:{CLASS_COLOR[seg["class"]]}">{seg["text"]}</b>'
+        elif seg.get('style') == 'strong':
+            out += f'<b class="st">{seg["text"]}</b>'
+        else:
+            out += seg['text']
+    return out
+
+
+def activity_section(feed: str | None) -> str:
+    if not feed:
+        return ''
+    rows = J(FIX / feed)['rows']
+    if not rows:
+        return ''
+    return sec('Activity', ''.join(FeedRow(crest_img(r['crest'], 40), sentence(r['segments']), ago(r['at']), TAGS[r['tag']]) for r in rows))
+
+
+def standing(home: str | None, guild: bool, spec: str) -> list[str]:
+    if not home:
+        return []
+    a = J(FIX / home)
+    out = []
+    gs = a.get('guild_sims')
+    if gs:
+        own = gs['you'] or next((r for r in gs['rows'] if r['you']), None)
+        if own:
+            band = '60' if gs['band'] >= 60 else f"{gs['band']} to {gs['band'] + 9}"
+            out.append(f"#{own['rank']} of {gs['of']} {ROLE_WORD[gs['role']]} in {gs['guild_name']}, {band}{' raid' if gs['preset'] == 'raid' else ''}")
+    w = a.get('spec_week')
+    if w:
+        out.append(f"{spec} is graded {w['grade']} this week" if w['grade'] else f"{spec} is #{w['place']} of {w['of']} this week")
+    if guild:
+        r = J(HOME / 'guild-home-60.json')['next_raid']
+        left = datetime.fromisoformat(r['starts_at'].replace('Z', '+00:00')) - NOW
+        d, rem = divmod(int(left.total_seconds()) // 60, 1440)
+        out.append(f"{r['title']} in {d} days, {rem // 60} hours, {rem % 60} min, {r['counts']['in']} in")
+    return out
 
 
 def ledger(*sections: str) -> str:
@@ -257,15 +315,16 @@ def felsnap(answer: str = 'character-34.json') -> Char:
     return Char(answer, HOME / 'bis-hunter-beast-mastery.json', HOME / 'items-hunter.json')
 
 
-def state_ready(ch: Char, me: str | None, premium: bool = False) -> str:
+def state_ready(ch: Char, me: str | None, premium: bool = False, feed: str | None = None, home: str | None = None) -> str:
     owner = J(FIX / me)['characters'][0] if me else None
     body = head(ch, owner)
     if owner:
-        body += summary(*next_line(ch, owner))
+        spec = {'priest': 'Holy', 'hunter': 'Beast Mastery'}[ch.cls]
+        body += summary(*next_line(ch, owner), standing=standing(home, 'guild' in owner, spec))
     logged = bool(ch.page.get('score'))
     body += ledger(gear_section(ch, owner is not None), score_section(ch, owner is not None),
                    fights_section(ch) if ch.page['best'] else '', builds_section(ch) if ch.page['builds_seen'] else '',
-                   owner_sections(premium) if owner and logged else '')
+                   activity_section(feed), owner_sections(premium) if owner and logged else '')
     return body
 
 
@@ -274,7 +333,8 @@ def state_unread() -> str:
     owner = J(FIX / 'me-34-unread.json')['characters'][0]
     cells = {g['slot']: c for g in ch.page['gear'] if (c := pick_cell(ch, g))}
     return (head(ch, owner, answer=False)
-            + summary('Your gear has not been read yet. In game, log in, wait for the world to load, then log out once; it appears here within a minute.', tone='neutral')
+            + summary('Your gear has not been read yet. In game, log in, wait for the world to load, then log out once; it appears here within a minute.', tone='neutral',
+                      standing=standing('home-34.json', False, 'Beast Mastery'))
             + ledger(sec('Best in slot for level 30 to 39', Plate(doll(cells), 'Gear'), 'Best in slot'), score_section(ch, True)))
 
 
@@ -317,9 +377,10 @@ def state_error() -> str:
 
 
 STATES = {
-    'visitor-60': (lambda: state_ready(elyra(), None), None),
-    'owner-34': (lambda: state_ready(felsnap(), 'me-34.json'), ('Felsnap', 'hunter', 'Level 34')),
-    'owner-60-premium': (lambda: state_ready(elyra(), 'me-60.json', premium=True), ('Elyra Duskvale', 'priest', 'Level 60')),
+    'visitor-60': (lambda: state_ready(elyra(), None, feed='feed-60.json'), None),
+    'owner-34': (lambda: state_ready(felsnap(), 'me-34.json', home='home-34.json'), ('Felsnap', 'hunter', 'Level 34')),
+    'owner-60-premium': (lambda: state_ready(elyra(), 'me-60.json', premium=True, feed='feed-60-owner.json', home='home-60.json'),
+                         ('Elyra Duskvale', 'priest', 'Level 60')),
     'no-score': (lambda: state_ready(felsnap(), None), None),
     'unread': (state_unread, ('Felsnap', 'hunter', 'Level 34')),
     'not-found': (lambda: state_missing(False), None),

@@ -81,6 +81,11 @@ function applyChange(bar: HTMLElement, change: ControlBarChange, defaultValue?: 
     `${window.location.pathname}${search}${window.location.hash}`,
   );
   bar.dispatchEvent(new CustomEvent<ControlBarChange>(CONTROL_BAR_EVENT, { detail: change, bubbles: true }));
+  closeControlBar(bar);
+}
+
+/** Collapses the phone bar (a choice was made): the toggle says so to assistive tech. */
+export function closeControlBar(bar: HTMLElement): void {
   bar.removeAttribute('data-open');
   bar.querySelector('[data-control-bar-toggle]')?.setAttribute('aria-expanded', 'false');
 }

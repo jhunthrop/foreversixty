@@ -44,6 +44,9 @@ type Accounts interface {
 type Service struct {
 	Store    *Store
 	Accounts Accounts
+	// Activity keeps the guild's raid rows in the site feed (activity.GuildRaidWriter); nil
+	// writes none.
+	Activity RaidActivity
 	// R2 is the object store the crest routes write to, read from, and delete from
 	// (crest.go). nil in a deployment or test harness with no object storage
 	// configured - every crest route then answers 503 rather than panicking on a nil

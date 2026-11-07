@@ -116,11 +116,11 @@ describe('diffAgainstBand: points beyond the band (shared case list)', () => {
     expect(bandDiffStatus(result)).toEqual({ kind: 'toTake', count: 10 });
   });
 
-  it('level 58: 49 points holding the whole 41-point band match, 8 beyond the guide', () => {
+  it('level 58: 49 points holding the whole 41-point band match, 8 beyond the build', () => {
     const result = diffAgainstBand(warrior, ranksOf(warrior, LEVEL_58), BAND_50);
     expect(result).toMatchObject({ diffCount: 0, missingCount: 0, extraCount: 8 });
     expect(bandDiffStatus(result)).toEqual({ kind: 'matches', beyond: 8 });
-    expect(bandCompareCopy.beyondGuide(8)).toBe('+8 beyond the guide');
+    expect(bandCompareCopy.beyondGuide(8)).toBe('+8 beyond the build');
   });
 
   it('stray points differ only up to the band total: 10 stray − (46 − 41) = 5', () => {

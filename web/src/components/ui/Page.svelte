@@ -2,9 +2,12 @@
 <!-- The page composition (web layout spec 2026-11-05 §3.7, §3A.2): the header, the control bar,
      then the body in one of four layouts inside Base.astro's one .page-column (this never declares
      a container of its own). `ledger` (BiS, tiers, rankings): one column. `split` (sim, guild,
-     reports): main and a 340 px rail from 1024, --rail-w from 1760. `reading` (guides): a 200 px
-     contents rail, the 720 px measure and a lane from 1760. `overview` (home): a 12-column grid.
+     reports): main and a 340 px rail from 1024, --rail-w from 1760. `reading` (guides): a full-width
+     `top` (the plate), then the ReadingSections, a 200 px contents rail left of them from 1760. `overview` (home): a 12-column grid.
      `form` (/connect; setup spec 2026-11-07 section 3A): one 560 px column at the page column's left.
+     `workbench` (planner; planner spec 2026-11-08 section 3A): main and a 340 px rail from 1280
+     (--rail-w from 1760); below 1280 main and rail give their regions to one flow ordered by each
+     ui/Ordered's `order`, two columns from 1024 where an Ordered `span` takes both.
      Sections in main and rail are --section-gap apart; nothing here draws a surface. -->
 <script lang="ts">
   import type { Snippet } from 'svelte';
@@ -15,6 +18,7 @@
     header,
     bar,
     toc,
+    top,
     rail,
     stickyRail = false,
     testid,
@@ -25,9 +29,11 @@
     header?: Snippet;
     /** The ControlBar (full-bleed, sticky under the site header). */
     bar?: Snippet;
-    /** `reading` only: the contents rail. */
+    /** `reading` only: the contents rail (from 1760, left of the sections). */
     toc?: Snippet;
-    /** `split` and `reading`: the rail (the lane on a reading page). */
+    /** `reading` only: the full-width block above the sections and the contents rail (the plate). */
+    top?: Snippet;
+    /** `split`, `reading` and `workbench`: the rail (the lane on a reading page). */
     rail?: Snippet;
     /** The rail sticks below the bar from 1024. */
     stickyRail?: boolean;
@@ -39,8 +45,11 @@
 {#if header}{@render header()}{/if}
 {#if bar}{@render bar()}{/if}
 <div class="ui-page" data-layout={layout} data-testid={testid}>
-  {#if layout === 'split' || layout === 'reading'}
-    {#if layout === 'reading' && toc}<nav class="ui-page-toc" aria-label="Contents">{@render toc()}</nav>{/if}
+  {#if layout === 'reading'}
+    {#if top}<div class="ui-page-top">{@render top()}</div>{/if}
+    {#if toc}<nav class="ui-page-toc" aria-label="Contents">{@render toc()}</nav>{/if}
+    <div class="ui-page-main">{@render children()}</div>
+  {:else if layout === 'split' || layout === 'workbench'}
     <div class="ui-page-main">{@render children()}</div>
     {#if rail}<aside class="ui-page-rail" data-sticky={stickyRail ? 'true' : undefined}>
         {@render rail()}
@@ -72,6 +81,15 @@
   .ui-page-toc {
     display: none;
   }
+  /* L2 Reading (guides spec 2026-11-08 §3A): the plate full width, then the sections, the
+     contents rail beside them from 1760. */
+  .ui-page[data-layout='reading'] {
+    row-gap: var(--section-gap);
+  }
+  .ui-page-top {
+    grid-column: 1 / -1;
+    min-width: 0;
+  }
   .ui-page[data-layout='form'] > .ui-page-main {
     /* The form measure (spec 3A, the proposed --measure-form at 560): the full width on a phone. */
     width: 100%;
@@ -85,6 +103,38 @@
   .ui-page[data-layout='overview'] > .ui-page-main > :global(*) {
     grid-column: 1 / -1;
   }
+  /* L3 Workbench (planner spec 2026-11-08 section 3A): one flow below 1280, ordered by --o. */
+  .ui-page[data-layout='workbench'] {
+    gap: var(--section-gap) var(--gap);
+  }
+  .ui-page[data-layout='workbench'] > .ui-page-main,
+  .ui-page[data-layout='workbench'] > .ui-page-rail {
+    display: contents;
+  }
+  .ui-page[data-layout='workbench'] :global([data-order]) {
+    order: var(--o, 0);
+    min-width: 0;
+  }
+  @media (min-width: 1024px) and (max-width: 1279px) {
+    .ui-page[data-layout='workbench'] {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .ui-page[data-layout='workbench'] :global([data-span]) {
+      grid-column: 1 / -1;
+    }
+  }
+  @media (min-width: 1280px) {
+    .ui-page[data-layout='workbench'] {
+      grid-template-columns: minmax(0, 1fr) 340px;
+    }
+    .ui-page[data-layout='workbench'] > .ui-page-main,
+    .ui-page[data-layout='workbench'] > .ui-page-rail {
+      display: flex;
+    }
+    .ui-page[data-layout='workbench'] > .ui-page-rail {
+      gap: 40px;
+    }
+  }
   @media (min-width: 1024px) {
     .ui-page[data-layout='split'] {
       grid-template-columns: minmax(0, 1fr) 340px;
@@ -94,9 +144,6 @@
       position: sticky;
       top: calc(var(--bar-h) + 20px);
     }
-    .ui-page[data-layout='reading'] {
-      grid-template-columns: minmax(0, var(--measure-reading)) minmax(0, 1fr);
-    }
     .ui-page[data-layout='overview'] > .ui-page-main > :global([data-span='8']) {
       grid-column: span 8;
     }
@@ -105,11 +152,12 @@
     }
   }
   @media (min-width: 1760px) {
-    .ui-page[data-layout='split'] {
+    .ui-page[data-layout='split'],
+    .ui-page[data-layout='workbench'] {
       grid-template-columns: minmax(0, 1fr) var(--rail-w);
     }
     .ui-page[data-layout='reading'] {
-      grid-template-columns: var(--toc-w) minmax(0, var(--measure-reading)) minmax(440px, 640px);
+      grid-template-columns: var(--toc-w) minmax(0, 1fr);
     }
     .ui-page-toc {
       display: block;

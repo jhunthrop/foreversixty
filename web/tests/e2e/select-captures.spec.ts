@@ -154,8 +154,9 @@ for (const width of [1024, 1440, 2000, 390] as const) {
     test(`planner ${width}`, async ({ page }) => {
       test.skip(width === 1024, 'the planner captures are 1440, 2000 and 390');
       await page.goto('/planner');
-      await page.getByTestId('planner-race-select').waitFor({ state: 'attached' });
-      await open(page, 'planner-race-select', phone);
+      await page.locator('select[data-testid="control-race"]').waitFor({ state: 'attached' });
+      if (phone) await page.getByTestId('planner-bar').locator('[data-control-bar-toggle]').click();
+      else await open(page, 'control-race', phone);
       await shot(page, 'planner', width);
     });
   });

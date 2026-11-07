@@ -30,6 +30,9 @@ export interface RotationItem {
   /** The spells the row's APL step needs known (its positive `known` gates, named): a row that
    *  needs a raid-only talent is a raid build row too (`markRaidBuildRows`). */
   needs?: readonly string[];
+  /** Cast below the top rank the class learns by 60 (glance.ts `markCheapRanks`): the guide
+   *  chose a cheap rank, and the row says so. */
+  cheapRank?: boolean;
 }
 
 export interface RotationLists {

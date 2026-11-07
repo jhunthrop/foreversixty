@@ -29,6 +29,7 @@ func TestOpenAPIListsEveryRoute(t *testing.T) {
 	requiredPaths := []string{
 		"/health", "/version",
 		"/v1/subscribe", "/v1/subscribe/confirm", "/v1/subscribe/unsubscribe",
+		"/v1/feed", "/v1/home",
 		"/v1/builds", "/v1/builds/{id}", "/b/{id}", "/b/{id}/card.png",
 		"/v1/auth/battlenet/start", "/v1/auth/battlenet/callback",
 		"/v1/auth/app/start", "/v1/auth/app/continue", "/v1/auth/app/exchange", "/v1/auth/app/logout",

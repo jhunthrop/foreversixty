@@ -10,10 +10,10 @@
 // collection uses gets the same coverage without depending on that server.
 //
 // Every spec guide renders the same nine `##` sections in the same order (SPEC_SECTIONS),
-// so the table of contents SpecTableOfContents.astro renders is identical to the headings
-// the page actually has. This asserts that identity directly against the raw markdown body,
-// rather than against a rendered page, so it fails on the exact file that is missing or
-// misordered a section.
+// so the anchors the spec page links to (its Toc rail and On this page select, both built from
+// SPEC_SECTIONS) are exactly the sections the page actually has. This asserts that identity
+// directly against the raw markdown body, rather than against a rendered page, so it fails on
+// the exact file that is missing or misordered a section.
 import { readFileSync, readdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';

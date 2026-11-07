@@ -75,3 +75,35 @@ export function renderLogsMocks(): string {
   run(PYTHON, [path.join(GENERATORS, 'ws_logs.py')], { FS_LOGS_FACTS: facts, FS_MOCK_OUT: dir });
   return dir;
 }
+
+/**
+ * The guide mocks named (ws_guides.py --list), from this checkout's content, guide libs and the
+ * fixtures support/guides-page.ts serves: guides_facts.mjs runs the pages' own models, ws_guides.py
+ * draws just those mocks. Returns the folder that holds web-guides-*.html.
+ */
+export function renderGuidesMocks(mocks: readonly string[]): string {
+  const dir = freshDir('guides');
+  const facts = path.join(dir, 'guides-facts.json');
+  run('node', [path.join(GENERATORS, 'guides_facts.mjs'), facts]);
+  run(PYTHON, [path.join(GENERATORS, 'ws_guides.py'), ...mocks], {
+    FS_GUIDES_FACTS: facts,
+    FS_MOCK_OUT: dir,
+  });
+  return dir;
+}
+
+/**
+ * The planner mocks named (ws_planner.py --list), from this checkout's data/builds files, the
+ * planner libs and the fixtures support/planner-page.ts serves: planner_facts.mjs runs the page's
+ * own models, ws_planner.py draws just those mocks. Returns the folder that holds web-planner*.html.
+ */
+export function renderPlannerMocks(mocks: readonly string[]): string {
+  const dir = freshDir('planner');
+  const facts = path.join(dir, 'planner-facts.json');
+  run('node', [path.join(GENERATORS, 'planner_facts.mjs'), facts]);
+  run(PYTHON, [path.join(GENERATORS, 'ws_planner.py'), ...mocks], {
+    FS_PLANNER_FACTS: facts,
+    FS_MOCK_OUT: dir,
+  });
+  return dir;
+}

@@ -1,0 +1,40 @@
+---
+// web/src/components/guides/GuideSources.astro
+// A guide's Sources (guides spec 2026-11-08 §4.3): one slim link Row per unique source, the kind
+// as a muted Tag and the label in gold. Provenance stays here, at the foot of the content.
+import Row from '../ui/Row.svelte';
+import Section from '../ui/Section.svelte';
+import Tag from '../ui/Tag.svelte';
+import { guidesCopy } from '../../lib/guides/copy';
+import { pillLabelFor, type Source } from '../../lib/sources';
+
+interface Props {
+  sources: readonly Source[];
+}
+const { sources } = Astro.props;
+const unique = [...new Map(sources.map((source) => [source.url, source])).values()];
+---
+
+{unique.length > 0 && (
+  <Section title={guidesCopy.sources} testid="guide-sources">
+    <div class="guide-sources">
+      {unique.map((source) => (
+        <Row title={source.label} href={source.url} density="slim" open>
+          <Tag slot="lead" tone="muted">
+            {pillLabelFor(source.kind)}
+          </Tag>
+          <span slot="titleContent" class="text-gold font-semibold">
+            {source.label}
+          </span>
+        </Row>
+      ))}
+    </div>
+  </Section>
+)}
+
+<style>
+  .guide-sources {
+    display: flex;
+    flex-direction: column;
+  }
+</style>

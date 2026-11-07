@@ -316,8 +316,7 @@ label:has(input[type='checkbox']:disabled) {
   /* Reading and form measures: a narrower, centred measure inside the column. */
   .measure-form,
   .measure-reading,
-  .measure-wide,
-  .measure-aside {
+  .measure-wide {
     width: 100%;
     margin-inline: auto;
   }
@@ -329,9 +328,6 @@ label:has(input[type='checkbox']:disabled) {
   }
   .measure-wide {
     max-width: var(--measure-wide);
-  }
-  .measure-aside {
-    max-width: var(--measure-aside);
   }
 }
 
@@ -430,28 +426,6 @@ label:has(input[type='checkbox']:disabled) {
     padding: 8px 10px;
     border-bottom: 1px solid var(--color-line-soft);
     vertical-align: top;
-  }
-  .prose-forever.prose-wide p,
-  .prose-forever.prose-wide ul,
-  .prose-forever.prose-wide ol {
-    max-width: none;
-  }
-  /* The spec guide's sections: a rule above each h2 and room around it, so a section boundary
-     reads differently from a block inside a section. */
-  .prose-forever.prose-wide h2 {
-    font-size: 22px;
-    margin: 56px 0 20px;
-    padding-top: 28px;
-    border-top: 1px solid var(--color-line-soft);
-  }
-  .prose-forever.prose-wide > h2:first-of-type {
-    margin-top: 32px;
-    padding-top: 0;
-    border-top: none;
-  }
-  .prose-forever.prose-wide h3 {
-    font-size: 16px;
-    margin: 24px 0 8px;
   }
   /* The quiet-label recipe. */
   .prose-forever th {
@@ -831,36 +805,6 @@ html:not([data-session='1']) [data-signed-in-only] {
 details[open] > summary .when-closed,
 details:not([open]) > summary .when-open {
   display: none;
-}
-
-/* The planner's Point Order row (components/planner/OrderStrip.svelte, its one list). */
-/* The scroll cue: while points sit past the right edge, the row fades out there, and the fade
-   shrinks to nothing as it is scrolled to the end (a scroll-driven animation on the row's own
-   inline scroll). A row that fits has no active timeline, so it never fades. CSS only: the
-   planner island's script budget is untouched. */
-@property --order-fade {
-  syntax: '<length>';
-  inherits: false;
-  initial-value: 0px;
-}
-@keyframes order-fade {
-  from {
-    --order-fade: 48px;
-  }
-  to {
-    --order-fade: 0px;
-  }
-}
-@supports (animation-timeline: scroll()) {
-  [data-testid='order-strip'] ol {
-    mask-image: linear-gradient(to right, #000 calc(100% - var(--order-fade)), transparent);
-    /* Longhands: the page build's CSS minifier drops an `animation` shorthand next to a
-       timeline it does not know. */
-    animation-name: order-fade;
-    animation-timing-function: linear;
-    animation-fill-mode: both;
-    animation-timeline: scroll(self inline);
-  }
 }
 
 /* The account's Characters card (account/CharacterList.svelte): the Battle.net refresh bar.

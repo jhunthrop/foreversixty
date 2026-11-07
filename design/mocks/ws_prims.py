@@ -104,8 +104,8 @@ def Field(label: str, grow: bool = False) -> str:
     return f'<span class="field{" grow" if grow else ""}">{label}</span>'
 
 
-def Row(title: str, sub: str = '', lead: str = '', trail: str = '', title_color: str = '', rank: str = '', link: bool = True, selected: bool = False, foot: str = '') -> str:
-    cls = 'row' + ('' if lead or rank else ' nolead') + (' cur' if selected else '')
+def Row(title: str, sub: str = '', lead: str = '', trail: str = '', title_color: str = '', rank: str = '', link: bool = True, selected: bool = False, foot: str = '', slim: bool = False) -> str:
+    cls = 'row' + ('' if lead or rank else ' nolead') + (' cur' if selected else '') + (' slim' if slim else '')
     tag = 'a' if link else 'div'
     href = ' href="#"' if link else ''
     color = f' style="color:{title_color}"' if title_color else ''
@@ -802,3 +802,372 @@ def Code(text: str, big: bool = False) -> str:
 def PageForm(main: str) -> str:
     """Page layout 'form': one column at 560 px under the page header, left-aligned in the page column."""
     return f'<div class="pc" style="padding-top:20px"><div class="layout-form">{main}</div></div>'
+
+# ------------------------------------------------ primitives added by the guides round (2026-11-08; design/specs/2026-11-08-guides.md section 3A)
+# Additive only: no earlier mock changes (PageHeader and Page are redefined as supersets; with the new arguments left at their
+# defaults they emit exactly what they emitted before). `PageHeader(lead=)` is the Lead type under the title (one sentence,
+# 17/26, max 62ch: the system's own type role, 3.3). `Page('reading')` is L2 Reading (3.7): a 200 px contents rail from 1760,
+# the sections beside it. `ReadingSection` is a Section on a reading page: its head (22/28), then the prose (720) and its lane
+# (440 to 640) side by side from 1280, the lane first in one column below. `Prose` (class rprose: logs owns .prose) is the rendered guide markdown's typography
+# (paragraphs, lists, h3, the game-tooltip names, the ruled fact list). `Toc` is the contents rail. `PlateColumns` is a Plate
+# split into labelled columns by hairlines (the guide's At a glance band; next: the character summary and the sim result band).
+# `TalentTrees` is `Trees` at a compact cell (24 px, 28 from 1760). `LevelSlider` is the shipped GuideLevelingTree's control
+# row (previous, the level range, next). Rows gain the contract's `density='slim'` (44 px).
+PRIM_CSS += '''
+.ph-lead{margin-top:10px;font-size:17px;line-height:26px;max-width:62ch;color:var(--text)}
+@media(max-width:767px){.ph-lead{font-size:16px;line-height:24px}}
+.layout-reading{display:grid;grid-template-columns:minmax(0,1fr);column-gap:var(--gap);align-items:start}
+.layout-reading>.toc{display:none}
+@media(min-width:1760px){.layout-reading{grid-template-columns:var(--toc-w) minmax(0,1fr)}.layout-reading>.toc{display:block;position:sticky;top:76px}}
+.layout-reading>.body{display:flex;flex-direction:column;gap:var(--section-gap);min-width:0}
+.rsec>.sec-h h2{font:700 22px/28px var(--font-body);color:var(--strong)}
+@media(max-width:767px){.rsec>.sec-h h2{font-size:20px;line-height:26px}}
+.rd{display:grid;grid-template-columns:minmax(0,var(--measure-reading));grid-template-areas:"lane" "prose";gap:24px var(--gap);padding-top:20px}
+.rd.solo{grid-template-areas:"prose"}
+@media(min-width:1280px){.rd{grid-template-columns:var(--measure-reading) minmax(0,640px);grid-template-areas:"prose lane"}.rd.solo{grid-template-columns:var(--measure-reading)}}
+.rd>.rd-prose{grid-area:prose;min-width:0}.rd>.rd-lane{grid-area:lane;min-width:0;display:flex;flex-direction:column;gap:28px}
+.lane-blk{display:flex;flex-direction:column;gap:8px;min-width:0}.lane-blk>.t-label{padding-bottom:2px}
+.rprose{font-size:16px;line-height:26px;color:var(--text);max-width:var(--measure-reading);overflow-wrap:break-word}
+.rprose.lane{font-size:15px;line-height:24px}
+.rprose p{margin:0 0 14px}.rprose>:last-child{margin-bottom:0}
+.rprose ul,.rprose ol{margin:0 0 14px;padding-left:20px;list-style:disc}.rprose ol{list-style:decimal}.rprose li{margin:0 0 8px}.rprose li::marker{color:var(--muted)}
+.rprose h3{font:700 18px/24px var(--font-body);color:var(--strong);margin:28px 0 10px}.rprose>h3:first-child{margin-top:0}
+.rprose strong{color:var(--strong);font-weight:700}.rprose a{font-weight:600}
+.rprose .gtip{text-decoration:underline dotted;text-decoration-color:color-mix(in srgb,currentColor 40%,transparent);text-underline-offset:3px;cursor:pointer}
+.rprose span.gtip:not(.gtip-item){color:var(--strong);font-weight:500}
+.rprose .glabel{font:700 12px/16px var(--font-body);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:18px 0 4px}.rprose .glabel:first-child{margin-top:0}
+.rprose.ruled ul{list-style:none;padding:0;margin:0}.rprose.ruled li{position:relative;margin:0;padding:12px 0 12px 20px;border-bottom:1px solid var(--line-soft);break-inside:avoid}
+.rprose.ruled li::before{content:"";position:absolute;left:0;top:21px;width:6px;height:6px;border-radius:50%;background:var(--gold)}
+@media(min-width:1024px){.rprose.cols{max-width:none}.rprose.cols ul{column-count:2;column-gap:48px}}
+.rprose.plus ul,.rprose.minus ul{list-style:none;padding:0}.rprose.plus li,.rprose.minus li{position:relative;padding-left:20px}
+.rprose.plus li::before,.rprose.minus li::before{position:absolute;left:0;font-weight:700}.rprose.plus li::before{content:"+";color:var(--kill)}.rprose.minus li::before{content:"\\2212";color:var(--wipe)}
+.toc .t-label{display:block;padding-bottom:10px}.toc ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.toc a{display:flex;align-items:center;min-height:32px;padding-left:12px;font:600 14px/18px var(--font-body);color:var(--nav);box-shadow:inset 2px 0 0 var(--line-soft)}
+.toc a:hover{color:var(--strong)}.toc a[aria-current]{color:var(--gold);box-shadow:inset 2px 0 0 var(--gold)}
+.pcols{display:grid;grid-template-columns:minmax(0,1fr)}
+@media(min-width:1024px){.pcols{grid-template-columns:repeat(var(--n),minmax(0,1fr))}.pcols.n1{grid-template-columns:minmax(0,1fr)}}
+.pcol{display:flex;flex-direction:column;gap:12px;padding:16px 20px 20px;min-width:0}
+.pcol+.pcol{border-top:1px solid var(--line-soft)}
+@media(min-width:1024px){.pcol+.pcol{border-top:0;border-left:1px solid var(--line-soft)}}
+.pcol-h{display:flex;align-items:baseline;gap:12px}.pcol-h .t-small{margin-left:auto;text-align:right}
+.pcol .st-r{min-height:40px;padding-block:6px}.pcol .st-r .nm b{white-space:nowrap}
+@media(max-width:1023px){.pcol .st .stc{grid-template-columns:28px minmax(0,1fr) minmax(0,96px) auto}.pcol .st.open .st-r .br{display:block;grid-column:auto;padding-top:0}}.pcol .rows.slim .row{padding-block:7px}
+.pcol-f{margin-top:auto;display:flex;gap:12px;flex-wrap:wrap;align-items:center;padding-top:4px}
+.trees.cmp{gap:16px;grid-template-columns:repeat(3,max-content)}.trees.cmp .tg>[role=row]{display:contents}.trees.cmp .tc{display:block}.trees.cmp .tr h3{font-size:13px;line-height:18px;padding-bottom:6px;white-space:nowrap}
+.trees.cmp .tg{grid-template-columns:repeat(4,24px);gap:4px}.trees.cmp .tc,.trees.cmp .tc img,.trees.cmp .tc .ic{width:24px!important;height:24px!important}
+.trees.cmp .tc b{font-size:10px;line-height:12px;right:-3px;bottom:-4px}
+@media(min-width:1760px){.trees.cmp .tg{grid-template-columns:repeat(4,28px)}.trees.cmp .tc,.trees.cmp .tc img,.trees.cmp .tc .ic{width:28px!important;height:28px!important}}
+@media(max-width:767px){.trees.cmp .tr h3{white-space:normal;flex-wrap:wrap;column-gap:6px;row-gap:0;min-height:42px;align-content:flex-end}.trees.cmp{grid-template-columns:repeat(3,minmax(0,max-content));gap:10px}.trees.cmp .tg{grid-template-columns:repeat(4,22px);gap:3px}.trees.cmp .tc,.trees.cmp .tc img,.trees.cmp .tc .ic{width:22px!important;height:22px!important}}
+.lvl{display:flex;align-items:center;gap:10px}.lvl .bt{all:unset;box-sizing:border-box;width:44px;height:44px;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--line);border-radius:4px;color:var(--nav);font-size:18px}
+.lvl .bt:hover{color:var(--strong);border-color:var(--gold)}.lvl .bt.off{opacity:.45}
+.lvl .rg{position:relative;flex:1;height:44px;display:flex;align-items:center}.lvl .rg .tk{height:4px;width:100%;border-radius:2px;background:var(--line-soft)}
+.lvl .rg .fl{position:absolute;left:0;height:4px;border-radius:2px;background:var(--gold)}
+.lvl .rg .th{position:absolute;width:20px;height:20px;margin-left:-10px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 4px #e5b95533}
+.rows.slim .row{min-height:44px;padding-block:6px}
+/* MUST 5 (guides): the open phone bar wraps a segmented control that does not fit, so the current choice is never cut off */
+.bar-m .seg{flex-wrap:wrap}.bar-m .seg a{min-width:max-content}
+.ans-box{display:flex;flex-direction:column;gap:6px;min-width:0}
+@media(min-width:900px){.ans-box{min-width:380px;min-height:96px;justify-content:flex-end;align-items:flex-end;text-align:right}}
+'''
+
+
+_PageHeader0 = PageHeader
+_Page0 = Page
+
+
+def PageHeader(title: str, title_color: str = '', crest: str = '', meta: list[str] | None = None, answer: str = '', actions: str = '', tabs: str = '',
+               lead: str = '') -> str:
+    """PageHeader with the optional Lead sentence under the meta line (inside head-title, so the regions are unchanged)."""
+    html = _PageHeader0(title, title_color, crest, meta, answer, actions, tabs)
+    if not lead:
+        return html
+    at = re.search(r'<div class="ph-meta" data-region="head-meta">.*?</span></div>', html) if meta else None
+    cut = at.end() if at else html.index('</h1>') + len('</h1>')
+    return html[:cut] + f'<p class="ph-lead">{lead}</p>' + html[cut:]
+
+
+def Page(layout: str, main: str = '', rail: str = '', sticky_rail: bool = False) -> str:
+    """Page with layout 'reading' (L2): `rail` is the Toc (shown from 1760), `main` the ReadingSections."""
+    if layout != 'reading':
+        return _Page0(layout, main, rail, sticky_rail)
+    return f'<div class="pc" style="padding-top:var(--section-gap)"><div class="layout-reading"><nav class="toc" aria-label="Sections in this guide">{rail}</nav><div class="body">{main}</div></div></div>'
+
+
+def Prose(html: str, *mods: str) -> str:
+    """Rendered guide markdown. mods: 'lane' (15/24, in a lane), 'ruled' (a fact list with gold marks and hairlines), 'cols' (two
+    columns from 1024), 'plus' / 'minus' (Strengths and Weaknesses marks)."""
+    return f'<div class="rprose {" ".join(mods)}">{html}</div>'
+
+
+def ReadingSection(title: str, prose: str, lane: str = '', anchor: str = '', action: str = '') -> str:
+    """A section of a reading page: the Section head (22/28), then prose and lane (lane first in the DOM: one column reads it first)."""
+    a = f'<span class="act">{action}</span>' if action else ''
+    lane_html = f'<div class="rd-lane">{lane}</div>' if lane else ''
+    return (f'<section class="rsec" data-region="{region_slug(title)}" id="{anchor}"><div class="sec-h"><h2>{title}</h2>{a}</div>'
+            f'<div class="rd{"" if lane else " solo"}">{lane_html}<div class="rd-prose">{prose}</div></div></section>')
+
+
+def LaneBlock(label: str, body: str, meta: str = '') -> str:
+    """One labelled block in a lane (12 px caps label, then its rows or table)."""
+    m = f'<span class="t-small">{meta}</span>' if meta else ''
+    return f'<div class="lane-blk"><div class="pcol-h"><h3 class="t-label">{label}</h3>{m}</div>{body}</div>'
+
+
+def Toc(label: str, items: list[tuple[str, str]], current: str = '') -> str:
+    """The contents rail: (title, anchor); the current section gold with a 2 px bar (aria-current="location")."""
+    lis = ''.join(f'<li><a href="#{a}"{" aria-current=\"location\"" if a == current else ""}>{t}</a></li>' for t, a in items)
+    return f'<span class="t-label">{label}</span><ol>{lis}</ol>'
+
+
+def PlateColumns(cols: list[tuple[str, str, str, str]], label: str = '') -> str:
+    """A Plate in labelled columns: (label, meta, body, foot). Hairlines between, stacked below 1024."""
+    inner = ''.join(f'<div class="pcol"><div class="pcol-h"><h2 class="t-label">{lab}</h2>{f"<span class=t-small>{meta}</span>" if meta else ""}</div>{body}'
+                    + (f'<div class="pcol-f">{foot}</div>' if foot else '') + '</div>' for lab, meta, body, foot in cols)
+    return Plate(f'<div class="pcols{" n1" if len(cols) == 1 else ""}" style="--n:{len(cols)}">{inner}</div>', label)
+
+
+def TalentTrees(trees: list[tuple[str, int, list[tuple]]]) -> str:
+    """`Trees` at the compact cell: three trees side by side in a 400 px column (the At a glance band, the leveling lane)."""
+    return Trees(trees).replace('<div class="trees">', '<div class="trees cmp">', 1)
+
+
+def LevelSlider(level: int, lo: int, hi: int, label: str) -> str:
+    """The shipped GuideLevelingTree control row: previous level, the level range (a slider), next level."""
+    frac = (level - lo) / (hi - lo)
+    return (f'<div class="lvl"><button type="button" class="bt{" off" if level == lo else ""}" aria-label="Previous level"{" disabled" if level == lo else ""}>&lsaquo;</button>'
+            f'<span class="rg" role="slider" aria-label="{label}" aria-valuemin="{lo}" aria-valuemax="{hi}" aria-valuenow="{level}" aria-valuetext="Level {level}" tabindex="0">'
+            f'<span class="tk"></span><span class="fl" style="width:{frac * 100:.1f}%"></span><span class="th" style="left:{frac * 100:.1f}%"></span></span>'
+            f'<button type="button" class="bt{" off" if level == hi else ""}" aria-label="Next level"{" disabled" if level == hi else ""}>&rsaquo;</button></div>')
+
+
+def RowsSlim(rows: list[str], open_: bool = True) -> str:
+    """Rows at the contract's density 'slim' (44 px)."""
+    return Rows(rows, open_).replace('<div class="rows', '<div class="rows slim', 1)
+
+
+# ------------------------------------------------ primitives added by the home B round (2026-11-07; design/specs/2026-11-07-home-b.md)
+# Countdown (ui/Countdown.svelte): a panel with a caps eyebrow (live dot), a days/hours/min clock read as one timer, and its
+# content at the right. FeedRow (ui/FeedRow.svelte): one feed line as a link: icon or crest, the sentence, the time over a caps
+# kind. FeedSkeleton: the feed while it loads. GradeTile: a tier letter on its tier colour. Row gains `slim` (44 px).
+PRIM_CSS += '''
+.row.slim{min-height:44px;padding-block:6px}
+.cdn{position:relative;min-width:0;padding:20px 24px;border:1px solid var(--line);border-radius:8px;background:var(--raised)}
+.cdn.raid{border-color:#3b2a4d;background:radial-gradient(500px 200px at 100% 0,#5a1d7a33,transparent 70%),var(--raised)}
+.cdn.guild{background:radial-gradient(400px 200px at 100% 0,#e5b9551a,transparent 70%),var(--raised)}
+.cdn .eb{margin:0;font:700 12px/16px var(--font-body);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.cdn .live{display:inline-block;width:8px;height:8px;margin-right:8px;border-radius:50%;background:var(--kill);vertical-align:1px}
+.cdn .rw{display:flex;flex-wrap:wrap;align-items:flex-end;gap:16px 28px;margin-top:10px}
+.cdn .clk{display:flex;gap:14px;font-variant-numeric:tabular-nums}
+.cdn .clk>span{display:flex;flex-direction:column;align-items:center}
+.cdn .clk b{font:700 40px/42px var(--font-body);color:var(--strong)}
+.cdn .clk>span>span{font-size:11px;line-height:16px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.cdn .as{flex:1 1 200px;min-width:0;margin-left:auto}
+.frow{display:grid;grid-template-columns:40px minmax(0,1fr) auto;gap:14px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line-soft);font-size:15px;line-height:22px;color:inherit}
+.frow .ld{display:flex;line-height:0}.frow .tx{min-width:0}.frow .tx b{font-weight:700}
+.frow .wh{text-align:right;font-size:13px;line-height:20px;white-space:nowrap;color:var(--muted)}
+.frow .wh .k{display:block;font-size:11px;line-height:16px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;color:#7f7864}
+.fsk{display:flex;flex-direction:column}.fsk>span{display:flex;height:65px;align-items:center;gap:14px;border-bottom:1px solid var(--line-soft)}
+.grade{display:inline-flex;flex:none;align-items:center;justify-content:center;width:56px;height:56px;border-radius:8px;font:700 32px/1 var(--font-body);color:#17110a}
+'''
+
+TIER_TONES = {'S': '#ff8000', 'A': '#b866f5', 'B': '#3d94f0', 'C': '#1eff00', 'D': '#9d9d9d'}
+PRIM_CSS += ''.join(f'.grade.t{k}{{background:{v}}}' for k, v in TIER_TONES.items()) + '\n'
+
+
+def Countdown(eyebrow: str, clock: list[tuple[str, str]] | None, aside: str = '', tone: str = 'neutral', live: bool = False) -> str:
+    """clock: (value, unit) parts, or None for no clock. The clock is one timer read aloud; the parts are hidden from it."""
+    dot = '<span class="live" aria-hidden="true"></span>' if live else ''
+    clk = ''
+    if clock:
+        label = ', '.join(f'{int(v)} {u}' for v, u in clock)
+        clk = f'<div class="clk" role="timer" aria-label="{label}">' + ''.join(f'<span aria-hidden="true"><b>{v}</b><span>{u}</span></span>' for v, u in clock) + '</div>'
+    side = f'<div class="as">{aside}</div>' if aside else ''
+    return f'<div class="cdn {tone}"><p class="eb">{dot}{eyebrow}</p><div class="rw">{clk}{side}</div></div>'
+
+
+def FeedRow(lead: str, sentence: str, when: str, kind: str) -> str:
+    return f'<a class="frow" href="#"><span class="ld">{lead}</span><span class="tx">{sentence}</span><span class="wh">{when}<span class="k">{kind}</span></span></a>'
+
+
+def FeedSkeleton(rows: int = 5) -> str:
+    return '<div class="fsk" role="status" aria-busy="true">' + ''.join(f'<span aria-hidden="true">{Skeleton(40, 40)}{Skeleton(480, 16)}</span>' for _ in range(rows)) + '</div>'
+
+
+def GradeTile(letter: str) -> str:
+    return f'<span class="grade t{letter}" role="img" aria-label="Tier {letter}">{letter}</span>'
+
+# ------------------------------------------------ primitives added by the planner round (2026-11-08; design/specs/2026-11-08-planner.md section 3A)
+# Additive only: no earlier mock changes. `Page('workbench')` is L3 Workbench (3.7) with the split at 1280 (main | 340 rail;
+# 400 from 1760), one column below 1280 where main and rail give their regions to one flow ordered by `data-order`.
+# `TalentEditor` is the planner's editable trees on the page's one Plate: three tree columns split by hairlines (one tree
+# behind tree tabs below 768), each a head (spec icon, tree name, points), the client's tree art behind a grid of talent
+# buttons, the prerequisite arrows, a rank pill on every cell; the cell colours are the game's (TalentFrame): a talent you
+# can spend in has a green ring and a green rank, a partial one green, a maxed one gold, a locked one grey and dimmed.
+# `TalentTip` is the talent tooltip (Overlay kind 'tooltip'). `PointOrder` is the build's spend order in rows of ten levels
+# with a socket per level. `Switch` is the shipped ui/Switch. `CodeField` is the paste box for a code a player copies out
+# of the game (mono, the one face for literal codes). `ClassPicker` is the ControlBar's class choice: nine crests, the
+# class names from 1280 (ruling P10) and in the phone stack.
+PRIM_CSS += '''
+.layout-wb{display:grid;grid-template-columns:minmax(0,1fr);gap:var(--section-gap) var(--gap);align-items:start}
+.layout-wb>.main,.layout-wb>.rail{display:contents}
+.layout-wb [data-order]{order:var(--o,0);min-width:0}
+@media(min-width:1024px) and (max-width:1279px){.layout-wb{grid-template-columns:repeat(2,minmax(0,1fr))}.layout-wb [data-span]{grid-column:1/-1}}
+@media(min-width:1280px){.layout-wb{grid-template-columns:minmax(0,1fr) 340px}.layout-wb>.main,.layout-wb>.rail{display:flex;flex-direction:column;gap:var(--section-gap);min-width:0}.layout-wb>.rail{gap:40px}}
+@media(min-width:1760px){.layout-wb{grid-template-columns:minmax(0,1fr) var(--rail-w)}}
+.tedit{--cell:44px;--cgap:8px}
+@media(min-width:768px){.tedit{--cell:48px}}@media(min-width:1760px){.tedit{--cell:56px;--cgap:10px}}
+.tedit-tabs{display:flex;border:1px solid var(--line);border-radius:4px;overflow:hidden;margin:12px 12px 0}
+.tedit-tabs button{all:unset;box-sizing:border-box;flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;min-height:60px;padding:8px 4px;border-left:1px solid var(--line-soft);cursor:pointer;color:var(--nav);font:600 12px/16px var(--font-body);text-align:center}
+.tedit-tabs button:first-child{border-left:0}.tedit-tabs button>span{display:flex;align-items:center;gap:6px}
+.tedit-tabs button b{font:700 15px/20px var(--font-body);font-variant-numeric:tabular-nums;color:var(--strong)}
+.tedit-tabs button[aria-selected=true]{background:#e5b9551a;color:var(--gold);box-shadow:inset 0 -2px 0 var(--gold)}.tedit-tabs button[aria-selected=true] b{color:var(--gold)}
+@media(min-width:768px){.tedit-tabs{display:none}}
+.tedit-cols{display:grid;grid-template-columns:minmax(0,1fr)}
+@media(min-width:768px){.tedit-cols{grid-template-columns:repeat(var(--n),minmax(0,1fr))}.tedit-tree+.tedit-tree{border-left:1px solid var(--line-soft)}}
+@media(max-width:767px){.tedit-tree:not(.on){display:none}}
+.tedit-tree{display:flex;flex-direction:column;align-items:center;gap:14px;padding:14px 12px 18px;min-width:0}
+@media(min-width:1280px){.tedit-tree{padding:16px 20px 20px}}
+.tedit-h{align-self:stretch;display:flex;align-items:center;gap:10px;min-width:0}
+.tedit-h h2{font:700 15px/20px var(--font-body);color:var(--strong);margin:0;min-width:0}.tedit-h b{margin-left:auto;font:700 18px/24px var(--font-body);font-variant-numeric:tabular-nums;color:var(--gold)}
+.tedit-h b.zero{color:var(--muted)}
+@media(max-width:767px){.tedit-h{display:none}}
+.tedit-g{position:relative;display:grid;grid-template-columns:repeat(var(--cols),var(--cell));gap:var(--cgap);padding:6px}
+.tedit-g>.art{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:4px;opacity:.5;pointer-events:none}
+.tedit-g>svg{position:absolute;inset:6px;width:calc(100% - 12px);height:calc(100% - 12px);pointer-events:none;overflow:visible}
+.tedit-g>[role=row]{display:contents}
+.tedit-g [role=gridcell]{position:relative;width:var(--cell);height:var(--cell)}
+.tc2{all:unset;box-sizing:border-box;position:relative;display:block;width:var(--cell);height:var(--cell);border-radius:5px;cursor:pointer;background:#10141d}
+.tc2 img,.tc2 .ic{display:block;width:100%!important;height:100%!important;border-radius:5px;border:0}
+.tc2::after{content:"";position:absolute;inset:0;border-radius:5px;box-shadow:inset 0 0 0 2px var(--ring,var(--line))}
+.tc2 .rk{position:absolute;right:-5px;bottom:-5px;z-index:1;padding:0 4px;border-radius:999px;border:1px solid var(--ring,var(--line));background:var(--bg);font:700 12px/14px var(--font-body);font-variant-numeric:tabular-nums;color:var(--rk,var(--muted));white-space:nowrap}
+.tc2.avail{--ring:#4fae5c;--rk:var(--kill)}.tc2.part{--ring:var(--kill);--rk:var(--kill)}.tc2.max{--ring:var(--gold);--rk:var(--gold)}
+.tc2.lock img,.tc2.lock .ic{filter:grayscale(1) brightness(.55)}.tc2.lock{cursor:default}
+.tc2.diff::before{content:"";position:absolute;left:-4px;top:-4px;z-index:1;width:9px;height:9px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 2px var(--bg)}
+.tc2:hover:not(.lock),.tc2.hov{filter:brightness(1.15)}.tc2.hov::after{box-shadow:inset 0 0 0 2px var(--gold-hover)}
+.tc2:focus-visible,.tc2.fv{outline:2px solid var(--gold);outline-offset:2px}
+.tc2.act{transform:translateY(1px)}
+.tc2.plan .rk{opacity:.6;border-style:dashed}
+.tedit-h .trs{all:unset;cursor:pointer;font:600 13px/18px var(--font-body);color:var(--gold)}.tedit-h .trs:hover{color:var(--gold-hover)}
+button.link{all:unset;cursor:pointer;font:600 14px/20px var(--font-body);color:var(--gold)}input.field{box-sizing:border-box;width:100%;font-family:var(--font-body)}input.field::placeholder{color:var(--muted)}
+.porder-m{display:grid;grid-template-columns:120px minmax(0,1fr);column-gap:16px;padding-top:4px}
+.porder-m .porder-s>span{height:auto;text-align:center;font-size:11px;line-height:14px;color:#5d6577;font-variant-numeric:tabular-nums}
+@media(max-width:767px){.porder-m{grid-template-columns:minmax(0,1fr)}.porder-m>span:first-child{display:none}}
+.txt-s{display:none}@media(max-width:767px){.txt-l{display:none}.txt-s{display:inline}}
+.tedit-g path{fill:none;stroke-linecap:round;vector-effect:non-scaling-stroke}.tedit-g path.halo{stroke:var(--bg);stroke-width:5}.tedit-g path.on{stroke:var(--gold);stroke-width:2}.tedit-g path.off{stroke:#3a4256;stroke-width:2}
+.tedit-f{display:flex;flex-wrap:wrap;align-items:center;gap:6px 16px;padding:12px 16px;border-top:1px solid var(--line-soft)}
+.tedit-f .st2{flex-basis:100%;min-height:20px;font-size:14px;line-height:20px;color:var(--strong)}.tedit-f .st2.wipe{color:var(--wipe)}
+.tedit-f .rs{margin-left:auto;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.ttip{position:relative;width:300px;max-width:100%;padding:12px 14px;background:var(--raised);border:1px solid var(--line);border-radius:6px;box-shadow:0 18px 40px #000a;display:flex;flex-direction:column;gap:6px}
+.ttip b{font:700 15px/20px var(--font-body);color:var(--strong)}.ttip .r{font-size:13px;line-height:18px;color:var(--muted);font-variant-numeric:tabular-nums}
+.ttip p{font-size:13px;line-height:19px;color:var(--text);margin:0}.ttip p.nx{color:var(--muted)}.ttip p.nx .t-label{display:block;margin-bottom:2px}
+.ttip .req{color:var(--wipe);font-size:13px;line-height:18px}.ttip .bd{color:var(--gold);font:600 13px/18px var(--font-body)}
+.porder{display:flex;flex-direction:column}
+.porder-r{display:grid;grid-template-columns:120px minmax(0,1fr);align-items:center;column-gap:16px;padding:8px 0;border-bottom:1px solid var(--line-soft)}
+.porder-r:last-child{border-bottom:0}.porder-r .t-small{font-variant-numeric:tabular-nums}
+.porder-s{display:grid;grid-template-columns:repeat(10,36px);gap:6px}
+.porder-s>span{position:relative;width:36px;height:36px}.porder-s img,.porder-s .ic{width:36px!important;height:36px!important}
+.porder-s .em{display:block;width:36px;height:36px;border-radius:5px;border:1px dashed var(--line)}.porder-s .em.nx{border-color:var(--gold)}
+.porder-s .em.past{border-style:solid;border-color:var(--line-soft);opacity:.5}
+.porder-s .pl img,.porder-s .pl .ic{opacity:.55}.porder-s .pl::after{content:"";position:absolute;inset:0;border-radius:5px;box-shadow:inset 0 0 0 1px var(--line)}
+.porder-s b{position:absolute;right:-4px;bottom:-5px;padding:0 3px;border-radius:999px;background:var(--bg);font:700 12px/14px var(--font-body);font-variant-numeric:tabular-nums;color:var(--muted)}
+.porder-cap{display:flex;align-items:center;gap:10px;padding:10px 0;font-size:13px;line-height:18px;color:var(--gold);border-bottom:1px solid var(--line-soft)}
+.porder-cap::before{content:"";flex:none;width:10px;height:2px;background:var(--gold)}
+@media(max-width:767px){.porder-r{grid-template-columns:minmax(0,1fr);row-gap:6px}.porder-s{grid-template-columns:repeat(10,minmax(0,30px));gap:4px}.porder-r .porder-s>span,.porder-s img,.porder-s .ic,.porder-s .em{width:30px!important;height:30px!important}}
+.swt{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:44px;font-size:14px;line-height:20px;color:var(--text)}
+.swt i{flex:none;position:relative;width:40px;height:22px;border-radius:999px;background:var(--line)}.swt i::after{content:"";position:absolute;left:3px;top:3px;width:16px;height:16px;border-radius:50%;background:var(--nav)}
+.swt.on i{background:var(--gold)}.swt.on i::after{left:21px;background:#17110a}.swt.off{opacity:.5}
+.codef{display:block;width:100%;min-height:68px;padding:10px 12px;border:1px solid var(--line);border-radius:4px;background:#0a0d14;color:var(--strong);font:500 13px/20px ui-monospace,'SF Mono',Menlo,monospace;overflow-wrap:anywhere;white-space:pre-wrap}
+.codef.ph{color:var(--muted)}.codef.bad{border-color:var(--wipe)}.codef.short{min-height:44px;display:flex;align-items:center}
+.clsp a{padding:0 10px}.clsp a .lbl{display:none}
+@media(min-width:1280px){.clsp a .lbl{display:inline}}@media(min-width:1760px){.clsp a{padding:0 12px}}
+.bar-m .clsp a .lbl{display:inline}.bar-m .clsp a{flex:1 1 30%;justify-content:flex-start}
+'''
+
+
+def Page(layout: str, main: str = '', rail: str = '', sticky_rail: bool = False, _prev=Page) -> str:
+    """Page with layout 'workbench' (L3, split from 1280): main and rail; below 1280 one flow ordered by data-order."""
+    if layout != 'workbench':
+        return _prev(layout, main, rail, sticky_rail)
+    return f'<div class="pc" style="padding-top:20px"><div class="layout-wb"><div class="main">{main}</div><aside class="rail">{rail}</aside></div></div>'
+
+
+def Ordered(html: str, order: int, span: bool = False) -> str:
+    """A region's place in the one-column flow of Page('workbench') below 1280 (and full width from 1024 when `span`)."""
+    return f'<div data-order style="--o:{order}"{" data-span" if span else ""}>{html}</div>'
+
+
+def TalentCell2(icon_html: str, name: str, rank: int, mx: int, state: str, differs: bool = False, extra: str = '') -> str:
+    """One talent button. state: avail | part | max | lock (lib/planner/styles cellState: available | filled | maxed | locked)."""
+    cls = f'tc2 {state}' + (' diff' if differs else '') + (f' {extra}' if extra else '')
+    dis = ' aria-disabled="true"' if state == 'lock' else ''
+    return f'<button type="button" class="{cls}" aria-label="{escape(name)}, rank {rank} of {mx}"{dis}>{icon_html}<span class="rk" aria-hidden="true">{rank}/{mx}</span></button>'
+
+
+def TextFor(long: str, short: str) -> str:
+    """One sentence in two lengths: the long one from 768, the short one on a phone (one line)."""
+    return f'<span class="txt-l">{long}</span><span class="txt-s">{short}</span>'
+
+
+def TalentEditor(trees: list[dict], active: int = 0, foot: str = '', label: str = 'Talent trees') -> str:
+    """trees: {name, icon_html, points, art_src, cols, tiers, viewbox, connectors [(d, met)], cells [(tier, col, cell_html)]}.
+    The Plate's content: tree tabs (below 768), the tree columns, then the foot (status line, source line, Reset)."""
+    tabs = ''.join(f'<button type="button" role="tab" aria-selected="{"true" if i == active else "false"}"><span>{t["icon_html"]}<b>{t["points"]}</b></span>{escape(t["name"])}</button>'
+                   for i, t in enumerate(trees))
+    cols = ''
+    for i, t in enumerate(trees):
+        rows = ''
+        for tier in range(t['tiers']):
+            row = ''
+            for col in range(t['cols']):
+                c = next((x for x in t['cells'] if x[0] == tier and x[1] == col), None)
+                row += f'<span role="gridcell">{c[2] if c else ""}</span>'
+            rows += f'<div role="row">{row}</div>'
+        paths = ''.join(f'<path class="halo" d="{d}"/><path class="{"on" if met else "off"}" d="{d}"/>' for d, met in t['connectors'])
+        art = f'<img class="art" src="{t["art_src"]}" alt="" aria-hidden="true">' if t.get('art_src') else ''
+        pts = f'<b class="num{" zero" if not t["points"] else ""}">{t["points"]}</b>'
+        rs = t.get('reset', '')
+        cols += (f'<div class="tedit-tree{" on" if i == active else ""}" role="tabpanel" aria-label="{escape(t["name"])}"><div class="tedit-h">{t["icon_html"]}<h2>{escape(t["name"])}</h2>{pts}{rs}</div>'
+                 f'<div class="tedit-g" role="grid" aria-label="{escape(t["name"])} talents" style="--cols:{t["cols"]}">{art}<svg viewBox="{t["viewbox"]}" preserveAspectRatio="none" aria-hidden="true">{paths}</svg>{rows}</div></div>')
+    f = f'<div class="tedit-f">{foot}</div>' if foot else ''
+    return Plate(f'<div class="tedit"><div class="tedit-tabs" role="tablist" aria-label="Talent trees">{tabs}</div><div class="tedit-cols" style="--n:{len(trees)}">{cols}</div>{f}</div>', label)
+
+
+def TalentTip(name: str, rank: int, mx: int, now: str, nxt: str, req: str = '', band: str = '', next_label: str = 'Next rank') -> str:
+    n = f'<p>{escape(now)}</p>' if now else ''
+    x = f'<p class="nx"><span class="t-label">{next_label}</span>{escape(nxt)}</p>' if nxt else ''
+    r = f'<span class="req">{escape(req)}</span>' if req else ''
+    bd = f'<span class="bd">{escape(band)}</span>' if band else ''
+    return f'<div class="ttip" role="tooltip"><b>{escape(name)}</b><span class="r">Rank {rank} of {mx}</span>{n}{x}{r}{bd}</div>'
+
+
+def PointOrder(rows: list[tuple[str, list[str]]], cap_after: int = -1, cap_text: str = '') -> str:
+    """rows: (label, slots html). A slot: an icon with its rank, an empty socket, the next socket (gold). `cap_after`: the row
+    index after which the character's level line sits (points past it are planned ahead). A faint 0 to 9 marker sits over
+    the first row: the last digit of each socket's level."""
+    out = '<div class="porder-m" aria-hidden="true"><span></span><div class="porder-s">' + ''.join(f'<span>{d}</span>' for d in range(10)) + '</div></div>'
+    for i, (lab, slots) in enumerate(rows):
+        out += f'<div class="porder-r"><span class="t-small">{lab}</span><div class="porder-s" role="list">{"".join(slots)}</div></div>'
+        if i == cap_after and cap_text:
+            out += f'<p class="porder-cap">{cap_text}</p>'
+    return f'<div class="porder">{out}</div>'
+
+
+def OrderSlot(icon_html: str = '', name: str = '', rank: str = '', kind: str = '') -> str:
+    """kind: '' (spent), 'pl' (spent past the character's level), 'em' (empty), 'nx' (the next point), 'past' (beyond 60: none)."""
+    if kind in ('em', 'nx', 'past'):
+        return f'<span role="listitem" aria-label="{escape(name)}" title="{escape(name)}"><span class="em {kind if kind != "em" else ""}"></span></span>'
+    return f'<span role="listitem" class="{kind}" aria-label="{escape(name)}" title="{escape(name)}">{icon_html}<b>{rank}</b></span>'
+
+
+def Switch(label: str, on: bool = True, disabled: bool = False) -> str:
+    return f'<label class="swt{" on" if on else ""}{" off" if disabled else ""}"><span>{label}</span><i role="switch" aria-checked="{"true" if on else "false"}"{" aria-disabled=\"true\"" if disabled else ""} tabindex="0"></i></label>'
+
+
+def CodeField(text: str, placeholder: bool = False, bad: bool = False, label: str = '', short: bool = False) -> str:
+    cls = 'codef' + (' ph' if placeholder else '') + (' bad' if bad else '') + (' short' if short else '')
+    return f'<span class="{cls}" role="textbox" aria-multiline="{"false" if short else "true"}" aria-label="{escape(label)}">{escape(text)}</span>'
+
+
+def ClassPicker(classes: list[tuple[str, str, bool]]) -> str:
+    """The ControlBar's class choice: (crest_html, name, current). Crests always; names from 1280 and in the phone stack."""
+    return seg([(f'<span class="lbl">{n}</span>', on, None, c) for c, n, on in classes], 'clsp', 'Class').replace('<a href="#" role="radio"', '<a href="#" role="radio" title=""', 0)

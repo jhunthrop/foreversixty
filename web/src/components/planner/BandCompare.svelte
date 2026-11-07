@@ -1,42 +1,37 @@
 <!-- web/src/components/planner/BandCompare.svelte -->
-<!-- Rebuild spec §4.D (answers review findings 1 and 3): the new rail panel comparing a
-     build against its own level band's published build -- the band's own set DPS (an
-     always-available number, no engine run), a differs-count, a load action, and a link to
-     the BiS page's own best-in-slot list for the band (owner ruling §11).
-
-     Fetches `bis/<spec>.json` through the exact `fetchBisFile` surface `BisSlotPopover.
-     svelte` already imports -- the planner island never bundles this data, and a spec
-     nobody has hovered or compared yet costs exactly one small fetch, cached in memory for
-     the life of the page. The per-cell diff and the "load this band" reconstruction are the
-     new `lib/planner/band-compare.ts` adapter (`diffAgainstBand`/`loadFromBand`), both thin
-     wrappers over existing, unchanged functions (see that module's own header comment).
-
-     Owner ruling §12: this panel always compares against the band of the build's OWN level
-     (`bandForLevel(levelReached(order))`) -- there is no band picker here; previewing a
-     different bracket is the BiS page's own job, one click away through "Best in slot
-     list" below. -->
+<!-- The Level build section (spec 2026-11-08 section 4.6, rulings Q1 and MUST 3): the build
+     against its level band's published build. One line: `Matches` in green; the difference named
+     (`Differs by 2 points: this build takes Rapid Killing 2/2; the level 60 build takes ...`);
+     the band points still to take; or, for a character with more points than the band's build
+     covers, how far it reaches and which build the rest follow -- never `Matches` then. Load (with
+     its confirm over spent points), See what differs, and the band's gear on the BiS page. The
+     band's own set figure retired (decision P1): the head's live score now runs on this band's
+     gear, which this section hands up through `onband`. The band file is `bis/<spec>.json`,
+     fetched once per spec (`fetchBisFile`); there is no band picker here (owner ruling 12). -->
 <script lang="ts">
   import { bandForLevel, bandEntryFor, bisPageHref, fetchBisFile } from '../../lib/bis/hover';
-  import type { BisFile, Faction } from '../../lib/bis/types';
+  import type { BisBand, BisFile, Faction } from '../../lib/bis/types';
   import {
+    bandCoverage,
+    bandDiffNames,
     bandDiffStatus,
     bandForPanel,
+    bandPointTotal,
     bandTitleForDraft,
     diffAgainstBand,
     loadFromBandAtLevel,
     type BandDiffView,
   } from '../../lib/planner/band-compare';
+  import { bandRangeLabel } from '../../lib/planner/band-title';
   import { bandCompareCopy } from '../../lib/planner/copy';
-  import { slotScoreUnitFor, tankHeadlineForBand } from '../../lib/bis/tank-view';
-  import { plannerScoreCopy } from '../../lib/planner/score-unit';
-  import { levelReached } from '../../lib/planner/derive';
+  import { levelReached, pointsAvailableAt } from '../../lib/planner/derive';
   import type { PlannerStore } from '../../lib/planner/store.svelte';
-  import { SECONDARY_BUTTON } from '../../lib/planner/styles';
   import { siblingSpecNames, specDisplayName } from '../../lib/sim/spec-label';
   import { specKeyFor } from '../../lib/addon/score';
-  import Card from '../ui/Card.svelte';
+  import { LINK } from '../../lib/ui/primitives';
   import type { LadderOrderFor } from '../../lib/planner/ladder-load';
-  import Skeleton from '../ui/Skeleton.svelte';
+  import Button from '../ui/Button.svelte';
+  import Section from '../ui/Section.svelte';
 
   let {
     store,
@@ -44,7 +39,7 @@
     characterLevel = null,
     onbanddiff,
     onloaded,
-    class: className = '',
+    onband,
   }: {
     store: PlannerStore;
     /** `?spec=` (spec §4.I): names which spec's `bis/<spec>.json` this panel reads,
@@ -60,11 +55,12 @@
      *  (ux-designer review finding 2): a band load is never a character/addon import and
      *  must never claim to be one in Planner.svelte's own reconstruction note. */
     onloaded?: (bandLabel: string) => void;
-    /** Merged onto the root element -- spec §6's phone placement (above the tree row,
-     *  never collapsed) needs an `order-first` the rail's own desktop position does not. */
-    class?: string;
+    /** Fires with the band entry the section compares against (or null) and its label: the
+     *  head's live score sims this band's gear (decision P1). */
+    onband?: (band: BisBand | null, bandLabel: string) => void;
   } = $props();
 
+  let file = $state<BisFile | null | undefined>(undefined);
   const faction = $derived<Faction>(store.raceRow?.faction === 'horde' ? 'horde' : 'alliance');
   /** The band of the points spent (what a bare build is compared with). */
   const reachedBand = $derived(bandForLevel(levelReached(store.order)));
@@ -86,7 +82,7 @@
   const specKey = $derived(
     specOverride ?? (store.talentIndex ? specKeyFor(store.classSlug, store.split) : null),
   );
-  const bandLabel = $derived(band === 60 ? '60' : `${band} to ${band + 9}`);
+  const bandLabel = $derived(bandRangeLabel(band));
   // The spec's ladder order (/data/leveling-plans.json), so "Load" spends the band's points the
   // way the sim and the guide's Leveling strip do; {} until read, and on a failed read.
   let ladderOrderFor = $state<LadderOrderFor>(() => undefined);
@@ -99,7 +95,6 @@
 
   // undefined: still loading (or not started). null: fetched, and there is no file for this
   // spec yet -- the honest empty state, never a guess (BisSlotPopover.svelte's own pattern).
-  let file = $state<BisFile | null | undefined>(undefined);
   let loadedFor = $state('');
 
   $effect(() => {
@@ -123,16 +118,6 @@
     file !== null && file !== undefined ? bandEntryFor(file, band, faction) : undefined,
   );
 
-  /** The band's headline: the set's DPS, or a tank band's first headline figure (its own
-   *  damage is not what a tank is judged on). */
-  const bandFigureLine = $derived.by(() => {
-    if (bandEntry === undefined) return '';
-    const tankFigure = tankHeadlineForBand(bandEntry)?.figures[0];
-    return tankFigure === undefined
-      ? plannerScoreCopy.bandFigure(bandEntry.set_dps, slotScoreUnitFor(bandEntry))
-      : `${tankFigure.value} ${tankFigure.label.toLowerCase()}`;
-  });
-
   const diff = $derived.by(() => {
     if (store.talentIndex === null || bandEntry === undefined) return null;
     const result = diffAgainstBand(store.talentIndex, store.ranks, bandEntry.talents);
@@ -141,10 +126,32 @@
 
   /** Every band point taken reads as a match; points past the band's total are a quiet note. */
   const status = $derived(diff === null ? null : bandDiffStatus(diff));
-  const beyond = $derived(status === null || status.kind === 'toTake' ? 0 : status.beyond);
+  /** A character with more points than the band's build covers never reads `Matches` (MUST 3). */
+  const coverage = $derived(
+    status === null || bandEntry === undefined || store.talentIndex === null
+      ? null
+      : bandCoverage(
+          status,
+          bandPointTotal(store.talentIndex, bandEntry.talents),
+          characterLevel === null ? null : pointsAvailableAt(characterLevel),
+        ),
+  );
+  const beyond = $derived(
+    status === null || status.kind === 'toTake' || coverage !== null ? 0 : status.beyond,
+  );
+  /** The difference named, not counted (ruling Q1). */
+  const namedLine = $derived.by(() => {
+    if (status?.kind !== 'differs' || store.talentIndex === null || bandEntry === undefined) return '';
+    const names = bandDiffNames(store.talentIndex, store.ranks, bandEntry.talents);
+    return bandCompareCopy.differsNamed(status.count, names.mine, names.theirs, bandLabel);
+  });
 
   $effect(() => {
     onbanddiff?.(diff);
+  });
+  // Only once the band file has answered: the estimate waits for the gear it runs on.
+  $effect(() => {
+    if (file !== undefined) onband?.(bandEntry ?? null, bandLabel);
   });
 
   const gearHref = $derived(
@@ -173,9 +180,9 @@
   function scrollToFirstDiff(): void {
     const id = firstDiffingTalentId();
     if (id === null) return;
-    document
-      .querySelector(`[data-testid="talent-${id}"]`)
-      ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    const cell = document.querySelector<HTMLElement>(`[data-testid="talent-${id}"]`);
+    cell?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    cell?.focus({ preventScroll: true });
   }
 
   function applyLoad(): void {
@@ -207,27 +214,14 @@
   }
 </script>
 
-<Card
-  glyph="layers"
-  compact
-  title={bandCompareCopy.heading(bandLabel)}
-  testid="band-compare"
-  class="mx-[18px] md:mx-0 {className}"
->
+<Section title={bandCompareCopy.heading(bandLabel)} testid="band-compare">
   {#if file === undefined}
-    <!-- Fix round 4 (CI: the facts-rail/footer position tests this panel's own loading-to-
-         ready swap was moving, 18-33.5px, now that it reliably finishes mid-test instead of
-         before it): this panel's own ready state measures 88px total, at every width and
-         points-spent state checked, against this skeleton's old `lines={3}` default at
-         140.5px -- a real 52.5px the outer reserve divs (Planner.svelte, tuned for the
-         bigger talent-data swap) never accounted for, because this panel's own `bis/<spec>.
-         json` fetch resolves on its own schedule, independent of and after that swap. One
-         row at 20px plus this section's own header/gap/padding overhead (68.5px, measured
-         the same way) lands within a pixel of that same 88px -- close enough that nothing
-         downstream moves when this panel settles. -->
-    <Skeleton lines={1} rowHeight="h-5" testid="band-compare-skeleton" />
+    <div class="pl-sec" data-testid="band-compare-skeleton" aria-busy="true">
+      <span class="skeleton-block block max-w-full" style="width:260px;height:20px"></span>
+      <span class="skeleton-block block max-w-full" style="width:200px;height:44px"></span>
+    </div>
   {:else if file === null || bandEntry === undefined}
-    <p class="text-muted text-[13px]" data-testid="band-compare-empty">
+    <p class="text-small text-muted pl-pad" data-testid="band-compare-empty">
       {bandCompareCopy.noLevelBuild(
         store.level,
         specKey !== null ? specDisplayName(specKey) : '',
@@ -235,93 +229,63 @@
       )}
     </p>
   {:else if diff !== null}
-    <div class="flex flex-col gap-1">
-      <span class="text-gold numeric text-[22px]" data-testid="band-compare-set-dps">
-        {bandFigureLine}
-      </span>
-      <span class="text-muted text-[12px]">{bandCompareCopy.setDpsCaption(bandLabel)}</span>
-    </div>
-
-    <div class="flex flex-col gap-0.5">
-      <p class="text-[13px]" data-testid="band-compare-differs">
-        {#if status?.kind === 'matches'}
-          <span class="font-semibold" style="color: var(--color-kill)">{bandCompareCopy.matches}</span>
+    <div class="pl-sec">
+      <p class="pl-line" data-testid="band-compare-differs">
+        {#if coverage !== null}
+          {bandCompareCopy.coversFewer(
+            coverage.covered,
+            coverage.total,
+            bandRangeLabel(Math.min(60, band + 10)),
+          )}
+        {:else if status?.kind === 'matches'}
+          <b class="text-kill">{bandCompareCopy.matches}</b>
         {:else if status?.kind === 'differs'}
-          <span class="text-gold numeric">{status.count}</span>
-          {bandCompareCopy.differsSuffix}
+          {namedLine}
         {:else if status?.kind === 'toTake'}
-          <span class="text-gold numeric">{status.count}</span>
+          <b class="text-gold tabular-nums">{status.count}</b>
           {bandCompareCopy.toTakeSuffix}
         {/if}
       </p>
       {#if beyond > 0}
-        <p class="text-muted tabular text-[12px]" data-testid="band-compare-beyond">
+        <p class="text-small text-muted" data-testid="band-compare-beyond">
           {bandCompareCopy.beyondGuide(beyond)}
         </p>
       {/if}
-    </div>
-
-    {#if confirming}
-      <div class="flex flex-col gap-3" data-testid="band-compare-load-confirm">
-        <p class="text-muted text-[13px]">{bandCompareCopy.loadConfirmMessage}</p>
-        <div class="flex flex-wrap gap-3">
-          <button
-            type="button"
-            class="{SECONDARY_BUTTON} border-line-warm-strong text-gold px-4"
-            data-testid="band-compare-load-confirm-proceed"
-            onclick={confirmLoad}
+      {#if confirming}
+        <p class="text-small text-muted" data-testid="band-compare-load-confirm">
+          {bandCompareCopy.loadConfirmMessage}
+        </p>
+        <div class="pl-acts">
+          <Button onclick={confirmLoad} testid="band-compare-load-confirm-proceed"
+            >{bandCompareCopy.loadConfirmProceed}</Button
           >
-            {bandCompareCopy.loadConfirmProceed}
-          </button>
-          <button
-            type="button"
-            class="{SECONDARY_BUTTON} border-line-warm text-text px-4"
-            data-testid="band-compare-load-confirm-cancel"
-            onclick={() => (confirming = false)}
+          <Button onclick={() => (confirming = false)} testid="band-compare-load-confirm-cancel"
+            >{bandCompareCopy.loadConfirmCancel}</Button
           >
-            {bandCompareCopy.loadConfirmCancel}
-          </button>
         </div>
-      </div>
-    {:else}
-      <div class="flex flex-wrap gap-3">
-        {#if !store.readOnly}
-          <button
-            type="button"
-            class="{SECONDARY_BUTTON} border-line-warm-strong text-gold px-4"
-            data-testid="band-compare-load"
-            onclick={requestLoad}
-          >
-            {bandCompareCopy.loadButton(bandLabel)}
-          </button>
-        {/if}
-        {#if status?.kind !== 'matches'}
-          <button
-            type="button"
-            class="{SECONDARY_BUTTON} border-line-warm text-text px-4"
-            data-testid="band-compare-see-differs"
-            onclick={scrollToFirstDiff}
-          >
-            {bandCompareCopy.seeWhatDiffers}
-          </button>
-        {/if}
-      </div>
-    {/if}
-
-    {#if loadedLine !== ''}
-      <p class="text-muted tabular text-[12px]" data-testid="band-compare-loaded">{loadedLine}</p>
-    {/if}
-
-    <a
-      class="border-line-warm rounded-control flex min-h-11 items-center justify-between border px-3 text-[13px]"
-      href={gearHref}
-      data-testid="band-compare-gear-link"
-    >
-      <span class="text-muted">{bandCompareCopy.gearRowLabel(bandLabel)}</span>
-      <span class="text-gold flex items-center gap-1 font-semibold">
-        {bandCompareCopy.bestInSlotList}
-        <span aria-hidden="true">→</span>
-      </span>
-    </a>
+      {:else}
+        <div class="pl-acts">
+          {#if !store.readOnly}
+            <Button onclick={requestLoad} testid="band-compare-load"
+              >{bandCompareCopy.loadButton(bandLabel)}</Button
+            >
+          {/if}
+          {#if status?.kind === 'differs'}
+            <Button onclick={scrollToFirstDiff} testid="band-compare-see-differs"
+              >{bandCompareCopy.seeWhatDiffers}</Button
+            >
+          {/if}
+        </div>
+      {/if}
+      {#if loadedLine !== ''}
+        <p class="text-small text-muted" data-testid="band-compare-loaded">{loadedLine}</p>
+      {/if}
+      <p class="pl-gear">
+        <span class="text-small text-muted">{bandCompareCopy.gearRowLabel(bandLabel)}</span>
+        <a class={LINK} href={gearHref} data-testid="band-compare-gear-link"
+          >{bandCompareCopy.bestInSlotList} ›</a
+        >
+      </p>
+    </div>
   {/if}
-</Card>
+</Section>

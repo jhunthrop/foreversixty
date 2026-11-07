@@ -164,3 +164,57 @@ export function bandForPanel(
 ): number {
   return pointsSpent === 0 && characterLevel === null ? VISITOR_DEFAULT_BAND : reachedBand;
 }
+
+/** The talents each side takes above the other's rank, as the band line names them (ruling Q1):
+ *  a talent's name, with its rank of max when it has more than one rank ("Rapid Killing 2/2"). */
+export interface BandDiffNames {
+  mine: string[];
+  theirs: string[];
+}
+
+export function bandDiffNames(
+  index: TalentIndex,
+  ranks: ReadonlyMap<number, number>,
+  bandTalents: string,
+): BandDiffNames {
+  const bandTrees = bandTreeRanksFrom(bandTalents);
+  const named = (name: string, rank: number, max: number): string =>
+    max > 1 ? `${name} ${rank}/${max}` : name;
+  const mine: string[] = [];
+  const theirs: string[] = [];
+  index.trees.forEach((tree, treeIndex) => {
+    tree.talents.forEach((talent, talentIndex) => {
+      const buildRank = ranks.get(talent.id) ?? 0;
+      const bandRank = Math.min(bandTrees[treeIndex]?.[talentIndex] ?? 0, talent.max_rank);
+      if (buildRank > bandRank) mine.push(named(talent.name, buildRank, talent.max_rank));
+      if (bandRank > buildRank) theirs.push(named(talent.name, bandRank, talent.max_rank));
+    });
+  });
+  return { mine, theirs };
+}
+
+/** The points a band's build holds (the sum of its digits, each capped at its talent's max). */
+export function bandPointTotal(index: TalentIndex, bandTalents: string): number {
+  const bandTrees = bandTreeRanksFrom(bandTalents);
+  return index.trees.reduce(
+    (sum, tree, treeIndex) =>
+      sum +
+      tree.talents.reduce(
+        (inTree, talent, talentIndex) =>
+          inTree + Math.min(bandTrees[treeIndex]?.[talentIndex] ?? 0, talent.max_rank),
+        0,
+      ),
+    0,
+  );
+}
+
+/** A band build that matches but covers fewer points than the character has (ruling MUST 3):
+ *  the points it covers and the character's total; null when the line may say Matches. */
+export function bandCoverage(
+  status: BandDiffStatus,
+  bandPoints: number,
+  characterPoints: number | null,
+): { covered: number; total: number } | null {
+  if (status.kind !== 'matches' || characterPoints === null || bandPoints >= characterPoints) return null;
+  return { covered: bandPoints, total: characterPoints };
+}

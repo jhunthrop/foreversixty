@@ -1,5 +1,5 @@
 // web/tests/e2e/parity-home.spec.ts
-// Home against its committed mocks (design/parity.md, design/specs/2026-11-06-home.md): every
+// Home against its committed mocks (design/parity.md, design/specs/2026-11-07-home-b.md): every
 // state at 1440 x 1000, each region's blocks and box compared (support/parity.ts), a side-by-side
 // per state in test-results/parity/home-<state>.png. Desktop project only: the mocks are 1440.
 import { test, expect } from './support/test';
@@ -21,7 +21,9 @@ const CONFIG = readParityConfig('home-parity.json');
 
 test.describe('Home mock parity at 1440', () => {
   test.skip(({ isMobile }) => isMobile, 'the parity mocks are desktop captures');
-  test.use({ viewport: CONFIG.viewport });
+  // The mocks print the guild's raid in its own zone (CST); a viewer in that zone sees no extra
+  // "your time" line, so both sides read the same copy on a UTC CI runner too.
+  test.use({ viewport: CONFIG.viewport, timezoneId: 'America/Chicago' });
 
   for (const state of CONFIG.states as ((typeof CONFIG.states)[number] & HomeState)[]) {
     test(`${state.id} matches ${state.mock}`, async ({ page, browser }) => {

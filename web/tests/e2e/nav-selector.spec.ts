@@ -178,7 +178,8 @@ test.describe('the bar at every width', () => {
     await signInWith(page, [OBNOXIOUS]);
     await storePointer(page, armoryPointer(OBNOXIOUS));
     await page.setViewportSize({ width: 2000, height: 900 });
-    await page.goto('/guides');
+    // /guides is a wide page since the flat rebuild (its header follows --page-max); /changelog keeps 1344.
+    await page.goto('/changelog');
     await ready(page);
     const mark = (await page.getByRole('banner').getByRole('link', { name: 'Forever Sixty' }).boundingBox())!;
     const account = (await selector(page).boundingBox())!;
@@ -455,7 +456,10 @@ test.describe('choosing a character', () => {
     await choose(page, FROSTBYTE);
     await expect(page.getByRole('heading', { level: 1 })).toContainText('Mage');
     await expect(page).toHaveURL(/\/planner\?character=us%2Fnormal%2Ffrostbyte/);
-    await expect(page.getByTestId('character-header')).toContainText('Frostbyte');
+    // The planner's own character card is retired (spec 2026-11-08 4.1); the head's meta line
+    // carries the selected character's level (Frostbyte is 42). The fixture has no mage talents,
+    // so the rail (and its send, which names the character) is not drawn here.
+    await expect(page.getByTestId('planner-meta')).toContainText('Level 42');
     expect(await pageWasNotReloaded(page)).toBe(true);
   });
 

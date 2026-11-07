@@ -56,8 +56,9 @@ export const TONE_TEXT: Readonly<Record<FigureTone, string>> = {
   muted: 'text-muted',
 };
 
-/** The Page primitive's compositions (spec 3.7; `form`: setup spec 2026-11-07 section 3A). */
-export type PageLayout = 'ledger' | 'split' | 'reading' | 'overview' | 'form';
+/** The Page primitive's compositions (spec 3.7; `form`: setup spec 2026-11-07 section 3A;
+ *  `workbench`: planner spec 2026-11-08 section 3A). */
+export type PageLayout = 'ledger' | 'split' | 'reading' | 'overview' | 'form' | 'workbench';
 
 /** One choice in a ControlBar group (spec 3.4). */
 export interface ControlOption {
@@ -74,6 +75,8 @@ export interface ControlOption {
   disabledReason?: string;
   /** The option navigates (a path segment such as the spec) instead of writing a query param. */
   href?: string;
+  /** A ring colour (CSS): `icon` renders as the round ringed class crest (ruling P10). */
+  ring?: string;
 }
 
 export interface ControlGroup {
@@ -89,6 +92,9 @@ export interface ControlGroup {
   /** A select's width from 768 px, in px, instead of its longest label: one long, rare option
    *  (a race name) truncates in the field, never in its list, so the bar keeps to one row. */
   fieldWidth?: number;
+  /** A segmented group of icons (the class picker, ruling P10): the labels show from 1280 and in
+   *  the open phone stack, else each radio keeps its label as its accessible name. */
+  compact?: boolean;
 }
 
 /** The phone bar's one line: each group's chosen label, joined with a middle dot. */

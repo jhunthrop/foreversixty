@@ -217,6 +217,9 @@ func (s *Service) createRaid(w http.ResponseWriter, r *http.Request) {
 	s.logger().Info("guilds", "op", "raid_create", "guild_id", guildID, "raids", len(raids), "user_id", actor.UserID)
 	s.rememberDiscordDefaults(r.Context(), guildID, req.PostToDiscord, req.RemindDayBefore)
 	s.publishCreated(r.Context(), views, now)
+	for _, v := range views {
+		s.raidActivity(r.Context(), v.ID)
+	}
 	if ticked(req.PostToDiscord) && len(views) > 0 {
 		s.scheduleCreated(r.Context(), guildID, views, boxOr(req.RemindDayBefore, views[0].Discord.RemindDefault), now)
 		views = s.withSchedules(r.Context(), views)

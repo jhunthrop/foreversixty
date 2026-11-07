@@ -2,7 +2,7 @@ import { crc32, deflateSync } from 'node:zlib';
 import { expect, test } from './support/test';
 
 import { ACTIVE_BUILD } from './support/active-build';
-import { shareBuild } from './support/planner';
+import { bareSpentLine, shareBuild, spentLine } from './support/planner';
 
 const SAVED = {
   ok: true,
@@ -99,7 +99,7 @@ test('a rate-limited save keeps the build and explains the wait', async ({ page 
   await expect(page.getByTestId('share-panel').getByRole('alert')).toContainText(
     'Too many saves from this connection; try again in an hour.',
   );
-  await expect(page.getByTestId('planner-spent')).toHaveText('1/51');
+  await expect(spentLine(page)).toHaveText(bareSpentLine(1));
 });
 
 test('a rejected build shows the API field message and retries', async ({ page }) => {
@@ -146,13 +146,14 @@ test('a save that resolves after the build changed is not shown as the current b
   await page.goto('/planner');
   await page.getByTestId('talent-1001').click();
   await shareBuild(page);
-  await expect(page.getByTestId('share-open')).toHaveAttribute('aria-busy', 'true');
+  // The save is in flight: Share holds off until it answers.
+  await expect(page.getByTestId('share-open')).toBeDisabled();
 
   // Edit the build while that save is still in flight.
   await page.getByTestId('talent-1001').click();
 
   release();
-  await expect(page.getByRole('button', { name: 'Share' })).toBeVisible();
+  await expect(page.getByTestId('share-open')).toBeEnabled();
   await expect(page.getByTestId('share-link')).not.toBeVisible();
 });
 

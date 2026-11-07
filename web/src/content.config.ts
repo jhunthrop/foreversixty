@@ -66,6 +66,10 @@ export const guideSchema = factSchema.extend({
    *  full legal race list; an empty array (the default, and every class landing page's
    *  value) marks none. */
   recommendedRaces: z.array(z.string()).default([]),
+  /** Further races the Races prose calls a pick (Survival's "Orc and Troll are level for the
+   *  Horde"): tagged Recommended in the Racials lane beside `recommendedRaces`, which the BiS
+   *  ranker reads as exactly one race per faction and so cannot carry them (guides 0A). */
+  alsoRecommendedRaces: z.array(z.string()).default([]),
   /** The set of stats this guide's own Stat priority section covers. StatPriorityPills.astro
    *  still renders these as a numbered pill row in this array's own order, but that order is
    *  no longer authoritative (live-numbers lane, 2026-10-06): `GuideStatTable.astro` renders
