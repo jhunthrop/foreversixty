@@ -28,7 +28,6 @@
     subContent,
     foot,
     item = false,
-    id,
     labelledby,
   }: {
     title: string;
@@ -54,8 +53,6 @@
     foot?: Snippet;
     /** A list item (`li`) of the caller's `ul`, so the rows keep their hairlines between them. Never with `href`. */
     item?: boolean;
-    /** The row's id (a link target such as `#guild-2`). */
-    id?: string;
     /** The id of the element that names the row (aria-labelledby). */
     labelledby?: string;
     /** Never rendered: an Astro caller's whitespace between named slots arrives as children. */
@@ -85,7 +82,6 @@
   {id}
   aria-labelledby={labelledby}
   data-testid={testid}
-  {id}
 >
   {#if hasLead}
     <span class="flex items-center gap-3">
