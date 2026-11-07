@@ -335,10 +335,9 @@ test.describe('the /premium landings', () => {
       const tinted = page.locator(`[data-anchor="${anchor}"]`);
       await expect(tinted).toHaveCount(lines);
       for (const line of await tinted.all()) await expect(line).toHaveCSS('background-color', TINT);
-      await expect(page.locator('li.feature:not([data-anchor])').first()).not.toHaveCSS(
-        'background-color',
-        TINT,
-      );
+      await expect(
+        page.getByTestId('premium-features').locator('li:not([data-anchor])').first(),
+      ).not.toHaveCSS('background-color', TINT);
       const landed = await tinted.first().boundingBox();
       expect(landed?.height).toBe(plain?.height);
       expect(landed?.width).toBe(plain?.width);
@@ -359,7 +358,7 @@ test.describe('/premium#coach on a phone', () => {
   test('the card title stays in view above the tinted coach line', async ({ page }) => {
     await page.goto('/premium#coach');
     await expect(page.locator('#coach')).toBeInViewport();
-    await expect(page.locator('#premium .plan-name')).toBeInViewport();
+    await expect(page.locator('#premium .ui-plh-name')).toBeInViewport();
     await expect(page.locator('#coach')).toHaveCSS('background-color', TINT);
   });
 });
