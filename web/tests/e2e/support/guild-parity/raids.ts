@@ -62,7 +62,12 @@ async function openRaidsTab(page: Page, withForm: boolean): Promise<void> {
   await expect(page.getByTestId('guild-raids-rows')).toBeVisible();
   if (withForm) {
     await page.getByTestId('guild-raids-plan').click();
-    await expect(page.getByTestId('raid-form-create')).toBeVisible();
+    const form = page.getByTestId('raid-form-create');
+    await expect(form).toBeVisible();
+    // The listbox loads after first paint and covers each native select with its trigger; the
+    // mock draws the triggers, so wait until every select in the form has one.
+    const selects = await form.locator('select').count();
+    await expect(form.locator('[aria-haspopup="listbox"]')).toHaveCount(selects);
   }
   await page.waitForLoadState('networkidle');
 }
