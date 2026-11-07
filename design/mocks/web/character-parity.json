@@ -33,6 +33,19 @@
       "guild": "guild-home-60.json"
     },
     {
+      "id": "owner-60-coach",
+      "mock": "web-character-owner-60-coach.html",
+      "path": "/character/us/hardcore/elyra-duskvale",
+      "character": "character-60.json",
+      "rating": "rating-60.json",
+      "me": "me-60.json",
+      "feed": "feed-60-owner.json",
+      "home": "home-60.json",
+      "guild": "guild-home-60.json",
+      "coachHistory": "coach-history-60.json",
+      "open": "coach"
+    },
+    {
       "id": "no-score",
       "mock": "web-character-no-score.html",
       "path": "/character/us/normal/felsnap",

@@ -3,6 +3,8 @@ guild_settings_fixtures.py's, which guild_fixtures.py writes for the build. Regi
 
   settings       the officer's Settings tab on the guild page: the plan (a founder Raid guild billed to Dunmaro, one seat of three given) and
                  Discord in the main column; Members and access, then Records and crest in the rail. No cards: open Sections, rows on hairlines.
+  settings-bot   the same tab with the Forever Sixty bot installed in the guild's Discord server (no webhook): where raids post, the linked
+                 members, Send test message, Change channel and Remove.
   settings-page  the standalone /settings route for the same guild before a plan: its own head (the guild's name in the faction colour, one
                  meta line), the plan chooser in the plan's place, Records without the crest (the crest lives on the guild page's tab).
 """
@@ -116,6 +118,19 @@ def discord_section() -> str:
                    action=Tag('Connected', 'kill'))
 
 
+def discord_bot_section() -> str:
+    """The Forever Sixty bot installed (GuildDiscordBot, installed): where raids post, the linked members, its three actions."""
+    b = S.settings_bot()['discord']['bot']
+    linked = f"{b['linked_members']} of {b['members']} members have linked Discord. The others get a link when they press a button."
+    dest = (f'<div style="display:flex;flex-direction:column;gap:2px">'
+            f'{p(f"Posts raids to <b class=\"strong\">#{b["channel_name"]}</b> in <b class=\"strong\">{b["server_name"]}</b>", small=False)}'
+            f'{p("With sign-up buttons &middot; <a href=\"#\" style=\"text-decoration:underline\">Open in Discord</a>")}</div>')
+    acts = f'<div class="sp-btns" style="padding-top:0">{_act("Send test message", small=False)}{_act("Change channel", small=False)}{_act("Remove", small=False)}</div>'
+    # The status line under the actions holds its 21 px under an 8 px gap (DiscordStatusLine), empty at rest.
+    inner = f'{dest}{p(linked)}<div style="display:flex;flex-direction:column">{acts}<div style="margin-top:8px;min-height:21px"></div></div>'
+    return Section('Discord', body(f'<div style="display:flex;flex-direction:column;gap:12px">{inner}</div>'), action=Tag('Connected', 'kill'))
+
+
 def members_section() -> str:
     s = S.settings()
     holder = s['claimed_by']
@@ -147,8 +162,8 @@ def records_section(crest: bool) -> str:
     return Section('Records and crest' if crest else 'Records', body(html))
 
 
-def settings_tab():
-    main = plan_section() + discord_section()
+def settings_tab(bot: bool = False):
+    main = plan_section() + (discord_bot_section() if bot else discord_section())
     rail = members_section() + records_section(crest=True)
     # The tab's own heading for screen readers (GuildSettings embedded): outside every region, as built.
     head = hdr(tabs_active='Settings', actions=Button('Invite link', small=True)) + band_line(O.OFFICER) + '<h2 class="sp-sr">Guild settings</h2>'
@@ -162,4 +177,4 @@ def settings_page():
     return build_page('Guild settings page', _view(head + Page('split', main, rail) + NOTICE_LINE + _CSS), 'Guild', ('Dunmaro', 'hunter', 'Beast Mastery Hunter &middot; 60'))
 
 
-PAGES: dict = {'web-guild-settings': settings_tab, 'web-guild-settings-page': settings_page}
+PAGES: dict = {'web-guild-settings': settings_tab, 'web-guild-settings-bot': lambda: settings_tab(bot=True), 'web-guild-settings-page': settings_page}

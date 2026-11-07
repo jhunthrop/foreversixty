@@ -2,8 +2,8 @@
 <!-- design/specs/2026-10-04-guild-page.md §12.2: the guild header's identity-row mark,
      beside the h1 -- the flat faction logo (`factionLogoSrc`, FactionMark.astro's own
      second provenance note), inside ClassCrest.astro's own ring recipe (circular crop,
-     ~16% inner padding, 2px box-shadow ring in the subject's own colour, --color-raised
-     background fallback) ported to Svelte the same way ClassCrestRing.svelte already ports
+     ~16% inner padding, 2px box-shadow ring in the subject's own colour, the page ground
+     tinted by that colour behind it) ported to Svelte the same way ClassCrestRing.svelte already ports
      that recipe for a non-Astro caller (Vite's Astro integration only compiles `.astro`
      files reached from another `.astro` entry point).
 
@@ -87,10 +87,12 @@
     height={64}
     loading="eager"
     decoding="async"
-    class="bg-raised box-border h-11 w-11 shrink-0 rounded-full object-contain p-[7px] {small
+    class="box-border h-11 w-11 shrink-0 rounded-full object-contain p-[7px] {small
       ? ''
       : 'lg:h-16 lg:w-16 lg:p-[10px]'}"
-    style={knownFaction ? `box-shadow: 0 0 0 2px ${FACTION_BAR_COLOR[faction as Faction]};` : ''}
+    style={knownFaction
+      ? `box-shadow: 0 0 0 2px ${FACTION_BAR_COLOR[faction as Faction]}; background: color-mix(in srgb, ${FACTION_BAR_COLOR[faction as Faction]} 12%, var(--color-bg));`
+      : 'background: var(--color-bg);'}
     data-testid={testid}
     data-faction-name={faction ?? undefined}
   />

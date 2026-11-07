@@ -53,7 +53,7 @@ function panelProps(answer: CoachAnswer | null, extra: PanelExtra = {}) {
 }
 
 describe('CoachPanel', () => {
-  it('every prose span tokenises spell names: the Practice line and the opening too', () => {
+  it('every prose span tokenises spell names: the drill line and the opening too', () => {
     const base = coachModelReview();
     const fix = base.review.fixFirst!;
     const answer = {
@@ -88,9 +88,15 @@ describe('CoachPanel', () => {
   it('ready model review: coach title, structure in order, footer, History', () => {
     const body = panel(coachModelReview());
     expect(body).toContain('Your Fury coach');
-    const order = ['A clean pull', 'Fix first', 'Practice', 'Then', 'Doing well', "Couldn't check"].map((s) =>
-      body.indexOf(s),
-    );
+    const order = [
+      'A clean pull',
+      'Fix first',
+      'The drill',
+      'Then',
+      'Doing well',
+      'What the coach could not check',
+      'Measured against',
+    ].map((s) => body.indexOf(s));
     expect(order.every((at) => at >= 0)).toBe(true);
     expect([...order].sort((a, b) => a - b)).toEqual(order);
     expect(body).toContain('Reviewed 27 Oct · Based on: your log; top Fury logs.');
@@ -210,18 +216,20 @@ describe('CoachPanel', () => {
     expect(panel(null, { view: viewOf('loading') })).toContain('Reading the pull…');
   });
 
-  it('the status slot is its own row on phone, so the swap moves nothing', () => {
+  it('the status slot holds one line in the Section head, so the swap moves nothing', () => {
     const writing = coachWritingReview();
     const reserve = reserveFor(writing.review);
     for (const html of [panel(writing, { reserve }), panel(coachModelReview(), { reserve })]) {
-      expect(html).toMatch(/class="[^"]*basis-full[^"]*md:basis-auto[^"]*"\s+aria-live="polite"/);
+      expect(html).toMatch(/class="[^"]*\bh-5\b[^"]*"\s+aria-live="polite"/);
     }
   });
 
-  it('the rail is three card surfaces', () => {
+  it('the review is the one Plate; the rail is open Sections with no card', () => {
     const body = panel(coachModelReview());
-    for (const id of ['coach-player-card', 'coach-cannot', 'coach-footer-card']) {
-      expect(body).toMatch(new RegExp(`card-surface[^"]*"[^>]*data-testid="${id}"`));
+    expect(body.match(/data-region="plate"/g)?.length).toBe(1);
+    expect(body).not.toContain('card-surface');
+    for (const id of ['coach-cannot', 'coach-footer-card']) {
+      expect(body).toMatch(new RegExp(`class="ui-section[^"]*"[^>]*data-testid="${id}"`));
     }
   });
 
@@ -229,7 +237,7 @@ describe('CoachPanel', () => {
     const body = panel(coachModelReview());
     expect(body).not.toContain('min-h-[640px]');
     expect(body).toContain('@container');
-    expect(body).toContain('@min-[1120px]:flex-row');
+    expect(body).toContain('@min-[1120px]:grid-cols-[minmax(0,1fr)_320px]');
     expect(body).toContain('id="coach-panel-heading"');
     expect(body).toContain('tabindex="-1"');
     expect(body).toContain('aria-live="polite"');

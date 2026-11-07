@@ -26,11 +26,12 @@ function section(controller: HistoryController): string {
 }
 
 describe('CharacterHistory', () => {
-  it('is the #history section with the heading, the caption and one panel, in both columns when ready', () => {
+  it('is the #history section named History (the page Section draws the heading), the caption and both columns, open', () => {
     const html = section(stub('ready', characterHistoryFixture()));
     expect(html).toMatch(/<section[^>]*id="history"/);
-    expect(html).toContain('-order-2');
-    expect(html).toContain('>History</h2>');
+    expect(html).toContain('aria-label="History"');
+    expect(html).not.toContain('<h2');
+    expect(html).not.toContain('rounded-panel');
     expect(html).toContain('Includes your private and guild reports. Only you see this section.');
     expect(html).toContain('xl:grid-cols-2');
     expect(html).toContain('data-testid="history-score"');
@@ -47,11 +48,10 @@ describe('CharacterHistory', () => {
     expect(html).not.toContain('history-plot');
   });
 
-  it('shows the load error with Try again inside the panel', () => {
+  it('shows the load error with Try again in the section', () => {
     const html = section(stub('error', null));
     expect(html).toContain('Your history did not load.');
     expect(html).toContain('data-testid="history-error-retry"');
-    expect(html).toContain('>History</h2>');
   });
 
   it('replaces both columns with one sentence when no score point exists', () => {

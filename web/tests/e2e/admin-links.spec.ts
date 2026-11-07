@@ -114,7 +114,7 @@ test('a refused field says why beside the field', async ({ page }) => {
   await page.getByTestId('links-target').fill('https://elsewhere.example');
   await page.getByTestId('links-label').fill('X');
   await page.getByTestId('links-create').click();
-  await expect(page.getByTestId('links-target-hint')).toHaveText('a path on this site, like /guides');
+  await expect(page.locator('#link-target-error')).toHaveText('a path on this site, like /guides');
   await expect(page.getByTestId('links-target')).toHaveAttribute('aria-invalid', 'true');
 });
 

@@ -55,10 +55,10 @@ describe('momentHref', () => {
 
   it('time and resource moments open the timelines window', () => {
     expect(momentHref(3, GUID, { kind: 'resource', at_ms: 161000, to_ms: 170000 })).toBe(
-      `?fight=3&view=timelines&source=${GUID}&start=161000&end=170000`,
+      `?fight=3&tab=timeline&source=${GUID}&start=161000&end=170000`,
     );
     expect(momentHref(3, GUID, { kind: 'time', at_ms: 1000 })).toBe(
-      `?fight=3&view=timelines&source=${GUID}&start=1000&end=6000`,
+      `?fight=3&tab=timeline&source=${GUID}&start=1000&end=6000`,
     );
   });
 

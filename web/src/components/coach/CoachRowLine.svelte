@@ -15,6 +15,7 @@
   import { rowLineFor, type RowLine, type StripPhase } from '../../lib/coach/row-line';
   import { createCoachViewerState } from '../../lib/coach/viewer-state.svelte';
   import { defaultState, withState } from '../../lib/report/url';
+  import Button from '../ui/Button.svelte';
   import CoachRowStrip from './CoachRowStrip.svelte';
 
   let {
@@ -79,8 +80,6 @@
         ),
   );
   const label = $derived(line === null ? '' : `${line.lead}${line.title}${line.after}`);
-  const OFFICER_BUTTON =
-    'rounded-control border-line-warm hover:border-gold focus-visible:outline-gold active:bg-card-top inline-flex h-11 items-center border px-3 text-[13px] font-semibold focus-visible:outline-2 focus-visible:outline-offset-2 md:h-9';
 </script>
 
 {#if request !== null && (phase !== 'line' || line !== null)}
@@ -95,14 +94,9 @@
     onRetry={() => (attempt += 1)}
   />
 {:else if officerButton && rowOpen}
-  <div class="border-line-soft border-t bg-[#0b0f17] py-1 pl-12 md:pl-[100px]">
-    <button
-      type="button"
-      class={OFFICER_BUTTON}
-      onclick={() => openReportLink(href)}
-      data-testid="coach-officer-open"
-    >
+  <div class="py-1 pl-12 md:pl-[100px]">
+    <Button size="sm" onclick={() => openReportLink(href)} testid="coach-officer-open">
       {coachCopy.rowOfficer}
-    </button>
+    </Button>
   </div>
 {/if}

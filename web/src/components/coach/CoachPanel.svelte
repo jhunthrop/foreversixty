@@ -1,24 +1,26 @@
 <!-- web/src/components/coach/CoachPanel.svelte -->
-<!-- The Coach tab's panel (spec 3.1, 4.2 and 6): one column inside the report's content column,
-     the card at its full width and the rail under it as a 2-up grid (20 px gap); two columns, a
-     760 px card and a 320 px rail, only when the content column is 1120 px or wider (a container
-     query, so nothing ever runs past the column). It is presentational: the container owns the
-     fetch (panel-state) and hands over the view, the answer and the reserve. The header is a fixed
-     44 px row with a status slot that never moves a line; a writing review is held at its reserved
-     heights. The card is always its natural height: the tab's reserve lives on CoachTab. -->
+<!-- The Coach tab's panel (spec 3.1, 4.2 and 6; logs-reports 6.2 Coach): a Section titled for the
+     review (meta: who it is for, spec, boss, result) whose Plate holds the review in type hierarchy,
+     then the open rail Sections `What the coach could not check` and `Measured against`; the rail
+     sits under the review, and beside it (320 px) only when the content column is 1120 px or wider
+     (a container query, so nothing ever runs past the column). It is presentational: the container owns the
+     fetch (panel-state) and hands over the view, the answer and the reserve. The status sits in the
+     Section's head row and never moves a line; a writing review is held at its reserved
+     heights. The review is always its natural height: the tab's reserve lives on CoachTab. -->
 <script lang="ts">
   import { busyLine } from '../../lib/coach/busy-line';
-  import { coachCopy, fill } from '../../lib/coach/copy';
+  import { COACH_SEPARATOR, coachCopy, fill } from '../../lib/coach/copy';
   import { footerLine } from '../../lib/coach/footer';
   import type { CoachNames } from '../../lib/coach/names';
   import type { CoachAnswer } from '../../lib/coach/panel-state.svelte';
   import type { Reserve } from '../../lib/coach/reserves';
   import type { CoachPanelView } from '../../lib/coach/states';
-  import { CARD } from '../../lib/ui/card';
-  import { BUSY_CLASS } from '../../lib/ui/busy';
-  import { classColorVar } from '../../lib/report/format';
+  import { LINK } from '../../lib/ui/primitives';
   import { splitUnitName } from '../../lib/characters';
-  import ClassIcon from '../report/ClassIcon.svelte';
+  import Button from '../ui/Button.svelte';
+  import Plate from '../ui/Plate.svelte';
+  import Section from '../ui/Section.svelte';
+  import Tag from '../ui/Tag.svelte';
   import CoachReviewBody from './CoachReviewBody.svelte';
   import CoachTeaser from './CoachTeaser.svelte';
   import CoachText from './CoachText.svelte';
@@ -35,7 +37,6 @@
     playerName,
     playerGuid,
     firstFight,
-    className = undefined,
     cardLine = '',
     historyHref = null,
     refetching = false,
@@ -54,9 +55,7 @@
     playerName: string;
     playerGuid: string;
     firstFight: number;
-    /** The roster's class, for the rail's player card. */
-    className?: string;
-    /** The card's muted line: spec, boss, result. */
+    /** The Section's meta after the name: spec, boss, result. */
     cardLine?: string;
     /** The character page's coach list, for Premium viewers of their own review. */
     historyHref?: string | null;
@@ -116,32 +115,19 @@
       ),
   );
   const footer = $derived(full === null ? '' : footerLine(full.reviewed_at, full.basis_labels));
-  const BUTTON =
-    'rounded-control border-line-warm hover:border-gold focus-visible:outline-gold active:bg-card-top inline-flex h-11 items-center border px-4 text-[13px] font-semibold focus-visible:outline-2 focus-visible:outline-offset-2';
+  /** The Section's meta: who the review is for, then the card line (spec, boss, result). */
+  const meta = $derived(cardLine === '' ? displayName : `${displayName}${COACH_SEPARATOR}${cardLine}`);
 </script>
 
 <div class="@container" data-testid="coach-panel" data-state={view.state}>
-  <div class="flex flex-col gap-5 @min-[1120px]:flex-row @min-[1120px]:items-start @min-[1120px]:gap-10">
-    <section
-      class="{CARD} w-full p-[18px] md:p-6 @min-[1120px]:w-[760px] @min-[1120px]:shrink-0"
-      data-testid="coach-card"
-    >
-      <header class="flex flex-wrap items-center justify-between gap-x-4 md:min-h-11">
-        <h2
-          id="coach-panel-heading"
-          tabindex="-1"
-          class="section-title leading-6 outline-none"
-          data-testid="coach-title"
-        >
-          {title}
-        </h2>
-        <div
-          class="flex h-5 basis-full items-center gap-2 text-[13px] md:basis-auto"
-          aria-live="polite"
-          data-testid="coach-status"
-        >
+  <div
+    class="flex flex-col gap-[var(--section-gap)] @min-[1120px]:grid @min-[1120px]:grid-cols-[minmax(0,1fr)_320px] @min-[1120px]:items-start @min-[1120px]:gap-x-10"
+  >
+    <Section {title} {meta} focusId="coach-panel-heading" titleTestid="coach-title" testid="coach-card">
+      {#snippet head()}
+        <span class="flex h-5 items-center gap-2 text-[13px]" aria-live="polite" data-testid="coach-status">
           {#if view.officer}
-            <span class="pill-site" data-testid="coach-officer-pill">{coachCopy.officerPill}</span>
+            <Tag tone="gold" testid="coach-officer-pill">{coachCopy.officerPill}</Tag>
           {:else if statusText !== ''}
             {#if view.state === 'writing' && !late}
               <span class="bg-gold h-2 w-2 rounded-full motion-safe:animate-pulse" aria-hidden="true"></span>
@@ -150,124 +136,91 @@
           {:else if swapped}
             <span class="sr-only">{coachCopy.ready}</span>
           {/if}
-        </div>
-      </header>
-
-      {#if view.starter}
-        <p class="text-muted mt-1 text-[13px] leading-5" data-testid="coach-starter-hint">
-          {fill(coachCopy.starterHint, { Spec: specName })}
-        </p>
-      {/if}
-      {#if view.officer}
-        <p class="text-muted mt-1 text-[13px] leading-5" data-testid="coach-officer-note">
-          {fill(coachCopy.officerNote, { Name: displayName })}
-        </p>
-      {/if}
-      {#if view.state === 'busy'}
-        <p
-          class="border-line-warm text-muted mt-3 border-l-2 pl-3 text-[13px] leading-5"
-          data-testid="coach-busy"
-        >
-          {full === null ? coachCopy.busy : busyLine(full)}
-        </p>
-      {/if}
-
-      <div class="mt-4" aria-busy={view.state === 'writing' || view.state === 'loading'}>
-        {#if showBody && full !== null}
-          <CoachReviewBody answer={full} {names} {build} {classSlug} {firstFight} {playerGuid} {reserve} />
-        {:else if view.state === 'loading'}
-          <div class="flex flex-col gap-3" data-testid="coach-loading">
-            <span class="skeleton-block h-4 w-3/4"></span>
-            <span class="skeleton-block h-4 w-1/2"></span>
-            <span class="border-line mt-4 block h-24 border-l-2 pl-4"
-              ><span class="skeleton-block block h-5 w-2/3"></span></span
-            >
-          </div>
-        {:else if (view.state === 'teaser' || view.state === 'teaser_empty') && answer?.access === 'teaser'}
-          <CoachTeaser {answer} {names} />
-        {:else if view.state === 'preparing'}
-          <p class="text-text text-[15px]" data-testid="coach-preparing">
-            {fill(coachCopy.preparing, { Spec: specName })}
+        </span>
+      {/snippet}
+      <Plate flush={false}>
+        {#if view.starter}
+          <p class="text-small text-muted mb-3" data-testid="coach-starter-hint">
+            {fill(coachCopy.starterHint, { Spec: specName })}
           </p>
-          <button
-            type="button"
-            class="{BUTTON} mt-4 {refetching ? BUSY_CLASS : ''}"
-            aria-busy={refetching}
-            disabled={refetching}
-            onclick={onRetry}
-          >
-            {coachCopy.checkAgain}
-          </button>
-        {:else if view.state === 'not_reviewable'}
-          <div class="flex flex-col gap-1" data-testid="coach-not-reviewable">
-            {#each notReviewableLines as line, index (index)}
-              <p class="text-text text-[15px] leading-[22px]">{line}</p>
-            {/each}
-          </div>
-        {:else if view.state === 'error'}
-          <p class="text-text text-[15px]" role="alert" data-testid="coach-error">{coachCopy.error}</p>
-          <button
-            type="button"
-            class="{BUTTON} mt-4 {refetching ? BUSY_CLASS : ''}"
-            aria-busy={refetching}
-            disabled={refetching}
-            onclick={onRetry}
-          >
-            {coachCopy.rowRetry}
-          </button>
-        {:else if view.state === 'not_available'}
-          <p class="text-text text-[15px]" data-testid="coach-not-available">{coachCopy.notAvailable}</p>
-        {:else if view.state === 'signed_out'}
-          <p class="text-text text-[15px]" data-testid="coach-signed-out">{coachCopy.signedOut}</p>
-          <a
-            href={signInHref}
-            class="rounded-control border-gold text-gold hover:border-gold-hover mt-4 inline-flex h-11 items-center border px-4 text-[14px] font-semibold"
-            data-testid="coach-sign-in">{coachCopy.signIn}</a
-          >
         {/if}
-      </div>
-    </section>
+        {#if view.officer}
+          <p class="text-small text-muted mb-3" data-testid="coach-officer-note">
+            {fill(coachCopy.officerNote, { Name: displayName })}
+          </p>
+        {/if}
+        {#if view.state === 'busy'}
+          <p class="text-small text-ember mb-3" data-testid="coach-busy">
+            {full === null ? coachCopy.busy : busyLine(full)}
+          </p>
+        {/if}
 
-    {#if full !== null && showBody}
-      <aside
-        class="grid w-full grid-cols-1 items-start gap-5 md:grid-cols-2 @min-[1120px]:flex @min-[1120px]:w-[320px] @min-[1120px]:shrink-0 @min-[1120px]:flex-col"
-        data-testid="coach-rail"
-      >
-        <div class="flex flex-col gap-5 @min-[1120px]:contents">
-          <div class="{CARD} hidden items-center gap-3 p-4 md:flex" data-testid="coach-player-card">
-            <ClassIcon {className} size={40} />
-            <div class="min-w-0">
-              <p class="truncate text-[15px] font-semibold" style={`color: ${classColorVar(className)}`}>
-                {displayName}
-              </p>
-              <p class="text-muted text-[13px] leading-5">{cardLine}</p>
+        <div aria-busy={view.state === 'writing' || view.state === 'loading'}>
+          {#if showBody && full !== null}
+            <CoachReviewBody answer={full} {names} {build} {classSlug} {firstFight} {playerGuid} {reserve} />
+          {:else if view.state === 'loading'}
+            <div class="flex flex-col gap-3" data-testid="coach-loading">
+              <span class="skeleton-block h-4 w-3/4"></span>
+              <span class="skeleton-block h-4 w-1/2"></span>
+              <span class="skeleton-block mt-4 h-3 w-24"></span>
+              <span class="skeleton-block h-6 w-2/3"></span>
+              <span class="skeleton-block h-12 w-full"></span>
             </div>
-          </div>
-          {#if full.review.couldntCheck.length > 0}
-            <section class="{CARD} p-4" data-testid="coach-cannot">
-              <h3 class="label text-muted">{coachCopy.labelCannot}</h3>
-              <ul class="mt-1 flex flex-col gap-1">
-                {#each full.review.couldntCheck as line, index (index)}
-                  <li class="text-muted text-[13px] leading-5">
-                    <CoachText text={line} {names} {build} {classSlug} />
-                  </li>
-                {/each}
-              </ul>
-            </section>
+          {:else if (view.state === 'teaser' || view.state === 'teaser_empty') && answer?.access === 'teaser'}
+            <CoachTeaser {answer} {names} />
+          {:else if view.state === 'preparing'}
+            <p class="text-text text-[15px]" data-testid="coach-preparing">
+              {fill(coachCopy.preparing, { Spec: specName })}
+            </p>
+            <span class="mt-4 inline-flex" aria-busy={refetching}>
+              <Button disabled={refetching} onclick={onRetry}>{coachCopy.checkAgain}</Button>
+            </span>
+          {:else if view.state === 'not_reviewable'}
+            <div class="flex flex-col gap-1" data-testid="coach-not-reviewable">
+              {#each notReviewableLines as line, index (index)}
+                <p class="text-text text-[15px] leading-6">{line}</p>
+              {/each}
+            </div>
+          {:else if view.state === 'error'}
+            <p class="text-text text-[15px]" role="alert" data-testid="coach-error">{coachCopy.error}</p>
+            <span class="mt-4 inline-flex" aria-busy={refetching}>
+              <Button disabled={refetching} onclick={onRetry}>{coachCopy.rowRetry}</Button>
+            </span>
+          {:else if view.state === 'not_available'}
+            <p class="text-text text-[15px]" data-testid="coach-not-available">{coachCopy.notAvailable}</p>
+          {:else if view.state === 'signed_out'}
+            <p class="text-text text-[15px]" data-testid="coach-signed-out">{coachCopy.signedOut}</p>
+            <span class="mt-4 inline-flex">
+              <Button tone="primary" href={signInHref} testid="coach-sign-in">{coachCopy.signIn}</Button>
+            </span>
           {/if}
         </div>
-        <div class="flex flex-col gap-5 @min-[1120px]:contents">
-          <div class="{CARD} p-4" data-testid="coach-footer-card">
-            <p class="text-muted text-[12px] leading-[18px]" data-testid="coach-footer">{footer}</p>
-            {#if historyHref !== null && !view.officer}
-              <a
-                href={historyHref}
-                class="text-text hover:text-strong focus-visible:outline-gold inline-flex min-h-11 items-center text-[13px] underline focus-visible:outline-2"
-                data-testid="coach-history">{coachCopy.history}</a
-              >
-            {/if}
-          </div>
-        </div>
+      </Plate>
+    </Section>
+
+    {#if full !== null && showBody}
+      <aside class="flex flex-col gap-[var(--section-gap)]" data-testid="coach-rail">
+        {#if full.review.couldntCheck.length > 0}
+          <Section title={coachCopy.labelCannot} level={3} testid="coach-cannot">
+            <ul class="flex flex-col gap-1">
+              {#each full.review.couldntCheck as line, index (index)}
+                <li class="text-small text-muted">
+                  <CoachText text={line} {names} {build} {classSlug} />
+                </li>
+              {/each}
+            </ul>
+          </Section>
+        {/if}
+        <Section title={coachCopy.labelBasis} level={3} testid="coach-footer-card">
+          <p class="text-small text-muted" data-testid="coach-footer">{footer}</p>
+          {#if historyHref !== null && !view.officer}
+            <a
+              href={historyHref}
+              class="{LINK} mt-1 inline-flex min-h-11 items-center text-[14px]"
+              data-testid="coach-history">{coachCopy.history} ›</a
+            >
+          {/if}
+        </Section>
       </aside>
     {/if}
   </div>

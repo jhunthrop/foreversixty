@@ -30,6 +30,10 @@ export interface CharacterState {
   /** The owner's /v1/home answer and their guild's home (the standing line). */
   home?: string;
   guild?: string;
+  /** The owner's coach history (GET .../coach/history). */
+  coachHistory?: string;
+  /** An owner Disclosure the state opens once settled. */
+  open?: 'coach';
 }
 
 function fixture(name: string): unknown {
@@ -91,6 +95,10 @@ export async function routeCharacter(page: Page, state: CharacterState): Promise
     const guild = fixture(state.guild);
     await page.route('**/v1/guilds/*/home', (route) => route.fulfill(envelope(guild)));
   }
+  if (state.coachHistory !== undefined) {
+    const history = fixture(state.coachHistory);
+    await page.route(`${api}/coach/history*`, (route) => route.fulfill(envelope(history)));
+  }
   const rows = state.search === undefined ? [] : (fixture(state.search) as { rows: unknown[] }).rows;
   await page.route('**/v1/characters/search*', (route) => route.fulfill(envelope({ rows })));
   await routeData(page);
@@ -104,4 +112,9 @@ export async function openCharacter(page: Page, state: CharacterState): Promise<
   if (state.character === 'pending') return;
   await expect(page.locator('[aria-busy="true"]')).toHaveCount(0);
   await page.waitForLoadState('networkidle');
+  if (state.open === 'coach') {
+    await page.getByTestId('character-coach-toggle').locator('summary').click();
+    await expect(page.getByTestId('coach-history-row').first()).toBeVisible();
+    await page.mouse.move(0, 0);
+  }
 }

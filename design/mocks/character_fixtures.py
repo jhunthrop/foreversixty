@@ -179,6 +179,22 @@ def elyra_me(gear: list[dict]) -> dict:
                       'talents': {'trees': ['0' * 16, '0' * 16, '0' * 16], 'points': [15, 31, 5]}}}
 
 
+def coach_history() -> dict:
+    """Elyra's coach history (GET .../coach/history): four reviews, newest first, one page. SAMPLE (typed): the titles are
+    the coach's own Holy output (web/src/fixtures/coach/holy-model.json and holy-rules.json, the Onyxia pull) and its
+    `historyNone` rows; the pulls are the fixture's own report."""
+    title = read(ROOT / 'web/src/fixtures/coach/holy-model.json')['review']['fixFirst']['title']
+    review = lambda fight, boss, kill, source, at, fix: {  # noqa: E731
+        'report_id': 'fixture2abcd', 'fight_index': fight, 'player_key': 'us/hardcore/elyra-duskvale', 'spec': 'Holy',
+        'boss': boss, 'kill': kill, 'source': source, 'generated_at': at, 'fix_first': {'title': fix} if fix else None}
+    return {'reviews': [
+        review(4, 'Onyxia', True, 'model', '2026-11-04T21:40:00Z', title),
+        review(3, 'Onyxia', False, 'rules', '2026-11-04T21:12:00Z', title),
+        review(2, 'Magmadar', True, 'model', '2026-11-03T21:05:00Z', None),
+        review(1, 'Lucifron', True, 'rules', '2026-11-03T20:40:00Z', None),
+    ], 'next_cursor': None}
+
+
 def main() -> None:
     drop = chances()
     pbis = read(DATA / 'bis' / f'{PRIEST_SPEC}.json')
@@ -195,6 +211,7 @@ def main() -> None:
     write('me-60.json', {**me60, 'guilds': [{**GUILD, 'rank': 'Officer', 'verified': True, 'verified_count': 14, 'faction': 'alliance'}]})
     write('feed-60.json', elyra_feed(owner=False))
     write('feed-60-owner.json', elyra_feed(owner=True))
+    write('coach-history-60.json', coach_history())
     write('home-60.json', home_answer(60))
     write('home-34.json', home_answer(34))
 

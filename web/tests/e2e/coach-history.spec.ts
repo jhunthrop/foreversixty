@@ -83,7 +83,7 @@ test('twenty rows, each the review line, a link to its Coach tab, and 56 px tall
     const link = rows(page).nth(index);
     await expect(link).toHaveAttribute('href', row.href);
     await expect(link.getByTestId('coach-history-title')).toHaveText(row.title);
-    await expect(link).toContainText([...row.lead, row.title].join(SEPARATOR));
+    await expect(link).toContainText(row.lead.join(SEPARATOR));
     await expect(link.getByTestId('coach-history-wipe')).toHaveCount(row.wipe ? 1 : 0);
     await expect(link.getByTestId('coach-history-rules')).toHaveCount(row.logOnly ? 1 : 0);
   }
