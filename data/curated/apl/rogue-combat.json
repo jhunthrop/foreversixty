@@ -1,7 +1,7 @@
 {
   "spec": "rogue-combat",
   "state": "written",
-  "notes": "Combat at 60. Stealth and Garrote on the pull (a bleed ignores the boss's unsundered armor; Ambush gets none of Puncturing Wounds, Lethality or Aggression). Eviscerate at five combo points, Slice and Dice whenever it drops at one or two (from 60 only; sim-accuracy round 26: on the bare fights 10 to 60, 10,000 iterations, seeds 1 and 50001, both factions, no Slice and Dice and five-point Eviscerates does 0.5 to 6% more at every level, while raid 60 keeps it by 2.4%), Adrenaline Rush on cooldown (Blade Flurry is picked up by autocastOtherCooldowns), Backstab with a dagger and Sinister Strike without one. 2026-11-02 guide rewrite: replaces the 15 s Slice and Dice gate; raid 60 616.75 to 625.5 (+1.4%), bare 60 within 0.1%, bare 20 to 50 down 0.7 to 3.1% (energy-starved, no Relentless Strikes). Every rank named here is checked against this build's own spellconst. Client 1.60.1.70755: Shank (1329283 at 24, 1329549 at 44; off-hand 50% weapon damage, 5 energy for +15/+25, 10 sec cooldown, cannot miss) is new for every rogue and is cast on cooldown right after the cooldowns line.",
+  "notes": "Combat at 60. Stealth and Garrote on the pull (a bleed ignores the boss's unsundered armor; Ambush gets none of Puncturing Wounds, Lethality or Aggression). Eviscerate at five combo points, Slice and Dice whenever it drops at one or two (from 60 only; sim-accuracy round 26: on the bare fights 10 to 60, 10,000 iterations, seeds 1 and 50001, both factions, no Slice and Dice and five-point Eviscerates does 0.5 to 6% more at every level, while raid 60 keeps it by 2.4%), Adrenaline Rush on cooldown (Blade Flurry is picked up by autocastOtherCooldowns), Backstab with a dagger and Sinister Strike without one. 2026-11-02 guide rewrite: replaces the 15 s Slice and Dice gate; raid 60 616.75 to 625.5 (+1.4%), bare 60 within 0.1%, bare 20 to 50 down 0.7 to 3.1% (energy-starved, no Relentless Strikes). Every rank named here is checked against this build's own spellconst. Client 1.60.1.70755: Shank (1329283 at 24, 1329549 at 44; off-hand 50% weapon damage, 5 energy for +15/+25, 10 sec cooldown, cannot miss) is new for every rogue and is cast on cooldown right after the cooldowns line. MythicSim comparison (2026-11-07, owner approved): Shank only under 80 energy, Eviscerate at four combo points from 30 (five below), and at 60 their Slice and Dice rule (up whenever it drops at one or more points with 6 seconds of fight left; refreshed at five points under 1 second left with over 9 seconds to go). 10,000 iterations, seeds 1 and 50001: raid 60 +1.25%, bare 30/40/50/60 +0.25/+0.55/+0.91/+0.83%, bare 20 unchanged. Their Slice and Dice while leveling lost 3 to 6% at 30 to 50, so it stays a level 60 rule; Eviscerate at four lost 0.6% at 20, so it starts at 30.",
   "engineering_notes": {
     "1": "Previously starved entirely: Slice and Dice used to sit here instead, re-applying itself at currentComboPoints >= 1 with no floor, so it looped at 1-3 combo points forever and this line never saw five combo points."
   },
@@ -63,11 +63,24 @@
         }
       },
       {
-        "notes": "Shank on cooldown: an off-hand stab that cannot miss and pays back more energy than it costs, every 10 seconds, and every 8 with five points of Flash of Steel.",
+        "notes": "Shank on cooldown while you are under 80 energy: an off-hand stab that cannot miss and pays back more energy than it costs, every 10 seconds, and every 8 with five points of Flash of Steel. Near the cap the energy it returns would be wasted, so spend first.",
         "action": {
           "castSpell": {
             "spellId": {
               "spellId": 1329549
+            }
+          },
+          "condition": {
+            "cmp": {
+              "op": "OpLt",
+              "lhs": {
+                "currentEnergy": {}
+              },
+              "rhs": {
+                "const": {
+                  "val": "80"
+                }
+              }
             }
           }
         }
@@ -81,20 +94,58 @@
             }
           },
           "condition": {
-            "cmp": {
-              "op": "OpGe",
-              "lhs": {
-                "currentComboPoints": {}
-              },
-              "rhs": {
-                "const": {
-                  "val": "5"
+            "or": {
+              "vals": [
+                {
+                  "and": {
+                    "vals": [
+                      {
+                        "cmp": {
+                          "op": "OpGe",
+                          "lhs": {
+                            "currentLevel": {}
+                          },
+                          "rhs": {
+                            "const": {
+                              "val": "30"
+                            }
+                          }
+                        }
+                      },
+                      {
+                        "cmp": {
+                          "op": "OpGe",
+                          "lhs": {
+                            "currentComboPoints": {}
+                          },
+                          "rhs": {
+                            "const": {
+                              "val": "4"
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "cmp": {
+                    "op": "OpGe",
+                    "lhs": {
+                      "currentComboPoints": {}
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "5"
+                      }
+                    }
+                  }
                 }
-              }
+              ]
             }
           }
         },
-        "notes": "Eviscerate at five combo points."
+        "notes": "Eviscerate at four combo points from 30, at five before that."
       },
       {
         "action": {
@@ -108,44 +159,6 @@
             "and": {
               "vals": [
                 {
-                  "not": {
-                    "val": {
-                      "auraIsActive": {
-                        "auraId": {
-                          "spellId": 6774,
-                          "rank": 2
-                        }
-                      }
-                    }
-                  }
-                },
-                {
-                  "cmp": {
-                    "op": "OpGe",
-                    "lhs": {
-                      "currentComboPoints": {}
-                    },
-                    "rhs": {
-                      "const": {
-                        "val": "1"
-                      }
-                    }
-                  }
-                },
-                {
-                  "cmp": {
-                    "op": "OpLe",
-                    "lhs": {
-                      "currentComboPoints": {}
-                    },
-                    "rhs": {
-                      "const": {
-                        "val": "2"
-                      }
-                    }
-                  }
-                },
-                {
                   "cmp": {
                     "op": "OpGe",
                     "lhs": {
@@ -157,12 +170,112 @@
                       }
                     }
                   }
+                },
+                {
+                  "or": {
+                    "vals": [
+                      {
+                        "and": {
+                          "vals": [
+                            {
+                              "cmp": {
+                                "op": "OpGe",
+                                "lhs": {
+                                  "currentComboPoints": {}
+                                },
+                                "rhs": {
+                                  "const": {
+                                    "val": "1"
+                                  }
+                                }
+                              }
+                            },
+                            {
+                              "not": {
+                                "val": {
+                                  "auraIsActive": {
+                                    "auraId": {
+                                      "spellId": 6774,
+                                      "rank": 2
+                                    }
+                                  }
+                                }
+                              }
+                            },
+                            {
+                              "cmp": {
+                                "op": "OpGe",
+                                "lhs": {
+                                  "remainingTime": {}
+                                },
+                                "rhs": {
+                                  "const": {
+                                    "val": "6"
+                                  }
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "and": {
+                          "vals": [
+                            {
+                              "cmp": {
+                                "op": "OpGe",
+                                "lhs": {
+                                  "currentComboPoints": {}
+                                },
+                                "rhs": {
+                                  "const": {
+                                    "val": "5"
+                                  }
+                                }
+                              }
+                            },
+                            {
+                              "cmp": {
+                                "op": "OpLt",
+                                "lhs": {
+                                  "auraRemainingTime": {
+                                    "auraId": {
+                                      "spellId": 6774,
+                                      "rank": 2
+                                    }
+                                  }
+                                },
+                                "rhs": {
+                                  "const": {
+                                    "val": "1"
+                                  }
+                                }
+                              }
+                            },
+                            {
+                              "cmp": {
+                                "op": "OpGt",
+                                "lhs": {
+                                  "remainingTime": {}
+                                },
+                                "rhs": {
+                                  "const": {
+                                    "val": "9"
+                                  }
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
                 }
               ]
             }
           }
         },
-        "notes": "At 60, Slice and Dice whenever it drops, at one or two combo points. Five points always go to Eviscerate; a short Slice and Dice keeps the attack speed up for far fewer points. While you level, leave it off a single target and put every five points into Eviscerate: your white swings miss too often for the attack speed to pay back the energy and the points."
+        "notes": "At 60, Slice and Dice whenever it drops, at any combo points, as long as 6 seconds of the fight are left. Do not refresh it early. While you level, leave it off a single target and put your points into Eviscerate: your white swings miss too often for the attack speed to pay back the energy and the points."
       },
       {
         "action": {

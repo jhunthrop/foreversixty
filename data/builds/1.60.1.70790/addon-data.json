@@ -6449,6 +6449,13 @@
             "condition": "On two or more targets, above 40 rage.",
             "icon": "inv_misc_monsterclaw_03",
             "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1328617,
+            "name": "Lacerate",
+            "condition": "Anything else on the global cooldown goes into Lacerate.",
+            "icon": "ability_druid_lacerate",
+            "race_spell_ids": {}
           }
         ]
       },
@@ -6488,6 +6495,13 @@
             "name": "Swipe",
             "condition": "On two or more targets, above 40 rage.",
             "icon": "inv_misc_monsterclaw_03",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1328617,
+            "name": "Lacerate",
+            "condition": "Anything else on the global cooldown goes into Lacerate.",
+            "icon": "ability_druid_lacerate",
             "race_spell_ids": {}
           }
         ]
@@ -6529,6 +6543,13 @@
             "condition": "On two or more targets, above 40 rage.",
             "icon": "inv_misc_monsterclaw_03",
             "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1328617,
+            "name": "Lacerate",
+            "condition": "Anything else on the global cooldown goes into Lacerate.",
+            "icon": "ability_druid_lacerate",
+            "race_spell_ids": {}
           }
         ]
       },
@@ -6569,6 +6590,13 @@
             "condition": "On two or more targets, above 40 rage.",
             "icon": "inv_misc_monsterclaw_03",
             "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1328617,
+            "name": "Lacerate",
+            "condition": "Anything else on the global cooldown goes into Lacerate.",
+            "icon": "ability_druid_lacerate",
+            "race_spell_ids": {}
           }
         ]
       },
@@ -6608,6 +6636,13 @@
             "name": "Swipe",
             "condition": "On two or more targets, above 40 rage.",
             "icon": "inv_misc_monsterclaw_03",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1328616,
+            "name": "Lacerate",
+            "condition": "Anything else on the global cooldown goes into Lacerate.",
+            "icon": "ability_druid_lacerate",
             "race_spell_ids": {}
           }
         ]
@@ -6656,6 +6691,13 @@
             "condition": "On two or more targets, above 40 rage.",
             "icon": "inv_misc_monsterclaw_03",
             "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1328616,
+            "name": "Lacerate",
+            "condition": "Anything else on the global cooldown goes into Lacerate.",
+            "icon": "ability_druid_lacerate",
+            "race_spell_ids": {}
           }
         ]
       },
@@ -6702,6 +6744,13 @@
             "name": "Swipe",
             "condition": "On two or more targets, above 40 rage.",
             "icon": "inv_misc_monsterclaw_03",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1328616,
+            "name": "Lacerate",
+            "condition": "Anything else on the global cooldown goes into Lacerate.",
+            "icon": "ability_druid_lacerate",
             "race_spell_ids": {}
           }
         ]
@@ -6757,6 +6806,13 @@
             "condition": "On two or more targets, above 40 rage.",
             "icon": "inv_misc_monsterclaw_03",
             "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1328616,
+            "name": "Lacerate",
+            "condition": "Anything else on the global cooldown goes into Lacerate.",
+            "icon": "ability_druid_lacerate",
+            "race_spell_ids": {}
           }
         ]
       },
@@ -6810,6 +6866,13 @@
             "name": "Swipe",
             "condition": "On two or more targets, above 40 rage.",
             "icon": "inv_misc_monsterclaw_03",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 414644,
+            "name": "Lacerate",
+            "condition": "Anything else on the global cooldown goes into Lacerate.",
+            "icon": "ability_druid_lacerate",
             "race_spell_ids": {}
           }
         ]
@@ -6872,6 +6935,13 @@
             "condition": "On two or more targets, above 40 rage.",
             "icon": "inv_misc_monsterclaw_03",
             "race_spell_ids": {}
+          },
+          {
+            "spell_id": 414644,
+            "name": "Lacerate",
+            "condition": "Anything else on the global cooldown goes into Lacerate.",
+            "icon": "ability_druid_lacerate",
+            "race_spell_ids": {}
           }
         ]
       },
@@ -6932,6 +7002,13 @@
             "name": "Swipe",
             "condition": "On two or more targets, above 40 rage.",
             "icon": "inv_misc_monsterclaw_03",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1235826,
+            "name": "Lacerate",
+            "condition": "Anything else on the global cooldown goes into Lacerate.",
+            "icon": "ability_druid_lacerate",
             "race_spell_ids": {}
           }
         ]
@@ -6994,6 +7071,13 @@
             "condition": "On two or more targets, above 40 rage.",
             "icon": "inv_misc_monsterclaw_03",
             "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1235826,
+            "name": "Lacerate",
+            "condition": "Anything else on the global cooldown goes into Lacerate.",
+            "icon": "ability_druid_lacerate",
+            "race_spell_ids": {}
           }
         ]
       },
@@ -7054,6 +7138,13 @@
             "name": "Swipe",
             "condition": "On two or more targets, above 40 rage.",
             "icon": "inv_misc_monsterclaw_03",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1235826,
+            "name": "Lacerate",
+            "condition": "Anything else on the global cooldown goes into Lacerate.",
+            "icon": "ability_druid_lacerate",
             "race_spell_ids": {}
           }
         ]
@@ -7116,6 +7207,13 @@
             "condition": "On two or more targets, above 40 rage.",
             "icon": "inv_misc_monsterclaw_03",
             "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1235827,
+            "name": "Lacerate",
+            "condition": "Anything else on the global cooldown goes into Lacerate.",
+            "icon": "ability_druid_lacerate",
+            "race_spell_ids": {}
           }
         ]
       },
@@ -7176,6 +7274,13 @@
             "name": "Swipe",
             "condition": "On two or more targets, above 40 rage.",
             "icon": "inv_misc_monsterclaw_03",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1235827,
+            "name": "Lacerate",
+            "condition": "Anything else on the global cooldown goes into Lacerate.",
+            "icon": "ability_druid_lacerate",
             "race_spell_ids": {}
           }
         ]
@@ -32452,7 +32557,7 @@
           {
             "spell_id": 5171,
             "name": "Slice and Dice",
-            "condition": "Slice and Dice at four or more combo points when it is down or has under 3 seconds left, and at three once it has fallen off.",
+            "condition": "From 17, Slice and Dice the moment it falls off, at however many combo points you have, as long as 6 seconds of the fight are left.",
             "icon": "ability_rogue_slicedice",
             "race_spell_ids": {}
           },
@@ -32485,7 +32590,7 @@
           {
             "spell_id": 5171,
             "name": "Slice and Dice",
-            "condition": "Slice and Dice at four or more combo points when it is down or has under 3 seconds left, and at three once it has fallen off.",
+            "condition": "From 17, Slice and Dice the moment it falls off, at however many combo points you have, as long as 6 seconds of the fight are left.",
             "icon": "ability_rogue_slicedice",
             "race_spell_ids": {}
           },
@@ -32518,7 +32623,7 @@
           {
             "spell_id": 5171,
             "name": "Slice and Dice",
-            "condition": "Slice and Dice at four or more combo points when it is down or has under 3 seconds left, and at three once it has fallen off.",
+            "condition": "From 17, Slice and Dice the moment it falls off, at however many combo points you have, as long as 6 seconds of the fight are left.",
             "icon": "ability_rogue_slicedice",
             "race_spell_ids": {}
           },
@@ -32551,7 +32656,7 @@
           {
             "spell_id": 5171,
             "name": "Slice and Dice",
-            "condition": "Slice and Dice at four or more combo points when it is down or has under 3 seconds left, and at three once it has fallen off.",
+            "condition": "From 17, Slice and Dice the moment it falls off, at however many combo points you have, as long as 6 seconds of the fight are left.",
             "icon": "ability_rogue_slicedice",
             "race_spell_ids": {}
           },
@@ -32584,7 +32689,7 @@
           {
             "spell_id": 5171,
             "name": "Slice and Dice",
-            "condition": "Slice and Dice at four or more combo points when it is down or has under 3 seconds left, and at three once it has fallen off.",
+            "condition": "From 17, Slice and Dice the moment it falls off, at however many combo points you have, as long as 6 seconds of the fight are left.",
             "icon": "ability_rogue_slicedice",
             "race_spell_ids": {}
           },
@@ -32617,7 +32722,7 @@
           {
             "spell_id": 5171,
             "name": "Slice and Dice",
-            "condition": "Slice and Dice at four or more combo points when it is down or has under 3 seconds left, and at three once it has fallen off.",
+            "condition": "From 17, Slice and Dice the moment it falls off, at however many combo points you have, as long as 6 seconds of the fight are left.",
             "icon": "ability_rogue_slicedice",
             "race_spell_ids": {}
           },
@@ -32657,7 +32762,7 @@
           {
             "spell_id": 5171,
             "name": "Slice and Dice",
-            "condition": "Slice and Dice at four or more combo points when it is down or has under 3 seconds left, and at three once it has fallen off.",
+            "condition": "From 17, Slice and Dice the moment it falls off, at however many combo points you have, as long as 6 seconds of the fight are left.",
             "icon": "ability_rogue_slicedice",
             "race_spell_ids": {}
           },
@@ -32697,7 +32802,7 @@
           {
             "spell_id": 5171,
             "name": "Slice and Dice",
-            "condition": "Slice and Dice at four or more combo points when it is down or has under 3 seconds left, and at three once it has fallen off.",
+            "condition": "From 17, Slice and Dice the moment it falls off, at however many combo points you have, as long as 6 seconds of the fight are left.",
             "icon": "ability_rogue_slicedice",
             "race_spell_ids": {}
           },
@@ -32737,7 +32842,7 @@
           {
             "spell_id": 5171,
             "name": "Slice and Dice",
-            "condition": "Slice and Dice at four or more combo points when it is down or has under 3 seconds left, and at three once it has fallen off.",
+            "condition": "From 17, Slice and Dice the moment it falls off, at however many combo points you have, as long as 6 seconds of the fight are left.",
             "icon": "ability_rogue_slicedice",
             "race_spell_ids": {}
           },
@@ -32777,7 +32882,7 @@
           {
             "spell_id": 5171,
             "name": "Slice and Dice",
-            "condition": "Slice and Dice at four or more combo points when it is down or has under 3 seconds left, and at three once it has fallen off.",
+            "condition": "From 17, Slice and Dice the moment it falls off, at however many combo points you have, as long as 6 seconds of the fight are left.",
             "icon": "ability_rogue_slicedice",
             "race_spell_ids": {}
           },
@@ -32817,7 +32922,7 @@
           {
             "spell_id": 5171,
             "name": "Slice and Dice",
-            "condition": "Slice and Dice at four or more combo points when it is down or has under 3 seconds left, and at three once it has fallen off.",
+            "condition": "From 17, Slice and Dice the moment it falls off, at however many combo points you have, as long as 6 seconds of the fight are left.",
             "icon": "ability_rogue_slicedice",
             "race_spell_ids": {}
           },
@@ -32864,7 +32969,7 @@
           {
             "spell_id": 5171,
             "name": "Slice and Dice",
-            "condition": "Slice and Dice at four or more combo points when it is down or has under 3 seconds left, and at three once it has fallen off.",
+            "condition": "From 17, Slice and Dice the moment it falls off, at however many combo points you have, as long as 6 seconds of the fight are left.",
             "icon": "ability_rogue_slicedice",
             "race_spell_ids": {}
           },
@@ -32911,7 +33016,7 @@
           {
             "spell_id": 5171,
             "name": "Slice and Dice",
-            "condition": "Slice and Dice at four or more combo points when it is down or has under 3 seconds left, and at three once it has fallen off.",
+            "condition": "From 17, Slice and Dice the moment it falls off, at however many combo points you have, as long as 6 seconds of the fight are left.",
             "icon": "ability_rogue_slicedice",
             "race_spell_ids": {}
           },
@@ -32958,7 +33063,7 @@
           {
             "spell_id": 5171,
             "name": "Slice and Dice",
-            "condition": "Slice and Dice at four or more combo points when it is down or has under 3 seconds left, and at three once it has fallen off.",
+            "condition": "From 17, Slice and Dice the moment it falls off, at however many combo points you have, as long as 6 seconds of the fight are left.",
             "icon": "ability_rogue_slicedice",
             "race_spell_ids": {}
           },
@@ -33012,7 +33117,7 @@
           {
             "spell_id": 6774,
             "name": "Slice and Dice",
-            "condition": "Slice and Dice at four or more combo points when it is down or has under 3 seconds left, and at three once it has fallen off.",
+            "condition": "From 17, Slice and Dice the moment it falls off, at however many combo points you have, as long as 6 seconds of the fight are left.",
             "icon": "ability_rogue_slicedice",
             "race_spell_ids": {}
           },
@@ -33066,7 +33171,7 @@
           {
             "spell_id": 6774,
             "name": "Slice and Dice",
-            "condition": "Slice and Dice at four or more combo points when it is down or has under 3 seconds left, and at three once it has fallen off.",
+            "condition": "From 17, Slice and Dice the moment it falls off, at however many combo points you have, as long as 6 seconds of the fight are left.",
             "icon": "ability_rogue_slicedice",
             "race_spell_ids": {}
           },
@@ -33120,7 +33225,7 @@
           {
             "spell_id": 6774,
             "name": "Slice and Dice",
-            "condition": "Slice and Dice at four or more combo points when it is down or has under 3 seconds left, and at three once it has fallen off.",
+            "condition": "From 17, Slice and Dice the moment it falls off, at however many combo points you have, as long as 6 seconds of the fight are left.",
             "icon": "ability_rogue_slicedice",
             "race_spell_ids": {}
           },
@@ -33174,7 +33279,7 @@
           {
             "spell_id": 6774,
             "name": "Slice and Dice",
-            "condition": "Slice and Dice at four or more combo points when it is down or has under 3 seconds left, and at three once it has fallen off.",
+            "condition": "From 17, Slice and Dice the moment it falls off, at however many combo points you have, as long as 6 seconds of the fight are left.",
             "icon": "ability_rogue_slicedice",
             "race_spell_ids": {}
           },
@@ -33228,7 +33333,7 @@
           {
             "spell_id": 6774,
             "name": "Slice and Dice",
-            "condition": "Slice and Dice at four or more combo points when it is down or has under 3 seconds left, and at three once it has fallen off.",
+            "condition": "From 17, Slice and Dice the moment it falls off, at however many combo points you have, as long as 6 seconds of the fight are left.",
             "icon": "ability_rogue_slicedice",
             "race_spell_ids": {}
           },
@@ -33282,7 +33387,7 @@
           {
             "spell_id": 6774,
             "name": "Slice and Dice",
-            "condition": "Slice and Dice at four or more combo points when it is down or has under 3 seconds left, and at three once it has fallen off.",
+            "condition": "From 17, Slice and Dice the moment it falls off, at however many combo points you have, as long as 6 seconds of the fight are left.",
             "icon": "ability_rogue_slicedice",
             "race_spell_ids": {}
           },
@@ -33336,7 +33441,7 @@
           {
             "spell_id": 6774,
             "name": "Slice and Dice",
-            "condition": "Slice and Dice at four or more combo points when it is down or has under 3 seconds left, and at three once it has fallen off.",
+            "condition": "From 17, Slice and Dice the moment it falls off, at however many combo points you have, as long as 6 seconds of the fight are left.",
             "icon": "ability_rogue_slicedice",
             "race_spell_ids": {}
           },
@@ -33390,7 +33495,7 @@
           {
             "spell_id": 6774,
             "name": "Slice and Dice",
-            "condition": "Slice and Dice at four or more combo points when it is down or has under 3 seconds left, and at three once it has fallen off.",
+            "condition": "From 17, Slice and Dice the moment it falls off, at however many combo points you have, as long as 6 seconds of the fight are left.",
             "icon": "ability_rogue_slicedice",
             "race_spell_ids": {}
           },
@@ -33444,7 +33549,7 @@
           {
             "spell_id": 6774,
             "name": "Slice and Dice",
-            "condition": "Slice and Dice at four or more combo points when it is down or has under 3 seconds left, and at three once it has fallen off.",
+            "condition": "From 17, Slice and Dice the moment it falls off, at however many combo points you have, as long as 6 seconds of the fight are left.",
             "icon": "ability_rogue_slicedice",
             "race_spell_ids": {}
           },
@@ -33493,7 +33598,7 @@
           {
             "spell_id": 6760,
             "name": "Eviscerate",
-            "condition": "Eviscerate at five combo points.",
+            "condition": "Eviscerate at four combo points from 30, at five before that.",
             "icon": "ability_rogue_eviscerate",
             "race_spell_ids": {}
           },
@@ -33519,7 +33624,7 @@
           {
             "spell_id": 6760,
             "name": "Eviscerate",
-            "condition": "Eviscerate at five combo points.",
+            "condition": "Eviscerate at four combo points from 30, at five before that.",
             "icon": "ability_rogue_eviscerate",
             "race_spell_ids": {}
           },
@@ -33545,7 +33650,7 @@
           {
             "spell_id": 6760,
             "name": "Eviscerate",
-            "condition": "Eviscerate at five combo points.",
+            "condition": "Eviscerate at four combo points from 30, at five before that.",
             "icon": "ability_rogue_eviscerate",
             "race_spell_ids": {}
           },
@@ -33571,7 +33676,7 @@
           {
             "spell_id": 6761,
             "name": "Eviscerate",
-            "condition": "Eviscerate at five combo points.",
+            "condition": "Eviscerate at four combo points from 30, at five before that.",
             "icon": "ability_rogue_eviscerate",
             "race_spell_ids": {}
           },
@@ -33597,7 +33702,7 @@
           {
             "spell_id": 6761,
             "name": "Eviscerate",
-            "condition": "Eviscerate at five combo points.",
+            "condition": "Eviscerate at four combo points from 30, at five before that.",
             "icon": "ability_rogue_eviscerate",
             "race_spell_ids": {}
           },
@@ -33623,7 +33728,7 @@
           {
             "spell_id": 6761,
             "name": "Eviscerate",
-            "condition": "Eviscerate at five combo points.",
+            "condition": "Eviscerate at four combo points from 30, at five before that.",
             "icon": "ability_rogue_eviscerate",
             "race_spell_ids": {}
           },
@@ -33649,14 +33754,14 @@
           {
             "spell_id": 1329283,
             "name": "Shank",
-            "condition": "Shank on cooldown: an off-hand stab that cannot miss and pays back more energy than it costs, every 10 seconds, and every 8 with five points of Flash of Steel.",
+            "condition": "Shank on cooldown while you are under 80 energy: an off-hand stab that cannot miss and pays back more energy than it costs, every 10 seconds, and every 8 with five points of Flash of Steel.",
             "icon": "ability_theblackarrow",
             "race_spell_ids": {}
           },
           {
             "spell_id": 6762,
             "name": "Eviscerate",
-            "condition": "Eviscerate at five combo points.",
+            "condition": "Eviscerate at four combo points from 30, at five before that.",
             "icon": "ability_rogue_eviscerate",
             "race_spell_ids": {}
           },
@@ -33682,14 +33787,14 @@
           {
             "spell_id": 1329283,
             "name": "Shank",
-            "condition": "Shank on cooldown: an off-hand stab that cannot miss and pays back more energy than it costs, every 10 seconds, and every 8 with five points of Flash of Steel.",
+            "condition": "Shank on cooldown while you are under 80 energy: an off-hand stab that cannot miss and pays back more energy than it costs, every 10 seconds, and every 8 with five points of Flash of Steel.",
             "icon": "ability_theblackarrow",
             "race_spell_ids": {}
           },
           {
             "spell_id": 6762,
             "name": "Eviscerate",
-            "condition": "Eviscerate at five combo points.",
+            "condition": "Eviscerate at four combo points from 30, at five before that.",
             "icon": "ability_rogue_eviscerate",
             "race_spell_ids": {}
           },
@@ -33715,14 +33820,14 @@
           {
             "spell_id": 1329283,
             "name": "Shank",
-            "condition": "Shank on cooldown: an off-hand stab that cannot miss and pays back more energy than it costs, every 10 seconds, and every 8 with five points of Flash of Steel.",
+            "condition": "Shank on cooldown while you are under 80 energy: an off-hand stab that cannot miss and pays back more energy than it costs, every 10 seconds, and every 8 with five points of Flash of Steel.",
             "icon": "ability_theblackarrow",
             "race_spell_ids": {}
           },
           {
             "spell_id": 6762,
             "name": "Eviscerate",
-            "condition": "Eviscerate at five combo points.",
+            "condition": "Eviscerate at four combo points from 30, at five before that.",
             "icon": "ability_rogue_eviscerate",
             "race_spell_ids": {}
           },
@@ -33748,14 +33853,14 @@
           {
             "spell_id": 1329283,
             "name": "Shank",
-            "condition": "Shank on cooldown: an off-hand stab that cannot miss and pays back more energy than it costs, every 10 seconds, and every 8 with five points of Flash of Steel.",
+            "condition": "Shank on cooldown while you are under 80 energy: an off-hand stab that cannot miss and pays back more energy than it costs, every 10 seconds, and every 8 with five points of Flash of Steel.",
             "icon": "ability_theblackarrow",
             "race_spell_ids": {}
           },
           {
             "spell_id": 8623,
             "name": "Eviscerate",
-            "condition": "Eviscerate at five combo points.",
+            "condition": "Eviscerate at four combo points from 30, at five before that.",
             "icon": "ability_rogue_eviscerate",
             "race_spell_ids": {}
           },
@@ -33781,14 +33886,14 @@
           {
             "spell_id": 1329283,
             "name": "Shank",
-            "condition": "Shank on cooldown: an off-hand stab that cannot miss and pays back more energy than it costs, every 10 seconds, and every 8 with five points of Flash of Steel.",
+            "condition": "Shank on cooldown while you are under 80 energy: an off-hand stab that cannot miss and pays back more energy than it costs, every 10 seconds, and every 8 with five points of Flash of Steel.",
             "icon": "ability_theblackarrow",
             "race_spell_ids": {}
           },
           {
             "spell_id": 8623,
             "name": "Eviscerate",
-            "condition": "Eviscerate at five combo points.",
+            "condition": "Eviscerate at four combo points from 30, at five before that.",
             "icon": "ability_rogue_eviscerate",
             "race_spell_ids": {}
           },
@@ -33814,14 +33919,14 @@
           {
             "spell_id": 1329283,
             "name": "Shank",
-            "condition": "Shank on cooldown: an off-hand stab that cannot miss and pays back more energy than it costs, every 10 seconds, and every 8 with five points of Flash of Steel.",
+            "condition": "Shank on cooldown while you are under 80 energy: an off-hand stab that cannot miss and pays back more energy than it costs, every 10 seconds, and every 8 with five points of Flash of Steel.",
             "icon": "ability_theblackarrow",
             "race_spell_ids": {}
           },
           {
             "spell_id": 8623,
             "name": "Eviscerate",
-            "condition": "Eviscerate at five combo points.",
+            "condition": "Eviscerate at four combo points from 30, at five before that.",
             "icon": "ability_rogue_eviscerate",
             "race_spell_ids": {}
           },
@@ -33847,14 +33952,14 @@
           {
             "spell_id": 1329283,
             "name": "Shank",
-            "condition": "Shank on cooldown: an off-hand stab that cannot miss and pays back more energy than it costs, every 10 seconds, and every 8 with five points of Flash of Steel.",
+            "condition": "Shank on cooldown while you are under 80 energy: an off-hand stab that cannot miss and pays back more energy than it costs, every 10 seconds, and every 8 with five points of Flash of Steel.",
             "icon": "ability_theblackarrow",
             "race_spell_ids": {}
           },
           {
             "spell_id": 8624,
             "name": "Eviscerate",
-            "condition": "Eviscerate at five combo points.",
+            "condition": "Eviscerate at four combo points from 30, at five before that.",
             "icon": "ability_rogue_eviscerate",
             "race_spell_ids": {}
           },
@@ -33887,14 +33992,14 @@
           {
             "spell_id": 1329549,
             "name": "Shank",
-            "condition": "Shank on cooldown: an off-hand stab that cannot miss and pays back more energy than it costs, every 10 seconds, and every 8 with five points of Flash of Steel.",
+            "condition": "Shank on cooldown while you are under 80 energy: an off-hand stab that cannot miss and pays back more energy than it costs, every 10 seconds, and every 8 with five points of Flash of Steel.",
             "icon": "ability_theblackarrow",
             "race_spell_ids": {}
           },
           {
             "spell_id": 8624,
             "name": "Eviscerate",
-            "condition": "Eviscerate at five combo points.",
+            "condition": "Eviscerate at four combo points from 30, at five before that.",
             "icon": "ability_rogue_eviscerate",
             "race_spell_ids": {}
           },
@@ -33927,14 +34032,14 @@
           {
             "spell_id": 1329549,
             "name": "Shank",
-            "condition": "Shank on cooldown: an off-hand stab that cannot miss and pays back more energy than it costs, every 10 seconds, and every 8 with five points of Flash of Steel.",
+            "condition": "Shank on cooldown while you are under 80 energy: an off-hand stab that cannot miss and pays back more energy than it costs, every 10 seconds, and every 8 with five points of Flash of Steel.",
             "icon": "ability_theblackarrow",
             "race_spell_ids": {}
           },
           {
             "spell_id": 8624,
             "name": "Eviscerate",
-            "condition": "Eviscerate at five combo points.",
+            "condition": "Eviscerate at four combo points from 30, at five before that.",
             "icon": "ability_rogue_eviscerate",
             "race_spell_ids": {}
           },
@@ -33967,14 +34072,14 @@
           {
             "spell_id": 1329549,
             "name": "Shank",
-            "condition": "Shank on cooldown: an off-hand stab that cannot miss and pays back more energy than it costs, every 10 seconds, and every 8 with five points of Flash of Steel.",
+            "condition": "Shank on cooldown while you are under 80 energy: an off-hand stab that cannot miss and pays back more energy than it costs, every 10 seconds, and every 8 with five points of Flash of Steel.",
             "icon": "ability_theblackarrow",
             "race_spell_ids": {}
           },
           {
             "spell_id": 11299,
             "name": "Eviscerate",
-            "condition": "Eviscerate at five combo points.",
+            "condition": "Eviscerate at four combo points from 30, at five before that.",
             "icon": "ability_rogue_eviscerate",
             "race_spell_ids": {}
           },
@@ -34007,14 +34112,14 @@
           {
             "spell_id": 1329549,
             "name": "Shank",
-            "condition": "Shank on cooldown: an off-hand stab that cannot miss and pays back more energy than it costs, every 10 seconds, and every 8 with five points of Flash of Steel.",
+            "condition": "Shank on cooldown while you are under 80 energy: an off-hand stab that cannot miss and pays back more energy than it costs, every 10 seconds, and every 8 with five points of Flash of Steel.",
             "icon": "ability_theblackarrow",
             "race_spell_ids": {}
           },
           {
             "spell_id": 11299,
             "name": "Eviscerate",
-            "condition": "Eviscerate at five combo points.",
+            "condition": "Eviscerate at four combo points from 30, at five before that.",
             "icon": "ability_rogue_eviscerate",
             "race_spell_ids": {}
           },
@@ -34047,14 +34152,14 @@
           {
             "spell_id": 1329549,
             "name": "Shank",
-            "condition": "Shank on cooldown: an off-hand stab that cannot miss and pays back more energy than it costs, every 10 seconds, and every 8 with five points of Flash of Steel.",
+            "condition": "Shank on cooldown while you are under 80 energy: an off-hand stab that cannot miss and pays back more energy than it costs, every 10 seconds, and every 8 with five points of Flash of Steel.",
             "icon": "ability_theblackarrow",
             "race_spell_ids": {}
           },
           {
             "spell_id": 11299,
             "name": "Eviscerate",
-            "condition": "Eviscerate at five combo points.",
+            "condition": "Eviscerate at four combo points from 30, at five before that.",
             "icon": "ability_rogue_eviscerate",
             "race_spell_ids": {}
           },
@@ -34087,14 +34192,14 @@
           {
             "spell_id": 1329549,
             "name": "Shank",
-            "condition": "Shank on cooldown: an off-hand stab that cannot miss and pays back more energy than it costs, every 10 seconds, and every 8 with five points of Flash of Steel.",
+            "condition": "Shank on cooldown while you are under 80 energy: an off-hand stab that cannot miss and pays back more energy than it costs, every 10 seconds, and every 8 with five points of Flash of Steel.",
             "icon": "ability_theblackarrow",
             "race_spell_ids": {}
           },
           {
             "spell_id": 11299,
             "name": "Eviscerate",
-            "condition": "Eviscerate at five combo points.",
+            "condition": "Eviscerate at four combo points from 30, at five before that.",
             "icon": "ability_rogue_eviscerate",
             "race_spell_ids": {}
           },
@@ -34127,14 +34232,14 @@
           {
             "spell_id": 1329549,
             "name": "Shank",
-            "condition": "Shank on cooldown: an off-hand stab that cannot miss and pays back more energy than it costs, every 10 seconds, and every 8 with five points of Flash of Steel.",
+            "condition": "Shank on cooldown while you are under 80 energy: an off-hand stab that cannot miss and pays back more energy than it costs, every 10 seconds, and every 8 with five points of Flash of Steel.",
             "icon": "ability_theblackarrow",
             "race_spell_ids": {}
           },
           {
             "spell_id": 11300,
             "name": "Eviscerate",
-            "condition": "Eviscerate at five combo points.",
+            "condition": "Eviscerate at four combo points from 30, at five before that.",
             "icon": "ability_rogue_eviscerate",
             "race_spell_ids": {}
           },
@@ -34167,21 +34272,21 @@
           {
             "spell_id": 1329549,
             "name": "Shank",
-            "condition": "Shank on cooldown: an off-hand stab that cannot miss and pays back more energy than it costs, every 10 seconds, and every 8 with five points of Flash of Steel.",
+            "condition": "Shank on cooldown while you are under 80 energy: an off-hand stab that cannot miss and pays back more energy than it costs, every 10 seconds, and every 8 with five points of Flash of Steel.",
             "icon": "ability_theblackarrow",
             "race_spell_ids": {}
           },
           {
             "spell_id": 11300,
             "name": "Eviscerate",
-            "condition": "Eviscerate at five combo points.",
+            "condition": "Eviscerate at four combo points from 30, at five before that.",
             "icon": "ability_rogue_eviscerate",
             "race_spell_ids": {}
           },
           {
             "spell_id": 6774,
             "name": "Slice and Dice",
-            "condition": "At 60, Slice and Dice whenever it drops, at one or two combo points.",
+            "condition": "At 60, Slice and Dice whenever it drops, at any combo points, as long as 6 seconds of the fight are left.",
             "icon": "ability_rogue_slicedice",
             "race_spell_ids": {}
           },
@@ -52619,15 +52724,15 @@
               ]
             },
             "chest": {
-              "item_id": 4455,
-              "source_kind": "crafted",
-              "source": "Leatherworking",
+              "item_id": 9406,
+              "source_kind": "dungeon",
+              "source": "Uldaman",
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 9406,
-                  "source_kind": "dungeon",
-                  "source": "Uldaman"
+                  "item_id": 4455,
+                  "source_kind": "crafted",
+                  "source": "Leatherworking"
                 },
                 {
                   "item_id": 7375,
@@ -52637,15 +52742,15 @@
               ]
             },
             "wrist": {
-              "item_id": 270032,
-              "source_kind": "quest",
-              "source": "Blackfathom Villainy",
+              "item_id": 18948,
+              "source_kind": "crafted",
+              "source": "Leatherworking",
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 18948,
-                  "source_kind": "crafted",
-                  "source": "Leatherworking"
+                  "item_id": 270032,
+                  "source_kind": "quest",
+                  "source": "Blackfathom Villainy"
                 },
                 {
                   "item_id": 3230,
@@ -52679,12 +52784,12 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 252521,
+                  "item_id": 252459,
                   "source_kind": "crafted",
                   "source": "Leatherworking"
                 },
                 {
-                  "item_id": 252459,
+                  "item_id": 252521,
                   "source_kind": "crafted",
                   "source": "Leatherworking"
                 }
@@ -52697,14 +52802,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 270031,
-                  "source_kind": "quest",
-                  "source": "Blackfathom Villainy"
-                },
-                {
-                  "item_id": 252517,
+                  "item_id": 5963,
                   "source_kind": "crafted",
                   "source": "Leatherworking"
+                },
+                {
+                  "item_id": 9509,
+                  "source_kind": "dungeon",
+                  "source": "Gnomeregan"
                 }
               ]
             },
@@ -52770,28 +52875,28 @@
               "alternatives": []
             },
             "trinket2": {
-              "item_id": 21566,
+              "item_id": 21568,
               "source_kind": "rep",
               "source": "Silverwing Sentinels",
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 21568,
+                  "item_id": 21566,
                   "source_kind": "rep",
                   "source": "Silverwing Sentinels"
                 }
               ]
             },
             "main_hand": {
-              "item_id": 273040,
-              "source_kind": "world",
-              "source": "Mana Devourer",
+              "item_id": 13045,
+              "source_kind": "world_drop",
+              "source": "World drop",
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 2549,
-                  "source_kind": "dungeon",
-                  "source": "Razorfen Kraul"
+                  "item_id": 273040,
+                  "source_kind": "world",
+                  "source": "Mana Devourer"
                 },
                 {
                   "item_id": 1976,
@@ -52845,12 +52950,12 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 277043,
+                  "item_id": 277051,
                   "source_kind": "crafted",
                   "source": "Leatherworking"
                 },
                 {
-                  "item_id": 277051,
+                  "item_id": 277043,
                   "source_kind": "crafted",
                   "source": "Leatherworking"
                 }
@@ -52917,14 +53022,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 720,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
-                },
-                {
                   "item_id": 1978,
                   "source_kind": "dungeon",
                   "source": "Razorfen Kraul"
+                },
+                {
+                  "item_id": 720,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
                 }
               ]
             },
@@ -52953,14 +53058,14 @@
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 5963,
+                  "source_kind": "crafted",
+                  "source": "Leatherworking"
+                },
+                {
                   "item_id": 9509,
                   "source_kind": "dungeon",
                   "source": "Gnomeregan"
-                },
-                {
-                  "item_id": 252517,
-                  "source_kind": "crafted",
-                  "source": "Leatherworking"
                 }
               ]
             },
@@ -53064,8 +53169,8 @@
             13087,
             7727,
             18440,
-            4455,
-            270032,
+            9406,
+            18948,
             720,
             252460,
             252457,
@@ -53073,8 +53178,8 @@
             271911,
             271916,
             21119,
-            21566,
-            273040
+            21568,
+            13045
           ],
           "horde": [
             252512,
@@ -53096,16 +53201,16 @@
         },
         "weights": {
           "stamina": 1.0,
-          "armor": 0.086,
-          "defense": 0.344,
-          "dodge": 0.153,
-          "strength": 0.06,
-          "agility": 0.187,
-          "attack_power": 0.03,
-          "feral_attack_power": 0.03,
-          "hit": 0.058,
-          "crit": 0.027,
-          "expertise": 1.83
+          "armor": 0.104,
+          "defense": 0.404,
+          "dodge": 0.164,
+          "strength": 0.121,
+          "agility": 0.215,
+          "attack_power": 0.061,
+          "feral_attack_power": 0.061,
+          "hit": 0.07,
+          "crit": 0.034,
+          "expertise": 2.061
         }
       },
       {
@@ -53445,14 +53550,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 10776,
-                  "source_kind": "dungeon",
-                  "source": "Razorfen Downs: Tuten'kash"
-                },
-                {
                   "item_id": 8120,
                   "source_kind": "dungeon",
                   "source": "Uldaman: Ancient Treasure"
+                },
+                {
+                  "item_id": 12254,
+                  "source_kind": "vendor",
+                  "source": "Masat T'andr"
                 }
               ]
             },
@@ -53481,14 +53586,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 19508,
-                  "source_kind": "dungeon",
-                  "source": "Scarlet Monastery: High Inquisitor Fairbanks"
-                },
-                {
                   "item_id": 18948,
                   "source_kind": "crafted",
                   "source": "Leatherworking"
+                },
+                {
+                  "item_id": 270032,
+                  "source_kind": "quest",
+                  "source": "Blackfathom Villainy"
                 }
               ]
             },
@@ -53517,14 +53622,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 6788,
-                  "source_kind": "quest",
-                  "source": "Khan Hratha"
-                },
-                {
                   "item_id": 252460,
                   "source_kind": "crafted",
                   "source": "Leatherworking"
+                },
+                {
+                  "item_id": 6788,
+                  "source_kind": "quest",
+                  "source": "Khan Hratha"
                 }
               ]
             },
@@ -53694,16 +53799,14 @@
         },
         "weights": {
           "stamina": 1.0,
-          "armor": 0.158,
-          "defense": 0.444,
-          "dodge": 0.171,
-          "strength": 0.087,
-          "agility": 0.226,
-          "attack_power": 0.044,
-          "feral_attack_power": 0.044,
-          "hit": 0.108,
+          "armor": 0.157,
+          "dodge": 0.186,
+          "strength": 0.099,
+          "agility": 0.235,
+          "attack_power": 0.05,
+          "feral_attack_power": 0.05,
           "crit": 0.05,
-          "expertise": 2.987
+          "expertise": 2.977
         }
       },
       {
@@ -53758,9 +53861,9 @@
                   "source": "Razorfen Downs: Glutton"
                 },
                 {
-                  "item_id": 220852,
-                  "source_kind": "vendor",
-                  "source": "PvP reward · Alliance"
+                  "item_id": 17749,
+                  "source_kind": "dungeon",
+                  "source": "Maraudon: Razorlash"
                 }
               ]
             },
@@ -54030,9 +54133,9 @@
                   "source": "Ribbly Screwspigot"
                 },
                 {
-                  "item_id": 220853,
-                  "source_kind": "vendor",
-                  "source": "PvP reward · Horde"
+                  "item_id": 17749,
+                  "source_kind": "dungeon",
+                  "source": "Maraudon: Razorlash"
                 }
               ]
             },
@@ -54290,14 +54393,15 @@
         },
         "weights": {
           "stamina": 1.0,
-          "armor": 0.137,
-          "dodge": 0.256,
-          "strength": 0.064,
-          "agility": 0.259,
-          "attack_power": 0.032,
-          "feral_attack_power": 0.032,
-          "hit": 0.143,
-          "expertise": 3.864
+          "armor": 0.13,
+          "dodge": 0.253,
+          "strength": 0.076,
+          "agility": 0.271,
+          "attack_power": 0.038,
+          "feral_attack_power": 0.038,
+          "hit": 0.102,
+          "crit": 0.058,
+          "expertise": 3.454
         }
       },
       {
@@ -54388,7 +54492,7 @@
                   "source": "PvP reward · Alliance"
                 },
                 {
-                  "item_id": 231696,
+                  "item_id": 231702,
                   "source_kind": "vendor",
                   "source": "PvP reward · Alliance"
                 }
@@ -54485,38 +54589,38 @@
               ]
             },
             "finger1": {
-              "item_id": 11669,
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Golem Lord Argelmach",
-              "chance": null,
-              "alternatives": [
-                {
-                  "item_id": 2246,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
-                },
-                {
-                  "item_id": 272408,
-                  "source_kind": "vendor",
-                  "source": "Pix Xizzix"
-                }
-              ]
-            },
-            "finger2": {
               "item_id": 272409,
               "source_kind": "vendor",
               "source": "Pix Xizzix",
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 2246,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
+                  "item_id": 11669,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Depths: Golem Lord Argelmach"
                 },
                 {
-                  "item_id": 272408,
-                  "source_kind": "vendor",
-                  "source": "Pix Xizzix"
+                  "item_id": 13373,
+                  "source_kind": "dungeon",
+                  "source": "Stratholme: Ramstein the Gorger"
+                }
+              ]
+            },
+            "finger2": {
+              "item_id": 2246,
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "chance": null,
+              "alternatives": [
+                {
+                  "item_id": 11669,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Depths: Golem Lord Argelmach"
+                },
+                {
+                  "item_id": 13373,
+                  "source_kind": "dungeon",
+                  "source": "Stratholme: Ramstein the Gorger"
                 }
               ]
             },
@@ -54532,9 +54636,9 @@
                   "source": "The Eye of Command"
                 },
                 {
-                  "item_id": 271903,
-                  "source_kind": "rep",
-                  "source": "Theramore Expeditionary Force"
+                  "item_id": 11810,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Depths: General Angerforge"
                 }
               ]
             },
@@ -54550,9 +54654,9 @@
                   "source": "The Eye of Command"
                 },
                 {
-                  "item_id": 271903,
-                  "source_kind": "rep",
-                  "source": "Theramore Expeditionary Force"
+                  "item_id": 11810,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Depths: General Angerforge"
                 }
               ]
             },
@@ -54595,15 +54699,15 @@
               ]
             },
             "neck": {
-              "item_id": 13091,
-              "source_kind": "world_drop",
-              "source": "World drop",
+              "item_id": 16335,
+              "source_kind": "vendor",
+              "source": "PvP rank 4 · Senior Sergeant · Horde",
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 19534,
-                  "source_kind": "rep",
-                  "source": "Warsong Outriders"
+                  "item_id": 13091,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
                 },
                 {
                   "item_id": 19095,
@@ -54696,27 +54800,27 @@
                   "source": "PvP reward · Horde"
                 },
                 {
-                  "item_id": 231677,
-                  "source_kind": "pvp",
+                  "item_id": 231688,
+                  "source_kind": "vendor",
                   "source": "PvP reward · Horde"
                 }
               ]
             },
             "waist": {
-              "item_id": 275614,
+              "item_id": 279252,
               "source_kind": "crafted",
               "source": "Leatherworking",
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 275614,
+                  "source_kind": "crafted",
+                  "source": "Leatherworking"
+                },
+                {
                   "item_id": 272396,
                   "source_kind": "vendor",
                   "source": "Pix Xizzix"
-                },
-                {
-                  "item_id": 279252,
-                  "source_kind": "crafted",
-                  "source": "Leatherworking"
                 }
               ]
             },
@@ -54745,13 +54849,13 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 231671,
-                  "source_kind": "vendor",
-                  "source": "PvP reward · Horde"
+                  "item_id": 18716,
+                  "source_kind": "dungeon",
+                  "source": "Stratholme: Archivist Galford"
                 },
                 {
-                  "item_id": 231682,
-                  "source_kind": "pvp",
+                  "item_id": 231671,
+                  "source_kind": "vendor",
                   "source": "PvP reward · Horde"
                 }
               ]
@@ -54768,63 +54872,63 @@
                   "source": "World drop"
                 },
                 {
-                  "item_id": 13373,
-                  "source_kind": "dungeon",
-                  "source": "Stratholme: Ramstein the Gorger"
+                  "item_id": 272409,
+                  "source_kind": "vendor",
+                  "source": "Pix Xizzix"
                 }
               ]
             },
             "finger2": {
-              "item_id": 272409,
-              "source_kind": "vendor",
-              "source": "Pix Xizzix",
+              "item_id": 11669,
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Golem Lord Argelmach",
               "chance": null,
               "alternatives": [
-                {
-                  "item_id": 11669,
-                  "source_kind": "dungeon",
-                  "source": "Blackrock Depths: Golem Lord Argelmach"
-                },
                 {
                   "item_id": 2246,
                   "source_kind": "world_drop",
                   "source": "World drop"
+                },
+                {
+                  "item_id": 272409,
+                  "source_kind": "vendor",
+                  "source": "Pix Xizzix"
                 }
               ]
             },
             "trinket1": {
-              "item_id": 272440,
-              "source_kind": "vendor",
-              "source": "Pix Xizzix",
-              "chance": null,
-              "alternatives": [
-                {
-                  "item_id": 272437,
-                  "source_kind": "vendor",
-                  "source": "Pix Xizzix"
-                },
-                {
-                  "item_id": 17909,
-                  "source_kind": "quest",
-                  "source": "The Eye of Command"
-                }
-              ]
-            },
-            "trinket2": {
               "item_id": 20072,
               "source_kind": "rep",
               "source": "The Defilers",
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 17909,
-                  "source_kind": "quest",
-                  "source": "The Eye of Command"
+                  "item_id": 272440,
+                  "source_kind": "vendor",
+                  "source": "Pix Xizzix"
                 },
+                {
+                  "item_id": 272437,
+                  "source_kind": "vendor",
+                  "source": "Pix Xizzix"
+                }
+              ]
+            },
+            "trinket2": {
+              "item_id": 272061,
+              "source_kind": "vendor",
+              "source": "Creeg Bothunk",
+              "chance": null,
+              "alternatives": [
                 {
                   "item_id": 272060,
                   "source_kind": "vendor",
                   "source": "Creeg Bothunk"
+                },
+                {
+                  "item_id": 272437,
+                  "source_kind": "vendor",
+                  "source": "Pix Xizzix"
                 }
               ]
             },
@@ -54859,41 +54963,39 @@
             272396,
             237818,
             19052,
-            11669,
             272409,
+            2246,
             272440,
             20071,
             13937
           ],
           "horde": [
             279253,
-            13091,
+            16335,
             20194,
             12551,
             19587,
             272099,
-            275614,
+            279252,
             22740,
             19052,
             12544,
-            272409,
-            272440,
+            11669,
             20072,
             13937
           ]
         },
         "weights": {
           "stamina": 1.0,
-          "armor": 0.149,
-          "defense": 1.375,
-          "dodge": 0.764,
-          "strength": 0.103,
-          "agility": 0.63,
-          "attack_power": 0.051,
-          "feral_attack_power": 0.051,
-          "hit": 0.173,
-          "crit": 0.151,
-          "expertise": 4.061
+          "armor": 0.152,
+          "defense": 1.456,
+          "dodge": 0.762,
+          "strength": 0.116,
+          "agility": 0.622,
+          "attack_power": 0.058,
+          "feral_attack_power": 0.058,
+          "crit": 0.14,
+          "expertise": 4.659
         }
       }
     ],
@@ -96706,14 +96808,14 @@
               "chance": 0.0234,
               "alternatives": [
                 {
-                  "item_id": 252494,
-                  "source_kind": "crafted",
-                  "source": "Leatherworking"
-                },
-                {
                   "item_id": 14572,
                   "source_kind": "world_drop",
                   "source": "World drop"
+                },
+                {
+                  "item_id": 252494,
+                  "source_kind": "crafted",
+                  "source": "Leatherworking"
                 }
               ]
             },
@@ -96897,10 +96999,10 @@
         "weights": {
           "attack_power": 1.0,
           "strength": 1.0,
-          "agility": 1.735,
-          "crit": 0.445,
-          "hit": 0.599,
-          "melee_haste": 3.565
+          "agility": 1.733,
+          "crit": 0.443,
+          "hit": 0.611,
+          "melee_haste": 3.445
         }
       },
       {
@@ -97058,14 +97160,14 @@
               "chance": 0.6,
               "alternatives": [
                 {
-                  "item_id": 9509,
-                  "source_kind": "dungeon",
-                  "source": "Gnomeregan"
-                },
-                {
                   "item_id": 13114,
                   "source_kind": "world_drop",
                   "source": "World drop"
+                },
+                {
+                  "item_id": 9509,
+                  "source_kind": "dungeon",
+                  "source": "Gnomeregan"
                 }
               ]
             },
@@ -97361,14 +97463,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 17694,
-                  "source_kind": "quest",
-                  "source": "Allegiance to the Old Gods"
-                },
-                {
                   "item_id": 277210,
                   "source_kind": "quest",
                   "source": "The Horn of Xelthos"
+                },
+                {
+                  "item_id": 17694,
+                  "source_kind": "quest",
+                  "source": "Allegiance to the Old Gods"
                 }
               ]
             },
@@ -97384,9 +97486,9 @@
                   "source": "Allegiance to the Old Gods"
                 },
                 {
-                  "item_id": 277210,
-                  "source_kind": "quest",
-                  "source": "The Horn of Xelthos"
+                  "item_id": 1491,
+                  "source_kind": "dungeon",
+                  "source": "Blackfathom Deeps"
                 }
               ]
             },
@@ -97474,10 +97576,10 @@
         "weights": {
           "attack_power": 1.0,
           "strength": 1.0,
-          "agility": 1.599,
-          "crit": 0.617,
-          "hit": 0.906,
-          "melee_haste": 5.114
+          "agility": 1.606,
+          "crit": 0.625,
+          "hit": 1.025,
+          "melee_haste": 3.783
         }
       },
       {
@@ -97617,14 +97719,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 13117,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
-                },
-                {
                   "item_id": 20090,
                   "source_kind": "rep",
                   "source": "The League of Arathor"
+                },
+                {
+                  "item_id": 13117,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
                 }
               ]
             },
@@ -98070,10 +98172,10 @@
         "weights": {
           "attack_power": 1.0,
           "strength": 1.0,
-          "agility": 1.667,
-          "crit": 0.987,
-          "hit": 1.728,
-          "melee_haste": 7.941
+          "agility": 1.654,
+          "crit": 0.978,
+          "hit": 1.612,
+          "melee_haste": 8.26
         }
       },
       {
@@ -98128,9 +98230,9 @@
                   "source": "PvP reward · Alliance"
                 },
                 {
-                  "item_id": 9647,
-                  "source_kind": "quest",
-                  "source": "Rescue OOX-22/FE!"
+                  "item_id": 17749,
+                  "source_kind": "dungeon",
+                  "source": "Maraudon: Razorlash"
                 }
               ]
             },
@@ -98177,14 +98279,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 252540,
-                  "source_kind": "crafted",
-                  "source": "Leatherworking"
-                },
-                {
                   "item_id": 14672,
                   "source_kind": "world_drop",
                   "source": "World drop"
+                },
+                {
+                  "item_id": 252540,
+                  "source_kind": "crafted",
+                  "source": "Leatherworking"
                 }
               ]
             },
@@ -98297,22 +98399,22 @@
               ]
             },
             "trinket1": {
-              "item_id": 249470,
+              "item_id": 249469,
               "source_kind": "crafted",
               "source": "Enchanting",
               "chance": null,
               "alternatives": []
             },
             "trinket2": {
-              "item_id": 249469,
+              "item_id": 249470,
               "source_kind": "crafted",
               "source": "Enchanting",
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 744,
+                  "item_id": 17774,
                   "source_kind": "quest",
-                  "source": "Sweet Amber"
+                  "source": "The Pariah's Instructions"
                 }
               ]
             },
@@ -98323,9 +98425,9 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 2164,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
+                  "item_id": 11635,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Depths: Hedrum the Creeper"
                 },
                 {
                   "item_id": 10750,
@@ -98379,9 +98481,9 @@
                   "source": "PvP reward · Horde"
                 },
                 {
-                  "item_id": 9479,
-                  "source_kind": "dungeon",
-                  "source": "Zul'Farrak: Chief Ukorz Sandscalp"
+                  "item_id": 10008,
+                  "source_kind": "crafted",
+                  "source": "Tailoring"
                 }
               ]
             },
@@ -98397,9 +98499,9 @@
                   "source": "Wanted: Vile Priestess Hexx and Her Minions"
                 },
                 {
-                  "item_id": 17772,
-                  "source_kind": "quest",
-                  "source": "Shadowshard Fragments"
+                  "item_id": 19535,
+                  "source_kind": "rep",
+                  "source": "Warsong Outriders"
                 }
               ]
             },
@@ -98446,14 +98548,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 11193,
-                  "source_kind": "quest",
-                  "source": "Broken Alliances"
-                },
-                {
                   "item_id": 15064,
                   "source_kind": "crafted",
                   "source": "Leatherworking"
+                },
+                {
+                  "item_id": 11193,
+                  "source_kind": "quest",
+                  "source": "Broken Alliances"
                 }
               ]
             },
@@ -98487,7 +98589,7 @@
                   "source": "World drop"
                 },
                 {
-                  "item_id": 252548,
+                  "item_id": 252547,
                   "source_kind": "crafted",
                   "source": "Leatherworking"
                 }
@@ -98518,32 +98620,32 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 8262,
+                  "item_id": 1718,
                   "source_kind": "world_drop",
                   "source": "World drop"
                 },
                 {
-                  "item_id": 15057,
-                  "source_kind": "crafted",
-                  "source": "Leatherworking"
+                  "item_id": 9624,
+                  "source_kind": "quest",
+                  "source": "Rig Wars"
                 }
               ]
             },
             "feet": {
-              "item_id": 17728,
-              "source_kind": "dungeon",
-              "source": "Maraudon: Rotgrip",
+              "item_id": 252469,
+              "source_kind": "crafted",
+              "source": "Leatherworking",
               "chance": null,
               "alternatives": [
-                {
-                  "item_id": 252469,
-                  "source_kind": "crafted",
-                  "source": "Leatherworking"
-                },
                 {
                   "item_id": 252468,
                   "source_kind": "crafted",
                   "source": "Leatherworking"
+                },
+                {
+                  "item_id": 17728,
+                  "source_kind": "dungeon",
+                  "source": "Maraudon: Rotgrip"
                 }
               ]
             },
@@ -98554,14 +98656,14 @@
               "chance": 0.25,
               "alternatives": [
                 {
-                  "item_id": 11862,
-                  "source_kind": "quest",
-                  "source": "Bone-Bladed Weapons"
+                  "item_id": 2262,
+                  "source_kind": "dungeon",
+                  "source": "Scarlet Monastery"
                 },
                 {
-                  "item_id": 9533,
-                  "source_kind": "quest",
-                  "source": "Divino-matic Rod"
+                  "item_id": 13095,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
                 }
               ]
             },
@@ -98572,14 +98674,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 11862,
-                  "source_kind": "quest",
-                  "source": "Bone-Bladed Weapons"
+                  "item_id": 2262,
+                  "source_kind": "dungeon",
+                  "source": "Scarlet Monastery"
                 },
                 {
-                  "item_id": 9533,
-                  "source_kind": "quest",
-                  "source": "Divino-matic Rod"
+                  "item_id": 13095,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
                 }
               ]
             },
@@ -98610,13 +98712,13 @@
               ]
             },
             "main_hand": {
-              "item_id": 2164,
+              "item_id": 2163,
               "source_kind": "world_drop",
               "source": "World drop",
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 2163,
+                  "item_id": 2164,
                   "source_kind": "world_drop",
                   "source": "World drop"
                 },
@@ -98652,9 +98754,9 @@
                   "source": "Sunken Temple: Atal'ai Warrior"
                 },
                 {
-                  "item_id": 13039,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
+                  "item_id": 11628,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Depths: Houndmaster Grebmar"
                 }
               ]
             }
@@ -98673,8 +98775,8 @@
             17728,
             17713,
             19516,
-            249470,
             249469,
+            249470,
             2163,
             6660,
             2100
@@ -98688,11 +98790,12 @@
             13120,
             20193,
             220859,
-            17728,
+            252469,
             17713,
             19511,
             19120,
             249470,
+            2163,
             6660,
             2100
           ]
@@ -98700,10 +98803,10 @@
         "weights": {
           "attack_power": 1.0,
           "strength": 1.0,
-          "agility": 1.646,
-          "crit": 1.293,
-          "hit": 2.117,
-          "melee_haste": 9.073
+          "agility": 1.693,
+          "crit": 1.366,
+          "hit": 1.945,
+          "melee_haste": 9.252
         }
       },
       {
@@ -98717,32 +98820,32 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 13404,
-                  "source_kind": "dungeon",
-                  "source": "Stratholme: The Unforgiven"
+                  "item_id": 227055,
+                  "source_kind": "pvp",
+                  "source": "PvP reward · Alliance"
                 },
                 {
-                  "item_id": 227055,
+                  "item_id": 231545,
                   "source_kind": "pvp",
                   "source": "PvP reward · Alliance"
                 }
               ]
             },
             "neck": {
-              "item_id": 13089,
-              "source_kind": "world_drop",
-              "source": "World drop",
+              "item_id": 15411,
+              "source_kind": "quest",
+              "source": "In Dreams",
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 12103,
-                  "source_kind": "dungeon",
-                  "source": "Stratholme: Balnazzar"
+                  "item_id": 17044,
+                  "source_kind": "quest",
+                  "source": "Aurius' Reckoning"
                 },
                 {
-                  "item_id": 15411,
-                  "source_kind": "quest",
-                  "source": "In Dreams"
+                  "item_id": 11933,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Depths: Emperor Dagran Thaurissan"
                 }
               ]
             },
@@ -98753,9 +98856,9 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 12082,
-                  "source_kind": "quest",
-                  "source": "A Taste of Flame"
+                  "item_id": 20059,
+                  "source_kind": "rep",
+                  "source": "The League of Arathor"
                 },
                 {
                   "item_id": 227054,
@@ -98765,9 +98868,9 @@
               ]
             },
             "back": {
-              "item_id": 272414,
-              "source_kind": "vendor",
-              "source": "Pix Xizzix",
+              "item_id": 13340,
+              "source_kind": "dungeon",
+              "source": "Stratholme: Baron Rivendare",
               "chance": null,
               "alternatives": [
                 {
@@ -98776,9 +98879,9 @@
                   "source": "The League of Arathor"
                 },
                 {
-                  "item_id": 3475,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
+                  "item_id": 272414,
+                  "source_kind": "vendor",
+                  "source": "Pix Xizzix"
                 }
               ]
             },
@@ -98789,14 +98892,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 227058,
-                  "source_kind": "pvp",
-                  "source": "PvP reward · Alliance"
+                  "item_id": 14637,
+                  "source_kind": "dungeon",
+                  "source": "Scholomance"
                 },
                 {
-                  "item_id": 231543,
-                  "source_kind": "pvp",
-                  "source": "PvP reward · Alliance"
+                  "item_id": 252484,
+                  "source_kind": "crafted",
+                  "source": "Leatherworking"
                 }
               ]
             },
@@ -98819,15 +98922,15 @@
               ]
             },
             "hands": {
-              "item_id": 867,
-              "source_kind": "world_drop",
-              "source": "World drop",
+              "item_id": 271948,
+              "source_kind": "rep",
+              "source": "Theramore Expeditionary Force",
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 15063,
-                  "source_kind": "crafted",
-                  "source": "Leatherworking"
+                  "item_id": 16396,
+                  "source_kind": "pvp",
+                  "source": "PvP rank 7 · Knight-Lieutenant · Alliance"
                 },
                 {
                   "item_id": 231544,
@@ -98843,14 +98946,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 20045,
-                  "source_kind": "rep",
-                  "source": "The League of Arathor"
-                },
-                {
                   "item_id": 16458,
                   "source_kind": "pvp",
                   "source": "PvP rank 12 · Marshal · Alliance"
+                },
+                {
+                  "item_id": 19044,
+                  "source_kind": "crafted",
+                  "source": "Leatherworking"
                 }
               ]
             },
@@ -98927,33 +99030,28 @@
               ]
             },
             "trinket1": {
-              "item_id": 249470,
-              "source_kind": "crafted",
-              "source": "Enchanting",
-              "chance": null,
-              "alternatives": [
-                {
-                  "item_id": 249469,
-                  "source_kind": "crafted",
-                  "source": "Enchanting"
-                }
-              ]
-            },
-            "trinket2": {
               "item_id": 11815,
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Emperor Dagran Thaurissan",
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 249469,
-                  "source_kind": "crafted",
-                  "source": "Enchanting"
-                },
-                {
                   "item_id": 22321,
                   "source_kind": "dungeon",
                   "source": "Blackrock Spire: Overlord Wyrmthalak"
+                }
+              ]
+            },
+            "trinket2": {
+              "item_id": 249469,
+              "source_kind": "crafted",
+              "source": "Enchanting",
+              "chance": null,
+              "alternatives": [
+                {
+                  "item_id": 249470,
+                  "source_kind": "crafted",
+                  "source": "Enchanting"
                 }
               ]
             },
@@ -98976,23 +99074,17 @@
               ]
             },
             "off_hand": {
-              "item_id": 14555,
+              "item_id": 19100,
+              "source_kind": "rep",
+              "source": "Stormpike Guard",
+              "chance": null,
+              "alternatives": []
+            },
+            "ranged": {
+              "item_id": 2100,
               "source_kind": "world_drop",
               "source": "World drop",
               "chance": null,
-              "alternatives": [
-                {
-                  "item_id": 12783,
-                  "source_kind": "crafted",
-                  "source": "Blacksmithing"
-                }
-              ]
-            },
-            "ranged": {
-              "item_id": 12651,
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: Shadow Hunter Vosh'gajin",
-              "chance": 0.08,
               "alternatives": [
                 {
                   "item_id": 12653,
@@ -99000,9 +99092,9 @@
                   "source": "Blackrock Spire: Shadow Hunter Vosh'gajin"
                 },
                 {
-                  "item_id": 2100,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
+                  "item_id": 22318,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Depths: Arena Spoils"
                 }
               ]
             }
@@ -99015,32 +99107,32 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 227057,
-                  "source_kind": "pvp",
-                  "source": "PvP reward · Horde"
+                  "item_id": 13404,
+                  "source_kind": "dungeon",
+                  "source": "Stratholme: The Unforgiven"
                 },
                 {
-                  "item_id": 231553,
+                  "item_id": 227057,
                   "source_kind": "pvp",
                   "source": "PvP reward · Horde"
                 }
               ]
             },
             "neck": {
-              "item_id": 15411,
-              "source_kind": "quest",
-              "source": "In Dreams",
+              "item_id": 13089,
+              "source_kind": "world_drop",
+              "source": "World drop",
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 11933,
+                  "item_id": 12103,
                   "source_kind": "dungeon",
-                  "source": "Blackrock Depths: Emperor Dagran Thaurissan"
+                  "source": "Stratholme: Balnazzar"
                 },
                 {
-                  "item_id": 17044,
+                  "item_id": 15411,
                   "source_kind": "quest",
-                  "source": "Aurius' Reckoning"
+                  "source": "In Dreams"
                 }
               ]
             },
@@ -99051,9 +99143,9 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 20194,
-                  "source_kind": "rep",
-                  "source": "The Defilers"
+                  "item_id": 12082,
+                  "source_kind": "quest",
+                  "source": "A Taste of Flame"
                 },
                 {
                   "item_id": 227056,
@@ -99069,14 +99161,14 @@
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 13340,
+                  "source_kind": "dungeon",
+                  "source": "Stratholme: Baron Rivendare"
+                },
+                {
                   "item_id": 20068,
                   "source_kind": "rep",
                   "source": "The Defilers"
-                },
-                {
-                  "item_id": 11626,
-                  "source_kind": "dungeon",
-                  "source": "Blackrock Depths: High Interrogator Gerstahn "
                 }
               ]
             },
@@ -99087,14 +99179,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 14637,
-                  "source_kind": "dungeon",
-                  "source": "Scholomance"
+                  "item_id": 227060,
+                  "source_kind": "pvp",
+                  "source": "PvP reward · Horde"
                 },
                 {
-                  "item_id": 252484,
-                  "source_kind": "crafted",
-                  "source": "Leatherworking"
+                  "item_id": 231549,
+                  "source_kind": "pvp",
+                  "source": "PvP reward · Horde"
                 }
               ]
             },
@@ -99123,14 +99215,14 @@
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 15063,
+                  "source_kind": "crafted",
+                  "source": "Leatherworking"
+                },
+                {
                   "item_id": 231555,
                   "source_kind": "pvp",
                   "source": "PvP reward · Horde"
-                },
-                {
-                  "item_id": 272099,
-                  "source_kind": "vendor",
-                  "source": "Creeg Bothunk"
                 }
               ]
             },
@@ -99146,9 +99238,9 @@
                   "source": "PvP rank 12 · General · Horde"
                 },
                 {
-                  "item_id": 19044,
-                  "source_kind": "crafted",
-                  "source": "Leatherworking"
+                  "item_id": 20190,
+                  "source_kind": "rep",
+                  "source": "The Defilers"
                 }
               ]
             },
@@ -99177,14 +99269,14 @@
               "chance": 0.16,
               "alternatives": [
                 {
-                  "item_id": 13210,
-                  "source_kind": "dungeon",
-                  "source": "Blackrock Spire: Halycon"
-                },
-                {
                   "item_id": 12553,
                   "source_kind": "dungeon",
                   "source": "Blackrock Depths: Princess Moira Bronzebeard "
+                },
+                {
+                  "item_id": 13210,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Spire: Halycon"
                 }
               ]
             },
@@ -99195,14 +99287,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 13098,
-                  "source_kind": "dungeon",
-                  "source": "Blackrock Spire: General Drakkisath"
-                },
-                {
                   "item_id": 17713,
                   "source_kind": "dungeon",
                   "source": "Maraudon: Princess Theradras"
+                },
+                {
+                  "item_id": 13098,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Spire: General Drakkisath"
                 }
               ]
             },
@@ -99218,35 +99310,45 @@
                   "source": "Maraudon: Princess Theradras"
                 },
                 {
-                  "item_id": 19510,
-                  "source_kind": "rep",
-                  "source": "Warsong Outriders"
+                  "item_id": 13098,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Spire: General Drakkisath"
                 }
               ]
             },
             "trinket1": {
+              "item_id": 11815,
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Emperor Dagran Thaurissan",
+              "chance": null,
+              "alternatives": [
+                {
+                  "item_id": 249469,
+                  "source_kind": "crafted",
+                  "source": "Enchanting"
+                },
+                {
+                  "item_id": 22321,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Spire: Overlord Wyrmthalak"
+                }
+              ]
+            },
+            "trinket2": {
               "item_id": 19120,
               "source_kind": "quest",
               "source": "Job Opening: Guard Captain of Revantusk Village",
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 11815,
-                  "source_kind": "dungeon",
-                  "source": "Blackrock Depths: Emperor Dagran Thaurissan"
-                }
-              ]
-            },
-            "trinket2": {
-              "item_id": 249469,
-              "source_kind": "crafted",
-              "source": "Enchanting",
-              "chance": null,
-              "alternatives": [
+                  "item_id": 249469,
+                  "source_kind": "crafted",
+                  "source": "Enchanting"
+                },
                 {
-                  "item_id": 11815,
+                  "item_id": 22321,
                   "source_kind": "dungeon",
-                  "source": "Blackrock Depths: Emperor Dagran Thaurissan"
+                  "source": "Blackrock Spire: Overlord Wyrmthalak"
                 }
               ]
             },
@@ -99269,27 +99371,33 @@
               ]
             },
             "off_hand": {
-              "item_id": 19099,
-              "source_kind": "rep",
-              "source": "Frostwolf Clan",
-              "chance": null,
-              "alternatives": []
-            },
-            "ranged": {
-              "item_id": 2100,
+              "item_id": 14555,
               "source_kind": "world_drop",
               "source": "World drop",
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 12783,
+                  "source_kind": "crafted",
+                  "source": "Blacksmithing"
+                }
+              ]
+            },
+            "ranged": {
+              "item_id": 12651,
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Shadow Hunter Vosh'gajin",
+              "chance": 0.08,
+              "alternatives": [
+                {
+                  "item_id": 2100,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
+                },
+                {
                   "item_id": 12653,
                   "source_kind": "dungeon",
                   "source": "Blackrock Spire: Shadow Hunter Vosh'gajin"
-                },
-                {
-                  "item_id": 22318,
-                  "source_kind": "dungeon",
-                  "source": "Blackrock Depths: Arena Spoils"
                 }
               ]
             }
@@ -99297,6 +99405,24 @@
         },
         "new_at_band": {
           "alliance": [
+            279253,
+            15411,
+            15058,
+            13340,
+            15056,
+            19587,
+            271948,
+            272395,
+            15057,
+            16711,
+            19325,
+            272408,
+            11815,
+            249469,
+            12590,
+            19100
+          ],
+          "horde": [
             279253,
             15058,
             272414,
@@ -99308,34 +99434,19 @@
             19325,
             272408,
             11815,
+            19120,
             12590,
             14555,
             12651
-          ],
-          "horde": [
-            279253,
-            15411,
-            15058,
-            272414,
-            15056,
-            19587,
-            272395,
-            15057,
-            16711,
-            19325,
-            272408,
-            249469,
-            12590,
-            19099
           ]
         },
         "weights": {
           "attack_power": 1.0,
           "strength": 1.0,
-          "agility": 1.782,
-          "crit": 1.993,
-          "hit": 4.016,
-          "melee_haste": 37.66
+          "agility": 1.465,
+          "crit": 1.224,
+          "hit": 1.326,
+          "melee_haste": 10.805
         }
       }
     ],
@@ -100053,14 +100164,14 @@
               "chance": 0.6,
               "alternatives": [
                 {
-                  "item_id": 13114,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
-                },
-                {
                   "item_id": 9509,
                   "source_kind": "dungeon",
                   "source": "Gnomeregan"
+                },
+                {
+                  "item_id": 13114,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
                 }
               ]
             },
@@ -100125,14 +100236,14 @@
               "chance": 0.25,
               "alternatives": [
                 {
-                  "item_id": 776,
-                  "source_kind": "dungeon",
-                  "source": "Razorfen Kraul"
-                },
-                {
                   "item_id": 6681,
                   "source_kind": "dungeon",
                   "source": "Razorfen Kraul: Aggem Thorncurse"
+                },
+                {
+                  "item_id": 776,
+                  "source_kind": "dungeon",
+                  "source": "Razorfen Kraul"
                 }
               ]
             },
@@ -100463,10 +100574,10 @@
         "weights": {
           "attack_power": 1.0,
           "strength": 1.0,
-          "agility": 1.644,
-          "crit": 0.617,
-          "hit": 0.918,
-          "melee_haste": 5.411
+          "agility": 1.66,
+          "crit": 0.644,
+          "hit": 0.896,
+          "melee_haste": 4.945
         }
       },
       {
@@ -100606,14 +100717,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 13117,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
-                },
-                {
                   "item_id": 20090,
                   "source_kind": "rep",
                   "source": "The League of Arathor"
+                },
+                {
+                  "item_id": 13117,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
                 }
               ]
             },
@@ -101059,10 +101170,10 @@
         "weights": {
           "attack_power": 1.0,
           "strength": 1.0,
-          "agility": 1.695,
-          "crit": 0.92,
-          "hit": 1.195,
-          "melee_haste": 6.368
+          "agility": 1.708,
+          "crit": 0.939,
+          "hit": 1.279,
+          "melee_haste": 6.732
         }
       },
       {
@@ -101153,9 +101264,9 @@
                   "source": "Leatherworking"
                 },
                 {
-                  "item_id": 11193,
-                  "source_kind": "quest",
-                  "source": "Tremors of the Earth"
+                  "item_id": 10583,
+                  "source_kind": "dungeon",
+                  "source": "Razorfen Downs"
                 }
               ]
             },
@@ -101220,14 +101331,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 9652,
-                  "source_kind": "quest",
-                  "source": "Saving Sharpbeak"
-                },
-                {
                   "item_id": 8262,
                   "source_kind": "world_drop",
                   "source": "World drop"
+                },
+                {
+                  "item_id": 9652,
+                  "source_kind": "quest",
+                  "source": "Saving Sharpbeak"
                 }
               ]
             },
@@ -101290,18 +101401,24 @@
               "source_kind": "crafted",
               "source": "Enchanting",
               "chance": null,
-              "alternatives": []
+              "alternatives": [
+                {
+                  "item_id": 249469,
+                  "source_kind": "crafted",
+                  "source": "Enchanting"
+                }
+              ]
             },
             "trinket2": {
-              "item_id": 249469,
-              "source_kind": "crafted",
-              "source": "Enchanting",
+              "item_id": 744,
+              "source_kind": "quest",
+              "source": "Sweet Amber",
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 744,
-                  "source_kind": "quest",
-                  "source": "Sweet Amber"
+                  "item_id": 249469,
+                  "source_kind": "crafted",
+                  "source": "Enchanting"
                 }
               ]
             },
@@ -101435,14 +101552,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 11193,
-                  "source_kind": "quest",
-                  "source": "Broken Alliances"
-                },
-                {
                   "item_id": 15064,
                   "source_kind": "crafted",
                   "source": "Leatherworking"
+                },
+                {
+                  "item_id": 10583,
+                  "source_kind": "dungeon",
+                  "source": "Razorfen Downs"
                 }
               ]
             },
@@ -101476,9 +101593,9 @@
                   "source": "World drop"
                 },
                 {
-                  "item_id": 220857,
-                  "source_kind": "vendor",
-                  "source": "PvP reward · Horde"
+                  "item_id": 252548,
+                  "source_kind": "crafted",
+                  "source": "Leatherworking"
                 }
               ]
             },
@@ -101507,12 +101624,12 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 1718,
+                  "item_id": 8262,
                   "source_kind": "world_drop",
                   "source": "World drop"
                 },
                 {
-                  "item_id": 8262,
+                  "item_id": 1718,
                   "source_kind": "world_drop",
                   "source": "World drop"
                 }
@@ -101573,9 +101690,9 @@
               ]
             },
             "trinket1": {
-              "item_id": 19120,
-              "source_kind": "quest",
-              "source": "Job Opening: Guard Captain of Revantusk Village",
+              "item_id": 249470,
+              "source_kind": "crafted",
+              "source": "Enchanting",
               "chance": null,
               "alternatives": [
                 {
@@ -101586,9 +101703,9 @@
               ]
             },
             "trinket2": {
-              "item_id": 249470,
-              "source_kind": "crafted",
-              "source": "Enchanting",
+              "item_id": 19120,
+              "source_kind": "quest",
+              "source": "Job Opening: Guard Captain of Revantusk Village",
               "chance": null,
               "alternatives": [
                 {
@@ -101663,7 +101780,7 @@
             17713,
             19516,
             249470,
-            249469,
+            744,
             6660,
             2100
           ],
@@ -101679,8 +101796,8 @@
             17728,
             17713,
             19511,
-            19120,
             249470,
+            19120,
             6660,
             2100
           ]
@@ -101688,10 +101805,10 @@
         "weights": {
           "attack_power": 1.0,
           "strength": 1.0,
-          "agility": 1.594,
-          "crit": 1.072,
-          "hit": 1.436,
-          "melee_haste": 6.841
+          "agility": 1.612,
+          "crit": 1.116,
+          "hit": 1.441,
+          "melee_haste": 6.511
         }
       },
       {
@@ -101717,9 +101834,9 @@
               ]
             },
             "neck": {
-              "item_id": 13089,
-              "source_kind": "world_drop",
-              "source": "World drop",
+              "item_id": 15411,
+              "source_kind": "quest",
+              "source": "In Dreams",
               "chance": null,
               "alternatives": [
                 {
@@ -101728,9 +101845,9 @@
                   "source": "Blackrock Depths: Emperor Dagran Thaurissan"
                 },
                 {
-                  "item_id": 15411,
-                  "source_kind": "quest",
-                  "source": "In Dreams"
+                  "item_id": 13089,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
                 }
               ]
             },
@@ -101741,32 +101858,32 @@
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 12927,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Spire: Pyroguard Emberseer"
+                },
+                {
                   "item_id": 227054,
                   "source_kind": "pvp",
                   "source": "PvP reward · Alliance"
-                },
-                {
-                  "item_id": 271955,
-                  "source_kind": "rep",
-                  "source": "Theramore Expeditionary Force"
                 }
               ]
             },
             "back": {
-              "item_id": 13340,
-              "source_kind": "dungeon",
-              "source": "Stratholme: Baron Rivendare",
+              "item_id": 272414,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix",
               "chance": null,
               "alternatives": [
+                {
+                  "item_id": 13340,
+                  "source_kind": "dungeon",
+                  "source": "Stratholme: Baron Rivendare"
+                },
                 {
                   "item_id": 20073,
                   "source_kind": "rep",
                   "source": "The League of Arathor"
-                },
-                {
-                  "item_id": 272414,
-                  "source_kind": "vendor",
-                  "source": "Pix Xizzix"
                 }
               ]
             },
@@ -101777,9 +101894,9 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 14637,
-                  "source_kind": "dungeon",
-                  "source": "Scholomance"
+                  "item_id": 231543,
+                  "source_kind": "pvp",
+                  "source": "PvP reward · Alliance"
                 },
                 {
                   "item_id": 252484,
@@ -101800,9 +101917,9 @@
                   "source": "PvP rank 12 · Marshal · Alliance"
                 },
                 {
-                  "item_id": 13120,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
+                  "item_id": 12966,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Spire: The Beast"
                 }
               ]
             },
@@ -101813,9 +101930,9 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 16396,
-                  "source_kind": "pvp",
-                  "source": "PvP rank 7 · Knight-Lieutenant · Alliance"
+                  "item_id": 15063,
+                  "source_kind": "crafted",
+                  "source": "Leatherworking"
                 },
                 {
                   "item_id": 231544,
@@ -101831,14 +101948,14 @@
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 20045,
+                  "source_kind": "rep",
+                  "source": "The League of Arathor"
+                },
+                {
                   "item_id": 16458,
                   "source_kind": "pvp",
                   "source": "PvP rank 12 · Marshal · Alliance"
-                },
-                {
-                  "item_id": 19044,
-                  "source_kind": "crafted",
-                  "source": "Leatherworking"
                 }
               ]
             },
@@ -101872,9 +101989,9 @@
                   "source": "Blackrock Depths: Princess Moira Bronzebeard "
                 },
                 {
-                  "item_id": 13210,
-                  "source_kind": "dungeon",
-                  "source": "Blackrock Spire: Halycon"
+                  "item_id": 231546,
+                  "source_kind": "pvp",
+                  "source": "PvP reward · Alliance"
                 }
               ]
             },
@@ -101924,11 +102041,6 @@
                   "item_id": 249469,
                   "source_kind": "crafted",
                   "source": "Enchanting"
-                },
-                {
-                  "item_id": 22321,
-                  "source_kind": "dungeon",
-                  "source": "Blackrock Spire: Overlord Wyrmthalak"
                 }
               ]
             },
@@ -101942,6 +102054,11 @@
                   "item_id": 249469,
                   "source_kind": "crafted",
                   "source": "Enchanting"
+                },
+                {
+                  "item_id": 22321,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Spire: Overlord Wyrmthalak"
                 }
               ]
             },
@@ -101970,27 +102087,27 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 19100,
-                  "source_kind": "rep",
-                  "source": "Stormpike Guard"
+                  "item_id": 12783,
+                  "source_kind": "crafted",
+                  "source": "Blacksmithing"
                 }
               ]
             },
             "ranged": {
-              "item_id": 2100,
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "chance": null,
+              "item_id": 12651,
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Shadow Hunter Vosh'gajin",
+              "chance": 0.08,
               "alternatives": [
+                {
+                  "item_id": 2100,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
+                },
                 {
                   "item_id": 12653,
                   "source_kind": "dungeon",
                   "source": "Blackrock Spire: Shadow Hunter Vosh'gajin"
-                },
-                {
-                  "item_id": 22318,
-                  "source_kind": "dungeon",
-                  "source": "Blackrock Depths: Arena Spoils"
                 }
               ]
             }
@@ -102015,9 +102132,9 @@
               ]
             },
             "neck": {
-              "item_id": 13089,
-              "source_kind": "world_drop",
-              "source": "World drop",
+              "item_id": 15411,
+              "source_kind": "quest",
+              "source": "In Dreams",
               "chance": null,
               "alternatives": [
                 {
@@ -102026,9 +102143,9 @@
                   "source": "Blackrock Depths: Emperor Dagran Thaurissan"
                 },
                 {
-                  "item_id": 15411,
+                  "item_id": 17044,
                   "source_kind": "quest",
-                  "source": "In Dreams"
+                  "source": "Aurius' Reckoning"
                 }
               ]
             },
@@ -102039,32 +102156,32 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 12927,
-                  "source_kind": "dungeon",
-                  "source": "Blackrock Spire: Pyroguard Emberseer"
-                },
-                {
                   "item_id": 227056,
                   "source_kind": "pvp",
                   "source": "PvP reward · Horde"
+                },
+                {
+                  "item_id": 272105,
+                  "source_kind": "vendor",
+                  "source": "Creeg Bothunk"
                 }
               ]
             },
             "back": {
-              "item_id": 272414,
-              "source_kind": "vendor",
-              "source": "Pix Xizzix",
+              "item_id": 13340,
+              "source_kind": "dungeon",
+              "source": "Stratholme: Baron Rivendare",
               "chance": null,
               "alternatives": [
-                {
-                  "item_id": 13340,
-                  "source_kind": "dungeon",
-                  "source": "Stratholme: Baron Rivendare"
-                },
                 {
                   "item_id": 20068,
                   "source_kind": "rep",
                   "source": "The Defilers"
+                },
+                {
+                  "item_id": 272414,
+                  "source_kind": "vendor",
+                  "source": "Pix Xizzix"
                 }
               ]
             },
@@ -102075,9 +102192,9 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 231549,
-                  "source_kind": "pvp",
-                  "source": "PvP reward · Horde"
+                  "item_id": 14637,
+                  "source_kind": "dungeon",
+                  "source": "Scholomance"
                 },
                 {
                   "item_id": 252484,
@@ -102111,9 +102228,9 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 15063,
-                  "source_kind": "crafted",
-                  "source": "Leatherworking"
+                  "item_id": 16499,
+                  "source_kind": "pvp",
+                  "source": "PvP rank 7 · Blood Guard · Horde"
                 },
                 {
                   "item_id": 231555,
@@ -102170,9 +102287,9 @@
                   "source": "Blackrock Depths: Princess Moira Bronzebeard "
                 },
                 {
-                  "item_id": 231552,
-                  "source_kind": "pvp",
-                  "source": "PvP reward · Horde"
+                  "item_id": 13210,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Spire: Halycon"
                 }
               ]
             },
@@ -102213,9 +102330,9 @@
               ]
             },
             "trinket1": {
-              "item_id": 249470,
-              "source_kind": "crafted",
-              "source": "Enchanting",
+              "item_id": 19120,
+              "source_kind": "quest",
+              "source": "Job Opening: Guard Captain of Revantusk Village",
               "chance": null,
               "alternatives": [
                 {
@@ -102231,20 +102348,20 @@
               ]
             },
             "trinket2": {
-              "item_id": 19120,
-              "source_kind": "quest",
-              "source": "Job Opening: Guard Captain of Revantusk Village",
+              "item_id": 249470,
+              "source_kind": "crafted",
+              "source": "Enchanting",
               "chance": null,
               "alternatives": [
-                {
-                  "item_id": 249469,
-                  "source_kind": "crafted",
-                  "source": "Enchanting"
-                },
                 {
                   "item_id": 11815,
                   "source_kind": "dungeon",
                   "source": "Blackrock Depths: Emperor Dagran Thaurissan"
+                },
+                {
+                  "item_id": 249469,
+                  "source_kind": "crafted",
+                  "source": "Enchanting"
                 }
               ]
             },
@@ -102273,27 +102390,27 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 12783,
-                  "source_kind": "crafted",
-                  "source": "Blacksmithing"
+                  "item_id": 19099,
+                  "source_kind": "rep",
+                  "source": "Frostwolf Clan"
                 }
               ]
             },
             "ranged": {
-              "item_id": 12651,
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: Shadow Hunter Vosh'gajin",
-              "chance": 0.08,
+              "item_id": 2100,
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "chance": null,
               "alternatives": [
-                {
-                  "item_id": 2100,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
-                },
                 {
                   "item_id": 12653,
                   "source_kind": "dungeon",
                   "source": "Blackrock Spire: Shadow Hunter Vosh'gajin"
+                },
+                {
+                  "item_id": 22318,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Depths: Arena Spoils"
                 }
               ]
             }
@@ -102302,8 +102419,9 @@
         "new_at_band": {
           "alliance": [
             279253,
+            15411,
             15058,
-            13340,
+            272414,
             15056,
             19587,
             272395,
@@ -102314,12 +102432,14 @@
             11815,
             249470,
             12590,
-            14555
+            14555,
+            12651
           ],
           "horde": [
             279253,
+            15411,
             15058,
-            272414,
+            13340,
             15056,
             19587,
             272395,
@@ -102327,20 +102447,19 @@
             16711,
             19325,
             272408,
-            249470,
             19120,
+            249470,
             12590,
-            14555,
-            12651
+            14555
           ]
         },
         "weights": {
           "attack_power": 1.0,
           "strength": 1.0,
-          "agility": 1.47,
-          "crit": 1.091,
-          "hit": 1.282,
-          "melee_haste": 9.814
+          "agility": 1.95,
+          "crit": 2.117,
+          "hit": 2.852,
+          "melee_haste": 13.704
         }
       }
     ],
@@ -148684,7 +148803,6 @@
     "3341": "Gauntlets of Ogre Strength",
     "3414": "Crested Scepter",
     "3415": "Staff of the Friar",
-    "3475": "Cloak of Flames",
     "3480": "Rough Bronze Shoulders",
     "3481": "Silvered Bronze Shoulders",
     "3485": "Green Iron Gauntlets",
@@ -148790,6 +148908,7 @@
     "5781": "Murloc Scale Breastplate",
     "5943": "Rift Bracers",
     "5962": "Guardian Pants",
+    "5963": "Barbaric Leggings",
     "5964": "Barbaric Shoulders",
     "5965": "Guardian Cloak",
     "5970": "Serpent Gloves",
@@ -149121,6 +149240,7 @@
     "11631": "Stoneshell Guard",
     "11632": "Earthslag Shoulders",
     "11633": "Spiderfang Carapace",
+    "11635": "Hookfang Shanker",
     "11662": "Ban'thok Sash",
     "11669": "Naglering",
     "11675": "Shadefiend Boots",
@@ -149136,6 +149256,7 @@
     "11750": "Kindling Stave",
     "11755": "Verek's Collar",
     "11782": "Boreal Mantle",
+    "11810": "Force of Will",
     "11815": "Hand of Justice",
     "11819": "Second Wind",
     "11822": "Omnicast Boots",
@@ -149201,6 +149322,7 @@
     "12927": "Truestrike Shoulders",
     "12929": "Emberfury Talisman",
     "12936": "Battleborn Armbraces",
+    "12966": "Blackmist Armguards",
     "12967": "Bloodmoon Cloak",
     "12968": "Frostweaver Cape",
     "12977": "Magefist Gloves",
@@ -149444,6 +149566,7 @@
     "16474": "Field Marshal's Lamellar Faceguard",
     "16481": "Marshal's Plate Bracers",
     "16482": "Marshal's Plate Girdle",
+    "16499": "Blood Guard's Leather Vices",
     "16517": "Legionnaire's Chain Bracers",
     "16537": "General's Silk Sash",
     "16538": "General's Silk Cuffs",
@@ -149531,6 +149654,7 @@
     "17743": "Resurgence Rod",
     "17745": "Noxious Shooter",
     "17748": "Vinerot Sandals",
+    "17749": "Phytoskin Spaulders",
     "17755": "Satyrmane Sash",
     "17772": "Zealous Shadowshard Pendant",
     "17773": "Prodigious Shadowshard Pendant",
@@ -149563,6 +149687,7 @@
     "18701": "Innervating Band",
     "18706": "Arena Master",
     "18710": "Arena Bracers",
+    "18716": "Ash Covered Boots",
     "18721": "Barrage Girdle",
     "18723": "Animated Chain Necklace",
     "18727": "Crimson Felt Hat",
@@ -149803,7 +149928,6 @@
     "220854": "Knight's Leather Armor",
     "220855": "Stone Guard's Leather Armor",
     "220856": "Sergeant Major's Leather Gauntlets",
-    "220857": "First Sergeant's Leather Gauntlets",
     "220858": "Knight's Leather Pants",
     "220859": "Stone Guard's Leather Pants",
     "220862": "Sergeant Major's Crackling Leather Boots",
@@ -149845,8 +149969,8 @@
     "227055": "Lieutenant Commander's Leather Helm",
     "227056": "Champion's Leather Shoulders",
     "227057": "Champion's Leather Helm",
-    "227058": "Knight-Captain's Leather Chestpiece",
     "227059": "Legionnaire's Leather Legguards",
+    "227060": "Legionnaire's Leather Chestpiece",
     "227090": "Champion's Dreadweave Cowl",
     "227093": "Lieutenant Commander's Dreadweave Cowl",
     "227094": "Legionnaire's Dreadweave Tunic",
@@ -149904,6 +150028,7 @@
     "231543": "Field Marshal's Leather Chestpiece",
     "231544": "Marshal's Leather Handgrips",
     "231545": "Field Marshal's Leather Mask",
+    "231546": "Marshal's Leather Footguards",
     "231548": "Marshal's Leather Leggings",
     "231549": "Warlord's Leather Breastplate",
     "231552": "General's Leather Treads",
@@ -150033,6 +150158,7 @@
     "231699": "Field Marshal's Dragonhide Spaulders",
     "231700": "Marshal's Dragonhide Gloves",
     "231701": "Field Marshal's Dragonhide Headdress",
+    "231702": "Field Marshal's Dragonhide Tunic",
     "231705": "Field Marshal's Dragonhide Pauldrons",
     "234542": "High Warlord's Greatsword",
     "234543": "High Warlord's Battle Axe",
@@ -150687,6 +150813,7 @@
     "11304": 7.4,
     "11608": 47.4,
     "11628": 27.2,
+    "11635": 35.7,
     "11748": 52.5,
     "11750": 34.1,
     "11860": 37.3,
