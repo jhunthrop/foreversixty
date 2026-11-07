@@ -32,6 +32,11 @@ local ItemTooltip = ns.ItemTooltip or require("ItemTooltip")
 local Chip = {}
 
 Chip.FRAME_NAME = "ForeverSixtyChip"
+--- The secure button that opens the talent window (Chip.syncTalentButton) and what it clicks.
+Chip.TALENT_BUTTON_NAME = "ForeverSixtyChipTalents"
+Chip.TALENT_MICRO_BUTTON = "TalentMicroButton"
+--- How far over the chip the secure button sits: above the "+N" badge, so the whole chip clicks.
+Chip.TALENT_BUTTON_RAISE = 20
 Chip.CARD_NAME = "ForeverSixtyChipPath"
 
 --- Seconds the point ring pulses before it holds still (spec section 4.1).
@@ -1106,7 +1111,7 @@ end
 function Chip.handlerFor(chosen)
 	local action = chosen ~= nil and chosen.action or nil
 	if action == "talents" then
-		return Theme.toggleTalents
+		return Chip.openTalents
 	elseif action == "equip" then
 		return function()
 			if not (Chip.combat or Theme.inCombat()) then
@@ -1199,6 +1204,8 @@ function Chip.setCombat(inCombat)
 	if Chip.combat then
 		Chip.closePath()
 	end
+	-- Combat is starting and the lockdown is not on yet: the last moment the secure button can go.
+	Chip.syncTalentButton()
 end
 
 local function copyList(list)
@@ -1393,6 +1400,155 @@ function Chip.savePosition()
 	return true
 end
 
+--- The chip's hover and drag, on the chip's own frame whichever button took the mouse.
+function Chip.onEnter(frame)
+	Chip.paintEdge(true)
+	if Chip.current ~= nil then
+		Theme.showLines(frame, Chip.tooltipLines(Chip.current), "ANCHOR_BOTTOMLEFT")
+	end
+end
+
+function Chip.onLeave()
+	Chip.paintEdge(false)
+	Theme.hideTooltip()
+end
+
+function Chip.onDragStart(frame)
+	if Theme.shiftDown() then
+		Chip.dragging = true
+		Theme.hideTooltip()
+		frame:StartMoving()
+	end
+end
+
+function Chip.onDragStop(frame)
+	if Chip.dragging then
+		Chip.dragging = false
+		frame:StopMovingOrSizing()
+		Chip.savePosition()
+	end
+end
+
+-- The talent click ------------------------------------------------------------
+-- Taint (live taint.log, 7 Nov 2026): opening the talent window from addon code runs the window's
+-- OnShow in tainted execution. That OnShow calls MultiActionBar_ShowAllGrids, which lays the action
+-- bars out again, so MainActionBar.snappedToFrame and the bars' shownButtonContainers are written
+-- tainted. The next layout in combat (PetActionBar:Update hides the bar on PLAYER_TARGET_CHANGED,
+-- pet or no pet) clears MainActionBar's anchors, reads that field and is refused the SetPoint: the
+-- main bar has no anchor and the bars anchored to it go with it. pcall and securecall do not help.
+--
+-- So on a client with the micro button the talent click is a secure one: the client's own
+-- SecureActionButtonTemplate clicks TalentMicroButton (talentsOnly: always the Talents tab), and no
+-- addon code is on the stack while the window opens.
+--
+-- The button is protected, and a frame a protected one is anchored to is restricted in combat too.
+-- The chip can stay up in combat (combatHide off) and is resized there, so the button is a child of
+-- UIParent, never the chip's, and is hidden and unanchored as combat starts.
+
+--- The client's talent micro button, or nil where this client has none.
+local function talentMicroButton()
+	return Compat.clientGlobal(Chip.TALENT_MICRO_BUTTON, "table")
+end
+
+--- The chip's own click on "talents". Over the chip the secure button takes this click, so on a
+--- client with the micro button this is only reached when it is not armed (in combat), and then it
+--- does nothing: opening the window from here is the taint above. Only a client with no micro
+--- button opens the window from addon code.
+function Chip.openTalents()
+	if talentMicroButton() ~= nil then
+		return false
+	end
+	return Theme.toggleTalents()
+end
+
+--- After the secure button's click. The left click was the client's own; the right click has no
+--- secure action and hides the chip as on the chip itself.
+function Chip.onTalentButtonPostClick(_, mouseButton)
+	if mouseButton == "RightButton" then
+		Chip.onClick(nil, mouseButton)
+	else
+		Theme.hideTooltip()
+	end
+end
+
+--- The secure button, built the first time the chip offers the talent window; nil on a client
+--- without the micro button or the template. Never called in combat (Chip.syncTalentButton).
+function Chip.ensureTalentButton()
+	if Chip.talentButton ~= nil then
+		return Chip.talentButton
+	end
+	local micro = talentMicroButton()
+	if micro == nil or Chip.noTalentButton then
+		return nil
+	end
+	local ok, button = pcall(CreateFrame, "Button", Chip.TALENT_BUTTON_NAME, UIParent, "SecureActionButtonTemplate")
+	if not ok or type(button) ~= "table" then
+		Chip.noTalentButton = true
+		Theme.note(L.diagChipNoTalentButton)
+		return nil
+	end
+	Theme.noteFrame("Chip talent click", "the chip first offered the talent window")
+	button:SetFrameStrata("MEDIUM")
+	button:SetFrameLevel(Chip.FRAME_LEVEL + Chip.TALENT_BUTTON_RAISE)
+	button:RegisterForClicks("LeftButtonUp", "RightButtonUp")
+	button:RegisterForDrag("LeftButton")
+	-- On the release, as the chip's own click, whatever ActionButtonUseKeyDown says.
+	button:SetAttribute("useOnKeyDown", false)
+	-- The left button with any modifier; the right button has no type, so no secure action.
+	button:SetAttribute("*type1", "click")
+	button:SetAttribute("*clickbutton1", micro)
+	button:SetScript("PostClick", Chip.onTalentButtonPostClick)
+	button:SetScript("OnEnter", function()
+		Chip.onEnter(Chip.frame)
+	end)
+	button:SetScript("OnLeave", function()
+		Chip.onLeave()
+	end)
+	button:SetScript("OnDragStart", function()
+		Chip.onDragStart(Chip.frame)
+	end)
+	button:SetScript("OnDragStop", function()
+		Chip.onDragStop(Chip.frame)
+	end)
+	button:Hide()
+	Chip.talentButton = button
+	return button
+end
+
+--- Whether the secure button belongs over the chip now: the chip is up, takes the mouse and offers
+--- the talent window, and combat is not on.
+local function talentButtonWanted()
+	local frame, model = Chip.frame, Chip.current
+	return frame ~= nil and frame:IsShown() == true and model ~= nil and model.chosen ~= nil
+		and model.chosen.action == "talents" and model.mouse ~= false
+		and not (Chip.combat or Chip.disabled or Chip.inCinematic)
+end
+
+--- Put the secure button over the chip, or take it away. Nothing touches it in the lockdown: a
+--- protected frame refuses, and the refresh at the end of combat brings it back.
+function Chip.syncTalentButton()
+	if Theme.inCombat() then
+		return
+	end
+	local wanted = talentButtonWanted()
+	if wanted == (Chip.talentButtonArmed == true) then
+		return
+	end
+	local button = wanted and Chip.ensureTalentButton() or Chip.talentButton
+	if button == nil then
+		return
+	end
+	if wanted then
+		button:ClearAllPoints()
+		button:SetAllPoints(Chip.frame)
+		button:Show()
+	else
+		button:Hide()
+		button:ClearAllPoints()
+	end
+	Chip.talentButtonArmed = wanted
+end
+
 local function onEvent(_, event)
 	if event == "CINEMATIC_START" then
 		Chip.inCinematic = true
@@ -1400,6 +1556,7 @@ local function onEvent(_, event)
 			Chip.frame:Hide()
 		end
 		Chip.closePath()
+		Chip.syncTalentButton()
 	elseif event == "CINEMATIC_STOP" then
 		Chip.inCinematic = false
 		Chip.refresh()
@@ -1486,30 +1643,10 @@ function Chip.ensure()
 	Chip.badge, Chip.badgeDigits = buildBadge(frame)
 
 	frame:SetScript("OnClick", Chip.onClick)
-	frame:SetScript("OnEnter", function(self)
-		Chip.paintEdge(true)
-		if Chip.current ~= nil then
-			Theme.showLines(self, Chip.tooltipLines(Chip.current), "ANCHOR_BOTTOMLEFT")
-		end
-	end)
-	frame:SetScript("OnLeave", function()
-		Chip.paintEdge(false)
-		Theme.hideTooltip()
-	end)
-	frame:SetScript("OnDragStart", function(self)
-		if Theme.shiftDown() then
-			Chip.dragging = true
-			Theme.hideTooltip()
-			self:StartMoving()
-		end
-	end)
-	frame:SetScript("OnDragStop", function(self)
-		if Chip.dragging then
-			Chip.dragging = false
-			self:StopMovingOrSizing()
-			Chip.savePosition()
-		end
-	end)
+	frame:SetScript("OnEnter", Chip.onEnter)
+	frame:SetScript("OnLeave", Chip.onLeave)
+	frame:SetScript("OnDragStart", Chip.onDragStart)
+	frame:SetScript("OnDragStop", Chip.onDragStop)
 	frame:SetScript("OnEvent", onEvent)
 	Theme.registerEvent(frame, "CINEMATIC_START")
 	Theme.registerEvent(frame, "CINEMATIC_STOP")
@@ -1669,11 +1806,13 @@ function Chip.refresh(data)
 		end
 		Chip.closePath()
 		noteLastNight(model, false)
+		Chip.syncTalentButton()
 		return state
 	end
 	draw(model)
 	noteLastNight(model, true)
 	Chip.selfCheck()
+	Chip.syncTalentButton()
 	return state
 end
 

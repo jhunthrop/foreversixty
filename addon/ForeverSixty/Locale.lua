@@ -789,6 +789,7 @@ local L = {
 	chipIdleInbox = "Build waiting: /fs",
 	chipHintBuildWindow = "Click: Open the build window",
 	diagChipMoved = "The Forever Sixty line was off screen, so it went back beside the minimap",
+	diagChipNoTalentButton = "The Forever Sixty line could not make its talent button; press N for the talent window",
 	-- What the chip cut a too-long line with.
 	ellipsis = "…",
 	diagChipOff = "The Forever Sixty line is off: its text did not fit or it was off screen",
