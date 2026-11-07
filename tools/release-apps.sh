@@ -14,7 +14,8 @@
 #      notes, to the Play track (PLAY_TRACK, default internal) through tools/play-upload.ts
 #      (the Play Developer API with a short-lived token; no service-account key exists),
 #   4. iOS: archives, exports and uploads to TestFlight with fastlane's upload_to_testflight,
-#      once the Apple account exists. Until then iOS is skipped with what is missing named
+#      once the Apple account exists. Signing is automatic, driven by the App Store Connect
+#      key (-allowProvisioningUpdates): no certificate or profile is kept anywhere. Until then iOS is skipped with what is missing named
 #      (or fails, when --platform ios asked for it).
 # It never pushes: push the commit and the tag afterwards (git push --follow-tags), as the
 # workflow does. A build number spent on a failed upload is simply skipped next time.
@@ -57,6 +58,10 @@ readonly PLAY_TRACK=${PLAY_TRACK:-internal}
 readonly PLAY_RELEASE_STATUS=${PLAY_RELEASE_STATUS:-draft}
 readonly ANDROID_SIGNING=(ANDROID_KEYSTORE_PATH ANDROID_KEYSTORE_PASSWORD ANDROID_KEY_ALIAS ANDROID_KEY_PASSWORD)
 readonly APPLE_ACCOUNT=(APPLE_TEAM_ID ASC_KEY_ID ASC_ISSUER_ID ASC_KEY_P8)
+readonly EXPORT_OPTIONS=$IOS_DIR/ExportOptions.plist
+readonly TEAM_PLACEHOLDER=__APPLE_TEAM_ID__
+# The archive's identity under automatic signing; the export re-signs for distribution.
+readonly ARCHIVE_IDENTITY="Apple Development"
 
 BUMP=build
 PLATFORM=both
@@ -162,6 +167,11 @@ preflight() {
 		[ "$PLATFORM" = ios ] && $EXECUTE && die "iOS cannot be released: $IOS_SKIP"
 		DO_IOS=false
 	fi
+	if $DO_IOS; then
+		[[ $APPLE_TEAM_ID =~ ^[A-Z0-9]{10}$ ]] || die "APPLE_TEAM_ID '$APPLE_TEAM_ID' is not a 10-character Team ID"
+		grep -q "$TEAM_PLACEHOLDER" "$EXPORT_OPTIONS" 2>/dev/null ||
+			die "apps/ios/ExportOptions.plist is missing or has no $TEAM_PLACEHOLDER teamID"
+	fi
 	if $DO_ANDROID && $EXECUTE && [ -n "$ANDROID_MISSING" ]; then
 		die "Android cannot be released: set $ANDROID_MISSING"
 	fi
@@ -226,31 +236,48 @@ play_token() {
 
 release_ios() {
 	local work=$1 archive=$1/ForeverSixty.xcarchive export=$1/export key=$1/asc-key.json
+	local options=$1/ExportOptions.plist
 	echo "iOS: archive, export and TestFlight"
 	[ -n "${SENTRY_DSN_IOS:-}" ] || echo "  note: SENTRY_DSN_IOS is empty, so this build reports no crashes"
 	write_asc_key "$key"
+	write_export_options "$options"
 	run "$XCODEGEN" generate --spec "$IOS_DIR/project.yml"
+	# Automatic signing throughout, driven by the App Store Connect key: the archive is signed
+	# for development (the identity automatic signing expects; naming Apple Distribution here
+	# conflicts with it), and the export re-signs it for App Store Connect. With
+	# -allowProvisioningUpdates Xcode registers the bundle IDs and capabilities and makes the
+	# certificates and profiles both targets need.
 	run "$XCODEBUILD" archive -project "$IOS_DIR/ForeverSixty.xcodeproj" -scheme ForeverSixty \
 		-configuration Release -destination 'generic/platform=iOS' -archivePath "$archive" \
-		-allowProvisioningUpdates -authenticationKeyPath "$work/asc-key.p8" \
-		-authenticationKeyID "${ASC_KEY_ID:-}" -authenticationKeyIssuerID "${ASC_ISSUER_ID:-}" \
-		DEVELOPMENT_TEAM="${APPLE_TEAM_ID:-}" CODE_SIGN_STYLE=Automatic CODE_SIGN_IDENTITY="Apple Distribution" \
+		"${ASC_AUTH[@]}" \
+		DEVELOPMENT_TEAM="${APPLE_TEAM_ID:-}" CODE_SIGN_STYLE=Automatic CODE_SIGN_IDENTITY="$ARCHIVE_IDENTITY" \
 		SENTRY_DSN="${SENTRY_DSN_IOS:-}"
 	run "$XCODEBUILD" -exportArchive -archivePath "$archive" -exportPath "$export" \
-		-exportOptionsPlist "$IOS_DIR/ExportOptions.plist" -allowProvisioningUpdates \
-		-authenticationKeyPath "$work/asc-key.p8" -authenticationKeyID "${ASC_KEY_ID:-}" \
-		-authenticationKeyIssuerID "${ASC_ISSUER_ID:-}"
+		-exportOptionsPlist "$options" "${ASC_AUTH[@]}"
 	run "${FASTLANE_CMD[@]}" run upload_to_testflight ipa:"$export/ForeverSixty.ipa" \
 		api_key_path:"$key" changelog:"${NOTES:-Bug fixes and improvements.}" \
 		skip_waiting_for_build_processing:true
 }
 
 # write_asc_key <json path>: the App Store Connect key, as the .p8 xcodebuild reads and the
-# JSON fastlane reads, inside the run's private scratch directory.
+# JSON fastlane reads, inside the run's private scratch directory (removed when the run ends).
+# ASC_AUTH: the flags that let xcodebuild sign and provision with that key.
 write_asc_key() {
+	local p8
+	p8=$(dirname "$1")/asc-key.p8
+	ASC_AUTH=(-allowProvisioningUpdates -authenticationKeyPath "$p8"
+		-authenticationKeyID "${ASC_KEY_ID:-}" -authenticationKeyIssuerID "${ASC_ISSUER_ID:-}")
 	$EXECUTE || return 0
-	printf '%s\n' "$ASC_KEY_P8" >"$(dirname "$1")/asc-key.p8"
-	ruby -rjson -e 'puts JSON.generate(key_id: ENV.fetch("ASC_KEY_ID"), issuer_id: ENV.fetch("ASC_ISSUER_ID"), key: ENV.fetch("ASC_KEY_P8"))' >"$1"
+	(
+		umask 077
+		printf '%s\n' "$ASC_KEY_P8" >"$p8"
+		ruby -rjson -e 'puts JSON.generate(key_id: ENV.fetch("ASC_KEY_ID"), issuer_id: ENV.fetch("ASC_ISSUER_ID"), key: ENV.fetch("ASC_KEY_P8"))' >"$1"
+	)
+}
+
+# write_export_options <plist path>: apps/ios/ExportOptions.plist with the team filled in.
+write_export_options() {
+	sed "s/$TEAM_PLACEHOLDER/${APPLE_TEAM_ID:-}/" "$EXPORT_OPTIONS" >"$1"
 }
 
 print_plan() {

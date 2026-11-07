@@ -16,9 +16,11 @@ settings:
     SWIFT_TREAT_WARNINGS_AS_ERRORS: YES
     GCC_TREAT_WARNINGS_AS_ERRORS: YES
     ENABLE_USER_SCRIPT_SANDBOXING: YES
-    # Simulator-only until the Apple Team ID exists (lane O): ad-hoc
-    # "Sign to Run Locally", which needs no account. A fully unsigned app has
-    # no entitlements and the simulator Keychain refuses it (-34018).
+    # Local and CI simulator builds: ad-hoc "Sign to Run Locally", which needs
+    # no account. A fully unsigned app has no entitlements and the simulator
+    # Keychain refuses it (-34018). A release (tools/release-apps.sh) overrides
+    # all three on its xcodebuild line: automatic signing for APPLE_TEAM_ID,
+    # driven by the App Store Connect key, never a manual identity.
     CODE_SIGN_STYLE: Manual
     CODE_SIGN_IDENTITY: "-"
     DEVELOPMENT_TEAM: ""
