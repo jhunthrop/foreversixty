@@ -1,14 +1,13 @@
 // web/src/lib/guild/raid-buttons.ts
 // The raid page's button recipes, shared by the officer row, the cancel confirm and the
-// attendance surfaces (raids spec 4 "Officer buttons"): one outline, and the failure-coloured
-// outline that only a destructive answer wears.
-import { SECONDARY_BUTTON_FIXED } from '../planner/styles';
+// attendance surfaces (raids spec 4 "Officer buttons"): the system's secondary button (lib/ui/button),
+// and the danger button that only a destructive answer wears.
+import { button } from '../ui/button';
 
-export const RAID_BUTTON = `${SECONDARY_BUTTON_FIXED} border-line-warm text-text px-4 active:bg-card-top disabled:cursor-not-allowed disabled:opacity-50`;
+export const RAID_BUTTON = button('secondary', 'md');
 
-/** The confirm's destructive answer: the same outline in the failure colour. */
-export const RAID_WIPE_BUTTON =
-  'rounded-control border-wipe/60 text-wipe hover:border-wipe hover:bg-wipe/10 active:bg-wipe/15 inline-flex h-11 items-center border px-4 text-[12px] font-bold tracking-[0.06em] uppercase transition-colors duration-[120ms] disabled:cursor-not-allowed disabled:opacity-50';
+/** The confirm's destructive answer: the danger outline. */
+export const RAID_WIPE_BUTTON = button('danger', 'md');
 
 /** A 44 px underlined text button (`Cancel`, `Not this log`). */
 export const RAID_TEXT_BUTTON =

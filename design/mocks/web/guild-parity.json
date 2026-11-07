@@ -99,6 +99,21 @@
       "id": "claim",
       "path": "/guild/us/pvp/olympus-xxvii/claim",
       "mock": "web-guild-claim.html"
+    },
+    {
+      "id": "raids",
+      "path": "/guild/us/pvp/olympus-xxvii#raids",
+      "mock": "web-guild-raids.html"
+    },
+    {
+      "id": "raids-plan",
+      "path": "/guild/us/pvp/olympus-xxvii#raids",
+      "mock": "web-guild-raids-plan.html"
+    },
+    {
+      "id": "assignments",
+      "path": "/guild/us/pvp/olympus-xxvii/raids/41",
+      "mock": "web-guild-assignments.html"
     }
   ]
 }
