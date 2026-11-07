@@ -1,5 +1,7 @@
 <!-- web/src/components/sim/tools/StatWeights.svelte -->
-<!-- Design 7. The caution opens the page, in our words, and links to Top Gear -- it is not
+<!-- /sim/weights (mock design/mocks/ws_simtools.py): the run line, the caution as the page's
+     standing line, the scale factors on the page's one Plate once a run finishes, and the stats to
+     weigh in the rail. Design 7: the caution opens the page, in our words, and links to Top Gear -- it is not
      a footnote, because the whole reason this page exists is that addons ask for a number
      the number itself cannot justify.
 
@@ -20,16 +22,20 @@
      model for this spec is never on screen to tick in the first place. -->
 <script lang="ts">
   import type { Me } from '../../../lib/account/api';
-  import { SECONDARY_BUTTON } from '../../../lib/planner/styles';
   import type { BulkStore } from '../../../lib/sim/bulk-store.svelte';
   import { bulkCopy, WEIGHTS_STATS_FROM_ENGINE } from '../../../lib/sim/copy';
   import { specLabel } from '../../../lib/sim/spec-label';
   import { hasWeightStats, pickableStatsFor, statLabel, toolScaleView } from '../../../lib/sim/weights';
+  import type { Snippet } from 'svelte';
+  import Notice from '../../ui/Notice.svelte';
+  import Page from '../../ui/Page.svelte';
+  import Plate from '../../ui/Plate.svelte';
+  import Section from '../../ui/Section.svelte';
   import WeightsScaleTable from '../WeightsScaleTable.svelte';
   import BulkRunBar from './BulkRunBar.svelte';
   import SaveSimForm from './SaveSimForm.svelte';
 
-  let { store }: { store: BulkStore; me: Me | null } = $props();
+  let { store, lead }: { store: BulkStore; me: Me | null; lead?: Snippet } = $props();
 
   const view = $derived(toolScaleView(store.weights, store.character?.spec ?? '', store.referenceStat));
   /** The picker's own list: `store.weightStats` when the spec sent one, the full pinned
@@ -56,64 +62,62 @@
   }
 </script>
 
-<div class="flex flex-col gap-[22px] md:gap-8" data-testid="sim-stat-weights">
-  <section
-    class="border-line-warm rounded-panel mx-[18px] border p-4 md:mx-0"
-    data-testid="sim-weights-warning"
-  >
-    <p class="text-strong text-[14px]">{bulkCopy.weightsWarning}</p>
-    <a class="{SECONDARY_BUTTON} border-line-warm text-nav mt-2 px-4" href="/sim/gear">
-      {bulkCopy.weightsWarningLink}
-    </a>
-  </section>
-
-  <section class="border-line rounded-panel mx-[18px] flex flex-col gap-2 border p-3 md:mx-0">
-    <h3 class="section-title">{bulkCopy.weightsPick}</h3>
-    {#if store.referenceStat}
-      <p class="text-muted text-[12px]" data-testid="sim-weights-reference">
-        {bulkCopy.weightsReference}: {statLabel(store.referenceStat)}
-      </p>
-    {/if}
-    {#if hasWeightStats(store.weightStats)}
-      <p class="text-muted text-[12px]" data-testid="sim-weights-stats-note">{WEIGHTS_STATS_FROM_ENGINE}</p>
-    {/if}
-    <ul class="flex flex-wrap gap-3">
-      {#each pickable as stat (stat.id)}
-        <li>
-          <label class="text-text flex min-h-11 items-center gap-2 text-[13px]">
-            <input
-              type="checkbox"
-              class="h-5 w-5"
-              data-testid={`sim-weight-pick-${stat.id}`}
-              checked={store.stats.includes(stat.id)}
-              disabled={stat.id === store.referenceStat}
-              onchange={() => togglePick(stat.id)}
-            />
-            {stat.label}
-          </label>
-        </li>
-      {/each}
-    </ul>
-  </section>
-
-  <BulkRunBar {store} />
-
+<Page layout="split" testid="sim-stat-weights">
+  {#snippet bar()}<BulkRunBar {store} />{/snippet}
+  {#if lead}{@render lead()}{/if}
+  <Notice
+    text={bulkCopy.weightsWarning}
+    tone="neutral"
+    action={{ label: bulkCopy.weightsWarningLink, href: '/sim/gear' }}
+    testid="sim-weights-warning"
+  />
   {#if store.weights.length > 0}
-    <section class="mx-[18px] flex flex-col gap-3 md:mx-0" data-testid="sim-weights">
-      <!-- Task 8, sub-item 1: contract 10.9's error-is-a-lower-bound caveat, read right
-           before the numbers it caveats -- one thought together with the greying below
-           (the table's own "Not significant", which the caveat's own first sentence
-           restates in prose), not a second warning box stacked above this one. -->
-      <p class="text-muted text-[12px]" data-testid="sim-weights-error-caveat">
+    <Section
+      title={bulkCopy.weightsResultsTitle}
+      meta={specLabel(store.character?.spec ?? '')}
+      testid="sim-weights"
+    >
+      <!-- Contract 10.9's error-is-a-lower-bound caveat, read right before the numbers it caveats. -->
+      <p class="text-small text-muted m-0 pb-3" data-testid="sim-weights-error-caveat">
         {bulkCopy.weightsErrorCaveat(store.weights.map((row) => row.stat))}
       </p>
-      <WeightsScaleTable {view} />
-
-      <!-- Contract 10.6: saved sims of every kind are public at /sim/<id>. A finished
-           weights run saves through the identical component and flow Top Gear and talent
-           compare already use (SaveSimForm.svelte, ComboResults.svelte's own extraction),
-           rather than a second, drifting copy of the same save form. -->
-      <SaveSimForm onsave={(title) => store.save(title)} titleFor={saveTitleFor} {canSave} />
-    </section>
+      <Plate><WeightsScaleTable {view} /></Plate>
+      <!-- Contract 10.6: saved sims of every kind are public at /sim/<id>, saved through the one
+           SaveSimForm Top Gear and talent compare use. -->
+      <div class="pt-4">
+        <SaveSimForm onsave={(title) => store.save(title)} titleFor={saveTitleFor} {canSave} />
+      </div>
+    </Section>
   {/if}
-</div>
+  {#snippet rail()}
+    <Section title={bulkCopy.weightsPick} testid="sim-weights-pick">
+      {#if store.referenceStat}
+        <p class="text-small text-muted m-0" data-testid="sim-weights-reference">
+          {bulkCopy.weightsReference}: {statLabel(store.referenceStat)}
+        </p>
+      {/if}
+      {#if hasWeightStats(store.weightStats)}
+        <p class="text-small text-muted m-0" data-testid="sim-weights-stats-note">
+          {WEIGHTS_STATS_FROM_ENGINE}
+        </p>
+      {/if}
+      <ul class="m-0 grid list-none grid-cols-2 gap-x-4 p-0">
+        {#each pickable as stat (stat.id)}
+          <li>
+            <label class="text-text flex min-h-11 items-center gap-2 text-[14px]">
+              <input
+                type="checkbox"
+                class="accent-gold h-[18px] w-[18px]"
+                data-testid={`sim-weight-pick-${stat.id}`}
+                checked={store.stats.includes(stat.id)}
+                disabled={stat.id === store.referenceStat}
+                onchange={() => togglePick(stat.id)}
+              />
+              {stat.label}
+            </label>
+          </li>
+        {/each}
+      </ul>
+    </Section>
+  {/snippet}
+</Page>

@@ -1,6 +1,7 @@
 <!-- web/src/components/sim/tools/ToolsView.svelte -->
-<!-- The tools island's root: the character strip, the source switcher and the one tool
-     view this page is. Every tool view is a lazy chunk, so /sim/weights downloads neither
+<!-- The tools island's root (mock design/mocks/ws_simtools.py): the source switcher until a
+     character is loaded, then the one tool view this page is, which leads with the character
+     line (ToolCharacterLine) under its run bar. Every tool view is a lazy chunk, so /sim/weights downloads neither
      the slot grid nor the source picker.
 
      There is no <h1> here: each .astro shell carries its own, in static HTML, ahead of this
@@ -12,16 +13,16 @@
   import { battlenetStartUrl, effectiveServerSims, fetchMe, type Me } from '../../../lib/account/api';
   import { followCurrentCharacter, simHoldsWork } from '../../../lib/sim/follow-current-character';
   import { readCurrent } from '../../../lib/current-character';
-  import { VIEW_GAP } from '../../../lib/current-character-layout';
   import { createLazyComponent, type LazyLoadState } from '../../../lib/report/lazy-component.svelte';
   import { TOOL_SKELETONS } from '../../../lib/sim/bulk-skeleton';
   import { createBulkStore, type SimTool } from '../../../lib/sim/bulk-store.svelte';
   import type { Origin } from '../../../lib/sim/candidates';
   import { bulkCopy } from '../../../lib/sim/copy';
+  import Page from '../../ui/Page.svelte';
+  import ToolCharacterLine from './ToolCharacterLine.svelte';
   import { syncTabHrefs } from '../../../lib/sim/tabs';
   import { runBootstrapRestore, sourceIdForInstance } from '../../../lib/sim/character-bootstrap';
   import { parseSimState } from '../../../lib/sim/url';
-  import CharacterStrip from '../CharacterStrip.svelte';
   import SourceSwitcher from '../SourceSwitcher.svelte';
   import LoadError from '../../ui/LoadError.svelte';
 
@@ -206,29 +207,32 @@
          line. The phone gutter the old <p> carried (px-[18px] md:px-0) lives on this
          wrapper instead, since LoadError takes no class prop -- the same shape the report
          island's top-level error and SimView's two lazy panels already use. -->
-    <div class="px-[18px] md:px-0">
+    <Page layout="ledger">
       <LoadError message={lazy.error} onRetry={() => lazy.load()} testid="sim-tool-error" />
-    </div>
+    </Page>
   {:else}
     <!-- eslint-disable-next-line svelte/no-at-html-tags -->
     {@html TOOL_SKELETONS[tool]}
   {/if}
 {/snippet}
 
-<div class={`flex flex-col ${VIEW_GAP}`} data-testid="sim-tools-view">
-  {#if store.character !== null && !switcherOpen}
-    <CharacterStrip
+{#snippet characterLine()}
+  {#if store.character !== null}
+    <ToolCharacterLine
       character={store.character}
       items={store.items}
-      races={[]}
       onchange={() => (switcherOpen = true)}
-      onrace={(slug) => store.setRace(slug)}
     />
-  {:else}
+  {/if}
+{/snippet}
+
+<div data-testid="sim-tools-view">
+  {#if store.character === null || switcherOpen}
     <SourceSwitcher
       busy={store.phase === 'loading-character'}
       message={store.message}
       signedIn={me !== null}
+      hasCharacters={store.character !== null}
       onaddon={(code) => void store.loadAddon(code)}
       onbuild={(id) => void store.loadBuild(id)}
       onfight={(ref) => void store.loadFight(ref)}
@@ -237,19 +241,21 @@
     />
   {/if}
 
-  {#if store.character !== null || tool === 'weights'}
-    <!-- Design 7: /sim/weights opens with the caution before any character is loaded --
-         the whole reason the page exists is a warning, so it cannot wait behind a load.
-         The other three tools are unaffected: they still need a character before their
-         view (a slot grid, a boss picker) means anything. -->
+  {#if (store.character !== null && !switcherOpen) || tool === 'weights'}
+    <!-- Design 7: /sim/weights opens with the caution before any character is loaded. The other
+         three tools need a character before their view (a slot grid, a boss picker) means anything. -->
     {#if viewLazy.current}
-      <viewLazy.current {store} {me} />
+      <viewLazy.current
+        {store}
+        {me}
+        lead={store.character !== null && !switcherOpen ? characterLine : undefined}
+      />
     {:else}
       {@render lazyFallback(viewLazy)}
     {/if}
-  {:else}
-    <p class="text-muted px-[18px] text-[14px] md:px-0" data-testid="sim-tools-empty">
-      {bulkCopy.needCharacter}
-    </p>
+  {:else if store.character === null}
+    <Page layout="ledger">
+      <p class="text-small text-muted m-0" data-testid="sim-tools-empty">{bulkCopy.needCharacter}</p>
+    </Page>
   {/if}
 </div>

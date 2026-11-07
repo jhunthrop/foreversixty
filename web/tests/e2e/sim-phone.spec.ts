@@ -250,12 +250,12 @@ test('compare mode stacks the ability table into one figure per row, with no sid
   await sectionsKeepGutter(page);
 
   // Heroic Strike's row: the phone label carrying both figures in one line is visible, and
-  // the desktop-only damage cells it stands in for are not -- never a `slug()`ed name,
-  // which the row's own test id was written to avoid needing.
+  // the desktop-only figure cells it stands in for are not (StatRow's phone grammar) --
+  // never a `slug()`ed name, which the row's own test id was written to avoid needing.
   const row = page.getByTestId(`compare-ability-${HEROIC_STRIKE_SPELL_ID}`);
   await expect(row).toBeVisible();
-  await expect(row.locator('span[class*="md:hidden"]')).toBeVisible();
-  for (const cell of await row.locator('span[class*="md:inline"]').all()) {
+  await expect(row.locator('.ui-st-sub .ui-st-phone')).toBeVisible();
+  for (const cell of await row.locator('.ui-st-f:not([data-primary="true"])').all()) {
     await expect(cell).toBeHidden();
   }
 });

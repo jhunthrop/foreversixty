@@ -10,7 +10,7 @@
   import { plannerSimCopy as simCopy } from '../../lib/sim/planner-copy';
   import type { LiveDps } from '../../lib/planner/live-dps.svelte';
   import type { LiveGate } from '../../lib/planner/live-gate';
-  import { PRIMARY_BUTTON_FIXED, SECONDARY_BUTTON_FIXED } from '../../lib/planner/styles';
+  import { button } from '../../lib/ui/button';
   import { plannerScoreCopy } from '../../lib/planner/score-unit';
   import type { SlotScoreUnit } from '../../lib/bis/tank-view';
   import { poolQualityCopy } from '../../lib/sim/pool-quality-copy';
@@ -76,7 +76,7 @@
   <!-- The same 44px the figure occupies, so asking moves nothing. -->
   <button
     type="button"
-    class="{SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong px-3"
+    class={button('secondary', 'md', true)}
     onclick={onshow}
     data-testid="planner-dps-show"
   >
@@ -116,9 +116,9 @@
     {/if}
     <!-- The bar's one primary button: simming a build is one of the planner's own jobs
            (build review round 1, finding 5), a real action rather than an underlined link.
-           PRIMARY_BUTTON_FIXED, not the shrinking PRIMARY_BUTTON: no other control in this
-           lane shrinks its target on desktop. -->
-    <a class="{PRIMARY_BUTTON_FIXED} px-4" {href} data-testid="planner-sim-link">
+           The md size, a fixed 44 px: no other control in this lane shrinks its target on
+           desktop. -->
+    <a class={button('primary', 'md', true)} {href} data-testid="planner-sim-link">
       {simCopy.simThisBuild}
     </a>
   </div>

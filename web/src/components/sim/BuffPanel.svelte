@@ -7,7 +7,10 @@
      list read out of src/data/generated/sim-ids.json; the names and icons are the build's,
      with buff-names.ts's humanised fallback when the build has no table. A row this page
      could not file would still be reachable in the request drawer (Task 15), which is the
-     escape hatch the design names. -->
+     escape hatch the design names.
+
+     It sits inside the More settings Sheet (sim spec 2026-11-06): a heading, then one
+     Disclosure per group and plain rows inside it, no boxes. -->
 <script lang="ts">
   import {
     BUFF_GROUPS,
@@ -25,6 +28,7 @@
   import { simCopy } from '../../lib/sim/copy';
   import type { SimSettings } from '../../lib/sim/settings';
   import CooldownRows from './CooldownRows.svelte';
+  import Disclosure from '../ui/Disclosure.svelte';
   import Select from '../ui/Select.svelte';
 
   let {
@@ -72,21 +76,18 @@
   }
 </script>
 
-<section
-  class="border-line bg-raised rounded-panel mx-[18px] flex flex-col gap-2 border p-4 md:mx-0"
-  data-testid="sim-buff-panel"
->
-  <h2 class="section-title">{simCopy.buffPanel}</h2>
-  <p class="text-muted text-[12px]">{simCopy.buffPanelNote}</p>
+<div class="flex flex-col" data-testid="sim-buff-panel">
+  <h3 class="text-label tracking-label text-muted font-bold uppercase">{simCopy.buffPanel}</h3>
+  <p class="text-small text-muted mt-1 mb-2">{simCopy.buffPanelNote}</p>
 
   {#each BUFF_GROUPS as group (group)}
     {@const rows = rowsIn(group)}
     {#if rows.length > 0}
-      <details class="border-line-soft rounded-panel border" data-testid={`sim-buff-group-${group}`}>
-        <summary class="label text-nav flex min-h-11 cursor-pointer items-center gap-2 px-3 md:min-h-9">
-          <span>{simCopy.buffGroupLabel[group] ?? group}</span>
-          <span class="text-muted numeric text-[12px]">{countIn(group)}/{sizeOf(group)}</span>
-        </summary>
+      <Disclosure
+        summary={simCopy.buffGroupLabel[group] ?? group}
+        meta={`${countIn(group)}/${sizeOf(group)}`}
+        testid={`sim-buff-group-${group}`}
+      >
         {#if group === 'weapon-imbue'}
           <ImbueRows
             sections={imbues}
@@ -97,12 +98,12 @@
             onpick={pickImbue}
           />
         {:else}
-          <ul class="grid grid-cols-1 gap-1 p-3 pt-0 md:grid-cols-2">
+          <ul class="grid grid-cols-1 gap-x-4 gap-y-1 md:grid-cols-2">
             {#each rows as row (row.id)}
               {@const label = buffLabel(row.id, names)}
               {@const icon = buffIcon(build, row.id, names)}
               {@const grade = gradeOf(listFor(selection, row.kind), row.id)}
-              <li class="flex min-h-11 items-center gap-2 text-[13px] md:min-h-9">
+              <li class="flex min-h-11 items-center gap-2 text-[14px] md:min-h-9">
                 {#if icon !== null}
                   <!-- The name beside it carries the row, so the icon is decorative. -->
                   <img src={icon} alt="" width="20" height="20" class="rounded-[2px]" loading="lazy" />
@@ -141,7 +142,7 @@
             {/each}
           </ul>
         {/if}
-      </details>
+      </Disclosure>
     {/if}
   {/each}
 
@@ -152,4 +153,4 @@
     ids={[...selectedIn(selection, 'potion'), ...selectedIn(selection, 'explosive')]}
     {onchange}
   />
-</section>
+</div>

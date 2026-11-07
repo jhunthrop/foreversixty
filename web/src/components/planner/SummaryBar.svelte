@@ -1,7 +1,7 @@
 <!-- web/src/components/planner/SummaryBar.svelte -->
-<!-- design/DESIGN-SYSTEM.md "State panel": label rows on a raised panel, mono numbers,
-     gold accent. Pinned to the top of the viewport on phone (design/Mobile.dc.html keeps
-     the current state above the fold), static on desktop. -->
+<!-- The planner's state bar (web layout spec 2026-11-05 §3.3): an open row of facts on the page
+     ground, no box; mono numbers, gold accent. Pinned to the top of the viewport on phone
+     (design/Mobile.dc.html keeps the current state above the fold), static on desktop. -->
 <script lang="ts">
   import type { LiveDps } from '../../lib/planner/live-dps.svelte';
   import type { PlannerStore } from '../../lib/planner/store.svelte';
@@ -47,7 +47,7 @@
 </script>
 
 <div
-  class="border-line bg-raised md:rounded-panel sticky top-0 z-20 flex flex-wrap items-start gap-3 border-b px-[18px] py-3 md:static md:gap-5 md:border md:px-5"
+  class="bg-bg sticky top-0 z-20 flex flex-wrap items-start gap-3 px-[18px] py-3 md:static md:gap-5 md:px-0"
 >
   <div class="flex flex-col gap-1">
     <label class="quiet-label" for="planner-summary-class">Class</label>

@@ -1,5 +1,8 @@
 <!-- web/src/components/sim/SpecCard.svelte -->
-<!-- "Can I trust this" in one card. The figure is whatever the validation job measured,
+<!-- "Can I trust this" in one row of /sim/specs' Plate (mock design/mocks/ws_simtools.py
+     `web-sim-specs`): the spec in its class colour, the measured gap and the state's note under it,
+     the state as a Tag at the right, then the rotation, the worst actions and the engine stamp on
+     the row's foot. The figure is whatever the validation job measured,
      published either way -- the design's whole point is that the answer lives on the site
      rather than in a footnote, so a bad gap is shown as plainly as a good one.
      The cast-gap rows read actual first: the player's own number is the one they recognise
@@ -16,15 +19,18 @@
   // other caller in report/format.ts pre-multiplies by 100 exactly as this does, so a
   // hand-rolled toFixed(1) here would be a second formatter that drifts the day the first
   // one changes.
-  import { classColorVar, formatPercent } from '../../lib/report/format';
+  import { formatPercent } from '../../lib/report/format';
   import { resolveActionName, type ActionNames } from '../../lib/sim/action-names';
   import { simCopy } from '../../lib/sim/copy';
   import { classOfSpec, specLabel } from '../../lib/sim/spec-label';
-  import { specPillClass, specStateLabel, specStateNote } from '../../lib/sim/spec-state';
+  import { specStateLabel, specStateNote } from '../../lib/sim/spec-state';
+  import { classTone } from '../../lib/ui/primitives';
+  import Disclosure from '../ui/Disclosure.svelte';
+  import Row from '../ui/Row.svelte';
+  import Tag from '../ui/Tag.svelte';
   import { loadRotationNotes, rotationNotesFor, type RotationNotes } from '../../lib/sim/rotations';
   import type { SpecFidelity } from '../../lib/sim/types';
   import { engineLabel } from '../../lib/sim/version';
-  import Disclosure from './Disclosure.svelte';
 
   let {
     row,
@@ -43,7 +49,6 @@
     compact?: boolean;
   } = $props();
 
-  const colour = $derived(classColorVar(classOfSpec(row.spec)));
   const figure = $derived(
     row.median_gap === null
       ? simCopy.specNoParses
@@ -66,62 +71,56 @@
   const rotationSteps = $derived(rotationNotesFor(row.spec, notes));
 </script>
 
-<article
+<Row
   id={row.spec}
-  class="border-line bg-card-top rounded-panel flex flex-col gap-3 border p-4"
-  data-testid={`spec-${row.spec}`}
+  title={specLabel(row.spec)}
+  titleTone={classTone(classOfSpec(row.spec))}
+  testid={`spec-${row.spec}`}
+  open={false}
 >
-  <div class="flex flex-wrap items-center gap-2">
-    <h3 class="heading-name text-[15px]" style={`color: ${colour}`}>{specLabel(row.spec)}</h3>
-    <span class={specPillClass(row.state)} data-testid="spec-state">{specStateLabel(row.state)}</span>
-  </div>
-
-  <p class="text-strong numeric text-[13px]" data-testid="spec-figure">{figure}</p>
-  <p class="text-muted text-[13px]">{specStateNote(row.state)}</p>
-
-  {#if !compact && rotationSteps.length > 0}
-    <!-- Final whole-branch review, I2: these three testids were bare -- "spec-rotation-trigger"
-         and friends, not "spec-rotation-trigger-<spec>" -- so all 20 damage-spec cards on this
-         page carried the identical testid and the identical accessible name at once. Today's
-         tests scope through `spec-<slug>` (the card's own testid) so nothing failed, but any
-         unscoped locator is an instant Playwright strict-mode violation, and a screen reader
-         user tabbing the page hears 20 indistinguishable "what it does" buttons with no
-         difference between them. Suffixed with `row.spec`, matching the `id` the <article>
-         above already sets. -->
-    <Disclosure
-      label={simCopy.rotationLink}
-      id={`spec-rotation-${row.spec}`}
-      triggerClass="label text-nav text-[12px] underline decoration-dotted underline-offset-2"
-      panelClass="border-line-soft rounded-panel flex flex-col gap-2 border p-3"
-      triggerTestId={`spec-rotation-trigger-${row.spec}`}
-      panelTestId={`spec-rotation-panel-${row.spec}`}
+  {#snippet subContent()}
+    <span class="flex flex-col">
+      <span class="text-strong tabular-nums" data-testid="spec-figure">{figure}</span>
+      <span>{specStateNote(row.state)}</span>
+    </span>
+  {/snippet}
+  {#snippet trail()}
+    <Tag tone={row.state === 'validated' ? 'success' : 'muted'} testid="spec-state"
+      >{specStateLabel(row.state)}</Tag
     >
-      <ol
-        class="flex list-decimal flex-col gap-1 pl-5 text-[13px]"
-        data-testid={`spec-rotation-steps-${row.spec}`}
-      >
-        {#each rotationSteps as step, index (index)}
-          <li>{step}</li>
-        {/each}
-      </ol>
-    </Disclosure>
-  {/if}
-
-  {#if !compact && row.worst_actions.length > 0}
-    <div class="flex flex-col gap-1">
-      <span class="label text-muted">{simCopy.specWorstActions}</span>
-      {#each row.worst_actions.slice(0, 3) as action (action.name)}
-        <span class="text-muted numeric text-[12px]">
-          {resolveActionName(action.name, actionNames)}
+  {/snippet}
+  {#snippet foot()}
+    {#if !compact && rotationSteps.length > 0}
+      <div class="w-full">
+        <Disclosure
+          summary={simCopy.rotationLink}
+          testid={`spec-rotation-panel-${row.spec}`}
+          summaryTestid={`spec-rotation-trigger-${row.spec}`}
+        >
+          <ol
+            class="m-0 flex list-decimal flex-col gap-1 pl-5 text-[14px]"
+            data-testid={`spec-rotation-steps-${row.spec}`}
+          >
+            {#each rotationSteps as step, index (index)}
+              <li>{step}</li>
+            {/each}
+          </ol>
+        </Disclosure>
+      </div>
+    {/if}
+    {#if !compact && row.worst_actions.length > 0}
+      <span class="text-small text-muted tabular-nums">
+        {simCopy.specWorstActions}:
+        {#each row.worst_actions.slice(0, 3) as action, index (action.name)}{index > 0
+            ? ' · '
+            : ''}{resolveActionName(action.name, actionNames)}
           {action.actual_casts}
           {simCopy.specCast}, {action.sim_casts}
-          {simCopy.specSimmed}
-        </span>
-      {/each}
-    </div>
-  {/if}
-
-  {#if !compact && footer !== ''}
-    <p class="text-muted numeric mt-auto text-[12px]" data-testid="spec-footer">{footer}</p>
-  {/if}
-</article>
+          {simCopy.specSimmed}{/each}
+      </span>
+    {/if}
+    {#if !compact && footer !== ''}
+      <span class="text-small text-muted tabular-nums" data-testid="spec-footer">{footer}</span>
+    {/if}
+  {/snippet}
+</Row>

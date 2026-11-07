@@ -23,6 +23,7 @@ import type { Item, ItemSet, TalentFile } from '../../../lib/planner/types';
 import type { BulkResult } from '../../../lib/sim/bulk-types';
 import { ranksFromTalentsString } from '../../../lib/sim/character';
 import { canPlanCombo, comboRows } from '../../../lib/sim/combos';
+import { bulkCopy } from '../../../lib/sim/copy';
 import { handoffCopy } from '../../../lib/sim/handoff-copy';
 import { poolQualityCopy } from '../../../lib/sim/pool-quality-copy';
 import type { Combo } from '../../../lib/sim/bulk-types';
@@ -49,13 +50,12 @@ function renderCombos(overrides: Partial<BulkResult> = {}): string {
 }
 
 /**
- * Each row's own `<div role="row" data-testid="sim-combo-row">…</div>`, in the same order
- * `comboRows(result)` produces them. Bounded to that one `</div>` rather than "up to the
- * next row" (or the end of the body): every cell inside a row is a `<span>`, never a nested
- * `<div>` (SubstitutionChips.svelte included), so the first `</div>` after a row's own
- * opening tag is always that row's own closing tag -- which matters for the LAST row, since
- * splitting on "the next row start" would otherwise fold the page's own trailing "Open in
- * planner" button (a real `href`) into it and hide a false positive.
+ * Each row's own StatRow, from its `<div role="row" data-testid="sim-combo-row">` to the
+ * first `</div>` after it: the close of the name cell's sub line, the row's one nested div
+ * that holds content (SubstitutionChips renders only spans). So a segment carries the
+ * changed items and the row's own "Plan it" link, and never runs on into the next row or
+ * the page's trailing "Open in planner" button (a real `href`), which would hide a false
+ * positive on the LAST row.
  */
 function rowSegments(body: string): string[] {
   const marker = 'data-testid="sim-combo-row"';
@@ -146,9 +146,13 @@ describe('ComboResults: "Plan it" per row (task 7)', () => {
     expect(firstHref(segments[setIndex])).toBeNull();
   });
 
-  it('gives the action column header an accessible name with no visible text', () => {
+  it('names the leader’s within-error group in visible text on its rows', () => {
     const body = renderCombos();
-    expect(body).toContain(`aria-label="${handoffCopy.planIt}"`);
+    const rows = comboRows(result);
+    const segments = rowSegments(body);
+    rows.forEach((row, index) => {
+      if (row.withinError) expect(segments[index]).toContain(bulkCopy.withinError);
+    });
   });
 
   /**
@@ -257,10 +261,10 @@ describe('ComboResults: Copy for the game (task L8.1)', () => {
   it('reads "Copy for the game" and is live once the talent file is in hand', () => {
     const button = copyButton(renderWithTalents(talentsJson as unknown as TalentFile));
     expect(button).toContain(addonCopy.copyForGame);
-    expect(button).not.toMatch(/\sdisabled/);
+    expect(button).not.toMatch(/\sdisabled(?=[\s=>])/);
   });
 
   it('is disabled while the talent file has not loaded', () => {
-    expect(copyButton(renderWithTalents(null))).toMatch(/\sdisabled/);
+    expect(copyButton(renderWithTalents(null))).toMatch(/\sdisabled(?=[\s=>])/);
   });
 });

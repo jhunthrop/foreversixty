@@ -6,10 +6,11 @@
      place this lane names a consumable id -- and the names and icons come from
      simbuffs.json (contract 10.4) rather than from a de-underscored id. -->
 <script lang="ts">
-  import { dataUrl } from '../../../lib/planner/load';
+  import ItemIcon from '../../ui/ItemIcon.svelte';
   import { bulkCopy } from '../../../lib/sim/copy';
   import { presetConsumables } from '../../../lib/sim/settings';
   import { buffIcon, buffName, type SimBuffFile } from '../../../lib/sim/sim-buffs';
+  import ToolSection from './ToolSection.svelte';
 
   let {
     picked,
@@ -18,6 +19,7 @@
     spec,
     level,
     ontoggle,
+    plate = false,
   }: {
     picked: readonly string[];
     buffs: SimBuffFile;
@@ -26,42 +28,32 @@
     spec: string;
     level: number;
     ontoggle: (id: string) => void;
+    /** The block sits on the page's one Plate. */
+    plate?: boolean;
   } = $props();
 
   const offered = $derived([...new Set(presetConsumables('raid-buffed', spec, level))]);
 </script>
 
-<section
-  class="border-line rounded-panel mx-[18px] flex flex-col gap-2 border p-3 md:mx-0"
-  data-testid="sim-consumables"
->
-  <h3 class="section-title">{bulkCopy.tryEach}</h3>
-  <p class="text-muted text-[12px]">{bulkCopy.consumableCandidates}</p>
-  <ul class="flex flex-wrap gap-3">
+<ToolSection title={bulkCopy.tryEach} testid="sim-consumables" {plate}>
+  <p class="text-muted text-[13px]">{bulkCopy.consumableCandidates}</p>
+  <ul class="flex flex-wrap gap-x-5 gap-y-1 pt-1">
     {#each offered as id (id)}
       <li>
-        <label class="text-text flex min-h-11 items-center gap-2 text-[13px]">
+        <label class="text-text flex min-h-11 items-center gap-2 text-[14px]">
           <input
             type="checkbox"
-            class="h-5 w-5"
+            class="accent-gold h-5 w-5"
             data-testid={`sim-consumable-${id}`}
             checked={picked.includes(id)}
             onchange={() => ontoggle(id)}
           />
           {#if buffIcon(buffs, id) !== ''}
-            <img
-              src={dataUrl(treeVersion, `icons/${buffIcon(buffs, id)}.webp`)}
-              alt=""
-              width="20"
-              height="20"
-              loading="lazy"
-              decoding="async"
-              class="rounded-control border-line h-5 w-5 border object-cover"
-            />
+            <ItemIcon icon={buffIcon(buffs, id)} build={treeVersion} size={28} />
           {/if}
           {buffName(buffs, id)}
         </label>
       </li>
     {/each}
   </ul>
-</section>
+</ToolSection>

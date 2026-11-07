@@ -20,8 +20,9 @@
     type LootSource,
   } from '../../../lib/sim/loot';
   import { PHASE_LATER, openDateLabel, phaseLabel, type PhaseRow } from '../../../lib/sim/phase';
-  import { SECONDARY_BUTTON } from '../../../lib/planner/styles';
   import type { Item } from '../../../lib/planner/types';
+  import Button from '../../ui/Button.svelte';
+  import ToolSection from './ToolSection.svelte';
 
   let {
     loot,
@@ -36,6 +37,7 @@
     ontogglekind,
     ontoggleupcoming,
     ontoggle,
+    plate = false,
   }: {
     loot: LootFile;
     phases: readonly PhaseRow[];
@@ -51,6 +53,8 @@
     ontogglekind: (kind: string) => void;
     ontoggleupcoming: (value: boolean) => void;
     ontoggle: (sourceId: string, bossId?: string) => void;
+    /** The picker sits on the page's one Plate (/sim/drops). */
+    plate?: boolean;
   } = $props();
 
   const groups = $derived(groupSources(loot));
@@ -60,7 +64,7 @@
   }
 
   /**
-   * "First raids, 9 December 2026" for a dated phase, and the no-date sentence for the
+   * "First raids, 9 December 2026" for a dated phase, and the no-date for the
    * literal `"later"` -- contract 10.4's "shows as unreleased without a date".
    */
   function gateLabel(source: LootSource): string {
@@ -71,16 +75,13 @@
   }
 </script>
 
-<section
-  class="border-line rounded-panel mx-[18px] flex flex-col gap-3 border p-3 md:mx-0"
-  data-testid="sim-source-picker"
->
-  <div class="flex flex-wrap items-center gap-3">
+<ToolSection title={bulkCopy.sourcesTitle} testid="sim-source-picker" {plate}>
+  <div class="flex flex-wrap items-center gap-x-5">
     {#each groups as group (group.kind)}
-      <label class="text-muted flex min-h-11 items-center gap-2 text-[12px]">
+      <label class="text-text flex min-h-11 items-center gap-2 text-[14px]">
         <input
           type="checkbox"
-          class="h-5 w-5"
+          class="accent-gold h-5 w-5"
           data-testid={`sim-kind-${group.kind}`}
           checked={shownKinds.includes(group.kind)}
           onchange={() => ontogglekind(group.kind)}
@@ -88,10 +89,10 @@
         {group.label}
       </label>
     {/each}
-    <label class="text-muted flex min-h-11 items-center gap-2 text-[12px]">
+    <label class="text-text flex min-h-11 items-center gap-2 text-[14px]">
       <input
         type="checkbox"
-        class="h-5 w-5"
+        class="accent-gold h-5 w-5"
         data-testid="sim-upcoming"
         checked={showUpcoming}
         onchange={(event) => ontoggleupcoming(event.currentTarget.checked)}
@@ -111,66 +112,65 @@
     )}
     {@const shown = visibility.shown}
     {#if visibility.ticked && group.sources.length > 0}
-      <div class="flex flex-col gap-1">
-        <h3 class="section-title">{SOURCE_KIND_LABELS[group.kind]}</h3>
+      <div class="flex flex-col gap-1 pt-4">
+        <h3 class="text-strong text-[15px] leading-5 font-bold">{SOURCE_KIND_LABELS[group.kind]}</h3>
         {#if visibility.allGated}
           <!-- dps D33 (BLOCKER) / newcomer MAJOR "ticking Raids produces an empty void":
                a ticked kind whose every source is gated used to render nothing here at
                all. Name the gate instead of vanishing. -->
-          <p class="text-muted text-[12px]" data-testid={`sim-kind-${group.kind}-gated`}>
+          <p class="text-muted text-[13px]" data-testid={`sim-kind-${group.kind}-gated`}>
             {toolFixCopy.sourcesAllGated}
           </p>
           <ul class="flex flex-col gap-1 pl-3">
             {#each group.sources as source (source.id)}
-              <li class="text-muted text-[12px]">{source.name} — {gateLabel(source)}</li>
+              <li class="text-muted text-[13px]">{source.name}: {gateLabel(source)}</li>
             {/each}
           </ul>
-          <button
-            type="button"
-            class="{SECONDARY_BUTTON} border-line-warm text-nav w-fit px-3"
-            data-testid={`sim-kind-${group.kind}-show-upcoming`}
-            onclick={() => ontoggleupcoming(true)}
-          >
-            {bulkCopy.showUpcoming}
-          </button>
+          <div class="pt-1">
+            <Button
+              size="sm"
+              testid={`sim-kind-${group.kind}-show-upcoming`}
+              onclick={() => ontoggleupcoming(true)}>{bulkCopy.showUpcoming}</Button
+            >
+          </div>
         {:else}
           {#if group.kind === 'crafted'}
             {@const split = professionSplit(shown, professions)}
             {#if split.mine.length > 0}
-              <p class="text-muted text-[12px]">{bulkCopy.sourcesMyProfessions}</p>
+              <p class="text-muted text-[13px]">{bulkCopy.sourcesMyProfessions}</p>
             {:else}
-              <p class="text-muted text-[12px]">{bulkCopy.sourcesProfessionsUnknown}</p>
+              <p class="text-muted text-[13px]">{bulkCopy.sourcesProfessionsUnknown}</p>
             {/if}
           {/if}
           {#if group.kind === 'quest'}
-            <p class="text-muted text-[12px]">{bulkCopy.sourcesQuestNote}</p>
+            <p class="text-muted text-[13px]">{bulkCopy.sourcesQuestNote}</p>
           {/if}
           {#each shown as source (source.id)}
-            <div class="border-line-soft flex flex-col gap-1 border-b py-2 last:border-b-0">
-              <label class="text-text flex min-h-11 items-center gap-2 text-[13px]">
+            <div class="flex flex-col py-1">
+              <label class="text-text flex min-h-11 items-center gap-2 text-[14px]">
                 <input
                   type="checkbox"
-                  class="h-5 w-5"
+                  class="accent-gold h-5 w-5"
                   data-testid={`sim-source-${source.id}`}
                   checked={isPicked(source.id)}
                   onchange={() => ontoggle(source.id)}
                 />
-                <span class="flex-1">{sourceLabel(source)}</span>
+                <span class="text-strong flex-1 font-bold">{sourceLabel(source)}</span>
                 {#if (source.bosses ?? []).length > 0}
-                  <span class="text-muted text-[12px]">{bulkCopy.sourcesWholeRaid}</span>
+                  <span class="text-muted text-[13px]">{bulkCopy.sourcesWholeRaid}</span>
                 {/if}
-                <span class="text-muted numeric text-[12px]">
+                <span class="text-muted text-[13px] tabular-nums">
                   {triedCount(itemsOfSource(source), items, known)}
                 </span>
               </label>
               {#if gateLabel(source) !== ''}
-                <p class="text-muted pl-7 text-[12px]">{gateLabel(source)}</p>
+                <p class="text-muted pl-7 text-[13px]">{gateLabel(source)}</p>
               {/if}
               {#each source.bosses ?? [] as boss (boss.id)}
                 <label class="text-text flex min-h-11 items-center gap-2 pl-7 text-[13px]">
                   <input
                     type="checkbox"
-                    class="h-5 w-5"
+                    class="accent-gold h-5 w-5"
                     data-testid={`sim-source-${boss.id}`}
                     checked={isPicked(source.id, boss.id)}
                     onchange={() => ontoggle(source.id, boss.id)}
@@ -181,13 +181,13 @@
                        (`loot.ts`'s `bossName`) -- the one thing both databases agree on,
                        without inventing a kind ("Chest") neither one states. -->
                   <span class="flex-1">{bossName(source, boss)}</span>
-                  <span class="text-muted numeric text-[12px]">
+                  <span class="text-muted text-[13px] tabular-nums">
                     {triedCount(boss.items, items, known)}
                   </span>
                 </label>
               {/each}
               {#if (source.trash ?? []).length > 0}
-                <p class="text-muted pl-7 text-[12px]">{bulkCopy.sourcesTrash}</p>
+                <p class="text-muted pl-7 text-[13px]">{bulkCopy.sourcesTrash}</p>
               {/if}
             </div>
           {/each}
@@ -195,4 +195,4 @@
       </div>
     {/if}
   {/each}
-</section>
+</ToolSection>

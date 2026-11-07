@@ -5,7 +5,6 @@
 // the page's own view chunk resolving), so nothing shifts between the two moments.
 //
 // Static markup with no data in it, so it is safe to {@html} and identical every render.
-import { VIEW_GAP } from '../current-character-layout';
 import type { SimTool } from './bulk-store.svelte';
 
 // A third verbatim copy of this one-liner (already duplicated between report/skeleton.ts and
@@ -15,56 +14,32 @@ import type { SimTool } from './bulk-store.svelte';
 // drifting on -- not worth the cross-lane coupling for this task.
 const block = (classes: string): string => `<span class="skeleton-block ${classes}"></span>`;
 
-/** One slot row of the candidate grid: an icon square, a name bar, two small bars. */
+/** One placeholder row: an icon square, a name bar, two small bars, on the rows' 58 px. */
 const slotRow = (): string =>
-  '<li class="flex min-h-11 items-center gap-3 border-b border-line-soft px-2 py-2">' +
+  '<li class="flex min-h-[var(--row-h)] items-center gap-3 py-2">' +
   `${block('h-8 w-8 rounded-control')}${block('h-3 w-32')}${block('ml-auto h-3 w-10')}${block('h-3 w-8')}` +
   '</li>';
 
-/** One ranked results row: rank, chips, figure, delta, percent. */
-const comboRow = (): string =>
-  '<li class="grid min-h-11 grid-cols-[28px_minmax(120px,2fr)_84px_84px_56px] items-center gap-x-3 border-b border-line-soft px-2 py-2">' +
-  `${block('h-3 w-4')}${block('h-3 w-40')}${block('ml-auto h-3 w-14')}${block('ml-auto h-3 w-12')}${block('ml-auto h-3 w-8')}` +
-  '</li>';
-
-// Fix round 1, Important #2: the inner, visible wrapper uses `VIEW_GAP`, not an
-// independent skeleton-only gap -- it is what stacks against the chip slot below, and
-// `ToolsView.svelte`'s own root uses that exact gap between its chip slot and everything
-// after it. A different gap here would still reserve the right total height (the min-h
-// budget covers that), but it would paint the strip/grid/run-bar block at the wrong
-// vertical offset relative to the chip for the whole window this skeleton is visible --
-// both as gear.astro's own pre-hydration markup and as ToolsView.svelte's own lazy
-// fallback. The *outer* wrapper's gap (between the sr-only status line and this block)
-// is untouched: that text has no visible size, so its gap paints nothing.
-const shell = (label: string, body: string): string =>
+/**
+ * The island's first frames at the page's geometry (mock design/mocks/ws_simtools.py): the run
+ * bar's band, then the page column with a section head and its rows. No surface is drawn: the
+ * skeleton is open, as every section on the page is.
+ */
+const shell = (label: string, rows: number): string =>
   [
-    `<div class="flex flex-col gap-4" aria-busy="true">`,
+    '<div aria-busy="true">',
     `<p class="sr-only" role="status">${label}</p>`,
-    `<div aria-hidden="true" class="flex flex-col ${VIEW_GAP}">`,
-    body,
-    '</div></div>',
+    '<div aria-hidden="true">',
+    `<div class="flex h-[var(--bar-h)] items-center gap-3 px-[var(--page-inset)]">${block('h-3 w-36')}${block('ml-auto h-9 w-28 rounded-control')}</div>`,
+    '<div class="flex flex-col gap-3 px-[var(--page-inset)] pt-5">',
+    `${block('h-5 w-48')}`,
+    `<ul class="flex flex-col">${Array.from({ length: rows }, slotRow).join('')}</ul>`,
+    '</div></div></div>',
   ].join('');
 
-/** The character strip's reserved band, which every tool page opens with. */
-const strip = (): string =>
-  '<div class="bg-raised border-line rounded-panel mx-[18px] flex flex-wrap items-center gap-x-6 gap-y-2 border p-4 md:mx-0">' +
-  `${block('h-6 w-40')}${block('h-3 w-24')}${block('h-3 w-16')}` +
-  '</div>';
-
-const runBar = (): string =>
-  '<div class="border-line rounded-panel mx-[18px] flex flex-wrap items-center gap-3 border p-4 md:mx-0">' +
-  `${block('h-3 w-36')}${block('h-9 w-28 rounded-control')}${block('h-9 w-24 rounded-control')}` +
-  '</div>';
-
-const grid = (count: number): string =>
-  `<ul class="mx-[18px] flex flex-col md:mx-0">${Array.from({ length: count }, slotRow).join('')}</ul>`;
-
-const table = (count: number): string =>
-  `<ul class="mx-[18px] flex flex-col md:mx-0">${Array.from({ length: count }, comboRow).join('')}</ul>`;
-
 export const TOOL_SKELETONS: Record<SimTool, string> = {
-  gear: shell('Loading Top Gear.', [strip(), grid(8), runBar()].join('')),
-  talents: shell('Loading talent compare.', [strip(), grid(3), runBar()].join('')),
-  drops: shell('Loading the Droptimizer.', [strip(), grid(6), runBar()].join('')),
-  weights: shell('Loading stat weights.', [strip(), table(6), runBar()].join('')),
+  gear: shell('Loading Top Gear.', 8),
+  talents: shell('Loading talent compare.', 3),
+  drops: shell('Loading the Droptimizer.', 6),
+  weights: shell('Loading stat weights.', 6),
 };

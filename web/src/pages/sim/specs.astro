@@ -3,16 +3,9 @@
 // Which specs the simulator is trusted for, and by how much. Static; the island fetches
 // GET /v1/specs.
 import Base from '../../layouts/Base.astro';
-import { VIEW_GAP } from '../../lib/current-character-layout';
 import { simCopy } from '../../lib/sim/copy';
-import {
-  SPEC_CARD_SKELETON_CLASSES,
-  SPEC_GRID_CLASSES,
-  specSkeletonSlots,
-  unsimulatedSpecSkeletonSlots,
-} from '../../lib/sim/spec-skeleton';
-import ScopeNote from '../../components/sim/ScopeNote.astro';
-import SimPageHead from '../../components/sim/SimPageHead.astro';
+import SimToolHead from '../../components/sim/SimToolHead.svelte';
+import SpecGrid from '../../components/sim/SpecGrid.svelte';
 import IslandScript from '../../components/IslandScript.astro';
 ---
 
@@ -20,56 +13,18 @@ import IslandScript from '../../components/IslandScript.astro';
   title="Spec support"
   description="Which World of Warcraft: Forever specs the simulator models, how close each one is to real parses, and when the rest arrive."
   path="/sim/specs"
+  wide
 >
   <link rel="stylesheet" href="/sim-island.css" slot="head" />
-  <main id="main" tabindex="-1" class="flex flex-col gap-[22px] pt-4 pb-10 md:gap-8 md:px-0 md:pt-7">
-    <SimPageHead title="Spec support" currentPath="/sim/specs" />
-    <ScopeNote />
-    <!-- Round 2 (Lighthouse): static, ahead of the island, and never replaced --
-         specs-intro was the measured LCP element (its render was gated on hydration);
-         SimView.svelte's specs branch no longer renders its own copy of this text. -->
-    <p class="text-muted px-[18px] text-[14px] md:px-0" data-testid="specs-intro">
-      {simCopy.specsIntro}
-    </p>
-    <!-- Round 5 (Lighthouse): #sim reserved no height at all before this -- the shell
-         measured 42px, the hydrated grid (SpecGrid.svelte's own loading/error skeleton,
-         dpsSpecs().length cards) measured 3684px, and mounting into that gap shoved the
-         footer down by roughly the grid's own height (0.34 CLS; the layout-shifts audit
-         could not attribute it to a font because the real cause was never a font-swap).
-         Rendering the identical skeleton here -- spec-skeleton.ts is the one source both
-         this shell and SpecGrid.svelte read, so the two can never drift back out of sync
-         the way the missing reservation itself was allowed to -- means the mount swap
-         moves nothing. Task 2 adds the second (unsimulated) group below, under its own
-         heading, at the same skeleton-card technique so its own reservation never drifts
-         from SpecGrid.svelte's real render either.
-
-         Fix round 1, Important #2: the grids are wrapped in `flex flex-col ${VIEW_GAP}`, the
-         same root SimView.svelte renders once hydrated. 2026-10-31: the "Jump to" spine bar's
-         slot that used to open this wrapper is gone with the bar; the island renders nothing
-         in its place, so both moments still start the grids at the same offset. -->
+  <main id="main" tabindex="-1" class="sim-page">
+    <!-- The head is static, ahead of the island: its lead was the measured LCP element (round 2,
+         Lighthouse), and SpecGrid's no-rows render is the shell's reservation (round 5), the
+         same component the island mounts, so the mount moves nothing. -->
+    <SimToolHead tool="specs" title="Spec support" lead={simCopy.specsIntro} />
     <div id="sim" data-sim-mount data-sim-view="specs">
-      <div class={`flex flex-col ${VIEW_GAP}`}>
-        <div class="flex flex-col gap-6">
-          <div class="flex flex-col gap-3">
-            <h2 class="section-title px-[18px] md:px-0">{simCopy.specsSimulatedHeading}</h2>
-            <div class={SPEC_GRID_CLASSES} data-testid="specs-grid" aria-hidden="true">
-              {specSkeletonSlots().map(() => (
-                <div class={SPEC_CARD_SKELETON_CLASSES} />
-              ))}
-            </div>
-          </div>
-          <div class="flex flex-col gap-3">
-            <h2 class="section-title px-[18px] md:px-0">{simCopy.specsUnsimulatedHeading}</h2>
-            <div class={SPEC_GRID_CLASSES} data-testid="specs-grid-unsimulated" aria-hidden="true">
-              {unsimulatedSpecSkeletonSlots().map(() => (
-                <div class={SPEC_CARD_SKELETON_CLASSES} />
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
+      <SpecGrid rows={null} error={null} onretry={() => {}} />
       <noscript>
-        <p class="text-muted px-[18px] text-[14px] md:px-0">
+        <p class="text-muted px-[var(--page-inset)] text-[14px]">
           Spec support needs JavaScript. The <a href="/sim">simulator</a> does too.
         </p>
       </noscript>
@@ -77,3 +32,9 @@ import IslandScript from '../../components/IslandScript.astro';
     <IslandScript src="/sim-island.js" />
   </main>
 </Base>
+
+<style>
+  .sim-page {
+    padding-bottom: 40px;
+  }
+</style>

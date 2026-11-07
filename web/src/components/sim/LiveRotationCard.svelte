@@ -27,6 +27,7 @@
   import { isSimulatedSpec, specDisplayName } from '../../lib/sim/spec-label';
   import type { SpecFidelity } from '../../lib/sim/types';
   import FidelityNote from './FidelityNote.svelte';
+  import Section from '../ui/Section.svelte';
   import RotationDisclosure from './RotationDisclosure.svelte';
 
   let { spec, fidelity }: { spec: string; fidelity: SpecFidelity | null } = $props();
@@ -35,23 +36,19 @@
   const simulated = $derived(isSimulatedSpec(spec));
 </script>
 
-<section
-  class="border-line bg-raised rounded-panel mx-[18px] flex flex-col gap-2 border p-4 md:mx-0"
-  data-testid="sim-rotation-card"
->
-  <h2 class="section-title">{simCopy.rotationCard}</h2>
+<Section title={simCopy.rotationCard} testid="sim-rotation-card">
   {#if simulated}
-    <p class="text-[13px]">{simCopy.rotationCardBody(name)}</p>
+    <p class="text-[14px] leading-5">{simCopy.rotationCardBody(name)}</p>
     <RotationDisclosure
       {spec}
       idPrefix="sim-rotation-card"
-      triggerClass="label text-nav text-[13px] underline decoration-dotted underline-offset-2"
+      triggerClass="text-nav text-[14px] underline decoration-dotted underline-offset-2"
       triggerTestId="sim-rotation-card-link"
     />
+    <FidelityNote {fidelity} testid="sim-rotation-card-note" class="pt-2" />
   {:else}
-    <p class="text-[13px]" data-testid="sim-rotation-not-simulated">
+    <p class="text-[14px] leading-5" data-testid="sim-rotation-not-simulated">
       {simCopy.rotationNotSimulated(name)}
     </p>
   {/if}
-  {#if simulated}<FidelityNote {fidelity} testid="sim-rotation-card-note" />{/if}
-</section>
+</Section>

@@ -23,9 +23,7 @@ const ALLOWED = new Map<string, number>([
   ['components/ui/CodeField.svelte', 1], // the paste box for a code copied out of the game // a field id, the share link (the copy-as-text summary is a sentence, in Barlow) // the talent code paste box
   ['components/report/QueriesView.svelte', 2], // the SQL box and its result cells
   ['components/report/MechanicsMode.svelte', 2], // <code> the forever-logs command
-  ['components/sim/SavedKind.svelte', 1], // the engine build string
   ['components/sim/DetailsCard.svelte', 1], // the engine build string
-  ['components/sim/tools/BulkRunBar.svelte', 1], // the engine's own error sentence
   ['components/sim/RequestDrawer.svelte', 3], // the request JSON, a field id, the buff ids
   ['components/guild/report/ReportDiscord.svelte', 1], // the copy fallback box
   ['components/guild/RaidOfficerRow.svelte', 1], // the copy fallback box

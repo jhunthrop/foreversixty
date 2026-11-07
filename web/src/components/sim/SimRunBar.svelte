@@ -6,6 +6,7 @@
      settings are inert at 50% while a run is in flight (the shipped rule); the primary stays live
      (Stop). Precision reads in runs, the one count every part of the page uses. -->
 <script lang="ts">
+  import type { Snippet } from 'svelte';
   import type { PrimaryAction } from '../../lib/sim/answer';
   import { simCopy } from '../../lib/sim/copy';
   import { simPageCopy as copy } from '../../lib/sim/page-copy';
@@ -39,6 +40,11 @@
     onprecision,
     onprimary,
     onmore,
+    precisionOptions,
+    primaryLabel,
+    primaryTestid = 'sim-run-button',
+    testid = 'sim-settings',
+    extra,
   }: {
     settings: SimSettings;
     precisionId: PrecisionId;
@@ -51,6 +57,14 @@
     onprecision: (value: PrecisionId) => void;
     onprimary: () => void;
     onmore: () => void;
+    /** The precision choices, when the page's runs are counted differently (the bulk tools). */
+    precisionOptions?: readonly { value: string; label: string }[];
+    /** The primary's words, over the quick sim's own for `primary`. */
+    primaryLabel?: string;
+    primaryTestid?: string;
+    testid?: string;
+    /** A second action before More settings (the bulk tools' "Run on our servers"). */
+    extra?: Snippet;
   } = $props();
 
   const PARAM = {
@@ -112,7 +126,9 @@
       param: PARAM.precision,
       kind: 'select',
       value: precisionId,
-      options: PRECISIONS.map((id) => ({ value: id, label: copy.bar.precisionOptions[id] ?? id })),
+      options:
+        precisionOptions ??
+        PRECISIONS.map((id) => ({ value: id, label: copy.bar.precisionOptions[id] ?? id })),
     },
   ]);
 
@@ -162,16 +178,17 @@
   busyTitle={copy.bar.busyTitle}
   {onchange}
   id="sim-bar"
-  testid="sim-settings"
+  {testid}
 >
   {#snippet end()}
+    {#if extra}{@render extra()}{/if}
     <button type="button" class="sim-more text-gold" onclick={onmore} data-testid="sim-settings-more"
       >{copy.bar.moreSettings}</button
     >
   {/snippet}
   {#snippet action()}
-    <Button tone={primaryTone} disabled={primaryDisabled} onclick={onprimary} testid="sim-run-button"
-      >{LABEL[primary]}</Button
+    <Button tone={primaryTone} disabled={primaryDisabled} onclick={onprimary} testid={primaryTestid}
+      >{primaryLabel ?? LABEL[primary]}</Button
     >
   {/snippet}
 </ControlBar>

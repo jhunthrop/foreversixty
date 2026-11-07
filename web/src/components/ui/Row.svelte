@@ -23,6 +23,7 @@
     open = false,
     wrapTrail = false,
     testid,
+    id,
     titleContent,
     subContent,
     foot,
@@ -40,6 +41,8 @@
     /** Below 768 the trail takes its own line under the body (an in-row Segmented). */
     wrapTrail?: boolean;
     testid?: string;
+    /** A link target on the row itself (`/sim/specs#warrior-fury`). */
+    id?: string;
     /** Replaces the title's text (a name with its tooltip trigger). */
     titleContent?: Snippet;
     /** Replaces the sub line (a source line with a glyph). */
@@ -71,6 +74,7 @@
   ]}
   aria-current={selected ? 'true' : undefined}
   data-testid={testid}
+  {id}
 >
   {#if hasLead}
     <span class="flex items-center gap-3">

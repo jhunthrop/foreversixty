@@ -9,12 +9,18 @@
      A pure render, per the lane's standing convention: `checkRequest` (request-json.ts)
      owns the parse-then-ask-the-engine question and its three-way answer; this component
      only seeds a textarea, calls that function on a click, and renders whichever `status`
-     comes back. -->
+     comes back.
+
+     Drawn as a disclosure (web layout spec 2026-11-05 §3A.2): a native details element so the
+     summary keeps its own testid, the body open on the ground, the field recipe on the text and
+     ui/Button for the actions. No box. -->
 <script lang="ts">
   import { simCopy } from '../../lib/sim/copy';
   import type { RequestValidation } from '../../lib/sim/engine';
   import { checkRequest, formatRequest, type RequestCheck } from '../../lib/sim/request-json';
   import type { SimRequest } from '../../lib/sim/types';
+  import { FIELD_FOCUS, fieldEdge } from '../../lib/ui/field';
+  import Button from '../ui/Button.svelte';
 
   let {
     request,
@@ -110,36 +116,35 @@
     }
   }
 
-  const button =
-    'border-line-warm rounded-control text-nav label min-h-11 border px-4 disabled:opacity-50 md:min-h-9';
+  /** The field recipe (lib/ui/field.ts) on the JSON and the share link: the page ground, one edge. */
+  const FIELD = `rounded-field bg-bg text-strong w-full border ${fieldEdge(false)} ${FIELD_FOCUS}`;
 </script>
 
-<details
-  class="border-line bg-raised rounded-panel mx-[18px] border md:mx-0"
-  data-testid="sim-request-drawer"
->
+<details class="request-drawer mx-[18px] md:mx-0" data-testid="sim-request-drawer">
   <summary
-    class="flex min-h-11 cursor-pointer flex-wrap items-center gap-x-3 px-4 md:min-h-9"
+    class="focus-visible:outline-gold flex min-h-11 cursor-pointer list-none flex-wrap items-center gap-x-2 select-none focus-visible:outline-2 focus-visible:-outline-offset-2 [&::-webkit-details-marker]:hidden"
     data-testid="sim-request-summary"
   >
-    <span class="label text-nav">{simCopy.requestDrawerSummary}</span>
-    <span class="text-muted text-[12px]">{simCopy.requestDrawerHint}</span>
+    <span class="text-nav text-[14px] leading-5 font-semibold">{simCopy.requestDrawerSummary}</span>
+    <span class="text-small text-muted">{simCopy.requestDrawerHint}</span>
   </summary>
-  <div class="flex flex-col gap-3 p-4 pt-0">
-    <p class="text-muted text-[12px]">{simCopy.requestNote}</p>
+  <div class="flex flex-col gap-3 pt-1 pb-2">
+    <p class="text-small text-muted">{simCopy.requestNote}</p>
     <label class="sr-only" for="sim-request-json">{simCopy.requestDrawer}</label>
     <textarea
       id="sim-request-json"
-      class="border-line-warm rounded-control bg-card-top text-text h-72 w-full border p-3 font-mono text-[12px]"
+      class={`${FIELD} h-72 p-3 font-mono text-[12px]`}
       spellcheck="false"
       bind:value={text}
       oninput={() => (edited = true)}
       data-testid="sim-request-json"></textarea>
 
     {#if check !== null && (check.status === 'parse-error' || check.status === 'validate-error')}
-      <p role="alert" class="text-strong text-[13px]" data-testid="sim-request-errors">{check.message}</p>
+      <p role="alert" class="text-strong text-[14px] leading-5" data-testid="sim-request-errors">
+        {check.message}
+      </p>
     {:else if check !== null && check.status === 'invalid'}
-      <ul class="flex flex-col gap-1 text-[13px]" role="alert" data-testid="sim-request-errors">
+      <ul class="flex flex-col gap-1 text-[14px] leading-5" role="alert" data-testid="sim-request-errors">
         {#each check.errors as row, index (`${row.field}-${index}`)}
           <li data-testid={`sim-request-error-${row.field}`}>
             <span class="text-strong font-mono">{row.field}</span>
@@ -148,41 +153,29 @@
         {/each}
       </ul>
     {:else if check !== null && check.status === 'valid'}
-      <p class="text-muted text-[13px]" data-testid="sim-request-valid">{simCopy.requestValid}</p>
+      <p class="text-muted text-[14px] leading-5" data-testid="sim-request-valid">{simCopy.requestValid}</p>
     {/if}
 
-    <div class="flex flex-wrap items-center gap-3">
-      <button
-        type="button"
-        class={button}
-        {disabled}
-        onclick={() => void apply()}
-        data-testid="sim-request-apply"
+    <div class="flex flex-wrap items-center gap-2">
+      <Button size="sm" {disabled} onclick={() => void apply()} testid="sim-request-apply"
+        >{simCopy.requestApply}</Button
       >
-        {simCopy.requestApply}
-      </button>
-      <button
-        type="button"
-        class={button}
-        {disabled}
-        onclick={() => void run()}
-        data-testid="sim-request-run"
+      <Button size="sm" {disabled} onclick={() => void run()} testid="sim-request-run"
+        >{simCopy.requestRun}</Button
       >
-        {simCopy.requestRun}
-      </button>
       {#if canShare}
-        <button type="button" class={button} onclick={() => void share()} data-testid="sim-request-share">
-          {simCopy.requestShare}
-        </button>
+        <Button size="sm" onclick={() => void share()} testid="sim-request-share"
+          >{simCopy.requestShare}</Button
+        >
       {/if}
-      <button type="button" class={button} onclick={reset} data-testid="sim-request-reset">
-        {simCopy.requestReset}
-      </button>
+      <Button size="sm" onclick={reset} testid="sim-request-reset">{simCopy.requestReset}</Button>
     </div>
-    <p class="text-muted text-[12px]">{simCopy.requestApplyNote}</p>
+    <p class="text-small text-muted">{simCopy.requestApplyNote}</p>
 
     {#if canShare && shareError !== ''}
-      <p role="alert" class="text-strong text-[13px]" data-testid="sim-request-share-error">{shareError}</p>
+      <p role="alert" class="text-strong text-[14px] leading-5" data-testid="sim-request-share-error">
+        {shareError}
+      </p>
     {:else if canShare && shared !== ''}
       <label class="sr-only" for="sim-request-share-link">{simCopy.requestShare}</label>
       <input
@@ -190,7 +183,7 @@
         type="text"
         readonly
         value={shared}
-        class="border-line-warm rounded-control bg-raised text-text h-11 w-full border px-3 text-[13px]"
+        class={`${FIELD} h-11 px-3 text-[14px] md:h-10`}
         data-testid="sim-request-share-link"
         onclick={(event) => event.currentTarget.select()}
       />
@@ -203,3 +196,16 @@
     </p>
   </div>
 </details>
+
+<style>
+  /* The caret is drawn, as ui/Disclosure draws it: no text node to read. */
+  .request-drawer > summary::before {
+    content: '\25B8';
+    display: inline-block;
+    font-size: 11px;
+    color: var(--color-muted);
+  }
+  .request-drawer[open] > summary::before {
+    transform: rotate(90deg);
+  }
+</style>

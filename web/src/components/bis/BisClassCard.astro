@@ -40,7 +40,7 @@ const roleWord = (role: SpecRole): string | undefined =>
   role === 'dps' ? undefined : landingCopy.roleWords[role];
 ---
 
-<section class="card card-surface-quiet" style={`--c: ${color}`} id={slug} data-testid={testid}>
+<section class="card" style={`--c: ${color}`} id={slug} data-testid={testid}>
   <div class="card-head">
     <ClassCrest slug={slug} size={56} />
     <h3 class="card-name">{name}</h3>
@@ -73,8 +73,8 @@ const roleWord = (role: SpecRole): string | undefined =>
           <Tag tone={spec.role === 'tank' ? 'gold' : 'muted'}>{roleWord(spec.role)}</Tag>
         </span>
       )}
-      <span class="pill pill-site yours" data-yours hidden>
-        {landingCopy.yours}
+      <span class="yours" data-yours hidden>
+        <Tag tone="gold">{landingCopy.yours}</Tag>
       </span>
       <svg
         class="go"
@@ -95,29 +95,23 @@ const roleWord = (role: SpecRole): string | undefined =>
 </section>
 
 <style>
+  /* An open block on the page ground (web layout spec 2026-11-05 §3A.2): the class colour's rule
+     over the crest and name, the spec rows under it, no box. */
   .card {
     position: relative;
-    overflow: hidden;
-  }
-  .card::before {
-    content: '';
-    position: absolute;
-    inset: 0 0 auto;
-    height: 3px;
-    background: var(--c);
+    border-top: 2px solid var(--c);
   }
   .card-head {
     display: flex;
     align-items: center;
     gap: 14px;
-    padding: 18px 18px 16px;
+    padding: 16px 0 12px;
   }
   .card-name {
     margin: 0;
-    font-family: var(--font-heading);
-    font-size: var(--text-card-title);
-    font-weight: 800;
-    letter-spacing: var(--tracking-heading);
+    font-family: var(--font-body);
+    font-size: 18px;
+    font-weight: 700;
     color: var(--c);
   }
   .spr {
@@ -125,9 +119,8 @@ const roleWord = (role: SpecRole): string | undefined =>
     align-items: center;
     gap: 12px;
     min-height: 48px;
-    padding: 0 16px 0 14px;
+    padding: 0 12px 0 10px;
     border-left: 2px solid transparent;
-    border-top: 1px solid var(--color-line-soft);
     color: var(--color-text);
     font-size: 15px;
     font-weight: 600;
@@ -137,7 +130,6 @@ const roleWord = (role: SpecRole): string | undefined =>
     width: 28px;
     height: 28px;
     border-radius: var(--radius-control);
-    border: 1px solid var(--color-line);
     object-fit: cover;
   }
   .nm {
@@ -146,8 +138,7 @@ const roleWord = (role: SpecRole): string | undefined =>
     color: var(--color-strong);
   }
   .yours {
-    height: 20px;
-    font-size: 10px;
+    display: inline-flex;
   }
   .yours[hidden] {
     display: none;
@@ -194,7 +185,7 @@ const roleWord = (role: SpecRole): string | undefined =>
   }
   @media (max-width: 599px) {
     .card-head {
-      padding: 12px 16px 10px;
+      padding: 12px 0 10px;
     }
     .card-head :global(.crest) {
       width: 44px !important;

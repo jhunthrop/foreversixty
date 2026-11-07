@@ -7,7 +7,12 @@
      The character strip's own item file is fetched once, the same `loadItems` call
      `store.svelte.ts`'s `adopt()` makes: a saved sim's class is learned only from `result`,
      so until it resolves the grid draws slot names and ids without icons or rarities,
-     exactly as it does on /sim before its own fetch lands. -->
+     exactly as it does on /sim before its own fetch lands.
+
+     Sim spec 2026-11-06 §4.5 grammar, the saved quick sim's: the character head with its answer
+     (the figure, the 95% band, Open in the sim and Copy link), then a split page: the result
+     table (its one Plate) and the character in the main column, This run (Facts) and Rotation
+     in the rail. -->
 <script lang="ts">
   import { onMount } from 'svelte';
   import activeBuild from '../../data/active-build.json';
@@ -26,18 +31,26 @@
   } from '../../lib/sim/character';
   import { bulkCopy, simCopy } from '../../lib/sim/copy';
   import { encounterLabel } from '../../lib/sim/encounter';
+  import type { AnswerModel } from '../../lib/sim/answer';
   import { confidenceBand, formatMargin } from '../../lib/sim/estimate';
   import { gameCodeForSimResult } from '../../lib/sim/game-code';
+  import { simPageCopy } from '../../lib/sim/page-copy';
+  import { grouped } from '../../lib/sim/result-copy';
   import { specLabel } from '../../lib/sim/spec-label';
   import { mergeSpecRows } from '../../lib/sim/spec-state';
   import type { ItemsStatus } from '../../lib/sim/store.svelte';
   import type { SimResult, SpecFidelity } from '../../lib/sim/types';
-  import { engineLabel, isStale } from '../../lib/sim/version';
+  import { isStale } from '../../lib/sim/version';
   import { yieldToMain } from '../../lib/yield';
   import CopyForGame from '../CopyForGame.svelte';
+  import Button from '../ui/Button.svelte';
+  import Notice from '../ui/Notice.svelte';
+  import Page from '../ui/Page.svelte';
   import CharacterStrip from './CharacterStrip.svelte';
   import DetailsCard from './DetailsCard.svelte';
   import LiveRotationCard from './LiveRotationCard.svelte';
+  import SimAnswer from './SimAnswer.svelte';
+  import SimCharacterHead from './SimCharacterHead.svelte';
 
   let { result, onrerun }: { result: SimResult; onrerun: () => void } = $props();
 
@@ -45,10 +58,6 @@
 
   const stale = $derived(isStale(result.engine_version));
   const hasFigure = $derived(result.dps.mean > 0);
-  const figure = $derived(hasFigure ? Math.round(result.dps.mean).toLocaleString('en-US') : '—');
-  const band = $derived(
-    hasFigure && result.dps.error > 0 ? `± ${formatMargin(confidenceBand(result.dps))}` : '',
-  );
   // The stored request carries no settings preset, only the raw encounter and buff list --
   // the same shape `og-meta.ts`'s unfurl reads, and the same derivation: a raid-buffed run
   // logs at least one BUFF-type aura, a solo one logs none.
@@ -57,6 +66,9 @@
   // The request's own capture time is the only timestamp a SimResult carries; an absent one
   // (an empty string) is not turned into a fabricated date.
   const savedDate = $derived(result.request.source.captured_at.slice(0, 10));
+  const headLines = $derived(
+    savedDate === '' ? [encounterText] : [encounterText, simPageCopy.head.saved(savedDate)],
+  );
 
   // Kind is derived from the stored request, never sent and never stored twice (contract
   // 1.1) -- this is what lets a saved page pick its own results view without a second field
@@ -85,6 +97,18 @@
   const heading = $derived(
     result.title !== undefined && result.title !== '' ? result.title : fallbackHeading,
   );
+
+  /** The head's answer: the kind's name, the figure and its band, labelled once as 95%. */
+  const answerModel = $derived<AnswerModel>({
+    state: 'result',
+    label: kind === 'run' ? '' : KIND_TITLES[kind],
+    figure: hasFigure ? { value: grouped(result.dps.mean), tone: 'gold', unit: true } : undefined,
+    caption:
+      hasFigure && result.dps.error > 0
+        ? { bold: `± ${formatMargin(confidenceBand(result.dps))} (95%)` }
+        : undefined,
+    primary: 'run-again',
+  });
 
   const gearKnown = $derived(result.request.character.gear.length > 0);
 
@@ -243,7 +267,7 @@
 
 {#snippet lazyFallback(lazy: LazyLoadState)}
   {#if lazy.error !== ''}
-    <p class="text-muted px-[18px] text-[13px] md:px-0" role="alert" data-testid="sim-results-error">
+    <p class="text-muted text-[14px] leading-5" role="alert" data-testid="sim-results-error">
       {lazy.error}
       <button
         type="button"
@@ -254,92 +278,65 @@
   {/if}
 {/snippet}
 
-<div class="flex flex-wrap items-baseline gap-x-4 gap-y-1 px-[18px] md:px-0">
-  <h1 class="heading-page" data-testid="sim-saved-title">{heading}</h1>
+{#snippet rail()}
+  {#if drawnStage >= 2}
+    <DetailsCard {result}>
+      <CopyForGame code={gameCode} testid="sim-saved-copy-for-game" />
+    </DetailsCard>
+    <LiveRotationCard spec={result.request.spec} {fidelity} />
+  {/if}
+{/snippet}
+
+<div data-testid="sim-saved-header">
+  <SimCharacterHead name={heading} classSlug={result.request.character.class} lines={headLines}>
+    {#snippet answer()}
+      <SimAnswer model={answerModel}>
+        {#snippet actions()}
+          <Button tone="primary" size="sm" onclick={onrerun} testid="sim-run-yourself"
+            >{simPageCopy.answer.openInSim}</Button
+          >
+          <Button size="sm" onclick={() => void copyLink()} testid="sim-saved-copy"
+            ><span aria-live="polite">{copied ? simPageCopy.answer.copied : simPageCopy.answer.copyLink}</span
+            ></Button
+          >
+        {/snippet}
+      </SimAnswer>
+    {/snippet}
+  </SimCharacterHead>
 </div>
 
-<section
-  class="bg-raised border-line rounded-panel mx-[18px] flex flex-wrap items-baseline gap-x-6 gap-y-2 border p-4 md:mx-0"
-  data-testid="sim-saved-header"
->
-  <div class="flex flex-wrap items-baseline gap-2">
-    <span
-      class={`numeric text-[32px] leading-none ${hasFigure ? 'text-gold' : 'text-muted'}`}
-      data-testid="sim-dps"
-    >
-      {figure}
-    </span>
-    <span class="text-muted numeric text-[14px]" data-testid="sim-error">{band}</span>
-  </div>
-  <span class="text-muted text-[13px]" data-testid="sim-saved-encounter">{encounterText}</span>
-  {#if stale}
-    <span class="pill pill-sample" data-testid="sim-stale-pill">{engineLabel(result.engine_version)}</span>
-  {:else}
-    <span class="tabular text-muted font-mono text-[13px]" data-testid="sim-engine">
-      {engineLabel(result.engine_version)}
-    </span>
-  {/if}
-  {#if result.request.source.captured_at !== ''}
-    <span class="text-muted numeric text-[13px]" data-testid="sim-saved-date">{savedDate}</span>
-  {/if}
-</section>
-
 {#if stale}
-  <p class="mx-[18px] text-[13px] md:mx-0" data-testid="sim-stale">
-    <span class="text-strong">{simCopy.staleEngine}</span>
-  </p>
-{/if}
-
-<!-- A weights result has no gear story (design 7): nothing was tried in any slot, so the
-     strip shows no grid rather than the equipped set a weights run never touched for its
-     own sake. -->
-{#if drawnStage >= 1}
-  <CharacterStrip
-    {character}
-    {items}
-    {itemsStatus}
-    gearKnown={kind !== 'weights' && gearKnown}
-    readonly
-    {plannerHref}
-    {talentPoints}
-    onchange={() => {}}
-  />
-{/if}
-
-{#if kind === 'weights'}
-  {#if savedWeightsLazy.current}
-    <savedWeightsLazy.current result={result as WeightsResult} />
-  {:else}
-    {@render lazyFallback(savedWeightsLazy)}
-  {/if}
-{:else if savedCombosLazy.current}
-  <savedCombosLazy.current result={result as BulkResult} treeVersion={character.tree_version} />
-{:else}
-  {@render lazyFallback(savedCombosLazy)}
-{/if}
-
-{#if drawnStage >= 2}
-  <DetailsCard {result} />
-
-  <LiveRotationCard spec={result.request.spec} {fidelity} />
-
-  <div class="mx-[18px] flex flex-wrap items-center gap-3 md:mx-0">
-    <button
-      type="button"
-      class="border-line-warm rounded-control text-nav label min-h-11 border px-4"
-      onclick={onrerun}
-      data-testid="sim-run-yourself"
-    >
-      {simCopy.runThisYourself}
-    </button>
-    <button
-      type="button"
-      class="border-line-warm rounded-control text-nav label min-h-11 border px-4"
-      onclick={() => void copyLink()}
-      data-testid="sim-saved-copy"
-    >
-      {copied ? simCopy.copied : simCopy.copyLink}
-    </button>
-    <CopyForGame code={gameCode} testid="sim-saved-copy-for-game" />
+  <div class="px-[var(--page-inset)]">
+    <Notice text={simCopy.staleEngine} tone="neutral" testid="sim-stale" />
   </div>
 {/if}
+
+<Page layout="split" {rail}>
+  {#if kind === 'weights'}
+    {#if savedWeightsLazy.current}
+      <savedWeightsLazy.current result={result as WeightsResult} />
+    {:else}
+      {@render lazyFallback(savedWeightsLazy)}
+    {/if}
+  {:else if savedCombosLazy.current}
+    <savedCombosLazy.current result={result as BulkResult} treeVersion={character.tree_version} />
+  {:else}
+    {@render lazyFallback(savedCombosLazy)}
+  {/if}
+
+  <!-- A weights result has no gear story (design 7): nothing was tried in any slot, so the
+       strip shows no grid rather than the equipped set a weights run never touched for its
+       own sake. -->
+  {#if drawnStage >= 1}
+    <CharacterStrip
+      {character}
+      {items}
+      {itemsStatus}
+      gearKnown={kind !== 'weights' && gearKnown}
+      readonly
+      {plannerHref}
+      {talentPoints}
+      onchange={() => {}}
+    />
+  {/if}
+</Page>

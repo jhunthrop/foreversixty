@@ -188,3 +188,50 @@ export async function openSimState(page: Page, state: SimParityState): Promise<v
     await drawWholeReport(page);
   }
 }
+
+/** The tool pages' parity states (parity-sim-tools.spec.ts, design/mocks/web/simtools-parity.json). */
+export type ToolParityState = 'gear' | 'gear-empty' | 'talents' | 'drops' | 'weights' | 'specs';
+
+/**
+ * The mock's character on a tool page: the same Fury set the quick-sim states load (the landing
+ * rail's link, Troll, named Thandrel, a linked addon export), handed to the tool by `?code=` as a
+ * tab carries it.
+ */
+async function openToolWithFury(page: Page, tool: string): Promise<void> {
+  await page.goto('/sim');
+  const href = await page
+    .locator('[data-region="section-sim-a-best-in-slot-set"] a', { hasText: 'Fury' })
+    .getAttribute('href');
+  expect(href).not.toBeNull();
+  const landing = new URL(href ?? '', 'http://localhost');
+  const code = (landing.searchParams.get('code') ?? '').replace(':night-elf:', ':troll:');
+  const params = new URLSearchParams({ code: `${code}|who=${MOCK_CHARACTER}:Forever`, source: 'addon' });
+  await page.goto(`/sim/${tool}?${params.toString()}`);
+  await expect(page.getByTestId('sim-character')).toBeVisible({ timeout: 15_000 });
+  await expect(page.getByTestId('sim-run-bulk')).toBeVisible();
+}
+
+export async function openToolState(page: Page, state: ToolParityState): Promise<void> {
+  await serveMockData(page);
+  if (state === 'specs') {
+    // No parse has been measured yet: every damage spec reads "Not yet", as production does.
+    await page.route('**/v1/specs**', (route) => route.fulfill(envelope({ specs: [] })));
+    await page.goto('/sim/specs');
+    await expect(page.getByTestId('spec-warrior-fury')).toBeVisible({ timeout: 15_000 });
+    return;
+  }
+  if (state === 'gear-empty') {
+    await page.goto('/sim/gear');
+    await expect(page.getByTestId('sim-addon-input')).toBeVisible({ timeout: 15_000 });
+    return;
+  }
+  await openToolWithFury(page, state);
+  const ready: Record<Exclude<ToolParityState, 'specs' | 'gear-empty'>, string> = {
+    gear: 'sim-slot-grid',
+    talents: 'sim-talent-candidates',
+    drops: 'sim-source-picker',
+    weights: 'sim-weights-pick',
+  };
+  await expect(page.getByTestId(ready[state])).toBeVisible({ timeout: 15_000 });
+  await expect(page.locator('[aria-busy="true"]')).toHaveCount(0, { timeout: 15_000 });
+}

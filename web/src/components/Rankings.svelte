@@ -60,6 +60,7 @@
   import RankingsAnswer from './rankings/RankingsAnswer.svelte';
   import RankingsMoreFilters from './rankings/RankingsMoreFilters.svelte';
   import ControlBar from './ui/ControlBar.svelte';
+  import Divided from './ui/Divided.svelte';
   import Notice from './ui/Notice.svelte';
   import Page from './ui/Page.svelte';
   import PageHeader from './ui/PageHeader.svelte';
@@ -582,37 +583,39 @@
               {/each}
             </RankList>
             {#if lastPage > 1}
-              <div
-                class="border-line-soft flex items-center justify-end gap-4 border-t px-4 py-3 text-[14px]"
-                data-testid="rankings-pager"
-              >
-                <span class="text-small text-muted tabular-nums">Page {state.page} of {lastPage}</span>
-                {#if state.page > 1}
-                  <a
-                    class={LINK}
-                    href={pageHref(state.page - 1)}
-                    data-testid="rankings-prev"
-                    onclick={(event) => {
-                      event.preventDefault();
-                      patch({ page: state.page - 1 });
-                    }}>Previous</a
-                  >
-                {:else}<span class="text-muted" data-testid="rankings-prev" aria-disabled="true"
-                    >Previous</span
-                  >{/if}
-                {#if state.page < lastPage}
-                  <a
-                    class={LINK}
-                    href={pageHref(state.page + 1)}
-                    data-testid="rankings-next"
-                    onclick={(event) => {
-                      event.preventDefault();
-                      patch({ page: state.page + 1 });
-                    }}>Next</a
-                  >
-                {:else}<span class="text-muted" data-testid="rankings-next" aria-disabled="true">Next</span
-                  >{/if}
-              </div>
+              <Divided>
+                <div
+                  class="flex w-full items-center justify-end gap-4 px-4 pb-3 text-[14px]"
+                  data-testid="rankings-pager"
+                >
+                  <span class="text-small text-muted tabular-nums">Page {state.page} of {lastPage}</span>
+                  {#if state.page > 1}
+                    <a
+                      class={LINK}
+                      href={pageHref(state.page - 1)}
+                      data-testid="rankings-prev"
+                      onclick={(event) => {
+                        event.preventDefault();
+                        patch({ page: state.page - 1 });
+                      }}>Previous</a
+                    >
+                  {:else}<span class="text-muted" data-testid="rankings-prev" aria-disabled="true"
+                      >Previous</span
+                    >{/if}
+                  {#if state.page < lastPage}
+                    <a
+                      class={LINK}
+                      href={pageHref(state.page + 1)}
+                      data-testid="rankings-next"
+                      onclick={(event) => {
+                        event.preventDefault();
+                        patch({ page: state.page + 1 });
+                      }}>Next</a
+                    >
+                  {:else}<span class="text-muted" data-testid="rankings-next" aria-disabled="true">Next</span
+                    >{/if}
+                </div>
+              </Divided>
             {/if}
           {/if}
         </Plate>

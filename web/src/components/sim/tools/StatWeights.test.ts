@@ -35,12 +35,18 @@ function renderWeights(weights: StatWeight[]): string {
   return body;
 }
 
-/** The whole `<div data-testid="sim-weight-<stat>">…</div>` row element for one stat. */
+/** One stat's StatRow, from its own opening tag up to the next row (or the table's end). */
 function rowFor(body: string, stat: string): string {
-  const match = new RegExp(`<div[^>]*data-testid="sim-weight-${stat}"[^>]*>.*?</div>`, 's').exec(body);
+  const match = new RegExp(
+    `<div[^>]*data-testid="sim-weight-${stat}"[^>]*>.*?(?=<div[^>]*class="ui-st-r|$)`,
+    's',
+  ).exec(body);
   if (match === null) throw new Error(`no row rendered for stat "${stat}"`);
   return match[0];
 }
+
+/** A greyed row: its primary figure is drawn muted (the StatRow's not-significant reading). */
+const GREYED = 'data-primary="true" data-muted="true"';
 
 describe('StatWeights: the published SimulationCraft form (live page)', () => {
   it('greys exactly the row the engine flagged insignificant, and no other', () => {
@@ -52,9 +58,9 @@ describe('StatWeights: the published SimulationCraft form (live page)', () => {
     const body = renderWeights(weights);
     const critRow = rowFor(body, 'crit');
     const strengthRow = rowFor(body, 'strength');
-    expect(critRow).toContain('opacity-50');
+    expect(critRow).toContain(GREYED);
     expect(critRow).toContain(bisCopy.weightsNotSignificant);
-    expect(strengthRow).not.toContain('opacity-50');
+    expect(strengthRow).not.toContain(GREYED);
     expect(strengthRow).not.toContain(bisCopy.weightsNotSignificant);
   });
 
@@ -81,8 +87,8 @@ describe('StatWeights: the published SimulationCraft form (live page)', () => {
     // Scoped to the two row <li>s, not the whole body: unrelated elements elsewhere on the
     // page (the save button's own `disabled:opacity-50` utility class) legitimately carry
     // the substring "opacity-50" without meaning a row is greyed.
-    expect(rowFor(body, 'attack_power')).not.toContain('opacity-50');
-    expect(rowFor(body, 'strength')).not.toContain('opacity-50');
+    expect(rowFor(body, 'attack_power')).not.toContain(GREYED);
+    expect(rowFor(body, 'strength')).not.toContain(GREYED);
     expect(body).not.toContain(bisCopy.weightsNotSignificant);
   });
 });

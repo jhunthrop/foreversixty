@@ -7,7 +7,6 @@
      resolved once by drop-picks.ts when the request was built), never a second join back to
      loot.json here. -->
 <script lang="ts">
-  import { SECONDARY_BUTTON } from '../../../lib/planner/styles';
   import { humaniseKey } from '../../../lib/sim/humanise';
   import type { Item } from '../../../lib/planner/types';
   import type { BulkResult, Combo } from '../../../lib/sim/bulk-types';
@@ -16,6 +15,7 @@
     comboRows,
     deltaLabel,
     planItHref,
+    rowName,
     sourceNameOfCombo,
     type ComboRow,
   } from '../../../lib/sim/combos';
@@ -23,7 +23,14 @@
   import type { UntriedPick } from '../../../lib/sim/drop-picks';
   import { handoffCopy } from '../../../lib/sim/handoff-copy';
   import { confidenceBand, formatMargin } from '../../../lib/sim/estimate';
+  import { button } from '../../../lib/ui/button';
+  import type { StatColumn } from '../../../lib/ui/stat-table';
+  import Button from '../../ui/Button.svelte';
+  import Row from '../../ui/Row.svelte';
+  import StatRow from '../../ui/StatRow.svelte';
+  import StatTable from '../../ui/StatTable.svelte';
   import SubstitutionChips from './SubstitutionChips.svelte';
+  import ToolSection from './ToolSection.svelte';
 
   let {
     result,
@@ -31,6 +38,7 @@
     treeVersion,
     untried,
     onpin,
+    plate = false,
   }: {
     result: BulkResult;
     items: ReadonlyMap<number, Item>;
@@ -43,7 +51,18 @@
     untried: readonly UntriedPick[];
     /** The item, its `drop:<source-id>` origin and the boss/source name it carried in. */
     onpin: (itemId: number, origin: string, sourceName: string) => void;
+    /** The results sit on the page's one Plate. */
+    plate?: boolean;
   } = $props();
+
+  /** A boss's rows: the gain (primary), then the share. */
+  const COLUMNS: readonly StatColumn[] = [
+    { id: 'delta', label: bulkCopy.resultsDelta },
+    { id: 'percent', label: bulkCopy.resultsPercent },
+  ];
+
+  /** A block's subheading inside the one results Section: the body face 700, not caps. */
+  const SUBHEAD = 'text-strong text-[15px] leading-5 font-bold';
 
   const rows = $derived(comboRows(result));
 
@@ -105,101 +124,97 @@
   }
 </script>
 
-<section class="mx-[18px] flex flex-col gap-3 md:mx-0" data-testid="sim-combos">
-  <p class="text-muted text-[12px]" data-testid="sim-drops-note">{bulkCopy.dropsNoChance}</p>
+<ToolSection title={bulkCopy.resultsTitle} testid="sim-combos" {plate}>
+  <div class="flex flex-col gap-3">
+    <p class="text-muted text-[13px]" data-testid="sim-drops-note">{bulkCopy.dropsNoChance}</p>
 
-  <p class="text-strong numeric text-[14px]" data-testid="sim-equipped-line">
-    {bulkCopy.resultsEquipped}: {Math.round(result.equipped.mean).toLocaleString('en-US')}
-    ± {formatMargin(confidenceBand(result.equipped))}
-  </p>
+    <p class="text-strong text-[15px] tabular-nums" data-testid="sim-equipped-line">
+      {bulkCopy.resultsEquipped}: {Math.round(result.equipped.mean).toLocaleString('en-US')}
+      ± {formatMargin(confidenceBand(result.equipped))}
+    </p>
 
-  <section class="flex flex-col gap-3" data-testid="sim-drops-by-boss">
-    <h3 class="section-title">{bulkCopy.dropsByBoss}</h3>
-    {#each byBoss as [origin, group] (origin)}
-      {@const wins = group.filter(isUpgrade)}
-      <div class="border-line rounded-panel border p-3">
-        <header class="flex flex-wrap items-baseline justify-between gap-2">
-          <h4 class="text-strong text-[13px]">{bossName(group[0].combo, origin)}</h4>
-          <span class="text-muted text-[12px]">{bulkCopy.dropsUpgrades(wins.length, group.length)}</span>
-        </header>
-        {#if wins.length > 0}
-          <p class="text-gold numeric text-[13px]" data-testid="sim-drops-best">
-            {bulkCopy.dropsBest}: {deltaLabel(wins[0].combo.delta)}
-          </p>
-        {/if}
-        <ul class="flex flex-col">
-          {#each group as row (comboKey(row))}
-            <li
-              class="border-line-soft flex min-h-11 items-center gap-3 border-b px-2 py-1 last:border-b-0"
-              data-testid="sim-combo-row"
-            >
-              <SubstitutionChips
-                substitutions={row.combo.substitutions}
-                {items}
-                {treeVersion}
-                classSlug={result.request.character.class}
-              />
-              <span class="text-gold numeric ml-auto text-[13px]">
-                {deltaLabel(row.combo.delta)}
-              </span>
-              <span class="text-muted numeric text-[12px]">{row.percent.toFixed(1)}%</span>
-            </li>
-          {/each}
-        </ul>
-      </div>
-    {/each}
-    {#each untried as pick (pick.key)}
-      <div class="border-line rounded-panel border p-3" data-testid="sim-drops-untried">
-        <!-- Fix round, Minor 4: the by-boss cards beside this one use the <h4> for the name
-             and the line under it for the count, never repeating the name in the sentence
-             below -- this card used to name it twice. -->
-        <h4 class="text-strong text-[13px]">{pick.name}</h4>
-        <p class="text-muted text-[13px]">{toolFixCopy.dropsNothingTried}</p>
-      </div>
-    {/each}
-  </section>
-
-  <section class="border-line rounded-panel border p-3" data-testid="sim-drops-flat">
-    <h3 class="section-title">{bulkCopy.dropsEveryUpgrade}</h3>
-    {#if upgrades.length === 0}
-      <p class="text-muted text-[13px]">{bulkCopy.noGain}</p>
-    {:else}
-      <ul class="flex flex-col">
-        {#each upgrades as row (comboKey(row))}
-          {@const pinId = comboKey(row)}
-          {@const href = planItHref(result, row.combo, treeVersion)}
-          <li
-            class="border-line-soft flex min-h-11 flex-wrap items-center gap-3 border-b px-2 py-1 last:border-b-0"
-          >
-            <SubstitutionChips
-              substitutions={row.combo.substitutions}
-              {items}
-              {treeVersion}
-              classSlug={result.request.character.class}
-            />
-            <span class="text-gold numeric ml-auto text-[13px]">
-              {deltaLabel(row.combo.delta)}
-            </span>
-            <!-- Task 7: two controls on one row now, so they get their own flex-wrap group
-                 rather than overflowing a phone that is too narrow for both side by side. -->
-            <span class="flex flex-wrap items-center gap-2">
-              {#if href !== null}
-                <a
-                  class="{SECONDARY_BUTTON} border-line-warm text-nav px-3"
-                  {href}
-                  data-testid={`sim-drops-plan-it-${pinId}`}>{handoffCopy.planIt}</a
-                >
-              {/if}
-              <button
-                type="button"
-                class="{SECONDARY_BUTTON} border-line-warm text-nav px-3"
-                data-testid={`sim-drops-pin-${pinId}`}
-                onclick={() => pin(row)}>{bulkCopy.dropsPin}</button
+    <div class="flex flex-col gap-5 pt-2" data-testid="sim-drops-by-boss">
+      <h3 class={SUBHEAD}>{bulkCopy.dropsByBoss}</h3>
+      {#each byBoss as [origin, group] (origin)}
+        {@const wins = group.filter(isUpgrade)}
+        <div class="flex flex-col">
+          <header class="flex flex-wrap items-baseline justify-between gap-2">
+            <h4 class={SUBHEAD}>{bossName(group[0].combo, origin)}</h4>
+            <span class="text-muted text-[13px]">{bulkCopy.dropsUpgrades(wins.length, group.length)}</span>
+          </header>
+          {#if wins.length > 0}
+            <p class="text-gold text-[13px] font-bold tabular-nums" data-testid="sim-drops-best">
+              {bulkCopy.dropsBest}: {deltaLabel(wins[0].combo.delta)}
+            </p>
+          {/if}
+          <StatTable columns={COLUMNS} bar={false} open label={bossName(group[0].combo, origin)}>
+            {#each group as row (comboKey(row))}
+              <StatRow
+                bar={false}
+                figures={[
+                  { value: deltaLabel(row.combo.delta) },
+                  { value: `${row.percent.toFixed(1)}%`, muted: true },
+                ]}
+                testid="sim-combo-row"
               >
-            </span>
-          </li>
-        {/each}
-      </ul>
-    {/if}
-  </section>
-</section>
+                {#snippet name()}
+                  <SubstitutionChips
+                    substitutions={row.combo.substitutions}
+                    {items}
+                    {treeVersion}
+                    classSlug={result.request.character.class}
+                  />
+                {/snippet}
+              </StatRow>
+            {/each}
+          </StatTable>
+        </div>
+      {/each}
+      {#each untried as pick (pick.key)}
+        <div class="flex flex-col" data-testid="sim-drops-untried">
+          <!-- Fix round, Minor 4: the by-boss groups beside this one use the <h4> for the name
+               and the line under it for the count, never repeating the name in the
+               below. -->
+          <h4 class={SUBHEAD}>{pick.name}</h4>
+          <p class="text-muted text-[13px]">{toolFixCopy.dropsNothingTried}</p>
+        </div>
+      {/each}
+    </div>
+
+    <div class="flex flex-col pt-3" data-testid="sim-drops-flat">
+      <h3 class={SUBHEAD}>{bulkCopy.dropsEveryUpgrade}</h3>
+      {#if upgrades.length === 0}
+        <p class="text-muted pt-1 text-[13px]">{bulkCopy.noGain}</p>
+      {:else}
+        <div class="pt-1">
+          {#each upgrades as row (comboKey(row))}
+            {@const pinId = comboKey(row)}
+            {@const href = planItHref(result, row.combo, treeVersion)}
+            <Row title={rowName(row)} open wrapTrail>
+              {#snippet titleContent()}
+                <SubstitutionChips
+                  substitutions={row.combo.substitutions}
+                  {items}
+                  {treeVersion}
+                  classSlug={result.request.character.class}
+                />
+              {/snippet}
+              {#snippet trail()}
+                <span class="text-gold text-[15px] font-bold tabular-nums">{deltaLabel(row.combo.delta)}</span
+                >
+                {#if href !== null}
+                  <a class={button('ghost', 'sm')} {href} data-testid={`sim-drops-plan-it-${pinId}`}
+                    >{handoffCopy.planIt}</a
+                  >
+                {/if}
+                <Button size="sm" testid={`sim-drops-pin-${pinId}`} onclick={() => pin(row)}
+                  >{bulkCopy.dropsPin}</Button
+                >
+              {/snippet}
+            </Row>
+          {/each}
+        </div>
+      {/if}
+    </div>
+  </div>
+</ToolSection>

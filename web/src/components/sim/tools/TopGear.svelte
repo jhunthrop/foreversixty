@@ -1,23 +1,13 @@
 <!-- web/src/components/sim/tools/TopGear.svelte -->
-<!-- /sim/gear and /sim/talents are the same island: Top Gear with its gear locked and only
-     the loadouts as candidates (design 3.4). `store.tool` is the whole difference, and it
-     is read once here rather than branched on in every child.
-
-     This is the composition every later Top Gear task adds a section to:
-       - Task 13's ItemSearch and ConsumableCandidates sit here, between the slot grid and
-         the combination count. Both only make sense in gear mode (search adds a gear
-         candidate; a consumable list only multiplies `gear` mode's product, contract
-         10.1 A5), so both live inside the same `gearMode` guard as the slot grid.
-       - Task 14's TalentCandidates sits outside the gearMode guard (talent compare is
-         loadouts only, contract 10.1's talents mode has no gear candidates) and its
-         NamedSets sits inside it, beside ItemSearch and ConsumableCandidates.
-       - Task 15's BulkRunBar mounts here (it mounts SettingsBar and RequestDrawer itself,
-         so this file needs no import of either), after the candidate sections, owning the
-         combination count.
-       - Task 16 inserts ComboResults here, after the run bar.
-     Each later task's section is its own child component; this file stays a thin
-     composition that delegates, never growing past what a single screen's layout needs. -->
+<!-- /sim/gear and /sim/talents are the same island (mock design/mocks/ws_simtools.py): the run
+     line, then the split page. Top gear: the candidate grid on the page's one Plate in the main
+     column, the results above it once a run finishes, and the ways to add candidates (an item
+     search, the consumables to try, whole sets, talent builds) as open sections in the rail.
+     Talents: gear is locked to what is worn, so the talent builds are the Plate and there is no
+     rail. `store.tool` is the whole difference, read once here. -->
 <script lang="ts">
+  import type { Snippet } from 'svelte';
+  import Page from '../../ui/Page.svelte';
   import type { Me } from '../../../lib/account/api';
   import type { Slot } from '../../../lib/planner/types';
   import type { BulkResult } from '../../../lib/sim/bulk-types';
@@ -35,14 +25,32 @@
   // the slot grid itself has no use for it -- Task 15's BulkRunBar is where a signed-out
   // premium prompt would read it. Destructuring only `store` keeps the type annotation
   // (and therefore the contract) intact without an unused local.
-  let { store }: { store: BulkStore; me: Me | null } = $props();
+  let { store, lead }: { store: BulkStore; me: Me | null; lead?: Snippet } = $props();
 
   const gearMode = $derived(store.tool === 'gear');
 </script>
 
-<div class="flex flex-col gap-[22px] md:gap-8" data-testid="sim-top-gear">
+<Page layout={gearMode ? 'split' : 'ledger'} testid="sim-top-gear">
+  {#snippet bar()}<BulkRunBar {store} />{/snippet}
+  {#if lead}{@render lead()}{/if}
+  {#if store.result !== null}
+    <!-- `runBulkAndSettle` replaces `result` with a fresh object on every finished run, so
+         `{#key}` remounts ComboResults and resets its save, copy and filter state. -->
+    {#key store.result}
+      <ComboResults
+        result={store.result as BulkResult}
+        items={store.items}
+        sets={store.sets}
+        treeVersion={store.character?.tree_version ?? ''}
+        partial={store.result.aborted === true}
+        onsave={(title) => store.save(title)}
+        talents={store.talentFile}
+      />
+    {/key}
+  {/if}
   {#if gearMode}
     <SlotGrid
+      plate
       rows={store.rows}
       locked={store.locked}
       enchants={store.enchants}
@@ -53,6 +61,16 @@
       oncopy={(key, patch) => store.copyAndModify(key, patch)}
       onlock={(slot: Slot) => store.toggleLock(slot)}
     />
+  {:else if store.character !== null}
+    <TalentCandidates
+      plate
+      character={store.character}
+      picked={store.loadouts}
+      ontoggle={(loadout, on) => (on ? store.addLoadout(loadout) : store.removeLoadout(loadout.name))}
+      onpendingcustom={(pending) => store.setPendingCustomBuild(pending)}
+    />
+  {/if}
+  {#snippet rail()}
     <ItemSearch
       items={[...store.items.values()]}
       loot={store.loot}
@@ -76,38 +94,12 @@
         onadd={(set) => store.addNamedSet(set)}
         onremove={(name) => store.removeNamedSet(name)}
       />
-    {/if}
-  {/if}
-
-  {#if store.character !== null}
-    <TalentCandidates
-      character={store.character}
-      picked={store.loadouts}
-      ontoggle={(loadout, on) => (on ? store.addLoadout(loadout) : store.removeLoadout(loadout.name))}
-      onpendingcustom={(pending) => store.setPendingCustomBuild(pending)}
-    />
-  {/if}
-
-  <BulkRunBar {store} />
-
-  {#if store.result !== null}
-    <!-- Fix round 1, finding 1: `runBulkAndSettle` never nulls `result` before a finished
-         run replaces it, so `store.result` goes straight from result A to result B and
-         this `{#if}` alone never unmounts ComboResults -- its local save/copy/filter state
-         (saveOpen, savedUrl, the game-code copy state, keepSet, ...) would otherwise survive into the
-         next run's own display. `{#key store.result}` remounts on every genuinely new
-         result (bulk-store-request.ts's `runBulkAndSettle` always assigns a freshly built
-         object, never mutates the old one in place), which resets all of it for free. -->
-    {#key store.result}
-      <ComboResults
-        result={store.result as BulkResult}
-        items={store.items}
-        sets={store.sets}
-        treeVersion={store.character?.tree_version ?? ''}
-        partial={store.result.aborted === true}
-        onsave={(title) => store.save(title)}
-        talents={store.talentFile}
+      <TalentCandidates
+        character={store.character}
+        picked={store.loadouts}
+        ontoggle={(loadout, on) => (on ? store.addLoadout(loadout) : store.removeLoadout(loadout.name))}
+        onpendingcustom={(pending) => store.setPendingCustomBuild(pending)}
       />
-    {/key}
-  {/if}
-</div>
+    {/if}
+  {/snippet}
+</Page>

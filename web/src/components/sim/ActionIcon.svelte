@@ -29,7 +29,7 @@
     alt={label}
     loading="lazy"
     decoding="async"
-    class="bg-card-top inline-block shrink-0 rounded-[4px]"
+    class="inline-block shrink-0 rounded-[4px]"
     style:width="{size}px"
     style:height="{size}px"
     onerror={() => (failedUrl = url)}

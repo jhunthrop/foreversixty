@@ -1,16 +1,12 @@
 <!-- web/src/components/sim/tools/BulkRunBar.svelte -->
-<!-- Design 3.1.8: the combination count, the precision, the cap notice, the lane switch and
-     one button. Every tool page mounts this, so the run affordance is identical on all four
-     and the settings bar and the request drawer arrive with it.
-
-     The cap notice never trims the list. It says what would exceed the cap and by how much,
-     and offers the lane that would allow it -- design 2.3's own rule.
-
-     "SettingsPanel" in this task's brief is part A's SettingsBar.svelte: it takes exactly
-     the `{ settings, spec, disabled, onchange }` shape the brief describes (it mounts
-     SettingsSheet's own disclosure itself, so nothing else here needs to). -->
+<!-- The run line every tool page shares (mock design/mocks/ws_simtools.py): the quick sim's own
+     ControlBar (SimRunBar: fight, length, targets, buffs, precision, More settings and the one
+     primary), with the tool's precision choices and words, then the standing lines under it: the
+     combination count, what the precision costs, the cap and anything that blocks a run. The cap
+     notice never trims the list: it says what would exceed the cap and by how much, and offers the
+     lane that would allow it. More settings is the quick sim's sheet (target, execute, buffs, the
+     raw request). -->
 <script lang="ts">
-  import { SECONDARY_BUTTON } from '../../../lib/planner/styles';
   import { PREMIUM_LINKS } from '../../../lib/billing/premium-links';
   import type { BulkStore } from '../../../lib/sim/bulk-store.svelte';
   import { BULK_PRECISIONS, LOW_CORE_CAP, type Precision } from '../../../lib/sim/bulk-types';
@@ -18,10 +14,12 @@
   import { poolQualityCopy } from '../../../lib/sim/pool-quality-copy';
   import { isSimulatedSpec, specDisplayName } from '../../../lib/sim/spec-label';
   import { weightsEngineIterations, weightsIterationsFor } from '../../../lib/sim/weights';
-  import PrecisionSelect from '../PrecisionSelect.svelte';
-  import RequestDrawer from '../RequestDrawer.svelte';
-  import SettingsBar from '../SettingsBar.svelte';
-  import { BUSY_CLASS } from '../../../lib/ui/busy';
+  import type { PrimaryAction } from '../../../lib/sim/answer';
+  import type { PrecisionId } from '../../../lib/sim/precision';
+  import { LINK } from '../../../lib/ui/primitives';
+  import Button from '../../ui/Button.svelte';
+  import MoreSettingsSheet from '../MoreSettingsSheet.svelte';
+  import SimRunBar from '../SimRunBar.svelte';
 
   let { store }: { store: BulkStore } = $props();
 
@@ -90,7 +88,7 @@
    * label was quietly wrong by up to 68x. `weightsCostNote` states the true total instead;
    * the option text itself no longer claims a number it cannot back up.
    */
-  const precisionLabelFor = (id: Precision): string => PRECISION_LABELS[id];
+  const precisionOptions = BULK_PRECISIONS.map((id) => ({ value: id, label: PRECISION_LABELS[id] }));
   /**
    * Task 8, sub-item 2: the real engine cost of the currently selected precision, for
    * however many stats are ticked right now -- `store.stats` is generic on `BulkStore`
@@ -101,113 +99,84 @@
   const weightsCost = $derived(
     weightsEngineIterations(weightsIterationsFor(store.precision, 'browser'), store.stats.length),
   );
+
+  let moreOpen = $state(false);
+  const runDisabled = $derived(
+    store.capNotice !== null ||
+      store.character === null ||
+      store.phase === 'loading-character' ||
+      (nothingToRun && !running) ||
+      (notSimulated && !running) ||
+      (store.pendingCustomBuild && !running),
+  );
+  const primary = $derived<PrimaryAction>(running ? 'stop' : runDisabled ? 'disabled' : 'run');
+  const primaryLabel = $derived(
+    running ? bulkCopy.stopBulk : store.result !== null ? bulkCopy.runBulkAgain : bulkCopy.runBulk,
+  );
+  const NOTE = 'text-small text-muted m-0';
+  const BLOCK = 'm-0 text-[14px] leading-5 text-strong';
 </script>
 
-<SettingsBar
+<SimRunBar
   settings={store.settings}
+  precisionId={store.precision as PrecisionId}
   spec={store.character?.spec ?? ''}
-  characterLevel={store.character?.level}
-  disabled={running}
-  onchange={(next) => store.setSettings(next)}
-  names={store.simBuffs}
-/>
-
-<section
-  class="border-line bg-raised rounded-panel mx-[18px] flex flex-col gap-3 border p-4 md:mx-0"
-  data-testid="sim-run-bulk-bar"
+  level={store.character?.level ?? 60}
+  {primary}
+  {primaryLabel}
+  primaryTestid="sim-run-bulk"
+  testid="sim-run-bulk-bar"
+  busy={running}
+  {precisionOptions}
+  onsettings={(next) => store.setSettings(next)}
+  onprecision={(value) => store.setPrecision(value as Precision)}
+  onprimary={() => (running ? store.stop() : void store.run())}
+  onmore={() => (moreOpen = true)}
 >
-  <div class="flex flex-wrap items-center gap-4">
-    {#if combinationTool}
-      <span class="text-strong numeric text-[14px]" data-testid="sim-combo-count">
-        {countLabel}
-      </span>
-    {/if}
-
-    <!-- Task 5: the select is h-11 but nothing here pinned the label itself to that height --
-         it happened to reach 44px only because a flex row without an explicit height grows
-         to its tallest child. Explicit now, the same floor every other control's own label
-         carries, rather than a hit target relying on a coincidence. -->
-    <div class="flex min-h-11 items-center gap-2">
-      <label class="quiet-label" for="bulk-precision-field">{bulkCopy.precisionLabel}</label>
-      <PrecisionSelect
-        id="bulk-precision-field"
-        class="w-[180px]"
-        value={store.precision}
-        options={BULK_PRECISIONS}
-        labelFor={precisionLabelFor}
-        disabled={running}
-        onchange={(value) => store.setPrecision(value as Precision)}
-      />
-    </div>
-
-    <button
-      type="button"
-      class={`${SECONDARY_BUTTON} border-line-warm text-nav px-4 ${running ? BUSY_CLASS : ''}`}
-      data-testid="sim-run-bulk"
-      disabled={store.capNotice !== null ||
-        store.character === null ||
-        store.phase === 'loading-character' ||
-        (nothingToRun && !running) ||
-        (notSimulated && !running) ||
-        (store.pendingCustomBuild && !running)}
-      aria-busy={running}
-      onclick={() => (running ? store.stop() : void store.run())}
-    >
-      {#if running}{bulkCopy.stopBulk}{:else if store.result !== null}{bulkCopy.runBulkAgain}{:else}{bulkCopy.runBulk}{/if}
-    </button>
-
+  {#snippet extra()}
     {#if store.premium}
-      <button
-        type="button"
-        class={`${SECONDARY_BUTTON} border-line-warm text-nav px-4 ${running ? BUSY_CLASS : ''}`}
-        data-testid="sim-server-run"
+      <Button
+        size="sm"
         disabled={running || store.serverCapNotice !== null || notSimulated}
-        aria-busy={running}
-        onclick={() => void store.runOnServer()}>{bulkCopy.capPremium}</button
+        onclick={() => void store.runOnServer()}
+        testid="sim-server-run">{bulkCopy.capPremium}</Button
       >
     {/if}
-  </div>
+  {/snippet}
+</SimRunBar>
 
+<div class="flex flex-col gap-1 px-[var(--page-inset)] pt-3" data-testid="sim-run-notes">
+  <p class="m-0 flex flex-wrap items-baseline gap-x-3 text-[14px] leading-5">
+    {#if combinationTool && countLabel !== ''}<span
+        class="text-strong font-semibold tabular-nums"
+        data-testid="sim-combo-count">{countLabel}</span
+      >{/if}
+    {#if combinationTool}
+      <span class="text-muted">{bulkCopy.precisionNote[store.precision]}</span>
+    {:else}
+      <span class="text-muted" data-testid="sim-weights-cost-note"
+        >{bulkCopy.weightsCostNote(weightsCost)}</span
+      >
+    {/if}
+  </p>
+  {#if store.cap === LOW_CORE_CAP}
+    <p class={NOTE} data-testid="sim-low-core">{bulkCopy.lowCoreNote(store.cap)}</p>
+  {/if}
   {#if notSimulated}
-    <p class="text-strong text-[13px]" data-testid="sim-run-not-simulated">
+    <p class={BLOCK} data-testid="sim-run-not-simulated">
       {simCopy.runNotSimulated(specDisplayName(store.character?.spec ?? ''))}
     </p>
   {/if}
-
   {#if store.pendingCustomBuild}
-    <!-- newcomer round 4 (review.md:83-110): a valid pasted build sitting in TalentCandidates'
-         own editor, not yet added -- blocked rather than added automatically, so RUN never
-         changes what is being compared without the player asking it to. -->
-    <p class="text-strong text-[13px]" data-testid="sim-run-pending-custom">
-      {poolQualityCopy.talentsPendingCustomBuild}
-    </p>
+    <p class={BLOCK} data-testid="sim-run-pending-custom">{poolQualityCopy.talentsPendingCustomBuild}</p>
   {/if}
-
-  {#if combinationTool}
-    <p class="text-muted text-[12px]">{bulkCopy.precisionNote[store.precision]}</p>
-  {:else}
-    <!-- Task 8, sub-item 2: the weights tool's own cost disclosure, in place of the staged
-         note above -- a weights run has no stages, but it does have a real cost the bare
-         "Fast"/"Normal"/"High" label no longer states. -->
-    <p class="text-muted text-[12px]" data-testid="sim-weights-cost-note">
-      {bulkCopy.weightsCostNote(weightsCost)}
-    </p>
-  {/if}
-
-  {#if store.cap === LOW_CORE_CAP}
-    <p class="text-muted text-[12px]" data-testid="sim-low-core">{bulkCopy.lowCoreNote(store.cap)}</p>
-  {/if}
-
   {#if store.capNotice !== null}
-    <p class="text-strong text-[13px]" role="alert" data-testid="sim-cap-notice">
+    <p class={BLOCK} role="alert" data-testid="sim-cap-notice">
       {bulkCopy.capNotice(store.capNotice.cap, store.capNotice.combinations)}
       {#if store.serverCapNotice === null}
-        <!-- Contract 10.1 A2: the premium lane's cap is 5,000, and bulkCopy.capPremiumNote
-             says that number. Offering it when the list is past 5,000 too would send the
-             player to a lane that refuses the same request. -->
         <span class="text-muted"
           >{bulkCopy.capPremiumNote}
-          <a href={PREMIUM_LINKS.serverSims} class="underline">{bulkCopy.seePlans}</a></span
+          <a href={PREMIUM_LINKS.serverSims} class={LINK}>{bulkCopy.seePlans}</a></span
         >
       {:else}
         <span class="text-muted"
@@ -216,35 +185,36 @@
       {/if}
     </p>
   {/if}
-
   {#if store.progressLine !== ''}
-    <p class="text-muted numeric text-[13px]" data-testid="sim-stage-progress">
-      {store.progressLine}
-    </p>
+    <p class="{NOTE} tabular-nums" data-testid="sim-stage-progress">{store.progressLine}</p>
   {/if}
-
   {#if store.message !== null}
-    <p class="text-strong text-[13px]" role="alert" data-testid="sim-message">
+    <p class="text-wipe m-0 text-[14px] leading-5" role="alert" data-testid="sim-message">
       {store.message}
-      {#if store.detail !== ''}
-        <span class="text-muted block font-mono text-[12px]">{store.detail}</span>
-      {/if}
+      {#if store.detail !== ''}<span class="text-muted block text-[13px]">{store.detail}</span>{/if}
     </p>
   {/if}
-</section>
+</div>
 
-<!-- Design 8: the exact JSON the run will send, editable and validated by the engine's own
-     Validate through the wasm's simValidate (contract 10.2). Part A owns the component;
-     mounting it here is what gives every tool page the same escape hatch. Apply and Run
-     both go through the store's own request methods (bulk-store-request.ts). `canShare` is
-     false: no tool page reads `?req=` back (only /sim does), so the Share affordance is
-     hidden entirely rather than the drawer inventing a message for a feature this page does
-     not have. -->
-<RequestDrawer
-  request={store.requestPreview}
-  disabled={running}
-  onvalidate={(json) => store.validateRequest(json)}
-  onapply={(next) => store.applyRequest(next)}
-  onrun={(next) => void store.runRequest(next)}
-  canShare={false}
-/>
+{#if store.character !== null}
+  <MoreSettingsSheet
+    open={moreOpen}
+    settings={store.settings}
+    spec={store.character.spec}
+    level={store.character.level}
+    build={store.character.tree_version}
+    classSlug={store.character.class_slug}
+    names={store.simBuffs}
+    request={store.requestPreview}
+    disabled={running}
+    onclose={() => (moreOpen = false)}
+    onchange={(next) => store.setSettings(next)}
+    onvalidate={(json) => store.validateRequest(json)}
+    onapply={(next) => store.applyRequest(next)}
+    onrun={(next) => {
+      moreOpen = false;
+      void store.runRequest(next);
+    }}
+    onshare={() => null}
+  />
+{/if}
