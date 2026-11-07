@@ -146,6 +146,7 @@ The apps are held to their mocks the way the site is (spec `design/specs/2026-11
 - A region present on one side only fails.
 - Inventory: any count that differs fails.
 - Box: x and y within **8 pt / dp**; width and height within **8 or 5%**, whichever is larger. Text rendering differs between Chromium, Core Text and Skia, so pixels are not compared against the mock; boxes and inventory are, which is the web gate's own rule.
+- Text, strictly: the mock's words are not compared (its data is the web fixture's and the app may word a label natively), but the build's own text is. Each state records a text golden beside its image: the accessibility tree's labels and values in reading order (iOS: `swift-snapshot-testing`'s `.recursiveDescription`-free text strategy over the hosting controller's accessibility elements, `ParityText.swift`; Android: `composeRule.onRoot(useUnmergedTree = true).printToString()` reduced to text and content descriptions, `ParityText.kt`). Any difference fails, so copy drift cannot pass silently (a signed-out snapshot passed with changed text on 2026-11-07). Image goldens tighten to `precision: 1, perceptualPrecision: 0.98` (iOS) and `changeThreshold = 0` (Roborazzi `RoborazziOptions.CompareOptions`).
 - Larger text: each state is also snapshotted at the largest size (iOS `accessibility5`, Android font scale 2.0) as a golden only; the review of the land looks at those captures. The layout rules for large text are in spec 3.2.
 
 ### When it fails
