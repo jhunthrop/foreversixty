@@ -110,7 +110,7 @@
         }
       },
       {
-        "notes": "Ice Lance while Fingers of Frost is up and its 8 second cooldown is ready. The charge makes the boss count as frozen, so Ice Lance hits for four times its damage with Shatter's 50% crit. From 37 Fingers of Frost gives two charges and Ice Lance spends one, so your next Frostbolt gets the other.",
+        "notes": "Ice Lance while Fingers of Frost is up and its 8 second cooldown is ready. The charge makes the boss count as frozen, so Ice Lance hits for four times its damage with Shatter's 50% crit. From 31 Fingers of Frost gives two charges and Ice Lance spends one, so your next Frostbolt gets the other.",
         "action": {
           "castSpell": {
             "spellId": {
@@ -232,7 +232,7 @@
         }
       },
       {
-        "notes": "Frostbolt is the filler, and you never stop casting it to wait on a proc. Once Fingers of Frost at 36 and Missile Barrage at 51 are in, every cast can roll one.",
+        "notes": "Frostbolt is the filler, and you never stop casting it to wait on a proc. Once Fingers of Frost at 30 and Missile Barrage at 51 are in, every cast can roll one.",
         "action": {
           "castSpell": {
             "spellId": {

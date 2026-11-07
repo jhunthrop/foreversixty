@@ -56,9 +56,10 @@ func TestBandBuildsTakeTheCastTalentsThatFit(t *testing.T) {
 }
 
 // Demonic Sacrifice is Soul Link's prerequisite, but the rotation never casts it without
-// Demonic Pact, and at level 20 it could only replace Demonic Aegis, a talent the engine does
-// not model. Reserving Soul Link alone leaves level 20 on the plain walk.
-func TestDemonologyKeepsDemonicAegisAtTwenty(t *testing.T) {
+// Demonic Pact, so the reservation never pulls it ahead of the walk: below 25 no band takes
+// it (round 13). Since round 28 Unholy Power and Fel Vitality come first below 25
+// (TestDemonologyTakesUnholyPowerBeforeHealthFunnel), so this holds Demonic Sacrifice only.
+func TestDemonologyKeepsDemonicSacrificeOutBelowTwentyFive(t *testing.T) {
 	repoRoot := filepath.Join("..", "..")
 	active, err := ReadActiveBuild(repoRoot)
 	if err != nil {
@@ -73,10 +74,11 @@ func TestDemonologyKeepsDemonicAegisAtTwenty(t *testing.T) {
 		t.Fatal(err)
 	}
 	targets := GuideTalentTargets(trees, digits)
+	const demonicSacrifice = 9 // Demonology's tree position of Demonic Sacrifice
 	for level := 10; level <= 24; level++ {
 		got := LadderTalentString(trees, targets, 1, level, ForSpec("warlock-demonology"))
-		if want := LadderTalentString(trees, targets, 1, level); got != want {
-			t.Errorf("level %d: %s, want the plain walk's %s", level, got, want)
+		if demo := got[len("00000000000000000-"):]; demo[demonicSacrifice] != '0' {
+			t.Errorf("level %d: %s takes Demonic Sacrifice", level, got)
 		}
 	}
 }

@@ -119,7 +119,7 @@ Tailoring and Enchanting, same as any warlock: tailored cloth and enchanted cast
 
 Train Corruption at 4, Life Tap at 6 and Bane of Agony at 8. Do the Voidwalker class quest from your warlock trainer the day you hit 10, then train Health Funnel at 12.
 
-Your points at 10 and 11 go into Improved Health Funnel: 40% more health moved, 30% cheaper, no threat, and usable at any demon health. It wakes up at 12 with Health Funnel and keeps the Voidwalker standing through bad pulls. Demonic Embrace follows from 12 to 14 for 9% more Stamina, then Unholy Power from 15 to 19 for 10% more pet damage.
+Your points from 10 to 14 go into Unholy Power for 10% more damage from your demon, the Voidwalker included. Fel Vitality follows from 15 to 17 for 15% more mana for you and more health and mana for the demon, then Demonic Energies at 18, which heals your demon for part of every spell you land. Improved Health Funnel comes at 19 and 20 to keep the Voidwalker standing through bad pulls: 40% more health moved, 30% cheaper, no threat, and usable at any demon health. Demonic Embrace follows from 21 to 23 for 9% more Stamina.
 
 Let the Voidwalker hold the mob and wand it down; a Lesser Magic Wand at 5 and a Greater Magic Wand at 13 cost no mana, and from 13 the Greater wand out-damages your bolts. An enchanter makes both, or check the Auction House. Cloth quest rewards with Intellect and Stamina beat anything a vendor sells.
 
