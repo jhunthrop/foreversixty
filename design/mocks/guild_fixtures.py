@@ -139,6 +139,14 @@ def recruit_fixtures() -> list[Path]:
 
 WRITERS.append(recruit_fixtures)
 
+# The GUILD-ALL lane's page groups, one fixtures module each.
+import guild_directory_fixtures  # noqa: E402
+import guild_raids_fixtures  # noqa: E402
+import guild_settings_fixtures  # noqa: E402
+import guild_states_fixtures  # noqa: E402
+import guild_tabs_fixtures  # noqa: E402
+WRITERS += [lambda m=m: m.writer(write) for m in (guild_states_fixtures, guild_tabs_fixtures, guild_raids_fixtures, guild_settings_fixtures, guild_directory_fixtures)]
+
 if __name__ == '__main__':
     for writer in WRITERS:
         for path in writer():

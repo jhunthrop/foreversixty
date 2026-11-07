@@ -544,8 +544,18 @@ def member_profile():
 PAGES = {'web-guild-member': landing_member, 'web-guild-officer': landing_officer, 'web-guild-raid': raid_planner, 'web-guild-loot': loot_council, 'web-guild-report': raid_report,
          'web-guild-recruit': recruitment, 'web-guild-applications': applications, 'web-guild-profile': member_profile}
 
+def all_pages() -> dict:
+    """Every guild mock: the persona round's pages here and the GUILD-ALL lane's, one module per page group."""
+    import ws_guild_directory
+    import ws_guild_raids
+    import ws_guild_settings
+    import ws_guild_states
+    import ws_guild_tabs
+    return {**PAGES, **ws_guild_states.PAGES, **ws_guild_tabs.PAGES, **ws_guild_raids.PAGES, **ws_guild_settings.PAGES, **ws_guild_directory.PAGES}
+
+
 if __name__ == '__main__':
     import sys
-    for n, f in PAGES.items():
+    for n, f in all_pages().items():
         if not sys.argv[1:] or n in sys.argv[1:]:
             print(write(n + '.html', f()))
