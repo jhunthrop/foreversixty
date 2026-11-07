@@ -5,13 +5,15 @@ import (
 	"fmt"
 	"sort"
 	"time"
+
+	"github.com/jhunthrop/foreversixty/api/internal/rating/presence"
 )
 
 // boardSQL ranks every spec's characters on every band: each character's best kill per
 // encounter on the band's instances (public, unflagged reports, rows not removed, accounts
 // not anonymised), its percentile among its spec on that encounter, then the average of
 // those percentiles. $1 and $2 are the zone names and their bands.
-const boardSQL = `with zb(zone, band) as (select * from unnest($1::text[], $2::int[])),
+var boardSQL = `with zb(zone, band) as (select * from unnest($1::text[], $2::int[])),
 best as (
   select distinct on (m.player_key, m.encounter_id) m.player_key, m.player_name, m.class, m.spec, zb.band,
          m.encounter_id, case when m.role = 'healer' then m.metric_hps else m.metric_dps end as val
@@ -20,7 +22,7 @@ best as (
   join zb on zb.zone = coalesce(nullif(r.log_zone, ''), r.zone)
   left join characters c on c.key = m.player_key
   left join users u on u.id = c.user_id
-  where m.kill and m.state <> 'removed' and r.visibility <> 'private' and r.flagged is null
+  where m.kill and m.state <> 'removed' and ` + presence.EvidenceReport("r") + `
     and m.spec is not null and m.class is not null and not coalesce(u.anonymize, false)
     and (case when m.role = 'healer' then m.metric_hps else m.metric_dps end) > 0
   order by m.player_key, m.encounter_id, val desc

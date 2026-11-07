@@ -26,8 +26,8 @@ type execer interface {
 }
 
 const insertEvent = `insert into activity_events (kind, occurred_at, spec, band, guild_id, character_key,
-	icon, crest, quality, href, date_only, segments, dedupe_key)
-	values ($1, $2, nullif($3, ''), nullif($4, 0), nullif($5, 0), nullif($6, ''), $7, $8, $9, $10, $11, $12, $13)`
+	icon, crest, quality, href, date_only, segments, dedupe_key, report_id)
+	values ($1, $2, nullif($3, ''), nullif($4, 0), nullif($5, 0), nullif($6, ''), $7, $8, $9, $10, $11, $12, $13, nullif($14, ''))`
 
 func eventArgs(e Event) ([]any, error) {
 	if e.DedupeKey == "" || KindTag[e.Kind] == "" {
@@ -38,7 +38,7 @@ func eventArgs(e Event) ([]any, error) {
 		return nil, fmt.Errorf("activity: encode %s: %w", e.DedupeKey, err)
 	}
 	return []any{e.Kind, e.OccurredAt.UTC(), e.Spec, e.Band, e.GuildID, e.CharacterKey, e.Icon,
-		e.Crest, e.Quality, e.Href, e.DateOnly, segments, e.DedupeKey}, nil
+		e.Crest, e.Quality, e.Href, e.DateOnly, segments, e.DedupeKey, e.ReportID}, nil
 }
 
 // Append writes e once: a second event with the same dedupe key is dropped. It reports

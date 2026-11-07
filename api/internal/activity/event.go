@@ -67,6 +67,9 @@ type Event struct {
 	DateOnly     bool
 	Segments     []Segment
 	DedupeKey    string
+	// ReportID is the report that wrote the row, if one did: the feed shows the row only while
+	// that report is public evidence (feed.go's reportVisible).
+	ReportID string
 }
 
 // Text is a plain segment.
