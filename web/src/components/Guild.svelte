@@ -767,14 +767,6 @@
     {#if bandLineLazy.current !== null}
       <bandLineLazy.current
         {layout}
-        character={myRosterRow === null
-          ? null
-          : {
-              name: myRosterRow.name,
-              class: myRosterRow.class ?? '',
-              spec: myRosterRow.spec ?? '',
-              level: myRosterRow.level ?? null,
-            }}
         guildId={home.guild.id}
         nextRaid={home.next_raid ?? null}
         officer={officerView}

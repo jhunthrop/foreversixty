@@ -123,7 +123,8 @@ test.describe('a member signs up (§9, R3)', () => {
   test('from the band line: the segments act on the character the sentence names', async ({ page }) => {
     const stub = await stubGuildRaids(page, { viewer: 'member' });
     await page.clock.install({ time: NOW });
-    await gotoHydrated(page, GUILD_URL, 'guild-raid-line');
+    // The band line rides every tab but the Overview, whose next-raid Plate draws the same control as a row.
+    await gotoHydrated(page, `${GUILD_URL}#raids`, 'guild-raid-line');
     const sentence = page.getByTestId('guild-raid-line-sentence');
     const segments = page.getByTestId('guild-raid-line-segments');
     // The alt is In, so the sentence names it and the segments show and act on it (spec 3.4).

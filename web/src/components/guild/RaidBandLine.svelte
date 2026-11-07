@@ -67,17 +67,13 @@
   import GateActionInline from './GateActionInline.svelte';
   import SignupSegments from './SignupSegments.svelte';
 
+  /** One of the account's characters on the roster; the row layout reads its class, spec and level. */
   interface OwnCharacter {
     character_key: string;
     name: string;
-  }
-
-  /** The row layout's character: who the segments sign up, as the roster knows them. */
-  interface RowCharacter {
-    name: string;
-    class: string;
-    spec: string;
-    level: number | null;
+    class?: string;
+    spec?: string;
+    level?: number | null;
   }
 
   let {
@@ -96,7 +92,6 @@
     locale = viewerLocale(),
     viewerTimezone = new Intl.DateTimeFormat().resolvedOptions().timeZone,
     layout = 'band',
-    character = null,
   }: {
     guildId: number;
     nextRaid: NextRaidView | null;
@@ -124,8 +119,6 @@
      *  Overview). `row`: the viewer's own Row in the Overview's next-raid Plate (web layout spec
      *  2026-11-05 §7.1): crest, character, spec and level, their state, the segments. */
     layout?: 'band' | 'row';
-    /** The row layout's character (the header character's roster row). */
-    character?: RowCharacter | null;
   } = $props();
 
   /** The space between the gate's two parts, an expression so block-edge trimming keeps it. */
@@ -195,12 +188,16 @@
     });
   });
 
+  /** The row's character: the one the segments act on (its name is the row's title). */
+  const rowCharacter = $derived(ownCharacters.find((c) => c.character_key === boundKey) ?? null);
   /** The row's sub line: `Holy Priest · level 60 · ` before the state clause. */
   const rowFacts = $derived.by(() => {
-    if (character === null) return '';
-    const cls = character.class.charAt(0).toUpperCase() + character.class.slice(1);
-    const level = character.level === null ? '' : ` · level ${character.level}`;
-    return `${character.spec} ${cls}${level} · `;
+    if (rowCharacter === null) return '';
+    const cls = (rowCharacter.class ?? '').charAt(0).toUpperCase() + (rowCharacter.class ?? '').slice(1);
+    const what = [rowCharacter.spec ?? '', cls].filter(Boolean).join(' ');
+    const level = rowCharacter.level == null ? '' : `level ${rowCharacter.level}`;
+    const parts = [what, level].filter((part) => part !== '');
+    return parts.length === 0 ? '' : `${parts.join(' · ')} · `;
   });
   const rowClause = $derived(
     bandClause({
@@ -273,8 +270,8 @@
   {@render statusRow()}
 {:else if layout === 'row'}
   <div data-testid="guild-raid-line" aria-busy={busy ? 'true' : undefined}>
-    <Row title={character?.name ?? boundName} titleTone={classTone(character?.class ?? '')} wrapTrail>
-      {#snippet lead()}<ClassCrestRing characterClass={character?.class ?? ''} size={36} />{/snippet}
+    <Row title={boundName} titleTone={classTone(rowCharacter?.class ?? '')} wrapTrail>
+      {#snippet lead()}<ClassCrestRing characterClass={rowCharacter?.class ?? ''} size={36} />{/snippet}
       {#snippet subContent()}<span data-testid="guild-raid-line-sentence"
           >{rowFacts}{rowClause.head}{#if rowClause.word !== ''}<strong class="text-strong font-semibold"
               >{rowClause.word}</strong

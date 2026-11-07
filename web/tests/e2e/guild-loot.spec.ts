@@ -82,6 +82,9 @@ test.describe('officer', () => {
     await expect(page.getByTestId('guild-loot-candidates')).toContainText('3 yes, 0 no of 4');
     await expect(page.getByTestId('guild-loot-candidates').getByTestId('guild-loot-award')).toHaveCount(0);
 
+    // On a phone the bar is one line: Change opens its choices.
+    const change = page.locator('#guild-loot-bar-groups').locator('..').locator('[data-control-bar-toggle]');
+    if (await change.isVisible()) await change.click();
     await page.getByTestId('control-night').getByRole('radio', { name: 'Tue 8 Dec' }).click();
     await expect(page.getByTestId('guild-loot-night-summary')).toHaveText('Tue 8 Dec · 1 drop, 0 open');
     await expect(page.getByTestId('guild-loot-open-drop')).toHaveCount(0);
