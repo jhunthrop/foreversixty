@@ -178,7 +178,8 @@ test.describe('the bar at every width', () => {
     await signInWith(page, [OBNOXIOUS]);
     await storePointer(page, armoryPointer(OBNOXIOUS));
     await page.setViewportSize({ width: 2000, height: 900 });
-    await page.goto('/guides');
+    // /guides is a wide page since the flat rebuild (its header follows --page-max); /changelog keeps 1344.
+    await page.goto('/changelog');
     await ready(page);
     const mark = (await page.getByRole('banner').getByRole('link', { name: 'Forever Sixty' }).boundingBox())!;
     const account = (await selector(page).boundingBox())!;
