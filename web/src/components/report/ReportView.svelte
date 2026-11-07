@@ -73,10 +73,7 @@
     type TimeWindow,
   } from '../../lib/report/window';
   import ActorTable from '../coach/GatedActorTable.svelte';
-  import AuraTable from './AuraTable.svelte';
-  import CastTable from './CastTable.svelte';
   import DeathsTab from './DeathsTab.svelte';
-  import ExchangeTable from './ExchangeTable.svelte';
   import NightView from './NightView.svelte';
   import PlayerView from './PlayerView.svelte';
   import RatingPanel from './RatingPanel.svelte';
@@ -84,8 +81,13 @@
   import ReportHead from './ReportHead.svelte';
   import SummaryPanels from './SummaryPanels.svelte';
   import TargetsRail from './TargetsRail.svelte';
-  import RaidCooldowns from './RaidCooldowns.svelte';
-  import ResourceGraphs from './ResourceGraphs.svelte';
+  import EventsRail from './EventsRail.svelte';
+  import MechanicsRail from './MechanicsRail.svelte';
+  import QueriesRail from './QueriesRail.svelte';
+  import RatingRail from './RatingRail.svelte';
+  import ThreatRail from './ThreatRail.svelte';
+  import type { ReportRatings } from '../../lib/rating/types';
+  import type { ReportRatingsStatus } from '../../lib/rating/report-ratings.svelte';
   import { reportFacts, reportHeading } from '../../lib/report/heading';
   import { hasRankedKill } from '../../lib/report/columns';
   import { quietMinutes } from '../../lib/report/quiet';
@@ -95,7 +97,6 @@
   import { homeRealmOf, setHomeRealm, unitLabel } from '../../lib/report/names.svelte';
   import { unitClassMap } from '../../lib/report/roster-class';
   import SummaryTab from './SummaryTab.svelte';
-  import ThreatTable from './ThreatTable.svelte';
   import TimeChart from './TimeChart.svelte';
   import { loadChartChunk } from '../../lib/chart/uplot-loader';
   import { deathKey, rateMarkers, threatMarkers } from '../../lib/chart/report-markers';
@@ -124,6 +125,13 @@
   const eventsViewLazy = createLazyComponent(() => import('./EventsView.svelte'));
   const queriesViewLazy = createLazyComponent(() => import('./QueriesView.svelte'));
   const ratingTabLazy = createLazyComponent(() => import('./RatingTab.svelte'));
+  // The tab tables past Summary and the three actor tabs ship as their own chunks too, fetched the
+  // first time their tab opens (the island's gzip budget, spec 13).
+  const threatTableLazy = createLazyComponent(() => import('./ThreatTable.svelte'));
+  const castTableLazy = createLazyComponent(() => import('./CastTable.svelte'));
+  const auraTabLazy = createLazyComponent(() => import('./AuraTab.svelte'));
+  const exchangeTableLazy = createLazyComponent(() => import('./ExchangeTable.svelte'));
+  const resourceGraphsLazy = createLazyComponent(() => import('./ResourceGraphs.svelte'));
   import {
     abilityOptions,
     applyActorFilters,
@@ -1440,6 +1448,19 @@
   $effect(() => {
     if (scoped !== null && !nightMode && state.tab === 'rating') ratingTabLazy.load();
   });
+  $effect(() => {
+    if (scoped === null) return;
+    if (state.tab === 'threat') threatTableLazy.load();
+    if (state.tab === 'casts') castTableLazy.load();
+    if (state.tab === 'buffs' || state.tab === 'debuffs') auraTabLazy.load();
+    if (state.tab === 'interrupts' || state.tab === 'dispels') exchangeTableLazy.load();
+    if (state.tab === 'resources') resourceGraphsLazy.load();
+  });
+  /** The Rating tab's answer, for its rail (RatingRail). */
+  let ratingState = $state<{ data: ReportRatings | null; status: ReportRatingsStatus }>({
+    data: null,
+    status: 'idle',
+  });
 
   // ---- the frame (logs spec 2026-11-07 6.1) ----
   /** The one-line notices under the bar (section 6.1): each says what the page did instead. */
@@ -1845,6 +1866,28 @@
             {/if}
           {:else if ACTOR_TABS.has(state.tab)}
             <TargetsRail title={tabTitle} actors={tabActors} />
+          {:else if state.tab === 'threat'}
+            <ThreatRail
+              taunts={scoped.taunts}
+              target={state.target}
+              pairs={scoped.threat_by_target ?? []}
+              names={unitNames}
+              {classOf}
+              sourceName={playerSet.has(state.source) ? unitNames.get(state.source) : undefined}
+              approximate={!windowIsWhole}
+              scopeNoun={nightMode ? 'night' : 'pull'}
+              durationMs={summary?.duration_ms ?? scoped.duration_ms}
+              onWindow={setWindow}
+            />
+          {:else if state.tab === 'events'}
+            <EventsRail off={state.eventsOff} onPatch={patch} />
+          {:else if state.tab === 'queries'}
+            <QueriesRail />
+          {:else if state.tab === 'rating'}
+            <RatingRail ratings={ratingState.data} status={ratingState.status} {roster} />
+          {/if}
+          {#if state.tab === 'mechanics' && base !== null}
+            <MechanicsRail summary={base} {classOf} />
           {/if}
         {/if}
       {/snippet}
@@ -1938,124 +1981,149 @@
             </p>
           {/if}
           {@render chart(chartMetric)}
-        {:else if state.tab === 'buffs'}
-          <AuraTable
-            tracks={scoped.auras}
-            durationMs={scoped.duration_ms}
-            startMs={timeWindow.startMs}
-            kind="BUFF"
-            names={unitNames}
-          />
-          <RaidCooldowns
-            tracks={scoped.auras}
-            casts={scoped.casts}
-            pulls={scoped.pulls ?? []}
-            window={cutWindow}
-            deaths={scoped.deaths}
-            names={unitNames}
-            syncKey={nightMode ? '' : chartSyncKey}
-          />
-        {:else if state.tab === 'debuffs'}
-          <AuraTable
-            tracks={scoped.auras}
-            durationMs={scoped.duration_ms}
-            startMs={timeWindow.startMs}
-            names={unitNames}
-            kind="DEBUFF"
-            bossNames={bossUnitNames}
-          />
-        {:else if state.tab === 'casts'}
-          <CastTable
-            rows={scoped.casts}
-            everyone={base?.casts ?? scoped.casts}
-            durationMs={scoped.duration_ms}
-            startMs={timeWindow.startMs}
-            {classOf}
-            approximate={!windowIsWhole}
-            measured={castExact ?? undefined}
-            measureError={castMeasureError}
-            whole={base === null ? undefined : scopeSource(base, scopeKey, scopePlayers, friendlySet).casts}
-            names={unitNames}
-          />
-        {:else if state.tab === 'interrupts'}
-          <ExchangeTable
-            rows={scoped.interrupts}
-            everyone={windowed?.interrupts ?? scoped.interrupts}
-            emptyText={exchangeEmpty('interrupted')}
-            casts={base?.casts ?? []}
-            players={playerSet}
-          />
-        {:else if state.tab === 'dispels'}
-          <ExchangeTable
-            rows={scoped.dispels}
-            everyone={windowed?.dispels ?? scoped.dispels}
-            emptyText={exchangeEmpty('dispelled')}
-            auras={base?.auras ?? []}
-            players={playerSet}
-          />
-        {:else if state.tab === 'resources'}
-          <ResourceGraphs
-            tracks={scoped.resources}
-            durationMs={scoped.duration_ms}
-            windowed={!windowIsWhole}
-            deaths={scoped.deaths.map((death) => ({
-              guid: death.guid,
-              at_ms: death.at_ms - timeWindow.startMs,
-            }))}
-            syncKey={nightMode ? '' : chartSyncKey}
-            windowStartMs={timeWindow.startMs}
-          />
-        {:else if state.tab === 'threat'}
-          <ThreatTable
-            rows={scoped.threat}
-            players={playerSet}
-            pairs={scoped.threat_by_target ?? []}
-            everyonePairs={windowed?.threat_by_target ?? scoped.threat_by_target ?? []}
-            taunts={scoped.taunts}
-            names={unitNames}
-            {classOf}
-            approximate={!windowIsWhole}
-            target={state.target}
-            sourceName={playerSet.has(state.source)
-              ? unitNames.get(state.source)
-              : state.source === SOURCE_ENEMIES
-                ? 'the enemies'
+        {:else if state.tab === 'buffs' || state.tab === 'debuffs'}
+          {#if auraTabLazy.current}
+            <auraTabLazy.current
+              table={{
+                tracks: scoped.auras,
+                durationMs: scoped.duration_ms,
+                startMs: timeWindow.startMs,
+                kind: state.tab === 'buffs' ? 'BUFF' : 'DEBUFF',
+                names: unitNames,
+                bossNames: bossUnitNames,
+                windowed: !windowIsWhole,
+              }}
+              cooldowns={state.tab === 'buffs'
+                ? {
+                    tracks: scoped.auras,
+                    casts: scoped.casts,
+                    pulls: scoped.pulls ?? [],
+                    window: cutWindow,
+                    deaths: scoped.deaths,
+                    names: unitNames,
+                    syncKey: nightMode ? '' : chartSyncKey,
+                  }
                 : undefined}
-            scopeNoun={nightMode ? 'night' : 'pull'}
-            durationMs={summary?.duration_ms ?? scoped.duration_ms}
-            window={cutWindow}
-            {nightMode}
-            onPatch={patch}
-            onWindow={setWindow}
-            totalThreat={windowed?.threat
-              .filter((row) => playerSet.has(row.guid))
-              .reduce((sum, row) => sum + row.threat, 0)}
-            chart={base === null || nightMode
-              ? undefined
-              : {
-                  pairs: base.threat_by_target ?? [],
-                  players: threatPlayers,
-                  taunts: base.taunts ?? [],
-                  targetChanges: base.target_changes,
-                  damageTaken: base.damage_taken,
-                  events: (enemyGuids) =>
-                    threatMarkers({
-                      deaths: base?.deaths ?? [],
-                      taunts: base?.taunts ?? [],
-                      targetChanges: base?.target_changes,
-                      enemyGuids,
-                      deathHref,
-                    }),
-                  phases: chartPhases,
-                  sourcePlayer,
-                  youGuid,
-                  chosen: state.players,
-                  onChoose: (players) => patch({ players }),
-                  brushShape,
-                  syncKey: chartSyncKey,
-                  onOpenDeath: openDeaths,
-                }}
-          />
+            />
+          {:else}
+            {@render lazyFallback(auraTabLazy, REPORT_LAZY_MIN_H.table)}
+          {/if}
+        {:else if state.tab === 'casts'}
+          {#if castTableLazy.current}
+            <castTableLazy.current
+              rows={scoped.casts}
+              everyone={base?.casts ?? scoped.casts}
+              durationMs={scoped.duration_ms}
+              startMs={timeWindow.startMs}
+              {classOf}
+              approximate={!windowIsWhole}
+              measured={castExact ?? undefined}
+              measureError={castMeasureError}
+              whole={base === null ? undefined : scopeSource(base, scopeKey, scopePlayers, friendlySet).casts}
+              names={unitNames}
+            />
+          {:else}
+            {@render lazyFallback(castTableLazy, REPORT_LAZY_MIN_H.table)}
+          {/if}
+        {:else if state.tab === 'interrupts' || state.tab === 'dispels'}
+          {#if exchangeTableLazy.current}
+            {#if state.tab === 'interrupts'}
+              <exchangeTableLazy.current
+                kind="interrupt"
+                rows={scoped.interrupts}
+                everyone={windowed?.interrupts ?? scoped.interrupts}
+                emptyText={exchangeEmpty('interrupted')}
+                casts={base?.casts ?? []}
+                players={playerSet}
+                {classOf}
+              />
+            {:else}
+              <exchangeTableLazy.current
+                kind="dispel"
+                rows={scoped.dispels}
+                everyone={windowed?.dispels ?? scoped.dispels}
+                emptyText={exchangeEmpty('dispelled')}
+                auras={base?.auras ?? []}
+                players={playerSet}
+                {classOf}
+              />
+            {/if}
+          {:else}
+            {@render lazyFallback(exchangeTableLazy, REPORT_LAZY_MIN_H.table)}
+          {/if}
+        {:else if state.tab === 'resources'}
+          {#if resourceGraphsLazy.current}
+            <resourceGraphsLazy.current
+              tracks={scoped.resources}
+              durationMs={scoped.duration_ms}
+              windowed={!windowIsWhole}
+              deaths={scoped.deaths.map((death) => ({
+                guid: death.guid,
+                at_ms: death.at_ms - timeWindow.startMs,
+              }))}
+              syncKey={nightMode ? '' : chartSyncKey}
+              windowStartMs={timeWindow.startMs}
+              {classOf}
+            />
+          {:else}
+            {@render lazyFallback(resourceGraphsLazy, REPORT_LAZY_MIN_H.table)}
+          {/if}
+        {:else if state.tab === 'threat'}
+          {#if threatTableLazy.current}
+            <threatTableLazy.current
+              rail={false}
+              rows={scoped.threat}
+              players={playerSet}
+              pairs={scoped.threat_by_target ?? []}
+              everyonePairs={windowed?.threat_by_target ?? scoped.threat_by_target ?? []}
+              taunts={scoped.taunts}
+              names={unitNames}
+              {classOf}
+              approximate={!windowIsWhole}
+              target={state.target}
+              sourceName={playerSet.has(state.source)
+                ? unitNames.get(state.source)
+                : state.source === SOURCE_ENEMIES
+                  ? 'the enemies'
+                  : undefined}
+              scopeNoun={nightMode ? 'night' : 'pull'}
+              durationMs={summary?.duration_ms ?? scoped.duration_ms}
+              window={cutWindow}
+              {nightMode}
+              onPatch={patch}
+              onWindow={setWindow}
+              totalThreat={windowed?.threat
+                .filter((row) => playerSet.has(row.guid))
+                .reduce((sum, row) => sum + row.threat, 0)}
+              chart={base === null || nightMode
+                ? undefined
+                : {
+                    pairs: base.threat_by_target ?? [],
+                    players: threatPlayers,
+                    taunts: base.taunts ?? [],
+                    targetChanges: base.target_changes,
+                    damageTaken: base.damage_taken,
+                    events: (enemyGuids) =>
+                      threatMarkers({
+                        deaths: base?.deaths ?? [],
+                        taunts: base?.taunts ?? [],
+                        targetChanges: base?.target_changes,
+                        enemyGuids,
+                        deathHref,
+                      }),
+                    phases: chartPhases,
+                    sourcePlayer,
+                    youGuid,
+                    chosen: state.players,
+                    onChoose: (players) => patch({ players }),
+                    brushShape,
+                    syncKey: chartSyncKey,
+                    onOpenDeath: openDeaths,
+                  }}
+            />
+          {:else}
+            {@render lazyFallback(threatTableLazy, REPORT_LAZY_MIN_H.table)}
+          {/if}
         {:else if state.tab === 'deaths'}
           <DeathsTab
             deaths={scoped.deaths}
@@ -2090,6 +2158,7 @@
               {roster}
               source={scopeKey}
               onSelectPlayer={(guid) => patch({ source: guid })}
+              onRatings={(next) => (ratingState = next)}
             />
           {:else}
             {@render lazyFallback(ratingTabLazy, REPORT_LAZY_MIN_H.rating)}
@@ -2119,6 +2188,7 @@
         {:else if state.tab === 'events'}
           {#if eventsViewLazy.current}
             <eventsViewLazy.current
+              chips={false}
               summary={windowed ?? scoped}
               {classOf}
               names={unitNames}

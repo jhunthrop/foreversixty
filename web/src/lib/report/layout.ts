@@ -6,6 +6,8 @@
 // module, applied to a new set of numbers.
 export const REPORT_LAZY_MIN_H = {
   rating: 'min-h-[320px]',
+  /** The tab tables loaded on first open: Threat, Casts, Buffs, Debuffs, Interrupts, Dispels, Resources. */
+  table: 'min-h-[360px]',
   coach: 'min-h-[420px] md:min-h-[640px]',
   timelines: 'min-h-[420px]',
   events: 'min-h-[360px]',
