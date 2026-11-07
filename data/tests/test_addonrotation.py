@@ -1053,12 +1053,13 @@ def test_fury_berserker_rage_starts_at_36_and_overpower_ends_there():
 
 # Sim round 22 platform (hunter F3 on the talent-level fix): a card row for a talent's spell
 # starts at the level the spec's published build spends its first point in that talent, not
-# when its tier opens. Survival's order takes Counterattack at 32 (tier 3 opens at 25),
-# Enhancement takes Stormstrike at 25 and Fury takes Death Wish at 30.
+# when its tier opens. Survival's order takes Strider Kick at 30 (round 29 dropped
+# Counterattack from the build), Enhancement takes Stormstrike at 25 and Fury takes Death
+# Wish at 30.
 @pytest.mark.parametrize(
     ("spec", "spell", "first"),
     [
-        ("hunter-survival", "Counterattack", 39),
+        ("hunter-survival", "Strider Kick", 30),
         ("shaman-enhancement", "Stormstrike", 25),
         ("warrior-fury", "Death Wish", 30),
     ],

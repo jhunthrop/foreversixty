@@ -1250,15 +1250,9 @@
           },
           {
             "from_level": 40,
-            "to_level": 42,
-            "rank": 1,
-            "note": "Sim-accuracy round 16 wave 2: per-level sweep on the MaxLevel + 12 rule (design/reviews/2026-11-04-sim-audit-round16/paladin.md, wave 2). Sim-accuracy round 24 second pass, on the talents the leveling order gives at each level (spec-breakdown -level N -rank id=rank, bare, 10,000 iterations, seeds 1 and 50001; design/reviews/2026-11-05-sim-audit-round24/paladin.md, Second pass). At 42 the two Flash of Light lines are judged together: the group's rank 2 with the tank's rank 1 is the best pair for an Undead and a Dwarf and within error of the best for a Human; an Undead with no row on this line at 42 heals 27% less."
-          },
-          {
-            "from_level": 43,
             "to_level": 49,
             "rank": 2,
-            "note": "Sim-accuracy round 20: Oath of Light adds its whole amount and follows the rank's level rule, so the rows were re-judged level by level at 43 to 60 (spec-breakdown -level, 10,000 iterations, seeds 1 and 50001, both factions; design/reviews/2026-11-04-sim-audit-round20/paladin.md H1). Rank 2 beats rank 1 by 2.9 to 3.6% at 43 and rank 3 by 8% at 49; it holds at 44 to 48."
+            "note": "Sim-accuracy round 29 (walks-heal): re-judged on the new leveling order's talents at the level (spec-breakdown -level N -rank, bare, 10,000 iterations, seeds 1 and 50001, both factions; design/reviews/2026-11-07-sim-audit-round29/walksheal.md). With Conviction and Divine Intellect in place of Holy Shock and Holy Power at 40 to 42, rank 2 beats rank 1 by 1.6% (Undead 40) to 14.2% (Human 42); the row that kept rank 1 at 40 to 42 is folded in. Sim-accuracy round 20: Oath of Light adds its whole amount and follows the rank's level rule, so the rows were re-judged level by level at 43 to 60 (spec-breakdown -level, 10,000 iterations, seeds 1 and 50001, both factions; design/reviews/2026-11-04-sim-audit-round20/paladin.md H1). Rank 2 beats rank 1 by 2.9 to 3.6% at 43 and rank 3 by 8% at 49; it holds at 44 to 48."
           },
           {
             "from_level": 50,
@@ -2782,33 +2776,35 @@
           {
             "from_level": 18,
             "to_level": 19,
-            "rank": 3,
-            "note": "Sim-accuracy round 24 (rank sweep at the first two levels after each new rank): 10,000 iterations, seeds 1 and 50001, band-20 gear, the leveling order's talents at the level. On the tank, Healing Wave rank 3 heals more than the new rank 4 at 18 and 19 (+3.4% to +5.4%, both factions, seeds 1 and 50001) and more than rank 2 (3,000-iteration screen); rank 2 wins from 20 (next row)."
+            "rank": 1,
+            "note": "Sim-accuracy round 29 (walks-heal): re-judged on the new leveling order's talents at the level (spec-breakdown -level N -rank, bare, 10,000 iterations, seeds 1 and 50001, both factions; design/reviews/2026-11-07-sim-audit-round29/walksheal.md). With Tidal Focus ahead of Improved Healing Wave, rank 1 heals 10 to 12% more than rank 3 at 18 and 19 (tauren and dwarf). Sim-accuracy round 24 (rank sweep at the first two levels after each new rank): 10,000 iterations, seeds 1 and 50001, band-20 gear, the leveling order's talents at the level. On the tank, Healing Wave rank 3 heals more than the new rank 4 at 18 and 19 (+3.4% to +5.4%, both factions, seeds 1 and 50001) and more than rank 2 (3,000-iteration screen); rank 2 wins from 20 (next row)."
           },
           {
             "from_level": 20,
             "to_level": 21,
-            "rank": 1,
-            "note": "Sim-accuracy round 24, second pass: judged on the talents a player has at each level (spec-breakdown -level N -rank, 10,000 iterations, seeds 1 and 50001, both factions, plus each horde race at 22 and 25). On the tank the cheap rank 1 heals the most at 20 and 21 (+0.6% to +4.1% over rank 2), and at 22 for a tauren, orc or troll (+0.1% to +0.3%; a dwarf and a Windshaper Skyborne cast rank 2 there). Rank 3 wins at 23 and 24 (+0.2% over rank 2 for a dwarf and at 24 for the horde; a tie for the horde at 23). At 25 the horde races cast rank 2 (+0.15% to +0.2% for a tauren and a troll; an orc and a Windshaper Skyborne tie) and a dwarf rank 3 (+0.1%). From 26 rank 3 wins again."
-          },
-          {
-            "from_level": 22,
-            "to_level": 22,
-            "rank": 1,
-            "races": [
-              "orc",
-              "tauren",
-              "troll"
-            ]
+            "rank": 2,
+            "note": "Sim-accuracy round 29 (walks-heal): re-judged on the new leveling order's talents at the level (spec-breakdown -level N -rank, bare, 10,000 iterations, seeds 1 and 50001, both factions; design/reviews/2026-11-07-sim-audit-round29/walksheal.md). Rank 2 beats rank 1 by 0.5 to 0.6% at 20 and 21, both factions; a dwarf ties rank 3 at 21. Sim-accuracy round 24, second pass: judged on the talents a player has at each level (spec-breakdown -level N -rank, 10,000 iterations, seeds 1 and 50001, both factions, plus each horde race at 22 and 25). On the tank the cheap rank 1 heals the most at 20 and 21 (+0.6% to +4.1% over rank 2), and at 22 for a tauren, orc or troll (+0.1% to +0.3%; a dwarf and a Windshaper Skyborne cast rank 2 there). Rank 3 wins at 23 and 24 (+0.2% over rank 2 for a dwarf and at 24 for the horde; a tie for the horde at 23). At 25 the horde races cast rank 2 (+0.15% to +0.2% for a tauren and a troll; an orc and a Windshaper Skyborne tie) and a dwarf rank 3 (+0.1%). From 26 rank 3 wins again."
           },
           {
             "from_level": 22,
             "to_level": 22,
             "rank": 2,
             "races": [
+              "orc",
+              "tauren",
+              "troll"
+            ],
+            "note": "Sim-accuracy round 29 (walks-heal): re-judged on the new leveling order's talents at the level (spec-breakdown -level N -rank, bare, 10,000 iterations, seeds 1 and 50001, both factions; design/reviews/2026-11-07-sim-audit-round29/walksheal.md). At 22 rank 2 beats rank 1 by 0.9 to 1.1% for an Orc, Tauren or Troll; an Orc ties rank 3."
+          },
+          {
+            "from_level": 22,
+            "to_level": 22,
+            "rank": 3,
+            "races": [
               "dwarf",
               "windshaper-skyborne"
-            ]
+            ],
+            "note": "Sim-accuracy round 29 (walks-heal): re-judged on the new leveling order's talents at the level (spec-breakdown -level N -rank, bare, 10,000 iterations, seeds 1 and 50001, both factions; design/reviews/2026-11-07-sim-audit-round29/walksheal.md). At 22 rank 3 beats rank 2 by 0.12% for a dwarf and 0.08% for a Windshaper, both seeds."
           },
           {
             "from_level": 23,

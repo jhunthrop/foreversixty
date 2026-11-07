@@ -213,7 +213,7 @@
       ]
     },
     "druid-restoration": {
-      "reason": "On each band's own fight, Restoration levels better with Heart of the Wild, all three ranks of Reflection and Bloom ahead of the top rows' other points, and Nature's Swiftness held as soon as it can be: beyond error at band 20 (round 11's pull profile, both factions) and band 30 (round 10), and no band loses.",
+      "reason": "On each band's own fight, Restoration levels better with Heart of the Wild, all three ranks of Reflection and Bloom ahead of the top rows' other points, and Nature's Swiftness held as soon as it can be: beyond error at band 20 (round 11's pull profile, both factions) and band 30 (round 10), and no band loses. Sim-accuracy round 29 (walks-heal): the list is now the whole order. Nature's Focus 3 to 5, Naturalist and Tranquil Spirit took 21 to 39 while Gift of Nature, Improved Rejuvenation, Swiftmend, Living Spirit and Genesis waited, and Nature's Swiftness's reservation pulled all five Naturalist points ahead of them; Nature's Splendor came last at 60. Now Bloom 20, Nature's Focus 21, Genesis 22, Gift of Nature 23 to 25, Improved Rejuvenation and Swiftmend by 29, Living Spirit 31 to 33, Genesis to 38, Nature's Majesty, Moonglow and Nature's Splendor by 44 (a Balance talent behind its own rows), then Improved Regrowth, Improved Tranquility, Tranquil Spirit and Naturalist, and Nature's Swiftness last at 60. Effective healing on each band's own fight, 10,000 iterations, seeds 1 and 50001, both factions: level at 21, +0.0 to +1.6% at 22 to 29, +6.6 to +9.3% at 30 to 39, +7.5 to +14.4% at 40 to 49, +5.4 to +8.3% at 50 to 59.",
       "first": [
         {
           "talent": "Heart of the Wild",
@@ -224,8 +224,88 @@
           "rank": 3
         },
         {
+          "talent": "Nature's Focus",
+          "rank": 2
+        },
+        {
           "talent": "Bloom",
           "rank": 1
+        },
+        {
+          "talent": "Nature's Focus",
+          "rank": 3
+        },
+        {
+          "talent": "Genesis",
+          "rank": 1
+        },
+        {
+          "talent": "Gift of Nature",
+          "rank": 3
+        },
+        {
+          "talent": "Improved Rejuvenation",
+          "rank": 1
+        },
+        {
+          "talent": "Swiftmend",
+          "rank": 1
+        },
+        {
+          "talent": "Improved Rejuvenation",
+          "rank": 3
+        },
+        {
+          "talent": "Gift of Nature",
+          "rank": 4
+        },
+        {
+          "talent": "Living Spirit",
+          "rank": 3
+        },
+        {
+          "talent": "Gift of Nature",
+          "rank": 5
+        },
+        {
+          "talent": "Genesis",
+          "rank": 5
+        },
+        {
+          "talent": "Nature's Majesty",
+          "rank": 2
+        },
+        {
+          "talent": "Moonglow",
+          "rank": 3
+        },
+        {
+          "talent": "Nature's Splendor",
+          "rank": 1
+        },
+        {
+          "talent": "Nature's Focus",
+          "rank": 4
+        },
+        {
+          "talent": "Improved Regrowth",
+          "rank": 1
+        },
+        {
+          "talent": "Nature's Focus",
+          "rank": 5
+        },
+        {
+          "talent": "Improved Tranquility",
+          "rank": 2
+        },
+        {
+          "talent": "Tranquil Spirit",
+          "rank": 5
+        },
+        {
+          "talent": "Naturalist",
+          "rank": 5
         },
         {
           "talent": "Nature's Swiftness",
@@ -544,30 +624,86 @@
       ]
     },
     "paladin-holy": {
-      "reason": "On band 30's own fight, Oath of Light ahead of Infusion of Light's second rank beats the plain walk beyond error, both factions (sim-accuracy round 11). The plain walk also spends Holy points a healer cannot use while live ones wait: at band 20 the 11th point goes to Purifying Power (Cleanse cost and the Exorcism and Holy Wrath cooldowns, none of which the healer casts) instead of Illumination, and at band 30 the 19th goes to Divine Precision (Holy spell hit; heals cannot miss) instead of Infusion of Light's second rank. Illumination's first rank, Divine Favor (which the rotation casts), Illumination to four ranks, Oath of Light, Illumination's fifth rank and both ranks of Infusion of Light, in that order, raise band 20's effective healing about 3.5% on its own fight, both factions, seeds 1 and 50001, hold band 30 level, and leave bands 35 to 60 on the plain walk (sim-accuracy round 15, paladin). The order keeps every level's build a superset of the level before (the walk takes the longest legal prefix) and still takes Oath of Light at 25.",
+      "reason": "On band 30's own fight, Oath of Light ahead of Infusion of Light's second rank beats the plain walk beyond error, both factions (sim-accuracy round 11). The plain walk also spends Holy points a healer cannot use while live ones wait: at band 20 the 11th point goes to Purifying Power (Cleanse cost and the Exorcism and Holy Wrath cooldowns, none of which the healer casts) instead of Illumination, and at band 30 the 19th goes to Divine Precision (Holy spell hit; heals cannot miss) instead of Infusion of Light's second rank. Illumination's first rank, Divine Favor (which the rotation casts), Illumination to four ranks, Oath of Light, Illumination's fifth rank and both ranks of Infusion of Light, in that order, raise band 20's effective healing about 3.5% on its own fight, both factions, seeds 1 and 50001, hold band 30 level, and leave bands 35 to 60 on the plain walk (sim-accuracy round 15, paladin). The order keeps every level's build a superset of the level before (the walk takes the longest legal prefix) and still takes Oath of Light at 25. Sim-accuracy round 29 (walks-heal): Reverence at 15 and 16 before Healing Light, Illumination 20 to 24 before Divine Favor (now 30), Divine Intellect 26 to 29 and 31 before the dead tolls, Benediction and Conviction (6% crit) 32 to 39, then Purifying Power, Divine Precision and Infusion of Light only as Holy Shock's toll, Holy Shock at 45 (in a leveling dungeon it costs more mana than it returns until Holy Power is behind it), Boundless Light, Holy Power by 52, Light's Vigil 53, and Precision, Guardian's Favor and Sacred Duty, which do nothing for a healer, last. +1.3 to +10.8% at 15 to 18, +1.5 to +2.7% at 21 to 25, +0.2 to +4.6% at 26 to 40, +8.7 to +15.7% at 43 to 58, +4.3% at 59, seeds 1 and 50001, both factions; at 41 and 42 a Human ties or trails by 0.5% until the tank's Flash of Light row follows the new talents (rank-choices.json, round 29).",
       "first": [
         {
-          "talent": "Illumination",
-          "rank": 1
+          "talent": "Spiritual Focus",
+          "rank": 5
         },
         {
-          "talent": "Divine Favor",
-          "rank": 1
+          "talent": "Reverence",
+          "rank": 2
         },
         {
-          "talent": "Illumination",
-          "rank": 4
-        },
-        {
-          "talent": "Oath of Light",
-          "rank": 1
+          "talent": "Healing Light",
+          "rank": 3
         },
         {
           "talent": "Illumination",
           "rank": 5
         },
         {
+          "talent": "Oath of Light",
+          "rank": 1
+        },
+        {
+          "talent": "Divine Intellect",
+          "rank": 4
+        },
+        {
+          "talent": "Divine Favor",
+          "rank": 1
+        },
+        {
+          "talent": "Divine Intellect",
+          "rank": 5
+        },
+        {
+          "talent": "Benediction",
+          "rank": 5
+        },
+        {
+          "talent": "Conviction",
+          "rank": 3
+        },
+        {
+          "talent": "Purifying Power",
+          "rank": 2
+        },
+        {
+          "talent": "Divine Precision",
+          "rank": 1
+        },
+        {
           "talent": "Infusion of Light",
+          "rank": 2
+        },
+        {
+          "talent": "Holy Shock",
+          "rank": 1
+        },
+        {
+          "talent": "Boundless Light",
+          "rank": 2
+        },
+        {
+          "talent": "Holy Power",
+          "rank": 5
+        },
+        {
+          "talent": "Light's Vigil",
+          "rank": 1
+        },
+        {
+          "talent": "Precision",
+          "rank": 3
+        },
+        {
+          "talent": "Guardian's Favor",
+          "rank": 2
+        },
+        {
+          "talent": "Sacred Duty",
           "rank": 2
         }
       ]
@@ -655,28 +791,164 @@
       ]
     },
     "priest-discipline": {
-      "reason": "On band 20's own fight, Meditation ahead of Mental Agility's first rank beats the plain walk beyond error, both factions; on band 30's, Penance (which the rotation casts) ahead of Soul Warding does too; no other band changes.",
+      "reason": "On band 20's own fight, Meditation ahead of Mental Agility's first rank beats the plain walk beyond error, both factions; on band 30's, Penance (which the rotation casts) ahead of Soul Warding does too; no other band changes. Sim-accuracy round 29 (walks-heal): Meditation 20 to 22 (it was 20, 28 and 29), Inner Focus, Mental Agility and Improved Power Word: Shield to Penance at 30, then Improved Renew 31 to 33 and Soul Warding, Twilight Focus 35 to 37 and Holy Specialization 38 to 42 before Renewed Hope and Divine Aegis (43 to 49), Divine Fury, Improved Healing 54 to 56 and Inspiration last. +6 to +15% at 21 to 28, +0.2 to +4.9% at 31 to 48, +1.9 to +6.1% at 54 to 59 (3,000-iteration sweep, Horde seed 1; the 10,000-iteration cells are in the round's report).",
       "first": [
         {
+          "talent": "Twin Disciplines",
+          "rank": 5
+        },
+        {
+          "talent": "Mental Strength",
+          "rank": 5
+        },
+        {
           "talent": "Meditation",
+          "rank": 3
+        },
+        {
+          "talent": "Inner Focus",
           "rank": 1
+        },
+        {
+          "talent": "Mental Agility",
+          "rank": 3
+        },
+        {
+          "talent": "Improved Power Word: Shield",
+          "rank": 3
         },
         {
           "talent": "Penance",
           "rank": 1
+        },
+        {
+          "talent": "Improved Renew",
+          "rank": 3
+        },
+        {
+          "talent": "Soul Warding",
+          "rank": 1
+        },
+        {
+          "talent": "Twilight Focus",
+          "rank": 3
+        },
+        {
+          "talent": "Holy Specialization",
+          "rank": 5
+        },
+        {
+          "talent": "Renewed Hope",
+          "rank": 3
+        },
+        {
+          "talent": "Divine Aegis",
+          "rank": 3
+        },
+        {
+          "talent": "Renewed Hope",
+          "rank": 4
+        },
+        {
+          "talent": "Divine Fury",
+          "rank": 4
+        },
+        {
+          "talent": "Improved Healing",
+          "rank": 3
+        },
+        {
+          "talent": "Divine Fury",
+          "rank": 5
+        },
+        {
+          "talent": "Inspiration",
+          "rank": 3
         }
       ]
     },
     "priest-holy": {
-      "reason": "Prayer of Mending, which the rotation casts, is the Holy tree's deepest talent; the plain walk leaves it out at band 40. Taking it there, with Spiritual Healing's three ranks taken as soon as they can be held (ahead of Spiritual Guidance's last ranks), beats the plain walk beyond error, both factions; no other band changes.",
+      "reason": "Prayer of Mending, which the rotation casts, is the Holy tree's deepest talent; the plain walk leaves it out at band 40. Taking it there, with Spiritual Healing's three ranks taken as soon as they can be held (ahead of Spiritual Guidance's last ranks), beats the plain walk beyond error, both factions; no other band changes. Sim-accuracy round 29 (walks-heal): Improved Renew 10 to 12 and Holy Specialization 13 to 17 before Twilight Focus, Divine Fury 18 and 19, Inspiration 20 to 22, Twilight Focus 23, 24 and 29, Holy Binding 25 (its Flash Heals heal the priest too), Improved Healing 26 to 28, Litany of Light, Spiritual Guidance to 4, Spirit of Redemption and Spiritual Healing by 39, so all thirty Holy points are in for Prayer of Mending at 40 with Divine Fury's last three points held back; from 41 Twin Disciplines, Mental Strength, Meditation by 53 (Discipline talents behind their own rows), Inner Focus, Mental Agility, and Divine Fury 58 to 60. +0.8 to +7.9% at 10 to 19, +0.1 to +0.7% at 20 to 24, +9.3 to +15.5% at 25 to 31, +1.1 to +8.0% at 32 to 59, seeds 1 and 50001, both factions.",
       "first": [
+        {
+          "talent": "Improved Renew",
+          "rank": 3
+        },
+        {
+          "talent": "Holy Specialization",
+          "rank": 5
+        },
+        {
+          "talent": "Divine Fury",
+          "rank": 2
+        },
+        {
+          "talent": "Inspiration",
+          "rank": 3
+        },
+        {
+          "talent": "Twilight Focus",
+          "rank": 2
+        },
+        {
+          "talent": "Holy Binding",
+          "rank": 1
+        },
+        {
+          "talent": "Improved Healing",
+          "rank": 3
+        },
+        {
+          "talent": "Twilight Focus",
+          "rank": 3
+        },
+        {
+          "talent": "Litany of Light",
+          "rank": 2
+        },
+        {
+          "talent": "Spiritual Guidance",
+          "rank": 2
+        },
+        {
+          "talent": "Spirit of Redemption",
+          "rank": 1
+        },
         {
           "talent": "Spiritual Healing",
           "rank": 3
         },
         {
+          "talent": "Spiritual Guidance",
+          "rank": 4
+        },
+        {
           "talent": "Prayer of Mending",
           "rank": 1
+        },
+        {
+          "talent": "Twin Disciplines",
+          "rank": 5
+        },
+        {
+          "talent": "Mental Strength",
+          "rank": 5
+        },
+        {
+          "talent": "Meditation",
+          "rank": 3
+        },
+        {
+          "talent": "Inner Focus",
+          "rank": 1
+        },
+        {
+          "talent": "Mental Agility",
+          "rank": 3
+        },
+        {
+          "talent": "Divine Fury",
+          "rank": 5
         }
       ]
     },
@@ -963,19 +1235,87 @@
       ]
     },
     "shaman-restoration": {
-      "reason": "On band 20's own fight, Mindfulness's second rank ahead of Tidal Focus's last rank beats the plain walk beyond error, both factions (round 11); Water Shield, which the rotation casts, taken as soon as it can be held (ahead of Tidal Focus's fourth rank) beats that beyond error at band 20 too, both factions (round 12); no other band changes. Mana Tide Totem (the 15-point row), which the rotation casts, is held next: at band 30 it takes Tidal Mastery's point and gains about 1.9% effective healing, seeds 1 and 50001, both factions (sim-accuracy round 13, walk lane); Nature's Swiftness and Riptide at 30 and 40 measured lower or under 1% and are not reserved.",
+      "reason": "On band 20's own fight, Mindfulness's second rank ahead of Tidal Focus's last rank beats the plain walk beyond error, both factions (round 11); Water Shield, which the rotation casts, taken as soon as it can be held (ahead of Tidal Focus's fourth rank) beats that beyond error at band 20 too, both factions (round 12); no other band changes. Mana Tide Totem (the 15-point row), which the rotation casts, is held next: at band 30 it takes Tidal Mastery's point and gains about 1.9% effective healing, seeds 1 and 50001, both factions (sim-accuracy round 13, walk lane); Nature's Swiftness and Riptide at 30 and 40 measured lower or under 1% and are not reserved. Sim-accuracy round 29 (walks-heal): Tidal Focus 10 to 12 before Improved Healing Wave (a faster Healing Wave at these levels only spends the mana sooner), Mindfulness 15 to 17, Water Shield 20, Improved Healing Wave full at 23, Mana Tide Totem 25, Restorative Totems 26 to 29 and 33, Healing Way 30 to 32, one point of Tidal Mastery, Purification 35 to 39 and Riptide at 40; Ancestral Knowledge and Thundering Strikes 41 to 50, then Tidal Mastery, Nature's Swiftness 55, Ancestral Healing and Healing Focus last. +0.2 to +17.8% at 10 to 22, +2.3 to +24% at 26 to 49, +0.6 to +3.6% at 50 to 59 (3,000-iteration sweep, Horde seed 1; the 10,000-iteration cells are in the round's report).",
       "first": [
         {
-          "talent": "Mindfulness",
+          "talent": "Tidal Focus",
+          "rank": 3
+        },
+        {
+          "talent": "Improved Healing Wave",
           "rank": 2
+        },
+        {
+          "talent": "Mindfulness",
+          "rank": 3
+        },
+        {
+          "talent": "Tidal Focus",
+          "rank": 5
         },
         {
           "talent": "Water Shield",
           "rank": 1
         },
         {
+          "talent": "Improved Healing Wave",
+          "rank": 5
+        },
+        {
+          "talent": "Ancestral Healing",
+          "rank": 1
+        },
+        {
           "talent": "Mana Tide Totem",
           "rank": 1
+        },
+        {
+          "talent": "Restorative Totems",
+          "rank": 4
+        },
+        {
+          "talent": "Healing Way",
+          "rank": 3
+        },
+        {
+          "talent": "Restorative Totems",
+          "rank": 5
+        },
+        {
+          "talent": "Tidal Mastery",
+          "rank": 1
+        },
+        {
+          "talent": "Purification",
+          "rank": 5
+        },
+        {
+          "talent": "Riptide",
+          "rank": 1
+        },
+        {
+          "talent": "Ancestral Knowledge",
+          "rank": 5
+        },
+        {
+          "talent": "Thundering Strikes",
+          "rank": 5
+        },
+        {
+          "talent": "Tidal Mastery",
+          "rank": 5
+        },
+        {
+          "talent": "Nature's Swiftness",
+          "rank": 1
+        },
+        {
+          "talent": "Ancestral Healing",
+          "rank": 3
+        },
+        {
+          "talent": "Healing Focus",
+          "rank": 3
         }
       ]
     },

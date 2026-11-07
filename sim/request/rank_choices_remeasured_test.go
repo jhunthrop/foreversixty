@@ -330,7 +330,8 @@ func TestRound21SurvivalRaptorStrikeRows(t *testing.T) {
 		{"Troll at 25 is the top rank", "troll", 25, r4, r3},
 		{"Troll at 26", "troll", 26, r2, r4},
 		{"Dwarf at 26", "dwarf", 26, r3, r4},
-		{"Orc at 27", "orc", 27, r3, r2},
+		// Round 28 (hybrids H5): an Orc at 27 gains 0.2% with rank 2 on the new order.
+		{"Orc at 27", "orc", 27, r2, r3},
 		{"Tauren at 28", "tauren", 28, r2, r3},
 		{"Troll at 28", "troll", 28, r3, r2},
 		{"Night Elf at 29", "night-elf", 29, r3, r4},

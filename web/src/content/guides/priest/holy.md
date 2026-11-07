@@ -113,13 +113,15 @@ Tailoring makes healing cloth you will wear into the first raids. Enchanting sav
 
 Until Holy Fire at 20, Smite is your damage: Shadow Word: Pain at 4 first, Smite, then the wand. Power Word: Shield at 6 and Renew at 8 matter most, and Inner Fire follows at 12. Healing a group before you learn Heal at 16, keep Renew on the tank and use Lesser Heal rank 3 as your filler. Keep Renew on rank 1 through your twenties, except at 16, the level Heal arrives, when rank 2 is worth its mana.
 
-Three points of Twilight Focus from 10 to 12 mean most hits no longer push back your casts. Improved Renew takes 13 to 15 for 15% bigger Renews, and Holy Specialization starts at 16 for more crit on your Holy spells.
+Improved Renew takes 10 to 12 for 15% bigger Renews, your main heal at these levels, and Holy Specialization 13 to 17 for more crit on your Holy spells. Divine Fury at 18 and 19 takes a fifth of a second off Heal.
 
 Wear cloth, take quest rewards over vendor gear, and swap the starting mace for the first quest staff or caster mace. Get a wand early: a Lesser Magic Wand from an Enchanter at 5, a Greater Magic Wand at 13, or a quest wand such as the Elven Wand (Bashal'Aran, Darkshore) or the Cinder Wand (Arugal's Folly, Silverpine Forest).
 
 ### Levels 20 to 60
 
 From 20 you can keep leveling Holy in groups, or respec to Shadow at the trainer for faster solo questing and come back to Holy at 60. Solo, Holy is slow: Smite and Holy Fire hit hard, but they cost so much mana that you drink after every pull. If you level Holy, Holy Fire opens, Smite finishes, and Power Word: Shield keeps you casting. In dungeons, keep Renew on the tank, Heal as the filler from level 16, and learn to downrank early.
+
+Your points from 20: Inspiration from 20 to 22, Twilight Focus at 23 and 24 so most hits stop pushing back your casts, Holy Binding at 25, the first level its row opens, since your Flash Heals on the group then heal you as well, and Improved Healing from 26 to 28. Twilight Focus is full at 29, Litany of Light takes 30 and 31, then Spiritual Guidance, Spirit of Redemption and Spiritual Healing, so that all thirty Holy points are in for Prayer of Mending at 40. From 41 go to Discipline: Twin Disciplines and Mental Strength open the row for Meditation, which keeps half your mana regeneration going while you cast and is in by 53, then Inner Focus and Mental Agility. The last three points of Divine Fury close the build at 58 to 60.
 
 Heal rank 1 is the filler through most of your twenties and early thirties: it keeps your whole healing bonus until 33 and heals more for its mana than any later rank, so a long pull ends with mana to spare. A later rank takes over at a few levels: rank 2 at 27 for a Human, Gnome or Night Elf (a Human stays on it at 28), rank 3 at 28 for a Dwarf, Gnome, Night Elf or Troll, rank 3 at 30 and 31 for an Undead or Troll, and rank 2 or 3 at 32 for everyone but a Troll. From 34 rank 1 has started to lose its bonus, and rank 4 costs more mana than its extra healing is worth in its first levels, so keep rank 3 from 34 to 37 before you move to rank 4, and to 38 as an Undead. A Troll stays on rank 1 at 34 and casts rank 2 at 38 and 39, and an Undead casts rank 2 at 39.
 

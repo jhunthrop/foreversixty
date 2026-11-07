@@ -129,7 +129,6 @@ var smokeBuildWarnings = map[string]map[string]string{
 	},
 	"hunter-survival": {
 		"{SpellID: 1317257}": "Strider Kick is a talent (sim/hunter/strider_kick.go, Forever's Survival tree); this build takes none.",
-		"{SpellID: 20910}":   "Counterattack is a talent (sim/hunter/counterattack.go, Forever's Survival tree); this build takes none.",
 	},
 	"mage-arcane": {
 		"{SpellID: 1239700}":        "Arcane Blast is a talent (sim/mage/arcane_blast.go, Forever's tree); this build takes none.",

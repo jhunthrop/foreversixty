@@ -82,8 +82,9 @@ func TestCuratedLadderFirstIsSound(t *testing.T) {
 			byName[node.Name] = node
 		}
 		// Another tree's talent may be reserved too (reserveOffTree): Shadow's Wand
-		// Specialization, and since sim-accuracy round 29 a deeper one once the reservation
-		// pays its row (Balance's Naturalist). The legality check below holds every level.
+		// Specialization; since sim-accuracy round 29 a deeper one behind the rows the list fills
+		// first (Balance's Naturalist, Restoration druid's Nature's Splendor). Every level's
+		// legality is checked below.
 		for ti, tree := range trees {
 			if ti == info.tree {
 				continue
@@ -148,7 +149,9 @@ func TestCuratedLadderFirstIsSound(t *testing.T) {
 // Sim-accuracy round 12 (healprofile): Restoration shaman holds Water Shield, which the
 // rotation casts, at band 20, ahead of Tidal Focus's fourth rank
 // (design/reviews/2026-11-03-sim-audit-round12/healprofile.md). Round 13 (walk) holds Mana
-// Tide Totem next, which moves band 30's Tidal Mastery point onto it.
+// Tide Totem next, which moves band 30's Tidal Mastery point onto it. Round 29 (walks-heal)
+// takes Tidal Focus before Improved Healing Wave and Restorative Totems and Healing Way
+// before Healing Focus and Tidal Mastery (TestHealerWalksTakeTheirLiveTalentsFirst).
 func TestRestorationShamanHoldsWaterShieldAtTwenty(t *testing.T) {
 	repoRoot := filepath.Join("..", "..")
 	active, err := ReadActiveBuild(repoRoot)
@@ -165,9 +168,9 @@ func TestRestorationShamanHoldsWaterShieldAtTwenty(t *testing.T) {
 	}
 	targets := GuideTalentTargets(trees, digits)
 	for level, want := range map[int]string{
-		20: "0000000000000000-000000000000000000-5320000010000000",
-		30: "0000000000000000-000000000000000000-5530003310010000",
-		40: "0000000000000000-000000000000000000-5530003315510000",
+		20: "0000000000000000-000000000000000000-2530000010000000",
+		30: "0000000000000000-000000000000000000-5530001010411000",
+		40: "0000000000000000-000000000000000000-5530001011513051",
 	} {
 		if got := LadderTalentString(trees, targets, 2, level, ForSpec("shaman-restoration")); got != want {
 			t.Errorf("level %d: %s, want %s", level, got, want)
@@ -212,5 +215,12 @@ func TestBeastMasteryTakesFocusedFireBeforeEnduranceTraining(t *testing.T) {
 
 // capstoneWaits are the published bands where a reservation deliberately holds the
 // capstone back: Shadow takes Wand Specialization at 10-11, so Shadowform waits from 40
-// to 42 (sim-accuracy round 15 wave 6; ladder-first.json's reason).
-var capstoneWaits = map[string]map[int]bool{"priest-shadow": {40: true}}
+// to 42 (sim-accuracy round 15 wave 6; ladder-first.json's reason). Round 29 (walks-heal):
+// the Holy paladin's Light's Vigil, which the rotation does not cast, waits for Conviction
+// and Holy Power until 53; Discipline's Divine Aegis waits for Improved Renew and Holy
+// Specialization until 46.
+var capstoneWaits = map[string]map[int]bool{
+	"priest-shadow":     {40: true},
+	"paladin-holy":      {40: true, 50: true},
+	"priest-discipline": {40: true},
+}

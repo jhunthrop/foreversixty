@@ -361,9 +361,11 @@ function walkLevel(
 }
 
 /** A reservation's ranks in another tree than the spec's own (Shadow's Wand Specialization,
- *  in Discipline; Fire's, in Arcane), one rank at a time in list order, each capped at the
- *  guide's target and its max rank, only for a first-row talent with no prerequisite, and
- *  only once the budget has paid for the own-tree ranks listed before it
+ *  in Discipline; Fire's, in Arcane; Restoration druid's Nature's Splendor, in Balance), one
+ *  rank at a time in list order, each capped at the guide's target and its max rank, only
+ *  while that tree's reserved ranks stay legal (a deeper talent waits for the rows the list
+ *  fills above it and for its prerequisite), and only once the budget has paid for the
+ *  own-tree ranks listed before it. A name the own tree carries is the own tree's
  *  (sim/leveling reserveOffTree). */
 function reserveOffTree(
   trees: readonly LadderTalentTree[],
@@ -374,16 +376,18 @@ function reserveOffTree(
 ): { reserved: Map<number, Ranks>; budget: number } {
   const reserved = new Map<number, Ranks>();
   const ahead = ownRanksAhead(trees, targets, ownTreeIndex, first);
+  const ownNames = new Set((trees[ownTreeIndex]?.talents ?? []).map((node) => node.name));
   let left = budget;
   first.forEach((row, i) => {
+    if (ownNames.has(row.talent)) return;
     trees.forEach((tree, ti) => {
       if (ti === ownTreeIndex) return;
       for (const node of tree.talents) {
-        if (node.name !== row.talent || node.tier !== 0 || node.prereq_talent_id !== null) continue;
+        if (node.name !== row.talent) continue;
         const ranks = reserved.get(ti) ?? new Map<number, number>();
         reserved.set(ti, ranks);
         const cap = Math.min(row.rank, target(targets, node.id), node.max_rank);
-        while ((ranks.get(node.id) ?? 0) < cap && left > ahead[i]!) {
+        while ((ranks.get(node.id) ?? 0) < cap && left > ahead[i]! && reservedIsLegal(tree, ranks, node.id)) {
           ranks.set(node.id, (ranks.get(node.id) ?? 0) + 1);
           left--;
         }
@@ -391,6 +395,13 @@ function reserveOffTree(
     });
   });
   return { reserved, budget: left };
+}
+
+/** Whether a tree's reserved ranks with one more rank of id still meet the tier gates and
+ *  prerequisites (sim/leveling reservedIsLegal). */
+function reservedIsLegal(tree: LadderTalentTree, reserved: Ranks, id: number): boolean {
+  const digits = tree.talents.map((node) => (reserved.get(node.id) ?? 0) + (node.id === id ? 1 : 0));
+  return treeIsLegal(tree, digits);
 }
 
 /** For each reservation entry, the own-tree ranks the entries before it reserve, each talent
