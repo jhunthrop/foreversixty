@@ -1,37 +1,26 @@
 <!-- web/src/components/SignInPrompt.svelte -->
-<!-- What a signed-out visitor sees wherever /logs needs an account: one line saying what
-     signing in is for, and a real button. A bare "Sign in" text link inside a sentence read
-     as fine print, and the only button was the one in the header.
-
-     `compact` is for the second and third prompt on the same page (the companion pairing
-     box and the upload form on /logs): the "Your reports" panel above them already carries
-     the button, and three identical buttons down one page read as a broken state. A
-     compact prompt keeps the same line and the same Battle.net link, as text. -->
+<!-- What a signed-out visitor sees wherever a page needs an account (the guild home, raid, claim,
+     recruit and member pages, the go-links admin): one sentence saying what signing in is for, and
+     the Battle.net button under it. No frame of its own: it sits inside whatever Section or Plate
+     the page already has, so it never adds a second Plate (web layout spec 2026-11-05 §3A.2). -->
 <script lang="ts">
   import { battlenetStartUrl } from '../lib/account/api';
-  import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
+  import { myReportsCopy } from '../lib/reports/my-reports-copy';
+  import Button from './ui/Button.svelte';
 
   let {
     line,
     next = '/account?signed_in=1',
     testid,
-    compact = false,
-  }: { line: string; next?: string; testid: string; compact?: boolean } = $props();
+  }: {
+    line: string;
+    /** Where Battle.net sends the visitor back to (the page they were on). */
+    next?: string;
+    testid: string;
+  } = $props();
 </script>
 
 <div class="flex flex-col items-start gap-3" data-testid={testid}>
-  <p class="text-[14px]">
-    {line}
-    {#if compact}
-      <a class="text-nav underline" href={battlenetStartUrl(next)}>Sign in with Battle.net.</a>
-    {/if}
-  </p>
-  {#if !compact}
-    <a
-      class="{SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong px-4"
-      href={battlenetStartUrl(next)}
-    >
-      Sign in with Battle.net
-    </a>
-  {/if}
+  <p class="max-w-[72ch] text-[15px] leading-6">{line}</p>
+  <Button href={battlenetStartUrl(next)}>{myReportsCopy.signInAction}</Button>
 </div>
