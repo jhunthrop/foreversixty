@@ -39,6 +39,14 @@ export function mountBisLane(root: HTMLElement): void {
   const defaultFaction = root.dataset.defaultFaction ?? 'alliance';
   const current = root.querySelector<HTMLElement>('[data-bis-current]');
   if (current === null) return;
+  // The band the server drew has no template of its own: keep a copy, so the lane can return to it.
+  const first = current.dataset.panel ?? '';
+  if (root.querySelector(`template[data-bis-panel="${first}"]`) === null) {
+    const keep = document.createElement('template');
+    keep.dataset.bisPanel = first;
+    keep.content.append(...[...current.childNodes].map((node) => node.cloneNode(true)));
+    root.append(keep);
+  }
   onGuideCharacter((character) => {
     const pointer = character === null ? readCurrent() : null;
     const pasted =

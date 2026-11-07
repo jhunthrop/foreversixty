@@ -27,9 +27,9 @@ from ws_prims import (Button, Facts, ItemRow, LaneBlock, LevelSlider, Link, Menu
 HERE = Path(__file__).resolve().parent
 F = json.loads(Path(os.environ.get('FS_GUIDES_FACTS') or HERE / 'data' / 'guides-facts.json').read_text())
 C = F['copy']
+SEC = {s['id']: s['title'] for s in F['sections']}   # SPEC_SECTIONS (lib/guides/sections.ts)
 TA = F['tier_answer']
 FACTION = {'alliance': '#6fb1ff', 'horde': '#ff6b5c'}
-FACTION_NAME = {'alliance': 'Alliance', 'horde': 'Horde'}
 TAG = C['specRowTag']   # guidesCopy.specRowTag: a healer, a tank, the melee spec of a ranged class (glance.ts specRowTag)
 QUAL = {2: 'q2', 3: 'q3', 4: 'q4', 5: 'q5'}
 
@@ -126,7 +126,7 @@ def overview(g: dict) -> str:
     o = g['overview']
     prose = (f'<div class="sw"><div><h3 class="t-label sw-h">{e(C["strengths"])}</h3>{Prose(o["strengths"], "plus")}</div>'
              f'<div><h3 class="t-label sw-h">{e(C["weaknesses"])}</h3>{Prose(o["weaknesses"], "minus")}</div></div>')
-    return ReadingSection('Overview', prose, LaneBlock(e(C['inARaid']), Prose(o['raid'], 'lane')), 'overview')
+    return ReadingSection(SEC['overview'], prose, LaneBlock(e(C['inARaid']), Prose(o['raid'], 'lane')), 'overview')
 
 
 def talents(g: dict) -> str:
@@ -139,7 +139,7 @@ def talents(g: dict) -> str:
         names = ' &middot; '.join(f'{e(x["name"])} <span class="t-small">{" &middot; ".join(e(r) for r in x["rankText"])}</span>' for x in k['talents'])
         keys.append(Row(names, e(k['why']), lead=icon(k['talents'][0].get('icon') or '', 32), link=False))
     lane = LaneBlock(PROPOSED['builds'], RowsSlim(rows) + diff) + LaneBlock(e(C['keyTalents']), Rows(keys, True))
-    return ReadingSection('Talents and builds', Prose(t['prose']), lane, 'talents-and-builds')
+    return ReadingSection(SEC['talents-and-builds'], Prose(t['prose']), lane, 'talents-and-builds')
 
 
 def rotation(g: dict, lists: dict | None = None) -> str:
@@ -152,7 +152,7 @@ def rotation(g: dict, lists: dict | None = None) -> str:
             notes += f'<p class="t-small">{e(C["raidBuildLegend"])}</p>'
         blocks = [(C['opener'], lists['opener'], True), (C['priority'], lists['priority'], True), (C['cooldowns'], lists['cooldowns'], False)]
         lane = notes + ''.join(LaneBlock(e(t), RowsSlim([spell_row(x, str(i + 1) if num else '') for i, x in enumerate(items)])) for t, items, num in blocks if items)
-    return ReadingSection('Rotation and priority', Prose(r['prose']), lane, 'rotation-and-priority')
+    return ReadingSection(SEC['rotation-and-priority'], Prose(r['prose']), lane, 'rotation-and-priority')
 
 
 def stats(g: dict, rows: list[dict] | None = None) -> str:
@@ -172,7 +172,7 @@ def stats(g: dict, rows: list[dict] | None = None) -> str:
         lane = LaneBlock(e(C['statPriorityRailLabel']), cap + table + notes)
     else:   # no weights for the spec: the guide's own order, unnumbered weights absent (the shipped fallback)
         lane = LaneBlock(e(C['statPriorityRailLabel']), RowsSlim([Row(e(x), rank=str(i + 1), link=False) for i, x in enumerate(g['statPriority'])]))
-    return ReadingSection('Stat priority', Prose(s['prose']), lane, 'stat-priority')
+    return ReadingSection(SEC['stat-priority'], Prose(s['prose']), lane, 'stat-priority')
 
 
 def gear(g: dict, band_no: int = 60, faction: str = 'alliance', data: bool = True) -> str:
@@ -192,7 +192,7 @@ def gear(g: dict, band_no: int = 60, faction: str = 'alliance', data: bool = Tru
         note = f'<p class="t-small">{e(C["preRaidNote"])}</p>' if band_no == 60 else ''
         lane = LaneBlock(e(F['fns']['levelRangeLabel'][str(band_no)]), f'<div class="items">{"".join(items)}</div>' + note, e(caption))
     lane += f'<p>{Link(rsaquo(C["fullListLink"]))}</p>'
-    return ReadingSection('Best in slot', Prose(b['prose']), lane, 'best-in-slot')
+    return ReadingSection(SEC['best-in-slot'], Prose(b['prose']), lane, 'best-in-slot')
 
 
 def extras(g: dict, data: bool = True) -> str:
@@ -210,7 +210,7 @@ def extras(g: dict, data: bool = True) -> str:
                 rows.append(Row(e(r['name']), e(r['gives']), lead=icon(r.get('icon') or '', 28), link=False))
         lane = (LaneBlock(e(C['enchants']), f'<p class="t-small">{e(C["enchantsNote"])}</p>' + ench)
                 + LaneBlock(e(C['consumables']), f'<p class="t-small">{e(C["consumablesNote"])}</p>' + RowsSlim(rows)))
-    return ReadingSection('Enchants and consumables', Prose(x['prose']), lane, 'enchants-and-consumables')
+    return ReadingSection(SEC['enchants-and-consumables'], Prose(x['prose']), lane, 'enchants-and-consumables')
 
 
 def races(g: dict) -> str:
@@ -225,7 +225,7 @@ def races(g: dict) -> str:
         head = C['alliancePicksHeading'] if grp['faction'] == 'alliance' else C['hordePicksHeading']
         body += f'<h4 class="t-label sub-h">{e(head)}</h4>' + Rows(rows, True)
     lines = ''.join(f'<p class="t-small">{e(t)}</p>' for t in r['lines'])
-    return ReadingSection('Races', Prose(r['prose']), LaneBlock(e(C['racialsColumn']), body + lines), 'races')
+    return ReadingSection(SEC['races'], Prose(r['prose']), LaneBlock(e(C['racialsColumn']), body + lines), 'races')
 
 
 def leveling(g: dict, level: int = 60, data: bool = True) -> str:
@@ -237,7 +237,7 @@ def leveling(g: dict, level: int = 60, data: bool = True) -> str:
         lane = LaneBlock(e(C['talentsByLevel']),
                          f'<p class="t-small">{e(C["levelingTreeIntro"])}</p><p class="lvl-l"><b class="strong">{e(at["point"])}</b><span class="t-small">{e(at["spent"])}</span></p>'
                          + LevelSlider(level, 10, 60, e(C['levelSliderLabel'])) + TalentTrees(trees_of(at['trees'])) + f'<p>{Link(rsaquo(C["loadInPlanner"]))}</p>')
-    return ReadingSection('Leveling', prose, lane, 'leveling')
+    return ReadingSection(SEC['leveling'], prose, lane, 'leveling')
 
 
 def sources(g: dict) -> str:
@@ -255,8 +255,9 @@ def spec_bar(g: dict, open_m: bool = False) -> str:
     toc_m = '<span class="t-label" style="display:block;margin:8px 0 4px">' + e(C['tocBarLabel']) + '</span>' + RowsSlim(
         [Row(e(s['title'])) for s in F['sections']])
     end = f'<span class="toc-sel">{sel(e(C["tocBarLabel"]))}</span>'
-    return control_bar([('Spec', seg(items, label='Spec'), seg(items, label='Spec') + toc_m)],
-                       f'{e(g["specName"])} {e(g["className"])} &middot; {e(C["tocBarLabel"])}', end=end, open_m=open_m, label='Guide choices')
+    spec = e(C['specGroupLabel'])
+    return control_bar([(spec, seg(items, label=spec), seg(items, label=spec) + toc_m)],
+                       f'{e(g["specName"])} {e(g["className"])} &middot; {e(C["tocBarLabel"])}', end=end, open_m=open_m, label=e(C['barLabel']))
 
 
 def spec_page(gid: str, kind: str = 'out', me_key: str = '', level: int = 60, open_m: bool = False, partial: bool = False) -> str:
@@ -271,7 +272,7 @@ def spec_page(gid: str, kind: str = 'out', me_key: str = '', level: int = 60, op
     faction = me['faction'] if me and kind == 'same' else 'alliance'
     body = [overview(gp), talents(gp), rotation(gp, {} if partial else None), stats(gp, [] if partial else None),
             gear(gp, band_no, faction, not partial), extras(gp, not partial), races(gp),
-            ReadingSection('Professions', Prose(g['professions']), '', 'professions'), leveling(gp, level if kind == 'same' else 60, not partial),
+            ReadingSection(SEC['professions'], Prose(g['professions']), '', 'professions'), leveling(gp, level if kind == 'same' else 60, not partial),
             sources(g) + f'<p class="t-small foot-note" data-region="{REGION["footer_note"]}">{e(F["fns"]["dataSourceLine"])}</p>']
     toc = Toc(e(C['tocBarLabel']), [(e(s['title']), s['id']) for s in F['sections']], 'overview')
     html = head + spec_bar(g, open_m) + band(gp) + Page('reading', ''.join(body), toc) + PAGE_CSS

@@ -50,13 +50,20 @@ const groups: ControlGroup[] = [
 </ControlBar>
 
 <script>
-  // The select jumps: its value is a section's anchor; the face goes back to "On this page".
+  // The select jumps: its value is a section's anchor. On a phone the bar closes, so the section
+  // lands below it, and focus moves to the section, as a link to its anchor would.
+  import { closeControlBar } from '../../lib/ui/control-bar';
+
   const field = document.getElementById('guide-toc') as HTMLSelectElement | null;
   field?.addEventListener('change', () => {
-    const id = field.value;
-    if (id === '') return;
-    document.getElementById(id)?.scrollIntoView();
-    history.replaceState(null, '', `#${id}`);
+    const section = field.value === '' ? null : document.getElementById(field.value);
+    if (section === null) return;
+    const bar = field.closest<HTMLElement>('[data-control-bar]');
+    if (bar !== null) closeControlBar(bar);
+    history.replaceState(null, '', `#${section.id}`);
+    section.scrollIntoView();
+    if (!section.hasAttribute('tabindex')) section.setAttribute('tabindex', '-1');
+    section.focus({ preventScroll: true });
   });
 </script>
 

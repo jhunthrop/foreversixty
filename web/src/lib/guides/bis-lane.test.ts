@@ -114,6 +114,15 @@ describe('mountBisLane', () => {
     expect(current().dataset.panel).toBe('20-alliance');
   });
 
+  it('returns to the band the server drew when the character moves on to 60', () => {
+    mountBisLane(root);
+    publishGuideCharacter(mage(34, 'horde'));
+    expect(current().dataset.panel).toBe('30-horde');
+    publishGuideCharacter(mage(60, 'alliance'));
+    expect(current().dataset.panel).toBe('60-alliance');
+    expect(current().textContent).toBe('60-alliance');
+  });
+
   it('keeps the panel it has when the key has no template', () => {
     mountBisLane(root);
     publishGuideCharacter(mage(44, 'alliance'));

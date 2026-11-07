@@ -147,6 +147,16 @@
     outline-offset: 2px;
   }
   @media (max-width: 767px) {
+    /* A tree's name may take two lines in a 97 px column ("Marksmanship 11"): the three heads
+       share one height so the grids start level. */
+    .ui-tree h3 {
+      white-space: normal;
+      flex-wrap: wrap;
+      column-gap: 6px;
+      row-gap: 0;
+      min-height: 42px;
+      align-content: flex-end;
+    }
     .ui-trees {
       grid-template-columns: repeat(3, minmax(0, max-content));
       gap: 10px;
