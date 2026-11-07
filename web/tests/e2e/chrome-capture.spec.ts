@@ -210,7 +210,7 @@ function write(name: string, value: Capture): void {
 
 const TEMPLATES: Record<string, HomeState> = {
   'template-out': {},
-  'template-in': { me: 'me-34.json', sims: 'sims-34.json', reports: 'reports-34.json' },
+  'template-in': { me: 'me-34.json', feed: 'feed-34.json', home: 'home-34.json' },
   'template-new': { me: 'me-new.json' },
   'template-pending': { me: 'pending' },
 };

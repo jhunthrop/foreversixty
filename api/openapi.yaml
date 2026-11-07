@@ -5579,6 +5579,7 @@ paths:
         - { name: filter, in: query, schema: { type: string, enum: [all, spec, guild, logs] } }
         - { name: spec, in: query, schema: { type: string }, description: "The viewer's spec key, e.g. warrior-fury" }
         - { name: band, in: query, schema: { type: integer, enum: [20, 30, 40, 50, 60] } }
+        - { name: character, in: query, schema: { type: string }, description: "One character's own rows (the character page's activity), its key, e.g. us/normal/thalrin; a guild-only row still needs the viewer in that guild" }
         - { name: cursor, in: query, schema: { type: string } }
         - { name: limit, in: query, schema: { type: integer, minimum: 1, maximum: 30 } }
       responses:
@@ -5593,7 +5594,7 @@ paths:
                   - $ref: '#/components/schemas/Envelope'
                   - { type: object, properties: { data: { $ref: '#/components/schemas/FeedPage' } } }
         '400':
-          description: "A bad filter, spec, band, limit or cursor; the spec filter needs spec and band"
+          description: "A bad filter, spec, band, character, limit or cursor; the spec filter needs spec and band"
           x-fixtures: [feed.error-invalid]
           content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
         '401':

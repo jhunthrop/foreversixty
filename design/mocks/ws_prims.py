@@ -944,6 +944,7 @@ def RowsSlim(rows: list[str], open_: bool = True) -> str:
     """Rows at the contract's density 'slim' (44 px)."""
     return Rows(rows, open_).replace('<div class="rows', '<div class="rows slim', 1)
 
+
 # ------------------------------------------------ primitives added by the home B round (2026-11-07; design/specs/2026-11-07-home-b.md)
 # Countdown (ui/Countdown.svelte): a panel with a caps eyebrow (live dot), a days/hours/min clock read as one timer, and its
 # content at the right. FeedRow (ui/FeedRow.svelte): one feed line as a link: icon or crest, the sentence, the time over a caps
@@ -960,7 +961,7 @@ PRIM_CSS += '''
 .cdn .clk>span{display:flex;flex-direction:column;align-items:center}
 .cdn .clk b{font:700 40px/42px var(--font-body);color:var(--strong)}
 .cdn .clk>span>span{font-size:11px;line-height:16px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
-.cdn .as{min-width:0;margin-left:auto}
+.cdn .as{flex:1 1 200px;min-width:0;margin-left:auto}
 .frow{display:grid;grid-template-columns:40px minmax(0,1fr) auto;gap:14px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line-soft);font-size:15px;line-height:22px;color:inherit}
 .frow .ld{display:flex;line-height:0}.frow .tx{min-width:0}.frow .tx b{font-weight:700}
 .frow .wh{text-align:right;font-size:13px;line-height:20px;white-space:nowrap;color:var(--muted)}

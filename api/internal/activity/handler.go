@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
+	"github.com/jhunthrop/foreversixty/api/internal/character"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
 	"github.com/jhunthrop/foreversixty/sim/specs"
 )
@@ -151,6 +152,12 @@ func parseFeedQuery(w http.ResponseWriter, r *http.Request) (Query, bool) {
 			return bad("band", "band must be 20, 30, 40, 50 or 60")
 		}
 		q.Band = n
+	}
+	if c := strings.ToLower(v.Get("character")); c != "" {
+		if !character.ValidKey(c) {
+			return bad("character", "character must be a key like us/normal/thalrin")
+		}
+		q.Character = c
 	}
 	if q.Filter == FilterSpec && (q.Spec == "" || q.Band == 0) {
 		return bad("spec", "the spec filter needs spec and band")

@@ -25,6 +25,11 @@ export interface CharacterState {
   /** The owner's /v1/me; absent, the viewer is signed out. */
   me?: string;
   search?: string;
+  /** The character's activity (GET /v1/feed?character=); absent, no rows. */
+  feed?: string;
+  /** The owner's /v1/home answer and their guild's home (the standing line). */
+  home?: string;
+  guild?: string;
 }
 
 function fixture(name: string): unknown {
@@ -75,6 +80,16 @@ export async function routeCharacter(page: Page, state: CharacterState): Promise
   if (state.rating !== undefined) {
     const rating = fixture(state.rating);
     await page.route(`${api}/rating`, (route) => route.fulfill(envelope(rating)));
+  }
+  const feed = state.feed === undefined ? { rows: [], next_cursor: null } : fixture(state.feed);
+  await page.route('**/v1/feed?*', (route) => route.fulfill(envelope(feed)));
+  if (state.home !== undefined) {
+    const home = fixture(state.home);
+    await page.route('**/v1/home?*', (route) => route.fulfill(envelope(home)));
+  }
+  if (state.guild !== undefined) {
+    const guild = fixture(state.guild);
+    await page.route('**/v1/guilds/*/home', (route) => route.fulfill(envelope(guild)));
   }
   const rows = state.search === undefined ? [] : (fixture(state.search) as { rows: unknown[] }).rows;
   await page.route('**/v1/characters/search*', (route) => route.fulfill(envelope({ rows })));

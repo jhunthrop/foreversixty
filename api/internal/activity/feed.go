@@ -39,9 +39,12 @@ type Query struct {
 	Band int
 	// GuildIDs are the viewer's verified guilds; empty signed out.
 	GuildIDs []int64
-	Cursor   string
-	Limit    int
-	Now      time.Time
+	// Character narrows any filter to one character's own rows (the character page's activity):
+	// its key, <region>/<ruleset>/<slug>; empty for the whole feed.
+	Character string
+	Cursor    string
+	Limit     int
+	Now       time.Time
 }
 
 // Row is one feed row as GET /v1/feed answers it.
@@ -110,6 +113,10 @@ func (q Query) where() (string, []any, error) {
 	case FilterLogs:
 		args = append(args, logKinds)
 		clauses = append(clauses, fmt.Sprintf("e.kind = any($%d)", len(args)))
+	}
+	if q.Character != "" {
+		args = append(args, q.Character)
+		clauses = append(clauses, fmt.Sprintf("e.character_key = $%d", len(args)))
 	}
 	if q.Cursor != "" {
 		c, err := decodeCursor(q.Cursor)

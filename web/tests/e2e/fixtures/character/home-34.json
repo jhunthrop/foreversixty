@@ -1,0 +1,20 @@
+{
+  "import_sim": {
+    "state": "done",
+    "dps": 26.2,
+    "simmed_at": "2026-11-06T12:00:00Z",
+    "sim_id": "s_2"
+  },
+  "spec_week": {
+    "spec": "hunter-beast-mastery",
+    "band": 30,
+    "faction": "alliance",
+    "role": "dps",
+    "grade": "B",
+    "last_week_grade": null,
+    "place": 7,
+    "of": 23
+  },
+  "movers": null,
+  "guild_sims": null
+}

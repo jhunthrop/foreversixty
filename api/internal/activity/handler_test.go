@@ -47,7 +47,7 @@ func TestFeedRouteAnswersAndRefuses(t *testing.T) {
 	}
 	for url, code := range map[string]int{
 		"/v1/feed?filter=guild": 401, "/v1/feed?filter=nope": 400, "/v1/feed?filter=spec": 400,
-		"/v1/feed?spec=warrior-nope": 400, "/v1/feed?band=25": 400, "/v1/feed?cursor=zz": 400, "/v1/home?character=x": 401,
+		"/v1/feed?spec=warrior-nope": 400, "/v1/feed?band=25": 400, "/v1/feed?cursor=zz": 400, "/v1/feed?character=nope": 400, "/v1/feed?character=us/normal/thalrin": 200, "/v1/home?character=x": 401,
 	} {
 		if rec, _ := serve(t, s, nil, 0, url); rec.Code != code {
 			t.Errorf("%s: %d, want %d", url, rec.Code, code)

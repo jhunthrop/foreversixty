@@ -1,0 +1,76 @@
+{
+  "rows": [
+    {
+      "id": "e_2",
+      "kind": "log_upload",
+      "at": "2026-11-06T16:10:00Z",
+      "tag": "logs",
+      "icon": null,
+      "crest": "priest",
+      "quality": null,
+      "href": "/reports/rpt12118",
+      "date_only": false,
+      "segments": [
+        {
+          "text": "Elyra Duskvale",
+          "style": "name",
+          "class": "priest"
+        },
+        {
+          "text": " uploaded Molten Core, 10 bosses in 92 min"
+        }
+      ]
+    },
+    {
+      "id": "e_3",
+      "kind": "ranking_climb",
+      "at": "2026-11-05T21:00:00Z",
+      "tag": "rankings",
+      "icon": null,
+      "crest": "priest",
+      "quality": null,
+      "href": "/character/us/hardcore/elyra-duskvale",
+      "date_only": false,
+      "segments": [
+        {
+          "text": "Holy, 60: ",
+          "style": "strong"
+        },
+        {
+          "text": "Elyra Duskvale",
+          "style": "name",
+          "class": "priest"
+        },
+        {
+          "text": " climbed 6 places to "
+        },
+        {
+          "text": "#4",
+          "style": "strong"
+        }
+      ]
+    },
+    {
+      "id": "e_4",
+      "kind": "boss_kill",
+      "at": "2026-11-03T20:40:00Z",
+      "tag": "logs",
+      "icon": null,
+      "crest": "priest",
+      "quality": null,
+      "href": "/reports/rpt12118",
+      "date_only": false,
+      "segments": [
+        {
+          "text": "Elyra Duskvale",
+          "style": "name",
+          "class": "priest"
+        },
+        {
+          "text": " downed Lucifron in Molten Core, the first kill on Forever"
+        }
+      ]
+    }
+  ],
+  "next_cursor": null
+}

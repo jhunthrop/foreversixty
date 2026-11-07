@@ -129,9 +129,51 @@ def owner_me(character: dict, premium: bool) -> dict:
             'entitlements': {'history': premium, 'log_coach': premium}, 'plan': 'premium' if premium else 'free'}
 
 
+GUILD = {'id': 2, 'name': 'Cx66 Olympus', 'region': 'us', 'ruleset': 'hardcore', 'slug': 'cx66-olympus'}
+
+
+def feed_row(i: int, kind: str, at: str, tag: str, segments: list[dict], href: str, crest: str | None = 'priest') -> dict:
+    return {'id': f'e_{i}', 'kind': kind, 'at': at, 'tag': tag, 'icon': None if crest else 'inv_misc_book_09', 'crest': crest,
+            'quality': None, 'href': href, 'date_only': False, 'segments': segments}
+
+
+def elyra_feed(owner: bool) -> dict:
+    name = {'text': 'Elyra Duskvale', 'style': 'name', 'class': 'priest'}
+    rows = [
+        feed_row(2, 'log_upload', '2026-11-06T16:10:00Z', 'logs', [name, {'text': ' uploaded Molten Core, 10 bosses in 92 min'}], '/reports/rpt12118'),
+        feed_row(3, 'ranking_climb', '2026-11-05T21:00:00Z', 'rankings',
+                 [{'text': 'Holy, 60: ', 'style': 'strong'}, name, {'text': ' climbed 6 places to '}, {'text': '#4', 'style': 'strong'}],
+                 '/character/us/hardcore/elyra-duskvale'),
+        feed_row(4, 'boss_kill', '2026-11-03T20:40:00Z', 'logs', [name, {'text': ' downed Lucifron in Molten Core, the first kill on Forever'}], '/reports/rpt12118'),
+    ]
+    if owner:
+        rows.insert(0, feed_row(1, 'guild_sim', '2026-11-06T17:30:00Z', 'your_guild',
+                                [name, {'text': ' simmed 912 HPS, #3 of 14 healers in Cx66 Olympus (Holy, 60 raid)'}], '/sim/s_1'))
+    return {'rows': rows, 'next_cursor': None}
+
+
+def home_answer(level: int) -> dict:
+    if level < 60:
+        return {'import_sim': {'state': 'done', 'dps': 26.2, 'simmed_at': '2026-11-06T12:00:00Z', 'sim_id': 's_2'},
+                'spec_week': {'spec': 'hunter-beast-mastery', 'band': 30, 'faction': 'alliance', 'role': 'dps', 'grade': 'B',
+                              'last_week_grade': None, 'place': 7, 'of': 23},
+                'movers': None, 'guild_sims': None}
+    ladder = [('Thalrin', 'paladin', 1001.2, False), ('Mirelle', 'druid', 955.0, False), ('Elyra Duskvale', 'priest', 912.4, True)]
+    return {'import_sim': {'state': 'done', 'dps': 912.4, 'simmed_at': '2026-11-06T17:30:00Z', 'sim_id': 's_1'},
+            'spec_week': {'spec': 'priest-holy', 'band': 60, 'faction': 'alliance', 'role': 'healer', 'grade': 'A',
+                          'last_week_grade': None, 'place': 2, 'of': 9},
+            'movers': None,
+            'guild_sims': {'guild_id': GUILD['id'], 'guild_name': GUILD['name'], 'role': 'healer', 'band': 60, 'preset': 'raid', 'unit': 'HPS',
+                           'of': 14, 'rows': [{'rank': i + 1, 'name': n, 'class': c, 'key': f"us/hardcore/{n.lower().replace(' ', '-')}",
+                                               'value': v, 'delta': None, 'simmed_at': '2026-11-06T17:30:00Z', 'you': y}
+                                              for i, (n, c, v, y) in enumerate(ladder)],
+                           'you': None}}
+
+
 def elyra_me(gear: list[dict]) -> dict:
     return {'key': 'us/hardcore/elyra-duskvale', 'region': 'us', 'ruleset': 'hardcore', 'name': 'Elyra Duskvale', 'class': 'Priest',
             'spec': 'Holy', 'race': 'Night Elf', 'realm': 'Doomhowl', 'level': 60, 'faction': 'alliance', 'item_level': 62, 'source': 'bnet',
+            'guild': {'id': GUILD['id'], 'name': GUILD['name'], 'rank': 'Officer', 'verified': True, 'attendance': {'present': 3, 'nights': 4}},
             'build': {'source': 'addon', 'captured_at': CAPTURED, 'level': 60, 'data_build': BUILD,
                       'gear': {g['slot']: g['worn']['id'] for g in gear if g['worn']},
                       'talents': {'trees': ['0' * 16, '0' * 16, '0' * 16], 'points': [15, 31, 5]}}}
@@ -149,7 +191,12 @@ def main() -> None:
     write('items-priest.json', {**pitems_all, 'items': [i for i in pitems_all['items'] if i['id'] in ids]})
     write('character-60.json', elyra(pgear))
     write('rating-60.json', rating())
-    write('me-60.json', owner_me(elyra_me(pgear), premium=True))
+    me60 = owner_me(elyra_me(pgear), premium=True)
+    write('me-60.json', {**me60, 'guilds': [{**GUILD, 'rank': 'Officer', 'verified': True, 'verified_count': 14, 'faction': 'alliance'}]})
+    write('feed-60.json', elyra_feed(owner=False))
+    write('feed-60-owner.json', elyra_feed(owner=True))
+    write('home-60.json', home_answer(60))
+    write('home-34.json', home_answer(34))
 
     hbis = read(HOME / 'bis-hunter-beast-mastery.json')
     hitems = {i['id']: i for i in read(HOME / 'items-hunter.json')['items']}
