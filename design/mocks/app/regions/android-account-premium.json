@@ -128,10 +128,19 @@
     16,
     2273,
     380,
-    251
+    163
+   ],
+   "inventory": {}
+  },
+  "section-delete-account": {
+   "box": [
+    16,
+    2468,
+    380,
+    143
    ],
    "inventory": {
-    "row": 1
+    "button": 1
    }
   }
  }

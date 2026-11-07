@@ -32,7 +32,7 @@ struct HomeSnapshotTests {
             .preferredColorScheme(.dark)
         assertSnapshot(
             of: framed,
-            as: .image(precision: 0.99, perceptualPrecision: 0.98, layout: .device(config: tall ? Self.iPhone17Tall : Self.iPhone17)),
+            as: .image(precision: SnapshotTolerance.precision, perceptualPrecision: SnapshotTolerance.perceptualPrecision, layout: .device(config: tall ? Self.iPhone17Tall : Self.iPhone17)),
             testName: name
         )
     }

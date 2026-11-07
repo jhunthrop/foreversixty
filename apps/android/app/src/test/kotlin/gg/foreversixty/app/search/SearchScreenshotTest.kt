@@ -9,7 +9,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onRoot
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.takahirom.roborazzi.RoborazziOptions
 import com.github.takahirom.roborazzi.captureRoboImage
 import gg.foreversixty.app.R
 import gg.foreversixty.app.bis.BisRange
@@ -47,6 +46,7 @@ import org.junit.runner.RunWith
 import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.GraphicsMode
+import gg.foreversixty.app.testing.STRICT_SNAPSHOT
 
 /**
  * Every F12 board on a Pixel 9 (412 x 915 dp), at the default size and at font scale 2.0 (spec
@@ -74,7 +74,7 @@ class SearchScreenshotTest {
                 }
             }
         }
-        compose.onRoot().captureRoboImage("src/test/screenshots/search/$name.png", roborazziOptions = TOLERANT)
+        compose.onRoot().captureRoboImage("src/test/screenshots/search/$name.png", roborazziOptions = STRICT_SNAPSHOT)
     }
 
     private fun search(name: String, state: SearchScreenState, large: Boolean = false) =
@@ -192,9 +192,6 @@ class SearchScreenshotTest {
         val CURRENT = SearchTestData.character(LIGHTNINGBOLLTZ, "shaman", level = 60)
     }
 }
-
-/** Goldens are recorded on macOS and verified on Linux CI; allow anti-aliasing noise only. */
-private val TOLERANT = RoborazziOptions(compareOptions = RoborazziOptions.CompareOptions(changeThreshold = 0.005F))
 
 /** Pixel 9: 412 x 915 dp at 420 dpi. */
 private const val PIXEL_9 = "w412dp-h915dp-normal-long-notround-any-420dpi-keyshidden-nonav"

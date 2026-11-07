@@ -16,11 +16,10 @@ public enum Theme {
         public static let accent = FSColor.gold
     }
 
-    /// The site's type: Cinzel for the wordmark, Barlow Condensed for headings, Barlow for
-    /// body copy. The faces are bundled from apps/shared/fonts and listed under UIAppFonts.
+    /// The site's type: Barlow, 700 for headings, from apps/shared/fonts (UIAppFonts).
     public enum Typography {
-        public static let title = Font.custom("BarlowCondensed-Bold", size: FSTextSize.h2)
-        public static let cardTitle = Font.custom("BarlowCondensed-Bold", size: FSTextSize.cardTitle)
+        public static let title = Font.custom(FSFont.bodyBold, size: FSTextSize.h2)
+        public static let cardTitle = Font.custom(FSFont.bodyBold, size: FSTextSize.cardTitle)
         public static let body = Font.custom(FSFont.body, size: FSType.body.size)
         public static let meta = Font.custom(FSFont.bodySemibold, size: FSTextSize.meta)
     }

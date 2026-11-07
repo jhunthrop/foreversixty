@@ -5,15 +5,14 @@ import androidx.compose.material3.Typography
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.TextUnit
 
 /**
  * Material 3 mapped onto the generated tokens (Tokens.kt: FsColor, FsType, FsTextSize, FsRadius,
  * FsSpace, from design/tokens/tokens.json). The site is dark only, so the app is too.
- * The faces come from apps/shared/fonts through the forever.shared-fonts plugin (res/font).
+ * The faces are FsFont's (Barlow, and Marcellus for titles), from apps/shared/fonts through the
+ * forever.shared-fonts plugin (res/font); headings are Barlow 700, as on the site.
  */
 private val ForeverColors = darkColorScheme(
     primary = FsColor.gold,
@@ -36,27 +35,11 @@ private val ForeverColors = darkColorScheme(
     error = FsColor.wipe,
 )
 
-/** Cinzel: the wordmark only. */
-val DisplayFamily = FontFamily(Font(R.font.cinzel_bold, FontWeight.Bold))
-
-/** Barlow Condensed: headings and titles. */
-val HeadingFamily = FontFamily(
-    Font(R.font.barlowcondensed_bold, FontWeight.Bold),
-    Font(R.font.barlowcondensed_extrabold, FontWeight.ExtraBold),
-)
-
-/** Barlow: body copy, labels and meta lines. */
-val BodyFamily = FontFamily(
-    Font(R.font.barlow_regular, FontWeight.Normal),
-    Font(R.font.barlow_semibold, FontWeight.SemiBold),
-    Font(R.font.barlow_bold, FontWeight.Bold),
-)
-
 private fun heading(size: TextUnit) =
-    TextStyle(fontFamily = HeadingFamily, fontWeight = FontWeight.Bold, fontSize = size)
+    TextStyle(fontFamily = FsFont.body, fontWeight = FontWeight.Bold, fontSize = size)
 
 private fun body(size: TextUnit) =
-    TextStyle(fontFamily = BodyFamily, fontWeight = FontWeight.Normal, fontSize = size)
+    TextStyle(fontFamily = FsFont.body, fontWeight = FontWeight.Normal, fontSize = size)
 
 private val ForeverTypography = Typography(
     headlineMedium = heading(FsTextSize.h1Phone),

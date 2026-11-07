@@ -10,8 +10,8 @@ extension Snapshotting where Value: SwiftUI.View, Format == UIImage {
     /// perceptual compare, a CoreImage/Metal pass that runs on that same GPU and, on the runner's
     /// virtual GPU, reports nonsense (5% of pixels and a 0.45 precision for a one-pixel, one-level
     /// difference; 2026-11-02, Xcode 27.1 and iOS 26.5 on both sides). With `perceptualPrecision`
-    /// at 1 the compare counts differing bytes instead, against the suites' usual 0.99.
+    /// at 1 the compare counts differing bytes instead, at the suites' precision (SnapshotTolerance).
     static func keyWindowImage(layout: SwiftUISnapshotLayout, traits: UITraitCollection) -> Snapshotting {
-        .image(drawHierarchyInKeyWindow: true, precision: 0.99, perceptualPrecision: 1, layout: layout, traits: traits)
+        .image(drawHierarchyInKeyWindow: true, precision: SnapshotTolerance.precision, perceptualPrecision: 1, layout: layout, traits: traits)
     }
 }

@@ -16,7 +16,6 @@ import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.performScrollToIndex
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.takahirom.roborazzi.ExperimentalRoborazziApi
-import com.github.takahirom.roborazzi.RoborazziOptions
 import com.github.takahirom.roborazzi.captureScreenRoboImage
 import gg.foreversixty.app.account.CharacterLine
 import gg.foreversixty.app.account.AccountCopy
@@ -72,6 +71,7 @@ import org.junit.runner.RunWith
 import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.GraphicsMode
+import gg.foreversixty.app.testing.STRICT_SNAPSHOT
 
 /**
  * Every F16 screen and state on a Pixel 9 (412 x 915 dp) inside the tab bar, at the default size
@@ -108,7 +108,7 @@ class GuildScreenshotTest {
         scrollTo?.let { compose.onNode(hasScrollToIndexAction()).performScrollToIndex(it) }
         scrollToText?.let { compose.onNode(hasScrollAction()).performScrollToNode(hasText(it)) }
         compose.waitForIdle()
-        captureScreenRoboImage("src/test/screenshots/guild/$name${if (large) "-xl" else ""}.png", roborazziOptions = TOLERANT)
+        captureScreenRoboImage("src/test/screenshots/guild/$name${if (large) "-xl" else ""}.png", roborazziOptions = STRICT_SNAPSHOT)
     }
 
     private val stripTime = { at: Instant -> clock().stripTime(at, RaidTime.now) }
@@ -318,9 +318,6 @@ class GuildScreenshotTest {
 
     @Test fun youCalendarRow_xl() = capture("you-calendar-row", large = true, tab = ForeverTab.You) { You() }
 }
-
-/** Goldens are recorded on macOS and verified on Linux CI; allow anti-aliasing noise only. */
-private val TOLERANT = RoborazziOptions(compareOptions = RoborazziOptions.CompareOptions(changeThreshold = 0.005F))
 
 /** Pixel 9: 412 x 915 dp at 420 dpi. */
 private const val PIXEL_9 = "w412dp-h915dp-normal-long-notround-any-420dpi-keyshidden-nonav"

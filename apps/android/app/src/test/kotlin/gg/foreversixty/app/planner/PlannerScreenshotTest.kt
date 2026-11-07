@@ -15,7 +15,6 @@ import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.unit.dp
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.takahirom.roborazzi.RoborazziOptions
 import com.github.takahirom.roborazzi.ExperimentalRoborazziApi
 import com.github.takahirom.roborazzi.captureRoboImage
 import com.github.takahirom.roborazzi.captureScreenRoboImage
@@ -57,6 +56,7 @@ import org.junit.runner.RunWith
 import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.GraphicsMode
+import gg.foreversixty.app.testing.STRICT_SNAPSHOT
 
 /**
  * The planner's boards (spec F13.1 to F13.6) at Pixel 9 size, at the default font scale and at 2.0,
@@ -109,7 +109,7 @@ class PlannerScreenshotTest {
             }
         }
         compose.waitForIdle()
-        captureScreenRoboImage("src/test/screenshots/f13-1-reset_default.png", roborazziOptions = TOLERANT)
+        captureScreenRoboImage("src/test/screenshots/f13-1-reset_default.png", roborazziOptions = STRICT_SNAPSHOT)
     }
 
     /** A fresh planner: nothing to undo, so Undo is at 40%. */
@@ -187,7 +187,7 @@ class PlannerScreenshotTest {
                 }
             }
         }
-        compose.onRoot().captureRoboImage("src/test/screenshots/$name.png", roborazziOptions = TOLERANT)
+        compose.onRoot().captureRoboImage("src/test/screenshots/$name.png", roborazziOptions = STRICT_SNAPSHOT)
     }
 
     private companion object {
@@ -195,9 +195,6 @@ class PlannerScreenshotTest {
         const val SCRIM = 0.55f
     }
 }
-
-/** Goldens are recorded on macOS and verified on Linux CI; allow anti-aliasing noise only. */
-private val TOLERANT = RoborazziOptions(compareOptions = RoborazziOptions.CompareOptions(changeThreshold = 0.005F))
 
 /** Pixel 9: 412 x 915 dp at 420 dpi. */
 private const val PIXEL_9 = "w412dp-h915dp-normal-long-notround-any-420dpi-keyshidden-nonav"

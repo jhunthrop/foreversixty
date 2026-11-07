@@ -14,8 +14,8 @@ struct UpdateRequiredSnapshotTests {
         assertSnapshot(
             of: view,
             as: .image(
-                precision: 0.99,
-                perceptualPrecision: 0.98,
+                precision: SnapshotTolerance.precision,
+                perceptualPrecision: SnapshotTolerance.perceptualPrecision,
                 layout: .device(config: .iPhone13),
                 traits: UITraitCollection(userInterfaceStyle: .dark)
             )

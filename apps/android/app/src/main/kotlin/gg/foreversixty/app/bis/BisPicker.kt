@@ -38,7 +38,7 @@ import gg.foreversixty.app.designsystem.pillSurface
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.FsRadius
 import gg.foreversixty.app.designsystem.GameColors
-import gg.foreversixty.app.designsystem.HeadingFamily
+import gg.foreversixty.app.designsystem.FsFont
 import gg.foreversixty.app.items.SpecIcon
 
 private const val CLASS_COLUMNS = 3
@@ -57,7 +57,7 @@ fun BisPickerContent(context: BisContext, catalog: SpecCatalog, build: String, o
     ) {
         Text(
             stringResource(R.string.bis_picker_title).uppercase(),
-            style = MaterialTheme.typography.titleMedium.copy(fontFamily = HeadingFamily, fontWeight = FontWeight.ExtraBold),
+            style = MaterialTheme.typography.titleMedium.copy(fontFamily = FsFont.body, fontWeight = FontWeight.ExtraBold),
             color = FsColor.strong,
             modifier = Modifier.semantics { heading() },
         )

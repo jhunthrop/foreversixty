@@ -43,7 +43,7 @@ struct PlannerSnapshotTests {
         }
         assertSnapshot(
             of: view.environment(\.itemIconSource, RepoItemIconSource()).preferredColorScheme(.dark),
-            as: .image(precision: 0.99, perceptualPrecision: 0.98, layout: .device(config: Self.iPhone17), traits: traits),
+            as: .image(precision: SnapshotTolerance.precision, perceptualPrecision: SnapshotTolerance.perceptualPrecision, layout: .device(config: Self.iPhone17), traits: traits),
             named: size.rawValue,
             testName: name
         )

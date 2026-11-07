@@ -35,7 +35,7 @@ struct WidgetSnapshotTests {
             of: framed,
             as: keyWindow
                 ? .keyWindowImage(layout: layout, traits: traits)
-                : .image(precision: 0.99, perceptualPrecision: 0.98, layout: layout, traits: traits),
+                : .image(precision: SnapshotTolerance.precision, perceptualPrecision: SnapshotTolerance.perceptualPrecision, layout: layout, traits: traits),
             testName: name
         )
     }

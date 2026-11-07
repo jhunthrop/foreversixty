@@ -7,7 +7,6 @@ import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onRoot
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.takahirom.roborazzi.RoborazziOptions
 import com.github.takahirom.roborazzi.captureRoboImage
 import gg.foreversixty.app.bis.BisTestData
 import gg.foreversixty.app.designsystem.ForeverTheme
@@ -21,6 +20,7 @@ import org.junit.runner.RunWith
 import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.GraphicsMode
+import gg.foreversixty.app.testing.STRICT_SNAPSHOT
 
 /**
  * The Talents screen's states (spec F6 §6, §7) at Pixel 9 size, at the default font scale and at
@@ -110,16 +110,13 @@ class TalentsScreenshotTest {
                 }
             }
         }
-        compose.onRoot().captureRoboImage("src/test/screenshots/$name.png", roborazziOptions = TOLERANT)
+        compose.onRoot().captureRoboImage("src/test/screenshots/$name.png", roborazziOptions = STRICT_SNAPSHOT)
     }
 
     private companion object {
         const val LARGE = 2f
     }
 }
-
-/** Goldens are recorded on macOS and verified on Linux CI; allow anti-aliasing noise only. */
-private val TOLERANT = RoborazziOptions(compareOptions = RoborazziOptions.CompareOptions(changeThreshold = 0.005F))
 
 /** 360 x 640 dp, the smallest supported phone. */
 private const val SMALL_PHONE = "w360dp-h640dp-normal-notlong-notround-any-420dpi-keyshidden-nonav"

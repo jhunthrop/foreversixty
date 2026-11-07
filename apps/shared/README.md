@@ -28,16 +28,15 @@ fails otherwise).
 
 ## Fonts (`fonts/`)
 
-The OFL faces the site self-hosts, as TTF (converted from the site's own Latin subsets in
-`web/src/assets/fonts/`, covering ASCII, Latin-1 and the typographic punctuation the site
-renders): Barlow 400/600/700 (body), Barlow Condensed 700/800 (headings), Cinzel 700 (the
-wordmark only). Licences sit beside them (`OFL-Barlow.txt` covers Barlow Condensed too).
-Marcellus 400 (`Marcellus-Regular.ttf`, the unmodified upstream file from google/fonts, licence
-`OFL-Marcellus.txt`) is the screen title's face from the flat redesign
-(`design/specs/2026-11-07-mobile-redesign.md`); the apps wire it in that spec's lane T, which also retires
-Barlow Condensed and Cinzel from the apps. iOS
-bundles them and lists them under `UIAppFonts` (`FSFont` uses the PostScript names); Android
-copies them to `res/font` with lowercase names.
+The OFL faces, as TTF: Barlow 400/600/700 (converted from the site's own Latin subsets in
+`web/src/assets/fonts/`) and Marcellus 400 (`Marcellus-Regular.ttf`, the unmodified upstream file
+from google/fonts, so the OFL's Reserved Font Name clause holds; licence `OFL-Marcellus.txt`), the
+screen title's face. These four are the apps' faces (`design/tokens/tokens.json` `font`): iOS
+bundles them and lists them under `UIAppFonts` in the app and the widget extension (`FSFont`
+names them by PostScript name); Android's `forever.shared-fonts` plugin copies exactly these to
+`res/font` with lowercase names (`FsFont`). Barlow Condensed 700/800 and Cinzel 700 (licences
+`OFL-Barlow.txt`, `OFL-Cinzel.txt`) stay here for the design mocks and the Discord assets only;
+neither app ships them (the wordmark is the site's SVG).
 
 ## Brand (`brand/`)
 

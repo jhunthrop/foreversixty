@@ -61,10 +61,9 @@ import gg.foreversixty.app.designsystem.BrandButtonKind
 import gg.foreversixty.app.designsystem.BrandButton
 import gg.foreversixty.app.designsystem.quietCard
 import gg.foreversixty.app.designsystem.primaryCard
-import gg.foreversixty.app.designsystem.BodyFamily
+import gg.foreversixty.app.designsystem.FsFont
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.FsRadius
-import gg.foreversixty.app.designsystem.HeadingFamily
 import gg.foreversixty.app.raids.logic.RaidChip
 import gg.foreversixty.app.raids.logic.RaidClock
 import gg.foreversixty.app.raids.logic.RaidFacts

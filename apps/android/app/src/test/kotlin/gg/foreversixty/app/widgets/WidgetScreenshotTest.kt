@@ -29,7 +29,6 @@ import androidx.glance.appwidget.ExperimentalGlanceRemoteViewsApi
 import androidx.glance.appwidget.GlanceRemoteViews
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.takahirom.roborazzi.RoborazziOptions
 import com.github.takahirom.roborazzi.captureRoboImage
 import gg.foreversixty.app.raids.resources
 import gg.foreversixty.app.widgets.glance.RaidWidgetContent
@@ -50,6 +49,7 @@ import org.junit.runner.RunWith
 import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.GraphicsMode
+import gg.foreversixty.app.testing.STRICT_SNAPSHOT
 
 /**
  * The real Glance widgets, rendered to RemoteViews by Glance and inflated as the launcher would,
@@ -90,7 +90,7 @@ class WidgetScreenshotTest {
         }
         shown = views to size
         compose.waitForIdle()
-        compose.onNodeWithTag(CAPTURE).captureRoboImage("src/test/screenshots/widgets/$name.png", roborazziOptions = TOLERANT)
+        compose.onNodeWithTag(CAPTURE).captureRoboImage("src/test/screenshots/widgets/$name.png", roborazziOptions = STRICT_SNAPSHOT)
     }
 
     private fun figures() = WidgetFigures(resources(), zone)
@@ -209,4 +209,3 @@ private const val CAPTURE = "widget"
 private val repoRoot: File = generateSequence(File("").absoluteFile) { it.parentFile }.first { File(it, "data/builds").isDirectory }
 
 private const val PIXEL_9 = "w412dp-h915dp-normal-long-notround-any-420dpi-keyshidden-nonav"
-private val TOLERANT = RoborazziOptions(compareOptions = RoborazziOptions.CompareOptions(changeThreshold = 0.005F))

@@ -12,7 +12,6 @@ import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.takahirom.roborazzi.RoborazziOptions
 import com.github.takahirom.roborazzi.captureRoboImage
 import gg.foreversixty.app.designsystem.ForeverTheme
 import org.junit.Assert.assertEquals
@@ -24,6 +23,7 @@ import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.GraphicsMode
 import java.util.UUID
+import gg.foreversixty.app.testing.STRICT_SNAPSHOT
 
 /**
  * The blocking update screen at Pixel 9 size, and the install id behind `X-App-Install`.
@@ -48,9 +48,7 @@ class UpdateRequiredTest {
         }
         compose.onRoot().captureRoboImage(
             "src/test/screenshots/update_required.png",
-            roborazziOptions = RoborazziOptions(
-                compareOptions = RoborazziOptions.CompareOptions(changeThreshold = 0.005F),
-            ),
+            roborazziOptions = STRICT_SNAPSHOT,
         )
         compose.onNodeWithText("Open Google Play").performClick()
         assertEquals(1, opened)

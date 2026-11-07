@@ -4,7 +4,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onRoot
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.takahirom.roborazzi.RoborazziOptions
 import com.github.takahirom.roborazzi.captureRoboImage
 import gg.foreversixty.app.account.CharacterLine
 import gg.foreversixty.app.account.YouActions
@@ -24,6 +23,7 @@ import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.GraphicsMode
 import java.time.Instant
+import gg.foreversixty.app.testing.STRICT_SNAPSHOT
 
 /**
  * F8's states at Pixel 9 size (spec 5.8.1), the same list as iOS PremiumSnapshotTests: You free
@@ -95,13 +95,12 @@ class PremiumScreenshotTest {
 
     private fun capture(name: String, screen: @Composable () -> Unit) {
         compose.setContent { ForeverTheme { ForeverTabScaffold(selected = ForeverTab.You, onSelect = {}) { screen() } } }
-        compose.onRoot().captureRoboImage("src/test/screenshots/premium_$name.png", roborazziOptions = TOLERANT)
+        compose.onRoot().captureRoboImage("src/test/screenshots/premium_$name.png", roborazziOptions = STRICT_SNAPSHOT)
     }
 }
 
 private val NOW: Instant = Instant.parse("2025-11-01T00:00:00Z")
 
-private val TOLERANT = RoborazziOptions(compareOptions = RoborazziOptions.CompareOptions(changeThreshold = 0.005F))
 
 private const val VERSION = "Version 0.1.0 (1) · data 1.60.1.70658"
 

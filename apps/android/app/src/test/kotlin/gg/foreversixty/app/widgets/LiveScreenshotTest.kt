@@ -23,7 +23,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.takahirom.roborazzi.RoborazziOptions
 import com.github.takahirom.roborazzi.captureRoboImage
 import gg.foreversixty.app.designsystem.ForeverTheme
 import gg.foreversixty.app.designsystem.FsColor
@@ -42,6 +41,7 @@ import org.junit.runner.RunWith
 import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.GraphicsMode
+import gg.foreversixty.app.testing.STRICT_SNAPSHOT
 
 /**
  * The ongoing notifications as the system's own expanded template draws them (spec §5.6, board
@@ -74,7 +74,7 @@ class LiveScreenshotTest {
         }
         notification = views
         compose.waitForIdle()
-        compose.onNodeWithTag(TAG).captureRoboImage("src/test/screenshots/widgets/$name.png", roborazziOptions = TOLERANT)
+        compose.onNodeWithTag(TAG).captureRoboImage("src/test/screenshots/widgets/$name.png", roborazziOptions = STRICT_SNAPSHOT)
     }
 
     /** The raid card at [at]; the chronometer counts against the device clock, so it is re-based on the capture's own now. */
@@ -133,7 +133,7 @@ class LiveScreenshotTest {
                 Box(Modifier.testTag(TAG).fillMaxWidth().background(FsColor.bg).padding(16.dp)) { content() }
             }
         }
-        compose.onNodeWithTag(TAG).captureRoboImage("src/test/screenshots/widgets/$name.png", roborazziOptions = TOLERANT)
+        compose.onNodeWithTag(TAG).captureRoboImage("src/test/screenshots/widgets/$name.png", roborazziOptions = STRICT_SNAPSHOT)
     }
 
     @Test
@@ -178,4 +178,3 @@ private val SHADE = Color(0xFFDADDE3)
 /** The system template draws dark text: a light shade, as on a light-theme phone. */
 private val CARD = Color(0xFFF3F4F7)
 private const val PIXEL_9 = "w412dp-h915dp-normal-long-notround-any-420dpi-keyshidden-nonav"
-private val TOLERANT = RoborazziOptions(compareOptions = RoborazziOptions.CompareOptions(changeThreshold = 0.005F))
