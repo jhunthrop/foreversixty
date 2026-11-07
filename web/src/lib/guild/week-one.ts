@@ -1,13 +1,14 @@
 // web/src/lib/guild/week-one.ts
-// The Before raids open card (design/specs/2026-11-05-guild-week-one.md §3.1): the guild's level
-// spread, the raids-open line, who has which profession, and the viewer's one next step. Pure, so
-// every branch is pinned without a page; GuildWeekOneCard.svelte draws it.
+// Before raids open on the guild Overview (design/specs/2026-11-05-guild-week-one.md §3.1, redrawn
+// in the home B direction 2026-11-07): the guild's level spread as a Tally, who has which
+// profession, and the viewer's one next step. Pure, so every branch is pinned without a page;
+// GuildWeekOneCard.svelte draws it under the first raids' countdown.
 import phases from '../../data/phases.json';
 import { levelingGuideHref, levelingSpecKey, specNameOf } from '../leveling/leveling-plan';
 import { SPECS } from '../sim/specs';
 import type { GuildRosterEntry, NextRaidView } from './api';
 import { isPrimaryProfession, professionName } from './professions';
-import { countdown, NOBODY_SIGNED_UP, whenPhrase } from './raid-copy';
+import { NOBODY_SIGNED_UP, whenPhrase } from './raid-copy';
 import { dateLabel } from './raid-time';
 import { RAID_LEVEL } from './readiness-view';
 import { sameSpecName } from './spec-name';
@@ -30,7 +31,7 @@ export const RAIDS_OPEN_AT = new Date(RAIDS_ONE);
 export const weekOneCopy = {
   titleBefore: 'Before raids open',
   titleAfter: 'Your first raid',
-  raidsOpen: 'Raids are open. Your first logged night starts the progression board.',
+  raidsOpen: 'Your first logged night starts the progression board.',
   noLevel: (n: number): string => `${n} with no level on file yet.`,
   empty: "Nobody's level is on file yet. Levels show once members sync the addon or import from Battle.net.",
   error: "The guild's levels did not load.",
@@ -53,14 +54,17 @@ export function weekOneTitle(now: Date): string {
   return raidsAreOpen(now) ? weekOneCopy.titleAfter : weekOneCopy.titleBefore;
 }
 
-/** `Barrow Deeps, Hyjal Summit and Onyxia's Lair open Wed 9 Dec, in 35 days.` Or the open line. */
-export function raidsOpenLine(now: Date, locale?: string): string {
-  if (raidsAreOpen(now)) return weekOneCopy.raidsOpen;
-  const left = countdown(RAIDS_OPEN_AT, RAIDS_OPEN_AT, now);
-  return `Barrow Deeps, Hyjal Summit and Onyxia's Lair open ${raidsOpenDay(locale)}, ${left}.`;
+/** The section's meta: once the raids are open, what the first logged night starts. */
+export function weekOneMeta(now: Date): string | undefined {
+  return raidsAreOpen(now) ? weekOneCopy.raidsOpen : undefined;
 }
 
-/** The four tiles and the characters with no level on file. */
+/** The opening instant for the countdown while it is ahead; null once the raids are open. */
+export function raidsCountdownTarget(now: Date): string | null {
+  return raidsAreOpen(now) ? null : RAIDS_OPEN_AT.toISOString();
+}
+
+/** The four level bands and the characters with no level on file. */
 export interface LevelSpread {
   at60: number;
   fifties: number;
@@ -69,7 +73,7 @@ export interface LevelSpread {
   noLevel: number;
 }
 
-/** True when the guild has no level on file for anyone counted: the tiles give way to one line. */
+/** True when the guild has no level on file for anyone counted: the Tally gives way to one line. */
 export function spreadIsEmpty(spread: LevelSpread): boolean {
   return spread.at60 + spread.fifties + spread.forties + spread.under40 === 0;
 }
@@ -88,6 +92,27 @@ export function levelSpread(entries: readonly GuildRosterEntry[]): LevelSpread {
     if (level >= FORTIES) return { ...total, forties: total.forties + 1 };
     return { ...total, under40: total.under40 + 1 };
   }, spread);
+}
+
+/** One Tally entry per band against everyone counted: At 60 reads gold until the whole roster is
+ *  there (short of 60 before the raids open is the road, not a failure), the lower bands a muted
+ *  share (fewer there is not short of a goal). */
+export function levelTally(
+  spread: LevelSpread,
+): { key: string; label: string; have: number; want: number; tone?: 'warn' | 'none' }[] {
+  const counted = spread.at60 + spread.fifties + spread.forties + spread.under40;
+  return [
+    {
+      key: 'at60',
+      label: `At ${RAID_LEVEL}`,
+      have: spread.at60,
+      want: counted,
+      ...(spread.at60 < counted ? { tone: 'warn' as const } : {}),
+    },
+    { key: 'fifties', label: '50 to 59', have: spread.fifties, want: counted, tone: 'none' },
+    { key: 'forties', label: '40 to 49', have: spread.forties, want: counted, tone: 'none' },
+    { key: 'under40', label: 'Under 40', have: spread.under40, want: counted, tone: 'none' },
+  ];
 }
 
 /** The part of a roster row the professions line reads. */
@@ -226,13 +251,14 @@ function officerStep(input: WeekOneInput): WeekOneStep {
 }
 
 /** The raider's own character: how far to 60 and how to get there, or at 60 what to check. */
-function characterStep(character: WeekOneCharacter, level: number, locale: string): WeekOneStep {
+function characterStep(character: WeekOneCharacter, level: number, input: WeekOneInput): WeekOneStep {
   const specKey = characterSpecKey(character.class, character.spec);
   if (level >= RAID_LEVEL) {
     const slug = SPECS.find((entry) => entry.spec === specKey)?.spec_slug;
+    const before = raidsAreOpen(input.now) ? 'the first raid' : raidsOpenDay(input.locale);
     return {
       name: character.name,
-      text: ` is level ${RAID_LEVEL}. Check your gear before ${raidsOpenDay(locale)}.`,
+      text: ` is level ${RAID_LEVEL}. Check your gear before ${before}.`,
       action: {
         kind: 'link',
         href: slug === undefined ? '/bis' : `/bis/${character.class}/${slug}`,
@@ -278,7 +304,7 @@ function raiderStep(input: WeekOneInput): WeekOneStep {
       invite: false,
     };
   }
-  return characterStep(character, character.level, input.locale);
+  return characterStep(character, character.level, input);
 }
 
 /** The viewer's next step: the first branch that applies, one primary button (spec §3.1). */

@@ -9,7 +9,7 @@
 <script lang="ts">
   import type { Snippet } from 'svelte';
   import type { GlyphName } from '../../lib/ui/glyphs';
-  import { ROW, ROW_INTERACTIVE, ROW_LABEL, ROW_SUB } from '../../lib/ui/row';
+  import { ROW, ROW_INTERACTIVE, ROW_OPEN, ROW_LABEL, ROW_SUB } from '../../lib/ui/row';
   import Glyph from './Glyph.svelte';
   import IconTile, { type TileTone } from './IconTile.svelte';
 
@@ -29,6 +29,7 @@
     external = false,
     onclick,
     nested = false,
+    open = false,
     loading = false,
     empty = false,
     error,
@@ -57,6 +58,8 @@
     external?: boolean;
     onclick?: () => void;
     nested?: boolean;
+    /** In an open Section, not a card: no side padding, hairlines between rows (ROW_OPEN). */
+    open?: boolean;
     loading?: boolean;
     /** No value yet: a muted dash. */
     empty?: boolean;
@@ -99,7 +102,7 @@
   aria-disabled={disabled ? 'true' : undefined}
   aria-busy={loading ? 'true' : undefined}
   data-testid={testid}
-  class="{ROW} {interactive ? ROW_INTERACTIVE : ''}"
+  class="{open ? ROW_OPEN : ROW} {interactive ? ROW_INTERACTIVE : ''}"
   style:padding-left={nested ? (glyph === undefined ? '70px' : '46px') : undefined}
 >
   {#if icon !== undefined}{@render icon()}{:else if glyph !== undefined}<IconTile

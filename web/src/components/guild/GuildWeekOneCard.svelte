@@ -1,18 +1,21 @@
 <!-- web/src/components/guild/GuildWeekOneCard.svelte -->
-<!-- The Before raids open card (design/specs/2026-11-05-guild-week-one.md §3.1): the first card on
-     Overview while nothing is logged in the tier. The guild's level spread, when the raids open,
-     who has which profession, and the viewer's one next step (a quiet line, no button, when the
-     band above already holds the sign-up segments for the next event). Below 768 the next step leads the
-     card and professions close it, so the primary button sits above the 640 px fold. The words and branches are
-     lib/guild/week-one.ts; `loading` and `error` hold its height so the page does not shift. -->
+<!-- Before raids open on the Overview (design/specs/2026-11-05-guild-week-one.md §3.1, redrawn in
+     the home B direction 2026-11-07): the first raids' countdown, then an open Section with the
+     guild's level spread as a Tally, who has which profession and the viewer's one next step (a
+     sentence, one Button, and an officer's invite link), then the guild's activity. No box of its
+     own: the Overview's one Plate is the next raid. The words and branches are lib/guild/week-one.ts;
+     `loading` and `error` hold the section's height so the page does not shift. -->
 <script lang="ts">
+  import activeBuild from '../../data/active-build.json';
   import { minuteClock } from '../../lib/guild/minute-clock.svelte';
   import {
     levelSpread,
+    levelTally,
     professionFacts,
-    raidsOpenLine,
+    raidsCountdownTarget,
     spreadIsEmpty,
     weekOneCopy,
+    weekOneMeta,
     weekOneStep,
     weekOneTitle,
     type ProfessionHolder,
@@ -22,12 +25,16 @@
   import type { GuildRosterEntry, NextRaidView } from '../../lib/guild/api';
   import { viewerLocale } from '../../lib/guild/raid-time';
   import { classColorVar } from '../../lib/report/format';
-  import { button } from '../../lib/ui/button';
+  import { REGION } from '../../lib/ui/regions';
+  import RaidsCountdown from '../RaidsCountdown.svelte';
   import ActionLink from '../ui/ActionLink.svelte';
-  import Card from '../ui/Card.svelte';
+  import Button from '../ui/Button.svelte';
   import LoadError from '../ui/LoadError.svelte';
-  import StatTile from '../ui/StatTile.svelte';
+  import Section from '../ui/Section.svelte';
+  import Skeleton from '../ui/Skeleton.svelte';
+  import Tally from '../ui/Tally.svelte';
   import FactLine from './FactLine.svelte';
+  import GuildActivity from './overview/GuildActivity.svelte';
 
   let {
     status,
@@ -84,88 +91,64 @@
       planGated,
     }),
   );
-  const tiles = $derived([
-    { value: spread.at60, label: 'AT 60', gold: spread.at60 > 0 },
-    { value: spread.fifties, label: '50 TO 59', gold: false },
-    { value: spread.forties, label: '40 TO 49', gold: false },
-    { value: spread.under40, label: 'UNDER 40', gold: false },
-  ]);
-  /** Below 768 the primary leads its row, above the secondary link (§3.1 Row 4, guild round 2). */
-  const actionClass = `${button('primary', 'md')} max-md:order-first max-md:w-full`;
 </script>
 
 {#snippet primary(action: WeekOneAction)}
   {#if action.kind === 'link'}
-    <a href={action.href} class={actionClass} data-testid="guild-week-one-action">{action.label}</a>
+    <Button tone="primary" size="sm" href={action.href} testid="guild-week-one-action">{action.label}</Button>
   {:else}
-    <button
-      type="button"
-      class={actionClass}
+    <Button
+      tone="primary"
+      size="sm"
       onclick={action.kind === 'approve' ? onApprove : onPlan}
-      data-testid="guild-week-one-action">{action.label}</button
+      testid="guild-week-one-action">{action.label}</Button
     >
   {/if}
 {/snippet}
 
-<Card glyph="target" title={weekOneTitle(clock.now)} testid="guild-overview-card-week-one">
+<div data-region={REGION.countdowns}>
+  <RaidsCountdown
+    raidsOpen={raidsCountdownTarget(clock.now)}
+    build={activeBuild.build}
+    testid="guild-week-one-countdown"
+  />
+</div>
+
+<Section title={weekOneTitle(clock.now)} meta={weekOneMeta(clock.now)} testid="guild-overview-card-week-one">
   {#if status === 'error'}
-    <div class="min-h-[460px] md:min-h-[300px]">
+    <div class="min-h-[180px]">
       <LoadError message={weekOneCopy.error} {onRetry} testid="guild-week-one-error" />
     </div>
   {:else if status === 'loading'}
-    <div
-      class="flex min-h-[460px] flex-col gap-4 md:min-h-[300px]"
-      role="status"
-      aria-busy="true"
-      data-testid="guild-week-one-loading"
-    >
-      <div class="grid grid-cols-2 gap-3 md:grid-cols-[repeat(4,132px)]">
-        {#each [0, 1, 2, 3] as tile (tile)}<span class="skeleton-block h-[76px]" aria-hidden="true"
-          ></span>{/each}
-      </div>
-      <span class="skeleton-block h-[15px] w-[70%]" aria-hidden="true"></span>
-      <span class="skeleton-block h-[13px] w-[70%]" aria-hidden="true"></span>
-      <span class="skeleton-block h-11" aria-hidden="true"></span>
-    </div>
+    <Skeleton lines={4} minHeight="min-h-[180px]" testid="guild-week-one-loading" />
   {:else}
     <div class="flex flex-col gap-4">
       {#if spreadIsEmpty(spread)}
         <p class="text-muted text-[14px]" data-testid="guild-week-one-empty">{weekOneCopy.empty}</p>
       {:else}
         <div class="flex flex-col gap-2">
-          <div
-            class="grid grid-cols-2 gap-3 md:grid-cols-[repeat(4,132px)]"
-            data-testid="guild-week-one-tiles"
-          >
-            {#each tiles as tile (tile.label)}
-              <StatTile value={String(tile.value)} label={tile.label} tone={tile.gold ? 'gold' : 'strong'} />
-            {/each}
-          </div>
+          <Tally items={levelTally(spread)} testid="guild-week-one-spread" />
           {#if spread.noLevel > 0}
-            <p class="text-muted text-[13px]" data-testid="guild-week-one-no-level">
+            <p class="text-muted text-small" data-testid="guild-week-one-no-level">
               {weekOneCopy.noLevel(spread.noLevel)}
             </p>
           {/if}
         </div>
       {/if}
 
-      <p class="text-text text-[15px]" data-testid="guild-week-one-raids-line">
-        {raidsOpenLine(clock.now, locale)}
-      </p>
-
       {#if professions.length > 0}
-        <p class="text-muted text-[13px] max-md:order-last" data-testid="guild-week-one-professions">
-          <span class="quiet-label">{weekOneCopy.professions}</span>
+        <p class="text-muted text-small" data-testid="guild-week-one-professions">
+          <span class="text-strong font-semibold">{weekOneCopy.professions}</span>
           <FactLine facts={professions} />
         </p>
       {/if}
 
       <div
-        class="border-line-soft flex flex-wrap items-center justify-between gap-4 max-md:order-first max-md:flex-col max-md:items-stretch max-md:border-b max-md:pb-4 md:border-t md:pt-4"
+        class="flex flex-wrap items-center justify-between gap-x-6 gap-y-3"
         data-testid="guild-week-one-step"
       >
         <p
-          class={step.action === null ? 'text-muted text-[14px]' : 'text-[15px]'}
+          class={step.action === null ? 'text-muted text-[14px]' : 'text-[15px] leading-6'}
           data-testid="guild-week-one-sentence"
         >
           {#if step.name !== null && character !== null}<span
@@ -173,7 +156,7 @@
               style={`color:${classColorVar(character.class)}`}>{step.name}</span
             >{/if}{step.text}
         </p>
-        <div class="flex flex-wrap items-center gap-4 max-md:flex-col max-md:items-stretch">
+        <div class="flex flex-wrap items-center gap-4">
           {#if step.invite && inviteHref !== ''}
             <ActionLink href={inviteHref} data-testid="guild-week-one-invite">{weekOneCopy.invite}</ActionLink
             >
@@ -183,4 +166,6 @@
       </div>
     </div>
   {/if}
-</Card>
+</Section>
+
+{#if status === 'ready'}<GuildActivity now={fixedNow} />{/if}

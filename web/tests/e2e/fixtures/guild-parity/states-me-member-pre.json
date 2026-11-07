@@ -1,0 +1,39 @@
+{
+  "user": {
+    "id": 7,
+    "battletag": "Fixture#1",
+    "email": null,
+    "role": "user",
+    "anonymize": false
+  },
+  "characters": [
+    {
+      "key": "us/pvp/nightlatch",
+      "region": "us",
+      "ruleset": "pvp",
+      "name": "Nightlatch",
+      "class": "Rogue",
+      "spec": "Subtlety",
+      "level": 23,
+      "realm": "Skyborne",
+      "faction": "alliance",
+      "guild": {
+        "id": 2,
+        "name": "Olympus XXVII",
+        "verified": true
+      }
+    }
+  ],
+  "guilds": [
+    {
+      "id": 2,
+      "region": "us",
+      "ruleset": "pvp",
+      "name": "Olympus XXVII",
+      "rank": "member",
+      "consent": "gear_bags",
+      "verified": true,
+      "can": []
+    }
+  ]
+}

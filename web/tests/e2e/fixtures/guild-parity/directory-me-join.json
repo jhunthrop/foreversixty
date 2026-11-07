@@ -1,0 +1,23 @@
+{
+  "user": {
+    "id": 41,
+    "battletag": "Ashenveil#2201",
+    "email": null,
+    "role": "user",
+    "anonymize": false,
+    "premium": false
+  },
+  "characters": [
+    {
+      "key": "us/pvp/ashenveil",
+      "region": "us",
+      "ruleset": "pvp",
+      "name": "Ashenveil",
+      "class": "Paladin",
+      "level": 60,
+      "faction": "alliance"
+    }
+  ],
+  "main_character_key": "us/pvp/ashenveil",
+  "guilds": []
+}

@@ -14,6 +14,7 @@
   import { tick } from 'svelte';
   import { MediaQuery } from 'svelte/reactivity';
   import type { GuildRaidViewerCharacter, GuildSignupState, GuildZoneKind } from '../../lib/guild/api';
+  import { FIELD_CHROME } from '../../lib/guild/field-styles';
   import { focusOnMount } from '../../lib/guild/focus-now';
   import {
     classWord,
@@ -41,6 +42,7 @@
     type SignupOutcome,
   } from '../../lib/guild/signup-strip';
   import { classColorVar } from '../../lib/report/format';
+  import { ROW_ITEM } from '../../lib/ui/primitives';
   import ClassCrestRing from '../character/ClassCrestRing.svelte';
   import Select from '../ui/Select.svelte';
   import SignupSegments from './SignupSegments.svelte';
@@ -251,10 +253,7 @@
 </script>
 
 {#if !character.verified}
-  <li
-    class="border-line-soft flex min-h-[68px] items-center gap-3 border-b py-3 last:border-b-0"
-    data-testid={`signup-row-${key}`}
-  >
+  <li class="{ROW_ITEM} flex min-h-[68px] items-center gap-3 py-3" data-testid={`signup-row-${key}`}>
     <span class="opacity-60"><ClassCrestRing characterClass={character.class} size={32} /></span>
     <div class="min-w-0">
       <p class="heading-name text-muted text-[14px]">{character.name}</p>
@@ -262,12 +261,7 @@
     </div>
   </li>
 {:else}
-  <li
-    bind:this={rowEl}
-    class="border-line-soft border-b pt-1.5 last:border-b-0 md:pt-3"
-    aria-busy={busy}
-    data-testid={`signup-row-${key}`}
-  >
+  <li bind:this={rowEl} class="{ROW_ITEM} pt-1.5 md:pt-3" aria-busy={busy} data-testid={`signup-row-${key}`}>
     <div
       class="grid grid-cols-[minmax(0,1fr)_176px] items-center gap-x-2 gap-y-1 md:min-h-[68px] md:gap-4 {asksSpec
         ? 'md:grid-cols-[minmax(180px,1fr)_auto_220px_minmax(200px,1.4fr)]'
@@ -330,7 +324,7 @@
       >
         <input
           type="text"
-          class="border-line-warm bg-raised text-text rounded-control placeholder:text-muted hover:border-line-warm-strong focus-visible:outline-gold h-11 w-full min-w-0 border pr-16 pl-3 text-[13px] transition-colors duration-[120ms] focus-visible:outline-2 disabled:cursor-not-allowed disabled:opacity-50"
+          class="{FIELD_CHROME} pr-16 disabled:opacity-50"
           maxlength={NOTE_MAX}
           placeholder={raidCopy.placeholders.note}
           aria-label={raidCopy.placeholders.note}

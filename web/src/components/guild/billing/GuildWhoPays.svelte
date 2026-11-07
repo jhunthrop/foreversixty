@@ -13,6 +13,7 @@
     BILLING_SAFE_TEXT_BUTTON,
     CONFIRM_ACTION_WIDTH,
     CONFIRM_ACTIONS,
+    CONFIRM_BLOCK,
   } from '../../../lib/guild/billing-styles';
   import { button } from '../../../lib/ui/button';
   import { BUSY_CLASS } from '../../../lib/ui/busy';
@@ -102,7 +103,7 @@
 </script>
 
 <div bind:this={rootEl} data-testid="guild-whopays">
-  <SettingsRow label={copy.heading} sub={copy.help} testid="guild-whopays-row" controlBelow>
+  <SettingsRow open label={copy.heading} sub={copy.help} testid="guild-whopays-row" controlBelow>
     {#snippet below()}
       {#if waiting && transfer !== null}
         <span class="text-[14px]" data-testid="guild-transfer-waiting">
@@ -151,15 +152,17 @@
   </SettingsRow>
   {#if !waiting && opening && candidates.length > 0}
     <div
-      class="border-line-soft mx-5 mb-4 flex flex-col gap-3 border p-4"
+      class="{CONFIRM_BLOCK} mb-3"
       role="group"
       aria-labelledby="guild-transfer-label"
       onkeydown={onKeydown}
       data-testid="guild-transfer-confirm"
     >
       <div class="flex flex-col gap-1">
-        <label id="guild-transfer-label" class="quiet-label" for="guild-transfer-select"
-          >{copy.transferTo}</label
+        <label
+          id="guild-transfer-label"
+          class="text-muted text-[13px] font-semibold"
+          for="guild-transfer-select">{copy.transferTo}</label
         >
         <Select
           id="guild-transfer-select"
@@ -199,6 +202,6 @@
       </div>
     </div>
   {:else if error !== ''}
-    <p class="px-5 pb-4 text-[13px]" role="alert" data-testid="guild-transfer-error">{error}</p>
+    <p class="pb-3 text-[13px]" role="alert" data-testid="guild-transfer-error">{error}</p>
   {/if}
 </div>

@@ -24,7 +24,8 @@
   import { guildMarkSrc } from '../../lib/guild/mark';
   import { BUSY_CLASS } from '../../lib/ui/busy';
   import { button } from '../../lib/ui/button';
-  import { ROW, ROW_LABEL, ROW_SUB } from '../../lib/ui/row';
+  import { ROW_LABEL, ROW_OPEN, ROW_SUB } from '../../lib/ui/row';
+  import { CONFIRM_BLOCK } from '../../lib/guild/billing-styles';
 
   let {
     guildId,
@@ -127,7 +128,7 @@
 </script>
 
 <section data-testid="guild-crest-settings">
-  <div class="{ROW} gap-y-2">
+  <div class="{ROW_OPEN} gap-y-2">
     {#if previewUrl !== null}
       <img
         src={previewUrl}
@@ -135,7 +136,7 @@
         aria-hidden="true"
         width="40"
         height="40"
-        class="bg-raised box-border h-10 w-10 shrink-0 rounded-full object-contain p-[6px]"
+        class="box-border h-10 w-10 shrink-0 rounded-full bg-white/[.045] object-contain p-[6px]"
         style={ringStyle}
         data-testid="guild-crest-preview"
       />
@@ -146,13 +147,13 @@
         aria-hidden="true"
         width="40"
         height="40"
-        class="bg-raised box-border h-10 w-10 shrink-0 rounded-full object-contain p-[6px]"
+        class="box-border h-10 w-10 shrink-0 rounded-full bg-white/[.045] object-contain p-[6px]"
         style={ringStyle}
         data-testid="guild-crest-current"
       />
     {:else}
       <div
-        class="bg-raised box-border h-10 w-10 shrink-0 rounded-full"
+        class="box-border h-10 w-10 shrink-0 rounded-full bg-white/[.045]"
         aria-hidden="true"
         data-testid="guild-crest-current"
       ></div>
@@ -192,7 +193,7 @@
     </label>
   </div>
 
-  <div class="flex flex-col gap-3 px-5 pb-4">
+  <div class="flex flex-col gap-3 pb-3">
     <div class="flex flex-col gap-1">
       <span class="text-muted min-w-0 truncate text-[13px]" data-testid="guild-crest-file-name"
         >{selectedFile === null ? guildCrestCopy.noneChosen : selectedFile.name}</span
@@ -232,7 +233,7 @@
     </div>
 
     {#if confirmingRemove}
-      <div class="border-line-soft flex flex-col gap-3 border p-4" data-testid="guild-crest-remove-confirm">
+      <div class={CONFIRM_BLOCK} data-testid="guild-crest-remove-confirm">
         <p class="text-[13px]">{guildCrestCopy.removeConfirmLine}</p>
         <div class="flex gap-3">
           <button
