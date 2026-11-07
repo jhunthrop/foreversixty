@@ -567,6 +567,7 @@ safety net, runnable by hand at any time:
   re-runs the sign-in import with it, sealed at rest in `users.bnet_token_box` with
   `NOTIFY_ENCRYPTION_KEY`; once it has expired, or Battle.net refuses it, the token is
   forgotten and the account's characters are refreshed one by one from public profiles.
+  Signing out forgets the token too. The token is never logged and no endpoint returns it.
   Each visit logs `op="visit_refresh"` with `path` (`account` or `public`).
 - **429 backoff**: a rate limit pauses this process's automatic refreshes for 30 s, doubling
   per further 429 up to 15 minutes, and resets after a batch that finishes clean.

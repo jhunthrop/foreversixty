@@ -8,7 +8,8 @@
 -- bnet_token_box is the sign-in's Battle.net access token, sealed with the notify key
 -- (notify.Sealer), and bnet_token_expires_at its expiry. Battle.net issues no refresh
 -- token, so a visit uses the sealed token until it expires and then refreshes character by
--- character from public profiles. Only api/internal/bnetimport writes these columns.
+-- character from public profiles. api/internal/bnetimport writes these columns; sign-out
+-- (auth.Store.ForgetBnetToken) clears the token, and deleting the users row takes it along.
 alter table users
   add column if not exists bnet_synced_at timestamptz,
   add column if not exists bnet_token_box bytea,

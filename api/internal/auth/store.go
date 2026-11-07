@@ -322,6 +322,17 @@ func (s *Store) SetMainCharacter(ctx context.Context, id int64, key string) (Use
 		`update users set main_character_key = $2 where id = $1 returning `+userColumns, id, key))
 }
 
+// ForgetBnetToken drops the account's sealed Battle.net access token (migration 0081), on
+// sign-out. Deleting the users row takes the token with it.
+func (s *Store) ForgetBnetToken(ctx context.Context, id int64) error {
+	if _, err := s.Pool.Exec(ctx,
+		`update users set bnet_token_box = null, bnet_token_expires_at = null where id = $1 and bnet_token_box is not null`,
+		id); err != nil {
+		return fmt.Errorf("auth: forget battle.net token: %w", err)
+	}
+	return nil
+}
+
 // User reads one account.
 func (s *Store) User(ctx context.Context, id int64) (User, error) {
 	return scanUser(s.Pool.QueryRow(ctx, `select `+userColumns+` from users where id = $1`, id))
