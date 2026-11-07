@@ -6,33 +6,33 @@ Forever unifies melee, ranged and spell hit into one stat. An item's crit rating
 
 ## Alliance
 
-### Band 20 (gnome, 00000000000000000-3152000000000000000-000000000000000000)
+### Band 20 (gnome, 00000000000000000-3113030000000000000-000000000000000000)
 
-Set DPS (verified): 43.3. Weights run: 4.7s. Verify run: 11.2s. 241 eligible items had no known source.
+Set DPS (verified): 45.7. Weights run: 6.3s. Verify run: 15.0s. 241 eligible items had no known source.
 
-Race sweep: night-elf 43.8 ± 0.0, high-order-skyborne 43.3 ± 0.0, gnome 43.3 ± 0.0, human 43.2 ± 0.0, dwarf 42.6 ± 0.0 (dps); night-elf beats the guide race gnome by 0.6 (1.37%) ± 0.1, beyond error.
+Race sweep: night-elf 46.2 ± 0.0, gnome 45.7 ± 0.0, high-order-skyborne 45.7 ± 0.0, human 45.6 ± 0.0, dwarf 45.2 ± 0.0 (dps); night-elf beats the guide race gnome by 0.5 (1.09%) ± 0.1, beyond error.
 
-Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=1.000 ± 0.001, agility=1.785 ± 0.010, crit=0.467 ± 0.009 per rating point (14 rating = 1%, 6.533 per %), hit=0.597 ± 0.022 per rating point (10 rating = 1%, 5.973 per %), melee_haste=2.869 ± 0.307
+Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=1.000 ± 0.001, agility=1.767 ± 0.009, crit=0.458 ± 0.008 per rating point (14 rating = 1%, 6.410 per %), hit=0.574 ± 0.013 per rating point (10 rating = 1%, 5.738 per %), melee_haste=3.295 ± 0.296
 
 | Slot | Item | Source | Score (attack_power points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Brawler's Leather Hood (252504) | Leatherworking [crafted] | 14.3 attack_power points (1.03 DPS) | yes | Defender's Leather Hood (252447, -0.46 DPS, sim-verified) [crafted] |
-| neck | Sentinel's Medallion (20444) | Silverwing Sentinels [rep] | 10.7 attack_power points (0.77 DPS) | yes | Erudite's Amulet (277204, -0.50 DPS, sim-verified) [quest]; Tarnished Locket (279870, -0.98 DPS) [quest] |
-| shoulder | Serpent's Shoulders (5404) | Wailing Caverns: Lady Anacondra [dungeon] | 8.9 attack_power points (0.64 DPS) | yes | Slime-encrusted Pads (6461, -0.63 DPS, sim-verified) [dungeon] |
-| back | Glowing Lizardscale Cloak (6449) | Wailing Caverns: Skum [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Cape of the Brotherhood (5193, -0.13 DPS) [dungeon]; Dark Leather Cloak (2316, -0.24 DPS) [crafted]; Bristlebark Cape (14571, -0.26 DPS) [world_drop] |
-| chest | Tunic of Westfall (2041) | The Defias Brotherhood [quest] | 19.6 attack_power points (1.41 DPS) | yes | Brawler's Leather Armor (252490, -0.15 DPS) [crafted]; Prospector's Chestpiece (14562, -0.50 DPS) [world_drop]; Trapper's Leather Armor (252491, -0.51 DPS) [crafted] |
-| wrist | Forest Leather Bracers (3202) | World drop [world_drop] | 8.9 attack_power points (0.64 DPS) | yes | Bravo's Armbands (270015, -0.04 DPS) [quest]; Bristlebark Bindings (14569, -0.11 DPS) [world_drop]; Wolf Bracers (4794, -0.13 DPS) [vendor] |
-| hands | Blackened Defias Gloves (10401) | The Deadmines: Defias Overseer [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Bristlebark Gloves (14572, +0.00 DPS) [world_drop]; Brawler's Leather Gloves (252494, +0.00 DPS) [crafted]; Gloves of the Fang (10413, -2.27 DPS, sim-verified) [dungeon] |
-| waist | Blackened Defias Belt (10403) | The Deadmines: Captain Greenskin [dungeon] | 18.0 attack_power points (1.29 DPS) | yes | Brawler's Leather Belt (252428, -0.49 DPS) [crafted]; Murloc Scale Belt (5780, -0.76 DPS) [crafted]; Deviate Scale Belt (6468, -3.31 DPS, sim-verified) [crafted] |
-| legs | Blackened Defias Leggings (10400) | The Deadmines: Defias Overseer [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Leggings of the Fang (10410, +0.00 DPS) [dungeon]; Trapper's Leather Pants (252501, +0.00 DPS) [crafted]; Brawler's Leather Pants (252500, -2.48 DPS, sim-verified) [crafted] |
-| feet | Blackened Defias Boots (10402) | The Deadmines: Defias Strip Miner [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Footpads of the Fang (10411, +0.00 DPS) [dungeon]; Brawler's Leather Boots (252439, +0.00 DPS) [crafted]; Feet of the Lynx (1121, -2.39 DPS, sim-verified) [world_drop] |
-| finger1 | Protector's Band (20439) | Silverwing Sentinels [rep] | 11.1 attack_power points (0.80 DPS) | yes | Demon Band (12054, -0.51 DPS) [world_drop]; Lavishly Jeweled Ring (1156, -0.54 DPS) [dungeon]; The 1 Ring (8350, -0.60 DPS) [world] |
-| finger2 | Pyrewood Signet Ring (277210) | The Horn of Xelthos [quest] | 9.5 attack_power points (0.68 DPS) | yes | Demon Band (12054, -0.26 DPS, sim-verified) [world_drop]; Lavishly Jeweled Ring (1156, -0.43 DPS) [dungeon]; The 1 Ring (8350, -0.48 DPS) [world] |
+| head | Brawler's Leather Hood (252504) | Leatherworking [crafted] | 14.1 attack_power points (1.07 DPS) | yes | Defender's Leather Hood (252447, -0.45 DPS, sim-verified) [crafted] |
+| neck | Sentinel's Medallion (20444) | Silverwing Sentinels [rep] | 10.6 attack_power points (0.80 DPS) | yes | Erudite's Amulet (277204, -0.52 DPS, sim-verified) [quest]; Tarnished Locket (279870, -1.03 DPS) [quest] |
+| shoulder | Serpent's Shoulders (5404) | Wailing Caverns: Lady Anacondra [dungeon] | 8.8 attack_power points (0.67 DPS) | yes | Slime-encrusted Pads (6461, -0.65 DPS, sim-verified) [dungeon] |
+| back | Glowing Lizardscale Cloak (6449) | Wailing Caverns: Skum [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Cape of the Brotherhood (5193, -0.13 DPS) [dungeon]; Dark Leather Cloak (2316, -0.25 DPS) [crafted]; Bristlebark Cape (14571, -0.27 DPS) [world_drop] |
+| chest | Tunic of Westfall (2041) | The Defias Brotherhood [quest] | 19.4 attack_power points (1.47 DPS) | yes | Brawler's Leather Armor (252490, -0.16 DPS) [crafted]; Prospector's Chestpiece (14562, -0.52 DPS) [world_drop]; Trapper's Leather Armor (252491, -0.53 DPS) [crafted] |
+| wrist | Forest Leather Bracers (3202) | World drop [world_drop] | 8.8 attack_power points (0.67 DPS) | yes | Bravo's Armbands (270015, -0.04 DPS) [quest]; Bristlebark Bindings (14569, -0.12 DPS) [world_drop]; Wolf Bracers (4794, -0.13 DPS) [vendor] |
+| hands | Blackened Defias Gloves (10401) | The Deadmines: Defias Overseer [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Bristlebark Gloves (14572, +0.00 DPS) [world_drop]; Brawler's Leather Gloves (252494, +0.00 DPS) [crafted]; Gloves of the Fang (10413, -2.59 DPS, sim-verified) [dungeon] |
+| waist | Blackened Defias Belt (10403) | The Deadmines: Captain Greenskin [dungeon] | 18.0 attack_power points (1.36 DPS) | yes | Brawler's Leather Belt (252428, -0.52 DPS) [crafted]; Murloc Scale Belt (5780, -0.81 DPS) [crafted]; Deviate Scale Belt (6468, -3.69 DPS, sim-verified) [crafted] |
+| legs | Blackened Defias Leggings (10400) | The Deadmines: Defias Overseer [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Leggings of the Fang (10410, +0.00 DPS) [dungeon]; Trapper's Leather Pants (252501, +0.00 DPS) [crafted]; Brawler's Leather Pants (252500, -2.85 DPS, sim-verified) [crafted] |
+| feet | Blackened Defias Boots (10402) | The Deadmines: Defias Strip Miner [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Footpads of the Fang (10411, +0.00 DPS) [dungeon]; Brawler's Leather Boots (252439, +0.00 DPS) [crafted]; Feet of the Lynx (1121, -2.75 DPS, sim-verified) [world_drop] |
+| finger1 | Protector's Band (20439) | Silverwing Sentinels [rep] | 11.1 attack_power points (0.83 DPS) | yes | Demon Band (12054, -0.53 DPS) [world_drop]; Lavishly Jeweled Ring (1156, -0.57 DPS) [dungeon]; The 1 Ring (8350, -0.63 DPS) [world] |
+| finger2 | Pyrewood Signet Ring (277210) | The Horn of Xelthos [quest] | 9.4 attack_power points (0.71 DPS) | yes | Lavishly Jeweled Ring (1156, -0.44 DPS) [dungeon]; The 1 Ring (8350, -0.50 DPS) [world]; Demon Band (12054, -0.55 DPS, sim-verified) [world_drop] |
 | trinket1 | - | - |  |  |  |
 | trinket2 | - | - |  |  |  |
-| main_hand | Blackfang (2236) | World drop [world_drop] | 228.7 attack_power points (16.43 DPS) | yes | Tail Spike (6448, -1.86 DPS) [dungeon]; Deadly Bronze Poniard (3490, -3.06 DPS) [crafted]; Goblin Screwdriver (1936, -3.70 DPS) [dungeon] |
-| off_hand | Assassin's Blade (1935) | Shadowfang Keep [dungeon] | 227.5 attack_power points (16.34 DPS) | yes | Tail Spike (6448, -0.33 DPS, sim-verified) [dungeon] |
-| ranged | Lil Timmy's Peashooter (13136) | World drop [world_drop] | 7.1 attack_power points (0.51 DPS) | yes | Fine Longbow (11304, -0.23 DPS, sim-verified) [vendor]; Deadly Blunderbuss (4369, -0.26 DPS) [crafted]; Light Bow (4576, -0.26 DPS) [world_drop] |
+| main_hand | Blackfang (2236) | World drop [world_drop] | 228.7 attack_power points (17.25 DPS) | yes | Tail Spike (6448, -1.96 DPS) [dungeon]; Deadly Bronze Poniard (3490, -3.22 DPS) [crafted]; Goblin Screwdriver (1936, -3.89 DPS) [dungeon] |
+| off_hand | Assassin's Blade (1935) | Shadowfang Keep [dungeon] | 227.4 attack_power points (17.16 DPS) | yes | Tail Spike (6448, -0.51 DPS, sim-verified) [dungeon] |
+| ranged | Lil Timmy's Peashooter (13136) | World drop [world_drop] | 7.1 attack_power points (0.53 DPS) | yes | Fine Longbow (11304, -0.22 DPS, sim-verified) [vendor]; Deadly Blunderbuss (4369, -0.27 DPS) [crafted]; Light Bow (4576, -0.27 DPS) [world_drop] |
 
 **New at 20:** head: Brawler's Leather Hood; neck: Sentinel's Medallion; shoulder: Serpent's Shoulders; back: Glowing Lizardscale Cloak; chest: Tunic of Westfall; wrist: Forest Leather Bracers; hands: Blackened Defias Gloves; waist: Blackened Defias Belt; legs: Blackened Defias Leggings; feet: Blackened Defias Boots; finger1: Protector's Band; finger2: Pyrewood Signet Ring; main_hand: Blackfang; off_hand: Assassin's Blade; ranged: Lil Timmy's Peashooter
 
@@ -40,7 +40,7 @@ No-known-source sample (15 of 241, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (gnome, 00000000000000000-3153030000012300000-000000000000000000)
 
-Set DPS (verified): 76.1. Weights run: 4.9s. Verify run: 13.9s. 422 eligible items had no known source.
+Set DPS (verified): 76.1. Weights run: 6.4s. Verify run: 18.5s. 422 eligible items had no known source.
 
 Race sweep: night-elf 76.6 ± 0.1, gnome 76.1 ± 0.1, human 75.9 ± 0.1, high-order-skyborne 75.8 ± 0.1, dwarf 75.4 ± 0.1 (dps); night-elf beats the guide race gnome by 0.5 (0.63%) ± 0.1, beyond error.
 
@@ -72,7 +72,7 @@ No-known-source sample (15 of 422, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (gnome, 00000000000000000-3153030000012321511-000000000000000000)
 
-Set DPS (verified): 137.3. Weights run: 5.1s. Verify run: 12.3s. 562 eligible items had no known source.
+Set DPS (verified): 137.3. Weights run: 6.9s. Verify run: 16.5s. 562 eligible items had no known source.
 
 Race sweep: night-elf 137.9 ± 0.1, gnome 137.3 ± 0.1, high-order-skyborne 136.7 ± 0.1, human 136.6 ± 0.1, dwarf 136.3 ± 0.1 (dps); night-elf beats the guide race gnome by 0.6 (0.41%) ± 0.2, beyond error.
 
@@ -106,7 +106,7 @@ No-known-source sample (15 of 562, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (gnome, 32200000000000000-3153030000012321541-000000000000000000)
 
-Set DPS (verified): 207.7. Weights run: 5.5s. Verify run: 18.8s. 707 eligible items had no known source.
+Set DPS (verified): 207.7. Weights run: 7.2s. Verify run: 25.3s. 707 eligible items had no known source.
 
 Race sweep: night-elf 208.4 ± 0.2, gnome 207.7 ± 0.2, human 206.9 ± 0.2, high-order-skyborne 206.9 ± 0.2, dwarf 206.2 ± 0.1 (dps); night-elf beats the guide race gnome by 0.7 (0.33%) ± 0.2, beyond error.
 
@@ -140,7 +140,7 @@ No-known-source sample (15 of 707, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (gnome, 32530100000000000-3153030000012321541-030000000000000000)
 
-Set DPS (verified): 310.2. Weights run: 5.1s. Verify run: 57.1s. 1667 eligible items had no known source.
+Set DPS (verified): 310.2. Weights run: 6.6s. Verify run: 74.9s. 1667 eligible items had no known source.
 
 Race sweep: gnome 310.2 ± 0.3, night-elf 310.1 ± 0.3, high-order-skyborne 308.7 ± 0.3, human 308.4 ± 0.3, dwarf 308.0 ± 0.3 (dps); the guide race gnome is best.
 
@@ -174,7 +174,7 @@ No-known-source sample (15 of 1667, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (gnome, 00520300200000000-3043030002012321451-005000000000000000)
 
-Set DPS (verified): 889.5. Weights run: 5.7s. Verify run: 61.7s. 1667 eligible items had no known source.
+Set DPS (verified): 889.5. Weights run: 7.4s. Verify run: 81.0s. 1667 eligible items had no known source.
 
 Race sweep: gnome 889.5 ± 0.7, high-order-skyborne 885.3 ± 0.7, night-elf 884.0 ± 0.7, human 883.6 ± 0.7, dwarf 880.7 ± 0.7 (dps); the guide race gnome is best.
 
@@ -208,33 +208,33 @@ No-known-source sample (15 of 1667, see the JSON for more): 1189 Overseer's Ring
 
 ## Horde
 
-### Band 20 (undead, 00000000000000000-3152000000000000000-000000000000000000)
+### Band 20 (undead, 00000000000000000-3113030000000000000-000000000000000000)
 
-Set DPS (verified): 43.9. Weights run: 4.7s. Verify run: 10.5s. 240 eligible items had no known source.
+Set DPS (verified): 46.3. Weights run: 6.3s. Verify run: 14.0s. 240 eligible items had no known source.
 
-Race sweep: undead 43.9 ± 0.0, troll 43.2 ± 0.0, windshaper-skyborne 43.2 ± 0.0, orc 42.7 ± 0.0 (dps); the guide race undead is best.
+Race sweep: undead 46.3 ± 0.0, troll 45.6 ± 0.0, windshaper-skyborne 45.5 ± 0.0, orc 45.1 ± 0.0 (dps); the guide race undead is best.
 
-Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=1.000 ± 0.001, agility=1.785 ± 0.010, crit=0.467 ± 0.009 per rating point (14 rating = 1%, 6.533 per %), hit=0.597 ± 0.022 per rating point (10 rating = 1%, 5.973 per %), melee_haste=2.869 ± 0.307
+Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=1.000 ± 0.001, agility=1.767 ± 0.009, crit=0.458 ± 0.008 per rating point (14 rating = 1%, 6.410 per %), hit=0.574 ± 0.013 per rating point (10 rating = 1%, 5.738 per %), melee_haste=3.295 ± 0.296
 
 | Slot | Item | Source | Score (attack_power points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Brawler's Leather Hood (252504) | Leatherworking [crafted] | 14.3 attack_power points (1.03 DPS) | yes | Defender's Leather Hood (252447, -0.46 DPS, sim-verified) [crafted] |
-| neck | Scout's Medallion (20442) | Warsong Outriders [rep] | 10.7 attack_power points (0.77 DPS) | yes | Erudite's Amulet (277204, -0.49 DPS, sim-verified) [quest] |
-| shoulder | Serpent's Shoulders (5404) | Wailing Caverns: Lady Anacondra [dungeon] | 8.9 attack_power points (0.64 DPS) | yes | Slime-encrusted Pads (6461, -0.63 DPS, sim-verified) [dungeon] |
-| back | Glowing Lizardscale Cloak (6449) | Wailing Caverns: Skum [dungeon] | sim-verified (43.9 DPS) | yes | Cape of the Brotherhood (5193, -0.13 DPS) [dungeon]; Dark Leather Cloak (2316, -0.24 DPS) [crafted]; Bristlebark Cape (14571, -0.26 DPS) [world_drop] |
-| chest | Blackened Defias Armor (10399) | The Deadmines: Edwin VanCleef [dungeon] | sim-verified (43.9 DPS) | yes | Prospector's Chestpiece (14562, +0.00 DPS) [world_drop]; Trapper's Leather Armor (252491, +0.00 DPS) [crafted]; Brawler's Leather Armor (252490, -2.66 DPS, sim-verified) [crafted] |
-| wrist | Forest Leather Bracers (3202) | World drop [world_drop] | 8.9 attack_power points (0.64 DPS) | yes | Bristlebark Bindings (14569, -0.11 DPS) [world_drop]; Wolf Bracers (4794, -0.13 DPS) [vendor]; Spare Part Bindings (279875, -0.26 DPS) [quest] |
-| hands | Gloves of the Fang (10413) | Wailing Caverns: Druid of the Fang [dungeon] | 14.7 attack_power points (1.06 DPS) | yes | Brawler's Leather Gloves (252494, -0.26 DPS) [crafted]; Bristlebark Gloves (14572, -0.27 DPS, sim-verified) [world_drop]; Serpent Gloves (5970, -0.29 DPS) [dungeon] |
-| waist | Blackened Defias Belt (10403) | The Deadmines: Captain Greenskin [dungeon] | 18.0 attack_power points (1.29 DPS) | yes | Brawler's Leather Belt (252428, -0.49 DPS) [crafted]; Murloc Scale Belt (5780, -0.76 DPS) [crafted]; Deviate Scale Belt (6468, -3.35 DPS, sim-verified) [crafted] |
-| legs | Blackened Defias Leggings (10400) | The Deadmines: Defias Overseer [dungeon] | sim-verified (43.9 DPS) | yes | Leggings of the Fang (10410, +0.00 DPS) [dungeon]; Trapper's Leather Pants (252501, +0.00 DPS) [crafted]; Brawler's Leather Pants (252500, -2.60 DPS, sim-verified) [crafted] |
-| feet | Blackened Defias Boots (10402) | The Deadmines: Defias Strip Miner [dungeon] | sim-verified (43.9 DPS) | yes | Footpads of the Fang (10411, +0.00 DPS) [dungeon]; Brawler's Leather Boots (252439, +0.00 DPS) [crafted]; Feet of the Lynx (1121, -2.71 DPS, sim-verified) [world_drop] |
-| finger1 | Legionnaire's Band (20429) | Warsong Outriders [rep] | 11.1 attack_power points (0.80 DPS) | yes | Bounty Hunter's Ring (5351, -0.42 DPS) [quest]; Demon Band (12054, -0.51 DPS) [world_drop]; Lavishly Jeweled Ring (1156, -0.54 DPS) [dungeon] |
-| finger2 | Pyrewood Signet Ring (277210) | The Horn of Xelthos [quest] | 9.5 attack_power points (0.68 DPS) | yes | Bounty Hunter's Ring (5351, -0.23 DPS, sim-verified) [quest]; Demon Band (12054, -0.40 DPS) [world_drop]; Lavishly Jeweled Ring (1156, -0.43 DPS) [dungeon] |
+| head | Brawler's Leather Hood (252504) | Leatherworking [crafted] | 14.1 attack_power points (1.07 DPS) | yes | Defender's Leather Hood (252447, -0.49 DPS, sim-verified) [crafted] |
+| neck | Scout's Medallion (20442) | Warsong Outriders [rep] | 10.6 attack_power points (0.80 DPS) | yes | Erudite's Amulet (277204, -0.49 DPS, sim-verified) [quest] |
+| shoulder | Serpent's Shoulders (5404) | Wailing Caverns: Lady Anacondra [dungeon] | 8.8 attack_power points (0.67 DPS) | yes | Slime-encrusted Pads (6461, -0.64 DPS, sim-verified) [dungeon] |
+| back | Glowing Lizardscale Cloak (6449) | Wailing Caverns: Skum [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Cape of the Brotherhood (5193, -0.13 DPS) [dungeon]; Dark Leather Cloak (2316, -0.25 DPS) [crafted]; Bristlebark Cape (14571, -0.27 DPS) [world_drop] |
+| chest | Blackened Defias Armor (10399) | The Deadmines: Edwin VanCleef [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Prospector's Chestpiece (14562, +0.00 DPS) [world_drop]; Trapper's Leather Armor (252491, +0.00 DPS) [crafted]; Brawler's Leather Armor (252490, -2.54 DPS, sim-verified) [crafted] |
+| wrist | Forest Leather Bracers (3202) | World drop [world_drop] | 8.8 attack_power points (0.67 DPS) | yes | Bristlebark Bindings (14569, -0.12 DPS) [world_drop]; Wolf Bracers (4794, -0.13 DPS) [vendor]; Spare Part Bindings (279875, -0.27 DPS) [quest] |
+| hands | Gloves of the Fang (10413) | Wailing Caverns: Druid of the Fang [dungeon] | 14.6 attack_power points (1.10 DPS) | yes | Bristlebark Gloves (14572, -0.25 DPS, sim-verified) [world_drop]; Brawler's Leather Gloves (252494, -0.27 DPS) [crafted]; Serpent Gloves (5970, -0.30 DPS) [dungeon] |
+| waist | Blackened Defias Belt (10403) | The Deadmines: Captain Greenskin [dungeon] | 18.0 attack_power points (1.36 DPS) | yes | Brawler's Leather Belt (252428, -0.52 DPS) [crafted]; Murloc Scale Belt (5780, -0.81 DPS) [crafted]; Deviate Scale Belt (6468, -3.27 DPS, sim-verified) [crafted] |
+| legs | Blackened Defias Leggings (10400) | The Deadmines: Defias Overseer [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Leggings of the Fang (10410, +0.00 DPS) [dungeon]; Trapper's Leather Pants (252501, +0.00 DPS) [crafted]; Brawler's Leather Pants (252500, -2.48 DPS, sim-verified) [crafted] |
+| feet | Blackened Defias Boots (10402) | The Deadmines: Defias Strip Miner [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Footpads of the Fang (10411, +0.00 DPS) [dungeon]; Brawler's Leather Boots (252439, +0.00 DPS) [crafted]; Feet of the Lynx (1121, -2.58 DPS, sim-verified) [world_drop] |
+| finger1 | Legionnaire's Band (20429) | Warsong Outriders [rep] | 11.1 attack_power points (0.83 DPS) | yes | Bounty Hunter's Ring (5351, -0.44 DPS) [quest]; Demon Band (12054, -0.53 DPS) [world_drop]; Lavishly Jeweled Ring (1156, -0.57 DPS) [dungeon] |
+| finger2 | Pyrewood Signet Ring (277210) | The Horn of Xelthos [quest] | 9.4 attack_power points (0.71 DPS) | yes | Demon Band (12054, -0.40 DPS) [world_drop]; Lavishly Jeweled Ring (1156, -0.44 DPS) [dungeon]; Bounty Hunter's Ring (5351, -0.53 DPS, sim-verified) [quest] |
 | trinket1 | - | - |  |  |  |
 | trinket2 | - | - |  |  |  |
-| main_hand | Blackfang (2236) | World drop [world_drop] | 228.7 attack_power points (16.43 DPS) | yes | Tail Spike (6448, -1.86 DPS) [dungeon]; Deadly Bronze Poniard (3490, -3.06 DPS) [crafted]; Goblin Screwdriver (1936, -3.70 DPS) [dungeon] |
-| off_hand | Assassin's Blade (1935) | Shadowfang Keep [dungeon] | 227.5 attack_power points (16.34 DPS) | yes | Tail Spike (6448, -0.35 DPS, sim-verified) [dungeon] |
-| ranged | Lil Timmy's Peashooter (13136) | World drop [world_drop] | 7.1 attack_power points (0.51 DPS) | yes | Fine Longbow (11304, -0.24 DPS, sim-verified) [vendor]; Deadly Blunderbuss (4369, -0.26 DPS) [crafted]; Light Bow (4576, -0.26 DPS) [world_drop] |
+| main_hand | Blackfang (2236) | World drop [world_drop] | 228.7 attack_power points (17.25 DPS) | yes | Tail Spike (6448, -1.96 DPS) [dungeon]; Deadly Bronze Poniard (3490, -3.22 DPS) [crafted]; Goblin Screwdriver (1936, -3.89 DPS) [dungeon] |
+| off_hand | Assassin's Blade (1935) | Shadowfang Keep [dungeon] | 227.4 attack_power points (17.16 DPS) | yes | Tail Spike (6448, -0.43 DPS, sim-verified) [dungeon] |
+| ranged | Lil Timmy's Peashooter (13136) | World drop [world_drop] | 7.1 attack_power points (0.53 DPS) | yes | Fine Longbow (11304, -0.23 DPS, sim-verified) [vendor]; Deadly Blunderbuss (4369, -0.27 DPS) [crafted]; Light Bow (4576, -0.27 DPS) [world_drop] |
 
 **New at 20:** head: Brawler's Leather Hood; neck: Scout's Medallion; shoulder: Serpent's Shoulders; back: Glowing Lizardscale Cloak; chest: Blackened Defias Armor; wrist: Forest Leather Bracers; hands: Gloves of the Fang; waist: Blackened Defias Belt; legs: Blackened Defias Leggings; feet: Blackened Defias Boots; finger1: Legionnaire's Band; finger2: Pyrewood Signet Ring; main_hand: Blackfang; off_hand: Assassin's Blade; ranged: Lil Timmy's Peashooter
 
@@ -242,7 +242,7 @@ No-known-source sample (15 of 240, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (undead, 00000000000000000-3153030000012300000-000000000000000000)
 
-Set DPS (verified): 76.8. Weights run: 4.9s. Verify run: 14.5s. 423 eligible items had no known source.
+Set DPS (verified): 76.8. Weights run: 6.4s. Verify run: 19.3s. 423 eligible items had no known source.
 
 Race sweep: undead 76.8 ± 0.1, troll 75.9 ± 0.1, windshaper-skyborne 75.8 ± 0.1, orc 75.5 ± 0.1 (dps); the guide race undead is best.
 
@@ -274,7 +274,7 @@ No-known-source sample (15 of 423, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (undead, 00000000000000000-3153030000012321511-000000000000000000)
 
-Set DPS (verified): 138.3. Weights run: 5.1s. Verify run: 11.8s. 561 eligible items had no known source.
+Set DPS (verified): 138.3. Weights run: 6.9s. Verify run: 16.0s. 561 eligible items had no known source.
 
 Race sweep: undead 138.3 ± 0.1, windshaper-skyborne 136.4 ± 0.1, troll 136.4 ± 0.1, orc 135.7 ± 0.1 (dps); the guide race undead is best.
 
@@ -308,7 +308,7 @@ No-known-source sample (15 of 561, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (undead, 32200000000000000-3153030000012321541-000000000000000000)
 
-Set DPS (verified): 211.4. Weights run: 5.5s. Verify run: 19.2s. 706 eligible items had no known source.
+Set DPS (verified): 211.4. Weights run: 7.2s. Verify run: 26.3s. 706 eligible items had no known source.
 
 Race sweep: undead 211.4 ± 0.2, troll 208.2 ± 0.2, windshaper-skyborne 208.0 ± 0.2, orc 207.4 ± 0.2 (dps); the guide race undead is best.
 
@@ -342,7 +342,7 @@ No-known-source sample (15 of 706, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (undead, 32530100000000000-3153030000012321541-030000000000000000)
 
-Set DPS (verified): 313.3. Weights run: 5.1s. Verify run: 60.1s. 1671 eligible items had no known source.
+Set DPS (verified): 313.3. Weights run: 6.6s. Verify run: 78.4s. 1671 eligible items had no known source.
 
 Race sweep: undead 313.3 ± 0.3, windshaper-skyborne 308.6 ± 0.3, troll 308.3 ± 0.3, orc 306.8 ± 0.3 (dps); the guide race undead is best.
 
@@ -376,7 +376,7 @@ No-known-source sample (15 of 1671, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (undead, 00520300200000000-3043030002012321451-005000000000000000)
 
-Set DPS (verified): 889.8. Weights run: 5.7s. Verify run: 64.2s. 1671 eligible items had no known source.
+Set DPS (verified): 889.8. Weights run: 7.4s. Verify run: 85.4s. 1671 eligible items had no known source.
 
 Race sweep: undead 889.8 ± 0.7, windshaper-skyborne 886.3 ± 0.7, orc 885.8 ± 0.7, troll 885.6 ± 0.7 (dps); the guide race undead is best.
 

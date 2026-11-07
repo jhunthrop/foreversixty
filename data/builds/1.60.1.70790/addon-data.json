@@ -97411,10 +97411,10 @@
         "weights": {
           "attack_power": 1.0,
           "strength": 1.0,
-          "agility": 1.717,
-          "crit": 0.435,
-          "hit": 0.598,
-          "melee_haste": 3.643
+          "agility": 1.735,
+          "crit": 0.445,
+          "hit": 0.599,
+          "melee_haste": 3.565
         }
       },
       {
@@ -100053,14 +100053,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 12054,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
-                },
-                {
                   "item_id": 1156,
                   "source_kind": "dungeon",
                   "source": "The Deadmines: Gilnid"
+                },
+                {
+                  "item_id": 8350,
+                  "source_kind": "world",
+                  "source": "Fishing"
                 }
               ]
             },
@@ -100215,14 +100215,14 @@
               "chance": 0.0234,
               "alternatives": [
                 {
-                  "item_id": 252494,
-                  "source_kind": "crafted",
-                  "source": "Leatherworking"
-                },
-                {
                   "item_id": 14572,
                   "source_kind": "world_drop",
                   "source": "World drop"
+                },
+                {
+                  "item_id": 252494,
+                  "source_kind": "crafted",
+                  "source": "Leatherworking"
                 }
               ]
             },
@@ -100305,14 +100305,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 5351,
-                  "source_kind": "quest",
-                  "source": "Hezrul Bloodmark"
-                },
-                {
                   "item_id": 12054,
                   "source_kind": "world_drop",
                   "source": "World drop"
+                },
+                {
+                  "item_id": 1156,
+                  "source_kind": "dungeon",
+                  "source": "The Deadmines: Gilnid"
                 }
               ]
             },
@@ -100406,10 +100406,10 @@
         "weights": {
           "attack_power": 1.0,
           "strength": 1.0,
-          "agility": 1.785,
-          "crit": 0.467,
-          "hit": 0.597,
-          "melee_haste": 2.869
+          "agility": 1.767,
+          "crit": 0.458,
+          "hit": 0.574,
+          "melee_haste": 3.295
         }
       },
       {
