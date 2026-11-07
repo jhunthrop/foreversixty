@@ -79,8 +79,12 @@ func TestGuildRaidWriterKeepsOneRowWithItsCounts(t *testing.T) {
 	u := user(t, s, "o#1", false)
 	g := guild(t, s, "Olympus XXVII")
 	var raid int64
-	if err := s.Pool.QueryRow(context.Background(), `insert into guild_raids (guild_id, zone, title, starts_at, duration_minutes, created_by)
-		values ($1, 'raid:onyxias-lair', 'Onyxia''s Lair', $2, 120, $3) returning id`, g, testNow.Add(48*time.Hour), u).Scan(&raid); err != nil {
+	// The row's time is the raid's created_at, so it is pinned before testNow: left to the
+	// database's now() it reads as a future row, and drops out of the feed, once the wall clock
+	// passes testNow.
+	if err := s.Pool.QueryRow(context.Background(), `insert into guild_raids (guild_id, zone, title, starts_at, duration_minutes, created_by, created_at)
+		values ($1, 'raid:onyxias-lair', 'Onyxia''s Lair', $2, 120, $3, $4) returning id`,
+		g, testNow.Add(48*time.Hour), u, testNow.Add(-time.Hour)).Scan(&raid); err != nil {
 		t.Fatal(err)
 	}
 	w := &GuildRaidWriter{Store: s}
