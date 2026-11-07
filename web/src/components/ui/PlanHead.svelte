@@ -40,17 +40,28 @@
     /** Replaces the price Figure (a static page that draws both intervals in fixed cells). */
     price?: Snippet;
     testid?: string;
+    /** Never rendered: an Astro caller's whitespace between named slots arrives as children. */
+    children?: Snippet;
   } = $props();
 </script>
 
 <div class="ui-plh" data-testid={testid}>
-  <svelte:element this={`h${level}`} class="ui-plh-name">{name}{#if tag}{@render tag()}{/if}</svelte:element>
+  <svelte:element this={`h${level}`} class="ui-plh-name"
+    >{name}{#if tag}{@render tag()}{/if}</svelte:element
+  >
   <span class="ui-plh-aud">{audience}</span>
   <div class="ui-plh-fig">
-    {#if price}{@render price()}{:else}<Figure {value} {unit} tone={gold ? 'gold' : 'strong'} size="big" />{/if}
+    {#if price}{@render price()}{:else}<Figure
+        {value}
+        {unit}
+        tone={gold ? 'gold' : 'strong'}
+        size="big"
+      />{/if}
   </div>
   {#each lines as line, i (i)}
-    <span class={['ui-plh-line', line.tone === 'gold' && 'is-gold']} data-testid={line.testid}>{line.text}</span>
+    <span class={['ui-plh-line', line.tone === 'gold' && 'is-gold']} data-testid={line.testid}
+      >{line.text}</span
+    >
   {/each}
 </div>
 
@@ -77,12 +88,14 @@
   .ui-plh-fig {
     margin-top: 8px;
   }
-  .ui-plh-line {
+  /* Global under the head: a caller's `price` snippet (both intervals in fixed cells) draws its
+     own lines with the same class. */
+  .ui-plh :global(.ui-plh-line) {
     font-size: 13px;
     line-height: 20px;
     color: var(--color-muted);
   }
-  .ui-plh-line.is-gold {
+  .ui-plh :global(.ui-plh-line.is-gold) {
     color: var(--color-gold);
   }
 </style>

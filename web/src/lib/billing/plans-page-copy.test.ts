@@ -10,7 +10,6 @@ import {
   GUILD_TRIAL_DAYS,
   PLANS,
   RAID_SIZES,
-  REFUND_WINDOW_DAYS,
   RENEWAL_REMINDER_DAYS,
   TRIAL_REMINDER_DAYS,
   formatAmount,
@@ -80,7 +79,10 @@ describe('plansPageCopy against spec 6.1', () => {
       formatAmount(PLANS.guild.founderYearly / 12),
       'Or {yearly price}.',
     ]);
-    expect(copy.price.founderUntil('{list}')).toBe('Founder price until 6 Jan 2027, then {list}.');
+    // Ruling MUST 1 (design/specs/2026-11-08-premium-account.md 0A) replaces the line's words.
+    expect(copy.price.founderUntil('{list}')).toBe(
+      'Founder price for anyone who subscribes by 6 Jan 2027. {list} after that.',
+    );
     expect(copy.price.perMonth(PLANS.premium.founderYearly)).toBe(perMonthLine(PLANS.premium.founderYearly));
     expect(copy.price.orYearly('{yearly price}')).toBe('Or {yearly price}.');
   });
@@ -228,8 +230,9 @@ describe('plansPageCopy guild region against spec B5', () => {
     const spec61 = Array.from({ length: cells.length / 2 }, (_, i) => ({
       term: cells[2 * i],
       sentence: cells[2 * i + 1],
-    })).filter((r) => r.term !== 'Trial');
-    const b5Terms = ['Verified members', 'Paying together', 'Trial'];
+    })).filter((r) => r.term !== 'Trial' && r.term !== 'Refunds');
+    // Refunds follows refunds.md since ruling MUST 2 (2026-11-08; its own test below).
+    const b5Terms = ['Verified members', 'Paying together', 'Trial', 'Refunds'];
     expect(copy.rules).toHaveLength(10);
     expect(copy.rules.filter((r) => !b5Terms.includes(r.term))).toEqual(spec61);
     expect(copy.guild.name).toBe(row('Guild card')[0]);
@@ -270,10 +273,19 @@ describe('typed figures come from the plan constants', () => {
       `We email ${RENEWAL_REMINDER_DAYS} days before every yearly renewal`,
       ruleSentence('Renewals'),
     ],
-    ['refund window', `Ask within ${REFUND_WINDOW_DAYS} days of a first charge`, ruleSentence('Refunds')],
   ])('%s: the spec states the constant and the copy renders it', (_name, phrase, rendered) => {
     expect(specText).toContain(phrase);
     expect(rendered).toContain(phrase);
+  });
+
+  it('the Refunds rule says what refunds.md says (ruling MUST 2): email, no part-period refunds', () => {
+    const refunds = readFileSync(new URL('../../content/pages/refunds.md', import.meta.url), 'utf8');
+    const rule = ruleSentence('Refunds');
+    expect(refunds).toContain('help@foreversixty.gg');
+    expect(rule).toContain('help@foreversixty.gg');
+    expect(refunds).toContain('we do not refund part of a period');
+    expect(rule).toContain('there are no part-period refunds');
+    expect(rule).not.toMatch(/within \d+ days/);
   });
 
   it('the copy source writes none of the three figures as a literal', () => {

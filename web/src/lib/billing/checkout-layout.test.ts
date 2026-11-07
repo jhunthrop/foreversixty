@@ -3,14 +3,10 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import {
-  CHECKOUT_BAND_ATTRIBUTE,
-  CHECKOUT_BAND_RESERVE,
-  CHECKOUT_BODY_RESERVE,
   CHECKOUT_FRAME_PX,
   GUILD_CARDS_PROPERTY,
   GUILD_LOADING_ATTRIBUTE,
   GUILD_SKELETON_CARD,
-  PREMIUM_BAND_PX,
   GUILD_LEAD_RESERVE,
   guildFrameReserve,
   releaseGuildFrameReserve,
@@ -18,14 +14,6 @@ import {
 } from './checkout-layout';
 
 describe('checkout layout reserves', () => {
-  it('the band holds one box at phone, tablet and desktop', () => {
-    expect(CHECKOUT_BAND_RESERVE).toBe('min-h-[163px] md:min-h-[206px] lg:min-h-[150px]');
-  });
-
-  it('the body holds the PremiumOwnedPanel, not just the 21 px message line', () => {
-    expect(CHECKOUT_BODY_RESERVE).toBe('min-h-[204px] md:min-h-[184px]');
-  });
-
   it('the guild lead holds the longest lead: 2 lines at 1440, 3 at 390', () => {
     expect(GUILD_LEAD_RESERVE).toBe('min-h-[63px] md:min-h-[42px]');
   });
@@ -38,43 +26,31 @@ describe('checkout layout reserves', () => {
 describe('the pixel table matches the classes', () => {
   const px = CHECKOUT_FRAME_PX;
 
-  it('band, lead and card figures are the ones the classes carry', () => {
-    expect(CHECKOUT_BAND_RESERVE).toBe(
-      `min-h-[${px.band.phone}px] md:min-h-[${px.band.md}px] lg:min-h-[${px.band.lg}px]`,
-    );
+  it('lead and card figures are the ones the classes carry', () => {
     expect(GUILD_LEAD_RESERVE).toBe(`min-h-[${px.lead.phone}px] md:min-h-[${px.lead.md}px]`);
     expect(GUILD_SKELETON_CARD).toBe(`h-[${px.card.phone}px] md:h-[${px.card.md}px]`);
   });
 });
 
 describe('guildFrameReserve', () => {
-  it('phone: band 163 + 20 + lead 63 + 16 + foot 63 + 64 - 12, then 260 + 12 a card', () => {
-    expect(guildFrameReserve('phone')).toEqual({ fixedPx: 377, perCardPx: 272 });
-  });
-
-  it('md: band 206 + 32 + lead 42 + 16 + 63 + 64 - 12, then 156 + 12 a card', () => {
-    expect(guildFrameReserve('md')).toEqual({ fixedPx: 411, perCardPx: 168 });
-  });
-
-  it('lg: the band is 150, the rest as md', () => {
-    expect(guildFrameReserve('lg')).toEqual({ fixedPx: 355, perCardPx: 168 });
-  });
-});
-
-describe('the premium band', () => {
-  it('CheckoutBand carries PREMIUM_BAND_PX under the head script mark', () => {
-    const band = readFileSync(
-      new URL('../../components/checkout/CheckoutBand.svelte', import.meta.url),
-      'utf8',
-    );
-    expect(band).toMatch(
-      new RegExp(
-        `data-checkout-band='premium'\\]\\) \\.checkout-band-row \\{\\s*min-height: ${PREMIUM_BAND_PX.phone}px;`,
-      ),
-    );
-    expect(band).toContain(`min-height: ${PREMIUM_BAND_PX.md}px;`);
-    expect(CHECKOUT_BAND_ATTRIBUTE).toBe('data-checkout-band');
-  });
+  const px = CHECKOUT_FRAME_PX;
+  it.each(['phone', 'md', 'lg'] as const)(
+    '%s: head, step top, lead, gap, foot, bottom less one card gap',
+    (bp) => {
+      const wide = bp !== 'phone';
+      expect(guildFrameReserve(bp)).toEqual({
+        fixedPx:
+          px.head[bp] +
+          (wide ? px.stepTop.md : px.stepTop.phone) +
+          (wide ? px.lead.md : px.lead.phone) +
+          px.leadGap +
+          px.foot +
+          px.bottom -
+          px.cardGap,
+        perCardPx: (wide ? px.card.md : px.card.phone) + px.cardGap,
+      });
+    },
+  );
 });
 
 describe('showFooterKeepReserve', () => {

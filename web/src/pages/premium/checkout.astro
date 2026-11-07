@@ -28,7 +28,6 @@ import {
   MIN_GUILD_COUNT,
 } from '../../lib/account/premium-hint';
 import {
-  CHECKOUT_BAND_ATTRIBUTE,
   GUILD_CARDS_PROPERTY,
   GUILD_LOADING_ATTRIBUTE,
   guildFrameReserve,
@@ -42,7 +41,7 @@ const md = guildFrameReserve('md');
 const lg = guildFrameReserve('lg');
 ---
 
-<Base title="Checkout" description="Continue to checkout." path="/premium/checkout">
+<Base title="Checkout" description="Continue to checkout." path="/premium/checkout" wide>
   <script
     slot="head"
     is:inline
@@ -56,7 +55,6 @@ const lg = guildFrameReserve('lg');
       raidGuildSizeLine: checkoutGuildCopy.sizeLine.raidGuild,
       cardsProperty: GUILD_CARDS_PROPERTY,
       loadingAttribute: GUILD_LOADING_ATTRIBUTE,
-      bandAttribute: CHECKOUT_BAND_ATTRIBUTE,
     }}
   >
     // Layout only: the launcher still validates every param after hydration.
@@ -87,18 +85,10 @@ const lg = guildFrameReserve('lg');
       }
       document.documentElement.style.setProperty(cardsProperty, String(cards));
       document.documentElement.setAttribute(loadingAttribute, '');
-    } else if (
-      params.get('plan') === 'premium' &&
-      intervals.includes(params.get('interval')) &&
-      !params.has('guild_id')
-    ) {
-      // plan=premium's band carries its h1 alone and hugs it (CheckoutBand.svelte's CSS).
-      document.documentElement.setAttribute(bandAttribute, 'premium');
     }
   </script>
-  <!-- No measure: the island draws the full-bleed band (its h1 and its height reserve, spec
-       §5.1 / §7) on its static render, then the guild step's 880 column or the narrow message
-       and plan=premium column under it. -->
+  <!-- The island draws the PageHeader on its static render, then the Steps in the form column or
+       the guild list in the page column (premium spec 2026-11-08 section 6). -->
   <main id="main" tabindex="-1" class="checkout-main flex w-full flex-col" data-testid="checkout-main">
     <CheckoutLauncher client:after-paint />
   </main>
@@ -114,13 +104,6 @@ const lg = guildFrameReserve('lg');
     lgCard: lg.perCardPx,
   }}
 >
-  /* This page's two columns, through the site's measure classes (one column system, no page
-     container of its own): .measure-form is the 640 px message and Premium panel column
-     (spec §4.2), .measure-wide the guild step's 880 px column (§5.1). */
-  .checkout-main {
-    --measure-form: 640px;
-    --measure-wide: 880px;
-  }
   /* The guild step's height from the first paint while it loads: band, step padding, lead, the
      skeleton's cards and the foot (checkout-layout.ts guildFrameReserve), and at least the
      viewport, so the site footer starts below the fold. CheckoutGuildStep removes

@@ -1,0 +1,51 @@
+---
+// web/src/components/premium/PlanPrice.astro
+// A plan's price for every interval and founder state at once (premium spec 2026-11-08 section 4.4):
+// the page's pre-paint attributes (`data-iv`, `data-founder`) show one before first paint; an
+// interval switch is the player's own action, so its new lines may take their own height. Every figure and line is the card
+// model's own (priceCell, costLine).
+import Figure from '../ui/Figure.svelte';
+import { INTERVALS, type PlanKey } from '../../lib/billing/plans';
+import { FOUNDER_STATES, costLine, founderKey, priceCell } from './model';
+
+interface Props {
+  plan: PlanKey;
+  gold?: boolean;
+}
+const { plan, gold = false } = Astro.props;
+const cells = INTERVALS.flatMap((interval) =>
+  FOUNDER_STATES.map((founder) => ({
+    interval,
+    fd: founderKey(founder),
+    cell: priceCell(plan, interval, founder),
+    cost: costLine(plan, interval, founder),
+  })),
+);
+---
+
+<div class="plan-price" data-testid={`price-${plan}`}>
+  {cells.map(({ interval, fd, cell, cost }) => (
+    <div class="plan-price-cell" data-iv={interval} data-fd={fd}>
+      <Figure value={cell.amount} unit={cell.suffix.trim()} tone={gold ? 'gold' : 'strong'} size="big" />
+      <span class="ui-plh-line">{cell.secondLine}</span>
+      {cell.founderLine && (
+        <span class="ui-plh-line is-gold" data-testid="founder-line">
+          {cell.founderLine}
+        </span>
+      )}
+      {cost && <span class="ui-plh-line">{cost}</span>}
+    </div>
+  ))}
+</div>
+
+<style>
+  .plan-price-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+  }
+  .plan-price-cell :global(.ui-figure) {
+    margin-bottom: 4px;
+  }
+</style>

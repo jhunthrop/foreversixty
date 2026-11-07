@@ -168,7 +168,7 @@ test.describe('ready cards', () => {
     const posts = await routePost(page, CHECKOUT_PATH, () => checkoutReply());
     await openStep(page, STEP_FIXTURES.ready);
     const button = page.getByTestId(id('subscribe'));
-    await expect(button).toContainText(copy.ready.startTrial);
+    await expect(button).toContainText(copy.ready.startTrial('').split(' · ')[0]);
     await expect(fills(page)).toHaveCount(1);
     await expect(button).toHaveClass(/\bbg-gold\b/);
     await button.click();
@@ -479,7 +479,7 @@ test.describe('guild_id', () => {
     });
     await expect(button).not.toHaveAttribute('aria-busy', 'true');
     await expect(button).toBeEnabled();
-    await expect(button).toContainText(copy.ready.startTrial);
+    await expect(button).toContainText(copy.ready.startTrial('').split(' · ')[0]);
     expect(posts).toHaveLength(1);
   });
 });

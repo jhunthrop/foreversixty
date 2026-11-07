@@ -35,13 +35,13 @@ describe('priceCell', () => {
   it('puts the list price and the founder date on one founder line while founder is open', () => {
     const cell = priceCell('premium', 'yearly', true);
     expect(cell.amount).toBe(`$${PLANS.premium.founderYearly}`);
-    expect(cell.founderLine).toBe('Founder price until 6 Jan 2027, then $50.');
+    expect(cell.founderLine).toBe('Founder price for anyone who subscribes by 6 Jan 2027. $50 after that.');
     expect(priceCell('premium', 'monthly', true).founderLine).toBe(
-      'Founder price until 6 Jan 2027, then $6 a month.',
+      'Founder price for anyone who subscribes by 6 Jan 2027. $6 a month after that.',
     );
-    expect(priceCell('guild', 'yearly', true).founderLine).toBe('Founder price until 6 Jan 2027, then $150.');
+    expect(priceCell('guild', 'yearly', true).founderLine).toBe('Founder price for anyone who subscribes by 6 Jan 2027. $150 after that.');
     expect(priceCell('raid_guild', 'monthly', true).founderLine).toBe(
-      'Founder price until 6 Jan 2027, then $25 a month.',
+      'Founder price for anyone who subscribes by 6 Jan 2027. $25 a month after that.',
     );
     expect(cell.suffix).toBe(plansPageCopy.price.suffix.yearly);
     expect(cell.secondLine).toBe(perMonthLine(PLANS.premium.founderYearly));

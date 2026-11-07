@@ -76,7 +76,7 @@ describe('subscribe button', () => {
   const plan = { plan: 'guild' as const, interval: 'yearly' as const };
 
   it('is the trial while it is unused, else the price', () => {
-    expect(subscribeLabel(plan, false, NOT_FOUNDER)).toBe(checkoutGuildCopy.ready.startTrial);
+    expect(subscribeLabel(plan, false, NOT_FOUNDER)).toBe(checkoutGuildCopy.ready.startTrial('$150 a year'));
     expect(subscribeLabel(plan, true, NOT_FOUNDER)).toBe('Subscribe · $150 a year');
   });
 

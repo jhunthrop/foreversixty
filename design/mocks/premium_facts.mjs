@@ -195,6 +195,8 @@ export default {
   discord_link: strip(discordLinkCopy), discord_role: discordRoleCopy, notifications: strip(notificationsCopy), premium_row: strip(premiumRowCopy),
   consent: strip(guildConsentCopy), account_failed: ACCOUNT_FAILED, pairing: strip(pairingCopy), my_reports: myReportsCopy,
   accounts, devices,
+  // The /v1/me and /v1/devices bodies themselves, so a parity spec serves the build exactly what the mocks drew.
+  raw_accounts: ACCOUNTS, raw_devices: DEVICES,
   // Ruling K1: a guild checkout in its trial saved a card and charges at the trial's end (7 days from now).
   checkout_trial_saved: checkoutCopy.trialSaved(utcDayMonthYear(days(7))),
   // Ruling K2: the renewal line above the next steps, on the paid Premium account's own renewal date.

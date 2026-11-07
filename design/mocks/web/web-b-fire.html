@@ -448,7 +448,6 @@ body{display:flex;flex-direction:column;min-height:100vh}.fs-foot{margin-top:aut
 .st-tabs{max-width:390px}.st-tabs .tedit-tabs{display:flex}.st-tabs .tedit-tree:not(.on){display:none}.st-tabs .tedit-cols{grid-template-columns:minmax(0,1fr)}.st-tabs .tedit-tree{border-left:0!important}
 </style><style>
 /* page-level layout only (no surfaces) */
-section>.sec-h+*{margin-top:12px}
 .stack{display:flex;flex-direction:column;gap:12px;min-width:0}.stack.tight{gap:6px}
 .acts{display:flex;gap:10px 16px;flex-wrap:wrap;align-items:center}
 .lede{font-size:15px;line-height:24px;max-width:72ch}.t-small{max-width:80ch}
@@ -469,6 +468,7 @@ section>.sec-h+*{margin-top:12px}
 .dev .row .sub{white-space:normal}
 .msg{display:flex;flex-direction:column;gap:12px}
 @media(max-width:1023px){.btn.sm{height:44px}}
+@media(max-width:767px){.cbar .pc{padding-block:0;min-height:0}}   /* the phone bar is its 48 px line, as the built ControlBar */
 .statesheet{display:grid;gap:40px}.st-grid{display:grid;gap:24px 40px;grid-template-columns:repeat(auto-fill,minmax(340px,1fr))}.st-cell{display:flex;flex-direction:column;gap:6px;min-width:0}
 </style><style>
 /* ---- Page: one column, four layouts ---- */

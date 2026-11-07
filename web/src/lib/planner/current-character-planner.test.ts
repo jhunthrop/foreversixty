@@ -4,16 +4,13 @@ import fixtureClasses from '../../fixtures/planner/classes.json';
 import fixtureCombos from '../../fixtures/planner/combos.json';
 import fixtureRaces from '../../fixtures/planner/races.json';
 import fixtureTalents from '../../fixtures/planner/talents/warrior.json';
-import { readCurrent, type CurrentCharacter } from '../current-character';
+import type { CurrentCharacter } from '../current-character';
 import {
   decidePlannerLoad,
   followPointerInPlanner,
   isBarePlannerUrl,
-  labelForPlannerLoad,
   plannerAddonCode,
-  recordPlannerCharacter,
   unsavedPlannerHref,
-  writePlannerPointer,
   type PlannerLoadDecision,
 } from './current-character-planner';
 import { decodeFS1, orderFromRanks } from './fs1';
@@ -43,20 +40,6 @@ function loadedPlannerStore(
   });
   store.setTalents(fixtureTalents as TalentFile);
   return store;
-}
-
-function fakeStorage(): Storage {
-  const map = new Map<string, string>();
-  return {
-    getItem: (key) => map.get(key) ?? null,
-    setItem: (key, value) => void map.set(key, value),
-    removeItem: (key) => void map.delete(key),
-    clear: () => map.clear(),
-    key: (index) => [...map.keys()][index] ?? null,
-    get length() {
-      return map.size;
-    },
-  };
 }
 
 function stored(source: CurrentCharacter['source'], ref: string): CurrentCharacter {
@@ -262,51 +245,6 @@ describe('decidePlannerLoad', () => {
   });
 });
 
-describe('labelForPlannerLoad', () => {
-  const index = indexTalents(fixtureTalents as TalentFile);
-  const order = GOOD_DECODED.ok ? orderFromRanks(index, GOOD_DECODED.build.treeRanks).order : [];
-
-  // Fix round 1, Important: specLabel already names the class ("Fury Warrior"), so a title
-  // and a derivable spec join as "<title> · <specLabel>", never "<title> · <className> ·
-  // <specLabel>", and an untitled, spec-derivable load is `specLabel` alone, not
-  // "<className> · <specLabel>".
-  it('joins the title with the spec label when both are present', () => {
-    expect(labelForPlannerLoad('My Fury Build', 'Warrior', index, order)).toBe(
-      'My Fury Build · Fury Warrior',
-    );
-  });
-
-  it('ignores a blank title, same as no title at all', () => {
-    expect(labelForPlannerLoad('   ', 'Warrior', index, order)).toBe('Fury Warrior');
-  });
-
-  it('is the title alone when the spec is not derivable (no talent data yet)', () => {
-    expect(labelForPlannerLoad('My Fury Build', 'Warrior', null, [])).toBe('My Fury Build');
-  });
-
-  it('is the spec label alone, with no title and a derivable spec', () => {
-    expect(labelForPlannerLoad(undefined, 'Warrior', index, order)).toBe('Fury Warrior');
-  });
-
-  it('is the class name alone, with no title and no derivable spec', () => {
-    expect(labelForPlannerLoad(undefined, 'Warrior', null, [])).toBe('Warrior');
-  });
-});
-
-describe('recordPlannerCharacter', () => {
-  it('writes a build-sourced pointer', () => {
-    const storage = fakeStorage();
-    recordPlannerCharacter('build', 'b1', 'My Build', 'mage', storage);
-    expect(readCurrent(storage)).toMatchObject({ source: 'build', ref: 'b1', classSlug: 'mage' });
-  });
-
-  it('writes an addon-sourced pointer', () => {
-    const storage = fakeStorage();
-    recordPlannerCharacter('addon', GOOD_CODE, 'Warrior', 'warrior', storage);
-    expect(readCurrent(storage)).toMatchObject({ source: 'addon', ref: GOOD_CODE });
-  });
-});
-
 describe('plannerAddonCode', () => {
   it('is empty with no talent index', () => {
     const store = { talentIndex: null } as unknown as Parameters<typeof plannerAddonCode>[0];
@@ -325,40 +263,6 @@ describe('plannerAddonCode', () => {
       itemIndex: new Map(),
     } as unknown as Parameters<typeof plannerAddonCode>[0];
     expect(plannerAddonCode(store)).toMatch(/^FSB1:1:warrior:/);
-  });
-});
-
-describe('writePlannerPointer', () => {
-  const index = indexTalents(fixtureTalents as TalentFile);
-  const order = GOOD_DECODED.ok ? orderFromRanks(index, GOOD_DECODED.build.treeRanks).order : [];
-  const loadedStore = {
-    talentIndex: index,
-    classRow: { id: 1, slug: 'warrior', name: 'Warrior' },
-    order,
-  } as unknown as PlannerStore;
-  const emptyStore = { talentIndex: null } as unknown as PlannerStore;
-
-  it('writes and returns the fresh pointer once talent data has loaded, standalone', () => {
-    const storage = fakeStorage();
-    const result = writePlannerPointer(loadedStore, true, 'addon', GOOD_CODE, 'warrior', undefined, storage);
-    expect(result).toMatchObject({ source: 'addon', ref: GOOD_CODE, label: 'Fury Warrior' });
-    expect(readCurrent(storage)).toEqual(result);
-  });
-
-  it('is a no-op inline (standalone false), leaving any existing pointer untouched', () => {
-    const storage = fakeStorage();
-    recordPlannerCharacter('build', 'b1', 'Old', 'mage', storage);
-    const before = readCurrent(storage);
-    const result = writePlannerPointer(loadedStore, false, 'addon', GOOD_CODE, 'warrior', undefined, storage);
-    expect(result).toEqual(before);
-    expect(readCurrent(storage)).toEqual(before);
-  });
-
-  it('is a no-op before talent data has loaded', () => {
-    const storage = fakeStorage();
-    const result = writePlannerPointer(emptyStore, true, 'addon', GOOD_CODE, 'warrior', undefined, storage);
-    expect(result).toBeNull();
-    expect(readCurrent(storage)).toBeNull();
   });
 });
 

@@ -1,127 +1,286 @@
 ---
 // web/src/pages/premium.astro
-// The plans page (design/specs/2026-10-27-launch-pricing.md section 3.1). Static, no client
-// JavaScript files: the interval is a native radiogroup read with :has(), and the founder state
-// is a root attribute set by a six-line inline head script from the window's closing instant.
-// Both intervals and both founder states are always in the DOM inside fixed-height cells.
+// The plans page in the flat system (design/specs/2026-11-08-premium-account.md sections 4, 5):
+// the PageHeader (`Plans`, the lead, signed in the account's plan as the answer), the interval bar,
+// the founder line and at most one state line, then the one Plate (Free and Premium, Premium first
+// on a phone), the guild plans, the rules and the questions open, and the sample coach review in
+// the rail. Static: both intervals and both founder states are in the DOM in fixed cells, and the
+// pre-paint attributes (`data-iv` from ?interval=, `data-founder` from the window's closing
+// instant, `data-premium` from the stored source) pick one. Signed out nothing is fetched; signed
+// in one small module reads /v1/me (premium-account.ts, gap G1).
 import Base from '../layouts/Base.astro';
-import GuildRules from '../components/premium/GuildRules.astro';
-import IntervalControl from '../components/premium/IntervalControl.astro';
-import PageHead from '../components/ui/PageHead.astro';
-import Card from '../components/ui/Card.astro';
-import Disclosure from '../components/ui/Disclosure.astro';
-import PlanCard from '../components/premium/PlanCard.astro';
-import PremiumCoachSample from '../components/premium/PremiumCoachSample.astro';
+import CoachSample from '../components/premium/CoachSample.astro';
+import PlanFeatures from '../components/premium/PlanFeatures.astro';
+import PlanPrice from '../components/premium/PlanPrice.astro';
+import Button from '../components/ui/Button.svelte';
+import Columns from '../components/ui/Columns.svelte';
+import ControlBar from '../components/ui/ControlBar.astro';
+import Notice from '../components/ui/Notice.svelte';
+import Page from '../components/ui/Page.svelte';
+import PageHeader from '../components/ui/PageHeader.svelte';
+import PlanHead from '../components/ui/PlanHead.svelte';
+import Plate from '../components/ui/Plate.svelte';
+import Row from '../components/ui/Row.svelte';
+import RowGrid from '../components/ui/RowGrid.svelte';
+import Section from '../components/ui/Section.svelte';
+import Tag from '../components/ui/Tag.svelte';
 import { checkoutCopy } from '../lib/billing/copy';
-import { FOUNDER_WINDOW_CLOSES } from '../lib/billing/plans';
+import { FOUNDER_WINDOW_CLOSES, INTERVALS, type PlanKey } from '../lib/billing/plans';
 import { plansPageCopy as copy } from '../lib/billing/plans-page-copy';
+import { premiumSourceCopy } from '../lib/billing/premium-source-copy';
+import { myReportsCopy } from '../lib/reports/my-reports-copy';
+import { REGION } from '../lib/ui/regions';
+import { LINK, type ControlGroup } from '../lib/ui/primitives';
+import {
+  FOUNDER_STATES,
+  buttonLabel,
+  checkoutHref,
+  founderKey,
+  trialParts,
+} from '../components/premium/model';
+
+const intervalGroup: ControlGroup = {
+  label: copy.interval.groupLabel,
+  param: 'interval',
+  kind: 'segmented',
+  options: INTERVALS.map((value) => ({ value, label: copy.interval.labels[value] })),
+  value: 'yearly',
+  defaultValue: 'yearly',
+};
+const priced = (plan: PlanKey) =>
+  INTERVALS.flatMap((interval) =>
+    FOUNDER_STATES.map((founder) => ({
+      interval,
+      fd: founderKey(founder),
+      href: checkoutHref(plan, interval),
+      label: buttonLabel(plan, interval, founder),
+    })),
+  );
+const OWNED = Object.entries(premiumSourceCopy.premiumCard);
+const trial = trialParts();
+const guildPlans = [
+  { tier: 'guild' as const, block: copy.guild },
+  { tier: 'raid_guild' as const, block: copy.raidGuild },
+];
 ---
 
-<Base title={copy.title} description={copy.description} path="/premium">
+<Base title={copy.title} description={copy.description} path="/premium" wide>
   <script slot="head" is:inline define:vars={{ closes: FOUNDER_WINDOW_CLOSES }}>
-    // With JavaScript off the attribute is never set and the page keeps showing founder prices
-    // (open is the CSS default), even after the window closes. Checkout charges whatever the
-    // server decides, so only the display can be stale.
-    // No "before" state: founder prices apply from launch until the window closes.
-    document.documentElement.dataset.founder = Date.now() < Date.parse(closes) ? 'open' : 'closed';
+    // With JavaScript off neither attribute is set: founder prices (open is the CSS default) and
+    // yearly show. Checkout charges whatever the server decides, so only the display can be stale.
+    const root = document.documentElement;
+    root.dataset.founder = Date.now() < Date.parse(closes) ? 'open' : 'closed';
+    if (new URLSearchParams(location.search).get('interval') === 'monthly') root.dataset.iv = 'monthly';
   </script>
   <main id="main" tabindex="-1" class="plans-page" data-testid="plans-page">
-    <div class="px-[var(--page-inset)] pt-3">
-      <PageHead eyebrow={copy.band.eyebrow} title={copy.band.heading} job={copy.band.lede}>
-        <IntervalControl slot="aside" />
-        <div slot="below" class="flex flex-col gap-1">
-          <p class="founder-row" data-fd="open" data-testid="founder-row">
-            <span class="pill pill-site">{copy.founder.label}</span>
-            <span>{copy.founder.open}</span>
-          </p>
-          <p class="text-text hidden min-h-11 items-center gap-[6px] text-[13px] md:flex" data-band-guild-row>
-            <span>{copy.band.guildLead}</span>
-            <a
-              href="#guild-leaders"
-              class="inline-flex min-h-11 items-center hover:underline"
-              data-testid="band-guild-link"
-            >
-              {copy.band.guildLink}
-            </a>
-          </p>
+    <PageHeader title={copy.title} tone="strong" lead={copy.band.lede}>
+      <div slot="answer" class="premium-answer-slot" data-premium-slot="answer"></div>
+    </PageHeader>
+    <ControlBar
+      id="plans-bar"
+      label={copy.interval.groupLabel}
+      groups={[intervalGroup]}
+      testid="interval-bar"
+    >
+      <span slot="end" class="plans-bar-end">
+        <span class="text-small text-muted">{copy.band.guildLead}</span>
+        <a class={LINK} href="#guild-leaders" data-testid="band-guild-link">
+          {copy.band.guildLink} ›
+        </a>
+      </span>
+    </ControlBar>
+    <div class="plans-notes">
+      <div data-region={REGION.notes}>
+        <p class="plans-founder" data-fd="open" data-testid="founder-row">
+          <Tag>{copy.founder.label}</Tag>
+          <span>{copy.founder.open}</span>
+        </p>
+        <div class="plans-canceled" hidden data-testid="premium-canceled-notice">
+          <Notice tone="neutral" text={checkoutCopy.canceled} />
         </div>
-      </PageHead>
+        <div data-premium-slot="state"></div>
+      </div>
     </div>
 
-    <div class="body">
-      <p class="canceled" role="status" data-testid="premium-canceled-notice" hidden>
-        {checkoutCopy.canceled}
-      </p>
+    <Page layout="split">
+      <Plate label="Plans for a player" testid="plans-plate">
+        <Columns count={2} open={false} secondFirst>
+          <div data-testid="plan-free" id="free">
+            <PlanHead
+              name={copy.free.name}
+              audience={copy.free.audience}
+              value={copy.free.price}
 
-      <div class="regions">
-        <!-- Region A, for your character (§B3.2): no heading, the band asks the question. Free and
-             Premium are one subgrid row set; the sample coach review spans that row set from 1024. -->
-        <div class="grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-4 lg:grid-cols-3" data-region="a">
-          <PlanCard plan="free" />
-          <PlanCard plan="premium" />
-          <div
-            class="grid md:col-span-2 md:max-w-[480px] lg:col-span-1 lg:row-span-6 lg:max-w-none"
-            data-plan="coach-sample"
-          >
-            <PremiumCoachSample />
-          </div>
-        </div>
-
-        <!-- Region B, for guild leaders (§B3.3): the band's guild link lands here. -->
-        <section id="guild-leaders" class="mt-7 scroll-mt-4 md:mt-10" aria-labelledby="guild-leaders-heading">
-          <h2 id="guild-leaders-heading" class="heading-section">
-            {copy.guildRegion.heading}
-          </h2>
-          <p class="text-text mt-2 max-w-[720px] text-[14px] leading-[1.5]">{copy.guildRegion.lede}</p>
-          <p class="text-muted mt-1 max-w-[720px] text-[13px] leading-[1.45]">{copy.guildRegion.members}</p>
-          <div class="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-4 lg:grid-cols-3" data-guild-row>
-            <PlanCard plan="guild" headingLevel={3} />
-            <PlanCard plan="raid_guild" headingLevel={3} />
-            <p
-              class="history-promise md:col-span-2 lg:col-span-1 lg:row-span-6"
-              data-plan="history"
-              data-testid="history-promise"
+              lines={[{ text: copy.free.note }]}
             >
-              {copy.historyPromise}
+              <span slot="tag" class="your-plan your-plan-free">
+                <Tag tone="success">{copy.yourPlanTag}</Tag>
+              </span>
+            </PlanHead>
+            <PlanFeatures features={copy.free.features} testid="free-features" />
+            <a
+              class={`${LINK} signed-out-only plan-foot`}
+              href="/login?next=%2Fpremium"
+              data-testid="free-sign-in"
+            >
+              {myReportsCopy.signInAction} ›
+            </a>
+          </div>
+          <div data-testid="plan-premium" id="premium">
+            <PlanHead name={copy.premium.name} audience={copy.premium.audience} value="">
+              <span slot="tag" class="your-plan your-plan-premium">
+                <Tag tone="success">{copy.yourPlanTag}</Tag>
+              </span>
+              <PlanPrice slot="price" plan="premium" gold />
+            </PlanHead>
+            <div class="plan-act">
+              {priced('premium').map((b) => (
+                <span class="plan-btn" data-iv={b.interval} data-fd={b.fd}>
+                  <Button tone="primary" href={b.href}>
+                    {b.label}
+                  </Button>
+                </span>
+              ))}
+            </div>
+            <div class="plan-owned">
+              {OWNED.map(([source, line]) => (
+                <p class="owned-line" data-source={source}>
+                  {line}
+                </p>
+              ))}
+              <span>
+                <Button href="/account#plan">{premiumSourceCopy.buttons.seePlan}</Button>
+              </span>
+            </div>
+            <p class="text-small text-muted m-0" data-testid="premium-support">
+              {copy.premium.support}
+            </p>
+            <PlanFeatures features={copy.premium.features} testid="premium-features" />
+            <p class="text-small text-muted m-0" data-testid="premium-scope">
+              {copy.premium.scope}
             </p>
           </div>
-          <div class="mt-7 md:mt-8">
-            <GuildRules />
-          </div>
-        </section>
-      </div>
+        </Columns>
+      </Plate>
 
-      <p class="foot">{copy.foot}</p>
+      <Section title={copy.guildRegion.heading} anchor="guild-leaders">
+        <div class="plans-stack">
+          <p class="plans-lede">{copy.guildRegion.lede}</p>
+          <p class="text-small text-muted m-0">{copy.guildRegion.members}</p>
+          <Columns count={2}>
+            {guildPlans.map(({ tier, block }) => (
+              <div data-testid={`plan-${tier}`} data-guild-column={tier}>
+                <PlanHead name={block.name} audience={block.audience} value="">
+                  <span slot="tag" class="guild-tag">
+                    <Tag tone="success">
+                      <span data-guild-tag></span>
+                    </Tag>
+                  </span>
+                  <PlanPrice slot="price" plan={tier} />
+                </PlanHead>
+                <div class="plan-act guild-subscribe">
+                  {priced(tier).map((b) => (
+                    <span class="plan-btn" data-iv={b.interval} data-fd={b.fd}>
+                      <Button href={b.href}>{b.label}</Button>
+                    </span>
+                  ))}
+                </div>
+                <div class="guild-on" data-premium-slot="guild" data-tier={tier}></div>
+                <p class="text-small text-muted m-0">
+                  <b class="text-strong">{trial.lead}</b>
+                  {trial.rest}
+                </p>
+                <PlanFeatures features={block.features} />
+              </div>
+            ))}
+          </Columns>
+          <p class="text-small text-muted m-0" data-testid="history-promise">
+            {copy.historyPromise}
+          </p>
+        </div>
+      </Section>
 
-      <Card glyph="book" title="Questions" body="rows" id="faq" testid="plans-faq">
-        {copy.faq.map((entry) => (
-          <Disclosure title={entry.question} row>
-            <p class="text-muted m-0 max-w-[80ch] px-5 pb-4 text-[14px] leading-[22px]">{entry.answer}</p>
-          </Disclosure>
-        ))}
-      </Card>
-    </div>
+      <Section title={copy.howItWorks} testid="guild-rules">
+        <RowGrid cols={2}>
+          {copy.rules.map((rule) => (
+            <Row title={rule.term} sub={rule.sentence} open />
+          ))}
+        </RowGrid>
+      </Section>
+
+      <Section title={copy.faqTitle} meta={copy.foot} anchor="faq" testid="plans-faq">
+        <RowGrid cols={2}>
+          {copy.faq.map((entry) => (
+            <Row title={entry.question} sub={entry.answer} open />
+          ))}
+        </RowGrid>
+      </Section>
+
+      <CoachSample slot="rail" />
+    </Page>
   </main>
 
-  <script is:inline>
-    // is:inline: no bundle and no request, so this page ships zero client JavaScript files.
-    // Stripe's cancel_url sends a visitor who backs out of Checkout to this exact page,
-    // ?canceled=1; this static page is the only place that can acknowledge it.
-    if (new URLSearchParams(window.location.search).get('canceled') === '1') {
-      const notice = document.querySelector('[data-testid="premium-canceled-notice"]');
+  <script>
+    import { CONTROL_BAR_EVENT, type ControlBarChange } from '../lib/ui/control-bar';
+    import { syncIntervalRadios } from '../components/premium/interval';
+
+    const root = document.documentElement;
+    // Stripe's cancel_url lands here with ?canceled=1; this static page is the only place that can say so.
+    if (new URLSearchParams(location.search).get('canceled') === '1') {
+      const notice = document.querySelector<HTMLElement>('[data-testid="premium-canceled-notice"]');
       if (notice) notice.hidden = false;
+    }
+    syncIntervalRadios(root.dataset.iv === 'monthly' ? 'monthly' : 'yearly');
+    document.addEventListener(CONTROL_BAR_EVENT, (event) => {
+      const { param, value } = (event as CustomEvent<ControlBarChange>).detail;
+      if (param !== 'interval') return;
+      if (value === 'monthly') root.dataset.iv = 'monthly';
+      else delete root.dataset.iv;
+    });
+    if (root.dataset.session === '1') {
+      void import('../components/premium/premium-account').then((m) => m.bootPremiumAccount());
     }
   </script>
 </Base>
 
 <style is:global>
-  /* One interval and one founder state show; the rest stay in the DOM inside fixed cells. */
-  .plans-page:has(#iv-monthly:checked) [data-iv='yearly'],
-  .plans-page:not(:has(#iv-monthly:checked)) [data-iv='monthly'] {
+  /* One interval and one founder state show; the others keep their box (stacked cells). */
+  :root:not([data-iv='monthly']) .plans-page [data-iv='monthly'],
+  :root[data-iv='monthly'] .plans-page [data-iv='yearly'] {
     display: none;
   }
-  :root[data-founder='closed'] [data-fd='open'],
-  :root:not([data-founder='closed']) [data-fd='closed'] {
+  :root[data-founder='closed'] .plans-page [data-fd='open'],
+  :root:not([data-founder='closed']) .plans-page [data-fd='closed'] {
+    display: none;
+  }
+  /* Signed out the head has no answer; signed in its box is held until /v1/me answers. */
+  :root:not([data-session='1']) .plans-page [data-region='head-answer'],
+  :root[data-plan-mine='out'] .plans-page [data-region='head-answer'] {
+    display: none;
+  }
+  :root[data-session='1'] .plans-page .signed-out-only {
+    display: none;
+  }
+  /* The account's own plan: `Your plan` on Free while it has no Premium, on Premium when it has. */
+  .plans-page .your-plan,
+  .plans-page .guild-tag,
+  .plans-page .plan-owned,
+  .plans-page .owned-line {
+    display: none;
+  }
+  :root[data-premium] .plans-page .plan-owned {
+    display: flex;
+  }
+  :root[data-plan-mine='free']:not([data-premium]) .plans-page .your-plan-free,
+  :root[data-premium] .plans-page .your-plan-premium,
+  :root[data-premium='own'] .plans-page .owned-line[data-source='own'],
+  :root[data-premium='seat'] .plans-page .owned-line[data-source='seat'],
+  :root[data-premium='grant'] .plans-page .owned-line[data-source='grant'],
+  .plans-page [data-on-plan='true'] .guild-tag {
+    display: inline-flex;
+  }
+  :root[data-premium] .plans-page [data-testid='plan-premium'] .plan-act,
+  .plans-page [data-on-plan='true'] .guild-subscribe {
     display: none;
   }
 </style>
@@ -132,46 +291,82 @@ import { plansPageCopy as copy } from '../lib/billing/plans-page-copy';
     flex-direction: column;
     width: 100%;
   }
-  .founder-row {
+  /* The head's row is as tall as the title block, so the answer filling in moves nothing. */
+  @media (min-width: 900px) {
+    .premium-answer-slot {
+      min-width: 300px;
+    }
+  }
+  .plans-bar-end {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 12px;
+  }
+  .plans-notes {
+    padding-inline: var(--page-inset);
+  }
+  .plans-founder {
     display: flex;
-    align-items: flex-start;
-    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 10px;
     margin: 0;
-    font-size: 13px;
+    padding-top: 14px;
+    padding-bottom: 4px;
+    font-size: 15px;
+    line-height: 24px;
     color: var(--color-text);
   }
-  .founder-row .pill {
-    flex: none;
+  .plan-foot {
+    margin-top: auto;
   }
-  .body {
+  .plan-act {
+    display: grid;
+    justify-items: start;
+  }
+
+  .plan-owned {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .owned-line {
+    margin: 0;
+    font-size: 15px;
+    line-height: 24px;
+    color: var(--color-strong);
+  }
+  .plans-stack {
     display: flex;
     flex-direction: column;
-    gap: 22px;
-    padding: 12px var(--page-inset) 56px;
+    gap: 12px;
+    min-width: 0;
   }
-  .canceled {
+  .plans-lede {
     margin: 0;
-    font-size: 14px;
+    max-width: 72ch;
+    font-size: 15px;
+    line-height: 24px;
   }
-  .history-promise {
-    align-self: start;
-    margin: 0;
-    max-width: 720px;
-    padding-left: 14px;
-    border-left: 2px solid var(--color-line);
-    font-size: 14px;
-    line-height: 1.5;
-    color: var(--color-text);
+  .guild-on:empty {
+    display: none;
   }
-  .foot {
-    margin: 0;
-    font-size: 13px;
-    color: var(--color-muted);
+  .guild-on {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
   }
-  @media (min-width: 768px) {
-    .body {
-      gap: 32px;
-      padding: 12px 0 64px;
+  @media (max-width: 767px) {
+    .plan-act,
+    .plan-btn,
+    .plan-btn :global(.ui-btn),
+    .plan-btn :global(a),
+    .plan-owned :global(a) {
+      width: 100%;
+    }
+    .plans-page :global(.plan-btn a) {
+      display: flex;
     }
   }
 </style>

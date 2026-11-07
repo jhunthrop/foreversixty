@@ -1,0 +1,49 @@
+---
+// web/src/components/premium/PlanFeatures.astro
+// A plan's feature lines as a ruled list (premium spec 2026-11-08 section 4.4: Prose ruled lane);
+// a Premium line carries its anchor (the first line of an anchor its id, every line `data-anchor`),
+// so a contextual link lands on it.
+import Prose from '../ui/Prose.svelte';
+import type { PremiumFeature } from '../../lib/billing/plans-page-copy';
+import { featureLines, isFirstOfAnchor } from './model';
+
+interface Props {
+  features: readonly (string | PremiumFeature)[];
+  testid?: string;
+}
+const { features, testid } = Astro.props;
+const lines = featureLines(features);
+const escape = (text: string): string =>
+  text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+const html = `<ul>${lines
+  .map((line, index) => {
+    const id = isFirstOfAnchor(lines, index) && line.anchor !== null ? ` id="${line.anchor}"` : '';
+    const anchor = line.anchor === null ? '' : ` data-anchor="${line.anchor}"`;
+    return `<li${id}${anchor}>${escape(line.text)}</li>`;
+  })
+  .join('')}</ul>`;
+---
+
+<div class="plan-features">
+  <Prose {html} mods={['ruled', 'lane']} {testid} />
+</div>
+
+<style>
+  /* A plan's list is denser than a guide's (premium spec 4.4: 15/22, 8 px rows). */
+  .plan-features :global(.ui-prose) {
+    font-size: 15px;
+    line-height: 22px;
+  }
+  .plan-features :global(li) {
+    padding-block: 8px;
+    scroll-margin-top: 120px;
+  }
+  /* The landing highlight: every line of the anchor a contextual link named, no box change. */
+  .plan-features:has(#coach:target) :global([data-anchor='coach']),
+  .plan-features:has(#server-sims:target) :global([data-anchor='server-sims']),
+  .plan-features:has(#history:target) :global([data-anchor='history']),
+  .plan-features:has(#notifications:target) :global([data-anchor='notifications']) {
+    background: rgb(229 185 85 / 0.08);
+    box-shadow: inset 3px 0 0 var(--color-gold);
+  }
+</style>

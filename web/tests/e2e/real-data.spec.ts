@@ -15,7 +15,6 @@ import { ACTIVE_BUILD } from './support/active-build';
 import {
   bareSpentLine,
   chooseClass,
-  classRadio,
   expectClass,
   pointsLeft,
   shareBuild,
@@ -295,7 +294,7 @@ test('a build shared on the new trees reopens from its link, on desktop and on a
   await page.goto('/b/real1234');
   await expect(page.getByTestId(`tree-points-${arms.id}`)).toHaveText('31');
   await expect(page.getByTestId(`tree-points-${fury.id}`)).toHaveText('20');
-  await expect(classRadio(page, 'warrior')).toHaveAttribute('aria-disabled', 'true');
+  await expect(page.getByTestId('planner-fork-button')).toBeVisible();
 
   await page.setViewportSize({ width: 390, height: 800 });
   await page.reload();

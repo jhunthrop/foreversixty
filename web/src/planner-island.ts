@@ -53,7 +53,13 @@ async function boot(): Promise<void> {
     }
   }
 
-  mount(Planner, { target, props: { treeVersion, classSlug, raceSlug, record } });
+  // The page's reserve (page.go `.b-reserve`) held the footer out of the first screen until now.
+  target.replaceChildren();
+  // A shared build (premium spec 2026-11-08 section 8, G4): its own title and views in the head,
+  // and no class and race bar (decision B3). A record that did not parse mounts a bare planner.
+  const shared =
+    record === null ? {} : { title: record.title ?? null, views: record.views ?? null, hideBar: true };
+  mount(Planner, { target, props: { treeVersion, classSlug, raceSlug, record, ...shared } });
 }
 
 if (document.readyState === 'loading') {

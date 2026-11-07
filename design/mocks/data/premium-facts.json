@@ -2125,6 +2125,1223 @@
    ]
   }
  },
+ "raw_accounts": {
+  "free": {
+   "user": {
+    "id": 7,
+    "battletag": "Hunthrop#1894",
+    "email": null,
+    "role": "user",
+    "anonymize": false
+   },
+   "characters": [
+    {
+     "key": "us/normal/felsnap",
+     "region": "us",
+     "ruleset": "normal",
+     "name": "Felsnap",
+     "class": "Hunter",
+     "spec": "Beast Mastery",
+     "race": "Dwarf",
+     "realm": "Skyborne",
+     "level": 34,
+     "faction": "alliance",
+     "item_level": 31,
+     "source": "bnet",
+     "build": {
+      "source": "addon",
+      "captured_at": "2026-11-04T19:30:00Z",
+      "level": 34,
+      "data_build": "1.60.1.70790",
+      "gear": {
+       "head": 252504,
+       "neck": 273049,
+       "shoulder": 2264,
+       "back": 14593,
+       "chest": 2041,
+       "wrist": 897,
+       "hands": 7358,
+       "waist": 20090,
+       "legs": 9509,
+       "feet": 10402,
+       "finger1": 6748,
+       "finger2": 6748,
+       "main_hand": 6679,
+       "ranged": 13137
+      },
+      "talents": {
+       "trees": [
+        "0000000000000000",
+        "00000000000000000",
+        "000000000000000000"
+       ],
+       "points": [
+        23,
+        0,
+        0
+       ]
+      }
+     }
+    }
+   ],
+   "guilds": [],
+   "bnet_imported_at": "2026-11-06T09:00:00Z",
+   "main_character_key": "us/normal/felsnap",
+   "entitlements": {
+    "personal_portal": false,
+    "server_sims": false,
+    "retention": false,
+    "multi_compare": false,
+    "history": false,
+    "notifications": false,
+    "officer_views": false,
+    "roster_check": false,
+    "log_coach": false,
+    "supporter_mark": false,
+    "billing": null
+   },
+   "notifications": {
+    "connect": true,
+    "discord": null
+   },
+   "discord_link_available": true,
+   "discord_link": null
+  },
+  "new": {
+   "user": {
+    "id": 7,
+    "battletag": "Hunthrop#1894",
+    "email": null,
+    "role": "user",
+    "anonymize": false
+   },
+   "characters": [],
+   "guilds": [],
+   "bnet_imported_at": "2026-11-06T09:00:00Z",
+   "main_character_key": null,
+   "entitlements": {
+    "personal_portal": false,
+    "server_sims": false,
+    "retention": false,
+    "multi_compare": false,
+    "history": false,
+    "notifications": false,
+    "officer_views": false,
+    "roster_check": false,
+    "log_coach": false,
+    "supporter_mark": false,
+    "billing": null
+   },
+   "notifications": {
+    "connect": true,
+    "discord": null
+   },
+   "discord_link_available": true,
+   "discord_link": null
+  },
+  "several": {
+   "user": {
+    "id": 7,
+    "battletag": "Hunthrop#1894",
+    "email": null,
+    "role": "user",
+    "anonymize": false
+   },
+   "characters": [
+    {
+     "key": "us/normal/felsnap",
+     "region": "us",
+     "ruleset": "normal",
+     "name": "Felsnap",
+     "class": "Hunter",
+     "spec": "Beast Mastery",
+     "race": "Dwarf",
+     "realm": "Skyborne",
+     "level": 34,
+     "faction": "alliance",
+     "item_level": 31,
+     "source": "bnet",
+     "build": {
+      "source": "addon",
+      "captured_at": "2026-11-04T19:30:00Z",
+      "level": 34,
+      "data_build": "1.60.1.70790",
+      "gear": {
+       "head": 252504,
+       "neck": 273049,
+       "shoulder": 2264,
+       "back": 14593,
+       "chest": 2041,
+       "wrist": 897,
+       "hands": 7358,
+       "waist": 20090,
+       "legs": 9509,
+       "feet": 10402,
+       "finger1": 6748,
+       "finger2": 6748,
+       "main_hand": 6679,
+       "ranged": 13137
+      },
+      "talents": {
+       "trees": [
+        "0000000000000000",
+        "00000000000000000",
+        "000000000000000000"
+       ],
+       "points": [
+        23,
+        0,
+        0
+       ]
+      }
+     }
+    },
+    {
+     "key": "us-normal-brisa",
+     "region": "us",
+     "ruleset": "normal",
+     "name": "Brisa",
+     "class": "Druid",
+     "realm": "Skyborne",
+     "level": 19,
+     "faction": "alliance",
+     "race": "Night Elf",
+     "source": "bnet"
+    },
+    {
+     "key": "us-normal-korrin",
+     "region": "us",
+     "ruleset": "normal",
+     "name": "Korrin",
+     "class": "Priest",
+     "realm": "Skyborne",
+     "level": 27,
+     "faction": "alliance",
+     "race": "Dwarf",
+     "spec": "Holy",
+     "source": "export",
+     "build": {
+      "source": "addon",
+      "captured_at": "2026-11-08T05:12:00.000Z",
+      "level": 27
+     }
+    }
+   ],
+   "guilds": [],
+   "bnet_imported_at": "2026-11-06T09:00:00Z",
+   "main_character_key": "us/normal/felsnap",
+   "entitlements": {
+    "personal_portal": false,
+    "server_sims": false,
+    "retention": false,
+    "multi_compare": false,
+    "history": false,
+    "notifications": false,
+    "officer_views": false,
+    "roster_check": false,
+    "log_coach": false,
+    "supporter_mark": false,
+    "billing": null
+   },
+   "notifications": {
+    "connect": true,
+    "discord": null
+   },
+   "discord_link_available": true,
+   "discord_link": null
+  },
+  "premium": {
+   "user": {
+    "id": 7,
+    "battletag": "Hunthrop#1894",
+    "email": null,
+    "role": "user",
+    "anonymize": false
+   },
+   "characters": [
+    {
+     "key": "us/normal/thandrel",
+     "region": "us",
+     "ruleset": "normal",
+     "name": "Thandrel",
+     "class": "Warrior",
+     "spec": "Fury",
+     "race": "Human",
+     "realm": "Skyborne",
+     "level": 60,
+     "faction": "alliance",
+     "item_level": 61,
+     "source": "bnet",
+     "build": {
+      "source": "addon",
+      "captured_at": "2026-11-04T19:30:00Z",
+      "level": 60,
+      "data_build": "1.60.1.70790",
+      "gear": {
+       "head": 23314,
+       "neck": 11933,
+       "shoulder": 12927,
+       "back": 13340,
+       "chest": 252483,
+       "wrist": 19578,
+       "hands": 231541,
+       "waist": 19044,
+       "legs": 231540,
+       "feet": 275618,
+       "finger1": 13098,
+       "finger2": 19514,
+       "trinket1": 11815,
+       "trinket2": 249470,
+       "main_hand": 279259,
+       "off_hand": 22384,
+       "ranged": 2100
+      },
+      "talents": {
+       "trees": [
+        "0000000000000000",
+        "00000000000000000",
+        "000000000000000000"
+       ],
+       "points": [
+        17,
+        34,
+        0
+       ]
+      }
+     },
+     "guild": {
+      "id": 2,
+      "name": "Olympus XXVII",
+      "rank": "Officer",
+      "verified": true,
+      "attendance": {
+       "present": 3,
+       "nights": 4
+      }
+     }
+    }
+   ],
+   "guilds": [
+    {
+     "id": 2,
+     "region": "us",
+     "ruleset": "normal",
+     "name": "Olympus XXVII",
+     "slug": "olympus-xxvii",
+     "rank": "Officer",
+     "verified": true,
+     "verified_count": 18,
+     "faction": "alliance",
+     "consent": "gear",
+     "plan": {
+      "tier": "guild",
+      "you_hold_seat": false,
+      "scope": "plan",
+      "status": "active",
+      "current_period_end": "2027-10-04T10:00:00.000Z",
+      "cancel_at_period_end": false,
+      "billed_by": "Thandrel",
+      "you_are_billing_contact": true
+     },
+     "can": [
+      "approve",
+      "remove",
+      "settings",
+      "award",
+      "billing"
+     ]
+    }
+   ],
+   "bnet_imported_at": "2026-11-06T09:00:00Z",
+   "main_character_key": "us/normal/thandrel",
+   "entitlements": {
+    "personal_portal": true,
+    "server_sims": true,
+    "retention": true,
+    "multi_compare": true,
+    "history": true,
+    "notifications": true,
+    "officer_views": false,
+    "roster_check": false,
+    "log_coach": true,
+    "supporter_mark": true,
+    "billing": {
+     "source": "stripe",
+     "plan": "premium",
+     "status": "active",
+     "current_period_end": "2027-11-04T10:00:00.000Z",
+     "cancel_at_period_end": false,
+     "founder": true,
+     "interval": "yearly",
+     "amount_cents": 4000
+    }
+   },
+   "notifications": {
+    "connect": true,
+    "discord": {
+     "channel_id": "1183920045519",
+     "source": "connected",
+     "guild_id": "7712",
+     "name": "Forever Sixty",
+     "events": {
+      "sim_finished": true,
+      "upload_parsed": true,
+      "upload_private": false
+     },
+     "disabled_reason": null,
+     "last_error": null,
+     "failures": 0
+    }
+   },
+   "discord_link_available": true,
+   "discord_link": {
+    "display_name": "thandrel"
+   },
+   "server_sims": {
+    "runs_this_month": 4
+   }
+  },
+  "monthly": {
+   "user": {
+    "id": 7,
+    "battletag": "Hunthrop#1894",
+    "email": null,
+    "role": "user",
+    "anonymize": false
+   },
+   "characters": [
+    {
+     "key": "us/normal/felsnap",
+     "region": "us",
+     "ruleset": "normal",
+     "name": "Felsnap",
+     "class": "Hunter",
+     "spec": "Beast Mastery",
+     "race": "Dwarf",
+     "realm": "Skyborne",
+     "level": 34,
+     "faction": "alliance",
+     "item_level": 31,
+     "source": "bnet",
+     "build": {
+      "source": "addon",
+      "captured_at": "2026-11-04T19:30:00Z",
+      "level": 34,
+      "data_build": "1.60.1.70790",
+      "gear": {
+       "head": 252504,
+       "neck": 273049,
+       "shoulder": 2264,
+       "back": 14593,
+       "chest": 2041,
+       "wrist": 897,
+       "hands": 7358,
+       "waist": 20090,
+       "legs": 9509,
+       "feet": 10402,
+       "finger1": 6748,
+       "finger2": 6748,
+       "main_hand": 6679,
+       "ranged": 13137
+      },
+      "talents": {
+       "trees": [
+        "0000000000000000",
+        "00000000000000000",
+        "000000000000000000"
+       ],
+       "points": [
+        23,
+        0,
+        0
+       ]
+      }
+     }
+    }
+   ],
+   "guilds": [],
+   "bnet_imported_at": "2026-11-06T09:00:00Z",
+   "main_character_key": "us/normal/felsnap",
+   "entitlements": {
+    "personal_portal": true,
+    "server_sims": true,
+    "retention": true,
+    "multi_compare": true,
+    "history": true,
+    "notifications": true,
+    "officer_views": false,
+    "roster_check": false,
+    "log_coach": true,
+    "supporter_mark": true,
+    "billing": {
+     "source": "stripe",
+     "plan": "premium",
+     "status": "active",
+     "current_period_end": "2026-12-04T10:00:00.000Z",
+     "cancel_at_period_end": false,
+     "founder": true,
+     "interval": "monthly",
+     "amount_cents": 500
+    }
+   },
+   "notifications": {
+    "connect": true,
+    "discord": null
+   },
+   "discord_link_available": true,
+   "discord_link": null
+  },
+  "ending": {
+   "user": {
+    "id": 7,
+    "battletag": "Hunthrop#1894",
+    "email": null,
+    "role": "user",
+    "anonymize": false
+   },
+   "characters": [
+    {
+     "key": "us/normal/felsnap",
+     "region": "us",
+     "ruleset": "normal",
+     "name": "Felsnap",
+     "class": "Hunter",
+     "spec": "Beast Mastery",
+     "race": "Dwarf",
+     "realm": "Skyborne",
+     "level": 34,
+     "faction": "alliance",
+     "item_level": 31,
+     "source": "bnet",
+     "build": {
+      "source": "addon",
+      "captured_at": "2026-11-04T19:30:00Z",
+      "level": 34,
+      "data_build": "1.60.1.70790",
+      "gear": {
+       "head": 252504,
+       "neck": 273049,
+       "shoulder": 2264,
+       "back": 14593,
+       "chest": 2041,
+       "wrist": 897,
+       "hands": 7358,
+       "waist": 20090,
+       "legs": 9509,
+       "feet": 10402,
+       "finger1": 6748,
+       "finger2": 6748,
+       "main_hand": 6679,
+       "ranged": 13137
+      },
+      "talents": {
+       "trees": [
+        "0000000000000000",
+        "00000000000000000",
+        "000000000000000000"
+       ],
+       "points": [
+        23,
+        0,
+        0
+       ]
+      }
+     }
+    }
+   ],
+   "guilds": [],
+   "bnet_imported_at": "2026-11-06T09:00:00Z",
+   "main_character_key": "us/normal/felsnap",
+   "entitlements": {
+    "personal_portal": true,
+    "server_sims": true,
+    "retention": true,
+    "multi_compare": true,
+    "history": true,
+    "notifications": true,
+    "officer_views": false,
+    "roster_check": false,
+    "log_coach": true,
+    "supporter_mark": true,
+    "billing": {
+     "source": "stripe",
+     "plan": "premium",
+     "status": "active",
+     "current_period_end": "2026-12-18T10:00:00.000Z",
+     "cancel_at_period_end": true,
+     "founder": true,
+     "interval": "yearly",
+     "amount_cents": 4000
+    }
+   },
+   "notifications": {
+    "connect": true,
+    "discord": null
+   },
+   "discord_link_available": true,
+   "discord_link": null
+  },
+  "grant": {
+   "user": {
+    "id": 7,
+    "battletag": "Hunthrop#1894",
+    "email": null,
+    "role": "user",
+    "anonymize": false
+   },
+   "characters": [
+    {
+     "key": "us/normal/felsnap",
+     "region": "us",
+     "ruleset": "normal",
+     "name": "Felsnap",
+     "class": "Hunter",
+     "spec": "Beast Mastery",
+     "race": "Dwarf",
+     "realm": "Skyborne",
+     "level": 34,
+     "faction": "alliance",
+     "item_level": 31,
+     "source": "bnet",
+     "build": {
+      "source": "addon",
+      "captured_at": "2026-11-04T19:30:00Z",
+      "level": 34,
+      "data_build": "1.60.1.70790",
+      "gear": {
+       "head": 252504,
+       "neck": 273049,
+       "shoulder": 2264,
+       "back": 14593,
+       "chest": 2041,
+       "wrist": 897,
+       "hands": 7358,
+       "waist": 20090,
+       "legs": 9509,
+       "feet": 10402,
+       "finger1": 6748,
+       "finger2": 6748,
+       "main_hand": 6679,
+       "ranged": 13137
+      },
+      "talents": {
+       "trees": [
+        "0000000000000000",
+        "00000000000000000",
+        "000000000000000000"
+       ],
+       "points": [
+        23,
+        0,
+        0
+       ]
+      }
+     }
+    }
+   ],
+   "guilds": [],
+   "bnet_imported_at": "2026-11-06T09:00:00Z",
+   "main_character_key": "us/normal/felsnap",
+   "entitlements": {
+    "personal_portal": false,
+    "server_sims": true,
+    "retention": true,
+    "multi_compare": true,
+    "history": true,
+    "notifications": true,
+    "officer_views": false,
+    "roster_check": false,
+    "log_coach": true,
+    "supporter_mark": true,
+    "billing": {
+     "source": "grant",
+     "plan": "premium",
+     "status": "active",
+     "current_period_end": null,
+     "cancel_at_period_end": false,
+     "founder": false,
+     "interval": null,
+     "amount_cents": null
+    }
+   },
+   "notifications": {
+    "connect": true,
+    "discord": null
+   },
+   "discord_link_available": true,
+   "discord_link": null
+  },
+  "seat": {
+   "user": {
+    "id": 7,
+    "battletag": "Hunthrop#1894",
+    "email": null,
+    "role": "user",
+    "anonymize": false
+   },
+   "characters": [
+    {
+     "key": "us/normal/felsnap",
+     "region": "us",
+     "ruleset": "normal",
+     "name": "Felsnap",
+     "class": "Hunter",
+     "spec": "Beast Mastery",
+     "race": "Dwarf",
+     "realm": "Skyborne",
+     "level": 34,
+     "faction": "alliance",
+     "item_level": 31,
+     "source": "bnet",
+     "build": {
+      "source": "addon",
+      "captured_at": "2026-11-04T19:30:00Z",
+      "level": 34,
+      "data_build": "1.60.1.70790",
+      "gear": {
+       "head": 252504,
+       "neck": 273049,
+       "shoulder": 2264,
+       "back": 14593,
+       "chest": 2041,
+       "wrist": 897,
+       "hands": 7358,
+       "waist": 20090,
+       "legs": 9509,
+       "feet": 10402,
+       "finger1": 6748,
+       "finger2": 6748,
+       "main_hand": 6679,
+       "ranged": 13137
+      },
+      "talents": {
+       "trees": [
+        "0000000000000000",
+        "00000000000000000",
+        "000000000000000000"
+       ],
+       "points": [
+        23,
+        0,
+        0
+       ]
+      }
+     }
+    }
+   ],
+   "guilds": [
+    {
+     "id": 2,
+     "region": "us",
+     "ruleset": "normal",
+     "name": "Olympus XXVII",
+     "slug": "olympus-xxvii",
+     "rank": "Member",
+     "verified": true,
+     "verified_count": 18,
+     "faction": "alliance",
+     "consent": "gear",
+     "plan": {
+      "tier": "guild",
+      "you_hold_seat": true,
+      "scope": "plan",
+      "status": "active",
+      "current_period_end": "2027-10-04T10:00:00.000Z",
+      "cancel_at_period_end": false,
+      "billed_by": "Thandrel",
+      "you_are_billing_contact": false
+     },
+     "can": []
+    }
+   ],
+   "bnet_imported_at": "2026-11-06T09:00:00Z",
+   "main_character_key": "us/normal/felsnap",
+   "entitlements": {
+    "personal_portal": false,
+    "server_sims": true,
+    "retention": true,
+    "multi_compare": true,
+    "history": true,
+    "notifications": true,
+    "officer_views": false,
+    "roster_check": false,
+    "log_coach": true,
+    "supporter_mark": true,
+    "billing": null
+   },
+   "notifications": {
+    "connect": true,
+    "discord": null
+   },
+   "discord_link_available": true,
+   "discord_link": null,
+   "seat": {
+    "guild_name": "Olympus XXVII",
+    "given_by": "Thandrel",
+    "since": "2026-11-02T10:00:00.000Z",
+    "starts_at": null
+   }
+  },
+  "offer": {
+   "user": {
+    "id": 7,
+    "battletag": "Hunthrop#1894",
+    "email": null,
+    "role": "user",
+    "anonymize": false
+   },
+   "characters": [
+    {
+     "key": "us/normal/felsnap",
+     "region": "us",
+     "ruleset": "normal",
+     "name": "Felsnap",
+     "class": "Hunter",
+     "spec": "Beast Mastery",
+     "race": "Dwarf",
+     "realm": "Skyborne",
+     "level": 34,
+     "faction": "alliance",
+     "item_level": 31,
+     "source": "bnet",
+     "build": {
+      "source": "addon",
+      "captured_at": "2026-11-04T19:30:00Z",
+      "level": 34,
+      "data_build": "1.60.1.70790",
+      "gear": {
+       "head": 252504,
+       "neck": 273049,
+       "shoulder": 2264,
+       "back": 14593,
+       "chest": 2041,
+       "wrist": 897,
+       "hands": 7358,
+       "waist": 20090,
+       "legs": 9509,
+       "feet": 10402,
+       "finger1": 6748,
+       "finger2": 6748,
+       "main_hand": 6679,
+       "ranged": 13137
+      },
+      "talents": {
+       "trees": [
+        "0000000000000000",
+        "00000000000000000",
+        "000000000000000000"
+       ],
+       "points": [
+        23,
+        0,
+        0
+       ]
+      }
+     }
+    }
+   ],
+   "guilds": [],
+   "bnet_imported_at": "2026-11-06T09:00:00Z",
+   "main_character_key": "us/normal/felsnap",
+   "entitlements": {
+    "personal_portal": true,
+    "server_sims": true,
+    "retention": true,
+    "multi_compare": true,
+    "history": true,
+    "notifications": true,
+    "officer_views": false,
+    "roster_check": false,
+    "log_coach": true,
+    "supporter_mark": true,
+    "billing": {
+     "source": "stripe",
+     "plan": "premium",
+     "status": "active",
+     "current_period_end": "2027-03-08T10:00:00.000Z",
+     "cancel_at_period_end": false,
+     "founder": true,
+     "interval": "yearly",
+     "amount_cents": 4000
+    }
+   },
+   "notifications": {
+    "connect": true,
+    "discord": null
+   },
+   "discord_link_available": true,
+   "discord_link": null,
+   "seat_offer": {
+    "guild_id": 2,
+    "guild_name": "Olympus XXVII",
+    "from_name": "Thandrel",
+    "offered_at": "2026-11-07T10:00:00.000Z",
+    "own_ends_at": "2027-03-08T10:00:00.000Z",
+    "own_amount_cents": 4000,
+    "own_interval": "yearly"
+   }
+  },
+  "ended": {
+   "user": {
+    "id": 7,
+    "battletag": "Hunthrop#1894",
+    "email": null,
+    "role": "user",
+    "anonymize": false
+   },
+   "characters": [
+    {
+     "key": "us/normal/felsnap",
+     "region": "us",
+     "ruleset": "normal",
+     "name": "Felsnap",
+     "class": "Hunter",
+     "spec": "Beast Mastery",
+     "race": "Dwarf",
+     "realm": "Skyborne",
+     "level": 34,
+     "faction": "alliance",
+     "item_level": 31,
+     "source": "bnet",
+     "build": {
+      "source": "addon",
+      "captured_at": "2026-11-04T19:30:00Z",
+      "level": 34,
+      "data_build": "1.60.1.70790",
+      "gear": {
+       "head": 252504,
+       "neck": 273049,
+       "shoulder": 2264,
+       "back": 14593,
+       "chest": 2041,
+       "wrist": 897,
+       "hands": 7358,
+       "waist": 20090,
+       "legs": 9509,
+       "feet": 10402,
+       "finger1": 6748,
+       "finger2": 6748,
+       "main_hand": 6679,
+       "ranged": 13137
+      },
+      "talents": {
+       "trees": [
+        "0000000000000000",
+        "00000000000000000",
+        "000000000000000000"
+       ],
+       "points": [
+        23,
+        0,
+        0
+       ]
+      }
+     }
+    }
+   ],
+   "guilds": [],
+   "bnet_imported_at": "2026-11-06T09:00:00Z",
+   "main_character_key": "us/normal/felsnap",
+   "entitlements": {
+    "personal_portal": true,
+    "server_sims": false,
+    "retention": false,
+    "multi_compare": false,
+    "history": false,
+    "notifications": false,
+    "officer_views": false,
+    "roster_check": false,
+    "log_coach": false,
+    "supporter_mark": false,
+    "billing": null
+   },
+   "notifications": {
+    "connect": true,
+    "discord": null
+   },
+   "discord_link_available": true,
+   "discord_link": null,
+   "ended_seat": {
+    "guild_name": "Olympus XXVII",
+    "ended_at": "2026-11-02T10:00:00.000Z",
+    "resubscribe_url": "/premium/checkout?plan=premium&interval=yearly&comeback=cb_9f2",
+    "amount_cents": 4000,
+    "interval": "yearly"
+   }
+  },
+  "pastdue": {
+   "user": {
+    "id": 7,
+    "battletag": "Hunthrop#1894",
+    "email": null,
+    "role": "user",
+    "anonymize": false
+   },
+   "characters": [
+    {
+     "key": "us/normal/felsnap",
+     "region": "us",
+     "ruleset": "normal",
+     "name": "Felsnap",
+     "class": "Hunter",
+     "spec": "Beast Mastery",
+     "race": "Dwarf",
+     "realm": "Skyborne",
+     "level": 34,
+     "faction": "alliance",
+     "item_level": 31,
+     "source": "bnet",
+     "build": {
+      "source": "addon",
+      "captured_at": "2026-11-04T19:30:00Z",
+      "level": 34,
+      "data_build": "1.60.1.70790",
+      "gear": {
+       "head": 252504,
+       "neck": 273049,
+       "shoulder": 2264,
+       "back": 14593,
+       "chest": 2041,
+       "wrist": 897,
+       "hands": 7358,
+       "waist": 20090,
+       "legs": 9509,
+       "feet": 10402,
+       "finger1": 6748,
+       "finger2": 6748,
+       "main_hand": 6679,
+       "ranged": 13137
+      },
+      "talents": {
+       "trees": [
+        "0000000000000000",
+        "00000000000000000",
+        "000000000000000000"
+       ],
+       "points": [
+        23,
+        0,
+        0
+       ]
+      }
+     }
+    }
+   ],
+   "guilds": [],
+   "bnet_imported_at": "2026-11-06T09:00:00Z",
+   "main_character_key": "us/normal/felsnap",
+   "entitlements": {
+    "personal_portal": true,
+    "server_sims": true,
+    "retention": true,
+    "multi_compare": true,
+    "history": true,
+    "notifications": true,
+    "officer_views": false,
+    "roster_check": false,
+    "log_coach": true,
+    "supporter_mark": true,
+    "billing": {
+     "source": "stripe",
+     "plan": "premium",
+     "status": "past_due",
+     "current_period_end": "2026-11-11T10:00:00.000Z",
+     "cancel_at_period_end": false,
+     "founder": true,
+     "interval": "yearly",
+     "amount_cents": 4000
+    }
+   },
+   "notifications": {
+    "connect": true,
+    "discord": null
+   },
+   "discord_link_available": true,
+   "discord_link": null
+  },
+  "claim": {
+   "user": {
+    "id": 7,
+    "battletag": "Hunthrop#1894",
+    "email": null,
+    "role": "user",
+    "anonymize": false
+   },
+   "characters": [
+    {
+     "key": "us/normal/thandrel",
+     "region": "us",
+     "ruleset": "normal",
+     "name": "Thandrel",
+     "class": "Warrior",
+     "spec": "Fury",
+     "race": "Human",
+     "realm": "Skyborne",
+     "level": 60,
+     "faction": "alliance",
+     "item_level": 61,
+     "source": "bnet",
+     "build": {
+      "source": "addon",
+      "captured_at": "2026-11-04T19:30:00Z",
+      "level": 60,
+      "data_build": "1.60.1.70790",
+      "gear": {
+       "head": 23314,
+       "neck": 11933,
+       "shoulder": 12927,
+       "back": 13340,
+       "chest": 252483,
+       "wrist": 19578,
+       "hands": 231541,
+       "waist": 19044,
+       "legs": 231540,
+       "feet": 275618,
+       "finger1": 13098,
+       "finger2": 19514,
+       "trinket1": 11815,
+       "trinket2": 249470,
+       "main_hand": 279259,
+       "off_hand": 22384,
+       "ranged": 2100
+      },
+      "talents": {
+       "trees": [
+        "0000000000000000",
+        "00000000000000000",
+        "000000000000000000"
+       ],
+       "points": [
+        17,
+        34,
+        0
+       ]
+      }
+     },
+     "guild": {
+      "id": 2,
+      "name": "Olympus XXVII",
+      "rank": "Officer",
+      "verified": true,
+      "attendance": {
+       "present": 3,
+       "nights": 4
+      }
+     }
+    }
+   ],
+   "guilds": [
+    {
+     "id": 2,
+     "region": "us",
+     "ruleset": "normal",
+     "name": "Olympus XXVII",
+     "slug": "olympus-xxvii",
+     "rank": "Officer",
+     "verified": true,
+     "verified_count": 18,
+     "faction": "alliance",
+     "consent": "gear",
+     "can": [
+      "approve"
+     ],
+     "claim": {
+      "state": "pending",
+      "yours": false,
+      "pending_yours": true,
+      "holder_name": null
+     },
+     "subscribe": {
+      "step": "claim_pending_yours",
+      "trial_used": false,
+      "available_at": null,
+      "reason": null,
+      "other_guild_name": null
+     }
+    },
+    {
+     "id": 7,
+     "region": "us",
+     "ruleset": "normal",
+     "name": "Pinefeather Lodge",
+     "slug": "pinefeather-lodge",
+     "rank": "Member",
+     "consent": "roster",
+     "verified": false,
+     "verified_count": 4,
+     "faction": "alliance",
+     "can": [],
+     "subscribe": {
+      "step": "ask_leader",
+      "trial_used": null,
+      "available_at": null,
+      "reason": null,
+      "other_guild_name": null
+     }
+    }
+   ],
+   "bnet_imported_at": "2026-11-06T09:00:00Z",
+   "main_character_key": "us/normal/thandrel",
+   "entitlements": {
+    "personal_portal": false,
+    "server_sims": false,
+    "retention": false,
+    "multi_compare": false,
+    "history": false,
+    "notifications": false,
+    "officer_views": false,
+    "roster_check": false,
+    "log_coach": false,
+    "supporter_mark": false,
+    "billing": null
+   },
+   "notifications": {
+    "connect": true,
+    "discord": null
+   },
+   "discord_link_available": true,
+   "discord_link": null
+  }
+ },
+ "raw_devices": {
+  "none": [],
+  "one": [
+   {
+    "id": "d1",
+    "name": "JHUNT-PC",
+    "platform": "windows/amd64",
+    "kind": "companion",
+    "created_at": "2026-11-03T18:00:00Z",
+    "last_seen_at": "2026-11-06T09:57:00Z"
+   }
+  ],
+  "several": [
+   {
+    "id": "d1",
+    "name": "JHUNT-PC",
+    "platform": "windows/amd64",
+    "kind": "companion",
+    "created_at": "2026-11-03T18:00:00Z",
+    "last_seen_at": "2026-11-06T09:57:00Z"
+   },
+   {
+    "id": "d2",
+    "name": "STEAMDECK",
+    "platform": "linux/amd64",
+    "kind": "companion",
+    "created_at": "2026-10-19T10:00:00.000Z",
+    "last_seen_at": "2026-11-06T10:00:00.000Z"
+   },
+   {
+    "id": "d3",
+    "name": "MacBook Air",
+    "platform": "darwin/arm64",
+    "kind": "companion",
+    "created_at": "2026-11-07T10:00:00.000Z",
+    "last_seen_at": null
+   }
+  ]
+ },
  "checkout_trial_saved": "Card saved. First charge 15 Nov 2026.",
  "checkout_renewal": "$40 a year · renews 4 Nov 2027 · receipt from Stripe by email",
  "checkout_signed_in": "Signed in as Hunthrop#1894",
@@ -2133,7 +3350,7 @@
  "shared": {
   "note": "This build was shared as a link. Edit a copy to spend points of your own.",
   "fork": "Edit a copy",
-  "readOnly": "This build was opened from a share link; fork it to edit",
+  "readOnly": "This build was opened from a share link; edit a copy to change it",
   "shareTitle": "Share this build",
   "meta": "Shared build",
   "views": {

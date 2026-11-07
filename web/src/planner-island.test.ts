@@ -153,4 +153,17 @@ describe('planner-island.css', () => {
       ).toEqual([]);
     });
   }
+
+  // The API's /b/:id message pages (api/internal/site/page.go: not found, failed to load) draw the
+  // system Button and link with the site's own utilities, which only this stylesheet carries there.
+  it('covers the classes the API message page renders', async () => {
+    const pageGo = await readFile(path.join(WEB_ROOT, '../api/internal/site/page.go'), 'utf8');
+    const recipe = (name: string): string[] => {
+      const body = new RegExp(`\\b${name}\\s*=\\s*((?:"[^"]*"\\s*\\+?\\s*)+)`).exec(pageGo)?.[1] ?? '';
+      return [...body.matchAll(/"([^"]*)"/g)].flatMap(([, part]) => part.split(/\s+/).filter(Boolean));
+    };
+    const names = [...recipe('primaryButtonClass'), ...recipe('linkClass'), 'page-column', 'bg-bg'];
+    expect(names).toContain('h-11');
+    expect(names.filter((className) => !hasSelector(css, className))).toEqual([]);
+  });
 });

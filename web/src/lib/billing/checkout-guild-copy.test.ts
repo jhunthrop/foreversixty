@@ -90,7 +90,8 @@ describe('steps', () => {
   it('ready', () => {
     expect(copy.ready.holdsClaim(G)).toBe(row('`ready`, trial unused', 0, { Guild: G }));
     expect(copy.ready.holdsClaim(G)).toBe(row('`ready`, trial used', 0, { Guild: G }));
-    expect(copy.ready.startTrial).toBe(row('`ready`, trial unused', 1));
+    // Ruling SHOULD (design/specs/2026-11-08-premium-account.md 0A): the trial button names the price after it.
+    expect(copy.ready.startTrial('$120 a year')).toBe('Start 7 free days · then $120 a year');
     expect(copy.ready.subscribe('$120 a year')).toBe(row('`ready`, trial used', 1, { price: '$120 a year' }));
     expect(copy.ready.lapsed(G, '2027-11-18')).toBe(
       row('`ready`, lapsed', 0, { Guild: G, date: '18 Nov 2027' }),
@@ -154,7 +155,7 @@ describe('steps', () => {
   it('a guild name ending in s takes the apostrophe alone', () => {
     const name = 'Employed Millennials';
     expect(copy.askLeader(name)).toBe(
-      "Only Employed Millennials' guild master can claim it and subscribe it. Send them this link.",
+      "Employed Millennials' guild master can claim it, or an officer with a second officer's confirmation. Send them this link.",
     );
     expect(copy.copyField.labelGuildMaster(name)).toBe("Link for Employed Millennials' guild master");
     expect(copy.claimBlocked.holdsOther(name, G)).toMatch(/^You already hold Employed Millennials' claim\./);

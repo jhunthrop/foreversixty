@@ -8,6 +8,8 @@ Code read for this spec: `web/src/components/CheckoutLauncher.svelte`, `web/src/
 
 **Raid size.** Forever runs 10-, 20- and 40-person raids. No copy here assumes 40. A 10-person raid team, and a 20-person one with a small bench, fits under Guild's 25-member cap; the checkout says so where the plan is shown (§5.1, §9.1).
 
+> Amended 2026-11-08 (premium round, ruling Q8): the claim lines below follow the API's rule (api/internal/guilds/claim.go): a guild master claims at once, an officer with a second officer's or the guild master's confirmation; whoever holds the claim subscribes.
+
 ## 0. What we got wrong before
 
 1. Launch pricing §3.1.7 listed only guilds the viewer could already bill (`can` holds `billing`, `plan` null). Billing needs a claimed guild and a verified claim holder. On launch day almost no guild is claimed. So the list was empty for nearly everyone, and the "edge case" line was the page.
@@ -475,10 +477,10 @@ Prices, dates and counts come from `plans.ts`, `GUILD_TIER_MEMBER_LIMIT` and the
 | Size line, Guild | `Up to 25 verified members. A 10-person raid team fits, and a 20-person one with a small bench.` |
 | Size line, Raid guild | `Any size. For guilds over 25 verified members.` |
 | Lead, one or more `ready` | `Choose the guild this plan is for.` |
-| Lead, none `ready`, every guild unclaimed | one guild: `Only a guild's guild master can claim it here and subscribe it. Your guild has not been claimed yet, so the next step is theirs.`; two: `Only a guild's guild master can claim it here and subscribe it. Neither of your guilds has been claimed yet, so the next step is theirs.`; three or more: `Only a guild's guild master can claim it here and subscribe it. None of your guilds has been claimed yet, so the next step is theirs.` |
+| Lead, none `ready`, every guild unclaimed | one guild: `A guild's guild master claims it here, or an officer once a second officer confirms; whoever holds the claim subscribes it. Your guild has not been claimed yet, so the next step is theirs.`; two: `A guild's guild master claims it here, or an officer once a second officer confirms; whoever holds the claim subscribes it. Neither of your guilds has been claimed yet, so the next step is theirs.`; three or more: `A guild's guild master claims it here, or an officer once a second officer confirms; whoever holds the claim subscribes it. None of your guilds has been claimed yet, so the next step is theirs.` |
 | Lead, none `ready`, a card the viewer can claim from (`claim`, `start_claim`, `confirm_claim`, `claim_link_bnet`, `claim_pending_yours`) | `You can claim a guild here. Each card below has its next step.` |
-| Lead, none `ready`, some claimed and some not | `Only a guild's guild master can claim it here and subscribe it. Here is the next step for each of your guilds.` |
-| Lead, none `ready`, every guild claimed or on a plan | `The guild master who holds a guild's claim subscribes it. Here is where each of your guilds stands.` |
+| Lead, none `ready`, some claimed and some not | `A guild's guild master claims it here, or an officer once a second officer confirms; whoever holds the claim subscribes it. Here is the next step for each of your guilds.` |
+| Lead, none `ready`, every guild claimed or on a plan | `Whoever holds a guild's claim subscribes it. Here is where each of your guilds stands.` |
 | Rank words | `Guild master`; `Officer`; `Member` |
 | Verify mark | `Verified`; `Not verified` |
 | More characters | `+{n} more` |
@@ -504,9 +506,9 @@ Prices, dates and counts come from `plans.ts`, `GUILD_TIER_MEMBER_LIMIT` and the
 | `confirm_claim` done, no `holder_name` | `Confirmed. The officer who started the claim holds {Guild}.` |
 | `claim_pending_ask` | `An officer has started a claim on {Guild}. Once a second officer or the guild master confirms it, they can subscribe it. Send them this link.` |
 | `claimed_ask`, viewer is an officer | `{Name} holds {Guild}'s claim and subscribes it. Send them this link.` |
-| `claimed_ask`, viewer is a member | `The guild master who holds {Guild}'s claim subscribes it. Send them this link.` |
+| `claimed_ask`, viewer is a member | `Whoever holds {Guild}'s claim subscribes it. Send them this link.` |
 | `claimed_ask`, viewer holds the claim (`claim.yours` true; controller ruling 2026-10-27) | `You hold {Guild}'s claim. Subscribing it needs a verified officer or guild-master character.` |
-| `ask_leader` | `Only {Guild}'s guild master can claim it and subscribe it. Send them this link.` |
+| `ask_leader` | `{Guild}'s guild master can claim it, or an officer with a second officer's confirmation. Send them this link.` |
 | `ask_leader`, other-character line | `Lead {Guild} on another character? Save that character with the addon, then come back.` + `Get set up` |
 | `ask_leader` and `claimed_ask`, moderator fallback | `Guild master gone? Ask us on Discord and we will sort the claim by hand.` (link text `Ask us on Discord`, to the site Discord invite) |
 | `claim_blocked`, `holds_other` | `You already hold {Other}'s claim. One account holds one guild's claim, so an officer of {Guild} claims it instead.` |

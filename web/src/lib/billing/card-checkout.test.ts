@@ -23,7 +23,7 @@ describe('readyLabel', () => {
   const price = '$120 a year';
   it('names the trial when unused, the price when used, again when lapsed', () => {
     expect(readyLabel({ subscribe: { step: 'ready', trial_used: false } }, price)).toBe(
-      'Start the 7-day trial',
+      'Start 7 free days · then $120 a year',
     );
     expect(readyLabel({ subscribe: { step: 'ready', trial_used: true } }, price)).toBe(
       'Subscribe · $120 a year',

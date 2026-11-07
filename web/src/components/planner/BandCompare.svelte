@@ -40,6 +40,7 @@
     onbanddiff,
     onloaded,
     onband,
+    heading,
   }: {
     store: PlannerStore;
     /** `?spec=` (spec §4.I): names which spec's `bis/<spec>.json` this panel reads,
@@ -58,6 +59,8 @@
     /** Fires with the band entry the section compares against (or null) and its label: the
      *  head's live score sims this band's gear (decision P1). */
     onband?: (band: BisBand | null, bandLabel: string) => void;
+    /** The section's title in place of `{band} build`: a shared build's `Guide build` (ruling SHOULD). */
+    heading?: string;
   } = $props();
 
   let file = $state<BisFile | null | undefined>(undefined);
@@ -214,7 +217,7 @@
   }
 </script>
 
-<Section title={bandCompareCopy.heading(bandLabel)} testid="band-compare">
+<Section title={heading ?? bandCompareCopy.heading(bandLabel)} testid="band-compare">
   {#if file === undefined}
     <div class="pl-sec" data-testid="band-compare-skeleton" aria-busy="true">
       <span class="skeleton-block block max-w-full" style="width:260px;height:20px"></span>

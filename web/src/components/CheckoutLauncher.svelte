@@ -35,17 +35,22 @@
   import { checkoutCopy } from '../lib/billing/copy';
   import { checkoutGuildCopy, type GuildTier } from '../lib/billing/checkout-guild-copy';
   import { replacePlanInUrl } from '../lib/billing/checkout-plan-switch';
-  import { CHECKOUT_BODY_RESERVE } from '../lib/billing/checkout-layout';
-  import { founderOpen } from '../lib/billing/plans';
+  import { PLANS, founderOpen, formatPrice } from '../lib/billing/plans';
+  import { priceFor } from '../lib/billing/plan-costs';
+  import { premiumSourceCopy } from '../lib/billing/premium-source-copy';
+  import { utcDayMonthYear } from '../lib/dates';
   import { safeNextPath } from '../lib/account/safe-next';
-  import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
+  import { LINK } from '../lib/ui/primitives';
   import {
     isGuildPlan,
     parseCheckoutParams,
     showsGuildStep,
     type CheckoutParams,
   } from '../lib/billing/checkout-params';
-  import CheckoutBand from './checkout/CheckoutBand.svelte';
+  import CheckoutHead from './checkout/CheckoutHead.svelte';
+  import CheckoutSteps, { type CheckoutPhase } from './checkout/CheckoutSteps.svelte';
+  import Page from './ui/Page.svelte';
+  import Plate from './ui/Plate.svelte';
   import CheckoutGuildStep from './checkout/CheckoutGuildStep.svelte';
   import PremiumOwnedPanel from './checkout/PremiumOwnedPanel.svelte';
 
@@ -74,7 +79,14 @@
 
   let invalid = $state(false);
   let message = $state(checkoutCopy.redirecting);
-  let showRetry = $state(false);
+  let phase = $state<CheckoutPhase>('redirecting');
+  /** The account's BattleTag for row 1, once /v1/me answered. */
+  let battletag = $state<string | null>(null);
+  /** Row 2 after the return: a paid plan, or a guild trial's saved card (ruling K1). */
+  let paidLine = $state<string>(checkoutCopy.paid);
+  /** Above the next steps once Premium is on (ruling K2). */
+  let renewal = $state<string | null>(null);
+  let polling = $state(false);
   let request = $state<CheckoutParams | null>(null);
   /** The guild step shows (spec §5): set from the URL before /v1/me answers (showsGuildStep). */
   let stepShown = $state(false);
@@ -115,20 +127,47 @@
     );
   }
 
+  /** What the return says once the entitlement is in: a guild's trial card line, Premium's renewal. */
+  function describeReturn(me: Me, parsed: CheckoutParams): void {
+    if (isGuildPlan(parsed.plan)) {
+      const plan = me.guilds.find((guild) => guild.id === parsed.guildId)?.plan;
+      if (plan?.status === 'trialing' && plan.current_period_end) {
+        paidLine = checkoutCopy.trialSaved(utcDayMonthYear(plan.current_period_end));
+      }
+      return;
+    }
+    const billing = me.entitlements?.billing;
+    if (billing?.current_period_end && billing.interval) {
+      const price = formatPrice(
+        priceFor('premium', billing.interval, billing.founder === true),
+        billing.interval,
+      );
+      renewal = checkoutCopy.renewalLine(price, utcDayMonthYear(billing.current_period_end));
+    }
+  }
+
   async function pollForEntitlement(parsed: CheckoutParams): Promise<void> {
+    phase = 'processing';
     message = checkoutCopy.processing;
+    polling = true;
     for (let attempt = 0; attempt < POLL_ATTEMPTS; attempt += 1) {
       // Bypass fetchMeOnce's per-page cache: each attempt must be a fresh request, or the
       // loop would just re-read the same stale snapshot fetched before the webhook ran.
       io.forgetSession();
       const me = await io.fetchMe();
-      if (isEntitled(me, parsed)) {
+      if (me !== null) battletag = me.user.battletag;
+      if (me !== null && isEntitled(me, parsed)) {
+        describeReturn(me, parsed);
+        phase = 'confirmed';
         message = checkoutCopy.confirmed;
+        polling = false;
         return;
       }
       if (attempt < POLL_ATTEMPTS - 1) await new Promise((resolve) => setTimeout(resolve, POLL_INTERVAL_MS));
     }
+    phase = 'slow';
     message = checkoutCopy.confirmationSlow;
+    polling = false;
   }
 
   function redirectToLogin(): void {
@@ -202,7 +241,6 @@
 
   function showOwned(me: Me): void {
     ownedMe = me;
-    showRetry = false;
   }
 
   async function openBillingPortal(): Promise<void> {
@@ -223,7 +261,9 @@
       redirectToLogin();
       return;
     }
+    battletag = me.user.battletag;
     if (parsed.status === 'success') {
+      if (isGuildPlan(parsed.plan)) paidLine = '';
       void pollForEntitlement(parsed);
       return;
     }
@@ -239,18 +279,18 @@
       else if (outcome.kind === 'login') redirectToLogin();
       else window.location.assign(outcome.url);
     } catch (error) {
-      showRetry = false;
       const kind = refusalKind(error);
+      phase = 'refused';
       if (kind === 'not_open') {
         message = checkoutCopy.notOpenYet;
       } else if (kind === 'not_found') {
         message = checkoutCopy.comebackGone;
       } else if (error instanceof BillingApiError && (kind === 'conflict' || kind === 'forbidden')) {
-        // The API's own sentence, verbatim; retrying does not help, so showRetry stays false.
+        // The API's own sentence, verbatim; retrying does not help, so there is no Try again.
         message = error.message;
       } else {
         message = checkoutCopy.genericFailure;
-        showRetry = true;
+        phase = 'error';
       }
     }
   }
@@ -272,72 +312,95 @@
   });
 </script>
 
-<CheckoutBand
+<CheckoutHead
   plan={request?.plan ?? null}
   interval={request?.interval ?? DEFAULT_INTERVAL}
   {founder}
   {invalid}
+  showChange={phase === 'redirecting' || phase === 'error' || phase === 'refused'}
 />
 
 {#if stepShown && request !== null && request.plan !== 'premium'}
-  {#if refreshFailed}
-    <div class="px-[18px] pt-5 md:px-12">
-      <p class="measure-wide m-0 text-[14px]" role="status" data-testid="checkout-refresh-error">
+  <Page layout="ledger">
+    {#if refreshFailed}
+      <p class="m-0 text-[14px]" role="status" data-testid="checkout-refresh-error">
         {checkoutCopy.genericFailure}
       </p>
-    </div>
-  {/if}
-  <CheckoutGuildStep
-    me={stepMe}
-    failed={stepFailed}
-    plan={request.plan}
-    interval={request.interval}
-    {founder}
-    {selfUrl}
-    onRetry={() => void loadGuildStep(true)}
-    onCheckAgain={refreshGuildStep}
-    onSwitch={switchPlan}
-    onCheckout={checkoutGuild}
-    onPortal={openGuildPortal}
-    {arrival}
-  />
+    {/if}
+    <CheckoutGuildStep
+      me={stepMe}
+      failed={stepFailed}
+      plan={request.plan}
+      interval={request.interval}
+      {founder}
+      {selfUrl}
+      onRetry={() => void loadGuildStep(true)}
+      onCheckAgain={refreshGuildStep}
+      onSwitch={switchPlan}
+      onCheckout={checkoutGuild}
+      onPortal={openGuildPortal}
+      {arrival}
+    />
+  </Page>
 {:else}
-  <!-- The narrow body under the band: the redirect and refusal messages, the invalid-link
-       line, and the plan=premium slot (Task 12's PremiumOwnedPanel, spec §4.2). Its width is
-       the site's .measure-form, which checkout.astro sets to this page's 640 px column. -->
-  <div class="px-[18px] pt-10 pb-16 md:px-0">
-    <div class={`measure-form flex flex-col gap-3 ${CHECKOUT_BODY_RESERVE}`} data-testid="checkout-body">
-      {#if invalid}
-        <p class="min-h-[21px] text-[14px]" role="alert" data-testid="checkout-message">
-          {checkoutGuildCopy.invalidLink.text}
-          <a href={PREMIUM_HREF} class="underline">{checkoutGuildCopy.invalidLink.button}</a>
+  <Page layout="form" testid="checkout-body">
+    {#if invalid}
+      <p class="m-0 text-[15px] leading-6" role="alert" data-testid="checkout-message">
+        {checkoutGuildCopy.invalidLink.text}
+        <a href={PREMIUM_HREF} class={LINK}>{checkoutGuildCopy.invalidLink.button} ›</a>
+      </p>
+    {:else if ownedMe !== null}
+      <Plate label={premiumSourceCopy.buttons.seePlan}>
+        <div class="checkout-owned">
+          <PremiumOwnedPanel
+            me={ownedMe}
+            now={ownedNow}
+            busy={portalBusy}
+            onPortal={() => void openBillingPortal()}
+          />
+        </div>
+      </Plate>
+      {#if portalFailed}
+        <p class="text-wipe m-0 pt-3 text-[14px]" role="alert" data-testid="checkout-portal-error">
+          {checkoutCopy.genericFailure}
         </p>
-      {:else if ownedMe !== null}
-        <PremiumOwnedPanel
-          me={ownedMe}
-          now={ownedNow}
-          busy={portalBusy}
-          onPortal={() => void openBillingPortal()}
+      {/if}
+    {:else}
+      <div>
+        <CheckoutSteps
+          {phase}
+          {message}
+          planName={PLANS[request?.plan ?? 'premium'].name}
+          signedInAs={battletag}
+          {paidLine}
+          busy={polling}
+          onRetry={request === null ? undefined : () => void launch(request!)}
+          onCheckAgain={request === null ? undefined : () => void pollForEntitlement(request!)}
         />
-        {#if portalFailed}
-          <p class="text-[14px]" role="alert" data-testid="checkout-portal-error">
-            {checkoutCopy.genericFailure}
+        {#if phase === 'confirmed' && request !== null && !isGuildPlan(request.plan)}
+          {#if renewal !== null}<p class="text-small text-muted m-0 pt-4" data-testid="checkout-renewal">
+              {renewal}
+            </p>{/if}
+          <p class="checkout-next" data-testid="checkout-next">
+            <a class={LINK} href="/sim">{checkoutCopy.nextSim} ›</a>
+            <a class={LINK} href="/logs">{checkoutCopy.nextCoach} ›</a>
+            <a class={LINK} href="/account#plan">{premiumSourceCopy.buttons.seePlan} ›</a>
           </p>
         {/if}
-      {:else}
-        <p class="min-h-[21px] text-[14px]" role="alert" data-testid="checkout-message">
-          {message}
-        </p>
-      {/if}
-      {#if !invalid && showRetry && request !== null}
-        <button
-          type="button"
-          class={`${SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong w-fit px-4`}
-          onclick={() => void launch(request!)}
-        >
-          {checkoutCopy.retry}
-        </button>
-      {/if}
-    </div>
-  </div>
+      </div>
+    {/if}
+  </Page>
 {/if}
+
+<style>
+  .checkout-owned {
+    padding: 16px 20px 20px;
+  }
+  .checkout-next {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 16px;
+    margin: 0;
+    padding-top: 8px;
+  }
+</style>

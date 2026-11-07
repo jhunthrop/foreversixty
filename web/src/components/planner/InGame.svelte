@@ -5,7 +5,8 @@
      build disables the send with its sentence and makes Copy the primary; signed out (or no
      character) Copy for the game is the primary, then the hint and the way to the addon. The send
      state machine is the shipped one (`sendActionFor`, `send-build.ts`), moved here from the
-     retired character card. -->
+     retired character card. On a shared build (`plainOtherClass`) another class's build is one
+     plain line above Copy for the game instead of the disabled send (premium spec ruling MUST 5). -->
 <script lang="ts">
   import type { MeCharacter } from '../../lib/account/api';
   import { addonCopy } from '../../lib/addon/copy';
@@ -25,12 +26,16 @@
     store,
     character,
     origin = null,
+    plainOtherClass = false,
   }: {
     store: PlannerStore;
     /** The header selector's character (null signed out or with none): the send is aimed at it. */
     character: MeCharacter | null;
     /** Set when the build on screen is another player's ('' for a link that names nobody). */
     origin?: { owner: string } | null;
+    /** Another class's build says so in one plain line above Copy for the game, with no disabled
+     *  send button (premium spec 2026-11-08 ruling MUST 5): the shared build page. */
+    plainOtherClass?: boolean;
   } = $props();
 
   let sendState = $state<SendState>({ kind: 'idle' });
@@ -116,7 +121,9 @@
 
 <Section title={plannerCopy.inGameTitle} testid="planner-in-game">
   <div class="pl-sec">
-    {#if character !== null}
+    {#if character !== null && otherClass && plainOtherClass}
+      <p class="pl-line" data-testid="planner-send-other">{action.label}</p>
+    {:else if character !== null}
       <div class="pl-acts">
         <Button
           tone={otherClass ? 'secondary' : 'primary'}

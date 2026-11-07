@@ -66,7 +66,6 @@ def LinkBtn(label: str, primary: bool = False, small: bool = False) -> str:
 
 CSS = '''<style>
 /* page-level layout only (no surfaces) */
-section>.sec-h+*{margin-top:12px}
 .stack{display:flex;flex-direction:column;gap:12px;min-width:0}.stack.tight{gap:6px}
 .acts{display:flex;gap:10px 16px;flex-wrap:wrap;align-items:center}
 .lede{font-size:15px;line-height:24px;max-width:72ch}.t-small{max-width:80ch}
@@ -87,6 +86,7 @@ section>.sec-h+*{margin-top:12px}
 .dev .row .sub{white-space:normal}
 .msg{display:flex;flex-direction:column;gap:12px}
 @media(max-width:1023px){.btn.sm{height:44px}}
+@media(max-width:767px){.cbar .pc{padding-block:0;min-height:0}}   /* the phone bar is its 48 px line, as the built ControlBar */
 .statesheet{display:grid;gap:40px}.st-grid{display:grid;gap:24px 40px;grid-template-columns:repeat(auto-fill,minmax(340px,1fr))}.st-cell{display:flex;flex-direction:column;gap:6px;min-width:0}
 </style>'''
 
@@ -219,7 +219,10 @@ def premium_page(state: str) -> str:
     elif n == 'ended':
         en = F['seat_ended_line']
         notices += Notice(e(en['text']), r(en['action']), tone='neutral')
-    notes = f'<div data-region="{REGION["notes"]}">{notices}</div>' if notices else ''
+    # The region is the notes in the page column, as the planner's (the built Notice sits inside the column's inset):
+    # one .pc around the region, the Notices' own .pc wrappers dropped.
+    inner = notices.replace('<div class="pc">', '').replace('</p></div>', '</p>')
+    notes = f'<div class="pc"><div data-region="{REGION["notes"]}">{inner}</div></div>' if notices else ''
     plate = Plate(Columns([free_column(st), premium_column(st)], open_=False, second_first=True), 'Plans for a player')
     gr = P['guildRegion']
     guild = Section(e(gr['heading']), f'<div class="stack" id="guild-leaders"><p class="lede">{e(gr["lede"])}</p><p class="t-small">{e(gr["members"])}</p>'
@@ -512,8 +515,11 @@ def b_page(state: str) -> str:
             title, text = msgs[1]
         else:
             astro = (ROOT / 'web/src/pages/b-unavailable.astro').read_text()
-            title = re.search(r'<h1[^>]*>([^<]+)</h1>', astro).group(1)
-            text = ' '.join(re.sub(r'\s+', ' ', re.sub(r'<[^>]+>', '', p)).strip() for p in re.findall(r'<p[^>]*>([\s\S]*?)</p>', astro))
+            # The page's frontmatter holds its two strings (`const title`, `const sentence`, the
+            # sentence possibly split over '...' + '...' parts).
+            title = re.search(r"const title = '([^']+)'", astro).group(1)
+            parts = re.search(r"const sentence =\s*((?:'[^']*'\s*\+?\s*)+);", astro).group(1)
+            text = ''.join(re.findall(r"'([^']*)'", parts))
         planner = re.search(r'class="[^"]*">([^<]+)</a></p>', (ROOT / 'api/internal/site/page.go').read_text()).group(1)
         ask = f'<p class="t-small">{e(PROPOSED["askSender"])}</p>' if state == 'missing' else ''
         body = PageHeader(e(title), meta=[e(text)]) + PageForm(f'<div class="stack">{ask}<div class="acts">{LinkBtn(e(planner), primary=True)}{r(PROPOSED["guideLink"])}</div></div>')

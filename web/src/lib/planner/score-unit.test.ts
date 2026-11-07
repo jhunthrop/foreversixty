@@ -38,9 +38,10 @@ describe('plannerScoreCopy', () => {
     expect(plannerScoreCopy.ratePhrase('dps')).toBe('damage per second');
   });
 
-  it('writes the band figure in the band unit', () => {
-    expect(plannerScoreCopy.bandFigure(40.9088, 'hps')).toBe('40.9 HPS');
-    expect(plannerScoreCopy.bandFigure(40.9088, 'dps')).toBe('40.9 DPS');
+  it('writes the band figure in the band unit, a whole number for every role', () => {
+    expect(plannerScoreCopy.bandFigure(40.9088, 'hps')).toBe('41 HPS');
+    expect(plannerScoreCopy.bandFigure(40.9088, 'dps')).toBe('41 DPS');
+    expect(plannerScoreCopy.bandFigure(1234.5, 'dps')).toBe('1,235 DPS');
   });
 
   it('keeps the role word out of the waiting line and never a point count', () => {
@@ -48,10 +49,10 @@ describe('plannerScoreCopy', () => {
     expect(plannerScoreCopy.waiting).not.toMatch(/DPS|HPS/);
   });
 
-  it("prints the figure in the role's own digits", () => {
-    expect(plannerScoreCopy.figure(12345.6, 'dps')).toBe('12,346');
-    expect(plannerScoreCopy.figure(381.04, 'hps')).toBe('381.0');
-    expect(plannerScoreCopy.figure(27517.4, 'tank_score')).toBe('27,517');
+  it("prints every role's figure as a whole number (ruling 2026-11-08: HPS without a decimal)", () => {
+    expect(plannerScoreCopy.figure(12345.6)).toBe('12,346');
+    expect(plannerScoreCopy.figure(381.04)).toBe('381');
+    expect(plannerScoreCopy.figure(27517.4)).toBe('27,517');
   });
 
   it('names the failure by unit', () => {
