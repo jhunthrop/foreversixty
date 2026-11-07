@@ -250,7 +250,8 @@ def Gap(label: str) -> str:
 # groups and the raid planner's role groups). Meter gains a class tone; Skeleton is the shipped `Skeleton`.
 PRIM_CSS += '''
 .rl{--grp-w:0px;--rr-name:minmax(180px,220px);--rr-bar:minmax(120px,1fr);--rr-fig:112px;--rr-gap:88px;--rr-links:206px;--n:1}
-.rl.links3{--rr-links:156px}.rl.tank{--rr-fig:124px}
+.rl.links3{--rr-links:156px}
+/* tank figures share the list's 112 px columns: at 124 the built heads clip at 1280 (web e2e tiers.spec.ts, "every column head is one short line") */
 @media(min-width:1100px){.rl.grouped{--grp-w:184px}}
 @media(min-width:1760px){.rl{--rr-name:minmax(240px,1fr);--rr-bar:560px}}
 .rl .cols{display:grid;column-gap:16px;grid-template-columns:28px 36px var(--rr-name) var(--rr-bar) repeat(var(--n),var(--rr-fig)) var(--rr-gap) var(--rr-links)}
@@ -275,14 +276,16 @@ PRIM_CSS += '''
 .rr .nm .ttl a{font:700 16px/20px var(--font-body);color:var(--c)}.rr .nm .ttl a:hover{text-decoration:underline;text-underline-offset:4px}
 .rr .nm .sub{font-size:13px;line-height:18px;color:var(--muted)}
 .rr .nm .low{font-size:13px;line-height:18px;color:var(--muted);text-decoration:underline dotted;text-underline-offset:3px;align-self:flex-start}
-.rr .br{}
+.rr .br{display:flex;flex-direction:column;gap:4px;min-width:0}.rr .br .tie{font:700 12px/16px var(--font-body);color:var(--strong)}
 .rr .x{display:contents}
 .rr .fg{text-align:right;font:700 16px/20px var(--font-body);font-variant-numeric:tabular-nums;color:var(--strong);white-space:nowrap}
 .rr .fg small{font-size:12px;font-weight:600;color:var(--muted);margin-left:4px}.rr .fg.best{color:var(--kill)}.rr .fg .lbl{display:none}
 .rr .gp{text-align:right;font:600 15px/20px var(--font-body);font-variant-numeric:tabular-nums;color:var(--text);white-space:nowrap}
-.rr .gp.top{color:var(--strong);font-weight:700}.rr .gp .tie{display:block;font:700 12px/16px var(--font-body);color:var(--strong)}
+.rr .gp.top{color:var(--strong);font-weight:700}
 .rr .lk{display:flex;justify-content:flex-end;gap:16px}
-.rr .lk a{display:inline-flex;align-items:center;min-height:40px;font:600 14px/20px var(--font-body);color:var(--nav)}.rr .lk a.p{color:var(--gold)}
+/* the shipped RankRow (ui/rank-list.css): the token row height (tokens.css --row-h 58) and 44 px link targets */
+.rl .rr{min-height:58px}.rl .rr-heads .t-label{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rr .lk a{display:inline-flex;align-items:center;min-height:44px;font:600 14px/20px var(--font-body);color:var(--nav)}.rr .lk a.p{color:var(--gold)}
 .rr .lk a:hover,.rr .lk a.hov{color:var(--gold-hover)}.rr .lk a.fv{outline:2px solid var(--gold);outline-offset:2px;border-radius:3px}
 .tag.you{margin-left:2px}
 .meter.cls>i{background:var(--c)}
@@ -291,7 +294,7 @@ PRIM_CSS += '''
 @media(max-width:1023px){.rl .rr-heads{display:none}
  .rl .rr.cols{grid-template-columns:22px 32px minmax(0,1fr) auto;grid-template-areas:"rk ld nm f1" "rk ld nm gp" ". . xx xx" ". . br br" ". . lk lk";column-gap:12px;row-gap:0;padding:10px 14px 2px}
  .rr .rk{grid-area:rk}.rr .ld{grid-area:ld}.rr .nm{grid-area:nm}.rr .br{grid-area:br}.rr .gp{grid-area:gp}.rr .lk{grid-area:lk}.rr .fg.f1{grid-area:f1}.rr .x{grid-area:xx;display:flex;gap:0 16px;flex-wrap:wrap}.rr .x .fg{text-align:left;font-size:14px}.rr .x .fg .lbl{display:inline;font-weight:400;color:var(--muted);margin-right:6px}
- .rr .br{padding-top:8px}.rr .gp{align-self:start}.rr .fg.f1{align-self:end}.rr .x:not(:empty){padding-top:6px}.rr .gp .tie{display:inline;margin-left:6px}.rr .lk{justify-content:flex-start;gap:20px}.rr .lk a{min-height:44px}}
+ .rr .br{padding-top:8px}.rr .gp{align-self:start}.rr .fg.f1{align-self:end}.rr .x:not(:empty){padding-top:6px}.rr .lk{justify-content:flex-start;gap:20px}.rr .lk a{min-height:44px}}
 '''
 
 
@@ -322,6 +325,7 @@ def RankRow(rank: str, crest: str, color: str, name: str, sub: str, frac: float,
         return f'<span class="fg{" f1" if i == 0 else ""}{" best" if best else ""}"><span class="lbl">{lbl}</span>{v}<small>{u}</small></span>'
     first = fig(0, figures[0])
     extra = ''.join(fig(i, f) for i, f in enumerate(figures[1:], 1))
+    # the built RankRow (ui/RankRow.svelte): the tie line sits under the bar ("≈ tie with Arms")
     tie_html = f'<span class="tie">{tie}</span>' if tie else ''
     low_html = f'<span class="low">{low}</span>' if low else ''
     you_html = f'<span class="pill tag you">{you}</span>' if you else ''
@@ -329,14 +333,15 @@ def RankRow(rank: str, crest: str, color: str, name: str, sub: str, frac: float,
     cls = 'rr cols' + (' cur' if selected else '') + (' hov' if state == 'hover' else '')
     return (f'<div class="{cls}" role="listitem" style="--c:{color}"><span class="rk">{rank}</span><span class="ld">{crest}</span>'
             f'<div class="nm"><span class="ttl"><a href="#">{name}</a>{you_html}</span><span class="sub">{sub}</span>{low_html}</div>'
-            f'<span class="br">{MeterClass(frac, color)}</span>{first}<span class="x">{extra}</span>'
-            f'<span class="gp{" top" if gap_top else ""}">{gap}{tie_html}</span><span class="lk">{lk}</span></div>')
+            f'<span class="br">{MeterClass(frac, color)}{tie_html}</span>{first}<span class="x">{extra}</span>'
+            f'<span class="gp{" top" if gap_top else ""}">{gap}</span><span class="lk">{lk}</span></div>')
 
 
 def RankGroup(letter: str, color: str, band: str, count: str, rows: list[str]) -> str:
     """A letter group: the 148 px label column (letter, count, band) with the tier rail at x=0; a header strip below 1100."""
-    return (f'<div class="rg" style="--t:{color}"><div class="rg-l"><span class="lt">{letter}</span><span class="ct">{count}</span>'
-            f'<span class="bd">{band}</span></div><div class="rg-rows">{"".join(rows)}</div></div>')
+    # the built RankGroup's semantics: a list item of the ranked list, holding its own list named "Tier {letter}"
+    return (f'<div class="rg" role="listitem" style="--t:{color}"><div class="rg-l"><span class="lt">{letter}</span><span class="ct">{count}</span>'
+            f'<span class="bd">{band}</span></div><div class="rg-rows" role="list" aria-label="Tier {letter}">{"".join(rows)}</div></div>')
 
 
 def RankList(heads: str, body: str, n_figs: int = 1, grouped: bool = False, links3: bool = False, tank: bool = False) -> str:

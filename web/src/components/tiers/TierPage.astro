@@ -325,9 +325,6 @@ const linkCount = role === 'dps' ? 4 : 3;
 </Base>
 
 <style>
-  .tier-page {
-    padding-bottom: 40px;
-  }
   .tier-faction {
     display: flex;
     flex-direction: column;
@@ -451,8 +448,9 @@ const linkCount = role === 'dps' ? 4 : 3;
   .tier-answer-body > a {
     display: inline-flex;
     align-items: center;
-    min-height: 32px;
     font-size: 15px;
+    /* the answer's links as the shared CharacterAnswer draws them: one 24 px line (mock web-tiers-you) */
+    line-height: 24px;
   }
   @media (min-width: 900px) {
     .tier-answer {

@@ -92,8 +92,6 @@ code{font:13px/20px ui-monospace,Menlo,monospace;color:var(--strong)}
 .tiers .row .ttl{font:700 19px/24px var(--font-body)}
 .tiers .rows.open .row{padding-inline:14px}
 .tiers .row.cur{background:color-mix(in srgb,var(--c) 12%,transparent);box-shadow:inset 3px 0 0 var(--c)}
-/* the shipped RankRow (ui/rank-list.css): the token row height and 44 px link targets */
-.rl .rr{min-height:58px}.rl .rr-heads .t-label{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.rl .rr .lk a{min-height:44px}
 /* K3 as ruled: a single-class board has no crest column */
 .rl.nocrest .cols{grid-template-columns:28px var(--rr-name) var(--rr-bar) repeat(var(--n),var(--rr-fig)) var(--rr-gap) var(--rr-links)}
 .rl.nocrest .rr .ld{display:none}

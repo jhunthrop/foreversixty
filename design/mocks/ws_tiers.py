@@ -67,6 +67,38 @@ def load(faction: str) -> tuple[list[dict], dict]:
     return rows, meta
 
 
+def list_label(role: str, faction: str) -> str:
+    """The Plate's accessible name (tier-copy.ts listLabel)."""
+    return f'{ROLE_LABEL[role]} tier list, {FACTION_LABEL[faction]}'
+
+
+def tie_mates(out: list[dict], i: int, role: str) -> list[int]:
+    """The rows a row ties with (lib/tiers/tier-list.ts): on DPS every other row within the margin of it, never one only
+    chained through a third; on healer the neighbours its mark names; tanks none."""
+    if role == 'tank' or out[i]['tie'] is None:
+        return []
+    if role == 'healer':
+        return {'above': [i - 1], 'below': [i + 1], 'both': [i - 1, i + 1]}[out[i]['tie']]
+    def within(lower: float, higher: float) -> bool:
+        return abs(1 - lower / higher) * 100 <= TIE_PCT
+    m = out[i]['metric']
+    return [j for j, o in enumerate(out) if j != i and within(*((m, o['metric']) if j < i else (o['metric'], m)))]
+
+
+def join_names(names: list[str]) -> str:
+    return names[0] if len(names) == 1 else f"{', '.join(names[:-1])} and {names[-1]}"
+
+
+def tie_text(r: dict) -> str:
+    """'≈ tie with Arms', a partner across a letter line with its letter ('Beast Mastery (B)'); tier-copy.ts tieText."""
+    if not r['mates']:
+        return ''
+    def label(o: dict) -> str:
+        letter = f" ({o['tier']})" if r.get('tier') and o.get('tier') and o['tier'] != r['tier'] else ''
+        return (o['name'] if r['role'] == 'dps' else full_name(o)) + letter
+    return f"&asymp; tie with {join_names([label(o) for o in r['mates']])}"
+
+
 def heal_points(r: dict):
     m = r['m']
     if 'hps_error' not in m or not m.get('hps_at_bounds'):
@@ -110,6 +142,8 @@ def ranked(rows: list[dict], role: str) -> tuple[list[dict], bool]:
         for r in out:
             g = round(r['gap'] * 1e6) / 1e6
             r['tier'] = [t for t, f in TIERS if g >= f][-1]
+    for i, r in enumerate(out):
+        r['mates'] = [out[j] for j in tie_mates(out, i, role)] if is_ranked else []
     if tank:
         best_eh = max(r['m']['effective_health'] for r in out)
         best_tps = max(r['m']['tps'] for r in out)
@@ -150,7 +184,7 @@ def row_html(r: dict, ranked_: bool, you: bool = False, state: str = '') -> str:
         else:
             gap = 'Top' if r['rank'] == 1 and r['gap'] == 0 else f"&minus;{r['gap']:.1f}%"
     rank = '' if not ranked_ else (f"={r['rank']}" if role == 'healer' and r['tie'] else str(r['rank']))
-    tie = '&asymp; tie' if r['tie'] else ''
+    tie = tie_text(r)
     return RankRow(rank, crest_img(r['cls'], 36), CLASS_COLOR[r['cls']], r['name'], f"{CLASS_NAME[r['cls']]} &middot; {r['race']}",
                    r['frac'], figs, gap, LINKS4 if role == 'dps' else LINKS3, gap_top=gap in ('Top', 'Least'), tie=tie,
                    low='Stat weights less certain' if r['low'] else '', you='Your spec' if you else '', selected=you, state=state)
@@ -199,12 +233,13 @@ def caption(role: str, meta: dict, signed_in: bool) -> str:
 def notes(role: str, faction: str, meta: dict, ranked_: bool) -> str:
     fl = FACTION_LABEL[faction]
     gear = (f'Every spec is simmed in its best {meta["preset"]} gear, with enchants a fresh level 60 can buy, raid buffs and consumables, '
-            f'as its best {fl} race, named under it.')
-    fresh = 'At a fresh 60 the order differs: <a class="link" href="#">see the leveling bands &rsaquo;</a>'
+            f'as the guide&rsquo;s recommended {fl} race, named under it.')
+    fresh = 'At a fresh 60 the order differs: <a class="link" href="#">see the leveling bands</a>.'
     if role == 'dps':
         cols = [('What the number is', f'Damage per second from our own sim against one target for {DPS_FIGHT_SECONDS} seconds. {gear}'),
-                ('What it leaves out', f'Cleave, add fights, movement and what a spec brings the raid are not counted, so a spec can sit lower here than it plays in your raid. {fresh}'),
-                ('Letters and ties', f'S is within 5% of the top, A within 10%, B within 20%, C within 30%, D beyond. &asymp;&nbsp;tie marks a spec within {TIE_PCT:.0f}% of the one above; a tie across a line is a tie.')]
+                ('What it leaves out', f'Cleave, add fights, movement and what a spec brings the raid are not counted, so a spec can sit lower here than it plays in your raid. '
+                 f'For how specs do in real raid logs, see <a class="link" href="#">the log rankings</a>. {fresh}'),
+                ('Letters and ties', f'S is within 5% of the top, A within 10%, B within 20%, C within 30%, D beyond. &asymp;&nbsp;tie names the specs within {TIE_PCT:.0f}% of a spec; a tie across a line names the other letter, and the two are a tie.')]
     elif role == 'healer':
         order = ('&asymp;&nbsp;tie means the sim cannot order the pair: their order changes with the heal profile&rsquo;s tuning, or their gap is within the measured error. '
                  'Tied healers share a rank: =2, =2, then 4.') if ranked_ else 'Ranks appear once the next ranking publishes the measured error.'
@@ -238,9 +273,11 @@ def answer(rows: list[dict], role: str, all_lists: dict, state: str = 'ready') -
     me_role = next(rl for rl, lst in all_lists.items() if any(r['spec'] == YOU_SPEC for r in lst[0]))
     lst, _ = all_lists[me_role]
     me = next(r for r in lst if r['spec'] == YOU_SPEC)
-    who = f'<span class="ans-line">{crest_img(me["cls"], 32)}<b class="ans-name" style="color:{CLASS_COLOR[me["cls"]]}">{full_name(me)}</b></span>'
     if me_role != role:
-        return (f'<span class="t-label">Your spec</span>{who}<span class="t-small">{full_name(me)} is on the {ROLE_LABEL[me_role]} list.</span>'
+        # spec 4.6: line 2 is the crest and name over the Small line, the ready state's 40 px crest and two lines
+        return (f'<span class="t-label">Your spec</span>'
+                f'<span class="ans-row">{crest_img(me["cls"], 40)}<span class="ans-who"><b class="ans-name" style="color:{CLASS_COLOR[me["cls"]]}">{full_name(me)}</b>'
+                f'<span class="t-small">{full_name(me)} is on the {ROLE_LABEL[me_role]} list.</span></span></span>'
                 + Link('See where it stands &rsaquo;'))
     top = lst[0]
     tier = f'Tier {me["tier"]} &middot; ' if me.get('tier') else ''
@@ -249,7 +286,7 @@ def answer(rows: list[dict], role: str, all_lists: dict, state: str = 'ready') -
     return (f'<span class="t-label">Your spec &middot; {ROLE_LABEL[role]}</span>'
             f'<span class="ans-row">{crest_img(me["cls"], 40)}<span class="ans-who"><b class="ans-name" style="color:{CLASS_COLOR[me["cls"]]}">{full_name(me)}</b>'
             f'<span class="t-small">{detail}</span></span>{fig}</span>'
-            f'<span class="ans-links">{Link("Your best in slot &rsaquo;")}{Link("Guide &rsaquo;")}</span>')
+            f'<span class="ans-links">{Link("Your best in slot &rsaquo;")}{Link("Guide &rsaquo;")}{Link("Sim your character &rsaquo;")}</span>')
 
 
 PAGE_CSS = '''<style>
@@ -257,7 +294,7 @@ PAGE_CSS = '''<style>
 .head .ans{min-width:0}.ans-line,.ans-row{display:flex;align-items:center;gap:10px}.ans-row{gap:14px}.ans-who{display:flex;flex-direction:column;min-width:0}.ans-name{font:700 18px/22px var(--font-body)}.ans-row .fig{margin-left:8px}.ans-row .fig .v{white-space:nowrap}.ans-who{flex:1}@media(min-width:900px){.ans-who{flex:none}}
 .ans-links{display:flex;gap:16px}
 @media(min-width:900px){.head .ans{min-width:420px;min-height:96px;justify-content:flex-end}.ans-line,.ans-row{justify-content:flex-end}.ans-who{text-align:right}}
-.notes3{display:grid;gap:12px var(--gap);grid-template-columns:minmax(0,1fr);padding-top:16px}
+.notes3{display:grid;gap:12px var(--gap);grid-template-columns:minmax(0,1fr);padding-top:12px}
 @media(min-width:1024px){.notes3{grid-template-columns:repeat(3,minmax(0,1fr))}}
 .notes3 .nt{margin-top:6px;font-size:15px;line-height:24px;color:var(--text);max-width:62ch}
 .tiers-plate{padding-top:12px}
@@ -274,8 +311,8 @@ def tiers_page(role: str, faction: str = 'alliance', signed_in: bool = False, op
     lst, ranked_ = lists[role]
     stamp = meta['updated'].strftime('%-d %b')
     header = PageHeader('Tier list', meta=[f'Level 60 &middot; {meta["preset"]} &middot; Updated {stamp}'],
-                        answer=answer(rows, role, lists, answer_state) if signed_in else '')
-    plate = f'<div class="tiers-plate">{Plate(the_list(lst, role, ranked_, YOU_SPEC if signed_in else "", hover_spec))}</div>'
+                        answer=f'<div class="ans-box">{answer(rows, role, lists, answer_state)}</div>' if signed_in else '')
+    plate = f'<div class="tiers-plate">{Plate(the_list(lst, role, ranked_, YOU_SPEC if signed_in else "", hover_spec), list_label(role, faction))}</div>'
     body = (header + bar(role, faction, counts, open_m) + caption(role, meta, signed_in)
             + Page('ledger', plate + f'<div class="section">{notes(role, faction, meta, ranked_)}</div>') + PAGE_CSS)
     note = (f'Tier list mock (design/specs/2026-11-06-tiers.md), built only from ws_prims. Data: build {BUILD}, band 60, preset raid, '

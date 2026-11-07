@@ -140,3 +140,13 @@ export function renderPagesMocks(mocks: readonly string[]): string {
   run(PYTHON, [path.join(GENERATORS, 'ws_pages.py'), ...mocks], { FS_PAGES_FACTS: facts, FS_MOCK_OUT: dir });
   return dir;
 }
+
+/**
+ * The tier list mocks (ws_tiers.py) from this checkout's data/builds/<active build>/bis, the files
+ * the fixture build prerenders /tiers from. Returns the folder that holds web-tiers*.html.
+ */
+export function renderTiersMocks(): string {
+  const dir = freshDir('tiers');
+  run(PYTHON, [path.join(GENERATORS, 'ws_tiers.py')], { FS_DATA_ROOT: REPO_ROOT, FS_MOCK_OUT: dir });
+  return dir;
+}

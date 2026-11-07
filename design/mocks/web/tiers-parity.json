@@ -1,0 +1,27 @@
+{
+  "comment": "The tier list states the parity gate checks (web/tests/e2e/parity-tiers.spec.ts) at 1440 x 1000. ws_tiers.py ranks each mock from data/builds/<active build>/bis (band 60, preset raid), the files the fixture build publishes on /tiers; tests/e2e/support/tiers-parity.ts opens the build signed out, or signed in as the mock's sample character (Thandrel, Fury Warrior 60). web-tiers-bar (phone, controls open) and web-tiers-states (the states sheet) are not page states at 1440.",
+  "viewport": {
+    "width": 1440,
+    "height": 1000
+  },
+  "states": [
+    { "id": "dps", "path": "/tiers", "mock": "web-tiers.html" },
+    { "id": "dps-you", "path": "/tiers", "mock": "web-tiers-you.html" },
+    {
+      "id": "dps-horde",
+      "path": "/tiers?faction=horde",
+      "mock": "web-tiers-horde.html"
+    },
+    {
+      "id": "healer",
+      "path": "/tiers/healer",
+      "mock": "web-tiers-healer.html"
+    },
+    { "id": "tank", "path": "/tiers/tank", "mock": "web-tiers-tank.html" },
+    {
+      "id": "tank-you",
+      "path": "/tiers/tank",
+      "mock": "web-tiers-tank-you.html"
+    }
+  ]
+}
