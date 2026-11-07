@@ -309,7 +309,7 @@
       <ul class="m-0 flex list-none flex-col gap-3 p-0" aria-busy="true" data-testid="checkout-guild-loading">
         <li class="sr-only" role="status">{copy.loading}</li>
         {#each Array.from({ length: skeletonCards }, (_, index) => index) as index (index)}
-          <li class={`skeleton-block rounded-panel ${GUILD_SKELETON_CARD}`} aria-hidden="true"></li>
+          <li class={`skeleton-block ${GUILD_SKELETON_CARD}`} aria-hidden="true"></li>
         {/each}
       </ul>
     {:else if empty !== null}
@@ -334,7 +334,7 @@
         {lead}
       </p>
       <Plate label={checkoutCopy.whichGuild} testid="checkout-guild-plate">
-        <ul class="m-0 flex list-none flex-col p-0" data-testid="checkout-guild-cards">
+        <ul class="checkout-guild-cards m-0 flex list-none flex-col p-0" data-testid="checkout-guild-cards">
           {#each cards as guild (guild.id)}
             <GuildStepCard
               {guild}
@@ -397,3 +397,10 @@
     {/if}
   </div>
 </div>
+
+<style>
+  /* A `guild_id` arrival scrolls its Row to the top: clear the sticky site header. */
+  .checkout-guild-cards > :global(li) {
+    scroll-margin-top: 6rem;
+  }
+</style>

@@ -1,6 +1,5 @@
 {
   "files": {
-    "components/account/discord/DiscordPasteForm.svelte": 2,
     "components/admin/GoLinksAdmin.svelte": 6,
     "components/bis/BisBandStrip.astro": 2,
     "components/bis/BisClassCard.astro": 3,
@@ -21,10 +20,6 @@
     "components/chart/LegendSheet.svelte": 6,
     "components/chart/OverviewBrush.svelte": 1,
     "components/chart/TimeSeriesPlot.svelte": 2,
-    "components/checkout/CheckoutGuildStep.svelte": 1,
-    "components/checkout/ClaimConfirmBlock.svelte": 1,
-    "components/checkout/GuildStepCard.svelte": 1,
-    "components/checkout/PremiumOwnedPanel.svelte": 1,
     "components/claim/ClaimNextSteps.svelte": 1,
     "components/ClassTile.astro": 4,
     "components/coach/CoachChips.svelte": 2,

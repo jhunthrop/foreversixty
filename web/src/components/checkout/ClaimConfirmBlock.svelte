@@ -1,7 +1,7 @@
 <!-- web/src/components/checkout/ClaimConfirmBlock.svelte -->
-<!-- Spec 2026-10-27-subscribe-and-join §5.3: the in-place confirm under a claim opener, the
-     GuildClaim.svelte recipe (border-line-soft border p-4, gap 12): the confirm sentence, the
-     commit (PRIMARY_BUTTON_FIXED, busy label + aria-busy) and Cancel (44 px underlined text).
+<!-- Spec 2026-10-27-subscribe-and-join §5.3: the in-place confirm under a claim opener, a selected
+     Row (the gold ground and bar, as the account's seat offer): the confirm sentence, then in its
+     foot the commit (the primary button, busy label + aria-busy) and Cancel (secondary).
      Focus moves to Cancel on open, to the refusal line when one shows; Escape closes. The
      decisions (words, outcome, refusal) are claim-flow.ts; the shell owns which block is open
      and what happens after, so this draws and reports. -->
@@ -14,8 +14,9 @@
     type ClaimIo,
     type ClaimKind,
   } from '../../lib/billing/claim-flow';
-  import { PRIMARY_BUTTON_FIXED } from '../../lib/planner/styles';
+  import { button } from '../../lib/ui/button';
   import { BUSY_CLASS } from '../../lib/ui/busy';
+  import Row from '../ui/Row.svelte';
 
   let {
     kind,
@@ -72,40 +73,43 @@
 <div
   role="group"
   aria-label={words.sentence}
-  class="border-line-soft flex flex-col gap-3 border p-4"
   onkeydown={onKeydown}
   data-testid={`guild-${guild.id}-claim-confirm`}
 >
-  <p class="text-text m-0 text-[13px]">{words.sentence}</p>
-  <button
-    type="button"
-    class={`${PRIMARY_BUTTON_FIXED} w-full justify-center px-4 ${busy ? BUSY_CLASS : ''}`}
-    disabled={busy || frozen}
-    aria-busy={busy || frozen}
-    onclick={() => void commit()}
-    data-testid={`guild-${guild.id}-claim-commit`}
-  >
-    {busy ? words.busy : words.commit}
-  </button>
-  <button
-    type="button"
-    bind:this={cancelEl}
-    class="text-text hover:text-strong focus-visible:outline-gold inline-flex min-h-11 w-fit items-center underline focus-visible:outline-2 focus-visible:outline-offset-2 disabled:opacity-60"
-    disabled={busy}
-    onclick={onCancel}
-    data-testid={`guild-${guild.id}-claim-cancel`}
-  >
-    {copy.confirm.cancel}
-  </button>
-  {#if error !== null}
-    <p
-      bind:this={errorEl}
-      tabindex="-1"
-      role="alert"
-      class="text-text m-0 text-[13px] outline-none"
-      data-testid={`guild-${guild.id}-claim-error`}
-    >
-      {error}
-    </p>
-  {/if}
+  <Row title={words.sentence} selected>
+    {#snippet titleContent()}<span class="text-[14px] leading-5">{words.sentence}</span>{/snippet}
+    {#snippet foot()}
+      <button
+        type="button"
+        class={`${button('primary')} w-full ${busy ? BUSY_CLASS : ''}`}
+        disabled={busy || frozen}
+        aria-busy={busy || frozen}
+        onclick={() => void commit()}
+        data-testid={`guild-${guild.id}-claim-commit`}
+      >
+        {busy ? words.busy : words.commit}
+      </button>
+      <button
+        type="button"
+        bind:this={cancelEl}
+        class={`${button('secondary')} w-full`}
+        disabled={busy}
+        onclick={onCancel}
+        data-testid={`guild-${guild.id}-claim-cancel`}
+      >
+        {copy.confirm.cancel}
+      </button>
+      {#if error !== null}
+        <p
+          bind:this={errorEl}
+          tabindex="-1"
+          role="alert"
+          class="text-wipe m-0 text-[13px] outline-none"
+          data-testid={`guild-${guild.id}-claim-error`}
+        >
+          {error}
+        </p>
+      {/if}
+    {/snippet}
+  </Row>
 </div>
