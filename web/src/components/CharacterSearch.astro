@@ -54,7 +54,13 @@ const FIELD = [FIELD_CONTROL, FIELD_HEIGHT, FIELD_FOCUS, fieldEdge(false)].join(
           class={FIELD}
         />
         <div class="typeahead" data-typeahead>
-          <ul id="home-character-search-listbox" class="typeahead-list" role="listbox" hidden></ul>
+          <ul
+            id="home-character-search-listbox"
+            class="typeahead-list ui-overlay"
+            data-kind="menu"
+            role="listbox"
+            hidden
+          ></ul>
         </div>
       </div>
     </div>

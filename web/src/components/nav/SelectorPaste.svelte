@@ -5,6 +5,11 @@
      says so under it. Focus moves into the box on open. -->
 <script lang="ts">
   import { selectorCopy } from '../../lib/character-selector/copy';
+  import { button } from '../../lib/ui/button';
+  import { FIELD_CONTROL, FIELD_FOCUS, fieldEdge } from '../../lib/ui/field';
+
+  /** Use and Cancel are the Button primitive's secondary recipe. */
+  const SECONDARY = button('secondary', 'md');
 
   let { onpaste, oncancel }: { onpaste: (input: string) => Promise<boolean>; oncancel: () => void } =
     $props();
@@ -31,7 +36,12 @@
   }
 </script>
 
-<div class="csel-paste" data-testid="selector-paste-form" role="presentation" onkeydown={onKeydown}>
+<div
+  class="csel-paste ui-overlay-rule-t"
+  data-testid="selector-paste-form"
+  role="presentation"
+  onkeydown={onKeydown}
+>
   <div class="csel-paste-label">{selectorCopy.pasteLabel}</div>
   <textarea
     bind:this={box}
@@ -40,18 +50,21 @@
     aria-label={selectorCopy.pasteLabel}
     aria-invalid={invalid ? 'true' : undefined}
     spellcheck="false"
+    class={[FIELD_CONTROL, FIELD_FOCUS, fieldEdge(invalid)]}
     data-testid="selector-paste-input"></textarea>
   <div class="csel-paste-buttons">
     <button
       type="button"
-      class="csel-button"
+      class={`csel-button ${SECONDARY}`}
       disabled={text.trim() === '' || working}
       data-testid="selector-paste-use"
       onclick={() => void submit()}
     >
       {selectorCopy.pasteUse}
     </button>
-    <button type="button" class="csel-button" onclick={oncancel}>{selectorCopy.pasteCancel}</button>
+    <button type="button" class={`csel-button ${SECONDARY}`} onclick={oncancel}
+      >{selectorCopy.pasteCancel}</button
+    >
   </div>
   {#if invalid}
     <div class="csel-paste-error" role="alert" data-testid="selector-paste-error">

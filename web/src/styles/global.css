@@ -1,9 +1,13 @@
 /* web/src/styles/global.css */
 @import 'tailwindcss';
 @import './tokens.css';
+@import '../components/ui/overlay.css';
 @import './nav.css';
 @import './typeahead.css';
-@import './select.css';
+@import '../components/ui/select.css';
+@import '../components/ui/card.css';
+@import '../components/ui/skeleton.css';
+@import '../components/ui/row.css';
 
 @layer base {
   body {
@@ -18,6 +22,8 @@
   }
 
   html {
+    /* The themed scrollbar's thumb (below): a cool grey between the line and the muted text. */
+    --scrollbar-thumb: #343d52;
     background: var(--color-bg);
     color: var(--color-text);
     font-family: var(--font-body);
@@ -61,12 +67,12 @@
     outline-offset: 2px;
   }
   /* Themed scrollbars, site-wide: macOS with a mouse plugged in (or "Show scroll bars: Always")
-     drew a classic grey bar on the fight list and every other scroll box. A thin warm thumb on a
+     drew a classic grey bar on the fight list and every other scroll box. A thin thumb on a
      clear track; the ::-webkit-scrollbar rules are Safari's, which ignores the standard pair. A
      strip that hides its bar (scrollbar-width: none) does so outside the layers and still wins. */
   * {
     scrollbar-width: thin;
-    scrollbar-color: var(--color-line-warm-strong) transparent;
+    scrollbar-color: var(--scrollbar-thumb) transparent;
   }
   ::-webkit-scrollbar {
     width: 8px;
@@ -76,7 +82,7 @@
     background: transparent;
   }
   ::-webkit-scrollbar-thumb {
-    background: var(--color-line-warm-strong);
+    background: var(--scrollbar-thumb);
     border-radius: 4px;
   }
   ::-webkit-scrollbar-thumb:hover {
@@ -237,24 +243,6 @@ label:has(input[type='checkbox']:disabled) {
   font-size: 13px;
   font-weight: 700;
   letter-spacing: 0.01em;
-}
-
-/* The card surface (polish spec 4.2): gradient, gold-tinted border, panel radius, the inset
-   top highlight and the deep shadow. card-surface-quiet drops the highlight. */
-@utility card-surface {
-  background: var(--surface-card);
-  border: 1px solid var(--color-line-card);
-  border-radius: var(--radius-panel);
-  box-shadow:
-    inset 0 1px 0 var(--card-highlight),
-    var(--shadow-card);
-}
-
-@utility card-surface-quiet {
-  background: var(--surface-card);
-  border: 1px solid var(--color-line-card);
-  border-radius: var(--radius-panel);
-  box-shadow: var(--shadow-card);
 }
 
 /* The band's ember sky (polish spec 4.4, direction B). */
@@ -424,7 +412,6 @@ label:has(input[type='checkbox']:disabled) {
   .prose-forever td {
     text-align: left;
     padding: 8px 10px;
-    border-bottom: 1px solid var(--color-line-soft);
     vertical-align: top;
   }
   /* The quiet-label recipe. */
@@ -435,28 +422,6 @@ label:has(input[type='checkbox']:disabled) {
   }
 }
 
-/* The report skeleton: placeholder blocks that shimmer while the report loads. Still
-   under reduced motion; the blocks alone say "loading". */
-.skeleton-block {
-  display: block;
-  border-radius: 3px;
-  background: linear-gradient(
-    90deg,
-    var(--color-line-soft) 0%,
-    color-mix(in srgb, var(--color-line-soft) 60%, var(--color-raised)) 50%,
-    var(--color-line-soft) 100%
-  );
-  background-size: 200% 100%;
-  animation: skeleton-shimmer 1.6s ease-in-out infinite;
-}
-@keyframes skeleton-shimmer {
-  from {
-    background-position: 200% 0;
-  }
-  to {
-    background-position: -200% 0;
-  }
-}
 /* Hidden until an island confirms the session (Base.astro's session hint): a signed-in
    visitor never sees the server-rendered "Sign in" block flash before the swap. */
 html[data-session='1'] [data-session-hide] {
@@ -511,74 +476,8 @@ html[data-session='1'][data-history='1'] .history-reserve {
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .skeleton-block,
   .reveal {
     animation: none;
-  }
-}
-
-/* Row bands (row-band sweep 2026-11-01, design/specs/2026-11-01-row-bands.md). A row that lights
-   up inside a list (the viewer's own row, a marked or addressed fight, a link row's hover) is a
-   rounded band, never a square stripe: while lit it takes the control radius, holds its content
-   12 px in (lib/ui/row.ts ROW_BAND_REACH gives a flush row that room without moving its content),
-   and the hairlines on either side of it step back, so the band reads as the row itself. Unlit,
-   a row keeps square corners, so its own hairline runs straight to its ends. Plain CSS, outside
-   the layers, so it outranks the rows' own border-line-soft rules. A row that runs edge to edge
-   in a clipped card (the account, rankings, tier and BiS lists) is already contained by the
-   card and keeps its full-bleed ground.
-   The rules beside a band belong to its neighbours (the next row's top border, the previous
-   row's bottom border, the latter reachable only by `:has(+ …)`), so the neighbour selectors
-   are keyed to `.row-rule` (lib/ui/row.ts ROW_RULE, on every row of a ruled list). A universal
-   subject (a sibling combinator into `*`, a bare `:has()`) is matched against every element on the site, and that
-   extra style work was enough to move the home page after its first layout. */
-.row-band {
-  transition:
-    background-color 120ms ease-out,
-    box-shadow 120ms ease-out;
-}
-.row-band-own {
-  background-color: var(--row-hover);
-}
-.row-band-mark,
-.row-band-target:target {
-  background-color: rgba(229, 185, 85, 0.08);
-  box-shadow: inset 2px 0 0 var(--color-gold);
-}
-.row-band-hover:active {
-  background-color: var(--color-card-top);
-  box-shadow: var(--row-band-ring);
-}
-:is(.row-band-own, .row-band-mark, .row-band-target:target, .row-band-hover:active) {
-  border-radius: var(--radius-control);
-}
-:is(.row-band-own, .row-band-mark, .row-band-target:target, .row-band-hover:active),
-:is(.row-band-own, .row-band-mark, .row-band-target:target, .row-band-hover:active) + .row-rule {
-  border-top-color: transparent;
-}
-:is(.row-band-own, .row-band-mark, .row-band-target:target, .row-band-hover:active),
-.row-rule:has(+ :is(.row-band-own, .row-band-mark, .row-band-target:target, .row-band-hover:active)) {
-  border-bottom-color: transparent;
-}
-@media (hover: hover) and (pointer: fine) {
-  .row-band-hover:hover {
-    border-radius: var(--radius-control);
-  }
-  .row-band-hover:hover:not(:active) {
-    background-color: var(--row-band-hover);
-    box-shadow: var(--row-band-ring);
-  }
-  .row-band-hover:hover,
-  .row-band-hover:hover + .row-rule {
-    border-top-color: transparent;
-  }
-  .row-band-hover:hover,
-  .row-rule:has(+ .row-band-hover:hover) {
-    border-bottom-color: transparent;
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .row-band {
-    transition: none;
   }
 }
 
@@ -753,33 +652,15 @@ html[data-discord='lapsed'] .account-discord-skeleton {
 }
 /* account loading reserve:end */
 
-/* The shared character header's server-rendered loading state (CharacterHeader.svelte): the
-   skeleton box shows only for a visitor with a session hint, the signed-out band only for one
-   without, so neither kind of visitor sees the panel change size when the island hydrates.
-   /logs' "Your reports" panel reuses `.ch-hint-out-only` for its signed-out sentence. */
+/* A block shown only with a session hint (`.ch-hint-only`) or only without (`.ch-hint-out-only`,
+   /logs' "Your reports" signed-out sentence), swapped before paint so neither visitor sees a
+   change of size. */
 html:not([data-session='1']) .ch-hint-only {
   display: none;
 }
 html[data-session='1'] .ch-hint-out-only {
   display: none;
 }
-
-/* The band's "server sim finished" line (CharacterHeader.svelte, spec 2026-10-24 3.7):
-   with data-finished hinted the skeleton holds the footer row (56px phone, 44px from 600px;
-   at 1024px the band's 136px grid plus that row). The island collapses it if no line comes. */
-html[data-finished='1'] .ch-band .ch-foot-reserve {
-  display: block;
-}
-html[data-finished='1'] .ch-band.ch-loading {
-  --ch-foot-reserve: var(--ch-foot-phone-h);
-}
-@media (min-width: 600px) {
-  html[data-finished='1'] .ch-band.ch-loading {
-    --ch-foot-reserve: var(--ch-foot-h);
-  }
-}
-/* From 1024px the skeleton's min-height and rows come from CharacterHeader.svelte's single
-   footer-reserve rule (shared with the ready state's .ch-has-foot). */
 
 /* Home (design/specs/2026-11-06-home.md §4): with a session hinted the server-rendered signed-out
    page is gone before paint and the HomeSignedIn island holds the place; when /v1/me says nobody

@@ -1,10 +1,8 @@
 // web/src/lib/bis/landing-answer.ts
-// What the /bis landing hands the shared character header (components/character/
-// CharacterHeader.svelte): the answer ("Best-in-slot slots you wear", how many of the character's
-// band's best-in-slot slots it already wears, and which slots the band has no pick for) and the
-// one action (the character's own spec page at its own band). The identity, the sync line and
-// every state are the header's own. The spec page's card reuses the answer through
-// `bisAnswerSpec` with its own spec lookup.
+// What the /bis landing's head answer counts (landing-answer-view.ts paints it): how many of the
+// character's band's best-in-slot slots it already wears and which slots the band has no pick for,
+// as the shared AnswerSpec contract (lib/character-header/types.ts), and the one action (the
+// character's own spec page at its own band).
 import type { MeCharacter } from '../account/api';
 import type { AnswerSpec, HeaderAction, HeaderAnswer } from '../character-header/types';
 import { characterSpecName } from '../character-spec';
@@ -19,7 +17,7 @@ import { levelingSpecKey } from '../leveling/leveling-plan';
 import { specLinkHref } from './landing-links';
 import { slotDisplayLabel } from './slot-display-labels';
 import { hasKnownSource } from './source-cell';
-import type { BisBand, Faction } from './types';
+import type { BisBand, BisFile, Faction } from './types';
 
 const DEFAULT_LOOKUP_FACTION: Faction = 'alliance';
 
@@ -99,15 +97,17 @@ export interface BisAnswerOptions {
   specKeyOf(character: MeCharacter): string | undefined;
   /** What the slot shows when `specKeyOf` finds no spec, or the spec has no list at the band. */
   withoutList?: HeaderAnswer;
+  /** Reads a spec's published file (default: the browser fetch); the mock facts read it off disk. */
+  fetchFile?: (build: string, specKey: string) => Promise<BisFile | null>;
 }
 
 /** The character's band entry in the spec's published file; undefined when there is no file or no entry. */
 async function bandEntryOf(
-  build: string,
+  options: Pick<BisAnswerOptions, 'build' | 'fetchFile'>,
   specKey: string,
   character: MeCharacter,
 ): Promise<BisBand | undefined> {
-  const file = await fetchBisFile(build, specKey);
+  const file = await (options.fetchFile ?? fetchBisFile)(options.build, specKey);
   if (file === null) return undefined;
   const band = characterBand(character.level) ?? DEFAULT_LANDING_BAND;
   return bandEntryFor(file, band, character.faction ?? DEFAULT_LOOKUP_FACTION);
@@ -121,7 +121,7 @@ export async function loadBisAnswer(
   const withoutList = options.withoutList ?? NO_LIST;
   const specKey = options.specKeyOf(character);
   if (specKey === undefined) return withoutList;
-  const entry = await bandEntryOf(options.build, specKey, character);
+  const entry = await bandEntryOf(options, specKey, character);
   if (entry === undefined) return withoutList;
   return countAnswer(entry, character.build?.gear ?? {}, specKey.split('-')[0]);
 }
@@ -145,9 +145,13 @@ export function bisAnswerSpec(options: BisAnswerOptions): AnswerSpec {
 }
 
 /** The landing's answer: counts against the spec the character reports. */
-export function landingAnswerSpec(config: LandingConfig): AnswerSpec {
+export function landingAnswerSpec(
+  config: LandingConfig,
+  fetchFile?: BisAnswerOptions['fetchFile'],
+): AnswerSpec {
   return bisAnswerSpec({
     build: config.build,
+    ...(fetchFile === undefined ? {} : { fetchFile }),
     specKeyOf: (character) =>
       specKeyFor(config, character.class, characterSpecName(character)) ?? levelingSpecKey(character),
   });

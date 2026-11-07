@@ -1,7 +1,7 @@
 <!-- web/src/components/character/FinishedSimLine.svelte -->
 <!-- The band's footer row (experience spec 2026-10-24 section 3.4): "Your Frost Mage sim
      finished: 1,204 DPS  Open result →", `and N more` when several wait, and a dismiss. It
-     fills the slot CharacterHeader gives it (full width under the band, a gold edge, no box); it
+     fills the slot its page gives it (full width under the head, a gold edge, no box); it
      owns its edge, its copy and the dismiss. Following the link marks that run seen on the
      result page (3.6), so nothing here posts on a link click. Dismiss posts the seen call for
      every run the line names. -->

@@ -12,6 +12,19 @@
 // below is `tooltipShiftPx`'s pure-function default/test fixture only; `positionTooltipPanel`
 // measures the panel's own real rendered width instead of assuming a constant.
 const TOOLTIP_PANEL_WIDTH_PX = 288;
+
+/** The panel's own placement, read from the variables positionTooltipPanel sets on the host: the
+ *  `style` both tooltip panels (ItemTooltip, GameTooltip) hand their Overlay. */
+export const TOOLTIP_PANEL_PLACEMENT = [
+  'position: var(--item-tooltip-position, absolute)',
+  'left: var(--item-tooltip-shift, 0px)',
+  'top: var(--item-tooltip-top, 100%)',
+  'bottom: var(--item-tooltip-bottom, auto)',
+  'margin-top: var(--item-tooltip-mt, 8px)',
+  'margin-bottom: var(--item-tooltip-mb, 0px)',
+  'max-height: var(--item-tooltip-max-h, none)',
+  'overflow-y: var(--item-tooltip-overflow-y, visible)',
+].join('; ');
 // The site's own 16 px side gutter: a panel never sits closer to a screen edge than the page text does.
 const SIDE_MARGIN_PX = 16;
 // Above and below the anchor, the panel may come this close to the top or bottom edge.

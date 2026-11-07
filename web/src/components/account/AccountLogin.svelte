@@ -1,6 +1,7 @@
 <!-- web/src/components/account/AccountLogin.svelte -->
-<!-- /login's island: the Battle.net button (to the visitor's own `?next=`), or, already signed in,
-     the way back to the account. Reads the one shared `/v1/me`. -->
+<!-- /login's island, inside the page's one Plate (pages/login.astro): the reason, the Battle.net
+     button (to the visitor's own `?next=`) and what Battle.net shares; or, already signed in, who
+     is signed in and the way back to the account. Reads the one shared `/v1/me`. -->
 <script lang="ts">
   import { onMount } from 'svelte';
   import { ACCOUNT_FAILED, battlenetStartUrl, fetchMeOnce, type Me } from '../../lib/account/api';
@@ -8,7 +9,8 @@
   import { accountSignInCopy } from '../../lib/account/signin-copy';
   import { createQueryState } from '../../lib/data/query.svelte';
   import { API_BASE_URL } from '../../lib/planner/config';
-  import { PRIMARY_BUTTON_FIXED } from '../../lib/planner/styles';
+  import { myReportsCopy } from '../../lib/reports/my-reports-copy';
+  import Button from '../ui/Button.svelte';
 
   let { next = '/logs' }: { next?: string } = $props();
 
@@ -17,7 +19,7 @@
     ttlMs: 10 * 60 * 1000,
   });
   const me = $derived(session.data);
-  const displayName = $derived(me?.user.battletag ?? me?.user.email ?? 'Your account');
+  const displayName = $derived(me?.user.battletag ?? me?.user.email ?? accountSignInCopy.goAccount);
 
   // The static build never sees a visitor's query string, so the real `?next=` is read in the
   // browser, on the visitor's own request (until then, the caller's fallback).
@@ -27,31 +29,19 @@
   });
 </script>
 
-<div class="flex flex-col gap-6" data-testid="login">
+<div class="flex flex-col items-start gap-3 px-5 pt-4 pb-5" data-testid="login">
   {#if me !== null}
-    <p class="text-[14px]">Signed in as {displayName}.</p>
-    <a class="{PRIMARY_BUTTON_FIXED} self-start px-5" href="/account" data-testid="login-go-account">
-      Your account
-    </a>
+    <p class="text-[15px] leading-6">{accountSignInCopy.signedInAs(displayName)}</p>
+    <Button tone="primary" href="/account" testid="login-go-account">{accountSignInCopy.goAccount}</Button>
   {:else}
-    <p class="text-muted text-[14px]">{accountSignInCopy.reason}</p>
-    <div class="flex flex-col gap-3">
-      <a
-        class="{PRIMARY_BUTTON_FIXED} self-start px-5"
-        href={battlenetStartUrl(resolvedNext ?? next)}
-        data-testid="battlenet"
-      >
-        Sign in with Battle.net
-      </a>
-      <p class="text-muted text-[13px]">
-        Battle.net tells the site your BattleTag and your characters. It never sees a password here.
-      </p>
-    </div>
+    <p class="max-w-[72ch] text-[15px] leading-6">{accountSignInCopy.reason}</p>
+    <Button tone="primary" href={battlenetStartUrl(resolvedNext ?? next)} testid="battlenet"
+      >{myReportsCopy.signInAction}</Button
+    >
+    <p class="text-muted text-[13px] leading-5">{accountSignInCopy.privacy}</p>
   {/if}
-  <!-- 21px, the error line's height, reserved so the session landing never shoves the page. -->
-  <div class="min-h-[21px]">
-    {#if session.status === 'failed'}<p class="text-[14px]" role="alert" data-testid="account-error">
-        {ACCOUNT_FAILED}
-      </p>{/if}
-  </div>
+  <!-- The error line's height, reserved so the session landing never shoves the page. -->
+  <p class="min-h-5 text-[14px] leading-5" role="status">
+    {#if session.status === 'failed'}{ACCOUNT_FAILED}{/if}
+  </p>
 </div>

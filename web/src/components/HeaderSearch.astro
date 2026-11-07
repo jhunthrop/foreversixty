@@ -3,7 +3,7 @@
 // The compact character lookup in the site header, on every page (Task L8.2 fix round 2 item
 // 7). From 1024px: a 44px magnifier button in the bar (the "/" hint beside it from 1280px,
 // the width the four doors leave room for: nav.css's bar budget)
-// that opens a small panel under the bar holding the design system's Search at its small size.
+// that opens a small panel (the overlay surface, ui/overlay.css) under the bar holding the design system's Search at its small size.
 // Below 1024: the same small Search as the first row of the Menu. A name, or Name-Realm as the
 // game writes it, opens the profile at the site's default region and ruleset
 // (lib/character-search.ts); the home page's full box is the one with the region and ruleset
@@ -11,7 +11,8 @@
 // Each form's status line is a live region, so it stays in the page while empty (fix round 4
 // item 2: `empty:mt-0` closes the gap without hiding it from assistive tech).
 import { homeCharacterSearchCopy as copy } from '../lib/home-landing-copy';
-import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
+import { button } from '../lib/ui/button';
+import { FIELD_CONTROL, FIELD_FOCUS, fieldEdge } from '../lib/ui/field';
 
 interface Props {
   /** `bar` is the desktop button and its panel; `menu` is the Menu's own row. */
@@ -20,8 +21,9 @@ interface Props {
 
 const { place } = Astro.props;
 const id = `site-search-${place}`;
-const FIELD =
-  'border-line-warm-strong bg-raised rounded-control text-text placeholder:text-muted h-11 w-full min-w-0 border pr-3 pl-10 text-[15px]';
+/** The Field primitive's input (lib/ui/field.ts), 44 px tall with room for the magnifier. */
+const FIELD = [FIELD_CONTROL, FIELD_FOCUS, fieldEdge(false), 'h-11 min-w-0 pl-10'].join(' ');
+const SUBMIT = `${button('secondary', 'md')} shrink-0`;
 ---
 
 {place === 'bar' ? (
@@ -54,7 +56,13 @@ const FIELD =
         {copy.slashKey}
       </kbd>
     </button>
-    <div id={`${id}-panel`} class="site-search-panel" hidden data-header-search-panel>
+    <div
+      id={`${id}-panel`}
+      class="site-search-panel ui-overlay"
+      data-kind="menu"
+      hidden
+      data-header-search-panel
+    >
       <form
         class="flex gap-2"
         role="search"
@@ -100,13 +108,16 @@ const FIELD =
             data-testid="site-search-input"
           />
           <div class="typeahead" data-typeahead>
-            <ul id={`${id}-listbox`} class="typeahead-list" role="listbox" hidden />
+            <ul
+              id={`${id}-listbox`}
+              class="typeahead-list ui-overlay"
+              data-kind="menu"
+              role="listbox"
+              hidden
+            />
           </div>
         </span>
-        <button
-          type="submit"
-          class={`${SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong shrink-0 px-3`}
-        >
+        <button type="submit" class={SUBMIT}>
           {copy.submit}
         </button>
       </form>
@@ -159,13 +170,10 @@ const FIELD =
           data-testid="site-menu-search-input"
         />
         <div class="typeahead" data-typeahead>
-          <ul id={`${id}-listbox`} class="typeahead-list" role="listbox" hidden />
+          <ul id={`${id}-listbox`} class="typeahead-list ui-overlay" data-kind="menu" role="listbox" hidden />
         </div>
       </span>
-      <button
-        type="submit"
-        class={`${SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong shrink-0 px-3`}
-      >
+      <button type="submit" class={SUBMIT}>
         {copy.submit}
       </button>
     </form>

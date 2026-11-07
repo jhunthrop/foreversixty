@@ -88,8 +88,23 @@ async function stubSession(page: Page, serverSims: boolean): Promise<void> {
  * /sim with a level 60 Fury warrior's full raid set: the landing rail's own "Fury ›" link (the
  * published BiS set, the mock's spec), without its `run=1`, so the page stops at "No sim yet".
  */
+/**
+ * Waits until the first page has stored its /v1/me answer, so the character's page (the second
+ * load) always reads it before paint: Base.astro's head script then sets data-server-sims for a
+ * payer and the header hides its Premium door from that hint (data-premium-nav="hide"), as a
+ * returning reader sees it. Without the wait the second load raced the store, and the chrome
+ * capture flipped between "hide" and the after-paint "hold".
+ */
+async function settleCachedMe(page: Page): Promise<void> {
+  await page.waitForFunction(() => {
+    const key = document.querySelector<HTMLElement>('[data-me-storage-key]')?.dataset.meStorageKey;
+    return key !== undefined && localStorage.getItem(key) !== null;
+  });
+}
+
 async function openFuryWarrior(page: Page): Promise<void> {
   await page.goto('/sim');
+  await settleCachedMe(page);
   const href = await page
     .locator('[data-region="section-sim-a-best-in-slot-set"] a', { hasText: 'Fury' })
     .getAttribute('href');

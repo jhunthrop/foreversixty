@@ -30,7 +30,7 @@
   import { fetchItemTooltipModel } from '../lib/items/lookup';
   import { positionTooltipPanel, type TooltipAlign } from '../lib/items/tooltip-position';
   import { rarityClassFor } from '../lib/planner/items';
-  import { dataUrl } from '../lib/planner/load';
+  import ItemIcon from './ui/ItemIcon.svelte';
 
   let {
     itemId,
@@ -213,15 +213,7 @@
     {#if children}
       {@render children()}
     {:else if resolvedModel}
-      <img
-        src={dataUrl(build, `icons/${resolvedModel.icon}.webp`)}
-        alt=""
-        width="20"
-        height="20"
-        loading="lazy"
-        decoding="async"
-        class="rounded-control border-line h-5 w-5 border object-cover"
-      />
+      <ItemIcon icon={resolvedModel.icon} quality={resolvedModel.quality} {build} size={20} />
       <span class={rarityClassFor(resolvedModel.quality)}>{resolvedModel.name}</span>
     {:else}
       <span class="text-muted">Item {itemId}</span>

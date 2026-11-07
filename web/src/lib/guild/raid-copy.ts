@@ -188,8 +188,6 @@ export const raidCopy = {
   /** The raid page's own words outside the 6.1 table (spec 3.2, 3.7, 4 "Page states"). */
   page: {
     eyebrow: 'Raid',
-    /** The guild band's own eyebrow (guild page spec 4.A), on the not-visible and failed pages. */
-    guildEyebrow: 'Guild',
     loading: 'Loading the raid',
     /** The officer state select's accessible name (3.7). */
     signupFor: (name: string): string => `Sign-up for ${name}`,
@@ -231,7 +229,7 @@ export function zoneLineOf(view: {
     : view.zone_name;
 }
 
-/** The page's eyebrow, set uppercase by its `label` class: `RAID`, `DUNGEON`, `EVENT`. */
+/** The raid's kind while the page loads, in the Label role: `Raid`, `Dungeon`, `Event`. */
 export const eyebrowOf = (kind: GuildZoneKind): string => KIND_EYEBROWS[kind];
 /** `Cancel raid`, `Cancel run`, `Cancel event`. */
 export const cancelActionOf = (kind: GuildZoneKind): string => `Cancel ${KIND_WORDS[kind]}`;

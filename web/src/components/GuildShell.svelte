@@ -29,6 +29,7 @@
   import { GUILD_BANDLESS_TOP, GUILD_VIEW_MIN, RAID_BAND_MIN } from '../lib/guild/raid-layout';
   import { guildClaimCopy, guildSettingsCopy } from '../lib/guild/copy';
   import { raidCopy } from '../lib/guild/raid-copy';
+  import PageHeader from './ui/PageHeader.svelte';
 
   /** The recruit, applications and profile views' loading height, the same as their own skeleton. */
   const GUILD_VIEW_LOADING = 'min-h-[640px]';
@@ -103,7 +104,7 @@
         >
           ← {guildClaimCopy.backToGuild('')}
         </a>
-        <h1 class="heading-page">{guildClaimCopy.heading('')}</h1>
+        <PageHeader title={guildClaimCopy.heading('')} />
         {@render chunkPending(claimLazy, 'guild-claim-chunk', GUILD_LOADING.claim.minHeight)}
       </div>
     {/if}
@@ -112,7 +113,7 @@
       <settingsLazy.current path={settingsPath} />
     {:else}
       <div class="flex flex-col gap-6 {GUILD_BANDLESS_TOP}">
-        <h1 class="heading-page">{guildSettingsCopy.heading}</h1>
+        <PageHeader title={guildSettingsCopy.heading} />
         {@render chunkPending(settingsLazy, 'guild-settings-chunk', GUILD_LOADING.settings.minHeight)}
       </div>
     {/if}

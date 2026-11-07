@@ -1,0 +1,21 @@
+/* web/src/components/ui/card.css
+   The retired card surface (web layout spec 2026-11-05 §3A.2 "Retired outright"), kept only for
+   ui/Card (lib/ui/card.ts CARD, CARD_QUIET) and the pages not yet off it; it leaves with Card. */
+
+/* The card surface (polish spec 4.2): gradient, gold-tinted border, panel radius, the inset
+   top highlight and the deep shadow. card-surface-quiet drops the highlight. */
+@utility card-surface {
+  background: var(--surface-card);
+  border: 1px solid var(--color-line-card);
+  border-radius: var(--radius-panel);
+  box-shadow:
+    inset 0 1px 0 var(--card-highlight),
+    var(--shadow-card);
+}
+
+@utility card-surface-quiet {
+  background: var(--surface-card);
+  border: 1px solid var(--color-line-card);
+  border-radius: var(--radius-panel);
+  box-shadow: var(--shadow-card);
+}

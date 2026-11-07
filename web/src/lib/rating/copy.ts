@@ -5,7 +5,7 @@
 
 /** Spec §6.4's own worked-example threshold for showing the character trend sparkline —
  *  a display-only choice (Ruling 7), not a server-side minimum. */
-export const MIN_TREND_SAMPLES = 5;
+const MIN_TREND_SAMPLES = 5;
 
 export const ratingCopy = {
   tabLabel: 'Rating',

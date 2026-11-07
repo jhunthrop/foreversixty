@@ -28,6 +28,7 @@
   } from '../lib/guild/raid-layout';
   import type { RaidStatusAction } from '../lib/guild/raids-api';
   import FactionCrest from './character/FactionCrest.svelte';
+  import PageHeader from './ui/PageHeader.svelte';
   import GuildBandFrame from './guild/GuildBandFrame.svelte';
   import GuildTabs from './guild/GuildTabs.svelte';
   import RaidPlanner from './guild/planner/RaidPlanner.svelte';
@@ -114,21 +115,21 @@
 {/snippet}
 
 {#snippet raidEyebrow()}
-  <span class="label text-gold flex items-center gap-2.5">
-    <i class="bg-gold inline-block h-px w-7" aria-hidden="true"></i>{raid === null
-      ? raidCopy.page.eyebrow
-      : eyebrowOf(kindOf(raid))}
-  </span>
+  <span class="text-label tracking-label text-muted font-bold uppercase"
+    >{raid === null ? raidCopy.page.eyebrow : eyebrowOf(kindOf(raid))}</span
+  >
+{/snippet}
+
+{#snippet guildCrest()}
+  <FactionCrest faction={c.guild?.faction ?? null} src={c.guild?.mark ?? null} />
 {/snippet}
 
 {#snippet guildHeading()}
-  <span class="label text-gold flex items-center gap-2.5">
-    <i class="bg-gold inline-block h-px w-7" aria-hidden="true"></i>{raidCopy.page.guildEyebrow}
-  </span>
-  <div class="flex items-center gap-4 lg:gap-[18px]">
-    <FactionCrest faction={c.guild?.faction ?? null} src={c.guild?.mark ?? null} />
-    <h1 class="heading-page">{guildName}</h1>
-  </div>
+  <PageHeader
+    title={guildName}
+    tone={c.guild?.faction ? { faction: c.guild.faction } : 'strong'}
+    crest={guildCrest}
+  />
 {/snippet}
 
 {#if c.load === 'failed'}

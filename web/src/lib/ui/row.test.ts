@@ -4,7 +4,7 @@ import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { ROW_BAND_MARK, ROW_BAND_OWN, ROW_BAND_REACH, ownRowBand, ownRowBandInside, rowBand } from './row';
 
-const GLOBAL_CSS = readFileSync(join(import.meta.dirname, '..', '..', 'styles', 'global.css'), 'utf8');
+const GLOBAL_CSS = readFileSync(join(import.meta.dirname, '..', '..', 'components', 'ui', 'row.css'), 'utf8');
 
 /** A class string's side margin and padding in px (Tailwind steps are 4 px). */
 function sides(classes: string): { margin: number; padding: number } {
@@ -45,7 +45,7 @@ describe('row bands (row-band sweep 2026-11-01)', () => {
     expect(ownRowBandInside(true)).not.toMatch(/-mx-/);
   });
 
-  it('global.css rounds a lit band and steps back the rules beside a lit one', () => {
+  it('ui/row.css rounds a lit band and steps back the rules beside a lit one', () => {
     // Rounded only while lit: an unlit row's hairline runs straight to its ends.
     expect(GLOBAL_CSS).toMatch(/\.row-band \{\s*transition:/);
     expect(GLOBAL_CSS).toMatch(

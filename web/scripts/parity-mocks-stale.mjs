@@ -28,9 +28,19 @@ export const PARITY_PAGES = {
 const ICON_IMG = /<img class="(ic[^"]*)" src="data:[^"]*"[^>]*>/g;
 const ICON_SOCKET = /<span class="(ic[^"]*)" style="[^"]*"><\/span>/g;
 
-/** A mock's HTML with what depends on the checkout (which icon files it holds) taken out. */
+// The captured site chrome points its images into web/public by a path relative to where the mock
+// was written (design/mocks/web, or web/test-results/parity/mocks/<page> one level deeper), so the
+// same image reads `../../../web/public/x` in one and `../../../../public/x` in the other. Each such
+// path (an attribute value, a srcset or a url()) is cut back to `/public/`.
+const PUBLIC_PATH = /(["'(,\s])(?:\.{1,2}\/|[\w.-]+\/)*public\//g;
+
+/** A mock's HTML with what depends on the checkout (which icon files it holds) and on where the mock
+ *  was written taken out. */
 export function normalizeMock(html) {
-  return html.replace(ICON_IMG, '<icon class="$1">').replace(ICON_SOCKET, '<icon class="$1">');
+  return html
+    .replace(ICON_IMG, '<icon class="$1">')
+    .replace(ICON_SOCKET, '<icon class="$1">')
+    .replace(PUBLIC_PATH, '$1/public/');
 }
 
 /** About 60 characters of text either side of the first difference, tags and data URIs dropped. */
