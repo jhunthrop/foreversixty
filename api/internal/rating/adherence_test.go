@@ -6,6 +6,7 @@ import (
 	"math"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"testing"
 
@@ -16,10 +17,9 @@ import (
 	"github.com/jhunthrop/foreversixty/logs/engine/summary"
 )
 
-// Warrior spell ids from data/builds/1.60.1.70291/spellranks.json. The fury rotation shipped
-// in that build's addon-data.json lists, at band 60, Bloodrage, Death Wish, Battle Shout,
-// Execute, Bloodthirst, Whirlwind and Heroic Strike; at band 20 it lists Bloodrage, Death Wish,
-// Battle Shout and Heroic Strike only.
+// Warrior spell ids from the data builds' spellranks.json. The active build's fury rotation
+// lists Execute, Bloodthirst, Whirlwind and Heroic Strike at 60, and Heroic Strike without
+// Execute at the low levels (preExecuteLevel reads which).
 const (
 	spellBloodthirst4   = 23894
 	spellWhirlwind1680  = 1680 // the band lists Whirlwind as 462891: the same family
@@ -159,21 +159,38 @@ func TestAdherenceIsAbsentForASpecWithNoRotation(t *testing.T) {
 	}
 }
 
-// The band follows the character's stored level: at 25 (band 20) Execute is not in the
-// rotation yet, so half the casts are off it; with the level only in the export the export's
-// level= section is the level; with no level stored at all the band is 60, where it is.
+// The band follows the character's stored level: below the level Execute joins the fury
+// rotation, half the casts are off it; with the level only in the export the export's level=
+// section is the level; with no level stored at all the band is 60, where it is listed. The
+// level is read from the shipped rotation (preExecuteLevel), never pinned: the data is a floor.
 func TestAdherenceBandFollowsTheStoredLevel(t *testing.T) {
 	casts := func() []summary.CastRow {
 		return castRows("", [2]int64{spellHeroicStrike4, 5}, [2]int64{spellExecute1, 5})
 	}
+	level := preExecuteLevel(t)
 
-	seedLevel(t, "Adhlow", 25)
-	wantAdherence(t, "Battle.net level 25", rateForAdherence(t, "low", "Adhlow", "Warrior", "Fury", casts()), 0.5)
+	seedLevel(t, "Adhlow", level)
+	wantAdherence(t, "Battle.net level before Execute", rateForAdherence(t, "low", "Adhlow", "Warrior", "Fury", casts()), 0.5)
 
-	seedExportLevel(t, "Adhexport", "25")
-	wantAdherence(t, "export level 25", rateForAdherence(t, "export", "Adhexport", "Warrior", "Fury", casts()), 0.5)
+	seedExportLevel(t, "Adhexport", strconv.Itoa(level))
+	wantAdherence(t, "export level before Execute", rateForAdherence(t, "export", "Adhexport", "Warrior", "Fury", casts()), 0.5)
 
 	wantAdherence(t, "no level stored", rateForAdherence(t, "nolevel", "Adhnolevel", "Warrior", "Fury", casts()), 1.0)
+}
+
+// preExecuteLevel is the highest level whose shipped fury rotation lists Heroic Strike but not
+// Execute yet, from the active build's rotations.
+func preExecuteLevel(t *testing.T) int {
+	t.Helper()
+	useRepoGearData(t)
+	for level := 59; level >= 1; level-- {
+		rot, ok := sims.RotationFor("", "warrior-fury", level)
+		if ok && rot.Lists(spellHeroicStrike4) && !rot.Lists(spellExecute1) {
+			return level
+		}
+	}
+	t.Fatal("no fury rotation level lists Heroic Strike without Execute")
+	return 0
 }
 
 // Adherence is reported to two decimals: 7 of 11 listed is 0.64.
