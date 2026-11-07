@@ -101,11 +101,11 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
 | 10 | 0000000000000000-010000000000000000-0000000000000000 | main_hand:1927 off_hand:3651 | 15.0 | 5 | other:attack/1=70.3, spell:3606=68.3, spell:8044=19.8, spell:3599=5.8, spell:20572=2.0 | {SpellID: 17364}, {SpellID: 408498, Tag: 5}, {SpellID: 408498} |
-| 20 | 0000000000000000-055010000000000000-0000000000000000 | main_hand:2236 off_hand:4820 | 27.1 | 5 | other:attack/1=121.6, spell:6350=69.3, spell:8045=18.1, spell:6363=5.0, spell:20572=2.0 | {SpellID: 16246}, {SpellID: 17364}, {SpellID: 408498, Tag: 5}, {SpellID: 408498} |
+| 20 | 0000000000000000-053030000000000000-0000000000000000 | main_hand:2236 off_hand:4820 | 28.2 | 5 | other:attack/1=121.6, spell:6350=69.7, spell:8045=17.8, spell:6363=5.1, spell:20572=2.0 | {SpellID: 16246}, {SpellID: 17364}, {SpellID: 408498, Tag: 5}, {SpellID: 408498} |
 | 30 | 0000000000000000-055030310031000000-0000000000000000 | main_hand:7687 off_hand:4066 | 50.8 | 6 | other:attack/1=78.5, spell:6351=32.0, spell:17364=26.1, spell:8046=5.4, spell:20572=2.0 | {SpellID: 16246}, {SpellID: 408498, Tag: 5}, {SpellID: 408498} |
-| 38 | 0000000000000000-055030310051202020-0000000000000000 | main_hand:868 off_hand:7496 | 66.1 | 6 | other:attack/1=90.8, spell:6351=32.0, spell:17364=23.4, spell:10412=5.0, spell:20572=2.0 | {SpellID: 16246}, {SpellID: 408498, Tag: 5} |
-| 40 | 0000000000000000-055030310051202031-0000000000000000 | main_hand:2164 off_hand:9918 | 70.2 | 7 | other:attack/1=111.6, spell:6352=36.0, spell:17364=22.9, spell:10412=5.0, spell:20572=2.0 | {SpellID: 16246}, {SpellID: 408498, Tag: 5} |
-| 50 | 3230000000000000-055030310051202051-0000000000000000 | main_hand:810 off_hand:10195 | 131.5 | 9 | other:attack/1=94.2, spell:15207=23.5, spell:17364=21.8, spell:10435=20.1, spell:10413=5.0 | {SpellID: 16246} |
+| 38 | 0000000000000000-055030310051002040-0000000000000000 | main_hand:868 off_hand:7496 | 66.1 | 6 | other:attack/1=90.8, spell:6351=32.0, spell:17364=23.4, spell:10412=5.0, spell:20572=2.0 | {SpellID: 16246}, {SpellID: 408498, Tag: 5} |
+| 40 | 0000000000000000-055030310051002051-0000000000000000 | main_hand:2164 off_hand:9918 | 95.4 | 8 | other:attack/1=106.6, spell:6352=35.6, spell:10391=26.3, spell:17364=22.7, spell:10412=5.0 | {SpellID: 16246} |
+| 50 | 3000000000000000-055030310051202051-0500000000000000 | main_hand:810 off_hand:10195 | 139.1 | 9 | other:attack/1=93.5, spell:15207=24.7, spell:17364=21.7, spell:10435=20.1, spell:10413=5.0 | {SpellID: 16246} |
 | 60 | 3230030000000000-055030310051202051-0520000000000000 | main_hand:22802 off_hand:22819 | 216.8 | 9 | other:attack/1=112.4, spell:10436=44.1, spell:15208=29.1, spell:17364=24.9, spell:10414=5.0 | {SpellID: 16246} |
 
 ## Learned but unused (informational)
@@ -152,7 +152,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Frost Shock (spell 8058)
 - Frostbrand Attack (spell 10458)
 - Lava Burst (spell 1238299)
-- Lightning Bolt (spell 10391)
 
 ### Level 50
 
@@ -182,5 +181,3 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - shaman-enhancement level=30 kind=zero_casts spell="Lightning Bolt" id=943 authored=15208
 - shaman-enhancement level=38 kind=unresolved_id action={SpellID: 408498, Tag: 5}
 - shaman-enhancement level=38 kind=zero_casts spell="Lightning Bolt" id=10391 authored=15208
-- shaman-enhancement level=40 kind=unresolved_id action={SpellID: 408498, Tag: 5}
-- shaman-enhancement level=40 kind=zero_casts spell="Lightning Bolt" id=10391 authored=15208

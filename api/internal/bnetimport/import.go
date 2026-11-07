@@ -65,6 +65,9 @@ type Service struct {
 	// cap (the nightly refresh, which enriches one character at a time). The API sets
 	// it with EnrichmentSlotsFor.
 	MaxConcurrentEnrichments int
+	// ImportSims queues the auto-sim of a character whose gear the enrichment changed; nil
+	// queues none.
+	ImportSims ImportSimmer
 
 	// staticSeen remembers which static namespaces noteStaticNamespace has
 	// already logged.

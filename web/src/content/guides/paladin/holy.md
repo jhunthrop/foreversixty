@@ -114,13 +114,13 @@ Holy Light and Seal of Righteousness come at 1, Judgement at 4, Holy Strike at 6
 
 At 12, the class quest from your trainer teaches Redemption. A healer without it is a long corpse run for the group.
 
-Most Holy paladins level as Retribution and respec for raids; the Retribution guide has those points. If you level as Holy, your first five points, 10 to 14, go into Spiritual Focus: at 5/5, 70% of the hits you take do not push back Holy Light, or Flash of Light once you learn it at 20. Healing Light takes 15 to 17 for 12% bigger heals, then Reverence at 18 and 19 keeps 30% of your mana regen going while you cast.
+Most Holy paladins level as Retribution and respec for raids; the Retribution guide has those points. If you level as Holy, your first five points, 10 to 14, go into Spiritual Focus: at 5/5, 70% of the hits you take do not push back Holy Light, or Flash of Light once you learn it at 20. Reverence comes first, at 15 and 16, keeping 30% of your mana regen going while you cast, then Healing Light from 17 to 19 for 12% bigger heals.
 
 You still kill things with your weapon and your Seal, so take quest rewards over vendor gear and replace your Battleworn Hammer with the first better slow two-hander you find. Paladins cannot use wands. You wear mail until plate at 40.
 
 ### Levels 20 to 60
 
-Level as Retribution and heal dungeons on the way: Flash of Light at level 20 is enough to heal most dungeons at your level, even in a Retribution build. Respec Holy for raids. If you do level as Holy, take Oath of Light at 25, the first point you can spend in its row, ahead of Divine Precision and Infusion of Light: it is the biggest heal in that row from the day you get it, and Divine Precision only adds Holy spell hit and a little silence reduction, nothing for your heals. Questing as Holy is slow either way.
+Level as Retribution and heal dungeons on the way: Flash of Light at level 20 is enough to heal most dungeons at your level, even in a Retribution build. Respec Holy for raids. If you do level as Holy, Illumination takes 20 to 24 and Oath of Light comes at 25, the first point you can spend in its row, ahead of Divine Precision and Infusion of Light: it is the biggest heal in that row from the day you get it, and Divine Precision only adds Holy spell hit and a little silence reduction, nothing for your heals. Then Divine Intellect from Protection for a bigger mana bar, Divine Favor at 30, and Benediction and Conviction from Retribution by 39, 6% crit on every heal and so more Illumination refunds. Holy Shock waits until 45: it costs more mana than a leveling dungeon lets you spend until Holy Power stands behind it, so Purifying Power, Divine Precision and Infusion of Light come at 40 to 44 only to open its row, Boundless Light and Holy Power follow by 52, and Light's Vigil comes at 53. Precision, Guardian's Favor and Sacred Duty do nothing for your heals, so they are your last points. Questing as Holy is slow either way.
 
 Common mistakes:
 

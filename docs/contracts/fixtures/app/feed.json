@@ -1,0 +1,40 @@
+{
+  "ok": true,
+  "data": {
+    "rows": [
+      {
+        "id": "e_412",
+        "kind": "bis_change",
+        "at": "2026-11-07T17:02:00Z",
+        "tag": "your_spec",
+        "icon": "inv_chest_leather_08",
+        "crest": "warrior",
+        "quality": 3,
+        "href": "/bis/warrior/fury",
+        "date_only": false,
+        "segments": [
+          { "text": "Blackened Defias Armor", "style": "item", "class": "warrior", "quality": 3, "item_id": 10399 },
+          { "text": " is the new chest" }
+        ]
+      },
+      {
+        "id": "e_409",
+        "kind": "log_upload",
+        "at": "2026-11-07T16:51:00Z",
+        "tag": "logs",
+        "icon": null,
+        "crest": "warlock",
+        "quality": null,
+        "href": "/reports/abc123",
+        "date_only": false,
+        "segments": [
+          { "text": "Nightfall", "style": "name", "class": "warlock" },
+          { "text": " uploaded Shadowfang Keep, 8 bosses in 41 min" }
+        ]
+      }
+    ],
+    "next_cursor": "MTc2MjUzMjAwMDAwMDAwMHwwfDE3NjI1MzQ2NjAwMDAwMDB8NDA5"
+  },
+  "error": null,
+  "request_id": "9f2c41d07ab3e655"
+}

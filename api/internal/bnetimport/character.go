@@ -113,6 +113,7 @@ func (s *Service) enrichCharacter(ctx context.Context, ref characterRef, rosterC
 	if err := tx.Commit(ctx); err != nil {
 		return false, false, fmt.Errorf("bnetimport: commit enrich %s: %w", ref.Key, err)
 	}
+	s.simImport(ctx, ref, true)
 	return guildWritten, unavailable, nil
 }
 

@@ -7,10 +7,6 @@
   ],
   "expected_idle": [
     {
-      "id": 20910,
-      "reason": "Counterattack only lands while its parry-triggered proc aura is active (hunter.CounterattackProcAura), which only activates off an OnSpellHitTaken parry -- i.e. it requires the TARGET to attack the hunter. This ladder's (and the site's own production sim's) target dummy carries TankIndex: -1 and no SwingSpeed/MinBaseDamage (sim/request/request.go's targetStats/encounter), so it never auto-attacks anyone; nothing in a bare, untanked single-character run can ever trigger a parry, at any level, in any of the 300 iterations. This is a property of the shared encounter builder every spec's ladder run shares, not a defect in this rotation or in sim/hunter/counterattack.go -- Counterattack is correctly wired and dealt real damage in sim/hunter/survival_melee_test.go's own TestCounterattackLevel60ProcsOnParryAndDealsClientDamage, which activates the proc aura directly rather than waiting on an attack that this harness's target never makes."
-    },
-    {
       "id": 14271,
       "reason": "Mongoose Bite only lands inside its window (hunter.MongooseBiteWindowAura, spell 5302), which a dodge or an Expose Prey proc opens. The ladder target never attacks, so no dodge comes, and Expose Prey is a tier-4 Survival talent the guide build cannot reach at levels 20 and 30, so the line is idle until the build spends it. From the level it does, the ladder's marked target (the survival kit carries Hunter's Mark) lets the talent open the window."
     },
@@ -96,17 +92,6 @@
                   "val": "0%"
                 }
               }
-            }
-          }
-        }
-      },
-      {
-        "notes": "Counterattack the moment it lights up after you parry. It cannot be dodged, blocked or parried, so press it before anything else that is ready.",
-        "action": {
-          "castSpell": {
-            "spellId": {
-              "rank": 4,
-              "spellId": 20910
             }
           }
         }

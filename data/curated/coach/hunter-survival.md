@@ -32,9 +32,9 @@ This is the best Survival Hunter on Forever. Survival is a melee spec in Forever
 - Rapid Fire from twenty-six on the pull with your trinkets. Add Elune's Light, Blood Fury or Berserking if your race has one.
 - Disengage from twenty trims some threat on a five second cooldown. It turns off your auto attack, so start swinging again the moment it lands.
 - Feign Death from thirty drops all of your threat if it lands. Check the message, because it can be resisted.
-- Deterrence from twenty-five is your emergency button when something turns on you.
 - Explosive Trap from thirty-four under the pack is your AoE, and Engineering's explosives are the rest.
 - Freezing Trap from twenty is your crowd control, laid before the pull.
+- Deterrence from twenty-five is your emergency button when something turns on you.
 
 **The mistakes to look for, by finding.**
 - Core abilities under-used: a button the priority list wants sitting ready while something lower went first.

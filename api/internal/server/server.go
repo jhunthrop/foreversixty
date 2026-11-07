@@ -6,6 +6,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/jhunthrop/foreversixty/api/internal/activity"
 	"github.com/jhunthrop/foreversixty/api/internal/addon"
 	"github.com/jhunthrop/foreversixty/api/internal/app"
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
@@ -90,6 +91,9 @@ type Deps struct {
 	// GoLinks serves the tracked links: the Worker's resolve and count, the site's arrival and
 	// the owner's funnel; nil leaves them unmounted.
 	GoLinks *golinks.Service
+	// Activity serves the site feed (GET /v1/feed) and the home blocks (GET /v1/home); nil
+	// leaves them unmounted.
+	Activity *activity.Service
 
 	TrustedProxyHops int
 }
@@ -184,6 +188,9 @@ func NewRouter(d Deps) http.Handler {
 	}
 	if d.GoLinks != nil {
 		golinks.Mount(mux, d.GoLinks)
+	}
+	if d.Activity != nil {
+		activity.Mount(mux, d.Activity)
 	}
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		httpx.WriteError(w, r, http.StatusNotFound, "not_found", "no such route", nil)

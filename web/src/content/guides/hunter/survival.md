@@ -3,7 +3,7 @@ title: Survival Hunter in Forever
 classSlug: hunter
 spec: survival
 role: dps
-build: 'FS1:1.60.1.70790:hunter:night-elf:5/005005001/500230231051222151:'
+build: 'FS1:1.60.1.70790:hunter:night-elf:5/005005201/500230230050222151:'
 recommendedRaces: [night-elf, orc]
 alsoRecommendedRaces: [troll]
 statPriority: [Hit, Critical strike, Agility, Intellect, Strength, Attack power, Attack speed]
@@ -67,7 +67,7 @@ Survival is a melee spec in Forever: two weapons, Raptor Strike queued every tim
 
 ## Talents and builds
 
-Thirty-five points in Survival take every melee damage talent, eleven in Marksmanship take Careful Aim and Lone Wolf, and five in Beast Mastery take Deadly Aspects.
+Thirty-three points in Survival take every melee damage talent, thirteen in Marksmanship take Careful Aim, Rapid Killing and Lone Wolf, and five in Beast Mastery take Deadly Aspects.
 
 - **Lone Wolf** (1 point): 20% more damage with every attack while no pet is out. Forever's pets copy only a tenth of your attack power and take no stat buffs from other players, so in a raid the talent beats the pet for a melee hunter. Out in the world the pet is worth a little more than the talent and takes the hits, so keep it out there; the point waits for your next raid pull
 - **Expose Prey** (2 points): your hits on a target with Hunter's Mark have a 10% chance to open Mongoose Bite for 10 seconds, the only way it opens on a boss that is not attacking you
@@ -78,9 +78,9 @@ Thirty-five points in Survival take every melee damage talent, eleven in Marksma
 - **Deadly Aspects** (5 points): under Aspect of the Beast, every white swing has a 10% chance to speed your melee attacks by 30% for 12 seconds
 - **Resourcefulness** (2 points): 60% off melee and trap costs, and your special crits keep half your mana regeneration running
 
-Careful Aim (5 points) turns Intellect into attack power and is the way to Lone Wolf. Lethal Attacks (5 points) is 5% crit on everything. Surefooted is 3% hit, Strider Kick is a third melee special, and Clever Traps and Survivalist's Discipline turn Immolation Trap into a damage button. Counterattack comes with Deterrence on the way down. Improved Tracking (5 points) is 5% damage against the creature type you track. Track covers Beasts, Demons, Dragonkin, Elementals, Giants, Humanoids and Undead, which takes in most raid bosses, so set it to the boss's type before the pull whenever Track covers it.
+Careful Aim (5 points) turns Intellect into attack power and is the way to Lone Wolf. Lethal Attacks (5 points) is 5% crit on everything. Surefooted is 3% hit, Strider Kick is a third melee special, and Clever Traps and Survivalist's Discipline turn Immolation Trap into a damage button. Improved Tracking (5 points) is 5% damage against the creature type you track. Track covers Beasts, Demons, Dragonkin, Elementals, Giants, Humanoids and Undead, which takes in most raid bosses, so set it to the boss's type before the pull whenever Track covers it.
 
-The build skips the Marksmanship shot talents: Mortal Shots is ranged only, Hawk Eye is range on a bow you never fire, and Efficiency's 15% comes on top of Resourcefulness's 60%, so it saves little. The same build is the raid build. Rapid Killing sits on Lone Wolf's row, and Lethal Attacks and Careful Aim are exactly the ten points that open it, so its two points would have to come out of the Survival talents or Deadly Aspects, and two fewer points of Deadly Aspects cost you more than a shorter Rapid Fire gives back.
+The build skips the Marksmanship shot talents: Mortal Shots is ranged only, Hawk Eye is range on a bow you never fire, and Efficiency's 15% comes on top of Resourcefulness's 60%, so it saves little. The same build is the raid build. Rapid Killing (2 points) sits on Lone Wolf's row, which Lethal Attacks and Careful Aim open, and takes two minutes off Rapid Fire, so a fight that runs past three minutes gets a second one. Its points come from Deterrence and Counterattack: behind a boss that is hitting the tank you never parry, so Counterattack never lights up, and Deterrence only answers a hit you are not taking.
 
 ## Rotation and priority
 
@@ -88,11 +88,11 @@ In a raid, dismiss your pet before the pull; Lone Wolf only works with no pet ou
 
 Walk in behind the boss with the rogues once the tank has it. On the pull, press Rapid Fire, your trinkets and your racial (Elune's Light, Blood Fury or Berserking) together. Rapid Fire speeds your melee swings in Forever, so it is a melee cooldown for you. Its five minute cooldown gives you one in a normal boss fight.
 
-Then work through your melee priority: Raptor Strike, Counterattack, Mongoose Bite, Lacerate, Strider Kick, Immolation Trap. Raptor Strike replaces your next white hit instead of costing a global, so the only mistake is letting it sit unqueued. Mongoose Bite and Counterattack are the buttons you watch for: Expose Prey opens Mongoose Bite off your own hits, while Counterattack needs a parry, and from behind a boss you will not parry, so it is mostly an add and trash button. Keep Lacerate's bleed on the boss between Mongoose Bites; it crits like every bleed in Forever, and Strider Kick and Immolation Trap fill what is left. Wing Clip is only a filler while a Windfury Totem reaches you; in a group without a shaman, leave it alone.
+Then work through your melee priority: Raptor Strike, Mongoose Bite, Lacerate, Strider Kick, Immolation Trap. Raptor Strike replaces your next white hit instead of costing a global, so the only mistake is letting it sit unqueued. Mongoose Bite is the button you watch for: Expose Prey opens it off your own hits. Keep Lacerate's bleed on the boss between Mongoose Bites; it crits like every bleed in Forever, and Strider Kick and Immolation Trap fill what is left. Wing Clip is only a filler while a Windfury Totem reaches you; in a group without a shaman, leave it alone.
 
 You fire no shots in this spec. Your bow or gun is there for its stats.
 
-**Threat.** You sit on a fresh tank's heels in the opener. Disengage trims some threat on a 5 second cooldown, but it turns off your auto attack, so start swinging again the moment it lands. Feign Death drops all of your threat if it lands; check the message, because either can miss or be resisted. Deterrence is your emergency button when something turns on you.
+**Threat.** You sit on a fresh tank's heels in the opener. Disengage trims some threat on a 5 second cooldown, but it turns off your auto attack, so start swinging again the moment it lands. Feign Death drops all of your threat if it lands; check the message, because either can miss or be resisted. Feign Death is also your answer when something turns on you.
 
 **Trash.** Survival has little cleave of its own. Explosive Trap under the pack is your AoE, and Engineering's explosives are the rest. Freezing Trap is your crowd control, laid before the pull.
 
@@ -142,7 +142,7 @@ Survival levels in melee. Keep a pet out while you level: Lone Wolf is the last 
 
 Open with Hunter's Mark, send the pet, then walk in and queue Raptor Strike. Press Mongoose Bite whenever it lights up, and from 30 keep Lacerate on anything that will live long enough to bleed. Wing Clip a runner. Wear Aspect of the Monkey until 30: its dodges open Mongoose Bite. At 30 switch to Aspect of the Beast and keep it up. Throw Immolation Trap under anything that will live long enough to burn. Feign Death at 30 resets a bad pull. Aspect of the Cheetah at 20 is your run speed between quests, but it dazes you when you are hit, so never wear it into a fight.
 
-Spend 25 to 29 on Predator's Edge and take Strider Kick at 30, then Resourcefulness, Expose Prey, Survivalist's Discipline and a point of Lightning Reflexes. Deterrence and Counterattack wait for 38 and 39: one is an emergency button and the other needs a parry, and while your pet holds the mob neither adds damage.
+Spend 25 to 29 on Predator's Edge and take Strider Kick at 30, then Resourcefulness, Expose Prey, Survivalist's Discipline and Lightning Reflexes, with Lacerating Strikes at 40 and Lightning Reflexes full at 42. Deadly Aspects from 43, Lethal Attacks and Careful Aim take you to 57, Rapid Killing comes at 58 and 59, and Lone Wolf is the last point at 60.
 
 At 26 Immolation Trap rank 2 arrives, and with a trap on every pull your mana runs short. From 26 to 29 keep Raptor Strike rank 3 on your bar instead of rank 4: most of the hit is your weapon, so it does nearly what rank 4 does for less mana, and the mana it saves goes into traps. On a Horde character rank 2 is better again: an Orc, a Troll or a Windshaper Skyborne at 26 and 27, a Tauren at 26 to 28. Drag the lower rank onto your bar from the spellbook at 26 and put rank 4 back at 30.
 

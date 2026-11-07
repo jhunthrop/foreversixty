@@ -1,5 +1,5 @@
 <!-- web/src/components/home/HomeSignedIn.svelte -->
-<!-- The signed-in home (home spec 2026-11-06 §4): one island over the session read the header
+<!-- The signed-in home (home spec 2026-11-06 §4, layout B 2026-11-07): one island over the session read the header
      uses. With the session hint on (html[data-session='1']) the server-rendered signed-out page is
      hidden before paint and this island's skeleton holds the place; once /v1/me answers it draws
      the selected character, or the no-character page, or, signed out after all (the hint was
@@ -8,6 +8,7 @@
   import { createCharacterCardState } from '../../lib/bis/character-card-state.svelte';
   import { HOME_OUT_ATTR } from '../../lib/home/home-layout';
   import { homeCopy, homeHrefs } from '../../lib/home/home-view';
+  import { feedCopy, type FeedRow } from '../../lib/home/feed';
   import { REGION } from '../../lib/ui/regions';
   import Button from '../ui/Button.svelte';
   import Page from '../ui/Page.svelte';
@@ -16,8 +17,10 @@
   import Section from '../ui/Section.svelte';
   import HomeCharacter from './HomeCharacter.svelte';
   import HomeClassPicker from './HomeClassPicker.svelte';
+  import FeedSkeleton from '../ui/FeedSkeleton.svelte';
   import HomeSummary from './HomeSummary.svelte';
-  import HomeUpgrades from './HomeUpgrades.svelte';
+
+  let { floor, raidsOpen }: { floor: FeedRow[]; raidsOpen: string | null } = $props();
 
   const session = createCharacterCardState();
   const settled = $derived(session.status === 'ready' || session.status === 'failed');
@@ -43,12 +46,13 @@
           <span class="skeleton-block block h-7 w-[280px]" aria-hidden="true"></span>
         </div>
       {/snippet}
-      {#snippet bar()}<HomeSummary loading />{/snippet}
-      <HomeUpgrades status="loading" upgrades={null} bis={null} build="" onRetry={() => {}} />
+      <Section title={feedCopy.title}>
+        <FeedSkeleton />
+      </Section>
     </Page>
   {:else if me !== null && session.character !== null}
     {#key session.character.key}
-      <HomeCharacter {me} character={session.character} />
+      <HomeCharacter {me} character={session.character} {floor} {raidsOpen} />
     {/key}
   {:else if me !== null}
     <Page layout="ledger" testid="home-no-character">

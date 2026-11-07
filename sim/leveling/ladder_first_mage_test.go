@@ -25,8 +25,10 @@ func TestMageLadderTakesItsCastTalentsEarly(t *testing.T) {
 		{"mage-frost", "frost", 2, 10, "000000000000000000-00000000000000000-010000000000000000"},
 		{"mage-frost", "frost", 2, 20, "000000000000000000-00000000000000000-053200010000000000"}, // Precision, Ice Shards 2, Frost Channeling 1 since round 28
 		{"mage-arcane", "arcane", 0, 20, "140005000100000000-00000000000000000-000000000000000000"},
-		{"mage-arcane", "arcane", 0, 25, "141005211100000000-00000000000000000-000000000000000000"},
-		{"mage-arcane", "arcane", 0, 30, "141005213100300000-00000000000000000-000000000000000000"},
+		// Sim-accuracy round 29 (walks-dps): Missile Barrage, Arcane Impact and Arcane
+		// Meditation before the armor and range points (TestArcaneTakesItsDamageTalentsBeforeArmor).
+		{"mage-arcane", "arcane", 0, 25, "140005203100000000-00000000000000000-000000000000000000"},
+		{"mage-arcane", "arcane", 0, 30, "141005203100301000-00000000000000000-000000000000000000"},
 		// Sim-accuracy round 23: Fire's level 60 build takes Accelerant 5, Missile Barrage
 		// and Arcane Blast; its ladder keeps Ignite, Pyroblast, Heating Up at 30 and
 		// Combustion at 40, spends Accelerant 2 to 4 at 22 to 24 in place of Flame Throwing
@@ -37,10 +39,12 @@ func TestMageLadderTakesItsCastTalentsEarly(t *testing.T) {
 		{"mage-fire", "fire", 1, 24, "000000000000000000-54500001000000000-000000000000000000"},
 		{"mage-fire", "fire", 1, 30, "000000000000000000-54500001230100000-000000000000000000"},
 		{"mage-fire", "fire", 1, 40, "000000000000000000-54500001230133031-000000000000000000"},
-		{"mage-fire", "fire", 1, 41, "100000000000000000-54500001230133031-000000000000000000"},
-		{"mage-fire", "fire", 1, 42, "200000000000000000-54500001230133031-000000000000000000"},
-		{"mage-fire", "fire", 1, 43, "200000000000000000-55500001230133031-000000000000000000"},
-		{"mage-fire", "fire", 1, 45, "200000000000000000-55500201230133031-000000000000000000"},
+		// Sim-accuracy round 29 (walks-dps): Precision at 41 to 43 and Wand Specialization at
+		// 44 and 45, then Arcane Concentration and Arcane Blast before Accelerant 5 and
+		// Burning Soul (TestFireTakesPrecisionAfterCombustion).
+		{"mage-fire", "fire", 1, 41, "000000000000000000-54500001230133031-001000000000000000"},
+		{"mage-fire", "fire", 1, 43, "000000000000000000-54500001230133031-003000000000000000"},
+		{"mage-fire", "fire", 1, 45, "200000000000000000-54500001230133031-003000000000000000"},
 		{"mage-fire", "fire", 1, 60, "230105200100000000-55500201230133031-003000000000000000"},
 	}
 	trees, err := LoadTalentTrees(repoRoot, active, "mage")
@@ -90,6 +94,44 @@ func TestReservationSpendsAnOffTreeRankInListOrder(t *testing.T) {
 		{"listed after, level 15", after, 15, "100000000000000000-50000000000000000-000000000000000000"},
 		{"listed first, level 10", before, 10, "100000000000000000-00000000000000000-000000000000000000"},
 		{"listed first, level 15", before, 15, "100000000000000000-50000000000000000-000000000000000000"},
+	}
+	for _, c := range cases {
+		if got := LadderTalentString(trees, targets, 1, c.level, c.opt); got != c.want {
+			t.Errorf("%s: %s, want %s", c.name, got, c.want)
+		}
+	}
+}
+
+// Sim-accuracy round 29 (walks-dps): a reservation may name another tree's deeper talent
+// (Balance's Naturalist, Fire's Arcane Concentration). It is taken once the ranks the
+// reservation already holds in that tree pay its row and its prerequisite, never before,
+// so the walk stays legal; a deeper rank whose row is not paid yet is skipped and the
+// point goes to the walk as before.
+func TestReservationSpendsADeeperOffTreeRankOnceItsRowIsPaid(t *testing.T) {
+	repoRoot := filepath.Join("..", "..")
+	active, err := ReadActiveBuild(repoRoot)
+	if err != nil {
+		t.Fatal(err)
+	}
+	trees, err := LoadTalentTrees(repoRoot, active, "mage")
+	if err != nil {
+		t.Fatal(err)
+	}
+	_, digits, err := GuideBuildTalents(repoRoot, "mage", "fire")
+	if err != nil {
+		t.Fatal(err)
+	}
+	targets := GuideTalentTargets(trees, digits)
+	paid := withFirst([]LadderFirstRank{{Talent: "Wand Specialization", Rank: 2}, {Talent: "Improved Channeling", Rank: 3}, {Talent: "Arcane Concentration", Rank: 1}})
+	unpaid := withFirst([]LadderFirstRank{{Talent: "Arcane Concentration", Rank: 1}})
+	cases := []struct {
+		name  string
+		opt   LadderOption
+		level int
+		want  string
+	}{
+		{"row paid, level 15", paid, 15, "230001000000000000-00000000000000000-000000000000000000"},
+		{"row not paid, level 10", unpaid, 10, "000000000000000000-10000000000000000-000000000000000000"},
 	}
 	for _, c := range cases {
 		if got := LadderTalentString(trees, targets, 1, c.level, c.opt); got != c.want {

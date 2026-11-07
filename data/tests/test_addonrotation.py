@@ -980,8 +980,9 @@ def test_the_holy_paladin_band_40_flash_of_light_pair_exports_the_ranks_it_casts
         b for b in build_rotation("paladin-holy", Path("curated"), spellranks) if b.level == 40
     )
     flash = [line.spell_id for line in band.lines if line.name == "Flash of Light"]
-    # Round 24: the group's Flash of Light is rank 2 (19939) at 40 to 42.
-    assert set(flash) == {19750, 19939}
+    # Round 24: the group's Flash of Light is rank 2 (19939) at 40 to 42. Round 29: the tank's is
+    # rank 2 from 40 too, so band 40 casts rank 2 only.
+    assert set(flash) == {19939}
     assert {line.spell_id for line in band.lines if line.name == "Holy Light"} == {1026}
     assert {line.spell_id for line in band.lines if line.name == "Holy Shock"} == {1311606}
 
@@ -1053,12 +1054,13 @@ def test_fury_berserker_rage_starts_at_36_and_overpower_ends_there():
 
 # Sim round 22 platform (hunter F3 on the talent-level fix): a card row for a talent's spell
 # starts at the level the spec's published build spends its first point in that talent, not
-# when its tier opens. Survival's order takes Counterattack at 32 (tier 3 opens at 25),
-# Enhancement takes Stormstrike at 25 and Fury takes Death Wish at 30.
+# when its tier opens. Survival's order takes Strider Kick at 30 (round 29 dropped
+# Counterattack from the build), Enhancement takes Stormstrike at 25 and Fury takes Death
+# Wish at 30.
 @pytest.mark.parametrize(
     ("spec", "spell", "first"),
     [
-        ("hunter-survival", "Counterattack", 39),
+        ("hunter-survival", "Strider Kick", 30),
         ("shaman-enhancement", "Stormstrike", 25),
         ("warrior-fury", "Death Wish", 30),
     ],
@@ -1081,20 +1083,20 @@ def test_a_talent_row_starts_where_the_published_build_takes_the_talent(spec, sp
 @pytest.mark.parametrize(
     ("spec", "note", "first"),
     [
-        ("shaman-restoration", "Your highest rank of Healing Wave right after Nature's", 44),
+        ("shaman-restoration", "Your highest rank of Healing Wave right after Nature's", 55),
         # Round 24 (platform, second pass): the gate names Maelstrom Weapon's rank 5 (tag 5),
         # so the row starts at the fifth point (42 on the leveling order), not the first (37).
-        ("shaman-enhancement", "Lightning Bolt at five Maelstrom Weapon stacks", 42),
+        ("shaman-enhancement", "Lightning Bolt at five Maelstrom Weapon stacks", 39),
         # Round 24 (platform): the gate is on Clearcasting (16246), the aura Elemental Focus
         # (16164) gives; the raid order takes the talent at 52, the leveling build never does.
-        ("shaman-enhancement", "Fire Nova on a Clearcasting proc", 52),
+        ("shaman-enhancement", "Fire Nova on a Clearcasting proc", 57),
         # The mage proc buffs (Missile Barrage 400589, Heating Up 400625) and the Improved
         # Scorch debuff (12873) printed from 10, 20 and 22, before the talents.
         ("mage-fire", "Pyroblast only on 3 stacks of Heating Up", 30),
         ("mage-fire", "Scorch to build Improved Scorch to 5 stacks", 27),
         ("mage-fire", "Arcane Missiles the moment Missile Barrage procs", 55),
         ("mage-frost", "Arcane Missiles the moment Missile Barrage lights up", 51),
-        ("mage-arcane", "Arcane Missiles the moment Missile Barrage lights up", 22),
+        ("mage-arcane", "Arcane Missiles the moment Missile Barrage lights up", 21),
     ],
 )
 def test_a_row_gated_on_a_talent_starts_where_the_published_build_takes_it(spec, note, first):
@@ -1114,7 +1116,7 @@ def test_a_row_gated_on_a_talent_starts_where_the_published_build_takes_it(spec,
 @pytest.mark.parametrize(
     ("spec", "note", "last"),
     [
-        ("mage-arcane", "Arcane Missiles until you have both ranks of Missile Barrage", 22),
+        ("mage-arcane", "Arcane Missiles until you have both ranks of Missile Barrage", 21),
     ],
 )
 def test_a_row_gated_on_lacking_a_talent_rank_ends_where_the_build_takes_it(spec, note, last):

@@ -1,6 +1,9 @@
 package leveling
 
-import "testing"
+import (
+	"path/filepath"
+	"testing"
+)
 
 // Sim-accuracy round 28 (hybrids): a leveling cat takes Sharpened Claws at 23 and 24,
 // ahead of Savage Fury, and Leader of the Pack, Blood Frenzy, Natural Instinct and Rend and
@@ -39,9 +42,9 @@ func TestFeralTakesSharpenedClawsAndTheCritTalentsEarlier(t *testing.T) {
 
 // Sim-accuracy round 28 (hybrids): a leveling Survival hunter takes Predator's Edge at 25
 // to 29 and Resourcefulness, Expose Prey, Survivalist's Discipline and Lightning Reflexes
-// after Strider Kick, before Deterrence and Counterattack. Deterrence is never pressed on a
-// target that hits someone else, and Counterattack needs a parry, so neither does anything
-// in the fight; they come at 38 and 39, where they pay the toll for Lacerating Strikes.
+// after Strider Kick. Round 29 (walks-heal) drops Deterrence and Counterattack from the
+// build (TestSurvivalBuildSpendsNothingOnDeterrenceOrCounterattack), so Lightning
+// Reflexes takes 37 to 39 and 41 and 42, around Lacerating Strikes at 40.
 func TestSurvivalTakesPredatorsEdgeBeforeDeterrence(t *testing.T) {
 	const survivalTree = 2
 	const empty = "0000000000000000-0000000000000000-"
@@ -54,13 +57,44 @@ func TestSurvivalTakesPredatorsEdgeBeforeDeterrence(t *testing.T) {
 		34: empty + "500230230050220100",
 		36: empty + "500230230050222100",
 		37: empty + "500230230050222110",
-		38: empty + "500230231050222110",
-		39: empty + "500230231051222110",
-		40: empty + "500230231051222111",
+		38: empty + "500230230050222120",
+		39: empty + "500230230050222130",
+		40: empty + "500230230050222131",
 	}
 	for level, w := range want {
 		if got := ladderAt(t, "hunter", "survival", survivalTree, level); got != w {
 			t.Errorf("level %d Survival build %q, want %q", level, got, w)
+		}
+	}
+}
+
+// Sim-accuracy round 29 (walks-heal): Deterrence is never pressed and Counterattack needs a
+// parry, and the boss of a raid fight swings at the tank, never at a hunter behind it: in
+// the raid fight the build with neither does the same damage to the last digit (868.16 at
+// seed 1). Their two points go to Rapid Killing, two minutes off Rapid Fire, which speeds
+// the Survival hunter's melee swings in Forever (+0.6 to +0.7% at raid 60, seeds 1 and
+// 50001, both factions). Lone Wolf's row is open with Lethal Attacks and Careful Aim.
+func TestSurvivalBuildSpendsNothingOnDeterrenceOrCounterattack(t *testing.T) {
+	repoRoot := filepath.Join("..", "..")
+	active, err := ReadActiveBuild(repoRoot)
+	if err != nil {
+		t.Fatal(err)
+	}
+	trees, err := LoadTalentTrees(repoRoot, active, "hunter")
+	if err != nil {
+		t.Fatal(err)
+	}
+	_, digits, err := GuideBuildTalents(repoRoot, "hunter", "survival")
+	if err != nil {
+		t.Fatal(err)
+	}
+	targets := GuideTalentTargets(trees, digits)
+	want := map[string]int{"Deterrence": 0, "Counterattack": 0, "Rapid Killing": 2, "Lone Wolf": 1, "Lacerating Strikes": 1}
+	for _, tree := range trees {
+		for _, node := range tree.Talents {
+			if rank, ok := want[node.Name]; ok && targets[node.ID] != rank {
+				t.Errorf("%s holds %d points in the Survival build, want %d", node.Name, targets[node.ID], rank)
+			}
 		}
 	}
 }

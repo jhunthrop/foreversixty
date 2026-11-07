@@ -146,7 +146,7 @@ Multi-Shot comes at 18. It is the worst damage for its mana you fire, so once yo
 
 At 10 your trainer starts the taming quests, which end by teaching Tame Beast. Tame a beast at your level, feed it to keep it happy, and train Mend Pet at 12.
 
-Your first five points go into Deadly Aspects: with Aspect of the Hawk up, each point is a 2% chance on Auto Shot for 30% ranged attack speed over 12 sec. Take Focused Fire at 15 and 16, the moment its row opens: 2% on every shot and every pet hit is worth more on single pulls than pet health, so Endurance Training starts at 17.
+Your first five points go into Deadly Aspects: with Aspect of the Hawk up, each point is a 2% chance on Auto Shot for 30% ranged attack speed over 12 sec. Take Focused Fire at 15 and 16, the moment its row opens: 2% on every shot and every pet hit is worth more on single pulls than pet health, so Endurance Training starts at 17. Unleashed Fury takes 20 to 24 and Ferocity 25 to 29, before the fourth point of Endurance Training; Bestial Discipline comes at 30 and 31, Bestial Swiftness and Intimidation at 32 and 33 open the way to Bestial Wrath, and Frenzy fills 35 to 39.
 
 Take quest rewards over vendor gear, Agility first. Replace your starting bow or gun with the first ranged quest reward you find: your ranged weapon is most of your damage. Wear leather until 40. From 40 you can wear mail, but keep a leather piece whenever it is the better one.
 

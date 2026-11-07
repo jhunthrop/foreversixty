@@ -15,19 +15,23 @@ var ladderFirstSpecs = map[string]struct {
 	"druid-feral":          {"druid", "feral", 1},
 	"druid-feral-bear":     {"druid", "feral-bear", 1},
 	"druid-restoration":    {"druid", "restoration", 2},
+	"druid-balance":        {"druid", "balance", 0},
 	"hunter-beast-mastery": {"hunter", "beast-mastery", 0},
+	"hunter-marksmanship":  {"hunter", "marksmanship", 1},
 	"hunter-survival":      {"hunter", "survival", 2},
 	"mage-arcane":          {"mage", "arcane", 0},
 	"mage-fire":            {"mage", "fire", 1},
 	"mage-frost":           {"mage", "frost", 2},
 	"paladin-holy":         {"paladin", "holy", 0},
 	"paladin-protection":   {"paladin", "protection", 1},
+	"paladin-retribution":  {"paladin", "retribution", 2},
 	"priest-discipline":    {"priest", "discipline", 0},
 	"priest-holy":          {"priest", "holy", 1},
 	"priest-shadow":        {"priest", "shadow", 2},
 	"rogue-assassination":  {"rogue", "assassination", 0},
 	"rogue-combat":         {"rogue", "combat", 1},
 	"rogue-subtlety":       {"rogue", "subtlety", 2},
+	"shaman-elemental":     {"shaman", "elemental", 0},
 	"shaman-enhancement":   {"shaman", "enhancement", 1},
 	"shaman-restoration":   {"shaman", "restoration", 2},
 	"warlock-affliction":   {"warlock", "affliction", 0},
@@ -35,6 +39,7 @@ var ladderFirstSpecs = map[string]struct {
 	"warlock-destruction":  {"warlock", "destruction", 2},
 	"warrior-arms":         {"warrior", "arms", 0},
 	"warrior-fury":         {"warrior", "fury", 1},
+	"warrior-protection":   {"warrior", "protection", 2},
 }
 
 // spineCapstoneNotDefining names a spec whose guide build's deepest talent is a filler point
@@ -76,24 +81,24 @@ func TestCuratedLadderFirstIsSound(t *testing.T) {
 		for _, node := range own.Talents {
 			byName[node.Name] = node
 		}
-		// Another tree's first-row talent with no prerequisite may be reserved too
-		// (reserveOffTree): Shadow's Wand Specialization.
+		// Another tree's talent may be reserved too (reserveOffTree): Shadow's Wand
+		// Specialization; since sim-accuracy round 29 a deeper one behind the rows the list fills
+		// first (Balance's Naturalist, Restoration druid's Nature's Splendor). Every level's
+		// legality is checked below.
 		for ti, tree := range trees {
 			if ti == info.tree {
 				continue
 			}
 			for _, node := range tree.Talents {
-				if node.Tier == 0 && node.PrereqTalentID == 0 {
-					if _, taken := byName[node.Name]; !taken {
-						byName[node.Name] = node
-					}
+				if _, taken := byName[node.Name]; !taken {
+					byName[node.Name] = node
 				}
 			}
 		}
 		for _, r := range row.First {
 			node, ok := byName[r.Talent]
 			if !ok {
-				t.Errorf("%s: %q is neither a talent of its own tree (%s) nor another tree's first-row talent", spec, r.Talent, own.Name)
+				t.Errorf("%s: %q is not a talent of this class (own tree %s)", spec, r.Talent, own.Name)
 				continue
 			}
 			if targets[node.ID] < r.Rank {
@@ -144,7 +149,9 @@ func TestCuratedLadderFirstIsSound(t *testing.T) {
 // Sim-accuracy round 12 (healprofile): Restoration shaman holds Water Shield, which the
 // rotation casts, at band 20, ahead of Tidal Focus's fourth rank
 // (design/reviews/2026-11-03-sim-audit-round12/healprofile.md). Round 13 (walk) holds Mana
-// Tide Totem next, which moves band 30's Tidal Mastery point onto it.
+// Tide Totem next, which moves band 30's Tidal Mastery point onto it. Round 29 (walks-heal)
+// takes Tidal Focus before Improved Healing Wave and Restorative Totems and Healing Way
+// before Healing Focus and Tidal Mastery (TestHealerWalksTakeTheirLiveTalentsFirst).
 func TestRestorationShamanHoldsWaterShieldAtTwenty(t *testing.T) {
 	repoRoot := filepath.Join("..", "..")
 	active, err := ReadActiveBuild(repoRoot)
@@ -161,9 +168,9 @@ func TestRestorationShamanHoldsWaterShieldAtTwenty(t *testing.T) {
 	}
 	targets := GuideTalentTargets(trees, digits)
 	for level, want := range map[int]string{
-		20: "0000000000000000-000000000000000000-5320000010000000",
-		30: "0000000000000000-000000000000000000-5530003310010000",
-		40: "0000000000000000-000000000000000000-5530003315510000",
+		20: "0000000000000000-000000000000000000-2530000010000000",
+		30: "0000000000000000-000000000000000000-5530001010411000",
+		40: "0000000000000000-000000000000000000-5530001011513051",
 	} {
 		if got := LadderTalentString(trees, targets, 2, level, ForSpec("shaman-restoration")); got != want {
 			t.Errorf("level %d: %s, want %s", level, got, want)
@@ -194,7 +201,8 @@ func TestBeastMasteryTakesFocusedFireBeforeEnduranceTraining(t *testing.T) {
 	for _, node := range trees[0].Talents {
 		byName[node.Name] = node.ID
 	}
-	for level, want := range map[int][2]int{15: {1, 0}, 16: {2, 0}, 17: {2, 1}, 20: {2, 4}} {
+	// Sim-accuracy round 29 (walks-dps): Unleashed Fury takes 20 ahead of the fourth point.
+	for level, want := range map[int][2]int{15: {1, 0}, 16: {2, 0}, 17: {2, 1}, 20: {2, 3}} {
 		ranks, err := TalentRanksFromString(trees, LadderTalentString(trees, targets, 0, level, ForSpec("hunter-beast-mastery")))
 		if err != nil {
 			t.Fatal(err)
@@ -207,5 +215,12 @@ func TestBeastMasteryTakesFocusedFireBeforeEnduranceTraining(t *testing.T) {
 
 // capstoneWaits are the published bands where a reservation deliberately holds the
 // capstone back: Shadow takes Wand Specialization at 10-11, so Shadowform waits from 40
-// to 42 (sim-accuracy round 15 wave 6; ladder-first.json's reason).
-var capstoneWaits = map[string]map[int]bool{"priest-shadow": {40: true}}
+// to 42 (sim-accuracy round 15 wave 6; ladder-first.json's reason). Round 29 (walks-heal):
+// the Holy paladin's Light's Vigil, which the rotation does not cast, waits for Conviction
+// and Holy Power until 53; Discipline's Divine Aegis waits for Improved Renew and Holy
+// Specialization until 46.
+var capstoneWaits = map[string]map[int]bool{
+	"priest-shadow":     {40: true},
+	"paladin-holy":      {40: true, 50: true},
+	"priest-discipline": {40: true},
+}

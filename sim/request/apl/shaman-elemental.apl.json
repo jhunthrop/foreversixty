@@ -170,7 +170,7 @@
       }
     },
     {
-      "notes": "Magma Totem on two or more targets: it burns everything standing next to it for 20 seconds, or 40 from 30 with both points of Trial by Fire.",
+      "notes": "Magma Totem on two or more targets: it burns everything standing next to it for 20 seconds, or 40 from 34 with both points of Trial by Fire.",
       "action": {
         "condition": {
           "and": {

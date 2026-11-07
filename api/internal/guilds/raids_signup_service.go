@@ -140,6 +140,7 @@ func (s *Service) signUp(ctx context.Context, cmd SignupCommand, skipUnchanged b
 	} else {
 		s.markRaid(ctx, raid.ID)
 	}
+	s.raidActivity(ctx, raid.ID)
 	if cmd.State == SignupOut {
 		s.publishLateChange(ctx, raid, char.CharacterKey, char.Name, time.Now())
 	}

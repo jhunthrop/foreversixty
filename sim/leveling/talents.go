@@ -481,29 +481,33 @@ func RequireGuideBuildMatchesActive(guideBuild, activeBuild string) error {
 }
 
 // reserveOffTree spends a reservation's ranks that sit in another tree than the spec's own
-// (Shadow's Wand Specialization, in Discipline; Fire's, in Arcane) in list order, one rank
-// at a time, each capped at the guide's target and its max rank, and only where the rank is
-// legal on its own: a first-row talent with no prerequisite (a deeper one would need that
-// tree's points first, which the plain walk spends after the own tree). An off-tree rank
-// listed after own-tree ranks waits until the budget has paid for those (ownRanksAhead), so
-// the list is the build's own sequence across trees. It returns each tree's reserved ranks
-// and the budget left.
+// (Shadow's Wand Specialization, in Discipline; Fire's, in Arcane; Restoration druid's Nature's
+// Splendor, in Balance) in list order, one rank at a time, each capped at the guide's target
+// and its max rank, and only while that tree's reserved ranks stay legal: a deeper talent waits
+// for the points the list reserves in the rows above it, and for its prerequisite. An off-tree
+// rank listed after own-tree ranks waits until the budget has paid for those (ownRanksAhead),
+// so the list is the build's own sequence across trees. A name the spec's own tree carries is
+// always the own tree's. It returns each tree's reserved ranks and the budget left.
 func reserveOffTree(trees []TalentTree, targets map[int]int, ownTreeIndex int, first []LadderFirstRank, budget int) (map[int]map[int]int, int) {
 	reserved := map[int]map[int]int{}
 	ahead := ownRanksAhead(trees, targets, ownTreeIndex, first)
 	for i, r := range first {
+		if ownTreeHas(trees, ownTreeIndex, r.Talent) {
+			continue
+		}
 		for ti, tree := range trees {
 			if ti == ownTreeIndex {
 				continue
 			}
 			for _, node := range tree.Talents {
-				if node.Name != r.Talent || node.Tier != 0 || node.PrereqTalentID != 0 {
+				if node.Name != r.Talent {
 					continue
 				}
 				if reserved[ti] == nil {
 					reserved[ti] = map[int]int{}
 				}
-				for reserved[ti][node.ID] < min(r.Rank, targets[node.ID], node.MaxRank) && budget > ahead[i] {
+				for reserved[ti][node.ID] < min(r.Rank, targets[node.ID], node.MaxRank) && budget > ahead[i] &&
+					reservedIsLegal(tree, reserved[ti], node.ID) {
 					reserved[ti][node.ID]++
 					budget--
 				}
@@ -511,6 +515,32 @@ func reserveOffTree(trees []TalentTree, targets map[int]int, ownTreeIndex int, f
 		}
 	}
 	return reserved, budget
+}
+
+// ownTreeHas reports whether the spec's own tree has a talent named name.
+func ownTreeHas(trees []TalentTree, ownTreeIndex int, name string) bool {
+	if ownTreeIndex < 0 || ownTreeIndex >= len(trees) {
+		return false
+	}
+	for _, node := range trees[ownTreeIndex].Talents {
+		if node.Name == name {
+			return true
+		}
+	}
+	return false
+}
+
+// reservedIsLegal reports whether tree's reserved ranks with one more rank of id still meet
+// the planner's tier gates and prerequisites (treeIsLegal).
+func reservedIsLegal(tree TalentTree, reserved map[int]int, id int) bool {
+	digits := make([]int, len(tree.Talents))
+	for j, node := range tree.Talents {
+		digits[j] = reserved[node.ID]
+		if node.ID == id {
+			digits[j]++
+		}
+	}
+	return treeIsLegal(tree, digits)
 }
 
 // ownRanksAhead is, for each entry of first, how many ranks of the spec's own tree the

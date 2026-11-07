@@ -22,6 +22,8 @@ export const REGION = {
   controls: 'controls',
   /** The page's summary line under the bar (BiS: the comparison sentence and the view toggle). */
   summary: 'summary',
+  /** Countdown panels under the head (home: the first raids and the guild's next event). */
+  countdowns: 'countdowns',
   /** One-line standing notes between the summary and the Plate (BiS: source rule, hit cap, weapon). */
   notes: 'notes',
   /** Plate: the page's one primary object. */

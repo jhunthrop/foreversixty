@@ -51,6 +51,14 @@ type JobDeps struct {
 	Log    *slog.Logger
 	// Notify, when set, is told of every run that finishes in state done.
 	Notify notify.SimEvents
+	// Finished, when set, is told of every run that finishes in state done: the guild feed's
+	// writer (activity.GuildSimWriter).
+	Finished FinishedHook
+}
+
+// FinishedHook is told a run finished; it never fails the run.
+type FinishedHook interface {
+	SimFinished(ctx context.Context, simID string)
 }
 
 func (d JobDeps) logger() *slog.Logger {
@@ -120,6 +128,9 @@ func Run(ctx context.Context, d JobDeps, simID string) error {
 	}
 	if res.Error == "" {
 		d.announce(ctx, simID, res)
+		if d.Finished != nil {
+			d.Finished.SimFinished(ctx, simID)
+		}
 	}
 	return nil
 }
