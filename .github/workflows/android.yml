@@ -58,11 +58,14 @@ jobs:
       - name: Unit, contract-fixture and screenshot tests
         if: inputs.record != true
         run: ./gradlew test :app:verifyRoborazziDebug
+      # A failing non-screenshot test must not lose the recording: the goldens are uploaded
+      # whatever the run's other tests did (as ios.yml's record mode).
       - name: Record the screenshot and text goldens
         if: inputs.record == true
+        continue-on-error: true
         run: ./gradlew :app:recordRoborazziDebug
       - name: Upload the recorded goldens
-        if: inputs.record == true
+        if: inputs.record == true && !cancelled()
         uses: actions/upload-artifact@v4
         with:
           name: android-snapshots
