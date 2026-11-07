@@ -31,7 +31,6 @@ F = json.loads(Path(os.environ.get('FS_PAGES_FACTS') or HERE / 'data' / 'pages-f
 C = F['copy']
 CL = C['changelog']
 NF = C['notFound']
-M = F['markup']
 LOG = F['changelog']
 ME = F['me']
 SPEC_DOC = 'design/specs/2026-11-08-pages.md'
@@ -209,13 +208,6 @@ def not_found_page(kind: str = 'out', suggest: bool = False, character: bool = F
     return build_page(NF['docTitle'], html, '', who, note)
 
 
-def unavailable_page() -> str:
-    u = M['unavailable']
-    head = PageHeader(e(u['h1']), lead=e(u['paragraphs'][0]))
-    body = f'<div data-region="{REGION["intro"]}">{Prose("<p>" + u["paragraphs"][1] + "</p>")}</div>'
-    return build_page(u['docTitle'], head + Page('ledger', body) + PAGE_CSS, '', None, f'Build unavailable mock ({SPEC_DOC}); copy verbatim from b-unavailable.astro.')
-
-
 # ------------------------------------------------------------------------------------------------ every element state
 def states_page() -> str:
     blocks = []
@@ -302,7 +294,6 @@ PAGES = {
     'web-404-nochar': lambda: not_found_page('nochar'),
     'web-404-suggest': lambda: not_found_page(suggest=True),
     'web-404-character': lambda: not_found_page(character=True),
-    'web-b-unavailable': unavailable_page,
     'web-pages-states': states_page,
 }
 
@@ -317,7 +308,7 @@ def compare(before: Path) -> None:
         for w, sc in ((1440, .5), (1920, .42), (2000, .4), (390, .8)):
             print(ws_compose.compose(name, live, mock, w, sc, max_h=6000))
     for name, live, mock in (('404-in', '404-in', 'web-404-in'), ('terms', 'terms', 'web-legal-terms'), ('refunds', 'refunds', 'web-legal-refunds'),
-                             ('sources', 'sources', 'web-about-sources'), ('b-unavailable', 'b-unavailable', 'web-b-unavailable')):
+                             ('sources', 'sources', 'web-about-sources')):
         for w, sc in ((1440, .5), (390, .8)):
             print(ws_compose.compose(name, live, mock, w, sc, max_h=6000))
 

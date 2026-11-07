@@ -11,7 +11,6 @@
 //    lib/account/answer-copy.ts, lib/addon/copy.ts (setupPageTitle), lib/home-landing-copy.ts (the character lookup),
 //    lib/footer-copy.ts (the legal links), lib/sources.ts (pillLabelFor), lib/dates.ts (formatDate, latest), lib/characters.ts,
 //    lib/changelog/copy.ts and lib/not-found/copy.ts (the pages' own strings, gap PG1), lib/not-found/suggest.ts (knownPages);
-//  - strings that live in markup: b-unavailable.astro (the Premium lane's page), read from the file verbatim;
 //  - data: src/data/classes.json, specs.json; the signed-in fixture web/tests/e2e/fixtures/home/me-34.json (descriptorLines).
 import { createRequire } from "node:module";
 import { existsSync, mkdtempSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
@@ -33,15 +32,6 @@ function collection(dir) {
     return { id: f.replace(/\.md$/, ""), data: YAML.parse(m[1]), body: m[2] };
   });
 }
-const read = (p) => readFileSync(join(WEB, p), "utf8");
-// Markup literals, verbatim from their file (b-unavailable.astro is the Premium lane's page; its copy stays in markup).
-const attr = (text, name) => new RegExp(`${name}="([^"]*)"`).exec(text)?.[1];
-const unavailableAstro = read("src/pages/b-unavailable.astro");
-const markup = {
-  unavailable: { docTitle: attr(unavailableAstro, "title"), description: attr(unavailableAstro, "description"),
-    h1: /<h1[^>]*>([^<]+)<\/h1>/.exec(unavailableAstro)[1].trim(),
-    paragraphs: [...unavailableAstro.matchAll(/<p[^>]*>([\s\S]*?)<\/p>/g)].map((m) => m[1].replace(/\s+/g, " ").trim()) },
-};
 
 const entry = `
 import classes from ${src("src/data/classes.json")};
@@ -124,6 +114,6 @@ await esbuild.build({ stdin: { contents: entry, resolveDir: WEB, loader: "ts" },
 const bundled = readFileSync(outfile, "utf8").replace(/from "@astrojs\/markdown-satteri"/g, `from ${JSON.stringify(pathToFileURL(require.resolve("@astrojs/markdown-satteri")).href)}`);
 writeFileSync(outfile, bundled);
 const { run } = await import(pathToFileURL(outfile).href);
-const facts = { ...(await run(collection("src/content/changelog"), collection("src/content/pages"))), markup };
+const facts = { ...(await run(collection("src/content/changelog"), collection("src/content/pages"))) };
 writeFileSync(OUT, JSON.stringify(facts, null, 1) + "\n");
 console.log(OUT.pathname);

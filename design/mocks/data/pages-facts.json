@@ -1497,16 +1497,5 @@
    "Beast Mastery Hunter guide"
   ],
   "known": 82
- },
- "markup": {
-  "unavailable": {
-   "docTitle": "Build unavailable",
-   "description": "This shared build cannot be loaded right now.",
-   "h1": "Build unavailable",
-   "paragraphs": [
-    "Shared builds are stored by the Forever Sixty API, which is not answering right now. The build itself is not lost; the link will work again once the API is back.",
-    "In the meantime, <a href=\"/planner\">the build planner</a> works without it."
-   ]
-  }
  }
 }
