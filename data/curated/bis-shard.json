@@ -1,0 +1,9 @@
+{
+  "specs": [
+    "hunter-survival",
+    "mage-frost",
+    "warlock-demonology",
+    "warlock-destruction"
+  ],
+  "reason": "Sim round 28 moved four leveling orders (Survival band 30, Frost bands 20 and 30, Demonology band 20, Destruction bands 20 to 40)."
+}
