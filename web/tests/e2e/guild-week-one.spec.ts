@@ -265,7 +265,7 @@ test.describe('after a kill', () => {
     await capture(page, 'overview-after-kill');
 
     await page.getByRole('tab', { name: 'Progression' }).click();
-    await expect(page.getByTestId('guild-progression-down')).toHaveText(`${down} of ${named}`);
+    await expect(page.getByTestId('guild-progression-down')).toContainText(`${down} of ${named}`);
     await expect(page.locator('body')).not.toContainText('NaN');
     await capture(page, 'progression-one-kill');
   });

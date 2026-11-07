@@ -156,7 +156,7 @@ describe('GuildProgression with pulls', () => {
       }),
     };
     const copy = text(progressionHtml(noKill));
-    expect(copy).toContain('Named bosses down this tier 0 of 1');
+    expect(copy).toContain('0 of 1 Named bosses down');
     expect(copy).toContain('pulls, no kill yet.');
     expect(copy).not.toContain('NaN');
     expect(copy).not.toContain('We do not track');

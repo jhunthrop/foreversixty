@@ -18,7 +18,7 @@ const GUILD_ID = 2;
 /** guild_overview_data.SELECTED_DROP: the drop the loot state opens. */
 const SELECTED_DROP = 17075;
 
-type Viewer = 'member' | 'officer';
+export type Viewer = 'member' | 'officer';
 
 const VIEWERS: Readonly<Record<Viewer, { name: string; spec: string; cls: string }>> = {
   member: { name: 'Hollowmend', spec: 'Holy', cls: 'Priest' },
@@ -31,10 +31,11 @@ function fixture(name: string): unknown {
 
 const envelope = (data: unknown) => ({ json: { ok: true, data, error: null, request_id: 'guild-parity' } });
 
-/** The guild API's answers by path (after `/v1/guilds/<id>`), for one viewer. */
-function guildAnswers(viewer: Viewer): ReadonlyArray<[RegExp, (url: URL) => string]> {
+/** The guild API's answers by path (after `/v1/guilds/<id>`), for one viewer; `home` swaps the
+ *  home's file (the Roster state's has a waiting list). */
+function guildAnswers(viewer: Viewer, home: string): ReadonlyArray<[RegExp, (url: URL) => string]> {
   return [
-    [/^\/home$/, () => `overview-home-${viewer}.json`],
+    [/^\/home$/, () => home],
     [/^\/raids$/, () => 'overview-raids.json'],
     [/^\/raids\/\d+$/, () => `overview-raid-${viewer}.json`],
     [/^\/progression$/, () => 'overview-progression.json'],
@@ -52,7 +53,7 @@ function guildAnswers(viewer: Viewer): ReadonlyArray<[RegExp, (url: URL) => stri
   ];
 }
 
-async function answer(route: Route, viewer: Viewer): Promise<void> {
+async function answer(route: Route, viewer: Viewer, home: string): Promise<void> {
   const url = new URL(route.request().url());
   if (url.pathname === '/v1/me') return route.fulfill(envelope(fixture(`overview-me-${viewer}.json`)));
   if (url.pathname === `/v1${GUILD_PATH.replace('/guild', '/guilds')}`)
@@ -62,14 +63,18 @@ async function answer(route: Route, viewer: Viewer): Promise<void> {
     return route.fulfill(envelope({ night: url.searchParams.get('night') ?? '', flags: [] }));
   if (url.pathname.startsWith(prefix)) {
     const rest = url.pathname.slice(prefix.length);
-    const hit = guildAnswers(viewer).find(([pattern]) => pattern.test(rest));
+    const hit = guildAnswers(viewer, home).find(([pattern]) => pattern.test(rest));
     if (hit !== undefined) return route.fulfill(envelope(fixture(hit[1](url))));
   }
   return route.fallback();
 }
 
 /** Signs in as the mock's viewer (its header character) and routes every guild read. */
-async function routeGuild(page: Page, viewer: Viewer): Promise<void> {
+export async function routeGuild(
+  page: Page,
+  viewer: Viewer,
+  home = `overview-home-${viewer}.json`,
+): Promise<void> {
   const who = VIEWERS[viewer];
   await page.context().addCookies([{ name: 'fs_csrf', value: 'token', domain: 'localhost', path: '/' }]);
   await storePointer(page, {
@@ -78,7 +83,7 @@ async function routeGuild(page: Page, viewer: Viewer): Promise<void> {
     label: `${who.name} · ${who.spec} ${who.cls}`,
     classSlug: who.cls.toLowerCase(),
   });
-  await page.route('**/v1/**', (route) => answer(route, viewer));
+  await page.route('**/v1/**', (route) => answer(route, viewer, home));
 }
 
 async function openOverview(page: Page, viewer: Viewer): Promise<void> {

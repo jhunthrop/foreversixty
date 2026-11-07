@@ -44,6 +44,21 @@
       "id": "profile",
       "path": "/guild/us/pvp/olympus-xxvii/members/u%3A1016",
       "mock": "web-guild-profile.html"
+    },
+    {
+      "id": "roster",
+      "path": "/guild/us/pvp/olympus-xxvii#roster",
+      "mock": "web-guild-roster.html"
+    },
+    {
+      "id": "progression",
+      "path": "/guild/us/pvp/olympus-xxvii#progression",
+      "mock": "web-guild-progression.html"
+    },
+    {
+      "id": "readiness",
+      "path": "/guild/us/pvp/olympus-xxvii#readiness",
+      "mock": "web-guild-readiness.html"
     }
   ]
 }
