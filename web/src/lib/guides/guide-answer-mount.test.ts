@@ -27,6 +27,8 @@ const markup = readFileSync(path.resolve('src/components/ui/CharacterAnswer.svel
   .replace('{label}', 'Your character')
   .replace(/data-page=\{[^}]*\}/, `data-page='${JSON.stringify(PAGE)}'`)
   .replace('data-crest={crest}', 'data-crest="end"')
+  .replace(/data-figure=\{[^}]*\}/, '')
+  .replace(/\{#if figure\}[\s\S]*?\{\/if\}/g, '')
   .replace('data-testid={testid}', 'data-testid="guide-answer"')
   .replace(/data-testid=\{sub\('([a-z]+)'\)\}/g, 'data-testid="guide-answer-$1"')
   .replace('class={LINK}', '');

@@ -169,32 +169,32 @@ describe('countAnswer', () => {
 describe('landingAction', () => {
   it('opens the character’s own spec at its own band and faction', () => {
     expect(landingAction(character({ faction: 'horde' }), CONFIG)).toEqual({
-      label: 'Fury gear for 40 to 49 →',
+      label: 'Fury gear for 40 to 49',
       href: '/bis/warrior/fury?faction=horde#band-horde-40',
     });
   });
 
   it('names the top band plainly', () => {
-    expect(landingAction(character({ level: 60 }), CONFIG).label).toBe('Fury gear for 60 →');
+    expect(landingAction(character({ level: 60 }), CONFIG).label).toBe('Fury gear for 60');
   });
 
   it('under 20 opens the first band', () => {
     expect(landingAction(character({ level: 12 }), CONFIG)).toEqual({
-      label: 'Fury gear for 20 to 29 →',
+      label: 'Fury gear for 20 to 29',
       href: '/bis/warrior/fury?faction=alliance#band-alliance-20',
     });
   });
 
   it('a character with no spec yet opens the class’s leveling spec', () => {
     expect(landingAction(character({ spec: undefined }), CONFIG)).toEqual({
-      label: 'Arms gear for 40 to 49 →',
+      label: 'Arms gear for 40 to 49',
       href: '/bis/warrior/arms?faction=alliance#band-alliance-40',
     });
   });
 
   it('points a class the site does not know at the grid', () => {
     expect(landingAction(character({ class: 'Monk' }), CONFIG)).toEqual({
-      label: 'Every class and spec →',
+      label: 'Every class and spec',
       href: '#bis-classes',
     });
   });

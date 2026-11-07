@@ -1,5 +1,5 @@
-// The band's "your server sim finished" line (experience spec 2026-10-24 section 3.4) on the
-// signed-in best-in-slot index (home no longer draws the character header, design/specs/2026-11-06-home.md), with /v1/me stubbed.
+// The "your server sim finished" line (experience spec 2026-10-24 section 3.4) under the head of
+// the signed-in best-in-slot index (design/specs/2026-11-07-bis-landing.md), with /v1/me stubbed.
 import type { Page } from '@playwright/test';
 import { expect, test } from './support/test';
 import { mockEntitlements } from '../../src/test-support/billing-fixtures';
@@ -43,20 +43,18 @@ async function stubMe(page: Page, finished: unknown[], server = true): Promise<s
   return seen;
 }
 
-test('one unseen run: the line sits inside the band, links to the result, and dismiss clears it', async ({
+test('one unseen run: the line sits under the head, links to the result, and dismiss clears it', async ({
   page,
 }) => {
   await page.setViewportSize({ width: 1440, height: 1000 });
   const seen = await stubMe(page, [run('sim-1', 1204)]);
   await page.goto('/bis');
-  const band = page.getByTestId('character-header');
   const line = page.getByTestId('finished-sim-line');
   await expect(line).toBeVisible();
   await expect(line).toContainText('Your Frost Mage sim finished: 1,204 DPS');
   await expect(page.getByTestId('finished-sim-link')).toHaveAttribute('href', '/sim/sim-1');
   await expect(page.getByTestId('finished-sim-more')).toHaveCount(0);
 
-  const withLine = (await band.boundingBox())!.height;
   const lineBox = (await line.boundingBox())!;
   expect(lineBox.height).toBeGreaterThanOrEqual(44);
   expect(lineBox.height).toBeLessThan(46);
@@ -64,10 +62,7 @@ test('one unseen run: the line sits inside the band, links to the result, and di
   await page.getByTestId('finished-sim-dismiss').click();
   await expect(line).toHaveCount(0);
   expect(seen).toEqual(['sim-1']);
-  await expect(page.getByTestId('character-header-action')).toBeFocused();
-  const without = (await band.boundingBox())!.height;
-  expect(withLine - without).toBeCloseTo(lineBox.height, 0);
-  expect(without).toBeGreaterThanOrEqual(136);
+  await expect(page.getByTestId('bis-answer-button')).toBeFocused();
 });
 
 test('three unseen runs: and 2 more, and dismiss marks all three seen', async ({ page }) => {
@@ -85,13 +80,13 @@ test('three unseen runs: and 2 more, and dismiss marks all three seen', async ({
 test('no unseen runs, or no server sims: no line', async ({ page }) => {
   await stubMe(page, []);
   await page.goto('/bis');
-  await expect(page.getByTestId('character-header')).toBeVisible();
+  await expect(page.getByTestId('bis-answer')).toHaveAttribute('data-state', 'ready');
   await expect(page.getByTestId('finished-sim-line')).toHaveCount(0);
 
   await page.unroute('**/v1/me');
   await stubMe(page, [run('sim-1', 1204)], false);
   await page.reload();
-  await expect(page.getByTestId('character-header')).toBeVisible();
+  await expect(page.getByTestId('bis-answer')).toHaveAttribute('data-state', 'ready');
   await expect(page.getByTestId('finished-sim-line')).toHaveCount(0);
 });
 

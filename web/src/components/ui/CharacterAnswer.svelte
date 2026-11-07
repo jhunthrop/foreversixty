@@ -7,8 +7,11 @@
      the account loads when a session is hinted (the skeleton); no answer column signed out.
      `crest="end"` (the guides) puts the crest at the outer right edge of the right-aligned box
      from 900, the name and level line right-aligned beside it. With `testid`, the detail, next
-     and action fields carry `<testid>-detail`, `-next` and `-action`. -->
+     and action fields carry `<testid>-detail`, `-next` and `-action`. `figure` (the /bis landing,
+     design/specs/2026-11-07-bis-landing.md) puts a Figure over a Meter between the name and the
+     links, reserved in the skeleton with the 44 px button the page paints into its links. -->
 <script lang="ts">
+  import type { Snippet } from 'svelte';
   import { LINK } from '../../lib/ui/primitives';
 
   let {
@@ -17,6 +20,7 @@
     page,
     testid,
     crest = 'start',
+    figure,
   }: {
     label: string;
     /** The element the page script paints. */
@@ -26,6 +30,8 @@
     testid?: string;
     /** Which side of the name the crest sits on from 900: left (`start`) or the outer right edge (`end`). */
     crest?: 'start' | 'end';
+    /** A Figure (and its Meter) the page script paints under the name: `data-field="figure"`. */
+    figure?: Snippet;
   } = $props();
 
   const sub = (name: string): string | undefined => (testid === undefined ? undefined : `${testid}-${name}`);
@@ -38,6 +44,7 @@
   data-state="loading"
   data-page={page === undefined ? undefined : JSON.stringify(page)}
   data-crest={crest}
+  data-figure={figure === undefined ? undefined : ''}
   data-testid={testid}
 >
   <span class="text-label tracking-label text-muted font-bold uppercase">{label}</span>
@@ -49,6 +56,10 @@
         <span class="skeleton-block ui-cans-sk-detail"></span>
       </span>
     </span>
+    {#if figure}<span class="ui-cans-sk-fig">
+        <span class="skeleton-block ui-cans-sk-num"></span>
+        <span class="skeleton-block ui-cans-sk-bar"></span>
+      </span>{/if}
     <span class="skeleton-block ui-cans-sk-link"></span>
   </div>
   <div class="ui-cans-body" data-answer-body hidden>
@@ -59,6 +70,7 @@
         <span class="text-small text-muted" data-field="detail" data-testid={sub('detail')}></span>
       </span>
     </span>
+    {#if figure}<div class="ui-cans-fig" data-field="figure" hidden>{@render figure()}</div>{/if}
     <span class="text-small text-muted" data-field="message" hidden></span>
     <span class="ui-cans-links">
       <span class="text-small text-muted ui-cans-next" data-field="next" data-testid={sub('next')} hidden
@@ -117,6 +129,44 @@
     width: 220px;
     height: 20px;
   }
+  .ui-cans-sk-fig,
+  .ui-cans-fig {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: 100%;
+    max-width: 380px;
+  }
+  .ui-cans-sk-num {
+    width: 160px;
+    height: 50px;
+  }
+  .ui-cans-sk-bar {
+    width: 100%;
+    height: 8px;
+  }
+  .ui-cans-fig :global(.ui-meter) {
+    align-self: stretch;
+  }
+  /* The answer is left-aligned under the title below 900 px: so is its figure. */
+  @media (max-width: 899px) {
+    .ui-cans-fig :global(.ui-figure) {
+      align-items: flex-start;
+      text-align: left;
+    }
+  }
+  .ui-cans[data-figure] .ui-cans-sk-link {
+    width: 240px;
+    height: 44px;
+  }
+  /* The figure's reserve at every width: the filled answer (name, figure, caption, meter, note,
+     button) is 224 px, so the skeleton holds it and the page below never moves. */
+  .ui-cans[data-figure] {
+    min-height: 224px;
+  }
+  .ui-cans[data-figure] .ui-cans-links {
+    padding-top: 4px;
+  }
   .ui-cans-crest {
     width: 40px;
     height: 40px;
@@ -132,7 +182,7 @@
     align-items: center;
     gap: 4px 16px;
   }
-  .ui-cans :global([data-field='links'] a) {
+  .ui-cans :global([data-field='links'] a:not(.button-label)) {
     color: var(--color-gold);
     font-size: 15px;
     line-height: 24px;
@@ -142,7 +192,7 @@
     font-size: 13px;
     line-height: 20px;
   }
-  .ui-cans :global([data-field='links'] a:hover) {
+  .ui-cans :global([data-field='links'] a:not(.button-label):hover) {
     color: var(--color-gold-hover);
   }
   .ui-cans :global([data-field='links'] a:focus-visible) {
@@ -167,6 +217,10 @@
     }
     .ui-cans-text {
       text-align: left;
+    }
+    .ui-cans-sk-fig,
+    .ui-cans-fig {
+      align-items: flex-end;
     }
     .ui-cans-next {
       flex-basis: 100%;

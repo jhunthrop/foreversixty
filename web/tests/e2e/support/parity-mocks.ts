@@ -175,3 +175,27 @@ export function renderReportMocks(mocks: readonly string[]): string {
   });
   return dir;
 }
+
+/**
+ * The /bis landing mocks named (ws_bis_landing.py --list), from the landing's own models, this
+ * checkout's data/builds/<active build>/bis and the fixtures support/bis-landing-page.ts serves:
+ * bis_landing_facts.mjs runs the models, ws_bis_landing.py draws just those mocks. Returns the
+ * folder that holds web-bis-landing*.html.
+ */
+export function renderBisLandingMocks(mocks: readonly string[]): string {
+  const dir = freshDir('bis-landing');
+  const facts = path.join(dir, 'bis-landing-facts.json');
+  run('node', [path.join(GENERATORS, 'bis_landing_facts.mjs'), facts]);
+  run(PYTHON, [path.join(GENERATORS, 'ws_bis_landing.py'), ...mocks], {
+    FS_BIS_LANDING_FACTS: facts,
+    FS_MOCK_OUT: dir,
+  });
+  return dir;
+}
+
+/** The /app/auth mocks (ws_app_auth.py), from the page's copy module. Returns the folder. */
+export function renderAppAuthMocks(): string {
+  const dir = freshDir('app-auth');
+  run(PYTHON, [path.join(GENERATORS, 'ws_app_auth.py')], { FS_MOCK_OUT: dir });
+  return dir;
+}

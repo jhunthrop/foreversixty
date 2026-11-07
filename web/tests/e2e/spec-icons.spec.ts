@@ -39,12 +39,14 @@ test.describe('spec icons come from the spec-icon map', () => {
     }
   });
 
-  test('the /bis class cards', async ({ page }) => {
+  test('the /bis class and spec plate', async ({ page }) => {
     await page.goto('/bis');
-    const rows = page.locator('a.spr[data-spec-key]');
+    const rows = page.locator('a[data-testid^="bis-spec-row-"]');
     await expect(rows).toHaveCount(SPECS.length);
     for (const row of await rows.all()) {
-      const key = (await row.getAttribute('data-spec-key')) ?? '';
+      const key = ((await row.getAttribute('data-testid')) ?? '')
+        .slice('bis-spec-row-'.length)
+        .replace('/', '-');
       expect(iconOfSrc(await row.locator('img').getAttribute('src')), key).toBe(SPEC_BY_KEY[key].icon);
     }
   });
