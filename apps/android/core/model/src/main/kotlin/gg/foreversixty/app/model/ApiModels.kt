@@ -773,7 +773,7 @@ data class FeedRow(
     @SerialName("id") val id: String,
     @SerialName("kind") val kind: String,
     @SerialName("at") val at: String,
-    /** For this viewer: your_spec on the viewer's spec and band */
+    /** For this viewer: the kind's tag (log_upload and boss_kill logs, ranking_top and ranking_climb rankings, bis_change best_in_slot, guild rows your_guild), or your_spec on the viewer's spec and band */
     @SerialName("tag") val tag: String,
     /** An HD icon stem under /data/<build>/icons/ */
     @SerialName("icon") val icon: String? = null,

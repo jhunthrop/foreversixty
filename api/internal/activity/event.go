@@ -13,15 +13,28 @@ const (
 	KindGuildSim     = "guild_sim"
 )
 
-// The tags a row carries for its viewer (rows[].tag). A row's stored base tag is what it
-// shows to anyone whose spec it does not match; TagYourSpec replaces it on a match.
+// The tags a row carries for its viewer (rows[].tag). A row's kind decides its tag (KindTag);
+// a guild row is always TagYourGuild, and TagYourSpec replaces the kind's tag on a row of the
+// viewer's spec and band.
 const (
-	TagYourSpec  = "your_spec"
-	TagLogs      = "logs"
-	TagGuides    = "guides"
-	TagYourGuild = "your_guild"
-	TagPatch     = "patch"
+	TagYourSpec   = "your_spec"
+	TagLogs       = "logs"
+	TagRankings   = "rankings"
+	TagBestInSlot = "best_in_slot"
+	TagYourGuild  = "your_guild"
+	TagPatch      = "patch"
 )
+
+// KindTag is the one map from an event kind to the tag it shows anyone it is not personal to.
+var KindTag = map[string]string{
+	KindLogUpload:    TagLogs,
+	KindBossKill:     TagLogs,
+	KindGuildRaid:    TagYourGuild,
+	KindRankingTop:   TagRankings,
+	KindRankingClimb: TagRankings,
+	KindBisChange:    TagBestInSlot,
+	KindGuildSim:     TagYourGuild,
+}
 
 // The segment styles (rows[].segments[].style). Plain text has none.
 const (
@@ -47,7 +60,6 @@ type Event struct {
 	Band         int    // 20..60, or 0
 	GuildID      int64  // set: the guild's members only
 	CharacterKey string
-	TagBase      string
 	Icon         string
 	Crest        string
 	Quality      *int

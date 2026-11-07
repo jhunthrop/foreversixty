@@ -79,7 +79,7 @@ func member(t *testing.T, s *Store, guildID int64, key string, userID int64) {
 }
 
 func ev(kind, dedupe string, at time.Time) Event {
-	return Event{Kind: kind, OccurredAt: at, TagBase: TagLogs, Segments: []Segment{Text(dedupe)}, DedupeKey: dedupe}
+	return Event{Kind: kind, OccurredAt: at, Segments: []Segment{Text(dedupe)}, DedupeKey: dedupe}
 }
 
 func mustAppend(t *testing.T, s *Store, e Event) {

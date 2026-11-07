@@ -26,18 +26,18 @@ type execer interface {
 }
 
 const insertEvent = `insert into activity_events (kind, occurred_at, spec, band, guild_id, character_key,
-	tag_base, icon, crest, quality, href, date_only, segments, dedupe_key)
-	values ($1, $2, nullif($3, ''), nullif($4, 0), nullif($5, 0), nullif($6, ''), $7, $8, $9, $10, $11, $12, $13, $14)`
+	icon, crest, quality, href, date_only, segments, dedupe_key)
+	values ($1, $2, nullif($3, ''), nullif($4, 0), nullif($5, 0), nullif($6, ''), $7, $8, $9, $10, $11, $12, $13)`
 
 func eventArgs(e Event) ([]any, error) {
-	if e.DedupeKey == "" || e.Kind == "" || e.TagBase == "" {
-		return nil, fmt.Errorf("activity: event %q needs a kind, a tag and a dedupe key", e.DedupeKey)
+	if e.DedupeKey == "" || KindTag[e.Kind] == "" {
+		return nil, fmt.Errorf("activity: event %q needs a known kind and a dedupe key", e.DedupeKey)
 	}
 	segments, err := json.Marshal(e.Segments)
 	if err != nil {
 		return nil, fmt.Errorf("activity: encode %s: %w", e.DedupeKey, err)
 	}
-	return []any{e.Kind, e.OccurredAt.UTC(), e.Spec, e.Band, e.GuildID, e.CharacterKey, e.TagBase, e.Icon,
+	return []any{e.Kind, e.OccurredAt.UTC(), e.Spec, e.Band, e.GuildID, e.CharacterKey, e.Icon,
 		e.Crest, e.Quality, e.Href, e.DateOnly, segments, e.DedupeKey}, nil
 }
 

@@ -36,7 +36,7 @@ func TestFeedKeepsGuildRowsInTheGuild(t *testing.T) {
 	other := guild(t, s, "Other")
 	mustAppend(t, s, ev(KindLogUpload, "public", testNow.Add(-time.Minute)))
 	own := ev(KindGuildRaid, "own guild", testNow.Add(-2*time.Minute))
-	own.GuildID, own.TagBase = g, TagYourGuild
+	own.GuildID = g
 	mustAppend(t, s, own)
 	theirs := ev(KindGuildRaid, "their guild", testNow.Add(-3*time.Minute))
 	theirs.GuildID = other
@@ -59,7 +59,7 @@ func TestFeedSpecFilterAndOwnRowsFirst(t *testing.T) {
 	s := testStore(t)
 	mustAppend(t, s, ev(KindLogUpload, "newest, not mine", testNow.Add(-time.Minute)))
 	mine := ev(KindBisChange, "mine", testNow.Add(-10*time.Minute))
-	mine.Spec, mine.Band, mine.TagBase = "warrior-fury", 20, TagGuides
+	mine.Spec, mine.Band = "warrior-fury", 20
 	mustAppend(t, s, mine)
 	other := ev(KindBisChange, "fury at 30", testNow.Add(-20*time.Minute))
 	other.Spec, other.Band = "warrior-fury", 30
@@ -70,7 +70,7 @@ func TestFeedSpecFilterAndOwnRowsFirst(t *testing.T) {
 	if got := texts(all); got[0] != "mine" || got[1] != "newest, not mine" || got[3] != "last hour" {
 		t.Fatalf("order: %v", got)
 	}
-	if all.Rows[0].Tag != TagYourSpec || all.Rows[2].Tag != TagLogs {
+	if all.Rows[0].Tag != TagYourSpec || all.Rows[2].Tag != TagBestInSlot {
 		t.Fatalf("tags: %s %s", all.Rows[0].Tag, all.Rows[2].Tag)
 	}
 	if got := texts(read(t, s, Query{Filter: FilterSpec, Spec: "warrior-fury", Band: 20})); len(got) != 1 || got[0] != "mine" {

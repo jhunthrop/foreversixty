@@ -92,7 +92,7 @@ func guildSimEvent(f simFacts, simID string, ladder []LadderRow) Event {
 	}
 	return Event{
 		Kind: KindGuildSim, OccurredAt: f.at, Spec: f.spec, Band: f.band, GuildID: f.guildID, CharacterKey: f.key,
-		TagBase: TagYourGuild, Crest: f.class, Href: "/sim/" + simID,
+		Crest: f.class, Href: "/sim/" + simID,
 		Segments: []Segment{Name(f.name, f.class), Text(fmt.Sprintf(" simmed %s %s%s in ", figure, unit, place)),
 			Strong(f.guild), Text(fmt.Sprintf(" (%s, %s)", SpecName(f.spec), words))},
 		DedupeKey: "guild-sim:" + strconv.FormatInt(f.guildID, 10) + ":" + f.key + ":" + f.at.UTC().Format("20060102"),

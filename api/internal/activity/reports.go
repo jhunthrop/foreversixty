@@ -90,7 +90,7 @@ func uploadEvent(f reportFacts) Event {
 		segments = []Segment{Name(f.name, crest), Text(" uploaded " + f.zone + ", " + counts)}
 	}
 	e := Event{
-		Kind: KindLogUpload, OccurredAt: f.at, TagBase: TagLogs, Crest: crest,
+		Kind: KindLogUpload, OccurredAt: f.at, Crest: crest,
 		Href: "/reports/" + f.id, Segments: segments, DedupeKey: "upload:" + f.id,
 	}
 	if !f.anonymous {
@@ -142,7 +142,7 @@ func killEvent(f reportFacts, encounterID int, boss string) Event {
 		segments = []Segment{Name(f.name, crest), Text(" downed "), Strong(boss), Text(" in " + f.zone + ", the first kill on Forever")}
 	}
 	e := Event{
-		Kind: KindBossKill, OccurredAt: f.at, TagBase: TagLogs, Crest: crest, Href: "/reports/" + f.id,
+		Kind: KindBossKill, OccurredAt: f.at, Crest: crest, Href: "/reports/" + f.id,
 		Segments: segments, DedupeKey: "first-kill:" + strconv.Itoa(encounterID),
 	}
 	if f.spec != "" && f.level > 0 {

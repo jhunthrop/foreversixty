@@ -112,3 +112,19 @@ func TestRankingEventsTellATopAndTheClimbsWorthARow(t *testing.T) {
 		t.Fatal("a board seen for the first time tells no movement")
 	}
 }
+
+// Every kind has its tag in the one map: rankings rows say Rankings, BiS rows say Best in slot.
+func TestEveryKindHasItsTag(t *testing.T) {
+	want := map[string]string{
+		KindLogUpload: TagLogs, KindBossKill: TagLogs, KindGuildRaid: TagYourGuild, KindGuildSim: TagYourGuild,
+		KindRankingTop: TagRankings, KindRankingClimb: TagRankings, KindBisChange: TagBestInSlot,
+	}
+	if len(KindTag) != len(want) {
+		t.Fatalf("KindTag has %d kinds, want %d", len(KindTag), len(want))
+	}
+	for kind, tag := range want {
+		if KindTag[kind] != tag {
+			t.Errorf("%s: tag %q, want %q", kind, KindTag[kind], tag)
+		}
+	}
+}

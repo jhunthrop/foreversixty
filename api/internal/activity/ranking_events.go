@@ -50,7 +50,7 @@ func rankEvent(id boardID, r BoardRow, kind string, gain int, now time.Time) Eve
 		dedupe = fmt.Sprintf("rank-climb:%s:%d:%s:%d:%s", id.spec, id.band, r.Key, r.Rank, now.UTC().Format("2006010215"))
 	}
 	return Event{
-		Kind: kind, OccurredAt: now, Spec: id.spec, Band: id.band, CharacterKey: r.Key, TagBase: TagLogs,
+		Kind: kind, OccurredAt: now, Spec: id.spec, Band: id.band, CharacterKey: r.Key,
 		Crest: r.Class, Href: "/character/" + r.Key, Segments: segments, DedupeKey: dedupe,
 	}
 }

@@ -3828,7 +3828,7 @@ components:
         id: { type: string }
         kind: { type: string, enum: [log_upload, boss_kill, guild_raid, ranking_top, ranking_climb, bis_change, guild_sim] }
         at: { type: string, format: date-time }
-        tag: { type: string, enum: [your_spec, logs, guides, your_guild, patch], description: "For this viewer: your_spec on the viewer's spec and band" }
+        tag: { type: string, enum: [your_spec, logs, rankings, best_in_slot, your_guild, patch], description: "For this viewer: the kind's tag (log_upload and boss_kill logs, ranking_top and ranking_climb rankings, bis_change best_in_slot, guild rows your_guild), or your_spec on the viewer's spec and band" }
         icon: { type: ["string", "null"], description: "An HD icon stem under /data/<build>/icons/" }
         crest: { type: ["string", "null"], description: "A class slug: the row shows that class crest" }
         quality: { type: ["integer", "null"], description: "The icon's item quality, for its border" }

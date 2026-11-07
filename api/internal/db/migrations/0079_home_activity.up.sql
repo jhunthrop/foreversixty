@@ -12,7 +12,6 @@ create table if not exists activity_events (
   band         int,
   guild_id     bigint references guilds (id) on delete cascade,
   character_key text,
-  tag_base     text not null,
   icon         text not null default '',
   crest        text not null default '',
   quality      int,

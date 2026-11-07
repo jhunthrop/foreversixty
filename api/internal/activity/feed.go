@@ -135,7 +135,7 @@ func (s *Store) Read(ctx context.Context, q Query) (Page, error) {
 		limit = DefaultLimit
 	}
 	sql := `select e.id, e.kind, e.occurred_at, date_trunc('hour', e.occurred_at), ` + mineSQL + `,
-		e.spec, e.band, e.guild_id is not null, e.tag_base, e.icon, e.crest, e.quality, e.href, e.date_only, e.segments
+		e.spec, e.band, e.guild_id is not null, e.icon, e.crest, e.quality, e.href, e.date_only, e.segments
 		from activity_events e where ` + where + `
 		order by date_trunc('hour', e.occurred_at) desc, ` + mineSQL + ` desc, e.occurred_at desc, e.id desc
 		limit ` + strconv.Itoa(limit+1)
@@ -165,22 +165,22 @@ type scanner interface{ Scan(dest ...any) error }
 
 func scanRow(rows scanner, q Query) (Row, cursor, error) {
 	var (
-		r               Row
-		c               cursor
-		spec            *string
-		band            *int
-		guild           bool
-		tagBase, ic, cr string
-		segments        []byte
+		r        Row
+		c        cursor
+		spec     *string
+		band     *int
+		guild    bool
+		ic, cr   string
+		segments []byte
 	)
-	if err := rows.Scan(&c.id, &r.Kind, &r.At, &c.hour, &c.mine, &spec, &band, &guild, &tagBase, &ic, &cr,
+	if err := rows.Scan(&c.id, &r.Kind, &r.At, &c.hour, &c.mine, &spec, &band, &guild, &ic, &cr,
 		&r.Quality, &r.Href, &r.DateOnly, &segments); err != nil {
 		return Row{}, cursor{}, fmt.Errorf("activity: scan feed: %w", err)
 	}
 	r.At = r.At.UTC()
 	c.at = r.At
 	r.ID = "e_" + strconv.FormatInt(c.id, 10)
-	r.Tag = tagFor(tagBase, guild, spec, band, q)
+	r.Tag = tagFor(KindTag[r.Kind], guild, spec, band, q)
 	r.Icon, r.Crest = nonEmpty(ic), nonEmpty(cr)
 	if err := json.Unmarshal(segments, &r.Segments); err != nil {
 		return Row{}, cursor{}, fmt.Errorf("activity: decode row %d: %w", c.id, err)
@@ -189,7 +189,7 @@ func scanRow(rows scanner, q Query) (Row, cursor, error) {
 }
 
 // tagFor is the row's tag for this viewer: a guild row is always Your guild, a row of the
-// viewer's spec and band is Your spec, anything else keeps its base tag.
+// viewer's spec and band is Your spec, anything else shows its kind's tag (KindTag).
 func tagFor(base string, guild bool, spec *string, band *int, q Query) string {
 	switch {
 	case guild:

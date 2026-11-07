@@ -83,7 +83,7 @@ func guildRaidEvent(f raidFacts) Event {
 		icon = genericRaidIcon
 	}
 	return Event{
-		Kind: KindGuildRaid, OccurredAt: f.createdAt, GuildID: f.guildID, TagBase: TagYourGuild, Icon: icon,
+		Kind: KindGuildRaid, OccurredAt: f.createdAt, GuildID: f.guildID, Icon: icon,
 		Href: guildPath(f.region, f.ruleset, f.guild) + "/raids/" + strconv.FormatInt(f.id, 10),
 		Segments: []Segment{Strong(f.guild), Text(" posted "), Strong(f.title),
 			Text(fmt.Sprintf(", %s: %d in, %d late", day, f.in, f.late))},

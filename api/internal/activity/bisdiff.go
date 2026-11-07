@@ -143,7 +143,7 @@ func bisEvent(f bisFile, k bandKey, cs []pickChange, items *itemTable) Event {
 		quality = &q
 	}
 	return Event{
-		Kind: KindBisChange, OccurredAt: f.GeneratedAt, Spec: f.Spec, Band: k.band, TagBase: TagGuides,
+		Kind: KindBisChange, OccurredAt: f.GeneratedAt, Spec: f.Spec, Band: k.band,
 		Icon: it.Icon, Quality: quality, Href: "/bis/" + spec.ClassSlug + "/" + spec.SpecSlug,
 		Segments:  segments,
 		DedupeKey: strings.Join([]string{"bis", f.Spec, strconv.Itoa(k.band), k.preset, f.GeneratedAt.UTC().Format("20060102T150405")}, ":"),
