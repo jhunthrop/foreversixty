@@ -114,6 +114,16 @@
       "id": "assignments",
       "path": "/guild/us/pvp/olympus-xxvii/raids/41",
       "mock": "web-guild-assignments.html"
+    },
+    {
+      "id": "settings",
+      "path": "/guild/us/pvp/olympus-xxvii#settings",
+      "mock": "web-guild-settings.html"
+    },
+    {
+      "id": "settings-page",
+      "path": "/guild/us/pvp/olympus-xxvii/settings",
+      "mock": "web-guild-settings-page.html"
     }
   ]
 }

@@ -150,7 +150,7 @@
 <li
   bind:this={rowEl}
   onkeydown={onKeydown}
-  class="border-line-soft flex flex-col gap-3 border-b py-3 last:border-b-0"
+  class="flex flex-col gap-3 py-2"
   data-testid={`guild-seat-${seat.slot}`}
   data-seat-kind={kind}
 >
@@ -188,7 +188,7 @@
         </div>
       {:else}
         <span
-          class="border-line inline-block size-8 shrink-0 rounded-full border border-dashed"
+          class="inline-block size-8 shrink-0 rounded-full border border-dashed border-white/20"
           aria-hidden="true"
         ></span>
         <span class="text-muted text-[14px]">{copy.notGiven}</span>

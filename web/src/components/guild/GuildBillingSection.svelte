@@ -40,7 +40,7 @@
   } from '../../lib/guild/billing-handoff';
   import { readReserve, writeReserve } from '../../lib/layout-reserve';
   import { minuteClock } from '../../lib/guild/minute-clock.svelte';
-  import Card from '../ui/Card.svelte';
+  import Section from '../ui/Section.svelte';
   import LoadError from '../ui/LoadError.svelte';
   import Skeleton from '../ui/Skeleton.svelte';
   import BillingHandoff from './BillingHandoff.svelte';
@@ -164,22 +164,14 @@
   });
 </script>
 
-<Card
-  id="billing"
-  class="scroll-mt-20"
-  glyph="crown"
-  label={view?.billing ? settingsWords.guildPlan : undefined}
-  title={view?.billing ? copy.chooser.tierName(view.billing.tier) : settingsWords.guildPlan}
-  body="none"
+<Section
+  anchor="billing"
+  title={settingsWords.guildPlan}
+  meta={view?.billing ? copy.chooser.tierName(view.billing.tier) : undefined}
   testid="guild-settings-billing"
 >
   <div bind:this={sectionEl}>
-    <div
-      bind:this={statusEl}
-      role="status"
-      tabindex="-1"
-      class="text-muted border-line-soft border-t px-5 py-3 text-[13px] empty:hidden"
-    >
+    <div bind:this={statusEl} role="status" tabindex="-1" class="text-muted pb-3 text-[13px] empty:hidden">
       {#if flow.notice === 'unconfirmed'}
         <p data-testid="guild-upgrade-unconfirmed">{copy.upgrade.unconfirmed}</p>
       {:else if flow.notice === 'unconfirmed-stale'}
@@ -189,12 +181,12 @@
       {/if}
     </div>
     {#if failed}
-      <div class="border-line-soft border-t px-5 py-4">
+      <div>
         <LoadError message={copy.loadFailed} onRetry={() => void load()} testid="guild-billing-load-error" />
       </div>
     {:else if view === null}
       <div
-        class="border-line-soft border-t px-5 py-4 {GUILD_BILLING_LOADING.minHeight}"
+        class={GUILD_BILLING_LOADING.minHeight}
         style={storedReserve === null ? undefined : `min-height: ${storedReserve}px`}
         data-testid="guild-billing-reserve"
       >
@@ -204,7 +196,7 @@
       <!-- The ready blocks, measured once settled so the next visit reserves this height. -->
       <div class="flex flex-col" bind:clientHeight={readyHeight} data-testid="guild-billing-ready">
         {#if view.billing !== null && view.transfer !== null && offeredToReader(view)}
-          <div class="border-line-soft border-t px-5 py-4">
+          <div class="pb-3">
             <GuildTransferOffer {guildId} plan={view.billing} transfer={view.transfer} onChanged={reload} />
           </div>
         {/if}
@@ -230,7 +222,7 @@
             />
           {/if}
         </div>
-        <div class="border-line-soft flex flex-col gap-5 border-t px-5 py-4 {hasLowerBlocks ? '' : 'hidden'}">
+        <div class="flex flex-col gap-5 pt-3 {hasLowerBlocks ? '' : 'hidden'}">
           {#if showSizeLine(view)}
             <GuildSizeLine
               count={view.verified_count}
@@ -259,7 +251,7 @@
               {...chooserPreselect(preselect)}
             />
           {/if}
-          <div data-testid="guild-billing-seats-slot">
+          <div class="empty:hidden" data-testid="guild-billing-seats-slot">
             <GuildSeats
               {guildId}
               seats={view.seats}
@@ -281,4 +273,4 @@
       </div>
     {/if}
   </div>
-</Card>
+</Section>

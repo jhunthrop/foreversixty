@@ -15,6 +15,7 @@
   import type { GuildHome, GuildViewerRole } from '../../lib/guild/api';
   import { guildHomeCopy } from '../../lib/guild/copy';
   import { button } from '../../lib/ui/button';
+  import { CONFIRM_BLOCK } from '../../lib/guild/billing-styles';
   import GuildCrestSettings from './GuildCrestSettings.svelte';
   import GuildSettings from '../GuildSettings.svelte';
 
@@ -68,7 +69,7 @@
   <GuildCrestSettings guildId={home.guild.id} guild={home.guild} {onCrestChanged} />
 {/snippet}
 
-<section class="flex flex-col gap-6" data-testid="guild-settings-tab">
+<section class="flex flex-col" data-testid="guild-settings-tab">
   <GuildSettings
     embedded
     {path}
@@ -79,11 +80,11 @@
 
   {#if canContestHere}
     <div
-      class="border-line-soft flex flex-col gap-3 border-t pt-6"
+      class="flex flex-col items-start gap-3 px-(--page-inset) pt-3"
       data-testid="guild-settings-claim-contest"
     >
       <button
-        class="{button('secondary', 'sm')} w-fit"
+        class={button('secondary', 'sm')}
         onclick={onContestStart}
         disabled={contestBusy}
         data-testid="guild-home-contest-button"
@@ -96,7 +97,7 @@
       {/if}
 
       {#if showContestConfirm}
-        <div class="border-line-soft flex flex-col gap-3 border p-4" data-testid="guild-home-contest-confirm">
+        <div class={CONFIRM_BLOCK} data-testid="guild-home-contest-confirm">
           <ul class="flex flex-col gap-1 text-[13px]">
             {#each guildHomeCopy.contestRules as rule (rule)}
               <li>{rule}</li>
