@@ -8,7 +8,9 @@ Forever unifies melee, ranged and spell hit into one stat. An item's crit rating
 
 ### Band 20 (human, 50320001000000000-00000000000000000-00000000000000000)
 
-Set DPS (verified): 51.3. Weights run: 7.0s. Verify run: 53.3s. 281 eligible items had no known source.
+Set DPS (verified): 51.3. Weights run: 4.1s. Verify run: 31.2s. 281 eligible items had no known source.
+
+Race sweep: human 51.3 ± 0.0, dwarf 49.3 ± 0.0 (heal_score); the guide race human is best.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.042, intellect=1.023 ± 0.008, spirit=0.775 ± 0.005, mp5=3.250 ± 0.009, crit=0.194 ± 0.009 per rating point (14 rating = 1%, 2.712 per %), spell_haste=3.246 ± 0.103
 
@@ -36,101 +38,109 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 
 No-known-source sample (15 of 281, see the JSON for more): 1189 Overseer's Ring; 2273 Guerrilla Armor; 2314 Toughened Leather Armor; 2543 Militia Pants; 2952 Fine Light Hide Jerkin; 3579 Ornate Copper Shoulders; 4642 Star of Xil'yeh; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4800 Mighty Chain Pants; 4816 Legionnaire's Leggings; 4964 Goblin Smasher; 5255 Quilboar Tomahawk; 5821 Darkstalker Boots
 
-### Band 30 (human, 50320215002100000-00000000000000000-00000000000000000)
+### Band 30 (human, 50320015000100000-40000000000000000-00000000000000000)
 
-Set DPS (verified): 132.4. Weights run: 6.5s. Verify run: 38.3s. 504 eligible items had no known source.
+Set DPS (verified): 134.6. Weights run: 3.6s. Verify run: 21.0s. 504 eligible items had no known source.
 
-Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.054, intellect=1.660 ± 0.014, spirit=1.325 ± 0.011, mp5=4.523 ± 0.022, crit=0.565 ± 0.017 per rating point (14 rating = 1%, 7.913 per %), spell_haste=not significant (-0.359 ± 0.096)
+Race sweep: human 134.6 ± 0.1, dwarf 128.8 ± 0.1 (heal_score); the guide race human is best.
+
+Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.063, intellect=1.891 ± 0.016, spirit=1.419 ± 0.012, mp5=4.787 ± 0.023, crit=0.598 ± 0.018 per rating point (14 rating = 1%, 8.373 per %), spell_haste=-0.471 ± 0.113
 
 | Slot | Item | Source | Score (healing_power points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Holy Shroud (2721) | World drop [world_drop] | 40.9 healing_power points (6.53 DPS) | yes | Nightsky Cowl (4039, -2.30 DPS) [world_drop]; Acolyte's Chain Helm (250501, -2.55 DPS) [crafted]; Enduring Cap (3020, -4.59 DPS, sim-verified) [world_drop] |
-| neck | Kaleidoscope Chain (13084) | World drop [world_drop] | 11.9 healing_power points (1.90 DPS) | yes | Crystal Starfire Medallion (5003, -0.20 DPS, sim-verified) [world_drop]; Archmagister's Faceted Pendant (273049, -0.32 DPS) [world]; Seal of the Expedition (271920, -0.58 DPS) [rep] |
-| shoulder | Death Speaker Mantle (6685) | Razorfen Kraul: Death Speaker Jargba [dungeon] | 24.3 healing_power points (3.87 DPS) | yes | Bloodmage Mantle (7684, -0.05 DPS) [dungeon]; Mantle of Honor (3560, -0.54 DPS) [quest]; Magician's Mantle (12998, -0.69 DPS) [world_drop] |
-| back | Caretaker's Cape (19533) | Silverwing Sentinels [rep] | sim-decided (no score - a real sim tournament chose this pick) | yes | Glowing Thresher Cape (6901, -0.11 DPS) [dungeon]; Expeditionary's Cape (271923, -0.17 DPS) [rep]; Repairman's Cape (9605, -0.70 DPS, sim-verified) [quest] |
-| chest | Death Speaker Robes (6682) | Razorfen Kraul: Death Speaker Jargba [dungeon] | sim-verified (+0.3 DPS vs the runner-up, not corroborated against the finished set) | yes | Pristine Gown (253961, -0.21 DPS) [crafted]; Beguiler Robes (7728, -0.29 DPS, sim-verified) [dungeon]; Wisdom's Leather Tunic (252511, -0.37 DPS) [crafted] |
-| wrist | Spidertank Oilrag (9448) | Gnomeregan: Electrocutioner 6000 [dungeon] | 22.6 healing_power points (3.60 DPS) | yes | Mindthrust Bracers (1974, -0.90 DPS, sim-verified) [dungeon]; Nightsky Wristbands (6407, -1.38 DPS) [world_drop]; Glowing Magical Bracelets (13106, -1.48 DPS) [world_drop] |
-| hands | Gloves of Old (9395) | World drop [world_drop] | 24.2 healing_power points (3.86 DPS) | yes | Truefaith Gloves (7049, -0.67 DPS) [crafted]; Hotshot Pilot's Gloves (9491, -0.69 DPS) [dungeon]; Acolyte's Gloves (250511, -0.94 DPS) [crafted] |
-| waist | Mender's Leather Belt (252523) | Leatherworking [crafted] | 36.9 healing_power points (5.89 DPS) | yes | Prefect's Belt (250559, -0.28 DPS, sim-verified) [crafted]; Skycaller's Leather Belt (252522, -1.86 DPS) [crafted]; Belt of Arugal (6392, -2.60 DPS) [dungeon] |
-| legs | Wisdom's Leather Leggings (252519) | Leatherworking [crafted] | 41.9 healing_power points (6.68 DPS) | yes | Pristine Leggings (253987, -0.23 DPS, sim-verified) [crafted]; Acolyte's Silvered Chain Leggings (250526, -0.58 DPS) [crafted]; Wisdom's Leather Pants (252503, -1.06 DPS) [crafted] |
-| feet | Gilded Slippers (254001) | Tailoring [crafted] | 36.9 healing_power points (5.89 DPS) | yes | Acolyte's Boots (250506, -2.81 DPS) [crafted]; Wisdom's Leather Boots (252444, -2.81 DPS) [crafted]; Acidic Walkers (9454, -3.16 DPS, sim-verified) [dungeon] |
-| finger1 | Ring of Power Regulation (273030) | Excavation Site: Wetlands: Relic Guardian [dungeon] | 19.6 healing_power points (3.12 DPS) | yes | Runemender's Seal (273031, -0.21 DPS) [world]; Lorekeeper's Ring (19525, -0.56 DPS) [rep]; Snake Hoop (6750, -0.84 DPS) [quest] |
-| finger2 | Electrocutioner Lagnut (9447) (or Runemender's Seal (273031)) | Gnomeregan: Electrocutioner 6000 [dungeon] | 18.3 healing_power points (2.92 DPS) | yes | Runemender's Seal (273031, +0.00 DPS) [world]; Lorekeeper's Ring (19525, -0.36 DPS) [rep]; Snake Hoop (6750, -0.63 DPS) [quest] |
+| head | Holy Shroud (2721) | World drop [world_drop] | 41.5 healing_power points (6.29 DPS) | yes | Enduring Cap (3020, -0.20 DPS) [world_drop]; Nightsky Cowl (4039, -1.78 DPS) [world_drop]; Dokebi Hat (14584, -2.06 DPS) [world_drop] |
+| neck | Kaleidoscope Chain (13084) | World drop [world_drop] | 13.2 healing_power points (2.01 DPS) | yes | Crystal Starfire Medallion (5003, -0.21 DPS) [world_drop]; Archmagister's Faceted Pendant (273049, -0.29 DPS) [world]; Seal of the Expedition (271920, -0.57 DPS) [rep] |
+| shoulder | Death Speaker Mantle (6685) | Razorfen Kraul: Death Speaker Jargba [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Bloodmage Mantle (7684, -0.12 DPS) [dungeon]; Mantle of Honor (3560, -0.55 DPS) [quest]; Nightsky Mantle (4718, -0.69 DPS) [world_drop] |
+| back | Caretaker's Cape (19533) | Silverwing Sentinels [rep] | sim-decided (no score - a real sim tournament chose this pick) | yes | Repairman's Cape (9605, +0.00 DPS) [quest]; Expeditionary's Cape (271923, +0.00 DPS) [rep]; Glowing Thresher Cape (6901, -0.05 DPS) [dungeon] |
+| chest | Death Speaker Robes (6682) | Razorfen Kraul: Death Speaker Jargba [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Beguiler Robes (7728, +0.00 DPS) [dungeon]; Pristine Gown (253961, -0.29 DPS) [crafted]; Wisdom's Leather Tunic (252511, -0.44 DPS) [crafted] |
+| wrist | Spidertank Oilrag (9448) | Gnomeregan: Electrocutioner 6000 [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Mindthrust Bracers (1974, +0.00 DPS) [dungeon]; Nightsky Wristbands (6407, -1.18 DPS) [world_drop]; Glowing Magical Bracelets (13106, -1.25 DPS) [world_drop] |
+| hands | Gloves of Old (9395) | World drop [world_drop] | 26.5 healing_power points (4.01 DPS) | yes | Hotshot Pilot's Gloves (9491, -0.65 DPS) [dungeon]; Truefaith Gloves (7049, -0.88 DPS) [crafted]; Acolyte's Gloves (250511, -1.06 DPS) [crafted] |
+| waist | Mender's Leather Belt (252523) | Leatherworking [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Prefect's Belt (250559, -0.55 DPS) [crafted]; Skycaller's Leather Belt (252522, -1.79 DPS) [crafted]; Silver-lined Belt (13011, -2.45 DPS) [world_drop] |
+| legs | Wisdom's Leather Leggings (252519) | Leatherworking [crafted] | 44.2 healing_power points (6.69 DPS) | yes | Pristine Leggings (253987, -0.28 DPS) [crafted]; Acolyte's Silvered Chain Leggings (250526, -0.61 DPS) [crafted]; Wisdom's Leather Pants (252503, -1.08 DPS) [crafted] |
+| feet | Gilded Slippers (254001) | Tailoring [crafted] | 38.9 healing_power points (5.89 DPS) | yes | Acidic Walkers (9454, -1.99 DPS) [dungeon]; Acolyte's Boots (250506, -2.80 DPS) [crafted]; Wisdom's Leather Boots (252444, -2.80 DPS) [crafted] |
+| finger1 | Ring of Power Regulation (273030) | Excavation Site: Wetlands: Relic Guardian [dungeon] | 20.4 healing_power points (3.08 DPS) | yes | Runemender's Seal (273031, -0.22 DPS) [world]; Lorekeeper's Ring (19525, -0.57 DPS) [rep]; Snake Hoop (6750, -0.74 DPS) [quest] |
+| finger2 | Electrocutioner Lagnut (9447) (or Runemender's Seal (273031)) | Gnomeregan: Electrocutioner 6000 [dungeon] | 18.9 healing_power points (2.87 DPS) | yes | Runemender's Seal (273031, +0.00 DPS) [world]; Lorekeeper's Ring (19525, -0.36 DPS) [rep]; Snake Hoop (6750, -0.53 DPS) [quest] |
 | trinket1 | - | - |  |  |  |
 | trinket2 | - | - |  |  |  |
-| main_hand | Death Speaker Scepter (2816) | Razorfen Kraul: Death Speaker Jargba [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Crested Scepter (3414, -5.22 DPS) [dungeon]; Pysan's Old Greatsword (1975, -6.22 DPS) [dungeon]; Taskmaster Axe (5194, -7.96 DPS, sim-verified) [dungeon] |
-| off_hand | Orb of Souls (249395) | Enchanting [crafted] | 20.9 healing_power points (3.34 DPS) | yes | Orb of Mystic Insight (249394, -0.94 DPS, sim-verified) [crafted]; Heart of Agamaggan (6694, -0.95 DPS) [dungeon]; Orb of Mistmantle (13031, -1.06 DPS) [world_drop] |
+| main_hand | Death Speaker Scepter (2816) | Razorfen Kraul: Death Speaker Jargba [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Taskmaster Axe (5194, -1.76 DPS) [dungeon]; Crested Scepter (3414, -4.88 DPS) [dungeon]; Pysan's Old Greatsword (1975, -5.91 DPS) [dungeon] |
+| off_hand | Orb of Souls (249395) | Enchanting [crafted] | 21.5 healing_power points (3.26 DPS) | yes | Orb of Mystic Insight (249394, -0.48 DPS) [crafted]; Heart of Agamaggan (6694, -0.99 DPS) [dungeon]; Orb of Mistmantle (13031, -1.04 DPS) [world_drop] |
 | ranged | - | - |  |  |  |
 
 **New at 30:** head: Holy Shroud; neck: Kaleidoscope Chain; shoulder: Death Speaker Mantle; back: Caretaker's Cape; chest: Death Speaker Robes; wrist: Spidertank Oilrag; hands: Gloves of Old; waist: Mender's Leather Belt; legs: Wisdom's Leather Leggings; feet: Gilded Slippers; finger1: Ring of Power Regulation; finger2: Electrocutioner Lagnut; main_hand: Death Speaker Scepter; off_hand: Orb of Souls
 
 No-known-source sample (15 of 504, see the JSON for more): 913 Huge Ogre Sword; 1189 Overseer's Ring; 1216 Frost Bracers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2314 Toughened Leather Armor; 2543 Militia Pants; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3579 Ornate Copper Shoulders; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak
 
-### Band 40 (human, 50320215012101251-00000000000000000-00000000000000000)
+### Band 40 (human, 50320115000100000-50000000000000000-05030000000000000)
 
-Set DPS (verified): 199.0. Weights run: 8.7s. Verify run: 40.7s. 691 eligible items had no known source.
+Set DPS (verified): 217.9. Weights run: 4.0s. Verify run: 25.6s. 691 eligible items had no known source.
 
-Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.275, intellect=1.003 ± 0.026, spirit=0.860 ± 0.024, mp5=3.254 ± 0.036, crit=0.884 ± 0.033 per rating point (14 rating = 1%, 12.379 per %), spell_haste=2.651 ± 0.470
+Race sweep: human 217.9 ± 0.1, dwarf 210.2 ± 0.2 (heal_score); the guide race human is best.
+
+Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.086, intellect=1.532 ± 0.014, spirit=1.462 ± 0.013, mp5=4.606 ± 0.025, crit=0.527 ± 0.018 per rating point (14 rating = 1%, 7.384 per %), spell_haste=not significant (0.236 ± 0.171)
 
 | Slot | Item | Source | Score (healing_power points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Papal Fez (9431) | Uldaman [dungeon] | 46.8 healing_power points (10.08 DPS) | yes | Whitemane's Chapeau (7720, -1.41 DPS, sim-verified) [dungeon]; Holy Shroud (2721, -1.86 DPS) [world_drop]; Earthen Silk Hood (254015, -3.49 DPS) [crafted] |
-| neck | Glowing Eye of Mordresh (10769) | Razorfen Downs: Mordresh Fire Eye [dungeon] | 28.0 healing_power points (6.03 DPS) | yes | Triune Amulet (7722, -3.11 DPS, sim-verified) [dungeon]; Necklace of Calisea (1714, -3.23 DPS) [dungeon]; Prodigious Shadowshard Pendant (17773, -3.88 DPS) [quest] |
-| shoulder | Inquisitor's Shawl (19507) | Scarlet Monastery: High Inquisitor Fairbanks [dungeon] | 35.0 healing_power points (7.55 DPS) | yes | Earthen Silk Shoulders (254033, -2.42 DPS, sim-verified) [crafted]; Sheepshear Mantle (13115, -2.98 DPS) [world_drop]; Mantle of Doan (7712, -3.26 DPS) [dungeon] |
-| back | Caretaker's Cape (19532) | Silverwing Sentinels [rep] | sim-verified (+1.5 DPS vs the runner-up, not corroborated against the finished set) | yes | Expeditionary's Cape (271922, -1.69 DPS) [rep]; Glowing Thresher Cape (6901, -1.81 DPS) [dungeon]; Repairman's Cape (9605, -1.94 DPS) [quest] |
-| chest | Stormcloth Vest (10020) | Tailoring [crafted] | 64.9 healing_power points (13.97 DPS) | yes | Deathchill Armor (10764, -4.97 DPS, sim-verified) [dungeon]; Dreamweave Vest (10021, -5.56 DPS) [crafted]; Civinad Robes (9623, -6.15 DPS) [quest] |
-| wrist | Spidertank Oilrag (9448) | Gnomeregan: Electrocutioner 6000 [dungeon] | 18.8 healing_power points (4.04 DPS) | yes | Earthen Silk Cuffs (254019, -0.96 DPS) [crafted]; Mindthrust Bracers (1974, -1.04 DPS, sim-verified) [dungeon]; Enchanted Kodo Bracers (13119, -1.32 DPS) [world_drop] |
-| hands | Mender's Leather Gloves (252530) | Leatherworking [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Dreamweave Gloves (10019, -0.43 DPS) [crafted]; Prefect's Gauntlet (250569, -0.43 DPS) [crafted]; Gilded Handwraps (254021, -0.50 DPS, sim-verified) [crafted] |
-| waist | Gilded Cord (254037) | Tailoring [crafted] | 35.2 healing_power points (7.58 DPS) | yes | Mender's Leather Belt (252523, -1.26 DPS, sim-verified) [crafted]; Prefect's Belt (250559, -1.33 DPS) [crafted]; Deathmage Sash (10771, -2.83 DPS) [dungeon] |
-| legs | Warchief Kilt (7760) | Scarlet Monastery [dungeon] | 42.1 healing_power points (9.06 DPS) | yes | Stoneweaver Leggings (9407, -0.93 DPS, sim-verified) [dungeon]; Wisdom's Leather Leggings (252519, -1.73 DPS) [crafted]; Pristine Leggings (253987, -1.88 DPS) [crafted] |
-| feet | Mender's Leather Shoes (252533) (or Mender's Mail Boots (252565)) | Leatherworking [crafted] | 37.0 healing_power points (7.98 DPS) | yes | Mender's Mail Boots (252565, +0.00 DPS) [crafted]; Prefect's Boots (250549, -0.00 DPS) [crafted]; Gilded Slippers (254001, -1.42 DPS) [crafted] |
-| finger1 | Lorekeeper's Ring (19524) | Silverwing Sentinels [rep] | 18.8 healing_power points (4.04 DPS) | yes | Electrocutioner Lagnut (9447, -0.81 DPS) [dungeon]; Runemender's Seal (273031, -0.81 DPS) [world]; Philanthropist's Ring (281635, -0.81 DPS) [quest] |
-| finger2 | Ring of Power Regulation (273030) | Excavation Site: Wetlands: Relic Guardian [dungeon] | 15.8 healing_power points (3.39 DPS) | yes | Electrocutioner Lagnut (9447, -0.16 DPS) [dungeon]; Runemender's Seal (273031, -0.16 DPS) [world]; Philanthropist's Ring (281635, -0.16 DPS) [quest] |
-| trinket1 | Ankh of Life (1713) | World drop [world_drop] | sim-verified (+3.4 DPS vs the runner-up, not corroborated against the finished set) | yes | - |
+| head | Papal Fez (9431) | Uldaman [dungeon] | 61.2 healing_power points (9.81 DPS) | yes | Whitemane's Chapeau (7720, -1.60 DPS, sim-verified) [dungeon]; Holy Shroud (2721, -3.11 DPS) [world_drop]; Miner's Hat of the Deep (9429, -3.29 DPS) [dungeon] |
+| neck | Glowing Eye of Mordresh (10769) | Razorfen Downs: Mordresh Fire Eye [dungeon] | 32.3 healing_power points (5.17 DPS) | yes | Triune Amulet (7722, -2.25 DPS) [dungeon]; Prodigious Shadowshard Pendant (17773, -2.71 DPS) [quest]; Necklace of Calisea (1714, -3.91 DPS, sim-verified) [dungeon] |
+| shoulder | Inquisitor's Shawl (19507) | Scarlet Monastery: High Inquisitor Fairbanks [dungeon] | 41.9 healing_power points (6.72 DPS) | yes | Earthen Silk Shoulders (254033, -1.96 DPS) [crafted]; Mantle of Doan (7712, -2.25 DPS) [dungeon]; Sheepshear Mantle (13115, -3.97 DPS, sim-verified) [world_drop] |
+| back | Caretaker's Cape (19532) | Silverwing Sentinels [rep] | sim-decided (no score - a real sim tournament chose this pick) | yes | Glowing Thresher Cape (6901, -1.06 DPS) [dungeon]; Blackforge Cape (6424, -1.15 DPS) [dungeon]; Expeditionary's Cape (271922, -2.64 DPS, sim-verified) [rep] |
+| chest | Stormcloth Vest (10020) | Tailoring [crafted] | 69.7 healing_power points (11.17 DPS) | yes | Dreamweave Vest (10021, -2.79 DPS) [crafted]; Robe of Power (7054, -4.10 DPS) [crafted]; Deathchill Armor (10764, -7.18 DPS, sim-verified) [dungeon] |
+| wrist | Spidertank Oilrag (9448) | Gnomeregan: Electrocutioner 6000 [dungeon] | 22.8 healing_power points (3.66 DPS) | yes | Enchanted Kodo Bracers (13119, -0.33 DPS) [world_drop]; Earthen Silk Cuffs (254019, -0.88 DPS) [crafted]; Mindthrust Bracers (1974, -1.12 DPS, sim-verified) [dungeon] |
+| hands | Mender's Leather Gloves (252530) | Leatherworking [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Gilded Handwraps (254021, -0.33 DPS) [crafted]; Bonefingers (10765, -0.41 DPS) [dungeon]; Dreamweave Gloves (10019, -0.50 DPS, sim-verified) [crafted] |
+| waist | Gilded Cord (254037) | Tailoring [crafted] | 43.0 healing_power points (6.89 DPS) | yes | Mender's Leather Belt (252523, -1.31 DPS, sim-verified) [crafted]; Prefect's Belt (250559, -1.65 DPS) [crafted]; Deathmage Sash (10771, -2.09 DPS) [dungeon] |
+| legs | Warchief Kilt (7760) | Scarlet Monastery [dungeon] | 53.7 healing_power points (8.60 DPS) | yes | Stoneweaver Leggings (9407, -0.96 DPS, sim-verified) [dungeon]; Wisdom's Leather Leggings (252519, -1.88 DPS) [crafted]; Pristine Leggings (253987, -2.18 DPS) [crafted] |
+| feet | Mender's Leather Shoes (252533) (or Mender's Mail Boots (252565)) | Leatherworking [crafted] | 45.0 healing_power points (7.20 DPS) | yes | Mender's Mail Boots (252565, +0.00 DPS) [crafted]; Prefect's Boots (250549, -0.51 DPS) [crafted]; Gilded Slippers (254001, -1.34 DPS) [crafted] |
+| finger1 | Lorekeeper's Ring (19524) | Silverwing Sentinels [rep] | 22.8 healing_power points (3.66 DPS) | yes | Runemender's Seal (273031, -0.57 DPS) [world]; Welken Ring (5011, -0.79 DPS) [world_drop]; Ring of Power Regulation (273030, -4.43 DPS, sim-verified) [dungeon] |
+| finger2 | Electrocutioner Lagnut (9447) | Gnomeregan: Electrocutioner 6000 [dungeon] | sim-verified (+0.3 DPS vs the runner-up, not corroborated against the finished set) | yes | Runemender's Seal (273031, +0.00 DPS) [world]; Welken Ring (5011, -0.21 DPS) [world_drop]; Ring of Power Regulation (273030, -0.32 DPS, sim-verified) [dungeon] |
+| trinket1 | Ankh of Life (1713) | World drop [world_drop] | sim-verified (+4.3 DPS vs the runner-up, not corroborated against the finished set) | yes | - |
 | trinket2 | Enriched Seal (271905) | Theramore Expeditionary Force [rep] | sim-decided (no score - a real sim tournament chose this pick) | yes | - |
-| main_hand | Hand of Righteousness (7721) | Scarlet Monastery: High Inquisitor Whitemane [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Death Speaker Scepter (2816, -6.82 DPS, sim-verified) [dungeon]; Taskmaster Axe (5194, -10.55 DPS) [dungeon]; Bookmaker's Scepter (4122, -13.97 DPS) [quest] |
-| off_hand | Beacon of Hope (9393) | Uldaman [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Orb of Lorica (11262, -0.61 DPS, sim-verified) [quest]; Battered Viking Shield (9403, -0.83 DPS) [dungeon]; Orb of Souls (249395, -1.57 DPS) [crafted] |
+| main_hand | Hand of Righteousness (7721) | Scarlet Monastery: High Inquisitor Whitemane [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Taskmaster Axe (5194, -7.85 DPS) [dungeon]; Death Speaker Scepter (2816, -8.55 DPS, sim-verified) [dungeon]; Bookmaker's Scepter (4122, -10.66 DPS) [quest] |
+| off_hand | Beacon of Hope (9393) | Uldaman [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Orb of Lorica (11262, -0.08 DPS) [quest]; Orb of Souls (249395, -0.97 DPS) [crafted]; Battered Viking Shield (9403, -1.06 DPS, sim-verified) [dungeon] |
 | ranged | - | - |  |  |  |
 
-**New at 40:** head: Papal Fez; neck: Glowing Eye of Mordresh; shoulder: Inquisitor's Shawl; back: Caretaker's Cape; chest: Stormcloth Vest; hands: Mender's Leather Gloves; waist: Gilded Cord; legs: Warchief Kilt; feet: Mender's Leather Shoes; finger1: Lorekeeper's Ring; finger2: Ring of Power Regulation; trinket1: Ankh of Life; trinket2: Enriched Seal; main_hand: Hand of Righteousness; off_hand: Beacon of Hope
+**New at 40:** head: Papal Fez; neck: Glowing Eye of Mordresh; shoulder: Inquisitor's Shawl; back: Caretaker's Cape; chest: Stormcloth Vest; hands: Mender's Leather Gloves; waist: Gilded Cord; legs: Warchief Kilt; feet: Mender's Leather Shoes; finger1: Lorekeeper's Ring; trinket1: Ankh of Life; trinket2: Enriched Seal; main_hand: Hand of Righteousness; off_hand: Beacon of Hope
 
 No-known-source sample (15 of 691, see the JSON for more): 913 Huge Ogre Sword; 1189 Overseer's Ring; 1216 Frost Bracers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2314 Toughened Leather Armor; 2543 Militia Pants; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3579 Ornate Copper Shoulders; 4081 Blackforge Leggings; 4116 Olmann Sewar; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4797 Fiery Cloak
 
-### Band 50 (human, 50320215012101251-50320000000000000-00000000000000000)
+### Band 50 (human, 50320215012101230-50000000000000000-05030000000000000)
 
-Set DPS (verified): 214.8. Weights run: 14.5s. Verify run: 195.2s. 883 eligible items had no known source.
+Set DPS (verified): 240.6. Weights run: 7.8s. Verify run: 102.5s. 883 eligible items had no known source.
+
+Race sweep: human 240.2 ± 0.3, dwarf 228.0 ± 0.3 (heal_score); the guide race human is best.
 
 1 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
-Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.021, intellect=1.607 ± 0.018, spirit=1.263 ± 0.015, mp5=4.432 ± 0.018, crit=0.667 ± 0.026 per rating point (14 rating = 1%, 9.332 per %), spell_haste=not significant (0.220 ± 0.144)
+Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.207, intellect=1.099 ± 0.023, spirit=1.351 ± 0.017, mp5=4.046 ± 0.026, crit=0.926 ± 0.034 per rating point (14 rating = 1%, 12.965 per %), spell_haste=not significant (1.409 ± 0.437)
 
 | Slot | Item | Source | Score (healing_power points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Papal Fez (9431) | Uldaman [dungeon] | 60.7 healing_power points (8.05 DPS) | yes | Knight-Lieutenant's Imbued Helmet (220810, +0.00 DPS) [vendor]; Gemburst Circlet (10751, -0.22 DPS) [quest]; Soothsayer's Headdress (17740, -0.46 DPS) [dungeon] |
-| neck | Glowing Eye of Mordresh (10769) | Razorfen Downs: Mordresh Fire Eye [dungeon] | 32.9 healing_power points (4.36 DPS) | yes | Gemshard Heart (17707, -1.22 DPS) [dungeon]; Mindburst Medallion (11196, -1.45 DPS) [quest]; Horizon Choker (13085, -1.54 DPS, sim-verified) [world_drop] |
-| shoulder | Ironfeather Shoulders (15067) | Leatherworking [crafted] | 57.2 healing_power points (7.59 DPS) | yes | Knight-Lieutenant's Imbued Pauldrons (220808, +0.00 DPS) [vendor]; Living Shoulders (15061, -1.30 DPS) [crafted]; Lead Surveyor's Mantle (11842, -2.15 DPS, sim-verified) [dungeon] |
-| back | Spritecaster Cape (11623) | Blackrock Depths: High Interrogator Gerstahn  [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Caretaker's Cape (19531, -0.22 DPS) [rep]; Expeditionary's Cape (271921, -0.32 DPS) [rep]; Featherskin Cape (10843, -0.78 DPS) [world] |
-| chest | Ghostweave Vest (14141) | Tailoring [crafted] | 69.7 healing_power points (9.25 DPS) | yes | Knight's Imbued Armor (220813, -0.28 DPS) [vendor]; Feathered Breastplate (8349, -0.58 DPS) [crafted]; Stormcloth Vest (10020, -1.66 DPS, sim-verified) [crafted] |
-| wrist | Mender's Leather Bracers (252543) (or Mender's Mail Bracers (252573)) | Leatherworking [crafted] | 37.8 healing_power points (5.02 DPS) | yes | Mender's Mail Bracers (252573, +0.00 DPS) [crafted]; Nethergeld Cuffs (254061, -0.03 DPS) [crafted]; Prefect's Wristguards (250584, -0.26 DPS) [crafted] |
-| hands | Mender's Leather Gauntlets (252551) | Leatherworking [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Mender's Mail Gauntlets (252587, +0.00 DPS) [crafted]; Gilded Gloves (254095, -0.22 DPS) [crafted]; Prefect's Gloves (250554, -0.55 DPS) [crafted] |
-| waist | Mender's Leather Waistguard (252477) (or Mender's Mail Belt (252591)) | Leatherworking [crafted] | 49.3 healing_power points (6.54 DPS) | yes | Mender's Mail Belt (252591, +0.00 DPS) [crafted]; Prefect's Waistguard (250574, -0.43 DPS) [crafted]; Gilded Waistcord (254081, -0.77 DPS) [crafted] |
-| legs | Knight's Imbued Leggings (220809) | Captain Dirgehammer [vendor] | 67.6 healing_power points (8.97 DPS) | yes | Kilt of the Atal'ai Prophet (10807, -1.32 DPS) [dungeon]; Jinxed Hoodoo Kilt (9474, -1.53 DPS) [dungeon]; Senior Designer's Pantaloons (11841, -2.05 DPS, sim-verified) [dungeon] |
-| feet | Mender's Leather Boots (252472) (or Mender's Mail Sabatons (252579)) | Leatherworking [crafted] | 45.7 healing_power points (6.06 DPS) | yes | Mender's Mail Sabatons (252579, +0.00 DPS) [crafted]; Gilded Sandals (254107, -0.03 DPS) [crafted]; Mender's Leather Shoes (252533, -0.21 DPS) [crafted] |
-| finger1 | Brainlash (6440) | Zul'Farrak [dungeon] | 30.4 healing_power points (4.04 DPS) | yes | Chivalrous Signet (20505, -0.55 DPS) [quest]; Cyclopean Band (11824, -0.68 DPS) [dungeon]; Eye of Adaegus (5266, -0.75 DPS) [world_drop] |
-| finger2 | Lorekeeper's Ring (19523) | Silverwing Sentinels [rep] | 29.7 healing_power points (3.94 DPS) | yes | Cyclopean Band (11824, -0.59 DPS) [dungeon]; Eye of Adaegus (5266, -0.65 DPS) [world_drop]; Chivalrous Signet (20505, -1.84 DPS, sim-verified) [quest] |
-| trinket1 | Ankh of Life (1713) | World drop [world_drop] | sim-verified (+6.9 DPS vs the runner-up, not corroborated against the finished set) | yes | Uther's Strength (11302, +0.00 DPS) [world_drop]; Evonice's Landin' Pilla (18951, -0.34 DPS) [quest]; Thunderbrew's Boot Flask (744, -0.67 DPS) [quest] |
-| trinket2 | Enriched Seal (271903) | Theramore Expeditionary Force [rep] | sim-decided (no score - a real sim tournament chose this pick) | yes | Uther's Strength (11302, -0.55 DPS) [world_drop]; Thunderbrew's Boot Flask (744, -1.60 DPS) [quest]; Evonice's Landin' Pilla (18951, -2.42 DPS, sim-verified) [quest] |
-| main_hand | Hand of Righteousness (7721) | Scarlet Monastery: High Inquisitor Whitemane [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Death Speaker Scepter (2816, -4.79 DPS) [dungeon]; Taskmaster Axe (5194, -6.50 DPS) [dungeon]; Inventor's Focal Sword (17719, -6.89 DPS, sim-verified) [dungeon] |
-| off_hand | Twisting Essence Jar (249456) | Enchanting [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Gizlock's Hypertech Buckler (17718, +0.00 DPS) [dungeon]; Cloud Stone (17737, -0.05 DPS) [dungeon]; Orb of Lorica (11262, -0.14 DPS) [quest] |
+| head | Cassandra's Grace (13102) | World drop [world_drop] | 56.2 healing_power points (18.31 DPS) | yes | Knight-Lieutenant's Imbued Helmet (220810, +0.00 DPS) [vendor]; Papal Fez (9431, -1.08 DPS) [dungeon]; Gemburst Circlet (10751, -1.35 DPS) [quest] |
+| neck | Glowing Eye of Mordresh (10769) | Razorfen Downs: Mordresh Fire Eye [dungeon] | 28.8 healing_power points (9.39 DPS) | yes | Horizon Choker (13085, -1.99 DPS, sim-verified) [world_drop]; Lei of Lilies (1315, -2.78 DPS) [world_drop]; Mindburst Medallion (11196, -3.08 DPS) [quest] |
+| shoulder | Ironfeather Shoulders (15067) | Leatherworking [crafted] | sim-verified (+0.7 DPS vs the runner-up, not corroborated against the finished set) | yes | Knight-Lieutenant's Imbued Pauldrons (220808, +0.00 DPS) [vendor]; Living Shoulders (15061, -0.66 DPS, sim-verified) [crafted]; Mender's Leather Shoulders (252538, -1.45 DPS) [crafted] |
+| back | Caretaker's Cape (19531) | Silverwing Sentinels [rep] | sim-decided (no score - a real sim tournament chose this pick) | yes | Spritecaster Cape (11623, -0.46 DPS) [dungeon]; Featherskin Cape (10843, -1.78 DPS) [world]; Expeditionary's Cape (271921, -2.60 DPS) [rep] |
+| chest | Ghostweave Vest (14141) | Tailoring [crafted] | sim-verified (+1.8 DPS vs the runner-up, not corroborated against the finished set) | yes | Stormcloth Vest (10020, -1.75 DPS, sim-verified) [crafted]; Feathered Breastplate (8349, -1.95 DPS) [crafted]; Knight's Imbued Armor (220813, -2.91 DPS) [vendor] |
+| wrist | Mender's Leather Bracers (252543) (or Mender's Mail Bracers (252573)) | Leatherworking [crafted] | 34.8 healing_power points (11.35 DPS) | yes | Mender's Mail Bracers (252573, +0.00 DPS) [crafted]; Nethergeld Cuffs (254061, -0.11 DPS) [crafted]; Prefect's Wristguards (250584, -0.98 DPS) [crafted] |
+| hands | Mender's Leather Gauntlets (252551) | Leatherworking [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Mender's Mail Gauntlets (252587, +0.00 DPS) [crafted]; Gilded Gloves (254095, -0.73 DPS) [crafted]; Prefect's Gloves (250554, -1.94 DPS) [crafted] |
+| waist | Mender's Leather Waistguard (252477) (or Mender's Mail Belt (252591)) | Leatherworking [crafted] | 43.2 healing_power points (14.09 DPS) | yes | Mender's Mail Belt (252591, +0.00 DPS) [crafted]; Prefect's Waistguard (250574, -0.72 DPS) [crafted]; Earthenweave Cord (254077, -0.76 DPS) [crafted] |
+| legs | Knight's Imbued Leggings (220809) | Captain Dirgehammer [vendor] | 59.5 healing_power points (19.39 DPS) | yes | Senior Designer's Pantaloons (11841, -1.68 DPS, sim-verified) [dungeon]; Jinxed Hoodoo Kilt (9474, -2.22 DPS) [dungeon]; Kilt of the Atal'ai Prophet (10807, -3.06 DPS) [dungeon] |
+| feet | Mender's Leather Shoes (252533) (or Mender's Mail Boots (252565)) | Leatherworking [crafted] | 41.2 healing_power points (13.42 DPS) | yes | Mender's Mail Boots (252565, +0.00 DPS) [crafted]; Gilded Sandals (254107, -0.08 DPS) [crafted]; Earthenweave Boots (254093, -0.10 DPS) [crafted] |
+| finger1 | Lorekeeper's Ring (19523) | Silverwing Sentinels [rep] | 28.2 healing_power points (9.19 DPS) | yes | Chivalrous Signet (20505, -1.79 DPS) [quest]; Cyclopean Band (11824, -1.98 DPS) [dungeon]; Brainlash (6440, -9.87 DPS, sim-verified) [dungeon] |
+| finger2 | Eye of Adaegus (5266) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Brainlash (6440, +0.00 DPS) [dungeon]; Chivalrous Signet (20505, -0.04 DPS) [quest]; Cyclopean Band (11824, -0.23 DPS) [dungeon] |
+| trinket1 | Ankh of Life (1713) | World drop [world_drop] | sim-verified (+10.2 DPS vs the runner-up, not corroborated against the finished set) | yes | Uther's Strength (11302, +0.00 DPS) [world_drop]; Evonice's Landin' Pilla (18951, -0.88 DPS) [quest]; Thunderbrew's Boot Flask (744, -1.76 DPS) [quest] |
+| trinket2 | Enriched Seal (271903) | Theramore Expeditionary Force [rep] | sim-decided (no score - a real sim tournament chose this pick) | yes | Uther's Strength (11302, -0.73 DPS) [world_drop]; Evonice's Landin' Pilla (18951, -2.59 DPS, sim-verified) [quest]; Thunderbrew's Boot Flask (744, -3.07 DPS) [quest] |
+| main_hand | Hand of Righteousness (7721) | Scarlet Monastery: High Inquisitor Whitemane [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Inventor's Focal Sword (17719, -9.91 DPS, sim-verified) [dungeon]; Death Speaker Scepter (2816, -12.00 DPS) [dungeon]; Taskmaster Axe (5194, -15.98 DPS) [dungeon] |
+| off_hand | Twisting Essence Jar (249456) | Enchanting [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Gizlock's Hypertech Buckler (17718, -0.86 DPS) [dungeon]; Battered Viking Shield (9403, -1.08 DPS) [dungeon]; Beacon of Hope (9393, -1.46 DPS, sim-verified) [dungeon] |
 | ranged | - | - |  |  |  |
 
-**New at 50:** shoulder: Ironfeather Shoulders; back: Spritecaster Cape; chest: Ghostweave Vest; wrist: Mender's Leather Bracers; hands: Mender's Leather Gauntlets; waist: Mender's Leather Waistguard; legs: Knight's Imbued Leggings; feet: Mender's Leather Boots; finger1: Brainlash; finger2: Lorekeeper's Ring; trinket2: Enriched Seal; off_hand: Twisting Essence Jar
+**New at 50:** head: Cassandra's Grace; shoulder: Ironfeather Shoulders; back: Caretaker's Cape; chest: Ghostweave Vest; wrist: Mender's Leather Bracers; hands: Mender's Leather Gauntlets; waist: Mender's Leather Waistguard; legs: Knight's Imbued Leggings; finger1: Lorekeeper's Ring; finger2: Eye of Adaegus; trinket2: Enriched Seal; off_hand: Twisting Essence Jar
 
 No-known-source sample (15 of 883, see the JSON for more): 913 Huge Ogre Sword; 1189 Overseer's Ring; 1216 Frost Bracers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2314 Toughened Leather Armor; 2543 Militia Pants; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3579 Ornate Copper Shoulders; 4081 Blackforge Leggings; 4116 Olmann Sewar; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4797 Fiery Cloak
 
 ### Band 60 (human, 50320215012101251-50322000000000000-05030000000000000)
 
-Set DPS (verified): 338.1. Weights run: 15.3s. Verify run: 891.4s. 2115 eligible items had no known source.
+Set DPS (verified): 338.1. Weights run: 8.9s. Verify run: 519.0s. 2115 eligible items had no known source.
+
+Race sweep: human 337.7 ± 0.5, dwarf 320.0 ± 0.5 (heal_score); the guide race human is best.
 
 2 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -162,7 +172,9 @@ No-known-source sample (15 of 2115, see the JSON for more): 913 Huge Ogre Sword;
 
 ### Band 60, raid preset (human, 50320215012101251-50322000000000000-05030000000000000)
 
-Set DPS (verified): 743.8. Weights run: 8.0s. Verify run: 361.2s. 2115 eligible items had no known source.
+Set DPS (verified): 743.8. Weights run: 4.6s. Verify run: 208.8s. 2115 eligible items had no known source.
+
+Race sweep: human 744.3 ± 0.7, dwarf 723.3 ± 0.6 (heal_score); the guide race human is best.
 
 6 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -196,7 +208,9 @@ No-known-source sample (15 of 2115, see the JSON for more): 913 Huge Ogre Sword;
 
 ### Band 20 (undead, 50320001000000000-00000000000000000-00000000000000000)
 
-Set DPS (verified): 50.3. Weights run: 7.0s. Verify run: 52.7s. 268 eligible items had no known source.
+Set DPS (verified): 50.3. Weights run: 4.1s. Verify run: 31.1s. 268 eligible items had no known source.
+
+Race sweep: undead 50.3 ± 0.0 (heal_score); the guide race undead is best.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.042, intellect=1.023 ± 0.008, spirit=0.775 ± 0.005, mp5=3.250 ± 0.009, crit=0.194 ± 0.009 per rating point (14 rating = 1%, 2.712 per %), spell_haste=3.246 ± 0.103
 
@@ -224,101 +238,107 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 
 No-known-source sample (15 of 268, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2273 Guerrilla Armor; 2314 Toughened Leather Armor; 2543 Militia Pants; 2952 Fine Light Hide Jerkin; 3579 Ornate Copper Shoulders; 4642 Star of Xil'yeh; 5255 Quilboar Tomahawk; 5821 Darkstalker Boots; 5822 Hedgeseed Gauntlets; 5968 Rugged Boots; 6189 Durable Chain Shoulders; 6478 Rat Stompers; 7187 VanCleef's Boots
 
-### Band 30 (undead, 50320215002100000-00000000000000000-00000000000000000)
+### Band 30 (undead, 50320015000100000-40000000000000000-00000000000000000)
 
-Set DPS (verified): 127.6. Weights run: 6.5s. Verify run: 40.7s. 491 eligible items had no known source.
+Set DPS (verified): 130.0. Weights run: 3.6s. Verify run: 22.3s. 491 eligible items had no known source.
 
-Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.054, intellect=1.660 ± 0.014, spirit=1.325 ± 0.011, mp5=4.523 ± 0.022, crit=0.565 ± 0.017 per rating point (14 rating = 1%, 7.913 per %), spell_haste=not significant (-0.359 ± 0.096)
+Race sweep: undead 130.0 ± 0.1 (heal_score); the guide race undead is best.
+
+Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.063, intellect=1.891 ± 0.016, spirit=1.419 ± 0.012, mp5=4.787 ± 0.023, crit=0.598 ± 0.018 per rating point (14 rating = 1%, 8.373 per %), spell_haste=-0.471 ± 0.113
 
 | Slot | Item | Source | Score (healing_power points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Holy Shroud (2721) | World drop [world_drop] | 40.9 healing_power points (6.53 DPS) | yes | Nightsky Cowl (4039, -2.30 DPS) [world_drop]; Acolyte's Chain Helm (250501, -2.55 DPS) [crafted]; Enduring Cap (3020, -2.77 DPS, sim-verified) [world_drop] |
-| neck | Kaleidoscope Chain (13084) | World drop [world_drop] | 11.9 healing_power points (1.90 DPS) | yes | Crystal Starfire Medallion (5003, -0.31 DPS, sim-verified) [world_drop]; Archmagister's Faceted Pendant (273049, -0.32 DPS) [world]; Darkspear Warding Pendant (272075, -0.58 DPS) [vendor] |
-| shoulder | Death Speaker Mantle (6685) | Razorfen Kraul: Death Speaker Jargba [dungeon] | 24.3 healing_power points (3.87 DPS) | yes | Bloodmage Mantle (7684, -0.05 DPS) [dungeon]; Magician's Mantle (12998, -0.69 DPS) [world_drop]; Nightsky Mantle (4718, -0.69 DPS) [world_drop] |
-| back | Battle Healer's Cloak (19529) | Warsong Outriders [rep] | sim-decided (no score - a real sim tournament chose this pick) | yes | Darkspear Raider's Cloak (272078, -0.17 DPS) [vendor]; Glowing Thresher Cape (6901, -0.49 DPS, sim-verified) [dungeon]; Windsong Drape (15468, -1.28 DPS) [quest] |
-| chest | Beguiler Robes (7728) | Scarlet Monastery [dungeon] | 39.5 healing_power points (6.31 DPS) | yes | Death Speaker Robes (6682, -0.40 DPS, sim-verified) [dungeon]; Pristine Gown (253961, -0.41 DPS) [crafted]; Wisdom's Leather Tunic (252511, -0.58 DPS) [crafted] |
-| wrist | Spidertank Oilrag (9448) | Gnomeregan: Electrocutioner 6000 [dungeon] | 22.6 healing_power points (3.60 DPS) | yes | Mindthrust Bracers (1974, -0.42 DPS, sim-verified) [dungeon]; Nightsky Wristbands (6407, -1.38 DPS) [world_drop]; Glowing Magical Bracelets (13106, -1.48 DPS) [world_drop] |
-| hands | Gloves of Old (9395) | World drop [world_drop] | 24.2 healing_power points (3.86 DPS) | yes | Truefaith Gloves (7049, -0.64 DPS, sim-verified) [crafted]; Hotshot Pilot's Gloves (9491, -0.69 DPS) [dungeon]; Acolyte's Gloves (250511, -0.94 DPS) [crafted] |
-| waist | Mender's Leather Belt (252523) | Leatherworking [crafted] | 36.9 healing_power points (5.89 DPS) | yes | Prefect's Belt (250559, -0.67 DPS, sim-verified) [crafted]; Skycaller's Leather Belt (252522, -1.86 DPS) [crafted]; Belt of Arugal (6392, -2.60 DPS) [dungeon] |
-| legs | Wisdom's Leather Leggings (252519) | Leatherworking [crafted] | 41.9 healing_power points (6.68 DPS) | yes | Pristine Leggings (253987, -0.42 DPS, sim-verified) [crafted]; Acolyte's Silvered Chain Leggings (250526, -0.58 DPS) [crafted]; Wisdom's Leather Pants (252503, -1.06 DPS) [crafted] |
-| feet | Gilded Slippers (254001) | Tailoring [crafted] | 36.9 healing_power points (5.89 DPS) | yes | Acolyte's Boots (250506, -2.81 DPS) [crafted]; Wisdom's Leather Boots (252444, -2.81 DPS) [crafted]; Acidic Walkers (9454, -3.18 DPS, sim-verified) [dungeon] |
-| finger1 | Ring of Power Regulation (273030) | Excavation Site: Wetlands: Relic Guardian [dungeon] | 19.6 healing_power points (3.12 DPS) | yes | Runemender's Seal (273031, -0.21 DPS) [world]; Darkspear Signet (272071, -0.24 DPS) [vendor]; Solid Gold Band (279845, -0.31 DPS) [quest] |
-| finger2 | Electrocutioner Lagnut (9447) (or Runemender's Seal (273031)) | Gnomeregan: Electrocutioner 6000 [dungeon] | 18.3 healing_power points (2.92 DPS) | yes | Runemender's Seal (273031, +0.00 DPS) [world]; Darkspear Signet (272071, -0.03 DPS) [vendor]; Solid Gold Band (279845, -0.10 DPS) [quest] |
+| head | Holy Shroud (2721) | World drop [world_drop] | 41.5 healing_power points (6.29 DPS) | yes | Nightsky Cowl (4039, -1.78 DPS) [world_drop]; Dokebi Hat (14584, -2.06 DPS) [world_drop]; Enduring Cap (3020, -5.18 DPS, sim-verified) [world_drop] |
+| neck | Kaleidoscope Chain (13084) | World drop [world_drop] | 13.2 healing_power points (2.01 DPS) | yes | Crystal Starfire Medallion (5003, -0.16 DPS, sim-verified) [world_drop]; Archmagister's Faceted Pendant (273049, -0.29 DPS) [world]; Darkspear Warding Pendant (272075, -0.57 DPS) [vendor] |
+| shoulder | Bloodmage Mantle (7684) | Scarlet Monastery: Bloodmage Thalnos [dungeon] | sim-verified (+0.1 DPS vs the runner-up, not corroborated against the finished set) | yes | Death Speaker Mantle (6685, -0.15 DPS, sim-verified) [dungeon]; Nightsky Mantle (4718, -0.57 DPS) [world_drop]; Magician's Mantle (12998, -0.61 DPS) [world_drop] |
+| back | Battle Healer's Cloak (19529) | Warsong Outriders [rep] | sim-decided (no score - a real sim tournament chose this pick) | yes | Glowing Thresher Cape (6901, -0.05 DPS) [dungeon]; Resilient Cape (14400, -1.11 DPS) [world_drop]; Darkspear Raider's Cloak (272078, -1.57 DPS, sim-verified) [vendor] |
+| chest | Death Speaker Robes (6682) | Razorfen Kraul: Death Speaker Jargba [dungeon] | sim-verified (+0.9 DPS vs the runner-up, not corroborated against the finished set) | yes | Pristine Gown (253961, -0.29 DPS) [crafted]; Wisdom's Leather Tunic (252511, -0.44 DPS) [crafted]; Beguiler Robes (7728, -0.90 DPS, sim-verified) [dungeon] |
+| wrist | Spidertank Oilrag (9448) | Gnomeregan: Electrocutioner 6000 [dungeon] | sim-verified (+0.8 DPS vs the runner-up, not corroborated against the finished set) | yes | Mindthrust Bracers (1974, -0.79 DPS, sim-verified) [dungeon]; Nightsky Wristbands (6407, -1.18 DPS) [world_drop]; Glowing Magical Bracelets (13106, -1.25 DPS) [world_drop] |
+| hands | Gloves of Old (9395) | World drop [world_drop] | 26.5 healing_power points (4.01 DPS) | yes | Hotshot Pilot's Gloves (9491, -0.37 DPS, sim-verified) [dungeon]; Truefaith Gloves (7049, -0.88 DPS) [crafted]; Acolyte's Gloves (250511, -1.06 DPS) [crafted] |
+| waist | Mender's Leather Belt (252523) | Leatherworking [crafted] | 38.9 healing_power points (5.88 DPS) | yes | Prefect's Belt (250559, -0.55 DPS) [crafted]; Skycaller's Leather Belt (252522, -1.79 DPS) [crafted]; Silver-lined Belt (13011, -2.45 DPS) [world_drop] |
+| legs | Wisdom's Leather Leggings (252519) | Leatherworking [crafted] | 44.2 healing_power points (6.69 DPS) | yes | Pristine Leggings (253987, -0.28 DPS) [crafted]; Acolyte's Silvered Chain Leggings (250526, -0.61 DPS) [crafted]; Wisdom's Leather Pants (252503, -1.08 DPS) [crafted] |
+| feet | Gilded Slippers (254001) | Tailoring [crafted] | 38.9 healing_power points (5.89 DPS) | yes | Acolyte's Boots (250506, -2.80 DPS) [crafted]; Wisdom's Leather Boots (252444, -2.80 DPS) [crafted]; Acidic Walkers (9454, -3.21 DPS, sim-verified) [dungeon] |
+| finger1 | Ring of Power Regulation (273030) | Excavation Site: Wetlands: Relic Guardian [dungeon] | 20.4 healing_power points (3.08 DPS) | yes | Runemender's Seal (273031, -0.22 DPS) [world]; Solid Gold Band (279845, -0.34 DPS) [quest]; Darkspear Signet (272071, -3.28 DPS, sim-verified) [vendor] |
+| finger2 | Electrocutioner Lagnut (9447) | Gnomeregan: Electrocutioner 6000 [dungeon] | sim-verified (+0.6 DPS vs the runner-up, not corroborated against the finished set) | yes | Runemender's Seal (273031, +0.00 DPS) [world]; Solid Gold Band (279845, -0.13 DPS) [quest]; Darkspear Signet (272071, -0.59 DPS, sim-verified) [vendor] |
 | trinket1 | - | - |  |  |  |
 | trinket2 | - | - |  |  |  |
-| main_hand | Death Speaker Scepter (2816) | Razorfen Kraul: Death Speaker Jargba [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Crested Scepter (3414, -5.22 DPS) [dungeon]; The Stitcher (279874, -6.06 DPS) [quest]; Taskmaster Axe (5194, -7.77 DPS, sim-verified) [dungeon] |
-| off_hand | Orb of Souls (249395) | Enchanting [crafted] | 20.9 healing_power points (3.34 DPS) | yes | Orb of Mystic Insight (249394, -0.75 DPS, sim-verified) [crafted]; Heart of Agamaggan (6694, -0.95 DPS) [dungeon]; Orb of Mistmantle (13031, -1.06 DPS) [world_drop] |
+| main_hand | Death Speaker Scepter (2816) | Razorfen Kraul: Death Speaker Jargba [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Crested Scepter (3414, -4.88 DPS) [dungeon]; The Stitcher (279874, -5.75 DPS) [quest]; Taskmaster Axe (5194, -8.02 DPS, sim-verified) [dungeon] |
+| off_hand | Orb of Souls (249395) | Enchanting [crafted] | 21.5 healing_power points (3.26 DPS) | yes | Orb of Mystic Insight (249394, -0.82 DPS, sim-verified) [crafted]; Witch's Finger (16887, -0.97 DPS) [quest]; Heart of Agamaggan (6694, -0.99 DPS) [dungeon] |
 | ranged | - | - |  |  |  |
 
-**New at 30:** head: Holy Shroud; neck: Kaleidoscope Chain; shoulder: Death Speaker Mantle; back: Battle Healer's Cloak; chest: Beguiler Robes; wrist: Spidertank Oilrag; hands: Gloves of Old; waist: Mender's Leather Belt; legs: Wisdom's Leather Leggings; feet: Gilded Slippers; finger1: Ring of Power Regulation; finger2: Electrocutioner Lagnut; main_hand: Death Speaker Scepter; off_hand: Orb of Souls
+**New at 30:** head: Holy Shroud; neck: Kaleidoscope Chain; shoulder: Bloodmage Mantle; back: Battle Healer's Cloak; chest: Death Speaker Robes; wrist: Spidertank Oilrag; hands: Gloves of Old; waist: Mender's Leather Belt; legs: Wisdom's Leather Leggings; feet: Gilded Slippers; finger1: Ring of Power Regulation; finger2: Electrocutioner Lagnut; main_hand: Death Speaker Scepter; off_hand: Orb of Souls
 
 No-known-source sample (15 of 491, see the JSON for more): 913 Huge Ogre Sword; 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2314 Toughened Leather Armor; 2543 Militia Pants; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3579 Ornate Copper Shoulders; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 5000 Coral Band; 5004 Mark of the Kirin Tor
 
-### Band 40 (undead, 50320215012101251-00000000000000000-00000000000000000)
+### Band 40 (undead, 50320115000100000-50000000000000000-05030000000000000)
 
-Set DPS (verified): 195.0. Weights run: 8.7s. Verify run: 42.3s. 675 eligible items had no known source.
+Set DPS (verified): 213.4. Weights run: 4.0s. Verify run: 24.8s. 675 eligible items had no known source.
 
-Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.275, intellect=1.003 ± 0.026, spirit=0.860 ± 0.024, mp5=3.254 ± 0.036, crit=0.884 ± 0.033 per rating point (14 rating = 1%, 12.379 per %), spell_haste=2.651 ± 0.470
+Race sweep: undead 213.3 ± 0.1 (heal_score); the guide race undead is best.
+
+Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.086, intellect=1.532 ± 0.014, spirit=1.462 ± 0.013, mp5=4.606 ± 0.025, crit=0.527 ± 0.018 per rating point (14 rating = 1%, 7.384 per %), spell_haste=not significant (0.236 ± 0.171)
 
 | Slot | Item | Source | Score (healing_power points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Papal Fez (9431) | Uldaman [dungeon] | 46.8 healing_power points (10.08 DPS) | yes | Whitemane's Chapeau (7720, -1.34 DPS, sim-verified) [dungeon]; Holy Shroud (2721, -1.86 DPS) [world_drop]; Earthen Silk Hood (254015, -3.49 DPS) [crafted] |
-| neck | Glowing Eye of Mordresh (10769) | Razorfen Downs: Mordresh Fire Eye [dungeon] | 28.0 healing_power points (6.03 DPS) | yes | Triune Amulet (7722, -3.06 DPS, sim-verified) [dungeon]; Necklace of Calisea (1714, -3.23 DPS) [dungeon]; Prodigious Shadowshard Pendant (17773, -3.88 DPS) [quest] |
-| shoulder | Inquisitor's Shawl (19507) | Scarlet Monastery: High Inquisitor Fairbanks [dungeon] | 35.0 healing_power points (7.55 DPS) | yes | Earthen Silk Shoulders (254033, -2.39 DPS, sim-verified) [crafted]; Sheepshear Mantle (13115, -2.98 DPS) [world_drop]; Mantle of Doan (7712, -3.26 DPS) [dungeon] |
-| back | Battle Healer's Cloak (19528) | Warsong Outriders [rep] | sim-verified (+1.2 DPS vs the runner-up, not corroborated against the finished set) | yes | Darkspear Raider's Cloak (272077, -1.69 DPS) [vendor]; Glowing Thresher Cape (6901, -1.81 DPS) [dungeon]; Icy Cloak (4327, -2.18 DPS) [crafted] |
-| chest | Stormcloth Vest (10020) | Tailoring [crafted] | 64.9 healing_power points (13.97 DPS) | yes | Deathchill Armor (10764, -4.85 DPS, sim-verified) [dungeon]; Dreamweave Vest (10021, -5.56 DPS) [crafted]; Civinad Robes (9623, -6.15 DPS) [quest] |
-| wrist | Spidertank Oilrag (9448) | Gnomeregan: Electrocutioner 6000 [dungeon] | 18.8 healing_power points (4.04 DPS) | yes | Mindthrust Bracers (1974, -0.63 DPS, sim-verified) [dungeon]; Earthen Silk Cuffs (254019, -0.96 DPS) [crafted]; Enchanted Kodo Bracers (13119, -1.32 DPS) [world_drop] |
-| hands | Mender's Leather Gloves (252530) | Leatherworking [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Gilded Handwraps (254021, -0.30 DPS, sim-verified) [crafted]; Dreamweave Gloves (10019, -0.43 DPS) [crafted]; Prefect's Gauntlet (250569, -0.43 DPS) [crafted] |
-| waist | Gilded Cord (254037) | Tailoring [crafted] | 35.2 healing_power points (7.58 DPS) | yes | Mender's Leather Belt (252523, -1.12 DPS, sim-verified) [crafted]; Prefect's Belt (250559, -1.33 DPS) [crafted]; Deathmage Sash (10771, -2.83 DPS) [dungeon] |
-| legs | Warchief Kilt (7760) | Scarlet Monastery [dungeon] | 42.1 healing_power points (9.06 DPS) | yes | Stoneweaver Leggings (9407, -0.52 DPS, sim-verified) [dungeon]; Wisdom's Leather Leggings (252519, -1.73 DPS) [crafted]; Pristine Leggings (253987, -1.88 DPS) [crafted] |
-| feet | Mender's Leather Shoes (252533) (or Mender's Mail Boots (252565)) | Leatherworking [crafted] | 37.0 healing_power points (7.98 DPS) | yes | Mender's Mail Boots (252565, +0.00 DPS) [crafted]; Prefect's Boots (250549, -0.00 DPS) [crafted]; Gilded Slippers (254001, -1.42 DPS) [crafted] |
-| finger1 | Darkspear Signet (272070) | Creeg Bothunk [vendor] | 19.5 healing_power points (4.20 DPS) | yes | Ring of Power Regulation (273030, -0.81 DPS) [dungeon]; Solid Gold Band (279845, -0.91 DPS) [quest]; Electrocutioner Lagnut (9447, -0.97 DPS) [dungeon] |
-| finger2 | Advisor's Ring (19520) | Warsong Outriders [rep] | 18.8 healing_power points (4.04 DPS) | yes | Ring of Power Regulation (273030, -0.56 DPS, sim-verified) [dungeon]; Solid Gold Band (279845, -0.75 DPS) [quest]; Electrocutioner Lagnut (9447, -0.81 DPS) [dungeon] |
-| trinket1 | Ankh of Life (1713) | World drop [world_drop] | sim-verified (+3.2 DPS vs the runner-up, not corroborated against the finished set) | yes | - |
+| head | Papal Fez (9431) | Uldaman [dungeon] | 61.2 healing_power points (9.81 DPS) | yes | Whitemane's Chapeau (7720, -1.89 DPS, sim-verified) [dungeon]; Holy Shroud (2721, -3.11 DPS) [world_drop]; Miner's Hat of the Deep (9429, -3.29 DPS) [dungeon] |
+| neck | Glowing Eye of Mordresh (10769) | Razorfen Downs: Mordresh Fire Eye [dungeon] | 32.3 healing_power points (5.17 DPS) | yes | Triune Amulet (7722, -2.25 DPS) [dungeon]; Prodigious Shadowshard Pendant (17773, -2.71 DPS) [quest]; Necklace of Calisea (1714, -3.82 DPS, sim-verified) [dungeon] |
+| shoulder | Inquisitor's Shawl (19507) | Scarlet Monastery: High Inquisitor Fairbanks [dungeon] | 41.9 healing_power points (6.72 DPS) | yes | Earthen Silk Shoulders (254033, -1.96 DPS) [crafted]; Mantle of Doan (7712, -2.25 DPS) [dungeon]; Sheepshear Mantle (13115, -3.65 DPS, sim-verified) [world_drop] |
+| back | Battle Healer's Cloak (19528) | Warsong Outriders [rep] | sim-verified (213.3 DPS) | yes | Cloak of Blight (6832, -1.01 DPS) [quest]; Glowing Thresher Cape (6901, -1.06 DPS) [dungeon]; Darkspear Raider's Cloak (272077, -2.20 DPS, sim-verified) [vendor] |
+| chest | Stormcloth Vest (10020) | Tailoring [crafted] | 69.7 healing_power points (11.17 DPS) | yes | Dreamweave Vest (10021, -2.79 DPS) [crafted]; Robe of Power (7054, -4.10 DPS) [crafted]; Deathchill Armor (10764, -6.66 DPS, sim-verified) [dungeon] |
+| wrist | Spidertank Oilrag (9448) | Gnomeregan: Electrocutioner 6000 [dungeon] | 22.8 healing_power points (3.66 DPS) | yes | Enchanted Kodo Bracers (13119, -0.33 DPS) [world_drop]; Mindthrust Bracers (1974, -0.86 DPS, sim-verified) [dungeon]; Earthen Silk Cuffs (254019, -0.88 DPS) [crafted] |
+| hands | Mender's Leather Gloves (252530) | Leatherworking [crafted] | sim-verified (213.3 DPS) | yes | Gilded Handwraps (254021, -0.33 DPS) [crafted]; Bonefingers (10765, -0.41 DPS) [dungeon]; Dreamweave Gloves (10019, -0.56 DPS, sim-verified) [crafted] |
+| waist | Gilded Cord (254037) | Tailoring [crafted] | 43.0 healing_power points (6.89 DPS) | yes | Mender's Leather Belt (252523, -1.27 DPS, sim-verified) [crafted]; Prefect's Belt (250559, -1.65 DPS) [crafted]; Deathmage Sash (10771, -2.09 DPS) [dungeon] |
+| legs | Warchief Kilt (7760) | Scarlet Monastery [dungeon] | 53.7 healing_power points (8.60 DPS) | yes | Stoneweaver Leggings (9407, -0.82 DPS, sim-verified) [dungeon]; Wisdom's Leather Leggings (252519, -1.88 DPS) [crafted]; Pristine Leggings (253987, -2.18 DPS) [crafted] |
+| feet | Mender's Leather Shoes (252533) (or Mender's Mail Boots (252565)) | Leatherworking [crafted] | 45.0 healing_power points (7.20 DPS) | yes | Mender's Mail Boots (252565, +0.00 DPS) [crafted]; Prefect's Boots (250549, -0.51 DPS) [crafted]; Gilded Slippers (254001, -1.34 DPS) [crafted] |
+| finger1 | Darkspear Signet (272070) | Creeg Bothunk [vendor] | 27.6 healing_power points (4.43 DPS) | yes | Ring of Power Regulation (273030, -1.25 DPS) [dungeon]; Electrocutioner Lagnut (9447, -1.35 DPS) [dungeon]; Runemender's Seal (273031, -1.35 DPS) [world] |
+| finger2 | Advisor's Ring (19520) | Warsong Outriders [rep] | 22.8 healing_power points (3.66 DPS) | yes | Electrocutioner Lagnut (9447, -0.57 DPS) [dungeon]; Runemender's Seal (273031, -0.57 DPS) [world]; Ring of Power Regulation (273030, -0.65 DPS, sim-verified) [dungeon] |
+| trinket1 | Ankh of Life (1713) | World drop [world_drop] | sim-verified (213.3 DPS) | yes | - |
 | trinket2 | Darkspear Voodoo Seal (272059) | Creeg Bothunk [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | - |
-| main_hand | Hand of Righteousness (7721) | Scarlet Monastery: High Inquisitor Whitemane [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Death Speaker Scepter (2816, -6.36 DPS, sim-verified) [dungeon]; Taskmaster Axe (5194, -10.55 DPS) [dungeon]; Skullbreaker (17039, -14.18 DPS) [quest] |
-| off_hand | Beacon of Hope (9393) | Uldaman [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Forcestone Buckler (17508, -0.12 DPS) [quest]; Battered Viking Shield (9403, -0.83 DPS) [dungeon]; Omega Orb (7749, -1.44 DPS) [quest] |
+| main_hand | Hand of Righteousness (7721) | Scarlet Monastery: High Inquisitor Whitemane [dungeon] | sim-verified (213.3 DPS) | yes | Taskmaster Axe (5194, -7.85 DPS) [dungeon]; Death Speaker Scepter (2816, -8.26 DPS, sim-verified) [dungeon]; Skullbreaker (17039, -10.90 DPS) [quest] |
+| off_hand | Forcestone Buckler (17508) | Compendium of the Fallen [quest] | sim-verified (213.3 DPS) | yes | Beacon of Hope (9393, -0.30 DPS) [dungeon]; Battered Viking Shield (9403, -0.33 DPS) [dungeon]; Omega Orb (7749, -1.10 DPS) [quest] |
 | ranged | - | - |  |  |  |
 
-**New at 40:** head: Papal Fez; neck: Glowing Eye of Mordresh; shoulder: Inquisitor's Shawl; back: Battle Healer's Cloak; chest: Stormcloth Vest; hands: Mender's Leather Gloves; waist: Gilded Cord; legs: Warchief Kilt; feet: Mender's Leather Shoes; finger1: Darkspear Signet; finger2: Advisor's Ring; trinket1: Ankh of Life; trinket2: Darkspear Voodoo Seal; main_hand: Hand of Righteousness; off_hand: Beacon of Hope
+**New at 40:** head: Papal Fez; neck: Glowing Eye of Mordresh; shoulder: Inquisitor's Shawl; back: Battle Healer's Cloak; chest: Stormcloth Vest; hands: Mender's Leather Gloves; waist: Gilded Cord; legs: Warchief Kilt; feet: Mender's Leather Shoes; finger1: Darkspear Signet; finger2: Advisor's Ring; trinket1: Ankh of Life; trinket2: Darkspear Voodoo Seal; main_hand: Hand of Righteousness; off_hand: Forcestone Buckler
 
 No-known-source sample (15 of 675, see the JSON for more): 913 Huge Ogre Sword; 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2314 Toughened Leather Armor; 2543 Militia Pants; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3579 Ornate Copper Shoulders; 4081 Blackforge Leggings; 4116 Olmann Sewar; 4196 Feathered Mantle; 4642 Star of Xil'yeh
 
-### Band 50 (undead, 50320215012101251-50320000000000000-00000000000000000)
+### Band 50 (undead, 50320215012101230-50000000000000000-05030000000000000)
 
-Set DPS (verified): 204.9. Weights run: 14.5s. Verify run: 189.6s. 883 eligible items had no known source.
+Set DPS (verified): 231.3. Weights run: 7.8s. Verify run: 99.7s. 883 eligible items had no known source.
 
-1 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
+Race sweep: undead 231.3 ± 0.3 (heal_score); the guide race undead is best.
 
-Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.197, intellect=1.295 ± 0.027, spirit=1.314 ± 0.018, mp5=4.642 ± 0.029, crit=1.228 ± 0.039 per rating point (14 rating = 1%, 17.193 per %), spell_haste=2.019 ± 0.435
+Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.207, intellect=1.099 ± 0.023, spirit=1.351 ± 0.017, mp5=4.046 ± 0.026, crit=0.926 ± 0.034 per rating point (14 rating = 1%, 12.965 per %), spell_haste=not significant (1.409 ± 0.437)
 
 | Slot | Item | Source | Score (healing_power points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Papal Fez (9431) | Uldaman [dungeon] | 55.8 healing_power points (14.61 DPS) | yes | Eye of Theradras (17715, -0.24 DPS) [dungeon]; Gemburst Circlet (10751, -0.31 DPS) [quest]; Cassandra's Grace (13102, -0.96 DPS, sim-verified) [world_drop] |
-| neck | Glowing Eye of Mordresh (10769) | Razorfen Downs: Mordresh Fire Eye [dungeon] | 30.4 healing_power points (7.94 DPS) | yes | Horizon Choker (13085, -1.89 DPS, sim-verified) [world_drop]; Gemshard Heart (17707, -2.49 DPS) [dungeon]; Mindburst Medallion (11196, -2.62 DPS) [quest] |
-| shoulder | Ironfeather Shoulders (15067) | Leatherworking [crafted] | 51.4 healing_power points (13.45 DPS) | yes | Living Shoulders (15061, -1.71 DPS, sim-verified) [crafted]; Mender's Leather Shoulders (252538, -1.72 DPS) [crafted]; Mender's Mail Shoulders (252569, -1.72 DPS) [crafted] |
-| back | Battle Healer's Cloak (19527) | Warsong Outriders [rep] | sim-decided (no score - a real sim tournament chose this pick) | yes | Spritecaster Cape (11623, -0.43 DPS, sim-verified) [dungeon]; Featherskin Cape (10843, -1.31 DPS) [world]; Darkspear Raider's Cloak (272076, -1.36 DPS) [vendor] |
-| chest | Ghostweave Vest (14141) | Tailoring [crafted] | 72.4 healing_power points (18.95 DPS) | yes | Stormcloth Vest (10020, -1.94 DPS, sim-verified) [crafted]; Feathered Breastplate (8349, -2.34 DPS) [crafted]; Embrace of the Wind Serpent (12462, -2.87 DPS) [world] |
-| wrist | Mender's Leather Bracers (252543) (or Mender's Mail Bracers (252573)) | Leatherworking [crafted] | 36.0 healing_power points (9.40 DPS) | yes | Mender's Mail Bracers (252573, +0.00 DPS) [crafted]; Nethergeld Cuffs (254061, -0.08 DPS) [crafted]; Prefect's Wristguards (250584, -0.68 DPS) [crafted] |
-| hands | Mender's Leather Gauntlets (252551) | Leatherworking [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Mender's Mail Gauntlets (252587, +0.00 DPS) [crafted]; Gilded Gloves (254095, -0.53 DPS) [crafted]; Prefect's Gloves (250554, -1.37 DPS) [crafted] |
-| waist | Mender's Leather Waistguard (252477) (or Mender's Mail Belt (252591)) | Leatherworking [crafted] | 45.5 healing_power points (11.91 DPS) | yes | Mender's Mail Belt (252591, +0.00 DPS) [crafted]; Prefect's Waistguard (250574, -0.68 DPS) [crafted]; Gilded Waistcord (254081, -1.28 DPS) [crafted] |
-| legs | Senior Designer's Pantaloons (11841) | Blackrock Depths: General Angerforge [dungeon] | 57.7 healing_power points (15.10 DPS) | yes | Kilt of the Atal'ai Prophet (10807, -1.24 DPS) [dungeon]; Jinxed Hoodoo Kilt (9474, -1.38 DPS, sim-verified) [dungeon]; Warchief Kilt (7760, -1.98 DPS) [dungeon] |
-| feet | Gilded Sandals (254107) | Tailoring [crafted] | 42.7 healing_power points (11.16 DPS) | yes | Mender's Mail Boots (252565, -0.10 DPS) [crafted]; Mender's Leather Boots (252472, -0.11 DPS) [crafted]; Mender's Leather Shoes (252533, -0.41 DPS, sim-verified) [crafted] |
-| finger1 | Darkspear Signet (272069) | Creeg Bothunk [vendor] | 32.5 healing_power points (8.50 DPS) | yes | Brainlash (6440, -1.70 DPS) [dungeon]; Eye of Adaegus (5266, -2.34 DPS) [world_drop]; Cyclopean Band (11824, -2.40 DPS) [dungeon] |
-| finger2 | Advisor's Ring (19519) | Warsong Outriders [rep] | 30.6 healing_power points (8.00 DPS) | yes | Brainlash (6440, -1.64 DPS, sim-verified) [dungeon]; Eye of Adaegus (5266, -1.84 DPS) [world_drop]; Cyclopean Band (11824, -1.90 DPS) [dungeon] |
-| trinket1 | Ankh of Life (1713) | World drop [world_drop] | sim-verified (+6.6 DPS vs the runner-up, not corroborated against the finished set) | yes | Uther's Strength (11302, +0.00 DPS) [world_drop]; Evonice's Landin' Pilla (18951, -0.69 DPS) [quest]; Alchemist's Stone (13503, -2.75 DPS) [crafted] |
-| trinket2 | Darkspear Voodoo Seal (272061) | Creeg Bothunk [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Uther's Strength (11302, -1.89 DPS, sim-verified) [world_drop]; Evonice's Landin' Pilla (18951, -2.63 DPS) [quest]; Alchemist's Stone (13503, -4.70 DPS) [crafted] |
-| main_hand | Hand of Righteousness (7721) | Scarlet Monastery: High Inquisitor Whitemane [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Inventor's Focal Sword (17719, -6.60 DPS, sim-verified) [dungeon]; Death Speaker Scepter (2816, -9.55 DPS) [dungeon]; Taskmaster Axe (5194, -12.82 DPS) [dungeon] |
-| off_hand | Twisting Essence Jar (249456) | Enchanting [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Gizlock's Hypertech Buckler (17718, +0.00 DPS) [dungeon]; Forcestone Buckler (17508, -0.26 DPS) [quest]; Beacon of Hope (9393, -0.59 DPS) [dungeon] |
+| head | Cassandra's Grace (13102) | World drop [world_drop] | 56.2 healing_power points (18.31 DPS) | yes | Papal Fez (9431, -1.08 DPS) [dungeon]; Gemburst Circlet (10751, -1.35 DPS) [quest]; Soothsayer's Headdress (17740, -1.91 DPS) [dungeon] |
+| neck | Glowing Eye of Mordresh (10769) | Razorfen Downs: Mordresh Fire Eye [dungeon] | 28.8 healing_power points (9.39 DPS) | yes | Horizon Choker (13085, -2.16 DPS, sim-verified) [world_drop]; Lei of Lilies (1315, -2.78 DPS) [world_drop]; Mindburst Medallion (11196, -3.08 DPS) [quest] |
+| shoulder | Ironfeather Shoulders (15067) | Leatherworking [crafted] | sim-verified (+0.9 DPS vs the runner-up, not corroborated against the finished set) | yes | Living Shoulders (15061, -0.91 DPS, sim-verified) [crafted]; Mender's Leather Shoulders (252538, -1.45 DPS) [crafted]; Mender's Mail Shoulders (252569, -1.45 DPS) [crafted] |
+| back | Battle Healer's Cloak (19527) | Warsong Outriders [rep] | sim-decided (no score - a real sim tournament chose this pick) | yes | Spritecaster Cape (11623, -0.46 DPS) [dungeon]; Featherskin Cape (10843, -1.78 DPS) [world]; Darkspear Raider's Cloak (272076, -2.60 DPS) [vendor] |
+| chest | Ghostweave Vest (14141) | Tailoring [crafted] | sim-verified (+2.1 DPS vs the runner-up, not corroborated against the finished set) | yes | Feathered Breastplate (8349, -1.95 DPS) [crafted]; Stormcloth Vest (10020, -2.06 DPS, sim-verified) [crafted]; Embrace of the Wind Serpent (12462, -2.99 DPS) [world] |
+| wrist | Mender's Leather Bracers (252543) (or Mender's Mail Bracers (252573)) | Leatherworking [crafted] | 34.8 healing_power points (11.35 DPS) | yes | Mender's Mail Bracers (252573, +0.00 DPS) [crafted]; Nethergeld Cuffs (254061, -0.11 DPS) [crafted]; Prefect's Wristguards (250584, -0.98 DPS) [crafted] |
+| hands | Mender's Leather Gauntlets (252551) | Leatherworking [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Mender's Mail Gauntlets (252587, +0.00 DPS) [crafted]; Gilded Gloves (254095, -0.73 DPS) [crafted]; Prefect's Gloves (250554, -1.94 DPS) [crafted] |
+| waist | Mender's Leather Waistguard (252477) (or Mender's Mail Belt (252591)) | Leatherworking [crafted] | 43.2 healing_power points (14.09 DPS) | yes | Mender's Mail Belt (252591, +0.00 DPS) [crafted]; Prefect's Waistguard (250574, -0.72 DPS) [crafted]; Earthenweave Cord (254077, -0.76 DPS) [crafted] |
+| legs | Senior Designer's Pantaloons (11841) | Blackrock Depths: General Angerforge [dungeon] | 57.0 healing_power points (18.59 DPS) | yes | Jinxed Hoodoo Kilt (9474, -1.14 DPS, sim-verified) [dungeon]; Kilt of the Atal'ai Prophet (10807, -2.25 DPS) [dungeon]; Warchief Kilt (7760, -2.45 DPS) [dungeon] |
+| feet | Mender's Leather Shoes (252533) (or Mender's Mail Boots (252565)) | Leatherworking [crafted] | 41.2 healing_power points (13.42 DPS) | yes | Mender's Mail Boots (252565, +0.00 DPS) [crafted]; Gilded Sandals (254107, -0.08 DPS) [crafted]; Earthenweave Boots (254093, -0.10 DPS) [crafted] |
+| finger1 | Darkspear Signet (272069) | Creeg Bothunk [vendor] | 28.3 healing_power points (9.24 DPS) | yes | Brainlash (6440, -1.66 DPS) [dungeon]; Eye of Adaegus (5266, -1.80 DPS) [world_drop]; Cyclopean Band (11824, -2.03 DPS) [dungeon] |
+| finger2 | Advisor's Ring (19519) | Warsong Outriders [rep] | 28.2 healing_power points (9.19 DPS) | yes | Brainlash (6440, -1.28 DPS, sim-verified) [dungeon]; Eye of Adaegus (5266, -1.75 DPS) [world_drop]; Cyclopean Band (11824, -1.98 DPS) [dungeon] |
+| trinket1 | Ankh of Life (1713) | World drop [world_drop] | sim-verified (+8.7 DPS vs the runner-up, not corroborated against the finished set) | yes | Uther's Strength (11302, +0.00 DPS) [world_drop]; Evonice's Landin' Pilla (18951, -0.88 DPS) [quest]; Alchemist's Stone (13503, -3.52 DPS) [crafted] |
+| trinket2 | Darkspear Voodoo Seal (272061) | Creeg Bothunk [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Evonice's Landin' Pilla (18951, -2.19 DPS) [quest]; Uther's Strength (11302, -2.94 DPS, sim-verified) [world_drop]; Alchemist's Stone (13503, -4.83 DPS) [crafted] |
+| main_hand | Hand of Righteousness (7721) | Scarlet Monastery: High Inquisitor Whitemane [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Inventor's Focal Sword (17719, -8.79 DPS, sim-verified) [dungeon]; Death Speaker Scepter (2816, -12.00 DPS) [dungeon]; Taskmaster Axe (5194, -15.98 DPS) [dungeon] |
+| off_hand | Twisting Essence Jar (249456) | Enchanting [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Forcestone Buckler (17508, -0.33 DPS) [quest]; Beacon of Hope (9393, -0.78 DPS) [dungeon]; Gizlock's Hypertech Buckler (17718, -0.86 DPS) [dungeon] |
 | ranged | - | - |  |  |  |
 
-**New at 50:** shoulder: Ironfeather Shoulders; back: Battle Healer's Cloak; chest: Ghostweave Vest; wrist: Mender's Leather Bracers; hands: Mender's Leather Gauntlets; waist: Mender's Leather Waistguard; legs: Senior Designer's Pantaloons; feet: Gilded Sandals; finger1: Darkspear Signet; finger2: Advisor's Ring; trinket2: Darkspear Voodoo Seal; off_hand: Twisting Essence Jar
+**New at 50:** head: Cassandra's Grace; shoulder: Ironfeather Shoulders; back: Battle Healer's Cloak; chest: Ghostweave Vest; wrist: Mender's Leather Bracers; hands: Mender's Leather Gauntlets; waist: Mender's Leather Waistguard; legs: Senior Designer's Pantaloons; finger1: Darkspear Signet; finger2: Advisor's Ring; trinket2: Darkspear Voodoo Seal; off_hand: Twisting Essence Jar
 
 No-known-source sample (15 of 883, see the JSON for more): 913 Huge Ogre Sword; 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2314 Toughened Leather Armor; 2543 Militia Pants; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3579 Ornate Copper Shoulders; 4081 Blackforge Leggings; 4116 Olmann Sewar; 4196 Feathered Mantle; 4642 Star of Xil'yeh
 
 ### Band 60 (undead, 50320215012101251-50322000000000000-05030000000000000)
 
-Set DPS (verified): 321.8. Weights run: 15.3s. Verify run: 883.7s. 2141 eligible items had no known source.
+Set DPS (verified): 321.8. Weights run: 8.9s. Verify run: 513.1s. 2141 eligible items had no known source.
+
+Race sweep: undead 321.6 ± 0.5 (heal_score); the guide race undead is best.
 
 2 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -350,7 +370,9 @@ No-known-source sample (15 of 2141, see the JSON for more): 913 Huge Ogre Sword;
 
 ### Band 60, raid preset (undead, 50320215012101251-50322000000000000-05030000000000000)
 
-Set DPS (verified): 734.2. Weights run: 8.0s. Verify run: 378.2s. 2141 eligible items had no known source.
+Set DPS (verified): 734.2. Weights run: 4.6s. Verify run: 217.9s. 2141 eligible items had no known source.
+
+Race sweep: undead 734.1 ± 0.7 (heal_score); the guide race undead is best.
 
 3 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
