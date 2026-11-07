@@ -761,6 +761,46 @@ data class Estimate(
     @SerialName("max") val max: Double? = null,
 )
 
+@Serializable
+data class FeedPage(
+    @SerialName("rows") val rows: List<FeedRow> = emptyList(),
+    /** Pass back as ?cursor= for the next page; null on the last */
+    @SerialName("next_cursor") val nextCursor: String? = null,
+)
+
+@Serializable
+data class FeedRow(
+    @SerialName("id") val id: String,
+    @SerialName("kind") val kind: String,
+    @SerialName("at") val at: String,
+    /** For this viewer: your_spec on the viewer's spec and band */
+    @SerialName("tag") val tag: String,
+    /** An HD icon stem under /data/<build>/icons/ */
+    @SerialName("icon") val icon: String? = null,
+    /** A class slug: the row shows that class crest */
+    @SerialName("crest") val crest: String? = null,
+    /** The icon's item quality, for its border */
+    @SerialName("quality") val quality: Int? = null,
+    /** A site path the row links to */
+    @SerialName("href") val href: String,
+    /** Show the date, not a relative time */
+    @SerialName("date_only") val dateOnly: Boolean,
+    @SerialName("segments") val segments: List<FeedSegment> = emptyList(),
+)
+
+/** One run of a feed row's sentence. Plain text has no style. */
+@Serializable
+data class FeedSegment(
+    @SerialName("text") val text: String,
+    /** name carries class; item carries quality and item_id */
+    @SerialName("style") val style: String? = null,
+    /** A class slug, for a name in its class colour */
+    @SerialName("class") val className: String? = null,
+    /** An item's quality, 0 poor to 5 legendary */
+    @SerialName("quality") val quality: Int? = null,
+    @SerialName("item_id") val itemId: Int? = null,
+)
+
 /** The engine's store.FightEntry plus whether the ingest verified the fight */
 @Serializable
 data class FightEntry(
@@ -1279,6 +1319,38 @@ data class HomeAlreadyBest(
     @SerialName("item") val item: HomeItem,
 )
 
+/** The signed-in home's own blocks; each is null when it has nothing true to say. */
+@Serializable
+data class HomeBlocks(
+    @SerialName("import_sim") val importSim: HomeImportSim? = null,
+    @SerialName("spec_week") val specWeek: HomeSpecWeek? = null,
+    @SerialName("movers") val movers: HomeMovers? = null,
+    @SerialName("guild_sims") val guildSims: HomeGuildSims? = null,
+)
+
+/** The character's guild ladder for its role, band and preset; members only, three or more. */
+@Serializable
+data class HomeGuildSims(
+    @SerialName("guild_id") val guildId: Long,
+    @SerialName("guild_name") val guildName: String,
+    @SerialName("role") val role: String,
+    @SerialName("band") val band: Int,
+    @SerialName("preset") val preset: String,
+    @SerialName("unit") val unit: String,
+    @SerialName("of") val of: Int,
+    @SerialName("rows") val rows: List<HomeLadderRow> = emptyList(),
+    @SerialName("you") val you: HomeLadderRow? = null,
+)
+
+/** The character's latest auto-sim on import (bare preset, default iterations). */
+@Serializable
+data class HomeImportSim(
+    @SerialName("state") val state: String,
+    @SerialName("dps") val dps: Double? = null,
+    @SerialName("simmed_at") val simmedAt: String? = null,
+    @SerialName("sim_id") val simId: String? = null,
+)
+
 /** An item read from the build's table; every field but id is null when the table lacks it. */
 @Serializable
 data class HomeItem(
@@ -1287,6 +1359,38 @@ data class HomeItem(
     @SerialName("quality") val quality: Int? = null,
     @SerialName("icon") val icon: String? = null,
     @SerialName("item_level") val itemLevel: Int? = null,
+)
+
+@Serializable
+data class HomeLadderRow(
+    @SerialName("rank") val rank: Int,
+    @SerialName("name") val name: String,
+    @SerialName("class") val className: String,
+    @SerialName("key") val key: String,
+    @SerialName("value") val value: Double,
+    @SerialName("delta") val delta: Int? = null,
+    @SerialName("simmed_at") val simmedAt: String,
+    @SerialName("sim_id") val simId: String,
+    @SerialName("you") val you: Boolean,
+)
+
+@Serializable
+data class HomeMoverRow(
+    @SerialName("rank") val rank: Int,
+    @SerialName("name") val name: String,
+    @SerialName("class") val className: String,
+    @SerialName("key") val key: String,
+    /** Places gained since last week; null with no baseline */
+    @SerialName("delta") val delta: Int? = null,
+)
+
+@Serializable
+data class HomeMovers(
+    @SerialName("spec") val spec: String,
+    @SerialName("band") val band: Int,
+    /** false: no last-week board yet, rows are the top 3 with no movement */
+    @SerialName("baseline") val baseline: Boolean,
+    @SerialName("rows") val rows: List<HomeMoverRow> = emptyList(),
 )
 
 @Serializable
@@ -1300,6 +1404,21 @@ data class HomePick(
     @SerialName("source_line") val sourceLine: String,
     /** Percent (0 to 100) when the source names one; absent or null otherwise. */
     @SerialName("drop_chance") val dropChance: Double? = null,
+)
+
+/** The spec on the tier list's rules at the character's band and faction this reset week. */
+@Serializable
+data class HomeSpecWeek(
+    @SerialName("spec") val spec: String,
+    @SerialName("band") val band: Int,
+    @SerialName("faction") val faction: String,
+    @SerialName("role") val role: String,
+    /** S to D for a damage spec; null for tanks and healers */
+    @SerialName("grade") val grade: String? = null,
+    /** null until last week's grade exists */
+    @SerialName("last_week_grade") val lastWeekGrade: String? = null,
+    @SerialName("place") val place: Int,
+    @SerialName("of") val of: Int,
 )
 
 @Serializable
