@@ -60,6 +60,9 @@
   class={[
     'ui-row border-line-soft relative grid items-center gap-x-3 border-b last:border-b-0',
     hasLead ? 'grid-cols-[auto_minmax(0,1fr)_auto]' : 'grid-cols-[minmax(0,1fr)_auto]',
+    // A narrow phone row with nothing at its right gives the body that column and its gap.
+    !trail &&
+      (hasLead ? 'max-[600px]:grid-cols-[auto_minmax(0,1fr)]' : 'max-[600px]:grid-cols-[minmax(0,1fr)]'),
     density === 'slim' ? 'min-h-11 py-[6px]' : 'min-h-[var(--row-h)] py-[10px]',
     open && !selected ? 'px-0' : 'px-4',
     element === 'a' &&
@@ -90,6 +93,7 @@
     class={[
       'flex items-center gap-3',
       wrapTrail ? 'max-md:col-span-full max-md:mt-2 md:justify-self-end' : 'justify-self-end',
+      !trail && 'max-[600px]:hidden',
     ]}
     >{#if trail}{@render trail()}{/if}</span
   >

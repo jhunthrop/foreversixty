@@ -72,6 +72,18 @@ const notes =
 </LaneBlock>
 
 <style>
+  /* The stats read as a list of names, not headings (the mock's plain 16/24 names), and the
+     empty lead cell takes no height. */
+  :global([data-testid='guide-stat-table'] .ui-st-name) {
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
+    color: var(--color-text);
+    overflow-wrap: normal;
+  }
+  :global([data-testid='guide-stat-table'] .ui-st-icon) {
+    height: auto;
+  }
   .guide-stat-rows {
     display: flex;
     flex-direction: column;

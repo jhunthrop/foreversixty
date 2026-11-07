@@ -52,8 +52,8 @@ const MOCK_HEAD_INSET =
   'below 768 the mock puts the 18 px page inset outside the head region (.pc), PageHeader inside it; ' +
   'a primitive/mock-library question, the same drift parity-setup.spec.ts lists (2026-11-08)';
 const MOCK_PHONE_BAR =
-  "below 768 the mock library's ControlBar is a details/summary line 62 px tall (ws_lib.control_bar); the " +
-  "built ControlBar's is a 48 px button with aria-expanded, the same disclosure (every lane's bar shares it)";
+  "below 768 the mock library's ControlBar line is a details/summary (ws_lib.control_bar); the built " +
+  "ControlBar's is a button with aria-expanded, the same disclosure (every lane's bar shares it)";
 /** The spec guides carry the ControlBar; /guides and the class landing have none. */
 const HAS_BAR = new Set([
   'guides-hunter-survival',
@@ -67,7 +67,7 @@ const EXPECTED_DRIFT: Readonly<Record<string, { failures: readonly string[]; why
       `${id}-390`,
       HAS_BAR.has(id)
         ? {
-            failures: ['head:box', 'controls:inventory', 'controls:box'],
+            failures: ['head:box', 'controls:inventory'],
             why: `${MOCK_HEAD_INSET}; ${MOCK_PHONE_BAR}`,
           }
         : { failures: ['head:box'], why: MOCK_HEAD_INSET },

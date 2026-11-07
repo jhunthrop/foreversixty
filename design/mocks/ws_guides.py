@@ -371,9 +371,10 @@ PAGE_CSS = '''<style>
 .sub-h{padding:12px 0 2px;margin:0}
 .items{display:flex;flex-direction:column}
 .foot-note{padding-top:16px}
-section>.sec-h+.rows,section>.sec-h+.prose{margin-top:12px}.gl-fill{padding-top:8px}.ans-next{align-self:center}
+section>.sec-h+.rows,section>.sec-h+.rprose{margin-top:12px}.gl-fill{padding-top:8px}.ans-next{align-self:center}
 @media(min-width:900px){.ans-next{flex-basis:100%;text-align:right}}.ic-spacer{display:inline-block;flex:none}
 .cgrp{padding-bottom:20px;min-width:0}
+@media(max-width:767px){.cbar .pc{padding-block:0;min-height:0}}   /* the phone bar is its 48 px line, as the built ControlBar */
 .toc-sel{display:inline-flex}@media(min-width:1760px){.toc-sel{display:none}}
 .statesheet{display:grid;gap:40px}.st-b>h2{margin-bottom:12px}.st-pair{display:flex;gap:48px;flex-wrap:wrap;align-items:flex-start}.st-menu{position:relative;width:360px;height:440px}.st-menu .menu{position:static}
 .st-toc{display:block;width:200px}.st-lv{max-width:480px;padding-bottom:12px}

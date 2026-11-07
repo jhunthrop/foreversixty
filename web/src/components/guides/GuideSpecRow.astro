@@ -27,14 +27,7 @@ const { specKey, name, href, icon, iconSize, tone, tag, sub, foot } = Astro.prop
 ---
 
 {foot === undefined ? (
-  <Row
-    title={name}
-    titleTone={tone}
-    {href}
-    density="slim"
-    wrapTrail={tag !== undefined}
-    testid={`guide-spec-row-${specKey}`}
-  >
+  <Row title={name} titleTone={tone} {href} density="slim" wrapTrail testid={`guide-spec-row-${specKey}`}>
     <img
       slot="lead"
       src={icon}
@@ -89,14 +82,25 @@ const { specKey, name, href, icon, iconSize, tone, tag, sub, foot } = Astro.prop
     border-radius: 4px;
     box-shadow: 0 0 0 1px var(--color-line);
   }
+  /* The tags sit on the name's 20 px line, so a tagged row is as tall as any other. */
   .guide-spec-tags {
     display: flex;
+    align-items: center;
     gap: 8px;
+    height: 20px;
   }
   .guide-spec-foot {
     color: var(--color-gold);
     font-weight: 600;
-    font-size: 14px;
+    font-size: 15px;
+    line-height: 24px;
+  }
+  /* On a phone the tags take their own line under the name; a row with none showing (no role
+     tag, not your spec) keeps no empty line for them. */
+  @media (max-width: 767px) {
+    :global(.ui-row > span:has(> .guide-spec-tags > [data-your-spec][hidden]:only-child)) {
+      display: none;
+    }
   }
   :global(.ui-row[data-testid^='guide-spec-row-'][aria-current='true']) {
     background: var(--color-selected);

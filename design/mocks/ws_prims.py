@@ -808,7 +808,7 @@ def PageForm(main: str) -> str:
 # defaults they emit exactly what they emitted before). `PageHeader(lead=)` is the Lead type under the title (one sentence,
 # 17/26, max 62ch: the system's own type role, 3.3). `Page('reading')` is L2 Reading (3.7): a 200 px contents rail from 1760,
 # the sections beside it. `ReadingSection` is a Section on a reading page: its head (22/28), then the prose (720) and its lane
-# (440 to 640) side by side from 1280, the lane first in one column below. `Prose` is the rendered guide markdown's typography
+# (440 to 640) side by side from 1280, the lane first in one column below. `Prose` (class rprose: logs owns .prose) is the rendered guide markdown's typography
 # (paragraphs, lists, h3, the game-tooltip names, the ruled fact list). `Toc` is the contents rail. `PlateColumns` is a Plate
 # split into labelled columns by hairlines (the guide's At a glance band; next: the character summary and the sim result band).
 # `TalentTrees` is `Trees` at a compact cell (24 px, 28 from 1760). `LevelSlider` is the shipped GuideLevelingTree's control
@@ -827,20 +827,20 @@ PRIM_CSS += '''
 @media(min-width:1280px){.rd{grid-template-columns:var(--measure-reading) minmax(0,640px);grid-template-areas:"prose lane"}.rd.solo{grid-template-columns:var(--measure-reading)}}
 .rd>.rd-prose{grid-area:prose;min-width:0}.rd>.rd-lane{grid-area:lane;min-width:0;display:flex;flex-direction:column;gap:28px}
 .lane-blk{display:flex;flex-direction:column;gap:8px;min-width:0}.lane-blk>.t-label{padding-bottom:2px}
-.prose{font-size:16px;line-height:26px;color:var(--text);max-width:var(--measure-reading);overflow-wrap:break-word}
-.prose.lane{font-size:15px;line-height:24px}
-.prose p{margin:0 0 14px}.prose>:last-child{margin-bottom:0}
-.prose ul,.prose ol{margin:0 0 14px;padding-left:20px;list-style:disc}.prose ol{list-style:decimal}.prose li{margin:0 0 8px}.prose li::marker{color:var(--muted)}
-.prose h3{font:700 18px/24px var(--font-body);color:var(--strong);margin:28px 0 10px}.prose>h3:first-child{margin-top:0}
-.prose strong{color:var(--strong);font-weight:700}.prose a{font-weight:600}
-.prose .gtip{text-decoration:underline dotted;text-decoration-color:color-mix(in srgb,currentColor 40%,transparent);text-underline-offset:3px;cursor:pointer}
-.prose span.gtip:not(.gtip-item){color:var(--strong);font-weight:500}
-.prose .glabel{font:700 12px/16px var(--font-body);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:18px 0 4px}.prose .glabel:first-child{margin-top:0}
-.prose.ruled ul{list-style:none;padding:0;margin:0}.prose.ruled li{position:relative;margin:0;padding:12px 0 12px 20px;border-bottom:1px solid var(--line-soft);break-inside:avoid}
-.prose.ruled li::before{content:"";position:absolute;left:0;top:21px;width:6px;height:6px;border-radius:50%;background:var(--gold)}
-@media(min-width:1024px){.prose.cols{max-width:none}.prose.cols ul{column-count:2;column-gap:48px}}
-.prose.plus ul,.prose.minus ul{list-style:none;padding:0}.prose.plus li,.prose.minus li{position:relative;padding-left:20px}
-.prose.plus li::before,.prose.minus li::before{position:absolute;left:0;font-weight:700}.prose.plus li::before{content:"+";color:var(--kill)}.prose.minus li::before{content:"\\2212";color:var(--wipe)}
+.rprose{font-size:16px;line-height:26px;color:var(--text);max-width:var(--measure-reading);overflow-wrap:break-word}
+.rprose.lane{font-size:15px;line-height:24px}
+.rprose p{margin:0 0 14px}.rprose>:last-child{margin-bottom:0}
+.rprose ul,.rprose ol{margin:0 0 14px;padding-left:20px;list-style:disc}.rprose ol{list-style:decimal}.rprose li{margin:0 0 8px}.rprose li::marker{color:var(--muted)}
+.rprose h3{font:700 18px/24px var(--font-body);color:var(--strong);margin:28px 0 10px}.rprose>h3:first-child{margin-top:0}
+.rprose strong{color:var(--strong);font-weight:700}.rprose a{font-weight:600}
+.rprose .gtip{text-decoration:underline dotted;text-decoration-color:color-mix(in srgb,currentColor 40%,transparent);text-underline-offset:3px;cursor:pointer}
+.rprose span.gtip:not(.gtip-item){color:var(--strong);font-weight:500}
+.rprose .glabel{font:700 12px/16px var(--font-body);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:18px 0 4px}.rprose .glabel:first-child{margin-top:0}
+.rprose.ruled ul{list-style:none;padding:0;margin:0}.rprose.ruled li{position:relative;margin:0;padding:12px 0 12px 20px;border-bottom:1px solid var(--line-soft);break-inside:avoid}
+.rprose.ruled li::before{content:"";position:absolute;left:0;top:21px;width:6px;height:6px;border-radius:50%;background:var(--gold)}
+@media(min-width:1024px){.rprose.cols{max-width:none}.rprose.cols ul{column-count:2;column-gap:48px}}
+.rprose.plus ul,.rprose.minus ul{list-style:none;padding:0}.rprose.plus li,.rprose.minus li{position:relative;padding-left:20px}
+.rprose.plus li::before,.rprose.minus li::before{position:absolute;left:0;font-weight:700}.rprose.plus li::before{content:"+";color:var(--kill)}.rprose.minus li::before{content:"\\2212";color:var(--wipe)}
 .toc .t-label{display:block;padding-bottom:10px}.toc ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
 .toc a{display:flex;align-items:center;min-height:32px;padding-left:12px;font:600 14px/18px var(--font-body);color:var(--nav);box-shadow:inset 2px 0 0 var(--line-soft)}
 .toc a:hover{color:var(--strong)}.toc a[aria-current]{color:var(--gold);box-shadow:inset 2px 0 0 var(--gold)}
@@ -896,7 +896,7 @@ def Page(layout: str, main: str = '', rail: str = '', sticky_rail: bool = False)
 def Prose(html: str, *mods: str) -> str:
     """Rendered guide markdown. mods: 'lane' (15/24, in a lane), 'ruled' (a fact list with gold marks and hairlines), 'cols' (two
     columns from 1024), 'plus' / 'minus' (Strengths and Weaknesses marks)."""
-    return f'<div class="prose {" ".join(mods)}">{html}</div>'
+    return f'<div class="rprose {" ".join(mods)}">{html}</div>'
 
 
 def ReadingSection(title: str, prose: str, lane: str = '', anchor: str = '', action: str = '') -> str:

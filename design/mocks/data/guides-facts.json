@@ -3,27 +3,16 @@
  "copy": {
   "loadThisBuild": "Load this build",
   "simThisBuild": "Sim this build",
-  "treeLoadFailed": "This build did not load",
-  "recommendedRaceLabel": "Recommended",
-  "eyebrow": "Guides",
   "signedInCallout": "[fn]",
   "indexLine": "Talents, rotation and gear for every spec, from your first talent point to the raid at 60.",
-  "roleLabel": "[fn]",
   "readTheGuide": "Read the guide",
-  "readTheGuideAriaLabel": "[fn]",
   "yourSpecPill": "Your spec",
-  "yourSpecAriaLabel": "[fn]",
   "classLandingSpecsHeading": "Specs",
   "buildRailLabel": "Build",
   "rotationRailTitle": "Rotation",
   "fullPriorityLink": "Full priority ↓",
   "statPriorityRailLabel": "Stat priority",
-  "levelingPointsLabel": "[fn]",
   "loadInPlanner": "Load in planner",
-  "loadBuildRailAriaLabel": "Load this build in the planner (summary)",
-  "simBuildRailAriaLabel": "Sim this build (summary)",
-  "loadRaidBuildRailAriaLabel": "Load the raid build in the planner (summary)",
-  "simRaidBuildRailAriaLabel": "Sim the raid build (summary)",
   "rotationForRaidBuild": "For the raid build.",
   "levelingBuild": "Level 60 build",
   "raidBuild": "Raid build",
@@ -44,24 +33,14 @@
   "cooldowns": "Cooldowns",
   "raidBuildTag": "Raid build only",
   "raidBuildLegend": "Raid build only: needs a talent only the raid build takes. Not on the raid build? Skip that row.",
-  "bestInSlot": "Best in slot",
-  "levelRange": "Level range",
   "bisCaption": "[fn]",
   "fullListLink": "Full list and alternatives",
   "preRaidNote": "These are the best picks before the first raid tier. Raid loot is not itemized in the client yet, and this list updates when it is.",
   "notSimChecked": "Ranked by stats only",
-  "slotColumn": "Slot",
-  "itemColumn": "Item",
-  "sourceColumn": "Source",
   "enchants": "Enchants",
   "consumables": "Consumables",
   "enchantsNote": "The enchant for each slot that adds the most of your weighted stats. Crit, hit and haste enchants are not included.",
   "consumablesNote": "What to bring to a raid.",
-  "enchantColumn": "Enchant",
-  "givesColumn": "Gives",
-  "consumableColumn": "Consumable",
-  "raceColumn": "Race",
-  "factionColumn": "Faction",
   "racialsColumn": "Racials",
   "recommendedTag": "Recommended",
   "hitToCap": "[fn]",
@@ -102,10 +81,8 @@
   "levelValueText": "[fn]",
   "loadLevelBuildAriaLabel": "[fn]",
   "tocBarLabel": "On this page",
-  "tocBarHint": "Jump to a section",
   "alliancePicksHeading": "Alliance",
   "hordePicksHeading": "Horde",
-  "factionGroup": "Faction",
   "alsoUsed": "Food, oil and potions",
   "answerLabel": "Your character",
   "talentsAtLevel": "[fn]",
@@ -3596,7 +3573,7 @@
        "name": "Hunter's Mark",
        "rank": 4,
        "icon": "ability_hunter_snipershot",
-       "clause": "Whenever the target is not marked, and from 35 Expose Prey needs it",
+       "clause": "Whenever the target is not marked, and from 33 Expose Prey needs it",
        "tipKey": "spell:14325",
        "rankText": "Rank 4"
       },
@@ -3605,7 +3582,7 @@
        "name": "Raptor Strike",
        "rank": 8,
        "icon": "ability_meleedamage",
-       "clause": "On every swing it is ready, with an older rank on your bar at 26 to 29, at 33, and at 46 and 47, and to 49 on most Horde characters",
+       "clause": "On every swing it is ready, with an older rank on your bar at 26 to 29, at 31, and at 46 and 47, and to 49 on most Horde characters",
        "tipKey": "spell:14266",
        "rankText": "Rank 8"
       },
@@ -6484,7 +6461,7 @@
    "leveling": {
     "early": "<h3 id=\"levels-1-to-19\">Levels 1 to 19</h3>\n<p>Train <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:409580\">Heart of the Lion</span> at level 1 and keep it up all the way to 60: 10% more stats and extra attack power (280 at 60) for everyone near you, and another 10% stats for you. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14266\">Raptor Strike</span> from level 1 is your main button, with new ranks at 8 and 16. Train <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:13163\">Aspect of the Monkey</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25295\">Serpent Sting</span> at 4, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14325\">Hunter’s Mark</span> at 6, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14268\">Wing Clip</span> at 12 and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14271\">Mongoose Bite</span> at 16, which lights up after you dodge.</p>\n<p>At 10 your trainer starts the taming quests, which end by teaching <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1515\">Tame Beast</span>. Tame a beast at your level, feed it to keep it happy, and train <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:13544\">Mend Pet</span> at 12.</p>\n<p>Your first five points go into <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:104996:5\">Improved Tracking</span>, 1% damage per point against whatever you are tracking: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1494\">Track Beasts</span> from level 1, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:19883\">Track Humanoids</span> at 10, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:19884\">Track Undead</span> at 18. Keep the right one on. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:104993:2\">Savage Strikes</span> at 15 and 16 adds 2% crit to your melee abilities per point, then <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:104992:3\">Survivalist</span> from 17 adds 2% health per point.</p>\n<p>Take quest rewards over vendor gear, Agility first. Your melee weapon is your damage: replace the starting one with the first slow two-handed quest reward you find, since <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14266\">Raptor Strike</span> adds its damage on top of the weapon hit. Wear leather until 40. From 40 you can wear mail, but keep a leather piece whenever it is the better one.</p>\n",
     "stripHeading": "Levels 20 to 60",
-    "late": "<p>Survival levels in melee. Keep a pet out while you level: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105007:1\">Lone Wolf</span> is the last point this build takes, at 60, and until then the pet holds aggro and adds damage. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105007:1\">Lone Wolf</span> pays off in a raid, where you get the raid buffs and your pet gets none, so your own hits carry more of the damage. Out in the world at 60 a pet still adds a little more damage than <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105007:1\">Lone Wolf</span> does and takes the hits for you, so keep it out while you quest and farm. The talent does nothing while your pet is out, so dismiss the pet before a raid pull and call it back afterwards.</p>\n<p>Open with <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14325\">Hunter’s Mark</span>, send the pet, then walk in and queue <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14266\">Raptor Strike</span>. Press <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14271\">Mongoose Bite</span> whenever it lights up, and from 30 keep <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1299332\">Lacerate</span> on anything that will live long enough to bleed. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14268\">Wing Clip</span> a runner. Wear <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:13163\">Aspect of the Monkey</span> until 30: its dodges open <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14271\">Mongoose Bite</span>. At 30 switch to <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1299447\">Aspect of the Beast</span> and keep it up. Throw <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14305\">Immolation Trap</span> under anything that will live long enough to burn. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:5384\">Feign Death</span> at 30 resets a bad pull. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:5118\">Aspect of the Cheetah</span> at 20 is your run speed between quests, but it dazes you when you are hit, so never wear it into a fight.</p>\n<p>At 26 <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14305\">Immolation Trap</span> rank 2 arrives, and with a trap on every pull your mana runs short. From 26 to 29 keep <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14266\">Raptor Strike</span> rank 3 on your bar instead of rank 4: most of the hit is your weapon, so it does nearly what rank 4 does for less mana, and the mana it saves goes into traps. On a Horde character rank 2 is better again: an Orc at 26, a Troll or a Windshaper Skyborne at 26 and 27, a Tauren at 26 to 28. Drag the lower rank onto your bar from the spellbook at 26 and put rank 4 back at 30.</p>\n<p>At 33 you have only the first point of <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:104983:2\">Resourcefulness</span>, and for that one level <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14266\">Raptor Strike</span> rank 1 is the better button: it costs almost nothing, and the mana goes into traps. Drag it onto the bar at 33 and put rank 5 back at 34, when the second point makes every rank cheap.</p>\n<p>Mail at 40 is the biggest armor upgrade you will get, and from 20 you can carry two weapons.</p>\n<p>At 46 the new <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14305\">Immolation Trap</span> rank costs more, and with a trap on every pull your mana starts to run short over a chain of them. Rank 6 of <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14266\">Raptor Strike</span>, trained at 40, is the one to use until then, though a Troll does a touch better keeping rank 5 at 40 itself. For 46 and 47, keep rank 5 on your bar instead: most of the hit is your weapon, so it does nearly what rank 6 does for less mana, and the mana it saves goes into traps. Drag rank 5 back from the spellbook as you did at 26. At 48 put rank 7 on the bar. On a Horde character rank 5 is still the better button: an Orc, Troll or Tauren at 48 and 49, a Windshaper Skyborne at 48.</p>\n",
+    "late": "<p>Survival levels in melee. Keep a pet out while you level: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105007:1\">Lone Wolf</span> is the last point this build takes, at 60, and until then the pet holds aggro and adds damage. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105007:1\">Lone Wolf</span> pays off in a raid, where you get the raid buffs and your pet gets none, so your own hits carry more of the damage. Out in the world at 60 a pet still adds a little more damage than <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105007:1\">Lone Wolf</span> does and takes the hits for you, so keep it out while you quest and farm. The talent does nothing while your pet is out, so dismiss the pet before a raid pull and call it back afterwards.</p>\n<p>Open with <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14325\">Hunter’s Mark</span>, send the pet, then walk in and queue <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14266\">Raptor Strike</span>. Press <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14271\">Mongoose Bite</span> whenever it lights up, and from 30 keep <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1299332\">Lacerate</span> on anything that will live long enough to bleed. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14268\">Wing Clip</span> a runner. Wear <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:13163\">Aspect of the Monkey</span> until 30: its dodges open <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14271\">Mongoose Bite</span>. At 30 switch to <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1299447\">Aspect of the Beast</span> and keep it up. Throw <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14305\">Immolation Trap</span> under anything that will live long enough to burn. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:5384\">Feign Death</span> at 30 resets a bad pull. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:5118\">Aspect of the Cheetah</span> at 20 is your run speed between quests, but it dazes you when you are hit, so never wear it into a fight.</p>\n<p>Spend 25 to 29 on <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:110861:5\">Predator’s Edge</span> and take <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1317257\">Strider Kick</span> at 30, then <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:104983:2\">Resourcefulness</span>, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:104985:2\">Expose Prey</span>, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:110860:2\">Survivalist’s Discipline</span> and a point of <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:110859:5\">Lightning Reflexes</span>. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:19263\">Deterrence</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:20910\">Counterattack</span> wait for 38 and 39: one is an emergency button and the other needs a parry, and while your pet holds the mob neither adds damage.</p>\n<p>At 26 <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14305\">Immolation Trap</span> rank 2 arrives, and with a trap on every pull your mana runs short. From 26 to 29 keep <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14266\">Raptor Strike</span> rank 3 on your bar instead of rank 4: most of the hit is your weapon, so it does nearly what rank 4 does for less mana, and the mana it saves goes into traps. On a Horde character rank 2 is better again: an Orc, a Troll or a Windshaper Skyborne at 26 and 27, a Tauren at 26 to 28. Drag the lower rank onto your bar from the spellbook at 26 and put rank 4 back at 30.</p>\n<p>At 31 you have only the first point of <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:104983:2\">Resourcefulness</span>, and for that one level <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14266\">Raptor Strike</span> rank 1 is the better button: it costs almost nothing, and the mana goes into traps. Drag it onto the bar at 31 and put rank 5 on at 32, when you train it and the second point makes every rank cheap.</p>\n<p>Mail at 40 is the biggest armor upgrade you will get, and from 20 you can carry two weapons.</p>\n<p>At 46 the new <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14305\">Immolation Trap</span> rank costs more, and with a trap on every pull your mana starts to run short over a chain of them. Rank 6 of <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14266\">Raptor Strike</span>, trained at 40, is the one to use until then, though a Troll does a touch better keeping rank 5 at 40 itself. For 46 and 47, keep rank 5 on your bar instead: most of the hit is your weapon, so it does nearly what rank 6 does for less mana, and the mana it saves goes into traps. Drag rank 5 back from the spellbook as you did at 26. At 48 put rank 7 on the bar. On a Horde character rank 5 is still the better button: an Orc, Troll or Tauren at 48 and 49, a Windshaper Skyborne at 48.</p>\n",
     "steps": 51,
     "ladder": [
      {
@@ -6549,7 +6526,7 @@
      },
      {
       "level": 25,
-      "name": "Deterrence"
+      "name": "Predator's Edge"
      },
      {
       "level": 26,
@@ -6573,39 +6550,39 @@
      },
      {
       "level": 31,
-      "name": "Predator's Edge"
+      "name": "Resourcefulness"
      },
      {
       "level": 32,
-      "name": "Counterattack"
+      "name": "Resourcefulness"
      },
      {
       "level": 33,
-      "name": "Resourcefulness"
+      "name": "Expose Prey"
      },
      {
       "level": 34,
-      "name": "Resourcefulness"
+      "name": "Expose Prey"
      },
      {
       "level": 35,
-      "name": "Expose Prey"
+      "name": "Survivalist's Discipline"
      },
      {
       "level": 36,
-      "name": "Expose Prey"
+      "name": "Survivalist's Discipline"
      },
      {
       "level": 37,
-      "name": "Survivalist's Discipline"
+      "name": "Lightning Reflexes"
      },
      {
       "level": 38,
-      "name": "Survivalist's Discipline"
+      "name": "Deterrence"
      },
      {
       "level": 39,
-      "name": "Lightning Reflexes"
+      "name": "Counterattack"
      },
      {
       "level": 40,
@@ -6695,9 +6672,9 @@
     "at": {
      "34": {
       "level": 34,
-      "name": "Resourcefulness",
+      "name": "Expose Prey",
       "rank": 2,
-      "point": "Level 34: Resourcefulness, rank 2",
+      "point": "Level 34: Expose Prey, rank 2",
       "spent": "25 points spent, 26 to go",
       "trees": [
        {
@@ -7798,7 +7775,7 @@
            }
           ],
           "spell_id": 19263,
-          "rank": 1
+          "rank": 0
          },
          {
           "id": 104988,
@@ -7872,7 +7849,7 @@
            }
           ],
           "spell_id": 19306,
-          "rank": 1
+          "rank": 0
          },
          {
           "id": 104983,
@@ -7916,7 +7893,7 @@
            }
           ],
           "spell_id": 1310532,
-          "rank": 0
+          "rank": 2
          },
          {
           "id": 110860,
@@ -28487,9 +28464,9 @@
     "priority": 8,
     "cooldowns": 2
    },
-   "stat_rows": 7,
-   "bis": 5,
-   "extras": "4/7",
+   "stat_rows": 0,
+   "bis": 0,
+   "extras": null,
    "ranked": true
   },
   "shaman/enhancement": {
@@ -28500,9 +28477,9 @@
     "priority": 7,
     "cooldowns": 2
    },
-   "stat_rows": 8,
-   "bis": 5,
-   "extras": "6/7",
+   "stat_rows": 0,
+   "bis": 0,
+   "extras": null,
    "ranked": true
   },
   "shaman/restoration": {
@@ -28513,9 +28490,9 @@
     "priority": 10,
     "cooldowns": 3
    },
-   "stat_rows": 5,
-   "bis": 5,
-   "extras": "4/9",
+   "stat_rows": 0,
+   "bis": 0,
+   "extras": null,
    "ranked": true
   },
   "warlock/affliction": {
@@ -28619,7 +28596,7 @@
    "identity": "Dwarf Survival Hunter",
    "level_line": "Level 34",
    "talents_at": "Talents at level 34",
-   "next": "Next point at 35: Expose Prey"
+   "next": "Next point at 35: Survivalist's Discipline"
   },
   "survival60": {
    "name": "Thandrel",

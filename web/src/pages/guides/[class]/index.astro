@@ -148,4 +148,11 @@ const tone = { classSlug: classSlug as ClassSlug };
   .guide-landing-plate {
     padding-bottom: var(--section-gap);
   }
+  /* The sections start where the mock's split page does below 1024 (its 28 px top, the split
+     Page's 20 px here). */
+  @media (max-width: 1023px) {
+    .guide-landing-plate {
+      padding-bottom: calc(var(--section-gap) + 8px);
+    }
+  }
 </style>
