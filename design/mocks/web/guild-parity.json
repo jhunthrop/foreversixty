@@ -59,6 +59,26 @@
       "id": "readiness",
       "path": "/guild/us/pvp/olympus-xxvii#readiness",
       "mock": "web-guild-readiness.html"
+    },
+    {
+      "id": "before-raids",
+      "path": "/guild/us/pvp/olympus-xxvii",
+      "mock": "web-guild-before-raids.html"
+    },
+    {
+      "id": "low-level",
+      "path": "/guild/us/pvp/olympus-xxvii",
+      "mock": "web-guild-low-level.html"
+    },
+    {
+      "id": "no-raid",
+      "path": "/guild/us/pvp/olympus-xxvii",
+      "mock": "web-guild-no-raid.html"
+    },
+    {
+      "id": "public",
+      "path": "/guild/us/pvp/olympus-xxvii",
+      "mock": "web-guild-public.html"
     }
   ]
 }

@@ -1,0 +1,47 @@
+{
+  "rows": [
+    {
+      "id": "g1",
+      "kind": "guild_sim",
+      "at": "2026-12-15T21:48:00Z",
+      "tag": "your_guild",
+      "icon": null,
+      "crest": "mage",
+      "quality": null,
+      "href": "/character/us/pvp/frostquill",
+      "date_only": false,
+      "segments": [
+        {
+          "text": "Frostquill",
+          "style": "name",
+          "class": "mage"
+        },
+        {
+          "text": " simmed 612.4 DPS, #1 of 14 damage dealers in Olympus XXVII (Frost Mage, 60)"
+        }
+      ]
+    },
+    {
+      "id": "g2",
+      "kind": "guild_sim",
+      "at": "2026-12-15T19:00:00Z",
+      "tag": "your_guild",
+      "icon": null,
+      "crest": "warlock",
+      "quality": null,
+      "href": "/character/us/pvp/doomwhisper",
+      "date_only": false,
+      "segments": [
+        {
+          "text": "Doomwhisper",
+          "style": "name",
+          "class": "warlock"
+        },
+        {
+          "text": " simmed 598.0 DPS, #2 of 14 damage dealers in Olympus XXVII (Affliction Warlock, 60)"
+        }
+      ]
+    }
+  ],
+  "next_cursor": null
+}

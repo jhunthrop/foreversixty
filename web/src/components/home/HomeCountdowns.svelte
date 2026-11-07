@@ -5,13 +5,11 @@
 <script lang="ts">
   import type { NextRaidView } from '../../lib/guild/api';
   import { raidTimeLine } from '../../lib/guild/overview-role-view';
-  import { FIRST_RAIDS } from '../../lib/first-raids';
   import { homeBCopy, homeBHrefs } from '../../lib/home/home-b-view';
-  import { dayText } from '../../lib/home/feed';
   import { LINK } from '../../lib/ui/primitives';
   import { REGION } from '../../lib/ui/regions';
   import Countdown from '../ui/Countdown.svelte';
-  import ItemIcon from '../ui/ItemIcon.svelte';
+  import RaidsCountdown from '../RaidsCountdown.svelte';
 
   let {
     raidsOpen,
@@ -41,19 +39,7 @@
 </script>
 
 <div class="home-countdowns" class:solo={guild === undefined} data-region={REGION.countdowns}>
-  <Countdown
-    eyebrow={raidsOpen === null ? homeBCopy.raidsOpen : homeBCopy.raidsEyebrow(dayText(raidsOpen))}
-    target={raidsOpen}
-    live
-    tone="raid"
-    testid="home-raids-countdown"
-  >
-    <ul class="home-raids" aria-label="First raids">
-      {#each FIRST_RAIDS as first (first.name)}
-        <li><ItemIcon icon={first.icon} {build} size={40} eager /><span>{first.name}</span></li>
-      {/each}
-    </ul>
-  </Countdown>
+  <RaidsCountdown {raidsOpen} {build} testid="home-raids-countdown" />
   {#if guild !== undefined}
     {#if guild === null}
       <Countdown eyebrow={homeBCopy.findGuild} target={null} tone="guild" testid="home-guild-countdown">
@@ -99,26 +85,6 @@
     .home-countdowns:not(.solo) {
       grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
     }
-  }
-  .home-raids {
-    display: flex;
-    justify-content: flex-end;
-    gap: 18px;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-  .home-raids li {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 6px;
-    width: 88px;
-    font-size: 13px;
-    line-height: 16px;
-    font-weight: 600;
-    text-align: center;
-    color: var(--color-nav);
   }
   /* One line per fact, cut with an ellipsis, so the panel keeps one height whatever the zone,
      the raid title or the sign-up line says. */

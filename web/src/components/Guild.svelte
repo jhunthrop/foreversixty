@@ -759,6 +759,26 @@
 {#snippet headInvite()}
   <Button size="sm" href={`${settingsHref}#invite`} testid="guild-head-invite">Invite link</Button>
 {/snippet}
+{#snippet weekOneLead()}
+  {#if weekOneLazy.current}
+    <weekOneLazy.current
+      status={weekOneStatus}
+      officer={officerView}
+      waiting={home?.summary?.waiting_for_approval ?? 0}
+      entries={home?.members ?? []}
+      rows={home?.roster ?? []}
+      character={weekOneCharacter}
+      nextRaid={home?.next_raid ?? null}
+      raidHref={home?.next_raid == null ? null : guildRaidHref(guildPath, home.next_raid.id)}
+      inviteHref={settingsHref === '' ? '' : `${settingsHref}#invite`}
+      onRetry={() => (homeAttempt += 1)}
+      onApprove={approveFromCard}
+      onPlan={planFromCard}
+      {bandSignsUp}
+      planGated={!officerTools}
+    />
+  {/if}
+{/snippet}
 {#snippet bandLine()}{@render raidLine('band')}{/snippet}
 {#snippet youRow()}{@render raidLine('row')}{/snippet}
 
@@ -985,28 +1005,8 @@
           summary={home?.summary}
           {showCounts}
           onSelectTab={selectTab}
-        >
-          {#snippet lead()}
-            {#if showWeekOne && weekOneLazy.current}
-              <weekOneLazy.current
-                status={weekOneStatus}
-                officer={officerView}
-                waiting={home?.summary?.waiting_for_approval ?? 0}
-                entries={home?.members ?? []}
-                rows={home?.roster ?? []}
-                character={weekOneCharacter}
-                nextRaid={home?.next_raid ?? null}
-                raidHref={home?.next_raid == null ? null : guildRaidHref(guildPath, home.next_raid.id)}
-                inviteHref={settingsHref === '' ? '' : `${settingsHref}#invite`}
-                onRetry={() => (homeAttempt += 1)}
-                onApprove={approveFromCard}
-                onPlan={planFromCard}
-                {bandSignsUp}
-                planGated={!officerTools}
-              />
-            {/if}
-          {/snippet}
-        </overviewLazy.current>
+          lead={showWeekOne ? weekOneLead : undefined}
+        />
       {:else}
         <div class="min-h-[720px]" aria-hidden="true" data-testid="guild-overview-reserve"></div>
         {@render lazyFallback(overviewLazy)}

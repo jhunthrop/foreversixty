@@ -189,8 +189,8 @@ test.describe('zero logs', () => {
     const card = page.getByTestId('guild-overview-card-week-one');
     await expect(card).toBeVisible();
     await expect(card).toContainText('Before raids open');
-    await expect(card).toContainText('AT 60');
-    await expect(page.getByTestId('guild-week-one-raids-line')).toContainText('open Wed 9 Dec');
+    await expect(page.getByTestId('guild-week-one-spread')).toContainText('At 60');
+    await expect(page.getByTestId('guild-week-one-countdown')).toContainText('First raids open · Wed 9 Dec');
     await expect(page.getByTestId('guild-week-one-sentence')).toHaveText(
       `${VIEWER_MEMBER} is level 52, 8 levels to 60.`,
     );
