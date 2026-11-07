@@ -317,7 +317,9 @@
       </svg>
     </button>
     {#if mark !== null}
-      <span class="csel-tip" role="tooltip" id={TIP_ID}>{markTooltip(mark, current)}</span>
+      <span class="csel-tip ui-overlay" data-kind="tooltip" role="tooltip" id={TIP_ID}
+        >{markTooltip(mark, current)}</span
+      >
     {/if}
   {:else if selector.closed === 'account'}
     <button

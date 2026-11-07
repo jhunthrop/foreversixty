@@ -8,6 +8,7 @@
   import { selectorCopy } from '../../lib/character-selector/copy';
   import { rowLineThree, rowLineTwo, type SelectorRow } from '../../lib/character-selector/rows';
   import { classColorVar } from '../../lib/report/format';
+  import { button } from '../../lib/ui/button';
   import SelectorCrest from './SelectorCrest.svelte';
 
   let {
@@ -89,7 +90,7 @@
   {#if row.status === 'failed'}
     <button
       type="button"
-      class="csel-retry"
+      class={`csel-retry ${button('secondary', 'md')}`}
       disabled={retrying}
       data-testid={`selector-retry-${row.key}`}
       onclick={() => onretry(row)}

@@ -68,7 +68,10 @@ function renderRow(row: CharacterSuggestion, id: string): HTMLLIElement {
   const klass = classOf(row);
   const item = element('li', 'typeahead-item');
   item.setAttribute('role', 'presentation');
-  const link = element('a', klass === undefined ? 'typeahead-row typeahead-row-plain' : 'typeahead-row');
+  const link = element(
+    'a',
+    klass === undefined ? 'typeahead-row typeahead-row-plain ui-overlay-row' : 'typeahead-row ui-overlay-row',
+  );
   link.id = id;
   link.href = characterHref(row.region, row.ruleset, row.name);
   link.tabIndex = -1;

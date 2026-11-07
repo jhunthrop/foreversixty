@@ -35,9 +35,7 @@
     "components/coach/CoachRowStrip.svelte": 3,
     "components/coach/SpellIcon.svelte": 1,
     "components/CurrentCharacterChip.svelte": 3,
-    "components/Footer.astro": 3,
     "components/ForeverScoreCard.svelte": 2,
-    "components/GameTooltip.svelte": 4,
     "components/guild/billing/GuildPlanChooser.svelte": 2,
     "components/guild/billing/GuildSeatPicker.svelte": 1,
     "components/guild/billing/GuildSeatRow.svelte": 2,
@@ -70,10 +68,7 @@
     "components/GuildLanding.svelte": 3,
     "components/GuildRaid.svelte": 6,
     "components/GuildSettings.svelte": 1,
-    "components/HeaderSearch.astro": 4,
     "components/HomeTopGuilds.svelte": 2,
-    "components/ItemHover.svelte": 1,
-    "components/ItemTooltip.svelte": 7,
     "components/planner/PlannerDps.svelte": 1,
     "components/planner/SummaryBar.svelte": 3,
     "components/planner/TalentCell.svelte": 5,
@@ -143,11 +138,6 @@
     "components/StatePanel.astro": 4,
     "components/TierStrip.svelte": 1,
     "components/ToolCard.astro": 2,
-    "layouts/Base.astro": 2,
-    "pages/login.astro": 3,
-    "styles/global.css": 10,
-    "styles/nav.css": 35,
-    "styles/select.css": 11,
-    "styles/typeahead.css": 5
+    "pages/login.astro": 3
   }
 }

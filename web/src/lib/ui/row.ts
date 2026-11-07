@@ -13,7 +13,7 @@ export const ROW_INTERACTIVE =
   'cursor-pointer transition-colors duration-[120ms] hover:bg-row-hover active:bg-gold/10 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-gold';
 
 /**
- * Row bands (global.css `.row-band`): a row that lights up inside a list is a rounded band whose
+ * Row bands (ui/row.css `.row-band`): a row that lights up inside a list is a rounded band whose
  * content sits 12 px in. A row whose list pads it by less reaches out by the difference, so its
  * content keeps the list's left edge and the band grows into the gutter, keyed by the list's own
  * side padding in Tailwind steps (0, `px-1`, `px-2`). Apply it to the lit row only.
@@ -25,7 +25,7 @@ export const ROW_BAND_REACH = {
 } as const;
 
 /** Every row of a ruled list that holds a band: its rule steps back when the row beside it lights
- *  (global.css keys the neighbour selectors to it, never to a universal subject). */
+ *  (ui/row.css keys the neighbour selectors to it, never to a universal subject). */
 export const ROW_RULE = 'row-rule';
 
 /** The viewer's own row: the gold wash on a band. */

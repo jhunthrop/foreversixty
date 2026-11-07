@@ -3,6 +3,8 @@
 // design/specs/2026-10-28-polish.md section 2: a brand block beside four labelled link
 // columns, the trademark and operator lines small and last. Copy lives in lib/footer-copy.ts.
 // Phone: the columns stay a 2 x 2 grid of 44px rows, never one long column (tenet 4).
+// The two community links are the Button primitive's secondary small recipe; the legal bar is set
+// apart by spacing alone, no rule (web layout spec 2026-11-05 §2 P1, §3A.3: no surface drawn here).
 import {
   FOOTER_COLUMNS,
   FOOTER_DISCORD_BUTTON,
@@ -16,11 +18,11 @@ import DiscordMark from './DiscordMark.astro';
 import Wordmark from './Wordmark.astro';
 import Seal from './Seal.astro';
 import { REGION } from '../lib/ui/regions';
+import { button } from '../lib/ui/button';
 
 const LINK_CLASS =
   'inline-flex items-center min-h-11 lg:min-h-8 text-[14px] text-nav transition-colors duration-[120ms] hover:text-strong active:text-gold-hover';
-const BUTTON_CLASS =
-  'inline-flex items-center gap-2 h-11 lg:h-9 px-3.5 rounded-control border border-line-warm-strong bg-raised text-[14px] font-semibold text-strong transition-colors duration-[120ms] hover:border-gold-hover hover:text-gold-hover';
+const BUTTON_CLASS = button('secondary', 'sm');
 ---
 
 <footer
@@ -62,7 +64,7 @@ const BUTTON_CLASS =
         ))}
       </nav>
     </div>
-    <div class="flex flex-col gap-1 border-t border-line-soft pt-[18px] pb-7 lg:flex-row lg:items-center lg:justify-between">
+    <div class="flex flex-col gap-1 pt-[19px] pb-7 lg:flex-row lg:items-center lg:justify-between">
       <nav aria-label="Legal" class="-mx-3.5 lg:-mx-2 flex lg:order-last">
         {FOOTER_LEGAL_LINKS.map((link) => (
           <a href={link.href} class={`${LINK_CLASS} px-3.5 lg:px-2 text-[13px]`}>
