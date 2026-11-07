@@ -86,11 +86,14 @@ func importEndState(err error) string {
 // logged at WARN and the caller redirects exactly as it would have with
 // no importer at all. The account reads running from the start until the
 // run ends, or until the background continuation it hands off to ends.
-func (s *Service) runImport(r *http.Request, userID int64, accessToken string) {
+func (s *Service) runImport(r *http.Request, userID int64, accessToken string, expiresAt time.Time) {
 	if s.Importer == nil || accessToken == "" {
 		return
 	}
 	id := httpx.RequestIDFrom(r.Context())
+	if keeper, ok := s.Importer.(TokenKeeper); ok {
+		keeper.KeepToken(r.Context(), userID, accessToken, expiresAt)
+	}
 	s.recordImportState(id, userID, BnetImportRunning)
 	ctx, cancel := context.WithTimeout(r.Context(), importBudget)
 	defer cancel()
@@ -104,8 +107,8 @@ func (s *Service) runImport(r *http.Request, userID int64, accessToken string) {
 }
 
 // continueImport finishes, in the background, an import the sign-in budget
-// cut short (importContinueBudget). The access token lives only in this
-// goroutine's memory until it returns, and is never persisted or logged.
+// cut short (importContinueBudget). The access token is never logged; the only copy
+// persisted is the TokenKeeper's sealed one.
 func (s *Service) continueImport(id string, userID int64, accessToken string) {
 	go func() {
 		ctx, cancel := context.WithTimeout(context.Background(), importContinueBudget)

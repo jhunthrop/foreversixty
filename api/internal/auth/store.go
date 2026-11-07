@@ -50,10 +50,14 @@ type User struct {
 	Email     *string `json:"email"`
 	Role      string  `json:"role"`
 	Anonymize bool    `json:"anonymize"`
-	// BnetImportedAt is when the Battle.net import last ran for this
-	// account, nil when it never has. Not serialized directly — Me's
-	// own top-level bnet_imported_at field carries it (spec §6).
+	// BnetImportedAt is when the account was last updated from Battle.net (a sign-in
+	// import, a visit refresh or a background refresh of any of its characters), nil
+	// when it never was. Not serialized directly: Me's own top-level bnet_imported_at
+	// field carries it (spec §6).
 	BnetImportedAt *time.Time `json:"-"`
+	// BnetSyncedAt is when the last account-wide Battle.net sync started (migration
+	// 0081): the visit refresh's stale check reads it. Never serialized.
+	BnetSyncedAt *time.Time `json:"-"`
 	// MainCharacterKey is the account's chosen main, nil until chosen. Not
 	// serialized directly: Me carries it as main_character_key.
 	MainCharacterKey *string `json:"-"`
@@ -260,12 +264,12 @@ func (s *Store) logger() *slog.Logger {
 }
 
 const userColumns = `id, coalesce(bnet_sub, ''), battletag, email, role, anonymize, bnet_imported_at, main_character_key,
-	bnet_import_state, bnet_import_state_at`
+	bnet_import_state, bnet_import_state_at, bnet_synced_at`
 
 func scanUser(row pgx.Row) (User, error) {
 	var u User
 	if err := row.Scan(&u.ID, &u.BnetSub, &u.Battletag, &u.Email, &u.Role, &u.Anonymize, &u.BnetImportedAt, &u.MainCharacterKey,
-		&u.BnetImportState, &u.BnetImportStateAt); err != nil {
+		&u.BnetImportState, &u.BnetImportStateAt, &u.BnetSyncedAt); err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			return User{}, ErrNotFound
 		}

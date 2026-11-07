@@ -42,14 +42,14 @@ func (s *Service) bnetCallback(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if next == appFlowNext {
-		s.finishAppSignIn(w, r, state, u.ID, bu.AccessToken)
+		s.finishAppSignIn(w, r, state, u.ID, bu.AccessToken, bu.AccessTokenExpiry)
 		return
 	}
 	if _, err := s.Auth.StartSession(r.Context(), w, u.ID, "battlenet"); err != nil {
 		s.answerCallbackFailure(w, r, next, internalCallbackFailure(err))
 		return
 	}
-	s.runImport(r, u.ID, bu.AccessToken)
+	s.runImport(r, u.ID, bu.AccessToken, bu.AccessTokenExpiry)
 	http.Redirect(w, r, s.PublicBaseURL+safeNext(next), http.StatusFound)
 }
 

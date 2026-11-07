@@ -313,3 +313,46 @@ func setCookie(res *http.Response, name string) *http.Cookie {
 	}
 	return nil
 }
+
+// recordingVisits remembers which accounts the authenticator reported.
+type recordingVisits struct{ ids []int64 }
+
+func (v *recordingVisits) Visited(u User) { v.ids = append(v.ids, u.ID) }
+
+func TestSignedInRequestsReportTheVisitButCompanionsDoNot(t *testing.T) {
+	store := testStore(t)
+	ctx := context.Background()
+	u, err := store.UpsertEmailUser(ctx, "visitor@example.com")
+	if err != nil {
+		t.Fatal(err)
+	}
+	sess, err := store.CreateSession(ctx, u.ID, "email", SessionTTL)
+	if err != nil {
+		t.Fatal(err)
+	}
+	companion, hash := NewDeviceToken()
+	if _, err := store.CreateDevice(ctx, u.ID, "Raid PC", "windows/amd64", hash); err != nil {
+		t.Fatal(err)
+	}
+	visits := &recordingVisits{}
+	a := &Authenticator{Store: store, Visits: visits}
+	h := a.Middleware(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) { w.WriteHeader(http.StatusOK) }))
+
+	anon := httptest.NewRequest(http.MethodGet, "/v1/me", nil)
+	h.ServeHTTP(httptest.NewRecorder(), anon)
+	if len(visits.ids) != 0 {
+		t.Fatalf("an anonymous request reported %v", visits.ids)
+	}
+	device := httptest.NewRequest(http.MethodGet, "/v1/me", nil)
+	device.Header.Set("Authorization", "Bearer "+companion)
+	h.ServeHTTP(httptest.NewRecorder(), device)
+	if len(visits.ids) != 0 {
+		t.Fatalf("a companion request reported %v", visits.ids)
+	}
+	signed := httptest.NewRequest(http.MethodGet, "/v1/me", nil)
+	signed.AddCookie(&http.Cookie{Name: SessionCookie, Value: sess.ID})
+	h.ServeHTTP(httptest.NewRecorder(), signed)
+	if len(visits.ids) != 1 || visits.ids[0] != u.ID {
+		t.Fatalf("visits = %v, want the session's account once", visits.ids)
+	}
+}
