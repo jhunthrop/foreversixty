@@ -30,8 +30,8 @@
   } = $props();
 </script>
 
-<div class="flex flex-col gap-4 px-5 pt-1 pb-5" data-testid="discord-connect-view">
-  {#if !replacing}<p class="text-text text-[14px]">{notificationsCopy.intro}</p>{/if}
+<div class="flex flex-col gap-4" data-testid="discord-connect-view">
+  {#if !replacing}<p class="text-[15px] leading-6">{notificationsCopy.intro}</p>{/if}
   <div class="flex flex-col items-start">
     <DiscordConnectLink
       label={notificationsCopy.connect}

@@ -1,6 +1,5 @@
 // web/src/lib/billing/checkout-layout.test.ts
 // Pins the checkout frame's reserves to the spec heights (§5.7, §7) and the panel they hold.
-import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import {
   CHECKOUT_FRAME_PX,

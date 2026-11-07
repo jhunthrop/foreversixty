@@ -46,8 +46,7 @@ export const checkoutGuildCopy = {
     },
     someClaimed: `${CLAIM_RULE} Here is the next step for each of your guilds.`,
     canClaim: 'You can claim a guild here. Each card below has its next step.',
-    allClaimed:
-      "Whoever holds a guild's claim subscribes it. Here is where each of your guilds stands.",
+    allClaimed: "Whoever holds a guild's claim subscribes it. Here is where each of your guilds stands.",
   },
   rank: { leader: 'Guild master', officer: 'Officer', member: 'Member' },
   verifyMark: { verified: 'Verified', notVerified: 'Not verified' },
@@ -133,8 +132,7 @@ export const checkoutGuildCopy = {
       `You hold ${of(guild)} claim. Subscribing it needs a verified officer or guild-master character.`,
     officer: (name: string, guild: string): string =>
       `${name} holds ${of(guild)} claim and subscribes it. Send them this link.`,
-    member: (guild: string): string =>
-      `Whoever holds ${of(guild)} claim subscribes it. Send them this link.`,
+    member: (guild: string): string => `Whoever holds ${of(guild)} claim subscribes it. Send them this link.`,
   },
   askLeader: (guild: string): string =>
     `${of(guild)} guild master can claim it, or an officer with a second officer's confirmation. Send them this link.`,

@@ -76,7 +76,10 @@ test('the account page lists devices, pairs one, and shows the character', async
   await expect(page.getByTestId('character-selector')).toBeVisible();
   await expect(page.getByText('Raid PC')).toBeVisible();
   await expect(
-    page.getByTestId('account-characters').getByRole('link', { name: 'Elyra Duskvale' }),
+    page
+      .getByTestId('account-character-row')
+      .filter({ hasText: 'Elyra Duskvale' })
+      .getByTestId('character-open'),
   ).toHaveAttribute('href', '/character/us/hardcore/elyra-duskvale');
 
   // One device is paired, so the entry is the quiet "Pair another computer", and the code
@@ -120,25 +123,21 @@ test('a signed-in visitor sees imported characters, refreshes, and is told what 
   await page.goto('/account?refreshed=1');
 
   // No snapshot from before the redirect (a fresh test page): the return reads as updated.
-  await expect(page.getByTestId('bnet-refresh-result')).toContainText('Updated just now');
+  // The result line takes the Characters head's meta for a while.
+  await expect(page.getByTestId('account-characters')).toContainText('Updated just now');
   await expect.poll(() => new URL(page.url()).search).toBe('');
 
-  // The guilded, verified character.
-  await expect(page.getByTestId('account-characters').getByRole('link', { name: 'Thoradin' })).toBeVisible();
-  await expect(page.getByTestId('character-guild-line').filter({ hasText: 'Iron Vanguard' })).toContainText(
-    'Officer',
+  // The guilded character carries its guild on the row's second line.
+  const rows = page.getByTestId('account-character-row');
+  await expect(rows.filter({ hasText: 'Thoradin' }).getByTestId('character-guild')).toHaveText(
+    'Iron Vanguard',
   );
-  await expect(page.getByTestId('character-guild-verified').first()).toHaveText('Verified');
 
   // The unguilded character carries no guild line at all.
-  const elyraRow = page
-    .getByTestId('account-characters')
-    .getByRole('link', { name: 'Elyra Duskvale' })
-    .locator('..');
-  await expect(elyraRow.getByTestId('character-guild-line')).toHaveCount(0);
+  await expect(rows.filter({ hasText: 'Elyra Duskvale' }).getByTestId('character-guild')).toHaveCount(0);
 
   // The result line gives way, after a few seconds, to the import time and the refresh link.
-  await expect(page.getByTestId('bnet-imported')).toContainText('Imported from Battle.net', {
+  await expect(page.getByTestId('account-characters')).toContainText('Imported from Battle.net', {
     timeout: 12_000,
   });
   await expect(page.getByTestId('bnet-refresh')).toHaveAttribute(
@@ -147,7 +146,7 @@ test('a signed-in visitor sees imported characters, refreshes, and is told what 
   );
 });
 
-test('choosing a main on the account page records it and makes it the hero', async ({ page }) => {
+test('choosing a main on the account page records it and makes it the head answer', async ({ page }) => {
   let mainKey: string | undefined;
   const me = () => ({
     ok: true,
@@ -181,9 +180,10 @@ test('choosing a main on the account page records it and makes it the hero', asy
   await expect(list).toBeVisible();
   // Reloadd is the site's guess (highest level) until the player chooses; Dottzz offers Set as main.
   await expect(list.getByTestId('character-main-pill')).toHaveCount(1);
-  const dottzzRow = list.locator('li', { hasText: 'Dottzz' });
+  const dottzzRow = list.getByTestId('account-character-row').filter({ hasText: 'Dottzz' });
   await dottzzRow.getByTestId('character-set-main').click();
   await expect(dottzzRow.getByTestId('character-main-pill')).toBeVisible();
   expect(mainKey).toBe('us/pvp/dottzz');
-  await expect(page.getByTestId('account-hero')).toContainText('Dottzz');
+  // The head's answer is the main.
+  await expect(page.getByTestId('account-head')).toContainText('Dottzz');
 });

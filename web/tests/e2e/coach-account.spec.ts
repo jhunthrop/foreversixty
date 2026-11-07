@@ -1,7 +1,7 @@
 // web/tests/e2e/coach-account.spec.ts
-// The account page's "last raid" coach line (design/specs/2026-10-28-log-coach.md section 3.3):
-// its five states plus the error, the shared reserve (no shift), and the privacy page's Log coach
-// section, shown once the plans page stops holding the coach line and absent while it holds it.
+// The account page's "last raid" coach line (design/specs/2026-10-28-log-coach.md section 3.3; premium
+// spec 2026-11-08 7.2 and G5): the Characters Plate's foot row in its four states with a raid, nothing
+// at all with no raid or on a failed read, and the privacy page's Log coach section.
 import type { Page } from '@playwright/test';
 import { expect, test } from './support/test';
 import { coachCopy } from '../../src/lib/coach/copy';
@@ -16,12 +16,10 @@ import {
   type AccountLineId,
 } from './support/coach-stubs';
 import { gotoHydrated } from './support/hydrated';
-import { drainShifts, recordShifts, sumShifts } from './support/layout-shift';
 import { expectNoAxeViolations } from './support/officer-tools';
 import { shortControls } from './support/short-controls';
 
 const ZONE = 'America/Chicago';
-const MAX_ACCOUNT_CLS = 0.02;
 const SEPARATOR = ' · ';
 test.use({ timezoneId: ZONE });
 
@@ -32,8 +30,7 @@ async function openAccount(page: Page, id: AccountLineId): Promise<void> {
   await signInAs(page, viewer);
   await routeAccountDevices(page);
   await routeRecent(page, recent);
-  await recordShifts(page);
-  await gotoHydrated(page, '/account', 'coach-last-raid');
+  await gotoHydrated(page, '/account', 'account-characters');
 }
 
 /** The sentence the line should read, from the same module the page uses. */
@@ -44,7 +41,7 @@ function expectedSentence(id: AccountLineId): string {
   return view.segments.map((segment) => segment.text).join(SEPARATOR);
 }
 
-const readable: AccountLineId[] = ['premium', 'premium-one', 'free', 'pending', 'clean', 'none'];
+const readable: AccountLineId[] = ['premium', 'premium-one', 'free', 'pending', 'clean'];
 
 for (const id of readable) {
   test(`the ${id} line reads its sentence`, async ({ page }) => {
@@ -66,33 +63,35 @@ test('the Premium line opens the review; the free line goes to /premium', async 
   await expect(free.getByTestId('coach-last-raid-link')).toHaveAttribute('href', '/premium#coach');
 });
 
-test('no raid in 14 days shows the muted none line, never hidden', async ({ page }) => {
-  await openAccount(page, 'none');
-  await expect(line(page)).toHaveText(coachCopy.lastRaidNone);
-  await expect(page.getByTestId('coach-last-raid-link')).toHaveCount(0);
-});
+for (const id of ['none', 'error'] as const) {
+  test(`${id === 'none' ? 'no raid in 14 days' : 'a failed read'} draws no line at all`, async ({ page }) => {
+    const read = page.waitForResponse('**/v1/me/coach/recent');
+    await openAccount(page, id);
+    await read;
+    await expect(page.getByTestId('account-character-row').first()).toBeVisible();
+    await expect(line(page)).toHaveCount(0);
+  });
+}
 
-test('a failed read shows the error line and a retry that reads again', async ({ page }) => {
-  await openAccount(page, 'error');
-  await expect(line(page)).toContainText(coachCopy.lastRaidError);
-  await page.unroute('**/v1/me/coach/recent');
-  await routeRecent(page, RECENT.premium.recent);
-  await page.getByTestId('coach-last-raid-retry').click();
-  await expect(line(page)).toHaveAttribute('data-state', 'ready');
-});
-
-test('the line is the first child of the Characters panel and shifts nothing', async ({ page }) => {
+test("the line is the Characters Plate's foot row, under the character rows", async ({ page }) => {
   await openAccount(page, 'premium');
   await expect(line(page)).toHaveAttribute('data-state', 'ready');
-  const first = page.getByTestId('account-characters').locator('[data-testid="coach-last-raid"]');
-  await expect(first).toBeVisible();
-  expect(sumShifts(await drainShifts(page))).toBeLessThanOrEqual(MAX_ACCOUNT_CLS);
+  const inPlate = page
+    .getByTestId('account-characters')
+    .locator('[data-region="plate"] [data-testid="coach-last-raid"]');
+  await expect(inPlate).toBeVisible();
+  const rowBottom = await page
+    .getByTestId('account-character-row')
+    .last()
+    .evaluate((el) => el.getBoundingClientRect().bottom);
+  const lineTop = await line(page).evaluate((el) => el.getBoundingClientRect().top);
+  expect(lineTop).toBeGreaterThanOrEqual(rowBottom - 1);
 });
 
 test('axe finds nothing, and no control is under 44 px at 360', async ({ page }) => {
   await page.setViewportSize({ width: 360, height: 800 });
-  await openAccount(page, 'error');
-  await expect(line(page)).toContainText(coachCopy.lastRaidError);
+  await openAccount(page, 'premium');
+  await expect(line(page)).toHaveAttribute('data-state', 'ready');
   await expectNoAxeViolations(page, '[data-testid="coach-last-raid"]');
   expect(await shortControls(line(page))).toEqual([]);
 });

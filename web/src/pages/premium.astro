@@ -110,6 +110,7 @@ const guildPlans = [
               name={copy.free.name}
               audience={copy.free.audience}
               value={copy.free.price}
+              level={2}
 
               lines={[{ text: copy.free.note }]}
             >
@@ -127,7 +128,7 @@ const guildPlans = [
             </a>
           </div>
           <div data-testid="plan-premium" id="premium">
-            <PlanHead name={copy.premium.name} audience={copy.premium.audience} value="">
+            <PlanHead name={copy.premium.name} audience={copy.premium.audience} value="" level={2}>
               <span slot="tag" class="your-plan your-plan-premium">
                 <Tag tone="success">{copy.yourPlanTag}</Tag>
               </span>

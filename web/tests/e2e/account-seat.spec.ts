@@ -91,9 +91,9 @@ test('a payer sees the offer, accepts, and reads the new status', async ({ page 
   );
   expect(hit).toContain('/seats/offer/accept');
   await expect(page.getByTestId('account-seat-offer-accept')).toHaveCount(0);
-  await expect(page.getByTestId('account-billing-row')).toContainText(
-    'Premium · ends 20 Dec 2026 · then a seat from The Last Watch',
-  );
+  await expect(page.getByTestId('account-plan-when')).toContainText('Ends');
+  await expect(page.getByTestId('account-plan-when')).toContainText('20 Dec 2026');
+  await expect(page.getByTestId('account-plan-extra')).toHaveText('Then a seat from The Last Watch');
 });
 
 test('a refused accept shows the error line and keeps the offer open', async ({ page }) => {
@@ -117,15 +117,16 @@ test('declining gives its status', async ({ page }) => {
 
 test('own Premium ending into a seat reads the hand-over', async ({ page }) => {
   await openAccount(page, { seat: ME_SEAT }, OWN_PREMIUM);
-  await expect(page.getByTestId('account-billing-row')).toContainText(
-    'Premium · ends 20 Dec 2026 · then a seat from The Last Watch',
-  );
+  await expect(page.getByTestId('account-plan-when')).toContainText('Ends');
+  await expect(page.getByTestId('account-plan-when')).toContainText('20 Dec 2026');
+  await expect(page.getByTestId('account-plan-extra')).toHaveText('Then a seat from The Last Watch');
   await expect(page.getByRole('button', { name: 'Manage billing' })).toBeVisible();
 });
 
 test('a seat holder sees a seat from the guild and no Manage billing', async ({ page }) => {
   await openAccount(page, { seat: { ...ME_SEAT, starts_at: null } });
-  await expect(page.getByTestId('account-billing-row')).toContainText('Premium · a seat from The Last Watch');
+  await expect(page.getByTestId('account-plan-head')).toContainText(accountPlanCopy.head.names.seat);
+  await expect(page.getByTestId('account-plan-extra')).toContainText('The Last Watch');
   await expect(page.getByTestId('account-plan-line2')).toContainText('Given by Thornwick');
   await expect(page.getByRole('button', { name: 'Manage billing' })).toHaveCount(0);
   await expectClean(page);
@@ -155,8 +156,9 @@ test('a seat holder with a personal portal sees Billing history, not Manage bill
     seat: PREMIUM_SEAT_WITH_PORTAL.seat,
     entitlements: { ...PREMIUM_SEAT_WITH_PORTAL.entitlements, server_sims: true },
   });
-  await expect(page.getByTestId('account-billing-row')).toContainText(
-    accountPlanCopy.planLine.seat(PREMIUM_SEAT_WITH_PORTAL.seat?.guild_name ?? ''),
+  await expect(page.getByTestId('account-plan-head')).toContainText(accountPlanCopy.head.names.seat);
+  await expect(page.getByTestId('account-plan-extra')).toContainText(
+    PREMIUM_SEAT_WITH_PORTAL.seat?.guild_name ?? '',
   );
   const button = page.getByTestId('account-billing-button');
   await expect(button).toHaveText(premiumSourceCopy.buttons.history);
@@ -169,7 +171,7 @@ test('a seat holder without a personal portal sees no billing button', async ({ 
     seat: PREMIUM_SEAT_NO_PORTAL.seat,
     entitlements: { ...PREMIUM_SEAT_NO_PORTAL.entitlements, server_sims: true },
   });
-  await expect(page.getByTestId('account-billing-row')).toBeVisible();
+  await expect(page.getByTestId('account-plan-head')).toContainText(accountPlanCopy.head.names.seat);
   await expect(page.getByTestId('account-billing-button')).toHaveCount(0);
 });
 

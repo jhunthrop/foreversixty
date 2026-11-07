@@ -1,23 +1,19 @@
 ---
 // web/src/pages/account.astro
+// Your account (design/specs/2026-11-08-premium-account.md section 7): the whole page is one island
+// (components/account/AccountPage.svelte through Account.svelte) over one /v1/me read; the server
+// markup is its loading state, which reserves the ready page's shape for a hinted visitor.
 import Base from '../layouts/Base.astro';
 import Account from '../components/Account.svelte';
 ---
 
 <Base
   title="Your account"
-  description="Your Forever Sixty account: paired devices, linked characters, and how your name appears."
+  description="Your Forever Sixty account: your characters, your plan, paired devices, Discord and how your name appears."
   path="/account"
+  wide
 >
-  <main
-    id="main"
-    tabindex="-1"
-    class="flex flex-col gap-[22px] px-[18px] pt-4 pb-10 md:gap-8 md:px-0 md:pt-7"
-  >
-    <!-- The title lives inside Account.svelte itself, not here (brief 2026-09-22 §B1: it
-         sits beside the identity line at lg, and both come from the same `me` load) --
-         same "the island owns its own <h1>" pattern character.astro uses for
-         Character.svelte, rather than the two rendering a duplicate heading. -->
+  <main id="main" tabindex="-1" class="flex w-full flex-col">
     <Account client:load mode="account" />
   </main>
 </Base>

@@ -85,21 +85,6 @@ describe('checkout page frame: the head script', () => {
       band: null,
     });
   });
-
-  it.each(['?plan=premium&interval=yearly', '?plan=premium&interval=monthly&comeback=3'])(
-    '%s marks the band premium, so it hugs its h1 from the first paint',
-    async (search) => {
-      expect((await run(search)).band).toBe('premium');
-    },
-  );
-
-  it.each([
-    '?plan=premium&interval=weekly',
-    '?plan=premium&interval=yearly&guild_id=4',
-    '?plan=guild&interval=yearly',
-  ])('%s leaves the band unmarked', async (search) => {
-    expect((await run(search)).band).toBeNull();
-  });
 });
 
 describe('checkout page frame: the CSS', () => {
@@ -123,8 +108,8 @@ describe('checkout page frame: the CSS', () => {
     expect(source).toMatch(/data-checkout-step='guild'.*checkout-body.*\{\s*visibility: hidden;/s);
   });
 
-  it('sets the site measures to the page columns: 640 message and panel, 880 guild step', () => {
-    expect(source).toMatch(/\.checkout-main \{\s*--measure-form: 640px;\s*--measure-wide: 880px;\s*\}/);
+  it('declares no column of its own: the form and ledger Page layouts set the widths (B5)', () => {
+    expect(source).not.toMatch(/--measure-(form|wide)/);
   });
 
   it('main carries the class the CSS keys on and no measure', async () => {

@@ -91,6 +91,11 @@ CSS = '''<style>
 </style>'''
 
 
+# The account page's Sections open on a 12 px gap under the heading's hairline, as the built ui/Section (pt-3);
+# /premium's and /b/:id's Sections open on a Plate, Columns or the planner's own blocks, which carry their own.
+ACCOUNT_CSS = '<style>section>.sec-h+*{margin-top:12px}</style>'
+
+
 def render(title: str, body: str, nav: str, who, chrome_state: str, note: str, extra_css: str = '') -> str:
     assert_no_surface_styles(body)
     return _page(title, body + CSS + extra_css + f'<style>{ws_prims.PRIM_CSS}</style>', nav, who, note, chrome_state)
@@ -124,7 +129,7 @@ def premium_column(st: dict) -> tuple:
     owned = st.get('owned')
     # Ruling PR2: founder is said once (the notice and the price line); the column carries only `Your plan`.
     tag = Tag(e(YOUR_PLAN), 'kill') if owned else ''
-    head = PlanHead(e(P['premium']['name']), e(P['premium']['audience']), e(c['amount']), e(c['suffix'].strip()), lines, tag, gold=True)
+    head = PlanHead(e(P['premium']['name']), e(P['premium']['audience']), e(c['amount']), e(c['suffix'].strip()), lines, tag, gold=True, level=2)
     if owned:
         act = f'<p class="lede strong">{e(SRC["premiumCard"][owned])}</p>{LinkBtn(e(SRC["buttons"]["seePlan"]))}'
     else:
@@ -137,7 +142,7 @@ def premium_column(st: dict) -> tuple:
 def free_column(st: dict) -> tuple:
     mine = st.get('signed') and not st.get('owned')
     tag = Tag(e(YOUR_PLAN), 'kill') if mine else ''
-    head = PlanHead(e(P['free']['name']), e(P['free']['audience']), e(P['free']['price']), '', [(e(P['free']['note']), '')], tag)
+    head = PlanHead(e(P['free']['name']), e(P['free']['audience']), e(P['free']['price']), '', [(e(P['free']['note']), '')], tag, level=2)
     foot = '' if st.get('signed') else r(F['my_reports']['signInAction'])
     body = f'<div class="stack">{head}{ruled(P["free"]["features"])}</div>'
     return ('', '', body, foot)
@@ -463,7 +468,7 @@ def account_page(state: str) -> str:
         head = PageHeader(e(ACC['title']))
         inner = f'<div class="stack" style="padding:16px 20px 20px"><p class="lede">{e(F["signin"]["reason"])}</p><div class="acts">{LinkBtn(e(F['my_reports']['signInAction']), primary=True)}</div></div>'
         body = head + PageForm(Plate(inner, 'Sign in'))
-        return render(f'{ACC["title"]} · Forever Sixty', body, '', None, '', '/account mock, signed out. Copy: signin-copy.ts.')
+        return render(f'{ACC["title"]} · Forever Sixty', body, '', None, '', '/account mock, signed out. Copy: signin-copy.ts.', extra_css=ACCOUNT_CSS)
     if state in ('loading', 'error'):
         head = PageHeader(e(ACC['title']), meta=[Skeleton(220, 14)] if state == 'loading' else None)
         if state == 'loading':
@@ -474,7 +479,7 @@ def account_page(state: str) -> str:
         else:
             inner = f'<div class="stack" style="padding:16px 20px 20px"><p class="alert" role="alert">{e(F["account_failed"])}</p><div class="acts">{Btn(e(CK['retry']), primary=True)}</div></div>'
             body = head + Page('split', Section(e(CL['heading']), Plate(inner, e(CL['heading']))), '')
-        return render(f'{ACC["title"]} · Forever Sixty', body, '', None, 'pending', f'/account mock, {state}.')
+        return render(f'{ACC["title"]} · Forever Sixty', body, '', None, 'pending', f'/account mock, {state}.', extra_css=ACCOUNT_CSS)
     st = ACCOUNT_STATES[state]
     a = A[st.get('acct', state)]
     confirm = st.get('confirm', False)
@@ -486,7 +491,7 @@ def account_page(state: str) -> str:
     body = head + Page('split', main, rail)
     key = st.get('acct', state)
     note = f'/account mock, {state}. Data: premium-facts.json (account models on the {key} account, DERIVED from home fixtures; devices {st["dev"]}).'
-    return render(f'{ACC["title"]} · Forever Sixty', body, '', who_of(key) if key != 'new' else None, chrome_of(key), note)
+    return render(f'{ACC["title"]} · Forever Sixty', body, '', who_of(key) if key != 'new' else None, chrome_of(key), note, extra_css=ACCOUNT_CSS)
 
 
 def account_states() -> str:
@@ -500,7 +505,7 @@ def account_states() -> str:
     cells.append(f'<div class="st-cell"><span class="t-label">Characters: refreshing from Battle.net</span>{characters_section(A["free"], refreshing=True)}</div>')
     cells.append(f'<div class="st-cell"><span class="t-label">Sign out asks first</span><p class="lede">{e(ACC["signOutAsk"])}</p><div class="acts">{Btn(e(ACC["signOut"]), tone="danger")}{Btn(e(DC["cancel"]))}</div></div>')
     body = '<div class="pc" style="padding-top:24px"><h1 class="t-title">Account: element states</h1></div>' + Page('ledger', f'<div class="st-grid">{"".join(cells)}</div>')
-    return render('Account states', body, '', WHO['free'], '', 'Account states sheet; data as the account mocks.')
+    return render('Account states', body, '', WHO['free'], '', 'Account states sheet; data as the account mocks.', extra_css=ACCOUNT_CSS)
 
 
 # ================================================================================================ /b/:id

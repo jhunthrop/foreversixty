@@ -69,7 +69,7 @@ test('not subscribed: plain text with a link to the plans, no upsell tone', asyn
     route.fulfill(fulfil({ ok: true, data: [], error: null, request_id: 'r' })),
   );
   await page.goto('/account');
-  await expect(page.getByTestId('account')).toContainText('Not on Premium');
+  await expect(page.getByTestId('account-plan-head')).toContainText('Free');
   await expect(page.getByTestId('account-see-plans')).toHaveAttribute('href', '/premium#premium');
 });
 
@@ -111,7 +111,8 @@ test('active subscription: shows the renewal date and a working manage-billing b
   });
   await page.route('https://billing.stripe.com/**', (route) => route.fulfill({ status: 200, body: 'ok' }));
   await page.goto('/account');
-  await expect(page.getByTestId('account')).toContainText('renews 1 Dec 2026');
+  await expect(page.getByTestId('account-plan-when')).toContainText('Renews');
+  await expect(page.getByTestId('account-plan-when')).toContainText('1 Dec 2026');
   await page.getByRole('button', { name: 'Manage billing' }).click();
   await page.waitForURL('https://billing.stripe.com/**');
   expect(posted).toEqual({});
@@ -142,7 +143,8 @@ test('past due: shows the payment-failed banner without losing access', async ({
     route.fulfill(fulfil({ ok: true, data: [], error: null, request_id: 'r' })),
   );
   await page.goto('/account');
-  await expect(page.getByTestId('account')).toContainText('payment failed');
+  await expect(page.getByTestId('account-past-due')).toContainText(billingBlockCopy.pastDueTag);
+  await expect(page.getByTestId('account-premium-serverSims-link')).toBeVisible();
 });
 
 test('the Premium block names each benefit and shows the Supporter mark when it is on', async ({ page }) => {
@@ -181,12 +183,12 @@ test('the Premium block names each benefit and shows the Supporter mark when it 
     /Discord notifications\s*Premium\s*only/,
   );
   await expect(page.getByTestId('account-premium-notifications-link')).toHaveCount(0);
-  await expect(page.getByTestId('account-hero').getByTestId('supporter-chip')).toBeVisible();
-  // The mark belongs to the person: the character rows never carry it.
-  await expect(page.getByTestId('supporter-chip')).toHaveCount(1);
+  await expect(page.getByTestId('account-premium-supporter')).toContainText('Shown on your characters');
+  // The mark belongs to the person and shows on the character pages: no row here carries it.
+  await expect(page.getByTestId('supporter-chip')).toHaveCount(0);
 });
 
-test('without the Supporter mark the hero carries no chip', async ({ page }) => {
+test('without the Supporter mark the Plan says Not shown', async ({ page }) => {
   await page.route('**/v1/me', (route) =>
     route.fulfill(fulfil(meWith(mockEntitlements({ supporter_mark: false }), [HERO_CHARACTER]))),
   );
@@ -194,7 +196,8 @@ test('without the Supporter mark the hero carries no chip', async ({ page }) => 
     route.fulfill(fulfil({ ok: true, data: [], error: null, request_id: 'r' })),
   );
   await page.goto('/account');
-  await expect(page.getByTestId('account-hero')).toContainText('Elyra Duskvale');
+  await expect(page.getByTestId('account-characters')).toContainText('Elyra Duskvale');
+  await expect(page.getByTestId('account-premium-supporter')).toContainText('Not shown');
   await expect(page.getByTestId('supporter-chip')).toHaveCount(0);
 });
 
@@ -212,12 +215,14 @@ async function openFixture(page: Page, me: Me): Promise<void> {
   await routeMeCell(page, () => me);
   await routeDevices(page);
   await page.goto('/account');
-  await expect(page.getByTestId('account-plan-headline')).toBeVisible();
+  await expect(page.getByTestId('account-plan-head')).toBeVisible();
 }
 
 test("the owner's grant reads granted with no end date and offers no billing button", async ({ page }) => {
   await openFixture(page, withPremiumRowsOn(PREMIUM_GRANT_OPEN_ENDED));
-  await expect(page.getByTestId('account-billing-row')).toContainText(premiumSourceCopy.grant.noEnd);
+  // A grant: Premium with no date beside it (the plan sentence's `granted, no end date`).
+  await expect(page.getByTestId('account-plan-head')).toContainText('Premium');
+  await expect(page.getByTestId('account-plan-when')).toHaveCount(0);
   await expect(page.getByTestId('account-plan-line2')).toHaveText(premiumSourceCopy.grant.givenNoEnd);
   await expect(page.getByTestId('account-billing-button')).toHaveCount(0);
   await expectNoAxeViolations(page, '#plan');
@@ -242,7 +247,7 @@ test('every fixture whose Premium rows are On reads a plan line, never Not on Pr
     current = withPremiumRowsOn(source);
     await page.goto('/account');
     await expect(page.getByTestId('account-premium-serverSims-link')).toBeVisible();
-    await expect(page.getByTestId('account-billing-row')).not.toContainText(billingBlockCopy.notSubscribed);
+    await expect(page.getByTestId('account-plan-head')).not.toContainText('Free');
   }
 });
 

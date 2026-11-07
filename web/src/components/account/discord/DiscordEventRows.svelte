@@ -1,12 +1,12 @@
 <!-- web/src/components/account/discord/DiscordEventRows.svelte -->
-<!-- "Post when": the two event switches and the nested private-logs switch (disabled, value kept,
-     while the log switch is off), each a SettingsRow with a Switch. The private row carries the
-     note as its sub. A press shows its new position at once, at 60 %, until `onToggle` answers
-     whether the change took; a refusal puts the switch back. -->
+<!-- The event switches (premium spec 2026-11-08 section 7.6): a slim row with its Switch for each
+     event, and the nested private-logs switch (disabled, value kept, while the log switch is off)
+     with the note as its sub. A press shows its new position at once, at 60 %, until `onToggle`
+     answers whether the change took; a refusal puts the switch back. -->
 <script lang="ts">
   import type { DiscordEvents } from '../../../lib/account/api';
   import { notificationsCopy } from '../../../lib/account/notifications-copy';
-  import SettingsRow from '../../ui/SettingsRow.svelte';
+  import Row from '../../ui/Row.svelte';
   import Switch from '../../ui/Switch.svelte';
 
   const uid = $props.id();
@@ -21,7 +21,7 @@
   }: {
     events: DiscordEvents;
     disabled?: boolean;
-    /** The block is not live (switched off, lapsed): greyed rows, switches off the tab order. */
+    /** The block is not live (switched off, lapsed): the switches are disabled (45 %, off the tab order). */
     inactive?: boolean;
     busy?: boolean;
     showNote?: boolean;
@@ -29,23 +29,12 @@
   } = $props();
 
   const rows = [
-    {
-      key: 'sim_finished',
-      label: notificationsCopy.eventSimFinished,
-      testid: 'discord-event-sim',
-      glyph: 'server',
-    },
-    {
-      key: 'upload_parsed',
-      label: notificationsCopy.eventUploadParsed,
-      testid: 'discord-event-upload',
-      glyph: 'chart',
-    },
+    { key: 'sim_finished', label: notificationsCopy.eventSimFinished, testid: 'discord-event-sim' },
+    { key: 'upload_parsed', label: notificationsCopy.eventUploadParsed, testid: 'discord-event-upload' },
     {
       key: 'upload_private',
       label: notificationsCopy.eventUploadPrivate,
       testid: 'discord-event-private',
-      glyph: 'lock',
       child: true,
     },
   ] as const;
@@ -69,32 +58,32 @@
   }
 </script>
 
-<div class="flex flex-col" role="group" aria-labelledby="{uid}-legend" aria-busy={busy}>
-  <p
-    id="{uid}-legend"
-    class="text-muted border-line-soft border-t px-5 pt-4 pb-2 text-[11px] leading-none font-bold tracking-[.14em] uppercase"
-  >
-    {notificationsCopy.eventsLabel}
-  </p>
+<div aria-busy={busy ? 'true' : undefined}>
   {#each rows as row (row.key)}
-    <SettingsRow
-      label={row.label}
-      glyph={row.glyph}
-      nested={'child' in row}
-      sub={'child' in row && showNote ? notificationsCopy.eventsNote : undefined}
-      disabled={inactive || ('child' in row && !events.upload_parsed)}
-      testid="{row.testid}-row"
+    <div
+      class:pl-6={'child' in row}
+      data-nested={'child' in row ? 'true' : undefined}
+      data-testid="{row.testid}-row"
     >
-      {#snippet control(labelId)}
-        <Switch
-          checked={shown(row.key)}
-          labelledby={labelId}
-          disabled={isDisabled(row.key)}
-          saving={pending?.key === row.key}
-          onchange={(next) => change(row.key, next)}
-          testid={row.testid}
-        />
-      {/snippet}
-    </SettingsRow>
+      <Row
+        title={row.label}
+        sub={'child' in row && showNote ? notificationsCopy.eventsNote : undefined}
+        density="slim"
+        open
+      >
+        {#snippet titleContent()}<span id="{uid}-{row.key}" class="text-text font-normal">{row.label}</span
+          >{/snippet}
+        {#snippet trail()}
+          <Switch
+            checked={shown(row.key)}
+            labelledby="{uid}-{row.key}"
+            disabled={isDisabled(row.key)}
+            saving={pending?.key === row.key}
+            onchange={(next) => change(row.key, next)}
+            testid={row.testid}
+          />
+        {/snippet}
+      </Row>
+    </div>
   {/each}
 </div>

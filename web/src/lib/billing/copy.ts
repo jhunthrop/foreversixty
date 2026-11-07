@@ -36,7 +36,8 @@ export const checkoutCopy = {
   trialSaved: (date: string): string => `Card saved. First charge ${date}.`,
   checkAgain: 'Check again',
   /** Above the next steps once Premium is on (ruling K2): `$40 a year · renews 4 Nov 2027 · receipt from Stripe by email`. */
-  renewalLine: (price: string, date: string): string => `${price} · renews ${date} · receipt from Stripe by email`,
+  renewalLine: (price: string, date: string): string =>
+    `${price} · renews ${date} · receipt from Stripe by email`,
   nextSim: 'Run a server sim',
   nextCoach: 'Upload a log for the coach',
 };

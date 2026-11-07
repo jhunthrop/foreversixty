@@ -33,29 +33,36 @@
   const pending = $derived(plan === null && !invalid);
   const guild = $derived(plan !== null && PLANS[plan].guild);
   const title = $derived(
-    invalid ? copy.band.invalidTitle : plan === null ? '' : guild ? copy.band.title : PLANS[plan].name,
+    invalid ? copy.band.invalidTitle : plan === null || guild ? copy.band.title : PLANS[plan].name,
   );
-  const cell = $derived(plan === null ? null : priceCell(plan, interval, founder));
+  // Before the URL is read the head draws a guild plan's summary hidden (the taller frame), so a
+  // guild checkout, which stays on this page, never moves when the launcher fills it in.
+  const shown = $derived<PlanKey | null>(plan ?? (pending ? 'guild' : null));
+  const cell = $derived(shown === null ? null : priceCell(shown, interval, founder));
 </script>
 
 <div class="checkout-head" class:is-pending={pending} data-testid="checkout-band">
-  <PageHeader title={title || ' '} tone="strong">
+  <PageHeader {title} tone="strong">
     {#snippet answer()}
-      {#if cell !== null && plan !== null}
-        <div class="checkout-plan" data-testid="checkout-plan">
+      {#if cell !== null && shown !== null}
+        <div
+          class="checkout-plan"
+          data-testid="checkout-plan-summary"
+          aria-hidden={pending ? 'true' : undefined}
+        >
           <span class="checkout-plan-fig">
             <Figure
               value={cell.amount}
               unit={cell.suffix.trim()}
-              label={guild ? PLANS[plan].name : undefined}
+              label={guild || pending ? PLANS[shown].name : undefined}
               tone="gold"
               align="end"
             />
             {#if founder}<Tag>{copy.planSummary.founder}</Tag>{/if}
           </span>
-          {#if guild}
+          {#if guild || pending}
             <span class="text-small text-muted" data-testid="checkout-size-line"
-              >{plan === 'raid_guild' ? copy.sizeLine.raidGuild : copy.sizeLine.guild}</span
+              >{shown === 'raid_guild' ? copy.sizeLine.raidGuild : copy.sizeLine.guild}</span
             >
             <span class="text-small text-strong font-bold">{copy.planSummary.trial}</span>
           {:else}
@@ -65,8 +72,6 @@
               >{copy.planSummary.changePlan} ›</a
             >{/if}
         </div>
-      {:else if pending}
-        <div class="checkout-plan" aria-hidden="true"></div>
       {/if}
     {/snippet}
   </PageHeader>
@@ -88,7 +93,8 @@
     align-items: flex-end;
     gap: 8px;
   }
-  .is-pending :global(h1) {
+  .is-pending :global(h1),
+  .is-pending .checkout-plan {
     visibility: hidden;
   }
   @media (min-width: 900px) {

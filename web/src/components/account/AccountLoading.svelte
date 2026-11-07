@@ -1,34 +1,55 @@
 <!-- web/src/components/account/AccountLoading.svelte -->
-<!-- /account's loading state: the ready page's layout with its contents missing. It takes no
-     props: every height comes from CSS (global.css's "account loading reserve" block) keyed on
-     the hints Base.astro sets on <html> before paint. -->
+<!-- /account's loading state (premium spec 2026-11-08 section 7A): the ready page's head and split
+     with skeletons at the final geometry. The two columns carry the shipped reserve (spec
+     2026-10-25-discord-notifications 9.1): global.css's "account loading reserve" block sizes
+     `.account-left-skeleton` (main) and `.account-rail-skeleton` (the rail) from the heights
+     Base.astro reads before paint, so a returning visitor's loading page has the ready page's
+     shape. A visitor with no session hint can only resolve to the sign-in page: nothing is drawn. -->
 <script lang="ts">
-  import AccountTitle from './AccountTitle.svelte';
+  import { accountPageCopy } from '../../lib/account/account-page-copy';
+  import { characterListCopy } from '../../lib/account/character-list-copy';
+  import { notificationsCopy } from '../../lib/account/notifications-copy';
+  import Page from '../ui/Page.svelte';
+  import Plate from '../ui/Plate.svelte';
+  import Section from '../ui/Section.svelte';
   import Skeleton from '../ui/Skeleton.svelte';
+  import AccountHead from './AccountHead.svelte';
+
+  const RAIL = [accountPageCopy.devicesLabel, notificationsCopy.label, accountPageCopy.youLabel];
 </script>
 
-<!-- The loading state draws the ready page's layout with its contents missing (spec
-       2026-10-25-discord-notifications 9.1): the header row, the 8/4 grid, and the rail's
-       blocks at their floors. global.css's "account loading reserve" block sizes them
-       from the hints Base.astro sets before paint. `.session-reserve` collapses the
-       skeletons when `<html>` carries no data-session hint, i.e. the visitor has no
-       session cookie and this can only resolve to the sign-in prompt, so that page ends
-       under its one button instead of reserving panels of black. -->
-<div class="account-header-reserve">
-  <AccountTitle />
-</div>
-<div
-  class="session-reserve flex flex-col gap-8 lg:grid lg:grid-cols-[minmax(0,1fr)_440px] lg:items-start lg:gap-8"
->
-  <div>
-    <Skeleton lines={3} minHeight="account-left-skeleton" testid="account-left-skeleton" />
+<Page layout="split" testid="account-loading">
+  {#snippet header()}<AccountHead />{/snippet}
+  <div class="account-loading session-reserve account-left-skeleton" data-testid="account-left-skeleton">
+    <Section title={characterListCopy.heading}>
+      <Plate>
+        <div class="px-4 py-3">
+          <Skeleton lines={2} rowHeight="h-[56px]" testid="account-characters-skeleton" />
+        </div>
+      </Plate>
+    </Section>
+    <Section title={accountPageCopy.planLabel}>
+      <Skeleton lines={4} rowHeight="h-5" testid="account-plan-skeleton" />
+    </Section>
   </div>
-  <div class="account-rail-skeleton flex flex-col gap-8" data-testid="account-rail-skeleton">
-    <Skeleton lines={3} minHeight="account-devices-skeleton" testid="account-devices-skeleton" />
-    <Skeleton lines={3} minHeight="account-you-skeleton" testid="account-you-skeleton" />
-    <div class="flex flex-col gap-4">
-      <Skeleton lines={3} minHeight="account-plan-skeleton" testid="account-plan-skeleton" />
-      <Skeleton lines={3} minHeight="account-discord-skeleton" testid="account-discord-skeleton" />
+  {#snippet rail()}
+    <div class="account-loading session-reserve account-rail-skeleton" data-testid="account-rail-skeleton">
+      {#each RAIL as title (title)}
+        <Section {title}>
+          <Skeleton lines={3} rowHeight="h-5" testid="account-{title.toLowerCase()}-skeleton" />
+        </Section>
+      {/each}
     </div>
-  </div>
-</div>
+  {/snippet}
+</Page>
+
+<style>
+  .account-loading {
+    display: flex;
+    flex-direction: column;
+    gap: var(--section-gap);
+  }
+  :global(html:not([data-session='1'])) .account-loading {
+    display: none;
+  }
+</style>

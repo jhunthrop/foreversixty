@@ -28,10 +28,10 @@ function renderLine(plan: GuildBillingView): { body: string; text: string } {
 }
 
 describe('AccountGuildPlanLine', () => {
-  it('reads a Guild settings link row whose value is the scoped line', () => {
+  it('reads a Guild settings slim row whose trail links to them with the scoped line', () => {
     const out = renderLine(BASE);
     expect(out.body).toContain('data-testid="account-guild-plan"');
-    expect(out.text).toBe('Guild settings Officer tools · until 12 Dec 2026');
+    expect(out.text).toBe('Guild settings Officer tools · until 12 Dec 2026 ›');
     expect(out.body).toContain('href="/guild/us/hardcore/the-last-watch/settings"');
     expect(out.body).not.toContain('underline');
   });
@@ -43,7 +43,7 @@ describe('AccountGuildPlanLine', () => {
       current_period_end: '2026-12-31T12:00:00Z',
       billed_by: 'a#1',
     });
-    expect(out.text).toBe('Guild settings Renews 31 Dec 2026');
+    expect(out.text).toBe('Guild settings Renews 31 Dec 2026 ›');
   });
 
   it('keeps the seat note and never names the tier the account holds', () => {
@@ -55,6 +55,6 @@ describe('AccountGuildPlanLine', () => {
       billed_by: 'a#1',
       you_hold_seat: true,
     });
-    expect(out.text).toBe('Guild settings Renews 12 Dec 2026 · you hold a seat');
+    expect(out.text).toBe('Guild settings Renews 12 Dec 2026 · you hold a seat ›');
   });
 });

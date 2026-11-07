@@ -162,7 +162,8 @@ test.describe('unlink', () => {
     await openAccount(page, { linked: true });
     await unlink(page).click();
     await expect(page.getByTestId('discord-unlink-question')).toHaveText(copy.unlinkQuestion);
-    await expect(page.getByTestId('discord-linked-as')).toBeVisible();
+    // The question takes the linked row's place (premium spec 2026-11-08, -confirm).
+    await expect(page.getByTestId('discord-linked-as')).toHaveCount(0);
     await expect(page.getByTestId('discord-unlink-cancel')).toBeFocused();
     expect(
       await page.getByTestId('discord-unlink-cancel').evaluate((el) => el.matches(':focus-visible')),
@@ -179,7 +180,7 @@ test.describe('unlink', () => {
     await expect(status(page)).toHaveText(copy.unlinked);
     await expect(link(page)).toBeFocused();
     expect(seen.unlinks).toBe(1);
-    await expect(status(page)).toHaveText('', { timeout: 6000 });
+    await expect(status(page)).toHaveCount(0, { timeout: 6000 });
   });
 
   test('a failure says so and the question stays', async ({ page }) => {
@@ -211,11 +212,10 @@ test('Opening Discord… and the 10 s stuck line under fake timers', async ({ pa
 });
 
 test.describe('layout', () => {
-  test('#you scrolls the panel to the top', async ({ page }) => {
+  test('#you (where the bot sends a player) scrolls the Discord section to the top', async ({ page }) => {
     await page.setViewportSize({ width: DESKTOP.width, height: 400 });
     await openAccount(page, {});
-    const panel = page.locator('#you');
-    await expect(panel).toHaveCSS('scroll-margin-top', '80px');
+    const panel = page.locator('#discord');
     await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(0);
     const top = (await panel.boundingBox())?.y ?? Infinity;
     expect(top).toBeGreaterThanOrEqual(0);

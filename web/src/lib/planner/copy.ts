@@ -113,7 +113,8 @@ export const plannerCopy = {
   fork: 'Edit a copy',
   /** The shared page's meta lead and its view count (spec 2026-11-08 section 8). */
   sharedMeta: 'Shared build',
-  sharedViews: (views: number): string => `${views.toLocaleString('en-US')} ${views === 1 ? 'view' : 'views'}`,
+  sharedViews: (views: number): string =>
+    `${views.toLocaleString('en-US')} ${views === 1 ? 'view' : 'views'}`,
   shareTitleLabel: 'Title',
   shareTitlePlaceholder: 'Optional',
   copyLink: 'Copy link',

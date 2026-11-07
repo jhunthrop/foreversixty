@@ -115,7 +115,7 @@ describe('AccountPremiumBlock', () => {
     it('reads muted Sparkline only when not entitled', () => {
       const html = renderBlock(mockEntitlements({ history: false }), [CHARACTER]);
       expect(text(html)).toContain('History charts Sparkline only');
-      expect(html).toMatch(/text-muted[^>]*data-testid="settings-row-value">Sparkline only</);
+      expect(html).toContain('<span class="text-small text-muted">Sparkline only</span>');
       expect(html).not.toContain('account-premium-history-link');
     });
   });
@@ -163,12 +163,12 @@ describe('AccountPremiumBlock plan headline', () => {
     expect(renderBlock(mockEntitlements())).not.toContain('account-plan-headline');
   });
 
-  it('reads the plan line and a Founder pill with a title and a screen-reader tail', () => {
+  it('reads the plan name, its date and a Founder pill with a title and a screen-reader tail', () => {
     const html = renderPlan({ ...PLAN, founder: true });
-    expect(text(html)).toContain('Premium · renews 20 Dec 2026 · $6 a month');
     expect(html).toContain('data-testid="account-founder"');
-    expect(html.replace(/<!--[^>]*-->/g, '')).toContain('<h2 class="heading-plan">Premium</h2>');
+    expect(html).toMatch(/data-testid="account-plan-head"[\s\S]*>Premium</);
     expect(text(html)).toContain('Renews 20 Dec 2026');
+    expect(text(html)).toContain('$6 a month');
     expect(html).toContain('title="Founder price, kept while your plan stays active."');
     expect(html).toMatch(/class="sr-only"> ?Founder price, kept while your plan stays active\./);
     expect(renderPlan(PLAN)).not.toContain('account-founder');

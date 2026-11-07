@@ -14,7 +14,7 @@ const fulfil = (body: unknown, status = 200) => ({
   body: JSON.stringify(body),
 });
 
-test('signing in lands on the hub with the main character in the hero band', async ({ page }) => {
+test("signing in lands on the account with the main character as the head's answer", async ({ page }) => {
   await page.route('**/v1/me', (route) =>
     route.fulfill(fulfil({ ok: true, data: meBnetFixture, error: null, request_id: 'r' })),
   );
@@ -53,15 +53,9 @@ test('signing in lands on the hub with the main character in the hero band', asy
     'Thoradin is your current character',
   );
   await expect.poll(() => new URL(page.url()).search).toBe('');
-  const heroBand = page.getByTestId('account-hero');
-  await expect(heroBand).toContainText('Thoradin');
-  // Thoradin also appears in the Characters list below (its own row's own
-  // "character-open-sim" link, pointed at the armory fallback), so this locator must stay
-  // scoped to the hero band -- the same disambiguation handoffs-account-character.spec.ts
-  // uses for a row -- or it hits a strict-mode violation on the two same-testid matches.
-  const heroSim = heroBand.getByTestId('character-open-sim');
-  await expect(heroSim).toHaveAttribute('href', /^\/sim\?source=addon&code=/);
-
-  await heroSim.click();
-  await expect(page).toHaveURL(/\/sim\?source=addon&code=/);
+  // The head's answer is the main character (premium spec 2026-11-08 7.1): Open goes to its page.
+  const answer = page.getByTestId('account-head');
+  await expect(answer).toContainText('Thoradin');
+  const open = answer.getByTestId('setup-answer-open');
+  await expect(open).toHaveAttribute('href', '/character/us/pvp/thoradin');
 });

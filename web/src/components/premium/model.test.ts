@@ -39,7 +39,9 @@ describe('priceCell', () => {
     expect(priceCell('premium', 'monthly', true).founderLine).toBe(
       'Founder price for anyone who subscribes by 6 Jan 2027. $6 a month after that.',
     );
-    expect(priceCell('guild', 'yearly', true).founderLine).toBe('Founder price for anyone who subscribes by 6 Jan 2027. $150 after that.');
+    expect(priceCell('guild', 'yearly', true).founderLine).toBe(
+      'Founder price for anyone who subscribes by 6 Jan 2027. $150 after that.',
+    );
     expect(priceCell('raid_guild', 'monthly', true).founderLine).toBe(
       'Founder price for anyone who subscribes by 6 Jan 2027. $25 a month after that.',
     );

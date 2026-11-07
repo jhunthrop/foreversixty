@@ -1,10 +1,8 @@
 // web/tests/e2e/handoffs-account-character.spec.ts
-// The account Characters list's per-row action is built from `MeCharacter.build` alone, with
-// no per-row `sim-input` fetch (spec 2026-09-22 §3.4, CharacterRowLink.svelte's own header
-// comment) -- unlike the hero band and the character page, which still use
-// CharacterHandoffLinks and its own real fetch. A row therefore offers "Open in simulator"
-// (via the fetch-free armory-ref href) exactly when the character carries a `build`, and
-// "No export yet" otherwise; there is no per-row "Open in planner" link.
+// The account Characters Plate's rows (premium spec 2026-11-08 7.2) are drawn from `/v1/me` alone,
+// with no per-row `sim-input` fetch: each row says where its build came from (`Addon`,
+// `Battle.net`, or `No gear yet` when it has none) and opens the character's page, where the
+// simulator, planner and paste hand-offs live.
 import { expect, test } from './support/test';
 
 function envelope(data: unknown, status = 200) {
@@ -31,19 +29,30 @@ const ME = {
   guilds: [],
 };
 
-test('a signed-in member sees hand-off links only for a character with a build', async ({ page }) => {
+test('each row names its build source and opens the character page', async ({ page }) => {
   await page.route('**/v1/me', (route) => route.fulfill(envelope(ME)));
   await page.route('**/v1/devices', (route) => route.fulfill(envelope([])));
+  const simInputs: string[] = [];
+  await page.route('**/v1/characters/**', (route) => {
+    simInputs.push(route.request().url());
+    return route.fulfill(envelope(null, 404));
+  });
 
   await page.goto('/account');
 
-  const thrallgarRow = page.getByRole('listitem').filter({ hasText: 'Thrallgar' });
-  await expect(thrallgarRow.getByTestId('character-open-sim')).toHaveAttribute(
+  const rows = page.getByTestId('account-character-row');
+  const thrallgarRow = rows.filter({ hasText: 'Thrallgar' });
+  await expect(thrallgarRow.getByTestId('character-source')).toHaveText('Addon');
+  await expect(thrallgarRow.getByTestId('character-open')).toHaveAttribute(
     'href',
-    '/sim?source=armory&ref=us%2Fnormal%2Fthrallgar',
+    '/character/us/normal/thrallgar',
   );
 
-  const rolandRow = page.getByRole('listitem').filter({ hasText: 'Roland' });
-  await expect(rolandRow.getByTestId('character-paste-export')).toHaveAttribute('href', '/setup#paste');
-  await expect(rolandRow.getByTestId('character-open-sim')).toHaveCount(0);
+  const rolandRow = rows.filter({ hasText: 'Roland' });
+  await expect(rolandRow.getByTestId('character-source')).toHaveText('No gear yet');
+  await expect(rolandRow.getByTestId('character-open')).toHaveAttribute(
+    'href',
+    '/character/us/normal/roland',
+  );
+  expect(simInputs.filter((url) => url.includes('sim-input'))).toEqual([]);
 });

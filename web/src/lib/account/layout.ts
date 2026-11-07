@@ -2,8 +2,10 @@
 // Reserved-height constants for /account's loading state (experience spec
 // 2026-10-25-discord-notifications section 9.1): the loading page draws the ready page's
 // layout, so these tables are the single source for the floors that global.css's
-// "account loading reserve" block repeats as CSS (layout-reserve.test.ts asserts the two agree) and for
-// SIGNED_OUT_MIN_H. `npm run lhci`'s own account.html run cannot confirm any of it: its sandbox
+// "account loading reserve" block repeats as CSS (layout-reserve.test.ts asserts the two agree).
+// The 2026-11-08 page (premium spec 7) keeps the mechanism: `left` is now the main column (Characters,
+// Plan, Guild) and `rail` the rail (Devices, Discord, You); a stored height is what reserves them,
+// and the floors below are the shipped page's, met only on a first visit. `npm run lhci`'s own account.html run cannot confirm any of it: its sandbox
 // has no CORS allowance for localhost to call the real API, so it always lands on the
 // `failed`/LoadError branch instead.
 
@@ -15,15 +17,6 @@ export const SECTION_GAP_PX = 32;
 
 /** The gap between the rail's Plan block and the Discord block under it (`gap-4`). */
 export const PLAN_GAP_PX = 16;
-
-/** The signed-out prompt's floor. A visitor with the session hint sees the loading reserve until
- *  `/v1/me` answers, so a hinted visitor who turns out signed out only avoids a layout shift if
- *  the prompt's block holds the same height as the reserved grid under the header row (no
- *  Discord hint then: `data-discord` is `none`, so the rail is Devices + You + Plan). Both
- *  figures are `SECTION_GAP_PX` arithmetic over the tables below -- `layout-reserve.test.ts` checks
- *  them -- and Tailwind needs the literal class text. Unverifiable against `npm run lhci`'s own
- *  account.html run (its sandbox has no CORS allowance, so it always lands on LoadError). */
-export const SIGNED_OUT_MIN_H = 'min-h-[1576px] lg:min-h-[949px]';
 
 // ---- The loading reserve (experience spec 2026-10-25-discord-notifications §9.1) ----------
 // The loading state draws the ready page's skeleton at its real positions. Two buckets:

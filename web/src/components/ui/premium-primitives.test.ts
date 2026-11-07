@@ -16,7 +16,11 @@ const raw = (value: string) => createRawSnippet(() => ({ render: () => value }))
 
 describe('Columns', () => {
   it('lays its children out as columns: open by default, the count on the grid', () => {
-    const body = html(Columns, { count: 2, children: raw('<div><p>a</p><p>b</p></div>'), testid: 'c' } as never);
+    const body = html(Columns, {
+      count: 2,
+      children: raw('<div><p>a</p><p>b</p></div>'),
+      testid: 'c',
+    } as never);
     expect(body).toContain('class="ui-cols');
     expect(body).toContain('data-open="true"');
     expect(body).toContain('--cols: 2');
@@ -65,7 +69,12 @@ describe('PlanHead', () => {
     } as never);
     expect(body).toMatch(/<h2 class="ui-plh-name[^"]*">Free<span class="tag">Your plan<\/span><\/h2>/);
     expect(body).toMatch(/text-strong[^"]*">\$0</);
-    const custom = html(PlanHead, { name: 'Guild', audience: 'a', value: '', price: raw('<b>both</b>') } as never);
+    const custom = html(PlanHead, {
+      name: 'Guild',
+      audience: 'a',
+      value: '',
+      price: raw('<b>both</b>'),
+    } as never);
     expect(custom).toContain('<b>both</b>');
     expect(custom).not.toContain('ui-figure');
   });

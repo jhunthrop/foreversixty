@@ -65,7 +65,7 @@ test('changing consent calls the API and leaving removes the row and the cards g
 
   await page.goto('/account');
   await expect(page.getByTestId('account-guilds')).toContainText('The Last Watch');
-  await expect(page.getByTestId('character-guild-line').first()).toContainText('The Last Watch');
+  await expect(page.getByTestId('character-guild').first()).toContainText('The Last Watch');
   await choose(page.getByTestId('account-guild-consent'), 'roster');
   await expect(page.getByTestId('account-guild-consent')).toHaveValue('roster');
   await expect(page.getByTestId('account-guild-consent-saved')).toHaveText(
@@ -74,22 +74,22 @@ test('changing consent calls the API and leaving removes the row and the cards g
 
   // Leave asks first, naming what it removes; Cancel changes nothing.
   await page.getByTestId('account-guild-leave').click();
-  await expect(page.getByTestId('account-guild-leave-confirm')).toContainText(
+  await expect(page.getByTestId('account-guild-leave-ask')).toContainText(
     'Leave The Last Watch? This removes all 3 of your characters from its roster.',
   );
   // A member holds no claim, so the confirm says nothing about releasing one.
   await expect(page.getByTestId('account-guild-leave-releases')).toHaveCount(0);
-  await page.getByTestId('account-guild-leave-confirm').getByRole('button', { name: 'Cancel' }).click();
-  await expect(page.getByTestId('account-guild-leave-confirm')).toHaveCount(0);
+  await page.getByTestId('account-guild-leave-ask').getByRole('button', { name: 'Cancel' }).click();
+  await expect(page.getByTestId('account-guild-leave-ask')).toHaveCount(0);
   expect(leaves).toBe(0);
   await expect(page.getByTestId('account-guilds')).toContainText('The Last Watch');
 
   await page.getByTestId('account-guild-leave').click();
-  await page.getByTestId('account-guild-leave-confirm-button').click();
+  await page.getByTestId('account-guild-leave-confirm').click();
   await expect(page.getByTestId('account-guilds')).toHaveCount(0);
   expect(leaves).toBe(1);
   // The character cards drop its guild line in the same view, no reload.
-  await expect(page.getByTestId('character-guild-line')).toHaveCount(0);
+  await expect(page.getByTestId('character-guild')).toHaveCount(0);
   await expect(page.getByTestId('account-characters')).toContainText('Quillfeather');
 });
 
@@ -114,7 +114,7 @@ test('the guild master is warned that leaving releases the claim and what the of
   await page.route('**/v1/devices', (route) => route.fulfill(envelope([])));
   await page.goto('/account');
   await page.getByTestId('account-guild-leave').click();
-  const confirm = page.getByTestId('account-guild-leave-confirm');
+  const confirm = page.getByTestId('account-guild-leave-ask');
   await expect(confirm).toContainText(
     'Leave Lifecycle Test? This removes all 3 of your characters from its roster.',
   );
@@ -124,28 +124,29 @@ test('the guild master is warned that leaving releases the claim and what the of
   await expect(page.getByTestId('account-guild-leave-no-handover')).toHaveText(
     'There is no hand-over yet; if you want an officer to run the guild after you, ask us on Discord before you leave.',
   );
-  // Leave is the red primary and Cancel the plain one, with focus on Cancel; the consent select is labelled.
-  const leave = page.getByTestId('account-guild-leave-confirm-button');
+  // Leave is the danger confirm (wipe outline, never filled) and Cancel the plain one, with focus on
+  // Cancel; the consent select is labelled.
+  const leave = page.getByTestId('account-guild-leave-confirm');
   await expect(leave).toHaveText('Leave guild');
-  expect(await leave.evaluate((node) => getComputedStyle(node).backgroundColor)).not.toBe('rgba(0, 0, 0, 0)');
+  expect(await leave.evaluate((node) => getComputedStyle(node).backgroundColor)).toBe('rgba(0, 0, 0, 0)');
   await expect(page.getByTestId('account-guild-leave-cancel')).toBeFocused();
   await expect(page.getByRole('combobox', { name: 'Share with this guild' })).toBeVisible();
   // P.1: nothing under the open confirm -- no hairline on the row, no empty line after the card.
   const row = page.getByTestId('account-guild-row');
   await expect(row).toHaveCSS('border-bottom-width', '0px');
   expect(await row.evaluate((node) => node.lastElementChild?.getAttribute('data-testid'))).toBe(
-    'account-guild-leave-confirm',
+    'account-guild-leave-ask',
   );
   const dir = process.env.G7_SHOTS;
   if (dir) await page.screenshot({ path: `${dir}/g7-leave-claimant-1280.png`, fullPage: true });
-  // The confirm clears the plan card below it by a gutter, at a phone's width too.
+  // The confirm clears the section below it (Devices, at a phone's width) by a gutter.
   await page.setViewportSize({ width: 390, height: 900 });
-  const [box, plan] = await Promise.all([
+  const [box, next] = await Promise.all([
     confirm.boundingBox(),
-    page.getByTestId('account-guilds-plan').boundingBox(),
+    page.getByTestId('account-devices').boundingBox(),
   ]);
-  expect(box && plan).toBeTruthy();
-  if (box && plan) expect(plan.y - (box.y + box.height)).toBeGreaterThanOrEqual(12);
+  expect(box && next).toBeTruthy();
+  if (box && next) expect(next.y - (box.y + box.height)).toBeGreaterThanOrEqual(12);
   if (dir) await page.screenshot({ path: `${dir}/g7-leave-claimant-390.png`, fullPage: true });
 });
 

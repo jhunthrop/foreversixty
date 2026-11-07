@@ -1,14 +1,17 @@
 <!-- web/src/components/account/discord/DiscordSaved.svelte -->
-<!-- A saved webhook's card body (saved, switched off, lapsed): destination, notice, the events
-     and the actions, in the spec's per-state order (3.2). Switched off puts the events last and
-     the replace row right under the notice; saved puts the replace row above the actions. Both hide the row
-     while the remove question is open. -->
+<!-- A saved webhook's block (saved, switched off, lapsed; premium spec 2026-11-08 section 7.6): where
+     it posts, the warning or notice, the event switches, Send test message and Remove, and the way to
+     a different channel, in the spec's per-state order (3.2): switched off puts the events last and
+     the replace link right under the notice. The replace link hides while the remove question is
+     open. -->
 <script lang="ts">
   import type { DiscordEvents, DiscordNotifications } from '../../../lib/account/api';
   import { removeQuestionFor, sourceOf, type DiscordBlockKey } from '../../../lib/account/notifications';
+  import { notificationsCopy } from '../../../lib/account/notifications-copy';
+  import { LINK } from '../../../lib/ui/primitives';
   import DiscordActions from './DiscordActions.svelte';
+  import DiscordConnectLink from './DiscordConnectLink.svelte';
   import DiscordEventRows from './DiscordEventRows.svelte';
-  import DiscordReplace from './DiscordReplace.svelte';
   import DiscordStatusLine from './DiscordStatusLine.svelte';
   import DiscordSummary from './DiscordSummary.svelte';
 
@@ -39,6 +42,9 @@
     onReplace: () => void;
     onStuck: () => void;
   } = $props();
+
+  const connected = $derived(sourceOf(discord) === 'connected');
+  const replaceShown = $derived(!confirming && (state === 'saved' || state === 'disabled'));
 </script>
 
 {#snippet eventRows()}
@@ -52,19 +58,37 @@
   />
 {/snippet}
 
-<DiscordSummary
-  {state}
-  {discord}
-  replaceHidden={confirming}
-  replaceDisabled={busy !== null}
-  {onReplace}
-  {onStuck}
-/>
+{#snippet replace()}
+  {#if connected}
+    <p>
+      <DiscordConnectLink
+        label={notificationsCopy.reconnect}
+        class="{LINK} text-[15px]"
+        testid="discord-replace"
+        busy={busy !== null}
+        {onStuck}
+      >
+        {#snippet content(text)}{text} ›{/snippet}
+      </DiscordConnectLink>
+    </p>
+    <p class="text-small text-muted" data-testid="discord-replace-note">{notificationsCopy.reconnectNote}</p>
+  {:else}
+    <p>
+      <button
+        type="button"
+        class="{LINK} text-[15px]"
+        disabled={busy !== null}
+        onclick={onReplace}
+        data-testid="discord-replace">{notificationsCopy.replace} ›</button
+      >
+    </p>
+  {/if}
+{/snippet}
+
+<DiscordSummary {state} {discord} />
+{#if state === 'disabled' && replaceShown}{@render replace()}{/if}
 {#if state !== 'disabled'}{@render eventRows()}{/if}
-{#if state === 'saved' && !confirming}
-  <DiscordReplace variant="row" source={sourceOf(discord)} disabled={busy !== null} {onReplace} {onStuck} />
-{/if}
-<div class="border-line-soft flex flex-col border-t px-5 py-4">
+<div class="flex flex-col">
   <DiscordActions
     {state}
     {confirming}
@@ -77,4 +101,5 @@
   />
   <DiscordStatusLine {status} reserve={false} />
 </div>
+{#if state === 'saved' && replaceShown}{@render replace()}{/if}
 {#if state === 'disabled'}{@render eventRows()}{/if}

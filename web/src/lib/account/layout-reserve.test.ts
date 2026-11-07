@@ -17,7 +17,6 @@ import {
   PLAN_HEADLINE_RESERVE,
   PLAN_NO_PLAN_ROW_RESERVE,
   RAIL_FLOORS,
-  SIGNED_OUT_MIN_H,
   currentBucket,
   discordHintState,
   discordLinkHint,
@@ -146,11 +145,6 @@ describe('the floors', () => {
   it('take the taller column at lg and stack the two below it', () => {
     expect(gridFloor('none', 'lg')).toBe(Math.max(LEFT_FLOOR.lg, railFloor('none', 'lg')));
     expect(gridFloor('none', 'stack')).toBe(LEFT_FLOOR.stack + 32 + railFloor('none', 'stack'));
-  });
-
-  it('are the signed-out prompt floor, which has no Discord block', () => {
-    const literal = (bucket: ReserveBucket): string => px(gridFloor('none', bucket));
-    expect(SIGNED_OUT_MIN_H).toBe(`min-h-[${literal('stack')}] lg:min-h-[${literal('lg')}]`);
   });
 });
 

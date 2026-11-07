@@ -38,7 +38,15 @@ const HIDE_ON_ERROR = "this.style.visibility='hidden'";
         <div class="coach-rows" data-testid="coach-sample-fix-first">
           <Row title={view.fixFirst.title} sub={view.fixFirst.why} selected testid="coach-sample-fix-title">
             {view.fixFirst.icon && (
-              <img slot="lead" class="coach-icon" src={view.fixFirst.icon} width="40" height="40" alt="" onerror={HIDE_ON_ERROR} />
+              <img
+                slot="lead"
+                class="coach-icon"
+                src={view.fixFirst.icon}
+                width="40"
+                height="40"
+                alt=""
+                onerror={HIDE_ON_ERROR}
+              />
             )}
           </Row>
         </div>
@@ -51,7 +59,15 @@ const HIDE_ON_ERROR = "this.style.visibility='hidden'";
           {view.then.map((item) => (
             <Row title={item.title} sub={item.why}>
               {item.icon && (
-                <img slot="lead" class="coach-icon" src={item.icon} width="32" height="32" alt="" onerror={HIDE_ON_ERROR} />
+                <img
+                  slot="lead"
+                  class="coach-icon"
+                  src={item.icon}
+                  width="32"
+                  height="32"
+                  alt=""
+                  onerror={HIDE_ON_ERROR}
+                />
               )}
             </Row>
           ))}
@@ -65,7 +81,15 @@ const HIDE_ON_ERROR = "this.style.visibility='hidden'";
           {view.doingWell.map((item) => (
             <Row title={item.text} density="slim">
               {item.icon && (
-                <img slot="lead" class="coach-icon" src={item.icon} width="24" height="24" alt="" onerror={HIDE_ON_ERROR} />
+                <img
+                  slot="lead"
+                  class="coach-icon"
+                  src={item.icon}
+                  width="24"
+                  height="24"
+                  alt=""
+                  onerror={HIDE_ON_ERROR}
+                />
               )}
             </Row>
           ))}
