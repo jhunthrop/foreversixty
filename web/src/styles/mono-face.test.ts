@@ -16,14 +16,12 @@ const STYLED_EXTENSIONS = new Set(['.astro', '.svelte', '.ts', '.css']);
 const ALLOWED = new Map<string, number>([
   ['styles/nav.css', 2], // the header export paste box and the search box's "/" key hint
   ['components/Guild.svelte', 1], // <code> a guild address
-  ['components/CharacterSearch.astro', 1], // the "/" key hint
-  ['components/CopyForGame.svelte', 1], // the copy-for-the-game string field
+  ['components/CharacterSearch.astro', 1], // the "/" key hint // the copy-for-the-game string field
   ['components/Account.svelte', 2], // the pairing code the companion asks for
   ['components/Upload.svelte', 8], // file and folder names, /combatlog, the chosen file name, both drop zones
   ['components/AddonPasteBox.svelte', 1], // the addon export paste box
   ['components/ui/CopyLinkField.svelte', 1], // a link to copy
-  ['components/planner/SharePanel.svelte', 2], // a field id, the share link (the copy-as-text summary is a sentence, in Barlow)
-  ['components/planner/ImportBox.svelte', 1], // the talent code paste box
+  ['components/ui/CodeField.svelte', 1], // the paste box for a code copied out of the game // a field id, the share link (the copy-as-text summary is a sentence, in Barlow) // the talent code paste box
   ['components/report/QueriesView.svelte', 2], // the SQL box and its result cells
   ['components/report/MechanicsMode.svelte', 2], // <code> the forever-logs command
   ['components/sim/SavedKind.svelte', 1], // the engine build string

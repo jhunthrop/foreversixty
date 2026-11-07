@@ -1046,7 +1046,8 @@ PRIM_CSS += '''
 .tc2:focus-visible,.tc2.fv{outline:2px solid var(--gold);outline-offset:2px}
 .tc2.act{transform:translateY(1px)}
 .tc2.plan .rk{opacity:.6;border-style:dashed}
-.tedit-h .trs{font:600 13px/18px var(--font-body);color:var(--gold)}.tedit-h .trs:hover{color:var(--gold-hover)}
+.tedit-h .trs{all:unset;cursor:pointer;font:600 13px/18px var(--font-body);color:var(--gold)}.tedit-h .trs:hover{color:var(--gold-hover)}
+button.link{all:unset;cursor:pointer;font:600 14px/20px var(--font-body);color:var(--gold)}input.field{box-sizing:border-box;width:100%;font-family:var(--font-body)}input.field::placeholder{color:var(--muted)}
 .porder-m{display:grid;grid-template-columns:120px minmax(0,1fr);column-gap:16px;padding-top:4px}
 .porder-m .porder-s>span{height:auto;text-align:center;font-size:11px;line-height:14px;color:#5d6577;font-variant-numeric:tabular-nums}
 @media(max-width:767px){.porder-m{grid-template-columns:minmax(0,1fr)}.porder-m>span:first-child{display:none}}
@@ -1070,7 +1071,7 @@ PRIM_CSS += '''
 .porder-s b{position:absolute;right:-4px;bottom:-5px;padding:0 3px;border-radius:999px;background:var(--bg);font:700 12px/14px var(--font-body);font-variant-numeric:tabular-nums;color:var(--muted)}
 .porder-cap{display:flex;align-items:center;gap:10px;padding:10px 0;font-size:13px;line-height:18px;color:var(--gold);border-bottom:1px solid var(--line-soft)}
 .porder-cap::before{content:"";flex:none;width:10px;height:2px;background:var(--gold)}
-@media(max-width:767px){.porder-r{grid-template-columns:minmax(0,1fr);row-gap:6px}.porder-s{grid-template-columns:repeat(10,minmax(0,30px));gap:4px}.porder-s>span,.porder-s img,.porder-s .ic,.porder-s .em{width:30px!important;height:30px!important}}
+@media(max-width:767px){.porder-r{grid-template-columns:minmax(0,1fr);row-gap:6px}.porder-s{grid-template-columns:repeat(10,minmax(0,30px));gap:4px}.porder-r .porder-s>span,.porder-s img,.porder-s .ic,.porder-s .em{width:30px!important;height:30px!important}}
 .swt{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:44px;font-size:14px;line-height:20px;color:var(--text)}
 .swt i{flex:none;position:relative;width:40px;height:22px;border-radius:999px;background:var(--line)}.swt i::after{content:"";position:absolute;left:3px;top:3px;width:16px;height:16px;border-radius:50%;background:var(--nav)}
 .swt.on i{background:var(--gold)}.swt.on i::after{left:21px;background:#17110a}.swt.off{opacity:.5}

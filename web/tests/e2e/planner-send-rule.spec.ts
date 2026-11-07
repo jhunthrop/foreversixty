@@ -1,8 +1,8 @@
 // W.12 ruling 1: the planner never sends another build to a character. Three cases against the
 // fixture build with a stubbed account: another class's build (the button names the mismatch and
 // stays off), another player's build of the same class (it says what it replaces and asks once),
-// and the character's own build (it sends as before). "Sim this build" sits in the same card, under
-// the send, in view at 1280 x 900.
+// and the character's own build (it sends as before). "Sim this build" is in view at 1280 x 900:
+// since spec 2026-11-08 (4.1) it sits in the head's answer, the send in the rail's In the game.
 import type { Page } from '@playwright/test';
 import { expect, test } from './support/test';
 
@@ -49,7 +49,7 @@ async function signIn(page: Page, characterClass: string) {
 }
 
 test.describe('the planner never sends another build to a character', () => {
-  test.skip(({ isMobile }) => isMobile, 'The card is asserted at desktop width');
+  test.skip(({ isMobile }) => isMobile, 'In the game is asserted at desktop width');
   test.use({ viewport: { width: 1280, height: 900 } });
 
   test('another class’s build: the button names the mismatch and stays off', async ({ page }) => {
@@ -61,7 +61,7 @@ test.describe('the planner never sends another build to a character', () => {
     });
     await page.goto('/planner?class=warrior');
     await page.getByTestId('talent-1001').click();
-    const action = page.getByTestId('character-header-action');
+    const action = page.getByTestId('planner-send');
     await expect(action).toHaveText('This is a Warrior build; Obnoxious Yell is a Rogue');
     await expect(action).toBeDisabled();
     await action.click({ force: true });
@@ -84,12 +84,12 @@ test.describe('the planner never sends another build to a character', () => {
     });
     await page.goto(`/planner?code=${encodeURIComponent(ASHENVEIL)}`);
     await expect(page.getByTestId('planner-build-origin')).toHaveText(/^Ashenveil's build · .*Warrior$/);
-    const action = page.getByTestId('character-header-action');
+    const action = page.getByTestId('planner-send');
     await expect(action).toHaveText('Send this build to Obnoxious Yell (replaces their 29 points)');
 
     // The first press asks; cancelling sends nothing.
     await action.click();
-    await expect(page.getByTestId('character-header-note')).toHaveText(
+    await expect(page.getByTestId('planner-send-note')).toHaveText(
       "Send Ashenveil's build to Obnoxious Yell?",
     );
     await expect(action).toHaveText('Yes, send it');
@@ -105,7 +105,7 @@ test.describe('the planner never sends another build to a character', () => {
     expect(queued).toEqual([{ build_id: SAVED.id, character_key: KEY }]);
   });
 
-  test('the character’s own build sends without asking, and "Sim this build" sits under it', async ({
+  test('the character’s own build sends without asking, and "Sim this build" is on the first screen', async ({
     page,
   }) => {
     await signIn(page, 'Warrior');
@@ -113,21 +113,19 @@ test.describe('the planner never sends another build to a character', () => {
     await page.route('**/v1/addon/inbox', (route) => route.fulfill(ok({ build_id: SAVED.id }, 201)));
     await page.goto('/planner');
     await page.getByTestId('talent-1001').click();
-    const action = page.getByTestId('character-header-action');
+    const action = page.getByTestId('planner-send');
     await expect(action).toHaveText('Send this build to Obnoxious Yell');
     await expect(page.getByTestId('planner-build-origin')).toHaveCount(0);
 
-    // "Sim this build": in the card, under Send, inside the first screen at 1280 x 900.
+    // "Sim this build": once, in the head's answer under the figures, inside the first screen
+    // at 1280 x 900 (spec 2026-11-08 4.1; the card that held it under Send is retired).
     const sim = page.getByTestId('planner-sim-link');
-    await expect(sim).toHaveText('Sim this build');
-    const sendBox = await action.boundingBox();
+    await expect(sim).toHaveText('Sim this build ›');
+    await expect(page.getByTestId('planner-answer').getByTestId('planner-sim-link')).toBeVisible();
     const simBox = await sim.boundingBox();
-    expect(sendBox).not.toBeNull();
     expect(simBox).not.toBeNull();
-    expect(simBox!.y).toBeGreaterThan(sendBox!.y + sendBox!.height - 1);
+    expect(simBox!.y).toBeGreaterThanOrEqual(0);
     expect(simBox!.y + simBox!.height).toBeLessThan(900);
-    expect(Math.abs(simBox!.x - sendBox!.x)).toBeLessThan(2);
-    expect(Math.abs(simBox!.width - sendBox!.width)).toBeLessThan(2);
     await expect(page.getByTestId('planner-sim-link')).toHaveCount(1);
 
     await action.click();

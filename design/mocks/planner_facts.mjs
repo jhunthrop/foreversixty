@@ -191,6 +191,8 @@ export default {
   states: {
     empty: { ...state({ cls: 'warrior', race: legalRaces('warrior')[0].slug }), note: null },
     progress: { ...state({ cls: 'hunter', race: 'night-elf', order: surv.order.slice(0, 20) }), note: null },
+    // A class chosen in the bar from the bare Warrior page: selectClass keeps the race when it is legal for the class.
+    hunter_empty: state({ cls: 'hunter', race: legalRaces('hunter').some((r) => r.slug === legalRaces('warrior')[0].slug) ? legalRaces('warrior')[0].slug : legalRaces('hunter')[0].slug }),
     guide: { ...state({ cls: 'hunter', race: 'night-elf', order: surv.order }), dropped: surv.dropped.length, origin: CH.originLine('', 'Survival Hunter') },
     holy: { ...state({ cls: 'priest', race: 'human', order: guideOrder(GUIDE.holy).order }), origin: CH.originLine('', 'Holy Priest') },
     fire: { ...state({ cls: 'mage', race: 'human', order: guideOrder(GUIDE.fire).order }), origin: CH.originLine('', 'Fire Mage') },
@@ -199,6 +201,11 @@ export default {
     you_cap: state({ cls: 'hunter', race: 'dwarf', order: capOrder.order, level: felsnap.level, spec: 'hunter-beast-mastery' }),
     invalid: { ...state({ cls: 'warrior', race: legalRaces('warrior')[0].slug }), note: invalid.ok ? '' : invalid.message },
   },
+  // The committed signed-in fixture with real ranks (gap G5, web/tests/e2e/fixtures/planner/me-34-talents.json): Felsnap's
+  // own 25 points (the 40 band cut at 34), one digit per talent in tab order, and the two points the cap mock plans past them.
+  felsnap_cap: { trees: indexTalents(TALENTS.hunter).trees.map((tree) => { const r = ranksByTalent(capOrder.order.slice(0, 25)); return tree.talents.map((t) => (r.get(t.id) ?? 0).toString(36)).join(''); }),
+    points: pointsPerTree(indexTalents(TALENTS.hunter), capOrder.order.slice(0, 25)),
+    planned: capOrder.order.slice(25).map((id) => indexTalents(TALENTS.hunter).byId.get(id).name) },
   felsnap: { name: felsnap.name, level: felsnap.level, race: felsnap.race, spec: felsnap.spec, class: felsnap.class, loaded_line: bandCompareCopy.loadedLine(felsnap.level, felsnapOrder.order.length, felsnapOrder.fullPoints) },
   send: {
     idle: send({ kind: 'idle' }), empty: send({ kind: 'idle' }, 0), sending: send({ kind: 'sending' }), sent: send({ kind: 'sent' }),

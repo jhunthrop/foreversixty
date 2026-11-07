@@ -14,6 +14,7 @@
     type = 'button',
     disabled = false,
     onclick,
+    label,
     testid,
     children,
   }: {
@@ -26,6 +27,8 @@
     type?: 'button' | 'submit';
     disabled?: boolean;
     onclick?: (event: MouseEvent) => void;
+    /** The accessible name when the visible words need more ("Retry" that reloads the talents). */
+    label?: string;
     testid?: string;
     children: Snippet;
   } = $props();
@@ -34,7 +37,9 @@
 </script>
 
 {#if href !== undefined && !disabled}
-  <a class={classes} {href} {rel} data-testid={testid}>{@render children()}</a>
+  <a class={classes} {href} {rel} aria-label={label} data-testid={testid}>{@render children()}</a>
 {:else}
-  <button class={classes} {type} {disabled} {onclick} data-testid={testid}>{@render children()}</button>
+  <button class={classes} {type} {disabled} {onclick} aria-label={label} data-testid={testid}
+    >{@render children()}</button
+  >
 {/if}

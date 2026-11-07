@@ -7,6 +7,12 @@ import { loadLevelingPlans } from '../leveling/plans-file';
 
 /** The ladder order for `spec`'s band `bandTalents`, or undefined to reconstruct one. */
 export type LadderOrderFor = (index: TalentIndex, bandTalents: string, spec: string) => number[] | undefined;
+/** The same for a code's tree ranks (a guide's `Load this build`, `?code=&spec=`). */
+export type LadderOrderForRanks = (
+  index: TalentIndex,
+  treeRanks: readonly (readonly number[])[],
+  spec: string,
+) => number[] | undefined;
 
 /** The first points of `ladder` that spend exactly `treeRanks`, when that prefix is a legal
  *  order (`validateOrder`); undefined when the band is not a point of this ladder. */
@@ -33,9 +39,16 @@ export function ladderPrefixFor(
 
 /** Reads the plans once and answers band loads from them; never fails (no ladder: reconstruct). */
 export async function loadLadderOrderFor(): Promise<LadderOrderFor> {
+  const forRanks = await loadLadderOrderForRanks();
+  return (index, bandTalents, spec) => forRanks(index, bandTreeRanksFrom(bandTalents), spec);
+}
+
+/** A guide's build in the guide's own levelling order (spec 2026-11-08 ruling SHOULD): the
+ *  spec's ladder when it reaches exactly the code's ranks, else undefined (reconstruct). */
+export async function loadLadderOrderForRanks(): Promise<LadderOrderForRanks> {
   const plans = await loadLevelingPlans();
-  return (index, bandTalents, spec) => {
+  return (index, treeRanks, spec) => {
     const ladder = plans[spec]?.ladder;
-    return ladder === undefined ? undefined : ladderPrefixFor(index, bandTreeRanksFrom(bandTalents), ladder);
+    return ladder === undefined ? undefined : ladderPrefixFor(index, treeRanks, ladder);
   };
 }

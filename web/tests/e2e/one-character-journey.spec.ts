@@ -11,7 +11,7 @@
 import type { Page } from '@playwright/test';
 import { expect, test, apiUnreachable, GUILD_OVERVIEW_READS } from './support/test';
 import { API, devLogin, pointerOf, serveShells, signInThroughProxy } from './support/local-stack';
-import { nativeSelect } from './support/select';
+import { expectClass, raceSelect } from './support/planner';
 
 test.beforeEach(({ page }) => apiUnreachable(page, ...GUILD_OVERVIEW_READS));
 
@@ -94,23 +94,24 @@ test('the chosen character follows the player through every page', async ({ page
 
   // 2. The planner opens on that character: its race, level, talents and gear, not the first legal race.
   await page.goto('/planner');
-  await expect(nativeSelect(page, 'Class')).toHaveValue('hunter');
-  await expect(nativeSelect(page, 'Race')).toHaveValue(bow.raceSlug);
+  await expectClass(page, 'hunter');
+  await expect(raceSelect(page)).toHaveValue(bow.raceSlug);
   await expect(page.getByTestId('planner-code-note')).toContainText('Talents loaded from a character');
-  const main = page.getByRole('main');
-  await expect(main).toContainText(`Hunter talents · ${bow.race} · Level 60 · ${bow.spec} Hunter`);
-  await expect(main).toContainText('Bow Jackzon');
-  const spent = Number((await main.innerText()).match(/SPENT\s+(\d+)\/51/)?.[1] ?? '0');
+  // Spec 2026-11-08 4.1: the title, then the meta line (race, level, the leading spec).
+  await expect(page.getByTestId('page-title')).toHaveText('Hunter talents');
+  await expect(page.getByTestId('planner-meta')).toHaveText(`${bow.race} · Level 60 · ${bow.spec} Hunter`);
+  await expect(page.getByRole('main')).toContainText('Bow Jackzon');
+  const spentText = (await page.getByTestId('planner-spent-line').innerText()).trim();
+  const spent = Number(spentText.match(/^(\d+) of 51 spent/)?.[1] ?? '0');
   expect(spent).toBeGreaterThan(0);
-  // The planner shows the points the record carries, never "25/51" beside "has spent 51".
+  // The planner shows the points the record carries, never "25 of 51" beside "has spent 51".
   expect(spent).toBe(bow.points);
   await expect(page.getByTestId('planner-build-origin')).toHaveCount(0);
-  await expect(page.getByTestId('character-header-action')).toHaveText('Send this build to Bow Jackzon');
+  await expect(page.getByTestId('planner-send')).toHaveText('Send this build to Bow Jackzon');
   const simLink = page.getByTestId('planner-sim-link');
-  // "Sim this build" is in the card under Send, inside the first screen.
-  const sendBox = (await page.getByTestId('character-header-action').boundingBox())!;
+  // "Sim this build" is in the head's answer (the card under Send is retired), inside the first screen.
+  await expect(page.getByTestId('planner-answer').getByTestId('planner-sim-link')).toBeVisible();
   const simBox = (await simLink.boundingBox())!;
-  expect(simBox.y).toBeGreaterThan(sendBox.y);
   expect(simBox.y + simBox.height).toBeLessThan(900);
   const href = (await simLink.getAttribute('href')) ?? '';
   const code = new URL(href, WEB).searchParams.get('code') ?? '';
@@ -185,16 +186,16 @@ test('the chosen character follows the player through every page', async ({ page
     const named = exported.includes('who=') ? exported : `${exported}|who=Ashenveil:Realm`;
     await page.goto(`/planner?code=${encodeURIComponent(named)}`);
   }
-  await expect(nativeSelect(page, 'Class')).toHaveValue('paladin');
+  await expectClass(page, 'paladin');
   await headerIs(page, 'Bow Jackzon', `${bow.spec} Hunter · 60`);
   expect(await pointerOf(page)).toMatchObject({ source: 'armory', ref: BOW });
   // Whose build it is, and never a Paladin build sent to a Hunter.
   await expect(page.getByTestId('planner-build-origin')).toContainText("Ashenveil's build ·");
   await expect(page.getByTestId('planner-build-origin')).toContainText('Paladin');
-  await expect(page.getByTestId('character-header-action')).toHaveText(
+  await expect(page.getByTestId('planner-send')).toHaveText(
     'This is a Paladin build; Bow Jackzon is a Hunter',
   );
-  await expect(page.getByTestId('character-header-action')).toBeDisabled();
+  await expect(page.getByTestId('planner-send')).toBeDisabled();
   await shot(page, '08-guild-gear-in-planner');
 
   // 7. On a later visit (a fresh tab session) the header says the character was restored, and
@@ -226,14 +227,12 @@ test('a class tile opens a class and leaves the character alone', async ({ page 
   await choose(page, BOW);
   await headerIs(page, 'Bow Jackzon', `${bow.spec} Hunter · 60`);
   await page.goto('/planner?class=mage');
-  await expect(nativeSelect(page, 'Class')).toHaveValue('mage');
+  await expectClass(page, 'mage');
   await expect(page.getByTestId('planner-sim-link')).toHaveCount(0);
   await headerIs(page, 'Bow Jackzon', `${bow.spec} Hunter · 60`);
   expect(await pointerOf(page)).toMatchObject({ source: 'armory', ref: BOW });
-  await expect(page.getByTestId('character-header-action')).toHaveText(
-    'This is a Mage build; Bow Jackzon is a Hunter',
-  );
-  await expect(page.getByTestId('character-header-action')).toBeDisabled();
+  await expect(page.getByTestId('planner-send')).toHaveText('This is a Mage build; Bow Jackzon is a Hunter');
+  await expect(page.getByTestId('planner-send')).toBeDisabled();
   await shot(page, '10-class-tile');
 });
 
@@ -250,7 +249,7 @@ test('a linked code never replaces the character, and a nameless one is never th
   await expect(page.getByTestId('sim-head-source')).toHaveText(/^Gear from a pasted export/);
   expect(await pointerOf(page)).toMatchObject({ source: 'armory', ref: BOW });
   await page.goto(`/planner?code=${encodeURIComponent(nameless)}`);
-  await expect(nativeSelect(page, 'Class')).toHaveValue('hunter');
+  await expectClass(page, 'hunter');
   expect(await pointerOf(page)).toMatchObject({ source: 'armory', ref: BOW });
   await headerIs(page, 'Bow Jackzon', `${bow.spec} Hunter · 60`);
   await shot(page, '11-linked-code');
@@ -309,18 +308,19 @@ test('signing in settles the pointer on the main, and signing out clears it', as
 test.describe('at 360 px', () => {
   test.use({ viewport: { width: 360, height: 800 } });
 
-  test('the planner card, the simulator card and the account card hold at phone width', async ({ page }) => {
+  test('In the game, the simulator card and the account card hold at phone width', async ({ page }) => {
     // The header chooser is a desktop control: choose there, then narrow the window.
     await page.setViewportSize({ width: 1280, height: 900 });
     await page.goto('/tiers');
     await choose(page, BOW);
     await page.setViewportSize({ width: 360, height: 800 });
     await page.goto('/planner');
-    const card = page.getByTestId('character-header');
+    // The retired character card's successor is the In the game section (spec 2026-11-08 4.7).
+    const card = page.getByTestId('planner-in-game');
     await expect(card).toContainText('Bow Jackzon');
-    await expect(page.getByTestId('character-header-action')).toHaveText('Send this build to Bow Jackzon');
+    await expect(page.getByTestId('planner-send')).toHaveText('Send this build to Bow Jackzon');
     await expect(page.getByTestId('planner-sim-link')).toBeVisible();
-    // The card itself holds at phone width: nothing in it is wider than it is, and it sits inside 360.
+    // The section holds at phone width: nothing in it is wider than it is, and it sits inside 360.
     const fits = await card.evaluate((el) => el.scrollWidth <= el.clientWidth);
     expect(fits).toBe(true);
     expect((await card.boundingBox())!.x + (await card.boundingBox())!.width).toBeLessThanOrEqual(360);

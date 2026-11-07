@@ -19,9 +19,26 @@ from html import escape
 from pathlib import Path
 
 from mocklib import CLASS_COLOR, ROOT
-from ws_prims import (Button, Field, ClassPicker, CodeField, Figure, Link, Notice, OrderSlot, Ordered, Page, PageHeader, PointOrder,
+from ws_prims import (Button as _Button, ClassPicker, CodeField, Figure, Link, Notice, OrderSlot, Ordered, Page, PageHeader, PointOrder,
                       Section, Skeleton, Switch, Tag, TalentCell2, TalentEditor, TalentTip, TextFor, build_page, control_bar, crest_img,
                       icon, sel, REGION)
+
+
+
+def Button(label: str, primary: bool = False, small: bool = False) -> str:
+    """The system Button as the build renders it, a <button> (ws_prims draws an <a>): the parity gate counts roles."""
+    return _Button(label, primary, small).replace('<a ', '<button type="button" ', 1).replace(' href="#"', '', 1).replace('</a>', '</button>')
+
+
+def ActionLink(label: str) -> str:
+    """A link-styled action (Reset…): a <button> in the build, as every action that navigates nowhere."""
+    return f'<button type="button" class="link">{label}</button>'
+
+
+def Field(placeholder: str, label: str = '') -> str:
+    """The system Field's input as the build renders it (a textbox), its placeholder muted."""
+    return f'<input class="field" type="text" placeholder="{placeholder}" aria-label="{label}">'
+
 
 HERE = Path(__file__).resolve().parent
 F = json.loads(Path(os.environ.get('FS_PLANNER_FACTS') or HERE / 'data' / 'planner-facts.json').read_text())
@@ -69,7 +86,7 @@ def trees(st: dict, compare: bool = True, hover: int | None = None, focus: int |
             extra = ' '.join(x for x in ['hov' if c['id'] == hover else ('fv' if c['id'] == focus else ''), 'plan' if c['planned'] else ''] if x)
             name = c['name'] + (f', {st["planned_cell"]}' if c['planned'] else '')
             cells.append((c['tier'], c['column'], TalentCell2(icon(c['icon'], 48), name, c['rank'], c['max'], STATE[c['state']], c['id'] in diff, extra)))
-        reset = '' if readonly or not t['points'] else f'<a class="trs" href="#" aria-label="Reset {e(t["name"])}">{e(P["resetTree"])}</a>'
+        reset = '' if readonly or not t['points'] else f'<button type="button" class="trs" aria-label="Reset {e(t["name"])}">{e(P["resetTree"])}</button>'
         out.append({'name': t['name'], 'icon_html': icon(t['icon'], 28), 'points': t['points'], 'art_src': art(t['background']), 'reset': reset,
                     'cols': t['columns'], 'tiers': t['tiers'], 'viewbox': t['viewBox'], 'connectors': [(x['d'], x['met']) for x in t['connectors']], 'cells': cells})
     return out
@@ -80,7 +97,7 @@ def tree_foot(st: dict, status: str = '', status_tone: str = '', reset_open: boo
     if reset_open:
         rs = f'<span class="t-small">{e(P["resetAsk"])}</span>{Button(e(P["resetYes"]), small=True)}{Button(e(P["resetNo"]), small=True)}'
     else:
-        rs = Link(e(P['reset'])) if st['spent'] else ''
+        rs = ActionLink(e(P['reset'])) if st['spent'] else ''
     return s + f'<span class="t-small">{e(C["tree_source"])}</span><span class="rs">{rs}</span>'
 
 
@@ -95,7 +112,8 @@ def answer(st: dict, score: tuple | None, loading: bool = False) -> str:
         else:
             v, err = score
             sc = f'<div class="pl-fig">{Figure(v, e(st["unit_label"]), size="big")}<span class="t-small">{err} &middot; {e(st["score_basis"])}</span></div>'
-        sim = Link(r(C['sim']['simThisBuild'])) if st['spent'] else ''
+        # Spec 5.2: `Sim this build ›` holds its line while nothing is spent (hidden, not removed).
+        sim = Link(r(C['sim']['simThisBuild'])) if st['spent'] else Link(r(C['sim']['simThisBuild'])).replace('<a ', '<a aria-hidden="true" tabindex="-1" style="visibility:hidden" ', 1)
         ans = f'<div class="ans-box pl-ans"><div class="pl-figs">{left}{sc}</div>{sim}</div>'
     return ans
 
@@ -120,7 +138,8 @@ def notes(text: str, short: str = '') -> str:
     if not text:
         return ''
     body = TextFor(e(text), e(short)) if short else e(text)
-    return f'<div data-region="{REGION["notes"]}" class="pl-notes">{Notice(body, tone="neutral")}</div>'
+    # The region is the note in the page column (the built Notice sits inside the column's inset).
+    return f'<div class="pc"><div data-region="{REGION["notes"]}" class="pl-notes"><p class="notice neutral">{body}</p></div></div>'
 
 
 def compare(st: dict, confirm: bool = False, loaded: str = '', readonly: bool = False) -> str:
@@ -175,7 +194,7 @@ def in_game(st: dict, send: dict | None, copy_state: str = 'idle') -> str:
 
 def share(st: dict, mode: str = 'idle') -> str:
     """Share this build: title, Share, Copy as text, the sim on the card. mode: idle | confirm | saved | failed | ratelimit."""
-    title = f'<label class="pl-field"><span class="t-label">{e(P["shareTitleLabel"])}</span>{Field(e(P["shareTitlePlaceholder"]))}</label>'
+    title = f'<label class="pl-field"><span class="t-label">{e(P["shareTitleLabel"])}</span>{Field(e(P["shareTitlePlaceholder"]), e(P["shareTitleLabel"]))}</label>'
     off = st['spent'] == 0
     share_btn = Button(e(P['share'])).replace('class="btn', 'class="btn is-off' if off else 'class="btn', 1)
     body = f'<div class="pl-acts pl-end">{title}{share_btn}</div>'
@@ -186,7 +205,7 @@ def share(st: dict, mode: str = 'idle') -> str:
         body += (f'<div class="pl-confirm" role="group" aria-label="{e(P["shareConfirmTitle"])}"><p class="strong">{e(P["shareConfirmTitle"])}</p><p class="t-small">{e(P["shareConfirmIntro"])}</p>'
                  f'<ul class="pl-list t-small">{items}</ul><div class="pl-acts">{Button(e(P["shareConfirmProceed"]))}{Button(e(P["shareConfirmCancel"]))}{Button(e(P["shareConfirmCopyUnsaved"]))}</div></div>')
     elif mode == 'saved':
-        body += (f'<div class="pl-confirm"><div class="pl-acts"><span class="pl-url">foreversixty.gg/b/k7Qm2xa</span>{Button(e(P["copyLink"]), small=True)}</div>'
+        body += (f'<div class="pl-confirm"><div class="pl-acts"><a class="pl-url" href="#">foreversixty.gg/b/k7Qm2xa</a>{Button(e(P["copyLink"]), small=True)}</div>'
                  f'<p class="t-small">{e(C["sim_done"])}</p></div>')
     elif mode in ('failed', 'ratelimit'):
         msg = C['save_failed'] if mode == 'failed' else C['rate_limit']
@@ -256,6 +275,7 @@ def planner(key: str, *, signed: str = 'out', send_key: str | None = None, note:
 def loading_page(failed: bool = False) -> str:
     st = S['empty']
     if failed:
+        # Spec 5.1: the failed state draws no rail sections.
         inner = (f'<div class="pl-err" role="alert"><p class="strong">{e(C["load_failed"])}</p><p class="t-small">{e(C["load_failed_detail"])}</p>'
                  f'<div class="pl-acts">{Button(e(P["retry"]))}</div></div>')
     else:
@@ -265,7 +285,7 @@ def loading_page(failed: bool = False) -> str:
     plate = Plate(inner, 'Talent trees')
     rail_sk = lambda t: Section(t, f'<div class="pl-sec">{Skeleton(260, 20)}{Skeleton(200, 44)}</div>')
     main = Ordered(plate, 1, span=True)
-    rail = Ordered(rail_sk(e(st['band']['heading'])), 2) + Ordered(rail_sk(e(P['inGameTitle'])), 3)
+    rail = '' if failed else Ordered(rail_sk(e(st['band']['heading'])), 2) + Ordered(rail_sk(e(P['inGameTitle'])), 3)
     body = head(st, None, False, loading=not failed) + bar(st) + Page('workbench', main, rail) + PAGE_CSS
     return build_page('Warrior talents · Forever Sixty', body, 'Tools', None, f'Planner mock ({"error" if failed else "loading"}). Spec: design/specs/2026-11-08-planner.md.')
 
@@ -323,6 +343,8 @@ PAGE_CSS = '''<style>
 @media(min-width:900px){.pl-figs{display:flex;gap:32px}.pl-fig{max-width:300px}}
 @media(min-width:900px){.pl-figs{justify-content:flex-end}.pl-fig{align-items:flex-end}}
 .pl-notes .notice{padding-top:4px;color:var(--text)}
+@media(max-width:899px){.pl-fig .t-small{min-height:40px}}
+@media(max-width:767px){main .btn.sm{height:44px}}
 .pl-sec{display:flex;flex-direction:column;gap:12px;padding-top:14px}.pl-pad{padding-top:14px}
 .pl-acts{display:flex;flex-wrap:wrap;gap:10px;align-items:center}.pl-acts.pl-end{align-items:flex-end}
 .pl-line{font-size:15px;line-height:22px}.pl-note{font-size:14px;line-height:20px}.pl-note.muted{color:var(--muted)}
@@ -348,12 +370,15 @@ GUIDE_NOTE = dict(note=F['notes']['guide'], origin=True) if F['notes']['guide'] 
 
 PAGES = {
     'web-planner': lambda: planner('empty'),
+    'web-planner-class': lambda: planner('hunter_empty'),
     'web-planner-progress': lambda: planner('progress'),
     'web-planner-guide': lambda: planner('guide', **GUIDE_NOTE),
     'web-planner-holy': lambda: planner('holy', **LINKED),
     'web-planner-fire': lambda: planner('fire', **LINKED),
     'web-planner-you': lambda: planner('you', signed='in', send_key='idle', note=F['felsnap']['loaded_line']),
-    'web-planner-you-cap': lambda: planner('you_cap', signed='in', send_key='idle'),
+    # Felsnap's own 25 points loaded from the character (web/tests/e2e/fixtures/planner/me-34-talents.json), then two clicks planned
+    # past level 34 (decision P4).
+    'web-planner-you-cap': lambda: planner('you_cap', signed='in', send_key='idle', note=F['notes']['reconstructed']),
     'web-planner-you-empty': lambda: planner('you_empty', signed='in', send_key='empty'),
     'web-planner-other': lambda: planner('holy', signed='in', send_key='other_class', **LINKED),
     'web-planner-invalid': lambda: planner('invalid', note=F['notes']['invalid']),

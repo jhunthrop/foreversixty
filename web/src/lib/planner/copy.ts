@@ -73,6 +73,8 @@ export const plannerCopy = {
   /** A code for a class the planner has no talent data for. */
   noClassNote: (slug: string): string => `That code names a class this planner does not have: ${slug}.`,
   inGameTitle: 'In the game',
+  /** The ControlBar's accessible name. */
+  barLabel: 'Planner choices',
   pointsLeft: 'Points left',
   /** Under Points left with no character: "20 of 51 spent · level 29" (the level once a point is spent). */
   spentOf: (spent: number, available: number, level: number | null): string =>
@@ -237,7 +239,12 @@ export const bandCompareCopy = {
   beyondGuide: (n: number): string => `+${n} beyond the build`,
   /** The difference named, not counted (ruling Q1): "Differs by 2 points: this build takes
    *  Rapid Killing 2/2; the level 60 build takes Deterrence and Counterattack." */
-  differsNamed: (count: number, mine: readonly string[], theirs: readonly string[], bandLabel: string): string => {
+  differsNamed: (
+    count: number,
+    mine: readonly string[],
+    theirs: readonly string[],
+    bandLabel: string,
+  ): string => {
     const sides = [
       mine.length > 0 ? `this build takes ${listOf(mine)}` : '',
       theirs.length > 0 ? `the ${lowerBandPhrase(bandLabel)} build takes ${listOf(theirs)}` : '',

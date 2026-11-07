@@ -1,0 +1,77 @@
+/* web/src/components/planner/planner.css
+   The planner's page-level layout (spec 2026-11-08 section 4, the mock's PAGE_CSS): the rhythm
+   inside its open Sections, rows of actions, the band line, the confirm rows under a hairline.
+   No surface: every box is a ui/ primitive (Plate, Section, Button, Field, CodeField). */
+.pl-sec {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-top: 2px;
+}
+.pl-pad {
+  padding-top: 2px;
+}
+.pl-acts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+.pl-acts.pl-end {
+  align-items: flex-end;
+}
+.pl-line {
+  font-size: 15px;
+  line-height: 22px;
+  color: var(--color-text);
+}
+.pl-note {
+  font-size: 14px;
+  line-height: 20px;
+}
+.pl-gear {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: baseline;
+  padding-top: 10px;
+  border-top: 1px solid var(--color-line-soft);
+}
+.pl-field {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 180px;
+}
+.pl-confirm {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px 0;
+  border-top: 1px solid var(--color-line-soft);
+}
+.pl-url {
+  font: 600 14px/20px var(--font-body);
+  color: var(--color-gold);
+  overflow-wrap: anywhere;
+}
+.pl-switch {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 44px;
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--color-text);
+}
+.pl-switch.pl-off {
+  opacity: 0.5;
+}
+.pl-card {
+  display: block;
+  width: 100%;
+  max-width: 600px;
+  height: auto;
+  border-radius: 6px;
+}

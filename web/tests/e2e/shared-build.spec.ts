@@ -3,7 +3,7 @@ import { expect, test } from './support/test';
 
 import { bandCompareCopy } from '../../src/lib/planner/copy';
 import { ACTIVE_BUILD } from './support/active-build';
-import { nativeSelect } from './support/select';
+import { bareSpentLine, classRadio, spentLine } from './support/planner';
 
 // The real /b/:id is server-rendered by the Go API and reaches the browser through the
 // Worker proxy (Task 12). Playwright serves the static site only, so the page is stubbed
@@ -50,21 +50,26 @@ test('a shared build opens read-only and Fork makes it editable', async ({ page 
 
   await expect(page.getByTestId('talent-1001')).toHaveAttribute('data-rank', '3');
   await expect(page.getByTestId('tree-points-161')).toHaveText('3');
-  await expect(page.getByTestId('planner-level')).toHaveText('12');
-  await expect(nativeSelect(page, 'Class')).toBeDisabled();
+  await expect(page.getByTestId('planner-meta')).toContainText('Level 12');
+  // Read-only: the bar's class crests are off (spec 2026-11-08 4.2), with the reason as title.
+  await expect(classRadio(page, 'warrior')).toHaveAttribute('aria-disabled', 'true');
+  await expect(classRadio(page, 'mage')).toHaveAttribute(
+    'title',
+    'This build was opened from a share link; fork it to edit',
+  );
 
   await page.getByTestId('talent-1002').click();
-  await expect(page.getByTestId('planner-refusal')).toHaveText(
+  await expect(page.getByTestId('planner-status')).toHaveText(
     'This build was opened from a share link; fork it to edit',
   );
   await expect(page.getByTestId('talent-1002')).toHaveAttribute('data-rank', '0');
 
-  await page.getByRole('button', { name: 'Fork' }).click();
-  await expect(nativeSelect(page, 'Class')).toBeEnabled();
+  await page.getByTestId('planner-fork-button').click();
+  await expect(classRadio(page, 'warrior')).not.toHaveAttribute('aria-disabled', 'true');
   await page.getByTestId('talent-1002').click();
   await expect(page.getByTestId('talent-1002')).toHaveAttribute('data-rank', '1');
-  await expect(page.getByTestId('planner-spent')).toHaveText('4/51');
-  await expect(page.getByRole('button', { name: 'Reset' })).toBeVisible();
+  await expect(spentLine(page)).toHaveText(bareSpentLine(4));
+  await expect(page.getByTestId('planner-reset')).toBeVisible();
 });
 
 // Fix round 2, item 7 (wow-player review finding 3): a populated shared build -- real
@@ -100,24 +105,25 @@ test('a populated read-only build keeps every cell inert, in both directions', a
   await expect(page.getByTestId('tree-points-302')).toHaveText('5');
 
   // Against the build's own band (the fixture's is empty, 0 points): all 5 points are past the
-  // band's total, so none of them differ -- Matches, "+5 beyond the guide" -- while the cell still
-  // carries its rank-differs marker. Load hidden (nothing to overwrite into on a read-only build),
-  // Fork offered in its place.
+  // band's total, so none of them differ -- Matches, "+5 beyond the build" -- while the cell still
+  // carries its rank-differs marker (the gold dot, TalentButton's `diff`). Load hidden (nothing
+  // to overwrite into on a read-only build), Fork offered in its place, and no See what differs.
   await expect(page.getByTestId('band-compare-differs')).toHaveText(bandCompareCopy.matches);
   await expect(page.getByTestId('band-compare-beyond')).toHaveText(bandCompareCopy.beyondGuide(5));
-  await expect(page.getByTestId('talent-differs-4001')).toBeVisible();
+  await expect(page.getByTestId('talent-4001')).toHaveClass(/\bdiff\b/);
   await expect(page.getByTestId('band-compare-load')).toHaveCount(0);
-  await expect(page.getByRole('button', { name: 'Fork' })).toBeVisible();
+  await expect(page.getByTestId('band-compare-see-differs')).toHaveCount(0);
+  await expect(page.getByTestId('planner-fork-button')).toBeVisible();
 
   // Left-click an unspent cell: no point is added.
   await page.getByTestId('talent-4002').click();
   await expect(page.getByTestId('talent-4002')).toHaveAttribute('data-rank', '0');
-  await expect(page.getByTestId('planner-spent')).toHaveText('5/51');
+  await expect(spentLine(page)).toHaveText(bareSpentLine(5));
 
   // Right-click an already-spent cell: no point is removed either.
   await page.getByTestId('talent-4001').click({ button: 'right' });
   await expect(page.getByTestId('talent-4001')).toHaveAttribute('data-rank', '5');
-  await expect(page.getByTestId('planner-spent')).toHaveText('5/51');
+  await expect(spentLine(page)).toHaveText(bareSpentLine(5));
 });
 
 // The API writes data-build itself, so malformed JSON there means the API is broken, not the
@@ -132,9 +138,12 @@ test('a build attribute that is not JSON still mounts an editable planner', asyn
 
   await expect(page.getByRole('grid', { name: 'Arms talents' })).toBeVisible();
   await expect(page.getByTestId('talent-1001')).toHaveAttribute('data-rank', '0');
-  await expect(nativeSelect(page, 'Class')).toBeEnabled();
-  await expect(page.getByRole('button', { name: 'Reset' })).toBeVisible();
-  await expect(page.getByRole('button', { name: 'Fork' })).toBeHidden();
+  await expect(classRadio(page, 'warrior')).not.toHaveAttribute('aria-disabled', 'true');
+  await expect(page.getByTestId('planner-fork-button')).toHaveCount(0);
+  // Editable: a click spends a point, and Reset (hidden at 0 spent) comes with it.
+  await page.getByTestId('talent-1001').click();
+  await expect(page.getByTestId('talent-1001')).toHaveAttribute('data-rank', '1');
+  await expect(page.getByTestId('planner-reset')).toBeVisible();
 });
 
 // boot() resolves the record's class and race ids through loadReference before it mounts.

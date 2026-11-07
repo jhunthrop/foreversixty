@@ -1,6 +1,7 @@
 import type { Locator, Page } from '@playwright/test';
 import { expect, test } from './support/test';
 import { fieldBox } from './support/select';
+import { openPlannerBar, pointsLeft, treePanel } from './support/planner';
 
 /**
  * Holds the talent request open so the planner's loading state can be measured, and returns
@@ -30,13 +31,12 @@ const SETTLED_PX = 4;
 test.describe('planner on a phone', () => {
   test.use({ viewport: { width: 360, height: 800 } });
 
-  // Rebuild spec §4.B: `PlannerCharacterCard` sits beside the header and makes its own
-  // `/v1/me` request, independent of the talent-data load these tests measure. Left
-  // unrouted, that request hits the real (unreachable in this suite) API and resolves on
-  // its own schedule, which is exactly the kind of unrelated, timing-dependent layout
-  // shift the footer-stability tests below exist to rule out. Routing it here as a fast,
-  // deterministic signed-out response keeps the card's own loading->omitted transition out
-  // of a window these tests are not about.
+  // The planner (In the game, the header selector) makes its own `/v1/me` request,
+  // independent of the talent-data load these tests measure. Left unrouted, that request
+  // hits the real (unreachable in this suite) API and resolves on its own schedule, which is
+  // exactly the kind of unrelated, timing-dependent change the footer-stability tests below
+  // exist to rule out. Routing it here as a fast, deterministic signed-out response keeps it
+  // out of a window these tests are not about.
   test.beforeEach(async ({ page }) => {
     await page.route('**/v1/me', (route) =>
       route.fulfill({
@@ -50,12 +50,12 @@ test.describe('planner on a phone', () => {
   test('shows one panel at a time behind a tab switcher', async ({ page }) => {
     await page.goto('/planner');
     const tabs = page.getByRole('tab');
-    // Rebuild spec §11 (owner ruling): the Gear tab is withdrawn with the gear panel --
-    // this planner's phone strip switches between its talent trees alone now. Named as
-    // well as counted, so a tab that went missing cannot be covered for by one that arrived.
+    // The phone strip switches between the talent trees alone. Named as well as counted, so a
+    // tab that went missing cannot be covered for by one that arrived. Each tab reads its
+    // points then its tree's name (spec 2026-11-08 3A, TalentEditor).
     await expect(tabs).toHaveCount(2);
-    await expect(tabs.nth(0)).toHaveAccessibleName(/^Arms/);
-    await expect(tabs.nth(1)).toHaveAccessibleName(/^Fury/);
+    await expect(tabs.nth(0)).toHaveAccessibleName(/Arms$/);
+    await expect(tabs.nth(1)).toHaveAccessibleName(/Fury$/);
     await expect(tabs.nth(0)).toHaveAttribute('aria-selected', 'true');
     await expect(page.getByRole('grid', { name: 'Arms talents' })).toBeVisible();
     await expect(page.getByRole('grid', { name: 'Fury talents' })).toBeHidden();
@@ -65,36 +65,23 @@ test.describe('planner on a phone', () => {
     await expect(page.getByRole('grid', { name: 'Arms talents' })).toBeHidden();
   });
 
-  // Polish spec 5.3: a clipped tab strip says so with a 24px fade on the hidden edge, and the
-  // open tab is scrolled into view when it is chosen.
-  test('a tab strip that overflows fades the clipped edge and scrolls the open tab into view', async ({
-    page,
-  }) => {
-    // Narrow enough that the last tab itself is clipped: the fade is measured against the last
-    // tab, not the scroll width (lib/scroll-fade.ts), and at 200 the two tabs now just fit.
-    await page.setViewportSize({ width: 160, height: 800 });
+  // Polish spec 5.3 asked a clipped tab strip to fade its hidden edge and scroll the open tab
+  // into view. The strip of spec 2026-11-08 (TalentEditor) cannot clip: the tabs share its width
+  // equally, so the narrowest phone shows every tab whole -- which is what the fade was for.
+  test('every tree tab sits whole inside the strip, and the open one is marked', async ({ page }) => {
     await page.goto('/planner');
-    const tablist = page.getByTestId('tree-tablist');
-    const wrap = tablist.locator('..');
-    await expect(page.getByRole('tab')).toHaveCount(2);
-    expect(
-      await tablist.evaluate(
-        (el) =>
-          (el.lastElementChild?.getBoundingClientRect().right ?? 0) > el.getBoundingClientRect().right + 1,
-      ),
-    ).toBe(true);
-    await expect(wrap).toHaveAttribute('data-fade-end', '');
-    await expect(wrap).not.toHaveAttribute('data-fade-start', '');
-    await page.getByRole('tab').nth(1).click();
-    const last = page.getByRole('tab').nth(1);
-    await expect(wrap).not.toHaveAttribute('data-fade-end', '');
-    await expect(wrap).toHaveAttribute('data-fade-start', '');
-    const inside = await last.evaluate((tab) => {
-      const edge = tab.parentElement?.getBoundingClientRect();
-      const box = tab.getBoundingClientRect();
-      return edge !== undefined && box.right <= edge.right + 1 && box.left >= edge.left - 1;
-    });
-    expect(inside).toBe(true);
+    const tabs = page.getByRole('tab');
+    await expect(tabs).toHaveCount(2);
+    const strip = page.getByRole('tablist');
+    const edge = (await strip.boundingBox())!;
+    for (const tab of await tabs.all()) {
+      const box = (await tab.boundingBox())!;
+      expect(box.x).toBeGreaterThanOrEqual(edge.x - 1);
+      expect(box.x + box.width).toBeLessThanOrEqual(edge.x + edge.width + 1);
+    }
+    await tabs.nth(1).click();
+    await expect(tabs.nth(1)).toHaveAttribute('aria-selected', 'true');
+    await expect(tabs.nth(0)).toHaveAttribute('aria-selected', 'false');
   });
 
   // The roving tabindex takes the unselected tabs out of the tab order, so arrow keys are the
@@ -119,17 +106,16 @@ test.describe('planner on a phone', () => {
     await expect(page.getByRole('grid', { name: 'Fury talents' })).toBeVisible();
   });
 
-  // The sticky summary bar this used to hold in view is gone from the standalone planner (site
-  // alignment 5.5: the head is a PageHead on the page ground, SummaryBar is the inline embed's
-  // only). What stands: points left is on the first screen, and loading the trees never moves
-  // the page -- the open tab scrolls the strip only (it used to pull the page down 95 px).
+  // The head is a PageHeader on the page ground (spec 2026-11-08 4.1): points left is on the
+  // first screen, and loading the trees never moves the page (the open tab used to pull the
+  // page down 95 px).
   test('opens on the first screen with points left, and loading the trees never scrolls the page', async ({
     page,
   }) => {
     await page.goto('/planner');
     await page.getByRole('grid', { name: 'Arms talents' }).waitFor();
     expect(await page.evaluate(() => window.scrollY)).toBe(0);
-    const box = await page.getByTestId('planner-remaining').boundingBox();
+    const box = await pointsLeft(page).boundingBox();
     const viewport = page.viewportSize();
     expect(box?.y ?? -1).toBeGreaterThanOrEqual(0);
     expect((box?.y ?? 9999) + (box?.height ?? 0)).toBeLessThanOrEqual(viewport?.height ?? 0);
@@ -155,13 +141,9 @@ test.describe('planner on a phone', () => {
 
     await page.goto('/planner');
     await expect(page.getByTestId('planner-talent-skeleton')).toBeVisible();
-    // Fix round 4 (CI, under its own worker contention: this test's own "loading" snapshot
-    // landed while the routed /v1/me above was still resolving, not after -- the same race
-    // this describe block's beforeEach already names, just not fully closed by routing
-    // alone. A mocked response still costs a promise tick; waiting for the card's own
-    // loading placeholder to clear first guarantees that tick has already happened,
-    // whatever else the worker is doing, before either measurement below.
-    await page.getByTestId('character-header-loading').waitFor({ state: 'detached' });
+    // The retired character card's loading placeholder was waited out here (fix round 4). Its
+    // successor, In the game, mounts with the trees and never during this window: while the
+    // talent data is held the rail shows only fixed-size skeletons, signed in or out.
     const loading = await footerTop(page);
 
     land();
@@ -177,8 +159,6 @@ test.describe('planner on a phone', () => {
 
     await page.goto('/planner');
     await expect(page.getByTestId('planner-talent-skeleton')).toBeVisible();
-    // Fix round 4: see the identical wait's own comment above.
-    await page.getByTestId('character-header-loading').waitFor({ state: 'detached' });
     const loading = await footerTop(page);
 
     land();
@@ -186,7 +166,7 @@ test.describe('planner on a phone', () => {
     expect(Math.abs((await footerTop(page)) - loading)).toBeLessThanOrEqual(SETTLED_PX);
   });
 
-  test('every talent cell, tab, select and button clears 44px', async ({ page }) => {
+  test('every talent cell, tab, class crest, select and button clears 44px', async ({ page }) => {
     await page.goto('/planner');
     const clears44 = async (locator: Locator): Promise<void> => {
       const box = await locator.boundingBox();
@@ -195,21 +175,29 @@ test.describe('planner on a phone', () => {
 
     for (const tab of await page.getByRole('tab').all()) await clears44(tab);
 
+    // Reset shows once a point is spent (spec 2026-11-08 4.4).
+    await page.getByTestId('talent-1001').click();
     for (const locator of [
       page.getByTestId('talent-1001'),
-      page.getByRole('button', { name: 'Reset' }),
-      page.locator('.sel:has(> #planner-class-select)'),
-      fieldBox(page, 'planner-race-select'),
+      page.getByTestId('planner-reset'),
+      page.getByTestId('planner-bar').locator('[data-control-bar-toggle]'),
     ]) {
       await clears44(locator);
     }
+
+    // The ControlBar is one line on a phone; open, the nine crests and the race field.
+    await openPlannerBar(page);
+    for (const crest of await page.getByTestId('control-class').getByRole('radio').all()) {
+      await clears44(crest);
+    }
+    await clears44(fieldBox(page, 'control-race'));
   });
 });
 
 test('a tree and its links fit a phone with no sideways scroll', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 800 });
   await page.goto('/planner');
-  await expect(page.getByTestId('tree-panel-161')).toBeVisible();
+  await expect(treePanel(page, 'Arms')).toBeVisible();
   const overflow = await page.evaluate(
     () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
   );
@@ -217,5 +205,6 @@ test('a tree and its links fit a phone with no sideways scroll', async ({ page }
   const grid = page.getByTestId('tree-161');
   const box = await grid.boundingBox();
   expect(box!.width).toBeLessThanOrEqual(390 - 36);
-  await expect(page.getByTestId('connector-1002-1004')).toBeAttached();
+  // Tactical Mastery's link to Deflection, the first of Arms's two (sorted by prerequisite id).
+  await expect(grid.locator('path[data-met]').first()).toBeAttached();
 });

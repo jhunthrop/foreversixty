@@ -1,7 +1,10 @@
 ---
 // web/src/pages/planner.astro
-// Static page. `?class=` and `?race=` are read by the island in the browser, because the
-// page itself is prerendered and has no request to read.
+// Static page. `?class=`, `?race=`, `?code=` and the rest are read by the island in the browser,
+// because the page itself is prerendered and has no request to read. The island draws the whole
+// page (spec 2026-11-08): the head, the bar, the one Plate of trees and the rail, in the wide page
+// column (L3 Workbench). Its server render is the first paint: the head and the bar, the Plate's
+// skeleton at the ready trees' height, so the trees arriving move nothing.
 import Base from '../layouts/Base.astro';
 import Planner from '../components/planner/Planner.svelte';
 import activeBuild from '../data/active-build.json';
@@ -12,16 +15,13 @@ import { DEFAULT_CLASS_SLUG } from '../lib/planner/config';
   title="Build planner"
   description="Plan a World of Warcraft: Forever build: talents in the order you spend them, and a short link to share it."
   path="/planner"
+  wide
 >
-  <main id="main" tabindex="-1" class="flex flex-col gap-[22px] pb-10 md:gap-8 md:px-0">
-    <!-- Rebuild spec §4.A: the h1 now lives inside the island (`PlannerHead.svelte`) --
-         it reads "{Class} talents", never the tool's own name "Build planner" (which stays
-         the page's <title>, Base.astro's own <head>, unchanged). -->
+  <main id="main" tabindex="-1">
     <!-- `client:after-paint`, not `client:load` (src/directives/after-paint.ts): the island's
          server-rendered head is the page's largest contentful paint, and `client:load` put its
-         whole chain -- some 80 module requests, ~175 KB -- ahead of that first paint, so
-         Lighthouse's simulation charged every byte to FCP and LCP (2026-11-02: a median
-         score of 0.84 and LCP 4.1 s on a quiet machine, against the 0.90 budget). -->
+         whole chain ahead of that first paint (2026-11-02: a median score of 0.84 and LCP 4.1 s
+         on a quiet machine, against the 0.90 budget). -->
     <Planner client:after-paint treeVersion={activeBuild.build} classSlug={DEFAULT_CLASS_SLUG} />
   </main>
 </Base>

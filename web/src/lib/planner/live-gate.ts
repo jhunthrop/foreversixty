@@ -18,14 +18,16 @@ export type LiveGate = 'unfinished' | 'ask' | 'run';
 
 export interface LiveGateInput {
   spent: number;
+  /** The points a finished build holds: 51, or the points a character's level earns (gap G7). */
+  needed?: number;
   /** A touch-first device or a data-saver connection: see `isConstrainedDevice`. */
   constrained: boolean;
   /** The visitor pressed "Show DPS" on this page. It holds for the rest of the visit. */
   optedIn: boolean;
 }
 
-export function liveGate({ spent, constrained, optedIn }: LiveGateInput): LiveGate {
-  if (spent < MAX_POINTS) return 'unfinished';
+export function liveGate({ spent, needed = MAX_POINTS, constrained, optedIn }: LiveGateInput): LiveGate {
+  if (spent === 0 || spent < needed) return 'unfinished';
   return constrained && !optedIn ? 'ask' : 'run';
 }
 

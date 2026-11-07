@@ -807,36 +807,6 @@ details:not([open]) > summary .when-open {
   display: none;
 }
 
-/* The planner's Point Order row (components/planner/OrderStrip.svelte, its one list). */
-/* The scroll cue: while points sit past the right edge, the row fades out there, and the fade
-   shrinks to nothing as it is scrolled to the end (a scroll-driven animation on the row's own
-   inline scroll). A row that fits has no active timeline, so it never fades. CSS only: the
-   planner island's script budget is untouched. */
-@property --order-fade {
-  syntax: '<length>';
-  inherits: false;
-  initial-value: 0px;
-}
-@keyframes order-fade {
-  from {
-    --order-fade: 48px;
-  }
-  to {
-    --order-fade: 0px;
-  }
-}
-@supports (animation-timeline: scroll()) {
-  [data-testid='order-strip'] ol {
-    mask-image: linear-gradient(to right, #000 calc(100% - var(--order-fade)), transparent);
-    /* Longhands: the page build's CSS minifier drops an `animation` shorthand next to a
-       timeline it does not know. */
-    animation-name: order-fade;
-    animation-timing-function: linear;
-    animation-fill-mode: both;
-    animation-timeline: scroll(self inline);
-  }
-}
-
 /* The account's Characters card (account/CharacterList.svelte): the Battle.net refresh bar.
    Here, not in the component's <style>: /logs imports Account.svelte lazily for its pairing
    block, and with inlined stylesheets the build emits no file for a lazily imported island's

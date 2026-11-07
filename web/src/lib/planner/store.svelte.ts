@@ -226,9 +226,29 @@ export function createPlannerStore(init: PlannerInit) {
       return characterLevel ?? levelReached(order);
     },
     /** The points the build may hold: all of them for a bare build, the character's earned
-     *  points once a real level is loaded (a shared build longer than that keeps its own size). */
+     *  points once a real level is loaded. Bug B2: a build longer than that never makes the extra
+     *  points spendable; they are planned ahead (`plannedAhead`, decision P4). */
     get pointsAvailable() {
-      return characterLevel === null ? MAX_POINTS : Math.max(pointsAvailableAt(characterLevel), order.length);
+      return characterLevel === null ? MAX_POINTS : pointsAvailableAt(characterLevel);
+    },
+    /** The character's level once one is loaded beside this page, else null. */
+    get characterLevel() {
+      return characterLevel;
+    },
+    /** The points still to spend at the character's level (or of the 51): never below 0. */
+    get pointsLeft() {
+      return Math.max(
+        0,
+        (characterLevel === null ? MAX_POINTS : pointsAvailableAt(characterLevel)) - order.length,
+      );
+    },
+    /** Points spent past the character's level (decision P4): planned, not yet earned. */
+    get plannedAhead() {
+      return characterLevel === null ? 0 : Math.max(0, order.length - pointsAvailableAt(characterLevel));
+    },
+    /** True when a character is loaded and every point its level earns is spent (decision P3). */
+    get atCap() {
+      return characterLevel !== null && order.length >= pointsAvailableAt(characterLevel);
     },
     get split() {
       return split;
@@ -415,6 +435,16 @@ export function createPlannerStore(init: PlannerInit) {
       if (!editable()) return;
       order = [];
       gear = {};
+      refusal = null;
+    },
+
+    /** Clears one tree's points (ruling Q9's per-tree reset). The other trees stay legal: a
+     *  tier's requirement and a prerequisite only ever count points in their own tree. */
+    resetTree(treeIndex: number): void {
+      if (!editable() || talentIndex === null) return;
+      const tree = talentIndex.trees[treeIndex];
+      if (tree === undefined) return;
+      order = order.filter((id) => talentIndex.treeOf.get(id)?.id !== tree.id);
       refusal = null;
     },
 

@@ -3,8 +3,7 @@ import { createServer } from 'vite';
 import { addonCopy } from '../../src/lib/addon/copy';
 import type * as Fsb1Module from '../../src/lib/addon/fsb1';
 import { ACTIVE_BUILD } from './support/active-build';
-import { openImportBox } from './support/planner';
-import { nativeSelect } from './support/select';
+import { bareSpentLine, expectClass, spentLine } from './support/planner';
 
 // Not a plain `import { decodeFSB1 } from '../../src/lib/addon/fsb1'`. fsb1.ts used to
 // import PINNED_STATS from sim/stats.ts, which imports a generated `.json` file at module
@@ -34,7 +33,7 @@ test.afterAll(async () => {
 });
 
 test.describe('the addon flows', () => {
-  test('the share panel copies a code the FSB1 decoder reads', async ({ page, context }) => {
+  test('In the game copies a code the FSB1 decoder reads', async ({ page, context }) => {
     await context.grantPermissions(['clipboard-read', 'clipboard-write']);
     // The e2e fixture (FOREVER_DATA=fixture) ships a two-tree warrior with talent ids
     // 1001-1004 and no paladin at all, so this exercises the planner's default class.
@@ -43,8 +42,10 @@ test.describe('the addon flows', () => {
     // code now carries talents alone, which `decodeFSB1`'s own `gear.length` of 0 proves.
     await page.getByTestId('talent-1001').click();
 
-    await page.getByTestId('copy-addon-code').click();
-    await expect(page.getByTestId('copy-addon-code')).toHaveText(addonCopy.copiedForGame);
+    // Spec 2026-11-08 4.7: Copy for the game lives in In the game (the page's primary signed out).
+    const copy = page.getByTestId('planner-in-game').getByTestId('copy-for-game');
+    await copy.click();
+    await expect(copy).toHaveText(addonCopy.copiedForGame);
 
     const code = await page.evaluate(() => navigator.clipboard.readText());
     expect(code.startsWith('FSB1:')).toBe(true);
@@ -69,18 +70,16 @@ test.describe('the addon flows', () => {
     // even though this class has two trees; orderFromRanks ignores the field it has no
     // tree for.
     await page.goto('/planner');
-    await openImportBox(page);
     await page.getByTestId('import-code').fill(`FS1:${ACTIVE_BUILD}:warrior:human:3502/0/0:head=12640`);
     await page.getByTestId('import-submit').click();
 
-    await expect(page.getByTestId('planner-spent')).toHaveText('10/51');
+    await expect(spentLine(page)).toHaveText(bareSpentLine(10));
     await expect(page.getByTestId('import-note').first()).toHaveText(addonCopy.importOrderApproximated);
     await expect(page.getByTestId('import-error')).toHaveCount(0);
   });
 
   test('a code from another format is refused by name', async ({ page }) => {
     await page.goto('/planner');
-    await openImportBox(page);
     await page.getByTestId('import-code').fill('FS2:nope');
     await page.getByTestId('import-submit').click();
     // The literal, not `addonCopy.wrongPrefix('FS2', 'FS1')`: this refusal comes out of
@@ -101,13 +100,12 @@ test.describe('the addon flows', () => {
     // to paladin itself (the import completes once that class's talents load; here they
     // never do, since the fixture has none) instead of asking the player to switch.
     await page.goto('/planner');
-    await openImportBox(page);
     await page.getByTestId('import-code').fill(`FS1:${ACTIVE_BUILD}:paladin:human:0/0/0:`);
     await page.getByTestId('import-submit').click();
     // The box (and its "switching" line) leaves with the warrior trees the moment the class
     // changes; what persists is the class itself, and here the fixture's own missing-data
     // state for it.
-    await expect(nativeSelect(page, 'Class')).toHaveValue('paladin');
+    await expectClass(page, 'paladin');
     await expect(page.getByTestId('planner-load-error')).toBeVisible();
   });
 

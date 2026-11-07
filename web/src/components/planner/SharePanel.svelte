@@ -1,20 +1,17 @@
 <!-- web/src/components/planner/SharePanel.svelte -->
-<!-- Saving a build and showing its link. The build stays in the store whatever the API
-     says, so a failed save costs nothing but a retry. The preview card is the same PNG
-     Discord and Twitter unfurl.
-
-     Task 21: a saved build's card can carry a simmed DPS figure. The card is rendered by
-     the API, which joins it in from the newest sim whose source is this build's own id --
-     no new field on BuildDraft or the card route. The panel's job is only to run that sim,
-     after the build has an id, and to never let a failed sim take the save down with it. -->
+<!-- Share this build (spec 2026-11-08 section 4.8): the title, Share (which asks first, naming
+     what goes public), the plain-text summary with Copy as text, and the switch that sims a DPS
+     onto the card. Saved: the link, Copy link, the card line and the 600 x 315 card. The build
+     stays in the store whatever the API says, so a failed save costs nothing but a retry. Copy
+     for the game left for In the game. Task 21: a saved build's card can carry a simmed DPS; the
+     API joins it in from the newest sim whose source is this build's id, so the panel only runs
+     that sim after the build has an id, and never lets a failed sim take the save down. -->
 <script lang="ts">
   import Switch from '../ui/Switch.svelte';
-  import { tick } from 'svelte';
-  import CopyForGame from '../CopyForGame.svelte';
-  import { addonCopy } from '../../lib/addon/copy';
+  import { tick, untrack } from 'svelte';
   import { plannerCopy } from '../../lib/planner/copy';
   import { ensureItems } from '../../lib/planner/items-ready';
-  import { plannerAddonCode, unsavedPlannerHref } from '../../lib/planner/current-character-planner';
+  import { unsavedPlannerHref } from '../../lib/planner/current-character-planner';
   import type { LiveDps } from '../../lib/planner/live-dps.svelte';
   import {
     cardUrlFor,
@@ -25,7 +22,6 @@
     type SavedBuild,
   } from '../../lib/planner/share';
   import { MAX_TITLE_LENGTH, type PlannerStore } from '../../lib/planner/store.svelte';
-  import { SECONDARY_BUTTON } from '../../lib/planner/styles';
   import type { BuildDraft } from '../../lib/planner/types';
   import { saveSim } from '../../lib/sim/api';
   import { characterFromPlanner, toCharacterSpec } from '../../lib/sim/character';
@@ -35,11 +31,9 @@
   import { defaultSettings } from '../../lib/sim/settings';
   import { ITERATIONS } from '../../lib/sim/types';
   import { createPool, type SimPool } from '../../lib/sim/worker';
-  import { BUSY_CLASS } from '../../lib/ui/busy';
-
-  // Retry and Copy link are both the neutral (non-gold) secondary button; only the layout
-  // around them differs.
-  const NEUTRAL_BUTTON = `${SECONDARY_BUTTON} border-line-warm text-text px-4`;
+  import Button from '../ui/Button.svelte';
+  import Field from '../ui/Field.svelte';
+  import Section from '../ui/Section.svelte';
 
   let { store, live }: { store: PlannerStore; live: LiveDps } = $props();
 
@@ -50,6 +44,11 @@
   // component instance from another -- a different problem from disambiguating multiple
   // items within one instance by loop index.
   const uid = $props.id();
+  /** The title field: the store keeps it trimmed and capped. */
+  let title = $state(untrack(() => store.title));
+  $effect(() => {
+    store.setTitle(title);
+  });
   const shareConfirmHeadingId = `share-confirm-heading-${uid}`;
   const includeSimLabelId = `share-include-sim-label-${uid}`;
 
@@ -67,17 +66,6 @@
    * duration and a cleanup on destroy to say something less accurate.
    */
   let copiedFrom = $state<'link' | 'unsaved' | 'text' | null>(null);
-
-  // Derived, not computed on click: the button is disabled while there is nothing to
-  // copy, and a $derived keeps that in step with every talent and gear edit for free.
-  // talentIndex is null until the talent data has loaded (or has failed to); the addon
-  // code is the empty string then, rather than a cast that would crash on that failure.
-  // `plannerAddonCode` (Task 10) is the one derivation, shared with Planner.svelte's own
-  // current-character chip so the two addon-code surfaces can never disagree. Task L8.1:
-  // both of this panel's addon buttons are `CopyForGame`, which keeps its own 3 s
-  // "Copied" -- the exception to `copiedFrom` above, because its confirmation names the
-  // next step (/fs in game) rather than only the clipboard's contents.
-  const addonCode = $derived(plannerAddonCode(store));
 
   // Same story for the confirm step's "unsaved link" alternative: path and query only, no
   // origin (`window.location.origin` is only ever read inside the click handler below, so
@@ -248,7 +236,6 @@
    * nothing rather than guessing at fields that were never going to be sent.
    */
   let confirmOpen = $state(false);
-  let shareButtonEl: HTMLButtonElement | undefined;
   let confirmHeadingEl: HTMLParagraphElement | undefined = $state();
   const shareItems = $derived.by(() => {
     const draft = draftOrNull();
@@ -282,7 +269,7 @@
   /** Closes the confirm and returns focus to the button that opened it. */
   function cancelShare(): void {
     confirmOpen = false;
-    shareButtonEl?.focus();
+    document.querySelector<HTMLElement>('[data-testid="share-open"]')?.focus();
   }
 
   async function confirmedShare(): Promise<void> {
@@ -342,153 +329,126 @@
 
 <svelte:window onkeydown={confirmOpen ? onConfirmKeydown : undefined} />
 
-<section class="flex w-full flex-col gap-3" data-testid="share-panel">
-  <div class="flex flex-wrap items-end gap-3">
-    <label class="flex flex-col gap-1">
-      <span class="quiet-label">Title</span>
-      <input
-        type="text"
-        maxlength={MAX_TITLE_LENGTH}
-        value={store.title}
-        oninput={(event) => store.setTitle(event.currentTarget.value)}
-        placeholder="Optional"
-        class="border-line-warm rounded-control bg-raised text-text placeholder:text-muted h-11 w-[260px] border px-3 text-[14px]"
-      />
-    </label>
-    <button
-      type="button"
-      class={`${SECONDARY_BUTTON} border-line-warm-strong text-gold px-4 ${saving ? BUSY_CLASS : ''}`}
-      disabled={saving || store.spent === 0}
-      aria-busy={saving}
-      data-testid="share-open"
-      bind:this={shareButtonEl}
-      onclick={() => void requestShare()}
-    >
-      {plannerCopy.share}
-    </button>
-    <CopyForGame code={addonCode} testid="copy-addon-code" />
-  </div>
-  <p class="text-muted text-[13px]">{addonCopy.addonCodeHint}</p>
-
-  <!-- Rebuild spec §4.H: Share / Copy for the game / Copy as text read as three equally
-       weighted export options, so this sits in the same section rather than a separate
-       panel. The computed string itself is visible (not just copied blind), same as the
-       share link above. -->
-  <div class="flex flex-wrap items-center gap-3">
-    <span class="text-muted text-[13px] tabular-nums" data-testid="planner-text-summary">{textSummary}</span>
-    <button
-      type="button"
-      class={NEUTRAL_BUTTON}
-      data-testid="copy-as-text"
-      disabled={textSummary === ''}
-      onclick={() => copyToClipboard(textSummary, 'text')}
-    >
-      {copiedFrom === 'text' ? plannerCopy.copiedText : plannerCopy.copyAsText}
-    </button>
-  </div>
-
-  <div
-    class="flex min-h-11 items-center justify-between gap-3 text-[13px]"
-    title={canIncludeSim ? undefined : simCopy.buildSimUnavailable}
-  >
-    <span class="text-muted" id={includeSimLabelId}>{simCopy.includeSimOnCard}</span>
-    <Switch
-      checked={includeSimChecked}
-      disabled={!canIncludeSim}
-      onchange={(next) => (includeSim = next)}
-      labelledby={includeSimLabelId}
-      testid="share-include-sim"
-    />
-  </div>
-
-  {#if confirmOpen}
-    <div
-      class="border-line bg-raised rounded-panel flex flex-col gap-3 border p-3"
-      role="group"
-      aria-labelledby={shareConfirmHeadingId}
-      data-testid="share-confirm"
-    >
-      <p
-        id={shareConfirmHeadingId}
-        tabindex="-1"
-        bind:this={confirmHeadingEl}
-        class="text-strong text-[14px] outline-none"
-      >
-        {plannerCopy.shareConfirmTitle}
-      </p>
-      <p class="text-muted text-[13px]">{plannerCopy.shareConfirmIntro}</p>
-      <ul class="text-muted list-disc pl-5 text-[13px]">
-        {#each shareItems as item (item)}
-          <li>{item}</li>
-        {/each}
-      </ul>
-      <div class="flex flex-wrap gap-3">
-        <button
-          type="button"
-          class="{SECONDARY_BUTTON} border-line-warm-strong text-gold px-4"
-          data-testid="share-confirm-proceed"
-          onclick={() => void confirmedShare()}
-        >
-          {plannerCopy.shareConfirmProceed}
-        </button>
-        <button type="button" class={NEUTRAL_BUTTON} data-testid="share-confirm-cancel" onclick={cancelShare}>
-          {plannerCopy.shareConfirmCancel}
-        </button>
-        <CopyForGame code={addonCode} testid="share-confirm-copy-code" />
-        <button
-          type="button"
-          class={NEUTRAL_BUTTON}
-          disabled={unsavedHref === ''}
-          data-testid="share-confirm-copy-unsaved"
-          onclick={copyUnsavedLink}
-        >
-          {copiedFrom === 'unsaved' ? plannerCopy.copiedUnsavedLink : plannerCopy.shareConfirmCopyUnsaved}
-        </button>
-      </div>
-    </div>
-  {/if}
-
-  {#if failure}
-    <div class="border-line bg-raised rounded-panel flex flex-col gap-2 border p-3" role="alert">
-      <p class="text-strong text-[14px]">{failure.message}</p>
-      {#each Object.entries(failure.fields) as [field, message] (field)}
-        <p class="text-muted text-[13px]"><span class="font-mono">{field}</span>: {message}</p>
-      {/each}
-      <button type="button" class="{NEUTRAL_BUTTON} w-fit" onclick={share}> Retry </button>
-    </div>
-  {/if}
-
-  {#if saved}
-    <div class="border-line bg-raised rounded-panel flex flex-col gap-3 border p-3">
-      <div class="flex flex-wrap items-center gap-3">
-        <a href={saved.url} class="font-mono text-[14px]" data-testid="share-link">{saved.url}</a>
-        <button type="button" class={NEUTRAL_BUTTON} onclick={() => copyToClipboard(saved.url, 'link')}>
-          {copiedFrom === 'link' ? 'Copied' : 'Copy link'}
-        </button>
-      </div>
-      {#if cardState !== 'idle'}
-        <p class="text-muted text-[13px]" data-testid="build-sim-status">
-          {#if cardState === 'running'}
-            {simCopy.buildSimRunning}
-          {:else if cardState === 'done'}
-            {simCopy.buildSimDone(cardDps, cardVersion)}
-          {:else}
-            {simCopy.buildSimSkipped}
-          {/if}
-        </p>
-      {/if}
-      {#if !cardBroken}
-        <img
-          src={cardUrlFor(saved.url)}
-          alt={`Preview card for build ${saved.id}`}
-          width="600"
-          height="315"
-          loading="lazy"
-          decoding="async"
-          class="rounded-panel border-line w-full max-w-[600px] border"
-          onerror={() => (cardBroken = true)}
+<Section title={plannerCopy.shareTitle} testid="share-panel">
+  <div class="pl-sec">
+    <div class="pl-acts pl-end">
+      <div class="pl-field">
+        <Field
+          id={`share-title-${uid}`}
+          label={plannerCopy.shareTitleLabel}
+          placeholder={plannerCopy.shareTitlePlaceholder}
+          maxlength={MAX_TITLE_LENGTH}
+          bind:value={title}
+          testid="share-title"
         />
-      {/if}
+      </div>
+      <Button disabled={saving || store.spent === 0} onclick={() => void requestShare()} testid="share-open"
+        >{plannerCopy.share}</Button
+      >
     </div>
-  {/if}
-</section>
+    <div class="pl-acts">
+      <span class="text-small text-muted tabular-nums" data-testid="planner-text-summary">{textSummary}</span>
+      <Button
+        size="sm"
+        disabled={textSummary === ''}
+        onclick={() => copyToClipboard(textSummary, 'text')}
+        testid="copy-as-text"
+        >{copiedFrom === 'text' ? plannerCopy.copiedText : plannerCopy.copyAsText}</Button
+      >
+    </div>
+    <div
+      class="pl-switch"
+      class:pl-off={!canIncludeSim}
+      title={canIncludeSim ? undefined : simCopy.buildSimUnavailable}
+    >
+      <span id={includeSimLabelId}>{simCopy.includeSimOnCard}</span>
+      <Switch
+        checked={includeSimChecked}
+        disabled={!canIncludeSim}
+        onchange={(next) => (includeSim = next)}
+        labelledby={includeSimLabelId}
+        testid="share-include-sim"
+      />
+    </div>
+
+    {#if confirmOpen}
+      <div
+        class="pl-confirm"
+        role="group"
+        aria-labelledby={shareConfirmHeadingId}
+        data-testid="share-confirm"
+      >
+        <p
+          id={shareConfirmHeadingId}
+          tabindex="-1"
+          bind:this={confirmHeadingEl}
+          class="text-strong outline-none"
+        >
+          {plannerCopy.shareConfirmTitle}
+        </p>
+        <p class="text-small text-muted">{plannerCopy.shareConfirmIntro}</p>
+        <ul class="text-small text-muted list-disc pl-5">
+          {#each shareItems as item (item)}
+            <li>{item}</li>
+          {/each}
+        </ul>
+        <div class="pl-acts">
+          <Button onclick={() => void confirmedShare()} testid="share-confirm-proceed"
+            >{plannerCopy.shareConfirmProceed}</Button
+          >
+          <Button onclick={cancelShare} testid="share-confirm-cancel">{plannerCopy.shareConfirmCancel}</Button
+          >
+          <Button disabled={unsavedHref === ''} onclick={copyUnsavedLink} testid="share-confirm-copy-unsaved"
+            >{copiedFrom === 'unsaved'
+              ? plannerCopy.copiedUnsavedLink
+              : plannerCopy.shareConfirmCopyUnsaved}</Button
+          >
+        </div>
+      </div>
+    {/if}
+
+    {#if failure}
+      <div class="pl-confirm" role="alert" data-testid="share-failure">
+        <p class="text-wipe">{failure.message}</p>
+        {#each Object.entries(failure.fields) as [field, message] (field)}
+          <p class="text-small text-muted">{field}: {message}</p>
+        {/each}
+        <div class="pl-acts"><Button size="sm" onclick={share}>{plannerCopy.retry}</Button></div>
+      </div>
+    {/if}
+
+    {#if saved}
+      <div class="pl-confirm">
+        <div class="pl-acts">
+          <a href={saved.url} class="pl-url" data-testid="share-link">{saved.url}</a>
+          <Button size="sm" onclick={() => copyToClipboard(saved.url, 'link')}
+            >{copiedFrom === 'link' ? plannerCopy.copied : plannerCopy.copyLink}</Button
+          >
+        </div>
+        {#if cardState !== 'idle'}
+          <p class="text-small text-muted" data-testid="build-sim-status">
+            {#if cardState === 'running'}
+              {simCopy.buildSimRunning}
+            {:else if cardState === 'done'}
+              {simCopy.buildSimDone(cardDps, cardVersion)}
+            {:else}
+              {simCopy.buildSimSkipped}
+            {/if}
+          </p>
+        {/if}
+        {#if !cardBroken}
+          <img
+            src={cardUrlFor(saved.url)}
+            alt={`Preview card for build ${saved.id}`}
+            width="600"
+            height="315"
+            loading="lazy"
+            decoding="async"
+            class="pl-card"
+            onerror={() => (cardBroken = true)}
+          />
+        {/if}
+      </div>
+    {/if}
+  </div>
+</Section>

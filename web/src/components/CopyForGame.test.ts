@@ -32,12 +32,12 @@ describe('CopyForGame (static render)', () => {
     expect(button).toContain(addonCopy.copyForGame);
     expect(addonCopy.copyForGame).toBe('Copy for the game');
     expect(button).toContain('data-testid="copy-addon-code"');
-    expect(button).not.toMatch(/\sdisabled/);
+    expect(button).not.toMatch(/\sdisabled(?=[\s>=])/);
   });
 
   it('disables the button when there is no code to copy', () => {
     const { body } = render(CopyForGame, { props: { code: '' } });
-    expect(buttonOf(body)).toMatch(/\sdisabled/);
+    expect(buttonOf(body)).toMatch(/\sdisabled(?=[\s>=])/);
   });
 
   it('shows no fallback field until a copy has failed', () => {

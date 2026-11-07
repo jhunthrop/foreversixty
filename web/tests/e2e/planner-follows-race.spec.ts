@@ -1,7 +1,7 @@
 import { expect, test } from './support/test';
 
 import { meAddonFixture } from '../../src/fixtures/me-addon';
-import { choose } from './support/select';
+import { chooseRace, raceSelect } from './support/planner';
 
 const ok = (data: unknown) => ({
   status: 200,
@@ -36,10 +36,10 @@ test.describe('The planner starts on the character’s race', () => {
     await page.goto('/planner');
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Warrior talents');
-    await expect(page.getByTestId('page-head-meta')).toContainText('Gnome · Level 21');
-    await expect(page.getByTestId('planner-race-select')).toHaveValue('gnome');
+    await expect(page.getByTestId('planner-meta')).toContainText('Gnome · Level 21');
+    await expect(raceSelect(page)).toHaveValue('gnome');
 
-    await choose(page.getByTestId('planner-race-select'), 'orc');
-    await expect(page.getByTestId('page-head-meta')).toContainText('Orc · Level 21');
+    await chooseRace(page, 'orc');
+    await expect(page.getByTestId('planner-meta')).toContainText('Orc · Level 21');
   });
 });

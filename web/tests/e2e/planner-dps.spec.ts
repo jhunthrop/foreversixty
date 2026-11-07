@@ -1,10 +1,18 @@
 import { expect, test } from './support/test';
-import { LAST_TALENT, NEARLY_FINISHED_BUILD, finishBuild, showLastTalent } from './support/planner';
+import {
+  LAST_TALENT,
+  NEARLY_FINISHED_BUILD,
+  finishBuild,
+  scoreFigure,
+  showLastTalent,
+} from './support/planner';
 
 // Task 20: a talent or slot change runs a 500-iteration sim in the browser pool and updates
 // a DPS estimate with its error in under a second (design 4.6). The fake engine (the default
 // here: PUBLIC_SIM_ENGINE is unset, so engine.ts loads src/fixtures/sim/engine-fake.ts) makes
-// the figure deterministic-ish -- not the exact number, but that one always arrives.
+// the figure deterministic-ish -- not the exact number, but that one always arrives. Spec
+// 2026-11-08 4.1: the figure is the head's answer (`planner-dps`), its caption under it
+// (`planner-dps-note`), run on the Level build section's gear once that section has answered.
 
 test('a finished build runs a live sim, and an unfinished one asks nothing of the engine', async ({
   page,
@@ -20,25 +28,25 @@ test('a finished build runs a live sim, and an unfinished one asks nothing of th
   await page.goto(NEARLY_FINISHED_BUILD);
   await showLastTalent(page);
   // One point short: no figure, and the DPS slot reads a plain explainer (never a point count).
-  await expect(page.getByTestId('planner-dps')).toHaveText('—');
-  await expect(page.getByTestId('planner-dps-error')).toHaveText('Appears once your points are spent.');
+  await expect(scoreFigure(page)).toHaveText('—');
+  await expect(page.getByTestId('planner-dps-note')).toHaveText('Appears once your points are spent.');
   await page.waitForTimeout(600);
   expect(simAssetRequests).toEqual([]);
 
   await finishBuild(page);
-  await expect(page.getByTestId('planner-dps')).not.toHaveText('—', { timeout: 3000 });
-  await expect(page.getByTestId('planner-dps-error')).toHaveText(/^± \d/);
+  await expect(scoreFigure(page)).not.toHaveText('—', { timeout: 3000 });
+  await expect(page.getByTestId('planner-dps-note')).toHaveText(/^± \d/);
 
   // Taking a point back out stops the sim, and the figure from the last run stays on screen
   // (dimmed) rather than blanking -- "a number that vanishes and reappears on every click is
   // worse than a stale number that dims" is the whole design decision this asserts.
   await page.getByTestId(LAST_TALENT).click({ button: 'right' });
-  await expect(page.getByTestId('planner-dps-error')).toHaveText('Appears once your points are spent.');
-  await expect(page.getByTestId('planner-dps')).not.toHaveText('—');
+  await expect(page.getByTestId('planner-dps-note')).toHaveText('Appears once your points are spent.');
+  await expect(scoreFigure(page)).not.toHaveText('—');
 
   // Spending it again settles into a fresh estimate of its own.
   await page.getByTestId(LAST_TALENT).click();
-  await expect(page.getByTestId('planner-dps-error')).toHaveText(/^± \d/, { timeout: 3000 });
+  await expect(page.getByTestId('planner-dps-note')).toHaveText(/^± \d/, { timeout: 3000 });
 
   expect(simAssetRequests).toEqual([]);
 });
@@ -62,31 +70,27 @@ test('"Sim this build" carries the build to the full results', async ({ page }) 
   await expect(page.getByTestId('sim-view')).toBeVisible();
 });
 
-// The error band only exists once a run is ready. It used to be removed from the page while
-// the next run was pending, so every talent click made the summary bar one line shorter and
-// then one line taller again, and the trees under it jumped up and back.
-test('a talent click never moves the trees: the summary bar keeps its height through a run', async ({
-  page,
-}) => {
+// The error line only exists once a run is ready. It used to be removed from the page while
+// the next run was pending, so every talent click made the head one line shorter and then one
+// line taller again, and the trees under it jumped up and back.
+test('a talent click never moves the trees: the head keeps its height through a run', async ({ page }) => {
   await page.goto(NEARLY_FINISHED_BUILD);
   await showLastTalent(page);
   const cell = page.getByTestId(LAST_TALENT);
   // Measured against the document, not the viewport: a click may scroll the page, and that
   // is not the trees moving.
   const top = (): Promise<number> => cell.evaluate((el) => el.getBoundingClientRect().top + window.scrollY);
-  // Planner rebuild (2026-10-01): the header now carries real heading text of its own
-  // (the h1's class/race/level/spec suffix, PlannerHeader.svelte) rather than the old
-  // static "Build planner" title, and that text settles a few pixels once the font swaps
-  // in -- unrelated to anything this test is about (a talent click moving nothing). The
-  // settle happens once, well under a second, and never again; waiting it out here is
-  // what isolates the one shift this test actually exists to catch.
+  // The head's title (Marcellus) settles a few pixels once the font swaps in -- unrelated to
+  // anything this test is about (a talent click moving nothing). The settle happens once,
+  // well under a second, and never again; waiting it out here is what isolates the one
+  // shift this test actually exists to catch.
   await page.evaluate(() => document.fonts.ready);
   await page.waitForTimeout(500);
   const before = await top();
 
   // Finishing the build brings the figure (or, on a phone, the button that asks for it).
   await finishBuild(page);
-  await expect(page.getByTestId('planner-dps-error')).toHaveText(/^± \d/, { timeout: 3000 });
+  await expect(page.getByTestId('planner-dps-note')).toHaveText(/^± \d/, { timeout: 3000 });
   expect(await top()).toBe(before);
 
   // Out and back in: the band gives way to "1 point to go" and returns, and the run that
@@ -95,7 +99,7 @@ test('a talent click never moves the trees: the summary bar keeps its height thr
   expect(await top()).toBe(before);
   await page.getByTestId(LAST_TALENT).click();
   expect(await top()).toBe(before);
-  await expect(page.getByTestId('planner-dps-error')).toHaveText(/^± \d/, { timeout: 3000 });
+  await expect(page.getByTestId('planner-dps-note')).toHaveText(/^± \d/, { timeout: 3000 });
   expect(await top()).toBe(before);
 });
 
@@ -108,43 +112,47 @@ test('a phone is asked before anything runs, and the answer holds for the visit'
   await page.getByTestId(LAST_TALENT).click();
 
   await expect(page.getByTestId('planner-dps-show')).toBeVisible();
-  await expect(page.getByTestId('planner-dps-error')).toHaveText('Runs on this device');
+  await expect(page.getByTestId('planner-dps-note')).toHaveText('Runs on this device');
   await page.getByTestId('planner-dps-show').click();
-  await expect(page.getByTestId('planner-dps')).not.toHaveText('—', { timeout: 3000 });
+  await expect(scoreFigure(page)).not.toHaveText('—', { timeout: 3000 });
 
   // Asked once: the next edit sims without asking again.
   await page.getByTestId(LAST_TALENT).click({ button: 'right' });
   await page.getByTestId(LAST_TALENT).click();
   await expect(page.getByTestId('planner-dps-show')).toHaveCount(0);
-  await expect(page.getByTestId('planner-dps-error')).toHaveText(/^± \d/, { timeout: 3000 });
+  await expect(page.getByTestId('planner-dps-note')).toHaveText(/^± \d/, { timeout: 3000 });
 });
 
-// Fix round 1, item 2.a (the mock): "Sim this build" left the facts rail entirely -- it is
-// now its own outlined gold button in the rail, above the Share panel, no longer bundled
-// with the DPS figure. This replaces the old same-row alignment test with the layout it
-// actually describes now.
-test('"Sim this build" sits in the rail, above the Share panel, not beside the DPS figure', async ({
+// Spec 2026-11-08 4.1: "Sim this build" is the head answer's link, under the two figures
+// (the build's code or the character's), above everything in the rail -- Share included.
+test('"Sim this build" sits in the head answer, under the figures and above the Share panel', async ({
   page,
 }) => {
   await page.goto(NEARLY_FINISHED_BUILD);
   const simLink = page.getByTestId('planner-sim-link');
-  const shareSection = page.getByTestId('planner-share-section');
+  const shareSection = page.getByTestId('share-panel');
   await expect(simLink).toBeVisible();
   await expect(shareSection).toBeVisible();
-  const simTop = await simLink.evaluate((el) => el.getBoundingClientRect().top);
-  const shareTop = await shareSection.evaluate((el) => el.getBoundingClientRect().top);
-  expect(simTop).toBeLessThan(shareTop);
+  await expect(page.getByTestId('planner-answer').getByTestId('planner-sim-link')).toBeVisible();
+  const top = (testid: string): Promise<number> =>
+    page.getByTestId(testid).evaluate((el) => el.getBoundingClientRect().top);
+  const figureBottom = await page
+    .getByTestId('planner-dps')
+    .evaluate((el) => el.getBoundingClientRect().bottom);
+  const simTop = await top('planner-sim-link');
+  expect(simTop).toBeGreaterThanOrEqual(figureBottom);
+  expect(simTop).toBeLessThan(await top('share-panel'));
 });
 
-// The facts rail (now inside PlannerHeader) must not change height as the figure fills in --
-// the same CLS concern the old row-sharing test guarded, applied to its new home.
-test('the facts rail keeps its own height as the DPS figure fills in', async ({ page }) => {
+// The head's answer is two fixed figure blocks (spec 2026-11-08 5.2): it must not change height
+// as the figure fills in -- the same CLS concern the old row-sharing test guarded.
+test('the head answer keeps its own height as the DPS figure fills in', async ({ page }) => {
   await page.goto(NEARLY_FINISHED_BUILD);
   await showLastTalent(page);
-  const facts = page.getByTestId('planner-facts');
-  const height = (): Promise<number> => facts.evaluate((el) => el.getBoundingClientRect().height);
+  const answer = page.getByTestId('planner-answer');
+  const height = (): Promise<number> => answer.evaluate((el) => el.getBoundingClientRect().height);
   const before = await height();
   await finishBuild(page);
-  await expect(page.getByTestId('planner-dps-error')).toHaveText(/^± \d/, { timeout: 3000 });
+  await expect(page.getByTestId('planner-dps-note')).toHaveText(/^± \d/, { timeout: 3000 });
   expect(await height()).toBe(before);
 });

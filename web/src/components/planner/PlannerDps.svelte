@@ -1,5 +1,6 @@
 <!-- web/src/components/planner/PlannerDps.svelte -->
-<!-- The fourth figure in the summary bar. It is the planner's own shape -- label caption,
+<!-- The live figure in the inline embed's summary bar (Top Gear's "add a build"; /planner's own
+     head answer is PlannerAnswer). It is the planner's own shape -- label caption,
      mono value at the same size -- so it reads as one more fact about the build rather
      than a widget bolted on.
      It dims rather than blanks while a new estimate runs: a number that disappears on every
@@ -9,11 +10,10 @@
   import { plannerSimCopy as simCopy } from '../../lib/sim/planner-copy';
   import type { LiveDps } from '../../lib/planner/live-dps.svelte';
   import type { LiveGate } from '../../lib/planner/live-gate';
-  import { FACT_FIGURE_CLASS, PRIMARY_BUTTON_FIXED, SECONDARY_BUTTON_FIXED } from '../../lib/planner/styles';
+  import { PRIMARY_BUTTON_FIXED, SECONDARY_BUTTON_FIXED } from '../../lib/planner/styles';
   import { plannerScoreCopy } from '../../lib/planner/score-unit';
   import type { SlotScoreUnit } from '../../lib/bis/tank-view';
   import { poolQualityCopy } from '../../lib/sim/pool-quality-copy';
-  import StatTile from '../ui/StatTile.svelte';
 
   let {
     live,
@@ -22,14 +22,9 @@
     pointsLeft,
     onshow,
     ownGearCaveat = false,
-    showSimLink = true,
-    unfinishedNote = 'dynamic',
     unit = 'dps',
-    tile = false,
   }: {
     live: LiveDps;
-    /** Unused when `showSimLink` is false (the planner rebuild's header facts rail -- the
-     *  link itself moved to the rail, above the Share panel, spec fix round 1 item 2.a). */
     href?: string;
     gate: LiveGate;
     pointsLeft: number;
@@ -44,22 +39,10 @@
      * number is wrong, this one is just never the player's own gear once a build is pasted.
      */
     ownGearCaveat?: boolean;
-    /** False inside `PlannerHeadControls`'s own facts rail (fix round 1): "Sim this build" is now
-     *  its own outlined gold button in the rail, above the Share panel, not bundled with the
-     *  figure. Still true (default) for the non-standalone inline embed, unchanged. */
-    showSimLink?: boolean;
-    /** 'static' inside the header's facts rail: the dynamic "{n} points to go" count now
-     *  lives under "Points left" instead (so the two never repeat the same number twice),
-     *  and this slot reads a plain explainer of what the figure is waiting for. 'dynamic'
-     *  (default) keeps the non-standalone embed's original behaviour. */
-    unfinishedNote?: 'dynamic' | 'static';
     /** What the figure is called (the build's role): a healer's is HPS, a tank's a tank
      *  score. The live run asks the engine for the role's own figure (`role_metrics`), so a
      *  DPS number is never relabelled as HPS. */
     unit?: SlotScoreUnit;
-    /** True inside the header's facts rail: the figure is a `StatTile` (heading-face
-     *  figure, the note wrapping under it on a phone) instead of the embed's mono column. */
-    tile?: boolean;
   } = $props();
 
   // `off` with a figure still held is a build that stopped being simmed -- a point came out,
@@ -82,9 +65,7 @@
   // The line under the figure says why there is no fresh number, when there is not one.
   const dpsNote = $derived(
     gate === 'unfinished'
-      ? unfinishedNote === 'static'
-        ? plannerScoreCopy.waiting
-        : simCopy.plannerDpsPointsToGo(pointsLeft)
+      ? simCopy.plannerDpsPointsToGo(pointsLeft)
       : gate === 'ask'
         ? simCopy.plannerDpsShowNote
         : band,
@@ -118,62 +99,38 @@
   </span>
 {/snippet}
 
-{#if tile}
-  <!-- Polish spec 5.1: a tile like its neighbours. The note wraps under the figure instead of
-       running off the right edge (it is nowrap in the embed below); two lines are reserved
-       below 640px, where the half-width tile wraps "Appears once your points are spent.",
-       and one from there up, so the answer arriving moves nothing. -->
-  <StatTile label={plannerScoreCopy.label(unit)} figureClass={FACT_FIGURE_CLASS}>
-    {#snippet figure()}
-      {#if gate === 'ask'}
-        {@render askButton()}
-      {:else}
-        {@render figureValue('')}
-      {/if}
-    {/snippet}
-    {#snippet note()}
-      <span
-        class="tabular text-muted block min-h-[36px] basis-full text-[13px] leading-[18px] sm:min-h-[18px] sm:basis-auto"
-        data-testid="planner-dps-error">{dpsNote}</span
-      >
-    {/snippet}
-  </StatTile>
-{:else}
-  <!-- One column, like Level and Points beside it: caption, then the value row, then the line
+<!-- One column, like Level and Points beside it: caption, then the value row, then the line
        that qualifies it. "Sim this build" sits IN the value row rather than beside the column,
        and the bar aligns its columns to the top (SummaryBar.svelte), so this column being one
        line taller than its neighbours leaves every caption and every value on one baseline. -->
-  <div class="flex flex-col gap-1">
-    <span class="quiet-label">{plannerScoreCopy.label(unit)}</span>
-    <!-- A column below md, one row from md: with the figure and the button side by side on a
+<div class="flex flex-col gap-1">
+  <span class="quiet-label">{plannerScoreCopy.label(unit)}</span>
+  <!-- A column below md, one row from md: with the figure and the button side by side on a
          phone, the runner's wider fallback font wrapped the pair in ways a Mac never showed
          (planner-dps.spec.ts read the button a row above the figure on CI). -->
-    <div class="flex flex-col items-start gap-2 md:flex-row md:items-center md:gap-4">
-      {#if gate === 'ask'}
-        {@render askButton()}
-      {:else}
-        {@render figureValue('numeric text-[20px] leading-11')}
-      {/if}
-      <!-- The bar's one primary button: simming a build is one of the planner's own jobs
+  <div class="flex flex-col items-start gap-2 md:flex-row md:items-center md:gap-4">
+    {#if gate === 'ask'}
+      {@render askButton()}
+    {:else}
+      {@render figureValue('numeric text-[20px] leading-11')}
+    {/if}
+    <!-- The bar's one primary button: simming a build is one of the planner's own jobs
            (build review round 1, finding 5), a real action rather than an underlined link.
            PRIMARY_BUTTON_FIXED, not the shrinking PRIMARY_BUTTON: no other control in this
            lane shrinks its target on desktop. -->
-      {#if showSimLink}
-        <a class="{PRIMARY_BUTTON_FIXED} px-4" {href} data-testid="planner-sim-link">
-          {simCopy.simThisBuild}
-        </a>
-      {/if}
-    </div>
-    <!-- Always on the page, at a fixed height, even with nothing to say: the band only exists
+    <a class="{PRIMARY_BUTTON_FIXED} px-4" {href} data-testid="planner-sim-link">
+      {simCopy.simThisBuild}
+    </a>
+  </div>
+  <!-- Always on the page, at a fixed height, even with nothing to say: the band only exists
          once a run is ready, and removing the line while the next run was pending made the
          whole summary bar one line shorter on every talent click, which moved the trees. -->
-    <span class="text-muted numeric block h-[18px] text-[12px] leading-[18px]" data-testid="planner-dps-error"
-      >{dpsNote}</span
-    >
-    {#if ownGearCaveat}
-      <span class="text-muted block text-[12px]" data-testid="planner-dps-own-gear">
-        {poolQualityCopy.plannerDpsOwnGearNote}
-      </span>
-    {/if}
-  </div>
-{/if}
+  <span class="text-muted numeric block h-[18px] text-[12px] leading-[18px]" data-testid="planner-dps-error"
+    >{dpsNote}</span
+  >
+  {#if ownGearCaveat}
+    <span class="text-muted block text-[12px]" data-testid="planner-dps-own-gear">
+      {poolQualityCopy.plannerDpsOwnGearNote}
+    </span>
+  {/if}
+</div>

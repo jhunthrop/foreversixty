@@ -91,3 +91,19 @@ export function renderGuidesMocks(mocks: readonly string[]): string {
   });
   return dir;
 }
+
+/**
+ * The planner mocks named (ws_planner.py --list), from this checkout's data/builds files, the
+ * planner libs and the fixtures support/planner-page.ts serves: planner_facts.mjs runs the page's
+ * own models, ws_planner.py draws just those mocks. Returns the folder that holds web-planner*.html.
+ */
+export function renderPlannerMocks(mocks: readonly string[]): string {
+  const dir = freshDir('planner');
+  const facts = path.join(dir, 'planner-facts.json');
+  run('node', [path.join(GENERATORS, 'planner_facts.mjs'), facts]);
+  run(PYTHON, [path.join(GENERATORS, 'ws_planner.py'), ...mocks], {
+    FS_PLANNER_FACTS: facts,
+    FS_MOCK_OUT: dir,
+  });
+  return dir;
+}
