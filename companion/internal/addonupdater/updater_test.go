@@ -382,13 +382,17 @@ func TestGameRunningGate(t *testing.T) {
 		{"a client with a path the system would not tell", []Proc{{Name: "WowB.exe"}}, true},
 		{"a client beside the flavour folders", []Proc{{Name: "Wow.exe", Path: filepath.Join(filepath.Dir(era), "Wow.exe")}}, true},
 		{"a client elsewhere", []Proc{{Name: "Wow.exe", Path: "/other/Wow.exe"}}, false},
+		{"this install's Mac client", []Proc{{Name: "World of Warcraft", Path: filepath.Join(era, "World of Warcraft Beta.app", "Contents", "MacOS", "World of Warcraft")}}, true},
+		{"the Mac launcher beside the flavour folders", []Proc{{Name: "World of Warcraft Launcher", Path: filepath.Join(filepath.Dir(era), "World of Warcraft Launcher.app", "Contents", "MacOS", "World of Warcraft Launcher")}}, false},
 	} {
 		if got := GameRunning(era, tc.procs); got != tc.want {
 			t.Errorf("%s: GameRunning = %v, want %v", tc.name, got, tc.want)
 		}
 	}
 	for name, want := range map[string]bool{"Wow.exe": true, "WowB.exe": true, "WowT.exe": true, "WowClassic.exe": true, "wowclassic.EXE": true,
-		"Wow-64.exe": true, "WowError.exe": true, "Showow.exe": false, "Wow.txt": false, "BlizzardError.exe": false} {
+		"Wow-64.exe": true, "WowError.exe": true, "Showow.exe": false, "Wow.txt": false, "BlizzardError.exe": false,
+		"World of Warcraft": true, "World of Warcraft Classic": true, "World of Warcraft Classic Beta": true,
+		"World of Warcraft Launcher": false, "World of Warcraft Beta.app": false, "Battle.net": false} {
 		if IsClientName(name) != want {
 			t.Errorf("IsClientName(%q) = %v", name, !want)
 		}

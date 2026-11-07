@@ -23,6 +23,7 @@ import (
 	"github.com/jhunthrop/foreversixty/companion/internal/secret"
 	"github.com/jhunthrop/foreversixty/companion/internal/state"
 	"github.com/jhunthrop/foreversixty/companion/internal/watch"
+	"github.com/jhunthrop/foreversixty/companion/internal/wow"
 )
 
 var t0 = time.Date(2026, 12, 9, 20, 0, 0, 0, time.UTC)
@@ -108,6 +109,10 @@ func newHarnessSeeded(t *testing.T, seed func(paths.Dirs)) *harness {
 	return newHarnessWith(t, seed, nil)
 }
 
+// noInstalls is the game search for a test: the machine's own installs
+// (the owner's Mac has the beta in /Applications) are not the test's.
+func noInstalls() []wow.Install { return nil }
+
 // newHarnessWith also lets a test adjust the app's options before it is built.
 func newHarnessWith(t *testing.T, seed func(paths.Dirs), tweak func(*app.Options)) *harness {
 	t.Helper()
@@ -141,6 +146,7 @@ func newHarnessWith(t *testing.T, seed func(paths.Dirs), tweak func(*app.Options
 		// Never a real browser or a real dialog from a test.
 		Open:            h.open,
 		PickFolder:      func() (string, error) { return h.pick, h.pickErr },
+		Detect:          noInstalls,
 		ConnectInterval: 2 * time.Millisecond,
 	}
 	if tweak != nil {

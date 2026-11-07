@@ -58,6 +58,7 @@ done
 content_type() {
 	case $1 in
 	*.exe) echo application/vnd.microsoft.portable-executable ;;
+	*.dmg) echo application/x-apple-diskimage ;;
 	*.zip) echo application/zip ;;
 	*.json) echo 'application/json; charset=utf-8' ;;
 	*.minisig | *.txt) echo 'text/plain; charset=utf-8' ;;

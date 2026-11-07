@@ -15,13 +15,21 @@ type Proc struct {
 	Path string
 }
 
-// clientName matches the game's executables: Wow.exe, WowB.exe, WowT.exe,
-// WowClassic.exe, WowClassicB.exe, Wow-64.exe and their kin.
+// clientName matches the game's Windows executables: Wow.exe, WowB.exe,
+// WowT.exe, WowClassic.exe, WowClassicB.exe, Wow-64.exe and their kin.
 var clientName = regexp.MustCompile(`(?i)^wow[a-z0-9_-]*\.exe$`)
 
+// macClientName matches the game's macOS executables, the file inside each
+// client's .app: "World of Warcraft" (in World of Warcraft Beta.app, the
+// Forever beta's), "World of Warcraft Classic" and their test kin. The
+// Battle.net folder's "World of Warcraft Launcher" is not a client.
+var macClientName = regexp.MustCompile(`(?i)^World of Warcraft( (Classic|Beta|Public Test|PTR|Test))*$`)
+
 // IsClientName reports whether an executable name is a World of Warcraft
-// client's.
-func IsClientName(name string) bool { return clientName.MatchString(name) }
+// client's, on Windows (and under Wine) or on macOS.
+func IsClientName(name string) bool {
+	return clientName.MatchString(name) || macClientName.MatchString(name)
+}
 
 // GameRunning reports whether a game client is running for the install, the
 // flavour folder that holds WTF and Interface. The process list is the

@@ -73,6 +73,10 @@ type Options struct {
 	// PickFolder is the native folder dialog. Zero means the real one
 	// (package picker); tests answer without a dialog.
 	PickFolder func() (string, error)
+	// Detect finds the game in its usual places. Zero means the real
+	// search (wow.Detect); tests find nothing, so a game installed on the
+	// machine running them never joins their folders.
+	Detect func() []wow.Install
 	// ConnectInterval overrides how often a sign-in is polled. Zero
 	// means the server's own interval, two seconds.
 	ConnectInterval time.Duration
@@ -162,6 +166,9 @@ func New(o Options) (*App, error) {
 	}
 	if o.PickFolder == nil {
 		o.PickFolder = picker.Pick
+	}
+	if o.Detect == nil {
+		o.Detect = wow.Detect
 	}
 	if o.Secret == nil {
 		o.Secret = secret.ConfigFile{Path: o.Dirs.ConfigFile()}
@@ -358,7 +365,7 @@ func (a *App) detect() []wow.Install {
 			added[in.Path] = true
 		}
 	}
-	for _, in := range wow.Detect() {
+	for _, in := range a.o.Detect() {
 		add(in)
 	}
 	a.added = added
