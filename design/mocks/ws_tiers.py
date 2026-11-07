@@ -20,7 +20,6 @@ from pathlib import Path
 from mocklib import CLASS_COLOR, emblem
 from ws_prims import (ColumnHeads, Link, Notice, Page, PageHeader, Plate, RankGroup, RankList, RankRow, Section,
                       Skeleton, build_page, control_bar, crest_img, seg, write)
-import ws_compose
 
 DATA_ROOT = Path(os.environ.get('FS_DATA_ROOT', Path(__file__).resolve().parents[2]))
 BUILD = json.loads((DATA_ROOT / 'web/src/data/active-build.json').read_text())['build']
@@ -362,6 +361,7 @@ PAGES = {
 
 def compare() -> None:
     """Before/after at the same scale against the live captures of 2026-11-06."""
+    import ws_compose  # Pillow: only the compare step needs it; the parity job's python3 has the standard library alone
     ws_compose.BEFORE = Path(__file__).resolve().parents[2] / 'design/reviews/2026-11-06-tiers/before'
     for w, sc in ((1440, .6), (1920, .5), (2000, .5), (390, .9)):
         print(ws_compose.compose('tiers', 'tiers', 'web-tiers', w, sc, max_h=3200))
