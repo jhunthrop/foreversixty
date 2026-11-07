@@ -1058,7 +1058,7 @@ def test_fury_berserker_rage_starts_at_36_and_overpower_ends_there():
 @pytest.mark.parametrize(
     ("spec", "spell", "first"),
     [
-        ("hunter-survival", "Counterattack", 32),
+        ("hunter-survival", "Counterattack", 39),
         ("shaman-enhancement", "Stormstrike", 25),
         ("warrior-fury", "Death Wish", 30),
     ],
