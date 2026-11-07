@@ -79,8 +79,8 @@ test('a damage row is a card with every field labelled', async ({ page }) => {
 test('the compare table stays inside the page gutter once a second fight is picked', async ({ page }) => {
   await page.goto(`${REPORT}&mode=compare`);
   await choose(page.getByTestId('compare-with'), '1');
-  // A phone gets one card per player; the table is the desktop's.
-  await expect(page.getByTestId('compare-cards')).toBeVisible();
+  // One table at every width; a phone folds the other figures under the name.
+  await expect(page.getByTestId('compare-table')).toBeVisible();
 
   // Measured against the 360 this file sets, not window.innerWidth: anything wider than the
   // phone widens the emulated layout viewport with it, so innerWidth moves to meet the
@@ -90,10 +90,10 @@ test('the compare table stays inside the page gutter once a second fight is pick
   // The cards keep the 18px page gutter on both sides, and each names its player beside
   // the difference: a four-column table in this width showed names and no numbers.
   const gutter = 18;
-  const box = (await page.getByTestId('compare-cards').boundingBox())!;
+  const box = (await page.getByTestId('compare-table').boundingBox())!;
   expect(box.x).toBeGreaterThanOrEqual(gutter);
   expect(box.x + box.width).toBeLessThanOrEqual(PHONE_WIDTH - gutter);
-  await expect(page.getByTestId('compare-card-delta').first()).toContainText(/[+-]/);
+  await expect(page.getByTestId('compare-Player-4184-000000A1')).toContainText(/[+\u2212]/);
 });
 
 test('the chart sits above the table, as the spec asks', async ({ page }) => {

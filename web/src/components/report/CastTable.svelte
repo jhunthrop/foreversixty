@@ -1,6 +1,8 @@
 <!-- web/src/components/report/CastTable.svelte -->
-<!-- Casts: counts, cast time, and the sequence as a timeline of ticks, which is the only
-     way to see a rotation's shape without opening the events file.
+<!-- Casts (logs spec 2026-11-07 section 6.2): the tab's one Plate, a StatTable of the spell's
+     icon, the spell over its caster (class colour; a pet reads `{pet} ({owner}'s pet)`), a Spark
+     tick strip of the sequence, Casts, Per min and Failed. The sequence is the only way to see a
+     rotation's shape without opening the events file.
 
      Three different truths sit in one row. The sequence is exact under any window --
      window.ts's scopeCastRow filters the millisecond offsets themselves, rather than
@@ -12,19 +14,18 @@
      silently the whole fight's total -- the `†` mark SummaryTab's Active column uses. -->
 <script lang="ts">
   import { splitUnitName } from '../../lib/characters';
-  import {
-    approximateAriaLabel,
-    approximateMark,
-    approximateTitle,
-    classColorVar,
-    formatDuration,
-    wholeFightAriaLabel,
-    wholeFightMark,
-    wholeFightTitle,
-  } from '../../lib/report/format';
+  import { approximateMark, classColorVar, formatDuration, wholeFightMark } from '../../lib/report/format';
   import type { CastRow } from '../../lib/report/types';
   import { castKey } from '../../lib/report/cast-key';
   import type { CastCounts } from '../../lib/report/exact';
+  import { SpellIcons } from '../../lib/report/spell-icons.svelte';
+  import type { StatColumn, StatFigure, StatSort } from '../../lib/ui/stat-table';
+  import Plate from '../ui/Plate.svelte';
+  import Section from '../ui/Section.svelte';
+  import Spark from '../ui/Spark.svelte';
+  import SpellIcon from '../ui/SpellIcon.svelte';
+  import StatRow from '../ui/StatRow.svelte';
+  import StatTable from '../ui/StatTable.svelte';
   import CopyCsv from './CopyCsv.svelte';
 
   let {
@@ -117,12 +118,26 @@
    * is silence, not a clean sheet: their cell reads a dash.
    */
   const recorders = $derived(new Set(everyone.filter((row) => row.failed > 0).map((row) => row.guid)));
+  const failedKnown = (row: CastRow): boolean => recorders.size === 0 || recorders.has(row.guid);
+  type CastSortColumn = 'casts' | 'perMin' | 'failed';
+  let sort = $state<StatSort>({ column: 'casts', direction: 'desc' });
+  function onsort(column: string): void {
+    sort =
+      sort.column === column
+        ? { column, direction: sort.direction === 'desc' ? 'asc' : 'desc' }
+        : { column, direction: 'desc' };
+  }
+  /** Casts and Per min order alike (one window, one length); Failed orders an unknown count last. */
+  const sortKey = (row: CastRow, column: CastSortColumn): number =>
+    column === 'failed' ? (failedKnown(row) ? refused(row) : -1) : row.succeeded;
+  const ordered = $derived(
+    [...shown].sort((a, b) => {
+      const order = sortKey(b, sort.column as CastSortColumn) - sortKey(a, sort.column as CastSortColumn);
+      return (sort.direction === 'desc' ? order : -order) || a.spell_name.localeCompare(b.spell_name);
+    }),
+  );
   /** Cancelled casts over the rows on screen: the total the rhythm line adds up. */
   const cancelledTotal = $derived(ordered.reduce((sum, row) => sum + cancelled(row), 0));
-  const failedKnown = (row: CastRow): boolean => recorders.size === 0 || recorders.has(row.guid);
-  const ordered = $derived(
-    [...shown].sort((a, b) => b.succeeded - a.succeeded || a.spell_name.localeCompare(b.spell_name)),
-  );
   /** The table as lines: one per caster and spell, with the casting time in seconds. */
   function csvLines(): string[][] {
     return [
@@ -174,172 +189,109 @@
     // wipe it is the player dead, neither a gap a rotation can close.
     return { casts: ticks.length, gap };
   });
-  const pct = (ms: number): number => (durationMs === 0 ? 0 : ((ms - startMs) / durationMs) * 100);
+  /** Where a cast sits along the window, 0 to 1: the Spark's tick. */
+  const position = (ms: number): number => (durationMs === 0 ? 0 : (ms - startMs) / durationMs);
 
   const mark = $derived(approximateMark(scaled));
-  const title = $derived(approximateTitle(scaled));
   /** Cast time is the whole fight's total under every window, never just this one's. */
   const castTimeMark = wholeFightMark(true);
-  const castTimeTitle = wholeFightTitle(true);
 
   function castTimeText(ms: number): string {
     return ms === 0 ? 'instant' : formatDuration(ms);
   }
+
+  const icons = new SpellIcons();
+  const columns: readonly StatColumn[] = [
+    { id: 'casts', label: 'Casts', sortable: true },
+    { id: 'perMin', label: 'Per min', sortable: true },
+    { id: 'failed', label: 'Failed', sortable: true },
+  ];
+  function figuresOf(row: CastRow): StatFigure[] {
+    return [
+      { value: `${mark}${row.succeeded}` },
+      { value: perMinute(row.succeeded), testid: 'cast-per-minute' },
+      failedKnown(row) ? { value: `${mark}${refused(row)}` } : { value: '–', muted: true },
+    ];
+  }
+  const SEPARATOR = ' · ';
 </script>
 
-{#if ordered.length === 0}
-  <p class="text-muted text-[14px]" data-testid="table-empty">No casts in this window.</p>
-{:else}
-  <div class="flex flex-col" data-testid="cast-table">
-    {#if rhythm !== null}
-      <p
-        class="text-[13px]"
-        data-testid="cast-rhythm"
-        title="Casts of every spell in this scope, and the longest stretch between two of them. A gap counts time spent dead or out of range; over the night it is on the night's clock."
-      >
-        <span class="numeric">{rhythm.casts}</span> casts{#if cancelledTotal > 0 && !scaled}
-          · <span class="numeric">{cancelledTotal}</span> cancelled{/if} ·
-        <span class="numeric">{perMinute(rhythm.casts)}</span> a minute · longest gap
-        <span class="numeric">{formatDuration(rhythm.gap.to - rhythm.gap.from)}</span> at
-        <span class="numeric">{formatDuration(rhythm.gap.from)}</span>
-      </p>
+<Section title="Casts" meta={`Every caster, ${formatDuration(durationMs)}`} testid="cast-section">
+  <Plate label="Casts">
+    {#if ordered.length === 0}
+      <p class="text-muted px-4 py-4 text-[14px]" data-testid="table-empty">No casts in this window.</p>
+    {:else}
+      <StatTable {columns} nameHead="Spell" barHead="When" {sort} {onsort} label="Casts" testid="cast-table">
+        {#each ordered as row (`${row.guid}-${row.spell_id}`)}
+          {@const caster = casterName(row)}
+          {@const via = viaOf(row)}
+          {@const colour = classColorVar(classOf.get(ownerOf(row)))}
+          <StatRow
+            figures={figuresOf(row)}
+            phone={`${row.succeeded} ${row.succeeded === 1 ? 'cast' : 'casts'}`}
+            testid={`cast-${row.guid}-${row.spell_id}`}
+          >
+            {#snippet icon()}<SpellIcon url={icons.of(row.spell_id)} spellId={row.spell_id} tip />{/snippet}
+            {#snippet name()}{row.spell_name}{#if sameName.has(`${row.guid}|${row.spell_name}`)}<span
+                  class="text-muted ml-1 text-[13px] font-normal tabular-nums"
+                  title="Two spells share this name; this is spell id {row.spell_id}">#{row.spell_id}</span
+                >{/if}{/snippet}
+            {#snippet sub()}
+              {#if via !== ''}<span style:color={colour} data-testid="cast-via">{via} ({caster}’s pet)</span
+                >{:else}<span style:color={colour}>{caster}</span
+                >{/if}{#if !scaled && (measured !== undefined || cancelled(row) > 0)}{SEPARATOR}<span
+                  title="Casts started that never went off: moved, interrupted or cancelled mid-cast"
+                  data-testid="cast-cancelled">{cancelled(row)} cancelled</span
+                >{:else if scaled}{SEPARATOR}<span
+                  title="Cancelled casts are being read from this window’s own cast lines"
+                  data-testid="cast-cancelled">– cancelled</span
+                >{/if}{#if row.cast_time_ms > 0}{SEPARATOR}<span
+                  title="Time spent casting this spell, every cast added together, over the whole fight"
+                  >casting {castTimeMark}{castTimeText(row.cast_time_ms)}</span
+                >{/if}<span class="ui-st-phone">{SEPARATOR}{perMinute(row.succeeded)} a minute</span>
+            {/snippet}
+            {#snippet meter()}<Spark marks={row.sequence.map(position)} color={colour} />{/snippet}
+          </StatRow>
+        {/each}
+      </StatTable>
     {/if}
-    <div
-      class="quiet-label hidden grid-cols-[minmax(150px,1.3fr)_minmax(170px,1.5fr)_64px_64px_64px_72px_80px_minmax(0,2fr)] gap-x-3 px-2 pb-1 md:grid"
-    >
-      <span>Caster</span>
-      <span>Spell</span>
-      <span class="text-right">Cast</span>
-      <span class="text-right" title="Successful casts per minute of this window">Per min</span>
-      <span
-        class="text-right"
-        title="Presses the game refused: out of range, no target, not enough mana. Only the player who wrote this log has them recorded"
-        >Failed</span
-      >
-      <span
-        class="text-right"
-        title="Casts started that never went off: moved, interrupted or cancelled mid-cast">Cancelled</span
-      >
-      <span
-        class="text-right"
-        title="Time spent casting this spell, every cast added together; instants show none"
-        >Casting, total</span
-      >
-      <span>Sequence</span>
-    </div>
-    <ul class="flex flex-col">
-      {#each ordered as row (`${row.guid}-${row.spell_id}`)}
-        {@const caster = casterName(row)}
-        {@const via = viaOf(row)}
-        <li
-          class="border-line-soft grid min-h-11 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1 border-b px-2 py-2 text-[14px] md:grid-cols-[minmax(150px,1.3fr)_minmax(170px,1.5fr)_64px_64px_64px_72px_80px_minmax(0,2fr)]"
-          data-testid={`cast-${row.guid}-${row.spell_id}`}
+  </Plate>
+  {#if ordered.length > 0}
+    <div class="text-muted flex flex-col gap-1 pt-3 text-[13px] leading-[18px]">
+      {#if rhythm !== null}
+        <p
+          data-testid="cast-rhythm"
+          title="Casts of every spell in this scope, and the longest stretch between two of them. A gap counts time spent dead or out of range; over the night it is on the night's clock."
         >
-          <span
-            class="truncate font-semibold"
-            style={`color: ${classColorVar(classOf.get(ownerOf(row)))}`}
-            title={caster}
-          >
-            {caster}
-          </span>
-          <span class="truncate" title={row.spell_name}
-            >{row.spell_name}{#if via !== ''}
-              <span
-                class="text-muted ml-1 text-[11px]"
-                title="Cast by this pet or guardian, counted on its owner's row"
-                data-testid="cast-via">· via {via}</span
-              >{/if}{#if sameName.has(`${row.guid}|${row.spell_name}`)}
-              <span
-                class="text-muted numeric ml-1 text-[11px]"
-                title="Two spells share this name; this is spell id {row.spell_id}">#{row.spell_id}</span
-              >{/if}</span
-          >
-          <!-- Below `md` the heading row is hidden and these three are a card's middle
-               lines, so each says what it is. The word goes into the accessible name as
-               well as onto the screen: an aria-label replaces an element's text outright,
-               so a visible word alone would reach a sighted reader and nobody else -- and
-               these cells are divs, with no column header for a screen reader to associate
-               them with at any width. -->
-          <span
-            class="numeric text-right"
-            {title}
-            aria-label={approximateAriaLabel(scaled, `${row.succeeded} cast`)}
-          >
-            {mark}{row.succeeded}<span class="quiet-label ml-1.5 md:hidden">cast</span>
-          </span>
-          <span class="text-muted numeric text-right text-[13px]" data-testid="cast-per-minute">
-            {perMinute(row.succeeded)}<span class="quiet-label ml-1.5 md:hidden">a minute</span>
-          </span>
-          <span
-            class="text-muted numeric text-right"
-            {title}
-            aria-label={approximateAriaLabel(
-              scaled,
-              failedKnown(row) ? `${refused(row)} failed` : 'failed casts not in this log for this player',
-            )}
-          >
-            {#if failedKnown(row)}{mark}{refused(row)}{:else}<span
-                title="Only the player whose client wrote this log has failed casts in it; this player's are not recorded"
-                >—</span
-              >{/if}<span class="quiet-label ml-1.5 md:hidden">failed</span>
-          </span>
-          <!-- The summary keeps whole-fight cast starts with no instants, so until the window's
-               own cast lines are read it cannot say which casts inside it were cut short; a
-               prorated count named the wrong spells, and a dash names nothing wrongly. -->
-          <span
-            class="text-muted numeric text-right"
-            title={scaled
-              ? 'Cancelled casts are being read from this window’s own cast lines'
-              : 'Casts started that never went off: moved, interrupted or cancelled mid-cast; instants have none'}
-            aria-label={scaled
-              ? 'cancelled casts not yet measured for this window'
-              : `${cancelled(row)} cancelled`}
-            data-testid="cast-cancelled"
-          >
-            {scaled ? '—' : cancelled(row)}<span class="quiet-label ml-1.5 md:hidden">cancelled</span>
-          </span>
-          <span
-            class="text-muted numeric text-right text-[13px]"
-            title={castTimeTitle}
-            aria-label={wholeFightAriaLabel(true, `${castTimeText(row.cast_time_ms)} cast time`)}
-          >
-            {castTimeMark}{castTimeText(row.cast_time_ms)}<span class="quiet-label ml-1.5 md:hidden"
-              >casting, total</span
-            >
-          </span>
-          <span class="bg-line-soft relative col-span-2 block h-[6px] w-full md:col-span-1">
-            {#each row.sequence as at, i (`${at}-${i}`)}
-              <span
-                class="bg-gold absolute top-0 h-full w-[2px]"
-                style={`left: ${pct(at)}%`}
-                title={formatDuration(at)}
-              ></span>
-            {/each}
-          </span>
-        </li>
-      {/each}
-    </ul>
-    <CopyCsv lines={csvLines} />
-  </div>
-  {#if scaled}
-    <p class="text-muted text-[12px]" data-testid="cast-approximate-note">
-      {#if measureError === ''}
-        <span data-testid="cast-measuring">Reading this window’s casts from the fight’s events…</span>
-      {:else}
-        <span class="text-wipe" role="alert">{measureError}</span>
+          <span class="tabular-nums">{rhythm.casts}</span>
+          casts{#if cancelledTotal > 0 && !scaled}{SEPARATOR}<span class="tabular-nums">{cancelledTotal}</span
+            > cancelled{/if}{SEPARATOR}<span class="tabular-nums">{perMinute(rhythm.casts)}</span> a minute{SEPARATOR}longest
+          gap <span class="tabular-nums">{formatDuration(rhythm.gap.to - rhythm.gap.from)}</span> at
+          <span class="tabular-nums">{formatDuration(rhythm.gap.from)}</span>
+        </p>
       {/if}
-      Until then Cast and Failed are marked {mark}, the whole fight’s count scaled by the window’s share of
-      the sequence, and Cancelled reads a dash. The sequence above is this window’s own ticks.
-    </p>
-  {:else if approximate}
-    <p class="text-kill text-[12px]" data-testid="cast-measured-note">
-      Cast, Failed and Cancelled are this window’s own counts, read from the fight’s cast lines.
-    </p>
+      {#if scaled}
+        <p data-testid="cast-approximate-note">
+          {#if measureError === ''}
+            <span data-testid="cast-measuring">Reading this window’s casts from the fight’s events…</span>
+          {:else}
+            <span class="text-wipe" role="alert">{measureError}</span>
+          {/if}
+          Until then Casts and Failed are marked {mark}, the whole fight’s count scaled by the window’s share
+          of the sequence, and cancelled casts read a dash. The ticks are this window’s own.
+        </p>
+      {:else if approximate}
+        <p class="text-kill" data-testid="cast-measured-note">
+          Casts, Failed and cancelled casts are this window’s own counts, read from the fight’s cast lines.
+        </p>
+      {/if}
+      <p data-testid="cast-time-note">
+        Casting time is marked {castTimeMark} because it is the whole fight's accumulated casting time for that
+        spell, even inside a shorter window.{#if !simulated}
+          Failed and cancelled casts are only known from the client that wrote this log; other players' rows
+          read a dash where the log is silent.{/if}
+      </p>
+      <CopyCsv lines={csvLines} />
+    </div>
   {/if}
-  <p class="text-muted text-[12px]" data-testid="cast-time-note">
-    Cast time is marked {castTimeMark} because it is the whole fight's accumulated casting time for that spell,
-    even inside a shorter window.{#if !simulated}
-      Failed and cancelled casts are only known from the client that wrote this log; other players' rows read
-      a dash where the log is silent.{/if}
-  </p>
-{/if}
+</Section>
