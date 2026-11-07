@@ -146,8 +146,10 @@ func exchangeError(err error) error {
 // caller packs it into the state cookie and a stray ';', '"' or '\'
 // would make net/http's cookie sanitiser drop bytes and log a warning
 // on every request.
-func safeNext(next string) string {
-	const fallback = "/logs"
+func safeNext(next string) string { return safeNextOr(next, "/logs") }
+
+// safeNextOr is safeNext with the caller's own fallback for a next that is missing or unsafe.
+func safeNextOr(next, fallback string) string {
 	u, err := url.Parse(next)
 	if err != nil || u.Scheme != "" || u.Host != "" || u.Opaque != "" {
 		return fallback

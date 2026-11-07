@@ -638,6 +638,21 @@ public struct BisWeight: Codable, Sendable, Equatable {
     }
 }
 
+/// The last Battle.net import's state, omitted until a sign-in has tracked one. Sign-in records running when its import starts; the import ends inside the sign-in's 5 s budget or in a background run of up to 2 minutes, then records done (no error) or failed. A running state older than 3 minutes 5 seconds reads as failed: the instance running it stopped. Poll /v1/me while it reads running.
+public struct BnetImport: Codable, Sendable, Equatable {
+    public let state: String
+    /// When this state was recorded.
+    public let at: Date
+
+    public init(
+        state: String,
+        at: Date
+    ) {
+        self.state = state
+        self.at = at
+    }
+}
+
 public struct Build: Codable, Sendable, Equatable {
     public let id: String
     public let classId: Int
@@ -4450,6 +4465,8 @@ public struct Me: Codable, Sendable, Equatable {
     public let mainCharacterKey: String?
     /// When the Battle.net import last ran. Every Battle.net sign-in imports the account's Forever characters (us, eu, tw); omitted when it never ran.
     public let bnetImportedAt: Date?
+    /// The last Battle.net import's state, omitted until a sign-in has tracked one. Sign-in records running when its import starts; the import ends inside the sign-in's 5 s budget or in a background run of up to 2 minutes, then records done (no error) or failed. A running state older than 3 minutes 5 seconds reads as failed: the instance running it stopped. Poll /v1/me while it reads running.
+    public let bnetImport: BnetImport?
     /// Omitted when the server has no sims store configured.
     public let serverSims: ServerSimsUsage?
     /// Omitted when the deployment has notifications off.
@@ -4471,6 +4488,7 @@ public struct Me: Codable, Sendable, Equatable {
         discordLinkSuggested: String? = nil,
         mainCharacterKey: String? = nil,
         bnetImportedAt: Date? = nil,
+        bnetImport: BnetImport? = nil,
         serverSims: ServerSimsUsage? = nil,
         notifications: MeNotifications? = nil,
         seat: MeSeat? = nil,
@@ -4487,6 +4505,7 @@ public struct Me: Codable, Sendable, Equatable {
         self.discordLinkSuggested = discordLinkSuggested
         self.mainCharacterKey = mainCharacterKey
         self.bnetImportedAt = bnetImportedAt
+        self.bnetImport = bnetImport
         self.serverSims = serverSims
         self.notifications = notifications
         self.seat = seat
@@ -4506,6 +4525,7 @@ public struct Me: Codable, Sendable, Equatable {
         discordLinkSuggested = try c.decodeIfPresent(String.self, forKey: .discordLinkSuggested)
         mainCharacterKey = try c.decodeIfPresent(String.self, forKey: .mainCharacterKey)
         bnetImportedAt = try c.decodeIfPresent(Date.self, forKey: .bnetImportedAt)
+        bnetImport = try c.decodeIfPresent(BnetImport.self, forKey: .bnetImport)
         serverSims = try c.decodeIfPresent(ServerSimsUsage.self, forKey: .serverSims)
         notifications = try c.decodeIfPresent(MeNotifications.self, forKey: .notifications)
         seat = try c.decodeIfPresent(MeSeat.self, forKey: .seat)

@@ -560,10 +560,7 @@ func TestBattleNetCallbackRejectsAForgedState(t *testing.T) {
 	res := h.do(t, http.MethodGet, "/v1/auth/battlenet/start", "")
 	res.Body.Close()
 	res = h.do(t, http.MethodGet, "/v1/auth/battlenet/callback?code=the-code&state=not-the-state", "")
-	defer res.Body.Close()
-	if res.StatusCode != http.StatusBadRequest {
-		t.Fatalf("status = %d, want 400", res.StatusCode)
-	}
+	wantSignInFailed(t, res, "https://foreversixty.gg/logs?signin=failed")
 }
 
 func TestStartRefusesToRedirectOffSite(t *testing.T) {
@@ -689,31 +686,22 @@ func TestBattleNetCallbackNeedsItsStateCookieAndCode(t *testing.T) {
 	h := newHarness(t)
 	h.withBattleNet(t, "1", "A#1")
 	res := h.do(t, http.MethodGet, "/v1/auth/battlenet/callback?code=the-code&state=x", "")
-	res.Body.Close()
-	if res.StatusCode != http.StatusBadRequest {
-		t.Fatalf("no cookie = %d, want 400", res.StatusCode)
-	}
-	start := h.do(t, http.MethodGet, "/v1/auth/battlenet/start", "")
+	wantSignInFailed(t, res, "https://foreversixty.gg/setup?signin=failed")
+	start := h.do(t, http.MethodGet, "/v1/auth/battlenet/start?next=/connect", "")
 	start.Body.Close()
 	target, _ := url.Parse(start.Header.Get("Location"))
-	res = h.do(t, http.MethodGet, "/v1/auth/battlenet/callback?state="+target.Query().Get("state"), "")
-	res.Body.Close()
-	if res.StatusCode != http.StatusBadRequest {
-		t.Fatalf("no code = %d, want 400", res.StatusCode)
-	}
+	res = h.do(t, http.MethodGet, "/v1/auth/battlenet/callback?error=access_denied&state="+target.Query().Get("state"), "")
+	wantSignInFailed(t, res, "https://foreversixty.gg/connect?signin=failed")
 }
 
-func TestBattleNetUpstreamFailureIs502(t *testing.T) {
+func TestBattleNetUpstreamFailureReturnsToTheSite(t *testing.T) {
 	h := newHarness(t)
 	h.withBattleNet(t, "1", "A#1")
-	start := h.do(t, http.MethodGet, "/v1/auth/battlenet/start", "")
+	start := h.do(t, http.MethodGet, "/v1/auth/battlenet/start?next=/setup", "")
 	start.Body.Close()
 	target, _ := url.Parse(start.Header.Get("Location"))
 	res := h.do(t, http.MethodGet, "/v1/auth/battlenet/callback?code=wrong&state="+target.Query().Get("state"), "")
-	defer res.Body.Close()
-	if res.StatusCode != http.StatusBadGateway {
-		t.Fatalf("status = %d, want 502", res.StatusCode)
-	}
+	wantSignInFailed(t, res, "https://foreversixty.gg/setup?signin=failed")
 }
 
 // brokenService is an auth service whose database has gone away, so
