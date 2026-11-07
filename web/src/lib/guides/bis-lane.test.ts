@@ -6,7 +6,7 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import type { CurrentCharacter } from '../current-character';
 import { writeCurrent } from '../current-character';
 import type { GuideCharacter } from './guide-answer';
-import { bisPanelKey, mountBisLane, ownBand } from './bis-lane';
+import { bisPanelKey, mountBisLane, ownBand, retargetFullList } from './bis-lane';
 import { publishGuideCharacter, resetGuideCharacter } from './guide-character';
 
 const CODE = (trees: string): string => `FS1:1.60.1.70532:mage:gnome:${trees}:`;
@@ -128,5 +128,17 @@ describe('mountBisLane', () => {
     publishGuideCharacter(mage(44, 'alliance'));
     expect(current().dataset.panel).toBe('60-alliance');
     expect(current().textContent).toBe('60-alliance');
+  });
+});
+
+describe('retargetFullList', () => {
+  it('points the full list at the shown band and faction', () => {
+    const root = document.createElement('div');
+    root.dataset.specSlug = 'survival';
+    root.innerHTML = '<a data-testid="guide-bis-full-list" href="/bis/hunter/survival">Full list</a>';
+    retargetFullList(root, 'hunter', '30-horde');
+    expect(root.querySelector('a')?.getAttribute('href')).toBe(
+      '/bis/hunter/survival?faction=horde#band-horde-30',
+    );
   });
 });

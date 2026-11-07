@@ -330,12 +330,7 @@ const jsonLd = [
       <ReadingSection title="Best in slot" anchor="best-in-slot">
         <Fragment slot="lane">
           <GlyphSheet />
-          <GuideBisLane
-            build={build}
-            classSlug={classSlug}
-            bis={guideBis}
-            href={`/bis/${classSlug}/${specSlug}`}
-          />
+          <GuideBisLane build={build} classSlug={classSlug} bis={guideBis} specSlug={specSlug} />
         </Fragment>
         <Prose html={await prose(proseOnly('Best in slot'))} />
       </ReadingSection>

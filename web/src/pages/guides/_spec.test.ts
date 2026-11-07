@@ -371,7 +371,7 @@ describe('/guides/mage/frost (the class-guide blocks)', () => {
       .sort();
     expect(templates).toEqual(expected);
     expect(bis).toMatch(
-      /href="\/bis\/mage\/frost"[^>]*data-testid="guide-bis-full-list"[^>]*>Full list and alternatives/,
+      /href="\/bis\/mage\/frost\?faction=alliance#band-alliance-60"[^>]*data-testid="guide-bis-full-list"[^>]*>Full list and alternatives/,
     );
     expect(bis).not.toContain('named honestly');
     expect(bis).not.toMatch(/<astro-island/);

@@ -5,6 +5,7 @@
 // for its first race's faction, and the link to the full list. The other bands wait in
 // templates, out of the document until chosen.
 import { LINK } from '../../lib/ui/primitives';
+import { specLinkHref } from '../../lib/bis/landing-links';
 import { guidesCopy } from '../../lib/guides/copy';
 import type { GuideBis } from '../../lib/guides/guide-bis';
 import GuideBisPanel from './GuideBisPanel.astro';
@@ -13,11 +14,19 @@ interface Props {
   build: string;
   classSlug: string;
   bis: GuideBis | undefined;
-  href: string;
+  specSlug: string;
 }
-const { build, classSlug, bis, href } = Astro.props;
+const { build, classSlug, bis, specSlug } = Astro.props;
 const shown = bis?.panels.find((panel) => panel.band === 60 && panel.faction === bis.defaultFaction);
 const key = (panel: { band: number; faction: string }): string => `${panel.band}-${panel.faction}`;
+// The full list opens at the band and faction the lane shows (the BiS page reads the hash);
+// bis-lane.ts moves it with the lane when the header character picks another band.
+const href = specLinkHref({
+  classSlug,
+  specSlug,
+  band: shown?.band ?? 60,
+  faction: (shown?.faction ?? bis?.defaultFaction) as 'alliance' | 'horde' | undefined,
+});
 ---
 
 <div
@@ -25,6 +34,7 @@ const key = (panel: { band: number; faction: string }): string => `${panel.band}
   data-testid="guide-bis"
   data-guide-class={classSlug}
   data-default-faction={bis?.defaultFaction ?? 'alliance'}
+  data-spec-slug={specSlug}
 >
   {shown !== undefined && (
     <div data-bis-current data-panel={key(shown)}>

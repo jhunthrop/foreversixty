@@ -3,6 +3,7 @@
 // G5; bug B2: any character the header selector names, a Battle.net one included): a character
 // of this class sees its own band and faction, anyone else the guide's level 60 picks. Every
 // band is in the page as a <template>; only the chosen one is in the document.
+import { specLinkHref } from '../bis/landing-links';
 import { readCurrent } from '../current-character';
 import type { GuideCharacter } from './guide-answer';
 import { bandForLevel, onGuideCharacter } from './guide-character';
@@ -62,5 +63,15 @@ export function mountBisLane(root: HTMLElement): void {
     if (template === null) return;
     current.replaceChildren(template.content.cloneNode(true));
     current.dataset.panel = key;
+    retargetFullList(root, classSlug, key);
   });
+}
+
+/** The full-list link follows the shown band: `/bis/<class>/<spec>?faction=<f>#band-<f>-<band>`. */
+export function retargetFullList(root: HTMLElement, classSlug: string, key: string): void {
+  const link = root.querySelector<HTMLAnchorElement>('[data-testid="guide-bis-full-list"]');
+  const specSlug = root.dataset.specSlug;
+  const [band, faction] = key.split('-');
+  if (link === null || specSlug === undefined || (faction !== 'alliance' && faction !== 'horde')) return;
+  link.href = specLinkHref({ classSlug, specSlug, band: Number(band), faction });
 }
