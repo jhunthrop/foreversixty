@@ -1,21 +1,21 @@
 ---
 title: How sources are classified
-description: How this site labels where a fact comes from, what each pill means, and what "single-source" means.
-updated: 2026-09-14
+description: How this site shows where a fact comes from, what each pill means, and what "single-source" means.
+updated: 2026-11-08
 sources:
   - label: This site
     url: https://foreversixty.gg/sources
     kind: site
 ---
 
-Every fact on this site carries a pill that says where it came from, and a note that says how confident we are in it.
+Each page carries one Updated date under its title. Source pills sit where the source changes what you do with a fact: on each news row, in the Sources list at the foot of a page, and beside a claim that only one outlet has reported.
 
 ## The four pill kinds
 
-- **Blizzard** — stated in an official Blizzard post, panel, or in-game text.
-- **Datamined** — pulled directly from the beta or live game client, such as with wago.tools.
-- **Community** — reported by press outlets, streamers, or other players, and not yet confirmed by Blizzard or the client.
-- **This site** — written or compiled by this site, such as a guide or a methodology page like this one.
+- **Blizzard**: stated in an official Blizzard post, panel, or in-game text.
+- **Datamined**: pulled directly from the beta or live game client, such as with wago.tools.
+- **Community**: reported by press outlets, streamers, or other players, and not yet confirmed by Blizzard or the client.
+- **This site**: written or compiled by this site, such as a guide or a methodology page like this one.
 
 ## What "single-source" means
 
