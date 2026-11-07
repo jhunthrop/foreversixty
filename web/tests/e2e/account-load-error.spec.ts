@@ -1,3 +1,5 @@
+import { addSessionHint } from './support/account-reserve';
+import { gotoHydrated } from './support/hydrated';
 import { expect, test } from './support/test';
 
 function fulfil(body: unknown, status = 200) {
@@ -23,7 +25,10 @@ const ME_OK = {
   request_id: 'r',
 };
 
-test('a failed /v1/me shows Try again, which re-fires the same request', async ({ page }) => {
+test('a failed /v1/me shows Try again, which re-fires the same request', async ({ page, baseURL }) => {
+  // The error Plate is for a signed-in visitor: without the session hint a failed read leaves the
+  // sign-in page (the test below).
+  await addSessionHint(page, baseURL);
   // Every /v1/me answers 500 until the retry is clicked. Counting requests is not
   // deterministic: the header's SessionNav and the account island share one deduped
   // fetchMeOnce promise when their calls overlap (one request) and make two when they do
@@ -48,4 +53,17 @@ test('a failed /v1/me shows Try again, which re-fires the same request', async (
 
   await expect(page.getByTestId('account-character-row').filter({ hasText: 'Elyra Duskvale' })).toBeVisible();
   await expect(page.getByTestId('account-load-error')).toHaveCount(0);
+});
+
+test('without a session hint a failed /v1/me leaves the sign-in page, not the error', async ({ page }) => {
+  await page.route('**/v1/me', (route) =>
+    route.fulfill(fulfil({ ok: false, data: null, error: { message: 'oops' }, request_id: 'r' }, 500)),
+  );
+  const answered = page.waitForResponse('**/v1/me');
+  await gotoHydrated(page, '/account', 'account');
+  await answered;
+  // The island has hydrated and its read has failed: give it the frame it would paint the error in.
+  await page.evaluate(() => new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done))));
+  await expect(page.getByTestId('account-load-error')).toHaveCount(0);
+  await expect(page.getByTestId('battlenet')).toBeVisible();
 });

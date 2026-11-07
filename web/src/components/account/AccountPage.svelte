@@ -46,6 +46,7 @@
     type CurrentCharacter,
   } from '../../lib/current-character';
   import { createQueryState } from '../../lib/data/query.svelte';
+  import { hasSessionHint } from '../../lib/page-load';
   import { viewerZone } from '../../lib/dates';
   import { leaveGuild, updateConsent, type GuildConsent } from '../../lib/guild/api';
   import { API_BASE_URL } from '../../lib/planner/config';
@@ -70,6 +71,9 @@
   /** Where a sign-in from this page comes back to. */
   const CONSENT_SAVED_MS = 3000;
 
+  // No session hint (no fs_csrf cookie): nobody is signed in, so a failed read (the API down) still
+  // leaves the sign-in page the static render drew; the error Plate is for a signed-in visitor.
+  const hinted = typeof document !== 'undefined' && hasSessionHint();
   // One `/v1/me` read, shared with every other island through the client cache (lib/data/query.ts).
   const session = createQueryState<Me | null>(`${API_BASE_URL}/v1/me`, () => fetchMeOnce(), {
     scope: 'private',
@@ -78,7 +82,7 @@
 
   // A writable $derived: tracks the cache, and the guild and setting handlers below also write it
   // so the page changes in the same frame; the next `session.data` change takes over again.
-  let me = $derived(session.data);
+  let me = $derived(session.status === 'failed' && !hinted ? null : session.data);
   let now = $state(new Date());
 
   /** Which section an action failed in, and why. */
@@ -116,7 +120,7 @@
   // A refresh after an action re-reads `/v1/me` with the account on screen: the page stays put.
   const rereading = $derived(session.status === 'loading' && session.data !== null);
   const status = $derived.by<'loading' | 'ready' | 'failed'>(() => {
-    if (session.status === 'failed') return 'failed';
+    if (session.status === 'failed') return hinted ? 'failed' : 'ready';
     if (session.status !== 'ready' && !rereading) return 'loading';
     if (me === null) return 'ready';
     if (devicesStatus === 'failed') return 'failed';

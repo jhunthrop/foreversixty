@@ -96,8 +96,11 @@
   :global(html[data-session='1']) .account-meta-reserve {
     display: block;
   }
-  /* A hinted visitor with a stored character (an account with characters): the answer's box, held
-     until /v1/me answers (the ready answer's measured size), as /setup holds it. */
+  /* A hinted visitor with a stored character before first paint (an account with characters): the
+     answer's box, held until /v1/me answers (the ready answer's measured size), as /setup holds it.
+     account.astro sets data-account-answer from data-pointer once, before paint: the header writing a
+     pointer while the page loads must not grow the loading head (a shift); the ready page swaps the
+     whole tree, so a first visit gains its answer there without one. */
   .account-answer-reserve {
     display: none;
   }
@@ -106,13 +109,13 @@
     display: none;
   }
   :global(
-    html[data-session='1'][data-pointer='1']
+    html[data-session='1'][data-account-answer='1']
       header
       div.ui-page-header-answer:has(> span.account-answer-reserve)
   ) {
     display: flex;
   }
-  :global(html[data-session='1'][data-pointer='1']) .account-answer-reserve {
+  :global(html[data-session='1'][data-account-answer='1']) .account-answer-reserve {
     display: block;
     width: 300px;
     height: 72px;

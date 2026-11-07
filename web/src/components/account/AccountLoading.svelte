@@ -5,7 +5,9 @@
      `.account-left-skeleton` (main) and `.account-rail-skeleton` (the rail) from the heights
      Base.astro reads before paint, so a returning visitor's loading page has the ready page's
      shape. A visitor with no session hint can only resolve to the sign-in page, so that page is
-     what the static render shows them (AccountOut), and the island draws the same. -->
+     what the static render shows them (AccountOut), and the island draws the same. The Battle.net
+     line under the Characters Plate is static copy, drawn here as on the ready page, so the ready
+     page's largest text is painted in the first frame instead of after /v1/me (LCP). -->
 <script lang="ts">
   import { accountPageCopy } from '../../lib/account/account-page-copy';
   import { characterListCopy } from '../../lib/account/character-list-copy';
@@ -16,6 +18,7 @@
   import Skeleton from '../ui/Skeleton.svelte';
   import AccountHead from './AccountHead.svelte';
   import AccountOut from './AccountOut.svelte';
+  import CharacterListIntro from './CharacterListIntro.svelte';
 
   const RAIL = [accountPageCopy.devicesLabel, notificationsCopy.label, accountPageCopy.youLabel];
 </script>
@@ -31,6 +34,7 @@
             <Skeleton lines={2} rowHeight="h-[56px]" testid="account-characters-skeleton" />
           </div>
         </Plate>
+        <CharacterListIntro />
       </Section>
       <Section title={accountPageCopy.planLabel}>
         <Skeleton lines={4} rowHeight="h-5" testid="account-plan-skeleton" />

@@ -22,6 +22,7 @@
   import Row from '../ui/Row.svelte';
   import Section from '../ui/Section.svelte';
   import Tag from '../ui/Tag.svelte';
+  import CharacterListIntro from './CharacterListIntro.svelte';
   import CoachLastRaidLine from './CoachLastRaidLine.svelte';
 
   /** Where Refresh lands: a second Battle.net login re-runs the import and comes back here. */
@@ -234,13 +235,7 @@
     </p>
   {/if}
   {#if characters.length > 0}
-    <p class="text-small text-muted max-w-[80ch] pt-3">
-      {characterListCopy.introBattlenetLine}
-      <a class={LINK} href="/setup">{characterListCopy.introInstallAddonLink}</a>
-      {characterListCopy.introAddonTail}
-      <a class={LINK} href={characterListCopy.pasteHref}>{characterListCopy.introPasteLink}</a>
-      {characterListCopy.introPasteTail}
-    </p>
+    <CharacterListIntro />
     <p class="pt-2">
       <a class={LINK} href={REPORTS_HREF} data-testid="account-reports-link"
         >{accountPageCopy.reportsLink} ›</a

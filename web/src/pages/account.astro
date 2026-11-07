@@ -5,6 +5,11 @@
 // markup is its loading state, which reserves the ready page's shape for a hinted visitor.
 import Base from '../layouts/Base.astro';
 import Account from '../components/Account.svelte';
+
+/** Freezes the pre-paint pointer hint (Base.astro's data-pointer) for the loading head's answer
+ *  reserve (AccountHead.svelte): the header may write a pointer while the page loads. */
+const ANSWER_HINT_SCRIPT =
+  "if(document.documentElement.dataset.pointer==='1')document.documentElement.dataset.accountAnswer='1'";
 ---
 
 <Base
@@ -14,6 +19,10 @@ import Account from '../components/Account.svelte';
   wide
 >
   <main id="main" tabindex="-1" class="flex w-full flex-col">
-    <Account client:load mode="account" />
+    <script is:inline set:html={ANSWER_HINT_SCRIPT}></script>
+    <!-- `client:after-paint`, not `client:load` (src/directives/after-paint.ts): the island's module
+         chain stays behind the server-drawn first paint (its loading frame, or the sign-in page
+         without a session hint), which Lighthouse would otherwise charge to LCP, as on /setup. -->
+    <Account client:after-paint mode="account" />
   </main>
 </Base>
