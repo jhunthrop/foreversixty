@@ -38,6 +38,14 @@ const html = `<ul>${lines
     padding-block: 8px;
     scroll-margin-top: 120px;
   }
+  /* A phone stacks the plan's name, price, buttons and support line over the list (about 305 px on
+     the Premium card at 360), so a landing there keeps the name in view above the tinted line
+     (premium entry spec 2026-10-29 section 8) and the line well inside a 640 px screen. */
+  @media (max-width: 767px) {
+    .plan-features :global(li) {
+      scroll-margin-top: 340px;
+    }
+  }
   /* The landing highlight: every line of the anchor a contextual link named, no box change. */
   .plan-features:has(#coach:target) :global([data-anchor='coach']),
   .plan-features:has(#server-sims:target) :global([data-anchor='server-sims']),
