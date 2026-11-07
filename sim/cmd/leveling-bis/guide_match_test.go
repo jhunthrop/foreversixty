@@ -65,10 +65,7 @@ func TestGuideDivergencesNameAStaleRaceAndAStaleRaidBuild(t *testing.T) {
 // each with the reason. It exists only while a split ranking lands one
 // shard at a time; the run that lands the last shard empties it, and it
 // never carries a spec past that landing.
-var knownStaleBISFiles = map[string]string{
-	"rogue-assassination": "sim round 27 moved the leveling order (Malice at 10 to 14; band 20 talents); the round 27 re-rank empties this",
-	"rogue-combat":        "sim round 27 moved the leveling order (Precision and Puncturing Wounds by 20; band 20 talents); the round 27 re-rank empties this",
-}
+var knownStaleBISFiles = map[string]string{}
 
 // TestPublishedBISMatchesGuides: the active build's committed bis files
 // wear the races and talents their guides name. Not gated like
