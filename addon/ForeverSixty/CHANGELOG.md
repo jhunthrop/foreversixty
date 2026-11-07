@@ -1,5 +1,12 @@
 # Forever Sixty
 
+## 2.0.35
+
+- Feral bear: Lacerate fills every empty global cooldown, for more threat and damage from 25.
+- Assassination: Slice and Dice goes back up the moment it drops, at any combo points.
+- Combat: Eviscerate at four combo points from 30, Shank held near full energy, and at 60 Slice and Dice back up whenever it drops.
+- New best in slot lists for Feral bear, Assassination and Combat on these rotations.
+
 ## 2.0.34
 
 - New leveling best in slot lists for 19 specs, ranked on talent orders that no longer spend early points on talents that do nothing in a fight.
