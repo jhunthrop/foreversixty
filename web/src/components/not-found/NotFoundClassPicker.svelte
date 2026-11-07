@@ -44,6 +44,12 @@
 </Section>
 
 <style>
+  /* 24 px tall targets (WCAG 2.5.8): the class and each spec are separate links on one row. */
+  .nf-class,
+  .nf-spec {
+    display: inline-block;
+    line-height: 24px;
+  }
   .nf-class:hover {
     text-decoration: underline;
   }

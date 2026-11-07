@@ -200,8 +200,8 @@ def not_found_page(kind: str = 'out', suggest: bool = False, character: bool = F
     head = PageHeader(e(NF['title']), meta=[e(path)], answer='' if kind == 'out' else answer(kind), lead=e(NF['job']))
     did = (f'<div data-region="{REGION["notes"]}">' + Notice(e(NF['didYouMean']), Link(rsaquo(SUGGEST[1])), 'neutral') + '</div>') if suggest else ''
     # signed out on a dead /character/ address the lookup comes first (SHOULD)
-    picker, look = class_picker(), f'<div class="section">{lookup()}</div>'
-    main = (look + picker) if character and kind == 'out' else (picker + look)
+    first_lookup = character and kind == 'out'
+    main = (lookup() + f'<div class="section">{class_picker()}</div>') if first_lookup else (class_picker() + f'<div class="section">{lookup()}</div>')
     who = (ME['name'], ME['class'].lower(), ME['level_line']) if kind != 'out' else None
     html = head + did + Page('ledger', main) + PAGE_CSS
     note = (f'404 mock ({SPEC_DOC}); copy from lib/not-found/copy.ts and the shared copy modules (pages-facts.json). State: {kind}'
@@ -268,7 +268,7 @@ main{padding-bottom:var(--section-gap)}
 .doc-intro+.rsec{margin-top:0}
 .nf-aside{margin:12px 0 16px}.nf-hint{margin-top:10px}.nf-status{min-height:20px;margin:0}
 @media(max-width:767px){.formrow .sel,.formrow .field{height:44px}}
-.nf-cls{font:700 15px/20px var(--font-body)}.nf-cls:hover{text-decoration:underline}
+.nf-cls{font:700 15px/24px var(--font-body);display:inline-block}.nf-spec{display:inline-block;line-height:24px}.nf-cls:hover{text-decoration:underline}
 .nf-specs{display:block;font-size:13px;line-height:18px;color:var(--muted)}.nf-spec{color:var(--muted)}.nf-spec:hover,.nf-spec.hov{color:var(--gold-hover)}
 .nf-cls.fv,.nf-spec.fv{outline:2px solid var(--gold);outline-offset:2px}
 .dated-a{margin:0}
