@@ -378,7 +378,7 @@
     border: 1px solid rgb(229 185 85 / 0.38);
     border-radius: var(--radius-pill);
     color: var(--color-gold);
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -422,7 +422,7 @@
     padding: 10px 12px 4px;
     background: var(--color-raised);
     color: var(--color-muted);
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 700;
     letter-spacing: 0.14em;
     text-transform: uppercase;

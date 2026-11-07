@@ -8,6 +8,29 @@ import process from 'node:process';
 import { fileURLToPath } from 'node:url';
 import { gzipSync } from 'node:zlib';
 import { ASSET_BUDGET_BYTES, CLOUDFLARE_ASSET_LIMIT_BYTES, measureAssets } from './asset-budget.mjs';
+import { startupClosure } from './island-closure.mjs';
+
+// Every island also has a startup-closure budget (`closureLimitBytes`, owner-delegated
+// 2026-11-07): the entry plus every chunk it imports statically, transitively, each gzipped on
+// its own (scripts/island-closure.mjs), which the entry budget alone never saw: a heavy static
+// import split into its own chunk left the entry small and the page just as slow. Each limit is
+// the closure measured on the fixture build (FOREVER_DATA=fixture) of 2026-11-07 plus 10%:
+// planner 98,497, report 147,156, sim 114,927, sim tools 85,455, Rankings 103,282, Character
+// 125,590, GuildShell 128,665, BisTooltipHost 23,746, BisSpecPage 70,428, listbox 15,705 bytes.
+
+/** Checks one island's closure; true when it is within its limit. */
+async function checkClosure(label, entry, limitBytes) {
+  if (limitBytes === undefined)
+    throw new Error(`${label} has no closureLimitBytes: every island budget sets one.`);
+  const { files, gzipped } = await startupClosure(entry, path.join(webRoot, 'dist'));
+  console.log(`${label} startup closure: ${files.length} files, ${gzipped} bytes gzipped`);
+  if (gzipped <= limitBytes) return true;
+  console.error(
+    `${label}'s startup closure is ${gzipped} bytes gzipped over ${files.length} files, over the ${limitBytes} ` +
+      'byte budget. Load the new weight with a dynamic import(), or measure and raise the limit with a reason.',
+  );
+  return false;
+}
 
 // Two standalone islands, two budgets. The planner's 60 KB came from the Phase 1 spec; it is
 // 66 KB since the character spine (spec 2026-09-25 section 4): the bar's identity, switch
@@ -48,19 +71,19 @@ const BUDGETS = [
   // published consumable set (sim/request/raid-consumes.json, about 0.7 KB gzipped) so the
   // planner's live figure and the /sim page match the published numbers; the real-data build
   // read 84,126 bytes against 83,968.
-  { file: 'dist/planner-island.js', limitBytes: 83 * 1024 },
-  { file: 'dist/report-island.js', limitBytes: 140 * 1024 },
+  { file: 'dist/planner-island.js', limitBytes: 83 * 1024, closureLimitBytes: 108347 },
+  { file: 'dist/report-island.js', limitBytes: 140 * 1024, closureLimitBytes: 161872 },
   // The sim island is the planner's gear grid plus the report's tables plus a run control.
   // 90 KB gzipped is roughly twice what those parts weigh today and well under the report's
   // ceiling; sim.wasm is not counted, since it is a separate immutable asset fetched after
   // first paint and never on the LCP path.
-  { file: 'dist/sim-island.js', limitBytes: 90 * 1024 },
+  { file: 'dist/sim-island.js', limitBytes: 90 * 1024, closureLimitBytes: 126420 },
   // The four combination tools: a candidate grid, an item search, a source picker and two
   // results views, each a lazily-imported chunk off one entry. 70 KB gzipped for the entry
   // is roughly twice what the shared parts (the character strip, the source switcher, the
   // run bar) weigh; the per-tool chunks are not counted here because none of them is on any
   // page's LCP path -- the shell paints its own skeleton first.
-  { file: 'dist/sim-tools-island.js', limitBytes: 70 * 1024 },
+  { file: 'dist/sim-tools-island.js', limitBytes: 70 * 1024, closureLimitBytes: 94001 },
 ];
 
 // Rankings, Character and GuildShell are ordinary `client:load` Astro islands, not
@@ -76,7 +99,7 @@ const BUDGETS = [
 // duplicated data module) still trips it well before it could threaten a Lighthouse score
 // no test here measures directly.
 const PAGE_ISLAND_BUDGETS = [
-  { component: 'Rankings', limitBytes: 16 * 1024 },
+  { component: 'Rankings', limitBytes: 16 * 1024, closureLimitBytes: 113611 },
   // Raised 16 -> 18 KB (paperdoll lane, 2026-10-31): the character page's Gear section became
   // the shared Paperdoll (design/specs/2026-10-31-paperdoll.md), which statically carries the
   // frame, its model and ItemHover. The spec's own §8 budget lets that frame add up to 4 KB
@@ -87,34 +110,34 @@ const PAGE_ISLAND_BUDGETS = [
   // +256 bytes (row-band sweep, 2026-11-01): the fight tables' marked and addressed rows are the
   // shared row band (lib/ui/row.ts), now a chunk of its own; the entry gains only the preload
   // entries naming it (+38 bytes gzipped measured, 18,424 -> 18,462), with the slack restored.
-  { component: 'Character', limitBytes: 18 * 1024 + 256 },
+  { component: 'Character', limitBytes: 18 * 1024 + 256, closureLimitBytes: 138149 },
   // +512 bytes (guild round 3, 2026-11-05): the guild page's first view now carries the week-one
   // card's raider step, the plan gate on the band, the unknown-guild panel and the landing's
   // Your guilds card. Measured 16,564 gzipped against 16,022 at round 2 (main moved too). Lazy
   // loading the Your guilds card and the not-found panel was tried: each saved under 100 bytes
   // and the card flashed in above the lookup, so the bytes stay; 16.5 KB still trips an
   // accidental heavy import.
-  { component: 'GuildShell', limitBytes: 16 * 1024 + 512 },
+  { component: 'GuildShell', limitBytes: 16 * 1024 + 512, closureLimitBytes: 141532 },
   // Lane bis-tooltip-host (2026-09-29): one BisTooltipHost per /bis/<class>/<spec> page
   // replaces roughly 840 per-row ItemHover islands with delegated document-level listeners
   // plus the same lazy-loaded ItemTooltip.svelte panel ItemHover already used -- no data,
   // no per-row state, so its own shell should stay close to ItemHover's own ~2 KB. 8 KB
   // gzipped leaves real headroom without hiding an accidental heavy import the way the
   // other two page-island budgets above already don't.
-  { component: 'BisTooltipHost', limitBytes: 8 * 1024 },
+  { component: 'BisTooltipHost', limitBytes: 8 * 1024, closureLimitBytes: 26121 },
   // The BiS page island (web layout spec 2026-11-05 §5, slice 2): the page head's answer, the
   // control bar, the paperdoll with its inline/side detail, the Sources filter and What to stack,
   // over one compact view model the page inlines as JSON. Measured 19,156 bytes gzipped on the
   // fixture build of 2026-11-06 (the entry; the compare code and the full data load lazily). 20 KB
   // keeps the page islands' slack and still trips an accidental heavy import.
-  { component: 'BisSpecPage', limitBytes: 20 * 1024 },
+  { component: 'BisSpecPage', limitBytes: 20 * 1024, closureLimitBytes: 77471 },
   // The shared dropdown's lazy chunk (design/specs/2026-10-30-controls-charts.md §A11.2):
   // lib/ui/listbox.ts with its list renderer, the popover core and Floating UI, loaded after
   // first paint on a fine pointer only. The spec asked for 9 KB; it measures 10,221 bytes
   // gzipped on the fixture build of 2026-10-30, of which Floating UI's computePosition with
   // offset, shift and size is about 5.1 KB on its own (its autoUpdate and hide were replaced
   // by popover.ts's own watcher to save 1 KB). 10.5 KB holds it with the fixture/CI gap.
-  { component: 'listbox', limitBytes: 10.5 * 1024 },
+  { component: 'listbox', limitBytes: 10.5 * 1024, closureLimitBytes: 17276 },
 ];
 
 const webRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -145,6 +168,8 @@ for (const budget of BUDGETS) {
     console.error(`${budget.file} is ${gzipped} bytes gzipped, over the ${budget.limitBytes} byte budget.`);
     failed = true;
   }
+  if (!(await checkClosure(budget.file, path.join(webRoot, budget.file), budget.closureLimitBytes)))
+    failed = true;
 }
 
 // The report charts' lazy chunk (controls and charts spec 2026-10-30 §B3, §B11): uPlot 1.6.32
@@ -204,6 +229,7 @@ for (const budget of PAGE_ISLAND_BUDGETS) {
     );
     failed = true;
   }
+  if (!(await checkClosure(`dist/_astro/${matches[0]}`, chunkPath, budget.closureLimitBytes))) failed = true;
 }
 
 if (failed) process.exit(1);

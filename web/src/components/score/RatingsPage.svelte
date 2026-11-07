@@ -83,7 +83,9 @@
       {#snippet answer()}
         <!-- the answer column holds 360 px from 900, as the mock's -->
         <span class="hidden min-[900px]:block min-[900px]:w-[360px]" aria-hidden="true"></span>
-        <span class="label text-muted">{scoreCopy.samplePill} · {scoreCopy.explainerHeading}</span>
+        <span class="text-label tracking-label text-muted font-bold uppercase"
+          >{scoreCopy.samplePill} · {scoreCopy.explainerHeading}</span
+        >
         <span
           class="text-[36px] leading-10 font-bold tabular-nums"
           style:color={TIER_COLOR[tier]}
@@ -161,12 +163,14 @@
     <div class="mt-4 grid grid-cols-3 gap-x-6 gap-y-5" data-testid="ratings-rating-sample">
       <Figure value={String(latest)} label="Latest fight" unit={ratingCopy.outOf100} tone="gold" size="big" />
       <div class="flex min-w-0 flex-col gap-[2px]">
-        <span class="label text-muted">Last {SAMPLE_TREND.length} fights</span>
+        <span class="text-label tracking-label text-muted font-bold uppercase"
+          >Last {SAMPLE_TREND.length} fights</span
+        >
         <Spark values={SAMPLE_TREND} top={RATING_TOP} />
         <span class="text-small text-muted">Up {rise} since the first</span>
       </div>
       <div class="flex min-w-0 flex-col gap-[2px]">
-        <span class="label text-muted">Weakest part</span>
+        <span class="text-label tracking-label text-muted font-bold uppercase">Weakest part</span>
         <span class="text-[15px] leading-5">Weakest part of a fight: {SAMPLE_WEAKEST}.</span>
       </div>
     </div>

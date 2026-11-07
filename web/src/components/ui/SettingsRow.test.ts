@@ -43,10 +43,11 @@ describe('SettingsRow', () => {
     expect(body).toMatch(/text-muted text-\[13px\][^>]*>Off, never posts\./);
   });
 
-  it('draws an icon tile at 32 px when it has a glyph', () => {
+  it('draws its glyph open in a 32 px slot, no tile ground', () => {
     const body = row({ glyph: 'server' });
     expect(body).toContain('data-glyph="server"');
-    expect(body).toContain('width: 32px');
+    expect(body).toContain('h-8 w-8');
+    expect(body).not.toContain('bg-tile');
   });
 
   it('keeps a 56 px minimum height with 20 px side padding and a top rule', () => {

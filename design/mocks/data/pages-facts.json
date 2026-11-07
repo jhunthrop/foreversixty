@@ -1156,6 +1156,7 @@
   },
   "setupTitle": "Get set up",
   "lookup": {
+   "pageTitle": "Characters",
    "heading": "Look up a character",
    "aside": "See any character’s Forever Score.",
    "nameLabel": "Character name",

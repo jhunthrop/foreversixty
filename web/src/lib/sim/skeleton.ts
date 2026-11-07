@@ -4,6 +4,7 @@
 // and for the same reason -- one string, used twice (the page shell before the island boots, via
 // set:html, and SimView.svelte between mounting and the saved result's first byte, via {@html}),
 // so the two moments look identical and nothing shifts between them. Static markup, no data.
+import { PLATE_SURFACE } from '../ui/primitives';
 const block = (classes: string): string => `<span class="skeleton-block ${classes}"></span>`;
 
 /** The page head at its ready geometry: the crest, the title and the meta line at the left, the
@@ -33,7 +34,7 @@ export const SIM_SAVED_SKELETON_HTML = [
   '<div aria-hidden="true" class="flex flex-col">',
   pageHead(),
   '<div class="grid items-start gap-[var(--gap)] px-[var(--page-inset)] pt-5 lg:grid-cols-[minmax(0,1fr)_340px] lg:pt-7 min-[1760px]:grid-cols-[minmax(0,1fr)_var(--rail-w)]">',
-  `<div class="flex flex-col">${sectionHead()}<div class="bg-raised border-line rounded-plate overflow-hidden border"><div class="h-10"></div>${Array.from({ length: 6 }, abilityRow).join('')}</div></div>`,
+  `<div class="flex flex-col">${sectionHead()}<div class="${PLATE_SURFACE} overflow-hidden"><div class="h-10"></div>${Array.from({ length: 6 }, abilityRow).join('')}</div></div>`,
   `<div class="flex flex-col">${sectionHead()}<span class="skeleton-block block h-[168px] w-full"></span></div>`,
   '</div></div></div>',
 ].join('');

@@ -49,7 +49,7 @@
   class="flex flex-col gap-1 min-[900px]:min-w-[360px] min-[900px]:items-end"
   data-testid="rankings-answer"
 >
-  <span class="label text-muted">{rankingsCopy.answerLabel}</span>
+  <span class="text-label tracking-label text-muted font-bold uppercase">{rankingsCopy.answerLabel}</span>
   <span class="flex flex-wrap items-center gap-x-3 gap-y-2 min-[900px]:justify-end">
     <img src={classCrestSrc(slug)} alt="" width={CREST_PX} height={CREST_PX} class="rounded-full" />
     <b class="text-[18px] leading-[22px] font-bold" style:color>{character.name}</b>

@@ -4,6 +4,7 @@
      primary object (the doll, the tier list, the result) and never a Section (§3A.2 rules).
      `flush` drops the inner padding for content that runs its own rows edge to edge. -->
 <script lang="ts">
+  import { PLATE_SURFACE } from '../../lib/ui/primitives';
   import type { Snippet } from 'svelte';
   import { REGION } from '../../lib/ui/regions';
 
@@ -22,7 +23,7 @@
 </script>
 
 <div
-  class="ui-plate bg-raised border-line rounded-plate min-w-0 border"
+  class={PLATE_SURFACE}
   class:p-4={!flush}
   role={label ? 'region' : undefined}
   aria-label={label}

@@ -21,7 +21,9 @@
   {#if answer.finding_count === 0}
     <p class="text-text text-[15px] leading-[22px]">{coachCopy.rulesNothing}</p>
   {:else}
-    <h3 class="label text-gold" data-testid="coach-teaser-count">{count}</h3>
+    <h3 class="text-label tracking-label text-gold font-bold uppercase" data-testid="coach-teaser-count">
+      {count}
+    </h3>
     {#if answer.fix_first !== null}
       <div class="border-gold mt-2 flex items-center gap-2 border-l-2 pl-4">
         <SpellIcon url={names.iconUrl(answer.fix_first.spell_id)} size={32} />
