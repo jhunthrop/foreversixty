@@ -12,6 +12,12 @@ that exact commit when it is green. Target: 30 to 45 minutes from merge to main.
    - waits for every check workflow GitHub started for the branch's head sha (web with every
      e2e shard, real-engine and lhci; sim; api in four test shards; data; tools; addon; logs;
      coach; companion; ios; android; mobile-codegen; whichever the batch's paths reach);
+   - checks that every workflow the batch's paths reach (`tools/land_workflows.py`) has a
+     run. A push whose head sha the remote already held, say from a lane branch pushed at the
+     same commit, carries no commits, so GitHub starts no path-filtered workflow for it (land
+     2026-11-07, bnet-refresh: only companion ran). land.sh dispatches each missing workflow
+     on the land branch (`gh workflow run`) and waits for it; one that still never starts is
+     a timeout, never a landing;
    - stops at the first failed job and lists every failed job with its link (exit 1);
    - when all are green, runs `git push origin <sha>:main`, which only succeeds as a
      fast-forward. If main moved meanwhile it says so (exit 2): merge `origin/main` into the
@@ -119,5 +125,5 @@ A job that starts reading one of the left-out trees adds it back in its own chec
 `/<tree>/` line after the `!` lines re-includes it). data.yml is held, and deploy and release
 jobs, which no landing runs, keep the full checkout.
 
-`tools/land.sh` needs `gh` (signed in) and `jq`. Tunables: `LAND_POLL_SECONDS` (30),
+`tools/land.sh` needs `gh` (signed in), `jq` and Python 3 with PyYAML. Tunables: `LAND_POLL_SECONDS` (30),
 `LAND_SETTLE_SECONDS` (90), `LAND_TIMEOUT_SECONDS` (5400). Tests: `bash tools/tests/test_land.sh`.
