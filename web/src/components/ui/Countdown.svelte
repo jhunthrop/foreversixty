@@ -140,7 +140,10 @@
     text-transform: uppercase;
     color: var(--color-muted);
   }
+  /* Grows beside the clock and wraps its own lines (a long "your time" line on a viewer outside
+     the guild's zone); it drops below the clock only when the row cannot hold 200 px of it. */
   .ui-countdown-aside {
+    flex: 1 1 200px;
     min-width: 0;
     margin-left: auto;
   }

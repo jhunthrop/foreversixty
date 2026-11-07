@@ -101,6 +101,7 @@
   }
   .home-raids {
     display: flex;
+    justify-content: flex-end;
     gap: 18px;
     margin: 0;
     padding: 0;
@@ -118,8 +119,13 @@
     text-align: center;
     color: var(--color-nav);
   }
+  /* One line per fact, cut with an ellipsis, so the panel keeps one height whatever the zone,
+     the raid title or the sign-up line says. */
   .home-guild-what {
     margin: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
     text-align: right;
     font-size: 14px;
     line-height: 22px;
@@ -127,6 +133,8 @@
   }
   .home-guild-what b {
     display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
     font-size: 18px;
     line-height: 24px;
     color: var(--color-strong);

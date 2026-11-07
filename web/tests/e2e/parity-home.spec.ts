@@ -21,7 +21,9 @@ const CONFIG = readParityConfig('home-parity.json');
 
 test.describe('Home mock parity at 1440', () => {
   test.skip(({ isMobile }) => isMobile, 'the parity mocks are desktop captures');
-  test.use({ viewport: CONFIG.viewport });
+  // The mocks print the guild's raid in its own zone (CST); a viewer in that zone sees no extra
+  // "your time" line, so both sides read the same copy on a UTC CI runner too.
+  test.use({ viewport: CONFIG.viewport, timezoneId: 'America/Chicago' });
 
   for (const state of CONFIG.states as ((typeof CONFIG.states)[number] & HomeState)[]) {
     test(`${state.id} matches ${state.mock}`, async ({ page, browser }) => {

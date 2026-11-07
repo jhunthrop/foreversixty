@@ -44,9 +44,9 @@ HOME_CSS = '''
 .figs-b .f .v.kill{color:var(--kill)}.figs-b .f .c{font-size:12px;line-height:16px;color:var(--muted)}
 .cds{display:grid;gap:var(--gap);grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);padding-top:28px}
 .cds.solo{grid-template-columns:minmax(0,1fr)}
-.raids{display:flex;gap:18px;margin:0;padding:0;list-style:none}
+.raids{display:flex;justify-content:flex-end;gap:18px;margin:0;padding:0;list-style:none}
 .raids li{display:flex;flex-direction:column;align-items:center;gap:6px;width:88px;font:600 13px/16px var(--font-body);text-align:center;color:var(--nav)}
-.gw{margin:0;text-align:right;font-size:14px;line-height:22px;color:var(--nav)}.gw b{display:block;font-size:18px;line-height:24px;color:var(--strong)}
+.gw{margin:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;text-align:right;font-size:14px;line-height:22px;color:var(--nav)}.gw b{display:block;overflow:hidden;text-overflow:ellipsis;font-size:18px;line-height:24px;color:var(--strong)}
 .dl{color:var(--kill);font-size:13px;font-weight:700}
 .err{display:flex;flex-wrap:wrap;align-items:center;gap:12px;min-height:44px;font-size:14px;color:var(--muted)}
 .empty-b{padding-block:12px;font-size:15px;line-height:24px;color:var(--muted)}
