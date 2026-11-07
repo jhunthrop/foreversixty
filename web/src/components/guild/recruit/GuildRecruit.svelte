@@ -1,6 +1,7 @@
 <!-- web/src/components/guild/recruit/GuildRecruit.svelte -->
 <!-- /guild/{region}/{ruleset}/{slug}/recruit (web layout spec 2026-11-05 §7.2 Recruitment, "Should I
-     apply?"): where a stranger meets the guild. The one Plate is the public card; under it what the
+     apply?"; mock web-guild-recruit): where a stranger meets the guild. The one Plate is the public
+     card, in its Section; under it what the
      viewer can do (sign in, apply, their own application, or the line that the guild is closed);
      the rail holds the officers' pitch and the officers. GuildShell loads this file as its own
      chunk; lib/guild/recruit-page.svelte.ts owns the reads and writes. -->
@@ -11,7 +12,7 @@
   import { viewerLocale } from '../../../lib/guild/raid-time';
   import { recruitCopy as copy } from '../../../lib/guild/recruit-copy';
   import { RecruitPage } from '../../../lib/guild/recruit-page.svelte';
-  import { cardFacts, officerRows, realmLabel } from '../../../lib/guild/recruit-view';
+  import { officerRows, realmLabel } from '../../../lib/guild/recruit-view';
   import { classTone } from '../../../lib/ui/primitives';
   import ClassCrestRing from '../../character/ClassCrestRing.svelte';
   import SignInPrompt from '../../SignInPrompt.svelte';
@@ -52,83 +53,89 @@
   const next = typeof location === 'undefined' ? '/account?signed_in=1' : location.pathname;
 </script>
 
-{#snippet rail()}
-  {#if p.card !== null}
-    {#if p.card.pitch !== ''}
-      <Section title={copy.card.why} testid="guild-recruit-pitch">
-        <p class="text-text text-[14px] leading-[22px] whitespace-pre-line">{p.card.pitch}</p>
-      </Section>
+<!-- One root: GuildShell lays its views out in a gapped flex column, and the head and the Page
+     below it are one block with the Page's own gap. -->
+<div>
+  {#snippet rail()}
+    {#if p.card !== null}
+      {#if p.card.pitch !== ''}
+        <Section title={copy.card.why} testid="guild-recruit-pitch">
+          <p class="text-text text-[14px] leading-[22px] whitespace-pre-line">{p.card.pitch}</p>
+        </Section>
+      {/if}
+      {#if p.card.officers.length > 0}
+        <Section title={copy.card.officers} testid="guild-recruit-officers">
+          {#each officerRows(p.card.officers) as officer (officer.key)}
+            <Row title={officer.name} titleTone={classTone(officer.classSlug)} sub={officer.sub} open>
+              {#snippet lead()}<ClassCrestRing characterClass={officer.classSlug} size={32} />{/snippet}
+            </Row>
+          {/each}
+        </Section>
+      {/if}
     {/if}
-    {#if p.card.officers.length > 0}
-      <Section title={copy.card.officers} testid="guild-recruit-officers">
-        {#each officerRows(p.card.officers) as officer (officer.key)}
-          <Row title={officer.name} titleTone={classTone(officer.classSlug)} sub={officer.sub} open>
-            {#snippet lead()}<ClassCrestRing characterClass={officer.classSlug} size={32} />{/snippet}
-          </Row>
-        {/each}
-      </Section>
-    {/if}
-  {/if}
-{/snippet}
-
-{#if p.load === 'failed'}
-  <LoadError message={copy.page.loadError} onRetry={() => void p.start()} testid="guild-recruit-error" />
-{:else if p.load === 'loading' || p.context === null || p.card === null || p.state === null}
-  <div class="min-h-[640px]" data-testid="guild-recruit-loading">
-    <Skeleton lines={6} label={copy.page.loading} testid="guild-recruit-skeleton" />
-  </div>
-{:else}
-  {@const state = p.state}
-  {@const card = p.card}
-  {@const context = p.context}
-  {#snippet header()}
-    <GuildViewHeader
-      guild={context.guild}
-      {guildPath}
-      title={copy.page.title(card.guild.name)}
-      facts={cardFacts(card)}
-      {tabRole}
-      testid="guild-recruit-head"
-    />
   {/snippet}
-  <Page layout="split" {header} {rail} testid="guild-recruit-page">
-    <RecruitCard {card} {viewerTimezone} {locale} />
-    {#if state.kind === 'closed'}
-      <Notice text={copy.closedLine(card.guild.name)} tone="neutral" testid="guild-recruit-closed" />
-    {:else if state.kind === 'member'}
-      <Notice
-        text={copy.mine.member(card.guild.name)}
-        tone="neutral"
-        action={{ label: copy.mine.openGuild, href: guildPath }}
-        testid="guild-recruit-member"
+
+  {#if p.load === 'failed'}
+    <LoadError message={copy.page.loadError} onRetry={() => void p.start()} testid="guild-recruit-error" />
+  {:else if p.load === 'loading' || p.context === null || p.card === null || p.state === null}
+    <div class="min-h-[640px]" data-testid="guild-recruit-loading">
+      <Skeleton lines={6} label={copy.page.loading} testid="guild-recruit-skeleton" />
+    </div>
+  {:else}
+    {@const state = p.state}
+    {@const card = p.card}
+    {@const context = p.context}
+    {#snippet header()}
+      <GuildViewHeader
+        guild={context.guild}
+        {guildPath}
+        title={copy.page.title(card.guild.name)}
+        facts={[copy.card.label]}
+        {tabRole}
+        testid="guild-recruit-head"
       />
-    {:else if state.kind === 'application'}
-      <MyApplication
-        application={state.application}
-        guildName={card.guild.name}
-        {viewerTimezone}
-        {locale}
-        busy={p.busy}
-        error={p.error}
-        onWithdraw={() => void p.withdraw()}
-      />
-    {:else}
-      <Section title={copy.apply.heading} testid="guild-recruit-apply">
-        {#if state.kind === 'signed-out'}
-          <SignInPrompt line={copy.apply.signIn(card.guild.name)} {next} testid="guild-recruit-sign-in" />
-        {:else if state.kind === 'no-character'}
-          <p class="text-text text-[14px]" data-testid="guild-recruit-no-character">
-            {copy.apply.noCharacter(realmLabel(card))}
-          </p>
-        {:else}
-          <ApplyForm
-            characters={state.characters}
-            busy={p.busy}
-            error={p.error}
-            onApply={(input) => void p.apply(input)}
-          />
-        {/if}
+    {/snippet}
+    <Page layout="split" {header} {rail} testid="guild-recruit-page">
+      <Section title={copy.card.heading(card.guild.name, card.open)} testid="guild-recruit-card-section">
+        <RecruitCard {card} mark={context.guild.mark} {viewerTimezone} {locale} />
       </Section>
-    {/if}
-  </Page>
-{/if}
+      {#if state.kind === 'closed'}
+        <Notice text={copy.closedLine(card.guild.name)} tone="neutral" testid="guild-recruit-closed" />
+      {:else if state.kind === 'member'}
+        <Notice
+          text={copy.mine.member(card.guild.name)}
+          tone="neutral"
+          action={{ label: copy.mine.openGuild, href: guildPath }}
+          testid="guild-recruit-member"
+        />
+      {:else if state.kind === 'application'}
+        <MyApplication
+          application={state.application}
+          guildName={card.guild.name}
+          {viewerTimezone}
+          {locale}
+          busy={p.busy}
+          error={p.error}
+          onWithdraw={() => void p.withdraw()}
+        />
+      {:else}
+        <Section title={copy.apply.heading} testid="guild-recruit-apply">
+          {#if state.kind === 'signed-out'}
+            <SignInPrompt line={copy.apply.signIn(card.guild.name)} {next} testid="guild-recruit-sign-in" />
+          {:else if state.kind === 'no-character'}
+            <p class="text-text text-[14px]" data-testid="guild-recruit-no-character">
+              {copy.apply.noCharacter(realmLabel(card))}
+            </p>
+          {:else}
+            <ApplyForm
+              characters={state.characters}
+              busy={p.busy}
+              error={p.error}
+              onApply={(input) => void p.apply(input)}
+            />
+          {/if}
+        </Section>
+      {/if}
+    </Page>
+  {/if}
+</div>

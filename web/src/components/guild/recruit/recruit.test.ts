@@ -165,7 +165,10 @@ describe('the applications page', () => {
     expect(out).toContain('Hexmarrow accepted');
     expect(out).toContain('Discord role granted');
     expect(out).toContain('data-testid="guild-recruit-edit"');
-    expect(out).toContain('value="123456789012345678"');
+    // The rail reads the card's fields, each with Edit; the form waits behind it.
+    expect(out).toContain('data-testid="guild-recruit-edit-wanted-open"');
+    expect(out).toContain('Tue and Thu, 8 to 11 pm server time');
+    expect(out).not.toContain('value="123456789012345678"');
   });
 
   it('a member is told only officers see it, with no applicant on the page', async () => {
@@ -182,6 +185,7 @@ describe('the applications page', () => {
       saving: false,
       line: null,
       onSave: noop,
+      editing: true,
     });
     expect(out).toContain('Copy Role ID');
     expect(out).toContain('role="switch"');

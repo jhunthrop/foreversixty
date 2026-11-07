@@ -1,0 +1,61 @@
+{
+  "guild": {
+    "id": 2,
+    "name": "Olympus XXVII",
+    "region": "us",
+    "ruleset": "pvp",
+    "faction": "alliance",
+    "crest_url": null,
+    "path": "/guild/us/pvp/olympus-xxvii"
+  },
+  "members": 24,
+  "open": true,
+  "pitch": "We raid two nights a week, bring flasks, and split loot by council with the numbers shown. New to Forever is fine.",
+  "raid_nights": {
+    "text": "Tue and Thu, 8:00 pm to 11:00 pm CST",
+    "upcoming": ["2026-12-11T02:00:00Z", "2026-12-16T02:00:00Z"],
+    "timezone": "America/Chicago"
+  },
+  "progress": {
+    "name": "Tier 1",
+    "raids": ["Onyxia's Lair"],
+    "named_encounters": 1,
+    "down": 1,
+    "pulls_total": 2
+  },
+  "wanted": [
+    {
+      "class": "warrior",
+      "spec": "warrior-protection",
+      "spec_name": "Protection Warrior",
+      "note": "Off tank"
+    },
+    {
+      "class": "paladin",
+      "spec": "paladin-holy",
+      "spec_name": "Holy Paladin",
+      "note": "For the heal rotation"
+    },
+    {
+      "class": "priest",
+      "spec": "priest-holy",
+      "spec_name": "Holy Priest",
+      "note": ""
+    }
+  ],
+  "officers": [
+    {
+      "name": "Ironbrand",
+      "class": "paladin",
+      "spec": "Holy",
+      "rank": "officer"
+    },
+    {
+      "name": "Shiverknife",
+      "class": "rogue",
+      "spec": "Assassination",
+      "rank": "officer"
+    }
+  ],
+  "updated_at": "2026-12-01T18:00:00Z"
+}

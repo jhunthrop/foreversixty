@@ -14,6 +14,21 @@
       "id": "report",
       "path": "/guild/us/pvp/olympus-xxvii/raids/40",
       "mock": "web-guild-report.html"
+    },
+    {
+      "id": "recruit",
+      "path": "/guild/us/pvp/olympus-xxvii/recruit",
+      "mock": "web-guild-recruit.html"
+    },
+    {
+      "id": "applications",
+      "path": "/guild/us/pvp/olympus-xxvii/applications",
+      "mock": "web-guild-applications.html"
+    },
+    {
+      "id": "profile",
+      "path": "/guild/us/pvp/olympus-xxvii/members/u%3A1016",
+      "mock": "web-guild-profile.html"
     }
   ]
 }
