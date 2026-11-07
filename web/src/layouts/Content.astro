@@ -1,5 +1,7 @@
 ---
 // web/src/layouts/Content.astro
+// A `pages` collection entry (About, the legal pages): the page head with its eyebrow, title,
+// Updated stamp and confidence sentence, the reading-measure body, then the Sources footer.
 import Base from './Base.astro';
 import SourcesList from '../components/SourcesList.astro';
 import PageHead from '../components/ui/PageHead.astro';
@@ -17,36 +19,8 @@ interface Props {
    *  neither the confidence sentence nor its separator. */
   confidence?: Confidence;
   sources: Source[];
-  /** 'header' (default, unchanged): the confidence sentence sits under the title, as every
-   *  `pages` collection entry still shows it. 'footer' (guides only, spec 5): it moves to a
-   *  quiet line directly above Sources instead -- "under the title" was the caveat's most
-   *  prominent spot on the page and spec 5 asks for the least prominent one instead. */
-  confidencePlacement?: 'header' | 'footer';
-  /** The guide rebuild (spec §4.B/§4.C): true drops this layout's own plain `<h1>`/
-   *  `UpdatedStamp`/header-placement-confidence block entirely -- the caller fills the
-   *  `beforeMain` slot with its own `ArtPanel`+`ClassHeader` region instead (full-bleed, outside this layout's own `<main>`).
-   *  The article grid, the sticky aside, `SourcesList` and a `footer`-placed confidence line are all unaffected -- only
-   *  the title block this prop names is suppressed. A caller passing `hideHeader` should
-   *  also pass `confidencePlacement="footer"`, or its confidence sentence has nowhere to
-   *  render at all. */
-  hideHeader?: boolean;
-  /** The guide rebuild's class landing page (spec §4.B): its identity paragraph and new
-   *  spec-card row read at the full site column width, not this layout's default reading measure
-   *  article column -- every other caller (every `pages`/`changelog` entry, the spec guide,
-   *  which supplies its own width via `hasAside`) is unaffected. */
-  wide?: boolean;
-  /** The spec guide: running text runs the full column width, the same as its tables and
-   *  callouts, instead of the 68ch reading measure. */
-  wideProse?: boolean;
-  /** The spec guides carry one data-source line (`footnote`) instead, so the footer confidence
-   *  line ("Our inference from what has been said") is left off. */
-  hideConfidenceNote?: boolean;
   /** False for the legal pages: they state no fact about the world, so no Sources footer. */
   showSources?: boolean;
-  /** One muted line above the Sources footer (the spec guides' data-source line). */
-  footnote?: string;
-  /** The Sources footer leaves off the "This site" pill (the spec guides speak as a player). */
-  hideSitePill?: boolean;
   /** The page head's eyebrow (site alignment spec 2026-10-29 §5.15): ABOUT, or LEGAL on the legal pages. */
   eyebrow?: string;
 }
@@ -57,20 +31,9 @@ const {
   updated,
   confidence,
   sources,
-  confidencePlacement = 'header',
-  hideHeader = false,
-  wide = false,
-  wideProse = false,
-  hideConfidenceNote = false,
-  footnote,
-  hideSitePill = false,
   showSources = true,
   eyebrow = 'About',
 } = Astro.props;
-// A page that fills the `aside` slot (the spec guides' table of contents) gets a wider main
-// with the article column and a sticky rail beside it at lg; below lg the rail is simply
-// not rendered by the slot's own classes, so the page keeps whatever inline version it has.
-const hasAside = Astro.slots.has('aside');
 const jsonLd = [articleLd({ title, description, path, updated }), breadcrumbLd(path, title)];
 const confidenceCopy: Record<Confidence, string> = {
   confirmed: 'Confirmed by Blizzard or by multiple sources',
@@ -81,62 +44,23 @@ const confidenceCopy: Record<Confidence, string> = {
 
 <Base title={title} description={description} path={path} jsonLd={jsonLd}>
   <meta slot="head" property="article:modified_time" content={updated.toISOString()} />
-  <slot name="beforeMain" />
-  <main
-    id="main"
-    tabindex="-1"
-    class:list={[
-      'w-full',
-      hideHeader ? 'px-[18px] py-10 md:px-0' : 'flex flex-col gap-8 px-[18px] pt-4 pb-10 md:px-0 md:pt-7',
-      hideHeader &&
-        (hasAside
-          ? 'measure-aside grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_220px] lg:gap-12'
-          : wide
-            ? 'flex flex-col gap-6'
-            : 'measure-reading flex flex-col gap-6'),
-    ]}
-  >
-    {!hideHeader && (
-      <PageHead eyebrow={eyebrow.toUpperCase()} title={title}>
-        <Fragment slot="meta">
-          <UpdatedStamp date={updated} />
-          {confidence !== undefined && confidencePlacement === 'header' && (
-            <>
-              <span> · </span>
-              <span>{confidenceCopy[confidence]}</span>
-            </>
-          )}
-        </Fragment>
-      </PageHead>
-    )}
-    <div
-      class:list={[
-        hasAside
-          ? 'flex min-w-0 flex-col gap-6 lg:max-w-(--measure-reading)'
-          : hideHeader
-            ? 'contents'
-            : 'flex max-w-(--measure-reading) flex-col gap-6',
-      ]}
-    >
-      <div class:list={['prose-forever text-[16px] leading-[1.6]', wideProse && 'prose-wide']}>
+  <main id="main" tabindex="-1" class="flex w-full flex-col gap-8 px-[18px] pt-4 pb-10 md:px-0 md:pt-7">
+    <PageHead eyebrow={eyebrow.toUpperCase()} title={title}>
+      <Fragment slot="meta">
+        <UpdatedStamp date={updated} />
+        {confidence !== undefined && (
+          <>
+            <span> · </span>
+            <span>{confidenceCopy[confidence]}</span>
+          </>
+        )}
+      </Fragment>
+    </PageHead>
+    <div class="flex max-w-(--measure-reading) flex-col gap-6">
+      <div class="prose-forever text-[16px] leading-[1.6]">
         <slot />
       </div>
-      {confidence !== undefined && confidencePlacement === 'footer' && !hideConfidenceNote && (
-        <p class="text-muted text-[13px]" data-testid="confidence-footer-note">
-          {confidenceCopy[confidence]}
-        </p>
-      )}
-      {footnote !== undefined && (
-        <p class="text-muted text-[13px]" data-testid="content-footnote">
-          {footnote}
-        </p>
-      )}
-      {showSources && <SourcesList sources={sources} hideSitePill={hideSitePill} />}
+      {showSources && <SourcesList sources={sources} />}
     </div>
-    {hasAside && (
-      <aside class="hidden lg:sticky lg:top-6 lg:block lg:self-start" data-testid="content-aside">
-        <slot name="aside" />
-      </aside>
-    )}
   </main>
 </Base>

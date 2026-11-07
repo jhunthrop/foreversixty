@@ -26,7 +26,7 @@ describe('Content layout', () => {
     expect(html).toContain('pill-community');
   });
 
-  it('defaults confidencePlacement to header, matching every pages-collection entry', async () => {
+  it('puts the confidence sentence under the title, before Sources, never in a footer line', async () => {
     const c = await createPageContainer();
     const html = await c.renderToString(Content, {
       props: {
@@ -44,29 +44,6 @@ describe('Content layout', () => {
     expect(sourcesIndex).toBeGreaterThan(titleIndex);
     expect(html.slice(titleIndex, sourcesIndex)).toContain('Reported by one outlet');
     expect(html).not.toContain('data-testid="confidence-footer-note"');
-  });
-
-  it('moves the confidence sentence to a quiet line above Sources when confidencePlacement is footer', async () => {
-    const c = await createPageContainer();
-    const html = await c.renderToString(Content, {
-      props: {
-        title: 'Hall of Thanes',
-        path: '/dungeons/hall-of-thanes',
-        updated: new Date('2026-09-12T00:00:00Z'),
-        confidence: 'single-source',
-        sources: [{ label: 'guided.news roundup', url: 'https://guided.news/x', kind: 'community' }],
-        confidencePlacement: 'footer',
-      },
-      slots: { default: '<p>body</p>' },
-    });
-    const titleIndex = html.indexOf('Hall of Thanes</h1>');
-    const bodyEnd = html.indexOf('prose-forever', titleIndex);
-    const footerNoteIndex = html.indexOf('data-testid="confidence-footer-note"');
-    const sourcesIndex = html.indexOf('>Sources<');
-    expect(html.slice(titleIndex, bodyEnd)).not.toContain('Reported by one outlet');
-    expect(footerNoteIndex).toBeGreaterThan(bodyEnd);
-    expect(footerNoteIndex).toBeLessThan(sourcesIndex);
-    expect(html).toContain('Reported by one outlet');
   });
 
   it('draws no status and no separator for a page with no confidence (the legal pages)', async () => {

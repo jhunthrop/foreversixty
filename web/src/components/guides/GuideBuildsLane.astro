@@ -1,0 +1,139 @@
+---
+// web/src/components/guides/GuideBuildsLane.astro
+// The Talents and builds lane (guides spec 2026-11-08 §4.3, G2): one slim Row per build (its
+// points per tree, Load this build and Sim this build as links), the raid diff line, then the
+// key talents (icon, the names with their ranks opening the talent tooltip, the why line).
+import LaneBlock from '../ui/LaneBlock.svelte';
+import Row from '../ui/Row.svelte';
+import { LINK } from '../../lib/ui/primitives';
+import { dataUrl } from '../../lib/planner/load';
+import { guidesCopy } from '../../lib/guides/copy';
+import { loadBuildHref, simBuildHref } from '../../lib/guides/build-links';
+import type { DecodedTreeView } from '../../lib/guides/build-tree';
+import type { KeyTalentEntry, KeyTalentRef } from '../../lib/guides/key-talents';
+import { talentTipKey } from '../../lib/tooltips/game-tip';
+
+interface Props {
+  build: string;
+  blocks: readonly { kind: string; label: string; code: string; trees: readonly DecodedTreeView[] }[];
+  raidDiffLine?: string;
+  keyTalents: readonly KeyTalentEntry[];
+}
+const { build, blocks, raidDiffLine, keyTalents } = Astro.props;
+const pointsLine = (trees: readonly DecodedTreeView[]): string =>
+  trees.map((tree) => `${tree.name} ${tree.points}`).join(' · ');
+const rankText = (talent: KeyTalentRef): string =>
+  talent.buildRanks !== undefined
+    ? [
+        guidesCopy.keyTalentBuildRank('leveling', talent.buildRanks.leveling, talent.maxRank ?? 0),
+        guidesCopy.keyTalentBuildRank('raid', talent.buildRanks.raid, talent.maxRank ?? 0),
+      ].join(' · ')
+    : talent.rank === undefined
+      ? ''
+      : `${talent.rank}/${talent.maxRank}`;
+---
+
+{blocks.length > 0 && (
+  <LaneBlock label={guidesCopy.builds} testid="guide-builds">
+    <div class="guide-lane-rows">
+      {blocks.map((block) => (
+        <Row
+          title={block.label}
+          sub={pointsLine(block.trees)}
+          density="slim"
+          open
+          wrapTrail
+          testid={`guide-build-${block.kind}`}
+        >
+          <span slot="trail" class="guide-build-links">
+            <a class={LINK} href={loadBuildHref(block.code)} data-testid={`guide-build-load-${block.kind}`}>
+              {guidesCopy.loadThisBuild}
+            </a>
+            <a class={LINK} href={simBuildHref(block.code)} data-testid={`guide-build-sim-${block.kind}`}>
+              {guidesCopy.simThisBuild}
+            </a>
+          </span>
+        </Row>
+      ))}
+    </div>
+    {raidDiffLine !== undefined && (
+      <p class="text-small text-muted m-0" data-testid="guide-raid-diff">
+        {raidDiffLine}
+      </p>
+    )}
+  </LaneBlock>
+)}
+{keyTalents.length > 0 && (
+  <LaneBlock label={guidesCopy.keyTalents} testid="guide-key-talents">
+    <div class="guide-lane-rows">
+      {keyTalents.map((entry) => (
+        <Row title={entry.talents.map((t) => t.name).join(' · ')} sub={entry.why} open>
+          <Fragment slot="lead">
+            {entry.talents[0]?.icon !== undefined ? (
+              <img
+                src={dataUrl(build, `icons/${entry.talents[0].icon}.webp`)}
+                alt=""
+                width="32"
+                height="32"
+                loading="lazy"
+                decoding="async"
+                class="guide-key-icon"
+              />
+            ) : (
+              <span class="guide-key-icon" aria-hidden="true" />
+            )}
+          </Fragment>
+          <Fragment slot="titleContent">
+            {entry.talents.map((talent, i) => (
+              <>
+                {i > 0 && ' · '}
+                <span
+                  class:list={[talent.id !== undefined && 'gtip guide-key-tip']}
+                  tabindex={talent.id !== undefined ? 0 : undefined}
+                  data-game-tip={
+                    talent.id === undefined
+                      ? undefined
+                      : talentTipKey(talent.id, Math.max(1, talent.rank ?? 1))
+                  }
+                >
+                  {talent.name}
+                </span>
+                {rankText(talent) !== '' && (
+                  <span class="text-muted text-[13px] font-semibold"> {rankText(talent)}</span>
+                )}
+              </>
+            ))}
+          </Fragment>
+        </Row>
+      ))}
+    </div>
+  </LaneBlock>
+)}
+
+<style>
+  .guide-lane-rows {
+    display: flex;
+    flex-direction: column;
+  }
+  .guide-build-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 4px 16px;
+    font-size: 14px;
+  }
+  .guide-key-icon {
+    display: block;
+    width: 32px;
+    height: 32px;
+    border-radius: 4px;
+  }
+  .guide-key-tip {
+    position: relative;
+    cursor: pointer;
+  }
+  .guide-key-tip:focus-visible {
+    outline: 2px solid var(--color-gold);
+    outline-offset: 2px;
+  }
+</style>

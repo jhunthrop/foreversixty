@@ -75,3 +75,19 @@ export function renderLogsMocks(): string {
   run(PYTHON, [path.join(GENERATORS, 'ws_logs.py')], { FS_LOGS_FACTS: facts, FS_MOCK_OUT: dir });
   return dir;
 }
+
+/**
+ * The guide mocks named (ws_guides.py --list), from this checkout's content, guide libs and the
+ * fixtures support/guides-page.ts serves: guides_facts.mjs runs the pages' own models, ws_guides.py
+ * draws just those mocks. Returns the folder that holds web-guides-*.html.
+ */
+export function renderGuidesMocks(mocks: readonly string[]): string {
+  const dir = freshDir('guides');
+  const facts = path.join(dir, 'guides-facts.json');
+  run('node', [path.join(GENERATORS, 'guides_facts.mjs'), facts]);
+  run(PYTHON, [path.join(GENERATORS, 'ws_guides.py'), ...mocks], {
+    FS_GUIDES_FACTS: facts,
+    FS_MOCK_OUT: dir,
+  });
+  return dir;
+}

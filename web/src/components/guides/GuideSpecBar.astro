@@ -1,0 +1,118 @@
+---
+// web/src/components/guides/GuideSpecBar.astro
+// The guide's ControlBar (guides spec 2026-11-08 §4.3): the class's specs as a segmented
+// group of links, each with its spec icon, the current one checked; at the end, from 768 to 1760,
+// an On this page select that jumps to a section (from 1760 the contents rail does). On a phone
+// one line, "<Spec> <Class> · On this page", that opens in place onto the specs and the sections
+// as slim rows.
+import ControlBar from '../ui/ControlBar.astro';
+import Row from '../ui/Row.svelte';
+import Select from '../ui/Select.astro';
+import { dataUrl } from '../../lib/planner/load';
+import { guidesCopy } from '../../lib/guides/copy';
+import type { ControlGroup } from '../../lib/ui/primitives';
+
+interface Props {
+  build: string;
+  classSlug: string;
+  specSlug: string;
+  summary: string;
+  specs: readonly { spec_slug: string; name: string; icon: string }[];
+  sections: readonly { title: string; id: string }[];
+}
+const { build, classSlug, specSlug, summary, specs, sections } = Astro.props;
+const groups: ControlGroup[] = [
+  {
+    label: guidesCopy.specGroupLabel,
+    param: 'spec',
+    kind: 'segmented',
+    value: specSlug,
+    options: specs.map((spec) => ({
+      value: spec.spec_slug,
+      label: spec.name,
+      icon: dataUrl(build, `icons/${spec.icon}.webp`),
+      href: `/guides/${classSlug}/${spec.spec_slug}`,
+    })),
+  },
+];
+---
+
+<ControlBar id="guide-bar" label={guidesCopy.barLabel} groups={groups} summary={summary} testid="guide-bar">
+  <Fragment slot="end">
+    <span class="guide-toc-select" data-testid="guide-toc-select">
+      <Select
+        id="guide-toc"
+        label={guidesCopy.tocBarLabel}
+        placeholder={guidesCopy.tocBarLabel}
+        size="dense"
+        fit
+        align="end"
+        options={sections.map((section) => ({ value: section.id, label: section.title }))}
+      />
+    </span>
+    <nav class="guide-toc-phone" aria-label={guidesCopy.tocBarLabel} data-testid="guide-toc-phone">
+      <span class="text-label tracking-label text-muted block pb-1 font-bold uppercase">
+        {guidesCopy.tocBarLabel}
+      </span>
+      {sections.map((section) => (
+        <Row
+          title={section.title}
+          href={`#${section.id}`}
+          density="slim"
+          open
+          testid={`guide-toc-phone-${section.id}`}
+        />
+      ))}
+    </nav>
+  </Fragment>
+</ControlBar>
+
+<script>
+  // On this page jumps to a section: the select below 1760, the open phone bar's rows below 768.
+  // The phone bar closes, so the section lands below it, and focus moves to the section, as a
+  // link to its anchor would.
+  import { closeControlBar } from '../../lib/ui/control-bar';
+
+  function jump(from: HTMLElement, id: string): void {
+    const section = id === '' ? null : document.getElementById(id);
+    if (section === null) return;
+    const bar = from.closest<HTMLElement>('[data-control-bar]');
+    if (bar !== null) closeControlBar(bar);
+    history.replaceState(null, '', `#${section.id}`);
+    section.scrollIntoView();
+    if (!section.hasAttribute('tabindex')) section.setAttribute('tabindex', '-1');
+    section.focus({ preventScroll: true });
+  }
+
+  const field = document.getElementById('guide-toc') as HTMLSelectElement | null;
+  field?.addEventListener('change', () => jump(field, field.value));
+  document.querySelector('[data-testid="guide-toc-phone"]')?.addEventListener('click', (event) => {
+    const link = (event.target as HTMLElement).closest<HTMLAnchorElement>('a[href^="#"]');
+    if (link === null) return;
+    event.preventDefault();
+    jump(link, link.hash.slice(1));
+  });
+</script>
+
+<style>
+  .guide-toc-select {
+    display: none;
+  }
+  .guide-toc-phone {
+    display: flex;
+    flex-direction: column;
+  }
+  @media (min-width: 768px) {
+    .guide-toc-select {
+      display: inline-flex;
+    }
+    .guide-toc-phone {
+      display: none;
+    }
+  }
+  @media (min-width: 1760px) {
+    .guide-toc-select {
+      display: none;
+    }
+  }
+</style>

@@ -28,6 +28,7 @@ import { buildFile, buildItemCatalog, readBuildJson } from './build-files';
 export { enchantFits, type EnchantTarget };
 import { factionForFirstRace, rankedBisFile } from './class-dps';
 import { guidesCopy } from './copy';
+import { isRealIcon } from '../icons/placeholder';
 import type { BisBand, BisStatWeight } from '../bis/types';
 import type { GuideBis } from './guide-bis';
 
@@ -76,9 +77,6 @@ const STAT_ALIASES: Readonly<Record<string, string>> = {
 
 /** Rating-family and haste stats: not scored (see the header). */
 const UNSCORED = new Set(['crit', 'hit', 'dodge', 'parry', 'block', 'defense', 'melee_haste', 'spell_haste']);
-
-/** An icon shared by this many enchants is the data's stand-in, not the enchant's own. */
-const STAND_IN_ICON_USES = 4;
 
 export function consumableKind(id: string): ConsumableKind {
   if (id.startsWith('flask_')) return 'flask';
@@ -150,10 +148,9 @@ export function pickEnchants(
   records: readonly EnchantRecord[],
   weights: readonly BisStatWeight[],
   context: EnchantContext,
+  iconExists: (icon: string) => boolean = () => true,
 ): EnchantRow[] {
   const byStat = new Map(weights.filter((w) => !(w.insignificant ?? false)).map((w) => [w.stat, w.weight]));
-  const iconUses = new Map<string, number>();
-  for (const record of records) iconUses.set(record.icon, (iconUses.get(record.icon) ?? 0) + 1);
   const best = new Map<string, { score: number; record: EnchantRecord }>();
   for (const record of records) {
     if (record.phase > LATEST_PHASE || record.item_types.includes('kit')) continue;
@@ -174,7 +171,9 @@ export function pickEnchants(
       slot,
       slotLabel: slot === 'main_hand' ? 'Weapon' : slotDisplayLabel(slot, context.classSlug),
       name: record.name,
-      icon: (iconUses.get(record.icon) ?? 0) >= STAND_IN_ICON_USES ? undefined : record.icon,
+      // The enchant's own spell icon (the client gives most enchanting spells the same one, and
+      // that is what the game shows): MUST 6, the same icon rows as the consumables.
+      icon: isRealIcon(record.icon) && iconExists(record.icon) ? record.icon : undefined,
       gives: enchantGives(record.stats),
     };
   });
@@ -352,13 +351,12 @@ export function loadGearExtras(
   const band: BisBand | undefined = bandEntry(file, 60, faction);
   if (band === undefined) return undefined;
   const records = readBuildJson<EnchantRecord[]>(build, 'enchants.json') ?? [];
+  const iconExists = (icon: string): boolean => existsSync(buildFile(build, 'icons', `${icon}.webp`));
   const simBuffs =
     readBuildJson<{ entries: Record<string, SimBuffEntry> }>(build, 'simbuffs.json')?.entries ?? {};
   return {
-    enchants: pickEnchants(records, band.weights, { classSlug, items }),
-    consumables: consumableRows(simRaidConsumes(spec, simBuffs), simBuffs, (icon) =>
-      existsSync(buildFile(build, 'icons', `${icon}.webp`)),
-    ),
+    enchants: pickEnchants(records, band.weights, { classSlug, items }, iconExists),
+    consumables: consumableRows(simRaidConsumes(spec, simBuffs), simBuffs, iconExists),
   };
 }
 

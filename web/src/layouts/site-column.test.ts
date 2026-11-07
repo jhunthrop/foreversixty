@@ -86,8 +86,8 @@ describe('the single site column', () => {
   });
 
   it('only Base.astro opens the column around the page slot', () => {
-    // A band component may use .page-column for its own inner content (ArtPanel does, inside
-    // .full-bleed); what only the layout may do is wrap the page's slot.
+    // A band component may use .page-column for its own inner content (inside a .full-bleed
+    // band); what only the layout may do is wrap the page's slot.
     const wrappers = scannedFiles()
       .filter((file) => /^(pages|layouts)\//.test(relative(file)))
       .filter((file) => /<div class="page-column">\s*<slot\s*\/>/.test(readFileSync(file, 'utf8')));

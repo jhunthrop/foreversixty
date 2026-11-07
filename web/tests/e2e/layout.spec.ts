@@ -53,7 +53,7 @@ test.describe('one centred column at 2000px', () => {
     { path: '/bis/hunter/marksmanship', content: '[data-testid="bis-plate"]' },
     { path: '/bis', content: 'main' },
     { path: '/tiers/tank', content: '[data-testid="tier-faction-panel-alliance"]' },
-    { path: '/guides', content: '.guides-index-body' },
+    { path: '/guides', content: '[data-testid="guides-class-picker"]' },
     { path: '/changelog', content: 'main' },
   ];
 

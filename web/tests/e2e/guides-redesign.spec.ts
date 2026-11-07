@@ -1,11 +1,12 @@
 // web/tests/e2e/guides-redesign.spec.ts
-// Acceptance sweep for the guides rebuild (design/specs/2026-10-04-guides.md, §11): the
-// nine-crest index, the class landing's spec cards (spec 2026-11-02), the spec
-// guide's 3-up action rail, and the Leveling band strip's own planner links -- at desktop
-// and phone, with the site's own "nothing scrolls sideways" sweep every page-level spec
-// runs (layout.spec.ts's own convention).
+// Acceptance sweep for the guides in the flat system (design/specs/2026-11-08-guides.md §4): the
+// /guides class picker (nine crests, 28 spec rows), the class landing's one Plate of spec rows
+// with the full card line, the spec guide's At a glance plate, and the Leveling lane's level
+// slider and planner link -- at desktop and phone, with the site's own "nothing scrolls
+// sideways" sweep every page-level spec runs (layout.spec.ts's own convention).
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
+import type { Page } from '@playwright/test';
 import { cardLineFor } from '../../src/lib/guides/class-landing';
 import { SPEC_BY_KEY } from '../../src/lib/sim/specs';
 import { expect, test } from './support/test';
@@ -23,46 +24,78 @@ function cardLine(classSlug: string, specSlug: string): string {
   return cardLineFor(body, path);
 }
 
+function iconOfSrc(src: string | null): string | undefined {
+  return src?.match(/\/icons\/([a-z0-9_]+)\.webp$/)?.[1];
+}
+
+const specRows = (page: Page) => page.locator('[data-testid^="guide-spec-row-"]');
+const glanceRotationRows = (page: Page) =>
+  page.getByTestId('guide-glance-rotation').locator('.guide-glance-rows > .ui-row');
+const levelingTree = (page: Page) => page.getByTestId('guide-leveling-tree');
+
+/** Scrolls the leveling lane into view and waits for its island (client:visible) to hydrate. */
+async function hydratedLevelingTree(page: Page): Promise<void> {
+  await levelingTree(page).scrollIntoViewIfNeeded();
+  await expect(page.locator('astro-island:has([data-testid="guide-leveling-tree"])')).not.toHaveAttribute(
+    'ssr',
+    /.*/,
+  );
+}
+
+async function noSidewaysScroll(page: Page): Promise<void> {
+  const { scrollWidth, clientWidth } = await page.evaluate(() => ({
+    scrollWidth: document.documentElement.scrollWidth,
+    clientWidth: document.documentElement.clientWidth,
+  }));
+  expect(scrollWidth).toBeLessThanOrEqual(clientWidth);
+}
+
 test.describe('desktop', () => {
   test.use({ viewport: DESKTOP });
 
   test('/guides renders nine class crests and 28 spec links', async ({ page }) => {
     await page.goto('/guides');
-    const crests = page.locator('[data-testid^="class-crest-"]');
-    await expect(crests).toHaveCount(9);
-    const specLinks = page.locator('[data-testid="guides-class-picker"] a[href^="/guides/"]');
-    await expect(specLinks).toHaveCount(28);
+    const picker = page.getByTestId('guides-class-picker');
+    await expect(picker.locator('[data-testid^="class-crest-"]')).toHaveCount(9);
+    await expect(picker.locator('a[data-testid^="guides-class-link-"]')).toHaveCount(9);
+    await expect(picker.locator('a[data-testid^="guide-spec-row-"][href^="/guides/"]')).toHaveCount(28);
   });
 
-  test('/guides/warrior leads with three spec cards that are each the link to their guide, with no figure', async ({
+  test('/guides/warrior leads with three spec rows that are each the link to their guide, with no figure', async ({
     page,
   }) => {
     await page.goto('/guides/warrior');
     await expect(page.locator('h1')).toHaveText('Warrior');
     await expect(page.getByRole('tablist', { name: 'Spec' })).toHaveCount(0);
-    const cards = page.locator('[data-testid="guide-class-spec-cards"] > a');
-    await expect(cards).toHaveCount(3);
-    await expect(cards.nth(1)).toHaveAttribute('href', '/guides/warrior/fury');
-    await expect(cards.nth(1)).toHaveAccessibleName('Read the Fury Warrior guide');
-    await expect(page.locator('[data-testid="guide-class-spec-cards"]')).not.toContainText(
-      /DPS at 60|per second/,
-    );
+    const rows = page.getByTestId('guide-class-spec-cards').locator('a[data-testid^="guide-spec-row-"]');
+    await expect(rows).toHaveCount(3);
+    const fury = rows.nth(1);
+    await expect(fury).toHaveAttribute('href', '/guides/warrior/fury');
+    // The row's own name says it (the spec retires the card's "Read the ... guide" aria label):
+    // the spec name, its line and "Read the guide ›", all one link and never a nested anchor.
+    await expect(fury).toContainText('Fury');
+    await expect(fury).toContainText('Read the guide ›');
+    await expect(fury.locator('a')).toHaveCount(0);
+    await expect(page.getByTestId('guide-class-spec-cards')).not.toContainText(/DPS at 60|per second/);
   });
 
-  test('every spec card says how the spec plays, from its guide’s Overview', async ({ page }) => {
+  test('every spec row says how the spec plays, from its guide’s Overview', async ({ page }) => {
     await page.goto('/guides/warrior');
     for (const specSlug of ['arms', 'fury', 'protection']) {
-      await expect(
-        page.getByTestId(`guide-spec-card-${specSlug}`).getByTestId('guide-spec-card-line'),
-      ).toHaveText(cardLine('warrior', specSlug));
+      await expect(page.getByTestId(`guide-spec-row-warrior/${specSlug}`)).toContainText(
+        cardLine('warrior', specSlug),
+      );
     }
   });
 
-  test('the class facts follow the cards under their own headings, with no sourcing caveat', async ({
+  test('the class facts follow the spec rows under their own headings, with no sourcing caveat', async ({
     page,
   }) => {
     await page.goto('/guides/warrior');
-    await expect(page.locator('.class-landing-body h2')).toHaveText(['What changed from 1.12', 'Races']);
+    await expect(page.getByTestId('class-landing-what-changed-from-1-12').locator('h2')).toHaveText(
+      'What changed from 1.12',
+    );
+    await expect(page.getByTestId('class-landing-races').locator('h2')).toHaveText('Races');
     // A floor, not a pin: the guide rounds add changes to the list as they confirm them.
     const changes = page.getByTestId('class-landing-what-changed-from-1-12').locator('li');
     await expect(changes.first()).toBeVisible();
@@ -72,10 +105,8 @@ test.describe('desktop', () => {
 
   test('druid gives Feral and Feral Bear their own form icons from the spec-icon map', async ({ page }) => {
     await page.goto('/guides/druid');
-    // data-icon names the spec's icon whether its art is in this build or not (the fixture
-    // carries a subset, so a card can draw the neutral square instead of the image).
-    const iconOf = (spec: string) =>
-      page.getByTestId(`guide-spec-card-${spec}`).locator('.spec-card-icon').getAttribute('data-icon');
+    const iconOf = async (spec: string) =>
+      iconOfSrc(await page.getByTestId(`guide-spec-row-druid/${spec}`).locator('img').getAttribute('src'));
     const cat = await iconOf('feral');
     const bear = await iconOf('feral-bear');
     expect(cat).toBe(SPEC_BY_KEY['druid-feral'].icon);
@@ -83,65 +114,68 @@ test.describe('desktop', () => {
     expect(cat).not.toBe(bear);
   });
 
-  test('/guides/warrior/fury rail shows four rotation lines with icons, Load/Sim buttons and stat priority lines', async ({
+  test('/guides/warrior/fury At a glance shows four rotation lines with icons, Load/Sim and the ranked stats', async ({
     page,
   }) => {
     await page.goto('/guides/warrior/fury');
-    const rotationLines = page.locator('[data-testid^="guide-rail-rotation-line-"]');
-    await expect(rotationLines).toHaveCount(4);
-    for (const line of await rotationLines.all()) {
+    await expect(glanceRotationRows(page)).toHaveCount(4);
+    for (const line of await glanceRotationRows(page).all()) {
       await expect(line.locator('img')).toHaveCount(1);
     }
-    await expect(page.getByTestId('guide-rail-load-build')).toBeVisible();
-    await expect(page.getByTestId('guide-rail-sim-build')).toBeVisible();
-    const statRows = page.locator(
-      '[data-testid="guide-rail-stat-priority"] >> text=/Attack power|Strength|Agility|Critical strike|Hit|Melee haste/',
-    );
-    expect(await statRows.count()).toBeGreaterThanOrEqual(6);
+    await expect(page.getByTestId('guide-load-build')).toBeVisible();
+    await expect(page.getByTestId('guide-sim-build')).toBeVisible();
+    const stats = page
+      .getByTestId('guide-glance-stats')
+      .getByRole('row')
+      .filter({ hasText: /Attack power|Strength|Agility|Critical strike|Hit|Haste/ });
+    expect(await stats.count()).toBeGreaterThanOrEqual(4);
   });
 
-  test('the rail and the full-tree build buttons carry distinct accessible names', async ({ page }) => {
+  // The rail's summary Load and the full tree's Load were two buttons that needed distinct
+  // names; the spec retires the rail (G1, "one Load per page now"): the plate's Load this build
+  // is the page's one primary, and each build row in Talents and builds carries a plain link.
+  test('the page has one Load this build button, the plate’s primary', async ({ page }) => {
     await page.goto('/guides/warrior/fury');
-    await expect(page.getByTestId('guide-rail-load-build')).toHaveAccessibleName(
-      'Load this build in the planner (summary)',
-    );
+    await expect(page.getByTestId('guide-load-build')).toHaveCount(1);
     await expect(page.getByTestId('guide-load-build')).toHaveAccessibleName('Load this build');
+    await expect(page.getByTestId('guide-glance-build').getByTestId('guide-load-build')).toHaveCount(1);
   });
 
-  test('/guides/warrior/protection shows the Build, Rotation and Stat priority rail cards and runs 3-up', async ({
+  test('/guides/warrior/protection shows the Build, Rotation and Stat priority columns and runs 3-up', async ({
     page,
   }) => {
-    // The rail renders a card only when it has real data (a spec with nothing to show has it
-    // omitted and the rail narrows to 2-up or 1-up). Protection now publishes a ranked
-    // tank BiS file and a rotation, so it carries all three.
+    // The plate draws a column only when it has real data (a spec with nothing to show has it
+    // omitted and the plate narrows to 2-up or 1-up). Protection publishes a ranked tank BiS
+    // file and a rotation, so it carries all three.
     await page.goto('/guides/warrior/protection');
-    await expect(page.getByTestId('guide-rail-build')).toBeVisible();
-    await expect(page.getByTestId('guide-rail-rotation')).toBeVisible();
-    await expect(page.getByTestId('guide-rail-stat-priority')).toBeVisible();
-    const rail = page.getByTestId('guide-action-rail');
-    await expect(rail).toHaveCSS('grid-template-columns', /^[\d.]+px [\d.]+px [\d.]+px$/);
+    await expect(page.getByTestId('guide-glance-build')).toBeVisible();
+    await expect(page.getByTestId('guide-glance-rotation')).toBeVisible();
+    await expect(page.getByTestId('guide-glance-stats')).toBeVisible();
+    await expect(page.getByTestId('guide-glance').locator('.ui-pcols')).toHaveCSS(
+      'grid-template-columns',
+      /^[\d.]+px [\d.]+px [\d.]+px$/,
+    );
   });
 
   test('the leveling tree walks 10 to 60 from the keyboard and the buttons', async ({ page }) => {
     await page.goto('/guides/warrior/fury');
-    const tree = page.getByTestId('guide-leveling-tree');
-    const slider = tree.getByTestId('guide-leveling-slider');
-    // The tree hydrates when it scrolls into view.
-    await tree.scrollIntoViewIfNeeded();
+    await hydratedLevelingTree(page);
+    const tree = levelingTree(page);
+    const slider = tree.getByTestId('guide-leveling-slider-range');
     await expect(slider).toBeEnabled();
-    await expect(tree.getByTestId('guide-tree-columns')).toBeVisible();
+    await expect(tree.getByTestId('guide-leveling-trees')).toBeVisible();
     const caption = tree.getByTestId('guide-leveling-caption');
     await expect(caption).toContainText('51 points spent, all placed');
-    await expect(tree.getByTestId('guide-leveling-next')).toBeDisabled();
+    await expect(tree.getByTestId('guide-leveling-slider-next')).toBeDisabled();
     // Home is 10, PageUp ten levels on, End is 60.
     await slider.focus();
     await page.keyboard.press('Home');
     await expect(caption).toContainText(/Level 10: .+, rank 1/);
     await expect(caption).toContainText('1 point spent, 50 to go');
-    await expect(tree.getByTestId('guide-leveling-previous')).toBeDisabled();
+    await expect(tree.getByTestId('guide-leveling-slider-previous')).toBeDisabled();
     await page.keyboard.press('PageUp');
     await expect(caption).toContainText('Level 20:');
-    await tree.getByTestId('guide-leveling-next').click();
+    await tree.getByTestId('guide-leveling-slider-next').click();
     await expect(caption).toContainText('12 points spent, 39 to go');
     await expect(tree.getByTestId('guide-leveling-load')).toHaveAccessibleName(
       'Load the level 21 build in the planner',
@@ -155,49 +189,45 @@ test.describe('desktop', () => {
     page,
   }) => {
     await page.goto('/guides/warrior/fury');
-    const tree = page.getByTestId('guide-leveling-tree');
-    // The tree hydrates when it scrolls into view.
-    await tree.scrollIntoViewIfNeeded();
-    await expect(tree.getByTestId('guide-leveling-slider')).toBeEnabled();
+    await hydratedLevelingTree(page);
+    const tree = levelingTree(page);
     const at60 = await tree.getByTestId('guide-leveling-load').getAttribute('href');
     expect(at60).toMatch(/^\/planner\?spec=warrior-fury&talents=/);
-    await tree.getByTestId('guide-leveling-previous').click();
+    await tree.getByTestId('guide-leveling-slider-previous').click();
+    await expect(tree.getByTestId('guide-leveling-load')).not.toHaveAttribute('href', at60 ?? '');
     const at59 = await tree.getByTestId('guide-leveling-load').getAttribute('href');
     expect(at59).toMatch(/^\/planner\?spec=warrior-fury&talents=/);
-    expect(at59).not.toBe(at60);
   });
 });
 
 test.describe('phone', () => {
   test.use({ viewport: PHONE });
 
-  test('/guides/warrior/fury rail stacks to one column with every line intact', async ({ page }) => {
+  test('/guides/warrior/fury At a glance stacks to one column with every line intact', async ({ page }) => {
     await page.goto('/guides/warrior/fury');
-    const rotationLines = page.locator('[data-testid^="guide-rail-rotation-line-"]');
-    await expect(rotationLines).toHaveCount(4);
-    const scrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
-    const clientWidth = await page.evaluate(() => document.documentElement.clientWidth);
-    expect(scrollWidth).toBeLessThanOrEqual(clientWidth);
+    await expect(glanceRotationRows(page)).toHaveCount(4);
+    await expect(page.getByTestId('guide-glance').locator('.ui-pcols')).toHaveCSS(
+      'grid-template-columns',
+      /^[\d.]+px$/,
+    );
+    await noSidewaysScroll(page);
   });
 
   test('the leveling tree keeps its control and link on phone, with no sideways scroll', async ({ page }) => {
     await page.goto('/guides/warrior/fury');
-    const tree = page.getByTestId('guide-leveling-tree');
-    // The tree hydrates when it scrolls into view.
-    await tree.scrollIntoViewIfNeeded();
-    await expect(tree.getByTestId('guide-leveling-slider')).toBeEnabled();
-    await expect(tree.getByTestId('guide-leveling-previous')).toBeVisible();
-    await expect(tree.getByTestId('guide-leveling-next')).toBeVisible();
+    await hydratedLevelingTree(page);
+    const tree = levelingTree(page);
+    await expect(tree.getByTestId('guide-leveling-slider-range')).toBeEnabled();
+    await expect(tree.getByTestId('guide-leveling-slider-previous')).toBeVisible();
+    await expect(tree.getByTestId('guide-leveling-slider-next')).toBeVisible();
     await expect(tree.getByTestId('guide-leveling-load')).toBeVisible();
-    await expect(tree.getByTestId('guide-tree-columns')).toBeVisible();
-    const scrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
-    const clientWidth = await page.evaluate(() => document.documentElement.clientWidth);
-    expect(scrollWidth).toBeLessThanOrEqual(clientWidth);
+    await expect(tree.getByTestId('guide-leveling-trees')).toBeVisible();
+    await noSidewaysScroll(page);
   });
 });
 
 const CLASS_SLUGS = ['druid', 'hunter', 'mage', 'paladin', 'priest', 'rogue', 'shaman', 'warlock', 'warrior'];
-/** The least room between the spec cards and the class notes below them. */
+/** The least room between the spec rows' plate and the class notes below them. */
 const MIN_GAP_BELOW_CARDS = 16;
 
 test.describe('class landings', () => {
@@ -209,24 +239,22 @@ test.describe('class landings', () => {
       test.use({ viewport });
 
       for (const classSlug of CLASS_SLUGS) {
-        test(`/guides/${classSlug} keeps every spec tab on screen and the notes clear of the cards`, async ({
+        test(`/guides/${classSlug} keeps every spec row on screen and the notes clear of the rows`, async ({
           page,
         }) => {
           await page.goto(`/guides/${classSlug}`);
           const clientWidth = await page.evaluate(() => document.documentElement.clientWidth);
-          for (const tab of await page.locator('[data-testid^="bis-spec-tab-"]').all()) {
-            const box = await tab.boundingBox();
+          const rows = await specRows(page).all();
+          expect(rows.length).toBeGreaterThanOrEqual(3);
+          for (const row of rows) {
+            const box = await row.boundingBox();
             expect(box).not.toBeNull();
             expect(box!.x).toBeGreaterThanOrEqual(0);
             expect(box!.x + box!.width).toBeLessThanOrEqual(clientWidth);
           }
-          const gap = await page.getByTestId('guide-class-spec-cards').evaluate((cards) => {
-            const next = cards.nextElementSibling;
-            return next === null
-              ? null
-              : next.getBoundingClientRect().top - cards.getBoundingClientRect().bottom;
-          });
-          if (gap !== null) expect(gap).toBeGreaterThanOrEqual(MIN_GAP_BELOW_CARDS);
+          const plate = await page.getByTestId('guide-class-spec-cards').boundingBox();
+          const notes = await page.locator('[data-testid^="class-landing-"]').first().boundingBox();
+          expect(notes!.y - (plate!.y + plate!.height)).toBeGreaterThanOrEqual(MIN_GAP_BELOW_CARDS);
         });
       }
     });
@@ -235,11 +263,11 @@ test.describe('class landings', () => {
   test.describe('1440 row', () => {
     test.use({ viewport: DESKTOP });
 
-    test('/guides/druid sets its four spec cards in one row', async ({ page }) => {
+    test('/guides/druid sets its four spec rows in one row', async ({ page }) => {
       await page.goto('/guides/druid');
-      const tops = await page
-        .locator('[data-testid="guide-class-spec-cards"] > a')
-        .evaluateAll((cards) => cards.map((card) => Math.round(card.getBoundingClientRect().top)));
+      const tops = await specRows(page).evaluateAll((rows) =>
+        rows.map((row) => Math.round(row.getBoundingClientRect().top)),
+      );
       expect(tops).toHaveLength(4);
       expect(new Set(tops).size).toBe(1);
     });
@@ -257,11 +285,7 @@ test.describe('no horizontal overflow', () => {
       for (const path of ['/guides', '/guides/warrior', '/guides/druid', '/guides/warrior/fury']) {
         test(`${path} fits the viewport without scrolling sideways`, async ({ page }) => {
           await page.goto(path);
-          const { scrollWidth, clientWidth } = await page.evaluate(() => ({
-            scrollWidth: document.documentElement.scrollWidth,
-            clientWidth: document.documentElement.clientWidth,
-          }));
-          expect(scrollWidth).toBeLessThanOrEqual(clientWidth);
+          await noSidewaysScroll(page);
         });
       }
     });

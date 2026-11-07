@@ -1,22 +1,32 @@
 ---
 // web/src/pages/guides/index.astro
-// Rebuild (spec 2026-10-04, §4.A): the nine-crest class picker, replacing the old flat
-// `ClassTile` + text-link-row list (spec §3). Not built on `Content.astro` -- this index
-// has no sources/confidence of its own (it aggregates, it does not assert), the same reason
-// the pre-rebuild page used `Base.astro` directly; that stays unchanged here.
+// /guides in the flat system (design/specs/2026-11-08-guides.md §4.1): the PageHeader (Guides,
+// the newest Updated stamp over every guide, the index line, the signed-in answer), then the one
+// Plate: every class as a group, its crest and name a link to its landing, its specs in tree
+// order as slim link rows with a Healer, Tank or Melee Tag; the header character's spec is
+// marked after load.
 import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
-import GuidesClassPicker, { type ClassCardEntry } from '../../components/guides/GuidesClassPicker.astro';
-import UpdatedStamp from '../../components/UpdatedStamp.astro';
-import PageHead from '../../components/ui/PageHead.astro';
+import ClassCrest from '../../components/ClassCrest.astro';
+import GuideAnswer from '../../components/guides/GuideAnswer.astro';
+import GuideSpecRow from '../../components/guides/GuideSpecRow.astro';
+import Page from '../../components/ui/Page.svelte';
+import PageHeader from '../../components/ui/PageHeader.svelte';
+import Plate from '../../components/ui/Plate.svelte';
+import Row from '../../components/ui/Row.svelte';
+import RowGrid from '../../components/ui/RowGrid.svelte';
 import classes from '../../data/classes.json';
-import { guidesCopy } from '../../lib/guides/copy';
+import activeBuild from '../../data/active-build.json';
 import { readSpecCatalog } from '../../lib/bis/load';
 import { latest } from '../../lib/dates';
-import activeBuild from '../../data/active-build.json';
+import type { ClassSlug } from '../../lib/ui/primitives';
+import { guidesCopy } from '../../lib/guides/copy';
 import { rankedBisFile } from '../../lib/guides/class-dps';
-import { pageUpdatedAt } from '../../lib/guides/guide-header';
+import { dayMonth, pageUpdatedAt } from '../../lib/guides/guide-header';
+import { specRowTag } from '../../lib/guides/glance';
+import { dataUrl } from '../../lib/planner/load';
 
+const build = activeBuild.build;
 const guides = await getCollection('guides');
 const catalog = readSpecCatalog();
 // The newest date any guide page shows: its own `updated`, or the day its ranked BiS file was
@@ -26,153 +36,78 @@ const updated = latest(
     const spec = g.data.spec === undefined ? undefined : `${g.data.classSlug}-${g.data.spec}`;
     return pageUpdatedAt(
       g.data.updated,
-      spec === undefined ? undefined : rankedBisFile(activeBuild.build, spec)?.generated_at,
+      spec === undefined ? undefined : rankedBisFile(build, spec)?.generated_at,
     );
   }),
 );
-
-// Tree order (`tree_index` ascending), the same order `SpecTabs` already uses elsewhere on
-// the site (spec §4.A/§4.B's shared "reuse the token" rule) -- not the old page's own
-// alphabetical-by-title sort.
-const entries: ClassCardEntry[] = classes.map((c) => ({
+const groups = classes.map((c) => ({
   slug: c.slug,
+  name: c.name,
   specs: catalog
     .filter((s) => s.class_slug === c.slug)
     .sort((a, b) => a.tree_index - b.tree_index)
-    .map((s) => ({
-      name: s.name,
-      href: `/guides/${c.slug}/${s.spec_slug}`,
-      icon: s.icon,
-      role: (['dps', 'healer', 'tank'].includes(s.role) ? s.role : 'dps') as 'dps' | 'healer' | 'tank',
-    })),
+    .map((s) => {
+      const role = (['dps', 'healer', 'tank'].includes(s.role) ? s.role : 'dps') as 'dps' | 'healer' | 'tank';
+      const tag = specRowTag(c.slug, s.spec, role);
+      return {
+        key: `${c.slug}/${s.spec_slug}`,
+        name: s.name,
+        href: `/guides/${c.slug}/${s.spec_slug}`,
+        icon: dataUrl(build, `icons/${s.icon}.webp`),
+        tag: tag === undefined ? undefined : guidesCopy.specRowTag[tag],
+      };
+    }),
 }));
 ---
 
-<Base
-  title="Guides"
-  description="Class and spec guides for World of Warcraft: Forever: talents, rotation, stat weights and best in slot for every spec."
-  path="/guides"
->
-  <main
-    id="main"
-    tabindex="-1"
-    class="flex flex-col gap-[22px] px-[18px] pt-4 pb-10 md:gap-8 md:px-0 md:pt-7"
-  >
-    <PageHead eyebrow={guidesCopy.eyebrow} title="Guides" job={guidesCopy.indexLine}>
-      <Fragment slot="meta">
-        <UpdatedStamp date={updated} />
-      </Fragment>
-      <div slot="below" id="guides-signed-in-callout" data-testid="guides-signed-in-callout-root">
-        <div
-          class="guides-callout-skeleton"
-          role="status"
-          aria-busy="true"
-          data-testid="guides-signed-in-callout-skeleton"
-        >
-          <span class="sr-only">Loading</span>
-          <span class="skeleton-block guides-callout-skeleton-crest" aria-hidden="true"></span>
-          <span class="skeleton-block guides-callout-skeleton-text" aria-hidden="true"></span>
-        </div>
-      </div>
-    </PageHead>
-    <div class="guides-index-body">
-      <GuidesClassPicker entries={entries} build={activeBuild.build} />
-    </div>
+<Base title={guidesCopy.indexTitle} description={guidesCopy.indexDescription} path="/guides" wide>
+  <main id="main" tabindex="-1" class="guides-index" data-testid="guides-index">
+    <Page layout="ledger">
+      <PageHeader slot="header" title={guidesCopy.indexTitle} tone="strong" lead={guidesCopy.indexLine}>
+        <span slot="meta">Updated {dayMonth(updated)}</span>
+        <GuideAnswer slot="answer" page={{}} />
+      </PageHeader>
+      <Plate label={guidesCopy.indexTitle} testid="guides-class-picker">
+        <RowGrid cols={3}>
+          {groups.map((group) => (
+            <div class="guides-class" data-testid={`guides-class-${group.slug}`}>
+              <Row
+                title={group.name}
+                titleTone={{ classSlug: group.slug as ClassSlug }}
+                href={`/guides/${group.slug}`}
+                testid={`guides-class-link-${group.slug}`}
+              >
+                <ClassCrest slot="lead" slug={group.slug} size={40} />
+              </Row>
+              <div class="guides-class-specs">
+                {group.specs.map((spec) => (
+                  <GuideSpecRow
+                    specKey={spec.key}
+                    name={spec.name}
+                    href={spec.href}
+                    icon={spec.icon}
+                    iconSize={28}
+                    tag={spec.tag}
+                  />
+                ))}
+              </div>
+            </div>
+          ))}
+        </RowGrid>
+      </Plate>
+    </Page>
   </main>
 </Base>
 
-<script>
-  // The index's own signed-in callout (spec §4.A): no Svelte island (the rebuild's own
-  // budget keeps every guide page static beyond the one existing `GuideBuildTree` island) --
-  // a plain module script swaps this skeleton for the real callout, or hides the slot
-  // signed-out / on a session with no usable character (never blocks the grid beside it,
-  // which needs nothing from this fetch). It follows the header character selector.
-  //
-  // The mount (and the account read and current-character modules behind it) is imported after
-  // the page has loaded and gone idle, not statically: the callout is the one thing here that
-  // needs the account, and a static import put that whole module chain, one round trip per
-  // level, ahead of first paint on a slow connection (main's Lighthouse run, 22 Oct: LCP
-  // 2065 ms against a 1700 ms budget, with the skeleton above already the reserved box).
-  const root = document.getElementById('guides-signed-in-callout');
-  if (root !== null) {
-    const mount = (): void => {
-      void import('../../lib/guides/signed-in-callout-mount').then((m) => m.mountSignedInCallout(root));
-    };
-    // A short beat after load, then idle: the skeleton holds the callout's box meanwhile, and
-    // the request for the account waits until the heading and its note have long been painted.
-    const afterLoad = (): void => {
-      window.setTimeout(() => {
-        if ('requestIdleCallback' in window) window.requestIdleCallback(mount, { timeout: 1500 });
-        else mount();
-      }, 400);
-    };
-    if (document.readyState === 'complete') afterLoad();
-    else window.addEventListener('load', afterLoad, { once: true });
-  }
-</script>
-
 <style>
-  .guides-index-body {
+  .guides-class {
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    min-width: 0;
+    padding-bottom: 20px;
   }
-
-  /* The callout's slot exists only for a visitor Base.astro's pre-paint script hints as signed
-     in (the readable half of the session cookie, <html data-session>). Without the hint the
-     visitor can only resolve to "no callout", so the 72px skeleton would paint and then
-     collapse, pulling the whole class grid up by the slot's height and gap: the 0.083
-     layout shift Lighthouse measured on this page. A visitor whose hint is wrong (a session
-     that has since ended) still collapses it once, the same trade-off global.css's
-     `.session-reserve` rule documents for /account. */
-  :global(html:not([data-session='1'])) #guides-signed-in-callout {
-    display: none;
-  }
-
-  /* Signed-in callout: skeleton and ready state share the same box height (44px line +
-     14px/18px padding = 72px) so the swap never shifts layout (spec §8's own rule). */
-  .guides-callout-skeleton {
+  .guides-class-specs {
     display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 14px 18px;
-    min-height: 72px;
-    box-sizing: border-box;
-  }
-  .guides-callout-skeleton-crest {
-    width: 36px;
-    height: 36px;
-    border-radius: 999px;
-    flex-shrink: 0;
-  }
-  .guides-callout-skeleton-text {
-    width: 220px;
-    height: 16px;
-  }
-  :global(.guides-callout) {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 14px 18px;
-    min-height: 72px;
-    box-sizing: border-box;
-    border: 1px solid var(--color-line-card);
-    border-radius: var(--radius-panel);
-    background: var(--surface-card);
-    box-shadow:
-      inset 0 1px 0 var(--card-highlight),
-      var(--shadow-card);
-  }
-  :global(.guides-callout-crest) {
-    flex-shrink: 0;
-    border-radius: 999px;
-    box-shadow: 0 0 0 2px var(--c);
-    background: var(--color-raised);
-    object-fit: cover;
-  }
-  :global(.guides-callout-text) {
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--color-gold);
+    flex-direction: column;
   }
 </style>

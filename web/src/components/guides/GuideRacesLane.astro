@@ -1,0 +1,127 @@
+---
+// web/src/components/guides/GuideRacesLane.astro
+// The Races lane (guides spec 2026-11-08 §4.3, rulings 0A): the Alliance races, then the Horde,
+// the recommended ones first and tagged, each with the racials that matter for this spec (icon,
+// name opening the racial tooltip, what it does); a line for a recommended race the prose does
+// not name.
+import LaneBlock from '../ui/LaneBlock.svelte';
+import Row from '../ui/Row.svelte';
+import Tag from '../ui/Tag.svelte';
+import { dataUrl } from '../../lib/planner/load';
+import { guidesCopy } from '../../lib/guides/copy';
+import { racesByFaction } from '../../lib/guides/glance';
+import { racialKeyFor } from '../../lib/guides/guide-tips';
+import type { GuideRaceRow } from '../../lib/guides/race-table';
+import type { GuideTipBundle } from '../../lib/tooltips/game-tip';
+
+interface Props {
+  build: string;
+  rows: readonly GuideRaceRow[];
+  lines: readonly string[];
+  tips: GuideTipBundle;
+}
+const { build, rows, lines, tips } = Astro.props;
+const groups = racesByFaction(rows);
+---
+
+<LaneBlock label={guidesCopy.racialsColumn} testid="guide-race-table">
+  {groups.map((group) => (
+    <div class="guide-race-group" data-faction={group.faction}>
+      <h4 class="text-label tracking-label text-muted guide-race-sub font-bold uppercase">
+        {group.faction === 'alliance' ? guidesCopy.alliancePicksHeading : guidesCopy.hordePicksHeading}
+      </h4>
+      <div class="guide-race-rows">
+        {group.rows.map((race) => (
+          <Row
+            title={race.name}
+            titleTone={{ faction: group.faction }}
+            open
+            wrapTrail={race.recommended}
+            testid={`guide-race-${race.slug}`}
+          >
+            <span slot="trail" class="guide-race-tag">
+              {race.recommended && <Tag>{guidesCopy.recommendedTag}</Tag>}
+            </span>
+            <Fragment slot="foot">
+              {race.racials.map((racial) => (
+                <span class="guide-racial">
+                  {racial.icon !== undefined ? (
+                    <img
+                      src={dataUrl(build, `icons/${racial.icon}.webp`)}
+                      alt=""
+                      width="20"
+                      height="20"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  ) : (
+                    <span class="guide-racial-gap" aria-hidden="true" />
+                  )}
+                  <span>
+                    <b
+                      class:list={[racialKeyFor(tips, racial.name) !== undefined && 'gtip guide-racial-tip']}
+                      tabindex={racialKeyFor(tips, racial.name) !== undefined ? 0 : undefined}
+                      data-game-tip={racialKeyFor(tips, racial.name)}
+                    >
+                      {racial.name}
+                    </b>{' '}
+                    {racial.effect}
+                  </span>
+                </span>
+              ))}
+            </Fragment>
+          </Row>
+        ))}
+      </div>
+    </div>
+  ))}
+  {lines.map((line) => (
+    <p class="text-small text-muted m-0">{line}</p>
+  ))}
+</LaneBlock>
+
+<style>
+  /* The faction label and its rows are the lane block's own items (8 px apart), as the
+     Consumables label is not: a faction is a group of the lane, not a line of a list. */
+  .guide-race-group {
+    display: contents;
+  }
+  .guide-race-sub {
+    margin: 0;
+    padding: 12px 0 2px;
+  }
+  /* The tag sits on the name's 20 px line: the row is as tall as its name, as every row is. */
+  .guide-race-tag {
+    display: flex;
+    align-items: center;
+    height: 20px;
+  }
+  .guide-race-rows {
+    display: flex;
+    flex-direction: column;
+  }
+  .guide-racial {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    width: 100%;
+    font-size: 13px;
+    line-height: 18px;
+    color: var(--color-muted);
+  }
+  .guide-racial img,
+  .guide-racial-gap {
+    flex: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 3px;
+  }
+  .guide-racial b {
+    color: var(--color-text);
+    font-weight: 600;
+  }
+  .guide-racial-tip {
+    position: relative;
+    cursor: pointer;
+  }
+</style>

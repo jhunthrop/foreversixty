@@ -9,10 +9,8 @@ import type { Source } from '../lib/sources';
 
 interface Props {
   sources: Source[];
-  /** Leave the "This site" pill off a source this site maintains (the spec guides). */
-  hideSitePill?: boolean;
 }
-const { sources, hideSitePill = false } = Astro.props;
+const { sources } = Astro.props;
 const unique = [...new Map(sources.map((s) => [s.url, s])).values()];
 ---
 
@@ -21,7 +19,7 @@ const unique = [...new Map(sources.map((s) => [s.url, s])).values()];
   <ul class="flex flex-col gap-2 list-none p-0 m-0">
     {unique.map((s) => (
       <li class="flex items-start gap-3 text-[14px]">
-        {!(hideSitePill && s.kind === 'site') && <SourcePill kind={s.kind} />}
+        <SourcePill kind={s.kind} />
         <a href={s.url} rel="noopener" class="min-w-0 break-words">
           {s.label}
         </a>

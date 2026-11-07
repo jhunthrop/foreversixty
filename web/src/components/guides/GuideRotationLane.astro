@@ -1,0 +1,69 @@
+---
+// web/src/components/guides/GuideRotationLane.astro
+// The Rotation and priority lane (guides spec 2026-11-08 §4.3): "For the raid build." and the
+// raid-only legend when they apply, then Opener and Priority (numbered) and Cooldowns as slim
+// spell rows. The lists are the guide's own (guideRotation), every line at its full clause.
+import LaneBlock from '../ui/LaneBlock.svelte';
+import GuideSpellRow from './GuideSpellRow.astro';
+import { guidesCopy } from '../../lib/guides/copy';
+import type { RotationLists } from '../../lib/guides/rotation-lists';
+
+interface Props {
+  build: string;
+  lists: RotationLists;
+  forRaidBuild: boolean;
+}
+const { build, lists, forRaidBuild } = Astro.props;
+const hasRaidOnly = [...lists.opener, ...lists.priority, ...lists.cooldowns].some(
+  (item) => item.raidBuildOnly,
+);
+const blocks = [
+  { key: 'opener', label: guidesCopy.opener, items: lists.opener, numbered: true },
+  { key: 'priority', label: guidesCopy.priority, items: lists.priority, numbered: true },
+  { key: 'cooldowns', label: guidesCopy.cooldowns, items: lists.cooldowns, numbered: false },
+].filter((block) => block.items.length > 0);
+---
+
+{(forRaidBuild || hasRaidOnly) && (
+  <div class="guide-rotation-notes">
+    {forRaidBuild && (
+      <p class="text-small text-muted" data-testid="guide-rotation-build">
+        {guidesCopy.rotationForRaidBuild}
+      </p>
+    )}
+    {hasRaidOnly && (
+      <p class="text-small text-muted" data-testid="guide-raid-build-legend">
+        {guidesCopy.raidBuildLegend}
+      </p>
+    )}
+  </div>
+)}
+{blocks.map((block) => (
+  <LaneBlock label={block.label} testid={`guide-rotation-${block.key}`}>
+    <div class="guide-rotation-rows" id={block.key === 'priority' ? 'priority' : undefined}>
+      {block.items.map((item, i) => (
+        <GuideSpellRow
+          build={build}
+          item={item}
+          rank={block.numbered ? String(i + 1) : undefined}
+          testid={`guide-rotation-${block.key}-row`}
+        />
+      ))}
+    </div>
+  </LaneBlock>
+))}
+
+<style>
+  .guide-rotation-notes {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .guide-rotation-notes p {
+    margin: 0;
+  }
+  .guide-rotation-rows {
+    display: flex;
+    flex-direction: column;
+  }
+</style>

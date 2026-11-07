@@ -1,0 +1,2327 @@
+{
+ "guides-390": {
+  "height": 3156,
+  "title": {
+   "x": 18,
+   "y": 91,
+   "w": 354,
+   "h": 34
+  },
+  "titleFont": "Barlow",
+  "rail": null,
+  "toc": {
+   "x": 0,
+   "y": 0,
+   "w": 0,
+   "h": 0
+  },
+  "article": null,
+  "cards": null,
+  "picker": null,
+  "h2": [],
+  "framed": 9,
+  "imgs": 37,
+  "sectionsInFold": 0,
+  "fonts": {
+   "Barlow 700 caps": 10,
+   "Barlow 400": 2,
+   "Barlow 800": 9,
+   "Barlow 600": 28
+  },
+  "smallTextNodes": 0,
+  "links": 28
+ },
+ "guides-1440": {
+  "height": 1478,
+  "title": {
+   "x": 96,
+   "y": 128,
+   "w": 546,
+   "h": 44
+  },
+  "titleFont": "Barlow",
+  "rail": null,
+  "toc": {
+   "x": 436,
+   "y": 0,
+   "w": 487,
+   "h": 80
+  },
+  "article": null,
+  "cards": null,
+  "picker": null,
+  "h2": [],
+  "framed": 9,
+  "imgs": 37,
+  "sectionsInFold": 0,
+  "fonts": {
+   "Barlow 700 caps": 10,
+   "Barlow 400": 2,
+   "Barlow 800": 9,
+   "Barlow 600": 28
+  },
+  "smallTextNodes": 0,
+  "links": 28
+ },
+ "guides-1920": {
+  "height": 1478,
+  "title": {
+   "x": 336,
+   "y": 128,
+   "w": 546,
+   "h": 44
+  },
+  "titleFont": "Barlow",
+  "rail": null,
+  "toc": {
+   "x": 676,
+   "y": 0,
+   "w": 487,
+   "h": 80
+  },
+  "article": null,
+  "cards": null,
+  "picker": null,
+  "h2": [],
+  "framed": 9,
+  "imgs": 37,
+  "sectionsInFold": 0,
+  "fonts": {
+   "Barlow 700 caps": 10,
+   "Barlow 400": 2,
+   "Barlow 800": 9,
+   "Barlow 600": 28
+  },
+  "smallTextNodes": 0,
+  "links": 28
+ },
+ "guides-2000": {
+  "height": 1478,
+  "title": {
+   "x": 376,
+   "y": 128,
+   "w": 546,
+   "h": 44
+  },
+  "titleFont": "Barlow",
+  "rail": null,
+  "toc": {
+   "x": 716,
+   "y": 0,
+   "w": 487,
+   "h": 80
+  },
+  "article": null,
+  "cards": null,
+  "picker": null,
+  "h2": [],
+  "framed": 9,
+  "imgs": 37,
+  "sectionsInFold": 0,
+  "fonts": {
+   "Barlow 700 caps": 10,
+   "Barlow 400": 2,
+   "Barlow 800": 9,
+   "Barlow 600": 28
+  },
+  "smallTextNodes": 0,
+  "links": 28
+ },
+ "guides-in-390": {
+  "height": 3244,
+  "title": {
+   "x": 18,
+   "y": 91,
+   "w": 354,
+   "h": 34
+  },
+  "titleFont": "Barlow",
+  "rail": null,
+  "toc": {
+   "x": 0,
+   "y": 0,
+   "w": 0,
+   "h": 0
+  },
+  "article": null,
+  "cards": null,
+  "picker": null,
+  "h2": [],
+  "framed": 10,
+  "imgs": 38,
+  "sectionsInFold": 0,
+  "fonts": {
+   "Barlow 700 caps": 10,
+   "Barlow 400": 2,
+   "Barlow 700": 1,
+   "Barlow 800": 9,
+   "Barlow 600": 28
+  },
+  "smallTextNodes": 0,
+  "links": 29
+ },
+ "guides-in-1440": {
+  "height": 1566,
+  "title": {
+   "x": 96,
+   "y": 128,
+   "w": 546,
+   "h": 44
+  },
+  "titleFont": "Barlow",
+  "rail": null,
+  "toc": {
+   "x": 436,
+   "y": 0,
+   "w": 487,
+   "h": 80
+  },
+  "article": null,
+  "cards": null,
+  "picker": null,
+  "h2": [],
+  "framed": 10,
+  "imgs": 38,
+  "sectionsInFold": 0,
+  "fonts": {
+   "Barlow 700 caps": 10,
+   "Barlow 400": 2,
+   "Barlow 700": 1,
+   "Barlow 800": 9,
+   "Barlow 600": 28
+  },
+  "smallTextNodes": 0,
+  "links": 29
+ },
+ "guides-hunter-390": {
+  "height": 3211,
+  "title": {
+   "x": 18,
+   "y": 185,
+   "w": 354,
+   "h": 34
+  },
+  "titleFont": "Barlow",
+  "rail": null,
+  "toc": {
+   "x": 0,
+   "y": 0,
+   "w": 0,
+   "h": 0
+  },
+  "article": null,
+  "cards": {
+   "x": 18,
+   "y": 354,
+   "w": 354,
+   "h": 686
+  },
+  "picker": {
+   "x": 18,
+   "y": 1112,
+   "w": 354,
+   "h": 613
+  },
+  "h2": [
+   {
+    "t": "Specs",
+    "x": 17,
+    "y": 353,
+    "w": 1,
+    "h": 1
+   },
+   {
+    "t": "What changed from 1.12",
+    "x": 18,
+    "y": 1072,
+    "w": 354,
+    "h": 29
+   },
+   {
+    "t": "Races",
+    "x": 39,
+    "y": 1776,
+    "w": 312,
+    "h": 29
+   },
+   {
+    "t": "Sources",
+    "x": 18,
+    "y": 1991,
+    "w": 354,
+    "h": 27
+   }
+  ],
+  "framed": 4,
+  "imgs": 3,
+  "sectionsInFold": 1,
+  "fonts": {
+   "Barlow 700 caps": 19,
+   "Barlow 700": 10,
+   "Barlow 400": 16
+  },
+  "smallTextNodes": 0,
+  "links": 9
+ },
+ "guides-hunter-1440": {
+  "height": 1713,
+  "title": {
+   "x": 178,
+   "y": 142,
+   "w": 490,
+   "h": 44
+  },
+  "titleFont": "Barlow",
+  "rail": null,
+  "toc": {
+   "x": 436,
+   "y": 0,
+   "w": 487,
+   "h": 80
+  },
+  "article": null,
+  "cards": {
+   "x": 96,
+   "y": 300,
+   "w": 1248,
+   "h": 236
+  },
+  "picker": {
+   "x": 96,
+   "y": 616,
+   "w": 1248,
+   "h": 232
+  },
+  "h2": [
+   {
+    "t": "Specs",
+    "x": 95,
+    "y": 299,
+    "w": 1,
+    "h": 1
+   },
+   {
+    "t": "What changed from 1.12",
+    "x": 96,
+    "y": 576,
+    "w": 1248,
+    "h": 29
+   },
+   {
+    "t": "Races",
+    "x": 119,
+    "y": 901,
+    "w": 1202,
+    "h": 29
+   },
+   {
+    "t": "Sources",
+    "x": 96,
+    "y": 1074,
+    "w": 1248,
+    "h": 27
+   }
+  ],
+  "framed": 4,
+  "imgs": 3,
+  "sectionsInFold": 3,
+  "fonts": {
+   "Barlow 700 caps": 19,
+   "Barlow 700": 10,
+   "Barlow 400": 16
+  },
+  "smallTextNodes": 0,
+  "links": 9
+ },
+ "guides-hunter-1920": {
+  "height": 1713,
+  "title": {
+   "x": 418,
+   "y": 142,
+   "w": 490,
+   "h": 44
+  },
+  "titleFont": "Barlow",
+  "rail": null,
+  "toc": {
+   "x": 676,
+   "y": 0,
+   "w": 487,
+   "h": 80
+  },
+  "article": null,
+  "cards": {
+   "x": 336,
+   "y": 300,
+   "w": 1248,
+   "h": 236
+  },
+  "picker": {
+   "x": 336,
+   "y": 616,
+   "w": 1248,
+   "h": 232
+  },
+  "h2": [
+   {
+    "t": "Specs",
+    "x": 335,
+    "y": 299,
+    "w": 1,
+    "h": 1
+   },
+   {
+    "t": "What changed from 1.12",
+    "x": 336,
+    "y": 576,
+    "w": 1248,
+    "h": 29
+   },
+   {
+    "t": "Races",
+    "x": 359,
+    "y": 901,
+    "w": 1202,
+    "h": 29
+   },
+   {
+    "t": "Sources",
+    "x": 336,
+    "y": 1074,
+    "w": 1248,
+    "h": 27
+   }
+  ],
+  "framed": 4,
+  "imgs": 3,
+  "sectionsInFold": 3,
+  "fonts": {
+   "Barlow 700 caps": 19,
+   "Barlow 700": 10,
+   "Barlow 400": 16
+  },
+  "smallTextNodes": 0,
+  "links": 9
+ },
+ "guides-hunter-2000": {
+  "height": 1713,
+  "title": {
+   "x": 458,
+   "y": 142,
+   "w": 490,
+   "h": 44
+  },
+  "titleFont": "Barlow",
+  "rail": null,
+  "toc": {
+   "x": 716,
+   "y": 0,
+   "w": 487,
+   "h": 80
+  },
+  "article": null,
+  "cards": {
+   "x": 376,
+   "y": 300,
+   "w": 1248,
+   "h": 236
+  },
+  "picker": {
+   "x": 376,
+   "y": 616,
+   "w": 1248,
+   "h": 232
+  },
+  "h2": [
+   {
+    "t": "Specs",
+    "x": 375,
+    "y": 299,
+    "w": 1,
+    "h": 1
+   },
+   {
+    "t": "What changed from 1.12",
+    "x": 376,
+    "y": 576,
+    "w": 1248,
+    "h": 29
+   },
+   {
+    "t": "Races",
+    "x": 399,
+    "y": 901,
+    "w": 1202,
+    "h": 29
+   },
+   {
+    "t": "Sources",
+    "x": 376,
+    "y": 1074,
+    "w": 1248,
+    "h": 27
+   }
+  ],
+  "framed": 4,
+  "imgs": 3,
+  "sectionsInFold": 3,
+  "fonts": {
+   "Barlow 700 caps": 19,
+   "Barlow 700": 10,
+   "Barlow 400": 16
+  },
+  "smallTextNodes": 0,
+  "links": 9
+ },
+ "guides-hunter-in-390": {
+  "height": 3211,
+  "title": {
+   "x": 18,
+   "y": 185,
+   "w": 354,
+   "h": 34
+  },
+  "titleFont": "Barlow",
+  "rail": null,
+  "toc": {
+   "x": 0,
+   "y": 0,
+   "w": 0,
+   "h": 0
+  },
+  "article": null,
+  "cards": {
+   "x": 18,
+   "y": 354,
+   "w": 354,
+   "h": 686
+  },
+  "picker": {
+   "x": 18,
+   "y": 1112,
+   "w": 354,
+   "h": 613
+  },
+  "h2": [
+   {
+    "t": "Specs",
+    "x": 17,
+    "y": 353,
+    "w": 1,
+    "h": 1
+   },
+   {
+    "t": "What changed from 1.12",
+    "x": 18,
+    "y": 1072,
+    "w": 354,
+    "h": 29
+   },
+   {
+    "t": "Races",
+    "x": 39,
+    "y": 1776,
+    "w": 312,
+    "h": 29
+   },
+   {
+    "t": "Sources",
+    "x": 18,
+    "y": 1991,
+    "w": 354,
+    "h": 27
+   }
+  ],
+  "framed": 4,
+  "imgs": 3,
+  "sectionsInFold": 1,
+  "fonts": {
+   "Barlow 700 caps": 20,
+   "Barlow 700": 10,
+   "Barlow 400": 16
+  },
+  "smallTextNodes": 0,
+  "links": 9
+ },
+ "guides-hunter-in-1440": {
+  "height": 1713,
+  "title": {
+   "x": 178,
+   "y": 142,
+   "w": 490,
+   "h": 44
+  },
+  "titleFont": "Barlow",
+  "rail": null,
+  "toc": {
+   "x": 436,
+   "y": 0,
+   "w": 487,
+   "h": 80
+  },
+  "article": null,
+  "cards": {
+   "x": 96,
+   "y": 300,
+   "w": 1248,
+   "h": 236
+  },
+  "picker": {
+   "x": 96,
+   "y": 616,
+   "w": 1248,
+   "h": 232
+  },
+  "h2": [
+   {
+    "t": "Specs",
+    "x": 95,
+    "y": 299,
+    "w": 1,
+    "h": 1
+   },
+   {
+    "t": "What changed from 1.12",
+    "x": 96,
+    "y": 576,
+    "w": 1248,
+    "h": 29
+   },
+   {
+    "t": "Races",
+    "x": 119,
+    "y": 901,
+    "w": 1202,
+    "h": 29
+   },
+   {
+    "t": "Sources",
+    "x": 96,
+    "y": 1074,
+    "w": 1248,
+    "h": 27
+   }
+  ],
+  "framed": 4,
+  "imgs": 3,
+  "sectionsInFold": 3,
+  "fonts": {
+   "Barlow 700 caps": 20,
+   "Barlow 700": 10,
+   "Barlow 400": 16
+  },
+  "smallTextNodes": 0,
+  "links": 9
+ },
+ "guides-priest-390": {
+  "height": 3772,
+  "title": {
+   "x": 18,
+   "y": 185,
+   "w": 354,
+   "h": 34
+  },
+  "titleFont": "Barlow",
+  "rail": null,
+  "toc": {
+   "x": 0,
+   "y": 0,
+   "w": 0,
+   "h": 0
+  },
+  "article": null,
+  "cards": {
+   "x": 18,
+   "y": 312,
+   "w": 354,
+   "h": 642
+  },
+  "picker": {
+   "x": 18,
+   "y": 1026,
+   "w": 354,
+   "h": 431
+  },
+  "h2": [
+   {
+    "t": "Specs",
+    "x": 17,
+    "y": 311,
+    "w": 1,
+    "h": 1
+   },
+   {
+    "t": "What changed from 1.12",
+    "x": 18,
+    "y": 986,
+    "w": 354,
+    "h": 29
+   },
+   {
+    "t": "Races",
+    "x": 39,
+    "y": 1508,
+    "w": 312,
+    "h": 29
+   },
+   {
+    "t": "Sources",
+    "x": 18,
+    "y": 2592,
+    "w": 354,
+    "h": 27
+   }
+  ],
+  "framed": 4,
+  "imgs": 3,
+  "sectionsInFold": 1,
+  "fonts": {
+   "Barlow 700 caps": 19,
+   "Barlow 700": 9,
+   "Barlow 400": 21
+  },
+  "smallTextNodes": 1,
+  "links": 7
+ },
+ "guides-priest-1440": {
+  "height": 1830,
+  "title": {
+   "x": 178,
+   "y": 142,
+   "w": 490,
+   "h": 44
+  },
+  "titleFont": "Barlow",
+  "rail": null,
+  "toc": {
+   "x": 436,
+   "y": 0,
+   "w": 487,
+   "h": 80
+  },
+  "article": null,
+  "cards": {
+   "x": 96,
+   "y": 258,
+   "w": 1248,
+   "h": 214
+  },
+  "picker": {
+   "x": 96,
+   "y": 552,
+   "w": 1248,
+   "h": 160
+  },
+  "h2": [
+   {
+    "t": "Specs",
+    "x": 95,
+    "y": 257,
+    "w": 1,
+    "h": 1
+   },
+   {
+    "t": "What changed from 1.12",
+    "x": 96,
+    "y": 512,
+    "w": 1248,
+    "h": 29
+   },
+   {
+    "t": "Races",
+    "x": 119,
+    "y": 765,
+    "w": 1202,
+    "h": 29
+   },
+   {
+    "t": "Sources",
+    "x": 96,
+    "y": 1251,
+    "w": 1248,
+    "h": 27
+   }
+  ],
+  "framed": 4,
+  "imgs": 3,
+  "sectionsInFold": 3,
+  "fonts": {
+   "Barlow 700 caps": 19,
+   "Barlow 700": 9,
+   "Barlow 400": 21
+  },
+  "smallTextNodes": 1,
+  "links": 7
+ },
+ "guide-survival-390": {
+  "height": 20312,
+  "title": {
+   "x": 18,
+   "y": 185,
+   "w": 354,
+   "h": 34
+  },
+  "titleFont": "Barlow",
+  "rail": {
+   "x": 18,
+   "y": 444,
+   "w": 354,
+   "h": 845
+  },
+  "toc": {
+   "x": 0,
+   "y": 0,
+   "w": 0,
+   "h": 0
+  },
+  "article": null,
+  "cards": null,
+  "picker": {
+   "x": 35,
+   "y": 1527,
+   "w": 320,
+   "h": 214
+  },
+  "h2": [
+   {
+    "t": "Overview",
+    "x": 18,
+    "y": 1431,
+    "w": 354,
+    "h": 35
+   },
+   {
+    "t": "Talents and builds",
+    "x": 18,
+    "y": 2271,
+    "w": 354,
+    "h": 64
+   },
+   {
+    "t": "Rotation and priority",
+    "x": 18,
+    "y": 5454,
+    "w": 354,
+    "h": 64
+   },
+   {
+    "t": "Stat priority",
+    "x": 18,
+    "y": 8233,
+    "w": 354,
+    "h": 64
+   },
+   {
+    "t": "Best in slot",
+    "x": 18,
+    "y": 9586,
+    "w": 354,
+    "h": 64
+   },
+   {
+    "t": "Enchants and consumables",
+    "x": 18,
+    "y": 11389,
+    "w": 354,
+    "h": 64
+   },
+   {
+    "t": "Races",
+    "x": 18,
+    "y": 12968,
+    "w": 354,
+    "h": 64
+   },
+   {
+    "t": "Professions",
+    "x": 18,
+    "y": 14541,
+    "w": 354,
+    "h": 64
+   },
+   {
+    "t": "Leveling",
+    "x": 18,
+    "y": 14912,
+    "w": 354,
+    "h": 64
+   },
+   {
+    "t": "Sources",
+    "x": 18,
+    "y": 18974,
+    "w": 354,
+    "h": 27
+   }
+  ],
+  "framed": 12,
+  "imgs": 305,
+  "sectionsInFold": 0,
+  "fonts": {
+   "Barlow 700 caps": 32,
+   "Barlow 400": 300,
+   "Barlow 500": 113,
+   "Barlow 700": 81,
+   "Barlow 400 caps": 10,
+   "Barlow 600": 60,
+   "Barlow 600 caps": 1
+  },
+  "smallTextNodes": 2,
+  "links": 42
+ },
+ "guide-survival-1440": {
+  "height": 12581,
+  "title": {
+   "x": 178,
+   "y": 142,
+   "w": 490,
+   "h": 44
+  },
+  "titleFont": "Barlow",
+  "rail": {
+   "x": 96,
+   "y": 365,
+   "w": 1247,
+   "h": 401
+  },
+  "toc": {
+   "x": 436,
+   "y": 0,
+   "w": 487,
+   "h": 80
+  },
+  "article": null,
+  "cards": null,
+  "picker": {
+   "x": 113,
+   "y": 962,
+   "w": 320,
+   "h": 214
+  },
+  "h2": [
+   {
+    "t": "Overview",
+    "x": 96,
+    "y": 866,
+    "w": 720,
+    "h": 35
+   },
+   {
+    "t": "Talents and builds",
+    "x": 96,
+    "y": 1436,
+    "w": 720,
+    "h": 64
+   },
+   {
+    "t": "Rotation and priority",
+    "x": 96,
+    "y": 3109,
+    "w": 720,
+    "h": 64
+   },
+   {
+    "t": "Stat priority",
+    "x": 96,
+    "y": 4931,
+    "w": 720,
+    "h": 64
+   },
+   {
+    "t": "Best in slot",
+    "x": 96,
+    "y": 5839,
+    "w": 720,
+    "h": 64
+   },
+   {
+    "t": "Enchants and consumables",
+    "x": 96,
+    "y": 7078,
+    "w": 720,
+    "h": 64
+   },
+   {
+    "t": "Races",
+    "x": 96,
+    "y": 8365,
+    "w": 720,
+    "h": 64
+   },
+   {
+    "t": "Professions",
+    "x": 96,
+    "y": 9334,
+    "w": 720,
+    "h": 64
+   },
+   {
+    "t": "Leveling",
+    "x": 96,
+    "y": 9602,
+    "w": 720,
+    "h": 64
+   },
+   {
+    "t": "Sources",
+    "x": 96,
+    "y": 11824,
+    "w": 720,
+    "h": 27
+   },
+   {
+    "t": "On this page",
+    "x": 1124,
+    "y": 834,
+    "w": 220,
+    "h": 27
+   }
+  ],
+  "framed": 12,
+  "imgs": 305,
+  "sectionsInFold": 2,
+  "fonts": {
+   "Barlow 700 caps": 32,
+   "Barlow 400": 298,
+   "Barlow 500": 113,
+   "Barlow 700": 82,
+   "Barlow 400 caps": 10,
+   "Barlow 600": 62,
+   "Barlow 600 caps": 1
+  },
+  "smallTextNodes": 2,
+  "links": 42
+ },
+ "guide-survival-1920": {
+  "height": 12581,
+  "title": {
+   "x": 418,
+   "y": 142,
+   "w": 490,
+   "h": 44
+  },
+  "titleFont": "Barlow",
+  "rail": {
+   "x": 336,
+   "y": 365,
+   "w": 1247,
+   "h": 401
+  },
+  "toc": {
+   "x": 676,
+   "y": 0,
+   "w": 487,
+   "h": 80
+  },
+  "article": null,
+  "cards": null,
+  "picker": {
+   "x": 353,
+   "y": 962,
+   "w": 320,
+   "h": 214
+  },
+  "h2": [
+   {
+    "t": "Overview",
+    "x": 336,
+    "y": 866,
+    "w": 720,
+    "h": 35
+   },
+   {
+    "t": "Talents and builds",
+    "x": 336,
+    "y": 1436,
+    "w": 720,
+    "h": 64
+   },
+   {
+    "t": "Rotation and priority",
+    "x": 336,
+    "y": 3109,
+    "w": 720,
+    "h": 64
+   },
+   {
+    "t": "Stat priority",
+    "x": 336,
+    "y": 4931,
+    "w": 720,
+    "h": 64
+   },
+   {
+    "t": "Best in slot",
+    "x": 336,
+    "y": 5839,
+    "w": 720,
+    "h": 64
+   },
+   {
+    "t": "Enchants and consumables",
+    "x": 336,
+    "y": 7078,
+    "w": 720,
+    "h": 64
+   },
+   {
+    "t": "Races",
+    "x": 336,
+    "y": 8365,
+    "w": 720,
+    "h": 64
+   },
+   {
+    "t": "Professions",
+    "x": 336,
+    "y": 9334,
+    "w": 720,
+    "h": 64
+   },
+   {
+    "t": "Leveling",
+    "x": 336,
+    "y": 9602,
+    "w": 720,
+    "h": 64
+   },
+   {
+    "t": "Sources",
+    "x": 336,
+    "y": 11824,
+    "w": 720,
+    "h": 27
+   },
+   {
+    "t": "On this page",
+    "x": 1364,
+    "y": 834,
+    "w": 220,
+    "h": 27
+   }
+  ],
+  "framed": 12,
+  "imgs": 305,
+  "sectionsInFold": 2,
+  "fonts": {
+   "Barlow 700 caps": 32,
+   "Barlow 400": 298,
+   "Barlow 500": 113,
+   "Barlow 700": 82,
+   "Barlow 400 caps": 10,
+   "Barlow 600": 62,
+   "Barlow 600 caps": 1
+  },
+  "smallTextNodes": 2,
+  "links": 42
+ },
+ "guide-survival-2000": {
+  "height": 12581,
+  "title": {
+   "x": 458,
+   "y": 142,
+   "w": 490,
+   "h": 44
+  },
+  "titleFont": "Barlow",
+  "rail": {
+   "x": 376,
+   "y": 365,
+   "w": 1247,
+   "h": 401
+  },
+  "toc": {
+   "x": 716,
+   "y": 0,
+   "w": 487,
+   "h": 80
+  },
+  "article": null,
+  "cards": null,
+  "picker": {
+   "x": 393,
+   "y": 962,
+   "w": 320,
+   "h": 214
+  },
+  "h2": [
+   {
+    "t": "Overview",
+    "x": 376,
+    "y": 866,
+    "w": 720,
+    "h": 35
+   },
+   {
+    "t": "Talents and builds",
+    "x": 376,
+    "y": 1436,
+    "w": 720,
+    "h": 64
+   },
+   {
+    "t": "Rotation and priority",
+    "x": 376,
+    "y": 3109,
+    "w": 720,
+    "h": 64
+   },
+   {
+    "t": "Stat priority",
+    "x": 376,
+    "y": 4931,
+    "w": 720,
+    "h": 64
+   },
+   {
+    "t": "Best in slot",
+    "x": 376,
+    "y": 5839,
+    "w": 720,
+    "h": 64
+   },
+   {
+    "t": "Enchants and consumables",
+    "x": 376,
+    "y": 7078,
+    "w": 720,
+    "h": 64
+   },
+   {
+    "t": "Races",
+    "x": 376,
+    "y": 8365,
+    "w": 720,
+    "h": 64
+   },
+   {
+    "t": "Professions",
+    "x": 376,
+    "y": 9334,
+    "w": 720,
+    "h": 64
+   },
+   {
+    "t": "Leveling",
+    "x": 376,
+    "y": 9602,
+    "w": 720,
+    "h": 64
+   },
+   {
+    "t": "Sources",
+    "x": 376,
+    "y": 11824,
+    "w": 720,
+    "h": 27
+   },
+   {
+    "t": "On this page",
+    "x": 1404,
+    "y": 834,
+    "w": 220,
+    "h": 27
+   }
+  ],
+  "framed": 12,
+  "imgs": 305,
+  "sectionsInFold": 2,
+  "fonts": {
+   "Barlow 700 caps": 32,
+   "Barlow 400": 298,
+   "Barlow 500": 113,
+   "Barlow 700": 82,
+   "Barlow 400 caps": 10,
+   "Barlow 600": 62,
+   "Barlow 600 caps": 1
+  },
+  "smallTextNodes": 2,
+  "links": 42
+ },
+ "guide-survival-in-390": {
+  "height": 20312,
+  "title": {
+   "x": 18,
+   "y": 185,
+   "w": 354,
+   "h": 34
+  },
+  "titleFont": "Barlow",
+  "rail": {
+   "x": 18,
+   "y": 444,
+   "w": 354,
+   "h": 845
+  },
+  "toc": {
+   "x": 0,
+   "y": 0,
+   "w": 0,
+   "h": 0
+  },
+  "article": null,
+  "cards": null,
+  "picker": {
+   "x": 35,
+   "y": 1527,
+   "w": 320,
+   "h": 214
+  },
+  "h2": [
+   {
+    "t": "Overview",
+    "x": 18,
+    "y": 1431,
+    "w": 354,
+    "h": 35
+   },
+   {
+    "t": "Talents and builds",
+    "x": 18,
+    "y": 2271,
+    "w": 354,
+    "h": 64
+   },
+   {
+    "t": "Rotation and priority",
+    "x": 18,
+    "y": 5454,
+    "w": 354,
+    "h": 64
+   },
+   {
+    "t": "Stat priority",
+    "x": 18,
+    "y": 8233,
+    "w": 354,
+    "h": 64
+   },
+   {
+    "t": "Best in slot",
+    "x": 18,
+    "y": 9586,
+    "w": 354,
+    "h": 64
+   },
+   {
+    "t": "Enchants and consumables",
+    "x": 18,
+    "y": 11389,
+    "w": 354,
+    "h": 64
+   },
+   {
+    "t": "Races",
+    "x": 18,
+    "y": 12968,
+    "w": 354,
+    "h": 64
+   },
+   {
+    "t": "Professions",
+    "x": 18,
+    "y": 14541,
+    "w": 354,
+    "h": 64
+   },
+   {
+    "t": "Leveling",
+    "x": 18,
+    "y": 14912,
+    "w": 354,
+    "h": 64
+   },
+   {
+    "t": "Sources",
+    "x": 18,
+    "y": 18974,
+    "w": 354,
+    "h": 27
+   }
+  ],
+  "framed": 12,
+  "imgs": 305,
+  "sectionsInFold": 0,
+  "fonts": {
+   "Barlow 700 caps": 32,
+   "Barlow 400": 300,
+   "Barlow 500": 113,
+   "Barlow 700": 81,
+   "Barlow 400 caps": 10,
+   "Barlow 600": 60,
+   "Barlow 600 caps": 1
+  },
+  "smallTextNodes": 2,
+  "links": 42
+ },
+ "guide-survival-in-1440": {
+  "height": 12581,
+  "title": {
+   "x": 178,
+   "y": 142,
+   "w": 490,
+   "h": 44
+  },
+  "titleFont": "Barlow",
+  "rail": {
+   "x": 96,
+   "y": 365,
+   "w": 1247,
+   "h": 401
+  },
+  "toc": {
+   "x": 436,
+   "y": 0,
+   "w": 487,
+   "h": 80
+  },
+  "article": null,
+  "cards": null,
+  "picker": {
+   "x": 113,
+   "y": 962,
+   "w": 320,
+   "h": 214
+  },
+  "h2": [
+   {
+    "t": "Overview",
+    "x": 96,
+    "y": 866,
+    "w": 720,
+    "h": 35
+   },
+   {
+    "t": "Talents and builds",
+    "x": 96,
+    "y": 1436,
+    "w": 720,
+    "h": 64
+   },
+   {
+    "t": "Rotation and priority",
+    "x": 96,
+    "y": 3109,
+    "w": 720,
+    "h": 64
+   },
+   {
+    "t": "Stat priority",
+    "x": 96,
+    "y": 4931,
+    "w": 720,
+    "h": 64
+   },
+   {
+    "t": "Best in slot",
+    "x": 96,
+    "y": 5839,
+    "w": 720,
+    "h": 64
+   },
+   {
+    "t": "Enchants and consumables",
+    "x": 96,
+    "y": 7078,
+    "w": 720,
+    "h": 64
+   },
+   {
+    "t": "Races",
+    "x": 96,
+    "y": 8365,
+    "w": 720,
+    "h": 64
+   },
+   {
+    "t": "Professions",
+    "x": 96,
+    "y": 9334,
+    "w": 720,
+    "h": 64
+   },
+   {
+    "t": "Leveling",
+    "x": 96,
+    "y": 9602,
+    "w": 720,
+    "h": 64
+   },
+   {
+    "t": "Sources",
+    "x": 96,
+    "y": 11824,
+    "w": 720,
+    "h": 27
+   },
+   {
+    "t": "On this page",
+    "x": 1124,
+    "y": 834,
+    "w": 220,
+    "h": 27
+   }
+  ],
+  "framed": 12,
+  "imgs": 305,
+  "sectionsInFold": 2,
+  "fonts": {
+   "Barlow 700 caps": 32,
+   "Barlow 400": 298,
+   "Barlow 500": 113,
+   "Barlow 700": 82,
+   "Barlow 400 caps": 10,
+   "Barlow 600": 62,
+   "Barlow 600 caps": 1
+  },
+  "smallTextNodes": 2,
+  "links": 42
+ },
+ "guide-frost-390": {
+  "height": 18136,
+  "title": {
+   "x": 18,
+   "y": 185,
+   "w": 354,
+   "h": 34
+  },
+  "titleFont": "Barlow",
+  "rail": {
+   "x": 18,
+   "y": 392,
+   "w": 354,
+   "h": 822
+  },
+  "toc": {
+   "x": 0,
+   "y": 0,
+   "w": 0,
+   "h": 0
+  },
+  "article": null,
+  "cards": null,
+  "picker": {
+   "x": 35,
+   "y": 1452,
+   "w": 320,
+   "h": 214
+  },
+  "h2": [
+   {
+    "t": "Overview",
+    "x": 18,
+    "y": 1356,
+    "w": 354,
+    "h": 35
+   },
+   {
+    "t": "Talents and builds",
+    "x": 18,
+    "y": 2130,
+    "w": 354,
+    "h": 64
+   },
+   {
+    "t": "Rotation and priority",
+    "x": 18,
+    "y": 5156,
+    "w": 354,
+    "h": 64
+   },
+   {
+    "t": "Stat priority",
+    "x": 18,
+    "y": 8211,
+    "w": 354,
+    "h": 64
+   },
+   {
+    "t": "Best in slot",
+    "x": 18,
+    "y": 9444,
+    "w": 354,
+    "h": 64
+   },
+   {
+    "t": "Enchants and consumables",
+    "x": 18,
+    "y": 11016,
+    "w": 354,
+    "h": 64
+   },
+   {
+    "t": "Races",
+    "x": 18,
+    "y": 12081,
+    "w": 354,
+    "h": 64
+   },
+   {
+    "t": "Professions",
+    "x": 18,
+    "y": 13550,
+    "w": 354,
+    "h": 64
+   },
+   {
+    "t": "Leveling",
+    "x": 18,
+    "y": 13972,
+    "w": 354,
+    "h": 64
+   },
+   {
+    "t": "Sources",
+    "x": 18,
+    "y": 16978,
+    "w": 354,
+    "h": 27
+   }
+  ],
+  "framed": 12,
+  "imgs": 306,
+  "sectionsInFold": 0,
+  "fonts": {
+   "Barlow 700 caps": 26,
+   "Barlow 400": 286,
+   "Barlow 500": 134,
+   "Barlow 700": 85,
+   "Barlow 400 caps": 8,
+   "Barlow 600": 52,
+   "Barlow 600 caps": 1
+  },
+  "smallTextNodes": 2,
+  "links": 36
+ },
+ "guide-frost-1440": {
+  "height": 11211,
+  "title": {
+   "x": 178,
+   "y": 142,
+   "w": 490,
+   "h": 44
+  },
+  "titleFont": "Barlow",
+  "rail": {
+   "x": 96,
+   "y": 344,
+   "w": 1247,
+   "h": 378
+  },
+  "toc": {
+   "x": 436,
+   "y": 0,
+   "w": 487,
+   "h": 80
+  },
+  "article": null,
+  "cards": null,
+  "picker": {
+   "x": 113,
+   "y": 918,
+   "w": 320,
+   "h": 214
+  },
+  "h2": [
+   {
+    "t": "Overview",
+    "x": 96,
+    "y": 822,
+    "w": 720,
+    "h": 35
+   },
+   {
+    "t": "Talents and builds",
+    "x": 96,
+    "y": 1342,
+    "w": 720,
+    "h": 64
+   },
+   {
+    "t": "Rotation and priority",
+    "x": 96,
+    "y": 2982,
+    "w": 720,
+    "h": 64
+   },
+   {
+    "t": "Stat priority",
+    "x": 96,
+    "y": 4934,
+    "w": 720,
+    "h": 64
+   },
+   {
+    "t": "Best in slot",
+    "x": 96,
+    "y": 5817,
+    "w": 720,
+    "h": 64
+   },
+   {
+    "t": "Enchants and consumables",
+    "x": 96,
+    "y": 6907,
+    "w": 720,
+    "h": 64
+   },
+   {
+    "t": "Races",
+    "x": 96,
+    "y": 7854,
+    "w": 720,
+    "h": 64
+   },
+   {
+    "t": "Professions",
+    "x": 96,
+    "y": 8765,
+    "w": 720,
+    "h": 64
+   },
+   {
+    "t": "Leveling",
+    "x": 96,
+    "y": 9033,
+    "w": 720,
+    "h": 64
+   },
+   {
+    "t": "Sources",
+    "x": 96,
+    "y": 10634,
+    "w": 720,
+    "h": 27
+   },
+   {
+    "t": "On this page",
+    "x": 1124,
+    "y": 790,
+    "w": 220,
+    "h": 27
+   }
+  ],
+  "framed": 12,
+  "imgs": 306,
+  "sectionsInFold": 2,
+  "fonts": {
+   "Barlow 700 caps": 26,
+   "Barlow 400": 284,
+   "Barlow 500": 134,
+   "Barlow 700": 86,
+   "Barlow 400 caps": 8,
+   "Barlow 600": 54,
+   "Barlow 600 caps": 1
+  },
+  "smallTextNodes": 2,
+  "links": 36
+ },
+ "guide-frost-2000": {
+  "height": 11211,
+  "title": {
+   "x": 458,
+   "y": 142,
+   "w": 490,
+   "h": 44
+  },
+  "titleFont": "Barlow",
+  "rail": {
+   "x": 376,
+   "y": 344,
+   "w": 1247,
+   "h": 378
+  },
+  "toc": {
+   "x": 716,
+   "y": 0,
+   "w": 487,
+   "h": 80
+  },
+  "article": null,
+  "cards": null,
+  "picker": {
+   "x": 393,
+   "y": 918,
+   "w": 320,
+   "h": 214
+  },
+  "h2": [
+   {
+    "t": "Overview",
+    "x": 376,
+    "y": 822,
+    "w": 720,
+    "h": 35
+   },
+   {
+    "t": "Talents and builds",
+    "x": 376,
+    "y": 1342,
+    "w": 720,
+    "h": 64
+   },
+   {
+    "t": "Rotation and priority",
+    "x": 376,
+    "y": 2982,
+    "w": 720,
+    "h": 64
+   },
+   {
+    "t": "Stat priority",
+    "x": 376,
+    "y": 4934,
+    "w": 720,
+    "h": 64
+   },
+   {
+    "t": "Best in slot",
+    "x": 376,
+    "y": 5817,
+    "w": 720,
+    "h": 64
+   },
+   {
+    "t": "Enchants and consumables",
+    "x": 376,
+    "y": 6907,
+    "w": 720,
+    "h": 64
+   },
+   {
+    "t": "Races",
+    "x": 376,
+    "y": 7854,
+    "w": 720,
+    "h": 64
+   },
+   {
+    "t": "Professions",
+    "x": 376,
+    "y": 8765,
+    "w": 720,
+    "h": 64
+   },
+   {
+    "t": "Leveling",
+    "x": 376,
+    "y": 9033,
+    "w": 720,
+    "h": 64
+   },
+   {
+    "t": "Sources",
+    "x": 376,
+    "y": 10634,
+    "w": 720,
+    "h": 27
+   },
+   {
+    "t": "On this page",
+    "x": 1404,
+    "y": 790,
+    "w": 220,
+    "h": 27
+   }
+  ],
+  "framed": 12,
+  "imgs": 306,
+  "sectionsInFold": 2,
+  "fonts": {
+   "Barlow 700 caps": 26,
+   "Barlow 400": 284,
+   "Barlow 500": 134,
+   "Barlow 700": 86,
+   "Barlow 400 caps": 8,
+   "Barlow 600": 54,
+   "Barlow 600 caps": 1
+  },
+  "smallTextNodes": 2,
+  "links": 36
+ },
+ "guide-holy-390": {
+  "height": 18933,
+  "title": {
+   "x": 18,
+   "y": 185,
+   "w": 354,
+   "h": 34
+  },
+  "titleFont": "Barlow",
+  "rail": {
+   "x": 18,
+   "y": 392,
+   "w": 354,
+   "h": 763
+  },
+  "toc": {
+   "x": 0,
+   "y": 0,
+   "w": 0,
+   "h": 0
+  },
+  "article": null,
+  "cards": null,
+  "picker": {
+   "x": 35,
+   "y": 1393,
+   "w": 320,
+   "h": 214
+  },
+  "h2": [
+   {
+    "t": "Overview",
+    "x": 18,
+    "y": 1297,
+    "w": 354,
+    "h": 35
+   },
+   {
+    "t": "Talents and builds",
+    "x": 18,
+    "y": 2050,
+    "w": 354,
+    "h": 64
+   },
+   {
+    "t": "Rotation and priority",
+    "x": 18,
+    "y": 5006,
+    "w": 354,
+    "h": 64
+   },
+   {
+    "t": "Stat priority",
+    "x": 18,
+    "y": 8601,
+    "w": 354,
+    "h": 64
+   },
+   {
+    "t": "Best in slot",
+    "x": 18,
+    "y": 9557,
+    "w": 354,
+    "h": 64
+   },
+   {
+    "t": "Enchants and consumables",
+    "x": 18,
+    "y": 11156,
+    "w": 354,
+    "h": 64
+   },
+   {
+    "t": "Races",
+    "x": 18,
+    "y": 12422,
+    "w": 354,
+    "h": 64
+   },
+   {
+    "t": "Professions",
+    "x": 18,
+    "y": 14002,
+    "w": 354,
+    "h": 64
+   },
+   {
+    "t": "Leveling",
+    "x": 18,
+    "y": 14270,
+    "w": 354,
+    "h": 64
+   },
+   {
+    "t": "Sources",
+    "x": 18,
+    "y": 17804,
+    "w": 354,
+    "h": 27
+   }
+  ],
+  "framed": 11,
+  "imgs": 315,
+  "sectionsInFold": 0,
+  "fonts": {
+   "Barlow 700 caps": 26,
+   "Barlow 400": 301,
+   "Barlow 500": 98,
+   "Barlow 700": 97,
+   "Barlow 400 caps": 15,
+   "Barlow 600": 53,
+   "Barlow 600 caps": 1
+  },
+  "smallTextNodes": 2,
+  "links": 35
+ },
+ "guide-holy-1440": {
+  "height": 11855,
+  "title": {
+   "x": 178,
+   "y": 142,
+   "w": 490,
+   "h": 44
+  },
+  "titleFont": "Barlow",
+  "rail": {
+   "x": 96,
+   "y": 344,
+   "w": 1247,
+   "h": 362
+  },
+  "toc": {
+   "x": 436,
+   "y": 0,
+   "w": 487,
+   "h": 80
+  },
+  "article": null,
+  "cards": null,
+  "picker": {
+   "x": 113,
+   "y": 902,
+   "w": 320,
+   "h": 214
+  },
+  "h2": [
+   {
+    "t": "Overview",
+    "x": 96,
+    "y": 806,
+    "w": 720,
+    "h": 35
+   },
+   {
+    "t": "Talents and builds",
+    "x": 96,
+    "y": 1305,
+    "w": 720,
+    "h": 64
+   },
+   {
+    "t": "Rotation and priority",
+    "x": 96,
+    "y": 2926,
+    "w": 720,
+    "h": 64
+   },
+   {
+    "t": "Stat priority",
+    "x": 96,
+    "y": 5264,
+    "w": 720,
+    "h": 64
+   },
+   {
+    "t": "Best in slot",
+    "x": 96,
+    "y": 5921,
+    "w": 720,
+    "h": 64
+   },
+   {
+    "t": "Enchants and consumables",
+    "x": 96,
+    "y": 7076,
+    "w": 720,
+    "h": 64
+   },
+   {
+    "t": "Races",
+    "x": 96,
+    "y": 8129,
+    "w": 720,
+    "h": 64
+   },
+   {
+    "t": "Professions",
+    "x": 96,
+    "y": 9141,
+    "w": 720,
+    "h": 64
+   },
+   {
+    "t": "Leveling",
+    "x": 96,
+    "y": 9358,
+    "w": 720,
+    "h": 64
+   },
+   {
+    "t": "Sources",
+    "x": 96,
+    "y": 11308,
+    "w": 720,
+    "h": 27
+   },
+   {
+    "t": "On this page",
+    "x": 1124,
+    "y": 774,
+    "w": 220,
+    "h": 27
+   }
+  ],
+  "framed": 11,
+  "imgs": 315,
+  "sectionsInFold": 2,
+  "fonts": {
+   "Barlow 700 caps": 26,
+   "Barlow 400": 299,
+   "Barlow 500": 98,
+   "Barlow 700": 98,
+   "Barlow 400 caps": 15,
+   "Barlow 600": 55,
+   "Barlow 600 caps": 1
+  },
+  "smallTextNodes": 2,
+  "links": 35
+ },
+ "guide-holy-2000": {
+  "height": 11855,
+  "title": {
+   "x": 458,
+   "y": 142,
+   "w": 490,
+   "h": 44
+  },
+  "titleFont": "Barlow",
+  "rail": {
+   "x": 376,
+   "y": 344,
+   "w": 1247,
+   "h": 362
+  },
+  "toc": {
+   "x": 716,
+   "y": 0,
+   "w": 487,
+   "h": 80
+  },
+  "article": null,
+  "cards": null,
+  "picker": {
+   "x": 393,
+   "y": 902,
+   "w": 320,
+   "h": 214
+  },
+  "h2": [
+   {
+    "t": "Overview",
+    "x": 376,
+    "y": 806,
+    "w": 720,
+    "h": 35
+   },
+   {
+    "t": "Talents and builds",
+    "x": 376,
+    "y": 1305,
+    "w": 720,
+    "h": 64
+   },
+   {
+    "t": "Rotation and priority",
+    "x": 376,
+    "y": 2926,
+    "w": 720,
+    "h": 64
+   },
+   {
+    "t": "Stat priority",
+    "x": 376,
+    "y": 5264,
+    "w": 720,
+    "h": 64
+   },
+   {
+    "t": "Best in slot",
+    "x": 376,
+    "y": 5921,
+    "w": 720,
+    "h": 64
+   },
+   {
+    "t": "Enchants and consumables",
+    "x": 376,
+    "y": 7076,
+    "w": 720,
+    "h": 64
+   },
+   {
+    "t": "Races",
+    "x": 376,
+    "y": 8129,
+    "w": 720,
+    "h": 64
+   },
+   {
+    "t": "Professions",
+    "x": 376,
+    "y": 9141,
+    "w": 720,
+    "h": 64
+   },
+   {
+    "t": "Leveling",
+    "x": 376,
+    "y": 9358,
+    "w": 720,
+    "h": 64
+   },
+   {
+    "t": "Sources",
+    "x": 376,
+    "y": 11308,
+    "w": 720,
+    "h": 27
+   },
+   {
+    "t": "On this page",
+    "x": 1404,
+    "y": 774,
+    "w": 220,
+    "h": 27
+   }
+  ],
+  "framed": 11,
+  "imgs": 315,
+  "sectionsInFold": 2,
+  "fonts": {
+   "Barlow 700 caps": 26,
+   "Barlow 400": 299,
+   "Barlow 500": 98,
+   "Barlow 700": 98,
+   "Barlow 400 caps": 15,
+   "Barlow 600": 55,
+   "Barlow 600 caps": 1
+  },
+  "smallTextNodes": 2,
+  "links": 35
+ },
+ "guide-protection-1440": {
+  "height": 12290,
+  "title": {
+   "x": 178,
+   "y": 142,
+   "w": 490,
+   "h": 44
+  },
+  "titleFont": "Barlow",
+  "rail": {
+   "x": 96,
+   "y": 365,
+   "w": 1247,
+   "h": 465
+  },
+  "toc": {
+   "x": 436,
+   "y": 0,
+   "w": 487,
+   "h": 80
+  },
+  "article": null,
+  "cards": null,
+  "picker": {
+   "x": 113,
+   "y": 1026,
+   "w": 320,
+   "h": 279
+  },
+  "h2": [
+   {
+    "t": "Overview",
+    "x": 96,
+    "y": 930,
+    "w": 720,
+    "h": 35
+   },
+   {
+    "t": "Talents and builds",
+    "x": 96,
+    "y": 1494,
+    "w": 720,
+    "h": 64
+   },
+   {
+    "t": "Rotation and priority",
+    "x": 96,
+    "y": 3235,
+    "w": 720,
+    "h": 64
+   },
+   {
+    "t": "Stat priority",
+    "x": 96,
+    "y": 5093,
+    "w": 720,
+    "h": 64
+   },
+   {
+    "t": "Best in slot",
+    "x": 96,
+    "y": 6366,
+    "w": 720,
+    "h": 64
+   },
+   {
+    "t": "Enchants and consumables",
+    "x": 96,
+    "y": 7463,
+    "w": 720,
+    "h": 64
+   },
+   {
+    "t": "Races",
+    "x": 96,
+    "y": 8623,
+    "w": 720,
+    "h": 64
+   },
+   {
+    "t": "Professions",
+    "x": 96,
+    "y": 10057,
+    "w": 720,
+    "h": 64
+   },
+   {
+    "t": "Leveling",
+    "x": 96,
+    "y": 10248,
+    "w": 720,
+    "h": 64
+   },
+   {
+    "t": "Sources",
+    "x": 96,
+    "y": 11684,
+    "w": 720,
+    "h": 27
+   },
+   {
+    "t": "On this page",
+    "x": 1124,
+    "y": 898,
+    "w": 220,
+    "h": 27
+   }
+  ],
+  "framed": 12,
+  "imgs": 336,
+  "sectionsInFold": 2,
+  "fonts": {
+   "Barlow 700 caps": 27,
+   "Barlow 400": 338,
+   "Barlow 500": 86,
+   "Barlow 700": 97,
+   "Barlow 400 caps": 8,
+   "Barlow 600": 76,
+   "Barlow 600 caps": 1
+  },
+  "smallTextNodes": 2,
+  "links": 37
+ }
+}

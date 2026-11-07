@@ -1,7 +1,7 @@
 // web/tests/e2e/guide-tooltips.spec.ts
 // A spec guide names talents, spells, racials, enchants and items everywhere: the key-talent
-// list, the build trees, the rotation and cooldown rows, the gear and
-// consumable tables, the races table and the prose itself. Each one opens the same game-style
+// rows, the At a glance trees, the rotation and cooldown rows, the Best in slot and consumable
+// rows, the racials and the prose itself (guides spec 2026-11-08 §5.4). Each one opens the same game-style
 // tooltip the rest of the site uses, on hover, keyboard focus or a tap, and Escape closes it.
 // The tooltip data is fetched only once a reader asks for one.
 import type { Page } from '@playwright/test';
@@ -29,7 +29,7 @@ test.describe('a spec guide opens the game tooltip for every name it shows', () 
     expect(requests).toEqual([]);
     const talent = page.locator('[data-testid="guide-key-talents"] [data-game-tip]').first();
     await talent.scrollIntoViewIfNeeded();
-    const name = (await talent.locator('.key-talent-name').innerText()).trim();
+    const name = (await talent.innerText()).trim();
     await talent.hover();
     const tooltip = page.getByTestId('game-tooltip');
     await expect(tooltip).toBeVisible();
@@ -44,7 +44,7 @@ test.describe('a spec guide opens the game tooltip for every name it shows', () 
   test('a rotation row opens on keyboard focus and Escape closes it', async ({ page, isMobile }) => {
     test.skip(isMobile, 'keyboard path');
     await openGuide(page);
-    const row = page.locator('[data-testid="guide-rotation-priority"] li[data-game-tip]').first();
+    const row = page.locator('[data-testid="guide-rotation-priority-row"] [data-game-tip]').first();
     await row.scrollIntoViewIfNeeded();
     await row.focus();
     const tooltip = page.getByTestId('game-tooltip');
@@ -68,12 +68,15 @@ test.describe('a spec guide opens the game tooltip for every name it shows', () 
   test('a gear pick and a consumable open the shared item tooltip', async ({ page, isMobile }) => {
     test.skip(isMobile, 'hover is the desktop path');
     await openGuide(page);
-    const pick = page.locator('[data-testid="guide-bis"] .gbis-panel:visible [data-bis-item]').first();
+    const pick = page
+      .locator('[data-testid="guide-bis"] [data-bis-current] [data-testid^="item-hover-"]')
+      .first();
     await pick.scrollIntoViewIfNeeded();
-    await pick.locator('.gbis-name').hover();
+    const pickName = (await pick.innerText()).trim();
+    await pick.hover();
     const itemTip = page.getByTestId('item-tooltip');
     await expect(itemTip).toBeVisible();
-    await expect(itemTip).toContainText((await pick.locator('.gbis-name').innerText()).trim());
+    await expect(itemTip).toContainText(pickName);
     await page.mouse.move(0, 0);
     await expect(itemTip).toBeHidden();
 
@@ -83,28 +86,27 @@ test.describe('a spec guide opens the game tooltip for every name it shows', () 
     await expect(itemTip).toContainText(/^[\s\S]*Use: /);
   });
 
-  test('a talent in the build tree carries its tooltip key and arrows move between cells', async ({
+  // The planner's TreeGrid with its roving arrow-key focus retires from the guide (G2): the
+  // At a glance trees are static TalentTrees, every learned or unlearned talent a focusable cell
+  // in order (spec §5.4, "trees cells in order"), each opening the shared game tooltip.
+  test('a talent in the At a glance trees opens its tooltip on focus and Tab walks to the next cell', async ({
     page,
     isMobile,
   }) => {
     test.skip(isMobile, 'hover and keyboard path');
     await openGuide(page);
-    // The tree hydrates when its section scrolls into view.
-    await page.getByTestId('guide-tree-skeleton').first().scrollIntoViewIfNeeded();
-    const columns = page.getByTestId('guide-tree-columns').first();
-    await expect(columns).toBeVisible();
-    // A read-only cell opens the page's shared game tooltip through its data-game-tip key, as
-    // every other talent name on the guide does (TalentCell.svelte); it has no tooltip of its
-    // own. The fixture's talent ids are not in the real build's tooltip bundle, so this checks
-    // the key and the roving focus; the tooltip itself is the key-talent tests' above.
-    const cell = columns.locator('[data-testid^="talent-"][role="group"]').first();
+    const cells = page.getByTestId('guide-glance-trees').locator('[role="group"][data-game-tip]');
+    const cell = cells.first();
     await expect(cell).toHaveAttribute('data-game-tip', /^talent:\d+:\d+$/);
-    await expect(columns.getByRole('tooltip')).toHaveCount(0);
     await cell.focus();
-    await page.keyboard.press('ArrowRight');
-    const focused = page.locator(':focus');
-    await expect(focused).toHaveAttribute('data-game-tip', /^talent:\d+:\d+$/);
-    expect(await focused.getAttribute('data-testid')).not.toBe(await cell.getAttribute('data-testid'));
+    const tooltip = page.getByTestId('game-tooltip');
+    await expect(tooltip).toBeVisible();
+    const label = (await cell.getAttribute('aria-label')) ?? '';
+    await expect(tooltip.getByTestId('game-tooltip-name')).toHaveText(label.replace(/ \d+\/\d+$/, ''));
+    await page.keyboard.press('Tab');
+    await expect(cells.nth(1)).toBeFocused();
+    await page.keyboard.press('Escape');
+    await expect(tooltip).toBeHidden();
   });
 
   test('a tap opens a talent on touch and a second tap closes it', async ({ page, isMobile }) => {

@@ -238,6 +238,14 @@
   .ui-cbar-groups[data-busy] {
     opacity: 0.5;
   }
+  /* The open phone bar wraps a segmented group that does not fit (guides ruling 0A MUST 5): the
+     chosen item is never cut off. Items keep their equal share while they fit. */
+  .ui-seg {
+    flex-wrap: wrap;
+  }
+  .ui-seg-item {
+    min-width: max-content;
+  }
   /* With a primary: the summary line and the primary share the phone's first row, the groups open
      under them. */
   .ui-cbar-inner[data-has-action] {
@@ -291,6 +299,7 @@
     }
     .ui-seg {
       display: inline-flex;
+      flex-wrap: nowrap;
     }
     .ui-seg-item {
       flex: none;

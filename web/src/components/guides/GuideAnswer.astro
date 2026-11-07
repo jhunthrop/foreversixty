@@ -1,0 +1,187 @@
+---
+// web/src/components/guides/GuideAnswer.astro
+// The signed-in answer in the PageHeader of /guides, a class landing and a spec guide (guides
+// spec 2026-11-08 §4.4): reserved at its final size while the account loads when a session is
+// hinted (no reserve signed out), then painted by lib/guides/guide-answer-mount.ts after load
+// from the header selector's character. Its label, crest, name, the level and identity line,
+// then its links (and, on a leveller's own guide, the ladder's next point).
+import { LINK } from '../../lib/ui/primitives';
+import { guidesCopy } from '../../lib/guides/copy';
+import type { GuideAnswerPage } from '../../lib/guides/guide-answer';
+
+interface Props {
+  page: GuideAnswerPage;
+}
+const { page } = Astro.props;
+---
+
+<div
+  class="guide-answer"
+  id="guide-answer"
+  data-signed-in-only
+  data-state="loading"
+  data-page={JSON.stringify(page)}
+  data-testid="guide-answer"
+>
+  <span class="text-label tracking-label text-muted font-bold uppercase">{guidesCopy.answerLabel}</span>
+  <div class="guide-answer-skeleton" data-answer-skeleton aria-hidden="true">
+    <span class="guide-answer-sk-row">
+      <span class="skeleton-block guide-answer-sk-crest"></span>
+      <span class="guide-answer-sk-lines">
+        <span class="skeleton-block guide-answer-sk-name"></span>
+        <span class="skeleton-block guide-answer-sk-detail"></span>
+      </span>
+    </span>
+    <span class="skeleton-block guide-answer-sk-link"></span>
+  </div>
+  <div class="guide-answer-body" data-answer-body hidden>
+    <span class="guide-answer-who" data-field="who">
+      <img class="guide-answer-crest crest" data-field="crest" src="" alt="" width="40" height="40" />
+      <span class="guide-answer-text">
+        <b class="guide-answer-name" data-field="name"></b>
+        <span class="text-small text-muted" data-field="detail" data-testid="guide-answer-detail"></span>
+      </span>
+    </span>
+    <span class="text-small text-muted guide-answer-message" data-field="message" hidden></span>
+    <span class="guide-answer-links">
+      <span
+        class="text-small text-muted guide-answer-next"
+        data-field="next"
+        data-testid="guide-answer-next"
+        hidden
+      ></span>
+      <span class="guide-answer-linkset" data-field="links"></span>
+      <button
+        type="button"
+        class={LINK}
+        data-field="action"
+        hidden
+        data-testid="guide-answer-action"
+      ></button>
+    </span>
+  </div>
+</div>
+
+<script>
+  import { afterPaint } from '../../lib/after-paint';
+
+  afterPaint(() => {
+    void import('../../lib/guides/guide-answer-mount').then((m) => m.mountGuideAnswer());
+  });
+</script>
+
+<style>
+  .guide-answer {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+  }
+  .guide-answer[data-state='hidden'] {
+    display: none;
+  }
+  .guide-answer-skeleton,
+  .guide-answer-body {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .guide-answer-skeleton[hidden],
+  .guide-answer-body[hidden],
+  .guide-answer [hidden] {
+    display: none;
+  }
+  .guide-answer-sk-row,
+  .guide-answer-who {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .guide-answer-sk-crest {
+    width: 40px;
+    height: 40px;
+    border-radius: 999px;
+  }
+  .guide-answer-sk-lines,
+  .guide-answer-text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+  .guide-answer-sk-lines {
+    gap: 4px;
+  }
+  .guide-answer-sk-name {
+    width: 150px;
+    height: 22px;
+  }
+  .guide-answer-sk-detail {
+    width: 190px;
+    height: 16px;
+  }
+  .guide-answer-sk-link {
+    width: 220px;
+    height: 20px;
+  }
+  .guide-answer-crest {
+    width: 40px;
+    height: 40px;
+    border-radius: 999px;
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--c) 55%, transparent);
+  }
+  .guide-answer-name {
+    font: 700 18px/22px var(--font-body);
+  }
+  .guide-answer-links,
+  .guide-answer-linkset {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 16px;
+  }
+  .guide-answer :global(.guide-answer-link) {
+    color: var(--color-gold);
+    font-size: 15px;
+    line-height: 24px;
+    font-weight: 600;
+  }
+  /* No session hint, or no character to name: the header keeps no answer column at all. */
+  :global(html:not([data-session='1']) .ui-page-header-answer:has(> .guide-answer)),
+  :global(.ui-page-header-answer:has(> .guide-answer[data-state='hidden'])) {
+    display: none;
+  }
+  .guide-answer :global(.guide-answer-link:hover) {
+    color: var(--color-gold-hover);
+  }
+  .guide-answer :global(.guide-answer-link:focus-visible) {
+    outline: 2px solid var(--color-gold);
+    outline-offset: 2px;
+  }
+  @media (min-width: 900px) {
+    .guide-answer {
+      min-width: 380px;
+      min-height: 96px;
+      justify-content: flex-end;
+      align-items: flex-end;
+      text-align: right;
+    }
+    .guide-answer-skeleton,
+    .guide-answer-body {
+      align-items: flex-end;
+    }
+    .guide-answer-sk-row,
+    .guide-answer-who {
+      flex-direction: row-reverse;
+    }
+    .guide-answer-text {
+      align-items: flex-end;
+    }
+    .guide-answer-links {
+      justify-content: flex-end;
+    }
+    .guide-answer-next {
+      flex-basis: 100%;
+      text-align: right;
+    }
+  }
+</style>
