@@ -255,6 +255,7 @@ const jsonLd = [
       />
       <GuideGlance
         slot="top"
+        spec={fullSpecId}
         build={build}
         code={describedCode}
         trees={talentTreesOf(describedTrees, tipBundle)}
@@ -298,6 +299,7 @@ const jsonLd = [
       <ReadingSection title="Talents and builds" anchor="talents-and-builds">
         <Fragment slot="lane">
           <GuideBuildsLane
+            spec={fullSpecId}
             build={build}
             blocks={buildBlocks}
             raidDiffLine={raidDiffLine}

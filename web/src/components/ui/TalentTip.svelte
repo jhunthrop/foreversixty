@@ -1,9 +1,3 @@
-<!-- web/src/components/ui/TalentTip.svelte -->
-<!-- The talent tooltip (planner spec 2026-11-08 section 3A, the mock's TalentTip): the overlay
-     ground, 300 px; the name, `Rank n of m`, this rank's text, the next rank under its label, the
-     requirement in --wipe when the point is refused, the band line in gold after a band load.
-     Draws the box only: TalentButton positions it. `talentId` names the test ids
-     (`talent-tip-<id>`, `talent-band-line-<id>`). -->
 <!-- Its styles travel with its code (css="injected"): it renders only after the island hydrates, and a
      page inlines only the styles of what its server render drew. -->
 <svelte:options css="injected" />
@@ -34,6 +28,13 @@
     talentId?: number;
   } = $props();
 </script>
+
+<!-- web/src/components/ui/TalentTip.svelte -->
+<!-- The talent tooltip (planner spec 2026-11-08 section 3A, the mock's TalentTip): the overlay
+     ground, 300 px; the name, `Rank n of m`, this rank's text, the next rank under its label, the
+     requirement in --wipe when the point is refused, the band line in gold after a band load.
+     Draws the box only: TalentButton positions it. `talentId` names the test ids
+     (`talent-tip-<id>`, `talent-band-line-<id>`). -->
 
 <div
   class="ttip"

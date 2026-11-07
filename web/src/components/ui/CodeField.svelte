@@ -1,8 +1,3 @@
-<!-- web/src/components/ui/CodeField.svelte -->
-<!-- The paste box for a literal code a player copies out of the game or the addon (planner spec
-     2026-11-08 section 3A, the mock's CodeField): mono 13/20 (the one face for literal codes),
-     68 px tall (`short`: 44 px, one line), the dark field ground, the --wipe border when the code
-     does not read. -->
 <!-- Its styles travel with its code (css="injected"): it renders only after the island hydrates, and a
      page inlines only the styles of what its server render drew. -->
 <svelte:options css="injected" />
@@ -35,6 +30,12 @@
     oninput?: (event: Event & { currentTarget: HTMLTextAreaElement }) => void;
   } = $props();
 </script>
+
+<!-- web/src/components/ui/CodeField.svelte -->
+<!-- The paste box for a literal code a player copies out of the game or the addon (planner spec
+     2026-11-08 section 3A, the mock's CodeField): mono 13/20 (the one face for literal codes),
+     68 px tall (`short`: 44 px, one line), the dark field ground, the --wipe border when the code
+     does not read. -->
 
 <textarea
   class="codef"

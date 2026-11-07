@@ -178,7 +178,8 @@ export function bandDiffNames(
   bandTalents: string,
 ): BandDiffNames {
   const bandTrees = bandTreeRanksFrom(bandTalents);
-  const named = (name: string, rank: number, max: number): string => (max > 1 ? `${name} ${rank}/${max}` : name);
+  const named = (name: string, rank: number, max: number): string =>
+    max > 1 ? `${name} ${rank}/${max}` : name;
   const mine: string[] = [];
   const theirs: string[] = [];
   index.trees.forEach((tree, treeIndex) => {
@@ -199,7 +200,8 @@ export function bandPointTotal(index: TalentIndex, bandTalents: string): number 
     (sum, tree, treeIndex) =>
       sum +
       tree.talents.reduce(
-        (inTree, talent, talentIndex) => inTree + Math.min(bandTrees[treeIndex]?.[talentIndex] ?? 0, talent.max_rank),
+        (inTree, talent, talentIndex) =>
+          inTree + Math.min(bandTrees[treeIndex]?.[talentIndex] ?? 0, talent.max_rank),
         0,
       ),
     0,

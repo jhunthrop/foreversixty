@@ -132,11 +132,23 @@ test.describe('planner on a phone', () => {
   });
 
   // /planner.html carries a CLS budget of 0.05 (lighthouserc.json) and Lighthouse audits the
-  // phone. The island paints a placeholder and then swaps in a planner the better part of a
-  // thousand pixels tall, so with nothing reserved everything under it -- the footer above all
-  // -- drops down the page when the talent data lands. That swap measured 0.185 of the page's
-  // 0.186 CLS. These two tests hold the request open and measure the footer across the swap.
-  test('the footer stays put when the talent data lands', async ({ page }) => {
+  // phone. The island paints a placeholder and then swaps in the trees, so with nothing
+  // reserved everything under the placeholder dropped down the page when the talent data
+  // landed (0.185 of the page's 0.186 CLS). Spec 2026-11-08 5.2 moved the reserve onto the
+  // trees' Plate itself: loading, failed and ready stand the same height, so the Plate and the
+  // section under it hold still; the sections that only a ready planner draws (Point order,
+  // Share, Import) arrive below the first screen, where no shift is visible. These two tests
+  // hold the request open and measure across the swap.
+  const plate = (page: Page): Locator => page.getByRole('region', { name: 'Talent trees' });
+  const boxOf = async (locator: Locator): Promise<{ y: number; height: number }> => {
+    const box = await locator.boundingBox();
+    return { y: box?.y ?? -1, height: box?.height ?? -1 };
+  };
+  const expectBelowFirstScreen = async (page: Page): Promise<void> => {
+    expect(await footerTop(page)).toBeGreaterThanOrEqual(page.viewportSize()?.height ?? 0);
+  };
+
+  test('the trees and the section under them stay put when the talent data lands', async ({ page }) => {
     const land = await holdTalents(page, 'continue');
 
     await page.goto('/planner');
@@ -144,26 +156,36 @@ test.describe('planner on a phone', () => {
     // The retired character card's loading placeholder was waited out here (fix round 4). Its
     // successor, In the game, mounts with the trees and never during this window: while the
     // talent data is held the rail shows only fixed-size skeletons, signed in or out.
-    const loading = await footerTop(page);
+    const band = page.getByRole('heading', { name: 'Level 60 build' });
+    const loadingPlate = await boxOf(plate(page));
+    const loadingBand = await boxOf(band);
+    await expectBelowFirstScreen(page);
 
     land();
     await expect(page.getByRole('grid', { name: 'Arms talents' })).toBeVisible();
-    expect(Math.abs((await footerTop(page)) - loading)).toBeLessThanOrEqual(SETTLED_PX);
+    const readyPlate = await boxOf(plate(page));
+    expect(Math.abs(readyPlate.y - loadingPlate.y)).toBeLessThanOrEqual(SETTLED_PX);
+    expect(Math.abs(readyPlate.height - loadingPlate.height)).toBeLessThanOrEqual(SETTLED_PX);
+    expect(Math.abs((await boxOf(band)).y - loadingBand.y)).toBeLessThanOrEqual(SETTLED_PX);
+    await expectBelowFirstScreen(page);
   });
 
   // The reserve has to cover the failure branch too. It is much the shortest of the three
   // states, so a reserve that applied only while loading would let the region collapse here
-  // and haul the footer back up into the viewport -- the same bug, in the visible direction.
-  test('the footer stays put when the talent data fails to load', async ({ page }) => {
+  // and haul what follows back up into the viewport -- the same bug, in the visible direction.
+  test('the trees stay put when the talent data fails to load', async ({ page }) => {
     const land = await holdTalents(page, 'abort');
 
     await page.goto('/planner');
     await expect(page.getByTestId('planner-talent-skeleton')).toBeVisible();
-    const loading = await footerTop(page);
+    const loadingPlate = await boxOf(plate(page));
 
     land();
     await expect(page.getByText('Talent data did not load', { exact: true })).toBeVisible();
-    expect(Math.abs((await footerTop(page)) - loading)).toBeLessThanOrEqual(SETTLED_PX);
+    const failedPlate = await boxOf(plate(page));
+    expect(Math.abs(failedPlate.y - loadingPlate.y)).toBeLessThanOrEqual(SETTLED_PX);
+    expect(Math.abs(failedPlate.height - loadingPlate.height)).toBeLessThanOrEqual(SETTLED_PX);
+    await expectBelowFirstScreen(page);
   });
 
   test('every talent cell, tab, class crest, select and button clears 44px', async ({ page }) => {

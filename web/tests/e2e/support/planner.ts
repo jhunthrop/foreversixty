@@ -85,12 +85,23 @@ export async function finishBuild(page: Page): Promise<void> {
   if (await show.isVisible()) await show.click();
 }
 
+/**
+ * Waits until the planner island has hydrated. Before it does, a class crest is a plain
+ * `?class=` link (a click reloads the page) and the phone bar's toggle has no handler: Astro
+ * marks an island not yet hydrated with `ssr` (support/hydrated.ts).
+ */
+export async function plannerHydrated(page: Page): Promise<void> {
+  await expect(page.getByTestId('planner-bar')).toBeAttached();
+  await expect(page.locator('astro-island[ssr]:has([data-testid="planner-bar"])')).toHaveCount(0);
+}
+
 /** Opens the ControlBar on a phone, where it is one line until "Change" is pressed. */
 export async function openPlannerBar(page: Page): Promise<void> {
+  await plannerHydrated(page);
   const toggle = page.getByTestId('planner-bar').locator('[data-control-bar-toggle]');
-  if ((await toggle.isVisible()) && (await toggle.getAttribute('aria-expanded')) !== 'true') {
-    await toggle.click();
-  }
+  if (!(await toggle.isVisible())) return;
+  if ((await toggle.getAttribute('aria-expanded')) !== 'true') await toggle.click();
+  await expect(toggle).toHaveAttribute('aria-expanded', 'true');
 }
 
 /** The class crest radio for `slug` in the ControlBar. */

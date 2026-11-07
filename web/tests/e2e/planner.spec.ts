@@ -200,7 +200,9 @@ test('clicking a talent spends points and the counters follow', async ({ page })
 
 test('a locked tier refuses the point and says why', async ({ page }) => {
   await page.goto('/planner');
-  await page.getByTestId('talent-1003').click();
+  // A locked cell is aria-disabled, but its click still reaches the planner, which refuses and
+  // says why (TalentButton): `force` clicks it as a player would, past Playwright's enabled check.
+  await page.getByTestId('talent-1003').click({ force: true });
   await expect(page.getByTestId('planner-status')).toHaveText('Needs 5 points in Arms. You have 0.');
   await expect(page.getByTestId('talent-1003')).toHaveAttribute('data-rank', '0');
   await expect(spentLine(page)).toHaveText(bareSpentLine(0));

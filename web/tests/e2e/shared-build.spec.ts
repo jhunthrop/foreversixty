@@ -58,7 +58,9 @@ test('a shared build opens read-only and Fork makes it editable', async ({ page 
     'This build was opened from a share link; fork it to edit',
   );
 
-  await page.getByTestId('talent-1002').click();
+  // A read-only cell is aria-disabled (locked), but a click still reaches the planner, which
+  // refuses and says why: `force` clicks it as a viewer would, past Playwright's enabled check.
+  await page.getByTestId('talent-1002').click({ force: true });
   await expect(page.getByTestId('planner-status')).toHaveText(
     'This build was opened from a share link; fork it to edit',
   );
@@ -116,7 +118,7 @@ test('a populated read-only build keeps every cell inert, in both directions', a
   await expect(page.getByTestId('planner-fork-button')).toBeVisible();
 
   // Left-click an unspent cell: no point is added.
-  await page.getByTestId('talent-4002').click();
+  await page.getByTestId('talent-4002').click({ force: true });
   await expect(page.getByTestId('talent-4002')).toHaveAttribute('data-rank', '0');
   await expect(spentLine(page)).toHaveText(bareSpentLine(5));
 

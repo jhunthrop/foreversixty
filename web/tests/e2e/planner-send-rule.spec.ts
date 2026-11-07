@@ -83,7 +83,10 @@ test.describe('the planner never sends another build to a character', () => {
       return route.fulfill(ok({ build_id: SAVED.id }, 201));
     });
     await page.goto(`/planner?code=${encodeURIComponent(ASHENVEIL)}`);
-    await expect(page.getByTestId('planner-build-origin')).toHaveText(/^Ashenveil's build · .*Warrior$/);
+    // Spec 2026-11-08 ruling MUST 1: the origin is said once. A named export arrives with its
+    // note, so the gold origin line is dropped; whose build it is, is said by the ask below.
+    await expect(page.getByTestId('planner-code-note')).toBeVisible();
+    await expect(page.getByTestId('planner-build-origin')).toHaveCount(0);
     const action = page.getByTestId('planner-send');
     await expect(action).toHaveText('Send this build to Obnoxious Yell (replaces their 29 points)');
 

@@ -1,10 +1,3 @@
-<!-- web/src/components/ui/PointOrder.svelte -->
-<!-- The build's spend order (planner spec 2026-11-08 section 3A, 4.5; the mock's PointOrder): a
-     faint 0 to 9 marker over the first row (the last digit of each socket's level), then rows of
-     ten levels, a 120 px label column and ten 36 px sockets (30 below 768). A spent point is its
-     icon with the rank it reached, a tab stop with its name as title; a planned one (past the
-     character's level) dims; an empty level is dashed --line, the next point dashed gold. The gold
-     cap line follows row `capAfter` when `capText` is given. Nothing scrolls sideways. -->
 <!-- Its styles travel with its code (css="injected"): it renders only after the island hydrates, and a
      page inlines only the styles of what its server render drew. -->
 <svelte:options css="injected" />
@@ -34,6 +27,14 @@
     broken = new Set([...broken, index]);
   }
 </script>
+
+<!-- web/src/components/ui/PointOrder.svelte -->
+<!-- The build's spend order (planner spec 2026-11-08 section 3A, 4.5; the mock's PointOrder): a
+     faint 0 to 9 marker over the first row (the last digit of each socket's level), then rows of
+     ten levels, a 120 px label column and ten 36 px sockets (30 below 768). A spent point is its
+     icon with the rank it reached, a tab stop with its name as title; a planned one (past the
+     character's level) dims; an empty level is dashed --line, the next point dashed gold. The gold
+     cap line follows row `capAfter` when `capText` is given. Nothing scrolls sideways. -->
 
 <div class="porder" data-testid={testid}>
   <div class="porder-m" aria-hidden="true">

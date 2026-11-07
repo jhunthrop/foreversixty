@@ -20,6 +20,8 @@ import type { GlanceRotation } from '../../lib/guides/glance';
 import type { StatLane } from '../../lib/guides/stat-lane';
 
 interface Props {
+  /** The guide spec (`hunter-survival`): Load this build opens the planner in its levelling order. */
+  spec?: string;
   build: string;
   /** The build the plate describes (the raid build when the guide has its own). */
   code?: string;
@@ -29,7 +31,7 @@ interface Props {
   rotationTitle: string;
   stats?: StatLane;
 }
-const { build, code, trees, isRaidBuild, rotation, rotationTitle, stats } = Astro.props;
+const { spec, build, code, trees, isRaidBuild, rotation, rotationTitle, stats } = Astro.props;
 const hasBuild = code !== undefined && trees.length > 0;
 const hasRotation = rotation.rows.length > 0;
 const hasStats = stats !== undefined && stats.glanceRows.length > 0;
@@ -48,7 +50,7 @@ const statRank = (reading: string): string => (reading === 'value' ? String(++ra
         >
           <TalentTrees trees={trees} build={build} testid="guide-glance-trees" />
           <Fragment slot="foot">
-            <Button tone="primary" href={loadBuildHref(code!)} testid="guide-load-build">
+            <Button tone="primary" href={loadBuildHref(code!, spec)} testid="guide-load-build">
               {guidesCopy.loadThisBuild}
             </Button>
             <Button href={simBuildHref(code!)} testid="guide-sim-build">

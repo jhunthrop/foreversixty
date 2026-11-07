@@ -1080,7 +1080,7 @@
     {:else if store.spent > 0}
       <button
         type="button"
-        class="{LINK} text-[14px] leading-5 [@media(pointer:coarse)]:-my-3 [@media(pointer:coarse)]:py-3"
+        class="{LINK} text-[14px] leading-5 max-md:-my-3 max-md:py-3 [@media(pointer:coarse)]:-my-3 [@media(pointer:coarse)]:py-3"
         onclick={() => (confirmingReset = true)}
         data-testid="planner-reset">{plannerCopy.reset}</button
       >

@@ -189,9 +189,10 @@ test('the chosen character follows the player through every page', async ({ page
   await expectClass(page, 'paladin');
   await headerIs(page, 'Bow Jackzon', `${bow.spec} Hunter · 60`);
   expect(await pointerOf(page)).toMatchObject({ source: 'armory', ref: BOW });
-  // Whose build it is, and never a Paladin build sent to a Hunter.
-  await expect(page.getByTestId('planner-build-origin')).toContainText("Ashenveil's build ·");
-  await expect(page.getByTestId('planner-build-origin')).toContainText('Paladin');
+  // Never a Paladin build sent to a Hunter. The origin is said once (spec 2026-11-08 ruling
+  // MUST 1): her export arrives with its note, so the gold origin line is dropped beside it.
+  await expect(page.getByTestId('planner-code-note')).toBeVisible();
+  await expect(page.getByTestId('planner-build-origin')).toHaveCount(0);
   await expect(page.getByTestId('planner-send')).toHaveText(
     'This is a Paladin build; Bow Jackzon is a Hunter',
   );

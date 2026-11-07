@@ -1,12 +1,3 @@
-<!-- web/src/components/ui/TalentEditor.svelte -->
-<!-- The editable talent trees on the page's one Plate (planner spec 2026-11-08 section 3A, 4.4; the
-     mock's TalentEditor). From 768 one column per tree split by hairlines; below 768 the tree tabs
-     and the open tree (`active`). Each tree: a head (spec icon, name, points, the per-tree Reset
-     when it has points), the client's art at 50% behind the grid, the prerequisite arrows (gold
-     when met) on a --bg halo, then tiers × columns of gridcells holding TalentButtons. The grid
-     owns the keyboard: one tab stop per tree on its last-focused cell, arrows move, Backspace or
-     Delete removes (Enter is the button's own click). `foot` renders in `.tedit-f` (the status
-     line `.st2`, `.st2.wipe`, and the right-hand `.rs` group are styled here). -->
 <!-- Its styles travel with its code (css="injected"): it renders only after the island hydrates, and a
      page inlines only the styles of what its server render drew. -->
 <svelte:options css="injected" />
@@ -90,6 +81,16 @@
     tablist?.querySelector<HTMLElement>(`[data-testid="tree-tab-${target}"]`)?.focus();
   }
 </script>
+
+<!-- web/src/components/ui/TalentEditor.svelte -->
+<!-- The editable talent trees on the page's one Plate (planner spec 2026-11-08 section 3A, 4.4; the
+     mock's TalentEditor). From 768 one column per tree split by hairlines; below 768 the tree tabs
+     and the open tree (`active`). Each tree: a head (spec icon, name, points, the per-tree Reset
+     when it has points), the client's art at 50% behind the grid, the prerequisite arrows (gold
+     when met) on a --bg halo, then tiers × columns of gridcells holding TalentButtons. The grid
+     owns the keyboard: one tab stop per tree on its last-focused cell, arrows move, Backspace or
+     Delete removes (Enter is the button's own click). `foot` renders in `.tedit-f` (the status
+     line `.st2`, `.st2.wipe`, and the right-hand `.rs` group are styled here). -->
 
 <Plate {label} {testid}>
   <div class="tedit">

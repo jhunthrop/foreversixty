@@ -37,12 +37,11 @@ test('a finished build runs a live sim, and an unfinished one asks nothing of th
   await expect(scoreFigure(page)).not.toHaveText('—', { timeout: 3000 });
   await expect(page.getByTestId('planner-dps-note')).toHaveText(/^± \d/);
 
-  // Taking a point back out stops the sim, and the figure from the last run stays on screen
-  // (dimmed) rather than blanking -- "a number that vanishes and reappears on every click is
-  // worse than a stale number that dims" is the whole design decision this asserts.
+  // Taking a point back out stops the sim. Spec 2026-11-08 4.1 retired the dimmed stale figure
+  // for an unfinished build: the head reads `—` with its waiting line until every point is spent.
   await page.getByTestId(LAST_TALENT).click({ button: 'right' });
   await expect(page.getByTestId('planner-dps-note')).toHaveText('Appears once your points are spent.');
-  await expect(scoreFigure(page)).not.toHaveText('—');
+  await expect(scoreFigure(page)).toHaveText('—');
 
   // Spending it again settles into a fresh estimate of its own.
   await page.getByTestId(LAST_TALENT).click();

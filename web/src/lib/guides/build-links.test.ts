@@ -9,6 +9,14 @@ describe('loadBuildHref', () => {
   });
 });
 
+describe('loadBuildHref with the guide spec', () => {
+  it('names the spec so the planner spends the build in the guide order', () => {
+    expect(loadBuildHref('FS1:x', 'hunter-survival')).toBe(
+      `/planner?code=${encodeURIComponent('FS1:x')}&spec=hunter-survival`,
+    );
+  });
+});
+
 describe('simBuildHref', () => {
   it('links to the quick-sim tab with ?code=', () => {
     const href = simBuildHref('FS1:1.60.1.69893:warrior:human:1/2/3:');

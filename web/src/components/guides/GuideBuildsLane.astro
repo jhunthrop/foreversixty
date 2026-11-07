@@ -14,12 +14,14 @@ import type { KeyTalentEntry, KeyTalentRef } from '../../lib/guides/key-talents'
 import { talentTipKey } from '../../lib/tooltips/game-tip';
 
 interface Props {
+  /** The guide spec (`hunter-survival`): Load this build opens the planner in its levelling order. */
+  spec?: string;
   build: string;
   blocks: readonly { kind: string; label: string; code: string; trees: readonly DecodedTreeView[] }[];
   raidDiffLine?: string;
   keyTalents: readonly KeyTalentEntry[];
 }
-const { build, blocks, raidDiffLine, keyTalents } = Astro.props;
+const { spec, build, blocks, raidDiffLine, keyTalents } = Astro.props;
 const pointsLine = (trees: readonly DecodedTreeView[]): string =>
   trees.map((tree) => `${tree.name} ${tree.points}`).join(' · ');
 const rankText = (talent: KeyTalentRef): string =>
@@ -46,7 +48,11 @@ const rankText = (talent: KeyTalentRef): string =>
           testid={`guide-build-${block.kind}`}
         >
           <span slot="trail" class="guide-build-links">
-            <a class={LINK} href={loadBuildHref(block.code)} data-testid={`guide-build-load-${block.kind}`}>
+            <a
+              class={LINK}
+              href={loadBuildHref(block.code, spec)}
+              data-testid={`guide-build-load-${block.kind}`}
+            >
               {guidesCopy.loadThisBuild}
             </a>
             <a class={LINK} href={simBuildHref(block.code)} data-testid={`guide-build-sim-${block.kind}`}>

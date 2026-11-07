@@ -1,7 +1,3 @@
-<!-- web/src/components/ui/Notice.svelte -->
-<!-- One standing sentence under the page header (web layout spec 2026-11-05 §3A.2): a guild's
-     standing line, a "before raids open" state. Text and one optional link, no box. `lead` puts a
-     small mark before the sentence (the sim's Worth knowing lines lead with the spell's icon). -->
 <!-- Its styles travel with its code (css="injected"): it renders only after the island hydrates, and a
      page inlines only the styles of what its server render drew. -->
 <svelte:options css="injected" />
@@ -31,6 +27,11 @@
     testid?: string;
   } = $props();
 </script>
+
+<!-- web/src/components/ui/Notice.svelte -->
+<!-- One standing sentence under the page header (web layout spec 2026-11-05 §3A.2): a guild's
+     standing line, a "before raids open" state. Text and one optional link, no box. `lead` puts a
+     small mark before the sentence (the sim's Worth knowing lines lead with the spell's icon). -->
 
 <p
   class={[

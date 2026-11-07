@@ -1,13 +1,3 @@
-<!-- web/src/components/ui/TalentButton.svelte -->
-<!-- One talent (planner spec 2026-11-08 section 3A, the mock's TalentCell2): the icon, a 2 px inset
-     ring and a rank pill in the state's colour (avail, part, max, lock), the gold dot when it
-     differs from the band, a dashed dimmed pill when planned past the character's level. Click
-     adds; right-click or a 500 ms primary press removes, exactly once per gesture. A locked cell
-     is aria-disabled but its click still reaches `onadd`: the caller refuses and says why. The
-     tooltip opens 150 ms after hover or focus and closes on leave, blur or Escape, placed with the
-     site's one edge-aware rule (lib/items/tooltip-position). Arrow keys and Backspace belong to
-     the grid (TalentEditor), which owns the one tab stop per tree. Read-only: no gesture, the
-     tooltip still opens. -->
 <!-- Its styles travel with its code (css="injected"): it renders only after the island hydrates, and a
      page inlines only the styles of what its server render drew. -->
 <svelte:options css="injected" />
@@ -153,6 +143,17 @@
     clearTimeout(pressTimer);
   });
 </script>
+
+<!-- web/src/components/ui/TalentButton.svelte -->
+<!-- One talent (planner spec 2026-11-08 section 3A, the mock's TalentCell2): the icon, a 2 px inset
+     ring and a rank pill in the state's colour (avail, part, max, lock), the gold dot when it
+     differs from the band, a dashed dimmed pill when planned past the character's level. Click
+     adds; right-click or a 500 ms primary press removes, exactly once per gesture. A locked cell
+     is aria-disabled but its click still reaches `onadd`: the caller refuses and says why. The
+     tooltip opens 150 ms after hover or focus and closes on leave, blur or Escape, placed with the
+     site's one edge-aware rule (lib/items/tooltip-position). Arrow keys and Backspace belong to
+     the grid (TalentEditor), which owns the one tab stop per tree. Read-only: no gesture, the
+     tooltip still opens. -->
 
 <button
   bind:this={button}

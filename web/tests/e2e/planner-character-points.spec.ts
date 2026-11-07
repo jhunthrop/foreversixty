@@ -84,8 +84,9 @@ test.describe('the planner counts only the points a character has earned', () =>
     await impale.hover();
     await expect(page.getByTestId('talent-tip-1006')).toContainText(plannerCopy.noPointsLeft(21));
 
-    // P4: a click still spends it, as a point planned past the character's level.
-    await impale.click();
+    // P4: a click still spends it, as a point planned past the character's level (the cell is
+    // aria-disabled, so `force` clicks it as a player would, past Playwright's enabled check).
+    await impale.click({ force: true });
     await expect(impale).toHaveAttribute('data-rank', '1');
     await expect(impale).toHaveAccessibleName(`Impale, rank 1 of 2, ${plannerCopy.plannedCell(21)}`);
     await expect(pointsLeft(page)).toHaveText('0');
