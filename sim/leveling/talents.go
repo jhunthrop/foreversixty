@@ -483,11 +483,12 @@ func RequireGuideBuildMatchesActive(guideBuild, activeBuild string) error {
 // reserveOffTree spends a reservation's ranks that sit in another tree than the spec's own
 // (Shadow's Wand Specialization, in Discipline; Fire's, in Arcane) in list order, one rank
 // at a time, each capped at the guide's target and its max rank, and only where the rank is
-// legal on its own: a first-row talent with no prerequisite (a deeper one would need that
-// tree's points first, which the plain walk spends after the own tree). An off-tree rank
-// listed after own-tree ranks waits until the budget has paid for those (ownRanksAhead), so
-// the list is the build's own sequence across trees. It returns each tree's reserved ranks
-// and the budget left.
+// legal on the ranks reserved so far: a first-row talent with no prerequisite, or a deeper
+// one once the ranks this reservation already holds in that tree pay its row and its
+// prerequisite (offTreeRankIsPaid; the plain walk spends that tree only after the own
+// tree, so nothing else would). An off-tree rank listed after own-tree ranks waits until the
+// budget has paid for those (ownRanksAhead), so the list is the build's own sequence across
+// trees. It returns each tree's reserved ranks and the budget left.
 func reserveOffTree(trees []TalentTree, targets map[int]int, ownTreeIndex int, first []LadderFirstRank, budget int) (map[int]map[int]int, int) {
 	reserved := map[int]map[int]int{}
 	ahead := ownRanksAhead(trees, targets, ownTreeIndex, first)
@@ -497,7 +498,7 @@ func reserveOffTree(trees []TalentTree, targets map[int]int, ownTreeIndex int, f
 				continue
 			}
 			for _, node := range tree.Talents {
-				if node.Name != r.Talent || node.Tier != 0 || node.PrereqTalentID != 0 {
+				if node.Name != r.Talent || !offTreeRankIsPaid(tree, node, reserved[ti]) {
 					continue
 				}
 				if reserved[ti] == nil {
@@ -511,6 +512,22 @@ func reserveOffTree(trees []TalentTree, targets map[int]int, ownTreeIndex int, f
 		}
 	}
 	return reserved, budget
+}
+
+// offTreeRankIsPaid is true when node can take a rank on top of held, the ranks a
+// reservation holds in node's tree: the rows above it carry pointsPerTier points a tier and
+// its prerequisite holds the rank it lists.
+func offTreeRankIsPaid(tree TalentTree, node TalentNode, held map[int]int) bool {
+	above := 0
+	for _, other := range tree.Talents {
+		if other.Tier < node.Tier {
+			above += held[other.ID]
+		}
+	}
+	if above < pointsPerTier*node.Tier {
+		return false
+	}
+	return node.PrereqTalentID == 0 || held[node.PrereqTalentID] >= max(node.PrereqRank, 1)
 }
 
 // ownRanksAhead is, for each entry of first, how many ranks of the spec's own tree the

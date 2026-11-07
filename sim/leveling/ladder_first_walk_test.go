@@ -33,7 +33,9 @@ func TestBandBuildsTakeTheCastTalentsThatFit(t *testing.T) {
 		// Sim-accuracy round 15 (shaman): Stormstrike sits in the 15-point row and beta
 		// logs show Enhancement shamans of level 25 to 35 casting it; band 30 left it out.
 		{"shaman-enhancement", "shaman", "enhancement", 1, 30, "Stormstrike", "0000000000000000-055030310031000000-0000000000000000"},
-		{"warlock-affliction", "warlock", "affliction", 0, 30, "Siphon Life", "25522300100001000-0000000000000000000-0000000000000000"},
+		// Sim-accuracy round 29 (walks-dps): Amplify Curse, Pandemic and Malevolence before
+		// Soul Harvest and Improved Drains (TestAfflictionTakesPandemicBeforeTheDrainTalents).
+		{"warlock-affliction", "warlock", "affliction", 0, 30, "Siphon Life", "25520000132001000-0000000000000000000-0000000000000000"},
 		{"warlock-demonology", "warlock", "demonology", 1, 30, "Soul Link", "00000000000000000-2035113101210001000-0000000000000000"},
 		{"warrior-arms", "warrior", "arms", 0, 40, "Mortal Strike", "13323213032214001-000000000000000000-000000000000000000"},
 		// Sim-accuracy round 15 (warrior): the guide build dropped Lingering Rage and Piercing

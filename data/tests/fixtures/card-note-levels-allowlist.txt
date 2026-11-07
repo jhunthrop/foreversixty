@@ -7,12 +7,12 @@ druid-feral Cat Form 0c5cb3ccea51  conditional: "in Cat Form" applies only once 
 druid-feral-bear Primal Bite 0521f76d6f72  the clause opens "in your forties and early fifties", after Primal Bite at 40
 hunter-survival Mongoose Bite ef096649bb13  Hunter's Mark mechanic: why marking matters, true whenever Mongoose Bite is trained
 mage-arcane Arcane Power 6db11e38d193  conditional: "inside Arcane Power" applies only once you have it
-mage-fire Accelerant 323d14f0d30a  the lead sentence scopes the row to Arcane Blast at 57
-mage-fire Heating Up 16d1a9b10d81  the lead sentence scopes the row to Arcane Blast at 57
+mage-fire Accelerant 323d14f0d30a  the lead sentence scopes the row to Arcane Blast at 54
+mage-fire Heating Up 16d1a9b10d81  the lead sentence scopes the row to Arcane Blast at 54
 mage-fire Heating Up 8ac1afc59d40  mechanic: why Scorch goes first, true once Heating Up is in
-mage-fire Ignite 16d1a9b10d81  the lead sentence scopes the row to Arcane Blast at 57
+mage-fire Ignite 16d1a9b10d81  the lead sentence scopes the row to Arcane Blast at 54
 mage-fire Improved Scorch f387656aaba3  "Scorch waits for Improved Scorch": says not to cast it before the talent
-mage-fire Missile Barrage 323d14f0d30a  the lead sentence scopes the row to Arcane Blast at 57
+mage-fire Missile Barrage 323d14f0d30a  the lead sentence scopes the row to Arcane Blast at 54
 mage-fire Pyroblast ecf5186bd4a5  "in raid gear": a level 60 comparison
 mage-fire Scorch ecf5186bd4a5  "in raid gear": a level 60 comparison
 mage-fire Scorch f387656aaba3  a comparison that tells you to hold Scorch back

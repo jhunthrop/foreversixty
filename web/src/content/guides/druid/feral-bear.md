@@ -112,10 +112,10 @@ No craft in your raid set binds on pickup, so no profession is needed for it: th
 
 Before 10 you are a caster: Moonfire from 4, then Wrath. At 10, Heeding the Call from your trainer in Darnassus or Thunder Bluff (The Great Ursera Spirit on Zephras Isle for Skyborne) teaches Bear Form, and Maul, Growl and Demoralizing Roar train the same level. Enrage follows at 12, Bash at 14, Swipe at 16 and a second Maul rank at 18.
 
-Your points from 10 to 14 go into Ferocity, so Maul and Swipe cost 5 less Rage. Furor takes one point at 15, for a 20% chance of 10 Rage when you shift into Bear Form. Feral Swiftness at 16 and 17 adds 4% dodge, and Feral Instinct at 18 and 19 adds 20% to Swipe.
+Your points from 10 to 14 go into Ferocity, so Maul and Swipe cost 5 less Rage. Furor takes one point at 15, for a 20% chance of 10 Rage when you shift into Bear Form. Thick Hide takes 16 to 18 for more armor in Bear Form, and Feral Swiftness at 19 adds 2% dodge. Feral Instinct only adds to Swipe, which a single target never sees, so it waits for the end of the build.
 
 Your paw hits with your weapon's DPS, so replace the starter weapon with the highest-DPS staff or two-handed mace a quest gives you. Wear leather quest rewards with Stamina and Agility over vendor gear, and take the Idol of Shifting Tides from the Aquatic Form quest at 16.
 
 ### Levels 20 to 60
 
-Dire Bear Form comes at 40. A bear is the safe way to level through big pulls and the fastest way into dungeons, at the cost of kill speed: Maul and Swipe on a pack, Demoralizing Roar to blunt it, and Frenzied Regeneration from 36 to skip drinking. Lacerate arrives at 25 and Primal Bite at 40, and until then Maul, Swipe and Demoralizing Roar hold a dungeon pack.
+Dire Bear Form comes at 40. A bear is the safe way to level through big pulls and the fastest way into dungeons, at the cost of kill speed: Maul and Swipe on a pack, Demoralizing Roar to blunt it, and Frenzied Regeneration from 36 to skip drinking. Lacerate arrives at 25 and Primal Bite at 40, and until then Maul, Swipe and Demoralizing Roar hold a dungeon pack. Sharpened Claws comes at 22 and 23, Blood Frenzy at 28 and 29, Leader of the Pack at 30, Predatory Strikes at 31 to 33 and Natural Instinct at 34 and 35, so Rend and Tear starts at 36 and Lacerate's bleed turns it on. After 41, Heart of the Wild and Naturalist come before Natural Reaction: 10% more damage is 10% more threat.

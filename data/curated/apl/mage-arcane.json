@@ -288,7 +288,7 @@
         }
       },
       {
-        "notes": "Arcane Missiles until you have both ranks of Missile Barrage, the second at 23 on the leveling order and at 24 on the raid order: on a long fight it does more damage for its mana than Arcane Blast once you have it and more damage a second than Frostbolt. Once both are in, Missiles waits for the free proc and Blast takes over.",
+        "notes": "Arcane Missiles until you have both ranks of Missile Barrage, the second at 22 on the leveling order and at 24 on the raid order: on a long fight it does more damage for its mana than Arcane Blast once you have it and more damage a second than Frostbolt. Once both are in, Missiles waits for the free proc and Blast takes over.",
         "action": {
           "condition": {
             "not": {
