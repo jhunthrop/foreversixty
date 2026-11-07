@@ -22,6 +22,10 @@ const FILES = [
   'spellicons.json',
   'stat-weights.json',
   'talents/',
+  // Read by the simulator tool pages (parity-sim-tools.spec.ts): the items the engine knows,
+  // which item search offers, and the random-suffix table the candidate rows read.
+  'simitems.json',
+  'suffixes.json',
   // Read by writeSimNames for the derived simnames files (spells.json by ws_sim.py too).
   'items.json',
   'spells.json',

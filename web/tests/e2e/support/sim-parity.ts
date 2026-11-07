@@ -208,7 +208,13 @@ async function openToolWithFury(page: Page, tool: string): Promise<void> {
   await expect(page.getByTestId('sim-run-bulk')).toBeVisible();
 }
 
+/** The mocks draw a desktop's run line: a CI runner's few cores would add the low-core cap note. */
+const MOCK_CORES = 8;
+
 export async function openToolState(page: Page, state: ToolParityState): Promise<void> {
+  await page.addInitScript((cores) => {
+    Object.defineProperty(navigator, 'hardwareConcurrency', { get: () => cores });
+  }, MOCK_CORES);
   await serveMockData(page);
   if (state === 'specs') {
     // No parse has been measured yet: every damage spec reads "Not yet", as production does.
