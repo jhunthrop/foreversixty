@@ -29,21 +29,21 @@ export const guildBotState = (discord: BotFacts, changingChannel: boolean): Guil
 
 /**
  * Section heights per state, phone then desktop. `picker` is the §3.1 cap, held on the install
- * return until the read answers. `installed` and `unusable` are measured on the fixture build
- * (2026-11-07, the flat Section; the guild parity state `settings-bot` and the unusable spec's
- * states): installed is 284 px at 390 and 209 px from 768; the can't-be-used notice is at most
+ * return until the read answers. The other four are measured on the fixture build (2026-11-07, the
+ * flat Section; the guild parity state `settings-bot` and the bot specs' states): installed is
+ * 284 px at 390 and 209 px from 768; nothing connected 262 / 243; removed in Discord 199 / 179
+ * (with the webhook's fallback line; 196 / 177 without); the can't-be-used notice is at most
  * 238 / 199, and its reserve sits 10 px under installed's, so choosing a channel from the notice
- * moves the page by 10 px at most (A.2, item 17). The old 392 / 312 and 382 / 302 still counted
- * the Card head's 62 px and left the section ~100 px taller than its content. `removed` and
- * `nothing` are still estimates, replaced when they are measured the same way.
+ * moves the page by 10 px at most (A.2, item 17). The old estimates still counted the Card head's
+ * 62 px and left the section up to ~100 px taller than its content.
  * A webhook-only section keeps G1's two heights plus the offer (WEBHOOK_OFFER_RESERVE).
  */
 export const GUILD_BOT_RESERVE: Readonly<Record<Exclude<GuildBotState, 'webhook-only'>, string>> = {
   picker: 'min-h-[462px] md:min-h-[392px]',
   installed: 'min-h-[284px] md:min-h-[209px]',
   unusable: 'min-h-[274px] md:min-h-[199px]',
-  removed: 'min-h-[362px] md:min-h-[292px]',
-  nothing: 'min-h-[402px] md:min-h-[312px]',
+  removed: 'min-h-[199px] md:min-h-[179px]',
+  nothing: 'min-h-[262px] md:min-h-[243px]',
 };
 
 /** G1's connected (250 / 230 on md) and switched-off (349 / 310) heights plus the offer's 100, and (site alignment) the Card head's 62 px every table here carries. */
