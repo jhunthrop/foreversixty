@@ -1,15 +1,19 @@
 <!-- web/src/components/guild/billing/GuildSeatPicker.svelte -->
-<!-- Give and Move, in place in the seat Row's foot (spec 3.2.5), open with no box: a select of verified
-     members who hold no seat here, the payer note when a member who pays for Premium is chosen, focus
-     on the select, Escape acts as Cancel. Presentational: the row loads the candidates and sends the choice. -->
+<!-- Give and Move, in place under the row (spec 3.2.5): a native select of verified members who hold no
+     seat here, the payer note when a member who pays for Premium is chosen, focus on the select,
+     Escape is handled by the row. Presentational: the row loads the candidates and sends the choice. -->
 <script lang="ts">
+  import { button } from '../../../lib/ui/button';
   import type { SeatCandidate } from '../../../lib/billing/contract';
   import { seatsCopy as copy } from '../../../lib/billing/seats-copy';
-  import { CONFIRM_ACTION_WIDTH, CONFIRM_ACTIONS, SAFE_FOCUS } from '../../../lib/guild/billing-styles';
+  import {
+    BILLING_SAFE_TEXT_BUTTON,
+    CONFIRM_ACTION_WIDTH,
+    CONFIRM_ACTIONS,
+    CONFIRM_BLOCK,
+  } from '../../../lib/guild/billing-styles';
   import { focusOnMount } from '../../../lib/guild/focus-now';
   import { sortedByName } from '../../../lib/guild/seat-view';
-  import { button } from '../../../lib/ui/button';
-  import { FIELD_LABEL } from '../../../lib/ui/field';
   import { BUSY_CLASS } from '../../../lib/ui/busy';
   import Skeleton from '../../ui/Skeleton.svelte';
   import Select from '../../ui/Select.svelte';
@@ -45,39 +49,27 @@
     return mode === 'give' ? copy.picker.give : copy.picker.move;
   });
   const selectId = $derived(`guild-seat-${slot}-select`);
-
-  /** Escape acts as Cancel while the picker is open. */
-  function onKeydown(event: KeyboardEvent): void {
-    if (event.key !== 'Escape') return;
-    event.preventDefault();
-    onCancel();
-  }
 </script>
 
-<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 <div
-  class="flex w-full flex-col gap-3 pt-1"
+  class={CONFIRM_BLOCK}
   role="group"
   aria-labelledby={`${selectId}-label`}
   aria-busy={candidates === null || busy}
-  onkeydown={onKeydown}
   data-testid={`guild-seat-${slot}-picker`}
 >
   {#if candidates === null}
     <Skeleton lines={1} rowHeight="h-11" label="Loading members" testid={`guild-seat-${slot}-loading`} />
   {:else if options.length === 0}
     <p class="text-[14px]" data-testid={`guild-seat-${slot}-empty`}>{copy.picker.everyoneHasPremium}</p>
-    <button
-      type="button"
-      class="{button('secondary', 'sm')} {SAFE_FOCUS} w-fit"
-      use:focusOnMount
-      onclick={onCancel}
-    >
+    <button type="button" class={BILLING_SAFE_TEXT_BUTTON} use:focusOnMount onclick={onCancel}>
       {copy.picker.cancel}
     </button>
   {:else}
     <div class="flex flex-col gap-1">
-      <label id={`${selectId}-label`} class={FIELD_LABEL} for={selectId}>{title}</label>
+      <label id={`${selectId}-label`} class="text-muted text-[13px] font-semibold" for={selectId}
+        >{title}</label
+      >
       <Select
         id={selectId}
         value={chosen === null ? '' : String(chosen.user_id)}
@@ -99,12 +91,12 @@
       <p class="text-muted text-[13px]">{copy.picker.keepsNote(holderName)}</p>
     {/if}
     {#if error !== ''}
-      <p class="text-wipe text-[13px]" role="alert" data-testid={`guild-seat-${slot}-error`}>{error}</p>
+      <p class="text-[13px]" role="alert" data-testid={`guild-seat-${slot}-error`}>{error}</p>
     {/if}
     <div class={CONFIRM_ACTIONS}>
       <button
         type="button"
-        class="{button('primary', 'sm')} {CONFIRM_ACTION_WIDTH} {busy ? BUSY_CLASS : ''}"
+        class="{button('primary')} {CONFIRM_ACTION_WIDTH} {busy ? BUSY_CLASS : ''}"
         disabled={busy || chosen === null}
         aria-busy={busy}
         onclick={() => chosen !== null && onSubmit(chosen)}
@@ -113,10 +105,8 @@
       >
         {submitText}
       </button>
-      <button
-        type="button"
-        class="{button('secondary', 'sm')} {SAFE_FOCUS} {CONFIRM_ACTION_WIDTH}"
-        onclick={onCancel}>{copy.picker.cancel}</button
+      <button type="button" class="{BILLING_SAFE_TEXT_BUTTON} {CONFIRM_ACTION_WIDTH}" onclick={onCancel}
+        >{copy.picker.cancel}</button
       >
     </div>
   {/if}

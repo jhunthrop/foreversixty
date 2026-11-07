@@ -1,8 +1,4 @@
 """Web-layout reference mocks for the billing lane (RESTYLE-REST, 2026-11-07), composed ONLY from ws_prims:
-  - web-guild-billing-states: the guild settings Billing tab blocks (the plan chooser, Premium seats with the Give
-    picker open, the Move to Raid guild confirm, the Who pays transfer confirm). The settings page frame belongs to the
-    guild lane (ws_guild_settings.py), which can import the block functions below; this sheet is a reference, not a
-    parity state;
   - web-account-discord-paste: the account's Discord paste form (the notifications Section when connect is off);
   - web-admin-links: the owner's /admin/links (PageHeader, a split Page: the links' Plate of Rows, the New link rail).
 Data and copy are read at render time from design/mocks/data/billing-facts.json (node design/mocks/billing_facts.mjs),
@@ -59,57 +55,6 @@ def render(title: str, body: str, nav: str, note: str) -> str:
 
 
 # ================================================================================================ the guild Billing tab blocks
-def plan_chooser() -> str:
-    """GuildPlanChooser: the interval Segmented, one Row per plan (radio lead, the picked one selected), the count, the
-    compare link, the one gold button, the trial and founder lines."""
-    c = G['chooser']
-    rows = [Row(e(t['name']), f'{e(t["line"])}<br>{e(t["list"])}', lead='<input class="radio" type="radio" name="tier"' + (' checked' if k == 'guild' else '') + '>',
-                trail=Figure(e(t['price']), unit=e(t['unit']), size='sm'), link=False, selected=k == 'guild') for k, t in G['tiers'].items()]
-    return (f'<div class="stack">{Segmented([(e(G["interval"]["labels"]["yearly"]), True), (e(G["interval"]["labels"]["monthly"]), False)])}'
-            f'{Rows(rows)}<p class="t-small">{e(G["verified"])}</p>{Link(e(c["compare"]) + " &rsaquo;")}'
-            f'<div class="acts">{_Button(e(G["subscribe"]), primary=True)}</div><p class="t-small">{e(c["trialLine"])}</p><p class="t-small">{e(c["founderLine"])}</p></div>')
-
-
-def seats(picking: bool = True) -> str:
-    """GuildSeats: a level 3 Section with its count, the helper, an open Row per seat (crest, class-coloured name, the
-    seat's lines, the action); Give seat opens the picker in its Row's foot."""
-    s = G['seats']
-    held = Row('Kraggor', f'{e(s["held"]["given"])}<br>{e(s["held"]["lock"])}', lead=crest_img('warrior', 32), title_color='var(--class-warrior)',
-               trail=Btn(e(s['move'])), link=False)
-    offered = Row('Mirelle', f'{Tag(e(s["waiting"]), "muted")}<br>{e(s["offered"]["note"])}', lead=crest_img('priest', 32), title_color='var(--class-priest)',
-                  trail=Btn(e(s['withdraw'])), link=False)
-    p = s['picker']
-    foot = (f'<div class="stack"><label class="f"><span class="t-label">{e(p["title"])}</span>{Select(e(p["option"]))}</label>'
-            f'<div class="acts">{Btn(e(p["give"]), primary=True)}{Btn(e(p["cancel"]))}</div></div>') if picking else ''
-    empty = Row(f'<span class="t-small">{e(s["notGiven"])}</span>', lead=EmptyCrest(32), trail=Btn(e(s['give'])), link=False, foot=foot)
-    return Section(e(s['heading']), f'<p class="t-small">{e(s["explainer"])}</p>{Rows([held, offered, empty], open_=True)}', meta=e(s['count']))
-
-
-def upgrade_confirm() -> str:
-    """GuildUpgradeConfirm: a selected Row, the prorated sentence, then Move to Raid guild and Keep Guild in its foot."""
-    u = G['upgrade']
-    return Rows([Row(e(u['sentence']), link=False, selected=True, foot=f'{Btn(e(u["commit"]), primary=True)}{Btn(e(u["keep"]))}')])
-
-
-def who_pays() -> str:
-    """GuildWhoPays: the Who pays row, then the transfer confirm as a selected Row (the officer select, what it does)."""
-    w = G['whoPays']
-    top = Row(e(w['heading']), e(w['help']), trail=Btn(e(w['transfer'])), link=False)
-    confirm = Row(e(w['transferTo']), link=False, selected=True,
-                  foot=(f'<div class="stack">{Select("Mirelle")}<p>{e(w["consequence"])}</p><p class="t-small">{e(w["stays"])}</p>'
-                        f'<div class="acts">{Btn(e(w["send"]), primary=True)}{Btn(e(w["cancel"]))}</div></div>'))
-    return Rows([top, confirm])
-
-
-def guild_billing_states() -> str:
-    cells = [('The plan chooser (no plan, 12 verified)', plan_chooser()), ('Premium seats, Give seat open', seats()),
-             ('Move to Raid guild, confirm', upgrade_confirm()), ('Who pays, the transfer confirm', who_pays())]
-    grid = ''.join(f'<div class="st-cell"><span class="t-label">{lab}</span>{html}</div>' for lab, html in cells)
-    body = '<div class="pc" style="padding-top:24px"><h1 class="t-title">Guild billing: element states</h1></div>' + Page('ledger', f'<div class="st-grid">{grid}</div>')
-    return render('Guild billing states', body, 'Guilds', 'Guild settings Billing tab blocks; data billing-facts.json (guild-billing-copy.ts, seats-copy.ts, plans).')
-
-
-# ================================================================================================ the Discord paste form
 def discord_paste() -> str:
     """DiscordPasteForm in the account's notifications Section: the steps (an ordered list), the Field, the trust helper,
     the event switches, Save."""
@@ -143,7 +88,7 @@ def admin_links() -> str:
     return render('Links · Forever Sixty', body, '', '/admin/links mock (the owner); data billing-facts.json (admin-copy.ts, funnel.ts over the e2e links).')
 
 
-PAGES = {'web-guild-billing-states': guild_billing_states, 'web-account-discord-paste': discord_paste, 'web-admin-links': admin_links}
+PAGES = {'web-account-discord-paste': discord_paste, 'web-admin-links': admin_links}
 
 if __name__ == '__main__':
     if sys.argv[1:2] == ['--list']:

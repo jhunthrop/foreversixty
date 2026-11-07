@@ -10,6 +10,7 @@
   import type { GuildRaidView } from '../../lib/guild/api';
   import { plannedRowView } from '../../lib/guild/planned-row';
   import { SEP } from '../../lib/guild/raid-copy';
+  import { ROW_ITEM } from '../../lib/ui/primitives';
   import { ROW_BAND_HOVER, ROW_RULE } from '../../lib/ui/row';
   import RaidChip from './RaidChip.svelte';
 
@@ -34,10 +35,7 @@
 </script>
 
 {#snippet dateBlock(box: string)}
-  <span
-    class="border-line rounded-control flex flex-col items-center justify-center border {box}"
-    aria-hidden="true"
-  >
+  <span class="flex flex-col items-center justify-center {box}" aria-hidden="true">
     <span class="label text-muted leading-none">{view.weekday}</span>
     <span class="text-strong numeric text-[22px] leading-tight">{view.day}</span>
     <span class="label text-muted leading-none">{view.month}</span>
@@ -70,7 +68,7 @@
 
 <a
   {href}
-  class="group border-line-soft focus-visible:outline-gold block border-b focus-visible:outline-2 focus-visible:-outline-offset-2 {ROW_BAND_HOVER} {ROW_RULE}"
+  class="group {ROW_ITEM} focus-visible:outline-gold block focus-visible:outline-2 focus-visible:-outline-offset-2 {ROW_BAND_HOVER} {ROW_RULE}"
   data-testid={testid}
 >
   <span

@@ -30,7 +30,7 @@ describe('PlannedRaidRow', () => {
   it('gives the link its date in words, since the date block is hidden from screen readers', () => {
     const markup = html();
     expect(markup).toMatch(/<span class="sr-only">Thursday 10 December, <\/span>/);
-    expect(markup).toMatch(/border-line rounded-control[^"]*" aria-hidden="true"/);
+    expect(markup).toMatch(/flex flex-col items-center justify-center[^"]*" aria-hidden="true"/);
   });
 
   it('is one link to the raid page', () => {

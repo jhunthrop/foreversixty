@@ -1,0 +1,59 @@
+{
+  "rows": [
+    {
+      "rank": 1,
+      "guild": {
+        "name": "Olympus XXVII",
+        "region": "us",
+        "ruleset": "pvp"
+      },
+      "value": 3,
+      "fought_at": "2026-12-03T04:00:00Z",
+      "report_id": "parity0"
+    },
+    {
+      "rank": 2,
+      "guild": {
+        "name": "The Last Watch",
+        "region": "us",
+        "ruleset": "hardcore"
+      },
+      "value": 3,
+      "fought_at": "2026-12-03T04:00:00Z",
+      "report_id": "parity1"
+    },
+    {
+      "rank": 3,
+      "guild": {
+        "name": "Iron Vanguard",
+        "region": "us",
+        "ruleset": "hardcore"
+      },
+      "value": 2,
+      "fought_at": "2026-12-03T04:00:00Z",
+      "report_id": "parity2"
+    },
+    {
+      "rank": 4,
+      "guild": {
+        "name": "Ashen Covenant",
+        "region": "eu",
+        "ruleset": "normal"
+      },
+      "value": 1,
+      "fought_at": "2026-12-03T04:00:00Z",
+      "report_id": "parity3"
+    },
+    {
+      "rank": 5,
+      "guild": {
+        "name": "Pinewood Wardens",
+        "region": "us",
+        "ruleset": "normal"
+      },
+      "value": 1,
+      "fought_at": "2026-12-03T04:00:00Z",
+      "report_id": "parity4"
+    }
+  ]
+}

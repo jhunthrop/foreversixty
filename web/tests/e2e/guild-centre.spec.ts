@@ -762,14 +762,15 @@ test.describe('roster at 390px: three blocks under the name, nothing past the ed
       'They can rejoin with the invite link.',
     );
     await expect(page.getByTestId('guild-roster-remove-cancel')).toBeFocused();
+    // The danger button (lib/ui/button.ts BUTTON_DANGER): wipe ink on a wipe hairline, never filled.
     const yes = await page
       .getByTestId('guild-roster-remove-yes')
-      .evaluate((n) => getComputedStyle(n).backgroundColor);
+      .evaluate((n) => [getComputedStyle(n).color, getComputedStyle(n).borderTopWidth]);
     const cancel = await page
       .getByTestId('guild-roster-remove-cancel')
-      .evaluate((n) => getComputedStyle(n).backgroundColor);
-    expect(yes).not.toBe(cancel);
-    expect(yes).not.toBe('rgba(0, 0, 0, 0)');
+      .evaluate((n) => getComputedStyle(n).color);
+    expect(yes[0]).not.toBe(cancel);
+    expect(yes[1]).toBe('1px');
   });
 
   // The line shows only while no rank is known at all (d05e718ba): a roster row's rank is the addon's.

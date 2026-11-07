@@ -61,7 +61,7 @@ describe('GuildRaids planned section', () => {
     const button = planButton(markup);
     expect(button).not.toBe('');
     expect(button).not.toMatch(DISABLED);
-    expect(text(markup)).toMatch(/^Raids Plan an event/);
+    expect(text(markup)).toMatch(/^Planned 2 Plan an event/);
   });
 
   it('gives a member no Plan an event', () => {
@@ -80,7 +80,7 @@ describe('GuildRaids planned section', () => {
 
   it('leaves the count out of the sub-head with none planned', () => {
     const markup = html({ planned: [] });
-    expect(markup).not.toContain('card-head-meta');
+    expect(markup).not.toContain('text-small text-muted');
     expect(text(markup)).toContain(`${raidCopy.subheads.planned} ${raidCopy.emptyPlanned.member}`);
   });
 
@@ -89,13 +89,13 @@ describe('GuildRaids planned section', () => {
     expect(text(html({ planned: [], officer: true }))).toContain(raidCopy.emptyPlanned.officer);
   });
 
-  it('draws no Planned panel for a gated officer with nothing planned: header, gate, then Raid nights', () => {
+  it('draws no Planned rows for a gated officer with nothing planned: the head, the gate, then Raid nights', () => {
     const markup = html({ planned: [], officer: true, officerTools: false });
-    expect(markup).not.toContain('data-testid="guild-planned"');
+    expect(markup).not.toContain('data-testid="guild-planned-rows"');
     expect(text(markup)).not.toContain(raidCopy.emptyPlanned.officer);
     const gate = markup.indexOf('guild-raids-plan-gate');
-    expect(gate).toBeGreaterThan(markup.indexOf('guild-raids-header'));
-    expect(markup.indexOf('guild-raid-nights-heading')).toBeGreaterThan(gate);
+    expect(gate).toBeGreaterThan(markup.indexOf('guild-raids-plan"'));
+    expect(markup.indexOf('guild-raid-nights')).toBeGreaterThan(gate);
   });
 
   it('keeps the Planned rows of a gated officer whose plan lapsed with raids still planned', () => {
@@ -105,7 +105,7 @@ describe('GuildRaids planned section', () => {
 
   it('puts Raid nights under Planned', () => {
     const markup = html({ planned: weeks(1) });
-    expect(markup.indexOf('guild-raid-nights-heading')).toBeGreaterThan(markup.indexOf('guild-planned'));
+    expect(markup.indexOf('guild-raid-nights')).toBeGreaterThan(markup.indexOf('guild-planned'));
   });
 
   it('shows a visitor nothing planned (R1)', () => {

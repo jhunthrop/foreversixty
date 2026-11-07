@@ -23,7 +23,8 @@
   import { SEP } from '../../lib/guild/raid-copy';
   import { stampParts } from '../../lib/guild/raid-time';
   import { guildRaidHref } from '../../lib/characters';
-  import { PRIMARY_BUTTON_FIXED } from '../../lib/planner/styles';
+  import { button } from '../../lib/ui/button';
+  import { ROW_ITEM } from '../../lib/ui/primitives';
   import { ROW_BAND_HOVER } from '../../lib/ui/row';
   import LoadError from '../ui/LoadError.svelte';
   import Figures from './Figures.svelte';
@@ -98,15 +99,11 @@
   >
 {/snippet}
 
-<section
-  class="bg-raised border-line rounded-panel flex flex-col gap-3 border p-4 shadow-[inset_0_1px_0_rgba(229,185,85,.35)] md:p-5"
-  aria-labelledby="raid-match-heading"
-  data-testid="raid-match-picker"
->
+<section class="flex flex-col gap-3" aria-labelledby="raid-match-heading" data-testid="raid-match-picker">
   <!-- Focus lands here on open, whatever state the list is in (the button that opened it is gone). -->
   <h2
     id="raid-match-heading"
-    class="section-title"
+    class="text-section text-strong font-bold"
     tabindex="-1"
     bind:this={heading}
     use:focusOnMount
@@ -138,7 +135,7 @@
         {@const taken = picker.isTaken(row)}
         {@const elsewhere =
           row.matched_raid === null ? null : matchedElsewhereParts(row.matched_raid, guildTimezone, locale)}
-        <div class="border-line-soft border-t first:border-t-0">
+        <div class={ROW_ITEM}>
           <div
             bind:this={rows[row.report_id]}
             role="radio"
@@ -152,7 +149,7 @@
             data-testid={`raid-match-row-${row.report_id}`}
           >
             <span
-              class="border-line-warm relative mt-1 size-4 rounded-full border md:mt-0"
+              class="border-muted relative mt-1 size-4 rounded-full border md:mt-0"
               aria-hidden="true"
               data-testid="raid-match-radio"
             >
@@ -205,7 +202,7 @@
     {#if picker.load === 'ready' && picker.rows.length > 0}
       <button
         type="button"
-        class="{PRIMARY_BUTTON_FIXED} focus-visible:outline-gold px-4 focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+        class={button('primary', 'md')}
         disabled={!picker.canMatch}
         onclick={() => void submit()}
         data-testid="raid-match-submit">{picker.busy ? copy.matching : copy.match}</button

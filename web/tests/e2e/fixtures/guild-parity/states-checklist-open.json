@@ -1,0 +1,12 @@
+{
+  "character": {
+    "character_key": "us/pvp/hollowmend",
+    "name": "Hollowmend",
+    "class": "priest",
+    "spec": "Holy",
+    "level": 60
+  },
+  "raid": null,
+  "verdict": "getting_started",
+  "items": []
+}

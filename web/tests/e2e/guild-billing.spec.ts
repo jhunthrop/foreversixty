@@ -47,7 +47,7 @@ test('case 9: not on a plan preselects the fit, and the trial button carries pla
     'href',
     `/premium/checkout?plan=raid_guild&interval=yearly&guild_id=${GUILD_ID}`,
   );
-  await page.getByTestId('guild-billing-interval-monthly').check();
+  await page.getByTestId('guild-billing-interval-monthly').click();
   await page.getByTestId('guild-billing-option-guild').click();
   await expect(page.getByTestId('guild-billing-subscribe')).toHaveAttribute(
     'href',
@@ -180,7 +180,7 @@ test('case 14: lapsed reads the read-only line, Subscribe again, and both CSVs d
 test('a settings link made for a plan preselects that card and interval', async ({ page }) => {
   await openWith(page, guildBillingRead(), `${SETTINGS_GUILD_PATH}?plan=raid_guild&interval=monthly#billing`);
   await expect(page.getByTestId('guild-billing-option-raid_guild').locator('input')).toBeChecked();
-  await expect(page.getByTestId('guild-billing-interval-monthly')).toBeChecked();
+  await expect(page.getByTestId('guild-billing-interval-monthly')).toHaveAttribute('aria-checked', 'true');
   await expect(page.getByTestId('guild-billing-subscribe')).toHaveAttribute(
     'href',
     `/premium/checkout?plan=raid_guild&interval=monthly&guild_id=${GUILD_ID}`,

@@ -40,7 +40,7 @@ describe('GuildSeatRow', () => {
     const name = /data-testid="guild-seat-1-name">([^<]*)</.exec(body)?.[1];
     expect(name).toBe('Kraggor');
     expect(text(body)).toContain('Given 2 Nov');
-    const note = /data-testid="guild-seat-1-note">([\s\S]*?Waiting[\s\S]*?)<\/span>/.exec(body)?.[1] ?? '';
+    const note = /data-testid="guild-seat-1-note">([\s\S]*?)<\/p>/.exec(body)?.[1] ?? '';
     expect(text(note)).toBe('Moving to Mirelle · offered 10 Nov Waiting');
     expect(text(body)).not.toContain('Can move from');
     expect(body).not.toContain('guild-seat-1-move');
@@ -48,11 +48,12 @@ describe('GuildSeatRow', () => {
     expect(body).not.toContain('guild-seat-1-give');
   });
 
-  it('is an open Row list item: the crest leads, the name in its class colour, the button trails', () => {
+  it('below 768 the row is two lines: who and the button share line 1, the middle spans line 2', () => {
     const body = html(held());
-    expect(body).toMatch(/<li class="ui-row[^"]*px-0[^>]*data-testid="guild-seat-1"/);
-    expect(body).toContain('var(--color-class-');
-    expect(body).toMatch(/<button[^>]*data-testid="guild-seat-1-move"/);
+    expect(body).toMatch(/data-testid="guild-seat-1-grid"/);
+    expect(body).toContain('grid-cols-[minmax(0,1fr)_auto]');
+    expect(body).toContain('col-span-full row-start-2');
+    expect(body).toContain('col-start-2 row-start-1');
   });
 
   it('an opener draws closed until its picker opens', () => {

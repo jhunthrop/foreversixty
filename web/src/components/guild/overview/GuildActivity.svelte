@@ -1,0 +1,55 @@
+<!-- web/src/components/guild/overview/GuildActivity.svelte -->
+<!-- The guild's activity on the Overview (home B spec 2026-11-07 P3, P7, P8): the Your guild rows of
+     GET /v1/feed (raid posts and guild sims), each line's time updating each minute. Your guild never
+     floors with site events: with no rows, or a read that fails, the section is not drawn. -->
+<script lang="ts">
+  import activeBuild from '../../../data/active-build.json';
+  import { minuteClock } from '../../../lib/guild/minute-clock.svelte';
+  import { feedCopy, fetchFeed, whenText, type FeedRow } from '../../../lib/home/feed';
+  import ClassCrestRing from '../../character/ClassCrestRing.svelte';
+  import FeedSentence from '../../home/FeedSentence.svelte';
+  import FeedRowUi from '../../ui/FeedRow.svelte';
+  import ItemIcon from '../../ui/ItemIcon.svelte';
+  import Section from '../../ui/Section.svelte';
+
+  let { now }: { now?: Date } = $props();
+
+  const TITLE = 'Guild activity';
+  const clock = minuteClock(() => now);
+  let rows = $state<FeedRow[]>([]);
+
+  $effect(() => {
+    void fetchFeed({ filter: 'guild', signedIn: true })
+      .then((page) => (rows = page.rows))
+      .catch(() => (rows = []));
+  });
+</script>
+
+{#if rows.length > 0}
+  <Section title={TITLE} testid="guild-overview-activity">
+    <div class="flex flex-col">
+      {#each rows as row (row.id)}
+        <FeedRowUi
+          href={row.href}
+          when={whenText(row, clock.now)}
+          kind={feedCopy.tags[row.tag]}
+          testid="guild-overview-activity-row"
+        >
+          {#snippet lead()}
+            {#if row.crest !== null}
+              <ClassCrestRing characterClass={row.crest} size={40} />
+            {:else}
+              <ItemIcon
+                icon={row.icon ?? undefined}
+                quality={row.quality ?? 1}
+                build={activeBuild.build}
+                size={40}
+              />
+            {/if}
+          {/snippet}
+          <FeedSentence segments={row.segments} />
+        </FeedRowUi>
+      {/each}
+    </div>
+  </Section>
+{/if}

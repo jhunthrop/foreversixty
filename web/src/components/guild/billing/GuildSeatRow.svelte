@@ -1,20 +1,22 @@
 <!-- web/src/components/guild/billing/GuildSeatRow.svelte -->
-<!-- One seat (spec 3.2.5), an open Row list item: Held, Offered (waiting), Accepted, Empty or
-     Returned. The crest leads, the name (class colour) and the seat's lines are the body, the trail is
+<!-- One seat (spec 3.2.5): Held, Offered (waiting), Accepted, Empty or Returned. The right column is
      Move seat, Withdraw or Give seat, and only a reader who may manage seats gets it. Give and Move
-     open the picker in the row's foot; a locked Move seat is aria-disabled and its date is text. -->
+     open the picker in place below the row; a locked Move seat is aria-disabled and its date is text. -->
 <script lang="ts">
   import { tick } from 'svelte';
   import type { SeatCandidate, SeatView } from '../../../lib/billing/contract';
   import { giveSeat, moveSeat, seatCandidates, withdrawSeat } from '../../../lib/billing/seats-api';
   import { seatsCopy as copy } from '../../../lib/billing/seats-copy';
-  import { smallButton } from '../../../lib/account/small-button';
+  import {
+    BILLING_MOVE_BUTTON,
+    BILLING_OUTLINE_BUTTON,
+    BILLING_TEXT_BUTTON,
+    OPENER_PRESSED,
+  } from '../../../lib/guild/billing-styles';
   import { isSeatLocked, seatErrorLine, seatRowKind, staleReadRefusal } from '../../../lib/guild/seat-view';
   import { BUSY_CLASS } from '../../../lib/ui/busy';
-  import { classTone } from '../../../lib/ui/primitives';
   import ClassCrestRing from '../../character/ClassCrestRing.svelte';
-  import Row from '../../ui/Row.svelte';
-  import Tag from '../../ui/Tag.svelte';
+  import { classColorVar } from '../../../lib/report/format';
   import GuildSeatPicker from './GuildSeatPicker.svelte';
 
   let {
@@ -36,6 +38,7 @@
   let candidates = $state<readonly SeatCandidate[] | null>(null);
   let busy = $state(false);
   let error = $state('');
+  let rowEl = $state<HTMLElement | null>(null);
 
   const kind = $derived(seatRowKind(seat));
   const locked = $derived(isSeatLocked(seat, now));
@@ -69,19 +72,11 @@
   const canWithdraw = $derived(kind === 'offered' || kind === 'pending');
   /** A held seat moving to a payer: line 1 stays the holder, the Waiting pill sits in the middle. */
   const moving = $derived(kind === 'pending' && seat.holder !== null);
-  /** The holder, else the member a seat is offered to; null for an empty or returned seat. */
-  const who = $derived(seat.holder ?? seat.offeree);
-  /** The Waiting tag sits under the name of an offered seat and of an empty seat's offeree. */
-  const waitingUnderName = $derived(kind === 'offered' || (seat.holder === null && seat.offeree !== null));
-
-  /** The seat's own Row: the list item the testid names. */
-  const rowElement = (): HTMLElement | null =>
-    document.querySelector<HTMLElement>(`[data-testid="guild-seat-${seat.slot}"]`);
 
   /** Puts focus back on the row's action once the opener it came from has re-rendered. */
   async function refocusAction(): Promise<void> {
     await tick();
-    rowElement()?.querySelector<HTMLElement>('[data-seat-action]')?.focus();
+    rowEl?.querySelector<HTMLElement>('[data-seat-action]')?.focus();
   }
 
   async function open(mode: 'give' | 'move'): Promise<void> {
@@ -103,11 +98,17 @@
     void refocusAction();
   }
 
+  function onKeydown(event: KeyboardEvent): void {
+    if (event.key !== 'Escape' || picking === null) return;
+    event.preventDefault();
+    close();
+  }
+
   /** A refused submit keeps the picker open: focus goes back to its button, which `busy` disabled
    *  (and so blurred), so the alert is read in place and Escape still acts as Cancel. */
   async function refocusSubmit(): Promise<void> {
     await tick();
-    rowElement()?.querySelector<HTMLElement>('[data-seat-submit]')?.focus();
+    rowEl?.querySelector<HTMLElement>('[data-seat-submit]')?.focus();
   }
 
   async function submit(candidate: SeatCandidate): Promise<void> {
@@ -146,97 +147,127 @@
   }
 </script>
 
-<Row
-  title={who?.name ?? copy.notGiven}
-  titleTone={who === null ? undefined : classTone(who.class)}
-  item
-  open
-  testid={`guild-seat-${seat.slot}`}
+<li
+  bind:this={rowEl}
+  onkeydown={onKeydown}
+  class="flex flex-col gap-3 py-2"
+  data-testid={`guild-seat-${seat.slot}`}
+  data-seat-kind={kind}
 >
-  {#snippet lead()}
-    <ClassCrestRing characterClass={who?.class ?? ''} size={32} />
-  {/snippet}
-  {#snippet titleContent()}
-    {#if who === null}<span class="text-muted font-normal">{copy.notGiven}</span>{:else}<span
-        data-testid={`guild-seat-${seat.slot}-name`}>{who.name}</span
-      >{/if}
-  {/snippet}
-  {#snippet subContent()}
-    {#if waitingUnderName}
-      <span class="block pt-1"><Tag tone="muted">{copy.waiting}</Tag></span>
-    {:else if seat.given_at !== null && seat.holder !== null && (kind === 'held' || moving)}
-      <span class="block">{copy.givenOn(seat.given_at)}</span>
-    {/if}
-    {#if middle !== ''}
-      <span
-        id={noteId}
-        class="flex flex-wrap items-center gap-2 {kind === 'held' && !locked ? 'text-text' : ''}"
-        data-testid={`guild-seat-${seat.slot}-note`}
-      >
-        {middle}{#if moving}<Tag tone="muted">{copy.waiting}</Tag>{/if}
-      </span>
-    {/if}
-    {#if lockLine !== ''}
-      <span id={lockId} class="block" data-testid={lockId}>{lockLine}</span>
-    {/if}
-  {/snippet}
-  {#snippet trail()}
+  <div
+    class="grid items-center gap-x-4 gap-y-2 md:min-h-12 {manage
+      ? 'grid-cols-[minmax(0,1fr)_auto] md:grid-cols-[minmax(220px,1fr)_minmax(0,1.4fr)_auto]'
+      : 'grid-cols-1 md:grid-cols-[minmax(220px,1fr)_minmax(0,1.4fr)]'}"
+    data-testid={`guild-seat-${seat.slot}-grid`}
+  >
+    <!-- Below 768 the row is two lines (spec 7): who and the button on line 1, the middle on line 2. -->
+    <div class="col-start-1 row-start-1 flex min-w-0 items-center gap-3">
+      {#if seat.holder !== null}
+        <ClassCrestRing characterClass={seat.holder.class} size={32} />
+        <div class="flex min-w-0 flex-col">
+          <span
+            class="heading-name truncate text-[14px]"
+            style={`color: ${classColorVar(seat.holder.class)}`}
+            data-testid={`guild-seat-${seat.slot}-name`}>{seat.holder.name}</span
+          >
+          {#if kind === 'offered'}
+            <span><span class="pill pill-sample">{copy.waiting}</span></span>
+          {:else if seat.given_at !== null && (kind === 'held' || moving)}
+            <span class="text-muted text-[12px]">{copy.givenOn(seat.given_at)}</span>
+          {/if}
+        </div>
+      {:else if seat.offeree !== null}
+        <ClassCrestRing characterClass={seat.offeree.class} size={32} />
+        <div class="flex min-w-0 flex-col">
+          <span
+            class="heading-name truncate text-[14px]"
+            style={`color: ${classColorVar(seat.offeree.class)}`}
+            data-testid={`guild-seat-${seat.slot}-name`}>{seat.offeree.name}</span
+          >
+          <span><span class="pill pill-sample">{copy.waiting}</span></span>
+        </div>
+      {:else}
+        <span
+          class="inline-block size-8 shrink-0 rounded-full border border-dashed border-white/20"
+          aria-hidden="true"
+        ></span>
+        <span class="text-muted text-[14px]">{copy.notGiven}</span>
+      {/if}
+    </div>
+    <div
+      class="col-span-full row-start-2 flex flex-col gap-1 text-[13px] md:col-span-1 md:col-start-2 md:row-start-1"
+    >
+      {#if middle !== ''}
+        <p
+          id={noteId}
+          class="{kind === 'held' && !locked ? 'text-text' : 'text-muted'} {moving
+            ? 'flex flex-wrap items-center gap-2'
+            : ''}"
+          data-testid={`guild-seat-${seat.slot}-note`}
+        >
+          {middle}{#if moving}<span class="pill pill-sample">{copy.waiting}</span>{/if}
+        </p>
+      {/if}
+      {#if lockLine !== ''}
+        <p id={lockId} class="text-muted" data-testid={lockId}>{lockLine}</p>
+      {/if}
+    </div>
     {#if manage}
-      {#if canMove}
-        <button
-          type="button"
-          class={smallButton()}
-          aria-disabled={moveDisabled}
-          aria-expanded={picking === 'move'}
-          aria-describedby={moveDisabled ? (lockLine !== '' ? lockId : noteId) : undefined}
-          onclick={() => void open('move')}
-          data-seat-action
-          data-testid={`guild-seat-${seat.slot}-move`}
-        >
-          {copy.move}
-        </button>
-      {/if}
-      {#if canWithdraw}
-        <button
-          type="button"
-          class="{smallButton('ghost')} {busy ? BUSY_CLASS : ''}"
-          disabled={busy}
-          aria-busy={busy}
-          onclick={() => void withdraw()}
-          data-seat-action={canMove ? undefined : ''}
-          data-testid={`guild-seat-${seat.slot}-withdraw`}
-        >
-          {busy ? copy.withdrawing : copy.withdraw}
-        </button>
-      {:else if !canMove}
-        <button
-          type="button"
-          class={smallButton()}
-          aria-expanded={picking === 'give'}
-          onclick={() => void open('give')}
-          data-seat-action
-          data-testid={`guild-seat-${seat.slot}-give`}
-        >
-          {copy.give}
-        </button>
-      {/if}
+      <div class="col-start-2 row-start-1 flex items-center justify-end gap-2 md:col-start-3">
+        {#if canMove}
+          <button
+            type="button"
+            class="{BILLING_OUTLINE_BUTTON} {picking === 'move' ? OPENER_PRESSED : ''}"
+            aria-disabled={moveDisabled}
+            aria-expanded={picking === 'move'}
+            aria-describedby={moveDisabled ? (lockLine !== '' ? lockId : noteId) : undefined}
+            onclick={() => void open('move')}
+            data-seat-action
+            data-testid={`guild-seat-${seat.slot}-move`}
+          >
+            {copy.move}
+          </button>
+        {/if}
+        {#if canWithdraw}
+          <button
+            type="button"
+            class="{BILLING_TEXT_BUTTON} {busy ? BUSY_CLASS : ''}"
+            disabled={busy}
+            aria-busy={busy}
+            onclick={() => void withdraw()}
+            data-seat-action={canMove ? undefined : ''}
+            data-testid={`guild-seat-${seat.slot}-withdraw`}
+          >
+            {busy ? copy.withdrawing : copy.withdraw}
+          </button>
+        {:else if !canMove}
+          <button
+            type="button"
+            class="{BILLING_MOVE_BUTTON} {picking === 'give' ? OPENER_PRESSED : ''}"
+            aria-expanded={picking === 'give'}
+            onclick={() => void open('give')}
+            data-seat-action
+            data-testid={`guild-seat-${seat.slot}-give`}
+          >
+            {copy.give}
+          </button>
+        {/if}
+      </div>
     {/if}
-  {/snippet}
-  {#snippet foot()}
-    {#if picking === null && error !== ''}
-      <p class="text-wipe text-[13px]" role="alert" data-testid={`guild-seat-${seat.slot}-error`}>{error}</p>
-    {/if}
-    {#if picking !== null}
-      <GuildSeatPicker
-        slot={seat.slot}
-        mode={picking}
-        {holderName}
-        {candidates}
-        {busy}
-        {error}
-        onSubmit={(candidate) => void submit(candidate)}
-        onCancel={close}
-      />
-    {/if}
-  {/snippet}
-</Row>
+  </div>
+  {#if picking === null && error !== ''}
+    <p class="text-[13px]" role="alert" data-testid={`guild-seat-${seat.slot}-error`}>{error}</p>
+  {/if}
+  {#if picking !== null}
+    <GuildSeatPicker
+      slot={seat.slot}
+      mode={picking}
+      {holderName}
+      {candidates}
+      {busy}
+      {error}
+      onSubmit={(candidate) => void submit(candidate)}
+      onCancel={close}
+    />
+  {/if}
+</li>

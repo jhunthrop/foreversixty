@@ -8,6 +8,7 @@
 <script lang="ts">
   import { tick } from 'svelte';
   import type { GuildRaidView } from '../../lib/guild/api';
+  import { TEXTAREA_CHROME } from '../../lib/guild/field-styles';
   import { focusOnMount } from '../../lib/guild/focus-now';
   import { cancelActionOf, kindOf, raidCopy } from '../../lib/guild/raid-copy';
   import { signupListText } from '../../lib/guild/raid-comp';
@@ -171,7 +172,7 @@
   {#if copyFailed !== null}
     <p class="text-wipe text-[13px]" role="alert" data-testid="raid-copy-failed">{raidCopy.copyFailed}</p>
     <textarea
-      class="border-line-warm bg-raised text-text rounded-control w-full border p-2 font-mono text-[12px]"
+      class="{TEXTAREA_CHROME} font-mono text-[12px]"
       rows="6"
       readonly
       aria-label={raidCopy.officerRow.copy}
