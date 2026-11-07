@@ -1,33 +1,22 @@
 {
- "approvals": {
-  "count": 3,
-  "names": [
-   "Nightlatch",
-   "Voidcall",
-   "Skyarcana"
-  ]
- },
- "applications": {
-  "count": 2,
-  "names": [
-   "Ashenveil",
-   "Quillbright"
-  ]
- },
- "not_signed": {
-  "raid_id": 41,
-  "count": 3,
-  "names": [
-   "Voidcall",
-   "Skyarcana",
-   "Starnettle"
-  ]
- },
- "drops_to_award": {
-  "tracked": true,
-  "count": 4,
-  "raid_id": 38,
-  "label": "Onyxia, Mon 7 Dec",
-  "awarded": 2
- }
+  "approvals": {
+    "count": 3,
+    "names": ["Nightlatch", "Voidcall", "Skyarcana"]
+  },
+  "applications": {
+    "count": 2,
+    "names": ["Ashenveil", "Quillbright"]
+  },
+  "not_signed": {
+    "raid_id": 41,
+    "count": 3,
+    "names": ["Voidcall", "Skyarcana", "Starnettle"]
+  },
+  "drops_to_award": {
+    "tracked": true,
+    "count": 4,
+    "raid_id": 38,
+    "label": "Onyxia, Mon 7 Dec",
+    "awarded": 2
+  }
 }

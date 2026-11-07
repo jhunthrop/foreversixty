@@ -186,146 +186,157 @@
   />
 {/snippet}
 
-<Page layout="split" {header} {bar} testid="raid-page">
-  {#if flags.cancelled && c.raceLine !== null}
-    <p class="text-wipe text-[13px]" role="alert" tabindex="-1" use:focusOnMount data-testid="raid-race-line">
-      {c.raceLine}
-    </p>
-  {/if}
-  {#if c.editing}
-    <RaidForm
-      mode="edit"
-      zones={c.zones}
-      guildTimezone={raid.guild_timezone}
-      {viewerTimezone}
-      {raid}
-      plannedCount={0}
-      discord={raid.discord}
-      {settingsHref}
-      onSubmit={async (payload) => {
-        const result = await c.saveEdit(payload);
-        if (result.ok) onCloseEdit();
-        return result;
-      }}
-      onCancel={onCloseEdit}
-      {now}
-      {locale}
-    />
-  {/if}
-  {#if flags.ended || raid.match !== null}
-    <RaidDoneBand
-      {raid}
-      {now}
-      {guildPath}
-      {viewerTimezone}
-      {guildTimezone}
-      {locale}
-      {officer}
-      readOnly={!c.officerTools}
-      {gateId}
-      loadCandidates={c.loadCandidates}
-      onMatch={c.matchLog}
-      onClear={c.clearMatch}
-    />
-  {/if}
-  {#if raid.key_item != null}<ZoneKeyNote item={raid.key_item} testid="raid-key" />{/if}
-  {#if c.pollPaused}<p class="text-muted text-[13px]" data-testid="raid-poll-paused">{raidCopy.poll}</p>{/if}
-  <RaidSignupStrip
-    {raid}
-    locked={flags.locked}
-    ended={flags.ended}
-    cancelled={flags.cancelled}
-    onSignup={c.signup}
-    currentKey={c.currentKey}
-  />
-  <Section title={raidCopy.subheads.signups} meta={count.ratio} testid="raid-signups">
-    <PlannerRoster
-      {raid}
-      {grouping}
-      {officer}
-      officerTools={c.officerTools}
-      {gateId}
-      closed={flags.cancelled}
-      busyKey={c.rosterBusy}
-      line={c.line}
-      onSetState={(row, state) => c.setRosterState(row, state)}
-    />
-  </Section>
-  {#if officer}
-    <PlannerNotSigned
-      {raid}
-      {now}
-      clock={nextPingClock}
-      officerTools={c.officerTools}
-      {gateId}
-      closed={flags.cancelled || flags.ended}
-      busyKey={c.rosterBusy}
-      pinging={c.planner.pinging}
-      pingAnswer={c.planner.pingAnswer}
-      onPing={() => void c.planner.ping()}
-      onSetState={(row, state) => c.setRosterState(row, state)}
-    />
-  {/if}
-
-  {#snippet rail()}
-    {#if target !== null && roles}
-      <CompTally {raid} {target}>
-        {#snippet edit()}
-          {#if officer && editingComp}
-            <CompTargetForm
-              {target}
-              disabled={!c.officerTools}
-              busy={c.planner.compBusy}
-              fields={c.planner.compFields}
-              line={c.planner.compLine}
-              onSave={c.planner.saveComp}
-              onReset={c.planner.resetComp}
-              onRefuse={(fields) => c.planner.refuseComp(fields)}
-              onDone={() => (editingComp = false)}
-            />
-          {:else if officer}
-            <Button
-              size="sm"
-              disabled={!c.officerTools || flags.cancelled}
-              onclick={() => (editingComp = true)}
-              testid="raid-comp-edit">Change the target</Button
-            >
-          {/if}
-        {/snippet}
-      </CompTally>
+<!-- One block: the guild shell spaces its children, and the head, bar and page sit flush as the mock draws them. -->
+<div>
+  <Page layout="split" {header} {bar} testid="raid-page">
+    {#if flags.cancelled && c.raceLine !== null}
+      <p
+        class="text-wipe text-[13px]"
+        role="alert"
+        tabindex="-1"
+        use:focusOnMount
+        data-testid="raid-race-line"
+      >
+        {c.raceLine}
+      </p>
     {/if}
-    {#if officer && roles}
-      <PlannerBench
+    {#if c.editing}
+      <RaidForm
+        mode="edit"
+        zones={c.zones}
+        guildTimezone={raid.guild_timezone}
+        {viewerTimezone}
         {raid}
+        plannedCount={0}
+        discord={raid.discord}
+        {settingsHref}
+        onSubmit={async (payload) => {
+          const result = await c.saveEdit(payload);
+          if (result.ok) onCloseEdit();
+          return result;
+        }}
+        onCancel={onCloseEdit}
+        {now}
+        {locale}
+      />
+    {/if}
+    {#if flags.ended || raid.match !== null}
+      <RaidDoneBand
+        {raid}
+        {now}
+        {guildPath}
+        {viewerTimezone}
+        {guildTimezone}
+        {locale}
+        {officer}
+        readOnly={!c.officerTools}
+        {gateId}
+        loadCandidates={c.loadCandidates}
+        onMatch={c.matchLog}
+        onClear={c.clearMatch}
+      />
+    {/if}
+    {#if raid.key_item != null}<ZoneKeyNote item={raid.key_item} testid="raid-key" />{/if}
+    {#if c.pollPaused}<p class="text-muted text-[13px]" data-testid="raid-poll-paused">
+        {raidCopy.poll}
+      </p>{/if}
+    <RaidSignupStrip
+      {raid}
+      locked={flags.locked}
+      ended={flags.ended}
+      cancelled={flags.cancelled}
+      onSignup={c.signup}
+      currentKey={c.currentKey}
+    />
+    <Section title={raidCopy.subheads.signups} meta={count.ratio} testid="raid-signups">
+      <PlannerRoster
+        {raid}
+        {grouping}
+        {officer}
         officerTools={c.officerTools}
+        {gateId}
         closed={flags.cancelled}
         busyKey={c.rosterBusy}
+        line={c.line}
+        onSetState={(row, state) => c.setRosterState(row, state)}
+      />
+    </Section>
+    {#if officer}
+      <PlannerNotSigned
+        {raid}
+        {now}
+        clock={nextPingClock}
+        officerTools={c.officerTools}
+        {gateId}
+        closed={flags.cancelled || flags.ended}
+        busyKey={c.rosterBusy}
+        pinging={c.planner.pinging}
+        pingAnswer={c.planner.pingAnswer}
+        onPing={() => void c.planner.ping()}
         onSetState={(row, state) => c.setRosterState(row, state)}
       />
     {/if}
-    {#if raid.assignments}
-      <PlannerAssignments
-        {raid}
-        {officer}
-        officerTools={c.officerTools}
-        closed={flags.cancelled || flags.ended}
-        actions={c.assignments}
-      />
-    {/if}
-    {#if raid.cover && raid.cover.length > 0}<BuffCover cover={raid.cover} />{/if}
-    <Section title={raidCopy.subheads.notes} id="raid-notes" testid="raid-notes">
-      {#if raid.notes_html.trim() === ''}
-        <p class="text-muted text-[14px]" data-testid="raid-notes-empty">{notesEmptyOf(kind, officer)}</p>
-      {:else}
-        <div
-          class="prose-forever [&_a]:text-gold [&_li]:marker:text-muted text-[14px] leading-[1.6] [&_ol]:list-decimal [&_ul]:list-disc"
-          data-testid="raid-notes-prose"
-        >
-          <!-- The API renders and sanitises the notes (paragraphs, bold, italic, lists, links). -->
-          <!-- eslint-disable-next-line svelte/no-at-html-tags -->
-          {@html raid.notes_html}
-        </div>
+
+    {#snippet rail()}
+      {#if target !== null && roles}
+        <CompTally {raid} {target}>
+          {#snippet edit()}
+            {#if officer && editingComp}
+              <CompTargetForm
+                {target}
+                disabled={!c.officerTools}
+                busy={c.planner.compBusy}
+                fields={c.planner.compFields}
+                line={c.planner.compLine}
+                onSave={c.planner.saveComp}
+                onReset={c.planner.resetComp}
+                onRefuse={(fields) => c.planner.refuseComp(fields)}
+                onDone={() => (editingComp = false)}
+              />
+            {:else if officer}
+              <Button
+                size="sm"
+                disabled={!c.officerTools || flags.cancelled}
+                onclick={() => (editingComp = true)}
+                testid="raid-comp-edit">Change the target</Button
+              >
+            {/if}
+          {/snippet}
+        </CompTally>
       {/if}
-    </Section>
-  {/snippet}
-</Page>
+      {#if officer && roles}
+        <PlannerBench
+          {raid}
+          officerTools={c.officerTools}
+          closed={flags.cancelled}
+          busyKey={c.rosterBusy}
+          onSetState={(row, state) => c.setRosterState(row, state)}
+        />
+      {/if}
+      {#if raid.assignments}
+        <PlannerAssignments
+          {raid}
+          {officer}
+          officerTools={c.officerTools}
+          closed={flags.cancelled || flags.ended}
+          actions={c.assignments}
+        />
+      {/if}
+      {#if raid.cover && raid.cover.length > 0}<BuffCover cover={raid.cover} />{/if}
+      <Section title={raidCopy.subheads.notes} id="raid-notes" testid="raid-notes">
+        {#if raid.notes_html.trim() === ''}
+          <p class="text-muted text-[14px]" data-testid="raid-notes-empty">{notesEmptyOf(kind, officer)}</p>
+        {:else}
+          <div
+            class="prose-forever [&_a]:text-gold [&_li]:marker:text-muted text-[14px] leading-[1.6] [&_ol]:list-decimal [&_ul]:list-disc [&>:last-child]:mb-0"
+            data-testid="raid-notes-prose"
+          >
+            <!-- The API renders and sanitises the notes (paragraphs, bold, italic, lists, links). -->
+            <!-- eslint-disable-next-line svelte/no-at-html-tags -->
+            {@html raid.notes_html}
+          </div>
+        {/if}
+      </Section>
+    {/snippet}
+  </Page>
+</div>

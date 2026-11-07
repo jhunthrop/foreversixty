@@ -125,6 +125,10 @@ export const LINK =
   'text-gold font-semibold hover:text-gold-hover active:text-gold-hover rounded-field ' +
   'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold';
 
+/** A Row wrapped in a list item: the Row's own hairline is lost (each Row is its item's last
+ *  child), so the item carries it, none under the last. */
+export const ROW_ITEM = 'border-line-soft border-b last:border-b-0';
+
 /** The few fields an item row or icon needs; every surface's item maps to this. */
 export interface ItemRef {
   id: number;

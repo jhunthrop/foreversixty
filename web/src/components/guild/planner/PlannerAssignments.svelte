@@ -125,9 +125,9 @@
         >
       {/if}
     </div>
-    <p class="sr-only" aria-live="polite">
+    <span class="sr-only" aria-live="polite">
       {copyState === 'copied' && copyShown === encounter.encounter_id ? assignmentsCopy.copied : ''}
-    </p>
+    </span>
     {#if officer && actions.postAnswer !== null}
       <p class="text-muted pt-2 text-[13px]" role="status" data-testid="raid-assignments-post-answer">
         {actions.postAnswer}

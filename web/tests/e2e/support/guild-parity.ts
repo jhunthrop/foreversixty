@@ -5,11 +5,13 @@
 // the same files ws_guild2.py draws the mocks from) and waits until the page shows its data.
 import type { Page } from '@playwright/test';
 import { OVERVIEW_OPENERS } from './guild-parity/overview';
+import { RAID_OPENERS } from './guild-parity/raid';
 
 export type GuildStateOpener = (page: Page) => Promise<void>;
 
 const OPENERS: Readonly<Record<string, GuildStateOpener>> = {
   ...OVERVIEW_OPENERS,
+  ...RAID_OPENERS,
 };
 
 export async function openGuildState(page: Page, id: string): Promise<void> {

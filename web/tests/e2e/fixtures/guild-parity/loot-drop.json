@@ -1,149 +1,149 @@
 {
- "night": "raid:38",
- "item_id": 17075,
- "name": "Vis'kag the Bloodletter",
- "icon": "inv_sword_18",
- "quality": 4,
- "kind": "gear",
- "officers": 4,
- "closed": false,
- "award": null,
- "candidates": [
-  {
-   "character_key": "us/pvp/seraphine",
-   "name": "Seraphine",
-   "class": "paladin",
-   "spec": "Retribution",
-   "gain_dps": 14.2,
-   "gain_unit": "dps",
-   "tier": 0,
-   "not_sim_checked": false,
-   "ilvl_delta": null,
-   "attendance": {
-    "present": 4,
-    "nights": 4
-   },
-   "already_equivalent": false,
-   "fills_empty_slot": false,
-   "replaces": "Mirah's Song",
-   "replaces_item": {
-    "item_id": 15806,
-    "name": "Mirah's Song",
-    "icon": "inv_sword_24",
-    "quality": 3
-   },
-   "items_won": 0,
-   "bis_for_them": true,
-   "ms_os": "ms",
-   "ms_os_source": "declared",
-   "votes": {
-    "yes": 3,
-    "no": 0,
-    "voters": 4,
-    "mine": null
-   }
-  },
-  {
-   "character_key": "us/pvp/shiverknife",
-   "name": "Shiverknife",
-   "class": "rogue",
-   "spec": "Assassination",
-   "gain_dps": 11.6,
-   "gain_unit": "dps",
-   "tier": 0,
-   "not_sim_checked": false,
-   "ilvl_delta": null,
-   "attendance": {
-    "present": 3,
-    "nights": 4
-   },
-   "already_equivalent": false,
-   "fills_empty_slot": false,
-   "replaces": "Dal'Rend's Sacred Charge",
-   "replaces_item": {
-    "item_id": 12940,
-    "name": "Dal'Rend's Sacred Charge",
-    "icon": "inv_sword_36",
-    "quality": 3
-   },
-   "items_won": 1,
-   "bis_for_them": false,
-   "ms_os": "ms",
-   "ms_os_source": "declared",
-   "votes": {
-    "yes": 1,
-    "no": 0,
-    "voters": 4,
-    "mine": null
-   }
-  },
-  {
-   "character_key": "us/pvp/groundshock",
-   "name": "Groundshock",
-   "class": "shaman",
-   "spec": "Enhancement",
-   "gain_dps": 9.1,
-   "gain_unit": "dps",
-   "tier": 0,
-   "not_sim_checked": false,
-   "ilvl_delta": null,
-   "attendance": {
-    "present": 4,
-    "nights": 4
-   },
-   "already_equivalent": false,
-   "fills_empty_slot": false,
-   "replaces": "Ironfoe",
-   "replaces_item": {
-    "item_id": 11684,
-    "name": "Ironfoe",
-    "icon": "inv_mace_10",
-    "quality": 4
-   },
-   "items_won": 0,
-   "bis_for_them": false,
-   "ms_os": "os",
-   "ms_os_source": "declared",
-   "votes": {
-    "yes": 1,
-    "no": 0,
-    "voters": 4,
-    "mine": null
-   }
-  },
-  {
-   "character_key": "us/pvp/blacktide",
-   "name": "Blacktide",
-   "class": "rogue",
-   "spec": "Combat",
-   "gain_dps": 4.0,
-   "gain_unit": "dps",
-   "tier": 0,
-   "not_sim_checked": false,
-   "ilvl_delta": null,
-   "attendance": {
-    "present": 2,
-    "nights": 4
-   },
-   "already_equivalent": false,
-   "fills_empty_slot": false,
-   "replaces": "Skullforge Reaver",
-   "replaces_item": {
-    "item_id": 13361,
-    "name": "Skullforge Reaver",
-    "icon": "inv_sword_47",
-    "quality": 3
-   },
-   "items_won": 2,
-   "bis_for_them": false,
-   "ms_os": "os",
-   "ms_os_source": "declared",
-   "votes": {
-    "yes": 1,
-    "no": 0,
-    "voters": 4,
-    "mine": null
-   }
-  }
- ]
+  "night": "raid:38",
+  "item_id": 17075,
+  "name": "Vis'kag the Bloodletter",
+  "icon": "inv_sword_18",
+  "quality": 4,
+  "kind": "gear",
+  "officers": 4,
+  "closed": false,
+  "award": null,
+  "candidates": [
+    {
+      "character_key": "us/pvp/seraphine",
+      "name": "Seraphine",
+      "class": "paladin",
+      "spec": "Retribution",
+      "gain_dps": 14.2,
+      "gain_unit": "dps",
+      "tier": 0,
+      "not_sim_checked": false,
+      "ilvl_delta": null,
+      "attendance": {
+        "present": 4,
+        "nights": 4
+      },
+      "already_equivalent": false,
+      "fills_empty_slot": false,
+      "replaces": "Mirah's Song",
+      "replaces_item": {
+        "item_id": 15806,
+        "name": "Mirah's Song",
+        "icon": "inv_sword_24",
+        "quality": 3
+      },
+      "items_won": 0,
+      "bis_for_them": true,
+      "ms_os": "ms",
+      "ms_os_source": "declared",
+      "votes": {
+        "yes": 3,
+        "no": 0,
+        "voters": 4,
+        "mine": null
+      }
+    },
+    {
+      "character_key": "us/pvp/shiverknife",
+      "name": "Shiverknife",
+      "class": "rogue",
+      "spec": "Assassination",
+      "gain_dps": 11.6,
+      "gain_unit": "dps",
+      "tier": 0,
+      "not_sim_checked": false,
+      "ilvl_delta": null,
+      "attendance": {
+        "present": 3,
+        "nights": 4
+      },
+      "already_equivalent": false,
+      "fills_empty_slot": false,
+      "replaces": "Dal'Rend's Sacred Charge",
+      "replaces_item": {
+        "item_id": 12940,
+        "name": "Dal'Rend's Sacred Charge",
+        "icon": "inv_sword_36",
+        "quality": 3
+      },
+      "items_won": 1,
+      "bis_for_them": false,
+      "ms_os": "ms",
+      "ms_os_source": "declared",
+      "votes": {
+        "yes": 1,
+        "no": 0,
+        "voters": 4,
+        "mine": null
+      }
+    },
+    {
+      "character_key": "us/pvp/groundshock",
+      "name": "Groundshock",
+      "class": "shaman",
+      "spec": "Enhancement",
+      "gain_dps": 9.1,
+      "gain_unit": "dps",
+      "tier": 0,
+      "not_sim_checked": false,
+      "ilvl_delta": null,
+      "attendance": {
+        "present": 4,
+        "nights": 4
+      },
+      "already_equivalent": false,
+      "fills_empty_slot": false,
+      "replaces": "Ironfoe",
+      "replaces_item": {
+        "item_id": 11684,
+        "name": "Ironfoe",
+        "icon": "inv_mace_10",
+        "quality": 4
+      },
+      "items_won": 0,
+      "bis_for_them": false,
+      "ms_os": "os",
+      "ms_os_source": "declared",
+      "votes": {
+        "yes": 1,
+        "no": 0,
+        "voters": 4,
+        "mine": null
+      }
+    },
+    {
+      "character_key": "us/pvp/blacktide",
+      "name": "Blacktide",
+      "class": "rogue",
+      "spec": "Combat",
+      "gain_dps": 4.0,
+      "gain_unit": "dps",
+      "tier": 0,
+      "not_sim_checked": false,
+      "ilvl_delta": null,
+      "attendance": {
+        "present": 2,
+        "nights": 4
+      },
+      "already_equivalent": false,
+      "fills_empty_slot": false,
+      "replaces": "Skullforge Reaver",
+      "replaces_item": {
+        "item_id": 13361,
+        "name": "Skullforge Reaver",
+        "icon": "inv_sword_47",
+        "quality": 3
+      },
+      "items_won": 2,
+      "bis_for_them": false,
+      "ms_os": "os",
+      "ms_os_source": "declared",
+      "votes": {
+        "yes": 1,
+        "no": 0,
+        "voters": 4,
+        "mine": null
+      }
+    }
+  ]
 }

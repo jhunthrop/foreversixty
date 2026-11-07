@@ -710,7 +710,7 @@ async function answerRaids(stub: RaidStub, route: Route): Promise<void> {
 }
 
 /** Serves the guild page's prerendered shell at a raid URL (the Worker's job in production). */
-async function serveRaidShell(route: Route): Promise<void> {
+export async function serveRaidShell(route: Route): Promise<void> {
   if (route.request().resourceType() !== 'document') return route.fallback();
   const shell = new URL(GUILD_URL, route.request().url()).toString();
   const response = await route.fetch({ url: shell });

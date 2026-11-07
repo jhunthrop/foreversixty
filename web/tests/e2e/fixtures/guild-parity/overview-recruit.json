@@ -1,48 +1,42 @@
 {
- "guild": {
-  "id": 2,
-  "name": "Olympus XXVII",
-  "region": "us",
-  "ruleset": "pvp",
-  "faction": "alliance",
-  "crest_url": null,
-  "path": "/guild/us/pvp/olympus-xxvii"
- },
- "members": 24,
- "open": true,
- "pitch": "We raid two nights a week and split loot by council with the numbers shown.",
- "raid_nights": {
-  "text": "Thu and Mon, 8 to 11 pm",
-  "upcoming": [
-   "2026-12-11T02:00:00Z"
-  ],
-  "timezone": "America/Chicago"
- },
- "progress": {
-  "name": "First tier",
-  "raids": [
-   "Barrow Deeps",
-   "Hyjal Summit",
-   "Onyxia's Lair"
-  ],
-  "named_encounters": 1,
-  "down": 1,
-  "pulls_total": 4
- },
- "wanted": [],
- "updated_at": "2026-12-08T19:30:00Z",
- "officers": [
-  {
-   "name": "Dunmaro",
-   "class": "hunter",
-   "spec": "Beast Mastery",
-   "rank": "leader"
+  "guild": {
+    "id": 2,
+    "name": "Olympus XXVII",
+    "region": "us",
+    "ruleset": "pvp",
+    "faction": "alliance",
+    "crest_url": null,
+    "path": "/guild/us/pvp/olympus-xxvii"
   },
-  {
-   "name": "Ironbrand",
-   "class": "paladin",
-   "spec": "Holy",
-   "rank": "officer"
-  }
- ]
+  "members": 24,
+  "open": true,
+  "pitch": "We raid two nights a week and split loot by council with the numbers shown.",
+  "raid_nights": {
+    "text": "Thu and Mon, 8 to 11 pm",
+    "upcoming": ["2026-12-11T02:00:00Z"],
+    "timezone": "America/Chicago"
+  },
+  "progress": {
+    "name": "First tier",
+    "raids": ["Barrow Deeps", "Hyjal Summit", "Onyxia's Lair"],
+    "named_encounters": 1,
+    "down": 1,
+    "pulls_total": 4
+  },
+  "wanted": [],
+  "updated_at": "2026-12-08T19:30:00Z",
+  "officers": [
+    {
+      "name": "Dunmaro",
+      "class": "hunter",
+      "spec": "Beast Mastery",
+      "rank": "leader"
+    },
+    {
+      "name": "Ironbrand",
+      "class": "paladin",
+      "spec": "Holy",
+      "rank": "officer"
+    }
+  ]
 }

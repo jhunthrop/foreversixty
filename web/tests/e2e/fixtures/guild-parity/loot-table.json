@@ -1,2954 +1,2952 @@
 {
- "encounters": [
-  {
-   "encounter_id": 1084,
-   "name": "Onyxia",
-   "zone": "Onyxia's Lair",
-   "killed": true,
-   "kill_nights": 1,
-   "on_farm": false
-  }
- ],
- "selected": 1084,
- "items": [
-  {
-   "item_id": 15410,
-   "name": "Scale of Onyxia",
-   "icon": "",
-   "quality": 3,
-   "slot": "",
-   "inventory_type": 0,
-   "item_class": 7,
-   "item_subclass": 6,
-   "kind": "skinned",
-   "quest_label": "",
-   "eligible": [
+  "encounters": [
     {
-     "character_key": "us/pvp/thornwicke",
-     "name": "Thornwicke",
-     "class": "warrior",
-     "item_id": 15410
-    },
-    {
-     "character_key": "us/pvp/ironbrand",
-     "name": "Ironbrand",
-     "class": "paladin",
-     "item_id": 15410
-    },
-    {
-     "character_key": "us/pvp/valomira",
-     "name": "Valomira",
-     "class": "paladin",
-     "item_id": 15410
-    },
-    {
-     "character_key": "us/pvp/seraphine",
-     "name": "Seraphine",
-     "class": "paladin",
-     "item_id": 15410
-    },
-    {
-     "character_key": "us/pvp/dunmaro",
-     "name": "Dunmaro",
-     "class": "hunter",
-     "item_id": 15410
-    },
-    {
-     "character_key": "us/pvp/pinefeather",
-     "name": "Pinefeather",
-     "class": "hunter",
-     "item_id": 15410
-    },
-    {
-     "character_key": "us/pvp/skytalon",
-     "name": "Skytalon",
-     "class": "hunter",
-     "item_id": 15410
-    },
-    {
-     "character_key": "us/pvp/shiverknife",
-     "name": "Shiverknife",
-     "class": "rogue",
-     "item_id": 15410
-    },
-    {
-     "character_key": "us/pvp/blacktide",
-     "name": "Blacktide",
-     "class": "rogue",
-     "item_id": 15410
-    },
-    {
-     "character_key": "us/pvp/hollowmend",
-     "name": "Hollowmend",
-     "class": "priest",
-     "item_id": 15410
-    },
-    {
-     "character_key": "us/pvp/dawnweaver",
-     "name": "Dawnweaver",
-     "class": "priest",
-     "item_id": 15410
-    },
-    {
-     "character_key": "us/pvp/voidcall",
-     "name": "Voidcall",
-     "class": "priest",
-     "item_id": 15410
-    },
-    {
-     "character_key": "us/pvp/stonetide",
-     "name": "Stonetide",
-     "class": "shaman",
-     "item_id": 15410
-    },
-    {
-     "character_key": "us/pvp/emberfall",
-     "name": "Emberfall",
-     "class": "shaman",
-     "item_id": 15410
-    },
-    {
-     "character_key": "us/pvp/groundshock",
-     "name": "Groundshock",
-     "class": "shaman",
-     "item_id": 15410
-    },
-    {
-     "character_key": "us/pvp/frostquill",
-     "name": "Frostquill",
-     "class": "mage",
-     "item_id": 15410
-    },
-    {
-     "character_key": "us/pvp/cinderglass",
-     "name": "Cinderglass",
-     "class": "mage",
-     "item_id": 15410
-    },
-    {
-     "character_key": "us/pvp/skyarcana",
-     "name": "Skyarcana",
-     "class": "mage",
-     "item_id": 15410
-    },
-    {
-     "character_key": "us/pvp/doomwhisper",
-     "name": "Doomwhisper",
-     "class": "warlock",
-     "item_id": 15410
-    },
-    {
-     "character_key": "us/pvp/grimsworn",
-     "name": "Grimsworn",
-     "class": "warlock",
-     "item_id": 15410
-    },
-    {
-     "character_key": "us/pvp/hexmarrow",
-     "name": "Hexmarrow",
-     "class": "warlock",
-     "item_id": 15410
-    },
-    {
-     "character_key": "us/pvp/mossveil",
-     "name": "Mossveil",
-     "class": "druid",
-     "item_id": 15410
-    },
-    {
-     "character_key": "us/pvp/starnettle",
-     "name": "Starnettle",
-     "class": "druid",
-     "item_id": 15410
-    },
-    {
-     "character_key": "us/pvp/nightlatch",
-     "name": "Nightlatch",
-     "class": "rogue",
-     "item_id": 15410
+      "encounter_id": 1084,
+      "name": "Onyxia",
+      "zone": "Onyxia's Lair",
+      "killed": true,
+      "kill_nights": 1,
+      "on_farm": false
     }
-   ],
-   "awarded_to": null,
-   "candidates": [],
-   "copies": 1,
-   "encounter_id": 1084,
-   "boss": "Onyxia",
-   "raid": "Onyxia's Lair"
-  },
-  {
-   "item_id": 16900,
-   "name": "Stormrage Cover",
-   "icon": "",
-   "quality": 4,
-   "slot": "",
-   "inventory_type": 1,
-   "item_class": 4,
-   "item_subclass": 2,
-   "kind": "gear",
-   "quest_label": "",
-   "eligible": [],
-   "awarded_to": null,
-   "candidates": [
+  ],
+  "selected": 1084,
+  "items": [
     {
-     "character_key": "us/pvp/seraphine",
-     "name": "Seraphine",
-     "class": "paladin",
-     "spec": "Retribution",
-     "gain_dps": 14.2,
-     "gain_unit": "dps",
-     "tier": 0,
-     "not_sim_checked": false,
-     "ilvl_delta": null,
-     "attendance": {
-      "present": 4,
-      "nights": 4
-     },
-     "already_equivalent": false,
-     "fills_empty_slot": false,
-     "replaces": "Mirah's Song",
-     "replaces_item": {
-      "item_id": 15806,
-      "name": "Mirah's Song",
-      "icon": "inv_sword_24",
-      "quality": 3
-     },
-     "items_won": 0
+      "item_id": 15410,
+      "name": "Scale of Onyxia",
+      "icon": "",
+      "quality": 3,
+      "slot": "",
+      "inventory_type": 0,
+      "item_class": 7,
+      "item_subclass": 6,
+      "kind": "skinned",
+      "quest_label": "",
+      "eligible": [
+        {
+          "character_key": "us/pvp/thornwicke",
+          "name": "Thornwicke",
+          "class": "warrior",
+          "item_id": 15410
+        },
+        {
+          "character_key": "us/pvp/ironbrand",
+          "name": "Ironbrand",
+          "class": "paladin",
+          "item_id": 15410
+        },
+        {
+          "character_key": "us/pvp/valomira",
+          "name": "Valomira",
+          "class": "paladin",
+          "item_id": 15410
+        },
+        {
+          "character_key": "us/pvp/seraphine",
+          "name": "Seraphine",
+          "class": "paladin",
+          "item_id": 15410
+        },
+        {
+          "character_key": "us/pvp/dunmaro",
+          "name": "Dunmaro",
+          "class": "hunter",
+          "item_id": 15410
+        },
+        {
+          "character_key": "us/pvp/pinefeather",
+          "name": "Pinefeather",
+          "class": "hunter",
+          "item_id": 15410
+        },
+        {
+          "character_key": "us/pvp/skytalon",
+          "name": "Skytalon",
+          "class": "hunter",
+          "item_id": 15410
+        },
+        {
+          "character_key": "us/pvp/shiverknife",
+          "name": "Shiverknife",
+          "class": "rogue",
+          "item_id": 15410
+        },
+        {
+          "character_key": "us/pvp/blacktide",
+          "name": "Blacktide",
+          "class": "rogue",
+          "item_id": 15410
+        },
+        {
+          "character_key": "us/pvp/hollowmend",
+          "name": "Hollowmend",
+          "class": "priest",
+          "item_id": 15410
+        },
+        {
+          "character_key": "us/pvp/dawnweaver",
+          "name": "Dawnweaver",
+          "class": "priest",
+          "item_id": 15410
+        },
+        {
+          "character_key": "us/pvp/voidcall",
+          "name": "Voidcall",
+          "class": "priest",
+          "item_id": 15410
+        },
+        {
+          "character_key": "us/pvp/stonetide",
+          "name": "Stonetide",
+          "class": "shaman",
+          "item_id": 15410
+        },
+        {
+          "character_key": "us/pvp/emberfall",
+          "name": "Emberfall",
+          "class": "shaman",
+          "item_id": 15410
+        },
+        {
+          "character_key": "us/pvp/groundshock",
+          "name": "Groundshock",
+          "class": "shaman",
+          "item_id": 15410
+        },
+        {
+          "character_key": "us/pvp/frostquill",
+          "name": "Frostquill",
+          "class": "mage",
+          "item_id": 15410
+        },
+        {
+          "character_key": "us/pvp/cinderglass",
+          "name": "Cinderglass",
+          "class": "mage",
+          "item_id": 15410
+        },
+        {
+          "character_key": "us/pvp/skyarcana",
+          "name": "Skyarcana",
+          "class": "mage",
+          "item_id": 15410
+        },
+        {
+          "character_key": "us/pvp/doomwhisper",
+          "name": "Doomwhisper",
+          "class": "warlock",
+          "item_id": 15410
+        },
+        {
+          "character_key": "us/pvp/grimsworn",
+          "name": "Grimsworn",
+          "class": "warlock",
+          "item_id": 15410
+        },
+        {
+          "character_key": "us/pvp/hexmarrow",
+          "name": "Hexmarrow",
+          "class": "warlock",
+          "item_id": 15410
+        },
+        {
+          "character_key": "us/pvp/mossveil",
+          "name": "Mossveil",
+          "class": "druid",
+          "item_id": 15410
+        },
+        {
+          "character_key": "us/pvp/starnettle",
+          "name": "Starnettle",
+          "class": "druid",
+          "item_id": 15410
+        },
+        {
+          "character_key": "us/pvp/nightlatch",
+          "name": "Nightlatch",
+          "class": "rogue",
+          "item_id": 15410
+        }
+      ],
+      "awarded_to": null,
+      "candidates": [],
+      "copies": 1,
+      "encounter_id": 1084,
+      "boss": "Onyxia",
+      "raid": "Onyxia's Lair"
     },
     {
-     "character_key": "us/pvp/shiverknife",
-     "name": "Shiverknife",
-     "class": "rogue",
-     "spec": "Assassination",
-     "gain_dps": 11.6,
-     "gain_unit": "dps",
-     "tier": 0,
-     "not_sim_checked": false,
-     "ilvl_delta": null,
-     "attendance": {
-      "present": 3,
-      "nights": 4
-     },
-     "already_equivalent": false,
-     "fills_empty_slot": false,
-     "replaces": "Dal'Rend's Sacred Charge",
-     "replaces_item": {
-      "item_id": 12940,
-      "name": "Dal'Rend's Sacred Charge",
-      "icon": "inv_sword_36",
-      "quality": 3
-     },
-     "items_won": 1
+      "item_id": 16900,
+      "name": "Stormrage Cover",
+      "icon": "",
+      "quality": 4,
+      "slot": "",
+      "inventory_type": 1,
+      "item_class": 4,
+      "item_subclass": 2,
+      "kind": "gear",
+      "quest_label": "",
+      "eligible": [],
+      "awarded_to": null,
+      "candidates": [
+        {
+          "character_key": "us/pvp/seraphine",
+          "name": "Seraphine",
+          "class": "paladin",
+          "spec": "Retribution",
+          "gain_dps": 14.2,
+          "gain_unit": "dps",
+          "tier": 0,
+          "not_sim_checked": false,
+          "ilvl_delta": null,
+          "attendance": {
+            "present": 4,
+            "nights": 4
+          },
+          "already_equivalent": false,
+          "fills_empty_slot": false,
+          "replaces": "Mirah's Song",
+          "replaces_item": {
+            "item_id": 15806,
+            "name": "Mirah's Song",
+            "icon": "inv_sword_24",
+            "quality": 3
+          },
+          "items_won": 0
+        },
+        {
+          "character_key": "us/pvp/shiverknife",
+          "name": "Shiverknife",
+          "class": "rogue",
+          "spec": "Assassination",
+          "gain_dps": 11.6,
+          "gain_unit": "dps",
+          "tier": 0,
+          "not_sim_checked": false,
+          "ilvl_delta": null,
+          "attendance": {
+            "present": 3,
+            "nights": 4
+          },
+          "already_equivalent": false,
+          "fills_empty_slot": false,
+          "replaces": "Dal'Rend's Sacred Charge",
+          "replaces_item": {
+            "item_id": 12940,
+            "name": "Dal'Rend's Sacred Charge",
+            "icon": "inv_sword_36",
+            "quality": 3
+          },
+          "items_won": 1
+        },
+        {
+          "character_key": "us/pvp/groundshock",
+          "name": "Groundshock",
+          "class": "shaman",
+          "spec": "Enhancement",
+          "gain_dps": 9.1,
+          "gain_unit": "dps",
+          "tier": 0,
+          "not_sim_checked": false,
+          "ilvl_delta": null,
+          "attendance": {
+            "present": 4,
+            "nights": 4
+          },
+          "already_equivalent": false,
+          "fills_empty_slot": false,
+          "replaces": "Ironfoe",
+          "replaces_item": {
+            "item_id": 11684,
+            "name": "Ironfoe",
+            "icon": "inv_mace_10",
+            "quality": 4
+          },
+          "items_won": 0
+        },
+        {
+          "character_key": "us/pvp/blacktide",
+          "name": "Blacktide",
+          "class": "rogue",
+          "spec": "Combat",
+          "gain_dps": 4.0,
+          "gain_unit": "dps",
+          "tier": 0,
+          "not_sim_checked": false,
+          "ilvl_delta": null,
+          "attendance": {
+            "present": 2,
+            "nights": 4
+          },
+          "already_equivalent": false,
+          "fills_empty_slot": false,
+          "replaces": "Skullforge Reaver",
+          "replaces_item": {
+            "item_id": 13361,
+            "name": "Skullforge Reaver",
+            "icon": "inv_sword_47",
+            "quality": 3
+          },
+          "items_won": 2
+        }
+      ],
+      "copies": 1,
+      "encounter_id": 1084,
+      "boss": "Onyxia",
+      "raid": "Onyxia's Lair"
     },
     {
-     "character_key": "us/pvp/groundshock",
-     "name": "Groundshock",
-     "class": "shaman",
-     "spec": "Enhancement",
-     "gain_dps": 9.1,
-     "gain_unit": "dps",
-     "tier": 0,
-     "not_sim_checked": false,
-     "ilvl_delta": null,
-     "attendance": {
-      "present": 4,
-      "nights": 4
-     },
-     "already_equivalent": false,
-     "fills_empty_slot": false,
-     "replaces": "Ironfoe",
-     "replaces_item": {
-      "item_id": 11684,
-      "name": "Ironfoe",
-      "icon": "inv_mace_10",
-      "quality": 4
-     },
-     "items_won": 0
+      "item_id": 16908,
+      "name": "Bloodfang Hood",
+      "icon": "",
+      "quality": 4,
+      "slot": "",
+      "inventory_type": 1,
+      "item_class": 4,
+      "item_subclass": 2,
+      "kind": "gear",
+      "quest_label": "",
+      "eligible": [],
+      "awarded_to": null,
+      "candidates": [
+        {
+          "character_key": "us/pvp/seraphine",
+          "name": "Seraphine",
+          "class": "paladin",
+          "spec": "Retribution",
+          "gain_dps": 14.2,
+          "gain_unit": "dps",
+          "tier": 0,
+          "not_sim_checked": false,
+          "ilvl_delta": null,
+          "attendance": {
+            "present": 4,
+            "nights": 4
+          },
+          "already_equivalent": false,
+          "fills_empty_slot": false,
+          "replaces": "Mirah's Song",
+          "replaces_item": {
+            "item_id": 15806,
+            "name": "Mirah's Song",
+            "icon": "inv_sword_24",
+            "quality": 3
+          },
+          "items_won": 0
+        },
+        {
+          "character_key": "us/pvp/shiverknife",
+          "name": "Shiverknife",
+          "class": "rogue",
+          "spec": "Assassination",
+          "gain_dps": 11.6,
+          "gain_unit": "dps",
+          "tier": 0,
+          "not_sim_checked": false,
+          "ilvl_delta": null,
+          "attendance": {
+            "present": 3,
+            "nights": 4
+          },
+          "already_equivalent": false,
+          "fills_empty_slot": false,
+          "replaces": "Dal'Rend's Sacred Charge",
+          "replaces_item": {
+            "item_id": 12940,
+            "name": "Dal'Rend's Sacred Charge",
+            "icon": "inv_sword_36",
+            "quality": 3
+          },
+          "items_won": 1
+        },
+        {
+          "character_key": "us/pvp/groundshock",
+          "name": "Groundshock",
+          "class": "shaman",
+          "spec": "Enhancement",
+          "gain_dps": 9.1,
+          "gain_unit": "dps",
+          "tier": 0,
+          "not_sim_checked": false,
+          "ilvl_delta": null,
+          "attendance": {
+            "present": 4,
+            "nights": 4
+          },
+          "already_equivalent": false,
+          "fills_empty_slot": false,
+          "replaces": "Ironfoe",
+          "replaces_item": {
+            "item_id": 11684,
+            "name": "Ironfoe",
+            "icon": "inv_mace_10",
+            "quality": 4
+          },
+          "items_won": 0
+        },
+        {
+          "character_key": "us/pvp/blacktide",
+          "name": "Blacktide",
+          "class": "rogue",
+          "spec": "Combat",
+          "gain_dps": 4.0,
+          "gain_unit": "dps",
+          "tier": 0,
+          "not_sim_checked": false,
+          "ilvl_delta": null,
+          "attendance": {
+            "present": 2,
+            "nights": 4
+          },
+          "already_equivalent": false,
+          "fills_empty_slot": false,
+          "replaces": "Skullforge Reaver",
+          "replaces_item": {
+            "item_id": 13361,
+            "name": "Skullforge Reaver",
+            "icon": "inv_sword_47",
+            "quality": 3
+          },
+          "items_won": 2
+        }
+      ],
+      "copies": 1,
+      "encounter_id": 1084,
+      "boss": "Onyxia",
+      "raid": "Onyxia's Lair"
     },
     {
-     "character_key": "us/pvp/blacktide",
-     "name": "Blacktide",
-     "class": "rogue",
-     "spec": "Combat",
-     "gain_dps": 4.0,
-     "gain_unit": "dps",
-     "tier": 0,
-     "not_sim_checked": false,
-     "ilvl_delta": null,
-     "attendance": {
-      "present": 2,
-      "nights": 4
-     },
-     "already_equivalent": false,
-     "fills_empty_slot": false,
-     "replaces": "Skullforge Reaver",
-     "replaces_item": {
-      "item_id": 13361,
-      "name": "Skullforge Reaver",
-      "icon": "inv_sword_47",
-      "quality": 3
-     },
-     "items_won": 2
+      "item_id": 16914,
+      "name": "Netherwind Crown",
+      "icon": "",
+      "quality": 4,
+      "slot": "",
+      "inventory_type": 1,
+      "item_class": 4,
+      "item_subclass": 1,
+      "kind": "gear",
+      "quest_label": "",
+      "eligible": [],
+      "awarded_to": null,
+      "candidates": [
+        {
+          "character_key": "us/pvp/seraphine",
+          "name": "Seraphine",
+          "class": "paladin",
+          "spec": "Retribution",
+          "gain_dps": 14.2,
+          "gain_unit": "dps",
+          "tier": 0,
+          "not_sim_checked": false,
+          "ilvl_delta": null,
+          "attendance": {
+            "present": 4,
+            "nights": 4
+          },
+          "already_equivalent": false,
+          "fills_empty_slot": false,
+          "replaces": "Mirah's Song",
+          "replaces_item": {
+            "item_id": 15806,
+            "name": "Mirah's Song",
+            "icon": "inv_sword_24",
+            "quality": 3
+          },
+          "items_won": 0
+        },
+        {
+          "character_key": "us/pvp/shiverknife",
+          "name": "Shiverknife",
+          "class": "rogue",
+          "spec": "Assassination",
+          "gain_dps": 11.6,
+          "gain_unit": "dps",
+          "tier": 0,
+          "not_sim_checked": false,
+          "ilvl_delta": null,
+          "attendance": {
+            "present": 3,
+            "nights": 4
+          },
+          "already_equivalent": false,
+          "fills_empty_slot": false,
+          "replaces": "Dal'Rend's Sacred Charge",
+          "replaces_item": {
+            "item_id": 12940,
+            "name": "Dal'Rend's Sacred Charge",
+            "icon": "inv_sword_36",
+            "quality": 3
+          },
+          "items_won": 1
+        },
+        {
+          "character_key": "us/pvp/groundshock",
+          "name": "Groundshock",
+          "class": "shaman",
+          "spec": "Enhancement",
+          "gain_dps": 9.1,
+          "gain_unit": "dps",
+          "tier": 0,
+          "not_sim_checked": false,
+          "ilvl_delta": null,
+          "attendance": {
+            "present": 4,
+            "nights": 4
+          },
+          "already_equivalent": false,
+          "fills_empty_slot": false,
+          "replaces": "Ironfoe",
+          "replaces_item": {
+            "item_id": 11684,
+            "name": "Ironfoe",
+            "icon": "inv_mace_10",
+            "quality": 4
+          },
+          "items_won": 0
+        },
+        {
+          "character_key": "us/pvp/blacktide",
+          "name": "Blacktide",
+          "class": "rogue",
+          "spec": "Combat",
+          "gain_dps": 4.0,
+          "gain_unit": "dps",
+          "tier": 0,
+          "not_sim_checked": false,
+          "ilvl_delta": null,
+          "attendance": {
+            "present": 2,
+            "nights": 4
+          },
+          "already_equivalent": false,
+          "fills_empty_slot": false,
+          "replaces": "Skullforge Reaver",
+          "replaces_item": {
+            "item_id": 13361,
+            "name": "Skullforge Reaver",
+            "icon": "inv_sword_47",
+            "quality": 3
+          },
+          "items_won": 2
+        }
+      ],
+      "copies": 1,
+      "encounter_id": 1084,
+      "boss": "Onyxia",
+      "raid": "Onyxia's Lair"
+    },
+    {
+      "item_id": 16921,
+      "name": "Halo of Transcendence",
+      "icon": "",
+      "quality": 4,
+      "slot": "",
+      "inventory_type": 1,
+      "item_class": 4,
+      "item_subclass": 1,
+      "kind": "gear",
+      "quest_label": "",
+      "eligible": [],
+      "awarded_to": null,
+      "candidates": [
+        {
+          "character_key": "us/pvp/seraphine",
+          "name": "Seraphine",
+          "class": "paladin",
+          "spec": "Retribution",
+          "gain_dps": 14.2,
+          "gain_unit": "dps",
+          "tier": 0,
+          "not_sim_checked": false,
+          "ilvl_delta": null,
+          "attendance": {
+            "present": 4,
+            "nights": 4
+          },
+          "already_equivalent": false,
+          "fills_empty_slot": false,
+          "replaces": "Mirah's Song",
+          "replaces_item": {
+            "item_id": 15806,
+            "name": "Mirah's Song",
+            "icon": "inv_sword_24",
+            "quality": 3
+          },
+          "items_won": 0
+        },
+        {
+          "character_key": "us/pvp/shiverknife",
+          "name": "Shiverknife",
+          "class": "rogue",
+          "spec": "Assassination",
+          "gain_dps": 11.6,
+          "gain_unit": "dps",
+          "tier": 0,
+          "not_sim_checked": false,
+          "ilvl_delta": null,
+          "attendance": {
+            "present": 3,
+            "nights": 4
+          },
+          "already_equivalent": false,
+          "fills_empty_slot": false,
+          "replaces": "Dal'Rend's Sacred Charge",
+          "replaces_item": {
+            "item_id": 12940,
+            "name": "Dal'Rend's Sacred Charge",
+            "icon": "inv_sword_36",
+            "quality": 3
+          },
+          "items_won": 1
+        },
+        {
+          "character_key": "us/pvp/groundshock",
+          "name": "Groundshock",
+          "class": "shaman",
+          "spec": "Enhancement",
+          "gain_dps": 9.1,
+          "gain_unit": "dps",
+          "tier": 0,
+          "not_sim_checked": false,
+          "ilvl_delta": null,
+          "attendance": {
+            "present": 4,
+            "nights": 4
+          },
+          "already_equivalent": false,
+          "fills_empty_slot": false,
+          "replaces": "Ironfoe",
+          "replaces_item": {
+            "item_id": 11684,
+            "name": "Ironfoe",
+            "icon": "inv_mace_10",
+            "quality": 4
+          },
+          "items_won": 0
+        },
+        {
+          "character_key": "us/pvp/blacktide",
+          "name": "Blacktide",
+          "class": "rogue",
+          "spec": "Combat",
+          "gain_dps": 4.0,
+          "gain_unit": "dps",
+          "tier": 0,
+          "not_sim_checked": false,
+          "ilvl_delta": null,
+          "attendance": {
+            "present": 2,
+            "nights": 4
+          },
+          "already_equivalent": false,
+          "fills_empty_slot": false,
+          "replaces": "Skullforge Reaver",
+          "replaces_item": {
+            "item_id": 13361,
+            "name": "Skullforge Reaver",
+            "icon": "inv_sword_47",
+            "quality": 3
+          },
+          "items_won": 2
+        }
+      ],
+      "copies": 1,
+      "encounter_id": 1084,
+      "boss": "Onyxia",
+      "raid": "Onyxia's Lair"
+    },
+    {
+      "item_id": 16929,
+      "name": "Nemesis Skullcap",
+      "icon": "",
+      "quality": 4,
+      "slot": "",
+      "inventory_type": 1,
+      "item_class": 4,
+      "item_subclass": 1,
+      "kind": "gear",
+      "quest_label": "",
+      "eligible": [],
+      "awarded_to": null,
+      "candidates": [
+        {
+          "character_key": "us/pvp/seraphine",
+          "name": "Seraphine",
+          "class": "paladin",
+          "spec": "Retribution",
+          "gain_dps": 14.2,
+          "gain_unit": "dps",
+          "tier": 0,
+          "not_sim_checked": false,
+          "ilvl_delta": null,
+          "attendance": {
+            "present": 4,
+            "nights": 4
+          },
+          "already_equivalent": false,
+          "fills_empty_slot": false,
+          "replaces": "Mirah's Song",
+          "replaces_item": {
+            "item_id": 15806,
+            "name": "Mirah's Song",
+            "icon": "inv_sword_24",
+            "quality": 3
+          },
+          "items_won": 0
+        },
+        {
+          "character_key": "us/pvp/shiverknife",
+          "name": "Shiverknife",
+          "class": "rogue",
+          "spec": "Assassination",
+          "gain_dps": 11.6,
+          "gain_unit": "dps",
+          "tier": 0,
+          "not_sim_checked": false,
+          "ilvl_delta": null,
+          "attendance": {
+            "present": 3,
+            "nights": 4
+          },
+          "already_equivalent": false,
+          "fills_empty_slot": false,
+          "replaces": "Dal'Rend's Sacred Charge",
+          "replaces_item": {
+            "item_id": 12940,
+            "name": "Dal'Rend's Sacred Charge",
+            "icon": "inv_sword_36",
+            "quality": 3
+          },
+          "items_won": 1
+        },
+        {
+          "character_key": "us/pvp/groundshock",
+          "name": "Groundshock",
+          "class": "shaman",
+          "spec": "Enhancement",
+          "gain_dps": 9.1,
+          "gain_unit": "dps",
+          "tier": 0,
+          "not_sim_checked": false,
+          "ilvl_delta": null,
+          "attendance": {
+            "present": 4,
+            "nights": 4
+          },
+          "already_equivalent": false,
+          "fills_empty_slot": false,
+          "replaces": "Ironfoe",
+          "replaces_item": {
+            "item_id": 11684,
+            "name": "Ironfoe",
+            "icon": "inv_mace_10",
+            "quality": 4
+          },
+          "items_won": 0
+        },
+        {
+          "character_key": "us/pvp/blacktide",
+          "name": "Blacktide",
+          "class": "rogue",
+          "spec": "Combat",
+          "gain_dps": 4.0,
+          "gain_unit": "dps",
+          "tier": 0,
+          "not_sim_checked": false,
+          "ilvl_delta": null,
+          "attendance": {
+            "present": 2,
+            "nights": 4
+          },
+          "already_equivalent": false,
+          "fills_empty_slot": false,
+          "replaces": "Skullforge Reaver",
+          "replaces_item": {
+            "item_id": 13361,
+            "name": "Skullforge Reaver",
+            "icon": "inv_sword_47",
+            "quality": 3
+          },
+          "items_won": 2
+        }
+      ],
+      "copies": 1,
+      "encounter_id": 1084,
+      "boss": "Onyxia",
+      "raid": "Onyxia's Lair"
+    },
+    {
+      "item_id": 16939,
+      "name": "Dragonstalker's Helm",
+      "icon": "",
+      "quality": 4,
+      "slot": "",
+      "inventory_type": 1,
+      "item_class": 4,
+      "item_subclass": 3,
+      "kind": "gear",
+      "quest_label": "",
+      "eligible": [],
+      "awarded_to": null,
+      "candidates": [
+        {
+          "character_key": "us/pvp/seraphine",
+          "name": "Seraphine",
+          "class": "paladin",
+          "spec": "Retribution",
+          "gain_dps": 14.2,
+          "gain_unit": "dps",
+          "tier": 0,
+          "not_sim_checked": false,
+          "ilvl_delta": null,
+          "attendance": {
+            "present": 4,
+            "nights": 4
+          },
+          "already_equivalent": false,
+          "fills_empty_slot": false,
+          "replaces": "Mirah's Song",
+          "replaces_item": {
+            "item_id": 15806,
+            "name": "Mirah's Song",
+            "icon": "inv_sword_24",
+            "quality": 3
+          },
+          "items_won": 0
+        },
+        {
+          "character_key": "us/pvp/shiverknife",
+          "name": "Shiverknife",
+          "class": "rogue",
+          "spec": "Assassination",
+          "gain_dps": 11.6,
+          "gain_unit": "dps",
+          "tier": 0,
+          "not_sim_checked": false,
+          "ilvl_delta": null,
+          "attendance": {
+            "present": 3,
+            "nights": 4
+          },
+          "already_equivalent": false,
+          "fills_empty_slot": false,
+          "replaces": "Dal'Rend's Sacred Charge",
+          "replaces_item": {
+            "item_id": 12940,
+            "name": "Dal'Rend's Sacred Charge",
+            "icon": "inv_sword_36",
+            "quality": 3
+          },
+          "items_won": 1
+        },
+        {
+          "character_key": "us/pvp/groundshock",
+          "name": "Groundshock",
+          "class": "shaman",
+          "spec": "Enhancement",
+          "gain_dps": 9.1,
+          "gain_unit": "dps",
+          "tier": 0,
+          "not_sim_checked": false,
+          "ilvl_delta": null,
+          "attendance": {
+            "present": 4,
+            "nights": 4
+          },
+          "already_equivalent": false,
+          "fills_empty_slot": false,
+          "replaces": "Ironfoe",
+          "replaces_item": {
+            "item_id": 11684,
+            "name": "Ironfoe",
+            "icon": "inv_mace_10",
+            "quality": 4
+          },
+          "items_won": 0
+        },
+        {
+          "character_key": "us/pvp/blacktide",
+          "name": "Blacktide",
+          "class": "rogue",
+          "spec": "Combat",
+          "gain_dps": 4.0,
+          "gain_unit": "dps",
+          "tier": 0,
+          "not_sim_checked": false,
+          "ilvl_delta": null,
+          "attendance": {
+            "present": 2,
+            "nights": 4
+          },
+          "already_equivalent": false,
+          "fills_empty_slot": false,
+          "replaces": "Skullforge Reaver",
+          "replaces_item": {
+            "item_id": 13361,
+            "name": "Skullforge Reaver",
+            "icon": "inv_sword_47",
+            "quality": 3
+          },
+          "items_won": 2
+        }
+      ],
+      "copies": 1,
+      "encounter_id": 1084,
+      "boss": "Onyxia",
+      "raid": "Onyxia's Lair"
+    },
+    {
+      "item_id": 16947,
+      "name": "Helmet of Ten Storms",
+      "icon": "",
+      "quality": 4,
+      "slot": "",
+      "inventory_type": 1,
+      "item_class": 4,
+      "item_subclass": 3,
+      "kind": "gear",
+      "quest_label": "",
+      "eligible": [],
+      "awarded_to": null,
+      "candidates": [
+        {
+          "character_key": "us/pvp/seraphine",
+          "name": "Seraphine",
+          "class": "paladin",
+          "spec": "Retribution",
+          "gain_dps": 14.2,
+          "gain_unit": "dps",
+          "tier": 0,
+          "not_sim_checked": false,
+          "ilvl_delta": null,
+          "attendance": {
+            "present": 4,
+            "nights": 4
+          },
+          "already_equivalent": false,
+          "fills_empty_slot": false,
+          "replaces": "Mirah's Song",
+          "replaces_item": {
+            "item_id": 15806,
+            "name": "Mirah's Song",
+            "icon": "inv_sword_24",
+            "quality": 3
+          },
+          "items_won": 0
+        },
+        {
+          "character_key": "us/pvp/shiverknife",
+          "name": "Shiverknife",
+          "class": "rogue",
+          "spec": "Assassination",
+          "gain_dps": 11.6,
+          "gain_unit": "dps",
+          "tier": 0,
+          "not_sim_checked": false,
+          "ilvl_delta": null,
+          "attendance": {
+            "present": 3,
+            "nights": 4
+          },
+          "already_equivalent": false,
+          "fills_empty_slot": false,
+          "replaces": "Dal'Rend's Sacred Charge",
+          "replaces_item": {
+            "item_id": 12940,
+            "name": "Dal'Rend's Sacred Charge",
+            "icon": "inv_sword_36",
+            "quality": 3
+          },
+          "items_won": 1
+        },
+        {
+          "character_key": "us/pvp/groundshock",
+          "name": "Groundshock",
+          "class": "shaman",
+          "spec": "Enhancement",
+          "gain_dps": 9.1,
+          "gain_unit": "dps",
+          "tier": 0,
+          "not_sim_checked": false,
+          "ilvl_delta": null,
+          "attendance": {
+            "present": 4,
+            "nights": 4
+          },
+          "already_equivalent": false,
+          "fills_empty_slot": false,
+          "replaces": "Ironfoe",
+          "replaces_item": {
+            "item_id": 11684,
+            "name": "Ironfoe",
+            "icon": "inv_mace_10",
+            "quality": 4
+          },
+          "items_won": 0
+        },
+        {
+          "character_key": "us/pvp/blacktide",
+          "name": "Blacktide",
+          "class": "rogue",
+          "spec": "Combat",
+          "gain_dps": 4.0,
+          "gain_unit": "dps",
+          "tier": 0,
+          "not_sim_checked": false,
+          "ilvl_delta": null,
+          "attendance": {
+            "present": 2,
+            "nights": 4
+          },
+          "already_equivalent": false,
+          "fills_empty_slot": false,
+          "replaces": "Skullforge Reaver",
+          "replaces_item": {
+            "item_id": 13361,
+            "name": "Skullforge Reaver",
+            "icon": "inv_sword_47",
+            "quality": 3
+          },
+          "items_won": 2
+        }
+      ],
+      "copies": 1,
+      "encounter_id": 1084,
+      "boss": "Onyxia",
+      "raid": "Onyxia's Lair"
+    },
+    {
+      "item_id": 16955,
+      "name": "Judgement Crown",
+      "icon": "",
+      "quality": 4,
+      "slot": "",
+      "inventory_type": 1,
+      "item_class": 4,
+      "item_subclass": 4,
+      "kind": "gear",
+      "quest_label": "",
+      "eligible": [],
+      "awarded_to": null,
+      "candidates": [
+        {
+          "character_key": "us/pvp/seraphine",
+          "name": "Seraphine",
+          "class": "paladin",
+          "spec": "Retribution",
+          "gain_dps": 14.2,
+          "gain_unit": "dps",
+          "tier": 0,
+          "not_sim_checked": false,
+          "ilvl_delta": null,
+          "attendance": {
+            "present": 4,
+            "nights": 4
+          },
+          "already_equivalent": false,
+          "fills_empty_slot": false,
+          "replaces": "Mirah's Song",
+          "replaces_item": {
+            "item_id": 15806,
+            "name": "Mirah's Song",
+            "icon": "inv_sword_24",
+            "quality": 3
+          },
+          "items_won": 0
+        },
+        {
+          "character_key": "us/pvp/shiverknife",
+          "name": "Shiverknife",
+          "class": "rogue",
+          "spec": "Assassination",
+          "gain_dps": 11.6,
+          "gain_unit": "dps",
+          "tier": 0,
+          "not_sim_checked": false,
+          "ilvl_delta": null,
+          "attendance": {
+            "present": 3,
+            "nights": 4
+          },
+          "already_equivalent": false,
+          "fills_empty_slot": false,
+          "replaces": "Dal'Rend's Sacred Charge",
+          "replaces_item": {
+            "item_id": 12940,
+            "name": "Dal'Rend's Sacred Charge",
+            "icon": "inv_sword_36",
+            "quality": 3
+          },
+          "items_won": 1
+        },
+        {
+          "character_key": "us/pvp/groundshock",
+          "name": "Groundshock",
+          "class": "shaman",
+          "spec": "Enhancement",
+          "gain_dps": 9.1,
+          "gain_unit": "dps",
+          "tier": 0,
+          "not_sim_checked": false,
+          "ilvl_delta": null,
+          "attendance": {
+            "present": 4,
+            "nights": 4
+          },
+          "already_equivalent": false,
+          "fills_empty_slot": false,
+          "replaces": "Ironfoe",
+          "replaces_item": {
+            "item_id": 11684,
+            "name": "Ironfoe",
+            "icon": "inv_mace_10",
+            "quality": 4
+          },
+          "items_won": 0
+        },
+        {
+          "character_key": "us/pvp/blacktide",
+          "name": "Blacktide",
+          "class": "rogue",
+          "spec": "Combat",
+          "gain_dps": 4.0,
+          "gain_unit": "dps",
+          "tier": 0,
+          "not_sim_checked": false,
+          "ilvl_delta": null,
+          "attendance": {
+            "present": 2,
+            "nights": 4
+          },
+          "already_equivalent": false,
+          "fills_empty_slot": false,
+          "replaces": "Skullforge Reaver",
+          "replaces_item": {
+            "item_id": 13361,
+            "name": "Skullforge Reaver",
+            "icon": "inv_sword_47",
+            "quality": 3
+          },
+          "items_won": 2
+        }
+      ],
+      "copies": 1,
+      "encounter_id": 1084,
+      "boss": "Onyxia",
+      "raid": "Onyxia's Lair"
+    },
+    {
+      "item_id": 16963,
+      "name": "Helm of Wrath",
+      "icon": "",
+      "quality": 4,
+      "slot": "",
+      "inventory_type": 1,
+      "item_class": 4,
+      "item_subclass": 4,
+      "kind": "gear",
+      "quest_label": "",
+      "eligible": [],
+      "awarded_to": null,
+      "candidates": [
+        {
+          "character_key": "us/pvp/seraphine",
+          "name": "Seraphine",
+          "class": "paladin",
+          "spec": "Retribution",
+          "gain_dps": 14.2,
+          "gain_unit": "dps",
+          "tier": 0,
+          "not_sim_checked": false,
+          "ilvl_delta": null,
+          "attendance": {
+            "present": 4,
+            "nights": 4
+          },
+          "already_equivalent": false,
+          "fills_empty_slot": false,
+          "replaces": "Mirah's Song",
+          "replaces_item": {
+            "item_id": 15806,
+            "name": "Mirah's Song",
+            "icon": "inv_sword_24",
+            "quality": 3
+          },
+          "items_won": 0
+        },
+        {
+          "character_key": "us/pvp/shiverknife",
+          "name": "Shiverknife",
+          "class": "rogue",
+          "spec": "Assassination",
+          "gain_dps": 11.6,
+          "gain_unit": "dps",
+          "tier": 0,
+          "not_sim_checked": false,
+          "ilvl_delta": null,
+          "attendance": {
+            "present": 3,
+            "nights": 4
+          },
+          "already_equivalent": false,
+          "fills_empty_slot": false,
+          "replaces": "Dal'Rend's Sacred Charge",
+          "replaces_item": {
+            "item_id": 12940,
+            "name": "Dal'Rend's Sacred Charge",
+            "icon": "inv_sword_36",
+            "quality": 3
+          },
+          "items_won": 1
+        },
+        {
+          "character_key": "us/pvp/groundshock",
+          "name": "Groundshock",
+          "class": "shaman",
+          "spec": "Enhancement",
+          "gain_dps": 9.1,
+          "gain_unit": "dps",
+          "tier": 0,
+          "not_sim_checked": false,
+          "ilvl_delta": null,
+          "attendance": {
+            "present": 4,
+            "nights": 4
+          },
+          "already_equivalent": false,
+          "fills_empty_slot": false,
+          "replaces": "Ironfoe",
+          "replaces_item": {
+            "item_id": 11684,
+            "name": "Ironfoe",
+            "icon": "inv_mace_10",
+            "quality": 4
+          },
+          "items_won": 0
+        },
+        {
+          "character_key": "us/pvp/blacktide",
+          "name": "Blacktide",
+          "class": "rogue",
+          "spec": "Combat",
+          "gain_dps": 4.0,
+          "gain_unit": "dps",
+          "tier": 0,
+          "not_sim_checked": false,
+          "ilvl_delta": null,
+          "attendance": {
+            "present": 2,
+            "nights": 4
+          },
+          "already_equivalent": false,
+          "fills_empty_slot": false,
+          "replaces": "Skullforge Reaver",
+          "replaces_item": {
+            "item_id": 13361,
+            "name": "Skullforge Reaver",
+            "icon": "inv_sword_47",
+            "quality": 3
+          },
+          "items_won": 2
+        }
+      ],
+      "copies": 1,
+      "encounter_id": 1084,
+      "boss": "Onyxia",
+      "raid": "Onyxia's Lair"
+    },
+    {
+      "item_id": 17064,
+      "name": "Shard of the Scale",
+      "icon": "",
+      "quality": 4,
+      "slot": "",
+      "inventory_type": 12,
+      "item_class": 4,
+      "item_subclass": 0,
+      "kind": "gear",
+      "quest_label": "",
+      "eligible": [],
+      "awarded_to": null,
+      "candidates": [
+        {
+          "character_key": "us/pvp/seraphine",
+          "name": "Seraphine",
+          "class": "paladin",
+          "spec": "Retribution",
+          "gain_dps": 14.2,
+          "gain_unit": "dps",
+          "tier": 0,
+          "not_sim_checked": false,
+          "ilvl_delta": null,
+          "attendance": {
+            "present": 4,
+            "nights": 4
+          },
+          "already_equivalent": false,
+          "fills_empty_slot": false,
+          "replaces": "Mirah's Song",
+          "replaces_item": {
+            "item_id": 15806,
+            "name": "Mirah's Song",
+            "icon": "inv_sword_24",
+            "quality": 3
+          },
+          "items_won": 0
+        },
+        {
+          "character_key": "us/pvp/shiverknife",
+          "name": "Shiverknife",
+          "class": "rogue",
+          "spec": "Assassination",
+          "gain_dps": 11.6,
+          "gain_unit": "dps",
+          "tier": 0,
+          "not_sim_checked": false,
+          "ilvl_delta": null,
+          "attendance": {
+            "present": 3,
+            "nights": 4
+          },
+          "already_equivalent": false,
+          "fills_empty_slot": false,
+          "replaces": "Dal'Rend's Sacred Charge",
+          "replaces_item": {
+            "item_id": 12940,
+            "name": "Dal'Rend's Sacred Charge",
+            "icon": "inv_sword_36",
+            "quality": 3
+          },
+          "items_won": 1
+        },
+        {
+          "character_key": "us/pvp/groundshock",
+          "name": "Groundshock",
+          "class": "shaman",
+          "spec": "Enhancement",
+          "gain_dps": 9.1,
+          "gain_unit": "dps",
+          "tier": 0,
+          "not_sim_checked": false,
+          "ilvl_delta": null,
+          "attendance": {
+            "present": 4,
+            "nights": 4
+          },
+          "already_equivalent": false,
+          "fills_empty_slot": false,
+          "replaces": "Ironfoe",
+          "replaces_item": {
+            "item_id": 11684,
+            "name": "Ironfoe",
+            "icon": "inv_mace_10",
+            "quality": 4
+          },
+          "items_won": 0
+        },
+        {
+          "character_key": "us/pvp/blacktide",
+          "name": "Blacktide",
+          "class": "rogue",
+          "spec": "Combat",
+          "gain_dps": 4.0,
+          "gain_unit": "dps",
+          "tier": 0,
+          "not_sim_checked": false,
+          "ilvl_delta": null,
+          "attendance": {
+            "present": 2,
+            "nights": 4
+          },
+          "already_equivalent": false,
+          "fills_empty_slot": false,
+          "replaces": "Skullforge Reaver",
+          "replaces_item": {
+            "item_id": 13361,
+            "name": "Skullforge Reaver",
+            "icon": "inv_sword_47",
+            "quality": 3
+          },
+          "items_won": 2
+        }
+      ],
+      "copies": 1,
+      "encounter_id": 1084,
+      "boss": "Onyxia",
+      "raid": "Onyxia's Lair"
+    },
+    {
+      "item_id": 17067,
+      "name": "Ancient Cornerstone Grimoire",
+      "icon": "",
+      "quality": 4,
+      "slot": "",
+      "inventory_type": 23,
+      "item_class": 4,
+      "item_subclass": 0,
+      "kind": "gear",
+      "quest_label": "",
+      "eligible": [],
+      "awarded_to": null,
+      "candidates": [
+        {
+          "character_key": "us/pvp/seraphine",
+          "name": "Seraphine",
+          "class": "paladin",
+          "spec": "Retribution",
+          "gain_dps": 14.2,
+          "gain_unit": "dps",
+          "tier": 0,
+          "not_sim_checked": false,
+          "ilvl_delta": null,
+          "attendance": {
+            "present": 4,
+            "nights": 4
+          },
+          "already_equivalent": false,
+          "fills_empty_slot": false,
+          "replaces": "Mirah's Song",
+          "replaces_item": {
+            "item_id": 15806,
+            "name": "Mirah's Song",
+            "icon": "inv_sword_24",
+            "quality": 3
+          },
+          "items_won": 0
+        },
+        {
+          "character_key": "us/pvp/shiverknife",
+          "name": "Shiverknife",
+          "class": "rogue",
+          "spec": "Assassination",
+          "gain_dps": 11.6,
+          "gain_unit": "dps",
+          "tier": 0,
+          "not_sim_checked": false,
+          "ilvl_delta": null,
+          "attendance": {
+            "present": 3,
+            "nights": 4
+          },
+          "already_equivalent": false,
+          "fills_empty_slot": false,
+          "replaces": "Dal'Rend's Sacred Charge",
+          "replaces_item": {
+            "item_id": 12940,
+            "name": "Dal'Rend's Sacred Charge",
+            "icon": "inv_sword_36",
+            "quality": 3
+          },
+          "items_won": 1
+        },
+        {
+          "character_key": "us/pvp/groundshock",
+          "name": "Groundshock",
+          "class": "shaman",
+          "spec": "Enhancement",
+          "gain_dps": 9.1,
+          "gain_unit": "dps",
+          "tier": 0,
+          "not_sim_checked": false,
+          "ilvl_delta": null,
+          "attendance": {
+            "present": 4,
+            "nights": 4
+          },
+          "already_equivalent": false,
+          "fills_empty_slot": false,
+          "replaces": "Ironfoe",
+          "replaces_item": {
+            "item_id": 11684,
+            "name": "Ironfoe",
+            "icon": "inv_mace_10",
+            "quality": 4
+          },
+          "items_won": 0
+        },
+        {
+          "character_key": "us/pvp/blacktide",
+          "name": "Blacktide",
+          "class": "rogue",
+          "spec": "Combat",
+          "gain_dps": 4.0,
+          "gain_unit": "dps",
+          "tier": 0,
+          "not_sim_checked": false,
+          "ilvl_delta": null,
+          "attendance": {
+            "present": 2,
+            "nights": 4
+          },
+          "already_equivalent": false,
+          "fills_empty_slot": false,
+          "replaces": "Skullforge Reaver",
+          "replaces_item": {
+            "item_id": 13361,
+            "name": "Skullforge Reaver",
+            "icon": "inv_sword_47",
+            "quality": 3
+          },
+          "items_won": 2
+        }
+      ],
+      "copies": 1,
+      "encounter_id": 1084,
+      "boss": "Onyxia",
+      "raid": "Onyxia's Lair"
+    },
+    {
+      "item_id": 17068,
+      "name": "Deathbringer",
+      "icon": "inv_axe_09",
+      "quality": 4,
+      "slot": "",
+      "inventory_type": 13,
+      "item_class": 2,
+      "item_subclass": 0,
+      "kind": "gear",
+      "quest_label": "",
+      "eligible": [],
+      "awarded_to": null,
+      "candidates": [
+        {
+          "character_key": "us/pvp/seraphine",
+          "name": "Seraphine",
+          "class": "paladin",
+          "spec": "Retribution",
+          "gain_dps": 14.2,
+          "gain_unit": "dps",
+          "tier": 0,
+          "not_sim_checked": false,
+          "ilvl_delta": null,
+          "attendance": {
+            "present": 4,
+            "nights": 4
+          },
+          "already_equivalent": false,
+          "fills_empty_slot": false,
+          "replaces": "Mirah's Song",
+          "replaces_item": {
+            "item_id": 15806,
+            "name": "Mirah's Song",
+            "icon": "inv_sword_24",
+            "quality": 3
+          },
+          "items_won": 0
+        },
+        {
+          "character_key": "us/pvp/shiverknife",
+          "name": "Shiverknife",
+          "class": "rogue",
+          "spec": "Assassination",
+          "gain_dps": 11.6,
+          "gain_unit": "dps",
+          "tier": 0,
+          "not_sim_checked": false,
+          "ilvl_delta": null,
+          "attendance": {
+            "present": 3,
+            "nights": 4
+          },
+          "already_equivalent": false,
+          "fills_empty_slot": false,
+          "replaces": "Dal'Rend's Sacred Charge",
+          "replaces_item": {
+            "item_id": 12940,
+            "name": "Dal'Rend's Sacred Charge",
+            "icon": "inv_sword_36",
+            "quality": 3
+          },
+          "items_won": 1
+        },
+        {
+          "character_key": "us/pvp/groundshock",
+          "name": "Groundshock",
+          "class": "shaman",
+          "spec": "Enhancement",
+          "gain_dps": 9.1,
+          "gain_unit": "dps",
+          "tier": 0,
+          "not_sim_checked": false,
+          "ilvl_delta": null,
+          "attendance": {
+            "present": 4,
+            "nights": 4
+          },
+          "already_equivalent": false,
+          "fills_empty_slot": false,
+          "replaces": "Ironfoe",
+          "replaces_item": {
+            "item_id": 11684,
+            "name": "Ironfoe",
+            "icon": "inv_mace_10",
+            "quality": 4
+          },
+          "items_won": 0
+        },
+        {
+          "character_key": "us/pvp/blacktide",
+          "name": "Blacktide",
+          "class": "rogue",
+          "spec": "Combat",
+          "gain_dps": 4.0,
+          "gain_unit": "dps",
+          "tier": 0,
+          "not_sim_checked": false,
+          "ilvl_delta": null,
+          "attendance": {
+            "present": 2,
+            "nights": 4
+          },
+          "already_equivalent": false,
+          "fills_empty_slot": false,
+          "replaces": "Skullforge Reaver",
+          "replaces_item": {
+            "item_id": 13361,
+            "name": "Skullforge Reaver",
+            "icon": "inv_sword_47",
+            "quality": 3
+          },
+          "items_won": 2
+        }
+      ],
+      "copies": 1,
+      "encounter_id": 1084,
+      "boss": "Onyxia",
+      "raid": "Onyxia's Lair"
+    },
+    {
+      "item_id": 17075,
+      "name": "Vis'kag the Bloodletter",
+      "icon": "inv_sword_18",
+      "quality": 4,
+      "slot": "",
+      "inventory_type": 13,
+      "item_class": 2,
+      "item_subclass": 7,
+      "kind": "gear",
+      "quest_label": "",
+      "eligible": [],
+      "awarded_to": null,
+      "candidates": [
+        {
+          "character_key": "us/pvp/seraphine",
+          "name": "Seraphine",
+          "class": "paladin",
+          "spec": "Retribution",
+          "gain_dps": 14.2,
+          "gain_unit": "dps",
+          "tier": 0,
+          "not_sim_checked": false,
+          "ilvl_delta": null,
+          "attendance": {
+            "present": 4,
+            "nights": 4
+          },
+          "already_equivalent": false,
+          "fills_empty_slot": false,
+          "replaces": "Mirah's Song",
+          "replaces_item": {
+            "item_id": 15806,
+            "name": "Mirah's Song",
+            "icon": "inv_sword_24",
+            "quality": 3
+          },
+          "items_won": 0
+        },
+        {
+          "character_key": "us/pvp/shiverknife",
+          "name": "Shiverknife",
+          "class": "rogue",
+          "spec": "Assassination",
+          "gain_dps": 11.6,
+          "gain_unit": "dps",
+          "tier": 0,
+          "not_sim_checked": false,
+          "ilvl_delta": null,
+          "attendance": {
+            "present": 3,
+            "nights": 4
+          },
+          "already_equivalent": false,
+          "fills_empty_slot": false,
+          "replaces": "Dal'Rend's Sacred Charge",
+          "replaces_item": {
+            "item_id": 12940,
+            "name": "Dal'Rend's Sacred Charge",
+            "icon": "inv_sword_36",
+            "quality": 3
+          },
+          "items_won": 1
+        },
+        {
+          "character_key": "us/pvp/groundshock",
+          "name": "Groundshock",
+          "class": "shaman",
+          "spec": "Enhancement",
+          "gain_dps": 9.1,
+          "gain_unit": "dps",
+          "tier": 0,
+          "not_sim_checked": false,
+          "ilvl_delta": null,
+          "attendance": {
+            "present": 4,
+            "nights": 4
+          },
+          "already_equivalent": false,
+          "fills_empty_slot": false,
+          "replaces": "Ironfoe",
+          "replaces_item": {
+            "item_id": 11684,
+            "name": "Ironfoe",
+            "icon": "inv_mace_10",
+            "quality": 4
+          },
+          "items_won": 0
+        },
+        {
+          "character_key": "us/pvp/blacktide",
+          "name": "Blacktide",
+          "class": "rogue",
+          "spec": "Combat",
+          "gain_dps": 4.0,
+          "gain_unit": "dps",
+          "tier": 0,
+          "not_sim_checked": false,
+          "ilvl_delta": null,
+          "attendance": {
+            "present": 2,
+            "nights": 4
+          },
+          "already_equivalent": false,
+          "fills_empty_slot": false,
+          "replaces": "Skullforge Reaver",
+          "replaces_item": {
+            "item_id": 13361,
+            "name": "Skullforge Reaver",
+            "icon": "inv_sword_47",
+            "quality": 3
+          },
+          "items_won": 2
+        }
+      ],
+      "copies": 1,
+      "encounter_id": 1084,
+      "boss": "Onyxia",
+      "raid": "Onyxia's Lair"
+    },
+    {
+      "item_id": 17078,
+      "name": "Sapphiron Drape",
+      "icon": "inv_misc_cape_16",
+      "quality": 4,
+      "slot": "",
+      "inventory_type": 16,
+      "item_class": 4,
+      "item_subclass": 1,
+      "kind": "gear",
+      "quest_label": "",
+      "eligible": [],
+      "awarded_to": null,
+      "candidates": [
+        {
+          "character_key": "us/pvp/seraphine",
+          "name": "Seraphine",
+          "class": "paladin",
+          "spec": "Retribution",
+          "gain_dps": 14.2,
+          "gain_unit": "dps",
+          "tier": 0,
+          "not_sim_checked": false,
+          "ilvl_delta": null,
+          "attendance": {
+            "present": 4,
+            "nights": 4
+          },
+          "already_equivalent": false,
+          "fills_empty_slot": false,
+          "replaces": "Mirah's Song",
+          "replaces_item": {
+            "item_id": 15806,
+            "name": "Mirah's Song",
+            "icon": "inv_sword_24",
+            "quality": 3
+          },
+          "items_won": 0
+        },
+        {
+          "character_key": "us/pvp/shiverknife",
+          "name": "Shiverknife",
+          "class": "rogue",
+          "spec": "Assassination",
+          "gain_dps": 11.6,
+          "gain_unit": "dps",
+          "tier": 0,
+          "not_sim_checked": false,
+          "ilvl_delta": null,
+          "attendance": {
+            "present": 3,
+            "nights": 4
+          },
+          "already_equivalent": false,
+          "fills_empty_slot": false,
+          "replaces": "Dal'Rend's Sacred Charge",
+          "replaces_item": {
+            "item_id": 12940,
+            "name": "Dal'Rend's Sacred Charge",
+            "icon": "inv_sword_36",
+            "quality": 3
+          },
+          "items_won": 1
+        },
+        {
+          "character_key": "us/pvp/groundshock",
+          "name": "Groundshock",
+          "class": "shaman",
+          "spec": "Enhancement",
+          "gain_dps": 9.1,
+          "gain_unit": "dps",
+          "tier": 0,
+          "not_sim_checked": false,
+          "ilvl_delta": null,
+          "attendance": {
+            "present": 4,
+            "nights": 4
+          },
+          "already_equivalent": false,
+          "fills_empty_slot": false,
+          "replaces": "Ironfoe",
+          "replaces_item": {
+            "item_id": 11684,
+            "name": "Ironfoe",
+            "icon": "inv_mace_10",
+            "quality": 4
+          },
+          "items_won": 0
+        },
+        {
+          "character_key": "us/pvp/blacktide",
+          "name": "Blacktide",
+          "class": "rogue",
+          "spec": "Combat",
+          "gain_dps": 4.0,
+          "gain_unit": "dps",
+          "tier": 0,
+          "not_sim_checked": false,
+          "ilvl_delta": null,
+          "attendance": {
+            "present": 2,
+            "nights": 4
+          },
+          "already_equivalent": false,
+          "fills_empty_slot": false,
+          "replaces": "Skullforge Reaver",
+          "replaces_item": {
+            "item_id": 13361,
+            "name": "Skullforge Reaver",
+            "icon": "inv_sword_47",
+            "quality": 3
+          },
+          "items_won": 2
+        }
+      ],
+      "copies": 1,
+      "encounter_id": 1084,
+      "boss": "Onyxia",
+      "raid": "Onyxia's Lair"
+    },
+    {
+      "item_id": 17966,
+      "name": "Onyxia Hide Backpack",
+      "icon": "",
+      "quality": 2,
+      "slot": "",
+      "inventory_type": 18,
+      "item_class": 1,
+      "item_subclass": 0,
+      "kind": "bag",
+      "quest_label": "",
+      "eligible": [
+        {
+          "character_key": "us/pvp/thornwicke",
+          "name": "Thornwicke",
+          "class": "warrior",
+          "item_id": 17966
+        },
+        {
+          "character_key": "us/pvp/ironbrand",
+          "name": "Ironbrand",
+          "class": "paladin",
+          "item_id": 17966
+        },
+        {
+          "character_key": "us/pvp/valomira",
+          "name": "Valomira",
+          "class": "paladin",
+          "item_id": 17966
+        },
+        {
+          "character_key": "us/pvp/seraphine",
+          "name": "Seraphine",
+          "class": "paladin",
+          "item_id": 17966
+        },
+        {
+          "character_key": "us/pvp/dunmaro",
+          "name": "Dunmaro",
+          "class": "hunter",
+          "item_id": 17966
+        },
+        {
+          "character_key": "us/pvp/pinefeather",
+          "name": "Pinefeather",
+          "class": "hunter",
+          "item_id": 17966
+        },
+        {
+          "character_key": "us/pvp/skytalon",
+          "name": "Skytalon",
+          "class": "hunter",
+          "item_id": 17966
+        },
+        {
+          "character_key": "us/pvp/shiverknife",
+          "name": "Shiverknife",
+          "class": "rogue",
+          "item_id": 17966
+        },
+        {
+          "character_key": "us/pvp/blacktide",
+          "name": "Blacktide",
+          "class": "rogue",
+          "item_id": 17966
+        },
+        {
+          "character_key": "us/pvp/hollowmend",
+          "name": "Hollowmend",
+          "class": "priest",
+          "item_id": 17966
+        },
+        {
+          "character_key": "us/pvp/dawnweaver",
+          "name": "Dawnweaver",
+          "class": "priest",
+          "item_id": 17966
+        },
+        {
+          "character_key": "us/pvp/voidcall",
+          "name": "Voidcall",
+          "class": "priest",
+          "item_id": 17966
+        },
+        {
+          "character_key": "us/pvp/stonetide",
+          "name": "Stonetide",
+          "class": "shaman",
+          "item_id": 17966
+        },
+        {
+          "character_key": "us/pvp/emberfall",
+          "name": "Emberfall",
+          "class": "shaman",
+          "item_id": 17966
+        },
+        {
+          "character_key": "us/pvp/groundshock",
+          "name": "Groundshock",
+          "class": "shaman",
+          "item_id": 17966
+        },
+        {
+          "character_key": "us/pvp/frostquill",
+          "name": "Frostquill",
+          "class": "mage",
+          "item_id": 17966
+        },
+        {
+          "character_key": "us/pvp/cinderglass",
+          "name": "Cinderglass",
+          "class": "mage",
+          "item_id": 17966
+        },
+        {
+          "character_key": "us/pvp/skyarcana",
+          "name": "Skyarcana",
+          "class": "mage",
+          "item_id": 17966
+        },
+        {
+          "character_key": "us/pvp/doomwhisper",
+          "name": "Doomwhisper",
+          "class": "warlock",
+          "item_id": 17966
+        },
+        {
+          "character_key": "us/pvp/grimsworn",
+          "name": "Grimsworn",
+          "class": "warlock",
+          "item_id": 17966
+        },
+        {
+          "character_key": "us/pvp/hexmarrow",
+          "name": "Hexmarrow",
+          "class": "warlock",
+          "item_id": 17966
+        },
+        {
+          "character_key": "us/pvp/mossveil",
+          "name": "Mossveil",
+          "class": "druid",
+          "item_id": 17966
+        },
+        {
+          "character_key": "us/pvp/starnettle",
+          "name": "Starnettle",
+          "class": "druid",
+          "item_id": 17966
+        },
+        {
+          "character_key": "us/pvp/nightlatch",
+          "name": "Nightlatch",
+          "class": "rogue",
+          "item_id": 17966
+        }
+      ],
+      "awarded_to": null,
+      "candidates": [],
+      "copies": 1,
+      "encounter_id": 1084,
+      "boss": "Onyxia",
+      "raid": "Onyxia's Lair"
+    },
+    {
+      "item_id": 18205,
+      "name": "Eskhandar's Collar",
+      "icon": "inv_belt_12",
+      "quality": 4,
+      "slot": "",
+      "inventory_type": 2,
+      "item_class": 4,
+      "item_subclass": 0,
+      "kind": "gear",
+      "quest_label": "",
+      "eligible": [],
+      "awarded_to": {
+        "award_id": 1,
+        "character_key": "us/pvp/hollowmend",
+        "name": "Hollowmend",
+        "at": "2026-12-08T03:01:00Z",
+        "by_name": "Ironbrand"
+      },
+      "candidates": [
+        {
+          "character_key": "us/pvp/seraphine",
+          "name": "Seraphine",
+          "class": "paladin",
+          "spec": "Retribution",
+          "gain_dps": 14.2,
+          "gain_unit": "dps",
+          "tier": 0,
+          "not_sim_checked": false,
+          "ilvl_delta": null,
+          "attendance": {
+            "present": 4,
+            "nights": 4
+          },
+          "already_equivalent": false,
+          "fills_empty_slot": false,
+          "replaces": "Mirah's Song",
+          "replaces_item": {
+            "item_id": 15806,
+            "name": "Mirah's Song",
+            "icon": "inv_sword_24",
+            "quality": 3
+          },
+          "items_won": 0
+        },
+        {
+          "character_key": "us/pvp/shiverknife",
+          "name": "Shiverknife",
+          "class": "rogue",
+          "spec": "Assassination",
+          "gain_dps": 11.6,
+          "gain_unit": "dps",
+          "tier": 0,
+          "not_sim_checked": false,
+          "ilvl_delta": null,
+          "attendance": {
+            "present": 3,
+            "nights": 4
+          },
+          "already_equivalent": false,
+          "fills_empty_slot": false,
+          "replaces": "Dal'Rend's Sacred Charge",
+          "replaces_item": {
+            "item_id": 12940,
+            "name": "Dal'Rend's Sacred Charge",
+            "icon": "inv_sword_36",
+            "quality": 3
+          },
+          "items_won": 1
+        },
+        {
+          "character_key": "us/pvp/groundshock",
+          "name": "Groundshock",
+          "class": "shaman",
+          "spec": "Enhancement",
+          "gain_dps": 9.1,
+          "gain_unit": "dps",
+          "tier": 0,
+          "not_sim_checked": false,
+          "ilvl_delta": null,
+          "attendance": {
+            "present": 4,
+            "nights": 4
+          },
+          "already_equivalent": false,
+          "fills_empty_slot": false,
+          "replaces": "Ironfoe",
+          "replaces_item": {
+            "item_id": 11684,
+            "name": "Ironfoe",
+            "icon": "inv_mace_10",
+            "quality": 4
+          },
+          "items_won": 0
+        },
+        {
+          "character_key": "us/pvp/blacktide",
+          "name": "Blacktide",
+          "class": "rogue",
+          "spec": "Combat",
+          "gain_dps": 4.0,
+          "gain_unit": "dps",
+          "tier": 0,
+          "not_sim_checked": false,
+          "ilvl_delta": null,
+          "attendance": {
+            "present": 2,
+            "nights": 4
+          },
+          "already_equivalent": false,
+          "fills_empty_slot": false,
+          "replaces": "Skullforge Reaver",
+          "replaces_item": {
+            "item_id": 13361,
+            "name": "Skullforge Reaver",
+            "icon": "inv_sword_47",
+            "quality": 3
+          },
+          "items_won": 2
+        }
+      ],
+      "copies": 1,
+      "encounter_id": 1084,
+      "boss": "Onyxia",
+      "raid": "Onyxia's Lair"
+    },
+    {
+      "item_id": 18422,
+      "name": "Head of Onyxia",
+      "icon": "inv_misc_head_dragon_01",
+      "quality": 4,
+      "slot": "",
+      "inventory_type": 0,
+      "item_class": 12,
+      "item_subclass": 0,
+      "kind": "quest",
+      "quest_label": "",
+      "eligible": [
+        {
+          "character_key": "us/pvp/thornwicke",
+          "name": "Thornwicke",
+          "class": "warrior",
+          "item_id": 18422
+        },
+        {
+          "character_key": "us/pvp/ironbrand",
+          "name": "Ironbrand",
+          "class": "paladin",
+          "item_id": 18422
+        },
+        {
+          "character_key": "us/pvp/valomira",
+          "name": "Valomira",
+          "class": "paladin",
+          "item_id": 18422
+        },
+        {
+          "character_key": "us/pvp/seraphine",
+          "name": "Seraphine",
+          "class": "paladin",
+          "item_id": 18422
+        },
+        {
+          "character_key": "us/pvp/dunmaro",
+          "name": "Dunmaro",
+          "class": "hunter",
+          "item_id": 18422
+        },
+        {
+          "character_key": "us/pvp/pinefeather",
+          "name": "Pinefeather",
+          "class": "hunter",
+          "item_id": 18422
+        },
+        {
+          "character_key": "us/pvp/skytalon",
+          "name": "Skytalon",
+          "class": "hunter",
+          "item_id": 18422
+        },
+        {
+          "character_key": "us/pvp/shiverknife",
+          "name": "Shiverknife",
+          "class": "rogue",
+          "item_id": 18422
+        },
+        {
+          "character_key": "us/pvp/blacktide",
+          "name": "Blacktide",
+          "class": "rogue",
+          "item_id": 18422
+        },
+        {
+          "character_key": "us/pvp/hollowmend",
+          "name": "Hollowmend",
+          "class": "priest",
+          "item_id": 18422
+        },
+        {
+          "character_key": "us/pvp/dawnweaver",
+          "name": "Dawnweaver",
+          "class": "priest",
+          "item_id": 18422
+        },
+        {
+          "character_key": "us/pvp/voidcall",
+          "name": "Voidcall",
+          "class": "priest",
+          "item_id": 18422
+        },
+        {
+          "character_key": "us/pvp/stonetide",
+          "name": "Stonetide",
+          "class": "shaman",
+          "item_id": 18422
+        },
+        {
+          "character_key": "us/pvp/emberfall",
+          "name": "Emberfall",
+          "class": "shaman",
+          "item_id": 18422
+        },
+        {
+          "character_key": "us/pvp/groundshock",
+          "name": "Groundshock",
+          "class": "shaman",
+          "item_id": 18422
+        },
+        {
+          "character_key": "us/pvp/frostquill",
+          "name": "Frostquill",
+          "class": "mage",
+          "item_id": 18422
+        },
+        {
+          "character_key": "us/pvp/cinderglass",
+          "name": "Cinderglass",
+          "class": "mage",
+          "item_id": 18422
+        },
+        {
+          "character_key": "us/pvp/skyarcana",
+          "name": "Skyarcana",
+          "class": "mage",
+          "item_id": 18422
+        },
+        {
+          "character_key": "us/pvp/doomwhisper",
+          "name": "Doomwhisper",
+          "class": "warlock",
+          "item_id": 18422
+        },
+        {
+          "character_key": "us/pvp/grimsworn",
+          "name": "Grimsworn",
+          "class": "warlock",
+          "item_id": 18422
+        },
+        {
+          "character_key": "us/pvp/hexmarrow",
+          "name": "Hexmarrow",
+          "class": "warlock",
+          "item_id": 18422
+        },
+        {
+          "character_key": "us/pvp/mossveil",
+          "name": "Mossveil",
+          "class": "druid",
+          "item_id": 18422
+        },
+        {
+          "character_key": "us/pvp/starnettle",
+          "name": "Starnettle",
+          "class": "druid",
+          "item_id": 18422
+        },
+        {
+          "character_key": "us/pvp/nightlatch",
+          "name": "Nightlatch",
+          "class": "rogue",
+          "item_id": 18422
+        }
+      ],
+      "awarded_to": null,
+      "candidates": [],
+      "copies": 1,
+      "encounter_id": 1084,
+      "boss": "Onyxia",
+      "raid": "Onyxia's Lair"
+    },
+    {
+      "item_id": 18423,
+      "name": "Head of Onyxia",
+      "icon": "",
+      "quality": 4,
+      "slot": "",
+      "inventory_type": 0,
+      "item_class": 12,
+      "item_subclass": 0,
+      "kind": "quest",
+      "quest_label": "",
+      "eligible": [
+        {
+          "character_key": "us/pvp/thornwicke",
+          "name": "Thornwicke",
+          "class": "warrior",
+          "item_id": 18423
+        },
+        {
+          "character_key": "us/pvp/ironbrand",
+          "name": "Ironbrand",
+          "class": "paladin",
+          "item_id": 18423
+        },
+        {
+          "character_key": "us/pvp/valomira",
+          "name": "Valomira",
+          "class": "paladin",
+          "item_id": 18423
+        },
+        {
+          "character_key": "us/pvp/seraphine",
+          "name": "Seraphine",
+          "class": "paladin",
+          "item_id": 18423
+        },
+        {
+          "character_key": "us/pvp/dunmaro",
+          "name": "Dunmaro",
+          "class": "hunter",
+          "item_id": 18423
+        },
+        {
+          "character_key": "us/pvp/pinefeather",
+          "name": "Pinefeather",
+          "class": "hunter",
+          "item_id": 18423
+        },
+        {
+          "character_key": "us/pvp/skytalon",
+          "name": "Skytalon",
+          "class": "hunter",
+          "item_id": 18423
+        },
+        {
+          "character_key": "us/pvp/shiverknife",
+          "name": "Shiverknife",
+          "class": "rogue",
+          "item_id": 18423
+        },
+        {
+          "character_key": "us/pvp/blacktide",
+          "name": "Blacktide",
+          "class": "rogue",
+          "item_id": 18423
+        },
+        {
+          "character_key": "us/pvp/hollowmend",
+          "name": "Hollowmend",
+          "class": "priest",
+          "item_id": 18423
+        },
+        {
+          "character_key": "us/pvp/dawnweaver",
+          "name": "Dawnweaver",
+          "class": "priest",
+          "item_id": 18423
+        },
+        {
+          "character_key": "us/pvp/voidcall",
+          "name": "Voidcall",
+          "class": "priest",
+          "item_id": 18423
+        },
+        {
+          "character_key": "us/pvp/stonetide",
+          "name": "Stonetide",
+          "class": "shaman",
+          "item_id": 18423
+        },
+        {
+          "character_key": "us/pvp/emberfall",
+          "name": "Emberfall",
+          "class": "shaman",
+          "item_id": 18423
+        },
+        {
+          "character_key": "us/pvp/groundshock",
+          "name": "Groundshock",
+          "class": "shaman",
+          "item_id": 18423
+        },
+        {
+          "character_key": "us/pvp/frostquill",
+          "name": "Frostquill",
+          "class": "mage",
+          "item_id": 18423
+        },
+        {
+          "character_key": "us/pvp/cinderglass",
+          "name": "Cinderglass",
+          "class": "mage",
+          "item_id": 18423
+        },
+        {
+          "character_key": "us/pvp/skyarcana",
+          "name": "Skyarcana",
+          "class": "mage",
+          "item_id": 18423
+        },
+        {
+          "character_key": "us/pvp/doomwhisper",
+          "name": "Doomwhisper",
+          "class": "warlock",
+          "item_id": 18423
+        },
+        {
+          "character_key": "us/pvp/grimsworn",
+          "name": "Grimsworn",
+          "class": "warlock",
+          "item_id": 18423
+        },
+        {
+          "character_key": "us/pvp/hexmarrow",
+          "name": "Hexmarrow",
+          "class": "warlock",
+          "item_id": 18423
+        },
+        {
+          "character_key": "us/pvp/mossveil",
+          "name": "Mossveil",
+          "class": "druid",
+          "item_id": 18423
+        },
+        {
+          "character_key": "us/pvp/starnettle",
+          "name": "Starnettle",
+          "class": "druid",
+          "item_id": 18423
+        },
+        {
+          "character_key": "us/pvp/nightlatch",
+          "name": "Nightlatch",
+          "class": "rogue",
+          "item_id": 18423
+        }
+      ],
+      "awarded_to": null,
+      "candidates": [],
+      "copies": 1,
+      "encounter_id": 1084,
+      "boss": "Onyxia",
+      "raid": "Onyxia's Lair"
+    },
+    {
+      "item_id": 18705,
+      "name": "Mature Black Dragon Sinew",
+      "icon": "",
+      "quality": 4,
+      "slot": "",
+      "inventory_type": 0,
+      "item_class": 12,
+      "item_subclass": 0,
+      "kind": "quest",
+      "quest_label": "",
+      "eligible": [
+        {
+          "character_key": "us/pvp/thornwicke",
+          "name": "Thornwicke",
+          "class": "warrior",
+          "item_id": 18705
+        },
+        {
+          "character_key": "us/pvp/ironbrand",
+          "name": "Ironbrand",
+          "class": "paladin",
+          "item_id": 18705
+        },
+        {
+          "character_key": "us/pvp/valomira",
+          "name": "Valomira",
+          "class": "paladin",
+          "item_id": 18705
+        },
+        {
+          "character_key": "us/pvp/seraphine",
+          "name": "Seraphine",
+          "class": "paladin",
+          "item_id": 18705
+        },
+        {
+          "character_key": "us/pvp/dunmaro",
+          "name": "Dunmaro",
+          "class": "hunter",
+          "item_id": 18705
+        },
+        {
+          "character_key": "us/pvp/pinefeather",
+          "name": "Pinefeather",
+          "class": "hunter",
+          "item_id": 18705
+        },
+        {
+          "character_key": "us/pvp/skytalon",
+          "name": "Skytalon",
+          "class": "hunter",
+          "item_id": 18705
+        },
+        {
+          "character_key": "us/pvp/shiverknife",
+          "name": "Shiverknife",
+          "class": "rogue",
+          "item_id": 18705
+        },
+        {
+          "character_key": "us/pvp/blacktide",
+          "name": "Blacktide",
+          "class": "rogue",
+          "item_id": 18705
+        },
+        {
+          "character_key": "us/pvp/hollowmend",
+          "name": "Hollowmend",
+          "class": "priest",
+          "item_id": 18705
+        },
+        {
+          "character_key": "us/pvp/dawnweaver",
+          "name": "Dawnweaver",
+          "class": "priest",
+          "item_id": 18705
+        },
+        {
+          "character_key": "us/pvp/voidcall",
+          "name": "Voidcall",
+          "class": "priest",
+          "item_id": 18705
+        },
+        {
+          "character_key": "us/pvp/stonetide",
+          "name": "Stonetide",
+          "class": "shaman",
+          "item_id": 18705
+        },
+        {
+          "character_key": "us/pvp/emberfall",
+          "name": "Emberfall",
+          "class": "shaman",
+          "item_id": 18705
+        },
+        {
+          "character_key": "us/pvp/groundshock",
+          "name": "Groundshock",
+          "class": "shaman",
+          "item_id": 18705
+        },
+        {
+          "character_key": "us/pvp/frostquill",
+          "name": "Frostquill",
+          "class": "mage",
+          "item_id": 18705
+        },
+        {
+          "character_key": "us/pvp/cinderglass",
+          "name": "Cinderglass",
+          "class": "mage",
+          "item_id": 18705
+        },
+        {
+          "character_key": "us/pvp/skyarcana",
+          "name": "Skyarcana",
+          "class": "mage",
+          "item_id": 18705
+        },
+        {
+          "character_key": "us/pvp/doomwhisper",
+          "name": "Doomwhisper",
+          "class": "warlock",
+          "item_id": 18705
+        },
+        {
+          "character_key": "us/pvp/grimsworn",
+          "name": "Grimsworn",
+          "class": "warlock",
+          "item_id": 18705
+        },
+        {
+          "character_key": "us/pvp/hexmarrow",
+          "name": "Hexmarrow",
+          "class": "warlock",
+          "item_id": 18705
+        },
+        {
+          "character_key": "us/pvp/mossveil",
+          "name": "Mossveil",
+          "class": "druid",
+          "item_id": 18705
+        },
+        {
+          "character_key": "us/pvp/starnettle",
+          "name": "Starnettle",
+          "class": "druid",
+          "item_id": 18705
+        },
+        {
+          "character_key": "us/pvp/nightlatch",
+          "name": "Nightlatch",
+          "class": "rogue",
+          "item_id": 18705
+        }
+      ],
+      "awarded_to": null,
+      "candidates": [],
+      "copies": 1,
+      "encounter_id": 1084,
+      "boss": "Onyxia",
+      "raid": "Onyxia's Lair"
+    },
+    {
+      "item_id": 18813,
+      "name": "Ring of Binding",
+      "icon": "inv_jewelry_ring_13",
+      "quality": 4,
+      "slot": "",
+      "inventory_type": 11,
+      "item_class": 4,
+      "item_subclass": 0,
+      "kind": "gear",
+      "quest_label": "",
+      "eligible": [],
+      "awarded_to": {
+        "award_id": 2,
+        "character_key": "us/pvp/doomwhisper",
+        "name": "Doomwhisper",
+        "at": "2026-12-08T03:02:00Z",
+        "by_name": "Dunmaro"
+      },
+      "candidates": [
+        {
+          "character_key": "us/pvp/seraphine",
+          "name": "Seraphine",
+          "class": "paladin",
+          "spec": "Retribution",
+          "gain_dps": 14.2,
+          "gain_unit": "dps",
+          "tier": 0,
+          "not_sim_checked": false,
+          "ilvl_delta": null,
+          "attendance": {
+            "present": 4,
+            "nights": 4
+          },
+          "already_equivalent": false,
+          "fills_empty_slot": false,
+          "replaces": "Mirah's Song",
+          "replaces_item": {
+            "item_id": 15806,
+            "name": "Mirah's Song",
+            "icon": "inv_sword_24",
+            "quality": 3
+          },
+          "items_won": 0
+        },
+        {
+          "character_key": "us/pvp/shiverknife",
+          "name": "Shiverknife",
+          "class": "rogue",
+          "spec": "Assassination",
+          "gain_dps": 11.6,
+          "gain_unit": "dps",
+          "tier": 0,
+          "not_sim_checked": false,
+          "ilvl_delta": null,
+          "attendance": {
+            "present": 3,
+            "nights": 4
+          },
+          "already_equivalent": false,
+          "fills_empty_slot": false,
+          "replaces": "Dal'Rend's Sacred Charge",
+          "replaces_item": {
+            "item_id": 12940,
+            "name": "Dal'Rend's Sacred Charge",
+            "icon": "inv_sword_36",
+            "quality": 3
+          },
+          "items_won": 1
+        },
+        {
+          "character_key": "us/pvp/groundshock",
+          "name": "Groundshock",
+          "class": "shaman",
+          "spec": "Enhancement",
+          "gain_dps": 9.1,
+          "gain_unit": "dps",
+          "tier": 0,
+          "not_sim_checked": false,
+          "ilvl_delta": null,
+          "attendance": {
+            "present": 4,
+            "nights": 4
+          },
+          "already_equivalent": false,
+          "fills_empty_slot": false,
+          "replaces": "Ironfoe",
+          "replaces_item": {
+            "item_id": 11684,
+            "name": "Ironfoe",
+            "icon": "inv_mace_10",
+            "quality": 4
+          },
+          "items_won": 0
+        },
+        {
+          "character_key": "us/pvp/blacktide",
+          "name": "Blacktide",
+          "class": "rogue",
+          "spec": "Combat",
+          "gain_dps": 4.0,
+          "gain_unit": "dps",
+          "tier": 0,
+          "not_sim_checked": false,
+          "ilvl_delta": null,
+          "attendance": {
+            "present": 2,
+            "nights": 4
+          },
+          "already_equivalent": false,
+          "fills_empty_slot": false,
+          "replaces": "Skullforge Reaver",
+          "replaces_item": {
+            "item_id": 13361,
+            "name": "Skullforge Reaver",
+            "icon": "inv_sword_47",
+            "quality": 3
+          },
+          "items_won": 2
+        }
+      ],
+      "copies": 1,
+      "encounter_id": 1084,
+      "boss": "Onyxia",
+      "raid": "Onyxia's Lair"
+    },
+    {
+      "item_id": 21108,
+      "name": "Draconic for Dummies",
+      "icon": "",
+      "quality": 4,
+      "slot": "",
+      "inventory_type": 0,
+      "item_class": 15,
+      "item_subclass": 0,
+      "kind": "quest",
+      "quest_label": "",
+      "eligible": [
+        {
+          "character_key": "us/pvp/thornwicke",
+          "name": "Thornwicke",
+          "class": "warrior",
+          "item_id": 21108
+        },
+        {
+          "character_key": "us/pvp/ironbrand",
+          "name": "Ironbrand",
+          "class": "paladin",
+          "item_id": 21108
+        },
+        {
+          "character_key": "us/pvp/valomira",
+          "name": "Valomira",
+          "class": "paladin",
+          "item_id": 21108
+        },
+        {
+          "character_key": "us/pvp/seraphine",
+          "name": "Seraphine",
+          "class": "paladin",
+          "item_id": 21108
+        },
+        {
+          "character_key": "us/pvp/dunmaro",
+          "name": "Dunmaro",
+          "class": "hunter",
+          "item_id": 21108
+        },
+        {
+          "character_key": "us/pvp/pinefeather",
+          "name": "Pinefeather",
+          "class": "hunter",
+          "item_id": 21108
+        },
+        {
+          "character_key": "us/pvp/skytalon",
+          "name": "Skytalon",
+          "class": "hunter",
+          "item_id": 21108
+        },
+        {
+          "character_key": "us/pvp/shiverknife",
+          "name": "Shiverknife",
+          "class": "rogue",
+          "item_id": 21108
+        },
+        {
+          "character_key": "us/pvp/blacktide",
+          "name": "Blacktide",
+          "class": "rogue",
+          "item_id": 21108
+        },
+        {
+          "character_key": "us/pvp/hollowmend",
+          "name": "Hollowmend",
+          "class": "priest",
+          "item_id": 21108
+        },
+        {
+          "character_key": "us/pvp/dawnweaver",
+          "name": "Dawnweaver",
+          "class": "priest",
+          "item_id": 21108
+        },
+        {
+          "character_key": "us/pvp/voidcall",
+          "name": "Voidcall",
+          "class": "priest",
+          "item_id": 21108
+        },
+        {
+          "character_key": "us/pvp/stonetide",
+          "name": "Stonetide",
+          "class": "shaman",
+          "item_id": 21108
+        },
+        {
+          "character_key": "us/pvp/emberfall",
+          "name": "Emberfall",
+          "class": "shaman",
+          "item_id": 21108
+        },
+        {
+          "character_key": "us/pvp/groundshock",
+          "name": "Groundshock",
+          "class": "shaman",
+          "item_id": 21108
+        },
+        {
+          "character_key": "us/pvp/frostquill",
+          "name": "Frostquill",
+          "class": "mage",
+          "item_id": 21108
+        },
+        {
+          "character_key": "us/pvp/cinderglass",
+          "name": "Cinderglass",
+          "class": "mage",
+          "item_id": 21108
+        },
+        {
+          "character_key": "us/pvp/skyarcana",
+          "name": "Skyarcana",
+          "class": "mage",
+          "item_id": 21108
+        },
+        {
+          "character_key": "us/pvp/doomwhisper",
+          "name": "Doomwhisper",
+          "class": "warlock",
+          "item_id": 21108
+        },
+        {
+          "character_key": "us/pvp/grimsworn",
+          "name": "Grimsworn",
+          "class": "warlock",
+          "item_id": 21108
+        },
+        {
+          "character_key": "us/pvp/hexmarrow",
+          "name": "Hexmarrow",
+          "class": "warlock",
+          "item_id": 21108
+        },
+        {
+          "character_key": "us/pvp/mossveil",
+          "name": "Mossveil",
+          "class": "druid",
+          "item_id": 21108
+        },
+        {
+          "character_key": "us/pvp/starnettle",
+          "name": "Starnettle",
+          "class": "druid",
+          "item_id": 21108
+        },
+        {
+          "character_key": "us/pvp/nightlatch",
+          "name": "Nightlatch",
+          "class": "rogue",
+          "item_id": 21108
+        }
+      ],
+      "awarded_to": null,
+      "candidates": [],
+      "copies": 1,
+      "encounter_id": 1084,
+      "boss": "Onyxia",
+      "raid": "Onyxia's Lair"
     }
-   ],
-   "copies": 1,
-   "encounter_id": 1084,
-   "boss": "Onyxia",
-   "raid": "Onyxia's Lair"
-  },
-  {
-   "item_id": 16908,
-   "name": "Bloodfang Hood",
-   "icon": "",
-   "quality": 4,
-   "slot": "",
-   "inventory_type": 1,
-   "item_class": 4,
-   "item_subclass": 2,
-   "kind": "gear",
-   "quest_label": "",
-   "eligible": [],
-   "awarded_to": null,
-   "candidates": [
+  ],
+  "at_level_cap": 24,
+  "raids": [
     {
-     "character_key": "us/pvp/seraphine",
-     "name": "Seraphine",
-     "class": "paladin",
-     "spec": "Retribution",
-     "gain_dps": 14.2,
-     "gain_unit": "dps",
-     "tier": 0,
-     "not_sim_checked": false,
-     "ilvl_delta": null,
-     "attendance": {
-      "present": 4,
-      "nights": 4
-     },
-     "already_equivalent": false,
-     "fills_empty_slot": false,
-     "replaces": "Mirah's Song",
-     "replaces_item": {
-      "item_id": 15806,
-      "name": "Mirah's Song",
-      "icon": "inv_sword_24",
-      "quality": 3
-     },
-     "items_won": 0
+      "key": "barrow-deeps",
+      "name": "Barrow Deeps",
+      "in_client": false,
+      "encounters": []
     },
     {
-     "character_key": "us/pvp/shiverknife",
-     "name": "Shiverknife",
-     "class": "rogue",
-     "spec": "Assassination",
-     "gain_dps": 11.6,
-     "gain_unit": "dps",
-     "tier": 0,
-     "not_sim_checked": false,
-     "ilvl_delta": null,
-     "attendance": {
-      "present": 3,
-      "nights": 4
-     },
-     "already_equivalent": false,
-     "fills_empty_slot": false,
-     "replaces": "Dal'Rend's Sacred Charge",
-     "replaces_item": {
-      "item_id": 12940,
-      "name": "Dal'Rend's Sacred Charge",
-      "icon": "inv_sword_36",
-      "quality": 3
-     },
-     "items_won": 1
+      "key": "hyjal-summit",
+      "name": "Hyjal Summit",
+      "in_client": false,
+      "encounters": []
     },
     {
-     "character_key": "us/pvp/groundshock",
-     "name": "Groundshock",
-     "class": "shaman",
-     "spec": "Enhancement",
-     "gain_dps": 9.1,
-     "gain_unit": "dps",
-     "tier": 0,
-     "not_sim_checked": false,
-     "ilvl_delta": null,
-     "attendance": {
-      "present": 4,
-      "nights": 4
-     },
-     "already_equivalent": false,
-     "fills_empty_slot": false,
-     "replaces": "Ironfoe",
-     "replaces_item": {
-      "item_id": 11684,
-      "name": "Ironfoe",
-      "icon": "inv_mace_10",
-      "quality": 4
-     },
-     "items_won": 0
-    },
-    {
-     "character_key": "us/pvp/blacktide",
-     "name": "Blacktide",
-     "class": "rogue",
-     "spec": "Combat",
-     "gain_dps": 4.0,
-     "gain_unit": "dps",
-     "tier": 0,
-     "not_sim_checked": false,
-     "ilvl_delta": null,
-     "attendance": {
-      "present": 2,
-      "nights": 4
-     },
-     "already_equivalent": false,
-     "fills_empty_slot": false,
-     "replaces": "Skullforge Reaver",
-     "replaces_item": {
-      "item_id": 13361,
-      "name": "Skullforge Reaver",
-      "icon": "inv_sword_47",
-      "quality": 3
-     },
-     "items_won": 2
+      "key": "onyxias-lair",
+      "name": "Onyxia's Lair",
+      "in_client": true,
+      "encounters": [1084]
     }
-   ],
-   "copies": 1,
-   "encounter_id": 1084,
-   "boss": "Onyxia",
-   "raid": "Onyxia's Lair"
-  },
-  {
-   "item_id": 16914,
-   "name": "Netherwind Crown",
-   "icon": "",
-   "quality": 4,
-   "slot": "",
-   "inventory_type": 1,
-   "item_class": 4,
-   "item_subclass": 1,
-   "kind": "gear",
-   "quest_label": "",
-   "eligible": [],
-   "awarded_to": null,
-   "candidates": [
-    {
-     "character_key": "us/pvp/seraphine",
-     "name": "Seraphine",
-     "class": "paladin",
-     "spec": "Retribution",
-     "gain_dps": 14.2,
-     "gain_unit": "dps",
-     "tier": 0,
-     "not_sim_checked": false,
-     "ilvl_delta": null,
-     "attendance": {
-      "present": 4,
-      "nights": 4
-     },
-     "already_equivalent": false,
-     "fills_empty_slot": false,
-     "replaces": "Mirah's Song",
-     "replaces_item": {
-      "item_id": 15806,
-      "name": "Mirah's Song",
-      "icon": "inv_sword_24",
-      "quality": 3
-     },
-     "items_won": 0
-    },
-    {
-     "character_key": "us/pvp/shiverknife",
-     "name": "Shiverknife",
-     "class": "rogue",
-     "spec": "Assassination",
-     "gain_dps": 11.6,
-     "gain_unit": "dps",
-     "tier": 0,
-     "not_sim_checked": false,
-     "ilvl_delta": null,
-     "attendance": {
-      "present": 3,
-      "nights": 4
-     },
-     "already_equivalent": false,
-     "fills_empty_slot": false,
-     "replaces": "Dal'Rend's Sacred Charge",
-     "replaces_item": {
-      "item_id": 12940,
-      "name": "Dal'Rend's Sacred Charge",
-      "icon": "inv_sword_36",
-      "quality": 3
-     },
-     "items_won": 1
-    },
-    {
-     "character_key": "us/pvp/groundshock",
-     "name": "Groundshock",
-     "class": "shaman",
-     "spec": "Enhancement",
-     "gain_dps": 9.1,
-     "gain_unit": "dps",
-     "tier": 0,
-     "not_sim_checked": false,
-     "ilvl_delta": null,
-     "attendance": {
-      "present": 4,
-      "nights": 4
-     },
-     "already_equivalent": false,
-     "fills_empty_slot": false,
-     "replaces": "Ironfoe",
-     "replaces_item": {
-      "item_id": 11684,
-      "name": "Ironfoe",
-      "icon": "inv_mace_10",
-      "quality": 4
-     },
-     "items_won": 0
-    },
-    {
-     "character_key": "us/pvp/blacktide",
-     "name": "Blacktide",
-     "class": "rogue",
-     "spec": "Combat",
-     "gain_dps": 4.0,
-     "gain_unit": "dps",
-     "tier": 0,
-     "not_sim_checked": false,
-     "ilvl_delta": null,
-     "attendance": {
-      "present": 2,
-      "nights": 4
-     },
-     "already_equivalent": false,
-     "fills_empty_slot": false,
-     "replaces": "Skullforge Reaver",
-     "replaces_item": {
-      "item_id": 13361,
-      "name": "Skullforge Reaver",
-      "icon": "inv_sword_47",
-      "quality": 3
-     },
-     "items_won": 2
-    }
-   ],
-   "copies": 1,
-   "encounter_id": 1084,
-   "boss": "Onyxia",
-   "raid": "Onyxia's Lair"
-  },
-  {
-   "item_id": 16921,
-   "name": "Halo of Transcendence",
-   "icon": "",
-   "quality": 4,
-   "slot": "",
-   "inventory_type": 1,
-   "item_class": 4,
-   "item_subclass": 1,
-   "kind": "gear",
-   "quest_label": "",
-   "eligible": [],
-   "awarded_to": null,
-   "candidates": [
-    {
-     "character_key": "us/pvp/seraphine",
-     "name": "Seraphine",
-     "class": "paladin",
-     "spec": "Retribution",
-     "gain_dps": 14.2,
-     "gain_unit": "dps",
-     "tier": 0,
-     "not_sim_checked": false,
-     "ilvl_delta": null,
-     "attendance": {
-      "present": 4,
-      "nights": 4
-     },
-     "already_equivalent": false,
-     "fills_empty_slot": false,
-     "replaces": "Mirah's Song",
-     "replaces_item": {
-      "item_id": 15806,
-      "name": "Mirah's Song",
-      "icon": "inv_sword_24",
-      "quality": 3
-     },
-     "items_won": 0
-    },
-    {
-     "character_key": "us/pvp/shiverknife",
-     "name": "Shiverknife",
-     "class": "rogue",
-     "spec": "Assassination",
-     "gain_dps": 11.6,
-     "gain_unit": "dps",
-     "tier": 0,
-     "not_sim_checked": false,
-     "ilvl_delta": null,
-     "attendance": {
-      "present": 3,
-      "nights": 4
-     },
-     "already_equivalent": false,
-     "fills_empty_slot": false,
-     "replaces": "Dal'Rend's Sacred Charge",
-     "replaces_item": {
-      "item_id": 12940,
-      "name": "Dal'Rend's Sacred Charge",
-      "icon": "inv_sword_36",
-      "quality": 3
-     },
-     "items_won": 1
-    },
-    {
-     "character_key": "us/pvp/groundshock",
-     "name": "Groundshock",
-     "class": "shaman",
-     "spec": "Enhancement",
-     "gain_dps": 9.1,
-     "gain_unit": "dps",
-     "tier": 0,
-     "not_sim_checked": false,
-     "ilvl_delta": null,
-     "attendance": {
-      "present": 4,
-      "nights": 4
-     },
-     "already_equivalent": false,
-     "fills_empty_slot": false,
-     "replaces": "Ironfoe",
-     "replaces_item": {
-      "item_id": 11684,
-      "name": "Ironfoe",
-      "icon": "inv_mace_10",
-      "quality": 4
-     },
-     "items_won": 0
-    },
-    {
-     "character_key": "us/pvp/blacktide",
-     "name": "Blacktide",
-     "class": "rogue",
-     "spec": "Combat",
-     "gain_dps": 4.0,
-     "gain_unit": "dps",
-     "tier": 0,
-     "not_sim_checked": false,
-     "ilvl_delta": null,
-     "attendance": {
-      "present": 2,
-      "nights": 4
-     },
-     "already_equivalent": false,
-     "fills_empty_slot": false,
-     "replaces": "Skullforge Reaver",
-     "replaces_item": {
-      "item_id": 13361,
-      "name": "Skullforge Reaver",
-      "icon": "inv_sword_47",
-      "quality": 3
-     },
-     "items_won": 2
-    }
-   ],
-   "copies": 1,
-   "encounter_id": 1084,
-   "boss": "Onyxia",
-   "raid": "Onyxia's Lair"
-  },
-  {
-   "item_id": 16929,
-   "name": "Nemesis Skullcap",
-   "icon": "",
-   "quality": 4,
-   "slot": "",
-   "inventory_type": 1,
-   "item_class": 4,
-   "item_subclass": 1,
-   "kind": "gear",
-   "quest_label": "",
-   "eligible": [],
-   "awarded_to": null,
-   "candidates": [
-    {
-     "character_key": "us/pvp/seraphine",
-     "name": "Seraphine",
-     "class": "paladin",
-     "spec": "Retribution",
-     "gain_dps": 14.2,
-     "gain_unit": "dps",
-     "tier": 0,
-     "not_sim_checked": false,
-     "ilvl_delta": null,
-     "attendance": {
-      "present": 4,
-      "nights": 4
-     },
-     "already_equivalent": false,
-     "fills_empty_slot": false,
-     "replaces": "Mirah's Song",
-     "replaces_item": {
-      "item_id": 15806,
-      "name": "Mirah's Song",
-      "icon": "inv_sword_24",
-      "quality": 3
-     },
-     "items_won": 0
-    },
-    {
-     "character_key": "us/pvp/shiverknife",
-     "name": "Shiverknife",
-     "class": "rogue",
-     "spec": "Assassination",
-     "gain_dps": 11.6,
-     "gain_unit": "dps",
-     "tier": 0,
-     "not_sim_checked": false,
-     "ilvl_delta": null,
-     "attendance": {
-      "present": 3,
-      "nights": 4
-     },
-     "already_equivalent": false,
-     "fills_empty_slot": false,
-     "replaces": "Dal'Rend's Sacred Charge",
-     "replaces_item": {
-      "item_id": 12940,
-      "name": "Dal'Rend's Sacred Charge",
-      "icon": "inv_sword_36",
-      "quality": 3
-     },
-     "items_won": 1
-    },
-    {
-     "character_key": "us/pvp/groundshock",
-     "name": "Groundshock",
-     "class": "shaman",
-     "spec": "Enhancement",
-     "gain_dps": 9.1,
-     "gain_unit": "dps",
-     "tier": 0,
-     "not_sim_checked": false,
-     "ilvl_delta": null,
-     "attendance": {
-      "present": 4,
-      "nights": 4
-     },
-     "already_equivalent": false,
-     "fills_empty_slot": false,
-     "replaces": "Ironfoe",
-     "replaces_item": {
-      "item_id": 11684,
-      "name": "Ironfoe",
-      "icon": "inv_mace_10",
-      "quality": 4
-     },
-     "items_won": 0
-    },
-    {
-     "character_key": "us/pvp/blacktide",
-     "name": "Blacktide",
-     "class": "rogue",
-     "spec": "Combat",
-     "gain_dps": 4.0,
-     "gain_unit": "dps",
-     "tier": 0,
-     "not_sim_checked": false,
-     "ilvl_delta": null,
-     "attendance": {
-      "present": 2,
-      "nights": 4
-     },
-     "already_equivalent": false,
-     "fills_empty_slot": false,
-     "replaces": "Skullforge Reaver",
-     "replaces_item": {
-      "item_id": 13361,
-      "name": "Skullforge Reaver",
-      "icon": "inv_sword_47",
-      "quality": 3
-     },
-     "items_won": 2
-    }
-   ],
-   "copies": 1,
-   "encounter_id": 1084,
-   "boss": "Onyxia",
-   "raid": "Onyxia's Lair"
-  },
-  {
-   "item_id": 16939,
-   "name": "Dragonstalker's Helm",
-   "icon": "",
-   "quality": 4,
-   "slot": "",
-   "inventory_type": 1,
-   "item_class": 4,
-   "item_subclass": 3,
-   "kind": "gear",
-   "quest_label": "",
-   "eligible": [],
-   "awarded_to": null,
-   "candidates": [
-    {
-     "character_key": "us/pvp/seraphine",
-     "name": "Seraphine",
-     "class": "paladin",
-     "spec": "Retribution",
-     "gain_dps": 14.2,
-     "gain_unit": "dps",
-     "tier": 0,
-     "not_sim_checked": false,
-     "ilvl_delta": null,
-     "attendance": {
-      "present": 4,
-      "nights": 4
-     },
-     "already_equivalent": false,
-     "fills_empty_slot": false,
-     "replaces": "Mirah's Song",
-     "replaces_item": {
-      "item_id": 15806,
-      "name": "Mirah's Song",
-      "icon": "inv_sword_24",
-      "quality": 3
-     },
-     "items_won": 0
-    },
-    {
-     "character_key": "us/pvp/shiverknife",
-     "name": "Shiverknife",
-     "class": "rogue",
-     "spec": "Assassination",
-     "gain_dps": 11.6,
-     "gain_unit": "dps",
-     "tier": 0,
-     "not_sim_checked": false,
-     "ilvl_delta": null,
-     "attendance": {
-      "present": 3,
-      "nights": 4
-     },
-     "already_equivalent": false,
-     "fills_empty_slot": false,
-     "replaces": "Dal'Rend's Sacred Charge",
-     "replaces_item": {
-      "item_id": 12940,
-      "name": "Dal'Rend's Sacred Charge",
-      "icon": "inv_sword_36",
-      "quality": 3
-     },
-     "items_won": 1
-    },
-    {
-     "character_key": "us/pvp/groundshock",
-     "name": "Groundshock",
-     "class": "shaman",
-     "spec": "Enhancement",
-     "gain_dps": 9.1,
-     "gain_unit": "dps",
-     "tier": 0,
-     "not_sim_checked": false,
-     "ilvl_delta": null,
-     "attendance": {
-      "present": 4,
-      "nights": 4
-     },
-     "already_equivalent": false,
-     "fills_empty_slot": false,
-     "replaces": "Ironfoe",
-     "replaces_item": {
-      "item_id": 11684,
-      "name": "Ironfoe",
-      "icon": "inv_mace_10",
-      "quality": 4
-     },
-     "items_won": 0
-    },
-    {
-     "character_key": "us/pvp/blacktide",
-     "name": "Blacktide",
-     "class": "rogue",
-     "spec": "Combat",
-     "gain_dps": 4.0,
-     "gain_unit": "dps",
-     "tier": 0,
-     "not_sim_checked": false,
-     "ilvl_delta": null,
-     "attendance": {
-      "present": 2,
-      "nights": 4
-     },
-     "already_equivalent": false,
-     "fills_empty_slot": false,
-     "replaces": "Skullforge Reaver",
-     "replaces_item": {
-      "item_id": 13361,
-      "name": "Skullforge Reaver",
-      "icon": "inv_sword_47",
-      "quality": 3
-     },
-     "items_won": 2
-    }
-   ],
-   "copies": 1,
-   "encounter_id": 1084,
-   "boss": "Onyxia",
-   "raid": "Onyxia's Lair"
-  },
-  {
-   "item_id": 16947,
-   "name": "Helmet of Ten Storms",
-   "icon": "",
-   "quality": 4,
-   "slot": "",
-   "inventory_type": 1,
-   "item_class": 4,
-   "item_subclass": 3,
-   "kind": "gear",
-   "quest_label": "",
-   "eligible": [],
-   "awarded_to": null,
-   "candidates": [
-    {
-     "character_key": "us/pvp/seraphine",
-     "name": "Seraphine",
-     "class": "paladin",
-     "spec": "Retribution",
-     "gain_dps": 14.2,
-     "gain_unit": "dps",
-     "tier": 0,
-     "not_sim_checked": false,
-     "ilvl_delta": null,
-     "attendance": {
-      "present": 4,
-      "nights": 4
-     },
-     "already_equivalent": false,
-     "fills_empty_slot": false,
-     "replaces": "Mirah's Song",
-     "replaces_item": {
-      "item_id": 15806,
-      "name": "Mirah's Song",
-      "icon": "inv_sword_24",
-      "quality": 3
-     },
-     "items_won": 0
-    },
-    {
-     "character_key": "us/pvp/shiverknife",
-     "name": "Shiverknife",
-     "class": "rogue",
-     "spec": "Assassination",
-     "gain_dps": 11.6,
-     "gain_unit": "dps",
-     "tier": 0,
-     "not_sim_checked": false,
-     "ilvl_delta": null,
-     "attendance": {
-      "present": 3,
-      "nights": 4
-     },
-     "already_equivalent": false,
-     "fills_empty_slot": false,
-     "replaces": "Dal'Rend's Sacred Charge",
-     "replaces_item": {
-      "item_id": 12940,
-      "name": "Dal'Rend's Sacred Charge",
-      "icon": "inv_sword_36",
-      "quality": 3
-     },
-     "items_won": 1
-    },
-    {
-     "character_key": "us/pvp/groundshock",
-     "name": "Groundshock",
-     "class": "shaman",
-     "spec": "Enhancement",
-     "gain_dps": 9.1,
-     "gain_unit": "dps",
-     "tier": 0,
-     "not_sim_checked": false,
-     "ilvl_delta": null,
-     "attendance": {
-      "present": 4,
-      "nights": 4
-     },
-     "already_equivalent": false,
-     "fills_empty_slot": false,
-     "replaces": "Ironfoe",
-     "replaces_item": {
-      "item_id": 11684,
-      "name": "Ironfoe",
-      "icon": "inv_mace_10",
-      "quality": 4
-     },
-     "items_won": 0
-    },
-    {
-     "character_key": "us/pvp/blacktide",
-     "name": "Blacktide",
-     "class": "rogue",
-     "spec": "Combat",
-     "gain_dps": 4.0,
-     "gain_unit": "dps",
-     "tier": 0,
-     "not_sim_checked": false,
-     "ilvl_delta": null,
-     "attendance": {
-      "present": 2,
-      "nights": 4
-     },
-     "already_equivalent": false,
-     "fills_empty_slot": false,
-     "replaces": "Skullforge Reaver",
-     "replaces_item": {
-      "item_id": 13361,
-      "name": "Skullforge Reaver",
-      "icon": "inv_sword_47",
-      "quality": 3
-     },
-     "items_won": 2
-    }
-   ],
-   "copies": 1,
-   "encounter_id": 1084,
-   "boss": "Onyxia",
-   "raid": "Onyxia's Lair"
-  },
-  {
-   "item_id": 16955,
-   "name": "Judgement Crown",
-   "icon": "",
-   "quality": 4,
-   "slot": "",
-   "inventory_type": 1,
-   "item_class": 4,
-   "item_subclass": 4,
-   "kind": "gear",
-   "quest_label": "",
-   "eligible": [],
-   "awarded_to": null,
-   "candidates": [
-    {
-     "character_key": "us/pvp/seraphine",
-     "name": "Seraphine",
-     "class": "paladin",
-     "spec": "Retribution",
-     "gain_dps": 14.2,
-     "gain_unit": "dps",
-     "tier": 0,
-     "not_sim_checked": false,
-     "ilvl_delta": null,
-     "attendance": {
-      "present": 4,
-      "nights": 4
-     },
-     "already_equivalent": false,
-     "fills_empty_slot": false,
-     "replaces": "Mirah's Song",
-     "replaces_item": {
-      "item_id": 15806,
-      "name": "Mirah's Song",
-      "icon": "inv_sword_24",
-      "quality": 3
-     },
-     "items_won": 0
-    },
-    {
-     "character_key": "us/pvp/shiverknife",
-     "name": "Shiverknife",
-     "class": "rogue",
-     "spec": "Assassination",
-     "gain_dps": 11.6,
-     "gain_unit": "dps",
-     "tier": 0,
-     "not_sim_checked": false,
-     "ilvl_delta": null,
-     "attendance": {
-      "present": 3,
-      "nights": 4
-     },
-     "already_equivalent": false,
-     "fills_empty_slot": false,
-     "replaces": "Dal'Rend's Sacred Charge",
-     "replaces_item": {
-      "item_id": 12940,
-      "name": "Dal'Rend's Sacred Charge",
-      "icon": "inv_sword_36",
-      "quality": 3
-     },
-     "items_won": 1
-    },
-    {
-     "character_key": "us/pvp/groundshock",
-     "name": "Groundshock",
-     "class": "shaman",
-     "spec": "Enhancement",
-     "gain_dps": 9.1,
-     "gain_unit": "dps",
-     "tier": 0,
-     "not_sim_checked": false,
-     "ilvl_delta": null,
-     "attendance": {
-      "present": 4,
-      "nights": 4
-     },
-     "already_equivalent": false,
-     "fills_empty_slot": false,
-     "replaces": "Ironfoe",
-     "replaces_item": {
-      "item_id": 11684,
-      "name": "Ironfoe",
-      "icon": "inv_mace_10",
-      "quality": 4
-     },
-     "items_won": 0
-    },
-    {
-     "character_key": "us/pvp/blacktide",
-     "name": "Blacktide",
-     "class": "rogue",
-     "spec": "Combat",
-     "gain_dps": 4.0,
-     "gain_unit": "dps",
-     "tier": 0,
-     "not_sim_checked": false,
-     "ilvl_delta": null,
-     "attendance": {
-      "present": 2,
-      "nights": 4
-     },
-     "already_equivalent": false,
-     "fills_empty_slot": false,
-     "replaces": "Skullforge Reaver",
-     "replaces_item": {
-      "item_id": 13361,
-      "name": "Skullforge Reaver",
-      "icon": "inv_sword_47",
-      "quality": 3
-     },
-     "items_won": 2
-    }
-   ],
-   "copies": 1,
-   "encounter_id": 1084,
-   "boss": "Onyxia",
-   "raid": "Onyxia's Lair"
-  },
-  {
-   "item_id": 16963,
-   "name": "Helm of Wrath",
-   "icon": "",
-   "quality": 4,
-   "slot": "",
-   "inventory_type": 1,
-   "item_class": 4,
-   "item_subclass": 4,
-   "kind": "gear",
-   "quest_label": "",
-   "eligible": [],
-   "awarded_to": null,
-   "candidates": [
-    {
-     "character_key": "us/pvp/seraphine",
-     "name": "Seraphine",
-     "class": "paladin",
-     "spec": "Retribution",
-     "gain_dps": 14.2,
-     "gain_unit": "dps",
-     "tier": 0,
-     "not_sim_checked": false,
-     "ilvl_delta": null,
-     "attendance": {
-      "present": 4,
-      "nights": 4
-     },
-     "already_equivalent": false,
-     "fills_empty_slot": false,
-     "replaces": "Mirah's Song",
-     "replaces_item": {
-      "item_id": 15806,
-      "name": "Mirah's Song",
-      "icon": "inv_sword_24",
-      "quality": 3
-     },
-     "items_won": 0
-    },
-    {
-     "character_key": "us/pvp/shiverknife",
-     "name": "Shiverknife",
-     "class": "rogue",
-     "spec": "Assassination",
-     "gain_dps": 11.6,
-     "gain_unit": "dps",
-     "tier": 0,
-     "not_sim_checked": false,
-     "ilvl_delta": null,
-     "attendance": {
-      "present": 3,
-      "nights": 4
-     },
-     "already_equivalent": false,
-     "fills_empty_slot": false,
-     "replaces": "Dal'Rend's Sacred Charge",
-     "replaces_item": {
-      "item_id": 12940,
-      "name": "Dal'Rend's Sacred Charge",
-      "icon": "inv_sword_36",
-      "quality": 3
-     },
-     "items_won": 1
-    },
-    {
-     "character_key": "us/pvp/groundshock",
-     "name": "Groundshock",
-     "class": "shaman",
-     "spec": "Enhancement",
-     "gain_dps": 9.1,
-     "gain_unit": "dps",
-     "tier": 0,
-     "not_sim_checked": false,
-     "ilvl_delta": null,
-     "attendance": {
-      "present": 4,
-      "nights": 4
-     },
-     "already_equivalent": false,
-     "fills_empty_slot": false,
-     "replaces": "Ironfoe",
-     "replaces_item": {
-      "item_id": 11684,
-      "name": "Ironfoe",
-      "icon": "inv_mace_10",
-      "quality": 4
-     },
-     "items_won": 0
-    },
-    {
-     "character_key": "us/pvp/blacktide",
-     "name": "Blacktide",
-     "class": "rogue",
-     "spec": "Combat",
-     "gain_dps": 4.0,
-     "gain_unit": "dps",
-     "tier": 0,
-     "not_sim_checked": false,
-     "ilvl_delta": null,
-     "attendance": {
-      "present": 2,
-      "nights": 4
-     },
-     "already_equivalent": false,
-     "fills_empty_slot": false,
-     "replaces": "Skullforge Reaver",
-     "replaces_item": {
-      "item_id": 13361,
-      "name": "Skullforge Reaver",
-      "icon": "inv_sword_47",
-      "quality": 3
-     },
-     "items_won": 2
-    }
-   ],
-   "copies": 1,
-   "encounter_id": 1084,
-   "boss": "Onyxia",
-   "raid": "Onyxia's Lair"
-  },
-  {
-   "item_id": 17064,
-   "name": "Shard of the Scale",
-   "icon": "",
-   "quality": 4,
-   "slot": "",
-   "inventory_type": 12,
-   "item_class": 4,
-   "item_subclass": 0,
-   "kind": "gear",
-   "quest_label": "",
-   "eligible": [],
-   "awarded_to": null,
-   "candidates": [
-    {
-     "character_key": "us/pvp/seraphine",
-     "name": "Seraphine",
-     "class": "paladin",
-     "spec": "Retribution",
-     "gain_dps": 14.2,
-     "gain_unit": "dps",
-     "tier": 0,
-     "not_sim_checked": false,
-     "ilvl_delta": null,
-     "attendance": {
-      "present": 4,
-      "nights": 4
-     },
-     "already_equivalent": false,
-     "fills_empty_slot": false,
-     "replaces": "Mirah's Song",
-     "replaces_item": {
-      "item_id": 15806,
-      "name": "Mirah's Song",
-      "icon": "inv_sword_24",
-      "quality": 3
-     },
-     "items_won": 0
-    },
-    {
-     "character_key": "us/pvp/shiverknife",
-     "name": "Shiverknife",
-     "class": "rogue",
-     "spec": "Assassination",
-     "gain_dps": 11.6,
-     "gain_unit": "dps",
-     "tier": 0,
-     "not_sim_checked": false,
-     "ilvl_delta": null,
-     "attendance": {
-      "present": 3,
-      "nights": 4
-     },
-     "already_equivalent": false,
-     "fills_empty_slot": false,
-     "replaces": "Dal'Rend's Sacred Charge",
-     "replaces_item": {
-      "item_id": 12940,
-      "name": "Dal'Rend's Sacred Charge",
-      "icon": "inv_sword_36",
-      "quality": 3
-     },
-     "items_won": 1
-    },
-    {
-     "character_key": "us/pvp/groundshock",
-     "name": "Groundshock",
-     "class": "shaman",
-     "spec": "Enhancement",
-     "gain_dps": 9.1,
-     "gain_unit": "dps",
-     "tier": 0,
-     "not_sim_checked": false,
-     "ilvl_delta": null,
-     "attendance": {
-      "present": 4,
-      "nights": 4
-     },
-     "already_equivalent": false,
-     "fills_empty_slot": false,
-     "replaces": "Ironfoe",
-     "replaces_item": {
-      "item_id": 11684,
-      "name": "Ironfoe",
-      "icon": "inv_mace_10",
-      "quality": 4
-     },
-     "items_won": 0
-    },
-    {
-     "character_key": "us/pvp/blacktide",
-     "name": "Blacktide",
-     "class": "rogue",
-     "spec": "Combat",
-     "gain_dps": 4.0,
-     "gain_unit": "dps",
-     "tier": 0,
-     "not_sim_checked": false,
-     "ilvl_delta": null,
-     "attendance": {
-      "present": 2,
-      "nights": 4
-     },
-     "already_equivalent": false,
-     "fills_empty_slot": false,
-     "replaces": "Skullforge Reaver",
-     "replaces_item": {
-      "item_id": 13361,
-      "name": "Skullforge Reaver",
-      "icon": "inv_sword_47",
-      "quality": 3
-     },
-     "items_won": 2
-    }
-   ],
-   "copies": 1,
-   "encounter_id": 1084,
-   "boss": "Onyxia",
-   "raid": "Onyxia's Lair"
-  },
-  {
-   "item_id": 17067,
-   "name": "Ancient Cornerstone Grimoire",
-   "icon": "",
-   "quality": 4,
-   "slot": "",
-   "inventory_type": 23,
-   "item_class": 4,
-   "item_subclass": 0,
-   "kind": "gear",
-   "quest_label": "",
-   "eligible": [],
-   "awarded_to": null,
-   "candidates": [
-    {
-     "character_key": "us/pvp/seraphine",
-     "name": "Seraphine",
-     "class": "paladin",
-     "spec": "Retribution",
-     "gain_dps": 14.2,
-     "gain_unit": "dps",
-     "tier": 0,
-     "not_sim_checked": false,
-     "ilvl_delta": null,
-     "attendance": {
-      "present": 4,
-      "nights": 4
-     },
-     "already_equivalent": false,
-     "fills_empty_slot": false,
-     "replaces": "Mirah's Song",
-     "replaces_item": {
-      "item_id": 15806,
-      "name": "Mirah's Song",
-      "icon": "inv_sword_24",
-      "quality": 3
-     },
-     "items_won": 0
-    },
-    {
-     "character_key": "us/pvp/shiverknife",
-     "name": "Shiverknife",
-     "class": "rogue",
-     "spec": "Assassination",
-     "gain_dps": 11.6,
-     "gain_unit": "dps",
-     "tier": 0,
-     "not_sim_checked": false,
-     "ilvl_delta": null,
-     "attendance": {
-      "present": 3,
-      "nights": 4
-     },
-     "already_equivalent": false,
-     "fills_empty_slot": false,
-     "replaces": "Dal'Rend's Sacred Charge",
-     "replaces_item": {
-      "item_id": 12940,
-      "name": "Dal'Rend's Sacred Charge",
-      "icon": "inv_sword_36",
-      "quality": 3
-     },
-     "items_won": 1
-    },
-    {
-     "character_key": "us/pvp/groundshock",
-     "name": "Groundshock",
-     "class": "shaman",
-     "spec": "Enhancement",
-     "gain_dps": 9.1,
-     "gain_unit": "dps",
-     "tier": 0,
-     "not_sim_checked": false,
-     "ilvl_delta": null,
-     "attendance": {
-      "present": 4,
-      "nights": 4
-     },
-     "already_equivalent": false,
-     "fills_empty_slot": false,
-     "replaces": "Ironfoe",
-     "replaces_item": {
-      "item_id": 11684,
-      "name": "Ironfoe",
-      "icon": "inv_mace_10",
-      "quality": 4
-     },
-     "items_won": 0
-    },
-    {
-     "character_key": "us/pvp/blacktide",
-     "name": "Blacktide",
-     "class": "rogue",
-     "spec": "Combat",
-     "gain_dps": 4.0,
-     "gain_unit": "dps",
-     "tier": 0,
-     "not_sim_checked": false,
-     "ilvl_delta": null,
-     "attendance": {
-      "present": 2,
-      "nights": 4
-     },
-     "already_equivalent": false,
-     "fills_empty_slot": false,
-     "replaces": "Skullforge Reaver",
-     "replaces_item": {
-      "item_id": 13361,
-      "name": "Skullforge Reaver",
-      "icon": "inv_sword_47",
-      "quality": 3
-     },
-     "items_won": 2
-    }
-   ],
-   "copies": 1,
-   "encounter_id": 1084,
-   "boss": "Onyxia",
-   "raid": "Onyxia's Lair"
-  },
-  {
-   "item_id": 17068,
-   "name": "Deathbringer",
-   "icon": "inv_axe_09",
-   "quality": 4,
-   "slot": "",
-   "inventory_type": 13,
-   "item_class": 2,
-   "item_subclass": 0,
-   "kind": "gear",
-   "quest_label": "",
-   "eligible": [],
-   "awarded_to": null,
-   "candidates": [
-    {
-     "character_key": "us/pvp/seraphine",
-     "name": "Seraphine",
-     "class": "paladin",
-     "spec": "Retribution",
-     "gain_dps": 14.2,
-     "gain_unit": "dps",
-     "tier": 0,
-     "not_sim_checked": false,
-     "ilvl_delta": null,
-     "attendance": {
-      "present": 4,
-      "nights": 4
-     },
-     "already_equivalent": false,
-     "fills_empty_slot": false,
-     "replaces": "Mirah's Song",
-     "replaces_item": {
-      "item_id": 15806,
-      "name": "Mirah's Song",
-      "icon": "inv_sword_24",
-      "quality": 3
-     },
-     "items_won": 0
-    },
-    {
-     "character_key": "us/pvp/shiverknife",
-     "name": "Shiverknife",
-     "class": "rogue",
-     "spec": "Assassination",
-     "gain_dps": 11.6,
-     "gain_unit": "dps",
-     "tier": 0,
-     "not_sim_checked": false,
-     "ilvl_delta": null,
-     "attendance": {
-      "present": 3,
-      "nights": 4
-     },
-     "already_equivalent": false,
-     "fills_empty_slot": false,
-     "replaces": "Dal'Rend's Sacred Charge",
-     "replaces_item": {
-      "item_id": 12940,
-      "name": "Dal'Rend's Sacred Charge",
-      "icon": "inv_sword_36",
-      "quality": 3
-     },
-     "items_won": 1
-    },
-    {
-     "character_key": "us/pvp/groundshock",
-     "name": "Groundshock",
-     "class": "shaman",
-     "spec": "Enhancement",
-     "gain_dps": 9.1,
-     "gain_unit": "dps",
-     "tier": 0,
-     "not_sim_checked": false,
-     "ilvl_delta": null,
-     "attendance": {
-      "present": 4,
-      "nights": 4
-     },
-     "already_equivalent": false,
-     "fills_empty_slot": false,
-     "replaces": "Ironfoe",
-     "replaces_item": {
-      "item_id": 11684,
-      "name": "Ironfoe",
-      "icon": "inv_mace_10",
-      "quality": 4
-     },
-     "items_won": 0
-    },
-    {
-     "character_key": "us/pvp/blacktide",
-     "name": "Blacktide",
-     "class": "rogue",
-     "spec": "Combat",
-     "gain_dps": 4.0,
-     "gain_unit": "dps",
-     "tier": 0,
-     "not_sim_checked": false,
-     "ilvl_delta": null,
-     "attendance": {
-      "present": 2,
-      "nights": 4
-     },
-     "already_equivalent": false,
-     "fills_empty_slot": false,
-     "replaces": "Skullforge Reaver",
-     "replaces_item": {
-      "item_id": 13361,
-      "name": "Skullforge Reaver",
-      "icon": "inv_sword_47",
-      "quality": 3
-     },
-     "items_won": 2
-    }
-   ],
-   "copies": 1,
-   "encounter_id": 1084,
-   "boss": "Onyxia",
-   "raid": "Onyxia's Lair"
-  },
-  {
-   "item_id": 17075,
-   "name": "Vis'kag the Bloodletter",
-   "icon": "inv_sword_18",
-   "quality": 4,
-   "slot": "",
-   "inventory_type": 13,
-   "item_class": 2,
-   "item_subclass": 7,
-   "kind": "gear",
-   "quest_label": "",
-   "eligible": [],
-   "awarded_to": null,
-   "candidates": [
-    {
-     "character_key": "us/pvp/seraphine",
-     "name": "Seraphine",
-     "class": "paladin",
-     "spec": "Retribution",
-     "gain_dps": 14.2,
-     "gain_unit": "dps",
-     "tier": 0,
-     "not_sim_checked": false,
-     "ilvl_delta": null,
-     "attendance": {
-      "present": 4,
-      "nights": 4
-     },
-     "already_equivalent": false,
-     "fills_empty_slot": false,
-     "replaces": "Mirah's Song",
-     "replaces_item": {
-      "item_id": 15806,
-      "name": "Mirah's Song",
-      "icon": "inv_sword_24",
-      "quality": 3
-     },
-     "items_won": 0
-    },
-    {
-     "character_key": "us/pvp/shiverknife",
-     "name": "Shiverknife",
-     "class": "rogue",
-     "spec": "Assassination",
-     "gain_dps": 11.6,
-     "gain_unit": "dps",
-     "tier": 0,
-     "not_sim_checked": false,
-     "ilvl_delta": null,
-     "attendance": {
-      "present": 3,
-      "nights": 4
-     },
-     "already_equivalent": false,
-     "fills_empty_slot": false,
-     "replaces": "Dal'Rend's Sacred Charge",
-     "replaces_item": {
-      "item_id": 12940,
-      "name": "Dal'Rend's Sacred Charge",
-      "icon": "inv_sword_36",
-      "quality": 3
-     },
-     "items_won": 1
-    },
-    {
-     "character_key": "us/pvp/groundshock",
-     "name": "Groundshock",
-     "class": "shaman",
-     "spec": "Enhancement",
-     "gain_dps": 9.1,
-     "gain_unit": "dps",
-     "tier": 0,
-     "not_sim_checked": false,
-     "ilvl_delta": null,
-     "attendance": {
-      "present": 4,
-      "nights": 4
-     },
-     "already_equivalent": false,
-     "fills_empty_slot": false,
-     "replaces": "Ironfoe",
-     "replaces_item": {
-      "item_id": 11684,
-      "name": "Ironfoe",
-      "icon": "inv_mace_10",
-      "quality": 4
-     },
-     "items_won": 0
-    },
-    {
-     "character_key": "us/pvp/blacktide",
-     "name": "Blacktide",
-     "class": "rogue",
-     "spec": "Combat",
-     "gain_dps": 4.0,
-     "gain_unit": "dps",
-     "tier": 0,
-     "not_sim_checked": false,
-     "ilvl_delta": null,
-     "attendance": {
-      "present": 2,
-      "nights": 4
-     },
-     "already_equivalent": false,
-     "fills_empty_slot": false,
-     "replaces": "Skullforge Reaver",
-     "replaces_item": {
-      "item_id": 13361,
-      "name": "Skullforge Reaver",
-      "icon": "inv_sword_47",
-      "quality": 3
-     },
-     "items_won": 2
-    }
-   ],
-   "copies": 1,
-   "encounter_id": 1084,
-   "boss": "Onyxia",
-   "raid": "Onyxia's Lair"
-  },
-  {
-   "item_id": 17078,
-   "name": "Sapphiron Drape",
-   "icon": "inv_misc_cape_16",
-   "quality": 4,
-   "slot": "",
-   "inventory_type": 16,
-   "item_class": 4,
-   "item_subclass": 1,
-   "kind": "gear",
-   "quest_label": "",
-   "eligible": [],
-   "awarded_to": null,
-   "candidates": [
-    {
-     "character_key": "us/pvp/seraphine",
-     "name": "Seraphine",
-     "class": "paladin",
-     "spec": "Retribution",
-     "gain_dps": 14.2,
-     "gain_unit": "dps",
-     "tier": 0,
-     "not_sim_checked": false,
-     "ilvl_delta": null,
-     "attendance": {
-      "present": 4,
-      "nights": 4
-     },
-     "already_equivalent": false,
-     "fills_empty_slot": false,
-     "replaces": "Mirah's Song",
-     "replaces_item": {
-      "item_id": 15806,
-      "name": "Mirah's Song",
-      "icon": "inv_sword_24",
-      "quality": 3
-     },
-     "items_won": 0
-    },
-    {
-     "character_key": "us/pvp/shiverknife",
-     "name": "Shiverknife",
-     "class": "rogue",
-     "spec": "Assassination",
-     "gain_dps": 11.6,
-     "gain_unit": "dps",
-     "tier": 0,
-     "not_sim_checked": false,
-     "ilvl_delta": null,
-     "attendance": {
-      "present": 3,
-      "nights": 4
-     },
-     "already_equivalent": false,
-     "fills_empty_slot": false,
-     "replaces": "Dal'Rend's Sacred Charge",
-     "replaces_item": {
-      "item_id": 12940,
-      "name": "Dal'Rend's Sacred Charge",
-      "icon": "inv_sword_36",
-      "quality": 3
-     },
-     "items_won": 1
-    },
-    {
-     "character_key": "us/pvp/groundshock",
-     "name": "Groundshock",
-     "class": "shaman",
-     "spec": "Enhancement",
-     "gain_dps": 9.1,
-     "gain_unit": "dps",
-     "tier": 0,
-     "not_sim_checked": false,
-     "ilvl_delta": null,
-     "attendance": {
-      "present": 4,
-      "nights": 4
-     },
-     "already_equivalent": false,
-     "fills_empty_slot": false,
-     "replaces": "Ironfoe",
-     "replaces_item": {
-      "item_id": 11684,
-      "name": "Ironfoe",
-      "icon": "inv_mace_10",
-      "quality": 4
-     },
-     "items_won": 0
-    },
-    {
-     "character_key": "us/pvp/blacktide",
-     "name": "Blacktide",
-     "class": "rogue",
-     "spec": "Combat",
-     "gain_dps": 4.0,
-     "gain_unit": "dps",
-     "tier": 0,
-     "not_sim_checked": false,
-     "ilvl_delta": null,
-     "attendance": {
-      "present": 2,
-      "nights": 4
-     },
-     "already_equivalent": false,
-     "fills_empty_slot": false,
-     "replaces": "Skullforge Reaver",
-     "replaces_item": {
-      "item_id": 13361,
-      "name": "Skullforge Reaver",
-      "icon": "inv_sword_47",
-      "quality": 3
-     },
-     "items_won": 2
-    }
-   ],
-   "copies": 1,
-   "encounter_id": 1084,
-   "boss": "Onyxia",
-   "raid": "Onyxia's Lair"
-  },
-  {
-   "item_id": 17966,
-   "name": "Onyxia Hide Backpack",
-   "icon": "",
-   "quality": 2,
-   "slot": "",
-   "inventory_type": 18,
-   "item_class": 1,
-   "item_subclass": 0,
-   "kind": "bag",
-   "quest_label": "",
-   "eligible": [
-    {
-     "character_key": "us/pvp/thornwicke",
-     "name": "Thornwicke",
-     "class": "warrior",
-     "item_id": 17966
-    },
-    {
-     "character_key": "us/pvp/ironbrand",
-     "name": "Ironbrand",
-     "class": "paladin",
-     "item_id": 17966
-    },
-    {
-     "character_key": "us/pvp/valomira",
-     "name": "Valomira",
-     "class": "paladin",
-     "item_id": 17966
-    },
-    {
-     "character_key": "us/pvp/seraphine",
-     "name": "Seraphine",
-     "class": "paladin",
-     "item_id": 17966
-    },
-    {
-     "character_key": "us/pvp/dunmaro",
-     "name": "Dunmaro",
-     "class": "hunter",
-     "item_id": 17966
-    },
-    {
-     "character_key": "us/pvp/pinefeather",
-     "name": "Pinefeather",
-     "class": "hunter",
-     "item_id": 17966
-    },
-    {
-     "character_key": "us/pvp/skytalon",
-     "name": "Skytalon",
-     "class": "hunter",
-     "item_id": 17966
-    },
-    {
-     "character_key": "us/pvp/shiverknife",
-     "name": "Shiverknife",
-     "class": "rogue",
-     "item_id": 17966
-    },
-    {
-     "character_key": "us/pvp/blacktide",
-     "name": "Blacktide",
-     "class": "rogue",
-     "item_id": 17966
-    },
-    {
-     "character_key": "us/pvp/hollowmend",
-     "name": "Hollowmend",
-     "class": "priest",
-     "item_id": 17966
-    },
-    {
-     "character_key": "us/pvp/dawnweaver",
-     "name": "Dawnweaver",
-     "class": "priest",
-     "item_id": 17966
-    },
-    {
-     "character_key": "us/pvp/voidcall",
-     "name": "Voidcall",
-     "class": "priest",
-     "item_id": 17966
-    },
-    {
-     "character_key": "us/pvp/stonetide",
-     "name": "Stonetide",
-     "class": "shaman",
-     "item_id": 17966
-    },
-    {
-     "character_key": "us/pvp/emberfall",
-     "name": "Emberfall",
-     "class": "shaman",
-     "item_id": 17966
-    },
-    {
-     "character_key": "us/pvp/groundshock",
-     "name": "Groundshock",
-     "class": "shaman",
-     "item_id": 17966
-    },
-    {
-     "character_key": "us/pvp/frostquill",
-     "name": "Frostquill",
-     "class": "mage",
-     "item_id": 17966
-    },
-    {
-     "character_key": "us/pvp/cinderglass",
-     "name": "Cinderglass",
-     "class": "mage",
-     "item_id": 17966
-    },
-    {
-     "character_key": "us/pvp/skyarcana",
-     "name": "Skyarcana",
-     "class": "mage",
-     "item_id": 17966
-    },
-    {
-     "character_key": "us/pvp/doomwhisper",
-     "name": "Doomwhisper",
-     "class": "warlock",
-     "item_id": 17966
-    },
-    {
-     "character_key": "us/pvp/grimsworn",
-     "name": "Grimsworn",
-     "class": "warlock",
-     "item_id": 17966
-    },
-    {
-     "character_key": "us/pvp/hexmarrow",
-     "name": "Hexmarrow",
-     "class": "warlock",
-     "item_id": 17966
-    },
-    {
-     "character_key": "us/pvp/mossveil",
-     "name": "Mossveil",
-     "class": "druid",
-     "item_id": 17966
-    },
-    {
-     "character_key": "us/pvp/starnettle",
-     "name": "Starnettle",
-     "class": "druid",
-     "item_id": 17966
-    },
-    {
-     "character_key": "us/pvp/nightlatch",
-     "name": "Nightlatch",
-     "class": "rogue",
-     "item_id": 17966
-    }
-   ],
-   "awarded_to": null,
-   "candidates": [],
-   "copies": 1,
-   "encounter_id": 1084,
-   "boss": "Onyxia",
-   "raid": "Onyxia's Lair"
-  },
-  {
-   "item_id": 18205,
-   "name": "Eskhandar's Collar",
-   "icon": "inv_belt_12",
-   "quality": 4,
-   "slot": "",
-   "inventory_type": 2,
-   "item_class": 4,
-   "item_subclass": 0,
-   "kind": "gear",
-   "quest_label": "",
-   "eligible": [],
-   "awarded_to": {
-    "award_id": 1,
-    "character_key": "us/pvp/hollowmend",
-    "name": "Hollowmend",
-    "at": "2026-12-08T03:01:00Z",
-    "by_name": "Ironbrand"
-   },
-   "candidates": [
-    {
-     "character_key": "us/pvp/seraphine",
-     "name": "Seraphine",
-     "class": "paladin",
-     "spec": "Retribution",
-     "gain_dps": 14.2,
-     "gain_unit": "dps",
-     "tier": 0,
-     "not_sim_checked": false,
-     "ilvl_delta": null,
-     "attendance": {
-      "present": 4,
-      "nights": 4
-     },
-     "already_equivalent": false,
-     "fills_empty_slot": false,
-     "replaces": "Mirah's Song",
-     "replaces_item": {
-      "item_id": 15806,
-      "name": "Mirah's Song",
-      "icon": "inv_sword_24",
-      "quality": 3
-     },
-     "items_won": 0
-    },
-    {
-     "character_key": "us/pvp/shiverknife",
-     "name": "Shiverknife",
-     "class": "rogue",
-     "spec": "Assassination",
-     "gain_dps": 11.6,
-     "gain_unit": "dps",
-     "tier": 0,
-     "not_sim_checked": false,
-     "ilvl_delta": null,
-     "attendance": {
-      "present": 3,
-      "nights": 4
-     },
-     "already_equivalent": false,
-     "fills_empty_slot": false,
-     "replaces": "Dal'Rend's Sacred Charge",
-     "replaces_item": {
-      "item_id": 12940,
-      "name": "Dal'Rend's Sacred Charge",
-      "icon": "inv_sword_36",
-      "quality": 3
-     },
-     "items_won": 1
-    },
-    {
-     "character_key": "us/pvp/groundshock",
-     "name": "Groundshock",
-     "class": "shaman",
-     "spec": "Enhancement",
-     "gain_dps": 9.1,
-     "gain_unit": "dps",
-     "tier": 0,
-     "not_sim_checked": false,
-     "ilvl_delta": null,
-     "attendance": {
-      "present": 4,
-      "nights": 4
-     },
-     "already_equivalent": false,
-     "fills_empty_slot": false,
-     "replaces": "Ironfoe",
-     "replaces_item": {
-      "item_id": 11684,
-      "name": "Ironfoe",
-      "icon": "inv_mace_10",
-      "quality": 4
-     },
-     "items_won": 0
-    },
-    {
-     "character_key": "us/pvp/blacktide",
-     "name": "Blacktide",
-     "class": "rogue",
-     "spec": "Combat",
-     "gain_dps": 4.0,
-     "gain_unit": "dps",
-     "tier": 0,
-     "not_sim_checked": false,
-     "ilvl_delta": null,
-     "attendance": {
-      "present": 2,
-      "nights": 4
-     },
-     "already_equivalent": false,
-     "fills_empty_slot": false,
-     "replaces": "Skullforge Reaver",
-     "replaces_item": {
-      "item_id": 13361,
-      "name": "Skullforge Reaver",
-      "icon": "inv_sword_47",
-      "quality": 3
-     },
-     "items_won": 2
-    }
-   ],
-   "copies": 1,
-   "encounter_id": 1084,
-   "boss": "Onyxia",
-   "raid": "Onyxia's Lair"
-  },
-  {
-   "item_id": 18422,
-   "name": "Head of Onyxia",
-   "icon": "inv_misc_head_dragon_01",
-   "quality": 4,
-   "slot": "",
-   "inventory_type": 0,
-   "item_class": 12,
-   "item_subclass": 0,
-   "kind": "quest",
-   "quest_label": "",
-   "eligible": [
-    {
-     "character_key": "us/pvp/thornwicke",
-     "name": "Thornwicke",
-     "class": "warrior",
-     "item_id": 18422
-    },
-    {
-     "character_key": "us/pvp/ironbrand",
-     "name": "Ironbrand",
-     "class": "paladin",
-     "item_id": 18422
-    },
-    {
-     "character_key": "us/pvp/valomira",
-     "name": "Valomira",
-     "class": "paladin",
-     "item_id": 18422
-    },
-    {
-     "character_key": "us/pvp/seraphine",
-     "name": "Seraphine",
-     "class": "paladin",
-     "item_id": 18422
-    },
-    {
-     "character_key": "us/pvp/dunmaro",
-     "name": "Dunmaro",
-     "class": "hunter",
-     "item_id": 18422
-    },
-    {
-     "character_key": "us/pvp/pinefeather",
-     "name": "Pinefeather",
-     "class": "hunter",
-     "item_id": 18422
-    },
-    {
-     "character_key": "us/pvp/skytalon",
-     "name": "Skytalon",
-     "class": "hunter",
-     "item_id": 18422
-    },
-    {
-     "character_key": "us/pvp/shiverknife",
-     "name": "Shiverknife",
-     "class": "rogue",
-     "item_id": 18422
-    },
-    {
-     "character_key": "us/pvp/blacktide",
-     "name": "Blacktide",
-     "class": "rogue",
-     "item_id": 18422
-    },
-    {
-     "character_key": "us/pvp/hollowmend",
-     "name": "Hollowmend",
-     "class": "priest",
-     "item_id": 18422
-    },
-    {
-     "character_key": "us/pvp/dawnweaver",
-     "name": "Dawnweaver",
-     "class": "priest",
-     "item_id": 18422
-    },
-    {
-     "character_key": "us/pvp/voidcall",
-     "name": "Voidcall",
-     "class": "priest",
-     "item_id": 18422
-    },
-    {
-     "character_key": "us/pvp/stonetide",
-     "name": "Stonetide",
-     "class": "shaman",
-     "item_id": 18422
-    },
-    {
-     "character_key": "us/pvp/emberfall",
-     "name": "Emberfall",
-     "class": "shaman",
-     "item_id": 18422
-    },
-    {
-     "character_key": "us/pvp/groundshock",
-     "name": "Groundshock",
-     "class": "shaman",
-     "item_id": 18422
-    },
-    {
-     "character_key": "us/pvp/frostquill",
-     "name": "Frostquill",
-     "class": "mage",
-     "item_id": 18422
-    },
-    {
-     "character_key": "us/pvp/cinderglass",
-     "name": "Cinderglass",
-     "class": "mage",
-     "item_id": 18422
-    },
-    {
-     "character_key": "us/pvp/skyarcana",
-     "name": "Skyarcana",
-     "class": "mage",
-     "item_id": 18422
-    },
-    {
-     "character_key": "us/pvp/doomwhisper",
-     "name": "Doomwhisper",
-     "class": "warlock",
-     "item_id": 18422
-    },
-    {
-     "character_key": "us/pvp/grimsworn",
-     "name": "Grimsworn",
-     "class": "warlock",
-     "item_id": 18422
-    },
-    {
-     "character_key": "us/pvp/hexmarrow",
-     "name": "Hexmarrow",
-     "class": "warlock",
-     "item_id": 18422
-    },
-    {
-     "character_key": "us/pvp/mossveil",
-     "name": "Mossveil",
-     "class": "druid",
-     "item_id": 18422
-    },
-    {
-     "character_key": "us/pvp/starnettle",
-     "name": "Starnettle",
-     "class": "druid",
-     "item_id": 18422
-    },
-    {
-     "character_key": "us/pvp/nightlatch",
-     "name": "Nightlatch",
-     "class": "rogue",
-     "item_id": 18422
-    }
-   ],
-   "awarded_to": null,
-   "candidates": [],
-   "copies": 1,
-   "encounter_id": 1084,
-   "boss": "Onyxia",
-   "raid": "Onyxia's Lair"
-  },
-  {
-   "item_id": 18423,
-   "name": "Head of Onyxia",
-   "icon": "",
-   "quality": 4,
-   "slot": "",
-   "inventory_type": 0,
-   "item_class": 12,
-   "item_subclass": 0,
-   "kind": "quest",
-   "quest_label": "",
-   "eligible": [
-    {
-     "character_key": "us/pvp/thornwicke",
-     "name": "Thornwicke",
-     "class": "warrior",
-     "item_id": 18423
-    },
-    {
-     "character_key": "us/pvp/ironbrand",
-     "name": "Ironbrand",
-     "class": "paladin",
-     "item_id": 18423
-    },
-    {
-     "character_key": "us/pvp/valomira",
-     "name": "Valomira",
-     "class": "paladin",
-     "item_id": 18423
-    },
-    {
-     "character_key": "us/pvp/seraphine",
-     "name": "Seraphine",
-     "class": "paladin",
-     "item_id": 18423
-    },
-    {
-     "character_key": "us/pvp/dunmaro",
-     "name": "Dunmaro",
-     "class": "hunter",
-     "item_id": 18423
-    },
-    {
-     "character_key": "us/pvp/pinefeather",
-     "name": "Pinefeather",
-     "class": "hunter",
-     "item_id": 18423
-    },
-    {
-     "character_key": "us/pvp/skytalon",
-     "name": "Skytalon",
-     "class": "hunter",
-     "item_id": 18423
-    },
-    {
-     "character_key": "us/pvp/shiverknife",
-     "name": "Shiverknife",
-     "class": "rogue",
-     "item_id": 18423
-    },
-    {
-     "character_key": "us/pvp/blacktide",
-     "name": "Blacktide",
-     "class": "rogue",
-     "item_id": 18423
-    },
-    {
-     "character_key": "us/pvp/hollowmend",
-     "name": "Hollowmend",
-     "class": "priest",
-     "item_id": 18423
-    },
-    {
-     "character_key": "us/pvp/dawnweaver",
-     "name": "Dawnweaver",
-     "class": "priest",
-     "item_id": 18423
-    },
-    {
-     "character_key": "us/pvp/voidcall",
-     "name": "Voidcall",
-     "class": "priest",
-     "item_id": 18423
-    },
-    {
-     "character_key": "us/pvp/stonetide",
-     "name": "Stonetide",
-     "class": "shaman",
-     "item_id": 18423
-    },
-    {
-     "character_key": "us/pvp/emberfall",
-     "name": "Emberfall",
-     "class": "shaman",
-     "item_id": 18423
-    },
-    {
-     "character_key": "us/pvp/groundshock",
-     "name": "Groundshock",
-     "class": "shaman",
-     "item_id": 18423
-    },
-    {
-     "character_key": "us/pvp/frostquill",
-     "name": "Frostquill",
-     "class": "mage",
-     "item_id": 18423
-    },
-    {
-     "character_key": "us/pvp/cinderglass",
-     "name": "Cinderglass",
-     "class": "mage",
-     "item_id": 18423
-    },
-    {
-     "character_key": "us/pvp/skyarcana",
-     "name": "Skyarcana",
-     "class": "mage",
-     "item_id": 18423
-    },
-    {
-     "character_key": "us/pvp/doomwhisper",
-     "name": "Doomwhisper",
-     "class": "warlock",
-     "item_id": 18423
-    },
-    {
-     "character_key": "us/pvp/grimsworn",
-     "name": "Grimsworn",
-     "class": "warlock",
-     "item_id": 18423
-    },
-    {
-     "character_key": "us/pvp/hexmarrow",
-     "name": "Hexmarrow",
-     "class": "warlock",
-     "item_id": 18423
-    },
-    {
-     "character_key": "us/pvp/mossveil",
-     "name": "Mossveil",
-     "class": "druid",
-     "item_id": 18423
-    },
-    {
-     "character_key": "us/pvp/starnettle",
-     "name": "Starnettle",
-     "class": "druid",
-     "item_id": 18423
-    },
-    {
-     "character_key": "us/pvp/nightlatch",
-     "name": "Nightlatch",
-     "class": "rogue",
-     "item_id": 18423
-    }
-   ],
-   "awarded_to": null,
-   "candidates": [],
-   "copies": 1,
-   "encounter_id": 1084,
-   "boss": "Onyxia",
-   "raid": "Onyxia's Lair"
-  },
-  {
-   "item_id": 18705,
-   "name": "Mature Black Dragon Sinew",
-   "icon": "",
-   "quality": 4,
-   "slot": "",
-   "inventory_type": 0,
-   "item_class": 12,
-   "item_subclass": 0,
-   "kind": "quest",
-   "quest_label": "",
-   "eligible": [
-    {
-     "character_key": "us/pvp/thornwicke",
-     "name": "Thornwicke",
-     "class": "warrior",
-     "item_id": 18705
-    },
-    {
-     "character_key": "us/pvp/ironbrand",
-     "name": "Ironbrand",
-     "class": "paladin",
-     "item_id": 18705
-    },
-    {
-     "character_key": "us/pvp/valomira",
-     "name": "Valomira",
-     "class": "paladin",
-     "item_id": 18705
-    },
-    {
-     "character_key": "us/pvp/seraphine",
-     "name": "Seraphine",
-     "class": "paladin",
-     "item_id": 18705
-    },
-    {
-     "character_key": "us/pvp/dunmaro",
-     "name": "Dunmaro",
-     "class": "hunter",
-     "item_id": 18705
-    },
-    {
-     "character_key": "us/pvp/pinefeather",
-     "name": "Pinefeather",
-     "class": "hunter",
-     "item_id": 18705
-    },
-    {
-     "character_key": "us/pvp/skytalon",
-     "name": "Skytalon",
-     "class": "hunter",
-     "item_id": 18705
-    },
-    {
-     "character_key": "us/pvp/shiverknife",
-     "name": "Shiverknife",
-     "class": "rogue",
-     "item_id": 18705
-    },
-    {
-     "character_key": "us/pvp/blacktide",
-     "name": "Blacktide",
-     "class": "rogue",
-     "item_id": 18705
-    },
-    {
-     "character_key": "us/pvp/hollowmend",
-     "name": "Hollowmend",
-     "class": "priest",
-     "item_id": 18705
-    },
-    {
-     "character_key": "us/pvp/dawnweaver",
-     "name": "Dawnweaver",
-     "class": "priest",
-     "item_id": 18705
-    },
-    {
-     "character_key": "us/pvp/voidcall",
-     "name": "Voidcall",
-     "class": "priest",
-     "item_id": 18705
-    },
-    {
-     "character_key": "us/pvp/stonetide",
-     "name": "Stonetide",
-     "class": "shaman",
-     "item_id": 18705
-    },
-    {
-     "character_key": "us/pvp/emberfall",
-     "name": "Emberfall",
-     "class": "shaman",
-     "item_id": 18705
-    },
-    {
-     "character_key": "us/pvp/groundshock",
-     "name": "Groundshock",
-     "class": "shaman",
-     "item_id": 18705
-    },
-    {
-     "character_key": "us/pvp/frostquill",
-     "name": "Frostquill",
-     "class": "mage",
-     "item_id": 18705
-    },
-    {
-     "character_key": "us/pvp/cinderglass",
-     "name": "Cinderglass",
-     "class": "mage",
-     "item_id": 18705
-    },
-    {
-     "character_key": "us/pvp/skyarcana",
-     "name": "Skyarcana",
-     "class": "mage",
-     "item_id": 18705
-    },
-    {
-     "character_key": "us/pvp/doomwhisper",
-     "name": "Doomwhisper",
-     "class": "warlock",
-     "item_id": 18705
-    },
-    {
-     "character_key": "us/pvp/grimsworn",
-     "name": "Grimsworn",
-     "class": "warlock",
-     "item_id": 18705
-    },
-    {
-     "character_key": "us/pvp/hexmarrow",
-     "name": "Hexmarrow",
-     "class": "warlock",
-     "item_id": 18705
-    },
-    {
-     "character_key": "us/pvp/mossveil",
-     "name": "Mossveil",
-     "class": "druid",
-     "item_id": 18705
-    },
-    {
-     "character_key": "us/pvp/starnettle",
-     "name": "Starnettle",
-     "class": "druid",
-     "item_id": 18705
-    },
-    {
-     "character_key": "us/pvp/nightlatch",
-     "name": "Nightlatch",
-     "class": "rogue",
-     "item_id": 18705
-    }
-   ],
-   "awarded_to": null,
-   "candidates": [],
-   "copies": 1,
-   "encounter_id": 1084,
-   "boss": "Onyxia",
-   "raid": "Onyxia's Lair"
-  },
-  {
-   "item_id": 18813,
-   "name": "Ring of Binding",
-   "icon": "inv_jewelry_ring_13",
-   "quality": 4,
-   "slot": "",
-   "inventory_type": 11,
-   "item_class": 4,
-   "item_subclass": 0,
-   "kind": "gear",
-   "quest_label": "",
-   "eligible": [],
-   "awarded_to": {
-    "award_id": 2,
-    "character_key": "us/pvp/doomwhisper",
-    "name": "Doomwhisper",
-    "at": "2026-12-08T03:02:00Z",
-    "by_name": "Dunmaro"
-   },
-   "candidates": [
-    {
-     "character_key": "us/pvp/seraphine",
-     "name": "Seraphine",
-     "class": "paladin",
-     "spec": "Retribution",
-     "gain_dps": 14.2,
-     "gain_unit": "dps",
-     "tier": 0,
-     "not_sim_checked": false,
-     "ilvl_delta": null,
-     "attendance": {
-      "present": 4,
-      "nights": 4
-     },
-     "already_equivalent": false,
-     "fills_empty_slot": false,
-     "replaces": "Mirah's Song",
-     "replaces_item": {
-      "item_id": 15806,
-      "name": "Mirah's Song",
-      "icon": "inv_sword_24",
-      "quality": 3
-     },
-     "items_won": 0
-    },
-    {
-     "character_key": "us/pvp/shiverknife",
-     "name": "Shiverknife",
-     "class": "rogue",
-     "spec": "Assassination",
-     "gain_dps": 11.6,
-     "gain_unit": "dps",
-     "tier": 0,
-     "not_sim_checked": false,
-     "ilvl_delta": null,
-     "attendance": {
-      "present": 3,
-      "nights": 4
-     },
-     "already_equivalent": false,
-     "fills_empty_slot": false,
-     "replaces": "Dal'Rend's Sacred Charge",
-     "replaces_item": {
-      "item_id": 12940,
-      "name": "Dal'Rend's Sacred Charge",
-      "icon": "inv_sword_36",
-      "quality": 3
-     },
-     "items_won": 1
-    },
-    {
-     "character_key": "us/pvp/groundshock",
-     "name": "Groundshock",
-     "class": "shaman",
-     "spec": "Enhancement",
-     "gain_dps": 9.1,
-     "gain_unit": "dps",
-     "tier": 0,
-     "not_sim_checked": false,
-     "ilvl_delta": null,
-     "attendance": {
-      "present": 4,
-      "nights": 4
-     },
-     "already_equivalent": false,
-     "fills_empty_slot": false,
-     "replaces": "Ironfoe",
-     "replaces_item": {
-      "item_id": 11684,
-      "name": "Ironfoe",
-      "icon": "inv_mace_10",
-      "quality": 4
-     },
-     "items_won": 0
-    },
-    {
-     "character_key": "us/pvp/blacktide",
-     "name": "Blacktide",
-     "class": "rogue",
-     "spec": "Combat",
-     "gain_dps": 4.0,
-     "gain_unit": "dps",
-     "tier": 0,
-     "not_sim_checked": false,
-     "ilvl_delta": null,
-     "attendance": {
-      "present": 2,
-      "nights": 4
-     },
-     "already_equivalent": false,
-     "fills_empty_slot": false,
-     "replaces": "Skullforge Reaver",
-     "replaces_item": {
-      "item_id": 13361,
-      "name": "Skullforge Reaver",
-      "icon": "inv_sword_47",
-      "quality": 3
-     },
-     "items_won": 2
-    }
-   ],
-   "copies": 1,
-   "encounter_id": 1084,
-   "boss": "Onyxia",
-   "raid": "Onyxia's Lair"
-  },
-  {
-   "item_id": 21108,
-   "name": "Draconic for Dummies",
-   "icon": "",
-   "quality": 4,
-   "slot": "",
-   "inventory_type": 0,
-   "item_class": 15,
-   "item_subclass": 0,
-   "kind": "quest",
-   "quest_label": "",
-   "eligible": [
-    {
-     "character_key": "us/pvp/thornwicke",
-     "name": "Thornwicke",
-     "class": "warrior",
-     "item_id": 21108
-    },
-    {
-     "character_key": "us/pvp/ironbrand",
-     "name": "Ironbrand",
-     "class": "paladin",
-     "item_id": 21108
-    },
-    {
-     "character_key": "us/pvp/valomira",
-     "name": "Valomira",
-     "class": "paladin",
-     "item_id": 21108
-    },
-    {
-     "character_key": "us/pvp/seraphine",
-     "name": "Seraphine",
-     "class": "paladin",
-     "item_id": 21108
-    },
-    {
-     "character_key": "us/pvp/dunmaro",
-     "name": "Dunmaro",
-     "class": "hunter",
-     "item_id": 21108
-    },
-    {
-     "character_key": "us/pvp/pinefeather",
-     "name": "Pinefeather",
-     "class": "hunter",
-     "item_id": 21108
-    },
-    {
-     "character_key": "us/pvp/skytalon",
-     "name": "Skytalon",
-     "class": "hunter",
-     "item_id": 21108
-    },
-    {
-     "character_key": "us/pvp/shiverknife",
-     "name": "Shiverknife",
-     "class": "rogue",
-     "item_id": 21108
-    },
-    {
-     "character_key": "us/pvp/blacktide",
-     "name": "Blacktide",
-     "class": "rogue",
-     "item_id": 21108
-    },
-    {
-     "character_key": "us/pvp/hollowmend",
-     "name": "Hollowmend",
-     "class": "priest",
-     "item_id": 21108
-    },
-    {
-     "character_key": "us/pvp/dawnweaver",
-     "name": "Dawnweaver",
-     "class": "priest",
-     "item_id": 21108
-    },
-    {
-     "character_key": "us/pvp/voidcall",
-     "name": "Voidcall",
-     "class": "priest",
-     "item_id": 21108
-    },
-    {
-     "character_key": "us/pvp/stonetide",
-     "name": "Stonetide",
-     "class": "shaman",
-     "item_id": 21108
-    },
-    {
-     "character_key": "us/pvp/emberfall",
-     "name": "Emberfall",
-     "class": "shaman",
-     "item_id": 21108
-    },
-    {
-     "character_key": "us/pvp/groundshock",
-     "name": "Groundshock",
-     "class": "shaman",
-     "item_id": 21108
-    },
-    {
-     "character_key": "us/pvp/frostquill",
-     "name": "Frostquill",
-     "class": "mage",
-     "item_id": 21108
-    },
-    {
-     "character_key": "us/pvp/cinderglass",
-     "name": "Cinderglass",
-     "class": "mage",
-     "item_id": 21108
-    },
-    {
-     "character_key": "us/pvp/skyarcana",
-     "name": "Skyarcana",
-     "class": "mage",
-     "item_id": 21108
-    },
-    {
-     "character_key": "us/pvp/doomwhisper",
-     "name": "Doomwhisper",
-     "class": "warlock",
-     "item_id": 21108
-    },
-    {
-     "character_key": "us/pvp/grimsworn",
-     "name": "Grimsworn",
-     "class": "warlock",
-     "item_id": 21108
-    },
-    {
-     "character_key": "us/pvp/hexmarrow",
-     "name": "Hexmarrow",
-     "class": "warlock",
-     "item_id": 21108
-    },
-    {
-     "character_key": "us/pvp/mossveil",
-     "name": "Mossveil",
-     "class": "druid",
-     "item_id": 21108
-    },
-    {
-     "character_key": "us/pvp/starnettle",
-     "name": "Starnettle",
-     "class": "druid",
-     "item_id": 21108
-    },
-    {
-     "character_key": "us/pvp/nightlatch",
-     "name": "Nightlatch",
-     "class": "rogue",
-     "item_id": 21108
-    }
-   ],
-   "awarded_to": null,
-   "candidates": [],
-   "copies": 1,
-   "encounter_id": 1084,
-   "boss": "Onyxia",
-   "raid": "Onyxia's Lair"
-  }
- ],
- "at_level_cap": 24,
- "raids": [
-  {
-   "key": "barrow-deeps",
-   "name": "Barrow Deeps",
-   "in_client": false,
-   "encounters": []
-  },
-  {
-   "key": "hyjal-summit",
-   "name": "Hyjal Summit",
-   "in_client": false,
-   "encounters": []
-  },
-  {
-   "key": "onyxias-lair",
-   "name": "Onyxia's Lair",
-   "in_client": true,
-   "encounters": [
-    1084
-   ]
-  }
- ]
+  ]
 }

@@ -19,6 +19,11 @@
       "id": "loot",
       "path": "/guild/us/pvp/olympus-xxvii#loot",
       "mock": "web-guild-loot.html"
+    },
+    {
+      "id": "raid",
+      "path": "/guild/us/pvp/olympus-xxvii/raids/41",
+      "mock": "web-guild-raid.html"
     }
   ]
 }
