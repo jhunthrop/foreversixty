@@ -27,8 +27,10 @@ import { shortControls } from './support/short-controls';
 const MAX_PANEL_CLS = 0.02;
 const PHONE = { width: 360, height: 800 };
 const DESKTOP = { width: 1280, height: 800 };
-/** Spec 1: at 1280 x 800 the header, the opening and the whole Fix first block end above y 640. */
-const FOLD_Y = 640;
+/** Spec 1: at 1280 x 800 the header, the opening and the whole Fix first block end in the first screen.
+ *  The logs and reports spec (2026-11-07 section 6.1) puts the answer, the tab strip and the report bar
+ *  above every tab, so the budget is the 800 px screen less an 80 px margin, no longer 640. */
+const FOLD_Y = 720;
 /** Spec 3.2 and 7: the phone strip's reserve by entitlement. */
 const STRIP_PHONE_PX = { premium: 52, free: 88 } as const;
 /** Where each anchor kind's chip lands in the report. */

@@ -157,13 +157,19 @@ test('casts show the caster, the count and a sequence timeline', async ({ page }
   await expect(page.getByTestId('cast-Player-4184-000000A3-116')).toContainText('Morrowlyn');
 });
 
-test('interrupts, dispels, resources and threat each render or say they are empty', async ({ page }) => {
+test('interrupts, dispels, resources and threat each render or say they are empty', async ({
+  page,
+  isMobile,
+}) => {
   await page.goto(`${FIGHT}&tab=interrupts`);
   await expect(page.getByTestId('table-empty')).toContainText('Nothing was interrupted');
 
   await page.goto(`${FIGHT}&tab=resources`);
   await expect(page.getByTestId('resource-graphs')).toBeVisible();
-  await expect(page.getByTestId('resource-graphs').getByTestId('resource-zero').first()).toBeVisible();
+  // Below 1024 a StatTable keeps the name and the primary figure only (logs spec section 12), so the
+  // Time empty figure is a desktop column.
+  if (!isMobile)
+    await expect(page.getByTestId('resource-graphs').getByTestId('resource-zero').first()).toBeVisible();
 
   await page.goto(`${FIGHT}&tab=threat`);
   await expect(page.getByTestId('threat-table')).toContainText('Baelgrim');
@@ -235,7 +241,12 @@ test('an ability named in the url resolves to its id, or says it is unknown', as
   await expect(page).not.toHaveURL(/ability=/);
 });
 
-test('a resource graph draws the cap, shades the time at it and says what was wasted', async ({ page }) => {
+test('a resource graph draws the cap, shades the time at it and says what was wasted', async ({
+  page,
+  isMobile,
+}) => {
+  // The bar over the fight is a desktop column: below 1024 the row keeps its name and primary figure (logs spec section 12).
+  test.skip(isMobile, 'the Spark column is desktop only');
   await page.goto(`${FIGHT}&tab=resources`);
   // Baelgrim's rage fills to 1000 of 1000 eighteen seconds in and stays read at the cap
   // for that one second of the fixture's sixty.
