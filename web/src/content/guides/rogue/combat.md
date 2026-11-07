@@ -123,7 +123,7 @@ Sinister Strike, Eviscerate and Stealth are there from level 1. Gouge trains at 
 
 Poised at 18 takes 10 Energy off your first ability when you start a pull at full Energy out of combat, so never pull half empty.
 
-Your points from 10 to 12 go into Coup de Grace for 20% more Eviscerate damage. Efficient Strikes at 13 takes 3 Energy off Sinister Strike, Lightning Reflexes from 14 to 18 gives you 5% dodge, and Puncturing Wounds from 19 only pays off when you have a dagger in the main hand and get behind the mob for Backstab.
+Your points from 10 to 12 go into Coup de Grace for 20% more Eviscerate damage. Efficient Strikes at 13 takes 3 Energy off Sinister Strike, and a first point of Lightning Reflexes at 14 opens the next row. Precision from 15 to 17 makes every swing and strike miss less, with a sword or a dagger. Puncturing Wounds from 18 to 20 only pays off when you have a dagger in the main hand and get behind the mob for Backstab, and Lightning Reflexes finishes from 21 to 24 for 5% dodge.
 
 Wear leather and take quest rewards over vendor gear. Replace the Worn Dagger with the first quest sword, axe or mace that beats it, and keep throwing knives for pulling.
 

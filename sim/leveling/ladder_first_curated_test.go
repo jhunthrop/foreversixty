@@ -25,6 +25,7 @@ var ladderFirstSpecs = map[string]struct {
 	"priest-holy":          {"priest", "holy", 1},
 	"priest-shadow":        {"priest", "shadow", 2},
 	"rogue-assassination":  {"rogue", "assassination", 0},
+	"rogue-combat":         {"rogue", "combat", 1},
 	"rogue-subtlety":       {"rogue", "subtlety", 2},
 	"shaman-enhancement":   {"shaman", "enhancement", 1},
 	"shaman-restoration":   {"shaman", "restoration", 2},

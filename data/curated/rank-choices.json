@@ -13,6 +13,15 @@
             "note": "Sim-accuracy round 26 (re-judged below 20 on the corrected below-band gear: real weapons, wands and armor, faction-filtered; spec-breakdown -level N -rank, band 20, 10,000 iterations, seeds 1 and 50001, both factions' published races; spells that share the mana bar judged on a joint grid). Judged with the Wrath rows: Moonfire rank 1 with Wrath rank 1 beats Moonfire rank 2 by 1.0 to 3.1% at 12 and 13. Rank 2 holds at 10, 11 and 14."
           },
           {
+            "from_level": 14,
+            "to_level": 14,
+            "rank": 1,
+            "races": [
+              "windshaper-skyborne"
+            ],
+            "note": "Sim-accuracy round 27 (orders lane): the Skyborne races judged on their own (spec-breakdown -race -level N -rank, bare, band 20, 10,000 iterations, seeds 1 and 50001, the spells that share the mana bar on a joint grid). Round 26 judged night elf and tauren and grouped each Skyborne race with one of them. A Windshaper casts Moonfire rank 1 with Wrath rank 1 at 14 (see the Wrath row): +1.17% / +1.13%."
+          },
+          {
             "from_level": 15,
             "to_level": 17,
             "rank": 1,
@@ -20,6 +29,26 @@
           },
           {
             "from_level": 18,
+            "to_level": 18,
+            "rank": 1,
+            "races": [
+              "high-order-skyborne",
+              "windshaper-skyborne"
+            ],
+            "note": "Sim-accuracy round 27 (orders lane): the Skyborne races judged on their own (spec-breakdown -race -level N -rank, bare, band 20, 10,000 iterations, seeds 1 and 50001, the spells that share the mana bar on a joint grid). Round 26 judged night elf and tauren and grouped each Skyborne race with one of them. Both Skyborne races at 18 cast Moonfire rank 1 with Wrath rank 3 (the Wrath row leaves them out at 18): High Order +1.30% / +1.46%, Windshaper +1.75% / +1.96% over Wrath 2 and Moonfire 2. Tauren stays on 2 and 2 (Wrath 3 with Moonfire 1 loses 1.8% there)."
+          },
+          {
+            "from_level": 18,
+            "to_level": 18,
+            "rank": 2,
+            "note": "Sim-accuracy round 26 (re-judged below 20 on the corrected below-band gear: real weapons, wands and armor, faction-filtered; spec-breakdown -level N -rank, band 20, 10,000 iterations, seeds 1 and 50001, both factions' published races; spells that share the mana bar judged on a joint grid). From 18 Moonfire rank 2 beats rank 1 again: +3.5 to 4.7% at 18 with Wrath rank 2 and +1.1 to 1.4% at 19 with Wrath rank 3; rank 3 stays behind both.",
+            "races": [
+              "night-elf",
+              "tauren"
+            ]
+          },
+          {
+            "from_level": 19,
             "to_level": 19,
             "rank": 2,
             "note": "Sim-accuracy round 26 (re-judged below 20 on the corrected below-band gear: real weapons, wands and armor, faction-filtered; spec-breakdown -level N -rank, band 20, 10,000 iterations, seeds 1 and 50001, both factions' published races; spells that share the mana bar judged on a joint grid). From 18 Moonfire rank 2 beats rank 1 again: +3.5 to 4.7% at 18 with Wrath rank 2 and +1.1 to 1.4% at 19 with Wrath rank 3; rank 3 stays behind both."
@@ -70,7 +99,21 @@
             "from_level": 14,
             "to_level": 14,
             "rank": 2,
-            "note": "Sim-accuracy round 26 (re-judged below 20 on the corrected below-band gear: real weapons, wands and armor, faction-filtered; spec-breakdown -level N -rank, band 20, 10,000 iterations, seeds 1 and 50001, both factions' published races; spells that share the mana bar judged on a joint grid). At 14 Wrath rank 2 with Moonfire rank 2 holds: rank 1 with Moonfire rank 1 is level for a tauren (+0.1 to 0.2%) and 0.4% behind for a night elf."
+            "note": "Sim-accuracy round 26 (re-judged below 20 on the corrected below-band gear: real weapons, wands and armor, faction-filtered; spec-breakdown -level N -rank, band 20, 10,000 iterations, seeds 1 and 50001, both factions' published races; spells that share the mana bar judged on a joint grid). At 14 Wrath rank 2 with Moonfire rank 2 holds: rank 1 with Moonfire rank 1 is level for a tauren (+0.1 to 0.2%) and 0.4% behind for a night elf.",
+            "races": [
+              "night-elf",
+              "tauren",
+              "high-order-skyborne"
+            ]
+          },
+          {
+            "from_level": 14,
+            "to_level": 14,
+            "rank": 1,
+            "races": [
+              "windshaper-skyborne"
+            ],
+            "note": "Sim-accuracy round 27 (orders lane): the Skyborne races judged on their own (spec-breakdown -race -level N -rank, bare, band 20, 10,000 iterations, seeds 1 and 50001, the spells that share the mana bar on a joint grid). Round 26 judged night elf and tauren and grouped each Skyborne race with one of them. A Windshaper casts Wrath rank 1 with Moonfire rank 1 at 14: +1.17% / +1.13% over ranks 2 and 2."
           },
           {
             "from_level": 15,
@@ -80,8 +123,18 @@
           },
           {
             "from_level": 17,
+            "to_level": 17,
+            "rank": 2,
+            "note": "Sim-accuracy round 26 (re-judged below 20 on the corrected below-band gear: real weapons, wands and armor, faction-filtered; spec-breakdown -level N -rank, band 20, 10,000 iterations, seeds 1 and 50001, both factions' published races; spells that share the mana bar judged on a joint grid). Rank 2 holds at 17 (with Moonfire rank 1); at 18 rank 2 with Moonfire rank 2 beats the old pair by 3.5% (tauren) and 4.7% (night elf; rank 3 with Moonfire rank 1 is level with it). Rank 3 wins from 19."
+          },
+          {
+            "from_level": 18,
             "to_level": 18,
             "rank": 2,
+            "races": [
+              "night-elf",
+              "tauren"
+            ],
             "note": "Sim-accuracy round 26 (re-judged below 20 on the corrected below-band gear: real weapons, wands and armor, faction-filtered; spec-breakdown -level N -rank, band 20, 10,000 iterations, seeds 1 and 50001, both factions' published races; spells that share the mana bar judged on a joint grid). Rank 2 holds at 17 (with Moonfire rank 1); at 18 rank 2 with Moonfire rank 2 beats the old pair by 3.5% (tauren) and 4.7% (night elf; rank 3 with Moonfire rank 1 is level with it). Rank 3 wins from 19."
           },
           {
@@ -189,7 +242,20 @@
             "from_level": 10,
             "to_level": 10,
             "rank": 1,
-            "note": "Sim-accuracy round 26 (re-judged below 20 on the corrected below-band gear; spec-breakdown -level N -rank, band 20, 10,000 iterations, seeds 1 and 50001, night elf and tauren, the four heals on a joint grid). At 10 the tank's Rejuvenation rank 1 heals 0.2% (tauren) more; a night elf gains the same 0.2% only with rank 1 on the party and on Healing Touch as well (the next two rows), and loses with the tank's rank 1 alone."
+            "note": "Sim-accuracy round 26 (re-judged below 20 on the corrected below-band gear; spec-breakdown -level N -rank, band 20, 10,000 iterations, seeds 1 and 50001, night elf and tauren, the four heals on a joint grid). At 10 the tank's Rejuvenation rank 1 heals 0.2% (tauren) more; a night elf gains the same 0.2% only with rank 1 on the party and on Healing Touch as well (the next two rows), and loses with the tank's rank 1 alone. Sim-accuracy round 27 (orders lane): the Skyborne races judged on their own (spec-breakdown -race -level N -rank, bare, band 20, 10,000 iterations, seeds 1 and 50001, the spells that share the mana bar on a joint grid). Round 26 judged night elf and tauren and grouped each Skyborne race with one of them. Both Skyborne races are left out at 10: rank 2 of the tank Rejuvenation, the party Rejuvenation and Healing Touch beats every other combination there, High Order +0.23% / +0.23%, Windshaper +0.61% / +0.61%; the night elf rows for the party Rejuvenation and Healing Touch at 10 no longer name High Order.",
+            "races": [
+              "night-elf",
+              "tauren"
+            ]
+          },
+          {
+            "from_level": 12,
+            "to_level": 12,
+            "rank": 1,
+            "races": [
+              "high-order-skyborne"
+            ],
+            "note": "Sim-accuracy round 27 (orders lane): the Skyborne races judged on their own (spec-breakdown -race -level N -rank, bare, band 20, 10,000 iterations, seeds 1 and 50001, the spells that share the mana bar on a joint grid). Round 26 judged night elf and tauren and grouped each Skyborne race with one of them. A High Order's tank Rejuvenation rank 1 at 12, with party rank 2: +0.47% / +0.40%."
           },
           {
             "from_level": 13,
@@ -264,10 +330,18 @@
             "to_level": 10,
             "rank": 1,
             "races": [
-              "night-elf",
-              "high-order-skyborne"
+              "night-elf"
             ],
             "note": "Sim-accuracy round 26 (re-judged below 20 on the corrected below-band gear; spec-breakdown -level N -rank, band 20, 10,000 iterations, seeds 1 and 50001, night elf and tauren, the four heals on a joint grid). A night elf's party Rejuvenation rank 1 at 10, with rank 1 on the tank and on Healing Touch (+0.2% at both seeds); a tauren keeps rank 2."
+          },
+          {
+            "from_level": 13,
+            "to_level": 14,
+            "rank": 1,
+            "races": [
+              "windshaper-skyborne"
+            ],
+            "note": "Sim-accuracy round 27 (orders lane): the Skyborne races judged on their own (spec-breakdown -race -level N -rank, bare, band 20, 10,000 iterations, seeds 1 and 50001, the spells that share the mana bar on a joint grid). Round 26 judged night elf and tauren and grouped each Skyborne race with one of them. A Windshaper's party Rejuvenation rank 1 at 13 and 14, with Healing Touch rank 1: +1.28% / +1.28% at 13, +1.33% / +1.33% at 14."
           },
           {
             "from_level": 15,
@@ -281,9 +355,10 @@
             "rank": 1,
             "races": [
               "night-elf",
-              "high-order-skyborne"
+              "high-order-skyborne",
+              "windshaper-skyborne"
             ],
-            "note": "Sim-accuracy round 26 (re-judged below 20 on the corrected below-band gear: real weapons, wands and armor, faction-filtered; spec-breakdown -level N -rank, band 20, 10,000 iterations, seeds 1 and 50001, both factions' published races; spells that share the mana bar judged on a joint grid). At 16 a night elf keeps rank 1 on the party (rank 3 is 0.3% behind); a tauren keeps the newest rank 3 (+0.3% over rank 1)."
+            "note": "Sim-accuracy round 26 (re-judged below 20 on the corrected below-band gear: real weapons, wands and armor, faction-filtered; spec-breakdown -level N -rank, band 20, 10,000 iterations, seeds 1 and 50001, both factions' published races; spells that share the mana bar judged on a joint grid). At 16 a night elf keeps rank 1 on the party (rank 3 is 0.3% behind); a tauren keeps the newest rank 3 (+0.3% over rank 1). Sim-accuracy round 27 (orders lane): the Skyborne races judged on their own (spec-breakdown -race -level N -rank, bare, band 20, 10,000 iterations, seeds 1 and 50001, the spells that share the mana bar on a joint grid). Round 26 judged night elf and tauren and grouped each Skyborne race with one of them. Windshaper Skyborne joins the night elf at 16: +2.52% / +2.52% over the tauren's party rank 3."
           },
           {
             "from_level": 17,
@@ -355,16 +430,29 @@
             "to_level": 10,
             "rank": 1,
             "races": [
-              "night-elf",
-              "high-order-skyborne"
+              "night-elf"
             ],
             "note": "Sim-accuracy round 26 (re-judged below 20 on the corrected below-band gear; spec-breakdown -level N -rank, band 20, 10,000 iterations, seeds 1 and 50001, night elf and tauren, the four heals on a joint grid). A night elf's Healing Touch rank 1 at 10, with the Rejuvenation rows above (+0.2%); a tauren keeps rank 2."
+          },
+          {
+            "from_level": 13,
+            "to_level": 14,
+            "rank": 1,
+            "races": [
+              "windshaper-skyborne"
+            ],
+            "note": "Sim-accuracy round 27 (orders lane): the Skyborne races judged on their own (spec-breakdown -race -level N -rank, bare, band 20, 10,000 iterations, seeds 1 and 50001, the spells that share the mana bar on a joint grid). Round 26 judged night elf and tauren and grouped each Skyborne race with one of them. A Windshaper's Healing Touch rank 1 at 13 and 14, with the party Rejuvenation rank 1 (see that row)."
           },
           {
             "from_level": 14,
             "to_level": 14,
             "rank": 2,
-            "note": "Sim-accuracy round 26 (re-judged below 20 on the corrected below-band gear: real weapons, wands and armor, faction-filtered; spec-breakdown -level N -rank, band 20, 10,000 iterations, seeds 1 and 50001, both factions' published races; spells that share the mana bar judged on a joint grid). Healing Touch rank 2 on the hole at 14 for every race (a night elf gains 2.0% with it over rank 1, with the tank on Rejuvenation rank 1 and the party on rank 2)."
+            "note": "Sim-accuracy round 26 (re-judged below 20 on the corrected below-band gear: real weapons, wands and armor, faction-filtered; spec-breakdown -level N -rank, band 20, 10,000 iterations, seeds 1 and 50001, both factions' published races; spells that share the mana bar judged on a joint grid). Healing Touch rank 2 on the hole at 14 for every race (a night elf gains 2.0% with it over rank 1, with the tank on Rejuvenation rank 1 and the party on rank 2).",
+            "races": [
+              "night-elf",
+              "tauren",
+              "high-order-skyborne"
+            ]
           },
           {
             "from_level": 15,
@@ -372,17 +460,17 @@
             "rank": 1,
             "races": [
               "night-elf",
-              "high-order-skyborne"
+              "high-order-skyborne",
+              "windshaper-skyborne"
             ],
-            "note": "Sim-accuracy round 26 (re-judged below 20 on the corrected below-band gear: real weapons, wands and armor, faction-filtered; spec-breakdown -level N -rank, band 20, 10,000 iterations, seeds 1 and 50001, both factions' published races; spells that share the mana bar judged on a joint grid). A night elf keeps rank 1 at 15 and 16 (rank 2 is 0.3 to 0.6% behind)."
+            "note": "Sim-accuracy round 26 (re-judged below 20 on the corrected below-band gear: real weapons, wands and armor, faction-filtered; spec-breakdown -level N -rank, band 20, 10,000 iterations, seeds 1 and 50001, both factions' published races; spells that share the mana bar judged on a joint grid). A night elf keeps rank 1 at 15 and 16 (rank 2 is 0.3 to 0.6% behind). Sim-accuracy round 27 (orders lane): the Skyborne races judged on their own (spec-breakdown -race -level N -rank, bare, band 20, 10,000 iterations, seeds 1 and 50001, the spells that share the mana bar on a joint grid). Round 26 judged night elf and tauren and grouped each Skyborne race with one of them. Windshaper Skyborne joins the night elf here: Healing Touch rank 1 at 15 +0.50% / +0.45%, and with the party Rejuvenation rank 1 at 16 +2.52% / +2.52% over the tauren ranks."
           },
           {
             "from_level": 15,
             "to_level": 16,
             "rank": 2,
             "races": [
-              "tauren",
-              "windshaper-skyborne"
+              "tauren"
             ],
             "note": "Sim-accuracy round 26 (re-judged below 20 on the corrected below-band gear: real weapons, wands and armor, faction-filtered; spec-breakdown -level N -rank, band 20, 10,000 iterations, seeds 1 and 50001, both factions' published races; spells that share the mana bar judged on a joint grid). A tauren keeps rank 2 at 15 and 16 (rank 1 is 0.2 to 0.3% behind)."
           },

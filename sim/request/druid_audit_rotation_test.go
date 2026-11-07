@@ -1,6 +1,7 @@
 package request
 
 import (
+	"encoding/json"
 	"testing"
 	"time"
 
@@ -456,33 +457,32 @@ func TestFeralCasterRankRowsBelowTwenty(t *testing.T) {
 
 // Sim-accuracy round 24: Restoration below 20, the four heals judged
 // together (band-20 gear and heal profile, 10,000 iterations, night elf and
-// tauren). The fight runs dry, so the cheap ranks win: party Rejuvenation
-// rank 2 at 10 to 12; at 13 to 16 the factions split (their band-20 gear
-// differs), an Alliance druid moving the tank line to rank 1 and a Horde
-// druid the party line to rank 2, then rank 3 at 16; Healing Touch rank 2 at
-// 14 to 16; and from 17 to 19 rank 1 of the tank and party Rejuvenation,
-// Healing Touch and (from 18) Regrowth.
+// tauren). The fight runs dry, so the cheap ranks win. Re-judged in round 26
+// on the corrected below-band gear (night elf and tauren) and in round 27 for
+// the Skyborne races on their own: the tank and party Rejuvenation ranks
+// below by race, and from 17 to 19 rank 1 of the tank and party
+// Rejuvenation, Healing Touch and (from 18) Regrowth.
 func TestRestorationRankRowsBelowTwenty(t *testing.T) {
 	healingTouch := map[int]int{1: 5185, 2: 5186, 3: 5187, 4: 5188}
 	regrowth := map[int]int{1: 8936, 2: 8938}
 	tank := linesCasting(t, "druid-restoration", 9841)
 	party := linesCasting(t, "druid-restoration", 8910)
 	regrowthLine := linesCasting(t, "druid-restoration", 9858)
-	for _, race := range []string{"night-elf", "high-order-skyborne"} {
-		assertRanks(t, party, "druid-restoration", "druid", race, rejuvenationRank, []rankCase{
-			{10, BarePreset, 2}, {12, BarePreset, 2}, {13, BarePreset, 1}, {16, BarePreset, 1}, {17, BarePreset, 1},
-		})
-		assertRanks(t, tank, "druid-restoration", "druid", race, rejuvenationRank, []rankCase{
-			{12, BarePreset, 2}, {13, BarePreset, 1}, {16, BarePreset, 1}, {19, BarePreset, 1}, {20, BarePreset, 1},
-		})
+	// level -> rank, tank then party, per race.
+	ranks := map[string][2]map[int]int{
+		"night-elf":           {{10: 1, 12: 2, 13: 1, 16: 1, 19: 1}, {10: 1, 12: 2, 13: 2, 15: 1, 16: 1, 17: 1}},
+		"tauren":              {{10: 1, 12: 2, 13: 1, 16: 1, 19: 1}, {10: 2, 13: 2, 15: 1, 16: 3, 17: 1}},
+		"high-order-skyborne": {{10: 2, 12: 1, 13: 1, 16: 1, 19: 1}, {10: 2, 12: 2, 13: 2, 15: 1, 16: 1, 17: 1}},
+		"windshaper-skyborne": {{10: 2, 12: 2, 13: 1, 16: 1, 19: 1}, {10: 2, 13: 1, 14: 1, 15: 1, 16: 1, 17: 1}},
 	}
-	for _, race := range []string{"tauren", "windshaper-skyborne"} {
-		assertRanks(t, party, "druid-restoration", "druid", race, rejuvenationRank, []rankCase{
-			{10, BarePreset, 2}, {13, BarePreset, 2}, {15, BarePreset, 2}, {16, BarePreset, 3}, {17, BarePreset, 1},
-		})
-		assertRanks(t, tank, "druid-restoration", "druid", race, rejuvenationRank, []rankCase{
-			{13, BarePreset, 2}, {16, BarePreset, 3}, {17, BarePreset, 1}, {19, BarePreset, 1},
-		})
+	for race, lines := range ranks {
+		for i, line := range []json.RawMessage{tank, party} {
+			var cases []rankCase
+			for level, rank := range lines[i] {
+				cases = append(cases, rankCase{level, BarePreset, rank})
+			}
+			assertRanks(t, line, "druid-restoration", "druid", race, rejuvenationRank, cases)
+		}
 	}
 	for _, race := range []string{"night-elf", "tauren"} {
 		// The Nature's Swiftness line keeps the top rank, so only the filler's
@@ -543,7 +543,8 @@ func TestDruidRankRowsSecondPassRound24(t *testing.T) {
 	}{
 		// Round 26: rank 2 at 14 for every race (corrected below-band gear).
 		{"night-elf", 14, 2, 1}, {"night-elf", 16, 1, 2}, {"high-order-skyborne", 15, 1, 2},
-		{"tauren", 14, 2, 1}, {"tauren", 16, 2, 1}, {"windshaper-skyborne", 15, 2, 1},
+		// Round 27: a Windshaper Skyborne takes rank 1 at 15 and 16, as a night elf does.
+		{"tauren", 14, 2, 1}, {"tauren", 16, 2, 1}, {"windshaper-skyborne", 15, 1, 2},
 		// The Nature's Swiftness line casts the top rank (8) at 48 too.
 		{"night-elf", 48, 6, 0}, {"night-elf", 49, 8, 6}, {"tauren", 49, 8, 6},
 	} {

@@ -124,7 +124,7 @@ You start with Sinister Strike, Eviscerate and Stealth. Backstab trains at 4, Go
 
 Poised also comes at 18: at full Energy out of combat your next ability costs 10 less, so walk into every pull capped and open with Ambush or Garrote.
 
-Your first three points, 10 to 12, go into Improved Gouge, which holds the mob 1.5 seconds longer and gives you time to get behind it. Remorseless Attacks at 13 and 14 adds 40% crit to your next Sinister Strike, Backstab or Ambush after a kill, then Malice from 15 to 19 gives you 5% crit.
+Your first five points, 10 to 14, go into Malice for 5% crit on every attack and poison. Ruthlessness from 15 to 17 often leaves a combo point after a finisher, both points of Improved Slice and Dice at 18 and 19 make it last 30% longer, and Lethality at 20 and 21 makes your Backstab and Sinister Strike crits hit harder. Improved Gouge, which holds the mob 1.5 seconds longer and gives you time to get behind it, comes at 22 to 24, and Remorseless Attacks at 25 and 26 adds 40% crit to your next Sinister Strike, Backstab or Ambush after a kill.
 
 Wear leather and take quest rewards over vendor gear. Drop the Worn Dagger the moment a quest offers a better dagger, so Backstab and Ambush stay open to you, and keep throwing knives for pulling.
 
