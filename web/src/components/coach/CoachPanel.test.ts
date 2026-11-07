@@ -96,9 +96,7 @@ describe('CoachPanel', () => {
       'Doing well',
       'What the coach could not check',
       'Measured against',
-    ].map((s) =>
-      body.indexOf(s),
-    );
+    ].map((s) => body.indexOf(s));
     expect(order.every((at) => at >= 0)).toBe(true);
     expect([...order].sort((a, b) => a - b)).toEqual(order);
     expect(body).toContain('Reviewed 27 Oct · Based on: your log; top Fury logs.');
