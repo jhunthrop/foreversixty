@@ -8,7 +8,6 @@
   let {
     tone = 'secondary',
     size = 'md',
-    sentence = false,
     href,
     rel,
     type = 'button',
@@ -20,7 +19,6 @@
   }: {
     tone?: ButtonTone;
     size?: ButtonSize;
-    sentence?: boolean;
     href?: string;
     /** A link's rel (`noopener` on every install and download link). */
     rel?: string;
@@ -33,7 +31,7 @@
     children: Snippet;
   } = $props();
 
-  const classes = $derived(button(tone, size, sentence));
+  const classes = $derived(button(tone, size));
 </script>
 
 {#if href !== undefined && !disabled}
