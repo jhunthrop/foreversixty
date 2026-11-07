@@ -209,22 +209,6 @@ def Segmented(items: list[tuple[str, bool]], small: bool = False) -> str:
     return seg([(a, on, None, '') for a, on in items], 'sm' if small else '')
 
 
-def Grid(cols: list[str], rows: list[tuple]) -> str:
-    """A coverage matrix. rows: (label, sub, [(state, text)]) with state ok|warn|miss|none. Reused for buffs, attendance, readiness."""
-    h = '<div class="h"></div>' + ''.join(f'<div class="h" style="text-align:center">{c}</div>' for c in cols)
-    body = ''.join(f'<div class="l"><div class="ttl">{lab}</div>' + (f'<div class="sub">{sub}</div>' if sub else '') + '</div>' + ''.join(f'<div class="c {st}">{tx}</div>' for st, tx in cells) for lab, sub, cells in rows)
-    return f'<div class="gridm" style="--n:{len(cols)}">{h}{body}</div>'
-
-
-def Tally(items: list[tuple]) -> str:
-    """Counts against a target, one Meter each. items: (lead_html, label, have, want)."""
-    out = ''
-    for lead, label, have, want in items:
-        st = 'ok' if have >= want else ('warn' if have >= want * 0.75 else 'miss')
-        out += f'<div class="t"><div class="top">{lead}<b>{label}</b><span class="n {st}">{have}/{want}</span></div>{Meter(have / want if want else 1, "kill" if st == "ok" else "")}</div>'
-    return f'<div class="tally">{out}</div>'
-
-
 def Checklist(items: list[tuple]) -> str:
     """Private pre-raid checks. items: (state ok|warn|miss|gap, title, sub, fix_label|None). A Row per check, the fix a link."""
     rows = []
@@ -1313,15 +1297,133 @@ def PlanHead(name: str, audience: str, value: str, unit: str, lines: list[tuple[
             f'{Figure(value, unit=unit, tone="gold" if gold else "", size="big")}{sm}</div>')
 
 
+# ------------------------------------------------ the guild parity round (2026-11-07): the shipped markup of Button, Meter, Tally, Grid and
+# Rows, so a mock's blocks read as the built ones (web/src/components/ui: Button is a <button> when it acts, Meter a labelled meter,
+# Tally a list, Grid a table with a caption and an optional lead per row, Rows a list when the built rows are <li>s). RowGroup is a
+# Plate's caps group label over its rows (the raid planner's Tanks, Healers ... groups).
+PRIM_CSS += '''
+button.btn{cursor:pointer;-webkit-appearance:none;appearance:none}button.btn.sm{padding:0 18px}
+.row .foot .pill{height:22px}
+.rprose.note{font-size:14px;line-height:1.6}
+.btnrow{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding-top:12px}
+.btn.ghost{border-color:transparent;color:var(--gold);text-transform:none;letter-spacing:.01em;font-size:13px;padding:0 18px}
+.rows.open .row.cur{padding-inline:16px}
+section>.sec-h+ul.rows,section>.sec-h+ul,section>.sec-h+table,section>.sec-h+.rprose{margin-top:12px}
+ul.rows{list-style:none;margin:0;padding:0}ul.rows>li:not(:last-child)>.row{border-bottom:1px solid var(--line-soft)}
+.rgrp{padding-bottom:4px}.rgrp>h3{display:flex;gap:8px;align-items:baseline;padding:12px 16px 4px;font:700 12px/16px var(--font-body);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.rgrp>h3 span{font-variant-numeric:tabular-nums}
+.tally{list-style:none;margin:0;padding:0}.tally .t .note{font-size:12px;line-height:16px;color:var(--muted)}
+table.gridm{display:table;width:100%;border-collapse:collapse}table.gridm caption{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+table.gridm thead th{height:33px;box-sizing:border-box;padding-block:8px}table.gridm th.h{text-align:left}table.gridm th.h.hc{text-align:center}table.gridm th.l{text-align:left;font-weight:400}
+table.gridm .ld{display:flex;gap:8px;align-items:center;min-width:0}table.gridm .ld img{width:24px;height:24px;flex:none}
+'''
+
+_Button1 = Button
+
+
+def Button(label: str, primary: bool = False, small: bool = False, tone: str = '', act: bool = False) -> str:
+    """act: the built Button that does something (a <button>), not a link styled as one. tone 'ghost' is the quiet in-row Edit."""
+    html = _Button1(label, primary, small, '' if tone == 'ghost' else tone)
+    if tone == 'ghost':
+        html = html.replace('class="btn', 'class="btn ghost', 1)
+    return html.replace('<a ', '<button type="button" ', 1).replace(' href="#"', '', 1).replace('</a>', '</button>') if act else html
+
+
+_Meter0 = Meter
+
+
+def Meter(frac: float, tone: str = '', label: str = '') -> str:
+    """label: the built Meter's accessible name (role meter); without one it is decoration."""
+    html = _Meter0(frac, tone)
+    return html.replace('<div class="meter', f'<div role="meter" aria-label="{label}" aria-valuenow="{round(max(0, min(1, frac)) * 100)}" aria-valuemin="0" aria-valuemax="100" class="meter', 1) if label else html
+
+
+def Tally(items: list[tuple]) -> str:
+    """Counts against a target, one labelled Meter each, as a list. items: (lead_html, label, have, want[, note])."""
+    out = ''
+    for lead, label, have, want, *rest in items:
+        st = 'ok' if have >= want else ('warn' if have >= want * 0.75 else 'miss')
+        note = f'<span class="note">{rest[0]}</span>' if rest and rest[0] else ''
+        out += (f'<li class="t"><div class="top">{lead}<b>{label}</b><span class="n {st}">{have}/{want}</span></div>'
+                f'{Meter(have / want if want else 1, "kill" if st == "ok" else "", f"{label}: {have} of {want}")}{note}</li>')
+    return f'<ul class="tally">{out}</ul>'
+
+
+def Grid(cols: list[str], rows: list[tuple], caption: str = '', label_header: str = '') -> str:
+    """A coverage matrix as the built table. rows: (label, sub, [(state, text)][, lead_html]) with state ok|warn|miss|none."""
+    head = f'<th scope="col" class="h">{label_header or ""}</th>' + ''.join(f'<th scope="col" class="h hc">{c}</th>' for c in cols)
+    body = ''
+    for lab, sub, cells, *rest in rows:
+        lead = rest[0] if rest else ''
+        text = f'<span><span class="ttl" style="display:block">{lab}</span>' + (f'<span class="sub" style="display:block">{sub}</span>' if sub else '') + '</span>'
+        body += (f'<tr><th scope="row" class="l"><span class="ld">{lead}{text}</span></th>'
+                 + ''.join(f'<td class="c {st}">{tx}</td>' for st, tx in cells) + '</tr>')
+    cap = f'<caption>{caption}</caption>' if caption else ''
+    return f'<table class="gridm" style="--n:{len(cols)}">{cap}<thead><tr>{head}</tr></thead><tbody>{body}</tbody></table>'
+
+
+_Rows0 = Rows
+
+
+def Rows(rows: list[str], open_: bool = False, list_: bool = False) -> str:
+    """list_: the built rows are list items (a <ul> of <li>s)."""
+    if not list_:
+        return _Rows0(rows, open_)
+    return f'<ul class="rows{" open" if open_ else ""}">' + ''.join(f'<li>{r}</li>' for r in rows) + '</ul>'
+
+
+def ButtonRow(buttons: str) -> str:
+    """Buttons that act on the block above, under it in one wrapping line (the assignments' Copy as raid warning and Post to Discord)."""
+    return f'<div class="btnrow">{buttons}</div>'
+
+
+def RowGroup(label: str, count: int, rows: list[str]) -> str:
+    """A group inside a Plate: a caps label with its count (a level 3 heading, never a Section) over its rows as a list."""
+    return f'<div class="rgrp"><h3>{label} <span>{count}</span></h3>{Rows(rows, list_=True)}</div>'
+
+
+PRIM_CSS += '''
+.sec-h{flex-wrap:wrap;row-gap:4px}
+.sgr .st{min-height:20px}
+.backlink{display:inline-flex;align-items:center;min-height:44px;font-size:13px;color:var(--muted);text-decoration:underline}
+.sgr{border-bottom:1px solid var(--line-soft);padding-top:12px;list-style:none}.sgr:last-child{border-bottom:0}
+.sgr .g{display:grid;grid-template-columns:minmax(180px,1fr) auto minmax(200px,1.4fr);align-items:center;gap:4px 16px;min-height:68px}
+.sgr .who{display:flex;gap:12px;align-items:center;min-width:0}.sgr .who p{margin:0}.sgr .nm{font:700 14px/20px var(--font-body)}.sgr .ws{font-size:12px;color:var(--muted)}
+.sgr .g.spec{grid-template-columns:minmax(180px,1fr) auto 220px minmax(200px,1.4fr)}
+.sgr input{height:44px;width:100%;min-width:0;border:1px solid var(--line-warm);border-radius:4px;background:var(--raised);color:var(--text);padding:0 12px;font-size:13px}
+.sgr .seg a{height:44px}
+'''
+
+_Section0 = Section
+
+
+def Section(title: str, body: str, action: str = '', meta: str = '', named: bool = False) -> str:
+    """named: the built Section with an id, a landmark named by its heading (role region)."""
+    html = _Section0(title, body, action, meta)
+    if not named:
+        return html
+    sid = region_slug(title)
+    return html.replace('<section ', f'<section id="{sid}" aria-labelledby="{sid}-title" ', 1).replace('<h2 ', f'<h2 id="{sid}-title" ', 1)
+
+
+def BackLink(label: str) -> str:
+    """The way back to the page this one belongs to (a raid page's guild Raids tab), one 44 px line above the PageHeader."""
+    return f'<div class="pc"><a class="backlink" href="#">{label}</a></div>'
+
+
+def SignupRow(crest: str, name: str, color: str, who: str, segments: str, spec: str = '', note: str = 'Note for the officers (optional)') -> str:
+    """The viewer's own sign-up (guild/SignupRow): crest, name and spec line, In / Late / Bench / Out, the spec pick when asked, the note."""
+    pick = f'<span>{spec}</span>' if spec else ''
+    return (f'<li class="sgr"><div class="g{" spec" if spec else ""}"><div class="who">{crest}<div><p class="nm" style="color:{color}">{name}</p><p class="ws">{who}</p></div></div>'
+            f'{segments}{pick}<input type="text" aria-label="{note}" placeholder="{note}"></div><div class="st"></div></li>')
+
 # ------------------------------------------------ primitives added by the guild report round (2026-11-07; guild parity, lane C)
-# Additive only. `Action` is the system Button as the built one is, a real <button> (an action on the page: Post to Discord,
-# Not this log), where `Button` stays a link. `Toggle` is a Row title that opens the row's detail (the shipped Row
+# Additive only. `Toggle` is a Row title that opens the row's detail (the shipped Row
 # titleContent button, aria-expanded). `Inspector` is the shipped ui/Inspector at its side placement: an aside named
 # "<selection> detail", 320 px, a hairline at its left, an optional head (title, sub) and caps-labelled sections; `Entries`
 # is a section's ordered list (a line and a detail line each). `Live` is the polite status a copy button speaks through
 # (empty until it speaks). `Split` lays a Plate's rows beside its Inspector.
 PRIM_CSS += '''
-button.btn{cursor:pointer}button.btn.primary{background:var(--gold);border-color:var(--gold);color:#17110a}
 button.tgl{all:unset;cursor:pointer;font:inherit;color:inherit}
 .split-insp{display:flex;min-width:0}.split-insp>.rows{flex:1;min-width:0}
 .insp{width:320px;flex:none;border-left:1px solid var(--line);align-self:start;min-width:0}
@@ -1332,10 +1434,6 @@ button.tgl{all:unset;cursor:pointer;font:inherit;color:inherit}
 .insp-l li{display:flex;flex-direction:column;gap:4px;min-width:0}.insp-l p{margin:0}
 .live{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 '''
-
-
-def Action(label: str, primary: bool = False, small: bool = False) -> str:
-    return f'<button type="button" class="btn{" primary" if primary else ""}{" sm" if small else ""}">{label}</button>'
 
 
 def Toggle(label: str, expanded: bool = False) -> str:

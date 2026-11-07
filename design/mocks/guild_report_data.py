@@ -1,25 +1,22 @@
 """The raid night report's data (design/parity.md, "The guild states"; state `report`): Onyxia, Tue 8 Dec, read by an officer
 (Dunmaro). One source for both sides: ws_guild2.raid_report draws the mock from `raid_view()` and guild_fixtures.py writes the
-same answers into web/tests/e2e/fixtures/guild-parity/report-*.json, which web/tests/e2e/support/guild-parity/report.ts routes.
-Shapes: web/src/lib/guild/api.ts (GuildRaidView, GuildHome), attendance-contract.ts (RaidReport), rankings/api.ts (GuildPage),
-account/api.ts (Me). Roster and sign-up states come from guild_data.R.
+same raid view into web/tests/e2e/fixtures/guild-parity/report-raid.json, which web/tests/e2e/support/guild-parity/report.ts
+routes. The viewer, guild and home reads are the raid planner's (guild_raid.py: the same officer on the same guild). Shapes:
+web/src/lib/guild/api.ts (GuildRaidView), attendance-contract.ts (RaidReport). Roster and sign-up states come from guild_data.R.
 """
-from guild_data import GUILD, GUILD_ID, R, REGION, RULESET, SLUG, ZONE
+from guild_data import R, ZONE
+from guild_raid import ONYXIA_ENCOUNTER as ONYXIA, RAID_ZONE_KEY, RAID_ZONE_NAME as ZONE_NAME, VIEWER, counts, key_of as key, member
 
-VIEWER = 'Dunmaro'
-RAID_ID = 41
-ZONE_NAME = "Onyxia's Lair"
+# The Tuesday before the planner's Thursday raid (guild_raid.RAID_ID 41).
+RAID_ID = 40
 TITLE = ZONE_NAME
 # Tue 8 Dec, 8:00 pm CST (the guild raids Tue and Thu at 8:00 pm).
 STARTS_AT = '2026-12-09T02:00:00Z'
 UPLOADED_AT = '2026-12-09T05:10:00Z'
 AWARDED_AT = '2026-12-09T04:30:00Z'
 NIGHT_MS = 90 * 60_000
-ONYXIA = 1084
 # Not in the log: everyone else on the roster came.
 AWAY = ('Voidcall', 'Starnettle')
-ROLE = {'Tank': 'tank', 'Healer': 'healer', 'Melee': 'dps', 'Ranged': 'dps'}
-GROUP = {'Tank': 'tank', 'Healer': 'healer', 'Melee': 'melee', 'Ranged': 'ranged'}
 SPELL = {'Flame Breath': 18435, 'Deep Breath': 17086, 'Tail Sweep': 15847}
 
 # fight index, name, boss pull number (None on trash), result, duration ms, deaths as (who, killing ability)
@@ -37,10 +34,6 @@ PARSES = [('Frostquill', 812, 96), ('Doomwhisper', 744, 88), ('Dunmaro', 618, 61
 LOOT = [(18813, 'Ring of Binding', 4, 'inv_jewelry_ring_13', 'Doomwhisper')]
 
 
-def key(name: str) -> str:
-    return f'{REGION}/{RULESET}/{name.lower()}'
-
-
 def row(name: str) -> tuple:
     return next(r for r in R if r[0] == name)
 
@@ -52,10 +45,6 @@ def who(name: str) -> dict:
 
 def signed_state(state: str) -> str | None:
     return None if state == 'none' else state
-
-
-def spec_key(r: tuple) -> str:
-    return f"{r[1]}-{r[2].lower().replace(' ', '-')}"
 
 
 def death(name: str, ability: str, at_ms: int) -> dict:
@@ -118,10 +107,10 @@ def report() -> dict:
 def attendance() -> list[dict]:
     out = []
     for r in R:
-        name, _, spec, role, _, state = r
+        name, _, spec, _, _, state = r
         here = name not in AWAY
         outcome = 'present' if here else 'absent'
-        out.append({**who(name), 'spec': spec, 'signed': signed_state(state), 'role': ROLE[role], 'outcome': outcome, 'came_as': None,
+        out.append({**who(name), 'spec': spec, 'signed': signed_state(state), 'role': member(name)['role'], 'outcome': outcome, 'came_as': None,
                     'first_seen_offset_s': 0 if here else None, 'pulls_present': len(PULLS) if here else 0, 'pulls_total': len(PULLS),
                     'excused': False, 'own': name == VIEWER, 'auto_outcome': outcome, 'auto_excused': False, 'override': None})
     return out
@@ -136,31 +125,28 @@ def night() -> dict:
 
 
 def signups() -> list[dict]:
-    return [{**who(r[0]), 'spec': r[2], 'role': ROLE[r[3]], 'state': r[5], 'note': '', 'own': r[0] == VIEWER, 'group': GROUP[r[3]],
-             'spec_key': spec_key(r)} for r in R if r[5] != 'none']
-
-
-def counts(rows: list[dict]) -> dict:
-    live = [s for s in rows if s['state'] in ('in', 'late')]
-    classes: dict[str, int] = {}
-    for s in live:
-        classes[s['class']] = classes.get(s['class'], 0) + 1
-    by = lambda field, value: sum(1 for s in live if s[field] == value)  # noqa: E731
-    return {'in': sum(1 for s in rows if s['state'] == 'in'), 'late': sum(1 for s in rows if s['state'] == 'late'),
-            'bench': sum(1 for s in rows if s['state'] == 'bench'), 'out': 0, 'tanks': by('role', 'tank'), 'healers': by('role', 'healer'),
-            'dps': by('role', 'dps'), 'melee': by('group', 'melee'), 'ranged': by('group', 'ranged'), 'classes': classes}
+    """Tuesday's sign-ups: the roster's states (guild_data.R), as the planner's Thursday reads them."""
+    out = []
+    for r in R:
+        if r[5] == 'none':
+            continue
+        m = member(r[0])
+        out.append({**who(r[0]), 'spec': m['spec'], 'role': m['role'], 'state': m['state'], 'note': '', 'own': r[0] == VIEWER,
+                    'group': m['group'], 'spec_key': m['spec_key']})
+    return out
 
 
 def raid_view() -> dict:
     rows = signups()
-    viewer = row(VIEWER)
+    v = member(VIEWER)
     return {
-        'id': RAID_ID, 'zone': 'raid:onyxias-lair', 'zone_name': ZONE_NAME, 'zone_kind': 'raid', 'key_item': None, 'title': TITLE,
+        'id': RAID_ID, 'zone': RAID_ZONE_KEY, 'zone_name': ZONE_NAME, 'zone_kind': 'raid', 'key_item': None, 'title': TITLE,
         'starts_at': STARTS_AT, 'duration_minutes': 180, 'status': 'done', 'size': 40, 'guild_timezone': ZONE, 'notes_html': '', 'notes': '',
-        'counts': counts(rows), 'signups': rows,
-        'not_signed': [{**who(r[0]), 'spec': r[2], 'group': GROUP[r[3]], 'spec_key': spec_key(r)} for r in R if r[5] == 'none'],
-        'viewer': {'characters': [{**who(VIEWER), 'spec': viewer[2], 'verified': True, 'state': viewer[5], 'role': ROLE[viewer[3]],
-                                   'raid_spec': spec_key(viewer), 'spec_key': spec_key(viewer), 'default_spec': spec_key(viewer)}]},
+        'counts': counts(), 'signups': rows,
+        'not_signed': [{**who(m['name']), 'spec': m['spec'], 'group': m['group'], 'spec_key': m['spec_key']}
+                       for m in map(member, (r[0] for r in R)) if m['state'] == 'none'],
+        'viewer': {'characters': [{**who(VIEWER), 'spec': v['spec'], 'verified': True, 'state': v['state'], 'role': v['role'],
+                                   'raid_spec': v['spec_key'], 'spec_key': v['spec_key'], 'default_spec': v['spec_key']}]},
         'discord': {'available': True, 'connected': True, 'post_default': True, 'remind_default': True, 'channel_name': 'raids'},
         'discord_post': None, 'cover': None, 'comp_target': None, 'assignments': None,
         'pre_done_status': 'locked',
@@ -170,43 +156,8 @@ def raid_view() -> dict:
     }
 
 
-def guild_summary() -> dict:
-    return {'id': GUILD_ID, 'name': GUILD, 'region': REGION, 'ruleset': RULESET, 'faction': 'alliance', 'crest_url': None}
-
-
-def guild_page() -> dict:
-    """GET /v1/guilds/{region}/{ruleset}/{slug}: the public read that resolves the guild's id."""
-    return {'guild': guild_summary(), 'progression': [], 'roster_best': [], 'reports': []}
-
-
-def guild_home() -> dict:
-    """GET /v1/guilds/{id}/home as the officer reads it; the raid page reads its viewer and claim."""
-    return {'guild': guild_summary(),
-            'viewer': {'role': 'officer', 'character_key': key(VIEWER), 'verified': True, 'officer_tools': True, 'raid_guild_tools': True},
-            'claim': {'state': 'claimed', 'since': '2026-11-12T00:00:00Z', 'frozen': False, 'yours': True,
-                      'claimed_by': {'name': VIEWER, 'class': row(VIEWER)[1], 'character_key': key(VIEWER)}},
-            'reports': [], 'roster': [], 'pending': []}
-
-
-def me() -> dict:
-    """GET /v1/me: the officer signed in with Dunmaro, the mock's `who`."""
-    r = row(VIEWER)
-    return {
-        'user': {'id': 7, 'battletag': 'Fixture#1894', 'email': None, 'role': 'user', 'anonymize': False},
-        'characters': [{'key': key(VIEWER), 'region': REGION, 'ruleset': RULESET, 'name': VIEWER, 'class': r[1].title(), 'spec': r[2],
-                        'level': 60, 'realm': 'Skyborne', 'faction': 'alliance',
-                        'guild': {'id': GUILD_ID, 'name': GUILD, 'rank': 'Officer', 'verified': True}}],
-        'guilds': [{'id': GUILD_ID, 'region': REGION, 'ruleset': RULESET, 'name': GUILD, 'slug': SLUG, 'rank': 'officer',
-                    'verified': True, 'can': ['approve', 'remove', 'settings', 'award'], 'faction': 'alliance'}],
-        'main_character_key': key(VIEWER),
-    }
-
-
-FIXTURES = {'report-raid.json': raid_view, 'report-guild.json': guild_page, 'report-home.json': guild_home, 'report-me.json': me}
-
-
 def write_report_fixtures(write) -> list:
-    return [write(name, build()) for name, build in FIXTURES.items()]
+    return [write('report-raid.json', raid_view())]
 
 
 # ------------------------------------------------ what the mock prints from the data (web/src/lib/guild/report-night-view.ts words)

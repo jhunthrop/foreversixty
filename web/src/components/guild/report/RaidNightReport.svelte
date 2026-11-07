@@ -1,7 +1,8 @@
 <!-- web/src/components/guild/report/RaidNightReport.svelte -->
 <!-- The done raid (web layout spec 2026-11-05 §7.2 "Raid report"): "How did the night go and who
-     needs a word?", mock web-guild-report, built only from the ui/ primitives. Page split: the head
-     (the raid, its Done Tag and date, and the answer: kills, wipes, attempts, deaths), then for a
+     needs a word?", mock web-guild-report, built only from the ui/ primitives. Page split: the back link
+     and the head (the raid, its Done Tag and date, the answer: kills, wipes, attempts, deaths, the
+     guild tabs, as the planner's), then for a
      member Your night, Pulls (the one Plate, each pull's deaths in the Inspector), DPS and HPS by
      boss kill and the consumables by pull. Rail: Attendance (the match line, the summary, and for
      officers the fix rows behind Fix attendance), Loot awarded, the Discord summary (officers), the
@@ -26,6 +27,7 @@
   import Section from '../../ui/Section.svelte';
   import Tag from '../../ui/Tag.svelte';
   import GuildPlanGate from '../GuildPlanGate.svelte';
+  import GuildTabs from '../GuildTabs.svelte';
   import RaidDoneBand from '../RaidDoneBand.svelte';
   import ReportAttendance from './ReportAttendance.svelte';
   import ReportConsumables from './ReportConsumables.svelte';
@@ -119,7 +121,20 @@
 {/snippet}
 
 {#snippet header()}
-  <PageHeader title={raid.title} tone={titleTone} {meta} {answer} testid="raid-head" />
+  <div>
+    <div>
+      <a
+        href={`${guildPath}#raids`}
+        class="text-muted inline-flex min-h-11 items-center text-[13px] underline"
+        data-testid="raid-back-link">{raidCopy.backLink(guildName)}</a
+      >
+    </div>
+    <PageHeader title={raid.title} tone={titleTone} {meta} {answer} testid="raid-head">
+      {#snippet tabs()}
+        <GuildTabs active="raids" role={officer ? 'officer' : 'member'} hrefBase={guildPath} />
+      {/snippet}
+    </PageHeader>
+  </div>
 {/snippet}
 
 <!-- The log the night was read from: in the Attendance section once the report draws, alone under

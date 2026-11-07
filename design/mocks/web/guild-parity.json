@@ -6,8 +6,13 @@
   },
   "states": [
     {
-      "id": "report",
+      "id": "raid",
       "path": "/guild/us/pvp/olympus-xxvii/raids/41",
+      "mock": "web-guild-raid.html"
+    },
+    {
+      "id": "report",
+      "path": "/guild/us/pvp/olympus-xxvii/raids/40",
       "mock": "web-guild-report.html"
     }
   ]

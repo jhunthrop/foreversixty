@@ -4,13 +4,12 @@
 // committed fixtures (tests/e2e/fixtures/guild-parity, written by design/mocks/guild_fixtures.py,
 // the same files ws_guild2.py draws the mocks from) and waits until the page shows its data.
 import type { Page } from '@playwright/test';
+import { RAID_OPENERS } from './guild-parity/raid';
 import { openReport } from './guild-parity/report';
 
 export type GuildStateOpener = (page: Page) => Promise<void>;
 
-const OPENERS: Readonly<Record<string, GuildStateOpener>> = {
-  report: openReport,
-};
+const OPENERS: Readonly<Record<string, GuildStateOpener>> = { ...RAID_OPENERS, report: openReport };
 
 export async function openGuildState(page: Page, id: string): Promise<void> {
   const open = OPENERS[id];

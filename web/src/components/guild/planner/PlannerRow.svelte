@@ -8,7 +8,7 @@
   import type { GuildSignupState } from '../../../lib/guild/api';
   import { rowSub, stateTag } from '../../../lib/guild/raid-planner-view';
   import type { RosterRow } from '../../../lib/guild/raid-roster';
-  import { classTone } from '../../../lib/ui/primitives';
+  import { classTone, ROW_ITEM } from '../../../lib/ui/primitives';
   import ClassCrestRing from '../../character/ClassCrestRing.svelte';
   import Row from '../../ui/Row.svelte';
   import Tag from '../../ui/Tag.svelte';
@@ -51,7 +51,7 @@
   }
 </script>
 
-<li aria-busy={busy} data-testid="raid-roster-row">
+<li class={ROW_ITEM} aria-busy={busy} data-testid="raid-roster-row">
   <Row title={row.name} titleTone={classTone(row.class)} selected={row.own} wrapTrail={officer}>
     {#snippet lead()}<ClassCrestRing characterClass={row.class} size={28} />{/snippet}
     {#snippet subContent()}
