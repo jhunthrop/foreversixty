@@ -41,6 +41,12 @@ describe('selectedLandingBand', () => {
     expect(selectedLandingBand(null, 40)).toBe(40);
     expect(selectedLandingBand(null, undefined)).toBe(20);
   });
+
+  it('the character beats a stored pick; the stored pick beats the default', () => {
+    expect(selectedLandingBand(null, 20, 60)).toBe(20);
+    expect(selectedLandingBand(null, undefined, 60)).toBe(60);
+    expect(selectedLandingBand(50, 20, 60)).toBe(50);
+  });
 });
 
 describe('topSourceWords', () => {

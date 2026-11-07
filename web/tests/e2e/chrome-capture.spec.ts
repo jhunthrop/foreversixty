@@ -235,6 +235,9 @@ test.describe('site chrome capture', () => {
       // The header as a reader sees it after load: the selector island hydrated, as the parity
       // specs wait for it on the build side (support/parity.ts waitForChromeHydrated).
       await waitForChromeHydrated(page);
+      // And wired (Header.astro's after-paint script, data-header-wired), so every capture holds the
+      // same header attributes whatever the state's timing.
+      await page.locator('[data-site-header][data-header-wired]').waitFor({ state: 'attached' });
       write(name, await capture(page));
       await context.close();
     }

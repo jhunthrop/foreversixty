@@ -6,6 +6,7 @@
 import type { Faction } from '../bis/types';
 import { onCurrentCharacterChange } from '../current-character-events';
 import { afterLoad, hasSessionHint } from '../page-load';
+import { writeFigure } from '../ui/figure-dom';
 import { CONTROL_BAR_EVENT, type ControlBarChange } from '../ui/control-bar';
 import { hrefWithFaction } from './tier-controls';
 import type { TierSpecView } from './tier-callout';
@@ -76,16 +77,6 @@ function fields(slot: HTMLElement): (name: AnswerField) => HTMLElement {
     if (found === null) throw new Error(`tier answer: the template has no ${name}`);
     return found;
   };
-}
-
-/** The figure's value is its first text node; its unit the span after it (ui/Figure.svelte). */
-function writeFigure(figure: HTMLElement, value: string, unit: string): void {
-  const line = figure.querySelector<HTMLElement>('.ui-figure > span');
-  if (line === null) return;
-  const text = [...line.childNodes].find((node) => node.nodeType === Node.TEXT_NODE);
-  if (text !== undefined) text.nodeValue = value;
-  const unitNode = line.querySelector('span');
-  if (unitNode !== null) unitNode.textContent = unit;
 }
 
 function showSpec(field: (name: AnswerField) => HTMLElement, view: TierSpecView, config: ClientConfig): void {

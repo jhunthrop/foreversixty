@@ -917,18 +917,23 @@
    ],
    "rows": [
     {
+     "id": "raids-dec-9",
+     "on": "2026-12-09",
      "when": "Dec 9",
      "what": "Barrow Deeps, Hyjal Summit, and Onyxia's Lair open"
     },
     {
+     "id": "hardcore",
      "when": "Winter 2026/27",
      "what": "The Hardcore ruleset, exact date not yet announced"
     },
     {
+     "id": "spring-2027",
      "when": "Spring 2027",
      "what": "Two raids, two dungeons, new quests and a zone, a legendary questline, and a PvP season"
     },
     {
+     "id": "summer-2027",
      "when": "Summer 2027",
      "what": "A revamped iconic raid plus one new raid, two dungeons, a PvP season, and professions and Legacy updates"
     }
@@ -1274,7 +1279,14 @@
    "didYouMean": "Did you mean",
    "yourCharacter": "Your character"
   },
-  "legalTabsLabel": "Legal pages"
+  "legalTabsLabel": "Legal pages",
+  "login": {
+   "reason": "Sign in with Battle.net and your Forever characters come straight in, with your builds, sims and logs saved. Reading reports and rankings never needs an account.",
+   "title": "Sign in",
+   "privacy": "Battle.net tells the site your BattleTag and your characters. It never sees a password here.",
+   "goAccount": "Your account",
+   "action": "Sign in with Battle.net"
+  }
  },
  "classes": [
   {

@@ -1,7 +1,7 @@
 // web/tests/e2e/parity-b.spec.ts
 // The shared build /b/:id against its mocks (design/parity.md, design/specs/2026-11-08-premium-account.md
 // sections 8 and 14, gap G7): a stranger signed out on the Survival raid build (web-b) and an
-// unknown id (web-b-missing), at 1440 and 390, each region (head, head-title, head-meta,
+// unknown id (web-b-missing), and the static build-unavailable page (web-b-unavailable), at 1440 and 390, each region (head, head-title, head-meta,
 // head-answer, notes, plate, every Section) compared for its blocks and box (support/parity.ts).
 //
 // The API renders the page, so the build side is the API's own HTML: fixtures/shared-build/
@@ -80,6 +80,16 @@ const STATES: readonly { id: string; mock: string; open: (page: Page) => Promise
       await expect(page.getByTestId('page-title')).toHaveText('Build not found');
     },
   },
+  {
+    // The static page src/worker.ts serves with a 503 when the API cannot answer /b/:id.
+    id: 'b-unavailable',
+    mock: 'web-b-unavailable',
+    open: async (page) => {
+      await routePlannerState(page, 'out');
+      await page.goto('/b-unavailable');
+      await expect(page.getByTestId('page-title')).toHaveText('Build unavailable');
+    },
+  },
 ];
 const WIDTHS = [1440, 390] as const;
 const HEIGHT = 1000;
@@ -95,6 +105,7 @@ const MOCK_HEAD_INSET =
 const EXPECTED_DRIFT: Readonly<Record<string, { failures: readonly string[]; why: string }>> = {
   'b-390': { failures: ['head:box'], why: MOCK_HEAD_INSET },
   'b-missing-390': { failures: ['head:box'], why: MOCK_HEAD_INSET },
+  'b-unavailable-390': { failures: ['head:box'], why: MOCK_HEAD_INSET },
 };
 
 test.describe('/b/:id mock parity', () => {

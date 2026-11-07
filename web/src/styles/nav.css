@@ -24,8 +24,9 @@
     align-items: center;
     justify-content: space-between;
     gap: 24px;
-    padding: 18px var(--bar-inset);
-    border-bottom: 1px solid color-mix(in srgb, var(--color-line) 60%, transparent);
+    /* No hairline under the bar (the flat system: hierarchy by type and spacing); the extra pixel
+       of bottom padding keeps the bar the 81 px it was drawn at. */
+    padding: 18px var(--bar-inset) 19px;
     background: var(--color-bg);
   }
   .site-wordmark {
@@ -52,7 +53,7 @@
     order: 2;
     display: flex;
     align-self: stretch;
-    margin: -18px 0;
+    margin: -18px 0 -19px;
     gap: 22px;
     /* Sentence case like the rest of the system (owner 2026-11-06): Barlow 600, no tracking. */
     font-size: 15px;
@@ -118,6 +119,7 @@
     background: var(--color-gold);
   }
   /* ------------------------------------------------------------- hover panels */
+  /* A door's panel is the overlay surface (`ui-overlay`, kind menu: ui/overlay.css); this places it. */
   .site-panel {
     position: absolute;
     z-index: 60;
@@ -125,10 +127,6 @@
     left: -12px;
     width: 560px;
     padding: 10px;
-    border: 1px solid var(--color-line);
-    border-radius: 6px;
-    background: var(--color-raised);
-    box-shadow: 0 14px 36px rgb(0 0 0 / 0.6);
     text-transform: none;
     letter-spacing: normal;
     white-space: normal;
@@ -213,7 +211,6 @@
     height: 28px;
     border-radius: 999px;
     object-fit: cover;
-    background: var(--color-raised);
     box-shadow: 0 0 0 2px color-mix(in srgb, var(--c) 55%, transparent);
   }
   .site-panel-class:hover .site-panel-crest,
@@ -226,7 +223,6 @@
     min-height: 44px;
     margin-top: 6px;
     padding: 0 10px;
-    border-top: 1px solid var(--color-line-soft);
     border-radius: 0 0 4px 4px;
     font-size: 12px;
     font-weight: 600;
@@ -253,7 +249,7 @@
   @media (max-width: 1439px) {
     .site-header {
       gap: 18px;
-      padding: 18px var(--bar-inset);
+      padding: 18px var(--bar-inset) 19px;
     }
     .site-doors {
       gap: 20px;
@@ -262,7 +258,7 @@
   @media (max-width: 1279px) {
     .site-header {
       gap: 12px;
-      padding: 18px var(--bar-inset);
+      padding: 18px var(--bar-inset) 19px;
     }
     .site-wordmark {
       gap: 7px;
@@ -296,7 +292,7 @@
       align-items: center;
       gap: 0 8px;
       height: 56px;
-      padding: 6px 18px 5px;
+      padding: 6px 18px;
     }
     .site-header[data-menu-open] {
       height: auto;
@@ -318,13 +314,16 @@
       justify-content: center;
       width: 44px;
       height: 44px;
-      border: 1px solid var(--color-line-warm);
+      border: 0;
       border-radius: 4px;
       background: none;
       color: var(--color-text);
     }
+    .site-menu-button:hover {
+      color: var(--color-strong);
+    }
     .site-menu-button[aria-expanded='true'] {
-      border-color: var(--color-gold);
+      color: var(--color-gold);
     }
     .site-menu {
       display: none;
@@ -348,14 +347,13 @@
       min-height: 56px;
       margin-top: 18px;
       padding: 6px 12px 6px 8px;
-      border: 1px solid var(--color-line);
+      border: 0;
       border-radius: 6px;
-      background: var(--color-raised);
+      background: none;
       text-align: left;
       color: var(--color-strong);
     }
     .site-menu-character:hover {
-      border-color: var(--color-line-warm-strong);
       background: #101624;
     }
     .site-doors {
@@ -378,9 +376,8 @@
       justify-content: center;
       min-height: 44px;
       margin-top: 12px;
-      border: 1px solid var(--color-line-warm);
       border-radius: 4px;
-      color: var(--color-text);
+      color: var(--color-gold);
     }
     .site-menu-heading {
       display: block;
@@ -520,7 +517,8 @@
     /* The pill is 4px taller than the 44px the bar was drawn around; the bar keeps its height. */
     margin: -2px 0;
     padding: 0 12px 0 5px;
-    border: 1px solid var(--color-line-card);
+    /* No edge at rest: the account chip is its tint; hover and open draw the gold edge. */
+    border: 1px solid transparent;
     border-radius: 999px;
     background: rgb(255 255 255 / 0.035);
     color: var(--color-strong);
@@ -565,7 +563,6 @@
     height: 36px;
     border-radius: 999px;
     object-fit: cover;
-    background-color: var(--color-raised);
     background-size: cover;
     box-shadow: 0 0 0 2px color-mix(in srgb, var(--c, var(--color-line)) 55%, transparent);
   }
@@ -598,7 +595,6 @@
     width: 14px;
     height: 14px;
     border-radius: 999px;
-    border: 1px solid var(--color-line-warm);
     background: var(--color-bg);
     place-items: center;
     color: var(--color-strong);
@@ -668,13 +664,9 @@
     top: calc(100% + 6px);
     left: 0;
     padding: 6px 9px;
-    border: 1px solid var(--color-line-warm);
-    border-radius: 4px;
-    background: #161c2a;
     color: var(--color-text);
     font-size: 12px;
     white-space: nowrap;
-    box-shadow: 0 6px 18px rgb(0 0 0 / 0.65);
     pointer-events: none;
   }
   .csel-btn[aria-expanded='false']:hover ~ .csel-tip,
@@ -906,6 +898,9 @@
   }
 
   /* ----------------------------------------------------------- popover and sheet */
+  /* The panel and the hover tip are the overlay surface (`ui-overlay`, kinds menu and tooltip:
+     ui/overlay.css); their parts take the overlay's hairlines (`ui-overlay-rule-t`/`-b`), the
+     list's fade and the sheet's grab handle from it too. This places them. */
   .csel-panel {
     position: absolute;
     z-index: 20;
@@ -914,12 +909,6 @@
     width: 380px;
     max-height: calc(100vh - 96px);
     overflow-y: auto;
-    border: 1px solid var(--color-line-card);
-    border-radius: var(--radius-panel);
-    background: var(--surface-card);
-    box-shadow:
-      inset 0 1px 0 var(--card-highlight),
-      var(--shadow-card);
     text-align: left;
   }
   .csel-scrim,
@@ -933,7 +922,6 @@
     justify-content: space-between;
     height: 44px;
     padding: 0 18px;
-    border-bottom: 1px solid var(--color-line-soft);
   }
   .csel-head-title {
     margin-right: auto;
@@ -958,18 +946,10 @@
   }
   .csel-filter {
     padding: 8px 18px;
-    border-bottom: 1px solid var(--color-line-soft);
   }
+  /* The input is the Field primitive's (lib/ui/field.ts), at the panel's 36 px. */
   .csel-filter input {
-    width: 100%;
     height: 36px;
-    padding: 0 10px;
-    border: 1px solid var(--color-line);
-    border-radius: 4px;
-    background: var(--color-bg);
-    color: var(--color-strong);
-    font: inherit;
-    font-size: 13px;
   }
   .csel-list-wrap {
     position: relative;
@@ -992,8 +972,6 @@
     right: 0;
     bottom: 0;
     height: 36px;
-    background: linear-gradient(180deg, rgb(13 17 26 / 0), var(--color-raised));
-    pointer-events: none;
   }
   .csel-row {
     display: flex;
@@ -1036,7 +1014,6 @@
     height: 36px;
     border-radius: 999px;
     object-fit: cover;
-    background: var(--color-raised);
     box-shadow: 0 0 0 2px color-mix(in srgb, var(--c) 55%, transparent);
   }
   .csel-row-text {
@@ -1091,29 +1068,11 @@
   .csel-check {
     color: var(--color-gold);
   }
+  /* Retry is the Button primitive's secondary recipe (lib/ui/button.ts); this places it. */
   .csel-retry {
     flex-shrink: 0;
-    height: 44px;
     min-width: 56px;
     margin-right: 14px;
-    padding: 0 10px;
-    border: 1px solid var(--color-line-warm);
-    border-radius: 4px;
-    background: none;
-    color: var(--color-strong);
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-  }
-  .csel-retry:hover {
-    border-color: var(--color-line-warm-strong);
-  }
-  .csel-retry:active {
-    background: #0a0d15;
-  }
-  .csel-retry:disabled {
-    opacity: 0.7;
   }
   .csel-action {
     display: grid;
@@ -1124,7 +1083,6 @@
     min-height: 52px;
     padding: 6px 18px;
     border: 0;
-    border-top: 1px solid var(--color-line-soft);
     background: none;
     font: inherit;
     text-align: left;
@@ -1166,7 +1124,6 @@
   }
   .csel-note {
     padding: 10px 18px;
-    border-top: 1px solid var(--color-line-soft);
     font-size: 12px;
     color: var(--color-muted);
   }
@@ -1209,34 +1166,8 @@
     text-decoration: underline;
     text-underline-offset: 3px;
   }
-  .csel-button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    height: 44px;
-    padding: 0 16px;
-    border: 1px solid var(--color-line-warm-strong);
-    border-radius: 4px;
-    background: none;
-    color: var(--color-strong);
-    font: inherit;
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-  }
-  .csel-button:hover {
-    background: #101624;
-  }
-  .csel-button:active {
-    background: #0a0d15;
-  }
-  .csel-button:disabled {
-    opacity: 0.5;
-  }
   .csel-paste {
     padding: 12px 14px 14px;
-    border-top: 1px solid var(--color-line-soft);
   }
   /* The quiet-label recipe (global.css): a field's label. */
   .csel-paste-label {
@@ -1245,15 +1176,11 @@
     font-weight: 600;
     color: var(--color-muted);
   }
+  /* The textarea is the Field primitive's (lib/ui/field.ts); the export reads in the mono face. */
   .csel-paste textarea {
     display: block;
-    width: 100%;
     height: 76px;
-    padding: 8px 10px;
-    border: 1px solid var(--color-line);
-    border-radius: 4px;
-    background: var(--color-bg);
-    color: var(--color-strong);
+    padding-block: 8px;
     font-family: var(--font-mono);
     font-size: 12px;
     resize: none;
@@ -1297,7 +1224,6 @@
     align-items: center;
     gap: 12px;
     padding: 16px 18px;
-    border-bottom: 1px solid var(--color-line-soft);
   }
   .csel-acct-id {
     display: flex;
@@ -1345,7 +1271,6 @@
   }
   .csel-arows {
     padding: 6px 0;
-    border-top: 1px solid var(--color-line-soft);
   }
   .csel-arow {
     display: flex;
@@ -1484,7 +1409,7 @@
       display: flex;
       flex-direction: column;
       border-bottom: 0;
-      border-radius: 12px 12px 0 0;
+      border-radius: var(--radius-plate) var(--radius-plate) 0 0;
       box-shadow: none;
       padding-bottom: calc(14px + env(safe-area-inset-bottom));
     }
@@ -1494,12 +1419,6 @@
       height: 20px;
       flex-shrink: 0;
       touch-action: none;
-    }
-    .csel-grab span {
-      width: 36px;
-      height: 4px;
-      border-radius: 2px;
-      background: var(--color-line-warm);
     }
     .csel-head {
       height: 48px;
@@ -1556,20 +1475,22 @@
     gap: 6px;
     min-width: 44px;
     height: 44px;
-    padding: 0 10px;
-    border: 1px solid var(--color-line-warm);
+    /* 11 px: the 10 px it had plus the pixel its retired edge took, so the box keeps its width. */
+    padding: 0 11px;
+    border: 0;
     border-radius: 4px;
     background: none;
     color: var(--color-gold);
   }
   .site-search-button:hover,
   .site-search-button[aria-expanded='true'] {
-    border-color: var(--color-gold);
+    color: var(--color-gold-hover);
   }
   .site-search-kbd {
-    padding: 0 5px;
-    border: 1px solid var(--color-line-warm-strong);
+    /* The keycap is a tint, not an edge; 1 px more padding keeps its 20 px box. */
+    padding: 1px 6px;
     border-radius: 3px;
+    background: rgb(255 255 255 / 0.06);
     color: var(--color-muted);
     font-family: var(--font-mono);
     font-size: 12px;
@@ -1582,10 +1503,6 @@
     right: 0;
     width: 360px;
     padding: 12px;
-    border: 1px solid var(--color-line);
-    border-radius: 6px;
-    background: var(--color-raised);
-    box-shadow: 0 10px 28px rgb(0 0 0 / 0.6);
   }
   .site-search-panel[hidden] {
     display: none;

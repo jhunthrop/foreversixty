@@ -1,0 +1,60 @@
+/* web/src/components/ui/overlay.css
+   The overlay surface (web layout spec 2026-11-05 §3A.2, P1): the one box every tooltip, menu and
+   sheet draws. Overlay.svelte renders it; markup that cannot mount a Svelte component (the header's
+   static door panels, the lookup's typeahead list, the selector island's own panel) takes the same
+   two attributes, `class="ui-overlay" data-kind="menu"`, so there is one surface and one place to
+   change it. Imported by global.css, so the static pages and the API's island pages carry it.
+
+   Kinds:
+     menu     S1 ground, the 1 px --color-line edge, the plate radius, the overlay shadow
+     sheet    the menu's box anchored to the bottom edge: top corners rounded, no bottom edge
+     tooltip  the in-game tooltip frame (the best-addon tenet): a dark translucent ground and a thin
+              light frame, the client's own look, with the same radius and shadow
+
+   Inside an overlay, its parts are separated by the overlay's own hairline (`ui-overlay-rule-t`
+   above a part, `ui-overlay-rule-b` under one), a scroll list fades into the ground
+   (`ui-overlay-fade`), a row takes the S2 hover ground on hover, keyboard selection and focus
+   (`ui-overlay-row`), and a sheet carries its grab handle (`ui-overlay-grab`). The part classes
+   draw only inside a `.ui-overlay`. */
+
+@layer components {
+  .ui-overlay {
+    min-width: 0;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-plate);
+    background: var(--color-raised);
+    box-shadow: var(--shadow-overlay);
+  }
+  .ui-overlay[data-kind='sheet'] {
+    border-bottom: 0;
+    border-radius: var(--radius-plate) var(--radius-plate) 0 0;
+  }
+  /* The client's tooltip: a dark translucent ground and its thin light edge. */
+  .ui-overlay[data-kind='tooltip'] {
+    border-color: rgb(196 203 218 / 0.4);
+    background: rgb(8 11 20 / 0.97);
+    backdrop-filter: blur(3px);
+  }
+
+  .ui-overlay .ui-overlay-rule-t {
+    border-top: 1px solid var(--color-line-soft);
+  }
+  .ui-overlay .ui-overlay-rule-b {
+    border-bottom: 1px solid var(--color-line-soft);
+  }
+  .ui-overlay .ui-overlay-row:hover,
+  .ui-overlay .ui-overlay-row[aria-selected='true'],
+  .ui-overlay .ui-overlay-row:focus-visible {
+    background: var(--color-hover);
+  }
+  .ui-overlay .ui-overlay-fade {
+    background: linear-gradient(180deg, rgb(13 17 26 / 0), var(--color-raised));
+    pointer-events: none;
+  }
+  .ui-overlay .ui-overlay-grab {
+    width: 36px;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--color-line);
+  }
+}

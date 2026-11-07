@@ -1,0 +1,823 @@
+{
+ "build": "1.60.1.70790",
+ "updated": "7 Nov",
+ "raidLabel": "raid-ready, Phase 1",
+ "bands": [
+  {
+   "band": 20,
+   "label": "20 to 29",
+   "summary": "Top sources: crafting, dungeons. Each list is the best you can wear inside one level range; gear changes about every ten levels."
+  },
+  {
+   "band": 30,
+   "label": "30 to 39",
+   "summary": "Top sources: world drops, dungeons. Each list is the best you can wear inside one level range; gear changes about every ten levels."
+  },
+  {
+   "band": 40,
+   "label": "40 to 49",
+   "summary": "Top sources: world drops, crafting. Each list is the best you can wear inside one level range; gear changes about every ten levels."
+  },
+  {
+   "band": 50,
+   "label": "50 to 59",
+   "summary": "Top sources: crafting, world drops. Each list is the best you can wear inside one level range; gear changes about every ten levels."
+  },
+  {
+   "band": 60,
+   "label": "60",
+   "summary": "Top sources: crafting, vendors. Each list is the best you can wear inside one level range; gear changes about every ten levels. 60: full raid-ready, Phase 1 gear."
+  }
+ ],
+ "classes": [
+  {
+   "slug": "warrior",
+   "name": "Warrior",
+   "color": "#c69b6d",
+   "specs": [
+    {
+     "key": "warrior-arms",
+     "classSlug": "warrior",
+     "specSlug": "arms",
+     "name": "Arms",
+     "role": "dps",
+     "icon": "ability_rogue_eviscerate"
+    },
+    {
+     "key": "warrior-fury",
+     "classSlug": "warrior",
+     "specSlug": "fury",
+     "name": "Fury",
+     "role": "dps",
+     "icon": "ability_warrior_innerrage"
+    },
+    {
+     "key": "warrior-protection",
+     "classSlug": "warrior",
+     "specSlug": "protection",
+     "name": "Protection",
+     "role": "tank",
+     "icon": "inv_shield_06"
+    }
+   ]
+  },
+  {
+   "slug": "paladin",
+   "name": "Paladin",
+   "color": "#f48cba",
+   "specs": [
+    {
+     "key": "paladin-holy",
+     "classSlug": "paladin",
+     "specSlug": "holy",
+     "name": "Holy",
+     "role": "healer",
+     "icon": "spell_holy_holybolt"
+    },
+    {
+     "key": "paladin-protection",
+     "classSlug": "paladin",
+     "specSlug": "protection",
+     "name": "Protection",
+     "role": "tank",
+     "icon": "spell_holy_devotionaura"
+    },
+    {
+     "key": "paladin-retribution",
+     "classSlug": "paladin",
+     "specSlug": "retribution",
+     "name": "Retribution",
+     "role": "dps",
+     "icon": "spell_holy_auraoflight"
+    }
+   ]
+  },
+  {
+   "slug": "hunter",
+   "name": "Hunter",
+   "color": "#aad372",
+   "specs": [
+    {
+     "key": "hunter-beast-mastery",
+     "classSlug": "hunter",
+     "specSlug": "beast-mastery",
+     "name": "Beast Mastery",
+     "role": "dps",
+     "icon": "ability_hunter_beasttaming"
+    },
+    {
+     "key": "hunter-marksmanship",
+     "classSlug": "hunter",
+     "specSlug": "marksmanship",
+     "name": "Marksmanship",
+     "role": "dps",
+     "icon": "ability_marksmanship"
+    },
+    {
+     "key": "hunter-survival",
+     "classSlug": "hunter",
+     "specSlug": "survival",
+     "name": "Survival",
+     "role": "dps",
+     "icon": "ability_hunter_swiftstrike"
+    }
+   ]
+  },
+  {
+   "slug": "rogue",
+   "name": "Rogue",
+   "color": "#fff468",
+   "specs": [
+    {
+     "key": "rogue-assassination",
+     "classSlug": "rogue",
+     "specSlug": "assassination",
+     "name": "Assassination",
+     "role": "dps",
+     "icon": "ability_rogue_eviscerate"
+    },
+    {
+     "key": "rogue-combat",
+     "classSlug": "rogue",
+     "specSlug": "combat",
+     "name": "Combat",
+     "role": "dps",
+     "icon": "ability_backstab"
+    },
+    {
+     "key": "rogue-subtlety",
+     "classSlug": "rogue",
+     "specSlug": "subtlety",
+     "name": "Subtlety",
+     "role": "dps",
+     "icon": "ability_stealth"
+    }
+   ]
+  },
+  {
+   "slug": "priest",
+   "name": "Priest",
+   "color": "#ffffff",
+   "specs": [
+    {
+     "key": "priest-discipline",
+     "classSlug": "priest",
+     "specSlug": "discipline",
+     "name": "Discipline",
+     "role": "healer",
+     "icon": "spell_holy_wordfortitude"
+    },
+    {
+     "key": "priest-holy",
+     "classSlug": "priest",
+     "specSlug": "holy",
+     "name": "Holy",
+     "role": "healer",
+     "icon": "spell_holy_guardianspirit"
+    },
+    {
+     "key": "priest-shadow",
+     "classSlug": "priest",
+     "specSlug": "shadow",
+     "name": "Shadow",
+     "role": "dps",
+     "icon": "spell_shadow_shadowwordpain"
+    }
+   ]
+  },
+  {
+   "slug": "shaman",
+   "name": "Shaman",
+   "color": "#3f8fe0",
+   "specs": [
+    {
+     "key": "shaman-elemental",
+     "classSlug": "shaman",
+     "specSlug": "elemental",
+     "name": "Elemental",
+     "role": "dps",
+     "icon": "spell_nature_lightning"
+    },
+    {
+     "key": "shaman-enhancement",
+     "classSlug": "shaman",
+     "specSlug": "enhancement",
+     "name": "Enhancement",
+     "role": "dps",
+     "icon": "spell_nature_lightningshield"
+    },
+    {
+     "key": "shaman-restoration",
+     "classSlug": "shaman",
+     "specSlug": "restoration",
+     "name": "Restoration",
+     "role": "healer",
+     "icon": "spell_nature_magicimmunity"
+    }
+   ]
+  },
+  {
+   "slug": "mage",
+   "name": "Mage",
+   "color": "#3fc7eb",
+   "specs": [
+    {
+     "key": "mage-arcane",
+     "classSlug": "mage",
+     "specSlug": "arcane",
+     "name": "Arcane",
+     "role": "dps",
+     "icon": "spell_holy_magicalsentry"
+    },
+    {
+     "key": "mage-fire",
+     "classSlug": "mage",
+     "specSlug": "fire",
+     "name": "Fire",
+     "role": "dps",
+     "icon": "spell_fire_firebolt02"
+    },
+    {
+     "key": "mage-frost",
+     "classSlug": "mage",
+     "specSlug": "frost",
+     "name": "Frost",
+     "role": "dps",
+     "icon": "spell_frost_frostbolt02"
+    }
+   ]
+  },
+  {
+   "slug": "warlock",
+   "name": "Warlock",
+   "color": "#8788ee",
+   "specs": [
+    {
+     "key": "warlock-affliction",
+     "classSlug": "warlock",
+     "specSlug": "affliction",
+     "name": "Affliction",
+     "role": "dps",
+     "icon": "spell_shadow_deathcoil"
+    },
+    {
+     "key": "warlock-demonology",
+     "classSlug": "warlock",
+     "specSlug": "demonology",
+     "name": "Demonology",
+     "role": "dps",
+     "icon": "spell_shadow_metamorphosis"
+    },
+    {
+     "key": "warlock-destruction",
+     "classSlug": "warlock",
+     "specSlug": "destruction",
+     "name": "Destruction",
+     "role": "dps",
+     "icon": "spell_shadow_rainoffire"
+    }
+   ]
+  },
+  {
+   "slug": "druid",
+   "name": "Druid",
+   "color": "#ff7c0a",
+   "specs": [
+    {
+     "key": "druid-balance",
+     "classSlug": "druid",
+     "specSlug": "balance",
+     "name": "Balance",
+     "role": "dps",
+     "icon": "spell_nature_starfall"
+    },
+    {
+     "key": "druid-feral",
+     "classSlug": "druid",
+     "specSlug": "feral",
+     "name": "Feral",
+     "role": "dps",
+     "icon": "ability_druid_catform"
+    },
+    {
+     "key": "druid-feral-bear",
+     "classSlug": "druid",
+     "specSlug": "feral-bear",
+     "name": "Feral Bear",
+     "role": "tank",
+     "icon": "ability_racial_bearform"
+    },
+    {
+     "key": "druid-restoration",
+     "classSlug": "druid",
+     "specSlug": "restoration",
+     "name": "Restoration",
+     "role": "healer",
+     "icon": "spell_nature_healingtouch"
+    }
+   ]
+  }
+ ],
+ "accounts": {
+  "24": {
+   "answer": {
+    "state": "ready",
+    "character": {
+     "name": "Felsnap",
+     "classSlug": "hunter",
+     "className": "Hunter",
+     "line": "Level 24 · Dwarf Beast Mastery Hunter"
+    },
+    "body": {
+     "kind": "count",
+     "worn": 2,
+     "unit": "of 14 slots",
+     "caption": "Best-in-slot pieces you wear",
+     "bar": 0.14285714285714285,
+     "note": "Trinkets and Off hand have no pick at this level range."
+    },
+    "action": {
+     "label": "Beast Mastery gear for 20 to 29",
+     "href": "/bis/hunter/beast-mastery?faction=alliance#band-alliance-20"
+    }
+   },
+   "band": 20,
+   "faction": "alliance",
+   "crestFrom": "Hunter"
+  },
+  "34": {
+   "answer": {
+    "state": "ready",
+    "character": {
+     "name": "Felsnap",
+     "classSlug": "hunter",
+     "className": "Hunter",
+     "line": "Level 34 · Dwarf Beast Mastery Hunter"
+    },
+    "body": {
+     "kind": "count",
+     "worn": 0,
+     "unit": "of 14 slots",
+     "caption": "Best-in-slot pieces you wear",
+     "bar": 0,
+     "note": "Trinkets and Off hand have no pick at this level range."
+    },
+    "action": {
+     "label": "Beast Mastery gear for 30 to 39",
+     "href": "/bis/hunter/beast-mastery?faction=alliance#band-alliance-30"
+    }
+   },
+   "band": 30,
+   "faction": "alliance",
+   "crestFrom": "Hunter"
+  },
+  "60": {
+   "answer": {
+    "state": "ready",
+    "character": {
+     "name": "Thandrel",
+     "classSlug": "warrior",
+     "className": "Warrior",
+     "line": "Level 60 · Human Fury Warrior"
+    },
+    "body": {
+     "kind": "count",
+     "worn": 4,
+     "unit": "of 17 slots",
+     "caption": "Best-in-slot pieces you wear",
+     "bar": 0.23529411764705882
+    },
+    "action": {
+     "label": "Fury gear for 60",
+     "href": "/bis/warrior/fury?faction=alliance#band-alliance-60"
+    }
+   },
+   "band": 60,
+   "faction": "alliance",
+   "crestFrom": "Warrior"
+  },
+  "new": {
+   "answer": {
+    "state": "none",
+    "message": "No character on this account yet.",
+    "link": {
+     "label": "Set up your character",
+     "href": "/setup"
+    }
+   },
+   "band": null
+  },
+  "nogear": {
+   "answer": {
+    "state": "ready",
+    "character": {
+     "name": "Felsnap",
+     "classSlug": "hunter",
+     "className": "Hunter",
+     "line": "Level 34 · Dwarf Beast Mastery Hunter"
+    },
+    "body": {
+     "kind": "sentence",
+     "text": "Add the addon to see how many of these slots you already wear.",
+     "link": {
+      "label": "Get the addon and companion",
+      "href": "/setup"
+     }
+    },
+    "action": {
+     "label": "Beast Mastery gear for 30 to 39",
+     "href": "/bis/hunter/beast-mastery?faction=alliance#band-alliance-30"
+    }
+   },
+   "band": 30,
+   "faction": "alliance",
+   "crestFrom": "Hunter"
+  },
+  "sim": {
+   "answer": {
+    "state": "ready",
+    "character": {
+     "name": "Felsnap",
+     "classSlug": "hunter",
+     "className": "Hunter",
+     "line": "Level 34 · Dwarf Beast Mastery Hunter"
+    },
+    "body": {
+     "kind": "count",
+     "worn": 0,
+     "unit": "of 14 slots",
+     "caption": "Best-in-slot pieces you wear",
+     "bar": 0,
+     "note": "Trinkets and Off hand have no pick at this level range."
+    },
+    "action": {
+     "label": "Beast Mastery gear for 30 to 39",
+     "href": "/bis/hunter/beast-mastery?faction=alliance#band-alliance-30"
+    }
+   },
+   "band": 30,
+   "faction": "alliance",
+   "crestFrom": "Hunter"
+  },
+  "error": {
+   "answer": {
+    "state": "error",
+    "message": "We could not load your character.",
+    "retry": "Try again"
+   },
+   "band": null
+  }
+ },
+ "me": {
+  "24": {
+   "user": {
+    "id": 7,
+    "battletag": "Hunthrop#1894",
+    "email": null,
+    "role": "user",
+    "anonymize": false
+   },
+   "characters": [
+    {
+     "key": "us/normal/felsnap",
+     "region": "us",
+     "ruleset": "normal",
+     "name": "Felsnap",
+     "class": "Hunter",
+     "spec": "Beast Mastery",
+     "race": "Dwarf",
+     "realm": "Skyborne",
+     "level": 24,
+     "faction": "alliance",
+     "item_level": 22,
+     "source": "bnet",
+     "build": {
+      "source": "addon",
+      "captured_at": "2026-11-04T19:30:00Z",
+      "level": 24,
+      "data_build": "1.60.1.70790",
+      "gear": {
+       "head": 252504,
+       "chest": 2041,
+       "shoulder": 2264,
+       "back": 14593,
+       "wrist": 897,
+       "hands": 7358,
+       "waist": 20090,
+       "legs": 9509,
+       "feet": 10402,
+       "finger1": 6748,
+       "main_hand": 6679,
+       "ranged": 13137
+      },
+      "talents": {
+       "trees": [
+        "0000000000000000",
+        "00000000000000000",
+        "000000000000000000"
+       ],
+       "points": [
+        13,
+        0,
+        0
+       ]
+      }
+     }
+    }
+   ],
+   "guilds": [],
+   "bnet_imported_at": "2026-11-06T09:00:00Z",
+   "main_character_key": "us/normal/felsnap"
+  },
+  "34": {
+   "user": {
+    "id": 7,
+    "battletag": "Hunthrop#1894",
+    "email": null,
+    "role": "user",
+    "anonymize": false
+   },
+   "characters": [
+    {
+     "key": "us/normal/felsnap",
+     "region": "us",
+     "ruleset": "normal",
+     "name": "Felsnap",
+     "class": "Hunter",
+     "spec": "Beast Mastery",
+     "race": "Dwarf",
+     "realm": "Skyborne",
+     "level": 34,
+     "faction": "alliance",
+     "item_level": 31,
+     "source": "bnet",
+     "build": {
+      "source": "addon",
+      "captured_at": "2026-11-04T19:30:00Z",
+      "level": 34,
+      "data_build": "1.60.1.70790",
+      "gear": {
+       "head": 252504,
+       "neck": 273049,
+       "shoulder": 2264,
+       "back": 14593,
+       "chest": 2041,
+       "wrist": 897,
+       "hands": 7358,
+       "waist": 20090,
+       "legs": 9509,
+       "feet": 10402,
+       "finger1": 6748,
+       "finger2": 6748,
+       "main_hand": 6679,
+       "ranged": 13137
+      },
+      "talents": {
+       "trees": [
+        "0000000000000000",
+        "00000000000000000",
+        "000000000000000000"
+       ],
+       "points": [
+        23,
+        0,
+        0
+       ]
+      }
+     }
+    }
+   ],
+   "guilds": [],
+   "bnet_imported_at": "2026-11-06T09:00:00Z",
+   "main_character_key": "us/normal/felsnap"
+  },
+  "60": {
+   "user": {
+    "id": 7,
+    "battletag": "Hunthrop#1894",
+    "email": null,
+    "role": "user",
+    "anonymize": false
+   },
+   "characters": [
+    {
+     "key": "us/normal/thandrel",
+     "region": "us",
+     "ruleset": "normal",
+     "name": "Thandrel",
+     "class": "Warrior",
+     "spec": "Fury",
+     "race": "Human",
+     "realm": "Skyborne",
+     "level": 60,
+     "faction": "alliance",
+     "item_level": 61,
+     "source": "bnet",
+     "build": {
+      "source": "addon",
+      "captured_at": "2026-11-04T19:30:00Z",
+      "level": 60,
+      "data_build": "1.60.1.70790",
+      "gear": {
+       "head": 23314,
+       "neck": 11933,
+       "shoulder": 12927,
+       "back": 13340,
+       "chest": 252483,
+       "wrist": 19578,
+       "hands": 231541,
+       "waist": 19044,
+       "legs": 231540,
+       "feet": 275618,
+       "finger1": 13098,
+       "finger2": 19514,
+       "trinket1": 11815,
+       "trinket2": 249470,
+       "main_hand": 279259,
+       "off_hand": 22384,
+       "ranged": 2100
+      },
+      "talents": {
+       "trees": [
+        "0000000000000000",
+        "00000000000000000",
+        "000000000000000000"
+       ],
+       "points": [
+        17,
+        34,
+        0
+       ]
+      }
+     },
+     "guild": {
+      "id": 2,
+      "name": "Olympus XXVII",
+      "rank": "Officer",
+      "verified": true,
+      "attendance": {
+       "present": 3,
+       "nights": 4
+      }
+     }
+    }
+   ],
+   "guilds": [
+    {
+     "id": 2,
+     "region": "us",
+     "ruleset": "normal",
+     "name": "Olympus XXVII",
+     "slug": "olympus-xxvii",
+     "rank": "Officer",
+     "verified": true,
+     "verified_count": 18,
+     "faction": "alliance"
+    }
+   ],
+   "bnet_imported_at": "2026-11-06T09:00:00Z",
+   "main_character_key": "us/normal/thandrel"
+  },
+  "nogear": {
+   "user": {
+    "id": 7,
+    "battletag": "Hunthrop#1894",
+    "email": null,
+    "role": "user",
+    "anonymize": false
+   },
+   "characters": [
+    {
+     "key": "us/normal/felsnap",
+     "region": "us",
+     "ruleset": "normal",
+     "name": "Felsnap",
+     "class": "Hunter",
+     "spec": "Beast Mastery",
+     "race": "Dwarf",
+     "realm": "Skyborne",
+     "level": 34,
+     "faction": "alliance",
+     "item_level": 31,
+     "source": "bnet"
+    }
+   ],
+   "guilds": [],
+   "bnet_imported_at": "2026-11-06T09:00:00Z",
+   "main_character_key": "us/normal/felsnap"
+  },
+  "sim": {
+   "user": {
+    "id": 7,
+    "battletag": "Hunthrop#1894",
+    "email": null,
+    "role": "user",
+    "anonymize": false
+   },
+   "characters": [
+    {
+     "key": "us/normal/felsnap",
+     "region": "us",
+     "ruleset": "normal",
+     "name": "Felsnap",
+     "class": "Hunter",
+     "spec": "Beast Mastery",
+     "race": "Dwarf",
+     "realm": "Skyborne",
+     "level": 34,
+     "faction": "alliance",
+     "item_level": 31,
+     "source": "bnet",
+     "build": {
+      "source": "addon",
+      "captured_at": "2026-11-04T19:30:00Z",
+      "level": 34,
+      "data_build": "1.60.1.70790",
+      "gear": {
+       "head": 252504,
+       "neck": 273049,
+       "shoulder": 2264,
+       "back": 14593,
+       "chest": 2041,
+       "wrist": 897,
+       "hands": 7358,
+       "waist": 20090,
+       "legs": 9509,
+       "feet": 10402,
+       "finger1": 6748,
+       "finger2": 6748,
+       "main_hand": 6679,
+       "ranged": 13137
+      },
+      "talents": {
+       "trees": [
+        "0000000000000000",
+        "00000000000000000",
+        "000000000000000000"
+       ],
+       "points": [
+        23,
+        0,
+        0
+       ]
+      }
+     }
+    }
+   ],
+   "guilds": [],
+   "bnet_imported_at": "2026-11-06T09:00:00Z",
+   "main_character_key": "us/normal/felsnap",
+   "entitlements": {
+    "server_sims": true,
+    "retention": true,
+    "multi_compare": true,
+    "history": true,
+    "notifications": true,
+    "officer_views": false,
+    "roster_check": true,
+    "log_coach": true,
+    "supporter_mark": true,
+    "billing": null
+   },
+   "finished_sims": [
+    {
+     "sim_id": "sim-1",
+     "spec": "hunter-beast-mastery",
+     "title": "Felsnap at 34",
+     "dps": 212.4,
+     "finished_at": "2026-11-06T11:00:00Z"
+    }
+   ]
+  }
+ },
+ "finished": {
+  "prefix": "Your Beast Mastery Hunter sim finished: ",
+  "figure": "212 DPS",
+  "open": "Open result →",
+  "dismiss": "Dismiss: your Beast Mastery Hunter sim finished",
+  "more": 0
+ },
+ "copy": {
+  "title": "Best in slot",
+  "levels": "Levels 20 to 60",
+  "lead": "The best gear you can wear at your level, for every spec. Open yours.",
+  "tierQuestion": "Which spec is strongest?",
+  "tierLink": "Tier list",
+  "answerLabel": "Your character",
+  "bandGroupLabel": "Level range",
+  "plateLabel": "Classes and specs",
+  "yours": "Yours",
+  "roleWords": {
+   "tank": "Tank",
+   "healer": "Healer"
+  },
+  "yourRange": {
+   "20": "Your range: 20 to 29",
+   "30": "Your range: 30 to 39",
+   "40": "Your range: 40 to 49",
+   "50": "Your range: 50 to 59",
+   "60": "Your range: 60"
+  },
+  "retry": "Try again"
+ }
+}

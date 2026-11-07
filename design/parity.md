@@ -83,9 +83,15 @@ Then commit `design/mocks/web` (and `design/mocks/data/bis-facts.json`).
 
 `design/mocks/web/home-parity.json`, layout B (spec `design/specs/2026-11-07-home-b.md`): `out` (signed out), `34` (a level 34 leveler, no guild), `60` (a level 60 raider in a guild with a raid planned and the guild's sims), `new` (signed in, no character), `feed-empty` (the feed floored with real site events), `feed-loading`, `loading` (the session hinted, `/v1/me` in flight), `error` (the feed failed). Mocks `web-home-<state>.html` from `design/mocks/ws_home.py`. The data is committed in `web/tests/e2e/fixtures/home/` (`python3 design/mocks/home_fixtures.py` writes the `/v1/me`, `/v1/feed`, `/v1/home` and guild answers); `tests/e2e/support/home-page.ts` routes the same files, so the parity job needs no `data/builds`.
 
+## The BiS landing states
+
+`web/tests/e2e/parity-bis-landing.spec.ts`: `out` (signed out, 20 to 29), `out-30` to `out-60` (`?band=`), `24` (Felsnap at 24, 2 of 14 slots), `34`, `60` (Thandrel), `new` (no character), `nogear`, `sim` (a finished server sim under the head), `loading`, `error`; 1440 for every state, 390 for `out` and `24`. Mocks `web-bis-landing*.html` from `design/mocks/ws_bis_landing.py` (spec `design/specs/2026-11-07-bis-landing.md`). Test-time render: `node design/mocks/bis_landing_facts.mjs <out>/bis-landing-facts.json`, then `ws_bis_landing.py` with `FS_BIS_LANDING_FACTS` and `FS_MOCK_OUT` (`renderBisLandingMocks`); the facts run the landing's own models on the fixtures `support/bis-landing-page.ts` serves, and both sides count against `data/builds/<active build>/bis`.
+
+`web/tests/e2e/parity-app-auth.spec.ts`: `/app/auth` without and with a code, at 1440 and 390, against `web-app-auth*.html` from `design/mocks/ws_app_auth.py`. `parity-b.spec.ts` also checks the static `/b-unavailable` page against `web-b-unavailable`.
+
 ## The changelog, legal and 404 states
 
-`web/tests/e2e/parity-pages.spec.ts`: `changelog` (All), `changelog-game` (`?show=game`), `legal-privacy`, `404` (signed out) and `404-in` (Felsnap, `fixtures/home/me-34.json`), at 1440 and 390. Mocks `web-changelog*.html`, `web-legal-privacy.html`, `web-404*.html` from `design/mocks/ws_pages.py` (spec `design/specs/2026-11-08-pages.md`). Test-time render: `node design/mocks/pages_facts.mjs <out>/pages-facts.json`, then `ws_pages.py` with `FS_PAGES_FACTS` and `FS_MOCK_OUT` (`renderPagesMocks` in `support/parity-mocks.ts`); the facts bundle the content collections, the copy modules and `lib/changelog/entries.ts`, and need no `src/data/generated`.
+`web/tests/e2e/parity-pages.spec.ts`: `changelog` (All), `changelog-game` (`?show=game`), `legal-privacy`, `404` (signed out), `404-in` (Felsnap, `fixtures/home/me-34.json`) and `login` (signed out), at 1440 and 390. Mocks `web-changelog*.html`, `web-legal-privacy.html`, `web-404*.html`, `web-login.html` from `design/mocks/ws_pages.py` (spec `design/specs/2026-11-08-pages.md`). Test-time render: `node design/mocks/pages_facts.mjs <out>/pages-facts.json`, then `ws_pages.py` with `FS_PAGES_FACTS` and `FS_MOCK_OUT` (`renderPagesMocks` in `support/parity-mocks.ts`); the facts bundle the content collections, the copy modules and `lib/changelog/entries.ts`, and need no `src/data/generated`.
 
 ## The tier list states
 

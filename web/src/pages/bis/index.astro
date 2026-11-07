@@ -1,60 +1,127 @@
 ---
 // web/src/pages/bis/index.astro
-// /bis: the best-in-slot landing (design/specs/2026-10-10-bis-landing.md). It answers one
-// question, "what should I wear right now?", and gets a player from the front door to their own
-// spec's list at their own band in one click: the hero, the shared character header (the selected
-// character, how many of its slots it wears, one button; signed out, its one muted line), then
-// the band strip and the nine class cards in game order. No spec carries a figure here -- the
-// tier list owns rankings. Everything but the live header and the character's marks is
-// prerendered; the page script mounts those after the page settles and follows the header
-// selector in place.
+// /bis in the flat system (design/specs/2026-11-07-bis-landing.md, mocks web-bis-landing*): the
+// PageHeader (Best in slot, the levels and the Updated stamp, the lead, the signed-in answer: the
+// header selector's character, how many of its range's pieces it wears, one button to its own
+// spec at its own range), the finished server sim line when one waits, the ControlBar's level
+// range (the character's own range by default, owner 2026-11-07) with the tier list link, the
+// range's summary line, then the one Plate: every class as a group, its specs as slim link rows
+// that open at the selected range. Everything is prerendered; lib/bis/landing-client.ts follows
+// the bar and the header selector in place after paint.
 import Base from '../../layouts/Base.astro';
-import BisBandStrip from '../../components/bis/BisBandStrip.astro';
-import BisClassCard from '../../components/bis/BisClassCard.astro';
-import PageHead from '../../components/ui/PageHead.astro';
-import ActionLink from '../../components/ui/ActionLink.svelte';
-import BisLandingHeader from '../../components/bis/BisLandingHeader.svelte';
-import UpdatedStamp from '../../components/UpdatedStamp.astro';
+import ClassCrest from '../../components/ClassCrest.astro';
+import GuideSpecRow from '../../components/guides/GuideSpecRow.astro';
+import BisLandingAnswer from '../../components/bis/BisLandingAnswer.astro';
+import ControlBar from '../../components/ui/ControlBar.astro';
+import Page from '../../components/ui/Page.svelte';
+import PageHeader from '../../components/ui/PageHeader.svelte';
+import Plate from '../../components/ui/Plate.svelte';
+import Row from '../../components/ui/Row.svelte';
+import RowGrid from '../../components/ui/RowGrid.svelte';
 import activeBuild from '../../data/active-build.json';
 import { landingCopy } from '../../lib/bis/landing-copy';
 import { loadLandingData } from '../../lib/bis/landing-build';
+import { DEFAULT_LANDING_BAND, LANDING_BANDS, bandLabel } from '../../lib/bis/landing-bands';
+import { BAND_PARAM, SPEC_ROW_PREFIX } from '../../lib/bis/landing-client';
+import { specLinkHref } from '../../lib/bis/landing-links';
+import { dayMonth } from '../../lib/guides/guide-header';
+import { REGION } from '../../lib/ui/regions';
+import { LINK, type ClassSlug, type ControlGroup } from '../../lib/ui/primitives';
 
 const { cards, captions, raidLabel, updated, config } = loadLandingData(activeBuild.build);
 const configJson = JSON.stringify(config).replace(/</g, '\\u003c');
+const groups: ControlGroup[] = [
+  {
+    label: landingCopy.bandGroupLabel,
+    param: BAND_PARAM,
+    kind: 'segmented',
+    value: String(DEFAULT_LANDING_BAND),
+    options: LANDING_BANDS.map((band) => ({ value: String(band), label: bandLabel(band) })),
+  },
+];
+const summaries = captions.map((caption) => ({
+  band: caption.band,
+  text:
+    landingCopy.bandSummary(caption.text) +
+    (caption.band === LANDING_BANDS.at(-1) && raidLabel !== '' ? ` ${landingCopy.raidNote(raidLabel)}` : ''),
+}));
+const roleWord = (role: string): string | undefined =>
+  role === 'tank' || role === 'healer' ? landingCopy.roleWords[role] : undefined;
 ---
 
-<Base title={landingCopy.title} description={landingCopy.description} path="/bis">
-  <main
-    id="main"
-    tabindex="-1"
-    class="flex flex-col gap-[22px] px-[18px] pt-4 pb-10 md:gap-8 md:px-0 md:pt-7"
-    data-testid="bis-landing"
-  >
-    <PageHead eyebrow={landingCopy.eyebrow} title={landingCopy.h1} job={landingCopy.jobLine}>
-      <Fragment slot="meta">{updated && <UpdatedStamp date={updated} />}</Fragment>
-      <div slot="aside" class="tier">
-        <span class="tier-question">{landingCopy.tierQuestion}</span>{' '}
-        <ActionLink href={landingCopy.tierHref} data-testid="bis-index-tier-link">
-          {landingCopy.tierLink}
-        </ActionLink>
+<Base title={landingCopy.title} description={landingCopy.description} path="/bis" wide>
+  <main id="main" tabindex="-1" data-testid="bis-landing">
+    <Page layout="ledger">
+      <PageHeader slot="header" title={landingCopy.title} tone="strong" lead={landingCopy.lead}>
+        <Fragment slot="meta">
+          <span>{landingCopy.levels}</span>
+          {updated !== null && <span data-testid="bis-landing-updated">Updated {dayMonth(updated)}</span>}
+        </Fragment>
+        <BisLandingAnswer slot="answer" />
+      </PageHeader>
+      <Fragment slot="bar">
+        <div class="bis-finished" data-bis-finished data-testid="bis-finished"></div>
+        <ControlBar groups={groups} label={landingCopy.bandGroupLabel} testid="bis-landing-bar">
+          <span slot="end" class="bis-tier">
+            <span class="text-small text-muted">{landingCopy.tierQuestion}</span>
+            <a class={LINK} href={landingCopy.tierHref} data-testid="bis-index-tier-link">
+              {landingCopy.tierLink} ›
+            </a>
+          </span>
+        </ControlBar>
+      </Fragment>
+      <div class="bis-body">
+        <p
+          class="text-small text-muted bis-summary"
+          data-region={REGION.summary}
+          data-testid="bis-landing-summary"
+        >
+          {summaries.map((summary) => (
+            <span data-band-text={summary.band} hidden={summary.band !== DEFAULT_LANDING_BAND}>
+              {summary.text}
+            </span>
+          ))}{' '}
+          <a
+            class={LINK}
+            href="?band="
+            data-your-range
+            data-label={landingCopy.yourRange('{band}')}
+            hidden
+          ></a>
+        </p>
+        <div id="bis-classes">
+          <Plate label={landingCopy.plateLabel} testid="bis-class-grid">
+            <RowGrid cols={3}>
+              {cards.map((card) => (
+                <div class="bis-class" data-testid={`bis-class-${card.slug}`}>
+                  <Row title={card.name} titleTone={{ classSlug: card.slug as ClassSlug }}>
+                    <ClassCrest slot="lead" slug={card.slug} size={40} />
+                  </Row>
+                  <div class="bis-class-specs">
+                    {card.specs.map((spec) => (
+                      <GuideSpecRow
+                        specKey={`${spec.classSlug}/${spec.specSlug}`}
+                        name={spec.name}
+                        href={specLinkHref({
+                          classSlug: spec.classSlug,
+                          specSlug: spec.specSlug,
+                          band: DEFAULT_LANDING_BAND,
+                        })}
+                        icon={spec.iconSrc}
+                        iconSize={28}
+                        tag={roleWord(spec.role)}
+                        testidPrefix={SPEC_ROW_PREFIX}
+                        yoursLabel={landingCopy.yours}
+                      />
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </RowGrid>
+          </Plate>
+        </div>
       </div>
-    </PageHead>
-
-    <div data-bis-header data-testid="bis-header-slot">
-      <BisLandingHeader config={config} />
-    </div>
-    <BisBandStrip captions={captions} raidLabel={raidLabel} />
-    <div class="grid-wrap" id="bis-classes">
-      <h2 class="grid-heading heading-section" data-grid-heading data-testid="bis-grid-heading">
-        <span data-signed-out-only>{landingCopy.gridHeadingSignedOut}</span>
-        <span data-signed-in-only>{landingCopy.gridHeadingSignedIn}</span>
-      </h2>
-      <div class="grid" data-testid="bis-class-grid">
-        {cards.map((card) => (
-          <BisClassCard name={card.name} slug={card.slug} color={card.color} specs={card.specs} />
-        ))}
-      </div>
-    </div>
+    </Page>
   </main>
   <script is:inline type="application/json" id="bis-landing-config" set:html={configJson}></script>
   <script>
@@ -67,40 +134,47 @@ const configJson = JSON.stringify(config).replace(/</g, '\\u003c');
 </Base>
 
 <style>
-  .tier {
+  .bis-tier {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     column-gap: 8px;
-    font-size: 14px;
   }
-  .tier-question {
-    color: var(--color-muted);
+  .bis-summary {
+    margin: 0;
+    padding-bottom: 16px;
   }
-  .grid-wrap {
+  .bis-summary [hidden] {
+    display: none;
+  }
+  .bis-class {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    min-width: 0;
+    padding-bottom: 20px;
   }
-  .grid-heading {
-    margin: 0;
+  .bis-class-specs {
+    display: flex;
+    flex-direction: column;
   }
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 16px;
-    align-items: start;
+  .bis-finished {
+    --ch-foot-h: 44px;
+    --ch-foot-phone-h: 56px;
+    margin-bottom: 12px;
   }
-
-  @media (max-width: 1023px) {
-    .grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
+  /* Empty until the finished server sim line mounts; Base.astro's pre-paint script stamps
+     data-finished when the cached account has a finished run waiting, so the line's room is held
+     before it mounts and nothing below it moves. */
+  .bis-finished:empty {
+    display: none;
   }
-  @media (max-width: 599px) {
-    .grid {
-      grid-template-columns: minmax(0, 1fr);
-      gap: 12px;
+  :global(html[data-finished='1']) .bis-finished:empty {
+    display: block;
+    min-height: var(--ch-foot-phone-h);
+  }
+  @media (min-width: 600px) {
+    :global(html[data-finished='1']) .bis-finished:empty {
+      min-height: var(--ch-foot-h);
     }
   }
 </style>

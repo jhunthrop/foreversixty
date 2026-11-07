@@ -252,7 +252,8 @@ describe('Notice, Overlay', () => {
 
   it('Overlay draws the one overlay surface', () => {
     const body = html(Overlay, { kind: 'menu', children: text('<p>x</p>') });
-    expect(body).toContain('shadow-overlay');
+    expect(body).toContain('ui-overlay');
+    expect(body).toContain('data-kind="menu"');
     expect(body).toContain('role="menu"');
   });
 });

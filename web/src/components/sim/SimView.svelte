@@ -60,7 +60,6 @@
   import Skeleton from '../ui/Skeleton.svelte';
   import RunReport from './RunReport.svelte';
   import SavedSim from './SavedSim.svelte';
-  import SavedSimLoadFailed from './SavedSimLoadFailed.svelte';
   import SimAnswer from './SimAnswer.svelte';
   import SimCharacterHead from './SimCharacterHead.svelte';
   import SimFidelityCaption from './SimFidelityCaption.svelte';
@@ -69,7 +68,6 @@
   import SimRunBar from './SimRunBar.svelte';
   import SimSaveActions from './SimSaveActions.svelte';
   import SimToolTabs from './SimToolTabs.svelte';
-  import SimYourSims from './SimYourSims.svelte';
 
   let {
     simId = '',
@@ -186,6 +184,11 @@
   const moreSheetLazy = createLazyComponent(() => import('./MoreSettingsSheet.svelte'));
   const preRunLazy = createLazyComponent(() => import('./SimPreRun.svelte'));
   const specGridLazy = createLazyComponent(() => import('./SpecGrid.svelte'));
+  // The saved sim's failure panel ships as its own chunk: only a page whose load failed fetches it.
+  // Your sims (the rail's tail) is a signed-in reader's alone and fills from its own fetch: its chunk
+  // starts loading as soon as a session is known or hinted, beside that fetch.
+  const yourSimsLazy = createLazyComponent(() => import('./SimYourSims.svelte'));
+  const savedFailedLazy = createLazyComponent(() => import('./SavedSimLoadFailed.svelte'));
   $effect(() => {
     if (comparison !== null) compareViewLazy.load();
   });
@@ -432,6 +435,12 @@
     if (moreOpen) moreSheetLazy.load();
   });
   $effect(() => {
+    if (signedIn || sessionPending) yourSimsLazy.load();
+  });
+  $effect(() => {
+    if (savedSim.error !== null && savedSim.error !== simCopy.notFound) savedFailedLazy.load();
+  });
+  $effect(() => {
     if (bootstrap.view === 'specs') specGridLazy.load();
     else if (store.character !== null && store.result === null) preRunLazy.load();
   });
@@ -498,7 +507,7 @@
 
 <!-- The rail's tail: Your sims, a payer's server runs among them (spec 2026-11-06-sim). -->
 {#snippet yourSims()}
-  {#if signedIn}<SimYourSims
+  {#if signedIn && yourSimsLazy.current}<yourSimsLazy.current
       rows={historyRows}
       error={historyError}
       onretry={() => void loadHistory()}
@@ -529,7 +538,16 @@
         <LoadError message={savedSim.error} onRetry={() => savedSim.load(simId)} testid="sim-saved-error" />
       </div>
     {:else if savedSim.error !== null}
-      <SavedSimLoadFailed onRetry={() => savedSim.load(simId)} />
+      {#if savedFailedLazy.current}
+        <savedFailedLazy.current onRetry={() => savedSim.load(simId)} />
+      {:else if savedFailedLazy.error}
+        <!-- The panel's own chunk failed to load: the same retry, as the shared load error. -->
+        <div class="sim-pad">
+          <LoadError message={savedSim.error} onRetry={() => savedSim.load(simId)} testid="sim-saved-error" />
+        </div>
+      {:else}
+        <div class="sim-pad"><Skeleton lines={4} testid="sim-lazy-skeleton" /></div>
+      {/if}
     {:else}
       <!-- The same static string sim/[id].astro renders before hydration (skeleton.ts). -->
       <!-- eslint-disable-next-line svelte/no-at-html-tags -->

@@ -48,11 +48,16 @@ export function parseBandParam(raw: string | null | undefined): number | null {
 }
 
 /**
- * The selected band: the viewer's own choice (the URL, else the stored one) wins; otherwise the
- * character's band; otherwise the default. The character's band is undefined under level 20.
+ * The selected band (owner 2026-11-07: the default follows the character): the address bar's
+ * `?band=` wins, then the character's own band, then the viewer's last pick (storage, signed out
+ * or with a character under 20), then the first band. The character's band is undefined under 20.
  */
-export function selectedLandingBand(explicit: number | null, characterBand: number | undefined): number {
-  return explicit ?? characterBand ?? DEFAULT_LANDING_BAND;
+export function selectedLandingBand(
+  urlBand: number | null,
+  characterBand: number | undefined,
+  storedBand: number | null = null,
+): number {
+  return urlBand ?? characterBand ?? storedBand ?? DEFAULT_LANDING_BAND;
 }
 
 /** The two source kinds most picks come from, most common first (ties keep first-seen order). */

@@ -23,7 +23,7 @@ from pathlib import Path
 
 from mocklib import CLASS_COLOR
 from ws_prims import (Button, CharacterAnswer, Dated, DatedGroup, Disclosure, Field, FormRow, LaneBlock, Link, Notice, Page, PageHeader,
-                      Plate, Prose, ReadingSection, Row, RowGrid, RowsSlim, Section, Select, Skeleton, TabStrip, Tag, Toc, build_page,
+                      PageForm, Plate, Prose, ReadingSection, Row, RowGrid, RowsSlim, Section, Select, Skeleton, TabStrip, Tag, Toc, build_page,
                       control_bar, crest_img, seg, sel, write, REGION)
 
 HERE = Path(__file__).resolve().parent
@@ -208,6 +208,17 @@ def not_found_page(kind: str = 'out', suggest: bool = False, character: bool = F
     return build_page(NF['docTitle'], html, '', who, note)
 
 
+# ------------------------------------------------------------------------------------------------ sign in
+def login_page() -> str:
+    """/login signed out: the form page as /account signed out draws it (ws_premium account_page('out')), one Plate holding the
+    reason, the Battle.net button, what Battle.net shares, and the reserved status line. Copy: lib/account/signin-copy.ts."""
+    L = C['login']
+    inner = (f'<div class="lg-in"><p class="lede">{e(L["reason"])}</p>{Button(e(L["action"]), primary=True)}'
+             f'<p class="t-small">{e(L["privacy"])}</p><p class="lg-status" role="status"></p></div>')
+    html = PageHeader(e(L['title'])) + PageForm(Plate(inner, e(L['title']))) + PAGE_CSS
+    return build_page(L['title'], html, '', None, '/login mock, signed out. Copy: lib/account/signin-copy.ts, my-reports-copy.ts signInAction.')
+
+
 # ------------------------------------------------------------------------------------------------ every element state
 def states_page() -> str:
     blocks = []
@@ -264,6 +275,8 @@ main{padding-bottom:var(--section-gap)}
 .nf-specs{display:block;font-size:13px;line-height:18px;color:var(--muted)}.nf-spec{color:var(--muted)}.nf-spec:hover,.nf-spec.hov{color:var(--gold-hover)}
 .nf-cls.fv,.nf-spec.fv{outline:2px solid var(--gold);outline-offset:2px}
 .dated-a{margin:0}
+.lg-in{display:flex;flex-direction:column;align-items:flex-start;gap:12px;padding:16px 20px 20px}.lg-in .lede{font-size:15px;line-height:24px;max-width:72ch}
+.lg-status{min-height:20px;margin:0}
 .statesheet{display:grid;gap:40px}.st-b>h2{margin-bottom:12px}.st-row{display:flex;gap:24px;flex-wrap:wrap;align-items:flex-start}.st-col{flex-direction:column;max-width:420px}
 .st-entries{max-width:1248px}.st-toc{display:block;width:220px}.st-ans{max-width:520px}.st-rows{max-width:1248px}
 .seg a.hov{background:var(--hover);color:var(--strong)}.seg a.fv{outline:2px solid var(--gold);outline-offset:-2px}
@@ -294,6 +307,7 @@ PAGES = {
     'web-404-nochar': lambda: not_found_page('nochar'),
     'web-404-suggest': lambda: not_found_page(suggest=True),
     'web-404-character': lambda: not_found_page(character=True),
+    'web-login': login_page,
     'web-pages-states': states_page,
 }
 

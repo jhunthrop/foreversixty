@@ -82,11 +82,12 @@ export function paintGuideAnswer(root: HTMLElement, answer: GuideAnswer, retry: 
 
 const SPEC_ROW = 'guide-spec-row-';
 
-/** Marks the header character's spec row on /guides and a class landing (gold ground, bar,
- *  "Your spec"); every other row is unmarked. */
-export function markSpecRows(scope: ParentNode, key: string | undefined): void {
-  for (const row of scope.querySelectorAll<HTMLElement>(`[data-testid^="${SPEC_ROW}"]`)) {
-    const mine = row.dataset.testid === `${SPEC_ROW}${key ?? ''}`;
+/** Marks the header character's spec row on /guides, a class landing and /bis (gold ground, bar,
+ *  "Your spec" or "Yours"); every other row is unmarked. `prefix` is the rows' testid before the
+ *  `<class>/<spec>` key (components/guides/GuideSpecRow.astro). */
+export function markSpecRows(scope: ParentNode, key: string | undefined, prefix: string = SPEC_ROW): void {
+  for (const row of scope.querySelectorAll<HTMLElement>(`[data-testid^="${prefix}"]`)) {
+    const mine = key !== undefined && row.dataset.testid === `${prefix}${key}`;
     if (mine) row.setAttribute('aria-current', 'true');
     else row.removeAttribute('aria-current');
     const tag = row.querySelector<HTMLElement>('[data-your-spec]');

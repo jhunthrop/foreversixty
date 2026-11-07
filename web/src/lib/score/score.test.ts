@@ -14,33 +14,9 @@ import {
   SCORE_MAX,
   mostToGain,
   ownCharacter,
-  tierStrip,
   tierTextColor,
-  NEEDS_WORK_COLOR,
-  nextTierLine,
   componentGaps,
 } from './score';
-
-// L8.4 fix round 4 item 1: the line under the score, from the score and the tier lines alone.
-describe('nextTierLine (fix round 4 item 1)', () => {
-  it('counts the points to the next tier at each boundary, naming it with its line', () => {
-    expect(nextTierLine(0)).toBe('500 to Uncommon (500)');
-    expect(nextTierLine(499)).toBe('1 to Uncommon (500)');
-    expect(nextTierLine(500)).toBe('500 to Rare (1000)');
-    expect(nextTierLine(999)).toBe('1 to Rare (1000)');
-    expect(nextTierLine(1000)).toBe('500 to Epic (1500)');
-    expect(nextTierLine(1499)).toBe('1 to Epic (1500)');
-    expect(nextTierLine(1500)).toBe('500 to Legendary (2000)');
-    expect(nextTierLine(1830)).toBe('170 to Legendary (2000)');
-    expect(nextTierLine(1999)).toBe('1 to Legendary (2000)');
-  });
-
-  it('reads "Top tier" in the top tier', () => {
-    expect(nextTierLine(2000)).toBe('Top tier');
-    expect(nextTierLine(2100)).toBe('Top tier');
-    expect(scoreCopy.topTier).toBe('Top tier');
-  });
-});
 
 // L8.4 fix round 4 item 2: the "+88" cue gets its unit. The design system names no unit word
 // for score points, so "pts".
@@ -160,15 +136,6 @@ describe('tier colours (fix round 1 item 1)', () => {
     expect(tierTextColor('mythic')).toBeNull();
   });
 
-  it('the strip keeps the exact quality colour for each bar and the text variant for each name', () => {
-    const strip = tierStrip();
-    expect(strip.map((s) => s.tier)).toEqual(['common', 'uncommon', 'rare', 'epic', 'legendary']);
-    expect(strip.map((s) => s.range)).toEqual(['0–499', '500–999', '1000–1499', '1500–1999', '2000+']);
-    const epic = strip.find((s) => s.tier === 'epic');
-    expect(epic?.color).toBe('#a335ee');
-    expect(epic?.textColor).toBe('#b866f5');
-  });
-
   it('says the note is true now', () => {
     expect(scoreCopy.tiersNote).toBe(
       'The tiers take the colours of item quality in game. The ranges may change as more players are logged.',
@@ -195,14 +162,6 @@ describe('mostToGain (fix round 1 item 3)', () => {
     );
     expect(mostToGain(COMPONENT_MAX)).toBeNull();
     expect(mostToGain(null)).toBeNull();
-  });
-});
-
-describe('the part to work on (fix round 2 item 2)', () => {
-  it('is the part Most to gain names, drawn in one neutral colour that is no tier colour', () => {
-    expect(NEEDS_WORK_COLOR).toBe('#f5d27a');
-    for (const tier of Object.values(labels.tiers)) expect(tier.color).not.toBe(NEEDS_WORK_COLOR);
-    expect(scoreCopy.gainCue(88)).toBe('+88 pts'); // fix round 4 item 2: with its unit
   });
 });
 

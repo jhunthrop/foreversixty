@@ -11,8 +11,14 @@
   import type { LoadStatus } from '../../lib/character-selector/selector-state.svelte';
   import { battlenetStartUrl } from '../../lib/account/api';
   import type { AccountPanel } from '../../lib/character-selector/account-panel';
+  import { button } from '../../lib/ui/button';
+  import { FIELD_CONTROL, FIELD_FOCUS, fieldEdge } from '../../lib/ui/field';
   import SelectorPaste from './SelectorPaste.svelte';
   import SelectorRow from './SelectorRow.svelte';
+
+  /** The filter is the Field primitive's input; Try again the Button primitive's secondary. */
+  const FIELD = [FIELD_CONTROL, FIELD_FOCUS, fieldEdge(false)].join(' ');
+  const SECONDARY = button('secondary', 'md');
 
   const SWIPE_CLOSE_PX = 40;
   const SKELETON_ROWS = 3;
@@ -213,7 +219,7 @@
 
 {#snippet accountRows(panel: AccountPanel)}
   {@const words = selectorCopy.account}
-  <div class="csel-arows" data-testid="selector-account-rows">
+  <div class="csel-arows ui-overlay-rule-t" data-testid="selector-account-rows">
     {#if panel.profile !== null}
       <a class="csel-arow" href={panel.profile.href} data-testid="selector-row-profile">
         <span class="csel-tile is-small">{@render glyph(GLYPHS.person)}</span>
@@ -273,7 +279,8 @@
 
 <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 <div
-  class="csel-panel"
+  class="csel-panel ui-overlay"
+  data-kind={sheet ? 'sheet' : 'menu'}
   role="dialog"
   aria-label={selectorCopy.dialogLabel}
   aria-modal={sheet ? 'true' : undefined}
@@ -288,10 +295,10 @@
     onpointerup={onGrabUp}
     onpointercancel={() => (swipeStartY = null)}
   >
-    <span></span>
+    <span class="ui-overlay-grab"></span>
   </div>
   {#if account !== null}
-    <div class="csel-acct-head" data-testid="selector-account-head">
+    <div class="csel-acct-head ui-overlay-rule-b" data-testid="selector-account-head">
       <span class="csel-tile">{@render glyph(GLYPHS.person)}</span>
       <span class="csel-acct-id">
         <span class="csel-acct-name" data-testid="selector-account-name">{account.head.name}</span>
@@ -304,7 +311,7 @@
       {/if}
     </div>
   {/if}
-  <div class="csel-head" class:is-signout={signedOutEmpty}>
+  <div class="csel-head ui-overlay-rule-b" class:is-signout={signedOutEmpty}>
     <span class="csel-head-title">{heading}</span>
     {#if showManage}
       <a class="csel-manage" href={selectorCopy.manageHref} data-testid="selector-manage">
@@ -333,8 +340,9 @@
   {/if}
 
   {#if showFilter}
-    <div class="csel-filter">
+    <div class="csel-filter ui-overlay-rule-b">
       <input
+        class={FIELD}
         type="search"
         placeholder={selectorCopy.filterPlaceholder}
         aria-label={selectorCopy.filterLabel}
@@ -363,7 +371,7 @@
     <div class="csel-message" data-testid="selector-load-error">
       <div class="csel-message-title">{selectorCopy.loadErrorTitle}</div>
       <div class="csel-message-body">{selectorCopy.loadErrorBody}</div>
-      <button type="button" class="csel-button" style="margin-top:12px" onclick={ontryagain}>
+      <button type="button" class={`csel-button ${SECONDARY}`} style="margin-top:12px" onclick={ontryagain}>
         {selectorCopy.tryAgain}
       </button>
     </div>
@@ -398,18 +406,21 @@
           />
         {/each}
       </ul>
-      {#if scrolls && !scrolledToEnd}<div class="csel-fade" data-testid="selector-fade"></div>{/if}
+      {#if scrolls && !scrolledToEnd}<div
+          class="csel-fade ui-overlay-fade"
+          data-testid="selector-fade"
+        ></div>{/if}
     </div>
   {/if}
 
   {#if model.session === 'signed-out' && model.rows.length > 0}
-    <div class="csel-note">{selectorCopy.pastedNotSaved}</div>
+    <div class="csel-note ui-overlay-rule-t">{selectorCopy.pastedNotSaved}</div>
   {:else if model.session === 'expired'}
-    <div class="csel-note is-ember">{selectorCopy.sessionEnded}</div>
+    <div class="csel-note is-ember ui-overlay-rule-t">{selectorCopy.sessionEnded}</div>
   {/if}
 
   {#if restored}
-    <div class="csel-note csel-restored" data-testid="selector-restored">
+    <div class="csel-note csel-restored ui-overlay-rule-t" data-testid="selector-restored">
       <span>{selectorCopy.restoredLine}</span>
       <button
         type="button"
@@ -428,7 +439,12 @@
   {#if pasteOpen}
     <SelectorPaste {onpaste} oncancel={() => (pasteOpen = false)} />
   {:else}
-    <button type="button" class="csel-action" data-testid="selector-paste" onclick={() => (pasteOpen = true)}>
+    <button
+      type="button"
+      class="csel-action ui-overlay-rule-t"
+      data-testid="selector-paste"
+      onclick={() => (pasteOpen = true)}
+    >
       <span class="csel-action-icon">
         <svg
           width="18"
@@ -452,7 +468,7 @@
     </button>
   {/if}
   {#if offerAddon}
-    <a class="csel-action" href={selectorCopy.addonHref} data-testid="selector-addon">
+    <a class="csel-action ui-overlay-rule-t" href={selectorCopy.addonHref} data-testid="selector-addon">
       <span class="csel-action-icon">
         <svg
           width="18"

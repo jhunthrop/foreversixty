@@ -28,6 +28,19 @@ describe('normalizeMock', () => {
     expect(normalizeMock(`<li>${ICON}</li>`)).toBe(normalizeMock(`<li>${SOCKET}</li>`));
   });
 
+  it('reads a public image the same from any depth the mock was written at', () => {
+    const at = (prefix: string) =>
+      `<img class="site-panel-crest" src="${prefix}/icons/hd/crests/warrior.webp" srcset="${prefix}/a.webp 1x, ${prefix}/b.webp 2x">` +
+      `<link href="${prefix}/favicon.svg"><i style="background-image:url(${prefix}/icons/x.webp)"></i>`;
+    expect(normalizeMock(at('../../../web/public'))).toBe(normalizeMock(at('../../../../public')));
+  });
+
+  it('keeps a different public image apart', () => {
+    expect(normalizeMock('<img src="../../../web/public/icons/a.webp">')).not.toBe(
+      normalizeMock('<img src="../../../../public/icons/b.webp">'),
+    );
+  });
+
   it('keeps an icon of another quality apart', () => {
     expect(normalizeMock(ICON)).not.toBe(normalizeMock(SOCKET.replace('q4', 'q3')));
   });
