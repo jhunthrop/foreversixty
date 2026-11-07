@@ -3,9 +3,9 @@ member profile. Composed only from ws_prims primitives. Data shapes: api/cmd/see
 In / Late / Bench, loot candidates, readiness, attendance, raid report). Modules whose data source is not confirmed carry a Gap marker.
 """
 from ws_prims import *  # noqa: F403
-from ws_prims import (Page, PageHeader, Section, Plate, Rows, Row, Figures, Figure, Tag, Button, Link, TabStrip, Select, Notice, Segmented, Grid, Tally,
+from ws_prims import (Page, PageHeader, Section, Plate, Rows, Row, Figures, Figure, Meter, Tag, Button, Link, TabStrip, Select, Notice, Segmented, Grid, Tally,
                       Checklist, Votes, Gap, build_page, crest_img, icon, write, Emblem, RowGroup, Prose, control_bar, seg, BackLink, SignupRow, ButtonRow,
-                      SpellIcon, DisclosureButton, VoteButtons)
+                      SpellIcon, DisclosureButton, VoteButtons, Toggle, Entries, Inspector, Live, Split, RowsSlim, Disclosure, ItemRow)
 
 from datetime import datetime
 from zoneinfo import ZoneInfo
@@ -15,7 +15,7 @@ import guild_overview_fixtures as F
 from guild_data import ALLIANCE, GUILD, NOW, TABS, ZONE, C, R, STATE_TAG  # noqa: F401
 import guild_data as gd
 import guild_raid
-from ws_prims import ItemRow
+import guild_report_data as rd
 
 # Figures and rows under a Section head sit 12 px below its hairline, as the built Section body does (padding-top on a layout div).
 # Lane A's words (the built page's own): the raid's icon (lib/first-raids.ts), the sign-up role words by roster group
@@ -374,21 +374,50 @@ def loot_council():
     return build_page('Loot council', _view(hdr(tabs_active='Loot', actions=Button('Invite link', small=True)) + band_line(O.OFFICER) + bar + Page('split', main, rail, sticky_rail=True)), 'Guild', ('Dunmaro', 'hunter', 'Beast Mastery Hunter &middot; 60'))
 
 
+def _section_body(html):
+    """A Section body as the built Section draws it: 12 px under the head row."""
+    return f'<div style="padding-top:12px">{html}</div>'
+
+
 def raid_report():
-    pulls = Plate(Rows([Row('Onyxian Whelp pack', 'Trash &middot; 1:00', trail=Tag('Clear', 'kill'), link=False), Row('Onyxia, pull 1', '4:00 &middot; 6 deaths &middot; dead to Deep Breath ×3, Tail Sweep ×2, Flame Breath', trail=Tag('Wipe', 'wipe'), link=False),
-                        Row('Onyxian Whelp pack', 'Trash &middot; 0:55', trail=Tag('Clear', 'kill'), link=False), Row('Onyxia, pull 2', '3:45 &middot; 1 death &middot; Flame Breath', trail=Tag('Kill', 'kill'), link=False)]))
-    fig = Figures([('1', 'Kills', '', 'kill'), ('1', 'Wipes', '', 'wipe'), ('2', 'Attempts', '', ''), ('7', 'Deaths', '', '')])
-    parse = Rows([Row('Frostquill', 'Frost Mage &middot; 3:45', lead=crest_img('mage', 32), title_color=C['mage'], trail=Tag('96', 'gold') + Figure('812', '', 'DPS', size='sm'), link=False),
-                  Row('Doomwhisper', 'Affliction Warlock', lead=crest_img('warlock', 32), title_color=C['warlock'], trail=Tag('88', 'gold') + Figure('744', '', 'DPS', size='sm'), link=False),
-                  Row('Dunmaro', 'Beast Mastery Hunter', lead=crest_img('hunter', 32), title_color=C['hunter'], trail=Tag('61', 'muted') + Figure('618', '', 'DPS', size='sm'), link=False)], open_=True)
-    cons = Grid(['Pull 1', 'Pull 2'], [('Flask', '', [('none', '?'), ('none', '?')]), ('Food', '', [('none', '?'), ('none', '?')]), ('Potion', '', [('none', '?'), ('none', '?')])]) + f'<div style="padding-top:8px">{Gap("The log carries no buff events yet: needs a buff-event parser")}</div>'
-    att = Rows([Row('22 of 24 on the roster were there', 'Read from the log. Voidcall and Starnettle were not.', trail=Link('Fix attendance'), link=False)], open_=True)
-    lootr = Rows([Row('Ring of Binding to Doomwhisper', 'Awarded 8 Dec', lead=icon('inv_jewelry_ring_13', 36, 'q4'), link=False)], open_=True)
-    discord = Rows([Row('Olympus XXVII: Onyxia down', 'Onyxia killed on the second pull, 3:45. 22 of 24 there. Ring of Binding to Doomwhisper.', trail=Button('Post to Discord', small=True), link=False)], open_=True)
-    main = Section('Pulls', pulls, meta='4 fights') + Section('Parses', parse, meta='Best of the night') + Section('Consumables by pull', cons)
-    rail = Section('Attendance', att) + Section('Loot awarded', lootr) + Section('Discord summary', discord)
-    head = PageHeader('Onyxia, Tue 8 Dec', ALLIANCE, icon('inv_misc_head_dragon_01', 56, 'q5'), meta=["Onyxia's Lair", '1 boss &middot; 1 kill &middot; 2 trash packs &middot; 1 wipe'], answer=fig)
-    return build_page('Raid report', head + Page('split', main, rail, sticky_rail=True), 'Guild', ('Dunmaro', 'hunter', 'Beast Mastery Hunter &middot; 60'))
+    """The done raid as an officer reads it (state `report`), drawn from guild_report_data (the parity fixtures' own data)."""
+    raid = rd.raid_view()
+    rep, viewer = raid['report'], rd.row(rd.VIEWER)
+    shown = rd.default_pull(rep)
+    tone = {'kill': ('Kill', 'kill'), 'wipe': ('Wipe', 'wipe'), 'clear': ('Clear', 'muted')}
+    rows = []
+    for p in rep['pulls']:
+        is_open = p is shown
+        title = Toggle(rd.pull_title(p), is_open) if p['death_causes'] else rd.pull_title(p)
+        rows.append(Row(title, rd.pull_sub(p), trail=Tag(*tone[p['result']]), link=False, selected=is_open))
+    deaths = Entries([(f'<b style="color:{C[d["class"]]}">{d["name"]}</b> <span class="t-small">{rd.clock(d["at_ms"])} in</span>',
+                       f'<b>{d["killing_blow"]["ability"]}</b> from {d["killing_blow"]["source"]}, 4,210 (1,050 overkill)') for d in shown['death_causes']])
+    insp = Inspector(rd.pull_title(shown), [('Deaths', deaths)], rd.pull_title(shown), rd.pull_sub(shown))
+    pulls = Plate(Split(Rows(rows), insp), 'Every pull of the night')
+    output = Rows([Row(p['name'], f'DPS &middot; rated {p["rating"]} of 100', lead=crest_img(p['class'], 24), title_color=C[p['class']],
+                       trail=Figure(str(p['value']), '', 'DPS', size='sm'), link=False, selected=p['name'] == rd.VIEWER, slim=True) for p in rep['parses']], open_=True)
+    unknown = ''.join(f'<p class="t-small" style="margin-top:4px">{rd.pull_title(b)}: the log carried no character sheet, so nothing can be said.</p>' for b in rep['consumables']['by_pull'])
+    match = raid['match']
+    logged = (f'<p class="t-small">Logged as a raid night. {Link("Open the night")}</p><div><p class="t-small">Log uploaded '
+              f'{rd.local(match["uploaded_at"]):%a} {rd.local(match["uploaded_at"]).day} Dec, {rd.hour(rd.local(match["uploaded_at"]))} by {match["uploaded_by_name"]}'
+              f' &middot; matched by time</p>{Button("Not this log", small=True, act=True)}</div>')
+    fix = RowsSlim([Row(a['name'], 'Present' if a['outcome'] == 'present' else 'Out', lead=crest_img(a['class'], 24), title_color=C[a['class']],
+                        trail=Select('Fix'), link=False, selected=a['own']) for a in raid['attendance']])
+    att = logged + f'<p>{rd.attendance_summary(raid["night"])}</p>' + Disclosure('Fix attendance', fix)
+    lootr = ''.join(ItemRow(a['item_name'], a['quality'], icon(a['icon'], 32, f'q{a["quality"]}'), f'{g["boss"]} &middot; to {a["name"]}')
+                    for g in rep['loot'] for a in g['awards'])
+    lines = rd.discord_lines(raid)
+    discord = (''.join(f'<p class="t-small">{"<b>" + x + "</b>" if i == 0 else x}</p>' for i, x in enumerate(lines))
+               + f'<div style="display:flex;gap:12px;padding-top:12px">{Button("Post to Discord", primary=True, small=True, act=True)}{Button("Copy for Discord", small=True, act=True)}{Live()}</div>')
+    main = Section('Pulls', pulls, meta=f'{len(rep["pulls"])} fights') + Section('DPS and HPS', _section_body(output), meta='Boss kills') + Section('Consumables by pull', _section_body(unknown))
+    rail = Section('Attendance', att) + Section('Loot awarded', _section_body(lootr)) + Section('Discord summary', _section_body(discord))
+    h = rep['headline']
+    fig = Figures([(str(h['kills']), 'Kills', '', 'kill'), (str(h['wipes']), 'Wipes', '', 'wipe'), (str(h['attempts']), 'Attempts', '', ''), (str(h['deaths']), 'Deaths', '', '')])
+    # One raid page: the back link and the guild tabs as the planner's (raid_planner).
+    head = BackLink(f'&lsaquo; {GUILD} &middot; Raids') + PageHeader(raid['title'], ALLIANCE, meta=[Tag('Done', 'muted'), rd.when_line(raid)], answer=fig,
+                                                                  tabs=TabStrip(TABS, 'Raids'))
+    return build_page('Raid report', _view(head + Page('split', main, rail, sticky_rail=True)), 'Guild',
+                      (rd.VIEWER, viewer[1], f'{viewer[2]} {viewer[1].title()} &middot; 60'))
 
 
 # ---- Recruitment, applications and the member profile (lane D). Drawn from guild_data (the values guild_fixtures.recruit_fixtures

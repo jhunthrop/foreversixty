@@ -60,7 +60,7 @@
   const posted = $derived(report.posted_at);
 </script>
 
-<Section title={copy.discord.head} id="raid-discord" testid="raid-discord">
+<Section title={copy.discord.head} anchor="raid-discord" testid="raid-discord">
   <div class="text-muted flex flex-col gap-0.5 text-[13px] leading-[18px]" data-testid="raid-discord-preview">
     {#each lines as line, index (index)}
       <p class={index === 0 ? 'text-strong font-bold' : ''}>{line}</p>

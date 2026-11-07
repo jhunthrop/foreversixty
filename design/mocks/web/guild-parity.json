@@ -26,6 +26,11 @@
       "mock": "web-guild-raid.html"
     },
     {
+      "id": "report",
+      "path": "/guild/us/pvp/olympus-xxvii/raids/40",
+      "mock": "web-guild-report.html"
+    },
+    {
       "id": "recruit",
       "path": "/guild/us/pvp/olympus-xxvii/recruit",
       "mock": "web-guild-recruit.html"

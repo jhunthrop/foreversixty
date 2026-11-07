@@ -17,7 +17,7 @@
   const icon = $derived(lootIconOf(award) ?? undefined);
 </script>
 
-<li data-testid="raid-loot-award">
+<div data-testid="raid-loot-award">
   <ItemRow
     item={{ id: award.item_id, name: award.item_name, quality: award.quality, icon }}
     {build}
@@ -25,4 +25,4 @@
     source={copy.loot.to(boss, award.name)}
     testid="raid-loot-row"
   />
-</li>
+</div>

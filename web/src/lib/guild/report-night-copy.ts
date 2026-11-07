@@ -10,6 +10,7 @@ export const reportNightCopy = {
   pulls: {
     head: 'Pulls',
     caption: 'Every pull of the night',
+    count: (n: number): string => `${n} ${n === 1 ? 'fight' : 'fights'}`,
     trash: 'Trash',
     showDeaths: 'Show the deaths',
     notRead: 'These deaths are not read from the log yet.',
@@ -40,6 +41,7 @@ export const reportNightCopy = {
   },
   attendance: {
     head: 'Attendance',
+    fix: 'Fix attendance',
     fixLabel: (name: string): string => `Fix ${name}'s attendance`,
     fixPlaceholder: 'Fix',
     backToLog: 'Back to the log',

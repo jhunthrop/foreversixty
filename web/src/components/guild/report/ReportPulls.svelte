@@ -14,6 +14,7 @@
   import Inspector from '../../ui/Inspector.svelte';
   import Plate from '../../ui/Plate.svelte';
   import Row from '../../ui/Row.svelte';
+  import Section from '../../ui/Section.svelte';
   import Tag from '../../ui/Tag.svelte';
   import PullDeaths from './PullDeaths.svelte';
 
@@ -71,54 +72,55 @@
   {/if}
 {/snippet}
 
-<h2 class="sr-only">{copy.pulls.head}</h2>
-<Plate label={copy.pulls.caption} testid="raid-pulls">
-  {#if rows.length === 0}
-    <p class="text-muted p-4 text-[14px]" data-testid="raid-pulls-empty">{copy.pulls.none}</p>
-  {:else}
-    <div class="flex min-w-0">
-      <ul class="min-w-0 flex-1">
-        {#each rows as row (row.key)}
-          {@const isOpen = open?.key === row.key}
-          <li data-testid="raid-pull-row" data-result={row.pull.result}>
-            <Row title={row.title} sub={row.sub} selected={isOpen}>
-              {#snippet titleContent()}
-                {#if row.expandable}
-                  <button
-                    type="button"
-                    class="focus-visible:outline-gold text-left after:absolute after:inset-0 focus-visible:outline-2"
-                    aria-expanded={isOpen}
-                    aria-controls={isOpen ? panelId(row) : undefined}
-                    onclick={() => toggle(row)}
-                    data-testid="raid-pull-open">{row.title}</button
-                  >
-                {:else}{row.title}{/if}
-              {/snippet}
-              {#snippet trail()}<Tag tone={row.tag.tone} testid="raid-pull-result">{row.tag.text}</Tag
-                >{/snippet}
-            </Row>
-            {#if isOpen && !side.current}
-              <Inspector
-                id={panelId(row)}
-                selection={row.title}
-                placement="inline"
-                sections={[{ label: copy.figures.deaths, body: deaths }]}
-                testid="raid-pull-inspector"
-              />
-            {/if}
-          </li>
-        {/each}
-      </ul>
-      {#if open !== null && side.current}
-        <Inspector
-          id={INSPECTOR_ID}
-          selection={open.title}
-          placement="side"
-          {head}
-          sections={[{ label: copy.figures.deaths, body: deaths }]}
-          testid="raid-pull-inspector"
-        />
-      {/if}
-    </div>
-  {/if}
-</Plate>
+<Section title={copy.pulls.head} meta={copy.pulls.count(rows.length)} anchor="report" testid="raid-report">
+  <Plate label={copy.pulls.caption} testid="raid-pulls">
+    {#if rows.length === 0}
+      <p class="text-muted p-4 text-[14px]" data-testid="raid-pulls-empty">{copy.pulls.none}</p>
+    {:else}
+      <div class="flex min-w-0">
+        <div class="min-w-0 flex-1">
+          {#each rows as row (row.key)}
+            {@const isOpen = open?.key === row.key}
+            <div data-testid="raid-pull-row" data-result={row.pull.result}>
+              <Row title={row.title} sub={row.sub} selected={isOpen}>
+                {#snippet titleContent()}
+                  {#if row.expandable}
+                    <button
+                      type="button"
+                      class="focus-visible:outline-gold text-left after:absolute after:inset-0 focus-visible:outline-2"
+                      aria-expanded={isOpen}
+                      aria-controls={isOpen ? panelId(row) : undefined}
+                      onclick={() => toggle(row)}
+                      data-testid="raid-pull-open">{row.title}</button
+                    >
+                  {:else}{row.title}{/if}
+                {/snippet}
+                {#snippet trail()}<Tag tone={row.tag.tone} testid="raid-pull-result">{row.tag.text}</Tag
+                  >{/snippet}
+              </Row>
+              {#if isOpen && !side.current}
+                <Inspector
+                  id={panelId(row)}
+                  selection={row.title}
+                  placement="inline"
+                  sections={[{ label: copy.figures.deaths, body: deaths }]}
+                  testid="raid-pull-inspector"
+                />
+              {/if}
+            </div>
+          {/each}
+        </div>
+        {#if open !== null && side.current}
+          <Inspector
+            id={INSPECTOR_ID}
+            selection={open.title}
+            placement="side"
+            {head}
+            sections={[{ label: copy.figures.deaths, body: deaths }]}
+            testid="raid-pull-inspector"
+          />
+        {/if}
+      </div>
+    {/if}
+  </Plate>
+</Section>

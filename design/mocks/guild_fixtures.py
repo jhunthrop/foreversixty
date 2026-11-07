@@ -40,6 +40,10 @@ def write_raid_planner() -> list[Path]:
 # One writer per page group; each returns the files it wrote.
 WRITERS: list = [write_raid_planner]
 
+# The raid night report (state `report`): guild_report_data.py.
+from guild_report_data import write_report_fixtures  # noqa: E402
+WRITERS.append(lambda: write_report_fixtures(write))
+
 
 def overview_writer() -> list[Path]:
     """Lane A: the member and officer Overviews and the Loot tab (guild_overview_fixtures.py)."""

@@ -6,6 +6,7 @@
      While a fix saves the select shows it; a refusal keeps the row and says so under it. A member
      reads the sentence only: their own night is in Your night. -->
 <script lang="ts">
+  import type { Snippet } from 'svelte';
   import type {
     AttendanceOverrideStatus,
     RaidAttendanceRow,
@@ -17,11 +18,13 @@
   import { reportNightCopy as copy } from '../../../lib/guild/report-night-copy';
   import { classTone, LINK } from '../../../lib/ui/primitives';
   import ClassCrestRing from '../../character/ClassCrestRing.svelte';
+  import Disclosure from '../../ui/Disclosure.svelte';
   import Row from '../../ui/Row.svelte';
   import Section from '../../ui/Section.svelte';
   import Select from '../../ui/Select.svelte';
 
   let {
+    log,
     night,
     rows,
     officer,
@@ -31,6 +34,8 @@
     lines = {},
     onFix,
   }: {
+    /** The log the night was read from (the match line), above the summary. */
+    log?: Snippet;
     night: RaidNight;
     rows: readonly RaidAttendanceRow[];
     officer: boolean;
@@ -45,20 +50,33 @@
   } = $props();
 
   const models = $derived(officer ? fixRows(rows) : []);
+  /** The fix rows open on their own once a fix exists or a refusal needs reading; else the
+   *  officer opens them. */
+  const needsOpen = $derived(
+    models.some((model) => model.auto !== null) ||
+      Object.keys(lines).length > 0 ||
+      Object.keys(fixing).length > 0,
+  );
+  let openedByHand = $state(false);
   const options = fixOptions();
   const isStatus = (value: string): value is AttendanceOverrideStatus =>
     (FIX_STATUSES as readonly string[]).includes(value);
 </script>
 
-<Section title={copy.attendance.head} id="attendance" testid="raid-attendance">
+<Section title={copy.attendance.head} anchor="attendance" testid="raid-attendance">
+  {#if log}<div class="mb-2">{@render log()}</div>{/if}
   <p class="text-text text-[14px]" data-testid="raid-attendance-summary">{attendanceSummary(night)}</p>
   {#if models.length > 0}
-    <ul class="mt-2">
+    <Disclosure
+      summary={copy.attendance.fix}
+      bind:open={() => openedByHand || needsOpen, (open) => (openedByHand = open)}
+      testid="raid-attendance-fix-open"
+    >
       {#each models as model (model.row.character_key)}
         {@const key = model.row.character_key}
         {@const saving = key in fixing}
         {@const shown = saving ? (fixing[key] ?? '') : model.value}
-        <li aria-busy={saving} data-testid="raid-attendance-row" data-fixed={model.auto !== null}>
+        <div aria-busy={saving} data-testid="raid-attendance-row" data-fixed={model.auto !== null}>
           <Row
             title={model.row.name}
             titleTone={classTone(model.row.class)}
@@ -107,8 +125,8 @@
               />
             {/snippet}
           </Row>
-        </li>
+        </div>
       {/each}
-    </ul>
+    </Disclosure>
   {/if}
 </Section>

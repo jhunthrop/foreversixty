@@ -210,6 +210,11 @@ test.describe('Not this log (§3.1 clear confirm)', () => {
   });
 });
 
+/** The officer's fix rows sit behind Fix attendance (mock web-guild-report). */
+async function openFixRows(page: Page): Promise<void> {
+  await page.getByTestId('raid-attendance-fix-open').locator('summary').click();
+}
+
 test.describe('the report and attendance, officer (web layout spec 2026-11-05 §7.2)', () => {
   const fix = (page: Page, name: string) => page.getByTestId(`raid-attendance-fix-${keyOf(name)}`);
   const attendanceRowOf = (page: Page, name: string) =>
@@ -226,6 +231,7 @@ test.describe('the report and attendance, officer (web layout spec 2026-11-05 §
     page,
   }) => {
     const stub = await openRaid(page, officerDone({ fixDelayMs: FIX_DELAY_MS }));
+    await openFixRows(page);
     const summary = page.getByTestId('raid-attendance-summary');
     await expect(summary).toHaveText('13 of 14 came · 1 late · 1 not in the log · 2 more joined');
     await choose(fix(page, 'Hexbramble'), 'bench');
@@ -250,6 +256,7 @@ test.describe('the report and attendance, officer (web layout spec 2026-11-05 §
   test('a refused fix keeps the row and says so under it', async ({ page }) => {
     const stub = await openRaid(page, officerDone());
     stub.refuseNext = { fix: { code: 'internal', status: 500 } };
+    await openFixRows(page);
     await choose(fix(page, 'Hexbramble'), 'present');
     await expect(attendanceRowOf(page, 'Hexbramble').getByTestId('raid-attendance-line')).toHaveText(
       attendanceCopy.errors.rows,
@@ -261,6 +268,7 @@ test.describe('the report and attendance, officer (web layout spec 2026-11-05 §
 
   test('every raider has a row, the likely fixes first, the alt read as Came as', async ({ page }) => {
     await openRaid(page, officerDone());
+    await openFixRows(page);
     const rows = page.getByTestId('raid-attendance-row');
     await expect(rows).toHaveCount(allAttendance().length);
     await expect(rows.first()).toContainText('Hexbramble');
@@ -441,6 +449,7 @@ test('officer-read-only: match, clear, the fix and Post disabled; Copy live', as
   const stub = await openRaid(page, officerDone({ officerTools: false, discordConnected: true }));
   await expect(page.getByTestId('raid-not-this-log')).toBeDisabled();
   await expect(page.getByTestId('raid-report-post')).toBeDisabled();
+  await openFixRows(page);
   const fixes = page.locator('select[data-testid^="raid-attendance-fix-"]');
   await expect(fixes).toHaveCount(allAttendance().length);
   // A done raid draws no officer row; the gate sentence shows once, above the report.
