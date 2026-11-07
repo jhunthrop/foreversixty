@@ -1,7 +1,7 @@
 <!-- web/src/components/sim/tools/BulkRunBar.svelte -->
 <!-- The run line every tool page shares (mock design/mocks/ws_simtools.py): the quick sim's own
      ControlBar (SimRunBar: fight, length, targets, buffs, precision, More settings and the one
-     primary), with the tool's precision choices and words, then the standing lines under it: the
+     primary; a payer's "Run on our servers" is in More settings, as on /sim), with the tool's precision choices and words, then the standing lines under it: the
      combination count, what the precision costs, the cap and anything that blocks a run. The cap
      notice never trims the list: it says what would exceed the cap and by how much, and offers the
      lane that would allow it. More settings is the quick sim's sheet (target, execute, buffs, the
@@ -17,7 +17,6 @@
   import type { PrimaryAction } from '../../../lib/sim/answer';
   import type { PrecisionId } from '../../../lib/sim/precision';
   import { LINK } from '../../../lib/ui/primitives';
-  import Button from '../../ui/Button.svelte';
   import MoreSettingsSheet from '../MoreSettingsSheet.svelte';
   import SimRunBar from '../SimRunBar.svelte';
 
@@ -132,18 +131,7 @@
   onprecision={(value) => store.setPrecision(value as Precision)}
   onprimary={() => (running ? store.stop() : void store.run())}
   onmore={() => (moreOpen = true)}
->
-  {#snippet extra()}
-    {#if store.premium}
-      <Button
-        size="sm"
-        disabled={running || store.serverCapNotice !== null || notSimulated}
-        onclick={() => void store.runOnServer()}
-        testid="sim-server-run">{bulkCopy.capPremium}</Button
-      >
-    {/if}
-  {/snippet}
-</SimRunBar>
+/>
 
 <div class="flex flex-col gap-1 px-[var(--page-inset)] pt-3" data-testid="sim-run-notes">
   <p class="m-0 flex flex-wrap items-baseline gap-x-3 text-[14px] leading-5">
@@ -206,7 +194,12 @@
     classSlug={store.character.class_slug}
     names={store.simBuffs}
     request={store.requestPreview}
-    disabled={running}
+    disabled={running || store.serverCapNotice !== null}
+    premium={store.premium}
+    onserver={() => {
+      moreOpen = false;
+      void store.runOnServer();
+    }}
     onclose={() => (moreOpen = false)}
     onchange={(next) => store.setSettings(next)}
     onvalidate={(json) => store.validateRequest(json)}

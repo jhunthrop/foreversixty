@@ -17,7 +17,6 @@
   import { TOOL_SKELETONS } from '../../../lib/sim/bulk-skeleton';
   import { createBulkStore, type SimTool } from '../../../lib/sim/bulk-store.svelte';
   import type { Origin } from '../../../lib/sim/candidates';
-  import { bulkCopy } from '../../../lib/sim/copy';
   import Page from '../../ui/Page.svelte';
   import ToolCharacterLine from './ToolCharacterLine.svelte';
   import { syncTabHrefs } from '../../../lib/sim/tabs';
@@ -253,9 +252,5 @@
     {:else}
       {@render lazyFallback(viewLazy)}
     {/if}
-  {:else if store.character === null}
-    <Page layout="ledger">
-      <p class="text-small text-muted m-0" data-testid="sim-tools-empty">{bulkCopy.needCharacter}</p>
-    </Page>
   {/if}
 </div>

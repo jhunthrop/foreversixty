@@ -193,19 +193,16 @@ export async function openSimState(page: Page, state: SimParityState): Promise<v
 export type ToolParityState = 'gear' | 'gear-empty' | 'talents' | 'drops' | 'weights' | 'specs';
 
 /**
- * The mock's character on a tool page: the same Fury set the quick-sim states load (the landing
- * rail's link, Troll, named Thandrel, a linked addon export), handed to the tool by `?code=` as a
- * tab carries it.
+ * The tool mocks' character (design/mocks/ws_simtools.py `CODE`): a level 60 Orc Fury Warrior
+ * entered by hand, wearing Lionheart Helm and Arcanite Reaper, handed to the tool by `?code=` as
+ * a tab carries it. Two worn items keep every candidate the mock draws readable from the build's
+ * item file alone.
  */
+export const TOOL_CHARACTER = (build: string): string =>
+  `FS1:${build}:warrior:orc:0/5530515/0:head=12640,main_hand=12784|level=60`;
+
 async function openToolWithFury(page: Page, tool: string): Promise<void> {
-  await page.goto('/sim');
-  const href = await page
-    .locator('[data-region="section-sim-a-best-in-slot-set"] a', { hasText: 'Fury' })
-    .getAttribute('href');
-  expect(href).not.toBeNull();
-  const landing = new URL(href ?? '', 'http://localhost');
-  const code = (landing.searchParams.get('code') ?? '').replace(':night-elf:', ':troll:');
-  const params = new URLSearchParams({ code: `${code}|who=${MOCK_CHARACTER}:Forever`, source: 'addon' });
+  const params = new URLSearchParams({ code: TOOL_CHARACTER(BUILD) });
   await page.goto(`/sim/${tool}?${params.toString()}`);
   await expect(page.getByTestId('sim-character')).toBeVisible({ timeout: 15_000 });
   await expect(page.getByTestId('sim-run-bulk')).toBeVisible();
@@ -225,6 +222,8 @@ export async function openToolState(page: Page, state: ToolParityState): Promise
     await expect(page.getByTestId('sim-addon-input')).toBeVisible({ timeout: 15_000 });
     return;
   }
+  // Signed out, the saved-builds read is out of reach: the talent builds say so and go on.
+  await page.route('**/v1/builds?*', (route) => route.abort('connectionrefused'));
   await openToolWithFury(page, state);
   const ready: Record<Exclude<ToolParityState, 'specs' | 'gear-empty'>, string> = {
     gear: 'sim-slot-grid',

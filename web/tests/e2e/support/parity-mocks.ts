@@ -63,6 +63,13 @@ export function renderSimMocks(): string {
   return dir;
 }
 
+/** The simulator tool mocks (ws_simtools.py) from this checkout's data/builds. Returns the folder. */
+export function renderSimToolsMocks(): string {
+  const dir = freshDir('simtools');
+  run(PYTHON, [path.join(GENERATORS, 'ws_simtools.py')], { FS_DATA_ROOT: REPO_ROOT, FS_MOCK_OUT: dir });
+  return dir;
+}
+
 /**
  * The logs, reports list, rankings and ratings mocks (ws_logs.py) from the files the spec serves
  * (support/logs-parity.ts): logs_facts.mjs bundles the copy modules and the rankings stubs, and

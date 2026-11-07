@@ -156,8 +156,8 @@ describe('professionSplit', () => {
 });
 
 describe('DEFAULT_OFF_KINDS', () => {
-  it('is quests and nothing else', () => {
-    expect([...DEFAULT_OFF_KINDS]).toEqual(['quest']);
+  it('is quests and the single-mob kinds', () => {
+    expect([...DEFAULT_OFF_KINDS]).toEqual(['quest', 'world', 'world_drop', 'zone', 'vendor']);
   });
 });
 

@@ -7,6 +7,7 @@ import path from 'node:path';
 import type { Page } from '@playwright/test';
 import { apiUnreachable, expect, test } from './support/test';
 import { bulkCopy } from '../../src/lib/sim/copy';
+import { openMoreSettings } from './support/sim-page';
 
 // Reads this spec does not answer go unanswered, as the API out of reach (support/test.ts).
 test.beforeEach(({ page }) => apiUnreachable(page, '**/v1/builds?*'));
@@ -208,7 +209,9 @@ test('the picker groups every source kind and leaves quests off', async ({ page 
 test('an unreleased source is hidden until show-upcoming, and then says it has no date', async ({ page }) => {
   await loadDrops(page);
   // The fixture's world boss carries `opens: "later"` (contract 10.4), which never opens
-  // whatever the clock says -- so this is a date-independent assertion.
+  // whatever the clock says -- so this is a date-independent assertion. World mobs are off
+  // until asked for (loot.ts DEFAULT_OFF_KINDS), so the kind goes on first.
+  await page.getByTestId('sim-kind-world').check();
   await expect(page.getByTestId('sim-source-world:azuregos')).toHaveCount(0);
   await page.getByTestId('sim-upcoming').check();
   await expect(page.getByTestId('sim-source-world:azuregos')).toBeVisible();
@@ -257,6 +260,7 @@ test('the flat list only lists genuine upgrades, and the boss card names the tru
   await loadDrops(page);
   await page.getByTestId('sim-upcoming').check();
   await page.getByTestId('sim-source-raid:molten-core:11502').check();
+  await openMoreSettings(page);
   await expect(page.getByTestId('sim-server-run')).toBeVisible();
   await page.getByTestId('sim-server-run').click();
   await expect(page.getByTestId('sim-drops-flat')).toBeVisible({ timeout: 10_000 });
@@ -291,6 +295,7 @@ test('a drop pins into Top Gear, carrying its origin in the URL', async ({ page 
   await loadDrops(page, `${FURY}|who=Simfury:Realm`);
   await page.getByTestId('sim-upcoming').check();
   await page.getByTestId('sim-source-raid:molten-core:11502').check();
+  await openMoreSettings(page);
   await expect(page.getByTestId('sim-server-run')).toBeVisible();
   await page.getByTestId('sim-server-run').click();
   await expect(page.getByTestId('sim-drops-pin-finger1:19325')).toBeVisible({ timeout: 10_000 });

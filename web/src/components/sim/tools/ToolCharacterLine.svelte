@@ -79,7 +79,7 @@
     <span class="text-muted" data-testid="paperdoll-source">{source}</span>
     <span class="ml-auto flex items-center gap-4">
       <a
-        class="{LINK} text-[14px]"
+        class="{LINK} text-[14px] [@media(pointer:coarse)]:-my-3 [@media(pointer:coarse)]:inline-block [@media(pointer:coarse)]:py-3"
         href={plannerHrefFor(character, talentIndex)}
         data-testid="sim-open-planner">{simCopy.openInPlanner} ›</a
       >

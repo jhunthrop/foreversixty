@@ -76,14 +76,17 @@
     {@const key = candidateKey(row)}
     <Row title={row.item.name} open wrapTrail testid={testId(row)}>
       {#snippet lead()}
-        <input
-          type="checkbox"
-          class="accent-gold h-5 w-5"
-          aria-label={row.item.name}
-          checked={row.checked}
-          disabled={locked || !row.known}
-          onchange={() => ontoggle(key)}
-        />
+        <!-- The label is the 44 px hit target around the 20 px mark. -->
+        <label class="-mx-3 inline-flex min-h-11 min-w-11 items-center justify-center">
+          <input
+            type="checkbox"
+            class="accent-gold h-5 w-5"
+            aria-label={row.item.name}
+            checked={row.checked}
+            disabled={locked || !row.known}
+            onchange={() => ontoggle(key)}
+          />
+        </label>
         <ItemIcon icon={row.item.icon} quality={row.item.quality} build={treeVersion} size={32} />
       {/snippet}
       {#snippet titleContent()}

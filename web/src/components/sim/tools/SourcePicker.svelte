@@ -21,6 +21,7 @@
   } from '../../../lib/sim/loot';
   import { PHASE_LATER, openDateLabel, phaseLabel, type PhaseRow } from '../../../lib/sim/phase';
   import type { Item } from '../../../lib/planner/types';
+  import Disclosure from '../../ui/Disclosure.svelte';
   import Button from '../../ui/Button.svelte';
   import ToolSection from './ToolSection.svelte';
 
@@ -74,6 +75,29 @@
     return date === '' ? bulkCopy.notOpenYet : bulkCopy.opensOn(phaseLabel(source.opens), date);
   }
 </script>
+
+{#snippet bosses(source: LootSource)}
+  {#each source.bosses ?? [] as boss (boss.id)}
+    <label class="text-text flex min-h-11 items-center gap-2 pl-7 text-[13px]">
+      <input
+        type="checkbox"
+        class="accent-gold h-5 w-5"
+        data-testid={`sim-source-${boss.id}`}
+        checked={isPicked(source.id, boss.id)}
+        onchange={() => ontoggle(source.id, boss.id)}
+      />
+      <!-- Contract 10.4: "a boss with no name in either database is emitted
+                       with an empty name". dps D35: the id is not a name a player should
+                       read, so an unresolved boss is named by its zone instead
+                       (`loot.ts`'s `bossName`) -- the one thing both databases agree on,
+                       without inventing a kind ("Chest") neither one states. -->
+      <span class="flex-1">{bossName(source, boss)}</span>
+      <span class="text-muted text-[13px] tabular-nums">
+        {triedCount(boss.items, items, known)}
+      </span>
+    </label>
+  {/each}
+{/snippet}
 
 <ToolSection title={bulkCopy.sourcesTitle} testid="sim-source-picker" {plate}>
   <div class="flex flex-wrap items-center gap-x-5">
@@ -166,26 +190,20 @@
               {#if gateLabel(source) !== ''}
                 <p class="text-muted pl-7 text-[13px]">{gateLabel(source)}</p>
               {/if}
-              {#each source.bosses ?? [] as boss (boss.id)}
-                <label class="text-text flex min-h-11 items-center gap-2 pl-7 text-[13px]">
-                  <input
-                    type="checkbox"
-                    class="accent-gold h-5 w-5"
-                    data-testid={`sim-source-${boss.id}`}
-                    checked={isPicked(source.id, boss.id)}
-                    onchange={() => ontoggle(source.id, boss.id)}
-                  />
-                  <!-- Contract 10.4: "a boss with no name in either database is emitted
-                       with an empty name". dps D35: the id is not a name a player should
-                       read, so an unresolved boss is named by its zone instead
-                       (`loot.ts`'s `bossName`) -- the one thing both databases agree on,
-                       without inventing a kind ("Chest") neither one states. -->
-                  <span class="flex-1">{bossName(source, boss)}</span>
-                  <span class="text-muted text-[13px] tabular-nums">
-                    {triedCount(boss.items, items, known)}
-                  </span>
-                </label>
-              {/each}
+              {#if group.kind === 'dungeon' && (source.bosses ?? []).length > 0}
+                <!-- A dungeon's bosses fold under its row: a real build lists 900 of them. -->
+                <div class="pl-7">
+                  <Disclosure
+                    summary={bulkCopy.sourcesBosses}
+                    meta={String((source.bosses ?? []).length)}
+                    testid={`sim-source-bosses-${source.id}`}
+                  >
+                    {@render bosses(source)}
+                  </Disclosure>
+                </div>
+              {:else}
+                {@render bosses(source)}
+              {/if}
               {#if (source.trash ?? []).length > 0}
                 <p class="text-muted pl-7 text-[13px]">{bulkCopy.sourcesTrash}</p>
               {/if}

@@ -10,6 +10,7 @@
 import { mount } from 'svelte';
 import SimView from './components/sim/SimView.svelte';
 import { scheduleBoot } from './lib/islands/boot';
+import { shellReservations } from './lib/islands/reservations';
 import { simIdFrom } from './lib/sim/url';
 import type { SimResult } from './lib/sim/types';
 import type { BisSetClass } from './lib/sim/bis-set-rail';
@@ -59,11 +60,6 @@ export function readInitialNotes(element: HTMLElement): PrerenderedNote[] | unde
     console.error('sim island: data-sim-notes is not valid JSON', error);
     return undefined;
   }
-}
-
-/** The mount element's min-height classes, at every breakpoint. */
-export function shellReservations(element: HTMLElement): string[] {
-  return [...element.classList].filter((name) => /(^|:)min-h-\[/.test(name));
 }
 
 function boot(): void {

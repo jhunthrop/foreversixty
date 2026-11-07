@@ -334,6 +334,7 @@
       {itemsStatus}
       gearKnown={kind !== 'weights' && gearKnown}
       readonly
+      plated={false}
       {plannerHref}
       {talentPoints}
       onchange={() => {}}

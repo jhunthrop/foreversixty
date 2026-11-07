@@ -667,7 +667,7 @@ export const simCopy = {
   specsUnsimulatedHeading: 'Healers and tanks',
   /** Exact body text task-2-brief.md specifies, verbatim, for every card in that second
    *  group -- no fidelity pill, no engine stamp, no "Not yet" badge link. */
-  specsUnsimulatedBody: 'Not simulated yet — damage specs first; healers and tanks come later',
+  specsUnsimulatedBody: 'Not simulated yet: damage specs first; healers and tanks come later',
   /**
    * Fix round 1, Finding B: the `<Base description="...">` strings are what a healer or
    * tank reads in a search result or a link preview -- the first place the DPS-only claim
@@ -1037,6 +1037,8 @@ export const bulkCopy = {
     'Nothing has recorded this character’s professions, so every profession is listed.',
   sourcesTrash: 'Trash and chests',
   sourcesWholeRaid: 'Every boss',
+  /** A dungeon's folded boss list (mock design/mocks/ws_simtools.py). */
+  sourcesBosses: 'Bosses',
   showUpcoming: 'Show unreleased content',
   opensOn: (label: string, date: string): string => `${label}, ${date}`,
   notOpenYet: 'Not open yet',
@@ -1168,7 +1170,6 @@ export const bulkCopy = {
    * string for the error it swallows, and that string lives here like every other one.
    */
   phasesFailed: 'The phase table could not be read.',
-  needCharacter: 'Load a character first.',
   needAddonForBags: 'Paste your addon export to see your bags and bank here.',
   /**
    * `addSearchItem`'s miss path (fix round 2, the player-visible half of fix round 1's
