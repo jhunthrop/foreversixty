@@ -6,61 +6,65 @@ Forever unifies melee, ranged and spell hit into one stat. An item's crit rating
 
 ## Alliance
 
-### Band 20 (night-elf, 5420000000000000-0000000000000000-000000000000000000)
+### Band 20 (night-elf, 5320000100000000-0000000000000000-000000000000000000)
 
-Set DPS (verified): 90.4. Weights run: 4.7s. Verify run: 7.7s. 268 eligible items had no known source.
+Set DPS (verified): 91.0. Weights run: 5.8s. Verify run: 11.1s. 268 eligible items had no known source.
 
-Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): ranged_attack_power=1.000 ± 0.001, agility=3.145 ± 0.010, crit=0.657 ± 0.011 per rating point (14 rating = 1%, 9.192 per %), hit=0.965 ± 0.032 per rating point (10 rating = 1%, 9.653 per %), melee_haste=4.430 ± 0.457, intellect=1.617 ± 0.021, spell_power=not significant (0.000 ± 0.000)
+Race sweep: night-elf 91.0 ± 0.1, high-order-skyborne 89.9 ± 0.1, human 89.7 ± 0.1, dwarf 87.0 ± 0.1 (dps); the guide race night-elf is best.
+
+Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): ranged_attack_power=1.000 ± 0.001, agility=3.150 ± 0.010, crit=0.661 ± 0.011 per rating point (14 rating = 1%, 9.255 per %), hit=0.971 ± 0.031 per rating point (10 rating = 1%, 9.709 per %), melee_haste=4.425 ± 0.455, intellect=1.614 ± 0.021, spell_power=not significant (0.000 ± 0.000)
 
 | Slot | Item | Source | Score (ranged_attack_power points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Brawler's Leather Hood (252504) | Leatherworking [crafted] | 25.2 ranged_attack_power points (2.52 DPS) | yes | Trapper's Leather Hood (252505, -1.02 DPS, sim-verified) [crafted]; Shadow Goggles (4373, -1.71 DPS) [crafted] |
+| head | Brawler's Leather Hood (252504) | Leatherworking [crafted] | 25.2 ranged_attack_power points (2.52 DPS) | yes | Trapper's Leather Hood (252505, -1.02 DPS, sim-verified) [crafted]; Shadow Goggles (4373, -1.72 DPS) [crafted] |
 | neck | Sentinel's Medallion (20444) | Silverwing Sentinels [rep] | 18.9 ranged_attack_power points (1.89 DPS) | yes | Erudite's Amulet (277204, -1.24 DPS, sim-verified) [quest] |
-| shoulder | Serpent's Shoulders (5404) | Wailing Caverns: Lady Anacondra [dungeon] | 15.7 ranged_attack_power points (1.57 DPS) | yes | Magician's Mantle (12998, -0.12 DPS) [world_drop]; Reinforced Woolen Shoulders (4315, -0.93 DPS) [crafted] |
+| shoulder | Serpent's Shoulders (5404) | Wailing Caverns: Lady Anacondra [dungeon] | 15.8 ranged_attack_power points (1.58 DPS) | yes | Magician's Mantle (12998, -0.12 DPS) [world_drop]; Reinforced Woolen Shoulders (4315, -0.93 DPS) [crafted] |
 | back | Glowing Lizardscale Cloak (6449) | Wailing Caverns: Skum [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Cape of the Brotherhood (5193, -0.32 DPS, sim-verified) [dungeon]; Sentry Cloak (2059, -0.63 DPS) [world_drop]; Bristlebark Cape (14571, -0.63 DPS) [world_drop] |
-| chest | Tunic of Westfall (2041) | The Defias Brotherhood [quest] | 34.6 ranged_attack_power points (3.46 DPS) | yes | Trapper's Leather Armor (252491, -0.29 DPS, sim-verified) [crafted]; Brawler's Leather Armor (252490, -1.26 DPS) [crafted]; Mystic's Wrap (14369, -1.38 DPS) [world_drop] |
-| wrist | Forest Leather Bracers (3202) | World drop [world_drop] | 15.7 ranged_attack_power points (1.57 DPS) | yes | Wolf Bracers (4794, -0.32 DPS, sim-verified) [vendor]; Bristlebark Bindings (14569, -0.63 DPS) [world_drop]; Bravo's Armbands (270015, -0.63 DPS) [quest] |
-| hands | Gloves of the Fang (10413) (or Serpent Gloves (5970)) | Wailing Caverns: Druid of the Fang [dungeon] | 18.9 ranged_attack_power points (1.89 DPS) | yes | Serpent Gloves (5970, +0.00 DPS) [dungeon]; Trapper's Leather Gloves (252495, -0.14 DPS) [crafted]; Riding Gloves (1304, -0.46 DPS) [quest] |
+| chest | Tunic of Westfall (2041) | The Defias Brotherhood [quest] | 34.7 ranged_attack_power points (3.47 DPS) | yes | Trapper's Leather Armor (252491, -0.29 DPS, sim-verified) [crafted]; Brawler's Leather Armor (252490, -1.26 DPS) [crafted]; Mystic's Wrap (14369, -1.39 DPS) [world_drop] |
+| wrist | Forest Leather Bracers (3202) | World drop [world_drop] | 15.8 ranged_attack_power points (1.58 DPS) | yes | Wolf Bracers (4794, -0.32 DPS, sim-verified) [vendor]; Bristlebark Bindings (14569, -0.63 DPS) [world_drop]; Bravo's Armbands (270015, -0.63 DPS) [quest] |
+| hands | Gloves of the Fang (10413) (or Serpent Gloves (5970)) | Wailing Caverns: Druid of the Fang [dungeon] | 18.9 ranged_attack_power points (1.89 DPS) | yes | Serpent Gloves (5970, +0.00 DPS) [dungeon]; Trapper's Leather Gloves (252495, -0.15 DPS) [crafted]; Riding Gloves (1304, -0.46 DPS) [quest] |
 | waist | Blackened Defias Belt (10403) | The Deadmines: Captain Greenskin [dungeon] | 18.0 ranged_attack_power points (1.80 DPS) | yes | Trapper's Leather Belt (252429, -0.06 DPS) [crafted]; Deviate Scale Belt (6468, -0.23 DPS) [crafted]; Keller's Girdle (2911, -0.51 DPS) [world_drop] |
 | legs | Leggings of the Fang (10410) | Wailing Caverns: Lord Cobrahn [dungeon] | sim-verified (+1.0 DPS vs the runner-up, not corroborated against the finished set) | yes | Brawler's Leather Pants (252500, +0.00 DPS) [crafted]; Duty Bound Leggings (279868, -0.30 DPS) [quest]; Trapper's Leather Pants (252501, -0.96 DPS, sim-verified) [crafted] |
-| feet | Feet of the Lynx (1121) | World drop [world_drop] | 25.2 ranged_attack_power points (2.52 DPS) | yes | Trapper's Leather Boots (252440, -0.25 DPS, sim-verified) [crafted]; Blackened Defias Boots (10402, -0.63 DPS) [dungeon]; Footpads of the Fang (10411, -0.63 DPS) [dungeon] |
-| finger1 | Lavishly Jeweled Ring (1156) | The Deadmines: Gilnid [dungeon] | 16.0 ranged_attack_power points (1.60 DPS) | yes | Volcanic Rock Ring (12053, -1.11 DPS) [world_drop]; The 1 Ring (8350, -1.12 DPS) [world]; Minor Channeling Ring (1449, -1.28 DPS) [quest] |
-| finger2 | Protector's Band (20439) | Silverwing Sentinels [rep] | 12.6 ranged_attack_power points (1.26 DPS) | yes | Volcanic Rock Ring (12053, -0.75 DPS, sim-verified) [world_drop]; The 1 Ring (8350, -0.78 DPS) [world]; Minor Channeling Ring (1449, -0.93 DPS) [quest] |
+| feet | Feet of the Lynx (1121) | World drop [world_drop] | 25.2 ranged_attack_power points (2.52 DPS) | yes | Trapper's Leather Boots (252440, -0.26 DPS, sim-verified) [crafted]; Blackened Defias Boots (10402, -0.63 DPS) [dungeon]; Footpads of the Fang (10411, -0.63 DPS) [dungeon] |
+| finger1 | Lavishly Jeweled Ring (1156) | The Deadmines: Gilnid [dungeon] | 16.0 ranged_attack_power points (1.60 DPS) | yes | Volcanic Rock Ring (12053, -1.12 DPS) [world_drop]; The 1 Ring (8350, -1.12 DPS) [world]; Minor Channeling Ring (1449, -1.28 DPS) [quest] |
+| finger2 | Protector's Band (20439) | Silverwing Sentinels [rep] | 12.6 ranged_attack_power points (1.26 DPS) | yes | Volcanic Rock Ring (12053, -0.75 DPS, sim-verified) [world_drop]; The 1 Ring (8350, -0.78 DPS) [world]; Minor Channeling Ring (1449, -0.94 DPS) [quest] |
 | trinket1 | - | - |  |  |  |
 | trinket2 | - | - |  |  |  |
-| main_hand | Impaling Harpoon (5200) | The Deadmines: Captain Greenskin [dungeon] | 36.4 ranged_attack_power points (3.64 DPS) | yes | Bronze Dory (250603, -0.43 DPS, sim-verified) [crafted]; Lupine Axe (1220, -1.75 DPS) [world]; Piercing Axe (6094, -1.75 DPS) [quest] |
+| main_hand | Impaling Harpoon (5200) | The Deadmines: Captain Greenskin [dungeon] | 36.4 ranged_attack_power points (3.65 DPS) | yes | Bronze Dory (250603, -0.43 DPS, sim-verified) [crafted]; Lupine Axe (1220, -1.75 DPS) [world]; Piercing Axe (6094, -1.75 DPS) [quest] |
 | off_hand | - | - |  |  |  |
-| ranged | Ranger Bow (3021) | World drop [world_drop] | 179.4 ranged_attack_power points (17.95 DPS) | yes | Venomstrike (6469, -0.31 DPS, sim-verified) [dungeon]; Lil Timmy's Peashooter (13136, -1.34 DPS) [world_drop]; Lovingly Crafted Boomstick (4372, -4.33 DPS) [crafted] |
+| ranged | Ranger Bow (3021) | World drop [world_drop] | 179.4 ranged_attack_power points (17.97 DPS) | yes | Venomstrike (6469, -0.31 DPS, sim-verified) [dungeon]; Lil Timmy's Peashooter (13136, -1.34 DPS) [world_drop]; Lovingly Crafted Boomstick (4372, -4.34 DPS) [crafted] |
 
 **New at 20:** head: Brawler's Leather Hood; neck: Sentinel's Medallion; shoulder: Serpent's Shoulders; back: Glowing Lizardscale Cloak; chest: Tunic of Westfall; wrist: Forest Leather Bracers; hands: Gloves of the Fang; waist: Blackened Defias Belt; legs: Leggings of the Fang; feet: Feet of the Lynx; finger1: Lavishly Jeweled Ring; finger2: Protector's Band; main_hand: Impaling Harpoon; ranged: Ranger Bow
 
 No-known-source sample (15 of 268, see the JSON for more): 1189 Overseer's Ring; 2314 Toughened Leather Armor; 2664 Spinner Fang; 2952 Fine Light Hide Jerkin; 3038 Archer's Longbow; 3222 Wicked Dagger; 3738 Brewing Rod; 4642 Star of Xil'yeh; 4763 Blackwood Recurve Bow; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 5255 Quilboar Tomahawk; 5748 Centaur Longbow; 5821 Darkstalker Boots
 
-### Band 30 (night-elf, 5420001504000000-0000000000000000-000000000000000000)
+### Band 30 (night-elf, 5320000505000100-0000000000000000-000000000000000000)
 
-Set DPS (verified): 139.4. Weights run: 4.8s. Verify run: 13.3s. 463 eligible items had no known source.
+Set DPS (verified): 146.2. Weights run: 5.6s. Verify run: 16.8s. 463 eligible items had no known source.
 
-Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): ranged_attack_power=1.000 ± 0.001, agility=3.044 ± 0.010, crit=0.883 ± 0.014 per rating point (14 rating = 1%, 12.367 per %), hit=1.442 ± 0.041 per rating point (10 rating = 1%, 14.421 per %), melee_haste=not significant (-0.877 ± 0.594), intellect=0.429 ± 0.016, spell_power=not significant (0.000 ± 0.000)
+Race sweep: night-elf 146.2 ± 0.1, human 144.8 ± 0.1, high-order-skyborne 143.6 ± 0.1, dwarf 142.9 ± 0.1 (dps); the guide race night-elf is best.
+
+Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): ranged_attack_power=1.000 ± 0.001, agility=3.043 ± 0.010, crit=0.882 ± 0.013 per rating point (14 rating = 1%, 12.354 per %), hit=1.379 ± 0.041 per rating point (10 rating = 1%, 13.789 per %), melee_haste=not significant (-1.653 ± 0.621), intellect=not significant (0.000 ± 0.000), spell_power=not significant (0.000 ± 0.000)
 
 | Slot | Item | Source | Score (ranged_attack_power points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Brawler's Leather Helm (252512) | Leatherworking [crafted] | 30.4 ranged_attack_power points (3.37 DPS) | yes | Brawler's Leather Hood (252504, -0.63 DPS, sim-verified) [crafted]; Humbert's Helm (4724, -1.01 DPS) [world]; Resilient Cap (14401, -2.18 DPS) [world_drop] |
-| neck | Sentinel's Medallion (19541) | Silverwing Sentinels [rep] | 24.4 ranged_attack_power points (2.70 DPS) | yes | Archmagister's Faceted Pendant (273049, -1.08 DPS) [world]; Kaleidoscope Chain (13084, -1.16 DPS) [world_drop]; Erudite's Amulet (277204, -2.02 DPS) [quest] |
-| shoulder | Forest Tracker Epaulets (2278) | World drop [world_drop] | 33.5 ranged_attack_power points (3.71 DPS) | yes | Mantle of Thieves (2264, -0.34 DPS) [dungeon]; Dark Leather Shoulders (4252, -1.35 DPS) [crafted]; Insignia Mantle (4721, -1.35 DPS) [world_drop] |
-| back | Tigerstrike Mantle (13108) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Hawkeye's Cloak (14593, -0.34 DPS) [world_drop]; Glowing Lizardscale Cloak (6449, -0.67 DPS) [dungeon]; Cape of the Brotherhood (5193, -1.01 DPS) [dungeon] |
-| chest | Garb of Florid Feathers (273026) | Excavation Site: Wetlands: Shadetooth [dungeon] | sim-verified (+1.7 DPS vs the runner-up, not corroborated against the finished set) | yes | Tunic of Westfall (2041, -0.04 DPS) [quest]; Green Leather Armor (4255, -0.67 DPS) [crafted]; Dusky Leather Armor (7374, -1.66 DPS, sim-verified) [crafted] |
-| wrist | Hawkeye's Bracers (14590) (or Insignia Bracers (6410)) | World drop [world_drop] | 18.3 ranged_attack_power points (2.02 DPS) | yes | Insignia Bracers (6410, +0.00 DPS) [world_drop]; Madwolf Bracers (897, -0.34 DPS) [world]; Forest Leather Bracers (3202, -0.34 DPS) [world_drop] |
-| hands | Cartilage Shapers (273054) | Lyn the Ignored [world] | 27.4 ranged_attack_power points (3.04 DPS) | yes | Pilferer's Gloves (7358, -0.85 DPS, sim-verified) [crafted]; Insignia Gloves (6408, -1.01 DPS) [world_drop]; Gloves of the Fang (10413, -1.01 DPS) [dungeon] |
-| waist | Stalker's Leather Belt (252521) | Leatherworking [crafted] | 30.0 ranged_attack_power points (3.32 DPS) | yes | Highlander's Chain Girdle (20090, -0.66 DPS) [rep]; Highlander's Leather Girdle (20117, -0.66 DPS) [rep]; Skulker's Leather Belt (252520, -1.36 DPS, sim-verified) [crafted] |
-| legs | Troll's Bane Leggings (13114) | World drop [world_drop] | sim-verified (+0.2 DPS vs the runner-up, not corroborated against the finished set) | yes | Petrolspill Leggings (9509, -0.23 DPS, sim-verified) [dungeon]; Dusky Leather Leggings (7373, -0.34 DPS) [crafted]; Ferine Leggings (6690, -1.27 DPS) [dungeon] |
-| feet | Insignia Boots (4055) (or Feet of the Lynx (1121)) | World drop [world_drop] | 24.4 ranged_attack_power points (2.70 DPS) | yes | Feet of the Lynx (1121, +0.00 DPS) [world_drop]; Blackened Defias Boots (10402, -0.67 DPS) [dungeon]; Footpads of the Fang (10411, -0.67 DPS) [dungeon] |
-| finger1 | Ring of Precision (1491) (or Protector's Band (19517)) | Blackfathom Deeps [dungeon] | 18.3 ranged_attack_power points (2.02 DPS) | yes | Monkey Ring (6748, -0.34 DPS) [quest]; Defias Renegade Ring (1076, -0.67 DPS) [dungeon]; Seal of Wrynn (2933, -0.82 DPS) [quest] |
-| finger2 | Protector's Band (19517) | Silverwing Sentinels [rep] | 18.3 ranged_attack_power points (2.02 DPS) | yes | Monkey Ring (6748, -0.34 DPS) [quest]; Defias Renegade Ring (1076, -0.67 DPS) [dungeon]; Seal of Wrynn (2933, -0.82 DPS) [quest] |
+| head | Brawler's Leather Helm (252512) | Leatherworking [crafted] | 30.4 ranged_attack_power points (3.38 DPS) | yes | Brawler's Leather Hood (252504, -0.68 DPS) [crafted]; Humbert's Helm (4724, -1.02 DPS) [world]; Resilient Cap (14401, -2.71 DPS) [world_drop] |
+| neck | Sentinel's Medallion (19541) | Silverwing Sentinels [rep] | 24.3 ranged_attack_power points (2.71 DPS) | yes | Kaleidoscope Chain (13084, -1.35 DPS) [world_drop]; Archmagister's Faceted Pendant (273049, -1.37 DPS) [world]; Erudite's Amulet (277204, -2.03 DPS) [quest] |
+| shoulder | Forest Tracker Epaulets (2278) | World drop [world_drop] | 33.5 ranged_attack_power points (3.72 DPS) | yes | Mantle of Thieves (2264, -0.34 DPS) [dungeon]; Dark Leather Shoulders (4252, -1.35 DPS) [crafted]; Insignia Mantle (4721, -1.35 DPS) [world_drop] |
+| back | Tigerstrike Mantle (13108) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Hawkeye's Cloak (14593, -0.34 DPS) [world_drop]; Glowing Lizardscale Cloak (6449, -0.68 DPS) [dungeon]; Cape of the Brotherhood (5193, -1.02 DPS) [dungeon] |
+| chest | Garb of Florid Feathers (273026) | Excavation Site: Wetlands: Shadetooth [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Tunic of Westfall (2041, +0.00 DPS) [quest]; Dusky Leather Armor (7374, +0.00 DPS) [crafted]; Green Leather Armor (4255, -0.34 DPS) [crafted] |
+| wrist | Hawkeye's Bracers (14590) (or Insignia Bracers (6410)) | World drop [world_drop] | 18.3 ranged_attack_power points (2.03 DPS) | yes | Insignia Bracers (6410, +0.00 DPS) [world_drop]; Madwolf Bracers (897, -0.34 DPS) [world]; Forest Leather Bracers (3202, -0.34 DPS) [world_drop] |
+| hands | Cartilage Shapers (273054) | Lyn the Ignored [world] | 27.4 ranged_attack_power points (3.05 DPS) | yes | Pilferer's Gloves (7358, -0.34 DPS) [crafted]; Insignia Gloves (6408, -1.02 DPS) [world_drop]; Gloves of the Fang (10413, -1.02 DPS) [dungeon] |
+| waist | Stalker's Leather Belt (252521) | Leatherworking [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Skulker's Leather Belt (252520, +0.00 DPS) [crafted]; Highlander's Chain Girdle (20090, -0.38 DPS) [rep]; Highlander's Leather Girdle (20117, -0.38 DPS) [rep] |
+| legs | Troll's Bane Leggings (13114) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Petrolspill Leggings (9509, +0.00 DPS) [dungeon]; Dusky Leather Leggings (7373, -0.34 DPS) [crafted]; Insignia Leggings (4054, -1.69 DPS) [world_drop] |
+| feet | Insignia Boots (4055) (or Feet of the Lynx (1121)) | World drop [world_drop] | 24.3 ranged_attack_power points (2.71 DPS) | yes | Feet of the Lynx (1121, +0.00 DPS) [world_drop]; Blackened Defias Boots (10402, -0.68 DPS) [dungeon]; Footpads of the Fang (10411, -0.68 DPS) [dungeon] |
+| finger1 | Ring of Precision (1491) (or Protector's Band (19517)) | Blackfathom Deeps [dungeon] | 18.3 ranged_attack_power points (2.03 DPS) | yes | Monkey Ring (6748, -0.34 DPS) [quest]; Defias Renegade Ring (1076, -0.68 DPS) [dungeon]; Thunderbrow Ring (13097, -1.02 DPS) [world_drop] |
+| finger2 | Protector's Band (19517) | Silverwing Sentinels [rep] | 18.3 ranged_attack_power points (2.03 DPS) | yes | Monkey Ring (6748, -0.34 DPS) [quest]; Defias Renegade Ring (1076, -0.68 DPS) [dungeon]; Thunderbrow Ring (13097, -1.02 DPS) [world_drop] |
 | trinket1 | - | - |  |  |  |
 | trinket2 | - | - |  |  |  |
-| main_hand | Felbough Arm (273037) | Fel Ancient [world] | sim-decided (no score - a real sim tournament chose this pick) | yes | Claw of the Shadowmancer (2912, +0.00 DPS) [world_drop]; Armor Piercer (6679, -1.26 DPS) [dungeon]; Kam's Walking Stick (2280, -1.46 DPS) [dungeon] |
+| main_hand | Felbough Arm (273037) | Fel Ancient [world] | sim-decided (no score - a real sim tournament chose this pick) | yes | Armor Piercer (6679, -1.20 DPS) [dungeon]; Kam's Walking Stick (2280, -1.53 DPS) [dungeon]; Bronze Dory (250603, -1.54 DPS) [crafted] |
 | off_hand | - | - |  |  |  |
-| ranged | Golemsight Long Gun (273029) | Excavation Site: Wetlands: Relic Guardian [dungeon] | 250.7 ranged_attack_power points (27.77 DPS) | yes | Ironweaver (13137, -0.66 DPS, sim-verified) [world_drop]; Crystalpine Stinger (13037, -1.58 DPS) [world_drop]; Chesterfall Musket (7729, -2.15 DPS) [dungeon] |
+| ranged | Golemsight Long Gun (273029) | Excavation Site: Wetlands: Relic Guardian [dungeon] | 250.7 ranged_attack_power points (27.88 DPS) | yes | Ironweaver (13137, -0.93 DPS) [world_drop]; Crystalpine Stinger (13037, -1.78 DPS) [world_drop]; Chesterfall Musket (7729, -2.15 DPS) [dungeon] |
 
 **New at 30:** head: Brawler's Leather Helm; neck: Sentinel's Medallion; shoulder: Forest Tracker Epaulets; back: Tigerstrike Mantle; chest: Garb of Florid Feathers; wrist: Hawkeye's Bracers; hands: Cartilage Shapers; waist: Stalker's Leather Belt; legs: Troll's Bane Leggings; feet: Insignia Boots; finger1: Ring of Precision; finger2: Protector's Band; main_hand: Felbough Arm; ranged: Golemsight Long Gun
 
@@ -68,7 +72,9 @@ No-known-source sample (15 of 463, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 40 (night-elf, 5420001505001251-0000000000000000-000000000000000000)
 
-Set DPS (verified): 227.2. Weights run: 5.2s. Verify run: 15.3s. 718 eligible items had no known source.
+Set DPS (verified): 227.2. Weights run: 6.3s. Verify run: 21.1s. 718 eligible items had no known source.
+
+Race sweep: night-elf 227.2 ± 0.1, human 225.3 ± 0.1, high-order-skyborne 225.2 ± 0.1, dwarf 223.2 ± 0.1 (dps); the guide race night-elf is best.
 
 1 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -100,7 +106,9 @@ No-known-source sample (15 of 718, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 50 (night-elf, 5420001505001251-0052300000000000-000000000000000000)
 
-Set DPS (verified): 325.7. Weights run: 5.3s. Verify run: 21.8s. 900 eligible items had no known source.
+Set DPS (verified): 325.7. Weights run: 6.6s. Verify run: 29.9s. 900 eligible items had no known source.
+
+Race sweep: night-elf 325.7 ± 0.2, human 323.5 ± 0.2, high-order-skyborne 322.4 ± 0.2, dwarf 321.1 ± 0.2 (dps); the guide race night-elf is best.
 
 Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): ranged_attack_power=1.000 ± 0.001, agility=3.110 ± 0.032, crit=1.759 ± 0.057 per rating point (14 rating = 1%, 24.630 per %), hit=2.433 ± 0.108 per rating point (10 rating = 1%, 24.334 per %), melee_haste=7.554 ± 1.160, intellect=2.911 ± 0.044, spell_power=not significant (0.000 ± 0.000)
 
@@ -130,7 +138,9 @@ No-known-source sample (15 of 900, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 60 (night-elf, 5420001505001251-0052451001200000-000000000000000000)
 
-Set DPS (verified): 478.4. Weights run: 4.9s. Verify run: 57.3s. 2028 eligible items had no known source.
+Set DPS (verified): 478.4. Weights run: 6.3s. Verify run: 73.4s. 2028 eligible items had no known source.
+
+Race sweep: night-elf 478.4 ± 0.3, human 477.3 ± 0.3, high-order-skyborne 473.3 ± 0.3, dwarf 471.8 ± 0.3 (dps); the guide race night-elf is best.
 
 2 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -162,7 +172,9 @@ No-known-source sample (15 of 2028, see the JSON for more): 913 Huge Ogre Sword;
 
 ### Band 60, raid preset (night-elf, 5420001505001251-0052350001400000-000000000000000000)
 
-Set DPS (verified): 958.8. Weights run: 5.1s. Verify run: 55.6s. 2028 eligible items had no known source.
+Set DPS (verified): 958.8. Weights run: 6.6s. Verify run: 70.1s. 2028 eligible items had no known source.
+
+Race sweep: night-elf 958.8 ± 0.5, high-order-skyborne 956.3 ± 0.5, human 954.2 ± 0.5, dwarf 950.9 ± 0.5 (dps); the guide race night-elf is best.
 
 4 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -194,61 +206,65 @@ No-known-source sample (15 of 2028, see the JSON for more): 913 Huge Ogre Sword;
 
 ## Horde
 
-### Band 20 (orc, 5420000000000000-0000000000000000-000000000000000000)
+### Band 20 (orc, 5320000100000000-0000000000000000-000000000000000000)
 
-Set DPS (verified): 87.8. Weights run: 4.7s. Verify run: 8.1s. 264 eligible items had no known source.
+Set DPS (verified): 88.4. Weights run: 5.8s. Verify run: 11.4s. 264 eligible items had no known source.
 
-Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): ranged_attack_power=1.000 ± 0.001, agility=3.145 ± 0.010, crit=0.657 ± 0.011 per rating point (14 rating = 1%, 9.192 per %), hit=0.965 ± 0.032 per rating point (10 rating = 1%, 9.653 per %), melee_haste=4.430 ± 0.457, intellect=1.617 ± 0.021, spell_power=not significant (0.000 ± 0.000)
+Race sweep: windshaper-skyborne 89.3 ± 0.1, troll 88.4 ± 0.1, orc 88.4 ± 0.1, tauren 85.8 ± 0.1 (dps); windshaper-skyborne beats the guide race orc by 0.9 (1.04%) ± 0.1, beyond error.
+
+Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): ranged_attack_power=1.000 ± 0.001, agility=3.150 ± 0.010, crit=0.661 ± 0.011 per rating point (14 rating = 1%, 9.255 per %), hit=0.971 ± 0.031 per rating point (10 rating = 1%, 9.709 per %), melee_haste=4.425 ± 0.455, intellect=1.614 ± 0.021, spell_power=not significant (0.000 ± 0.000)
 
 | Slot | Item | Source | Score (ranged_attack_power points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Brawler's Leather Hood (252504) | Leatherworking [crafted] | 25.2 ranged_attack_power points (2.52 DPS) | yes | Trapper's Leather Hood (252505, -1.41 DPS, sim-verified) [crafted]; Shadow Goggles (4373, -1.71 DPS) [crafted] |
+| head | Brawler's Leather Hood (252504) | Leatherworking [crafted] | 25.2 ranged_attack_power points (2.52 DPS) | yes | Trapper's Leather Hood (252505, -1.42 DPS, sim-verified) [crafted]; Shadow Goggles (4373, -1.72 DPS) [crafted] |
 | neck | Scout's Medallion (20442) | Warsong Outriders [rep] | 18.9 ranged_attack_power points (1.89 DPS) | yes | Erudite's Amulet (277204, -1.25 DPS, sim-verified) [quest] |
-| shoulder | Serpent's Shoulders (5404) | Wailing Caverns: Lady Anacondra [dungeon] | 15.7 ranged_attack_power points (1.57 DPS) | yes | Magician's Mantle (12998, -0.66 DPS, sim-verified) [world_drop]; Reinforced Woolen Shoulders (4315, -0.93 DPS) [crafted] |
+| shoulder | Serpent's Shoulders (5404) | Wailing Caverns: Lady Anacondra [dungeon] | 15.8 ranged_attack_power points (1.58 DPS) | yes | Magician's Mantle (12998, -0.67 DPS, sim-verified) [world_drop]; Reinforced Woolen Shoulders (4315, -0.93 DPS) [crafted] |
 | back | Glowing Lizardscale Cloak (6449) | Wailing Caverns: Skum [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Cape of the Brotherhood (5193, -0.31 DPS, sim-verified) [dungeon]; Sentry Cloak (2059, -0.63 DPS) [world_drop]; Bristlebark Cape (14571, -0.63 DPS) [world_drop] |
-| chest | Trapper's Leather Armor (252491) | Leatherworking [crafted] | 26.9 ranged_attack_power points (2.69 DPS) | yes | Brawler's Leather Armor (252490, -0.58 DPS, sim-verified) [crafted]; Mystic's Wrap (14369, -0.61 DPS) [world_drop]; Mystic's Robe (14371, -0.61 DPS) [world_drop] |
-| wrist | Forest Leather Bracers (3202) | World drop [world_drop] | 15.7 ranged_attack_power points (1.57 DPS) | yes | Wolf Bracers (4794, -0.31 DPS, sim-verified) [vendor]; Bristlebark Bindings (14569, -0.63 DPS) [world_drop]; Spare Part Bindings (279875, -0.63 DPS) [quest] |
-| hands | Gloves of the Fang (10413) (or Serpent Gloves (5970)) | Wailing Caverns: Druid of the Fang [dungeon] | 18.9 ranged_attack_power points (1.89 DPS) | yes | Serpent Gloves (5970, +0.00 DPS) [dungeon]; Trapper's Leather Gloves (252495, -0.14 DPS) [crafted]; Forest Leather Gloves (3058, -0.63 DPS) [world_drop] |
+| chest | Trapper's Leather Armor (252491) | Leatherworking [crafted] | 26.9 ranged_attack_power points (2.69 DPS) | yes | Brawler's Leather Armor (252490, -0.58 DPS, sim-verified) [crafted]; Mystic's Wrap (14369, -0.62 DPS) [world_drop]; Mystic's Robe (14371, -0.62 DPS) [world_drop] |
+| wrist | Forest Leather Bracers (3202) | World drop [world_drop] | 15.8 ranged_attack_power points (1.58 DPS) | yes | Wolf Bracers (4794, -0.31 DPS, sim-verified) [vendor]; Bristlebark Bindings (14569, -0.63 DPS) [world_drop]; Spare Part Bindings (279875, -0.63 DPS) [quest] |
+| hands | Gloves of the Fang (10413) (or Serpent Gloves (5970)) | Wailing Caverns: Druid of the Fang [dungeon] | 18.9 ranged_attack_power points (1.89 DPS) | yes | Serpent Gloves (5970, +0.00 DPS) [dungeon]; Trapper's Leather Gloves (252495, -0.15 DPS) [crafted]; Forest Leather Gloves (3058, -0.63 DPS) [world_drop] |
 | waist | Blackened Defias Belt (10403) | The Deadmines: Captain Greenskin [dungeon] | 18.0 ranged_attack_power points (1.80 DPS) | yes | Trapper's Leather Belt (252429, -0.06 DPS) [crafted]; Deviate Scale Belt (6468, -0.23 DPS) [crafted]; Keller's Girdle (2911, -0.51 DPS) [world_drop] |
-| legs | Leggings of the Fang (10410) | Wailing Caverns: Lord Cobrahn [dungeon] | sim-verified (+0.6 DPS vs the runner-up, not corroborated against the finished set) | yes | Brawler's Leather Pants (252500, +0.00 DPS) [crafted]; Bluegill Breeches (3022, -0.31 DPS) [world]; Trapper's Leather Pants (252501, -0.64 DPS, sim-verified) [crafted] |
+| legs | Leggings of the Fang (10410) | Wailing Caverns: Lord Cobrahn [dungeon] | sim-verified (+0.6 DPS vs the runner-up, not corroborated against the finished set) | yes | Brawler's Leather Pants (252500, +0.00 DPS) [crafted]; Bluegill Breeches (3022, -0.32 DPS) [world]; Trapper's Leather Pants (252501, -0.64 DPS, sim-verified) [crafted] |
 | feet | Feet of the Lynx (1121) | World drop [world_drop] | 25.2 ranged_attack_power points (2.52 DPS) | yes | Trapper's Leather Boots (252440, -0.31 DPS, sim-verified) [crafted]; Blackened Defias Boots (10402, -0.63 DPS) [dungeon]; Footpads of the Fang (10411, -0.63 DPS) [dungeon] |
-| finger1 | Lavishly Jeweled Ring (1156) | The Deadmines: Gilnid [dungeon] | 16.0 ranged_attack_power points (1.60 DPS) | yes | Bounty Hunter's Ring (5351, -0.66 DPS) [quest]; Loop of Sacrifice (281673, -0.79 DPS) [quest]; Volcanic Rock Ring (12053, -1.11 DPS) [world_drop] |
-| finger2 | Legionnaire's Band (20429) | Warsong Outriders [rep] | 12.6 ranged_attack_power points (1.26 DPS) | yes | Bounty Hunter's Ring (5351, -0.31 DPS, sim-verified) [quest]; Loop of Sacrifice (281673, -0.45 DPS) [quest]; Volcanic Rock Ring (12053, -0.77 DPS) [world_drop] |
+| finger1 | Lavishly Jeweled Ring (1156) | The Deadmines: Gilnid [dungeon] | 16.0 ranged_attack_power points (1.60 DPS) | yes | Bounty Hunter's Ring (5351, -0.65 DPS) [quest]; Loop of Sacrifice (281673, -0.79 DPS) [quest]; Volcanic Rock Ring (12053, -1.12 DPS) [world_drop] |
+| finger2 | Legionnaire's Band (20429) | Warsong Outriders [rep] | 12.6 ranged_attack_power points (1.26 DPS) | yes | Bounty Hunter's Ring (5351, -0.31 DPS, sim-verified) [quest]; Loop of Sacrifice (281673, -0.45 DPS) [quest]; Volcanic Rock Ring (12053, -0.78 DPS) [world_drop] |
 | trinket1 | - | - |  |  |  |
 | trinket2 | - | - |  |  |  |
-| main_hand | Impaling Harpoon (5200) | The Deadmines: Captain Greenskin [dungeon] | 36.4 ranged_attack_power points (3.64 DPS) | yes | Crescent Staff (6505, -0.36 DPS, sim-verified) [quest]; Bronze Dory (250603, -0.52 DPS) [crafted]; Staff of Orgrimmar (15444, -0.78 DPS) [quest] |
+| main_hand | Impaling Harpoon (5200) | The Deadmines: Captain Greenskin [dungeon] | 36.4 ranged_attack_power points (3.65 DPS) | yes | Crescent Staff (6505, -0.36 DPS, sim-verified) [quest]; Bronze Dory (250603, -0.52 DPS) [crafted]; Staff of Orgrimmar (15444, -0.78 DPS) [quest] |
 | off_hand | - | - |  |  |  |
-| ranged | Ranger Bow (3021) | World drop [world_drop] | 179.4 ranged_attack_power points (17.95 DPS) | yes | Venomstrike (6469, -0.58 DPS, sim-verified) [dungeon]; Lil Timmy's Peashooter (13136, -1.34 DPS) [world_drop]; Lovingly Crafted Boomstick (4372, -4.33 DPS) [crafted] |
+| ranged | Ranger Bow (3021) | World drop [world_drop] | 179.4 ranged_attack_power points (17.97 DPS) | yes | Venomstrike (6469, -0.58 DPS, sim-verified) [dungeon]; Lil Timmy's Peashooter (13136, -1.34 DPS) [world_drop]; Lovingly Crafted Boomstick (4372, -4.34 DPS) [crafted] |
 
 **New at 20:** head: Brawler's Leather Hood; neck: Scout's Medallion; shoulder: Serpent's Shoulders; back: Glowing Lizardscale Cloak; chest: Trapper's Leather Armor; wrist: Forest Leather Bracers; hands: Gloves of the Fang; waist: Blackened Defias Belt; legs: Leggings of the Fang; feet: Feet of the Lynx; finger1: Lavishly Jeweled Ring; finger2: Legionnaire's Band; main_hand: Impaling Harpoon; ranged: Ranger Bow
 
 No-known-source sample (15 of 264, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2314 Toughened Leather Armor; 2664 Spinner Fang; 2952 Fine Light Hide Jerkin; 3038 Archer's Longbow; 3222 Wicked Dagger; 3738 Brewing Rod; 4642 Star of Xil'yeh; 4763 Blackwood Recurve Bow; 5255 Quilboar Tomahawk; 5748 Centaur Longbow; 5821 Darkstalker Boots; 5968 Rugged Boots; 6478 Rat Stompers
 
-### Band 30 (orc, 5420001504000000-0000000000000000-000000000000000000)
+### Band 30 (orc, 5320000505000100-0000000000000000-000000000000000000)
 
-Set DPS (verified): 137.7. Weights run: 4.8s. Verify run: 13.9s. 462 eligible items had no known source.
+Set DPS (verified): 144.4. Weights run: 5.6s. Verify run: 16.4s. 462 eligible items had no known source.
 
-Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): ranged_attack_power=1.000 ± 0.001, agility=3.044 ± 0.010, crit=0.883 ± 0.014 per rating point (14 rating = 1%, 12.367 per %), hit=1.442 ± 0.041 per rating point (10 rating = 1%, 14.421 per %), melee_haste=not significant (-0.877 ± 0.594), intellect=0.429 ± 0.016, spell_power=not significant (0.000 ± 0.000)
+Race sweep: orc 144.4 ± 0.1, troll 143.7 ± 0.1, windshaper-skyborne 143.6 ± 0.1, tauren 140.5 ± 0.1 (dps); the guide race orc is best.
+
+Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): ranged_attack_power=1.000 ± 0.001, agility=3.043 ± 0.010, crit=0.882 ± 0.013 per rating point (14 rating = 1%, 12.354 per %), hit=1.379 ± 0.041 per rating point (10 rating = 1%, 13.789 per %), melee_haste=not significant (-1.653 ± 0.621), intellect=not significant (0.000 ± 0.000), spell_power=not significant (0.000 ± 0.000)
 
 | Slot | Item | Source | Score (ranged_attack_power points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Brawler's Leather Helm (252512) | Leatherworking [crafted] | 30.4 ranged_attack_power points (3.37 DPS) | yes | Brawler's Leather Hood (252504, -0.67 DPS) [crafted]; Humbert's Helm (4724, -1.01 DPS) [world]; Resilient Cap (14401, -2.18 DPS) [world_drop] |
-| neck | Scout's Medallion (19537) | Warsong Outriders [rep] | 24.4 ranged_attack_power points (2.70 DPS) | yes | Archmagister's Faceted Pendant (273049, -1.08 DPS) [world]; Kaleidoscope Chain (13084, -1.16 DPS) [world_drop]; Erudite's Amulet (277204, -2.02 DPS) [quest] |
-| shoulder | Forest Tracker Epaulets (2278) | World drop [world_drop] | 33.5 ranged_attack_power points (3.71 DPS) | yes | Mantle of Thieves (2264, -0.34 DPS) [dungeon]; Dark Leather Shoulders (4252, -1.35 DPS) [crafted]; Insignia Mantle (4721, -1.35 DPS) [world_drop] |
-| back | Tigerstrike Mantle (13108) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Hawkeye's Cloak (14593, -0.34 DPS) [world_drop]; Glowing Lizardscale Cloak (6449, -0.67 DPS) [dungeon]; Swiftrunner Cape (6745, -0.67 DPS) [quest] |
-| chest | Garb of Florid Feathers (273026) | Excavation Site: Wetlands: Shadetooth [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Dusky Leather Armor (7374, +0.00 DPS) [crafted]; Green Leather Armor (4255, -0.67 DPS) [crafted]; Panther Armor (6670, -0.71 DPS) [quest] |
-| wrist | Hawkeye's Bracers (14590) (or Insignia Bracers (6410)) | World drop [world_drop] | 18.3 ranged_attack_power points (2.02 DPS) | yes | Insignia Bracers (6410, +0.00 DPS) [world_drop]; Forest Leather Bracers (3202, -0.34 DPS) [world_drop]; Loamflake Bracers (15462, -0.34 DPS) [quest] |
-| hands | Cartilage Shapers (273054) | Lyn the Ignored [world] | 27.4 ranged_attack_power points (3.04 DPS) | yes | Pilferer's Gloves (7358, -0.34 DPS) [crafted]; Braced Handguards (6784, -0.67 DPS) [quest]; Insignia Gloves (6408, -1.01 DPS) [world_drop] |
-| waist | Stalker's Leather Belt (252521) | Leatherworking [crafted] | 30.0 ranged_attack_power points (3.32 DPS) | yes | Skulker's Leather Belt (252520, -0.29 DPS) [crafted]; Deftkin Belt (16659, -0.64 DPS) [quest]; Defiler's Chain Girdle (20152, -0.66 DPS) [rep] |
-| legs | Troll's Bane Leggings (13114) | World drop [world_drop] | sim-verified (137.7 DPS) | yes | Petrolspill Leggings (9509, +0.00 DPS) [dungeon]; Dusky Leather Leggings (7373, -0.34 DPS) [crafted]; Ferine Leggings (6690, -1.27 DPS) [dungeon] |
-| feet | Insignia Boots (4055) (or Warsong Boots (16977), Feet of the Lynx (1121)) | World drop [world_drop] | 24.4 ranged_attack_power points (2.70 DPS) | yes | Feet of the Lynx (1121, +0.00 DPS) [world_drop]; Warsong Boots (16977, +0.00 DPS) [quest]; Trailblazer Boots (10653, -0.34 DPS) [quest] |
-| finger1 | Ring of Precision (1491) (or Legionnaire's Band (19513)) | Blackfathom Deeps [dungeon] | 18.3 ranged_attack_power points (2.02 DPS) | yes | Monkey Ring (6748, -0.34 DPS) [quest]; Defias Renegade Ring (1076, -0.67 DPS) [dungeon]; Band of the Fist (17694, -0.67 DPS) [quest] |
-| finger2 | Legionnaire's Band (19513) | Warsong Outriders [rep] | 18.3 ranged_attack_power points (2.02 DPS) | yes | Monkey Ring (6748, -0.34 DPS) [quest]; Defias Renegade Ring (1076, -0.67 DPS) [dungeon]; Band of the Fist (17694, -0.67 DPS) [quest] |
+| head | Brawler's Leather Helm (252512) | Leatherworking [crafted] | 30.4 ranged_attack_power points (3.38 DPS) | yes | Brawler's Leather Hood (252504, -0.67 DPS, sim-verified) [crafted]; Humbert's Helm (4724, -1.02 DPS) [world]; Resilient Cap (14401, -2.71 DPS) [world_drop] |
+| neck | Scout's Medallion (19537) | Warsong Outriders [rep] | 24.3 ranged_attack_power points (2.71 DPS) | yes | Kaleidoscope Chain (13084, -1.35 DPS) [world_drop]; Archmagister's Faceted Pendant (273049, -1.37 DPS) [world]; Erudite's Amulet (277204, -2.03 DPS) [quest] |
+| shoulder | Forest Tracker Epaulets (2278) | World drop [world_drop] | 33.5 ranged_attack_power points (3.72 DPS) | yes | Mantle of Thieves (2264, -0.37 DPS, sim-verified) [dungeon]; Dark Leather Shoulders (4252, -1.35 DPS) [crafted]; Insignia Mantle (4721, -1.35 DPS) [world_drop] |
+| back | Tigerstrike Mantle (13108) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Hawkeye's Cloak (14593, -0.34 DPS) [world_drop]; Glowing Lizardscale Cloak (6449, -0.68 DPS) [dungeon]; Swiftrunner Cape (6745, -0.68 DPS) [quest] |
+| chest | Garb of Florid Feathers (273026) | Excavation Site: Wetlands: Shadetooth [dungeon] | sim-verified (+1.6 DPS vs the runner-up, not corroborated against the finished set) | yes | Panther Armor (6670, +0.00 DPS) [quest]; Green Leather Armor (4255, -0.34 DPS) [crafted]; Dusky Leather Armor (7374, -1.63 DPS, sim-verified) [crafted] |
+| wrist | Hawkeye's Bracers (14590) (or Insignia Bracers (6410)) | World drop [world_drop] | 18.3 ranged_attack_power points (2.03 DPS) | yes | Insignia Bracers (6410, +0.00 DPS) [world_drop]; Forest Leather Bracers (3202, -0.34 DPS) [world_drop]; Loamflake Bracers (15462, -0.34 DPS) [quest] |
+| hands | Cartilage Shapers (273054) | Lyn the Ignored [world] | 27.4 ranged_attack_power points (3.05 DPS) | yes | Braced Handguards (6784, -0.68 DPS) [quest]; Pilferer's Gloves (7358, -0.91 DPS, sim-verified) [crafted]; Insignia Gloves (6408, -1.02 DPS) [world_drop] |
+| waist | Stalker's Leather Belt (252521) | Leatherworking [crafted] | sim-verified (+1.3 DPS vs the runner-up, not corroborated against the finished set) | yes | Deftkin Belt (16659, -0.36 DPS) [quest]; Defiler's Chain Girdle (20152, -0.38 DPS) [rep]; Skulker's Leather Belt (252520, -1.35 DPS, sim-verified) [crafted] |
+| legs | Troll's Bane Leggings (13114) | World drop [world_drop] | sim-verified (+0.2 DPS vs the runner-up, not corroborated against the finished set) | yes | Petrolspill Leggings (9509, -0.16 DPS, sim-verified) [dungeon]; Dusky Leather Leggings (7373, -0.34 DPS) [crafted]; Insignia Leggings (4054, -1.69 DPS) [world_drop] |
+| feet | Insignia Boots (4055) (or Warsong Boots (16977), Feet of the Lynx (1121)) | World drop [world_drop] | 24.3 ranged_attack_power points (2.71 DPS) | yes | Feet of the Lynx (1121, +0.00 DPS) [world_drop]; Warsong Boots (16977, +0.00 DPS) [quest]; Trailblazer Boots (10653, -0.34 DPS) [quest] |
+| finger1 | Ring of Precision (1491) (or Legionnaire's Band (19513)) | Blackfathom Deeps [dungeon] | 18.3 ranged_attack_power points (2.03 DPS) | yes | Monkey Ring (6748, -0.34 DPS) [quest]; Defias Renegade Ring (1076, -0.68 DPS) [dungeon]; Band of the Fist (17694, -0.68 DPS) [quest] |
+| finger2 | Legionnaire's Band (19513) | Warsong Outriders [rep] | 18.3 ranged_attack_power points (2.03 DPS) | yes | Monkey Ring (6748, -0.34 DPS) [quest]; Defias Renegade Ring (1076, -0.68 DPS) [dungeon]; Band of the Fist (17694, -0.68 DPS) [quest] |
 | trinket1 | - | - |  |  |  |
 | trinket2 | - | - |  |  |  |
-| main_hand | Felbough Arm (273037) | Fel Ancient [world] | sim-decided (no score - a real sim tournament chose this pick) | yes | Armor Piercer (6679, -1.26 DPS) [dungeon]; Kam's Walking Stick (2280, -1.46 DPS) [dungeon]; Bronze Dory (250603, -1.61 DPS) [crafted] |
+| main_hand | Felbough Arm (273037) | Fel Ancient [world] | sim-decided (no score - a real sim tournament chose this pick) | yes | Claw of the Shadowmancer (2912, -0.70 DPS, sim-verified) [world_drop]; Armor Piercer (6679, -1.20 DPS) [dungeon]; Kam's Walking Stick (2280, -1.53 DPS) [dungeon] |
 | off_hand | - | - |  |  |  |
-| ranged | Golemsight Long Gun (273029) | Excavation Site: Wetlands: Relic Guardian [dungeon] | 250.7 ranged_attack_power points (27.77 DPS) | yes | Ironweaver (13137, -0.93 DPS) [world_drop]; Crystalpine Stinger (13037, -1.58 DPS) [world_drop]; Chesterfall Musket (7729, -2.15 DPS) [dungeon] |
+| ranged | Golemsight Long Gun (273029) | Excavation Site: Wetlands: Relic Guardian [dungeon] | 250.7 ranged_attack_power points (27.88 DPS) | yes | Ironweaver (13137, -1.42 DPS, sim-verified) [world_drop]; Crystalpine Stinger (13037, -1.78 DPS) [world_drop]; Chesterfall Musket (7729, -2.15 DPS) [dungeon] |
 
 **New at 30:** head: Brawler's Leather Helm; neck: Scout's Medallion; shoulder: Forest Tracker Epaulets; back: Tigerstrike Mantle; chest: Garb of Florid Feathers; wrist: Hawkeye's Bracers; hands: Cartilage Shapers; waist: Stalker's Leather Belt; legs: Troll's Bane Leggings; feet: Insignia Boots; finger1: Ring of Precision; finger2: Legionnaire's Band; main_hand: Felbough Arm; ranged: Golemsight Long Gun
 
@@ -256,7 +272,9 @@ No-known-source sample (15 of 462, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 40 (orc, 5420001505001251-0000000000000000-000000000000000000)
 
-Set DPS (verified): 226.1. Weights run: 5.2s. Verify run: 15.0s. 708 eligible items had no known source.
+Set DPS (verified): 226.1. Weights run: 6.3s. Verify run: 20.6s. 708 eligible items had no known source.
+
+Race sweep: orc 226.1 ± 0.1, windshaper-skyborne 225.5 ± 0.1, troll 224.3 ± 0.1, tauren 220.6 ± 0.1 (dps); the guide race orc is best.
 
 1 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -288,7 +306,9 @@ No-known-source sample (15 of 708, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 50 (orc, 5420001505001251-0052300000000000-000000000000000000)
 
-Set DPS (verified): 326.4. Weights run: 5.3s. Verify run: 21.3s. 891 eligible items had no known source.
+Set DPS (verified): 326.4. Weights run: 6.6s. Verify run: 29.7s. 891 eligible items had no known source.
+
+Race sweep: orc 326.4 ± 0.2, windshaper-skyborne 324.0 ± 0.2, troll 322.3 ± 0.2, tauren 318.2 ± 0.2 (dps); the guide race orc is best.
 
 Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): ranged_attack_power=1.000 ± 0.001, agility=3.110 ± 0.032, crit=1.759 ± 0.057 per rating point (14 rating = 1%, 24.630 per %), hit=2.433 ± 0.108 per rating point (10 rating = 1%, 24.334 per %), melee_haste=7.554 ± 1.160, intellect=2.911 ± 0.044, spell_power=not significant (0.000 ± 0.000)
 
@@ -318,7 +338,9 @@ No-known-source sample (15 of 891, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 60 (orc, 5420001505001251-0052451001200000-000000000000000000)
 
-Set DPS (verified): 468.3. Weights run: 4.9s. Verify run: 57.2s. 2027 eligible items had no known source.
+Set DPS (verified): 468.3. Weights run: 6.3s. Verify run: 71.3s. 2027 eligible items had no known source.
+
+Race sweep: orc 468.3 ± 0.3, windshaper-skyborne 463.7 ± 0.3, troll 461.8 ± 0.3, tauren 456.7 ± 0.3 (dps); the guide race orc is best.
 
 4 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -350,7 +372,9 @@ No-known-source sample (15 of 2027, see the JSON for more): 913 Huge Ogre Sword;
 
 ### Band 60, raid preset (orc, 5420001505001251-0052350001400000-000000000000000000)
 
-Set DPS (verified): 953.9. Weights run: 5.1s. Verify run: 55.7s. 2027 eligible items had no known source.
+Set DPS (verified): 953.9. Weights run: 6.6s. Verify run: 70.1s. 2027 eligible items had no known source.
+
+Race sweep: orc 953.9 ± 0.5, windshaper-skyborne 950.6 ± 0.5, troll 945.3 ± 0.5, tauren 934.5 ± 0.5 (dps); the guide race orc is best.
 
 4 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 

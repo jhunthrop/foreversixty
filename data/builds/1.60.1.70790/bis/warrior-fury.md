@@ -8,7 +8,9 @@ Forever unifies melee, ranged and spell hit into one stat. An item's crit rating
 
 ### Band 20 (night-elf, 00000000000000000-050510000000000000-000000000000000000)
 
-Set DPS (verified): 35.4. Weights run: 3.9s. Verify run: 15.3s. 349 eligible items had no known source.
+Set DPS (verified): 35.4. Weights run: 4.9s. Verify run: 21.4s. 349 eligible items had no known source.
+
+Race sweep: high-order-skyborne 35.5 ± 0.0, night-elf 35.4 ± 0.0, human 35.4 ± 0.0, dwarf 35.0 ± 0.0, gnome 34.6 ± 0.0 (dps); high-order-skyborne beats the guide race night-elf by 0.2 (0.48%) ± 0.1, beyond error.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=2.000 ± 0.003, agility=1.006 ± 0.024, crit=0.567 ± 0.025 per rating point (14 rating = 1%, 7.939 per %), hit=0.869 ± 0.054 per rating point (10 rating = 1%, 8.686 per %), melee_haste=5.240 ± 0.341
 
@@ -38,7 +40,9 @@ No-known-source sample (15 of 349, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (night-elf, 00000000000000000-050530025000100000-000000000000000000)
 
-Set DPS (verified): 62.4. Weights run: 4.6s. Verify run: 12.0s. 596 eligible items had no known source.
+Set DPS (verified): 62.4. Weights run: 5.6s. Verify run: 17.3s. 596 eligible items had no known source.
+
+Race sweep: high-order-skyborne 62.6 ± 0.1, night-elf 62.4 ± 0.1, human 62.3 ± 0.1, dwarf 61.7 ± 0.1, gnome 61.3 ± 0.1 (dps); high-order-skyborne beats the guide race night-elf by 0.3 (0.45%) ± 0.1, beyond error.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=2.000 ± 0.003, agility=1.176 ± 0.038, crit=0.860 ± 0.042 per rating point (14 rating = 1%, 12.042 per %), hit=1.194 ± 0.107 per rating point (10 rating = 1%, 11.936 per %), melee_haste=7.591 ± 0.772
 
@@ -66,39 +70,45 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 
 No-known-source sample (15 of 596, see the JSON for more): 913 Huge Ogre Sword; 1189 Overseer's Ring; 1216 Frost Bracers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2314 Toughened Leather Armor; 2543 Militia Pants; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 3579 Ornate Copper Shoulders; 3738 Brewing Rod; 4196 Feathered Mantle; 4642 Star of Xil'yeh
 
-### Band 40 (night-elf, 00000000000000000-050530025122100221-000000000000000000)
+### Band 40 (night-elf, 00000000000000000-050530025121100231-000000000000000000)
 
-Set DPS (verified): 145.0. Weights run: 4.6s. Verify run: 18.1s. 815 eligible items had no known source.
+Set DPS (verified): 149.1. Weights run: 5.7s. Verify run: 14.9s. 815 eligible items had no known source.
 
-Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=2.000 ± 0.003, agility=1.535 ± 0.051, crit=1.426 ± 0.067 per rating point (14 rating = 1%, 19.968 per %), hit=1.304 ± 0.110 per rating point (10 rating = 1%, 13.041 per %), melee_haste=6.739 ± 1.050
+Race sweep: night-elf 149.1 ± 0.2, human 148.4 ± 0.2, high-order-skyborne 147.9 ± 0.2, dwarf 147.6 ± 0.2, gnome 146.6 ± 0.2 (dps); the guide race night-elf is best.
+
+2 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
+
+Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=2.000 ± 0.003, agility=1.709 ± 0.067, crit=1.540 ± 0.089 per rating point (14 rating = 1%, 21.557 per %), hit=1.656 ± 0.138 per rating point (10 rating = 1%, 16.561 per %), melee_haste=10.393 ± 1.359
 
 | Slot | Item | Source | Score (attack_power points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Raging Berserker's Helm (7719) | Scarlet Monastery: Herod [dungeon] | 46.0 attack_power points (4.48 DPS) | yes | Chromite Barbute (8142, -0.35 DPS) [dungeon]; White Bandit Mask (10008, -0.69 DPS) [crafted]; Barbaric Iron Helm (7915, -1.38 DPS) [crafted] |
-| neck | Zealous Shadowshard Pendant (17772) | Shadowshard Fragments [quest] | 20.0 attack_power points (1.95 DPS) | yes | Sentinel's Medallion (19540, -0.30 DPS) [rep]; Kaleidoscope Chain (13084, -0.57 DPS) [world_drop] |
-| shoulder | Forest Tracker Epaulets (2278) | World drop [world_drop] | 26.9 attack_power points (2.62 DPS) | yes | Flintrock Shoulders (7755, -0.15 DPS) [dungeon]; Hard Gold Pauldrons (250539, -0.48 DPS) [crafted]; Barbaric Iron Shoulders (7913, -0.55 DPS) [crafted] |
-| back | Sergeant Major's Cape (16336) | PvP rank 5 · Sergeant Major · Alliance [pvp] | sim-decided (no score - a real sim tournament chose this pick) | yes | Hawkeye's Cloak (14593, -0.44 DPS) [world_drop]; Yeti Fur Cloak (2805, -0.58 DPS) [quest]; Parachute Cloak (10518, -0.87 DPS) [crafted] |
-| chest | Icemail Jerkin (1981) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Quillward Harness (10583, -0.46 DPS) [dungeon]; Kolkar Marauder Chain (6773, -1.09 DPS) [quest]; Carapace of Tuten'kash (10775, -1.72 DPS) [dungeon] |
-| wrist | Ravager's Armguards (14770) | World drop [world_drop] | 20.1 attack_power points (1.96 DPS) | yes | Branded Leather Bracers (19508, -0.01 DPS) [dungeon]; Hawkeye's Bracers (14590, -0.29 DPS) [world_drop]; Yorgen Bracers (13012, -0.34 DPS) [world_drop] |
-| hands | Gloves of Holy Might (867) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Plated Fist of Hakoo (13071, +0.00 DPS) [world_drop]; Prowler's Leather Gloves (252524, +0.00 DPS) [crafted]; Scarlet Gauntlets (10331, -2.66 DPS, sim-verified) [dungeon] |
-| waist | Ogron's Sash (13117) | World drop [world_drop] | 31.8 attack_power points (3.10 DPS) | yes | Boar Champion's Belt (10768, -0.18 DPS) [dungeon]; Highlander's Leather Girdle (20116, -0.18 DPS) [rep]; Highlander's Plate Girdle (20125, -0.18 DPS) [rep] |
-| legs | Scarlet Leggings (10330) | Scarlet Monastery: Herod [dungeon] | 42.0 attack_power points (4.09 DPS) | yes | Symbolic Legplates (14829, -0.27 DPS) [world_drop]; Firemane Leggings (13129, -0.39 DPS) [world_drop]; Orcish War Leggings (7929, -0.78 DPS) [crafted] |
-| feet | Officer's Boots (250546) | Blacksmithing [crafted] | 36.7 attack_power points (3.58 DPS) | yes | Blackforge Greaves (6423, -0.35 DPS, sim-verified) [dungeon]; Prowler's Leather Shoes (252465, -0.39 DPS) [crafted]; Skulker's Leather Shoes (252531, -0.57 DPS) [crafted] |
-| finger1 | Protector's Band (19515) | Silverwing Sentinels [rep] | 28.3 attack_power points (2.76 DPS) | yes | Mark of Kern (2262, -0.81 DPS) [dungeon]; Assault Band (13095, -0.81 DPS) [world_drop]; Falcon's Hook (7552, -0.83 DPS) [dungeon] |
-| finger2 | Thunderbrow Ring (13097) | World drop [world_drop] | 20.6 attack_power points (2.01 DPS) | yes | Mark of Kern (2262, -0.06 DPS) [dungeon]; Assault Band (13095, -0.06 DPS) [world_drop]; Falcon's Hook (7552, -0.08 DPS) [dungeon] |
+| head | Raging Berserker's Helm (7719) | Scarlet Monastery: Herod [dungeon] | 47.6 attack_power points (5.44 DPS) | yes | Chromite Barbute (8142, -0.35 DPS) [dungeon]; White Bandit Mask (10008, -0.77 DPS) [crafted]; Barbaric Iron Helm (7915, -1.62 DPS) [crafted] |
+| neck | Sentinel's Medallion (19540) | Silverwing Sentinels [rep] | sim-decided (no score - a real sim tournament chose this pick) | yes | Zealous Shadowshard Pendant (17772, +0.00 DPS) [quest]; Kaleidoscope Chain (13084, -0.45 DPS) [world_drop]; Archmagister's Faceted Pendant (273049, -0.78 DPS) [world] |
+| shoulder | Forest Tracker Epaulets (2278) | World drop [world_drop] | 28.8 attack_power points (3.30 DPS) | yes | Flintrock Shoulders (7755, -0.20 DPS) [dungeon]; Barbaric Iron Shoulders (7913, -0.75 DPS) [crafted]; Hard Gold Pauldrons (250539, -0.78 DPS) [crafted] |
+| back | Sergeant Major's Cape (16336) | PvP rank 5 · Sergeant Major · Alliance [pvp] | sim-verified (149.1 DPS) | yes | Yeti Fur Cloak (2805, -0.69 DPS) [quest]; Hawkeye's Cloak (14593, -0.80 DPS, sim-verified) [world_drop]; Parachute Cloak (10518, -0.98 DPS) [crafted] |
+| chest | Icemail Jerkin (1981) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Quillward Harness (10583, -1.04 DPS) [dungeon]; Kolkar Marauder Chain (6773, -2.02 DPS) [quest]; Carapace of Tuten'kash (10775, -2.74 DPS) [dungeon] |
+| wrist | Ravager's Armguards (14770) | World drop [world_drop] | 20.8 attack_power points (2.39 DPS) | yes | Branded Leather Bracers (19508, -0.10 DPS) [dungeon]; Hawkeye's Bracers (14590, -0.30 DPS) [world_drop]; Yorgen Bracers (13012, -0.42 DPS) [world_drop] |
+| hands | Gloves of Holy Might (867) | World drop [world_drop] | sim-verified (149.1 DPS) | yes | Plated Fist of Hakoo (13071, +0.00 DPS) [world_drop]; Prowler's Leather Gloves (252524, +0.00 DPS) [crafted]; Scarlet Gauntlets (10331, -3.77 DPS, sim-verified) [dungeon] |
+| waist | Ogron's Sash (13117) | World drop [world_drop] | 33.4 attack_power points (3.82 DPS) | yes | Officer's Belt (250556, -0.36 DPS) [crafted]; Highlander's Leather Girdle (20116, -0.39 DPS) [rep]; Highlander's Plate Girdle (20125, -0.39 DPS) [rep] |
+| legs | Scarlet Leggings (10330) | Scarlet Monastery: Herod [dungeon] | 42.0 attack_power points (4.81 DPS) | yes | Symbolic Legplates (14829, -0.20 DPS) [world_drop]; Firemane Leggings (13129, -0.46 DPS) [world_drop]; Triprunner Dungarees (9624, -0.60 DPS) [quest] |
+| feet | Officer's Boots (250546) | Blacksmithing [crafted] | 38.0 attack_power points (4.35 DPS) | yes | Blackforge Greaves (6423, -0.33 DPS) [dungeon]; Prowler's Leather Shoes (252465, -0.46 DPS) [crafted]; Skulker's Leather Shoes (252531, -0.59 DPS) [crafted] |
+| finger1 | Protector's Band (19515) | Silverwing Sentinels [rep] | 29.7 attack_power points (3.40 DPS) | yes | Thunderbrow Ring (13097, -0.98 DPS) [world_drop]; Ring of the Underwood (2951, -0.98 DPS) [world_drop]; Mark of Kern (2262, -1.11 DPS) [dungeon] |
+| finger2 | Falcon's Hook (7552) | Uldaman: Ancient Treasure [dungeon] | 21.4 attack_power points (2.45 DPS) | yes | Ring of the Underwood (2951, -0.03 DPS) [world_drop]; Mark of Kern (2262, -0.16 DPS) [dungeon]; Thunderbrow Ring (13097, -1.22 DPS, sim-verified) [world_drop] |
 | trinket1 | Ankh of Life (1713) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | - |
 | trinket2 | - | - |  |  |  |
-| main_hand | Gut Ripper (2164) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Ardent Custodian (868, +0.00 DPS) [world_drop]; Fiery War Axe (870, +0.00 DPS) [world_drop]; Nightblade (1982, +0.00 DPS) [world_drop] |
-| off_hand | Vanquisher's Sword (10823) | Bring the Light [quest] | 442.0 attack_power points (43.09 DPS) | yes | Southsea Lamp (9359, -0.87 DPS, sim-verified) [world_drop]; Shoni's Disarming Tool (9608, -20.46 DPS) [quest] |
-| ranged | Monolithic Bow (9426) | Uldaman [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Master Hunter's Rifle (17687, -0.24 DPS) [quest]; The Silencer (13138, -0.25 DPS) [world_drop]; Swiftwind (13038, -0.57 DPS) [world_drop] |
+| main_hand | Gut Ripper (2164) | World drop [world_drop] | sim-verified (149.1 DPS) | yes | Fiery War Axe (870, +0.00 DPS) [world_drop]; Nightblade (1982, +0.00 DPS) [world_drop]; Ardent Custodian (868, -1.52 DPS, sim-verified) [world_drop] |
+| off_hand | Vanquisher's Sword (10823) | Bring the Light [quest] | 442.0 attack_power points (50.60 DPS) | yes | Southsea Lamp (9359, +0.00 DPS) [world_drop]; Shoni's Disarming Tool (9608, -24.03 DPS) [quest] |
+| ranged | Monolithic Bow (9426) | Uldaman [dungeon] | sim-verified (149.1 DPS) | yes | Master Hunter's Rifle (17687, -0.26 DPS) [quest]; The Silencer (13138, -0.36 DPS) [world_drop]; Swiftwind (13038, -0.59 DPS) [world_drop] |
 
-**New at 40:** head: Raging Berserker's Helm; neck: Zealous Shadowshard Pendant; back: Sergeant Major's Cape; chest: Icemail Jerkin; wrist: Ravager's Armguards; hands: Gloves of Holy Might; waist: Ogron's Sash; legs: Scarlet Leggings; feet: Officer's Boots; finger1: Protector's Band; finger2: Thunderbrow Ring; trinket1: Ankh of Life; main_hand: Gut Ripper; off_hand: Vanquisher's Sword; ranged: Monolithic Bow
+**New at 40:** head: Raging Berserker's Helm; neck: Sentinel's Medallion; back: Sergeant Major's Cape; chest: Icemail Jerkin; wrist: Ravager's Armguards; hands: Gloves of Holy Might; waist: Ogron's Sash; legs: Scarlet Leggings; feet: Officer's Boots; finger1: Protector's Band; finger2: Falcon's Hook; trinket1: Ankh of Life; main_hand: Gut Ripper; off_hand: Vanquisher's Sword; ranged: Monolithic Bow
 
 No-known-source sample (15 of 815, see the JSON for more): 913 Huge Ogre Sword; 1189 Overseer's Ring; 1216 Frost Bracers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2314 Toughened Leather Armor; 2543 Militia Pants; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 3579 Ornate Copper Shoulders; 3738 Brewing Rod; 4081 Blackforge Leggings; 4110 Master Hunter's Bow
 
-### Band 50 (night-elf, 30321000000000000-050530025122100231-000000000000000000)
+### Band 50 (night-elf, 30312000000000000-050530025122100231-000000000000000000)
 
-Set DPS (verified): 226.9. Weights run: 5.2s. Verify run: 21.6s. 1030 eligible items had no known source.
+Set DPS (verified): 226.9. Weights run: 6.1s. Verify run: 27.8s. 1030 eligible items had no known source.
+
+Race sweep: night-elf 226.9 ± 0.3, high-order-skyborne 226.4 ± 0.3, dwarf 226.2 ± 0.3, human 226.1 ± 0.3, gnome 224.3 ± 0.3 (dps); the guide race night-elf is best.
 
 3 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -130,7 +140,9 @@ No-known-source sample (15 of 1030, see the JSON for more): 913 Huge Ogre Sword;
 
 ### Band 60 (night-elf, 30323013002000000-050530025122100231-200000000000000000)
 
-Set DPS (verified): 363.0. Weights run: 5.0s. Verify run: 91.7s. 2366 eligible items had no known source.
+Set DPS (verified): 363.0. Weights run: 5.9s. Verify run: 106.5s. 2366 eligible items had no known source.
+
+Race sweep: night-elf 363.0 ± 0.4, high-order-skyborne 362.0 ± 0.4, human 361.8 ± 0.4, dwarf 361.3 ± 0.4, gnome 360.8 ± 0.4 (dps); the guide race night-elf is best.
 
 2 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -162,7 +174,9 @@ No-known-source sample (15 of 2366, see the JSON for more): 913 Huge Ogre Sword;
 
 ### Band 60, raid preset (night-elf, 30323013002000000-050530025122100231-200000000000000000)
 
-Set DPS (verified): 1004.2. Weights run: 5.1s. Verify run: 80.2s. 2366 eligible items had no known source.
+Set DPS (verified): 1004.2. Weights run: 6.5s. Verify run: 101.2s. 2366 eligible items had no known source.
+
+Race sweep: high-order-skyborne 1005.3 ± 1.0, night-elf 1004.2 ± 1.0, human 998.7 ± 1.0, gnome 998.5 ± 1.0, dwarf 998.2 ± 1.0 (dps); high-order-skyborne beats the guide race night-elf by 1.1 (0.11%) ± 1.4, inside error.
 
 2 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -196,7 +210,9 @@ No-known-source sample (15 of 2366, see the JSON for more): 913 Huge Ogre Sword;
 
 ### Band 20 (undead, 00000000000000000-050510000000000000-000000000000000000)
 
-Set DPS (verified): 36.5. Weights run: 3.9s. Verify run: 16.1s. 332 eligible items had no known source.
+Set DPS (verified): 36.5. Weights run: 4.9s. Verify run: 22.6s. 332 eligible items had no known source.
+
+Race sweep: undead 36.5 ± 0.0, windshaper-skyborne 35.6 ± 0.0, troll 35.5 ± 0.0, orc 35.3 ± 0.0, tauren 35.1 ± 0.0 (dps); the guide race undead is best.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=2.000 ± 0.003, agility=1.006 ± 0.024, crit=0.567 ± 0.025 per rating point (14 rating = 1%, 7.939 per %), hit=0.869 ± 0.054 per rating point (10 rating = 1%, 8.686 per %), melee_haste=5.240 ± 0.341
 
@@ -226,7 +242,9 @@ No-known-source sample (15 of 332, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (undead, 00000000000000000-050530025000100000-000000000000000000)
 
-Set DPS (verified): 63.6. Weights run: 4.6s. Verify run: 10.9s. 581 eligible items had no known source.
+Set DPS (verified): 63.6. Weights run: 5.6s. Verify run: 15.4s. 581 eligible items had no known source.
+
+Race sweep: undead 63.6 ± 0.1, windshaper-skyborne 62.6 ± 0.1, troll 62.4 ± 0.1, orc 62.0 ± 0.1, tauren 61.6 ± 0.1 (dps); the guide race undead is best.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=2.000 ± 0.003, agility=1.176 ± 0.038, crit=0.860 ± 0.042 per rating point (14 rating = 1%, 12.042 per %), hit=1.194 ± 0.107 per rating point (10 rating = 1%, 11.936 per %), melee_haste=7.591 ± 0.772
 
@@ -254,41 +272,45 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 
 No-known-source sample (15 of 581, see the JSON for more): 913 Huge Ogre Sword; 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2314 Toughened Leather Armor; 2543 Militia Pants; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 3579 Ornate Copper Shoulders; 3738 Brewing Rod; 4196 Feathered Mantle
 
-### Band 40 (undead, 00000000000000000-050530025122100221-000000000000000000)
+### Band 40 (undead, 00000000000000000-050530025121100231-000000000000000000)
 
-Set DPS (verified): 145.0. Weights run: 4.6s. Verify run: 18.4s. 797 eligible items had no known source.
+Set DPS (verified): 149.1. Weights run: 5.7s. Verify run: 16.2s. 797 eligible items had no known source.
 
-2 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
+Race sweep: undead 149.1 ± 0.2, windshaper-skyborne 147.5 ± 0.2, troll 147.3 ± 0.2, orc 146.4 ± 0.2, tauren 145.6 ± 0.2 (dps); the guide race undead is best.
 
-Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=2.000 ± 0.003, agility=1.535 ± 0.051, crit=1.426 ± 0.067 per rating point (14 rating = 1%, 19.968 per %), hit=1.304 ± 0.110 per rating point (10 rating = 1%, 13.041 per %), melee_haste=6.739 ± 1.050
+1 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
+
+Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=2.000 ± 0.003, agility=1.709 ± 0.067, crit=1.540 ± 0.089 per rating point (14 rating = 1%, 21.557 per %), hit=1.656 ± 0.138 per rating point (10 rating = 1%, 16.561 per %), melee_haste=10.393 ± 1.359
 
 | Slot | Item | Source | Score (attack_power points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Raging Berserker's Helm (7719) | Scarlet Monastery: Herod [dungeon] | 46.0 attack_power points (4.48 DPS) | yes | Chromite Barbute (8142, -0.35 DPS) [dungeon]; White Bandit Mask (10008, -0.69 DPS) [crafted]; Barbaric Iron Helm (7915, -1.38 DPS) [crafted] |
-| neck | Scout's Medallion (19536) | Warsong Outriders [rep] | sim-decided (no score - a real sim tournament chose this pick) | yes | Zealous Shadowshard Pendant (17772, +0.00 DPS) [quest]; Ethereal Talisman (4430, -0.07 DPS) [quest]; Kaleidoscope Chain (13084, -0.27 DPS) [world_drop] |
-| shoulder | Forest Tracker Epaulets (2278) | World drop [world_drop] | 26.9 attack_power points (2.62 DPS) | yes | Flintrock Shoulders (7755, -0.15 DPS) [dungeon]; Hard Gold Pauldrons (250539, -0.48 DPS) [crafted]; Barbaric Iron Shoulders (7913, -0.55 DPS) [crafted] |
-| back | Hawkeye's Cloak (14593) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Imperial Cloak (6432, -0.44 DPS) [dungeon]; Parachute Cloak (10518, -0.44 DPS) [crafted]; Sporid Cape (6629, -1.99 DPS, sim-verified) [dungeon] |
-| chest | Icemail Jerkin (1981) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Quillward Harness (10583, -0.46 DPS) [dungeon]; Kolkar Marauder Chain (6773, -1.09 DPS) [quest]; Carapace of Tuten'kash (10775, -1.72 DPS) [dungeon] |
-| wrist | Ravager's Armguards (14770) | World drop [world_drop] | 20.1 attack_power points (1.96 DPS) | yes | Branded Leather Bracers (19508, -0.01 DPS) [dungeon]; Hawkeye's Bracers (14590, -0.29 DPS) [world_drop]; Yorgen Bracers (13012, -0.34 DPS) [world_drop] |
-| hands | Gloves of Holy Might (867) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Plated Fist of Hakoo (13071, +0.00 DPS) [world_drop]; Prowler's Leather Gloves (252524, +0.00 DPS) [crafted]; Scarlet Gauntlets (10331, -2.36 DPS, sim-verified) [dungeon] |
-| waist | Ogron's Sash (13117) | World drop [world_drop] | 31.8 attack_power points (3.10 DPS) | yes | Boar Champion's Belt (10768, -0.18 DPS) [dungeon]; Defiler's Leather Girdle (20192, -0.18 DPS) [rep]; Defiler's Plate Girdle (20206, -0.18 DPS) [rep] |
-| legs | Scarlet Leggings (10330) | Scarlet Monastery: Herod [dungeon] | 42.0 attack_power points (4.09 DPS) | yes | Symbolic Legplates (14829, -0.27 DPS) [world_drop]; Firemane Leggings (13129, -0.39 DPS) [world_drop]; Orcish War Leggings (7929, -0.78 DPS) [crafted] |
-| feet | Officer's Boots (250546) | Blacksmithing [crafted] | 36.7 attack_power points (3.58 DPS) | yes | Blackforge Greaves (6423, -0.33 DPS) [dungeon]; Prowler's Leather Shoes (252465, -0.39 DPS) [crafted]; Skulker's Leather Shoes (252531, -0.57 DPS) [crafted] |
-| finger1 | Legionnaire's Band (19512) | Warsong Outriders [rep] | 28.3 attack_power points (2.76 DPS) | yes | Mark of Kern (2262, -0.81 DPS) [dungeon]; Assault Band (13095, -0.81 DPS) [world_drop]; Falcon's Hook (7552, -0.83 DPS) [dungeon] |
-| finger2 | Thunderbrow Ring (13097) | World drop [world_drop] | 20.6 attack_power points (2.01 DPS) | yes | Mark of Kern (2262, -0.06 DPS) [dungeon]; Assault Band (13095, -0.06 DPS) [world_drop]; Falcon's Hook (7552, -0.08 DPS) [dungeon] |
+| head | Raging Berserker's Helm (7719) | Scarlet Monastery: Herod [dungeon] | 47.6 attack_power points (5.44 DPS) | yes | Chromite Barbute (8142, -0.35 DPS) [dungeon]; White Bandit Mask (10008, -0.77 DPS) [crafted]; Barbaric Iron Helm (7915, -1.62 DPS) [crafted] |
+| neck | Scout's Medallion (19536) | Warsong Outriders [rep] | sim-decided (no score - a real sim tournament chose this pick) | yes | Zealous Shadowshard Pendant (17772, +0.00 DPS) [quest]; Ethereal Talisman (4430, -0.22 DPS) [quest]; Kaleidoscope Chain (13084, -0.45 DPS) [world_drop] |
+| shoulder | Forest Tracker Epaulets (2278) | World drop [world_drop] | 28.8 attack_power points (3.30 DPS) | yes | Flintrock Shoulders (7755, -0.20 DPS) [dungeon]; Barbaric Iron Shoulders (7913, -0.75 DPS) [crafted]; Hard Gold Pauldrons (250539, -0.78 DPS) [crafted] |
+| back | Hawkeye's Cloak (14593) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Imperial Cloak (6432, -0.49 DPS) [dungeon]; Tigerstrike Mantle (13108, -0.49 DPS) [world_drop]; Parachute Cloak (10518, -0.86 DPS, sim-verified) [crafted] |
+| chest | Icemail Jerkin (1981) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Quillward Harness (10583, -1.04 DPS) [dungeon]; Kolkar Marauder Chain (6773, -2.02 DPS) [quest]; Carapace of Tuten'kash (10775, -2.74 DPS) [dungeon] |
+| wrist | Ravager's Armguards (14770) | World drop [world_drop] | 20.8 attack_power points (2.39 DPS) | yes | Branded Leather Bracers (19508, -0.10 DPS) [dungeon]; Hawkeye's Bracers (14590, -0.30 DPS) [world_drop]; Yorgen Bracers (13012, -0.42 DPS) [world_drop] |
+| hands | Gloves of Holy Might (867) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Plated Fist of Hakoo (13071, +0.00 DPS) [world_drop]; Prowler's Leather Gloves (252524, +0.00 DPS) [crafted]; Scarlet Gauntlets (10331, -4.34 DPS, sim-verified) [dungeon] |
+| waist | Ogron's Sash (13117) | World drop [world_drop] | 33.4 attack_power points (3.82 DPS) | yes | Officer's Belt (250556, -0.36 DPS) [crafted]; Defiler's Leather Girdle (20192, -0.39 DPS) [rep]; Defiler's Plate Girdle (20206, -0.39 DPS) [rep] |
+| legs | Scarlet Leggings (10330) | Scarlet Monastery: Herod [dungeon] | 42.0 attack_power points (4.81 DPS) | yes | Firemane Leggings (13129, -0.46 DPS) [world_drop]; Triprunner Dungarees (9624, -0.60 DPS) [quest]; Symbolic Legplates (14829, -1.14 DPS, sim-verified) [world_drop] |
+| feet | Officer's Boots (250546) | Blacksmithing [crafted] | 38.0 attack_power points (4.35 DPS) | yes | Prowler's Leather Shoes (252465, -0.46 DPS) [crafted]; Skulker's Leather Shoes (252531, -0.59 DPS) [crafted]; Blackforge Greaves (6423, -0.93 DPS, sim-verified) [dungeon] |
+| finger1 | Legionnaire's Band (19512) | Warsong Outriders [rep] | 29.7 attack_power points (3.40 DPS) | yes | Thunderbrow Ring (13097, -0.98 DPS) [world_drop]; Ring of the Underwood (2951, -0.98 DPS) [world_drop]; Mark of Kern (2262, -1.11 DPS) [dungeon] |
+| finger2 | Falcon's Hook (7552) | Uldaman: Ancient Treasure [dungeon] | 21.4 attack_power points (2.45 DPS) | yes | Thunderbrow Ring (13097, -0.03 DPS) [world_drop]; Ring of the Underwood (2951, -0.03 DPS) [world_drop]; Mark of Kern (2262, -0.16 DPS) [dungeon] |
 | trinket1 | Ankh of Life (1713) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | - |
 | trinket2 | - | - |  |  |  |
-| main_hand | Gut Ripper (2164) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Ardent Custodian (868, +0.00 DPS) [world_drop]; Fiery War Axe (870, +0.00 DPS) [world_drop]; Nightblade (1982, +0.00 DPS) [world_drop] |
-| off_hand | Vanquisher's Sword (10823) | Bring the End [quest] | 442.0 attack_power points (43.09 DPS) | yes | Southsea Lamp (9359, +0.00 DPS) [world_drop] |
-| ranged | Monolithic Bow (9426) | Uldaman [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Master Hunter's Rifle (17687, -0.24 DPS) [quest]; The Silencer (13138, -0.25 DPS) [world_drop]; Swiftwind (13038, -0.57 DPS) [world_drop] |
+| main_hand | Gut Ripper (2164) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Fiery War Axe (870, +0.00 DPS) [world_drop]; Nightblade (1982, +0.00 DPS) [world_drop]; Ardent Custodian (868, -1.62 DPS, sim-verified) [world_drop] |
+| off_hand | Vanquisher's Sword (10823) | Bring the End [quest] | 442.0 attack_power points (50.60 DPS) | yes | Southsea Lamp (9359, -1.41 DPS, sim-verified) [world_drop] |
+| ranged | Monolithic Bow (9426) | Uldaman [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Master Hunter's Rifle (17687, -0.26 DPS) [quest]; The Silencer (13138, -0.36 DPS) [world_drop]; Swiftwind (13038, -0.59 DPS) [world_drop] |
 
-**New at 40:** head: Raging Berserker's Helm; neck: Scout's Medallion; chest: Icemail Jerkin; wrist: Ravager's Armguards; hands: Gloves of Holy Might; waist: Ogron's Sash; legs: Scarlet Leggings; feet: Officer's Boots; finger1: Legionnaire's Band; finger2: Thunderbrow Ring; trinket1: Ankh of Life; main_hand: Gut Ripper; off_hand: Vanquisher's Sword; ranged: Monolithic Bow
+**New at 40:** head: Raging Berserker's Helm; neck: Scout's Medallion; chest: Icemail Jerkin; wrist: Ravager's Armguards; hands: Gloves of Holy Might; waist: Ogron's Sash; legs: Scarlet Leggings; feet: Officer's Boots; finger1: Legionnaire's Band; finger2: Falcon's Hook; trinket1: Ankh of Life; main_hand: Gut Ripper; off_hand: Vanquisher's Sword; ranged: Monolithic Bow
 
 No-known-source sample (15 of 797, see the JSON for more): 913 Huge Ogre Sword; 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2314 Toughened Leather Armor; 2543 Militia Pants; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 3579 Ornate Copper Shoulders; 3738 Brewing Rod; 4081 Blackforge Leggings
 
-### Band 50 (undead, 30321000000000000-050530025122100231-000000000000000000)
+### Band 50 (undead, 30312000000000000-050530025122100231-000000000000000000)
 
-Set DPS (verified): 229.7. Weights run: 5.2s. Verify run: 21.2s. 1011 eligible items had no known source.
+Set DPS (verified): 229.7. Weights run: 6.1s. Verify run: 26.9s. 1011 eligible items had no known source.
+
+Race sweep: undead 229.7 ± 0.3, windshaper-skyborne 227.4 ± 0.3, troll 226.5 ± 0.3, orc 226.0 ± 0.3, tauren 224.8 ± 0.3 (dps); the guide race undead is best.
 
 2 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -320,7 +342,9 @@ No-known-source sample (15 of 1011, see the JSON for more): 913 Huge Ogre Sword;
 
 ### Band 60 (undead, 30323013002000000-050530025122100231-200000000000000000)
 
-Set DPS (verified): 362.8. Weights run: 5.0s. Verify run: 89.4s. 2356 eligible items had no known source.
+Set DPS (verified): 362.8. Weights run: 5.9s. Verify run: 104.4s. 2356 eligible items had no known source.
+
+Race sweep: undead 362.8 ± 0.4, windshaper-skyborne 359.5 ± 0.4, troll 358.4 ± 0.4, orc 356.5 ± 0.4, tauren 354.6 ± 0.4 (dps); the guide race undead is best.
 
 3 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -352,7 +376,9 @@ No-known-source sample (15 of 2356, see the JSON for more): 913 Huge Ogre Sword;
 
 ### Band 60, raid preset (undead, 30323013002000000-050530025122100231-200000000000000000)
 
-Set DPS (verified): 1004.0. Weights run: 5.1s. Verify run: 79.2s. 2356 eligible items had no known source.
+Set DPS (verified): 1004.0. Weights run: 6.5s. Verify run: 99.8s. 2356 eligible items had no known source.
+
+Race sweep: windshaper-skyborne 1006.8 ± 1.0, orc 1005.0 ± 1.1, undead 1004.0 ± 1.1, troll 1001.4 ± 1.1, tauren 994.6 ± 1.1 (dps); windshaper-skyborne beats the guide race undead by 2.8 (0.28%) ± 1.5, beyond error.
 
 2 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
