@@ -174,19 +174,21 @@ test.describe('the bar at every width', () => {
     await expect(page.getByTestId('selector-sub')).toBeHidden();
   });
 
-  test('the wordmark and the account control sit on the 1344px content edges at 2000', async ({ page }) => {
+  test('the wordmark and the account control sit on the wide column content edges at 2000', async ({
+    page,
+  }) => {
     await signInWith(page, [OBNOXIOUS]);
     await storePointer(page, armoryPointer(OBNOXIOUS));
     await page.setViewportSize({ width: 2000, height: 900 });
-    // /guides and /changelog are wide pages since the flat rebuild (the header follows --page-max);
-    // the BiS index keeps 1344.
+    // /bis is a wide page (data-column="wide", tokens.css) and the header follows --page-max.
     await page.goto('/bis');
     await ready(page);
     const mark = (await page.getByRole('banner').getByRole('link', { name: 'Forever Sixty' }).boundingBox())!;
     const account = (await selector(page).boundingBox())!;
-    // The page's own content edge: the 1344 column's start (328) plus its 48 px gutter.
-    expect(Math.abs(mark.x - 376)).toBeLessThanOrEqual(1);
-    expect(Math.abs(account.x + account.width - 1624)).toBeLessThanOrEqual(1);
+    // At 2000 the wide column is clamp(1600, 100vw - 160, 1792) = 1792 px, so it starts at 104,
+    // and the wide gutter is 64 px: the content edges are 168 and 2000 - 168 = 1832.
+    expect(Math.abs(mark.x - 168)).toBeLessThanOrEqual(1);
+    expect(Math.abs(account.x + account.width - 1832)).toBeLessThanOrEqual(1);
   });
 
   test('a 22-character name keeps the bar one row and ends in an ellipsis, with the whole name in title', async ({
