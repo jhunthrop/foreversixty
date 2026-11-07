@@ -22,7 +22,7 @@ import Row from '../components/ui/Row.svelte';
 import Tag from '../components/ui/Tag.svelte';
 import Toc from '../components/ui/Toc.svelte';
 import { changelogCopy } from '../lib/changelog/copy';
-import { COMING_UP_SOURCE, comingUpHtml } from '../lib/changelog/coming-up';
+import { COMING_UP_SOURCE, comingUpHtml, comingUpRows } from '../lib/changelog/coming-up';
 import {
   changelogMonths,
   showCounts,
@@ -41,6 +41,11 @@ const entries = sortedEntries(
   collection.map((entry) => ({ id: entry.id, data: entry.data, html: entry.rendered?.html ?? '' })),
 );
 const months = changelogMonths(entries);
+/** Coming up as of this build (the site rebuilds nightly): past days and covered rows drop. */
+const comingUp = comingUpRows(
+  new Date(),
+  collection.flatMap((entry) => (entry.data.covers === undefined ? [] : [entry.data.covers])),
+);
 const counts = showCounts(entries);
 const updated = latest(collection.map((entry) => entry.data.updated));
 const empty = SHOWS.filter((show) => counts[show] === 0);
@@ -81,18 +86,20 @@ const hideCss = (['game', 'site'] as const satisfies readonly ChangelogShow[])
         />
       )}
 
-      <ReadingSection title={changelogCopy.comingUp} anchor="coming-up" testid="changelog-coming-up">
-        <LaneBlock slot="lane" label={guidesCopy.sources}>
-          <div class="flex flex-col">
-            <Row title={COMING_UP_SOURCE.label} href={COMING_UP_SOURCE.url} density="slim" open>
-              <span slot="titleContent" class="text-gold font-semibold">
-                {COMING_UP_SOURCE.label}
-              </span>
-            </Row>
-          </div>
-        </LaneBlock>
-        <Prose html={comingUpHtml()} />
-      </ReadingSection>
+      {comingUp.length > 0 && (
+        <ReadingSection title={changelogCopy.comingUp} anchor="coming-up" testid="changelog-coming-up">
+          <LaneBlock slot="lane" label={guidesCopy.sources}>
+            <div class="flex flex-col">
+              <Row title={COMING_UP_SOURCE.label} href={COMING_UP_SOURCE.url} density="slim" open>
+                <span slot="titleContent" class="text-gold font-semibold">
+                  {COMING_UP_SOURCE.label}
+                </span>
+              </Row>
+            </div>
+          </LaneBlock>
+          <Prose html={comingUpHtml(comingUp)} />
+        </ReadingSection>
+      )}
 
       {months.map((month) => (
         <DatedGroup title={month.title} anchor={month.anchor} testid={`changelog-month-${month.anchor}`}>

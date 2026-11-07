@@ -1,6 +1,7 @@
 import { defineCollection } from 'astro:content';
 import { z } from 'astro/zod';
 import { glob } from 'astro/loaders';
+import { COMING_UP_IDS } from './lib/changelog/coming-up';
 
 export const sourceKinds = ['blizzard', 'datamined', 'community', 'site'] as const;
 export const confidences = ['confirmed', 'single-source', 'inferred'] as const;
@@ -29,6 +30,8 @@ export const changelogSchema = factSchema.extend({
   date: z.coerce.date(),
   kind: z.enum(sourceKinds),
   note: z.string().optional(),
+  /** The Coming up row this entry reports as happened; the row drops from the block. */
+  covers: z.enum(COMING_UP_IDS).optional(),
 });
 
 const changelog = defineCollection({
