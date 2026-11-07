@@ -60,6 +60,8 @@ if [ "\$1 \$2" = "run list" ]; then
   cat "$dir/clone/gh/list.\$n.json"
 elif [ "\$1 \$2" = "run view" ]; then
   cat "$dir/clone/gh/run.\$3.json"
+elif [ "\$1 \$2" = "workflow run" ]; then
+  [ ! -e "$dir/clone/gh/dispatch-fails" ]
 else
   exit 1
 fi
@@ -68,16 +70,17 @@ EOF
 	echo "$dir/clone"
 }
 
-# run_json <id> <workflow> <status> <conclusion> <job:status:conclusion...>
+# run_json <id> <workflow> <status> <conclusion> <job:status:conclusion...>; the run's event
+# is EVENT (push by default).
 run_json() {
-	local id=$1 name=$2 status=$3 conclusion=$4 jobs='' job
+	local id=$1 name=$2 status=$3 conclusion=$4 jobs='' job event=${EVENT:-push}
 	shift 4
 	for job in "$@"; do
 		IFS=: read -r jname jstatus jconclusion <<<"$job"
 		jobs+="${jobs:+,}{\"name\":\"$jname\",\"status\":\"$jstatus\",\"conclusion\":\"$jconclusion\",\"url\":\"https://ci/$id/$jname\"}"
 	done
-	printf '{"databaseId":%s,"name":"%s","status":"%s","conclusion":"%s","jobs":[%s]}' \
-		"$id" "$name" "$status" "$conclusion" "$jobs"
+	printf '{"databaseId":%s,"name":"%s","status":"%s","conclusion":"%s","event":"%s","jobs":[%s]}' \
+		"$id" "$name" "$status" "$conclusion" "$event" "$jobs"
 }
 
 # fixture <clone> <poll> <run json...>: the run list of that poll and each run's view.
@@ -99,6 +102,21 @@ land() {
 	shift
 	(cd "$clone" && GH="$clone/gh/gh" LAND_POLL_SECONDS=0 LAND_SETTLE_SECONDS=0 \
 		LAND_TIMEOUT_SECONDS=${TIMEOUT:-60} bash "$LAND" "$@") >"$clone/out" 2>&1
+}
+
+# with_workflows <clone>: land/1's batch now changes api/ only, and carries an api workflow
+# (push on land/**, paths api/**) and a docs workflow (paths docs/**) the batch does not touch.
+with_workflows() {
+	local clone=$1
+	mkdir -p "$clone/.github/workflows" "$clone/api"
+	printf 'name: api\non:\n  push:\n    branches: [main, "land/**"]\n    paths: ["api/**"]\n  workflow_dispatch:\n' \
+		>"$clone/.github/workflows/api.yml"
+	printf 'name: docs\non:\n  push:\n    branches: [main, "land/**"]\n    paths: ["docs/**"]\n' \
+		>"$clone/.github/workflows/docs.yml"
+	echo change >"$clone/api/x.go"
+	git -C "$clone" add -A
+	git -C "$clone" -c user.name=t -c user.email=t@t commit -q --amend -m batch
+	git -C "$clone" push -q -f origin land/1
 }
 
 origin_ref() { git -C "$1/../origin.git" rev-parse -q --verify "$2" 2>/dev/null; }
@@ -123,7 +141,7 @@ assert "main is the land branch's sha" equal "$(origin_ref "$c" refs/heads/main)
 assert "the land branch is deleted" equal "$(origin_ref "$c" refs/heads/land/1)" ''
 assert "it polled until the running run completed" equal "$(cat "$c/gh/polls")" 2
 assert "it asks for the push runs of the branch's head sha" \
-	contains "$(cat "$c/gh/calls")" "run list --branch land/1 --commit $sha --event push"
+	contains "$(cat "$c/gh/calls")" "run list --branch land/1 --commit $sha"
 assert "a skipped job is green" lacks "$(cat "$c/out")" 'failed'
 
 # --- launch mode: skipped test jobs, and whole runs whose every job skipped, are green ---
@@ -192,6 +210,38 @@ land "$c" land/1
 assert "a run whose jobs cannot be read fails the landing" equal $? 1
 assert "it names the run it could not read" contains "$(cat "$c/out")" 'could not read run 51'
 assert "main did not move on an unreadable run" lacks "$(origin_ref "$c" refs/heads/main)" "$(git -C "$c" rev-parse HEAD)"
+
+# --- an expected workflow that never started is dispatched, then waited for ---
+c=$(setup dispatch)
+with_workflows "$c"
+sha=$(git -C "$c" rev-parse HEAD)
+fixture "$c" 1 "$(run_json 61 companion completed success build:completed:success)"
+fixture "$c" 2 "$(run_json 61 companion completed success build:completed:success)" \
+	"$(EVENT=workflow_dispatch run_json 62 api completed success test:completed:success)"
+land "$c" land/1
+assert "a dispatched expected workflow lands once green" equal $? 0
+assert "it dispatched the api workflow on the land branch" contains "$(cat "$c/gh/calls")" "workflow run api.yml --ref land/1"
+assert "it did not dispatch a workflow whose paths the batch misses" lacks "$(cat "$c/gh/calls")" "docs.yml"
+assert "it says why it dispatched" contains "$(cat "$c/out")" 'api never started on land/1'
+assert "main is the dispatched landing's sha" equal "$(origin_ref "$c" refs/heads/main)" "$sha"
+
+# --- an expected workflow that never starts, even dispatched, is a timeout, not a landing ---
+c=$(setup never)
+with_workflows "$c"
+fixture "$c" 1 "$(run_json 71 companion completed success build:completed:success)"
+TIMEOUT=0 land "$c" land/1
+assert "a missing expected workflow fails the landing" equal $? 1
+assert "it names the workflow that never started" contains "$(cat "$c/out")" 'never started: api'
+assert "main did not move without the api run" lacks "$(origin_ref "$c" refs/heads/main)" "$(git -C "$c" rev-parse HEAD)"
+
+# --- a dispatch that fails stops the landing ---
+c=$(setup undispatchable)
+with_workflows "$c"
+fixture "$c" 1 "$(run_json 81 companion completed success build:completed:success)"
+touch "$c/gh/dispatch-fails"
+land "$c" land/1
+assert "a failed dispatch fails the landing" equal $? 1
+assert "it names the workflow it could not dispatch" contains "$(cat "$c/out")" 'could not dispatch api.yml'
 
 # --- a branch origin does not have ---
 c=$(setup missing)
