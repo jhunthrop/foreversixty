@@ -14,8 +14,11 @@
 #   var PLAY_SA                      the Play publishing service account. The release job mints a
 #                                    short-lived androidpublisher token as it through GitHub
 #                                    federation (GCP_WIF_PROVIDER); no service-account key exists.
-#   ASC_KEY_ID, ASC_ISSUER_ID, ASC_KEY_P8   App Store Connect API key (App Manager), once Apple
-#                                           enrollment clears
+#   ASC_KEY_ID, ASC_ISSUER_ID, ASC_KEY_P8   App Store Connect API key. iOS signs automatically
+#                                           with it (-allowProvisioningUpdates): Xcode makes the
+#                                           certificates and profiles; none is stored here. The
+#                                           script writes the .p8 to a private temp directory and
+#                                           removes it when it exits.
 # Variables: APPLE_TEAM_ID, SENTRY_DSN_ANDROID, SENTRY_DSN_IOS (a DSN is not a secret; empty
 # means that build reports no crashes).
 name: apps-release
