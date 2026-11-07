@@ -1,6 +1,6 @@
 <!-- web/src/components/sim/tools/SlotGrid.svelte -->
-<!-- Design 3.1.2: one section per slot, each with its candidates and a lock. Rings and
-     trinkets get one section, not two: sim/bulk tries them in both slots and the grid
+<!-- Design 3.1.2: one group per slot, each with its candidates and a lock. Rings and
+     trinkets get one group, not two: sim/bulk tries them in both slots and the grid
      saying otherwise would be a promise the engine does not keep. -->
 <script lang="ts">
   import { SLOTS, type Slot } from '../../../lib/planner/types';
@@ -9,6 +9,7 @@
   import { bulkCopy } from '../../../lib/sim/copy';
   import type { EnchantRow, SuffixRow } from '../../../lib/sim/enchants';
   import CandidateRows from './CandidateRows.svelte';
+  import ToolSection from './ToolSection.svelte';
 
   let {
     rows,
@@ -20,6 +21,7 @@
     ontoggle,
     oncopy,
     onlock,
+    plate = false,
   }: {
     rows: readonly CandidateRow[];
     locked: readonly string[];
@@ -30,6 +32,8 @@
     ontoggle: (key: string) => void;
     oncopy: (key: string, patch: { enchant?: number; suffix?: number }) => void;
     onlock: (slot: Slot) => void;
+    /** The candidates sit on the page's one Plate (/sim/gear). */
+    plate?: boolean;
   } = $props();
 
   /**
@@ -42,43 +46,45 @@
   const bySlot = $derived(new Map(SHOWN.map((slot) => [slot, rows.filter((row) => row.slot === slot)])));
 </script>
 
-<section class="mx-[18px] flex flex-col gap-3 md:mx-0" data-testid="sim-slot-grid">
-  <!-- One message for a genuinely empty grid, rather than 15 empty per-slot sections: a
+<ToolSection title={bulkCopy.candidatesTitle} testid="sim-slot-grid" {plate}>
+  <!-- One message for a genuinely empty grid, rather than 15 empty per-slot groups: a
        freshly-loaded character almost always has at least one equipped row, so this is the
        true-void case (no gear, no bag/bank picks, nothing searched in yet), not the normal
-       "this slot has nothing" case -- which a section simply not existing already says. -->
+       "this slot has nothing" case -- which a group simply not existing already says. -->
   {#if rows.length === 0}
-    <p class="text-muted px-2 text-[13px]" data-testid="sim-slot-grid-empty">{bulkCopy.noCandidates}</p>
+    <p class="text-muted text-[13px]" data-testid="sim-slot-grid-empty">{bulkCopy.noCandidates}</p>
   {/if}
-  {#each SHOWN as slot (slot)}
-    {@const slotRows = bySlot.get(slot) ?? []}
-    {#if slotRows.length > 0}
-      <div class="border-line rounded-panel border p-3">
-        <header class="flex flex-wrap items-center justify-between gap-2">
-          <h3 class="section-title">{slotLabelForClass(slot, classSlug)}</h3>
-          <label class="text-muted flex min-h-11 items-center gap-2 text-[12px]">
-            <input
-              type="checkbox"
-              class="h-5 w-5"
-              data-testid={`sim-lock-${slot}`}
-              checked={locked.includes(slot)}
-              onchange={() => onlock(slot)}
-            />
-            {locked.includes(slot) ? bulkCopy.lockedSlot : bulkCopy.lockSlot}
-          </label>
-        </header>
-        <CandidateRows
-          rows={slotRows}
-          {slot}
-          locked={locked.includes(slot)}
-          {enchants}
-          {suffixes}
-          {classSlug}
-          {treeVersion}
-          {ontoggle}
-          {oncopy}
-        />
-      </div>
-    {/if}
-  {/each}
-</section>
+  <div class="flex flex-col gap-5">
+    {#each SHOWN as slot (slot)}
+      {@const slotRows = bySlot.get(slot) ?? []}
+      {#if slotRows.length > 0}
+        <div class="flex flex-col">
+          <header class="flex flex-wrap items-center justify-between gap-2">
+            <h3 class="text-strong text-[15px] leading-5 font-bold">{slotLabelForClass(slot, classSlug)}</h3>
+            <label class="text-muted flex min-h-11 items-center gap-2 text-[13px]">
+              <input
+                type="checkbox"
+                class="accent-gold h-5 w-5"
+                data-testid={`sim-lock-${slot}`}
+                checked={locked.includes(slot)}
+                onchange={() => onlock(slot)}
+              />
+              {locked.includes(slot) ? bulkCopy.lockedSlot : bulkCopy.lockSlot}
+            </label>
+          </header>
+          <CandidateRows
+            rows={slotRows}
+            {slot}
+            locked={locked.includes(slot)}
+            {enchants}
+            {suffixes}
+            {classSlug}
+            {treeVersion}
+            {ontoggle}
+            {oncopy}
+          />
+        </div>
+      {/if}
+    {/each}
+  </div>
+</ToolSection>

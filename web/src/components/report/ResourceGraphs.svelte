@@ -1,8 +1,9 @@
 <!-- web/src/components/report/ResourceGraphs.svelte -->
-<!-- One sparkline per actor and power type, drawn as an inline SVG polyline rather than a
-     canvas: these are small, numerous, and never interactive, so markup beats a second
-     drawing surface. Time at zero is the number a mana-starved healer is looking for, so
-     it sits beside the line rather than in a tooltip.
+<!-- Resources (logs spec 2026-11-07 section 6.2): the tab's one Plate, a StatTable row per
+     actor and power type: the crest, the name over the power and its peak, low and cap
+     figures, a Spark of the bar over the fight in the class colour (the time at the cap
+     shaded, the cap drawn, deaths marked), then Gained, Spent, Wasted and Time empty. Time
+     at zero is the number a mana-starved healer is looking for, so it is a column.
 
      The line and the number beside it are answering two different questions. The series
      is exact under any window: window.ts's scopeResource only slices it to the window's
@@ -16,14 +17,21 @@
   import { clockLabel } from '../../lib/chart/time-axis';
   import SyncedCrosshair from '../chart/SyncedCrosshair.svelte';
   import {
+    classColorVar,
     formatAmount,
     formatDuration,
     formatPercent,
-    wholeFightAriaLabel,
     wholeFightMark,
-    wholeFightTitle,
   } from '../../lib/report/format';
   import type { ResourceTrack } from '../../lib/report/types';
+  import { classSlugOf } from '../../lib/report/planner-link';
+  import type { StatColumn, StatFigure } from '../../lib/ui/stat-table';
+  import ClassCrestRing from '../character/ClassCrestRing.svelte';
+  import Plate from '../ui/Plate.svelte';
+  import Section from '../ui/Section.svelte';
+  import Spark from '../ui/Spark.svelte';
+  import StatRow from '../ui/StatRow.svelte';
+  import StatTable from '../ui/StatTable.svelte';
   import CopyCsv from './CopyCsv.svelte';
 
   let {
@@ -33,6 +41,7 @@
     windowed = false,
     syncKey = '',
     windowStartMs = 0,
+    classOf = new Map<string, string>(),
   }: {
     tracks: ResourceTrack[];
     durationMs: number;
@@ -43,6 +52,8 @@
     syncKey?: string;
     /** Where the sliced series starts on the fight's clock, so the cursor's ms finds its second. */
     windowStartMs?: number;
+    /** GUID to class, for the crest and the line's colour. */
+    classOf?: ReadonlyMap<string, string>;
   } = $props();
   const owner = 'resource-graphs';
   /** The page cursor's second inside this window, from any chart or lane on the page. */
@@ -105,8 +116,9 @@
 
   /** The top of the sparkline's scale: the peak reading, or the cap when the line never reached it. */
   const scaleTop = (peak: number, max: number | undefined): number => Math.max(peak, max ?? 0);
-  /** A reading's y on the 26-unit viewBox the sparkline is drawn in; every line and mark uses this one scale. */
-  const yOf = (value: number, top: number): number => (top === 0 ? 24 : 24 - (value / top) * 22);
+  /** A reading's y in the Spark's 24-unit box (lib/ui/spark.ts: baseline 22, rise 20), so the cap
+   *  line sits on the line's own scale. */
+  const yOf = (value: number, top: number): number => (top === 0 ? 22 : 22 - (value / top) * 20);
   /** The seconds whose reading is at the cap, as [from, to] percentages of the line's width. */
   function atMaxSpans(series: number[], max: number): { from: number; to: number }[] {
     if (max <= 0 || series.length === 0) return [];
@@ -125,15 +137,19 @@
   function atCapPct(atMaxMs: number): number {
     return durationMs === 0 ? 0 : (atMaxMs / durationMs) * 100;
   }
-  /** One track's series as lines: the second, the reading, and whether it was at the cap. */
-  function seriesCsv(track: ResourceTrack): string[][] {
+  /** Every series as lines: the player, the power, the second, the reading and whether it was at the cap. */
+  function seriesCsv(): string[][] {
     return [
-      ['Second', 'Reading', 'At cap'],
-      ...track.series.map((value, index) => [
-        String(index),
-        String(value),
-        track.max !== undefined && track.max > 0 && value >= track.max ? 'yes' : 'no',
-      ]),
+      ['Player', 'Power', 'Second', 'Reading', 'At cap'],
+      ...rows.flatMap((track) =>
+        track.series.map((value, index) => [
+          splitUnitName(track.name).name,
+          powerName(track.power_type),
+          String(index),
+          String(value),
+          track.max !== undefined && track.max > 0 && value >= track.max ? 'yes' : 'no',
+        ]),
+      ),
     ];
   }
 
@@ -171,206 +187,173 @@
   const hadActivity = (track: ResourceTrack): boolean =>
     track.series.some((value) => value > 0) || track.gained > 0 || track.spent > 0 || (track.wasted ?? 0) > 0;
 
+  const powerName = (type: number): string => POWER_NAMES.get(type) ?? `Power ${type}`;
   const rows = $derived(
     tracks.filter(hadActivity).sort((a, b) => a.name.localeCompare(b.name) || a.power_type - b.power_type),
   );
 
-  function points(series: number[], top: number): string {
-    if (top === 0 || series.length < 2) return '';
-    return series
-      .map((value, index) => `${(index / (series.length - 1)) * 100},${yOf(value, top)}`)
-      .join(' ');
-  }
-
   const mark = wholeFightMark(true);
-  const title = wholeFightTitle(true);
+  const hasCap = (track: ResourceTrack): boolean => track.max !== undefined && track.max > 0;
 
-  function zeroText(zeroMs: number): string {
-    return zeroMs === 0 ? 'never empty' : `${formatDuration(zeroMs)} empty`;
+  const columns: readonly StatColumn[] = [
+    { id: 'gained', label: 'Gained' },
+    { id: 'spent', label: 'Spent' },
+    { id: 'wasted', label: 'Wasted' },
+    { id: 'empty', label: 'Time empty' },
+  ];
+  function figuresOf(track: ResourceTrack): StatFigure[] {
+    return [
+      { value: `${mark}${formatAmount(track.gained)}` },
+      { value: `${mark}${formatAmount(track.spent)}` },
+      track.wasted === undefined
+        ? { value: '–', muted: true }
+        : { value: `${mark}${formatAmount(track.wasted)}` },
+      {
+        value: `${mark}${track.zero_ms === 0 ? '0:00' : formatDuration(track.zero_ms)}`,
+        testid: 'resource-zero',
+      },
+    ];
   }
+  const SEPARATOR = ' · ';
 </script>
 
-{#if rows.length === 0}
-  <p class="text-muted text-[14px]" data-testid="table-empty">No resource changes in this window.</p>
-{:else}
-  <!-- The column heads (fix round 2): what each row's name, power, line and figure are. -->
-  <div
-    class="quiet-label border-line-soft grid grid-cols-[minmax(0,1fr)_auto] gap-x-3 border-b px-2 pb-1 md:grid-cols-[minmax(120px,1.2fr)_96px_minmax(0,3fr)_96px]"
-    data-testid="resource-head"
-  >
-    <span>Player</span>
-    <span class="hidden md:block">Power</span>
-    <span class="hidden md:block">Over the {capSpan}</span>
-    <span class="text-right">Time empty</span>
-  </div>
-  <ul class="flex flex-col" data-testid="resource-graphs">
-    {#each rows as track (`${track.guid}-${track.power_type}`)}
-      {@const lowest = low(track.series)}
-      {@const peak = peakOf(track.series)}
-      {@const top = scaleTop(peak, track.max)}
-      <li
-        class="border-line-soft grid min-h-11 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1 border-b px-2 py-2 text-[14px] md:grid-cols-[minmax(120px,1.2fr)_96px_minmax(0,3fr)_96px]"
-        data-testid={`resource-${track.guid}-${track.power_type}`}
+<Section
+  title="Resources"
+  meta={`Mana, rage, energy and focus, ${capSpan === 'window' ? 'this window' : 'whole fight'}`}
+>
+  <Plate label="Resources">
+    {#if rows.length === 0}
+      <p class="text-muted px-4 py-4 text-[14px]" data-testid="table-empty">
+        No resource changes in this window.
+      </p>
+    {:else}
+      <StatTable
+        {columns}
+        nameHead="Player"
+        barHead={`Over the ${capSpan}`}
+        label="Resources"
+        testid="resource-graphs"
       >
-        <span class="truncate font-semibold">{splitUnitName(track.name).name}</span>
-        <span class="text-muted text-[13px]"
-          >{POWER_NAMES.get(track.power_type) ?? `Power ${track.power_type}`}</span
-        >
-        <span class="col-span-2 flex flex-col gap-0.5 md:col-span-1">
-          {#if track.series.length === 0}
-            <!-- A sim: the engine reports a whole-fight total, never a per-second reading
-               (sim/adapter/adapter.go's `resources`, this file's own header comment), so
-               there is no line to draw and no cap to mark. Saying so, with the real
-               totals beside it, is Defect 4's own "say plainly what it cannot show and
-               why" -- the row still agrees with the sample iteration's cast log, just in
-               words instead of a graph that would otherwise draw nothing and explain
-               nothing. -->
-            <p
-              class="text-muted numeric flex flex-wrap items-baseline gap-x-3 text-[11px]"
-              data-testid="resource-totals-only"
-            >
-              <span title="The whole fight's total gain, summed across every source"
-                >gained {formatAmount(track.gained)}</span
-              >
-              <span title="The whole fight's total spend">spent {formatAmount(track.spent)}</span>
-              {#if (track.wasted ?? 0) > 0}
-                <span title="Power gained past the cap and thrown away"
-                  >wasted {formatAmount(track.wasted ?? 0)}</span
-                >
-              {/if}
-            </p>
-            <p class="text-muted text-[12px]">
-              No per-second reading or cap for a simulated fight; these are the fight's own totals.
-            </p>
-          {:else}
-            <!-- A pointer over the line reads the second under it; a tap on a phone does the same. -->
-            <span
-              class="relative block touch-none"
-              onpointermove={(event) => readAt(event, `${track.guid}-${track.power_type}`, track.series)}
-              onpointerdown={(event) => readAt(event, `${track.guid}-${track.power_type}`, track.series)}
-              onpointerleave={(event) => clearReadout(event, `${track.guid}-${track.power_type}`)}
-            >
-              <svg class="h-[40px] w-full" viewBox="0 0 100 26" preserveAspectRatio="none" aria-hidden="true">
-                <line
-                  x1="0"
-                  y1="2"
-                  x2="100"
-                  y2="2"
-                  stroke="var(--color-line-soft)"
-                  stroke-width="1"
-                  vector-effect="non-scaling-stroke"
-                />
-                <line
-                  x1="0"
-                  y1="24"
-                  x2="100"
-                  y2="24"
-                  stroke="var(--color-line-soft)"
-                  stroke-width="1"
-                  vector-effect="non-scaling-stroke"
-                />
-                {#each deaths as death, i (`${death.at_ms}-${i}`)}
-                  <line
-                    x1={durationMs === 0 ? 0 : (death.at_ms / durationMs) * 100}
-                    y1="0"
-                    x2={durationMs === 0 ? 0 : (death.at_ms / durationMs) * 100}
-                    y2="26"
-                    stroke={death.guid === track.guid ? 'var(--color-death)' : 'var(--color-death-soft)'}
-                    stroke-width={death.guid === track.guid ? 2 : 1}
-                    vector-effect="non-scaling-stroke"
-                  />
-                {/each}
-                {#if track.max !== undefined && track.max > 0}
-                  {#each atMaxSpans(track.series, track.max) as span, i (`${span.from}-${i}`)}
-                    <rect
-                      x={span.from}
-                      y="0"
-                      width={span.to - span.from}
-                      height="26"
-                      fill="var(--color-gold)"
-                      opacity="0.18"
-                      data-testid="resource-at-max"
-                    />
-                  {/each}
-                  <!-- A perfectly horizontal <line> has zero geometric height under
-                     getBoundingClientRect, so a visibility check on it always reads
-                     hidden regardless of where it is drawn; a thin filled <rect> at the
-                     same y (from yOf, the same scale the sparkline itself uses) carries
-                     genuine area and reads the same as a cap line on screen. -->
-                  <rect
-                    x="0"
-                    y={yOf(track.max, top) - 0.4}
-                    width="100"
-                    height="0.8"
-                    fill="var(--color-gold)"
-                    data-testid="resource-cap-line"
-                  />
-                {/if}
-                <polyline
-                  points={points(track.series, top)}
-                  fill="none"
-                  stroke="var(--color-gold)"
-                  stroke-width="1.5"
-                  vector-effect="non-scaling-stroke"
-                />
-              </svg>
-              {#if syncKey !== ''}<SyncedCrosshair {syncKey} window={shownWindow} />{/if}
-            </span>
-            {@const reading = readouts[`${track.guid}-${track.power_type}`] ?? atCursor(track.series)}
-            {#if reading}
-              <span class="text-strong numeric text-[11px]" data-testid="resource-readout">{reading}</span>
-            {/if}
-            <!-- The peak/low reading always renders; when the track carries a reported cap the
-               same line also carries the cap figures, so a test (or a reader) that asks for
-               "the figures" sees the peak beside the cap, the time at it and the waste. -->
-            <span
-              class={track.max !== undefined && track.max > 0
-                ? 'text-muted numeric flex flex-wrap items-baseline gap-x-3 text-[11px]'
-                : 'text-muted numeric flex justify-between text-[11px]'}
-              data-testid={track.max !== undefined && track.max > 0 ? 'resource-cap-figures' : undefined}
-            >
-              <span title="The top of the line">peak {formatAmount(peak)}</span>
-              <span title="The lowest point and when it was reached" data-testid="resource-low"
-                >low {formatAmount(lowest.value)} at {formatDuration(lowest.atMs)}</span
-              >
-              {#if track.max !== undefined && track.max > 0}
+        {#each rows as track (`${track.guid}-${track.power_type}`)}
+          {@const lowest = low(track.series)}
+          {@const peak = peakOf(track.series)}
+          {@const top = scaleTop(peak, track.max)}
+          {@const colour = classColorVar(classOf.get(track.guid))}
+          {@const key = `${track.guid}-${track.power_type}`}
+          {@const reading = readouts[key] ?? atCursor(track.series)}
+          <StatRow
+            figures={figuresOf(track)}
+            phone={`${formatAmount(track.spent)} spent`}
+            testid={`resource-${track.guid}-${track.power_type}`}
+          >
+            {#snippet icon()}<ClassCrestRing
+                characterClass={classSlugOf(classOf.get(track.guid)) ?? ''}
+                size={28}
+              />{/snippet}
+            {#snippet name()}<span style:color={colour}>{splitUnitName(track.name).name}</span>{/snippet}
+            {#snippet sub()}
+              <!-- A block, so the figures wrap between pairs on a phone (each pair stays whole). -->
+              <div>
+                <span class="whitespace-nowrap">{powerName(track.power_type)}</span
+                >{#if track.series.length === 0}{SEPARATOR}<span
+                    >No per-second reading or cap for a simulated fight; these are the fight's own totals.</span
+                  ><span class="ui-st-phone" data-testid="resource-totals-only"
+                    >{SEPARATOR}gained {formatAmount(track.gained)}{SEPARATOR}spent {formatAmount(
+                      track.spent,
+                    )}{#if (track.wasted ?? 0) > 0}{`${SEPARATOR}wasted ${formatAmount(track.wasted ?? 0)}`}{/if}</span
+                  >{:else}{SEPARATOR}<span data-testid={hasCap(track) ? 'resource-cap-figures' : undefined}
+                    ><span class="whitespace-nowrap" title="The top of the line"
+                      >peak {formatAmount(peak)}</span
+                    >{SEPARATOR}<span
+                      class="whitespace-nowrap"
+                      title="The lowest point and when it was reached"
+                      data-testid="resource-low"
+                      >low {formatAmount(lowest.value)} at {formatDuration(lowest.atMs)}</span
+                    >{#if hasCap(track)}{SEPARATOR}<span
+                        class="whitespace-nowrap"
+                        title="The share of this window the bar spent full, measured from the window's own seconds"
+                        data-testid="resource-at-cap"
+                        >at cap {formatPercent(atCapPct(track.at_max_ms ?? 0))} of the {capSpan}</span
+                      >{SEPARATOR}<span class="whitespace-nowrap"
+                        >{mark}wasted {formatAmount(track.wasted ?? 0)}</span
+                      >{/if}</span
+                  >{/if}
+              </div>
+            {/snippet}
+            {#snippet meter()}
+              {#if track.series.length > 0}
+                <!-- A pointer over the line reads the second under it; a tap on a phone does the same. -->
                 <span
-                  title="The share of this window the bar spent full, measured from the window's own seconds"
-                  data-testid="resource-at-cap"
-                  >at cap {formatPercent(atCapPct(track.at_max_ms ?? 0))} of the {capSpan}</span
+                  class="relative block touch-none"
+                  role="presentation"
+                  onpointermove={(event) => readAt(event, key, track.series)}
+                  onpointerdown={(event) => readAt(event, key, track.series)}
+                  onpointerleave={(event) => clearReadout(event, key)}
                 >
-                <!-- One title per element: the whole-fight one from wholeFightTitle(true),
-                   already bound to this file's `title` const, and the words that explain
-                   what the figure is in the aria-label, which is where a title on an
-                   element with visible text would not reliably be read out anyway. -->
-                <span
-                  {title}
-                  aria-label={wholeFightAriaLabel(
-                    true,
-                    `${formatAmount(track.wasted ?? 0)} of power gained past the cap and thrown away`,
-                  )}>{mark}wasted {formatAmount(track.wasted ?? 0)}</span
-                >
+                  <Spark values={track.series} {top} color={colour} />
+                  <svg
+                    class="pointer-events-none absolute inset-0 h-6 w-full"
+                    viewBox="0 0 1000 24"
+                    preserveAspectRatio="none"
+                    aria-hidden="true"
+                  >
+                    {#each deaths as death, i (`${death.at_ms}-${i}`)}
+                      <rect
+                        x={durationMs === 0 ? 0 : (death.at_ms / durationMs) * 1000}
+                        y="0"
+                        width={death.guid === track.guid ? 4 : 2}
+                        height="24"
+                        fill={death.guid === track.guid ? 'var(--color-death)' : 'var(--color-death-soft)'}
+                      />
+                    {/each}
+                    {#if hasCap(track)}
+                      {#each atMaxSpans(track.series, track.max ?? 0) as span, i (`${span.from}-${i}`)}
+                        <rect
+                          x={span.from * 10}
+                          y="0"
+                          width={(span.to - span.from) * 10}
+                          height="24"
+                          fill="var(--color-gold)"
+                          opacity="0.18"
+                          data-testid="resource-at-max"
+                        />
+                      {/each}
+                      <!-- A filled rect, not a <line>: a horizontal line has no height for a visibility check. -->
+                      <rect
+                        x="0"
+                        y={yOf(track.max ?? 0, top) - 0.6}
+                        width="1000"
+                        height="1.2"
+                        fill="var(--color-gold)"
+                        opacity="0.6"
+                        data-testid="resource-cap-line"
+                      />
+                    {/if}
+                  </svg>
+                  {#if syncKey !== ''}<SyncedCrosshair {syncKey} window={shownWindow} />{/if}
+                </span>
+                {#if reading}<span
+                    class="text-strong block text-[12px] leading-4 tabular-nums"
+                    data-testid="resource-readout">{reading}</span
+                  >{/if}
               {/if}
-            </span>
-            <CopyCsv lines={() => seriesCsv(track)} label="Copy this line as CSV" />
-          {/if}
-        </span>
-        <span
-          class="text-muted numeric text-right text-[13px]"
-          {title}
-          aria-label={wholeFightAriaLabel(true, zeroText(track.zero_ms))}
-          data-testid="resource-zero"
-        >
-          {mark}{zeroText(track.zero_ms)}
-        </span>
-      </li>
-    {/each}
-  </ul>
-  <p class="text-muted text-[12px]">
-    Fight length in this window: <span class="numeric">{formatDuration(durationMs)}</span>.
-  </p>
-  <p class="text-muted text-[12px]" data-testid="resource-wholefight-note">
-    Time empty and power wasted are marked {mark} because the summary tracks them for the whole fight only; the
-    line, the cap and the time at the cap are this window's own.
-  </p>
-{/if}
+            {/snippet}
+          </StatRow>
+        {/each}
+      </StatTable>
+    {/if}
+  </Plate>
+  {#if rows.length > 0}
+    <div class="text-muted flex flex-col gap-1 pt-3 text-[13px] leading-[18px]">
+      <p>Fight length in this window: <span class="tabular-nums">{formatDuration(durationMs)}</span>.</p>
+      <p data-testid="resource-wholefight-note">
+        Gained, spent, wasted and time empty are marked {mark} because the summary tracks them for the whole fight
+        only; the line, the cap and the time at the cap are this window's own.
+      </p>
+      {#if rows.some((track) => track.series.length > 0)}<CopyCsv
+          lines={seriesCsv}
+          label="Copy every line as CSV"
+        />{/if}
+    </div>
+  {/if}
+</Section>

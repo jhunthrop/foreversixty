@@ -1,40 +1,24 @@
 <!-- web/src/components/sim/SourceSwitcher.svelte -->
-<!-- The four ways in. Order is deliberate: the addon export is first because it needs no
-     account and produces the most accurate character, and "your characters" is last because
-     it is the one that needs a sign-in. The site now has a real Battle.net-backed source
-     (spec 2026-09-22 §3.3), so signing in gets a member's gear and talents from Blizzard
-     directly rather than only from a prior addon export.
-     A signed-in member's own character list lives in LandingState.svelte, not here (Task
-     18): this switcher only reaches a signed-in member when they explicitly reopen it (from
-     the strip's "Change source", or the landing state's "Sim something else"), so the card's
-     signed-in body is a way back to that list rather than a second copy of it.
-
-     2026-09-26 layout pass, review round 1: `heroSignIn` promotes the sign-in card to a
-     full-width hero above the three paste cards, for a signed-out visitor on /sim only
-     (Finding 2 -- the audience already uses Battle.net, so "sign in and go" should not sit
-     equal-weight beside three cards that need something to paste). The bulk tool pages
-     (ToolsView.svelte) never pass it, so their switcher keeps today's four-card grid.
-
-     Persona review 2026-10-06 bis (one-primary audit): the design system allows one
-     primary action per view. ColdPasteHero.svelte now owns the one paste surface on /sim
-     whenever it renders (signed out, or signed in with no tracked character) -- the exact
-     states `showColdPasteHero` in SimView.svelte gates -- so this switcher's own addon
-     card would otherwise be a second paste box, and its hero-branch sign-in button a
-     second gold primary beside the hero's own Run. `showAddonCard` drops the former; the
-     sign-in button is demoted to the same secondary look the non-hero branch already uses
-     for it below (`action`), rather than `PRIMARY_BUTTON_FIXED`. The bulk tool pages pass
-     neither prop, since they carry no hero and the one-paste-surface rule does not apply
-     there. -->
+<!-- A tool page with no character (mock design/mocks/ws_simtools.py `*-empty`), the landing's own
+     grammar (SimLanding.svelte): the addon export on the page's one Plate, the other ways in as open
+     rows (a build, a logged fight, your characters). The addon export is first because it needs no
+     account and gives the most accurate character; "Your characters" is last because it is the one
+     that needs a sign-in. Signed in, that row is the way back to the character just left (the
+     line's "Change source" opened this). -->
 <script lang="ts">
-  import Card from '../ui/Card.svelte';
   import { currentCharacterCopy } from '../../lib/current-character-copy';
   import { landingCopy } from '../../lib/sim/landing-copy';
-  import { rowLink } from '../../lib/report/format';
   import { parseBuildInput } from '../../lib/sim/build-input';
-  import { fightRefOf } from '../../lib/sim/sources';
   import { simCopy } from '../../lib/sim/copy';
-  import { button } from '../../lib/ui/button';
-  import { BUSY_CLASS } from '../../lib/ui/busy';
+  import { fightRefOf } from '../../lib/sim/sources';
+  import { LINK } from '../../lib/ui/primitives';
+  import Button from '../ui/Button.svelte';
+  import Field from '../ui/Field.svelte';
+  import FormRow from '../ui/FormRow.svelte';
+  import Page from '../ui/Page.svelte';
+  import Plate from '../ui/Plate.svelte';
+  import Row from '../ui/Row.svelte';
+  import Section from '../ui/Section.svelte';
 
   let {
     busy,
@@ -46,8 +30,6 @@
     onsignin,
     onback = () => {},
     hasCharacters = true,
-    heroSignIn = false,
-    showAddonCard = true,
   }: {
     busy: boolean;
     message: string | null;
@@ -56,46 +38,15 @@
     onbuild: (id: string) => void;
     onfight: (ref: string) => void;
     onsignin: () => void;
-    /** Signed-in only: returns to the landing state's character list. */
+    /** Signed in: back to the character the line's "Change source" left. */
     onback?: () => void;
-    /** False for a signed-in account with no characters: there is nothing to go back to,
-     *  so the account card carries only its note. */
+    /** False for a signed-in account with no characters: nothing to go back to. */
     hasCharacters?: boolean;
-    /** Finding 2, 2026-09-26 layout pass: renders the sign-in card as a full-width hero
-     *  above the three paste cards instead of a fourth, equal-weight one. Has no effect
-     *  while `signedIn` is true -- that state is always the "back to your characters" grid. */
-    heroSignIn?: boolean;
-    /** False whenever ColdPasteHero.svelte already owns the one paste surface on this view
-     *  (SimView.svelte passes `!showColdPasteHero`): "From a build" and "From a logged
-     *  fight" become a two-card row and `onaddon` goes unused. True everywhere else (the
-     *  bulk tool pages' default, which never show a hero). */
-    showAddonCard?: boolean;
   } = $props();
 
   let addonCode = $state('');
   let buildRef = $state('');
   let fightRef = $state('');
-
-  const field =
-    'border-line-warm rounded-control bg-raised text-text min-h-11 w-full border px-3 py-2 text-[14px]';
-  const action = 'border-line-warm-strong rounded-control text-strong label min-h-11 self-start border px-4';
-  // The three Load buttons all start a request, so each takes the shared busy look and
-  // aria-busy while `busy` holds (design 2026-09-22 spec section 3.2). Their label is
-  // "Load" whether or not a load is running -- only the look changes.
-  const actionBusy = $derived(busy ? `${action} ${BUSY_CLASS}` : action);
-
-  /** Polish spec 5.3: the sentence, then Sign in (primary) and Paste an export (secondary). */
-  const signInButton = button('primary', 'md');
-  const pasteButton = button('secondary', 'md');
-
-  /** Takes the visitor to the cold-paste box above, which owns the paste surface. */
-  function focusPasteBox(): void {
-    const box = document.getElementById(landingCopy.pasteBoxId);
-    box?.scrollIntoView({ block: 'center' });
-    box?.focus();
-  }
-
-  const showHero = $derived(heroSignIn && !signedIn);
 
   /** A saved link or id loads the saved build; an unsaved planner link loads its code. */
   function loadBuildInput(): void {
@@ -104,157 +55,110 @@
     if (input.kind === 'code') onaddon(input.code);
     else onbuild(input.id);
   }
+
+  function submitWith(event: SubmitEvent, run: () => void): void {
+    event.preventDefault();
+    run();
+  }
 </script>
 
-{#snippet addonCard()}
-  <Card glyph="download" compact title={simCopy.sourceAddonTitle}>
-    <p class="text-muted text-[13px]">{simCopy.sourceAddonBody}</p>
-    <label class="sr-only" for="sim-addon">{simCopy.sourceAddonTitle}</label>
-    <textarea
-      id="sim-addon"
-      rows="2"
-      class={field}
-      placeholder="FS1:…"
-      bind:value={addonCode}
-      disabled={busy}
-      data-testid="sim-addon-input"></textarea>
-    <button
-      type="button"
-      class={actionBusy}
-      disabled={busy}
-      aria-busy={busy}
-      onclick={() => onaddon(addonCode)}
-      data-testid="sim-addon-load"
-    >
-      Load
-    </button>
-    <!-- The addon pointer belongs to this card, not to the row's end where it read as an
-         orphaned line under three cards. -->
-    <p class="text-muted text-[12px]">
-      <a href="/setup" class="{rowLink} text-nav" data-testid="sim-get-addon"
-        >{currentCharacterCopy.getTheAddon}</a
-      >
-    </p>
-  </Card>
-{/snippet}
-
-{#snippet buildCard()}
-  <Card glyph="tree" compact title={simCopy.sourceBuildTitle}>
-    <p class="text-muted text-[13px]">{simCopy.sourceBuildBody}</p>
-    <label class="sr-only" for="sim-build">{simCopy.sourceBuildTitle}</label>
-    <input
-      id="sim-build"
-      class={field}
-      placeholder="foreversixty.gg/b/…"
-      bind:value={buildRef}
-      disabled={busy}
-      data-testid="sim-build-input"
-    />
-    <button
-      type="button"
-      class={actionBusy}
-      disabled={busy}
-      aria-busy={busy}
-      onclick={loadBuildInput}
-      data-testid="sim-build-load">Load</button
-    >
-  </Card>
-{/snippet}
-
-{#snippet fightCard()}
-  <Card glyph="chart" compact title={simCopy.sourceFightTitle}>
-    <p class="text-muted text-[13px]">{simCopy.sourceFightBody}</p>
-    <label class="sr-only" for="sim-fight">{simCopy.sourceFightTitle}</label>
-    <input
-      id="sim-fight"
-      class={field}
-      placeholder="foreversixty.gg/reports/…?fight=2"
-      bind:value={fightRef}
-      disabled={busy}
-      data-testid="sim-fight-input"
-    />
-    <button
-      type="button"
-      class={actionBusy}
-      disabled={busy}
-      aria-busy={busy}
-      onclick={() => onfight(fightRefOf(fightRef))}
-      data-testid="sim-fight-load">Load</button
-    >
-  </Card>
-{/snippet}
-
-<section class="mx-[18px] flex flex-col gap-3 md:mx-0" data-testid="sim-sources">
-  {#if showHero}
-    <!-- Finding 2: the hero. Full width, first -- the three paste cards below are secondary. Finding 3: the DPS-only restriction
-         lives here too, as the caption under this heading, its only copy on the page for a
-         signed-out visitor. Persona review 2026-10-06 bis: this sign-in button is no
-         longer PRIMARY_BUTTON -- ColdPasteHero.svelte's Run is the one gold primary on this
-         view whenever the hero renders (`showColdPasteHero`), so this takes the same
-         secondary `action` look the non-hero branch below already uses for the identical
-         button. -->
-    <Card glyph="user" compact title={simCopy.sourceAccountTitle} testid="sim-account-card">
-      <p class="text-muted text-[13px]">{simCopy.signInToFindCharacters}</p>
-      <div class="flex flex-wrap gap-3">
-        <button type="button" class={signInButton} onclick={onsignin} data-testid="sim-signin">
-          {landingCopy.signInWithBattlenet}
-        </button>
-        <button type="button" class={pasteButton} onclick={focusPasteBox} data-testid="sim-paste-an-export">
-          {landingCopy.pasteAnExport}
-        </button>
-      </div>
-    </Card>
-
-    <div class={`grid grid-cols-1 gap-3 ${showAddonCard ? 'md:grid-cols-3' : 'md:grid-cols-2'}`}>
-      {#if showAddonCard}
-        {@render addonCard()}
-      {/if}
-      {@render buildCard()}
-      {@render fightCard()}
-    </div>
-  {:else}
-    <div class="grid grid-cols-1 gap-3 md:grid-cols-2">
-      {#if showAddonCard}
-        {@render addonCard()}
-      {/if}
-      {@render buildCard()}
-      {@render fightCard()}
-
-      <Card glyph="user" compact title={simCopy.sourceAccountTitle} testid="sim-account-card">
-        {#if signedIn && hasCharacters}
-          <button type="button" class={action} onclick={onback} data-testid="sim-back-to-characters">
-            {simCopy.backToCharacters}
-          </button>
-        {:else if !signedIn}
-          <p class="text-muted text-[13px]">{simCopy.signInToFindCharacters}</p>
-          <button type="button" class={action} onclick={onsignin} data-testid="sim-signin">
-            {landingCopy.signInWithBattlenet}
-          </button>
-        {:else}
-          <!-- Signed in, none yet: never a sign-in. /account refreshes the list from Battle.net. -->
-          <p class="text-muted text-[13px]" data-testid="sim-characters-on-their-way">
-            {simCopy.charactersOnTheirWay}
-          </p>
+<Page layout="ledger" testid="sim-sources">
+  <Section title={simCopy.sourceAddonTitle} testid="sim-source-addon">
+    <Plate label={simCopy.sourceAddonTitle}>
+      <div class="flex flex-col gap-3 p-4">
+        <FormRow
+          label={simCopy.sourceAddonTitle}
+          onsubmit={(event) => submitWith(event, () => onaddon(addonCode))}
+        >
+          <Field
+            id="sim-addon"
+            label={simCopy.sourceAddonTitle}
+            placeholder="FS1:…"
+            grow
+            disabled={busy}
+            bind:value={addonCode}
+            testid="sim-addon-input"
+          />
+          {#snippet submit()}
+            <Button tone="primary" type="submit" disabled={busy} testid="sim-addon-load"
+              >{simCopy.sourceLoad}</Button
+            >
+          {/snippet}
+        </FormRow>
+        <p class="text-small text-muted m-0">
+          {simCopy.sourceAddonBody}
           <a
-            class={`${action} inline-flex items-center`}
-            href={simCopy.noCharactersYetHref}
-            data-testid="sim-your-account"
+            href="/setup"
+            class="{LINK} inline-flex min-h-11 items-center md:min-h-0"
+            data-testid="sim-get-addon">{currentCharacterCopy.getTheAddon} ›</a
           >
-            {simCopy.yourAccount}
-          </a>
-        {/if}
-      </Card>
+        </p>
+      </div>
+    </Plate>
+  </Section>
+  <Section title={simCopy.sourceOtherWays}>
+    <div>
+      <Row title={simCopy.sourceBuildTitle} sub={simCopy.sourceBuildBody} open wrapTrail>
+        {#snippet trail()}
+          <FormRow label={simCopy.sourceBuildTitle} onsubmit={(event) => submitWith(event, loadBuildInput)}>
+            <Field
+              id="sim-build"
+              label={simCopy.sourceBuildTitle}
+              placeholder="foreversixty.gg/b/…"
+              labelHidden
+              disabled={busy}
+              bind:value={buildRef}
+              testid="sim-build-input"
+            />
+            {#snippet submit()}
+              <Button type="submit" disabled={busy} testid="sim-build-load">{simCopy.sourceLoad}</Button>
+            {/snippet}
+          </FormRow>
+        {/snippet}
+      </Row>
+      <Row title={simCopy.sourceFightTitle} sub={simCopy.sourceFightBody} open wrapTrail>
+        {#snippet trail()}
+          <FormRow
+            label={simCopy.sourceFightTitle}
+            onsubmit={(event) => submitWith(event, () => onfight(fightRefOf(fightRef)))}
+          >
+            <Field
+              id="sim-fight"
+              label={simCopy.sourceFightTitle}
+              placeholder="foreversixty.gg/reports/…?fight=2"
+              labelHidden
+              disabled={busy}
+              bind:value={fightRef}
+              testid="sim-fight-input"
+            />
+            {#snippet submit()}
+              <Button type="submit" disabled={busy} testid="sim-fight-load">{simCopy.sourceLoad}</Button>
+            {/snippet}
+          </FormRow>
+        {/snippet}
+      </Row>
+      {#if signedIn && hasCharacters}
+        <Row title={simCopy.sourceAccountTitle} sub={simCopy.backToCharactersSub} open wrapTrail>
+          {#snippet trail()}
+            <Button onclick={onback} testid="sim-back-to-characters">{simCopy.backToCharacters}</Button>
+          {/snippet}
+        </Row>
+      {:else if signedIn}
+        <Row title={simCopy.sourceAccountTitle} sub={simCopy.charactersOnTheirWay} open wrapTrail>
+          {#snippet trail()}
+            <Button href="/account" testid="sim-your-account">{simCopy.yourAccount}</Button>
+          {/snippet}
+        </Row>
+      {:else}
+        <Row title={simCopy.sourceAccountTitle} sub={simCopy.signInToFindCharacters} open wrapTrail>
+          {#snippet trail()}
+            <Button onclick={onsignin} testid="sim-signin">{landingCopy.signInWithBattlenet}</Button>
+          {/snippet}
+        </Row>
+      {/if}
     </div>
-
-    <!-- task-2-brief.md: this switcher is what a signed-out visitor reads first on the bulk
-         tool pages -- the same scope sentence their own Astro shell already carries above
-         the fold, repeated here since it sits below the shell's own copy of it once the
-         island mounts. /sim's own hero branch above carries the one copy of this sentence
-         it needs instead (Finding 3). -->
-    <p class="text-muted text-[12px]" data-testid="sim-sources-scope-note">{simCopy.scopeNote}</p>
-  {/if}
-
-  {#if message}
-    <p role="alert" class="text-strong text-[13px]" data-testid="sim-source-message">{message}</p>
-  {/if}
-</section>
+    {#if message}
+      <p class="text-small text-wipe m-0 mt-2" role="alert" data-testid="sim-source-message">{message}</p>
+    {/if}
+  </Section>
+</Page>

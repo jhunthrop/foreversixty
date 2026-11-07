@@ -11,14 +11,6 @@
 // font; it was this).
 import { dpsSpecs, nonDpsSpecs } from './spec-label';
 
-/** The specs grid's own responsive column classes. Shared by both the simulated (dps)
- *  section and the unsimulated (healer/tank) section below it, so the two groups line up
- *  in the same column widths. */
-export const SPEC_GRID_CLASSES = 'grid grid-cols-1 gap-3 px-[18px] md:grid-cols-2 md:px-0 lg:grid-cols-3';
-
-/** One placeholder card's classes -- the height every real SpecCard reserves before content. */
-export const SPEC_CARD_SKELETON_CLASSES = 'bg-card-top border-line rounded-panel min-h-[168px] border';
-
 /** One slot index per dps spec, so the skeleton always has the same card count the real grid will. */
 export function specSkeletonSlots(): number[] {
   return Array.from({ length: dpsSpecs().length }, (_, index) => index);

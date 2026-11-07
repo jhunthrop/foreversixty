@@ -7,6 +7,7 @@
 // source picker and two results views do not fit under that. Nothing here is loaded by /sim.
 import { mount } from 'svelte';
 import { scheduleBoot } from './lib/islands/boot';
+import { shellReservations } from './lib/islands/reservations';
 import ToolsView from './components/sim/tools/ToolsView.svelte';
 import { TOOLS, type SimTool } from './lib/sim/bulk-store.svelte';
 import './styles/fonts.css';
@@ -42,6 +43,9 @@ function boot(): void {
   // The shell's skeleton and no-JS paragraph live inside the mount; Svelte 5 appends rather
   // than replaces, so they go before the mount or they stay under the island.
   target.replaceChildren();
+  // The shell's min-h reservation holds the footer until the island draws; after that the page
+  // is as tall as what it shows (lib/islands/reservations.ts).
+  target.classList.remove(...shellReservations(target));
   mount(ToolsView, { target, props: { tool } });
 }
 

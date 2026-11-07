@@ -35,7 +35,7 @@ test('a pet’s cast row sits under its owner and says which pet cast it', async
   const bite = page.getByTestId('cast-Pet-0-2085-2284-7855-165189-01000000B1-17253');
   await expect(bite).toBeVisible();
   await expect(bite).toContainText('Thalgrit');
-  await expect(bite).toContainText('via Ashfang');
+  await expect(bite.getByTestId('cast-via')).toHaveText('Ashfang (Thalgrit’s pet)');
 });
 
 test('picking the pet’s owner keeps the pet’s casts on screen', async ({ page }) => {

@@ -19,6 +19,7 @@
   import { RANKING_METRICS } from '../../lib/rankings/url';
   import { formatAmount, percentileToken, rowLink } from '../../lib/report/format';
   import { executionHref, executionLabel, executionTitle } from '../../lib/sim/execution';
+  import { ROW_ITEM } from '../../lib/ui/primitives';
   import { ROW_BAND_MARK, ROW_BAND_REACH, ROW_BAND_TARGET, ROW_RULE } from '../../lib/ui/row';
 
   let {
@@ -118,16 +119,16 @@
 
 <section class="flex flex-col gap-2">
   {#if heading}
-    <h2 class="section-title">{title}</h2>
+    <h2 class="text-section text-strong font-bold">{title}</h2>
     <p class="text-muted text-[12px]" data-testid="character-execution-definition">
       {characterTableCopy.executionDefinition}
     </p>
   {:else}
-    <p class="label text-muted pt-1.5" data-testid="character-table-label">{title}</p>
+    <p class="text-small text-muted pt-1.5 font-semibold" data-testid="character-table-label">{title}</p>
   {/if}
   <ul class="flex flex-col" data-testid={testid}>
     <li
-      class={`quiet-label border-line-soft grid min-h-9 items-end gap-3 border-b px-2 pb-2 ${GRID} ${ROW_RULE}`}
+      class={`quiet-label grid min-h-9 items-end gap-3 px-2 pb-2 ${ROW_ITEM} ${GRID} ${ROW_RULE}`}
       aria-hidden="true"
       data-testid="character-table-header"
     >
@@ -143,7 +144,7 @@
       <!-- L8.5 ruling 1: the rating card's weakest part links here (fix round 2: the target's
            gold edge and tint, 96px under the window's top). -->
       <li
-        class={`border-line-soft grid min-h-11 items-center gap-3 border-b py-2 text-[14px] ${GRID} ${ROW_RULE} ${rowPadding(row)}${rowId === null ? '' : TARGET}`}
+        class={`grid min-h-11 items-center gap-3 py-2 text-[14px] ${ROW_ITEM} ${GRID} ${ROW_RULE} ${rowPadding(row)}${rowId === null ? '' : TARGET}`}
         id={rowId === null ? undefined : rowId(row)}
         data-marked={isMarked(row) ? 'true' : undefined}
       >

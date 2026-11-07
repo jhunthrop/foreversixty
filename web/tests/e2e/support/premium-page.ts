@@ -14,7 +14,7 @@ import { PARITY_OUT, REPO_ROOT } from './parity';
 
 export const PREMIUM_NOW = new Date('2026-11-08T10:00:00Z');
 
-export type PremiumPageState = 'out' | 'free' | 'seat' | 'checkout-confirmed';
+export type PremiumPageState = 'out' | 'free' | 'seat' | 'checkout-confirmed' | 'checkout-owned';
 
 const json = (body: unknown, status = 200) => ({
   status,
@@ -30,6 +30,7 @@ const ACCOUNT_OF: Record<PremiumPageState, string | null> = {
   free: 'free',
   seat: 'seat',
   'checkout-confirmed': 'premium',
+  'checkout-owned': 'seat',
 };
 
 const PATH_OF: Record<PremiumPageState, string> = {
@@ -37,6 +38,7 @@ const PATH_OF: Record<PremiumPageState, string> = {
   free: '/premium',
   seat: '/premium',
   'checkout-confirmed': '/premium/checkout?plan=premium&interval=yearly&status=success&session_id=cs_test_1',
+  'checkout-owned': '/premium/checkout?plan=premium&interval=yearly',
 };
 
 interface Facts {
@@ -67,6 +69,7 @@ export async function openPremiumState(page: Page, state: PremiumPageState, mock
   await page.goto(PATH_OF[state]);
   if (state === 'free' || state === 'seat') await expect(page.getByTestId('premium-answer')).toBeVisible();
   if (state === 'checkout-confirmed') await expect(page.getByTestId('checkout-next')).toBeVisible();
+  if (state === 'checkout-owned') await expect(page.getByTestId('premium-owned')).toBeVisible();
   await page.waitForLoadState('networkidle');
 }
 

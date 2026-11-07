@@ -7,7 +7,7 @@ import { expect, test } from './support/test';
 import { addonCopy } from '../../src/lib/addon/copy';
 import { ACTIVE_BUILD } from './support/active-build';
 import { expectClass, raceSelect, shareBuild } from './support/planner';
-import { gotoSim, simCharacter } from './support/sim-page';
+import { gotoSim, simCharacter, openMoreSettings } from './support/sim-page';
 import { simPageCopy } from '../../src/lib/sim/page-copy';
 
 // The fixture Fury Warrior every other /sim* spec in this suite already pastes (grepped
@@ -165,6 +165,7 @@ test.describe('current character', () => {
 
     await page.getByTestId('sim-upcoming').check();
     await page.getByTestId('sim-source-raid:molten-core:11502').check();
+    await openMoreSettings(page);
     await expect(page.getByTestId('sim-server-run')).toBeVisible();
     await page.getByTestId('sim-server-run').click();
 

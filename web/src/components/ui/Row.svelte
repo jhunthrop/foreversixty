@@ -23,9 +23,12 @@
     open = false,
     wrapTrail = false,
     testid,
+    id,
     titleContent,
     subContent,
     foot,
+    item = false,
+    labelledby,
   }: {
     title: string;
     titleTone?: TitleTone;
@@ -40,17 +43,23 @@
     /** Below 768 the trail takes its own line under the body (an in-row Segmented). */
     wrapTrail?: boolean;
     testid?: string;
+    /** A link target on the row itself (`/sim/specs#warrior-fury`). */
+    id?: string;
     /** Replaces the title's text (a name with its tooltip trigger). */
     titleContent?: Snippet;
     /** Replaces the sub line (a source line with a glyph). */
     subContent?: Snippet;
     /** A line of controls under the body, full width (a narrow rail: tags, votes, a button). */
     foot?: Snippet;
+    /** A list item (`li`) of the caller's `ul`, so the rows keep their hairlines between them. Never with `href`. */
+    item?: boolean;
+    /** The id of the element that names the row (aria-labelledby). */
+    labelledby?: string;
     /** Never rendered: an Astro caller's whitespace between named slots arrives as children. */
     children?: Snippet;
   } = $props();
 
-  const element = $derived(rowElement(href));
+  const element = $derived(rowElement(href, item));
   const hasLead = $derived(lead !== undefined || rank !== undefined);
 </script>
 
@@ -70,6 +79,8 @@
     selected && 'bg-selected shadow-[inset_3px_0_0_var(--color-gold)]',
   ]}
   aria-current={selected ? 'true' : undefined}
+  {id}
+  aria-labelledby={labelledby}
   data-testid={testid}
 >
   {#if hasLead}

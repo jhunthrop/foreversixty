@@ -4,7 +4,6 @@ import path from 'node:path';
 import type { Page } from '@playwright/test';
 import { expect, test } from './support/test';
 import { bulkCopy } from '../../src/lib/sim/copy';
-import { fieldBox } from './support/select';
 
 const ROOT = path.join(import.meta.dirname, '..', '..');
 const activeBuild = JSON.parse(readFileSync(path.join(ROOT, 'src', 'data', 'active-build.json'), 'utf8')) as {
@@ -68,7 +67,7 @@ test('the page opens with the warning, above everything else', async ({ page }) 
 // so the row must render no value at all in this state.
 test('with no character loaded, the settings bar makes no rotation claim at all', async ({ page }) => {
   await page.goto('/sim/weights');
-  await expect(page.getByTestId('sim-settings')).toBeVisible();
+  await expect(page.getByTestId('sim-run-bulk-bar')).toBeVisible();
   await expect(page.getByTestId('sim-rotation')).toHaveCount(0);
   await expect(page.getByText(/is not simulated/)).toHaveCount(0);
 });
@@ -277,8 +276,8 @@ test('the run bar shows no combination count, but does show a working precision 
   await loadWeights(page);
   await expect(page.getByTestId('sim-run-bulk-bar')).toBeVisible();
   await expect(page.getByTestId('sim-combo-count')).toHaveCount(0);
-  const precision = page.getByTestId('sim-precision');
-  await expect(fieldBox(page, 'sim-precision')).toBeVisible();
+  const precision = page.getByTestId('control-precision');
+  await expect(precision).toBeAttached();
   await expect(precision.locator('option')).toHaveCount(3);
   // Task 8, sub-item 2: the option text itself is now the bulk tools' own bare
   // "Fast"/"Normal"/"High" -- the wire's nominal iteration count was never the real cost of

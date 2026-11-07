@@ -9,6 +9,7 @@ import { apiUnreachable, expect, test } from './support/test';
 import { addonCopy } from '../../src/lib/addon/copy';
 import { bulkCopy } from '../../src/lib/sim/copy';
 import { choose } from './support/select';
+import { openRequest } from './support/sim-page';
 
 // Reads this spec does not answer go unanswered, as the API out of reach (support/test.ts).
 test.beforeEach(({ page }) => apiUnreachable(page, '**/v1/builds?*'));
@@ -223,6 +224,8 @@ test('a named set from the addon export carries its enchant and suffix into the 
   await loadGear(page, '/sim/gear', FURY_V2);
   await expect(page.getByTestId('sim-set-Alt Set')).toBeVisible();
   await page.getByTestId('sim-set-Alt Set').getByRole('button', { name: bulkCopy.setsAdd }).click();
+  // The raw request lives in More settings, as on /sim (BulkRunBar mounts MoreSettingsSheet).
+  await openRequest(page);
   await page.getByTestId('sim-request-drawer').locator('summary').click();
   // The drawer rebuilds its JSON after the set lands in the store; read it once the set is
   // in it, or a phone-speed run parses an empty textarea.
@@ -275,7 +278,7 @@ test('a run reports its stage line and ends with a ranked table', async ({ page 
 test('precision is three choices and normal runs two stages', async ({ page }) => {
   await loadGear(page);
   await page.getByTestId('sim-search-add-16963').click();
-  await choose(page.getByTestId('sim-precision'), 'normal');
+  await choose(page.getByTestId('control-precision'), 'normal');
   await page.getByTestId('sim-run-bulk').click();
   await expect(page.getByTestId('sim-stage-progress')).toHaveText(/stage \d of 2 /);
 });
@@ -295,7 +298,7 @@ test('the results show the equipped baseline, a ranked table and a per-slot summ
   // the default precision would leave exactly one finalist, not a ranked table of more
   // than one row. Normal's 2-stage ladder halves once -- 3 -> 2 -- which is what this test
   // is actually asserting on.
-  await choose(page.getByTestId('sim-precision'), 'normal');
+  await choose(page.getByTestId('control-precision'), 'normal');
   await page.getByTestId('sim-run-bulk').click();
 
   const equipped = page.getByTestId('sim-equipped-line');

@@ -120,6 +120,8 @@ export const guildBillingCopy = {
   founderPill: 'Founder',
   line2,
   chooser: {
+    /** The plan radio group's accessible name. */
+    planGroup: 'Plan',
     /** The one link to the plans page's guild region (spec 2026-10-29-premium-entry section 7). */
     compare: 'Compare Guild and Raid guild',
     tierName,

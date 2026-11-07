@@ -19,6 +19,7 @@
     actions,
     tabs,
     minRowHeight,
+    titleTestid = 'page-title',
     testid,
   }: {
     title: string;
@@ -37,6 +38,8 @@
      *  (one spec's figure, another's four) keeps its title and controls at the same y. The
      *  title block sits at the bottom of that area. */
     minRowHeight?: string;
+    /** The title's testid, for a page whose tests name its heading ("report-title"). */
+    titleTestid?: string;
     testid?: string;
     /** Never rendered: an Astro caller's whitespace between named slots arrives as children. */
     children?: Snippet;
@@ -48,7 +51,7 @@
     <div class="flex min-w-0 items-center gap-4" data-region={REGION.headTitle}>
       {#if crest}{@render crest()}{/if}
       <div class="min-w-0">
-        <h1 class="ui-title" style:color={titleColor(tone)} data-testid="page-title">{title}</h1>
+        <h1 class="ui-title" style:color={titleColor(tone)} data-testid={titleTestid}>{title}</h1>
         {#if meta}<div
             data-region={REGION.headMeta}
             class="text-small text-muted mt-[6px] flex flex-wrap items-center gap-x-4 gap-y-[6px]"

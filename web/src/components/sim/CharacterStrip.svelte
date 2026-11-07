@@ -54,6 +54,7 @@
     talentPoints,
     onchange,
     onrace = () => {},
+    plated = true,
   }: {
     character: SimCharacter;
     items: Map<number, Item>;
@@ -97,6 +98,8 @@
     onchange: () => void;
     /** The player answering the race question; the store replaces the character. */
     onrace?: (slug: string) => void;
+    /** The doll sits on a Plate; false on a page whose one Plate is its result (a saved Top gear run). */
+    plated?: boolean;
   } = $props();
 
   // "Open in planner" (below) needs the talent tree layout to encode the character's
@@ -230,7 +233,7 @@
         <span class="pill pill-site" data-testid="paperdoll-source">{source}</span>
       </div>
       {#if !unread && gearKnown}
-        <Plate label={gearCopy.listLabel} testid="sim-gear">
+        {#snippet doll()}
           <GearDoll
             slots={paperdollSlots}
             mode="worn"
@@ -241,7 +244,12 @@
             label={gearCopy.listLabel}
             testid="paperdoll"
           />
-        </Plate>
+        {/snippet}
+        {#if plated}
+          <Plate label={gearCopy.listLabel} testid="sim-gear">{@render doll()}</Plate>
+        {:else}
+          <div data-testid="sim-gear">{@render doll()}</div>
+        {/if}
       {/if}
       {#if pending}
         <!-- One question, asked once. The run control stays disabled until it is answered,

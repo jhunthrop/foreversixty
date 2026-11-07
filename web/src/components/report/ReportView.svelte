@@ -1,19 +1,25 @@
 <!-- web/src/components/report/ReportView.svelte -->
-<!-- The report island's root. It owns three things and delegates everything else:
+<!-- The report island's root (logs spec 2026-11-07 section 6). It owns three things and delegates
+     everything else:
        the URL state, which is the page's whole state (src/lib/report/url.ts)
        the data, which is one meta fetch, one report.json and one summary per fight
-       the layout, which is a selector column beside a content column on desktop and one
-       stacked column on phone.
-     Tasks 10 to 17 add panels inside the content column. -->
+       the frame: the PageHeader with its answer and the one tab strip (ReportHead), the control
+       bar (ReportBar), then a split Page whose main column holds the tab's one Plate first and its
+       open Sections after, and whose rail holds This pull and the tab's own rail Sections. -->
 <script lang="ts">
   import { untrack } from 'svelte';
-  import { MediaQuery } from 'svelte/reactivity';
-  import Card from '../ui/Card.svelte';
-  import PageHead from '../ui/PageHead.svelte';
+  import Facts from '../ui/Facts.svelte';
+  import Notice from '../ui/Notice.svelte';
+  import Page from '../ui/Page.svelte';
+  import PageHeader from '../ui/PageHeader.svelte';
+  import Plate from '../ui/Plate.svelte';
+  import Section from '../ui/Section.svelte';
+  import TabStripMore from '../ui/TabStripMore.svelte';
   import Tag from '../ui/Tag.svelte';
   import {
     POLL_INTERVAL_MS,
     REPORT_LOAD_FAILED,
+    REPORT_NOT_FOUND,
     createPoller,
     fetchAccessUrl,
     fetchLive,
@@ -27,26 +33,19 @@
   } from '../../lib/report/load';
   import {
     combinedFights,
-    combinedLabel,
     defaultFightIndex,
     resolveFightIndex,
     sampleFightIndex,
   } from '../../lib/report/fights';
   import { aggregateNight, nightSummary, type Night } from '../../lib/report/night';
-  import {
-    formatDuration,
-    outcomeLabel,
-    phaseReached,
-    schoolToken,
-    TRASH_PARSE,
-  } from '../../lib/report/format';
+  import { formatClock, schoolToken, TRASH_PARSE } from '../../lib/report/format';
   import {
     FLAG_LETTERS,
     MISSING_FIGHT,
     SOURCE_ENEMIES,
     SOURCE_EVERYONE,
     SOURCE_FRIENDLIES,
-    TABS,
+    legacyTab,
     trashScopeKey,
     type FlagKey,
     defaultState,
@@ -73,31 +72,34 @@
     windowMs,
     windowOf,
     windowPresets,
-    windowSummaryLabel,
     type TimeWindow,
   } from '../../lib/report/window';
   import ActorTable from '../coach/GatedActorTable.svelte';
-  import AuraTable from './AuraTable.svelte';
-  import CastTable from './CastTable.svelte';
   import DeathsTab from './DeathsTab.svelte';
-  import ExchangeTable from './ExchangeTable.svelte';
-  import FightSelector from './FightSelector.svelte';
-  import FilterBar from './FilterBar.svelte';
-  import ModeBar from './ModeBar.svelte';
   import NightView from './NightView.svelte';
+  import PlayerView from './PlayerView.svelte';
+  import RatingPanel from './RatingPanel.svelte';
+  import ReportBar from './ReportBar.svelte';
+  import ReportHead from './ReportHead.svelte';
+  import SummaryPanels from './SummaryPanels.svelte';
+  import TargetsRail from './TargetsRail.svelte';
   import Glossary from './Glossary.svelte';
-  import RaidCooldowns from './RaidCooldowns.svelte';
-  import ResourceGraphs from './ResourceGraphs.svelte';
+  import EventsRail from './EventsRail.svelte';
+  import MechanicsRail from './MechanicsRail.svelte';
+  import QueriesRail from './QueriesRail.svelte';
+  import RatingRail from './RatingRail.svelte';
+  import ThreatRail from './ThreatRail.svelte';
+  import type { ReportRatings } from '../../lib/rating/types';
+  import type { ReportRatingsStatus } from '../../lib/rating/report-ratings.svelte';
   import { reportFacts, reportHeading } from '../../lib/report/heading';
   import { hasRankedKill } from '../../lib/report/columns';
   import { quietMinutes } from '../../lib/report/quiet';
   import { isSampleReport } from '../../lib/report/sample';
   import { pageTitle } from '../../lib/seo';
   import { reportCredit } from '../../lib/report/credit';
-  import { homeRealmOf, setHomeRealm } from '../../lib/report/names.svelte';
+  import { homeRealmOf, setHomeRealm, unitLabel } from '../../lib/report/names.svelte';
   import { unitClassMap } from '../../lib/report/roster-class';
   import SummaryTab from './SummaryTab.svelte';
-  import ThreatTable from './ThreatTable.svelte';
   import TimeChart from './TimeChart.svelte';
   import { loadChartChunk } from '../../lib/chart/uplot-loader';
   import { deathKey, rateMarkers, threatMarkers } from '../../lib/chart/report-markers';
@@ -107,9 +109,15 @@
   import { dataUrl } from '../../lib/planner/load';
   import LoadError from '../ui/LoadError.svelte';
   import Skeleton from '../ui/Skeleton.svelte';
+  import Row from '../ui/Row.svelte';
+  import Spinner from '../ui/Spinner.svelte';
+  import ClassIcon from './ClassIcon.svelte';
+  import { REGION } from '../../lib/ui/regions';
+  import { button as buttonClass } from '../../lib/ui/button';
   import { REPORT_LAZY_MIN_H } from '../../lib/report/layout';
   import { provideCoachRow } from '../../lib/coach/report-context';
   import CoachTabHost from '../coach/CoachTabHost.svelte';
+  import CoachRowLine from '../coach/CoachRowLine.svelte';
   import { createLazyComponent, type LazyLoadState } from '../../lib/report/lazy-component.svelte';
   // Compare, Mechanics, Rankings, Timelines, Events and Queries are not the landing mode or
   // view (Analyze / tables / summary is), so each ships as its own chunk fetched the first
@@ -117,11 +125,17 @@
   // bundle. See lazy-component.svelte.ts.
   const compareModeLazy = createLazyComponent(() => import('./CompareMode.svelte'));
   const mechanicsModeLazy = createLazyComponent(() => import('./MechanicsMode.svelte'));
-  const rankingsModeLazy = createLazyComponent(() => import('./RankingsMode.svelte'));
   const timelinesViewLazy = createLazyComponent(() => import('./TimelinesView.svelte'));
   const eventsViewLazy = createLazyComponent(() => import('./EventsView.svelte'));
   const queriesViewLazy = createLazyComponent(() => import('./QueriesView.svelte'));
   const ratingTabLazy = createLazyComponent(() => import('./RatingTab.svelte'));
+  // The tab tables past Summary and the three actor tabs ship as their own chunks too, fetched the
+  // first time their tab opens (the island's gzip budget, spec 13).
+  const threatTableLazy = createLazyComponent(() => import('./ThreatTable.svelte'));
+  const castTableLazy = createLazyComponent(() => import('./CastTable.svelte'));
+  const auraTabLazy = createLazyComponent(() => import('./AuraTab.svelte'));
+  const exchangeTableLazy = createLazyComponent(() => import('./ExchangeTable.svelte'));
+  const resourceGraphsLazy = createLazyComponent(() => import('./ResourceGraphs.svelte'));
   import {
     abilityOptions,
     applyActorFilters,
@@ -139,10 +153,21 @@
   import { inSource, scopeSource } from '../../lib/report/source';
   import { fightGroupScope, groupScope, raidFlaggedPlayers, scopeNoun } from '../../lib/report/group';
   import { splitUnitName } from '../../lib/characters';
-  import { simCopy } from '../../lib/sim/copy';
   import { reportCopy } from '../../lib/report/copy';
   import { justUploadedAt } from '../../lib/reports/just-uploaded';
-  import { SECONDARY_BUTTON } from '../../lib/planner/styles';
+  import {
+    ACTOR_TABS,
+    NIGHT_TABS,
+    TABS_MD,
+    TABS_XL,
+    listedTabs,
+    reportAnswer,
+    thisPullFacts,
+  } from '../../lib/report/frame';
+  import { pullNumbers } from '../../lib/report/fights';
+  import { createCoachViewerState } from '../../lib/coach/viewer-state.svelte';
+  import { coachTabListed } from '../../lib/coach/viewer';
+  import { loadSpellIcons, NO_SPELL_ICONS, type SpellIconOf } from '../../lib/guild/report-spell-icons';
   // Value imports from exact.ts are deliberately absent: it pulls in the DuckDB query layer
   // (src/lib/report/query.ts), which dynamically imports the multi-hundred-KB duckdb-wasm
   // package. None of that belongs in the initial bundle everyone pays for on load -- every
@@ -151,8 +176,9 @@
   // at build and costs nothing.
   import type { CastCounts, ExactSplit, DeadSpan, ExactTotals, TargetScope } from '../../lib/report/exact';
   import { resolveTreeSizes } from '../../lib/report/tree-sizes';
-  import { REPORT_SKELETON_HTML } from '../../lib/report/skeleton';
-  import { classSlugOf } from '../../lib/report/planner-link';
+  import ReportSkeleton from './ReportSkeleton.svelte';
+  import { classSlugOf, plannerLinkFor } from '../../lib/report/planner-link';
+  import { simLinkFor } from '../../lib/report/sim-link';
 
   let { reportId, inlineMeta = null }: { reportId: string; inlineMeta?: ReportMeta | null } = $props();
 
@@ -214,12 +240,8 @@
   let state = $state<ReportState>(defaultState(1));
   const fight = $derived<FightEntry | null>(fights.find((f) => f.index === state.fight) ?? null);
   provideCoachRow(() => ({ reportId, fight, firstFight }));
-  /**
-   * The encounter slug the rankings pages use, from the selected fight's own name. This
-   * is `rankings/api.ts`'s one shared derivation -- Task 19's `/rankings/<encounter-slug>`
-   * route uses the same function, so the two cannot drift apart on a name with punctuation.
-   */
-  const currentEncounterSlug = $derived(slugFor(fight?.name ?? ''));
+  /** The rankings board of the boss on screen (decision R3b: the Rankings mode retired to a link). */
+  const rankingsHref = $derived(fight?.kind === 'encounter' ? `/rankings/${slugFor(fight.name)}` : null);
   const roster = $derived(
     ((nightMode ? nightFold : summary)?.roster ?? []).map((row) => ({
       guid: row.guid,
@@ -297,16 +319,6 @@
   const scopePlayers = $derived(
     state.source === SOURCE_FRIENDLIES && groupScopeNow.scoped ? groupScopeNow.group : playerSet,
   );
-  /**
-   * The subtitle's deaths: the fight's own count, or under the group scope the group's deaths in
-   * the fight's summary, the same list the Deaths tab shows below it (the fight list's mark reads
-   * the engine's group_deaths, which also takes back a hunter's Feign Death).
-   */
-  const subtitleDeaths = $derived(
-    !groupScopeNow.scoped || state.source !== SOURCE_FRIENDLIES
-      ? (fight?.deaths ?? 0)
-      : (base?.deaths ?? []).filter((death) => groupScopeNow.group.has(death.guid)).length,
-  );
   /** What the scope's players are called on the chart and the tables. */
   const noun = $derived(scopeNoun(groupScopeNow, state.source));
   /** The players and their pets and totems: what the enemies scope leaves out. */
@@ -358,7 +370,6 @@
    * it: the summary can only prorate the one by the other.
    */
   let tableExact = $state<Map<string, ExactTotals> | null>(null);
-  let tableMeasuring = $state(false);
   let tableMeasureError = $state('');
   /** The measure that is wanted now; an answer for an older question is dropped. */
   let measureToken = 0;
@@ -367,11 +378,7 @@
     // measure is the default the moment the table is prorated: every reviewer read a
     // prorated window as fact, and one read the wrong killer off it. The delay lets a
     // drag settle before the events are asked.
-    const wanted =
-      actorTableApproximate &&
-      !nightMode &&
-      state.view === 'tables' &&
-      (state.tab === 'damage-done' || state.tab === 'damage-taken' || state.tab === 'healing');
+    const wanted = actorTableApproximate && !nightMode && ACTOR_TABS.has(state.tab);
     void [tableKind, cutWindow, tableScope, filters.countOverkill, ignoringDead, state.fight];
     tableExact = null;
     tableMeasureError = '';
@@ -404,7 +411,6 @@
     return null;
   });
   async function runTableMeasure(token = measureToken): Promise<void> {
-    tableMeasuring = true;
     tableMeasureError = '';
     try {
       const { measureTable, sharedQueryLayer } = await import('../../lib/report/exact');
@@ -422,8 +428,6 @@
         tableMeasureError = `The measure did not run, so these are the summary’s prorated figures${
           thrown instanceof Error ? ` (${thrown.message})` : ''
         }.`;
-    } finally {
-      if (token === measureToken) tableMeasuring = false;
     }
   }
 
@@ -436,7 +440,7 @@
   let castMeasureError = $state('');
   let castToken = 0;
   $effect(() => {
-    const wanted = !windowIsWhole && !nightMode && state.view === 'tables' && state.tab === 'casts';
+    const wanted = !windowIsWhole && !nightMode && state.tab === 'casts';
     void [cutWindow, state.fight];
     castExact = null;
     castMeasureError = '';
@@ -522,20 +526,11 @@
       chartedError = `That ability's line did not load${thrown instanceof Error ? ` (${thrown.message})` : ''}.`;
     }
   }
-  /** True where there is a chart to put an ability on: one pull, Analyze, an actor tab. */
-  const abilityChartAvailable = $derived(
-    !nightMode &&
-      state.mode === 'analyze' &&
-      state.view === 'tables' &&
-      (state.tab === 'damage-done' || state.tab === 'damage-taken' || state.tab === 'healing'),
-  );
-
+  /** True where there is a chart to put an ability on: one pull, one player's own view. */
+  const abilityChartAvailable = $derived(!nightMode && playerView);
   /** The zero-height mark above the tab's table, for the phone to scroll to on a tab change. */
   let tabAnchor = $state<HTMLElement | undefined>(undefined);
-  /** The mark above the mode bar, for the phone to scroll to on a mode change. */
-  let modeAnchor = $state<HTMLElement | undefined>(undefined);
   let shownTab = state.tab;
-  let shownMode = state.mode;
   /** Scrolls a phone to the mark; a desktop has both in view and never moves. */
   function bringIntoView(anchor: HTMLElement | undefined): void {
     if (typeof window === 'undefined' || !window.matchMedia('(max-width: 767px)').matches) return;
@@ -555,16 +550,6 @@
       bringIntoView(sourceRow);
     } else bringIntoView(tabAnchor);
   });
-  $effect(() => {
-    const mode = state.mode;
-    if (mode === shownMode) return;
-    shownMode = mode;
-    bringIntoView(modeAnchor);
-  });
-  /** The dead spans the window meets: the note lists these, and says nothing when there are none. */
-  const windowedDeadSpans = $derived(
-    deadSpans.filter((span) => span.endMs > cutWindow.startMs && span.startMs < cutWindow.endMs),
-  );
   /** The window, cut at the last death when the filter asks for it. */
   // The window itself is never cut: "ignore events after a death" leaves each player's own
   // dead spans out of the measure instead (see `deadSpans`), since a raised player fights on.
@@ -606,18 +591,6 @@
   const presets = $derived(
     scoped === null ? [] : windowPresets(scoped, base?.duration_ms ?? scoped.duration_ms),
   );
-  /**
-   * Per fight index, the phase that pull reached. Over the night every pull's summary is
-   * folded, so the whole list can say; on a single pull only the one on screen is loaded,
-   * and the others' rows say nothing rather than guessing.
-   */
-  const phaseOf = $derived.by(() => {
-    // eslint-disable-next-line svelte/prefer-svelte-reactivity
-    const out = new Map<number, string>(night?.phaseReached ?? []);
-    const own = phaseReached(summary?.phases);
-    if (own !== '' && fight !== null) out.set(fight.index, own);
-    return out;
-  });
   /** The main chart's metric: the table's own on the three rate tabs, damage done elsewhere (spec §B5.2). */
   const chartMetric = $derived<'damage-done' | 'healing' | 'damage-taken'>(
     state.tab === 'damage-taken' ? 'damage-taken' : state.tab === 'healing' ? 'healing' : 'damage-done',
@@ -626,16 +599,17 @@
   const wholeScoped = $derived(
     base === null || nightMode ? null : scopeSource(base, scopeKey, scopePlayers, friendlySet),
   );
-  const wholeChartActors = $derived.by(() => {
+  /** A chart's actors over the whole fight, under the source scope. */
+  function wholeChartActorsFor(metric: 'damage-done' | 'healing' | 'damage-taken'): Actor[] {
     if (wholeScoped === null) return [];
     const table =
-      chartMetric === 'damage-taken'
+      metric === 'damage-taken'
         ? wholeScoped.damage_taken
-        : chartMetric === 'healing'
+        : metric === 'healing'
           ? wholeScoped.healing
           : wholeScoped.damage_done;
     return table.filter((actor) => inSource(actor.guid, scopeKey, scopePlayers, friendlySet));
-  });
+  }
   /** The brush's shape on every chart: the raid's damage per second over the whole fight. */
   const brushShape = $derived(
     base === null
@@ -676,7 +650,7 @@
   /** A death's link on the Deaths tab, keeping the fight and the window (spec §B6.6). */
   function deathHref(death: { guid: string; at_ms: number }): string {
     return `${window.location.pathname}${reportSearch(
-      withState(state, { mode: 'analyze', view: 'tables', tab: 'deaths', openDeaths: [deathKey(death)] }),
+      withState(state, { tab: 'deaths', openDeaths: [deathKey(death)] }),
       firstFight,
     )}`;
   }
@@ -684,7 +658,7 @@
     const keys = deaths.map((event) => event.key.replace(/^death-/, ''));
     const span =
       deaths.length > 1 ? { start: deaths[0].atMs, end: deaths[deaths.length - 1].atMs + 1000 } : {};
-    patch({ mode: 'analyze', view: 'tables', tab: 'deaths', openDeaths: keys, ...span });
+    patch({ tab: 'deaths', openDeaths: keys, ...span });
   }
   const iconOf = (_spellId: number, stem?: string): string | null =>
     stem === undefined ? null : dataUrl(activeBuild.build, `icons/${stem}.webp`);
@@ -720,12 +694,6 @@
     ),
   );
   const chartSyncKey = $derived(`${reportId}:${state.fight}`);
-  /** The tabs whose table is itself a time chart: the shared damage chart is not drawn above them. */
-  const tabDrawsOwnChart = $derived(
-    state.mode === 'analyze' &&
-      state.view === 'tables' &&
-      (state.tab === 'threat' || state.tab === 'resources'),
-  );
   // The chart chunk loads in parallel with the summary, so a chart never waits on it (spec §B11).
   $effect(() => {
     loadChartChunk().catch(() => {
@@ -735,54 +703,6 @@
   // Whole means the cut window too: "ignore events after a death" narrows what the tables
   // sum just as a brush does, and a narrowed table is measured, not prorated.
   const windowIsWhole = $derived(base !== null && isFullWindow(cutWindow, base.duration_ms));
-
-  // The chart block collapses to a one-line strip on a phone by default and stays open on
-  // desktop (design review 2026-09-26 findings 1 and 2): every table tab shared the same
-  // chart, its sliders and its six preset buttons above it, so switching tables re-asked a
-  // phone visitor to scroll past the same stack every time. `md:` here matches Tailwind's
-  // own breakpoint, not this component's `lg`-gated table tabs, which answer a different
-  // question (does a pill row or a select fit).
-  const CHART_OPEN_KEY = 'fs.report.chartOpen';
-  // The subtitle's separator as an expression: Svelte trims a block's leading space, which read
-  // "4 fights· complete" when it was literal text.
-  const SUBTITLE_SEPARATOR = ' · ';
-  function prefersOpenChart(): boolean {
-    try {
-      return globalThis.matchMedia?.('(min-width: 768px)').matches ?? true;
-    } catch {
-      return true;
-    }
-  }
-  let chartOpen = $state(prefersOpenChart());
-  /**
-   * The sample report draws the 74 px strip only on a phone, where its first screen promises the
-   * damage rows (onboarding-second-screen.spec.ts). From md up it draws the full chart, head,
-   * legend, presets and brush, as a real report does (owner, 2026-10-30: "still too small").
-   */
-  const wideViewport = new MediaQuery('min-width: 768px', true);
-  const compactChart = $derived(isSampleReport(reportId) && !wideViewport.current);
-  $effect(() => {
-    // The visitor's remembered choice, read once after mount -- never at the component's
-    // own evaluation, so there is nothing here for a server render to disagree with.
-    try {
-      const stored = globalThis.localStorage?.getItem(CHART_OPEN_KEY);
-      if (stored === 'true' || stored === 'false') chartOpen = stored === 'true';
-    } catch {
-      /* Storage can be unavailable (Safari private mode); the viewport default stands. */
-    }
-  });
-  function setChartOpen(open: boolean): void {
-    chartOpen = open;
-    try {
-      globalThis.localStorage?.setItem(CHART_OPEN_KEY, String(open));
-    } catch {
-      /* ignore */
-    }
-  }
-  /** The collapsed strip's own readout, the same words the open chart's caption uses. */
-  const chartSummaryLabel = $derived(
-    summary === null ? '' : windowSummaryLabel(timeWindow, summary.duration_ms),
-  );
 
   /**
    * True while the report is still being written -- the report's own status says so, or a
@@ -812,18 +732,6 @@
       ability: next.ability,
       flags: (Object.keys(FLAG_LETTERS) as FlagKey[]).filter((key) => next[key]),
     });
-  }
-  /** 'Copied' for a moment after the link is copied; '' otherwise. */
-  let copied = $state('');
-
-  async function copyLink(): Promise<void> {
-    try {
-      await navigator.clipboard.writeText(window.location.href);
-      copied = 'Copied';
-    } catch {
-      copied = 'Copy failed';
-    }
-    setTimeout(() => (copied = ''), 2000);
   }
   /** Set when the url named a fight the report does not have, cleared on the next pick. */
   let missingFight = $state<number | null>(null);
@@ -891,14 +799,6 @@
    * leaves the night's amounts bare.
    */
   const nightProrates = $derived(nightMode && (filters.target !== '' || filters.bossOnly));
-  /** The night's split note names the filter that is on, not a filter that is not. */
-  const nightFilterWords = $derived.by(() => {
-    const words = [
-      ...(filters.target !== '' || filters.bossOnly ? ['a target or boss filter'] : []),
-      ...(filters.ability !== null ? ['an ability filter'] : []),
-    ];
-    return words.join(' and ');
-  });
   const actorTableApproximate = $derived(
     !windowIsWhole || filtersScale || ignoringDead || filters.countOverkill,
   );
@@ -1069,8 +969,6 @@
       .filter((actor) => actor.total > 0 || actor.effective > 0)
       .sort((a, b) => b.effective - a.effective);
   });
-
-  const metricLabel = $derived(state.tab === 'healing' ? 'Healing' : 'Damage');
 
   /**
    * Players with no row in this table: under a death window that is usually someone who
@@ -1247,7 +1145,9 @@
     else window.history.replaceState(null, '', url);
   }
 
-  function patch(next: Partial<ReportState>): void {
+  function patch(raw: Partial<ReportState>): void {
+    // A sibling still speaking the old words ({ mode, view, tab }) lands on the tab it means.
+    const next: Partial<ReportState> = legacyTab(raw);
     // Changing fight drops the window: milliseconds from one fight's start mean nothing in
     // another's.
     const changesFight = next.fight !== undefined && next.fight !== state.fight;
@@ -1259,7 +1159,7 @@
     // the url on every pointer move, and pushing those would bury the real back
     // destination under a hundred entries.
     const pushes =
-      (['fight', 'mode', 'view', 'tab', 'source'] as const).some(
+      (['fight', 'tab', 'source'] as const).some(
         (key) => next[key] !== undefined && next[key] !== state[key],
       ) ||
       // The first window set on a whole fight is pushed too, so Back returns to the
@@ -1435,7 +1335,7 @@
     if (status === 'processing' || status === 'waiting' || status === 'unparsed') {
       document
         .getElementById('report')
-        ?.classList.remove('min-h-[2460px]', 'md:min-h-[1556px]', 'lg:min-h-[1325px]');
+        ?.classList.remove('min-h-[1900px]', 'md:min-h-[2200px]', 'lg:min-h-[1420px]');
     }
   });
 
@@ -1598,581 +1498,656 @@
   // is a no-op once the chunk has resolved so re-entering a mode already visited this session
   // costs nothing further.
   $effect(() => {
-    if (state.mode === 'compare' && summary !== null && !nightMode) compareModeLazy.load();
+    if (state.tab === 'compare' && summary !== null && !nightMode) compareModeLazy.load();
   });
   $effect(() => {
-    if (state.mode === 'mechanics' && base !== null) mechanicsModeLazy.load();
+    if (state.tab === 'mechanics' && base !== null) mechanicsModeLazy.load();
   });
   $effect(() => {
-    if (state.mode === 'rankings' && fight !== null) rankingsModeLazy.load();
+    if (scoped !== null && !nightMode && state.tab === 'timeline') timelinesViewLazy.load();
   });
   $effect(() => {
-    if (scoped !== null && !nightMode && state.mode === 'analyze' && state.view === 'timelines')
-      timelinesViewLazy.load();
+    if (scoped !== null && !nightMode && state.tab === 'events') eventsViewLazy.load();
   });
   $effect(() => {
-    if (scoped !== null && !nightMode && state.mode === 'analyze' && state.view === 'events')
-      eventsViewLazy.load();
+    if (scoped !== null && !nightMode && state.tab === 'queries') queriesViewLazy.load();
   });
   $effect(() => {
-    if (scoped !== null && !nightMode && state.mode === 'analyze' && state.view === 'queries')
-      queriesViewLazy.load();
+    if (scoped !== null && !nightMode && state.tab === 'rating') ratingTabLazy.load();
   });
   $effect(() => {
-    if (
-      scoped !== null &&
-      !nightMode &&
-      state.mode === 'analyze' &&
-      state.view === 'tables' &&
-      state.tab === 'rating'
-    )
-      ratingTabLazy.load();
+    if (scoped === null) return;
+    if (state.tab === 'threat') threatTableLazy.load();
+    if (state.tab === 'casts') castTableLazy.load();
+    if (state.tab === 'buffs' || state.tab === 'debuffs') auraTabLazy.load();
+    if (state.tab === 'interrupts' || state.tab === 'dispels') exchangeTableLazy.load();
+    if (state.tab === 'resources') resourceGraphsLazy.load();
   });
+  /** The Rating tab's answer, for its rail (RatingRail). */
+  let ratingState = $state<{ data: ReportRatings | null; status: ReportRatingsStatus }>({
+    data: null,
+    status: 'idle',
+  });
+
+  // ---- the frame (logs spec 2026-11-07 6.1) ----
+  /** The one-line notices under the bar (section 6.1): each says what the page did instead. */
+  const notices = $derived.by((): { id: string; text: string }[] => {
+    const out: { id: string; text: string }[] = [];
+    if (unknownSource !== null)
+      out.push({
+        id: 'report-unknown-source',
+        text: `This report has no player or unit called ${unknownSource}, so every friendly is showing.`,
+      });
+    if (unknownAbility !== null)
+      out.push({
+        id: 'report-unknown-ability',
+        text: `This tab has no ability called ${unknownAbility}, so every ability is showing.`,
+      });
+    if (missingFight !== null)
+      out.push({
+        id: 'report-missing-fight',
+        text:
+          missingFight === MISSING_FIGHT
+            ? 'This link names a fight the page cannot read, so the first fight is showing.'
+            : trashScopeKey(missingFight) !== null
+              ? `This report has no trash group starting at fight ${trashScopeKey(missingFight)}, so the first fight is showing.`
+              : `This report has no fight ${missingFight}, so the first fight is showing.`,
+      });
+    // A pull the logger's group was not in reads everyone in range (lib/report/group.ts), and
+    // says so, so the scope word over the table is never a surprise.
+    if (groupMissing) out.push({ id: 'report-group-missing', text: reportCopy.groupMissing });
+    if (error !== '') out.push({ id: 'report-fight-error', text: error });
+    if (percentilesUnavailable && showParse && fight?.kind === 'encounter')
+      out.push({ id: 'parse-unavailable-line', text: '' });
+    return out.filter((notice) => notice.text !== '' || notice.id === 'parse-unavailable-line');
+  });
+  /** The report has a logger's group, and this pull ran without any of it. */
+  const groupMissing = $derived(
+    !nightMode &&
+      fight !== null &&
+      state.source === SOURCE_FRIENDLIES &&
+      groupScopeNow.noun === 'everyone' &&
+      (fights.some((entry) => (entry.group?.length ?? 0) > 0) || (meta?.group?.length ?? 0) > 0),
+  );
+  /** "2 minutes ago": how long a report has been processing. */
+  const uploadedAge = $derived.by(() => {
+    const at = Date.parse(meta?.created_at ?? '');
+    if (Number.isNaN(at)) return 'just now';
+    const minutes = Math.max(0, Math.round((now - at) / 60_000));
+    return minutes === 0 ? 'just now' : `${minutes} ${minutes === 1 ? 'minute' : 'minutes'} ago`;
+  });
+  /** The Coach tab is listed only for a signed-in owner of a character in the pull, or an officer. */
+  const coachViewer = createCoachViewerState();
+  const tabs = $derived(listedTabs(coachTabListed(coachViewer.viewer, roster)));
+  const tabXl = $derived(TABS_XL - (tabs.some((tab) => tab.id === 'coach') ? 0 : 1));
+  /** A url on this page with `next` applied: what every in-page link carries. */
+  function hrefWith(next: Partial<ReportState>): string {
+    return `${typeof window === 'undefined' ? '' : window.location.pathname}${reportSearch(withState(state, next), firstFight) || '?'}`;
+  }
+  const tabItems = $derived(
+    tabs.map((tab) => ({
+      id: tab.id,
+      label: tab.label,
+      href: hrefWith({ tab: tab.id }),
+      testid: `tab-${tab.id}`,
+    })),
+  );
+  const playerHref = (guid: string): string => hrefWith({ source: guid });
+  /** The Source list's players: the scope's own (the group on a crowded log, everyone in range under that word). */
+  const sourceRoster = $derived(
+    state.source === SOURCE_ENEMIES
+      ? roster
+      : roster.filter(
+          (row) => inSource(row.guid, scopeKey, scopePlayers, friendlySet) || row.guid === state.source,
+        ),
+  );
+  /** The scope's word for the head's caption. */
+  const scopeWord = $derived(
+    state.source === SOURCE_EVERYONE || (!groupScopeNow.scoped && groupScopeNow.crowded)
+      ? reportCopy.everyoneInRange
+      : state.source === SOURCE_FRIENDLIES && groupScopeNow.scoped
+        ? groupScopeNow.noun === 'raid'
+          ? reportCopy.yourRaid
+          : reportCopy.yourGroup
+        : 'Group',
+  );
+  /** The players and deaths in the Source scope, for the answer and This pull. */
+  const scopeRoster = $derived(
+    (wholeScoped?.roster ?? []).filter((row) => inSource(row.guid, scopeKey, scopePlayers, friendlySet)),
+  );
+  const scopeDeaths = $derived(
+    (wholeScoped?.deaths ?? []).filter((death) => inSource(death.guid, scopeKey, scopePlayers, friendlySet)),
+  );
+  const answer = $derived(
+    fight === null || nightMode || summary === null
+      ? null
+      : reportAnswer({
+          fight,
+          attempt: pullNumbers(fights).get(fight.index)?.pull,
+          scope: scopeWord,
+          players: scopeRoster.length,
+          deaths: scopeDeaths.length,
+          groupDps:
+            scopeRoster.reduce((sum, row) => sum + row.damage_done, 0) /
+            (Math.max(summary.duration_ms, 1) / 1000),
+        }),
+  );
+  const pullFacts = $derived(
+    fight === null || nightMode
+      ? []
+      : thisPullFacts({
+          fight,
+          players: scopeRoster.length,
+          deaths: scopeDeaths.length,
+          phases: summary?.phases ?? [],
+        }),
+  );
+  const isTrashPull = $derived(fight !== null && fight.kind !== 'encounter');
+  const live = $derived<'live' | 'quiet' | null>(fightIsLive ? (quiet === null ? 'live' : 'quiet') : null);
+  const simHref = $derived(
+    fight === null || nightMode
+      ? null
+      : `/sim?source=fight&ref=${encodeURIComponent(`${reportId}:${state.fight}`)}&mode=compare`,
+  );
+  const where = $derived(
+    [facts.zone, fights.length > 0 ? facts.date : ''].filter((part) => part !== '').join(' · '),
+  );
+  /** One player as the Source on an actor tab: the player's own view (decision R5). */
+  const playerView = $derived(sourcePlayer !== undefined && ACTOR_TABS.has(state.tab) && !nightMode);
+  const playerRow = $derived(base?.roster.find((row) => row.guid === sourcePlayer));
+  const rosterByGuid = $derived(new Map((base?.roster ?? []).map((row) => [row.guid, row])));
+  const tabTitle = $derived<'Targets' | 'Healed' | 'Sources'>(
+    state.tab === 'healing' ? 'Healed' : state.tab === 'damage-taken' ? 'Sources' : 'Targets',
+  );
+  /** A night shows only the tabs that fold across pulls (section 6.3); the rest say pick a pull
+   *  (Coach says so itself, in its own words). */
+  const onePullTab = $derived(nightMode && !NIGHT_TABS.has(state.tab) && state.tab !== 'coach');
+  /** One player's worn set at the pull as a planner build, for Gear at the pull. */
+  function plannerHrefFor(guid: string | undefined): string | null {
+    const combatant = base?.combatants.find((row) => row.guid === guid);
+    if (combatant === undefined) return null;
+    const className = classOf.get(combatant.guid);
+    return (
+      plannerLinkFor({
+        dataBuild: activeBuild.build,
+        className,
+        treeSizes: treeSizesFor(className),
+        combatant,
+      })?.href ?? null
+    );
+  }
+  /** The tabs the sibling lane draws: their main content in the main column, This pull in the rail. */
+  let spellIcon = $state<SpellIconOf>(NO_SPELL_ICONS);
+  $effect(() => {
+    void loadSpellIcons(activeBuild.build).then((icons) => {
+      spellIcon = icons;
+    });
+  });
+  /** A same-page link (`?tab=…`, `?source=…`) moves in place: no reload, Back still undoes it. */
+  function followInPage(event: MouseEvent): void {
+    if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey)
+      return;
+    const anchor = (event.target as Element | null)?.closest('a');
+    const href = anchor?.getAttribute('href') ?? '';
+    if (anchor === null || anchor === undefined || anchor.target !== '') return;
+    const url = new URL(href, window.location.href);
+    if (url.pathname !== window.location.pathname || url.origin !== window.location.origin) return;
+    event.preventDefault();
+    const parsed = parseReportState(url.search, firstFight);
+    patch({ ...parsed, start: parsed.start, end: parsed.end });
+  }
 </script>
 
 {#snippet lazyFallback(lazy: LazyLoadState, minHeight: string)}
-  <!-- While the import is still in flight (loading and no failure yet), a Skeleton sized to
-       the panel reserves its place instead of leaving the mode or view blank for that one
-       round trip. A failure -- offline after the entry loaded, or a chunk evicted from the
-       cache -- says so through LoadError and offers a retry that calls `load()` again, which
-       is a fresh attempt rather than a no-op: see lazy-component.svelte.ts. -->
+  <!-- While a tab's chunk is in flight a Skeleton holds its place; a failed chunk says so inside
+       the Plate with Try again, a fresh attempt (lazy-component.svelte.ts). -->
   {#if lazy.error !== ''}
-    <LoadError message={lazy.error} onRetry={() => lazy.load()} testid="lazy-view-error" />
+    <Plate label={reportCopy.viewFailed}>
+      <div class="px-4 py-3">
+        <LoadError message={reportCopy.viewFailed} onRetry={() => lazy.load()} testid="lazy-view-error" />
+      </div>
+    </Plate>
   {:else}
     <Skeleton {minHeight} testid="lazy-view-skeleton" />
   {/if}
 {/snippet}
 
-{#snippet parseRetry()}
-  {#if percentilesUnavailable && showParse}
-    <p class="text-muted text-[13px]" data-testid="parse-unavailable">
-      The rankings could not be reached, so the Parse column is unknown; every other figure is from the log.
-      <button type="button" class="text-strong ml-1 underline" onclick={() => (parseAttempt += 1)}
-        >Try again</button
-      >
-    </p>
+{#snippet thisPull()}
+  {#if fight !== null && !nightMode}
+    <Section title="This pull" meta={`Started ${formatClock(fight.start)}`} testid="report-this-pull">
+      <!-- The facts' own first hairline sits on the head's (the mock's Facts under a Section head). -->
+      <div class="-mt-3"><Facts items={pullFacts} /></div>
+    </Section>
   {/if}
 {/snippet}
 
-{#snippet creditLine()}
-  <span class="flex flex-wrap items-center gap-x-2 gap-y-1">
-    {#if !credit.credited}<Tag tone="muted" testid="report-not-credited">{reportCopy.notCreditedTag}</Tag
-      >{/if}
-    <span data-testid="report-credit"
-      >{credit.prefix}{#if credit.href}<a class="text-gold hover:underline" href={credit.href}
-          >{credit.name}</a
-        >{:else}{credit.name}{/if}</span
-    >
-  </span>
-{/snippet}
-
-<!-- The processing and waiting head's meta line: the live badge, who owns it, its state, and the credit. -->
-{#snippet processingMeta()}
-  {#if status === 'waiting'}
-    <span class="pill pill-site mr-2" data-testid="report-live"
-      >{quiet === null ? 'Live' : reportCopy.quietBadge}</span
-    >
-  {/if}
-  <span data-testid="report-subtitle">
-    {#if meta !== null && meta.zone !== '' && meta.title !== ''}{meta.zone} ·{/if}
-    {#if status === 'waiting'}
-      {#if meta?.owner}<span data-testid="report-owner">{meta.owner.battletag}</span>{/if}
-    {:else}
-      {status === 'processing' ? 'Processing' : 'Could not be parsed'}
-    {/if}
-  </span>
-  {@render creditLine()}
-{/snippet}
-
-<!-- The report head's meta line: the sample or live badge (announced politely, not stealing focus: a
-     fight going live or settling is worth a screen reader hearing about on its own time), the zone,
-     date, fights and state, the fight in view, and under it the credit and the sample note. -->
-{#snippet reportMeta()}
-  <span role="status" aria-live="polite">
-    {#if isSampleReport(reportId)}
-      <span class="pill pill-site mr-2" data-testid="report-sample-badge">{reportCopy.sampleBadge}</span>
-    {:else if fightIsLive}
-      <span class="pill pill-site mr-2" data-testid="report-live"
-        >{quiet === null ? 'Live' : reportCopy.quietBadge}</span
-      >
-    {/if}
-  </span>
-  <span data-testid="report-subtitle">
-    {#if facts.zone !== ''}{facts.zone} ·{/if}
-    {#if fights.length > 0}<span class="numeric whitespace-nowrap">{facts.date}</span> ·{/if}
-    <span class="numeric whitespace-nowrap">{facts.fights}</span>{#if !isSampleReport(reportId)}
-      {SUBTITLE_SEPARATOR}{meta.status}{/if}
-    {#if nightMode}· {combinedLabel(fights, state.fight)}{/if}
-    {#if fight}· {fight.name}
-      {#if fight.kind === 'encounter' && !fight.in_progress}
-        <span
-          class="font-semibold {fight.kill ? 'text-kill' : 'text-wipe'}"
-          title={fight.kill ? 'The boss died' : 'The percentage is the boss’s health when the pull ended'}
-          data-testid="report-fight-outcome"
-          >{outcomeLabel(fight, fight.kill ? '' : phaseReached(summary?.phases))}</span
-        >
-      {/if}
-      <span class="numeric">{formatDuration(fight.duration_ms)}</span>
-      {#if subtitleDeaths > 0}
-        · <span class="text-death numeric">{subtitleDeaths}</span>
-        {subtitleDeaths === 1 ? 'death' : 'deaths'}
-      {/if}{/if}
-  </span>
-  <!-- The bundled sample was logged by no one the site knows: no credit line. -->
-  {#if !isSampleReport(reportId)}{@render creditLine()}{/if}
-  {#if isSampleReport(reportId)}
-    <span class="block" data-testid="report-sample-note">{reportCopy.sampleNote}</span>
+{#snippet chart(metric: 'damage-done' | 'healing' | 'damage-taken')}
+  {#if summary !== null && !nightMode}
+    <TimeChart
+      {metric}
+      actors={wholeChartActorsFor(metric)}
+      roster={summary.roster}
+      durationMs={summary.duration_ms}
+      window={timeWindow}
+      phases={chartPhases}
+      events={mainMarkers}
+      {deadSpans}
+      {brushShape}
+      onWindow={setWindow}
+      {sourcePlayer}
+      enemies={state.source === SOURCE_ENEMIES}
+      {youGuid}
+      chosen={state.players}
+      preset={state.playersPreset === null ? 'split' : state.playersPreset}
+      onChoose={(players) => patch({ players })}
+      onPreset={(preset) => patch({ players: null, playersPreset: preset === 'split' ? null : preset })}
+      logScale={state.logScale}
+      onLogScale={(logScale) => patch({ logScale })}
+      targetName={state.target === ''
+        ? undefined
+        : splitUnitName(unitNames.get(state.target) ?? state.target).name}
+      syncKey={chartSyncKey}
+      onOpenDeath={openDeaths}
+      extra={chartedAbility === null ? null : { label: chartedAbility.label, series: chartedAbility.series }}
+      {noun}
+    />
   {/if}
 {/snippet}
 
-<!-- Sim first, Copy link second, both the same secondary button (design review 2026-09-26 finding
-     5): the old inline gold link read as emphasis, not the one action a raider reaches for right
-     after opening a fight. A phone gets them as 44 px icon buttons. -->
-{#snippet reportActions()}
-  <div class="flex items-center gap-2">
-    {#if fight}
-      <a
-        class="{SECONDARY_BUTTON} border-line-warm text-text w-11 justify-center px-0 md:w-auto md:px-3"
-        href={`/sim?source=fight&ref=${encodeURIComponent(`${reportId}:${state.fight}`)}&mode=compare`}
-        aria-label={simCopy.simThisFight}
-        title={simCopy.simThisFight}
-        data-testid="report-sim-fight"
-        ><svg
-          class="md:hidden"
-          width="18"
-          height="18"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          aria-hidden="true"
-          ><path d="M10 2v6.5L4.6 18a2 2 0 0 0 1.8 3h11.2a2 2 0 0 0 1.8-3L14 8.5V2" /><path
-            d="M8.5 2h7"
-          /><path d="M7 15h10" /></svg
-        ><span class="hidden md:inline">{simCopy.simThisFight}</span></a
-      >
-    {/if}
-    <button
-      type="button"
-      class="{SECONDARY_BUTTON} border-line-warm text-text w-11 justify-center px-0 md:w-auto md:px-3"
-      title="Copy a link to exactly this view"
-      aria-label={copied === '' ? 'Copy link' : copied}
-      data-testid="copy-link"
-      onclick={() => void copyLink()}
-    >
-      <svg
-        class="md:hidden"
-        width="18"
-        height="18"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        aria-hidden="true"
-        ><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7" /><path
-          d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"
-        /></svg
-      ><span class={copied === '' ? 'hidden md:inline' : ''}>{copied === '' ? 'Copy link' : copied}</span>
-    </button>
-  </div>
+{#snippet stateHead(title: string, line: string)}
+  <PageHeader {title} titleTestid="report-title">
+    {#snippet meta()}
+      {#if status === 'waiting'}<Tag tone="success" testid="report-live"
+          >{quiet === null ? reportCopy.liveTag : reportCopy.quietBadge}</Tag
+        ><span>{reportCopy.loggingNow}</span>{:else if line !== ''}<span data-testid="report-subtitle"
+          >{line}</span
+        >{/if}
+    {/snippet}
+    {#snippet tabs()}
+      <TabStripMore
+        tabs={[
+          {
+            id: 'summary',
+            label: 'Summary',
+            href: '#',
+            disabled: true,
+            attrs: {
+              title:
+                status === 'processing'
+                  ? reportCopy.parsing
+                  : status === 'waiting'
+                    ? reportCopy.waiting
+                    : reportCopy.parseFailed,
+            },
+          },
+        ]}
+        active=""
+        md={1}
+        xl={1}
+        label={reportCopy.tabsLabel}
+        testid="report-tabs-disabled"
+      />
+    {/snippet}
+  </PageHeader>
 {/snippet}
 
 {#if status === 'failed'}
-  <div class="px-[18px] md:px-0">
-    <LoadError message={error} onRetry={() => void loadReport()} testid="report-error" />
-  </div>
-{:else if status === 'processing' || status === 'waiting' || status === 'unparsed'}
-  <div class="reveal" data-testid="report-processing" data-state={status}>
-    <div class="px-[18px] pb-2 md:px-0 md:pb-2">
-      <PageHead
-        eyebrow={reportCopy.eyebrow}
-        title={status === 'waiting' && meta !== null
-          ? heading
-          : meta?.title || meta?.zone || reportCopy.yourUpload}
-        titleTestid="report-title"
-        meta={processingMeta}
-      />
-    </div>
-    <div class="flex flex-col gap-4 px-[18px] pt-4 md:px-0">
-      <div class="flex min-w-0 flex-wrap gap-1" data-testid="report-tabs-disabled">
-        {#each TABS.slice(0, 1) as tab (tab.id)}
+  <Page layout="ledger" testid="report-failed">
+    {#snippet header()}<PageHeader title={reportCopy.eyebrow} />{/snippet}
+    <Plate label={reportCopy.eyebrow}>
+      <div
+        class="flex flex-wrap items-center gap-3 px-4 py-4 text-[14px]"
+        role="alert"
+        data-testid="report-error"
+      >
+        {#if error === REPORT_NOT_FOUND}
+          <span class="text-muted">{reportCopy.reportMissing}</span>
+          <a class="text-gold font-semibold" href="/reports">{reportCopy.openYourReports} ›</a>
+        {:else}
+          <span class="text-muted"
+            >{error === '' || error === REPORT_LOAD_FAILED ? reportCopy.reportFailed : error}</span
+          >
           <button
             type="button"
-            disabled
-            title={status === 'processing'
-              ? reportCopy.parsing
-              : status === 'waiting'
-                ? reportCopy.waiting
-                : reportCopy.parseFailed}
-            class="text-muted inline-flex min-h-9 cursor-not-allowed items-center px-3 text-[12px] font-bold tracking-[0.06em] uppercase opacity-60"
-            >{tab.label}</button
+            class={buttonClass('secondary', 'sm')}
+            data-testid="report-error-retry"
+            onclick={() => void loadReport()}>{reportCopy.tryAgain}</button
           >
-        {/each}
-      </div>
-      <div
-        class="border-line-soft rounded-control flex flex-col gap-2 border p-4"
-        data-testid="report-fights-strip"
-      >
-        {#if status === 'processing' || status === 'waiting'}
-          <p
-            class="flex items-center gap-3 text-[14px]"
-            role="status"
-            data-testid={status === 'waiting' ? 'report-waiting' : 'report-parsing'}
-          >
-            <span
-              class="border-line-warm border-t-text inline-block h-4 w-4 shrink-0 rounded-full border-2 {status ===
-                'waiting' && quiet !== null
-                ? ''
-                : 'animate-spin motion-reduce:animate-none'}"
-              aria-hidden="true"
-              data-testid="report-spinner"
-            ></span>
-            {status === 'waiting'
-              ? quiet === null
-                ? reportCopy.waiting
-                : reportCopy.quiet(quiet)
-              : reportCopy.parsing}
-          </p>
-        {:else}
-          <p class="text-[14px]" role="alert" data-testid="report-parse-failed">
-            {reportCopy.parseFailed}
-            <a class="text-strong underline" href="/setup#logging" data-testid="report-parse-failed-link"
-              >{reportCopy.parseFailedLink}</a
-            >
-          </p>
         {/if}
       </div>
-    </div>
+    </Plate>
+  </Page>
+{:else if status === 'processing' || status === 'waiting' || status === 'unparsed'}
+  <div class="reveal" data-testid="report-processing" data-state={status}>
+    <Page layout="ledger">
+      {#snippet header()}
+        {@render stateHead(
+          status === 'waiting' && meta !== null
+            ? heading
+            : meta?.title || meta?.zone || reportCopy.yourUpload,
+          status === 'processing'
+            ? `Uploaded ${uploadedAge}`
+            : status === 'unparsed'
+              ? (meta?.zone ?? '')
+              : '',
+        )}
+      {/snippet}
+      <Plate label={reportCopy.fightsLabel}>
+        <div class="px-4 py-4 text-[14px]" data-testid="report-fights-strip">
+          {#if status === 'processing' || status === 'waiting'}
+            <p
+              class="flex items-center gap-3"
+              role="status"
+              data-testid={status === 'waiting' ? 'report-waiting' : 'report-parsing'}
+            >
+              {#if !(status === 'waiting' && quiet !== null)}<span data-testid="report-spinner"
+                  ><Spinner /></span
+                >{/if}
+              {status === 'waiting'
+                ? quiet === null
+                  ? reportCopy.waiting
+                  : reportCopy.quiet(quiet)
+                : reportCopy.parsing}
+            </p>
+          {:else}
+            <p role="alert" data-testid="report-parse-failed">
+              {reportCopy.parseFailed}
+              <a class="text-gold font-semibold" href="/setup#logging" data-testid="report-parse-failed-link"
+                >{reportCopy.parseFailedLink}</a
+              >
+            </p>
+          {/if}
+        </div>
+      </Plate>
+    </Page>
   </div>
 {:else if status === 'loading' || meta === null}
-  <!-- Static, trusted markup of our own (skeleton.ts): no data goes into it. -->
-  <!-- eslint-disable-next-line svelte/no-at-html-tags -->
-  {@html REPORT_SKELETON_HTML}
+  <ReportSkeleton title={meta === null ? undefined : heading} />
 {:else}
-  <!-- The ready state's own wrapper, which is the only place `.reveal` may sit (design
-       2026-09-22 spec section 1.4). A plain block div: the island's mount point
-       (`<div id="report">` in report-shell.astro and reports/[id].astro) is a block container
-       with no gap of its own, so gathering these siblings under one div changes no
-       spacing -- unlike the flex islands, where a wrapper would have to repeat the gap. -->
-  <div class="reveal">
-    <!-- A phone: the title on one line with its pill beside it, and under them the subtitle
-         with the two actions as 44px icon buttons at its right. From md the wrapper below is
-         an ordinary row and the header the ordinary column it always was. -->
-    <div class="px-[18px] pb-2 md:px-0 md:pb-2">
-      <PageHead
-        eyebrow={reportCopy.eyebrow}
-        title={heading}
-        titleClass="min-w-0 break-words"
-        titleTestid="report-title"
-        meta={reportMeta}
-        aside={reportActions}
-      />
-    </div>
-
-    {#if unknownSource !== null}
-      <p class="text-muted px-[18px] text-[13px] md:px-0" role="status" data-testid="report-unknown-source">
-        This report has no player or unit called <span class="font-semibold">{unknownSource}</span>, so every
-        friendly is showing.
-      </p>
-    {/if}
-    {#if unknownAbility !== null}
-      <p class="text-muted px-[18px] text-[13px] md:px-0" role="status" data-testid="report-unknown-ability">
-        This tab has no ability called <span class="font-semibold">{unknownAbility}</span>, so every ability
-        is showing.
-      </p>
-    {/if}
-    {#if missingFight !== null}
-      <p class="text-muted px-[18px] text-[13px] md:px-0" role="status" data-testid="report-missing-fight">
-        {#if missingFight === MISSING_FIGHT}
-          This link names a fight the page cannot read, so the first fight is showing.
-        {:else if trashScopeKey(missingFight) !== null}
-          This report has no trash group starting at fight
-          <span class="numeric">{trashScopeKey(missingFight)}</span>, so the first fight is showing.
-        {:else}
-          This report has no fight <span class="numeric">{missingFight}</span>, so the first fight is showing.
-        {/if}
-      </p>
-    {/if}
-
-    {#if error !== ''}
-      <!-- The fight selector and the url have already moved by the time a fight's summary
-         fails, so without this the previous fight's numbers sit under the new fight's
-         label. A live report whose next fight is not written yet is the ordinary way to
-         reach it. One line until a later task owns a real error panel. -->
-      <p class="text-muted px-[18px] text-[13px] md:px-0" role="alert" data-testid="report-fight-error">
-        {error}
-      </p>
-    {/if}
-
-    <!-- items-start: the fight list is a short panel beside a tall column, and stretched
-         to the row it drew a bordered box a screen or two taller than its rows. It sticks
-         instead (FightSelector), so it is never further away than the top of the screen. -->
-    <div
-      class="grid grid-cols-1 gap-[22px] px-[18px] md:grid-cols-[300px_minmax(0,1fr)] md:items-start md:gap-8 md:px-0"
-    >
-      <FightSelector
-        {fights}
-        selected={state.fight}
-        onSelect={(index) => patch({ fight: index })}
-        {phaseOf}
-        foldOnPhone={isSampleReport(reportId)}
-        deathsInRange={groupScopeNow.scoped}
-      />
-
-      <div class="flex min-w-0 flex-col gap-[22px] md:gap-6">
-        <!-- Sticky on phone only: the desktop layout keeps the selector column beside the
-           content and the whole bar is a short scroll from anything. On a phone a forty-row
-           table puts the tabs a long way off the top of the screen, so the bar rides under
-           the page header instead. The negative margin takes it out to the viewport edges
-           so its background covers the rows sliding under it, and the padding puts the
-           18px gutter back on its own children. -->
-        <!-- On a phone the fight list sits above the mode bar, so a mode's content starts a
-           screen or two down; a mode change scrolls here, the way a tab change scrolls to
-           its table. -->
-        <!-- -mb: the anchor is an empty flex item, and its gap doubled the 22px between the fight list and the tab row.
-             From md it is the column's first item: -mb-4 sets the mode bar 16 px under the page head
-             (its 8 px foot plus 8; PageHead's own head-to-below rhythm) instead of 32. Stage 2's PageHead
-             (eyebrow, the credit sentence on its own line) is 52 px taller than the old header, and
-             at 1280 x 800 that pushed Fix first's last line past the 640 px fold (coach-report). -->
-        <div bind:this={modeAnchor} class="scroll-mt-2 max-md:-mb-[22px] md:-mb-4" aria-hidden="true"></div>
-        <div class="bg-bg -mx-[18px] px-[18px] py-2 md:mx-0 md:px-0 md:py-0">
-          <ModeBar {state} {roster} onPatch={patch} {nightMode} scope={groupScopeNow} />
-        </div>
-        <!-- The chart and its presets are a fight's: nothing draws a chart over a night, and
-           Mechanics ignores the window, so it does not show a strip it would then disown.
-           Collapsed to one line by default on a phone (chartOpen, above): a canvas nobody
-           opens is a canvas nobody should pay the scroll distance for. -->
-        <!-- The Coach tab reads a review, not a window: no chart, so Fix first opens in view. -->
-        <!-- One chart per tab (spec §B1.7): Threat draws its own chart below, and Resources is its
-             own set of lines (fix round 2), so neither repeats the damage chart above it. -->
-        {#if summary !== null && !nightMode && state.mode !== 'mechanics' && state.tab !== 'coach' && !tabDrawsOwnChart}
-          {#if chartOpen}
-            <TimeChart
-              metric={chartMetric}
-              actors={wholeChartActors}
-              roster={summary.roster}
-              durationMs={summary.duration_ms}
-              window={timeWindow}
-              phases={chartPhases}
-              events={mainMarkers}
-              {deadSpans}
-              {brushShape}
-              {presets}
-              onSelectPreset={(index) => setWindow(presets[index]?.window ?? null)}
-              onWindow={setWindow}
-              {sourcePlayer}
-              enemies={state.source === SOURCE_ENEMIES}
-              {youGuid}
-              chosen={state.players}
-              preset={state.playersPreset === null ? 'split' : state.playersPreset}
-              onChoose={(players) => patch({ players })}
-              onPreset={(preset) =>
-                patch({ players: null, playersPreset: preset === 'split' ? null : preset })}
-              logScale={state.logScale}
-              onLogScale={(logScale) => patch({ logScale })}
-              targetName={state.target === ''
-                ? undefined
-                : splitUnitName(unitNames.get(state.target) ?? state.target).name}
-              extra={chartedAbility === null
-                ? null
-                : { label: chartedAbility.label, series: chartedAbility.series }}
-              syncKey={chartSyncKey}
-              onOpenDeath={openDeaths}
-              compact={compactChart}
-              {noun}
+  <!-- The ready state's own wrapper, the only place `.reveal` may sit. A same-page link inside
+       it moves in place (followInPage). -->
+  <!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_static_element_interactions -->
+  <div class="reveal" onclick={followInPage}>
+    <Page layout="split" testid="report-page">
+      {#snippet header()}
+        <ReportHead
+          title={heading}
+          {where}
+          fightCount={facts.fights}
+          sample={isSampleReport(reportId)}
+          {credit}
+          {live}
+          {answer}
+          {simHref}
+        >
+          {#snippet tabs()}
+            <TabStripMore
+              tabs={tabItems}
+              active={state.tab}
+              md={TABS_MD}
+              xl={tabXl}
+              label={reportCopy.tabsLabel}
+              moreLabel={reportCopy.more}
+              testid="report-tabs"
+              onSelect={(tab) => patch({ tab: tab as ReportState['tab'] })}
             />
-          {:else}
-            <div
-              class="border-line rounded-panel bg-raised flex items-center justify-between gap-3 border p-3"
-              data-testid="chart-collapsed"
-            >
-              <span class="text-muted numeric text-[12px]">{chartSummaryLabel}</span>
-              <button
-                type="button"
-                class="{SECONDARY_BUTTON} border-line-warm text-text px-3"
-                data-testid="chart-toggle"
-                onclick={() => setChartOpen(true)}
-              >
-                {reportCopy.showChart}
-              </button>
-            </div>
-          {/if}
-        {/if}
-        <!-- Where a tab's table begins. On a phone the chart, its sliders and the death
-           presets sit between the tab strip and the table, so a tap on a tab that left the
-           page where it was read as a tap that did nothing; the page scrolls here instead. -->
-        <!-- -mb: the anchor is an empty flex item, and its gap doubled the 24px between the chart and the table. -->
-        <div bind:this={tabAnchor} class="scroll-mt-2 md:-mb-6" aria-hidden="true"></div>
-        {#if scoped !== null && state.mode === 'analyze' && state.view === 'tables'}
-          {#if state.tab === 'summary' && nightMode}
-            {#if night !== null}
-              <NightView
-                {night}
-                trash={trashMode}
-                loading={nightLoading}
-                {unitClasses}
-                onSelect={(index) => patch({ fight: index })}
-                onSelectPlayer={(guid) => patch({ source: guid })}
-              />
-            {/if}
-          {:else if state.tab === 'summary'}
-            {@render parseRetry()}
-            <SummaryTab
-              summary={scoped}
-              everyone={windowed ?? scoped}
-              durationMs={scoped.duration_ms}
-              {percentiles}
-              {parseFallback}
-              {showParse}
-              approximate={!windowIsWhole}
-              dataBuild={activeBuild.build}
-              {classOf}
-              {unitClasses}
-              {treeSizesFor}
-              onSelectPlayer={(guid) => patch({ source: guid })}
-              players={playerSet}
-              seen={noun === 'everyone'}
-              onTab={(tab) => patch({ tab })}
-              {reportId}
-              fightIndex={state.fight}
-            />
-          {:else if state.tab === 'damage-done' || state.tab === 'damage-taken' || state.tab === 'healing'}
-            <Card
-              glyph="chart"
-              title={TABS.find((tab) => tab.id === state.tab)?.label ?? ''}
-              meta={`${tabActors.length} ${tabActors.length === 1 ? 'row' : 'rows'} · ${formatDuration(scoped.duration_ms)}`}
-              body="none"
-              testid="report-table-card"
-            >
-              <div class="border-line-soft flex flex-col gap-3 border-t p-3 md:px-5 md:py-4">
-                <FilterBar
-                  {filters}
-                  actors={tabSource}
-                  afterDeathAvailable={!nightMode}
-                  onChange={setFilters}
-                  showBossOnly={state.tab !== 'healing'}
-                />
-                {@render parseRetry()}
-                <ActorTable
-                  actors={tabActors}
-                  durationMs={scoped.duration_ms}
-                  {metricLabel}
-                  {percentiles}
-                  parseFallback={tableParseFallback}
-                  {showParse}
-                  pairsLabel={state.tab === 'damage-taken' ? 'Sources' : 'Targets'}
-                  mitigation={state.tab === 'damage-taken'}
-                  healing={state.tab === 'healing'}
-                  splitUnavailable={nightMode && filtersScale}
-                  splitFilter={nightFilterWords}
-                  absent={absentPlayers}
-                  deadAt={deadRows}
-                  {windowIsWhole}
-                  measure={nightMode ? undefined : measureRow}
-                  approximate={actorTableApproximate}
-                  amountApproximate={(filtersScale && !windowIsWhole && tableExact === null) || nightProrates}
-                  onChart={abilityChartAvailable ? toggleAbilityOnChart : undefined}
-                  charted={chartedAbility?.key ?? ''}
-                />
-                {#if actorTableApproximate}
-                  <p class="text-muted text-[12px]" data-testid="approximate-note">
-                    {#if tableExact !== null}
-                      <span class="text-kill" data-testid="table-measured"
-                        >Totals, shares, per-second figures and targets are measured from the fight’s events
-                        for this window and filter.</span
-                      >
-                      A row’s ability split is measured the same way when it is opened.
-                      {#if ignoringDead && windowedDeadSpans.length > 0}
-                        <span data-testid="dead-spans-note"
-                          >Left out while dead: {windowedDeadSpans
-                            .map(
-                              (span) =>
-                                `${splitUnitName(unitNames.get(span.guid) ?? span.guid).name} ${formatDuration(span.startMs)} to ${formatDuration(span.endMs)}`,
-                            )
-                            .join(', ')}. A figure that does not move had nothing landing in those spans.</span
-                        >
-                      {/if}
-                    {:else if nightMode}
-                      Over the whole night a tilde marks a figure split across abilities and targets in
-                      proportion to the window and any target or boss filter{nightProrates
-                        ? ', totals included'
-                        : ''}; an ability filter’s totals are exact. Open a pull to read its figures from the
-                      fight’s events.
-                    {:else if tableMeasuring}
-                      <span data-testid="table-measuring">Measuring this window from the fight’s events…</span
-                      > A tilde marks a figure still prorated from the summary.
-                    {:else if tableMeasureError !== ''}
-                      <span class="text-wipe" role="alert">{tableMeasureError}</span> A tilde marks a figure
-                      prorated from the summary{filtersScale && !windowIsWhole ? ', totals included' : ''}.
-                      <button
-                        type="button"
-                        class="text-gold inline-flex min-h-11 items-center underline-offset-2 hover:underline md:min-h-0"
-                        data-testid="measure-table"
-                        onclick={() => void runTableMeasure(++measureToken)}>Try the measure again</button
-                      >
-                    {:else}
-                      A tilde marks a figure split across abilities and targets in proportion to the window
-                      and any active target or boss filter. Totals and per-second figures are exact.
-                      <button
-                        type="button"
-                        class="text-gold inline-flex min-h-11 items-center underline-offset-2 hover:underline md:min-h-0"
-                        data-testid="measure-exactly"
-                        onclick={() => patch({ view: 'queries' })}
-                        >Measure this window exactly in Queries</button
-                      >.
-                    {/if}
-                  </p>
-                {/if}
-                {#if chartedError !== ''}
-                  <p class="text-wipe text-[12px]" role="alert" data-testid="ability-chart-error">
-                    {chartedError}
-                  </p>
-                {/if}
+          {/snippet}
+        </ReportHead>
+      {/snippet}
+      {#snippet bar()}
+        <ReportBar
+          {state}
+          {fights}
+          roster={sourceRoster}
+          scope={groupScopeNow}
+          window={timeWindow}
+          durationMs={base?.duration_ms ?? 0}
+          {presets}
+          actorTab={ACTOR_TABS.has(state.tab) && !playerView}
+          {filters}
+          filterActors={tabSource}
+          afterDeathAvailable={!nightMode}
+          onPatch={patch}
+          onWindow={setWindow}
+          onFilters={setFilters}
+        />
+        {#if notices.length > 0}
+          <div data-region={REGION.summary}>
+            {#each notices.filter((notice) => notice.text !== '') as notice (notice.id)}
+              <div class="px-[var(--page-inset)]">
+                <Notice text={notice.text} tone="neutral" testid={notice.id} />
               </div>
-            </Card>
-          {:else if state.tab === 'buffs'}
-            <RaidCooldowns
-              tracks={scoped.auras}
-              casts={scoped.casts}
-              pulls={scoped.pulls ?? []}
-              window={cutWindow}
-              deaths={scoped.deaths}
-              names={unitNames}
-              syncKey={nightMode ? '' : chartSyncKey}
-            />
-            <AuraTable
-              tracks={scoped.auras}
-              durationMs={scoped.duration_ms}
-              startMs={timeWindow.startMs}
-              kind="BUFF"
-              names={unitNames}
-            />
-          {:else if state.tab === 'debuffs'}
-            {#if scopeKey === SOURCE_FRIENDLIES}
-              <p class="text-muted text-[12px]" data-testid="debuffs-scope-note">
-                These are the debuffs on the raid. The ones on the enemies, a boss’s Flame Shock among them,
-                are under
-                <button
-                  type="button"
-                  class="text-gold inline-flex min-h-11 items-center underline-offset-2 hover:underline md:min-h-0"
-                  onclick={() => patch({ source: 'enemies' })}>Source · All enemies</button
-                >.
+            {/each}
+            {#if percentilesUnavailable && showParse && fight?.kind === 'encounter'}
+              <p class="px-[var(--page-inset)] pt-2 text-[15px]" data-testid="parse-unavailable">
+                <span class="max-md:hidden">{reportCopy.parsesUnknown}</span><span class="md:hidden"
+                  >{reportCopy.parsesUnknownShort}</span
+                >
+                <button type="button" class="text-gold ml-2 font-semibold" onclick={() => (parseAttempt += 1)}
+                  >{reportCopy.tryAgain}</button
+                >
               </p>
             {/if}
-            <AuraTable
-              tracks={scoped.auras}
+          </div>
+        {/if}
+      {/snippet}
+      {#snippet rail()}
+        {@render thisPull()}
+        {#if !onePullTab && scoped !== null}
+          {#if state.tab === 'summary' && !nightMode}
+            <SummaryPanels
+              part="deaths"
+              summary={scoped}
               durationMs={scoped.duration_ms}
-              startMs={timeWindow.startMs}
-              names={unitNames}
-              kind="DEBUFF"
-              bossNames={bossUnitNames}
+              players={playerSet}
+              tabHref={(tab) => hrefWith({ tab })}
+              {spellIcon}
             />
-          {:else if state.tab === 'casts'}
-            <CastTable
+            <RatingPanel
+              {reportId}
+              fightIndex={state.fight}
+              roster={scoped.roster.map((row) => ({ guid: row.guid, name: row.name, class: row.class }))}
+              trash={isTrashPull}
+              tabHref={hrefWith({ tab: 'rating' })}
+            />
+            {#if fight?.kind === 'encounter' && scoped.combatants.length > 0}
+              <Section title="At pull" testid="at-pull-card">
+                {#each scoped.combatants as combatant (combatant.guid)}
+                  {@const label = unitLabel(combatant.name).text}
+                  <Row
+                    title={label}
+                    sub={`${combatant.spec ?? classOf.get(combatant.guid) ?? ''} · item level ${combatant.item_level ?? 0} · ${combatant.gear.filter((item) => item.ID > 0).length} items`}
+                    open
+                  >
+                    {#snippet lead()}<ClassIcon className={classOf.get(combatant.guid)} size={28} />{/snippet}
+                    {#snippet trail()}<span class="flex gap-3" data-testid="at-pull-links"
+                        ><a
+                          class="text-gold text-[14px] font-semibold [@media(pointer:coarse)]:-my-3 [@media(pointer:coarse)]:inline-block [@media(pointer:coarse)]:py-3"
+                          href={playerHref(combatant.guid)}>Gear ›</a
+                        ><a
+                          class="text-gold text-[14px] font-semibold [@media(pointer:coarse)]:-my-3 [@media(pointer:coarse)]:inline-block [@media(pointer:coarse)]:py-3"
+                          href={simLinkFor(reportId, state.fight, combatant.guid).href}
+                          data-testid="combatant-sim-link">Sim ›</a
+                        ></span
+                      >{/snippet}
+                  </Row>
+                {/each}
+              </Section>
+            {/if}
+            {#if rankingsHref !== null}
+              <a
+                class="text-gold text-[14px] font-semibold [@media(pointer:coarse)]:-my-3 [@media(pointer:coarse)]:inline-block [@media(pointer:coarse)]:py-3"
+                href={rankingsHref}
+                data-testid="report-rankings-link">Rankings for {fight?.name} ›</a
+              >
+            {/if}
+          {:else if ACTOR_TABS.has(state.tab)}
+            <TargetsRail title={tabTitle} actors={tabActors} />
+          {:else if state.tab === 'threat'}
+            <ThreatRail
+              taunts={scoped.taunts}
+              target={state.target}
+              pairs={scoped.threat_by_target ?? []}
+              names={unitNames}
+              {classOf}
+              sourceName={playerSet.has(state.source) ? unitNames.get(state.source) : undefined}
+              approximate={!windowIsWhole}
+              scopeNoun={nightMode ? 'night' : 'pull'}
+              durationMs={summary?.duration_ms ?? scoped.duration_ms}
+              onWindow={setWindow}
+            />
+          {:else if state.tab === 'events'}
+            <EventsRail off={state.eventsOff} onPatch={patch} />
+          {:else if state.tab === 'queries'}
+            <QueriesRail />
+          {:else if state.tab === 'rating'}
+            <RatingRail ratings={ratingState.data} status={ratingState.status} {roster} />
+          {/if}
+          {#if state.tab === 'mechanics' && base !== null}
+            <MechanicsRail summary={base} {classOf} />
+          {/if}
+        {/if}
+      {/snippet}
+
+      <div bind:this={tabAnchor} class="-mb-[var(--section-gap)] scroll-mt-2" aria-hidden="true"></div>
+      {#if onePullTab}
+        <Plate label={reportCopy.onePullLabel}>
+          <p
+            class="text-muted px-4 py-4 text-[14px]"
+            data-testid={state.tab === 'rating' ? 'rating-tab-night' : 'night-tables-only'}
+          >
+            {state.tab === 'rating' ? reportCopy.ratingNight : reportCopy.onePullOnly}
+          </p>
+        </Plate>
+      {:else if scoped !== null}
+        {#if state.tab === 'summary' && nightMode}
+          {#if night !== null}
+            <NightView
+              {night}
+              trash={trashMode}
+              loading={nightLoading}
+              {unitClasses}
+              onSelect={(index) => patch({ fight: index })}
+              onSelectPlayer={(guid) => patch({ source: guid })}
+            />
+          {/if}
+        {:else if state.tab === 'summary'}
+          <SummaryTab
+            summary={scoped}
+            durationMs={scoped.duration_ms}
+            {percentiles}
+            {parseFallback}
+            showParse={showParse && fight?.kind === 'encounter'}
+            approximate={!windowIsWhole}
+            {unitClasses}
+            {playerHref}
+            onSelectPlayer={(guid) => patch({ source: guid })}
+          />
+          {@render chart('damage-done')}
+          <SummaryPanels
+            part="taken"
+            summary={scoped}
+            everyone={windowed ?? scoped}
+            durationMs={scoped.duration_ms}
+            players={playerSet}
+            approximate={!windowIsWhole}
+            tabHref={(tab) => hrefWith({ tab })}
+            {spellIcon}
+          />
+        {:else if ACTOR_TABS.has(state.tab) && playerView}
+          <PlayerView
+            tab={state.tab as 'damage-done' | 'healing' | 'damage-taken'}
+            actor={tabActors[0]}
+            row={playerRow}
+            combatant={undefined}
+            durationMs={scoped.duration_ms}
+            approximate={actorTableApproximate}
+            measure={nightMode ? undefined : measureRow}
+            {spellIcon}
+            dataBuild={activeBuild.build}
+            onChart={abilityChartAvailable ? toggleAbilityOnChart : undefined}
+            charted={chartedAbility?.key ?? ''}
+          />
+          {#if chartedError !== ''}
+            <p class="text-small text-wipe" role="alert" data-testid="ability-chart-error">{chartedError}</p>
+          {/if}
+          {#if tabActors[0] !== undefined}
+            <!-- The coach's line for this player (components/coach, placed as shipped): the row is open. -->
+            <CoachRowLine actor={tabActors[0]} rowOpen />
+          {/if}
+          {@render chart(chartMetric)}
+          <PlayerView
+            part="gear"
+            tab={state.tab as 'damage-done' | 'healing' | 'damage-taken'}
+            actor={tabActors[0]}
+            row={playerRow}
+            combatant={scoped.combatants.find((row) => row.guid === sourcePlayer)}
+            durationMs={scoped.duration_ms}
+            {spellIcon}
+            dataBuild={activeBuild.build}
+            plannerHref={plannerHrefFor(sourcePlayer)}
+          />
+        {:else if ACTOR_TABS.has(state.tab)}
+          <ActorTable
+            tab={state.tab as 'damage-done' | 'healing' | 'damage-taken'}
+            actors={tabActors}
+            durationMs={scoped.duration_ms}
+            roster={rosterByGuid}
+            players={playerSet}
+            {percentiles}
+            parseFallback={tableParseFallback}
+            showParse={showParse && fight?.kind === 'encounter'}
+            amountApproximate={(filtersScale && !windowIsWhole && tableExact === null) || nightProrates}
+            approximate={actorTableApproximate && tableExact === null}
+            absent={absentPlayers}
+            {windowIsWhole}
+            deadAt={deadRows}
+            selected={state.source}
+            {playerHref}
+            onSelectPlayer={(guid) => patch({ source: guid })}
+          />
+          {#if actorTableApproximate && !nightMode}
+            <!-- A window or a target filter: the summary can only prorate, so the table is measured from
+                 the fight's events, and this line says which figures are which. -->
+            <p class="text-small text-muted" data-testid="approximate-note">
+              {#if tableExact !== null}<span class="text-kill" data-testid="table-measured"
+                  >Measured from the fight’s events for this window and filter.</span
+                >{:else if tableMeasureError !== ''}<span class="text-wipe" role="alert"
+                  >{tableMeasureError}</span
+                >{:else}Measuring this window from the fight’s events… a tilde marks a figure still prorated.{/if}
+            </p>
+          {/if}
+          {@render chart(chartMetric)}
+        {:else if state.tab === 'buffs' || state.tab === 'debuffs'}
+          {#if auraTabLazy.current}
+            <auraTabLazy.current
+              table={{
+                tracks: scoped.auras,
+                durationMs: scoped.duration_ms,
+                startMs: timeWindow.startMs,
+                kind: state.tab === 'buffs' ? 'BUFF' : 'DEBUFF',
+                names: unitNames,
+                bossNames: bossUnitNames,
+                windowed: !windowIsWhole,
+              }}
+              cooldowns={state.tab === 'buffs'
+                ? {
+                    tracks: scoped.auras,
+                    casts: scoped.casts,
+                    pulls: scoped.pulls ?? [],
+                    window: cutWindow,
+                    deaths: scoped.deaths,
+                    names: unitNames,
+                    syncKey: nightMode ? '' : chartSyncKey,
+                  }
+                : undefined}
+            />
+          {:else}
+            {@render lazyFallback(auraTabLazy, REPORT_LAZY_MIN_H.table)}
+          {/if}
+        {:else if state.tab === 'casts'}
+          {#if castTableLazy.current}
+            <castTableLazy.current
               rows={scoped.casts}
               everyone={base?.casts ?? scoped.casts}
               durationMs={scoped.duration_ms}
@@ -2184,24 +2159,38 @@
               whole={base === null ? undefined : scopeSource(base, scopeKey, scopePlayers, friendlySet).casts}
               names={unitNames}
             />
-          {:else if state.tab === 'interrupts'}
-            <ExchangeTable
-              rows={scoped.interrupts}
-              everyone={windowed?.interrupts ?? scoped.interrupts}
-              emptyText={exchangeEmpty('interrupted')}
-              casts={base?.casts ?? []}
-              players={playerSet}
-            />
-          {:else if state.tab === 'dispels'}
-            <ExchangeTable
-              rows={scoped.dispels}
-              everyone={windowed?.dispels ?? scoped.dispels}
-              emptyText={exchangeEmpty('dispelled')}
-              auras={base?.auras ?? []}
-              players={playerSet}
-            />
-          {:else if state.tab === 'resources'}
-            <ResourceGraphs
+          {:else}
+            {@render lazyFallback(castTableLazy, REPORT_LAZY_MIN_H.table)}
+          {/if}
+        {:else if state.tab === 'interrupts' || state.tab === 'dispels'}
+          {#if exchangeTableLazy.current}
+            {#if state.tab === 'interrupts'}
+              <exchangeTableLazy.current
+                kind="interrupt"
+                rows={scoped.interrupts}
+                everyone={windowed?.interrupts ?? scoped.interrupts}
+                emptyText={exchangeEmpty('interrupted')}
+                casts={base?.casts ?? []}
+                players={playerSet}
+                {classOf}
+              />
+            {:else}
+              <exchangeTableLazy.current
+                kind="dispel"
+                rows={scoped.dispels}
+                everyone={windowed?.dispels ?? scoped.dispels}
+                emptyText={exchangeEmpty('dispelled')}
+                auras={base?.auras ?? []}
+                players={playerSet}
+                {classOf}
+              />
+            {/if}
+          {:else}
+            {@render lazyFallback(exchangeTableLazy, REPORT_LAZY_MIN_H.table)}
+          {/if}
+        {:else if state.tab === 'resources'}
+          {#if resourceGraphsLazy.current}
+            <resourceGraphsLazy.current
               tracks={scoped.resources}
               durationMs={scoped.duration_ms}
               windowed={!windowIsWhole}
@@ -2211,9 +2200,15 @@
               }))}
               syncKey={nightMode ? '' : chartSyncKey}
               windowStartMs={timeWindow.startMs}
+              {classOf}
             />
-          {:else if state.tab === 'threat'}
-            <ThreatTable
+          {:else}
+            {@render lazyFallback(resourceGraphsLazy, REPORT_LAZY_MIN_H.table)}
+          {/if}
+        {:else if state.tab === 'threat'}
+          {#if threatTableLazy.current}
+            <threatTableLazy.current
+              rail={false}
               rows={scoped.threat}
               players={playerSet}
               pairs={scoped.threat_by_target ?? []}
@@ -2263,64 +2258,49 @@
                     onOpenDeath: openDeaths,
                   }}
             />
-          {:else if state.tab === 'deaths'}
-            <DeathsTab
-              deaths={scoped.deaths}
-              casts={base?.casts ?? []}
-              open={state.openDeaths}
-              onPatch={patch}
-              onSelectPlayer={(guid) => patch({ source: guid })}
-              durationMs={summary?.duration_ms ?? scoped.duration_ms}
-              pulls={scoped.pulls ?? []}
-              combatants={scoped.combatants}
-              {classOf}
-              dataBuild={activeBuild.build}
-              {treeSizesFor}
-              onWindow={setWindow}
+          {:else}
+            {@render lazyFallback(threatTableLazy, REPORT_LAZY_MIN_H.table)}
+          {/if}
+        {:else if state.tab === 'deaths'}
+          <DeathsTab
+            deaths={scoped.deaths}
+            casts={base?.casts ?? []}
+            open={state.openDeaths}
+            onPatch={patch}
+            durationMs={summary?.duration_ms ?? scoped.duration_ms}
+            pulls={scoped.pulls ?? []}
+            combatants={scoped.combatants}
+            {classOf}
+            dataBuild={activeBuild.build}
+            {treeSizesFor}
+            onWindow={setWindow}
+            {spellIcon}
+          />
+          {@render chart('damage-taken')}
+        {:else if state.tab === 'coach'}
+          <CoachTabHost
+            {reportId}
+            {fight}
+            {firstFight}
+            {roster}
+            source={scopeKey}
+            {nightMode}
+            onSelectPlayer={(guid) => patch({ source: guid })}
+          />
+        {:else if state.tab === 'rating'}
+          {#if ratingTabLazy.current}
+            <ratingTabLazy.current
               {reportId}
-              fightIndex={nightMode ? undefined : state.fight}
-            />
-          {:else if state.tab === 'coach'}
-            <CoachTabHost
-              {reportId}
-              {fight}
-              {firstFight}
+              fightIndex={state.fight}
               {roster}
               source={scopeKey}
-              {nightMode}
               onSelectPlayer={(guid) => patch({ source: guid })}
+              onRatings={(next) => (ratingState = next)}
             />
-          {:else if state.tab === 'rating' && nightMode}
-            <p class="text-muted text-[14px]" data-testid="rating-tab-night">
-              Ratings are one pull's. Pick a {trashMode ? 'pull' : 'boss pull'} from the list to see one.
-            </p>
-          {:else if state.tab === 'rating'}
-            {#if ratingTabLazy.current}
-              <ratingTabLazy.current
-                {reportId}
-                fightIndex={state.fight}
-                {roster}
-                source={scopeKey}
-                onSelectPlayer={(guid) => patch({ source: guid })}
-              />
-            {:else}
-              {@render lazyFallback(ratingTabLazy, REPORT_LAZY_MIN_H.rating)}
-            {/if}
+          {:else}
+            {@render lazyFallback(ratingTabLazy, REPORT_LAZY_MIN_H.rating)}
           {/if}
-        {/if}
-        {#if nightMode && state.mode !== 'mechanics' && (state.view !== 'tables' || state.mode !== 'analyze')}
-          <p class="text-muted text-[14px]" data-testid="night-tables-only">
-            Timelines, events, queries, compare and rankings are one pull's. Pick a pull from the list to see
-            them, or
-            <button
-              type="button"
-              class="text-gold inline-flex min-h-11 items-center underline-offset-2 hover:underline md:min-h-0"
-              onclick={() => patch({ mode: 'analyze', view: 'tables' })}
-              >go back to the {trashMode ? 'trash' : 'night'}'s tables</button
-            >.
-          </p>
-        {/if}
-        {#if scoped !== null && !nightMode && state.mode === 'analyze' && state.view === 'timelines'}
+        {:else if state.tab === 'timeline'}
           {#if timelinesViewLazy.current}
             <timelinesViewLazy.current
               summary={scoped}
@@ -2342,10 +2322,10 @@
           {:else}
             {@render lazyFallback(timelinesViewLazy, REPORT_LAZY_MIN_H.timelines)}
           {/if}
-        {/if}
-        {#if scoped !== null && !nightMode && state.mode === 'analyze' && state.view === 'events'}
+        {:else if state.tab === 'events'}
           {#if eventsViewLazy.current}
             <eventsViewLazy.current
+              chips={false}
               summary={windowed ?? scoped}
               {classOf}
               names={unitNames}
@@ -2353,32 +2333,28 @@
               off={state.eventsOff}
               search={state.find}
               onPatch={patch}
-              loadStream={nightMode
-                ? undefined
-                : async () => {
-                    const { loadEventStream, sharedQueryLayer } = await import('../../lib/report/exact');
-                    return loadEventStream(
-                      sharedQueryLayer(),
-                      eventsUrl(dataBase, state.fight, engineVersion),
-                      cutWindow,
-                    );
-                  }}
+              loadStream={async () => {
+                const { loadEventStream, sharedQueryLayer } = await import('../../lib/report/exact');
+                return loadEventStream(
+                  sharedQueryLayer(),
+                  eventsUrl(dataBase, state.fight, engineVersion),
+                  cutWindow,
+                );
+              }}
             />
           {:else}
             {@render lazyFallback(eventsViewLazy, REPORT_LAZY_MIN_H.events)}
           {/if}
-        {/if}
-        <!-- `scoped` only to say a summary has loaded, the same guard its three siblings
-           use; the Queries view reads the fight's events.parquet, not the summary, and
-           takes the window so a starting point is written for what is on screen. -->
-        {#if scoped !== null && !nightMode && state.mode === 'analyze' && state.view === 'queries'}
+        {:else if state.tab === 'queries'}
           {#if queriesViewLazy.current}
-            <queriesViewLazy.current dataBaseUrl={dataBase} fightIndex={state.fight} window={timeWindow} />
+            <!-- The Starting points wrap inside the column (the mock's `.qstarts`), never under the rail. -->
+            <div class="report-queries min-w-0">
+              <queriesViewLazy.current dataBaseUrl={dataBase} fightIndex={state.fight} window={timeWindow} />
+            </div>
           {:else}
             {@render lazyFallback(queriesViewLazy, REPORT_LAZY_MIN_H.queries)}
           {/if}
-        {/if}
-        {#if state.mode === 'compare' && summary !== null && !nightMode}
+        {:else if state.tab === 'compare' && summary !== null}
           {#if compareModeLazy.current}
             <compareModeLazy.current
               {fights}
@@ -2397,50 +2373,35 @@
             {@render lazyFallback(compareModeLazy, REPORT_LAZY_MIN_H.compare)}
           {/if}
         {/if}
-        {#if state.mode === 'rankings' && fight !== null}
-          {#if rankingsModeLazy.current}
-            <rankingsModeLazy.current
-              {fight}
-              {reportId}
-              encounterSlug={currentEncounterSlug}
-              spec={state.rankingsSpec}
-              metric={state.rankingsMetric}
-              onPatch={patch}
-            />
-          {:else}
-            {@render lazyFallback(rankingsModeLazy, REPORT_LAZY_MIN_H.rankings)}
-          {/if}
+      {/if}
+      {#if state.tab === 'mechanics' && base !== null}
+        <!-- The whole fight, never the window and never the source scope: `base`, not `scoped`. -->
+        {#if mechanicsModeLazy.current}
+          <mechanicsModeLazy.current
+            summary={base}
+            {classOf}
+            {nightMode}
+            trash={!nightMode && fight?.kind !== 'encounter'}
+            onPatch={patch}
+            hrefFor={(next) => reportSearch(withState(state, legacyTab(next)), firstFight) || '?'}
+          />
+        {:else}
+          {@render lazyFallback(mechanicsModeLazy, REPORT_LAZY_MIN_H.mechanics)}
         {/if}
-        <!-- The whole fight, never the window and never the source scope: `base`, not
-           `scoped`. Over the night `base` is the fold, which carries the night's
-           mechanics, so the mode draws there too. -->
-        {#if state.mode === 'mechanics' && base !== null}
-          {#if mechanicsModeLazy.current}
-            <mechanicsModeLazy.current
-              summary={base}
-              {classOf}
-              {nightMode}
-              trash={!nightMode && fight?.kind !== 'encounter'}
-              onPatch={patch}
-              hrefFor={(next) => reportSearch(withState(state, next), firstFight) || '?'}
-            />
-          {:else}
-            {@render lazyFallback(mechanicsModeLazy, REPORT_LAZY_MIN_H.mechanics)}
-          {/if}
-        {:else if state.mode === 'mechanics' && nightMode && nightLoading}
-          <!-- The night's fold is every pull's summary fetched in turn, so a cold load
-             leaves `base` null for as long as that takes. Without this the mode is a
-             blank panel: the analyze branch's own loading line is inside NightView,
-             which mechanics does not mount. -->
-          <p class="text-muted text-[14px]" data-testid="mechanics-night-loading">
-            Folding the night’s pulls…
-          </p>
-        {/if}
-        <!-- Last in the column, not fourth in the stack of control rows above the chart:
-             a glossary is a footnote, read when a word stops someone, and up top it drew
-             a full-width bar between the tabs and the first figure. -->
-        <Glossary />
-      </div>
-    </div>
+      {:else if state.tab === 'mechanics' && nightMode && nightLoading}
+        <p class="text-muted text-[14px]" data-testid="mechanics-night-loading">Folding the night’s pulls…</p>
+      {/if}
+      <!-- Last in the column: a glossary is a footnote, read when a word stops someone. -->
+      <Glossary />
+    </Page>
   </div>
 {/if}
+
+<style>
+  .report-queries :global(.ui-seg) {
+    flex-wrap: wrap;
+  }
+  .report-queries :global(.ui-seg-item) {
+    min-width: 0;
+  }
+</style>

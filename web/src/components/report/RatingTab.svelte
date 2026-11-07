@@ -1,21 +1,42 @@
 <!-- web/src/components/report/RatingTab.svelte -->
-<!-- The full report card: one number first, then the six components, then each
-     component's moments -- spec section 6.1's exact three-level structure. Native
-     <details>/<summary> disclosures throughout (the report/ directory's own ActorRow.svelte
-     and DeathsTab.svelte roll a button + aria-expanded + local state instead, but this
-     card's nesting -- a details per player, a details per component inside it -- reads
-     more plainly with the browser's own disclosure element and needs no click-driven state
-     to open the single-player case correctly on first render). -->
+<!-- The Rating tab (logs spec 2026-11-07 section 6.2): Section `Performance rating` holding the
+     tab's one Plate. A trash pull reads the shipped `noRatingForTrash` line. A boss pull draws,
+     per rated player in the source scope, a first row (crest, `{name}'s rating`, the basis
+     sentence, the overall as a big gold `70 of 100`), then a StatTable row per part: its name and
+     one-line definition, a score Meter (green from 75), `Of 100`, `Weight`, `Basis`; an excluded
+     part reads `ratingCopy.excludedReason` with dashes. A part's moments link into the tab that
+     shows them. The rail's rated players and The cap live in RatingRail.svelte; `onRatings`
+     hands this tab's fetch to it so the page fetches once. -->
 <script lang="ts">
   import { splitUnitName } from '../../lib/characters';
   import { classColorVar } from '../../lib/report/format';
+  import { classSlugOf } from '../../lib/report/planner-link';
   import { SOURCE_ENEMIES, SOURCE_FRIENDLIES } from '../../lib/report/url';
-  import { createReportRatingsFetch } from '../../lib/rating/report-ratings.svelte';
+  import { createReportRatingsFetch, type ReportRatingsStatus } from '../../lib/rating/report-ratings.svelte';
   import { ratingCopy, componentLabel } from '../../lib/rating/copy';
   import { momentHref } from '../../lib/rating/moments';
   import { classForPlayer, guidForPlayer } from '../../lib/rating/roster-join';
-  import { RATING_COMPONENT_ORDER } from '../../lib/rating/types';
-  import type { RatingCardPlayer, RatingComponent, RatingMoment } from '../../lib/rating/types';
+  import {
+    RATING_LOADING,
+    basisColumn,
+    basisSentence,
+    momentText,
+    orderedComponents,
+    partDefinition,
+    playerRating,
+    scoreTone,
+  } from '../../lib/report/rating-card';
+  import type { RatingCardPlayer, RatingComponent, ReportRatings } from '../../lib/rating/types';
+  import type { StatColumn, StatFigure } from '../../lib/ui/stat-table';
+  import ClassCrestRing from '../character/ClassCrestRing.svelte';
+  import Divided from '../ui/Divided.svelte';
+  import Figure from '../ui/Figure.svelte';
+  import Meter from '../ui/Meter.svelte';
+  import Plate from '../ui/Plate.svelte';
+  import Row from '../ui/Row.svelte';
+  import Section from '../ui/Section.svelte';
+  import StatRow from '../ui/StatRow.svelte';
+  import StatTable from '../ui/StatTable.svelte';
 
   let {
     reportId,
@@ -24,6 +45,7 @@
     source,
     onSelectPlayer,
     apiBase = undefined,
+    onRatings = undefined,
   }: {
     reportId: string;
     fightIndex: number;
@@ -31,11 +53,16 @@
     source: string;
     onSelectPlayer: (guid: string) => void;
     apiBase?: string;
+    /** The fetch's state on every change, for the rail (RatingRail's `ratings` and `status`). */
+    onRatings?: (state: { data: ReportRatings | null; status: ReportRatingsStatus }) => void;
   } = $props();
 
   const fetcher = createReportRatingsFetch(apiBase);
   $effect(() => {
     fetcher.load(reportId, fightIndex);
+  });
+  $effect(() => {
+    onRatings?.({ data: fetcher.data, status: fetcher.status });
   });
 
   const withGuids = $derived(
@@ -49,156 +76,154 @@
         : withGuids.filter((row) => row.guid === source),
   );
 
-  function orderedComponents(player: RatingCardPlayer): RatingComponent[] {
-    return RATING_COMPONENT_ORDER.map(
-      (name) =>
-        player.components.find((c) => c.name === name) ?? {
-          name,
-          score: null,
-          weight: 0,
-          basis: '',
-          percentile: null,
-          bracket_n: 0,
-          excluded: true,
-          reason: '',
-          moments: [],
-        },
-    );
+  const COLUMNS: readonly StatColumn[] = [
+    { id: 'score', label: 'Of 100' },
+    { id: 'weight', label: 'Weight' },
+    { id: 'basis', label: 'Basis' },
+  ];
+  const DASH: StatFigure = { value: '–', muted: true };
+
+  function figuresOf(part: RatingComponent): StatFigure[] {
+    if (part.excluded) return [DASH, DASH, DASH];
+    return [
+      { value: String(Math.round(part.score ?? 0)) },
+      { value: `${Math.round(part.weight)}%` },
+      { value: basisColumn(part), muted: true },
+    ];
   }
 
-  function basisLine(player: RatingCardPlayer, part: RatingComponent): string {
-    if (part.excluded) return ratingCopy.excludedReason(componentLabel(part.name), part.reason);
-    if (part.basis === 'percentile' && part.percentile !== null)
-      return ratingCopy.percentileBasis(
-        player.spec,
-        player.class,
-        player.role,
-        part.percentile,
-        part.bracket_n,
-      );
-    if (part.basis === 'absolute') return ratingCopy.absoluteBasis;
-    return '';
-  }
-
-  function momentText(moment: RatingMoment): string {
-    const time = moment.at_ms !== undefined ? `${Math.round(moment.at_ms / 1000)}s — ` : '';
-    return `${time}${moment.spell_name ?? 'Unnamed'}`;
-  }
+  const classOf = (player: RatingCardPlayer, guid: string): string | undefined =>
+    classForPlayer(guid, player.class, roster);
 </script>
 
-<div class="flex flex-col gap-4" data-testid="rating-tab">
-  {#if fetcher.status === 'loading' || fetcher.status === 'idle'}
-    <p class="text-muted text-[14px]" data-testid="rating-tab-loading">Loading ratings.</p>
-  {:else if fetcher.status === 'flagged'}
-    <p class="text-muted text-[14px]" data-testid="rating-tab-flagged">{ratingCopy.flagged}</p>
-  {:else if fetcher.status === 'none'}
-    <p class="text-muted text-[14px]" data-testid="rating-tab-none">{ratingCopy.noRatingForTrash}</p>
-  {:else if fetcher.status === 'failed'}
-    <p class="text-[14px]" role="alert" data-testid="rating-tab-error">{ratingCopy.fetchFailed}</p>
-  {:else if source === SOURCE_ENEMIES}
-    <p class="text-muted text-[14px]" data-testid="rating-tab-enemies">{ratingCopy.enemiesHaveNone}</p>
-  {:else if visible.length === 0 && withGuids.length === 0}
-    <p class="text-muted text-[14px]" data-testid="rating-tab-empty">{ratingCopy.tabEmpty}</p>
-  {:else if visible.length === 0}
-    <p class="text-muted text-[14px]" data-testid="rating-tab-no-match">{ratingCopy.noMatchingRow}</p>
-  {:else}
-    {#each visible as { player, guid } (player.player_key)}
-      <details
-        class="border-line rounded-panel bg-raised border p-3"
-        data-testid={`rating-card-${guid || player.player_key}`}
-        open={visible.length === 1}
-      >
-        <summary class="flex min-h-11 cursor-pointer items-center gap-3 md:min-h-9">
-          {#if guid !== ''}
-            <button
-              type="button"
-              class="flex-1 truncate text-left font-semibold underline-offset-2 hover:underline"
-              style={`color: ${classColorVar(classForPlayer(guid, player.class, roster))}`}
-              title="Show only this player"
-              onclick={(event) => {
-                // A button nested in <summary> still bubbles its click up to toggle the
-                // details unless the click's default action is stopped here -- selecting a
-                // player should narrow the source, not just fold this one card.
-                event.preventDefault();
-                onSelectPlayer(guid);
-              }}>{splitUnitName(player.player_name).name}</button
-            >
-          {:else}
-            <span
-              class="flex-1 truncate font-semibold"
-              style={`color: ${classColorVar(classForPlayer(guid, player.class, roster))}`}
-            >
-              {splitUnitName(player.player_name).name}
-            </span>
-          {/if}
-          {#if player.insufficient}
-            <span class="text-muted text-[13px] font-semibold" data-testid="rating-insufficient"
-              >{ratingCopy.insufficient}</span
-            >
-          {:else}
-            <span class="text-gold figure-stat" data-testid="rating-overall"
-              >{Math.round(player.overall)}</span
-            >
-          {/if}
-        </summary>
-        {#if player.insufficient}
-          <p class="text-muted mt-2 text-[13px]" data-testid="rating-insufficient-note">
-            {ratingCopy.insufficientNote(player.insufficient_reason)}
-          </p>
-        {:else if player.overall_capped}
-          <p class="text-muted mt-2 text-[13px]" data-testid="rating-capped-note">
-            <span class="tabular font-semibold">{Math.round(player.overall)}</span>, {ratingCopy.cappedNote}
-          </p>
-        {/if}
-        <ul class="mt-3 flex flex-col gap-2" data-testid="rating-components">
-          {#each orderedComponents(player) as part (part.name)}
+{#snippet line(text: string, testid: string, alert = false)}
+  <p class="text-muted px-4 py-4 text-[14px]" role={alert ? 'alert' : undefined} data-testid={testid}>
+    {text}
+  </p>
+{/snippet}
+
+{#snippet partRow(guid: string, part: RatingComponent)}
+  <StatRow
+    figures={figuresOf(part)}
+    phone={part.excluded ? undefined : 'of 100'}
+    testid={`rating-component-${part.name}`}
+  >
+    {#snippet name()}{componentLabel(part.name)}{/snippet}
+    {#snippet sub()}
+      <div>
+        {part.excluded
+          ? ratingCopy.excludedReason(componentLabel(part.name), part.reason)
+          : partDefinition(part.name)}
+      </div>
+      {#if part.name === 'utility' && !part.excluded}
+        <div data-testid="rating-threat-note">{ratingCopy.threatNotModeled}</div>
+      {/if}
+      {#if part.moments.length > 0}
+        <ul class="flex flex-wrap gap-x-3" data-testid={`rating-moments-${part.name}`}>
+          {#each part.moments as moment, index (index)}
+            {@const href = momentHref(fightIndex, guid, moment)}
             <li>
-              <details
-                class="border-line-soft rounded-control border p-2"
-                data-testid={`rating-component-${part.name}`}
-              >
-                <summary class="flex min-h-11 cursor-pointer items-center gap-3 text-[13px] md:min-h-9">
-                  <span class="flex-1 font-semibold">{componentLabel(part.name)}</span>
-                  {#if !part.excluded}
-                    <span class="tabular text-muted text-[12px]">weight {Math.round(part.weight)}%</span>
-                    <span class="text-gold numeric w-10 text-right font-bold"
-                      >{Math.round(part.score ?? 0)}</span
-                    >
-                  {:else}
-                    <span class="text-muted text-[12px]">not scored</span>
-                  {/if}
-                </summary>
-                <p class="text-muted mt-2 text-[12px]">{basisLine(player, part)}</p>
-                {#if part.name === 'utility' && !part.excluded}
-                  <p class="text-muted mt-1 text-[12px]" data-testid="rating-threat-note">
-                    {ratingCopy.threatNotModeled}
-                  </p>
-                {/if}
-                {#if part.moments.length > 0}
-                  <ul class="mt-2 flex flex-col gap-1" data-testid={`rating-moments-${part.name}`}>
-                    {#each part.moments as moment, index (index)}
-                      {@const href = momentHref(fightIndex, guid, moment)}
-                      <li class="text-[12px]">
-                        {#if href !== null}
-                          <a class="text-gold underline-offset-2 hover:underline" {href}
-                            >{momentText(moment)}</a
-                          >
-                        {:else}
-                          <span class="text-muted">{momentText(moment)}</span>
-                        {/if}
-                      </li>
-                    {/each}
-                  </ul>
-                {/if}
-              </details>
+              {#if href !== null}
+                <a class="text-gold underline-offset-2 hover:underline" {href}>{momentText(moment)}</a>
+              {:else}
+                {momentText(moment)}
+              {/if}
             </li>
           {/each}
         </ul>
-      </details>
-    {/each}
-  {/if}
-  <a
-    class="text-gold inline-flex min-h-11 items-center text-[12px] underline-offset-2 hover:underline md:min-h-0"
-    href="/ratings">{ratingCopy.explainLink}</a
-  >
-</div>
+      {/if}
+    {/snippet}
+    {#snippet meter()}
+      {#if !part.excluded}<Meter value={(part.score ?? 0) / 100} tone={scoreTone(part.score ?? 0)} />{/if}
+    {/snippet}
+  </StatRow>
+{/snippet}
+
+{#snippet card(player: RatingCardPlayer, guid: string)}
+  {@const name = splitUnitName(player.player_name).name}
+  <div class="w-full" data-testid={`rating-card-${guid || player.player_key}`}>
+    <Row title={playerRating(name)} sub={basisSentence(player)}>
+      {#snippet lead()}<ClassCrestRing
+          characterClass={classSlugOf(classOf(player, guid)) ?? ''}
+          size={32}
+        />{/snippet}
+      {#snippet titleContent()}
+        {#if guid !== ''}
+          <button
+            type="button"
+            class="focus-visible:outline-gold text-left underline-offset-2 hover:underline focus-visible:outline-2"
+            style:color={classColorVar(classOf(player, guid))}
+            title="Show only this player"
+            onclick={() => onSelectPlayer(guid)}>{playerRating(name)}</button
+          >
+        {:else}
+          <span style:color={classColorVar(classOf(player, guid))}>{playerRating(name)}</span>
+        {/if}
+      {/snippet}
+      {#snippet trail()}
+        {#if player.insufficient}
+          <span class="text-muted text-[15px] font-semibold" data-testid="rating-insufficient"
+            >{ratingCopy.insufficient}</span
+          >
+        {:else}
+          <Figure
+            value={String(Math.round(player.overall))}
+            unit="of 100"
+            tone="gold"
+            size="big"
+            testid="rating-overall"
+          />
+        {/if}
+      {/snippet}
+    </Row>
+    {#if player.insufficient}
+      <p class="text-muted px-4 pb-3 text-[13px]" data-testid="rating-insufficient-note">
+        {ratingCopy.insufficientNote(player.insufficient_reason)}
+      </p>
+    {:else if player.overall_capped}
+      <p class="text-muted px-4 pb-3 text-[13px]" data-testid="rating-capped-note">
+        <span class="font-semibold tabular-nums">{Math.round(player.overall)}</span>, {ratingCopy.cappedNote}
+      </p>
+    {/if}
+    <StatTable
+      columns={COLUMNS}
+      nameHead="Part"
+      barHead="Score"
+      label={playerRating(name)}
+      testid="rating-components"
+    >
+      {#each orderedComponents(player) as part (part.name)}
+        {@render partRow(guid, part)}
+      {/each}
+    </StatTable>
+  </div>
+{/snippet}
+
+<Section
+  title={ratingCopy.panelHeading}
+  action={{ label: ratingCopy.explainLink, href: '/ratings' }}
+  testid="rating-tab"
+>
+  <Plate label="Rating">
+    {#if fetcher.status === 'loading' || fetcher.status === 'idle'}
+      {@render line(RATING_LOADING, 'rating-tab-loading')}
+    {:else if fetcher.status === 'flagged'}
+      {@render line(ratingCopy.flagged, 'rating-tab-flagged')}
+    {:else if fetcher.status === 'none'}
+      {@render line(ratingCopy.noRatingForTrash, 'rating-tab-none')}
+    {:else if fetcher.status === 'failed'}
+      {@render line(ratingCopy.fetchFailed, 'rating-tab-error', true)}
+    {:else if source === SOURCE_ENEMIES}
+      {@render line(ratingCopy.enemiesHaveNone, 'rating-tab-enemies')}
+    {:else if visible.length === 0 && withGuids.length === 0}
+      {@render line(ratingCopy.tabEmpty, 'rating-tab-empty')}
+    {:else if visible.length === 0}
+      {@render line(ratingCopy.noMatchingRow, 'rating-tab-no-match')}
+    {:else}
+      {#each visible as { player, guid }, index (player.player_key)}
+        {#if index === 0}{@render card(player, guid)}
+        {:else}<Divided gap={0}>{@render card(player, guid)}</Divided>{/if}
+      {/each}
+    {/if}
+  </Plate>
+</Section>

@@ -98,6 +98,8 @@
   const owner = `chart-${Math.random().toString(36).slice(2)}`;
   /** A median is the reference every line is read against: 2 px, so it holds among 12 lines. */
   const MEDIAN_WIDTH = 2;
+  /** The axis frame and tick ink: a chart stroke, not a card edge. */
+  const FRAME = 'var(--color-line)';
   const AXIS_PX = CHART_AXIS_PX;
   const LANE_PX = CHART_LANE_PX;
   const EVENT_LINE_PX = CHART_EVENT_LINE_PX;
@@ -239,8 +241,8 @@
           font,
           stroke: () => colour('var(--color-muted)'),
           grid: { show: false },
-          ticks: { show: true, size: 4, width: 1, stroke: () => colour('var(--color-line)') },
-          border: { show: true, width: 1, stroke: () => colour('var(--color-line)') },
+          ticks: { show: true, size: 4, width: 1, stroke: () => colour(FRAME) },
+          border: { show: true, width: 1, stroke: () => colour(FRAME) },
           splits: (u) =>
             timeTicks(u.scales.x.min ?? 0, u.scales.x.max ?? 0, u.bbox.width / devicePixelRatio, labelFloorS),
           values: (_u, splits) => splits.map((at) => clockLabel(at * 1000)),
@@ -990,7 +992,7 @@
   }
   .marker.gold .face {
     border-radius: 4px;
-    background: var(--color-raised);
+    background: color-mix(in srgb, var(--color-gold) 12%, var(--color-bg));
     border: 1px solid color-mix(in srgb, var(--color-gold) 70%, transparent);
     color: var(--color-gold);
   }

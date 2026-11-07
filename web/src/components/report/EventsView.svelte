@@ -3,19 +3,36 @@
      timestamps, merged and time-ordered (src/lib/report/events.ts). The complete event
      stream -- every field of every line, not just what the summary keeps -- is
      events.parquet, which is the Queries view's job (Task 16): two to ten megabytes and a
-     DuckDB instance for a question this view answers for free. -->
+     DuckDB instance for a question this view answers for free.
+     Drawn to logs spec 2026-11-07 section 6.2 (`web-report-events`): Section `Events` holding
+     the one Plate, a StatTable of lines (the spell's icon, the sentence with each player's name
+     in their class colour, Time, Amount), 200 a page. The Show chips are the rail's
+     (EventsRail); `chips` draws them here until the frame places the rail. -->
 <script lang="ts">
   import { classColorVar, formatAmount, formatDuration } from '../../lib/report/format';
   import {
     EVENT_KINDS,
     filterEvents,
+    sentenceParts,
     streamEvents,
     summaryEvents,
     type EventKind,
+    type SummaryEvent,
   } from '../../lib/report/events';
   import type { StreamLine } from '../../lib/report/exact';
+  import { SpellIcons } from '../../lib/report/spell-icons.svelte';
   import type { Summary } from '../../lib/report/types';
   import { BUSY_CLASS } from '../../lib/ui/busy';
+  import { LINK } from '../../lib/ui/primitives';
+  import type { StatColumn, StatFigure } from '../../lib/ui/stat-table';
+  import Button from '../ui/Button.svelte';
+  import Field from '../ui/Field.svelte';
+  import Plate from '../ui/Plate.svelte';
+  import Section from '../ui/Section.svelte';
+  import SpellIcon from '../ui/SpellIcon.svelte';
+  import StatRow from '../ui/StatRow.svelte';
+  import StatTable from '../ui/StatTable.svelte';
+  import EventChips from './EventChips.svelte';
 
   let {
     summary,
@@ -26,6 +43,7 @@
     onPatch = () => {},
     loadStream = undefined,
     names = new Map<string, string>(),
+    chips = true,
   }: {
     summary: Summary;
     classOf: Map<string, string>;
@@ -39,7 +57,11 @@
     loadStream?: () => Promise<StreamLine[]>;
     /** GUID to unit name, so an aura line can say who applied it. */
     names?: ReadonlyMap<string, string>;
+    /** Draw the Show chips above the table; false once the frame draws EventsRail. */
+    chips?: boolean;
   } = $props();
+
+  const icons = new SpellIcons();
 
   let stream = $state<StreamLine[] | null>(null);
   let streaming = $state(false);
@@ -84,97 +106,122 @@
   const PAGE = 200;
   let limit = $state(PAGE);
   const shown = $derived(matching.slice(0, limit));
+  const unshown = $derived(matching.length - shown.length);
   $effect(() => {
     // Back to the first page whenever the filter changes.
     void [kinds.size, search];
     limit = PAGE;
   });
 
-  function toggle(kind: EventKind): void {
-    onPatch({ eventsOff: kinds.has(kind) ? [...off, kind] : off.filter((entry) => entry !== kind) });
+  const streamedCount = $derived(
+    all.filter((event) => event.kind === 'damage' || event.kind === 'heal').length,
+  );
+
+  const COLUMNS: readonly StatColumn[] = [
+    { id: 'time', label: 'Time' },
+    { id: 'amount', label: 'Amount' },
+  ];
+  const DASH: StatFigure = { value: '–', muted: true };
+
+  function figuresOf(event: SummaryEvent): StatFigure[] {
+    return [
+      { value: formatDuration(event.atMs) },
+      event.amount === undefined ? DASH : { value: formatAmount(event.amount) },
+    ];
+  }
+
+  /** A player's name in their class colour; an enemy's in the line's own colour. */
+  const nameColor = (guid: string): string | undefined =>
+    classOf.has(guid) ? classColorVar(classOf.get(guid)) : undefined;
+
+  function onFind(event: Event): void {
+    const input = event.target;
+    if (input instanceof HTMLInputElement) onPatch({ find: input.value });
   }
 </script>
 
-<div class="flex flex-col gap-3" data-testid="events-view">
-  <div class="flex flex-wrap items-center gap-x-4 gap-y-2">
-    {#each EVENT_KINDS as kind (kind.id)}
-      <label class="flex min-h-11 items-center gap-2 text-[13px] md:min-h-0">
-        <input type="checkbox" checked={kinds.has(kind.id)} onchange={() => toggle(kind.id)} />
-        {kind.label}
-      </label>
-    {/each}
-    <label class="quiet-label flex items-center gap-2" for="events-search">
-      Find
-      <input
-        id="events-search"
-        class="border-line-warm bg-raised rounded-control text-text h-11 px-2 text-[13px] md:h-9"
-        type="search"
-        value={search}
-        oninput={(event) => onPatch({ find: (event.currentTarget as HTMLInputElement).value })}
-        data-testid="events-search"
-      />
-    </label>
-  </div>
+<Section
+  title="Events"
+  meta={`${matching.length.toLocaleString()} events in this window, in order`}
+  testid="events-view"
+>
+  <div class="flex flex-col gap-3">
+    <div class="flex flex-wrap items-center gap-x-6 gap-y-2">
+      {#if chips}<EventChips {off} {onPatch} />{/if}
+      <!-- The field reports each keystroke to the url; its own value follows the url back. -->
+      <div class="w-full md:ml-auto md:w-[240px]" oninput={onFind}>
+        <Field
+          id="events-search"
+          label="Find"
+          labelHidden
+          type="search"
+          placeholder="Find a name, spell or amount"
+          value={search}
+          testid="events-search"
+        />
+      </div>
+    </div>
 
-  <p class="text-muted text-[12px]">
-    <span class="numeric">{matching.length}</span> events
-    {#if stream === null}
-      are listed, from the summary: casts, auras going up and down, the hits and heals before each death, and
-      the deaths, each in the class colour of the player it is about. An aura applied while the same aura is
-      already up on that player is folded into the running one, so its applier can be named on the Buffs table
-      and not here.{#if loadStream !== undefined}
-        <button
-          type="button"
-          class={`text-gold inline-flex min-h-11 items-center underline-offset-2 hover:underline md:min-h-0 ${streaming ? BUSY_CLASS : ''}`}
-          data-testid="events-stream"
-          disabled={streaming}
-          aria-busy={streaming}
-          onclick={() => void runStream()}>Load every hit and heal in this window</button
-        >
-        from the fight’s events.{/if}{:else}: casts, auras and deaths from the summary, and
-      <span class="numeric"
-        >{all.filter((event) => event.kind === 'damage' || event.kind === 'heal').length}</span
-      >
-      hits and heals from the fight’s events{stream.length === all.length ? '' : ' in scope'}.{/if}
-    {#if streamError !== ''}<span class="text-wipe" role="alert">{streamError}</span>{/if}
-    Every field of every line is in Queries.
-  </p>
+    <Plate label="Events">
+      {#if shown.length === 0}
+        <p class="text-muted px-4 py-4 text-[14px]" data-testid="table-empty">
+          No rows matched.{stream === null && search.trim() !== ''
+            ? ' Load every hit and heal below to search them all.'
+            : ''}
+        </p>
+      {:else}
+        <StatTable columns={COLUMNS} nameHead="Event" bar={false} label="Events" testid="event-list">
+          {#each shown as event, index (`${event.atMs}-${index}`)}
+            <StatRow figures={figuresOf(event)} bar={false}>
+              {#snippet icon()}{#if event.spellId !== undefined}<SpellIcon
+                    url={icons.of(event.spellId)}
+                    spellId={event.spellId}
+                    size={24}
+                    tip
+                  />{/if}{/snippet}
+              {#snippet name()}
+                <!-- Wraps on a phone: the part a reader wants is the end of the line, "on Hobolol
+                     by Deadclasslol", and a truncated line cuts exactly that. -->
+                <span class="text-text text-[14px] font-normal"
+                  >{#each sentenceParts(event) as part, partIndex (partIndex)}{#if part.guid !== undefined && nameColor(part.guid) !== undefined}<span
+                        class="font-semibold"
+                        style:color={nameColor(part.guid)}>{part.text}</span
+                      >{:else}{part.text}{/if}{/each}</span
+                >
+              {/snippet}
+            </StatRow>
+          {/each}
+        </StatTable>
+        {#if unshown > 0}
+          <div class="px-4 py-3">
+            <Button size="sm" testid="events-more" onclick={() => (limit += PAGE)}
+              >Show {Math.min(PAGE, unshown)} more · {unshown.toLocaleString()} not yet shown</Button
+            >
+          </div>
+        {/if}
+      {/if}
+    </Plate>
 
-  {#if shown.length === 0}
-    <p class="text-muted text-[14px]" data-testid="table-empty">
-      Nothing matches{stream === null && search.trim() !== ''
-        ? ' among the summary’s events; load every hit and heal above to search them all'
-        : ''}.
-    </p>
-  {:else}
-    <ul class="flex flex-col" data-testid="event-list">
-      {#each shown as event, index (`${event.atMs}-${index}`)}
-        <li
-          class="border-line-soft grid min-h-11 grid-cols-[52px_minmax(0,1fr)_auto] items-center gap-2 border-b px-2 py-1 text-[14px] md:grid-cols-[68px_minmax(0,1fr)_auto] md:gap-3"
-        >
-          <span class="text-muted numeric text-[12px]">{formatDuration(event.atMs)}</span>
-          <!-- Wraps on a phone: the part a reader wants is the end of the line, "on Hobolol
-               by Deadclasslol", and a truncated line cuts exactly that. -->
-          <span
-            class="break-words md:truncate"
-            style={`color: ${classColorVar(classOf.get(event.guid))}`}
-            title="Coloured by the class of the player the line is about">{event.text}</span
+    <p class="text-muted text-[13px] leading-5">
+      {#if stream === null}
+        From the summary: casts, auras going up and down, the hits and heals before each death, and the
+        deaths. An aura applied while the same aura is already up on that player is folded into the running
+        one, so its applier is named on the Buffs table and not here.{#if loadStream !== undefined}
+          <button
+            type="button"
+            class={`${LINK} inline-flex min-h-11 items-center md:min-h-0 ${streaming ? BUSY_CLASS : ''}`}
+            data-testid="events-stream"
+            disabled={streaming}
+            aria-busy={streaming}
+            onclick={() => void runStream()}>Load every hit and heal in this window</button
           >
-          <span class="numeric text-right text-[13px]">
-            {event.amount === undefined ? '' : formatAmount(event.amount)}
-          </span>
-        </li>
-      {/each}
-    </ul>
-    {#if matching.length > shown.length}
-      <button
-        type="button"
-        class="border-line-warm rounded-control text-text inline-flex h-11 items-center self-start border px-3 text-[12px] font-bold tracking-[0.06em] uppercase md:h-9"
-        data-testid="events-more"
-        onclick={() => (limit += PAGE)}
-      >
-        Show {Math.min(PAGE, matching.length - shown.length)} more · {matching.length - shown.length} not yet shown
-      </button>
-    {/if}
-  {/if}
-</div>
+          from the fight’s events.{/if}
+      {:else}
+        Casts, auras and deaths from the summary, and <span class="tabular-nums">{streamedCount}</span>
+        hits and heals from the fight’s events{stream.length === all.length ? '' : ' in scope'}.
+      {/if}
+      {#if streamError !== ''}<span class="text-wipe" role="alert">{streamError}</span>{/if}
+      Every field of every line is in Queries.
+    </p>
+  </div>
+</Section>

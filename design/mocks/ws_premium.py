@@ -290,7 +290,7 @@ def checkout_page(state: str) -> str:
         o = A['seat']['owned']
         who = WHO['free']
         head = PageHeader(e(F['plan_table']['premium']['name']), answer=band('premium'))
-        inner = (f'<div class="stack" style="padding:16px 20px 20px"><p class="t-h3">{e(o["title"])}</p><p class="lede strong">{e(o["line"])}</p>'
+        inner = (f'<div class="stack" style="padding:16px 20px 20px"><h2 class="t-h3">{e(o["title"])}</h2><p class="lede strong">{e(o["line"])}</p>'
                  + (f'<p class="t-small">{e(o["line2"])}</p>' if o['line2'] else '') + f'<div class="acts">{LinkBtn(e(o["action"]["label"]))}</div></div>')
         body = head + PageForm(Plate(inner, 'Your plan'))
     elif state == 'guild':

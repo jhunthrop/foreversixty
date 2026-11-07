@@ -1,0 +1,12 @@
+{
+  "comment": "The simulator tool pages the parity gate checks (web/tests/e2e/parity-sim-tools.spec.ts) at 1440 x 1000. ws_simtools.py renders each mock from data/builds/<active build> and sim/request; the spec loads the same character (support/sim-parity.ts TOOL_CHARACTER) by ?code=.",
+  "viewport": { "width": 1440, "height": 1000 },
+  "states": [
+    { "id": "gear", "path": "/sim/gear", "mock": "web-simtools-gear.html" },
+    { "id": "gear-empty", "path": "/sim/gear", "mock": "web-simtools-gear-empty.html" },
+    { "id": "talents", "path": "/sim/talents", "mock": "web-simtools-talents.html" },
+    { "id": "drops", "path": "/sim/drops", "mock": "web-simtools-drops.html" },
+    { "id": "weights", "path": "/sim/weights", "mock": "web-simtools-weights.html" },
+    { "id": "specs", "path": "/sim/specs", "mock": "web-simtools-specs.html" }
+  ]
+}

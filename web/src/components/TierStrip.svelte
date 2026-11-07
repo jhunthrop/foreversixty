@@ -56,7 +56,7 @@
   {#each segments as segment (segment.tier)}
     {@const isHere = segment.tier === current}
     <li
-      class={`rounded-control flex min-w-0 flex-col gap-1 p-1.5 ${isHere ? 'bg-card-top outline-gold/70 outline outline-1' : ''}`}
+      class={`rounded-control flex min-w-0 flex-col gap-1 p-1.5 ${isHere ? 'bg-gold/[.08] outline-gold/70 outline outline-1' : ''}`}
       aria-current={isHere ? 'true' : undefined}
       data-testid={`tier-strip-${segment.tier}`}
     >

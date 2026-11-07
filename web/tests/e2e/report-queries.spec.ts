@@ -9,7 +9,8 @@ import { DEAD_API_BASE } from '../hermetic';
 import { DUCKDB_WASM_VERSION } from '../../src/lib/report/duckdb-runtime';
 import { serveDuckdbRuntime } from './support/duckdb-runtime';
 import { readFileSync } from 'node:fs';
-import { choose } from './support/select';
+
+import { pickFight, openTab } from './support/report-frame';
 
 /** The lines of fight 3 (Warden Kelthas, encounter 9001) in the fixture log, boundaries included. */
 function fightThreeLines(): number {
@@ -23,7 +24,7 @@ function fightThreeLines(): number {
 }
 
 const REPORT = '/reports/fixture2abcd';
-const QUERIES = `${REPORT}?fight=3&view=queries`;
+const QUERIES = `${REPORT}?fight=3&tab=queries`;
 // The preview's own address, which E2E_PORT moves (see playwright.config.ts): a run on a
 // second port must still recognise its own bytes as first-party.
 const ORIGIN = `http://localhost:${process.env.E2E_PORT ?? '4321'}`;
@@ -53,24 +54,15 @@ test('nothing DuckDB-related loads on page load, while browsing, or on opening Q
 
   await page.goto(REPORT);
   await expect(page.getByTestId('summary-tab')).toBeVisible();
-  const phone = (page.viewportSize()?.width ?? 1280) < 1024;
-  if (phone) await choose(page.getByTestId('tab-select'), 'damage-done');
-  else await page.getByTestId('tab-damage-done').click();
-  if (phone) {
-    await choose(page.getByTestId('tab-select'), 'casts');
-  } else {
-    // Casts lives under the category row's "More" menu now (design review 2026-09-26
-    // finding 3): a native `<details>`, opened by clicking its own summary.
-    await page.getByTestId('tab-more').click();
-    await page.getByTestId('tab-casts').click();
-  }
-  await page.getByTestId('view-events').click();
+  await openTab(page, 'damage-done');
+  await openTab(page, 'casts');
+  await openTab(page, 'events');
   await expect(page.getByTestId('events-view')).toBeVisible();
 
   expect(duckdbAssets(fetched)).toEqual([]);
   expect(parquetFiles(fetched)).toEqual([]);
 
-  await page.getByTestId('view-queries').click();
+  await openTab(page, 'queries');
   await expect(page.getByTestId('queries-view')).toBeVisible();
   await expect(page.getByTestId('query-run')).toBeEnabled();
 
@@ -197,10 +189,8 @@ test('an answer for the fight that was left behind is dropped, not painted', asy
   await page.getByTestId('template-event-counts').click();
   await page.getByTestId('query-run').click();
   await started;
-
-  await page.getByTestId('fight-group-1').click();
-  await page.getByTestId('fight-1').click();
-  await expect(page.getByTestId('fight-1')).toHaveAttribute('aria-current', 'true');
+  await pickFight(page, 1);
+  await expect(page.locator('select[data-testid="report-fight"]')).toHaveValue('1');
 
   const answered = page.waitForResponse((response) =>
     /\/fights\/3\/events\.parquet(\?|$)/.test(response.url()),

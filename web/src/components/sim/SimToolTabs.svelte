@@ -4,13 +4,23 @@
      nav of links). Each tab carries the loaded character (lib/sim/tabs.ts `tabStateFor`), so a tab
      opens the same character in that tool. Not on /sim/<id> (ruling S5). -->
 <script lang="ts">
-  import { SIM_TAB_ATTR, SIM_TABS, tabHref, tabStateFor, type TabSource } from '../../lib/sim/tabs';
+  import {
+    SIM_TAB_ATTR,
+    SIM_TABS,
+    tabHref,
+    tabStateFor,
+    type SimTabId,
+    type TabSource,
+  } from '../../lib/sim/tabs';
   import TabStrip from '../ui/TabStrip.svelte';
 
   let {
+    active = 'quick-sim',
     source = null,
     fallbackCode = null,
   }: {
+    /** The tab this page is. */
+    active?: SimTabId;
     /** The loaded character's source, or null with none. */
     source?: TabSource | null;
     /** An FS1 code for a source with no ref (a paste). */
@@ -28,4 +38,4 @@
   );
 </script>
 
-<TabStrip {tabs} active="quick-sim" label="Simulator tools" testid="sim-nav-tabs" wrap />
+<TabStrip {tabs} {active} label="Simulator tools" testid="sim-nav-tabs" wrap />

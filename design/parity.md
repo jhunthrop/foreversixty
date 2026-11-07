@@ -48,12 +48,16 @@ Each run writes `web/test-results/parity/<page>-<state>.png`: mock | build at th
 
 `design/mocks/web/sim-parity.json`: `landing-out`, `landing-in`, `result`, `saved`. `design/mocks/ws_sim.py` draws them from `web/src/fixtures/sim/result-full.json` and `data/builds/<active build>`, the files `web/tests/e2e/support/sim-parity.ts` serves to the fixture build.
 
+## The simulator tool states
+
+`design/mocks/web/simtools-parity.json`: `gear` (Top gear with a character), `gear-empty` (no character: the source switcher), `talents`, `drops` (the Droptimizer), `weights` and `specs` (Spec support, no parse measured yet). `design/mocks/ws_simtools.py` draws them in the quick sim's grammar from `data/builds/<active build>` (items, loot, stat weights), `sim/request/raid-consumes.json` and `web/src/data/phases.json`; the spec (`web/tests/e2e/parity-sim-tools.spec.ts`) loads the same character by `?code=` (`support/sim-parity.ts` `TOOL_CHARACTER`: a level 60 Orc Fury Warrior wearing Lionheart Helm and Arcanite Reaper) and serves the same build files. The Droptimizer's gates read the clock on both sides (`lib/sim/phase.ts` `hasOpened`, `ws_simtools.is_open`).
+
 ## Test-time mocks
 
 Before its tests each spec renders its mocks into `web/test-results/parity/mocks/<page>/` (`web/tests/e2e/support/parity-mocks.ts`) and compares against those:
 
 - **BiS:** `node design/mocks/bis_facts.mjs <the spec's own baseURL> <out>/bis-facts.json`, then `ws_bis.py` with `FS_BIS_FACTS` and `FS_MOCK_OUT` pointing there. The URL is the spec's preview (`E2E_PORT`), never whatever holds another port; `bis_facts.mjs` without a URL stops with the exact command.
-- **Simulator:** `ws_sim.py` with `FS_DATA_ROOT` at the checkout and `FS_MOCK_OUT` there.
+- **Simulator:** `ws_sim.py` with `FS_DATA_ROOT` at the checkout and `FS_MOCK_OUT` there; the tool pages the same with `ws_simtools.py`.
 
 The generators need `python3` (standard library only; Pillow is only for `ws_sim.py compare` and `ws_compose.py`). Rendering takes under a second for the simulator and a few seconds of page reads for BiS.
 
@@ -68,7 +72,7 @@ The committed `design/mocks/web/*.html` are what a reviewer reads and what the s
 npm run build && npm run preview -- --port 4500
 # from the repo root
 node design/mocks/bis_facts.mjs http://localhost:4500 && python3 design/mocks/ws_bis.py
-python3 design/mocks/ws_sim.py
+python3 design/mocks/ws_sim.py && python3 design/mocks/ws_simtools.py
 ```
 
 Then commit `design/mocks/web` (and `design/mocks/data/bis-facts.json`).
@@ -90,6 +94,10 @@ Then commit `design/mocks/web` (and `design/mocks/data/bis-facts.json`).
 ## The guild states
 
 `design/mocks/web/guild-parity.json`, against the committed mocks from `design/mocks/ws_guild2.py` (the persona round, `design/specs/2026-11-05-web-layout.md` section 7). The roster and every figure both sides show live once in `design/mocks/guild_data.py`; `python3 design/mocks/guild_fixtures.py` writes them as the API's answers into `web/tests/e2e/fixtures/guild-parity/`, which `tests/e2e/support/guild-parity/` routes to the build. The clock is pinned to Tue 8 Dec 2026, 4:00 pm in America/Chicago (`support/guild-parity/clock.ts`), so "Starts in" and the raid times read as the mock's. After a change: `python3 design/mocks/guild_fixtures.py && python3 design/mocks/ws_guild2.py`.
+
+## The admin links state and the billing references
+
+`web/tests/e2e/parity-admin.spec.ts`: `admin-links` (the owner, Thandrel from `fixtures/home/me-60.json` with role admin, and the three links `admin-links.spec.ts` serves) at 1440 against `web-admin-links.html`. Test-time render: `node design/mocks/billing_facts.mjs <out>/billing-facts.json`, then `ws_billing.py` with `FS_BILLING_FACTS` and `FS_MOCK_OUT` (the facts bundle `admin-copy.ts` and `funnel.ts`, the guild billing and seats copy and the notifications copy). The same generator draws one reference that is not a page state: `web-account-discord-paste.html` (the account's Discord paste form). The guild settings Billing tab is drawn and gated by the guild settings mock. The premium spec also checks `checkout-owned` (the seat account on `/premium/checkout`, its "You already have Premium" Plate).
 
 ## The site chrome
 

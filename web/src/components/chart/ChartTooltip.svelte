@@ -20,6 +20,7 @@
   import { chartCopy } from '../../lib/chart/copy';
   import type { ChartEvent } from '../../lib/chart/types';
   import Glyph from '../ui/Glyph.svelte';
+  import Overlay from '../ui/Overlay.svelte';
 
   let {
     open,
@@ -88,61 +89,66 @@
   data-testid="chart-tooltip"
   aria-hidden="true"
 >
-  <div class="head flex items-baseline justify-between gap-3 px-3 pb-1.5">
-    <span class="text-strong numeric text-[14px] font-bold" data-testid="chart-tooltip-time">{title}</span>
-    <span class="text-muted truncate text-[12px]">{note}</span>
-  </div>
-  {#if events.length > 0}
-    <ul class="events flex flex-col gap-1 px-3 py-1.5" data-testid="chart-tooltip-events">
-      {#each events as event (event.key)}
-        <li class="flex items-start gap-1.5 text-[12px] leading-4" class:death={event.kind === 'death'}>
-          <span class="text-muted numeric w-[30px] shrink-0">{clockLabel(event.atMs)}</span>
-          {#if event.iconUrl}
-            <img src={event.iconUrl} alt="" width="16" height="16" class="rounded-[3px]" />
-          {:else}
-            <span class="icon flex h-4 w-4 shrink-0 items-center justify-center rounded-[3px]"
-              ><Glyph name={glyphOf(event)} size={12} /></span
+  <Overlay kind="tooltip">
+    <div class="pt-2 pb-1.5">
+      <div class="flex items-baseline justify-between gap-3 px-3 pb-1.5">
+        <span class="text-strong numeric text-[14px] font-bold" data-testid="chart-tooltip-time">{title}</span
+        >
+        <span class="text-muted truncate text-[12px]">{note}</span>
+      </div>
+      {#if events.length > 0}
+        <ul class="flex flex-col gap-1 px-3 pt-0.5 pb-2" data-testid="chart-tooltip-events">
+          {#each events as event (event.key)}
+            <li class="flex items-start gap-1.5 text-[12px] leading-4" class:death={event.kind === 'death'}>
+              <span class="text-muted numeric w-[30px] shrink-0">{clockLabel(event.atMs)}</span>
+              {#if event.iconUrl}
+                <img src={event.iconUrl} alt="" width="16" height="16" class="rounded-[3px]" />
+              {:else}
+                <span class="icon flex h-4 w-4 shrink-0 items-center justify-center rounded-[3px]"
+                  ><Glyph name={glyphOf(event)} size={12} /></span
+                >
+              {/if}
+              <span>{event.text}</span>
+            </li>
+          {/each}
+        </ul>
+      {/if}
+      {#if threat && rows.length > 0}
+        <div class="text-muted flex justify-end gap-2 px-3 pt-1 text-[11px]">
+          <span>{chartCopy.tooltipThreatColumn}</span><span class="w-[50px] text-right"
+            >{chartCopy.tooltipShareColumn}</span
+          >
+        </div>
+      {/if}
+      <ul class="flex flex-col" data-testid="chart-tooltip-rows">
+        {#each rows as row (row.id)}
+          <li
+            class="row flex h-[22px] items-center gap-2 px-3"
+            class:hl={row.highlighted}
+            data-testid="chart-tooltip-row"
+          >
+            <span
+              class="h-3 w-[3px] shrink-0 rounded-[1px]"
+              style:background={row.dead ? 'var(--color-muted)' : row.colour}
+            ></span>
+            <span
+              class="min-w-0 flex-1 truncate text-[13px] font-semibold"
+              style:color={row.dead ? 'var(--color-muted)' : row.colour}>{row.label}</span
             >
-          {/if}
-          <span>{event.text}</span>
-        </li>
-      {/each}
-    </ul>
-  {/if}
-  {#if threat && rows.length > 0}
-    <div class="text-muted flex justify-end gap-2 px-3 pt-1 text-[11px]">
-      <span>{chartCopy.tooltipThreatColumn}</span><span class="w-[50px] text-right"
-        >{chartCopy.tooltipShareColumn}</span
-      >
+            <span class="numeric text-[13px] font-semibold {row.dead ? 'text-muted' : 'text-strong'}"
+              >{row.value}</span
+            >
+            {#if threat}
+              <span class="text-muted numeric w-[50px] text-right text-[12px]">{row.share ?? ''}</span>
+            {/if}
+          </li>
+        {/each}
+      </ul>
+      {#if more > 0}
+        <p class="text-muted px-3 pt-1 text-[12px]">{chartCopy.tooltipMore(more)}</p>
+      {/if}
     </div>
-  {/if}
-  <ul class="flex flex-col" data-testid="chart-tooltip-rows">
-    {#each rows as row (row.id)}
-      <li
-        class="row flex h-[22px] items-center gap-2 px-3"
-        class:hl={row.highlighted}
-        data-testid="chart-tooltip-row"
-      >
-        <span
-          class="h-3 w-[3px] shrink-0 rounded-[1px]"
-          style:background={row.dead ? 'var(--color-muted)' : row.colour}
-        ></span>
-        <span
-          class="min-w-0 flex-1 truncate text-[13px] font-semibold"
-          style:color={row.dead ? 'var(--color-muted)' : row.colour}>{row.label}</span
-        >
-        <span class="numeric text-[13px] font-semibold {row.dead ? 'text-muted' : 'text-strong'}"
-          >{row.value}</span
-        >
-        {#if threat}
-          <span class="text-muted numeric w-[50px] text-right text-[12px]">{row.share ?? ''}</span>
-        {/if}
-      </li>
-    {/each}
-  </ul>
-  {#if more > 0}
-    <p class="text-muted px-3 pt-1 text-[12px]">{chartCopy.tooltipMore(more)}</p>
-  {/if}
+  </Overlay>
 </div>
 
 <style>
@@ -150,16 +156,12 @@
     position: fixed;
     inset: auto;
     margin: 0;
-    padding: 8px 0 6px;
-    border: 1px solid var(--color-line-card);
-    border-radius: 10px;
-    background: #0d0f15;
+    padding: 0;
+    border: 0;
+    background: transparent;
     color: var(--color-text);
-    box-shadow:
-      inset 0 1px 0 var(--card-highlight),
-      0 16px 38px rgba(0, 0, 0, 0.6);
     pointer-events: none;
-    overflow: hidden;
+    overflow: visible;
     transition: opacity 80ms;
   }
   .chart-tooltip.fallback {
@@ -169,17 +171,11 @@
   .chart-tooltip.fallback.shown {
     display: block;
   }
-  .head {
-    border-bottom: 1px solid var(--color-line-soft);
-  }
-  .events {
-    border-bottom: 1px solid var(--color-line-soft);
-  }
   .events .death {
     color: #ffb4b0;
   }
   .icon {
-    background: var(--color-raised);
+    background: rgb(255 255 255 / 0.06);
     color: var(--color-text);
   }
   .death .icon {

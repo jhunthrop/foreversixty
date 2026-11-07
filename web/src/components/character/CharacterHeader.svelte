@@ -6,7 +6,8 @@
      the BiS spec page and the planner (the last two as the stacked `card` layout with the outline
      action); Rankings and Logs mount it the same way in later lanes.
 
-     FIXED by this component (a page never restyles or re-words these): the panel, the identity
+     FIXED by this component (a page never restyles or re-words these): the open band (no box,
+     web layout spec 2026-11-05 P6), the identity
      (crest 64 px, 56 stacked; label always "Your character"; name 24 px, 22 stacked; the
      descriptor "Gnome Fury Warrior · Level 60 · [flat faction logo] Alliance", the race only when
      the API sent it, split into two fixed lines below 1280 px and in the card layout so a
@@ -30,8 +31,8 @@
                      figure is a fraction of a whole), { kind: 'sentence', text } (the empty
                      answer) or { kind: 'none' }. It is re-run, under a skeleton, whenever the
                      selected character changes; a rejection is the failed state with "Try again".
-       emphasis      'primary' (a landing page's lead: the filled 48 px gold button, default) or
-                     'secondary' (a tool page's context card: the 44 px outline button).
+       emphasis      'primary' (a landing page's lead: the shared primary button, default) or
+                     'secondary' (a tool page's context: the shared secondary button).
        layout        'band' (full width, three columns from 1024 px, default) or 'card' (always
                      stacked, for a side column).
        whenSignedOut 'band' (the shared signed-out band, default) or 'none' (the home page, whose
@@ -82,7 +83,9 @@
   import { classColorVar } from '../../lib/report/format';
   import { classSlugFromName } from '../../lib/report/tree-sizes';
   import { finishedRunsFor } from '../../lib/character-header/finished-sim-line';
+  import { button as buttonRecipe } from '../../lib/ui/button';
   import SupporterChip from '../SupporterChip.svelte';
+  import Meter from '../ui/Meter.svelte';
   import FinishedSimLine from './FinishedSimLine.svelte';
   import CharacterHeaderSignedOut from './CharacterHeaderSignedOut.svelte';
 
@@ -187,6 +190,11 @@
     return typeof action === 'function' ? action({ character, belowLevelFloor }) : action;
   });
 
+  /** The one action is the shared button recipe (lib/ui/button.ts): the filled primary on a landing
+   *  page, the secondary on a tool page; a second action is always the secondary. */
+  const ctaClass = $derived(buttonRecipe(emphasis === 'primary' ? 'primary' : 'secondary', 'md'));
+  const secondClass = buttonRecipe('secondary', 'md');
+
   const hasAnswerColumn = $derived(answer !== undefined && (view === 'loading' || answerView !== null));
 
   const PLACEHOLDER_SYNC: SyncView = { source: 'Addon', age: '12 minutes ago', staleTail: null };
@@ -237,7 +245,9 @@
         />
       {/if}
       <span class="ch-ident">
-        <span class="label ch-label">{@render txt(characterHeaderCopy.label, ghost)}</span>
+        <span class="ch-label text-label tracking-label font-bold uppercase"
+          >{@render txt(characterHeaderCopy.label, ghost)}</span
+        >
         <span class="ch-name-box">
           <svelte:element
             this={nameHeading && !ghost ? 'h1' : 'span'}
@@ -288,7 +298,9 @@
 {/snippet}
 
 {#snippet figuresBody(current: FiguresView, ghost: boolean)}
-  <span class="label ch-answer-label" data-testid={ghost ? undefined : 'character-header-answer-label'}
+  <span
+    class="ch-answer-label text-label tracking-label font-bold uppercase"
+    data-testid={ghost ? undefined : 'character-header-answer-label'}
     >{@render txt(current.label, ghost)}</span
   >
   <span class="ch-figures">
@@ -304,9 +316,7 @@
     {/each}
   </span>
   {#if current.answer.bar !== undefined}
-    <span class="ch-track" aria-hidden="true">
-      <span class="ch-fill" style:width={`${(current.answer.bar * 100).toFixed(1)}%`}></span>
-    </span>
+    <span class="ch-track"><Meter value={current.answer.bar} /></span>
   {/if}
   {#if current.answer.note !== undefined}
     <span class="ch-note" data-testid={ghost ? undefined : 'character-header-note'}
@@ -393,7 +403,7 @@
     <button
       bind:this={actionEl}
       type="button"
-      class="ch-cta"
+      class="ch-cta {ctaClass}"
       disabled={act.disabled === true}
       onclick={() => onPick?.()}
       data-testid={ghost ? undefined : 'character-header-action'}>{@render txt(act.label, ghost)}</button
@@ -401,14 +411,14 @@
     {#if act.secondary !== undefined}
       {#if act.secondary.href !== undefined}
         <a
-          class="ch-cta ch-cta-second"
+          class="ch-cta ch-cta-second {secondClass}"
           href={act.secondary.href}
           data-testid={act.secondary.testid ?? 'character-header-secondary'}>{act.secondary.label}</a
         >
       {:else}
         <button
           type="button"
-          class="ch-cta ch-cta-second"
+          class="ch-cta ch-cta-second {secondClass}"
           onclick={() => onSecondary?.()}
           data-testid={act.secondary.testid ?? 'character-header-secondary'}>{act.secondary.label}</button
         >
@@ -439,7 +449,7 @@
   {:else}
     <a
       bind:this={actionEl}
-      class="ch-cta"
+      class="ch-cta {ctaClass}"
       href={act.href}
       data-testid={ghost ? undefined : 'character-header-action'}>{@render txt(act.label, ghost)}</a
     >
@@ -460,7 +470,7 @@
 
 {#if view === 'ready' && character !== null && resolvedAction !== null}
   <section
-    class="ch card-surface ch-{layout} ch-{emphasis}"
+    class="ch ch-{layout} ch-{emphasis}"
     class:ch-no-answer={!hasAnswerColumn}
     class:ch-has-foot={finishedRuns !== null}
     aria-label={characterHeaderCopy.label}
@@ -480,7 +490,7 @@
   {#if whenSignedOut === 'band'}<CharacterHeaderSignedOut />{/if}
 {:else if view === 'loading'}
   <section
-    class="ch card-surface ch-{layout} ch-{emphasis} ch-hint-only ch-loading"
+    class="ch ch-{layout} ch-{emphasis} ch-hint-only ch-loading"
     class:ch-no-answer={!hasAnswerColumn}
     role="status"
     aria-busy="true"
@@ -532,8 +542,10 @@
   .ch {
     --ch-cols: minmax(0, 1fr);
     --ch-gap: 16px;
-    --ch-pad-x: 16px;
-    --ch-pad-y: 16px;
+    /* Open on the page ground (web layout spec 2026-11-05 P1, P6): no box, so no side padding; the
+       vertical padding keeps the band's rhythm under the page head. */
+    --ch-pad-x: 0px;
+    --ch-pad-y: 12px;
     --ch-foot-h: 44px;
     --ch-foot-phone-h: 56px;
     --ch-band-min: 136px;
@@ -546,16 +558,14 @@
     align-items: center;
     box-sizing: border-box;
     padding: var(--ch-pad-y) var(--ch-pad-x);
-    /* The surface is the shared card-surface class on the element (site alignment spec
-       2026-10-29 S3): the account card's warm gradient, gold-tinted border and top edge. Its
-       emphasis comes from the crest, the class-coloured name and its one primary button. */
+    /* No surface of its own: its emphasis comes from the crest, the class-coloured name, the answer
+       figure and its one button. */
   }
   @media (min-width: 1024px) {
     .ch-band {
       --ch-cols: minmax(0, 1.3fr) minmax(0, 1fr) auto;
       --ch-gap: 28px;
-      --ch-pad-x: 22px;
-      --ch-pad-y: 18px;
+      --ch-pad-y: 16px;
       --ch-crest: 64px;
       --ch-name-size: 24px;
       /* The tallest state (a two-line stale sync under a two-line identity), so no state
@@ -580,9 +590,7 @@
      the gap above it, so the 136 px of the grid above stays exactly the grid's own. */
   .ch-foot {
     grid-column: 1 / -1;
-    margin: calc(var(--ch-pad-y) - var(--ch-gap)) calc(-1 * var(--ch-pad-x)) calc(-1 * var(--ch-pad-y));
-    border-radius: 0 0 calc(var(--radius-panel) - 1px) calc(var(--radius-panel) - 1px);
-    overflow: hidden;
+    margin: calc(var(--ch-pad-y) - var(--ch-gap)) 0 calc(-1 * var(--ch-pad-y));
   }
   /* The reserve (3.7): the skeleton holds the row the line will fill. Hidden unless the
      pre-paint script stamped data-finished (global.css shows it and sizes the skeleton). */
@@ -635,7 +643,7 @@
     height: var(--ch-crest);
     border-radius: 999px;
     object-fit: cover;
-    background: var(--color-raised);
+    background: color-mix(in srgb, var(--c) 12%, var(--color-bg));
     box-shadow: 0 0 0 2px color-mix(in srgb, var(--c) 55%, transparent);
   }
   .ch-ident {
@@ -645,7 +653,7 @@
     min-width: 0;
   }
   .ch-label {
-    color: var(--color-gold);
+    color: var(--color-muted);
   }
   .ch-ghost::before {
     content: attr(data-ghost);
@@ -668,10 +676,9 @@
   .ch-name {
     max-width: 100%;
     margin: 0;
-    font-family: var(--font-heading);
+    font-family: var(--font-body);
     font-size: var(--ch-name-size);
-    font-weight: 800;
-    letter-spacing: var(--tracking-heading);
+    font-weight: 700;
     line-height: 1.2;
     overflow: hidden;
     display: -webkit-box;
@@ -759,27 +766,19 @@
     gap: 6px 18px;
     font-family: var(--font-body);
     font-variant-numeric: tabular-nums;
-    font-size: 26px;
-    font-weight: 500;
+    font-size: 28px;
+    font-weight: 700;
     line-height: 1;
-    color: var(--color-text);
+    color: var(--color-strong);
   }
   .ch-unit {
     font-size: 15px;
     color: var(--color-muted);
   }
   .ch-track {
+    display: flex;
+    flex-direction: column;
     align-self: stretch;
-    height: 6px;
-    border-radius: 3px;
-    background: var(--color-line-soft);
-    overflow: hidden;
-  }
-  .ch-fill {
-    display: block;
-    height: 100%;
-    border-radius: 3px;
-    background: var(--color-gold);
   }
   .ch-note {
     font-size: 12px;
@@ -830,81 +829,14 @@
   }
 
   /* ---- action ---- */
+  /* The look is the shared recipe on the element (ctaClass); the band only sizes it. */
   .ch-cta {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
     box-sizing: border-box;
     width: 100%;
-    padding: 0 20px;
-    border-radius: var(--radius-control);
-    font-family: inherit;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    white-space: nowrap;
-    transition:
-      background 120ms ease-out,
-      border-color 120ms ease-out,
-      color 120ms ease-out;
   }
-  .ch-cta:focus-visible {
-    outline: 2px solid var(--color-gold);
-    outline-offset: 2px;
-  }
-  .ch-primary .ch-cta {
-    height: 48px;
-    border: 1px solid var(--color-gold-deep);
-    background: linear-gradient(180deg, #f0cc6c, #c99a3a);
-    box-shadow: 0 0 18px rgba(229, 185, 85, 0.18);
-    color: #1a1408;
-    font-size: 13px;
-  }
-  .ch-primary .ch-cta:hover {
-    background: linear-gradient(180deg, #f5d27a, #d4a444);
-    color: #1a1408;
-  }
-  .ch-primary .ch-cta:active {
-    background: linear-gradient(180deg, #d9b55c, #b88a32);
-  }
-  .ch-secondary .ch-cta {
-    height: 44px;
-    border: 1px solid var(--color-gold);
-    background: transparent;
-    color: var(--color-gold);
-    font-size: 12px;
-  }
-  .ch-secondary .ch-cta:hover {
-    border-color: var(--color-gold-hover);
-    color: var(--color-gold-hover);
-    background: color-mix(in srgb, var(--color-gold) 8%, transparent);
-  }
-  /* The second button sits 8px under the first (the grid gap is 16px), same width, same height,
-     quieter: the outline stays, the fill and glow go. */
+  /* The second button sits 8px under the first (the grid gap is 16px), same width and height. */
   .ch-cta-second {
     margin-top: -8px;
-    text-decoration: none;
-  }
-  .ch-primary .ch-cta-second {
-    height: 44px;
-    border: 1px solid var(--color-gold-deep);
-    background: transparent;
-    box-shadow: none;
-    color: var(--color-gold);
-    font-size: 12px;
-  }
-  .ch-primary .ch-cta-second:hover {
-    background: color-mix(in srgb, var(--color-gold) 8%, transparent);
-    color: var(--color-gold-hover);
-  }
-  .ch-cta:disabled {
-    cursor: default;
-    opacity: 0.6;
-  }
-  .ch-secondary .ch-cta:disabled:hover {
-    border-color: var(--color-gold);
-    color: var(--color-gold);
-    background: transparent;
   }
   .ch-note {
     margin: 8px 0 0;
@@ -924,9 +856,6 @@
     color: var(--color-gold);
     text-decoration: underline;
     text-underline-offset: 2px;
-  }
-  .ch-secondary .ch-cta:active {
-    background: color-mix(in srgb, var(--color-gold) 4%, transparent);
   }
   @media (min-width: 1024px) {
     .ch-band .ch-cta {
@@ -1029,7 +958,7 @@
   }
   .ch-sk-cta {
     width: 100%;
-    height: 48px;
+    height: 44px;
     border-radius: var(--radius-control);
   }
   @media (min-width: 1024px) {
@@ -1041,8 +970,5 @@
     .ch-band .ch-sk-cta {
       width: 250px;
     }
-  }
-  .ch-secondary .ch-sk-cta {
-    height: 44px;
   }
 </style>

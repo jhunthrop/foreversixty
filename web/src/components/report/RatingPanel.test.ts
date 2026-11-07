@@ -32,8 +32,8 @@ interface RatingPanelProps {
   reportId: string;
   fightIndex: number;
   roster: { guid: string; name: string; class?: string }[];
-  onTab: () => void;
-  onSelectPlayer?: (guid: string) => void;
+  tabHref: string;
+  trash?: boolean;
   apiBase?: string;
 }
 
@@ -43,7 +43,7 @@ function renderPanel(overrides: Partial<RatingPanelProps> = {}): string {
       reportId: 'fixture2abcd',
       fightIndex: 3,
       roster: ROSTER,
-      onTab: () => {},
+      tabHref: '?tab=rating',
       ...overrides,
     },
   });
@@ -57,9 +57,15 @@ describe('RatingPanel', () => {
     expect(body).toContain(ratingCopy.panelHeading);
   });
 
-  it('the heading carries a real "Rating tab" button, not a link -- Task 6 wires its click to onTab', () => {
+  it('the Section head carries the "Rating tab ›" link to the Rating tab (logs spec 6.2)', () => {
     const body = renderPanel();
-    expect(body).toMatch(/<button[^>]*type="button"[^>]*>\s*Rating tab/);
+    expect(body).toMatch(/<a[^>]*href="\?tab=rating"[^>]*>Rating tab ›/);
+  });
+
+  it('a trash pull is never asked: it reads the shipped trash line with no link', () => {
+    const body = renderPanel({ trash: true });
+    expect(body).toContain(ratingCopy.noRatingForTrash);
+    expect(body).not.toContain('Rating tab');
   });
 
   it('the initial render is the loading skeleton, never a premature empty or error flash', () => {
@@ -73,8 +79,8 @@ describe('RatingPanel', () => {
     expect(body).not.toContain('data-testid="rating-panel-rows"');
   });
 
-  it('renders with only the required props -- onSelectPlayer and apiBase are genuinely optional', () => {
-    expect(() => renderPanel({ onSelectPlayer: undefined, apiBase: undefined })).not.toThrow();
+  it('renders with only the required props -- trash and apiBase are genuinely optional', () => {
+    expect(() => renderPanel({ trash: undefined, apiBase: undefined })).not.toThrow();
   });
 
   it('renders with an empty roster without throwing', () => {

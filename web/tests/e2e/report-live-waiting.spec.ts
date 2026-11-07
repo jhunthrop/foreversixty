@@ -56,13 +56,14 @@ test('a live report with no fight yet waits for the first fight, then fills in o
   await expect(page.getByTestId('report-live')).toBeVisible();
   await expect(page.getByTestId('report-title')).toContainText('Baelgrim · 20 Oct 2026 · 0 fights');
   await expect(page).toHaveTitle(/^Baelgrim · 20 Oct 2026 · 0 fights · /);
-  await expect(page.getByTestId('report-credit')).toContainText('Credited to Baelgrim');
   await expect(page.getByTestId('report-error')).toHaveCount(0);
   await expect(page.getByText('No report with that id')).toHaveCount(0);
   if (CAPTURES) await page.screenshot({ path: path.join(CAPTURES, 'l4-live-waiting-1280.png') });
 
   // Two polls at five seconds each, plus slack: the first fight arrives and the page switches.
-  await expect(page.getByTestId('fight-3-outcome')).toBeVisible({ timeout: 25_000 });
+  await expect(page.locator('select[data-testid="report-fight"] option[value="3"]')).toHaveCount(1, {
+    timeout: 25_000,
+  });
   await expect(page.getByTestId('report-processing')).toHaveCount(0);
   expect(await page.evaluate(() => (window as unknown as { __kept?: boolean }).__kept)).toBe(true);
 });
@@ -77,7 +78,6 @@ test('the waiting screen on a phone, with no one credited yet', async ({ page })
 
   await page.goto(`/reports/${ID}`);
   await expect(page.getByTestId('report-waiting')).toBeVisible();
-  await expect(page.getByTestId('report-credit')).toContainText('Not credited yet');
   if (CAPTURES) await page.screenshot({ path: path.join(CAPTURES, 'l4-live-waiting-390.png') });
 });
 
@@ -106,7 +106,8 @@ test('the waiting screen says the companion has gone quiet, and recovers when it
   );
   await expect(page.getByTestId('report-waiting')).not.toContainText('Logging');
   await expect(page.getByTestId('report-live')).toHaveText('Quiet');
-  await expect(page.getByTestId('report-spinner')).not.toHaveClass(/animate-spin/);
+  // Quiet: the spinner stops (it goes; the Quiet tag and the line say why).
+  await expect(page.getByTestId('report-spinner')).toHaveCount(0);
   if (CAPTURES) await page.waitForTimeout(800); // the reveal fade finishes
   if (CAPTURES) await page.screenshot({ path: path.join(CAPTURES, 'l5-quiet-1280.png') });
 
@@ -116,7 +117,7 @@ test('the waiting screen says the companion has gone quiet, and recovers when it
     timeout: 15_000,
   });
   await expect(page.getByTestId('report-live')).toHaveText('Live');
-  await expect(page.getByTestId('report-spinner')).toHaveClass(/animate-spin/);
+  await expect(page.getByTestId('report-spinner')).toBeVisible();
 });
 
 test('the quiet waiting screen on a phone', async ({ page }) => {

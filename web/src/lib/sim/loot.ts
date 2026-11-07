@@ -46,8 +46,13 @@ export const SOURCE_KIND_LABELS: Record<LootKind, string> = {
   quest: bulkCopy.sourcesQuests,
 };
 
-/** Off unless the player asks: a quest reward is a one-time source (design 6.1). */
-export const DEFAULT_OFF_KINDS: readonly LootKind[] = ['quest'];
+/**
+ * Off unless the player asks: a quest reward is a one-time source (design 6.1), and the
+ * single-mob kinds (world mobs, world drops, zone drops, vendors) run to thousands of sources
+ * in a real build, a list nobody reads; their kind toggle brings them back (mock
+ * design/mocks/ws_simtools.py, the Droptimizer).
+ */
+export const DEFAULT_OFF_KINDS: readonly LootKind[] = ['quest', 'world', 'world_drop', 'zone', 'vendor'];
 
 export interface LootBoss {
   /** `<source id>:<npc-id>` (contract 10.4). */

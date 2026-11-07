@@ -11,7 +11,6 @@
 <script lang="ts">
   import { buildCodeFor } from '../../../lib/addon/build-code';
   import { indexTalents } from '../../../lib/planner/rules';
-  import { SECONDARY_BUTTON } from '../../../lib/planner/styles';
   import type { Item, ItemSet, TalentFile } from '../../../lib/planner/types';
   import { slotLabelForClass } from '../../../lib/bis/slot-display-labels';
   import type { BulkResult } from '../../../lib/sim/bulk-types';
@@ -37,9 +36,16 @@
   import { bulkCopy, toolFixCopy } from '../../../lib/sim/copy';
   import { handoffCopy } from '../../../lib/sim/handoff-copy';
   import { poolQualityCopy } from '../../../lib/sim/pool-quality-copy';
+  import { LINK } from '../../../lib/ui/primitives';
+  import type { StatColumn } from '../../../lib/ui/stat-table';
   import CopyForGame from '../../CopyForGame.svelte';
+  import Button from '../../ui/Button.svelte';
+  import Row from '../../ui/Row.svelte';
+  import StatRow from '../../ui/StatRow.svelte';
+  import StatTable from '../../ui/StatTable.svelte';
   import SaveSimForm from './SaveSimForm.svelte';
   import SubstitutionChips from './SubstitutionChips.svelte';
+  import ToolSection from './ToolSection.svelte';
 
   let {
     result,
@@ -49,6 +55,7 @@
     partial,
     onsave,
     talents = null,
+    plate = false,
   }: {
     result: BulkResult;
     items: ReadonlyMap<number, Item>;
@@ -62,7 +69,20 @@
      *  code's talent cells are read from. Null (not loaded, or failed) leaves "Copy for the
      *  game" disabled rather than copying a build with no talents in it. */
     talents?: TalentFile | null;
+    /** The results sit on the page's one Plate. */
+    plate?: boolean;
   } = $props();
+
+  /** The ranking's figure columns: the combination's DPS (primary), its gain, its share. */
+  const COLUMNS: readonly StatColumn[] = [
+    { id: 'dps', label: bulkCopy.resultsDps },
+    { id: 'delta', label: bulkCopy.resultsDelta },
+    { id: 'percent', label: bulkCopy.resultsPercent },
+  ];
+
+  function dpsOf(mean: number): string {
+    return Math.round(mean).toLocaleString('en-US');
+  }
 
   const FOUR_PIECE = 4;
   let keepSet = $state(false);
@@ -160,204 +180,153 @@
   );
 </script>
 
-<section class="mx-[18px] flex flex-col gap-3 md:mx-0" data-testid="sim-combos">
-  {#if partial}
-    <p class="text-strong text-[13px]" role="status">{bulkCopy.partial}</p>
-  {/if}
+<ToolSection title={bulkCopy.resultsTitle} testid="sim-combos" {plate}>
+  <div class="flex flex-col gap-3">
+    {#if partial}
+      <p class="text-strong text-[13px]" role="status">{bulkCopy.partial}</p>
+    {/if}
 
-  <p class="text-strong numeric text-[14px]" data-testid="sim-equipped-line">
-    {bulkCopy.resultsEquipped}: {equippedFigure} ± {equippedBand}
-    <span class="text-muted">{bulkCopy.ranAtStages(result.stages)}</span>
-  </p>
-
-  {#if isTalentsMode}
-    <p class="text-muted text-[12px]" data-testid="sim-talents-gear-locked">
-      {poolQualityCopy.talentsGearLockedNote}
+    <p class="text-strong text-[15px] tabular-nums" data-testid="sim-equipped-line">
+      {bulkCopy.resultsEquipped}: {equippedFigure} ± {equippedBand}
+      <span class="text-muted text-[13px]">{bulkCopy.ranAtStages(result.stages)}</span>
     </p>
-  {/if}
 
-  {#if canKeepSet}
-    <label class="text-muted flex min-h-11 w-fit items-center gap-2 text-[12px]">
-      <input type="checkbox" class="h-5 w-5" data-testid="sim-keep-set" bind:checked={keepSet} />
-      {bulkCopy.keepFourPiece}
-    </label>
-  {/if}
-
-  {#if rows.length === 0}
-    <p class="text-muted text-[13px]">{bulkCopy.noGain}</p>
-  {:else}
-    {#if tieGroups.length > 0}
-      <p class="text-muted text-[12px]" data-testid="sim-exact-ties">
-        {poolQualityCopy.exactTieNote(tieGroups.reduce((total, group) => total + group.length, 0))}
+    {#if isTalentsMode}
+      <p class="text-muted text-[13px]" data-testid="sim-talents-gear-locked">
+        {poolQualityCopy.talentsGearLockedNote}
       </p>
     {/if}
-    <!-- A generic ARIA table, not <ul>/<li>: the grid already carries five columns and
-         needs their headers announced (finding 4, fix round 1) -- role="row"/"columnheader"/
-         "cell" on plain divs, rather than fighting <ul>'s own implicit list semantics.
 
-         Task 7's sixth column ("Plan it") is `auto`-wide and `md:`-only: the five columns
-         above already fit a phone tightly (this file's own longstanding note), so a sixth
-         fixed-width track there would either force horizontal scroll or squeeze the
-         substitution column to nothing. Below `md` the action cell instead spans every
-         column of its OWN row (`col-span-full`) -- CSS grid auto-flow cannot fit a
-         full-span item into a row the other five cells already fill, so it drops to a new
-         row of its own, full width, rather than overlapping them. The header row carries
-         the identical sixth cell (empty, `aria-label`d) so every `role="row"` keeps the
-         same cell count as there are `columnheader`s at every breakpoint -- this only
-         changes CSS placement, never how many cells exist. -->
-    <div role="table" class="flex flex-col">
-      <div
-        class="quiet-label grid grid-cols-[28px_minmax(0,2fr)_84px_96px_56px] items-center gap-x-3 gap-y-1 px-2 pb-1 md:grid-cols-[28px_minmax(0,2fr)_84px_96px_56px_auto]"
-        role="row"
+    {#if canKeepSet}
+      <label class="text-text flex min-h-11 w-fit items-center gap-2 text-[14px]">
+        <input
+          type="checkbox"
+          class="accent-gold h-5 w-5"
+          data-testid="sim-keep-set"
+          bind:checked={keepSet}
+        />
+        {bulkCopy.keepFourPiece}
+      </label>
+    {/if}
+
+    {#if rows.length === 0}
+      <p class="text-muted text-[13px]">{bulkCopy.noGain}</p>
+    {:else}
+      {#if tieGroups.length > 0}
+        <p class="text-muted text-[13px]" data-testid="sim-exact-ties">
+          {poolQualityCopy.exactTieNote(tieGroups.reduce((total, group) => total + group.length, 0))}
+        </p>
+      {/if}
+      <!-- The ranking as a ui/StatTable: the rank in the lead column, what the combination
+           changed as the name, then DPS, gain and share. Each row's "Plan it" link sits on its
+           sub line, under the items it would open, with the leader's within-error group named
+           there too. Below 1024 the
+           table keeps the DPS with the gain under it. -->
+      <StatTable
+        columns={COLUMNS}
+        nameHead={bulkCopy.resultsChange}
+        bar={false}
+        open
+        label={bulkCopy.resultsTitle}
       >
-        <span role="columnheader">{bulkCopy.resultsRank}</span>
-        <span role="columnheader">{bulkCopy.resultsChange}</span>
-        <span role="columnheader" class="ml-auto">{bulkCopy.resultsDps}</span>
-        <span role="columnheader" class="ml-auto">{bulkCopy.resultsDelta}</span>
-        <span role="columnheader" class="ml-auto">{bulkCopy.resultsPercent}</span>
-        <!-- No visible label: an action column names itself by its own link text, so this
-             carries only the accessible name a screen reader needs for the column. Same
-             breakpoint classes as the data cell below, so an empty header never desyncs
-             from where the link itself sits. -->
-        <span role="columnheader" class="col-span-full md:col-span-1" aria-label={handoffCopy.planIt}></span>
-      </div>
-      {#each rows as row, index (comboKey(row))}
-        <!-- Review fix round 1: this each-key used to hash the substitutions inline here,
-             a second copy of what `comboKey` (combos.ts) already computes for the row's own
-             `data-testid` below. `comboKey` is at least as discriminating as the old inline
-             hash -- it keys every substitution the same way (kind-qualified for a
-             non-item one, slot+item_id for an item one) and additionally tells apart two
-             rows carrying the same item at different enchants/suffixes, which the old hash
-             never did -- so one function now serves both the each-key and the test id. -->
-        <!-- Fix round 1, minor 2: a real visual boundary at the end of the leader's
-             within-error group, not only a repeated rank digit in a 28px column. -->
-        {@const groupEnd = index === rows.length - 1 || rows[index + 1].combo.group !== row.combo.group}
-        {@const href = planItHref(result, row.combo, treeVersion)}
-        <div
-          class="grid min-h-11 grid-cols-[28px_minmax(0,2fr)_84px_96px_56px] items-center gap-x-3 gap-y-1 border-b px-2 py-2 md:grid-cols-[28px_minmax(0,2fr)_84px_96px_56px_auto] {groupEnd
-            ? 'border-line-warm'
-            : 'border-line-soft'}"
-          role="row"
-          aria-label={row.withinError ? bulkCopy.withinError : undefined}
-          data-testid="sim-combo-row"
-        >
-          <span
-            class="text-muted numeric text-[12px]"
-            role="cell"
-            aria-label={`${bulkCopy.resultsRank} ${row.rank}`}
+        {#each rows as row (comboKey(row))}
+          <!-- Review fix round 1: one function (`comboKey`, combos.ts) serves both the
+               each-key and the plan-it test id. -->
+          {@const href = planItHref(result, row.combo, treeVersion)}
+          <StatRow
+            bar={false}
+            figures={[
+              { value: dpsOf(row.combo.dps.mean) },
+              { value: deltaLabel(row.combo.delta) },
+              { value: `${row.percent.toFixed(1)}%`, muted: true },
+            ]}
+            phone={deltaLabel(row.combo.delta)}
+            testid="sim-combo-row"
           >
-            {row.rank}
-          </span>
-          <span role="cell">
-            <SubstitutionChips
-              substitutions={row.combo.substitutions}
-              {items}
-              {treeVersion}
-              classSlug={result.request.character.class}
-            />
-          </span>
-          <span
-            class="text-strong numeric ml-auto text-[13px]"
-            role="cell"
-            aria-label={`${bulkCopy.resultsDps} ${Math.round(row.combo.dps.mean).toLocaleString('en-US')}`}
-          >
-            {Math.round(row.combo.dps.mean).toLocaleString('en-US')}
-          </span>
-          <span
-            class="text-gold numeric ml-auto text-[13px]"
-            role="cell"
-            aria-label={`${bulkCopy.resultsDelta} ${deltaLabel(row.combo.delta)}`}
-          >
-            {deltaLabel(row.combo.delta)}
-          </span>
-          <span
-            class="text-muted numeric ml-auto text-[12px]"
-            role="cell"
-            aria-label={`${bulkCopy.resultsPercent} ${row.percent.toFixed(1)}%`}
-          >
-            {row.percent.toFixed(1)}%
-          </span>
-          <span role="cell" class="col-span-full md:col-span-1 md:ml-auto">
-            {#if href !== null}
-              <a
-                class="{SECONDARY_BUTTON} border-line-warm text-nav px-3"
-                {href}
-                data-testid={`sim-combo-plan-it-${comboKey(row)}`}>{handoffCopy.planIt}</a
+            {#snippet icon()}
+              <span class="text-muted block text-right text-[15px] leading-7 font-bold tabular-nums"
+                >{row.rank}</span
               >
-            {/if}
-          </span>
-        </div>
-      {/each}
-    </div>
-    <!-- Fix round 1, minor 1: nothing to "tell apart" with exactly one finalist.
-         newcomer round 4 / dps D25-pattern: shown only when `closestOverlappingPair`
-         proves an adjacent pair actually overlaps -- a −37.4% gap at a ±1.5/±1.6 margin
-         used to print this unconditionally, which is a false alarm on a clearly separable
-         result. Named to the pair it is true of when it fires. -->
-    {#if overlap !== null}
-      <p class="text-muted text-[12px]" data-testid="sim-within-error-note">
-        {poolQualityCopy.withinErrorNoteNaming(rowName(overlap.a), rowName(overlap.b))}
-      </p>
+            {/snippet}
+            {#snippet name()}
+              <span class="sr-only">{bulkCopy.resultsRank} {row.rank}</span>
+              <SubstitutionChips
+                substitutions={row.combo.substitutions}
+                {items}
+                {treeVersion}
+                classSlug={result.request.character.class}
+              />
+            {/snippet}
+            {#snippet sub()}
+              {#if href !== null}
+                <a class="{LINK} text-[13px]" {href} data-testid={`sim-combo-plan-it-${comboKey(row)}`}
+                  >{handoffCopy.planIt} ›</a
+                >
+              {/if}
+              {#if row.withinError}
+                <span>{href !== null ? ' · ' : ''}{bulkCopy.withinError}</span>
+              {/if}
+            {/snippet}
+          </StatRow>
+        {/each}
+      </StatTable>
+      <!-- Fix round 1, minor 1: nothing to "tell apart" with exactly one finalist.
+           newcomer round 4 / dps D25-pattern: shown only when `closestOverlappingPair`
+           proves an adjacent pair actually overlaps, named to the pair it is true of. -->
+      {#if overlap !== null}
+        <p class="text-muted text-[13px]" data-testid="sim-within-error-note">
+          {poolQualityCopy.withinErrorNoteNaming(rowName(overlap.a), rowName(overlap.b))}
+        </p>
+      {/if}
+      <!-- Final whole-branch review, Important 2: the run bar's own count (store.combinations)
+           is the engine's simCount over the submitted request, before comboRows' de-dupe
+           collapses a ring or trinket tried in both slots into one row -- so this table can
+           show fewer rows than that count said. -->
+      {#if collapsed > 0}
+        <p class="text-muted text-[13px]" data-testid="sim-combos-collapsed">
+          {toolFixCopy.combosCollapsedNote(collapsed)}
+        </p>
+      {/if}
     {/if}
-    <!-- Final whole-branch review, Important 2: the run bar's own count (store.combinations)
-         is the engine's simCount over the submitted request, before comboRows' de-dupe
-         collapses a ring or trinket tried in both slots into one row -- so this table can
-         show fewer rows than that count said. A companion to the "tried in both slots" rule
-         bullet below (bulkCopy.rules), not a contradiction of it: that bullet says why the
-         engine tries both slots, this says why the table shows one row for it. -->
-    {#if collapsed > 0}
-      <p class="text-muted text-[12px]" data-testid="sim-combos-collapsed">
-        {toolFixCopy.combosCollapsedNote(collapsed)}
-      </p>
-    {/if}
-  {/if}
 
-  {#if summary.length > 0}
-    <section class="border-line rounded-panel border p-3" data-testid="sim-slot-summary">
-      <h3 class="section-title">{bulkCopy.slotSummary}</h3>
-      <p class="text-muted text-[12px]">{bulkCopy.slotSummaryNote}</p>
-      <ul class="flex flex-col">
-        {#each summary as row (`${row.slot}-${row.item_id}`)}
-          <li class="border-line-soft flex min-h-11 items-center gap-3 border-b px-2 last:border-b-0">
-            <span class="text-muted w-24 text-[12px]"
-              >{slotLabelForClass(row.slot, result.request.character.class)}</span
+    {#if summary.length > 0}
+      <div class="pt-3" data-testid="sim-slot-summary">
+        <h3 class="text-strong text-[15px] leading-5 font-bold">{bulkCopy.slotSummary}</h3>
+        <p class="text-muted text-[13px]">{bulkCopy.slotSummaryNote}</p>
+        <div class="pt-1">
+          {#each summary as row (`${row.slot}-${row.item_id}`)}
+            <Row
+              title={row.name}
+              sub={slotLabelForClass(row.slot, result.request.character.class)}
+              open
+              density="slim"
             >
-            <span class="text-text flex-1 text-[13px]">{row.name}</span>
-            <span class="text-gold numeric text-[13px]">
-              {signedGainLabel(row.gain)}
-            </span>
-          </li>
+              {#snippet trail()}
+                <span class="text-gold text-[15px] font-bold tabular-nums">{signedGainLabel(row.gain)}</span>
+              {/snippet}
+            </Row>
+          {/each}
+        </div>
+      </div>
+    {/if}
+
+    <div class="flex flex-wrap gap-3 pt-2">
+      <Button size="sm" href={plannerHref} testid="sim-open-in-planner">{bulkCopy.openInPlanner}</Button>
+      <CopyForGame code={gameCode} testid="sim-copy-addon" />
+    </div>
+
+    <!-- The bulk store's `save()` has no fallback title of its own, so `saveTitleFor` above is
+         always passed explicitly. SaveSimForm is the one save flow every bulk tool page and
+         StatWeights share. -->
+    <SaveSimForm {onsave} titleFor={saveTitleFor} {canSave} />
+
+    <div class="pt-3" data-testid="sim-rules">
+      <h3 class="text-strong text-[15px] leading-5 font-bold">{bulkCopy.rulesTitle}</h3>
+      <ul class="text-muted flex list-disc flex-col gap-1 pt-1 pl-5 text-[13px]">
+        {#each bulkCopy.rules as rule (rule)}
+          <li>{rule}</li>
         {/each}
       </ul>
-    </section>
-  {/if}
-
-  <div class="flex flex-wrap gap-3">
-    <a
-      class="{SECONDARY_BUTTON} border-line-warm text-nav px-4"
-      href={plannerHref}
-      data-testid="sim-open-in-planner">{bulkCopy.openInPlanner}</a
-    >
-    <CopyForGame code={gameCode} testid="sim-copy-addon" />
+    </div>
   </div>
-
-  <!-- The controller's own ruling on this task: the bulk store's `save()` gained a state
-       (Task 10) so a browser-lane result can get a `sim_id` and `/sim/<id>` (Task 20) can
-       render it. `save()` has no fallback title of its own, so `saveTitleFor` above is
-       always passed explicitly. SaveSimForm's three states (closed, open, saved) mirror
-       `/sim`'s own save form (SimView.svelte) with the same generic vocabulary (`simCopy`)
-       -- saving a sim is the identical concept on every page, so it reuses that copy rather
-       than typing four more strings that would say the same thing; the follow-ups worktree
-       lifted the form itself out to SaveSimForm.svelte so StatWeights.svelte's save control
-       is the same component and flow rather than a second copy of it. -->
-  <SaveSimForm {onsave} titleFor={saveTitleFor} {canSave} />
-
-  <section class="border-line rounded-panel border p-3" data-testid="sim-rules">
-    <h3 class="section-title">{bulkCopy.rulesTitle}</h3>
-    <ul class="text-muted flex list-disc flex-col gap-1 pl-5 text-[12px]">
-      {#each bulkCopy.rules as rule (rule)}
-        <li>{rule}</li>
-      {/each}
-    </ul>
-  </section>
-</section>
+</ToolSection>

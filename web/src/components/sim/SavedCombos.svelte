@@ -7,7 +7,11 @@
 
      The item file is fetched here for icons and rarity colours only -- every name on the
      page comes off the result (contract 10.1 A6), so a saved sim whose class file 404s
-     still reads correctly, with slot names and ids in place of icons. -->
+     still reads correctly, with slot names and ids in place of icons.
+
+     Sim spec 2026-11-06 §4.5 grammar: the ranked table is the page's one Plate (a StatTable, the
+     rank in the lead column, the gain the primary figure), the per-slot summary an open Section
+     of Rows under it. -->
 <script lang="ts">
   import { loadItems } from '../../lib/planner/load';
   import type { Item } from '../../lib/planner/types';
@@ -17,6 +21,12 @@
   import { bulkCopy } from '../../lib/sim/copy';
   import { confidenceBand, formatMargin } from '../../lib/sim/estimate';
   import { poolQualityCopy } from '../../lib/sim/pool-quality-copy';
+  import type { StatColumn } from '../../lib/ui/stat-table';
+  import Plate from '../ui/Plate.svelte';
+  import Row from '../ui/Row.svelte';
+  import Section from '../ui/Section.svelte';
+  import StatRow from '../ui/StatRow.svelte';
+  import StatTable from '../ui/StatTable.svelte';
   import SubstitutionChips from './tools/SubstitutionChips.svelte';
 
   let { result, treeVersion }: { result: BulkResult; treeVersion: string } = $props();
@@ -44,109 +54,82 @@
   const isTalentsMode = $derived(result.request.bulk?.mode === 'talents');
   const equippedFigure = $derived(Math.round(result.equipped.mean).toLocaleString('en-US'));
   const equippedBand = $derived(formatMargin(confidenceBand(result.equipped)));
+  const classSlug = $derived(result.request.character.class);
+
+  /** The gain leads (the primary figure, kept on a phone); the DPS and the share follow. */
+  const COLUMNS: readonly StatColumn[] = [
+    { id: 'gain', label: bulkCopy.resultsDelta },
+    { id: 'dps', label: bulkCopy.resultsDps },
+    { id: 'percent', label: bulkCopy.resultsPercent },
+  ];
+  const grouped = (value: number): string => Math.round(value).toLocaleString('en-US');
 </script>
 
-<section class="mx-[18px] flex flex-col gap-3 md:mx-0" data-testid="sim-combos">
-  <p class="text-strong numeric text-[14px]" data-testid="sim-equipped-line">
-    {bulkCopy.resultsEquipped}: {equippedFigure} ± {equippedBand}
-    <span class="text-muted">{bulkCopy.ranAtStages(result.stages)}</span>
-  </p>
+{#snippet withinErrorLine()}{bulkCopy.withinError}{/snippet}
 
-  {#if isTalentsMode}
-    <p class="text-muted text-[12px]" data-testid="sim-talents-gear-locked">
-      {poolQualityCopy.talentsGearLockedNote}
+<div class="flex flex-col gap-[var(--section-gap)]" data-testid="sim-combos">
+  <div class="flex flex-col gap-3">
+    <p class="text-strong text-[14px] leading-5 tabular-nums" data-testid="sim-equipped-line">
+      {bulkCopy.resultsEquipped}: {equippedFigure} ± {equippedBand}
+      <span class="text-muted">{bulkCopy.ranAtStages(result.stages)}</span>
     </p>
-  {/if}
-
-  {#if rows.length === 0}
-    <p class="text-muted text-[13px]">{bulkCopy.noGain}</p>
-  {:else}
-    <div role="table" class="flex flex-col">
-      <div
-        class="quiet-label grid grid-cols-[28px_minmax(0,2fr)_84px_96px_56px] items-center gap-x-3 px-2 pb-1"
-        role="row"
-      >
-        <span role="columnheader">{bulkCopy.resultsRank}</span>
-        <span role="columnheader">{bulkCopy.resultsChange}</span>
-        <span role="columnheader" class="ml-auto">{bulkCopy.resultsDps}</span>
-        <span role="columnheader" class="ml-auto">{bulkCopy.resultsDelta}</span>
-        <span role="columnheader" class="ml-auto">{bulkCopy.resultsPercent}</span>
-      </div>
-      {#each rows as row, index (row.combo.substitutions
-        .map((sub) => `${sub.kind}:${sub.slot ?? ''}:${sub.item_id ?? sub.name ?? ''}`)
-        .join('|'))}
-        {@const groupEnd = index === rows.length - 1 || rows[index + 1].combo.group !== row.combo.group}
-        <div
-          class="grid min-h-11 grid-cols-[28px_minmax(0,2fr)_84px_96px_56px] items-center gap-x-3 border-b px-2 py-2 {groupEnd
-            ? 'border-line-warm'
-            : 'border-line-soft'}"
-          role="row"
-          aria-label={row.withinError ? bulkCopy.withinError : undefined}
-          data-testid="sim-combo-row"
-        >
-          <span
-            class="text-muted numeric text-[12px]"
-            role="cell"
-            aria-label={`${bulkCopy.resultsRank} ${row.rank}`}
-          >
-            {row.rank}
-          </span>
-          <span role="cell">
-            <SubstitutionChips
-              substitutions={row.combo.substitutions}
-              {items}
-              {treeVersion}
-              classSlug={result.request.character.class}
-            />
-          </span>
-          <span
-            class="text-strong numeric ml-auto text-[13px]"
-            role="cell"
-            aria-label={`${bulkCopy.resultsDps} ${Math.round(row.combo.dps.mean).toLocaleString('en-US')}`}
-          >
-            {Math.round(row.combo.dps.mean).toLocaleString('en-US')}
-          </span>
-          <span
-            class="text-gold numeric ml-auto text-[13px]"
-            role="cell"
-            aria-label={`${bulkCopy.resultsDelta} ${deltaLabel(row.combo.delta)}`}
-          >
-            {deltaLabel(row.combo.delta)}
-          </span>
-          <span
-            class="text-muted numeric ml-auto text-[12px]"
-            role="cell"
-            aria-label={`${bulkCopy.resultsPercent} ${row.percent.toFixed(1)}%`}
-          >
-            {row.percent.toFixed(1)}%
-          </span>
-        </div>
-      {/each}
-    </div>
-    {#if overlap !== null}
-      <p class="text-muted text-[12px]" data-testid="sim-within-error-note">
-        {poolQualityCopy.withinErrorNoteNaming(rowName(overlap.a), rowName(overlap.b))}
+    {#if isTalentsMode}
+      <p class="text-muted text-[13px] leading-5" data-testid="sim-talents-gear-locked">
+        {poolQualityCopy.talentsGearLockedNote}
       </p>
     {/if}
-  {/if}
+    {#if rows.length === 0}
+      <p class="text-muted text-[14px] leading-5">{bulkCopy.noGain}</p>
+    {:else}
+      <Plate label={bulkCopy.resultsChange}>
+        <StatTable
+          columns={COLUMNS}
+          nameHead={bulkCopy.resultsChange}
+          bar={false}
+          label={bulkCopy.resultsChange}
+        >
+          {#each rows as row (row.combo.substitutions
+            .map((sub) => `${sub.kind}:${sub.slot ?? ''}:${sub.item_id ?? sub.name ?? ''}`)
+            .join('|'))}
+            <StatRow
+              bar={false}
+              figures={[
+                { value: deltaLabel(row.combo.delta) },
+                { value: grouped(row.combo.dps.mean) },
+                { value: `${row.percent.toFixed(1)}%`, muted: true },
+              ]}
+              phone={grouped(row.combo.dps.mean)}
+              sub={row.withinError ? withinErrorLine : undefined}
+              testid="sim-combo-row"
+            >
+              {#snippet icon()}<span class="text-muted text-[13px] tabular-nums">{row.rank}</span>{/snippet}
+              {#snippet name()}<SubstitutionChips
+                  substitutions={row.combo.substitutions}
+                  {items}
+                  {treeVersion}
+                  {classSlug}
+                />{/snippet}
+            </StatRow>
+          {/each}
+        </StatTable>
+      </Plate>
+      {#if overlap !== null}
+        <p class="text-muted text-[13px] leading-5" data-testid="sim-within-error-note">
+          {poolQualityCopy.withinErrorNoteNaming(rowName(overlap.a), rowName(overlap.b))}
+        </p>
+      {/if}
+    {/if}
+  </div>
 
   {#if summary.length > 0}
-    <section class="border-line rounded-panel border p-3" data-testid="sim-slot-summary">
-      <h3 class="section-title">{bulkCopy.slotSummary}</h3>
-      <p class="text-muted text-[12px]">{bulkCopy.slotSummaryNote}</p>
-      <ul class="flex flex-col">
-        {#each summary as row (`${row.slot}-${row.item_id}`)}
-          <li class="border-line-soft flex min-h-11 items-center gap-3 border-b px-2 last:border-b-0">
-            <span class="text-muted w-24 text-[12px]"
-              >{slotLabelForClass(row.slot, result.request.character.class)}</span
-            >
-            <span class="text-text flex-1 text-[13px]">{row.name}</span>
-            <span class="text-gold numeric text-[13px]">
-              {row.gain === null ? '—' : `+${Math.round(row.gain).toLocaleString('en-US')}`}
-            </span>
-          </li>
-        {/each}
-      </ul>
-    </section>
+    <Section title={bulkCopy.slotSummary} meta={bulkCopy.slotSummaryNote} testid="sim-slot-summary">
+      {#each summary as row (`${row.slot}-${row.item_id}`)}
+        <Row title={row.name} sub={slotLabelForClass(row.slot, classSlug)} density="slim" open>
+          {#snippet trail()}<span class="text-gold text-[14px] font-semibold tabular-nums"
+              >{row.gain === null ? '–' : `+${grouped(row.gain)}`}</span
+            >{/snippet}
+        </Row>
+      {/each}
+    </Section>
   {/if}
-</section>
+</div>

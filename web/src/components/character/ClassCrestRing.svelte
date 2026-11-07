@@ -54,7 +54,7 @@
   <!-- Gating spec §3.5: the neutral disc carries the same 2 px ring as a crest, in --muted, and a
        class-less silhouette, so an unknown class reads as a person on the row, never a dark hole. -->
   <span
-    class="crest-ring bg-raised text-muted inline-flex shrink-0 items-end justify-center overflow-hidden rounded-full {sizeClass}"
+    class="crest-ring text-muted inline-flex shrink-0 items-end justify-center overflow-hidden rounded-full {sizeClass}"
     style={`--c: ${NEUTRAL_RING}; ${box}`}
     aria-hidden="true"
     data-testid={testid ? `${testid}-fallback` : undefined}
@@ -70,7 +70,7 @@
     height={size}
     loading="lazy"
     decoding="async"
-    class="crest-ring bg-raised shrink-0 rounded-full object-cover {sizeClass}"
+    class="crest-ring shrink-0 rounded-full object-cover {sizeClass}"
     style={`--c: ${color}; ${box}`}
     data-testid={testid}
   />
@@ -82,7 +82,10 @@
      visible. `summary`/`button` here, not `a`, since this component's callers (the account
      chip's `<summary>`, the menu's character-switch `<button>` rows) are never an anchor,
      unlike ClassCrest.astro's own callers. */
+  /* The disc behind the art is the crest's own: the page ground tinted by its ring colour, never a
+     surface token (web layout spec 2026-11-05 3A.2, "Crest (kept)"). */
   .crest-ring {
+    background: color-mix(in srgb, var(--c) 12%, var(--color-bg));
     box-shadow: 0 0 0 2px color-mix(in srgb, var(--c) 55%, transparent);
     transition: box-shadow 120ms ease-out;
   }

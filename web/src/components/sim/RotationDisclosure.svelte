@@ -65,7 +65,7 @@
   id={`${idPrefix}-drawer-${spec}`}
   {disabled}
   {triggerClass}
-  panelClass="border-line-soft rounded-panel flex flex-col gap-2 border p-3"
+  panelClass="flex flex-col gap-2 pt-2"
   {triggerTestId}
   panelTestId={`${idPrefix}-drawer-panel`}
 >

@@ -47,7 +47,15 @@
   import { selectCopy } from '../../lib/ui/copy';
   import type { SelectOption } from '../../lib/ui/listbox-model';
   import { classOption } from '../../lib/ui/select-options';
+  import { classSlugOf } from '../../lib/report/planner-link';
+  import type { StatColumn, StatFigure } from '../../lib/ui/stat-table';
+  import ClassCrestRing from '../character/ClassCrestRing.svelte';
+  import Notice from '../ui/Notice.svelte';
+  import Plate from '../ui/Plate.svelte';
+  import Section from '../ui/Section.svelte';
   import Select from '../ui/Select.svelte';
+  import StatRow from '../ui/StatRow.svelte';
+  import StatTable from '../ui/StatTable.svelte';
   import CopyCsv from './CopyCsv.svelte';
 
   let {
@@ -61,6 +69,7 @@
     metric: metricParam = '',
     vs = '',
     source = '',
+    controls = true,
     onPatch,
   }: {
     fights: FightEntry[];
@@ -79,6 +88,9 @@
     vs?: string;
     /** The page's source scope: a player's GUID when one is picked, else a scope word. */
     source?: string;
+    /** Draws the Compare with, Or a player, Metric and Phase pickers above the table; the page
+     *  turns it off once its ControlBar carries them (logs spec 2026-11-07 section 6.1). */
+    controls?: boolean;
     onPatch: (patch: { compareWith?: number | null; compareMetric?: string; compareVs?: string }) => void;
   } = $props();
 
@@ -237,6 +249,8 @@
     class?: string;
     a: number;
     b: number;
+    /** False when the player is not in the other pull: the figure and difference read a dash. */
+    inB: boolean;
   }
 
   /**
@@ -260,6 +274,7 @@
         class: row.class,
         a: rowMetric(row, left),
         b: 0,
+        inB: false,
       });
     }
     if (right !== null) {
@@ -267,9 +282,16 @@
         const found = byGuid.get(row.guid);
         const value = rowMetric(row, right);
         if (found === undefined) {
-          byGuid.set(row.guid, { guid: row.guid, name: row.name, class: row.class, a: 0, b: value });
+          byGuid.set(row.guid, {
+            guid: row.guid,
+            name: row.name,
+            class: row.class,
+            a: 0,
+            b: value,
+            inB: true,
+          });
         } else {
-          found.b = value;
+          byGuid.set(row.guid, { ...found, b: value, inB: true });
         }
       }
     }
@@ -324,8 +346,8 @@
     const other = lines.find((line) => line.guid === vs);
     if (base === undefined || other === undefined) return [];
     return [
-      { ...base, b: other.a },
-      { ...other, b: base.a },
+      { ...base, b: other.a, inB: true },
+      { ...other, b: base.a, inB: true },
     ];
   });
   /** The ability rows the reader opened, by GUID: a row is opened, not a tab. */
@@ -375,14 +397,67 @@
       ...shownLines.map((line) => [
         splitUnitName(line.name).name,
         String(line.a),
-        String(line.b),
-        String(line.a - line.b),
+        line.inB ? String(line.b) : '',
+        line.inB ? String(line.a - line.b) : '',
       ]),
     ];
   }
 
   const rightFight = $derived(fights.find((fight) => fight.index === rightIndex) ?? null);
   const currentFight = $derived(fights.find((fight) => fight.index === current) ?? null);
+
+  const DASH = '–';
+  const DASH_FIGURE: StatFigure = { value: DASH, muted: true };
+  const toneOf = (value: number): 'kill' | 'wipe' | undefined =>
+    value > 0 ? 'kill' : value < 0 ? 'wipe' : undefined;
+  /** The other pull's column head: its name and length, as the fight list reads it. */
+  const rightHead = $derived(
+    rightFight === null
+      ? reportCopy.compareWith
+      : joinFacts(rightFight.name, formatDuration(rightFight.duration_ms)),
+  );
+  const playerColumns = $derived<StatColumn[]>(
+    versusPlayer
+      ? [
+          { id: 'a', label: 'In this pull' },
+          { id: 'b', label: 'The other player' },
+          { id: 'diff', label: 'Difference' },
+        ]
+      : [
+          { id: 'a', label: 'This pull' },
+          { id: 'b', label: rightHead },
+          { id: 'diff', label: 'Difference' },
+        ],
+  );
+  function lineFigures(line: Line, deltaTestid: string): StatFigure[] {
+    if (!line.inB) return [{ value: mark + formatAmount(line.a) }, DASH_FIGURE, DASH_FIGURE];
+    const delta = line.a - line.b;
+    return [
+      { value: mark + formatAmount(line.a) },
+      { value: mark + formatAmount(line.b), muted: true },
+      { value: signed(delta), tone: toneOf(delta), testid: deltaTestid },
+    ];
+  }
+  const abilityColumns = (aHead: string, bHead: string): StatColumn[] => [
+    { id: 'a', label: aHead },
+    { id: 'b', label: bHead },
+    { id: 'diff', label: 'Difference' },
+  ];
+  function abilityFigures(row: AbilityDiff): StatFigure[] {
+    return [
+      row.a === null ? DASH_FIGURE : { value: splitMark + formatAmount(row.a) },
+      row.b === null ? DASH_FIGURE : { value: splitMark + formatAmount(row.b), muted: true },
+      { value: splitSigned(row.delta), tone: toneOf(row.delta), testid: 'ability-delta' },
+    ];
+  }
+  const metricTitle = $derived(metricOptionLabel(metric));
+  const sectionMeta = $derived(
+    versusPlayer
+      ? `${metricTitle}, ${playerName(basePlayer)} against ${playerName(vs)}`
+      : right === null
+        ? metricTitle
+        : `${metricTitle}, ${fightLabel(currentFight, leftWindow) || 'this pull'} against ${fightLabel(rightFight, rightWindow) || 'the other'}`,
+  );
 </script>
 
 {#snippet abilityTable(rows: AbilityDiff[], aHead: string, bHead: string, testid: string)}
@@ -395,46 +470,20 @@
     {:else if rows.length === 0}
       <p class="text-muted text-[13px]">Neither side used an ability of this kind here.</p>
     {:else}
-      <!-- A grid, not a table: three numbers and a name at 360px read better stacked than
-           they do as columns that must each keep a header. -->
-      <div class="quiet-label hidden grid-cols-[minmax(0,1fr)_96px_96px_96px] gap-x-3 px-2 pb-1 md:grid">
-        <span>Ability</span>
-        <span class="text-right">{aHead}</span>
-        <span class="text-right">{bHead}</span>
-        <span class="text-right">Difference</span>
-      </div>
-      <ul class="flex flex-col">
+      <StatTable columns={abilityColumns(aHead, bHead)} nameHead="Ability" bar={false} open label="Abilities">
         {#each rows as row (row.key)}
-          <li
-            class="border-line-soft grid min-h-11 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-0.5 border-b px-2 py-2 text-[14px] md:grid-cols-[minmax(0,1fr)_96px_96px_96px]"
-          >
-            <span class="truncate"
-              >{row.name}{#if row.via}<span class="text-muted ml-1 text-[11px]">· {row.via}</span
-                >{/if}{#if row.id !== undefined}<span
-                  class="text-muted numeric ml-1 text-[11px]"
+          <StatRow figures={abilityFigures(row)} bar={false} phone={splitSigned(row.delta)}>
+            {#snippet name()}{row.name}{/snippet}
+            {#snippet sub()}{#if row.via}{row.via}{/if}{#if row.id !== undefined}<span
                   data-testid="compare-ability-id"
                   title={row.id === 0
                     ? 'Two things share this name; this one is the auto-attack swing, which has no spell id'
                     : `Two spells share this name; this is spell id ${row.id}`}
-                  >{row.id === 0 ? 'swing' : `#${row.id}`}</span
-                >{/if}</span
-            >
-            <span class="numeric text-right md:col-start-2"
-              >{row.a === null ? '—' : splitMark + formatAmount(row.a)}<span
-                class="quiet-label ml-1.5 md:hidden">{aHead}</span
-              ></span
-            >
-            <span class="text-muted numeric col-start-1 text-left md:col-start-3 md:text-right"
-              >{row.b === null ? '—' : splitMark + formatAmount(row.b)}<span
-                class="quiet-label ml-1.5 md:hidden">{bHead}</span
-              ></span
-            >
-            <span class="numeric text-right" class:text-gold={row.delta >= 0} data-testid="ability-delta"
-              >{splitSigned(row.delta)}</span
-            >
-          </li>
+                  >{row.via ? ' · ' : ''}{row.id === 0 ? 'swing' : `#${row.id}`}</span
+                >{/if}{/snippet}
+          </StatRow>
         {/each}
-      </ul>
+      </StatTable>
       <CopyCsv lines={() => abilityCsv(rows, aHead, bHead)} />
       {#if splitScaled}
         <p class="text-muted text-[12px]" data-testid="compare-split-note">
@@ -447,71 +496,48 @@
   </div>
 {/snippet}
 
-{#snippet playerCard(line: Line)}
-  <li
-    class="border-line-soft grid grid-cols-[minmax(0,1fr)_auto] gap-x-3 gap-y-0.5 border-b py-2 text-[14px]"
-    data-testid={`compare-card-${line.guid}`}
+{#snippet abilitiesToggle(line: Line)}
+  <button
+    type="button"
+    class="text-gold inline-flex min-h-11 items-center text-[13px] font-semibold underline-offset-2 hover:underline md:min-h-0"
+    aria-expanded={openRows.includes(line.guid)}
+    onclick={() => toggleRow(line.guid)}
+    >{openRows.includes(line.guid) ? 'Hide abilities' : 'Abilities'}</button
   >
-    <span class="truncate font-semibold" style={`color: ${classColorVar(line.class)}`}
-      >{splitUnitName(line.name).name}</span
-    >
-    <span
-      class="numeric text-right"
-      class:text-gold={line.a >= line.b}
-      title={versusPlayer ? 'This player less the other one' : 'This fight less the compared fight'}
-      data-testid="compare-card-delta">{signed(line.a - line.b)}</span
-    >
-    <span class="text-muted col-span-2 text-[12px]"
-      ><span class="numeric">{mark}{formatAmount(line.a)}</span>
-      {versusPlayer ? 'in this pull' : 'this fight'} ·
-      <span class="numeric">{mark}{formatAmount(line.b)}</span>
-      {versusPlayer ? `for ${playerName(line.guid === basePlayer ? vs : basePlayer)}` : 'compared with'}</span
-    >
-    <span class="col-span-2">
-      <button
-        type="button"
-        class="text-nav inline-flex min-h-11 items-center text-[12px] font-bold tracking-[0.06em] uppercase"
-        aria-expanded={openRows.includes(line.guid)}
-        onclick={() => toggleRow(line.guid)}
-        >{openRows.includes(line.guid) ? 'Hide abilities' : 'Abilities'}</button
-      >
-    </span>
-    {#if openRows.includes(line.guid)}
-      <span class="col-span-2">
-        <!-- The card and the desktop row below both hold this player's expansion at once
-             (one hidden by breakpoint, not removed from the DOM), so this copy gets its
-             own testid rather than the desktop row's `compare-abilities-${guid}` --
-             sharing one would resolve two elements for a single lookup. -->
-        {@render abilityTable(
-          rowsFor(line.guid),
-          'This fight',
-          'Compared with',
-          `compare-abilities-card-${line.guid}`,
-        )}
-      </span>
-    {/if}
-  </li>
 {/snippet}
 
-<div class="flex flex-col gap-3" data-testid="compare-mode">
-  <p class="text-muted text-[12px]" data-testid="compare-scope">
-    {#if phase !== ''}
-      Each side shows its own {phase}: {formatDuration(leftWindow?.startMs ?? 0)} to {formatDuration(
-        leftWindow?.endMs ?? 0,
-      )} of this pull against {formatDuration(rightWindow?.startMs ?? 0)} to {formatDuration(
-        rightWindow?.endMs ?? 0,
-      )} of the other, so a long phase and a short one are read phase against phase.
-    {:else if window === null}
-      Both sides show the whole fight. Set a window in Analyze to compare the same stretch of each pull.
-    {:else}
-      Both sides show {formatDuration(window.startMs)} to {formatDuration(window.endMs)} of each fight, so a long
-      wipe and a short one are read over the same stretch. Clear the window in Analyze to compare whole fights.
-    {/if}
-  </p>
+{#snippet playerRow(line: Line, rowTestid: string, deltaTestid: string, panelTestid: string)}
+  <StatRow
+    figures={lineFigures(line, deltaTestid)}
+    bar={false}
+    phone={line.inB ? `${mark}${formatAmount(line.b)} · ${signed(line.a - line.b)}` : DASH}
+    testid={rowTestid}
+  >
+    {#snippet icon()}<ClassCrestRing characterClass={classSlugOf(line.class) ?? ''} size={28} />{/snippet}
+    {#snippet name()}<span style:color={classColorVar(line.class)}>{splitUnitName(line.name).name}</span
+      >{/snippet}
+    {#snippet sub()}
+      {#if versusPlayer}
+        <span>{mark}{formatAmount(line.a)} in this pull</span> ·
+        <span>{mark}{formatAmount(line.b)} for {playerName(line.guid === basePlayer ? vs : basePlayer)}</span>
+        ·
+      {/if}
+      {@render abilitiesToggle(line)}
+    {/snippet}
+  </StatRow>
+  {#if openRows.includes(line.guid)}
+    <div class="ui-st-r" role="row">
+      <div class="col-span-full" role="cell">
+        {@render abilityTable(rowsFor(line.guid), 'This pull', rightHead, panelTestid)}
+      </div>
+    </div>
+  {/if}
+{/snippet}
 
-  <div class="flex flex-wrap items-center gap-x-4 gap-y-2">
-    <div class="flex w-full flex-wrap items-center gap-2 md:w-auto">
-      <label class="quiet-label" for="compare-with">{reportCopy.compareWith}</label>
+{#snippet pickers()}
+  <div class="flex flex-wrap items-end gap-x-4 gap-y-3" data-testid="compare-controls">
+    <label class="flex w-full flex-col gap-1 md:w-auto">
+      <span class="text-muted text-[13px]">{reportCopy.compareWith}</span>
       <Select
         id="compare-with"
         class="w-full md:w-[260px]"
@@ -526,9 +552,9 @@
           onPatch({ compareWith: raw === '' ? null : Number(raw) });
         }}
       />
-    </div>
-    <div class="flex w-full flex-wrap items-center gap-2 md:w-auto">
-      <label class="quiet-label" for="compare-vs">{reportCopy.orAPlayer}</label>
+    </label>
+    <label class="flex w-full flex-col gap-1 md:w-auto">
+      <span class="text-muted text-[13px]">{reportCopy.orAPlayer}</span>
       <Select
         id="compare-vs"
         class="w-full md:w-[220px]"
@@ -538,9 +564,9 @@
         testid="compare-vs"
         onchange={(event) => onPatch({ compareVs: (event.currentTarget as HTMLSelectElement).value })}
       />
-    </div>
-    <div class="flex items-center gap-2">
-      <label class="quiet-label" for="compare-metric">{reportCopy.metric}</label>
+    </label>
+    <label class="flex flex-col gap-1">
+      <span class="text-muted text-[13px]">{reportCopy.metric}</span>
       <Select
         id="compare-metric"
         class="w-[160px]"
@@ -550,138 +576,123 @@
         testid="compare-metric"
         onchange={(event) => onPatch({ compareMetric: (event.currentTarget as HTMLSelectElement).value })}
       />
-    </div>
-    {#if rightWhole !== null}
-      {#if phases.length > 0}
-        <div class="flex items-center gap-2">
-          <label class="quiet-label" for="compare-phase">{reportCopy.phase}</label>
-          <Select
-            id="compare-phase"
-            class="w-[180px]"
-            size="dense"
-            bind:value={phase}
-            options={[
-              { value: '', label: reportCopy.wholePull },
-              ...phases.map((name) => ({ value: name, label: name })),
-            ]}
-            testid="compare-phase"
-          />
-        </div>
+    </label>
+    {#if rightWhole !== null && phases.length > 0}
+      <label class="flex flex-col gap-1">
+        <span class="text-muted text-[13px]">{reportCopy.phase}</span>
+        <Select
+          id="compare-phase"
+          class="w-[180px]"
+          size="dense"
+          bind:value={phase}
+          options={[
+            { value: '', label: reportCopy.wholePull },
+            ...phases.map((name) => ({ value: name, label: name })),
+          ]}
+          testid="compare-phase"
+        />
+      </label>
+    {/if}
+  </div>
+{/snippet}
+
+<div class="flex flex-col gap-4" data-testid="compare-mode">
+  {#if controls}{@render pickers()}{/if}
+  <Section title="Compare" meta={sectionMeta}>
+    <Plate label="Compare">
+      {#if error !== ''}
+        <p class="px-4 py-4 text-[14px]" role="alert">{error}</p>
+      {:else if versusPlayer}
+        <StatTable
+          columns={playerColumns}
+          nameHead="Player"
+          bar={false}
+          label="Two players in this pull"
+          testid="compare-cards"
+        >
+          {#each shownLines as line (line.guid)}
+            {@render playerRow(
+              line,
+              `compare-card-${line.guid}`,
+              'compare-card-delta',
+              `compare-abilities-card-${line.guid}`,
+            )}
+          {/each}
+        </StatTable>
+      {:else if right === null}
+        <p class="text-muted px-4 py-4 text-[14px]">
+          Pick a second fight, or a second player, to see the difference.
+        </p>
       {:else}
-        <p class="text-muted text-[12px]" data-testid="compare-phase-note">
+        <StatTable
+          columns={playerColumns}
+          nameHead="Player"
+          bar={false}
+          label={`Per-player ${METRIC_LABELS[metric]} in ${fightLabel(currentFight, leftWindow) || 'this fight'}, compared with ${fightLabel(rightFight, rightWindow) || 'the selected fight'}`}
+          testid="compare-table"
+        >
+          {#each shownLines as line (line.guid)}
+            {@render playerRow(
+              line,
+              `compare-${line.guid}`,
+              'compare-delta',
+              `compare-abilities-${line.guid}`,
+            )}
+          {/each}
+        </StatTable>
+      {/if}
+    </Plate>
+    <div class="flex flex-col gap-2 pt-2">
+      {#if error === '' && versusPlayer}
+        <p class="text-muted text-[13px]" data-testid="compare-players-scope">
+          {playerName(basePlayer)} against
+          {playerName(vs)}, in this pull{window === null
+            ? ''
+            : `'s ${formatDuration(window.startMs)} to ${formatDuration(window.endMs)}`}.
+        </p>
+        <h3 class="text-strong pt-2 text-[15px] font-bold">
+          {playerName(basePlayer)} against {playerName(vs)}, ability by ability
+        </h3>
+        {@render abilityTable(versusRows, playerName(basePlayer), playerName(vs), 'compare-players')}
+        <CopyCsv lines={playerCsv} label="Copy the two players as CSV" />
+      {:else if error === '' && right !== null}
+        <CopyCsv lines={playerCsv} />
+        <Notice
+          tone="neutral"
+          text="Players missing from the other pull show a dash."
+          testid="compare-missing-note"
+        />
+      {/if}
+      <p class="text-muted text-[13px]" data-testid="compare-scope">
+        {#if phase !== ''}
+          Each side shows its own {phase}: {formatDuration(leftWindow?.startMs ?? 0)} to {formatDuration(
+            leftWindow?.endMs ?? 0,
+          )} of this pull against {formatDuration(rightWindow?.startMs ?? 0)} to {formatDuration(
+            rightWindow?.endMs ?? 0,
+          )} of the other, so a long phase and a short one are read phase against phase.
+        {:else if window === null}
+          Both sides show the whole fight. Set a window in Analyze to compare the same stretch of each pull.
+        {:else}
+          Both sides show {formatDuration(window.startMs)} to {formatDuration(window.endMs)} of each fight, so a
+          long wipe and a short one are read over the same stretch. Clear the window in Analyze to compare whole
+          fights.
+        {/if}
+      </p>
+      {#if rightWhole !== null && phases.length === 0}
+        <p class="text-muted text-[13px]" data-testid="compare-phase-note">
           These two pulls have no phase in common, so there is nothing to align by: either their bosses have
           no curated phases, or one pull did not reach the other's.
         </p>
       {/if}
-    {/if}
-    {#if metric === 'threat' || metric === 'tps'}
-      <p class="text-muted text-[12px]" data-testid="compare-threat-note">
-        Threat is under the base threat model, which has no tank stance, taunt or threat multipliers yet, so a
-        tank can read below the damage dealers they held threat over; a longer pull reads higher for being
-        longer, so read the difference against the lengths.{threatScaled
-          ? ' Inside a window it is marked ~: the whole fight’s threat scaled to the window’s share, not measured from the window’s own events, the same figure the Threat tab greys.'
-          : ''}
-      </p>
-    {/if}
-  </div>
-
-  {#if error !== ''}
-    <p class="text-[14px]" role="alert">{error}</p>
-  {:else if versusPlayer}
-    <p class="text-muted text-[12px]" data-testid="compare-players-scope">
-      {playerName(basePlayer)} against
-      {playerName(vs)}, in this pull{window === null
-        ? ''
-        : `'s ${formatDuration(window.startMs)} to ${formatDuration(window.endMs)}`}.
-    </p>
-    <ul class="flex flex-col" data-testid="compare-cards">
-      {#each shownLines as line (line.guid)}{@render playerCard(line)}{/each}
-    </ul>
-    {@render abilityTable(versusRows, playerName(basePlayer), playerName(vs), 'compare-players')}
-    <CopyCsv lines={playerCsv} label="Copy the two players as CSV" />
-  {:else if right === null}
-    <p class="text-muted text-[14px]">Pick a second fight, or a second player, to see the difference.</p>
-  {:else}
-    <!-- Four columns of names and figures do not fit 360px, and `w-full` on a table is a
-         floor, not a ceiling: the table grows to its min-content width and eats the page
-         gutter. The scroller keeps it a real table -- caption, `th scope="col"`, the
-         header association a card stack would lose -- and lets it be wider than the phone
-         rather than narrower than its contents. QueriesView.svelte wraps its own result
-         table the same way. -->
-    <!-- A phone gets one block per player: a four-column table in a 354px box showed five
-         names and no numbers at rest. -->
-    <ul class="flex flex-col md:hidden" data-testid="compare-cards">
-      {#each shownLines as line (line.guid)}{@render playerCard(line)}{/each}
-    </ul>
-    <div class="hidden overflow-x-auto md:block">
-      <table class="w-full border-collapse text-[14px]" data-testid="compare-table">
-        <caption class="sr-only">
-          Per-player {METRIC_LABELS[metric]} in {fightLabel(currentFight, leftWindow) || 'this fight'},
-          compared with {fightLabel(rightFight, rightWindow) || 'the selected fight'}.
-        </caption>
-        <thead>
-          <tr class="border-line-soft border-b text-left">
-            <th scope="col" class="quiet-label bg-bg sticky left-0 px-2 py-2">Player</th>
-            <th scope="col" class="quiet-label px-2 py-2 text-right">
-              This fight
-              <span class="block truncate text-[11px] normal-case"
-                >{fightLabel(currentFight, leftWindow)}</span
-              >
-            </th>
-            <th scope="col" class="quiet-label px-2 py-2 text-right">
-              Compared with
-              <span class="block truncate text-[11px] normal-case">{fightLabel(rightFight, rightWindow)}</span
-              >
-            </th>
-            <th scope="col" class="quiet-label px-2 py-2 text-right">Difference</th>
-            <th scope="col"><span class="sr-only">Abilities</span></th>
-          </tr>
-        </thead>
-        <tbody>
-          {#each shownLines as line (line.guid)}
-            <tr class="border-line-soft min-h-11 border-b" data-testid={`compare-${line.guid}`}>
-              <!-- Sticky, so a name stays beside its figures when the box scrolls on a phone. -->
-              <td
-                class="bg-bg sticky left-0 max-w-[40vw] truncate px-2 py-2 font-semibold md:max-w-none"
-                style={`color: ${classColorVar(line.class)}`}
-              >
-                {splitUnitName(line.name).name}
-              </td>
-              <td class="numeric px-2 py-2 text-right">{mark}{formatAmount(line.a)}</td>
-              <td class="text-muted numeric px-2 py-2 text-right">{mark}{formatAmount(line.b)}</td>
-              <td
-                class="numeric w-[96px] px-2 py-2 text-right"
-                class:text-gold={line.a >= line.b}
-                data-testid="compare-delta"
-              >
-                {signed(line.a - line.b)}
-              </td>
-              <td class="px-2 py-2 text-right">
-                <button
-                  type="button"
-                  class="text-nav inline-flex min-h-11 items-center text-[12px] font-bold tracking-[0.06em] uppercase md:min-h-0"
-                  aria-expanded={openRows.includes(line.guid)}
-                  onclick={() => toggleRow(line.guid)}
-                  >{openRows.includes(line.guid) ? 'Hide abilities' : 'Abilities'}</button
-                >
-              </td>
-            </tr>
-            {#if openRows.includes(line.guid)}
-              <tr class="bg-card-top">
-                <td colspan="5" class="px-2 py-3">
-                  {@render abilityTable(
-                    rowsFor(line.guid),
-                    'This fight',
-                    'Compared with',
-                    `compare-abilities-${line.guid}`,
-                  )}
-                </td>
-              </tr>
-            {/if}
-          {/each}
-        </tbody>
-      </table>
+      {#if metric === 'threat' || metric === 'tps'}
+        <p class="text-muted text-[13px]" data-testid="compare-threat-note">
+          Threat is under the base threat model, which has no tank stance, taunt or threat multipliers yet, so
+          a tank can read below the damage dealers they held threat over; a longer pull reads higher for being
+          longer, so read the difference against the lengths.{threatScaled
+            ? ' Inside a window it is marked ~: the whole fight’s threat scaled to the window’s share, not measured from the window’s own events, the same figure the Threat tab greys.'
+            : ''}
+        </p>
+      {/if}
     </div>
-    <CopyCsv lines={playerCsv} />
-  {/if}
+  </Section>
 </div>

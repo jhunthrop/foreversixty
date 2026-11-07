@@ -582,6 +582,7 @@ describe('the droptimizer’s sources', () => {
   it('hides a source whose date is unknown until show-upcoming (contract 10.4)', async () => {
     const s = store('drops');
     await s.loadAddon(FURY);
+    s.toggleKind('world');
     expect(s.visibleSources.map((source) => source.id)).not.toContain('world:azuregos');
     s.setShowUpcoming(true);
     expect(s.visibleSources.map((source) => source.id)).toContain('world:azuregos');

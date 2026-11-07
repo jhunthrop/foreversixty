@@ -63,6 +63,13 @@ export function renderSimMocks(): string {
   return dir;
 }
 
+/** The simulator tool mocks (ws_simtools.py) from this checkout's data/builds. Returns the folder. */
+export function renderSimToolsMocks(): string {
+  const dir = freshDir('simtools');
+  run(PYTHON, [path.join(GENERATORS, 'ws_simtools.py')], { FS_DATA_ROOT: REPO_ROOT, FS_MOCK_OUT: dir });
+  return dir;
+}
+
 /**
  * The logs, reports list, rankings and ratings mocks (ws_logs.py) from the files the spec serves
  * (support/logs-parity.ts): logs_facts.mjs bundles the copy modules and the rankings stubs, and
@@ -148,5 +155,23 @@ export function renderPagesMocks(mocks: readonly string[]): string {
 export function renderTiersMocks(): string {
   const dir = freshDir('tiers');
   run(PYTHON, [path.join(GENERATORS, 'ws_tiers.py')], { FS_DATA_ROOT: REPO_ROOT, FS_MOCK_OUT: dir });
+  return dir;
+}
+
+/**
+ * The report mocks named (ws_report.py --list), from the bundled real log the spec serves
+ * (web/public/sample-report/sample) and the copy modules: logs_facts.mjs bundles the copy,
+ * ws_report.py draws just those mocks, each as the sample page the spec serves. Returns the folder that holds web-report-*.html.
+ */
+export function renderReportMocks(mocks: readonly string[]): string {
+  const dir = freshDir('report');
+  const facts = path.join(dir, 'logs-facts.json');
+  run('node', [path.join(GENERATORS, 'logs_facts.mjs'), facts]);
+  // FS_REPORT_SAMPLE: every report mock drawn as /reports/sample, the page the spec opens on this log.
+  run(PYTHON, [path.join(GENERATORS, 'ws_report.py'), ...mocks], {
+    FS_LOGS_FACTS: facts,
+    FS_MOCK_OUT: dir,
+    FS_REPORT_SAMPLE: '1',
+  });
   return dir;
 }

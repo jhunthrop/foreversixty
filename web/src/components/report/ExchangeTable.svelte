@@ -1,6 +1,9 @@
 <!-- web/src/components/report/ExchangeTable.svelte -->
 <!-- Interrupts and Dispels are the same shape: someone did something to someone else's
-     spell. One component, two tabs.
+     spell. One component, two tabs (logs spec 2026-11-07 section 6.2): the tab's one Plate, a
+     StatTable of the spell's icon, `{name} · {spell}` in the class colour over `Interrupted
+     {cast} on {target}` / `Removed {aura} on {target}`, and Count. What went through or ran its
+     course follows as an open Section.
 
      summary.ExchangeRow carries no timestamp, so nothing in it can be cut to a brushed
      window: scopeSummary (window.ts) passes `interrupts` and `dispels` straight through,
@@ -12,8 +15,14 @@
      on whether the window happens to be whole. -->
 <script lang="ts">
   import { splitUnitName } from '../../lib/characters';
-  import { wholeFightAriaLabel, wholeFightMark, wholeFightTitle } from '../../lib/report/format';
+  import { classColorVar, wholeFightMark } from '../../lib/report/format';
+  import { SpellIcons } from '../../lib/report/spell-icons.svelte';
   import type { AuraTrack, CastRow, ExchangeRow } from '../../lib/report/types';
+  import Plate from '../ui/Plate.svelte';
+  import Section from '../ui/Section.svelte';
+  import SpellIcon from '../ui/SpellIcon.svelte';
+  import StatRow from '../ui/StatRow.svelte';
+  import StatTable from '../ui/StatTable.svelte';
   import CopyCsv from './CopyCsv.svelte';
 
   let {
@@ -23,6 +32,8 @@
     everyone = rows,
     auras = [],
     players = new Set<string>(),
+    classOf = new Map<string, string>(),
+    kind: kindProp,
   }: {
     rows: ExchangeRow[];
     emptyText: string;
@@ -36,7 +47,20 @@
     /** The fight's aura tracks, for the "ran its course" count on the Dispels tab. */
     auras?: AuraTrack[];
     players?: ReadonlySet<string>;
+    /** GUID to class, for the name's colour. */
+    classOf?: ReadonlyMap<string, string>;
+    /** Which tab this is; by default the rows' own kind, else Dispels when aura tracks came. */
+    kind?: 'interrupt' | 'dispel';
   } = $props();
+
+  const kind = $derived(
+    kindProp ??
+      (rows[0]?.kind === 'dispel' || (rows.length === 0 && auras.length > 0) ? 'dispel' : 'interrupt'),
+  );
+  const title = $derived(kind === 'dispel' ? 'Dispels' : 'Interrupts');
+  const verb = $derived(kind === 'dispel' ? 'Removed' : 'Interrupted');
+  const icons = new SpellIcons();
+  const SEPARATOR = ' · ';
 
   interface Uncured {
     spell_id: number;
@@ -184,7 +208,7 @@
     ];
   }
   const mark = wholeFightMark(true);
-  const title = wholeFightTitle(true);
+  const total = $derived(rows.reduce((sum, row) => sum + row.count, 0));
 
   /** One line per source, most first: who did the interrupting or dispelling tonight. */
   const bySource = $derived.by(() => {
@@ -192,96 +216,100 @@
     const totals = new Map<string, { name: string; count: number }>();
     for (const row of rows) {
       const found = totals.get(row.source_guid);
-      if (found === undefined) totals.set(row.source_guid, { name: row.source_name, count: row.count });
-      else found.count += row.count;
+      totals.set(row.source_guid, { name: row.source_name, count: (found?.count ?? 0) + row.count });
     }
     return [...totals.values()].sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
   });
+  const shortfall = $derived(
+    kind === 'dispel'
+      ? uncured.map((entry) => ({
+          spellId: entry.spell_id,
+          name: entry.name,
+          line: `landed on the raid ${entry.applied} times · dispelled ${entry.dispelled}`,
+          own: entry.own,
+          left: entry.applied - entry.dispelled,
+        }))
+      : missed.map((entry) => ({
+          spellId: entry.spell_id,
+          name: entry.name,
+          line: `cast ${entry.cast} · stopped ${entry.stopped}`,
+          own: entry.own,
+          left: entry.cast - entry.stopped,
+        })),
+  );
 </script>
 
-{#if ordered.length === 0}
-  <p class="text-muted text-[14px]" data-testid="table-empty">{emptyText}</p>
-{:else}
-  <p class="flex flex-wrap gap-x-4 gap-y-1 text-[13px]" data-testid="exchange-by-source">
-    {#each bySource as entry (entry.name)}
-      <span
-        ><span class="font-semibold">{splitUnitName(entry.name).name}</span>
-        <span class="numeric">{mark}{entry.count}</span></span
+<Section {title} meta={`${mark}${total} in this fight`} testid="exchange-section">
+  <Plate label={title}>
+    {#if ordered.length === 0}
+      <p class="text-muted px-4 py-4 text-[14px]" data-testid="table-empty">{emptyText}</p>
+    {:else}
+      <StatTable
+        columns={[{ id: 'count', label: 'Count' }]}
+        nameHead="Who, with what"
+        bar={false}
+        label={title}
+        testid="exchange-table"
       >
-    {/each}
-  </p>
-  <div class="flex flex-col" data-testid="exchange-table">
-    <div
-      class="quiet-label hidden grid-cols-[minmax(120px,1fr)_minmax(120px,1fr)_minmax(120px,1fr)_minmax(120px,1fr)_64px] gap-x-3 px-2 pb-1 md:grid"
+        {#each ordered as row (`${row.source_guid}-${row.target_guid}-${row.spell_id}-${row.extra_spell_id}`)}
+          <StatRow figures={[{ value: `${mark}${row.count}` }]} bar={false} phone={`${row.count}×`}>
+            {#snippet icon()}<SpellIcon url={icons.of(row.spell_id)} spellId={row.spell_id} tip />{/snippet}
+            {#snippet name()}
+              <!-- The anchor a rating moment's link lands on (lib/rating/moments.ts). -->
+              <span id={`exchange-${row.source_guid}-${row.spell_id}`} class="scroll-mt-24"
+                ><span style:color={classColorVar(classOf.get(row.source_guid))}
+                  >{splitUnitName(row.source_name).name}</span
+                >{SEPARATOR}{row.spell_name}</span
+              >
+            {/snippet}
+            {#snippet sub()}{verb} {row.extra_spell_name} on {splitUnitName(row.target_name).name}{/snippet}
+          </StatRow>
+        {/each}
+      </StatTable>
+    {/if}
+  </Plate>
+  {#if ordered.length > 0}
+    <div class="text-muted flex flex-col gap-1 pt-3 text-[13px] leading-[18px]">
+      <p data-testid="exchange-by-source">
+        {#each bySource as entry, index (entry.name)}{#if index > 0}{SEPARATOR}{/if}<span
+            ><span class="text-text font-semibold">{splitUnitName(entry.name).name}</span>
+            <span class="tabular-nums">{mark}{entry.count}</span></span
+          >{/each}
+      </p>
+      <p data-testid="exchange-wholefight-note">
+        Count is marked {mark}: interrupts and dispels are the whole fight's totals, because the summary keeps
+        no timestamp for them and a brushed window cannot cut them down.
+      </p>
+      <CopyCsv lines={csvLines} />
+    </div>
+  {/if}
+</Section>
+
+{#if shortfall.length > 0}
+  <Section
+    title={kind === 'dispel' ? 'Ran their course' : 'Went through'}
+    meta={kind === 'dispel'
+      ? 'Debuffs someone dispelled at least once'
+      : 'Casts someone stopped at least once'}
+    testid={kind === 'dispel' ? 'dispels-uncured' : 'interrupts-missed'}
+  >
+    <StatTable
+      columns={[{ id: 'left', label: kind === 'dispel' ? 'Ran their course' : 'Went through' }]}
+      bar={false}
+      open
+      label={kind === 'dispel' ? 'Ran their course' : 'Went through'}
     >
-      <span>By</span>
-      <span>With</span>
-      <span>On</span>
-      <span>Spell</span>
-      <span class="text-right">Count</span>
-    </div>
-    <ul class="flex flex-col">
-      {#each ordered as row (`${row.source_guid}-${row.target_guid}-${row.spell_id}-${row.extra_spell_id}`)}
-        <li
-          class="border-line-soft grid min-h-11 grid-cols-1 items-center gap-x-3 gap-y-1 border-b px-2 py-2 text-[14px] md:grid-cols-[minmax(120px,1fr)_minmax(120px,1fr)_minmax(120px,1fr)_minmax(120px,1fr)_64px]"
-          id={`exchange-${row.source_guid}-${row.spell_id}`}
-        >
-          <span class="truncate font-semibold">{splitUnitName(row.source_name).name}</span>
-          <span class="truncate">{row.spell_name}</span>
-          <span class="text-muted truncate text-[13px]">{splitUnitName(row.target_name).name}</span>
-          <span class="text-muted truncate text-[13px]">{row.extra_spell_name}</span>
-          <span class="numeric text-right" {title} aria-label={wholeFightAriaLabel(true, String(row.count))}>
-            {mark}{row.count}
-          </span>
-        </li>
+      {#each shortfall as entry (entry.spellId)}
+        <StatRow figures={[{ value: String(entry.left) }]} bar={false}>
+          {#snippet icon()}<SpellIcon url={icons.of(entry.spellId)} spellId={entry.spellId} />{/snippet}
+          {#snippet name()}{entry.name}{/snippet}
+          {#snippet sub()}{entry.line}{#if scopedToSome}<span>
+                ({entry.own} in this scope)</span
+              >{/if}{SEPARATOR}<span class="text-wipe"
+              >{entry.left} {kind === 'dispel' ? 'ran their course' : 'went through'}</span
+            >{/snippet}
+        </StatRow>
       {/each}
-    </ul>
-    <CopyCsv lines={csvLines} />
-  </div>
-  {#if missed.length > 0}
-    <div class="flex flex-col gap-1" data-testid="interrupts-missed">
-      <h2 class="quiet-label">Went through</h2>
-      <ul class="flex flex-col">
-        {#each missed as entry (entry.spell_id)}
-          <li
-            class="border-line-soft flex min-h-11 flex-wrap items-center gap-x-3 border-b px-2 py-2 text-[14px]"
-          >
-            <span class="font-semibold">{entry.name}</span>
-            <span class="text-muted text-[13px]">
-              cast <span class="numeric">{entry.cast}</span> · stopped
-              <span class="numeric">{entry.stopped}</span>{#if scopedToSome}
-                <span class="text-muted">&nbsp;(<span class="numeric">{entry.own}</span> in this scope)</span
-                >{/if} ·
-              <span class="text-wipe numeric">{entry.cast - entry.stopped}</span> went through
-            </span>
-          </li>
-        {/each}
-      </ul>
-    </div>
-  {/if}
-  {#if uncured.length > 0}
-    <div class="flex flex-col gap-1" data-testid="dispels-uncured">
-      <h2 class="quiet-label">Ran their course</h2>
-      <ul class="flex flex-col">
-        {#each uncured as entry (entry.spell_id)}
-          <li
-            class="border-line-soft flex min-h-11 flex-wrap items-center gap-x-3 border-b px-2 py-2 text-[14px]"
-          >
-            <span class="font-semibold">{entry.name}</span>
-            <span class="text-muted text-[13px]">
-              landed on the raid <span class="numeric">{entry.applied}</span> times · dispelled
-              <span class="numeric">{entry.dispelled}</span>{#if scopedToSome}
-                <span class="text-muted">&nbsp;(<span class="numeric">{entry.own}</span> in this scope)</span
-                >{/if} ·
-              <span class="text-wipe numeric">{entry.applied - entry.dispelled}</span> ran their course
-            </span>
-          </li>
-        {/each}
-      </ul>
-    </div>
-  {/if}
-  <p class="text-muted text-[12px]" data-testid="exchange-wholefight-note">
-    Count is marked {mark}: interrupts and dispels are the whole fight's totals, because the summary keeps no
-    timestamp for them and a brushed window cannot cut them down.
-  </p>
+    </StatTable>
+  </Section>
 {/if}

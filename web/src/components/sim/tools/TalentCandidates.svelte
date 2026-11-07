@@ -10,7 +10,6 @@
   import { decodeFS1, orderFromRanks } from '../../../lib/planner/fs1';
   import { loadTalents } from '../../../lib/planner/load';
   import { indexTalents } from '../../../lib/planner/rules';
-  import { SECONDARY_BUTTON } from '../../../lib/planner/styles';
   import type { BuildRecord, TalentFile } from '../../../lib/planner/types';
   import { createLazyComponent, type LazyLoadState } from '../../../lib/report/lazy-component.svelte';
   import { fetchMyBuilds, SimApiError } from '../../../lib/sim/api';
@@ -20,12 +19,15 @@
   import { dedupeByName } from '../../../lib/sim/dedupe';
   import { poolQualityCopy } from '../../../lib/sim/pool-quality-copy';
   import { customLoadouts, hasUnaddedBuild, savedBuildsMessage } from '../../../lib/sim/talent-loadouts';
+  import Button from '../../ui/Button.svelte';
+  import ToolSection from './ToolSection.svelte';
 
   let {
     character,
     picked,
     ontoggle,
     onpendingcustom,
+    plate = false,
   }: {
     character: SimCharacter;
     picked: readonly TalentLoadout[];
@@ -37,6 +39,8 @@
      * once the buttons themselves are told apart.
      */
     onpendingcustom?: (pending: boolean) => void;
+    /** The builds sit on the page's one Plate (/sim/talents). */
+    plate?: boolean;
   } = $props();
 
   let talents = $state<TalentFile | null>(null);
@@ -170,111 +174,85 @@
   {/if}
 {/snippet}
 
-<section
-  class="border-line rounded-panel mx-[18px] flex flex-col gap-2 border p-3 md:mx-0"
-  data-testid="sim-talent-candidates"
->
-  <h3 class="section-title">{bulkCopy.talentsSaved}</h3>
+{#snippet loadoutRow(loadout: TalentLoadout, testid: string)}
+  <label class="text-text flex min-h-11 items-center gap-3 text-[14px]">
+    <input
+      type="checkbox"
+      class="accent-gold h-5 w-5"
+      data-testid={testid}
+      checked={isPicked(loadout)}
+      onchange={(event) => ontoggle(loadout, event.currentTarget.checked)}
+    />
+    {loadout.name}
+  </label>
+{/snippet}
 
-  {#if own !== null}
-    <label class="text-text flex min-h-11 items-center gap-2 text-[13px]">
-      <input
-        type="checkbox"
-        class="h-5 w-5"
-        data-testid="sim-loadout-current"
-        checked={isPicked(own)}
-        onchange={(event) => ontoggle(own, event.currentTarget.checked)}
-      />
-      {bulkCopy.talentsOwn}
-    </label>
-  {/if}
+<ToolSection title={bulkCopy.talentBuildsTitle} testid="sim-talent-candidates" {plate}>
+  <div class="flex flex-col">
+    {#if own !== null}
+      {@render loadoutRow(own, 'sim-loadout-current')}
+    {/if}
 
-  {#each savedLoadouts as loadout (loadout.name)}
-    <label class="text-text flex min-h-11 items-center gap-2 text-[13px]">
-      <input
-        type="checkbox"
-        class="h-5 w-5"
-        data-testid={`sim-loadout-${loadout.name}`}
-        checked={isPicked(loadout)}
-        onchange={(event) => ontoggle(loadout, event.currentTarget.checked)}
-      />
-      {loadout.name}
-    </label>
-  {/each}
-
-  {#if savedFailed}
-    <p class="text-muted text-[12px]" data-testid="sim-loadouts-unavailable">
-      {savedBuildsMessage(savedSignedOut)}
-    </p>
-  {:else if savedLoadouts.length === 0 && saved !== null}
-    <p class="text-muted text-[12px]">{bulkCopy.talentsNoSaved}</p>
-  {/if}
-
-  {#if exported.length > 0}
-    <h4 class="text-muted text-[12px]">{bulkCopy.talentsLoadouts}</h4>
-    {#each exported as loadout (loadout.name)}
-      <label class="text-text flex min-h-11 items-center gap-2 text-[13px]">
-        <input
-          type="checkbox"
-          class="h-5 w-5"
-          data-testid={`sim-loadout-${loadout.name}`}
-          checked={isPicked(loadout)}
-          onchange={(event) => ontoggle(loadout, event.currentTarget.checked)}
-        />
-        {loadout.name}
-      </label>
+    <h3 class="text-strong pt-3 text-[15px] leading-5 font-bold">{bulkCopy.talentsSaved}</h3>
+    {#each savedLoadouts as loadout (loadout.name)}
+      {@render loadoutRow(loadout, `sim-loadout-${loadout.name}`)}
     {/each}
-  {/if}
 
-  {#each custom as loadout (loadout.name)}
-    <label class="text-text flex min-h-11 items-center gap-2 text-[13px]">
-      <input
-        type="checkbox"
-        class="h-5 w-5"
-        data-testid={`sim-loadout-${loadout.name}`}
-        checked={isPicked(loadout)}
-        onchange={(event) => ontoggle(loadout, event.currentTarget.checked)}
-      />
-      {loadout.name}
-    </label>
-  {/each}
+    {#if savedFailed}
+      <p class="text-muted pt-1 text-[13px]" data-testid="sim-loadouts-unavailable">
+        {savedBuildsMessage(savedSignedOut)}
+      </p>
+    {:else if savedLoadouts.length === 0 && saved !== null}
+      <p class="text-muted pt-1 text-[13px]">{bulkCopy.talentsNoSaved}</p>
+    {/if}
 
-  <button
-    type="button"
-    class="{SECONDARY_BUTTON} border-line-warm text-nav w-fit px-3"
-    data-testid="sim-loadout-add"
-    onclick={() => {
-      plannerOpen = !plannerOpen;
-      if (plannerOpen) plannerLazy.load();
-    }}>{bulkCopy.talentsAddCustom}</button
-  >
+    {#if exported.length > 0}
+      <h3 class="text-strong pt-3 text-[15px] leading-5 font-bold">{bulkCopy.talentsLoadouts}</h3>
+      {#each exported as loadout (loadout.name)}
+        {@render loadoutRow(loadout, `sim-loadout-${loadout.name}`)}
+      {/each}
+    {/if}
 
-  {#if plannerOpen}
-    <div class="border-line rounded-panel border p-2" data-testid="sim-inline-planner">
-      {#if plannerLazy.current}
-        <!-- dps D39: without a seeded `gear`, this inline card's live DPS estimate ran a
-             gearless sim while the comparison table below simmed the loaded character's real
-             gear, so the same build read two different DPS numbers on one screen. Passing
-             the loaded character's gear here (through plannerGearFor) is what keeps the
-             inline card and the ranking table honest with each other. -->
-        <plannerLazy.current
-          treeVersion={character.tree_version}
-          classSlug={character.class_slug}
-          raceSlug={character.race_slug}
-          gear={plannerGearFor(character)}
-          oncode={(code: string) => (customCode = code)}
-          standalone={false}
-        />
-        <button
-          type="button"
-          class="{SECONDARY_BUTTON} border-line-warm text-nav mt-2 w-fit px-3 disabled:opacity-50"
-          data-testid="sim-loadout-accept"
-          disabled={customCode === ''}
-          onclick={addCustom}>{poolQualityCopy.talentsAddCustomConfirm}</button
-        >
-      {:else}
-        {@render lazyFallback(plannerLazy)}
-      {/if}
+    {#each custom as loadout (loadout.name)}
+      {@render loadoutRow(loadout, `sim-loadout-${loadout.name}`)}
+    {/each}
+
+    <div class="pt-3">
+      <Button
+        size="sm"
+        testid="sim-loadout-add"
+        onclick={() => {
+          plannerOpen = !plannerOpen;
+          if (plannerOpen) plannerLazy.load();
+        }}>{bulkCopy.talentsAddCustom}</Button
+      >
     </div>
-  {/if}
-</section>
+
+    {#if plannerOpen}
+      <div class="pt-3" data-testid="sim-inline-planner">
+        {#if plannerLazy.current}
+          <!-- dps D39: without a seeded `gear`, this inline card's live DPS estimate ran a
+               gearless sim while the comparison table below simmed the loaded character's real
+               gear, so the same build read two different DPS numbers on one screen. Passing
+               the loaded character's gear here (through plannerGearFor) is what keeps the
+               inline card and the ranking table honest with each other. -->
+          <plannerLazy.current
+            treeVersion={character.tree_version}
+            classSlug={character.class_slug}
+            raceSlug={character.race_slug}
+            gear={plannerGearFor(character)}
+            oncode={(code: string) => (customCode = code)}
+            standalone={false}
+          />
+          <div class="pt-2">
+            <Button size="sm" testid="sim-loadout-accept" disabled={customCode === ''} onclick={addCustom}
+              >{poolQualityCopy.talentsAddCustomConfirm}</Button
+            >
+          </div>
+        {:else}
+          {@render lazyFallback(plannerLazy)}
+        {/if}
+      </div>
+    {/if}
+  </div>
+</ToolSection>

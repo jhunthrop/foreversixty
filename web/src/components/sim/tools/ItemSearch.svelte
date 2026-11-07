@@ -5,8 +5,6 @@
      character has no way to obtain. -->
 <script lang="ts">
   import { rarityClassFor } from '../../../lib/planner/items';
-  import { dataUrl } from '../../../lib/planner/load';
-  import { SECONDARY_BUTTON } from '../../../lib/planner/styles';
   import type { Item } from '../../../lib/planner/types';
   import { bulkCopy } from '../../../lib/sim/copy';
   import {
@@ -22,7 +20,14 @@
   import { groupSources, type LootFile, sourceLabel } from '../../../lib/sim/loot';
   import { poolQualityCopy } from '../../../lib/sim/pool-quality-copy';
   import { selectCopy } from '../../../lib/ui/copy';
+  import { FIELD_CONTROL, FIELD_FOCUS, FIELD_HEIGHT, FIELD_LABEL, fieldEdge } from '../../../lib/ui/field';
+  import Button from '../../ui/Button.svelte';
+  import Field from '../../ui/Field.svelte';
+  import ItemIcon from '../../ui/ItemIcon.svelte';
+  import Row from '../../ui/Row.svelte';
   import Select from '../../ui/Select.svelte';
+  import Switch from '../../ui/Switch.svelte';
+  import ToolSection from './ToolSection.svelte';
 
   let {
     items,
@@ -31,6 +36,7 @@
     treeVersion,
     classSlug = '',
     onadd,
+    plate = false,
   }: {
     items: readonly Item[];
     loot: LootFile;
@@ -39,6 +45,8 @@
     /** The character's class: a relic class's ranged slot reads "Relic". */
     classSlug?: string;
     onadd: (itemId: number) => void;
+    /** The block sits on the page's one Plate. */
+    plate?: boolean;
   } = $props();
 
   let query = $state<ItemQuery>(defaultItemQuery());
@@ -59,37 +67,34 @@
   );
 </script>
 
-<section
-  class="border-line rounded-panel mx-[18px] flex flex-col gap-3 border p-3 md:mx-0"
-  data-testid="sim-item-search"
->
-  <h3 class="section-title">{bulkCopy.searchLabel}</h3>
-
-  <div class="flex flex-wrap gap-2">
-    <input
+<ToolSection title={bulkCopy.searchLabel} testid="sim-item-search" {plate}>
+  <div class="flex flex-wrap items-end gap-3">
+    <Field
+      id="sim-search-text"
       type="search"
-      bind:value={query.text}
+      label={bulkCopy.searchLabel}
+      labelHidden
       placeholder={bulkCopy.searchPlaceholder}
-      aria-label={bulkCopy.searchLabel}
-      class="border-line-warm rounded-control bg-bg text-text placeholder:text-muted h-11 min-w-[180px] flex-1 border px-3 text-[14px]"
+      grow
+      bind:value={query.text}
     />
-    <label class="text-muted flex items-center gap-2 text-[12px]">
-      {bulkCopy.searchMinItemLevel}
+    <label class="flex flex-col gap-[6px]">
+      <span class={FIELD_LABEL}>{bulkCopy.searchMinItemLevel}</span>
       <input
         type="number"
         min="0"
         max="120"
         bind:value={query.minItemLevel}
         data-testid="sim-search-ilvl"
-        class="border-line-warm rounded-control bg-bg text-text h-11 w-20 border px-2 text-[14px]"
+        class={[FIELD_CONTROL, FIELD_HEIGHT, FIELD_FOCUS, fieldEdge(false), 'w-24 tabular-nums']}
       />
     </label>
-    <div class="flex items-center gap-2">
-      <label class="quiet-label" for="sim-search-slot-field">{bulkCopy.searchSlot}</label>
+    <div class="flex flex-col gap-[6px]">
+      <label class={FIELD_LABEL} for="sim-search-slot-field">{bulkCopy.searchSlot}</label>
       <Select
         id="sim-search-slot-field"
         class="w-[160px]"
-        size="compact"
+        size="dense"
         bind:value={query.slot}
         options={[
           { value: '', label: bulkCopy.searchAnySlot },
@@ -98,12 +103,12 @@
         testid="sim-search-slot"
       />
     </div>
-    <div class="flex items-center gap-2">
-      <label class="quiet-label" for="sim-search-source-field">{bulkCopy.searchSource}</label>
+    <div class="flex flex-col gap-[6px]">
+      <label class={FIELD_LABEL} for="sim-search-source-field">{bulkCopy.searchSource}</label>
       <Select
         id="sim-search-source-field"
         class="w-[240px]"
-        size="compact"
+        size="dense"
         bind:value={query.sourceId}
         options={[
           { value: '', label: bulkCopy.searchAnySource },
@@ -120,50 +125,43 @@
         testid="sim-search-source"
       />
     </div>
-    <label class="text-muted flex min-h-11 items-center gap-2 text-[12px]">
-      <input
-        type="checkbox"
-        class="h-5 w-5"
-        data-testid="sim-search-usable"
-        bind:checked={query.usableOnly}
+    <span class="flex min-h-11 items-center gap-3 text-[14px]">
+      <span id="sim-search-usable-label" class="text-text">{bulkCopy.searchUsableOnly}</span>
+      <Switch
+        checked={query.usableOnly}
+        labelledby="sim-search-usable-label"
+        testid="sim-search-usable"
+        onchange={(next) => (query.usableOnly = next)}
       />
-      {bulkCopy.searchUsableOnly}
-    </label>
+    </span>
   </div>
 
   {#if found.length === 0}
-    <p class="text-muted text-[13px]">{noResultsMessage}</p>
+    <p class="text-muted pt-3 text-[13px]">{noResultsMessage}</p>
   {:else}
-    <ul class="max-h-[320px] overflow-y-auto">
+    <div class="mt-2 max-h-[320px] overflow-y-auto">
       {#each found as item (item.id)}
-        <li
-          class="border-line-soft flex min-h-11 items-center gap-3 border-b px-1 py-1 last:border-b-0"
-          data-testid={`sim-search-result-${item.id}`}
-        >
-          <img
-            src={dataUrl(treeVersion, `icons/${item.icon}.webp`)}
-            alt=""
-            width="24"
-            height="24"
-            loading="lazy"
-            decoding="async"
-            class="rounded-control border-line h-6 w-6 border object-cover"
-          />
-          <span class={`flex-1 text-[14px] font-semibold ${rarityClassFor(item.quality)}`}>
-            {item.name}{legendaryVariantLabel(item.id) === '' ? '' : ` (${legendaryVariantLabel(item.id)})`}
-          </span>
-          <span class="text-muted numeric text-[12px]">{item.item_level}</span>
-          <button
-            type="button"
-            class="{SECONDARY_BUTTON} border-line-warm text-nav px-3"
-            data-testid={`sim-search-add-${item.id}`}
-            onclick={() => onadd(item.id)}>{bulkCopy.searchAdd}</button
-          >
-        </li>
+        {@const variant = legendaryVariantLabel(item.id)}
+        <Row title={item.name} open density="slim" testid={`sim-search-result-${item.id}`}>
+          {#snippet lead()}
+            <ItemIcon icon={item.icon} quality={item.quality} build={treeVersion} size={28} />
+          {/snippet}
+          {#snippet titleContent()}
+            <span class={rarityClassFor(item.quality)}
+              >{item.name}{variant === '' ? '' : ` (${variant})`}</span
+            >
+          {/snippet}
+          {#snippet trail()}
+            <span class="text-muted text-[13px] tabular-nums">{item.item_level}</span>
+            <Button size="sm" testid={`sim-search-add-${item.id}`} onclick={() => onadd(item.id)}
+              >{bulkCopy.searchAdd}</Button
+            >
+          {/snippet}
+        </Row>
       {/each}
-    </ul>
+    </div>
     {#if found.length < matching}
-      <p class="text-muted text-[12px]">{bulkCopy.searchTruncated(found.length, matching)}</p>
+      <p class="text-muted pt-2 text-[12px]">{bulkCopy.searchTruncated(found.length, matching)}</p>
     {/if}
   {/if}
-</section>
+</ToolSection>

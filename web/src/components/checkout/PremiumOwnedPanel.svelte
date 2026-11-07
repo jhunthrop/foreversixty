@@ -8,7 +8,8 @@
   import { accountPlanCopy } from '../../lib/billing/account-plan-copy';
   import { billingBlockCopy } from '../../lib/billing/copy';
   import { premiumOwnedView } from '../../lib/billing/premium-owned';
-  import { SECONDARY_BUTTON_FIXED } from '../../lib/planner/styles';
+  import Tag from '../ui/Tag.svelte';
+  import { button } from '../../lib/ui/button';
 
   let {
     me,
@@ -27,21 +28,21 @@
 
   const view = $derived(premiumOwnedView(me, now, zone));
   const founderTail = ` ${accountPlanCopy.founder.title}`;
-  const BUTTON = `${SECONDARY_BUTTON_FIXED} border-line-warm text-text w-full px-4 sm:w-fit`;
+  const BUTTON = `${button('secondary')} w-full sm:w-fit`;
 
   let titleEl = $state<HTMLHeadingElement | undefined>(undefined);
   $effect(() => titleEl?.focus());
 </script>
 
 <section class="flex flex-col gap-2" data-testid="premium-owned">
-  <h2 bind:this={titleEl} tabindex="-1" class="heading-name text-strong m-0 text-[15px] outline-none">
+  <h2 bind:this={titleEl} tabindex="-1" class="text-strong m-0 text-[17px] leading-6 font-bold outline-none">
     {view.title}
   </h2>
   <p class="m-0 flex flex-wrap items-center gap-x-2 text-[14px]" data-testid="premium-owned-line">
     <span>{view.line}</span>
     {#if view.founder}
-      <span class="pill pill-site" title={accountPlanCopy.founder.title}
-        >{accountPlanCopy.founder.pill}<span class="sr-only">{founderTail}</span></span
+      <Tag title={accountPlanCopy.founder.title}
+        >{accountPlanCopy.founder.pill}<span class="sr-only">{founderTail}</span></Tag
       >
     {/if}
   </p>
