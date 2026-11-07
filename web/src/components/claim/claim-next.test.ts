@@ -5,7 +5,7 @@ import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
 import type { Me } from '../../lib/account/api';
 import { findMyGuild } from '../../lib/guild/my-guild';
-import { PRIMARY_BUTTON_FIXED } from '../../lib/planner/styles';
+import { BUTTON_PRIMARY } from '../../lib/ui/button';
 import SignInPrompt from '../SignInPrompt.svelte';
 import ClaimMemberHandoff from './ClaimMemberHandoff.svelte';
 import ClaimNextSteps from './ClaimNextSteps.svelte';
@@ -22,7 +22,7 @@ function testIds(body: string): string[] {
   return [...body.matchAll(/data-testid="(guild-claim-next-[a-z]+)"/g)].map((match) => match[1] ?? '');
 }
 
-const primaries = (html: string): number => html.split(PRIMARY_BUTTON_FIXED).length - 1;
+const primaries = (html: string): number => html.split(BUTTON_PRIMARY).length - 1;
 
 describe('Next steps', () => {
   it('leads with the subscribe button, the page one fill', () => {
@@ -37,7 +37,7 @@ describe('Next steps', () => {
       'guild-claim-next-discord',
     ]);
     expect(primaries(body)).toBe(1);
-    expect(body.indexOf(PRIMARY_BUTTON_FIXED)).toBeLessThan(body.indexOf('guild-claim-next-roster'));
+    expect(body.indexOf(BUTTON_PRIMARY)).toBeLessThan(body.indexOf('guild-claim-next-roster'));
   });
 
   it('keeps the roster link as the primary when there is nothing to subscribe', () => {
@@ -49,7 +49,7 @@ describe('Next steps', () => {
       'guild-claim-next-discord',
     ]);
     expect(primaries(body)).toBe(1);
-    expect(body.indexOf(PRIMARY_BUTTON_FIXED)).toBeLessThan(body.indexOf('guild-claim-next-roster'));
+    expect(body.indexOf(BUTTON_PRIMARY)).toBeLessThan(body.indexOf('guild-claim-next-roster'));
   });
 
   it('points Plan an event at the raids tab and the bot at the Discord settings', () => {

@@ -1,0 +1,12 @@
+{
+  "character": {
+    "character_key": "us/pvp/nightlatch",
+    "name": "Nightlatch",
+    "class": "rogue",
+    "spec": "Subtlety",
+    "level": 23
+  },
+  "raid": null,
+  "verdict": "getting_started",
+  "items": []
+}

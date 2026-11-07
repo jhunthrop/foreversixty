@@ -70,7 +70,7 @@ test('a signed-in visitor sees the guild that invited them, joins, and is sent t
 
   await page.goto(`/guild/invite/${INVITE_TOKEN}`);
   await expect(page.getByTestId('guild-join-card')).toBeVisible();
-  await expect(page.getByTestId('guild-join-name')).toHaveText('Lifecycle Test');
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Lifecycle Test');
   await expect(page.getByTestId('guild-join-invited')).toHaveText('You are invited to join Lifecycle Test.');
   await expect(page.getByTestId('guild-join-consequence')).toHaveText(
     'Joining puts your characters on its roster and shares your gear with its officers; you can change that on your account.',

@@ -41,7 +41,7 @@
   {#if ready.tanks !== null}
     <div class="flex flex-col gap-1 pt-2" data-testid="guild-raid-ready-tanks">
       <div class="flex items-baseline gap-3">
-        <span class="text-label tracking-label text-muted font-bold uppercase">Fire resistance on tanks</span>
+        <span class="text-small text-strong font-semibold">Fire resistance on tanks</span>
         <span class="text-small text-muted">{tanksMeta(ready.tanks)}</span>
       </div>
       {#each ready.tanks as tank (tank.key)}

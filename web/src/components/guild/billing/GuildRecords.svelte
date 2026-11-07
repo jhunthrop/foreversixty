@@ -17,7 +17,7 @@
 <div data-testid="guild-records">
   {#each DOWNLOADS as download (download.kind)}
     <SettingsRow
-      glyph="download"
+      open
       label={download.label}
       href={exportHref(guildId, download.kind)}
       testid={`guild-export-${download.kind}`}

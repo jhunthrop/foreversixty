@@ -44,6 +44,86 @@
       "id": "profile",
       "path": "/guild/us/pvp/olympus-xxvii/members/u%3A1016",
       "mock": "web-guild-profile.html"
+    },
+    {
+      "id": "roster",
+      "path": "/guild/us/pvp/olympus-xxvii#roster",
+      "mock": "web-guild-roster.html"
+    },
+    {
+      "id": "progression",
+      "path": "/guild/us/pvp/olympus-xxvii#progression",
+      "mock": "web-guild-progression.html"
+    },
+    {
+      "id": "readiness",
+      "path": "/guild/us/pvp/olympus-xxvii#readiness",
+      "mock": "web-guild-readiness.html"
+    },
+    {
+      "id": "before-raids",
+      "path": "/guild/us/pvp/olympus-xxvii",
+      "mock": "web-guild-before-raids.html"
+    },
+    {
+      "id": "low-level",
+      "path": "/guild/us/pvp/olympus-xxvii",
+      "mock": "web-guild-low-level.html"
+    },
+    {
+      "id": "no-raid",
+      "path": "/guild/us/pvp/olympus-xxvii",
+      "mock": "web-guild-no-raid.html"
+    },
+    {
+      "id": "public",
+      "path": "/guild/us/pvp/olympus-xxvii",
+      "mock": "web-guild-public.html"
+    },
+    {
+      "id": "landing-out",
+      "path": "/guild",
+      "mock": "web-guild-landing-out.html"
+    },
+    {
+      "id": "landing-in",
+      "path": "/guild",
+      "mock": "web-guild-landing-in.html"
+    },
+    {
+      "id": "join",
+      "path": "/guild/invite/fixtureinvitetoken1",
+      "mock": "web-guild-join.html"
+    },
+    {
+      "id": "claim",
+      "path": "/guild/us/pvp/olympus-xxvii/claim",
+      "mock": "web-guild-claim.html"
+    },
+    {
+      "id": "raids",
+      "path": "/guild/us/pvp/olympus-xxvii#raids",
+      "mock": "web-guild-raids.html"
+    },
+    {
+      "id": "raids-plan",
+      "path": "/guild/us/pvp/olympus-xxvii#raids",
+      "mock": "web-guild-raids-plan.html"
+    },
+    {
+      "id": "assignments",
+      "path": "/guild/us/pvp/olympus-xxvii/raids/41",
+      "mock": "web-guild-assignments.html"
+    },
+    {
+      "id": "settings",
+      "path": "/guild/us/pvp/olympus-xxvii#settings",
+      "mock": "web-guild-settings.html"
+    },
+    {
+      "id": "settings-page",
+      "path": "/guild/us/pvp/olympus-xxvii/settings",
+      "mock": "web-guild-settings-page.html"
     }
   ]
 }

@@ -25,7 +25,7 @@ function fixture<T>(name: string): T {
 
 const envelope = (data: unknown) => ({ json: { ok: true, data, error: null, request_id: 'guild-parity' } });
 
-async function openRaidPlanner(page: Page): Promise<void> {
+export async function openRaidPlanner(page: Page): Promise<void> {
   const raid = fixture<RaidFixture>('raid-onyxia.json');
   const page_ = fixture<GuildFixture>('raid-guild.json');
   const { id, region, ruleset } = page_.guild;

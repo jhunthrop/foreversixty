@@ -10,11 +10,11 @@ function tag(props: Record<string, unknown> = {}): string {
 }
 
 describe('Tag', () => {
-  it('is 22 px, 11 px 700 uppercase with a 1 px border', () => {
+  it('is 22 px, 12 px 600 in sentence case with a 1 px border', () => {
     const body = tag();
     expect(body).toContain('h-[22px]');
-    expect(body).toContain('text-[11px] font-bold tracking-[.08em]');
-    expect(body).toContain('uppercase');
+    expect(body).toContain('text-[12px] font-semibold tracking-[.01em]');
+    expect(body).not.toContain('uppercase');
     expect(body).toMatch(/ border /);
     expect(body).toContain('rounded-pill');
   });

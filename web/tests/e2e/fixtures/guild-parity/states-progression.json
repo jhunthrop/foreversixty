@@ -1,0 +1,24 @@
+{
+  "tier": {
+    "name": "First tier",
+    "raids": ["Barrow Deeps", "Hyjal Summit", "Onyxia's Lair"],
+    "named_encounters": 1,
+    "down": 0,
+    "pulls_total": 0
+  },
+  "unnamed": [],
+  "encounters": [
+    {
+      "encounter_id": 1084,
+      "name": "Onyxia",
+      "zone": "Onyxia's Lair",
+      "first_kill_at": null,
+      "pulls": 0,
+      "kills": 0,
+      "best_kill_ms": null,
+      "pulls_by_night": [],
+      "deaths_per_pull": 0,
+      "best_by_role": {}
+    }
+  ]
+}

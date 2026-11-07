@@ -196,7 +196,7 @@ PRIM_CSS += '''
 .gridm .c.ok{color:var(--kill)}.gridm .c.warn{color:var(--gold)}.gridm .c.miss{color:var(--wipe)}.gridm .c.none{color:var(--muted);font-weight:400}
 .tally{display:grid;gap:12px 16px;grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
 .tally .t{display:flex;flex-direction:column;gap:6px;min-width:0}.tally .t .top{display:flex;align-items:center;gap:8px}.tally .t .top b{font:700 15px/20px var(--font-body);color:var(--strong)}.tally .t .top .n{margin-left:auto;font:700 15px/20px var(--font-body);font-variant-numeric:tabular-nums}
-.tally .t .n.ok{color:var(--kill)}.tally .t .n.miss{color:var(--wipe)}.tally .t .n.warn{color:var(--gold)}
+.tally .t .n.none{color:var(--muted);font-weight:400}.tally .t .n.ok{color:var(--kill)}.tally .t .n.miss{color:var(--wipe)}.tally .t .n.warn{color:var(--gold)}
 .ck{width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font:700 13px/22px var(--font-body);color:#07090d;flex:none}
 .ck.ok{background:var(--kill)}.ck.warn{background:var(--gold)}.ck.miss{background:var(--wipe)}.ck.gap{background:var(--muted)}
 .gap-tag{font-size:12px;color:var(--muted)}
@@ -1340,13 +1340,15 @@ def Meter(frac: float, tone: str = '', label: str = '') -> str:
 
 
 def Tally(items: list[tuple]) -> str:
-    """Counts against a target, one labelled Meter each, as a list. items: (lead_html, label, have, want[, note])."""
+    """Counts against a target, one labelled Meter each, as a list. items: (lead_html, label, have, want[, note[, tone]]); a tone
+    (ok|warn|miss|none) overrides the target's, as the built Tally's item tone (`none`: a share, not a goal, reads muted)."""
     out = ''
     for lead, label, have, want, *rest in items:
-        st = 'ok' if have >= want else ('warn' if have >= want * 0.75 else 'miss')
+        st = rest[1] if len(rest) > 1 and rest[1] else ('ok' if have >= want else ('warn' if have >= want * 0.75 else 'miss'))
         note = f'<span class="note">{rest[0]}</span>' if rest and rest[0] else ''
+        bar = 'kill' if st == 'ok' else ('muted' if st == 'none' else '')
         out += (f'<li class="t"><div class="top">{lead}<b>{label}</b><span class="n {st}">{have}/{want}</span></div>'
-                f'{Meter(have / want if want else 1, "kill" if st == "ok" else "", f"{label}: {have} of {want}")}{note}</li>')
+                f'{Meter(have / want if want else 1, bar, f"{label}: {have} of {want}")}{note}</li>')
     return f'<ul class="tally">{out}</ul>'
 
 

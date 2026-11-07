@@ -116,7 +116,7 @@ test('an unclaimed guild asks an officer first, then says "You hold" and where t
     '/guild/us/hardcore/the-last-watch#roster',
   );
   await expect(page.getByTestId('guild-claim-next-invite')).toHaveText('Make an invite link');
-  // The next steps are two 44 px buttons: the roster is the gold primary, the invite link a ghost.
+  // The next steps are two 44 px buttons: the roster is the gold primary, the invite link an outline.
   for (const id of ['guild-claim-next-roster', 'guild-claim-next-invite']) {
     const box = await page.getByTestId(id).boundingBox();
     expect(box?.height).toBe(44);
@@ -124,11 +124,8 @@ test('an unclaimed guild asks an officer first, then says "You hold" and where t
   // The pointer still rests where the claim button was, which is where the primary now sits;
   // move it off so the resting colour is read, not the hover one.
   await page.mouse.move(0, 0);
-  await expect(page.getByTestId('guild-claim-next-roster')).toHaveCSS(
-    'background-color',
-    'rgb(229, 185, 85)',
-  );
-  await expect(page.getByTestId('guild-claim-next-invite')).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
+  await expect(page.getByTestId('guild-claim-next-roster')).toHaveCSS('background-image', /linear-gradient/);
+  await expect(page.getByTestId('guild-claim-next-invite')).toHaveCSS('background-image', 'none');
   await expect(page.getByTestId('guild-claim-next-invite')).toHaveAttribute(
     'href',
     '/guild/us/hardcore/the-last-watch/settings',
@@ -338,18 +335,15 @@ test('after a claim made for a plan, subscribe leads Next as the one gold fill',
   );
   await expect(page.getByTestId('guild-claim-next-roster')).toHaveText(guildClaimCopy.nextRoster);
 
-  // One fill: the subscribe button is gold, every other step is a ghost.
+  // One fill: the subscribe button is gold, every other step an outline.
   const ghosts = ['roster', 'invite', 'plan', 'discord'];
   await page.mouse.move(0, 0);
   await expect(page.getByTestId('guild-claim-next-subscribe')).toHaveCSS(
-    'background-color',
-    'rgb(229, 185, 85)',
+    'background-image',
+    /linear-gradient/,
   );
   for (const ghost of ghosts) {
-    await expect(page.getByTestId(`guild-claim-next-${ghost}`)).toHaveCSS(
-      'background-color',
-      'rgba(0, 0, 0, 0)',
-    );
+    await expect(page.getByTestId(`guild-claim-next-${ghost}`)).toHaveCSS('background-image', 'none');
   }
   for (const control of ['subscribe', ...ghosts]) {
     await expectTapHeight(page.getByTestId(`guild-claim-next-${control}`));

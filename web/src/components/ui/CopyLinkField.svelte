@@ -9,7 +9,7 @@
      page ground so it reads as a field against the card's. -->
 <script lang="ts">
   import type { Snippet } from 'svelte';
-  import { SECONDARY_BUTTON_FIXED } from '../../lib/planner/styles';
+  import { button } from '../../lib/ui/button';
   import { COPIED_VISIBLE_MS, createCopyFeedback, type CopyFeedbackState } from '../../lib/ui/copy-feedback';
   import { uiCopy } from '../../lib/ui/copy';
 
@@ -97,7 +97,7 @@
   </label>
   <div class={buttonRow}>
     <button
-      class={`${SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong ${buttonWidth} px-4`}
+      class={`${button('secondary')} ${buttonWidth}`}
       onclick={() => void copier.copy(url)}
       data-testid={`${testid}-copy`}
     >
@@ -105,7 +105,7 @@
     </button>
     {#if canShare}
       <button
-        class={`${SECONDARY_BUTTON_FIXED} border-line-warm text-text ${buttonWidth} px-4`}
+        class={`${button('secondary')} ${buttonWidth}`}
         onclick={() => void onShare()}
         data-testid={`${testid}-share`}
       >

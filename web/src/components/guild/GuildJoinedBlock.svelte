@@ -5,7 +5,7 @@
      moves to the sentence because the join button it replaces has just unmounted. -->
 <script lang="ts">
   import { guildJoinCopy } from '../../lib/guild/copy';
-  import { SECONDARY_BUTTON_FIXED } from '../../lib/planner/styles';
+  import Button from '../ui/Button.svelte';
 
   let { planLine, openHref }: { planLine: string | null; openHref: string } = $props();
 
@@ -16,15 +16,9 @@
 </script>
 
 <div role="status" class="flex flex-col gap-4">
-  <p bind:this={joinedEl} tabindex="-1" class="text-[14px]" data-testid="guild-join-joined">
+  <p bind:this={joinedEl} tabindex="-1" class="text-text text-[14px]" data-testid="guild-join-joined">
     {guildJoinCopy.joined}
   </p>
   <p class="text-muted min-h-[21px] text-[13px]" data-testid="guild-join-plan">{planLine ?? ''}</p>
 </div>
-<a
-  class="{SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong w-fit px-4"
-  href={openHref}
-  data-testid="guild-join-open"
->
-  {guildJoinCopy.openGuild}
-</a>
+<Button href={openHref} testid="guild-join-open">{guildJoinCopy.openGuild}</Button>

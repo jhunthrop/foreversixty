@@ -1,0 +1,9 @@
+{
+  "billing": null,
+  "trial_used": false,
+  "verified_count": 24,
+  "seats": [],
+  "transfer": null,
+  "transfer_candidates": [],
+  "can": ["billing", "seats", "transfer"]
+}
