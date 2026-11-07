@@ -744,3 +744,200 @@ PRIM_CSS += '''
 def Disclosure(summary: str, body: str, open_: bool = False, meta: str = '') -> str:
     m = f'<span class="t-small">{meta}</span>' if meta else ''
     return f'<details class="disc"{" open" if open_ else ""}><summary>{summary}{m}</summary><div class="disc-b">{body}</div></details>'
+
+# ------------------------------------------------ primitives added by the setup round (2026-11-07; design/specs/2026-11-07-setup.md section 3A)
+# Additive only. `Steps` is the shipped ui/Checklist with numbered marks and an action in the trail (a setup or onboarding
+# list: the first step not done carries the page's one primary Button). Marks: ok (done, the kill check), next (the first
+# step not done: gold disc with its number), todo (not done, optional or later: an outlined ring with its number), warn
+# (needs the player: gold "!"), miss (failed: wipe "×"), busy (in progress: a gold ring turning). `Capture` is a client
+# screenshot at its own aspect in a quiet frame (the one image frame on the site: /setup's surfaces and the companion,
+# later the guides' in-game shots), with an optional muted Tag under it. `Code` is literal text a player copies or matches
+# (slash commands, pairing and device codes): the one use of a mono face. `PageForm` is Page layout 'form': one column
+# at --measure-form (560 px), left-aligned in the page column, for a page that is one task (connect, sign in, checkout).
+PRIM_CSS += '''
+.steps .row{min-height:64px;padding-block:12px}
+.sm{width:26px;height:26px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;flex:none;font:700 13px/26px var(--font-body);font-variant-numeric:tabular-nums}
+.sm.ok{background:var(--kill);color:#07090d}.sm.next{background:var(--gold);color:#17110a}.sm.todo{box-shadow:inset 0 0 0 1.5px var(--line);color:var(--muted)}
+.sm.warn{background:var(--gold);color:#17110a}.sm.miss{background:var(--wipe);color:#07090d}
+.sm.busy{box-shadow:inset 0 0 0 2px var(--line);color:var(--muted);position:relative}
+.sm.busy::after{content:"";position:absolute;inset:0;border-radius:50%;border:2px solid transparent;border-top-color:var(--gold);animation:sm-spin 1s linear infinite}
+@keyframes sm-spin{to{transform:rotate(360deg)}}@media(prefers-reduced-motion:reduce){.sm.busy::after{animation:none}}
+.steps .row .sub{font-size:14px;line-height:20px;margin-top:2px}.steps .row .sub .warn{color:var(--gold)}.steps .row .sub .miss{color:var(--wipe)}
+.steps .row .sub .ok{color:var(--text)}
+.steps .row .trail .btn{min-width:0}
+.btn.is-off{opacity:.45;pointer-events:none}
+.cap{display:block;position:relative;width:100%;max-width:var(--w);max-height:var(--mh,420px);aspect-ratio:var(--ar);border:1px solid var(--line-soft);border-radius:4px;background:var(--raised);overflow:hidden}
+.cap img{display:block;width:100%;height:100%;object-fit:contain}
+.cap-wrap{display:flex;flex-direction:column;gap:8px;align-items:flex-start;min-width:0}
+code.c{font:600 14px/20px ui-monospace,'SF Mono',Menlo,monospace;color:var(--strong);letter-spacing:.02em}
+code.c.big{font-size:24px;line-height:30px;letter-spacing:.06em}
+.layout-form{max-width:560px}
+'''
+
+
+def Steps(items: list[tuple]) -> str:
+    """items: (mark, number, title, sub_html, action_html). mark: ok | next | todo | warn | miss | busy."""
+    word = {'ok': 'Done', 'next': 'Next', 'todo': 'Not done', 'warn': 'To do', 'miss': 'Failed', 'busy': 'In progress'}
+    rows = []
+    for mark, n, title, sub, action in items:
+        glyph = {'ok': '&#10003;', 'warn': '!', 'miss': '&times;', 'busy': ''}.get(mark, str(n))
+        lead = f'<span class="sm {mark}" role="img" aria-label="Step {n}: {word[mark]}">{glyph}</span>'
+        rows.append(Row(title, sub, lead=lead, trail=action, link=False))
+    return f'<div class="steps">{Rows(rows)}</div>'
+
+
+def Capture(src: str, w: int, h: int, alt: str, tag: str = '', tall: bool = False, lazy: bool = True) -> str:
+    """A client screenshot at its own aspect, capped at its native width and 420 px high (900 for a portrait capture)."""
+    t = f'{Tag(tag, "muted")}' if tag else ''
+    lz = ' loading="lazy"' if lazy else ''
+    # The picture links to its own file (spec 3A), as the built Capture does.
+    return (f'<div class="cap-wrap"><a class="cap" href="{src}" style="--w:{w}px;--ar:{w} / {h};--mh:{900 if tall else 420}px">'
+            f'<img src="{src}" width="{w}" height="{h}" alt="{escape(alt, quote=True)}"{lz} decoding="async"></a>{t}</div>')
+
+
+def Code(text: str, big: bool = False) -> str:
+    return f'<code class="c{" big" if big else ""}">{escape(text)}</code>'
+
+
+def PageForm(main: str) -> str:
+    """Page layout 'form': one column at 560 px under the page header, left-aligned in the page column."""
+    return f'<div class="pc" style="padding-top:20px"><div class="layout-form">{main}</div></div>'
+
+# ------------------------------------------------ primitives added by the guides round (2026-11-08; design/specs/2026-11-08-guides.md section 3A)
+# Additive only: no earlier mock changes (PageHeader and Page are redefined as supersets; with the new arguments left at their
+# defaults they emit exactly what they emitted before). `PageHeader(lead=)` is the Lead type under the title (one sentence,
+# 17/26, max 62ch: the system's own type role, 3.3). `Page('reading')` is L2 Reading (3.7): a 200 px contents rail from 1760,
+# the sections beside it. `ReadingSection` is a Section on a reading page: its head (22/28), then the prose (720) and its lane
+# (440 to 640) side by side from 1280, the lane first in one column below. `Prose` is the rendered guide markdown's typography
+# (paragraphs, lists, h3, the game-tooltip names, the ruled fact list). `Toc` is the contents rail. `PlateColumns` is a Plate
+# split into labelled columns by hairlines (the guide's At a glance band; next: the character summary and the sim result band).
+# `TalentTrees` is `Trees` at a compact cell (24 px, 28 from 1760). `LevelSlider` is the shipped GuideLevelingTree's control
+# row (previous, the level range, next). Rows gain the contract's `density='slim'` (44 px).
+PRIM_CSS += '''
+.ph-lead{margin-top:10px;font-size:17px;line-height:26px;max-width:62ch;color:var(--text)}
+@media(max-width:767px){.ph-lead{font-size:16px;line-height:24px}}
+.layout-reading{display:grid;grid-template-columns:minmax(0,1fr);column-gap:var(--gap);align-items:start}
+.layout-reading>.toc{display:none}
+@media(min-width:1760px){.layout-reading{grid-template-columns:var(--toc-w) minmax(0,1fr)}.layout-reading>.toc{display:block;position:sticky;top:76px}}
+.layout-reading>.body{display:flex;flex-direction:column;gap:var(--section-gap);min-width:0}
+.rsec>.sec-h h2{font:700 22px/28px var(--font-body);color:var(--strong)}
+@media(max-width:767px){.rsec>.sec-h h2{font-size:20px;line-height:26px}}
+.rd{display:grid;grid-template-columns:minmax(0,var(--measure-reading));grid-template-areas:"lane" "prose";gap:24px var(--gap);padding-top:20px}
+.rd.solo{grid-template-areas:"prose"}
+@media(min-width:1280px){.rd{grid-template-columns:var(--measure-reading) minmax(0,640px);grid-template-areas:"prose lane"}.rd.solo{grid-template-columns:var(--measure-reading)}}
+.rd>.rd-prose{grid-area:prose;min-width:0}.rd>.rd-lane{grid-area:lane;min-width:0;display:flex;flex-direction:column;gap:28px}
+.lane-blk{display:flex;flex-direction:column;gap:8px;min-width:0}.lane-blk>.t-label{padding-bottom:2px}
+.prose{font-size:16px;line-height:26px;color:var(--text);max-width:var(--measure-reading);overflow-wrap:break-word}
+.prose.lane{font-size:15px;line-height:24px}
+.prose p{margin:0 0 14px}.prose>:last-child{margin-bottom:0}
+.prose ul,.prose ol{margin:0 0 14px;padding-left:20px;list-style:disc}.prose ol{list-style:decimal}.prose li{margin:0 0 8px}.prose li::marker{color:var(--muted)}
+.prose h3{font:700 18px/24px var(--font-body);color:var(--strong);margin:28px 0 10px}.prose>h3:first-child{margin-top:0}
+.prose strong{color:var(--strong);font-weight:700}.prose a{font-weight:600}
+.prose .gtip{text-decoration:underline dotted;text-decoration-color:color-mix(in srgb,currentColor 40%,transparent);text-underline-offset:3px;cursor:pointer}
+.prose span.gtip:not(.gtip-item){color:var(--strong);font-weight:500}
+.prose .glabel{font:700 12px/16px var(--font-body);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:18px 0 4px}.prose .glabel:first-child{margin-top:0}
+.prose.ruled ul{list-style:none;padding:0;margin:0}.prose.ruled li{position:relative;margin:0;padding:12px 0 12px 20px;border-bottom:1px solid var(--line-soft);break-inside:avoid}
+.prose.ruled li::before{content:"";position:absolute;left:0;top:21px;width:6px;height:6px;border-radius:50%;background:var(--gold)}
+@media(min-width:1024px){.prose.cols{max-width:none}.prose.cols ul{column-count:2;column-gap:48px}}
+.prose.plus ul,.prose.minus ul{list-style:none;padding:0}.prose.plus li,.prose.minus li{position:relative;padding-left:20px}
+.prose.plus li::before,.prose.minus li::before{position:absolute;left:0;font-weight:700}.prose.plus li::before{content:"+";color:var(--kill)}.prose.minus li::before{content:"\\2212";color:var(--wipe)}
+.toc .t-label{display:block;padding-bottom:10px}.toc ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.toc a{display:flex;align-items:center;min-height:32px;padding-left:12px;font:600 14px/18px var(--font-body);color:var(--nav);box-shadow:inset 2px 0 0 var(--line-soft)}
+.toc a:hover{color:var(--strong)}.toc a[aria-current]{color:var(--gold);box-shadow:inset 2px 0 0 var(--gold)}
+.pcols{display:grid;grid-template-columns:minmax(0,1fr)}
+@media(min-width:1024px){.pcols{grid-template-columns:repeat(var(--n),minmax(0,1fr))}.pcols.n1{grid-template-columns:minmax(0,1fr)}}
+.pcol{display:flex;flex-direction:column;gap:12px;padding:16px 20px 20px;min-width:0}
+.pcol+.pcol{border-top:1px solid var(--line-soft)}
+@media(min-width:1024px){.pcol+.pcol{border-top:0;border-left:1px solid var(--line-soft)}}
+.pcol-h{display:flex;align-items:baseline;gap:12px}.pcol-h .t-small{margin-left:auto;text-align:right}
+.pcol .st-r{min-height:40px;padding-block:6px}.pcol .st-r .nm b{white-space:nowrap}
+@media(max-width:1023px){.pcol .st .stc{grid-template-columns:28px minmax(0,1fr) minmax(0,96px) auto}.pcol .st.open .st-r .br{display:block;grid-column:auto;padding-top:0}}.pcol .rows.slim .row{padding-block:7px}
+.pcol-f{margin-top:auto;display:flex;gap:12px;flex-wrap:wrap;align-items:center;padding-top:4px}
+.trees.cmp{gap:16px;grid-template-columns:repeat(3,max-content)}.trees.cmp .tg>[role=row]{display:contents}.trees.cmp .tc{display:block}.trees.cmp .tr h3{font-size:13px;line-height:18px;padding-bottom:6px;white-space:nowrap}
+.trees.cmp .tg{grid-template-columns:repeat(4,24px);gap:4px}.trees.cmp .tc,.trees.cmp .tc img,.trees.cmp .tc .ic{width:24px!important;height:24px!important}
+.trees.cmp .tc b{font-size:10px;line-height:12px;right:-3px;bottom:-4px}
+@media(min-width:1760px){.trees.cmp .tg{grid-template-columns:repeat(4,28px)}.trees.cmp .tc,.trees.cmp .tc img,.trees.cmp .tc .ic{width:28px!important;height:28px!important}}
+@media(max-width:767px){.trees.cmp{grid-template-columns:repeat(3,minmax(0,max-content));gap:10px}.trees.cmp .tg{grid-template-columns:repeat(4,22px);gap:3px}.trees.cmp .tc,.trees.cmp .tc img,.trees.cmp .tc .ic{width:22px!important;height:22px!important}}
+.lvl{display:flex;align-items:center;gap:10px}.lvl .bt{width:44px;height:44px;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--line);border-radius:4px;color:var(--nav);font-size:18px}
+.lvl .bt:hover{color:var(--strong);border-color:var(--gold)}.lvl .bt.off{opacity:.45}
+.lvl .rg{position:relative;flex:1;height:44px;display:flex;align-items:center}.lvl .rg .tk{height:4px;width:100%;border-radius:2px;background:var(--line-soft)}
+.lvl .rg .fl{position:absolute;left:0;height:4px;border-radius:2px;background:var(--gold)}
+.lvl .rg .th{position:absolute;width:20px;height:20px;margin-left:-10px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 4px #e5b95533}
+.rows.slim .row{min-height:44px;padding-block:6px}
+.ans-box{display:flex;flex-direction:column;gap:6px;min-width:0}
+@media(min-width:900px){.ans-box{min-width:380px;min-height:96px;justify-content:flex-end;align-items:flex-end;text-align:right}}
+'''
+
+
+_PageHeader0 = PageHeader
+_Page0 = Page
+
+
+def PageHeader(title: str, title_color: str = '', crest: str = '', meta: list[str] | None = None, answer: str = '', actions: str = '', tabs: str = '',
+               lead: str = '') -> str:
+    """PageHeader with the optional Lead sentence under the meta line (inside head-title, so the regions are unchanged)."""
+    html = _PageHeader0(title, title_color, crest, meta, answer, actions, tabs)
+    if not lead:
+        return html
+    at = re.search(r'<div class="ph-meta" data-region="head-meta">.*?</span></div>', html) if meta else None
+    cut = at.end() if at else html.index('</h1>') + len('</h1>')
+    return html[:cut] + f'<p class="ph-lead">{lead}</p>' + html[cut:]
+
+
+def Page(layout: str, main: str = '', rail: str = '', sticky_rail: bool = False) -> str:
+    """Page with layout 'reading' (L2): `rail` is the Toc (shown from 1760), `main` the ReadingSections."""
+    if layout != 'reading':
+        return _Page0(layout, main, rail, sticky_rail)
+    return f'<div class="pc" style="padding-top:var(--section-gap)"><div class="layout-reading"><nav class="toc" aria-label="Sections in this guide">{rail}</nav><div class="body">{main}</div></div></div>'
+
+
+def Prose(html: str, *mods: str) -> str:
+    """Rendered guide markdown. mods: 'lane' (15/24, in a lane), 'ruled' (a fact list with gold marks and hairlines), 'cols' (two
+    columns from 1024), 'plus' / 'minus' (Strengths and Weaknesses marks)."""
+    return f'<div class="prose {" ".join(mods)}">{html}</div>'
+
+
+def ReadingSection(title: str, prose: str, lane: str = '', anchor: str = '', action: str = '') -> str:
+    """A section of a reading page: the Section head (22/28), then prose and lane (lane first in the DOM: one column reads it first)."""
+    a = f'<span class="act">{action}</span>' if action else ''
+    lane_html = f'<div class="rd-lane">{lane}</div>' if lane else ''
+    return (f'<section class="rsec" data-region="{region_slug(title)}" id="{anchor}"><div class="sec-h"><h2>{title}</h2>{a}</div>'
+            f'<div class="rd{"" if lane else " solo"}">{lane_html}<div class="rd-prose">{prose}</div></div></section>')
+
+
+def LaneBlock(label: str, body: str, meta: str = '') -> str:
+    """One labelled block in a lane (12 px caps label, then its rows or table)."""
+    m = f'<span class="t-small">{meta}</span>' if meta else ''
+    return f'<div class="lane-blk"><div class="pcol-h"><h3 class="t-label">{label}</h3>{m}</div>{body}</div>'
+
+
+def Toc(label: str, items: list[tuple[str, str]], current: str = '') -> str:
+    """The contents rail: (title, anchor); the current section gold with a 2 px bar (aria-current="location")."""
+    lis = ''.join(f'<li><a href="#{a}"{" aria-current=\"location\"" if a == current else ""}>{t}</a></li>' for t, a in items)
+    return f'<span class="t-label">{label}</span><ol>{lis}</ol>'
+
+
+def PlateColumns(cols: list[tuple[str, str, str, str]], label: str = '') -> str:
+    """A Plate in labelled columns: (label, meta, body, foot). Hairlines between, stacked below 1024."""
+    inner = ''.join(f'<div class="pcol"><div class="pcol-h"><h2 class="t-label">{lab}</h2>{f"<span class=t-small>{meta}</span>" if meta else ""}</div>{body}'
+                    + (f'<div class="pcol-f">{foot}</div>' if foot else '') + '</div>' for lab, meta, body, foot in cols)
+    return Plate(f'<div class="pcols{" n1" if len(cols) == 1 else ""}" style="--n:{len(cols)}">{inner}</div>', label)
+
+
+def TalentTrees(trees: list[tuple[str, int, list[tuple]]]) -> str:
+    """`Trees` at the compact cell: three trees side by side in a 400 px column (the At a glance band, the leveling lane)."""
+    return Trees(trees).replace('<div class="trees">', '<div class="trees cmp">', 1)
+
+
+def LevelSlider(level: int, lo: int, hi: int, label: str) -> str:
+    """The shipped GuideLevelingTree control row: previous level, the level range (a slider), next level."""
+    frac = (level - lo) / (hi - lo)
+    return (f'<div class="lvl"><a class="bt{" off" if level == lo else ""}" href="#" aria-label="Previous level">&lsaquo;</a>'
+            f'<span class="rg" role="slider" aria-label="{label}" aria-valuemin="{lo}" aria-valuemax="{hi}" aria-valuenow="{level}" aria-valuetext="Level {level}" tabindex="0">'
+            f'<span class="tk"></span><span class="fl" style="width:{frac * 100:.1f}%"></span><span class="th" style="left:{frac * 100:.1f}%"></span></span>'
+            f'<a class="bt{" off" if level == hi else ""}" href="#" aria-label="Next level">&rsaquo;</a></div>')
+
+
+def RowsSlim(rows: list[str], open_: bool = True) -> str:
+    """Rows at the contract's density 'slim' (44 px)."""
+    return Rows(rows, open_).replace('<div class="rows', '<div class="rows slim', 1)
