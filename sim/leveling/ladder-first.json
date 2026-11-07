@@ -209,11 +209,51 @@
       ]
     },
     "mage-frost": {
-      "reason": "Frost casts Frostbolt from level 4. The plain walk's level-10 point is Frost Warding, armor on Frost Armor; Improved Frostbolt first makes the point a faster Frostbolt: +2.0 to +2.9% at band 10, at seeds 1 and 50001, both factions; the other bands do not change (sim-accuracy round 15, mage wave 2).",
+      "reason": "Frost casts Frostbolt from level 4: Improved Frostbolt 10 to 14 (+2.0 to +2.9% at band 10, round 15). Then Precision 15 to 17 before Frost Warding, which only adds armor; Ice Shards 18 and 19 open the row for Frost Channeling at 20 to 22, the mana that keeps Frostbolt going; Ice Shards ends at 25; Frostbite 26 lets Shatter (27, 28) work on frozen mobs; Ice Lance 29 opens Fingers of Frost at 30 and 31, six levels sooner, and Shatter ends at 32. Frost Warding, Permafrost, Ice Block and Cold Snap fill 33 to 37, and Ice Barrier still comes at 40. Bare, band gear, 10,000 iterations, seeds 1 and 50001, both factions: level 15 +2.4%, 16 +4.8 to +4.9%, 19 +0.7 to +0.8%, 20 +2.5 to +2.8%, 22 +7.8 to +8.9%, 25 +7.5 to +8.3%, 29 +2.4 to +2.7%, 30 +6.2 to +6.4%, 32 +14.5%, 36 +6.1 to +6.4%; every level from 15 to 36 gains at both seeds (sim-accuracy round 28, casters lane).",
       "first": [
         {
           "talent": "Improved Frostbolt",
           "rank": 5
+        },
+        {
+          "talent": "Precision",
+          "rank": 3
+        },
+        {
+          "talent": "Ice Shards",
+          "rank": 2
+        },
+        {
+          "talent": "Frost Channeling",
+          "rank": 3
+        },
+        {
+          "talent": "Ice Shards",
+          "rank": 5
+        },
+        {
+          "talent": "Frostbite",
+          "rank": 1
+        },
+        {
+          "talent": "Shatter",
+          "rank": 2
+        },
+        {
+          "talent": "Ice Lance",
+          "rank": 1
+        },
+        {
+          "talent": "Fingers of Frost",
+          "rank": 2
+        },
+        {
+          "talent": "Shatter",
+          "rank": 3
+        },
+        {
+          "talent": "Ice Barrier",
+          "rank": 1
         }
       ]
     },
@@ -465,10 +505,87 @@
       ]
     },
     "warlock-demonology": {
-      "reason": "The rotation casts Soul Link before the pull (the 20-point row, behind Demonic Sacrifice). A level 30 warlock's 21 points hold it, but the plain walk spends the last one on Decimation's second rank, which does nothing before Soul Fire at 48. Taking Soul Link as soon as it fits gains about 2.3% at band 30, seeds 1 and 50001, both factions (sim-accuracy round 13, walk lane). Demonic Sacrifice is not reserved: the rotation never casts it without Demonic Pact, and at 20 it could only replace Demonic Aegis, which the engine does not model; the walk reaches it on its own by 30.",
+      "reason": "The rotation casts Soul Link before the pull (the 20-point row, behind Demonic Sacrifice). A level 30 warlock's 21 points hold it, but the plain walk spends the last one on Decimation's second rank, which does nothing before Soul Fire at 48. Taking Soul Link as soon as it fits gains about 2.3% at band 30, seeds 1 and 50001, both factions (sim-accuracy round 13, walk lane). Demonic Sacrifice is not reserved: the rotation never casts it without Demonic Pact, and at 20 it could only replace Demonic Aegis, which the engine does not model; the walk reaches it on its own by 30. Unholy Power (pet damage) 10 to 14 and Fel Vitality (mana) 15 to 17 come before Improved Health Funnel and Demonic Embrace, which do nothing in a fight (the rotation never casts Health Funnel, and Stamina deals no damage); Demonic Energies follows at 18, the old order rejoins at 25, and Demonic Knowledge 31 to 33 comes before Decimation's second point, which does nothing before Soul Fire at 48. Bare, band gear, 10,000 iterations, seeds 1 and 50001, both factions: level 10 +0.14%, 15 +0.9 to +1.1%, 20 +0.4 to +0.7%, 23 +0.2%, 24 level (two dead points traded), 31 to 33 +3.1 to +3.3% (sim-accuracy round 28, casters lane).",
       "first": [
         {
+          "talent": "Unholy Power",
+          "rank": 5
+        },
+        {
+          "talent": "Fel Vitality",
+          "rank": 3
+        },
+        {
+          "talent": "Demonic Energies",
+          "rank": 1
+        },
+        {
           "talent": "Soul Link",
+          "rank": 1
+        },
+        {
+          "talent": "Demonic Knowledge",
+          "rank": 3
+        },
+        {
+          "talent": "Master Demonologist",
+          "rank": 5
+        }
+      ]
+    },
+    "warlock-destruction": {
+      "reason": "Destructive Reach (range) and Molten Skin (damage taken) do nothing in a fight, so they wait until a deeper row needs their points: Bane 10 to 14, Aftermath 15 to 17, Cataclysm 18 and 19, Shadowburn 20, Ruin 21 to 24, Agonizing Flames 25 to 27 and Ruin 28, then Destructive Reach 29. Conflagrate eats Immolate and loses damage until Fire and Brimstone backs it (-0.5% at 34 with no Fire and Brimstone), so Bane of Havoc, the Incinerate toll, comes at 30, Conflagrate at 31, Fire and Brimstone 32 to 34 and Shadow and Flame 35 to 38, five levels sooner; Destructive Reach 39, Incinerate 40, Molten Skin 41 to 43, and level 44 is the guide build. Bare, band gear, 10,000 iterations, seeds 1 and 50001, both factions: level 10 +1.0 to +1.6%, 14 +3.0 to +3.3%, 20 +2.3 to +2.5%, 27 +7.4 to +7.8%, 30 +5.3%, 33 +0.4 to +0.6%, 38 +14.1 to +14.3%, 40 +11.5 to +11.6%, 42 +3.7%; every level from 10 to 42 gains at both seeds (sim-accuracy round 28, casters lane; Icy Veins and Warcraft Tavern Forever Destruction pages also open on Bane and take Destructive Reach later).",
+      "first": [
+        {
+          "talent": "Bane",
+          "rank": 5
+        },
+        {
+          "talent": "Aftermath",
+          "rank": 3
+        },
+        {
+          "talent": "Cataclysm",
+          "rank": 2
+        },
+        {
+          "talent": "Shadowburn",
+          "rank": 1
+        },
+        {
+          "talent": "Ruin",
+          "rank": 4
+        },
+        {
+          "talent": "Agonizing Flames",
+          "rank": 3
+        },
+        {
+          "talent": "Ruin",
+          "rank": 5
+        },
+        {
+          "talent": "Bane of Havoc",
+          "rank": 1
+        },
+        {
+          "talent": "Destructive Reach",
+          "rank": 1
+        },
+        {
+          "talent": "Conflagrate",
+          "rank": 1
+        },
+        {
+          "talent": "Fire and Brimstone",
+          "rank": 3
+        },
+        {
+          "talent": "Shadow and Flame",
+          "rank": 4
+        },
+        {
+          "talent": "Incinerate",
           "rank": 1
         }
       ]

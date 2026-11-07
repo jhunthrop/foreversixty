@@ -32,6 +32,7 @@ var ladderFirstSpecs = map[string]struct {
 	"shaman-restoration":   {"shaman", "restoration", 2},
 	"warlock-affliction":   {"warlock", "affliction", 0},
 	"warlock-demonology":   {"warlock", "demonology", 1},
+	"warlock-destruction":  {"warlock", "destruction", 2},
 	"warrior-arms":         {"warrior", "arms", 0},
 	"warrior-fury":         {"warrior", "fury", 1},
 }
