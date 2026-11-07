@@ -1,5 +1,5 @@
 <!-- web/src/components/ui/Tag.svelte -->
-<!-- A state tag (polish spec 4.2): 22 px, 11 px 700 uppercase, 1 px border, four tones, an
+<!-- A state tag (polish spec 4.2): 22 px, 12 px 600 in sentence case, 1 px border, four tones, an
      optional glowing dot. For a state (Founder, Connected, Current, Main); source pills stay
      `pill`. -->
 <script lang="ts" module>
@@ -34,7 +34,7 @@
 </script>
 
 <span
-  class="rounded-pill inline-flex h-[22px] items-center gap-[6px] border px-2 text-[11px] font-bold tracking-[.08em] whitespace-nowrap uppercase {TONES[
+  class="rounded-pill inline-flex h-[22px] items-center gap-[6px] border px-2 text-[12px] font-semibold tracking-[.01em] whitespace-nowrap {TONES[
     tone
   ]}"
   {title}
