@@ -133,7 +133,7 @@ describe('/guides/warrior/fury (the page structure)', () => {
     const code = encodeURIComponent(entry.data.build as string);
     expect(glance).toMatch(
       new RegExp(
-        `href="/planner\\?code=${code}"[^>]*data-testid="guide-load-build"|data-testid="guide-load-build"[^>]*href="/planner\\?code=${code}"`,
+        `href="/planner\\?code=${code}(?:&amp;spec=[a-z-]+)?"[^>]*data-testid="guide-load-build"|data-testid="guide-load-build"[^>]*href="/planner\\?code=${code}(?:&amp;spec=[a-z-]+)?"`,
       ),
     );
     expect(glance).toContain('data-testid="guide-sim-build"');
@@ -194,7 +194,8 @@ describe('/guides/rogue/assassination (a spec with a raid build)', () => {
     const builds = blockOf(main, 'guide-builds', 6000);
     expect(builds).toMatch(/data-testid="guide-build-leveling"[\s\S]*?>Level 60 build</);
     expect(builds).toMatch(/data-testid="guide-build-raid"[\s\S]*?>Raid build</);
-    expect(builds).toContain(`href="/planner?code=${encodeURIComponent(raidBuild)}"`);
+    // The planner link may carry `&amp;spec=` after the code (the guide's own levelling order).
+    expect(builds).toContain(`href="/planner?code=${encodeURIComponent(raidBuild)}`);
     expect(builds).toContain(`href="/sim?code=${encodeURIComponent(raidBuild)}"`);
     expect(builds).toContain('data-testid="guide-build-load-raid"');
     expect(builds).toContain('data-testid="guide-build-sim-raid"');
@@ -203,7 +204,7 @@ describe('/guides/rogue/assassination (a spec with a raid build)', () => {
     expect(blockOf(main, 'guide-glance-build', 400)).toContain(`>${guidesCopy.raidBuild}</h2>`);
     expect(main).toMatch(
       new RegExp(
-        `href="/planner\\?code=${encodeURIComponent(raidBuild)}"[^>]*data-testid="guide-load-build"|data-testid="guide-load-build"[^>]*href="/planner\\?code=${encodeURIComponent(raidBuild)}"`,
+        `href="/planner\\?code=${encodeURIComponent(raidBuild)}(?:&amp;spec=[a-z-]+)?"[^>]*data-testid="guide-load-build"|data-testid="guide-load-build"[^>]*href="/planner\\?code=${encodeURIComponent(raidBuild)}(?:&amp;spec=[a-z-]+)?"`,
       ),
     );
   });
@@ -417,7 +418,7 @@ describe('/guides/mage/frost (the class-guide blocks)', () => {
     expect(leveling).toMatch(/value="60" aria-label="Level" aria-valuetext="Level 60"/);
     expect(leveling).toMatch(/data-testid="guide-leveling-trees"[\s\S]*?role="grid"/);
     expect(leveling).toMatch(
-      /href="\/planner\?spec=mage-frost&amp;talents=[0-9-]+"[^>]*data-testid="guide-leveling-load"|data-testid="guide-leveling-load"[^>]*href="\/planner\?spec=mage-frost&amp;talents=/,
+      /href="\/planner\?spec=mage-frost&amp;talents=[0-9-]+(?:&amp;spec=[a-z-]+)?"[^>]*data-testid="guide-leveling-load"|data-testid="guide-leveling-load"[^>]*href="\/planner\?spec=mage-frost&amp;talents=/,
     );
     expect(leveling).not.toContain('guide-leveling-strip');
   });
