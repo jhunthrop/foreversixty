@@ -36,9 +36,67 @@ def read(path: Path) -> dict:
     return json.loads(path.read_text())
 
 
+PRINT_WIDTH = 110  # web/.prettierrc
+
+
+def _flat(value) -> str | None:
+    """The value on one line as Prettier prints it, or None when Prettier always breaks it (an object)."""
+    if isinstance(value, dict):
+        return '{}' if not value else None
+    if isinstance(value, list):
+        parts = [_flat(item) for item in value]
+        return None if None in parts else '[' + ', '.join(parts) + ']'
+    return json.dumps(value)
+
+
+def _is_number(value) -> bool:
+    return isinstance(value, (int, float)) and not isinstance(value, bool)
+
+
+def _pretty(value, indent: int, column: int, tail: int) -> str:
+    """Prettier's JSON layout: objects broken one key per line; an array flat when it fits the print width
+    (from `column`, with `tail` characters after it on the line), a number array filled line by line, any
+    other array one item per line."""
+    pad, inner = ' ' * indent, ' ' * (indent + 2)
+    if isinstance(value, dict):
+        if not value:
+            return '{}'
+        lines = []
+        for index, (key, item) in enumerate(value.items()):
+            comma = 1 if index < len(value) - 1 else 0
+            head = f'{inner}{json.dumps(key)}: '
+            lines.append(head + _pretty(item, indent + 2, len(head), comma) + (',' if comma else ''))
+        return '{\n' + '\n'.join(lines) + '\n' + pad + '}'
+    if isinstance(value, list):
+        if not value:
+            return '[]'
+        flat = _flat(value)
+        if flat is not None and column + len(flat) + tail <= PRINT_WIDTH:
+            return flat
+        if all(_is_number(item) for item in value):
+            rows, row = [], ''
+            for index, item in enumerate(value):
+                word = json.dumps(item) + (',' if index < len(value) - 1 else '')
+                if row and len(inner) + len(row) + 1 + len(word) > PRINT_WIDTH:
+                    rows.append(row)
+                    row = word
+                else:
+                    row = f'{row} {word}' if row else word
+            rows.append(row)
+            return '[\n' + '\n'.join(inner + r for r in rows) + '\n' + pad + ']'
+        lines = []
+        for index, item in enumerate(value):
+            comma = 1 if index < len(value) - 1 else 0
+            lines.append(inner + _pretty(item, indent + 2, len(inner), comma) + (',' if comma else ''))
+        return '[\n' + '\n'.join(lines) + '\n' + pad + ']'
+    return json.dumps(value)
+
+
 def write(name: str, value) -> None:
+    """Writes the fixture in the layout Prettier gives it (2-space indent, a trailing newline, short arrays
+    on one line), so `npm run format:check` passes on a fresh regeneration."""
     OUT.mkdir(parents=True, exist_ok=True)
-    (OUT / name).write_text(json.dumps(value, indent=1) + '\n')
+    (OUT / name).write_text(_pretty(value, 0, 0, 0) + '\n')
 
 
 def chances() -> dict[int, float]:
