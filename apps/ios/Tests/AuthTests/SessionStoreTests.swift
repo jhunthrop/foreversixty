@@ -124,25 +124,56 @@ struct SessionStoreTests {
         #expect(await missing.0.revoke("dvc_nope") == .failed)
     }
 
-    @Test("deleting the account signs out with the date the data goes")
+    @Test("deleting the account signs out with the deleted line")
     func deleteAccount() async throws {
         let (session, tokens) = store(token: "fsd_x")
-        #expect(await session.deleteAccount() == .done)
-        let completeBy = try #require(ISO8601DateFormatter().date(from: "2026-11-29T21:41:00Z"))
-        #expect(session.phase == .signedOut(.accountDeleted(completeBy: completeBy)))
+        #expect(await session.deleteAccount(confirm: "Yell#1604") == .done)
+        #expect(session.phase == .signedOut(.accountDeleted))
         #expect(tokens.bearerToken() == nil)
     }
 
-    @Test("the deletion sends the confirmation phrase")
-    func deletionPhrase() throws {
-        let body = try #require(try Endpoint.deleteAccount(.confirmed).body)
-        #expect(String(decoding: body, as: UTF8.self) == #"{"confirm":"delete my account"}"#)
+    @Test("the deletion sends what the person typed")
+    func deletionSendsTyped() async throws {
+        let transport = try fixture("me.delete.json", status: 200)
+        let (session, _) = store(transport: transport, token: "fsd_x")
+        #expect(await session.deleteAccount(confirm: " yell#1604 ") == .done)
+        let request = try #require(transport.requests.last)
+        #expect(request.httpMethod == "DELETE")
+        let body = try #require(request.httpBody)
+        #expect(String(decoding: body, as: UTF8.self) == #"{"confirm":" yell#1604 "}"#)
     }
 
-    @Test("a refused deletion keeps the session")
-    func deleteRefused() async throws {
+    @Test("a confirm mismatch keeps the session and says so under the field")
+    func deleteMismatch() async throws {
+        let (session, _) = store(transport: try fixture("me.delete.error-confirm-mismatch.json", status: 400), token: "fsd_x")
+        #expect(await session.deleteAccount(confirm: "Yell") == .confirmMismatch)
+        #expect(session.phase.isSignedIn)
+    }
+
+    @Test("a guild obligation passes the API's message through")
+    func deleteGuildObligation() async throws {
+        let file = "me.delete.error-guild-obligation.json"
+        let envelope = try JSONDecoder().decode(ErrorEnvelopeProbe.self, from: try FixtureLocation.data(file))
+        let (session, _) = store(transport: try fixture(file, status: 409), token: "fsd_x")
+        #expect(await session.deleteAccount(confirm: "delete") == .refused(message: envelope.error.message))
+        #expect(envelope.error.message.contains("Olympus XXVII"))
+        #expect(session.phase.isSignedIn)
+    }
+
+    @Test("billing unavailable passes the API's message through")
+    func deleteBillingUnavailable() async throws {
+        let (session, _) = store(transport: try fixture("me.delete.error-billing-unavailable.json", status: 503), token: "fsd_x")
+        guard case let .refused(message) = await session.deleteAccount(confirm: "delete") else {
+            Issue.record("expected refused")
+            return
+        }
+        #expect(message.hasPrefix("Could not cancel your subscription"))
+    }
+
+    @Test("a broken body fails with the catalog line")
+    func deleteInvalid() async throws {
         let (session, _) = store(transport: try fixture("me.delete.error-invalid.json", status: 400), token: "fsd_x")
-        #expect(await session.deleteAccount() == .failed)
+        #expect(await session.deleteAccount(confirm: "delete") == .failed)
         #expect(session.phase.isSignedIn)
     }
 
@@ -150,9 +181,15 @@ struct SessionStoreTests {
     func browserOnly() async {
         let body = #"{"ok":false,"data":null,"error":{"code":"browser_session_required","message":"this can only be done on foreversixty.gg in a browser"},"request_id":"r"}"#
         let (session, _) = store(transport: RecordingTransport(status: 403, body: body), token: "fsd_x")
-        #expect(await session.deleteAccount() == .needsBrowser)
+        #expect(await session.deleteAccount(confirm: "delete") == .needsBrowser)
         #expect(await session.revoke("dvc_3Hm7pLa9") == .needsBrowser)
     }
+}
+
+/// Just the API's sentence from an error fixture.
+private struct ErrorEnvelopeProbe: Decodable {
+    struct Body: Decodable { let message: String }
+    let error: Body
 }
 
 private struct FailingWeb: WebAuthenticating {

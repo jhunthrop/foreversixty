@@ -32,6 +32,7 @@ import gg.foreversixty.app.auth.session.SessionPhase
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.guild.CalendarRoute
 import gg.foreversixty.app.guild.GuildExtrasFeature
+import gg.foreversixty.app.model.Me
 import gg.foreversixty.app.network.ApiResult
 import gg.foreversixty.app.premium.PlanScreen
 import gg.foreversixty.app.premium.PlanSummary
@@ -194,7 +195,7 @@ private fun SignedInYou(deps: AccountDeps) {
         )
         YouPage.Plan -> PlanScreen(plan, mayLink) { AccountLinks.open(context, AccountLinks.BILLING) }
         YouPage.Devices -> DevicesRoute(session) { deviceCount = it }
-        YouPage.Delete -> DeleteRoute(session, DeletionConsequence.of(me))
+        YouPage.Delete -> DeleteRoute(session, me)
         YouPage.About -> AboutScreen(version)
         YouPage.OfflineData -> offlineData?.let { model -> OfflineDataRoute(model) { page = YouPage.Root } }
         YouPage.Calendar -> deps.guildExtras?.let { extras ->
@@ -227,8 +228,9 @@ private fun DevicesRoute(session: SessionManager, onCount: (Int) -> Unit) {
                         failedRevoke = null
                         load()
                     }
-                    AccountActionOutcome.Failed -> failedRevoke = row.id
                     AccountActionOutcome.NeedsBrowser -> AccountLinks.open(context, AccountLinks.ACCOUNT)
+                    AccountActionOutcome.Failed, AccountActionOutcome.ConfirmMismatch, is AccountActionOutcome.Refused ->
+                        failedRevoke = row.id
                 }
             }
         },
@@ -236,20 +238,32 @@ private fun DevicesRoute(session: SessionManager, onCount: (Int) -> Unit) {
     )
 }
 
-/** Runs `DELETE /v1/me` after the dialog; on success the session shows signed out with the date. */
+/** Runs `DELETE /v1/me` with what the person typed; on success the session shows signed out. */
 @Composable
-private fun DeleteRoute(session: SessionManager, consequences: List<DeletionConsequence>) {
+private fun DeleteRoute(session: SessionManager, me: Me) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
+    var typed by rememberSaveable { mutableStateOf("") }
     var deleting by remember { mutableStateOf(false) }
-    var failed by remember { mutableStateOf(false) }
-    DeleteAccountScreen(consequences = consequences, deleting = deleting, failed = failed, onDelete = {
-        deleting = true
-        scope.launch {
-            val outcome = session.deleteAccount()
-            deleting = false
-            failed = outcome == AccountActionOutcome.Failed
-            if (outcome == AccountActionOutcome.NeedsBrowser) AccountLinks.open(context, AccountLinks.ACCOUNT)
-        }
-    })
+    var outcome by remember { mutableStateOf<AccountActionOutcome?>(null) }
+    DeleteAccountScreen(
+        consequences = DeletionConsequence.of(me),
+        battleTag = me.user.battletag,
+        typed = typed,
+        onTyped = {
+            typed = it
+            if (outcome == AccountActionOutcome.ConfirmMismatch) outcome = null
+        },
+        deleting = deleting,
+        outcome = outcome,
+        onDelete = {
+            deleting = true
+            scope.launch {
+                val result = session.deleteAccount(typed)
+                deleting = false
+                outcome = result.takeUnless { it == AccountActionOutcome.Done }
+                if (result == AccountActionOutcome.NeedsBrowser) AccountLinks.open(context, AccountLinks.ACCOUNT)
+            }
+        },
+    )
 }

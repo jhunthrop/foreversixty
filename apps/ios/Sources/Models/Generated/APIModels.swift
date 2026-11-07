@@ -87,21 +87,18 @@ public struct AccountCharacter: Codable, Sendable, Equatable {
     }
 }
 
-/// An accepted deletion. Every device and session of the account is already signed out; the data goes by complete_by (30 days after the request, the privacy page's promise).
+/// A finished deletion. Every device and session of the account is already signed out and the account no longer exists.
 public struct AccountDeletion: Codable, Sendable, Equatable {
-    public let requestedAt: Date
-    public let completeBy: Date
+    public let deletedAt: Date
 
     public init(
-        requestedAt: Date,
-        completeBy: Date
+        deletedAt: Date
     ) {
-        self.requestedAt = requestedAt
-        self.completeBy = completeBy
+        self.deletedAt = deletedAt
     }
 }
 
-/// The explicit confirmation behind DELETE /v1/me. The app sends the phrase only after the person has read what is deleted and confirmed it; any other value answers 400 invalid.
+/// The typed confirmation behind DELETE /v1/me: the account's BattleTag or the word "delete" (trimmed, any case), typed by the person after reading what is deleted and what is kept. Any other value answers 400 confirm_mismatch.
 public struct AccountDeletionRequest: Codable, Sendable, Equatable {
     public let confirm: String
 

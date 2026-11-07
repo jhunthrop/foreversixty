@@ -47,9 +47,9 @@ struct DeletionConsequenceTests {
         #expect(DeletionConsequence.of(try me("me.premium.json")) == [.premiumPlan, .founderPrice])
     }
 
-    @Test("a guild plan the account pays for ends with its seats")
+    @Test("a guild plan the account pays for is not a line, the server refuses it")
     func guildPayer() throws {
-        #expect(DeletionConsequence.of(try me("me.guild-payer.json")) == [.guildPlan(guild: "OLYMPUS XXVII")])
+        #expect(DeletionConsequence.of(try me("me.guild-payer.json")).isEmpty)
     }
 
     @Test("a seat held from a guild ends")

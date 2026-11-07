@@ -3,23 +3,30 @@ package gg.foreversixty.app.account
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
 import gg.foreversixty.app.R
+import gg.foreversixty.app.auth.session.AccountActionOutcome
+import gg.foreversixty.app.auth.session.DeletionConfirmation
 import gg.foreversixty.app.auth.session.DeletionConsequence
 import gg.foreversixty.app.designsystem.BrandButton
 import gg.foreversixty.app.designsystem.BrandButtonKind
@@ -29,65 +36,86 @@ import gg.foreversixty.app.designsystem.FsType
 import gg.foreversixty.app.designsystem.MicroLabel
 
 private val DELETED_ITEMS = listOf(
-    R.string.account_delete_item_identity,
-    R.string.account_delete_item_characters,
-    R.string.account_delete_item_logs,
-    R.string.account_delete_item_sims,
-    R.string.account_delete_item_links,
+    R.string.account_delete_deleted_subscription,
+    R.string.account_delete_deleted_identity,
+    R.string.account_delete_deleted_discord,
+    R.string.account_delete_deleted_private,
+    R.string.account_delete_deleted_guild,
+)
+
+private val KEPT_ITEMS = listOf(
+    R.string.account_delete_kept_billing,
+    R.string.account_delete_kept_reports,
+    R.string.account_delete_kept_characters,
+    R.string.account_delete_kept_builds,
 )
 
 /**
  * You › Delete account (App Store guideline 5.1.1(v), and the same in the Play app): what is
- * deleted in the privacy page's words; what else ends for this account (its plan, founder price,
- * guild plan, seat); what happens to guild reports; the destructive button and an explicit
- * confirmation that repeats the consequences.
+ * deleted and what is kept, in the web dialog's words; what else ends for this account (its plan,
+ * founder price, seat); then the typed confirmation (the BattleTag, or delete) and the destructive
+ * button, enabled only once the field matches by the server's rule ([DeletionConfirmation]).
+ * [outcome] is the last attempt's when it did not delete; null before the first try.
  */
 @Composable
 fun DeleteAccountScreen(
     consequences: List<DeletionConsequence>,
+    battleTag: String?,
+    typed: String,
+    onTyped: (String) -> Unit,
     deleting: Boolean,
-    failed: Boolean,
+    outcome: AccountActionOutcome?,
     onDelete: () -> Unit,
-    initiallyConfirming: Boolean = false,
 ) {
-    var confirming by rememberSaveable { mutableStateOf(initiallyConfirming) }
     val lines = consequences.map { AccountCopy.consequence(it) }
+    val canDelete = !deleting && DeletionConfirmation.matches(typed, battleTag)
     AccountPage(stringResource(R.string.account_delete_title)) {
         Text(stringResource(R.string.account_delete_intro), style = FsType.body, color = FsColor.text)
-        BulletCard(DELETED_ITEMS.map { stringResource(it) }, Icons.Filled.Close)
-        if (lines.isNotEmpty()) {
-            MicroLabel(stringResource(R.string.account_delete_lose_title))
-            BulletCard(lines, Icons.Outlined.Info)
-        }
-        // Pending the owner's decision on guild reports: one key, account.delete.reports.
-        Text(stringResource(R.string.account_delete_reports), style = FsType.body, color = FsColor.text)
-        Text(stringResource(R.string.account_delete_timing), style = FsType.body, color = FsColor.text)
-        if (failed) Text(stringResource(R.string.account_delete_failed), style = FsType.body, color = FsColor.wipe)
-        BrandButton(stringResource(R.string.account_delete_button), BrandButtonKind.Destructive, { confirming = true }, busy = deleting)
+        BulletGroup(stringResource(R.string.account_delete_deleted_title), DELETED_ITEMS.map { stringResource(it) }, Icons.Filled.Close)
+        BulletGroup(stringResource(R.string.account_delete_kept_title), KEPT_ITEMS.map { stringResource(it) }, Icons.Filled.Check, FsColor.muted)
+        if (lines.isNotEmpty()) BulletGroup(stringResource(R.string.account_delete_lose_title), lines, Icons.Outlined.Info)
+        ConfirmField(battleTag, typed, onTyped, enabled = !deleting, mismatch = outcome == AccountActionOutcome.ConfirmMismatch)
+        AccountCopy.deletionFailure(outcome)?.let { Text(it, style = FsType.body, color = FsColor.wipe) }
+        BrandButton(stringResource(R.string.account_delete_button), BrandButtonKind.Destructive, onDelete, busy = deleting, enabled = canDelete)
         Text(stringResource(R.string.account_delete_email), style = FsType.meta, color = FsColor.muted)
-    }
-    if (confirming) {
-        ConfirmDialog(
-            title = stringResource(R.string.account_delete_confirm_title),
-            body = (listOf(stringResource(R.string.account_delete_confirm_body)) + lines).joinToString("\n\n"),
-            action = stringResource(R.string.account_delete_button),
-            onConfirm = {
-                confirming = false
-                onDelete()
-            },
-            onDismiss = { confirming = false },
-        )
     }
 }
 
 @Composable
-private fun BulletCard(lines: List<String>, glyph: ImageVector) {
-    AccountCard {
-        Column(Modifier.padding(FsSpacing.space4), verticalArrangement = Arrangement.spacedBy(FsSpacing.space3)) {
-            lines.forEach { line ->
-                Row(horizontalArrangement = Arrangement.spacedBy(FsSpacing.space3)) {
-                    Icon(glyph, contentDescription = null, tint = FsColor.wipe, modifier = Modifier.size(16.dp))
-                    Text(line, style = FsType.body, color = FsColor.strong)
+private fun ConfirmField(battleTag: String?, typed: String, onTyped: (String) -> Unit, enabled: Boolean, mismatch: Boolean) {
+    val label = AccountCopy.deletionPrompt(battleTag)
+    Column(Modifier.padding(top = FsSpacing.space2), verticalArrangement = Arrangement.spacedBy(FsSpacing.space2)) {
+        MicroLabel(label)
+        OutlinedTextField(
+            value = typed,
+            onValueChange = onTyped,
+            singleLine = true,
+            enabled = enabled,
+            isError = mismatch,
+            keyboardOptions = KeyboardOptions(
+                capitalization = KeyboardCapitalization.None,
+                autoCorrectEnabled = false,
+                imeAction = ImeAction.Done,
+            ),
+            modifier = Modifier.fillMaxWidth().semantics { contentDescription = label },
+        )
+        if (mismatch) {
+            Text(stringResource(R.string.account_delete_confirm_mismatch), style = FsType.meta, color = FsColor.wipe)
+        }
+    }
+}
+
+@Composable
+private fun BulletGroup(title: String, lines: List<String>, glyph: ImageVector, tint: Color = FsColor.wipe) {
+    Column(verticalArrangement = Arrangement.spacedBy(FsSpacing.space2)) {
+        MicroLabel(title)
+        AccountCard {
+            Column(Modifier.padding(FsSpacing.space4), verticalArrangement = Arrangement.spacedBy(FsSpacing.space3)) {
+                lines.forEach { line ->
+                    Row(horizontalArrangement = Arrangement.spacedBy(FsSpacing.space3)) {
+                        Icon(glyph, contentDescription = null, tint = tint, modifier = Modifier.size(16.dp))
+                        Text(line, style = FsType.body, color = FsColor.strong)
+                    }
                 }
             }
         }

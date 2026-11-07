@@ -149,16 +149,20 @@ Blizzard's API is down. `name` is the full display name, first name and surname 
 Duskvale"): show it whole wherever a character is named. A Forever character carries no `realm`.
 
 ### DELETE /v1/me
-Auth session or app device token. In-app account deletion (App Store guideline 5.1.1(v), lane F1).
-Dark: no handler on main yet (the API lanes merge after Nov 6); the shape is final. Body
-`{ "confirm": "delete my account" }`, sent only after the person has read what is deleted and
-confirmed. Answer **202** `{ requested_at, complete_by }` (`me.delete`): every device token and
-browser session of the account is revoked at once, so the app's next call answers 401, and the
-data goes by `complete_by`, 30 days on, the privacy page's promise. Errors: 400 `invalid` when
-`confirm` is not the phrase (`me.delete.error-invalid`), 401 (`me.delete.error-unauthorized`).
-What is removed is the privacy page's list, the same as today's emailed request: see the
-operation's description in `api/openapi.yaml`. The app shows `account.delete.done` with
-`complete_by`, clears its token and every cache, and returns to signed out.
+Auth session or app device token. Self-service account deletion (App Store guideline 5.1.1(v),
+Google Play), live since lane account-delete (2026-11-07). Body `{ "confirm": "<typed>" }`: what
+the person typed, the account's BattleTag or the word `delete` (trimmed, any case; the app
+enables its button by the same rule). Answer **200** `{ deleted_at }` (`me.delete`): the account
+is deleted at once and every device token and browser session with it, so the app's next call
+answers 401. Errors: 400 `invalid` (no confirm, `me.delete.error-invalid`) or `confirm_mismatch`
+(`me.delete.error-confirm-mismatch`); 401 (`me.delete.error-unauthorized`); 409
+`guild_obligation` (holds a guild claim or pays a guild's live plan,
+`me.delete.error-guild-obligation`) or `staff_account`; 429 (five an hour); 503
+`billing_unavailable` (a live subscription could not be cancelled; nothing deleted,
+`me.delete.error-billing-unavailable`). Show the message of a 409, 429 or 503 verbatim. What is
+deleted and kept is the operation's description in `api/openapi.yaml` and
+docs/superpowers/specs/2026-11-07-account-delete-design.md. The app shows `account.delete.done`,
+clears its token and every cache, and returns to signed out.
 
 ### GET /v1/devices and DELETE /v1/devices/{id}
 Auth session or app device token. `GET` answers the account's devices, the array itself

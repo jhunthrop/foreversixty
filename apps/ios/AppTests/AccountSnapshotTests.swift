@@ -28,9 +28,8 @@ struct AccountSnapshotTests {
 
     @Test func sessionEnded() { snap(signedOutView(notice: AccountCopy.notice(.sessionEnded)), "signedout-401") }
 
-    @Test func accountDeleted() throws {
-        let date = try #require(ISO8601DateFormatter().date(from: "2026-11-29T21:41:00Z"))
-        snap(signedOutView(notice: AccountCopy.notice(.accountDeleted(completeBy: date)), failure: false), "signedout-deleted")
+    @Test func accountDeleted() {
+        snap(signedOutView(notice: AccountCopy.notice(.accountDeleted), failure: false), "signedout-deleted")
     }
 
     @Test func noCharacters() { snap(NoCharactersView {}, "home-no-characters") }
@@ -80,16 +79,33 @@ struct AccountSnapshotTests {
 
     @Test func deletePremium() throws { snap(try deleteView("me.premium.json"), "delete-premium") }
 
-    @Test func deleteGuildPayer() throws { snap(try deleteView("me.guild-payer.json"), "delete-guild-payer") }
-
     @Test func deleteSeat() throws { snap(try deleteView("me.seat.json"), "delete-seat") }
 
-    @Test func deleteFailed() throws { snap(try deleteView("me.json", failed: true), "delete-failed") }
+    @Test func deleteFailed() throws { snap(try deleteView("me.json", outcome: .failed), "delete-failed") }
 
-    private func deleteView(_ file: String, failed: Bool = false) throws -> some View {
-        let consequences = DeletionConsequence.of(try Self.me(file))
+    @Test func deleteGuildObligation() throws {
+        let message = "You hold the claim on Olympus XXVII, so deleting your account would cancel its Guild plan "
+            + "for the whole guild right away, with no refund. Release the claim on your account page first."
+        snap(try deleteView("me.guild-payer.json", outcome: .refused(message: message)), "delete-guild-obligation")
+    }
+
+    @Test func deleteMismatch() throws {
+        snap(try deleteView("me.json", typed: "Yell#16", outcome: .confirmMismatch), "delete-mismatch")
+    }
+
+    @Test func deleteReady() throws { snap(try deleteView("me.json", typed: "yell#1604"), "delete-ready") }
+
+    private func deleteView(_ file: String, typed: String = "", outcome: AccountActionOutcome? = nil) throws -> some View {
+        let me = try Self.me(file)
         return NavigationStack {
-            DeleteAccountView(consequences: consequences, isDeleting: false, failed: failed, onDelete: {})
+            DeleteAccountView(
+                consequences: DeletionConsequence.of(me),
+                battleTag: me.user.battletag,
+                typed: .constant(typed),
+                isDeleting: false,
+                outcome: outcome,
+                onDelete: {}
+            )
         }
     }
 

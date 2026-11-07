@@ -35,36 +35,113 @@
         }
       }
     },
-    "account.delete.confirm.body": {
+    "account.delete.confirm.battletag": {
+      "comment": "Arguments: 1 battletag (string)",
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Your characters, logs and sims are removed within thirty days. Every device is signed out now."
+            "value": "Type %1$@ to confirm"
           }
         }
       }
     },
-    "account.delete.confirm.title": {
+    "account.delete.confirm.mismatch": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Delete your Forever Sixty account?"
+            "value": "That doesn't match. Type your BattleTag or delete."
+          }
+        }
+      }
+    },
+    "account.delete.confirm.word": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Type delete to confirm"
+          }
+        }
+      }
+    },
+    "account.delete.deleted.discord": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your Discord link and Premium role, notification settings and watch list."
+          }
+        }
+      }
+    },
+    "account.delete.deleted.guild": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your guild memberships, applications and raid sign-ups."
+          }
+        }
+      }
+    },
+    "account.delete.deleted.identity": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your BattleTag, email and Battle.net sign-in. Every browser, companion and app is signed out."
+          }
+        }
+      }
+    },
+    "account.delete.deleted.private": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your private reports, saved sims, addon exports, and characters known only from your addon."
+          }
+        }
+      }
+    },
+    "account.delete.deleted.subscription": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Any Premium subscription is cancelled at once. There is no automatic refund; the refund policy applies."
+          }
+        }
+      }
+    },
+    "account.delete.deleted.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deleted"
           }
         }
       }
     },
     "account.delete.done": {
-      "comment": "Arguments: 1 date (string)",
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Your account is deleted. Everything is removed by %1$@."
+            "value": "Your account is deleted. Thanks for playing with us."
           }
         }
       }
@@ -97,62 +174,62 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Deleting your account removes what Forever Sixty holds about you:"
+            "value": "This can't be undone."
           }
         }
       }
     },
-    "account.delete.item.characters": {
+    "account.delete.kept.billing": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Your characters, their addon exports and sync history"
+            "value": "Stripe billing records, which we must keep for tax and legal reasons. Your link to them is removed."
           }
         }
       }
     },
-    "account.delete.item.identity": {
+    "account.delete.kept.builds": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Your Battle.net sign-in and email address"
+            "value": "Builds you shared, as anonymous links."
           }
         }
       }
     },
-    "account.delete.item.links": {
+    "account.delete.kept.characters": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Your notification settings, Discord link and devices"
+            "value": "Character data from public sources, such as the Battle.net profile and public logs, no longer linked to you."
           }
         }
       }
     },
-    "account.delete.item.logs": {
+    "account.delete.kept.reports": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "The combat logs you uploaded"
+            "value": "Public and guild reports, with your name removed."
           }
         }
       }
     },
-    "account.delete.item.sims": {
+    "account.delete.kept.title": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Your saved sims and builds, and the ratings derived from them"
+            "value": "Kept"
           }
         }
       }
@@ -164,18 +241,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Your founder price is gone for good. A plan taken later is billed at the full price."
-          }
-        }
-      }
-    },
-    "account.delete.lose.guildPlan": {
-      "comment": "Arguments: 1 guild (string)",
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "The %1$@ plan you pay for is cancelled, and its seats end for every member."
           }
         }
       }
@@ -214,17 +279,6 @@
         }
       }
     },
-    "account.delete.reports": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Guild reports stay for the raiders in them. Your name on them becomes Former raider."
-          }
-        }
-      }
-    },
     "account.delete.row": {
       "extractionState": "manual",
       "localizations": {
@@ -232,17 +286,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Delete account"
-          }
-        }
-      }
-    },
-    "account.delete.timing": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Every device is signed out at once. Everything listed is deleted within thirty days, and usually much sooner."
           }
         }
       }

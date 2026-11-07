@@ -5,6 +5,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import gg.foreversixty.app.R
+import gg.foreversixty.app.auth.session.AccountActionOutcome
+import gg.foreversixty.app.auth.session.DeletionConfirmation
 import gg.foreversixty.app.auth.session.DeletionConsequence
 import gg.foreversixty.app.auth.session.DeviceRow
 import gg.foreversixty.app.auth.session.RelativeAge
@@ -23,13 +25,13 @@ object AccountCopy {
     fun notice(notice: SignedOutNotice): String = when (notice) {
         is SignedOutNotice.SignInFailed -> signInFailure(notice.failure)
         SignedOutNotice.SessionEnded -> stringResource(R.string.signin_signedOut)
-        is SignedOutNotice.AccountDeleted -> stringResource(R.string.account_delete_done, longDate(notice.completeBy))
+        SignedOutNotice.AccountDeleted -> stringResource(R.string.account_delete_done)
     }
 
     /** Red is for failures only (spec §5.0): a completed deletion reads neutral. */
     fun isFailure(notice: SignedOutNotice): Boolean = when (notice) {
         is SignedOutNotice.SignInFailed, SignedOutNotice.SessionEnded -> true
-        is SignedOutNotice.AccountDeleted -> false
+        SignedOutNotice.AccountDeleted -> false
     }
 
     /** `US · PvP`: Forever has no realms, so a character is its region, ruleset and name. */
@@ -51,11 +53,32 @@ object AccountCopy {
         else -> null
     }
 
+    /** The confirm field's label: the account's BattleTag, or the word when it has none. */
+    @Composable
+    fun deletionPrompt(battleTag: String?): String {
+        val expected = DeletionConfirmation.expected(battleTag)
+        return if (expected == DeletionConfirmation.WORD) {
+            stringResource(R.string.account_delete_confirm_word)
+        } else {
+            stringResource(R.string.account_delete_confirm_battletag, expected)
+        }
+    }
+
+    /**
+     * The line under the field after a deletion that did not happen: the API's own sentence for a
+     * 409, 429 or 503, the catalog's for anything else. A mismatch shows under the field instead.
+     */
+    @Composable
+    fun deletionFailure(outcome: AccountActionOutcome?): String? = when (outcome) {
+        is AccountActionOutcome.Refused -> outcome.message
+        AccountActionOutcome.Failed -> stringResource(R.string.account_delete_failed)
+        null, AccountActionOutcome.Done, AccountActionOutcome.NeedsBrowser, AccountActionOutcome.ConfirmMismatch -> null
+    }
+
     @Composable
     fun consequence(consequence: DeletionConsequence): String = when (consequence) {
         DeletionConsequence.PremiumPlan -> stringResource(R.string.account_delete_lose_premium)
         DeletionConsequence.FounderPrice -> stringResource(R.string.account_delete_lose_founder)
-        is DeletionConsequence.GuildPlan -> stringResource(R.string.account_delete_lose_guildPlan, consequence.guild)
         is DeletionConsequence.Seat -> stringResource(R.string.account_delete_lose_seat, consequence.guild)
     }
 
