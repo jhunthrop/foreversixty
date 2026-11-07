@@ -231,7 +231,7 @@ export const plansPageCopy = {
     },
     {
       term: 'Renewals',
-      sentence: `We email ${RENEWAL_REMINDER_DAYS} days before every yearly renewal. Cancel in one click; the plan runs to the end of the period you paid for.`,
+      sentence: `We email ${RENEWAL_REMINDER_DAYS} days before every yearly renewal, to the address you gave Stripe at checkout. Cancel in one click; the plan runs to the end of the period you paid for.`,
     },
     {
       term: 'A new guild leader',
@@ -267,7 +267,8 @@ export const plansPageCopy = {
     },
     {
       question: 'Who am I paying?',
-      answer: 'Commish LLC d/b/a Forever Sixty. Stripe handles the payment; we never see or store your card.',
+      answer:
+        'Commish LLC d/b/a Forever Sixty. Your card statement reads FOREVERSIXTY. Stripe handles the payment; we never see or store your card.',
     },
   ] as FaqEntry[],
 };

@@ -162,7 +162,7 @@
    },
    {
     "term": "Renewals",
-    "sentence": "We email 7 days before every yearly renewal. Cancel in one click; the plan runs to the end of the period you paid for."
+    "sentence": "We email 7 days before every yearly renewal, to the address you gave Stripe at checkout. Cancel in one click; the plan runs to the end of the period you paid for."
    },
    {
     "term": "A new guild leader",
@@ -193,7 +193,7 @@
    },
    {
     "question": "Who am I paying?",
-    "answer": "Commish LLC d/b/a Forever Sixty. Stripe handles the payment; we never see or store your card."
+    "answer": "Commish LLC d/b/a Forever Sixty. Your card statement reads FOREVERSIXTY. Stripe handles the payment; we never see or store your card."
    }
   ]
  },
@@ -810,33 +810,25 @@
  },
  "account": {
   "title": "Your account",
-  "eyebrow": "Account",
   "signedInWithBattlenet": "Signed in with Battle.net",
   "signedInByEmail": "Signed in by email",
   "signOut": "Sign out",
   "devicesLabel": "Devices",
-  "reportsLabel": "Your reports",
-  "noExportTitle": "No gear or talents yet.",
-  "noExportBody": "Battle.net sends them after you next log out of the game. To see them now, paste an export from the addon.",
   "youLabel": "You",
   "guildLabel": "Guild",
   "planLabel": "Plan",
-  "currentCharacterLabel": "Current character",
   "noDevices": "No devices yet. The companion signs in with Battle.net from its Device page; a pairing code is only for the fallback.",
   "downloadCompanion": "Download the companion",
   "downloadCompanionHref": "/setup#companion",
   "pairADevice": "Use a pairing code instead",
   "pseudonymLabel": "Show a pseudonym instead of my character names",
   "pseudonymNote": "Applies everywhere your characters appear, on reports and rankings alike. Your reports are kept until you delete them or your account.",
-  "planKey": "Plan",
-  "heroLogs": "Logs",
   "signedInBanner": "[fn]",
   "signedInBannerEmpty": "[fn]",
   "reportsLink": "Your reports",
   "deleteTitle": "Delete your account",
   "deleteBody": "Email help@foreversixty.gg with your BattleTag and we delete your account and everything on it, within thirty days.",
-  "signOutAsk": "Sign out of Forever Sixty on this browser?",
-  "yourRatingsLabel": "Your ratings"
+  "signOutAsk": "Sign out of Forever Sixty on this browser?"
  },
  "characters_copy": {
   "heading": "Characters",

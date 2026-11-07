@@ -270,7 +270,7 @@ describe('typed figures come from the plan constants', () => {
     ['founder date', `Founder prices until ${FOUNDER_PRICE_UNTIL}`, copy.founder.open],
     [
       'renewal reminder',
-      `We email ${RENEWAL_REMINDER_DAYS} days before every yearly renewal`,
+      `We email ${RENEWAL_REMINDER_DAYS} days before every yearly renewal, to the address you gave Stripe at checkout`,
       ruleSentence('Renewals'),
     ],
   ])('%s: the spec states the constant and the copy renders it', (_name, phrase, rendered) => {
