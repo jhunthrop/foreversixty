@@ -131,7 +131,7 @@ test.describe('Premium owner', () => {
     await expect(page.getByTestId('coach-well')).toContainText(coachCopy.labelWell);
     await expect(page.getByTestId('coach-cannot')).toContainText(coachCopy.labelCannot);
     await expect(page.getByTestId('coach-footer')).toContainText('Reviewed');
-    await expect(page.getByTestId('coach-history')).toHaveText(coachCopy.history);
+    await expect(page.getByTestId('coach-history')).toHaveText(`${coachCopy.history} ›`);
     const text = (await page.getByTestId('coach-tab').textContent()) ?? '';
     expect(text).not.toMatch(FORBIDDEN_TEXT);
   });

@@ -3,12 +3,12 @@ import { coachRulesReview } from '../../test-support/coach-fixtures';
 import { SLOT_RESERVE, mergeReserve, reserveFor, slotClass } from './reserves';
 
 describe('slot reserves', () => {
-  it('pins the spec table: lines x 22 px, phone then desktop', () => {
-    expect(SLOT_RESERVE.opening).toBe('min-h-[154px] md:min-h-[66px]');
-    expect(SLOT_RESERVE.why).toBe('min-h-[176px] md:min-h-[88px]');
-    expect(SLOT_RESERVE.drill).toBe('min-h-[132px] md:min-h-[66px]');
-    expect(SLOT_RESERVE.thenWhy).toBe('min-h-[110px] md:min-h-[66px]');
-    expect(SLOT_RESERVE.well).toBe('min-h-[88px] md:min-h-[44px]');
+  it('pins the slot table: lines at the slot line height (opening 26, the rest 24 px), phone then desktop', () => {
+    expect(SLOT_RESERVE.opening).toBe('min-h-[182px] md:min-h-[78px]');
+    expect(SLOT_RESERVE.why).toBe('min-h-[192px] md:min-h-[96px]');
+    expect(SLOT_RESERVE.drill).toBe('min-h-[144px] md:min-h-[72px]');
+    expect(SLOT_RESERVE.thenWhy).toBe('min-h-[120px] md:min-h-[72px]');
+    expect(SLOT_RESERVE.well).toBe('min-h-[96px] md:min-h-[48px]');
     expect(SLOT_RESERVE.chips).toBe('min-h-[94px] md:min-h-[36px]');
     expect(SLOT_RESERVE.links).toBe('min-h-[80px] md:min-h-[40px]');
   });

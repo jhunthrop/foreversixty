@@ -1,23 +1,19 @@
 ---
 // web/src/pages/admin/links.astro
 // /admin/links: the owner's tracked links (foreversixty.gg/go/<slug>) and the funnel of each.
-// The head is static; the card under it is one island, because every state follows one session
-// read and the API decides who is the owner. Never indexed, never in the sitemap.
+// The PageHeader is static; the body under it is one island (GoLinksAdmin: a split Page, the
+// links' Plate and the New link rail), because every state follows one session read and the API
+// decides who is the owner. Never indexed, never in the sitemap.
 import Base from '../../layouts/Base.astro';
-import PageHead from '../../components/ui/PageHead.astro';
+import PageHeader from '../../components/ui/PageHeader.svelte';
 import GoLinksAdmin from '../../components/admin/GoLinksAdmin.svelte';
 import { adminLinksCopy as copy } from '../../lib/golinks/admin-copy';
 ---
 
-<Base title={copy.pageTitle} description={copy.pageDescription} path="/admin/links">
+<Base title={copy.pageTitle} description={copy.pageDescription} path="/admin/links" wide>
   <meta slot="head" name="robots" content="noindex" />
-  <main
-    id="main"
-    tabindex="-1"
-    class="flex flex-col gap-[22px] px-[var(--page-inset)] pt-4 pb-10 md:gap-8 md:pt-7"
-    data-testid="admin-links-page"
-  >
-    <PageHead eyebrow={copy.eyebrow} title={copy.pageTitle} job={copy.job} />
+  <main id="main" tabindex="-1" class="pb-(--section-gap)" data-testid="admin-links-page">
+    <PageHeader title={copy.pageTitle} lead={copy.job} />
     <GoLinksAdmin client:load />
   </main>
 </Base>

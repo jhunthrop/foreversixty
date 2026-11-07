@@ -9,6 +9,7 @@
   import type { HistoryFight } from '../../lib/character/history-api';
   import { afterLayout, opensOnSelection, scrollRowIntoView } from '../../lib/character/history-layout';
   import { listWindow } from '../../lib/character/history-select';
+  import { LINK } from '../../lib/ui/primitives';
   import CharacterFightTable from './CharacterFightTable.svelte';
 
   let {
@@ -75,7 +76,7 @@
   {#if view.button !== 'none'}
     <button
       type="button"
-      class="text-text hover:text-gold-hover active:text-gold-hover inline-flex min-h-11 items-center self-start text-[13px] font-semibold underline underline-offset-4"
+      class="{LINK} inline-flex min-h-11 items-center self-start text-[14px]"
       aria-expanded={expanded}
       data-testid={`${testid}-toggle`}
       onclick={() => (expanded = !expanded)}

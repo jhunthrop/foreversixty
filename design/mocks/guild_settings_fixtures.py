@@ -15,6 +15,9 @@ INVITE_URL = '/guild/invite/k7Qm2v9XcLp4'
 VERIFIED = gd.RAIDERS
 CHANNEL_ID = '1300000000000000002'
 DISCORD_SERVER_ID = '1300000000000000001'
+BOT_CHANNEL_ID = '1300000000000000003'
+BOT_CHANNEL = 'raid-signups'
+BOT_LINKED = 14
 
 
 def _key(name: str) -> str:
@@ -36,6 +39,19 @@ def settings() -> dict:
             'invite': {'rotated_at': INVITE_MADE, 'url': INVITE_URL, 'made_by': _holder(VIEWER)},
             'discord': {'available': True, 'connected': True, 'channel_id': CHANNEL_ID, 'discord_guild_id': DISCORD_SERVER_ID, 'disabled_reason': None,
                         'last_error': None, 'failures': 0, 'post_default': True}}
+
+
+def bot() -> dict:
+    """The Forever Sixty bot installed in the guild's Discord server, posting to its raid channel; 14 members have linked Discord."""
+    return {'server_id': DISCORD_SERVER_ID, 'server_name': gd.GUILD, 'channel_id': BOT_CHANNEL_ID, 'channel_name': BOT_CHANNEL,
+            'linked_members': BOT_LINKED, 'members': VERIFIED, 'failures': 0, 'last_error': None, 'removed_in_discord': False, 'channel_unusable': None}
+
+
+def settings_bot() -> dict:
+    """The same settings with the bot on for the deployment and installed (bot spec 3.1, installed); no webhook channel."""
+    base = settings()
+    discord = {**base['discord'], 'connected': False, 'channel_id': None, 'discord_guild_id': None, 'bot_available': True, 'bot': bot(), 'bot_refusal': None}
+    return {**base, 'discord': discord}
 
 
 def _seat(slot: int, holder: str | None) -> dict:
@@ -63,7 +79,8 @@ def billing_none() -> dict:
 
 def fixtures() -> dict[str, object]:
     """File name to JSON body."""
-    return {'settings-settings.json': settings(), 'settings-billing.json': billing(), 'settings-billing-none.json': billing_none()}
+    return {'settings-settings.json': settings(), 'settings-settings-bot.json': settings_bot(), 'settings-billing.json': billing(),
+            'settings-billing-none.json': billing_none()}
 
 
 def writer(write) -> list[Path]:

@@ -4,7 +4,6 @@ import { countLabel } from './funnel';
 
 export const adminLinksCopy = {
   pageTitle: 'Links',
-  eyebrow: 'Owner',
   job: 'Where people come from: clicks counted without cookies, then the accounts each link brought in.',
   pageDescription: 'The owner’s tracked links and the accounts each one brought in.',
   signedOut: 'Sign in with the owner’s account to see the links.',

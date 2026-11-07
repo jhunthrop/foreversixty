@@ -153,7 +153,6 @@
       playerName={unit?.name ?? ''}
       playerGuid={unit?.guid ?? ''}
       {firstFight}
-      className={unit?.class}
       cardLine={playerCardLine(
         panel.data !== null && panel.data.access !== 'teaser' ? panel.data.spec : '',
         unit?.class,

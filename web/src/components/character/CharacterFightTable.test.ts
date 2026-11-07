@@ -227,7 +227,7 @@ describe('CharacterFightTable, the History list props', () => {
     expect(out).not.toContain('<h2');
     expect(out).not.toContain('character-execution-definition');
     expect(out).toMatch(
-      /<p class="label[^"]*"[^>]*data-testid="character-table-label">Kills of Golemagg<\/p>/,
+      /<p class="text-small[^"]*"[^>]*data-testid="character-table-label">Kills of Golemagg<\/p>/,
     );
   });
 

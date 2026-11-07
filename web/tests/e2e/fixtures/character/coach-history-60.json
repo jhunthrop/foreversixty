@@ -1,0 +1,53 @@
+{
+  "reviews": [
+    {
+      "report_id": "fixture2abcd",
+      "fight_index": 4,
+      "player_key": "us/hardcore/elyra-duskvale",
+      "spec": "Holy",
+      "boss": "Onyxia",
+      "kill": true,
+      "source": "model",
+      "generated_at": "2026-11-04T21:40:00Z",
+      "fix_first": {
+        "title": "Died at 3:20 to Flame Breath"
+      }
+    },
+    {
+      "report_id": "fixture2abcd",
+      "fight_index": 3,
+      "player_key": "us/hardcore/elyra-duskvale",
+      "spec": "Holy",
+      "boss": "Onyxia",
+      "kill": false,
+      "source": "rules",
+      "generated_at": "2026-11-04T21:12:00Z",
+      "fix_first": {
+        "title": "Died at 3:20 to Flame Breath"
+      }
+    },
+    {
+      "report_id": "fixture2abcd",
+      "fight_index": 2,
+      "player_key": "us/hardcore/elyra-duskvale",
+      "spec": "Holy",
+      "boss": "Magmadar",
+      "kill": true,
+      "source": "model",
+      "generated_at": "2026-11-03T21:05:00Z",
+      "fix_first": null
+    },
+    {
+      "report_id": "fixture2abcd",
+      "fight_index": 1,
+      "player_key": "us/hardcore/elyra-duskvale",
+      "spec": "Holy",
+      "boss": "Lucifron",
+      "kill": true,
+      "source": "rules",
+      "generated_at": "2026-11-03T20:40:00Z",
+      "fix_first": null
+    }
+  ],
+  "next_cursor": null
+}

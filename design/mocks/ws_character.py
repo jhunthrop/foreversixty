@@ -2,7 +2,8 @@
 primitives. Spec: design/specs/2026-11-06-character.md.
 
 States (design/mocks/web/character-parity.json): visitor-60 (Elyra Duskvale, a level 60 Holy Priest), owner-34 (Felsnap,
-a level 34 leveler with no logs, the owner), owner-60-premium (Elyra, the owner on Premium), no-score (Felsnap seen by a
+a level 34 leveler with no logs, the owner), owner-60-premium (Elyra, the owner on Premium), owner-60-coach (the same with Coach history open: coach-history-60.json,
+four typed reviews whose titles are the coach's own Holy output), no-score (Felsnap seen by a
 visitor), unread (Felsnap's export carried no gear), not-found, elsewhere (the same name on other realms), loading,
 error. Every figure is read from web/tests/e2e/fixtures/character/ and fixtures/home (character_fixtures.py writes
 them), the files the parity spec routes; every gain is a listed runner-up's sim delta or the pick's score times the
@@ -286,12 +287,24 @@ def builds_section(ch: Char) -> str:
     return sec('Builds seen', Rows(rows, open_=True))
 
 
-def owner_sections(premium: bool) -> str:
+def coach_rows(file: str) -> str:
+    """The opened Coach history (coach/CoachHistoryList): link Rows, newest first: the fix-first title, the pull's
+    date, boss and spec muted under it, Wipe and Log only as Tags, a muted chevron."""
+    rows = []
+    for r in J(FIX / file)['reviews']:
+        title = (r.get('fix_first') or {}).get('title') or 'Nothing to fix'
+        tags = ('' if r['kill'] else Tag('Wipe', 'wipe')) + (Tag('Log only', 'muted') if r['source'] == 'rules' else '')
+        trail = tags + '<span class="t-small" aria-hidden="true">&rsaquo;</span>'
+        rows.append(Row(title, ' &middot; '.join([short_date(r['generated_at']), r['boss'], r['spec']]), trail=trail))
+    return f'<section aria-label="Your coach">{Rows(rows, open_=True, list_=True)}</section>'
+
+
+def owner_sections(premium: bool, coach: str | None = None) -> str:
     if not premium:
         return sec('History', Rows([Row('Score over time and parse per boss', 'Premium keeps every rated fight.', trail=Link('See plans &rsaquo;'), link=False)], open_=True))
     history = sec('History', Disclosure('Score over time, then parse per boss', ''))
-    coach = sec('Coach history', Disclosure('Every review the coach wrote for this character', ''))
-    return history + coach
+    body = coach_rows(coach) if coach else ''
+    return history + sec('Coach history', Disclosure('Every review the coach wrote for this character', body, open_=coach is not None))
 
 
 def next_line(ch: Char, owner: dict) -> tuple[str, str]:
@@ -315,7 +328,8 @@ def felsnap(answer: str = 'character-34.json') -> Char:
     return Char(answer, HOME / 'bis-hunter-beast-mastery.json', HOME / 'items-hunter.json')
 
 
-def state_ready(ch: Char, me: str | None, premium: bool = False, feed: str | None = None, home: str | None = None) -> str:
+def state_ready(ch: Char, me: str | None, premium: bool = False, feed: str | None = None, home: str | None = None,
+                coach: str | None = None) -> str:
     owner = J(FIX / me)['characters'][0] if me else None
     body = head(ch, owner)
     if owner:
@@ -324,7 +338,7 @@ def state_ready(ch: Char, me: str | None, premium: bool = False, feed: str | Non
     logged = bool(ch.page.get('score'))
     body += ledger(gear_section(ch, owner is not None), score_section(ch, owner is not None),
                    fights_section(ch) if ch.page['best'] else '', builds_section(ch) if ch.page['builds_seen'] else '',
-                   activity_section(feed), owner_sections(premium) if owner and logged else '')
+                   activity_section(feed), owner_sections(premium, coach) if owner and logged else '')
     return body
 
 
@@ -381,6 +395,8 @@ STATES = {
     'owner-34': (lambda: state_ready(felsnap(), 'me-34.json', home='home-34.json'), ('Felsnap', 'hunter', 'Level 34')),
     'owner-60-premium': (lambda: state_ready(elyra(), 'me-60.json', premium=True, feed='feed-60-owner.json', home='home-60.json'),
                          ('Elyra Duskvale', 'priest', 'Level 60')),
+    'owner-60-coach': (lambda: state_ready(elyra(), 'me-60.json', premium=True, feed='feed-60-owner.json', home='home-60.json',
+                                           coach='coach-history-60.json'), ('Elyra Duskvale', 'priest', 'Level 60')),
     'no-score': (lambda: state_ready(felsnap(), None), None),
     'unread': (state_unread, ('Felsnap', 'hunter', 'Level 34')),
     'not-found': (lambda: state_missing(False), None),

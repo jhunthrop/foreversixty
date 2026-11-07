@@ -20,6 +20,9 @@
   /** 28 / 36 / 44px (a list row is 40, the account hero 72), and 64px -> 84px from `lg` for the home hero (home rebuild spec §3.B.1). */
   const SIZE_PX = { sm: 28, md: 36, row: 40, lg: 44, xxl: 72 } as const;
   const XL_BOX = 'h-16 w-16 lg:h-[84px] lg:w-[84px]';
+  /** The neutral disc: the page ground and a muted 2 px ring, as ClassCrestRing draws an unknown class. */
+  const NEUTRAL_DISC =
+    'background: var(--color-bg); box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-muted) 55%, transparent);';
 
   let {
     character,
@@ -31,8 +34,8 @@
 
 {#if character.class === undefined}
   <span
-    class={`${size === 'xl' ? XL_BOX : ''} bg-raised border-line text-muted inline-flex shrink-0 items-end justify-center overflow-hidden rounded-full border`}
-    style={size === 'xl' ? '' : `width: ${SIZE_PX[size]}px; height: ${SIZE_PX[size]}px;`}
+    class={`${size === 'xl' ? XL_BOX : ''} text-muted inline-flex shrink-0 items-end justify-center overflow-hidden rounded-full`}
+    style={`${NEUTRAL_DISC}${size === 'xl' ? '' : ` width: ${SIZE_PX[size]}px; height: ${SIZE_PX[size]}px;`}`}
     aria-hidden="true"
     data-testid={`${testid}-avatar-fallback`}
     ><svg
@@ -49,8 +52,8 @@
     alt=""
     loading="lazy"
     decoding="async"
-    class={`${XL_BOX} bg-raised shrink-0 rounded-full object-cover shadow-[0_0_0_2px_color-mix(in_srgb,var(--c)_55%,transparent)]`}
-    style={`--c: ${classColorVar(character.class)};`}
+    class={`${XL_BOX} shrink-0 rounded-full object-cover shadow-[0_0_0_2px_color-mix(in_srgb,var(--c)_55%,transparent)]`}
+    style={`--c: ${classColorVar(character.class)}; background: color-mix(in srgb, var(--c) 12%, var(--color-bg));`}
     data-testid={`${testid}-avatar`}
   />
 {:else}
