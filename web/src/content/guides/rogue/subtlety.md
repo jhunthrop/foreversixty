@@ -126,7 +126,7 @@ Poised at 18 takes 10 Energy off your opener when you are at full Energy out of 
 
 Rupture does not train until 20, so on anything that lives a while, put three points into Slice and Dice whenever it is down, and Eviscerate at three or more while Slice and Dice is up.
 
-Your first three points, 10 to 12, go into Master of Deception, which lets you sneak past mobs as if you were three levels higher. Opportunity from 13 to 17 adds 20% to Backstab, Garrote and Ambush. Both points of Dirty Deeds, at 18 and 19, make Garrote 20 Energy cheaper and let you use it from the front.
+Your first five points, 10 to 14, go into Opportunity, which adds 4% a point to Backstab, Garrote and Ambush. Master of Deception from 15 to 17 lets you sneak past mobs as if you were three levels higher. Both points of Dirty Deeds, at 18 and 19, make Garrote 20 Energy cheaper and let you use it from the front.
 
 Wear leather and take quest rewards over vendor gear. Swap the Worn Dagger for the first better quest dagger, and keep throwing knives for pulling.
 

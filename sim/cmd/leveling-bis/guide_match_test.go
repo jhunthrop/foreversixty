@@ -66,8 +66,8 @@ func TestGuideDivergencesNameAStaleRaceAndAStaleRaidBuild(t *testing.T) {
 // shard at a time; the run that lands the last shard empties it, and it
 // never carries a spec past that landing.
 var knownStaleBISFiles = map[string]string{
-	"rogue-subtlety": "sim round 26 moved Initiative to 24, 25 and 27 (band 30 talents); the round 26 re-rank empties this",
-	"warrior-arms":   "sim round 26 moved Improved Overpower to 15 and 16 (band 20 talents); the round 26 re-rank empties this",
+	"rogue-assassination": "sim round 27 moved the leveling order (Malice at 10 to 14; band 20 talents); the round 27 re-rank empties this",
+	"rogue-combat":        "sim round 27 moved the leveling order (Precision and Puncturing Wounds by 20; band 20 talents); the round 27 re-rank empties this",
 }
 
 // TestPublishedBISMatchesGuides: the active build's committed bis files

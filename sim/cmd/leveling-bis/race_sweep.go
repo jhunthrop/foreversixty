@@ -3,10 +3,10 @@ package main
 // The race sweep (sim-accuracy round 25). A band's published set is
 // measured on the guide's race for its faction; the sweep runs the same
 // gear, talents, count and seed on every race the class can be in that
-// faction, from the client's race-class combinations (combos.json, Forever's
-// added Skyborne, Human hunter, Troll mage and Gnome shaman included), and
-// publishes the best race, its margin over the guide race and the margin's
-// error next to the pick. DPS specs are judged on damage, healers on the heal
+// faction, from the client's race-class combinations (request.LegalRaces:
+// combos.json, Forever's added Skyborne, Human hunter, Troll mage and Gnome
+// shaman included), and publishes the best race, its margin over the guide
+// race and the margin's error next to the pick. DPS specs are judged on damage, healers on the heal
 // score the ranker ranks by, tanks on threat (owner rule).
 //
 // The standalone -race-sweep mode runs the same sweep over a frozen copy of
@@ -57,17 +57,6 @@ type raceSweep struct {
 	Races       []raceScore `json:"races"`
 }
 
-type comboFile struct {
-	RaceID  int `json:"race_id"`
-	ClassID int `json:"class_id"`
-}
-
-type idSlug struct {
-	ID      int    `json:"id"`
-	Slug    string `json:"slug"`
-	Faction string `json:"faction"`
-}
-
 func readJSONFile(path string, into any) error {
 	b, err := os.ReadFile(path)
 	if err != nil {
@@ -77,43 +66,6 @@ func readJSONFile(path string, into any) error {
 		return fmt.Errorf("decoding %s: %w", path, err)
 	}
 	return nil
-}
-
-// legalRaces is every race classSlug can be in faction, in races.json order,
-// read from the build's client race-class combinations.
-func legalRaces(buildDir, classSlug, faction string) ([]string, error) {
-	var races, classes []idSlug
-	var combos []comboFile
-	for name, into := range map[string]any{"races.json": &races, "classes.json": &classes, "combos.json": &combos} {
-		if err := readJSONFile(filepath.Join(buildDir, name), into); err != nil {
-			return nil, err
-		}
-	}
-	classID := 0
-	for _, c := range classes {
-		if c.Slug == classSlug {
-			classID = c.ID
-		}
-	}
-	if classID == 0 {
-		return nil, fmt.Errorf("class %q is not in %s/classes.json", classSlug, buildDir)
-	}
-	allowed := make(map[int]bool)
-	for _, c := range combos {
-		if c.ClassID == classID {
-			allowed[c.RaceID] = true
-		}
-	}
-	var out []string
-	for _, r := range races {
-		if allowed[r.ID] && r.Faction == faction {
-			out = append(out, r.Slug)
-		}
-	}
-	if len(out) == 0 {
-		return nil, fmt.Errorf("no %s race can be a %s in %s/combos.json", faction, classSlug, buildDir)
-	}
-	return out, nil
 }
 
 // requestIterationsFor is what to ask spec's runner for so a run lands at
@@ -264,7 +216,7 @@ func runRaceSweep(runner engineRunner, cfg raceSweepConfig, resolveLayout talent
 	var out []bandRaceSweep
 	for _, b := range frozen.Bands {
 		pass := passSpec(spec, b.Preset, raidPreset)
-		races, err := legalRaces(cfg.BuildDir, spec.ClassSlug, b.Faction)
+		races, err := request.LegalRaces(cfg.BuildDir, spec.ClassSlug, b.Faction)
 		if err != nil {
 			return err
 		}

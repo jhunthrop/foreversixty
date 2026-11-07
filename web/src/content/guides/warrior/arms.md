@@ -122,7 +122,7 @@ Charge and Rend train at 4, Thunder Clap at 6, Hamstring at 8 and Overpower at 1
 
 At 10, Bloodrage trains, and your race's warrior quest teaches Defensive Stance, Sunder Armor and Taunt; its follow-up rewards a one-hander, a good pick if your two-hander is still the starter.
 
-Your first point at 10 makes Heroic Strike cost 1 less Rage. Three points of Deflection follow for parry and a first point of Improved Rend at 14. Both points of Improved Overpower come at 15 and 16, so the Overpowers your target's dodges open crit far more often. Improved Rend finishes at 17 and 18 for a much bigger bleed, and Improved Charge at 19 and 20 gives 6 more Rage on every opener.
+Your first three points, 10 to 12, go into Improved Rend for a much bigger bleed on everything you fight. Improved Heroic Strike at 13 makes Heroic Strike cost 1 less Rage, and a first point of Deflection at 14 opens the next row. Both points of Improved Overpower come at 15 and 16, so the Overpowers your target's dodges open crit far more often. Deflection finishes at 17 and 18 for parry, and Improved Charge at 19 and 20 gives 6 more Rage on every opener.
 
 Weapon damage is nearly all your damage, so swap the starter weapon for the first quest or dungeon two-hander you can get, and take quest rewards over vendor gear. You wear mail until plate at 40.
 

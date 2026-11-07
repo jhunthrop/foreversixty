@@ -250,8 +250,24 @@
       ]
     },
     "rogue-assassination": {
-      "reason": "The rotation casts Mutilate (the 30-point row since client 1.60.1.70755, behind Venom, learned at 40). The plain walk never reaches Venom on the way down, so Venom and then Mutilate are taken as soon as each fits: Venom at 29, where it also makes every Shank raise your poisons, and Mutilate at 40. Before 70755 Mutilate sat on the 20-point row and was taken at 30 for about 8% at band 30 (sim-accuracy round 13, walk lane).",
+      "reason": "The rotation casts Mutilate (the 30-point row since client 1.60.1.70755, behind Venom, learned at 40). The plain walk never reaches Venom on the way down, so Venom and then Mutilate are taken as soon as each fits: Venom at 29, where it also makes every Shank raise your poisons, and Mutilate at 40. Before 70755 Mutilate sat on the 20-point row and was taken at 30 for about 8% at band 30 (sim-accuracy round 13, walk lane). Malice 5 at 10 to 14, then Ruthlessness 3, Improved Slice and Dice 2 and Lethality 2, come ahead of Improved Gouge and Remorseless Attacks: the rotation never casts Gouge and Remorseless Attacks needs a kill, so neither does anything in a fight. +1.3% at level 10, +6.7% at 14, +3.0% at 20, +0.3% at 25, seeds 1 and 50001, both factions; the order rejoins the old one at 28 (sim-accuracy round 27, orders lane; wowfdb.com and wowforevercompass.com Forever Assassination leveling orders open Malice 10 to 14).",
       "first": [
+        {
+          "talent": "Malice",
+          "rank": 5
+        },
+        {
+          "talent": "Ruthlessness",
+          "rank": 3
+        },
+        {
+          "talent": "Improved Slice and Dice",
+          "rank": 2
+        },
+        {
+          "talent": "Lethality",
+          "rank": 2
+        },
         {
           "talent": "Venom",
           "rank": 1
@@ -262,9 +278,42 @@
         }
       ]
     },
-    "rogue-subtlety": {
-      "reason": "The rotation casts Premeditation (the 10-point row since client 1.60.1.70755), Ghostly Strike (the 15-point row) and Hemorrhage (the 20-point row, behind Serrated Blades 3). They are reserved in tier order, Elusiveness's first rank ahead of Ghostly Strike because the engine does not model it (Vanish is never cast), so every level only adds points. On the 70753 trees the reservation gained about 2.6% at band 20 and 6.7% at band 30, seeds 1 and 50001, both factions (sim-accuracy round 13, walk lane). Initiative (a combo point on every Garrote, cast after each Ghostly Strike) is held from 24, two points before Ghostly Strike and the third after it, in place of Camouflage and Elusiveness, which only pay the row tolls: +0.4% at level 25 and +1.0% at level 30, seeds 1 and 50001, both factions (sim-accuracy round 26, melee lane).",
+    "rogue-combat": {
+      "reason": "Precision (+1% hit a point) at 15 to 17 and Puncturing Wounds (Backstab crit) at 18 to 20 come ahead of Lightning Reflexes past the one point the 5-point row toll needs, since its dodge does nothing while the target hits someone else; Lightning Reflexes finishes at 21 to 24, where the order rejoins the old one; Adrenaline Rush stays at 40, as the plain walk takes it. Bare, band 20 dagger, seeds 1 and 50001, both factions: level 15 level (Precision's first point is lost to the level-gap hit penalty), 16 +1.0%, 17 +2.1%, 18 +5.5%, 20 +5.5%, 22 +2.2%; with a sword Precision first gains 2.1% at 17 and 2.9% at 20 while Puncturing Wounds gains nothing, so Precision leads (sim-accuracy round 27, orders lane).",
       "first": [
+        {
+          "talent": "Coup de Grace",
+          "rank": 3
+        },
+        {
+          "talent": "Efficient Strikes",
+          "rank": 1
+        },
+        {
+          "talent": "Lightning Reflexes",
+          "rank": 1
+        },
+        {
+          "talent": "Precision",
+          "rank": 3
+        },
+        {
+          "talent": "Puncturing Wounds",
+          "rank": 3
+        },
+        {
+          "talent": "Adrenaline Rush",
+          "rank": 1
+        }
+      ]
+    },
+    "rogue-subtlety": {
+      "reason": "The rotation casts Premeditation (the 10-point row since client 1.60.1.70755), Ghostly Strike (the 15-point row) and Hemorrhage (the 20-point row, behind Serrated Blades 3). They are reserved in tier order, Elusiveness's first rank ahead of Ghostly Strike because the engine does not model it (Vanish is never cast), so every level only adds points. On the 70753 trees the reservation gained about 2.6% at band 20 and 6.7% at band 30, seeds 1 and 50001, both factions (sim-accuracy round 13, walk lane). Initiative (a combo point on every Garrote, cast after each Ghostly Strike) is held from 24, two points before Ghostly Strike and the third after it, in place of Camouflage and Elusiveness, which only pay the row tolls: +0.4% at level 25 and +1.0% at level 30, seeds 1 and 50001, both factions (sim-accuracy round 26, melee lane). Opportunity (+4% a point to Backstab, Garrote and Ambush) is held first, at 10 to 14, ahead of Master of Deception, which only helps sneak past mobs: level 10 ties with the band's mace and gains 1.4% with a dagger, level 14 +0.5% and level 15 +0.3%, seeds 1 and 50001, both factions (sim-accuracy round 27, orders lane).",
+      "first": [
+        {
+          "talent": "Opportunity",
+          "rank": 5
+        },
         {
           "talent": "Premeditation",
           "rank": 1
@@ -344,8 +393,16 @@
       ]
     },
     "warrior-arms": {
-      "reason": "The rotation casts Mortal Strike (the 30-point row, learned at 40, behind Sweeping Strikes). A level 40 warrior's 31 points hold it, but the plain walk spends the last one on Weaponmaster. Taking Mortal Strike as soon as it fits gains about 20% at band 40, seeds 1 and 50001, both factions (sim-accuracy round 13, walk lane). Improved Overpower is held first, from 15: Overpower is cast from 12, while the walk's Improved Tactical Mastery only keeps rage through a stance change, which the rotation makes only for Recklessness from 50; +3.3% at level 20, seeds 1 and 50001, both factions (sim-accuracy round 26, melee lane).",
+      "reason": "The rotation casts Mortal Strike (the 30-point row, learned at 40, behind Sweeping Strikes). A level 40 warrior's 31 points hold it, but the plain walk spends the last one on Weaponmaster. Taking Mortal Strike as soon as it fits gains about 20% at band 40, seeds 1 and 50001, both factions (sim-accuracy round 13, walk lane). Improved Overpower is held first, from 15: Overpower is cast from 12, while the walk's Improved Tactical Mastery only keeps rage through a stance change, which the rotation makes only for Recklessness from 50; +3.3% at level 20, seeds 1 and 50001, both factions (sim-accuracy round 26, melee lane). Before that, Improved Rend 3 at 10 to 12 and Improved Heroic Strike at 13 come ahead of Deflection, whose parry does nothing while the target hits someone else; its first point at 14 pays the toll for Improved Overpower: +0.9 to 4.9% at levels 10 to 17, seeds 1 and 50001, both factions, and level 20 unchanged (sim-accuracy round 27, orders lane; Mobalytics Forever Arms guide, 5 Nov 2026, also opens Improved Rend 10 to 12).",
       "first": [
+        {
+          "talent": "Improved Rend",
+          "rank": 3
+        },
+        {
+          "talent": "Improved Heroic Strike",
+          "rank": 1
+        },
         {
           "talent": "Improved Overpower",
           "rank": 2

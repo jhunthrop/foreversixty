@@ -5,6 +5,7 @@ import (
 	"errors"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	"github.com/jhunthrop/foreversixty/sim/specs"
@@ -25,8 +26,8 @@ func TestAnIllegalTalentStringIsRefused(t *testing.T) {
 	}
 }
 
-// Every published band's build passes the same check: the guard refuses
-// only what the game refuses.
+// Every published band's build and race pass the same checks: the guards
+// refuse only what the game refuses.
 func TestEveryPublishedBuildIsLegal(t *testing.T) {
 	dir, err := buildDirectory(repoRoot)
 	if err != nil {
@@ -56,6 +57,54 @@ func TestEveryPublishedBuildIsLegal(t *testing.T) {
 			if err := layouts.Check(specs.ByKey[file.Spec].ClassSlug, e.Talents, e.Band); err != nil {
 				t.Errorf("%s band %d %s %s: %v", filepath.Base(path), e.Band, e.Preset, e.Faction, err)
 			}
+			if err := checkRace(dir, specs.ByKey[file.Spec].ClassSlug, e.Faction, e.Race); err != nil {
+				t.Errorf("%s band %d %s %s: %v", filepath.Base(path), e.Band, e.Preset, e.Faction, err)
+			}
+		}
+	}
+}
+
+// A -race the class cannot be is never measured: Skyborne priests ran
+// without a word (round 26), though no Skyborne can be a priest in the
+// client's race-class combinations. A race of the other faction is refused
+// too: the published entry's gear and buffs are the faction's.
+func TestARaceTheClassCannotBeIsRefused(t *testing.T) {
+	cases := []struct {
+		spec, faction, race string
+	}{
+		{"priest-shadow", "horde", "windshaper-skyborne"},
+		{"priest-holy", "alliance", "high-order-skyborne"},
+		{"paladin-retribution", "alliance", "orc"},
+		{"warrior-arms", "horde", "human"},
+		{"mage-fire", "horde", "nope"},
+	}
+	for _, c := range cases {
+		o := options{repoRoot: repoRoot, spec: c.spec, preset: "raid", band: 60, faction: c.faction,
+			iterations: 1, seed: 1, race: c.race}
+		_, err := legalRequest(o)
+		if err == nil {
+			t.Errorf("%s %s -race %s: legalRequest accepted it", c.spec, c.faction, c.race)
+			continue
+		}
+		if !errors.Is(err, errIllegalRace) || !strings.Contains(err.Error(), c.race) {
+			t.Errorf("%s %s -race %s: legalRequest = %v, want errIllegalRace naming the race", c.spec, c.faction, c.race, err)
+		}
+	}
+}
+
+// Every race the class can be in the faction still runs, Forever's added
+// combinations included.
+func TestEveryLegalRaceIsAccepted(t *testing.T) {
+	for _, c := range []struct{ spec, faction, race string }{
+		{"priest-shadow", "horde", "troll"},
+		{"mage-fire", "alliance", "high-order-skyborne"},
+		{"paladin-retribution", "horde", "undead"},
+		{"warrior-arms", "horde", "windshaper-skyborne"},
+	} {
+		o := options{repoRoot: repoRoot, spec: c.spec, preset: "raid", band: 60, faction: c.faction,
+			iterations: 1, seed: 1, race: c.race}
+		if _, err := legalRequest(o); err != nil {
+			t.Errorf("%s %s -race %s: %v", c.spec, c.faction, c.race, err)
 		}
 	}
 }

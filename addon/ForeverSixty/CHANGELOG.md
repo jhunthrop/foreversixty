@@ -1,5 +1,12 @@
 # Forever Sixty
 
+## 2.0.31
+
+- Subtlety: new best in slot lists. Ghostly Strike now hits with normalized weapon damage, so your weapon picks can change. Initiative comes at 24, 25 and 27.
+- Combat: leveling lists hold Slice and Dice until 60 and spend every five points on Eviscerate.
+- Arms: Improved Overpower comes at 15 and 16, and the level 20 list follows it.
+- Leveling ranks and rotation notes below 20 are updated for Balance, Restoration druid, Protection paladin, Holy and Discipline priests and Elemental.
+
 ## 2.0.30
 
 - Protection warrior: Horde lists are now built for Undead, the stronger threat pick. Your upgrade order changes.
