@@ -1,36 +1,45 @@
 ---
 // web/src/pages/index.astro
-// Home (design/specs/2026-11-06-home.md), built from the ui/ primitives and matched to its mocks
-// (design/mocks/web/web-home-*.html, the parity gate in tests/e2e/parity-home.spec.ts).
-// Signed out, server-rendered: the title and Sign in, "Pick your class", one class at every band
-// on the page's one Plate, and how to start. Signed in, the HomeSignedIn island draws the selected
-// character; the session hint hides the signed-out page before paint (global.css, HOME_OUT_ATTR).
+// Home, layout B "the world is moving" (design/specs/2026-11-07-home-b.md), built from the ui/
+// primitives and matched to its mocks (design/mocks/web/web-home-*.html, the parity gate in
+// tests/e2e/parity-home.spec.ts). Signed out, server-rendered: the title and Sign in, "Pick your
+// class", the first raids countdown, "Forever right now" (All) and how to start. Signed in, the
+// HomeSignedIn island draws the selected character; the session hint hides the signed-out page
+// before paint (global.css, HOME_OUT_ATTR). The feed's floor of real dated site events is built
+// here, at build time.
+import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import { HOME_DESCRIPTION, SITE_NAME } from '../lib/seo';
 import { battlenetStartUrl } from '../lib/account/api';
-import { homeExample, HOME_EXAMPLE } from '../lib/home/example';
 import { homeCopy, shortDate } from '../lib/home/home-view';
+import { FLOOR_MIN } from '../lib/home/feed';
+import { buildFloor } from '../lib/home/floor';
+import { floorInputs, raidsOpenIso } from '../lib/home/floor-load';
 import Button from '../components/ui/Button.svelte';
-import ItemRow from '../components/ui/ItemRow.svelte';
 import Page from '../components/ui/Page.svelte';
 import PageHeader from '../components/ui/PageHeader.svelte';
-import Plate from '../components/ui/Plate.svelte';
 import Row from '../components/ui/Row.svelte';
 import Section from '../components/ui/Section.svelte';
 import HomeClassPicker from '../components/home/HomeClassPicker.svelte';
+import HomeCountdowns from '../components/home/HomeCountdowns.svelte';
+import HomeFeed from '../components/home/HomeFeed.svelte';
 import HomeSignedIn from '../components/home/HomeSignedIn.svelte';
 import activeBuild from '../data/active-build.json';
-import dates from '../data/dates.json';
 
-const example = homeExample(activeBuild.build, (first, last) =>
-  homeCopy.example(HOME_EXAMPLE.name, first, last),
-);
-// The raid opening, while it is still ahead (the page is rebuilt every day).
-const raids = dates.find((entry) => 'role' in entry && entry.role === 'raids');
-const raidsLine =
-  raids !== undefined && new Date(raids.iso).getTime() > Date.now()
-    ? homeCopy.firstRaids(shortDate(raids.iso))
-    : null;
+const now = new Date();
+const raidsOpen = raidsOpenIso(now);
+const raidsLine = raidsOpen === null ? null : homeCopy.firstRaids(shortDate(raidsOpen.slice(0, 10)));
+const guides = (await getCollection('guides')).map((g) => ({
+  classSlug: g.data.classSlug,
+  spec: g.data.spec,
+  updated: g.data.updated,
+}));
+const changelog = (await getCollection('changelog')).map((e) => ({
+  id: e.id,
+  title: e.data.title,
+  date: e.data.date,
+}));
+const floor = buildFloor(floorInputs(guides, changelog, now));
 const signInHref = battlenetStartUrl('/account?signed_in=1');
 ---
 
@@ -49,27 +58,14 @@ const signInHref = battlenetStartUrl('/account?signed_in=1');
         </PageHeader>
         <HomeClassPicker />
       </Page>
+      <HomeCountdowns client:idle-after-load {raidsOpen} build={activeBuild.build} />
       <Page layout="split">
-        {example !== null && (
-          <Section
-            title={example.title}
-            action={{ label: homeCopy.exampleAction, href: HOME_EXAMPLE.bisHref }}
-            testid="home-example"
-          >
-            <Plate label={homeCopy.exampleLabel}>
-              {example.rows.map((row) => (
-                <ItemRow
-                  item={row.item}
-                  build={activeBuild.build}
-                  slotLabel={row.label}
-                  source={row.source}
-                  gain={{ value: row.setDps, unit: 'DPS', caption: homeCopy.exampleCaption }}
-                  testid="home-example-row"
-                />
-              ))}
-            </Plate>
-          </Section>
-        )}
+        <HomeFeed
+          client:idle-after-load
+          signedIn={false}
+          floor={floor.slice(0, FLOOR_MIN)}
+          build={activeBuild.build}
+        />
         <Fragment slot="rail">
           <Section title={homeCopy.howToStart} testid="home-how-to-start">
             <Row
@@ -84,6 +80,6 @@ const signInHref = battlenetStartUrl('/account?signed_in=1');
         </Fragment>
       </Page>
     </div>
-    <HomeSignedIn client:idle-after-load />
+    <HomeSignedIn client:idle-after-load {floor} {raidsOpen} />
   </main>
 </Base>

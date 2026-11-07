@@ -104,8 +104,8 @@ def Field(label: str, grow: bool = False) -> str:
     return f'<span class="field{" grow" if grow else ""}">{label}</span>'
 
 
-def Row(title: str, sub: str = '', lead: str = '', trail: str = '', title_color: str = '', rank: str = '', link: bool = True, selected: bool = False, foot: str = '') -> str:
-    cls = 'row' + ('' if lead or rank else ' nolead') + (' cur' if selected else '')
+def Row(title: str, sub: str = '', lead: str = '', trail: str = '', title_color: str = '', rank: str = '', link: bool = True, selected: bool = False, foot: str = '', slim: bool = False) -> str:
+    cls = 'row' + ('' if lead or rank else ' nolead') + (' cur' if selected else '') + (' slim' if slim else '')
     tag = 'a' if link else 'div'
     href = ' href="#"' if link else ''
     color = f' style="color:{title_color}"' if title_color else ''
@@ -802,3 +802,55 @@ def Code(text: str, big: bool = False) -> str:
 def PageForm(main: str) -> str:
     """Page layout 'form': one column at 560 px under the page header, left-aligned in the page column."""
     return f'<div class="pc" style="padding-top:20px"><div class="layout-form">{main}</div></div>'
+
+
+# ------------------------------------------------ primitives added by the home B round (2026-11-07; design/specs/2026-11-07-home-b.md)
+# Countdown (ui/Countdown.svelte): a panel with a caps eyebrow (live dot), a days/hours/min clock read as one timer, and its
+# content at the right. FeedRow (ui/FeedRow.svelte): one feed line as a link: icon or crest, the sentence, the time over a caps
+# kind. FeedSkeleton: the feed while it loads. GradeTile: a tier letter on its tier colour. Row gains `slim` (44 px).
+PRIM_CSS += '''
+.row.slim{min-height:44px;padding-block:6px}
+.cdn{position:relative;min-width:0;padding:20px 24px;border:1px solid var(--line);border-radius:8px;background:var(--raised)}
+.cdn.raid{border-color:#3b2a4d;background:radial-gradient(500px 200px at 100% 0,#5a1d7a33,transparent 70%),var(--raised)}
+.cdn.guild{background:radial-gradient(400px 200px at 100% 0,#e5b9551a,transparent 70%),var(--raised)}
+.cdn .eb{margin:0;font:700 12px/16px var(--font-body);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.cdn .live{display:inline-block;width:8px;height:8px;margin-right:8px;border-radius:50%;background:var(--kill);vertical-align:1px}
+.cdn .rw{display:flex;flex-wrap:wrap;align-items:flex-end;gap:16px 28px;margin-top:10px}
+.cdn .clk{display:flex;gap:14px;font-variant-numeric:tabular-nums}
+.cdn .clk>span{display:flex;flex-direction:column;align-items:center}
+.cdn .clk b{font:700 40px/42px var(--font-body);color:var(--strong)}
+.cdn .clk>span>span{font-size:11px;line-height:16px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.cdn .as{min-width:0;margin-left:auto}
+.frow{display:grid;grid-template-columns:40px minmax(0,1fr) auto;gap:14px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line-soft);font-size:15px;line-height:22px;color:inherit}
+.frow .ld{display:flex;line-height:0}.frow .tx{min-width:0}.frow .tx b{font-weight:700}
+.frow .wh{text-align:right;font-size:13px;line-height:20px;white-space:nowrap;color:var(--muted)}
+.frow .wh .k{display:block;font-size:11px;line-height:16px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;color:#7f7864}
+.fsk{display:flex;flex-direction:column}.fsk>span{display:flex;height:65px;align-items:center;gap:14px;border-bottom:1px solid var(--line-soft)}
+.grade{display:inline-flex;flex:none;align-items:center;justify-content:center;width:56px;height:56px;border-radius:8px;font:700 32px/1 var(--font-body);color:#17110a}
+'''
+
+TIER_TONES = {'S': '#ff8000', 'A': '#b866f5', 'B': '#3d94f0', 'C': '#1eff00', 'D': '#9d9d9d'}
+PRIM_CSS += ''.join(f'.grade.t{k}{{background:{v}}}' for k, v in TIER_TONES.items()) + '\n'
+
+
+def Countdown(eyebrow: str, clock: list[tuple[str, str]] | None, aside: str = '', tone: str = 'neutral', live: bool = False) -> str:
+    """clock: (value, unit) parts, or None for no clock. The clock is one timer read aloud; the parts are hidden from it."""
+    dot = '<span class="live" aria-hidden="true"></span>' if live else ''
+    clk = ''
+    if clock:
+        label = ', '.join(f'{int(v)} {u}' for v, u in clock)
+        clk = f'<div class="clk" role="timer" aria-label="{label}">' + ''.join(f'<span aria-hidden="true"><b>{v}</b><span>{u}</span></span>' for v, u in clock) + '</div>'
+    side = f'<div class="as">{aside}</div>' if aside else ''
+    return f'<div class="cdn {tone}"><p class="eb">{dot}{eyebrow}</p><div class="rw">{clk}{side}</div></div>'
+
+
+def FeedRow(lead: str, sentence: str, when: str, kind: str) -> str:
+    return f'<a class="frow" href="#"><span class="ld">{lead}</span><span class="tx">{sentence}</span><span class="wh">{when}<span class="k">{kind}</span></span></a>'
+
+
+def FeedSkeleton(rows: int = 5) -> str:
+    return '<div class="fsk" role="status" aria-busy="true">' + ''.join(f'<span aria-hidden="true">{Skeleton(40, 40)}{Skeleton(480, 16)}</span>' for _ in range(rows)) + '</div>'
+
+
+def GradeTile(letter: str) -> str:
+    return f'<span class="grade t{letter}" role="img" aria-label="Tier {letter}">{letter}</span>'

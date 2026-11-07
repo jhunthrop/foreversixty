@@ -1,5 +1,5 @@
 // web/tests/e2e/parity-home.spec.ts
-// Home against its committed mocks (design/parity.md, design/specs/2026-11-06-home.md): every
+// Home against its committed mocks (design/parity.md, design/specs/2026-11-07-home-b.md): every
 // state at 1440 x 1000, each region's blocks and box compared (support/parity.ts), a side-by-side
 // per state in test-results/parity/home-<state>.png. Desktop project only: the mocks are 1440.
 import { test, expect } from './support/test';

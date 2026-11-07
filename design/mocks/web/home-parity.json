@@ -1,12 +1,65 @@
 {
-  "comment": "The home states the parity gate checks (web/tests/e2e/parity-home.spec.ts) at 1440 x 1000. ws_home.py renders one mock per state from web/tests/e2e/fixtures/home/ (home_fixtures.py), the files the spec routes for the signed-in states.",
+  "comment": "The home states the parity gate checks (web/tests/e2e/parity-home.spec.ts) at 1440 x 1000, layout B (design/specs/2026-11-07-home-b.md). ws_home.py renders one mock per state from web/tests/e2e/fixtures/home/ (home_fixtures.py), the files the spec routes. feed: a fixture, `pending` (never answers) or `fail` (500).",
   "viewport": { "width": 1440, "height": 1000 },
   "states": [
-    { "id": "out", "path": "/", "mock": "web-home-out.html" },
-    { "id": "34", "path": "/", "mock": "web-home-34.html", "me": "me-34.json", "sims": "sims-34.json", "reports": "reports-34.json" },
-    { "id": "60", "path": "/", "mock": "web-home-60.html", "me": "me-60.json", "sims": "sims-60.json", "reports": "reports-60.json", "guild": "guild-home-60.json" },
-    { "id": "new", "path": "/", "mock": "web-home-new.html", "me": "me-new.json" },
-    { "id": "loading", "path": "/", "mock": "web-home-loading.html", "me": "pending" },
-    { "id": "error", "path": "/", "mock": "web-home-error.html", "me": "me-34.json", "sims": "sims-34.json", "reports": "reports-34.json", "failBis": true }
+    {
+      "id": "out",
+      "path": "/",
+      "mock": "web-home-out.html",
+      "feed": "feed-out.json"
+    },
+    {
+      "id": "34",
+      "path": "/",
+      "mock": "web-home-34.html",
+      "me": "me-34.json",
+      "feed": "feed-34.json",
+      "home": "home-34.json"
+    },
+    {
+      "id": "60",
+      "path": "/",
+      "mock": "web-home-60.html",
+      "me": "me-60.json",
+      "feed": "feed-60.json",
+      "home": "home-60.json",
+      "guild": "guild-home-60.json"
+    },
+    {
+      "id": "new",
+      "path": "/",
+      "mock": "web-home-new.html",
+      "me": "me-new.json"
+    },
+    {
+      "id": "feed-empty",
+      "path": "/",
+      "mock": "web-home-feed-empty.html",
+      "me": "me-34.json",
+      "feed": "feed-empty.json",
+      "home": "home-34.json"
+    },
+    {
+      "id": "feed-loading",
+      "path": "/",
+      "mock": "web-home-feed-loading.html",
+      "me": "me-34.json",
+      "feed": "pending",
+      "home": "home-34.json"
+    },
+    {
+      "id": "loading",
+      "path": "/",
+      "mock": "web-home-loading.html",
+      "me": "pending"
+    },
+    {
+      "id": "error",
+      "path": "/",
+      "mock": "web-home-error.html",
+      "me": "me-34.json",
+      "feed": "fail",
+      "home": "home-34.json"
+    }
   ]
 }
