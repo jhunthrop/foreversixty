@@ -121,6 +121,11 @@
       "mock": "web-guild-settings.html"
     },
     {
+      "id": "settings-bot",
+      "path": "/guild/us/pvp/olympus-xxvii#settings",
+      "mock": "web-guild-settings-bot.html"
+    },
+    {
       "id": "settings-page",
       "path": "/guild/us/pvp/olympus-xxvii/settings",
       "mock": "web-guild-settings-page.html"
