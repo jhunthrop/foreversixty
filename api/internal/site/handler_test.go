@@ -110,7 +110,7 @@ func TestBuildPageCarriesTheContractMetaTags(t *testing.T) {
 		`<meta property="og:url" content="https://foreversixty.gg/b/` + record.ID + `">`,
 		`<meta name="twitter:card" content="summary_large_image">`,
 		`<script type="module" src="https://foreversixty.gg/planner-island.js"></script>`,
-		`<main id="main">`,
+		`<main id="main" tabindex="-1">`,
 	} {
 		if !strings.Contains(body, want) {
 			t.Errorf("page is missing:\n%s", want)

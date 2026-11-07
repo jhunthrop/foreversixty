@@ -1,0 +1,141 @@
+---
+// web/src/components/premium/CoachSample.astro
+// /premium's rail (premium spec 2026-11-08 section 4.8): one sample coach review, rendered at build
+// from the coach's own Fury fixture, labelled Sample in its head and its caption. Static.
+import Row from '../ui/Row.svelte';
+import Section from '../ui/Section.svelte';
+import Tag from '../ui/Tag.svelte';
+import ClassCrest from '../ClassCrest.astro';
+import { coachSampleView, loadCoachSampleAnswer, type CoachSampleView } from '../../lib/billing/coach-sample';
+import { buildSpellIconOf } from '../../lib/billing/coach-sample-icons';
+import { plansPageCopy } from '../../lib/billing/plans-page-copy';
+
+interface Props {
+  view?: CoachSampleView;
+}
+const { view = coachSampleView(loadCoachSampleAnswer(), buildSpellIconOf()) } = Astro.props;
+const copy = plansPageCopy.coachSample;
+// A failed icon is hidden, never a broken-image glyph; its box stays.
+const HIDE_ON_ERROR = "this.style.visibility='hidden'";
+---
+
+<Section title={copy.label} testid="coach-sample">
+  <Tag slot="head" tone="muted" testid="coach-sample-tag">
+    {copy.tag}
+  </Tag>
+  <div class="coach">
+    <div class="coach-who">
+      <ClassCrest slug={view.classSlug} size={40} />
+      <span>
+        <b>{view.title}</b>
+        <span class="text-small text-muted block">{view.context}</span>
+      </span>
+    </div>
+    <p class="coach-opening">{view.opening}</p>
+    {view.fixFirst && (
+      <>
+        <span class="t-label">{copy.fixFirst}</span>
+        <div class="coach-rows" data-testid="coach-sample-fix-first">
+          <Row title={view.fixFirst.title} sub={view.fixFirst.why} selected testid="coach-sample-fix-title">
+            {view.fixFirst.icon && (
+              <img
+                slot="lead"
+                class="coach-icon"
+                src={view.fixFirst.icon}
+                width="40"
+                height="40"
+                alt=""
+                onerror={HIDE_ON_ERROR}
+              />
+            )}
+          </Row>
+        </div>
+      </>
+    )}
+    {view.then.length > 0 && (
+      <>
+        <span class="t-label">{copy.then}</span>
+        <div class="coach-rows" data-testid="coach-sample-then">
+          {view.then.map((item) => (
+            <Row title={item.title} sub={item.why}>
+              {item.icon && (
+                <img
+                  slot="lead"
+                  class="coach-icon"
+                  src={item.icon}
+                  width="32"
+                  height="32"
+                  alt=""
+                  onerror={HIDE_ON_ERROR}
+                />
+              )}
+            </Row>
+          ))}
+        </div>
+      </>
+    )}
+    {view.doingWell.length > 0 && (
+      <>
+        <span class="t-label">{copy.doingWell}</span>
+        <div class="coach-rows" data-testid="coach-sample-well">
+          {view.doingWell.map((item) => (
+            <Row title={item.text} density="slim">
+              {item.icon && (
+                <img
+                  slot="lead"
+                  class="coach-icon"
+                  src={item.icon}
+                  width="24"
+                  height="24"
+                  alt=""
+                  onerror={HIDE_ON_ERROR}
+                />
+              )}
+            </Row>
+          ))}
+        </div>
+      </>
+    )}
+    <p class="text-small text-muted m-0" data-testid="coach-sample-caption">
+      {copy.caption}
+    </p>
+  </div>
+</Section>
+
+<style>
+  .coach {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-width: 0;
+  }
+  .coach-who {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .coach-who b {
+    font: 700 16px/20px var(--font-body);
+    color: var(--color-strong);
+  }
+  .coach-opening {
+    margin: 0;
+    font-size: 15px;
+    line-height: 23px;
+  }
+  .coach-rows {
+    display: flex;
+    flex-direction: column;
+  }
+  .coach-icon {
+    border-radius: 4px;
+  }
+  .t-label {
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+</style>

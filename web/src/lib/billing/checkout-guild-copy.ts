@@ -18,7 +18,8 @@ export type GuildTier = Extract<PlanKey, 'guild' | 'raid_guild'>;
 
 const tierWord = (tier: GuildTier): string => PLANS[tier].name;
 const date = utcDayMonthYear;
-const CLAIM_RULE = "Only a guild's guild master can claim it here and subscribe it.";
+const CLAIM_RULE =
+  "A guild's guild master claims it here, or an officer once a second officer confirms; whoever holds the claim subscribes it.";
 const LAST_CLAIM_WINDOW = `You may attempt one claim every ${CLAIM_COOLDOWN_DAYS} days`;
 
 export const checkoutGuildCopy = {
@@ -45,8 +46,7 @@ export const checkoutGuildCopy = {
     },
     someClaimed: `${CLAIM_RULE} Here is the next step for each of your guilds.`,
     canClaim: 'You can claim a guild here. Each card below has its next step.',
-    allClaimed:
-      "The guild master who holds a guild's claim subscribes it. Here is where each of your guilds stands.",
+    allClaimed: "Whoever holds a guild's claim subscribes it. Here is where each of your guilds stands.",
   },
   rank: { leader: 'Guild master', officer: 'Officer', member: 'Member' },
   verifyMark: { verified: 'Verified', notVerified: 'Not verified' },
@@ -67,7 +67,7 @@ export const checkoutGuildCopy = {
     holdsClaim: (guild: string): string => `You hold ${of(guild)} claim.`,
     lapsed: (guild: string, endedAt: string): string =>
       `${of(guild)} plan ended ${date(endedAt)}. You hold its claim.`,
-    startTrial: `Start the ${GUILD_TRIAL_DAYS}-day trial`,
+    startTrial: (price: string): string => `Start ${GUILD_TRIAL_DAYS} free days · then ${price}`,
     subscribe: (price: string): string => `Subscribe · ${price}`,
     subscribeAgain: (price: string): string => `Subscribe again · ${price}`,
   },
@@ -132,11 +132,10 @@ export const checkoutGuildCopy = {
       `You hold ${of(guild)} claim. Subscribing it needs a verified officer or guild-master character.`,
     officer: (name: string, guild: string): string =>
       `${name} holds ${of(guild)} claim and subscribes it. Send them this link.`,
-    member: (guild: string): string =>
-      `The guild master who holds ${of(guild)} claim subscribes it. Send them this link.`,
+    member: (guild: string): string => `Whoever holds ${of(guild)} claim subscribes it. Send them this link.`,
   },
   askLeader: (guild: string): string =>
-    `Only ${of(guild)} guild master can claim it and subscribe it. Send them this link.`,
+    `${of(guild)} guild master can claim it, or an officer with a second officer's confirmation. Send them this link.`,
   otherCharacter: (guild: string): string =>
     `Lead ${guild} on another character? Save that character with the addon, then come back.`,
   getSetUp: 'Get set up',

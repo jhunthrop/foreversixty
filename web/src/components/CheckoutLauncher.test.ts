@@ -1,9 +1,10 @@
 // web/src/components/CheckoutLauncher.test.ts
-// The static render (what the page ships before hydration): the band's ground and reserve,
-// and the body slot reserved at the PremiumOwnedPanel's height, so nothing shifts later.
+// The static render (what the page ships before hydration): the head with its plan box held and
+// the Steps in the form column, row 2 busy, so nothing moves when the launcher reads the URL
+// (premium spec 2026-11-08 section 13).
 import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
-import { CHECKOUT_BAND_RESERVE, CHECKOUT_BODY_RESERVE } from '../lib/billing/checkout-layout';
+import { checkoutCopy } from '../lib/billing/copy';
 import CheckoutLauncher from './CheckoutLauncher.svelte';
 
 function html(): string {
@@ -11,22 +12,24 @@ function html(): string {
 }
 
 describe('CheckoutLauncher static render', () => {
-  it('draws the full-bleed band with its reserve before the URL is read', () => {
+  it('draws the head and the form column before the URL is read', () => {
     const body = html();
     expect(body).toContain('data-testid="checkout-band"');
-    expect(body).toContain(CHECKOUT_BAND_RESERVE);
-    // No container of its own: the narrow body takes the site's .measure-form (640 px on this page).
-    expect(body).not.toContain('mx-auto');
-    expect(body).toMatch(/class="measure-form [^"]*"[^>]*data-testid="checkout-body"/);
+    expect(body).toMatch(/data-layout="form"[^>]*data-testid="checkout-body"/);
   });
 
-  it('reserves the body slot at the panel height around the one-line message', () => {
+  it('draws the three steps, Pay with Stripe busy with the redirect line', () => {
     const body = html();
-    expect(body).toMatch(
-      new RegExp(
-        `class="[^"]*${CHECKOUT_BODY_RESERVE.replace(/[[\]]/g, '\\$&')}[^"]*"[^>]*data-testid="checkout-body"`,
-      ),
-    );
+    expect(body).toContain('data-testid="checkout-steps"');
+    for (const title of [
+      checkoutCopy.steps.signIn,
+      checkoutCopy.steps.pay,
+      checkoutCopy.steps.on('Premium'),
+    ]) {
+      expect(body).toContain(title);
+    }
+    expect(body).toContain('aria-label="Step 2: In progress"');
     expect(body).toContain('data-testid="checkout-message"');
+    expect(body).toContain(checkoutCopy.stripeLine);
   });
 });

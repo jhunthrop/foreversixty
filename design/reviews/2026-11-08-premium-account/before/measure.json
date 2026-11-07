@@ -1,0 +1,338 @@
+{
+ "premium-out-390": {
+  "height": 6551,
+  "mainWidth": 390,
+  "h1": 87,
+  "h1Text": "What is free, and what the plans add",
+  "framed": 7,
+  "firstAction": {
+   "text": "Subscribe · $40 a year",
+   "y": 932
+  },
+  "scrollWidth": 390
+ },
+ "premium-out-1440": {
+  "height": 3474,
+  "mainWidth": 1248,
+  "h1": 112,
+  "h1Text": "What is free, and what the plans add",
+  "framed": 7,
+  "firstAction": {
+   "text": "Subscribe · $40 a year",
+   "y": 455
+  },
+  "scrollWidth": 1440
+ },
+ "premium-out-1920": {
+  "height": 3474,
+  "mainWidth": 1248,
+  "h1": 112,
+  "h1Text": "What is free, and what the plans add",
+  "framed": 7,
+  "firstAction": {
+   "text": "Subscribe · $40 a year",
+   "y": 455
+  },
+  "scrollWidth": 1920
+ },
+ "premium-out-2000": {
+  "height": 3474,
+  "mainWidth": 1248,
+  "h1": 112,
+  "h1Text": "What is free, and what the plans add",
+  "framed": 7,
+  "firstAction": {
+   "text": "Subscribe · $40 a year",
+   "y": 455
+  },
+  "scrollWidth": 2000
+ },
+ "premium-own-390": {
+  "height": 6551,
+  "mainWidth": 390,
+  "h1": 87,
+  "h1Text": "What is free, and what the plans add",
+  "framed": 7,
+  "firstAction": null,
+  "scrollWidth": 390
+ },
+ "premium-own-1440": {
+  "height": 3474,
+  "mainWidth": 1248,
+  "h1": 112,
+  "h1Text": "What is free, and what the plans add",
+  "framed": 7,
+  "firstAction": null,
+  "scrollWidth": 1440
+ },
+ "premium-canceled-1440": {
+  "height": 3527,
+  "mainWidth": 1248,
+  "h1": 112,
+  "h1Text": "What is free, and what the plans add",
+  "framed": 7,
+  "firstAction": {
+   "text": "Subscribe · $40 a year",
+   "y": 508
+  },
+  "scrollWidth": 1440
+ },
+ "checkout-success-390": {
+  "height": 1372,
+  "mainWidth": 390,
+  "h1": 68,
+  "h1Text": "Premium",
+  "framed": 0,
+  "firstAction": null,
+  "scrollWidth": 390
+ },
+ "checkout-success-1440": {
+  "height": 1000,
+  "mainWidth": 1248,
+  "h1": 134,
+  "h1Text": "Premium",
+  "framed": 0,
+  "firstAction": null,
+  "scrollWidth": 1440
+ },
+ "checkout-error-1440": {
+  "height": 1000,
+  "mainWidth": 1248,
+  "h1": 134,
+  "h1Text": "Premium",
+  "framed": 0,
+  "firstAction": null,
+  "scrollWidth": 1440
+ },
+ "checkout-guild-390": {
+  "height": 1566,
+  "mainWidth": 390,
+  "h1": 68,
+  "h1Text": "Subscribe a guild",
+  "framed": 1,
+  "firstAction": null,
+  "scrollWidth": 390
+ },
+ "checkout-guild-1440": {
+  "height": 1000,
+  "mainWidth": 1248,
+  "h1": 134,
+  "h1Text": "Subscribe a guild",
+  "framed": 1,
+  "firstAction": null,
+  "scrollWidth": 1440
+ },
+ "account-out-390": {
+  "height": 1318,
+  "mainWidth": 390,
+  "h1": 91,
+  "h1Text": "Your account",
+  "framed": 0,
+  "firstAction": {
+   "text": "Sign in with Battle.net",
+   "y": 232
+  },
+  "scrollWidth": 390
+ },
+ "account-out-1440": {
+  "height": 1000,
+  "mainWidth": 1248,
+  "h1": 128,
+  "h1Text": "Your account",
+  "framed": 0,
+  "firstAction": {
+   "text": "Sign in with Battle.net",
+   "y": 237
+  },
+  "scrollWidth": 1440
+ },
+ "account-out-1920": {
+  "height": 1000,
+  "mainWidth": 1248,
+  "h1": 128,
+  "h1Text": "Your account",
+  "framed": 0,
+  "firstAction": {
+   "text": "Sign in with Battle.net",
+   "y": 237
+  },
+  "scrollWidth": 1920
+ },
+ "account-out-2000": {
+  "height": 1000,
+  "mainWidth": 1248,
+  "h1": 128,
+  "h1Text": "Your account",
+  "framed": 0,
+  "firstAction": {
+   "text": "Sign in with Battle.net",
+   "y": 237
+  },
+  "scrollWidth": 2000
+ },
+ "account-new-390": {
+  "height": 2725,
+  "mainWidth": 390,
+  "h1": 91,
+  "h1Text": "Your account",
+  "framed": 5,
+  "firstAction": {
+   "text": "See plans",
+   "y": 1622
+  },
+  "scrollWidth": 390
+ },
+ "account-new-1440": {
+  "height": 1517,
+  "mainWidth": 1248,
+  "h1": 128,
+  "h1Text": "Your account",
+  "framed": 5,
+  "firstAction": {
+   "text": "See plans",
+   "y": 975
+  },
+  "scrollWidth": 1440
+ },
+ "account-34-390": {
+  "height": 3227,
+  "mainWidth": 390,
+  "h1": 91,
+  "h1Text": "Your account",
+  "framed": 6,
+  "firstAction": {
+   "text": "See plans",
+   "y": 2124
+  },
+  "scrollWidth": 390
+ },
+ "account-34-1440": {
+  "height": 1517,
+  "mainWidth": 1248,
+  "h1": 128,
+  "h1Text": "Your account",
+  "framed": 6,
+  "firstAction": {
+   "text": "See plans",
+   "y": 975
+  },
+  "scrollWidth": 1440
+ },
+ "account-34-1920": {
+  "height": 1517,
+  "mainWidth": 1248,
+  "h1": 128,
+  "h1Text": "Your account",
+  "framed": 6,
+  "firstAction": {
+   "text": "See plans",
+   "y": 975
+  },
+  "scrollWidth": 1920
+ },
+ "account-34-2000": {
+  "height": 1517,
+  "mainWidth": 1248,
+  "h1": 128,
+  "h1Text": "Your account",
+  "framed": 6,
+  "firstAction": {
+   "text": "See plans",
+   "y": 975
+  },
+  "scrollWidth": 2000
+ },
+ "account-premium-390": {
+  "height": 4329,
+  "mainWidth": 390,
+  "h1": 91,
+  "h1Text": "Your account",
+  "framed": 8,
+  "firstAction": null,
+  "scrollWidth": 390
+ },
+ "account-premium-1440": {
+  "height": 2503,
+  "mainWidth": 1248,
+  "h1": 128,
+  "h1Text": "Your account",
+  "framed": 8,
+  "firstAction": null,
+  "scrollWidth": 1440
+ },
+ "account-premium-2000": {
+  "height": 2503,
+  "mainWidth": 1248,
+  "h1": 128,
+  "h1Text": "Your account",
+  "framed": 8,
+  "firstAction": null,
+  "scrollWidth": 2000
+ },
+ "b-shared-390": {
+  "height": 2958,
+  "mainWidth": 390,
+  "h1": 91,
+  "h1Text": "Hunter talents",
+  "framed": 7,
+  "firstAction": {
+   "text": "Fork",
+   "y": 1918
+  },
+  "scrollWidth": 390
+ },
+ "b-shared-1440": {
+  "height": 1848,
+  "mainWidth": 1440,
+  "h1": 128,
+  "h1Text": "Hunter talents",
+  "framed": 9,
+  "firstAction": {
+   "text": "Fork",
+   "y": 1077
+  },
+  "scrollWidth": 1440
+ },
+ "b-shared-1920": {
+  "height": 1848,
+  "mainWidth": 1920,
+  "h1": 128,
+  "h1Text": "Hunter talents",
+  "framed": 9,
+  "firstAction": {
+   "text": "Fork",
+   "y": 1077
+  },
+  "scrollWidth": 1920
+ },
+ "b-shared-2000": {
+  "height": 1848,
+  "mainWidth": 2000,
+  "h1": 128,
+  "h1Text": "Hunter talents",
+  "framed": 9,
+  "firstAction": {
+   "text": "Fork",
+   "y": 1077
+  },
+  "scrollWidth": 2000
+ },
+ "b-missing-390": {
+  "height": 1165,
+  "mainWidth": 390,
+  "h1": 56,
+  "h1Text": "Build not found",
+  "framed": 0,
+  "firstAction": null,
+  "scrollWidth": 390
+ },
+ "b-missing-1440": {
+  "height": 1000,
+  "mainWidth": 1440,
+  "h1": 81,
+  "h1Text": "Build not found",
+  "framed": 0,
+  "firstAction": null,
+  "scrollWidth": 1440
+ }
+}

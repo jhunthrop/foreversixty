@@ -69,8 +69,6 @@ export const FOUNDER_LAST_DAY = '6 Jan 2027';
 export const FOUNDER_PRICE_UNTIL = '6 January 2027';
 /** Days before a yearly renewal that the renewal email goes out. */
 export const RENEWAL_REMINDER_DAYS = 7;
-/** Days after a first charge within which a refund is granted. */
-export const REFUND_WINDOW_DAYS = 14;
 export const GUILD_TIER_MEMBER_LIMIT = 25;
 export const GUILD_TRIAL_DAYS = 7;
 /** Days before a guild trial ends that the reminder goes out. */

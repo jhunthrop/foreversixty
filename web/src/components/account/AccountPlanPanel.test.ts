@@ -52,7 +52,8 @@ const BUTTON = 'data-testid="account-billing-button"';
 describe('Account plan headline', () => {
   it('shows a grant with no end date and no billing button (the owner account)', () => {
     const html = panel(meWith({}, GRANT_OPEN));
-    expect(html).toContain('Premium · granted, no end date');
+    expect(html).toMatch(/data-testid="account-plan-head"[\s\S]*>Premium</);
+    expect(html).not.toContain('account-plan-when');
     expect(html).toContain('Given by Forever Sixty. Nothing is billed to you.');
     expect(html).not.toContain(BUTTON);
     expect(html).not.toMatch(/Manage billing|Billing history/);
@@ -80,7 +81,7 @@ describe('Account plan headline', () => {
     expect(html).toContain('role="alert"');
     expect(html).toContain('Your last payment failed.');
     expect(html).toContain('Manage billing');
-    expect(html.indexOf('account-billing-row')).toBeLessThan(html.indexOf('account-past-due'));
+    expect(html.indexOf('account-plan-head')).toBeLessThan(html.indexOf('account-past-due'));
     expect(html.indexOf('account-past-due')).toBeLessThan(html.indexOf('account-premium-block'));
   });
 
@@ -95,7 +96,7 @@ describe('Account plan headline', () => {
 
   it('shows See plans, linked to /premium, on the free plan', () => {
     const html = panel(meWith({}));
-    expect(html).toContain('Not on Premium.');
+    expect(html).toMatch(/data-testid="account-plan-head"[\s\S]*>Free</);
     expect(html).toContain('href="/premium#premium"');
     expect(html).toContain('See plans');
   });

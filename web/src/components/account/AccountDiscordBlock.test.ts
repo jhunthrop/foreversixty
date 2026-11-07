@@ -9,6 +9,7 @@ import { removeQuestionFor } from '../../lib/account/notifications';
 import { notificationsCopy } from '../../lib/account/notifications-copy';
 import { mockEntitlements } from '../../test-support/billing-fixtures';
 import { GUILD_ID, discordBlock } from '../../test-support/notifications-api';
+import AccountDiscord from './AccountDiscord.svelte';
 import AccountDiscordBlock from './AccountDiscordBlock.svelte';
 import DiscordActions from './discord/DiscordActions.svelte';
 import DiscordConnect from './discord/DiscordConnect.svelte';
@@ -74,9 +75,13 @@ describe('AccountDiscordBlock', () => {
     expect(html(bare)).not.toContain('id="discord"');
   });
 
-  it('carries the #discord anchor in every state', () => {
-    expect(html(meWith(false, { discord: null }))).toContain('id="discord"');
-    expect(html(meWith(true, { discord: null }))).toContain('id="discord"');
+  it('sits in the Discord section, which carries the #discord anchor in every state', () => {
+    for (const me of [meWith(false, { discord: null }), meWith(true, { discord: null })]) {
+      const body = render(AccountDiscord, { props: { me } }).body;
+      expect(body).toContain('id="discord"');
+      expect(body).toContain('data-region="section-discord"');
+      expect(body).toContain('data-testid="account-discord"');
+    }
   });
 
   it('empty: the paste form with both switches on and the only filled button', () => {
@@ -112,7 +117,7 @@ describe('AccountDiscordBlock', () => {
     );
     expect(order).toEqual([...order].sort((a, b) => a - b));
     expect(text(body)).toContain(notificationsCopy.eventUploadPrivate);
-    expect(tagOf(body, 'discord-event-private-row')).toContain('padding-left: 46px');
+    expect(tagOf(body, 'discord-event-private-row')).toContain('data-nested="true"');
     expect(isDisabled(body, 'discord-event-private')).toBe(false);
   });
 

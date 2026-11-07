@@ -99,12 +99,11 @@ describe('CheckoutGuildStep: loading', () => {
     expect(html({ me: null }).match(SKELETON_CARD)).toHaveLength(4);
   });
 
-  it('sits in the centred 880 column with the 48 / 18 gutters', () => {
+  it('sits in the page column with no column or gutters of its own (B5: one left edge)', () => {
     const body = html({ me: null });
-    // The site's measure class; checkout.astro sets --measure-wide to 880 px for this page.
-    expect(body).toMatch(/class="measure-wide[ "]/);
+    expect(body).not.toContain('measure-wide');
     expect(body).not.toContain('mx-auto');
-    expect(body).toMatch(/px-\[18px\][^"]*md:px-12/);
+    expect(body).not.toMatch(/md:px-12/);
   });
 });
 
@@ -204,7 +203,7 @@ describe('CheckoutGuildStep: ready card', () => {
     const body = html({ me: me([READY(1, 'Olympus')]) });
     expect(body.match(/ bg-gold /g)).toHaveLength(1);
     expect(body).toMatch(
-      /<button[^>]*data-step-action[^>]*>Start the 7-day trial<span class="sr-only">, Olympus</,
+      /<button[^>]*data-step-action[^>]*>Start 7 free days · then \$120 a year<span class="sr-only">, Olympus</,
     );
     expect(body).not.toContain('disabled');
   });

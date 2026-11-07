@@ -1,7 +1,9 @@
 <!-- web/src/components/account/AccountSeatOffer.svelte -->
-<!-- A guild's offer of a Premium seat to an account that pays for its own Premium: the confirm
-     block with a 2px gold left rule, first in the Plan panel. It focuses nothing on load; once
-     answered it is a status line and its buttons never return. The calls are injectable. -->
+<!-- A guild's offer of a Premium seat to an account that pays for its own Premium (premium spec
+     2026-11-08 section 7.3): one selected Row in the Plan section (the gold ground and bar) with the
+     offer, who sent it and what accepting does to the account's own plan, Accept the seat and
+     Decline in its foot. It focuses nothing on load; once answered it is one status line and its
+     buttons never return. The calls are injectable. -->
 <script lang="ts">
   import {
     answerOffer,
@@ -13,9 +15,9 @@
   } from '../../lib/account/seat-offer-flow';
   import { accountPlanCopy } from '../../lib/billing/account-plan-copy';
   import type { MeSeatOffer } from '../../lib/billing/contract';
-  import { CONFIRM_ACTION_WIDTH, CONFIRM_ACTIONS } from '../../lib/guild/billing-styles';
-  import { PRIMARY_BUTTON_FIXED } from '../../lib/planner/styles';
   import { acceptSeatOffer, declineSeatOffer } from '../../lib/billing/seats-api';
+  import { button } from '../../lib/ui/button';
+  import Row from '../ui/Row.svelte';
 
   let {
     offer,
@@ -48,49 +50,48 @@
     if (isAnswered(outcome)) onAnswered?.();
   }
 
-  const statusLine = $derived(offerStatusLine(outcome, offer, zone));
+  const consequence = $derived(
+    offer.own_ends_at !== null && offer.own_amount_cents !== null && offer.own_interval !== null
+      ? copy.consequence(offer.own_ends_at, offer.own_amount_cents, offer.own_interval, zone)
+      : null,
+  );
 </script>
 
-<!-- Answered, the block is a plain 13 px muted status line: no gold rule, no padding (spec 3.3). -->
-<div
-  class="flex flex-col gap-2 {answered ? '' : 'border-gold border-l-2 pl-3'}"
-  data-testid="account-seat-offer"
->
-  <div role="status" data-testid="account-seat-offer-status">
-    {#if answered}<p class="text-muted text-[13px]">{statusLine}</p>{/if}
-  </div>
-  {#if !answered}
-    <p class="text-strong text-[15px] font-bold">{copy.title(offer.guild_name)}</p>
-    <p class="text-muted text-[13px]">{copy.from(offer.from_name, offer.offered_at, zone)}</p>
-    {#if offer.own_ends_at !== null && offer.own_amount_cents !== null && offer.own_interval !== null}
-      <p class="text-[14px]">
-        {copy.consequence(offer.own_ends_at, offer.own_amount_cents, offer.own_interval, zone)}
-      </p>
-    {/if}
-    <div class={CONFIRM_ACTIONS}>
-      <button
-        class="{PRIMARY_BUTTON_FIXED} {CONFIRM_ACTION_WIDTH} px-4"
-        type="button"
-        disabled={busy}
-        onclick={() => void respond(accept, 'accepting', 'accepted')}
-        data-testid="account-seat-offer-accept"
-      >
-        {outcome === 'accepting' ? copy.accepting : copy.accept}
-      </button>
-      <button
-        class="text-text inline-flex min-h-11 items-center text-[14px] underline disabled:opacity-60 {CONFIRM_ACTION_WIDTH}"
-        type="button"
-        disabled={busy}
-        onclick={() => void respond(decline, 'declining', 'declined')}
-        data-testid="account-seat-offer-decline"
-      >
-        {copy.decline}
-      </button>
-    </div>
+{#if answered}
+  <p class="text-small text-muted" role="status" data-testid="account-seat-offer-status">
+    {offerStatusLine(outcome, offer, zone)}
+  </p>
+{:else}
+  <div data-testid="account-seat-offer">
+    <Row title={copy.title(offer.guild_name)} selected>
+      {#snippet subContent()}
+        {copy.from(offer.from_name, offer.offered_at, zone)}
+        {#if consequence !== null}<br /><span class="text-text text-[15px] leading-6">{consequence}</span
+          >{/if}
+      {/snippet}
+      {#snippet foot()}
+        <button
+          type="button"
+          class={button('primary')}
+          disabled={busy}
+          aria-busy={outcome === 'accepting' ? 'true' : undefined}
+          onclick={() => void respond(accept, 'accepting', 'accepted')}
+          data-testid="account-seat-offer-accept"
+          >{outcome === 'accepting' ? copy.accepting : copy.accept}</button
+        >
+        <button
+          type="button"
+          class={button('secondary')}
+          disabled={busy}
+          onclick={() => void respond(decline, 'declining', 'declined')}
+          data-testid="account-seat-offer-decline">{copy.decline}</button
+        >
+      {/snippet}
+    </Row>
     {#if outcome === 'failed'}
-      <p class="text-strong text-[13px]" role="alert" data-testid="account-seat-offer-error">
+      <p class="text-wipe pt-2 text-[13px]" role="alert" data-testid="account-seat-offer-error">
         {copy.failed}
       </p>
     {/if}
-  {/if}
-</div>
+  </div>
+{/if}

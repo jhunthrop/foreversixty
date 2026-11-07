@@ -11,7 +11,6 @@
   import { checkoutGuildCopy as copy } from '../../lib/billing/checkout-guild-copy';
   import { guildFacts, youRow } from '../../lib/billing/guild-card-model';
   import { guildMarkSrc } from '../../lib/guild/mark';
-  import { CARD } from '../../lib/ui/card';
   import { classColorVar } from '../../lib/report/format';
   import ClassCrestRing from '../character/ClassCrestRing.svelte';
 
@@ -44,7 +43,7 @@
 <li
   id={`guild-${guild.id}`}
   aria-labelledby={nameId}
-  class={`${CARD} grid scroll-mt-24 grid-cols-1 items-start gap-[14px] p-4 md:grid-cols-[minmax(0,1fr)_320px] md:gap-6 md:p-5`}
+  class="border-line-soft grid scroll-mt-24 grid-cols-1 items-start gap-[14px] border-b p-4 last:border-b-0 md:grid-cols-[minmax(0,1fr)_320px] md:gap-6 md:p-5"
   data-testid="checkout-guild-card"
 >
   <div class="flex min-w-0 flex-col">
@@ -127,10 +126,7 @@
     {/if}
   </div>
 
-  <div
-    class="border-line-soft flex min-w-0 flex-col gap-[10px] border-t pt-[14px] md:border-t-0 md:pt-0"
-    data-testid="guild-step-block"
-  >
+  <div class="flex min-w-0 flex-col gap-[10px]" data-testid="guild-step-block">
     {@render block()}
   </div>
 </li>

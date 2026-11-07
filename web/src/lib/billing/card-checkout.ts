@@ -29,7 +29,7 @@ export interface ReadyGuild {
 
 /** Spec §9.1: trial unused names the trial, a lapsed plan says again, else the price. */
 export function readyLabel(guild: ReadyGuild, price: string): string {
-  if (guild.subscribe?.trial_used === false) return copy.ready.startTrial;
+  if (guild.subscribe?.trial_used === false) return copy.ready.startTrial(price);
   if (guild.covered?.state === 'lapsed') return copy.ready.subscribeAgain(price);
   return copy.ready.subscribe(price);
 }

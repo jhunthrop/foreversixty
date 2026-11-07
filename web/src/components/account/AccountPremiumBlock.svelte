@@ -1,9 +1,10 @@
 <!-- web/src/components/account/AccountPremiumBlock.svelte -->
-<!-- The account page's Plan card (polish spec 4.3): a head (crown tile, `Plan` over the plan name,
-     the Founder tag, the renew or end date at the right), the pending seat offer, four settings
-     rows, and a foot with the billing button or See plans. Reads only what GET /v1/me says; an
-     older shape with no `entitlements` renders the free state. A live value links to where the
-     benefit lives; one that has not shipped, or is off for the plan, is a muted static row. -->
+<!-- /account's Plan section (premium spec 2026-11-08 section 7.3; `#plan`, where `See your plan`
+     lands): the plan's name as a Figure with the Founder tag and, at the right, Renews / Ends / Until
+     over the date; the plan's lines (or the ended seat's sentence and its way back, or the failed
+     payment alert); a pending seat offer; the four benefits as slim rows (a live value links to
+     where it lives, an off one is muted text); and the billing foot. Reads only what GET /v1/me
+     says; an older shape with no `entitlements` draws the free state. -->
 <script lang="ts">
   import type { Snippet } from 'svelte';
   import { PREMIUM_LINKS } from '../../lib/billing/premium-links';
@@ -16,12 +17,11 @@
   import { billingBlockCopy, premiumBlockCopy } from '../../lib/billing/copy';
   import { premiumSourceCopy } from '../../lib/billing/premium-source-copy';
   import { characterHref } from '../../lib/characters';
-  import { INLINE_LINK } from '../../lib/guild/field-styles';
   import { button } from '../../lib/ui/button';
-  import type { GlyphName } from '../../lib/ui/glyphs';
-  import CardHead from '../ui/CardHead.svelte';
-  import Glyph from '../ui/Glyph.svelte';
-  import SettingsRow from '../ui/SettingsRow.svelte';
+  import { LINK } from '../../lib/ui/primitives';
+  import Figure from '../ui/Figure.svelte';
+  import Row from '../ui/Row.svelte';
+  import Section from '../ui/Section.svelte';
   import Spinner from '../ui/Spinner.svelte';
   import Tag from '../ui/Tag.svelte';
 
@@ -37,6 +37,7 @@
     seePlans = false,
     pastDue = false,
     busy = false,
+    error = '',
     onBilling,
     notifications = { value: premiumRowCopy.off, linked: false },
     offer,
@@ -45,89 +46,61 @@
     characters?: readonly MeCharacter[];
     mainKey?: string;
     serverRunsThisMonth?: number;
-    /** The head's source: `accountPlanLine(me, now)`. Omitted, the card draws the free head and rows only. */
+    /** `accountPlanLine(me, now)`. Omitted, the section draws the free head and rows only. */
     plan?: AccountPlanLine;
-    /** The free state links to the plans page. */
+    /** The free state's foot: See plans. */
     seePlans?: boolean;
-    /** The own subscription's last payment failed: the alert takes line 2's place (spec 4.3). */
+    /** The own subscription's last payment failed: the alert takes line 2's place, Manage billing fills. */
     pastDue?: boolean;
-    /** Disables the billing button while a request is running. */
+    /** The billing portal is opening. */
     busy?: boolean;
-    /** Opens the billing portal; the button under the rows (`plan.billingButton`) calls it. */
+    /** The billing portal did not open. */
+    error?: string;
     onBilling?: () => void;
-    /**
-     * The Discord row: `premiumRowValue(me)` and whether it links to #discord. `null` hides the
-     * row (`premiumRowVisible(me)` is false: the deployment has notifications off); `undefined`
-     * keeps the muted `Premium only` row. `Account.svelte` is the only caller.
-     */
+    /** `premiumRowValue(me)` and whether it links to #discord; `null` hides the row (notifications off). */
     notifications?: { value: string; linked: boolean } | null;
-    /** A pending seat offer, drawn between the head and the rows. */
+    /** A pending seat offer, drawn above the benefits. */
     offer?: Snippet;
   } = $props();
 
   const founderTail = ` ${accountPlanCopy.founder.title}`;
   const main = $derived(mainCharacter(characters, mainKey));
-  const supporterHref = $derived(main === null ? null : characterHref(main.region, main.ruleset, main.name));
-
-  const historyHref = $derived(supporterHref === null ? null : `${supporterHref}#history`);
-  const historyCopy = $derived({
-    ...premiumBlockCopy.rows.history,
-    on: historyHref === null ? premiumBlockCopy.rows.history.on : premiumBlockCopy.rows.history.onWithMain,
+  const mainHref = $derived(main === null ? null : characterHref(main.region, main.ruleset, main.name));
+  const rows = $derived.by(() => {
+    const r = premiumBlockCopy.rows;
+    const history = entitlements?.history === true;
+    return [
+      {
+        key: 'serverSims',
+        label: r.serverSims.label,
+        value: entitlements?.server_sims === true ? r.serverSims.on(serverRunsThisMonth) : r.serverSims.off,
+        href: entitlements?.server_sims === true ? SIM_HREF : null,
+      },
+      {
+        key: 'history',
+        label: r.history.label,
+        value: history ? (mainHref === null ? r.history.on : r.history.onWithMain) : r.history.off,
+        href: history && mainHref !== null ? `${mainHref}#history` : null,
+      },
+      ...(notifications === null
+        ? []
+        : [
+            {
+              key: 'notifications',
+              label: r.notifications.label,
+              value: notifications.value,
+              href: notifications.linked ? NOTIFICATIONS_HREF : null,
+            },
+          ]),
+      {
+        key: 'supporter',
+        label: r.supporter.label,
+        value: entitlements?.supporter_mark === true ? r.supporter.on : r.supporter.off,
+        href: entitlements?.supporter_mark === true ? mainHref : null,
+      },
+    ];
   });
 
-  const notificationsRow = $derived(
-    notifications === null
-      ? []
-      : [
-          {
-            key: 'notifications',
-            glyph: 'bell' as GlyphName,
-            copy: {
-              label: premiumBlockCopy.rows.notifications.label,
-              on: notifications.value,
-              off: notifications.value,
-            },
-            live: notifications.linked,
-            href: NOTIFICATIONS_HREF,
-            muted: !notifications.linked,
-          },
-        ],
-  );
-
-  const rows = $derived([
-    {
-      key: 'serverSims',
-      glyph: 'server' as GlyphName,
-      copy: {
-        ...premiumBlockCopy.rows.serverSims,
-        on: premiumBlockCopy.rows.serverSims.on(serverRunsThisMonth),
-      },
-      live: entitlements?.server_sims === true,
-      href: SIM_HREF,
-      muted: false,
-    },
-    {
-      key: 'history',
-      glyph: 'chart' as GlyphName,
-      copy: historyCopy,
-      live: entitlements?.history === true,
-      href: historyHref,
-      muted: entitlements?.history !== true,
-    },
-    ...notificationsRow,
-    {
-      key: 'supporter',
-      glyph: 'star' as GlyphName,
-      copy: premiumBlockCopy.rows.supporter,
-      live: entitlements?.supporter_mark === true,
-      href: supporterHref,
-      muted: false,
-    },
-  ]);
-
-  const billingLabel = $derived(
-    plan?.billingButton === 'manage' ? premiumSourceCopy.buttons.manage : premiumSourceCopy.buttons.history,
-  );
   const showCancelNote = $derived(
     plan?.billingButton === 'manage' && plan.head.when?.label === accountPlanCopy.head.renews,
   );
@@ -135,96 +108,86 @@
   const showSeePlans = $derived(seePlans && plan?.ended == null);
 </script>
 
-<section class="card-surface overflow-hidden" data-testid="account-guilds-plan">
-  <CardHead
-    glyph="crown"
-    label={accountPageCopy.planLabel}
-    title={plan?.head.name ?? accountPlanCopy.head.names.free}
-    testid="account-plan-head"
-  >
-    {#snippet titleSnippet()}
-      {#if plan?.founder}
-        <Tag title={accountPlanCopy.founder.title} testid="account-founder"
-          >{accountPlanCopy.founder.pill}<span class="sr-only">{founderTail}</span></Tag
-        >
-      {/if}
-    {/snippet}
-    {#snippet aside()}
+<Section title={accountPageCopy.planLabel} anchor="plan" testid="account-guilds-plan">
+  <div class="flex flex-col gap-3">
+    <div class="flex min-h-6 flex-wrap items-end justify-between gap-3" data-testid="account-plan-head">
+      <span class="inline-flex flex-wrap items-center gap-2">
+        <Figure value={plan?.head.name ?? accountPlanCopy.head.names.free} size="sm" />
+        {#if plan?.founder}<Tag title={accountPlanCopy.founder.title} testid="account-founder"
+            >{accountPlanCopy.founder.pill}<span class="sr-only">{founderTail}</span></Tag
+          >{/if}
+      </span>
       {#if plan?.head.when != null}
-        <span
-          class="text-muted flex flex-col items-end gap-0.5 max-[479px]:items-start"
-          data-testid="account-plan-when"
-        >
-          <span>{plan.head.when.label}</span>
-          <span class="text-strong font-semibold">{plan.head.when.date}</span>
+        <span data-testid="account-plan-when">
+          <Figure value={plan.head.when.date} label={plan.head.when.label} size="sm" align="end" />
         </span>
       {/if}
-    {/snippet}
-  </CardHead>
-  {#if plan !== undefined}
-    <div class="-mt-2 flex flex-col gap-1 px-5 pb-4" data-testid="account-plan-headline">
+    </div>
+    {#if plan !== undefined}
       {#if plan.ended !== null}
-        <!-- Spec 3.3: the ended sentence takes the plan line's place, with the gold come-back link. -->
-        <p class="text-[14px]" data-testid="account-seat-ended">
-          {plan.ended.text}<a class={INLINE_LINK} href={plan.ended.href}>{plan.ended.action}</a>
+        <p class="max-w-[72ch] text-[15px] leading-6" data-testid="account-seat-ended">
+          {plan.ended.text}<a class={LINK} href={plan.ended.href}>{plan.ended.action}</a>
         </p>
       {:else}
-        <!-- The whole plan sentence, for a reader that skips the head's pieces. -->
-        <p class="sr-only" data-testid="account-billing-row">{plan.line}</p>
         {#if plan.head.extra !== null}
-          <p class="text-muted text-[13px]" data-testid="account-plan-extra">{plan.head.extra}</p>
+          <p class="text-small text-muted" data-testid="account-plan-extra">{plan.head.extra}</p>
         {/if}
         {#if showCancelNote}
-          <p class="text-muted text-[13px]" data-testid="account-cancel-note">
+          <p class="text-small text-muted" data-testid="account-cancel-note">
             {accountPlanCopy.head.cancelAnytime}
           </p>
         {/if}
       {/if}
       {#if pastDue}
-        <p class="flex flex-wrap items-center gap-2 text-[13px]" role="alert" data-testid="account-past-due">
+        <p class="flex flex-wrap items-center gap-2" role="alert" data-testid="account-past-due">
           <Tag tone="danger">{billingBlockCopy.pastDueTag}</Tag>
           <span class="text-strong">{billingBlockCopy.pastDueBanner}</span>
         </p>
       {:else if plan.line2 !== null}
-        <p class="text-muted text-[13px]" data-testid="account-plan-line2">{plan.line2}</p>
+        <p class="text-small text-muted" data-testid="account-plan-line2">{plan.line2}</p>
       {/if}
+    {/if}
+    {@render offer?.()}
+    <div data-testid="account-premium-block">
+      {#each rows as row (row.key)}
+        <Row title={row.label} density="slim" open wrapTrail testid={`account-premium-${row.key}`}>
+          {#snippet trail()}
+            {#if row.href !== null}
+              <a class="{LINK} text-[15px]" href={row.href} data-testid={`account-premium-${row.key}-link`}
+                >{row.value} ›</a
+              >
+            {:else}
+              <span class="text-small text-muted">{row.value}</span>
+            {/if}
+          {/snippet}
+        </Row>
+      {/each}
     </div>
-  {/if}
-  {@render offer?.()}
-  <ul class="m-0 flex list-none flex-col p-0" data-testid="account-premium-block">
-    {#each rows as row (row.key)}
-      {@const value = row.live ? row.copy.on : row.copy.off}
-      {@const linked = row.live && row.href !== null}
-      <li data-testid={`account-premium-${row.key}`}>
-        <SettingsRow
-          label={row.copy.label}
-          glyph={row.glyph}
-          {value}
-          muted={!linked && row.muted}
-          href={linked ? (row.href ?? undefined) : undefined}
-          testid={linked ? `account-premium-${row.key}-link` : undefined}
-        />
-      </li>
-    {/each}
-  </ul>
-  {#if showBilling || showSeePlans}
-    <div class="border-line-soft flex flex-wrap gap-3 border-t px-5 py-4">
-      {#if showBilling}
-        <button
-          class={button('secondary')}
-          onclick={onBilling}
-          disabled={busy}
-          aria-busy={busy ? 'true' : undefined}
-          data-testid="account-billing-button"
-        >
-          {#if busy}<Spinner />{:else}<Glyph name="card" />{/if}{billingLabel}
-        </button>
-      {/if}
-      {#if showSeePlans}
-        <a class={button('primary')} href={PREMIUM_LINKS.card} data-testid="account-see-plans"
-          >{billingBlockCopy.seePlans}</a
-        >
-      {/if}
-    </div>
-  {/if}
-</section>
+    {#if showBilling || showSeePlans}
+      <div class="flex flex-wrap items-center gap-x-4 gap-y-[10px]">
+        {#if showBilling}
+          <button
+            type="button"
+            class={button(pastDue ? 'primary' : 'secondary')}
+            onclick={onBilling}
+            disabled={busy}
+            aria-busy={busy ? 'true' : undefined}
+            data-testid="account-billing-button"
+          >
+            {#if busy}<Spinner />{/if}{plan?.billingButton === 'manage'
+              ? premiumSourceCopy.buttons.manage
+              : premiumSourceCopy.buttons.history}
+          </button>
+        {/if}
+        {#if showSeePlans}
+          <a class={button('primary')} href={PREMIUM_LINKS.card} data-testid="account-see-plans"
+            >{billingBlockCopy.seePlans}</a
+          >
+        {/if}
+      </div>
+    {/if}
+    {#if error !== ''}<p class="text-wipe text-[13px]" role="alert" data-testid="account-billing-error">
+        {error}
+      </p>{/if}
+  </div>
+</Section>

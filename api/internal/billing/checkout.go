@@ -31,11 +31,22 @@ const intentTransfer = "transfer"
 // be: Stripe's 48-hour minimum plus an hour of slack for clock skew.
 const transferTrialFloor = 49 * time.Hour
 
-// Where Stripe returns the buyer, appended to the public base URL.
-const (
-	checkoutSuccessPath = "/premium/checkout?status=success&session_id={CHECKOUT_SESSION_ID}"
-	checkoutCancelPath  = "/premium?canceled=1"
-)
+// Where Stripe returns the buyer, appended to the public base URL. The
+// success path names the plan, interval and guild it sold (successPath):
+// the checkout page reads them to know what to confirm, and refuses a
+// return that names no plan.
+const checkoutCancelPath = "/premium?canceled=1"
+
+// successPath is the checkout page's return address for one purchase. Every
+// value is a closed enum or an id, so nothing needs escaping, and Stripe's
+// {CHECKOUT_SESSION_ID} template must stay unescaped.
+func successPath(offer catalog.Offer, interval catalog.Interval, guildID *int64) string {
+	path := fmt.Sprintf("/premium/checkout?plan=%s&interval=%s", offer, interval)
+	if guildID != nil {
+		path += "&guild_id=" + strconv.FormatInt(*guildID, 10)
+	}
+	return path + "&status=success&session_id={CHECKOUT_SESSION_ID}"
+}
 
 // now is the handler's clock; tests set Service.Now.
 func (s *Service) now() time.Time {
@@ -120,7 +131,7 @@ type checkoutTrial struct {
 }
 
 // createSession resolves the Customer and price and creates the session.
-func (s *Service) createSession(ctx context.Context, userID int64, lookupKey, clientRef string,
+func (s *Service) createSession(ctx context.Context, userID int64, lookupKey, clientRef, success string,
 	metadata map[string]string, trial *checkoutTrial) (CheckoutSession, error) {
 	customerID, err := s.customerFor(ctx, userID)
 	if err != nil {
@@ -132,7 +143,7 @@ func (s *Service) createSession(ctx context.Context, userID int64, lookupKey, cl
 	}
 	params := CheckoutParams{
 		CustomerID: customerID, PriceID: priceID, ClientReferenceID: clientRef, Metadata: metadata,
-		SuccessURL: s.PublicBaseURL + checkoutSuccessPath,
+		SuccessURL: s.PublicBaseURL + success,
 		CancelURL:  s.PublicBaseURL + checkoutCancelPath,
 	}
 	if trial != nil {
@@ -186,7 +197,8 @@ func (s *Service) premiumCheckout(w http.ResponseWriter, r *http.Request, req pr
 		if err != nil {
 			return err
 		}
-		session, err := s.createSession(ctx, req.userID, lookupKey, req.clientRef, req.metadata, nil)
+		session, err := s.createSession(ctx, req.userID, lookupKey, req.clientRef,
+			successPath(catalog.OfferPremium, req.interval, nil), req.metadata, nil)
 		if err != nil {
 			return err
 		}
@@ -243,7 +255,8 @@ func (s *Service) guildCheckout(w http.ResponseWriter, r *http.Request, req guil
 		if err != nil {
 			return err
 		}
-		session, err := s.createSession(ctx, req.userID, lookupKey, req.clientRef, req.metadata, trial)
+		session, err := s.createSession(ctx, req.userID, lookupKey, req.clientRef,
+			successPath(req.offer, req.interval, &req.guildID), req.metadata, trial)
 		if err != nil {
 			return err
 		}

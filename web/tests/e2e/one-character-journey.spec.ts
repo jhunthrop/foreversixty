@@ -165,8 +165,12 @@ test('the chosen character follows the player through every page', async ({ page
   await expect(page.getByRole('main')).toContainText(bow.spec);
   await shot(page, '06-bis');
   await page.goto('/account');
-  await expect(page.getByRole('main')).toContainText(/CURRENT CHARACTER\s+Bow Jackzon/i);
-  await expect(page.getByTestId('account-hero')).toContainText(`${bow.race} ${bow.spec} Hunter · Level 60`);
+  // The header's character carries Current in the Characters plate.
+  const accountRow = page.getByTestId('account-character-row').filter({ hasText: 'Bow Jackzon' });
+  await expect(accountRow.getByTestId('character-current-pill')).toBeVisible();
+  await expect(accountRow.getByTestId('character-descriptor')).toContainText(
+    `${bow.race} ${bow.spec} Hunter · Level 60`,
+  );
   await expect(page.getByTestId('character-current-pill')).toHaveCount(1);
   await shot(page, '07-account');
 
@@ -298,8 +302,10 @@ test('signing in settles the pointer on the main, and signing out clears it', as
   await shot(page, '14-sign-in-settled');
   // Sign out from the account page: the pointer goes with the session.
   await page.goto('/account');
-  await expect(page.getByTestId('account-hero')).toBeVisible();
-  await page.getByRole('button', { name: /sign out/i }).click();
+  await expect(page.getByTestId('account-head')).toBeVisible();
+  // Sign out asks first (premium spec 2026-11-08 7.7).
+  await page.getByTestId('account-sign-out').click();
+  await page.getByTestId('account-sign-out-confirm').click();
   await expect.poll(async () => await pointerOf(page)).toBeNull();
   await page.goto('/tiers');
   await expect(page.getByTestId('selector-name')).toHaveCount(0);
@@ -335,10 +341,9 @@ test.describe('at 360 px', () => {
       await page.getByTestId('sim-head').screenshot({ path: `${CAPTURES}/w12-17-sim-card-360.png` });
 
     await page.goto('/account');
-    await expect(page.getByTestId('account-hero')).toBeVisible();
+    await expect(page.getByTestId('account-head')).toBeVisible();
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(360);
-    await page.waitForTimeout(800); // the page's reveal fade
     if (CAPTURES !== undefined)
-      await page.getByTestId('account-hero').screenshot({ path: `${CAPTURES}/w12-18-account-card-360.png` });
+      await page.getByTestId('account-head').screenshot({ path: `${CAPTURES}/w12-18-account-card-360.png` });
   });
 });

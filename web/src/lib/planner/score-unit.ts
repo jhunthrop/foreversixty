@@ -49,16 +49,12 @@ export const plannerScoreCopy = {
   /** The live run failed or came back without the role's figure: "HPS estimate unavailable
    *  for this build." */
   failed: (unit: SlotScoreUnit): string => `${SCORE_LABEL[unit]} estimate unavailable for this build.`,
-  /** The live figure as the strip prints it. A healer's reads to a tenth, like the level
-   *  band's "40.9 HPS", so the strip and the band card agree on the digits they share;
-   *  damage and a tank score are whole numbers. */
-  figure: (value: number, unit: SlotScoreUnit): string =>
-    unit === 'hps'
-      ? value.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 })
-      : Math.round(value).toLocaleString('en-US'),
-  /** The level band's headline: "40.9 HPS". */
+  /** The live figure as the strip prints it: every role a whole number (ruling 2026-11-08:
+   *  HPS without a decimal), the same digits the level band's card shows. */
+  figure: (value: number): string => Math.round(value).toLocaleString('en-US'),
+  /** The level band's headline: "41 HPS". */
   bandFigure: (setScore: number, unit: SlotScoreUnit): string =>
-    `${setScore.toFixed(1)} ${scoreUnitWord(unit)}`,
+    `${Math.round(setScore).toLocaleString('en-US')} ${scoreUnitWord(unit)}`,
 } as const;
 
 /** Every role's live run asks the engine for its own figure; damage is the default and

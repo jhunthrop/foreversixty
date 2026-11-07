@@ -1,10 +1,12 @@
 <!-- web/src/components/account/AccountDiscordLink.svelte -->
-<!-- The You panel's Discord link row (experience spec 2026-10-27-discord-bot §3.2): one of
-     unlinked (with a lead, the button a fill only when a guild of the account signs up in
-     Discord), linked (the display name and Unlink, which asks in place) or absent when the
-     deployment has the bot off. Draws from the `/v1/me` the page already holds. Every sentence
+<!-- The Discord section's link row (experience spec 2026-10-27-discord-bot §3.2; premium spec
+     2026-11-08 section 7.6): one Row, unlinked (the lead and Link Discord, a fill only when a guild
+     of the account signs up in Discord), linked (the display name and Unlink, which asks in the row:
+     danger Unlink and Cancel, focus on Cancel, Escape cancels) or absent when the deployment has the
+     bot off. Draws from the `/v1/me` the page already holds. Every sentence
      comes from the copy module; the callback's outcome is read from `?discord_link=` once. -->
 <script lang="ts">
+  import { smallButton } from '../../lib/account/small-button';
   import { onMount } from 'svelte';
   import { fetchMeFresh, type Me } from '../../lib/account/api';
   import { discordLinkCopy } from '../../lib/account/discord-link-copy';
@@ -16,9 +18,9 @@
     UNLINK_BUTTON_SELECTOR,
     type DiscordLinkOutcome,
   } from '../../lib/account/discord-link-return';
-  import { ACCOUNT_DISCORD_LINK_ROW_RESERVE } from '../../lib/account/layout';
   import { createFocusQueue } from '../../lib/account/discord-return.svelte';
-  import { button } from '../../lib/ui/button';
+  import Row from '../ui/Row.svelte';
+  import ConfirmButtons from './ConfirmButtons.svelte';
   import DiscordConnectLink from './discord/DiscordConnectLink.svelte';
 
   /** `Unlinked.` stays this long; a return's line stays until the next action. */
@@ -27,10 +29,10 @@
   const SETTLE_MS = 4000;
   /** The display name is shown at most this long. */
   const NAME_MAX = 32;
-  const ANCHOR = '#you';
+  /** The bot's callback still lands on `#you` (api discordbot); the row now lives under `#discord`. */
+  const ANCHORS = ['#you', '#discord'];
+  const SECTION = '#discord';
   const CANCEL = '[data-testid="discord-unlink-cancel"]';
-  const GAP_PX = 16;
-  const OUTLINE = button('secondary');
 
   interface Line {
     message: string;
@@ -89,9 +91,9 @@
     );
   });
 
-  /** The panel renders after the browser's own fragment scroll has run, so `#you` is honoured here. */
+  /** The section renders after the browser's own fragment scroll has run, so the anchor is honoured here. */
   function scrollToAnchor(): void {
-    if (window.location.hash === ANCHOR) document.querySelector(ANCHOR)?.scrollIntoView();
+    if (ANCHORS.includes(window.location.hash)) document.querySelector(SECTION)?.scrollIntoView();
   }
 
   function showStuck(): void {
@@ -124,77 +126,63 @@
     }
   }
 
-  function onKeydown(event: KeyboardEvent): void {
-    if (event.key === 'Escape' && confirming && !busy) cancel();
-  }
-
-  const linkClass = $derived(suggested === null ? OUTLINE : button('primary'));
-  const settledMinHeight = ACCOUNT_DISCORD_LINK_ROW_RESERVE.linked.lg - GAP_PX;
+  const linkClass = $derived(smallButton(suggested === null ? 'secondary' : 'primary'));
+  const shownName = $derived(linkedName === null ? '' : Array.from(linkedName).slice(0, NAME_MAX).join(''));
 </script>
 
 {#if me.discord_link_available === true}
-  <div
-    class="flex flex-col items-start gap-2"
-    onkeydown={onKeydown}
-    role="presentation"
-    data-testid="account-discord-link"
-  >
+  <div data-testid="account-discord-link">
     {#if settling}
-      <div style="min-height: {settledMinHeight}px" aria-hidden="true"></div>
+      <div class="min-h-[var(--row-h)]" aria-hidden="true"></div>
+    {:else if linkedName !== null && confirming}
+      <Row title={discordLinkCopy.unlinkQuestion} open wrapTrail>
+        {#snippet titleContent()}<span data-testid="discord-unlink-question"
+            >{discordLinkCopy.unlinkQuestion}</span
+          >{/snippet}
+        {#snippet trail()}
+          <ConfirmButtons
+            confirm={busy ? discordLinkCopy.unlinking : discordLinkCopy.unlink}
+            cancel={discordLinkCopy.cancel}
+            {busy}
+            onconfirm={() => void unlink()}
+            oncancel={cancel}
+            testid="discord-unlink"
+          />
+        {/snippet}
+      </Row>
     {:else if linkedName !== null}
-      <p class="text-[14px] [overflow-wrap:anywhere]" data-testid="discord-linked-as">
-        <span class="text-muted">{discordLinkCopy.linkedLead}</span>
-        <strong class="text-strong font-semibold">{Array.from(linkedName).slice(0, NAME_MAX).join('')}</strong
-        >
-      </p>
-      {#if confirming}
-        <p class="text-text text-[14px]" data-testid="discord-unlink-question">
-          {discordLinkCopy.unlinkQuestion}
-        </p>
-        <div class="flex flex-wrap items-center gap-3">
-          <button
-            type="button"
-            class={OUTLINE}
-            disabled={busy}
-            onclick={unlink}
-            data-testid="discord-unlink-confirm"
+      <Row title={`${discordLinkCopy.linkedLead} ${shownName}`} open wrapTrail testid="discord-linked-as">
+        {#snippet titleContent()}
+          <span class="[overflow-wrap:anywhere]">{discordLinkCopy.linkedLead} <b>{shownName}</b></span>
+        {/snippet}
+        {#snippet trail()}
+          <button type="button" class={smallButton()} onclick={askUnlink} data-testid="discord-unlink"
+            >{discordLinkCopy.unlink}</button
           >
-            {busy ? discordLinkCopy.unlinking : discordLinkCopy.unlink}
-          </button>
-          <button
-            type="button"
-            class={OUTLINE}
-            disabled={busy}
-            onclick={cancel}
-            data-testid="discord-unlink-cancel"
-          >
-            {discordLinkCopy.cancel}
-          </button>
-        </div>
-      {:else}
-        <button type="button" class={OUTLINE} onclick={askUnlink} data-testid="discord-unlink">
-          {discordLinkCopy.unlink}
-        </button>
-      {/if}
+        {/snippet}
+      </Row>
     {:else}
-      <p class={suggested === null ? 'text-muted text-[13px]' : 'text-text text-[14px]'}>
-        {suggested === null ? discordLinkCopy.lead : discordLinkCopy.leadSuggested(suggested)}
-      </p>
-      <DiscordConnectLink
-        label={discordLinkCopy.link}
-        class={linkClass}
-        testid="discord-link-start"
-        href={discordLinkStartUrl()}
-        onStuck={showStuck}
-      />
+      <Row
+        title={suggested === null ? discordLinkCopy.lead : discordLinkCopy.leadSuggested(suggested)}
+        open
+        wrapTrail
+      >
+        {#snippet trail()}
+          <DiscordConnectLink
+            label={discordLinkCopy.link}
+            class={linkClass}
+            testid="discord-link-start"
+            href={discordLinkStartUrl()}
+            onStuck={showStuck}
+          />
+        {/snippet}
+      </Row>
     {/if}
-    <div class="min-h-[21px] text-[13px]" role={line?.role ?? 'status'} data-testid="discord-link-status">
-      {#if line !== null}
+    {#if line !== null}
+      <div class="pt-2 text-[13px]" role={line.role} data-testid="discord-link-status">
         <p class={line.role === 'alert' ? 'text-wipe' : 'text-text'}>{line.message}</p>
-        {#if line.help !== undefined}
-          <p class="text-muted mt-1 text-[13px]">{line.help}</p>
-        {/if}
-      {/if}
-    </div>
+        {#if line.help !== undefined}<p class="text-muted mt-1">{line.help}</p>{/if}
+      </div>
+    {/if}
   </div>
 {/if}

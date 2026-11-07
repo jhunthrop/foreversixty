@@ -93,6 +93,25 @@ export function renderGuidesMocks(mocks: readonly string[]): string {
 }
 
 /**
+ * The shared build mocks named (ws_premium.py --list: web-b*), from the copy modules and this
+ * checkout's planner data: premium_facts.mjs reads the shared page's copy, planner_facts.mjs the
+ * build states ws_premium.py borrows from ws_planner.py. Returns the folder that holds web-b*.html.
+ */
+export function renderSharedBuildMocks(mocks: readonly string[]): string {
+  const dir = freshDir('shared-build');
+  const premiumFacts = path.join(dir, 'premium-facts.json');
+  const plannerFacts = path.join(dir, 'planner-facts.json');
+  run('node', [path.join(GENERATORS, 'premium_facts.mjs'), premiumFacts]);
+  run('node', [path.join(GENERATORS, 'planner_facts.mjs'), plannerFacts]);
+  run(PYTHON, [path.join(GENERATORS, 'ws_premium.py'), ...mocks], {
+    FS_PREMIUM_FACTS: premiumFacts,
+    FS_PLANNER_FACTS: plannerFacts,
+    FS_MOCK_OUT: dir,
+  });
+  return dir;
+}
+
+/**
  * The planner mocks named (ws_planner.py --list), from this checkout's data/builds files, the
  * planner libs and the fixtures support/planner-page.ts serves: planner_facts.mjs runs the page's
  * own models, ws_planner.py draws just those mocks. Returns the folder that holds web-planner*.html.

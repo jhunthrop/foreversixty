@@ -27,6 +27,19 @@ export const checkoutCopy = {
   findYourGuild: 'Find your guild',
   guildsDidNotLoad: 'Your guilds did not load.',
   tryAgain: 'Try again',
+  /** The checkout Steps (spec 2026-11-08 section 6). */
+  steps: { signIn: 'Sign in', pay: 'Pay with Stripe', on: (plan: string): string => `${plan} on` },
+  signedInAs: (who: string): string => `Signed in as ${who}`,
+  stripeLine: 'Stripe handles the card; we never see it.',
+  paid: 'Stripe took the payment.',
+  /** A guild checkout in its free trial took no payment (ruling K1). */
+  trialSaved: (date: string): string => `Card saved. First charge ${date}.`,
+  checkAgain: 'Check again',
+  /** Above the next steps once Premium is on (ruling K2): `$40 a year · renews 4 Nov 2027 · receipt from Stripe by email`. */
+  renewalLine: (price: string, date: string): string =>
+    `${price} · renews ${date} · receipt from Stripe by email`,
+  nextSim: 'Run a server sim',
+  nextCoach: 'Upload a log for the coach',
 };
 
 export const billingBlockCopy = {

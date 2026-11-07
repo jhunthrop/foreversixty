@@ -1,8 +1,8 @@
 <!-- web/src/components/account/AccountGuildRowStep.svelte -->
-<!-- Spec 6.5, in the polish component set: the three things a guild block adds. `plan` is the tier
-     tag beside the guild name (`No plan` when it has none), `mark` the warning `Not verified` tag,
-     `line` the no-plan row: its sentence under a `See the next step` link row to the checkout
-     guild step. The words and the link come from lib/account/guild-row-line. -->
+<!-- What a guild on /account adds to its rows (premium spec 2026-11-08 section 7.4): `plan` is the
+     tier Tag beside the guild name (`No plan` when it has none), `mark` the muted `Not verified` Tag,
+     `line` the no-plan slim row: its sentence with `See the next step ›` to the checkout guild
+     step. The words and the link come from lib/account/guild-row-line. -->
 <script lang="ts">
   import {
     guildPlanTag,
@@ -10,7 +10,8 @@
     notVerifiedMark,
     type GuildRowFacts,
   } from '../../lib/account/guild-row-line';
-  import SettingsRow from '../ui/SettingsRow.svelte';
+  import { LINK } from '../../lib/ui/primitives';
+  import Row from '../ui/Row.svelte';
   import Tag from '../ui/Tag.svelte';
 
   let { guild, part }: { guild: GuildRowFacts; part: 'plan' | 'mark' | 'line' } = $props();
@@ -23,13 +24,13 @@
 {#if part === 'plan' && plan !== null}
   <Tag tone={guild.plan ? 'gold' : 'muted'} testid="account-guild-plan-tag">{plan}</Tag>
 {:else if part === 'mark' && mark !== null}
-  <Tag tone="warn" testid="account-guild-not-verified">{mark}</Tag>
+  <Tag tone="muted" testid="account-guild-not-verified">{mark}</Tag>
 {:else if part === 'line' && next !== null}
-  <SettingsRow
-    glyph="card"
-    label={next.action}
-    sub={next.text}
-    href={next.href}
-    testid="account-guild-no-plan"
-  />
+  <Row title={next.text} density="slim" open wrapTrail testid="account-guild-no-plan">
+    {#snippet trail()}
+      <a class="{LINK} text-[15px] whitespace-nowrap" href={next.href} aria-label={next.label}
+        >{next.action} ›</a
+      >
+    {/snippet}
+  </Row>
 {/if}

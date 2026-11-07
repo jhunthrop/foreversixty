@@ -18,16 +18,9 @@
 // the player chooses (the selector, Set as main, a paste, Forget).
 import { buildCodeFor } from '../addon/build-code';
 import { decodeFS1, type FS1Result } from './fs1';
-import type { TalentIndex } from './rules';
 import type { PlannerStore } from './store.svelte';
-import {
-  announcePageLoadedCharacter,
-  readCurrent,
-  writeCurrent,
-  type CurrentCharacter,
-} from '../current-character';
-import { characterFromPlanner, plannerHrefFor, specOf } from '../sim/character';
-import { specLabel } from '../sim/spec-label';
+import type { CurrentCharacter } from '../current-character';
+import { characterFromPlanner, plannerHrefFor } from '../sim/character';
 
 /** True when `/planner`'s own URL carries none of `?code=`, `?class=`, `?race=`,
  *  `?talents=` -- the only shape a stored pointer is ever allowed to restore into (spec
@@ -195,75 +188,6 @@ export function followPointerInPlanner(
   if (pointer.source === 'armory') return { kind: 'character', key: pointer.ref };
   const classSlug = pointer.classSlug;
   return classSlug === '' || classSlug === openClassSlug ? { kind: 'none' } : { kind: 'class', classSlug };
-}
-
-/**
- * The label a planner load writes to the pointer. `specLabel` already names the class
- * ("Fury Warrior"), so it is never joined with `className` a second time -- that redundant
- * join was fix round 1's Important finding. Four branches:
- *  - a title and a derivable spec: `"<title> · <specLabel>"`, the spec's own
- *    "Simfury · Fury Warrior" shape (`current-character-bridge.ts`'s `recordCurrentCharacter`);
- *  - a title, no derivable spec: the title alone;
- *  - no title, a derivable spec: `specLabel` alone ("Fury Warrior");
- *  - neither: `className` alone (the caller's own `store.classRow.name` -- this module has
- *    no reference data of its own to look one up from a slug).
- * The spec is derivable once `talentIndex` has loaded (`specOf` then `specLabel`, the same
- * two helpers the sim side reads a `SimCharacter`'s spec with).
- */
-export function labelForPlannerLoad(
-  buildTitle: string | undefined,
-  className: string,
-  talentIndex: TalentIndex | null,
-  order: readonly number[],
-): string {
-  const title = buildTitle !== undefined && buildTitle.trim() !== '' ? buildTitle : null;
-  const spec = talentIndex === null ? null : specLabel(specOf(talentIndex, [...order]));
-  if (title !== null && spec !== null) return `${title} · ${spec}`;
-  return title ?? spec ?? className;
-}
-
-/**
- * Writes the current-character pointer for a planner load. The one write path every
- * planner load source shares (a decoded `?code=`/restored code, a successful paste, or this
- * mount's own saved `record`) so the pointer's shape (`current-character.ts`'s own
- * `CurrentCharacter`) is assembled in one place rather than at each of Planner.svelte's
- * three call sites.
- */
-export function recordPlannerCharacter(
-  source: 'addon' | 'build',
-  ref: string,
-  label: string,
-  classSlug: string,
-  storage?: Storage,
-): void {
-  const pointer: CurrentCharacter = { source, ref, label, classSlug, savedAt: new Date().toISOString() };
-  writeCurrent(pointer, storage);
-  // The selector and every sibling island learn of it; the planner ignores its own load.
-  announcePageLoadedCharacter();
-}
-
-/**
- * Every planner load source (a decoded/restored code, a paste, this mount's own `record`)
- * calls this, once talent data has loaded and only on a `standalone` mount, to build the
- * label, write the pointer, and hand back the fresh value for the chip -- Planner.svelte's
- * one `writePointer` call site. A no-op (before talent data loads, or inline) hands back
- * whatever is already stored, unchanged, rather than a value the caller has to guess at.
- */
-export function writePlannerPointer(
-  store: PlannerStore,
-  standalone: boolean,
-  source: 'addon' | 'build',
-  ref: string,
-  classSlug: string,
-  title?: string,
-  storage?: Storage,
-): CurrentCharacter | null {
-  if (standalone && store.talentIndex !== null) {
-    const className = store.classRow?.name ?? classSlug;
-    const label = labelForPlannerLoad(title, className, store.talentIndex, store.order);
-    recordPlannerCharacter(source, ref, label, classSlug, storage);
-  }
-  return readCurrent(storage);
 }
 
 /**

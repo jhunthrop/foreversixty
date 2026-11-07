@@ -295,7 +295,7 @@ test.describe('saved webhook', () => {
     expect(seen.deletes).toBe(1);
     await expect(input(page)).toBeFocused();
     await expect(panel(page)).toContainText(copy.removed);
-    await expect(premiumRow(page).getByText(premiumRowCopy.offSetUp, { exact: true })).toBeVisible();
+    await expect(premiumRow(page)).toContainText(premiumRowCopy.offSetUp);
   });
 });
 
@@ -542,7 +542,7 @@ test.describe('a connected channel (connect lane)', () => {
     await expect(destination).not.toContainText('Channel 1198');
     await expect(destination).not.toContainText('Posts through');
     const open = destination.getByTestId('discord-open');
-    await expect(open).toHaveText(copy.openInDiscord);
+    await expect(open).toHaveText(`${copy.openInDiscord} ›`);
     await expect(open).toHaveAttribute('href', `https://discord.com/channels/${GUILD_ID}/${CHANNEL_ID}`);
     await expect(open).toHaveAttribute('target', '_blank');
     const reconnect = page.getByTestId('discord-replace');

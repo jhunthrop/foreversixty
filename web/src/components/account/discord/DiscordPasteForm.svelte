@@ -45,8 +45,8 @@
   }
 </script>
 
-<form class="flex flex-col gap-4 pt-1" onsubmit={submit} novalidate>
-  <div class="flex flex-col gap-4 px-5">
+<form class="flex flex-col gap-4" onsubmit={submit} novalidate>
+  <div class="flex flex-col gap-4">
     {#if !replacing}<p class="text-text text-[14px]">{notificationsCopy.intro}</p>{/if}
     <ol class="m-0 flex list-none flex-col gap-2 p-0 text-[13px]">
       {#each notificationsCopy.howSteps as step, index (step)}
@@ -104,7 +104,7 @@
       return true;
     }}
   />
-  <div class="flex flex-wrap items-center gap-x-3 gap-y-1 px-5 pb-5">
+  <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
     <button
       type="submit"
       class={button(secondary ? 'secondary' : 'primary')}

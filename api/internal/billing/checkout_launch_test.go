@@ -188,3 +188,27 @@ func TestPortal_FounderConfiguration(t *testing.T) {
 		t.Fatalf("configuration = %q", got)
 	}
 }
+
+// The success URL names what was sold: the checkout page refuses a return
+// with no plan, and a guild return needs its guild to confirm the plan.
+func TestCheckout_SuccessURLNamesThePurchase(t *testing.T) {
+	h := newHarness(t)
+	uid := h.seedUser(t, "success-url@example.com")
+	p := mustCheckout(t, h, uid, map[string]any{"plan": "premium", "interval": "monthly"})
+	want := h.svc.PublicBaseURL + "/premium/checkout?plan=premium&interval=monthly&status=success&session_id={CHECKOUT_SESSION_ID}"
+	if p.SuccessURL != want {
+		t.Fatalf("success url = %q, want %q", p.SuccessURL, want)
+	}
+	if p.CancelURL != h.svc.PublicBaseURL+"/premium?canceled=1" {
+		t.Fatalf("cancel url = %q", p.CancelURL)
+	}
+}
+
+func TestSuccessPath_GuildCarriesItsGuild(t *testing.T) {
+	id := int64(42)
+	got := successPath(catalog.OfferRaidGuild, catalog.Yearly, &id)
+	want := "/premium/checkout?plan=raid_guild&interval=yearly&guild_id=42&status=success&session_id={CHECKOUT_SESSION_ID}"
+	if got != want {
+		t.Fatalf("successPath = %q, want %q", got, want)
+	}
+}

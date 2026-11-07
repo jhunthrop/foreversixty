@@ -12,7 +12,6 @@ import {
   GUILD_TRIAL_DAYS,
   PLANS,
   RAID_SIZES,
-  REFUND_WINDOW_DAYS,
   RENEWAL_REMINDER_DAYS,
   TRIAL_REMINDER_DAYS,
   SEAT_MOVE_LOCK_DAYS,
@@ -63,6 +62,9 @@ export interface PremiumFeature {
 
 export const plansPageCopy = {
   title: 'Plans',
+  /** The Tag on the account's own plan column (signed in). */
+  yourPlanTag: 'Your plan',
+  faqTitle: 'Questions',
   description:
     'What is free on Forever Sixty for good, what Premium, Guild and Raid guild add, and what each costs.',
   band: {
@@ -167,7 +169,7 @@ export const plansPageCopy = {
     perMonth: (yearlyUsd: number): string => perMonthLine(yearlyUsd),
     orYearly: (yearlyPrice: string): string => `Or ${yearlyPrice}.`,
     founderUntil: (listPrice: string): string =>
-      `Founder price until ${FOUNDER_LAST_DAY}, then ${listPrice}.`,
+      `Founder price for anyone who subscribes by ${FOUNDER_LAST_DAY}. ${listPrice} after that.`,
     perMember,
     perRaider,
   },
@@ -229,7 +231,7 @@ export const plansPageCopy = {
     },
     {
       term: 'Renewals',
-      sentence: `We email ${RENEWAL_REMINDER_DAYS} days before every yearly renewal. Cancel in one click; the plan runs to the end of the period you paid for.`,
+      sentence: `We email ${RENEWAL_REMINDER_DAYS} days before every yearly renewal, to the address you gave Stripe at checkout. Cancel in one click; the plan runs to the end of the period you paid for.`,
     },
     {
       term: 'A new guild leader',
@@ -238,7 +240,8 @@ export const plansPageCopy = {
     },
     {
       term: 'Refunds',
-      sentence: `Ask within ${REFUND_WINDOW_DAYS} days of a first charge for a refund. After that there are no part-year refunds.`,
+      sentence:
+        'Email help@foreversixty.gg for a refund. Cancelling stops the renewal and the plan runs to the end of the period you paid for; there are no part-period refunds. If you were charged twice, or paid for something that did not work, we put it right.',
     },
   ] as PlanRule[],
   foot: 'Prices in US dollars. Cancel any time; you keep the plan to the end of the period you paid for.',
@@ -264,7 +267,8 @@ export const plansPageCopy = {
     },
     {
       question: 'Who am I paying?',
-      answer: 'Commish LLC d/b/a Forever Sixty. Stripe handles the payment; we never see or store your card.',
+      answer:
+        'Commish LLC d/b/a Forever Sixty. Your card statement reads FOREVERSIXTY. Stripe handles the payment; we never see or store your card.',
     },
   ] as FaqEntry[],
 };

@@ -1,7 +1,7 @@
 // web/tests/e2e/account-armory-pointer.spec.ts
 // A current-character pointer written by a character page ('armory' source) used to send
 // CurrentCharacterBar's effect into an infinite loop on /account (it read the state it had
-// just written), which starved every other island: Your reports never left its skeleton.
+// just written), which starved every other island (then: Your reports never left its skeleton).
 import { expect, test } from './support/test';
 import { meBnetFixture } from '../../src/fixtures/me-bnet';
 
@@ -29,7 +29,13 @@ test('an armory current-character pointer does not stall the account page', asyn
   }, meBnetFixture.characters[0].key);
   await page.goto('/account');
   await expect(page.getByTestId('account-characters')).toBeVisible();
-  await expect(page.getByTestId('my-reports-empty')).toBeVisible();
-  await expect(page.getByTestId('my-reports-skeleton')).toHaveCount(0);
+  // The pointer resolves to its row (Current), and the rest of the page draws.
+  await expect(
+    page
+      .getByTestId('account-character-row')
+      .filter({ hasText: 'Thoradin' })
+      .getByTestId('character-current-pill'),
+  ).toBeVisible();
+  await expect(page.getByTestId('account-devices')).toBeVisible();
   expect(errors.filter((m) => m.includes('effect_update_depth_exceeded'))).toEqual([]);
 });

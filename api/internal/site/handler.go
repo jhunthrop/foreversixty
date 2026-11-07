@@ -85,8 +85,14 @@ func (d Deps) page(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// writeMessage answers with the message page; a missing build also asks the reader to go back to
+// whoever sent the link (ruling Q12), which a failure on our side does not.
 func (d Deps) writeMessage(w http.ResponseWriter, r *http.Request, status int, heading, body string) {
-	page, err := d.messageHTML(heading, body)
+	ask := ""
+	if status == http.StatusNotFound {
+		ask = askSenderLine
+	}
+	page, err := d.messageHTML(heading, body, ask)
 	if err != nil {
 		d.logger().Error("site", "id", httpx.RequestIDFrom(r.Context()), "op", "message", "err", err)
 		http.Error(w, heading, status)

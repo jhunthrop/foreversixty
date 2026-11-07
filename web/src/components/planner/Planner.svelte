@@ -27,7 +27,6 @@
     decidePlannerLoad,
     followPointerInPlanner,
     isBarePlannerUrl,
-    writePlannerPointer,
   } from '../../lib/planner/current-character-planner';
   import { bandRangeLabel } from '../../lib/planner/band-title';
   import { bandForLevel } from '../../lib/bis/hover';
@@ -93,6 +92,9 @@
     oncode,
     standalone = true,
     openingArt = [],
+    title = null,
+    views = null,
+    hideBar = false,
   }: {
     treeVersion: string;
     classSlug?: string;
@@ -116,7 +118,18 @@
     /** The opening class's tree art (`trees/<background>.webp`, tab order): the loading Plate
      *  paints it so the largest paint is in the server render (planner.astro reads it). */
     openingArt?: readonly string[];
+    /** The shared build's own name (`/b/:id`, premium spec 2026-11-08 decision B1): the H1 in
+     *  place of `{Class} talents`; a record with none reads `{Race} {Class}`. */
+    title?: string | null;
+    /** The shared build's view count, on its meta line. */
+    views?: number | null;
+    /** No class and race bar (decision B3): a shared build's class and race are the record's. */
+    hideBar?: boolean;
   } = $props();
+
+  /** The shared build page (`/b/:id`, spec section 8): its own head, the Edit a copy line, no bar,
+   *  In the game first and the level build set against it as the `Guide build`. */
+  const shared = record !== null;
 
   // The page is static, so ?class= and ?race= can only be read in the browser. A record
   // (from /b/:id) wins over the query string: that build already names its class and race.
@@ -345,16 +358,6 @@
   );
 
   // The chip's "Copy for the game" link; shared with SharePanel's own buttons (Task 10, L8.1).
-
-  // Every load source writes the pointer through here (Task 10); writePlannerPointer is a
-  // no-op inline or before talent data has loaded.
-  // The chip this used to feed is gone with it (rebuild
-  // spec §3: replaced by the shared character header) -- the write itself still matters
-  // (the site-wide current-character bridge every other tool page reads), so this keeps
-  // calling it and simply has nothing of its own left to do with the fresh pointer back.
-  function writePointer(source: 'addon' | 'build', ref: string, cls: string, title?: string): void {
-    writePlannerPointer(store, standalone, source, ref, cls, title);
-  }
 
   // An addon export for another class: switch the planner to it and import once that
   // class's talents have loaded, instead of telling the player to switch by hand. The
@@ -825,9 +828,10 @@
         codeNote = { kind: 'band', bandLabel };
       }
 
-      // Task 10: a `?code=`/restored code just applied above, or this mount's `record`.
-      if (record !== null) writePointer('build', record.id, slug, record.title);
-      else if (codeForThisClass !== null && !plannerLoad.restored) {
+      // Task 10: a `?code=`/restored code just applied above. A shared build (`record`) is looked
+      // at, not chosen, like any link: it leaves the header's character where it is, so In the game
+      // sends to that character (premium spec 2026-11-08 section 8, one way to switch).
+      if (record === null && codeForThisClass !== null && !plannerLoad.restored) {
         const named = codeForThisClass.build.character;
         if (named === undefined) {
           // A link that names nobody is somebody's build, not the current character's.
@@ -951,6 +955,14 @@
       .filter((part) => part !== '')
       .join(' · '),
   );
+  /** The H1: `{Class} talents`; on a shared build its own title, else `{Race} {Class}` (B1). */
+  const headTitle = $derived(
+    !shared
+      ? plannerHeaderCopy.h1(className)
+      : title !== null && title.trim() !== ''
+        ? title
+        : [store.raceRow?.name ?? '', className].filter((part) => part !== '').join(' '),
+  );
   /** Whose build this is when it is not the player's own; said once (ruling MUST 1): never beside a note. */
   const originLine = $derived(
     effectiveOrigin === null || codeNote !== null
@@ -1056,7 +1068,7 @@
   >
   <span class="rs">
     {#if store.readOnly}
-      <!-- A shared build's Fork lives in its Share section. -->
+      <!-- A shared build's Edit a copy sits in the notes line, not under the trees. -->
     {:else if confirmingReset}
       <span class="text-small text-muted">{plannerCopy.resetAsk}</span>
       <Button
@@ -1148,7 +1160,20 @@
 {/snippet}
 
 {#snippet notes()}
-  {#if noteText !== null}
+  {#if shared && store.readOnly}
+    <!-- Decision B2: Edit a copy sits in the first screen beside the shared-link line; pressing it
+         makes the planner editable in place (store.fork), and the line goes. -->
+    <div class="pl-notes">
+      <div data-region={REGION.notes}>
+        <!-- The Notice line's type and rhythm with a button as its second item (ui/Notice takes a
+             link only). -->
+        <p class="pl-shared-note" data-testid="planner-shared-note">
+          <span>{plannerCopy.sharedLinkNote}</span>
+          <Button onclick={() => store.fork()} testid="planner-fork-button">{plannerCopy.fork}</Button>
+        </p>
+      </div>
+    </div>
+  {:else if noteText !== null}
     <div class="pl-notes">
       <div data-region={REGION.notes}>
         <Notice text={noteText.text} short={noteText.short} tone="neutral" testid="planner-code-note" />
@@ -1160,6 +1185,7 @@
 {#snippet bandSection()}
   <BandCompare
     {store}
+    heading={shared ? bandCompareCopy.sharedHeading : undefined}
     characterLevel={store.characterLevel}
     specOverride={specParam ?? undefined}
     onbanddiff={(diff) => (bandDiff = diff)}
@@ -1196,11 +1222,7 @@
 {#if standalone}
   <Page layout="workbench" testid="planner">
     {#snippet header()}
-      <PageHeader
-        title={plannerHeaderCopy.h1(className)}
-        tone={classTone(store.classSlug)}
-        testid="planner-head"
-      >
+      <PageHeader title={headTitle} tone={classTone(store.classSlug)} testid="planner-head">
         {#snippet crest()}
           <!-- Keyed on mount: hydration keeps the server's src, which is the default class's. -->
           {#key mounted}<ClassCrestRing
@@ -1210,7 +1232,12 @@
             />{/key}
         {/snippet}
         {#snippet meta()}
+          {#if shared}<span data-testid="planner-shared-meta">{plannerCopy.sharedMeta}</span>{/if}
           <span data-testid="planner-meta">{metaLine}</span>
+          {#if shared}
+            <span class="numeric" data-testid="planner-split">{store.split.join('/')}</span>
+            {#if views !== null}<span data-testid="planner-views">{plannerCopy.sharedViews(views)}</span>{/if}
+          {/if}
           {#if originLine !== ''}<span class="text-gold" data-testid="planner-build-origin">{originLine}</span
             >{/if}
         {/snippet}
@@ -1235,42 +1262,45 @@
       </PageHeader>
     {/snippet}
     {#snippet bar()}
-      <ControlBar
-        groups={barGroups}
-        label={plannerCopy.barLabel}
-        onchange={chooseFromBar}
-        testid="planner-bar"
-        id="planner-bar"
-      >
-        {#snippet end()}<span class="text-small text-muted max-md:hidden"
-            >{plannerHeaderCopy.factionFollowsRace}</span
-          >{/snippet}
-      </ControlBar>
+      {#if !hideBar}
+        <ControlBar
+          groups={barGroups}
+          label={plannerCopy.barLabel}
+          onchange={chooseFromBar}
+          testid="planner-bar"
+          id="planner-bar"
+        >
+          {#snippet end()}<span class="text-small text-muted max-md:hidden"
+              >{plannerHeaderCopy.factionFollowsRace}</span
+            >{/snippet}
+        </ControlBar>
+      {/if}
       {@render notes()}
     {/snippet}
     {#snippet rail()}
       {#if status === 'ready'}
-        <Ordered order={2}>{@render bandSection()}</Ordered>
-        <Ordered order={3}><InGame {store} character={sendCharacter} origin={effectiveOrigin} /></Ordered>
-        {#if store.readOnly}
-          <Ordered order={7}>
-            <Section title={plannerCopy.shareTitle} testid="planner-fork">
-              <div class="pl-sec">
-                <p class="text-small text-muted">{plannerCopy.sharedLinkNote}</p>
-                <div class="pl-acts">
-                  <Button onclick={() => store.fork()} testid="planner-fork-button">{plannerCopy.fork}</Button
-                  >
-                </div>
-              </div>
-            </Section>
-          </Ordered>
-        {:else}
+        <!-- A shared build leads with In the game (spec section 8); the planner with its level build. -->
+        <Ordered order={shared ? 3 : 2}>{@render bandSection()}</Ordered>
+        <Ordered order={shared ? 2 : 3}
+          ><InGame
+            {store}
+            character={sendCharacter}
+            origin={effectiveOrigin}
+            plainOtherClass={shared}
+          /></Ordered
+        >
+        {#if !store.readOnly}
           <Ordered order={7}><SharePanel {store} {live} /></Ordered>
           <Ordered order={8}>{@render importSection()}</Ordered>
         {/if}
       {:else if status === 'loading'}
-        <Ordered order={2}>{@render railSkeleton(bandCompareCopy.heading('60'))}</Ordered>
-        <Ordered order={3}>{@render railSkeleton(plannerCopy.inGameTitle)}</Ordered>
+        {#if shared}
+          <Ordered order={2}>{@render railSkeleton(plannerCopy.inGameTitle)}</Ordered>
+          <Ordered order={3}>{@render railSkeleton(bandCompareCopy.sharedHeading)}</Ordered>
+        {:else}
+          <Ordered order={2}>{@render railSkeleton(bandCompareCopy.heading('60'))}</Ordered>
+          <Ordered order={3}>{@render railSkeleton(plannerCopy.inGameTitle)}</Ordered>
+        {/if}
       {/if}
     {/snippet}
     <Ordered order={1} span>{@render plate()}</Ordered>
@@ -1369,6 +1399,16 @@
   }
   .pl-notes {
     padding-inline: var(--page-inset);
+  }
+  .pl-shared-note {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 6px 14px;
+    padding: 14px 0 4px;
+    font-size: 15px;
+    line-height: 24px;
+    color: var(--color-text);
   }
   .pl-notes :global(.ui-notice) {
     padding-top: 4px;

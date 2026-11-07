@@ -80,17 +80,15 @@ describe('CharacterList', () => {
     expect(text(body)).toContain('Night Elf Priest · Level 60 · Whitemane (Hardcore US)');
   });
 
-  it('shows a guilded, verified character with the guild line and a verified pill', () => {
+  it("puts a guilded character's guild on the second sub line", () => {
     const { body } = render(CharacterList, { props: { characters: [GUILDED] } });
-    expect(body).toContain('Iron Vanguard');
-    expect(body).toContain('Officer');
-    expect(body).toContain('data-testid="character-guild-verified"');
+    expect(body).toContain('data-testid="character-guild">Iron Vanguard');
   });
 
   it('renders an unguilded character with no guild line, and omits absent fields from the descriptor', () => {
     const { body } = render(CharacterList, { props: { characters: [UNGUILDED] } });
     expect(body).toContain('Thoradin');
-    expect(body).not.toContain('data-testid="character-guild-line"');
+    expect(body).not.toContain('data-testid="character-guild"');
     expect(text(body)).toContain('Warrior · PvP US');
   });
 
@@ -103,37 +101,39 @@ describe('CharacterList', () => {
     expect(body).toContain('href="/setup#paste"');
   });
 
-  it('shows a Battle.net build pill and the "Open in simulator" link for a character with a blizzard build', () => {
+  /** The build-source Tag's word on the only row. */
+  const source = (body: string): string =>
+    /data-testid="character-source"[^>]*>([^<]*)/.exec(body.replace(/<!--.*?-->/g, ''))?.[1]?.trim() ?? '';
+
+  it('tags the build source: Battle.net, Addon, or No gear yet', () => {
+    expect(source(render(CharacterList, { props: { characters: [WITH_BLIZZARD_BUILD] } }).body)).toBe(
+      characterListCopy.battlenetSource,
+    );
+    expect(source(render(CharacterList, { props: { characters: [WITH_ADDON_BUILD] } }).body)).toBe(
+      characterListCopy.addonSource,
+    );
+    expect(source(render(CharacterList, { props: { characters: [UNGUILDED] } }).body)).toBe(
+      characterListCopy.noBuildYet,
+    );
+  });
+
+  it("links each row's Open to the character page; the row itself is not a link", () => {
     const { body } = render(CharacterList, { props: { characters: [WITH_BLIZZARD_BUILD] } });
-    expect(body).toContain('data-testid="character-build-pill">Battle.net');
-    expect(body).toContain('data-testid="character-open-sim"');
-    expect(body).toContain('href="/sim?source=armory&amp;ref=us%2Fpvp%2Fblizzardbuilt"');
-    expect(body).not.toContain('data-testid="character-needs-addon"');
+    expect(body).toContain('href="/character/us/pvp/blizzardbuilt" data-testid="character-open"');
+    expect(text(body)).toContain(`${characterListCopy.open} ›`);
+    expect(body).not.toContain('<a href="/character/us/pvp/blizzardbuilt" class="ui-row');
   });
 
-  it('shows an Addon build pill and the "Open in simulator" link for a character with an addon build', () => {
-    const { body } = render(CharacterList, { props: { characters: [WITH_ADDON_BUILD] } });
-    expect(body).toContain('data-testid="character-build-pill">Addon');
-    expect(body).toContain('data-testid="character-open-sim"');
-  });
-
-  it('shows the short "No gear yet" and a Paste an export link, no sentence and no simulator link, for a character with no build', () => {
-    const { body } = render(CharacterList, { props: { characters: [UNGUILDED] } });
-    expect(body).toContain('data-testid="character-build-pill">No gear yet');
-    expect(body).toContain('data-testid="character-paste-export"');
-    expect(body).not.toContain('Battle.net publishes');
-    expect(body).not.toContain('data-testid="character-open-sim"');
-  });
-
-  it('keeps each descriptor phrase on one line, wrapping only between phrases', () => {
+  it('is the page’s one Plate, named Characters, with the reports link under it', () => {
     const { body } = render(CharacterList, { props: { characters: [GUILDED] } });
-    expect(body).toContain('<span class="whitespace-nowrap">Night Elf Priest ·</span>');
-    expect(body).toContain('<span class="whitespace-nowrap">Level 60 ·</span>');
+    expect(body.match(/data-region="plate"/g)?.length).toBe(1);
+    expect(body).toContain('aria-label="Characters"');
+    expect(body).toContain('href="/reports" data-testid="account-reports-link"');
   });
 
-  it('puts the last-raid line under the rows, not above them', () => {
+  it('draws no last-raid line before a raid is read (spec 2026-11-08 G5)', () => {
     const { body } = render(CharacterList, { props: { characters: [GUILDED] } });
-    expect(body.indexOf('data-testid="coach-last-raid"')).toBeGreaterThan(body.indexOf('</ul>'));
+    expect(body).not.toContain('coach-last-raid');
   });
 
   it('says what a Battle.net refresh did, and offers Try again when it did not answer', () => {
@@ -152,7 +152,7 @@ describe('CharacterList', () => {
     expect(failed.body).toContain(characterListCopy.tryAgain);
   });
 
-  it('shows EmptyState with one action (Refresh from Battle.net) when there are no characters', () => {
+  it('fills the Plate with the empty sentence, Get set up first and Paste an export, when there are no characters', () => {
     const { body } = render(CharacterList, { props: { characters: [] } });
     expect(body).toContain(characterListCopy.empty);
     expect(body).toContain('data-testid="account-characters-empty"');
@@ -177,12 +177,12 @@ describe('CharacterList', () => {
     const withImport = render(CharacterList, {
       props: { characters: [GUILDED], bnetImportedAt: '2026-09-20T00:00:00Z' },
     });
-    expect(withImport.body).toContain('data-testid="bnet-imported"');
     expect(withImport.body).toContain('Imported from Battle.net');
     expect(withImport.body).toContain(characterListCopy.refreshFromBattlenet);
 
     const without = render(CharacterList, { props: { characters: [GUILDED] } });
-    expect(without.body).not.toContain('data-testid="bnet-imported"');
+    expect(without.body).not.toContain('Imported from Battle.net');
+    expect(without.body).not.toContain(characterListCopy.refreshFromBattlenet);
   });
 
   it('never draws the Supporter chip on a row: the mark belongs to the person, not the character', () => {

@@ -31,6 +31,8 @@ export const characterListCopy = {
   /** The main character's pill, and the control on every alt. */
   main: 'Main',
   current: 'Current',
+  /** A character row's link to its page (with `›`). */
+  open: 'Open',
   setAsMain: 'Set as main',
   setAsMainFailed: 'Could not set your main just now.',
   levelPrefix: (level: number): string => `Level ${level}`,

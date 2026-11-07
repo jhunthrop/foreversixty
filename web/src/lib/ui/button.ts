@@ -26,8 +26,11 @@ export const BUTTON_GHOST =
   `${BASE} text-gold border-transparent bg-transparent px-[10px] ` +
   `${HOVER}hover:text-gold-hover ${HOVER}hover:bg-gold/[.06] active:text-gold-hover`;
 
+/** A destructive confirm (premium spec 2026-11-08 section 3A): wipe ink and a 40 % wipe hairline,
+ *  never filled; hover takes the full wipe border and the lighter wipe ink. */
 export const BUTTON_DANGER =
-  `${BASE} text-wipe border-wipe/30 bg-wipe/[.06] ` + `${HOVER}hover:bg-wipe/[.12] active:bg-wipe/[.16]`;
+  `${BASE} text-wipe border-wipe/40 bg-transparent ` +
+  `${HOVER}hover:border-wipe ${HOVER}hover:text-[#ff8f88] active:translate-y-px`;
 
 /** 44 px everywhere. */
 export const BUTTON_MD = 'h-11';

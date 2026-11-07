@@ -1,9 +1,11 @@
 // web/tests/e2e/shared-build.spec.ts
 import { expect, test } from './support/test';
 
-import { bandCompareCopy } from '../../src/lib/planner/copy';
+import { bandCompareCopy, plannerCharacterCardCopy, plannerCopy } from '../../src/lib/planner/copy';
+import { READ_ONLY_REASON } from '../../src/lib/planner/store.svelte';
 import { ACTIVE_BUILD } from './support/active-build';
 import { bareSpentLine, classRadio, spentLine } from './support/planner';
+import { plannerAccount, routePlannerState } from './support/planner-page';
 
 // The real /b/:id is server-rendered by the Go API and reaches the browser through the
 // Worker proxy (Task 12). Playwright serves the static site only, so the page is stubbed
@@ -42,7 +44,9 @@ test('the island bundle and its stylesheet are published at fixed paths', async 
   expect(styles.headers()['content-type']).toContain('css');
 });
 
-test('a shared build opens read-only and Fork makes it editable', async ({ page }) => {
+test('a shared build opens read-only under its own title, and Edit a copy makes it editable', async ({
+  page,
+}) => {
   await page.route('**/b/k7x2qm4a', (route) =>
     route.fulfill({ status: 200, contentType: 'text/html', body: sharedPage }),
   );
@@ -50,28 +54,45 @@ test('a shared build opens read-only and Fork makes it editable', async ({ page 
 
   await expect(page.getByTestId('talent-1001')).toHaveAttribute('data-rank', '3');
   await expect(page.getByTestId('tree-points-161')).toHaveText('3');
+  // The head (premium spec 2026-11-08 section 8): the record's title, then Shared build, the
+  // planner's meta, the split and the views.
+  await expect(page.getByTestId('page-title')).toHaveText('Arms leveling');
+  await expect(page.getByTestId('planner-shared-meta')).toHaveText(plannerCopy.sharedMeta);
   await expect(page.getByTestId('planner-meta')).toContainText('Level 12');
-  // Read-only: the bar's class crests are off (spec 2026-11-08 4.2), with the reason as title.
-  await expect(classRadio(page, 'warrior')).toHaveAttribute('aria-disabled', 'true');
-  await expect(classRadio(page, 'mage')).toHaveAttribute(
-    'title',
-    'This build was opened from a share link; fork it to edit',
+  await expect(page.getByTestId('planner-split')).toHaveText('3/0');
+  await expect(page.getByTestId('planner-views')).toHaveText(plannerCopy.sharedViews(12));
+  // No class and race bar (decision B3); Edit a copy in the notes line (B2); In the game leads the
+  // rail and the level build is the Guide build.
+  await expect(page.getByTestId('planner-bar')).toHaveCount(0);
+  await expect(page.getByTestId('planner-shared-note')).toContainText(plannerCopy.sharedLinkNote);
+  await expect(page.getByTestId('planner-fork-button')).toHaveText(plannerCopy.fork);
+  await expect(page.getByTestId('band-compare').getByRole('heading')).toHaveText(
+    bandCompareCopy.sharedHeading,
   );
+  await expect(page.getByTestId('planner-reset')).toHaveCount(0);
 
   // A read-only cell is aria-disabled (locked), but a click still reaches the planner, which
   // refuses and says why: `force` clicks it as a viewer would, past Playwright's enabled check.
   await page.getByTestId('talent-1002').click({ force: true });
-  await expect(page.getByTestId('planner-status')).toHaveText(
-    'This build was opened from a share link; fork it to edit',
-  );
+  await expect(page.getByTestId('planner-status')).toHaveText(READ_ONLY_REASON);
   await expect(page.getByTestId('talent-1002')).toHaveAttribute('data-rank', '0');
 
   await page.getByTestId('planner-fork-button').click();
-  await expect(classRadio(page, 'warrior')).not.toHaveAttribute('aria-disabled', 'true');
+  await expect(page.getByTestId('planner-shared-note')).toHaveCount(0);
   await page.getByTestId('talent-1002').click();
   await expect(page.getByTestId('talent-1002')).toHaveAttribute('data-rank', '1');
   await expect(spentLine(page)).toHaveText(bareSpentLine(4));
   await expect(page.getByTestId('planner-reset')).toBeVisible();
+});
+
+test('a shared build with no title is headed by its race and class', async ({ page }) => {
+  const untitled = pageFor(JSON.stringify({ ...RECORD, id: 'untitled1', title: undefined }));
+  await page.route('**/b/untitled1', (route) =>
+    route.fulfill({ status: 200, contentType: 'text/html', body: untitled }),
+  );
+  await page.goto('/b/untitled1');
+  await expect(page.getByTestId('talent-1001')).toHaveAttribute('data-rank', '3');
+  await expect(page.getByTestId('page-title')).toHaveText(/^\S+( \S+)* Warrior$/);
 });
 
 // Fix round 2, item 7 (wow-player review finding 3): a populated shared build -- real
@@ -109,7 +130,7 @@ test('a populated read-only build keeps every cell inert, in both directions', a
   // Against the build's own band (the fixture's is empty, 0 points): all 5 points are past the
   // band's total, so none of them differ -- Matches, "+5 beyond the build" -- while the cell still
   // carries its rank-differs marker (the gold dot, TalentButton's `diff`). Load hidden (nothing
-  // to overwrite into on a read-only build), Fork offered in its place, and no See what differs.
+  // to overwrite into on a read-only build), Edit a copy offered instead, and no See what differs.
   await expect(page.getByTestId('band-compare-differs')).toHaveText(bandCompareCopy.matches);
   await expect(page.getByTestId('band-compare-beyond')).toHaveText(bandCompareCopy.beyondGuide(5));
   await expect(page.getByTestId('talent-4001')).toHaveClass(/\bdiff\b/);
@@ -162,4 +183,23 @@ test('a reference fetch that fails still mounts, and Planner offers the retry', 
   // The planner's own tree-load retry has its own accessible name (LoadError's
   // `retryAriaLabel`), so it stays unambiguous next to any other "Try again" on the page.
   await expect(page.getByRole('button', { name: 'Reload talents' })).toBeVisible();
+});
+
+// Ruling MUST 5 (premium spec 2026-11-08): signed in on another class, the shared page says so in
+// one plain line above Copy for the game, which stays the primary; there is no disabled send.
+test("another class's shared build says so in one line, and Copy for the game is the primary", async ({
+  page,
+}) => {
+  await routePlannerState(page, 'felsnap');
+  await page.route('**/b/k7x2qm4a', (route) =>
+    route.fulfill({ status: 200, contentType: 'text/html', body: sharedPage }),
+  );
+  await page.goto('/b/k7x2qm4a');
+
+  const name = plannerAccount().characters[0].name;
+  await expect(page.getByTestId('planner-send-other')).toHaveText(
+    plannerCharacterCardCopy.otherClass('Warrior', name, 'Hunter'),
+  );
+  await expect(page.getByTestId('planner-send')).toHaveCount(0);
+  await expect(page.getByTestId('copy-for-game')).toBeVisible();
 });

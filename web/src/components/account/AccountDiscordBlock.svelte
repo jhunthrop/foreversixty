@@ -1,7 +1,7 @@
 <!-- web/src/components/account/AccountDiscordBlock.svelte -->
-<!-- The account page's Discord block (experience spec 2026-10-25-discord-notifications, sections
-     3 to 5): one of five states chosen by blockState(me), drawn from the `/v1/me` the page
-     already holds. Flows live in lib/account/discord-actions.ts; every sentence comes from the
+<!-- The Discord section's Notifications block (experience spec 2026-10-25-discord-notifications,
+     sections 3 to 5; premium spec 2026-11-08 section 7.6): a caps label with the state Tag, then one
+     of five states chosen by blockState(me), drawn from the `/v1/me` the page already holds. Flows live in lib/account/discord-actions.ts; every sentence comes from the
      copy module. The typed webhook URL is component state only: cleared after a saved webhook,
      kept after a failed one, never written anywhere else. -->
 <script lang="ts">
@@ -20,7 +20,6 @@
   import { createFocusQueue, consumeReturn } from '../../lib/account/discord-return.svelte';
   import { blockState, connectAvailable, stateTagFor } from '../../lib/account/notifications';
   import { notificationsCopy } from '../../lib/account/notifications-copy';
-  import CardHead from '../ui/CardHead.svelte';
   import Tag from '../ui/Tag.svelte';
   import DiscordConnect from './discord/DiscordConnect.svelte';
   import DiscordFree from './discord/DiscordFree.svelte';
@@ -204,63 +203,60 @@
 </script>
 
 {#if block.state !== 'off' && !settling}
-  <div id="discord" class="scroll-mt-20" onkeydown={onKeydown} role="presentation">
-    <section class="card-surface overflow-hidden" data-testid="account-discord">
-      <CardHead
-        glyph="discord"
-        tone="discord"
-        label={notificationsCopy.headLabel}
-        title={notificationsCopy.label}
+  <div
+    class="flex flex-col gap-[6px]"
+    onkeydown={onKeydown}
+    role="presentation"
+    data-testid="account-discord"
+  >
+    <span class="flex items-center gap-2">
+      <span class="text-label tracking-label text-muted font-bold uppercase"
+        >{notificationsCopy.headLabel}</span
       >
-        {#snippet aside()}
-          {#if stateTag !== null}
-            <Tag tone={stateTag.tone} dot={stateTag.dot} testid="discord-state-tag">{stateTag.text}</Tag>
-          {/if}
-        {/snippet}
-      </CardHead>
-      {#if block.state === 'free'}
-        <DiscordFree />
-      {:else if showConnect}
-        <DiscordConnect
-          {status}
-          {replacing}
-          {quiet}
-          onStuck={showStuck}
-          onPaste={showPaste}
-          onCancel={cancel}
-        />
-      {:else if showForm}
-        {#if block.state === 'empty' && status !== null}
-          <div class="px-5"><DiscordStatusLine {status} /></div>
-        {/if}
-        <DiscordPasteForm
-          bind:webhook
-          bind:events={formEvents}
-          error={fieldFailure?.message ?? null}
-          offerPlans={fieldFailure?.target === 'plans'}
-          saving={busy === 'save'}
-          {replacing}
-          secondary={quiet}
-          onSubmit={submit}
-          onCancel={cancel}
-          onConnect={connectOn ? showConnectView : undefined}
-        />
-      {:else if 'discord' in block}
-        <DiscordSaved
-          state={block.state}
-          discord={block.discord}
-          {confirming}
-          {busy}
-          {status}
-          onToggleEvents={changeEvents}
-          onTest={test}
-          onAskRemove={askRemove}
-          onRemove={remove}
-          onCancel={cancel}
-          onReplace={startReplace}
-          onStuck={showStuck}
-        />
-      {/if}
-    </section>
+      {#if stateTag !== null}<Tag tone={stateTag.tone} dot={stateTag.dot} testid="discord-state-tag"
+          >{stateTag.text}</Tag
+        >{/if}
+    </span>
+    {#if block.state === 'free'}
+      <DiscordFree />
+    {:else if showConnect}
+      <DiscordConnect
+        {status}
+        {replacing}
+        {quiet}
+        onStuck={showStuck}
+        onPaste={showPaste}
+        onCancel={cancel}
+      />
+    {:else if showForm}
+      {#if block.state === 'empty' && status !== null}<DiscordStatusLine {status} />{/if}
+      <DiscordPasteForm
+        bind:webhook
+        bind:events={formEvents}
+        error={fieldFailure?.message ?? null}
+        offerPlans={fieldFailure?.target === 'plans'}
+        saving={busy === 'save'}
+        {replacing}
+        secondary={quiet}
+        onSubmit={submit}
+        onCancel={cancel}
+        onConnect={connectOn ? showConnectView : undefined}
+      />
+    {:else if 'discord' in block}
+      <DiscordSaved
+        state={block.state}
+        discord={block.discord}
+        {confirming}
+        {busy}
+        {status}
+        onToggleEvents={changeEvents}
+        onTest={test}
+        onAskRemove={askRemove}
+        onRemove={remove}
+        onCancel={cancel}
+        onReplace={startReplace}
+        onStuck={showStuck}
+      />
+    {/if}
   </div>
 {/if}

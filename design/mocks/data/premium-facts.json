@@ -1,0 +1,3355 @@
+{
+ "now": "2026-11-08T10:00:00.000Z",
+ "build": "1.60.1.70790",
+ "plans": {
+  "title": "Plans",
+  "yourPlanTag": "Your plan",
+  "faqTitle": "Questions",
+  "description": "What is free on Forever Sixty for good, what Premium, Guild and Raid guild add, and what each costs.",
+  "band": {
+   "eyebrow": "PLANS",
+   "heading": "What is free, and what the plans add",
+   "lede": "Everything a player needs is free, and the free list never shrinks. Premium and the guild plans pay for the site. There are no ads for anyone.",
+   "guildLead": "Running a guild?",
+   "guildLink": "Guild and Raid guild are further down"
+  },
+  "guildRegion": {
+   "heading": "For guild leaders",
+   "lede": "One officer pays, and the whole guild gets raids, sign-ups and attendance. Members never pay to sign up.",
+   "members": "Plans count verified members: players with a Forever Sixty account whose character the guild has confirmed. People in your Discord without an account do not count."
+  },
+  "founder": {
+   "label": "Founder",
+   "open": "Founder prices until 6 January 2027. Buy by then and the price stays for as long as you stay subscribed."
+  },
+  "interval": {
+   "groupLabel": "Billing interval",
+   "labels": {
+    "yearly": "Yearly",
+    "monthly": "Monthly"
+   }
+  },
+  "free": {
+   "name": "Free",
+   "audience": "For every player",
+   "price": "$0",
+   "note": "No card, no trial, no end date.",
+   "features": [
+    "Addon export and import",
+    "BiS lists for every spec and level band",
+    "Talent planner",
+    "Browser sims",
+    "Logs, live logging and parses",
+    "Rankings and the tier list",
+    "Class guides"
+   ]
+  },
+  "premium": {
+   "name": "Premium",
+   "audience": "For one player",
+   "support": "Free stays complete. Premium pays for the servers and keeps the site going.",
+   "features": [
+    {
+     "text": "Coach: after every logged raid, what to fix first. It names the casts you missed, the buffs you let drop and the consumables you skipped.",
+     "anchor": "coach"
+    },
+    {
+     "text": "Try up to 5,000 gear, talent or drop combinations in one sim and find your best DPS. Your browser stops at 400.",
+     "anchor": "server-sims"
+    },
+    {
+     "text": "Close the tab. Server sims keep running, and the site tells you when they finish.",
+     "anchor": "server-sims"
+    },
+    {
+     "text": "Runs go up to 100,000 iterations instead of 30,000, so close upgrades come out clear.",
+     "anchor": "server-sims"
+    },
+    {
+     "text": "See if you are improving: your Forever Score and every boss parse on a chart over time, with the fights behind each point.",
+     "anchor": "history"
+    },
+    {
+     "text": "A message in your own Discord channel when a server sim finishes or a log is parsed.",
+     "anchor": "notifications"
+    },
+    {
+     "text": "A Supporter mark beside your name on your characters and in your guild's roster.",
+     "anchor": null
+    }
+   ],
+   "scope": "Sims cover damage specs; healing and tanking specs are not simulated yet. The coach reviews every spec; damage specs get the most findings."
+  },
+  "guild": {
+   "name": "Guild",
+   "audience": "For a guild of up to 25 verified members",
+   "features": [
+    "Post raids on the site and in Discord; members sign up with one tap.",
+    "See who came: attendance and a report for every raid night from its log.",
+    "The Forever Sixty bot in your Discord: raid posts with buttons, plus /bis and /char lookups.",
+    "1 Premium seat to give a member, such as your raid leader.",
+    "Up to 25 verified members, so a guild that runs 10- or 20-person raids fits under Guild. Nothing switches off if you grow past it."
+   ]
+  },
+  "raidGuild": {
+   "name": "Raid guild",
+   "audience": "For a raiding guild of any size",
+   "features": [
+    "Loot council: each drop ranks the raiders it helps most, with what they wear now, their attendance and their loot this tier. Officers award it from the same screen.",
+    "Readiness board: before the pull, one list of who is missing enchants, consumables, talent points or upgrades, worst first.",
+    "3 Premium seats to give members.",
+    "Any number of members.",
+    "Everything in Guild: raids, sign-ups, attendance and the Discord bot."
+   ]
+  },
+  "price": {
+   "suffix": {
+    "yearly": " /year",
+    "monthly": " /month"
+   },
+   "perMonth": "[fn]",
+   "orYearly": "[fn]",
+   "founderUntil": "[fn]",
+   "perMember": "[fn]",
+   "perRaider": "[fn]"
+  },
+  "buttons": {
+   "subscribe": "[fn]",
+   "subscribeGuild": "[fn]"
+  },
+  "trial": "First 7 days free, once per guild. Cancel before day 8 and nothing is charged; guild settings shows the date of the first charge.",
+  "trialEmail": "We email you 3 days before the trial ends.",
+  "coachSample": {
+   "tag": "Sample",
+   "label": "What the coach says after a raid",
+   "context": "[fn]",
+   "fixFirst": "Fix first",
+   "then": "Then",
+   "doingWell": "Doing well",
+   "caption": "A sample review. Yours is written from your own log after every raid you upload.",
+   "ariaLabel": "A sample coach review"
+  },
+  "historyPromise": "If a guild plan ends, its raids, attendance, loot and reports stay readable for good, and officers can export attendance and loot as CSV at any time.",
+  "howItWorks": "How the guild plans work",
+  "rules": [
+   {
+    "term": "Verified members",
+    "sentence": "A verified member is a player with a Forever Sixty account whose character the guild has confirmed: an officer approved it, they joined by the guild's invite link, or the character is in the guild's logs. Each player counts once, however many characters they have in the guild. Discord members without an account do not count."
+   },
+   {
+    "term": "Size",
+    "sentence": "Guild counts verified members each day, the leader included. Above 25 the officer is told before renewal and offered Raid guild. Nothing switches off mid-plan."
+   },
+   {
+    "term": "Paying together",
+    "sentence": "One person's card pays for the plan. Members cannot split the bill on the site."
+   },
+   {
+    "term": "Seats",
+    "sentence": "The subscriber or the guild leader gives each seat to any verified member. A seat holder has Premium while the plan lasts."
+   },
+   {
+    "term": "Moving a seat",
+    "sentence": "A seat can move once every 30 days. The old holder keeps Premium until it moves. If a holder leaves the guild, the seat comes back at once."
+   },
+   {
+    "term": "Already on Premium",
+    "sentence": "A member who pays for Premium accepts a seat first. Their own Premium stops renewing and the seat starts when it ends, so nobody pays twice. If the seat is taken away later, they get a link to come back at the price they had."
+   },
+   {
+    "term": "Trial",
+    "sentence": "A guild's first 7 days are free, once per guild. The card is added at the start, and guild settings shows the date of the first charge from day one. Cancel before day 8 and nothing is charged."
+   },
+   {
+    "term": "Renewals",
+    "sentence": "We email 7 days before every yearly renewal, to the address you gave Stripe at checkout. Cancel in one click; the plan runs to the end of the period you paid for."
+   },
+   {
+    "term": "A new guild leader",
+    "sentence": "The subscriber hands the plan to another officer from guild settings. The founder price goes with it."
+   },
+   {
+    "term": "Refunds",
+    "sentence": "Email help@foreversixty.gg for a refund. Cancelling stops the renewal and the plan runs to the end of the period you paid for; there are no part-period refunds. If you were charged twice, or paid for something that did not work, we put it right."
+   }
+  ],
+  "foot": "Prices in US dollars. Cancel any time; you keep the plan to the end of the period you paid for.",
+  "faq": [
+   {
+    "question": "What happens if I cancel?",
+    "answer": "You keep everything through the end of the period you already paid for. After that, the account works like a free one, and nothing is deleted. A guild's records stay readable for good."
+   },
+   {
+    "question": "Can I get a refund?",
+    "answer": "Email us and we'll sort it out. The refund policy has the details."
+   },
+   {
+    "question": "Is anything from Battle.net ever paid?",
+    "answer": "No. Your characters, your sign-in, and everything the game itself tells us about you stays free, always. Blizzard's own rules for using their data require this, and we would want it that way regardless."
+   },
+   {
+    "question": "Are there ads?",
+    "answer": "No. Not for anyone, paying or not. The site is paid for by Premium and the guild plans, not by ads, and that is not a perk you are buying. It is true for everyone."
+   },
+   {
+    "question": "Who am I paying?",
+    "answer": "Commish LLC d/b/a Forever Sixty. Your card statement reads FOREVERSIXTY. Stripe handles the payment; we never see or store your card."
+   }
+  ]
+ },
+ "plan_table": {
+  "premium": {
+   "key": "premium",
+   "name": "Premium",
+   "monthly": 6,
+   "yearly": 50,
+   "founderMonthly": 5,
+   "founderYearly": 40,
+   "guild": false,
+   "seats": 0
+  },
+  "guild": {
+   "key": "guild",
+   "name": "Guild",
+   "monthly": 15,
+   "yearly": 150,
+   "founderMonthly": 12,
+   "founderYearly": 120,
+   "guild": true,
+   "seats": 1
+  },
+  "raid_guild": {
+   "key": "raid_guild",
+   "name": "Raid guild",
+   "monthly": 25,
+   "yearly": 250,
+   "founderMonthly": 20,
+   "founderYearly": 200,
+   "guild": true,
+   "seats": 3
+  }
+ },
+ "plan_order": [
+  "premium",
+  "guild",
+  "raid_guild"
+ ],
+ "founder_last_day": "6 Jan 2027",
+ "priced": {
+  "premium:yearly:founder": {
+   "cell": {
+    "amount": "$40",
+    "suffix": " /year",
+    "secondLine": "$3.33 a month, billed yearly",
+    "founderLine": "Founder price for anyone who subscribes by 6 Jan 2027. $50 after that."
+   },
+   "button": "Subscribe · $40 a year",
+   "cost": null,
+   "href": "/premium/checkout?plan=premium&interval=yearly",
+   "price": "$40 a year"
+  },
+  "premium:yearly:list": {
+   "cell": {
+    "amount": "$50",
+    "suffix": " /year",
+    "secondLine": "$4.17 a month, billed yearly",
+    "founderLine": null
+   },
+   "button": "Subscribe · $50 a year",
+   "cost": null,
+   "href": "/premium/checkout?plan=premium&interval=yearly",
+   "price": "$50 a year"
+  },
+  "premium:monthly:founder": {
+   "cell": {
+    "amount": "$5",
+    "suffix": " /month",
+    "secondLine": "Or $40 a year.",
+    "founderLine": "Founder price for anyone who subscribes by 6 Jan 2027. $6 a month after that."
+   },
+   "button": "Subscribe · $5 a month",
+   "cost": null,
+   "href": "/premium/checkout?plan=premium&interval=monthly",
+   "price": "$5 a month"
+  },
+  "premium:monthly:list": {
+   "cell": {
+    "amount": "$6",
+    "suffix": " /month",
+    "secondLine": "Or $50 a year.",
+    "founderLine": null
+   },
+   "button": "Subscribe · $6 a month",
+   "cost": null,
+   "href": "/premium/checkout?plan=premium&interval=monthly",
+   "price": "$6 a month"
+  },
+  "guild:yearly:founder": {
+   "cell": {
+    "amount": "$120",
+    "suffix": " /year",
+    "secondLine": "$10 a month, billed yearly",
+    "founderLine": "Founder price for anyone who subscribes by 6 Jan 2027. $150 after that."
+   },
+   "button": "Subscribe a guild · $120 a year",
+   "cost": "$4.80 per member a year at 25 members.",
+   "href": "/premium/checkout?plan=guild&interval=yearly",
+   "price": "$120 a year"
+  },
+  "guild:yearly:list": {
+   "cell": {
+    "amount": "$150",
+    "suffix": " /year",
+    "secondLine": "$12.50 a month, billed yearly",
+    "founderLine": null
+   },
+   "button": "Subscribe a guild · $150 a year",
+   "cost": "$6 per member a year at 25 members.",
+   "href": "/premium/checkout?plan=guild&interval=yearly",
+   "price": "$150 a year"
+  },
+  "guild:monthly:founder": {
+   "cell": {
+    "amount": "$12",
+    "suffix": " /month",
+    "secondLine": "Or $120 a year.",
+    "founderLine": "Founder price for anyone who subscribes by 6 Jan 2027. $15 a month after that."
+   },
+   "button": "Subscribe a guild · $12 a month",
+   "cost": "$0.48 per member a month at 25 members.",
+   "href": "/premium/checkout?plan=guild&interval=monthly",
+   "price": "$12 a month"
+  },
+  "guild:monthly:list": {
+   "cell": {
+    "amount": "$15",
+    "suffix": " /month",
+    "secondLine": "Or $150 a year.",
+    "founderLine": null
+   },
+   "button": "Subscribe a guild · $15 a month",
+   "cost": "$0.60 per member a month at 25 members.",
+   "href": "/premium/checkout?plan=guild&interval=monthly",
+   "price": "$15 a month"
+  },
+  "raid_guild:yearly:founder": {
+   "cell": {
+    "amount": "$200",
+    "suffix": " /year",
+    "secondLine": "$16.67 a month, billed yearly",
+    "founderLine": "Founder price for anyone who subscribes by 6 Jan 2027. $250 after that."
+   },
+   "button": "Subscribe a guild · $200 a year",
+   "cost": "$5 per raider a year in a 40-person raid, $10 in a 20, $20 in a 10.",
+   "href": "/premium/checkout?plan=raid_guild&interval=yearly",
+   "price": "$200 a year"
+  },
+  "raid_guild:yearly:list": {
+   "cell": {
+    "amount": "$250",
+    "suffix": " /year",
+    "secondLine": "$20.83 a month, billed yearly",
+    "founderLine": null
+   },
+   "button": "Subscribe a guild · $250 a year",
+   "cost": "$6.25 per raider a year in a 40-person raid, $12.50 in a 20, $25 in a 10.",
+   "href": "/premium/checkout?plan=raid_guild&interval=yearly",
+   "price": "$250 a year"
+  },
+  "raid_guild:monthly:founder": {
+   "cell": {
+    "amount": "$20",
+    "suffix": " /month",
+    "secondLine": "Or $200 a year.",
+    "founderLine": "Founder price for anyone who subscribes by 6 Jan 2027. $25 a month after that."
+   },
+   "button": "Subscribe a guild · $20 a month",
+   "cost": "$0.50 per raider a month in a 40-person raid, $1 in a 20, $2 in a 10.",
+   "href": "/premium/checkout?plan=raid_guild&interval=monthly",
+   "price": "$20 a month"
+  },
+  "raid_guild:monthly:list": {
+   "cell": {
+    "amount": "$25",
+    "suffix": " /month",
+    "secondLine": "Or $250 a year.",
+    "founderLine": null
+   },
+   "button": "Subscribe a guild · $25 a month",
+   "cost": "$0.63 per raider a month in a 40-person raid, $1.25 in a 20, $2.50 in a 10.",
+   "href": "/premium/checkout?plan=raid_guild&interval=monthly",
+   "price": "$25 a month"
+  }
+ },
+ "premium_lines": [
+  {
+   "text": "Coach: after every logged raid, what to fix first. It names the casts you missed, the buffs you let drop and the consumables you skipped.",
+   "anchor": "coach",
+   "first": true
+  },
+  {
+   "text": "Try up to 5,000 gear, talent or drop combinations in one sim and find your best DPS. Your browser stops at 400.",
+   "anchor": "server-sims",
+   "first": true
+  },
+  {
+   "text": "Close the tab. Server sims keep running, and the site tells you when they finish.",
+   "anchor": "server-sims",
+   "first": false
+  },
+  {
+   "text": "Runs go up to 100,000 iterations instead of 30,000, so close upgrades come out clear.",
+   "anchor": "server-sims",
+   "first": false
+  },
+  {
+   "text": "See if you are improving: your Forever Score and every boss parse on a chart over time, with the fights behind each point.",
+   "anchor": "history",
+   "first": true
+  },
+  {
+   "text": "A message in your own Discord channel when a server sim finishes or a log is parsed.",
+   "anchor": "notifications",
+   "first": true
+  },
+  {
+   "text": "A Supporter mark beside your name on your characters and in your guild's roster.",
+   "anchor": null,
+   "first": false
+  }
+ ],
+ "trial": {
+  "lead": "First 7 days free",
+  "rest": ", once per guild. Cancel before day 8 and nothing is charged; guild settings shows the date of the first charge."
+ },
+ "coach": {
+  "classSlug": "warrior",
+  "zone": "Molten Core",
+  "title": "Your Fury coach",
+  "context": "Fury Warrior · Molten Core · 40-player kill",
+  "opening": "Solid kill: you were alive the whole fight and Battle Shout was up 100% of it. Almost everything you left behind sits in one button.",
+  "fixFirst": {
+   "title": "Bloodthirst: 9 casts lost",
+   "why": "Bloodthirst is the button the Fury rotation is built around, and 9 casts went unused while you had the rage, longest at 1:12–1:25. At 2:44–2:58 you sat on a full bar instead, so that one gap cost you two Bloodthirsts.",
+   "icon": "spell_nature_bloodlust"
+  },
+  "then": [
+   {
+    "title": "Rage full for 14 seconds in total",
+    "why": "When the bar is full, Heroic Strike turns rage into damage instead of losing it.",
+    "icon": null
+   }
+  ],
+  "doingWell": [
+   {
+    "text": "You were alive the whole fight.",
+    "icon": null
+   },
+   {
+    "text": "Battle Shout was up 100% of the fight, against 97% for the top 25.",
+    "icon": "ability_warrior_battleshout"
+   }
+  ]
+ },
+ "checkout": {
+  "redirecting": "Redirecting to secure checkout…",
+  "signInRequired": "Sign in to continue.",
+  "canceled": "Checkout was canceled. Nothing was charged.",
+  "notOpenYet": "Purchases are not open yet. Nothing was charged. Check back soon.",
+  "genericFailure": "That did not work; try again.",
+  "processing": "Confirming your payment…",
+  "confirmed": "You're all set.",
+  "confirmationSlow": "This can take a moment; refresh if it does not update.",
+  "retry": "Try again",
+  "whichGuild": "Which guild?",
+  "chosenPlan": "[fn]",
+  "guildPlanLabel": "Guild",
+  "comebackGone": "That resubscribe link is no longer available. Start again from the premium page.",
+  "verifiedMembers": "[fn]",
+  "fitsRaidGuild": "[fn]",
+  "noBillableGuild": "You can subscribe a guild you lead or have claimed.",
+  "findYourGuild": "Find your guild",
+  "guildsDidNotLoad": "Your guilds did not load.",
+  "tryAgain": "Try again",
+  "steps": {
+   "signIn": "Sign in",
+   "pay": "Pay with Stripe",
+   "on": "[fn]"
+  },
+  "signedInAs": "[fn]",
+  "stripeLine": "Stripe handles the card; we never see it.",
+  "paid": "Stripe took the payment.",
+  "trialSaved": "[fn]",
+  "checkAgain": "Check again",
+  "renewalLine": "[fn]",
+  "nextSim": "Run a server sim",
+  "nextCoach": "Upload a log for the coach"
+ },
+ "billing_block": {
+  "notSubscribed": "Not on Premium.",
+  "seePlans": "See plans",
+  "manageBilling": "Manage billing",
+  "renews": "Renews",
+  "ends": "Ends",
+  "pastDueTag": "Payment failed",
+  "pastDueBanner": "Your last payment failed. Update your card to keep access.",
+  "guildBilledBy": "[fn]",
+  "guildNotSubscribed": "This guild is not on the guild plan yet.",
+  "subscribeTheGuild": "Subscribe your guild"
+ },
+ "premium_block": {
+  "rows": {
+   "serverSims": {
+    "label": "Server sims",
+    "on": "[fn]",
+    "off": "In your browser"
+   },
+   "history": {
+    "label": "History charts",
+    "on": "On",
+    "onWithMain": "Open on your main character",
+    "off": "Sparkline only"
+   },
+   "notifications": {
+    "label": "Discord notifications"
+   },
+   "supporter": {
+    "label": "Supporter mark",
+    "on": "Shown on your characters",
+    "off": "Not shown"
+   }
+  },
+  "supporterChip": "Supporter",
+  "supporterTooltip": "Supports Forever Sixty (Premium or guild plan)"
+ },
+ "source": {
+  "panelTitle": "You already have Premium.",
+  "grant": {
+   "noEnd": "Premium · granted, no end date",
+   "until": "[fn]",
+   "givenNoEnd": "Given by Forever Sixty. Nothing is billed to you.",
+   "givenUntil": "Given by Forever Sixty. It ends on its own; nothing is billed to you."
+  },
+  "fallback": "Premium",
+  "buttons": {
+   "manage": "Manage billing",
+   "history": "Billing history",
+   "seePlan": "See your plan"
+  },
+  "premiumCard": {
+   "own": "You have Premium through your subscription.",
+   "seat": "You have Premium through a seat from your guild.",
+   "grant": "You have Premium through a grant from Forever Sixty."
+  }
+ },
+ "links": {
+  "card": "/premium#premium",
+  "coach": "/premium#coach",
+  "serverSims": "/premium#server-sims",
+  "history": "/premium#history",
+  "notifications": "/premium#notifications",
+  "guildLeaders": "/premium#guild-leaders"
+ },
+ "guild_checkout": {
+  "band": {
+   "label": "CHECKOUT",
+   "title": "Subscribe a guild",
+   "invalidTitle": "Checkout"
+  },
+  "planSummary": {
+   "founder": "Founder",
+   "trial": "First 7 days free",
+   "changePlan": "Change plan"
+  },
+  "sizeLine": {
+   "guild": "Up to 25 verified members. A 10-person raid team fits, and a 20-person one with a small bench.",
+   "raidGuild": "Any size. For guilds over 25 verified members."
+  },
+  "lead": {
+   "ready": "Choose the guild this plan is for.",
+   "allUnclaimed": "[fn]",
+   "someClaimed": "A guild's guild master claims it here, or an officer once a second officer confirms; whoever holds the claim subscribes it. Here is the next step for each of your guilds.",
+   "canClaim": "You can claim a guild here. Each card below has its next step.",
+   "allClaimed": "Whoever holds a guild's claim subscribes it. Here is where each of your guilds stands."
+  },
+  "rank": {
+   "leader": "Guild master",
+   "officer": "Officer",
+   "member": "Member"
+  },
+  "verifyMark": {
+   "verified": "Verified",
+   "notVerified": "Not verified"
+  },
+  "more": "[fn]",
+  "facts": {
+   "verified": "[fn]",
+   "noneVerified": "No one verified yet",
+   "onRoster": "[fn]",
+   "noPlan": "No plan",
+   "plan": "[fn]",
+   "trial": "[fn]",
+   "ends": "[fn]",
+   "ended": "[fn]"
+  },
+  "ready": {
+   "holdsClaim": "[fn]",
+   "lapsed": "[fn]",
+   "startTrial": "[fn]",
+   "subscribe": "[fn]",
+   "subscribeAgain": "[fn]"
+  },
+  "switchPlan": {
+   "overLimit": "[fn]",
+   "withinLimit": "[fn]",
+   "toRaidGuild": "Switch to Raid guild",
+   "toGuild": "Switch to Guild"
+  },
+  "claim": {
+   "sentence": "[fn]",
+   "button": "[fn]"
+  },
+  "claimLinkBattlenet": {
+   "sentence": "[fn]",
+   "button": "Link Battle.net"
+  },
+  "startClaim": {
+   "sentence": "[fn]",
+   "button": "Start a claim"
+  },
+  "confirmClaim": {
+   "sentence": "[fn]",
+   "button": "Confirm the claim"
+  },
+  "confirm": {
+   "claim": "[fn]",
+   "yesClaim": "Yes, claim it",
+   "startClaim": "[fn]",
+   "yesStartClaim": "Yes, start the claim",
+   "confirmClaim": "[fn]",
+   "yesConfirmClaim": "Yes, confirm it",
+   "cancel": "Cancel"
+  },
+  "done": {
+   "claim": "[fn]",
+   "startClaim": "Claim started. It waits for a second officer or the guild master.",
+   "confirmClaim": "[fn]"
+  },
+  "claimPendingYours": "[fn]",
+  "claimPendingAsk": "[fn]",
+  "claimedAsk": {
+   "holdsClaim": "[fn]",
+   "officer": "[fn]",
+   "member": "[fn]"
+  },
+  "askLeader": "[fn]",
+  "otherCharacter": "[fn]",
+  "getSetUp": "Get set up",
+  "moderatorFallback": "Guild master gone? Ask us on Discord and we will sort the claim by hand.",
+  "moderatorLinkText": "Ask us on Discord",
+  "claimBlocked": {
+   "holdsOther": "[fn]",
+   "rateLimited": "[fn]"
+  },
+  "frozen": "[fn]",
+  "checkoutOpen": "[fn]",
+  "checkAgain": "Check again",
+  "openGuild": "Open the guild",
+  "onPlan": {
+   "youPay": "[fn]",
+   "billedBy": "[fn]",
+   "unnamed": "[fn]",
+   "manageBilling": "Manage billing",
+   "moveToRaidGuild": "Move to Raid guild",
+   "seatHeld": "You hold one of its Premium seats.",
+   "seatsGiven": "[fn]",
+   "seatsAllGiven": "[fn]"
+  },
+  "verify": {
+   "approver": "Not verified yet. An officer approves you from the roster, the guild's invite link verifies you at once, or you are verified when you turn up in the guild's logs.",
+   "noApprover": "[fn]",
+   "claimedNoApprover": "Not verified yet. You are verified when you turn up in the guild's logs, or once the claim holder approves you.",
+   "short": "Not verified yet. Turning up in the guild's logs also verifies you."
+  },
+  "copyField": {
+   "labelGuildMaster": "[fn]",
+   "labelPerson": "[fn]",
+   "labelSecondOfficer": "Link for a second officer",
+   "copy": "Copy link",
+   "copied": "Copied",
+   "share": "Share",
+   "failed": "Could not copy. Select the link and copy it."
+  },
+  "share": {
+   "title": "[fn]",
+   "claimText": "[fn]",
+   "settingsText": "[fn]"
+  },
+  "busy": {
+   "checkout": "Redirecting to secure checkout…",
+   "claiming": "Claiming…",
+   "starting": "Starting…",
+   "confirming": "Confirming…"
+  },
+  "claimErrors": {
+   "alreadyClaimed": "[fn]",
+   "pending": "[fn]",
+   "notEligible": "[fn]",
+   "rateLimited": "You made a claim in the last 30 days.",
+   "holdsAnother": "You already hold another guild's claim.",
+   "sameAccount": "You started this claim, so a second officer confirms it.",
+   "generic": "That did not work; try again."
+  },
+  "checkoutErrors": {
+   "notOpen": "Purchases are not open yet. Nothing was charged. Check back soon.",
+   "alreadyOnPlan": "[fn]",
+   "generic": "That did not work; try again.",
+   "tryAgain": "Try again"
+  },
+  "portalError": "Billing did not open. Try again.",
+  "loading": "Loading your guilds",
+  "loadError": {
+   "title": "Your guilds did not load.",
+   "retry": "Try again"
+  },
+  "emptyA": {
+   "title": "We do not know your guild yet.",
+   "body": "Your guilds come from your characters. Save a character with the addon on Get set up, and its guild shows here.",
+   "button": "Get set up"
+  },
+  "emptyB": {
+   "title": "None of your characters is in a guild we know.",
+   "body": "If you joined a guild since, save your character with the addon again. An officer's invite link also adds you at once.",
+   "button": "Get set up"
+  },
+  "foot": {
+   "missingGuild": "A guild missing? Save the character that is in it with the addon.",
+   "getSetUp": "Get set up",
+   "premium": "[fn]",
+   "getPremium": "Get Premium"
+  },
+  "invalidLink": {
+   "text": "Something is wrong with that link. Start again from the premium page.",
+   "button": "Premium page"
+  }
+ },
+ "guild_checkout_fns": {
+  "holdsClaim": "You hold Olympus XXVII's claim.",
+  "startTrial": "Start 7 free days · then $120 a year",
+  "verified": "18 verified members",
+  "noPlan": "No plan",
+  "onRoster": "31 characters on the roster",
+  "askLeader": "Pinefeather Lodge's guild master can claim it, or an officer with a second officer's confirmation. Send them this link.",
+  "verified4": "4 verified members",
+  "onRoster4": "9 characters on the roster",
+  "footPremium": "Or Premium for yourself, $40 a year.",
+  "chosen": "Guild · $120 a year"
+ },
+ "account_plan": {
+  "offer": {
+   "title": "[fn]",
+   "from": "[fn]",
+   "consequence": "[fn]",
+   "accept": "Accept the seat",
+   "accepting": "Accepting…",
+   "decline": "Decline",
+   "accepted": "[fn]",
+   "acceptedNoDate": "Accepted. The seat starts when your Premium ends.",
+   "declined": "Declined. Your Premium carries on as before.",
+   "failed": "That did not save. Try again."
+  },
+  "planLine": {
+   "renews": "[fn]",
+   "endsThenSeat": "[fn]",
+   "ends": "[fn]",
+   "renewsNoPrice": "[fn]",
+   "seat": "[fn]",
+   "givenBy": "[fn]"
+  },
+  "head": {
+   "names": {
+    "premium": "Premium",
+    "free": "Free",
+    "seat": "Guild seat"
+   },
+   "renews": "Renews",
+   "ends": "Ends",
+   "until": "Until",
+   "price": "[fn]",
+   "thenSeat": "[fn]",
+   "cancelAnytime": "Cancel anytime in Manage billing.",
+   "seatFrom": "[fn]"
+  },
+  "founder": {
+   "pill": "Founder",
+   "title": "Founder price, kept while your plan stays active."
+  },
+  "seatEnded": {
+   "text": "[fn]",
+   "action": "[fn]",
+   "actionNoPrice": "Come back"
+  },
+  "guildRow": {
+   "youHoldSeat": " · you hold a seat",
+   "notVerified": "Not verified",
+   "claimPending": "Claim pending",
+   "planTag": {
+    "guild": "Guild",
+    "raid_guild": "Raid guild",
+    "none": "No plan"
+   },
+   "noPlan": "[fn]",
+   "nextStep": "See the next step",
+   "nextStepLabel": "[fn]"
+  }
+ },
+ "seat_ended_line": {
+  "text": "Your seat from Olympus XXVII ended 2 Nov. ",
+  "action": "Come back at $40 a year",
+  "href": "/premium/checkout?plan=premium&interval=yearly&comeback=cb_9f2"
+ },
+ "account": {
+  "title": "Your account",
+  "signedInWithBattlenet": "Signed in with Battle.net",
+  "signedInByEmail": "Signed in by email",
+  "signOut": "Sign out",
+  "devicesLabel": "Devices",
+  "youLabel": "You",
+  "guildLabel": "Guild",
+  "planLabel": "Plan",
+  "noDevices": "No devices yet. The companion signs in with Battle.net from its Device page; a pairing code is only for the fallback.",
+  "downloadCompanion": "Download the companion",
+  "downloadCompanionHref": "/setup#companion",
+  "pairADevice": "Use a pairing code instead",
+  "pseudonymLabel": "Show a pseudonym instead of my character names",
+  "pseudonymNote": "Applies everywhere your characters appear, on reports and rankings alike. Your reports are kept until you delete them or your account.",
+  "signedInBanner": "[fn]",
+  "signedInBannerEmpty": "[fn]",
+  "reportsLink": "Your reports",
+  "deleteTitle": "Delete your account",
+  "deleteBody": "Email help@foreversixty.gg with your BattleTag and we delete your account and everything on it, within thirty days.",
+  "signOutAsk": "Sign out of Forever Sixty on this browser?"
+ },
+ "characters_copy": {
+  "heading": "Characters",
+  "empty": "No Forever characters on this Battle.net account yet. Make one in game, then refresh from Battle.net. Playing in Korea? Install the addon and the companion, or paste an export.",
+  "emptyLead": "No Forever characters on this Battle.net account yet. Make one in game, then refresh from Battle.net.",
+  "emptyKorea": "Playing in Korea? Install the addon and the companion, or paste an export.",
+  "emptyByEmail": "No characters yet. Sign in with Battle.net to bring your Forever characters here, or install the addon and the companion.",
+  "getSetUp": "Get set up",
+  "getSetUpHref": "/setup",
+  "pasteAnExport": "Paste an export",
+  "pasteHref": "/setup#paste",
+  "refreshFromBattlenet": "Refresh from Battle.net",
+  "importedFrom": "[fn]",
+  "verified": "Verified",
+  "main": "Main",
+  "current": "Current",
+  "open": "Open",
+  "setAsMain": "Set as main",
+  "setAsMainFailed": "Could not set your main just now.",
+  "levelPrefix": "[fn]",
+  "refreshing": "Refreshing…",
+  "refreshingAnnounce": "Refreshing from Battle.net.",
+  "refreshError": "Battle.net did not answer. Nothing changed.",
+  "tryAgain": "Try again",
+  "updatedJustNow": "[fn]",
+  "noChanges": "[fn]",
+  "importedJustNow": "Imported from Battle.net just now.",
+  "introBattlenetLine": "Your characters come from Battle.net each time you sign in.",
+  "introInstallAddonLink": "Install the addon and the companion",
+  "introAddonTail": "for bags, bank and live sync. In Korea, or Battle.net is down?",
+  "introPasteLink": "Paste an export",
+  "introPasteTail": "instead.",
+  "battlenetSource": "Battle.net",
+  "addonSource": "Addon",
+  "noBuildYet": "No gear yet"
+ },
+ "devices_copy": {
+  "revoke": "Revoke",
+  "cancel": "Cancel",
+  "revokeQuestion": "[fn]",
+  "pairAnother": "Pair another computer",
+  "codeFallbackLine": "Only for a companion that cannot open a browser; the companion signs in with Battle.net by itself."
+ },
+ "signin": {
+  "reason": "Sign in with Battle.net and your Forever characters come straight in, with your builds, sims and logs saved. Reading reports and rankings never needs an account."
+ },
+ "discord_link": {
+  "lead": "Link your Discord account so your guild's sign-up buttons and Forever Sixty commands know your characters.",
+  "leadSuggested": "[fn]",
+  "link": "Link Discord",
+  "opening": "Opening Discord…",
+  "linkedLead": "Linked to Discord as",
+  "unlink": "Unlink",
+  "unlinking": "Unlinking…",
+  "unlinkQuestion": "Unlink Discord? Sign-up buttons and commands will ask you to link again.",
+  "cancel": "Cancel",
+  "unlinked": "Unlinked.",
+  "unlinkFailed": "Could not unlink. Try again.",
+  "returnLinked": "Linked. In Discord, sign-up buttons and commands now know your characters.",
+  "returnDenied": "Cancelled in Discord. Nothing was linked.",
+  "returnFailed": "Could not link. Try again.",
+  "returnConflict": "That Discord account is linked to another Forever Sixty account.",
+  "conflictHelp": "Sign in to that account and unlink it on its account page, then try again.",
+  "stuck": "Discord did not open. Try again."
+ },
+ "discord_role": {
+  "label": "Premium role in Discord",
+  "lead": "Gives you the Premium role in the Forever Sixty Discord while you have Premium. Link now and it turns on when you subscribe.",
+  "leadOwned": "Link it and the role turns on.",
+  "link": "Link Premium role",
+  "returnLinked": "Linked. Your Discord Premium role now follows your Forever Sixty Premium.",
+  "returnDenied": "Cancelled in Discord. Nothing was linked.",
+  "returnFailed": "Could not link the Premium role. Try again.",
+  "stuck": "Discord did not open. Try again."
+ },
+ "notifications": {
+  "label": "Discord",
+  "headLabel": "Notifications",
+  "intro": "Get a message in a Discord channel when a server sim finishes or a log finishes parsing.",
+  "fieldLabel": "Webhook URL",
+  "placeholder": "https://discord.com/api/webhooks/…",
+  "howSteps": [
+   "In Discord, open the channel's settings, then Integrations, then Webhooks.",
+   "Choose New Webhook, name it something you will recognize, then Copy Webhook URL.",
+   "Paste it below."
+  ],
+  "trustHelper": "We store the URL encrypted, never show it again, and delete it with your account.",
+  "eventsLabel": "Post when",
+  "eventSimFinished": "A server sim finishes",
+  "eventUploadParsed": "A combat log you upload finishes parsing",
+  "eventUploadPrivate": "Include private logs",
+  "eventsNote": "Off: private logs are never posted. On: the channel sees the log's name and “Only you”.",
+  "save": "Save webhook",
+  "saving": "Saving…",
+  "cancel": "Cancel",
+  "test": "Send test message",
+  "testing": "Sending…",
+  "testAndSwitchOn": "Test and switch on",
+  "remove": "Unlink Discord",
+  "removing": "Unlinking…",
+  "removeQuestionPasted": "Remove this webhook? Posts stop and we forget the URL. It stays in Discord until you delete it there.",
+  "removeQuestionConnected": "Remove this connection? Posts stop and we delete its webhook from Discord.",
+  "replace": "Use a different webhook",
+  "connect": "Connect a Discord channel",
+  "connecting": "Opening Discord…",
+  "connectExplanation": "Discord asks for a server and a text channel, not a voice channel, then lets Forever Sixty post there. You need Manage Webhooks permission in that server. We keep only that webhook, encrypted.",
+  "pasteInstead": "Paste a webhook URL instead",
+  "connectInstead": "Connect a Discord channel instead",
+  "reconnect": "Connect a different channel",
+  "reconnectNote": "Connecting again replaces this channel and removes its webhook from Discord.",
+  "returnConnected": "Connected. Send a test message to see it in your channel.",
+  "returnDenied": "Cancelled in Discord. Nothing was connected.",
+  "returnFailed": "Could not connect. You need to be able to manage webhooks in that channel. Ask a server admin, or paste a webhook URL instead.",
+  "connectStuck": "Discord did not open. Try again, or paste a webhook URL instead.",
+  "openInDiscord": "Open in Discord",
+  "destinationChannel": "Posts to a channel in your Discord server",
+  "seePlans": "See plans",
+  "savedFirst": "Saved. Send a test message to see it in your channel.",
+  "savedEvents": "Saved.",
+  "testSent": "Sent. Check the channel.",
+  "testSentSwitchedOn": "Sent. Posts are on again.",
+  "testFailed": "[fn]",
+  "testRateLimited": "Wait a minute before sending another test.",
+  "testOurError": "Could not send the test. Try again.",
+  "removed": "Removed.",
+  "removeFailed": "Could not remove it. Try again.",
+  "saveFailed": "Could not save that. Try again.",
+  "emptyField": "Paste a Discord webhook URL.",
+  "invalidUrl": "That is not a Discord webhook URL. It starts with https://discord.com/api/webhooks/.",
+  "notEntitled": "Discord messages are part of Premium.",
+  "destinationNamed": "[fn]",
+  "channelLine": "[fn]",
+  "warningLines": "[fn]",
+  "switchedOff": "Switched off after 5 failed posts in a row.",
+  "lastError": "[fn]",
+  "switchedOffFix": "Fixed it in Discord? Test and switch on. If the webhook is gone, make a new one.",
+  "lapsedTitle": "Posts are paused because your plan ended.",
+  "lapsedBody": "We kept your webhook. Posts start again when you are back on Premium.",
+  "freeSentence": "Discord messages tell you when a server sim or a log you uploaded is done."
+ },
+ "premium_row": {
+  "off": "Premium only",
+  "offSetUp": "Off · set up",
+  "offNoEvents": "Off · no events chosen",
+  "offNeedsAttention": "Off · needs attention",
+  "paused": "Paused · plan lapsed",
+  "on": "[fn]"
+ },
+ "consent": {
+  "heading": "My guilds",
+  "roster": "Roster only",
+  "gear": "Gear",
+  "gearBags": "Gear and bags",
+  "leave": "Leave guild",
+  "left": "Left.",
+  "leaveConfirmLine": "[fn]",
+  "leaveReleasesClaim": "[fn]",
+  "leaveNoHandOver": "There is no hand-over yet; if you want an officer to run the guild after you, ask us on Discord before you leave.",
+  "leaveNoHandOverParts": [
+   "There is no hand-over yet; if you want an officer to run the guild after you, ask us on ",
+   "Discord",
+   " before you leave."
+  ],
+  "leaveLosesOfficer": "[fn]",
+  "shareLabel": "Share with this guild",
+  "leaveConfirmButton": "Leave guild",
+  "leaveCancel": "Cancel",
+  "consentSaved": "[fn]"
+ },
+ "account_failed": "That did not work; try again",
+ "pairing": {
+  "signedOut": "Live logging needs a signed-in account.",
+  "companionFirst": "Using the companion? Press Sign in with Battle.net in it. The code below is only for the fallback.",
+  "success": "[fn]",
+  "action": "Get a pairing code",
+  "failed": "The pairing code did not load. Try again.",
+  "codeLine": "[fn]",
+  "waiting": "Waiting for the companion to use the code"
+ },
+ "my_reports": {
+  "failed": "Your reports did not load.",
+  "empty": "No reports yet. Upload a log, or let the companion send your next raid.",
+  "signedOut": "Sign in to see your reports.",
+  "signInAction": "Sign in with Battle.net",
+  "uploadAction": "Upload a log"
+ },
+ "accounts": {
+  "free": {
+   "key": "free",
+   "source": "none",
+   "plan": {
+    "line": "Not on Premium.",
+    "line2": null,
+    "head": {
+     "name": "Free",
+     "when": null,
+     "extra": null
+    },
+    "founder": false,
+    "billingButton": null,
+    "ended": null
+   },
+   "battletag": "Hunthrop#1894",
+   "answer": {
+    "name": "Felsnap",
+    "classSlug": "hunter",
+    "levelLine": "Level 34 Beast Mastery Hunter",
+    "imported": "Imported from Battle.net 2 days ago.",
+    "open": {
+     "label": "Open Felsnap",
+     "href": "/character/us/normal/felsnap"
+    },
+    "bis": {
+     "label": "Best in slot",
+     "href": "/bis/hunter/beast-mastery?faction=alliance#band-alliance-30"
+    }
+   },
+   "characters": [
+    {
+     "name": "Felsnap",
+     "cls": "hunter",
+     "descriptor": "Dwarf Beast Mastery Hunter · Level 34 · Skyborne (Normal US)",
+     "guild": null,
+     "main": true,
+     "source": "addon",
+     "level": 34
+    }
+   ],
+   "imported": "Imported from Battle.net 2 days ago.",
+   "guilds": [],
+   "premiumRow": {
+    "value": "Premium only",
+    "linked": false
+   },
+   "discord": {
+    "state": "free",
+    "link": null
+   },
+   "serverSimsOn": "On",
+   "entitlements": {
+    "personal_portal": false,
+    "server_sims": false,
+    "retention": false,
+    "multi_compare": false,
+    "history": false,
+    "notifications": false,
+    "officer_views": false,
+    "roster_check": false,
+    "log_coach": false,
+    "supporter_mark": false,
+    "billing": null
+   },
+   "offer": null,
+   "owned": null,
+   "signedInBanner": "Signed in. Felsnap is your current character; change it from any row below."
+  },
+  "new": {
+   "key": "new",
+   "source": "none",
+   "plan": {
+    "line": "Not on Premium.",
+    "line2": null,
+    "head": {
+     "name": "Free",
+     "when": null,
+     "extra": null
+    },
+    "founder": false,
+    "billingButton": null,
+    "ended": null
+   },
+   "battletag": "Hunthrop#1894",
+   "answer": null,
+   "characters": [],
+   "imported": "Imported from Battle.net 2 days ago.",
+   "guilds": [],
+   "premiumRow": {
+    "value": "Premium only",
+    "linked": false
+   },
+   "discord": {
+    "state": "free",
+    "link": null
+   },
+   "serverSimsOn": "On",
+   "entitlements": {
+    "personal_portal": false,
+    "server_sims": false,
+    "retention": false,
+    "multi_compare": false,
+    "history": false,
+    "notifications": false,
+    "officer_views": false,
+    "roster_check": false,
+    "log_coach": false,
+    "supporter_mark": false,
+    "billing": null
+   },
+   "offer": null,
+   "owned": null,
+   "signedInBanner": "Signed in as Hunthrop#1894. Battle.net lists no Forever character on this account yet; make one in game, then refresh from Battle.net."
+  },
+  "several": {
+   "key": "several",
+   "source": "none",
+   "plan": {
+    "line": "Not on Premium.",
+    "line2": null,
+    "head": {
+     "name": "Free",
+     "when": null,
+     "extra": null
+    },
+    "founder": false,
+    "billingButton": null,
+    "ended": null
+   },
+   "battletag": "Hunthrop#1894",
+   "answer": {
+    "name": "Felsnap",
+    "classSlug": "hunter",
+    "levelLine": "Level 34 Beast Mastery Hunter",
+    "imported": "Imported from Battle.net 2 days ago.",
+    "open": {
+     "label": "Open Felsnap",
+     "href": "/character/us/normal/felsnap"
+    },
+    "bis": {
+     "label": "Best in slot",
+     "href": "/bis/hunter/beast-mastery?faction=alliance#band-alliance-30"
+    }
+   },
+   "characters": [
+    {
+     "name": "Felsnap",
+     "cls": "hunter",
+     "descriptor": "Dwarf Beast Mastery Hunter · Level 34 · Skyborne (Normal US)",
+     "guild": null,
+     "main": true,
+     "source": "addon",
+     "level": 34
+    },
+    {
+     "name": "Brisa",
+     "cls": "druid",
+     "descriptor": "Night Elf Druid · Level 19 · Skyborne (Normal US)",
+     "guild": null,
+     "main": false,
+     "source": null,
+     "level": 19
+    },
+    {
+     "name": "Korrin",
+     "cls": "priest",
+     "descriptor": "Dwarf Holy Priest · Level 27 · Skyborne (Normal US)",
+     "guild": null,
+     "main": false,
+     "source": "addon",
+     "level": 27
+    }
+   ],
+   "imported": "Imported from Battle.net 2 days ago.",
+   "guilds": [],
+   "premiumRow": {
+    "value": "Premium only",
+    "linked": false
+   },
+   "discord": {
+    "state": "free",
+    "link": null
+   },
+   "serverSimsOn": "On",
+   "entitlements": {
+    "personal_portal": false,
+    "server_sims": false,
+    "retention": false,
+    "multi_compare": false,
+    "history": false,
+    "notifications": false,
+    "officer_views": false,
+    "roster_check": false,
+    "log_coach": false,
+    "supporter_mark": false,
+    "billing": null
+   },
+   "offer": null,
+   "owned": null,
+   "signedInBanner": "Signed in. Felsnap is your current character; change it from any row below."
+  },
+  "premium": {
+   "key": "premium",
+   "source": "own",
+   "plan": {
+    "line": "Premium · renews 4 Nov 2027 · $40 a year",
+    "line2": null,
+    "head": {
+     "name": "Premium",
+     "when": {
+      "label": "Renews",
+      "date": "4 Nov 2027"
+     },
+     "extra": "$40 a year"
+    },
+    "founder": true,
+    "billingButton": "manage",
+    "ended": null
+   },
+   "battletag": "Hunthrop#1894",
+   "answer": {
+    "name": "Thandrel",
+    "classSlug": "warrior",
+    "levelLine": "Level 60 Fury Warrior",
+    "imported": "Imported from Battle.net 2 days ago.",
+    "open": {
+     "label": "Open Thandrel",
+     "href": "/character/us/normal/thandrel"
+    },
+    "bis": {
+     "label": "Best in slot",
+     "href": "/bis/warrior/fury?faction=alliance#band-alliance-60"
+    }
+   },
+   "characters": [
+    {
+     "name": "Thandrel",
+     "cls": "warrior",
+     "descriptor": "Human Fury Warrior · Level 60 · Skyborne (Normal US)",
+     "guild": "Olympus XXVII",
+     "main": true,
+     "source": "addon",
+     "level": 60
+    }
+   ],
+   "imported": "Imported from Battle.net 2 days ago.",
+   "guilds": [
+    {
+     "name": "Olympus XXVII",
+     "rank": "Officer",
+     "consent": "gear",
+     "tag": "Guild",
+     "mark": null,
+     "next": null,
+     "planLine": "Renews 4 Oct 2027",
+     "can": [
+      "approve",
+      "remove",
+      "settings",
+      "award",
+      "billing"
+     ],
+     "claim": null,
+     "step": null,
+     "leaveLine": "Leave Olympus XXVII? This removes your character from its roster.",
+     "leaveOfficer": "You lose your officer tools in Olympus XXVII.",
+     "claimLine": null
+    }
+   ],
+   "premiumRow": {
+    "value": "On · 2 events",
+    "linked": true
+   },
+   "discord": {
+    "state": "saved",
+    "link": {
+     "display_name": "thandrel"
+    }
+   },
+   "serverSimsOn": "On · 4 runs this month",
+   "entitlements": {
+    "personal_portal": true,
+    "server_sims": true,
+    "retention": true,
+    "multi_compare": true,
+    "history": true,
+    "notifications": true,
+    "officer_views": false,
+    "roster_check": false,
+    "log_coach": true,
+    "supporter_mark": true,
+    "billing": {
+     "source": "stripe",
+     "plan": "premium",
+     "status": "active",
+     "current_period_end": "2027-11-04T10:00:00.000Z",
+     "cancel_at_period_end": false,
+     "founder": true,
+     "interval": "yearly",
+     "amount_cents": 4000
+    }
+   },
+   "offer": null,
+   "owned": {
+    "title": "You already have Premium.",
+    "line": "Premium · renews 4 Nov 2027 · $40 a year",
+    "line2": null,
+    "founder": true,
+    "pastDue": false,
+    "action": {
+     "kind": "portal",
+     "label": "Manage billing"
+    }
+   },
+   "signedInBanner": "Signed in. Thandrel is your current character; change it from any row below."
+  },
+  "monthly": {
+   "key": "monthly",
+   "source": "own",
+   "plan": {
+    "line": "Premium · renews 4 Dec 2026 · $5 a month",
+    "line2": null,
+    "head": {
+     "name": "Premium",
+     "when": {
+      "label": "Renews",
+      "date": "4 Dec 2026"
+     },
+     "extra": "$5 a month"
+    },
+    "founder": true,
+    "billingButton": "manage",
+    "ended": null
+   },
+   "battletag": "Hunthrop#1894",
+   "answer": {
+    "name": "Felsnap",
+    "classSlug": "hunter",
+    "levelLine": "Level 34 Beast Mastery Hunter",
+    "imported": "Imported from Battle.net 2 days ago.",
+    "open": {
+     "label": "Open Felsnap",
+     "href": "/character/us/normal/felsnap"
+    },
+    "bis": {
+     "label": "Best in slot",
+     "href": "/bis/hunter/beast-mastery?faction=alliance#band-alliance-30"
+    }
+   },
+   "characters": [
+    {
+     "name": "Felsnap",
+     "cls": "hunter",
+     "descriptor": "Dwarf Beast Mastery Hunter · Level 34 · Skyborne (Normal US)",
+     "guild": null,
+     "main": true,
+     "source": "addon",
+     "level": 34
+    }
+   ],
+   "imported": "Imported from Battle.net 2 days ago.",
+   "guilds": [],
+   "premiumRow": {
+    "value": "Off · set up",
+    "linked": true
+   },
+   "discord": {
+    "state": "empty",
+    "link": null
+   },
+   "serverSimsOn": "On",
+   "entitlements": {
+    "personal_portal": true,
+    "server_sims": true,
+    "retention": true,
+    "multi_compare": true,
+    "history": true,
+    "notifications": true,
+    "officer_views": false,
+    "roster_check": false,
+    "log_coach": true,
+    "supporter_mark": true,
+    "billing": {
+     "source": "stripe",
+     "plan": "premium",
+     "status": "active",
+     "current_period_end": "2026-12-04T10:00:00.000Z",
+     "cancel_at_period_end": false,
+     "founder": true,
+     "interval": "monthly",
+     "amount_cents": 500
+    }
+   },
+   "offer": null,
+   "owned": {
+    "title": "You already have Premium.",
+    "line": "Premium · renews 4 Dec 2026 · $5 a month",
+    "line2": null,
+    "founder": true,
+    "pastDue": false,
+    "action": {
+     "kind": "portal",
+     "label": "Manage billing"
+    }
+   },
+   "signedInBanner": "Signed in. Felsnap is your current character; change it from any row below."
+  },
+  "ending": {
+   "key": "ending",
+   "source": "own",
+   "plan": {
+    "line": "Premium · ends 18 Dec 2026",
+    "line2": null,
+    "head": {
+     "name": "Premium",
+     "when": {
+      "label": "Ends",
+      "date": "18 Dec 2026"
+     },
+     "extra": "$40 a year"
+    },
+    "founder": true,
+    "billingButton": "manage",
+    "ended": null
+   },
+   "battletag": "Hunthrop#1894",
+   "answer": {
+    "name": "Felsnap",
+    "classSlug": "hunter",
+    "levelLine": "Level 34 Beast Mastery Hunter",
+    "imported": "Imported from Battle.net 2 days ago.",
+    "open": {
+     "label": "Open Felsnap",
+     "href": "/character/us/normal/felsnap"
+    },
+    "bis": {
+     "label": "Best in slot",
+     "href": "/bis/hunter/beast-mastery?faction=alliance#band-alliance-30"
+    }
+   },
+   "characters": [
+    {
+     "name": "Felsnap",
+     "cls": "hunter",
+     "descriptor": "Dwarf Beast Mastery Hunter · Level 34 · Skyborne (Normal US)",
+     "guild": null,
+     "main": true,
+     "source": "addon",
+     "level": 34
+    }
+   ],
+   "imported": "Imported from Battle.net 2 days ago.",
+   "guilds": [],
+   "premiumRow": {
+    "value": "Off · set up",
+    "linked": true
+   },
+   "discord": {
+    "state": "empty",
+    "link": null
+   },
+   "serverSimsOn": "On",
+   "entitlements": {
+    "personal_portal": true,
+    "server_sims": true,
+    "retention": true,
+    "multi_compare": true,
+    "history": true,
+    "notifications": true,
+    "officer_views": false,
+    "roster_check": false,
+    "log_coach": true,
+    "supporter_mark": true,
+    "billing": {
+     "source": "stripe",
+     "plan": "premium",
+     "status": "active",
+     "current_period_end": "2026-12-18T10:00:00.000Z",
+     "cancel_at_period_end": true,
+     "founder": true,
+     "interval": "yearly",
+     "amount_cents": 4000
+    }
+   },
+   "offer": null,
+   "owned": {
+    "title": "You already have Premium.",
+    "line": "Premium · ends 18 Dec 2026",
+    "line2": null,
+    "founder": true,
+    "pastDue": false,
+    "action": {
+     "kind": "portal",
+     "label": "Manage billing"
+    }
+   },
+   "signedInBanner": "Signed in. Felsnap is your current character; change it from any row below."
+  },
+  "grant": {
+   "key": "grant",
+   "source": "grant",
+   "plan": {
+    "line": "Premium · granted, no end date",
+    "line2": "Given by Forever Sixty. Nothing is billed to you.",
+    "head": {
+     "name": "Premium",
+     "when": null,
+     "extra": null
+    },
+    "founder": false,
+    "billingButton": null,
+    "ended": null
+   },
+   "battletag": "Hunthrop#1894",
+   "answer": {
+    "name": "Felsnap",
+    "classSlug": "hunter",
+    "levelLine": "Level 34 Beast Mastery Hunter",
+    "imported": "Imported from Battle.net 2 days ago.",
+    "open": {
+     "label": "Open Felsnap",
+     "href": "/character/us/normal/felsnap"
+    },
+    "bis": {
+     "label": "Best in slot",
+     "href": "/bis/hunter/beast-mastery?faction=alliance#band-alliance-30"
+    }
+   },
+   "characters": [
+    {
+     "name": "Felsnap",
+     "cls": "hunter",
+     "descriptor": "Dwarf Beast Mastery Hunter · Level 34 · Skyborne (Normal US)",
+     "guild": null,
+     "main": true,
+     "source": "addon",
+     "level": 34
+    }
+   ],
+   "imported": "Imported from Battle.net 2 days ago.",
+   "guilds": [],
+   "premiumRow": {
+    "value": "Off · set up",
+    "linked": true
+   },
+   "discord": {
+    "state": "empty",
+    "link": null
+   },
+   "serverSimsOn": "On",
+   "entitlements": {
+    "personal_portal": false,
+    "server_sims": true,
+    "retention": true,
+    "multi_compare": true,
+    "history": true,
+    "notifications": true,
+    "officer_views": false,
+    "roster_check": false,
+    "log_coach": true,
+    "supporter_mark": true,
+    "billing": {
+     "source": "grant",
+     "plan": "premium",
+     "status": "active",
+     "current_period_end": null,
+     "cancel_at_period_end": false,
+     "founder": false,
+     "interval": null,
+     "amount_cents": null
+    }
+   },
+   "offer": null,
+   "owned": {
+    "title": "You already have Premium.",
+    "line": "Premium · granted, no end date",
+    "line2": "Given by Forever Sixty. Nothing is billed to you.",
+    "founder": false,
+    "pastDue": false,
+    "action": {
+     "kind": "link",
+     "label": "See your plan",
+     "href": "/account#plan"
+    }
+   },
+   "signedInBanner": "Signed in. Felsnap is your current character; change it from any row below."
+  },
+  "seat": {
+   "key": "seat",
+   "source": "seat",
+   "plan": {
+    "line": "Premium · a seat from Olympus XXVII",
+    "line2": "Given by Thandrel. It lasts while the guild's plan does; nothing is billed to you.",
+    "head": {
+     "name": "Guild seat",
+     "when": null,
+     "extra": "A seat from Olympus XXVII"
+    },
+    "founder": false,
+    "billingButton": null,
+    "ended": null
+   },
+   "battletag": "Hunthrop#1894",
+   "answer": {
+    "name": "Felsnap",
+    "classSlug": "hunter",
+    "levelLine": "Level 34 Beast Mastery Hunter",
+    "imported": "Imported from Battle.net 2 days ago.",
+    "open": {
+     "label": "Open Felsnap",
+     "href": "/character/us/normal/felsnap"
+    },
+    "bis": {
+     "label": "Best in slot",
+     "href": "/bis/hunter/beast-mastery?faction=alliance#band-alliance-30"
+    }
+   },
+   "characters": [
+    {
+     "name": "Felsnap",
+     "cls": "hunter",
+     "descriptor": "Dwarf Beast Mastery Hunter · Level 34 · Skyborne (Normal US)",
+     "guild": null,
+     "main": true,
+     "source": "addon",
+     "level": 34
+    }
+   ],
+   "imported": "Imported from Battle.net 2 days ago.",
+   "guilds": [
+    {
+     "name": "Olympus XXVII",
+     "rank": "Member",
+     "consent": "gear",
+     "tag": "Guild",
+     "mark": null,
+     "next": null,
+     "planLine": "Renews 4 Oct 2027 · you hold a seat",
+     "can": [],
+     "claim": null,
+     "step": null,
+     "leaveLine": "Leave Olympus XXVII? This removes your character from its roster.",
+     "leaveOfficer": null,
+     "claimLine": null
+    }
+   ],
+   "premiumRow": {
+    "value": "Off · set up",
+    "linked": true
+   },
+   "discord": {
+    "state": "empty",
+    "link": null
+   },
+   "serverSimsOn": "On",
+   "entitlements": {
+    "personal_portal": false,
+    "server_sims": true,
+    "retention": true,
+    "multi_compare": true,
+    "history": true,
+    "notifications": true,
+    "officer_views": false,
+    "roster_check": false,
+    "log_coach": true,
+    "supporter_mark": true,
+    "billing": null
+   },
+   "offer": null,
+   "owned": {
+    "title": "You already have Premium.",
+    "line": "Premium · a seat from Olympus XXVII",
+    "line2": "Given by Thandrel. It lasts while the guild's plan does; nothing is billed to you.",
+    "founder": false,
+    "pastDue": false,
+    "action": {
+     "kind": "link",
+     "label": "See your plan",
+     "href": "/account#plan"
+    }
+   },
+   "signedInBanner": "Signed in. Felsnap is your current character; change it from any row below."
+  },
+  "offer": {
+   "key": "offer",
+   "source": "own",
+   "plan": {
+    "line": "Premium · renews 8 Mar 2027 · $40 a year",
+    "line2": null,
+    "head": {
+     "name": "Premium",
+     "when": {
+      "label": "Renews",
+      "date": "8 Mar 2027"
+     },
+     "extra": "$40 a year"
+    },
+    "founder": true,
+    "billingButton": "manage",
+    "ended": null
+   },
+   "battletag": "Hunthrop#1894",
+   "answer": {
+    "name": "Felsnap",
+    "classSlug": "hunter",
+    "levelLine": "Level 34 Beast Mastery Hunter",
+    "imported": "Imported from Battle.net 2 days ago.",
+    "open": {
+     "label": "Open Felsnap",
+     "href": "/character/us/normal/felsnap"
+    },
+    "bis": {
+     "label": "Best in slot",
+     "href": "/bis/hunter/beast-mastery?faction=alliance#band-alliance-30"
+    }
+   },
+   "characters": [
+    {
+     "name": "Felsnap",
+     "cls": "hunter",
+     "descriptor": "Dwarf Beast Mastery Hunter · Level 34 · Skyborne (Normal US)",
+     "guild": null,
+     "main": true,
+     "source": "addon",
+     "level": 34
+    }
+   ],
+   "imported": "Imported from Battle.net 2 days ago.",
+   "guilds": [],
+   "premiumRow": {
+    "value": "Off · set up",
+    "linked": true
+   },
+   "discord": {
+    "state": "empty",
+    "link": null
+   },
+   "serverSimsOn": "On",
+   "entitlements": {
+    "personal_portal": true,
+    "server_sims": true,
+    "retention": true,
+    "multi_compare": true,
+    "history": true,
+    "notifications": true,
+    "officer_views": false,
+    "roster_check": false,
+    "log_coach": true,
+    "supporter_mark": true,
+    "billing": {
+     "source": "stripe",
+     "plan": "premium",
+     "status": "active",
+     "current_period_end": "2027-03-08T10:00:00.000Z",
+     "cancel_at_period_end": false,
+     "founder": true,
+     "interval": "yearly",
+     "amount_cents": 4000
+    }
+   },
+   "offer": {
+    "title": "Olympus XXVII offers you a Premium seat.",
+    "from": "From Thandrel, 7 Nov.",
+    "consequence": "If you accept, your own Premium stops renewing and ends 8 Mar 2027, and the seat starts then. You are not charged twice. If the seat is ever taken away, we email you a link to come back at $40 a year, the price you pay now.",
+    "accepted": "Accepted. Your Premium ends 8 Mar 2027; the seat starts then.",
+    "declined": "Declined. Your Premium carries on as before."
+   },
+   "owned": {
+    "title": "You already have Premium.",
+    "line": "Premium · renews 8 Mar 2027 · $40 a year",
+    "line2": null,
+    "founder": true,
+    "pastDue": false,
+    "action": {
+     "kind": "portal",
+     "label": "Manage billing"
+    }
+   },
+   "signedInBanner": "Signed in. Felsnap is your current character; change it from any row below."
+  },
+  "ended": {
+   "key": "ended",
+   "source": "none",
+   "plan": {
+    "line": "Not on Premium.",
+    "line2": null,
+    "head": {
+     "name": "Free",
+     "when": null,
+     "extra": null
+    },
+    "founder": false,
+    "billingButton": "history",
+    "ended": {
+     "text": "Your seat from Olympus XXVII ended 2 Nov. ",
+     "action": "Come back at $40 a year",
+     "href": "/premium/checkout?plan=premium&interval=yearly&comeback=cb_9f2"
+    }
+   },
+   "battletag": "Hunthrop#1894",
+   "answer": {
+    "name": "Felsnap",
+    "classSlug": "hunter",
+    "levelLine": "Level 34 Beast Mastery Hunter",
+    "imported": "Imported from Battle.net 2 days ago.",
+    "open": {
+     "label": "Open Felsnap",
+     "href": "/character/us/normal/felsnap"
+    },
+    "bis": {
+     "label": "Best in slot",
+     "href": "/bis/hunter/beast-mastery?faction=alliance#band-alliance-30"
+    }
+   },
+   "characters": [
+    {
+     "name": "Felsnap",
+     "cls": "hunter",
+     "descriptor": "Dwarf Beast Mastery Hunter · Level 34 · Skyborne (Normal US)",
+     "guild": null,
+     "main": true,
+     "source": "addon",
+     "level": 34
+    }
+   ],
+   "imported": "Imported from Battle.net 2 days ago.",
+   "guilds": [],
+   "premiumRow": {
+    "value": "Premium only",
+    "linked": false
+   },
+   "discord": {
+    "state": "free",
+    "link": null
+   },
+   "serverSimsOn": "On",
+   "entitlements": {
+    "personal_portal": true,
+    "server_sims": false,
+    "retention": false,
+    "multi_compare": false,
+    "history": false,
+    "notifications": false,
+    "officer_views": false,
+    "roster_check": false,
+    "log_coach": false,
+    "supporter_mark": false,
+    "billing": null
+   },
+   "offer": null,
+   "owned": null,
+   "signedInBanner": "Signed in. Felsnap is your current character; change it from any row below."
+  },
+  "pastdue": {
+   "key": "pastdue",
+   "source": "own",
+   "plan": {
+    "line": "Premium · renews 11 Nov 2026 · $40 a year",
+    "line2": null,
+    "head": {
+     "name": "Premium",
+     "when": {
+      "label": "Renews",
+      "date": "11 Nov 2026"
+     },
+     "extra": "$40 a year"
+    },
+    "founder": true,
+    "billingButton": "manage",
+    "ended": null
+   },
+   "battletag": "Hunthrop#1894",
+   "answer": {
+    "name": "Felsnap",
+    "classSlug": "hunter",
+    "levelLine": "Level 34 Beast Mastery Hunter",
+    "imported": "Imported from Battle.net 2 days ago.",
+    "open": {
+     "label": "Open Felsnap",
+     "href": "/character/us/normal/felsnap"
+    },
+    "bis": {
+     "label": "Best in slot",
+     "href": "/bis/hunter/beast-mastery?faction=alliance#band-alliance-30"
+    }
+   },
+   "characters": [
+    {
+     "name": "Felsnap",
+     "cls": "hunter",
+     "descriptor": "Dwarf Beast Mastery Hunter · Level 34 · Skyborne (Normal US)",
+     "guild": null,
+     "main": true,
+     "source": "addon",
+     "level": 34
+    }
+   ],
+   "imported": "Imported from Battle.net 2 days ago.",
+   "guilds": [],
+   "premiumRow": {
+    "value": "Off · set up",
+    "linked": true
+   },
+   "discord": {
+    "state": "empty",
+    "link": null
+   },
+   "serverSimsOn": "On",
+   "entitlements": {
+    "personal_portal": true,
+    "server_sims": true,
+    "retention": true,
+    "multi_compare": true,
+    "history": true,
+    "notifications": true,
+    "officer_views": false,
+    "roster_check": false,
+    "log_coach": true,
+    "supporter_mark": true,
+    "billing": {
+     "source": "stripe",
+     "plan": "premium",
+     "status": "past_due",
+     "current_period_end": "2026-11-11T10:00:00.000Z",
+     "cancel_at_period_end": false,
+     "founder": true,
+     "interval": "yearly",
+     "amount_cents": 4000
+    }
+   },
+   "offer": null,
+   "owned": {
+    "title": "You already have Premium.",
+    "line": "Premium · renews 11 Nov 2026 · $40 a year",
+    "line2": null,
+    "founder": true,
+    "pastDue": true,
+    "action": {
+     "kind": "portal",
+     "label": "Manage billing"
+    }
+   },
+   "signedInBanner": "Signed in. Felsnap is your current character; change it from any row below."
+  },
+  "claim": {
+   "key": "claim",
+   "source": "none",
+   "plan": {
+    "line": "Not on Premium.",
+    "line2": null,
+    "head": {
+     "name": "Free",
+     "when": null,
+     "extra": null
+    },
+    "founder": false,
+    "billingButton": null,
+    "ended": null
+   },
+   "battletag": "Hunthrop#1894",
+   "answer": {
+    "name": "Thandrel",
+    "classSlug": "warrior",
+    "levelLine": "Level 60 Fury Warrior",
+    "imported": "Imported from Battle.net 2 days ago.",
+    "open": {
+     "label": "Open Thandrel",
+     "href": "/character/us/normal/thandrel"
+    },
+    "bis": {
+     "label": "Best in slot",
+     "href": "/bis/warrior/fury?faction=alliance#band-alliance-60"
+    }
+   },
+   "characters": [
+    {
+     "name": "Thandrel",
+     "cls": "warrior",
+     "descriptor": "Human Fury Warrior · Level 60 · Skyborne (Normal US)",
+     "guild": "Olympus XXVII",
+     "main": true,
+     "source": "addon",
+     "level": 60
+    }
+   ],
+   "imported": "Imported from Battle.net 2 days ago.",
+   "guilds": [
+    {
+     "name": "Olympus XXVII",
+     "rank": "Officer",
+     "consent": "gear",
+     "tag": "No plan",
+     "mark": null,
+     "next": {
+      "text": "Olympus XXVII has no plan.",
+      "action": "See the next step",
+      "label": "See the next step for Olympus XXVII",
+      "href": "/premium/checkout?plan=guild&interval=yearly#guild-2"
+     },
+     "planLine": null,
+     "can": [
+      "approve"
+     ],
+     "claim": {
+      "state": "pending",
+      "yours": false,
+      "pending_yours": true,
+      "holder_name": null
+     },
+     "step": "claim_pending_yours",
+     "leaveLine": "Leave Olympus XXVII? This removes your character from its roster.",
+     "leaveOfficer": "You lose your officer tools in Olympus XXVII.",
+     "claimLine": "Your claim on Olympus XXVII waits for a second officer or the guild master. Send them this link."
+    },
+    {
+     "name": "Pinefeather Lodge",
+     "rank": "Member",
+     "consent": "roster",
+     "tag": "No plan",
+     "mark": "Not verified",
+     "next": {
+      "text": "Pinefeather Lodge has no plan.",
+      "action": "See the next step",
+      "label": "See the next step for Pinefeather Lodge",
+      "href": "/premium/checkout?plan=guild&interval=yearly#guild-7"
+     },
+     "planLine": null,
+     "can": [],
+     "claim": null,
+     "step": "ask_leader",
+     "leaveLine": "Leave Pinefeather Lodge? This removes your character from its roster.",
+     "leaveOfficer": null,
+     "claimLine": null
+    }
+   ],
+   "premiumRow": {
+    "value": "Premium only",
+    "linked": false
+   },
+   "discord": {
+    "state": "free",
+    "link": null
+   },
+   "serverSimsOn": "On",
+   "entitlements": {
+    "personal_portal": false,
+    "server_sims": false,
+    "retention": false,
+    "multi_compare": false,
+    "history": false,
+    "notifications": false,
+    "officer_views": false,
+    "roster_check": false,
+    "log_coach": false,
+    "supporter_mark": false,
+    "billing": null
+   },
+   "offer": null,
+   "owned": null,
+   "signedInBanner": "Signed in. Thandrel is your current character; change it from any row below."
+  }
+ },
+ "devices": {
+  "none": {
+   "lines": [],
+   "names": [],
+   "entry": "Use a pairing code instead",
+   "revoke": []
+  },
+  "one": {
+   "lines": [
+    "JHUNT-PC · Windows · last seen 2 days ago"
+   ],
+   "names": [
+    "JHUNT-PC"
+   ],
+   "entry": "Pair another computer",
+   "revoke": [
+    "Revoke JHUNT-PC? The companion signs out."
+   ]
+  },
+  "several": {
+   "lines": [
+    "JHUNT-PC · Windows · last seen 2 days ago",
+    "STEAMDECK · Linux · last seen 2 days ago",
+    "MacBook Air · macOS · paired, not seen yet"
+   ],
+   "names": [
+    "JHUNT-PC",
+    "STEAMDECK",
+    "MacBook Air"
+   ],
+   "entry": "Pair another computer",
+   "revoke": [
+    "Revoke JHUNT-PC? The companion signs out.",
+    "Revoke STEAMDECK? The companion signs out.",
+    "Revoke MacBook Air? The companion signs out."
+   ]
+  }
+ },
+ "raw_accounts": {
+  "free": {
+   "user": {
+    "id": 7,
+    "battletag": "Hunthrop#1894",
+    "email": null,
+    "role": "user",
+    "anonymize": false
+   },
+   "characters": [
+    {
+     "key": "us/normal/felsnap",
+     "region": "us",
+     "ruleset": "normal",
+     "name": "Felsnap",
+     "class": "Hunter",
+     "spec": "Beast Mastery",
+     "race": "Dwarf",
+     "realm": "Skyborne",
+     "level": 34,
+     "faction": "alliance",
+     "item_level": 31,
+     "source": "bnet",
+     "build": {
+      "source": "addon",
+      "captured_at": "2026-11-04T19:30:00Z",
+      "level": 34,
+      "data_build": "1.60.1.70790",
+      "gear": {
+       "head": 252504,
+       "neck": 273049,
+       "shoulder": 2264,
+       "back": 14593,
+       "chest": 2041,
+       "wrist": 897,
+       "hands": 7358,
+       "waist": 20090,
+       "legs": 9509,
+       "feet": 10402,
+       "finger1": 6748,
+       "finger2": 6748,
+       "main_hand": 6679,
+       "ranged": 13137
+      },
+      "talents": {
+       "trees": [
+        "0000000000000000",
+        "00000000000000000",
+        "000000000000000000"
+       ],
+       "points": [
+        23,
+        0,
+        0
+       ]
+      }
+     }
+    }
+   ],
+   "guilds": [],
+   "bnet_imported_at": "2026-11-06T09:00:00Z",
+   "main_character_key": "us/normal/felsnap",
+   "entitlements": {
+    "personal_portal": false,
+    "server_sims": false,
+    "retention": false,
+    "multi_compare": false,
+    "history": false,
+    "notifications": false,
+    "officer_views": false,
+    "roster_check": false,
+    "log_coach": false,
+    "supporter_mark": false,
+    "billing": null
+   },
+   "notifications": {
+    "connect": true,
+    "discord": null
+   },
+   "discord_link_available": true,
+   "discord_link": null
+  },
+  "new": {
+   "user": {
+    "id": 7,
+    "battletag": "Hunthrop#1894",
+    "email": null,
+    "role": "user",
+    "anonymize": false
+   },
+   "characters": [],
+   "guilds": [],
+   "bnet_imported_at": "2026-11-06T09:00:00Z",
+   "main_character_key": null,
+   "entitlements": {
+    "personal_portal": false,
+    "server_sims": false,
+    "retention": false,
+    "multi_compare": false,
+    "history": false,
+    "notifications": false,
+    "officer_views": false,
+    "roster_check": false,
+    "log_coach": false,
+    "supporter_mark": false,
+    "billing": null
+   },
+   "notifications": {
+    "connect": true,
+    "discord": null
+   },
+   "discord_link_available": true,
+   "discord_link": null
+  },
+  "several": {
+   "user": {
+    "id": 7,
+    "battletag": "Hunthrop#1894",
+    "email": null,
+    "role": "user",
+    "anonymize": false
+   },
+   "characters": [
+    {
+     "key": "us/normal/felsnap",
+     "region": "us",
+     "ruleset": "normal",
+     "name": "Felsnap",
+     "class": "Hunter",
+     "spec": "Beast Mastery",
+     "race": "Dwarf",
+     "realm": "Skyborne",
+     "level": 34,
+     "faction": "alliance",
+     "item_level": 31,
+     "source": "bnet",
+     "build": {
+      "source": "addon",
+      "captured_at": "2026-11-04T19:30:00Z",
+      "level": 34,
+      "data_build": "1.60.1.70790",
+      "gear": {
+       "head": 252504,
+       "neck": 273049,
+       "shoulder": 2264,
+       "back": 14593,
+       "chest": 2041,
+       "wrist": 897,
+       "hands": 7358,
+       "waist": 20090,
+       "legs": 9509,
+       "feet": 10402,
+       "finger1": 6748,
+       "finger2": 6748,
+       "main_hand": 6679,
+       "ranged": 13137
+      },
+      "talents": {
+       "trees": [
+        "0000000000000000",
+        "00000000000000000",
+        "000000000000000000"
+       ],
+       "points": [
+        23,
+        0,
+        0
+       ]
+      }
+     }
+    },
+    {
+     "key": "us-normal-brisa",
+     "region": "us",
+     "ruleset": "normal",
+     "name": "Brisa",
+     "class": "Druid",
+     "realm": "Skyborne",
+     "level": 19,
+     "faction": "alliance",
+     "race": "Night Elf",
+     "source": "bnet"
+    },
+    {
+     "key": "us-normal-korrin",
+     "region": "us",
+     "ruleset": "normal",
+     "name": "Korrin",
+     "class": "Priest",
+     "realm": "Skyborne",
+     "level": 27,
+     "faction": "alliance",
+     "race": "Dwarf",
+     "spec": "Holy",
+     "source": "export",
+     "build": {
+      "source": "addon",
+      "captured_at": "2026-11-08T05:12:00.000Z",
+      "level": 27
+     }
+    }
+   ],
+   "guilds": [],
+   "bnet_imported_at": "2026-11-06T09:00:00Z",
+   "main_character_key": "us/normal/felsnap",
+   "entitlements": {
+    "personal_portal": false,
+    "server_sims": false,
+    "retention": false,
+    "multi_compare": false,
+    "history": false,
+    "notifications": false,
+    "officer_views": false,
+    "roster_check": false,
+    "log_coach": false,
+    "supporter_mark": false,
+    "billing": null
+   },
+   "notifications": {
+    "connect": true,
+    "discord": null
+   },
+   "discord_link_available": true,
+   "discord_link": null
+  },
+  "premium": {
+   "user": {
+    "id": 7,
+    "battletag": "Hunthrop#1894",
+    "email": null,
+    "role": "user",
+    "anonymize": false
+   },
+   "characters": [
+    {
+     "key": "us/normal/thandrel",
+     "region": "us",
+     "ruleset": "normal",
+     "name": "Thandrel",
+     "class": "Warrior",
+     "spec": "Fury",
+     "race": "Human",
+     "realm": "Skyborne",
+     "level": 60,
+     "faction": "alliance",
+     "item_level": 61,
+     "source": "bnet",
+     "build": {
+      "source": "addon",
+      "captured_at": "2026-11-04T19:30:00Z",
+      "level": 60,
+      "data_build": "1.60.1.70790",
+      "gear": {
+       "head": 23314,
+       "neck": 11933,
+       "shoulder": 12927,
+       "back": 13340,
+       "chest": 252483,
+       "wrist": 19578,
+       "hands": 231541,
+       "waist": 19044,
+       "legs": 231540,
+       "feet": 275618,
+       "finger1": 13098,
+       "finger2": 19514,
+       "trinket1": 11815,
+       "trinket2": 249470,
+       "main_hand": 279259,
+       "off_hand": 22384,
+       "ranged": 2100
+      },
+      "talents": {
+       "trees": [
+        "0000000000000000",
+        "00000000000000000",
+        "000000000000000000"
+       ],
+       "points": [
+        17,
+        34,
+        0
+       ]
+      }
+     },
+     "guild": {
+      "id": 2,
+      "name": "Olympus XXVII",
+      "rank": "Officer",
+      "verified": true,
+      "attendance": {
+       "present": 3,
+       "nights": 4
+      }
+     }
+    }
+   ],
+   "guilds": [
+    {
+     "id": 2,
+     "region": "us",
+     "ruleset": "normal",
+     "name": "Olympus XXVII",
+     "slug": "olympus-xxvii",
+     "rank": "Officer",
+     "verified": true,
+     "verified_count": 18,
+     "faction": "alliance",
+     "consent": "gear",
+     "plan": {
+      "tier": "guild",
+      "you_hold_seat": false,
+      "scope": "plan",
+      "status": "active",
+      "current_period_end": "2027-10-04T10:00:00.000Z",
+      "cancel_at_period_end": false,
+      "billed_by": "Thandrel",
+      "you_are_billing_contact": true
+     },
+     "can": [
+      "approve",
+      "remove",
+      "settings",
+      "award",
+      "billing"
+     ]
+    }
+   ],
+   "bnet_imported_at": "2026-11-06T09:00:00Z",
+   "main_character_key": "us/normal/thandrel",
+   "entitlements": {
+    "personal_portal": true,
+    "server_sims": true,
+    "retention": true,
+    "multi_compare": true,
+    "history": true,
+    "notifications": true,
+    "officer_views": false,
+    "roster_check": false,
+    "log_coach": true,
+    "supporter_mark": true,
+    "billing": {
+     "source": "stripe",
+     "plan": "premium",
+     "status": "active",
+     "current_period_end": "2027-11-04T10:00:00.000Z",
+     "cancel_at_period_end": false,
+     "founder": true,
+     "interval": "yearly",
+     "amount_cents": 4000
+    }
+   },
+   "notifications": {
+    "connect": true,
+    "discord": {
+     "channel_id": "1183920045519",
+     "source": "connected",
+     "guild_id": "7712",
+     "name": "Forever Sixty",
+     "events": {
+      "sim_finished": true,
+      "upload_parsed": true,
+      "upload_private": false
+     },
+     "disabled_reason": null,
+     "last_error": null,
+     "failures": 0
+    }
+   },
+   "discord_link_available": true,
+   "discord_link": {
+    "display_name": "thandrel"
+   },
+   "server_sims": {
+    "runs_this_month": 4
+   }
+  },
+  "monthly": {
+   "user": {
+    "id": 7,
+    "battletag": "Hunthrop#1894",
+    "email": null,
+    "role": "user",
+    "anonymize": false
+   },
+   "characters": [
+    {
+     "key": "us/normal/felsnap",
+     "region": "us",
+     "ruleset": "normal",
+     "name": "Felsnap",
+     "class": "Hunter",
+     "spec": "Beast Mastery",
+     "race": "Dwarf",
+     "realm": "Skyborne",
+     "level": 34,
+     "faction": "alliance",
+     "item_level": 31,
+     "source": "bnet",
+     "build": {
+      "source": "addon",
+      "captured_at": "2026-11-04T19:30:00Z",
+      "level": 34,
+      "data_build": "1.60.1.70790",
+      "gear": {
+       "head": 252504,
+       "neck": 273049,
+       "shoulder": 2264,
+       "back": 14593,
+       "chest": 2041,
+       "wrist": 897,
+       "hands": 7358,
+       "waist": 20090,
+       "legs": 9509,
+       "feet": 10402,
+       "finger1": 6748,
+       "finger2": 6748,
+       "main_hand": 6679,
+       "ranged": 13137
+      },
+      "talents": {
+       "trees": [
+        "0000000000000000",
+        "00000000000000000",
+        "000000000000000000"
+       ],
+       "points": [
+        23,
+        0,
+        0
+       ]
+      }
+     }
+    }
+   ],
+   "guilds": [],
+   "bnet_imported_at": "2026-11-06T09:00:00Z",
+   "main_character_key": "us/normal/felsnap",
+   "entitlements": {
+    "personal_portal": true,
+    "server_sims": true,
+    "retention": true,
+    "multi_compare": true,
+    "history": true,
+    "notifications": true,
+    "officer_views": false,
+    "roster_check": false,
+    "log_coach": true,
+    "supporter_mark": true,
+    "billing": {
+     "source": "stripe",
+     "plan": "premium",
+     "status": "active",
+     "current_period_end": "2026-12-04T10:00:00.000Z",
+     "cancel_at_period_end": false,
+     "founder": true,
+     "interval": "monthly",
+     "amount_cents": 500
+    }
+   },
+   "notifications": {
+    "connect": true,
+    "discord": null
+   },
+   "discord_link_available": true,
+   "discord_link": null
+  },
+  "ending": {
+   "user": {
+    "id": 7,
+    "battletag": "Hunthrop#1894",
+    "email": null,
+    "role": "user",
+    "anonymize": false
+   },
+   "characters": [
+    {
+     "key": "us/normal/felsnap",
+     "region": "us",
+     "ruleset": "normal",
+     "name": "Felsnap",
+     "class": "Hunter",
+     "spec": "Beast Mastery",
+     "race": "Dwarf",
+     "realm": "Skyborne",
+     "level": 34,
+     "faction": "alliance",
+     "item_level": 31,
+     "source": "bnet",
+     "build": {
+      "source": "addon",
+      "captured_at": "2026-11-04T19:30:00Z",
+      "level": 34,
+      "data_build": "1.60.1.70790",
+      "gear": {
+       "head": 252504,
+       "neck": 273049,
+       "shoulder": 2264,
+       "back": 14593,
+       "chest": 2041,
+       "wrist": 897,
+       "hands": 7358,
+       "waist": 20090,
+       "legs": 9509,
+       "feet": 10402,
+       "finger1": 6748,
+       "finger2": 6748,
+       "main_hand": 6679,
+       "ranged": 13137
+      },
+      "talents": {
+       "trees": [
+        "0000000000000000",
+        "00000000000000000",
+        "000000000000000000"
+       ],
+       "points": [
+        23,
+        0,
+        0
+       ]
+      }
+     }
+    }
+   ],
+   "guilds": [],
+   "bnet_imported_at": "2026-11-06T09:00:00Z",
+   "main_character_key": "us/normal/felsnap",
+   "entitlements": {
+    "personal_portal": true,
+    "server_sims": true,
+    "retention": true,
+    "multi_compare": true,
+    "history": true,
+    "notifications": true,
+    "officer_views": false,
+    "roster_check": false,
+    "log_coach": true,
+    "supporter_mark": true,
+    "billing": {
+     "source": "stripe",
+     "plan": "premium",
+     "status": "active",
+     "current_period_end": "2026-12-18T10:00:00.000Z",
+     "cancel_at_period_end": true,
+     "founder": true,
+     "interval": "yearly",
+     "amount_cents": 4000
+    }
+   },
+   "notifications": {
+    "connect": true,
+    "discord": null
+   },
+   "discord_link_available": true,
+   "discord_link": null
+  },
+  "grant": {
+   "user": {
+    "id": 7,
+    "battletag": "Hunthrop#1894",
+    "email": null,
+    "role": "user",
+    "anonymize": false
+   },
+   "characters": [
+    {
+     "key": "us/normal/felsnap",
+     "region": "us",
+     "ruleset": "normal",
+     "name": "Felsnap",
+     "class": "Hunter",
+     "spec": "Beast Mastery",
+     "race": "Dwarf",
+     "realm": "Skyborne",
+     "level": 34,
+     "faction": "alliance",
+     "item_level": 31,
+     "source": "bnet",
+     "build": {
+      "source": "addon",
+      "captured_at": "2026-11-04T19:30:00Z",
+      "level": 34,
+      "data_build": "1.60.1.70790",
+      "gear": {
+       "head": 252504,
+       "neck": 273049,
+       "shoulder": 2264,
+       "back": 14593,
+       "chest": 2041,
+       "wrist": 897,
+       "hands": 7358,
+       "waist": 20090,
+       "legs": 9509,
+       "feet": 10402,
+       "finger1": 6748,
+       "finger2": 6748,
+       "main_hand": 6679,
+       "ranged": 13137
+      },
+      "talents": {
+       "trees": [
+        "0000000000000000",
+        "00000000000000000",
+        "000000000000000000"
+       ],
+       "points": [
+        23,
+        0,
+        0
+       ]
+      }
+     }
+    }
+   ],
+   "guilds": [],
+   "bnet_imported_at": "2026-11-06T09:00:00Z",
+   "main_character_key": "us/normal/felsnap",
+   "entitlements": {
+    "personal_portal": false,
+    "server_sims": true,
+    "retention": true,
+    "multi_compare": true,
+    "history": true,
+    "notifications": true,
+    "officer_views": false,
+    "roster_check": false,
+    "log_coach": true,
+    "supporter_mark": true,
+    "billing": {
+     "source": "grant",
+     "plan": "premium",
+     "status": "active",
+     "current_period_end": null,
+     "cancel_at_period_end": false,
+     "founder": false,
+     "interval": null,
+     "amount_cents": null
+    }
+   },
+   "notifications": {
+    "connect": true,
+    "discord": null
+   },
+   "discord_link_available": true,
+   "discord_link": null
+  },
+  "seat": {
+   "user": {
+    "id": 7,
+    "battletag": "Hunthrop#1894",
+    "email": null,
+    "role": "user",
+    "anonymize": false
+   },
+   "characters": [
+    {
+     "key": "us/normal/felsnap",
+     "region": "us",
+     "ruleset": "normal",
+     "name": "Felsnap",
+     "class": "Hunter",
+     "spec": "Beast Mastery",
+     "race": "Dwarf",
+     "realm": "Skyborne",
+     "level": 34,
+     "faction": "alliance",
+     "item_level": 31,
+     "source": "bnet",
+     "build": {
+      "source": "addon",
+      "captured_at": "2026-11-04T19:30:00Z",
+      "level": 34,
+      "data_build": "1.60.1.70790",
+      "gear": {
+       "head": 252504,
+       "neck": 273049,
+       "shoulder": 2264,
+       "back": 14593,
+       "chest": 2041,
+       "wrist": 897,
+       "hands": 7358,
+       "waist": 20090,
+       "legs": 9509,
+       "feet": 10402,
+       "finger1": 6748,
+       "finger2": 6748,
+       "main_hand": 6679,
+       "ranged": 13137
+      },
+      "talents": {
+       "trees": [
+        "0000000000000000",
+        "00000000000000000",
+        "000000000000000000"
+       ],
+       "points": [
+        23,
+        0,
+        0
+       ]
+      }
+     }
+    }
+   ],
+   "guilds": [
+    {
+     "id": 2,
+     "region": "us",
+     "ruleset": "normal",
+     "name": "Olympus XXVII",
+     "slug": "olympus-xxvii",
+     "rank": "Member",
+     "verified": true,
+     "verified_count": 18,
+     "faction": "alliance",
+     "consent": "gear",
+     "plan": {
+      "tier": "guild",
+      "you_hold_seat": true,
+      "scope": "plan",
+      "status": "active",
+      "current_period_end": "2027-10-04T10:00:00.000Z",
+      "cancel_at_period_end": false,
+      "billed_by": "Thandrel",
+      "you_are_billing_contact": false
+     },
+     "can": []
+    }
+   ],
+   "bnet_imported_at": "2026-11-06T09:00:00Z",
+   "main_character_key": "us/normal/felsnap",
+   "entitlements": {
+    "personal_portal": false,
+    "server_sims": true,
+    "retention": true,
+    "multi_compare": true,
+    "history": true,
+    "notifications": true,
+    "officer_views": false,
+    "roster_check": false,
+    "log_coach": true,
+    "supporter_mark": true,
+    "billing": null
+   },
+   "notifications": {
+    "connect": true,
+    "discord": null
+   },
+   "discord_link_available": true,
+   "discord_link": null,
+   "seat": {
+    "guild_name": "Olympus XXVII",
+    "given_by": "Thandrel",
+    "since": "2026-11-02T10:00:00.000Z",
+    "starts_at": null
+   }
+  },
+  "offer": {
+   "user": {
+    "id": 7,
+    "battletag": "Hunthrop#1894",
+    "email": null,
+    "role": "user",
+    "anonymize": false
+   },
+   "characters": [
+    {
+     "key": "us/normal/felsnap",
+     "region": "us",
+     "ruleset": "normal",
+     "name": "Felsnap",
+     "class": "Hunter",
+     "spec": "Beast Mastery",
+     "race": "Dwarf",
+     "realm": "Skyborne",
+     "level": 34,
+     "faction": "alliance",
+     "item_level": 31,
+     "source": "bnet",
+     "build": {
+      "source": "addon",
+      "captured_at": "2026-11-04T19:30:00Z",
+      "level": 34,
+      "data_build": "1.60.1.70790",
+      "gear": {
+       "head": 252504,
+       "neck": 273049,
+       "shoulder": 2264,
+       "back": 14593,
+       "chest": 2041,
+       "wrist": 897,
+       "hands": 7358,
+       "waist": 20090,
+       "legs": 9509,
+       "feet": 10402,
+       "finger1": 6748,
+       "finger2": 6748,
+       "main_hand": 6679,
+       "ranged": 13137
+      },
+      "talents": {
+       "trees": [
+        "0000000000000000",
+        "00000000000000000",
+        "000000000000000000"
+       ],
+       "points": [
+        23,
+        0,
+        0
+       ]
+      }
+     }
+    }
+   ],
+   "guilds": [],
+   "bnet_imported_at": "2026-11-06T09:00:00Z",
+   "main_character_key": "us/normal/felsnap",
+   "entitlements": {
+    "personal_portal": true,
+    "server_sims": true,
+    "retention": true,
+    "multi_compare": true,
+    "history": true,
+    "notifications": true,
+    "officer_views": false,
+    "roster_check": false,
+    "log_coach": true,
+    "supporter_mark": true,
+    "billing": {
+     "source": "stripe",
+     "plan": "premium",
+     "status": "active",
+     "current_period_end": "2027-03-08T10:00:00.000Z",
+     "cancel_at_period_end": false,
+     "founder": true,
+     "interval": "yearly",
+     "amount_cents": 4000
+    }
+   },
+   "notifications": {
+    "connect": true,
+    "discord": null
+   },
+   "discord_link_available": true,
+   "discord_link": null,
+   "seat_offer": {
+    "guild_id": 2,
+    "guild_name": "Olympus XXVII",
+    "from_name": "Thandrel",
+    "offered_at": "2026-11-07T10:00:00.000Z",
+    "own_ends_at": "2027-03-08T10:00:00.000Z",
+    "own_amount_cents": 4000,
+    "own_interval": "yearly"
+   }
+  },
+  "ended": {
+   "user": {
+    "id": 7,
+    "battletag": "Hunthrop#1894",
+    "email": null,
+    "role": "user",
+    "anonymize": false
+   },
+   "characters": [
+    {
+     "key": "us/normal/felsnap",
+     "region": "us",
+     "ruleset": "normal",
+     "name": "Felsnap",
+     "class": "Hunter",
+     "spec": "Beast Mastery",
+     "race": "Dwarf",
+     "realm": "Skyborne",
+     "level": 34,
+     "faction": "alliance",
+     "item_level": 31,
+     "source": "bnet",
+     "build": {
+      "source": "addon",
+      "captured_at": "2026-11-04T19:30:00Z",
+      "level": 34,
+      "data_build": "1.60.1.70790",
+      "gear": {
+       "head": 252504,
+       "neck": 273049,
+       "shoulder": 2264,
+       "back": 14593,
+       "chest": 2041,
+       "wrist": 897,
+       "hands": 7358,
+       "waist": 20090,
+       "legs": 9509,
+       "feet": 10402,
+       "finger1": 6748,
+       "finger2": 6748,
+       "main_hand": 6679,
+       "ranged": 13137
+      },
+      "talents": {
+       "trees": [
+        "0000000000000000",
+        "00000000000000000",
+        "000000000000000000"
+       ],
+       "points": [
+        23,
+        0,
+        0
+       ]
+      }
+     }
+    }
+   ],
+   "guilds": [],
+   "bnet_imported_at": "2026-11-06T09:00:00Z",
+   "main_character_key": "us/normal/felsnap",
+   "entitlements": {
+    "personal_portal": true,
+    "server_sims": false,
+    "retention": false,
+    "multi_compare": false,
+    "history": false,
+    "notifications": false,
+    "officer_views": false,
+    "roster_check": false,
+    "log_coach": false,
+    "supporter_mark": false,
+    "billing": null
+   },
+   "notifications": {
+    "connect": true,
+    "discord": null
+   },
+   "discord_link_available": true,
+   "discord_link": null,
+   "ended_seat": {
+    "guild_name": "Olympus XXVII",
+    "ended_at": "2026-11-02T10:00:00.000Z",
+    "resubscribe_url": "/premium/checkout?plan=premium&interval=yearly&comeback=cb_9f2",
+    "amount_cents": 4000,
+    "interval": "yearly"
+   }
+  },
+  "pastdue": {
+   "user": {
+    "id": 7,
+    "battletag": "Hunthrop#1894",
+    "email": null,
+    "role": "user",
+    "anonymize": false
+   },
+   "characters": [
+    {
+     "key": "us/normal/felsnap",
+     "region": "us",
+     "ruleset": "normal",
+     "name": "Felsnap",
+     "class": "Hunter",
+     "spec": "Beast Mastery",
+     "race": "Dwarf",
+     "realm": "Skyborne",
+     "level": 34,
+     "faction": "alliance",
+     "item_level": 31,
+     "source": "bnet",
+     "build": {
+      "source": "addon",
+      "captured_at": "2026-11-04T19:30:00Z",
+      "level": 34,
+      "data_build": "1.60.1.70790",
+      "gear": {
+       "head": 252504,
+       "neck": 273049,
+       "shoulder": 2264,
+       "back": 14593,
+       "chest": 2041,
+       "wrist": 897,
+       "hands": 7358,
+       "waist": 20090,
+       "legs": 9509,
+       "feet": 10402,
+       "finger1": 6748,
+       "finger2": 6748,
+       "main_hand": 6679,
+       "ranged": 13137
+      },
+      "talents": {
+       "trees": [
+        "0000000000000000",
+        "00000000000000000",
+        "000000000000000000"
+       ],
+       "points": [
+        23,
+        0,
+        0
+       ]
+      }
+     }
+    }
+   ],
+   "guilds": [],
+   "bnet_imported_at": "2026-11-06T09:00:00Z",
+   "main_character_key": "us/normal/felsnap",
+   "entitlements": {
+    "personal_portal": true,
+    "server_sims": true,
+    "retention": true,
+    "multi_compare": true,
+    "history": true,
+    "notifications": true,
+    "officer_views": false,
+    "roster_check": false,
+    "log_coach": true,
+    "supporter_mark": true,
+    "billing": {
+     "source": "stripe",
+     "plan": "premium",
+     "status": "past_due",
+     "current_period_end": "2026-11-11T10:00:00.000Z",
+     "cancel_at_period_end": false,
+     "founder": true,
+     "interval": "yearly",
+     "amount_cents": 4000
+    }
+   },
+   "notifications": {
+    "connect": true,
+    "discord": null
+   },
+   "discord_link_available": true,
+   "discord_link": null
+  },
+  "claim": {
+   "user": {
+    "id": 7,
+    "battletag": "Hunthrop#1894",
+    "email": null,
+    "role": "user",
+    "anonymize": false
+   },
+   "characters": [
+    {
+     "key": "us/normal/thandrel",
+     "region": "us",
+     "ruleset": "normal",
+     "name": "Thandrel",
+     "class": "Warrior",
+     "spec": "Fury",
+     "race": "Human",
+     "realm": "Skyborne",
+     "level": 60,
+     "faction": "alliance",
+     "item_level": 61,
+     "source": "bnet",
+     "build": {
+      "source": "addon",
+      "captured_at": "2026-11-04T19:30:00Z",
+      "level": 60,
+      "data_build": "1.60.1.70790",
+      "gear": {
+       "head": 23314,
+       "neck": 11933,
+       "shoulder": 12927,
+       "back": 13340,
+       "chest": 252483,
+       "wrist": 19578,
+       "hands": 231541,
+       "waist": 19044,
+       "legs": 231540,
+       "feet": 275618,
+       "finger1": 13098,
+       "finger2": 19514,
+       "trinket1": 11815,
+       "trinket2": 249470,
+       "main_hand": 279259,
+       "off_hand": 22384,
+       "ranged": 2100
+      },
+      "talents": {
+       "trees": [
+        "0000000000000000",
+        "00000000000000000",
+        "000000000000000000"
+       ],
+       "points": [
+        17,
+        34,
+        0
+       ]
+      }
+     },
+     "guild": {
+      "id": 2,
+      "name": "Olympus XXVII",
+      "rank": "Officer",
+      "verified": true,
+      "attendance": {
+       "present": 3,
+       "nights": 4
+      }
+     }
+    }
+   ],
+   "guilds": [
+    {
+     "id": 2,
+     "region": "us",
+     "ruleset": "normal",
+     "name": "Olympus XXVII",
+     "slug": "olympus-xxvii",
+     "rank": "Officer",
+     "verified": true,
+     "verified_count": 18,
+     "faction": "alliance",
+     "consent": "gear",
+     "can": [
+      "approve"
+     ],
+     "claim": {
+      "state": "pending",
+      "yours": false,
+      "pending_yours": true,
+      "holder_name": null
+     },
+     "subscribe": {
+      "step": "claim_pending_yours",
+      "trial_used": false,
+      "available_at": null,
+      "reason": null,
+      "other_guild_name": null
+     }
+    },
+    {
+     "id": 7,
+     "region": "us",
+     "ruleset": "normal",
+     "name": "Pinefeather Lodge",
+     "slug": "pinefeather-lodge",
+     "rank": "Member",
+     "consent": "roster",
+     "verified": false,
+     "verified_count": 4,
+     "faction": "alliance",
+     "can": [],
+     "subscribe": {
+      "step": "ask_leader",
+      "trial_used": null,
+      "available_at": null,
+      "reason": null,
+      "other_guild_name": null
+     }
+    }
+   ],
+   "bnet_imported_at": "2026-11-06T09:00:00Z",
+   "main_character_key": "us/normal/thandrel",
+   "entitlements": {
+    "personal_portal": false,
+    "server_sims": false,
+    "retention": false,
+    "multi_compare": false,
+    "history": false,
+    "notifications": false,
+    "officer_views": false,
+    "roster_check": false,
+    "log_coach": false,
+    "supporter_mark": false,
+    "billing": null
+   },
+   "notifications": {
+    "connect": true,
+    "discord": null
+   },
+   "discord_link_available": true,
+   "discord_link": null
+  }
+ },
+ "raw_devices": {
+  "none": [],
+  "one": [
+   {
+    "id": "d1",
+    "name": "JHUNT-PC",
+    "platform": "windows/amd64",
+    "kind": "companion",
+    "created_at": "2026-11-03T18:00:00Z",
+    "last_seen_at": "2026-11-06T09:57:00Z"
+   }
+  ],
+  "several": [
+   {
+    "id": "d1",
+    "name": "JHUNT-PC",
+    "platform": "windows/amd64",
+    "kind": "companion",
+    "created_at": "2026-11-03T18:00:00Z",
+    "last_seen_at": "2026-11-06T09:57:00Z"
+   },
+   {
+    "id": "d2",
+    "name": "STEAMDECK",
+    "platform": "linux/amd64",
+    "kind": "companion",
+    "created_at": "2026-10-19T10:00:00.000Z",
+    "last_seen_at": "2026-11-06T10:00:00.000Z"
+   },
+   {
+    "id": "d3",
+    "name": "MacBook Air",
+    "platform": "darwin/arm64",
+    "kind": "companion",
+    "created_at": "2026-11-07T10:00:00.000Z",
+    "last_seen_at": null
+   }
+  ]
+ },
+ "checkout_trial_saved": "Card saved. First charge 15 Nov 2026.",
+ "checkout_renewal": "$40 a year · renews 4 Nov 2027 · receipt from Stripe by email",
+ "checkout_signed_in": "Signed in as Hunthrop#1894",
+ "guild_on_line": "Olympus XXVII is on the Guild plan. You pay for it.",
+ "guild_settings": "Guild settings",
+ "shared": {
+  "note": "This build was shared as a link. Edit a copy to spend points of your own.",
+  "fork": "Edit a copy",
+  "readOnly": "This build was opened from a share link; edit a copy to change it",
+  "shareTitle": "Share this build",
+  "meta": "Shared build",
+  "views": {
+   "7": "7 views",
+   "12": "12 views",
+   "41": "41 views"
+  },
+  "guideBuild": "Guide build"
+ }
+}

@@ -333,7 +333,9 @@ test('after a claim made for a plan, subscribe leads Next as the one gold fill',
   ]);
   // The viewer now holds the claim: "Claim the guild first" is no longer theirs to read (row 16).
   await expect(page.getByTestId('guild-claim-plan-line')).toHaveCount(0);
-  await expect(page.getByTestId('guild-claim-next-subscribe')).toHaveText(checkoutGuildCopy.ready.startTrial);
+  await expect(page.getByTestId('guild-claim-next-subscribe')).toContainText(
+    checkoutGuildCopy.ready.startTrial('').split(' · ')[0],
+  );
   await expect(page.getByTestId('guild-claim-next-roster')).toHaveText(guildClaimCopy.nextRoster);
 
   // One fill: the subscribe button is gold, every other step is a ghost.

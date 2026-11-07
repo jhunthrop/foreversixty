@@ -50,7 +50,7 @@ WHO = ('Felsnap', 'hunter', 'Level 34')
 # evaluated per state (spent_line, score_basis, order_rows, next_point, level_line, the notes).
 P = C['planner']
 # SAMPLE: the live estimate (PlannerDps runs the engine in the browser; no file carries a figure).
-SAMPLE_SCORE = {'guide': ('612', '± 4'), 'holy': ('418.6', '± 1.2'), 'fire': ('655', '± 5'), 'you_cap': ('171', '± 2')}
+SAMPLE_SCORE = {'guide': ('612', '± 4'), 'holy': ('419', '± 1'), 'fire': ('655', '± 5'), 'you_cap': ('171', '± 2')}
 
 
 def e(t) -> str:
@@ -142,8 +142,9 @@ def notes(text: str, short: str = '') -> str:
     return f'<div class="pc"><div data-region="{REGION["notes"]}" class="pl-notes"><p class="notice neutral">{body}</p></div></div>'
 
 
-def compare(st: dict, confirm: bool = False, loaded: str = '', readonly: bool = False) -> str:
+def compare(st: dict, confirm: bool = False, loaded: str = '', readonly: bool = False, heading: str = '') -> str:
     b, cmp = st['band'], st['compare']
+    b = {**b, 'heading': heading} if heading else b
     if cmp is None:
         return Section(e(b['heading']), f'<p class="t-small pl-pad">{e(b["none"])}</p>')
     s = cmp['status']
@@ -164,7 +165,7 @@ def compare(st: dict, confirm: bool = False, loaded: str = '', readonly: bool = 
     return Section(e(b['heading']), f'<div class="pl-sec">{line}{beyond}{acts}{ld}{gear}</div>')
 
 
-def in_game(st: dict, send: dict | None, copy_state: str = 'idle') -> str:
+def in_game(st: dict, send: dict | None, copy_state: str = 'idle', plain_block: bool = False) -> str:
     """The addon handoff. send: a sendActionFor result (signed in) or None (signed out: Copy for the game is the primary)."""
     copy_label = {'idle': C['addon']['copyForGame'], 'copied': C['addon']['copiedForGame'], 'failed': C['addon']['copyForGame']}[copy_state]
     # Q6: signed in, Send is the gold primary and Copy sits under it; Copy is the primary signed out or on another class's build.
@@ -173,7 +174,10 @@ def in_game(st: dict, send: dict | None, copy_state: str = 'idle') -> str:
     if copy_state == 'failed':
         failed = f'<p class="t-small" role="status">{e(C["addon"]["copyFailed"])}</p>{CodeField("FSB1:hunter:5/005005201/500230230050222151", label=C["addon"]["buildCodeLabel"], short=True)}'
     body = ''
-    if send is not None:
+    if send is not None and plain_block and send.get('otherClass'):
+        # Ruling MUST 5 (premium round): another class's build is one plain line above Copy for the game.
+        body += f'<p class="pl-line">{e(send["label"])}</p><div class="pl-acts">{copy_btn}</div>{failed}<p class="t-small">{e(C["addon"]["addonCodeHint"])}</p>'
+    elif send is not None:
         btn = Button(e(send['label']), primary=not send.get('otherClass')).replace('class="btn', 'class="btn is-off' if send.get('disabled') else 'class="btn', 1)
         sec = send.get('secondary') or {}
         sec_btn = Button(e(sec['label'])) if sec.get('testid') == 'planner-send-cancel' else ''

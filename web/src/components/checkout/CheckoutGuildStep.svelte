@@ -16,7 +16,8 @@
   import type { Me, MeGuild } from '../../lib/account/api';
   import { guildHref } from '../../lib/characters';
   import { preloadImages } from '../../lib/ui/preload-images';
-  import { CARD } from '../../lib/ui/card';
+  import Plate from '../ui/Plate.svelte';
+  import { checkoutCopy } from '../../lib/billing/copy';
   import { premiumSource } from '../../lib/account/plan-line';
   import { readMeGuildCount } from '../../lib/account/premium-hint';
   import { claimGuild, confirmClaim } from '../../lib/guild/api';
@@ -297,9 +298,10 @@
 
 <svelte:window onpageshow={onPageShow} />
 
-<div class="px-[18px] pt-5 pb-16 md:px-12 md:pt-8" data-testid="checkout-guild-step">
-  <!-- .measure-wide: checkout.astro sets it to this page's 880 px column. -->
-  <div class="measure-wide flex flex-col">
+<!-- The guild list in the page column (premium spec 2026-11-08 section 6, B5: one left edge with
+     the head): the lead, then the one Plate `Which guild?` with a row per guild. -->
+<div class="pb-16" data-testid="checkout-guild-step">
+  <div class="flex flex-col">
     {#if failed}
       <LoadError message={copy.loadError.title} {onRetry} testid="checkout-guild-error" />
     {:else if loading}
@@ -313,7 +315,7 @@
     {:else if empty !== null}
       <!-- Left in the 880 column, where the foot sits too (row 11); full-width button on a phone. -->
       <div
-        class={`${CARD} flex max-w-[640px] flex-col gap-2 p-5`}
+        class="flex max-w-[640px] flex-col gap-2"
         data-testid={empty === copy.emptyA ? 'checkout-guild-empty-a' : 'checkout-guild-empty-b'}
       >
         <p class="text-strong m-0 text-[15px]">{empty.title}</p>
@@ -331,47 +333,49 @@
       >
         {lead}
       </p>
-      <ul class="m-0 flex list-none flex-col gap-3 p-0" data-testid="checkout-guild-cards">
-        {#each cards as guild (guild.id)}
-          <GuildStepCard
-            {guild}
-            characters={me?.characters ?? []}
-            mainKey={me?.main_character_key}
-            standing={guild.subscribe != null}
-          >
-            {#snippet block()}
-              <GuildStepBlock
-                {guild}
-                {plan}
-                {interval}
-                {selfUrl}
-                viewerIsOfficer={viewerIsOfficer(guild)}
-                guildPageHref={guildPageHref(guild)}
-                {onCheckAgain}
-                claim={claimControls(guild, claimKindOf(guild.subscribe?.step ?? null))}
-                notice={notice?.id === guild.id ? notice.value : null}
-                onTryAgain={retryId === guild.id ? () => void pay(guild, 'checkout') : undefined}
-              >
-                {#snippet action()}
-                  <GuildPayAction
-                    {guild}
-                    {plan}
-                    {interval}
-                    {founder}
-                    {readyCards}
-                    busy={busy?.id === guild.id ? busy.kind : null}
-                    locked={busy !== null && busy.id !== guild.id}
-                    guildPageHref={guildPageHref(guild)}
-                    onSubscribe={() => void pay(guild, 'checkout')}
-                    onManage={() => void pay(guild, 'portal')}
-                    {onSwitch}
-                  />
-                {/snippet}
-              </GuildStepBlock>
-            {/snippet}
-          </GuildStepCard>
-        {/each}
-      </ul>
+      <Plate label={checkoutCopy.whichGuild} testid="checkout-guild-plate">
+        <ul class="m-0 flex list-none flex-col p-0" data-testid="checkout-guild-cards">
+          {#each cards as guild (guild.id)}
+            <GuildStepCard
+              {guild}
+              characters={me?.characters ?? []}
+              mainKey={me?.main_character_key}
+              standing={guild.subscribe != null}
+            >
+              {#snippet block()}
+                <GuildStepBlock
+                  {guild}
+                  {plan}
+                  {interval}
+                  {selfUrl}
+                  viewerIsOfficer={viewerIsOfficer(guild)}
+                  guildPageHref={guildPageHref(guild)}
+                  {onCheckAgain}
+                  claim={claimControls(guild, claimKindOf(guild.subscribe?.step ?? null))}
+                  notice={notice?.id === guild.id ? notice.value : null}
+                  onTryAgain={retryId === guild.id ? () => void pay(guild, 'checkout') : undefined}
+                >
+                  {#snippet action()}
+                    <GuildPayAction
+                      {guild}
+                      {plan}
+                      {interval}
+                      {founder}
+                      {readyCards}
+                      busy={busy?.id === guild.id ? busy.kind : null}
+                      locked={busy !== null && busy.id !== guild.id}
+                      guildPageHref={guildPageHref(guild)}
+                      onSubscribe={() => void pay(guild, 'checkout')}
+                      onManage={() => void pay(guild, 'portal')}
+                      {onSwitch}
+                    />
+                  {/snippet}
+                </GuildStepBlock>
+              {/snippet}
+            </GuildStepCard>
+          {/each}
+        </ul>
+      </Plate>
     {/if}
 
     <!-- An empty state's panel already offers Get set up, so the foot's missing-guild line would repeat it. -->
