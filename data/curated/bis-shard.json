@@ -1,0 +1,7 @@
+{
+  "specs": [
+    "rogue-assassination",
+    "rogue-combat"
+  ],
+  "reason": "Sim round 27 moved both leveling orders (Assassination Malice at 10 to 14; Combat Precision and Puncturing Wounds by 20), which changes their band 20 talents."
+}
