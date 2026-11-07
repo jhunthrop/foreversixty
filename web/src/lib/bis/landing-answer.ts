@@ -1,10 +1,8 @@
 // web/src/lib/bis/landing-answer.ts
-// What the /bis landing hands the shared character header (components/character/
-// CharacterHeader.svelte): the answer ("Best-in-slot slots you wear", how many of the character's
-// band's best-in-slot slots it already wears, and which slots the band has no pick for) and the
-// one action (the character's own spec page at its own band). The identity, the sync line and
-// every state are the header's own. The spec page's card reuses the answer through
-// `bisAnswerSpec` with its own spec lookup.
+// What the /bis landing's head answer counts (landing-answer-view.ts paints it): how many of the
+// character's band's best-in-slot slots it already wears and which slots the band has no pick for,
+// as the shared AnswerSpec contract (lib/character-header/types.ts), and the one action (the
+// character's own spec page at its own band).
 import type { MeCharacter } from '../account/api';
 import type { AnswerSpec, HeaderAction, HeaderAnswer } from '../character-header/types';
 import { characterSpecName } from '../character-spec';
