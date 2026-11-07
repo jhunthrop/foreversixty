@@ -1,0 +1,12 @@
+{
+  "ok": false,
+  "data": null,
+  "error": {
+    "code": "confirm_mismatch",
+    "message": "Type your BattleTag or delete to confirm.",
+    "fields": {
+      "confirm": "your BattleTag or delete"
+    }
+  },
+  "request_id": "9f2c41d07ab3e655"
+}

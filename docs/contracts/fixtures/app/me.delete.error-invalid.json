@@ -3,9 +3,9 @@
   "data": null,
   "error": {
     "code": "invalid",
-    "message": "confirm the deletion in the app first",
+    "message": "send what you typed to confirm",
     "fields": {
-      "confirm": "must be exactly \"delete my account\""
+      "confirm": "your BattleTag or delete"
     }
   },
   "request_id": "9f2c41d07ab3e655"

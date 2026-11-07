@@ -687,6 +687,7 @@ func serve(log *slog.Logger) error {
 
 	accounts.Seats = wireBilling(billingWiring{cfg: cfg, pool: pool, deps: &deps, entitle: entStore, authStore: authStore,
 		guildStore: guildStore, mailer: mailer, log: log})
+	deps.Account = accountHandler(pool, deps.Billing, roleSyncer, client, authenticator, log)
 	// After every producer exists (guilds, addon, billing, seats): the events router reaches them all.
 	wireEvents(ctx, cfg, pool, &deps, log)
 

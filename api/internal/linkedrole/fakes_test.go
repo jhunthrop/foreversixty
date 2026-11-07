@@ -110,6 +110,8 @@ type fakeDiscord struct {
 	userID   string
 	pushes   []push
 	next     int
+	// revokedTokens are the refresh tokens RevokeToken was given, in order.
+	revokedTokens []string
 }
 
 type push struct {
@@ -135,6 +137,13 @@ func (f *fakeDiscord) Refresh(_ context.Context, refresh string) (Tokens, error)
 }
 
 func (f *fakeDiscord) UserID(context.Context, string) (string, error) { return f.userID, nil }
+
+func (f *fakeDiscord) RevokeToken(_ context.Context, refresh string) error {
+	f.mu.Lock()
+	defer f.mu.Unlock()
+	f.revokedTokens = append(f.revokedTokens, refresh)
+	return nil
+}
 
 func (f *fakeDiscord) Push(_ context.Context, access string, c Connection) error {
 	f.mu.Lock()
