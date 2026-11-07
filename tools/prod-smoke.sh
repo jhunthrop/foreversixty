@@ -28,10 +28,10 @@ checks() {
 $SITE/|200|<title[^>]*>[^<]*Forever Sixty
 $SITE/guides|200|<h1[^>]*>Guides
 EOF
-	# One spec guide per class, each with its rotation's Priority list.
+	# One spec guide per class, each with its rotation's Priority list (its first row).
 	for guide in druid/feral hunter/marksmanship mage/frost paladin/retribution priest/shadow \
 		rogue/combat shaman/enhancement warlock/affliction warrior/fury; do
-		echo "$SITE/guides/$guide|200|id=\"priority\"[^>]*>Priority<"
+		echo "$SITE/guides/$guide|200|id=\"priority\".*guide-rotation-priority-row"
 	done
 	cat <<EOF
 $SITE/bis/warrior/fury|200|Best in slot
