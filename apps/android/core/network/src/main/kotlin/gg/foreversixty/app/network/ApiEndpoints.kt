@@ -23,12 +23,14 @@ import gg.foreversixty.app.model.CoachNight
 import gg.foreversixty.app.model.CoachRecent
 import gg.foreversixty.app.model.CoachReview
 import gg.foreversixty.app.model.Device
+import gg.foreversixty.app.model.FeedPage
 import gg.foreversixty.app.model.FightMeters
 import gg.foreversixty.app.model.GuideFile
 import gg.foreversixty.app.model.GuideIndex
 import gg.foreversixty.app.model.GuildHome
 import gg.foreversixty.app.model.GuildLoot
 import gg.foreversixty.app.model.GuildRaids
+import gg.foreversixty.app.model.HomeBlocks
 import gg.foreversixty.app.model.ItemSet
 import gg.foreversixty.app.model.ItemUsesShard
 import gg.foreversixty.app.model.ItemsFile
@@ -77,6 +79,14 @@ import kotlinx.serialization.builtins.serializer
 
 /** Every API call the apps make, one function per operation of api/openapi.yaml. */
 object ApiEndpoints {
+    /** GET /v1/feed: The site feed, "Forever right now" */
+    fun getFeed(filter: String? = null, spec: String? = null, band: Int? = null, cursor: String? = null, limit: Int? = null): Endpoint<FeedPage> =
+        Endpoint(HttpMethod.Get, "/v1/feed", FeedPage.serializer(), query = listOfNotNull(filter?.let { "filter" to it }, spec?.let { "spec" to it }, band?.let { "band" to it.toString() }, cursor?.let { "cursor" to it }, limit?.let { "limit" to it.toString() }))
+
+    /** GET /v1/home: The signed-in home's blocks for one of the caller's characters */
+    fun getHome(character: String): Endpoint<HomeBlocks> =
+        Endpoint(HttpMethod.Get, "/v1/home", HomeBlocks.serializer(), query = listOfNotNull("character" to character))
+
     /** GET /v1/builds: The caller's own saved builds */
     fun listMyBuilds(page: Int? = null): Endpoint<BuildList> =
         Endpoint(HttpMethod.Get, "/v1/builds", BuildList.serializer(), query = listOfNotNull("mine" to "1", page?.let { "page" to it.toString() }))
@@ -364,6 +374,8 @@ object StaticEndpoints {
 /** Every app route with its success status and the contract fixture that fixture mode answers. */
 object ContractRoutes {
     val api: List<FixtureRoute> = listOf(
+        FixtureRoute(HttpMethod.Get, "/v1/feed", "feed", HttpStatusCode.fromValue(200)),
+        FixtureRoute(HttpMethod.Get, "/v1/home", "home", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Get, "/v1/builds", "builds.list", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Get, "/v1/builds/{id}", "builds.get", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Delete, "/v1/builds/{id}", null, HttpStatusCode.fromValue(204)),

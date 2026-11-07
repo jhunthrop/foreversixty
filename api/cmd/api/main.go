@@ -15,6 +15,7 @@ import (
 
 	"github.com/jackc/pgx/v5/pgxpool"
 
+	"github.com/jhunthrop/foreversixty/api/internal/activity"
 	"github.com/jhunthrop/foreversixty/api/internal/addon"
 	"github.com/jhunthrop/foreversixty/api/internal/app"
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
@@ -256,21 +257,6 @@ func runParse(ctx context.Context, log *slog.Logger, args []string) error {
 	return parse.Report(ctx, newParseDeps(cfg, pool, client, treeData, log), args[0])
 }
 
-// newParseDeps builds the parse-report job's dependencies on the job's
-// own pool: the completion hook is a guilds service of its own, the
-// way the job's Discord poster is a notify service of its own.
-func newParseDeps(cfg config.Config, pool *pgxpool.Pool, client parse.Objects, treeData *trees.Data, log *slog.Logger) parse.Deps {
-	deps := parse.Deps{
-		Reports: &reports.Store{Pool: pool}, Objects: client, Log: log,
-		Rank:      &rankings.Store{Pool: pool, Specs: inferrer(treeData)},
-		Completed: newJobGuilds(cfg, pool, log),
-	}
-	if notifier := newJobNotifier(context.Background(), cfg, pool, log); notifier != nil {
-		deps.Notify = notifier
-	}
-	return deps
-}
-
 // runSim is the premium lane's Cloud Run job: run one sim natively
 // and exit.
 func runSim(ctx context.Context, log *slog.Logger, args []string) error {
@@ -289,6 +275,7 @@ func runSim(ctx context.Context, log *slog.Logger, args []string) error {
 	log.Info(sims.SimRunJobCommand, "sim", args[0], "engine", enginever.Version)
 	deps := sims.JobDeps{
 		Store: &sims.Store{Pool: pool}, Put: client, Engine: simEngine(log), Log: log,
+		Finished: &activity.GuildSimWriter{Store: &activity.Store{Pool: pool}, Log: log},
 	}
 	if notifier := newJobNotifier(ctx, cfg, pool, log); notifier != nil {
 		deps.Notify = notifier
@@ -465,6 +452,7 @@ func runBnetRefresh(ctx context.Context, log *slog.Logger) error {
 			"effect", "characters are re-synced but no Blizzard-sourced build is (re-)encoded")
 	}
 	svc := &bnetimport.Service{Pool: pool, Client: bnetClient(cfg, log), Regions: cfg.BnetRegions, Log: log, Tables: tables}
+	svc.ImportSims = refreshImportSims(ctx, cfg, pool, log)
 	if !cfg.BnetImportCharacters {
 		// Probe only: the namespace_appeared warning is the launch-day signal, and no
 		// character is re-synced from a namespace that is not Forever's (bnetimport.Stub).
@@ -750,6 +738,7 @@ func serve(log *slog.Logger) error {
 		}
 	}
 
+	wireActivity(ctx, activityWiring{cfg: cfg, pool: pool, trees: treeData, auth: authStore, accounts: accounts, log: log}, &deps)
 	srv := &http.Server{
 		Addr:              net.JoinHostPort(cfg.ListenHost, cfg.Port),
 		Handler:           server.NewRouter(deps),

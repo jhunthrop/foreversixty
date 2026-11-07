@@ -152,6 +152,7 @@ func (s *Service) refreshOneCharacter(ctx context.Context, sc staleCharacter, ro
 	if err := tx.Commit(ctx); err != nil {
 		return fmt.Errorf("bnetimport: refresh commit %s: %w", key, err)
 	}
+	s.simImport(ctx, ref, false)
 	return nil
 }
 

@@ -19,6 +19,10 @@ const defaultMailFrom = "Forever Sixty <hello@foreversixty.gg>"
 // api/Dockerfile.
 const defaultTreeDataDir = "/data"
 
+// defaultCuratedDir is where the Docker image places the data/curated files the API reads
+// (instance-levels.json, raids/first-tier.json); see api/Dockerfile.
+const defaultCuratedDir = "/curated"
+
 // Defaults for the Phase 3 variables. Every one of them has a working
 // default so a developer can run the service with the Phase 0 environment
 // and simply not have the features that need credentials.
@@ -82,6 +86,9 @@ type Config struct {
 	// directories are reported at startup and simply have no data, so the
 	// service still serves health, version, and subscribe.
 	TreeDataDir string
+	// CuratedDir holds the data/curated files the site feed reads (CURATED_DIR; the
+	// repository's data/curated in development).
+	CuratedDir string
 
 	// TrustedProxyHops is how many reverse proxies in front of this service
 	// are trusted to append to X-Forwarded-For; see httpx.RateLimit. 0
@@ -254,6 +261,10 @@ func Load(getenv func(string) string) (Config, error) {
 		if c.PublicBaseURL == productionBaseURL {
 			return Config{}, fmt.Errorf("config: FS_DEV_LOGIN=1 is refused when PUBLIC_BASE_URL is %s", productionBaseURL)
 		}
+	}
+	c.CuratedDir = getenv("CURATED_DIR")
+	if c.CuratedDir == "" {
+		c.CuratedDir = defaultCuratedDir
 	}
 	c.TreeDataDir = getenv("TREE_DATA_DIR")
 	if c.TreeDataDir == "" {

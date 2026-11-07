@@ -3,6 +3,28 @@
 import Foundation
 import Models
 
+public extension Endpoint where Response == FeedPage {
+    /// GET /v1/feed: The site feed, "Forever right now"
+    static func getFeed(filter: String? = nil, spec: String? = nil, band: Int? = nil, cursor: String? = nil, limit: Int? = nil) -> Endpoint {
+        Endpoint(method: .get, path: "/v1/feed", query: [
+            filter.map { URLQueryItem(name: "filter", value: "\($0)") },
+            spec.map { URLQueryItem(name: "spec", value: "\($0)") },
+            band.map { URLQueryItem(name: "band", value: "\($0)") },
+            cursor.map { URLQueryItem(name: "cursor", value: "\($0)") },
+            limit.map { URLQueryItem(name: "limit", value: "\($0)") },
+        ].compactMap { $0 })
+    }
+}
+
+public extension Endpoint where Response == HomeBlocks {
+    /// GET /v1/home: The signed-in home's blocks for one of the caller's characters
+    static func getHome(character: String) -> Endpoint {
+        Endpoint(method: .get, path: "/v1/home", query: [
+            URLQueryItem(name: "character", value: "\(character)"),
+        ].compactMap { $0 })
+    }
+}
+
 public extension Endpoint where Response == BuildList {
     /// GET /v1/builds: The caller's own saved builds
     static func listMyBuilds(page: Int? = nil) -> Endpoint {
@@ -497,6 +519,8 @@ public extension StaticResource where Response == TalentsFile {
 /// Every app route with its success status and the contract fixture that fixture mode answers.
 public enum ContractRoutes {
     public static let api: [FixtureRoute] = [
+        FixtureRoute(.get, "/v1/feed", fixture: "feed", status: 200),
+        FixtureRoute(.get, "/v1/home", fixture: "home", status: 200),
         FixtureRoute(.get, "/v1/builds", fixture: "builds.list", status: 200),
         FixtureRoute(.get, "/v1/builds/{id}", fixture: "builds.get", status: 200),
         FixtureRoute(.delete, "/v1/builds/{id}", fixture: nil, status: 204),

@@ -1,0 +1,6 @@
+{
+  "ok": false,
+  "data": null,
+  "error": { "code": "invalid", "message": "filter must be all, spec, guild or logs", "fields": { "filter": "filter must be all, spec, guild or logs" } },
+  "request_id": "9f2c41d07ab3e655"
+}

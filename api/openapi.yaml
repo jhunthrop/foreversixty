@@ -3810,6 +3810,116 @@ components:
         id: { type: string }
         url: { type: string, format: uri }
 
+    # Home B: the site feed and the home blocks (design/specs/2026-11-07-home-b.md) ----------
+    FeedSegment:
+      type: object
+      description: One run of a feed row's sentence. Plain text has no style.
+      required: [text]
+      properties:
+        text: { type: string }
+        style: { type: string, enum: [strong, name, item], description: "name carries class; item carries quality and item_id" }
+        class: { type: string, x-name: className, description: "A class slug, for a name in its class colour" }
+        quality: { type: integer, description: "An item's quality, 0 poor to 5 legendary" }
+        item_id: { type: integer }
+    FeedRow:
+      type: object
+      required: [id, kind, at, tag, icon, crest, quality, href, date_only, segments]
+      properties:
+        id: { type: string }
+        kind: { type: string, enum: [log_upload, boss_kill, guild_raid, ranking_top, ranking_climb, bis_change, guild_sim] }
+        at: { type: string, format: date-time }
+        tag: { type: string, enum: [your_spec, logs, rankings, best_in_slot, your_guild, patch], description: "For this viewer: the kind's tag (log_upload and boss_kill logs, ranking_top and ranking_climb rankings, bis_change best_in_slot, guild rows your_guild), or your_spec on the viewer's spec and band" }
+        icon: { type: ["string", "null"], description: "An HD icon stem under /data/<build>/icons/" }
+        crest: { type: ["string", "null"], description: "A class slug: the row shows that class crest" }
+        quality: { type: ["integer", "null"], description: "The icon's item quality, for its border" }
+        href: { type: string, description: "A site path the row links to" }
+        date_only: { type: boolean, description: "Show the date, not a relative time" }
+        segments: { type: array, items: { $ref: '#/components/schemas/FeedSegment' } }
+    FeedPage:
+      type: object
+      required: [rows, next_cursor]
+      properties:
+        rows: { type: array, items: { $ref: '#/components/schemas/FeedRow' } }
+        next_cursor: { type: ["string", "null"], description: "Pass back as ?cursor= for the next page; null on the last" }
+    HomeImportSim:
+      type: object
+      description: The character's latest auto-sim on import (bare preset, default iterations).
+      required: [state, dps, simmed_at, sim_id]
+      properties:
+        state: { type: string, enum: [pending, done, failed] }
+        dps: { type: ["number", "null"] }
+        simmed_at: { type: ["string", "null"], format: date-time }
+        sim_id: { type: ["string", "null"] }
+    HomeSpecWeek:
+      type: object
+      description: The spec on the tier list's rules at the character's band and faction this reset week.
+      required: [spec, band, faction, role, grade, last_week_grade, place, of]
+      properties:
+        spec: { type: string }
+        band: { type: integer }
+        faction: { type: string }
+        role: { type: string, enum: [dps, tank, healer] }
+        grade: { type: ["string", "null"], description: "S to D for a damage spec; null for tanks and healers" }
+        last_week_grade: { type: ["string", "null"], description: "null until last week's grade exists" }
+        place: { type: integer }
+        of: { type: integer }
+    HomeMoverRow:
+      type: object
+      required: [rank, name, class, key, delta]
+      properties:
+        rank: { type: integer }
+        name: { type: string }
+        class: { type: string, x-name: className }
+        key: { type: string }
+        delta: { type: ["integer", "null"], description: "Places gained since last week; null with no baseline" }
+    HomeMovers:
+      type: object
+      required: [spec, band, baseline, rows]
+      properties:
+        spec: { type: string }
+        band: { type: integer }
+        baseline: { type: boolean, description: "false: no last-week board yet, rows are the top 3 with no movement" }
+        rows: { type: array, items: { $ref: '#/components/schemas/HomeMoverRow' } }
+    HomeLadderRow:
+      type: object
+      required: [rank, name, class, key, value, delta, simmed_at, sim_id, you]
+      properties:
+        rank: { type: integer }
+        name: { type: string }
+        class: { type: string, x-name: className }
+        key: { type: string }
+        value: { type: number }
+        delta: { type: ["integer", "null"] }
+        simmed_at: { type: string, format: date-time }
+        sim_id: { type: string }
+        you: { type: boolean }
+    HomeGuildSims:
+      type: object
+      description: The character's guild ladder for its role, band and preset; members only, three or more.
+      required: [guild_id, guild_name, role, band, preset, unit, of, rows, you]
+      properties:
+        guild_id: { type: integer, format: int64 }
+        guild_name: { type: string }
+        role: { type: string, enum: [dps, tank, healer] }
+        band: { type: integer }
+        preset: { type: string }
+        unit: { type: string }
+        of: { type: integer }
+        rows: { type: array, items: { $ref: '#/components/schemas/HomeLadderRow' } }
+        you:
+          oneOf:
+            - { $ref: '#/components/schemas/HomeLadderRow' }
+            - { type: "null" }
+    HomeBlocks:
+      type: object
+      description: The signed-in home's own blocks; each is null when it has nothing true to say.
+      required: [import_sim, spec_week, movers, guild_sims]
+      properties:
+        import_sim: { oneOf: [ { $ref: '#/components/schemas/HomeImportSim' }, { type: "null" } ] }
+        spec_week: { oneOf: [ { $ref: '#/components/schemas/HomeSpecWeek' }, { type: "null" } ] }
+        movers: { oneOf: [ { $ref: '#/components/schemas/HomeMovers' }, { type: "null" } ] }
+        guild_sims: { oneOf: [ { $ref: '#/components/schemas/HomeGuildSims' }, { type: "null" } ] }
+
     # App sign-in, devices, notifications and config ---------------------------------------
     AppExchangeRequest:
       type: object
@@ -5454,6 +5564,70 @@ paths:
       responses:
         '302':
           description: "Redirect to configured public site base URL + /unsubscribed (success) or /subscribe-invalid (invalid token)"
+  /v1/feed:
+    get:
+      operationId: getFeed
+      tags: [app]
+      summary: The site feed, "Forever right now"
+      description: >-
+        The last 7 days of site activity, newest hour first and the viewer's own rows first within an
+        hour. Public; a session adds the viewer's verified guilds' rows. Anonymous answers are cached
+        30 s (stale 300 s); signed-in answers are private.
+      parameters:
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
+        - { name: filter, in: query, schema: { type: string, enum: [all, spec, guild, logs] } }
+        - { name: spec, in: query, schema: { type: string }, description: "The viewer's spec key, e.g. warrior-fury" }
+        - { name: band, in: query, schema: { type: integer, enum: [20, 30, 40, 50, 60] } }
+        - { name: cursor, in: query, schema: { type: string } }
+        - { name: limit, in: query, schema: { type: integer, minimum: 1, maximum: 30 } }
+      responses:
+        '426': { $ref: '#/components/responses/UpdateRequired' }
+        '200':
+          description: One page of the feed
+          x-fixtures: [feed, feed.empty]
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/FeedPage' } } }
+        '400':
+          description: "A bad filter, spec, band, limit or cursor; the spec filter needs spec and band"
+          x-fixtures: [feed.error-invalid]
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '401':
+          description: "filter=guild signed out"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  /v1/home:
+    get:
+      operationId: getHome
+      tags: [app]
+      summary: The signed-in home's blocks for one of the caller's characters
+      parameters:
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
+        - { name: character, in: query, required: true, schema: { type: string }, description: "The character key, region/ruleset/name-slug" }
+      responses:
+        '426': { $ref: '#/components/responses/UpdateRequired' }
+        '200':
+          description: The blocks; private
+          x-fixtures: [home, home.empty]
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/HomeBlocks' } } }
+        '400':
+          description: "character is missing"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '401':
+          description: "No session or device token"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '404':
+          description: "No such character on the caller's account"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
   /v1/builds:
     post:
       operationId: saveBuild
