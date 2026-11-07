@@ -72,46 +72,49 @@ const rankText = (talent: KeyTalentRef): string =>
 {keyTalents.length > 0 && (
   <LaneBlock label={guidesCopy.keyTalents} testid="guide-key-talents">
     <div class="guide-lane-rows">
-      {keyTalents.map((entry) => (
-        <Row title={entry.talents.map((t) => t.name).join(' · ')} sub={entry.why} open>
-          <Fragment slot="lead">
-            {entry.talents[0]?.icon !== undefined ? (
-              <img
-                src={dataUrl(build, `icons/${entry.talents[0].icon}.webp`)}
-                alt=""
-                width="32"
-                height="32"
-                loading="lazy"
-                decoding="async"
-                class="guide-key-icon"
-              />
-            ) : (
-              <span class="guide-key-icon" aria-hidden="true" />
-            )}
-          </Fragment>
-          <Fragment slot="titleContent">
-            {entry.talents.map((talent, i) => (
-              <>
-                {i > 0 && ' · '}
-                <span
-                  class:list={[talent.id !== undefined && 'gtip guide-key-tip']}
-                  tabindex={talent.id !== undefined ? 0 : undefined}
-                  data-game-tip={
-                    talent.id === undefined
-                      ? undefined
-                      : talentTipKey(talent.id, Math.max(1, talent.rank ?? 1))
-                  }
-                >
-                  {talent.name}
-                </span>
-                {rankText(talent) !== '' && (
-                  <span class="text-muted text-[13px] font-semibold"> {rankText(talent)}</span>
-                )}
-              </>
-            ))}
-          </Fragment>
-        </Row>
-      ))}
+      {keyTalents.map((entry) => {
+        const [leadTalent] = entry.talents;
+        return (
+          <Row title={entry.talents.map((t) => t.name).join(' · ')} sub={entry.why} open>
+            <Fragment slot="lead">
+              {leadTalent?.icon !== undefined ? (
+                <img
+                  src={dataUrl(build, `icons/${leadTalent.icon}.webp`)}
+                  alt=""
+                  width="32"
+                  height="32"
+                  loading="lazy"
+                  decoding="async"
+                  class="guide-key-icon"
+                />
+              ) : (
+                <span class="guide-key-icon" aria-hidden="true" />
+              )}
+            </Fragment>
+            <Fragment slot="titleContent">
+              {entry.talents.map((talent, i) => (
+                <>
+                  {i > 0 && ' · '}
+                  <span
+                    class:list={[talent.id !== undefined && 'gtip guide-key-tip']}
+                    tabindex={talent.id !== undefined ? 0 : undefined}
+                    data-game-tip={
+                      talent.id === undefined
+                        ? undefined
+                        : talentTipKey(talent.id, Math.max(1, talent.rank ?? 1))
+                    }
+                  >
+                    {talent.name}
+                  </span>
+                  {rankText(talent) !== '' && (
+                    <span class="text-muted text-[13px] font-semibold"> {rankText(talent)}</span>
+                  )}
+                </>
+              ))}
+            </Fragment>
+          </Row>
+        );
+      })}
     </div>
   </LaneBlock>
 )}
