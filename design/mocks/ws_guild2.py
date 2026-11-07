@@ -183,7 +183,7 @@ def raid_ready() -> str:
     ff = sum(1 for r in rows if r['flask_food']['flask_or_elixir'] and r['flask_food']['food'])
     tanks = [r for r in F.raid_view(O.OFFICER, True)['signups'] if r['role'] == 'tank' and r['state'] in ('in', 'late')]
     figs = Figures([(f'{att} of {len(rows)}', 'Attuned', '', '', 'sm'), (f'{ff} of {len(rows)}', 'Flask and food', '', '', 'sm')])
-    label = (f'<div style="display:flex;gap:12px;align-items:baseline;padding-top:8px"><span class="t-label">Fire resistance on tanks</span>'
+    label = (f'<div style="display:flex;gap:12px;align-items:baseline;padding-top:8px"><span class="t-small" style="color:var(--strong);font-weight:600">Fire resistance on tanks</span>'
              f'<span class="t-small">{len(tanks)} tank signed</span></div>')
     trows = Rows([Row(t['name'], trail=f"<b>{O.TANK_FIRE.get(t['name'], 0)} fire resistance</b>", title_color=C[t['class']], slim=True, link=False) for t in tanks], open_=True)
     return pad(figs) + label + trows

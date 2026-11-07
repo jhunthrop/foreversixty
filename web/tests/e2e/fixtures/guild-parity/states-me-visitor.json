@@ -1,0 +1,24 @@
+{
+  "user": {
+    "id": 9,
+    "battletag": "Felsnap#1",
+    "email": null,
+    "role": "user",
+    "anonymize": false
+  },
+  "characters": [
+    {
+      "key": "us/pvp/felsnap",
+      "region": "us",
+      "ruleset": "pvp",
+      "name": "Felsnap",
+      "class": "Warrior",
+      "spec": "Fury",
+      "level": 34,
+      "realm": "Skyborne",
+      "faction": "alliance",
+      "guild": null
+    }
+  ],
+  "guilds": []
+}

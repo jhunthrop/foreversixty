@@ -61,14 +61,16 @@ function card(overrides: Record<string, unknown> = {}): string {
 }
 
 describe('GuildWeekOneCard', () => {
-  it('draws the spread, the raids line, professions and one primary button', () => {
+  it('draws the countdown, the spread as a Tally, professions and one primary button', () => {
     const markup = card();
     const copy = text(markup);
+    expect(copy).toContain('First raids open · Wed 9 Dec');
+    expect(markup).toContain('data-region="countdowns"');
     expect(copy).toContain('Before raids open');
-    expect(copy).toContain('1 AT 60');
-    expect(copy).toContain('1 50 TO 59');
+    expect(markup).toContain('data-testid="guild-week-one-spread"');
+    expect(copy).toContain('At 60 1/2');
+    expect(copy).toContain('50 to 59 1/2');
     expect(copy).toContain('1 with no level on file yet.');
-    expect(copy).toContain("Barrow Deeps, Hyjal Summit and Onyxia's Lair open Wed 9 Dec, in 34 days");
     expect(copy).toContain('Professions');
     expect(copy).toContain('Alchemy: B');
     expect(copy).not.toContain('Cooking');
@@ -77,17 +79,17 @@ describe('GuildWeekOneCard', () => {
     expect(markup).toContain('href="/guild/settings#invite"');
   });
 
-  it('leads with the next step and ends with professions below 768, so the button clears the fold', () => {
+  it('draws no box, no caps title and no stat tiles: an open Section of the ui primitives', () => {
     const markup = card();
-    const step = /<div class="([^"]*)"[^>]*data-testid="guild-week-one-step"/.exec(markup)?.[1] ?? '';
-    expect(step).toContain('max-md:order-first');
-    expect(step).toContain('md:border-t');
-    const professions =
-      /<p class="([^"]*)"[^>]*data-testid="guild-week-one-professions"/.exec(markup)?.[1] ?? '';
-    expect(professions).toContain('max-md:order-last');
-    const action =
-      /<button[^>]*class="([^"]*)"[^>]*data-testid="guild-week-one-action"/.exec(markup)?.[1] ?? '';
-    expect(action).toContain('max-md:order-first');
+    expect(markup).not.toMatch(/card-surface|rounded-panel|uppercase|tracking-\[/);
+    expect(markup).toContain('data-region="section-before-raids-open"');
+  });
+
+  it('counts down to nothing once the raids are open, and says what the first night starts', () => {
+    const copy = text(card({ fixedNow: new Date('2026-12-15T00:00:00Z') }));
+    expect(copy).toContain('Raids open now');
+    expect(copy).toContain('Your first raid');
+    expect(copy).toContain('Your first logged night starts the progression board.');
   });
 
   it('holds its height while it loads and offers a retry when the levels fail', () => {
@@ -97,9 +99,9 @@ describe('GuildWeekOneCard', () => {
     expect(text(failed)).toContain('Try again');
   });
 
-  it('swaps the tiles for one line when nobody has a level, and keeps the step', () => {
+  it('swaps the Tally for one line when nobody has a level, and keeps the step', () => {
     const markup = card({ entries: [{ name: 'A', state: 'approved', rank: 'member' }] });
-    expect(markup).not.toContain('guild-week-one-tiles');
+    expect(markup).not.toContain('guild-week-one-spread');
     expect(text(markup)).toContain("Nobody's level is on file yet.");
     expect(markup).toContain('guild-week-one-action');
   });

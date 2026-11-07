@@ -58,7 +58,6 @@
     "components/guild/GuildReadiness.svelte": 2,
     "components/guild/GuildRosterTable.svelte": 7,
     "components/guild/GuildSettingsTab.svelte": 2,
-    "components/guild/GuildWeekOneCard.svelte": 1,
     "components/guild/PlannedRaidRow.svelte": 2,
     "components/guild/RaidForm.svelte": 3,
     "components/guild/RaidLootItem.svelte": 1,
