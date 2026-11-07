@@ -7,6 +7,7 @@ import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import type { Page } from '@playwright/test';
 import { expect, test } from './support/test';
+import { pickFight } from './support/report-frame';
 
 const FIXTURES = path.resolve(process.cwd(), 'src/fixtures/report');
 const ID = 'fixture2live';
@@ -109,11 +110,10 @@ test.describe('a beta-log report', () => {
     const table = page.getByTestId('summary-tab');
     await expect(table).toContainText('Baelgrim');
     await expect(table).not.toContainText('ClassicBetaPvP');
-    await expect(page.getByTestId('roster-Player-4184-000000A1').getByRole('button')).toHaveText('Baelgrim');
-    await expect(page.getByTestId('roster-Player-4184-000000A1').getByRole('button')).toHaveAttribute(
-      'title',
-      'Show only this player',
-    );
+    // The name is the link to the player's own view (logs spec 6.2, decision R5).
+    const name = page.getByTestId('roster-Player-4184-000000A1').getByRole('link');
+    await expect(name).toHaveText('Baelgrim');
+    await expect(name).toHaveAttribute('href', /source=Player-4184-000000A1/);
     const crossRealm = page.getByTestId('roster-Player-4184-000000A5');
     await expect(crossRealm).toContainText('Elyra Duskvale');
     await expect(crossRealm).toContainText('· Classic Beta PvP 2');
@@ -165,7 +165,7 @@ test.describe('a beta-log report', () => {
 
   test('a ratings outage still reads as an error', async ({ page }) => {
     await serveBetaReport(page, { zone: '' });
-    await page.route(`**/v1/reports/${ID}/fights/1/ratings`, (route) =>
+    await page.route(`**/v1/reports/${ID}/fights/3/ratings`, (route) =>
       route.fulfill({
         status: 503,
         contentType: 'application/json',
@@ -177,7 +177,7 @@ test.describe('a beta-log report', () => {
         }),
       }),
     );
-    await page.goto(`/reports/${ID}?fight=1`);
+    await page.goto(`/reports/${ID}?fight=3`);
     await expect(page.getByTestId('rating-panel-error')).toBeVisible();
     await expect(page.getByTestId('rating-panel-none')).toHaveCount(0);
   });
@@ -188,10 +188,10 @@ test.describe('a beta-log report', () => {
     await serveBetaReport(page, { zone: '' });
     await page.goto(`/reports/${ID}?fight=3`);
     await expect(page.getByTestId('report-title')).toHaveText(/^26 Sept? 2026 · 4 fights$/);
-    await expect(page.getByTestId('fight-1')).toContainText('Trash · 6.4s');
-    await expect(page.getByTestId('fight-1-kills')).toHaveText('115 mobs died · your group killed 26');
-    await expect(page.getByTestId('fight-1-outcome')).toHaveCount(0);
-    await expect(page.getByTestId('fight-3')).toContainText('Warden Kelthas');
+    const option = (index: number) => page.locator(`select[data-testid="report-fight"] option[value="${index}"]`);
+    await expect(option(1)).toHaveText('Trash · 0:06');
+    await expect(option(1)).toHaveAttribute('data-description', /· 115 mobs died$/);
+    await expect(option(3)).toContainText('Warden Kelthas');
   });
 
   test('trash from before engine 0.6 shows no kill count rather than the double-counted one', async ({
@@ -199,23 +199,9 @@ test.describe('a beta-log report', () => {
   }) => {
     await serveBetaReport(page, { zone: '', oldCounts: true });
     await page.goto(`/reports/${ID}?fight=3`);
-    await expect(page.getByTestId('fight-1')).toContainText('Trash · 6.4s');
-    await expect(page.getByTestId('fight-1-kills')).toHaveCount(0);
-    await expect(page.getByTestId('fight-selector')).not.toContainText(/230|kills|mobs died/);
-  });
-
-  test('trash in a zone folds into one row per zone and opens to its pulls', async ({ page }) => {
-    await serveBetaReport(page, { zone: 'Sanguine Depths' });
-    await page.goto(`/reports/${ID}?fight=3`);
-    const entry = page.getByTestId('fight-trash-1');
-    await expect(entry).toContainText('Trash · Sanguine Depths');
-    await expect(page.getByTestId('fight-group-1-kills')).toHaveText('230 mobs died · your group killed 52');
-    await expect(entry).toContainText('2 pulls');
-    await expect(page.getByTestId('fight-1')).toHaveCount(0);
-    await page.getByTestId('fight-group-1').click();
-    await expect(page.getByTestId('fight-2')).toContainText('Trash · ');
-    await page.getByTestId('fight-2').click();
-    await expect(page.getByTestId('fight-2')).toHaveAttribute('aria-current', 'true');
+    const option = page.locator('select[data-testid="report-fight"] option[value="1"]');
+    await expect(option).toHaveText('Trash · 0:06');
+    await expect(option).not.toHaveAttribute('data-description', /mobs? died/);
   });
 
   test('the subtitle credits the logging character, or says none is set and how to set one', async ({
@@ -224,7 +210,7 @@ test.describe('a beta-log report', () => {
     await serveBetaReport(page, { zone: '', credit: { key: 'us/pvp/bow-jackzon', name: 'Bow Jackzon' } });
     await page.goto(`/reports/${ID}?fight=3`);
     const credit = page.getByTestId('report-credit');
-    await expect(credit).toHaveText('Credited to Bow Jackzon');
+    await expect(credit).toHaveText('Logged by Bow Jackzon');
     await expect(credit.getByRole('link', { name: 'Bow Jackzon' })).toHaveAttribute(
       'href',
       '/character/us/pvp/bow-jackzon',
@@ -234,20 +220,21 @@ test.describe('a beta-log report', () => {
   test('no logging character reads as not credited, with the reason as visible text', async ({ page }) => {
     await serveBetaReport(page, { zone: '' });
     await page.goto(`/reports/${ID}?fight=3`);
-    const credit = page.getByTestId('report-credit');
-    await expect(credit).toHaveText(
+    // A muted Not credited Tag whose title carries the sentence (logs spec 6.1, decision R8).
+    const tag = page.getByTestId('report-not-credited');
+    await expect(tag).toHaveText(/not credited/i);
+    await expect(tag).toHaveAttribute(
+      'title',
       'Not credited yet. The companion credits it when it matches the log to a character the addon has synced.',
     );
-    await expect(credit).not.toHaveAttribute('title', /.+/);
-    await expect(credit.getByRole('link')).toHaveCount(0);
+    await expect(page.getByTestId('report-credit')).toHaveCount(0);
   });
 
-  test('a trash fight’s Parse column is a muted dash, not a rankings error', async ({ page }) => {
+  test('a trash fight has no Parse column and no rankings error', async ({ page }) => {
     await serveBetaReport(page, { zone: '' });
     await page.goto(`/reports/${ID}?fight=1`);
-    const cell = page.getByTestId('roster-Player-4184-000000A1').getByTestId('roster-percentile');
-    await expect(cell).toHaveText('—');
-    await expect(cell).toHaveAttribute('title', 'No parse for trash; parses are made for boss fights.');
+    await expect(page.getByTestId('summary-tab').getByRole('columnheader', { name: 'Damage' })).toBeVisible();
+    await expect(page.getByTestId('summary-tab').getByRole('columnheader', { name: 'Parse' })).toHaveCount(0);
     await expect(page.getByTestId('parse-unavailable')).toHaveCount(0);
   });
 
@@ -260,7 +247,8 @@ test.describe('a beta-log report', () => {
     );
     await page.goto(`/reports/${ID}`);
     await expect(page.getByTestId('report-parsing')).toBeVisible();
-    await expect(page.getByTestId('report-tabs-disabled').getByRole('button')).toHaveCount(1);
-    await expect(page.getByTestId('report-tabs-disabled').getByRole('button')).toHaveText(/summary/i);
+    const tab = page.getByTestId('report-tabs-disabled').getByRole('link', { name: 'Summary' });
+    await expect(tab).toHaveCount(1);
+    await expect(tab).toHaveAttribute('aria-disabled', 'true');
   });
 });

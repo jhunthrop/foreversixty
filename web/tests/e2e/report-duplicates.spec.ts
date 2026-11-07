@@ -4,6 +4,7 @@ import path from 'node:path';
 
 import { expect, test } from './support/test';
 import { choose } from './support/select';
+import { pickFight, openTab } from './support/report-frame';
 
 const FIXTURES = path.resolve(process.cwd(), 'src/fixtures/report');
 
@@ -46,49 +47,51 @@ test('a fight whose events share timestamps still renders its timelines and deat
 test('a link to a fight the report does not have says so instead of swapping silently', async ({ page }) => {
   await page.goto('/reports/fixture2abcd?fight=99');
   await expect(page.getByTestId('report-missing-fight')).toContainText('no fight 99');
-  await expect(page.getByTestId('fight-3')).toHaveAttribute('aria-current', 'true');
+  await expect(page.locator('select[data-testid="report-fight"]')).toHaveValue('3');
   // Picking a fight clears the notice.
-  await page.getByTestId('fight-4').click();
+  await pickFight(page, 4);
   await expect(page.getByTestId('report-missing-fight')).toHaveCount(0);
 });
 
 test('a kill reads as a kill, with per-second figures beside the totals', async ({ page }) => {
   await page.goto('/reports/fixture2abcd?fight=3');
-  await expect(page.getByTestId('fight-3-outcome')).toHaveText('Kill');
-  await expect(page.getByTestId('fight-3-outcome')).toHaveClass(/text-kill/);
-  await expect(page.getByTestId('fight-3-deaths')).toContainText('1');
-  await expect(page.getByTestId('roster-damage').first()).toContainText('/s');
+  await expect(page.locator('select[data-testid="report-fight"] option[value="3"]')).toHaveText(/· Kill ·/);
+  await expect(page.locator('select[data-testid="report-fight"] option[value="3"]')).toHaveAttribute(
+    'data-description',
+    /1 death/,
+  );
+  // MUST 1: each amount beside its rate.
+  const heads = page.getByTestId('summary-tab').getByRole('columnheader');
+  await expect(heads.filter({ hasText: 'Damage' }).first()).toBeVisible();
+  await expect(heads.filter({ hasText: 'DPS' })).toBeVisible();
 });
 
 test('the whole night folds every boss pull into one table, and each pull opens from it', async ({
   page,
 }) => {
   await page.goto('/reports/fixture2abcd?fight=all');
-  await expect(page.getByTestId('fight-all')).toHaveAttribute('aria-current', 'true');
+  await expect(page.locator('select[data-testid="report-fight"]')).toHaveValue('0');
   await expect(page.getByTestId('night-view')).toBeVisible();
   await expect(page.getByTestId('night-summary')).toContainText('2 boss pulls');
-  await expect(page.getByTestId('night-bosses').locator('li')).toHaveCount(2);
-  await expect(page.getByTestId('night-players').locator('li').first()).toBeVisible();
+  await expect(page.getByTestId('night-bosses').locator('[data-testid^="night-boss-"]')).toHaveCount(2);
+  await expect(page.getByTestId('night-players').locator('[data-testid^="night-player-"]').first()).toBeVisible();
   // The whole night keeps the tables and drops the chart: nothing draws a chart over a night.
   await expect(page.getByTestId('time-chart')).toHaveCount(0);
-  const phone = (page.viewportSize()?.width ?? 1280) < 1024;
-  if (phone) await choose(page.getByTestId('tab-select'), 'damage-done');
-  else await page.getByTestId('tab-damage-done').click();
+  await openTab(page, 'damage-done');
   await expect(page.getByTestId('actor-table')).toBeVisible();
-  if (phone) await choose(page.getByTestId('tab-select'), 'summary');
-  else await page.getByTestId('tab-summary').click();
-  await page.getByTestId('night-bosses').getByRole('button', { name: 'pull 1' }).first().click();
-  await expect(page.getByTestId('fight-3')).toHaveAttribute('aria-current', 'true');
+  await openTab(page, 'summary');
+  await page.getByTestId('night-bosses').getByRole('button', { name: '#1' }).first().click();
+  await expect(page.locator('select[data-testid="report-fight"]')).toHaveValue('3');
   await expect(page.getByTestId('summary-tab')).toBeVisible();
 });
 
 test('a bare report link opens on the first boss pull, and fight changes enter history', async ({ page }) => {
   await page.goto('/reports/fixture2abcd');
-  await expect(page.getByTestId('fight-3')).toHaveAttribute('aria-current', 'true');
-  await page.getByTestId('fight-4').click();
+  await expect(page.locator('select[data-testid="report-fight"]')).toHaveValue('3');
+  await pickFight(page, 4);
   await expect(page).toHaveURL(/fight=4/);
   await page.goBack();
-  await expect(page.getByTestId('fight-3')).toHaveAttribute('aria-current', 'true');
+  await expect(page.locator('select[data-testid="report-fight"]')).toHaveValue('3');
 });
 
 test('picking a roster name narrows the page to that player', async ({ page }) => {

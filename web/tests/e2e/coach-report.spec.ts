@@ -38,8 +38,8 @@ const LANDS: Readonly<Record<CoachAnchorKind, RegExp>> = {
   buffs: /tab=buffs/,
   death: /tab=deaths/,
   healing: /tab=healing/,
-  time: /view=timelines/,
-  resource: /view=timelines/,
+  time: /tab=timeline/,
+  resource: /tab=timeline/,
 };
 const FORBIDDEN_TEXT = /!|heal more/i;
 const leadOf = (template: string): string => template.split('{title}')[0]!.trim();
@@ -328,7 +328,8 @@ test.describe('officer', () => {
     await routeCoach(page, STATES.officer);
     await page.goto(ROWS_URL);
     await expect(page.getByTestId('coach-row-line')).toHaveCount(0);
-    await page.getByTestId(`actor-${GUID.morrowlyn}`).getByRole('button').first().click();
+    // The name opens the player's own view (logs spec 6.2), the row the coach line follows.
+    await page.getByTestId(`actor-${GUID.morrowlyn}`).getByRole('link').first().click();
     await page.getByTestId('coach-officer-open').click();
     await expect(page).toHaveURL(/tab=coach/);
     await expect(page.getByTestId('coach-officer-pill')).toHaveText(coachCopy.officerPill);

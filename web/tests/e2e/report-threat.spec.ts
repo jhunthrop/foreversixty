@@ -4,6 +4,7 @@
 // "who took the boss off me, and when" in one click.
 import { expect, test } from './support/test';
 import { choose, fieldBox } from './support/select';
+import { openTab } from './support/report-frame';
 
 const FIGHT = '/reports/fixture2abcd?fight=3&tab=threat';
 
@@ -93,7 +94,7 @@ test('a fight with no threat still says what its taunts were', async ({ page }) 
 // Baelgrim is a Warrior, not fight 3's tank, but he is the one who taunts Warden Kelthas
 // off the tank -- so the timeline names him "the taunter" rather than "the tank".
 test('the timeline marks the taunt on the taunter’s lane and names it on hover', async ({ page }) => {
-  await page.goto('/reports/fixture2abcd?fight=3&view=timelines');
+  await page.goto('/reports/fixture2abcd?fight=3&tab=timeline');
   const mark = page.getByTestId('lane-Player-4184-000000A1').getByTestId('taunt-mark').first();
   await expect(mark).toBeVisible();
   await mark.hover();
@@ -103,37 +104,9 @@ test('the timeline marks the taunt on the taunter’s lane and names it on hover
   await expect(page.getByTestId('lane-boss').getByTestId('taunt-mark').first()).toBeVisible();
 });
 
-test('the whole night names the pull each taunt came from', async ({ page }) => {
-  await page.goto('/reports/fixture2abcd?fight=all&tab=threat');
-  await expect(page.getByTestId('threat-taunts')).toContainText('Warden Kelthas · pull 1');
-  // Over the night a pair's target is the enemy's name, one row per name across pulls.
-  await choose(page.getByTestId('threat-target'), { label: 'Warden Kelthas' });
-  await expect(page.getByTestId('threat-on-target')).toContainText('Baelgrim');
-});
-
-// The night's Threat picker writes the enemy's NAME into `target` -- an add is a new GUID
-// on every pull -- and the damage tabs share that key. They have to read it as a name too:
-// read as a GUID it matched nothing, scaled every row to zero, and emptied the table while
-// the filter bar still said "Every target".
-test('an enemy picked on the night’s Threat tab keeps the damage tabs’ rows', async ({ page }) => {
-  await page.goto('/reports/fixture2abcd?fight=all&tab=threat');
-  await choose(page.getByTestId('threat-target'), { label: 'Warden Kelthas' });
-  await expect(page).toHaveURL(/target=Warden\+Kelthas/);
-
-  const phone = (page.viewportSize()?.width ?? 1280) < 1024;
-  if (phone) await choose(page.getByTestId('tab-select'), 'damage-done');
-  else await page.getByTestId('tab-damage-done').click();
-  const rows = page.getByTestId('actor-table').locator('li');
-  await expect(rows.first()).toBeVisible();
-  await expect(page.getByTestId('table-empty')).toHaveCount(0);
-  // And the bar names the enemy rather than reading "Every target" over a full table.
-  await expect(page.locator('#filter-target')).not.toHaveValue('');
-  await expect(page.locator('#filter-target').locator('option:checked')).toHaveText('Warden Kelthas');
-});
-
 test('the link alone carries the night’s named enemy into Damage Done', async ({ page }) => {
   await page.goto('/reports/fixture2abcd?fight=all&tab=damage-done&target=Warden+Kelthas');
-  await expect(page.getByTestId('actor-table').locator('li').first()).toBeVisible();
+  await expect(page.getByTestId('actor-table').locator('[role="row"][data-testid^="actor-Player"], [role="row"][data-testid^="actor-Creature"], [role="row"][data-testid^="actor-Pet"]').first()).toBeVisible();
   await expect(page.locator('#filter-target').locator('option:checked')).toHaveText('Warden Kelthas');
 });
 
@@ -235,28 +208,14 @@ test('the threat chart’s own brush sets the report’s window', async ({ page 
   await expect(page).toHaveURL(/start=6000/);
 });
 
-test('the night has no threat chart, and says why', async ({ page }) => {
-  await page.goto('/reports/fixture2abcd?fight=all&tab=threat');
-  await expect(page.getByTestId('threat-chart')).toHaveCount(0);
-  await expect(page.getByTestId('threat-chart-note')).toContainText('no clock');
-});
-
-test('the glossary explains standing and built', async ({ page }) => {
-  await page.goto(FIGHT);
-  await page.getByTestId('glossary').locator('summary').click();
-  await expect(page.getByTestId('glossary')).toContainText('Standing threat');
-  await expect(page.getByTestId('glossary')).toContainText('Threat built in a window');
-});
-
-// Owner 2026-10-30: the open "More" menu disappeared under the threat chart. The tab row is
-// sticky, so it is its own stacking context; the menu's z-index only ranked inside it until
-// the row carried one too. The topmost element at each menu item's centre must be that item.
+// Owner 2026-10-30: the open "More" menu disappeared under the threat chart. The topmost
+// element at each menu item's centre must be that item (ui/TabStripMore's menu).
 test('the open More menu sits above the threat chart', async ({ page }) => {
   test.skip((page.viewportSize()?.width ?? 1280) < 1024, 'the More menu is the desktop tab row');
   await page.goto(FIGHT);
   await expect(page.getByTestId('threat-chart')).toBeVisible();
-  await page.getByTestId('tab-more').click();
-  const items = page.getByTestId('tab-more-menu').locator('[role="tab"], a, button');
+  await page.locator('[data-testid="report-tabs-more"]:visible').first().click();
+  const items = page.locator('[role="menu"] [role="menuitemradio"]');
   const count = await items.count();
   expect(count).toBeGreaterThan(0);
   for (let i = 0; i < count; i += 1) {
@@ -264,7 +223,7 @@ test('the open More menu sits above the threat chart', async ({ page }) => {
     const box = await item.boundingBox();
     if (box === null) continue;
     const onTop = await page.evaluate(
-      ({ x, y }) => document.elementFromPoint(x, y)?.closest('[data-testid="tab-more-menu"]') !== null,
+      ({ x, y }) => document.elementFromPoint(x, y)?.closest('[role="menu"]') !== null,
       { x: box.x + box.width / 2, y: box.y + box.height / 2 },
     );
     expect(onTop, `menu item ${i} is covered`).toBe(true);

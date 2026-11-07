@@ -154,8 +154,6 @@
     color: var(--color-strong);
     font-size: 14px;
     font-weight: 600;
-    text-transform: none;
-    letter-spacing: normal;
   }
   .report-filters-panel {
     position: fixed;

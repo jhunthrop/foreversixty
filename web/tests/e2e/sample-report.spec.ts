@@ -92,7 +92,7 @@ test('the sample report opens from /logs and shows fights, with no API', async (
   await expect(page).not.toHaveURL(/fight=/);
   // Opens on its first boss kill, else its longest boss attempt, else its longest pull. The
   // sample has no boss, so that is its longest pull (fight 6, 12:43), not the first.
-  await expect(page.getByTestId('fight-6')).toHaveAttribute('aria-current', 'true');
+  await expect(page.locator('select[data-testid="report-fight"]')).toHaveValue('6');
   // Class colours: no name keeps the plain text colour.
   const colours = await roster
     .getByTestId(/^roster-Player-/)
@@ -101,7 +101,7 @@ test('the sample report opens from /logs and shows fights, with no API', async (
     );
   expect(new Set(colours).size).toBeGreaterThan(2);
   // A trash row prints its length once.
-  const row1 = await page.getByTestId('fight-1').innerText();
+  const row1 = await page.locator('select[data-testid="report-fight"] option[value="1"]').innerText();
   expect((row1.match(/3:26/g) ?? []).length).toBe(1);
 
   if (SHOT_DIR !== undefined) {
@@ -120,29 +120,28 @@ test.describe('the sample report’s chart', () => {
       const chart = page.getByTestId('time-chart');
       await expect(chart.locator('[data-state="ready"]').first()).toBeVisible();
       await expect(chart).not.toHaveAttribute('data-compact', 'true');
-      // The head with its title and units, the legend, the Window presets and the brush.
-      await expect(chart.getByText('Damage done', { exact: true }).first()).toBeVisible();
+      // The Section head with its title and figure, the legend and the brush; the Window choice
+      // is the control bar's (logs spec 6.1).
+      await expect(chart.getByText('Damage over the fight', { exact: true }).first()).toBeVisible();
       await expect(chart.getByTestId('chart-head-meta')).toContainText('DPS');
       await expect(chart.getByTestId('chart-legend')).toBeVisible();
-      await expect(fieldBox(chart, 'window-select')).toBeVisible();
+      await expect(fieldBox(page, 'window-select')).toBeVisible();
       await expect(chart.getByTestId('overview-brush')).toBeVisible();
-      // A plot of about 200 px (220 from 1440), plus its 22 px axis.
+      // A plot of 140 px plus its 22 px axis.
       const plot = (await chart.getByTestId('chart-plot').boundingBox())!;
-      expect(plot.height).toBeGreaterThanOrEqual(200 + 22);
+      expect(plot.height).toBeGreaterThanOrEqual(140 + 22);
       // The full chart's frame reserves its loaded height: nothing moves as it arrives.
       expect(await reportShift(page)).toBe(0);
     }
   });
 
-  test('on a phone stays the compact strip, once opened', async ({ page, isMobile }) => {
+  test('on a phone folds into a Disclosure, opened in place', async ({ page, isMobile }) => {
     test.skip(!isMobile, 'the phone layout');
     await page.goto('/reports/sample');
-    await page.getByTestId('chart-toggle').click();
-    const chart = page.getByTestId('time-chart');
-    await expect(chart).toHaveAttribute('data-compact', 'true');
-    await expect(chart.getByTestId('chart-legend')).toHaveCount(0);
-    const box = (await chart.boundingBox())!;
-    expect(box.height).toBeLessThanOrEqual(100);
+    const fold = page.getByTestId('chart-collapsed');
+    await expect(fold).not.toHaveAttribute('open', '');
+    await fold.locator('summary').click();
+    await expect(page.getByTestId('time-chart').getByTestId('chart-legend')).toBeVisible();
   });
 });
 
@@ -182,7 +181,7 @@ test.describe('the sample’s counts say what they count', () => {
     const source = page.getByTestId('source-scope');
     await expect(source.locator('option:checked')).toHaveText('Your group');
     // Fight 6's own flags put five players in the group; the report-wide last-seen flags said four.
-    await expect(page.getByTestId('summary-roster-card')).toContainText(/\b5 players · 0 deaths\b/);
+    await expect(page.getByTestId('summary-tab')).toContainText(/\b5 players · 0 deaths\b/);
     const chart = page.getByTestId('time-chart');
     await expect(chart.locator('[data-state="ready"]').first()).toBeVisible();
     await expect(chart.getByTestId('chart-head-meta')).toHaveText(/^Group \d+ DPS over the whole fight$/);
@@ -192,17 +191,20 @@ test.describe('the sample’s counts say what they count', () => {
     await expect(chart.getByTestId('death-marker')).toHaveCount(0);
     // The trash row's counts are true and say whose they are: every mob that died in range, and
     // the group's own kills.
-    await expect(page.getByTestId('fight-6-kills')).toHaveText('177 mobs died · your group killed 26');
-    // Deaths read the group's, like the kill line: the subtitle and the row both show none (the
-    // two in fight 6 were outsiders', counted under Everyone in range).
-    await expect(page.getByTestId('report-subtitle')).not.toContainText('death');
-    await expect(page.getByTestId('fight-6-deaths')).toHaveCount(0);
+    await expect(page.locator('select[data-testid="report-fight"] option[value="6"]')).toHaveAttribute(
+      'data-description',
+      /· 177 mobs died$/,
+    );
+    // The head's answer (decision R1, MUST 2): the mobs and the length, the group's deaths (none:
+    // the two in fight 6 were outsiders', counted under Everyone in range).
+    await expect(page.getByTestId('report-answer')).toHaveText(/^177\s*mobs · 12:43$/);
+    await expect(page.getByTestId('report-answer-caption')).toHaveText('Your group · 5 players · no deaths');
   });
 
   test('Everyone in range counts the players seen and totals, not a raid', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto('/reports/sample?source=everyone');
-    await expect(page.getByTestId('summary-roster-card')).toContainText('265 players seen');
+    await expect(page.getByTestId('summary-tab')).toContainText('265 players');
     const chart = page.getByTestId('time-chart');
     await expect(chart.locator('[data-state="ready"]').first()).toBeVisible();
     await expect(chart.getByTestId('chart-head-meta')).toHaveText(/^Total \d+ DPS over the whole fight$/);
@@ -212,14 +214,14 @@ test.describe('the sample’s counts say what they count', () => {
     expect(await label.evaluate((el) => el.scrollWidth <= el.clientWidth + 1)).toBe(true);
     await expect(chart.getByTestId('death-marker').first()).toBeVisible();
     await expect(chart.getByTestId('chart-legend')).toContainText('Median player');
-    await expect(page.getByTestId('report-subtitle')).toContainText('2 deaths');
+    await expect(page.getByTestId('report-answer-caption')).toHaveText('Everyone in range · 265 players · 2 deaths');
   });
 
   test('a pull the group was not in is everyone in range, said so', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto('/reports/sample?fight=2');
     await expect(page.getByTestId('source-scope').locator('option:checked')).toHaveText('Everyone in range');
-    await expect(page.getByTestId('summary-roster-card')).toContainText('players seen');
+    await expect(page.getByTestId('report-answer-caption')).toContainText('Everyone in range');
     await expect(page.getByTestId('time-chart').getByTestId('chart-head-meta')).toHaveText(/^Total /);
   });
 });

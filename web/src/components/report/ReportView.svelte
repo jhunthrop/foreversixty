@@ -173,7 +173,7 @@
   import type { CastCounts, ExactSplit, DeadSpan, ExactTotals, TargetScope } from '../../lib/report/exact';
   import { resolveTreeSizes } from '../../lib/report/tree-sizes';
   import ReportSkeleton from './ReportSkeleton.svelte';
-  import { classSlugOf } from '../../lib/report/planner-link';
+  import { classSlugOf, plannerLinkFor } from '../../lib/report/planner-link';
 
   let { reportId, inlineMeta = null }: { reportId: string; inlineMeta?: ReportMeta | null } = $props();
 
@@ -1581,8 +1581,19 @@
   const tabTitle = $derived<'Targets' | 'Healed' | 'Sources'>(
     state.tab === 'healing' ? 'Healed' : state.tab === 'damage-taken' ? 'Sources' : 'Targets',
   );
-  /** A night shows only the tabs that fold across pulls (section 6.3); the rest say pick a pull. */
-  const onePullTab = $derived(nightMode && !NIGHT_TABS.has(state.tab));
+  /** A night shows only the tabs that fold across pulls (section 6.3); the rest say pick a pull
+   *  (Coach says so itself, in its own words). */
+  const onePullTab = $derived(nightMode && !NIGHT_TABS.has(state.tab) && state.tab !== 'coach');
+  /** One player's worn set at the pull as a planner build, for Gear at the pull. */
+  function plannerHrefFor(guid: string | undefined): string | null {
+    const combatant = base?.combatants.find((row) => row.guid === guid);
+    if (combatant === undefined) return null;
+    const className = classOf.get(combatant.guid);
+    return (
+      plannerLinkFor({ dataBuild: activeBuild.build, className, treeSizes: treeSizesFor(className), combatant })
+        ?.href ?? null
+    );
+  }
   /** The tabs the sibling lane draws: their main content in the main column, This pull in the rail. */
   let spellIcon = $state<SpellIconOf>(NO_SPELL_ICONS);
   $effect(() => {
@@ -1695,7 +1706,9 @@
           <span class="text-muted">{reportCopy.reportMissing}</span>
           <a class="text-gold font-semibold" href="/reports">{reportCopy.openYourReports} ›</a>
         {:else}
-          <span class="text-muted">{reportCopy.reportFailed}</span>
+          <span class="text-muted"
+            >{error === '' || error === REPORT_LOAD_FAILED ? reportCopy.reportFailed : error}</span
+          >
           <button
             type="button"
             class={buttonClass('secondary', 'sm')}
@@ -1895,8 +1908,11 @@
       <div bind:this={tabAnchor} class="-mb-[var(--section-gap)] scroll-mt-2" aria-hidden="true"></div>
       {#if onePullTab}
         <Plate label={reportCopy.onePullLabel}>
-          <p class="text-muted px-4 py-4 text-[14px]" data-testid="night-tables-only">
-            {reportCopy.onePullOnly}
+          <p
+            class="text-muted px-4 py-4 text-[14px]"
+            data-testid={state.tab === 'rating' ? 'rating-tab-night' : 'night-tables-only'}
+          >
+            {state.tab === 'rating' ? reportCopy.ratingNight : reportCopy.onePullOnly}
           </p>
         </Plate>
       {:else if scoped !== null}
@@ -1956,6 +1972,7 @@
             durationMs={scoped.duration_ms}
             {spellIcon}
             dataBuild={activeBuild.build}
+            plannerHref={plannerHrefFor(sourcePlayer)}
           />
         {:else if ACTOR_TABS.has(state.tab)}
           <ActorTable
@@ -1975,9 +1992,14 @@
             {playerHref}
             onSelectPlayer={(guid) => patch({ source: guid })}
           />
-          {#if actorTableApproximate && tableMeasureError !== ''}
-            <p class="text-small text-wipe" role="alert" data-testid="approximate-note">
-              {tableMeasureError}
+          {#if actorTableApproximate && !nightMode}
+            <!-- A window or a target filter: the summary can only prorate, so the table is measured from
+                 the fight's events, and this line says which figures are which. -->
+            <p class="text-small text-muted" data-testid="approximate-note">
+              {#if tableExact !== null}<span class="text-kill" data-testid="table-measured"
+                  >Measured from the fight’s events for this window and filter.</span
+                >{:else if tableMeasureError !== ''}<span class="text-wipe" role="alert">{tableMeasureError}</span
+                >{:else}Measuring this window from the fight’s events… a tilde marks a figure still prorated.{/if}
             </p>
           {/if}
           {@render chart(chartMetric)}

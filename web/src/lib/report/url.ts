@@ -322,7 +322,8 @@ export function reportSearch(state: ReportState, firstFight: number): string {
   return query === '' ? '' : `?${query}`;
 }
 
-/** State is replaced, never mutated: the island holds it in one `$state` object. */
+/** State is replaced, never mutated: the island holds it in one `$state` object. A patch in the
+ *  old words (`{ view: 'timelines' }`) lands on the tab it names (`legacyTab`). */
 export function withState(state: ReportState, patch: Partial<ReportState>): ReportState {
-  return { ...state, ...patch };
+  return { ...state, ...legacyTab(patch) };
 }

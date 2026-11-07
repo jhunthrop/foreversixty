@@ -36,6 +36,7 @@
     measure,
     spellIcon,
     dataBuild,
+    plannerHref,
   }: {
     part?: 'abilities' | 'gear';
     tab: ActorTab;
@@ -47,6 +48,8 @@
     measure?: (actor: Actor) => Promise<ExactSplit>;
     spellIcon: SpellIconOf;
     dataBuild: string;
+    /** The worn set at the pull as a planner build; null when the class has no planner data. */
+    plannerHref?: string | null;
   } = $props();
 
   const NOUN: Readonly<Record<ActorTab, string>> = {
@@ -184,7 +187,12 @@
     {/if}
   </Section>
 {:else}
-  <Section title="Gear at the pull" meta={gearMeta || undefined} testid="report-gear">
+  <Section
+    title="Gear at the pull"
+    meta={gearMeta || undefined}
+    action={plannerHref ? { label: 'Open in the planner', href: plannerHref } : undefined}
+    testid="report-gear"
+  >
     {#if combatant === undefined || combatant.gear.every((item) => item.ID <= 0)}
       <EmptyLine text={NO_GEAR} section testid="report-no-gear" />
     {:else}

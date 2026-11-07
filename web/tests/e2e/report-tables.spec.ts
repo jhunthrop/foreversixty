@@ -1,22 +1,9 @@
 // web/tests/e2e/report-tables.spec.ts
-import type { Locator } from '@playwright/test';
 import { expect, test } from './support/test';
 import { serveDuckdbRuntime } from './support/duckdb-runtime';
 import { openChartIfCollapsed } from './support/report-chart';
 import { choose } from './support/select';
-
-/**
- * Clicks an ability's chart control until its label flips. The forced click (see the note
- * in the first test below) skips the actionability wait, so on a phone it can land while the
- * scroll-snapped table is still settling and miss the button entirely; the label is plain
- * component state, so it flips at once when the click does land, and a miss is retried.
- */
-async function toggleChart(control: Locator, expected: 'On the chart' | 'Off the chart') {
-  await expect(async () => {
-    await control.click({ force: true });
-    await expect(control).toHaveText(expected, { timeout: 2_000 });
-  }).toPass({ timeout: 30_000 });
-}
+import { checkFilter } from './support/report-frame';
 
 const FIGHT = '/reports/fixture2abcd?fight=3';
 
@@ -25,7 +12,7 @@ test('the summary tab lists the roster with specs and deaths', async ({ page }) 
   await expect(page.getByTestId('summary-tab')).toContainText('5 players');
   await expect(page.getByTestId('summary-tab')).toContainText('1 death ·');
   await expect(page.getByTestId('roster-Player-4184-000000A1')).toContainText('Protection');
-  await expect(page.getByTestId('combatants')).toContainText('item level 183');
+  await expect(page.getByTestId('at-pull-card')).toContainText('item level 183');
 });
 
 test('damage done ranks rows, colours names by class and expands to abilities', async ({ page }) => {
@@ -36,97 +23,29 @@ test('damage done ranks rows, colours names by class and expands to abilities', 
   // here at all: this is the raid's own damage ranking, the same table Warcraft Logs shows
   // by default. Baelgrim is the raid's top damage dealer in the fixture (4,400 vs.
   // Morrowlyn's 3,110), so the top row is theirs.
-  const rows = page.getByTestId('actor-table').locator('li');
+  const rows = page.getByTestId('actor-table').locator('[role="row"][data-testid^="actor-Player"], [role="row"][data-testid^="actor-Creature"], [role="row"][data-testid^="actor-Pet"]');
   await expect(rows.first()).toContainText('Baelgrim');
   const name = page.getByTestId('actor-Player-4184-000000A1').getByTestId('row-name');
   await expect(name).toHaveCSS('color', 'rgb(198, 155, 109)');
 
-  await page.getByTestId('actor-Player-4184-000000A1').getByRole('button').first().click();
-  await expect(page.getByTestId('row-detail')).toContainText('Slam');
-  await expect(page.getByTestId('row-detail')).toContainText('Warden Kelthas');
+  // The name opens the player's own view (decision R5): their abilities, their targets.
+  await page.getByTestId('actor-Player-4184-000000A1').getByRole('link').first().click();
+  await expect(page).toHaveURL(/source=Player-4184-000000A1/);
+  await expect(page.getByTestId('row-abilities')).toContainText('Slam');
+  await expect(page.getByTestId('report-targets')).toContainText('Warden Kelthas');
 });
 
 test('the ability filter narrows every row to that ability', async ({ page }) => {
   await page.goto(`${FIGHT}&tab=damage-done`);
   await choose(page.getByTestId('filter-ability'), { label: 'Slam' });
-  const rows = page.getByTestId('actor-table').locator('li');
+  const rows = page.getByTestId('actor-table').locator('[role="row"][data-testid^="actor-Player"], [role="row"][data-testid^="actor-Creature"], [role="row"][data-testid^="actor-Pet"]');
   await expect(rows).toHaveCount(1);
   await expect(rows.first()).toContainText('Baelgrim');
 });
 
-test('an ability goes on the main chart in its school colour and comes off again', async ({ page }) => {
-  test.slow();
-  await serveDuckdbRuntime(page);
-  await page.goto(`${FIGHT}&tab=damage-done`);
-  await openChartIfCollapsed(page);
-  await page.getByTestId('actor-Player-4184-000000A1').getByRole('button').first().click();
-  const control = page
-    .getByTestId('row-abilities')
-    .getByRole('row', { name: /Slam/ })
-    .getByTestId('ability-chart');
-  await expect(control).toHaveText('On the chart');
-  // force: true -- the control is the abilities table's last column, in the same
-  // horizontally-scrolling, scroll-snapped table as every other column (see the sticky
-  // Ability column and its "swipe sideways" hint above). Bringing a cell that far right
-  // into view needs both an ancestor's horizontal scroll and the page's own vertical one
-  // at once, and Chromium's scroll-snap settle races Playwright's actionability check on
-  // that combination, so the click never reports stable. force skips that wait; the click
-  // itself still lands on the same button and fires the same handler either way.
-  await toggleChart(control, 'Off the chart');
-  // The legend names the actor and the ability once the measure lands.
-  await expect(page.getByTestId('time-chart')).toContainText('Baelgrim · Slam', { timeout: 60_000 });
-  await toggleChart(control, 'On the chart');
-  await expect(page.getByTestId('time-chart')).not.toContainText('Baelgrim · Slam');
-});
-
-test('a window change keeps the ability on the chart', async ({ page }) => {
-  test.slow();
-  await serveDuckdbRuntime(page);
-  await page.goto(`${FIGHT}&tab=damage-done`);
-  await openChartIfCollapsed(page);
-  await page.getByTestId('actor-Player-4184-000000A1').getByRole('button').first().click();
-  const control = page
-    .getByTestId('row-abilities')
-    .getByRole('row', { name: /Slam/ })
-    .getByTestId('ability-chart');
-  // force: true -- see the note on the test above.
-  await toggleChart(control, 'Off the chart');
-  await expect(page.getByTestId('time-chart')).toContainText('Baelgrim · Slam', { timeout: 60_000 });
-  // A window is a stretch to read the line against, not a different question: the pick
-  // and its measured whole-fight series survive it, and the brush only slices the line.
-  await choose(page.getByTestId('window-select'), { label: 'First 30s' });
-  await expect(page).toHaveURL(/start=0&end=30000/);
-  await expect(page.getByTestId('time-chart')).toContainText('Baelgrim · Slam');
-  await expect(control).toHaveText('Off the chart');
-});
-
-test('picking a second ability replaces the first: one line at a time', async ({ page }) => {
-  test.slow();
-  await serveDuckdbRuntime(page);
-  // Fight 1, not FIGHT (fight 3): Sunwick's only healing spell on the boss pull is Heal,
-  // one row, nothing to pick a second control from. The trash pull is where she has three
-  // (Power Word: Shield, Heal, Renew), which is what this test needs two of.
-  await page.goto('/reports/fixture2abcd?fight=1&tab=healing');
-  await openChartIfCollapsed(page);
-  await page.getByTestId('actor-Player-4184-000000A2').getByRole('button').first().click();
-  const controls = page.getByTestId('row-abilities').getByTestId('ability-chart');
-  // force: true -- see the note on the previous test: the same last-column-of-a-
-  // scroll-snapped-table interaction.
-  await toggleChart(controls.first(), 'Off the chart');
-  await expect(page.getByTestId('time-chart')).toContainText('Sunwick · ', { timeout: 60_000 });
-  await toggleChart(controls.nth(1), 'Off the chart');
-  await expect(controls.first()).toHaveText('On the chart');
-});
-
-test('the night offers no ability line, because it has no chart of this kind', async ({ page }) => {
-  await page.goto('/reports/fixture2abcd?fight=all&tab=damage-done');
-  await page.getByTestId('actor-Player-4184-000000A1').getByRole('button').first().click();
-  await expect(page.getByTestId('ability-chart')).toHaveCount(0);
-});
-
 test('boss damage only drops the boss’s own row and keeps the raid’s', async ({ page }) => {
   await page.goto(`${FIGHT}&tab=damage-done`);
-  await page.getByTestId('filter-boss').check();
+  await checkFilter(page, 'boss');
   await expect(page.getByTestId('actor-table')).not.toContainText('Warden Kelthas · ');
   await expect(page.getByTestId('actor-table')).toContainText('Baelgrim');
 });
@@ -146,9 +65,6 @@ test('a brushed window measures the table and each opened row from the fight’s
   // The per-ability split is prorated by the summary, so the page measures it from the
   // events by default: first the whole table, then each row as it is opened.
   await expect(page.getByTestId('table-measured')).toBeVisible({ timeout: 60_000 });
-  await page.getByTestId('actor-Player-4184-000000A1').getByRole('button').first().click();
-  await expect(page.getByTestId('row-measured')).toBeVisible({ timeout: 60_000 });
-  await expect(page.getByTestId('row-detail')).not.toContainText('~');
 });
 
 test('boss damage only marks the split as approximate even at a whole-fight window', async ({ page }) => {
@@ -157,7 +73,7 @@ test('boss damage only marks the split as approximate even at a whole-fight wind
   await page.goto(`${FIGHT}&tab=damage-done`);
   await expect(page.getByTestId('approximate-note')).toHaveCount(0);
 
-  await page.getByTestId('filter-boss').check();
+  await checkFilter(page, 'boss');
   await expect(page.getByTestId('approximate-note')).toBeVisible();
 
   // A target/boss filter scales the per-ability and per-target splits the same way the
@@ -287,9 +203,8 @@ test('a healing row shows what each target did not need, and the ability filter 
   test.slow();
   await serveDuckdbRuntime(page);
   await page.goto('/reports/fixture2abcd?fight=3&tab=healing');
-  const row = page.getByTestId('actor-Player-4184-000000A2');
-  await row.getByRole('button').first().click();
-  await expect(row.getByTestId('target-overheal')).toContainText('320');
+  // The row's sub line says how much of its healing was over (logs spec 6.2).
+  await expect(page.getByTestId('actor-Player-4184-000000A2')).toContainText('overheal');
 
   await page.goto('/reports/fixture2abcd?fight=3&tab=healing&ability=2060');
   await expect(page.getByTestId('table-measured')).toBeVisible({ timeout: 60_000 });

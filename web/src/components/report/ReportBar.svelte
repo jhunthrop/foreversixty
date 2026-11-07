@@ -198,7 +198,11 @@
         size="dense"
         fit
         value={String(reportState.fight)}
-        placeholder={fight === null ? reportCopy.pickFight : fightLabel(fight, pulls.get(fight.index)?.pull)}
+        placeholder={fightChoices.some((option) => option.value === String(reportState.fight))
+          ? undefined
+          : fight === null
+            ? reportCopy.pickFight
+            : fightLabel(fight, pulls.get(fight.index)?.pull)}
         options={fightChoices}
         testid="report-fight"
         onchange={(event) => {

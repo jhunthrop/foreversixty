@@ -49,7 +49,6 @@ export const NIGHT_TABS: ReadonlySet<Tab> = new Set([
   'healing',
   'damage-taken',
   'mechanics',
-  'rating',
 ]);
 
 /** The tabs whose Source scope narrows a table with target and ability filters. */
@@ -78,7 +77,7 @@ const BOSS_GROUP = 'Boss pulls';
 
 /** The trash pulls that killed nothing: hidden behind the menu's foot toggle until asked for. */
 export function idlePulls(fights: readonly FightEntry[]): FightEntry[] {
-  return fights.filter((fight) => fight.kind !== 'encounter' && (fight.mob_deaths ?? 0) === 0);
+  return fights.filter((fight) => fight.kind !== 'encounter' && fight.mob_deaths === 0);
 }
 
 /** The foot toggle's words ("Show 7 pulls that killed nothing"); '' when every pull killed something. */
@@ -118,13 +117,17 @@ export function fightOptions(
         ];
   const trash = fights.filter(
     (fight) =>
-      fight.kind !== 'encounter' && (showIdle || (fight.mob_deaths ?? 0) > 0 || fight.index === selected),
+      fight.kind !== 'encounter' && (showIdle || fight.mob_deaths !== 0 || fight.index === selected),
   );
   const trashGroup = `Trash · ${plural(trash.length, 'pull')}`;
+  // A pull indexed before engine 0.6.0 has no true kill count: its row says when, never a count.
   const trashRows = trash.map((fight) => ({
     value: String(fight.index),
     label: fightLabel(fight),
-    description: `${formatClock(fight.start)} · ${plural(fight.mob_deaths ?? 0, 'mob')} died`,
+    description:
+      fight.mob_deaths === undefined
+        ? formatClock(fight.start)
+        : `${formatClock(fight.start)} · ${plural(fight.mob_deaths, 'mob')} died`,
     group: trashGroup,
   }));
   return [...bossRows, ...trashRows];

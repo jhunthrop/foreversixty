@@ -35,12 +35,12 @@ test('a processing report shows the parsing screen, then fills in without naviga
   await expect(page.getByTestId('report-title')).toHaveText('Your upload');
   await expect(page.getByTestId('report-parsing')).toContainText('Parsing your log');
   await expect(page.getByTestId('report-spinner')).toBeVisible();
-  const tab = page.getByTestId('report-tabs-disabled').getByRole('button').first();
+  const tab = page.getByTestId('report-tabs-disabled').getByRole('link', { name: 'Summary' });
   await expect(tab).toBeDisabled();
   await expect(tab).toHaveAttribute('title', /Parsing your log/);
 
   // Two polls at five seconds each, plus slack.
-  await expect(page.getByTestId('fight-3-outcome')).toBeVisible({ timeout: 25_000 });
+  await expect(page.locator('select[data-testid="report-fight"]')).toHaveValue('3', { timeout: 25_000 });
   await expect(page.getByTestId('report-processing')).toHaveCount(0);
   await expect(page.getByTestId('report-title')).not.toHaveText('Your upload');
   // Same document: nothing navigated or reloaded.
@@ -72,7 +72,7 @@ test('a 404 right after the upload is retried, not shown as a missing report', a
   await page.goto(`/reports/${ID}`);
   await expect(page.getByTestId('report-processing')).toBeVisible();
   await expect(page.getByTestId('report-error')).toHaveCount(0);
-  await expect(page.getByTestId('fight-3-outcome')).toBeVisible({ timeout: 15_000 });
+  await expect(page.locator('select[data-testid="report-fight"]')).toHaveValue('3', { timeout: 15_000 });
   expect(calls).toBe(3);
 });
 
