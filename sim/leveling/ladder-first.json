@@ -132,7 +132,7 @@
       ]
     },
     "druid-feral-bear": {
-      "reason": "The 10-point row is paid with Thick Hide 3 and Feral Swiftness 1 instead of Feral Swiftness 2 and Feral Instinct 2 (Swipe is a two-target line): threat ties at 16 to 20 and chance of death at 20 falls by half. Savage Fury, Sharpened Claws, Shredding Attacks, Lacerate at 25, Blood Frenzy, Leader of the Pack at 30, Predatory Strikes, Natural Instinct, Rend and Tear from 36 and Primal Bite at 40 (round 13's reservations kept), then Heart of the Wild and Naturalist (10% damage, so threat) before Natural Reaction; Feral Instinct last. Threat gains at every level 21 to 59 on the tank fight (sim-accuracy round 29, walks-dps lane; bare band gear, 10,000 iterations, seeds 1 and 50001, design/reviews/2026-11-07-sim-audit-round29/walksdps.md).",
+      "reason": "Tank rule (coordinator, round 29): a threat talent goes ahead of a survival talent only where the tank fight's chance of death rises by less than 5 points at every level the swap touches. The 10-point row is paid with Thick Hide 3 and Feral Swiftness 1 instead of Feral Swiftness 2 and Feral Instinct 2 (Swipe is a two-target line): threat ties at 16 to 20 and chance of death falls. Savage Fury, Sharpened Claws, Shredding Attacks, Lacerate at 25, Blood Frenzy, Leader of the Pack at 30, Predatory Strikes, Natural Instinct and Rend and Tear from 36 (round 13's reservations kept), Feral Swiftness's second point at 39 so the band 40 boss's chance of death stays where it was, Primal Bite at 40, then Natural Reaction, Heart of the Wild and Naturalist; Feral Instinct last. Naturalist before Natural Reaction or Heart of the Wild raised chance of death 6 to 14 points at 50 to 55 and is not taken. Threat gains at 22 to 49 and 53 to 59; 16 to 21 and 50 to 52 tie on threat with a lower chance of death; no level's chance of death rises more than a point (sim-accuracy round 29, walks-dps lane; bare band gear, 10,000 iterations, seeds 1 and 50001, both factions, design/reviews/2026-11-07-sim-audit-round29/walksdps.md).",
       "first": [
         {
           "talent": "Ferocity",
@@ -188,7 +188,11 @@
         },
         {
           "talent": "Rend and Tear",
-          "rank": 4
+          "rank": 3
+        },
+        {
+          "talent": "Feral Swiftness",
+          "rank": 2
         },
         {
           "talent": "Primal Bite",
@@ -199,15 +203,15 @@
           "rank": 5
         },
         {
+          "talent": "Natural Reaction",
+          "rank": 5
+        },
+        {
           "talent": "Heart of the Wild",
           "rank": 5
         },
         {
           "talent": "Naturalist",
-          "rank": 5
-        },
-        {
-          "talent": "Natural Reaction",
           "rank": 5
         }
       ]
@@ -1249,7 +1253,7 @@
       ]
     },
     "warrior-protection": {
-      "reason": "Defiance (20% more threat with a shield) opens at 20 once Improved Bloodrage, Shield Specialization and Improved Revenge pay its row, so Anticipation's Defense waits: Improved Revenge 17 to 19, Defiance 20 to 22, Master of Defense, Improved Sunder Armor, Improved Thunder Clap, Focused Rage, Anticipation 34 to 38 (before Bastion, so the band 30 boss's chance of death stays near the old order's), Concussion Blow 39 for Shield Slam at 40, Bastion 41 to 45. Threat gains at every level 17 to 45 on the tank fight (sim-accuracy round 29, walks-dps lane; bare band gear, 10,000 iterations, seeds 1 and 50001, design/reviews/2026-11-07-sim-audit-round29/walksdps.md).",
+      "reason": "Tank rule (coordinator, round 29): a threat talent goes ahead of a survival talent only where the tank fight's chance of death rises by less than 5 points at every level the swap touches. Defiance (20% more threat with a shield) opens at 20 once Improved Bloodrage, Shield Specialization and Improved Revenge pay its row, so it comes at 20 to 22 with Master of Defense at 23 and 24 ahead of Anticipation, where chance of death is still near zero. Anticipation 25 to 27, Last Stand 28 and Anticipation 29 and 30 are in before the band 20 boss starts to kill a level 28 and 29 tank, then Improved Sunder Armor, Improved Thunder Clap and Focused Rage; Concussion Blow 39, Shield Slam 40 and Bastion keep their levels. Threat gains at every level 17 to 38 (36 unchanged), chance of death at most 1.8 points higher (sim-accuracy round 29, walks-dps lane; bare band gear, 10,000 iterations, seeds 1 and 50001, both factions, design/reviews/2026-11-07-sim-audit-round29/walksdps.md).",
       "first": [
         {
           "talent": "Improved Bloodrage",
@@ -1272,6 +1276,18 @@
           "rank": 2
         },
         {
+          "talent": "Anticipation",
+          "rank": 3
+        },
+        {
+          "talent": "Last Stand",
+          "rank": 1
+        },
+        {
+          "talent": "Anticipation",
+          "rank": 5
+        },
+        {
           "talent": "Improved Sunder Armor",
           "rank": 3
         },
@@ -1281,11 +1297,7 @@
         },
         {
           "talent": "Focused Rage",
-          "rank": 3
-        },
-        {
-          "talent": "Anticipation",
-          "rank": 5
+          "rank": 2
         },
         {
           "talent": "Concussion Blow",
@@ -1294,6 +1306,10 @@
         {
           "talent": "Shield Slam",
           "rank": 1
+        },
+        {
+          "talent": "Focused Rage",
+          "rank": 3
         },
         {
           "talent": "Bastion",
