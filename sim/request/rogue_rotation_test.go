@@ -148,14 +148,44 @@ func TestSubtletyHemorrhageNeverAtFiveComboPoints(t *testing.T) {
 	}
 }
 
-// With the 31/20/0 raid build (Flawless Execution, Aggression) Assassination
-// finished into Eviscerate so often that Slice and Dice sat down for a
-// quarter of the fight: a three-point one once it has dropped gains 0.4% at
-// raid 60 and ties or gains at every bare band (round 22).
-func TestAssassinationSliceAndDiceAtThreeOnceDown(t *testing.T) {
+// From 17 Assassination puts Slice and Dice back up the moment it falls off,
+// at one or more combo points while 6 seconds of fight remain, instead of at
+// four with under 3 seconds left or at three once down (MythicSim comparison,
+// 2026-11-07, 10,000 iterations, seeds 1 and 50001: raid 60 +0.25%, bare 50
+// +0.50%, bare 60 +0.37%, bare 20 to 40 within error). Their Eviscerate at
+// three is held: it lost on every bare band.
+func TestAssassinationSliceAndDiceWheneverItDrops(t *testing.T) {
 	cond := specCondition(t, "rogue-assassination", 6774)
-	if !strings.Contains(cond, `{"cmp":{"op":"OpGe","lhs":{"currentComboPoints":{}},"rhs":{"const":{"val":"3"}}}},{"not":{"val":{"auraIsActive"`) {
-		t.Errorf("Slice and Dice has no three-point line once it has dropped: %s", cond)
+	for _, want := range []string{
+		`{"cmp":{"op":"OpGe","lhs":{"currentComboPoints":{}},"rhs":{"const":{"val":"1"}}}}`,
+		`{"cmp":{"op":"OpGe","lhs":{"remainingTime":{}},"rhs":{"const":{"val":"6"}}}}`,
+	} {
+		if !strings.Contains(cond, want) {
+			t.Errorf("Slice and Dice's condition lacks %s: %s", want, cond)
+		}
+	}
+	if evisc := specCondition(t, "rogue-assassination", 11300); strings.Contains(evisc, `"currentComboPoints":{}},"rhs":{"const":{"val":"3"}}`) {
+		t.Errorf("Eviscerate spends at three, which lost on every bare band: %s", evisc)
+	}
+}
+
+// MythicSim comparison (2026-11-07): Combat Shanks only under 80 energy and
+// Eviscerates at four from 30 (five below: four lost 0.6% at band 20). With
+// the 60-only Slice and Dice rule: raid 60 +1.25%, bare 30 to 60 +0.25 to
+// +0.91%, bare 20 unchanged.
+func TestCombatShankUnderEightyAndEviscerateAtFourFromThirty(t *testing.T) {
+	if cond := specCondition(t, "rogue-combat", 1329549); !strings.Contains(cond, `{"cmp":{"op":"OpLt","lhs":{"currentEnergy":{}},"rhs":{"const":{"val":"80"}}}}`) {
+		t.Errorf("Shank is not held at 80 energy: %s", cond)
+	}
+	cond := specCondition(t, "rogue-combat", 11300)
+	for _, want := range []string{
+		`{"cmp":{"op":"OpGe","lhs":{"currentLevel":{}},"rhs":{"const":{"val":"30"}}}}`,
+		`{"cmp":{"op":"OpGe","lhs":{"currentComboPoints":{}},"rhs":{"const":{"val":"4"}}}}`,
+		`{"cmp":{"op":"OpGe","lhs":{"currentComboPoints":{}},"rhs":{"const":{"val":"5"}}}}`,
+	} {
+		if !strings.Contains(cond, want) {
+			t.Errorf("Eviscerate's condition lacks %s: %s", want, cond)
+		}
 	}
 }
 

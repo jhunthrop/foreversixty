@@ -7,7 +7,7 @@ build: 'FS1:1.60.1.70790:rogue:gnome:325301/3153030000012321541/03:'
 raidBuild: 'FS1:1.60.1.70790:rogue:gnome:005203002/3043030002012321451/005:'
 recommendedRaces: [gnome, undead]
 statPriority: [Hit, Agility, Strength, Attack power, Critical strike, Melee haste]
-description: 'Combat Rogue for Forever: daggers and Backstab, Slice and Dice at one or two points, Adrenaline Rush and Blade Flurry timing, and the talents that matter.'
+description: 'Combat Rogue for Forever: daggers and Backstab, Slice and Dice whenever it drops, Adrenaline Rush and Blade Flurry timing, and the talents that matter.'
 updated: 2026-11-04
 confidence: inferred
 sources:
@@ -27,14 +27,14 @@ sources:
 
 ## Overview
 
-Combat is the steadiest rogue in a raid: a dagger in each hand, Backstab from behind, Eviscerate at five points and Adrenaline Rush with Blade Flurry for the burst.
+Combat is the steadiest rogue in a raid: a dagger in each hand, Backstab from behind, Eviscerate at four points and Adrenaline Rush with Blade Flurry for the burst.
 
 ### Strengths
 
 - The most forgiving raid rotation of the three trees: one builder, two finishers
 - Adrenaline Rush doubles your energy regeneration for 15 seconds, and Blade Flurry cleaves every swing onto a second target
 - Weapon Expertise and Precision cover dodge and hit inside the tree
-- Plays the same on every boss: stay behind, keep Slice and Dice up, spend at five
+- Plays the same on every boss: stay behind, keep Slice and Dice up, spend at four
 
 ### Weaknesses
 
@@ -74,11 +74,11 @@ Every rogue picks up **Poised** at 18: at full energy out of combat, your next a
 
 ### The priority
 
-**Shank** on cooldown, right behind any damage racial and your trinket: an off-hand stab for 5 energy that cannot miss and gives 40 back with Flash of Steel. Keep Slice and Dice up with one or two combo points every time it drops, Eviscerate at five, and Backstab in between. Backstab needs a dagger in the main hand and you behind the target; with any other weapon there, Sinister Strike is your builder. Do not refresh Slice and Dice early with five points. Let it fall, put one or two points back into it and keep five-point sets for Eviscerate. Rupture is not worth a global on a boss.
+**Shank** on cooldown while you are under 80 energy, right behind any damage racial and your trinket: an off-hand stab for 5 energy that cannot miss and gives 40 back with Flash of Steel. Near the cap that refund is wasted, so spend first. Put Slice and Dice back up with whatever combo points you have every time it drops, unless the boss has under 6 seconds left, Eviscerate at four, and Backstab in between. Backstab needs a dagger in the main hand and you behind the target; with any other weapon there, Sinister Strike is your builder. Do not refresh Slice and Dice early. Let it fall and put your points back into it. Rupture is not worth a global on a boss.
 
 ### Energy
 
-Backstab costs 60 and you are energy-limited all fight, so you spend the moment you can and wait on energy rather than clip anything. Never sit at full energy: anything over the cap is lost. Press **Adrenaline Rush** low on energy, never at the cap: on the pull, Garrote and one Backstab first, then Adrenaline Rush. Blade Flurry costs 25 and can go at any energy. Shank is energy too: never let it sit ready, and press it before Backstab when both are up. Before an add you know is coming, let energy climb a little so the first cleaved swings have Backstabs behind them.
+Backstab costs 60 and you are energy-limited all fight, so you spend the moment you can and wait on energy rather than clip anything. Never sit at full energy: anything over the cap is lost. Press **Adrenaline Rush** low on energy, never at the cap: on the pull, Garrote and one Backstab first, then Adrenaline Rush. Blade Flurry costs 25 and can go at any energy. Shank is energy too: below 80 energy never let it sit ready, and press it before Backstab when both are up. Before an add you know is coming, let energy climb a little so the first cleaved swings have Backstabs behind them.
 
 **Thistle Tea** gives 100 energy on a 5 minute cooldown. Drink it when you are near empty, so none of the 100 is lost to the cap.
 
@@ -119,7 +119,7 @@ Gnome on Alliance and Undead on Horde. **Eureka!** makes your non-periodic damag
 
 ### Levels 1 to 19
 
-Sinister Strike, Eviscerate and Stealth are there from level 1. Gouge trains at 6, Evasion at 8, Slice and Dice and Sprint at 10, Kick at 12, Garrote at 14 and Ambush at 18. Slice and Dice trains at 10, but leave it alone while you level: on a single mob your white swings miss too often for the attack speed to pay back its energy and points, so build to five and Eviscerate every time, whether you hold a dagger or a sword.
+Sinister Strike, Eviscerate and Stealth are there from level 1. Gouge trains at 6, Evasion at 8, Slice and Dice and Sprint at 10, Kick at 12, Garrote at 14 and Ambush at 18. Slice and Dice trains at 10, but leave it alone while you level: on a single mob your white swings miss too often for the attack speed to pay back its energy and points, so build up and Eviscerate every time, at five points until 30 and at four from then on, whether you hold a dagger or a sword.
 
 Poised at 18 takes 10 Energy off your first ability when you start a pull at full Energy out of combat, so never pull half empty.
 
@@ -129,4 +129,4 @@ Wear leather and take quest rewards over vendor gear. Replace the Worn Dagger wi
 
 ### Levels 20 to 60
 
-Level as Combat with a sword, axe or mace and Sinister Strike: mobs face you while you level, and Backstab needs you behind the target. In a dungeon, where the tank holds the mob and you stand at its back, from 20 on, a dagger and Backstab beat the sword, which is what your best in slot table lists. Open with Garrote from stealth, or with Cheap Shot once you train it at 26, then Eviscerate at five every time, and Gouge to step behind when you have a dagger in the main hand. Shank comes at 24: press it on cooldown from then on. Aggression by 30 makes every Sinister Strike hit harder. Improved Gouge and Remorseless Attacks come in the mid 40s and speed up the Gouge trick and back-to-back pulls from there. Poisons arrive at 20 with Instant Poison and at 30 with Deadly Poison. Sprint, Evasion and, from 22, Vanish get you out of the pulls that go wrong. Slice and Dice joins the rotation at 60, when your gear and the raid's buffs make every white swing count.
+Level as Combat with a sword, axe or mace and Sinister Strike: mobs face you while you level, and Backstab needs you behind the target. In a dungeon, where the tank holds the mob and you stand at its back, from 20 on, a dagger and Backstab beat the sword, which is what your best in slot table lists. Open with Garrote from stealth, or with Cheap Shot once you train it at 26, then Eviscerate at five every time until 30 and at four from then on, and Gouge to step behind when you have a dagger in the main hand. Shank comes at 24: press it on cooldown from then on whenever you are under 80 energy. Aggression by 30 makes every Sinister Strike hit harder. Improved Gouge and Remorseless Attacks come in the mid 40s and speed up the Gouge trick and back-to-back pulls from there. Poisons arrive at 20 with Instant Poison and at 30 with Deadly Poison. Sprint, Evasion and, from 22, Vanish get you out of the pulls that go wrong. Slice and Dice joins the rotation at 60, when your gear and the raid's buffs make every white swing count.

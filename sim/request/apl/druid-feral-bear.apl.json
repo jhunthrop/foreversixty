@@ -352,6 +352,17 @@
           }
         }
       }
+    },
+    {
+      "notes": "Anything else on the global cooldown goes into Lacerate. With five stacks up it is still a hit that carries threat, and it keeps the bleed fresh, so you never waste a global cooldown standing still.",
+      "action": {
+        "castSpell": {
+          "spellId": {
+            "spellId": 1235827,
+            "rank": 5
+          }
+        }
+      }
     }
   ]
 }

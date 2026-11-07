@@ -6449,6 +6449,13 @@
             "condition": "On two or more targets, above 40 rage.",
             "icon": "inv_misc_monsterclaw_03",
             "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1328617,
+            "name": "Lacerate",
+            "condition": "Anything else on the global cooldown goes into Lacerate.",
+            "icon": "ability_druid_lacerate",
+            "race_spell_ids": {}
           }
         ]
       },
@@ -6488,6 +6495,13 @@
             "name": "Swipe",
             "condition": "On two or more targets, above 40 rage.",
             "icon": "inv_misc_monsterclaw_03",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1328617,
+            "name": "Lacerate",
+            "condition": "Anything else on the global cooldown goes into Lacerate.",
+            "icon": "ability_druid_lacerate",
             "race_spell_ids": {}
           }
         ]
@@ -6529,6 +6543,13 @@
             "condition": "On two or more targets, above 40 rage.",
             "icon": "inv_misc_monsterclaw_03",
             "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1328617,
+            "name": "Lacerate",
+            "condition": "Anything else on the global cooldown goes into Lacerate.",
+            "icon": "ability_druid_lacerate",
+            "race_spell_ids": {}
           }
         ]
       },
@@ -6569,6 +6590,13 @@
             "condition": "On two or more targets, above 40 rage.",
             "icon": "inv_misc_monsterclaw_03",
             "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1328617,
+            "name": "Lacerate",
+            "condition": "Anything else on the global cooldown goes into Lacerate.",
+            "icon": "ability_druid_lacerate",
+            "race_spell_ids": {}
           }
         ]
       },
@@ -6608,6 +6636,13 @@
             "name": "Swipe",
             "condition": "On two or more targets, above 40 rage.",
             "icon": "inv_misc_monsterclaw_03",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1328616,
+            "name": "Lacerate",
+            "condition": "Anything else on the global cooldown goes into Lacerate.",
+            "icon": "ability_druid_lacerate",
             "race_spell_ids": {}
           }
         ]
@@ -6656,6 +6691,13 @@
             "condition": "On two or more targets, above 40 rage.",
             "icon": "inv_misc_monsterclaw_03",
             "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1328616,
+            "name": "Lacerate",
+            "condition": "Anything else on the global cooldown goes into Lacerate.",
+            "icon": "ability_druid_lacerate",
+            "race_spell_ids": {}
           }
         ]
       },
@@ -6702,6 +6744,13 @@
             "name": "Swipe",
             "condition": "On two or more targets, above 40 rage.",
             "icon": "inv_misc_monsterclaw_03",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1328616,
+            "name": "Lacerate",
+            "condition": "Anything else on the global cooldown goes into Lacerate.",
+            "icon": "ability_druid_lacerate",
             "race_spell_ids": {}
           }
         ]
@@ -6757,6 +6806,13 @@
             "condition": "On two or more targets, above 40 rage.",
             "icon": "inv_misc_monsterclaw_03",
             "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1328616,
+            "name": "Lacerate",
+            "condition": "Anything else on the global cooldown goes into Lacerate.",
+            "icon": "ability_druid_lacerate",
+            "race_spell_ids": {}
           }
         ]
       },
@@ -6810,6 +6866,13 @@
             "name": "Swipe",
             "condition": "On two or more targets, above 40 rage.",
             "icon": "inv_misc_monsterclaw_03",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 414644,
+            "name": "Lacerate",
+            "condition": "Anything else on the global cooldown goes into Lacerate.",
+            "icon": "ability_druid_lacerate",
             "race_spell_ids": {}
           }
         ]
@@ -6872,6 +6935,13 @@
             "condition": "On two or more targets, above 40 rage.",
             "icon": "inv_misc_monsterclaw_03",
             "race_spell_ids": {}
+          },
+          {
+            "spell_id": 414644,
+            "name": "Lacerate",
+            "condition": "Anything else on the global cooldown goes into Lacerate.",
+            "icon": "ability_druid_lacerate",
+            "race_spell_ids": {}
           }
         ]
       },
@@ -6932,6 +7002,13 @@
             "name": "Swipe",
             "condition": "On two or more targets, above 40 rage.",
             "icon": "inv_misc_monsterclaw_03",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1235826,
+            "name": "Lacerate",
+            "condition": "Anything else on the global cooldown goes into Lacerate.",
+            "icon": "ability_druid_lacerate",
             "race_spell_ids": {}
           }
         ]
@@ -6994,6 +7071,13 @@
             "condition": "On two or more targets, above 40 rage.",
             "icon": "inv_misc_monsterclaw_03",
             "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1235826,
+            "name": "Lacerate",
+            "condition": "Anything else on the global cooldown goes into Lacerate.",
+            "icon": "ability_druid_lacerate",
+            "race_spell_ids": {}
           }
         ]
       },
@@ -7054,6 +7138,13 @@
             "name": "Swipe",
             "condition": "On two or more targets, above 40 rage.",
             "icon": "inv_misc_monsterclaw_03",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1235826,
+            "name": "Lacerate",
+            "condition": "Anything else on the global cooldown goes into Lacerate.",
+            "icon": "ability_druid_lacerate",
             "race_spell_ids": {}
           }
         ]
@@ -7116,6 +7207,13 @@
             "condition": "On two or more targets, above 40 rage.",
             "icon": "inv_misc_monsterclaw_03",
             "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1235827,
+            "name": "Lacerate",
+            "condition": "Anything else on the global cooldown goes into Lacerate.",
+            "icon": "ability_druid_lacerate",
+            "race_spell_ids": {}
           }
         ]
       },
@@ -7176,6 +7274,13 @@
             "name": "Swipe",
             "condition": "On two or more targets, above 40 rage.",
             "icon": "inv_misc_monsterclaw_03",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1235827,
+            "name": "Lacerate",
+            "condition": "Anything else on the global cooldown goes into Lacerate.",
+            "icon": "ability_druid_lacerate",
             "race_spell_ids": {}
           }
         ]
@@ -32452,7 +32557,7 @@
           {
             "spell_id": 5171,
             "name": "Slice and Dice",
-            "condition": "Slice and Dice at four or more combo points when it is down or has under 3 seconds left, and at three once it has fallen off.",
+            "condition": "From 17, Slice and Dice the moment it falls off, at however many combo points you have, as long as 6 seconds of the fight are left.",
             "icon": "ability_rogue_slicedice",
             "race_spell_ids": {}
           },
@@ -32485,7 +32590,7 @@
           {
             "spell_id": 5171,
             "name": "Slice and Dice",
-            "condition": "Slice and Dice at four or more combo points when it is down or has under 3 seconds left, and at three once it has fallen off.",
+            "condition": "From 17, Slice and Dice the moment it falls off, at however many combo points you have, as long as 6 seconds of the fight are left.",
             "icon": "ability_rogue_slicedice",
             "race_spell_ids": {}
           },
@@ -32518,7 +32623,7 @@
           {
             "spell_id": 5171,
             "name": "Slice and Dice",
-            "condition": "Slice and Dice at four or more combo points when it is down or has under 3 seconds left, and at three once it has fallen off.",
+            "condition": "From 17, Slice and Dice the moment it falls off, at however many combo points you have, as long as 6 seconds of the fight are left.",
             "icon": "ability_rogue_slicedice",
             "race_spell_ids": {}
           },
@@ -32551,7 +32656,7 @@
           {
             "spell_id": 5171,
             "name": "Slice and Dice",
-            "condition": "Slice and Dice at four or more combo points when it is down or has under 3 seconds left, and at three once it has fallen off.",
+            "condition": "From 17, Slice and Dice the moment it falls off, at however many combo points you have, as long as 6 seconds of the fight are left.",
             "icon": "ability_rogue_slicedice",
             "race_spell_ids": {}
           },
@@ -32584,7 +32689,7 @@
           {
             "spell_id": 5171,
             "name": "Slice and Dice",
-            "condition": "Slice and Dice at four or more combo points when it is down or has under 3 seconds left, and at three once it has fallen off.",
+            "condition": "From 17, Slice and Dice the moment it falls off, at however many combo points you have, as long as 6 seconds of the fight are left.",
             "icon": "ability_rogue_slicedice",
             "race_spell_ids": {}
           },
@@ -32617,7 +32722,7 @@
           {
             "spell_id": 5171,
             "name": "Slice and Dice",
-            "condition": "Slice and Dice at four or more combo points when it is down or has under 3 seconds left, and at three once it has fallen off.",
+            "condition": "From 17, Slice and Dice the moment it falls off, at however many combo points you have, as long as 6 seconds of the fight are left.",
             "icon": "ability_rogue_slicedice",
             "race_spell_ids": {}
           },
@@ -32657,7 +32762,7 @@
           {
             "spell_id": 5171,
             "name": "Slice and Dice",
-            "condition": "Slice and Dice at four or more combo points when it is down or has under 3 seconds left, and at three once it has fallen off.",
+            "condition": "From 17, Slice and Dice the moment it falls off, at however many combo points you have, as long as 6 seconds of the fight are left.",
             "icon": "ability_rogue_slicedice",
             "race_spell_ids": {}
           },
@@ -32697,7 +32802,7 @@
           {
             "spell_id": 5171,
             "name": "Slice and Dice",
-            "condition": "Slice and Dice at four or more combo points when it is down or has under 3 seconds left, and at three once it has fallen off.",
+            "condition": "From 17, Slice and Dice the moment it falls off, at however many combo points you have, as long as 6 seconds of the fight are left.",
             "icon": "ability_rogue_slicedice",
             "race_spell_ids": {}
           },
@@ -32737,7 +32842,7 @@
           {
             "spell_id": 5171,
             "name": "Slice and Dice",
-            "condition": "Slice and Dice at four or more combo points when it is down or has under 3 seconds left, and at three once it has fallen off.",
+            "condition": "From 17, Slice and Dice the moment it falls off, at however many combo points you have, as long as 6 seconds of the fight are left.",
             "icon": "ability_rogue_slicedice",
             "race_spell_ids": {}
           },
@@ -32777,7 +32882,7 @@
           {
             "spell_id": 5171,
             "name": "Slice and Dice",
-            "condition": "Slice and Dice at four or more combo points when it is down or has under 3 seconds left, and at three once it has fallen off.",
+            "condition": "From 17, Slice and Dice the moment it falls off, at however many combo points you have, as long as 6 seconds of the fight are left.",
             "icon": "ability_rogue_slicedice",
             "race_spell_ids": {}
           },
@@ -32817,7 +32922,7 @@
           {
             "spell_id": 5171,
             "name": "Slice and Dice",
-            "condition": "Slice and Dice at four or more combo points when it is down or has under 3 seconds left, and at three once it has fallen off.",
+            "condition": "From 17, Slice and Dice the moment it falls off, at however many combo points you have, as long as 6 seconds of the fight are left.",
             "icon": "ability_rogue_slicedice",
             "race_spell_ids": {}
           },
@@ -32864,7 +32969,7 @@
           {
             "spell_id": 5171,
             "name": "Slice and Dice",
-            "condition": "Slice and Dice at four or more combo points when it is down or has under 3 seconds left, and at three once it has fallen off.",
+            "condition": "From 17, Slice and Dice the moment it falls off, at however many combo points you have, as long as 6 seconds of the fight are left.",
             "icon": "ability_rogue_slicedice",
             "race_spell_ids": {}
           },
@@ -32911,7 +33016,7 @@
           {
             "spell_id": 5171,
             "name": "Slice and Dice",
-            "condition": "Slice and Dice at four or more combo points when it is down or has under 3 seconds left, and at three once it has fallen off.",
+            "condition": "From 17, Slice and Dice the moment it falls off, at however many combo points you have, as long as 6 seconds of the fight are left.",
             "icon": "ability_rogue_slicedice",
             "race_spell_ids": {}
           },
@@ -32958,7 +33063,7 @@
           {
             "spell_id": 5171,
             "name": "Slice and Dice",
-            "condition": "Slice and Dice at four or more combo points when it is down or has under 3 seconds left, and at three once it has fallen off.",
+            "condition": "From 17, Slice and Dice the moment it falls off, at however many combo points you have, as long as 6 seconds of the fight are left.",
             "icon": "ability_rogue_slicedice",
             "race_spell_ids": {}
           },
@@ -33012,7 +33117,7 @@
           {
             "spell_id": 6774,
             "name": "Slice and Dice",
-            "condition": "Slice and Dice at four or more combo points when it is down or has under 3 seconds left, and at three once it has fallen off.",
+            "condition": "From 17, Slice and Dice the moment it falls off, at however many combo points you have, as long as 6 seconds of the fight are left.",
             "icon": "ability_rogue_slicedice",
             "race_spell_ids": {}
           },
@@ -33066,7 +33171,7 @@
           {
             "spell_id": 6774,
             "name": "Slice and Dice",
-            "condition": "Slice and Dice at four or more combo points when it is down or has under 3 seconds left, and at three once it has fallen off.",
+            "condition": "From 17, Slice and Dice the moment it falls off, at however many combo points you have, as long as 6 seconds of the fight are left.",
             "icon": "ability_rogue_slicedice",
             "race_spell_ids": {}
           },
@@ -33120,7 +33225,7 @@
           {
             "spell_id": 6774,
             "name": "Slice and Dice",
-            "condition": "Slice and Dice at four or more combo points when it is down or has under 3 seconds left, and at three once it has fallen off.",
+            "condition": "From 17, Slice and Dice the moment it falls off, at however many combo points you have, as long as 6 seconds of the fight are left.",
             "icon": "ability_rogue_slicedice",
             "race_spell_ids": {}
           },
@@ -33174,7 +33279,7 @@
           {
             "spell_id": 6774,
             "name": "Slice and Dice",
-            "condition": "Slice and Dice at four or more combo points when it is down or has under 3 seconds left, and at three once it has fallen off.",
+            "condition": "From 17, Slice and Dice the moment it falls off, at however many combo points you have, as long as 6 seconds of the fight are left.",
             "icon": "ability_rogue_slicedice",
             "race_spell_ids": {}
           },
@@ -33228,7 +33333,7 @@
           {
             "spell_id": 6774,
             "name": "Slice and Dice",
-            "condition": "Slice and Dice at four or more combo points when it is down or has under 3 seconds left, and at three once it has fallen off.",
+            "condition": "From 17, Slice and Dice the moment it falls off, at however many combo points you have, as long as 6 seconds of the fight are left.",
             "icon": "ability_rogue_slicedice",
             "race_spell_ids": {}
           },
@@ -33282,7 +33387,7 @@
           {
             "spell_id": 6774,
             "name": "Slice and Dice",
-            "condition": "Slice and Dice at four or more combo points when it is down or has under 3 seconds left, and at three once it has fallen off.",
+            "condition": "From 17, Slice and Dice the moment it falls off, at however many combo points you have, as long as 6 seconds of the fight are left.",
             "icon": "ability_rogue_slicedice",
             "race_spell_ids": {}
           },
@@ -33336,7 +33441,7 @@
           {
             "spell_id": 6774,
             "name": "Slice and Dice",
-            "condition": "Slice and Dice at four or more combo points when it is down or has under 3 seconds left, and at three once it has fallen off.",
+            "condition": "From 17, Slice and Dice the moment it falls off, at however many combo points you have, as long as 6 seconds of the fight are left.",
             "icon": "ability_rogue_slicedice",
             "race_spell_ids": {}
           },
@@ -33390,7 +33495,7 @@
           {
             "spell_id": 6774,
             "name": "Slice and Dice",
-            "condition": "Slice and Dice at four or more combo points when it is down or has under 3 seconds left, and at three once it has fallen off.",
+            "condition": "From 17, Slice and Dice the moment it falls off, at however many combo points you have, as long as 6 seconds of the fight are left.",
             "icon": "ability_rogue_slicedice",
             "race_spell_ids": {}
           },
@@ -33444,7 +33549,7 @@
           {
             "spell_id": 6774,
             "name": "Slice and Dice",
-            "condition": "Slice and Dice at four or more combo points when it is down or has under 3 seconds left, and at three once it has fallen off.",
+            "condition": "From 17, Slice and Dice the moment it falls off, at however many combo points you have, as long as 6 seconds of the fight are left.",
             "icon": "ability_rogue_slicedice",
             "race_spell_ids": {}
           },
@@ -33493,7 +33598,7 @@
           {
             "spell_id": 6760,
             "name": "Eviscerate",
-            "condition": "Eviscerate at five combo points.",
+            "condition": "Eviscerate at four combo points from 30, at five before that.",
             "icon": "ability_rogue_eviscerate",
             "race_spell_ids": {}
           },
@@ -33519,7 +33624,7 @@
           {
             "spell_id": 6760,
             "name": "Eviscerate",
-            "condition": "Eviscerate at five combo points.",
+            "condition": "Eviscerate at four combo points from 30, at five before that.",
             "icon": "ability_rogue_eviscerate",
             "race_spell_ids": {}
           },
@@ -33545,7 +33650,7 @@
           {
             "spell_id": 6760,
             "name": "Eviscerate",
-            "condition": "Eviscerate at five combo points.",
+            "condition": "Eviscerate at four combo points from 30, at five before that.",
             "icon": "ability_rogue_eviscerate",
             "race_spell_ids": {}
           },
@@ -33571,7 +33676,7 @@
           {
             "spell_id": 6761,
             "name": "Eviscerate",
-            "condition": "Eviscerate at five combo points.",
+            "condition": "Eviscerate at four combo points from 30, at five before that.",
             "icon": "ability_rogue_eviscerate",
             "race_spell_ids": {}
           },
@@ -33597,7 +33702,7 @@
           {
             "spell_id": 6761,
             "name": "Eviscerate",
-            "condition": "Eviscerate at five combo points.",
+            "condition": "Eviscerate at four combo points from 30, at five before that.",
             "icon": "ability_rogue_eviscerate",
             "race_spell_ids": {}
           },
@@ -33623,7 +33728,7 @@
           {
             "spell_id": 6761,
             "name": "Eviscerate",
-            "condition": "Eviscerate at five combo points.",
+            "condition": "Eviscerate at four combo points from 30, at five before that.",
             "icon": "ability_rogue_eviscerate",
             "race_spell_ids": {}
           },
@@ -33649,14 +33754,14 @@
           {
             "spell_id": 1329283,
             "name": "Shank",
-            "condition": "Shank on cooldown: an off-hand stab that cannot miss and pays back more energy than it costs, every 10 seconds, and every 8 with five points of Flash of Steel.",
+            "condition": "Shank on cooldown while you are under 80 energy: an off-hand stab that cannot miss and pays back more energy than it costs, every 10 seconds, and every 8 with five points of Flash of Steel.",
             "icon": "ability_theblackarrow",
             "race_spell_ids": {}
           },
           {
             "spell_id": 6762,
             "name": "Eviscerate",
-            "condition": "Eviscerate at five combo points.",
+            "condition": "Eviscerate at four combo points from 30, at five before that.",
             "icon": "ability_rogue_eviscerate",
             "race_spell_ids": {}
           },
@@ -33682,14 +33787,14 @@
           {
             "spell_id": 1329283,
             "name": "Shank",
-            "condition": "Shank on cooldown: an off-hand stab that cannot miss and pays back more energy than it costs, every 10 seconds, and every 8 with five points of Flash of Steel.",
+            "condition": "Shank on cooldown while you are under 80 energy: an off-hand stab that cannot miss and pays back more energy than it costs, every 10 seconds, and every 8 with five points of Flash of Steel.",
             "icon": "ability_theblackarrow",
             "race_spell_ids": {}
           },
           {
             "spell_id": 6762,
             "name": "Eviscerate",
-            "condition": "Eviscerate at five combo points.",
+            "condition": "Eviscerate at four combo points from 30, at five before that.",
             "icon": "ability_rogue_eviscerate",
             "race_spell_ids": {}
           },
@@ -33715,14 +33820,14 @@
           {
             "spell_id": 1329283,
             "name": "Shank",
-            "condition": "Shank on cooldown: an off-hand stab that cannot miss and pays back more energy than it costs, every 10 seconds, and every 8 with five points of Flash of Steel.",
+            "condition": "Shank on cooldown while you are under 80 energy: an off-hand stab that cannot miss and pays back more energy than it costs, every 10 seconds, and every 8 with five points of Flash of Steel.",
             "icon": "ability_theblackarrow",
             "race_spell_ids": {}
           },
           {
             "spell_id": 6762,
             "name": "Eviscerate",
-            "condition": "Eviscerate at five combo points.",
+            "condition": "Eviscerate at four combo points from 30, at five before that.",
             "icon": "ability_rogue_eviscerate",
             "race_spell_ids": {}
           },
@@ -33748,14 +33853,14 @@
           {
             "spell_id": 1329283,
             "name": "Shank",
-            "condition": "Shank on cooldown: an off-hand stab that cannot miss and pays back more energy than it costs, every 10 seconds, and every 8 with five points of Flash of Steel.",
+            "condition": "Shank on cooldown while you are under 80 energy: an off-hand stab that cannot miss and pays back more energy than it costs, every 10 seconds, and every 8 with five points of Flash of Steel.",
             "icon": "ability_theblackarrow",
             "race_spell_ids": {}
           },
           {
             "spell_id": 8623,
             "name": "Eviscerate",
-            "condition": "Eviscerate at five combo points.",
+            "condition": "Eviscerate at four combo points from 30, at five before that.",
             "icon": "ability_rogue_eviscerate",
             "race_spell_ids": {}
           },
@@ -33781,14 +33886,14 @@
           {
             "spell_id": 1329283,
             "name": "Shank",
-            "condition": "Shank on cooldown: an off-hand stab that cannot miss and pays back more energy than it costs, every 10 seconds, and every 8 with five points of Flash of Steel.",
+            "condition": "Shank on cooldown while you are under 80 energy: an off-hand stab that cannot miss and pays back more energy than it costs, every 10 seconds, and every 8 with five points of Flash of Steel.",
             "icon": "ability_theblackarrow",
             "race_spell_ids": {}
           },
           {
             "spell_id": 8623,
             "name": "Eviscerate",
-            "condition": "Eviscerate at five combo points.",
+            "condition": "Eviscerate at four combo points from 30, at five before that.",
             "icon": "ability_rogue_eviscerate",
             "race_spell_ids": {}
           },
@@ -33814,14 +33919,14 @@
           {
             "spell_id": 1329283,
             "name": "Shank",
-            "condition": "Shank on cooldown: an off-hand stab that cannot miss and pays back more energy than it costs, every 10 seconds, and every 8 with five points of Flash of Steel.",
+            "condition": "Shank on cooldown while you are under 80 energy: an off-hand stab that cannot miss and pays back more energy than it costs, every 10 seconds, and every 8 with five points of Flash of Steel.",
             "icon": "ability_theblackarrow",
             "race_spell_ids": {}
           },
           {
             "spell_id": 8623,
             "name": "Eviscerate",
-            "condition": "Eviscerate at five combo points.",
+            "condition": "Eviscerate at four combo points from 30, at five before that.",
             "icon": "ability_rogue_eviscerate",
             "race_spell_ids": {}
           },
@@ -33847,14 +33952,14 @@
           {
             "spell_id": 1329283,
             "name": "Shank",
-            "condition": "Shank on cooldown: an off-hand stab that cannot miss and pays back more energy than it costs, every 10 seconds, and every 8 with five points of Flash of Steel.",
+            "condition": "Shank on cooldown while you are under 80 energy: an off-hand stab that cannot miss and pays back more energy than it costs, every 10 seconds, and every 8 with five points of Flash of Steel.",
             "icon": "ability_theblackarrow",
             "race_spell_ids": {}
           },
           {
             "spell_id": 8624,
             "name": "Eviscerate",
-            "condition": "Eviscerate at five combo points.",
+            "condition": "Eviscerate at four combo points from 30, at five before that.",
             "icon": "ability_rogue_eviscerate",
             "race_spell_ids": {}
           },
@@ -33887,14 +33992,14 @@
           {
             "spell_id": 1329549,
             "name": "Shank",
-            "condition": "Shank on cooldown: an off-hand stab that cannot miss and pays back more energy than it costs, every 10 seconds, and every 8 with five points of Flash of Steel.",
+            "condition": "Shank on cooldown while you are under 80 energy: an off-hand stab that cannot miss and pays back more energy than it costs, every 10 seconds, and every 8 with five points of Flash of Steel.",
             "icon": "ability_theblackarrow",
             "race_spell_ids": {}
           },
           {
             "spell_id": 8624,
             "name": "Eviscerate",
-            "condition": "Eviscerate at five combo points.",
+            "condition": "Eviscerate at four combo points from 30, at five before that.",
             "icon": "ability_rogue_eviscerate",
             "race_spell_ids": {}
           },
@@ -33927,14 +34032,14 @@
           {
             "spell_id": 1329549,
             "name": "Shank",
-            "condition": "Shank on cooldown: an off-hand stab that cannot miss and pays back more energy than it costs, every 10 seconds, and every 8 with five points of Flash of Steel.",
+            "condition": "Shank on cooldown while you are under 80 energy: an off-hand stab that cannot miss and pays back more energy than it costs, every 10 seconds, and every 8 with five points of Flash of Steel.",
             "icon": "ability_theblackarrow",
             "race_spell_ids": {}
           },
           {
             "spell_id": 8624,
             "name": "Eviscerate",
-            "condition": "Eviscerate at five combo points.",
+            "condition": "Eviscerate at four combo points from 30, at five before that.",
             "icon": "ability_rogue_eviscerate",
             "race_spell_ids": {}
           },
@@ -33967,14 +34072,14 @@
           {
             "spell_id": 1329549,
             "name": "Shank",
-            "condition": "Shank on cooldown: an off-hand stab that cannot miss and pays back more energy than it costs, every 10 seconds, and every 8 with five points of Flash of Steel.",
+            "condition": "Shank on cooldown while you are under 80 energy: an off-hand stab that cannot miss and pays back more energy than it costs, every 10 seconds, and every 8 with five points of Flash of Steel.",
             "icon": "ability_theblackarrow",
             "race_spell_ids": {}
           },
           {
             "spell_id": 11299,
             "name": "Eviscerate",
-            "condition": "Eviscerate at five combo points.",
+            "condition": "Eviscerate at four combo points from 30, at five before that.",
             "icon": "ability_rogue_eviscerate",
             "race_spell_ids": {}
           },
@@ -34007,14 +34112,14 @@
           {
             "spell_id": 1329549,
             "name": "Shank",
-            "condition": "Shank on cooldown: an off-hand stab that cannot miss and pays back more energy than it costs, every 10 seconds, and every 8 with five points of Flash of Steel.",
+            "condition": "Shank on cooldown while you are under 80 energy: an off-hand stab that cannot miss and pays back more energy than it costs, every 10 seconds, and every 8 with five points of Flash of Steel.",
             "icon": "ability_theblackarrow",
             "race_spell_ids": {}
           },
           {
             "spell_id": 11299,
             "name": "Eviscerate",
-            "condition": "Eviscerate at five combo points.",
+            "condition": "Eviscerate at four combo points from 30, at five before that.",
             "icon": "ability_rogue_eviscerate",
             "race_spell_ids": {}
           },
@@ -34047,14 +34152,14 @@
           {
             "spell_id": 1329549,
             "name": "Shank",
-            "condition": "Shank on cooldown: an off-hand stab that cannot miss and pays back more energy than it costs, every 10 seconds, and every 8 with five points of Flash of Steel.",
+            "condition": "Shank on cooldown while you are under 80 energy: an off-hand stab that cannot miss and pays back more energy than it costs, every 10 seconds, and every 8 with five points of Flash of Steel.",
             "icon": "ability_theblackarrow",
             "race_spell_ids": {}
           },
           {
             "spell_id": 11299,
             "name": "Eviscerate",
-            "condition": "Eviscerate at five combo points.",
+            "condition": "Eviscerate at four combo points from 30, at five before that.",
             "icon": "ability_rogue_eviscerate",
             "race_spell_ids": {}
           },
@@ -34087,14 +34192,14 @@
           {
             "spell_id": 1329549,
             "name": "Shank",
-            "condition": "Shank on cooldown: an off-hand stab that cannot miss and pays back more energy than it costs, every 10 seconds, and every 8 with five points of Flash of Steel.",
+            "condition": "Shank on cooldown while you are under 80 energy: an off-hand stab that cannot miss and pays back more energy than it costs, every 10 seconds, and every 8 with five points of Flash of Steel.",
             "icon": "ability_theblackarrow",
             "race_spell_ids": {}
           },
           {
             "spell_id": 11299,
             "name": "Eviscerate",
-            "condition": "Eviscerate at five combo points.",
+            "condition": "Eviscerate at four combo points from 30, at five before that.",
             "icon": "ability_rogue_eviscerate",
             "race_spell_ids": {}
           },
@@ -34127,14 +34232,14 @@
           {
             "spell_id": 1329549,
             "name": "Shank",
-            "condition": "Shank on cooldown: an off-hand stab that cannot miss and pays back more energy than it costs, every 10 seconds, and every 8 with five points of Flash of Steel.",
+            "condition": "Shank on cooldown while you are under 80 energy: an off-hand stab that cannot miss and pays back more energy than it costs, every 10 seconds, and every 8 with five points of Flash of Steel.",
             "icon": "ability_theblackarrow",
             "race_spell_ids": {}
           },
           {
             "spell_id": 11300,
             "name": "Eviscerate",
-            "condition": "Eviscerate at five combo points.",
+            "condition": "Eviscerate at four combo points from 30, at five before that.",
             "icon": "ability_rogue_eviscerate",
             "race_spell_ids": {}
           },
@@ -34167,21 +34272,21 @@
           {
             "spell_id": 1329549,
             "name": "Shank",
-            "condition": "Shank on cooldown: an off-hand stab that cannot miss and pays back more energy than it costs, every 10 seconds, and every 8 with five points of Flash of Steel.",
+            "condition": "Shank on cooldown while you are under 80 energy: an off-hand stab that cannot miss and pays back more energy than it costs, every 10 seconds, and every 8 with five points of Flash of Steel.",
             "icon": "ability_theblackarrow",
             "race_spell_ids": {}
           },
           {
             "spell_id": 11300,
             "name": "Eviscerate",
-            "condition": "Eviscerate at five combo points.",
+            "condition": "Eviscerate at four combo points from 30, at five before that.",
             "icon": "ability_rogue_eviscerate",
             "race_spell_ids": {}
           },
           {
             "spell_id": 6774,
             "name": "Slice and Dice",
-            "condition": "At 60, Slice and Dice whenever it drops, at one or two combo points.",
+            "condition": "At 60, Slice and Dice whenever it drops, at any combo points, as long as 6 seconds of the fight are left.",
             "icon": "ability_rogue_slicedice",
             "race_spell_ids": {}
           },

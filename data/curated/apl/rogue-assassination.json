@@ -1,7 +1,7 @@
 {
   "spec": "rogue-assassination",
   "state": "written",
-  "notes": "Assassination at 60, hand-curated from simmed candidates (design/reviews/2026-10-07-rogue-curation.md) and re-searched at the raid build (design/reviews/2026-10-07-raid-builds.md). Mutilate builds, and combo points are spent from three (below 17: Slice and Dice at four once it drops, Eviscerate at five; sim-accuracy round 26, +0.2 to 0.5% at 10 to 16 at seeds 1 and 50001, both factions, level at 17 to 19): Cold Blood and Eviscerate, with Slice and Dice ahead of it whenever it has lapsed. Rupture is not cast: with the raid build's Coup de Grace, Aggression and Flawless Execution, Eviscerate is worth more than a Rupture (round 23). Venom was a finisher the rotation did not cast; since client 1.60.1.70755 it is a passive on Shank (poisons 30% harder and 20% more likely for 6 seconds), so the Shank line carries it. Without the Mutilate talent the Mutilate line falls through to Sinister Strike. Every rank named here is checked against this build's own spellconst. 2026-11-02 guide rewrite: Stealth and Garrote on the pull, +0.55% raid 60 (Ambush -0.1%). Client 1.60.1.70755: Shank (1329283 at 24, 1329549 at 44; off-hand 50% weapon damage, 5 energy for +15/+25, 10 sec cooldown, cannot miss) is new for every rogue and is cast on cooldown right after the cooldowns line.",
+  "notes": "Assassination at 60, hand-curated from simmed candidates (design/reviews/2026-10-07-rogue-curation.md) and re-searched at the raid build (design/reviews/2026-10-07-raid-builds.md). Mutilate builds, and combo points are spent from three (below 17: Slice and Dice at four once it drops, Eviscerate at five; sim-accuracy round 26, +0.2 to 0.5% at 10 to 16 at seeds 1 and 50001, both factions, level at 17 to 19): Cold Blood and Eviscerate, with Slice and Dice ahead of it whenever it has lapsed. Rupture is not cast: with the raid build's Coup de Grace, Aggression and Flawless Execution, Eviscerate is worth more than a Rupture (round 23). Venom was a finisher the rotation did not cast; since client 1.60.1.70755 it is a passive on Shank (poisons 30% harder and 20% more likely for 6 seconds), so the Shank line carries it. Without the Mutilate talent the Mutilate line falls through to Sinister Strike. Every rank named here is checked against this build's own spellconst. 2026-11-02 guide rewrite: Stealth and Garrote on the pull, +0.55% raid 60 (Ambush -0.1%). Client 1.60.1.70755: Shank (1329283 at 24, 1329549 at 44; off-hand 50% weapon damage, 5 energy for +15/+25, 10 sec cooldown, cannot miss) is new for every rogue and is cast on cooldown right after the cooldowns line. MythicSim comparison (2026-11-07, owner approved): from 17 Slice and Dice goes up whenever it has fallen off, at one or more combo points with 6 seconds of fight left, instead of at four with under 3 seconds left or at three once down. 10,000 iterations, seeds 1 and 50001: raid 60 +0.25%, bare 50 +0.50%, bare 60 +0.37%, bare 20 to 40 within error. Their Eviscerate at three is held: raid 60 +1.2 to 1.45%, but every bare band 20 to 60 lost 0.4 to 1.6% and neither a level nor an energy gate separates bare 60 from raid 60 (coordinator ruling). Revisit with a real raid log after 9 Dec.",
   "expected_idle": [
     {
       "id": 11294,
@@ -111,92 +111,44 @@
                         }
                       },
                       {
-                        "or": {
+                        "and": {
                           "vals": [
                             {
-                              "and": {
-                                "vals": [
-                                  {
-                                    "cmp": {
-                                      "op": "OpGe",
-                                      "lhs": {
-                                        "currentComboPoints": {}
-                                      },
-                                      "rhs": {
-                                        "const": {
-                                          "val": "4"
-                                        }
-                                      }
-                                    }
-                                  },
-                                  {
-                                    "or": {
-                                      "vals": [
-                                        {
-                                          "not": {
-                                            "val": {
-                                              "auraIsActive": {
-                                                "auraId": {
-                                                  "spellId": 6774,
-                                                  "rank": 2
-                                                }
-                                              }
-                                            }
-                                          }
-                                        },
-                                        {
-                                          "cmp": {
-                                            "op": "OpLt",
-                                            "lhs": {
-                                              "auraRemainingTime": {
-                                                "auraId": {
-                                                  "spellId": 6774,
-                                                  "rank": 2
-                                                }
-                                              }
-                                            },
-                                            "rhs": {
-                                              "const": {
-                                                "val": "3"
-                                              }
-                                            }
-                                          }
-                                        }
-                                      ]
-                                    }
+                              "cmp": {
+                                "op": "OpGe",
+                                "lhs": {
+                                  "currentComboPoints": {}
+                                },
+                                "rhs": {
+                                  "const": {
+                                    "val": "1"
                                   }
-                                ]
+                                }
                               }
                             },
                             {
-                              "and": {
-                                "vals": [
-                                  {
-                                    "cmp": {
-                                      "op": "OpGe",
-                                      "lhs": {
-                                        "currentComboPoints": {}
-                                      },
-                                      "rhs": {
-                                        "const": {
-                                          "val": "3"
-                                        }
-                                      }
-                                    }
-                                  },
-                                  {
-                                    "not": {
-                                      "val": {
-                                        "auraIsActive": {
-                                          "auraId": {
-                                            "spellId": 6774,
-                                            "rank": 2
-                                          }
-                                        }
-                                      }
+                              "not": {
+                                "val": {
+                                  "auraIsActive": {
+                                    "auraId": {
+                                      "spellId": 6774,
+                                      "rank": 2
                                     }
                                   }
-                                ]
+                                }
+                              }
+                            },
+                            {
+                              "cmp": {
+                                "op": "OpGe",
+                                "lhs": {
+                                  "remainingTime": {}
+                                },
+                                "rhs": {
+                                  "const": {
+                                    "val": "6"
+                                  }
+                                }
                               }
                             }
                           ]
@@ -253,7 +205,7 @@
             }
           }
         },
-        "notes": "Slice and Dice at four or more combo points when it is down or has under 3 seconds left, and at three once it has fallen off. Even three points keep it up for 15 seconds, over 20 with all three points of Improved Slice and Dice in the raid build, and getting the attack speed back beats waiting a builder for the fourth point. Below 17, with only Backstab's one point a strike, put four points into it once it has dropped and save five for Eviscerate."
+        "notes": "From 17, Slice and Dice the moment it falls off, at however many combo points you have, as long as 6 seconds of the fight are left. The attack speed is worth more than the points you would hold back for it, and a fresh one does not wait for the old one to run out. Below 17, with only Backstab's one point a strike, put four points into it once it has dropped and save five for Eviscerate."
       },
       {
         "action": {
