@@ -4,5 +4,11 @@
     "width": 1440,
     "height": 1000
   },
-  "states": []
+  "states": [
+    {
+      "id": "report",
+      "path": "/guild/us/pvp/olympus-xxvii/raids/41",
+      "mock": "web-guild-report.html"
+    }
+  ]
 }

@@ -1,0 +1,31 @@
+{
+ "guild": {
+  "id": 2,
+  "name": "Olympus XXVII",
+  "region": "us",
+  "ruleset": "pvp",
+  "faction": "alliance",
+  "crest_url": null
+ },
+ "viewer": {
+  "role": "officer",
+  "character_key": "us/pvp/dunmaro",
+  "verified": true,
+  "officer_tools": true,
+  "raid_guild_tools": true
+ },
+ "claim": {
+  "state": "claimed",
+  "since": "2026-11-12T00:00:00Z",
+  "frozen": false,
+  "yours": true,
+  "claimed_by": {
+   "name": "Dunmaro",
+   "class": "hunter",
+   "character_key": "us/pvp/dunmaro"
+  }
+ },
+ "reports": [],
+ "roster": [],
+ "pending": []
+}

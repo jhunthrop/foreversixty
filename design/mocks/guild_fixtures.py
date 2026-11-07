@@ -19,6 +19,10 @@ def write(name: str, data: object) -> Path:
 # One writer per page group; each returns the files it wrote.
 WRITERS: list = []
 
+# The raid night report (state `report`): guild_report_data.py.
+from guild_report_data import write_report_fixtures  # noqa: E402
+WRITERS.append(lambda: write_report_fixtures(write))
+
 if __name__ == '__main__':
     for writer in WRITERS:
         for path in writer():

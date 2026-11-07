@@ -28,7 +28,7 @@
   const groups = $derived(outputGroups(parses));
 </script>
 
-<Section title={copy.output.head} meta={copy.output.meta} id="raid-output" testid="raid-output">
+<Section title={copy.output.head} meta={copy.output.meta} anchor="raid-output" testid="raid-output">
   {#if groups.length === 0}
     <p class="text-muted text-[14px]" data-testid="raid-output-empty">
       {officer ? copy.output.officerEmpty : copy.output.memberEmpty}
@@ -40,9 +40,9 @@
           {#if groups.length > 1}<h3 class="text-label tracking-label text-muted font-bold uppercase">
               {group.boss}
             </h3>{/if}
-          <ul>
+          <div>
             {#each group.rows as row (`${row.character_key}-${row.metric}`)}
-              <li data-testid="raid-output-row">
+              <div data-testid="raid-output-row">
                 <Row
                   title={row.name}
                   titleTone={classTone(row.class)}
@@ -59,9 +59,9 @@
                       align="end"
                     />{/snippet}
                 </Row>
-              </li>
+              </div>
             {/each}
-          </ul>
+          </div>
         </div>
       {/each}
     </div>

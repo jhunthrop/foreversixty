@@ -1311,3 +1311,50 @@ def PlanHead(name: str, audience: str, value: str, unit: str, lines: list[tuple[
     sm = ''.join(f'<span class="pl2{" " + t if t else ""}">{x}</span>' for x, t in lines)
     return (f'<div class="plh"><h{level} class="nm">{name}{tag}</h{level}><span class="au">{audience}</span>'
             f'{Figure(value, unit=unit, tone="gold" if gold else "", size="big")}{sm}</div>')
+
+
+# ------------------------------------------------ primitives added by the guild report round (2026-11-07; guild parity, lane C)
+# Additive only. `Action` is the system Button as the built one is, a real <button> (an action on the page: Post to Discord,
+# Not this log), where `Button` stays a link. `Toggle` is a Row title that opens the row's detail (the shipped Row
+# titleContent button, aria-expanded). `Inspector` is the shipped ui/Inspector at its side placement: an aside named
+# "<selection> detail", 320 px, a hairline at its left, an optional head (title, sub) and caps-labelled sections; `Entries`
+# is a section's ordered list (a line and a detail line each). `Live` is the polite status a copy button speaks through
+# (empty until it speaks). `Split` lays a Plate's rows beside its Inspector.
+PRIM_CSS += '''
+button.btn{cursor:pointer}button.btn.primary{background:var(--gold);border-color:var(--gold);color:#17110a}
+button.tgl{all:unset;cursor:pointer;font:inherit;color:inherit}
+.split-insp{display:flex;min-width:0}.split-insp>.rows{flex:1;min-width:0}
+.insp{width:320px;flex:none;border-left:1px solid var(--line);align-self:start;min-width:0}
+.insp-h,.insp-s{padding:14px 16px}.insp-s+.insp-s,.insp-h+.insp-s{border-top:1px solid var(--line-soft)}
+.insp-h p{margin:0}.insp-h .t{font:700 15px/20px var(--font-body);color:var(--strong)}.insp-h .s{font-size:13px;line-height:18px;color:var(--muted)}
+.insp-s h3{margin:0;font:700 12px/16px var(--font-body);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.insp-l{display:flex;flex-direction:column;gap:16px;margin:4px 0 0;padding:0;list-style:none;font-size:14px;line-height:22px}
+.insp-l li{display:flex;flex-direction:column;gap:4px;min-width:0}.insp-l p{margin:0}
+.live{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+'''
+
+
+def Action(label: str, primary: bool = False, small: bool = False) -> str:
+    return f'<button type="button" class="btn{" primary" if primary else ""}{" sm" if small else ""}">{label}</button>'
+
+
+def Toggle(label: str, expanded: bool = False) -> str:
+    return f'<button type="button" class="tgl" aria-expanded="{"true" if expanded else "false"}">{label}</button>'
+
+
+def Entries(items: list[tuple[str, str]]) -> str:
+    return '<ol class="insp-l">' + ''.join(f'<li><p>{line}</p><div>{detail}</div></li>' for line, detail in items) + '</ol>'
+
+
+def Inspector(selection: str, sections: list[tuple[str, str]], title: str = '', sub: str = '') -> str:
+    head = f'<div class="insp-h"><p class="t">{title}</p><p class="s">{sub}</p></div>' if title else ''
+    body = ''.join(f'<section class="insp-s"><h3>{label}</h3>{html}</section>' for label, html in sections)
+    return f'<aside class="insp" data-region="{REGION["inspector"]}" aria-label="{escape(selection)} detail">{head}{body}</aside>'
+
+
+def Live() -> str:
+    return '<span class="live" role="status" aria-live="polite"></span>'
+
+
+def Split(rows: str, inspector: str) -> str:
+    return f'<div class="split-insp">{rows}{inspector}</div>'
