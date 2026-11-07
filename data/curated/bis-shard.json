@@ -1,0 +1,19 @@
+{
+  "specs": [
+    "druid-balance",
+    "druid-feral-bear",
+    "hunter-beast-mastery",
+    "hunter-marksmanship",
+    "hunter-survival",
+    "mage-arcane",
+    "mage-fire",
+    "paladin-retribution",
+    "priest-shadow",
+    "shaman-elemental",
+    "shaman-enhancement",
+    "warlock-affliction",
+    "warrior-fury",
+    "warrior-protection"
+  ],
+  "reason": "Sim round 29, run A of 3: the damage and tank specs whose leveling orders moved. Healers take up to 80 minutes each, so the 19 specs split across three runs that each fit the 250-minute ranking step."
+}
