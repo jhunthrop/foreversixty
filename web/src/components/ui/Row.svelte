@@ -46,6 +46,8 @@
     subContent?: Snippet;
     /** A line of controls under the body, full width (a narrow rail: tags, votes, a button). */
     foot?: Snippet;
+    /** Never rendered: an Astro caller's whitespace between named slots arrives as children. */
+    children?: Snippet;
   } = $props();
 
   const element = $derived(rowElement(href));

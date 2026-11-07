@@ -1,0 +1,108 @@
+---
+// web/src/components/guides/GuideSpecRow.astro
+// One spec as a link Row on /guides and a class landing (guides spec 2026-11-08 §4.1, §4.2): the
+// spec icon, the name, its muted role or Melee Tag, and a hidden "Your spec" Tag the answer
+// shows on the header character's spec (lib/guides/guide-answer-mount.ts marks the row
+// `aria-current`). On a landing the tags follow the name and the row carries its line and
+// "Read the guide ›"; on /guides they sit at the right.
+import Row from '../ui/Row.svelte';
+import Tag from '../ui/Tag.svelte';
+import { guidesCopy } from '../../lib/guides/copy';
+import type { TitleTone } from '../../lib/ui/primitives';
+
+interface Props {
+  /** `<class>/<spec>`: what the answer matches (the row's testid ends in it). */
+  specKey: string;
+  name: string;
+  href: string;
+  icon: string;
+  iconSize: 28 | 40;
+  tone?: TitleTone;
+  tag?: string;
+  sub?: string;
+  /** A landing row's last line ("Read the guide ›"). */
+  foot?: string;
+}
+const { specKey, name, href, icon, iconSize, tone, tag, sub, foot } = Astro.props;
+---
+
+{foot === undefined ? (
+  <Row
+    title={name}
+    titleTone={tone}
+    {href}
+    density="slim"
+    wrapTrail={tag !== undefined}
+    testid={`guide-spec-row-${specKey}`}
+  >
+    <img
+      slot="lead"
+      src={icon}
+      alt=""
+      width={iconSize}
+      height={iconSize}
+      loading="lazy"
+      decoding="async"
+      class="guide-spec-icon"
+    />
+    <span slot="trail" class="guide-spec-tags">
+      <span data-your-spec hidden>
+        <Tag>{guidesCopy.yourSpecPill}</Tag>
+      </span>
+      {tag !== undefined && <Tag tone="muted">{tag}</Tag>}
+    </span>
+  </Row>
+) : (
+  <Row title={name} titleTone={tone} {sub} {href} testid={`guide-spec-row-${specKey}`}>
+    <img
+      slot="lead"
+      src={icon}
+      alt=""
+      width={iconSize}
+      height={iconSize}
+      loading="lazy"
+      decoding="async"
+      class="guide-spec-icon"
+    />
+    <span slot="titleContent">
+      {name}
+      {tag !== undefined && (
+        <>
+          {' '}
+          <Tag tone="muted">{tag}</Tag>
+        </>
+      )}
+      <span data-your-spec hidden>
+        {' '}
+        <Tag>{guidesCopy.yourSpecPill}</Tag>
+      </span>
+    </span>
+    <span slot="foot" class="guide-spec-foot">
+      {foot}
+    </span>
+  </Row>
+)}
+
+<style>
+  .guide-spec-icon {
+    display: block;
+    border-radius: 4px;
+    box-shadow: 0 0 0 1px var(--color-line);
+  }
+  .guide-spec-tags {
+    display: flex;
+    gap: 8px;
+  }
+  .guide-spec-foot {
+    color: var(--color-gold);
+    font-weight: 600;
+    font-size: 14px;
+  }
+  :global(.ui-row[data-testid^='guide-spec-row-'][aria-current='true']) {
+    background: var(--color-selected);
+    box-shadow: inset 3px 0 0 var(--color-gold);
+  }
+  [data-your-spec][hidden] {
+    display: none;
+  }
+</style>

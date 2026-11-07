@@ -2,7 +2,7 @@
 <!-- The page head, once per page (web layout spec 2026-11-05 §3.3, §3A.2, §5.3): a crest, the Title
      in Marcellus 40/46 (32/38 below 768) in the class, spec or faction colour (owner decision 8: the
      faction colour where a page has no class, the strong colour where it has neither), one meta line
-     of facts and Tags, and at the right the page's answer (a Figure and its links) or its actions.
+     of facts and Tags, an optional Lead sentence, and at the right the page's answer (a Figure and its links) or its actions.
      A TabStrip may sit under it. No eyebrow, no job paragraph, no band art. -->
 <script lang="ts">
   import type { Snippet } from 'svelte';
@@ -14,6 +14,7 @@
     tone = 'strong',
     crest,
     meta,
+    lead,
     answer,
     actions,
     tabs,
@@ -25,6 +26,8 @@
     crest?: Snippet;
     /** The one fact line: strings and Tags, separated by space. */
     meta?: Snippet;
+    /** The page's one sentence under the meta line (the Lead type, 17/26, max 62ch). */
+    lead?: string;
     /** The page's answer: a Figure with its label and links. */
     answer?: Snippet;
     /** The page's buttons, when it has no answer. */
@@ -52,6 +55,7 @@
           >
             {@render meta()}
           </div>{/if}
+        {#if lead}<p class="ui-page-header-lead">{lead}</p>{/if}
       </div>
     </div>
     {#if answer}<div class="ui-page-header-answer" data-region={REGION.headAnswer}>{@render answer()}</div>
@@ -79,12 +83,23 @@
     overflow-wrap: anywhere;
     margin: 0;
   }
+  .ui-page-header-lead {
+    margin: 10px 0 0;
+    max-width: 62ch;
+    font-size: 16px;
+    line-height: 24px;
+    color: var(--color-text);
+  }
   .ui-page-header-answer {
     display: flex;
     flex-direction: column;
     gap: 4px;
   }
   @media (min-width: 768px) {
+    .ui-page-header-lead {
+      font-size: 17px;
+      line-height: 26px;
+    }
     .ui-title {
       font-size: var(--text-title);
       line-height: var(--text-title--line-height);

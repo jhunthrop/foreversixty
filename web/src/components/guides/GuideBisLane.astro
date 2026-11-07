@@ -1,0 +1,65 @@
+---
+// web/src/components/guides/GuideBisLane.astro
+// The Best in slot lane (guides spec 2026-11-08 §4.3, G5): one band of picks, the header
+// character's when it is this class (lib/guides/bis-lane.ts), else the guide's level 60 picks
+// for its first race's faction, and the link to the full list. The other bands wait in
+// templates, out of the document until chosen.
+import { LINK } from '../../lib/ui/primitives';
+import { guidesCopy } from '../../lib/guides/copy';
+import type { GuideBis } from '../../lib/guides/guide-bis';
+import GuideBisPanel from './GuideBisPanel.astro';
+
+interface Props {
+  build: string;
+  classSlug: string;
+  bis: GuideBis | undefined;
+  href: string;
+}
+const { build, classSlug, bis, href } = Astro.props;
+const shown = bis?.panels.find((panel) => panel.band === 60 && panel.faction === bis.defaultFaction);
+const key = (panel: { band: number; faction: string }): string => `${panel.band}-${panel.faction}`;
+---
+
+<div
+  class="guide-bis-lane"
+  data-testid="guide-bis"
+  data-guide-class={classSlug}
+  data-default-faction={bis?.defaultFaction ?? 'alliance'}
+>
+  {shown !== undefined && (
+    <div data-bis-current data-panel={key(shown)}>
+      <GuideBisPanel build={build} panel={shown} />
+    </div>
+  )}
+  {bis?.panels
+    .filter((panel) => panel !== shown)
+    .map((panel) => (
+      <template data-bis-panel={key(panel)}>
+        <GuideBisPanel build={build} panel={panel} />
+      </template>
+    ))}
+  <p class="m-0">
+    <a class={LINK} href={href} data-testid="guide-bis-full-list">
+      {guidesCopy.fullListLink} ›
+    </a>
+  </p>
+</div>
+
+<script>
+  import { afterPaint } from '../../lib/after-paint';
+
+  afterPaint(() => {
+    void import('../../lib/guides/bis-lane').then((m) => {
+      for (const root of document.querySelectorAll<HTMLElement>('[data-testid="guide-bis"]'))
+        m.mountBisLane(root);
+    });
+  });
+</script>
+
+<style>
+  .guide-bis-lane {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+  }
+</style>

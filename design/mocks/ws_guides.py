@@ -5,9 +5,10 @@ design/mocks/data/guides-facts.json, which design/mocks/guides_facts.mjs writes 
 (lib/guides/*, the copy module, the content files) on build 1.60.1.70790. Nothing is typed in except the strings this
 round proposes (PROPOSED below, listed in spec section 8.2) and the layout. The signed-in characters are the home
 fixtures (me-34 Felsnap, me-60 Thandrel); the level 34 Survival hunter and the level 60 Fire mage are derived from
-them in the facts reader and marked there.
+them as the committed fixtures web/tests/e2e/fixtures/guides (README.md there says how).
 
   node design/mocks/guides_facts.mjs && python3 design/mocks/ws_guides.py
+  python3 design/mocks/ws_guides.py [mock ...]                 (every mock, or just those named)
   node design/mocks/ws_shoot.mjs <mock> 390,1440,1920,2000   (each name in `python3 design/mocks/ws_guides.py --list`)
   python3 design/mocks/ws_guides.py compare <before dir>      (before/after sheets; before: shoot_guides_before.mjs)
 FS_GUIDES_FACTS and FS_MOCK_OUT point the generator elsewhere (a parity spec's test-time render).
@@ -96,7 +97,7 @@ def stat_rows(rows: list[dict], numbered: bool, per_point: bool) -> list[str]:
         figs = [e(r['valueText'])]
         if per_point:
             pp = r.get('perPoint')
-            figs.append(('&ndash;' if pp is None else (f'{pp:.1f}' if pp >= 10 else f'{pp:.2f}')))
+            figs.append(e(r['perPointText']) or '&ndash;')
         out.append(StatRow(lead, e(r['label']), '', figs, meter=Meter(r['value']) if valued else ''))
     return out
 
@@ -160,12 +161,14 @@ def stats(g: dict, rows: list[dict] | None = None) -> str:
     rows = t['rows'] if rows is None else rows
     if rows:
         cap = ''
-        for c in (t.get('hitCap'), t.get('expertiseCap')):
-            if c:
-                cap += f'<p class="t-small"><b class="strong">{e(c["cap"])}</b>' + (f' &middot; {e(c["detail"])}' if c.get('detail') else '') + '</p>'
+        c = t.get('hitCap')
+        if c:
+            cap += f'<p class="t-small"><b class="strong">{e(c["cap"])}</b>' + (f' &middot; {e(c["detail"])}' if c.get('detail') else '') + '</p>'
+        if t.get('expertiseCap'):
+            cap += f'<p class="t-small">{e(t["expertiseCap"]["text"])}</p>'
         table = StatTable([('', False), (e(F['markup']['statHead']), False), ('', False), (e(t['weightHead']), True), (e(t['perPointHead']), True)],
                           stat_rows(rows, False, True), 2, open_=True)
-        notes = ''.join(f'<p class="t-small">{e(x)}</p>' for x in [t.get('unitLine'), t.get('ratingNote'), *t['notOnItems']] if x)
+        notes = ''.join(f'<p class="t-small">{e(x)}</p>' for x in [t.get('unitLine'), t.get('ratingNote'), *t['notes']] if x)
         lane = LaneBlock(e(C['statPriorityRailLabel']), cap + table + notes)
     else:   # no weights for the spec: the guide's own order, unnumbered weights absent (the shipped fallback)
         lane = LaneBlock(e(C['statPriorityRailLabel']), RowsSlim([Row(e(x), rank=str(i + 1), link=False) for i, x in enumerate(g['statPriority'])]))
@@ -180,7 +183,9 @@ def gear(g: dict, band_no: int = 60, faction: str = 'alliance', data: bool = Tru
         items = []
         for r in panel['rows']:
             if r.get('empty'):
-                items.append(ItemRow(f'<span class="muted">{e(r.get("emptyText") or "")}</span>', 1, '<span class="ic" style="width:36px;height:36px"></span>', '', e(r['slotLabel'])))
+                # an empty slot names no item: its line is not a tooltip trigger (the built ItemRow's empty state)
+                items.append(ItemRow(f'<span class="muted">{e(r.get("emptyCopy") or "")}</span>', 1, '<span class="ic" style="width:36px;height:36px"></span>', '', e(r['slotLabel']))
+                             .replace(' role="button" tabindex="0"', '', 1))
                 continue
             items.append(ItemRow(e(r['itemName']), r['quality'], icon(r['icon'], 36, QUAL.get(r['quality'], '')), e(r['sourceDetail']), e(r['slotLabel'])))
         caption = panel['caption']
@@ -355,16 +360,17 @@ def states_page() -> str:
 PAGE_CSS = '''<style>
 /* page-level layout only (no surfaces): the answer box's inner rows, column splits, spacing */
 .ans-row{display:flex;align-items:center;gap:12px}.ans-who{display:flex;flex-direction:column;min-width:0}.ans-name{font:700 18px/22px var(--font-body)}
-.ans-links{display:flex;gap:16px;flex-wrap:wrap}
+.ans-links{display:flex;gap:4px 16px;flex-wrap:wrap}
 @media(min-width:900px){.ans-row{flex-direction:row-reverse}.ans-who{align-items:flex-end}.ans-links{justify-content:flex-end}}
 .glance{padding-top:20px}.specs{padding-bottom:var(--section-gap)}
 .sw{display:grid;gap:20px var(--gap);grid-template-columns:minmax(0,1fr)}@media(min-width:768px){.sw{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .sw-h{padding-bottom:8px}
 .lvl-l{display:flex;flex-direction:column}
 .racial{display:flex;gap:8px;align-items:flex-start;font-size:13px;line-height:18px;color:var(--muted);width:100%}.racial b{color:var(--text);font-weight:600}
-.sub-h{padding:12px 0 2px}
+.sub-h{padding:12px 0 2px;margin:0}
 .items{display:flex;flex-direction:column}
-.foot-note{padding-top:16px}.gl-fill{padding-top:8px}.ans-next{align-self:center}
+.foot-note{padding-top:16px}
+section>.sec-h+.rows,section>.sec-h+.prose{margin-top:12px}.gl-fill{padding-top:8px}.ans-next{align-self:center}
 @media(min-width:900px){.ans-next{flex-basis:100%;text-align:right}}.ic-spacer{display:inline-block;flex:none}
 .cgrp{padding-bottom:20px;min-width:0}
 .toc-sel{display:inline-flex}@media(min-width:1760px){.toc-sel{display:none}}
@@ -413,5 +419,10 @@ if __name__ == '__main__':
     elif sys.argv[1:2] == ['compare']:
         compare(Path(sys.argv[2]))
     else:
+        only = sys.argv[1:]
+        unknown = [name for name in only if name not in PAGES]
+        if unknown:
+            sys.exit(f'ws_guides.py: no such mock: {" ".join(unknown)} (see --list)')
         for name, fn in PAGES.items():
-            print(write(f'{name}.html', fn()))
+            if not only or name in only:
+                print(write(f'{name}.html', fn()))

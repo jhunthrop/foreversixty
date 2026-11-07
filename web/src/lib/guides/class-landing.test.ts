@@ -3,7 +3,7 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
-import { cardLineFor, splitClassLanding } from './class-landing';
+import { cardLineFor, proseLabels, splitClassLanding } from './class-landing';
 
 const GUIDES = fileURLToPath(new URL('../../content/guides/', import.meta.url));
 
@@ -88,4 +88,15 @@ describe('every class landing keeps the shape', () => {
       }
     });
   }
+});
+
+describe('proseLabels', () => {
+  it('turns a bold-only paragraph into the Prose glabel, and leaves bold inside a sentence alone', () => {
+    expect(proseLabels('<p><strong>Race picks.</strong></p>\n<ul><li>Orc</li></ul>')).toBe(
+      '<p class="glabel">Race picks.</p>\n<ul><li>Orc</li></ul>',
+    );
+    expect(proseLabels('<p><strong>Opener.</strong> Mage Armor first.</p>')).toBe(
+      '<p><strong>Opener.</strong> Mage Armor first.</p>',
+    );
+  });
 });

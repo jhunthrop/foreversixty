@@ -1,0 +1,72 @@
+---
+// web/src/components/guides/GuideSpecBar.astro
+// The guide's ControlBar (guides spec 2026-11-08 §4.3): the class's specs as a segmented
+// group of links, each with its spec icon, the current one checked; at the end, below 1760, an
+// On this page select that jumps to a section (from 1760 the contents rail does). On a phone one
+// line, "<Spec> <Class> · On this page", that opens in place.
+import ControlBar from '../ui/ControlBar.astro';
+import Select from '../ui/Select.astro';
+import { dataUrl } from '../../lib/planner/load';
+import { guidesCopy } from '../../lib/guides/copy';
+import type { ControlGroup } from '../../lib/ui/primitives';
+
+interface Props {
+  build: string;
+  classSlug: string;
+  specSlug: string;
+  summary: string;
+  specs: readonly { spec_slug: string; name: string; icon: string }[];
+  sections: readonly { title: string; id: string }[];
+}
+const { build, classSlug, specSlug, summary, specs, sections } = Astro.props;
+const groups: ControlGroup[] = [
+  {
+    label: guidesCopy.specGroupLabel,
+    param: 'spec',
+    kind: 'segmented',
+    value: specSlug,
+    options: specs.map((spec) => ({
+      value: spec.spec_slug,
+      label: spec.name,
+      icon: dataUrl(build, `icons/${spec.icon}.webp`),
+      href: `/guides/${classSlug}/${spec.spec_slug}`,
+    })),
+  },
+];
+---
+
+<ControlBar id="guide-bar" label={guidesCopy.barLabel} groups={groups} summary={summary} testid="guide-bar">
+  <span slot="end" class="guide-toc-select" data-testid="guide-toc-select">
+    <Select
+      id="guide-toc"
+      label={guidesCopy.tocBarLabel}
+      placeholder={guidesCopy.tocBarLabel}
+      size="dense"
+      fit
+      align="end"
+      options={sections.map((section) => ({ value: section.id, label: section.title }))}
+    />
+  </span>
+</ControlBar>
+
+<script>
+  // The select jumps: its value is a section's anchor; the face goes back to "On this page".
+  const field = document.getElementById('guide-toc') as HTMLSelectElement | null;
+  field?.addEventListener('change', () => {
+    const id = field.value;
+    if (id === '') return;
+    document.getElementById(id)?.scrollIntoView();
+    history.replaceState(null, '', `#${id}`);
+  });
+</script>
+
+<style>
+  .guide-toc-select {
+    display: inline-flex;
+  }
+  @media (min-width: 1760px) {
+    .guide-toc-select {
+      display: none;
+    }
+  }
+</style>

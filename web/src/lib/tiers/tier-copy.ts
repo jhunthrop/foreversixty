@@ -3,6 +3,7 @@
 // 2026-10-09-tier-list.md). The
 // strings describe the rules; a figure that moves nightly is passed in from the published
 // files, never written here (the owner's "prose never quotes nightly numbers" rule).
+import { answerCopy } from '../account/answer-copy';
 import classes from '../../data/classes.json';
 import type { BisRole, Faction } from '../bis/types';
 import { TIE_MARGIN_PERCENT, TIER_BANDS, type TierLetter } from './tier-rules';
@@ -358,16 +359,11 @@ export const tiersCopy = {
   /** The signed-in answer in the PageHeader (spec 4.6). */
   answer: {
     label: (role: BisRole): string => `Your spec · ${ROLE_LABELS[role]}`,
-    bis: 'Your best in slot',
+    ...answerCopy,
     guide: 'Guide',
-    sim: 'Sim your character',
     otherRole: (fullName: string, role: BisRole): string =>
       `${fullName} is on the ${ROLE_LABELS[role]} list.`,
     otherRoleLink: 'See where it stands',
-    unknown: (name: string): string => `${name}'s spec is not known yet.`,
-    unknownLink: 'Choose a character',
-    error: 'We could not load your character.',
-    retry: 'Try again',
   },
 } as const;
 

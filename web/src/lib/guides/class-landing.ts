@@ -101,3 +101,9 @@ export function splitClassLanding(body: string, file: string): ClassLanding {
     sections: firstHeading < 0 ? [] : parseSections(main.slice(firstHeading), file),
   };
 }
+
+/** A paragraph that is only bold text ("**Race picks.**") labels the list under it: the Prose
+ *  primitive's `glabel`. */
+export function proseLabels(html: string): string {
+  return html.replace(/<p><strong>([^<]+)<\/strong><\/p>/g, '<p class="glabel">$1</p>');
+}

@@ -1,64 +1,60 @@
 ---
 // web/src/pages/guides/[class]/[spec].astro
-// Rebuild (spec 2026-10-04, §4.C/§4.D): the plain `<h1>` title with no class identity
-// (spec §3's own "Replaced" list) becomes the full `ArtPanel`+`ClassHeader` band, matching
-// `/bis`, with the new `GuideActionRail` (Build/Rotation/Stat priority, §4.C) directly
-// under it, inside the same `ArtPanel`. The nine-section structure (SPEC_SECTIONS) still
-// renders in its existing fixed order with the same jump-list table of contents, boxed at
-// the top on narrow screens and a sticky rail beside the article at lg (Content's aside
-// slot); the Leveling section gains a planted component, `GuideLevelingTree` (the leveling
-// tree, design/specs/2026-11-04-leveling-tree.md), the same planting convention `proseOnly` already uses for Stat
-// priority and Races. No MDX is installed in this project, so a markdown file cannot embed
-// a component directly -- splitSpecSections/renderGuideMarkdown (lib/guides/) render each
-// of the nine sections independently instead of the whole body as one `<Body />`, which is
-// what makes planting possible while every heading keeps its exact id.
-//
-// W.18 (22 Oct 2026): the page reads like a class guide. Every block that has icons, tables or
-// ranks is built from the build data and the BiS ranker (lib/guides/*), never typed per guide;
-// the Markdown keeps the prose. The sections, in order: Overview (strengths, weaknesses, in a
-// raid), Talents and builds (trees, the raid-build diff, key talents), Rotation and priority
-// (opener, priority, cooldowns), Stat priority, Best in slot (the /bis picks per level range),
-// Enchants and consumables, Races (pills and a table), Professions, Leveling. One status note
-// at the top says once what is simulated, so the sections do not hedge.
+// A spec guide in the flat system (design/specs/2026-11-08-guides.md §4.3): the PageHeader (the
+// spec and class in the class colour, the role and Updated stamp, the Overview's one sentence,
+// the signed-in answer), the ControlBar (the class's specs, On this page below 1760), the one
+// Plate (At a glance), then the nine sections of SPEC_SECTIONS as ReadingSections: the guide's
+// own prose beside the lane its data builds (lib/guides/*, W.18), never a word of the guide
+// changed. Sources, the data line, and from 1760 the contents rail. No markdown component is
+// embedded: splitSpecSections renders each section on its own, so every heading keeps its id.
 import { getCollection } from 'astro:content';
-import ArtPanel from '../../../components/ArtPanel.astro';
-import ClassHeader, { type SpecTabEntry } from '../../../components/ClassHeader.astro';
-import GuideActionRail from '../../../components/guides/GuideActionRail.astro';
-import GuideBisTable from '../../../components/guides/GuideBisTable.astro';
-import GuideBuilds from '../../../components/guides/GuideBuilds.astro';
-import GuideGearExtras from '../../../components/guides/GuideGearExtras.astro';
-import GuideOverview from '../../../components/guides/GuideOverview.astro';
-import GuideStatTable from '../../../components/guides/GuideStatTable.astro';
-import KeyTalentList from '../../../components/guides/KeyTalentList.astro';
+import Base from '../../../layouts/Base.astro';
+import ClassCrest from '../../../components/ClassCrest.astro';
+import GuideAnswer from '../../../components/guides/GuideAnswer.astro';
+import GuideBisLane from '../../../components/guides/GuideBisLane.astro';
+import GuideBuildsLane from '../../../components/guides/GuideBuildsLane.astro';
+import GuideExtrasLane from '../../../components/guides/GuideExtrasLane.astro';
+import GuideGlance from '../../../components/guides/GuideGlance.astro';
 import GuideLevelingTree from '../../../components/guides/GuideLevelingTree.svelte';
-import RacePillRow from '../../../components/guides/RacePillRow.astro';
-import RaceTable from '../../../components/guides/RaceTable.astro';
-import RotationLists from '../../../components/guides/RotationLists.astro';
+import GuideRacesLane from '../../../components/guides/GuideRacesLane.astro';
+import GuideRotationLane from '../../../components/guides/GuideRotationLane.astro';
+import GuideSources from '../../../components/guides/GuideSources.astro';
+import GuideSpecBar from '../../../components/guides/GuideSpecBar.astro';
+import GuideStatLane from '../../../components/guides/GuideStatLane.astro';
+import GuideTooltips from '../../../components/guides/GuideTooltips.svelte';
 import GlyphSheet from '../../../components/bis/GlyphSheet.astro';
-import StatPriorityPills from '../../../components/guides/StatPriorityPills.astro';
-import SpecTableOfContents from '../../../components/SpecTableOfContents.astro';
-import Content from '../../../layouts/Content.astro';
+import LaneBlock from '../../../components/ui/LaneBlock.svelte';
+import Page from '../../../components/ui/Page.svelte';
+import PageHeader from '../../../components/ui/PageHeader.svelte';
+import Prose from '../../../components/ui/Prose.svelte';
+import ReadingSection from '../../../components/ui/ReadingSection.svelte';
+import Toc from '../../../components/ui/Toc.svelte';
 import classes from '../../../data/classes.json';
 import activeBuild from '../../../data/active-build.json';
 import { readSpecCatalog } from '../../../lib/bis/load';
-import { bandTopLevel } from '../../../lib/bis/rotation-view';
+import { articleLd, breadcrumbLd } from '../../../lib/seo';
+import { REGION } from '../../../lib/ui/regions';
+import type { ClassSlug } from '../../../lib/ui/primitives';
 import { decodeBuildTrees } from '../../../lib/guides/build-tree';
 import { describedBuildTrees, guideRotation } from '../../../lib/guides/guide-rotation';
-import { band60Weights, rankedBisFile } from '../../../lib/guides/class-dps';
+import { rankedBisFile } from '../../../lib/guides/class-dps';
 import { guidesCopy } from '../../../lib/guides/copy';
+import { glanceRotation, markCheapRanks, topRankAt60 } from '../../../lib/guides/glance';
+import { buildRaces } from '../../../lib/guides/build-races';
 import { renderGuideMarkdown } from '../../../lib/guides/markdown';
-import { railStatRows, rankedStatLabels } from '../../../lib/guides/rail-stats';
-import { splitSpecSections, type SpecSection } from '../../../lib/guides/sections';
+import { splitSpecSections, slugify, SPEC_SECTIONS, type SpecSection } from '../../../lib/guides/sections';
 import { diffBuilds, buildDiffLine } from '../../../lib/guides/build-diff';
+import { guideBuildBlocks } from '../../../lib/guides/guide-builds';
 import { guideTipsUrl, proseNames, specGuideData, withTipKeys } from '../../../lib/guides/guide-tips';
 import { linkProse } from '../../../lib/guides/prose-tips';
-import GuideTooltips from '../../../components/guides/GuideTooltips.svelte';
 import { pageScript } from '../../../lib/guides/page-script';
 import { dayMonth, pageUpdatedAt } from '../../../lib/guides/guide-header';
 import { guideLadderSteps } from '../../../lib/guides/leveling-builds';
 import { keyTalentsFor, withoutTalentBullets } from '../../../lib/guides/key-talents';
 import { splitOverview } from '../../../lib/guides/overview';
-import { raceTableFor, specKindOf } from '../../../lib/guides/race-table';
+import { raceTableFor, recommendedRaceLines, specKindOf } from '../../../lib/guides/race-table';
+import { guideStatLane } from '../../../lib/guides/stat-lane';
+import { talentTreesOf } from '../../../lib/guides/talent-cells';
 import {
   litTalentsOf,
   markRaidBuildRows,
@@ -68,123 +64,96 @@ import {
 
 export async function getStaticPaths() {
   const guides = await getCollection('guides');
-  const specGuides = guides.filter((g) => g.data.spec !== undefined);
-  return specGuides.map((entry) => {
-    const [classSlug, spec] = entry.id.split('/');
-    return { params: { class: classSlug, spec }, props: { entry } };
-  });
+  return guides
+    .filter((g) => g.data.spec !== undefined)
+    .map((entry) => {
+      const [classSlug, spec] = entry.id.split('/');
+      return { params: { class: classSlug, spec }, props: { entry } };
+    });
 }
 
 const { entry } = Astro.props;
-// entry.body is the collection entry's own raw markdown source (the same field
-// _sections.test.ts reads off disk directly); if `astro check` reports it missing from the
-// public CollectionEntry<'guides'> type in this Astro version, fall back to
-// `(entry as unknown as { body?: string }).body ?? ''` with a one-line comment saying why,
-// rather than switching to a different data source -- the raw body is what splitSpecSections
-// is built to consume, and it must be byte-identical to what _sections.test.ts validates.
 const sections = splitSpecSections(entry.body ?? '');
 
-/** A section's raw markdown, minus its own `## Heading` line -- for the sections that plant
- *  a component between the heading and the guide's own prose. */
+/** A section's raw markdown without its own `## Heading` line. */
 function proseOnly(section: SpecSection): string {
-  const raw = sections.get(section) ?? '';
-  const [, ...rest] = raw.split('\n');
+  const [, ...rest] = (sections.get(section) ?? '').split('\n');
   return rest.join('\n').replace(/^\n+/, '');
 }
 
-/** The heading the leveling tree is planted above; the Levels 1 to 19 prose before it stays above the tree. */
-const LEVELING_STRIP_HEADING = /^### Levels 20 to 60\s*$/m;
-
-/**
- * Splits the Leveling prose at the Levels 20 to 60 heading: [prose above it, its heading, prose
- * below it]. The leveling tree goes between the first two. Without the heading the tree opens
- * the section.
- */
+/** Splits the Leveling prose at the Levels 20 to 60 heading: [above it, the heading, below it]. */
 function splitAtLevelingStrip(markdown: string): [string, string, string] {
-  const match = LEVELING_STRIP_HEADING.exec(markdown);
+  const match = /^### Levels 20 to 60\s*$/m.exec(markdown);
   if (match === null) return ['', '', markdown];
-  const after = match.index + match[0].length;
-  return [markdown.slice(0, match.index), match[0], markdown.slice(after)];
+  return [markdown.slice(0, match.index), match[0], markdown.slice(match.index + match[0].length)];
 }
 
-const buildCode = entry.data.build;
 const build = activeBuild.build;
+const buildCode = entry.data.build;
 const classSlug = entry.data.classSlug;
 const specSlug = entry.id.split('/')[1]!;
 const fullSpecId = `${classSlug}-${specSlug}`;
 const className = classes.find((c) => c.slug === classSlug)?.name ?? classSlug;
 const role = entry.data.role ?? 'dps';
+const recommendedRaces = entry.data.recommendedRaces;
 
-// Tooltips: the guide's gear and its tooltip bundle in one read (lib/guides/guide-tips.ts).
-// Every talent, spell, racial, enchant and item the page names opens the game's tooltip; the
-// bundle is published beside the page and fetched on the first hover, focus or tap.
+// The guide's gear and its tooltip bundle in one read: every talent, spell, racial, enchant and
+// item the page names opens the game's tooltip, fetched on the first hover.
 const {
   bis: guideBis,
   extras: gearExtras,
   bundle: tipBundle,
-} = specGuideData(build, classSlug, fullSpecId, entry.data.recommendedRaces);
+} = specGuideData(build, classSlug, fullSpecId, recommendedRaces);
 
-// Talents: both builds decoded for the key-talent icons and the raid-build diff.
+// Talents: both builds decoded; the plate describes the raid build when the guide has its own.
 const buildTrees = buildCode === undefined ? [] : (decodeBuildTrees(build, buildCode) ?? []);
 const raidCode = entry.data.raidBuild;
 const raidTrees =
   raidCode === undefined || raidCode === buildCode ? undefined : decodeBuildTrees(build, raidCode);
+const describedTrees = describedBuildTrees(buildTrees, raidTrees);
+const describedCode = raidTrees === undefined ? buildCode : raidCode;
 
-// The prose's names, marked from the client data: a talent at the guide's raid build rank.
 const proseTargets = proseNames(build, classSlug, raidTrees ?? buildTrees, tipBundle);
 async function prose(markdown: string): Promise<string> {
   return linkProse(await renderGuideMarkdown(markdown), proseTargets);
 }
 
-// Overview: a summary sentence (the header's) and three bullet blocks.
 const overview = splitOverview(sections.get('Overview') ?? '');
 const hasOverviewBlocks = overview.strengths !== '' || overview.weaknesses !== '' || overview.raid !== '';
-const overviewHeadingHtml = await renderGuideMarkdown('## Overview');
-const overviewFallbackHtml = hasOverviewBlocks ? '' : await prose(proseOnly('Overview'));
-const strengthsHtml = await prose(overview.strengths);
-const weaknessesHtml = await prose(overview.weaknesses);
-const raidHtml = await prose(overview.raid);
+const overviewHtml = {
+  strengths: await prose(overview.strengths),
+  weaknesses: await prose(overview.weaknesses),
+  raid: await prose(overview.raid),
+  fallback: hasOverviewBlocks ? '' : await prose(proseOnly('Overview')),
+};
 
-// SpecTabs: every spec of this class, in the talent tree's own left-to-right order --
-// identical convention `/bis`'s own header already uses.
 const catalogEntries = readSpecCatalog()
   .filter((s) => s.class_slug === classSlug)
   .sort((a, b) => a.tree_index - b.tree_index);
-const specTabs: SpecTabEntry[] = catalogEntries.map((s) => ({
-  specSlug: s.spec_slug,
-  name: s.name,
-  icon: s.icon,
-  href: `/guides/${classSlug}/${s.spec_slug}`,
-  active: s.spec_slug === specSlug,
-}));
 const specName = catalogEntries.find((s) => s.spec_slug === specSlug)?.name ?? specSlug;
-const specIcon = specTabs.find((tab) => tab.active)?.icon;
+const title = `${specName} ${className}`;
 
+const buildBlocks =
+  buildCode === undefined
+    ? []
+    : guideBuildBlocks(buildCode, raidCode).map((block) => ({
+        ...block,
+        trees: decodeBuildTrees(build, block.code) ?? [],
+      }));
 const raidDiffLine =
   raidTrees === undefined || buildTrees.length === 0
     ? undefined
     : buildDiffLine(diffBuilds(buildTrees, raidTrees));
-const talentsHeadingHtml = await renderGuideMarkdown('## Talents and builds');
 const keyTalents = keyTalentsFor(
   proseOnly('Talents and builds'),
   buildTrees.length > 0 ? buildTrees : undefined,
   raidTrees,
 );
-const talentsProseHtml = await prose(withoutTalentBullets(proseOnly('Talents and builds')));
 
-// The build the level 60 sections describe (the rail, the key talents' ranks, the rotation
-// cards): the raid build when the guide has its own, else the level 60 build.
-const describedTrees = describedBuildTrees(buildTrees, raidTrees);
-const describedCode = raidTrees === undefined ? buildCode : raidCode;
-
-// Rail: Rotation card's first four level-60 lines (spec §4.C.2) -- the card is omitted
-// entirely when no rotation entry applies yet (spec §5's own state table), never a card
-// with zero lines standing in for "no data". The Rotation section's lists read the same lines.
-const rotationBandLabel = String(bandTopLevel(60));
-const rotationListsUnkeyed = guideRotation(build, classSlug, fullSpecId, role, describedTrees);
-// The lists follow the raid build's level 60 priority; a talent only the raid build takes is
-// marked in them, so a player on the level 60 build knows to skip that row.
-const raidOnlyTalents =
+// Rotation: the raid build's level 60 priority; a talent only the raid build takes is marked,
+// and a cheap rank the guide chose says so.
+const unkeyed = guideRotation(build, classSlug, fullSpecId, role, describedTrees);
+const raidOnly =
   raidTrees === undefined
     ? new Set<string>()
     : raidBuildOnlyTalents(
@@ -192,238 +161,261 @@ const raidOnlyTalents =
         litTalentsOf(buildTrees),
         litTalentsOf(raidTrees),
       );
-const rotationListsData =
-  rotationListsUnkeyed === undefined
+const rotation =
+  unkeyed === undefined
     ? undefined
-    : withTipKeys(markRaidBuildRows(rotationListsUnkeyed, raidOnlyTalents), tipBundle);
-const rotationHeadingHtml = await renderGuideMarkdown('## Rotation and priority');
-const rotationProseHtml = await prose(proseOnly('Rotation and priority'));
+    : markCheapRanks(
+        withTipKeys(markRaidBuildRows(unkeyed, raidOnly), tipBundle),
+        (name) => topRankAt60(build, classSlug, name),
+        proseOnly('Rotation and priority'),
+      );
+const glance =
+  rotation === undefined
+    ? { rows: [] }
+    : glanceRotation(
+        rotation.priority,
+        buildRaces(build).map((race) => race.name),
+      );
 
-// Rail: Stat priority card's real per-point numbers read the spec's own band-60 BiS data, at
-// the faction the guide's first `recommendedRaces` entry resolves to (the same rule, stated
-// once, `class-dps.ts` shares with the class landing's own Set DPS line). `rankedBisFile`
-// only ever reads the real pipeline file, never the `/bis` dev fixture.
-const ranked = rankedBisFile(build, fullSpecId);
-// Same load path `GuideStatTable.astro` uses for the planted Stat priority table below --
-// `band60Weights` is the one place this band's weights get read, so the rail card and the
-// table can never disagree.
-const band60 = band60Weights(build, fullSpecId, classSlug, entry.data.recommendedRaces);
-const statRows =
-  band60 === undefined ? [] : railStatRows(entry.data.statPriority, band60.weights, fullSpecId, band60.haste);
-// The pills rank only the stats the table gives a value, in the table's order; the
-// frontmatter list is only the fallback for a spec with no weights yet.
-const statPills = rankedStatLabels(statRows, entry.data.statPriority);
-const statPriorityHeadingHtml = await renderGuideMarkdown('## Stat priority');
-const statPriorityProseHtml = await prose(proseOnly('Stat priority'));
+const statLane = guideStatLane(build, classSlug, fullSpecId, recommendedRaces, entry.data.statPriority);
 
-// Best in slot: the /bis picks per level range (guideBis, above), plus the enchant and
-// consumable tables that follow the level 60 band's weights (gearExtras).
-const bisHref = `/bis/${classSlug}/${specSlug}`;
-const gearHeadingHtml = await renderGuideMarkdown('## Best in slot');
-const gearProseHtml = await prose(proseOnly('Best in slot'));
-const enchantsHeadingHtml = await renderGuideMarkdown('## Enchants and consumables');
-const enchantsProseHtml = await prose(proseOnly('Enchants and consumables'));
-
-// Races: the pills as the summary, the table under them.
 const raceRows = raceTableFor(
   build,
   classSlug,
-  entry.data.recommendedRaces,
+  [...recommendedRaces, ...entry.data.alsoRecommendedRaces],
   specKindOf(classSlug, fullSpecId, role),
 );
-const racesHeadingHtml = await renderGuideMarkdown('## Races');
 const racesProse = proseOnly('Races');
-const racesProseHtml = await prose(racesProse);
-const professionsHtml = await prose(sections.get('Professions') ?? '');
+const raceFaction = (faction: string): string =>
+  faction === 'alliance' ? guidesCopy.alliancePicksHeading : guidesCopy.hordePicksHeading;
+const racePicks = recommendedRaceLines(raceRows, racesProse);
+const raceLines = racePicks.map((pick) =>
+  guidesCopy.recommendedRacesLine(
+    raceRows.find((row) => row.slug === pick.slug)?.name ?? pick.slug,
+    raceFaction(pick.faction),
+    racePicks.filter((other) => other.faction === pick.faction).length === 1 ? 'the' : 'a',
+    pick.names.join(' and '),
+  ),
+);
 
-// The leveling tree is the whole journey, 10 to 60: the guide's own level 60 build climbed one
-// point a level in the ladder's order (lib/guides/leveling-builds.ts guideLadderSteps), the one
-// order the sim, the addon, the planner's band loads and /data/leveling-plans.json read.
 const treeIndex = catalogEntries.find((s) => s.spec_slug === specSlug)?.tree_index;
 const ladderSteps =
   buildCode === undefined || treeIndex === undefined
     ? []
     : guideLadderSteps(build, classSlug, fullSpecId, treeIndex, buildCode);
-const talentsByLevelHeadingHtml = await renderGuideMarkdown(`### ${guidesCopy.talentsByLevel}`);
-const levelingHeadingHtml = await renderGuideMarkdown('## Leveling');
-// #leveling, the character home's link, opens on the Levels 1 to 19 text a new character needs;
-// the tree (its own "Talents by level" heading, 10 to 60) follows it, then Levels 20 to 60.
-const [levelingEarlyProse, levelingStripHeading, levelingLateProse] = splitAtLevelingStrip(
-  proseOnly('Leveling'),
-);
-const levelingEarlyHtml = await prose(levelingEarlyProse);
-const levelingStripHeadingHtml = await renderGuideMarkdown(levelingStripHeading);
-const levelingLateHtml = await prose(levelingLateProse);
+const [levelingEarly, levelingStripHeading, levelingLate] = splitAtLevelingStrip(proseOnly('Leveling'));
+const levelingHtml =
+  (await prose(levelingEarly)) +
+  (levelingStripHeading === '' ? '' : await renderGuideMarkdown(levelingStripHeading)) +
+  (await prose(levelingLate));
 
-const updatedStamp = dayMonth(pageUpdatedAt(entry.data.updated, ranked?.generated_at));
-const metaLine = guidesCopy.headerMeta(role, updatedStamp);
+const rotationHtml = await prose(proseOnly('Rotation and priority'));
+const extrasHtml = await prose(proseOnly('Enchants and consumables'));
+
+const ranked = rankedBisFile(build, fullSpecId);
+const updated = pageUpdatedAt(entry.data.updated, ranked?.generated_at);
+const tocItems = SPEC_SECTIONS.map((section) => ({ title: section, id: slugify(section) }));
+const path = `/guides/${entry.id}`;
+const description = entry.data.description ?? '';
+const jsonLd = [
+  articleLd({ title: entry.data.title, description, path, updated: entry.data.updated }),
+  breadcrumbLd(path, entry.data.title),
+];
 ---
 
-<Content
-  title={entry.data.title}
-  description={entry.data.description}
-  path={`/guides/${entry.id}`}
-  updated={entry.data.updated}
-  confidence={entry.data.confidence}
-  sources={entry.data.sources}
-  confidencePlacement="footer"
-  hideHeader
-  wideProse
-  hideConfidenceNote
-  footnote={guidesCopy.dataSourceLine(build)}
-  hideSitePill
->
-  <Fragment slot="beforeMain">
-    <ArtPanel classSlug={classSlug}>
-      <ClassHeader
-        classSlug={classSlug}
-        className={className}
-        specName={specName}
-        specTabs={specTabs}
-        bands={[]}
+<Base title={entry.data.title} {description} {path} {jsonLd} wide>
+  <meta slot="head" property="article:modified_time" content={entry.data.updated.toISOString()} />
+  <main id="main" tabindex="-1" class="guide-page" data-testid="guide-page">
+    <Page layout="reading" testid="guide-body">
+      <PageHeader
+        slot="header"
+        title={title}
+        tone={{ classSlug: classSlug as ClassSlug }}
+        lead={overview.summary !== '' ? overview.summary : entry.data.description}
+      >
+        <ClassCrest slot="crest" slug={classSlug} size={56} priority />
+        <span slot="meta">{guidesCopy.headerMeta(role, dayMonth(updated))}</span>
+        <GuideAnswer
+          slot="answer"
+          page={{
+            classSlug,
+            specSlug,
+            ladder: ladderSteps.map((step) => ({ level: step.level, name: step.name })),
+          }}
+        />
+      </PageHeader>
+      <GuideSpecBar
+        slot="bar"
         build={build}
-        minimal
-        eyebrow={guidesCopy.eyebrow}
-        summaryOverride={overview.summary !== '' ? overview.summary : entry.data.description}
-        metaLine={metaLine}
-        metaIcon={specIcon}
+        classSlug={classSlug}
+        specSlug={specSlug}
+        summary={`${title} · ${guidesCopy.tocBarLabel}`}
+        specs={catalogEntries}
+        sections={tocItems}
       />
-      {describedCode !== undefined && (
-        <div class="guide-rail-wrap">
-          <GuideActionRail
+      <GuideGlance
+        slot="top"
+        build={build}
+        code={describedCode}
+        trees={talentTreesOf(describedTrees, tipBundle)}
+        isRaidBuild={raidTrees !== undefined}
+        rotation={glance}
+        rotationTitle={role === 'healer' ? guidesCopy.healingPriorityRailTitle : guidesCopy.rotationRailTitle}
+        stats={statLane}
+      />
+      <Toc
+        slot="toc"
+        label={guidesCopy.tocBarLabel}
+        items={tocItems}
+        current={tocItems[0]?.id}
+        testid="guide-toc"
+      />
+
+      <ReadingSection title="Overview" anchor="overview">
+        <LaneBlock slot="lane" label={guidesCopy.inARaid} testid="guide-overview-raid">
+          <Prose html={overviewHtml.raid} mods={['lane']} />
+        </LaneBlock>
+        {hasOverviewBlocks ? (
+          <div class="guide-sw">
+            <div>
+              <h3 class="text-label tracking-label text-muted guide-sw-head font-bold uppercase">
+                {guidesCopy.strengths}
+              </h3>
+              <Prose html={overviewHtml.strengths} mods={['plus']} testid="guide-strengths" />
+            </div>
+            <div>
+              <h3 class="text-label tracking-label text-muted guide-sw-head font-bold uppercase">
+                {guidesCopy.weaknesses}
+              </h3>
+              <Prose html={overviewHtml.weaknesses} mods={['minus']} testid="guide-weaknesses" />
+            </div>
+          </div>
+        ) : (
+          <Prose html={overviewHtml.fallback} />
+        )}
+      </ReadingSection>
+
+      <ReadingSection title="Talents and builds" anchor="talents-and-builds">
+        <Fragment slot="lane">
+          <GuideBuildsLane
             build={build}
-            buildCode={describedCode}
-            trees={describedTrees}
-            isRaidBuild={raidTrees !== undefined}
-            rotationBandLabel={rotationBandLabel}
-            rotationLines={rotationListsData?.priority.slice(0, 4) ?? []}
-            statRows={statRows}
+            blocks={buildBlocks}
+            raidDiffLine={raidDiffLine}
+            keyTalents={keyTalents}
           />
-        </div>
+        </Fragment>
+        <Prose html={await prose(withoutTalentBullets(proseOnly('Talents and builds')))} />
+      </ReadingSection>
+
+      {rotation !== undefined ? (
+        <ReadingSection title="Rotation and priority" anchor="rotation-and-priority">
+          <Fragment slot="lane">
+            <GuideRotationLane build={build} lists={rotation} forRaidBuild={raidTrees !== undefined} />
+          </Fragment>
+          <Prose html={rotationHtml} />
+        </ReadingSection>
+      ) : (
+        <ReadingSection title="Rotation and priority" anchor="rotation-and-priority">
+          <Prose html={rotationHtml} />
+        </ReadingSection>
       )}
-    </ArtPanel>
-  </Fragment>
-  <SpecTableOfContents />
-  <SpecTableOfContents slot="aside" placement="rail" />
-  <Fragment set:html={overviewHeadingHtml} />
-  {hasOverviewBlocks ? (
-    <GuideOverview strengthsHtml={strengthsHtml} weaknessesHtml={weaknessesHtml} raidHtml={raidHtml} />
-  ) : (
-    <Fragment set:html={overviewFallbackHtml} />
-  )}
-  <Fragment set:html={talentsHeadingHtml} />
-  {buildCode !== undefined && (
-    <GuideBuilds levelingCode={buildCode} raidCode={entry.data.raidBuild} raidDiffLine={raidDiffLine} />
-  )}
-  <KeyTalentList build={build} entries={keyTalents} />
-  <Fragment set:html={talentsProseHtml} />
-  <Fragment set:html={rotationHeadingHtml} />
-  {rotationListsData !== undefined && raidTrees !== undefined && (
-    <p class="text-muted" data-testid="guide-rotation-build">
-      {guidesCopy.rotationForRaidBuild}
-    </p>
-  )}
-  {rotationListsData !== undefined && <RotationLists build={build} lists={rotationListsData} />}
-  <Fragment set:html={rotationProseHtml} />
-  <Fragment set:html={statPriorityHeadingHtml} />
-  <StatPriorityPills stats={statPills} />
-  <GuideStatTable
-    build={build}
-    spec={fullSpecId}
-    classSlug={classSlug}
-    recommendedRaces={entry.data.recommendedRaces}
-    statPriority={entry.data.statPriority}
-  />
-  <Fragment set:html={statPriorityProseHtml} />
-  <Fragment set:html={gearHeadingHtml} />
-  {guideBis !== undefined && (
-    <Fragment>
-      <GlyphSheet />
-      <GuideBisTable build={build} bis={guideBis} bisHref={bisHref} classSlug={classSlug} />
-    </Fragment>
-  )}
-  <Fragment set:html={gearProseHtml} />
-  <Fragment set:html={enchantsHeadingHtml} />
-  {gearExtras !== undefined && <GuideGearExtras build={build} extras={gearExtras} tips={tipBundle} />}
-  <Fragment set:html={enchantsProseHtml} />
-  <Fragment set:html={racesHeadingHtml} />
-  <RacePillRow
-    build={build}
-    classSlug={entry.data.classSlug}
-    recommendedRaces={entry.data.recommendedRaces}
-  />
-  <RaceTable build={build} rows={raceRows} tips={tipBundle} prose={racesProse} />
-  <Fragment set:html={racesProseHtml} />
-  <Fragment set:html={professionsHtml} />
-  <Fragment set:html={levelingHeadingHtml} />
-  <Fragment set:html={levelingEarlyHtml} />
-  {ladderSteps.length > 0 && buildCode !== undefined && (
-    <Fragment>
-      <Fragment set:html={talentsByLevelHeadingHtml} />
-      <p class="leveling-tree-intro">{guidesCopy.levelingTreeIntro}</p>
-      <GuideLevelingTree client:visible code={buildCode} spec={fullSpecId} steps={ladderSteps} />
-    </Fragment>
-  )}
-  <Fragment set:html={levelingStripHeadingHtml} />
-  <Fragment set:html={levelingLateHtml} />
+
+      <ReadingSection title="Stat priority" anchor="stat-priority">
+        <Fragment slot="lane">
+          <GuideStatLane stats={statLane} fallback={entry.data.statPriority} />
+        </Fragment>
+        <Prose html={await prose(proseOnly('Stat priority'))} />
+      </ReadingSection>
+
+      <ReadingSection title="Best in slot" anchor="best-in-slot">
+        <Fragment slot="lane">
+          <GlyphSheet />
+          <GuideBisLane
+            build={build}
+            classSlug={classSlug}
+            bis={guideBis}
+            href={`/bis/${classSlug}/${specSlug}`}
+          />
+        </Fragment>
+        <Prose html={await prose(proseOnly('Best in slot'))} />
+      </ReadingSection>
+
+      {gearExtras !== undefined ? (
+        <ReadingSection title="Enchants and consumables" anchor="enchants-and-consumables">
+          <Fragment slot="lane">
+            <GuideExtrasLane build={build} extras={gearExtras} tips={tipBundle} />
+          </Fragment>
+          <Prose html={extrasHtml} />
+        </ReadingSection>
+      ) : (
+        <ReadingSection title="Enchants and consumables" anchor="enchants-and-consumables">
+          <Prose html={extrasHtml} />
+        </ReadingSection>
+      )}
+
+      <ReadingSection title="Races" anchor="races">
+        <Fragment slot="lane">
+          <GuideRacesLane build={build} rows={raceRows} lines={raceLines} tips={tipBundle} />
+        </Fragment>
+        <Prose html={await prose(racesProse)} />
+      </ReadingSection>
+
+      <ReadingSection title="Professions" anchor="professions">
+        <Prose html={await prose(proseOnly('Professions'))} />
+      </ReadingSection>
+
+      {ladderSteps.length > 0 ? (
+        <ReadingSection title="Leveling" anchor="leveling">
+          <LaneBlock slot="lane" label={guidesCopy.talentsByLevel} testid="guide-talents-by-level">
+            <GuideLevelingTree
+              client:visible
+              build={build}
+              spec={fullSpecId}
+              classSlug={classSlug}
+              specSlug={specSlug}
+              trees={talentTreesOf(buildTrees, tipBundle)}
+              steps={ladderSteps}
+            />
+          </LaneBlock>
+          <Prose html={levelingHtml} />
+        </ReadingSection>
+      ) : (
+        <ReadingSection title="Leveling" anchor="leveling">
+          <Prose html={levelingHtml} />
+        </ReadingSection>
+      )}
+
+      <GuideSources sources={entry.data.sources} />
+      <p
+        class="text-small text-muted guide-foot-note"
+        data-region={REGION.footerNote}
+        data-testid="content-footnote"
+      >
+        {guidesCopy.dataSourceLine(build)}
+      </p>
+    </Page>
+  </main>
   <script is:inline set:html={pageScript}></script>
   <GuideTooltips client:idle-after-load build={build} bundleUrl={guideTipsUrl(build, classSlug, specSlug)} />
-</Content>
+</Base>
 
 <style>
-  .leveling-tree-intro {
-    margin: 0 0 12px;
-    font-size: 13px;
-    color: var(--color-nav);
+  .guide-foot-note {
+    margin: 0;
+    padding-top: 16px;
   }
-  .guide-rail-wrap {
-    padding: 24px var(--page-inset) 28px var(--page-inset);
+  .guide-sw {
+    display: grid;
+    gap: 20px var(--gap);
+    grid-template-columns: minmax(0, 1fr);
   }
-  @media (max-width: 1023px) {
-    .guide-rail-wrap {
-      padding: 18px var(--page-inset) 22px var(--page-inset);
+  .guide-sw-head {
+    margin: 0;
+    padding-bottom: 8px;
+  }
+  @media (min-width: 768px) {
+    .guide-sw {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
-  }
-</style>
-
-<style is:global>
-  /* The body shares the page head's left edge (leftovers lane A): the layout centres a
-     `measure-aside` main at its own max width, which put the prose 112 px right of the head at
-     1440. The 720 px prose column and the 220 px contents rail keep their widths; the grid just
-     fills the page column, so the prose starts where the head starts and the rail sits at the
-     column's right edge. */
-  main.measure-aside {
-    max-width: none;
-  }
-  /* A name that opens the game tooltip (GuideTooltips.svelte mounts the panel inside it). The
-     row and pill hosts keep their own look; a name in the prose reads as a game link: the
-     spell or talent in the strong text colour, an item in its quality, both underlined dotted
-     so a reader knows it answers a hover, a focus or a tap. */
-  .gtip {
-    position: relative;
-    cursor: pointer;
-  }
-  .gtip:focus-visible {
-    outline: 2px solid var(--color-gold);
-    outline-offset: 2px;
-    border-radius: 3px;
-  }
-  .prose span.gtip,
-  .guide-prose span.gtip,
-  p span.gtip,
-  li > span.gtip {
-    text-decoration: underline dotted;
-    text-decoration-color: color-mix(in srgb, currentColor 35%, transparent);
-    text-underline-offset: 3px;
-  }
-  p span.gtip:not(.gtip-item),
-  li > span.gtip:not(.gtip-item) {
-    color: var(--color-strong);
-    font-weight: 500;
-  }
-  .gtip [role='tooltip'] {
-    color: var(--color-text);
-    text-decoration: none;
-    cursor: default;
   }
 </style>

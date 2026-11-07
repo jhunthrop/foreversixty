@@ -1,6 +1,6 @@
-// Every user-visible string the guides lane's own components (GuideBuildTree,
-// BuildActionButtons, RacePillRow, StatPriorityPills) render, reference voice throughout
-// (design/DESIGN-SYSTEM.md: state the thing and stop).
+// Every user-visible string the guide pages (/guides, the class landings, the spec guides) and
+// their components render, reference voice throughout (design/DESIGN-SYSTEM.md: state the
+// thing and stop).
 
 /** The unit a role's per-point and set figures are in: a tank's per-point figures are
  *  tank-score points (mitigation, risk and threat combined), never damage. */
@@ -16,37 +16,22 @@ type GuideRole = keyof typeof ROLE_RATE_UNIT;
 export const guidesCopy = {
   loadThisBuild: 'Load this build',
   simThisBuild: 'Sim this build',
-  treeLoadFailed: 'This build did not load',
-  recommendedRaceLabel: 'Recommended',
   // --- rebuild (2026-10-04) --------------------------------------------------------------
-  /** `ClassHeader`'s own eyebrow row, all three guide surfaces (spec §6's copy table). */
-  eyebrow: 'Guides',
   /** `/guides` index's own signed-in callout (spec §4.A/§6): `{specName}` and `{className}`
    *  come from the visitor's own character, e.g. "Your guide: Fury Warrior ›". */
   signedInCallout: (specName: string, className: string): string => `Your guide: ${specName} ${className} ›`,
   /** The /guides index line, under the title: what every guide gives, for launch day on. */
   indexLine: 'Talents, rotation and gear for every spec, from your first talent point to the raid at 60.',
-  roleLabel: (role: 'dps' | 'healer' | 'tank'): string =>
-    role === 'dps' ? 'DPS' : role === 'healer' ? 'Healer' : 'Tank',
   readTheGuide: 'Read the guide',
-  readTheGuideAriaLabel: (specName: string, className: string): string =>
-    `Read the ${specName} ${className} guide`,
   yourSpecPill: 'Your spec',
-  /** The class landing card's accessible name once it carries the "Your spec" pill. */
-  yourSpecAriaLabel: (cardLabel: string): string => `${cardLabel}, your spec`,
-  /** The class landing's visually hidden heading over the spec cards. */
+  /** The class landing's spec plate's accessible name. */
   classLandingSpecsHeading: 'Specs',
   buildRailLabel: 'Build',
   /** The rail's Rotation card title; its band label is the head's meta (site alignment §5.4). */
   rotationRailTitle: 'Rotation',
   fullPriorityLink: 'Full priority ↓',
   statPriorityRailLabel: 'Stat priority',
-  levelingPointsLabel: (points: number): string => `${points} point${points === 1 ? '' : 's'}`,
   loadInPlanner: 'Load in planner',
-  loadBuildRailAriaLabel: 'Load this build in the planner (summary)',
-  simBuildRailAriaLabel: 'Sim this build (summary)',
-  loadRaidBuildRailAriaLabel: 'Load the raid build in the planner (summary)',
-  simRaidBuildRailAriaLabel: 'Sim the raid build (summary)',
   /** Under "Rotation and priority" when the guide has its own raid build: the cards are worked
    *  out for it (its talents, cooldowns and cast times). */
   rotationForRaidBuild: 'For the raid build.',
@@ -83,8 +68,6 @@ export const guidesCopy = {
    *  wow-player SHOULD). */
   raidBuildLegend:
     'Raid build only: needs a talent only the raid build takes. Not on the raid build? Skip that row.',
-  bestInSlot: 'Best in slot',
-  levelRange: 'Level range',
   /** "Picks for a Human (Alliance).", "Picks for an Undead (Horde)." */
   bisCaption: (race: string, faction: string): string =>
     `Picks for ${/^[AEIOU]/i.test(race) ? 'an' : 'a'} ${race} (${faction}).`,
@@ -92,9 +75,6 @@ export const guidesCopy = {
   preRaidNote:
     'These are the best picks before the first raid tier. Raid loot is not itemized in the client yet, and this list updates when it is.',
   notSimChecked: 'Ranked by stats only',
-  slotColumn: 'Slot',
-  itemColumn: 'Item',
-  sourceColumn: 'Source',
   enchants: 'Enchants',
   consumables: 'Consumables',
   /** What the enchant table is: each slot's best flat-stat enchant by the band's weights
@@ -102,11 +82,6 @@ export const guidesCopy = {
   enchantsNote:
     'The enchant for each slot that adds the most of your weighted stats. Crit, hit and haste enchants are not included.',
   consumablesNote: 'What to bring to a raid.',
-  enchantColumn: 'Enchant',
-  givesColumn: 'Gives',
-  consumableColumn: 'Consumable',
-  raceColumn: 'Race',
-  factionColumn: 'Faction',
   racialsColumn: 'Racials',
 
   recommendedTag: 'Recommended',
@@ -195,10 +170,8 @@ export const guidesCopy = {
   levelValueText: (level: number): string => `Level ${level}`,
   loadLevelBuildAriaLabel: (level: number): string => `Load the level ${level} build in the planner`,
   tocBarLabel: 'On this page',
-  tocBarHint: 'Jump to a section',
   alliancePicksHeading: 'Alliance',
   hordePicksHeading: 'Horde',
-  factionGroup: 'Faction',
   alsoUsed: 'Food, oil and potions',
   // --- the flat system (design/specs/2026-11-08-guides.md, rulings 0A) -----------------------
   /** The signed-in answer's label, all three guide pages. */
@@ -208,6 +181,9 @@ export const guidesCopy = {
   /** Beside it: the ladder's next point (Q5), "Next point at 35: Expose Prey". */
   nextPointAt: (level: number, name: string): string => `Next point at ${level}: ${name}`,
   noCharacter: 'No character on this account yet.',
+  /** The guide's ControlBar: its accessible name and its one group's label. */
+  barLabel: 'Guide choices',
+  specGroupLabel: 'Spec',
   /** The At a glance plate's accessible name. */
   glance: 'At a glance',
   /** A healer's At a glance rotation column (MUST 2). */

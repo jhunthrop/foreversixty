@@ -858,7 +858,7 @@ PRIM_CSS += '''
 .trees.cmp .tc b{font-size:10px;line-height:12px;right:-3px;bottom:-4px}
 @media(min-width:1760px){.trees.cmp .tg{grid-template-columns:repeat(4,28px)}.trees.cmp .tc,.trees.cmp .tc img,.trees.cmp .tc .ic{width:28px!important;height:28px!important}}
 @media(max-width:767px){.trees.cmp{grid-template-columns:repeat(3,minmax(0,max-content));gap:10px}.trees.cmp .tg{grid-template-columns:repeat(4,22px);gap:3px}.trees.cmp .tc,.trees.cmp .tc img,.trees.cmp .tc .ic{width:22px!important;height:22px!important}}
-.lvl{display:flex;align-items:center;gap:10px}.lvl .bt{width:44px;height:44px;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--line);border-radius:4px;color:var(--nav);font-size:18px}
+.lvl{display:flex;align-items:center;gap:10px}.lvl .bt{all:unset;box-sizing:border-box;width:44px;height:44px;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--line);border-radius:4px;color:var(--nav);font-size:18px}
 .lvl .bt:hover{color:var(--strong);border-color:var(--gold)}.lvl .bt.off{opacity:.45}
 .lvl .rg{position:relative;flex:1;height:44px;display:flex;align-items:center}.lvl .rg .tk{height:4px;width:100%;border-radius:2px;background:var(--line-soft)}
 .lvl .rg .fl{position:absolute;left:0;height:4px;border-radius:2px;background:var(--gold)}
@@ -934,10 +934,10 @@ def TalentTrees(trees: list[tuple[str, int, list[tuple]]]) -> str:
 def LevelSlider(level: int, lo: int, hi: int, label: str) -> str:
     """The shipped GuideLevelingTree control row: previous level, the level range (a slider), next level."""
     frac = (level - lo) / (hi - lo)
-    return (f'<div class="lvl"><a class="bt{" off" if level == lo else ""}" href="#" aria-label="Previous level">&lsaquo;</a>'
+    return (f'<div class="lvl"><button type="button" class="bt{" off" if level == lo else ""}" aria-label="Previous level"{" disabled" if level == lo else ""}>&lsaquo;</button>'
             f'<span class="rg" role="slider" aria-label="{label}" aria-valuemin="{lo}" aria-valuemax="{hi}" aria-valuenow="{level}" aria-valuetext="Level {level}" tabindex="0">'
             f'<span class="tk"></span><span class="fl" style="width:{frac * 100:.1f}%"></span><span class="th" style="left:{frac * 100:.1f}%"></span></span>'
-            f'<a class="bt{" off" if level == hi else ""}" href="#" aria-label="Next level">&rsaquo;</a></div>')
+            f'<button type="button" class="bt{" off" if level == hi else ""}" aria-label="Next level"{" disabled" if level == hi else ""}>&rsaquo;</button></div>')
 
 
 def RowsSlim(rows: list[str], open_: bool = True) -> str:

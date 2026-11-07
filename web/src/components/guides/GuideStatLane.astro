@@ -1,0 +1,82 @@
+---
+// web/src/components/guides/GuideStatLane.astro
+// The Stat priority lane (guides spec 2026-11-08 §4.3): the cap lines, the weights table (stat,
+// bar, the weight with the anchor at 1.00, the rate per point or rating), the unit line, the
+// rating note and the notes for the rows with no figure. A spec with no weights lists the
+// guide's own order, unnumbered figures absent.
+import LaneBlock from '../ui/LaneBlock.svelte';
+import Meter from '../ui/Meter.svelte';
+import Row from '../ui/Row.svelte';
+import StatRow from '../ui/StatRow.svelte';
+import StatTable from '../ui/StatTable.svelte';
+import { guidesCopy } from '../../lib/guides/copy';
+import type { StatLane } from '../../lib/guides/stat-lane';
+
+interface Props {
+  stats: StatLane | undefined;
+  /** The guide's own statPriority, for a spec with no weights. */
+  fallback: readonly string[];
+}
+const { stats, fallback } = Astro.props;
+const notes =
+  stats === undefined
+    ? []
+    : [stats.unitLine, stats.ratingNote, ...stats.notes].filter((n) => n !== undefined);
+---
+
+<LaneBlock label={guidesCopy.statPriorityRailLabel} testid="guide-stat-table">
+  {stats === undefined ? (
+    <div class="guide-stat-rows">
+      {fallback.map((label, i) => (
+        <Row title={label} rank={String(i + 1)} density="slim" open />
+      ))}
+    </div>
+  ) : (
+    <>
+      {stats.hitCap !== undefined && (
+        <p class="text-small text-muted" title={stats.hitCap.title} data-testid="guide-stat-table-hit-cap">
+          <b class="text-strong">{stats.hitCap.cap}</b>
+          {stats.hitCap.detail !== undefined && <> · {stats.hitCap.detail}</>}
+        </p>
+      )}
+      {stats.expertiseCap !== undefined && <p class="text-small text-muted">{stats.expertiseCap.text}</p>}
+      <StatTable
+        columns={[
+          { id: 'weight', label: stats.weightHead },
+          { id: 'per-point', label: stats.perPointHead },
+        ]}
+        nameHead={guidesCopy.statColumn}
+        open
+        label={guidesCopy.statPriorityRailLabel}
+      >
+        {stats.rows.map((row, index) => (
+          <StatRow
+            figures={[
+              { value: row.valueText, muted: row.reading !== 'value' },
+              { value: row.perPointText === '' ? '–' : row.perPointText, muted: row.perPointText === '' },
+            ]}
+            testid={`guide-stat-table-row-${index}`}
+          >
+            <span slot="name">{row.label}</span>
+            {row.reading === 'value' && row.value !== undefined && row.perPercent === undefined && (
+              <Meter slot="meter" value={row.value} />
+            )}
+          </StatRow>
+        ))}
+      </StatTable>
+      {notes.map((note) => (
+        <p class="text-small text-muted">{note}</p>
+      ))}
+    </>
+  )}
+</LaneBlock>
+
+<style>
+  .guide-stat-rows {
+    display: flex;
+    flex-direction: column;
+  }
+  p {
+    margin: 0;
+  }
+</style>

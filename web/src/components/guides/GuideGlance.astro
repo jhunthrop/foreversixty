@@ -1,0 +1,138 @@
+---
+// web/src/components/guides/GuideGlance.astro
+// The guide's one Plate, At a glance (guides spec 2026-11-08 §4.3, rulings 0A): the described
+// build's three trees with Load this build (the page's one primary) and Sim this build, the
+// first four priority lines every character casts at their level 60 clause with the filler
+// always there, and the stats a player can gear for with the hit cap and unit lines. A column
+// with no data is left out; with none, no plate.
+import Button from '../ui/Button.svelte';
+import Meter from '../ui/Meter.svelte';
+import PlateColumn from '../ui/PlateColumn.svelte';
+import PlateColumns from '../ui/PlateColumns.svelte';
+import StatRow from '../ui/StatRow.svelte';
+import StatTable from '../ui/StatTable.svelte';
+import TalentTrees, { type TalentTree } from '../ui/TalentTrees.svelte';
+import GuideSpellRow from './GuideSpellRow.astro';
+import { LINK } from '../../lib/ui/primitives';
+import { guidesCopy } from '../../lib/guides/copy';
+import { loadBuildHref, simBuildHref } from '../../lib/guides/build-links';
+import type { GlanceRotation } from '../../lib/guides/glance';
+import type { StatLane } from '../../lib/guides/stat-lane';
+
+interface Props {
+  build: string;
+  /** The build the plate describes (the raid build when the guide has its own). */
+  code?: string;
+  trees: readonly TalentTree[];
+  isRaidBuild: boolean;
+  rotation: GlanceRotation;
+  rotationTitle: string;
+  stats?: StatLane;
+}
+const { build, code, trees, isRaidBuild, rotation, rotationTitle, stats } = Astro.props;
+const hasBuild = code !== undefined && trees.length > 0;
+const hasRotation = rotation.rows.length > 0;
+const hasStats = stats !== undefined && stats.glanceRows.length > 0;
+const count = [hasBuild, hasRotation, hasStats].filter(Boolean).length;
+let rank = 0;
+const statRank = (reading: string): string => (reading === 'value' ? String(++rank) : '');
+---
+
+{count > 0 && (
+  <div class="guide-glance">
+    <PlateColumns count={count} label={guidesCopy.glance} testid="guide-glance">
+      {hasBuild && (
+        <PlateColumn
+          label={isRaidBuild ? guidesCopy.raidBuild : guidesCopy.buildRailLabel}
+          testid="guide-glance-build"
+        >
+          <TalentTrees trees={trees} build={build} testid="guide-glance-trees" />
+          <Fragment slot="foot">
+            <Button tone="primary" href={loadBuildHref(code!)} testid="guide-load-build">
+              {guidesCopy.loadThisBuild}
+            </Button>
+            <Button href={simBuildHref(code!)} testid="guide-sim-build">
+              {guidesCopy.simThisBuild}
+            </Button>
+          </Fragment>
+        </PlateColumn>
+      )}
+      {hasRotation && (
+        <PlateColumn
+          label={rotationTitle}
+          meta={guidesCopy.levelRangeLabel(60)}
+          testid="guide-glance-rotation"
+        >
+          <div class="guide-glance-rows">
+            {rotation.rows.map((item) => (
+              <GuideSpellRow build={build} item={item} />
+            ))}
+          </div>
+          {rotation.filler !== undefined && (
+            <p class="text-small text-muted guide-glance-filler" data-testid="guide-glance-filler">
+              {guidesCopy.glanceFiller(rotation.filler.name)}
+            </p>
+          )}
+          <Fragment slot="foot">
+            <a class={LINK} href="#rotation-and-priority" data-testid="guide-full-priority">
+              {guidesCopy.fullPriorityLink}
+            </a>
+          </Fragment>
+        </PlateColumn>
+      )}
+      {hasStats && (
+        <PlateColumn
+          label={guidesCopy.statPriorityRailLabel}
+          meta={stats!.weightHead}
+          testid="guide-glance-stats"
+        >
+          <StatTable
+            columns={[{ id: 'weight', label: stats!.weightHead }]}
+            open
+            label={guidesCopy.statPriorityRailLabel}
+          >
+            {stats!.glanceRows.map((row) => (
+              <StatRow figures={[{ value: row.valueText, muted: row.reading !== 'value' }]}>
+                <span slot="icon" class="guide-glance-rank tabular-nums">
+                  {statRank(row.reading)}
+                </span>
+                <span slot="name">{row.label}</span>
+                {row.reading === 'value' && row.value !== undefined && (
+                  <Meter slot="meter" value={row.value} />
+                )}
+              </StatRow>
+            ))}
+          </StatTable>
+          {stats!.hitCap !== undefined && (
+            <p class="text-small text-muted" title={stats!.hitCap.title} data-testid="guide-glance-hit-cap">
+              <b class="text-strong">{stats!.hitCap.cap}</b>
+              {stats!.hitCap.detail !== undefined && <> · {stats!.hitCap.detail}</>}
+            </p>
+          )}
+          {stats!.unitLine !== undefined && <p class="text-small text-muted">{stats!.unitLine}</p>}
+        </PlateColumn>
+      )}
+    </PlateColumns>
+  </div>
+)}
+
+<style>
+  .guide-glance-rows {
+    display: flex;
+    flex-direction: column;
+  }
+  .guide-glance-rank {
+    display: inline-block;
+    width: 24px;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--color-muted);
+  }
+  .guide-glance-filler {
+    margin: 0;
+    padding-top: 8px;
+  }
+  .guide-glance p {
+    margin: 0;
+  }
+</style>

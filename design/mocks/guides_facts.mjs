@@ -8,13 +8,14 @@
 //    decodeBuildTrees, guideBuildBlocks, diffBuilds, keyTalentsFor, guideRotation, markRaidBuildRows, withTipKeys,
 //    band60Weights, railStatRows, rankedStatLabels, guideHitCapLine, specGuideData, raceTableFor, recommendedRaceLines,
 //    consumableLines, guideLadderSteps, linkProse over renderGuideMarkdown, headerMeta, dataSourceLine);
-//  - the signed-in answer: descriptorLines (lib/character-header) on the home fixtures, tierCopy.answer's states;
+//  - the signed-in answer: descriptorLines (lib/character-header) on the home fixtures and the derived guide fixtures
+//    (web/tests/e2e/fixtures/guides, gap G6: a Survival hunter at 34 and 60, a Fire mage at 60), tierCopy.answer's states;
 //  - the copy module: lib/guides/copy.ts (guidesCopy), lib/tiers/tier-copy.ts (answer states).
 // Every lib module resolves the repo through import.meta.url; the bundle defines it as lib/guides/build-files.ts's own.
 import { createRequire } from "node:module";
-import { mkdtempSync, writeFileSync, readFileSync, readdirSync } from "node:fs";
+import { existsSync, mkdtempSync, writeFileSync, readFileSync, readdirSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { basename, join } from "node:path";
 import { pathToFileURL } from "node:url";
 
 const WEB = new URL("../../web/", import.meta.url).pathname;
@@ -47,6 +48,9 @@ import classes from ${src("src/data/classes.json")};
 import activeBuild from ${src("src/data/active-build.json")};
 import me34 from ${src("tests/e2e/fixtures/home/me-34.json")};
 import me60 from ${src("tests/e2e/fixtures/home/me-60.json")};
+import meSurvival from ${src("tests/e2e/fixtures/guides/me-survival-34.json")};
+import meSurvival60 from ${src("tests/e2e/fixtures/guides/me-survival-60.json")};
+import meMage from ${src("tests/e2e/fixtures/guides/me-fire-60.json")};
 import { readSpecCatalog } from ${src("src/lib/bis/load.ts")};
 import { bandTopLevel } from ${src("src/lib/bis/rotation-view.ts")};
 import { latest } from ${src("src/lib/dates.ts")};
@@ -72,7 +76,7 @@ import { keyTalentsFor, withoutTalentBullets } from ${src("src/lib/guides/key-ta
 import { splitOverview } from ${src("src/lib/guides/overview.ts")};
 import { raceTableFor, specKindOf, recommendedRaceLines } from ${src("src/lib/guides/race-table.ts")};
 import { consumableLines } from ${src("src/lib/guides/gear-extras.ts")};
-import { guideExpertiseCapLine, guideHitCapLine } from ${src("src/lib/guides/hit-cap-line.ts")};
+import { guideStatLane } from ${src("src/lib/guides/stat-lane.ts")};
 import { bandTalentHits } from ${src("src/lib/guides/talent-hit.ts")};
 import { CLASS_LANDING_PANELS, cardLineFor, splitClassLanding } from ${src("src/lib/guides/class-landing.ts")};
 import { litTalentsOf, markRaidBuildRows, raidBuildOnlyTalents, talentNamesOf } from ${src("src/lib/guides/rotation-lists.ts")};
@@ -126,13 +130,8 @@ export async function run(entries, SPECS, CLASSES) {
       ranked: rankedBisFile(build, full) !== undefined };
   }
 
-  // ---- the signed-in answer's lines, from the fixtures (a Survival hunter is me-34 with its spec set: derived, marked)
-  // DERIVED (marked): a level 34 Survival hunter is me-34 with its points in the Survival tree; a level 60 Fire mage is
-  // me-60 with its class, race and points set (its name stays the fixture's). No fixture carries either.
-  const pts = (c, points) => ({ ...c.build, talents: { ...c.build.talents, points } });
-  const meSurvival = { ...me34, characters: me34.characters.map((c) => ({ ...c, spec: 'Survival', build: pts(c, [0, 0, 23]) })) };
-  const meSurvival60 = { ...me60, characters: me60.characters.map((c) => ({ ...c, class: 'Hunter', spec: 'Survival', race: 'Night Elf', build: pts(c, [5, 11, 35]) })) };
-  const meMage = { ...me60, characters: me60.characters.map((c) => ({ ...c, class: 'Mage', spec: 'Fire', race: 'Human', build: pts(c, [14, 34, 3]) })) };
+  // ---- the signed-in answer's lines, from the fixtures; the Survival and Fire accounts are the derived guide fixtures
+  // (web/tests/e2e/fixtures/guides/README.md), the same files the guides parity spec serves.
   const nextOf = (g, level) => { const n = nextTalentPoint(g.leveling.ladder, level); return n === undefined ? null : guidesCopy.nextPointAt(n.level, n.name); };
   const who = (me) => { const c = me.characters[0]; const d = descriptorLines(c); return { name: c.name, class: c.class, spec: c.spec, level: c.level, race: c.race, faction: c.faction, identity: d.identity, level_line: d.level, talents_at: guidesCopy.talentsAtLevel(c.level) }; };
   return { build, copy: strip(guidesCopy), tier_answer: strip(tierCopy.answer), sections: [...SPEC_SECTIONS].map((s) => ({ title: s, id: slugify(s) })),
@@ -171,21 +170,12 @@ async function specPage(entry) {
   if (rotation !== undefined) for (const k of ['opener', 'priority', 'cooldowns']) rotation[k] = ranked_(rotation[k]);
   const glance = rotation === undefined ? { rows: [] } : glanceRotation(rotation.priority, buildRaces(build).map((r) => r.name));
   const ranked = rankedBisFile(build, fullSpecId);
-  const band60 = band60Weights(build, fullSpecId, classSlug, entry.data.recommendedRaces);
-  const statRows = band60 === undefined ? [] : railStatRows(entry.data.statPriority, band60.weights, fullSpecId, band60.haste);
-  // GuideStatTable.astro's own fold
-  const talentHits = band60 === undefined ? [] : bandTalentHits(build, classSlug, band60.talents);
-  const hitCap = guideHitCapLine(band60?.hitToCap, talentHits);
-  const expertiseCap = guideExpertiseCapLine(band60?.expertiseToCap, talentHits);
-  const unitRow = statRows.find((r) => r.reading === 'value' && r.perPercent === undefined && r.perPoint !== undefined);
-  const rated = statRows.filter((r) => r.reading === 'value' && r.ratingFactor !== undefined);
-  const statTable = { anchor: statRows.find((r) => r.reading === 'value' && r.perPercent === undefined)?.label, hitCap, expertiseCap, role: band60?.role ?? 'dps',
-    rows: statRows.map((r) => ({ ...r, valueText: railStatValueText(r) })),
-    unitLine: unitRow ? guidesCopy.unitLine(unitRow.label.toLowerCase(), unitRow.perPoint >= 10 ? unitRow.perPoint.toFixed(1) : unitRow.perPoint.toFixed(2), band60?.role ?? 'dps', unitRow.ratingFactor !== undefined) : undefined,
-    ratingNote: rated.length ? guidesCopy.ratingNote(rated.map((r) => r.label).join(' and '), rated.length > 1, rated.map((r) => guidesCopy.ratingConversion(r.label.toLowerCase(), r.ratingFactor)).join(' and ')) : undefined,
-    perPointHead: guidesCopy.perPointColumn(band60?.role ?? 'dps', rated.length > 0), weightHead: guidesCopy.weightColumn(statRows.find((r) => r.reading === 'value' && r.perPercent === undefined)?.label ?? ''),
-    notOnItems: statRows.filter((r) => r.reading === 'not-on-items').map((r) => guidesCopy.notOnItemsNote(r.label, r.perPercent, band60?.role ?? 'dps')),
-    insignificant: statRows.filter((r) => r.reading === 'not-significant').map((r) => r.label), noGain: statRows.filter((r) => r.reading === 'no-gain').map((r) => r.label) };
+  // The page's own stat model (lib/guides/stat-lane.ts): the plate's rows and the lane's table, caps and notes.
+  const lane = guideStatLane(build, classSlug, fullSpecId, entry.data.recommendedRaces, entry.data.statPriority);
+  const statRows = lane?.rows ?? [];
+  const hitCap = lane?.hitCap;
+  const statTable = { hitCap, expertiseCap: lane?.expertiseCap, role: lane?.role ?? 'dps', rows: statRows,
+    unitLine: lane?.unitLine, ratingNote: lane?.ratingNote, perPointHead: lane?.perPointHead, weightHead: lane?.weightHead, notes: lane?.notes ?? [] };
   const raceRows = raceTableFor(build, classSlug, [...entry.data.recommendedRaces, ...(entry.data.alsoRecommendedRaces ?? [])], specKindOf(classSlug, fullSpecId, role));
   const racesProse = proseOnly('Races');
   const picks = recommendedRaceLines(raceRows, racesProse);
@@ -207,13 +197,13 @@ async function specPage(entry) {
     band: { isRaidBuild: raidTrees !== undefined, code: describedCode, trees: describedTrees, rotationBand: String(bandTopLevel(60)),
       rotationTitle: role === 'healer' ? guidesCopy.healingPriorityRailTitle : guidesCopy.rotationRailTitle,
       rotation: glance.rows, filler: glance.filler ? guidesCopy.glanceFiller(glance.filler.name) : null,
-      stats: glanceStatRows(statRows).map((r) => ({ ...r, valueText: railStatValueText(r) })), hitCap, unitLine: statTable.unitLine },
+      stats: lane?.glanceRows ?? [], hitCap, unitLine: statTable.unitLine },
     overview: { strengths: await prose(overview.strengths), weaknesses: await prose(overview.weaknesses), raid: await prose(overview.raid) },
     talents: { blocks, raidDiffLine, keyTalents: strip(keyTalents.map((k) => ({ ...k, talents: k.talents.map((t) => ({ ...t, rankText: t.buildRanks
       ? [guidesCopy.keyTalentBuildRank('leveling', t.buildRanks.leveling, t.maxRank), guidesCopy.keyTalentBuildRank('raid', t.buildRanks.raid, t.maxRank)]
       : t.rank === undefined ? [] : [t.rank + '/' + t.maxRank] })) }))), prose: await prose(withoutTalentBullets(proseOnly('Talents and builds'))) },
     rotation: { lists: rotation ?? null, forRaidBuild: rotation !== undefined && raidTrees !== undefined, prose: await prose(proseOnly('Rotation and priority')) },
-    stats: { pills: rankedStatLabels(statRows, entry.data.statPriority), table: statTable, prose: await prose(proseOnly('Stat priority')) },
+    stats: { table: statTable, prose: await prose(proseOnly('Stat priority')) },
     bis: { data: guideBis ? strip({ ...guideBis, panels: guideBis.panels.map((p) => ({ ...p, caption: guidesCopy.bisCaption(p.raceName, fac(p.faction)) })) }) : null, href: '/bis/' + classSlug + '/' + specSlug, prose: await prose(proseOnly('Best in slot')) },
     extras: { data: gearExtras ? { ...strip(gearExtras), lines: consumableLines(gearExtras.consumables) } : null, prose: await prose(proseOnly('Enchants and consumables')) },
     races: { rows: strip(raceRows), groups: strip(racesByFaction(raceRows)), lines: raceLines, prose: await prose(racesProse) },
@@ -222,23 +212,30 @@ async function specPage(entry) {
     sources: entry.data.sources, statPriority: entry.data.statPriority,
   };
 }`;
+// CI's parity job serves a downloaded dist and never runs sync:data, so src/data/generated is absent there; the
+// planner reference (classes, races, combos) reads it. Fall back to the fixture the fixture build publishes.
+const generatedFallback = {
+  name: "generated-fallback",
+  setup(build) {
+    build.onResolve({ filter: /data\/generated\/[^/]+\.json$/ }, (args) => {
+      const wanted = join(args.resolveDir, args.path);
+      if (existsSync(wanted)) return { path: wanted };
+      return { path: join(WEB, "src/fixtures/planner", basename(args.path)) };
+    });
+  },
+};
 const dir = mkdtempSync(join(tmpdir(), "guides-facts-"));
 const outfile = join(dir, "facts.mjs");
 const metaUrl = pathToFileURL(WEB + "src/lib/guides/build-files.ts").href;
 await esbuild.build({ stdin: { contents: entry, resolveDir: WEB, loader: "ts" }, bundle: true, platform: "node", format: "esm", outfile,
-  logLevel: "error", loader: { ".json": "json" }, external: ["@astrojs/markdown-satteri", "@playwright/test"],
+  logLevel: "error", loader: { ".json": "json" }, plugins: [generatedFallback], external: ["@astrojs/markdown-satteri", "@playwright/test"],
   define: { "import.meta.url": JSON.stringify(metaUrl), "import.meta.env": "{}" } });
 // The one external (the markdown processor, a native package) resolves from web/node_modules.
 const bundled = readFileSync(outfile, "utf8").replace(/from "@astrojs\/markdown-satteri"/g, `from ${JSON.stringify(pathToFileURL(require.resolve("@astrojs/markdown-satteri")).href)}`);
 writeFileSync(outfile, bundled);
 const { run } = await import(pathToFileURL(outfile).href);
 const facts = await run(entries, SPECS, CLASSES);
-// Strings that live in markup, not a copy module (gap G5): read from the files themselves, verbatim.
-const literal = (file, re) => { const m = re.exec(readFileSync(join(WEB, file), "utf8")); if (!m) throw new Error(file + ": " + re); return m[1]; };
-facts.markup = {
-  statHead: literal("src/components/guides/GuideStatTable.astro", />(Stat)</),
-  indexTitle: literal("src/pages/guides/index.astro", /<Base\s+title="([^"]+)"/),
-  indexDescription: literal("src/pages/guides/index.astro", /description="([^"]+)"/),
-};
+// Strings that lived in markup (gap G3) now live in the copy module.
+facts.markup = { statHead: facts.copy.statColumn, indexTitle: facts.copy.indexTitle, indexDescription: facts.copy.indexDescription };
 writeFileSync(OUT, JSON.stringify(facts, null, 1) + "\n");
 console.log(OUT.pathname);

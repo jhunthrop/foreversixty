@@ -60,7 +60,7 @@ export function glanceRotation(
 }
 
 /** The plate's stats: a row a player cannot act on ("Not on any item") stays in the full table. */
-export function glanceStatRows(rows: readonly RailStatRow[]): RailStatRow[] {
+export function glanceStatRows<T extends RailStatRow>(rows: readonly T[]): T[] {
   return rows.filter((row) => row.reading !== 'not-on-items');
 }
 

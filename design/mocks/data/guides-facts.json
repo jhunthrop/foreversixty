@@ -111,6 +111,8 @@
   "talentsAtLevel": "[fn]",
   "nextPointAt": "[fn]",
   "noCharacter": "No character on this account yet.",
+  "barLabel": "Guide choices",
+  "specGroupLabel": "Spec",
   "glance": "At a glance",
   "healingPriorityRailTitle": "Healing priority",
   "glanceFiller": "[fn]",
@@ -130,14 +132,14 @@
  "tier_answer": {
   "label": "[fn]",
   "bis": "Your best in slot",
-  "guide": "Guide",
   "sim": "Sim your character",
-  "otherRole": "[fn]",
-  "otherRoleLink": "See where it stands",
   "unknown": "[fn]",
   "unknownLink": "Choose a character",
   "error": "We could not load your character.",
-  "retry": "Try again"
+  "retry": "Try again",
+  "guide": "Guide",
+  "otherRole": "[fn]",
+  "otherRoleLink": "See where it stands"
  },
  "sections": [
   {
@@ -2058,7 +2060,8 @@
       "reading": "value",
       "value": 1,
       "perPoint": 1.1327159347985434,
-      "valueText": "1.00"
+      "valueText": "1.00",
+      "perPointText": "1.13"
      },
      {
       "label": "Critical strike",
@@ -2066,35 +2069,40 @@
       "reading": "value",
       "value": 0.6468806889598404,
       "perPoint": 0.7327320642982714,
-      "valueText": "0.65"
+      "valueText": "0.65",
+      "perPointText": "0.73"
      },
      {
       "label": "Agility",
       "reading": "value",
       "value": 0.5234680337607084,
       "perPoint": 0.5929405831984162,
-      "valueText": "0.52"
+      "valueText": "0.52",
+      "perPointText": "0.59"
      },
      {
       "label": "Intellect",
       "reading": "value",
       "value": 0.2456550575247724,
       "perPoint": 0.27825739812216255,
-      "valueText": "0.25"
+      "valueText": "0.25",
+      "perPointText": "0.28"
      },
      {
       "label": "Strength",
       "reading": "value",
       "value": 0.23176536802155623,
       "perPoint": 0.2625243254924655,
-      "valueText": "0.23"
+      "valueText": "0.23",
+      "perPointText": "0.26"
      },
      {
       "label": "Attack power",
       "reading": "value",
       "value": 0.19154162646409417,
       "perPoint": 0.21696225247310985,
-      "valueText": "0.19"
+      "valueText": "0.19",
+      "perPointText": "0.22"
      }
     ],
     "hitCap": {
@@ -3688,16 +3696,7 @@
     "prose": "<p>In a raid, dismiss your pet before the pull; <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105007:1\">Lone Wolf</span> only works with no pet out. Mark the boss with <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14325\">Hunter’s Mark</span> first, so the mana is back by the pull, then put up <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1299447\">Aspect of the Beast</span> and leave it up. At 60, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:469145\">Aspect of the Falcon</span> gives the same melee attack power as Beast (10 more once you own Hawk’s Ahn’Qiraj rank), and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:104960:5\">Deadly Aspects</span> procs from your swings under either one, so Falcon is not a clear upgrade. From 30 to 59 Beast is the only melee aspect you have. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:104985:2\">Expose Prey</span> needs a mark on the target, so if no other hunter has marked it, you do, and on a fight longer than two minutes you mark it again when it falls off.</p>\n<p>Walk in behind the boss with the rogues once the tank has it. On the pull, press <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:3045\">Rapid Fire</span>, your trinkets and your racial (<span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Elune's Light\">Elune’s Light</span>, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Blood Fury\">Blood Fury</span> or <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Berserking\">Berserking</span>) together. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:3045\">Rapid Fire</span> speeds your melee swings in Forever, so it is a melee cooldown for you. Its five minute cooldown gives you one in a normal boss fight.</p>\n<p>Then work through your melee priority: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14266\">Raptor Strike</span>, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:20910\">Counterattack</span>, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14271\">Mongoose Bite</span>, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1299332\">Lacerate</span>, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1317257\">Strider Kick</span>, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14305\">Immolation Trap</span>. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14266\">Raptor Strike</span> replaces your next white hit instead of costing a global, so the only mistake is letting it sit unqueued. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14271\">Mongoose Bite</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:20910\">Counterattack</span> are the buttons you watch for: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:104985:2\">Expose Prey</span> opens <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14271\">Mongoose Bite</span> off your own hits, while <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:20910\">Counterattack</span> needs a parry, and from behind a boss you will not parry, so it is mostly an add and trash button. Keep Lacerate’s bleed on the boss between Mongoose Bites; it crits like every bleed in Forever, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1317257\">Strider Kick</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14305\">Immolation Trap</span> fill what is left. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14268\">Wing Clip</span> is only a filler while a Windfury Totem reaches you; in a group without a shaman, leave it alone.</p>\n<p>You fire no shots in this spec. Your bow or gun is there for its stats.</p>\n<p><strong>Threat.</strong> You sit on a fresh tank’s heels in the opener. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14273\">Disengage</span> trims some threat on a 5 second cooldown, but it turns off your auto attack, so start swinging again the moment it lands. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:5384\">Feign Death</span> drops all of your threat if it lands; check the message, because either can miss or be resisted. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:19263\">Deterrence</span> is your emergency button when something turns on you.</p>\n<p><strong>Trash.</strong> Survival has little cleave of its own. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14317\">Explosive Trap</span> under the pack is your AoE, and Engineering’s explosives are the rest. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14311\">Freezing Trap</span> is your crowd control, laid before the pull.</p>\n<p><strong>Movement.</strong> Stay on the boss’s back. Every second you are not swinging is lost white damage and lost <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:104985:2\">Expose Prey</span> procs.</p>\n"
    },
    "stats": {
-    "pills": [
-     "Hit",
-     "Critical strike",
-     "Agility",
-     "Intellect",
-     "Strength",
-     "Attack power"
-    ],
     "table": {
-     "anchor": "Hit",
      "hitCap": {
       "text": "Hit cap: reached (special attacks), 28% (white swings), 16% (spells) · 6.2% hit from BiS gear and buffs, 3% from Surefooted, 6.8% still to find for spells",
       "title": "Hit is worth its full weight until the cap and nothing past it for your weapon attacks. Your damage spells miss until 16% against a boss three levels up, so past the weapon cap the same hit still lands more of them. The weights above are per rating point: 10 hit rating and 14 crit rating are 1%.",
@@ -3712,7 +3711,8 @@
        "reading": "value",
        "value": 1,
        "perPoint": 1.1327159347985434,
-       "valueText": "1.00"
+       "valueText": "1.00",
+       "perPointText": "1.13"
       },
       {
        "label": "Critical strike",
@@ -3720,53 +3720,57 @@
        "reading": "value",
        "value": 0.6468806889598404,
        "perPoint": 0.7327320642982714,
-       "valueText": "0.65"
+       "valueText": "0.65",
+       "perPointText": "0.73"
       },
       {
        "label": "Agility",
        "reading": "value",
        "value": 0.5234680337607084,
        "perPoint": 0.5929405831984162,
-       "valueText": "0.52"
+       "valueText": "0.52",
+       "perPointText": "0.59"
       },
       {
        "label": "Intellect",
        "reading": "value",
        "value": 0.2456550575247724,
        "perPoint": 0.27825739812216255,
-       "valueText": "0.25"
+       "valueText": "0.25",
+       "perPointText": "0.28"
       },
       {
        "label": "Strength",
        "reading": "value",
        "value": 0.23176536802155623,
        "perPoint": 0.2625243254924655,
-       "valueText": "0.23"
+       "valueText": "0.23",
+       "perPointText": "0.26"
       },
       {
        "label": "Attack power",
        "reading": "value",
        "value": 0.19154162646409417,
        "perPoint": 0.21696225247310985,
-       "valueText": "0.19"
+       "valueText": "0.19",
+       "perPointText": "0.22"
       },
       {
        "label": "Attack speed",
        "perPercent": "haste",
        "reading": "not-on-items",
        "value": 8.414883149361616,
-       "valueText": "Not on any item"
+       "valueText": "Not on any item",
+       "perPointText": ""
       }
      ],
      "unitLine": "1 hit rating = 1.13 DPS at level 60.",
      "ratingNote": "Hit and Critical strike are per rating point: 10 hit rating is 1% hit and 14 critical strike rating is 1% critical strike.",
      "perPointHead": "DPS per point or rating",
      "weightHead": "Weight (Hit = 1.00)",
-     "notOnItems": [
-      "Attack speed: haste DPS per 1%, but no item at level 60 has it."
-     ],
-     "insignificant": [],
-     "noGain": []
+     "notes": [
+      "Attack speed: 8.4 DPS per 1%, but no item at level 60 has it."
+     ]
     },
     "prose": "<p>The table above gives the order for your gear; here is why each stat counts. Hit matters up to 9%, the cap for your special attacks against a raid boss; <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:104987:3\">Surefooted</span> gives you 3% of it, so you need 6% from gear, or 5% as a Dwarf. Your white swings have a much higher cap that you will not reach, and hit past the special cap still raises white damage. Crit pays off on your melee specials: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:110861:5\">Predator’s Edge</span> makes their crits hit for 230% of a normal hit instead of double, and every special crit keeps half your mana regeneration running through <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:104983:2\">Resourcefulness</span>. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:104993:2\">Savage Strikes</span> adds 4% crit chance to those specials on top of what your gear gives. Agility is attack power and crit together, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:110859:5\">Lightning Reflexes</span> raises it by 15%. Intellect is attack power through <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105008:5\">Careful Aim</span>, and Strength is attack power directly. Plain attack power gives only itself. Haste is rare on gear but strong when you find it.</p>\n"
    },
@@ -10799,28 +10803,32 @@
       "reading": "value",
       "value": 1,
       "perPoint": 0.6179765299322775,
-      "valueText": "1.00"
+      "valueText": "1.00",
+      "perPointText": "0.62"
      },
      {
       "label": "Spell power",
       "reading": "value",
       "value": 0.7774867252038944,
       "perPoint": 0.48046854850991283,
-      "valueText": "0.78"
+      "valueText": "0.78",
+      "perPointText": "0.48"
      },
      {
       "label": "Intellect",
       "reading": "value",
       "value": 0.6815017775006987,
       "perPoint": 0.42115210360256083,
-      "valueText": "0.68"
+      "valueText": "0.68",
+      "perPointText": "0.42"
      },
      {
       "label": "Fire power",
       "reading": "value",
       "value": 0.6662034657697198,
       "perPoint": 0.4116981060052282,
-      "valueText": "0.67"
+      "valueText": "0.67",
+      "perPointText": "0.41"
      },
      {
       "label": "Critical strike",
@@ -10828,12 +10836,14 @@
       "reading": "value",
       "value": 0.499992957070404,
       "perPoint": 0.30898391260094643,
-      "valueText": "0.50"
+      "valueText": "0.50",
+      "perPointText": "0.31"
      },
      {
       "label": "Spell penetration",
       "reading": "not-significant",
-      "valueText": "Not significant"
+      "valueText": "Not significant",
+      "perPointText": ""
      }
     ],
     "hitCap": {
@@ -13841,15 +13851,7 @@
     "prose": "<p><strong>Opener.</strong> <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:22783\">Mage Armor</span>, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:23028\">Arcane Brilliance</span> and your food buff go up before the pull. Conjure a Mana Ruby and a Mana Citrine and drink back to full. Start <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:18809\">Pyroblast</span> 6 seconds before the pull so it lands just after the tank’s first hit: the full cast happens while nothing else is going on, and its burn starts your <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105782:3\">Fire Power</span> count. Then <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10207\">Scorch</span> to 5 stacks, and from there <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10199\">Fire Blast</span> whenever it is ready, unless 3 <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105786:1\">Heating Up</span> stacks have a <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:18809\">Pyroblast</span> waiting. Put up <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1239700\">Arcane Blast</span> once the stacks are on.</p>\n<p><strong>The loop.</strong> Keep 5 <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105788:3\">Improved Scorch</span> stacks rolling: refresh them with one <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10207\">Scorch</span> when 5 seconds or less are left, because a 3 second <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25306\">Fireball</span> can carry you past a later refresh. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:18809\">Pyroblast</span> only on 3 stacks of <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105786:1\">Heating Up</span>. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10199\">Fire Blast</span> every time it is off cooldown. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25345\">Arcane Missiles</span> the moment <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105809:2\">Missile Barrage</span> procs. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1239700\">Arcane Blast</span> once whenever its buff has dropped: 12% of your Intellect as spell damage for 18 seconds is worth a 1.5 second cast, but a second Blast on top doubles its cost, so let the buff fall off first. Everything else is <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25306\">Fireball</span>, except when <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10199\">Fire Blast</span> comes back in less than a Scorch’s cast: then cast <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10207\">Scorch</span>, so the <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10199\">Fire Blast</span> and its <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105786:1\">Heating Up</span> stack are not held behind a <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25306\">Fireball</span>. A <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:18809\">Pyroblast</span> at the full 6 seconds, or on 1 or 2 stacks, loses to a <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25306\">Fireball</span>.</p>\n<p><strong><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:11129\">Combustion</span>.</strong> Press it once the boss carries 5 stacks, together with your on-use trinkets and your racial: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Eureka!\">Eureka!</span> on a Gnome, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Blood Fury\">Blood Fury</span> on an Orc, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Berserking\">Berserking</span> on a Troll. A fresh tank needs a few seconds before you do. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:11129\">Combustion</span> lasts until three crits land, and every <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25306\">Fireball</span>, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10207\">Scorch</span> or <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10199\">Fire Blast</span> crit in it is an <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105794:5\">Ignite</span> and a <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105786:1\">Heating Up</span> stack, so the window usually ends in a 1.5 second <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:18809\">Pyroblast</span>.</p>\n<p><strong><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105794:5\">Ignite</span> and threat.</strong> Ignite’s damage is your damage and your threat. Fire mages pull more than anyone else in the first twenty seconds, mostly off a <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:11129\">Combustion</span> window that crits three times in a row. You have no <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:11958\">Ice Block</span> and no Invisibility, so the only fix is not to pull: watch your threat, hold <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:11129\">Combustion</span> on a fresh tank, and stop casting for a global if you are close. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105789:2\">Burning Soul</span> takes some off the top.</p>\n<p><strong>Mana in a 3 minute fight.</strong> Fire runs dry on a long fight, though not as fast as Arcane. In order: a Mana Ruby when you are 1,200 mana down, a <span class=\"gtip gtip-item text-rarity-common\" tabindex=\"0\" data-bis-item=\"13444\">Major Mana Potion</span> the next time you are well down, then the Mana Citrine or a <span class=\"gtip gtip-item text-rarity-uncommon\" tabindex=\"0\" data-bis-item=\"12662\">Demonic Rune</span> two minutes after the Ruby. Mana gems and Demonic Runes share one 2 minute cooldown, so it is a gem or a rune, never both at once. The <span class=\"gtip gtip-item text-rarity-epic-text\" tabindex=\"0\" data-bis-item=\"14152\">Robe of the Archmage</span> is on its own 5 minute cooldown and shares nothing with the gems or the rune: use it whenever you are 625 mana down. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:12051\">Evocation</span> is an 8 minute cooldown and comes once a fight: channel it near empty with more than 30 seconds left, never in the last 30. Keep <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10199\">Fire Blast</span> on cooldown even when you are short: every hit is a <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105786:1\">Heating Up</span> stack, and the mana you would save is worth less than the Pyroblasts you would lose. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25306\">Fireball</span> stays your filler when you are short too: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:29077\">Master of Elements</span> hands back 30% of its cost on every crit, and the <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105809:2\">Missile Barrage</span> procs it buys are free.</p>\n<p><strong>AoE.</strong> <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10216\">Flamestrike</span> is a 3 second cast that burns the ground for 8 seconds, so cast it where the tank is going to stand, then follow with <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10202\">Arcane Explosion</span> in the pack or a <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10187\">Blizzard</span> from range. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10216\">Flamestrike</span> costs 990 mana, so two of them on a big pull eat a third of your bar before the Arcane Explosions start. Let the tank get a few seconds of threat first, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10230\">Frost Nova</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1953\">Blink</span> out if the pack turns on you.</p>\n<p><strong>Execute and movement.</strong> Fire has no execute. On the move, keep <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10199\">Fire Blast</span> on cooldown and save a <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:18809\">Pyroblast</span> on 3 <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105786:1\">Heating Up</span> stacks for the next stop. Scorch’s stacks last 30 seconds, so a short movement phase does not drop them.</p>\n<p><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1237313\">Frostfire Bolt</span> is not a Fire filler. It hits for much less than <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25306\">Fireball</span>, and its burn mixes Frost and Fire, which <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105782:3\">Fire Power</span> does not count.</p>\n"
    },
    "stats": {
-    "pills": [
-     "Hit",
-     "Spell power",
-     "Intellect",
-     "Fire power",
-     "Critical strike"
-    ],
     "table": {
-     "anchor": "Hit",
      "hitCap": {
       "text": "Hit cap: 16% · 4% hit from BiS gear and buffs, 6% from Precision, 6% still to find",
       "title": "Spell hit is worth its full weight until the cap and nothing past it: spells miss 17% of the time against a boss three levels up, and 1% always remains. School talents such as Shadow Focus add hit to their own spells only. The weights above are per rating point: 10 hit rating is 1%.",
@@ -13864,28 +13866,32 @@
        "reading": "value",
        "value": 1,
        "perPoint": 0.6179765299322775,
-       "valueText": "1.00"
+       "valueText": "1.00",
+       "perPointText": "0.62"
       },
       {
        "label": "Spell power",
        "reading": "value",
        "value": 0.7774867252038944,
        "perPoint": 0.48046854850991283,
-       "valueText": "0.78"
+       "valueText": "0.78",
+       "perPointText": "0.48"
       },
       {
        "label": "Intellect",
        "reading": "value",
        "value": 0.6815017775006987,
        "perPoint": 0.42115210360256083,
-       "valueText": "0.68"
+       "valueText": "0.68",
+       "perPointText": "0.42"
       },
       {
        "label": "Fire power",
        "reading": "value",
        "value": 0.6662034657697198,
        "perPoint": 0.4116981060052282,
-       "valueText": "0.67"
+       "valueText": "0.67",
+       "perPointText": "0.41"
       },
       {
        "label": "Critical strike",
@@ -13893,31 +13899,31 @@
        "reading": "value",
        "value": 0.499992957070404,
        "perPoint": 0.30898391260094643,
-       "valueText": "0.50"
+       "valueText": "0.50",
+       "perPointText": "0.31"
       },
       {
        "label": "Spell haste",
        "perPercent": "haste",
        "reading": "not-on-items",
-       "valueText": "Not on any item"
+       "valueText": "Not on any item",
+       "perPointText": ""
       },
       {
        "label": "Spell penetration",
        "reading": "not-significant",
-       "valueText": "Not significant"
+       "valueText": "Not significant",
+       "perPointText": ""
       }
      ],
      "unitLine": "1 hit rating = 0.62 DPS at level 60.",
      "ratingNote": "Hit and Critical strike are per rating point: 10 hit rating is 1% hit and 14 critical strike rating is 1% critical strike.",
      "perPointHead": "DPS per point or rating",
      "weightHead": "Weight (Hit = 1.00)",
-     "notOnItems": [
-      "Spell haste: haste DPS per 1%, but no item at level 60 has it."
-     ],
-     "insignificant": [
-      "Spell penetration"
-     ],
-     "noGain": []
+     "notes": [
+      "Spell penetration shows as \"Not significant\": no measurable value at level 60.",
+      "Spell haste: no item at level 60 has it."
+     ]
     },
     "prose": "<p>The table above gives the order for your gear; this is why each stat counts. Hit matters up to the hit cap: every missed <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25306\">Fireball</span> or <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10207\">Scorch</span> is a missed <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105794:5\">Ignite</span> and a missed <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105786:1\">Heating Up</span> chance, and a missed <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10207\">Scorch</span> is a missed stack too. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105778:3\">Precision</span> gives you 6%, your gear finds the rest, and once your gear reaches the cap more hit adds nothing. Fire power is nearly as good as spell power to you: everything you cast on a boss is Fire except <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1239700\">Arcane Blast</span> and the <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105809:2\">Missile Barrage</span> Missiles. Crit feeds <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105794:5\">Ignite</span>, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105786:1\">Heating Up</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:29077\">Master of Elements</span> at once, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105784:3\">Critical Mass</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:11129\">Combustion</span> stack more of it on top of your gear. Intellect is your mana bar and adds spell crit, which Fire turns into <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105794:5\">Ignite</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105786:1\">Heating Up</span>. Fire drinks a <span class=\"gtip gtip-item text-rarity-common\" tabindex=\"0\" data-bis-item=\"13444\">Major Mana Potion</span> on every boss, so a deeper bar keeps you casting to the end.</p>\n"
    },
@@ -20845,28 +20851,32 @@
       "reading": "value",
       "value": 1,
       "perPoint": 0.5691510905350896,
-      "valueText": "1.00"
+      "valueText": "1.00",
+      "perPointText": "0.57"
      },
      {
       "label": "Healing power",
       "reading": "value",
       "value": 0.7322512039460818,
       "perPoint": 0.4167615712715447,
-      "valueText": "0.73"
+      "valueText": "0.73",
+      "perPointText": "0.42"
      },
      {
       "label": "Spirit",
       "reading": "value",
       "value": 0.5479137946374532,
       "perPoint": 0.31184573373712554,
-      "valueText": "0.55"
+      "valueText": "0.55",
+      "perPointText": "0.31"
      },
      {
       "label": "Intellect",
       "reading": "value",
       "value": 0.37592996529490635,
       "perPoint": 0.2139609497124143,
-      "valueText": "0.38"
+      "valueText": "0.38",
+      "perPointText": "0.21"
      },
      {
       "label": "Critical strike",
@@ -20874,7 +20884,8 @@
       "reading": "value",
       "value": 0.3000604501938129,
       "perPoint": 0.1707797324542585,
-      "valueText": "0.30"
+      "valueText": "0.30",
+      "perPointText": "0.17"
      }
     ],
     "unitLine": "1 point of mp5 = 0.57 HPS at level 60"
@@ -22616,15 +22627,7 @@
     "prose": "<p><strong>Before the pull.</strong> Drop <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:27871\">Lightwell</span> where the melee and the tank can reach it and tell the raid it is there: it lasts 3 minutes or 5 clicks, and being hit cancels a click. Put <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:6346\">Fear Ward</span> on the tank if the boss fears. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1240827\">Prayer of Mending</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25315\">Renew</span> go on the tank as he engages.</p>\n<p><strong>On the tank.</strong> <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1240827\">Prayer of Mending</span> every time it is ready. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25315\">Renew</span> always up at rank 7 or higher. Go up to the top rank on a tank who is dropping through it. Leave <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10901\">Power Word: Shield</span> on the tank to a Discipline priest: without the shield talents it costs more mana than it saves, and Weakened Soul locks it out for 15 seconds.</p>\n<p><strong>The filler is <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25314\">Greater Heal</span></strong> at your top rank. When it would overheal or your mana runs short, step down to rank 1: it costs far less, and though it has lost a little of your healing bonus by 60, a small heal wastes less on a small hole, so leave ranks 2 and 3 off your bars. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:6064\">Heal</span> rank 4 is cheaper still, but it keeps only about half your bonus, so it is the last step down. With <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105863:5\">Divine Fury</span> every one of them is a 2.5 second cast.</p>\n<p><strong>Low ranks.</strong> In Forever a rank learned far below your level gets less of your healing bonus. At 60, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:2053\">Lesser Heal</span> and the first ranks of <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:6064\">Heal</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25315\">Renew</span> were learned too long ago to scale with your gear and heal for little more than their base, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25315\">Renew</span> rank 5 and 6 and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:6064\">Heal</span> rank 4 keep only part of it. Downrank within the ranks you learned from your forties on: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25314\">Greater Heal</span> rank 1 is the one to keep.</p>\n<p><strong><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10917\">Flash Heal</span> is for emergencies.</strong> In a raid use the top rank, on a tank who is really low or anyone about to die: it is your dearest heal, so spend it there and let <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1240827\">Prayer of Mending</span>, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25315\">Renew</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25314\">Greater Heal</span> do the rest. While leveling, a lower rank keeps your bar alive. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105856:1\">Holy Binding</span> heals you off every one of them.</p>\n<p><strong><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25316\">Prayer of Healing</span>.</strong> Cast it when three or more players in one group are missing a fair chunk. In Forever it heals the target and the target’s party, so target a member of whichever group took the hit: you are not limited to your own party.</p>\n<p><strong>Overheal.</strong> Start <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25314\">Greater Heal</span> on the tank before the boss swings, and cancel it if he does not need it: a cancelled cast costs no mana. Do not chase small top-ups with the top rank; step down to rank 1, or let <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1240827\">Prayer of Mending</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25315\">Renew</span> cover them.</p>\n<p><strong><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14751\">Inner Focus</span>.</strong> Spend it on a <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25316\">Prayer of Healing</span>, your most expensive heal, or on a <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25314\">Greater Heal</span> for a tank who is about to drop: it makes the spell free and adds 25% crit chance. Do not let it fall on a <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25315\">Renew</span>.</p>\n<p><strong>Assignments.</strong> In a raid you will be on a group or on a tank. On a group, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25316\">Prayer of Healing</span> is your main spell and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1240827\">Prayer of Mending</span> goes on whoever in that group gets hit. On a tank, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25315\">Renew</span>, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1240827\">Prayer of Mending</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25314\">Greater Heal</span>, with <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10917\">Flash Heal</span> for the spikes. Either way, never stand where the boss’s cleave or the raid’s AoE lands on you: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105867:3\">Twilight Focus</span> helps, it does not make you immune.</p>\n<p><strong>Mana.</strong> Every heal you skip early is mana for the last minute. Sit out of casting for five seconds when you can and Spirit regeneration comes back in full. Drink a <span class=\"gtip gtip-item text-rarity-common\" tabindex=\"0\" data-bis-item=\"13444\">Major Mana Potion</span> and use a <span class=\"gtip gtip-item text-rarity-uncommon\" tabindex=\"0\" data-bis-item=\"12662\">Demonic Rune</span> once you are down enough that neither wastes, an Undead uses <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1277328\">Dark Sacrifice</span>, and a Gnome’s <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Eureka!\">Eureka!</span> goes on a string of Prayers of Healing.</p>\n"
    },
    "stats": {
-    "pills": [
-     "MP5",
-     "Healing power",
-     "Spirit",
-     "Intellect",
-     "Critical strike"
-    ],
     "table": {
-     "anchor": "MP5",
      "role": "healer",
      "rows": [
       {
@@ -22632,28 +22635,32 @@
        "reading": "value",
        "value": 1,
        "perPoint": 0.5691510905350896,
-       "valueText": "1.00"
+       "valueText": "1.00",
+       "perPointText": "0.57"
       },
       {
        "label": "Healing power",
        "reading": "value",
        "value": 0.7322512039460818,
        "perPoint": 0.4167615712715447,
-       "valueText": "0.73"
+       "valueText": "0.73",
+       "perPointText": "0.42"
       },
       {
        "label": "Spirit",
        "reading": "value",
        "value": 0.5479137946374532,
        "perPoint": 0.31184573373712554,
-       "valueText": "0.55"
+       "valueText": "0.55",
+       "perPointText": "0.31"
       },
       {
        "label": "Intellect",
        "reading": "value",
        "value": 0.37592996529490635,
        "perPoint": 0.2139609497124143,
-       "valueText": "0.38"
+       "valueText": "0.38",
+       "perPointText": "0.21"
       },
       {
        "label": "Critical strike",
@@ -22661,16 +22668,15 @@
        "reading": "value",
        "value": 0.3000604501938129,
        "perPoint": 0.1707797324542585,
-       "valueText": "0.30"
+       "valueText": "0.30",
+       "perPointText": "0.17"
       }
      ],
      "unitLine": "1 point of mp5 = 0.57 HPS at level 60",
      "ratingNote": "Critical strike is per rating point: 14 critical strike rating is 1% critical strike.",
      "perPointHead": "HPS per point or rating",
      "weightHead": "Weight (MP5 = 1.00)",
-     "notOnItems": [],
-     "insignificant": [],
-     "noGain": []
+     "notes": []
     },
     "prose": "<p>The table above gives the order for your gear; here is why each stat counts. Mp5 is mana that keeps coming while you cast, and on a long fight running dry is what ends your healing. Healing power is the size of every heal, though a rank learned far below your level keeps less of it, or none. Spirit pays you twice: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105853:4\">Spiritual Guidance</span> turns it into healing, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105843:3\">Meditation</span> keeps half of its regeneration running while you cast. Intellect deepens the bar. A critical heal is a bigger heal, and for Holy that is all it is, since <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105860:3\">Inspiration</span> only adds armor to the target. Spell power with no healing on it does nothing for a heal.</p>\n"
    },
