@@ -65,27 +65,7 @@ func TestGuideDivergencesNameAStaleRaceAndAStaleRaidBuild(t *testing.T) {
 // each with the reason. It exists only while a split ranking lands one
 // shard at a time; the run that lands the last shard empties it, and it
 // never carries a spec past that landing.
-var knownStaleBISFiles = map[string]string{
-	"druid-balance":        "sim round 29 moved the leveling order (band talents); the round 29 re-rank empties this",
-	"druid-feral-bear":     "sim round 29 moved the leveling order (band talents); the round 29 re-rank empties this",
-	"druid-restoration":    "sim round 29 moved the leveling order (band talents); the round 29 re-rank empties this",
-	"hunter-beast-mastery": "sim round 29 moved the leveling order (band talents); the round 29 re-rank empties this",
-	"hunter-marksmanship":  "sim round 29 moved the leveling order (band talents); the round 29 re-rank empties this",
-	"hunter-survival":      "sim round 29 moved the leveling order (band talents); the round 29 re-rank empties this",
-	"mage-arcane":          "sim round 29 moved the leveling order (band talents); the round 29 re-rank empties this",
-	"mage-fire":            "sim round 29 moved the leveling order (band talents); the round 29 re-rank empties this",
-	"paladin-holy":         "sim round 29 moved the leveling order (band talents); the round 29 re-rank empties this",
-	"paladin-retribution":  "sim round 29 moved the leveling order (band talents); the round 29 re-rank empties this",
-	"priest-discipline":    "sim round 29 moved the leveling order (band talents); the round 29 re-rank empties this",
-	"priest-holy":          "sim round 29 moved the leveling order (band talents); the round 29 re-rank empties this",
-	"priest-shadow":        "sim round 29 moved the leveling order (band talents); the round 29 re-rank empties this",
-	"shaman-elemental":     "sim round 29 moved the leveling order (band talents); the round 29 re-rank empties this",
-	"shaman-enhancement":   "sim round 29 moved the leveling order (band talents); the round 29 re-rank empties this",
-	"shaman-restoration":   "sim round 29 moved the leveling order (band talents); the round 29 re-rank empties this",
-	"warlock-affliction":   "sim round 29 moved the leveling order (band talents); the round 29 re-rank empties this",
-	"warrior-fury":         "sim round 29 moved the leveling order (band talents); the round 29 re-rank empties this",
-	"warrior-protection":   "sim round 29 moved the leveling order (band talents); the round 29 re-rank empties this",
-}
+var knownStaleBISFiles = map[string]string{}
 
 // TestPublishedBISMatchesGuides: the active build's committed bis files
 // wear the races and talents their guides name. Not gated like
