@@ -1,25 +1,28 @@
 <!-- web/src/components/GuildLanding.svelte -->
-<!-- The bare `/guild` page: where the header's Guild door lands a visitor with no guild of
-     their own (spec 2026-10-15-grouped-header.md section 2). A lookup by name, the top
-     guilds, and a line for officers. A signed-in visitor whose current character has a guild
-     is sent on to it once `/v1/me` answers; the lookup is already on screen meanwhile. One on an
-     alt outside a guild sees every guild of the account's at the top, and the lookup starts on
-     their first guild's region and ruleset (guild round 3). -->
+<!-- The bare `/guild` page (web layout spec 2026-11-05 §6.1 Landing, §7.1 signed-in landing): where
+     the header's Guild door lands a visitor with no guild of their own. PageHeader, then a split
+     Page: Open a guild (a FormRow) and Top guilds (the one Plate); the rail holds Your guilds when
+     the account has any, then Run a guild? (with the sign-in button signed out) or the claim the
+     account holds. A signed-in visitor whose current character has a guild, or whose account has
+     exactly one, is sent on to it once `/v1/me` answers; the lookup is already on screen meanwhile,
+     and starts on the account's first guild's region and ruleset (guild round 3). -->
 <script lang="ts">
-  import { GUILD_BANDLESS_TOP } from '../lib/guild/raid-layout';
   import { onMount } from 'svelte';
+  import { battlenetStartUrl, type Me } from '../lib/account/api';
   import { DEFAULT_REGION, DEFAULT_RULESET } from '../lib/character-search';
   import { guildHref, REGIONS, RULESETS } from '../lib/characters';
   import { guildLandingCopy as copy } from '../lib/guild/copy';
-  import { button } from '../lib/ui/button';
-  import Card from './ui/Card.svelte';
-  import Glyph from './ui/Glyph.svelte';
-  import PageHead from './ui/PageHead.svelte';
+  import { heldClaimRow, lookupDefaults, myGuildRows, type MyGuildRow } from '../lib/guild/landing-mine';
+  import { FIELD_LABEL } from '../lib/ui/field';
+  import Button from './ui/Button.svelte';
+  import Field from './ui/Field.svelte';
+  import FormRow from './ui/FormRow.svelte';
+  import Page from './ui/Page.svelte';
+  import PageHeader from './ui/PageHeader.svelte';
+  import Section from './ui/Section.svelte';
   import Select from './ui/Select.svelte';
   import HomeTopGuilds from './HomeTopGuilds.svelte';
   import GuildLandingMine from './guild/GuildLandingMine.svelte';
-  import { heldClaimRow, lookupDefaults, myGuildRows, type MyGuildRow } from '../lib/guild/landing-mine';
-  import type { Me } from '../lib/account/api';
 
   /** The session, when a test hands one in; the page reads its own on mount. */
   let { me: givenMe = null }: { me?: Me | null } = $props();
@@ -32,12 +35,15 @@
   let ruleset = $state<string>(DEFAULT_RULESET);
   let status = $state('');
   let mine = $state<MyGuildRow[]>(myGuildRows(givenMe));
-  /** The guild whose claim the account holds: the foot line says so instead of asking. */
+  /** The guild whose claim the account holds: the rail says so instead of asking. */
   let held = $state<MyGuildRow | null>(heldClaimRow(givenMe));
+  /** Null until `/v1/me` answers (the sign-in button waits for it), then whether there is a session. */
+  let signedIn = $state<boolean | null>(givenMe === null ? null : true);
   /** The player changed a select: the session's defaults never overwrite their choice. */
   let placeTouched = false;
 
   function applySession(me: Me | null): void {
+    signedIn = me !== null;
     mine = myGuildRows(me);
     held = heldClaimRow(me);
     const defaults = lookupDefaults(me);
@@ -64,82 +70,73 @@
       .then(({ openCurrentGuild }) => openCurrentGuild())
       .then(applySession);
   });
+
+  const next = typeof location === 'undefined' ? '/guild' : location.pathname;
 </script>
 
-<div class="reveal {GUILD_BANDLESS_TOP} flex flex-col gap-[22px] md:gap-8" data-testid="guild-landing">
-  <PageHead eyebrow={copy.eyebrow} title={copy.heading} job={copy.lead} />
-
-  <GuildLandingMine rows={mine} />
-
-  <Card glyph="search" title={copy.lookupHeading} body="none" testid="guild-lookup-card">
-    <form
-      role="search"
-      class="border-line-soft grid grid-cols-2 items-end gap-3 border-t px-5 py-4 md:grid-cols-[minmax(0,1fr)_auto_auto_auto]"
-      data-testid="guild-lookup"
-      onsubmit={onSubmit}
+<div data-testid="guild-landing">
+  {#snippet header()}
+    <PageHeader title={copy.heading} lead={copy.lead} testid="guild-landing-head" />
+  {/snippet}
+  {#snippet rail()}
+    <GuildLandingMine rows={mine} />
+    <Section
+      title={held === null ? copy.runHeading : copy.heldHeading}
+      anchor="claim"
+      testid="guild-landing-claim"
     >
-      <div class="col-span-2 flex flex-col gap-2 md:col-span-1">
-        <label class="quiet-label" for="guild-lookup-name">{copy.nameLabel}</label>
-        <div class="relative">
-          <Glyph
-            name="search"
-            size={16}
-            class="text-muted pointer-events-none absolute top-1/2 left-3 -translate-y-1/2"
-          />
-          <input
-            id="guild-lookup-name"
-            name="name"
-            type="text"
-            autocomplete="off"
-            spellcheck="false"
-            placeholder={copy.namePlaceholder}
-            bind:value={name}
-            aria-describedby="guild-lookup-status"
-            class="rounded-control border-line-card text-strong placeholder:text-muted hover:border-gold/30 focus-visible:outline-gold h-11 w-full border bg-white/[.045] pr-3 pl-9 text-[15px] font-semibold focus-visible:outline-2 focus-visible:outline-offset-2"
+      <div class="flex flex-col items-start gap-3">
+        <p class="text-text text-[14px] leading-[22px]" data-testid="guild-landing-claim-line">
+          {held === null ? copy.officerLine : copy.holdsClaim(held.name)}
+        </p>
+        {#if signedIn === false}
+          <Button href={battlenetStartUrl(next)} testid="guild-landing-sign-in">{copy.signIn}</Button>
+        {/if}
+      </div>
+    </Section>
+  {/snippet}
+  <Page layout="split" {header} {rail} testid="guild-landing-page">
+    <Section title={copy.lookupHeading} testid="guild-lookup-card">
+      <FormRow label={copy.lookupHeading} onsubmit={onSubmit} testid="guild-lookup">
+        <Field
+          id="guild-lookup-name"
+          name="name"
+          label={copy.nameLabel}
+          placeholder={copy.namePlaceholder}
+          autocomplete="off"
+          bind:value={name}
+          grow
+        />
+        <div class="flex flex-col gap-[6px]">
+          <label class={FIELD_LABEL} for="guild-lookup-region">{copy.regionLabel}</label>
+          <Select
+            id="guild-lookup-region"
+            name="region"
+            size="compact"
+            bind:value={region}
+            onchange={() => (placeTouched = true)}
+            options={regionOptions}
           />
         </div>
-      </div>
-      <div class="flex flex-col gap-2">
-        <label class="quiet-label" for="guild-lookup-region">{copy.regionLabel}</label>
-        <Select
-          id="guild-lookup-region"
-          name="region"
-          size="compact"
-          bind:value={region}
-          onchange={() => (placeTouched = true)}
-          options={regionOptions}
-        />
-      </div>
-      <div class="flex flex-col gap-2">
-        <label class="quiet-label" for="guild-lookup-ruleset">{copy.rulesetLabel}</label>
-        <Select
-          id="guild-lookup-ruleset"
-          name="ruleset"
-          size="compact"
-          bind:value={ruleset}
-          onchange={() => (placeTouched = true)}
-          options={rulesetOptions}
-        />
-      </div>
-      <button type="submit" class="{button('primary')} col-span-2 w-full md:col-span-1 md:w-auto">
-        {copy.submit}
-      </button>
-    </form>
-    <p
-      id="guild-lookup-status"
-      class="text-strong min-h-[1lh] px-5 pb-4 text-[13px] empty:hidden"
-      role="status"
-    >
-      {status}
-    </p>
-  </Card>
-
-  <Card glyph="trophy" title={copy.topHeading} body="none" testid="guild-landing-top">
-    <div class="border-line-soft border-t px-5 py-2"><HomeTopGuilds emptyAction={false} /></div>
-    {#snippet foot()}
-      <p id="claim" class="text-muted scroll-mt-24 text-[13px]" data-testid="guild-landing-claim">
-        {held === null ? copy.officerLine : copy.holdsClaim(held.name)}
-      </p>
-    {/snippet}
-  </Card>
+        <div class="flex flex-col gap-[6px]">
+          <label class={FIELD_LABEL} for="guild-lookup-ruleset">{copy.rulesetLabel}</label>
+          <Select
+            id="guild-lookup-ruleset"
+            name="ruleset"
+            size="compact"
+            bind:value={ruleset}
+            onchange={() => (placeTouched = true)}
+            options={rulesetOptions}
+          />
+        </div>
+        {#snippet submit()}
+          <Button tone="primary" type="submit">{copy.submit}</Button>
+        {/snippet}
+      </FormRow>
+      <p class="text-strong min-h-[1lh] pt-2 text-[13px] empty:hidden" role="status">{status}</p>
+    </Section>
+    <Section title={copy.topHeading} testid="guild-landing-top">
+      <HomeTopGuilds label={copy.topHeading} />
+    </Section>
+  </Page>
 </div>

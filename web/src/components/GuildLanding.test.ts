@@ -15,7 +15,7 @@ describe('GuildLanding', () => {
   });
 
   it('renders a labelled lookup form with region and ruleset defaulted', () => {
-    expect(body).toContain('role="search"');
+    expect(body).toContain('aria-label="Open a guild"');
     expect(body).toContain('data-testid="guild-lookup"');
     expect(body).toContain('Guild name');
     expect(body).toContain('Open guild');
@@ -29,7 +29,7 @@ describe('GuildLanding', () => {
     expect(body).toContain(guildLandingCopy.officerLine);
   });
 
-  it('puts the #claim anchor on the claim sentence, where the header’s Claim your guild lands', () => {
-    expect(body).toMatch(/<p id="claim"[^>]*>\s*Run a guild\?/);
+  it('puts the #claim anchor on the Run a guild? section, where the header’s Claim your guild lands', () => {
+    expect(body).toMatch(/<section id="claim"[^>]*>[\s\S]*?<h2[^>]*>Run a guild\?/);
   });
 });
