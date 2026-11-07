@@ -25,14 +25,14 @@ const SECONDARY_BUTTON_HOVER =
  */
 const FIXED_BUTTON_DISABLED = 'control-fixed';
 
-export const SECONDARY_BUTTON = `rounded-control inline-flex h-11 items-center border text-[12px] font-bold tracking-[0.06em] uppercase md:h-9 ${SECONDARY_BUTTON_HOVER}`;
+export const SECONDARY_BUTTON = `rounded-control inline-flex h-11 items-center border text-[13px] font-bold tracking-[.01em] md:h-9 ${SECONDARY_BUTTON_HOVER}`;
 
 /**
  * Same recipe as SECONDARY_BUTTON, but 44px tall on every breakpoint instead of shrinking to
  * 36px on desktop. For controls outside the planner -- the homepage subscribe button -- where
  * the 44px hit target is a fixed requirement, not just a phone-only minimum.
  */
-export const SECONDARY_BUTTON_FIXED = `rounded-control inline-flex h-11 items-center border text-[12px] font-bold tracking-[0.06em] uppercase ${SECONDARY_BUTTON_HOVER} ${FIXED_BUTTON_DISABLED}`;
+export const SECONDARY_BUTTON_FIXED = `rounded-control inline-flex h-11 items-center border text-[13px] font-bold tracking-[.01em] ${SECONDARY_BUTTON_HOVER} ${FIXED_BUTTON_DISABLED}`;
 
 /**
  * The primary button: the same recipe filled gold, for the single action a page is for
@@ -41,10 +41,10 @@ export const SECONDARY_BUTTON_FIXED = `rounded-control inline-flex h-11 items-ce
  * Callers add their own horizontal padding.
  */
 export const PRIMARY_BUTTON =
-  'rounded-control border-gold bg-gold text-bg hover:bg-gold-hover inline-flex h-11 items-center border text-[12px] font-bold tracking-[0.06em] uppercase md:h-9';
+  'rounded-control border-gold bg-gold text-bg hover:bg-gold-hover inline-flex h-11 items-center border text-[13px] font-bold tracking-[.01em] md:h-9';
 
 /** PRIMARY_BUTTON at 44px on every breakpoint, as SECONDARY_BUTTON_FIXED is to SECONDARY_BUTTON. */
-export const PRIMARY_BUTTON_FIXED = `rounded-control border-gold bg-gold text-bg hover:bg-gold-hover inline-flex h-11 items-center border text-[12px] font-bold tracking-[0.06em] uppercase ${FIXED_BUTTON_DISABLED}`;
+export const PRIMARY_BUTTON_FIXED = `rounded-control border-gold bg-gold text-bg hover:bg-gold-hover inline-flex h-11 items-center border text-[13px] font-bold tracking-[.01em] ${FIXED_BUTTON_DISABLED}`;
 
 /**
  * The four states a talent cell is read at a glance by, from design/DESIGN-SYSTEM.md
