@@ -175,6 +175,7 @@
   import { resolveTreeSizes } from '../../lib/report/tree-sizes';
   import ReportSkeleton from './ReportSkeleton.svelte';
   import { classSlugOf, plannerLinkFor } from '../../lib/report/planner-link';
+  import { simLinkFor } from '../../lib/report/sim-link';
 
   let { reportId, inlineMeta = null }: { reportId: string; inlineMeta?: ReportMeta | null } = $props();
 
@@ -1882,9 +1883,15 @@
                     open
                   >
                     {#snippet lead()}<ClassIcon className={classOf.get(combatant.guid)} size={28} />{/snippet}
-                    {#snippet trail()}<a
-                        class="text-gold text-[14px] font-semibold [@media(pointer:coarse)]:-my-3 [@media(pointer:coarse)]:inline-block [@media(pointer:coarse)]:py-3"
-                        href={playerHref(combatant.guid)}>Gear ›</a
+                    {#snippet trail()}<span class="flex gap-3" data-testid="at-pull-links"
+                        ><a
+                          class="text-gold text-[14px] font-semibold [@media(pointer:coarse)]:-my-3 [@media(pointer:coarse)]:inline-block [@media(pointer:coarse)]:py-3"
+                          href={playerHref(combatant.guid)}>Gear ›</a
+                        ><a
+                          class="text-gold text-[14px] font-semibold [@media(pointer:coarse)]:-my-3 [@media(pointer:coarse)]:inline-block [@media(pointer:coarse)]:py-3"
+                          href={simLinkFor(reportId, state.fight, combatant.guid).href}
+                          data-testid="combatant-sim-link">Sim ›</a
+                        ></span
                       >{/snippet}
                   </Row>
                 {/each}
