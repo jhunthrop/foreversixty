@@ -83,7 +83,7 @@ X_GLYPH = ('<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="
 
 def finished_line() -> str:
     """The finished server sim (components/character/FinishedSimLine.svelte, as shipped): the sentence and Open result as one
-    link on a gold-tinted line, a dismiss."""
+    link on a line with a 2 px gold edge (no box), a dismiss."""
     f = F['finished']
     return (f'<div class="pc"><div class="bl-done" role="status"><a href="#"><span>{e(f["prefix"])}<span class="num strong">{e(f["figure"])}</span></span>'
             f'<span class="gold link">{e(f["open"])}</span></a><button type="button" class="bl-x" aria-label="{e(f["dismiss"])}">'
@@ -139,7 +139,7 @@ PAGE_CSS = '''<style>
 .ans-box.bl-ans{min-height:224px}
 .bl-sum{padding:0 0 16px}
 .bl-done{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:44px;padding:0 0 0 22px;margin-bottom:12px;font-size:13px}
-.bl-done{background:color-mix(in srgb,var(--gold) 8%,var(--raised))}
+.bl-done{box-shadow:inset 2px 0 0 var(--gold)}
 .bl-done a{display:inline-flex;flex-wrap:wrap;gap:0 6px;align-items:center;min-height:44px;color:var(--text)}
 .bl-x{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border:0;background:none;color:var(--muted);cursor:pointer}
 .cgrp{padding-bottom:20px;min-width:0}
