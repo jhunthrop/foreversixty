@@ -1,6 +1,7 @@
 <!-- web/src/components/coach/CoachReviewBody.svelte -->
-<!-- The review's fixed structure (spec 3.1 and 5.1): opening, Fix first with its drill, Then,
-     Doing well. It renders only these fields; nothing is free prose outside them. While a
+<!-- The review's fixed structure (spec 3.1 and 5.1; logs-reports 6.2 Coach): the opening sentence
+     (17/26, strong), Fix first (gold Label, H3 title with its spell icon, why, The drill), Then fix,
+     Doing well (green checks), held apart by type and space, no rule or box. It renders only these fields; nothing is free prose outside them. While a
      writing review is held at its minimums (`reserve` set), every text slot keeps its reserved
      lines and the empty Then and Doing well slots stay, so the model's text swaps in with no
      shift. Evidence anchors become chips through coachAnchorHref. -->
@@ -71,7 +72,7 @@
 
 <div data-testid="coach-review-body">
   <p
-    class="text-text max-w-[720px] text-[15px] leading-[22px] {slotClass('opening', held)}"
+    class="text-strong max-w-[720px] text-[17px] leading-[26px] {slotClass('opening', held)}"
     data-testid="coach-opening"
   >
     <CoachText text={review.opening} {names} {build} {classSlug} />
@@ -79,22 +80,22 @@
 
   {#if review.fixFirst !== null}
     {@const fix = review.fixFirst}
-    <section class="border-gold mt-5 border-l-2 pl-4" data-testid="coach-fix-first">
-      <h3 class="label text-gold">{coachCopy.labelFixFirst}</h3>
-      <div class="mt-1 flex items-center gap-2">
-        <SpellIcon url={names.iconUrl(firstSpellId(fix.anchors, answer.anchors))} size={32} />
+    <section class="mt-6" data-testid="coach-fix-first">
+      <h3 class="text-label tracking-label text-gold font-bold uppercase">{coachCopy.labelFixFirst}</h3>
+      <div class="mt-2 flex items-center gap-3">
+        <SpellIcon url={names.iconUrl(firstSpellId(fix.anchors, answer.anchors))} size={36} />
         <p class="text-strong text-[20px] leading-7 font-bold" data-testid="coach-fix-title">
           <CoachText text={fix.title} {names} {build} {classSlug} plainSpells />
         </p>
       </div>
-      <p class="text-text mt-1 text-[15px] leading-[22px] {slotClass('why', held)}">
+      <p class="text-text mt-2 max-w-[720px] text-[15px] leading-6 {slotClass('why', held)}">
         <CoachText text={fix.why} {names} {build} {classSlug} />
       </p>
       {@render linkLines(fix.links, 0)}
-      <div class="border-line-soft mt-3 border-t pt-3">
-        <h4 class="label text-muted">{coachCopy.labelPractice}</h4>
+      <div class="mt-4">
+        <h4 class="text-label tracking-label text-muted font-bold uppercase">{coachCopy.labelPractice}</h4>
         <p
-          class="text-text mt-1 text-[14px] leading-[22px] {slotClass('drill', held)}"
+          class="text-text mt-1 max-w-[720px] text-[15px] leading-6 {slotClass('drill', held)}"
           data-testid="coach-drill"
         >
           <CoachText text={fix.drillText} {names} {build} {classSlug} />
@@ -105,12 +106,12 @@
   {/if}
 
   {#if thenSlots > 0}
-    <section class="mt-6" data-testid="coach-then">
-      <h3 class="label text-muted">{coachCopy.labelThen}</h3>
-      <ul class="mt-1 flex flex-col">
+    <section class="mt-8" data-testid="coach-then">
+      <h3 class="text-label tracking-label text-muted font-bold uppercase">{coachCopy.labelThen}</h3>
+      <ul class="mt-2 flex flex-col gap-5">
         {#each slots(thenSlots) as index (index)}
           {@const item = review.thenFix[index]}
-          <li class="border-line-soft border-t py-3.5 first:border-t-0" data-testid="coach-then-item">
+          <li data-testid="coach-then-item">
             {#if item !== undefined}
               <div class="flex items-center gap-2">
                 <SpellIcon url={names.iconUrl(firstSpellId(item.anchors, answer.anchors))} size={24} />
@@ -118,7 +119,7 @@
                   <CoachText text={item.title} {names} {build} {classSlug} plainSpells />
                 </p>
               </div>
-              <p class="text-text mt-1 text-[14px] leading-[22px] {slotClass('thenWhy', held)}">
+              <p class="text-text mt-1 max-w-[720px] text-[15px] leading-6 {slotClass('thenWhy', held)}">
                 <CoachText text={item.why} {names} {build} {classSlug} />
               </p>
               {@render linkLines(item.links, index + 1)}
@@ -139,12 +140,12 @@
   {/if}
 
   {#if wellSlots > 0}
-    <section class="mt-5" data-testid="coach-well">
-      <h3 class="label text-kill">{coachCopy.labelWell}</h3>
-      <ul class="mt-1 flex flex-col gap-1">
+    <section class="mt-8" data-testid="coach-well">
+      <h3 class="text-label tracking-label text-kill font-bold uppercase">{coachCopy.labelWell}</h3>
+      <ul class="mt-2 flex flex-col gap-1">
         {#each slots(wellSlots) as index (index)}
           {@const item = review.doingWell[index]}
-          <li class="flex gap-2 text-[14px] leading-[22px] {slotClass('well', held)}">
+          <li class="flex gap-2 text-[15px] leading-6 {slotClass('well', held)}">
             {#if item !== undefined}
               <span class="text-kill shrink-0" aria-hidden="true">✓</span>
               <span><CoachText text={item.text} {names} {build} {classSlug} /></span>

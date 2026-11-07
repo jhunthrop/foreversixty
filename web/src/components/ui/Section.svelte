@@ -18,6 +18,8 @@
     id,
     anchor,
     testid,
+    focusId,
+    titleTestid,
     head,
     children,
   }: {
@@ -33,6 +35,11 @@
     /** A link target only (`/logs#upload`): the section stays an unnamed block. */
     anchor?: string;
     testid?: string;
+    /** The heading's own id, which also makes it a programmatic focus target (tabindex -1): a
+     *  panel that moves focus to its heading once it settles (the report's Coach tab). */
+    focusId?: string;
+    /** The heading's testid, for a test that reads the title alone. */
+    titleTestid?: string;
     /** Extra content in the head row, right-aligned (a toggle, a Tag). */
     head?: Snippet;
     children: Snippet;
@@ -44,14 +51,19 @@
   class="ui-section min-w-0 scroll-mt-[calc(var(--bar-h)+12px)]"
   data-testid={testid}
   data-region={sectionRegion(title)}
-  aria-labelledby={id ? `${id}-title` : undefined}
+  aria-labelledby={id ? (focusId ?? `${id}-title`) : undefined}
 >
   <div class="border-line-soft flex flex-wrap items-baseline gap-x-3 gap-y-1 border-b pb-[10px]">
     <svelte:element
       this={level === 3 ? 'h3' : 'h2'}
-      id={id ? `${id}-title` : undefined}
-      class={['text-strong font-bold', reading ? 'text-section md:text-section-reading' : 'text-section']}
-      >{title}</svelte:element
+      id={focusId ?? (id ? `${id}-title` : undefined)}
+      tabindex={focusId ? -1 : undefined}
+      class={[
+        'text-strong font-bold',
+        reading ? 'text-section md:text-section-reading' : 'text-section',
+        focusId && 'outline-none',
+      ]}
+      data-testid={titleTestid}>{title}</svelte:element
     >
     {#if meta}<span class="text-small text-muted" data-testid={metaTestid}>{meta}</span>{/if}
     {#if head || action}

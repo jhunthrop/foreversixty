@@ -1,7 +1,8 @@
 <!-- web/src/components/character/CharacterHistory.svelte -->
 <!-- The History section of the owner's character page (experience spec
      2026-10-24-character-history 3.2 and 4): the score over time and the parse by boss, each
-     with the fights behind it. Mounted only for an owner on a plan with history, and loaded
+     with the fights behind it, open on the page ground inside the `History` Section's Disclosure
+     (character spec 2026-11-06 C8: the Section names it, so it draws no heading or box of its own). Mounted only for an owner on a plan with history, and loaded
      lazily, so no other viewer pays for it. It holds the box it will fill from the first
      paint (3.11): the last rendered height is stored after every settled paint. -->
 <script lang="ts">
@@ -72,14 +73,14 @@
 <section
   bind:this={section}
   id={SECTION_ID}
-  class="-order-2 flex flex-col gap-2"
+  class="flex scroll-mt-[calc(var(--bar-h)+12px)] flex-col gap-4"
   class:history-reserve={source.status === 'loading'}
+  aria-label={historyCopy.heading}
   aria-busy={source.status === 'loading' ? 'true' : undefined}
   data-testid="character-history-section"
 >
-  <h2 class="section-title">{historyCopy.heading}</h2>
-  <p class="text-muted text-[13px]" data-testid="history-caption">{historyCopy.caption}</p>
-  <div class="bg-raised border-line rounded-panel border p-4 md:p-5">
+  <p class="text-small text-muted" data-testid="history-caption">{historyCopy.caption}</p>
+  <div>
     {#if source.status === 'loading'}
       <div class="flex flex-col gap-7 xl:grid xl:grid-cols-2 xl:gap-x-8" data-testid="history-skeleton">
         <span class="sr-only" role="status">{historyCopy.loadingSr}</span>

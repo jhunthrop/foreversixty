@@ -27,7 +27,7 @@ function list(count: number, marked: string[] = [], extra: Record<string, unknow
 }
 
 const rowCount = (html: string): number =>
-  (html.match(/<li class="border-line-soft grid min-h-11/g) ?? []).length;
+  (html.match(/<li class="grid min-h-11/g) ?? []).length;
 
 describe('HistoryFights', () => {
   it('shows eight rows and Show all N when more exist', () => {

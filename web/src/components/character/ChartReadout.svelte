@@ -27,9 +27,12 @@
     testid: string;
   } = $props();
 
-  const STEP = 'rounded-control inline-flex size-11 items-center justify-center border active:bg-[#ffffff0d]';
-  const ENABLED = 'border-line text-text hover:border-gold hover:text-gold-hover';
-  const DISABLED = 'border-line-soft text-[#5d5a50]';
+  /** A step is an icon button with no box (the flat system): the row hover ground and gold glyph on
+   *  hover, a gold focus ring, a muted glyph at half strength when there is nothing further. */
+  const STEP =
+    'rounded-control inline-flex size-11 items-center justify-center focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold';
+  const ENABLED = 'text-text hover:bg-row-hover hover:text-gold-hover active:text-gold-hover';
+  const DISABLED = 'text-muted/50 cursor-default';
 </script>
 
 {#snippet chevron(direction: 'left' | 'right')}
@@ -50,14 +53,14 @@
       class="flex items-baseline gap-2"
       style={readout.color === null ? undefined : `color: ${readout.color}`}
     >
-      <span class="numeric text-[28px] leading-8 font-semibold" data-testid="history-readout-value"
+      <span class="text-[28px] leading-8 font-bold tabular-nums" data-testid="history-readout-value"
         >{readout.value}</span
       >
       {#if readout.word !== ''}
         <span class="text-[15px] font-semibold" data-testid="history-readout-word">{readout.word}</span>
       {/if}
     </p>
-    <p class="text-muted numeric text-[12px]" data-testid="history-readout-detail">
+    <p class="text-small text-muted tabular-nums" data-testid="history-readout-detail">
       {readout.detail}
     </p>
   </div>
