@@ -100093,14 +100093,14 @@
               "chance": 0.0234,
               "alternatives": [
                 {
-                  "item_id": 14572,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
-                },
-                {
                   "item_id": 252494,
                   "source_kind": "crafted",
                   "source": "Leatherworking"
+                },
+                {
+                  "item_id": 14572,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
                 }
               ]
             },
@@ -100284,10 +100284,10 @@
         "weights": {
           "attack_power": 1.0,
           "strength": 1.0,
-          "agility": 1.781,
-          "crit": 0.464,
-          "hit": 0.604,
-          "melee_haste": 3.26
+          "agility": 1.785,
+          "crit": 0.467,
+          "hit": 0.597,
+          "melee_haste": 2.869
         }
       },
       {
@@ -100517,14 +100517,14 @@
               "chance": 0.25,
               "alternatives": [
                 {
-                  "item_id": 6681,
-                  "source_kind": "dungeon",
-                  "source": "Razorfen Kraul: Aggem Thorncurse"
-                },
-                {
                   "item_id": 776,
                   "source_kind": "dungeon",
                   "source": "Razorfen Kraul"
+                },
+                {
+                  "item_id": 6681,
+                  "source_kind": "dungeon",
+                  "source": "Razorfen Kraul: Aggem Thorncurse"
                 }
               ]
             },
@@ -100855,10 +100855,10 @@
         "weights": {
           "attack_power": 1.0,
           "strength": 1.0,
-          "agility": 1.641,
-          "crit": 0.629,
-          "hit": 0.883,
-          "melee_haste": 4.201
+          "agility": 1.644,
+          "crit": 0.617,
+          "hit": 0.918,
+          "melee_haste": 5.411
         }
       },
       {
@@ -100962,14 +100962,14 @@
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 14590,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
+                },
+                {
                   "item_id": 4061,
                   "source_kind": "dungeon",
                   "source": "Uldaman: Ancient Treasure"
-                },
-                {
-                  "item_id": 7378,
-                  "source_kind": "crafted",
-                  "source": "Leatherworking"
                 }
               ]
             },
@@ -100998,14 +100998,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 20090,
-                  "source_kind": "rep",
-                  "source": "The League of Arathor"
-                },
-                {
                   "item_id": 13117,
                   "source_kind": "world_drop",
                   "source": "World drop"
+                },
+                {
+                  "item_id": 20090,
+                  "source_kind": "rep",
+                  "source": "The League of Arathor"
                 }
               ]
             },
@@ -101451,10 +101451,10 @@
         "weights": {
           "attack_power": 1.0,
           "strength": 1.0,
-          "agility": 1.683,
-          "crit": 0.91,
-          "hit": 1.422,
-          "melee_haste": 7.791
+          "agility": 1.695,
+          "crit": 0.92,
+          "hit": 1.195,
+          "melee_haste": 6.368
         }
       },
       {
@@ -101540,14 +101540,14 @@
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 15064,
+                  "source_kind": "crafted",
+                  "source": "Leatherworking"
+                },
+                {
                   "item_id": 11193,
                   "source_kind": "quest",
                   "source": "Tremors of the Earth"
-                },
-                {
-                  "item_id": 10583,
-                  "source_kind": "dungeon",
-                  "source": "Razorfen Downs"
                 }
               ]
             },
@@ -101612,14 +101612,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 8262,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
-                },
-                {
                   "item_id": 9652,
                   "source_kind": "quest",
                   "source": "Saving Sharpbeak"
+                },
+                {
+                  "item_id": 8262,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
                 }
               ]
             },
@@ -101698,13 +101698,13 @@
               ]
             },
             "main_hand": {
-              "item_id": 2163,
+              "item_id": 2164,
               "source_kind": "world_drop",
               "source": "World drop",
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 2164,
+                  "item_id": 2163,
                   "source_kind": "world_drop",
                   "source": "World drop"
                 },
@@ -101827,14 +101827,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 15064,
-                  "source_kind": "crafted",
-                  "source": "Leatherworking"
-                },
-                {
                   "item_id": 11193,
                   "source_kind": "quest",
                   "source": "Broken Alliances"
+                },
+                {
+                  "item_id": 15064,
+                  "source_kind": "crafted",
+                  "source": "Leatherworking"
                 }
               ]
             },
@@ -101868,9 +101868,9 @@
                   "source": "World drop"
                 },
                 {
-                  "item_id": 252548,
-                  "source_kind": "crafted",
-                  "source": "Leatherworking"
+                  "item_id": 220857,
+                  "source_kind": "vendor",
+                  "source": "PvP reward · Horde"
                 }
               ]
             },
@@ -101899,12 +101899,12 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 8262,
+                  "item_id": 1718,
                   "source_kind": "world_drop",
                   "source": "World drop"
                 },
                 {
-                  "item_id": 1718,
+                  "item_id": 8262,
                   "source_kind": "world_drop",
                   "source": "World drop"
                 }
@@ -101965,19 +101965,6 @@
               ]
             },
             "trinket1": {
-              "item_id": 249470,
-              "source_kind": "crafted",
-              "source": "Enchanting",
-              "chance": null,
-              "alternatives": [
-                {
-                  "item_id": 249469,
-                  "source_kind": "crafted",
-                  "source": "Enchanting"
-                }
-              ]
-            },
-            "trinket2": {
               "item_id": 19120,
               "source_kind": "quest",
               "source": "Job Opening: Guard Captain of Revantusk Village",
@@ -101990,16 +101977,29 @@
                 }
               ]
             },
+            "trinket2": {
+              "item_id": 249470,
+              "source_kind": "crafted",
+              "source": "Enchanting",
+              "chance": null,
+              "alternatives": [
+                {
+                  "item_id": 249469,
+                  "source_kind": "crafted",
+                  "source": "Enchanting"
+                }
+              ]
+            },
             "main_hand": {
-              "item_id": 2163,
+              "item_id": 2164,
               "source_kind": "world_drop",
               "source": "World drop",
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 11635,
-                  "source_kind": "dungeon",
-                  "source": "Blackrock Depths: Hedrum the Creeper"
+                  "item_id": 2163,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
                 },
                 {
                   "item_id": 10750,
@@ -102056,7 +102056,6 @@
             19516,
             249470,
             249469,
-            2163,
             6660,
             2100
           ],
@@ -102072,9 +102071,8 @@
             17728,
             17713,
             19511,
-            249470,
             19120,
-            2163,
+            249470,
             6660,
             2100
           ]
@@ -102082,10 +102080,10 @@
         "weights": {
           "attack_power": 1.0,
           "strength": 1.0,
-          "agility": 1.577,
-          "crit": 1.049,
-          "hit": 1.521,
-          "melee_haste": 6.604
+          "agility": 1.594,
+          "crit": 1.072,
+          "hit": 1.436,
+          "melee_haste": 6.841
         }
       },
       {
@@ -102721,6 +102719,8 @@
             16711,
             19325,
             272408,
+            249470,
+            19120,
             12590,
             14555,
             12651
@@ -103401,9 +103401,9 @@
                   "source": "Leatherworking"
                 },
                 {
-                  "item_id": 6410,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
+                  "item_id": 270032,
+                  "source_kind": "quest",
+                  "source": "Blackfathom Villainy"
                 }
               ]
             },
@@ -103414,12 +103414,12 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 4253,
+                  "item_id": 7359,
                   "source_kind": "crafted",
                   "source": "Leatherworking"
                 },
                 {
-                  "item_id": 7359,
+                  "item_id": 4253,
                   "source_kind": "crafted",
                   "source": "Leatherworking"
                 }
@@ -103450,14 +103450,14 @@
               "chance": 0.6,
               "alternatives": [
                 {
-                  "item_id": 9509,
-                  "source_kind": "dungeon",
-                  "source": "Gnomeregan"
-                },
-                {
                   "item_id": 13114,
                   "source_kind": "world_drop",
                   "source": "World drop"
+                },
+                {
+                  "item_id": 9509,
+                  "source_kind": "dungeon",
+                  "source": "Gnomeregan"
                 }
               ]
             },
@@ -103516,29 +103516,35 @@
               ]
             },
             "main_hand": {
+              "item_id": 6681,
+              "source_kind": "dungeon",
+              "source": "Razorfen Kraul: Aggem Thorncurse",
+              "chance": 1.0,
+              "alternatives": [
+                {
+                  "item_id": 2912,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
+                },
+                {
+                  "item_id": 776,
+                  "source_kind": "dungeon",
+                  "source": "Razorfen Kraul"
+                }
+              ]
+            },
+            "off_hand": {
               "item_id": 9453,
               "source_kind": "dungeon",
               "source": "Gnomeregan: Viscous Fallout",
               "chance": 0.25,
               "alternatives": [
                 {
-                  "item_id": 776,
-                  "source_kind": "dungeon",
-                  "source": "Razorfen Kraul"
-                },
-                {
-                  "item_id": 6681,
-                  "source_kind": "dungeon",
-                  "source": "Razorfen Kraul: Aggem Thorncurse"
+                  "item_id": 2912,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
                 }
               ]
-            },
-            "off_hand": {
-              "item_id": 2912,
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "chance": null,
-              "alternatives": []
             },
             "ranged": {
               "item_id": 273029,
@@ -103547,14 +103553,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 2098,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
-                },
-                {
                   "item_id": 273033,
                   "source_kind": "world",
                   "source": "Atrexis the Grave Knight"
+                },
+                {
+                  "item_id": 2098,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
                 }
               ]
             }
@@ -103626,9 +103632,9 @@
                   "source": "World drop"
                 },
                 {
-                  "item_id": 6449,
+                  "item_id": 6314,
                   "source_kind": "dungeon",
-                  "source": "Wailing Caverns: Skum"
+                  "source": "Shadowfang Keep: Wolf Master Nandos"
                 }
               ]
             },
@@ -103662,9 +103668,9 @@
                   "source": "Leatherworking"
                 },
                 {
-                  "item_id": 6410,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
+                  "item_id": 270032,
+                  "source_kind": "quest",
+                  "source": "Blackfathom Villainy"
                 }
               ]
             },
@@ -103675,12 +103681,12 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 4253,
+                  "item_id": 7359,
                   "source_kind": "crafted",
                   "source": "Leatherworking"
                 },
                 {
-                  "item_id": 7359,
+                  "item_id": 4253,
                   "source_kind": "crafted",
                   "source": "Leatherworking"
                 }
@@ -103729,14 +103735,14 @@
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 252439,
+                  "source_kind": "crafted",
+                  "source": "Leatherworking"
+                },
+                {
                   "item_id": 4055,
                   "source_kind": "world_drop",
                   "source": "World drop"
-                },
-                {
-                  "item_id": 16977,
-                  "source_kind": "quest",
-                  "source": "Warsong Supplies"
                 }
               ]
             },
@@ -103783,14 +103789,14 @@
               "chance": 0.25,
               "alternatives": [
                 {
-                  "item_id": 776,
-                  "source_kind": "dungeon",
-                  "source": "Razorfen Kraul"
-                },
-                {
                   "item_id": 6681,
                   "source_kind": "dungeon",
                   "source": "Razorfen Kraul: Aggem Thorncurse"
+                },
+                {
+                  "item_id": 776,
+                  "source_kind": "dungeon",
+                  "source": "Razorfen Kraul"
                 }
               ]
             },
@@ -103808,14 +103814,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 2098,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
-                },
-                {
                   "item_id": 273033,
                   "source_kind": "world",
                   "source": "Atrexis the Grave Knight"
+                },
+                {
+                  "item_id": 2098,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
                 }
               ]
             }
@@ -103835,8 +103841,8 @@
             1121,
             19517,
             13097,
+            6681,
             9453,
-            2912,
             273029
           ],
           "horde": [
@@ -103860,9 +103866,9 @@
         "weights": {
           "attack_power": 1.0,
           "strength": 1.0,
-          "agility": 1.668,
-          "crit": 0.643,
-          "hit": 0.92
+          "agility": 1.665,
+          "crit": 0.641,
+          "hit": 0.957
         }
       },
       {
@@ -104373,9 +104379,9 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 9453,
+                  "item_id": 6681,
                   "source_kind": "dungeon",
-                  "source": "Gnomeregan: Viscous Fallout"
+                  "source": "Razorfen Kraul: Aggem Thorncurse"
                 },
                 {
                   "item_id": 8006,
@@ -104455,9 +104461,9 @@
         "weights": {
           "attack_power": 1.0,
           "strength": 1.0,
-          "agility": 1.716,
-          "crit": 0.956,
-          "hit": 1.58
+          "agility": 1.718,
+          "crit": 0.958,
+          "hit": 1.584
         }
       },
       {
@@ -104994,13 +105000,13 @@
               ]
             },
             "main_hand": {
-              "item_id": 2164,
+              "item_id": 2163,
               "source_kind": "world_drop",
               "source": "World drop",
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 2163,
+                  "item_id": 2164,
                   "source_kind": "world_drop",
                   "source": "World drop"
                 },
@@ -105077,6 +105083,7 @@
             19511,
             19120,
             249470,
+            2163,
             6660,
             2100
           ]
@@ -105084,9 +105091,9 @@
         "weights": {
           "attack_power": 1.0,
           "strength": 1.0,
-          "agility": 1.578,
-          "crit": 1.052,
-          "hit": 1.745
+          "agility": 1.575,
+          "crit": 1.046,
+          "hit": 1.734
         }
       },
       {
@@ -123823,10 +123830,10 @@
         "weights": {
           "attack_power": 1.0,
           "strength": 2.0,
-          "agility": 1.073,
-          "crit": 0.59,
-          "hit": 0.778,
-          "melee_haste": 8.033
+          "agility": 1.04,
+          "crit": 0.578,
+          "hit": 0.697,
+          "melee_haste": 8.241
         }
       },
       {
@@ -149496,7 +149503,6 @@
     "11631": "Stoneshell Guard",
     "11632": "Earthslag Shoulders",
     "11633": "Spiderfang Carapace",
-    "11635": "Hookfang Shanker",
     "11662": "Ban'thok Sash",
     "11669": "Naglering",
     "11675": "Shadefiend Boots",
@@ -150183,6 +150189,7 @@
     "220854": "Knight's Leather Armor",
     "220855": "Stone Guard's Leather Armor",
     "220856": "Sergeant Major's Leather Gauntlets",
+    "220857": "First Sergeant's Leather Gauntlets",
     "220858": "Knight's Leather Pants",
     "220859": "Stone Guard's Leather Pants",
     "220862": "Sergeant Major's Crackling Leather Boots",
@@ -151071,7 +151078,6 @@
     "11304": 7.4,
     "11608": 47.4,
     "11628": 27.2,
-    "11635": 35.7,
     "11748": 52.5,
     "11750": 34.1,
     "11860": 37.3,

@@ -6,31 +6,33 @@ Forever unifies melee, ranged and spell hit into one stat. An item's crit rating
 
 ## Alliance
 
-### Band 20 (night-elf, 13322000000000000-000000000000000000-000000000000000000)
+### Band 20 (night-elf, 13320200000000000-000000000000000000-000000000000000000)
 
-Set DPS (verified): 30.2. Weights run: 3.0s. Verify run: 4.0s. 349 eligible items had no known source.
+Set DPS (verified): 31.1. Weights run: 3.6s. Verify run: 6.4s. 349 eligible items had no known source.
 
-Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.000 ± 0.003, agility=1.073 ± 0.024, crit=0.590 ± 0.022 per rating point (14 rating = 1%, 8.259 per %), hit=0.778 ± 0.071 per rating point (10 rating = 1%, 7.785 per %), melee_haste=8.033 ± 0.658
+Race sweep: high-order-skyborne 31.6 ± 0.0, night-elf 31.1 ± 0.0, human 31.1 ± 0.0, dwarf 30.7 ± 0.0, gnome 30.7 ± 0.0 (dps); high-order-skyborne beats the guide race night-elf by 0.4 (1.41%) ± 0.0, beyond error.
+
+Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.000 ± 0.003, agility=1.040 ± 0.024, crit=0.578 ± 0.023 per rating point (14 rating = 1%, 8.085 per %), hit=0.697 ± 0.081 per rating point (10 rating = 1%, 6.969 per %), melee_haste=8.241 ± 0.688
 
 | Slot | Item | Source | Score (attack_power points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Veteran's Silvered Chain Helm (250528) | Blacksmithing [crafted] | 20.0 attack_power points (0.81 DPS) | yes | Defender's Leather Hood (252447, -0.16 DPS, sim-verified) [crafted]; Guard's Silvered Chain Helm (250529, -0.37 DPS) [crafted]; Brawler's Leather Hood (252504, -0.46 DPS) [crafted] |
-| neck | Sentinel's Medallion (20444) | Silverwing Sentinels [rep] | 6.4 attack_power points (0.26 DPS) | yes | Erudite's Amulet (277204, -0.19 DPS, sim-verified) [quest]; Tarnished Locket (279870, -0.50 DPS) [quest] |
-| shoulder | Rough Bronze Shoulders (3480) (or Silvered Bronze Shoulders (3481)) | Blacksmithing [crafted] | 6.0 attack_power points (0.24 DPS) | yes | Silvered Bronze Shoulders (3481, +0.00 DPS) [crafted]; Serpent's Shoulders (5404, -0.03 DPS) [dungeon] |
-| back | Lambent Scale Cloak (4706) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Dark Leather Cloak (2316, -0.03 DPS) [crafted]; Glowing Lizardscale Cloak (6449, -0.06 DPS) [dungeon]; Grave Shroud (279865, -0.08 DPS) [quest] |
-| chest | Mutant Scale Breastplate (6627) | Wailing Caverns: Mutanus the Devourer [dungeon] | 20.0 attack_power points (0.81 DPS) | yes | Veteran's Chain Shirt (250488, -0.07 DPS) [crafted]; Brawler's Leather Armor (252490, -0.10 DPS) [crafted]; Defender's Leather Armor (252434, -0.11 DPS) [crafted] |
-| wrist | Patterned Bronze Bracers (2868) (or Death Bindings (286981)) | Blacksmithing [crafted] | 10.0 attack_power points (0.40 DPS) | yes | Death Bindings (286981, +0.00 DPS) [dungeon]; Bravo's Armbands (270015, -0.03 DPS) [quest]; Bristlebark Bindings (14569, -0.11 DPS) [world_drop] |
-| hands | Thorbia's Gauntlets (12994) | World drop [world_drop] | 16.0 attack_power points (0.65 DPS) | yes | Gloves of the Fang (10413, -0.06 DPS) [dungeon]; Gold-flecked Gloves (5195, -0.08 DPS) [dungeon]; Veteran's Gloves (250508, -0.11 DPS) [crafted] |
-| waist | Blackened Defias Belt (10403) | The Deadmines: Captain Greenskin [dungeon] | 18.0 attack_power points (0.73 DPS) | yes | Cobrahn's Grasp (6460, -0.03 DPS) [dungeon]; Brawler's Leather Belt (252428, -0.23 DPS) [crafted]; Deviate Scale Belt (6468, -0.27 DPS) [crafted] |
-| legs | Veteran's Chain Leggings (250493) | Blacksmithing [crafted] | 23.4 attack_power points (0.94 DPS) | yes | Defender's Leather Pants (252445, -0.04 DPS) [crafted]; Chausses of Westfall (6087, -0.06 DPS) [quest]; Brawler's Leather Pants (252500, -0.07 DPS) [crafted] |
-| feet | Brawler's Leather Boots (252439) | Leatherworking [crafted] | 15.4 attack_power points (0.62 DPS) | yes | Feet of the Lynx (1121, -0.03 DPS) [world_drop]; Veteran's Boots (250503, -0.04 DPS) [crafted]; Defender's Leather Boots (252441, -0.22 DPS) [crafted] |
-| finger1 | Protector's Band (20439) | Silverwing Sentinels [rep] | 12.3 attack_power points (0.50 DPS) | yes | The 1 Ring (8350, -0.37 DPS) [world]; Lavishly Jeweled Ring (1156, -0.41 DPS) [dungeon]; Ring of the Moon (12052, -0.42 DPS) [world_drop] |
-| finger2 | Demon Band (12054) | World drop [world_drop] | 8.0 attack_power points (0.32 DPS) | yes | The 1 Ring (8350, -0.20 DPS, sim-verified) [world]; Lavishly Jeweled Ring (1156, -0.24 DPS) [dungeon]; Ring of the Moon (12052, -0.24 DPS) [world_drop] |
+| head | Veteran's Silvered Chain Helm (250528) | Blacksmithing [crafted] | 20.0 attack_power points (0.84 DPS) | yes | Defender's Leather Hood (252447, -0.17 DPS, sim-verified) [crafted]; Guard's Silvered Chain Helm (250529, -0.40 DPS) [crafted]; Brawler's Leather Hood (252504, -0.49 DPS) [crafted] |
+| neck | Sentinel's Medallion (20444) | Silverwing Sentinels [rep] | 6.2 attack_power points (0.26 DPS) | yes | Erudite's Amulet (277204, -0.18 DPS, sim-verified) [quest]; Tarnished Locket (279870, -0.51 DPS) [quest] |
+| shoulder | Rough Bronze Shoulders (3480) (or Silvered Bronze Shoulders (3481)) | Blacksmithing [crafted] | 6.0 attack_power points (0.25 DPS) | yes | Silvered Bronze Shoulders (3481, +0.00 DPS) [crafted]; Serpent's Shoulders (5404, -0.03 DPS) [dungeon] |
+| back | Lambent Scale Cloak (4706) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Dark Leather Cloak (2316, -0.04 DPS) [crafted]; Glowing Lizardscale Cloak (6449, -0.07 DPS) [dungeon]; Grave Shroud (279865, -0.08 DPS) [quest] |
+| chest | Mutant Scale Breastplate (6627) | Wailing Caverns: Mutanus the Devourer [dungeon] | 20.0 attack_power points (0.84 DPS) | yes | Veteran's Chain Shirt (250488, -0.08 DPS) [crafted]; Brawler's Leather Armor (252490, -0.11 DPS) [crafted]; Defender's Leather Armor (252434, -0.12 DPS) [crafted] |
+| wrist | Patterned Bronze Bracers (2868) (or Death Bindings (286981)) | Blacksmithing [crafted] | 10.0 attack_power points (0.42 DPS) | yes | Death Bindings (286981, +0.00 DPS) [dungeon]; Bravo's Armbands (270015, -0.04 DPS) [quest]; Bristlebark Bindings (14569, -0.12 DPS) [world_drop] |
+| hands | Thorbia's Gauntlets (12994) | World drop [world_drop] | 16.0 attack_power points (0.67 DPS) | yes | Gloves of the Fang (10413, -0.07 DPS) [dungeon]; Gold-flecked Gloves (5195, -0.08 DPS) [dungeon]; Veteran's Gloves (250508, -0.12 DPS) [crafted] |
+| waist | Blackened Defias Belt (10403) | The Deadmines: Captain Greenskin [dungeon] | 18.0 attack_power points (0.75 DPS) | yes | Cobrahn's Grasp (6460, -0.04 DPS) [dungeon]; Brawler's Leather Belt (252428, -0.24 DPS) [crafted]; Deviate Scale Belt (6468, -0.29 DPS) [crafted] |
+| legs | Veteran's Chain Leggings (250493) | Blacksmithing [crafted] | 23.2 attack_power points (0.97 DPS) | yes | Defender's Leather Pants (252445, -0.04 DPS) [crafted]; Chausses of Westfall (6087, -0.05 DPS) [quest]; Brawler's Leather Pants (252500, -0.08 DPS) [crafted] |
+| feet | Brawler's Leather Boots (252439) | Leatherworking [crafted] | 15.2 attack_power points (0.64 DPS) | yes | Feet of the Lynx (1121, -0.04 DPS) [world_drop]; Veteran's Boots (250503, -0.04 DPS) [crafted]; Defender's Leather Boots (252441, -0.22 DPS) [crafted] |
+| finger1 | Protector's Band (20439) | Silverwing Sentinels [rep] | 12.2 attack_power points (0.51 DPS) | yes | The 1 Ring (8350, -0.38 DPS) [world]; Lavishly Jeweled Ring (1156, -0.42 DPS) [dungeon]; Ring of the Moon (12052, -0.43 DPS) [world_drop] |
+| finger2 | Demon Band (12054) | World drop [world_drop] | 8.0 attack_power points (0.34 DPS) | yes | The 1 Ring (8350, -0.21 DPS, sim-verified) [world]; Lavishly Jeweled Ring (1156, -0.25 DPS) [dungeon]; Ring of the Moon (12052, -0.25 DPS) [world_drop] |
 | trinket1 | - | - |  |  |  |
 | trinket2 | - | - |  |  |  |
-| main_hand | Smite's Mighty Hammer (7230) | The Deadmines: Mr. Smite [dungeon] | 302.3 attack_power points (12.20 DPS) | yes | Duskbringer (2205, -0.41 DPS, sim-verified) [dungeon]; Rockslicer (872, -0.51 DPS) [dungeon]; Sword of the Fallen (286977, -0.58 DPS) [dungeon] |
+| main_hand | Smite's Mighty Hammer (7230) | The Deadmines: Mr. Smite [dungeon] | 302.2 attack_power points (12.67 DPS) | yes | Duskbringer (2205, -0.46 DPS, sim-verified) [dungeon]; Rockslicer (872, -0.52 DPS) [dungeon]; Sword of the Fallen (286977, -0.59 DPS) [dungeon] |
 | off_hand | - | - |  |  |  |
-| ranged | Lil Timmy's Peashooter (13136) | World drop [world_drop] | 4.3 attack_power points (0.17 DPS) | yes | Dwarven Fishing Pole (3567, -0.01 DPS) [quest]; Fine Longbow (11304, -0.01 DPS) [vendor]; Cracked Blacksmith Hammer (285279, -0.01 DPS) [crafted] |
+| ranged | Lil Timmy's Peashooter (13136) | World drop [world_drop] | 4.2 attack_power points (0.17 DPS) | yes | Dwarven Fishing Pole (3567, -0.01 DPS) [quest]; Fine Longbow (11304, -0.01 DPS) [vendor]; Cracked Blacksmith Hammer (285279, -0.01 DPS) [crafted] |
 
 **New at 20:** head: Veteran's Silvered Chain Helm; neck: Sentinel's Medallion; shoulder: Rough Bronze Shoulders; back: Lambent Scale Cloak; chest: Mutant Scale Breastplate; wrist: Patterned Bronze Bracers; hands: Thorbia's Gauntlets; waist: Blackened Defias Belt; legs: Veteran's Chain Leggings; feet: Brawler's Leather Boots; finger1: Protector's Band; finger2: Demon Band; main_hand: Smite's Mighty Hammer; ranged: Lil Timmy's Peashooter
 
@@ -38,7 +40,9 @@ No-known-source sample (15 of 349, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (night-elf, 13323213030000000-000000000000000000-000000000000000000)
 
-Set DPS (verified): 63.1. Weights run: 3.4s. Verify run: 9.9s. 596 eligible items had no known source.
+Set DPS (verified): 63.1. Weights run: 4.2s. Verify run: 14.4s. 596 eligible items had no known source.
+
+Race sweep: night-elf 63.1 ± 0.1, human 62.4 ± 0.1, gnome 61.5 ± 0.1, dwarf 61.3 ± 0.1, high-order-skyborne 60.8 ± 0.1 (dps); the guide race night-elf is best.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.000 ± 0.004, agility=1.838 ± 0.055, crit=1.420 ± 0.062 per rating point (14 rating = 1%, 19.882 per %), hit=1.105 ± 0.169 per rating point (10 rating = 1%, 11.050 per %), melee_haste=11.706 ± 1.448
 
@@ -68,7 +72,9 @@ No-known-source sample (15 of 596, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 40 (night-elf, 13323213032214001-000000000000000000-000000000000000000)
 
-Set DPS (verified): 145.8. Weights run: 3.4s. Verify run: 15.2s. 815 eligible items had no known source.
+Set DPS (verified): 145.8. Weights run: 4.3s. Verify run: 21.2s. 815 eligible items had no known source.
+
+Race sweep: night-elf 145.8 ± 0.2, human 145.0 ± 0.2, dwarf 144.4 ± 0.2, gnome 143.3 ± 0.2, high-order-skyborne 138.4 ± 0.2 (dps); the guide race night-elf is best.
 
 1 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -100,7 +106,9 @@ No-known-source sample (15 of 815, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 50 (night-elf, 13323213032215201-050200000000000000-000000000000000000)
 
-Set DPS (verified): 218.6. Weights run: 3.6s. Verify run: 10.3s. 1030 eligible items had no known source.
+Set DPS (verified): 218.6. Weights run: 4.6s. Verify run: 15.5s. 1030 eligible items had no known source.
+
+Race sweep: high-order-skyborne 219.2 ± 0.3, night-elf 218.6 ± 0.3, human 218.3 ± 0.3, dwarf 218.3 ± 0.3, gnome 216.9 ± 0.3 (dps); high-order-skyborne beats the guide race night-elf by 0.7 (0.30%) ± 0.4, beyond error.
 
 2 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -132,7 +140,9 @@ No-known-source sample (15 of 1030, see the JSON for more): 913 Huge Ogre Sword;
 
 ### Band 60 (night-elf, 13323213032215201-050500000000000000-205000000000000000)
 
-Set DPS (verified): 312.0. Weights run: 3.2s. Verify run: 64.9s. 2366 eligible items had no known source.
+Set DPS (verified): 312.0. Weights run: 4.2s. Verify run: 79.8s. 2366 eligible items had no known source.
+
+Race sweep: night-elf 312.0 ± 0.4, high-order-skyborne 311.5 ± 0.4, human 311.1 ± 0.4, dwarf 310.5 ± 0.4, gnome 309.0 ± 0.4 (dps); the guide race night-elf is best.
 
 1 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -164,7 +174,9 @@ No-known-source sample (15 of 2366, see the JSON for more): 913 Huge Ogre Sword;
 
 ### Band 60, raid preset (night-elf, 30303213132215201-050500050120000000-100000000000000000)
 
-Set DPS (verified): 954.2. Weights run: 2.8s. Verify run: 68.6s. 2366 eligible items had no known source.
+Set DPS (verified): 954.2. Weights run: 3.6s. Verify run: 84.5s. 2366 eligible items had no known source.
+
+Race sweep: night-elf 954.2 ± 1.1, high-order-skyborne 954.2 ± 1.0, human 950.6 ± 1.1, gnome 947.9 ± 1.1, dwarf 940.3 ± 1.1 (dps); the guide race night-elf is best.
 
 2 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -196,31 +208,33 @@ No-known-source sample (15 of 2366, see the JSON for more): 913 Huge Ogre Sword;
 
 ## Horde
 
-### Band 20 (undead, 13322000000000000-000000000000000000-000000000000000000)
+### Band 20 (undead, 13320200000000000-000000000000000000-000000000000000000)
 
-Set DPS (verified): 31.6. Weights run: 3.0s. Verify run: 5.3s. 332 eligible items had no known source.
+Set DPS (verified): 32.6. Weights run: 3.6s. Verify run: 8.6s. 332 eligible items had no known source.
 
-Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.000 ± 0.003, agility=1.073 ± 0.024, crit=0.590 ± 0.022 per rating point (14 rating = 1%, 8.259 per %), hit=0.778 ± 0.071 per rating point (10 rating = 1%, 7.785 per %), melee_haste=8.033 ± 0.658
+Race sweep: windshaper-skyborne 32.8 ± 0.0, undead 32.6 ± 0.0, troll 31.8 ± 0.0, orc 31.6 ± 0.0, tauren 31.5 ± 0.0 (dps); windshaper-skyborne beats the guide race undead by 0.3 (0.80%) ± 0.0, beyond error.
+
+Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.000 ± 0.003, agility=1.040 ± 0.024, crit=0.578 ± 0.023 per rating point (14 rating = 1%, 8.085 per %), hit=0.697 ± 0.081 per rating point (10 rating = 1%, 6.969 per %), melee_haste=8.241 ± 0.688
 
 | Slot | Item | Source | Score (attack_power points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Veteran's Silvered Chain Helm (250528) | Blacksmithing [crafted] | 20.0 attack_power points (0.81 DPS) | yes | Defender's Leather Hood (252447, -0.14 DPS, sim-verified) [crafted]; Guard's Silvered Chain Helm (250529, -0.37 DPS) [crafted]; Brawler's Leather Hood (252504, -0.46 DPS) [crafted] |
-| neck | Scout's Medallion (20442) | Warsong Outriders [rep] | 6.4 attack_power points (0.26 DPS) | yes | Erudite's Amulet (277204, -0.15 DPS, sim-verified) [quest] |
-| shoulder | Rough Bronze Shoulders (3480) (or Silvered Bronze Shoulders (3481)) | Blacksmithing [crafted] | 6.0 attack_power points (0.24 DPS) | yes | Silvered Bronze Shoulders (3481, +0.00 DPS) [crafted]; Serpent's Shoulders (5404, -0.03 DPS) [dungeon] |
-| back | Lambent Scale Cloak (4706) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Dark Leather Cloak (2316, -0.03 DPS) [crafted]; Glowing Lizardscale Cloak (6449, -0.06 DPS) [dungeon]; Subterranean Cape (14149, -0.08 DPS) [dungeon] |
+| head | Veteran's Silvered Chain Helm (250528) | Blacksmithing [crafted] | 20.0 attack_power points (0.84 DPS) | yes | Defender's Leather Hood (252447, -0.17 DPS) [crafted]; Guard's Silvered Chain Helm (250529, -0.40 DPS) [crafted]; Brawler's Leather Hood (252504, -0.49 DPS) [crafted] |
+| neck | Scout's Medallion (20442) | Warsong Outriders [rep] | 6.2 attack_power points (0.26 DPS) | yes | Erudite's Amulet (277204, -0.17 DPS) [quest] |
+| shoulder | Rough Bronze Shoulders (3480) (or Silvered Bronze Shoulders (3481)) | Blacksmithing [crafted] | 6.0 attack_power points (0.25 DPS) | yes | Silvered Bronze Shoulders (3481, +0.00 DPS) [crafted]; Serpent's Shoulders (5404, -0.03 DPS) [dungeon] |
+| back | Lambent Scale Cloak (4706) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Dark Leather Cloak (2316, -0.04 DPS) [crafted]; Glowing Lizardscale Cloak (6449, -0.07 DPS) [dungeon]; Subterranean Cape (14149, -0.08 DPS) [dungeon] |
 | chest | Blackened Defias Armor (10399) | The Deadmines: Edwin VanCleef [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Veteran's Chain Shirt (250488, +0.00 DPS) [crafted]; Brawler's Leather Armor (252490, +0.00 DPS) [crafted]; Mutant Scale Breastplate (6627, -1.03 DPS, sim-verified) [dungeon] |
-| wrist | Patterned Bronze Bracers (2868) (or Death Bindings (286981)) | Blacksmithing [crafted] | 10.0 attack_power points (0.40 DPS) | yes | Death Bindings (286981, +0.00 DPS) [dungeon]; Bristlebark Bindings (14569, -0.11 DPS) [world_drop]; Raptorcrest Bracers (270010, -0.16 DPS) [quest] |
-| hands | Blackened Defias Gloves (10401) | The Deadmines: Defias Overseer [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Gold-flecked Gloves (5195, +0.00 DPS) [dungeon]; Gloves of the Fang (10413, +0.00 DPS) [dungeon]; Thorbia's Gauntlets (12994, -1.10 DPS, sim-verified) [world_drop] |
-| waist | Blackened Defias Belt (10403) | The Deadmines: Captain Greenskin [dungeon] | 18.0 attack_power points (0.73 DPS) | yes | Brawler's Leather Belt (252428, -0.23 DPS) [crafted]; Deviate Scale Belt (6468, -0.27 DPS) [crafted]; Cobrahn's Grasp (6460, -1.28 DPS, sim-verified) [dungeon] |
-| legs | Blackened Defias Leggings (10400) | The Deadmines: Defias Overseer [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Defender's Leather Pants (252445, +0.00 DPS) [crafted]; Brawler's Leather Pants (252500, +0.00 DPS) [crafted]; Veteran's Chain Leggings (250493, -0.97 DPS, sim-verified) [crafted] |
-| feet | Brawler's Leather Boots (252439) | Leatherworking [crafted] | 15.4 attack_power points (0.62 DPS) | yes | Feet of the Lynx (1121, -0.03 DPS) [world_drop]; Veteran's Boots (250503, -0.04 DPS) [crafted]; Defender's Leather Boots (252441, -0.22 DPS) [crafted] |
-| finger1 | Legionnaire's Band (20429) | Warsong Outriders [rep] | 12.3 attack_power points (0.50 DPS) | yes | Loop of Sacrifice (281673, -0.25 DPS) [quest]; Bounty Hunter's Ring (5351, -0.37 DPS) [quest]; The 1 Ring (8350, -0.37 DPS) [world] |
-| finger2 | Demon Band (12054) | World drop [world_drop] | 8.0 attack_power points (0.32 DPS) | yes | Loop of Sacrifice (281673, -0.08 DPS) [quest]; Bounty Hunter's Ring (5351, -0.19 DPS) [quest]; The 1 Ring (8350, -0.20 DPS) [world] |
+| wrist | Patterned Bronze Bracers (2868) (or Death Bindings (286981)) | Blacksmithing [crafted] | 10.0 attack_power points (0.42 DPS) | yes | Death Bindings (286981, +0.00 DPS) [dungeon]; Bristlebark Bindings (14569, -0.12 DPS) [world_drop]; Raptorcrest Bracers (270010, -0.17 DPS) [quest] |
+| hands | Blackened Defias Gloves (10401) | The Deadmines: Defias Overseer [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Gold-flecked Gloves (5195, +0.00 DPS) [dungeon]; Gloves of the Fang (10413, +0.00 DPS) [dungeon]; Thorbia's Gauntlets (12994, -1.12 DPS, sim-verified) [world_drop] |
+| waist | Blackened Defias Belt (10403) | The Deadmines: Captain Greenskin [dungeon] | 18.0 attack_power points (0.75 DPS) | yes | Brawler's Leather Belt (252428, -0.24 DPS) [crafted]; Deviate Scale Belt (6468, -0.29 DPS) [crafted]; Cobrahn's Grasp (6460, -1.30 DPS, sim-verified) [dungeon] |
+| legs | Blackened Defias Leggings (10400) | The Deadmines: Defias Overseer [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Defender's Leather Pants (252445, +0.00 DPS) [crafted]; Brawler's Leather Pants (252500, +0.00 DPS) [crafted]; Veteran's Chain Leggings (250493, -0.98 DPS, sim-verified) [crafted] |
+| feet | Brawler's Leather Boots (252439) | Leatherworking [crafted] | 15.2 attack_power points (0.64 DPS) | yes | Feet of the Lynx (1121, -0.04 DPS) [world_drop]; Veteran's Boots (250503, -0.04 DPS) [crafted]; Defender's Leather Boots (252441, -0.22 DPS) [crafted] |
+| finger1 | Legionnaire's Band (20429) | Warsong Outriders [rep] | 12.2 attack_power points (0.51 DPS) | yes | Loop of Sacrifice (281673, -0.26 DPS) [quest]; Bounty Hunter's Ring (5351, -0.38 DPS) [quest]; The 1 Ring (8350, -0.38 DPS) [world] |
+| finger2 | Demon Band (12054) | World drop [world_drop] | 8.0 attack_power points (0.34 DPS) | yes | Loop of Sacrifice (281673, -0.08 DPS) [quest]; Bounty Hunter's Ring (5351, -0.20 DPS) [quest]; The 1 Ring (8350, -0.21 DPS) [world] |
 | trinket1 | - | - |  |  |  |
 | trinket2 | - | - |  |  |  |
-| main_hand | Forsaken Greataxe (251533) | The Wrath of Rath'mael [quest] | 303.0 attack_power points (12.23 DPS) | yes | Hammerbone (270018, -0.11 DPS) [quest]; Duskbringer (2205, -0.35 DPS) [dungeon]; Smite's Mighty Hammer (7230, -0.65 DPS, sim-verified) [dungeon] |
+| main_hand | Forsaken Greataxe (251533) | The Wrath of Rath'mael [quest] | 303.0 attack_power points (12.71 DPS) | yes | Hammerbone (270018, -0.12 DPS) [quest]; Duskbringer (2205, -0.36 DPS) [dungeon]; Smite's Mighty Hammer (7230, -0.69 DPS, sim-verified) [dungeon] |
 | off_hand | - | - |  |  |  |
-| ranged | Lil Timmy's Peashooter (13136) | World drop [world_drop] | 4.3 attack_power points (0.17 DPS) | yes | Fine Longbow (11304, -0.01 DPS) [vendor]; Cracked Blacksmith Hammer (285279, -0.01 DPS) [crafted]; Deadly Blunderbuss (4369, -0.09 DPS) [crafted] |
+| ranged | Lil Timmy's Peashooter (13136) | World drop [world_drop] | 4.2 attack_power points (0.17 DPS) | yes | Fine Longbow (11304, -0.01 DPS) [vendor]; Cracked Blacksmith Hammer (285279, -0.01 DPS) [crafted]; Deadly Blunderbuss (4369, -0.09 DPS) [crafted] |
 
 **New at 20:** head: Veteran's Silvered Chain Helm; neck: Scout's Medallion; shoulder: Rough Bronze Shoulders; back: Lambent Scale Cloak; chest: Blackened Defias Armor; wrist: Patterned Bronze Bracers; hands: Blackened Defias Gloves; waist: Blackened Defias Belt; legs: Blackened Defias Leggings; feet: Brawler's Leather Boots; finger1: Legionnaire's Band; finger2: Demon Band; main_hand: Forsaken Greataxe; ranged: Lil Timmy's Peashooter
 
@@ -228,7 +242,9 @@ No-known-source sample (15 of 332, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (undead, 13323213030000000-000000000000000000-000000000000000000)
 
-Set DPS (verified): 63.2. Weights run: 3.4s. Verify run: 9.1s. 581 eligible items had no known source.
+Set DPS (verified): 63.2. Weights run: 4.2s. Verify run: 13.1s. 581 eligible items had no known source.
+
+Race sweep: undead 63.2 ± 0.1, troll 62.1 ± 0.1, orc 61.9 ± 0.1, tauren 61.5 ± 0.1, windshaper-skyborne 60.8 ± 0.1 (dps); the guide race undead is best.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.000 ± 0.004, agility=1.838 ± 0.055, crit=1.420 ± 0.062 per rating point (14 rating = 1%, 19.882 per %), hit=1.105 ± 0.169 per rating point (10 rating = 1%, 11.050 per %), melee_haste=11.706 ± 1.448
 
@@ -258,7 +274,9 @@ No-known-source sample (15 of 581, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 40 (undead, 13323213032214001-000000000000000000-000000000000000000)
 
-Set DPS (verified): 145.1. Weights run: 3.4s. Verify run: 15.4s. 797 eligible items had no known source.
+Set DPS (verified): 145.1. Weights run: 4.3s. Verify run: 21.3s. 797 eligible items had no known source.
+
+Race sweep: undead 145.1 ± 0.2, orc 143.2 ± 0.2, troll 142.8 ± 0.2, tauren 142.4 ± 0.2, windshaper-skyborne 138.0 ± 0.2 (dps); the guide race undead is best.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.000 ± 0.004, agility=2.096 ± 0.080, crit=2.055 ± 0.096 per rating point (14 rating = 1%, 28.771 per %), hit=2.804 ± 0.239 per rating point (10 rating = 1%, 28.043 per %), melee_haste=17.608 ± 2.144
 
@@ -288,7 +306,9 @@ No-known-source sample (15 of 797, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 50 (undead, 13323213032215201-050200000000000000-000000000000000000)
 
-Set DPS (verified): 221.7. Weights run: 3.6s. Verify run: 11.4s. 1011 eligible items had no known source.
+Set DPS (verified): 221.7. Weights run: 4.6s. Verify run: 16.5s. 1011 eligible items had no known source.
+
+Race sweep: undead 221.7 ± 0.3, windshaper-skyborne 221.1 ± 0.3, troll 220.1 ± 0.3, orc 218.9 ± 0.3, tauren 217.7 ± 0.3 (dps); the guide race undead is best.
 
 2 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -320,7 +340,9 @@ No-known-source sample (15 of 1011, see the JSON for more): 913 Huge Ogre Sword;
 
 ### Band 60 (undead, 13323213032215201-050500000000000000-205000000000000000)
 
-Set DPS (verified): 308.9. Weights run: 3.2s. Verify run: 68.2s. 2356 eligible items had no known source.
+Set DPS (verified): 308.9. Weights run: 4.2s. Verify run: 85.8s. 2356 eligible items had no known source.
+
+Race sweep: undead 308.9 ± 0.4, windshaper-skyborne 306.2 ± 0.3, troll 305.1 ± 0.3, orc 303.7 ± 0.3, tauren 302.3 ± 0.3 (dps); the guide race undead is best.
 
 4 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -352,7 +374,9 @@ No-known-source sample (15 of 2356, see the JSON for more): 913 Huge Ogre Sword;
 
 ### Band 60, raid preset (undead, 30303213132215201-050500050120000000-100000000000000000)
 
-Set DPS (verified): 926.0. Weights run: 2.8s. Verify run: 68.8s. 2356 eligible items had no known source.
+Set DPS (verified): 926.0. Weights run: 3.6s. Verify run: 85.4s. 2356 eligible items had no known source.
+
+Race sweep: windshaper-skyborne 930.5 ± 1.1, undead 926.0 ± 1.1, orc 923.9 ± 1.1, troll 923.3 ± 1.1, tauren 915.5 ± 1.1 (dps); windshaper-skyborne beats the guide race undead by 4.5 (0.48%) ± 1.5, beyond error.
 
 3 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
