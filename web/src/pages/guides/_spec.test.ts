@@ -148,7 +148,7 @@ describe('/guides/warrior/fury (the page structure)', () => {
     const answer = blockOf(main, 'guide-answer', 2000);
     expect(main.indexOf('data-region="head-answer"')).toBeLessThan(main.indexOf('id="guide-answer"'));
     expect(main).toMatch(
-      /id="guide-answer" data-signed-in-only data-state="loading" data-page="[^"]*classSlug&quot;:&quot;warrior&quot;,&quot;specSlug&quot;:&quot;fury&quot;,&quot;ladder&quot;:\[\{&quot;level&quot;:10/,
+      /id="guide-answer"[^>]*data-signed-in-only[^>]*data-state="loading"[^>]*data-page="[^"]*classSlug&quot;:&quot;warrior&quot;,&quot;specSlug&quot;:&quot;fury&quot;,&quot;ladder&quot;:\[\{&quot;level&quot;:10/,
     );
     expect(answer).toContain(guidesCopy.answerLabel);
   });

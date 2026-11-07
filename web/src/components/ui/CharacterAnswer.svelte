@@ -4,7 +4,10 @@
      (lib/guides/guide-answer-mount.ts paintGuideAnswer: the same data-field contract), the crest
      40 left of the name 18/22 in the class colour and a Small level line, then its links; or a
      Small message and a link or a retry. Reserved at its final size (380 x 96 from 900) while
-     the account loads when a session is hinted (the skeleton); no answer column signed out. -->
+     the account loads when a session is hinted (the skeleton); no answer column signed out.
+     `crest="end"` (the guides) puts the crest at the outer right edge of the right-aligned box
+     from 900, the name and level line right-aligned beside it. With `testid`, the detail, next
+     and action fields carry `<testid>-detail`, `-next` and `-action`. -->
 <script lang="ts">
   import { LINK } from '../../lib/ui/primitives';
 
@@ -13,6 +16,7 @@
     id,
     page,
     testid,
+    crest = 'start',
   }: {
     label: string;
     /** The element the page script paints. */
@@ -20,7 +24,11 @@
     /** What the page tells its script (JSON in `data-page`). */
     page?: unknown;
     testid?: string;
+    /** Which side of the name the crest sits on from 900: left (`start`) or the outer right edge (`end`). */
+    crest?: 'start' | 'end';
   } = $props();
+
+  const sub = (name: string): string | undefined => (testid === undefined ? undefined : `${testid}-${name}`);
 </script>
 
 <div
@@ -29,6 +37,7 @@
   data-signed-in-only
   data-state="loading"
   data-page={page === undefined ? undefined : JSON.stringify(page)}
+  data-crest={crest}
   data-testid={testid}
 >
   <span class="text-label tracking-label text-muted font-bold uppercase">{label}</span>
@@ -47,14 +56,15 @@
       <img class="ui-cans-crest crest" data-field="crest" src="" alt="" width="40" height="40" />
       <span class="ui-cans-text">
         <b class="ui-cans-name" data-field="name"></b>
-        <span class="text-small text-muted" data-field="detail"></span>
+        <span class="text-small text-muted" data-field="detail" data-testid={sub('detail')}></span>
       </span>
     </span>
     <span class="text-small text-muted" data-field="message" hidden></span>
     <span class="ui-cans-links">
-      <span class="text-small text-muted" data-field="next" hidden></span>
+      <span class="text-small text-muted ui-cans-next" data-field="next" data-testid={sub('next')} hidden
+      ></span>
       <span class="ui-cans-links" data-field="links"></span>
-      <button type="button" class={LINK} data-field="action" hidden></button>
+      <button type="button" class={LINK} data-field="action" data-testid={sub('action')} hidden></button>
     </span>
   </div>
 </div>
@@ -86,6 +96,9 @@
     display: flex;
     flex-direction: column;
     min-width: 0;
+  }
+  .ui-cans-sk .ui-cans-text {
+    gap: 4px;
   }
   .ui-cans-sk-crest {
     width: 40px;
@@ -154,6 +167,17 @@
     }
     .ui-cans-text {
       text-align: left;
+    }
+    .ui-cans-next {
+      flex-basis: 100%;
+      text-align: right;
+    }
+    .ui-cans[data-crest='end'] .ui-cans-row {
+      flex-direction: row-reverse;
+    }
+    .ui-cans[data-crest='end'] .ui-cans-text {
+      align-items: flex-end;
+      text-align: right;
     }
   }
 </style>

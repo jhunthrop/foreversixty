@@ -107,6 +107,15 @@ describe('CharacterAnswer', () => {
     }
     // the crest comes before the name: it sits at the name's left (ruling SHOULD)
     expect(body.indexOf('data-field="crest"')).toBeLessThan(body.indexOf('data-field="name"'));
+    expect(body).toContain('data-crest="start"');
+    for (const sub of ['detail', 'next', 'action']) expect(body).toContain(`data-testid="ans-${sub}"`);
+  });
+
+  it("takes the guides' outer-edge crest, and names no sub-fields without a testid", () => {
+    const body = html(CharacterAnswer, { label: 'Your character', id: 'guide-answer', crest: 'end' });
+    expect(body).toContain('data-crest="end"');
+    expect(body).not.toContain('data-testid');
+    expect(body).not.toContain('data-page');
   });
 });
 

@@ -1,7 +1,7 @@
 // web/src/lib/guides/guide-answer-mount.test.ts
 // @vitest-environment jsdom
-// Paints the answer into GuideAnswer.astro's own markup (read from the file, so a renamed field
-// fails this test), marks the header character's spec row, and boots from the page's facts:
+// Paints the answer into ui/CharacterAnswer's own markup as the guides render it (read from the
+// file, so a renamed field fails this test), marks the header character's spec row, and boots from the page's facts:
 // the header selector's character, only the newest read painted.
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
@@ -16,14 +16,19 @@ import { markSpecRows, mountGuideAnswer, paintGuideAnswer } from './guide-answer
 let session: Me | null = null;
 vi.mock('../account/api', () => ({ fetchMeOnce: () => Promise.resolve(session) }));
 
-/** GuideAnswer.astro's own markup: its body with the frontmatter, the script and the style cut
- *  and its two expressions filled (an Astro component cannot render in the jsdom environment; vitest runs from web/). */
-const ANSWER_SOURCE = readFileSync(path.resolve('src/components/guides/GuideAnswer.astro'), 'utf8');
+/** ui/CharacterAnswer's markup with GuideAnswer.astro's props filled in: this environment compiles
+ *  Svelte for the client, which svelte/server cannot render (pages-primitives.test.ts pins the
+ *  server render); vitest runs from web/. */
 const PAGE = { classSlug: 'hunter', specSlug: 'survival', ladder: [{ level: 36, name: 'Expose Prey' }] };
-const markup = ANSWER_SOURCE.split('---')[2]!
-  .split('<script>')[0]!
-  .replace('{guidesCopy.answerLabel}', 'Your character')
-  .replace('data-page={JSON.stringify(page)}', `data-page='${JSON.stringify(PAGE)}'`)
+const markup = readFileSync(path.resolve('src/components/ui/CharacterAnswer.svelte'), 'utf8')
+  .split('</script>')[1]!
+  .split('<style>')[0]!
+  .replace('{id}', 'id="guide-answer"')
+  .replace('{label}', 'Your character')
+  .replace(/data-page=\{[^}]*\}/, `data-page='${JSON.stringify(PAGE)}'`)
+  .replace('data-crest={crest}', 'data-crest="end"')
+  .replace('data-testid={testid}', 'data-testid="guide-answer"')
+  .replace(/data-testid=\{sub\('([a-z]+)'\)\}/g, 'data-testid="guide-answer-$1"')
   .replace('class={LINK}', '');
 
 const BOW: GuideCharacter = {
@@ -51,6 +56,10 @@ afterEach(() => {
 });
 
 describe('paintGuideAnswer', () => {
+  it('paints markup with every expression filled', () => {
+    expect(markup.replace(/data-page='[^']*'/, '')).not.toMatch(/[{}]/);
+  });
+
   it('paints a ready answer: crest, name in the class colour, the detail line, next and links', () => {
     const root = mountMarkup();
     const answer: Answer = {

@@ -1,7 +1,7 @@
 // web/src/lib/guides/guide-answer-mount.ts
-// Paints the signed-in answer (GuideAnswer.astro's markup) after load, only when a session is
-// hinted, and again on every change of the header selector's character; only the newest read
-// paints. Plain DOM: the guide pages carry no island above the fold.
+// Paints the signed-in answer (ui/CharacterAnswer's markup, via GuideAnswer.astro) after load,
+// only when a session is hinted, and again on every change of the header selector's character;
+// only the newest read paints. Plain DOM: the guide pages carry no island above the fold.
 import { fetchMeOnce } from '../account/api';
 import { onCurrentCharacterChange, readCurrent } from '../current-character';
 import { classCrestSrc } from '../class-crest';
