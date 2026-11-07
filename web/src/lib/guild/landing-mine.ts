@@ -5,6 +5,7 @@
 // a page.
 import type { Me } from '../account/api';
 import { guildHref, isRegion, isRuleset, rulesetLabel } from '../characters';
+import { guildRosterModelCopy } from './copy';
 
 export interface MyGuildRow {
   key: string;
@@ -12,7 +13,11 @@ export interface MyGuildRow {
   href: string;
   /** `US PvP`: where the guild lives, the way the lookup's own selects write it. */
   where: string;
+  /** The account's rank there (`Officer`), as the roster writes it; null when /v1/me sends none. */
+  rank: string | null;
 }
+
+const RANKS: Readonly<Record<string, string>> = guildRosterModelCopy.ranks;
 
 /** The account's guilds in the order `/v1/me` sends them; none signed out. */
 export function myGuildRows(me: Me | null): MyGuildRow[] {
@@ -21,6 +26,7 @@ export function myGuildRows(me: Me | null): MyGuildRow[] {
     name: guild.name,
     href: guildHref(guild.region, guild.ruleset, guild.name),
     where: `${guild.region.toUpperCase()} ${rulesetLabel(guild.ruleset)}`,
+    rank: guild.rank === undefined ? null : (RANKS[guild.rank] ?? null),
   }));
 }
 

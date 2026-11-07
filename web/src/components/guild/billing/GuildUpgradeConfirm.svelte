@@ -4,16 +4,17 @@
      (its ring shows on focus moved in code), Escape acts as Keep Guild. The renewal date is the plan
      line's own, so the two sentences never disagree. Below 768 the buttons are full width. -->
 <script lang="ts">
+  import { button } from '../../../lib/ui/button';
   import type { GuildPlanView, UpgradePreview } from '../../../lib/billing/contract';
   import { guildBillingCopy as copy } from '../../../lib/billing/guild-billing-copy';
   import {
     BILLING_SAFE_TEXT_BUTTON,
     CONFIRM_ACTION_WIDTH,
     CONFIRM_ACTIONS,
+    CONFIRM_BLOCK,
   } from '../../../lib/guild/billing-styles';
   import { upgradeFacts } from '../../../lib/guild/upgrade-facts';
   import { focusOnMount } from '../../../lib/guild/focus-now';
-  import { PRIMARY_BUTTON_FIXED } from '../../../lib/planner/styles';
   import Skeleton from '../../ui/Skeleton.svelte';
 
   let {
@@ -50,7 +51,7 @@
 </script>
 
 <div
-  class="border-line-soft flex flex-col gap-3 border p-4"
+  class={CONFIRM_BLOCK}
   role="group"
   aria-labelledby="guild-upgrade-sentence"
   aria-busy={preview === null || committing}
@@ -79,7 +80,7 @@
   <div class={CONFIRM_ACTIONS}>
     <button
       type="button"
-      class="{PRIMARY_BUTTON_FIXED} {CONFIRM_ACTION_WIDTH} px-4"
+      class="{button('primary')} {CONFIRM_ACTION_WIDTH}"
       disabled={preview === null || committing}
       onclick={onCommit}
       data-testid="guild-upgrade-commit"

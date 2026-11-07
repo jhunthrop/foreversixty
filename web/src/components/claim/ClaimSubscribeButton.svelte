@@ -5,7 +5,7 @@
   import { startCheckout } from '../../lib/billing/api';
   import { checkoutGuildCopy } from '../../lib/billing/checkout-guild-copy';
   import type { ClaimPlan } from '../../lib/guild/claim-plan';
-  import { PRIMARY_BUTTON_FIXED } from '../../lib/planner/styles';
+  import { button } from '../../lib/ui/button';
   import { BUSY_CLASS } from '../../lib/ui/busy';
 
   let { guildId, claimPlan, label }: { guildId: number; claimPlan: ClaimPlan; label: string } = $props();
@@ -28,7 +28,7 @@
 
 <div class="flex flex-col gap-2">
   <button
-    class={`${PRIMARY_BUTTON_FIXED} w-full justify-center px-4 md:w-fit ${busy ? BUSY_CLASS : ''}`}
+    class={`${button('primary')} w-full md:w-fit ${busy ? BUSY_CLASS : ''}`}
     onclick={() => void onClick()}
     disabled={busy}
     aria-busy={busy}

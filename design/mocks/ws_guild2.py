@@ -183,7 +183,7 @@ def raid_ready() -> str:
     ff = sum(1 for r in rows if r['flask_food']['flask_or_elixir'] and r['flask_food']['food'])
     tanks = [r for r in F.raid_view(O.OFFICER, True)['signups'] if r['role'] == 'tank' and r['state'] in ('in', 'late')]
     figs = Figures([(f'{att} of {len(rows)}', 'Attuned', '', '', 'sm'), (f'{ff} of {len(rows)}', 'Flask and food', '', '', 'sm')])
-    label = (f'<div style="display:flex;gap:12px;align-items:baseline;padding-top:8px"><span class="t-label">Fire resistance on tanks</span>'
+    label = (f'<div style="display:flex;gap:12px;align-items:baseline;padding-top:8px"><span class="t-small" style="color:var(--strong);font-weight:600">Fire resistance on tanks</span>'
              f'<span class="t-small">{len(tanks)} tank signed</span></div>')
     trows = Rows([Row(t['name'], trail=f"<b>{O.TANK_FIRE.get(t['name'], 0)} fire resistance</b>", title_color=C[t['class']], slim=True, link=False) for t in tanks], open_=True)
     return pad(figs) + label + trows
@@ -273,17 +273,22 @@ def cover_rows(raid, kind):
     return out
 
 
-def assignment_rows(encounter):
+def assignment_rows(encounter, edited=None):
+    """Each slot's Row; the `edited` slot (an officer's Edit) reads Done and opens its picker under the Row (AssignmentSlotRow)."""
     rows = []
     for s in encounter['slots']:
         names = ''.join(Tag(n['name'], 'gold' if n['own'] else 'muted') for n in s['names']) or '<span class="t-small">Open</span>'
         own = any(n['own'] for n in s['names'])
-        rows.append(Row(s['label'], f"{len(s['names'])} of {s['count']} &middot; {s['purpose']}", trail=Button('Edit', small=True, tone='ghost', act=True), foot=names,
-                        link=False, selected=own))
+        open_ = s['key'] == edited
+        row = Row(s['label'], f"{len(s['names'])} of {s['count']} &middot; {s['purpose']}", trail=Button('Done' if open_ else 'Edit', small=True, tone='ghost', act=True),
+                  foot=names, link=False, selected=own)
+        if open_:
+            row += f'<div style="display:flex;flex-direction:column;gap:8px;padding:8px 0 12px">{Select("Add a raider")}</div>'
+        rows.append(row)
     return rows
 
 
-def raid_planner():
+def raid_planner(edited=None):
     raid = guild_raid.raid_view()
     n, by = raid['counts'], {m['name']: m for m in guild_raid.MEMBERS}
     you = by[guild_raid.VIEWER]
@@ -304,7 +309,7 @@ def raid_planner():
              for m in sorted((by[s['name']] for s in raid['signups'] if s['state'] == 'bench'), key=lambda m: (CLASS_ORDER.index(m['class']), m['name']))]
     enc = raid['assignments']['encounters'][0]
     yours = ', '.join(s['label'] for s in enc['slots'] if any(x['own'] for x in s['names']))
-    assign = (Rows(assignment_rows(enc), open_=True, list_=True)
+    assign = (Rows(assignment_rows(enc, edited), open_=True, list_=True)
               + ButtonRow(Button('Copy as raid warning', small=True, act=True) + Button('Post to Discord', small=True, act=True)))
     cover = (Grid(['Need', 'In'], cover_rows(raid, 'buff'), 'Buffs: need against signed-up raiders', 'Buffs')
              + Grid(['Need', 'In'], cover_rows(raid, 'debuff'), 'Debuffs: need against signed-up raiders', 'Debuffs'))
@@ -319,7 +324,7 @@ def raid_planner():
                          actions=actions, tabs=TabStrip(TABS, 'Raids')))
     # The guild route's <main> ends 40 px under its view (pages/guild/[...path].astro pb-10).
     body = f'<div style="padding-bottom:40px">{head + bar + Page("split", main, rail, sticky_rail=True)}</div>'
-    return build_page('Raid planner', body, 'Guild', (guild_raid.VIEWER, you['class'], f"{you['spec']} {you['class'].title()} &middot; 60"))
+    return build_page('Raid planner, assignments' if edited else 'Raid planner', body, 'Guild', (guild_raid.VIEWER, you['class'], f"{you['spec']} {you['class'].title()} &middot; 60"))
 
 
 def band_line(viewer: str) -> str:

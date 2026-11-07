@@ -23,7 +23,7 @@
   class="flex flex-col gap-2 md:flex-row md:items-center md:justify-between md:gap-4"
   data-testid="guild-size-line"
 >
-  <p class="border-gold border-l-2 pl-3.5 text-[14px]">{copy.size.line(count)}</p>
+  <p class="text-[14px]">{copy.size.line(count)}</p>
   {#if payer}
     <button
       type="button"

@@ -13,6 +13,7 @@
   import { formatMadeOn, inviteUrl } from '../../lib/guild/invite-link';
   import { BUSY_CLASS } from '../../lib/ui/busy';
   import { button } from '../../lib/ui/button';
+  import { CONFIRM_BLOCK } from '../../lib/guild/billing-styles';
   import { COPIED_LONG_MS } from '../../lib/ui/copy-feedback';
   import CopyLinkField from '../ui/CopyLinkField.svelte';
   import SettingsRow from '../ui/SettingsRow.svelte';
@@ -95,15 +96,11 @@
 </script>
 
 <div bind:this={root} id="invite" class="flex scroll-mt-20 flex-col" data-testid={`${TESTID}-block`}>
-  <SettingsRow label={copy.inviteHeading} sub={copy.inviteHelp(guildName)} />
-  <div class="flex flex-col items-start gap-3 px-5 pb-4">
+  <SettingsRow open label={copy.inviteHeading} sub={copy.inviteHelp(guildName)} />
+  <div class="flex flex-col items-start gap-3 pb-3">
     {#if confirming}
       <!-- svelte-ignore a11y_no_static_element_interactions -->
-      <div
-        class="border-line-soft flex w-full flex-col gap-3 border p-4"
-        onkeydown={onConfirmKey}
-        data-testid={`${TESTID}-rotate-confirm`}
-      >
+      <div class="{CONFIRM_BLOCK} w-full" onkeydown={onConfirmKey} data-testid={`${TESTID}-rotate-confirm`}>
         <p class="text-[13px]">{copy.rotateConfirmLine}</p>
         <div class="flex gap-3">
           <button

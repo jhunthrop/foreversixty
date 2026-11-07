@@ -1,0 +1,23 @@
+{
+  "guild": {
+    "id": 2,
+    "region": "us",
+    "ruleset": "pvp",
+    "name": "Olympus XXVII",
+    "faction": "alliance",
+    "crest_url": null
+  },
+  "members": 24,
+  "inviter": {
+    "name": "Ironbrand",
+    "class": "paladin",
+    "character_key": "us/pvp/ironbrand"
+  },
+  "joins_as": {
+    "name": "Ashenveil",
+    "class": "paladin",
+    "race": "Human",
+    "level": 60,
+    "on_roster": true
+  }
+}

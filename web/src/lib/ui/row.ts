@@ -6,6 +6,10 @@
 export const ROW =
   'border-line-soft flex min-h-14 w-full flex-wrap items-center gap-x-[14px] gap-y-1 border-t px-5 py-[10px] text-left';
 
+/** The same row open, in a Section rather than a card (web layout spec 2026-11-05 §3A.2): no side
+ *  padding, a hairline under each row but the last. */
+export const ROW_OPEN = ROW.replace('border-t px-5', 'border-b px-0 last:border-b-0');
+
 /** The hover ground alone, for a row that holds its own links and buttons (a character row). */
 export const ROW_HOVER = 'transition-colors duration-[120ms] hover:bg-row-hover';
 

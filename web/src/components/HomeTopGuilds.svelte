@@ -1,23 +1,21 @@
 <!-- web/src/components/HomeTopGuilds.svelte -->
-<!-- The home page's Rankings panel live element (spec 2026-09-23 §2 item 3): the top five
-     guilds by progression, from `GET /v1/rankings/guilds?kind=progress` -- the one guild
-     leaderboard kind that needs no `encounter` (api/internal/rankings/guilds.go: `KindProgress`
-     counts distinct encounters killed, ordered desc). Same loading/error/empty/reveal shape
-     as `RecentReports.svelte` and `Rankings.svelte`'s own guild board, at panel scale: five
-     rows, not eight. -->
+<!-- The guild landing's Top guilds (web layout spec 2026-11-05 §6.1): the top five guilds by
+     progression, from `GET /v1/rankings/guilds?kind=progress` (the one guild leaderboard kind that
+     needs no `encounter`), as ranked Rows with a Meter against the leader in the page's one Plate.
+     Loading holds the five rows' height; a failure and an empty board are open lines. -->
 <script lang="ts">
-  import { guildHref } from '../lib/characters';
-  import { rowLink } from '../lib/report/format';
+  import { guildHref, rulesetLabel } from '../lib/characters';
   import { fetchGuildRankings, type GuildRankingRow } from '../lib/rankings/api';
   import { homeTopGuildsCopy } from '../lib/rankings/copy';
-  import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
   import LoadError from './ui/LoadError.svelte';
+  import Meter from './ui/Meter.svelte';
+  import Plate from './ui/Plate.svelte';
+  import Row from './ui/Row.svelte';
   import Skeleton from './ui/Skeleton.svelte';
 
   const ROWS = 5;
 
-  /** The empty board's "Open the guild page" button; off on the guild landing, which is that page. */
-  let { emptyAction = true }: { emptyAction?: boolean } = $props();
+  let { label = homeTopGuildsCopy.placeholderLabel }: { label?: string } = $props();
 
   let rows = $state<GuildRankingRow[]>([]);
   let status = $state<'loading' | 'ready' | 'failed'>('loading');
@@ -38,6 +36,8 @@
     void attempt;
     void load();
   });
+
+  const top = $derived(Math.max(1, ...rows.map((row) => row.value)));
 </script>
 
 {#if status === 'loading'}
@@ -55,31 +55,24 @@
     testid="home-top-guilds-error"
   />
 {:else if rows.length === 0}
-  <div class="flex flex-col items-start gap-3" data-testid="home-top-guilds-empty">
-    <p class="text-muted text-[14px]">{homeTopGuildsCopy.empty}</p>
-    {#if emptyAction}
-      <a class="{SECONDARY_BUTTON_FIXED} border-line-warm text-text px-4" href={homeTopGuildsCopy.emptyHref}>
-        {homeTopGuildsCopy.emptyAction}
-      </a>
-    {/if}
-  </div>
+  <p class="text-muted text-[14px]" data-testid="home-top-guilds-empty">{homeTopGuildsCopy.empty}</p>
 {:else}
-  <ul class="reveal flex flex-col" data-testid="home-top-guilds">
+  <Plate {label} testid="home-top-guilds">
     {#each rows as row (`${row.rank}-${row.guild.region}-${row.guild.ruleset}-${row.guild.name}`)}
-      <li
-        class="border-line-soft grid min-h-9 grid-cols-[24px_minmax(0,1fr)_auto] items-center gap-2 border-b py-1 text-[13px] last:border-b-0"
+      {@const bosses = homeTopGuildsCopy.bosses(Math.round(row.value))}
+      <Row
+        title={row.guild.name}
+        rank={String(row.rank)}
+        sub={`${row.guild.region.toUpperCase()} ${rulesetLabel(row.guild.ruleset)}`}
+        href={guildHref(row.guild.region, row.guild.ruleset, row.guild.name)}
       >
-        <span class="text-muted numeric text-[12px]">{row.rank}</span>
-        <a
-          class="{rowLink} truncate font-semibold"
-          href={guildHref(row.guild.region, row.guild.ruleset, row.guild.name)}
-        >
-          {row.guild.name}
-        </a>
-        <span class="text-muted numeric text-[12px]">
-          {homeTopGuildsCopy.bosses(Math.round(row.value))}
-        </span>
-      </li>
+        {#snippet trail()}
+          <span class="hidden w-24 md:block"
+            ><Meter value={row.value / top} label={`${row.guild.name}: ${bosses}`} /></span
+          >
+          <span class="text-text w-[72px] text-right text-[14px] font-semibold tabular-nums">{bosses}</span>
+        {/snippet}
+      </Row>
     {/each}
-  </ul>
+  </Plate>
 {/if}

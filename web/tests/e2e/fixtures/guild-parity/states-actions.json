@@ -1,0 +1,16 @@
+{
+  "approvals": {
+    "count": 0,
+    "names": []
+  },
+  "applications": {
+    "count": 0,
+    "names": []
+  },
+  "not_signed": {
+    "raid_id": null,
+    "count": 0,
+    "names": []
+  },
+  "drops_to_award": null
+}
