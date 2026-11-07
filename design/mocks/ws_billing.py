@@ -20,7 +20,7 @@ from ws_lib import page as _page
 
 HERE = Path(__file__).resolve().parent
 F = json.loads(Path(os.environ.get('FS_BILLING_FACTS') or HERE / 'data' / 'billing-facts.json').read_text())
-G, D, A = F['guild'], F['discord'], F['admin']
+D, A = F['discord'], F['admin']
 WHO = ('Thandrel', 'warrior', 'Level 60')
 
 CSS = '''<style>
@@ -54,7 +54,7 @@ def render(title: str, body: str, nav: str, note: str) -> str:
     return _page(title, body + CSS + f'<style>{ws_prims.PRIM_CSS}</style>', nav, WHO, note, '')
 
 
-# ================================================================================================ the guild Billing tab blocks
+# ================================================================================================ the account's Discord paste form
 def discord_paste() -> str:
     """DiscordPasteForm in the account's notifications Section: the steps (an ordered list), the Field, the trust helper,
     the event switches, Save."""
