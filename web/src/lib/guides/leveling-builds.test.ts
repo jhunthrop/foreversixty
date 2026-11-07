@@ -234,7 +234,13 @@ describe('the ladder’s point order', () => {
     const trees = loadLadderTrees(BUILD, 'mage')!;
     const nameOf = new Map(trees.flatMap((tree) => tree.talents.map((t) => [t.id, t.name] as const)));
     const at = (level: number) => nameOf.get(order[level - 10]!);
-    expect([at(40), at(41), at(43), at(44), at(45)]).toEqual(['Combustion', 'Precision', 'Precision', 'Wand Specialization', 'Wand Specialization']);
+    expect([at(40), at(41), at(43), at(44), at(45)]).toEqual([
+      'Combustion',
+      'Precision',
+      'Precision',
+      'Wand Specialization',
+      'Wand Specialization',
+    ]);
   });
 });
 
