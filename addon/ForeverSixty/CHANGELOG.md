@@ -1,5 +1,13 @@
 # Forever Sixty
 
+## 2.0.33
+
+- Destruction: Bane first, Conflagrate with Fire and Brimstone, and new best in slot lists for levels 20 to 40.
+- Demonology: Unholy Power first, and a new level 20 list.
+- Frost: Precision before Frost Warding and Fingers of Frost at 30, with new level 20 and 30 lists.
+- Survival: Predator's Edge at 25 and the damage talents ahead of Deterrence and Counterattack, with a new level 30 list.
+- Feral and Protection paladin leveling orders are updated too.
+
 ## 2.0.32
 
 - Assassination: Malice comes at 10 to 14, and the level 20 best in slot list follows the new build.
