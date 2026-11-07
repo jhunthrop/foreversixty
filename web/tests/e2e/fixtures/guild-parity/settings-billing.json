@@ -1,0 +1,66 @@
+{
+  "billing": {
+    "scope": "plan",
+    "tier": "raid_guild",
+    "status": "active",
+    "current_period_end": "2027-11-12T00:00:00Z",
+    "cancel_at_period_end": false,
+    "trial_end": null,
+    "founder": true,
+    "interval": "yearly",
+    "amount_cents": 20000,
+    "billed_by": "Dunmaro",
+    "you_are_billing_contact": true
+  },
+  "trial_used": true,
+  "verified_count": 24,
+  "seats": [
+    {
+      "slot": 1,
+      "state": "held",
+      "holder": {
+        "user_id": 1016,
+        "character_key": "us/pvp/frostquill",
+        "name": "Frostquill",
+        "class": "mage"
+      },
+      "given_at": "2026-11-20T00:00:00Z",
+      "starts_at": "2026-11-20T00:00:00Z",
+      "movable_at": "2026-12-20T00:00:00Z",
+      "returned": null,
+      "offeree": null
+    },
+    {
+      "slot": 2,
+      "state": "empty",
+      "holder": null,
+      "given_at": null,
+      "starts_at": null,
+      "movable_at": null,
+      "returned": null,
+      "offeree": null
+    },
+    {
+      "slot": 3,
+      "state": "empty",
+      "holder": null,
+      "given_at": null,
+      "starts_at": null,
+      "movable_at": null,
+      "returned": null,
+      "offeree": null
+    }
+  ],
+  "transfer": null,
+  "transfer_candidates": [
+    {
+      "user_id": 1000,
+      "name": "Ironbrand"
+    },
+    {
+      "user_id": 1001,
+      "name": "Shiverknife"
+    }
+  ],
+  "can": ["billing", "seats", "transfer"]
+}

@@ -31,7 +31,7 @@ describe('GuildPlanChooser', () => {
       /data-testid="guild-billing-option-guild-price">([\s\S]*?)<\/span>\s*<span class="text-muted/.exec(
         body,
       )?.[1] ?? '';
-    expect(price).toMatch(/<span class="text-strong numeric text-\[20px\]">\$120<\/span>/);
+    expect(price).toMatch(/<span class="text-strong text-\[15px\] font-bold tabular-nums">\$120<\/span>/);
     expect(body).not.toContain('<s ');
     expect(body).toMatch(/guild-billing-option-guild-list">\$150 after 6 Jan 2027</);
     expect(price).toMatch(/<span> a year<\/span>/);

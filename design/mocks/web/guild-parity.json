@@ -44,6 +44,16 @@
       "id": "profile",
       "path": "/guild/us/pvp/olympus-xxvii/members/u%3A1016",
       "mock": "web-guild-profile.html"
+    },
+    {
+      "id": "settings",
+      "path": "/guild/us/pvp/olympus-xxvii#settings",
+      "mock": "web-guild-settings.html"
+    },
+    {
+      "id": "settings-page",
+      "path": "/guild/us/pvp/olympus-xxvii/settings",
+      "mock": "web-guild-settings-page.html"
     }
   ]
 }

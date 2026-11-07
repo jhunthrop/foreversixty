@@ -37,7 +37,7 @@ describe('CopyLinkField on a card (spec §5.5, gate fixes G3 to G5)', () => {
     expect(body).toContain('<span class="quiet-label">Invite link</span>');
     expect(body).toMatch(/<input[^>]*bg-raised/);
     expect(body).toMatch(/<div class="flex flex-wrap items-center gap-3">/);
-    expect(body).toMatch(/w-fit px-4"[^>]*data-testid="guild-invite-copy"/);
+    expect(body).toMatch(/ w-fit"[^>]*data-testid="guild-invite-copy"/);
   });
 
   it('labelVisible false keeps the label for screen readers only', () => {
@@ -53,7 +53,7 @@ describe('CopyLinkField on a card (spec §5.5, gate fixes G3 to G5)', () => {
   it('phoneFullWidth fills the row below 768 and fits the buttons from 768', () => {
     const body = renderField(false, { phoneFullWidth: true });
     expect(body).toContain('grid gap-3 md:flex md:flex-wrap md:items-center grid-cols-1');
-    expect(body).toMatch(/w-full justify-center md:w-fit px-4"[^>]*data-testid="guild-invite-copy"/);
+    expect(body).toMatch(/w-full justify-center md:w-fit"[^>]*data-testid="guild-invite-copy"/);
   });
 });
 

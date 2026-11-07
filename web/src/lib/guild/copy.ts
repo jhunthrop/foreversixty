@@ -186,7 +186,6 @@ export const guildSettingsCopy = {
   // Spec section 4.4, exact wording.
   forbidden: 'You need to be a verified officer of this guild to see its settings.',
   heading: 'Guild settings',
-  eyebrow: 'Guild',
   // Spec 2026-10-27 section 9.3, under the read-only billing sentence.
   sendThemThisLink: 'Send them this link.',
   defaultVisibility: 'Default report visibility',
