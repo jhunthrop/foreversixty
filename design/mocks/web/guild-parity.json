@@ -1,0 +1,8 @@
+{
+  "comment": "The guild states the parity gate checks (web/tests/e2e/parity-guild.spec.ts) at 1440 x 1000, against the committed mocks from design/mocks/ws_guild2.py. The data both sides show is web/tests/e2e/fixtures/guild-parity (written by design/mocks/guild_fixtures.py, read by ws_guild2.py); tests/e2e/support/guild-parity/ routes those files as the API's answers. The clock and zone are the fixtures' own (America/Chicago), so times read as the mock's.",
+  "viewport": {
+    "width": 1440,
+    "height": 1000
+  },
+  "states": []
+}
