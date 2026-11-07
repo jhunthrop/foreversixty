@@ -1,8 +1,7 @@
 {
  "html": {
   "data-session": "1",
-  "data-server-sims": "1",
-  "data-premium-nav": "hide",
+  "data-premium-nav": "hold",
   "data-tooltip-host": "ready"
  },
  "body": {
