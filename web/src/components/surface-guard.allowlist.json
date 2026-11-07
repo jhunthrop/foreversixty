@@ -1,12 +1,6 @@
 {
   "files": {
-    "components/account/discord/DiscordPasteForm.svelte": 2,
-    "components/admin/GoLinksAdmin.svelte": 6,
     "components/CharacterHandoffLinks.svelte": 1,
-    "components/checkout/CheckoutGuildStep.svelte": 1,
-    "components/checkout/ClaimConfirmBlock.svelte": 1,
-    "components/checkout/GuildStepCard.svelte": 1,
-    "components/checkout/PremiumOwnedPanel.svelte": 1,
     "components/ClassTile.astro": 4,
     "components/CurrentCharacterChip.svelte": 3,
     "components/Footer.astro": 3,

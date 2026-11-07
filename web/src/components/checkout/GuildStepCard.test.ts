@@ -61,11 +61,12 @@ describe('GuildStepCard identity', () => {
     expect(empty).toContain('data-testid="guild-crest"');
   });
 
-  it('names the guild in its h2 with the realm line, scroll margin and anchor id', () => {
+  it('is a Row list item named by its h2, with the realm line, the anchor id and the 320 px step block', () => {
     const body = html([guild({})]);
-    expect(body).toMatch(/<li[^>]*id="guild-2"[^>]*aria-labelledby="guild-2-name"[^>]*scroll-mt-24/);
+    expect(body).toMatch(/<li[^>]*ui-row[^>]*id="guild-2"[^>]*aria-labelledby="guild-2-name"/);
+    expect(body).toMatch(/<h2[^>]*id="guild-2-name"/);
     expect(plain(body)).toContain('PvP · US');
-    expect(body).toMatch(/md:grid-cols-\[minmax\(0,1fr\)_320px\]/);
+    expect(body).toMatch(/md:w-\[320px\][^>]*data-testid="guild-step-block"/);
   });
 });
 

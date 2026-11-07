@@ -1,13 +1,15 @@
 <!-- web/src/components/account/discord/DiscordPasteForm.svelte -->
-<!-- Paste (or replace) the webhook: the three numbered steps (24 px numbered tiles), the labelled
-     52 px input, the reserved error line directly under it, the trust helper, the events as
-     switch rows and the one filled button. The typed URL lives only in the parent's state; it is
+<!-- Paste (or replace) the webhook: the three numbered steps (an ordered list, gold numerals), the
+     input in the Field recipe (lib/ui/field, the one field: ui/Field cannot carry the URL keyboard
+     attributes or the reserved error line with its plans link), the reserved error line directly
+     under it, the trust helper, the events as switch rows and the one filled button. The typed URL lives only in the parent's state; it is
      never put in an attribute other than the input's own value. -->
 <script lang="ts">
   import type { DiscordEvents } from '../../../lib/account/api';
   import { PREMIUM_LINKS } from '../../../lib/billing/premium-links';
   import { notificationsCopy } from '../../../lib/account/notifications-copy';
   import { button } from '../../../lib/ui/button';
+  import { FIELD_CONTROL, FIELD_FOCUS, FIELD_HEIGHT, FIELD_LABEL, fieldEdge } from '../../../lib/ui/field';
   import { ACTION_LINK, ACTION_LINK_CHEVRON } from '../../../lib/ui/link';
   import Glyph from '../../ui/Glyph.svelte';
   import Spinner from '../../ui/Spinner.svelte';
@@ -48,26 +50,18 @@
 <form class="flex flex-col gap-4" onsubmit={submit} novalidate>
   <div class="flex flex-col gap-4">
     {#if !replacing}<p class="text-text text-[14px]">{notificationsCopy.intro}</p>{/if}
-    <ol class="m-0 flex list-none flex-col gap-2 p-0 text-[13px]">
+    <ol class="marker:text-gold m-0 flex list-decimal flex-col gap-2 pl-5 text-[13px] marker:font-bold">
       {#each notificationsCopy.howSteps as step, index (step)}
-        <li class="text-muted flex items-center gap-3" data-testid="discord-step-{index + 1}">
-          <span
-            class="bg-tile text-tile-ink rounded-pill inline-flex h-6 w-6 shrink-0 items-center justify-center text-[12px] font-bold tabular-nums"
-            aria-hidden="true">{index + 1}</span
-          >{step}
-        </li>
+        <li class="text-muted pl-1" data-testid="discord-step-{index + 1}">{step}</li>
       {/each}
     </ol>
     <div class="flex flex-col">
-      <label class="quiet-label mb-2" for="discord-webhook">{notificationsCopy.fieldLabel}</label>
+      <label class="{FIELD_LABEL} mb-[6px]" for="discord-webhook">{notificationsCopy.fieldLabel}</label>
       <input
         type="text"
         name="discord-webhook"
         id="discord-webhook"
-        class="rounded-control text-strong focus-visible:outline-gold h-[52px] w-full border bg-white/[.045] px-3 text-[15px] focus-visible:outline-2 focus-visible:outline-offset-2 {error !==
-        null
-          ? 'border-wipe'
-          : 'border-line-card'}"
+        class={[FIELD_CONTROL, FIELD_HEIGHT, FIELD_FOCUS, fieldEdge(error !== null)]}
         inputmode="url"
         autocomplete="off"
         autocapitalize="off"

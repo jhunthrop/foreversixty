@@ -150,7 +150,7 @@ describe('CheckoutGuildStep: ready shell', () => {
   it('each card is a labelled li with its anchor id and the realm line', () => {
     const body = html({ me: me(GUILDS) });
     expect(body).toMatch(/<li[^>]*id="guild-2"[^>]*aria-labelledby="guild-2-name"/);
-    expect(body).toContain('scroll-mt-24');
+    expect(body).toContain('checkout-guild-cards');
     expect(text(body)).toContain('PvP · US');
   });
 

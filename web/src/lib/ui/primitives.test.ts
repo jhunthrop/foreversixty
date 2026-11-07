@@ -48,6 +48,8 @@ describe('rowElement', () => {
     expect(rowElement('/x')).toBe('a');
     expect(rowElement(undefined)).toBe('div');
     expect(rowElement('')).toBe('div');
+    expect(rowElement(undefined, true)).toBe('li');
+    expect(rowElement('/x', true)).toBe('a');
   });
 });
 

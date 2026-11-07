@@ -27,6 +27,9 @@
     titleContent,
     subContent,
     foot,
+    item = false,
+    id,
+    labelledby,
   }: {
     title: string;
     titleTone?: TitleTone;
@@ -49,11 +52,17 @@
     subContent?: Snippet;
     /** A line of controls under the body, full width (a narrow rail: tags, votes, a button). */
     foot?: Snippet;
+    /** A list item (`li`) of the caller's `ul`, so the rows keep their hairlines between them. Never with `href`. */
+    item?: boolean;
+    /** The row's id (a link target such as `#guild-2`). */
+    id?: string;
+    /** The id of the element that names the row (aria-labelledby). */
+    labelledby?: string;
     /** Never rendered: an Astro caller's whitespace between named slots arrives as children. */
     children?: Snippet;
   } = $props();
 
-  const element = $derived(rowElement(href));
+  const element = $derived(rowElement(href, item));
   const hasLead = $derived(lead !== undefined || rank !== undefined);
 </script>
 
@@ -73,6 +82,8 @@
     selected && 'bg-selected shadow-[inset_3px_0_0_var(--color-gold)]',
   ]}
   aria-current={selected ? 'true' : undefined}
+  {id}
+  aria-labelledby={labelledby}
   data-testid={testid}
   {id}
 >

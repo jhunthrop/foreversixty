@@ -108,8 +108,9 @@ export function controlSummary(groups: readonly ControlGroup[]): string {
 /** A Row's link xor action (3A.2 rule): a row that navigates never holds a button. */
 export type RowTarget = { href: string } | { action: true } | null;
 
-export function rowElement(href: string | undefined): 'a' | 'div' {
-  return href === undefined || href === '' ? 'div' : 'a';
+export function rowElement(href: string | undefined, item = false): 'a' | 'li' | 'div' {
+  if (href !== undefined && href !== '') return 'a';
+  return item ? 'li' : 'div';
 }
 
 /** A signed figure the way the site prints a gain: `+1.8`, `−1.8` (true minus), `0.0`. */
