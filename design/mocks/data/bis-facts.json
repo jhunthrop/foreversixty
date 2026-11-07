@@ -9,7 +9,7 @@
   "meta": "Best in slot",
   "answer": {
    "figure": {
-    "label": "This set, simmed 6 nov",
+    "label": "This set, simmed 7 nov",
     "value": "1083.6",
     "unit": "DPS",
     "caption": ""
@@ -645,7 +645,7 @@
   "meta": "Best in slot",
   "answer": {
    "figure": {
-    "label": "This set, simmed 6 nov",
+    "label": "This set, simmed 7 nov",
     "value": "867.3",
     "unit": "HPS",
     "caption": ""
@@ -2003,8 +2003,8 @@
   "meta": "Best in slot",
   "answer": {
    "figure": {
-    "label": "This set, simmed 6 nov",
-    "value": "90.4",
+    "label": "This set, simmed 7 nov",
+    "value": "91.0",
     "unit": "DPS",
     "caption": ""
    },
@@ -2531,40 +2531,40 @@
   "weights": {
    "title": "What to stack",
    "sentence": "Stack agility, then intellect, then ranged attack power.",
-   "caption": "Normalized to Agility = 1.00. Per point of stat, normalized to Agility = 1.00, with DPS per point and the sim error. Haste: 1.41 per 1%, not in the table because no item at this level range has it",
+   "caption": "Normalized to Agility = 1.00. Per point of stat, normalized to Agility = 1.00, with DPS per point and the sim error. Haste: 1.40 per 1%, not in the table because no item at this level range has it",
    "rows": [
     {
      "name": "Agility",
      "scale": "1.00",
      "bar": 1,
-     "line": "0.315 DPS per point",
+     "line": "0.316 DPS per point",
      "faint": false
     },
     {
      "name": "Intellect",
      "scale": "0.51",
-     "bar": 0.514,
+     "bar": 0.512,
      "line": "0.162 DPS per point",
      "faint": false
     },
     {
      "name": "Ranged attack power",
      "scale": "0.32",
-     "bar": 0.318,
+     "bar": 0.317,
      "line": "0.100 DPS per point",
      "faint": false
     },
     {
      "name": "Hit rating",
      "scale": "0.31",
-     "bar": 0.307,
+     "bar": 0.308,
      "line": "0.097 DPS per point",
      "faint": false
     },
     {
      "name": "Crit rating",
      "scale": "0.21",
-     "bar": 0.209,
+     "bar": 0.21,
      "line": "0.066 DPS per point",
      "faint": false
     },
