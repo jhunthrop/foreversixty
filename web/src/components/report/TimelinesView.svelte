@@ -4,15 +4,25 @@
      "who was doing nothing for eight seconds" is a glance rather than a calculation.
 
      Every source drawn here -- cast sequence, aura segments, deaths -- is exact under a
-     window (window.ts's scopeSummary), so nothing on this lane needs an approximate mark. -->
+     window (window.ts's scopeSummary), so nothing on this lane needs an approximate mark.
+     Drawn to logs spec 2026-11-07 section 6.2 (`web-report-timeline`): Section `Timeline` holding
+     the one Plate: the legend, a 160 px label column (crest and name in the class colour, then
+     the boss), one lane per actor on one time axis (casts gold, buffs green, debuffs red, a
+     death red, a taunt gold full height), the axis under. Below 768 the labels are 96 px and the
+     plot scrolls sideways inside its frame while the labels stay put. The summary carries no
+     per-player hit stream, so the lanes draw no hit marks (the mock's hits read events.parquet). -->
 <script lang="ts">
   import { splitUnitName } from '../../lib/characters';
   import { classColorVar, formatDuration, tauntKey } from '../../lib/report/format';
+  import { classSlugOf } from '../../lib/report/planner-link';
   import type { AuraTrack, Summary, Taunt } from '../../lib/report/types';
   import type { TimeWindow } from '../../lib/report/window';
   import { clearChartCursor, setChartCursor } from '../../lib/chart/cursor.svelte';
   import { clockLabel, timeTicks } from '../../lib/chart/time-axis';
   import SyncedCrosshair from '../chart/SyncedCrosshair.svelte';
+  import ClassCrestRing from '../character/ClassCrestRing.svelte';
+  import Plate from '../ui/Plate.svelte';
+  import Section from '../ui/Section.svelte';
 
   let {
     summary,
@@ -200,16 +210,15 @@
     end_ms: number;
     name: string;
     band: number;
-    color: string;
+    /** A buff is green, a debuff red (the legend's Buff up and Debuff up). */
+    debuff: boolean;
   }
   const BAND_PX = 3;
   const CASTS_PX = 12;
-  /** A hue of its own per aura name, stable across lanes and fights. */
-  function hueOf(name: string): number {
-    let hash = 0;
-    for (const char of name) hash = (hash * 31 + char.charCodeAt(0)) % 360;
-    return hash;
-  }
+  /** A lane's row: its plot's height plus 8 px above and below, never under 34 px. */
+  const ROW_MIN_PX = 34;
+  const ROW_PAD_PX = 16;
+  const ENEMY_LANE_PX = 18;
   /** Every aura on its own band, in name order, so each reads as one line and can be pointed at. */
   function bandAuras(tracks: AuraTrack[]): AuraBand[] {
     // By name, not by uptime: an aura keeps its row when the window moves.
@@ -219,12 +228,13 @@
     return ordered.flatMap((track) => {
       const band = bands.get(track.name) ?? bands.size;
       bands.set(track.name, band);
-      const color = `hsl(${hueOf(track.name)} 65% 62%)`;
-      return track.segments.map((segment) => ({ ...segment, name: track.name, band, color }));
+      const debuff = track.type === 'DEBUFF';
+      return track.segments.map((segment) => ({ ...segment, name: track.name, band, debuff }));
     });
   }
   const laneHeight = (auras: AuraBand[]): number =>
     Math.max(18, (auras.reduce((top, aura) => Math.max(top, aura.band), -1) + 1) * BAND_PX + CASTS_PX);
+  const rowHeight = (plot: number): number => Math.max(ROW_MIN_PX, plot + ROW_PAD_PX);
 
   const lanes = $derived(
     [...summary.roster]
@@ -233,178 +243,215 @@
         guid: row.guid,
         name: splitUnitName(row.name).name,
         color: classColorVar(row.class ?? classOf.get(row.guid)),
+        crest: classSlugOf(row.class ?? classOf.get(row.guid)) ?? '',
         casts: summary.casts
           .filter((cast) => cast.guid === row.guid)
           .flatMap((cast) => cast.sequence.map((at) => ({ at, name: cast.spell_name }))),
         auras: bandAuras(summary.auras.filter((track) => track.target_guid === row.guid)),
         deaths: summary.deaths.filter((death) => death.guid === row.guid).map((death) => death.at_ms),
         taunts: windowedTaunts.filter((taunt) => taunt.source_guid === row.guid),
-      })),
+      }))
+      .map((lane) => ({ ...lane, height: laneHeight(lane.auras) })),
   );
+  const LEGEND = [
+    { label: 'Cast', swatch: 'bg-gold h-[12px] w-[2px]' },
+    { label: 'Buff up', swatch: 'bg-kill/60 h-[5px] w-[14px] rounded-[2px]' },
+    { label: 'Debuff up', swatch: 'bg-wipe/60 h-[5px] w-[14px] rounded-[2px]' },
+    { label: 'Death', swatch: 'bg-death h-[14px] w-[3px]' },
+  ] as const;
 </script>
 
-{#if lanes.length === 0}
-  <p class="text-muted text-[14px]" data-testid="table-empty">Nobody was in this window.</p>
-{:else}
-  <div class="flex flex-col gap-1" data-testid="timelines">
-    <p class="quiet-label flex flex-wrap items-center gap-x-3">
-      <span class="numeric">{formatDuration(current.startMs)} to {formatDuration(current.endMs)}</span>
-      <span
-        ><span class="bg-text mr-1 inline-block h-[10px] w-[2px] align-middle" aria-hidden="true"
-        ></span>cast</span
-      >
-      <span
-        ><span class="bg-text mr-1 inline-block h-[6px] w-[14px] align-middle opacity-45" aria-hidden="true"
-        ></span>aura held</span
-      >
-      <span
-        ><span class="bg-death mr-1 inline-block h-[14px] w-[3px] align-middle" aria-hidden="true"
-        ></span>death</span
-      >
-      {#if bossCasts.length > 0}
-        <span
-          ><span class="bg-wipe mr-1 inline-block h-[10px] w-[2px] align-middle" aria-hidden="true"
-          ></span>boss cast</span
-        >
-      {/if}
-      {#if windowedTaunts.length > 0}
-        <span
-          ><span class="bg-gold mr-1 inline-block h-[14px] w-[3px] align-middle" aria-hidden="true"
-          ></span>taunt</span
-        >
-      {/if}
-    </p>
-    <!-- The readout on one line of fixed height: eight aura names must never wrap and push
-         the lanes out from under the pointer that is reading them. -->
-    <p
-      class="quiet-label h-5 truncate"
-      title={picked === null ? undefined : `${picked.name} · at ${formatDuration(picked.at)}`}
-    >
-      {#if picked}
-        <span class="text-strong normal-case" data-testid="timeline-picked"
-          >{picked.name} · at {formatDuration(picked.at)}</span
-        >
-      {:else}
-        <span>tap or hover a tick for the spell, or an aura band for what was up</span>
-      {/if}
-    </p>
-    <div
-      class="grid grid-cols-[minmax(96px,140px)_minmax(0,1fr)] gap-3"
-      aria-hidden="true"
-      data-testid="timeline-axis"
-    >
-      <span></span>
-      <span class="text-muted numeric relative block h-[14px] text-[11px]" bind:clientWidth={axisWidth}>
-        {#each axis as at (at)}
-          <span class="absolute top-0 -translate-x-1/2" style={`left: ${pct(at)}%`}>{clockLabel(at)}</span>
-        {/each}
-      </span>
-    </div>
-    <ul class="flex flex-col">
-      {#each enemyLanes as lane (lane.name)}
-        <li
-          class="border-line-soft grid min-h-11 grid-cols-[minmax(96px,140px)_minmax(0,1fr)] items-center gap-3 border-b py-2"
-          data-testid={lane.name === bossName ? 'lane-boss' : `lane-enemy-${lane.name}`}
-        >
-          <span class="text-wipe truncate text-[13px] font-semibold" title={lane.name}>{lane.name}</span>
-          <span
-            class="bg-line-soft relative block h-[18px] w-full touch-none"
-            data-lane
-            onpointerdown={(event) => pickNearest(event, lane.casts, [], lane.taunts)}
-            onpointermove={(event) => pickNearest(event, lane.casts, [], lane.taunts)}
-            onpointerleave={clearPick}
-          >
-            {#each lane.casts as cast, i (`${cast.at}-${i}`)}
-              <span
-                class="bg-wipe absolute bottom-0 h-[14px] w-[2px]"
-                style={`left: ${pct(cast.at)}%`}
-                title={`${cast.name} · ${formatDuration(cast.at)}`}
-              ></span>
-            {/each}
-            {#each lane.taunts as taunt (tauntKey(taunt))}
-              <span
-                class="bg-gold absolute top-0 h-full w-[3px]"
-                style={`left: ${pct(taunt.at_ms)}%`}
-                data-testid="taunt-mark"
-                title={`Taunt · ${formatDuration(taunt.at_ms)} · by ${splitUnitName(taunt.source_name).name}`}
-              ></span>
-            {/each}
-            {#if syncKey !== ''}<SyncedCrosshair {syncKey} window={current} />{/if}
-          </span>
-        </li>
-      {/each}
-      <!--
-        Keys carry the index as well as the timestamp: two casts in one millisecond, two
-        auras starting on the same tick and two deaths at the same instant are all real
-        (multi-target spells, a trinket and its proc, an AoE wipe), and a timestamp alone
-        made Svelte throw on the duplicate and leave the whole view blank.
-      -->
-      {#each lanes as lane (lane.guid)}
-        <li
-          class="border-line-soft grid min-h-11 grid-cols-[minmax(96px,140px)_minmax(0,1fr)] items-center gap-3 border-b py-2"
-          data-testid={`lane-${lane.guid}`}
-        >
-          <span class="truncate text-[13px] font-semibold" style={`color: ${lane.color}`}>{lane.name}</span>
-          <span
-            class="bg-line-soft relative block w-full touch-none"
-            style={`height: ${laneHeight(lane.auras)}px`}
-            data-lane
-            onpointerdown={(event) => pickNearest(event, lane.casts, lane.auras, lane.taunts)}
-            onpointermove={(event) => pickNearest(event, lane.casts, lane.auras, lane.taunts)}
-            onpointerleave={clearPick}
-          >
-            {#each lane.auras as segment, i (`${segment.start_ms}-${i}`)}
-              <span
-                class="absolute h-[3px]"
-                style={`top: ${segment.band * BAND_PX}px; left: ${pct(segment.start_ms)}%; width: ${Math.max(pct(segment.end_ms) - pct(segment.start_ms), 0.4)}%; background: ${segment.color}`}
-                title={`${segment.name} · ${formatDuration(segment.start_ms)} to ${formatDuration(segment.end_ms)}`}
-              ></span>
-            {/each}
-            {#each lane.casts as cast, i (`${cast.at}-${i}`)}
-              <span
-                class="absolute bottom-0 h-[10px] w-[2px]"
-                style={`left: ${pct(cast.at)}%; background-color: ${lane.color}`}
-                title={`${cast.name} · ${formatDuration(cast.at)}`}
-              ></span>
-            {/each}
-            {#each lane.deaths as at, i (`${at}-${i}`)}
-              <span
-                class="bg-death absolute top-0 h-full w-[3px]"
-                style={`left: ${pct(at)}%`}
-                title={`died at ${formatDuration(at)}`}
-              ></span>
-            {/each}
-            {#each lane.taunts as taunt (tauntKey(taunt))}
-              <span
-                class="bg-gold absolute top-0 h-full w-[3px]"
-                style={`left: ${pct(taunt.at_ms)}%`}
-                data-testid="taunt-mark"
-                title={`Taunt · ${formatDuration(taunt.at_ms)} · on ${splitUnitName(taunt.target_name).name}`}
-              ></span>
-            {/each}
-            {#if syncKey !== ''}<SyncedCrosshair {syncKey} window={current} />{/if}
-          </span>
-        </li>
-      {/each}
-    </ul>
-    {#if auraOrder.length > 0}
-      <!-- The bands are 3px each, too thin to label in place: this names each row's aura in
-           its colour, in the order the rows run from the top of every lane. -->
-      <details class="text-[12px]" data-testid="timeline-aura-legend">
-        <summary class="quiet-label min-h-11 cursor-pointer md:min-h-0"
-          >Aura rows, top to bottom ({auraOrder.length})</summary
-        >
-        <ol class="mt-1 flex flex-wrap gap-x-4 gap-y-1">
-          {#each auraOrder as name, index (name)}
-            <li class="flex items-center gap-1">
-              <span class="text-muted numeric text-[11px]">{index + 1}</span>
-              <span class="inline-block h-[3px] w-[14px]" style={`background: hsl(${hueOf(name)} 65% 62%)`}
-              ></span>
-              {name}
+{#snippet crossing()}{#if syncKey !== ''}<SyncedCrosshair {syncKey} window={current} />{/if}{/snippet}
+
+<Section
+  title="Timeline"
+  meta={`Every player, ${formatDuration(span)} · hover for the event`}
+  testid="timelines-section"
+>
+  <Plate label="Timeline">
+    {#if lanes.length === 0}
+      <p class="text-muted px-4 py-4 text-[14px]" data-testid="table-empty">Nothing in this window.</p>
+    {:else}
+      <div class="flex flex-col gap-2 px-4 pt-3 pb-3" data-testid="timelines">
+        <ul class="text-muted flex flex-wrap items-center gap-x-4 gap-y-1 text-[13px] leading-5">
+          <li class="text-text tabular-nums">
+            {formatDuration(current.startMs)} to {formatDuration(current.endMs)}
+          </li>
+          {#each LEGEND as item (item.label)}
+            <li class="flex items-center gap-2">
+              <span class={['inline-block', item.swatch]} aria-hidden="true"></span>{item.label}
             </li>
           {/each}
-        </ol>
-      </details>
+          {#if windowedTaunts.length > 0}
+            <li class="flex items-center gap-2">
+              <span class="bg-gold inline-block h-[14px] w-[3px]" aria-hidden="true"></span>Taunt
+            </li>
+          {/if}
+        </ul>
+        <!-- The readout on one line of fixed height: eight aura names must never wrap and push
+             the lanes out from under the pointer that is reading them. -->
+        <p
+          class="text-muted h-5 truncate text-[13px] leading-5"
+          title={picked === null ? undefined : `${picked.name} · at ${formatDuration(picked.at)}`}
+        >
+          {#if picked}
+            <span class="text-strong font-semibold" data-testid="timeline-picked"
+              >{picked.name} · at {formatDuration(picked.at)}</span
+            >
+          {:else}
+            Tap or hover a tick for the spell, or an aura band for what was up.
+          {/if}
+        </p>
+        <div class="grid grid-cols-[96px_minmax(0,1fr)] md:grid-cols-[160px_minmax(0,1fr)]">
+          <!-- The labels stay put; only the plot scrolls sideways on a phone. -->
+          <ul class="flex flex-col pr-3">
+            {#each enemyLanes as lane (lane.name)}
+              <li
+                class="flex items-center gap-2 overflow-hidden"
+                style:height="{rowHeight(ENEMY_LANE_PX)}px"
+                title={lane.name}
+              >
+                <ClassCrestRing characterClass="" size={20} />
+                <span class="text-strong truncate text-[14px] font-semibold">{lane.name}</span>
+              </li>
+            {/each}
+            {#each lanes as lane (lane.guid)}
+              <li
+                class="flex items-center gap-2 overflow-hidden"
+                style:height="{rowHeight(lane.height)}px"
+                title={lane.name}
+              >
+                <ClassCrestRing characterClass={lane.crest} size={20} />
+                <span class="truncate text-[14px] font-semibold" style:color={lane.color}>{lane.name}</span>
+              </li>
+            {/each}
+          </ul>
+          <div class="min-w-0 overflow-x-auto">
+            <div class="min-w-[560px] md:min-w-0" aria-hidden="true">
+              <ul class="flex flex-col">
+                {#each enemyLanes as lane (lane.name)}
+                  <li class="flex items-center" style:height="{rowHeight(ENEMY_LANE_PX)}px">
+                    <!-- svelte-ignore a11y_no_static_element_interactions (the plot is decorative, aria-hidden: the pointer readout is a sighted aid) -->
+                    <span
+                      class="relative block w-full touch-none"
+                      style:height="{ENEMY_LANE_PX}px"
+                      data-lane
+                      data-testid={lane.name === bossName ? 'lane-boss' : `lane-enemy-${lane.name}`}
+                      onpointerdown={(event) => pickNearest(event, lane.casts, [], lane.taunts)}
+                      onpointermove={(event) => pickNearest(event, lane.casts, [], lane.taunts)}
+                      onpointerleave={clearPick}
+                    >
+                      <span class="bg-line-soft absolute inset-x-0 top-1/2 block h-[2px] -translate-y-1/2"
+                      ></span>
+                      {#each lane.casts as cast, i (`${cast.at}-${i}`)}
+                        <span
+                          class="bg-gold absolute bottom-0 h-[14px] w-[2px]"
+                          style:left="{pct(cast.at)}%"
+                          title={`${cast.name} · ${formatDuration(cast.at)}`}
+                        ></span>
+                      {/each}
+                      {#each lane.taunts as taunt (tauntKey(taunt))}
+                        <span
+                          class="bg-gold absolute top-0 h-full w-[3px]"
+                          style:left="{pct(taunt.at_ms)}%"
+                          data-testid="taunt-mark"
+                          title={`Taunt · ${formatDuration(taunt.at_ms)} · by ${splitUnitName(taunt.source_name).name}`}
+                        ></span>
+                      {/each}
+                      {@render crossing()}
+                    </span>
+                  </li>
+                {/each}
+                <!--
+                  Keys carry the index as well as the timestamp: two casts in one millisecond, two
+                  auras starting on the same tick and two deaths at the same instant are all real
+                  (multi-target spells, a trinket and its proc, an AoE wipe), and a timestamp alone
+                  made Svelte throw on the duplicate and leave the whole view blank.
+                -->
+                {#each lanes as lane (lane.guid)}
+                  <li class="flex items-center" style:height="{rowHeight(lane.height)}px">
+                    <!-- svelte-ignore a11y_no_static_element_interactions (the plot is decorative, aria-hidden: the pointer readout is a sighted aid) -->
+                    <span
+                      class="relative block w-full touch-none"
+                      style:height="{lane.height}px"
+                      data-lane
+                      data-testid={`lane-${lane.guid}`}
+                      onpointerdown={(event) => pickNearest(event, lane.casts, lane.auras, lane.taunts)}
+                      onpointermove={(event) => pickNearest(event, lane.casts, lane.auras, lane.taunts)}
+                      onpointerleave={clearPick}
+                    >
+                      <span class="bg-line-soft absolute inset-x-0 bottom-[4px] block h-[2px]"></span>
+                      {#each lane.auras as segment, i (`${segment.start_ms}-${i}`)}
+                        <span
+                          class={[
+                            'absolute h-[3px] rounded-[1px]',
+                            segment.debuff ? 'bg-wipe/60' : 'bg-kill/60',
+                          ]}
+                          style:top="{segment.band * BAND_PX}px"
+                          style:left="{pct(segment.start_ms)}%"
+                          style:width="{Math.max(pct(segment.end_ms) - pct(segment.start_ms), 0.4)}%"
+                          title={`${segment.name} · ${formatDuration(segment.start_ms)} to ${formatDuration(segment.end_ms)}`}
+                        ></span>
+                      {/each}
+                      {#each lane.casts as cast, i (`${cast.at}-${i}`)}
+                        <span
+                          class="bg-gold absolute bottom-0 h-[10px] w-[2px]"
+                          style:left="{pct(cast.at)}%"
+                          title={`${cast.name} · ${formatDuration(cast.at)}`}
+                        ></span>
+                      {/each}
+                      {#each lane.deaths as at, i (`${at}-${i}`)}
+                        <span
+                          class="bg-death absolute top-0 h-full w-[3px]"
+                          style:left="{pct(at)}%"
+                          title={`died at ${formatDuration(at)}`}
+                        ></span>
+                      {/each}
+                      {#each lane.taunts as taunt (tauntKey(taunt))}
+                        <span
+                          class="bg-gold absolute -top-[4px] h-[calc(100%+8px)] w-[3px]"
+                          style:left="{pct(taunt.at_ms)}%"
+                          data-testid="taunt-mark"
+                          title={`Taunt · ${formatDuration(taunt.at_ms)} · on ${splitUnitName(taunt.target_name).name}`}
+                        ></span>
+                      {/each}
+                      {@render crossing()}
+                    </span>
+                  </li>
+                {/each}
+              </ul>
+              <span
+                class="text-muted relative mt-1 block h-4 text-[12px] leading-4 font-semibold tabular-nums"
+                bind:clientWidth={axisWidth}
+                data-testid="timeline-axis"
+              >
+                {#each axis as at (at)}
+                  <span class="absolute top-0 -translate-x-1/2 whitespace-nowrap" style:left="{pct(at)}%"
+                    >{clockLabel(at)}</span
+                  >
+                {/each}
+              </span>
+            </div>
+          </div>
+        </div>
+        {#if auraOrder.length > 0}
+          <!-- The bands are 3 px each, too thin to label in place: this names each row's aura in
+               the order the rows run from the top of every lane. -->
+          <details class="text-[13px]" data-testid="timeline-aura-legend">
+            <summary class="text-muted min-h-11 cursor-pointer leading-5 md:min-h-0"
+              >Aura rows, top to bottom ({auraOrder.length})</summary
+            >
+            <ol class="text-text mt-1 flex flex-wrap gap-x-4 gap-y-1">
+              {#each auraOrder as name, index (name)}
+                <li class="flex items-center gap-1">
+                  <span class="text-muted text-[12px] tabular-nums">{index + 1}</span>
+                  {name}
+                </li>
+              {/each}
+            </ol>
+          </details>
+        {/if}
+      </div>
     {/if}
-  </div>
-{/if}
+  </Plate>
+</Section>

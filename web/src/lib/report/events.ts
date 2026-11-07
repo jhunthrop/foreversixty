@@ -25,6 +25,36 @@ export const EVENT_KINDS: readonly { id: EventKind; label: string }[] = [
   { id: 'death', label: 'Deaths' },
 ];
 
+/**
+ * The Show chips (logs spec 2026-11-07 section 6.2, Events rail): each chip switches one or more
+ * kinds, so the url's `eventsOff` keeps its kind ids. The log's power changes are not in the
+ * summary or the stream yet, so there is no Power chip until there is a Power line.
+ */
+export const EVENT_CHIPS: readonly { id: string; label: string; kinds: readonly EventKind[] }[] = [
+  { id: 'casts', label: 'Casts', kinds: ['cast'] },
+  { id: 'damage', label: 'Damage', kinds: ['damage'] },
+  { id: 'heals', label: 'Heals', kinds: ['heal'] },
+  { id: 'auras', label: 'Auras', kinds: ['aura-applied', 'aura-removed'] },
+  { id: 'deaths', label: 'Deaths', kinds: ['death'] },
+];
+
+/** Whether a chip is on: every kind it switches is on. */
+export function chipOn(chip: { kinds: readonly EventKind[] }, off: readonly string[]): boolean {
+  return chip.kinds.every((kind) => !off.includes(kind));
+}
+
+/** The url's switched-off kinds after pressing a chip: an on chip goes off, anything else on. */
+export function toggleChip(chip: { kinds: readonly EventKind[] }, off: readonly string[]): string[] {
+  const rest = off.filter((kind) => !chip.kinds.includes(kind as EventKind));
+  return chipOn(chip, off) ? [...rest, ...chip.kinds] : rest;
+}
+
+/** A named unit a line mentions, so the view can colour the name by class. */
+export interface EventActor {
+  guid: string;
+  name: string;
+}
+
 export interface SummaryEvent {
   atMs: number;
   kind: EventKind;
@@ -35,6 +65,10 @@ export interface SummaryEvent {
   /** Every actor the line involves, for scoping by source: a heal is the healer's and the healed's. */
   guids: string[];
   amount?: number;
+  /** The spell the line is about, for its icon; absent on a death. */
+  spellId?: number;
+  /** The units the text names, by the spelling it uses. */
+  actors?: EventActor[];
   /** Words the find matches besides the text: a miss's own type ("parry"), so the noun finds the verb. */
   tags?: string[];
 }
@@ -59,6 +93,13 @@ const MISS_VERBS: Record<string, string> = {
  * the defender's side ("Hobolol parried General Kaal's Melee"), so a search for "parry"
  * finds the moment the Damage Taken row counted.
  */
+function actorsOf(line: StreamLine, who: string, whom: string): EventActor[] {
+  return [
+    { guid: line.sourceGuid, name: who },
+    { guid: line.destGuid, name: whom },
+  ];
+}
+
 export function streamEvents(lines: StreamLine[]): SummaryEvent[] {
   return lines.map((line) => {
     const who = splitUnitName(line.sourceName).name || 'Something';
@@ -74,6 +115,8 @@ export function streamEvents(lines: StreamLine[]): SummaryEvent[] {
         kind: 'aura-applied',
         guid: line.destGuid,
         guids: [line.sourceGuid, line.destGuid],
+        spellId: line.spellId,
+        actors: actorsOf(line, who, whom),
         text: who === 'Something' ? `${spell} refreshed on ${whom}` : `${who} refreshed ${spell} on ${whom}`,
         tags: ['refresh', 'refreshed'],
       };
@@ -87,6 +130,8 @@ export function streamEvents(lines: StreamLine[]): SummaryEvent[] {
         kind: 'damage',
         guid: line.destGuid,
         guids: [line.sourceGuid, line.destGuid],
+        spellId: line.spellId,
+        actors: actorsOf(line, who, whom),
         text: `${whom} ${verb} ${who}’s ${spell}${soaked}`,
         tags: [line.missType.toLowerCase(), 'avoided'],
       };
@@ -107,6 +152,8 @@ export function streamEvents(lines: StreamLine[]): SummaryEvent[] {
       guid: line.kind === 'heal' ? line.sourceGuid : line.destGuid,
       guids: [line.sourceGuid, line.destGuid],
       amount: line.kind === 'heal' ? line.amount - line.overheal : line.amount,
+      spellId: line.spellId,
+      actors: actorsOf(line, who, whom),
       text: `${who} ${line.kind === 'heal' ? 'healed' : 'hit'} ${whom} with ${spell}${detail}`,
     };
   });
@@ -126,6 +173,8 @@ export function summaryEvents(
         kind: 'cast',
         guid: row.guid,
         guids: [row.guid],
+        spellId: row.spell_id,
+        actors: [{ guid: row.guid, name: caster }],
         text: `${caster} cast ${row.spell_name}`,
       });
     }
@@ -162,11 +211,17 @@ export function summaryEvents(
         segment.source_guid === undefined
           ? [track.target_guid, ...track.appliers]
           : [track.target_guid, segment.source_guid];
+      const actors: EventActor[] = [
+        { guid: track.target_guid, name: target },
+        ...guids.slice(1).map((guid) => ({ guid, name: splitUnitName(names.get(guid) ?? '').name })),
+      ];
       events.push({
         atMs: segment.start_ms,
         kind: 'aura-applied',
         guid: track.target_guid,
         guids,
+        spellId: track.spell_id,
+        actors,
         text: `${track.name} ${verb} ${target}${by === '' ? '' : ` by ${by}`}`,
       });
       if (!continued)
@@ -175,6 +230,8 @@ export function summaryEvents(
           kind: 'aura-removed',
           guid: track.target_guid,
           guids,
+          spellId: track.spell_id,
+          actors,
           text: `${track.name} off ${target}${by === '' ? '' : ` (by ${by})`}`,
         });
     });
@@ -189,6 +246,11 @@ export function summaryEvents(
         guid: death.guid,
         guids: [death.guid, hit.source_guid],
         amount: hit.amount,
+        spellId: hit.spell_id,
+        actors: [
+          { guid: hit.source_guid, name: splitUnitName(hit.source_name).name },
+          { guid: death.guid, name: who },
+        ],
         text: `${splitUnitName(hit.source_name).name} hit ${who} with ${hit.spell_name === '' ? 'Melee' : hit.spell_name}`,
       });
     }
@@ -199,6 +261,11 @@ export function summaryEvents(
         guid: death.guid,
         guids: [death.guid, heal.source_guid],
         amount: heal.amount - (heal.overheal ?? 0),
+        spellId: heal.spell_id,
+        actors: [
+          { guid: heal.source_guid, name: splitUnitName(heal.source_name).name },
+          { guid: death.guid, name: who },
+        ],
         text: `${splitUnitName(heal.source_name).name} healed ${who} with ${heal.spell_name}`,
       });
     }
@@ -207,6 +274,7 @@ export function summaryEvents(
       kind: 'death',
       guid: death.guid,
       guids: [death.guid],
+      actors: [{ guid: death.guid, name: who }],
       text: `${who} died`,
     });
   }
@@ -235,4 +303,33 @@ export function filterEvents(events: SummaryEvent[], kinds: Set<EventKind>, sear
         (event.tags?.some((tag) => tag.includes(needle)) ?? false) ||
         (byAmount && event.amount !== undefined && String(event.amount).includes(digits))),
   );
+}
+
+/** A run of a line's text, naming a unit when `guid` is set. */
+export interface SentencePart {
+  text: string;
+  guid?: string;
+}
+
+/**
+ * The line cut at every name it mentions, longest name first (so "Kel" never splits
+ * "Kelthas"), for the view to colour each player's name in their class colour.
+ */
+export function sentenceParts(event: Pick<SummaryEvent, 'text' | 'actors'>): SentencePart[] {
+  const actors = [...(event.actors ?? [])]
+    .filter((actor) => actor.name !== '')
+    .sort((a, b) => b.name.length - a.name.length);
+  let parts: SentencePart[] = [{ text: event.text }];
+  for (const actor of actors) {
+    parts = parts.flatMap((part) =>
+      part.guid !== undefined
+        ? [part]
+        : part.text
+            .split(actor.name)
+            .flatMap((piece, index) =>
+              index === 0 ? [{ text: piece }] : [{ text: actor.name, guid: actor.guid }, { text: piece }],
+            ),
+    );
+  }
+  return parts.filter((part) => part.text !== '');
 }
