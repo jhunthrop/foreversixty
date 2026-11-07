@@ -8,11 +8,6 @@ public protocol WebAuthenticating: Sendable {
 }
 
 /// ASWebAuthenticationSession with an https (universal link) callback.
-///
-/// TODO(universal links): the https callback only completes once the app has the
-/// Associated Domains entitlement `applinks:foreversixty.gg` and the site serves
-/// apple-app-site-association for /app/*. Both wait on the Apple Team ID (lane O);
-/// add `com.apple.developer.associated-domains` to project.yml's entitlements then.
 @MainActor
 public final class SystemWebAuthenticator: NSObject, WebAuthenticating {
     private let anchor: @MainActor () -> ASPresentationAnchor
