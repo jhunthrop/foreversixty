@@ -5,12 +5,15 @@ import { SECONDARY_BUTTON_FIXED } from '../planner/styles';
 export const BILLING_OUTLINE_BUTTON = `${SECONDARY_BUTTON_FIXED} border-line-warm text-text w-fit px-4`;
 /** `Move to Raid guild`: the gold outline, as the plans page's card button. */
 export const BILLING_MOVE_BUTTON = `${SECONDARY_BUTTON_FIXED} border-gold text-gold w-fit px-4`;
+/** The focus ring a confirm's safe choice (Cancel, Keep Guild) shows on any focus: focus is moved
+ *  there in code, and the reader sees where it went after a click (spec 4). */
+export const SAFE_FOCUS = 'focus:outline-gold focus:outline-2 focus:outline-offset-2';
 /** A 44 px underlined text button (`Keep Guild`). */
 export const BILLING_TEXT_BUTTON =
   'text-text hover:text-gold-hover focus-visible:outline-gold inline-flex min-h-11 items-center text-[13px] underline focus-visible:outline-2';
 /** The safe choice a confirm block focuses in code (spec 4): the 2 px gold ring shows on any focus,
  *  not only keyboard focus-visible, so the reader sees where focus went after a click. */
-export const BILLING_SAFE_TEXT_BUTTON = `${BILLING_TEXT_BUTTON} focus:outline-gold focus:outline-2 focus:outline-offset-2`;
+export const BILLING_SAFE_TEXT_BUTTON = `${BILLING_TEXT_BUTTON} ${SAFE_FOCUS}`;
 /** An opener (`Give seat`, `Move to Raid guild`) while its confirm block is open: drawn pressed. */
 export const OPENER_PRESSED = 'bg-card-top';
 /** A confirm block's buttons: full width below 768, commit first (spec 7); inline from 768. */

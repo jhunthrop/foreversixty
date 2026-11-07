@@ -25,17 +25,24 @@ const checked = (body: string, tier: string): boolean =>
   new RegExp(`<input[^>]*checked[^>]*value="${tier}"`).test(body);
 
 describe('GuildPlanChooser', () => {
-  it('sets only the figures in tabular numerals and shows the list price as plain text', () => {
+  it('prices each plan Row with a Figure and shows the founder list price as plain text', () => {
     const body = html({ now: OPEN });
-    const price =
-      /data-testid="guild-billing-option-guild-price">([\s\S]*?)<\/span>\s*<span class="text-muted/.exec(
-        body,
-      )?.[1] ?? '';
-    expect(price).toMatch(/<span class="text-strong numeric text-\[20px\]">\$120<\/span>/);
+    const price = /data-testid="guild-billing-option-guild-price">([\s\S]*?)<\/label>/.exec(body)?.[1] ?? '';
+    expect(text(price)).toContain('$120');
+    expect(text(price)).toContain('a year');
+    expect(price).toContain('tabular-nums');
     expect(body).not.toContain('<s ');
     expect(body).toMatch(/guild-billing-option-guild-list">\$150 after 6 Jan 2027</);
-    expect(price).toMatch(/<span> a year<\/span>/);
     expect(body).toContain('max-w-[720px]');
+  });
+
+  it('draws the interval as the Segmented control and the plans as Rows, the picked one selected', () => {
+    const body = html({ count: 12 });
+    expect(body).toMatch(
+      /role="radio"[^>]*aria-checked="true"[^>]*data-testid="guild-billing-interval-yearly"/,
+    );
+    expect(body).toMatch(/ui-row[^"]*bg-selected[^>]*data-testid="guild-billing-option-guild"/);
+    expect(body).not.toMatch(/ui-row[^"]*bg-selected[^>]*data-testid="guild-billing-option-raid_guild"/);
   });
 
   it('preselects Guild at 12 members and Raid guild at 28', () => {

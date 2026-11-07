@@ -1,10 +1,11 @@
 <!-- web/src/components/guild/billing/GuildSeats.svelte -->
-<!-- Premium seats (spec 3.2.5): sub-head with its count, the helper, one row per seat. Officers
+<!-- Premium seats (spec 3.2.5): a level 3 Section with its count, the helper, one open Row per seat. Officers
      without `seats` see the rows with no right-hand column. Nothing draws before a plan has seats. -->
 <script lang="ts">
   import type { SeatView } from '../../../lib/billing/contract';
   import { seatsCopy as copy } from '../../../lib/billing/seats-copy';
   import { givenCount } from '../../../lib/guild/seat-view';
+  import Section from '../../ui/Section.svelte';
   import GuildSeatRow from './GuildSeatRow.svelte';
 
   let {
@@ -26,18 +27,18 @@
 </script>
 
 {#if seats.length > 0}
-  <div class="flex flex-col gap-2" data-testid="guild-seats">
-    <div class="flex items-baseline gap-3">
-      <h3 class="section-title">{copy.heading}</h3>
-      <span class="text-muted numeric text-[12px]" data-testid="guild-seats-count">
-        {copy.given(Math.min(givenCount(seats), total), total)}
-      </span>
-    </div>
-    <p class="text-muted text-[13px]">{copy.explainer}</p>
-    <ul class="border-line-soft border-t">
+  <Section
+    title={copy.heading}
+    level={3}
+    meta={copy.given(Math.min(givenCount(seats), total), total)}
+    metaTestid="guild-seats-count"
+    testid="guild-seats"
+  >
+    <p class="text-muted pt-2 text-[13px]">{copy.explainer}</p>
+    <ul class="m-0 list-none p-0">
       {#each seats as seat (seat.slot)}
         <GuildSeatRow {guildId} {seat} {manage} {now} {onChanged} />
       {/each}
     </ul>
-  </div>
+  </Section>
 {/if}

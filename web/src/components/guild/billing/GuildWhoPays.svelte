@@ -1,5 +1,6 @@
 <!-- web/src/components/guild/billing/GuildWhoPays.svelte -->
-<!-- Who pays (spec 3.2.6), the subscriber only: transfer the plan to another officer as an offer, the
+<!-- Who pays (spec 3.2.6), the subscriber only: transfer the plan to another officer as an offer (the
+     confirm a selected Row, the seat offer's idiom), the
      waiting line with Withdraw, and the declined line with the button back. The consequence sentence
      reads from the current plan, then what stays with the guild; nothing changes until the officer
      accepts. After a send or a withdraw, focus lands on the block's new action once it is enabled. -->
@@ -13,9 +14,11 @@
     BILLING_SAFE_TEXT_BUTTON,
     CONFIRM_ACTION_WIDTH,
     CONFIRM_ACTIONS,
+    SAFE_FOCUS,
   } from '../../../lib/guild/billing-styles';
   import { button } from '../../../lib/ui/button';
   import { BUSY_CLASS } from '../../../lib/ui/busy';
+  import Row from '../../ui/Row.svelte';
   import Select from '../../ui/Select.svelte';
   import SettingsRow from '../../ui/SettingsRow.svelte';
 
@@ -150,53 +153,60 @@
     {/snippet}
   </SettingsRow>
   {#if !waiting && opening && candidates.length > 0}
+    <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
     <div
-      class="border-line-soft mx-5 mb-4 flex flex-col gap-3 border p-4"
+      class="mx-5 mb-4"
       role="group"
       aria-labelledby="guild-transfer-label"
       onkeydown={onKeydown}
       data-testid="guild-transfer-confirm"
     >
-      <div class="flex flex-col gap-1">
-        <label id="guild-transfer-label" class="quiet-label" for="guild-transfer-select"
-          >{copy.transferTo}</label
-        >
-        <Select
-          id="guild-transfer-select"
-          value={chosen === null ? '' : String(chosen.user_id)}
-          options={candidates.map((candidate) => ({
-            value: String(candidate.user_id),
-            label: candidate.name,
-          }))}
-          focusOnMount
-          testid="guild-transfer-select"
-          onchange={(event) => (chosenId = Number((event.currentTarget as HTMLSelectElement).value))}
-        />
-      </div>
-      {#if consequence !== '' && chosen !== null}
-        <p class="text-[14px]" data-testid="guild-transfer-consequence">{consequence}</p>
-        <p class="text-muted text-[13px]" data-testid="guild-transfer-stays">
-          {copy.staysWithGuild(chosen.name)}
-        </p>
-      {/if}
-      {#if error !== ''}
-        <p class="text-[13px]" role="alert" data-testid="guild-transfer-error">{error}</p>
-      {/if}
-      <div class={CONFIRM_ACTIONS}>
-        <button
-          type="button"
-          class="{button('primary', 'sm')} {CONFIRM_ACTION_WIDTH} {busy ? BUSY_CLASS : ''}"
-          disabled={busy}
-          aria-busy={busy}
-          onclick={() => void send()}
-          data-testid="guild-transfer-send"
-        >
-          {busy ? copy.sending : copy.send}
-        </button>
-        <button type="button" class="{BILLING_SAFE_TEXT_BUTTON} {CONFIRM_ACTION_WIDTH}" onclick={close}
-          >{copy.cancel}</button
-        >
-      </div>
+      <Row title={copy.transferTo} selected>
+        {#snippet titleContent()}
+          <label id="guild-transfer-label" for="guild-transfer-select">{copy.transferTo}</label>
+        {/snippet}
+        {#snippet foot()}
+          <div class="flex w-full flex-col gap-3">
+            <Select
+              id="guild-transfer-select"
+              value={chosen === null ? '' : String(chosen.user_id)}
+              options={candidates.map((candidate) => ({
+                value: String(candidate.user_id),
+                label: candidate.name,
+              }))}
+              focusOnMount
+              testid="guild-transfer-select"
+              onchange={(event) => (chosenId = Number((event.currentTarget as HTMLSelectElement).value))}
+            />
+            {#if consequence !== '' && chosen !== null}
+              <p class="text-text text-[14px]" data-testid="guild-transfer-consequence">{consequence}</p>
+              <p class="text-muted text-[13px]" data-testid="guild-transfer-stays">
+                {copy.staysWithGuild(chosen.name)}
+              </p>
+            {/if}
+            {#if error !== ''}
+              <p class="text-wipe text-[13px]" role="alert" data-testid="guild-transfer-error">{error}</p>
+            {/if}
+            <div class={CONFIRM_ACTIONS}>
+              <button
+                type="button"
+                class="{button('primary', 'sm')} {CONFIRM_ACTION_WIDTH} {busy ? BUSY_CLASS : ''}"
+                disabled={busy}
+                aria-busy={busy}
+                onclick={() => void send()}
+                data-testid="guild-transfer-send"
+              >
+                {busy ? copy.sending : copy.send}
+              </button>
+              <button
+                type="button"
+                class="{button('secondary', 'sm')} {SAFE_FOCUS} {CONFIRM_ACTION_WIDTH}"
+                onclick={close}>{copy.cancel}</button
+              >
+            </div>
+          </div>
+        {/snippet}
+      </Row>
     </div>
   {:else if error !== ''}
     <p class="px-5 pb-4 text-[13px]" role="alert" data-testid="guild-transfer-error">{error}</p>

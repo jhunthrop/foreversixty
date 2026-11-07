@@ -1,11 +1,12 @@
 <!-- web/src/components/guild/billing/GuildPlanChooser.svelte -->
-<!-- The chooser (spec 3.2.2): Yearly/Monthly, the Guild and Raid guild cards (the one that fits the
-     verified count preselected), the count line, the one gold button to Checkout, then the trial
+<!-- The chooser (spec 3.2.2): Yearly/Monthly (the Segmented control), the Guild and Raid guild Rows
+     (the one that fits the verified count preselected), the count line, the one gold button to Checkout, then the trial
      and founder lines. Shown for no plan, a lapsed plan and the scoped officer-tools grant. -->
 <script lang="ts">
   import { guildBillingCopy as copy } from '../../../lib/billing/guild-billing-copy';
   import type { GuildTier } from '../../../lib/billing/contract';
   import {
+    INTERVALS,
     PLAN_ORDER,
     founderOpen,
     formatAmount,
@@ -14,10 +15,13 @@
   } from '../../../lib/billing/plans';
   import { listPriceAfterFounder, priceFor } from '../../../lib/billing/plan-costs';
   import { fitsTier } from '../../../lib/guild/billing-state';
-  import { PRIMARY_BUTTON_FIXED } from '../../../lib/planner/styles';
+  import { plansPageCopy } from '../../../lib/billing/plans-page-copy';
+  import { button } from '../../../lib/ui/button';
   import { PREMIUM_LINKS } from '../../../lib/billing/premium-links';
   import ActionLink from '../../ui/ActionLink.svelte';
-  import IntervalSegments from './IntervalSegments.svelte';
+  import Figure from '../../ui/Figure.svelte';
+  import Row from '../../ui/Row.svelte';
+  import Segmented from '../../ui/Segmented.svelte';
 
   let {
     guildId,
@@ -57,35 +61,52 @@
 </script>
 
 <div class="flex max-w-[720px] flex-col gap-3" data-testid="guild-billing-chooser">
-  <IntervalSegments value={interval} name="guild-billing-interval" onChange={(next) => (interval = next)} />
-  <div role="radiogroup" aria-label="Plan" class="grid gap-3 md:grid-cols-2">
+  <Segmented
+    options={INTERVALS.map((option) => ({ value: option, label: plansPageCopy.interval.labels[option] }))}
+    value={interval}
+    label={plansPageCopy.interval.groupLabel}
+    fill="phone"
+    onChange={(next) => (interval = next)}
+    testid="guild-billing-interval"
+  />
+  <!-- One Row per plan: the radio leads, and the name, the lines and the price are its labels, so the
+       whole row picks the plan; the picked one is the selected Row (the gold ground and bar). -->
+  <div role="radiogroup" aria-label={copy.chooser.planGroup}>
     {#each TIERS as key (key)}
-      <label
-        class="border-line has-[:checked]:border-gold has-[:checked]:bg-card-top rounded-control has-[:focus-visible]:outline-gold flex min-h-24 cursor-pointer flex-col gap-1 border p-4 has-[:focus-visible]:outline-2"
-        data-testid={`guild-billing-option-${key}`}
-      >
-        <input
-          type="radio"
-          class="sr-only"
-          name="guild-billing-tier"
-          value={key}
-          checked={tier === key}
-          onchange={() => (picked = key)}
-        />
-        <span class="section-title">{copy.chooser.tierName(key)}</span>
-        <!-- Only the figures are mono (spec 3.2.2); the unit is 13 px muted prose and the founder
-             list price is plain text below. -->
-        <span class="text-muted text-[13px]" data-testid={`guild-billing-option-${key}-price`}>
-          <span class="text-strong numeric text-[20px]">{formatAmount(priceFor(key, interval, founder))}</span
-          ><span>{intervalUnit(interval)}</span>
-        </span>
-        {#if founder}
-          <span class="text-muted text-[13px]" data-testid={`guild-billing-option-${key}-list`}
-            >{listPriceAfterFounder(key, interval)}</span
-          >
-        {/if}
-        <span class="text-muted text-[13px]">{copy.chooser.tierLine(key)}</span>
-      </label>
+      {@const id = `guild-billing-tier-${key}`}
+      <Row title={copy.chooser.tierName(key)} selected={tier === key} testid={`guild-billing-option-${key}`}>
+        {#snippet lead()}
+          <input
+            {id}
+            type="radio"
+            class="accent-gold focus-visible:outline-gold size-[18px] cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2"
+            name="guild-billing-tier"
+            value={key}
+            checked={tier === key}
+            onchange={() => (picked = key)}
+          />
+        {/snippet}
+        {#snippet titleContent()}<label class="block cursor-pointer" for={id}
+            >{copy.chooser.tierName(key)}</label
+          >{/snippet}
+        {#snippet subContent()}
+          <label class="block cursor-pointer" for={id}>
+            {copy.chooser.tierLine(key)}
+            {#if founder}<span class="block" data-testid={`guild-billing-option-${key}-list`}
+                >{listPriceAfterFounder(key, interval)}</span
+              >{/if}
+          </label>
+        {/snippet}
+        {#snippet trail()}
+          <label class="cursor-pointer" for={id} data-testid={`guild-billing-option-${key}-price`}>
+            <Figure
+              value={formatAmount(priceFor(key, interval, founder))}
+              unit={intervalUnit(interval).trim()}
+              size="sm"
+            />
+          </label>
+        {/snippet}
+      </Row>
     {/each}
   </div>
   <p class="text-muted text-[13px]" data-testid="guild-billing-count">
@@ -94,7 +115,7 @@
   <ActionLink href={PREMIUM_LINKS.guildLeaders} class="w-fit" data-testid="guild-billing-compare"
     >{copy.chooser.compare}</ActionLink
   >
-  <a {href} class="{PRIMARY_BUTTON_FIXED} w-fit px-4" data-testid="guild-billing-subscribe">{buttonText}</a>
+  <a {href} class="{button('primary')} w-full md:w-fit" data-testid="guild-billing-subscribe">{buttonText}</a>
   {#if !trialUsed && !lapsed}
     <p class="text-muted text-[13px]" data-testid="guild-billing-trial-line">{copy.chooser.trialLine}</p>
   {/if}
