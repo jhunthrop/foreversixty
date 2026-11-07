@@ -67,7 +67,6 @@
         <Button
           size="sm"
           tone="ghost"
-          sentence
           disabled={!editable}
           onclick={onToggle}
           testid={`assign-edit-${slot.key}`}>{editing ? assignmentsCopy.done : assignmentsCopy.edit}</Button
@@ -111,7 +110,6 @@
             <Button
               size="sm"
               tone="ghost"
-              sentence
               disabled={!editable || busy}
               onclick={() => onRemove(name.character_key)}
               testid={`assign-remove-${slot.key}`}>{assignmentsCopy.remove(name.name)}</Button
@@ -120,7 +118,6 @@
           <Button
             size="sm"
             tone="danger"
-            sentence
             disabled={!editable || busy}
             onclick={onClear}
             testid={`assign-clear-${slot.key}`}>{assignmentsCopy.clear}</Button
