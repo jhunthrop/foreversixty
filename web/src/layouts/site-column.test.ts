@@ -39,6 +39,7 @@ const ALLOWED: Readonly<Record<string, readonly RegExp[]>> = {
   'components/planner/TreeGrid.svelte': [/mx-auto w-fit/],
   // The item tooltip sizes itself to the viewport, minus a margin.
   'components/ItemTooltip.svelte': [/calc\(100vw_-_32px\)/],
+  'components/ui/TalentTip.svelte': [/calc\(100vw - 32px\)/], // the talent tooltip's phone cap, a popover
   // The header bar's phone name clamp reads the viewport, not a page container.
   'styles/nav.css': [/calc\(100vw - 460px\)/],
   // The wide column's own width (web layout spec 2026-11-05 §3.2): the token, not a container.
