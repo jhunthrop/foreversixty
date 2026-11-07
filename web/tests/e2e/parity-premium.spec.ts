@@ -24,6 +24,7 @@ const STATES: readonly { id: string; state: PremiumPageState; mock: string }[] =
   { id: 'premium-free', state: 'free', mock: 'web-premium-free' },
   { id: 'premium-seat', state: 'seat', mock: 'web-premium-seat' },
   { id: 'checkout-confirmed', state: 'checkout-confirmed', mock: 'web-checkout-confirmed' },
+  { id: 'checkout-owned', state: 'checkout-owned', mock: 'web-checkout-owned' },
 ];
 const WIDTHS = [1440, 390] as const;
 const HEIGHT = 1000;
@@ -42,7 +43,7 @@ const PREMIUM_DOOR =
 const MOCK_PHONE_BAR =
   "below 768 the mock library's ControlBar line is a details/summary (ws_lib.control_bar); the built " +
   "ControlBar's is a button with aria-expanded, the same disclosure (every lane's bar shares it)";
-const PAID = new Set(['premium-seat', 'checkout-confirmed']);
+const PAID = new Set(['premium-seat', 'checkout-confirmed', 'checkout-owned']);
 const HAS_BAR = (id: string) => id.startsWith('premium');
 const SECTION_META =
   "the built Section's head with a meta line (Questions) is 12 px taller than the mock library's sec-h, " +
