@@ -42,9 +42,9 @@ type Query struct {
 	// Character narrows any filter to one character's own rows (the character page's activity):
 	// its key, <region>/<ruleset>/<slug>; empty for the whole feed.
 	Character string
-	Cursor   string
-	Limit    int
-	Now      time.Time
+	Cursor    string
+	Limit     int
+	Now       time.Time
 }
 
 // Row is one feed row as GET /v1/feed answers it.
