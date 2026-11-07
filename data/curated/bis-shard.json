@@ -1,0 +1,8 @@
+{
+  "specs": [
+    "druid-restoration",
+    "priest-discipline",
+    "priest-holy"
+  ],
+  "reason": "Sim round 29, run B of 3: Restoration druid and the two priests. Healers take up to 80 minutes each, so the 19 specs split across three runs that each fit the 250-minute ranking step."
+}
