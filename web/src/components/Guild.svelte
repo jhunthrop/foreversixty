@@ -94,6 +94,7 @@
   } from './guild/GuildTabs.svelte';
   import GuildStatus from './GuildStatus.svelte';
   import EmptyState from './ui/EmptyState.svelte';
+  import Button from './ui/Button.svelte';
   import PageHeader from './ui/PageHeader.svelte';
   import Skeleton from './ui/Skeleton.svelte';
   import { findMyGuild } from '../lib/guild/my-guild';
@@ -417,6 +418,17 @@
   /** The card reads the home: it loads with it, and only a verified member's failure is an error. */
   const weekOneStatus = $derived<'loading' | 'error' | 'ready'>(
     home !== null ? 'ready' : homeStatus === 'loading' ? 'loading' : 'error',
+  );
+  /** The viewer's own lines under the head draw only when one of them has something to say, so an
+   *  empty block never pushes the tab's content down (the Overview carries the raid and the needs). */
+  const roleLineShown = $derived(
+    home !== null &&
+      ((myLevelingLine === null && home.standing != null && standingSentence(home.standing) !== '') ||
+        myLevelingLine !== null ||
+        (activeTab !== 'overview' && showsBandLine(myGuildMembership?.verified === true, role)) ||
+        (activeTab !== 'overview' && role === 'member' && needs !== null) ||
+        (myGuildMembership !== null && !myGuildMembership.verified) ||
+        home.claim.frozen),
   );
   const showWeekOne = $derived(
     home === null
@@ -744,10 +756,25 @@
   });
 </script>
 
-{#snippet bandLine()}
+{#snippet headInvite()}
+  <Button size="sm" href={`${settingsHref}#invite`} testid="guild-head-invite">Invite link</Button>
+{/snippet}
+{#snippet bandLine()}{@render raidLine('band')}{/snippet}
+{#snippet youRow()}{@render raidLine('row')}{/snippet}
+
+{#snippet raidLine(layout: 'band' | 'row')}
   {#if home !== null}
     {#if bandLineLazy.current !== null}
       <bandLineLazy.current
+        {layout}
+        character={myRosterRow === null
+          ? null
+          : {
+              name: myRosterRow.name,
+              class: myRosterRow.class ?? '',
+              spec: myRosterRow.spec ?? '',
+              level: myRosterRow.level ?? null,
+            }}
         guildId={home.guild.id}
         nextRaid={home.next_raid ?? null}
         officer={officerView}
@@ -819,11 +846,11 @@
     />
   </div>
 {:else if data !== null && resolved !== null}
-  <div class="reveal flex flex-col gap-[22px] md:gap-8 {GUILD_BANDLESS_TOP}" data-testid="guild" id="guild">
-    <!-- Site alignment (2026-10-29, D1): the head sits on the page ground like every other page's:
-         the shared PageHead (eyebrow, the guild's mark at the left, the name, the facts line), then
-         the viewer's own lines under it, then the tab strip. No band, no faction wash or watermark:
-         the TabStrip's edge fade runs to the page ground. -->
+  <div class="reveal flex flex-col gap-2" data-testid="guild" id="guild">
+    <!-- The head sits on the page ground like every other page's (web layout spec 2026-11-05 §6.1,
+         §7.1): the shared PageHeader (the guild's mark, the name, one meta line with the claim
+         holder, the officer actions, the TabStrip under it), then the viewer's own lines. No band,
+         no faction wash or watermark. -->
     <div class="flex flex-col gap-4" data-testid="guild-header">
       <header
         class="flex flex-col gap-3"
@@ -835,6 +862,7 @@
           title={data.guild.name}
           tone={faction === 'alliance' || faction === 'horde' ? { faction } : 'strong'}
           testid="guild-page-header"
+          actions={officerView && settingsHref !== '' ? headInvite : undefined}
         >
           {#snippet crest()}
             <FactionCrest {faction} src={guildMark} testid="guild-faction-crest" />
@@ -853,6 +881,12 @@
                 ]}
               />
             </span>
+            {#if meResolved && claimEntry.kind === 'claimedBy'}
+              <span data-testid="guild-claim-note"><GuildClaimedBy holder={home?.claim.claimed_by} /></span>
+            {/if}
+          {/snippet}
+          {#snippet tabs()}
+            <GuildTabs active={activeTab} {role} onSelect={selectTab} />
           {/snippet}
         </PageHeader>
 
@@ -867,17 +901,11 @@
           />
         {/if}
 
-        {#if meResolved && claimEntry.kind === 'claimedBy'}
-          <p class="text-muted text-[13px]" data-testid="guild-claim-note">
-            <GuildClaimedBy holder={home?.claim.claimed_by} />
-          </p>
-        {/if}
-
         <!-- The role-based line (spec §4.0/§4.A.1): unchanged v1 mechanism for claim/
                settings, still above the tab strip. "Contest this claim" moved out of here
                entirely (fix round 1, item 2) -- it now lives in the Settings tab, under
                the claim block, and never reaches the claimant's own account. -->
-        {#if homeStatus === 'ready' && home !== null}
+        {#if homeStatus === 'ready' && home !== null && roleLineShown}
           <div class="flex flex-col gap-2" data-testid="guild-role-line">
             <!-- Spec §4.A.1: the standing line's four branches (ranked / alone-in-spec /
                    unverified / signed-out) never branch on officer vs member -- every
@@ -923,15 +951,15 @@
                 </p>
               {/if}
             </div>
-            <div class="flex flex-wrap items-center justify-between gap-3">
-              {#if myGuildMembership !== null && !myGuildMembership.verified}
+            {#if myGuildMembership !== null && !myGuildMembership.verified}
+              <div class="flex flex-wrap items-center justify-between gap-3">
                 <GuildUnverifiedNote
                   guildName={home.guild.name}
                   hasApprover={home.viewer?.verify?.has_approver}
                   claimHref={guildClaimHref(resolved.region, resolved.ruleset, home.guild.name)}
                 />
-              {/if}
-            </div>
+              </div>
+            {/if}
 
             {#if home.claim.frozen}
               <p class="text-[13px]" role="alert" data-testid="guild-home-frozen">
@@ -949,8 +977,6 @@
           />
         {/if}
       </header>
-
-      <GuildTabs active={activeTab} {role} onSelect={selectTab} />
     </div>
 
     {#if activeTab === 'overview'}
@@ -962,7 +988,7 @@
           nextRaid={home?.next_raid ?? null}
           {guildPath}
           myRow={myRosterRow}
-          you={showsBandLine(myGuildMembership?.verified === true, role) ? bandLine : undefined}
+          you={showsBandLine(myGuildMembership?.verified === true, role) ? youRow : undefined}
           reports={home?.reports ?? data.reports}
           summary={home?.summary}
           {showCounts}

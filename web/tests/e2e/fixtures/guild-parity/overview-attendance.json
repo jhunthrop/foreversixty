@@ -1,0 +1,62 @@
+{
+ "raids": [
+  {
+   "id": 35,
+   "starts_at": "2026-11-27T02:00:00Z",
+   "zone_name": "Onyxia's Lair"
+  },
+  {
+   "id": 36,
+   "starts_at": "2026-11-29T02:00:00Z",
+   "zone_name": "Onyxia's Lair"
+  },
+  {
+   "id": 37,
+   "starts_at": "2026-12-04T02:00:00Z",
+   "zone_name": "Onyxia's Lair"
+  },
+  {
+   "id": 38,
+   "starts_at": "2026-12-08T02:00:00Z",
+   "zone_name": "Onyxia's Lair"
+  }
+ ],
+ "rows": [
+  {
+   "name": "Pinefeather",
+   "class": "hunter",
+   "account_key": "acct-pinefeather",
+   "cells": [
+    "present",
+    "present",
+    "absent",
+    "absent"
+   ],
+   "slipping": true
+  },
+  {
+   "name": "Skyarcana",
+   "class": "mage",
+   "account_key": "acct-skyarcana",
+   "cells": [
+    "present",
+    "absent",
+    "absent",
+    "none"
+   ],
+   "slipping": true
+  },
+  {
+   "name": "Cinderglass",
+   "class": "mage",
+   "account_key": "acct-cinderglass",
+   "cells": [
+    "bench",
+    "bench",
+    "present",
+    "bench"
+   ],
+   "slipping": false
+  }
+ ]
+}

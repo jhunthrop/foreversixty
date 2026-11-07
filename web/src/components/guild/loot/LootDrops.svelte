@@ -1,5 +1,5 @@
 <!-- web/src/components/guild/loot/LootDrops.svelte -->
-<!-- The loot council's one Plate (web layout spec 2026-11-05 §7.2): the chosen night's drops as
+<!-- The loot council's one Plate, in its Section (web layout spec 2026-11-05 §7.2): the chosen night's drops as
      ItemRows (icon in its quality frame, quality-coloured name, what it is and who can use it or
      who got it, an Open or Awarded Tag). A row is one button: it opens the drop's candidates (or,
      for a member, their own MS/OS call). On the current night a picker under the Plate opens any
@@ -10,6 +10,7 @@
   import { pickOptions, type DropRow } from '../../../lib/guild/loot-council-view';
   import ItemRow from '../../ui/ItemRow.svelte';
   import Plate from '../../ui/Plate.svelte';
+  import Section from '../../ui/Section.svelte';
   import Select from '../../ui/Select.svelte';
   import Tag from '../../ui/Tag.svelte';
 
@@ -42,11 +43,7 @@
   const options = $derived(pickOptions(openable, raids));
 </script>
 
-<section class="flex flex-col gap-3" aria-labelledby="guild-loot-drops-head" data-testid="guild-loot-drops">
-  <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-    <h2 id="guild-loot-drops-head" class="text-strong text-[18px] leading-6 font-bold">{heading}</h2>
-    <span class="text-small text-muted" data-testid="guild-loot-night-summary">{meta}</span>
-  </div>
+<Section title={heading} {meta} metaTestid="guild-loot-night-summary" testid="guild-loot-drops">
   <Plate>
     {#each rows as row (row.itemId)}
       <ItemRow
@@ -71,7 +68,7 @@
     {/each}
   </Plate>
   {#if openable.length > 0}
-    <div class="flex max-w-[360px] flex-col gap-[6px]" data-testid="guild-loot-open-drop">
+    <div class="mt-3 flex max-w-[360px] flex-col gap-[6px]" data-testid="guild-loot-open-drop">
       <label for="guild-loot-open-drop" class="text-label tracking-label text-muted font-bold uppercase"
         >Open a drop from the loot table</label
       >
@@ -87,4 +84,4 @@
       />
     </div>
   {/if}
-</section>
+</Section>

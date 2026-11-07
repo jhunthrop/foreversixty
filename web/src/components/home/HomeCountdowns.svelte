@@ -5,7 +5,8 @@
 <script lang="ts">
   import type { NextRaidView } from '../../lib/guild/api';
   import { raidTimeLine } from '../../lib/guild/overview-role-view';
-  import { FIRST_RAIDS, homeBCopy, homeBHrefs } from '../../lib/home/home-b-view';
+  import { FIRST_RAIDS } from '../../lib/first-raids';
+  import { homeBCopy, homeBHrefs } from '../../lib/home/home-b-view';
   import { dayText } from '../../lib/home/feed';
   import { LINK } from '../../lib/ui/primitives';
   import { REGION } from '../../lib/ui/regions';

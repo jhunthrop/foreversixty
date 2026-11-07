@@ -1,0 +1,29 @@
+{
+ "guild": {
+  "id": 2,
+  "name": "Olympus XXVII",
+  "region": "us",
+  "ruleset": "pvp",
+  "faction": "alliance",
+  "crest_url": null
+ },
+ "roster_best": [],
+ "reports": [
+  {
+   "id": "olympusony1207",
+   "title": "Onyxia's Lair \u00b7 raid night",
+   "zone": "Onyxia's Lair",
+   "created_at": "2026-12-08T02:00:00Z"
+  }
+ ],
+ "progression": [
+  {
+   "encounter": "Onyxia",
+   "encounter_id": 1084,
+   "difficulty": 1,
+   "kills": 1,
+   "pull_count": 2,
+   "first_kill_at": "2026-12-08T02:00:00Z"
+  }
+ ]
+}

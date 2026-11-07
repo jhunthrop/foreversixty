@@ -57,7 +57,10 @@
   import { minuteClock } from '../../lib/guild/minute-clock.svelte';
   import { guildRaidHref } from '../../lib/characters';
   import type { GuildRaidRole, GuildSignupState } from '../../lib/guild/api';
-  import { bandLineParts, kindCountsRoles, kindOf, whenPhrase } from '../../lib/guild/raid-copy';
+  import { bandClause, bandLineParts, kindCountsRoles, kindOf, whenPhrase } from '../../lib/guild/raid-copy';
+  import { classTone } from '../../lib/ui/primitives';
+  import ClassCrestRing from '../character/ClassCrestRing.svelte';
+  import Row from '../ui/Row.svelte';
   import { putSignup } from '../../lib/guild/raids-api';
   import { guildGateCopy } from '../../lib/guild/copy';
   import { gateAction, type GateFacts } from '../../lib/guild/plan-gate';
@@ -67,6 +70,14 @@
   interface OwnCharacter {
     character_key: string;
     name: string;
+  }
+
+  /** The row layout's character: who the segments sign up, as the roster knows them. */
+  interface RowCharacter {
+    name: string;
+    class: string;
+    spec: string;
+    level: number | null;
   }
 
   let {
@@ -84,6 +95,8 @@
     now: fixedNow,
     locale = viewerLocale(),
     viewerTimezone = new Intl.DateTimeFormat().resolvedOptions().timeZone,
+    layout = 'band',
+    character = null,
   }: {
     guildId: number;
     nextRaid: NextRaidView | null;
@@ -107,6 +120,12 @@
     now?: Date;
     locale?: string;
     viewerTimezone?: string;
+    /** `band`: the sentence, the segments and the raid link (the guild band on every tab but the
+     *  Overview). `row`: the viewer's own Row in the Overview's next-raid Plate (web layout spec
+     *  2026-11-05 §7.1): crest, character, spec and level, their state, the segments. */
+    layout?: 'band' | 'row';
+    /** The row layout's character (the header character's roster row). */
+    character?: RowCharacter | null;
   } = $props();
 
   /** The space between the gate's two parts, an expression so block-edge trimming keeps it. */
@@ -176,6 +195,23 @@
     });
   });
 
+  /** The row's sub line: `Holy Priest · level 60 · ` before the state clause. */
+  const rowFacts = $derived.by(() => {
+    if (character === null) return '';
+    const cls = character.class.charAt(0).toUpperCase() + character.class.slice(1);
+    const level = character.level === null ? '' : ` · level ${character.level}`;
+    return `${character.spec} ${cls}${level} · `;
+  });
+  const rowClause = $derived(
+    bandClause({
+      when: '',
+      state: shown?.state ?? null,
+      role: nextRaid !== null && kindCountsRoles(kindOf(nextRaid)) ? shown?.role : undefined,
+      n: 0,
+      size: null,
+    }),
+  );
+
   async function press(state: GuildSignupState): Promise<void> {
     if (nextRaid === null || boundKey === null || busy || locked) return;
     const prev = nextRaid;
@@ -235,6 +271,34 @@
     {/if}
   </p>
   {@render statusRow()}
+{:else if layout === 'row'}
+  <div data-testid="guild-raid-line" aria-busy={busy ? 'true' : undefined}>
+    <Row title={character?.name ?? boundName} titleTone={classTone(character?.class ?? '')} wrapTrail>
+      {#snippet lead()}<ClassCrestRing characterClass={character?.class ?? ''} size={36} />{/snippet}
+      {#snippet subContent()}<span data-testid="guild-raid-line-sentence"
+          >{rowFacts}{rowClause.head}{#if rowClause.word !== ''}<strong class="text-strong font-semibold"
+              >{rowClause.word}</strong
+            >{/if}{rowClause.tail}</span
+        >{/snippet}
+      {#snippet trail()}
+        {#if boundKey !== null}
+          <SignupSegments
+            value={boundState}
+            name={boundName}
+            size="band"
+            disabled={locked}
+            describedBy={locked ? lockedId : undefined}
+            onChange={(state) => void press(state)}
+            testid="guild-raid-line-segments"
+          />
+        {/if}
+      {/snippet}
+    </Row>
+    {#if locked}
+      <p id={lockedId} class="sr-only" data-testid="guild-raid-line-locked">{raidCopy.raidStates.locked}</p>
+    {/if}
+    <div class="px-4">{@render statusRow()}</div>
+  </div>
 {:else}
   <div class="flex flex-col gap-1" data-testid="guild-raid-line">
     <div

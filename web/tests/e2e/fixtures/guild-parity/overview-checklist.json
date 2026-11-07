@@ -1,0 +1,62 @@
+{
+ "character": {
+  "character_key": "us/pvp/hollowmend",
+  "name": "Hollowmend",
+  "class": "priest",
+  "spec": "Holy",
+  "level": 60
+ },
+ "raid": {
+  "id": 41,
+  "zone_key": "onyxias-lair",
+  "zone_name": "Onyxia's Lair"
+ },
+ "verdict": "almost",
+ "items": [
+  {
+   "key": "level",
+   "state": "ok",
+   "level": 60,
+   "required_level": 60
+  },
+  {
+   "key": "attunement",
+   "state": "ok",
+   "attunement_kind": "quest",
+   "key_item": {
+    "id": 16309,
+    "name": "Drakefire Amulet",
+    "quality": 3
+   }
+  },
+  {
+   "key": "gear_gap",
+   "state": "fail",
+   "upgrades": 2,
+   "slots": [
+    "hands",
+    "finger1"
+   ],
+   "unit": "hps"
+  },
+  {
+   "key": "enchants",
+   "state": "ok",
+   "missing_slots": []
+  },
+  {
+   "key": "flask_food",
+   "state": "fail",
+   "supplies": [],
+   "missing": [
+    "flask_or_elixir",
+    "food"
+   ]
+  },
+  {
+   "key": "fire_resistance",
+   "state": "not_tracked",
+   "reason": "resistance_not_in_export"
+  }
+ ]
+}

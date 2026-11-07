@@ -3,7 +3,8 @@
 // time from what the site itself publishes, so a quiet filter never looks dead and never shows
 // invented player activity. Pure: lib/home/floor-load.ts gathers the inputs.
 import type { FeedRow } from './feed';
-import { FIRST_RAIDS, specName } from './home-b-view';
+import { FIRST_RAIDS } from '../first-raids';
+import { specName } from './home-b-view';
 
 export interface FloorInputs {
   /** The first raid opening, while it is still ahead (dates.json role `raids`). */

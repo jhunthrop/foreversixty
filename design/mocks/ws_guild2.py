@@ -3,10 +3,24 @@ member profile. Composed only from ws_prims primitives. Data shapes: api/cmd/see
 In / Late / Bench, loot candidates, readiness, attendance, raid report). Modules whose data source is not confirmed carry a Gap marker.
 """
 from ws_prims import *  # noqa: F403
-from ws_prims import (Page, PageHeader, Section, Plate, Rows, Row, Figures, Figure, Meter, Tag, Button, Link, TabStrip, FormRow, Field, Select, Notice, Segmented, Grid, Tally,
+from ws_prims import (Page, PageHeader, Section, Plate, Rows, Row, Figures, Figure, Tag, Button, Link, TabStrip, FormRow, Field, Select, Notice, Segmented, Grid, Tally,
                       Checklist, Votes, Gap, build_page, crest_img, icon, write, Emblem)
 
-from guild_data import ALLIANCE, GUILD, TABS, C, R, STATE_TAG  # noqa: F401
+from datetime import datetime
+from zoneinfo import ZoneInfo
+
+import guild_overview_data as O
+import guild_overview_fixtures as F
+from guild_data import ALLIANCE, GUILD, NOW, TABS, ZONE, C, R, STATE_TAG  # noqa: F401
+from ws_prims import SpellIcon, control_bar, seg
+
+# Figures under a Section head sit 12 px below its hairline, as the built Section body does (padding-top on a layout div).
+# Lane A's words (the built page's own): the raid's icon (lib/first-raids.ts), the sign-up role words (raidCopy.roleLabels), the
+# BiS slot words (readiness-view enchantSlotLabel) and the loot table's slot lines (slotLine) for the Onyxia drops shown.
+RAID_ICON = 'inv_misc_head_dragon_black'
+ROLE_WORD = {'Tank': 'Tank', 'Healer': 'Healer', 'Melee': 'DPS', 'Ranged': 'DPS'}
+SLOT_WORD = {'hands': 'Hands', 'finger1': 'Finger 1'}
+SLOT_LINE = {(13, 7): 'One-Hand &middot; Sword', (13, 0): 'One-Hand &middot; Axe', (2, None): 'Neck', (11, None): 'Finger', (16, None): 'Back'}
 
 
 def ch(name):
@@ -18,51 +32,177 @@ def lead(name, size=32):
     return crest_img(r[1], size)
 
 
-def hdr(title_suffix='', tabs_active='Overview', actions='', notice=''):
-    return PageHeader(GUILD, ALLIANCE, Emblem('alliance', 56), meta=['<b class="strong">US</b> &middot; PvP', '24 raiders', 'Next raid: Onyxia&rsquo;s Lair, Thu 10 Dec'], actions=actions, tabs=TabStrip(TABS, tabs_active)) + notice
+def hdr(title_suffix='', tabs_active='Overview', actions='', notice='', officer=True):
+    """The guild's head as the built Guild.svelte draws it: the faction crest (64 px, guild page spec 12.2), the facts line
+    (ruleset and region, the tier's counts, Updated, the next raid; a member also reads who holds the claim), the role's tabs
+    as a tablist (hash tabs on one URL), an officer's actions."""
+    claim = [] if officer else [f'Claimed by {crest_img(ch(O.OFFICER)[1], 20)} <b style="color:{C[ch(O.OFFICER)[1]]}">{O.OFFICER}</b>']
+    tabs = TABS if officer else [t for t in TABS if t != 'Settings']
+    return PageHeader(GUILD, ALLIANCE, Emblem('alliance', 64), meta=[' &middot; '.join(head_facts())] + claim, actions=actions,
+                      tabs=TabStrip(tabs, tabs_active, tablist=True)) + notice
+
+
+def head_facts() -> list[str]:
+    t = F.tier()
+    nxt = guild_time(O.NEXT_RAID_AT)
+    return ['PvP US', f"{t['down']} boss down", f"{t['pulls_total']} pulls", 'Updated today', f"Next raid: {O.ZONE_NAME}, {day_label(nxt)}"]
+
+
+def guild_time(iso: str) -> datetime:
+    return datetime.fromisoformat(iso.replace('Z', '+00:00')).astimezone(ZoneInfo(ZONE))
+
+
+def day_label(at: datetime) -> str:
+    return f"{at.strftime('%a')} {at.day} {at.strftime('%b')}"
+
+
+def clock_label(at: datetime) -> str:
+    hour = at.hour % 12 or 12
+    return f"{hour}{'' if at.minute == 0 else f':{at.minute:02d}'} {'am' if at.hour < 12 else 'pm'} {at.tzname()}"
+
+
+def countdown_label() -> str:
+    left = guild_time(O.NEXT_RAID_AT) - guild_time(NOW)
+    days, hours = left.days, left.seconds // 3600
+    return f'in {days} days {hours} h'
 
 
 def next_raid(officer):
-    tally = Figures([('19', 'In', '', 'kill'), ('2', 'Late', '', 'gold'), ('2', 'Bench', '', ''), ('3', 'Not signed', '', 'wipe')]) if officer else ''
-    you = ('<div style="padding:16px"></div>')
-    top = Row("Onyxia's Lair", 'Thu 10 Dec &middot; 8:00 pm CST &middot; 9:00 pm EST your time', lead=icon('inv_misc_head_dragon_01', 40, 'q5'), trail=Figure('2d 4h', 'Starts in', size='sm'), link=False)
-    status = Row('Hollowmend' if not officer else 'Dunmaro', ('Holy Priest &middot; level 60 &middot; you are <b class="strong">In</b> as a healer' if not officer else 'Beast Mastery Hunter &middot; level 60 &middot; you are <b class="strong">In</b> as ranged'),
-                 lead=crest_img('priest' if not officer else 'hunter', 36), trail=Segmented([('In', True), ('Late', False), ('Bench', False)], small=True), link=False)
-    return Plate(Rows([top, status]) + (f'<div style="padding:12px 16px">{tally}</div>' if officer else ''))
+    """The next-raid Plate: the raid's Row (icon, the guild's time, the countdown), the viewer's own Row with In / Late /
+    Bench / Out (the built sign-up's four states), and for an officer the In, Late, Bench and Not signed figures."""
+    at = guild_time(O.NEXT_RAID_AT)
+    top = Row(O.ZONE_NAME, f'{day_label(at)} &middot; {clock_label(at)}', lead=icon(RAID_ICON, 40, 'q5'),
+              trail=Figure(countdown_label(), 'Starts in', tone='gold', size='sm'), link=False)
+    name = O.OFFICER if officer else O.MEMBER
+    _, cls, spec, role, _, state = ch(name)
+    word = {'in': 'In', 'late': 'Late', 'bench': 'Bench'}[state]
+    you = Row(name, f'{spec} {cls.title()} &middot; level 60 &middot; you are <strong>{word}</strong> as {ROLE_WORD[role]}', lead=crest_img(cls, 36),
+              title_color=C[cls], trail=Segmented([(w, w.lower() == state) for w in ('In', 'Late', 'Bench', 'Out')], small=True), link=False)
+    tally = ''
+    if officer:
+        view = F.raid_view(name, True)
+        c = view['counts']
+        tally = '<div style="padding:12px 16px">' + Figures([(str(c['in']), 'In', '', 'kill', 'sm'), (str(c['late']), 'Late', '', 'gold', 'sm'), (str(c['bench']), 'Bench', '', '', 'sm'),
+                                                             (str(len(view['not_signed_raiders'])), 'Not signed', '', 'wipe', 'sm')]) + '</div>'
+    return Plate(Rows([top, you]) + tally)
+
+
+def comp_tally() -> str:
+    view = F.raid_view(O.MEMBER, False)
+    c, late = view['counts'], view['counts']['late_groups']
+    have = {'tanks': c['tanks'], 'healers': c['healers'], 'melee': c['melee'], 'ranged': c['ranged']}
+    return Tally([(role.title(), have[role], O.COMP_TARGET[role], f'{late[role]} late' if late[role] else '') for role in ('tanks', 'healers', 'melee', 'ranged')])
+
+
+def comp_meta() -> str:
+    return f'{O.ZONE_NAME} default: {sum(O.COMP_TARGET.values())} players'
+
+
+def last_raid(meta_line: str) -> str:
+    counts = O.last_raid_counts()
+    at = guild_time(O.LAST_RAID_AT)
+    facts = [day_label(at), f'{counts["kills"]} boss ({O.BOSS})', f'{counts["kills"]} kill', f'{counts["wipes"]} wipe']
+    row = Row(f'{O.ZONE_NAME} &middot; raid night', ' &middot; '.join(facts), trail='<span class="gold" style="font-weight:600">Report &rsaquo;</span>')
+    return Section('Last raid', Rows([row], open_=True), meta=meta_line)
+
+
+def progression_line() -> str:
+    t = F.tier()
+    return f"{t['down']} of {t['named_encounters']} named bosses down: {O.BOSS}."
+
+
+def checklist_rows() -> list[tuple]:
+    """The member's checklist rows in the built words (overview-role-view checklistRows) for guild_overview_fixtures.checklist()."""
+    rows = []
+    for item in F.checklist()['items']:
+        k, ok = item['key'], item['state'] == 'ok'
+        if item['state'] == 'not_tracked':
+            continue
+        if k == 'level':
+            rows.append(('ok', f"Level {item['required_level']}", f"You are level {item['level']}.", None))
+        elif k == 'attunement':
+            rows.append(('ok', f'Attuned to {O.ZONE_NAME}', f"Attunement chain done. Keep the {item['key_item']['name']} on you.", None))
+        elif k == 'gear_gap':
+            slots = [SLOT_WORD[x] for x in item['slots']]
+            rows.append(('ok', 'Best in slot', 'Every slot is your best in slot.', None) if ok else
+                        ('warn', f"{item['upgrades']} slots are not best in slot", f"{' and '.join(slots)}.", 'Fix in the BiS list &rsaquo;'))
+        elif k == 'enchants':
+            rows.append(('ok', 'Enchants', 'Every slot that takes one is enchanted.', None))
+        elif k == 'flask_food':
+            rows.append(('warn', 'No flask, elixir or buff food in your bags', 'Bring a flask or a raid elixir, and buff food.', None))
+    return rows
 
 
 def landing_member():
-    notice = Notice('Almost there: two things before Thursday.', Link('See your checklist below &darr;'))
-    check = Checklist([('ok', 'Level 60', 'You are level 60.', None), ('ok', 'Attuned to Onyxia&rsquo;s Lair', 'Drakefire Amulet in your bags. Read from your addon export.', None),
-                       ('warn', '2 slots are not best in slot', 'Your gloves and ring. The planner shows the swap.', 'Fix in the BiS list &rsaquo;'), ('ok', 'Enchants', 'Every slot that takes one is enchanted.', None),
-                       ('miss', 'Flask or food', 'None in your bags. Read from your addon export, before you go.', 'What to bring &rsaquo;'), ('gap', 'Fire resistance', 'Not tracked yet: needs the resistance total in the addon export.', None)])
-    nums = Figures([('3 of 4', 'Raids attended', '', ''), ('1', 'Items this tier', '', ''), ('62', 'Your item level', '', '')])
-    asked = Rows([Row('Update your addon export', 'Officers need your gear to plan loot. Last read 9 days ago.', trail=Button('How', small=True), link=False)], open_=True)
-    cls = Tally([(crest_img('priest', 24), 'Priests', 2, 3), (crest_img('paladin', 24), 'Healers in the raid', 6, 8)])
-    main = (Section('Next raid', next_raid(False)) + Section('Before the raid', check, meta='Private to you &middot; Almost there')
-            + Section('Your numbers', nums) + Section('Officers asked you to', asked))
-    rail = (Section('Your class in the guild', cls, meta='Two priests; the guild wants three')
-            + Section('Last raid', Rows([Row('Onyxia', '1 kill &middot; 1 wipe &middot; you were there', trail=Link('Report &rsaquo;'), link=False)], open_=True))
-            + Section('Progression', '<p class="t-small" style="padding-top:12px">1 of 1 named encounters down.</p>'))
-    return build_page('Guild, member', hdr(notice='') + notice + Page('split', main, rail, sticky_rail=True), 'Guild', ('Hollowmend', 'priest', 'Holy Priest &middot; 60'))
+    """The Overview as a member. Since the persona round (summary.md): no "Officers asked you to" and no class-wanted Tally (no
+    source); the rail carries the raid's comp; progression is the Last raid's meta line; a check with no source is not drawn."""
+    rows = checklist_rows()
+    open_ = sum(1 for r in rows if r[0] != 'ok')
+    words = ['no', 'one', 'two', 'three', 'four', 'five']
+    weekday = guild_time(O.NEXT_RAID_AT).strftime('%A')
+    notice = Notice(f'Almost there: {words[open_]} things before {weekday}.', Link('See your checklist &rsaquo;'))
+    me = next(r for r in F.home(O.MEMBER, False)['roster'] if r['name'] == O.MEMBER)
+    nums = Figures([(f"{me['attendance']['present']} of {me['attendance']['nights']}", 'Raids attended', '', '', 'sm'), (str(me['item_level']), 'Your item level', '', '', 'sm')])
+    main = Section('Next raid', next_raid(False)) + Section('Before the raid', Checklist(rows), meta='Private to you &middot; Almost there') + Section('Your numbers', f'<div style="padding-top:12px">{nums}</div>')
+    rail = Section("The raid's comp", comp_tally(), meta=comp_meta()) + last_raid(progression_line())
+    return build_page('Guild, member', hdr(officer=False) + notice + Page('split', main, rail, sticky_rail=True), 'Guild', ('Hollowmend', 'priest', 'Holy Priest &middot; 60'))
+
+
+def cover_grids() -> str:
+    per = {'raid': '', 'melee_group': 'per melee group', 'caster_group': 'per caster group'}
+    out = ''
+    for kind, word in (('buff', 'Buffs'), ('debuff', 'Debuffs')):
+        rows = []
+        for r in (x for x in F.cover_rows() if x['kind'] == kind):
+            signed = r['providers_in'] + r['providers_late']
+            tone = 'miss' if signed == 0 else ('ok' if signed - r['likely'] >= r['need'] else 'warn')
+            sub = ' &middot; '.join(x for x in (per[r['per']], f"{r['likely']} on a talent we cannot see" if r['likely'] else '',
+                                                 f"{r['providers_bench']} on the bench" if r['providers_bench'] else '') if x)
+            rows.append((r['name'], sub, [('none', str(r['need'])), (tone, str(signed))], SpellIcon(r['name'], r['icon'])))
+        out += Grid(['Need', 'In'], rows, caption=f'{word}: need against signed-up raiders', label_header=word)
+    return out
+
+
+def raid_ready() -> str:
+    rows = F.readiness(True)['rows']
+    att = sum(1 for r in rows if r['attuned'])
+    ff = sum(1 for r in rows if r['flask_food']['flask_or_elixir'] and r['flask_food']['food'])
+    tanks = [r for r in F.raid_view(O.OFFICER, True)['signups'] if r['role'] == 'tank' and r['state'] in ('in', 'late')]
+    figs = Figures([(f'{att} of {len(rows)}', 'Attuned', '', '', 'sm'), (f'{ff} of {len(rows)}', 'Flask and food', '', '', 'sm')])
+    label = (f'<div style="display:flex;gap:12px;align-items:baseline;padding-top:8px"><span class="t-label">Fire resistance on tanks</span>'
+             f'<span class="t-small">{len(tanks)} tank signed</span></div>')
+    trows = Rows([Row(t['name'], trail=f"<b>{O.TANK_FIRE.get(t['name'], 0)} fire resistance</b>", title_color=C[t['class']], slim=True, link=False) for t in tanks], open_=True)
+    return f'<div style="padding-top:12px">{figs}</div>' + label + trows
+
+
+def attendance_grid() -> str:
+    cell = {'present': ('ok', '&#10003;'), 'absent': ('miss', '&times;'), 'bench': ('warn', 'B'), 'none': ('none', '&mdash;')}
+    page = F.recent_attendance()
+    cols = [guild_time(r['starts_at']).strftime('%a') for r in page['raids']]
+    rows = sorted(page['rows'], key=lambda r: (not r['slipping'], r['name']))
+    return Grid(cols, [(r['name'], 'slipping' if r['slipping'] else 'bench', [cell[c] for c in r['cells']]) for r in rows], caption='Attendance over the last raids')
+
+
+def action_rows() -> str:
+    a = F.officer_actions()
+    weekday = guild_time(O.NEXT_RAID_AT).strftime('%A')
+    rows = [Row(f"{a['approvals']['count']} raiders are waiting for approval", ', '.join(a['approvals']['names']), trail=Button('Review', small=True, action=True), link=False),
+            Row(f"{a['applications']['count']} applications", ', '.join(a['applications']['names']), trail=Button('Open', small=True), link=False),
+            Row(f"{a['not_signed']['count']} have not signed up for {weekday}", ', '.join(a['not_signed']['names']), trail=Button('Ping on Discord', small=True, action=True), link=False),
+            Row(f"{a['drops_to_award']['count']} drops to award", a['drops_to_award']['label'], trail=Button('Open loot', small=True, action=True), link=False)]
+    return Rows(rows, open_=True)
 
 
 def landing_officer():
-    action = Rows([Row('3 raiders are waiting for approval', 'Nightlatch, Voidcall, Skyarcana', trail=Button('Review', small=True), link=False),
-                   Row('2 applications', 'Both level 60, both with a parse', trail=Button('Open', small=True), link=False),
-                   Row('3 have not signed up for Thursday', 'Voidcall, Skyarcana, Starnettle', trail=Button('Ping on Discord', small=True), link=False),
-                   Row('2 drops to award', 'Onyxia, Tue 8 Dec', trail=Button('Open loot', small=True), link=False)], open_=True)
-    comp = Tally([(crest_img('warrior', 22), 'Tanks', 1, 2), (crest_img('paladin', 22), 'Healers', 6, 8), (crest_img('rogue', 22), 'Melee', 5, 10), (crest_img('mage', 22), 'Ranged', 11, 20)])
-    cover = Grid(['Need', 'In'], [('Windfury Totem', '2 groups', [('ok', '2'), ('ok', '3')]), ('Blessing of Might', '', [('ok', '1'), ('ok', '3')]), ('Blessing of Kings', '', [('ok', '1'), ('warn', '1')]),
-                                  ('Blessing of Salvation', '', [('ok', '1'), ('ok', '2')]), ('Prayer of Fortitude', '', [('ok', '1'), ('ok', '4')]), ('Arcane Intellect', '', [('ok', '1'), ('ok', '3')]),
-                                  ('Mark of the Wild', '', [('ok', '1'), ('ok', '1')]), ('Curse of the Elements', '', [('ok', '1'), ('miss', '0')]), ('Sunder Armor', '', [('ok', '1'), ('ok', '1')])])
-    ready = Figures([('18 of 24', 'Attuned', '', ''), ('&mdash;', 'Fire resist on tanks', '', '')]) + f'<div style="padding-top:8px">{Gap("Needs resistance totals and consumables in the addon export")}</div>'
-    att = Grid(['Mon', 'Tue', 'Thu', 'Sat'], [('Pinefeather', 'slipping', [('ok', '&#10003;'), ('ok', '&#10003;'), ('miss', '&times;'), ('miss', '&times;')]), ('Skyarcana', 'slipping', [('ok', '&#10003;'), ('miss', '&times;'), ('miss', '&times;'), ('none', '&mdash;')]),
-                                              ('Cinderglass', 'bench', [('warn', 'B'), ('warn', 'B'), ('ok', '&#10003;'), ('warn', 'B')])])
-    main = (Section('Action needed', action) + Section('Next raid', next_raid(True), Link('Open the planner &rsaquo;'))
-            + Section('Comp against the target', comp, Link('Edit target &rsaquo;'), meta='Onyxia default: 40 players, editable'))
-    rail = (Section('Buff and debuff cover', cover, meta='Signed-up raiders') + Section('Raid-ready', ready) + Section('Attendance, last 4 raids', att, Link('Roster &rsaquo;'))
-            + Section('Last raid', Rows([Row('Onyxia', '1 kill &middot; 1 wipe &middot; 22 of 24 there', trail=Link('Report &rsaquo;'), link=False)], open_=True), meta='1 of 1 named encounters down'))
+    """The Overview as an officer. Since the persona round: the cover is the curated catalogue (D15) in two Grids, Buffs and
+    Debuffs, every entry; Raid-ready counts attunement and flask and food and lists each signed tank's fire resistance; the
+    rail closes with Recruitment (slice 5)."""
+    rec = Rows([Row('Taking applications', 'Applications, votes and your public card')], open_=True)
+    main = (Section('Action needed', action_rows()) + Section('Next raid', next_raid(True), Link('Open the planner &rsaquo;'))
+            + Section('Comp against the target', comp_tally(), Link('Edit target &rsaquo;'), meta=comp_meta()))
+    rail = (Section('Buff and debuff cover', cover_grids(), meta='Signed-up raiders') + Section('Raid-ready', raid_ready(), meta='Signed-up raiders')
+            + Section(f'Attendance, last {len(O.RECENT_RAIDS)} raids', attendance_grid(), Link('Roster &rsaquo;')) + last_raid(progression_line())
+            + Section('Recruitment', rec))
     return build_page('Guild, officer', hdr(actions=Button('Invite link', small=True)) + Page('split', main, rail, sticky_rail=True), 'Guild', ('Dunmaro', 'hunter', 'Beast Mastery Hunter &middot; 60'))
 
 
@@ -84,25 +224,56 @@ def raid_planner():
     return build_page('Raid planner', head + bar + Page('split', main, rail, sticky_rail=True), 'Guild', ('Dunmaro', 'hunter', 'Beast Mastery Hunter &middot; 60'))
 
 
+def band_line(viewer: str) -> str:
+    """The guild band's raid line under the head on every tab but the Overview (raids spec 3.4): the sentence with the state
+    word, the four sign-up buttons, the raid's link."""
+    nxt = F.next_raid(viewer)
+    at = guild_time(O.NEXT_RAID_AT)
+    _, _, _, role, _, state = ch(viewer)
+    word = {'in': 'In', 'late': 'Late', 'bench': 'Bench'}[state]
+    n = nxt['counts']['in'] + nxt['counts']['late']
+    sentence = f"<p class=\"t-small\">{at.strftime('%A')} {clock_label(at)}, you are <strong>{word}</strong> as {ROLE_WORD[role]}, {n} of {nxt['size']} signed up.</p>"
+    segs = Segmented([(w, w.lower() == state) for w in ('In', 'Late', 'Bench', 'Out')], small=True).replace('<a href="#" role="radio"', '<button type="button" role="radio"').replace('</a>', '</button>')
+    return (f'<div class="pc"><div style="display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:44px;padding-top:12px">'
+            f'{sentence}<span style="display:flex;align-items:center;gap:16px">{segs}{Link(f"{O.ZONE_NAME} &rarr;")}</span></div></div>')
+
+
 def loot_council():
+    """The Loot tab as an officer, Vis'kag picked. It lives on the guild page (hash tabs), so its head is the guild's; the night
+    chooser is the page's ControlBar; on the current night a picker opens any drop of the loot table; the decision record's
+    rows carry no Edit (the award is undone from the drop's own rail) and Export history is a disclosure."""
+    nights = F.loot_nights()['nights']
+    night = nights[0]
+    open_n = sum(1 for d in night['drops'] if d['state'] == 'open')
+    table = {i['item_id']: i for i in F.loot_table()['items']}
     drops = []
-    for nm, ic, q, sl, n in [('Vis&rsquo;kag the Bloodletter', 'inv_sword_18', 'q4', 'One-hand sword', 5), ('Deathbringer', 'inv_axe_09', 'q4', 'One-hand axe', 4), ('Eskhandar&rsquo;s Collar', 'inv_belt_12', 'q4', 'Neck', 6),
-                             ('Ring of Binding', 'inv_jewelry_ring_13', 'q4', 'Finger', 7), ('Sapphiron Drape', 'inv_misc_cape_16', 'q4', 'Back', 5), ('Head of Onyxia', 'inv_misc_head_dragon_01', 'q4', 'Quest item', 2)]:
-        drops.append(Row(nm, f'{sl} &middot; {n} candidates', lead=icon(ic, 40, q), trail=Tag('Open', 'gold') if n != 2 else Tag('Awarded', 'kill'), selected=(nm.startswith('Vis')), title_color='#b866f5'))
-    plate = Plate(Rows(drops))
+    for d in night['drops']:
+        item = table[d['item_id']]
+        users = len(item['candidates']) if d['kind'] == 'gear' else len(item['eligible'])
+        what = SLOT_LINE.get((item['inventory_type'], item['item_subclass']), SLOT_LINE.get((item['inventory_type'], None), '')) if d['kind'] == 'gear' else 'Quest item'
+        tail = f"Awarded to {d['award']['name']}" if d['award'] else f'{users} candidates'
+        drops.append(Row(f'<span role="button" tabindex="0">{d["name"]}</span>', f'{what} &middot; {tail}', lead=icon(d['icon'], 40, f"q{d['quality']}"),
+                         trail=Tag('Open', 'gold') if d['state'] == 'open' else Tag('Awarded', 'kill'), selected=d['item_id'] == O.SELECTED_DROP,
+                         title_color='#b866f5', link=False))
+    picker = (f'<div style="display:flex;flex-direction:column;gap:6px;max-width:360px;margin-top:12px"><span class="t-label">Open a drop from the loot table</span>'
+              f'{Select("Pick a drop")}</div>')
+    main = Section(f'{O.BOSS} drops', Plate(Rows(drops)) + picker, meta=f"{day_label(guild_time(night['at']))} &middot; {len(night['drops'])} drops, {open_n} open &middot; Recorded by the addon")
+    drop = F.council_drop()
     cands = []
-    for name, gain, worn, bis, att, got, ms in [('Seraphine', '+14.2', 'Mirah&rsquo;s Song', 'Yes', '4 of 4', 0, 'MS'), ('Shiverknife', '+11.6', 'Dal&rsquo;Rend&rsquo;s Sacred Charge', 'No', '3 of 4', 1, 'MS'), ('Groundshock', '+9.1', 'Windfury Blade', 'No', '4 of 4', 0, 'OS'), ('Blacktide', '+4.0', 'Skullforge Reaver', 'No', '2 of 4', 2, 'OS')]:
-        r = ch(name)
-        cands.append(Row(name, f'<b class="gold">{gain} DPS</b> vs your {worn} &middot; BiS for them: {bis} &middot; attended {att} &middot; {got} this tier', lead=crest_img(r[1], 32), title_color=C[r[1]],
-                         trail=Tag(ms, 'gold' if ms == 'MS' else 'muted') + Votes(3 if name == 'Seraphine' else 1, 0, 4) + Button('Award', small=True), link=False))
-    cand = Rows(cands, open_=True)
-    record = Rows([Row('Eskhandar&rsquo;s Collar to Hollowmend', 'Awarded by Ironbrand &middot; main spec &middot; 3 votes of 4', lead=icon('inv_belt_12', 36, 'q4'), trail=Link('Edit'), link=False),
-                   Row('Ring of Binding to Doomwhisper', 'Awarded by Dunmaro &middot; main spec &middot; 4 votes of 4', lead=icon('inv_jewelry_ring_13', 36, 'q4'), trail=Link('Edit'), link=False)], open_=True)
-    main = Section('Onyxia drops', plate, meta='Grouped by raid night: Tue 8 Dec')
-    rail = Section('Candidates for Vis&rsquo;kag the Bloodletter', cand, meta='Gain in DPS, as on the BiS page') + Section('Decision record', record, Button('Export history', small=True))
-    head = PageHeader('Loot council', ALLIANCE, Emblem('alliance', 56), meta=['Onyxia', '6 drops, 4 open', 'Next unkilled: none, farm'], tabs=TabStrip(TABS, 'Loot'))
-    bar = control_bar([('Raid night', seg([('Tue 8 Dec', True, None, ''), ('Mon 15 Dec', False, None, '')]))], 'Tue 8 Dec')
-    return build_page('Loot council', head + bar + Page('split', main, rail, sticky_rail=True), 'Guild', ('Dunmaro', 'hunter', 'Beast Mastery Hunter &middot; 60'))
+    for c in drop['candidates']:
+        won = f"{c['items_won']} item{'' if c['items_won'] == 1 else 's'} this tier"
+        sub = f"+{c['gain_dps']} DPS over {c['replaces']} &middot; {c['attendance']['present']} of {c['attendance']['nights']} raid nights &middot; {won}"
+        foot = (Tag(c['ms_os'].upper(), 'gold') + (Tag('BiS for them', 'gold') if c['bis_for_them'] else '')
+                + Button(f"{c['votes']['yes']} yes", small=True, action=True) + Button(f"{c['votes']['no']} no", small=True, action=True)
+                + f'<span class="t-small">of {c["votes"]["voters"]} officers</span>' + Button('Award', small=True, action=True))
+        cands.append(Row(c['name'], sub, lead=crest_img(c['class'], 32), title_color=C[c['class']], foot=foot, link=False))
+    record = Rows([Row(f"{d['item_name']} to {d['name']}",
+                       f"Main spec &middot; {d['votes_yes']} yes, {d['votes_no']} no of {d['votes_officers']} &middot; by {d['awarded_by']} &middot; {day_label(guild_time(d['at']))}",
+                       lead=icon(d['icon'], 32, f"q{d['quality']}"), link=False) for d in F.decisions()], open_=True)
+    rail = (Section(f"Candidates for {drop['name']}", Rows(cands, open_=True), meta='Gain as on the BiS page')
+            + Section('Decision record', record, Button('Export history', small=True, action=True, expanded=False)))
+    bar = control_bar([('Raid night', seg([(day_label(guild_time(n['at'])), n is night, None, '') for n in nights]))], day_label(guild_time(night['at'])), label='Loot council choices')
+    return build_page('Loot council', hdr(tabs_active='Loot', actions=Button('Invite link', small=True)) + band_line(O.OFFICER) + bar + Page('split', main, rail, sticky_rail=True), 'Guild', ('Dunmaro', 'hunter', 'Beast Mastery Hunter &middot; 60'))
 
 
 def raid_report():

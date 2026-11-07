@@ -82,7 +82,7 @@ test.describe('officer', () => {
     await expect(page.getByTestId('guild-loot-candidates')).toContainText('3 yes, 0 no of 4');
     await expect(page.getByTestId('guild-loot-candidates').getByTestId('guild-loot-award')).toHaveCount(0);
 
-    await page.getByTestId('guild-loot-night-raid:11').click();
+    await page.getByTestId('control-night').getByRole('radio', { name: 'Tue 8 Dec' }).click();
     await expect(page.getByTestId('guild-loot-night-summary')).toHaveText('Tue 8 Dec · 1 drop, 0 open');
     await expect(page.getByTestId('guild-loot-open-drop')).toHaveCount(0);
     await expect(page.getByTestId('guild-loot-decisions')).toContainText('by Kraggor');

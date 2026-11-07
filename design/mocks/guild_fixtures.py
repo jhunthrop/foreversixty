@@ -19,6 +19,15 @@ def write(name: str, data: object) -> Path:
 # One writer per page group; each returns the files it wrote.
 WRITERS: list = []
 
+
+def overview_writer() -> list[Path]:
+    """Lane A: the member and officer Overviews and the Loot tab (guild_overview_fixtures.py)."""
+    from guild_overview_fixtures import overview_fixtures
+    return [write(name, data) for name, data in overview_fixtures().items()]
+
+
+WRITERS.append(overview_writer)
+
 if __name__ == '__main__':
     for writer in WRITERS:
         for path in writer():

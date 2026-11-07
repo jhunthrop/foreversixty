@@ -37,7 +37,8 @@
         class="text-label tracking-label text-muted border-line-soft border-b px-[6px] py-2 text-left font-bold uppercase"
         >{#if labelHeader}{labelHeader}{:else}<span class="sr-only">{caption}</span>{/if}</th
       >
-      {#each columns as column (column)}
+      <!-- Keyed by place: two raid nights can share a weekday (Thu, Sat, Thu, Mon). -->
+      {#each columns as column, index (index)}
         <th
           scope="col"
           class="text-label tracking-label text-muted border-line-soft border-b px-[6px] py-2 text-center font-bold uppercase"

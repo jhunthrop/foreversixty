@@ -232,9 +232,9 @@
       {/snippet}
     </Page>
   {:else}
-    <Page layout="split" testid="guild-overview-page">
-      {@render lead?.()}
-      {#if checklist !== null && nextRaid !== null}
+    <!-- The verdict sits under the head, over both columns (web layout spec 2026-11-05 §7.1). -->
+    {#if checklist !== null && nextRaid !== null}
+      <div class="px-(--page-inset)">
         <Notice
           text={verdictLine(checklist.verdict, rows, day)}
           action={rows.some((row) => row.tone !== 'ok')
@@ -242,7 +242,10 @@
             : undefined}
           testid="guild-overview-verdict"
         />
-      {/if}
+      </div>
+    {/if}
+    <Page layout="split" testid="guild-overview-page">
+      {@render lead?.()}
       {@render plate()}
       {#if checklist !== null && rows.length > 0}
         <div id="guild-overview-checklist">

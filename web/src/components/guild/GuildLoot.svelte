@@ -1,6 +1,6 @@
 <!-- web/src/components/guild/GuildLoot.svelte -->
 <!-- The Loot tab as the loot council (web layout spec 2026-11-05 §7.2): "This dropped. Who gets it,
-     and why?" Page split, built only from the ui/ primitives. Main: the raid night chooser, then
+     and why?" Page split, built only from the ui/ primitives. The control bar: the raid night. Main:
      the one Plate of that night's drops (Open or Awarded), and on the current night a picker that
      opens any drop of the loot table. Rail, officers: the picked drop's candidates with gain, what
      it replaces, BiS for them, attendance, loot this tier, MS/OS, Votes and Award; members: their
@@ -29,10 +29,9 @@
   import { classSlugFromName } from '../../lib/report/tree-sizes';
   import BisTooltipHost from '../BisTooltipHost.svelte';
   import LoadError from '../ui/LoadError.svelte';
+  import ControlBar from '../ui/ControlBar.svelte';
   import Page from '../ui/Page.svelte';
   import Section from '../ui/Section.svelte';
-  import Segmented from '../ui/Segmented.svelte';
-  import Select from '../ui/Select.svelte';
   import Skeleton from '../ui/Skeleton.svelte';
   import GuildPlanGate from './GuildPlanGate.svelte';
   import DecisionRecord from './loot/DecisionRecord.svelte';
@@ -84,6 +83,15 @@
   const rows = $derived(night === null ? [] : dropRows(night, council.table));
   const picks = $derived(night === null ? [] : openable(night, council.table, officer ? null : ownKeys));
   const options = $derived(council.nights === null ? [] : nightOptions(council.nights.nights));
+  /** The page's one control bar: the raid night, a Segmented up to three nights, the dropdown past. */
+  const nightGroup = $derived({
+    label: 'Raid night',
+    param: 'night',
+    kind: options.length <= SEGMENTED_NIGHTS ? ('segmented' as const) : ('select' as const),
+    options,
+    value: council.nightKey ?? '',
+    fieldWidth: 192,
+  });
   const tableItem = (itemId: number) => council.table.find((item) => item.item_id === itemId);
   const shipsIcon = (itemId: number): boolean => tableItem(itemId)?.kind === 'gear';
   const emptyText = $derived(
@@ -123,31 +131,15 @@
     <LoadError message={LOOT_LOAD_ERROR} testid="guild-loot-error" onRetry={() => void council.load()} />
   {:else}
     <Page layout="split" testid="guild-loot-page">
-      <div class="flex flex-wrap items-center gap-x-4 gap-y-2" data-testid="guild-loot-nights">
-        <span class="text-label tracking-label text-muted font-bold uppercase" id="guild-loot-night-label"
-          >Raid night</span
-        >
-        {#if options.length <= SEGMENTED_NIGHTS}
-          <Segmented
-            {options}
-            value={council.nightKey}
-            label="Raid night"
-            onChange={council.chooseNight}
-            testid="guild-loot-night"
-          />
-        {:else}
-          <div class="w-48">
-            <Select
-              id="guild-loot-night"
-              size="compact"
-              label="Raid night"
-              {options}
-              value={council.nightKey ?? ''}
-              onchange={(event) => council.chooseNight((event.currentTarget as HTMLSelectElement).value)}
-            />
-          </div>
-        {/if}
-      </div>
+      {#snippet bar()}
+        <ControlBar
+          groups={[nightGroup]}
+          label="Loot council choices"
+          id="guild-loot-bar"
+          testid="guild-loot-nights"
+          onchange={(_, value) => council.chooseNight(value)}
+        />
+      {/snippet}
       <LootDrops
         heading="Onyxia drops"
         meta={`${nightDay(night.date)} · ${nightSummary(night)}`}

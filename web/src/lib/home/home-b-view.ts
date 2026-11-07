@@ -15,12 +15,6 @@ export const BIS_SLOTS = 17;
 /** The guild ladder's rows above the viewer's pinned row (ruling R2). */
 export const GUILD_SIMS_SHOWN = 5;
 
-/** The first raids (dates.json role `raids`, phases.json `raids-1`). */
-export const FIRST_RAIDS = [
-  { name: 'Barrow Deeps', icon: 'spell_shadow_raisedead' },
-  { name: 'Hyjal Summit', icon: 'spell_nature_timestop' },
-  { name: "Onyxia's Lair", icon: 'inv_misc_head_dragon_black' },
-] as const;
 
 export const homeBCopy = {
   simmedOnImport: 'Simmed on import',

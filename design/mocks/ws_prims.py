@@ -209,31 +209,45 @@ def Segmented(items: list[tuple[str, bool]], small: bool = False) -> str:
     return seg([(a, on, None, '') for a, on in items], 'sm' if small else '')
 
 
-def Grid(cols: list[str], rows: list[tuple]) -> str:
-    """A coverage matrix. rows: (label, sub, [(state, text)]) with state ok|warn|miss|none. Reused for buffs, attendance, readiness."""
-    h = '<div class="h"></div>' + ''.join(f'<div class="h" style="text-align:center">{c}</div>' for c in cols)
-    body = ''.join(f'<div class="l"><div class="ttl">{lab}</div>' + (f'<div class="sub">{sub}</div>' if sub else '') + '</div>' + ''.join(f'<div class="c {st}">{tx}</div>' for st, tx in cells) for lab, sub, cells in rows)
-    return f'<div class="gridm" style="--n:{len(cols)}">{h}{body}</div>'
-
+def Grid(cols: list[str], rows: list[tuple], caption: str = 'Coverage', label_header: str = '') -> str:
+    """A coverage matrix as the built Grid's table. rows: (label, sub, [(state, text)]) or (label, sub, [(state, text)], lead_html)
+    with state ok|warn|miss|none; label_header is the label column's visible head."""
+    head = f'<th scope="col">{label_header}</th>' + ''.join(f'<th scope="col">{c}</th>' for c in cols)
+    body = ''
+    for r in rows:
+        lab, sub, cells = r[0], r[1], r[2]
+        lead = r[3] if len(r) > 3 else ''
+        s = f'<span class="sub">{sub}</span>' if sub else ''
+        body += (f'<tr><th scope="row"><span class="lh">{lead}<span><span class="ttl">{lab}</span>{s}</span></span></th>'
+                 + ''.join(f'<td class="{st}">{tx}</td>' for st, tx in cells) + '</tr>')
+    return f'<table class="gridt"><caption>{caption}</caption><thead><tr>{head}</tr></thead><tbody>{body}</tbody></table>'
 
 def Tally(items: list[tuple]) -> str:
-    """Counts against a target, one Meter each. items: (lead_html, label, have, want)."""
+    """Counts against a target as the built Tally's list (no lead: the built entries carry none). items: (label, have, want)
+    or (label, have, want, note); the earlier (lead_html, label, have, want) still reads, its lead dropped."""
     out = ''
-    for lead, label, have, want in items:
+    for it in items:
+        if isinstance(it[1], str):
+            it = it[1:]
+        label, have, want = it[0], it[1], it[2]
+        note = it[3] if len(it) > 3 else ''
         st = 'ok' if have >= want else ('warn' if have >= want * 0.75 else 'miss')
-        out += f'<div class="t"><div class="top">{lead}<b>{label}</b><span class="n {st}">{have}/{want}</span></div>{Meter(have / want if want else 1, "kill" if st == "ok" else "")}</div>'
-    return f'<div class="tally">{out}</div>'
-
+        frac = max(0, min(1, have / want if want else 1))
+        meter = (f'<div class="meter {"kill" if st == "ok" else ""}" role="meter" aria-valuemin="0" aria-valuemax="1" aria-valuenow="{frac:.2f}" '
+                 f'aria-label="{label}: {have} of {want}"><i style="width:{frac * 100:.0f}%"></i></div>')
+        n = f'<span class="note">{note}</span>' if note else ''
+        out += f'<li class="t"><div class="top"><b>{label}</b><span class="n {st}">{have}/{want}</span></div>{meter}{n}</li>'
+    return f'<ul class="tally">{out}</ul>'
 
 def Checklist(items: list[tuple]) -> str:
-    """Private pre-raid checks. items: (state ok|warn|miss|gap, title, sub, fix_label|None). A Row per check, the fix a link."""
+    """Private pre-raid checks as the built Checklist: a Row per check, its mark an image, its fix a link in the trail.
+    items: (state ok|warn|miss, title, sub, fix_label|None)."""
     rows = []
     for st, title, sub, fix in items:
-        mark = {'ok': '&#10003;', 'warn': '!', 'miss': '&times;', 'gap': '?'}[st]
-        word = {'ok': 'Done', 'warn': 'To do', 'miss': 'Missing', 'gap': 'Not tracked'}[st]
-        rows.append(Row(title, sub, lead=f'<span class="ck {st}" role="img" aria-label="{word}">{mark}</span>', trail=(f'<span class="link">{fix}</span>' if fix else ''), link=bool(fix)))
+        mark = {'ok': '&#10003;', 'warn': '!', 'miss': '&times;'}[st]
+        word = {'ok': 'Done', 'warn': 'To do', 'miss': 'Missing'}[st]
+        rows.append(Row(title, sub, lead=f'<span class="ck {st}" role="img" aria-label="{word}">{mark}</span>', trail=Link(fix) if fix else '', link=False))
     return Rows(rows, open_=True)
-
 
 def Votes(yes: int, no: int, total: int) -> str:
     return f'<div style="display:flex;gap:6px;align-items:center">{Tag(f"{yes} yes", "kill")}{Tag(f"{no} no", "wipe" if no else "muted")}<span class="t-small">of {total} officers</span></div>'
@@ -1311,3 +1325,51 @@ def PlanHead(name: str, audience: str, value: str, unit: str, lines: list[tuple[
     sm = ''.join(f'<span class="pl2{" " + t if t else ""}">{x}</span>' for x, t in lines)
     return (f'<div class="plh"><h{level} class="nm">{name}{tag}</h{level}><span class="au">{audience}</span>'
             f'{Figure(value, unit=unit, tone="gold" if gold else "", size="big")}{sm}</div>')
+
+
+# ------------------------------------------------ the guild parity round (2026-11-07): the built primitives' own semantics
+# The built Grid is a table, Tally a list with meters, Checklist rows hold their fix link in the trail, in-page tabs are a
+# tablist, and an action is a <button> (a disclosure carries aria-expanded). The mocks now emit the same roles, so the parity
+# inventory compares like with like.
+PRIM_CSS += '''
+.gridt{width:100%;border-collapse:collapse}.gridt caption{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.gridt th,.gridt td{border-bottom:1px solid var(--line-soft);padding:10px 6px}
+.gridt thead th{font:700 12px/16px var(--font-body);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:8px 6px;text-align:center}
+.gridt thead th:first-child{text-align:left}
+.gridt tbody th{text-align:left;font-weight:400}.gridt tbody th .lh{display:flex;align-items:center;gap:8px;min-width:0}
+.gridt tbody th .ttl{display:block;font:700 14px/18px var(--font-body);color:var(--strong)}.gridt tbody th .sub{display:block;font-size:12px;line-height:16px;color:var(--muted)}
+.gridt td{text-align:center;font:700 14px/18px var(--font-body);font-variant-numeric:tabular-nums}
+.gridt td.ok{color:var(--kill)}.gridt td.warn{color:var(--gold)}.gridt td.miss{color:var(--wipe)}.gridt td.none{color:var(--muted)}
+.gridt .sicon{width:24px;height:24px;border:1px solid var(--line-soft);border-radius:3px;flex:none}
+.tally{list-style:none;margin:0;padding:0}.sec-h+.tally,.sec-h+.gridt{margin-top:12px}.tally .t .note{font-size:12px;line-height:16px;color:var(--muted)}
+button.btn{cursor:pointer}
+.strip-tabs[role=tablist] a{text-decoration:none}
+'''
+
+_TabStrip0 = TabStrip
+
+
+def TabStrip(tabs: list[str], active: str, counts: dict | None = None, tablist: bool = False) -> str:
+    """tablist: in-page tabs on one URL (the guild's hash tabs) are a tablist of tabs, as the built TabStrip's `tablist` mode."""
+    html = _TabStrip0(tabs, active, counts)
+    if not tablist:
+        return html
+    html = html.replace('<nav class="strip-tabs ph-tabs">', '<div class="strip-tabs ph-tabs" role="tablist">', 1).replace('</nav>', '</div>')
+    return re.sub(r'<a href="#" class="(cur)?"', lambda m: f'<a href="#" role="tab" aria-selected="{"true" if m.group(1) else "false"}" class="{m.group(1) or ""}"', html)
+
+
+_Button1 = Button
+
+
+def Button(label: str, primary: bool = False, small: bool = False, tone: str = '', action: bool = False, expanded: bool | None = None) -> str:
+    """action: a <button> that acts in place (Ping, Review, Export history), not a link; expanded: a disclosure's state."""
+    html = _Button1(label, primary, small, tone)
+    if not action:
+        return html
+    exp = '' if expanded is None else f' aria-expanded="{"true" if expanded else "false"}"'
+    return html.replace('<a ', f'<button type="button"{exp} ', 1).replace(' href="#"', '', 1).replace('</a>', '</button>')
+
+
+def SpellIcon(name: str, stem: str) -> str:
+    """A spell's 24 px icon with its name as the title (the built SpellIcon)."""
+    return icon(stem, 24).replace('class="ic"', 'class="sicon"', 1).replace('alt=""', f'alt="" title="{name}"', 1)

@@ -1,0 +1,41 @@
+{
+ "tier": {
+  "name": "First tier",
+  "raids": [
+   "Barrow Deeps",
+   "Hyjal Summit",
+   "Onyxia's Lair"
+  ],
+  "named_encounters": 1,
+  "down": 1,
+  "pulls_total": 4
+ },
+ "unnamed": [
+  {
+   "zone": "Onyxia's Lair",
+   "pulls": 2,
+   "nights": 1
+  }
+ ],
+ "encounters": [
+  {
+   "encounter_id": 1084,
+   "name": "Onyxia",
+   "zone": "Onyxia's Lair",
+   "first_kill_at": "2026-12-08T02:00:00Z",
+   "pulls": 2,
+   "kills": 1,
+   "best_kill_ms": 225000,
+   "pulls_by_night": [
+    {
+     "report_id": "olympusony1207",
+     "date": "2026-12-07",
+     "pulls": 2,
+     "killed": true
+    }
+   ],
+   "deaths_per_pull": 3.5,
+   "best_by_role": {}
+  }
+ ]
+}

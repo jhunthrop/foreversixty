@@ -1,0 +1,858 @@
+{
+ "median_item_level": 62,
+ "generated_at": "2026-12-08T19:30:00Z",
+ "rows": [
+  {
+   "character_key": "us/pvp/thornwicke",
+   "name": "Thornwicke",
+   "class": "warrior",
+   "spec": "Protection",
+   "consent": "gear_bags",
+   "level": 60,
+   "gear_gap": {
+    "upgrades": 0,
+    "gain_dps": null,
+    "not_sim_checked": 0,
+    "unit": null
+   },
+   "enchants": {
+    "missing_slots": [],
+    "checked": true
+   },
+   "consumables": {
+    "state": "stocked"
+   },
+   "talent_points_unspent": 0,
+   "talent_points_read": true,
+   "item_level": 62,
+   "item_level_delta": 0,
+   "logged_at": "2026-12-08T19:30:00Z",
+   "failing": 0,
+   "no_export": false,
+   "synced_before_cutoff": true,
+   "attuned": true,
+   "resistances": {
+    "fire": 142,
+    "nature": 0,
+    "frost": 0,
+    "shadow": 0,
+    "arcane": 0
+   },
+   "flask_food": {
+    "flask_or_elixir": true,
+    "food": true
+   }
+  },
+  {
+   "character_key": "us/pvp/ironbrand",
+   "name": "Ironbrand",
+   "class": "paladin",
+   "spec": "Holy",
+   "consent": "gear_bags",
+   "level": 60,
+   "gear_gap": {
+    "upgrades": 0,
+    "gain_dps": null,
+    "not_sim_checked": 0,
+    "unit": null
+   },
+   "enchants": {
+    "missing_slots": [],
+    "checked": true
+   },
+   "consumables": {
+    "state": "stocked"
+   },
+   "talent_points_unspent": 0,
+   "talent_points_read": true,
+   "item_level": 63,
+   "item_level_delta": 0,
+   "logged_at": "2026-12-08T19:30:00Z",
+   "failing": 0,
+   "no_export": false,
+   "synced_before_cutoff": true,
+   "attuned": true,
+   "resistances": null,
+   "flask_food": {
+    "flask_or_elixir": true,
+    "food": true
+   }
+  },
+  {
+   "character_key": "us/pvp/valomira",
+   "name": "Valomira",
+   "class": "paladin",
+   "spec": "Holy",
+   "consent": "gear_bags",
+   "level": 60,
+   "gear_gap": {
+    "upgrades": 0,
+    "gain_dps": null,
+    "not_sim_checked": 0,
+    "unit": null
+   },
+   "enchants": {
+    "missing_slots": [],
+    "checked": true
+   },
+   "consumables": {
+    "state": "stocked"
+   },
+   "talent_points_unspent": 0,
+   "talent_points_read": true,
+   "item_level": 60,
+   "item_level_delta": 0,
+   "logged_at": "2026-12-08T19:30:00Z",
+   "failing": 0,
+   "no_export": false,
+   "synced_before_cutoff": true,
+   "attuned": true,
+   "resistances": null,
+   "flask_food": {
+    "flask_or_elixir": true,
+    "food": true
+   }
+  },
+  {
+   "character_key": "us/pvp/seraphine",
+   "name": "Seraphine",
+   "class": "paladin",
+   "spec": "Retribution",
+   "consent": "gear_bags",
+   "level": 60,
+   "gear_gap": {
+    "upgrades": 0,
+    "gain_dps": null,
+    "not_sim_checked": 0,
+    "unit": null
+   },
+   "enchants": {
+    "missing_slots": [],
+    "checked": true
+   },
+   "consumables": {
+    "state": "stocked"
+   },
+   "talent_points_unspent": 0,
+   "talent_points_read": true,
+   "item_level": 65,
+   "item_level_delta": 0,
+   "logged_at": "2026-12-08T19:30:00Z",
+   "failing": 0,
+   "no_export": false,
+   "synced_before_cutoff": true,
+   "attuned": true,
+   "resistances": null,
+   "flask_food": {
+    "flask_or_elixir": true,
+    "food": true
+   }
+  },
+  {
+   "character_key": "us/pvp/dunmaro",
+   "name": "Dunmaro",
+   "class": "hunter",
+   "spec": "Beast Mastery",
+   "consent": "gear_bags",
+   "level": 60,
+   "gear_gap": {
+    "upgrades": 0,
+    "gain_dps": null,
+    "not_sim_checked": 0,
+    "unit": null
+   },
+   "enchants": {
+    "missing_slots": [],
+    "checked": true
+   },
+   "consumables": {
+    "state": "stocked"
+   },
+   "talent_points_unspent": 0,
+   "talent_points_read": true,
+   "item_level": 61,
+   "item_level_delta": 0,
+   "logged_at": "2026-12-08T19:30:00Z",
+   "failing": 0,
+   "no_export": false,
+   "synced_before_cutoff": true,
+   "attuned": true,
+   "resistances": null,
+   "flask_food": {
+    "flask_or_elixir": true,
+    "food": true
+   }
+  },
+  {
+   "character_key": "us/pvp/pinefeather",
+   "name": "Pinefeather",
+   "class": "hunter",
+   "spec": "Marksmanship",
+   "consent": "gear_bags",
+   "level": 60,
+   "gear_gap": {
+    "upgrades": 0,
+    "gain_dps": null,
+    "not_sim_checked": 0,
+    "unit": null
+   },
+   "enchants": {
+    "missing_slots": [],
+    "checked": true
+   },
+   "consumables": {
+    "state": "stocked"
+   },
+   "talent_points_unspent": 0,
+   "talent_points_read": true,
+   "item_level": 58,
+   "item_level_delta": 0,
+   "logged_at": "2026-12-08T19:30:00Z",
+   "failing": 0,
+   "no_export": false,
+   "synced_before_cutoff": true,
+   "attuned": false,
+   "resistances": null,
+   "flask_food": {
+    "flask_or_elixir": true,
+    "food": true
+   }
+  },
+  {
+   "character_key": "us/pvp/skytalon",
+   "name": "Skytalon",
+   "class": "hunter",
+   "spec": "Survival",
+   "consent": "gear_bags",
+   "level": 60,
+   "gear_gap": {
+    "upgrades": 0,
+    "gain_dps": null,
+    "not_sim_checked": 0,
+    "unit": null
+   },
+   "enchants": {
+    "missing_slots": [],
+    "checked": true
+   },
+   "consumables": {
+    "state": "stocked"
+   },
+   "talent_points_unspent": 0,
+   "talent_points_read": true,
+   "item_level": 59,
+   "item_level_delta": 0,
+   "logged_at": "2026-12-08T19:30:00Z",
+   "failing": 0,
+   "no_export": false,
+   "synced_before_cutoff": true,
+   "attuned": true,
+   "resistances": null,
+   "flask_food": {
+    "flask_or_elixir": true,
+    "food": true
+   }
+  },
+  {
+   "character_key": "us/pvp/shiverknife",
+   "name": "Shiverknife",
+   "class": "rogue",
+   "spec": "Assassination",
+   "consent": "gear_bags",
+   "level": 60,
+   "gear_gap": {
+    "upgrades": 0,
+    "gain_dps": null,
+    "not_sim_checked": 0,
+    "unit": null
+   },
+   "enchants": {
+    "missing_slots": [],
+    "checked": true
+   },
+   "consumables": {
+    "state": "stocked"
+   },
+   "talent_points_unspent": 0,
+   "talent_points_read": true,
+   "item_level": 66,
+   "item_level_delta": 0,
+   "logged_at": "2026-12-08T19:30:00Z",
+   "failing": 0,
+   "no_export": false,
+   "synced_before_cutoff": true,
+   "attuned": true,
+   "resistances": null,
+   "flask_food": {
+    "flask_or_elixir": true,
+    "food": true
+   }
+  },
+  {
+   "character_key": "us/pvp/blacktide",
+   "name": "Blacktide",
+   "class": "rogue",
+   "spec": "Combat",
+   "consent": "gear_bags",
+   "level": 60,
+   "gear_gap": {
+    "upgrades": 0,
+    "gain_dps": null,
+    "not_sim_checked": 0,
+    "unit": null
+   },
+   "enchants": {
+    "missing_slots": [],
+    "checked": true
+   },
+   "consumables": {
+    "state": "stocked"
+   },
+   "talent_points_unspent": 0,
+   "talent_points_read": true,
+   "item_level": 57,
+   "item_level_delta": 0,
+   "logged_at": "2026-12-08T19:30:00Z",
+   "failing": 0,
+   "no_export": false,
+   "synced_before_cutoff": true,
+   "attuned": false,
+   "resistances": null,
+   "flask_food": {
+    "flask_or_elixir": true,
+    "food": true
+   }
+  },
+  {
+   "character_key": "us/pvp/hollowmend",
+   "name": "Hollowmend",
+   "class": "priest",
+   "spec": "Holy",
+   "consent": "gear_bags",
+   "level": 60,
+   "gear_gap": {
+    "upgrades": 0,
+    "gain_dps": null,
+    "not_sim_checked": 0,
+    "unit": null
+   },
+   "enchants": {
+    "missing_slots": [],
+    "checked": true
+   },
+   "consumables": {
+    "state": "short"
+   },
+   "talent_points_unspent": 0,
+   "talent_points_read": true,
+   "item_level": 64,
+   "item_level_delta": 0,
+   "logged_at": "2026-12-08T19:30:00Z",
+   "failing": 0,
+   "no_export": false,
+   "synced_before_cutoff": true,
+   "attuned": true,
+   "resistances": null,
+   "flask_food": {
+    "flask_or_elixir": false,
+    "food": false
+   }
+  },
+  {
+   "character_key": "us/pvp/dawnweaver",
+   "name": "Dawnweaver",
+   "class": "priest",
+   "spec": "Holy",
+   "consent": "gear_bags",
+   "level": 60,
+   "gear_gap": {
+    "upgrades": 0,
+    "gain_dps": null,
+    "not_sim_checked": 0,
+    "unit": null
+   },
+   "enchants": {
+    "missing_slots": [],
+    "checked": true
+   },
+   "consumables": {
+    "state": "stocked"
+   },
+   "talent_points_unspent": 0,
+   "talent_points_read": true,
+   "item_level": 60,
+   "item_level_delta": 0,
+   "logged_at": "2026-12-08T19:30:00Z",
+   "failing": 0,
+   "no_export": false,
+   "synced_before_cutoff": true,
+   "attuned": true,
+   "resistances": null,
+   "flask_food": {
+    "flask_or_elixir": true,
+    "food": true
+   }
+  },
+  {
+   "character_key": "us/pvp/voidcall",
+   "name": "Voidcall",
+   "class": "priest",
+   "spec": "Shadow",
+   "consent": "gear_bags",
+   "level": 60,
+   "gear_gap": {
+    "upgrades": 0,
+    "gain_dps": null,
+    "not_sim_checked": 0,
+    "unit": null
+   },
+   "enchants": {
+    "missing_slots": [],
+    "checked": true
+   },
+   "consumables": {
+    "state": "stocked"
+   },
+   "talent_points_unspent": 0,
+   "talent_points_read": true,
+   "item_level": 56,
+   "item_level_delta": 0,
+   "logged_at": "2026-12-08T19:30:00Z",
+   "failing": 0,
+   "no_export": false,
+   "synced_before_cutoff": true,
+   "attuned": true,
+   "resistances": null,
+   "flask_food": {
+    "flask_or_elixir": true,
+    "food": true
+   }
+  },
+  {
+   "character_key": "us/pvp/stonetide",
+   "name": "Stonetide",
+   "class": "shaman",
+   "spec": "Restoration",
+   "consent": "gear_bags",
+   "level": 60,
+   "gear_gap": {
+    "upgrades": 0,
+    "gain_dps": null,
+    "not_sim_checked": 0,
+    "unit": null
+   },
+   "enchants": {
+    "missing_slots": [],
+    "checked": true
+   },
+   "consumables": {
+    "state": "stocked"
+   },
+   "talent_points_unspent": 0,
+   "talent_points_read": true,
+   "item_level": 62,
+   "item_level_delta": 0,
+   "logged_at": "2026-12-08T19:30:00Z",
+   "failing": 0,
+   "no_export": false,
+   "synced_before_cutoff": true,
+   "attuned": true,
+   "resistances": null,
+   "flask_food": {
+    "flask_or_elixir": true,
+    "food": true
+   }
+  },
+  {
+   "character_key": "us/pvp/emberfall",
+   "name": "Emberfall",
+   "class": "shaman",
+   "spec": "Elemental",
+   "consent": "gear_bags",
+   "level": 60,
+   "gear_gap": {
+    "upgrades": 0,
+    "gain_dps": null,
+    "not_sim_checked": 0,
+    "unit": null
+   },
+   "enchants": {
+    "missing_slots": [],
+    "checked": true
+   },
+   "consumables": {
+    "state": "short"
+   },
+   "talent_points_unspent": 0,
+   "talent_points_read": true,
+   "item_level": 63,
+   "item_level_delta": 0,
+   "logged_at": "2026-12-08T19:30:00Z",
+   "failing": 0,
+   "no_export": false,
+   "synced_before_cutoff": true,
+   "attuned": true,
+   "resistances": null,
+   "flask_food": {
+    "flask_or_elixir": false,
+    "food": false
+   }
+  },
+  {
+   "character_key": "us/pvp/groundshock",
+   "name": "Groundshock",
+   "class": "shaman",
+   "spec": "Enhancement",
+   "consent": "gear_bags",
+   "level": 60,
+   "gear_gap": {
+    "upgrades": 0,
+    "gain_dps": null,
+    "not_sim_checked": 0,
+    "unit": null
+   },
+   "enchants": {
+    "missing_slots": [],
+    "checked": true
+   },
+   "consumables": {
+    "state": "stocked"
+   },
+   "talent_points_unspent": 0,
+   "talent_points_read": true,
+   "item_level": 67,
+   "item_level_delta": 0,
+   "logged_at": "2026-12-08T19:30:00Z",
+   "failing": 0,
+   "no_export": false,
+   "synced_before_cutoff": true,
+   "attuned": true,
+   "resistances": null,
+   "flask_food": {
+    "flask_or_elixir": true,
+    "food": true
+   }
+  },
+  {
+   "character_key": "us/pvp/frostquill",
+   "name": "Frostquill",
+   "class": "mage",
+   "spec": "Frost",
+   "consent": "gear_bags",
+   "level": 60,
+   "gear_gap": {
+    "upgrades": 0,
+    "gain_dps": null,
+    "not_sim_checked": 0,
+    "unit": null
+   },
+   "enchants": {
+    "missing_slots": [],
+    "checked": true
+   },
+   "consumables": {
+    "state": "stocked"
+   },
+   "talent_points_unspent": 0,
+   "talent_points_read": true,
+   "item_level": 68,
+   "item_level_delta": 0,
+   "logged_at": "2026-12-08T19:30:00Z",
+   "failing": 0,
+   "no_export": false,
+   "synced_before_cutoff": true,
+   "attuned": true,
+   "resistances": null,
+   "flask_food": {
+    "flask_or_elixir": true,
+    "food": true
+   }
+  },
+  {
+   "character_key": "us/pvp/cinderglass",
+   "name": "Cinderglass",
+   "class": "mage",
+   "spec": "Fire",
+   "consent": "gear_bags",
+   "level": 60,
+   "gear_gap": {
+    "upgrades": 0,
+    "gain_dps": null,
+    "not_sim_checked": 0,
+    "unit": null
+   },
+   "enchants": {
+    "missing_slots": [],
+    "checked": true
+   },
+   "consumables": {
+    "state": "stocked"
+   },
+   "talent_points_unspent": 0,
+   "talent_points_read": true,
+   "item_level": 59,
+   "item_level_delta": 0,
+   "logged_at": "2026-12-08T19:30:00Z",
+   "failing": 0,
+   "no_export": false,
+   "synced_before_cutoff": true,
+   "attuned": true,
+   "resistances": null,
+   "flask_food": {
+    "flask_or_elixir": true,
+    "food": true
+   }
+  },
+  {
+   "character_key": "us/pvp/skyarcana",
+   "name": "Skyarcana",
+   "class": "mage",
+   "spec": "Arcane",
+   "consent": "gear_bags",
+   "level": 60,
+   "gear_gap": {
+    "upgrades": 0,
+    "gain_dps": null,
+    "not_sim_checked": 0,
+    "unit": null
+   },
+   "enchants": {
+    "missing_slots": [],
+    "checked": true
+   },
+   "consumables": {
+    "state": "stocked"
+   },
+   "talent_points_unspent": 0,
+   "talent_points_read": true,
+   "item_level": 58,
+   "item_level_delta": 0,
+   "logged_at": "2026-12-08T19:30:00Z",
+   "failing": 0,
+   "no_export": false,
+   "synced_before_cutoff": true,
+   "attuned": true,
+   "resistances": null,
+   "flask_food": {
+    "flask_or_elixir": true,
+    "food": true
+   }
+  },
+  {
+   "character_key": "us/pvp/doomwhisper",
+   "name": "Doomwhisper",
+   "class": "warlock",
+   "spec": "Affliction",
+   "consent": "gear_bags",
+   "level": 60,
+   "gear_gap": {
+    "upgrades": 0,
+    "gain_dps": null,
+    "not_sim_checked": 0,
+    "unit": null
+   },
+   "enchants": {
+    "missing_slots": [],
+    "checked": true
+   },
+   "consumables": {
+    "state": "stocked"
+   },
+   "talent_points_unspent": 0,
+   "talent_points_read": true,
+   "item_level": 69,
+   "item_level_delta": 0,
+   "logged_at": "2026-12-08T19:30:00Z",
+   "failing": 0,
+   "no_export": false,
+   "synced_before_cutoff": true,
+   "attuned": true,
+   "resistances": null,
+   "flask_food": {
+    "flask_or_elixir": true,
+    "food": true
+   }
+  },
+  {
+   "character_key": "us/pvp/grimsworn",
+   "name": "Grimsworn",
+   "class": "warlock",
+   "spec": "Demonology",
+   "consent": "gear_bags",
+   "level": 60,
+   "gear_gap": {
+    "upgrades": 0,
+    "gain_dps": null,
+    "not_sim_checked": 0,
+    "unit": null
+   },
+   "enchants": {
+    "missing_slots": [],
+    "checked": true
+   },
+   "consumables": {
+    "state": "short"
+   },
+   "talent_points_unspent": 0,
+   "talent_points_read": true,
+   "item_level": 60,
+   "item_level_delta": 0,
+   "logged_at": "2026-12-08T19:30:00Z",
+   "failing": 0,
+   "no_export": false,
+   "synced_before_cutoff": true,
+   "attuned": true,
+   "resistances": null,
+   "flask_food": {
+    "flask_or_elixir": false,
+    "food": false
+   }
+  },
+  {
+   "character_key": "us/pvp/hexmarrow",
+   "name": "Hexmarrow",
+   "class": "warlock",
+   "spec": "Destruction",
+   "consent": "gear_bags",
+   "level": 60,
+   "gear_gap": {
+    "upgrades": 0,
+    "gain_dps": null,
+    "not_sim_checked": 0,
+    "unit": null
+   },
+   "enchants": {
+    "missing_slots": [],
+    "checked": true
+   },
+   "consumables": {
+    "state": "stocked"
+   },
+   "talent_points_unspent": 0,
+   "talent_points_read": true,
+   "item_level": 61,
+   "item_level_delta": 0,
+   "logged_at": "2026-12-08T19:30:00Z",
+   "failing": 0,
+   "no_export": false,
+   "synced_before_cutoff": true,
+   "attuned": true,
+   "resistances": null,
+   "flask_food": {
+    "flask_or_elixir": true,
+    "food": true
+   }
+  },
+  {
+   "character_key": "us/pvp/mossveil",
+   "name": "Mossveil",
+   "class": "druid",
+   "spec": "Restoration",
+   "consent": "gear_bags",
+   "level": 60,
+   "gear_gap": {
+    "upgrades": 0,
+    "gain_dps": null,
+    "not_sim_checked": 0,
+    "unit": null
+   },
+   "enchants": {
+    "missing_slots": [],
+    "checked": true
+   },
+   "consumables": {
+    "state": "stocked"
+   },
+   "talent_points_unspent": 0,
+   "talent_points_read": true,
+   "item_level": 64,
+   "item_level_delta": 0,
+   "logged_at": "2026-12-08T19:30:00Z",
+   "failing": 0,
+   "no_export": false,
+   "synced_before_cutoff": true,
+   "attuned": true,
+   "resistances": null,
+   "flask_food": {
+    "flask_or_elixir": true,
+    "food": true
+   }
+  },
+  {
+   "character_key": "us/pvp/starnettle",
+   "name": "Starnettle",
+   "class": "druid",
+   "spec": "Balance",
+   "consent": "gear_bags",
+   "level": 60,
+   "gear_gap": {
+    "upgrades": 0,
+    "gain_dps": null,
+    "not_sim_checked": 0,
+    "unit": null
+   },
+   "enchants": {
+    "missing_slots": [],
+    "checked": true
+   },
+   "consumables": {
+    "state": "stocked"
+   },
+   "talent_points_unspent": 0,
+   "talent_points_read": true,
+   "item_level": 70,
+   "item_level_delta": 0,
+   "logged_at": "2026-12-08T19:30:00Z",
+   "failing": 0,
+   "no_export": false,
+   "synced_before_cutoff": true,
+   "attuned": true,
+   "resistances": null,
+   "flask_food": {
+    "flask_or_elixir": true,
+    "food": true
+   }
+  },
+  {
+   "character_key": "us/pvp/nightlatch",
+   "name": "Nightlatch",
+   "class": "rogue",
+   "spec": "Subtlety",
+   "consent": "gear_bags",
+   "level": 60,
+   "gear_gap": {
+    "upgrades": 0,
+    "gain_dps": null,
+    "not_sim_checked": 0,
+    "unit": null
+   },
+   "enchants": {
+    "missing_slots": [],
+    "checked": true
+   },
+   "consumables": {
+    "state": "stocked"
+   },
+   "talent_points_unspent": 0,
+   "talent_points_read": true,
+   "item_level": 55,
+   "item_level_delta": 0,
+   "logged_at": "2026-12-08T19:30:00Z",
+   "failing": 0,
+   "no_export": false,
+   "synced_before_cutoff": true,
+   "attuned": true,
+   "resistances": null,
+   "flask_food": {
+    "flask_or_elixir": true,
+    "food": true
+   }
+  }
+ ],
+ "next_raid": {
+  "id": 41,
+  "title": "Onyxia's Lair",
+  "zone_name": "Onyxia's Lair",
+  "starts_at": "2026-12-11T02:00:00Z"
+ }
+}

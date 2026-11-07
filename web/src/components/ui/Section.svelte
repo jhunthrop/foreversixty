@@ -14,6 +14,7 @@
     meta,
     action,
     reading = false,
+    metaTestid,
     id,
     anchor,
     testid,
@@ -25,6 +26,8 @@
     meta?: string;
     action?: { label: string; href: string };
     reading?: boolean;
+    /** The meta line's testid, for a test that reads the line alone. */
+    metaTestid?: string;
     /** Names the section (aria-labelledby its heading: a landmark) and is its link target. */
     id?: string;
     /** A link target only (`/logs#upload`): the section stays an unnamed block. */
@@ -50,7 +53,7 @@
       class={['text-strong font-bold', reading ? 'text-section md:text-section-reading' : 'text-section']}
       >{title}</svelte:element
     >
-    {#if meta}<span class="text-small text-muted">{meta}</span>{/if}
+    {#if meta}<span class="text-small text-muted" data-testid={metaTestid}>{meta}</span>{/if}
     {#if head || action}
       <span class="ml-auto flex items-center gap-4">
         {#if head}{@render head()}{/if}
@@ -65,3 +68,11 @@
   </div>
   <div class="ui-section-body pt-3">{@render children()}</div>
 </section>
+
+<style>
+  /* Rows start on the head's hairline: a Row carries its own padding (the mock's `.sec-h + .rows`). */
+  .ui-section-body:has(> :global(.ui-row:first-child)),
+  .ui-section-body:has(> :global(:first-child:not(.ui-plate) > .ui-row:first-child)) {
+    padding-top: 0;
+  }
+</style>

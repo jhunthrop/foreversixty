@@ -4,5 +4,21 @@
     "width": 1440,
     "height": 1000
   },
-  "states": []
+  "states": [
+    {
+      "id": "member",
+      "path": "/guild/us/pvp/olympus-xxvii",
+      "mock": "web-guild-member.html"
+    },
+    {
+      "id": "officer",
+      "path": "/guild/us/pvp/olympus-xxvii",
+      "mock": "web-guild-officer.html"
+    },
+    {
+      "id": "loot",
+      "path": "/guild/us/pvp/olympus-xxvii#loot",
+      "mock": "web-guild-loot.html"
+    }
+  ]
 }

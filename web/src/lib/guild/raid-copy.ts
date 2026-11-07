@@ -476,8 +476,9 @@ export interface BandLineArgs {
   size: number | null;
 }
 
-/** The clause around its state word: `you are ` / `In` / ` as DPS`; no word while unsigned. */
-function bandClause({ state, role, characterName }: BandLineArgs): BandLineParts {
+/** The clause around its state word: `you are ` / `In` / ` as DPS`; no word while unsigned. The
+ *  Overview's own row reads it alone, after the character's spec and level. */
+export function bandClause({ state, role, characterName }: BandLineArgs): BandLineParts {
   if (state === null) return { head: 'you have not signed up yet', word: '', tail: '' };
   const word = SIGNED_UP_STATE_WORDS[state];
   if (state === 'bench') return { head: 'you are on the ', word, tail: '' };
