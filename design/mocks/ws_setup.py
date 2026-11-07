@@ -139,7 +139,8 @@ def addon_section(state: str) -> str:
 
 
 def companion_section(state: str) -> str:
-    comp = FACTS['companion']['downloads'][0]
+    # The visitor's own build (lib/setup/downloads.ts): None on a Mac while companion.json lists no Mac build.
+    comp = FACTS['download_for']['mac' if state == 'mac' else 'windows']
     steps = sentences(A['setupCompanionBody'])   # [what it is, the setting, /combatlog each time you log in]
     lead_sentence, rest = steps[0], steps[1:]
     howto = [A['setupCompanionPair']] + rest
@@ -159,8 +160,12 @@ def companion_section(state: str) -> str:
                     f'<p class="t-small">{escape(PC["code_line"])}</p></div>')
         else:
             pair = f'<div class="pair"><span class="t-label">{escape(lc["pairLabel"])}</span><p class="t-small">{escape(PC["companionFirst"])}</p><div class="acts">{Button(PC["action"], small=True)}</div></div>'
-    # On a Mac row 3 says "Windows only" once; the section drops that line and the SmartScreen one (U7, rulings).
-    plat = '' if state == 'mac' else f'<p class="t-small">{escape(FACTS["platforms_line"])}</p><p class="t-small">{escape(comp["firstRun"])}</p>'
+    # A Mac without a Mac build reads "Windows only" once, on row 3; the section drops that line and the SmartScreen one
+    # (U7, rulings). With a Mac build the Mac visitor gets its own signing line, and no platforms line once Mac ships.
+    plat = ''
+    if comp is not None:
+        line = FACTS['platforms_line']
+        plat = (f'<p class="t-small">{escape(line)}</p>' if line else '') + f'<p class="t-small">{escape(comp["firstRun"])}</p>'
     # U4 (rulings): once row 3 is ticked, the download stays here for another PC.
     another = f'<div class="acts">{arrow(A["setupDownloadAnother"])}</div>' if row_done(state, 3) else ''
     body = (f'<div class="body" id="companion"><p>{escape(lead_sentence)}</p>{plat}{another}'

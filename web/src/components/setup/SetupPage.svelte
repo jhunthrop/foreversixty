@@ -20,12 +20,12 @@
     snapshotOf,
     takeSnapshot,
   } from '../../lib/account/refresh-snapshot';
-  import companion from '../../data/companion.json';
   import { addonCopy } from '../../lib/addon/copy';
   import { readCurrent, type CurrentCharacter } from '../../lib/current-character';
   import { onCurrentCharacterChange } from '../../lib/current-character-events';
   import { sessionHinted } from '../../lib/data/query';
   import { setupAnswer } from '../../lib/setup/answer';
+  import { COMPANION_DOWNLOADS, COMPANION_PLATFORMS, downloadFor } from '../../lib/setup/downloads';
   import { SETUP_REFRESHED } from '../../lib/setup/links';
   import { loadSetupState } from '../../lib/setup/state';
   import { setupSteps, type SessionState, type StepAction } from '../../lib/setup/steps';
@@ -43,8 +43,9 @@
 
   /** While Battle.net's import runs, `/v1/me` is read again this often (setup spec G1). */
   const IMPORT_POLL_MS = 5000;
-  const PLATFORMS = companion.downloads.map((entry) => entry.platform);
-  const COMPANION_ASSET = companion.downloads[0].asset;
+  const PLATFORMS = COMPANION_PLATFORMS;
+  /** The server draws the Windows rows; a Mac swaps to its own build after hydration. */
+  const WINDOWS_ASSET = downloadFor('windows')?.asset ?? COMPANION_DOWNLOADS[0].asset;
 
   let mounted = $state(false);
   let session = $state<SessionState>('out');
@@ -160,6 +161,8 @@
       rows: setupSteps({ session: 'loading', me: null, devices: null, platform: 'windows' }, PLATFORMS),
     },
   ];
+  /** The Download step's file: the visitor's own build (a Mac without one has no Download step). */
+  const companionAsset = $derived(downloadFor(platform)?.asset ?? WINDOWS_ASSET);
   const settled = $derived(mounted && session !== 'loading');
   const signedIn = $derived(session === 'in' && me !== null);
   const answer = $derived(signedIn ? setupAnswer(me, current, now) : null);
@@ -191,7 +194,7 @@
     <div class={mounted ? undefined : 'setup-hint'} data-hint={mounted ? undefined : 'out'}>
       <SetupStepList
         rows={mounted ? rows : HINT_OUT_ROWS}
-        companionAsset={COMPANION_ASSET}
+        companionAsset={mounted ? companionAsset : WINDOWS_ASSET}
         {refreshing}
         {onAction}
         testid="setup-steps"
@@ -200,7 +203,7 @@
     {#if !mounted}
       {#each hintRows as hint (hint.key)}
         <div class="setup-hint" data-hint={hint.key}>
-          <SetupStepList rows={hint.rows} companionAsset={COMPANION_ASSET} />
+          <SetupStepList rows={hint.rows} companionAsset={WINDOWS_ASSET} />
         </div>
       {/each}
     {/if}

@@ -44,6 +44,7 @@ const IMMUTABLE_CACHE = 'public, max-age=31536000, immutable';
 
 const CONTENT_TYPES: Record<string, string> = {
   '.exe': 'application/vnd.microsoft.portable-executable',
+  '.dmg': 'application/x-apple-diskimage',
   '.zip': 'application/zip',
   '.json': 'application/json; charset=utf-8',
   '.minisig': 'text/plain; charset=utf-8',

@@ -1,14 +1,15 @@
 <!-- web/src/components/setup/SetupCompanion.svelte -->
-<!-- /setup's Section "The companion" (setup spec 4, rulings U4, U7, U8): what it is, on Windows the
-     platforms line and the signing line (a Mac visitor reads "Windows only" once, on row 3), a quiet
+<!-- /setup's Section "The companion" (setup spec 4, rulings U4, U7, U8): what it is, the visitor's
+     own build's platforms line and signing line (a Mac visitor without a Mac build reads "Windows
+     only" once, on row 3, and neither line here), a quiet
      download link once row 3 is ticked, the three ranked how-to Rows (`/combatlog` as Code), the
      Status capture with its Example tag and, signed in, the pairing block under a hairline (each
      paired device's status line first). -->
 <script lang="ts">
   import type { Device } from '../../lib/account/api';
-  import companion from '../../data/companion.json';
   import { addonCopy } from '../../lib/addon/copy';
   import { deviceStatusLine } from '../../lib/reports/device-status';
+  import { COMPANION_PLATFORMS, downloadFor } from '../../lib/setup/downloads';
   import { companionPlatformsLine } from '../../lib/setup/progress';
   import { stepHref } from '../../lib/setup/links';
   import type { VisitorPlatform } from '../../lib/setup/visitor-platform';
@@ -40,11 +41,14 @@
     onPaired?: (device: Device) => void;
   } = $props();
 
-  const [download] = companion.downloads;
+  /** The visitor's own build; null on a Mac while the feed carries no Mac build. */
+  const download = $derived(downloadFor(platform));
+  /** The quiet link for a second computer: the visitor's own build, else the Windows one. */
+  const another = $derived(download ?? downloadFor('windows'));
   /** `setupCompanionBody` at its sentences: what it is, then the two how-to steps after the pairing one. */
   const [lead, ...rest] = addonCopy.setupCompanionBody.split(/(?<=\.)\s+(?=[A-Z])/);
   const howTo = [addonCopy.setupCompanionPair, ...rest];
-  const platformsLine = companionPlatformsLine(companion.downloads.map((entry) => entry.platform));
+  const platformsLine = companionPlatformsLine(COMPANION_PLATFORMS);
   const capture = addonCopy.setupCompanionCapture;
 </script>
 
@@ -63,17 +67,17 @@
 >
   <div class="setup-body">
     <p data-testid="setup-companion-lead">{lead}</p>
-    {#if platform !== 'mac'}
+    {#if download !== null}
       {#if platformsLine !== null}<p class="text-small text-muted" data-testid="setup-companion-platforms">
           {platformsLine}
         </p>{/if}
       <p class="text-small text-muted" data-testid="setup-companion-first-run">{download.firstRun}</p>
     {/if}
-    {#if companionDone}
+    {#if companionDone && another !== null}
       <div class="setup-acts">
         <a
           class={LINK}
-          href={stepHref('download', download.asset) ?? '#'}
+          href={stepHref('download', another.asset) ?? '#'}
           rel="noopener"
           data-testid="setup-download-another">{addonCopy.setupDownloadAnother} ›</a
         >

@@ -535,7 +535,7 @@
     "mark": "ok",
     "lines": [
      {
-      "text": "Signed in as Hunthrop#1894 · Imported from Battle.net 1 hour ago.",
+      "text": "Signed in as Hunthrop#1894 · Updated 1 h ago from Battle.net",
       "tone": "ok"
      }
     ],
@@ -583,7 +583,7 @@
     "mark": "ok",
     "lines": [
      {
-      "text": "Signed in as Hunthrop#1894 · Imported from Battle.net 1 hour ago.",
+      "text": "Signed in as Hunthrop#1894 · Updated 1 h ago from Battle.net",
       "tone": "ok"
      }
     ],
@@ -626,7 +626,7 @@
     "mark": "ok",
     "lines": [
      {
-      "text": "Signed in as Hunthrop#1894 · Imported from Battle.net 1 hour ago.",
+      "text": "Signed in as Hunthrop#1894 · Updated 1 h ago from Battle.net",
       "tone": "ok"
      }
     ],
@@ -665,7 +665,7 @@
     "mark": "ok",
     "lines": [
      {
-      "text": "Signed in as Hunthrop#1894 · Imported from Battle.net 1 hour ago.",
+      "text": "Signed in as Hunthrop#1894 · Updated 1 h ago from Battle.net",
       "tone": "ok"
      }
     ],
@@ -701,7 +701,7 @@
   "name": "Felsnap",
   "classSlug": "hunter",
   "levelLine": "Level 34 Beast Mastery Hunter",
-  "imported": "Imported from Battle.net 1 hour ago.",
+  "imported": "Updated 1 h ago from Battle.net",
   "open": {
    "label": "Open Felsnap",
    "href": "/character/us/normal/felsnap"
@@ -715,7 +715,7 @@
   "name": "Felsnap",
   "classSlug": "hunter",
   "levelLine": "Level 34 Beast Mastery Hunter",
-  "imported": "Imported from Battle.net 1 hour ago.",
+  "imported": "Updated 1 h ago from Battle.net",
   "open": {
    "label": "Open Felsnap",
    "href": "/character/us/normal/felsnap"
@@ -949,7 +949,7 @@
  "device_status": [
   "JHUNT-PC · Windows · last seen 3 minutes ago"
  ],
- "imported": "Imported from Battle.net 1 hour ago.",
+ "imported": "Updated 1 h ago from Battle.net",
  "platforms_line": "Windows only; Mac is not supported yet. On a Mac, paste an export instead.",
  "companion": {
   "downloads": [
@@ -959,6 +959,14 @@
     "firstRun": "Signed by Commish LLC. If SmartScreen still asks while the certificate is new, choose More info, then Run anyway."
    }
   ]
+ },
+ "download_for": {
+  "windows": {
+   "platform": "Windows",
+   "asset": "foreversixty-companion_windows_amd64.exe",
+   "firstRun": "Signed by Commish LLC. If SmartScreen still asks while the certificate is new, choose More info, then Run anyway."
+  },
+  "mac": null
  },
  "download": {
   "label": "Download for Windows",
@@ -1353,10 +1361,11 @@
   "pasteAnExport": "Paste an export",
   "pasteHref": "/setup#paste",
   "refreshFromBattlenet": "Refresh from Battle.net",
-  "importedFrom": "[fn]",
+  "updatedFrom": "[fn]",
   "verified": "Verified",
   "main": "Main",
   "current": "Current",
+  "open": "Open",
   "setAsMain": "Set as main",
   "setAsMainFailed": "Could not set your main just now.",
   "levelPrefix": "[fn]",
@@ -1366,8 +1375,7 @@
   "tryAgain": "Try again",
   "updatedJustNow": "[fn]",
   "noChanges": "[fn]",
-  "importedJustNow": "Imported from Battle.net just now.",
-  "introBattlenetLine": "Your characters come from Battle.net each time you sign in.",
+  "introBattlenetLine": "Your characters come from Battle.net and update on their own.",
   "introInstallAddonLink": "Install the addon and the companion",
   "introAddonTail": "for bags, bank and live sync. In Korea, or Battle.net is down?",
   "introPasteLink": "Paste an export",
