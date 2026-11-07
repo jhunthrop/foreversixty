@@ -85,7 +85,7 @@ func TestTheLastSyncSurvivesARestart(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	again, err := app.New(app.Options{Dirs: h.dirs, Config: cfg, Secret: h.secret,
+	again, err := app.New(app.Options{Dirs: h.dirs, Config: cfg, Secret: h.secret, Detect: noInstalls,
 		Now: func() time.Time { return t0.Add(2 * time.Minute) }})
 	if err != nil {
 		t.Fatal(err)

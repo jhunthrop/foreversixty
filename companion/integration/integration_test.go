@@ -27,6 +27,7 @@ import (
 	"github.com/jhunthrop/foreversixty/companion/internal/paths"
 	"github.com/jhunthrop/foreversixty/companion/internal/secret"
 	"github.com/jhunthrop/foreversixty/companion/internal/watch"
+	"github.com/jhunthrop/foreversixty/companion/internal/wow"
 )
 
 var t0 = time.Date(2026, 12, 9, 20, 0, 0, 0, time.UTC)
@@ -78,6 +79,8 @@ func (c *companion) start() {
 		// One attempt with no wait: the outage in this test is
 		// simulated, so there is nothing to be patient about.
 		Retry: client.Retry{MaxAttempts: 1, Base: time.Millisecond, Max: time.Millisecond},
+		// The machine's own game is not this test's.
+		Detect: func() []wow.Install { return nil },
 	})
 	if err != nil {
 		c.t.Fatal(err)

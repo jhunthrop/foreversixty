@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <!-- tools/release-apps.sh exports the archive with these: an App Store Connect build,
-     signed automatically with the team the archive was built for. -->
+     signed automatically (the App Store Connect key makes the distribution certificate and
+     profiles). The script copies this file and puts APPLE_TEAM_ID in place of the teamID
+     placeholder; the Team ID is a repository variable, never written here. -->
 <plist version="1.0">
 <dict>
 	<key>method</key>
 	<string>app-store-connect</string>
 	<key>destination</key>
 	<string>export</string>
+	<key>teamID</key>
+	<string>__APPLE_TEAM_ID__</string>
 	<key>signingStyle</key>
 	<string>automatic</string>
 	<key>uploadSymbols</key>

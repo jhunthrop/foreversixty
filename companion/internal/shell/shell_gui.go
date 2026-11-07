@@ -24,13 +24,12 @@ import (
 // or the context ends. It must be called from the main goroutine:
 // every desktop toolkit here requires it.
 //
-// The tray outlives the window. On Windows the close button hides the
-// window (installCloseHook) and "Open Forever Sixty" shows it again;
-// the first close leaves it up for NoticeFor with a bar saying the
+// The tray outlives the window. On Windows and macOS the close button
+// hides the window (installCloseHook) and "Open Forever Sixty" shows it
+// again; the first close leaves it up for NoticeFor with a bar saying the
 // companion is still running in the tray. Where the close cannot be
-// caught (macOS, Linux: the toolkits have no close event and the tray
-// there shares the window's main loop) closing the window ends the
-// process, as before.
+// caught (Linux: the toolkit has no close event and the tray there
+// shares the window's main loop) closing the window ends the process.
 func Run(ctx context.Context, o Options) error {
 	o = o.withDefaults()
 	if o.Headless {
@@ -128,11 +127,22 @@ func Run(ctx context.Context, o Options) error {
 		case <-quit:
 		}
 	}()
+	// macOS: the menu bar, the system's Quit and the Dock icon's click
+	// (closehook_darwin.go). The Quit is the tray's Quit.
+	installAppHooks(func() {
+		if o.OnQuit != nil {
+			o.OnQuit()
+		}
+		stopAll()
+	}, openWindow)
 
 	// Where the close button cannot be caught, the window ending ends
 	// the process: the tray cannot be trusted to outlive the toolkit's
-	// main loop. Windows runs the tray on a thread of its own.
+	// main loop. Windows runs the tray on a thread of its own; on macOS
+	// the tray shares the window's loop, which a hidden window keeps
+	// running, so the close is caught there and the window only hides.
 	trayOutlives := runtime.GOOS == "windows"
+	hidesOnClose := trayOutlives || runtime.GOOS == "darwin"
 	pendingNotice := false
 loop:
 	for {
@@ -150,7 +160,7 @@ loop:
 		}
 		var hide func()
 		var showFn func()
-		if trayOutlives {
+		if hidesOnClose {
 			var ok bool
 			showFn, hide, ok = installCloseHook(w.Window(), func() bool {
 				if o.FirstClose != nil && o.FirstClose() && o.Notice != "" {

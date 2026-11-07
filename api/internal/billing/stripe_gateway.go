@@ -293,6 +293,16 @@ func (g *StripeGateway) CancelSubscriptionAtPeriodEnd(ctx context.Context, subsc
 	return nil
 }
 
+// CancelSubscriptionNow implements Gateway.CancelSubscriptionNow.
+func (g *StripeGateway) CancelSubscriptionNow(ctx context.Context, subscriptionID string) error {
+	if _, err := g.client.V1Subscriptions.Cancel(ctx, subscriptionID, &stripe.SubscriptionCancelParams{
+		InvoiceNow: stripe.Bool(false), Prorate: stripe.Bool(false),
+	}); err != nil {
+		return fmt.Errorf("billing: cancel subscription now %s: %w", subscriptionID, err)
+	}
+	return nil
+}
+
 // ResumeSubscription implements Gateway.ResumeSubscription.
 func (g *StripeGateway) ResumeSubscription(ctx context.Context, subscriptionID string) error {
 	if _, err := g.client.V1Subscriptions.Update(ctx, subscriptionID, &stripe.SubscriptionUpdateParams{

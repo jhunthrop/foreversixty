@@ -23,7 +23,7 @@
     testid,
   }: {
     rows: readonly StepRow[];
-    /** companion.json's first download: the file the Download step links to. */
+    /** The visitor's own companion build (lib/setup/downloads.ts): the file the Download step links to. */
     companionAsset: string;
     /** Refresh from Battle.net has started: its button reads `refreshing` and is disabled. */
     refreshing?: boolean;

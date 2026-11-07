@@ -66,6 +66,7 @@ type FakeGateway struct {
 	EnsuredSpecs          []PriceSpec
 	CanceledAtPeriodEnd   []string // subscription ids passed to CancelSubscriptionAtPeriodEnd, in order
 	Resumed               []string // subscription ids passed to ResumeSubscription, in order
+	CanceledNow           []string // subscription ids passed to CancelSubscriptionNow, in order
 	// GetSubscriptionCalls records the ids passed to GetSubscription, in order.
 	GetSubscriptionCalls []string
 	// OnGetSubscription, when set, runs after each GetSubscription call is
@@ -173,6 +174,24 @@ func (f *FakeGateway) CancelSubscriptionAtPeriodEnd(_ context.Context, subscript
 		return f.CancelErr
 	}
 	f.CanceledAtPeriodEnd = append(f.CanceledAtPeriodEnd, subscriptionID)
+	return nil
+}
+
+// CancelSubscriptionNow records the id and marks a registered subscription canceled, as
+// Stripe would; CancelErr fails it like CancelSubscriptionAtPeriodEnd.
+func (f *FakeGateway) CancelSubscriptionNow(_ context.Context, subscriptionID string) error {
+	f.mu.Lock()
+	defer f.mu.Unlock()
+	if f.Err != nil {
+		return f.Err
+	}
+	if f.CancelErr != nil {
+		return f.CancelErr
+	}
+	f.CanceledNow = append(f.CanceledNow, subscriptionID)
+	if sub, ok := f.Subscriptions[subscriptionID]; ok {
+		sub.Status = stripe.SubscriptionStatusCanceled
+	}
 	return nil
 }
 

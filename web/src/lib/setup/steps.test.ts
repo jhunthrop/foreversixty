@@ -69,6 +69,17 @@ describe('setupSteps: signed out', () => {
     });
   });
 
+  it('web-setup-mac with a Mac build: row 3 is the Mac download, Windows keeps its own', () => {
+    const both = ['Windows', 'Mac'];
+    const mac = setupSteps({ session: 'out', me: null, devices: [], platform: 'mac', now: NOW }, both);
+    expect(texts(mac[2])).toEqual([addonCopy.setupCompanionNote]);
+    expect(mac[2].action).toMatchObject({ id: 'download', label: 'Download for Mac', kind: 'link-button' });
+    const win = setupSteps({ session: 'out', me: null, devices: [], platform: 'windows', now: NOW }, both);
+    expect(win[2].action).toMatchObject({ id: 'download', label: 'Download for Windows' });
+    const signedIn = setupSteps({ session: 'in', me: me34, devices: [], platform: 'mac', now: NOW }, both);
+    expect(signedIn[2].action).toMatchObject({ id: 'download', label: 'Download for Mac' });
+  });
+
   it('web-setup-export: an export loaded ticks the addon row', () => {
     const rows = steps({ session: 'out', pointer: true });
     expect(marks(rows)).toEqual(['next', 'ok', 'todo']);

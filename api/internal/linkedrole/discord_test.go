@@ -105,3 +105,18 @@ func TestSetupRegistersTheMetadataAndTheVerificationURL(t *testing.T) {
 		t.Fatalf("patch = %q", got)
 	}
 }
+
+func TestRevokeTokenPostsTheRefreshTokenWithTheClientCredentials(t *testing.T) {
+	d := newTestDiscord(t, func(w http.ResponseWriter, r *http.Request) {
+		_ = r.ParseForm()
+		f := r.PostForm
+		if r.URL.Path != "/oauth2/token/revoke" || f.Get("token") != "r0" || f.Get("token_type_hint") != "refresh_token" ||
+			f.Get("client_id") != "app1" || f.Get("client_secret") != "s3cret" {
+			t.Errorf("request = %s %v", r.URL.Path, f)
+		}
+		_, _ = io.WriteString(w, `{}`)
+	})
+	if err := d.RevokeToken(context.Background(), "r0"); err != nil {
+		t.Fatal(err)
+	}
+}

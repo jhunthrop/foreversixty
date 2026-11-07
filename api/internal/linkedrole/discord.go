@@ -57,6 +57,9 @@ type Discord interface {
 	Refresh(ctx context.Context, refreshToken string) (Tokens, error)
 	UserID(ctx context.Context, accessToken string) (string, error)
 	Push(ctx context.Context, accessToken string, c Connection) error
+	// RevokeToken ends the authorization a refresh token belongs to (the member's Discord then
+	// lists the app as removed).
+	RevokeToken(ctx context.Context, refreshToken string) error
 }
 
 // HTTPDiscord talks to discord.com.
@@ -139,6 +142,17 @@ func (d *HTTPDiscord) UserID(ctx context.Context, accessToken string) (string, e
 		return "", fmt.Errorf("%w: no account in the answer", ErrDiscord)
 	}
 	return me.ID, nil
+}
+
+// RevokeToken revokes the refresh token, and with it the whole authorization.
+func (d *HTTPDiscord) RevokeToken(ctx context.Context, refreshToken string) error {
+	form := url.Values{
+		"token": {refreshToken}, "token_type_hint": {"refresh_token"},
+		"client_id": {d.clientID}, "client_secret": {d.clientSecret},
+	}
+	_, err := d.send(ctx, http.MethodPost, "/oauth2/token/revoke", "application/x-www-form-urlencoded",
+		strings.NewReader(form.Encode()), "", nil)
+	return err
 }
 
 // connectionBody is the role connection's JSON; metadata values are strings ("1" or "0" for a

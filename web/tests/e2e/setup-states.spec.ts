@@ -9,6 +9,8 @@ import { guildClaimCopy } from '../../src/lib/guild/copy';
 import { pairingCopy } from '../../src/lib/reports/copy';
 import { yourReportsPageCopy } from '../../src/lib/reports/my-reports-copy';
 import { storePointer } from './support/selector';
+import { companionDownloadPath } from '../../src/lib/downloads/paths';
+import { downloadFor } from '../../src/lib/setup/downloads';
 import { CLAIM_NEXT, openSetupState } from './support/setup-page';
 import { expect, test } from './support/test';
 
@@ -52,14 +54,26 @@ test('back from a refresh Battle.net did not answer: the refresh error and Try a
   expect(new URL(page.url()).search).toBe('');
 });
 
-test('a Mac visitor: row 3 says Windows only once and links to Try an export; no SmartScreen line (U7, U10)', async ({
+test('a Mac visitor: the Mac download with its own signing line, or while there is no Mac build Try an export and no SmartScreen line (U7, U10)', async ({
   page,
 }) => {
   await openSetupState(page, 'mac');
-  await expect(page.getByTestId('setup-action-paste')).toHaveAttribute('href', '#paste');
-  await expect(page.getByTestId('setup-action-download')).toHaveCount(0);
+  const mac = downloadFor('mac');
   await expect(page.getByTestId('setup-companion-platforms')).toHaveCount(0);
-  await expect(page.getByTestId('setup-companion-first-run')).toHaveCount(0);
+  if (mac === null) {
+    await expect(page.getByTestId('setup-action-paste')).toHaveAttribute('href', '#paste');
+    await expect(page.getByTestId('setup-action-download')).toHaveCount(0);
+    await expect(page.getByTestId('setup-companion-first-run')).toHaveCount(0);
+    return;
+  }
+  await expect(page.getByTestId('setup-action-download')).toHaveAttribute(
+    'href',
+    companionDownloadPath(mac.asset),
+  );
+  await expect(page.getByTestId('setup-action-download')).toHaveText(
+    addonCopy.setupCompanionDownload(mac.platform),
+  );
+  await expect(page.getByTestId('setup-companion-first-run')).toHaveText(mac.firstRun);
 });
 
 test('a pairing code out: row 3 waits with the code, no gold step', async ({ page }) => {

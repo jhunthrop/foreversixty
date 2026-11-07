@@ -11,6 +11,8 @@ import { CHARACTER, CHARACTER_PATH, CHARACTER_URL, routeCharacterSearch } from '
 import { expectFixtureNotFound } from './support/character-not-found';
 import { routeSampleReportMeta } from './support/logs-sample-fixture';
 import { addonCopy } from '../../src/lib/addon/copy';
+import { COMPANION_PLATFORMS } from '../../src/lib/setup/downloads';
+import { companionPlatformsLine } from '../../src/lib/setup/progress';
 
 const SHOTS = process.env.W9_SHOTS ?? 'test-results/w9';
 const SIZES = [
@@ -78,9 +80,8 @@ for (const size of SIZES) {
       await expect(page.getByRole('link', { name: 'Sign in with Battle.net' })).toBeVisible();
       await expect(page.getByRole('link', { name: 'Install from CurseForge' })).toBeVisible();
       await expect(page.getByRole('link', { name: 'Download for Windows' })).toBeVisible();
-      await expect(
-        page.getByText('Windows only; Mac is not supported yet. On a Mac, paste an export instead.'),
-      ).toBeVisible();
+      const platformsLine = companionPlatformsLine(COMPANION_PLATFORMS);
+      if (platformsLine !== null) await expect(page.getByText(platformsLine)).toBeVisible();
       await expect(page.getByTestId('setup-steps-step-1')).not.toContainText('Signed in as');
       await expect(page.getByTestId('addon-paste-box')).toBeVisible();
       await expect(page.getByTestId('setup-hand-install')).toBeVisible();

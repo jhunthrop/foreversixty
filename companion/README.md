@@ -13,10 +13,15 @@ and put it anywhere you like.
 | Platform | Asset |
 |---|---|
 | Windows | `foreversixty-companion_windows_amd64.exe` |
+| macOS 12 or later (Apple silicon and Intel) | `foreversixty-companion_darwin_universal.dmg` |
 | Linux | `foreversixty-companion_linux_amd64` |
 
-There is no macOS build: Forever runs on Windows and under Wine or Proton on Linux, and the two
-macOS targets are out of the release matrix until there is a reason to pay for the runners.
+On a Mac, open the disk image and drag **Forever Sixty** to Applications, then open it from there.
+The app is signed with Commish LLC's Developer ID and notarized by Apple, so it opens without a
+Gatekeeper warning. It finds the game in `/Applications/World of Warcraft` (or the same folder
+under your own Applications) by itself. The release also carries
+`foreversixty-companion_darwin_universal.app.zip`, the same app zipped, which is what an installed
+companion updates itself from.
 
 Every asset is published beside a `.minisig` signature. To check one:
 
@@ -34,10 +39,13 @@ is for the first download.
 At launch and every six hours the companion reads
 `https://foreversixty.gg/dl/companion/latest.json`, a small manifest that names the newest signed
 release and the files on it. If that release is newer than the running build and carries this
-platform's binary and its `.minisig`, the companion downloads both from the same address, checks
+platform's build and its `.minisig`, the companion downloads both from the same address, checks
 the `sha256` the manifest lists, verifies the signature against the public key built into it, and
 stages the binary in `update/`. The signature is verified again at the next launch, just before
-the new binary takes the old one's place. A download from anywhere but foreversixty.gg is refused,
+the new binary takes the old one's place. On a Mac the update is the whole signed app, and it
+replaces the app it runs from (`/Applications/Forever Sixty.app`) in one step, so the app's
+signature and notarization stay intact; an app run straight from the disk image, or from a folder
+you cannot write to, stays on its version and says so in the log. A download from anywhere but foreversixty.gg is refused,
 nothing unverified is ever installed, and a build without a public key never updates itself.
 
 The Windows build is signed through Azure Artifact Signing in the name of Commish LLC, the
@@ -77,12 +85,13 @@ cannot be reached, the token is still removed here and the window says to remove
 
 ## Close it and it keeps running
 
-Closing the window does not stop the companion: it stays in the tray (Windows) and keeps logging.
-The first time you close the window it says so, then hides. The tray icon's menu shows what the
-companion is doing in a line at the top (the same words as the Status headline, which is also the
-tooltip), **Open Forever Sixty**, **Open my reports on the site** and **Quit**. Quit is the only way
-to stop it. On Linux, closing the window quits the companion; keep it open while logging. The
-close-to-tray behaviour is Windows-only in the first release.
+Closing the window does not stop the companion: it stays in the tray (Windows) or the menu bar
+(macOS) and keeps logging. The first time you close the window it says so, then hides. The icon's
+menu shows what the companion is doing in a line at the top (the same words as the Status
+headline, which is also the tooltip), **Open Forever Sixty**, **Open my reports on the site** and
+**Quit**. Quit is the only way to stop it; on a Mac, **Quit Forever Sixty** in the app menu,
+Command-Q and the Dock's Quit do the same, and clicking the Dock icon opens the window again. On
+Linux, closing the window quits the companion; keep it open while logging.
 Launching the companion again just opens the running one.
 
 ## Log a raid
@@ -114,6 +123,7 @@ Where the companion keeps its files:
 | Platform | Directory |
 |---|---|
 | Windows | `%APPDATA%\ForeverSixty` |
+| macOS | `~/Library/Application Support/ForeverSixty` |
 | Linux | `~/.config/foreversixty` |
 
 Inside it: `config.json`, `queue/` for uploads that have not landed yet, `state/` for one file
@@ -226,6 +236,11 @@ go build ./cmd/foreversixty-companion
 The window needs cgo and a platform toolkit: WebKit on macOS (Xcode command line tools),
 WebView2 on Windows (a C compiler such as mingw-w64), and `libgtk-3-dev libwebkit2gtk-4.1-dev`
 on Linux. `-tags nogui` builds and tests everything else without them.
+
+On a Mac, `tools/package-mac-companion.sh <version> <binary> <out-dir>` (from the repository
+root) wraps a build in `Forever Sixty.app` and makes the disk image and the update zip, signed ad
+hoc unless `MAC_SIGNING_IDENTITY` names a Developer ID certificate;
+`docs/runbooks/companion-release.md` has the release side.
 
 The companion depends on the `logs/` module in this repository through a `replace`, so the
 engine that parses your log in the companion is the same code that parses it on the server.

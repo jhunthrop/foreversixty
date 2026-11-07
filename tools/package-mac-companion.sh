@@ -1,0 +1,163 @@
+#!/usr/bin/env bash
+# tools/package-mac-companion.sh <version> <universal-binary> <out-dir>
+#
+# Turns the companion's universal macOS binary into what the release publishes: the app
+# bundle "Forever Sixty.app", signed with the hardened runtime and a timestamp, notarized
+# and stapled, then shipped twice:
+#
+#   <out-dir>/foreversixty-companion_darwin_universal.dmg      the download /setup offers:
+#                                                              open it, drag the app to Applications
+#   <out-dir>/foreversixty-companion_darwin_universal.app.zip  what the companion updates itself
+#                                                              from (companion/internal/updater/bundle.go)
+#
+# companion.yml's build-mac job runs it on a macOS runner; it runs the same on a Mac by hand.
+#
+# Environment:
+#   MAC_SIGNING_IDENTITY  the codesign identity (a Developer ID Application certificate's
+#                         name or SHA-1). Empty: the app is signed ad hoc, nothing is
+#                         notarized, and the output is for testing only, never for the feed.
+#   MAC_KEYCHAIN          the keychain holding that identity (optional).
+#   NOTARY_KEY_FILE, NOTARY_KEY_ID, NOTARY_ISSUER
+#                         the App Store Connect API key notarytool signs in with (the .p8
+#                         file, its key id, its issuer id). Required with an identity.
+#
+# Exit status: 0 packaged; 1 a tool failed (signing, notarization, the disk image); 64 usage.
+set -euo pipefail
+
+readonly APP_NAME="Forever Sixty"
+readonly BUNDLE_ID=gg.foreversixty.companion
+readonly EXECUTABLE=foreversixty-companion
+readonly ASSET_STEM=foreversixty-companion_darwin_universal
+# Go 1.25, the companion's toolchain, runs on macOS 12 and later.
+readonly MIN_MACOS=12.0
+readonly ICON=companion/internal/icon/assets/seal.icns
+
+die() {
+	echo "package-mac-companion: $*" >&2
+	exit 64
+}
+
+(($# == 3)) || die "usage: tools/package-mac-companion.sh <version> <universal-binary> <out-dir>"
+readonly VERSION=$1 BINARY=$2 OUT=$3
+[[ $VERSION =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || die "'$VERSION' is not a version like 0.3.0"
+[[ -x $BINARY ]] || die "$BINARY is not an executable"
+ROOT=$(cd "$(dirname "$0")/.." && pwd)
+readonly ROOT
+[[ -s $ROOT/$ICON ]] || die "$ICON is missing"
+
+readonly IDENTITY=${MAC_SIGNING_IDENTITY:-}
+if [[ -n $IDENTITY ]]; then
+	[[ -s ${NOTARY_KEY_FILE:-} && -n ${NOTARY_KEY_ID:-} && -n ${NOTARY_ISSUER:-} ]] ||
+		die "a signed build is notarized: set NOTARY_KEY_FILE, NOTARY_KEY_ID and NOTARY_ISSUER"
+fi
+
+work=$(mktemp -d)
+trap 'rm -rf "$work"' EXIT
+readonly APP="$work/$APP_NAME.app"
+
+bundle() {
+	mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
+	cp "$BINARY" "$APP/Contents/MacOS/$EXECUTABLE"
+	cp "$ROOT/$ICON" "$APP/Contents/Resources/seal.icns"
+	# LSUIElement is false: the app has a Dock icon and a menu bar while it runs, and the
+	# seal in the menu bar's status area besides (companion/internal/shell).
+	cat >"$APP/Contents/Info.plist" <<PLIST
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>CFBundleIdentifier</key><string>$BUNDLE_ID</string>
+  <key>CFBundleName</key><string>$APP_NAME</string>
+  <key>CFBundleDisplayName</key><string>$APP_NAME</string>
+  <key>CFBundleExecutable</key><string>$EXECUTABLE</string>
+  <key>CFBundleIconFile</key><string>seal</string>
+  <key>CFBundlePackageType</key><string>APPL</string>
+  <key>CFBundleShortVersionString</key><string>$VERSION</string>
+  <key>CFBundleVersion</key><string>$VERSION</string>
+  <key>LSMinimumSystemVersion</key><string>$MIN_MACOS</string>
+  <key>LSApplicationCategoryType</key><string>public.app-category.games</string>
+  <key>LSUIElement</key><false/>
+  <key>NSHighResolutionCapable</key><true/>
+  <key>NSHumanReadableCopyright</key><string>Commish LLC</string>
+</dict>
+</plist>
+PLIST
+	plutil -lint "$APP/Contents/Info.plist"
+}
+
+codesign_item() { # codesign_item <path>
+	if [[ -z $IDENTITY ]]; then
+		codesign --force --sign - "$1"
+		return
+	fi
+	local keychain=()
+	[[ -n ${MAC_KEYCHAIN:-} ]] && keychain=(--keychain "$MAC_KEYCHAIN")
+	# The ${a[@]+...} form: macOS's own bash 3.2 calls an empty array unbound under set -u.
+	codesign --force --timestamp --options runtime ${keychain[@]+"${keychain[@]}"} --sign "$IDENTITY" "$1"
+}
+
+notarize() { # notarize <file>: submits, waits, and prints Apple's log when it is refused
+	local result id status
+	result=$(xcrun notarytool submit "$1" --key "$NOTARY_KEY_FILE" --key-id "$NOTARY_KEY_ID" \
+		--issuer "$NOTARY_ISSUER" --wait --timeout 30m --output-format json) || true
+	id=$(jq -r '.id // empty' <<<"$result")
+	status=$(jq -r '.status // empty' <<<"$result")
+	echo "notarization of $(basename "$1"): ${status:-no answer} (${id:-no id})"
+	if [[ $status != Accepted ]]; then
+		echo "$result" >&2
+		[[ -n $id ]] && xcrun notarytool log "$id" --key "$NOTARY_KEY_FILE" \
+			--key-id "$NOTARY_KEY_ID" --issuer "$NOTARY_ISSUER" >&2
+		echo "package-mac-companion: Apple did not accept $(basename "$1")" >&2
+		exit 1
+	fi
+}
+
+disk_image() { # disk_image <dmg>: the app beside a link to Applications, to drag it onto
+	local stage=$work/dmg attempt
+	mkdir -p "$stage"
+	ditto "$APP" "$stage/$APP_NAME.app"
+	ln -s /Applications "$stage/Applications"
+	# hdiutil fails now and then with "Resource busy" on a hosted runner; it is retried.
+	for attempt in 1 2 3; do
+		if hdiutil create -volname "$APP_NAME" -srcfolder "$stage" -fs HFS+ \
+			-format UDZO -ov "$1"; then
+			return
+		fi
+		echo "hdiutil failed (attempt $attempt); retrying" >&2
+		sleep $((attempt * 5))
+	done
+	echo "package-mac-companion: could not make the disk image" >&2
+	exit 1
+}
+
+mkdir -p "$OUT"
+readonly ZIP="$OUT/$ASSET_STEM.app.zip" DMG="$OUT/$ASSET_STEM.dmg"
+
+bundle
+codesign_item "$APP"
+codesign --verify --strict --verbose=2 "$APP"
+if [[ -n $IDENTITY ]]; then
+	# The app is notarized and stapled first, so the copy inside the disk image and the
+	# copy in the update zip both open offline.
+	ditto -c -k --keepParent "$APP" "$work/notarize.zip"
+	notarize "$work/notarize.zip"
+	xcrun stapler staple "$APP"
+	xcrun stapler validate "$APP"
+fi
+# --norsrc: no extended attributes or AppleDouble files; the bundle needs none, and the
+# updater unpacks plain files, folders and links.
+ditto -c -k --norsrc --keepParent "$APP" "$ZIP"
+disk_image "$DMG"
+codesign_item "$DMG"
+if [[ -n $IDENTITY ]]; then
+	notarize "$DMG"
+	xcrun stapler staple "$DMG"
+	xcrun stapler validate "$DMG"
+	# What Gatekeeper will say on a player's Mac: both must be accepted as notarized
+	# Developer ID software.
+	spctl --assess --type execute --verbose=2 "$APP"
+	spctl --assess --type open --context context:primary-signature --verbose=2 "$DMG"
+else
+	echo "package-mac-companion: signed ad hoc and not notarized; for testing only"
+fi
+ls -l "$OUT"

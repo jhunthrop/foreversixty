@@ -78,6 +78,45 @@ func (s *Syncer) SyncUser(ctx context.Context, userID int64) error {
 	return s.withAccess(ctx, link, func(access string) error { return s.push(ctx, userID, access) })
 }
 
+// Revoke is the account's deletion: the role connection is told premium false, so Discord
+// takes the Premium role away, then the authorization is revoked at Discord and the stored
+// refresh token deleted. Both halves run even when the first fails; a link Discord had already
+// revoked is simply removed.
+func (s *Syncer) Revoke(ctx context.Context, userID int64) error {
+	ctx, cancel := context.WithTimeout(ctx, syncWithin)
+	defer cancel()
+	link, ok, err := s.Store.Get(ctx, userID)
+	if err != nil || !ok {
+		return err
+	}
+	cleared := s.withAccess(ctx, link, func(access string) error {
+		if err := s.Discord.Push(ctx, access, Connection{Premium: false}); err != nil {
+			return fmt.Errorf("linkedrole: clear %d: %w", userID, err)
+		}
+		return nil
+	})
+	return errors.Join(cleared, s.revokeStored(ctx, userID))
+}
+
+// revokeStored revokes the link's current refresh token (withAccess may have rotated it) and
+// deletes the row.
+func (s *Syncer) revokeStored(ctx context.Context, userID int64) error {
+	link, ok, err := s.Store.Get(ctx, userID)
+	if err != nil || !ok {
+		return err
+	}
+	refresh, err := s.Sealer.Open(link.RefreshBox)
+	if err != nil {
+		return fmt.Errorf("linkedrole: open %d: %w", userID, err)
+	}
+	revokeErr := s.Discord.RevokeToken(ctx, refresh)
+	if revokeErr != nil {
+		revokeErr = fmt.Errorf("linkedrole: revoke %d: %w", userID, revokeErr)
+	}
+	_, delErr := s.Store.DeleteIf(ctx, userID, link.RefreshBox)
+	return errors.Join(revokeErr, delErr)
+}
+
 // withAccess refreshes the link's token, stores the rotated one and runs fn with the access
 // token. A revoked token removes the link (unless a racing sync rotated it) and runs nothing.
 func (s *Syncer) withAccess(ctx context.Context, link Link, fn func(access string) error) error {

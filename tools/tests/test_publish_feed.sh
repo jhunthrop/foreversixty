@@ -68,6 +68,12 @@ assert "each asset carries its site URL" equal "$(jq -r '.assets[0].browser_down
 assert "each asset carries its size and sha256" equal "$(jq -r '.assets[0] | "\(.size) \(.sha256)"' "$manifest")" \
 	"3 $(printf zip | sha256sum | cut -d' ' -f1)"
 
+printf 'dmg' >foreversixty-companion_darwin_universal.dmg
+printf 'sig' >foreversixty-companion_darwin_universal.dmg.minisig
+run companion companion-v0.3.0 foreversixty-companion_darwin_universal.dmg foreversixty-companion_darwin_universal.dmg.minisig
+assert "a Mac disk image publishes ($OUT)" equal "$STATUS" 0
+assert "and is typed as a disk image" contains "$(head -1 "$UPLOADS")" "|application/x-apple-diskimage|"
+
 run addon addon-v2.1.0 ForeverSixty-2.1.0.zip
 assert "an unsigned file is refused" equal "$STATUS" 64
 assert "and says which" contains "$OUT" "ForeverSixty-2.1.0.zip has no ForeverSixty-2.1.0.zip.minisig"

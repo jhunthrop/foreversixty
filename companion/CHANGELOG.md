@@ -1,5 +1,9 @@
 # Companion changelog
 
+## 0.2.37
+
+- A Mac companion: one app for Apple silicon and Intel Macs on macOS 12 or later, signed with Commish LLC's Developer ID and notarized by Apple, shipped as a disk image to drag into Applications. It finds the game in /Applications/World of Warcraft, sits in the menu bar, hides when its window is closed, has the Edit menu that makes Command-V paste a pairing code, keeps the device token in the macOS Keychain, waits for the Mac client to close before it updates the addon, and updates itself by replacing the whole signed app.
+
 ## 0.2.22
 
 - The Windows build is signed by Commish LLC, the company behind Forever Sixty, through Azure Artifact Signing: Windows names that publisher in its prompts, and SmartScreen's "unknown publisher" warning goes with it. The README lists the two platforms that ship, Windows and Linux.

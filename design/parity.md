@@ -25,6 +25,7 @@ The mock library (`design/mocks/ws_lib.py` `REGION`, emitted by `ws_lib` and `ws
 | `inspector` / `inspector-inline` | `Inspector` | The slot detail at the side (from 1760) / in place |
 | `section-<slug>` | `Section` | A section; the slug is its title (`section-what-to-stack`) |
 | `footer-note` | the page (BiS) | The closing one-liner (the guide line) |
+| `dialog` | the page's modal confirm (account: `AccountDeleteDialog`; mock `ws_prims.Dialog`) | A dialog open over the page: its title, body and actions. The scrim behind it is outside every region |
 | `intro` | the page (`Prose` before a document's first heading) | A content page's opening prose: About's text, the roadmap's line and table, the build-unavailable paragraph (design/specs/2026-11-08-pages.md) |
 
 ## What is compared

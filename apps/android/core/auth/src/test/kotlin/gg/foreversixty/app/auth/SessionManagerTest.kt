@@ -1,7 +1,6 @@
 package gg.foreversixty.app.auth
 
 import gg.foreversixty.app.auth.session.AccountActionOutcome
-import gg.foreversixty.app.auth.session.CONFIRMED_DELETION
 import gg.foreversixty.app.auth.session.CharacterSelection
 import gg.foreversixty.app.auth.session.DeletionConsequence
 import gg.foreversixty.app.auth.session.FixtureBrowser
@@ -13,7 +12,6 @@ import gg.foreversixty.app.auth.session.SessionTokens
 import gg.foreversixty.app.auth.session.SignInFailure
 import gg.foreversixty.app.auth.session.SignedOutNotice
 import gg.foreversixty.app.auth.session.me
-import gg.foreversixty.app.model.AccountDeletionRequest
 import gg.foreversixty.app.model.ApiJson
 import gg.foreversixty.app.model.Me
 import gg.foreversixty.app.network.ApiClient
@@ -28,8 +26,11 @@ import gg.foreversixty.app.network.ForeverHttpClient
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.engine.mock.respond
+import io.ktor.client.request.HttpRequestData
 import io.ktor.http.HttpHeaders
+import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
+import io.ktor.http.content.TextContent
 import io.ktor.http.headersOf
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -42,6 +43,7 @@ import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
@@ -191,28 +193,62 @@ class SessionManagerTest {
     }
 
     @Test
-    fun `deleting the account signs out with the date the data goes`() = runTest {
+    fun `deleting the account signs out with the deleted line`() = runTest {
         val (session, tokens) = manager(token = "fsd_x")
         session.start()
-        assertEquals(AccountActionOutcome.Done, session.deleteAccount())
-        val expected = SignedOutNotice.AccountDeleted(Instant.parse("2026-11-29T21:41:00Z"))
-        assertEquals(SessionPhase.SignedOut(expected), session.phase.value)
+        assertEquals(AccountActionOutcome.Done, session.deleteAccount("Yell#1604"))
+        assertEquals(SessionPhase.SignedOut(SignedOutNotice.AccountDeleted), session.phase.value)
         assertNull(tokens.bearerToken())
     }
 
     @Test
-    fun `the deletion sends the confirmation phrase`() {
-        assertEquals(
-            """{"confirm":"delete my account"}""",
-            ApiJson.encodeToString(AccountDeletionRequest.serializer(), CONFIRMED_DELETION),
-        )
+    fun `the deletion sends what the person typed`() = runTest {
+        val seen = mutableListOf<HttpRequestData>()
+        val engine = MockEngine { request ->
+            seen += request
+            respond(fixture("me.delete.json"), HttpStatusCode.OK, headersOf(HttpHeaders.ContentType, "application/json"))
+        }
+        val (session, _) = manager(token = "fsd_x", engine = engine)
+        session.start()
+        assertEquals(AccountActionOutcome.Done, session.deleteAccount(" yell#1604 "))
+        val request = seen.single { it.method == HttpMethod.Delete && it.url.encodedPath == "/v1/me" }
+        assertEquals("""{"confirm":" yell#1604 "}""", (request.body as TextContent).text)
     }
 
     @Test
-    fun `a refused deletion keeps the session`() = runTest {
+    fun `a confirm mismatch keeps the session and says so under the field`() = runTest {
+        val engine = answering(HttpStatusCode.BadRequest, fixture("me.delete.error-confirm-mismatch.json"))
+        val (session, _) = manager(token = "fsd_x", engine = engine)
+        session.start()
+        assertEquals(AccountActionOutcome.ConfirmMismatch, session.deleteAccount("Yell"))
+        assertTrue(session.phase.value is SessionPhase.SignedIn)
+    }
+
+    @Test
+    fun `a guild obligation passes the API's message through`() = runTest {
+        val body = fixture("me.delete.error-guild-obligation.json")
+        val message = requireNotNull(ApiJson.parseToJsonElement(body).jsonObject["error"]?.jsonObject?.get("message")).jsonPrimitive.content
+        val (session, _) = manager(token = "fsd_x", engine = answering(HttpStatusCode.Conflict, body))
+        session.start()
+        assertEquals(AccountActionOutcome.Refused(message), session.deleteAccount("delete"))
+        assertTrue(message.contains("Olympus XXVII"))
+        assertTrue(session.phase.value is SessionPhase.SignedIn)
+    }
+
+    @Test
+    fun `billing unavailable passes the API's message through`() = runTest {
+        val body = fixture("me.delete.error-billing-unavailable.json")
+        val (session, _) = manager(token = "fsd_x", engine = answering(HttpStatusCode.ServiceUnavailable, body))
+        session.start()
+        val outcome = session.deleteAccount("delete")
+        assertTrue(outcome is AccountActionOutcome.Refused && outcome.message.startsWith("Could not cancel your subscription"))
+    }
+
+    @Test
+    fun `a broken body fails with the catalog line`() = runTest {
         val (session, _) = manager(token = "fsd_x", engine = answering(HttpStatusCode.BadRequest, fixture("me.delete.error-invalid.json")))
         session.start()
-        assertEquals(AccountActionOutcome.Failed, session.deleteAccount())
+        assertEquals(AccountActionOutcome.Failed, session.deleteAccount("delete"))
         assertTrue(session.phase.value is SessionPhase.SignedIn)
     }
 
@@ -220,7 +256,7 @@ class SessionManagerTest {
     fun `403 browser_session_required opens the site instead of failing`() = runTest {
         val body = """{"ok":false,"data":null,"error":{"code":"browser_session_required","message":"this can only be done on foreversixty.gg in a browser"},"request_id":"r"}"""
         val (session, _) = manager(token = "fsd_x", engine = answering(HttpStatusCode.Forbidden, body))
-        assertEquals(AccountActionOutcome.NeedsBrowser, session.deleteAccount())
+        assertEquals(AccountActionOutcome.NeedsBrowser, session.deleteAccount("delete"))
         assertEquals(AccountActionOutcome.NeedsBrowser, session.revoke("dvc_3Hm7pLa9"))
     }
 
@@ -257,8 +293,8 @@ class SessionManagerTest {
     }
 
     @Test
-    fun `a guild plan the account pays for ends with its seats`() {
-        assertEquals(listOf(DeletionConsequence.GuildPlan("OLYMPUS XXVII")), DeletionConsequence.of(meOf("me.guild-payer.json")))
+    fun `a guild plan the account pays for is not a line, the server refuses it`() {
+        assertTrue(DeletionConsequence.of(meOf("me.guild-payer.json")).isEmpty())
     }
 
     @Test

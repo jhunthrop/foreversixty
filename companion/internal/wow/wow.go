@@ -54,7 +54,16 @@ type Install struct {
 // player to pick a folder.
 func Candidates() []string {
 	home, _ := os.UserHomeDir()
-	switch runtime.GOOS {
+	return candidatesFor(runtime.GOOS, home, os.Getenv)
+}
+
+// candidatesFor is Candidates for one system, home folder and
+// environment, so every system's list is testable on any of them. The
+// Battle.net launcher installs into /Applications on a Mac unless the
+// player chose their own Applications folder; a Mac flavour folder holds
+// WTF and Logs beside the client's .app exactly as on Windows.
+func candidatesFor(goos, home string, getenv func(string) string) []string {
+	switch goos {
 	case "darwin":
 		return []string{
 			"/Applications/World of Warcraft",
@@ -63,7 +72,7 @@ func Candidates() []string {
 	case "windows":
 		var out []string
 		for _, env := range []string{"ProgramFiles(x86)", "ProgramFiles"} {
-			if v := os.Getenv(env); v != "" {
+			if v := getenv(env); v != "" {
 				out = append(out, filepath.Join(v, "World of Warcraft"))
 			}
 		}
@@ -76,6 +85,24 @@ func Candidates() []string {
 				"Program Files (x86)", "World of Warcraft"),
 		}
 	}
+}
+
+// Detect scans every candidate path.
+func Detect() []Install { return detectIn(Candidates()) }
+
+// detectIn is Detect over the given roots.
+func detectIn(roots []string) []Install {
+	var out []Install
+	seen := map[string]bool{}
+	for _, root := range roots {
+		for _, in := range Scan(root) {
+			if !seen[in.Path] {
+				seen[in.Path] = true
+				out = append(out, in)
+			}
+		}
+	}
+	return out
 }
 
 // isInstall reports whether a directory is a flavour directory. WTF is
@@ -127,21 +154,6 @@ func scanAll(root string) []Install {
 		}
 	}
 	sort.Slice(out, func(i, j int) bool { return out[i].Path < out[j].Path })
-	return out
-}
-
-// Detect scans every candidate path.
-func Detect() []Install {
-	var out []Install
-	seen := map[string]bool{}
-	for _, root := range Candidates() {
-		for _, in := range Scan(root) {
-			if !seen[in.Path] {
-				seen[in.Path] = true
-				out = append(out, in)
-			}
-		}
-	}
 	return out
 }
 

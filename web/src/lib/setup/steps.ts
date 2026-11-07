@@ -15,6 +15,7 @@ import {
   newestAddonCharacter,
   signInLine,
 } from './progress';
+import { isMacPlatform } from './downloads';
 import type { VisitorPlatform } from './visitor-platform';
 
 /** `ok` done, `next` the first step not done (the page's one primary), `todo` optional or later,
@@ -100,18 +101,22 @@ function downloadLabel(platform: string): string {
   return addonCopy.setupCompanionDownload(platform);
 }
 
-/** Row 3 not done: the download on Windows, the export route on a Mac (U10). */
-function companionTodo(
-  platform: VisitorPlatform,
-  text: string,
-  downloadPlatform: string,
-  platforms: readonly string[],
-): StepRow {
-  if (platform === 'mac') {
+/** The platform word of the build this visitor downloads, or null on a Mac without a Mac build. */
+function downloadPlatform(platform: VisitorPlatform, platforms: readonly string[]): string | null {
+  const mac = platform === 'mac';
+  const own = platforms.find((name) => isMacPlatform(name) === mac);
+  if (own !== undefined) return own;
+  return mac ? null : (platforms[0] ?? 'Windows');
+}
+
+/** Row 3 not done: the visitor's own download, or on a Mac without a Mac build the export route (U10). */
+function companionTodo(platform: VisitorPlatform, text: string, platforms: readonly string[]): StepRow {
+  const download = downloadPlatform(platform, platforms);
+  if (download === null) {
     const macLine = companionPlatformsLine(platforms) ?? text;
     return row(3, 'todo', [line(macLine)], act('paste', addonCopy.setupTryExport, 'link'));
   }
-  return row(3, 'todo', [line(text)], act('download', downloadLabel(downloadPlatform)));
+  return row(3, 'todo', [line(text)], act('download', downloadLabel(download)));
 }
 
 function row(n: 1 | 2 | 3, mark: StepMark, lines: StepLineOut[], action: StepAction | null): StepRow {
@@ -137,12 +142,11 @@ function primary(action: StepAction): StepAction {
 
 /** Signed out, failed or loading: no account to read. */
 function anonymousRows(input: SetupInputs, platforms: readonly string[]): StepRow[] {
-  const download = platforms[0] ?? 'Windows';
   const addon =
     input.pointer === true
       ? row(2, 'ok', [line(addonCopy.setupAddonDoneLine, 'ok')], null)
       : row(2, 'todo', [line(addonCopy.setupAddonNote)], CURSEFORGE);
-  const companion = companionTodo(input.platform, addonCopy.setupCompanionNote, download, platforms);
+  const companion = companionTodo(input.platform, addonCopy.setupCompanionNote, platforms);
   if (input.session === 'loading') {
     return [
       row(1, 'ok', [SKELETON], null),
@@ -202,13 +206,12 @@ function signInRow(me: Me, input: SetupInputs, now: Date): StepRow {
 }
 
 function companionRow(me: Me, input: SetupInputs, platforms: readonly string[], now: Date): StepRow {
-  const download = platforms[0] ?? 'Windows';
   const status = companionLine(me, input.devices, now);
   if (status?.done === true) return row(3, 'ok', [line(status.text, 'ok')], null);
   if (input.pairingCode != null && input.pairingCode !== '') {
     return row(3, 'busy', [line(pairingCopy.waiting, 'muted', { code: input.pairingCode })], null);
   }
-  return companionTodo(input.platform, status?.text ?? addonCopy.setupCompanionNote, download, platforms);
+  return companionTodo(input.platform, status?.text ?? addonCopy.setupCompanionNote, platforms);
 }
 
 /** Every row of the plate for one state. `platforms` is companion.json's download platforms. */

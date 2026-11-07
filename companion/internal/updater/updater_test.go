@@ -118,8 +118,11 @@ func TestNewerComparesDottedVersions(t *testing.T) {
 }
 
 func TestAssetNamesCarryThePlatform(t *testing.T) {
-	if got := AssetName("darwin", "arm64"); got != "foreversixty-companion_darwin_arm64" {
-		t.Errorf("darwin = %q", got)
+	// One universal Mac build serves both architectures, as the zipped app.
+	for _, arch := range []string{"arm64", "amd64"} {
+		if got := AssetName("darwin", arch); got != "foreversixty-companion_darwin_universal.app.zip" {
+			t.Errorf("darwin/%s = %q", arch, got)
+		}
 	}
 	if got := AssetName("windows", "amd64"); got != "foreversixty-companion_windows_amd64.exe" {
 		t.Errorf("windows = %q", got)

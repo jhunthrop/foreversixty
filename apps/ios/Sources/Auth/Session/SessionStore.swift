@@ -4,20 +4,31 @@ import Networking
 import Observation
 
 /// What an account action came to. `needsBrowser` is `403 browser_session_required`: the act
-/// is done on foreversixty.gg, so the view opens the site and never retries.
+/// is done on foreversixty.gg, so the view opens the site and never retries. `confirmMismatch`
+/// is `400 confirm_mismatch` (the typed confirmation was refused); `refused` carries the API's
+/// own sentence for a 409, 429 or 503, which the view shows verbatim.
 public enum AccountActionOutcome: Equatable, Sendable {
     case done
     case failed
     case needsBrowser
+    case confirmMismatch
+    case refused(message: String)
+
+    /// The statuses whose message names the reason and the fix (api/openapi.yaml, deleteAccount).
+    static let verbatimStatuses: Set<Int> = [409, 429, 503]
+    static let confirmMismatchCode = "confirm_mismatch"
 
     init(_ error: APIError) {
-        self = error.needsBrowserSession ? .needsBrowser : .failed
+        if error.needsBrowserSession {
+            self = .needsBrowser
+        } else if error.code == Self.confirmMismatchCode {
+            self = .confirmMismatch
+        } else if case let .server(status, body, _) = error, Self.verbatimStatuses.contains(status) {
+            self = .refused(message: body.message)
+        } else {
+            self = .failed
+        }
     }
-}
-
-public extension AccountDeletionRequest {
-    /// The body `DELETE /v1/me` takes after the person confirmed (api/openapi.yaml).
-    static let confirmed = AccountDeletionRequest(confirm: "delete my account")
 }
 
 /// The account for the whole app: the phase (signed out, signing in, importing, signed in), the
@@ -134,15 +145,15 @@ public final class SessionStore {
         }
     }
 
-    /// `DELETE /v1/me` after the confirmation. On 202 the server has signed out every device,
-    /// so the app forgets its token without calling logout and shows the date the data goes.
-    public func deleteAccount() async -> AccountActionOutcome {
+    /// `DELETE /v1/me` with what the person typed (`DeletionConfirmation`). On 200 the account is
+    /// gone and every device signed out, so the app forgets its token without calling logout.
+    public func deleteAccount(confirm typed: String) async -> AccountActionOutcome {
         do throws(APIError) {
-            let deletion = try await client.send(.deleteAccount(.confirmed))
+            _ = try await client.send(.deleteAccount(AccountDeletionRequest(confirm: typed)))
             endingOnPurpose = true
             defer { endingOnPurpose = false }
             try? tokens.clear()
-            end(with: .accountDeleted(completeBy: deletion.completeBy))
+            end(with: .accountDeleted)
             return .done
         } catch {
             return AccountActionOutcome(error)

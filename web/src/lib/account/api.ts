@@ -469,6 +469,28 @@ export async function signOut(apiBase: string = API_BASE_URL): Promise<void> {
   forgetSignedInState();
 }
 
+/** DELETE /v1/me's answer (schema AccountDeletion): when the account went. */
+export interface AccountDeletion {
+  deleted_at: string;
+}
+
+/**
+ * Deletes the account (DELETE /v1/me, operation deleteAccount). `confirm` is what the person
+ * typed: the BattleTag or "delete". On 200 the server has deleted the account and cleared the
+ * session cookies, so everything the browser kept for it is forgotten here, as sign out does. A
+ * refusal throws an AccountError carrying the API's own message and code (confirm_mismatch,
+ * guild_obligation, staff_account, billing_unavailable; 401 when the session is already gone),
+ * and nothing is forgotten.
+ */
+export async function deleteAccount(
+  confirm: string,
+  apiBase: string = API_BASE_URL,
+): Promise<AccountDeletion> {
+  const data = await call<AccountDeletion>('/v1/me', apiBase, { method: 'DELETE', body: { confirm } });
+  forgetSignedInState();
+  return { deleted_at: data?.deleted_at ?? '' };
+}
+
 /** PATCH /v1/me; the answer is the new `/v1/me`, normalized and cached. */
 async function patchMe(body: Record<string, unknown>, apiBase: string): Promise<void> {
   const me = normalizeMeBilling(await call<Me>('/v1/me', apiBase, { method: 'PATCH', body }));

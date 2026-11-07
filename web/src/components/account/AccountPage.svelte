@@ -1,7 +1,7 @@
 <!-- web/src/components/account/AccountPage.svelte -->
 <!-- /account (premium spec 2026-11-08 sections 7, 7A) as one island over one `/v1/me` read: the head
      (title, BattleTag, Sign out, the main character as the answer), then a split page. Main: the
-     Characters Plate, the Plan, the Guilds; rail: Devices, Discord, You. Signed out it is a form
+     Characters Plate, the Plan, the Guilds; rail: Devices, Discord, You, Delete account. Signed out it is a form
      page with the Battle.net button; a failed read is a Plate with Try again; while it loads, the
      ready page's shape (AccountLoading). The page owns the account and every call; the sections
      draw it and report what the viewer chose. -->
@@ -9,7 +9,9 @@
   import {
     ACCOUNT_FAILED,
     companionsOf,
+    deleteAccount,
     fetchMeOnce,
+    forgetSignedInState,
     listDevices,
     pairDevice,
     refetchMe,
@@ -24,6 +26,8 @@
   } from '../../lib/account/api';
   import { accountPageCopy } from '../../lib/account/account-page-copy';
   import { characterListCopy } from '../../lib/account/character-list-copy';
+  import { deleteOutcome } from '../../lib/account/delete-confirm';
+  import { DELETED_ARRIVAL_HREF } from '../../lib/account/deleted-arrival';
   import { selectedCharacter } from '../../lib/account/hero-character';
   import {
     clearAccountReserve,
@@ -57,6 +61,7 @@
   import PageHeader from '../ui/PageHeader.svelte';
   import Plate from '../ui/Plate.svelte';
   import Section from '../ui/Section.svelte';
+  import AccountDelete from './AccountDelete.svelte';
   import AccountDevices from './AccountDevices.svelte';
   import AccountDiscord from './AccountDiscord.svelte';
   import AccountGuildBlock from './AccountGuildBlock.svelte';
@@ -251,12 +256,46 @@
   const onSignOut = (): void =>
     void run('head', async () => {
       await signOut();
-      // The next account may have a different page: forget the heights, and stop pagehide from
-      // storing them again on the way out.
-      stopReserveWrites?.();
-      clearAccountReserve();
+      forgetReserve();
       window.location.assign('/');
     });
+
+  /** The next account may have a different page: forget the heights, and stop pagehide from
+   *  storing them again on the way out. */
+  function forgetReserve(): void {
+    stopReserveWrites?.();
+    clearAccountReserve();
+  }
+
+  // ---------------------------------------------------------------- delete the account
+  let deleteOpen = $state(false);
+  let deleteBusy = $state(false);
+  let deleteMismatch = $state(false);
+  let deleteRefusal = $state('');
+
+  const onDeleteOpen = (): void => {
+    deleteMismatch = false;
+    deleteRefusal = '';
+    deleteOpen = true;
+  };
+
+  async function onDeleteConfirm(typed: string): Promise<void> {
+    deleteBusy = true;
+    deleteMismatch = false;
+    deleteRefusal = '';
+    const outcome = await deleteOutcome(() => deleteAccount(typed), ACCOUNT_FAILED);
+    if (outcome.kind === 'deleted' || outcome.kind === 'signed-out') {
+      // Gone either way: deleteAccount forgot the session's caches on a 200; a 401 means the
+      // session had already ended, so the browser forgets it here, as sign out does.
+      if (outcome.kind === 'signed-out') forgetSignedInState();
+      forgetReserve();
+      window.location.assign(outcome.kind === 'deleted' ? DELETED_ARRIVAL_HREF : '/account');
+      return;
+    }
+    deleteBusy = false;
+    if (outcome.kind === 'mismatch') deleteMismatch = true;
+    else deleteRefusal = outcome.message;
+  }
 
   async function onManageBilling(): Promise<void> {
     billingBusy = true;
@@ -448,6 +487,16 @@
         />
         <AccountDiscord me={me!} {now} />
         <AccountYou anonymize={me!.user.anonymize} {busy} error={errorIn('you')} {onAnonymize} />
+        <AccountDelete
+          battletag={me!.user.battletag}
+          open={deleteOpen}
+          busy={deleteBusy}
+          mismatch={deleteMismatch}
+          refusal={deleteRefusal}
+          onopen={onDeleteOpen}
+          onclose={() => (deleteOpen = false)}
+          onconfirm={(typed) => void onDeleteConfirm(typed)}
+        />
       {/snippet}
     </Page>
   {/if}

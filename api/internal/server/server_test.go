@@ -11,6 +11,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/jhunthrop/foreversixty/api/internal/account"
 	"github.com/jhunthrop/foreversixty/api/internal/builds"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
 	"github.com/jhunthrop/foreversixty/api/internal/phase"
@@ -183,5 +184,15 @@ func TestDeviceTrafficIsBudgetedPerDeviceNotAgainstTheBrowserOnTheSameIP(t *test
 	}
 	if code := get("fsd_serverdevice2"); code != http.StatusOK {
 		t.Fatalf("second device code = %d, want 200", code)
+	}
+}
+
+func TestAccountDeletionIsMountedAndRefusesASignedOutCaller(t *testing.T) {
+	h := NewRouter(Deps{Version: "test-1", Account: &account.Handler{Service: &account.Service{}}})
+	req := httptest.NewRequest(http.MethodDelete, "/v1/me", strings.NewReader(`{"confirm":"delete"}`))
+	rec := httptest.NewRecorder()
+	h.ServeHTTP(rec, req)
+	if rec.Code != http.StatusUnauthorized || !strings.Contains(rec.Body.String(), `"unauthorized"`) {
+		t.Fatalf("status = %d, body = %s; want 401 unauthorized", rec.Code, rec.Body.String())
 	}
 }

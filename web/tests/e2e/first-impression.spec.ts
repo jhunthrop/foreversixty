@@ -9,6 +9,8 @@ import { expect, test } from './support/test';
 import { CHARACTER_PATH, CHARACTER_URL, routeCharacterSearch } from './support/character-fixture';
 import { expectFixtureNotFound } from './support/character-not-found';
 import { routeSampleReportMeta } from './support/logs-sample-fixture';
+import { COMPANION_PLATFORMS } from '../../src/lib/setup/downloads';
+import { companionPlatformsLine } from '../../src/lib/setup/progress';
 
 const SHOTS = process.env.W8_SHOTS ?? 'test-results/w8';
 const SIZES = [
@@ -69,9 +71,10 @@ for (const size of SIZES) {
       await expect(page.getByTestId('setup-companion-pair')).toContainText(
         'Sign in with Battle.net inside the companion; it connects itself.',
       );
-      await expect(page.getByTestId('setup-companion-platforms')).toHaveText(
-        'Windows only; Mac is not supported yet. On a Mac, paste an export instead.',
-      );
+      // "Windows only; Mac is not supported yet..." until companion.json lists the Mac build.
+      const platformsLine = companionPlatformsLine(COMPANION_PLATFORMS);
+      if (platformsLine === null) await expect(page.getByTestId('setup-companion-platforms')).toHaveCount(0);
+      else await expect(page.getByTestId('setup-companion-platforms')).toHaveText(platformsLine);
       await page.getByTestId('setup-companion-capture').scrollIntoViewIfNeeded();
       await expect(page.getByTestId('setup-companion-capture').locator('img')).toBeVisible();
       await page.screenshot({ path: join(SHOTS, `w8-setup-${size.name}.png`), fullPage: true });

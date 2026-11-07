@@ -6,6 +6,7 @@
 package updater
 
 import (
+	"bytes"
 	"context"
 	"errors"
 	"fmt"
@@ -92,10 +93,15 @@ func New(o Options) *Updater {
 	return &Updater{o: o, feed: Feed{Base: o.FeedBase, HTTP: o.HTTP}}
 }
 
-// AssetName is what the release workflow calls the binary for one
+// AssetName is what the release workflow calls the build for one
 // platform. The version is not in the name, so the updater can ask
-// for it without knowing the release first.
+// for it without knowing the release first. macOS ships one universal
+// build for both architectures, as the signed app bundle zipped
+// (bundle.go), because a signed bundle is only ever replaced whole.
 func AssetName(goos, goarch string) string {
+	if goos == "darwin" {
+		return "foreversixty-companion_darwin_universal" + BundleAssetSuffix
+	}
 	name := fmt.Sprintf("foreversixty-companion_%s_%s", goos, goarch)
 	if goos == "windows" {
 		name += ".exe"
@@ -259,7 +265,8 @@ func (u *Updater) Poll(ctx context.Context, now time.Time) (bool, error) {
 	return u.Stage(ctx, rel)
 }
 
-// ApplyPending swaps a verified download over the running executable
+// ApplyPending swaps a verified download over the running executable,
+// or over the running app bundle on macOS (bundle.go),
 // and reports whether it did. It runs at startup, before anything
 // else, because Windows will not let a running binary be replaced.
 func ApplyPending(dir, publicKey, exe string) (bool, error) {
@@ -282,6 +289,31 @@ func ApplyPending(dir, publicKey, exe string) (bool, error) {
 		return false, err
 	}
 
+	bundle := BundleRoot(exe)
+	isBundle := bytes.HasPrefix(body, zipMagic)
+	switch {
+	case bundle != "" && isBundle:
+		if err := applyBundle(body, bundle, exe); err != nil {
+			return false, err
+		}
+		clearPending(dir)
+		return true, nil
+	case isBundle:
+		clearPending(dir)
+		return false, errors.New("the staged update is an app bundle, but this companion is not running from one")
+	case bundle != "":
+		clearPending(dir)
+		return false, fmt.Errorf("the staged update is not an app bundle, but this companion runs from %s", bundle)
+	}
+	if err := applyBinary(body, exe); err != nil {
+		return false, err
+	}
+	clearPending(dir)
+	return true, nil
+}
+
+// applyBinary swaps the verified binary in body over the one at exe.
+func applyBinary(body []byte, exe string) error {
 	// Stage the verified bytes as a sibling of exe first, so the swap
 	// below is two same-directory renames rather than a write in
 	// place: Windows will not let a running binary be replaced, but
@@ -290,7 +322,7 @@ func ApplyPending(dir, publicKey, exe string) (bool, error) {
 	// instant, unlike a full write.
 	tmp, err := os.CreateTemp(filepath.Dir(exe), filepath.Base(exe)+".update-*")
 	if err != nil {
-		return false, fmt.Errorf("stage the new binary next to the running one: %w", err)
+		return fmt.Errorf("stage the new binary next to the running one: %w", err)
 	}
 	tmpPath := tmp.Name()
 	moved := false
@@ -301,13 +333,13 @@ func ApplyPending(dir, publicKey, exe string) (bool, error) {
 	}()
 	if _, err := tmp.Write(body); err != nil {
 		tmp.Close()
-		return false, fmt.Errorf("write the new binary: %w", err)
+		return fmt.Errorf("write the new binary: %w", err)
 	}
 	if err := tmp.Close(); err != nil {
-		return false, fmt.Errorf("write the new binary: %w", err)
+		return fmt.Errorf("write the new binary: %w", err)
 	}
 	if err := os.Chmod(tmpPath, 0o755); err != nil {
-		return false, fmt.Errorf("make the new binary executable: %w", err)
+		return fmt.Errorf("make the new binary executable: %w", err)
 	}
 
 	// Beside exe, not in the update directory: the install location
@@ -317,20 +349,19 @@ func ApplyPending(dir, publicKey, exe string) (bool, error) {
 	previous := exe + ".previous"
 	os.Remove(previous)
 	if err := rename(exe, previous); err != nil {
-		return false, fmt.Errorf("move the running binary aside: %w", err)
+		return fmt.Errorf("move the running binary aside: %w", err)
 	}
 	if err := rename(tmpPath, exe); err != nil {
 		// The target is free now, so this should be rare, but leaving
 		// nothing at exe is worse than a stale binary: restore it, and
 		// report a restore failure rather than swallow it.
 		if restoreErr := rename(previous, exe); restoreErr != nil {
-			return false, fmt.Errorf("swap in the new binary: %w; restoring the previous binary also failed: %w", err, restoreErr)
+			return fmt.Errorf("swap in the new binary: %w; restoring the previous binary also failed: %w", err, restoreErr)
 		}
-		return false, fmt.Errorf("swap in the new binary: %w", err)
+		return fmt.Errorf("swap in the new binary: %w", err)
 	}
 	moved = true
-	clearPending(dir)
-	return true, nil
+	return nil
 }
 
 // rename is os.Rename; a test replaces it to make one half of the swap fail.

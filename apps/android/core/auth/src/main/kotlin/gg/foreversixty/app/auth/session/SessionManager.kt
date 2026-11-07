@@ -18,23 +18,38 @@ import kotlinx.coroutines.launch
 import java.time.Instant
 
 /**
- * What an account action came to. [NeedsBrowser] is `403 browser_session_required`: the act is
- * done on foreversixty.gg, so the view opens the site and never retries.
+ * What an account action came to (iOS `AccountActionOutcome`). [NeedsBrowser] is
+ * `403 browser_session_required`: the act is done on foreversixty.gg, so the view opens the site
+ * and never retries. [ConfirmMismatch] is `400 confirm_mismatch` (the typed confirmation was
+ * refused); [Refused] carries the API's own sentence for a 409, 429 or 503, shown verbatim.
  */
-enum class AccountActionOutcome {
-    Done,
-    Failed,
-    NeedsBrowser,
-    ;
+sealed interface AccountActionOutcome {
+    data object Done : AccountActionOutcome
 
-    internal companion object {
-        fun of(error: ApiError): AccountActionOutcome =
-            if ((error as? ApiError.Server)?.needsBrowserSession == true) NeedsBrowser else Failed
+    data object Failed : AccountActionOutcome
+
+    data object NeedsBrowser : AccountActionOutcome
+
+    data object ConfirmMismatch : AccountActionOutcome
+
+    data class Refused(val message: String) : AccountActionOutcome
+
+    companion object {
+        /** The statuses whose message names the reason and the fix (api/openapi.yaml, deleteAccount). */
+        internal val VERBATIM_STATUSES = setOf(409, 429, 503)
+        internal const val CONFIRM_MISMATCH = "confirm_mismatch"
+
+        internal fun of(error: ApiError): AccountActionOutcome {
+            val server = error as? ApiError.Server ?: return Failed
+            return when {
+                server.needsBrowserSession -> NeedsBrowser
+                server.code == CONFIRM_MISMATCH -> ConfirmMismatch
+                server.status in VERBATIM_STATUSES -> Refused(server.message)
+                else -> Failed
+            }
+        }
     }
 }
-
-/** The body `DELETE /v1/me` takes after the person confirmed (api/openapi.yaml). */
-val CONFIRMED_DELETION = AccountDeletionRequest(confirm = "delete my account")
 
 /**
  * The account for the whole app (iOS `SessionStore`): the phase, the current character, and the
@@ -146,16 +161,15 @@ class SessionManager(
     }
 
     /**
-     * `DELETE /v1/me` after the confirmation. On 202 the server has signed out every device, so
-     * the app forgets its token without calling logout and shows the date the data goes.
+     * `DELETE /v1/me` with what the person typed ([DeletionConfirmation]). On 200 the account is
+     * gone and every device signed out, so the app forgets its token without calling logout.
      */
-    suspend fun deleteAccount(): AccountActionOutcome =
-        when (val result = client.send(ApiEndpoints.deleteAccount(CONFIRMED_DELETION))) {
+    suspend fun deleteAccount(confirm: String): AccountActionOutcome =
+        when (val result = client.send(ApiEndpoints.deleteAccount(AccountDeletionRequest(confirm = confirm)))) {
             is ApiResult.Success -> {
-                val completeBy = runCatching { Instant.parse(result.data.completeBy) }.getOrNull()
                 endingOnPurpose = true
                 try {
-                    end(completeBy?.let { SignedOutNotice.AccountDeleted(it) })
+                    end(SignedOutNotice.AccountDeleted)
                 } finally {
                     endingOnPurpose = false
                 }

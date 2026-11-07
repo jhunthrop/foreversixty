@@ -8,7 +8,7 @@ on:
     branches: [main, 'land/**']
     tags: ['companion-v*']
   pull_request:
-    paths: ['companion/**', 'logs/**', 'docs/contracts/**', '.github/workflows/companion.yml']
+    paths: ['companion/**', 'logs/**', 'docs/contracts/**', '.github/workflows/companion.yml', 'tools/package-mac-companion.sh']
   workflow_dispatch:
     inputs:
       release:
@@ -61,7 +61,7 @@ jobs:
           fi
           if [ -n "$BEFORE" ] && git cat-file -e "$BEFORE" 2>/dev/null \
              && ! git diff --name-only "$BEFORE" "$GITHUB_SHA" \
-                  | grep -qE '^(companion/|logs/|docs/contracts/|\.github/workflows/companion\.yml)'; then
+                  | grep -qE '^(companion/|logs/|docs/contracts/|\.github/workflows/companion\.yml|tools/package-mac-companion\.sh)'; then
             echo "companion=false" >> "$GITHUB_OUTPUT"
             echo "nothing the companion is built from changed; the test job is skipped"
           else
@@ -181,7 +181,7 @@ jobs:
             changed=true
           elif [ -n "$last" ]; then
             if git diff --name-only "$last" "$GITHUB_SHA" \
-                | grep -qE '^(companion/|logs/|\.github/workflows/companion\.yml)'; then
+                | grep -qE '^(companion/|logs/|\.github/workflows/companion\.yml|tools/package-mac-companion\.sh)'; then
               changed=true
             fi
           else
@@ -211,17 +211,10 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          # macOS is not supported at launch (owner, 2026-10-15: "we won't
-          # support mac on launch"), and a macOS runner bills at ten times
-          # the Linux rate, so the two darwin targets are out of the matrix
-          # until it is. To bring them back:
-          #   - { runner: macos-14, goos: darwin, goarch: arm64 }
-          #   - { runner: macos-14, goos: darwin, goarch: amd64, cgoarch: '-arch x86_64 -mmacosx-version-min=11.0' }
-          # (Intel macOS is cross-compiled from the arm64 runner: Xcode's
-          # clang is a universal compiler, so -arch x86_64 is all it needs,
-          # and GitHub's Intel runners are retired.)
-          - { runner: windows-latest, goos: windows, goarch: amd64, cgoarch: '' }
-          - { runner: ubuntu-22.04, goos: linux, goarch: amd64, cgoarch: '' }
+          # macOS is its own job (build-mac below): one universal app, signed,
+          # notarized and packaged, which shares little with these steps.
+          - { runner: windows-latest, goos: windows, goarch: amd64 }
+          - { runner: ubuntu-22.04, goos: linux, goarch: amd64 }
     runs-on: ${{ matrix.runner }}
     timeout-minutes: 45
     # The signing environment carries the federated credential Azure trusts
@@ -233,12 +226,6 @@ jobs:
     defaults: { run: { shell: bash, working-directory: companion } }
     env:
       TAG: ${{ needs.version.outputs.tag }}
-      APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
-      APPLE_CERTIFICATE_P12: ${{ secrets.APPLE_CERTIFICATE_P12 }}
-      APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
-      APPLE_ID: ${{ secrets.APPLE_ID }}
-      APPLE_APP_PASSWORD: ${{ secrets.APPLE_APP_PASSWORD }}
-      APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
       MINISIGN_PUBLIC_KEY: ${{ vars.MINISIGN_PUBLIC_KEY }}
     steps:
       - uses: actions/checkout@v4
@@ -275,16 +262,11 @@ jobs:
           ls cmd/foreversixty-companion/*.syso
 
       - name: Build
-        env:
-          CGOARCH: ${{ matrix.cgoarch }}
         run: |
           version="${TAG#companion-v}"
           name="foreversixty-companion_${{ matrix.goos }}_${{ matrix.goarch }}"
           if [ "${{ matrix.goos }}" = "windows" ]; then name="${name}.exe"; fi
           mkdir -p dist
-          if [ -n "$CGOARCH" ]; then
-            export CGO_CFLAGS="$CGOARCH" CGO_CXXFLAGS="$CGOARCH" CGO_LDFLAGS="$CGOARCH"
-          fi
           ldflags="-s -w"
           ldflags="$ldflags -X github.com/jhunthrop/foreversixty/companion/internal/updater.Version=${version}"
           ldflags="$ldflags -X github.com/jhunthrop/foreversixty/companion/internal/updater.PublicKey=${MINISIGN_PUBLIC_KEY}"
@@ -300,75 +282,10 @@ jobs:
           echo "ASSET=${name}" >> "$GITHUB_ENV"
 
       - name: Smoke test the binary
-        # Every target but Intel macOS runs natively on its runner;
-        # that one is cross-compiled, and Rosetta runs it anyway. The
-        # Windows build has no console, so this checks that it starts
-        # and exits cleanly; the version it prints goes nowhere.
+        # Every target runs natively on its runner. The Windows build has
+        # no console, so this checks that it starts and exits cleanly; the
+        # version it prints goes nowhere.
         run: ./dist/"${ASSET}" -version
-
-      - name: Sign and notarize for macOS
-        if: matrix.goos == 'darwin' && env.APPLE_SIGNING_IDENTITY != ''
-        run: |
-          keychain="$RUNNER_TEMP/signing.keychain-db"
-          security create-keychain -p "$APPLE_CERTIFICATE_PASSWORD" "$keychain"
-          security set-keychain-settings -lut 900 "$keychain"
-          security unlock-keychain -p "$APPLE_CERTIFICATE_PASSWORD" "$keychain"
-          echo "$APPLE_CERTIFICATE_P12" | base64 --decode > "$RUNNER_TEMP/cert.p12"
-          security import "$RUNNER_TEMP/cert.p12" -k "$keychain" \
-            -P "$APPLE_CERTIFICATE_PASSWORD" -T /usr/bin/codesign
-          security set-key-partition-list -S apple-tool:,apple:,codesign: \
-            -s -k "$APPLE_CERTIFICATE_PASSWORD" "$keychain" >/dev/null
-          security list-keychain -d user -s "$keychain" login.keychain-db
-          codesign --force --timestamp --options runtime \
-            --sign "$APPLE_SIGNING_IDENTITY" "dist/${ASSET}"
-          codesign --verify --strict --verbose=2 "dist/${ASSET}"
-          ditto -c -k --keepParent "dist/${ASSET}" "$RUNNER_TEMP/notarize.zip"
-          xcrun notarytool submit "$RUNNER_TEMP/notarize.zip" \
-            --apple-id "$APPLE_ID" --team-id "$APPLE_TEAM_ID" \
-            --password "$APPLE_APP_PASSWORD" --wait
-          rm -f "$RUNNER_TEMP/cert.p12"
-          security delete-keychain "$keychain"
-
-      - name: Unsigned macOS build
-        if: matrix.goos == 'darwin' && env.APPLE_SIGNING_IDENTITY == ''
-        run: echo "::notice::APPLE_* secrets are not set, so this macOS build is unsigned."
-
-      - name: macOS app bundle
-        # A bare binary has no dock icon. The bundle is what goes in
-        # Applications; the bare binary stays published beside it because the
-        # updater downloads that asset by name. The updater swaps the file at
-        # os.Executable(), which inside a bundle is Contents/MacOS/, so an
-        # updated companion keeps its bundle (and its icon). Not signed or
-        # notarised here beyond what the binary step above did to the binary.
-        if: matrix.goos == 'darwin'
-        run: |
-          version="${TAG#companion-v}"
-          app="dist/Forever Sixty.app"
-          mkdir -p "$app/Contents/MacOS" "$app/Contents/Resources"
-          cp "dist/${ASSET}" "$app/Contents/MacOS/foreversixty-companion"
-          cp internal/icon/assets/seal.icns "$app/Contents/Resources/seal.icns"
-          cat > "$app/Contents/Info.plist" <<PLIST
-          <?xml version="1.0" encoding="UTF-8"?>
-          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-          <plist version="1.0">
-          <dict>
-            <key>CFBundleIdentifier</key><string>gg.foreversixty.companion</string>
-            <key>CFBundleName</key><string>Forever Sixty</string>
-            <key>CFBundleDisplayName</key><string>Forever Sixty</string>
-            <key>CFBundleExecutable</key><string>foreversixty-companion</string>
-            <key>CFBundleIconFile</key><string>seal</string>
-            <key>CFBundlePackageType</key><string>APPL</string>
-            <key>CFBundleShortVersionString</key><string>${version}</string>
-            <key>CFBundleVersion</key><string>${version}</string>
-            <key>LSUIElement</key><false/>
-            <key>NSHighResolutionCapable</key><true/>
-          </dict>
-          </plist>
-          PLIST
-          plutil -lint "$app/Contents/Info.plist"
-          ditto -c -k --keepParent "$app" "dist/${ASSET}.app.zip"
-          rm -rf "$app"
-          ls -l dist
 
       # Windows is signed through Azure Artifact Signing in Commish LLC's
       # name: Microsoft holds the key, the runner authenticates with the
@@ -417,9 +334,174 @@ jobs:
           path: companion/dist/*
           if-no-files-found: error
 
+  # The macOS companion: one universal app (Apple silicon and Intel), signed with the
+  # Developer ID certificate in Commish LLC's name, notarized by Apple with the App Store
+  # Connect API key and stapled, then published as a disk image for /setup and a zipped
+  # app for the updater (tools/package-mac-companion.sh). A macOS runner bills at ten
+  # times the Linux rate, so this job runs only when a release is cut: a companion-v* tag,
+  # a dispatch, or a push to main that releases. It never runs for the test job, a land
+  # branch or a pull request. Every release carries the Mac build, because the feed's
+  # latest.json names only the newest release's files; one without it would take the Mac
+  # download and the Mac updater offline until the next.
+  #
+  # Until the certificate is in the repository (APPLE_CERTIFICATE_P12), the app is signed
+  # ad hoc, nothing is notarized, and the build is kept as a run artifact for testing; the
+  # release publishes no Mac build. docs/runbooks/companion-release.md has the owner's
+  # one-time certificate steps.
+  build-mac:
+    needs: [test, version]
+    if: ${{ !cancelled() && needs.test.result == 'success' && needs.version.outputs.release == 'true' }}
+    # macos-latest, the standard Apple silicon image: macos-14 is gone ("The configuration
+    # 'macos-14-arm64-us-default' is not supported", 0.2.37's first run, 2026-11-07). Only Xcode's
+    # command line tools are used (clang, lipo, codesign, notarytool, stapler, hdiutil), so any
+    # image's Xcode does.
+    runs-on: macos-latest
+    timeout-minutes: 60
+    defaults: { run: { shell: bash, working-directory: companion } }
+    env:
+      TAG: ${{ needs.version.outputs.tag }}
+      MINISIGN_PUBLIC_KEY: ${{ vars.MINISIGN_PUBLIC_KEY }}
+      APPLE_CERTIFICATE_P12: ${{ secrets.APPLE_CERTIFICATE_P12 }}
+      APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+      # Optional: the certificate's name, to pin it. Unset, the one Developer ID
+      # Application identity in the imported .p12 is used.
+      APPLE_SIGNING_IDENTITY: ${{ vars.APPLE_SIGNING_IDENTITY }}
+      ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+      ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+      ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            companion
+            tools
+            web/src/data/companion.json
+      - uses: actions/setup-go@v5
+        with: { go-version-file: companion/go.mod, cache-dependency-path: companion/go.sum }
+
+      - name: Build the universal binary
+        # Intel is cross-compiled on the Apple silicon runner (Xcode's clang is a universal
+        # compiler; GitHub's Intel runners are retired), and lipo joins the two. The minimum
+        # system matches the Info.plist's: Go 1.25 runs on macOS 12 and later.
+        run: |
+          version="${TAG#companion-v}"
+          ldflags="-s -w"
+          ldflags="$ldflags -X github.com/jhunthrop/foreversixty/companion/internal/updater.Version=${version}"
+          ldflags="$ldflags -X github.com/jhunthrop/foreversixty/companion/internal/updater.PublicKey=${MINISIGN_PUBLIC_KEY}"
+          mkdir -p dist
+          for goarch in arm64 amd64; do
+            arch=$goarch; [ "$goarch" = amd64 ] && arch=x86_64
+            flags="-arch $arch -mmacosx-version-min=12.0"
+            CGO_ENABLED=1 GOOS=darwin GOARCH=$goarch \
+              CGO_CFLAGS="$flags" CGO_CXXFLAGS="$flags" CGO_LDFLAGS="$flags" \
+              go build -trimpath -ldflags "$ldflags" -o "dist/companion-$goarch" ./cmd/foreversixty-companion
+          done
+          lipo -create -output dist/foreversixty-companion dist/companion-arm64 dist/companion-amd64
+          lipo -info dist/foreversixty-companion
+          # Natively, then under Rosetta: both halves start.
+          ./dist/foreversixty-companion -version
+          arch -x86_64 ./dist/foreversixty-companion -version
+
+      - name: Import the Developer ID certificate
+        if: env.APPLE_CERTIFICATE_P12 != ''
+        # Into a keychain of the job's own, which the last step deletes. The identity is
+        # read from the certificate itself, so no secret has to repeat its name.
+        run: |
+          keychain="$RUNNER_TEMP/signing.keychain-db"
+          kc_password=$(uuidgen)
+          security create-keychain -p "$kc_password" "$keychain"
+          security set-keychain-settings -lut 3600 "$keychain"
+          security unlock-keychain -p "$kc_password" "$keychain"
+          printf '%s' "$APPLE_CERTIFICATE_P12" | base64 --decode > "$RUNNER_TEMP/cert.p12"
+          security import "$RUNNER_TEMP/cert.p12" -k "$keychain" -f pkcs12 \
+            -P "$APPLE_CERTIFICATE_PASSWORD" -T /usr/bin/codesign
+          rm -f "$RUNNER_TEMP/cert.p12"
+          security set-key-partition-list -S apple-tool:,apple:,codesign: \
+            -s -k "$kc_password" "$keychain" >/dev/null
+          existing=$(security list-keychains -d user | tr -d '"')
+          # shellcheck disable=SC2086 # one keychain path per word, none with a space
+          security list-keychains -d user -s "$keychain" $existing
+          identities=$(security find-identity -v -p codesigning "$keychain" | grep 'Developer ID Application' || true)
+          echo "$identities"
+          if [ -n "$APPLE_SIGNING_IDENTITY" ]; then
+            grep -qF "\"$APPLE_SIGNING_IDENTITY\"" <<<"$identities" || {
+              echo "::error::the certificate does not carry APPLE_SIGNING_IDENTITY ($APPLE_SIGNING_IDENTITY)"
+              exit 1
+            }
+            identity=$APPLE_SIGNING_IDENTITY
+          else
+            [ "$(grep -c . <<<"$identities")" = 1 ] || {
+              echo "::error::APPLE_CERTIFICATE_P12 must hold exactly one Developer ID Application identity"
+              exit 1
+            }
+            identity=$(sed -E 's/.*"(.*)".*/\1/' <<<"$identities")
+          fi
+          echo "signing as: $identity"
+          {
+            echo "MAC_SIGNING_IDENTITY=$identity"
+            echo "MAC_KEYCHAIN=$keychain"
+          } >> "$GITHUB_ENV"
+
+      - name: The App Store Connect key for notarization
+        if: env.APPLE_CERTIFICATE_P12 != ''
+        # The key is stored either as the .p8 file's text or base64 of it; both work.
+        run: |
+          key="$RUNNER_TEMP/AuthKey_${ASC_KEY_ID}.p8"
+          if grep -q 'BEGIN PRIVATE KEY' <<<"$ASC_KEY_P8"; then
+            printf '%s\n' "$ASC_KEY_P8" > "$key"
+          else
+            printf '%s' "$ASC_KEY_P8" | base64 --decode > "$key"
+          fi
+          chmod 600 "$key"
+          {
+            echo "NOTARY_KEY_FILE=$key"
+            echo "NOTARY_KEY_ID=$ASC_KEY_ID"
+            echo "NOTARY_ISSUER=$ASC_ISSUER_ID"
+          } >> "$GITHUB_ENV"
+
+      - name: No certificate yet
+        if: env.APPLE_CERTIFICATE_P12 == ''
+        # Once /setup offers the Mac build, a release without it would break that link, so a
+        # missing certificate then fails the release instead of quietly dropping the Mac app.
+        run: |
+          if jq -e '.downloads[] | select(.asset | test("darwin"))' ../web/src/data/companion.json >/dev/null; then
+            echo "::error::/setup offers a Mac build (web/src/data/companion.json) but APPLE_CERTIFICATE_P12 is not set"
+            exit 1
+          fi
+          echo "::notice::APPLE_CERTIFICATE_P12 is not set, so the Mac app is signed ad hoc, \
+          not notarized, and not published; it is kept as this run's unsigned-companion-darwin artifact."
+
+      - name: Package the app
+        run: ../tools/package-mac-companion.sh "${TAG#companion-v}" dist/foreversixty-companion dist/mac
+
+      - name: Publish the signed Mac build to the release
+        if: env.APPLE_CERTIFICATE_P12 != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: companion-darwin-universal
+          path: companion/dist/mac/*
+          if-no-files-found: error
+
+      - name: Keep the unsigned Mac build for testing
+        if: env.APPLE_CERTIFICATE_P12 == ''
+        # Not named companion-*, so the release never picks it up.
+        uses: actions/upload-artifact@v4
+        with:
+          name: unsigned-companion-darwin
+          path: companion/dist/mac/*
+          retention-days: 7
+
+      - name: Remove the keychain and the key
+        if: always()
+        run: |
+          if [ -n "${MAC_KEYCHAIN:-}" ]; then security delete-keychain "$MAC_KEYCHAIN" || true; fi
+          rm -f "${NOTARY_KEY_FILE:-}"
+
   release:
-    needs: [build, version]
-    if: ${{ !cancelled() && needs.build.result == 'success' && needs.version.outputs.release == 'true' }}
+    # The Mac build must pass too, signed or not: a release without its Mac app would
+    # take the Mac download offline (see build-mac).
+    needs: [build, build-mac, version]
+    if: ${{ !cancelled() && needs.build.result == 'success' && needs.build-mac.result == 'success' && needs.version.outputs.release == 'true' }}
     runs-on: ubuntu-latest
     timeout-minutes: 45
     permissions: { contents: write }
@@ -431,8 +513,9 @@ jobs:
       GH_TOKEN: ${{ github.token }}
     steps:
       - uses: actions/checkout@v4
+      # companion-* only: the unsigned Mac build of a run without the certificate stays out.
       - uses: actions/download-artifact@v4
-        with: { path: staged, merge-multiple: true }
+        with: { path: staged, pattern: 'companion-*', merge-multiple: true }
       - run: ls -l staged
 
       - name: Sign the assets with minisign

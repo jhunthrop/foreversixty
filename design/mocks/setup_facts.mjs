@@ -7,7 +7,8 @@
 //    addonLine, companionLine, companionPlatformsLine), lib/reports/device-status.ts, lib/account/connect-flow.ts;
 //  - data: web/src/data/companion.json, active-build.json, lib/downloads/paths.ts;
 //  - fixtures: web/tests/e2e/fixtures/home/me-34.json, me-new.json, web/tests/e2e/fixtures/setup/*.json.
-//  - the plate's rows and the head answer: lib/setup/steps.ts and lib/setup/answer.ts, the page's own models.
+//  - the plate's rows and the head answer: lib/setup/steps.ts and lib/setup/answer.ts, the page's own models;
+//  - which build each visitor downloads: lib/setup/downloads.ts (a Mac gets none while companion.json lists no Mac build).
 import { createRequire } from "node:module";
 import { existsSync, mkdtempSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -33,6 +34,7 @@ import { deviceStatusLine } from ${src("src/lib/reports/device-status.ts")};
 import { displayCode } from ${src("src/lib/account/connect-flow.ts")};
 import { setupSteps } from ${src("src/lib/setup/steps.ts")};
 import { setupAnswer } from ${src("src/lib/setup/answer.ts")};
+import { downloadFor } from ${src("src/lib/setup/downloads.ts")};
 import { relativeTime } from ${src("src/lib/dates.ts")};
 import { ADDON_DOWNLOAD_PATH, DATA_DOWNLOAD_PATH, companionDownloadPath } from ${src("src/lib/downloads/paths.ts")};
 import companion from ${src("src/data/companion.json")};
@@ -73,6 +75,7 @@ export default {
   imported: characterListCopy.updatedFrom(me34.bnet_imported_at, NOW),
   platforms_line: companionPlatformsLine(companion.downloads.map((d) => d.platform)),
   companion,
+  download_for: { windows: downloadFor('windows'), mac: downloadFor('mac') },
   download: { label: addonCopy.setupCompanionDownload(companion.downloads[0].platform), href: companionDownloadPath(companion.downloads[0].asset) },
   paths: { addon_zip: ADDON_DOWNLOAD_PATH, data: DATA_DOWNLOAD_PATH },
   data_build: addonCopy.currentDataBuild(activeBuild.build),
