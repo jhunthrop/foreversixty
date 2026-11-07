@@ -34,7 +34,7 @@ describe('the 404 answer', () => {
   it('keeps the guides answer for every other state', () => {
     expect(notFoundAnswerFrom(null, null)).toEqual({ state: 'hidden' });
     expect(notFoundAnswerFrom(null, null, true).state).toBe('error');
-    expect(notFoundAnswerFrom({ characters: [], main_character_key: null }, null).state).toBe('none');
+    expect(notFoundAnswerFrom({ characters: [] }, null).state).toBe('none');
     const unknown = { ...felsnap, class: undefined, spec: undefined };
     expect(notFoundAnswerFrom({ characters: [unknown], main_character_key: unknown.key }, null).state).toBe(
       'unknown',

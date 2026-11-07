@@ -171,6 +171,14 @@
   .ui-page[data-toc-from] {
     padding-top: var(--section-gap);
   }
+  /* A document's section head: its hairline stops at the reading measure (no rule over empty
+     space), and an arrival at its anchor lands 24 px under the top (no bar on a document). */
+  .ui-page:is([data-toc-from='1024'], [data-toc-from='0']) :global(.ui-rsec) {
+    scroll-margin-top: 24px;
+  }
+  .ui-page:is([data-toc-from='1024'], [data-toc-from='0']) :global(.ui-rsec > :first-child) {
+    max-width: var(--measure-reading);
+  }
   @media (min-width: 1024px) {
     .ui-page[data-toc-from='1024'] {
       grid-template-columns: var(--toc-w) minmax(0, 1fr);
