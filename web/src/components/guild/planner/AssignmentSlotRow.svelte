@@ -13,6 +13,7 @@
     pickerOptions,
     slotSub,
   } from '../../../lib/guild/assignments-view';
+  import { ROW_ITEM } from '../../../lib/ui/primitives';
   import Button from '../../ui/Button.svelte';
   import Row from '../../ui/Row.svelte';
   import Select from '../../ui/Select.svelte';
@@ -59,7 +60,7 @@
   }
 </script>
 
-<li data-testid={`assign-slot-${slot.key}`} data-own={holdsSlot(slot) ? 'true' : undefined}>
+<li class={ROW_ITEM} data-testid={`assign-slot-${slot.key}`} data-own={holdsSlot(slot) ? 'true' : undefined}>
   <Row title={slot.label} sub={slotSub(slot)} selected={holdsSlot(slot)} open>
     {#snippet trail()}
       {#if officer}

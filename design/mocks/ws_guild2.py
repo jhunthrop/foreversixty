@@ -4,9 +4,10 @@ In / Late / Bench, loot candidates, readiness, attendance, raid report). Modules
 """
 from ws_prims import *  # noqa: F403
 from ws_prims import (Page, PageHeader, Section, Plate, Rows, Row, Figures, Figure, Meter, Tag, Button, Link, TabStrip, FormRow, Field, Select, Notice, Segmented, Grid, Tally,
-                      Checklist, Votes, Gap, build_page, crest_img, icon, write, Emblem)
+                      Checklist, Votes, Gap, build_page, crest_img, icon, write, Emblem, RowGroup, Prose, control_bar, seg, BackLink, SignupRow, ButtonRow)
 
-from guild_data import ALLIANCE, GUILD, TABS, C, R, STATE_TAG  # noqa: F401
+from guild_data import ALLIANCE, GUILD, NOW, TABS, C, R, STATE_TAG  # noqa: F401
+import guild_raid
 
 
 def ch(name):
@@ -66,22 +67,106 @@ def landing_officer():
     return build_page('Guild, officer', hdr(actions=Button('Invite link', small=True)) + Page('split', main, rail, sticky_rail=True), 'Guild', ('Dunmaro', 'hunter', 'Beast Mastery Hunter &middot; 60'))
 
 
-def raid_planner():
-    bar = control_bar([('Group by', seg([('Status', True, None, ''), ('Role', False, None, ''), ('Class', False, None, '')]))], 'Group by status', end=Button('Copy sign-up list', small=True))
+ROLE_WORD = {'tank': 'Tank', 'healer': 'Healer', 'dps': 'DPS'}
+CLASS_ORDER = ['warrior', 'paladin', 'hunter', 'rogue', 'priest', 'shaman', 'mage', 'warlock', 'druid']
+SIGNUP_WORDS = ['In', 'Late', 'Bench', 'Out']
+
+
+def planner_sub(m):
+    """The planner row's line: `Holy Paladin · Healer` (raid-planner-view rowSub)."""
+    return f"{m['spec']} {m['class'].title()} &middot; {ROLE_WORD[m['role']]}"
+
+
+def signup_segments(state):
+    return Segmented([(w, w.lower() == state) for w in SIGNUP_WORDS], small=True)
+
+
+def planner_row(m, sub=''):
+    """A sign-up Row as an officer reads it: crest, class-colour name, the in-row In / Late / Bench / Out."""
+    return Row(m['name'], sub or planner_sub(m), lead=crest_img(m['class'], 28), title_color=C[m['class']], trail=signup_segments(m['state']),
+               link=False, selected=m['name'] == guild_raid.VIEWER)
+
+
+def roster_groups(raid):
+    """Group by role, the default for a raid (raid-planner-view plannerGroups): In by role, then Late and Bench."""
+    order = {'tank': 0, 'healer': 1, 'dps': 2}
+    rows = sorted((guild_raid.member(s['name']) for s in raid['signups']), key=lambda m: (order[m['role']], CLASS_ORDER.index(m['class']), m['name']))
+    on = [m for m in rows if m['state'] == 'in']
+    groups = [(label, [m for m in on if m['group'] == g]) for label, g in [('Tanks', 'tank'), ('Healers', 'healer'), ('Melee', 'melee'), ('Ranged', 'ranged')]]
+    groups += [(label, [m for m in rows if m['state'] == st]) for label, st in [('Late', 'late'), ('Bench', 'bench')]]
+    return ''.join(RowGroup(label, len(ms), [planner_row(m) for m in ms]) for label, ms in groups if ms or label in ('Tanks', 'Healers', 'Melee', 'Ranged'))
+
+
+def raid_when(raid):
+    """The head's time line in the guild's zone (the viewer is in it: no "your time"), counted from guild_data.NOW."""
+    from datetime import datetime, timedelta, timezone
+    start = datetime.fromisoformat(raid['starts_at'].replace('Z', '+00:00'))
+    cst = timezone(timedelta(hours=-6))
+    a, b = start.astimezone(cst), (start + timedelta(minutes=raid['duration_minutes'])).astimezone(cst)
+    left = start - datetime.fromisoformat(NOW.replace('Z', '+00:00'))
+    clock = lambda t: t.strftime('%I:%M %p').lstrip('0').lower()  # noqa: E731
+    return (f"{a.strftime('%A')} {a.day} {a.strftime('%B')} &middot; {clock(a)} to {clock(b)} CST &middot; "
+            f'<span class="gold">in {left.days} days {left.seconds // 3600} h</span>')
+
+
+def cover_rows(raid, kind):
+    per = {'raid': '', 'melee_group': 'per melee group', 'caster_group': 'per caster group'}
+    tone = {'ok': 'ok', 'short': 'warn', 'missing': 'miss'}
+    out = []
+    for r in (x for x in raid['cover'] if x['kind'] == kind):
+        sub = ' &middot; '.join(x for x in [per[r['per']], f"{r['likely']} on a talent we cannot see" if r['likely'] else '',
+                                              f"{r['providers_bench']} on the bench" if r['providers_bench'] else ''] if x)
+        out.append((r['name'], sub, [('none', str(r['need'])), (tone[r['state']], str(r['providers_in'] + r['providers_late']))], icon(r['icon'], 24, '').replace('<img ', f'<img title="{r["name"]}" ', 1)))
+    return out
+
+
+def assignment_rows(encounter):
     rows = []
-    for name, cls, spec, role, il, st in R:
-        tg, tone = STATE_TAG[st]
-        rows.append(Row(name, f'{spec} {cls.title()} &middot; {role.lower()} &middot; ilvl {il}', lead=crest_img(cls, 32), title_color=C[cls], trail=Tag(tg, tone) + Segmented([('In', st == 'in'), ('Late', st == 'late'), ('Bench', st == 'bench')], small=True), link=False))
-    roster = Plate(Rows(rows))
-    comp = Tally([(crest_img('warrior', 22), 'Tanks', 1, 2), (crest_img('paladin', 22), 'Healers', 6, 8), (crest_img('rogue', 22), 'Melee', 5, 10), (crest_img('mage', 22), 'Ranged', 11, 20)])
-    cls_tally = Figures([('5', 'Warrior', '', ''), ('3', 'Paladin', '', ''), ('3', 'Hunter', '', '')])
-    cover = Grid(['Need', 'In'], [('Windfury Totem', '', [('ok', '2'), ('ok', '3')]), ('Blessing of Kings', '', [('ok', '1'), ('warn', '1')]), ('Curse of the Elements', '', [('ok', '1'), ('miss', '0')]), ('Prayer of Fortitude', '', [('ok', '1'), ('ok', '4')])])
-    bench = Rows([Row('Cinderglass', 'Fire Mage &middot; benched', lead=crest_img('mage', 28), trail=Button('Swap in', small=True), link=False), Row('Nightlatch', 'Subtlety Rogue &middot; benched', lead=crest_img('rogue', 28), trail=Button('Swap in', small=True), link=False)], open_=True)
-    assign = Rows([Row('Tanks', 'Thornwicke on Onyxia; off-tank needed', trail=Link('Assign'), link=False), Row('Interrupts', 'Not assigned', trail=Link('Assign'), link=False), Row('Heal groups', 'Not assigned', trail=Link('Assign'), link=False)], open_=True)
-    main = Section('Sign-ups', roster, meta='19 in &middot; 2 late &middot; 2 bench &middot; 3 not signed')
-    rail = Section('Comp against the target', comp, meta='Onyxia default, editable') + Section('Buff cover', cover) + Section('Bench and swaps', bench) + Section('Assignments', assign, meta='Tanks, interrupts, heal groups')
-    head = PageHeader("Onyxia's Lair", ALLIANCE, icon('inv_misc_head_dragon_01', 56, 'q5'), meta=['Thu 10 Dec &middot; 8:00 pm CST', '9:00 pm EST your time', '23 of 40 signed up'], actions=Button('Post to Discord', small=True))
-    return build_page('Raid planner', head + bar + Page('split', main, rail, sticky_rail=True), 'Guild', ('Dunmaro', 'hunter', 'Beast Mastery Hunter &middot; 60'))
+    for s in encounter['slots']:
+        names = ''.join(Tag(n['name'], 'gold' if n['own'] else 'muted') for n in s['names']) or '<span class="t-small">Open</span>'
+        own = any(n['own'] for n in s['names'])
+        rows.append(Row(s['label'], f"{len(s['names'])} of {s['count']} &middot; {s['purpose']}", trail=Button('Edit', small=True, tone='ghost', act=True), foot=names,
+                        link=False, selected=own))
+    return rows
+
+
+def raid_planner():
+    raid = guild_raid.raid_view()
+    n, by = raid['counts'], {m['name']: m for m in guild_raid.MEMBERS}
+    you = by[guild_raid.VIEWER]
+    signed = n['in'] + n['late']
+    bar = control_bar([('Group by', seg([('Status', False, None, ''), ('Role', True, None, ''), ('Class', False, None, '')], label='Group by'))], 'Group by role',
+                      label='Sign-up grouping')
+    own = '<ul>' + SignupRow(crest_img(you['class'], 32), you['name'], C[you['class']], f"{you['spec']} {you['class'].title()}", Segmented([(w, w.lower() == you['state']) for w in SIGNUP_WORDS]),
+                             Select(f"{you['spec']} &middot; {ROLE_WORD[you['role']]}")) + '</ul>'
+    not_signed = [planner_row({**by[r['name']], 'state': None}, planner_sub(by[r['name']]) + ('' if r['discord_linked'] else ' &middot; No Discord linked'))
+                  for r in raid['not_signed_raiders']]
+    main = (Section('Your sign-up', own, named=True) + Section('Sign-ups', Plate(roster_groups(raid), 'Sign-ups'), meta=f"{signed}/{raid['size']}")
+            + Section('Not signed up', Rows(not_signed, open_=True, list_=True), action=Button('Ping on Discord', small=True, act=True), meta=str(len(not_signed))))
+    t = raid['comp_target']
+    late = n['late_groups']
+    comp = Tally([('', label, have, t[key], f'{late[key]} late' if late[key] else '') for key, label, have in
+                  [('tanks', 'Tanks', n['tanks']), ('healers', 'Healers', n['healers']), ('melee', 'Melee', n['melee']), ('ranged', 'Ranged', n['ranged'])]])
+    bench = [Row(m['name'], planner_sub(m), lead=crest_img(m['class'], 24), title_color=C[m['class']], trail=Button('Swap in', small=True, act=True), link=False, slim=True)
+             for m in sorted((by[s['name']] for s in raid['signups'] if s['state'] == 'bench'), key=lambda m: (CLASS_ORDER.index(m['class']), m['name']))]
+    enc = raid['assignments']['encounters'][0]
+    yours = ', '.join(s['label'] for s in enc['slots'] if any(x['own'] for x in s['names']))
+    assign = (Rows(assignment_rows(enc), open_=True, list_=True)
+              + ButtonRow(Button('Copy as raid warning', small=True, act=True) + Button('Post to Discord', small=True, act=True)))
+    cover = (Grid(['Need', 'In'], cover_rows(raid, 'buff'), 'Buffs: need against signed-up raiders', 'Buffs')
+             + Grid(['Need', 'In'], cover_rows(raid, 'debuff'), 'Debuffs: need against signed-up raiders', 'Debuffs'))
+    rail = (Section('Comp against the target', comp + f'<div style="padding-top:16px">{Button("Change the target", small=True, act=True)}</div>', meta=f"{raid['zone_name']} default: {sum(t[k] for k in ('tanks', 'healers', 'melee', 'ranged'))} players")
+            + Section('Bench and swaps', Rows(bench, open_=True, list_=True), meta=str(len(bench)))
+            + Section(f"{enc['name']} assignments", assign, meta=f'Your job: {yours}', named=True)
+            + Section('Buff and debuff cover', cover, meta='Signed-up raiders')
+            + Section('Notes', Prose(raid['notes_html'], 'note'), named=True))
+    actions = ''.join(Button(x, small=True, act=True) for x in ['Edit', 'Lock sign-ups', 'Copy the sign-up list', 'Cancel raid'])
+    head = (BackLink(f'&lsaquo; {GUILD} &middot; Raids')
+            + PageHeader(raid['title'], ALLIANCE, meta=[Tag('Planned'), raid_when(raid), f"<b class=\"strong\">{signed} of {raid['size']} signed up</b> &middot; {n['in']} In &middot; {n['late']} Late &middot; {n['bench']} Bench"],
+                         actions=actions, tabs=TabStrip(TABS, 'Raids')))
+    # The guild route's <main> ends 40 px under its view (pages/guild/[...path].astro pb-10).
+    body = f'<div style="padding-bottom:40px">{head + bar + Page("split", main, rail, sticky_rail=True)}</div>'
+    return build_page('Raid planner', body, 'Guild', (guild_raid.VIEWER, you['class'], f"{you['spec']} {you['class'].title()} &middot; 60"))
 
 
 def loot_council():
