@@ -1,6 +1,5 @@
 {
   "files": {
-    "components/admin/GoLinksAdmin.svelte": 6,
     "components/bis/BisBandStrip.astro": 2,
     "components/bis/BisClassCard.astro": 3,
     "components/character/BossPicker.svelte": 2,
