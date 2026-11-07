@@ -293,7 +293,7 @@
         }
       },
       {
-        "notes": "Arcane Blast whenever its buff has dropped, once, then back to Fire. Each cast adds 12% of your Intellect as spell damage to every spell you cast for 18 seconds, has a 40% chance at Missile Barrage and takes Incineration's crit. A second cast while the buff is up doubles its cost for one more stack, so let it fall off first.",
+        "notes": "Arcane Blast whenever its buff has dropped, once, then back to Fire. Each cast adds 12% of your Intellect as spell damage to every spell you cast for 18 seconds and takes Incineration's crit. Once you have Missile Barrage, each cast has a 40% chance to light it. A second cast while the buff is up doubles its cost for one more stack, so let it fall off first.",
         "action": {
           "condition": {
             "and": {

@@ -29,7 +29,6 @@ shaman-elemental Magma Totem 8bf512942822  the parentheses say "Searing Totem un
 shaman-enhancement Chain Lightning 1d04883f0bac  the list of spells Stormstrike buffs; Chain Lightning when trained
 warlock-affliction Bane of Doom ce525da289e0  the next clause says "all fight before 60, and the last minute at 60"
 warlock-affliction Wrack 2b88fb0c3445  the sentence opens "The raid build"
-warlock-affliction Wrack 4d41688f0a07  the clause before says "at 60"
 warlock-demonology Bane of Doom fb683d565974  the next clause says "all fight before 60, and the last minute at 60"
 warlock-demonology Searing Pain 35a4474c421c  a comparison: why the row beats Searing Pain
 warlock-destruction Bane of Doom fb683d565974  the next clause says "all fight before 60, and the last minute at 60"
