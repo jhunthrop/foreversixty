@@ -1,40 +1,41 @@
 <!-- web/src/components/report/RatingPanel.svelte -->
-<!-- The Summary dashboard's rating row: one line per roster player, the overall score plus
-     a compact six-segment bar, linking into the full RatingTab (spec §6.1). Mirrors
-     SummaryPanels.svelte's own dashboard pattern (a short list, a "go deeper" link) but
-     fetches its own data -- unlike SummaryPanels' siblings, a rating is not part of the
-     report's already-loaded summary.json (see docs/superpowers/plans/2026-09-21-rating-web
-     .md Ruling 8 on why this is its own component rather than a SummaryPanels addition). -->
+<!-- The Summary rail's Performance rating (logs spec 2026-11-07 6.2): a Row per rated player,
+     the crest, the name in its class colour and the score as "70 of 100", with the Rating tab ›
+     link. A trash pull is never asked (`trash`): its line is the shipped
+     ratingCopy.noRatingForTrash. A rating is not part of summary.json, so the panel fetches its
+     own (docs/superpowers/plans/2026-09-21-rating-web.md Ruling 8). -->
 <script lang="ts">
   import { unitLabel } from '../../lib/report/names.svelte';
   import { classColorVar } from '../../lib/report/format';
   import { createReportRatingsFetch } from '../../lib/rating/report-ratings.svelte';
-  import { ratingCopy, componentLabel } from '../../lib/rating/copy';
-  import { RATING_COMPONENT_ORDER } from '../../lib/rating/types';
+  import { ratingCopy } from '../../lib/rating/copy';
   import { classForPlayer, guidForPlayer } from '../../lib/rating/roster-join';
-  import { ACTION_LINK, ACTION_LINK_CHEVRON } from '../../lib/ui/link';
-  import Card from '../ui/Card.svelte';
-  import Glyph from '../ui/Glyph.svelte';
+  import Row from '../ui/Row.svelte';
+  import Section from '../ui/Section.svelte';
+  import Skeleton from '../ui/Skeleton.svelte';
+  import ClassIcon from './ClassIcon.svelte';
 
   let {
     reportId,
     fightIndex,
     roster,
-    onTab,
-    onSelectPlayer = undefined,
+    trash = false,
+    tabHref,
     apiBase = undefined,
   }: {
     reportId: string;
     fightIndex: number;
     roster: { guid: string; name: string; class?: string }[];
-    onTab: () => void;
-    onSelectPlayer?: (guid: string) => void;
+    /** A trash pull: nothing to rate, nothing to ask. */
+    trash?: boolean;
+    /** The Rating tab's url, kept with the fight. */
+    tabHref: string;
     apiBase?: string;
   } = $props();
 
   const fetcher = createReportRatingsFetch(apiBase);
   $effect(() => {
-    fetcher.load(reportId, fightIndex);
+    if (!trash) fetcher.load(reportId, fightIndex);
   });
 
   const rows = $derived(
@@ -42,65 +43,38 @@
   );
 </script>
 
-<Card glyph="star" title={ratingCopy.panelHeading} compact testid="rating-panel">
-  {#snippet aside()}
-    <button type="button" class={ACTION_LINK} onclick={onTab}>
-      {ratingCopy.panelMore}<Glyph name="chevron" size={16} class={ACTION_LINK_CHEVRON} />
-    </button>
-  {/snippet}
-  {#if fetcher.status === 'loading' || fetcher.status === 'idle'}
-    <div class="flex h-8 flex-col gap-2" data-testid="rating-panel-loading" aria-hidden="true">
-      <div class="bg-line-soft h-8 w-full animate-pulse rounded"></div>
-    </div>
+<Section
+  title={ratingCopy.panelHeading}
+  action={trash ? undefined : { label: ratingCopy.panelMore, href: tabHref }}
+  testid="rating-panel"
+>
+  {#if trash}
+    <p class="text-muted text-[14px]" data-testid="rating-panel-none">{ratingCopy.noRatingForTrash}</p>
+  {:else if fetcher.status === 'loading' || fetcher.status === 'idle'}
+    <div data-testid="rating-panel-loading" aria-hidden="true"><Skeleton minHeight="min-h-[58px]" /></div>
   {:else if fetcher.status === 'flagged'}
-    <p class="text-muted text-[13px]" data-testid="rating-panel-flagged">{ratingCopy.flagged}</p>
+    <p class="text-muted text-[14px]" data-testid="rating-panel-flagged">{ratingCopy.flagged}</p>
   {:else if fetcher.status === 'none'}
-    <p class="text-muted text-[13px]" data-testid="rating-panel-none">{ratingCopy.noRatingForTrash}</p>
+    <p class="text-muted text-[14px]" data-testid="rating-panel-none">{ratingCopy.noRatingForTrash}</p>
   {:else if fetcher.status === 'failed'}
-    <p class="text-muted text-[13px]" role="alert" data-testid="rating-panel-error">
-      {ratingCopy.fetchFailed}
-    </p>
+    <p class="text-muted text-[14px]" role="alert" data-testid="rating-panel-error">{ratingCopy.fetchFailed}</p>
   {:else if rows.length === 0}
-    <p class="text-muted text-[13px]" data-testid="rating-panel-empty">{ratingCopy.panelEmpty}</p>
+    <p class="text-muted text-[14px]" data-testid="rating-panel-empty">{ratingCopy.panelEmpty}</p>
   {:else}
-    <ul class="flex flex-col" data-testid="rating-panel-rows">
+    <div data-testid="rating-panel-rows">
       {#each rows as { player, guid } (player.player_key)}
-        <li class="border-line-soft flex min-h-8 items-center gap-3 border-b py-1 text-[13px] last:border-0">
-          <span
-            class="flex min-w-0 flex-1 items-center truncate font-semibold"
-            style={`color: ${classColorVar(classForPlayer(guid, player.class, roster))}`}
-          >
-            {#if onSelectPlayer && guid !== ''}
-              <button
-                type="button"
-                class="inline-flex min-h-11 items-center truncate underline-offset-2 hover:underline md:min-h-0"
-                style={`color: ${classColorVar(classForPlayer(guid, player.class, roster))}`}
-                title="Show only this player"
-                onclick={() => onSelectPlayer(guid)}>{unitLabel(player.player_name).text}</button
-              >
-            {:else}
-              {unitLabel(player.player_name).text}
-            {/if}
-          </span>
-          <span
-            class={`numeric w-8 text-right font-bold ${player.insufficient ? 'text-muted' : 'text-gold'}`}
-            data-testid="rating-panel-overall"
-            title={player.insufficient ? ratingCopy.insufficientNote(player.insufficient_reason) : undefined}
-            >{player.insufficient ? '—' : Math.round(player.overall)}</span
-          >
-          <span class="flex w-24 shrink-0 gap-[2px]" aria-hidden="true">
-            {#each RATING_COMPONENT_ORDER as name (name)}
-              {@const part = player.components.find((c) => c.name === name)}
-              <span class="bg-line-soft h-2 flex-1" title={part ? componentLabel(name) : undefined}
-                ><span
-                  class="bg-gold block h-full"
-                  style={`width: ${part && !part.excluded && part.score !== null ? part.score : 0}%`}
-                ></span></span
-              >
-            {/each}
-          </span>
-        </li>
+        {@const colour = classColorVar(classForPlayer(guid, player.class, roster))}
+        <Row title={unitLabel(player.player_name).text} open>
+          {#snippet lead()}<ClassIcon className={classForPlayer(guid, player.class, roster)} size={28} />{/snippet}
+          {#snippet titleContent()}<span style:color={colour}>{unitLabel(player.player_name).text}</span>{/snippet}
+          {#snippet trail()}<span
+              class="text-[15px] font-bold tabular-nums {player.insufficient ? 'text-muted' : 'text-gold'}"
+              data-testid="rating-panel-overall"
+              title={player.insufficient ? ratingCopy.insufficientNote(player.insufficient_reason) : undefined}
+              >{player.insufficient ? '–' : `${Math.round(player.overall)} of 100`}</span
+            >{/snippet}
+        </Row>
       {/each}
-    </ul>
+    </div>
   {/if}
-</Card>
+</Section>

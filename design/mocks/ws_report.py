@@ -26,6 +26,11 @@ def player_sub(r: dict, extra: str = '') -> str:
     return ' &middot; '.join(escape(b) if '<' not in b else b for b in bits)
 
 
+def plink(r: dict | None, name: str = '') -> str:
+    """A player's name in a table row: the link that opens their view (Source = that player, spec 9 "StatTable row")."""
+    return f'<a href="#" class="nm-l">{pname(r, name)}</a>'
+
+
 def melee(sid: int, logged: str) -> str:
     return 'Melee' if sid == 0 and not logged else spell(sid, logged)
 
@@ -47,7 +52,7 @@ def tab_summary(R, fi, source):
     for r in rs:
         figs = (['&ndash;'] if boss else []) + [x for _, ak, _, rk in pairs for x in (n0(r[ak]), rate(r[rk]))]
         figs += [f'{r["activity_pct"]:.1f}%', f'<span class="{"wipe" if r["deaths"] else ""}">{r["deaths"]}</span>']
-        rows.append(StatRow(crest(r, 28), pname(r), player_sub(r) or '&nbsp;', figs,
+        rows.append(StatRow(crest(r, 28), plink(r), player_sub(r) or '&nbsp;', figs,
                             primary_phone=f'damage &middot; {rate(r["dps"])} DPS', bar=False))
     table = StatTable(heads, rows, len(heads) - 2, bar=False, sort='Damage', sortable=tuple(h for h, _ in heads[2:]))
     nd = sum(1 for d in s['deaths'] if d['guid'] in fr)
@@ -109,7 +114,7 @@ def actor_table(R, fi, source, key, unit, head_amt):
         r = ros.get(a['guid'], {'name': a['name'], 'class': a.get('class')})
         extra = f'{n0(a["overheal"])} overheal ({a["overheal"] / a["total"] * 100:.0f}%)' if key == 'healing' and a.get('overheal') else ''
         figs = [n0(a['effective']), rate(a['effective'] / dur), f'{a["effective"] / tot * 100:.1f}%', f'{a["active_ms"] / s["duration_ms"] * 100:.1f}%']
-        rows.append(StatRow(crest(r, 28), pname(r, a['name']), player_sub(r, extra) or '&nbsp;', figs, MeterClass(a['effective'] / top, colour(r)),
+        rows.append(StatRow(crest(r, 28), plink(r, a['name']), player_sub(r, extra) or '&nbsp;', figs, MeterClass(a['effective'] / top, colour(r)),
                             primary_phone=f'{figs[1]} {unit}'))
     if acts:
         rows.append(StatRow('', f'Total, {plural(len(acts), "player")}', '', [n0(sum(a['effective'] for a in acts)), rate(sum(a['effective'] for a in acts) / dur), '100%', ''], total=True))
@@ -219,7 +224,7 @@ def tab_deaths(R, fi, source):
         r = ros.get(d['guid'])
         kb = d['killing_blow']
         head_row = Row(pname(r, d['name']), f'Killed by {escape(kb["source_name"])} &middot; {escape(melee(kb["spell_id"], kb["spell_name"]))} &middot; {n0(kb["amount"])} ({n0(kb.get("overkill", 0))} overkill) &middot; {n0(kb["max_hp"])} health',
-                       lead=f'<span class="num muted">{at(d["at_ms"])}</span>{crest(r, 32)}', trail='<span class="link">The 20 s before it &rsaquo;</span>', link=False)
+                       lead=f'<span class="num muted">{at(d["at_ms"])}</span>{crest(r, 32)}', trail='<button type="button" class="link">The 20 s before it &rsaquo;</button>', link=False)
         events = [('hit', h) for h in d['last']] + [('heal', h) for h in d.get('heals', [])]
         lines = []
         for kind, h in sorted(events, key=lambda e: e[1]['at_ms']):

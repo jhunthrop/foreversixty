@@ -1,257 +1,191 @@
 <!-- web/src/components/report/ActorTable.svelte -->
+<!-- The Damage done, Healing and Damage taken Plate (logs spec 2026-11-07 6.2): Section "{tab}"
+     ("Click a player to see their abilities") over one StatTable, a row per actor in the scope:
+     the crest, the name, the sub line, a class-colour Meter (share of the top), Amount (Effective
+     on Healing, its sub adding the overheal), DPS / HPS / Taken / s, Share and Active; Parse leads
+     on a ranked boss kill; a Total row foots it. Every figure head sorts. An empty window reads
+     the tab's own line inside the Plate. -->
 <script lang="ts">
   import type { Placement } from '../../lib/report/percentile';
-  import { formatAmount, formatPerSecond, formatDuration, formatAmountLike } from '../../lib/report/format';
-  import type { Actor, Ability } from '../../lib/report/types';
-  import CopyCsv from './CopyCsv.svelte';
-  import type { ExactSplit } from '../../lib/report/exact';
+  import { formatAmount, formatDuration, formatPercent } from '../../lib/report/format';
+  import { formatRate } from '../../lib/report/frame';
+  import type { Actor, RosterRow } from '../../lib/report/types';
+  import type { StatColumn, StatFigure, StatSort } from '../../lib/ui/stat-table';
+  import Plate from '../ui/Plate.svelte';
+  import Section from '../ui/Section.svelte';
+  import StatRow from '../ui/StatRow.svelte';
+  import StatTable from '../ui/StatTable.svelte';
   import ActorRow from './ActorRow.svelte';
 
+  type ActorTab = 'damage-done' | 'healing' | 'damage-taken';
+
   let {
+    tab,
     actors,
     durationMs,
-    metricLabel,
+    roster,
+    players,
     percentiles = new Map<string, Placement>(),
     parseFallback = '',
-    showParse = true,
-    pairsLabel = 'Targets',
-    approximate = false,
+    showParse = false,
     amountApproximate = false,
-    mitigation = false,
-    healing = false,
-    splitUnavailable = false,
-    splitFilter = '',
     absent = [],
-    windowIsWhole = false,
+    windowIsWhole = true,
     deadAt = new Map<string, number>(),
-    measure = undefined,
-    onChart = undefined,
-    charted = '',
-    openFirst = false,
+    selected = '',
+    playerHref,
+    onSelectPlayer,
   }: {
-    actors: Actor[];
+    tab: ActorTab;
+    actors: readonly Actor[];
     durationMs: number;
-    metricLabel: string;
-    percentiles?: Map<string, Placement>;
-    /** What an empty Parse cell shows: '' on trash, 'wipe', or a dash for not ranked yet. */
+    /** The pull's roster, by GUID: the spec, class and item level of a row's sub line. */
+    roster: ReadonlyMap<string, RosterRow>;
+    /** The players' GUIDs: their names open their own view; a pet or an enemy's does not. */
+    players: ReadonlySet<string>;
+    percentiles?: ReadonlyMap<string, Placement>;
     parseFallback?: string;
-    /** False on a report with no ranked boss kill: no Parse column at all. */
+    /** A ranked boss kill: the Parse column leads (never on Damage taken). */
     showParse?: boolean;
-    pairsLabel?: string;
-    approximate?: boolean;
-    /** True when the amounts are prorated too: a window met by a target or boss filter. */
+    /** The amounts are prorated: a window met by a target or boss filter. */
     amountApproximate?: boolean;
-    /** Sum what did not land (absorbed, blocked, avoided) under the total: the Damage Taken table's headline. */
-    mitigation?: boolean;
-    /** The Healing tab: the abilities table's last column is what each heal did not need. */
-    healing?: boolean;
-    /** Over the night under a target or boss filter the per-ability split cannot be measured; rows say so. */
-    splitUnavailable?: boolean;
-    /** The filter the night cannot split by, in words, for the row's note. */
-    splitFilter?: string;
     /** Players with no row in this window, and when they died if they were dead. */
-    absent?: { name: string; deadSince: number | null }[];
+    absent?: readonly { name: string; deadSince: number | null }[];
     windowIsWhole?: boolean;
     /** Players dead at the window's end, by GUID, with when they died. */
     deadAt?: ReadonlyMap<string, number>;
-    measure?: (actor: Actor) => Promise<ExactSplit>;
-    /** Puts this ability on the main chart, or takes it off when it is already there. */
-    onChart?: (actor: Actor, ability: Ability) => void;
-    /** `${guid}|${abilityKey(ability)}` of the ability currently on the chart; '' for none. */
-    charted?: string;
-    /** The first row starts open on its abilities: /sim, where it is the player's own character. */
-    openFirst?: boolean;
+    /** The bar's Source, when it is one player. */
+    selected?: string;
+    playerHref: (guid: string) => string;
+    onSelectPlayer: (guid: string) => void;
   } = $props();
 
-  const peak = $derived(actors.reduce((highest, actor) => Math.max(highest, actor.effective), 0));
-  const total = $derived(actors.reduce((sum, actor) => sum + actor.effective, 0));
-  /** Absorbed and blocked amounts and the avoided hits by type, over every row's abilities. */
-  const mitigated = $derived.by(() => {
-    let absorbed = 0;
-    let blocked = 0;
-    // eslint-disable-next-line svelte/prefer-svelte-reactivity
-    const avoided = new Map<string, number>();
-    for (const actor of actors) {
-      // A measured row carries its own figures; otherwise the per-ability ones, prorated like them.
-      if (actor.mitigated !== undefined) {
-        absorbed += actor.mitigated.absorbed;
-        blocked += actor.mitigated.blocked;
-        for (const [type, count] of Object.entries(actor.mitigated.misses)) {
-          avoided.set(type, (avoided.get(type) ?? 0) + count);
-        }
-        continue;
-      }
-      for (const ability of actor.abilities) {
-        absorbed += ability.absorbed ?? 0;
-        blocked += ability.blocked ?? 0;
-        for (const [type, count] of Object.entries(ability.misses ?? {})) {
-          avoided.set(type, (avoided.get(type) ?? 0) + count);
-        }
-      }
-    }
-    const hits = [...avoided.values()].reduce((sum, count) => sum + count, 0);
-    const prorated = approximate && actors.some((actor) => actor.mitigated === undefined);
-    // Alphabetical, not by count: the same six numbers must read in the same order under
-    // every filter, or a reader compares the wrong pairs.
-    const byType = [...avoided.entries()]
-      .sort((a, b) => a[0].localeCompare(b[0]))
-      .map(([type, count]) => `${prorated ? '~' : ''}${count} ${type.toLowerCase()}`)
-      .join(', ');
-    return { absorbed, blocked, hits, byType, prorated };
-  });
+  const TITLE: Readonly<Record<ActorTab, string>> = {
+    'damage-done': 'Damage done',
+    healing: 'Healing',
+    'damage-taken': 'Damage taken',
+  };
+  const RATE: Readonly<Record<ActorTab, string>> = {
+    'damage-done': 'DPS',
+    healing: 'HPS',
+    'damage-taken': 'Taken / s',
+  };
+  const amountLabel = $derived(tab === 'healing' ? 'Effective' : 'Amount');
+  const parse = $derived(showParse && tab !== 'damage-taken');
+  const columns = $derived<StatColumn[]>([
+    ...(parse ? [{ id: 'parse', label: 'Parse' }] : []),
+    { id: 'amount', label: amountLabel, sortable: true },
+    { id: 'rate', label: RATE[tab], sortable: true },
+    { id: 'share', label: 'Share', sortable: true },
+    { id: 'active', label: 'Active', sortable: true },
+  ]);
 
-  /** The table as it stands, for a spreadsheet: name, share, amount, per second, active. */
-  function csvLines(): string[][] {
-    // The healing table's second number is its overheal: the export carries it too.
-    const healing = actors.some((actor) => actor.overheal !== undefined);
-    const lines = [
-      [
-        'Rank',
-        'Name',
-        'Share',
-        'Amount',
-        ...(healing ? ['Overheal', 'Overheal %'] : []),
-        'Per second',
-        'Active %',
-      ],
-    ];
-    actors.forEach((actor, index) => {
-      // Blank where the screen is blank: a shield healer's absorbs have no overheal figure,
-      // and "0" would read as a heal with nothing wasted.
-      const overheal = actor.overheal ?? 0;
-      const gross = actor.effective + overheal;
-      const overhealCells =
-        actor.overheal === undefined
-          ? ['', '']
-          : [String(overheal), gross === 0 ? '0' : ((overheal / gross) * 100).toFixed(1)];
-      lines.push([
-        String(index + 1),
-        actor.name,
-        total === 0 ? '0' : ((actor.effective / total) * 100).toFixed(2),
-        String(actor.effective),
-        ...(healing ? overhealCells : []),
-        (actor.time_ms ?? durationMs) === 0
-          ? '0'
-          : (actor.effective / ((actor.time_ms ?? durationMs) / 1000)).toFixed(1),
-        // Blank for a pet row whose uptime was never measured, where the screen shows a dash.
-        actor.active_unknown === true
-          ? ''
-          : (actor.time_ms ?? durationMs) === 0
-            ? '0'
-            : Math.min((actor.active_ms / (actor.time_ms ?? durationMs)) * 100, 100).toFixed(1),
-      ]);
-    });
-    return lines;
+  let sort = $state<StatSort>({ column: 'amount', direction: 'desc' });
+  function onsort(column: string): void {
+    sort =
+      sort.column === column
+        ? { column, direction: sort.direction === 'desc' ? 'asc' : 'desc' }
+        : { column, direction: 'desc' };
   }
+  const total = $derived(actors.reduce((sum, actor) => sum + actor.effective, 0));
+  const top = $derived(actors.reduce((most, actor) => Math.max(most, actor.effective), 0));
+  const timeOf = (actor: Actor): number => actor.time_ms ?? durationMs;
+  const activeOf = (actor: Actor): number =>
+    timeOf(actor) === 0 ? 0 : Math.min((actor.active_ms / timeOf(actor)) * 100, 100);
+  function sortValue(actor: Actor, column: string): number {
+    if (column === 'rate') return timeOf(actor) === 0 ? 0 : actor.effective / timeOf(actor);
+    if (column === 'active') return activeOf(actor);
+    return actor.effective;
+  }
+  const rows = $derived.by(() => {
+    const sign = sort.direction === 'desc' ? -1 : 1;
+    return [...actors].sort((a, b) => sign * (sortValue(a, sort.column) - sortValue(b, sort.column)));
+  });
+  const mark = $derived(amountApproximate ? '~' : '');
+
+  function figures(actor: Actor): StatFigure[] {
+    const placed = percentiles.get(actor.guid);
+    return [
+      ...(parse
+        ? [
+            placed === undefined
+              ? { value: parseFallback || '–', muted: true }
+              : { value: String(Math.floor(placed.percentile)) },
+          ]
+        : []),
+      { value: `${mark}${formatAmount(actor.effective)}` },
+      { value: formatRate(timeOf(actor) === 0 ? 0 : actor.effective / (timeOf(actor) / 1000)) },
+      { value: total === 0 ? '0%' : formatPercent((actor.effective / total) * 100) },
+      actor.active_unknown === true ? { value: '–', muted: true } : { value: formatPercent(activeOf(actor)) },
+    ];
+  }
+
+  function subLine(actor: Actor): string {
+    const row = roster.get(actor.guid);
+    const who = [row?.spec, row?.class ?? actor.class].filter(Boolean).join(' ');
+    const overheal =
+      tab === 'healing' && actor.overheal !== undefined && actor.overheal > 0 && actor.total > 0
+        ? `${formatAmount(actor.overheal)} overheal (${Math.round((actor.overheal / actor.total) * 100)}%)`
+        : '';
+    const dead = deadAt.get(actor.guid);
+    return [
+      who,
+      row?.item_level ? `item level ${row.item_level}` : '',
+      overheal,
+      dead === undefined ? '' : `dead since ${formatDuration(dead)}`,
+    ]
+      .filter((part) => part !== '')
+      .join(' · ');
+  }
+
+  const totalSeconds = $derived(Math.max(durationMs, 1) / 1000);
+  const totalFigures = $derived<StatFigure[]>([
+    ...(parse ? [{ value: '' }] : []),
+    { value: `${mark}${formatAmount(total)}` },
+    { value: formatRate(total / totalSeconds) },
+    { value: '100%' },
+    { value: '' },
+  ]);
+  const absentLine = $derived(
+    absent.length === 0
+      ? ''
+      : `No row of their own ${windowIsWhole ? 'under this filter' : 'in this window'}: ${absent
+          .map((entry) =>
+            entry.deadSince === null ? entry.name : `${entry.name} (dead since ${formatDuration(entry.deadSince)})`,
+          )
+          .join(', ')}.`,
+  );
 </script>
 
-{#if actors.length === 0}
-  <p class="text-muted text-[14px]" data-testid="table-empty">Nothing in this window.</p>
-{:else}
-  <div class="flex flex-col" data-testid="actor-table">
-    <div
-      class="quiet-label hidden gap-x-3 px-2 pb-1 md:grid {showParse
-        ? 'grid-cols-[28px_40px_minmax(120px,1.4fr)_52px_minmax(0,3fr)_92px_80px_64px]'
-        : 'grid-cols-[28px_minmax(120px,1.4fr)_52px_minmax(0,3fr)_92px_80px_64px]'}"
-    >
-      <span title="Rank in this table">#</span>
-      {#if showParse}<span
-          title="Percentile among ranked kills of the same boss by this spec: damage here, healing on the Healing tab. Reads wipe on a wipe, – while nothing of this spec is ranked on this boss yet, … while the rankings are being asked, ? when they could not be reached; empty on Damage Taken and over the whole night."
-          >Parse</span
-        >{/if}
-      <span>Name</span>
-      <span class="text-right" title="Share of this table's total">Share</span>
-      <span title="Amount, split by ability. Hover a segment for the ability.">{metricLabel}</span>
-      <span class="text-right" title="Total in this window">Amount</span>
-      <span class="text-right" title="Amount divided by the window's length">Per sec</span>
-      <span class="text-right" title="Share of the window spent casting or attacking">Active</span>
-    </div>
-    <ul class="flex flex-col">
-      {#each actors as actor, index (actor.guid)}
-        <ActorRow
-          rank={index + 1}
-          {actor}
-          {peak}
-          columnMax={Math.max(peak, total)}
-          {durationMs}
-          {approximate}
-          {amountApproximate}
-          {splitUnavailable}
-          {splitFilter}
-          {healing}
-          deadSince={deadAt.get(actor.guid) ?? null}
-          {parseFallback}
-          {showParse}
-          {pairsLabel}
-          {measure}
-          {onChart}
-          {charted}
-          initiallyOpen={openFirst && index === 0}
-          percentile={percentiles.get(actor.guid) ?? null}
-          share={total === 0 ? 0 : (actor.effective / total) * 100}
+{#snippet totalName()}Total, {actors.length} {actors.length === 1 ? 'player' : 'players'}{/snippet}
+{#snippet absentSub()}<span data-testid="actor-absent">{absentLine}</span>{/snippet}
+
+<Section title={TITLE[tab]} meta="Click a player to see their abilities" testid="report-table-card">
+  <Plate label={TITLE[tab]}>
+    {#if actors.length === 0}
+      <p class="text-muted px-4 py-4 text-[14px]" data-testid="table-empty">Nothing in this window.</p>
+    {:else}
+      <StatTable {columns} nameHead="Player" {sort} {onsort} label={TITLE[tab]} testid="actor-table">
+        {#each rows as actor (actor.guid)}
+          <ActorRow
+            {actor}
+            subLine={subLine(actor)}
+            figures={figures(actor)}
+            ofTop={top === 0 ? 0 : actor.effective / top}
+            phone={`${formatRate(timeOf(actor) === 0 ? 0 : actor.effective / (timeOf(actor) / 1000))} ${RATE[tab]}`}
+            href={players.has(actor.guid) ? playerHref(actor.guid) : undefined}
+            selected={selected === actor.guid}
+            onSelect={onSelectPlayer}
+          />
+        {/each}
+        <StatRow
+          figures={totalFigures}
+          total
+          name={totalName}
+          sub={absentLine === '' ? undefined : absentSub}
+          testid="actor-total"
         />
-      {/each}
-    </ul>
-    <div
-      class="border-line-soft grid min-h-11 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 border-t px-2 py-2 text-[14px] {showParse
-        ? 'md:grid-cols-[28px_40px_minmax(120px,1.4fr)_52px_minmax(0,3fr)_92px_80px_64px]'
-        : 'md:grid-cols-[28px_minmax(120px,1.4fr)_52px_minmax(0,3fr)_92px_80px_64px]'}"
-      data-testid="actor-total"
-    >
-      <span class="quiet-label {showParse ? 'md:col-span-3' : 'md:col-span-2'}">Total</span>
-      <span class="numeric hidden text-right text-[12px] md:inline">100%</span>
-      <span class="hidden md:inline"></span>
-      <span
-        class="numeric text-right"
-        title={amountApproximate ? 'Prorated with its rows, the same way' : undefined}
-        >{amountApproximate ? '~' : ''}{formatAmountLike(total, Math.max(peak, total))}</span
-      >
-      <span
-        class="text-muted numeric hidden text-right text-[13px] md:inline"
-        title="Over the whole window. A row divides by its player's own time in it, so a player who died reads higher per second than the total"
-        >{formatPerSecond(total, durationMs)}</span
-      >
-      <!-- No figure: the summary keeps each player's active time, not the raid's, and the
-           largest of them said nothing true about the table. -->
-      <span class="hidden md:inline"></span>
-    </div>
-    {#if absent.length > 0}
-      <p class="text-muted border-line-soft border-t px-2 py-2 text-[12px]" data-testid="actor-absent">
-        No {mitigation ? 'target' : 'source'} row of their own {windowIsWhole
-          ? 'under this filter'
-          : 'in this window'}: {absent
-          .map((entry) =>
-            entry.deadSince === null
-              ? entry.name
-              : `${entry.name} (dead since ${formatDuration(entry.deadSince)})`,
-          )
-          .join(', ')}.
-      </p>
+      </StatTable>
     {/if}
-    {#if mitigation && mitigated.prorated}
-      <p
-        class="text-muted border-line-soft border-t px-2 py-2 text-[12px]"
-        data-testid="actor-mitigated"
-        title="An absorb, a block and an avoided hit have no damage share to prorate by, so a filter cannot split them from the summary; a pull measures them from that fight's events"
-      >
-        Mitigated: not split under this filter over this window. Open a pull to measure what was absorbed,
-        blocked and avoided under it.
-      </p>
-    {:else if mitigation && (mitigated.absorbed > 0 || mitigated.blocked > 0 || mitigated.hits > 0)}
-      <p
-        class="text-muted border-line-soft border-t px-2 py-2 text-[12px]"
-        data-testid="actor-mitigated"
-        title="What did not land, measured from the fight’s events: absorbed by shields, blocked, and hits avoided outright"
-      >
-        Mitigated: <span class="numeric">{formatAmount(mitigated.absorbed)}</span>
-        absorbed ·
-        <span class="numeric">{formatAmount(mitigated.blocked)}</span>
-        blocked ·
-        <span class="numeric">{mitigated.hits}</span> hits avoided{mitigated.hits > 0
-          ? ` (${mitigated.byType})`
-          : ''}
-      </p>
-    {/if}
-    <CopyCsv lines={csvLines} />
-  </div>
-{/if}
+  </Plate>
+</Section>

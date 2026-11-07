@@ -1,182 +1,143 @@
 <!-- web/src/components/report/SummaryPanels.svelte -->
-<!-- The summary as a dashboard: the things a reader wants at a glance, side by side, before
-     any tab is clicked. Damage taken by ability and the deaths, each a short bar list that
-     links to the tab that goes deeper. Damage and healing by source used to sit here too;
-     design review 2026-09-26 finding 6 dropped them -- the Summary table two sections above
-     already breaks damage and healing down by source, in the same numbers, so this repeated
-     them rather than adding anything. -->
+<!-- The Summary tab's two open Sections around its Plate (logs spec 2026-11-07 6.2):
+     `part="taken"` (main, under the chart) Damage taken by ability: an open StatTable of each
+     ability that hit a player in the scope (spell icon, name, a Meter, Share of everything every
+     player took whatever the scope shows, Amount, Per sec) with the Damage taken › link;
+     `part="deaths"` (the rail) Deaths: one Row per death in time order (the time, the crest, the
+     name, "{ability} · {source} · {amount}", a melee swing reads Melee) with the Deaths › link. -->
 <script lang="ts">
-  /** The log's null unit: a fall, a hazard, or a source the log did not name (as DeathsTab reads it). */
-  const NULL_GUID = /^0+$/;
   import { splitUnitName } from '../../lib/characters';
-  import {
-    classColorVar,
-    formatAmount,
-    formatDuration,
-    formatPerSecond,
-    schoolToken,
-  } from '../../lib/report/format';
+  import { classColorVar, formatAmount, formatDuration } from '../../lib/report/format';
+  import { formatRate } from '../../lib/report/frame';
   import type { Actor, Summary } from '../../lib/report/types';
-  import { ACTION_LINK, ACTION_LINK_CHEVRON } from '../../lib/ui/link';
-  import Card from '../ui/Card.svelte';
-  import Glyph from '../ui/Glyph.svelte';
+  import type { SpellIconOf } from '../../lib/guild/report-spell-icons';
+  import Meter from '../ui/Meter.svelte';
+  import Row from '../ui/Row.svelte';
+  import Section from '../ui/Section.svelte';
+  import StatRow from '../ui/StatRow.svelte';
+  import StatTable from '../ui/StatTable.svelte';
+  import ClassIcon from './ClassIcon.svelte';
+  import SpellIcon from './SpellIcon.svelte';
+
+  /** The log's null unit: a fall, a hazard, or a source the log did not name. */
+  const NULL_GUID = /^0+$/;
 
   let {
+    part,
     summary,
     everyone,
     approximate = false,
     durationMs,
     players,
-    onTab,
-    onSelectPlayer = undefined,
+    tabHref,
+    spellIcon,
   }: {
+    part: 'taken' | 'deaths';
     summary: Summary;
     durationMs: number;
     players: ReadonlySet<string>;
     /** The unscoped window: a source scope narrows the rows, never the total they share. */
     everyone?: Summary;
-    /**
-     * A brushed window: the by-ability split is the whole fight's, prorated by the window's
-     * share, not measured from the window's events the way the Damage Taken tab measures
-     * it, and a panel that reads 10,016 of a spell the window never saw is not a panel to
-     * trust bare.
-     */
+    /** A brushed window: the by-ability split is prorated from the whole fight's, and says so. */
     approximate?: boolean;
-    onTab: (tab: 'damage-taken' | 'deaths') => void;
-    /** Narrows the page to one player, the way the roster's names do. */
-    onSelectPlayer?: (guid: string) => void;
+    /** The url of a deeper tab, kept with the fight, source and window. */
+    tabHref: (tab: 'damage-taken' | 'deaths') => string;
+    spellIcon: SpellIconOf;
   } = $props();
 
   const ROWS = 8;
 
+  interface AbilityTotal {
+    name: string;
+    spellId: number;
+    total: number;
+  }
+
   /** Every ability that hit a player, summed over the players it hit, largest first. */
-  function abilityTotals(table: Actor[]): { name: string; school?: number; total: number }[] {
+  function abilityTotals(table: readonly Actor[]): AbilityTotal[] {
     // eslint-disable-next-line svelte/prefer-svelte-reactivity
-    const totals = new Map<string, { name: string; school?: number; total: number }>();
+    const totals = new Map<string, AbilityTotal>();
     for (const actor of table) {
       if (players.size > 0 && !players.has(actor.guid)) continue;
       for (const ability of actor.abilities) {
         const key = ability.name === '' ? 'Melee' : ability.name;
         const found = totals.get(key);
-        if (found === undefined)
-          totals.set(key, { name: key, school: ability.school, total: ability.effective });
+        if (found === undefined) totals.set(key, { name: key, spellId: ability.spell_id, total: ability.effective });
         else found.total += ability.effective;
       }
     }
-    return [...totals.values()].sort((a, b) => b.total - a.total);
+    return [...totals.values()].filter((row) => row.total > 0).sort((a, b) => b.total - a.total);
   }
-  // The share is of everything every player took: a source scope narrows the rows to one
-  // player's hits, never the total they share.
   const takenByAbility = $derived.by(() => {
     const rows = abilityTotals(summary.damage_taken);
     const total = abilityTotals((everyone ?? summary).damage_taken).reduce((sum, row) => sum + row.total, 0);
-    return rows.slice(0, ROWS).map((row) => ({ ...row, share: total === 0 ? 0 : (row.total / total) * 100 }));
+    return rows.slice(0, ROWS).map((row) => ({ ...row, share: total === 0 ? 0 : row.total / total }));
   });
-
+  const seconds = $derived(Math.max(durationMs, 1) / 1000);
   const deaths = $derived([...summary.deaths].sort((a, b) => a.at_ms - b.at_ms));
+  const COLUMNS = [
+    { id: 'share', label: 'Share' },
+    { id: 'amount', label: 'Amount' },
+    { id: 'rate', label: 'Per sec' },
+  ] as const;
+
+  function cause(death: Summary['deaths'][number]): string {
+    const blow = death.killing_blow;
+    if (blow === undefined) return '';
+    const spell =
+      NULL_GUID.test(blow.source_guid) && blow.spell_name === ''
+        ? 'a fall, a hazard or an untracked source'
+        : blow.spell_name === ''
+          ? 'Melee'
+          : blow.spell_name;
+    return `${spell} · ${splitUnitName(blow.source_name).name} · ${formatAmount(blow.amount)}`;
+  }
 </script>
 
-{#snippet tabLink(tab: 'damage-taken' | 'deaths', label: string)}
-  <button type="button" class={ACTION_LINK} onclick={() => onTab(tab)}>
-    {label}<Glyph name="chevron" size={16} class={ACTION_LINK_CHEVRON} />
-  </button>
-{/snippet}
-
-<div class="grid grid-cols-1 items-start gap-4 md:grid-cols-2" data-testid="summary-panels">
-  <Card glyph="chart" title="Damage taken by ability" compact testid="panel-taken">
-    {#snippet aside()}
-      {@render tabLink('damage-taken', 'Damage Taken tab')}
-    {/snippet}
-    <ul class="flex flex-col">
-      <li
-        class="quiet-label hidden min-h-6 grid-cols-[minmax(150px,1.6fr)_44px_minmax(0,2fr)_64px_56px] items-center gap-x-2 md:grid"
-        aria-hidden="true"
-      >
-        <span>Ability</span>
-        <span class="text-right" title="Share of all damage taken">Share</span>
-        <span class="hidden md:inline"></span>
-        <span class="text-right" title="Damage taken in this window">Amount</span>
-        <span class="text-right" title="Amount divided by the window's length">Per sec</span>
-      </li>
-      {#each takenByAbility as row (row.name)}
-        <li
-          class="border-line-soft grid min-h-8 grid-cols-[minmax(0,1fr)_44px_64px] items-center gap-x-2 gap-y-1 border-b py-1 text-[13px] md:grid-cols-[minmax(150px,1.6fr)_44px_minmax(0,2fr)_64px_56px] md:border-0 md:py-0"
-        >
-          <span class="truncate font-semibold" title={row.name}>{row.name}</span>
-          <span class="text-muted numeric text-right text-[12px] whitespace-nowrap"
-            >{row.share.toFixed(1)}%<span class="quiet-label ml-1 md:hidden">share</span></span
+{#if part === 'taken'}
+  <Section
+    title="Damage taken by ability"
+    action={{ label: 'Damage taken', href: tabHref('damage-taken') }}
+    testid="panel-taken"
+  >
+    {#if takenByAbility.length === 0}
+      <p class="text-muted text-[14px]">Nobody took damage in this window.</p>
+    {:else}
+      <StatTable columns={COLUMNS} nameHead="Ability" open label="Damage taken by ability">
+        {#each takenByAbility as row (row.name)}
+          <StatRow
+            figures={[
+              { value: `${(row.share * 100).toFixed(1)}%` },
+              { value: `${approximate ? '~' : ''}${formatAmount(row.total)}` },
+              { value: formatRate(row.total / seconds) },
+            ]}
+            phone={`${(row.share * 100).toFixed(1)}%`}
           >
-          <span class="bg-line-soft col-span-3 block h-[8px] w-full md:col-span-1"
-            ><span class="block h-full" style={`width: ${row.share}%; background: ${schoolToken(row.school)}`}
-            ></span></span
-          >
-          <span
-            class="numeric text-right whitespace-nowrap"
-            title={approximate
-              ? 'Prorated inside the window from the whole fight’s split; the Damage Taken tab measures it'
-              : undefined}
-            >{approximate ? '~' : ''}{formatAmount(row.total)}<span class="quiet-label ml-1 md:hidden"
-              >amount</span
-            ></span
-          >
-          <span class="text-muted numeric text-right text-[12px] whitespace-nowrap"
-            >{formatPerSecond(row.total, durationMs)}<span class="quiet-label ml-1 md:hidden">per sec</span
-            ></span
-          >
-        </li>
-      {/each}
-    </ul>
-    <p class="text-muted text-[11px]" data-testid="panel-share-note">
-      Share is of everything every player took in this window, whatever the source scope shows.
-    </p>
-    {#if approximate}
-      <p class="text-muted text-[11px]" data-testid="panel-taken-approximate">
-        Inside a window this split is the whole fight’s, prorated by the window’s share (~); the Damage Taken
-        tab measures the window’s own split from the fight’s events.
+            {#snippet icon()}<SpellIcon url={spellIcon(row.spellId)} />{/snippet}
+            {#snippet name()}<b class="text-strong">{row.name}</b>{/snippet}
+            {#snippet meter()}<Meter value={row.share} />{/snippet}
+          </StatRow>
+        {/each}
+      </StatTable>
+      <p class="text-small text-muted pt-2" data-testid="panel-share-note">
+        Share is of everything every player took in this window, whatever the source scope shows.
       </p>
     {/if}
-  </Card>
-
-  <Card glyph="target" title="Deaths" compact testid="panel-deaths">
-    {#snippet aside()}
-      {@render tabLink('deaths', 'Deaths tab')}
-    {/snippet}
+  </Section>
+{:else}
+  <Section title="Deaths" action={{ label: 'Deaths', href: tabHref('deaths') }} testid="panel-deaths">
     {#if deaths.length === 0}
-      <p class="text-muted text-[13px]">Nobody died.</p>
+      <p class="text-muted text-[14px]">Nobody died.</p>
     {:else}
-      <ul class="flex flex-col">
-        {#each deaths as death, i (`${death.guid}-${death.at_ms}-${i}`)}
-          <li
-            class="grid min-h-8 grid-cols-[52px_minmax(0,1fr)] items-center gap-x-2 gap-y-0.5 py-1 text-[13px] md:grid-cols-[52px_minmax(0,1fr)_minmax(0,1.6fr)]"
-          >
-            <span class="text-muted numeric text-[12px]">{formatDuration(death.at_ms)}</span>
-            <span class="truncate font-semibold" style={`color: ${classColorVar(death.class)}`}
-              >{#if onSelectPlayer}<button
-                  type="button"
-                  class="inline-flex min-h-11 items-center underline-offset-2 hover:underline md:min-h-0"
-                  style={`color: ${classColorVar(death.class)}`}
-                  title="Show only this player"
-                  onclick={() => onSelectPlayer(death.guid)}>{splitUnitName(death.name).name}</button
-                >{:else}{splitUnitName(death.name).name}{/if}</span
-            >
-            <!-- The killing hit wraps under the name on a phone rather than clipping its number. -->
-            <span
-              class="text-muted col-start-2 text-[12px] md:col-start-3"
-              title="The hit that killed them, and how hard it landed"
-            >
-              {#if death.killing_blow}
-                {NULL_GUID.test(death.killing_blow.source_guid) && death.killing_blow.spell_name === ''
-                  ? 'a fall, a hazard or an untracked source'
-                  : death.killing_blow.spell_name === ''
-                    ? 'Melee'
-                    : death.killing_blow.spell_name} ·
-                {splitUnitName(death.killing_blow.source_name).name} ·
-                <span class="numeric whitespace-nowrap">{formatAmount(death.killing_blow.amount)}</span>
-              {/if}
-            </span>
-          </li>
-        {/each}
-      </ul>
+      {#each deaths as death, i (`${death.guid}-${death.at_ms}-${i}`)}
+        <Row title={splitUnitName(death.name).name} sub={cause(death)} open>
+          {#snippet lead()}<span class="text-muted tabular-nums text-[13px]">{formatDuration(death.at_ms)}</span
+            ><ClassIcon className={death.class} size={28} />{/snippet}
+          {#snippet titleContent()}<span style:color={classColorVar(death.class)}
+              >{splitUnitName(death.name).name}</span
+            >{/snippet}
+        </Row>
+      {/each}
     {/if}
-  </Card>
-</div>
+  </Section>
+{/if}

@@ -41,6 +41,35 @@ export const reportCopy = {
   everySpec: 'Every spec',
   /** The merged preset/slider row's select, which replaced the old six-button preset row. */
   window: 'Window',
+  /** The control bar's first select (logs spec 2026-11-07 6.1). */
+  fight: 'Fight',
+  /** The tab strip's accessible name. */
+  tabsLabel: 'Report tabs',
+  /** The head's two actions, and the phone's one menu button that holds them. */
+  copyLink: 'Copy link',
+  copied: 'Copied',
+  copyFailed: 'Copy failed',
+  reportActions: 'Report actions',
+  /** The Filters button and popover (logs spec 6.1), as the BiS Sources pattern. */
+  filters: 'Filters',
+  clearFilters: 'Clear filters',
+  /** Every tab's empty table, and its chart. */
+  nothingInWindow: 'Nothing in this window.',
+  /** Section 6.3: a report that did not load, a missing one, a tab whose chunk failed. */
+  reportFailed: 'Report data did not load.',
+  reportMissing: 'No report with that id.',
+  openYourReports: 'Open your reports',
+  viewFailed: 'This view did not load.',
+  tryAgain: 'Try again',
+  /** The night view's line on a tab that is one pull's (section 6.3). */
+  onePullOnly: 'This tab is one pull’s. Pick a pull from the Fight list to see it.',
+  /** The Parse column's one line when the rankings did not answer (boss pulls only). */
+  parsesUnknown:
+    'The rankings could not be reached, so the Parse column is unknown; every other figure is from the log.',
+  parsesUnknownShort: 'Parses unknown: the rankings did not answer.',
+  /** The Live tag while the companion logs. */
+  liveTag: 'Live',
+  loggingNow: 'Logging now',
   /** The header of a report whose title is not known yet. */
   yourUpload: 'Your upload',
   /** The fights strip of a report being parsed, and the hover of every tab that needs fights. */

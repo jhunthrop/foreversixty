@@ -210,7 +210,8 @@ def answer(R: Report, fi: int, source: str, viewer: str = '') -> str:
         label = f'{escape(f["name"])} #{f.get("attempt", 1)} &middot; {"Kill" if f.get("kill") else "Wipe"} &middot; {mmss(f["duration_ms"])}'
         fig = Figure(n0(group_dps(R, s, source)), unit='DPS', size='big')
         cap = f'{scope} damage &middot; {plural(nd, "death")}'
-    acts = (f'<span class="ans-act">{Button("Sim this fight", small=True)}{Button("Copy link", small=True)}</span>'
+    # Sim this fight opens the simulator (a link styled as a button); Copy link acts in place (a button).
+    acts = (f'<span class="ans-act">{_Button("Sim this fight", small=True)}{Button("Copy link", small=True)}</span>'
             f'<span class="ans-more"><button type="button" class="btn sm" aria-haspopup="menu" aria-expanded="false" aria-label="Report actions">&middot;&middot;&middot;</button></span>')
     return f'<span class="t-label">{label}</span>{fig}<span class="t-small">{cap}</span>{acts}'
 
@@ -260,7 +261,7 @@ def bar(R: Report, fi: int, tab: str, source: str, open_m: bool = False, compare
     groups = [('Fight', sel(fight_label(f))), ('Source', sel(source)), ('Window', sel('Whole fight'))]
     if tab in TABLE_FILTERS:
         groups += [('Target', sel('Every target')), ('Ability', sel('Every ability')),
-                   ('Filters', '<span class="sel" role="button" aria-haspopup="dialog">Filters</span>')]
+                   ('Filters', '<span class="sel" role="button" aria-haspopup="dialog" aria-expanded="false">Filters</span>')]
     if tab == 'Threat':
         groups.append(('Enemy', sel('Every enemy')))
     if tab == 'Compare':
