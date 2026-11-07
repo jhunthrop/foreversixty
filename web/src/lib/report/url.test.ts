@@ -10,6 +10,7 @@ import {
   MISSING_FIGHT,
   trashScope,
   trashScopeKey,
+  type ReportState,
 } from './url';
 
 describe('the report URL state', () => {
@@ -27,7 +28,8 @@ describe('the report URL state', () => {
   it('reads a patch in the old words as the tab it names', () => {
     expect(legacyTab({ mode: 'analyze', view: 'tables', tab: 'interrupts' })).toEqual({ tab: 'interrupts' });
     expect(legacyTab({ view: 'queries' })).toEqual({ tab: 'queries' });
-    expect(legacyTab({ source: 'enemies' })).toEqual({ source: 'enemies' });
+    const sourceOnly: Partial<ReportState> = { source: 'enemies' };
+    expect(legacyTab(sourceOnly)).toEqual({ source: 'enemies' });
   });
 
   it('rating is a real tab: it parses from the url and serialises back', () => {
