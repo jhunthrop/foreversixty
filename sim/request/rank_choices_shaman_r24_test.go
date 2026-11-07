@@ -7,9 +7,11 @@ import "testing"
 // level. Elemental's Lightning Bolt filler keeps rank 3 from 20 to 33 and,
 // at 39, rank 4 for every race but an orc; Flame Shock rank 1 at 18 and 19
 // (round 26: a dwarf only); Earth Shock keeps rank 3 at 25 (an orc casts
-// rank 4) and at 26; Restoration's tank Healing Wave keeps rank 3 at 18 and
+// rank 4) and at 26; Restoration's tank Healing Wave kept rank 3 at 18 and
 // 19, rank 1 at 20 and 21, rank 1 at 22 for a tauren and rank 2 for a dwarf
-// (design/reviews/2026-11-05-sim-audit-round24/shaman.md).
+// (design/reviews/2026-11-05-sim-audit-round24/shaman.md); round 29's leveling
+// order (Tidal Focus before Improved Healing Wave) moved them to rank 1 at 18 and
+// 19, rank 2 at 20 to 22 and rank 3 at 22 for a dwarf (TestRound29HealerRankRows).
 func TestRound24ShamanRankRows(t *testing.T) {
 	const lb3, lb4, lb5, lb7 = 548, 915, 943, 10391
 	const fs1, fs2 = 8050, 8052
@@ -42,12 +44,12 @@ func TestRound24ShamanRankRows(t *testing.T) {
 		{"dwarf Earth Shock at 25", "shaman-enhancement", "dwarf", 25, es3, es4},
 		{"orc Earth Shock at 26", "shaman-enhancement", "orc", 26, es3, es4},
 		{"Earth Shock at 27 is the top rank", "shaman-enhancement", "dwarf", 27, es4, es3},
-		{"tank Healing Wave at 18", "shaman-restoration", "tauren", 18, hw3, 0},
-		{"tank Healing Wave at 19", "shaman-restoration", "dwarf", 19, hw3, 0},
-		{"tank Healing Wave at 20", "shaman-restoration", "dwarf", 20, hw1, hw2},
-		{"tank Healing Wave at 21", "shaman-restoration", "tauren", 21, hw1, hw2},
-		{"tauren tank Healing Wave at 22", "shaman-restoration", "tauren", 22, hw1, hw2},
-		{"dwarf tank Healing Wave at 22", "shaman-restoration", "dwarf", 22, hw2, hw1},
+		{"tank Healing Wave at 18", "shaman-restoration", "tauren", 18, hw1, hw3},
+		{"tank Healing Wave at 19", "shaman-restoration", "dwarf", 19, hw1, hw3},
+		{"tank Healing Wave at 20", "shaman-restoration", "dwarf", 20, hw2, hw1},
+		{"tank Healing Wave at 21", "shaman-restoration", "tauren", 21, hw2, hw1},
+		{"tauren tank Healing Wave at 22", "shaman-restoration", "tauren", 22, hw2, hw1},
+		{"dwarf tank Healing Wave at 22", "shaman-restoration", "dwarf", 22, hw3, hw2},
 		{"dwarf tank Healing Wave at 25", "shaman-restoration", "dwarf", 25, hw3, hw2},
 	} {
 		ids := rotationIDs(t, c.spec, "shaman", c.level, specRankChoices(c.spec, BarePreset, c.race))

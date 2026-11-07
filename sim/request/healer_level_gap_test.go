@@ -179,8 +179,8 @@ func TestRestorationShamanTankHealingWaveIsTheTopRank(t *testing.T) {
 // re-judged 40 to 49; round 20 re-judged 43 to 60 after Oath of Light began
 // adding its whole amount under the rank's level rule (10,000 iterations,
 // seeds 1 and 50001, both factions). The tank's Flash of Light keeps rank 1
-// to 42 (where it pairs with the group's rank 2, round 24), rank 2 at 43 to
-// 49, rank 3 at 50 to 54, rank 4 at 55 to 59 and at bare 60 (rank 5, as authored, in a
+// to 39, rank 2 at 40 to 49 (round 29: the new leveling order's Conviction and
+// Divine Intellect at 40 to 42 make rank 2 win there too), rank 3 at 50 to 54, rank 4 at 55 to 59 and at bare 60 (rank 5, as authored, in a
 // raid). Holy Light casts rank 1 to 23, its top rank at 24, rank 1 at 25,
 // rank 2 at 26 to 29 (round 24, on the talents at each level), its top rank
 // at 30 to 39, rank 4 at 40 to 42, its top
@@ -190,7 +190,7 @@ func TestRestorationShamanTankHealingWaveIsTheTopRank(t *testing.T) {
 func TestHolyPaladinFlashOfLightAndHolyLightKeepTheirHealingBonus(t *testing.T) {
 	filler := linesCasting(t, "paladin-holy", 19750, 19942)
 	assertRanks(t, filler, "paladin-holy", "paladin", "human", flashOfLightRank, []rankCase{
-		{20, BarePreset, 1}, {39, BarePreset, 1}, {40, BarePreset, 1}, {42, BarePreset, 1}, {43, BarePreset, 2}, {48, BarePreset, 2}, {49, BarePreset, 2},
+		{20, BarePreset, 1}, {39, BarePreset, 1}, {40, BarePreset, 2}, {42, BarePreset, 2}, {43, BarePreset, 2}, {48, BarePreset, 2}, {49, BarePreset, 2},
 		{50, BarePreset, 3}, {54, BarePreset, 3}, {55, BarePreset, 4}, {59, BarePreset, 4},
 		{60, BarePreset, 4}, {60, RaidPreset, 5},
 	})
