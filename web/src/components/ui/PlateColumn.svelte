@@ -46,6 +46,11 @@
     min-height: 40px;
     padding-block: 6px;
   }
+  /* A plate column is narrow even on a wide screen: the name keeps its share of the row. */
+  .ui-pcol :global(.ui-st) {
+    --st-name: minmax(0, 2fr);
+    --st-bar: minmax(0, 1fr);
+  }
   /* A plate table's lead cell is its rank, not a 28 px icon; slim rows breathe a pixel more. */
   .ui-pcol :global(.ui-st-r .ui-st-icon) {
     height: auto;

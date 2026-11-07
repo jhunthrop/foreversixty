@@ -356,8 +356,10 @@ test.describe('table of contents', () => {
     await expect(toggle).toContainText(`Frost Mage · ${guidesCopy.tocBarLabel}`);
     await toggle.click();
     await expect(toggle).toHaveAttribute('aria-expanded', 'true');
-    await expect(page.getByTestId('guide-toc-select')).toBeVisible();
-    await choose(page.locator('#guide-toc'), 'races');
+    // Open, the bar lists the sections as rows (the mock's open phone bar), not the select.
+    await expect(page.getByTestId('guide-toc-select')).toBeHidden();
+    await expect(page.getByTestId('guide-toc-phone')).toBeVisible();
+    await page.getByTestId('guide-toc-phone-races').click();
     await expect(page).toHaveURL(/#races$/);
     await expect(page.locator('#races')).toBeInViewport();
   });
@@ -372,10 +374,10 @@ test.describe('table of contents', () => {
     const bar = page.getByTestId('guide-bar');
     const toggle = bar.locator('[data-control-bar-toggle]');
     await toggle.click();
-    await choose(page.locator('#guide-toc'), 'rotation-and-priority');
+    await page.getByTestId('guide-toc-phone-rotation-and-priority').click();
     await expect(page).toHaveURL(/#rotation-and-priority$/);
     await expect(toggle).toHaveAttribute('aria-expanded', 'false');
-    // Focus follows the jump, not the select the closed bar now hides.
+    // Focus follows the jump, not the row the closed bar now hides.
     await expect(page.locator('#rotation-and-priority')).toBeFocused();
     const barBox = (await bar.boundingBox())!;
     const headingTop = (await page.locator('#rotation-and-priority').boundingBox())!.y;
