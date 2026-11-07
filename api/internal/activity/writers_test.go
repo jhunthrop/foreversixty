@@ -136,3 +136,41 @@ func TestDiffBisSeedsThenTellsChanges(t *testing.T) {
 		t.Fatalf("rows: %q", got)
 	}
 }
+
+// A report flagged or made private after it completed takes its feed rows (the upload and
+// its first kills) out of /v1/feed; a deleted one takes them along for good.
+func TestAFlaggedReportNeverAppearsInTheFeed(t *testing.T) {
+	s := testStore(t)
+	w := &ReportWriter{Store: s, RaidZones: map[string]bool{"Onyxia's Lair": true}}
+	u := user(t, s, "f#1", false)
+	char(t, s, "us/normal/nightfall", "Nightfall", "Warrior", 24, u)
+	report(t, s, "rf", u, "public", "Onyxia's Lair", "us/normal/nightfall")
+	report(t, s, "rp", u, "public", "Shadowfang Keep", "us/normal/nightfall")
+	w.ReportCompleted(context.Background(), "rf")
+	w.ReportCompleted(context.Background(), "rp")
+	feedRows := func() int {
+		rec, body := serve(t, s, nil, 0, "/v1/feed")
+		if rec.Code != 200 {
+			t.Fatalf("/v1/feed = %d", rec.Code)
+		}
+		return len(body["data"].(map[string]any)["rows"].([]any))
+	}
+	if n := feedRows(); n != 4 {
+		t.Fatalf("rows before the flag = %d, want 2 uploads and 2 first kills", n)
+	}
+	exec(t, s.Pool, `update reports set flagged = 'tampered' where id = 'rf'`)
+	exec(t, s.Pool, `update reports set visibility = 'private' where id = 'rp'`)
+	if got := rowTexts(t, s); len(got) != 0 {
+		t.Fatalf("rows after the flag and the private switch: %v, want none", got)
+	}
+	exec(t, s.Pool, `update reports set flagged = null where id = 'rf'`)
+	exec(t, s.Pool, `delete from fights where report_id = 'rf'`)
+	exec(t, s.Pool, `delete from reports where id = 'rf'`)
+	var left int
+	if err := s.Pool.QueryRow(context.Background(), `select count(*) from activity_events where report_id = 'rf'`).Scan(&left); err != nil {
+		t.Fatal(err)
+	}
+	if left != 0 {
+		t.Fatalf("%d rows outlived their deleted report", left)
+	}
+}

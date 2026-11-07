@@ -6,6 +6,8 @@ import (
 	"log/slog"
 	"strconv"
 	"time"
+
+	"github.com/jhunthrop/foreversixty/api/internal/rating/presence"
 )
 
 // ReportWriter writes the feed rows a completed report earns (rulings P1, P2): its upload,
@@ -28,7 +30,7 @@ type reportFacts struct {
 	at                               time.Time
 }
 
-const reportFactsSQL = `select r.id, coalesce(nullif(r.log_zone, ''), r.zone), coalesce(r.logging_character, ''),
+var reportFactsSQL = `select r.id, coalesce(nullif(r.log_zone, ''), r.zone), coalesce(r.logging_character, ''),
 	coalesce(c.name, ''), coalesce(c.class, ''), coalesce(c.level, 0), coalesce(u.anonymize, false),
 	(select count(distinct f.encounter_id) from fights f where f.report_id = r.id and f.kill and f.encounter_id is not null),
 	(select coalesce(max(f.start_ms + f.duration_ms) - min(f.start_ms), 0) from fights f where f.report_id = r.id),
@@ -38,7 +40,7 @@ const reportFactsSQL = `select r.id, coalesce(nullif(r.log_zone, ''), r.zone), c
 	from reports r
 	left join characters c on c.key = r.logging_character
 	left join users u on u.id = r.owner_id
-	where r.id = $1 and r.visibility = 'public' and r.flagged is null and r.status = 'complete'`
+	where r.id = $1 and r.visibility = 'public' and ` + presence.EvidenceReport("r") + ` and r.status = 'complete'`
 
 // ReportCompleted writes the report's rows. It never fails the completion: a failure is logged.
 func (w *ReportWriter) ReportCompleted(ctx context.Context, reportID string) {
@@ -91,7 +93,7 @@ func uploadEvent(f reportFacts) Event {
 	}
 	e := Event{
 		Kind: KindLogUpload, OccurredAt: f.at, Crest: crest,
-		Href: "/reports/" + f.id, Segments: segments, DedupeKey: "upload:" + f.id,
+		Href: "/reports/" + f.id, Segments: segments, DedupeKey: "upload:" + f.id, ReportID: f.id,
 	}
 	if !f.anonymous {
 		e.CharacterKey = f.key
@@ -143,7 +145,7 @@ func killEvent(f reportFacts, encounterID int, boss string) Event {
 	}
 	e := Event{
 		Kind: KindBossKill, OccurredAt: f.at, Crest: crest, Href: "/reports/" + f.id,
-		Segments: segments, DedupeKey: "first-kill:" + strconv.Itoa(encounterID),
+		Segments: segments, DedupeKey: "first-kill:" + strconv.Itoa(encounterID), ReportID: f.id,
 	}
 	if f.spec != "" && f.level > 0 {
 		e.Spec, e.Band = f.spec, BandOf(f.level)

@@ -9,6 +9,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/jhunthrop/foreversixty/api/internal/rating/presence"
 )
 
 // The feed filters (GET /v1/feed?filter=).
@@ -102,9 +104,14 @@ func decodeCursor(s string) (cursor, error) {
 // mineSQL is 1 for a row of the viewer's own: their guild's, or their spec and band's.
 const mineSQL = `(case when e.guild_id is not null or (e.spec = $2 and (e.band = $3 or e.band is null)) then 1 else 0 end)`
 
+// reportVisible keeps a row a report wrote only while that report is public evidence: one
+// flagged or made private after it completed drops out of every feed read.
+var reportVisible = `(e.report_id is null or exists (select 1 from reports r
+	where r.id = e.report_id and r.visibility = 'public' and ` + presence.EvidenceReport("r") + `))`
+
 func (q Query) where() (string, []any, error) {
 	args := []any{q.Now.Add(-FeedWindow), q.Spec, q.Band, q.GuildIDs, q.Now}
-	clauses := []string{"e.occurred_at >= $1", "e.occurred_at <= $5", "(e.guild_id is null or e.guild_id = any($4))"}
+	clauses := []string{"e.occurred_at >= $1", "e.occurred_at <= $5", "(e.guild_id is null or e.guild_id = any($4))", reportVisible}
 	switch q.Filter {
 	case FilterSpec:
 		clauses = append(clauses, "e.spec = $2 and (e.band = $3 or e.band is null)")
