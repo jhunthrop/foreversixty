@@ -279,8 +279,11 @@ def loading_page(failed: bool = False) -> str:
         inner = (f'<div class="pl-err" role="alert"><p class="strong">{e(C["load_failed"])}</p><p class="t-small">{e(C["load_failed_detail"])}</p>'
                  f'<div class="pl-acts">{Button(e(P["retry"]))}</div></div>')
     else:
+        # The opening class's tree art paints in the server render (the page's largest paint), in the Plate's reserved
+        # height: the ready trees' (spec 5.2).
         inner = '<div class="pl-skel" role="status" aria-busy="true" aria-label="Loading talent data">' + ''.join(
-            f'<div class="pl-skt">{Skeleton(180, 24)}{Skeleton(216, 384)}</div>' for _ in range(3)) + '</div>'
+            f'<div class="pl-skt">{Skeleton(180, 24)}<img class="pl-art" src="{art(t["background"])}" alt="" width="216" height="384"></div>'
+            for t in st['trees']) + '</div>'
     from ws_prims import Plate
     plate = Plate(inner, 'Talent trees')
     rail_sk = lambda t: Section(t, f'<div class="pl-sec">{Skeleton(260, 20)}{Skeleton(200, 44)}</div>')
@@ -353,9 +356,12 @@ PAGE_CSS = '''<style>
 .pl-field{display:flex;flex-direction:column;gap:6px;flex:1;min-width:180px}.pl-field .field{height:44px}
 .pl-confirm{display:flex;flex-direction:column;gap:10px;padding:12px 0;border-top:1px solid var(--line-soft)}
 .pl-list{list-style:disc;padding-left:20px}.pl-url{font:600 14px/20px var(--font-body);color:var(--gold);overflow-wrap:anywhere}
-.pl-skel{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;padding:16px 20px;min-height:520px}.pl-skt{display:flex;flex-direction:column;align-items:center;gap:14px}
+.pl-skel{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;padding:16px 20px;min-height:575px}
+@media(min-width:768px){.pl-skel{min-height:543px}}@media(min-width:1280px){.pl-skel{min-height:547px}}@media(min-width:1760px){.pl-skel{min-height:615px}}
+.pl-art{display:block;max-width:100%;height:384px;object-fit:cover;border-radius:4px;opacity:.5}.pl-skt{display:flex;flex-direction:column;align-items:center;gap:14px}
 @media(max-width:767px){.pl-skel{grid-template-columns:minmax(0,1fr)}.pl-skt+.pl-skt{display:none}}
-.pl-err{display:flex;flex-direction:column;gap:8px;padding:20px;min-height:520px}
+.pl-err{display:flex;flex-direction:column;gap:8px;padding:20px;min-height:575px}
+@media(min-width:768px){.pl-err{min-height:543px}}@media(min-width:1280px){.pl-err{min-height:547px}}@media(min-width:1760px){.pl-err{min-height:615px}}
 @media(max-width:767px){.cbar .pc{padding-block:0;min-height:0}}
 .statesheet{display:grid;gap:40px}.st-b>h2{margin-bottom:12px}.st-row{display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start}
 .st-c{display:flex;flex-direction:column;align-items:center;gap:10px;width:120px;text-align:center}
