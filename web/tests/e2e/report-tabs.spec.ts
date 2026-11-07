@@ -475,7 +475,7 @@ test('a night death card keeps its own span', async ({ page }) => {
   await expect(cards.first()).toContainText(`over ${onPull}`);
 });
 
-test('the full event stream lists aura refreshes under Auras applied', async ({ page }) => {
+test('the full event stream lists aura refreshes under the Auras chip', async ({ page }) => {
   test.slow();
   await serveDuckdbRuntime(page);
   await page.goto('/reports/fixture2abcd?fight=3&view=events');
@@ -483,8 +483,8 @@ test('the full event stream lists aura refreshes under Auras applied', async ({ 
   await expect(page.getByTestId('event-list')).toContainText('refreshed Power Word: Fortitude', {
     timeout: 60_000,
   });
-  // The "Auras applied" toggle governs it: off, the refresh goes with the applications.
-  await page.getByLabel('Auras applied').uncheck();
+  // The Auras chip governs it: off, the refresh goes with the applications.
+  await page.getByLabel('Auras', { exact: true }).uncheck();
   await expect(page.getByTestId('event-list')).not.toContainText('refreshed Power Word: Fortitude');
 });
 
