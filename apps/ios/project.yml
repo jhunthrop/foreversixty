@@ -83,14 +83,15 @@ targets:
     # Lane F14: the App Group the widget extension shares (snapshot file, settings, and the
     # device token's keychain group). Under the ad-hoc "Sign to Run Locally" identity the
     # simulator honours it with no Team ID; a device build needs the group registered (lane O).
-    # TODO(universal links): add when the Team ID exists (lane O):
-    #     com.apple.developer.associated-domains: ["applinks:foreversixty.gg"]
+    # Universal links: the Battle.net sign-in callback (https://foreversixty.gg/app/auth) and
+    # shared /b/* links open the app. The site serves apple-app-site-association for both.
     # TODO(lane A2, F7): the aps-environment entitlement and the Push
     # Notifications capability join the same entitlements file.
     entitlements:
       path: App/ForeverSixty.entitlements
       properties:
         com.apple.security.application-groups: [group.gg.foreversixty.app]
+        com.apple.developer.associated-domains: ["applinks:foreversixty.gg", "webcredentials:foreversixty.gg"]
     # MARKETING_VERSION and CURRENT_PROJECT_VERSION come from apps/VERSION, through this file.
     configFiles:
       Debug: Version.xcconfig
