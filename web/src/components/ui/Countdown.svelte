@@ -134,7 +134,7 @@
     color: var(--color-strong);
   }
   .ui-countdown-part span {
-    font-size: 11px;
+    font-size: 12px;
     line-height: 16px;
     letter-spacing: 0.12em;
     text-transform: uppercase;

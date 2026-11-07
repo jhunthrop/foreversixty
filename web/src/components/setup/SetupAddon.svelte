@@ -31,7 +31,9 @@
       <Button href={WAGO_URL} rel="noopener" testid="setup-wago">{addonCopy.installWago}</Button>
     </div>
     <Divided testid="setup-hand-install">
-      <span class="label text-muted">{addonCopy.setupHandInstall}</span>
+      <span class="text-label tracking-label text-muted font-bold uppercase"
+        >{addonCopy.setupHandInstall}</span
+      >
       <p class="text-small text-muted">{addonCopy.installDataLead}</p>
       <p class="text-small text-muted">{addonCopy.setupHandInstallBody}</p>
       <div class="setup-acts gap-5">

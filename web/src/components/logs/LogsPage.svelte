@@ -93,7 +93,9 @@
   {#if latest !== null}
     <!-- the answer column holds 360 px from 900, as the mock's -->
     <span class="hidden min-[900px]:block min-[900px]:w-[360px]" aria-hidden="true"></span>
-    <span class="label text-muted">Your latest report · {latest.age}</span>
+    <span class="text-label tracking-label text-muted font-bold uppercase"
+      >Your latest report · {latest.age}</span
+    >
     <Figure value={latest.title} size="big" testid="logs-answer" />
     <span class="text-small text-muted">{latestWhere}</span>
     <a class={LINK} href={latest.href} data-testid="logs-answer-open">Open it ›</a>

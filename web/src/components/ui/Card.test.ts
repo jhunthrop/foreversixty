@@ -33,7 +33,7 @@ const section = (doc: Document): Element => {
 };
 
 describe('Card (Svelte)', () => {
-  it('is a section on the primary card surface, clipped, with a 36 px tile and an uppercase h2', () => {
+  it('is a section on the primary card surface, clipped, with a 36 px tile and an h2 in its own case', () => {
     const doc = card({ testid: 'weights', id: 'weights' });
     const root = section(doc);
     expect(root.className).toBe('card-surface overflow-hidden');
@@ -43,7 +43,7 @@ describe('Card (Svelte)', () => {
     expect(head.className).toBe(CARD_HEAD.root);
     expect(head.querySelector('[data-testid=icon-tile]')?.getAttribute('style')).toContain('width: 36px');
     const h2 = root.querySelector('h2');
-    expect(h2?.className).toBe('heading-plan uppercase');
+    expect(h2?.className).toBe('text-strong text-[24px] leading-none font-bold');
     expect(h2?.textContent).toBe('Stat weights');
   });
 
@@ -68,14 +68,14 @@ describe('Card (Svelte)', () => {
     expect(head.className).toBe(CARD_HEAD.compact);
     expect(head.getAttribute('data-compact')).toBe('true');
     expect(head.querySelector('[data-testid=icon-tile]')?.getAttribute('style')).toContain('width: 28px');
-    expect(doc.querySelector('h2')?.className).toBe('section-title leading-6');
+    expect(doc.querySelector('h2')?.className).toBe('text-strong text-[18px] leading-6 font-bold');
     expect(head.textContent).not.toContain('Ignored');
     expect(doc.querySelector('[data-testid=card-head-meta]')?.textContent).toBe('20 to 29');
   });
 
   it('keeps the title in its own case under a micro-label', () => {
     const doc = card({ glyph: 'crown', label: 'Plan', title: 'Premium' });
-    expect(doc.querySelector('h2')?.className).toBe('heading-plan');
+    expect(doc.querySelector('h2')?.className).toBe('text-strong text-[24px] leading-none font-bold');
     expect(doc.body.textContent).toContain('Plan');
   });
 
@@ -125,7 +125,7 @@ describe('Card (Astro twin)', () => {
     const root = section(doc);
     expect(root.className).toBe('card-surface overflow-hidden');
     expect(root.firstElementChild?.className).toBe(CARD_HEAD.root);
-    expect(doc.querySelector('h2')?.className).toBe('heading-plan uppercase');
+    expect(doc.querySelector('h2')?.className).toBe('text-strong text-[24px] leading-none font-bold');
     expect(doc.querySelector('[data-testid=card-head-meta]')?.textContent?.trim()).toBe(
       'Hover or tap an item for its stats',
     );
@@ -144,7 +144,7 @@ describe('Card (Astro twin)', () => {
     const root = section(doc);
     expect(root.className).toBe('card-surface-quiet overflow-hidden col-span-6');
     expect(root.firstElementChild?.className).toBe(CARD_HEAD.compact);
-    expect(doc.querySelector('h3')?.className).toBe('section-title leading-6');
+    expect(doc.querySelector('h3')?.className).toBe('text-strong text-[18px] leading-6 font-bold');
     expect(doc.querySelector('[data-testid=icon-tile]')?.getAttribute('style')).toContain('width: 28px');
     expect(doc.querySelector('[data-testid=content]')?.parentElement?.className).toBe(CARD_BODY.table);
   });

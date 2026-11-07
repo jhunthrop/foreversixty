@@ -237,7 +237,9 @@
       />
 
       <div class="flex flex-col gap-2">
-        <span class="label text-muted" id="upload-visibility-label">Who can open it</span>
+        <span class="text-label tracking-label text-muted font-bold uppercase" id="upload-visibility-label"
+          >Who can open it</span
+        >
         <Segmented
           options={VISIBILITIES.map((option) => ({ value: option.id, label: option.label }))}
           value={visibility}

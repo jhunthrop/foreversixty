@@ -209,6 +209,12 @@ def not_found_page(kind: str = 'out', suggest: bool = False, character: bool = F
 
 
 # ------------------------------------------------------------------------------------------------ sign in
+def characters_page() -> str:
+    """/characters (design/specs/2026-11-07-bis-landing.md section 8): the PageHeader names the page, the lookup is its Section."""
+    body = PageHeader(e(C['lookup']['pageTitle'])) + Page('ledger', lookup()) + PAGE_CSS
+    return build_page(e(C['lookup']['heading']), body, '', None, '/characters mock; data pages-facts.json.')
+
+
 def login_page() -> str:
     """/login signed out: the form page as /account signed out draws it (ws_premium account_page('out')), one Plate holding the
     reason, the Battle.net button, what Battle.net shares, and the reserved status line. Copy: lib/account/signin-copy.ts."""
@@ -307,6 +313,7 @@ PAGES = {
     'web-404-nochar': lambda: not_found_page('nochar'),
     'web-404-suggest': lambda: not_found_page(suggest=True),
     'web-404-character': lambda: not_found_page(character=True),
+    'web-characters': characters_page,
     'web-login': login_page,
     'web-pages-states': states_page,
 }

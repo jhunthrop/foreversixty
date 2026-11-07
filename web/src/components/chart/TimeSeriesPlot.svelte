@@ -1038,7 +1038,7 @@
     border-radius: 3px;
     background: rgba(13, 15, 21, 0.9);
     color: var(--color-muted);
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 700;
     letter-spacing: 0.12em;
     line-height: 16px;

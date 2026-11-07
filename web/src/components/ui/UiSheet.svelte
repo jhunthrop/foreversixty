@@ -53,7 +53,7 @@
 
 <div class="flex flex-col gap-12 pb-16" data-testid="ui-sheet">
   <section class="flex flex-col gap-5" aria-labelledby="sheet-buttons">
-    <h2 id="sheet-buttons" class="heading-section">Buttons</h2>
+    <h2 id="sheet-buttons" class="text-strong text-[22px] leading-7 font-bold">Buttons</h2>
     {#each TONES as tone (tone)}
       <div class="flex flex-wrap items-end gap-x-6 gap-y-3" data-testid="sheet-buttons-{tone}">
         {#each STATES as state (state)}
@@ -79,7 +79,7 @@
   </section>
 
   <section class="flex flex-col gap-4" aria-labelledby="sheet-switch">
-    <h2 id="sheet-switch" class="heading-section">Switch</h2>
+    <h2 id="sheet-switch" class="text-strong text-[22px] leading-7 font-bold">Switch</h2>
     <div class="flex flex-wrap items-end gap-x-8 gap-y-4" data-testid="sheet-switches">
       {#each [{ name: 'off', on: false }, { name: 'on', on: true }] as one (one.name)}
         <div class="flex flex-col gap-2">
@@ -114,7 +114,7 @@
   </section>
 
   <section class="flex flex-col gap-4" aria-labelledby="sheet-rows">
-    <h2 id="sheet-rows" class="heading-section">Settings rows</h2>
+    <h2 id="sheet-rows" class="text-strong text-[22px] leading-7 font-bold">Settings rows</h2>
     <div class="grid gap-6 md:grid-cols-2">
       <div class="flex flex-col gap-2">
         {@render label('default, hover, focus-visible, active')}
@@ -179,7 +179,7 @@
   </section>
 
   <section class="flex flex-col gap-4" aria-labelledby="sheet-tags">
-    <h2 id="sheet-tags" class="heading-section">Tags</h2>
+    <h2 id="sheet-tags" class="text-strong text-[22px] leading-7 font-bold">Tags</h2>
     <div class="flex flex-wrap gap-3" data-testid="sheet-tags">
       <Tag>Founder</Tag>
       <Tag tone="success" dot>On · 2 events</Tag>
@@ -189,7 +189,7 @@
   </section>
 
   <section class="flex flex-col gap-4" aria-labelledby="sheet-links">
-    <h2 id="sheet-links" class="heading-section">Links</h2>
+    <h2 id="sheet-links" class="text-strong text-[22px] leading-7 font-bold">Links</h2>
     <div class="flex flex-wrap items-end gap-x-8 gap-y-3">
       <div class="flex flex-col gap-1">
         {@render label('default')}
@@ -215,7 +215,7 @@
   </section>
 
   <section class="flex flex-col gap-4" aria-labelledby="sheet-stats">
-    <h2 id="sheet-stats" class="heading-section">Stat tiles</h2>
+    <h2 id="sheet-stats" class="text-strong text-[22px] leading-7 font-bold">Stat tiles</h2>
     <div class="flex flex-wrap gap-3" data-testid="sheet-stats">
       <StatTile value="07" label="Days" />
       <StatTile value="3" label="Runs this month" />
@@ -226,7 +226,7 @@
   <SelectSheet />
 
   <section class="flex flex-col gap-4" aria-labelledby="sheet-head">
-    <h2 id="sheet-head" class="heading-section">Card head</h2>
+    <h2 id="sheet-head" class="text-strong text-[22px] leading-7 font-bold">Card head</h2>
     <div class="card-surface max-w-[520px]" data-testid="sheet-card-head">
       <CardHead glyph="crown" label="Plan" title="Premium">
         {#snippet titleSnippet()}<Tag>Founder</Tag>{/snippet}

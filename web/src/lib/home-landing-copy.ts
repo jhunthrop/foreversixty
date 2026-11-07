@@ -5,6 +5,8 @@
 /** Task L8.2 ruling 7: the character search box. Typing `Name`, or `Name-Realm` as the game
  *  writes it, opens that character's profile (lib/character-search.ts). */
 export const homeCharacterSearchCopy = {
+  /** /characters' page title; the lookup under it keeps its own Section heading. */
+  pageTitle: 'Characters',
   heading: 'Look up a character',
   /** The one muted line beside the heading. */
   aside: 'See any character’s Forever Score.',

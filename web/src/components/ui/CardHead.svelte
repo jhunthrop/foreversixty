@@ -60,7 +60,7 @@
     testid?: string;
   } = $props();
 
-  const titleClass = $derived(cardHeadTitleClass(compact, label !== undefined));
+  const titleClass = $derived(cardHeadTitleClass(compact));
   const hasRight = $derived(meta !== undefined || action !== undefined || aside !== undefined);
 </script>
 

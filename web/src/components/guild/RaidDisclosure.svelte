@@ -9,7 +9,7 @@
     heading,
     headingId,
     count = null,
-    headingClass = 'section-title',
+    headingClass = 'text-strong text-[18px] leading-6 font-bold',
     testid,
     children,
   }: {

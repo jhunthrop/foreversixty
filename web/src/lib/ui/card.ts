@@ -26,7 +26,7 @@ export const CARD_HEAD = {
   /** The compact head's title is one short word: it never pushes the right slot to a line of its
    *  own on a phone (paperdoll spec §3.2, the mocks' 360 boards). */
   titleBlockCompact: 'flex min-w-0 flex-1 flex-col gap-1',
-  label: 'text-muted text-[11px] leading-none font-bold tracking-[.14em] uppercase',
+  label: 'text-muted text-label leading-none font-bold tracking-label uppercase',
   titleRow: 'flex flex-wrap items-center gap-x-2 gap-y-1',
   aside: 'ml-auto min-w-0 text-right text-[13px]',
   meta: 'text-muted',
@@ -37,10 +37,11 @@ export function cardHeadTileSize(compact: boolean): 36 | 28 {
   return compact ? 28 : 36;
 }
 
-/** The title's recipe: the card title (18) when compact; 24 uppercase alone; its copy's case under a micro-label. */
-export function cardHeadTitleClass(compact: boolean, labelled: boolean): string {
-  if (compact) return 'section-title leading-6';
-  return labelled ? 'heading-plan' : 'heading-plan uppercase';
+/** The title's recipe, in its copy's case (no caps headings, web layout spec 3.3): the card
+ *  title (18) when compact, else 24. */
+export function cardHeadTitleClass(compact: boolean): string {
+  if (compact) return 'text-strong text-[18px] leading-6 font-bold';
+  return 'text-strong text-[24px] leading-none font-bold';
 }
 
 /** The body's padding per kind (§3.4): text and table bodies draw the head's divider; rows bring their own top rules. */

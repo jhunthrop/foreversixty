@@ -1,5 +1,5 @@
 <!-- web/src/components/guild/RaidBlock.svelte -->
-<!-- One block of the Report (attendance spec 3.4): a 15 px section-title sub-head with its mono
+<!-- One block of the Report (attendance spec 3.4): an 18 px section head with its mono
      muted count, a 12 px gap, then its rows. -->
 <script lang="ts">
   import type { Snippet } from 'svelte';
@@ -25,7 +25,7 @@
 </script>
 
 <div class="flex min-w-0 flex-col gap-3" data-testid={testid}>
-  <h3 class="section-title flex items-baseline gap-2">
+  <h3 class="text-strong flex items-baseline gap-2 text-[18px] leading-6 font-bold">
     <span
       >{heading}{#if tail !== null}{SPACE}<span class="whitespace-nowrap">{tail}</span>{/if}</span
     >{#if count !== null && count > 0}<span class="text-muted numeric text-[13px]">{count}</span>{/if}

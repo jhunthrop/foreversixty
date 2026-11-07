@@ -111,7 +111,7 @@
 </script>
 
 <section class="flex flex-col gap-6" aria-labelledby="sheet-select" data-testid="sheet-selects">
-  <h2 id="sheet-select" class="heading-section">Select</h2>
+  <h2 id="sheet-select" class="text-strong text-[22px] leading-7 font-bold">Select</h2>
 
   {#each SIZES as row (row.size)}
     <div class="flex flex-col gap-3" data-testid="sheet-select-{row.size}">
@@ -261,7 +261,7 @@
           aria-labelledby="sheet-dialog-title"
           data-testid="sheet-dialog"
         >
-          <h3 id="sheet-dialog-title" class="heading-section mb-3">Settings</h3>
+          <h3 id="sheet-dialog-title" class="text-strong mb-3 text-[22px] leading-7 font-bold">Settings</h3>
           <label class="quiet-label" for="sheet-dialog-style">Fight style</label>
           <Select
             id="sheet-dialog-style"

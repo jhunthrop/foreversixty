@@ -29,7 +29,9 @@
 <div class="flex flex-col gap-3 p-3 pt-0">
   {#each sections as section (section.slot)}
     <section data-testid={`sim-imbue-slot-${section.slot}`}>
-      <h3 class="label text-nav mb-1">{simCopy.imbueSlotLabel[section.slot] ?? section.slot}</h3>
+      <h3 class="text-label tracking-label text-nav mb-1 font-bold uppercase">
+        {simCopy.imbueSlotLabel[section.slot] ?? section.slot}
+      </h3>
       {#each section.kinds as group (group.kind)}
         <p class="text-muted mt-1 text-[12px]">{simCopy.imbueKindLabel[group.kind] ?? group.kind}</p>
         <ul class="grid grid-cols-1 gap-1 md:grid-cols-2">

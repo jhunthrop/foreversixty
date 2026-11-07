@@ -36,9 +36,9 @@
 
 {#snippet dateBlock(box: string)}
   <span class="flex flex-col items-center justify-center {box}" aria-hidden="true">
-    <span class="label text-muted leading-none">{view.weekday}</span>
+    <span class="text-label tracking-label text-muted leading-none font-bold uppercase">{view.weekday}</span>
     <span class="text-strong numeric text-[22px] leading-tight">{view.day}</span>
-    <span class="label text-muted leading-none">{view.month}</span>
+    <span class="text-label tracking-label text-muted leading-none font-bold uppercase">{view.month}</span>
   </span>
 {/snippet}
 

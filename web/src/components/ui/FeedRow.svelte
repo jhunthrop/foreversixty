@@ -67,7 +67,7 @@
   }
   .ui-feed-kind {
     display: block;
-    font-size: 11px;
+    font-size: 12px;
     line-height: 16px;
     letter-spacing: 0.1em;
     text-transform: uppercase;

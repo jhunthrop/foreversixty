@@ -67,7 +67,7 @@ const showLabel = label !== undefined && !compact;
     <div class={CARD_HEAD.titleBlock}>
       {showLabel && <span class={CARD_HEAD.label}>{label}</span>}
       <div class={CARD_HEAD.titleRow}>
-        <Heading class={cardHeadTitleClass(compact, label !== undefined)}>{title}</Heading>
+        <Heading class={cardHeadTitleClass(compact)}>{title}</Heading>
       </div>
     </div>
     {hasRight && (
