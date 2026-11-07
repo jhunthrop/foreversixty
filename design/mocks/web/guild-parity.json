@@ -44,6 +44,21 @@
       "id": "profile",
       "path": "/guild/us/pvp/olympus-xxvii/members/u%3A1016",
       "mock": "web-guild-profile.html"
+    },
+    {
+      "id": "raids",
+      "path": "/guild/us/pvp/olympus-xxvii#raids",
+      "mock": "web-guild-raids.html"
+    },
+    {
+      "id": "raids-plan",
+      "path": "/guild/us/pvp/olympus-xxvii#raids",
+      "mock": "web-guild-raids-plan.html"
+    },
+    {
+      "id": "assignments",
+      "path": "/guild/us/pvp/olympus-xxvii/raids/41",
+      "mock": "web-guild-assignments.html"
     }
   ]
 }
