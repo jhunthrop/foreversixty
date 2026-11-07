@@ -1383,7 +1383,6 @@ def RowGroup(label: str, count: int, rows: list[str]) -> str:
 
 
 PRIM_CSS += '''
-.sec-h{flex-wrap:wrap;row-gap:4px}
 .sgr .st{min-height:20px}
 .backlink{display:inline-flex;align-items:center;min-height:44px;font-size:13px;color:var(--muted);text-decoration:underline}
 .sgr{border-bottom:1px solid var(--line-soft);padding-top:12px;list-style:none}.sgr:last-child{border-bottom:0}

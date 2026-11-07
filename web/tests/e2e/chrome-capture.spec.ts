@@ -21,6 +21,7 @@ import { openHome, type HomeState } from './support/home-page';
 import { openSimState, type SimParityState } from './support/sim-parity';
 import { openLogsState, type LogsParityState } from './support/logs-parity';
 import { openTiersState, type TiersParityState } from './support/tiers-parity';
+import { openGuildState } from './support/guild-parity';
 import { REPO_ROOT, readParityConfig, waitForChromeHydrated } from './support/parity';
 
 const OUT = path.join(REPO_ROOT, 'design/mocks/data/chrome');
@@ -275,6 +276,11 @@ test.describe('site chrome capture', () => {
       s.id as TiersParityState,
     ]);
     await each(browser, states, openTiersState);
+  });
+
+  test('guild', async ({ browser }) => {
+    const states = readParityConfig('guild-parity.json').states.map((s): [string, string] => [s.mock, s.id]);
+    await each(browser, states, openGuildState);
   });
 
   test('character', async ({ browser }) => {

@@ -83,12 +83,20 @@ Then commit `design/mocks/web` (and `design/mocks/data/bis-facts.json`).
 
 `web/tests/e2e/parity-pages.spec.ts`: `changelog` (All), `changelog-game` (`?show=game`), `legal-privacy`, `404` (signed out) and `404-in` (Felsnap, `fixtures/home/me-34.json`), at 1440 and 390. Mocks `web-changelog*.html`, `web-legal-privacy.html`, `web-404*.html` from `design/mocks/ws_pages.py` (spec `design/specs/2026-11-08-pages.md`). Test-time render: `node design/mocks/pages_facts.mjs <out>/pages-facts.json`, then `ws_pages.py` with `FS_PAGES_FACTS` and `FS_MOCK_OUT` (`renderPagesMocks` in `support/parity-mocks.ts`); the facts bundle the content collections, the copy modules and `lib/changelog/entries.ts`, and need no `src/data/generated`.
 
+## The tier list states
+
+`design/mocks/web/tiers-parity.json`: `dps` (signed out), `dps-you` (Thandrel, Fury Warrior 60), `dps-horde` (`?faction=horde`), `healer`, `tank`, `tank-you` (a DPS spec on the Tank list), at 1440. Mocks `web-tiers*.html` from `design/mocks/ws_tiers.py` (spec `design/specs/2026-11-06-tiers.md`), rendered at test time (`renderTiersMocks`) from `data/builds/<active build>/bis`, the files the fixture build prerenders `/tiers` from, so a re-rank moves both sides alike. `web-tiers-bar` (phone, controls open) and `web-tiers-states` (the states sheet) are references, not page states.
+
+## The guild states
+
+`design/mocks/web/guild-parity.json`, against the committed mocks from `design/mocks/ws_guild2.py` (the persona round, `design/specs/2026-11-05-web-layout.md` section 7). The roster and every figure both sides show live once in `design/mocks/guild_data.py`; `python3 design/mocks/guild_fixtures.py` writes them as the API's answers into `web/tests/e2e/fixtures/guild-parity/`, which `tests/e2e/support/guild-parity/` routes to the build. The clock is pinned to Tue 8 Dec 2026, 4:00 pm in America/Chicago (`support/guild-parity/clock.ts`), so "Starts in" and the raid times read as the mock's. After a change: `python3 design/mocks/guild_fixtures.py && python3 design/mocks/ws_guild2.py`.
+
 ## The site chrome
 
 Every mock's header and footer are the shipped ones, not drawings: `web/tests/e2e/chrome-capture.spec.ts` (a tool, skipped unless `CHROME_CAPTURE=1`) opens each parity state as its spec does and writes `design/mocks/data/chrome/<mock>.json` (the header and footer markup, scripts removed, links to `#`, images pointing at `web/public`) and `chrome.css` (the site CSS that styles them, scoped under `.fs-chrome`). `ws_lib.write` fills each mock from its own capture, or from a template (`template-out`, `template-in` with the mock's character, `template-new`, `template-pending`). After a change to the header or footer, rebuild and recapture, then regenerate the mocks:
 
     cd web && npm run build && CHROME_CAPTURE=1 E2E_SKIP_BUILD=1 npx playwright test tests/e2e/chrome-capture.spec.ts --project=desktop
-    python3 design/mocks/ws_bis.py && python3 design/mocks/ws_tiers.py && python3 design/mocks/ws_sim.py && python3 design/mocks/ws_home.py
+    python3 design/mocks/ws_bis.py && python3 design/mocks/ws_tiers.py && python3 design/mocks/ws_sim.py && python3 design/mocks/ws_home.py && python3 design/mocks/ws_guild2.py
 
 ## When it fails
 

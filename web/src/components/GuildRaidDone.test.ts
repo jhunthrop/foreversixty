@@ -102,12 +102,30 @@ describe('a done raid, officer', () => {
     OFFICER,
   );
 
-  it('has no Your night, every raider in Attendance with the fix, and the Discord summary', () => {
+  it('has no Your night, the attendance fix behind Fix attendance, and the Discord summary', () => {
     expect(body).not.toContain('raid-your-night"');
-    expect(body.match(/data-testid="raid-attendance-row"/g)).toHaveLength(2);
-    expect(body).toContain('raid-attendance-fix-k2');
+    expect(body).toContain('raid-attendance-fix-open');
+    expect(body).not.toContain('data-testid="raid-attendance-row"');
     expect(body).toContain('raid-discord"');
     expect(body).toContain('raid-report-copy');
+  });
+
+  it('opens the fix on its own once a row has been fixed: every raider, each with its fix', () => {
+    const fixed = page(
+      DONE({
+        attendance: [
+          MINE,
+          attendanceRow({
+            character_key: 'k2',
+            name: 'Menda',
+            override: { status: 'bench', by_name: 'Kraggor', at: '2026-12-11T06:00:00Z' },
+          }),
+        ],
+      }),
+      OFFICER,
+    );
+    expect(fixed.match(/data-testid="raid-attendance-row"/g)).toHaveLength(2);
+    expect(fixed).toContain('raid-attendance-fix-k2');
   });
 
   it('keeps the rail after the main column: attendance, loot, Discord', () => {
