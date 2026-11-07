@@ -1,0 +1,58 @@
+{
+ "device": {
+  "width": 393,
+  "height": 852
+ },
+ "regions": {
+  "head": {
+   "box": [
+    16,
+    0,
+    361,
+    68
+   ],
+   "inventory": {}
+  },
+  "head-title": {
+   "box": [
+    16,
+    16,
+    361,
+    38
+   ],
+   "inventory": {}
+  },
+  "summary": {
+   "box": [
+    16,
+    68,
+    361,
+    42
+   ],
+   "inventory": {}
+  },
+  "section-look-up-a-character": {
+   "box": [
+    16,
+    130,
+    361,
+    109
+   ],
+   "inventory": {
+    "button": 1,
+    "field": 1
+   }
+  },
+  "section-add-this-character": {
+   "box": [
+    16,
+    287,
+    361,
+    182
+   ],
+   "inventory": {
+    "row": 2
+   }
+  }
+ }
+}

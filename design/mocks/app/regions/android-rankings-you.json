@@ -1,0 +1,101 @@
+{
+ "device": {
+  "width": 412,
+  "height": 915
+ },
+ "regions": {
+  "head": {
+   "box": [
+    16,
+    0,
+    380,
+    278
+   ],
+   "inventory": {
+    "image": 1
+   }
+  },
+  "head-title": {
+   "box": [
+    16,
+    16,
+    380,
+    64
+   ],
+   "inventory": {}
+  },
+  "head-meta": {
+   "box": [
+    16,
+    60,
+    349,
+    20
+   ],
+   "inventory": {}
+  },
+  "head-answer": {
+   "box": [
+    16,
+    96,
+    380,
+    168
+   ],
+   "inventory": {
+    "image": 1
+   }
+  },
+  "controls": {
+   "box": [
+    0,
+    278,
+    412,
+    62
+   ],
+   "inventory": {
+    "button": 1,
+    "segment": 4,
+    "field": 5
+   }
+  },
+  "summary": {
+   "box": [
+    0,
+    340,
+    412,
+    43
+   ],
+   "inventory": {}
+  },
+  "section-fury-warriors": {
+   "box": [
+    16,
+    403,
+    380,
+    2270
+   ],
+   "inventory": {
+    "row": 15
+   }
+  },
+  "plate": {
+   "box": [
+    16,
+    451,
+    380,
+    2222
+   ],
+   "inventory": {
+    "row": 15
+   }
+  },
+  "footer-note": {
+   "box": [
+    16,
+    2721,
+    380,
+    48
+   ],
+   "inventory": {}
+  }
+ }
+}

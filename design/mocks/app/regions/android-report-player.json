@@ -1,0 +1,131 @@
+{
+ "device": {
+  "width": 412,
+  "height": 915
+ },
+ "regions": {
+  "head": {
+   "box": [
+    16,
+    0,
+    380,
+    295
+   ],
+   "inventory": {
+    "button": 2
+   }
+  },
+  "head-title": {
+   "box": [
+    16,
+    16,
+    380,
+    102
+   ],
+   "inventory": {}
+  },
+  "head-meta": {
+   "box": [
+    16,
+    98,
+    380,
+    20
+   ],
+   "inventory": {}
+  },
+  "head-answer": {
+   "box": [
+    16,
+    134,
+    380,
+    92
+   ],
+   "inventory": {
+    "button": 1
+   }
+  },
+  "controls": {
+   "box": [
+    0,
+    295,
+    412,
+    62
+   ],
+   "inventory": {
+    "button": 1,
+    "field": 6
+   }
+  },
+  "section-soren-everhart-rsquo-s-damage": {
+   "box": [
+    16,
+    385,
+    380,
+    301
+   ],
+   "inventory": {
+    "button": 4,
+    "image": 1
+   }
+  },
+  "plate": {
+   "box": [
+    16,
+    472,
+    380,
+    214
+   ],
+   "inventory": {
+    "button": 3,
+    "image": 1
+   }
+  },
+  "section-damage-over-the-fight": {
+   "box": [
+    16,
+    734,
+    380,
+    79
+   ],
+   "inventory": {}
+  },
+  "section-gear-at-the-pull": {
+   "box": [
+    16,
+    861,
+    380,
+    116
+   ],
+   "inventory": {}
+  },
+  "footer-note": {
+   "box": [
+    16,
+    1025,
+    380,
+    36
+   ],
+   "inventory": {}
+  },
+  "section-this-pull": {
+   "box": [
+    16,
+    1085,
+    380,
+    241
+   ],
+   "inventory": {}
+  },
+  "section-targets": {
+   "box": [
+    16,
+    1358,
+    380,
+    484
+   ],
+   "inventory": {
+    "row": 6
+   }
+  }
+ }
+}

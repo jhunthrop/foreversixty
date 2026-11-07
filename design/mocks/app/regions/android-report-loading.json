@@ -1,0 +1,84 @@
+{
+ "device": {
+  "width": 412,
+  "height": 915
+ },
+ "regions": {
+  "head": {
+   "box": [
+    16,
+    0,
+    380,
+    243
+   ],
+   "inventory": {
+    "button": 1
+   }
+  },
+  "head-title": {
+   "box": [
+    16,
+    16,
+    380,
+    62
+   ],
+   "inventory": {}
+  },
+  "head-meta": {
+   "box": [
+    16,
+    62,
+    380,
+    16
+   ],
+   "inventory": {}
+  },
+  "head-answer": {
+   "box": [
+    16,
+    94,
+    380,
+    80
+   ],
+   "inventory": {}
+  },
+  "controls": {
+   "box": [
+    0,
+    243,
+    412,
+    62
+   ],
+   "inventory": {
+    "field": 3
+   }
+  },
+  "section-players": {
+   "box": [
+    16,
+    333,
+    380,
+    510
+   ],
+   "inventory": {}
+  },
+  "plate": {
+   "box": [
+    16,
+    380,
+    380,
+    463
+   ],
+   "inventory": {}
+  },
+  "section-this-pull": {
+   "box": [
+    16,
+    867,
+    380,
+    115
+   ],
+   "inventory": {}
+  }
+ }
+}

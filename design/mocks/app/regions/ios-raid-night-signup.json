@@ -1,0 +1,72 @@
+{
+ "device": {
+  "width": 393,
+  "height": 852
+ },
+ "regions": {
+  "head": {
+   "box": [
+    32,
+    8,
+    329,
+    94
+   ],
+   "inventory": {
+    "image": 1
+   }
+  },
+  "head-title": {
+   "box": [
+    32,
+    24,
+    329,
+    64
+   ],
+   "inventory": {
+    "image": 1
+   }
+  },
+  "head-meta": {
+   "box": [
+    104,
+    68,
+    220,
+    20
+   ],
+   "inventory": {}
+  },
+  "section-your-sign-up": {
+   "box": [
+    16,
+    316,
+    361,
+    91
+   ],
+   "inventory": {
+    "button": 4
+   }
+  },
+  "section-who-is-coming": {
+   "box": [
+    16,
+    435,
+    361,
+    231
+   ],
+   "inventory": {
+    "row": 3
+   }
+  },
+  "section-before-you-pull": {
+   "box": [
+    16,
+    694,
+    361,
+    131
+   ],
+   "inventory": {
+    "row": 2
+   }
+  }
+ }
+}

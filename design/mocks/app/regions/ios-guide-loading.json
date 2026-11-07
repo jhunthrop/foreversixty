@@ -1,0 +1,193 @@
+{
+ "device": {
+  "width": 393,
+  "height": 852
+ },
+ "regions": {
+  "head": {
+   "box": [
+    16,
+    0,
+    361,
+    328
+   ],
+   "inventory": {
+    "image": 1
+   }
+  },
+  "head-title": {
+   "box": [
+    16,
+    16,
+    361,
+    194
+   ],
+   "inventory": {
+    "image": 1
+   }
+  },
+  "head-meta": {
+   "box": [
+    88,
+    60,
+    289,
+    20
+   ],
+   "inventory": {}
+  },
+  "head-answer": {
+   "box": [
+    16,
+    226,
+    361,
+    88
+   ],
+   "inventory": {}
+  },
+  "controls": {
+   "box": [
+    0,
+    328,
+    393,
+    50
+   ],
+   "inventory": {
+    "row": 9,
+    "segment": 3,
+    "image": 3
+   }
+  },
+  "plate": {
+   "box": [
+    16,
+    398,
+    361,
+    1079
+   ],
+   "inventory": {
+    "row": 4,
+    "button": 2,
+    "image": 54
+   }
+  },
+  "section-overview": {
+   "box": [
+    16,
+    1525,
+    361,
+    805
+   ],
+   "inventory": {}
+  },
+  "section-talents-and-builds": {
+   "box": [
+    16,
+    2378,
+    361,
+    1752
+   ],
+   "inventory": {
+    "row": 9,
+    "image": 8
+   }
+  },
+  "section-rotation-and-priority": {
+   "box": [
+    16,
+    4178,
+    361,
+    2526
+   ],
+   "inventory": {
+    "row": 14,
+    "image": 13
+   }
+  },
+  "section-stat-priority": {
+   "box": [
+    16,
+    6752,
+    361,
+    1289
+   ],
+   "inventory": {}
+  },
+  "section-best-in-slot": {
+   "box": [
+    16,
+    8089,
+    361,
+    1660
+   ],
+   "inventory": {
+    "row": 17,
+    "image": 17
+   }
+  },
+  "section-enchants-and-consumables": {
+   "box": [
+    16,
+    9797,
+    361,
+    1481
+   ],
+   "inventory": {
+    "row": 16,
+    "image": 16
+   }
+  },
+  "section-races": {
+   "box": [
+    16,
+    11326,
+    361,
+    1467
+   ],
+   "inventory": {
+    "row": 8,
+    "image": 9
+   }
+  },
+  "section-professions": {
+   "box": [
+    16,
+    12841,
+    361,
+    291
+   ],
+   "inventory": {}
+  },
+  "section-leveling": {
+   "box": [
+    16,
+    13180,
+    361,
+    3092
+   ],
+   "inventory": {
+    "button": 2,
+    "image": 50
+   }
+  },
+  "section-sources": {
+   "box": [
+    16,
+    16320,
+    361,
+    505
+   ],
+   "inventory": {
+    "row": 10
+   }
+  },
+  "footer-note": {
+   "box": [
+    16,
+    16873,
+    361,
+    56
+   ],
+   "inventory": {}
+  }
+ }
+}

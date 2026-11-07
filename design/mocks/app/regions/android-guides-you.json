@@ -1,0 +1,60 @@
+{
+ "device": {
+  "width": 412,
+  "height": 915
+ },
+ "regions": {
+  "head": {
+   "box": [
+    16,
+    0,
+    380,
+    262
+   ],
+   "inventory": {
+    "image": 1
+   }
+  },
+  "head-title": {
+   "box": [
+    16,
+    16,
+    380,
+    122
+   ],
+   "inventory": {}
+  },
+  "head-meta": {
+   "box": [
+    16,
+    60,
+    380,
+    20
+   ],
+   "inventory": {}
+  },
+  "head-answer": {
+   "box": [
+    16,
+    154,
+    380,
+    94
+   ],
+   "inventory": {
+    "image": 1
+   }
+  },
+  "plate": {
+   "box": [
+    16,
+    282,
+    380,
+    2209
+   ],
+   "inventory": {
+    "row": 37,
+    "image": 37
+   }
+  }
+ }
+}

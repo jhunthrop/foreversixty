@@ -1,0 +1,50 @@
+{
+ "device": {
+  "width": 393,
+  "height": 852
+ },
+ "regions": {
+  "head": {
+   "box": [
+    16,
+    0,
+    361,
+    96
+   ],
+   "inventory": {}
+  },
+  "section-gear": {
+   "box": [
+    16,
+    116,
+    361,
+    1205
+   ],
+   "inventory": {
+    "row": 17
+   }
+  },
+  "plate": {
+   "box": [
+    16,
+    163,
+    361,
+    1158
+   ],
+   "inventory": {
+    "row": 17
+   }
+  },
+  "slots": {
+   "box": [
+    17,
+    164,
+    359,
+    1156
+   ],
+   "inventory": {
+    "row": 17
+   }
+  }
+ }
+}

@@ -1,0 +1,95 @@
+{
+ "device": {
+  "width": 412,
+  "height": 915
+ },
+ "regions": {
+  "head": {
+   "box": [
+    16,
+    0,
+    380,
+    295
+   ],
+   "inventory": {
+    "button": 2
+   }
+  },
+  "head-title": {
+   "box": [
+    16,
+    16,
+    380,
+    102
+   ],
+   "inventory": {}
+  },
+  "head-meta": {
+   "box": [
+    16,
+    98,
+    380,
+    20
+   ],
+   "inventory": {}
+  },
+  "head-answer": {
+   "box": [
+    16,
+    134,
+    380,
+    92
+   ],
+   "inventory": {
+    "button": 1
+   }
+  },
+  "controls": {
+   "box": [
+    0,
+    295,
+    412,
+    62
+   ],
+   "inventory": {
+    "field": 3
+   }
+  },
+  "section-coach": {
+   "box": [
+    16,
+    385,
+    380,
+    106
+   ],
+   "inventory": {}
+  },
+  "plate": {
+   "box": [
+    16,
+    433,
+    380,
+    58
+   ],
+   "inventory": {}
+  },
+  "footer-note": {
+   "box": [
+    16,
+    539,
+    380,
+    36
+   ],
+   "inventory": {}
+  },
+  "section-this-pull": {
+   "box": [
+    16,
+    599,
+    380,
+    241
+   ],
+   "inventory": {}
+  }
+ }
+}

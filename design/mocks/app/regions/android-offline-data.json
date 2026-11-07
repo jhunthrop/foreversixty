@@ -1,0 +1,48 @@
+{
+ "device": {
+  "width": 412,
+  "height": 915
+ },
+ "regions": {
+  "head": {
+   "box": [
+    32,
+    8,
+    348,
+    68
+   ],
+   "inventory": {}
+  },
+  "head-title": {
+   "box": [
+    32,
+    24,
+    348,
+    38
+   ],
+   "inventory": {}
+  },
+  "section-on-this-phone-26-6-mb": {
+   "box": [
+    16,
+    104,
+    380,
+    329
+   ],
+   "inventory": {
+    "row": 5
+   }
+  },
+  "section-updates": {
+   "box": [
+    16,
+    461,
+    380,
+    274
+   ],
+   "inventory": {
+    "row": 2
+   }
+  }
+ }
+}

@@ -1,0 +1,72 @@
+{
+ "device": {
+  "width": 412,
+  "height": 915
+ },
+ "regions": {
+  "head": {
+   "box": [
+    16,
+    0,
+    380,
+    154
+   ],
+   "inventory": {
+    "button": 1
+   }
+  },
+  "head-title": {
+   "box": [
+    16,
+    16,
+    380,
+    64
+   ],
+   "inventory": {}
+  },
+  "head-meta": {
+   "box": [
+    16,
+    60,
+    316,
+    20
+   ],
+   "inventory": {}
+  },
+  "section-pick-your-class": {
+   "box": [
+    16,
+    174,
+    380,
+    632
+   ],
+   "inventory": {
+    "row": 9,
+    "image": 9
+   }
+  },
+  "countdowns": {
+   "box": [
+    16,
+    806,
+    380,
+    248
+   ],
+   "inventory": {
+    "image": 3
+   }
+  },
+  "section-forever-right-now": {
+   "box": [
+    16,
+    1082,
+    380,
+    561
+   ],
+   "inventory": {
+    "row": 7,
+    "image": 7
+   }
+  }
+ }
+}

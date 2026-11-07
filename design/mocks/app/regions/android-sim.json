@@ -1,0 +1,84 @@
+{
+ "device": {
+  "width": 412,
+  "height": 915
+ },
+ "regions": {
+  "head": {
+   "box": [
+    16,
+    0,
+    380,
+    207
+   ],
+   "inventory": {}
+  },
+  "head-title": {
+   "box": [
+    16,
+    16,
+    380,
+    84
+   ],
+   "inventory": {}
+  },
+  "head-meta": {
+   "box": [
+    16,
+    60,
+    380,
+    40
+   ],
+   "inventory": {}
+  },
+  "section-sim-your-character": {
+   "box": [
+    16,
+    235,
+    380,
+    252
+   ],
+   "inventory": {
+    "button": 1,
+    "field": 1
+   }
+  },
+  "plate": {
+   "box": [
+    16,
+    282,
+    380,
+    205
+   ],
+   "inventory": {
+    "button": 1,
+    "field": 1
+   }
+  },
+  "section-other-ways-in": {
+   "box": [
+    16,
+    535,
+    380,
+    531
+   ],
+   "inventory": {
+    "row": 3,
+    "button": 3,
+    "field": 2
+   }
+  },
+  "section-sim-a-best-in-slot-set": {
+   "box": [
+    16,
+    1114,
+    380,
+    619
+   ],
+   "inventory": {
+    "row": 9,
+    "image": 9
+   }
+  }
+ }
+}

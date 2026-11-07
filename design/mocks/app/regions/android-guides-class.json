@@ -1,0 +1,80 @@
+{
+ "device": {
+  "width": 412,
+  "height": 915
+ },
+ "regions": {
+  "head": {
+   "box": [
+    16,
+    0,
+    380,
+    272
+   ],
+   "inventory": {
+    "image": 1
+   }
+  },
+  "head-title": {
+   "box": [
+    16,
+    16,
+    380,
+    242
+   ],
+   "inventory": {
+    "image": 1
+   }
+  },
+  "head-meta": {
+   "box": [
+    88,
+    60,
+    308,
+    20
+   ],
+   "inventory": {}
+  },
+  "plate": {
+   "box": [
+    16,
+    292,
+    380,
+    421
+   ],
+   "inventory": {
+    "row": 3,
+    "image": 3
+   }
+  },
+  "section-what-changed-from-1-12": {
+   "box": [
+    16,
+    789,
+    380,
+    795
+   ],
+   "inventory": {}
+  },
+  "section-sources": {
+   "box": [
+    16,
+    1632,
+    380,
+    329
+   ],
+   "inventory": {
+    "row": 6
+   }
+  },
+  "section-races": {
+   "box": [
+    16,
+    1985,
+    380,
+    144
+   ],
+   "inventory": {}
+  }
+ }
+}

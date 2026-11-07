@@ -1,0 +1,138 @@
+{
+ "device": {
+  "width": 412,
+  "height": 915
+ },
+ "regions": {
+  "head": {
+   "box": [
+    16,
+    0,
+    380,
+    240
+   ],
+   "inventory": {
+    "image": 1
+   }
+  },
+  "head-title": {
+   "box": [
+    16,
+    16,
+    380,
+    64
+   ],
+   "inventory": {
+    "image": 1
+   }
+  },
+  "head-meta": {
+   "box": [
+    88,
+    60,
+    211,
+    20
+   ],
+   "inventory": {}
+  },
+  "head-answer": {
+   "box": [
+    16,
+    96,
+    380,
+    130
+   ],
+   "inventory": {}
+  },
+  "controls": {
+   "box": [
+    0,
+    240,
+    412,
+    50
+   ],
+   "inventory": {
+    "segment": 9,
+    "field": 1,
+    "image": 9
+   }
+  },
+  "notes": {
+   "box": [
+    16,
+    290,
+    380,
+    32
+   ],
+   "inventory": {}
+  },
+  "plate": {
+   "box": [
+    16,
+    342,
+    380,
+    575
+   ],
+   "inventory": {
+    "button": 22,
+    "image": 22
+   }
+  },
+  "section-point-order": {
+   "box": [
+    16,
+    1439,
+    380,
+    491
+   ],
+   "inventory": {
+    "image": 51
+   }
+  },
+  "section-level-60-build": {
+   "box": [
+    16,
+    965,
+    380,
+    196
+   ],
+   "inventory": {
+    "button": 2
+   }
+  },
+  "section-in-the-game": {
+   "box": [
+    16,
+    1209,
+    380,
+    182
+   ],
+   "inventory": {
+    "button": 1
+   }
+  },
+  "section-share-this-build": {
+   "box": [
+    16,
+    1978,
+    380,
+    277
+   ],
+   "inventory": {
+    "button": 2,
+    "field": 1
+   }
+  },
+  "section-import-from-addon": {
+   "box": [
+    16,
+    2303,
+    380,
+    206
+   ],
+   "inventory": {
+    "button": 1
+   }
+  }
+ }
+}

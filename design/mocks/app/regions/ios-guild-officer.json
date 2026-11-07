@@ -1,0 +1,140 @@
+{
+ "device": {
+  "width": 393,
+  "height": 852
+ },
+ "regions": {
+  "head": {
+   "box": [
+    16,
+    0,
+    361,
+    259
+   ],
+   "inventory": {
+    "button": 1,
+    "image": 1
+   }
+  },
+  "head-title": {
+   "box": [
+    16,
+    16,
+    361,
+    84
+   ],
+   "inventory": {
+    "image": 1
+   }
+  },
+  "head-meta": {
+   "box": [
+    96,
+    60,
+    281,
+    40
+   ],
+   "inventory": {}
+  },
+  "section-action-needed": {
+   "box": [
+    16,
+    287,
+    361,
+    458
+   ],
+   "inventory": {
+    "row": 4,
+    "button": 4
+   }
+  },
+  "section-next-raid": {
+   "box": [
+    16,
+    793,
+    361,
+    409
+   ],
+   "inventory": {
+    "row": 2,
+    "segment": 4,
+    "image": 2
+   }
+  },
+  "plate": {
+   "box": [
+    16,
+    842,
+    361,
+    360
+   ],
+   "inventory": {
+    "row": 2,
+    "segment": 4,
+    "image": 2
+   }
+  },
+  "section-comp-against-the-target": {
+   "box": [
+    16,
+    1250,
+    361,
+    175
+   ],
+   "inventory": {}
+  },
+  "section-buff-and-debuff-cover": {
+   "box": [
+    16,
+    1449,
+    361,
+    1265
+   ],
+   "inventory": {
+    "image": 24
+   }
+  },
+  "section-raid-ready": {
+   "box": [
+    16,
+    2746,
+    361,
+    183
+   ],
+   "inventory": {
+    "row": 1
+   }
+  },
+  "section-attendance-last-4-raids": {
+   "box": [
+    16,
+    2961,
+    361,
+    248
+   ],
+   "inventory": {}
+  },
+  "section-last-raid": {
+   "box": [
+    16,
+    3241,
+    361,
+    138
+   ],
+   "inventory": {
+    "row": 1
+   }
+  },
+  "section-recruitment": {
+   "box": [
+    16,
+    3411,
+    361,
+    105
+   ],
+   "inventory": {
+    "row": 1
+   }
+  }
+ }
+}

@@ -1,0 +1,105 @@
+{
+ "device": {
+  "width": 412,
+  "height": 915
+ },
+ "regions": {
+  "head": {
+   "box": [
+    16,
+    0,
+    380,
+    209
+   ],
+   "inventory": {
+    "image": 1
+   }
+  },
+  "head-title": {
+   "box": [
+    16,
+    16,
+    380,
+    90
+   ],
+   "inventory": {
+    "image": 1
+   }
+  },
+  "head-meta": {
+   "box": [
+    88,
+    60,
+    308,
+    46
+   ],
+   "inventory": {}
+  },
+  "head-answer": {
+   "box": [
+    16,
+    122,
+    380,
+    73
+   ],
+   "inventory": {}
+  },
+  "countdowns": {
+   "box": [
+    16,
+    1136,
+    380,
+    210
+   ],
+   "inventory": {}
+  },
+  "section-forever-right-now": {
+   "box": [
+    0,
+    496,
+    412,
+    640
+   ],
+   "inventory": {
+    "row": 7,
+    "segment": 3,
+    "image": 7
+   }
+  },
+  "section-your-upgrades": {
+   "box": [
+    0,
+    241,
+    412,
+    223
+   ],
+   "inventory": {
+    "row": 3,
+    "image": 3
+   }
+  },
+  "section-your-spec-this-week": {
+   "box": [
+    0,
+    1423,
+    412,
+    125
+   ],
+   "inventory": {
+    "row": 1
+   }
+  },
+  "section-top-movers": {
+   "box": [
+    0,
+    1580,
+    412,
+    267
+   ],
+   "inventory": {
+    "row": 3,
+    "image": 3
+   }
+  }
+ }
+}

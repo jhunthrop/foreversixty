@@ -1,0 +1,107 @@
+{
+ "device": {
+  "width": 412,
+  "height": 915
+ },
+ "regions": {
+  "head": {
+   "box": [
+    16,
+    0,
+    380,
+    239
+   ],
+   "inventory": {
+    "image": 2
+   }
+  },
+  "head-title": {
+   "box": [
+    16,
+    16,
+    380,
+    116
+   ],
+   "inventory": {
+    "image": 2
+   }
+  },
+  "head-meta": {
+   "box": [
+    96,
+    60,
+    300,
+    72
+   ],
+   "inventory": {
+    "image": 1
+   }
+  },
+  "section-next-raid": {
+   "box": [
+    16,
+    339,
+    380,
+    261
+   ],
+   "inventory": {
+    "row": 2,
+    "segment": 4,
+    "image": 2
+   }
+  },
+  "plate": {
+   "box": [
+    16,
+    386,
+    380,
+    214
+   ],
+   "inventory": {
+    "row": 2,
+    "segment": 4,
+    "image": 2
+   }
+  },
+  "section-before-the-raid": {
+   "box": [
+    16,
+    648,
+    380,
+    374
+   ],
+   "inventory": {
+    "row": 5
+   }
+  },
+  "section-your-numbers": {
+   "box": [
+    16,
+    1070,
+    380,
+    89
+   ],
+   "inventory": {}
+  },
+  "section-the-raid-s-comp": {
+   "box": [
+    16,
+    1183,
+    380,
+    150
+   ],
+   "inventory": {}
+  },
+  "section-last-raid": {
+   "box": [
+    16,
+    1365,
+    380,
+    138
+   ],
+   "inventory": {
+    "row": 1
+   }
+  }
+ }
+}

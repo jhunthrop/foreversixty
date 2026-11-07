@@ -1,0 +1,212 @@
+{
+ "device": {
+  "width": 393,
+  "height": 852
+ },
+ "regions": {
+  "head": {
+   "box": [
+    16,
+    0,
+    361,
+    421
+   ],
+   "inventory": {
+    "button": 1,
+    "image": 1
+   }
+  },
+  "head-title": {
+   "box": [
+    16,
+    16,
+    361,
+    110
+   ],
+   "inventory": {
+    "image": 1
+   }
+  },
+  "head-meta": {
+   "box": [
+    88,
+    60,
+    289,
+    66
+   ],
+   "inventory": {}
+  },
+  "head-answer": {
+   "box": [
+    16,
+    142,
+    361,
+    172
+   ],
+   "inventory": {
+    "button": 1
+   }
+  },
+  "controls": {
+   "box": [
+    0,
+    421,
+    393,
+    62
+   ],
+   "inventory": {
+    "button": 2,
+    "segment": 3,
+    "field": 4
+   }
+  },
+  "summary": {
+   "box": [
+    16,
+    483,
+    361,
+    90
+   ],
+   "inventory": {
+    "image": 1
+   }
+  },
+  "section-damage-by-ability": {
+   "box": [
+    16,
+    601,
+    361,
+    853
+   ],
+   "inventory": {
+    "image": 9
+   }
+  },
+  "plate": {
+   "box": [
+    16,
+    649,
+    361,
+    805
+   ],
+   "inventory": {
+    "image": 9
+   }
+  },
+  "section-timeline": {
+   "box": [
+    16,
+    1928,
+    361,
+    1059
+   ],
+   "inventory": {
+    "row": 1,
+    "button": 1,
+    "segment": 4,
+    "image": 23
+   }
+  },
+  "section-gear": {
+   "box": [
+    16,
+    3035,
+    361,
+    1601
+   ],
+   "inventory": {
+    "row": 17,
+    "image": 17
+   }
+  },
+  "slots": {
+   "box": [
+    16,
+    3083,
+    361,
+    1275
+   ],
+   "inventory": {
+    "row": 17,
+    "image": 17
+   }
+  },
+  "section-talents": {
+   "box": [
+    16,
+    4684,
+    361,
+    1110
+   ],
+   "inventory": {
+    "image": 53
+   }
+  },
+  "section-rage": {
+   "box": [
+    16,
+    5842,
+    361,
+    1368
+   ],
+   "inventory": {
+    "image": 13
+   }
+  },
+  "section-buffs-and-debuffs": {
+   "box": [
+    16,
+    7258,
+    361,
+    1574
+   ],
+   "inventory": {
+    "image": 33
+   }
+  },
+  "section-dps-spread": {
+   "box": [
+    16,
+    1502,
+    361,
+    378
+   ],
+   "inventory": {}
+  },
+  "section-this-run": {
+   "box": [
+    16,
+    8880,
+    361,
+    1309
+   ],
+   "inventory": {
+    "button": 3,
+    "image": 30
+   }
+  },
+  "section-rotation": {
+   "box": [
+    16,
+    10237,
+    361,
+    1851
+   ],
+   "inventory": {
+    "row": 14,
+    "image": 14
+   }
+  },
+  "section-your-sims": {
+   "box": [
+    16,
+    12136,
+    361,
+    307
+   ],
+   "inventory": {
+    "row": 3
+   }
+  }
+ }
+}

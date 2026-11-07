@@ -1,0 +1,157 @@
+{
+ "device": {
+  "width": 393,
+  "height": 852
+ },
+ "regions": {
+  "head": {
+   "box": [
+    16,
+    44,
+    361,
+    358
+   ],
+   "inventory": {
+    "button": 4
+   }
+  },
+  "head-title": {
+   "box": [
+    16,
+    60,
+    361,
+    137
+   ],
+   "inventory": {}
+  },
+  "head-meta": {
+   "box": [
+    16,
+    104,
+    361,
+    93
+   ],
+   "inventory": {}
+  },
+  "controls": {
+   "box": [
+    0,
+    402,
+    393,
+    62
+   ],
+   "inventory": {
+    "segment": 3
+   }
+  },
+  "section-your-sign-up": {
+   "box": [
+    16,
+    492,
+    361,
+    147
+   ],
+   "inventory": {
+    "segment": 4,
+    "field": 2,
+    "image": 1
+   }
+  },
+  "section-sign-ups": {
+   "box": [
+    16,
+    687,
+    361,
+    2381
+   ],
+   "inventory": {
+    "row": 21,
+    "segment": 84,
+    "image": 21
+   }
+  },
+  "plate": {
+   "box": [
+    16,
+    735,
+    361,
+    2333
+   ],
+   "inventory": {
+    "row": 21,
+    "segment": 84,
+    "image": 21
+   }
+  },
+  "section-not-signed-up": {
+   "box": [
+    16,
+    3116,
+    361,
+    361
+   ],
+   "inventory": {
+    "row": 3,
+    "button": 1,
+    "segment": 12,
+    "image": 3
+   }
+  },
+  "section-comp-against-the-target": {
+   "box": [
+    16,
+    3501,
+    361,
+    225
+   ],
+   "inventory": {
+    "button": 1
+   }
+  },
+  "section-bench-and-swaps": {
+   "box": [
+    16,
+    3758,
+    361,
+    237
+   ],
+   "inventory": {
+    "row": 2,
+    "button": 2,
+    "image": 2
+   }
+  },
+  "section-onyxia-assignments": {
+   "box": [
+    16,
+    4027,
+    361,
+    1897
+   ],
+   "inventory": {
+    "row": 12,
+    "button": 14
+   }
+  },
+  "section-buff-and-debuff-cover": {
+   "box": [
+    16,
+    5956,
+    361,
+    1265
+   ],
+   "inventory": {
+    "image": 24
+   }
+  },
+  "section-notes": {
+   "box": [
+    16,
+    7253,
+    361,
+    69
+   ],
+   "inventory": {}
+  }
+ }
+}
