@@ -163,11 +163,7 @@
 {#snippet copyButton(rowSlug: string)}
   <button
     type="button"
-<<<<<<< HEAD
     class="{smallButton()} min-w-[76px] shrink-0"
-=======
-    class="{button('secondary', 'sm')} min-w-[76px] shrink-0"
->>>>>>> origin/main
     aria-label={copy.copyLabel(rowSlug)}
     onclick={() => copyLink(rowSlug)}
     data-testid={`links-copy-${rowSlug}`}
@@ -201,7 +197,7 @@
 {:else}
   <Page layout="split" testid="links-page-body">
     <Section title={copy.tableTitle} meta={copy.tableMeta(rows.length)} testid="links-table">
-      <div class="pt-3">
+      <div>
         {#if rows.length === 0}
           <p data-testid="links-empty">{copy.empty}</p>
         {:else}
@@ -230,9 +226,9 @@
     </Section>
     {#snippet rail()}
       <Section title={copy.formTitle} testid="links-form-card">
-        <div class="flex flex-col gap-4 pt-3">
+        <div class="flex flex-col gap-3">
           <p class="text-muted text-[14px]">{copy.formJob}</p>
-          <form class="flex flex-col gap-4" onsubmit={onCreate} novalidate data-testid="links-form">
+          <form class="flex flex-col gap-3" onsubmit={onCreate} novalidate data-testid="links-form">
             {#each FIELDS as field (field.id)}
               <Field
                 id={`link-${field.id}`}

@@ -1,0 +1,295 @@
+{
+ "guild": {
+  "interval": {
+   "groupLabel": "Billing interval",
+   "labels": {
+    "yearly": "Yearly",
+    "monthly": "Monthly"
+   }
+  },
+  "chooser": {
+   "planGroup": "Plan",
+   "compare": "Compare Guild and Raid guild",
+   "tierName": "[fn]",
+   "tierLine": "[fn]",
+   "verifiedToday": "[fn]",
+   "startTrial": "Start the 7-day trial",
+   "subscribe": "[fn]",
+   "subscribeAgain": "Subscribe again",
+   "trialLine": "First 7 days free, once per guild. Cancel before day 8 and nothing is charged; guild settings shows the date of the first charge.",
+   "founderLine": "Founder price until 6 January 2027, kept while the plan stays active.",
+   "opening": "Opening checkout…",
+   "failed": "Checkout did not open. Try again."
+  },
+  "tiers": {
+   "guild": {
+    "name": "Guild",
+    "line": "Up to 25 verified members · 1 Premium seat",
+    "price": "$120",
+    "unit": "a year",
+    "list": "$150 after 6 Jan 2027"
+   },
+   "raid_guild": {
+    "name": "Raid guild",
+    "line": "Any size · loot council and readiness · 3 Premium seats",
+    "price": "$200",
+    "unit": "a year",
+    "list": "$250 after 6 Jan 2027"
+   }
+  },
+  "verified": "12 verified members today.",
+  "subscribe": "Start the 7-day trial",
+  "upgrade": {
+   "sentence": "Move to Raid guild? Today you pay $45 for the rest of this year. From 20 Oct 2027 it is $250 a year.",
+   "commit": "Move to Raid guild",
+   "keep": "Keep Guild"
+  },
+  "seats": {
+   "heading": "Premium seats",
+   "explainer": "A seat gives one verified member Premium while the plan lasts. A seat can move once every 30 days.",
+   "count": "2 of 3 given",
+   "move": "Move seat",
+   "give": "Give seat",
+   "withdraw": "Withdraw",
+   "waiting": "Waiting",
+   "notGiven": "Not given",
+   "held": {
+    "given": "Given 2 Nov",
+    "lock": "Can move from 2 Dec"
+   },
+   "offered": {
+    "note": "Offered 10 Nov. They pay for Premium, so they accept it first."
+   },
+   "picker": {
+    "title": "Give this seat to",
+    "option": "Mirelle · Priest",
+    "give": "Give seat",
+    "cancel": "Cancel"
+   }
+  },
+  "whoPays": {
+   "heading": "Who pays",
+   "help": "Hand the plan to another officer, for example when the guild leader changes. The founder price goes with it.",
+   "transfer": "Transfer the plan",
+   "transferTo": "Transfer to",
+   "consequence": "Mirelle gets an offer to take over. When they add a card, they are billed from 4 Nov 2027 at $120 a year, and your plan stops renewing. Nothing changes until they accept.",
+   "stays": "Seats, raids and records stay with the guild; Mirelle manages seats from then.",
+   "send": "Send the offer",
+   "cancel": "Cancel"
+  }
+ },
+ "discord": {
+  "label": "Discord",
+  "headLabel": "Notifications",
+  "intro": "Get a message in a Discord channel when a server sim finishes or a log finishes parsing.",
+  "fieldLabel": "Webhook URL",
+  "placeholder": "https://discord.com/api/webhooks/…",
+  "howSteps": [
+   "In Discord, open the channel's settings, then Integrations, then Webhooks.",
+   "Choose New Webhook, name it something you will recognize, then Copy Webhook URL.",
+   "Paste it below."
+  ],
+  "trustHelper": "We store the URL encrypted, never show it again, and delete it with your account.",
+  "eventsLabel": "Post when",
+  "eventSimFinished": "A server sim finishes",
+  "eventUploadParsed": "A combat log you upload finishes parsing",
+  "eventUploadPrivate": "Include private logs",
+  "eventsNote": "Off: private logs are never posted. On: the channel sees the log's name and “Only you”.",
+  "save": "Save webhook",
+  "saving": "Saving…",
+  "cancel": "Cancel",
+  "test": "Send test message",
+  "testing": "Sending…",
+  "testAndSwitchOn": "Test and switch on",
+  "remove": "Unlink Discord",
+  "removing": "Unlinking…",
+  "removeQuestionPasted": "Remove this webhook? Posts stop and we forget the URL. It stays in Discord until you delete it there.",
+  "removeQuestionConnected": "Remove this connection? Posts stop and we delete its webhook from Discord.",
+  "replace": "Use a different webhook",
+  "connect": "Connect a Discord channel",
+  "connecting": "Opening Discord…",
+  "connectExplanation": "Discord asks for a server and a text channel, not a voice channel, then lets Forever Sixty post there. You need Manage Webhooks permission in that server. We keep only that webhook, encrypted.",
+  "pasteInstead": "Paste a webhook URL instead",
+  "connectInstead": "Connect a Discord channel instead",
+  "reconnect": "Connect a different channel",
+  "reconnectNote": "Connecting again replaces this channel and removes its webhook from Discord.",
+  "returnConnected": "Connected. Send a test message to see it in your channel.",
+  "returnDenied": "Cancelled in Discord. Nothing was connected.",
+  "returnFailed": "Could not connect. You need to be able to manage webhooks in that channel. Ask a server admin, or paste a webhook URL instead.",
+  "connectStuck": "Discord did not open. Try again, or paste a webhook URL instead.",
+  "openInDiscord": "Open in Discord",
+  "destinationChannel": "Posts to a channel in your Discord server",
+  "seePlans": "See plans",
+  "savedFirst": "Saved. Send a test message to see it in your channel.",
+  "savedEvents": "Saved.",
+  "testSent": "Sent. Check the channel.",
+  "testSentSwitchedOn": "Sent. Posts are on again.",
+  "testFailed": "[fn]",
+  "testRateLimited": "Wait a minute before sending another test.",
+  "testOurError": "Could not send the test. Try again.",
+  "removed": "Removed.",
+  "removeFailed": "Could not remove it. Try again.",
+  "saveFailed": "Could not save that. Try again.",
+  "emptyField": "Paste a Discord webhook URL.",
+  "invalidUrl": "That is not a Discord webhook URL. It starts with https://discord.com/api/webhooks/.",
+  "notEntitled": "Discord messages are part of Premium.",
+  "destinationNamed": "[fn]",
+  "channelLine": "[fn]",
+  "warningLines": "[fn]",
+  "switchedOff": "Switched off after 5 failed posts in a row.",
+  "lastError": "[fn]",
+  "switchedOffFix": "Fixed it in Discord? Test and switch on. If the webhook is gone, make a new one.",
+  "lapsedTitle": "Posts are paused because your plan ended.",
+  "lapsedBody": "We kept your webhook. Posts start again when you are back on Premium.",
+  "freeSentence": "Discord messages tell you when a server sim or a log you uploaded is done."
+ },
+ "admin": {
+  "copy": {
+   "pageTitle": "Links",
+   "job": "Where people come from: clicks counted without cookies, then the accounts each link brought in.",
+   "pageDescription": "The owner’s tracked links and the accounts each one brought in.",
+   "signedOut": "Sign in with the owner’s account to see the links.",
+   "notOwner": "This page is for the site’s owner. Your account can’t see the links.",
+   "loadFailed": "The links didn’t load.",
+   "tableTitle": "Your links",
+   "tableMeta": "[fn]",
+   "empty": "No links yet. Make the first one below.",
+   "columns": {
+    "link": "Link",
+    "clicks": "Clicks",
+    "signIns": "Signed up",
+    "linked": "Character linked",
+    "premium": "Premium"
+   },
+   "shareOf": {
+    "signIns": "of clicks",
+    "linked": "of signed up",
+    "premium": "of linked"
+   },
+   "bots": "[fn]",
+   "noClicks": "No clicks yet",
+   "totals": "All links",
+   "copy": "Copy",
+   "copied": "Copied",
+   "copyLabel": "[fn]",
+   "formTitle": "New link",
+   "formJob": "The link counts every click and sends people to the page you pick, on this site only.",
+   "slugLabel": "Slug",
+   "slugHint": "Lowercase letters, digits and dashes. It becomes foreversixty.gg/go/your-slug.",
+   "targetLabel": "Sends people to",
+   "targetHint": "A page on this site, like / or /guides.",
+   "labelLabel": "Label",
+   "labelHint": "What the table calls it, like “Reddit: r/classicwow”.",
+   "create": "Make link",
+   "creating": "Saving",
+   "created": "[fn]",
+   "createFailed": "That link wasn’t saved; try again."
+  },
+  "meta": "3 links · clicks since each was made",
+  "rows": [
+   {
+    "slug": "reddit-sim",
+    "target": "/sim",
+    "label": "Reddit: sim post",
+    "steps": [
+     {
+      "label": "Clicks",
+      "value": "120",
+      "note": "+2 bots, not counted"
+     },
+     {
+      "label": "Signed up",
+      "value": "12",
+      "note": "10% of clicks"
+     },
+     {
+      "label": "Character linked",
+      "value": "9",
+      "note": "75% of signed up"
+     },
+     {
+      "label": "Premium",
+      "value": "3",
+      "note": "33% of linked"
+     }
+    ]
+   },
+   {
+    "slug": "reddit",
+    "target": "/",
+    "label": "Reddit",
+    "steps": [
+     {
+      "label": "Clicks",
+      "value": "40",
+      "note": "+6 bots, not counted"
+     },
+     {
+      "label": "Signed up",
+      "value": "10",
+      "note": "25% of clicks"
+     },
+     {
+      "label": "Character linked",
+      "value": "5",
+      "note": "50% of signed up"
+     },
+     {
+      "label": "Premium",
+      "value": "1",
+      "note": "20% of linked"
+     }
+    ]
+   },
+   {
+    "slug": "wago",
+    "target": "/",
+    "label": "Wago",
+    "steps": [
+     {
+      "label": "Clicks",
+      "value": "0",
+      "note": "No clicks yet"
+     },
+     {
+      "label": "Signed up",
+      "value": "0",
+      "note": "–"
+     },
+     {
+      "label": "Character linked",
+      "value": "0",
+      "note": "–"
+     },
+     {
+      "label": "Premium",
+      "value": "0",
+      "note": "–"
+     }
+    ]
+   }
+  ],
+  "totals": [
+   {
+    "label": "Clicks",
+    "value": "160",
+    "note": "+8 bots, not counted"
+   },
+   {
+    "label": "Signed up",
+    "value": "22",
+    "note": "14% of clicks"
+   },
+   {
+    "label": "Character linked",
+    "value": "14",
+    "note": "64% of signed up"
+   },
+   {
+    "label": "Premium",
+    "value": "4",
+    "note": "29% of linked"
+   }
+  ]
+ }
+}
