@@ -8,13 +8,13 @@ test('the recap shows the killing blow, the last hits and the auras that were up
 
   const card = page.getByTestId('death-Player-4184-000000A4');
   await expect(card).toContainText('Thalgrit');
-  await expect(card).toContainText('killed by Warden Kelthas');
+  await expect(card).toContainText('Killed by Warden Kelthas');
   await expect(card).toContainText('Anima Lash');
   await expect(card).toContainText('100 overkill');
   // Two hits, not three: the boss's swing on the tank is logged only as a
   // SWING_DAMAGE_LANDED, which the engine reads for the target's health and never counts
   // as a hit of its own, so the recap is the two Anima Lash hits.
-  await expect(card.locator('tbody tr')).toHaveCount(2);
+  await expect(card.locator('[role="row"]:not(:first-child)')).toHaveCount(2);
   await expect(card).toContainText('Necrotic Wound');
 });
 
@@ -25,10 +25,11 @@ test('a death sets the window to the twenty seconds before it', async ({ page })
 });
 
 test('the combatants list links a build into the planner and the planner opens it', async ({ page }) => {
-  await page.goto('/reports/fixture2abcd?fight=3&tab=summary');
+  // Gear at the pull, in the tank's own view (logs spec 6.2): Open in the planner ›.
+  await page.goto('/reports/fixture2abcd?fight=3&tab=damage-done&source=Player-4184-000000A1');
 
-  const link = page.getByTestId('combatant-build-link').first();
-  await expect(link).toHaveText('Gear in the planner');
+  const link = page.getByTestId('report-gear').getByRole('link', { name: 'Open in the planner ›' });
+  await expect(link).toBeVisible();
   const href = await link.getAttribute('href');
   expect(decodeURIComponent(href ?? '')).toContain('FS1:');
   expect(decodeURIComponent(href ?? '')).toContain('head=175850');

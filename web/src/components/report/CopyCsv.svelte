@@ -3,6 +3,7 @@
      the button puts them on the clipboard and says whether it managed. -->
 <script lang="ts">
   import { toCsv } from '../../lib/report/csv';
+  import { LINK } from '../../lib/ui/primitives';
 
   let { lines, label = 'Copy this table as CSV' }: { lines: () => string[][]; label?: string } = $props();
 
@@ -21,7 +22,7 @@
 <div class="flex justify-end">
   <button
     type="button"
-    class="text-nav inline-flex min-h-11 items-center text-[12px] font-bold tracking-[0.06em] uppercase md:min-h-9"
+    class="{LINK} inline-flex min-h-11 items-center text-[14px] md:min-h-9"
     title={label}
     data-testid="copy-csv"
     onclick={() => void copy()}>{copied === '' ? 'Copy CSV' : copied}</button

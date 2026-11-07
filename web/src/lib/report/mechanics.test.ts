@@ -1,6 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import {
   cleanMechanicRows,
+  cleanPlayers,
+  judgedRoster,
+  mechanicTable,
+  mechanicTally,
   encounterKey,
   mechanicRowKey,
   mostOftenHit,
@@ -374,5 +378,91 @@ describe('a role’s ability landing on the others', () => {
     expect(tank?.unavoidable).toEqual({ damage: 500, names: ['Wicked Gash'] });
     // The victims' own cards are unchanged.
     expect(cards.find((card) => card.guid === 'dps-1')?.hits[0].others).toBeUndefined();
+  });
+});
+
+describe('mechanicTally', () => {
+  const roster = [
+    { guid: 'tank', role: 'tank' },
+    { guid: 'a', role: 'dps' },
+  ];
+
+  it('counts avoidable hits off the role that takes it, and names who', () => {
+    const tally = mechanicTally(
+      row({
+        spell_id: 1,
+        kind: 'avoidable',
+        role: 'tank',
+        players: [hit('tank', 50), { ...hit('a', 30), hits: 2, killed: true }],
+      }),
+      roster,
+    );
+    expect(tally).toEqual({ failed: 2, damage: 30, killed: true, who: 'a 2×' });
+  });
+
+  it('says nobody was hit, and folds names past three', () => {
+    expect(mechanicTally(row({ spell_id: 1, kind: 'avoidable', players: [] }), roster).who).toBe(
+      'Nobody was hit',
+    );
+    const many = ['b', 'c', 'd', 'e', 'f'].map((guid) => hit(guid, 1));
+    expect(mechanicTally(row({ spell_id: 1, kind: 'avoidable', players: many }), roster).who).toMatch(
+      /and 2 more$/,
+    );
+  });
+
+  it('reads interrupts and dispels as what went through', () => {
+    expect(
+      mechanicTally(row({ spell_id: 2, kind: 'interrupt', casts: 3, stopped: 1, damage: 40 }), roster),
+    ).toEqual({
+      failed: 2,
+      damage: 40,
+      killed: false,
+      who: '1 of 3 casts stopped',
+    });
+    expect(mechanicTally(row({ spell_id: 3, kind: 'dispel', applied: 2, dispelled: 2 }), roster).failed).toBe(
+      0,
+    );
+  });
+
+  it('never fails an unavoidable row', () => {
+    const tally = mechanicTally(row({ spell_id: 4, kind: 'unavoidable', players: [hit('a', 9)] }), roster);
+    expect(tally.failed).toBe(0);
+    expect(tally.who).toBe('1 player hit');
+  });
+});
+
+describe('mechanicTable', () => {
+  it('puts a death first, then what went wrong, then by damage', () => {
+    const rows = [
+      row({ spell_id: 1, kind: 'unavoidable', players: [hit('a', 999)] }),
+      row({ spell_id: 2, kind: 'interrupt', casts: 1, stopped: 0, damage: 5 }),
+      row({ spell_id: 3, kind: 'avoidable', players: [{ ...hit('a', 1), killed: true }] }),
+    ];
+    expect(mechanicTable(rows, []).map((line) => line.row.spell_id)).toEqual([3, 2, 1]);
+  });
+});
+
+describe('judgedRoster and cleanPlayers', () => {
+  it('keeps the judged players only over a night', () => {
+    const roster = [{ guid: 'a' }, { guid: 'b' }];
+    expect(judgedRoster({ table_found: true, rows: [] }, roster)).toHaveLength(2);
+    expect(judgedRoster({ table_found: true, rows: [], judged_players: ['b'] }, roster)).toEqual([
+      { guid: 'b' },
+    ]);
+  });
+
+  it('lists the players no avoidable mechanic landed on, and nobody without a table', () => {
+    const summary = {
+      roster: [
+        { guid: 'a', name: 'a' },
+        { guid: 'b', name: 'b' },
+      ],
+      mechanics: {
+        table_found: true,
+        rows: [row({ spell_id: 1, kind: 'avoidable', players: [hit('a', 5)] })],
+      },
+    } as unknown as Summary;
+    expect(cleanPlayers(summary).map((player) => player.guid)).toEqual(['b']);
+    expect(cleanPlayers({ ...summary, mechanics: { table_found: false, rows: [] } } as Summary)).toEqual([]);
   });
 });

@@ -372,6 +372,8 @@ export interface StreamLine {
   sourceName: string;
   destGuid: string;
   destName: string;
+  /** The spell's id, for its icon; absent on a stream loaded before the column was read. */
+  spellId?: number;
   spellName: string;
   amount: number;
   overheal: number;
@@ -388,7 +390,7 @@ export interface StreamLine {
  * "when did this actually get re-applied" is only answerable from the fight's own lines.
  */
 export function eventStreamSql(window: TimeWindow): string {
-  return `SELECT ${FIGHT_MS} AS fight_ms, kind, source_guid, source_name, dest_guid, dest_name, spell_name,
+  return `SELECT ${FIGHT_MS} AS fight_ms, kind, source_guid, source_name, dest_guid, dest_name, spell_id, spell_name,
   coalesce(amount, 0) AS amount, coalesce(overheal, 0) AS overheal, coalesce(absorbed, 0) AS absorbed,
   coalesce(blocked, 0) AS blocked, coalesce(miss_type, '') AS miss_type
 FROM (SELECT * FROM ${DAMAGE_LINES} UNION ALL SELECT * FROM ${EVENTS_TABLE} WHERE kind IN ('heal', 'missed', 'aura_refresh'))
@@ -417,6 +419,7 @@ export async function loadEventStream(
     sourceName: String(row.source_name ?? ''),
     destGuid: String(row.dest_guid ?? ''),
     destName: String(row.dest_name ?? ''),
+    spellId: num(row.spell_id),
     spellName: String(row.spell_name ?? ''),
     amount: num(row.amount),
     overheal: num(row.overheal),

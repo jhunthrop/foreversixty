@@ -5,6 +5,7 @@
 import { expect, test } from './support/test';
 import { openChartIfCollapsed } from './support/report-chart';
 import { choose } from './support/select';
+import { pickFight } from './support/report-frame';
 
 const FIGHT = '/reports/fixture2abcd?fight=3';
 const FIG = `${FIGHT}&tab=damage-done`;
@@ -17,7 +18,7 @@ test('dragging across the chart sets the window in the URL and rescopes the page
   await page.goto(FIG);
   await openChartIfCollapsed(page);
   const chart = page.getByTestId('time-chart');
-  await expect(chart.getByTestId('window-select')).toHaveValue('0');
+  await expect(page.getByTestId('window-select')).toHaveValue('0');
   await expect(chart.locator('[data-testid="chart-frame"][data-state="ready"]')).toBeVisible();
 
   const plot = chart.getByTestId('chart-plot');
@@ -32,8 +33,8 @@ test('dragging across the chart sets the window in the URL and rescopes the page
 
   await expect(page).toHaveURL(/start=\d+&end=\d+/);
   // The Window select names the dragged window, and the brush shows its edges.
-  await expect(chart.getByTestId('window-select')).toHaveValue('custom');
-  await expect(chart.getByTestId('window-select')).toContainText(/\d:\d\d to \d:\d\d/);
+  await expect(page.getByTestId('window-select')).toHaveValue('custom');
+  await expect(page.getByTestId('window-select')).toContainText(/\d:\d\d to \d:\d\d/);
   await expect(chart.getByTestId('brush-start-label')).toBeVisible();
 });
 
@@ -45,6 +46,7 @@ test('zoom keeps the plot, the brush and the URL on one window, and double-click
   const chart = page.getByTestId('time-chart');
   await expect(chart.locator('[data-testid="chart-frame"][data-state="ready"]')).toBeVisible();
   const plot = chart.getByTestId('chart-plot');
+  await plot.scrollIntoViewIfNeeded();
   const box = (await plot.boundingBox())!;
   await page.mouse.move(box.x + box.width * 0.3, box.y + box.height / 2);
   await page.mouse.down();
@@ -66,7 +68,7 @@ test('zoom keeps the plot, the brush and the URL on one window, and double-click
   // A double-click on the plot is the whole fight again.
   await plot.dblclick({ position: { x: box.width / 2, y: box.height / 2 } });
   await expect(page).not.toHaveURL(/start=/);
-  await expect(chart.getByTestId('window-select')).toHaveValue('0');
+  await expect(page.getByTestId('window-select')).toHaveValue('0');
 });
 
 test('the range inputs move the same window, so a keyboard can brush', async ({ page }) => {
@@ -104,8 +106,7 @@ test('a death preset sets the window to the seconds before it, and Whole fight c
 
 test('switching fight drops the window, because milliseconds do not carry across', async ({ page }) => {
   await page.goto(`${FIGHT}&start=1000&end=5000`);
-  await page.getByTestId('fight-group-1').click();
-  await page.getByTestId('fight-2').click();
+  await pickFight(page, 2);
   await expect(page).not.toHaveURL(/start=/);
 });
 

@@ -3,6 +3,7 @@
 // tested on its own. The mode's job is to say what the encounter's curated table judges
 // about a fight -- and, where the table is silent, to say that it is silent rather than
 // let the reader mistake the table for the whole of what happened.
+import { splitUnitName } from '../characters';
 import type { MechanicHit, MechanicRow, MechanicsBlock, Summary } from './types';
 
 /**
@@ -361,4 +362,108 @@ export function unclassifiedAbilities(summary: Summary): UnclassifiedAbility[] {
       players: hit.get(spell_id)?.size ?? 0,
     }))
     .sort((a, b) => b.damage - a.damage || a.spell_id - b.spell_id);
+}
+
+/** One line of the Mechanics table (logs spec 2026-11-07 section 6.2): how often the
+ *  mechanic went wrong, what it cost, and who and how often in words. */
+export interface MechanicTally {
+  /** Avoidable hits off the role that takes it, casts that went through, debuffs left on. */
+  failed: number;
+  /** Avoidable or unavoidable damage taken, or what a cast or debuff dealt going through. */
+  damage: number;
+  /** Someone died to it. */
+  killed: boolean;
+  /** `Thalgrit 2×, Elyra 1×`, `1 of 2 casts stopped`, `3 of 4 dispelled`. */
+  who: string;
+}
+
+/** How many names the who line spells out before `and {n} more`. */
+const WHO_NAMES = 3;
+
+function hitNames(hits: readonly MechanicHit[]): string {
+  if (hits.length === 0) return 'Nobody was hit';
+  const ranked = [...hits].sort((a, b) => b.hits - a.hits || b.damage - a.damage);
+  const named = ranked.slice(0, WHO_NAMES).map((hit) => `${splitUnitName(hit.name).name} ${hit.hits}×`);
+  const more = ranked.length - WHO_NAMES;
+  return more > 0 ? `${named.join(', ')} and ${more} more` : named.join(', ');
+}
+
+export function mechanicTally(
+  row: MechanicRow,
+  roster: readonly { guid: string; role?: string }[],
+): MechanicTally {
+  const players = row.players ?? [];
+  if (row.kind === 'avoidable') {
+    const roleOf = new Map(roster.map((player) => [player.guid, player.role]));
+    const off = players.filter((hit) => row.role === undefined || roleOf.get(hit.guid) !== row.role);
+    return {
+      failed: off.reduce((sum, hit) => sum + hit.hits, 0),
+      damage: off.reduce((sum, hit) => sum + hit.damage, 0),
+      killed: off.some((hit) => hit.killed),
+      who: hitNames(off),
+    };
+  }
+  if (row.kind === 'unavoidable')
+    return {
+      failed: 0,
+      damage: players.reduce((sum, hit) => sum + hit.damage, 0),
+      killed: players.some((hit) => hit.killed),
+      who:
+        players.length === 0
+          ? 'Nobody was hit'
+          : `${players.length} ${players.length === 1 ? 'player' : 'players'} hit`,
+    };
+  if (row.kind === 'interrupt')
+    return {
+      failed: Math.max(0, (row.casts ?? 0) - (row.stopped ?? 0)),
+      damage: row.damage ?? 0,
+      killed: false,
+      who: `${row.stopped ?? 0} of ${row.casts ?? 0} casts stopped`,
+    };
+  if (row.kind === 'dispel')
+    return {
+      failed: Math.max(0, (row.applied ?? 0) - (row.dispelled ?? 0)),
+      damage: row.damage ?? 0,
+      killed: false,
+      who: `${row.dispelled ?? 0} of ${row.applied ?? 0} dispelled`,
+    };
+  return { failed: 0, damage: 0, killed: false, who: '' };
+}
+
+/** The table's rows with their tallies, the ones that went wrong first, then by damage. */
+export function mechanicTable(
+  rows: readonly MechanicRow[],
+  roster: readonly { guid: string; role?: string }[],
+): { row: MechanicRow; tally: MechanicTally }[] {
+  return rows
+    .map((row) => ({ row, tally: mechanicTally(row, roster) }))
+    .sort(
+      (a, b) =>
+        Number(b.tally.killed) - Number(a.tally.killed) ||
+        Number(b.tally.failed > 0) - Number(a.tally.failed > 0) ||
+        b.tally.damage - a.tally.damage,
+    );
+}
+
+/** The roster the block judges: over a night, only the players who were in a judged pull. */
+export function judgedRoster<T extends { guid: string }>(block: MechanicsBlock, roster: readonly T[]): T[] {
+  const judged = block.judged_players;
+  return judged === undefined ? [...roster] : roster.filter((row) => judged.includes(row.guid));
+}
+
+/** Whether the table judges any one player (an interrupt-only table judges nobody). */
+export function judgesPlayers(block: MechanicsBlock): boolean {
+  return block.rows.some(
+    (row) => row.kind === 'avoidable' || (row.kind === 'unavoidable' && (row.players?.length ?? 0) > 0),
+  );
+}
+
+/** The rail's Clean list: the judged players no avoidable mechanic landed on. Empty when the
+ *  pull has no table, or the table judges nobody. */
+export function cleanPlayers(summary: Summary): PlayerMechanics[] {
+  const block = summary.mechanics;
+  if (block === undefined || !block.table_found || !judgesPlayers(block)) return [];
+  return playerMechanics(block.rows, judgedRoster(block, summary.roster)).filter(
+    (player) => player.hits.length === 0,
+  );
 }

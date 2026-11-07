@@ -20,7 +20,18 @@
     meleeBucket,
     unjudgedDeaths,
     rolePlacements,
+    judgedRoster as judgedPlayers,
+    judgesPlayers,
+    mechanicTable,
   } from '../../lib/report/mechanics';
+  import { classSlugOf } from '../../lib/report/planner-link';
+  import { SpellIcons } from '../../lib/report/spell-icons.svelte';
+  import ClassCrestRing from '../character/ClassCrestRing.svelte';
+  import Plate from '../ui/Plate.svelte';
+  import Row from '../ui/Row.svelte';
+  import Section from '../ui/Section.svelte';
+  import SpellIcon from '../ui/SpellIcon.svelte';
+  import Tag, { type TagTone } from '../ui/Tag.svelte';
   import type { ReportState } from '../../lib/report/url';
   import type { MechanicHit, MechanicKind, MechanicRow, Summary } from '../../lib/report/types';
 
@@ -157,18 +168,20 @@
    */
   // Over the night only the players who were in a judged pull get a card: a clean sheet
   // for someone who was never in the room is not a clean sheet.
-  const judgedRoster = $derived(
-    block.judged_players === undefined
-      ? summary.roster
-      : summary.roster.filter((row) => block.judged_players?.includes(row.guid)),
-  );
-  const players = $derived(playerMechanics(block.rows, judgedRoster));
+  const players = $derived(playerMechanics(block.rows, judgedPlayers(block, summary.roster)));
   /** An interrupt-only table judges nothing about any one player, so it draws no cards. */
-  const showPlayerCards = $derived(
-    block.rows.some(
-      (row) => row.kind === 'avoidable' || (row.kind === 'unavoidable' && (row.players?.length ?? 0) > 0),
-    ),
-  );
+  const showPlayerCards = $derived(judgesPlayers(block));
+  /** The Plate's rows: every mechanic the table lists, the ones that went wrong first. */
+  const table = $derived(mechanicTable(block.rows, summary.roster));
+  const icons = new SpellIcons();
+  const KIND_TAG: Record<string, string> = {
+    avoidable: 'Avoidable',
+    unavoidable: 'Unavoidable',
+    interrupt: 'Interrupt',
+    dispel: 'Dispel',
+  };
+  const tagTone = (row: MechanicRow, failed: number): TagTone =>
+    row.kind === 'avoidable' && failed > 0 ? 'danger' : 'muted';
 
   /**
    * The rows nobody failed. The table lists unavoidable damage so a reader does not
@@ -182,6 +195,7 @@
       problems.map((problem) => mechanicRowKey(problem.row)),
     ),
   );
+  const cleanKeys = $derived(new Set(clean.map((row) => mechanicRowKey(row))));
 
   /** What hit a player and the table does not list. The spec's honesty rule: an ability
       the curator has not reached is unjudged, not absent. */
@@ -262,202 +276,254 @@
     onPatch(patch);
   }
 
-  const linkClass = 'text-gold min-h-11 text-[12px] underline-offset-2 hover:underline md:min-h-0';
+  const linkClass =
+    'text-gold inline-flex min-h-11 items-center text-[13px] underline-offset-2 hover:underline md:min-h-0';
 </script>
 
-<div class="flex flex-col gap-4" data-testid="mechanics-mode">
-  {#if beforeMechanics}
-    <p class="text-muted text-[14px]" data-testid="mechanics-not-parsed">
-      This report was parsed before Mechanics mode existed; parse it again to see mechanics.
-    </p>
-  {:else if !block.table_found && trash}
-    <p class="text-muted text-[14px]" data-testid="mechanics-trash">
-      Mechanics are judged per boss, and this is a trash segment: pick a boss pull, or the whole night.
-    </p>
-  {:else if !block.table_found}
-    <p class="text-muted text-[14px]" data-testid="mechanics-no-table">
-      No mechanics table for this boss yet. A table says which of its abilities are avoidable, which casts to
-      interrupt and which debuffs to dispel; without one this page has nothing to judge. Run
-      <code class="font-mono text-[13px]">forever-logs mechanics-draft</code> on the log for a draft to review.
-    </p>
-  {:else}
-    <p class="text-muted text-[12px]">
-      Whole {nightMode ? 'night' : 'fight'}, from the encounter’s mechanics table. {nightMode
-        ? `${judgedSummary} A source pick does not apply here.`
-        : 'Whole fight: a brushed time window does not apply here, so none is offered.'}
-    </p>
+{#snippet line(text: string, testid: string)}
+  <p class="text-muted px-4 py-4 text-[14px]" data-testid={testid}>{text}</p>
+{/snippet}
 
-    <section class="flex flex-col gap-1" data-testid="mechanics-problems">
-      <h2 class="quiet-label" title="A death outranks any amount of damage; below the deaths, by damage">
-        Problems, deaths first, then most costly
-      </h2>
+{#snippet problemLinks(problem: Problem)}
+  {#if problem.row.kind === 'avoidable'}
+    <a
+      href={hrefFor(damageTakenPatch(problem.row.spell_id, problem.hit?.guid))}
+      class={linkClass}
+      aria-label={`Damage Taken for ${problem.subject}`}
+      onclick={(event) => follow(event, damageTakenPatch(problem.row.spell_id, problem.hit?.guid))}
+      >Damage taken</a
+    >
+    {#if problem.hit?.killed}
+      <a
+        href={hrefFor(deathsPatch(problem.hit.guid, problem.hit.last_ms, problem.row.spell_id))}
+        class={linkClass}
+        aria-label={`Deaths for ${problem.subject}`}
+        onclick={(event) =>
+          follow(event, deathsPatch(problem.hit?.guid ?? '', problem.hit?.last_ms, problem.row.spell_id))}
+        >Deaths</a
+      >
+    {/if}
+  {:else if problem.row.kind === 'interrupt'}
+    <a
+      href={hrefFor({ mode: 'analyze', view: 'tables', tab: 'interrupts' })}
+      class={linkClass}
+      aria-label={`Interrupts for ${problem.subject}`}
+      onclick={(event) => follow(event, { mode: 'analyze', view: 'tables', tab: 'interrupts' })}>Interrupts</a
+    >
+  {:else}
+    <a
+      href={hrefFor({ mode: 'analyze', view: 'tables', tab: 'dispels' })}
+      class={linkClass}
+      aria-label={`Dispels for ${problem.subject}`}
+      onclick={(event) => follow(event, { mode: 'analyze', view: 'tables', tab: 'dispels' })}>Dispels</a
+    >
+  {/if}
+{/snippet}
+
+{#snippet figure(value: string, label: string)}
+  <span class="flex min-w-[64px] flex-col items-end">
+    <span class="text-strong text-[15px] leading-5 font-bold tabular-nums">{value}</span>
+    <span class="text-muted text-[12px] leading-4">{label}</span>
+  </span>
+{/snippet}
+
+<div class="flex flex-col gap-[var(--section-gap)]" data-testid="mechanics-mode">
+  <Section title="Mechanics" meta="Problems first, then what went right">
+    <Plate label="Mechanics">
+      {#if beforeMechanics}
+        {@render line(
+          'This report was parsed before Mechanics mode existed; parse it again to see mechanics.',
+          'mechanics-not-parsed',
+        )}
+      {:else if !block.table_found && trash}
+        {@render line(
+          'Mechanics are judged per boss, and this is a trash segment: pick a boss pull, or the whole night.',
+          'mechanics-trash',
+        )}
+      {:else if !block.table_found && nightMode}
+        {@render line('No boss of the night has a table yet.', 'mechanics-no-table')}
+      {:else if !block.table_found}
+        <p class="text-muted px-4 py-4 text-[14px]" data-testid="mechanics-no-table">
+          No mechanics table for this boss yet. A table says which of its abilities are avoidable, which casts
+          to interrupt and which debuffs to dispel; without one this page has nothing to judge. Run
+          <code class="font-mono text-[13px]">forever-logs mechanics-draft</code> on the log for a draft to review.
+        </p>
+      {:else if table.length === 0}
+        {@render line('Nothing the table lists went wrong.', 'mechanics-table-empty')}
+      {:else}
+        <div data-testid="mechanics-table">
+          {#each table as { row, tally } (mechanicRowKey(row))}
+            <Row
+              title={row.name}
+              sub={[
+                cleanKeys.has(mechanicRowKey(row))
+                  ? `Nothing to answer for · ${kindWords(row.kind)}`
+                  : tally.who,
+                nightMode && row.encounter ? `on ${row.encounter}` : '',
+                row.note ?? '',
+              ]
+                .filter((part) => part !== '')
+                .join(' · ')}
+              testid={`mechanics-row-${mechanicRowKey(row)}`}
+            >
+              {#snippet lead()}<SpellIcon url={icons.of(row.spell_id)} spellId={row.spell_id} tip />{/snippet}
+              {#snippet trail()}
+                <Tag tone={tagTone(row, tally.failed)}>{KIND_TAG[row.kind] ?? row.kind}</Tag>
+                {@render figure(String(tally.failed), 'Failed')}
+                {@render figure(formatAmount(tally.damage), 'Damage')}
+              {/snippet}
+            </Row>
+          {/each}
+        </div>
+      {/if}
+    </Plate>
+    {#if !beforeMechanics && block.table_found}
+      <p class="text-muted pt-3 text-[13px]">
+        Whole {nightMode ? 'night' : 'fight'}, from the encounter’s mechanics table. {nightMode
+          ? `${judgedSummary} A source pick does not apply here.`
+          : 'Whole fight: a brushed time window does not apply here, so none is offered.'}
+      </p>
+    {/if}
+  </Section>
+
+  {#if !beforeMechanics && block.table_found}
+    <Section title="Problems" meta="Deaths first, then most costly" testid="mechanics-problems">
       {#if problems.length === 0}
         <p class="text-[14px]">Nothing the table lists went wrong.</p>
       {:else}
         <ol class="flex flex-col">
           {#each problems as problem (problem.key)}
-            <li
-              class="border-line-soft flex flex-wrap items-center gap-x-3 gap-y-1 border-b px-2 py-2 text-[14px]"
-            >
-              <span class:text-death={problem.hit?.killed}>{problem.text}</span>
-              {#if nightMode && problem.row.encounter}<span class="text-muted text-[12px]"
-                  >on {problem.row.encounter}</span
-                >{/if}
-              {#if problem.row.note}<span class="text-muted text-[12px]">{problem.row.note}</span>{/if}
-              <!-- The links share one line under the sentence on a phone, and sit inline on a
-                   desktop: three links floating between a headline and its note read as noise. -->
-              <span class="flex basis-full flex-wrap items-center gap-x-4 md:basis-auto md:gap-x-3">
-                {#if problem.row.kind === 'avoidable'}
-                  <a
-                    href={hrefFor(damageTakenPatch(problem.row.spell_id, problem.hit?.guid))}
-                    class={linkClass}
-                    aria-label={`Damage Taken for ${problem.subject}`}
-                    onclick={(event) =>
-                      follow(event, damageTakenPatch(problem.row.spell_id, problem.hit?.guid))}
-                    >Damage Taken</a
-                  >
-                  {#if problem.hit?.killed}
-                    <a
-                      href={hrefFor(deathsPatch(problem.hit.guid, problem.hit.last_ms, problem.row.spell_id))}
-                      class={linkClass}
-                      aria-label={`Deaths for ${problem.subject}`}
-                      onclick={(event) =>
-                        follow(
-                          event,
-                          deathsPatch(problem.hit?.guid ?? '', problem.hit?.last_ms, problem.row.spell_id),
-                        )}>Deaths</a
-                    >
-                  {/if}
-                {:else if problem.row.kind === 'interrupt'}
-                  <a
-                    href={hrefFor({ mode: 'analyze', view: 'tables', tab: 'interrupts' })}
-                    class={linkClass}
-                    aria-label={`Interrupts for ${problem.subject}`}
-                    onclick={(event) => follow(event, { mode: 'analyze', view: 'tables', tab: 'interrupts' })}
-                    >Interrupts</a
-                  >
-                {:else}
-                  <a
-                    href={hrefFor({ mode: 'analyze', view: 'tables', tab: 'dispels' })}
-                    class={linkClass}
-                    aria-label={`Dispels for ${problem.subject}`}
-                    onclick={(event) => follow(event, { mode: 'analyze', view: 'tables', tab: 'dispels' })}
-                    >Dispels</a
-                  >
-                {/if}
-              </span>
+            <li>
+              <Row
+                title={problem.text}
+                sub={[
+                  nightMode && problem.row.encounter ? `on ${problem.row.encounter}` : '',
+                  problem.row.note ?? '',
+                ]
+                  .filter((part) => part !== '')
+                  .join(' · ')}
+                open
+                wrapTrail
+              >
+                {#snippet lead()}<SpellIcon url={icons.of(problem.row.spell_id)} size={24} />{/snippet}
+                {#snippet titleContent()}<span class={problem.hit?.killed ? 'text-death' : 'text-strong'}
+                    >{problem.text}</span
+                  >{/snippet}
+                {#snippet trail()}{@render problemLinks(problem)}{/snippet}
+              </Row>
             </li>
           {/each}
         </ol>
       {/if}
-    </section>
+    </Section>
 
     {#if nightMode}
-      <section class="flex flex-col gap-2" data-testid="mechanics-night">
-        <h2 class="quiet-label">Over the night</h2>
+      <Section title="Over the night" testid="mechanics-night">
         {#if nightBosses.length === 0}
           <p class="text-[14px]">Nothing the table lists hit anyone on any pull.</p>
         {:else}
           {#each nightBosses as boss (boss.key)}
-            <div class="flex flex-col gap-1">
-              <h3 class="heading-name text-strong text-[13px]">{boss.name}</h3>
-              <ul class="flex flex-col">
-                {#each boss.rows as row (mechanicRowKey(row))}
-                  {@const worst = mostOftenHit(row.players)}
-                  <li class="border-line-soft border-b px-2 py-2 text-[14px]">
-                    <span class="font-semibold">{row.name}</span>
-                    hit someone on <span class="numeric">{row.pulls_hit ?? 0}</span>
-                    of <span class="numeric">{boss.pulls}</span>
-                    {boss.pulls === 1 ? 'pull' : 'pulls'}
-                    {#if worst !== undefined}
-                      · most often {splitUnitName(worst.name).name}
-                    {/if}
-                    {#if row.role !== undefined}
-                      · the {row.role}'s to place{#each rolePlacements([row], summary.roster) as placement (placement.hit.guid)}
-                        , {splitUnitName(placement.hit.name).name}{/each}
-                    {/if}
-                  </li>
-                {/each}
-              </ul>
-            </div>
+            <h3 class="text-strong pt-2 text-[15px] font-bold">{boss.name}</h3>
+            {#each boss.rows as row (mechanicRowKey(row))}
+              {@const worst = mostOftenHit(row.players)}
+              <Row
+                title={row.name}
+                sub={[
+                  `hit someone on ${row.pulls_hit ?? 0} of ${boss.pulls} ${boss.pulls === 1 ? 'pull' : 'pulls'}`,
+                  worst === undefined ? '' : `most often ${splitUnitName(worst.name).name}`,
+                  row.role === undefined
+                    ? ''
+                    : [
+                        `the ${row.role}'s to place`,
+                        ...rolePlacements([row], summary.roster).map(
+                          (placement) => splitUnitName(placement.hit.name).name,
+                        ),
+                      ].join(', '),
+                ]
+                  .filter((part) => part !== '')
+                  .join(' · ')}
+                open
+              >
+                {#snippet lead()}<SpellIcon url={icons.of(row.spell_id)} size={24} />{/snippet}
+              </Row>
+            {/each}
           {/each}
         {/if}
-      </section>
+      </Section>
     {/if}
 
     {#if melee.damage > 0}
-      <section class="flex flex-col gap-1" data-testid="mechanics-melee">
-        <h2 class="quiet-label">Melee swings</h2>
-        <p class="text-muted text-[13px]">
-          <span class="text-text numeric">{formatAmount(melee.damage)}</span> damage to
-          <span class="numeric">{melee.players}</span>
+      <Section title="Melee swings" testid="mechanics-melee">
+        <p class="text-muted text-[14px] leading-6">
+          <span class="text-text tabular-nums">{formatAmount(melee.damage)}</span> damage to
+          <span class="tabular-nums">{melee.players}</span>
           {melee.players === 1 ? 'player' : 'players'} from the enemies’ swings{#if melee.most}, most of it on
-            <span class="text-text">{splitUnitName(melee.most.name).name}</span> (<span class="numeric"
+            <span class="text-text">{splitUnitName(melee.most.name).name}</span> (<span class="tabular-nums"
               >{formatAmount(melee.most.damage)}</span
             >){#if melee.others.players > 0}, the other
-              <span class="numeric">{formatAmount(melee.others.damage)}</span> on
-              <span class="numeric">{melee.others.players}</span>
+              <span class="tabular-nums">{formatAmount(melee.others.damage)}</span> on
+              <span class="tabular-nums">{melee.others.players}</span>
               {melee.others.players === 1 ? 'other player' : 'other players'}{/if}{/if}. A swing lands on
-          whoever holds the enemy, so no table judges it; the Damage Taken tab splits it by source.
+          whoever holds the enemy, so no table judges it; the Damage taken tab splits it by source.
           <a
             href={hrefFor(damageTakenPatch(0))}
             class={linkClass}
             aria-label="Damage Taken, melee"
-            onclick={(event) => follow(event, damageTakenPatch(0))}>Damage Taken</a
+            onclick={(event) => follow(event, damageTakenPatch(0))}>Damage taken</a
           >
         </p>
-      </section>
+      </Section>
     {/if}
+
     {#if showPlayerCards}
-      <section class="grid grid-cols-1 gap-3 md:grid-cols-2" data-testid="mechanics-players">
+      <Section title="By player" meta="What hit them, and what did not" testid="mechanics-players">
         {#each players as player (player.guid)}
-          <article
-            class="border-line rounded-panel bg-raised flex flex-col gap-2 border p-3"
-            data-testid={`mechanics-player-${player.guid}`}
-          >
-            <h3 class="heading-name" style={`color: ${classColorVar(classOf.get(player.guid))}`}>
-              {splitUnitName(player.name).name}
-            </h3>
-            <p class="text-[13px]">
-              <span class="numeric">{formatAmount(player.damage)}</span> avoidable damage
-              {#if nightMode}
-                <span
-                  class="text-muted"
-                  title="Over the night the share would divide by every pull's damage taken, judged or not, so it is not shown; open a pull for it"
-                  >· share per pull only</span
-                >
-              {:else if takenOf(player.guid) > 0}
-                · <span class="numeric">{Math.round((player.damage / takenOf(player.guid)) * 100)}%</span> of what
-                they took
-              {/if}
-              {#if player.placed > 0}
-                · <span class="numeric">{formatAmount(player.placed)}</span> placed on others
-              {/if}
-            </p>
-            {#if player.hits.length === 0}
-              <p class="text-muted text-[13px]">
-                {nightMode
-                  ? 'Nothing avoidable landed on them on the judged pulls, or they were not in those pulls.'
-                  : 'Clean: nothing avoidable landed on them.'}
-              </p>
-            {:else}
-              <ul class="flex flex-col gap-1 text-[13px]">
+          <Row title={splitUnitName(player.name).name} open testid={`mechanics-player-${player.guid}`}>
+            {#snippet lead()}<ClassCrestRing
+                characterClass={classSlugOf(classOf.get(player.guid)) ?? ''}
+                size={28}
+              />{/snippet}
+            {#snippet titleContent()}<span style:color={classColorVar(classOf.get(player.guid))}
+                >{splitUnitName(player.name).name}</span
+              >{/snippet}
+            {#snippet subContent()}
+              <span class="block">
+                <span class="tabular-nums">{formatAmount(player.damage)}</span> avoidable damage
+                {#if nightMode}
+                  <span
+                    title="Over the night the share would divide by every pull's damage taken, judged or not, so it is not shown; open a pull for it"
+                    >· share per pull only</span
+                  >
+                {:else if takenOf(player.guid) > 0}
+                  · <span class="tabular-nums"
+                    >{Math.round((player.damage / takenOf(player.guid)) * 100)}%</span
+                  > of what they took
+                {/if}
+                {#if player.placed > 0}
+                  · <span class="tabular-nums">{formatAmount(player.placed)}</span> placed on others
+                {/if}
+              </span>
+              {#if player.hits.length === 0}
+                <span class="block">
+                  {nightMode
+                    ? 'Nothing avoidable landed on them on the judged pulls, or they were not in those pulls.'
+                    : 'Clean: nothing avoidable landed on them.'}
+                </span>
+              {:else}
                 <!-- A tank both hit by the cleave and placing it on others has two entries for
                      one row; a key on the row alone threw on the duplicate and blanked the page. -->
                 {#each player.hits as entry (`${mechanicRowKey(entry.row)}${entry.others === undefined ? '' : '-placed'}`)}
-                  <li class:text-death={entry.hit.killed}>
-                    {entry.row.name} · <span class="numeric">{entry.hit.hits}</span>
+                  <span class={['block', entry.hit.killed ? 'text-death' : 'text-text']}>
+                    {entry.row.name} · <span class="tabular-nums">{entry.hit.hits}</span>
                     {entry.hit.hits === 1 ? 'hit' : 'hits'}{entry.others === undefined ? '' : ' on'}
                     {#if entry.others !== undefined}
-                      <span class="numeric">{entry.others}</span>
+                      <span class="tabular-nums">{entry.others}</span>
                       {entry.others === 1 ? 'player' : 'players'} who are not the {entry.row.role}{/if} ·
-                    <span class="numeric">{formatAmount(entry.hit.damage)}</span>
+                    <span class="tabular-nums">{formatAmount(entry.hit.damage)}</span>
                     damage{#if (entry.hit.absorbed ?? 0) > 0}
-                      <span class="text-muted"
-                        >(<span class="numeric">{formatAmount(entry.hit.absorbed ?? 0)}</span> absorbed)</span
-                      >{/if}
+                      (<span class="tabular-nums">{formatAmount(entry.hit.absorbed ?? 0)}</span> absorbed){/if}
                     {#if nightMode && entry.row.encounter}· on {entry.row.encounter}{/if}
-                    {#if !nightMode}· first at <span class="numeric"
+                    {#if !nightMode}· first at <span class="tabular-nums"
                         >{formatDuration(entry.hit.first_ms)}</span
                       >{/if}
                     {#if entry.hit.killed}· {entry.others === undefined
@@ -468,109 +534,78 @@
                           .role}'s to take; where it lands is theirs to set"
                         >the {entry.row.role}'s to place</span
                       >{/if}
-                    {#if entry.hit.pulls}· on <span class="numeric">{entry.hit.pulls}</span>
+                    {#if entry.hit.pulls}· on <span class="tabular-nums">{entry.hit.pulls}</span>
                       {entry.hit.pulls === 1 ? 'pull' : 'pulls'}{/if}
-                  </li>
+                  </span>
                 {/each}
-              </ul>
-            {/if}
-            {#if player.unavoidable.damage > 0}
-              <p class="text-muted text-[13px]">
-                Unavoidable: <span class="numeric">{formatAmount(player.unavoidable.damage)}</span>
-                damage from {player.unavoidable.names.join(', ')}.
-              </p>
-            {/if}
-            {#if player.avoided.length > 0}
-              <p class="text-muted text-[13px]">Never hit by: {player.avoided.join(', ')}.</p>
-            {/if}
-          </article>
+              {/if}
+              {#if player.unavoidable.damage > 0}
+                <span class="block">
+                  Unavoidable: <span class="tabular-nums">{formatAmount(player.unavoidable.damage)}</span>
+                  damage from {player.unavoidable.names.join(', ')}.
+                </span>
+              {/if}
+              {#if player.avoided.length > 0}
+                <span class="block">Never hit by: {player.avoided.join(', ')}.</span>
+              {/if}
+            {/snippet}
+          </Row>
         {/each}
-      </section>
-    {/if}
-
-    {#if clean.length > 0}
-      <section class="flex flex-col gap-1" data-testid="mechanics-clean">
-        <h2 class="quiet-label">Also in the table, nothing to answer for</h2>
-        <ul class="flex flex-col">
-          {#each clean as row (mechanicRowKey(row))}
-            <li class="border-line-soft text-muted border-b px-2 py-2 text-[13px]">
-              <span class="text-text font-semibold">{row.name}</span>
-              {#if nightMode && row.encounter}<span>· {row.encounter}</span>{/if}
-              <span>· {kindWords(row.kind)}</span>
-              {#if row.note}<span>· {row.note}</span>{/if}
-            </li>
-          {/each}
-        </ul>
-      </section>
+      </Section>
     {/if}
 
     {#if unclassified.length > 0}
-      <section class="flex flex-col gap-1" data-testid="mechanics-unclassified">
-        <h2 class="quiet-label">Not yet classified</h2>
-        <p class="text-muted text-[12px]">
+      <Section title="Not yet classified" testid="mechanics-unclassified">
+        <p class="text-muted text-[13px]">
           These enemy abilities hit someone and the table does not list them, so it does not say whether they
-          were avoidable. Run <code class="font-mono text-[12px]">forever-logs mechanics-draft</code> on the
+          were avoidable. Run <code class="font-mono text-[13px]">forever-logs mechanics-draft</code> on the
           log for a draft that classifies them.{nightMode
             ? ' Over the night they are pooled across every boss: a folded ability no longer says which pull it came from.'
             : ''}
         </p>
-        <ul class="flex flex-col">
-          {#each unclassified as ability (ability.spell_id)}
-            <li
-              class="border-line-soft text-muted flex flex-wrap items-center gap-x-3 gap-y-1 border-b px-2 py-2 text-[13px]"
-            >
-              <span class="text-text font-semibold"
-                >{ability.name}{#if unclassifiedNameShared(ability)}
-                  <span
-                    class="text-muted numeric ml-1 text-[11px]"
-                    title="Two things share this name; this is spell id {ability.spell_id}"
-                    >#{ability.spell_id}</span
-                  >{/if}</span
-              >
-              <span
-                >· <span class="numeric">{formatAmount(ability.damage)}</span> damage to players ·
-                <span class="numeric">{ability.players}</span>
-                {ability.players === 1 ? 'player' : 'players'} hit</span
-              >
+        {#each unclassified as ability (ability.spell_id)}
+          <Row
+            title={unclassifiedNameShared(ability) ? `${ability.name} #${ability.spell_id}` : ability.name}
+            sub={`${formatAmount(ability.damage)} damage to players · ${ability.players} ${ability.players === 1 ? 'player' : 'players'} hit`}
+            open
+          >
+            {#snippet lead()}<SpellIcon url={icons.of(ability.spell_id)} size={24} />{/snippet}
+            {#snippet trail()}
               <a
                 href={hrefFor(damageTakenPatch(ability.spell_id))}
                 class={linkClass}
                 aria-label={`Damage Taken for ${ability.name}`}
-                onclick={(event) => follow(event, damageTakenPatch(ability.spell_id))}>Damage Taken</a
+                onclick={(event) => follow(event, damageTakenPatch(ability.spell_id))}>Damage taken</a
               >
-            </li>
-          {/each}
-        </ul>
-      </section>
+            {/snippet}
+          </Row>
+        {/each}
+      </Section>
     {/if}
+
     {#if unjudged.length > 0}
-      <section class="flex flex-col gap-1" data-testid="mechanics-unjudged-deaths">
-        <h2 class="quiet-label">Deaths the table does not explain</h2>
-        <p class="text-muted text-[12px]">
+      <Section title="Deaths the table does not explain" testid="mechanics-unjudged-deaths">
+        <p class="text-muted text-[13px]">
           Killed by a swing, by an ability the table does not list, or by nothing the log named: the problems
           above cannot say whether these were avoidable. The Deaths tab has each one in full.
         </p>
-        <ul class="flex flex-col">
-          {#each unjudged as death (`${death.guid}-${death.at_ms}`)}
-            <li
-              class="border-line-soft text-muted flex flex-wrap items-center gap-x-3 gap-y-1 border-b px-2 py-2 text-[13px]"
-            >
-              <span class="text-text font-semibold">{splitUnitName(death.name).name}</span>
-              <span
-                >{death.label ? `${death.label} · ` : ''}at
-                <span class="numeric">{formatDuration(death.at_ms)}</span>
-                · {death.by}</span
-              >
+        {#each unjudged as death (`${death.guid}-${death.at_ms}`)}
+          <Row
+            title={splitUnitName(death.name).name}
+            sub={`${death.label ? `${death.label} · ` : ''}at ${formatDuration(death.at_ms)} · ${death.by}`}
+            open
+          >
+            {#snippet trail()}
               <a
                 href={hrefFor(deathsPatch(death.guid, death.night_ms))}
                 class={linkClass}
                 aria-label={`Deaths, ${splitUnitName(death.name).name} at ${formatDuration(death.at_ms)}`}
                 onclick={(event) => follow(event, deathsPatch(death.guid, death.night_ms))}>Deaths</a
               >
-            </li>
-          {/each}
-        </ul>
-      </section>
+            {/snippet}
+          </Row>
+        {/each}
+      </Section>
     {/if}
   {/if}
 </div>

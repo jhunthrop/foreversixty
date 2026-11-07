@@ -617,6 +617,7 @@ def RowGrid(rows: list[str], cols: int = 3) -> str:
 # body), used for the phone chart and the death recap.
 PRIM_CSS += '''
 .strip-tabs .tm{display:none}.strip-tabs .more{display:inline-flex;gap:6px}
+.strip-tabs button.more{padding:14px;font:600 14px/16px var(--font-body);color:var(--nav);background:none;border:0;border-bottom:2px solid transparent;white-space:nowrap;cursor:pointer}
 @media(max-width:1759px){.strip-tabs a.xmd{display:none}}
 @media(min-width:1760px){.strip-tabs a.xxl{display:none}.strip-tabs .more.nmd{display:none}}
 .strip-tabs .more.cur{color:var(--strong);border-bottom-color:var(--gold)}
@@ -651,7 +652,7 @@ def TabStripMore(tabs: list[str], active: str, md: int, xl: int) -> str:
     def more(rest, cls):
         on = active in rest
         lab = f'More: {active}' if on else 'More'
-        return f'<a href="#" class="more {cls}{" cur" if on else ""}" aria-haspopup="menu" aria-expanded="false">{lab} &#9662;</a>'
+        return f'<button type="button" class="more {cls}{" cur" if on else ""}" aria-haspopup="menu" aria-expanded="false">{lab} &#9662;</button>'
     return '<nav class="strip-tabs ph-tabs" aria-label="Report tabs">' + out + more(rest_md, 'nmd') + more(rest_xl, 'nxl') + '</nav>'
 
 

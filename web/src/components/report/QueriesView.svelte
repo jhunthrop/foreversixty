@@ -10,7 +10,11 @@
      so an answer is painted only if the fight it was asked about is still the fight on
      screen and no newer run has started. src/lib/report/query.ts owns the other half of
      that discipline: one engine, one query at a time, and nothing left running after
-     close(). -->
+     close().
+     Drawn to logs spec 2026-11-07 section 6.2 (`web-report-queries`): Section `Queries` holding
+     the one Plate: the Starting points (Segmented), the SQL as literal code, the primary Run,
+     `{n} rows`, then the result as a StatTable under the query's own column names. The parquet's
+     column list is the rail's (QueriesRail). -->
 <script lang="ts">
   import { sharedQueryLayer } from '../../lib/report/exact';
   import { untrack } from 'svelte';
@@ -19,6 +23,14 @@
   import { QUERY_ABANDONED, QUERY_TEMPLATES, withWindow, type QueryResult } from '../../lib/report/query';
   import type { TimeWindow } from '../../lib/report/window';
   import { BUSY_CLASS } from '../../lib/ui/busy';
+  import { FIELD_CONTROL, FIELD_FOCUS, FIELD_LABEL, fieldEdge } from '../../lib/ui/field';
+  import type { StatColumn, StatFigure } from '../../lib/ui/stat-table';
+  import Button from '../ui/Button.svelte';
+  import Plate from '../ui/Plate.svelte';
+  import Section from '../ui/Section.svelte';
+  import Segmented from '../ui/Segmented.svelte';
+  import StatRow from '../ui/StatRow.svelte';
+  import StatTable from '../ui/StatTable.svelte';
 
   let {
     dataBaseUrl,
@@ -42,6 +54,17 @@
   // starting value, not a binding, and reading a prop straight into $state is what
   // state_referenced_locally warns about. Picking a template re-reads the window.
   let sql = $state(untrack(() => withWindow(QUERY_TEMPLATES[0].sql, current)));
+  /** The starting point on screen; cleared when the window moves, so picking it again rewrites
+   *  its bounds (a Segmented reports only a change). */
+  let template = $state<string | null>(QUERY_TEMPLATES[0].id);
+  let windowKey = untrack(() => `${current.startMs}-${current.endMs}`);
+  $effect(() => {
+    const key = `${current.startMs}-${current.endMs}`;
+    if (key === windowKey) return;
+    windowKey = key;
+    template = null;
+  });
+  const templateOptions = QUERY_TEMPLATES.map((one) => ({ value: one.id, label: one.label }));
   let result = $state<QueryResult | null>(null);
   let running = $state(false);
   let error = $state('');
@@ -73,9 +96,26 @@
   // fight switch re-registers the file. The island's unmount is the page's end anyway.
 
   function useTemplate(id: string): void {
-    const template = QUERY_TEMPLATES.find((candidate) => candidate.id === id);
-    if (template !== undefined) sql = withWindow(template.sql, current);
+    const found = QUERY_TEMPLATES.find((candidate) => candidate.id === id);
+    if (found === undefined) return;
+    sql = withWindow(found.sql, current);
   }
+
+  function pick(id: string): void {
+    template = id;
+    useTemplate(id);
+  }
+
+  /** The first column is the row's name; a one-column answer (a count) is a figure alone. */
+  const named = $derived((result?.columns.length ?? 0) > 1);
+  const resultColumns = $derived<StatColumn[]>(
+    (result?.columns ?? [])
+      .slice(named ? 1 : 0)
+      .map((column, index) => ({ id: `${index}-${column}`, label: column })),
+  );
+  const cellText = (cell: unknown): string => (cell === null || cell === undefined ? '' : String(cell));
+  const figuresOf = (row: readonly unknown[]): StatFigure[] =>
+    row.slice(named ? 1 : 0).map((cell) => ({ value: cellText(cell) }));
 
   async function run(): Promise<void> {
     // Both captured before the first await and re-checked after the last: the visitor can
@@ -111,102 +151,101 @@
   }
 </script>
 
-<div class="flex flex-col gap-3" data-testid="queries-view">
-  <p class="text-muted text-[13px]">
-    SQL over this fight’s event file, in your browser. The file downloads the first time you run a query and
-    nothing leaves the page. These figures are measured, not scaled: a query answers the window it asks about
-    exactly, where the tables mark a rescaled split with a tilde.
-  </p>
-
-  <div class="flex flex-wrap gap-2" role="group" aria-label="Starting points">
-    {#each QUERY_TEMPLATES as template (template.id)}
-      <button
-        type="button"
-        class="border-line-soft rounded-control text-nav inline-flex min-h-11 items-center border px-3 text-left text-[12px] font-bold tracking-[0.06em] uppercase md:min-h-9"
-        onclick={() => useTemplate(template.id)}
-        data-testid={`template-${template.id}`}
-      >
-        {template.label}
-      </button>
-    {/each}
-  </div>
-
-  <p class="text-muted text-[12px]" data-testid="query-window">
-    A starting point is written for the window on screen,
-    <span class="numeric">{formatDuration(current.startMs)}</span>
-    to
-    <span class="numeric">{formatDuration(current.endMs)}</span>. Pick one again after brushing the chart to
-    move its bounds.
-  </p>
-
-  <label class="quiet-label" for="query-sql">Query</label>
-  <textarea
-    id="query-sql"
-    class="border-line-warm bg-raised rounded-control text-text min-h-[140px] border p-3 font-mono text-[13px]"
-    bind:value={sql}
-    spellcheck="false"
-    data-testid="query-sql"></textarea>
-
-  <button
-    type="button"
-    class={`border-line-warm-strong rounded-control text-strong inline-flex h-11 w-fit items-center border px-4 text-[12px] font-bold tracking-[0.06em] uppercase ${running ? BUSY_CLASS : ''}`}
-    onclick={() => void run()}
-    disabled={running}
-    aria-busy={running}
-    data-testid="query-run"
-  >
-    Run
-  </button>
-
-  <!-- Always in the DOM, so the first slow run is announced rather than swallowed: a live
-       region added at the same moment as its text is not reliably read out. Polite, not
-       assertive -- a download finishing is worth hearing, not worth interrupting for. -->
-  <p class="text-muted text-[13px]" role="status" aria-live="polite" data-testid="query-status">
-    {#if note !== ''}
-      {note}
-    {:else if result !== null}
-      <span class="numeric">{rowsFound}</span>
-      {rowsFound === 1 ? 'row' : 'rows'} in
-      <span class="numeric">{Math.round(result.elapsedMs)}</span> ms{wasCold
-        ? '. That run included the one-time load.'
-        : '.'}
-    {/if}
-  </p>
-
-  {#if error !== ''}
-    <p class="text-[14px]" role="alert" data-testid="query-error">{error}</p>
-  {/if}
-
-  {#if result !== null}
-    {#if rowsShown === 0}
-      <p class="text-muted text-[14px]" data-testid="query-empty">No rows matched.</p>
-    {:else}
-      <div class="overflow-x-auto">
-        <table class="w-full text-[13px]" data-testid="query-result">
-          <thead>
-            <tr>
-              {#each result.columns as column, index (index)}
-                <th class="quiet-label border-line-soft border-b px-2 py-1 text-left">{column}</th>
-              {/each}
-            </tr>
-          </thead>
-          <tbody>
-            {#each result.rows as row, index (index)}
-              <tr class="border-line-soft border-b">
-                {#each row as cell, cellIndex (cellIndex)}
-                  <td class="tabular px-2 py-1 font-mono">{cell === null ? '' : String(cell)}</td>
-                {/each}
-              </tr>
-            {/each}
-          </tbody>
-        </table>
-      </div>
-    {/if}
-    {#if rowsFound > rowsShown}
-      <p class="text-muted text-[12px]" data-testid="query-truncated">
-        The first <span class="numeric">{rowsShown}</span> of
-        <span class="numeric">{rowsFound}</span> rows are shown. Add a LIMIT or a GROUP BY to narrow it.
+<Section title="Queries" meta="SQL over this fight’s events, run in your browser" testid="queries-view">
+  <Plate label="Query">
+    <div class="flex flex-col gap-2 px-4 py-[14px]">
+      <span class={FIELD_LABEL} id="query-starts">Starting points</span>
+      <Segmented
+        options={templateOptions}
+        value={template}
+        label="Starting points"
+        size="sm"
+        onChange={pick}
+        testid="template"
+      />
+      <p class="text-muted text-[13px] leading-5" data-testid="query-window">
+        A starting point is written for the window on screen,
+        <span class="tabular-nums">{formatDuration(current.startMs)}</span>
+        to
+        <span class="tabular-nums">{formatDuration(current.endMs)}</span>. Pick one again after brushing the
+        chart to move its bounds.
       </p>
+
+      <label class={['mt-2', FIELD_LABEL]} for="query-sql">Query</label>
+      <!-- Literal code, the page's one mono face. -->
+      <textarea
+        id="query-sql"
+        class={[
+          FIELD_CONTROL,
+          FIELD_FOCUS,
+          fieldEdge(false),
+          'min-h-[140px] resize-y py-2 font-mono text-[13px] leading-5',
+        ]}
+        bind:value={sql}
+        spellcheck="false"
+        data-testid="query-sql"></textarea>
+
+      <div class="flex flex-wrap items-center gap-3">
+        <span class={running ? BUSY_CLASS : undefined} aria-busy={running}>
+          <Button tone="primary" disabled={running} onclick={() => void run()} testid="query-run">Run</Button>
+        </span>
+        <!-- Always in the DOM, so the first slow run is announced rather than swallowed: a live
+             region added at the same moment as its text is not reliably read out. Polite, not
+             assertive -- a download finishing is worth hearing, not worth interrupting for. -->
+        <p
+          class="text-muted text-[13px] leading-5"
+          role="status"
+          aria-live="polite"
+          data-testid="query-status"
+        >
+          {#if note !== ''}
+            {note}
+          {:else if result !== null}
+            <span class="tabular-nums">{rowsFound}</span>
+            {rowsFound === 1 ? 'row' : 'rows'} in
+            <span class="tabular-nums">{Math.round(result.elapsedMs)}</span> ms{wasCold
+              ? '. That run included the one-time load.'
+              : '.'}
+          {/if}
+        </p>
+      </div>
+
+      {#if error !== ''}
+        <p class="text-wipe text-[14px]" role="alert" data-testid="query-error">{error}</p>
+      {/if}
+    </div>
+
+    {#if result !== null}
+      {#if rowsShown === 0}
+        <p class="text-muted px-4 pb-4 text-[14px]" data-testid="query-empty">No rows matched.</p>
+      {:else}
+        <div class="overflow-x-auto">
+          <StatTable
+            columns={resultColumns}
+            nameHead={named ? (result.columns[0] ?? '') : ''}
+            bar={false}
+            label="Query result"
+            testid="query-result"
+          >
+            {#each result.rows as row, index (index)}
+              <StatRow figures={figuresOf(row)} bar={false}>
+                {#snippet name()}{named ? cellText(row[0]) : ''}{/snippet}
+              </StatRow>
+            {/each}
+          </StatTable>
+        </div>
+      {/if}
+      {#if rowsFound > rowsShown}
+        <p class="text-muted px-4 pb-4 text-[13px]" data-testid="query-truncated">
+          The first <span class="tabular-nums">{rowsShown}</span> of
+          <span class="tabular-nums">{rowsFound}</span> rows are shown. Add a LIMIT or a GROUP BY to narrow it.
+        </p>
+      {/if}
     {/if}
-  {/if}
-</div>
+  </Plate>
+  <p class="text-muted mt-3 text-[13px] leading-5">
+    The file downloads the first time you run a query and nothing leaves the page. These figures are measured,
+    not scaled: a query answers the window it asks about exactly, where the tables mark a rescaled split with
+    a tilde.
+  </p>
+</Section>
