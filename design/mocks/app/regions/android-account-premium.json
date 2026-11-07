@@ -1,0 +1,138 @@
+{
+ "device": {
+  "width": 412,
+  "height": 915
+ },
+ "regions": {
+  "head": {
+   "box": [
+    16,
+    0,
+    380,
+    207
+   ],
+   "inventory": {
+    "button": 1,
+    "image": 1
+   }
+  },
+  "head-title": {
+   "box": [
+    16,
+    16,
+    380,
+    88
+   ],
+   "inventory": {
+    "button": 1
+   }
+  },
+  "head-meta": {
+   "box": [
+    16,
+    60,
+    354,
+    44
+   ],
+   "inventory": {
+    "button": 1
+   }
+  },
+  "head-answer": {
+   "box": [
+    16,
+    120,
+    380,
+    73
+   ],
+   "inventory": {
+    "image": 1
+   }
+  },
+  "section-characters": {
+   "box": [
+    16,
+    235,
+    380,
+    308
+   ],
+   "inventory": {
+    "row": 1,
+    "image": 1
+   }
+  },
+  "plate": {
+   "box": [
+    16,
+    308,
+    380,
+    128
+   ],
+   "inventory": {
+    "row": 1,
+    "image": 1
+   }
+  },
+  "section-plan": {
+   "box": [
+    16,
+    591,
+    380,
+    480
+   ],
+   "inventory": {
+    "row": 4,
+    "button": 1
+   }
+  },
+  "section-guild": {
+   "box": [
+    16,
+    1119,
+    380,
+    331
+   ],
+   "inventory": {
+    "row": 3,
+    "button": 1,
+    "field": 1,
+    "image": 1
+   }
+  },
+  "section-devices": {
+   "box": [
+    16,
+    1474,
+    380,
+    193
+   ],
+   "inventory": {
+    "row": 1,
+    "button": 1
+   }
+  },
+  "section-discord": {
+   "box": [
+    16,
+    1699,
+    380,
+    542
+   ],
+   "inventory": {
+    "row": 2,
+    "button": 3
+   }
+  },
+  "section-you": {
+   "box": [
+    16,
+    2273,
+    380,
+    251
+   ],
+   "inventory": {
+    "row": 1
+   }
+  }
+ }
+}

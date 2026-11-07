@@ -1,0 +1,119 @@
+{
+ "device": {
+  "width": 412,
+  "height": 915
+ },
+ "regions": {
+  "head": {
+   "box": [
+    16,
+    32,
+    380,
+    209
+   ],
+   "inventory": {
+    "image": 1
+   }
+  },
+  "head-title": {
+   "box": [
+    16,
+    48,
+    380,
+    90
+   ],
+   "inventory": {
+    "image": 1
+   }
+  },
+  "head-meta": {
+   "box": [
+    88,
+    92,
+    308,
+    46
+   ],
+   "inventory": {}
+  },
+  "head-answer": {
+   "box": [
+    16,
+    154,
+    380,
+    73
+   ],
+   "inventory": {}
+  },
+  "countdowns": {
+   "box": [
+    16,
+    496,
+    380,
+    482
+   ],
+   "inventory": {
+    "image": 3
+   }
+  },
+  "section-forever-right-now": {
+   "box": [
+    0,
+    1010,
+    412,
+    661
+   ],
+   "inventory": {
+    "row": 7,
+    "segment": 3,
+    "image": 7
+   }
+  },
+  "section-your-upgrades": {
+   "box": [
+    0,
+    273,
+    412,
+    223
+   ],
+   "inventory": {
+    "row": 3,
+    "image": 3
+   }
+  },
+  "section-guild-sims": {
+   "box": [
+    0,
+    1703,
+    412,
+    498
+   ],
+   "inventory": {
+    "row": 6,
+    "image": 6
+   }
+  },
+  "section-your-spec-this-week": {
+   "box": [
+    0,
+    2233,
+    412,
+    125
+   ],
+   "inventory": {
+    "row": 1
+   }
+  },
+  "section-top-3-for-fury-warrior-60": {
+   "box": [
+    0,
+    2390,
+    412,
+    181
+   ],
+   "inventory": {
+    "row": 3,
+    "image": 3
+   }
+  }
+ }
+}

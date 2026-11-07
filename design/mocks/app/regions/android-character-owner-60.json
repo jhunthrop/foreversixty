@@ -1,0 +1,156 @@
+{
+ "device": {
+  "width": 412,
+  "height": 915
+ },
+ "regions": {
+  "head": {
+   "box": [
+    16,
+    0,
+    380,
+    258
+   ],
+   "inventory": {
+    "image": 1
+   }
+  },
+  "head-title": {
+   "box": [
+    16,
+    16,
+    380,
+    118
+   ],
+   "inventory": {
+    "image": 1
+   }
+  },
+  "head-meta": {
+   "box": [
+    88,
+    60,
+    308,
+    74
+   ],
+   "inventory": {}
+  },
+  "head-answer": {
+   "box": [
+    16,
+    150,
+    380,
+    94
+   ],
+   "inventory": {}
+  },
+  "summary": {
+   "box": [
+    16,
+    258,
+    380,
+    180
+   ],
+   "inventory": {}
+  },
+  "section-gear": {
+   "box": [
+    16,
+    458,
+    380,
+    1372
+   ],
+   "inventory": {
+    "row": 17,
+    "image": 16
+   }
+  },
+  "plate": {
+   "box": [
+    16,
+    507,
+    380,
+    1323
+   ],
+   "inventory": {
+    "row": 17,
+    "image": 16
+   }
+  },
+  "slots": {
+   "box": [
+    17,
+    508,
+    378,
+    1321
+   ],
+   "inventory": {
+    "row": 17,
+    "image": 16
+   }
+  },
+  "section-forever-score": {
+   "box": [
+    16,
+    1878,
+    380,
+    279
+   ],
+   "inventory": {
+    "row": 5
+   }
+  },
+  "section-best-per-encounter": {
+   "box": [
+    16,
+    2205,
+    380,
+    513
+   ],
+   "inventory": {
+    "row": 5
+   }
+  },
+  "section-builds-seen": {
+   "box": [
+    16,
+    2766,
+    380,
+    223
+   ],
+   "inventory": {
+    "row": 3
+   }
+  },
+  "section-activity": {
+   "box": [
+    16,
+    3037,
+    380,
+    350
+   ],
+   "inventory": {
+    "row": 4,
+    "image": 4
+   }
+  },
+  "section-history": {
+   "box": [
+    16,
+    3435,
+    380,
+    91
+   ],
+   "inventory": {}
+  },
+  "section-coach-history": {
+   "box": [
+    16,
+    3574,
+    380,
+    91
+   ],
+   "inventory": {}
+  }
+ }
+}

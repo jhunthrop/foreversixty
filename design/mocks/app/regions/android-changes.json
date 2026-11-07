@@ -1,0 +1,91 @@
+{
+ "device": {
+  "width": 412,
+  "height": 915
+ },
+ "regions": {
+  "head": {
+   "box": [
+    16,
+    0,
+    380,
+    152
+   ],
+   "inventory": {}
+  },
+  "head-title": {
+   "box": [
+    16,
+    16,
+    380,
+    122
+   ],
+   "inventory": {}
+  },
+  "head-meta": {
+   "box": [
+    16,
+    60,
+    380,
+    20
+   ],
+   "inventory": {}
+  },
+  "controls": {
+   "box": [
+    0,
+    152,
+    412,
+    50
+   ],
+   "inventory": {
+    "row": 3,
+    "segment": 3
+   }
+  },
+  "section-coming-up": {
+   "box": [
+    16,
+    250,
+    380,
+    483
+   ],
+   "inventory": {
+    "row": 1
+   }
+  },
+  "section-november-2026": {
+   "box": [
+    16,
+    781,
+    380,
+    300
+   ],
+   "inventory": {
+    "row": 1
+   }
+  },
+  "section-october-2026": {
+   "box": [
+    16,
+    1129,
+    380,
+    142
+   ],
+   "inventory": {
+    "row": 1
+   }
+  },
+  "section-september-2026": {
+   "box": [
+    16,
+    1319,
+    380,
+    2320
+   ],
+   "inventory": {
+    "row": 59
+   }
+  }
+ }
+}

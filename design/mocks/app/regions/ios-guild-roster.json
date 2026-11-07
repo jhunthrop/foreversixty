@@ -1,0 +1,78 @@
+{
+ "device": {
+  "width": 393,
+  "height": 852
+ },
+ "regions": {
+  "head": {
+   "box": [
+    16,
+    0,
+    361,
+    259
+   ],
+   "inventory": {
+    "button": 1,
+    "image": 1
+   }
+  },
+  "head-title": {
+   "box": [
+    16,
+    16,
+    361,
+    84
+   ],
+   "inventory": {
+    "image": 1
+   }
+  },
+  "head-meta": {
+   "box": [
+    96,
+    60,
+    281,
+    40
+   ],
+   "inventory": {}
+  },
+  "section-waiting-for-approval": {
+   "box": [
+    16,
+    397,
+    361,
+    439
+   ],
+   "inventory": {
+    "row": 3,
+    "button": 7,
+    "image": 3
+   }
+  },
+  "section-roster": {
+   "box": [
+    16,
+    884,
+    361,
+    2635
+   ],
+   "inventory": {
+    "row": 21,
+    "button": 9,
+    "image": 21
+   }
+  },
+  "plate": {
+   "box": [
+    16,
+    1216,
+    361,
+    2227
+   ],
+   "inventory": {
+    "row": 21,
+    "image": 21
+   }
+  }
+ }
+}

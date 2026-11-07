@@ -1,0 +1,71 @@
+{
+ "device": {
+  "width": 412,
+  "height": 915
+ },
+ "regions": {
+  "head": {
+   "box": [
+    16,
+    0,
+    380,
+    259
+   ],
+   "inventory": {
+    "button": 1,
+    "image": 1
+   }
+  },
+  "head-title": {
+   "box": [
+    16,
+    16,
+    380,
+    84
+   ],
+   "inventory": {
+    "image": 1
+   }
+  },
+  "head-meta": {
+   "box": [
+    96,
+    60,
+    300,
+    40
+   ],
+   "inventory": {}
+  },
+  "section-planned": {
+   "box": [
+    16,
+    377,
+    380,
+    202
+   ],
+   "inventory": {
+    "button": 1
+   }
+  },
+  "plate": {
+   "box": [
+    16,
+    436,
+    380,
+    143
+   ],
+   "inventory": {}
+  },
+  "section-raid-nights": {
+   "box": [
+    16,
+    627,
+    380,
+    353
+   ],
+   "inventory": {
+    "button": 1
+   }
+  }
+ }
+}

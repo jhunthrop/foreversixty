@@ -1,0 +1,156 @@
+{
+ "device": {
+  "width": 393,
+  "height": 852
+ },
+ "regions": {
+  "head": {
+   "box": [
+    16,
+    0,
+    361,
+    258
+   ],
+   "inventory": {
+    "image": 1
+   }
+  },
+  "head-title": {
+   "box": [
+    16,
+    16,
+    361,
+    118
+   ],
+   "inventory": {
+    "image": 1
+   }
+  },
+  "head-meta": {
+   "box": [
+    88,
+    60,
+    289,
+    74
+   ],
+   "inventory": {}
+  },
+  "head-answer": {
+   "box": [
+    16,
+    150,
+    361,
+    94
+   ],
+   "inventory": {}
+  },
+  "summary": {
+   "box": [
+    16,
+    258,
+    361,
+    180
+   ],
+   "inventory": {}
+  },
+  "section-gear": {
+   "box": [
+    16,
+    458,
+    361,
+    1372
+   ],
+   "inventory": {
+    "row": 17,
+    "image": 16
+   }
+  },
+  "plate": {
+   "box": [
+    16,
+    507,
+    361,
+    1323
+   ],
+   "inventory": {
+    "row": 17,
+    "image": 16
+   }
+  },
+  "slots": {
+   "box": [
+    17,
+    508,
+    359,
+    1321
+   ],
+   "inventory": {
+    "row": 17,
+    "image": 16
+   }
+  },
+  "section-forever-score": {
+   "box": [
+    16,
+    1878,
+    361,
+    279
+   ],
+   "inventory": {
+    "row": 5
+   }
+  },
+  "section-best-per-encounter": {
+   "box": [
+    16,
+    2205,
+    361,
+    513
+   ],
+   "inventory": {
+    "row": 5
+   }
+  },
+  "section-builds-seen": {
+   "box": [
+    16,
+    2766,
+    361,
+    223
+   ],
+   "inventory": {
+    "row": 3
+   }
+  },
+  "section-activity": {
+   "box": [
+    16,
+    3037,
+    361,
+    350
+   ],
+   "inventory": {
+    "row": 4,
+    "image": 4
+   }
+  },
+  "section-history": {
+   "box": [
+    16,
+    3435,
+    361,
+    91
+   ],
+   "inventory": {}
+  },
+  "section-coach-history": {
+   "box": [
+    16,
+    3574,
+    361,
+    91
+   ],
+   "inventory": {}
+  }
+ }
+}

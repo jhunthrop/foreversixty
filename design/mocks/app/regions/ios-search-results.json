@@ -1,0 +1,32 @@
+{
+ "device": {
+  "width": 393,
+  "height": 852
+ },
+ "regions": {
+  "section-characters": {
+   "box": [
+    16,
+    80,
+    361,
+    156
+   ],
+   "inventory": {
+    "row": 2,
+    "image": 2
+   }
+  },
+  "section-items": {
+   "box": [
+    16,
+    264,
+    361,
+    95
+   ],
+   "inventory": {
+    "row": 1,
+    "image": 1
+   }
+  }
+ }
+}

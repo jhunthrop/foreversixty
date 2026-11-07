@@ -1,0 +1,90 @@
+{
+ "device": {
+  "width": 412,
+  "height": 915
+ },
+ "regions": {
+  "head": {
+   "box": [
+    16,
+    0,
+    380,
+    240
+   ],
+   "inventory": {
+    "image": 1
+   }
+  },
+  "head-title": {
+   "box": [
+    16,
+    16,
+    380,
+    64
+   ],
+   "inventory": {
+    "image": 1
+   }
+  },
+  "head-meta": {
+   "box": [
+    88,
+    60,
+    221,
+    20
+   ],
+   "inventory": {}
+  },
+  "head-answer": {
+   "box": [
+    16,
+    96,
+    380,
+    130
+   ],
+   "inventory": {}
+  },
+  "controls": {
+   "box": [
+    0,
+    240,
+    412,
+    50
+   ],
+   "inventory": {
+    "segment": 9,
+    "field": 1,
+    "image": 9
+   }
+  },
+  "plate": {
+   "box": [
+    16,
+    310,
+    380,
+    577
+   ],
+   "inventory": {
+    "image": 1
+   }
+  },
+  "section-level-60-build": {
+   "box": [
+    16,
+    935,
+    380,
+    125
+   ],
+   "inventory": {}
+  },
+  "section-in-the-game": {
+   "box": [
+    16,
+    1108,
+    380,
+    125
+   ],
+   "inventory": {}
+  }
+ }
+}

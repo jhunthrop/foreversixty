@@ -122,3 +122,33 @@ Read the side-by-side (`web/test-results/parity/<page>-<state>.png`, the test-ti
 `web.yml` job `parity` (needs `build`, runs on every push to `main` and `land/**` and on pull requests, launch mode included) serves the fixture dist and runs `tests/e2e/parity-*.spec.ts`, then the reference report (`scripts/check-parity-mocks.mjs`, non-blocking). Its sparse checkout carries the generators (`design/mocks/*.py`, `*.mjs`) and, from `data/builds`, only the files `web/tests/e2e/support/parity-data-paths.mjs` lists (what the simulator spec serves and `ws_sim.py` reads); the runner's own `python3` renders. `tools/land.sh` waits for every job of the branch's runs, so a red `parity` stops a landing. The four-shard `e2e` job also runs the specs when launch mode is off.
 
 Locally, with a port no other checkout holds: `E2E_PORT=4500 npx playwright test tests/e2e/parity-*.spec.ts --project=desktop && node scripts/check-parity-mocks.mjs` in `web/`.
+
+## Native
+
+The apps are held to their mocks the way the site is (spec `design/specs/2026-11-07-mobile-redesign.md`, section 7). One reference, two snapshot tools, the same regions and the same tolerance.
+
+### The reference
+- Mocks: `python3 design/mocks/ws_app.py` writes `design/mocks/app/<platform>-<screen>.html` (iOS 393 x 852 pt, Android 412 x 915 dp). A screen that matches a web page is that page's committed phone mock inside the app frame, so the app and the site share one structure; app-only screens are composed from `ws_prims`.
+- Region files: `node design/mocks/app_regions.mjs` writes `design/mocks/app/regions/<platform>-<screen>.json`: for each `data-region` (the names of the Regions table above, plus the app's own `countdowns` and `section-<slug>`), its box `[x, y, w, h]` in points / dp from the top of the content (under the navigation bar) and its inventory (`row`, `button`, `segment`, `field`, `image` counts). The fonts are the repo's (`design/mocks/app_fonts.mjs`), so a render is the same offline and in CI.
+- Captures for people: `node design/mocks/ws_app_shoot.mjs && python3 design/mocks/ws_app.py pack` write `design/reviews/2026-11-07-mobile/<platform>-<screen>.png`.
+- Staleness is blocking (wired by the spec's lane T): the web `parity` job runs `python3 design/mocks/ws_app.py && node design/mocks/app_regions.mjs --check`; a mock change without its region files fails, naming each file and the command.
+
+### The tools
+- iOS: `swift-snapshot-testing` 1.19.7 (already in `apps/ios/project.yml`, target `ForeverSixtyTests`), on CI's iOS 26.5 simulator (`.github/workflows/ios.yml`), device iPhone 17 Pro at 393 x 852.
+- Android: Roborazzi 1.77.0 (already in `apps/android/app/build.gradle.kts`), Robolectric with the Pixel 9 qualifier at 412 x 915 dp (`.github/workflows/android.yml`, `:app:verifyRoborazziDebug`).
+
+### How a native state is rendered
+- One test per mocked state (`ParityTests.swift` / `ParityTest.kt`, one case per `<screen>` id of the spec's table 4.2), named after it.
+- Data: fixture mode with the same JSON the mock reads: the web fixtures (`web/tests/e2e/fixtures/home/`, `/character/`, the guild parity fixtures, the sim fixture) copied into each app's test fixtures by the existing fixture plumbing (`ContractFixturesConventionPlugin.kt` on Android, the `Fixtures` folder reference on iOS), plus `docs/contracts/fixtures/app`. The clock is pinned to the mock's (`2026-11-06T18:00:00Z`; the guild states use the guild parity clock), the locale `en_US`, the time zone `America/Chicago`, motion off, the default text size.
+- Regions: each primitive that carries a region on the web carries it natively, `.parityRegion(.head)` in SwiftUI (a `PreferenceKey` that reports the frame in the screen's content coordinate space) and `Modifier.parityRegion("head")` in Compose (`onGloballyPositioned` relative to the content root, plus a semantics `testTag`). Sections report `section-<slug>` from their title with the web's slug rule (`regions.ts` `sectionRegion`). The inventory comes from the same tree: rows are the primitives that are rows, buttons the `FSButton` / `FsButton` and system buttons, segments the Segmented items, fields the text fields and selects, images `ItemIcon`, `ClassCrest` and `SpellIcon`.
+- The test renders the screen at the device size, collects regions and inventory, compares them with the region file, writes the golden (the existing self-regression gate stays) and a side-by-side `mock | build` PNG with every region outlined, uploaded as `native-parity-side-by-side`.
+
+### What is compared (the web rules, unchanged)
+- A region present on one side only fails.
+- Inventory: any count that differs fails.
+- Box: x and y within **8 pt / dp**; width and height within **8 or 5%**, whichever is larger. Text rendering differs between Chromium, Core Text and Skia, so pixels are not compared against the mock; boxes and inventory are, which is the web gate's own rule.
+- Text, strictly: the mock's words are not compared (its data is the web fixture's and the app may word a label natively), but the build's own text is. Each state records a text golden beside its image: the accessibility tree's labels and values in reading order (iOS: `swift-snapshot-testing`'s `.recursiveDescription`-free text strategy over the hosting controller's accessibility elements, `ParityText.swift`; Android: `composeRule.onRoot(useUnmergedTree = true).printToString()` reduced to text and content descriptions, `ParityText.kt`). Any difference fails, so copy drift cannot pass silently (a signed-out snapshot passed with changed text on 2026-11-07). Image goldens tighten to `precision: 1, perceptualPrecision: 0.98` (iOS) and `changeThreshold = 0` (Roborazzi `RoborazziOptions.CompareOptions`).
+- Larger text: each state is also snapshotted at the largest size (iOS `accessibility5`, Android font scale 2.0) as a golden only; the review of the land looks at those captures. The layout rules for large text are in spec 3.2.
+
+### When it fails
+The same as the web: read the side-by-side, remove what the build grew or take a mock change (`ws_app.py`, or the web generator the screen comes from) with the region files regenerated in the same branch. A feature the build has and the mock lacks is added to the mock, never dropped. Never widen the tolerance. A known drift is listed in the test's `EXPECTED_DRIFT` with a date and a lane, and the test fails once the drift is gone.

@@ -1,0 +1,111 @@
+{
+ "device": {
+  "width": 412,
+  "height": 915
+ },
+ "regions": {
+  "head": {
+   "box": [
+    16,
+    0,
+    380,
+    234
+   ],
+   "inventory": {}
+  },
+  "head-title": {
+   "box": [
+    16,
+    16,
+    380,
+    120
+   ],
+   "inventory": {}
+  },
+  "head-answer": {
+   "box": [
+    16,
+    152,
+    380,
+    68
+   ],
+   "inventory": {}
+  },
+  "controls": {
+   "box": [
+    0,
+    234,
+    412,
+    50
+   ],
+   "inventory": {
+    "segment": 2
+   }
+  },
+  "notes": {
+   "box": [
+    16,
+    284,
+    380,
+    92
+   ],
+   "inventory": {}
+  },
+  "plate": {
+   "box": [
+    16,
+    404,
+    380,
+    1353
+   ],
+   "inventory": {
+    "button": 1
+   }
+  },
+  "section-for-guild-leaders": {
+   "box": [
+    16,
+    1805,
+    380,
+    1616
+   ],
+   "inventory": {
+    "button": 2
+   }
+  },
+  "section-how-the-guild-plans-work": {
+   "box": [
+    16,
+    3469,
+    380,
+    1075
+   ],
+   "inventory": {
+    "row": 10
+   }
+  },
+  "section-questions": {
+   "box": [
+    16,
+    4592,
+    380,
+    549
+   ],
+   "inventory": {
+    "row": 5
+   }
+  },
+  "section-what-the-coach-says-after-a-raid": {
+   "box": [
+    16,
+    5165,
+    380,
+    635
+   ],
+   "inventory": {
+    "row": 4,
+    "image": 3
+   }
+  }
+ }
+}

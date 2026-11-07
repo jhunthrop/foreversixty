@@ -1,0 +1,102 @@
+{
+ "device": {
+  "width": 412,
+  "height": 915
+ },
+ "regions": {
+  "head": {
+   "box": [
+    16,
+    0,
+    380,
+    259
+   ],
+   "inventory": {
+    "button": 1,
+    "image": 1
+   }
+  },
+  "head-title": {
+   "box": [
+    16,
+    16,
+    380,
+    84
+   ],
+   "inventory": {
+    "image": 1
+   }
+  },
+  "head-meta": {
+   "box": [
+    96,
+    60,
+    300,
+    40
+   ],
+   "inventory": {}
+  },
+  "controls": {
+   "box": [
+    0,
+    357,
+    412,
+    62
+   ],
+   "inventory": {
+    "segment": 2
+   }
+  },
+  "section-onyxia-drops": {
+   "box": [
+    16,
+    447,
+    380,
+    680
+   ],
+   "inventory": {
+    "row": 6,
+    "field": 1,
+    "image": 6
+   }
+  },
+  "plate": {
+   "box": [
+    16,
+    518,
+    380,
+    535
+   ],
+   "inventory": {
+    "row": 6,
+    "image": 6
+   }
+  },
+  "section-candidates-for-vis-kag-the-bloodletter": {
+   "box": [
+    16,
+    1151,
+    380,
+    584
+   ],
+   "inventory": {
+    "row": 4,
+    "button": 12,
+    "image": 4
+   }
+  },
+  "section-decision-record": {
+   "box": [
+    16,
+    1767,
+    380,
+    166
+   ],
+   "inventory": {
+    "row": 2,
+    "button": 1,
+    "image": 2
+   }
+  }
+ }
+}

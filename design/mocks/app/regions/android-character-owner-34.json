@@ -1,0 +1,102 @@
+{
+ "device": {
+  "width": 412,
+  "height": 915
+ },
+ "regions": {
+  "head": {
+   "box": [
+    16,
+    0,
+    380,
+    231
+   ],
+   "inventory": {
+    "image": 1
+   }
+  },
+  "head-title": {
+   "box": [
+    16,
+    16,
+    380,
+    91
+   ],
+   "inventory": {
+    "image": 1
+   }
+  },
+  "head-meta": {
+   "box": [
+    88,
+    60,
+    308,
+    47
+   ],
+   "inventory": {}
+  },
+  "head-answer": {
+   "box": [
+    16,
+    123,
+    380,
+    94
+   ],
+   "inventory": {}
+  },
+  "summary": {
+   "box": [
+    16,
+    231,
+    380,
+    124
+   ],
+   "inventory": {}
+  },
+  "section-gear": {
+   "box": [
+    16,
+    375,
+    380,
+    1324
+   ],
+   "inventory": {
+    "row": 17,
+    "image": 14
+   }
+  },
+  "plate": {
+   "box": [
+    16,
+    424,
+    380,
+    1275
+   ],
+   "inventory": {
+    "row": 17,
+    "image": 14
+   }
+  },
+  "slots": {
+   "box": [
+    17,
+    425,
+    378,
+    1273
+   ],
+   "inventory": {
+    "row": 17,
+    "image": 14
+   }
+  },
+  "section-forever-score": {
+   "box": [
+    16,
+    1747,
+    380,
+    83
+   ],
+   "inventory": {}
+  }
+ }
+}

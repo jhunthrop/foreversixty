@@ -1,0 +1,123 @@
+{
+ "device": {
+  "width": 412,
+  "height": 915
+ },
+ "regions": {
+  "head": {
+   "box": [
+    16,
+    0,
+    380,
+    308
+   ],
+   "inventory": {
+    "image": 1
+   }
+  },
+  "head-title": {
+   "box": [
+    16,
+    16,
+    380,
+    64
+   ],
+   "inventory": {
+    "image": 1
+   }
+  },
+  "head-meta": {
+   "box": [
+    88,
+    60,
+    162,
+    20
+   ],
+   "inventory": {}
+  },
+  "head-answer": {
+   "box": [
+    16,
+    96,
+    380,
+    198
+   ],
+   "inventory": {}
+  },
+  "controls": {
+   "box": [
+    0,
+    308,
+    412,
+    62
+   ],
+   "inventory": {
+    "button": 1,
+    "segment": 12,
+    "field": 2
+   }
+  },
+  "summary": {
+   "box": [
+    16,
+    390,
+    380,
+    125
+   ],
+   "inventory": {
+    "segment": 2
+   }
+  },
+  "notes": {
+   "box": [
+    16,
+    515,
+    380,
+    40
+   ],
+   "inventory": {}
+  },
+  "plate": {
+   "box": [
+    16,
+    563,
+    380,
+    1525
+   ],
+   "inventory": {
+    "row": 17,
+    "image": 16
+   }
+  },
+  "slots": {
+   "box": [
+    17,
+    564,
+    378,
+    1523
+   ],
+   "inventory": {
+    "row": 17,
+    "image": 16
+   }
+  },
+  "section-what-to-stack": {
+   "box": [
+    16,
+    2120,
+    380,
+    501
+   ],
+   "inventory": {}
+  },
+  "footer-note": {
+   "box": [
+    16,
+    2669,
+    380,
+    42
+   ],
+   "inventory": {}
+  }
+ }
+}

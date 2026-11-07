@@ -1,0 +1,82 @@
+{
+ "device": {
+  "width": 412,
+  "height": 915
+ },
+ "regions": {
+  "head": {
+   "box": [
+    16,
+    0,
+    380,
+    392
+   ],
+   "inventory": {
+    "button": 1,
+    "image": 1
+   }
+  },
+  "head-title": {
+   "box": [
+    16,
+    16,
+    380,
+    122
+   ],
+   "inventory": {}
+  },
+  "head-meta": {
+   "box": [
+    16,
+    60,
+    380,
+    20
+   ],
+   "inventory": {}
+  },
+  "head-answer": {
+   "box": [
+    16,
+    154,
+    380,
+    224
+   ],
+   "inventory": {
+    "button": 1,
+    "image": 1
+   }
+  },
+  "controls": {
+   "box": [
+    0,
+    392,
+    412,
+    50
+   ],
+   "inventory": {
+    "segment": 5
+   }
+  },
+  "summary": {
+   "box": [
+    16,
+    462,
+    380,
+    76
+   ],
+   "inventory": {}
+  },
+  "plate": {
+   "box": [
+    16,
+    538,
+    380,
+    2185
+   ],
+   "inventory": {
+    "row": 37,
+    "image": 37
+   }
+  }
+ }
+}

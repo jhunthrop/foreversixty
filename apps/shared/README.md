@@ -17,7 +17,11 @@ The site is dark only, so the apps are dark only.
 The OFL faces the site self-hosts, as TTF (converted from the site's own Latin subsets in
 `web/src/assets/fonts/`, covering ASCII, Latin-1 and the typographic punctuation the site
 renders): Barlow 400/600/700 (body), Barlow Condensed 700/800 (headings), Cinzel 700 (the
-wordmark only). Licences sit beside them (`OFL-Barlow.txt` covers Barlow Condensed too). iOS
+wordmark only). Licences sit beside them (`OFL-Barlow.txt` covers Barlow Condensed too).
+Marcellus 400 (`Marcellus-Regular.ttf`, the unmodified upstream file from google/fonts, licence
+`OFL-Marcellus.txt`) is the screen title's face from the flat redesign
+(`design/specs/2026-11-07-mobile-redesign.md`); the apps wire it in that spec's lane T, which also retires
+Barlow Condensed and Cinzel from the apps. iOS
 bundles them and lists them under `UIAppFonts` (`FSFont` uses the PostScript names); Android
 copies them to `res/font` with lowercase names.
 

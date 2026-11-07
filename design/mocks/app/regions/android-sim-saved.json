@@ -1,0 +1,188 @@
+{
+ "device": {
+  "width": 412,
+  "height": 915
+ },
+ "regions": {
+  "head": {
+   "box": [
+    16,
+    0,
+    380,
+    328
+   ],
+   "inventory": {
+    "button": 2,
+    "image": 1
+   }
+  },
+  "head-title": {
+   "box": [
+    16,
+    16,
+    380,
+    110
+   ],
+   "inventory": {
+    "image": 1
+   }
+  },
+  "head-meta": {
+   "box": [
+    88,
+    60,
+    308,
+    66
+   ],
+   "inventory": {}
+  },
+  "head-answer": {
+   "box": [
+    16,
+    142,
+    380,
+    172
+   ],
+   "inventory": {
+    "button": 2
+   }
+  },
+  "summary": {
+   "box": [
+    16,
+    328,
+    380,
+    90
+   ],
+   "inventory": {
+    "image": 1
+   }
+  },
+  "section-damage-by-ability": {
+   "box": [
+    16,
+    446,
+    380,
+    817
+   ],
+   "inventory": {
+    "image": 9
+   }
+  },
+  "plate": {
+   "box": [
+    16,
+    494,
+    380,
+    769
+   ],
+   "inventory": {
+    "image": 9
+   }
+  },
+  "section-timeline": {
+   "box": [
+    16,
+    1737,
+    380,
+    1015
+   ],
+   "inventory": {
+    "row": 1,
+    "button": 1,
+    "segment": 4,
+    "image": 23
+   }
+  },
+  "section-gear": {
+   "box": [
+    16,
+    2800,
+    380,
+    1601
+   ],
+   "inventory": {
+    "row": 17,
+    "image": 17
+   }
+  },
+  "slots": {
+   "box": [
+    16,
+    2848,
+    380,
+    1275
+   ],
+   "inventory": {
+    "row": 17,
+    "image": 17
+   }
+  },
+  "section-talents": {
+   "box": [
+    16,
+    4449,
+    380,
+    1110
+   ],
+   "inventory": {
+    "image": 53
+   }
+  },
+  "section-rage": {
+   "box": [
+    16,
+    5607,
+    380,
+    1368
+   ],
+   "inventory": {
+    "image": 13
+   }
+  },
+  "section-buffs-and-debuffs": {
+   "box": [
+    16,
+    7023,
+    380,
+    1574
+   ],
+   "inventory": {
+    "image": 33
+   }
+  },
+  "section-dps-spread": {
+   "box": [
+    16,
+    1311,
+    380,
+    378
+   ],
+   "inventory": {}
+  },
+  "section-this-run": {
+   "box": [
+    16,
+    8645,
+    380,
+    1273
+   ],
+   "inventory": {
+    "button": 3,
+    "image": 30
+   }
+  },
+  "section-rotation": {
+   "box": [
+    16,
+    9966,
+    380,
+    1815
+   ],
+   "inventory": {
+    "row": 14,
+    "image": 14
+   }
+  }
+ }
+}

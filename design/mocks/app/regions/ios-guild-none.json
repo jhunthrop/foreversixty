@@ -1,0 +1,80 @@
+{
+ "device": {
+  "width": 393,
+  "height": 852
+ },
+ "regions": {
+  "head": {
+   "box": [
+    16,
+    0,
+    361,
+    126
+   ],
+   "inventory": {}
+  },
+  "head-title": {
+   "box": [
+    16,
+    16,
+    361,
+    96
+   ],
+   "inventory": {}
+  },
+  "section-open-a-guild": {
+   "box": [
+    16,
+    154,
+    361,
+    313
+   ],
+   "inventory": {
+    "button": 1,
+    "field": 3
+   }
+  },
+  "section-top-guilds": {
+   "box": [
+    16,
+    515,
+    361,
+    503
+   ],
+   "inventory": {
+    "row": 5
+   }
+  },
+  "plate": {
+   "box": [
+    16,
+    562,
+    361,
+    456
+   ],
+   "inventory": {
+    "row": 5
+   }
+  },
+  "section-your-guilds": {
+   "box": [
+    16,
+    1042,
+    361,
+    220
+   ],
+   "inventory": {
+    "row": 2
+   }
+  },
+  "section-run-a-guild": {
+   "box": [
+    16,
+    1294,
+    361,
+    91
+   ],
+   "inventory": {}
+  }
+ }
+}

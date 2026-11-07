@@ -1,0 +1,123 @@
+{
+ "device": {
+  "width": 412,
+  "height": 915
+ },
+ "regions": {
+  "head": {
+   "box": [
+    16,
+    0,
+    380,
+    207
+   ],
+   "inventory": {
+    "button": 1,
+    "image": 1
+   }
+  },
+  "head-title": {
+   "box": [
+    16,
+    16,
+    380,
+    88
+   ],
+   "inventory": {
+    "button": 1
+   }
+  },
+  "head-meta": {
+   "box": [
+    16,
+    60,
+    354,
+    44
+   ],
+   "inventory": {
+    "button": 1
+   }
+  },
+  "head-answer": {
+   "box": [
+    16,
+    120,
+    380,
+    73
+   ],
+   "inventory": {
+    "image": 1
+   }
+  },
+  "section-characters": {
+   "box": [
+    16,
+    235,
+    380,
+    290
+   ],
+   "inventory": {
+    "row": 1,
+    "image": 1
+   }
+  },
+  "plate": {
+   "box": [
+    16,
+    308,
+    380,
+    110
+   ],
+   "inventory": {
+    "row": 1,
+    "image": 1
+   }
+  },
+  "section-plan": {
+   "box": [
+    16,
+    573,
+    380,
+    382
+   ],
+   "inventory": {
+    "row": 4,
+    "button": 1
+   }
+  },
+  "section-devices": {
+   "box": [
+    16,
+    979,
+    380,
+    177
+   ],
+   "inventory": {
+    "button": 1
+   }
+  },
+  "section-discord": {
+   "box": [
+    16,
+    1188,
+    380,
+    413
+   ],
+   "inventory": {
+    "row": 2,
+    "button": 2
+   }
+  },
+  "section-you": {
+   "box": [
+    16,
+    1633,
+    380,
+    251
+   ],
+   "inventory": {
+    "row": 1
+   }
+  }
+ }
+}

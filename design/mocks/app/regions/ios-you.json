@@ -1,0 +1,72 @@
+{
+ "device": {
+  "width": 393,
+  "height": 852
+ },
+ "regions": {
+  "head": {
+   "box": [
+    32,
+    8,
+    329,
+    120
+   ],
+   "inventory": {
+    "image": 1
+   }
+  },
+  "head-title": {
+   "box": [
+    32,
+    24,
+    329,
+    90
+   ],
+   "inventory": {
+    "image": 1
+   }
+  },
+  "head-meta": {
+   "box": [
+    104,
+    68,
+    257,
+    46
+   ],
+   "inventory": {}
+  },
+  "section-your-character": {
+   "box": [
+    16,
+    185,
+    361,
+    152
+   ],
+   "inventory": {
+    "row": 2
+   }
+  },
+  "section-play": {
+   "box": [
+    16,
+    365,
+    361,
+    211
+   ],
+   "inventory": {
+    "row": 3
+   }
+  },
+  "section-account": {
+   "box": [
+    16,
+    604,
+    361,
+    355
+   ],
+   "inventory": {
+    "row": 5
+   }
+  }
+ }
+}

@@ -1,0 +1,46 @@
+{
+ "device": {
+  "width": 412,
+  "height": 915
+ },
+ "regions": {
+  "head": {
+   "box": [
+    32,
+    8,
+    348,
+    68
+   ],
+   "inventory": {}
+  },
+  "head-title": {
+   "box": [
+    32,
+    24,
+    348,
+    38
+   ],
+   "inventory": {}
+  },
+  "section-on-this-phone": {
+   "box": [
+    16,
+    104,
+    380,
+    87
+   ],
+   "inventory": {}
+  },
+  "section-updates": {
+   "box": [
+    16,
+    219,
+    380,
+    274
+   ],
+   "inventory": {
+    "row": 2
+   }
+  }
+ }
+}

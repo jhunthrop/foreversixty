@@ -1,0 +1,84 @@
+{
+ "device": {
+  "width": 412,
+  "height": 915
+ },
+ "regions": {
+  "head": {
+   "box": [
+    16,
+    0,
+    380,
+    219
+   ],
+   "inventory": {
+    "image": 2
+   }
+  },
+  "head-title": {
+   "box": [
+    16,
+    16,
+    380,
+    96
+   ],
+   "inventory": {
+    "image": 2
+   }
+  },
+  "head-meta": {
+   "box": [
+    96,
+    60,
+    300,
+    52
+   ],
+   "inventory": {
+    "image": 1
+   }
+  },
+  "countdowns": {
+   "box": [
+    16,
+    247,
+    380,
+    146
+   ],
+   "inventory": {
+    "image": 3
+   }
+  },
+  "section-your-first-raid": {
+   "box": [
+    16,
+    441,
+    380,
+    400
+   ],
+   "inventory": {
+    "button": 1
+   }
+  },
+  "section-guild-activity": {
+   "box": [
+    16,
+    889,
+    380,
+    231
+   ],
+   "inventory": {
+    "row": 2,
+    "image": 2
+   }
+  },
+  "section-last-raid": {
+   "box": [
+    16,
+    1144,
+    380,
+    68
+   ],
+   "inventory": {}
+  }
+ }
+}
