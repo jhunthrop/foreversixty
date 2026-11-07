@@ -44,6 +44,26 @@
       "id": "profile",
       "path": "/guild/us/pvp/olympus-xxvii/members/u%3A1016",
       "mock": "web-guild-profile.html"
+    },
+    {
+      "id": "landing-out",
+      "path": "/guild",
+      "mock": "web-guild-landing-out.html"
+    },
+    {
+      "id": "landing-in",
+      "path": "/guild",
+      "mock": "web-guild-landing-in.html"
+    },
+    {
+      "id": "join",
+      "path": "/guild/invite/fixtureinvitetoken1",
+      "mock": "web-guild-join.html"
+    },
+    {
+      "id": "claim",
+      "path": "/guild/us/pvp/olympus-xxvii/claim",
+      "mock": "web-guild-claim.html"
     }
   ]
 }

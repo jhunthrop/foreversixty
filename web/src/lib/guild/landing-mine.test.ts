@@ -9,7 +9,15 @@ import { heldClaimRow, lookupDefaults, myGuildRows } from './landing-mine';
 const ME = {
   characters: [],
   guilds: [
-    { id: 7, region: 'us', ruleset: 'pvp', name: 'Lifecycle Test', verified: true, verified_count: 3 },
+    {
+      id: 7,
+      region: 'us',
+      ruleset: 'pvp',
+      name: 'Lifecycle Test',
+      rank: 'officer',
+      verified: true,
+      verified_count: 3,
+    },
     { id: 9, region: 'eu', ruleset: 'hardcore', name: 'The Last Watch', verified: false, verified_count: 0 },
   ],
 } as unknown as Me;
@@ -17,12 +25,19 @@ const ME = {
 describe('myGuildRows', () => {
   it('lists every guild of the account with where it lives', () => {
     expect(myGuildRows(ME)).toEqual([
-      { key: 'us-pvp-7', name: 'Lifecycle Test', href: '/guild/us/pvp/lifecycle-test', where: 'US PvP' },
+      {
+        key: 'us-pvp-7',
+        name: 'Lifecycle Test',
+        href: '/guild/us/pvp/lifecycle-test',
+        where: 'US PvP',
+        rank: 'Officer',
+      },
       {
         key: 'eu-hardcore-9',
         name: 'The Last Watch',
         href: '/guild/eu/hardcore/the-last-watch',
         where: 'EU Hardcore',
+        rank: null,
       },
     ]);
   });
@@ -43,17 +58,18 @@ describe('lookupDefaults', () => {
 });
 
 describe('the landing for a signed-in player', () => {
-  it('puts Your guilds above the lookup', () => {
+  it('leads the rail with Your guilds, above Run a guild?', () => {
     const { body } = render(GuildLanding, { props: { me: ME } });
     const mine = body.indexOf('guild-landing-mine');
-    expect(mine).toBeGreaterThan(-1);
-    expect(mine).toBeLessThan(body.indexOf('guild-lookup-card'));
+    expect(mine).toBeGreaterThan(body.indexOf('ui-page-rail'));
+    expect(mine).toBeLessThan(body.indexOf('guild-landing-claim'));
+    expect(body).toContain('>Officer<');
     expect(body).toContain('Your guilds');
     expect(body).toContain('href="/guild/us/pvp/lifecycle-test"');
     expect(body).toContain('EU Hardcore');
   });
 
-  it('draws no Your guilds card signed out', () => {
+  it('draws no Your guilds section signed out', () => {
     const { body } = render(GuildLanding, { props: {} });
     expect(body).not.toContain('guild-landing-mine');
   });

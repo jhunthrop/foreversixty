@@ -249,6 +249,8 @@ export const guildCrestCopy = {
 
 export const guildJoinCopy = {
   failed: 'That invite link did not work.',
+  /** The one Section's heading under the guild's head (web layout spec 2026-11-05 §3A). */
+  sectionHeading: 'Your invite',
   guildLine: (realm: string, members: number | undefined): string =>
     members === undefined ? realm : `${realm} · ${counted(members, 'member')} on Forever Sixty`,
   invited: (guildName: string): string => `You are invited to join ${guildName}.`,
@@ -356,10 +358,13 @@ export const guildLandingCopy = {
   submit: 'Open guild',
   emptyName: "Type the guild's name as the game writes it.",
   topHeading: 'Top guilds',
-  officerLine:
-    'Run a guild? Sign in and import your character, then open the guild page and choose Claim this guild.',
-  /** In the officer line's place for a player who already holds a claim (guild loop round 3). */
+  /** The rail's officer section (web layout spec 2026-11-05 §6.1): its heading and its one line. */
+  runHeading: 'Run a guild?',
+  officerLine: 'Sign in and import your character, then open the guild page and choose Claim this guild.',
+  /** In the officer section's place for a player who already holds a claim (guild loop round 3). */
+  heldHeading: 'Your claim',
   holdsClaim: (guildName: string): string => `You hold ${possessive(guildName)} claim.`,
+  signIn: 'Sign in with Battle.net',
 } as const;
 
 /** The roster as everyone the addon saw, with a word beside each (lifecycle review round 4,

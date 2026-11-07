@@ -57,7 +57,7 @@ test.describe('guild landing', () => {
     await expect(page.getByTestId('home-top-guilds')).toContainText('The Last Watch');
     await expect(
       page.getByText(
-        'Run a guild? Sign in and import your character, then open the guild page and choose Claim this guild.',
+        'Sign in and import your character, then open the guild page and choose Claim this guild.',
       ),
     ).toBeVisible();
   });
