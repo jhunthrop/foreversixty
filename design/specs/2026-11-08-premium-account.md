@@ -191,7 +191,7 @@ Empty (`-new`): the Plate holds the gold `characterListCopy.empty` sentence, pri
 
 **7.6 Rail: Section `Discord`** (`#discord`, one place for everything Discord, decision A4): a Row `Linked to Discord as thandrel` with `Unlink` (or the lead sentence and `Link Discord`; `leadSuggested` when a guild signs up in Discord); a Row `Premium role in Discord` with its lead and `Link Premium role`; label `Notifications` and the shipped block in its state (free: `freeSentence` and `See plans ›`; empty: Connect a Discord channel; saved: `destinationChannel`, three `Switch`es, `Send test message`, `Connect a different channel ›`; warning, switched off, lapsed as shipped).
 
-**7.7 Rail: Section `You`**: the pseudonym `Switch` and its note; then a Row `Delete your account` with the proposed sentence (the privacy page's own route: email `help@foreversixty.gg`; gap G6 for a self-serve delete). `Sign out` asks first (proposed `Sign out of Forever Sixty on this browser?`, danger `Sign out`, `Cancel`) because it now sits beside the title (decision A5).
+**7.7 Rail: Section `You`**: the pseudonym `Switch` and its note. Then the last rail Section, `Delete account`: one line and a danger `Delete account` that opens the confirm dialog (G6, closed 2026-11-07). `Sign out` asks first (proposed `Sign out of Forever Sixty on this browser?`, danger `Sign out`, `Cancel`) because it now sits beside the title (decision A5).
 
 ## 7A. /account states
 
@@ -292,7 +292,7 @@ Retired: `plansPageCopy.band.eyebrow`, `band.heading` (as the H1), `accountPageC
 | Guild plan, claim pending, verified, next step | `/v1/me` guilds[].plan, claim, subscribe, verified, can | yes |
 | Devices with platform words | `/v1/devices` + `platformLabel` | yes (B2) |
 | Discord link, role, notifications | `/v1/me` discord_link, notifications | yes |
-| Delete the account | nothing | **no** (G6) |
+| Delete the account | `DELETE /v1/me` | yes (G6 closed 2026-11-07) |
 | Shared build title and views | the record (`title`, `views`) | yes; the page does not pass them to the island (G4) |
 | The shared build in the site column | `page.go` template | no column today (B4) |
 
@@ -302,7 +302,7 @@ Gaps:
 - **G3. The checkout's paid row** asserts a payment the page only infers from `?status=success`. Stripe returns `success_url` only after a paid session, so the line is true; if the owner prefers, row 2 can read `Back from Stripe.` (question 4).
 - **G4. `/b/:id`'s island props** gain `title` and `views` (already in the record) and `hideBar: true`; `page.go` passes the record's title to the template.
 - **G5. The coach's last-raid line** shows a failure sentence when its read fails; it should draw nothing (not a load error the player can act on).
-- **G6. No self-serve account deletion.** The privacy page routes it to email. A `DELETE /v1/me` with a typed confirm is the follow-up; until then the row says how.
+- **G6. No self-serve account deletion.** **Closed 2026-11-07 by the account-delete lane:** `DELETE /v1/me` (operation `deleteAccount`) with a typed confirm. The You row that said to email is gone; a `Delete account` Section sits last in the rail (one line, a danger button) and opens a confirm dialog listing what is deleted and what is kept, with the BattleTag (or `delete`) typed out (`AccountDelete.svelte`, `AccountDeleteDialog.svelte`, copy `accountPageCopy.deleteSection` / `deleteDialog`; mock `web-account-delete`, parity state `account-delete`). Email stays the route for export and correction, and an alternative for deletion (privacy page).
 - **G7. A parity fixture for /b/:id**: the API page's HTML as a fixture (planner spec G6), now with this template.
 
 Bugs for the build:

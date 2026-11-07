@@ -6,7 +6,8 @@
 // class", the first raids countdown, "Forever right now" (All) and how to start. Signed in, the
 // HomeSignedIn island draws the selected character; the session hint hides the signed-out page
 // before paint (global.css, HOME_OUT_ATTR). The feed's floor of real dated site events is built
-// here, at build time.
+// here, at build time. After an account deletion (`/?deleted=1`) a one-time notice sits under
+// the head (HomeDeletedNotice).
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import { HOME_DESCRIPTION, SITE_NAME } from '../lib/seo';
@@ -22,6 +23,7 @@ import Row from '../components/ui/Row.svelte';
 import Section from '../components/ui/Section.svelte';
 import HomeClassPicker from '../components/home/HomeClassPicker.svelte';
 import HomeCountdowns from '../components/home/HomeCountdowns.svelte';
+import HomeDeletedNotice from '../components/home/HomeDeletedNotice.svelte';
 import HomeFeed from '../components/home/HomeFeed.svelte';
 import HomeSignedIn from '../components/home/HomeSignedIn.svelte';
 import activeBuild from '../data/active-build.json';
@@ -56,6 +58,7 @@ const signInHref = battlenetStartUrl('/account?signed_in=1');
             {homeCopy.signIn}
           </Button>
         </PageHeader>
+        <HomeDeletedNotice client:idle-after-load />
         <HomeClassPicker />
       </Page>
       <HomeCountdowns client:idle-after-load {raidsOpen} build={activeBuild.build} />

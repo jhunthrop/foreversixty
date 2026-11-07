@@ -452,14 +452,42 @@ def discord_section(a: dict, unlinking: bool = False) -> str:
 
 def you_section(a: dict) -> str:
     sw = Switch(e(ACC['pseudonymLabel']), on=False)
-    rows = [Row(e(ACC['deleteTitle']), e(ACC['deleteBody']), link=False)]
-    return Section(e(ACC['youLabel']), f'<div class="stack">{sw}<p class="t-small">{e(ACC["pseudonymNote"])}</p>{Rows(rows, True)}</div>')
+    return Section(e(ACC['youLabel']), f'<div class="stack">{sw}<p class="t-small">{e(ACC["pseudonymNote"])}</p></div>')
+
+
+def delete_section() -> str:
+    """The rail's last Section (gap G6 closed 2026-11-07): one line and the danger Button that opens the confirm dialog."""
+    ds = ACC['deleteSection']
+    return Section(e(ds['title']), f'<div class="stack"><p class="t-small">{e(ds["line"])}</p><div class="acts">{Btn(e(ds["button"]), small=True, tone="danger")}</div></div>')
+
+
+def dialog_line(line: dict) -> str:
+    """One dialog line, its linked words (the refund policy) as a link, as delete-confirm.ts lineParts splits it."""
+    link = line.get('link')
+    if not link or link['label'] not in line['text']:
+        return f'<li>{e(line["text"])}</li>'
+    before, after = line['text'].split(link['label'], 1)
+    return f'<li>{e(before)}<a class="link" href="#">{e(link["label"])}</a>{e(after)}</li>'
+
+
+def delete_dialog(a: dict) -> str:
+    """The confirm dialog over the page: what is deleted, what is kept, the typed confirm (empty: the button is off)."""
+    dd = ACC['deleteDialog']
+    word = a['deleteWord']
+    label = e(a['deleteConfirm']).replace(e(word), f'<b class="strong">{e(word)}</b>', 1)
+    body = (f'<h3 class="wipe">{e(dd["deletedLabel"])}</h3><ul>{"".join(dialog_line(x) for x in dd["deleted"])}</ul>'
+            f'<h3>{e(dd["keptLabel"])}</h3><ul>{"".join(dialog_line(x) for x in dd["kept"])}</ul>'
+            f'<div class="dlg-f"><label for="account-delete-confirm">{label}</label>'
+            f'<input id="account-delete-confirm" type="text" autocomplete="off" spellcheck="false" autocapitalize="off"></div>')
+    actions = Btn(e(dd['confirm']), tone='danger', off=True) + Btn(e(dd['cancel']))
+    return ws_prims.Dialog(e(dd['title']), e(dd['intro']), body, actions, 'account-delete-title')
 
 
 ACCOUNT_STATES = {
     'free': dict(dev='none'), 'several': dict(dev='several'), 'premium': dict(dev='one'), 'seat': dict(dev='one'),
     'offer': dict(dev='one'), 'ended': dict(dev='one'), 'pastdue': dict(dev='one'), 'claim': dict(dev='one'), 'new': dict(dev='none'),
     'confirm': dict(dev='one', acct='premium', confirm=True), 'grant': dict(dev='one'),
+    'delete': dict(dev='none', acct='free', dialog=True),
 }
 
 
@@ -487,8 +515,8 @@ def account_page(state: str) -> str:
     head = PageHeader(e(ACC['title']), meta=meta, answer=account_answer(a))
     # Main: the characters (the Plate), then the plan and the guilds (rows that want the width); rail: the connections.
     main = characters_section(a) + plan_section(a) + guilds_section(a, asking=confirm)
-    rail = devices_section(st['dev'], revoking=confirm) + discord_section(a, unlinking=confirm) + you_section(a)
-    body = head + Page('split', main, rail)
+    rail = devices_section(st['dev'], revoking=confirm) + discord_section(a, unlinking=confirm) + you_section(a) + delete_section()
+    body = head + Page('split', main, rail) + (delete_dialog(a) if st.get('dialog') else '')
     key = st.get('acct', state)
     note = f'/account mock, {state}. Data: premium-facts.json (account models on the {key} account, DERIVED from home fixtures; devices {st["dev"]}).'
     return render(f'{ACC["title"]} · Forever Sixty', body, '', who_of(key) if key != 'new' else None, chrome_of(key), note, extra_css=ACCOUNT_CSS)

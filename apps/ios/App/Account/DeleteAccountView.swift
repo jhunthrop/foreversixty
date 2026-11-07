@@ -2,49 +2,53 @@ import Auth
 import DesignSystem
 import SwiftUI
 
-/// You › Delete account (App Store guideline 5.1.1(v)): what is deleted, in the privacy page's
-/// words; what else ends for this account (its plan, founder price, guild plan, seat); what
-/// happens to guild reports; then the destructive button and an explicit confirmation alert
-/// that repeats the consequences. Pure over its inputs.
+/// You › Delete account (App Store guideline 5.1.1(v)): what is deleted and what is kept, in the
+/// web dialog's words; what else ends for this account (its plan, founder price, seat); then the
+/// typed confirmation (the BattleTag, or delete) and the destructive button, enabled only once the
+/// field matches by the server's rule (`DeletionConfirmation`). Pure over its inputs.
 struct DeleteAccountView: View {
     /// The lines that apply to this account (`DeletionConsequence.of`), in order.
     let consequences: [DeletionConsequence]
+    let battleTag: String?
+    @Binding var typed: String
     let isDeleting: Bool
-    let failed: Bool
+    /// The last attempt's outcome when it did not delete; nil before the first try.
+    let outcome: AccountActionOutcome?
     let onDelete: () -> Void
-    @State private var confirming = false
 
-    private var items: [String] {
-        [
-            Copy.accountDeleteItemIdentity,
-            Copy.accountDeleteItemCharacters,
-            Copy.accountDeleteItemLogs,
-            Copy.accountDeleteItemSims,
-            Copy.accountDeleteItemLinks,
-        ]
-    }
+    static let deletedItems = [
+        Copy.accountDeleteDeletedSubscription,
+        Copy.accountDeleteDeletedIdentity,
+        Copy.accountDeleteDeletedDiscord,
+        Copy.accountDeleteDeletedPrivate,
+        Copy.accountDeleteDeletedGuild,
+    ]
+
+    static let keptItems = [
+        Copy.accountDeleteKeptBilling,
+        Copy.accountDeleteKeptReports,
+        Copy.accountDeleteKeptCharacters,
+        Copy.accountDeleteKeptBuilds,
+    ]
 
     private var consequenceLines: [String] { consequences.map(AccountCopy.consequence) }
+    private var canDelete: Bool { !isDeleting && DeletionConfirmation.matches(typed, battleTag: battleTag) }
 
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: FSSpacing.space4) {
                 Text(Copy.accountDeleteIntro).font(ScaledType.body).foregroundStyle(FSColor.text)
-                bulletCard(items, glyph: "minus")
+                group(Copy.accountDeleteDeletedTitle, Self.deletedItems, glyph: "minus")
+                group(Copy.accountDeleteKeptTitle, Self.keptItems, glyph: "checkmark", tint: FSColor.muted)
                 if !consequenceLines.isEmpty {
-                    MicroLabel(Copy.accountDeleteLoseTitle)
-                        .padding(.top, FSSpacing.space2)
-                    bulletCard(consequenceLines, glyph: "exclamationmark.circle")
+                    group(Copy.accountDeleteLoseTitle, consequenceLines, glyph: "exclamationmark.circle")
                 }
-                // Pending the owner's decision on guild reports: one key, account.delete.reports.
-                Text(Copy.accountDeleteReports).font(ScaledType.body).foregroundStyle(FSColor.text)
-                    .fixedSize(horizontal: false, vertical: true)
-                Text(Copy.accountDeleteTiming).font(ScaledType.body).foregroundStyle(FSColor.text)
-                    .fixedSize(horizontal: false, vertical: true)
-                if failed {
-                    Text(Copy.accountDeleteFailed).font(ScaledType.body).foregroundStyle(FSColor.wipe)
+                confirmField
+                if let failure = AccountCopy.deletionFailure(outcome) {
+                    Text(failure).font(ScaledType.body).foregroundStyle(FSColor.wipe)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
-                Button { confirming = true } label: {
+                Button(action: onDelete) {
                     if isDeleting {
                         ProgressView().tint(FSColor.wipe).frame(width: 20, height: 20)
                     } else {
@@ -52,7 +56,7 @@ struct DeleteAccountView: View {
                     }
                 }
                 .buttonStyle(BrandButtonStyle(.destructive))
-                .disabled(isDeleting)
+                .disabled(!canDelete)
                 .accessibilityLabel(Copy.accountDeleteButton)
                 Text(Copy.accountDeleteEmail).font(ScaledType.meta).foregroundStyle(FSColor.muted)
             }
@@ -60,53 +64,82 @@ struct DeleteAccountView: View {
         }
         .background(FSColor.bg)
         .navigationTitle(Copy.accountDeleteTitle)
-        .alert(Copy.accountDeleteConfirmTitle, isPresented: $confirming) {
-            Button(Copy.commonCancel, role: .cancel) {}
-            Button(Copy.accountDeleteButton, role: .destructive, action: onDelete)
-        } message: {
-            Text(([Copy.accountDeleteConfirmBody] + consequenceLines).joined(separator: "\n\n"))
-        }
     }
 
-    private func bulletCard(_ lines: [String], glyph: String) -> some View {
-        VStack(alignment: .leading, spacing: FSSpacing.space3) {
-            ForEach(lines, id: \.self) { line in
-                HStack(alignment: .firstTextBaseline, spacing: FSSpacing.space3) {
-                    Image(systemName: glyph).foregroundStyle(FSColor.wipe).accessibilityHidden(true)
-                    Text(line).font(ScaledType.body).foregroundStyle(FSColor.strong)
-                        .fixedSize(horizontal: false, vertical: true)
-                }
+    private var confirmLabel: String { AccountCopy.deletionPrompt(battleTag: battleTag) }
+
+    private var confirmField: some View {
+        VStack(alignment: .leading, spacing: FSSpacing.space2) {
+            MicroLabel(confirmLabel)
+            TextField("", text: $typed)
+                .font(ScaledType.body)
+                .foregroundStyle(FSColor.strong)
+                .textInputAutocapitalization(.never)
+                .autocorrectionDisabled()
+                .submitLabel(.done)
+                .disabled(isDeleting)
+                .padding(.horizontal, 14)
+                .frame(minHeight: 48)
+                .background(Color.black.opacity(0.35), in: .rect(cornerRadius: FSRadius.control))
+                .overlay(RoundedRectangle(cornerRadius: FSRadius.control).stroke(
+                    outcome == .confirmMismatch ? FSColor.wipe : FSColor.lineCard
+                ))
+                .accessibilityLabel(confirmLabel)
+            if outcome == .confirmMismatch {
+                Text(Copy.accountDeleteConfirmMismatch).font(ScaledType.meta).foregroundStyle(FSColor.wipe)
             }
         }
-        .padding(FSSpacing.space4)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .quietCard()
+        .padding(.top, FSSpacing.space2)
+    }
+
+    private func group(_ title: String, _ lines: [String], glyph: String, tint: Color = FSColor.wipe) -> some View {
+        VStack(alignment: .leading, spacing: FSSpacing.space2) {
+            MicroLabel(title)
+            VStack(alignment: .leading, spacing: FSSpacing.space3) {
+                ForEach(lines, id: \.self) { line in
+                    HStack(alignment: .firstTextBaseline, spacing: FSSpacing.space3) {
+                        Image(systemName: glyph).foregroundStyle(tint).accessibilityHidden(true)
+                        Text(line).font(ScaledType.body).foregroundStyle(FSColor.strong)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                }
+            }
+            .padding(FSSpacing.space4)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .quietCard()
+        }
     }
 }
 
-/// Runs `DELETE /v1/me` after the alert; on success the session shows signed out with the date.
+/// Runs `DELETE /v1/me` with what the person typed; on success the session shows signed out.
 struct DeleteAccountScreen: View {
     let session: SessionStore
     @Environment(\.openURL) private var openURL
+    @State private var typed = ""
     @State private var isDeleting = false
-    @State private var failed = false
+    @State private var outcome: AccountActionOutcome?
 
     var body: some View {
         DeleteAccountView(
             consequences: session.phase.me.map(DeletionConsequence.of) ?? [],
+            battleTag: session.phase.me?.user.battletag,
+            typed: $typed,
             isDeleting: isDeleting,
-            failed: failed,
+            outcome: outcome,
             onDelete: delete
         )
+        .onChange(of: typed) { _, _ in
+            if outcome == .confirmMismatch { outcome = nil }
+        }
     }
 
     private func delete() {
         isDeleting = true
         Task {
-            let outcome = await session.deleteAccount()
+            let result = await session.deleteAccount(confirm: typed)
             isDeleting = false
-            failed = outcome == .failed
-            if outcome == .needsBrowser { openURL(AccountLinks.account) }
+            outcome = result == .done ? nil : result
+            if result == .needsBrowser { openURL(AccountLinks.account) }
         }
     }
 }

@@ -172,6 +172,10 @@ type Gateway interface {
 	// the current period; the operator's runbook (spec §2.7) covers
 	// refunding that charge by hand.
 	CancelSubscriptionAtPeriodEnd(ctx context.Context, subscriptionID string) error
+	// CancelSubscriptionNow ends a subscription at once, with no proration credit and no
+	// final invoice: the account deleting itself (CancelAccountSubscriptions). Refunds stay
+	// a hand step under the refund policy.
+	CancelSubscriptionNow(ctx context.Context, subscriptionID string) error
 	// ResumeSubscription clears cancel_at_period_end, undoing
 	// CancelSubscriptionAtPeriodEnd (the seats package's compensation when
 	// accepting a seat fails after Stripe was told to cancel).

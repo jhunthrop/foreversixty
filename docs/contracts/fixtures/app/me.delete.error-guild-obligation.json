@@ -1,0 +1,12 @@
+{
+  "ok": false,
+  "data": null,
+  "error": {
+    "code": "guild_obligation",
+    "message": "You hold the claim on Olympus XXVII, so deleting your account would cancel its Guild plan for the whole guild right away, with no refund. Release the claim on your account page first. If the guild should keep its paid features, have the new in-game guild master claim it and subscribe before you delete.",
+    "fields": {
+      "guilds": "Olympus XXVII"
+    }
+  },
+  "request_id": "9f2c41d07ab3e655"
+}

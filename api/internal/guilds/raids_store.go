@@ -89,7 +89,7 @@ type RaidInput struct {
 }
 
 const raidColumns = `id, guild_id, zone, title, starts_at, duration_minutes, notes, status,
-	report_id, post_default, created_by, created_at, updated_at`
+	report_id, post_default, coalesce(created_by, 0), created_at, updated_at`
 
 func scanRaid(row pgx.Row) (Raid, error) {
 	var r Raid

@@ -6,6 +6,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/jhunthrop/foreversixty/api/internal/account"
 	"github.com/jhunthrop/foreversixty/api/internal/activity"
 	"github.com/jhunthrop/foreversixty/api/internal/addon"
 	"github.com/jhunthrop/foreversixty/api/internal/app"
@@ -59,6 +60,8 @@ type Deps struct {
 	// them is about who is asking.
 	Auth     *auth.Authenticator
 	Accounts *auth.Service
+	// Account serves DELETE /v1/me, the self-service deletion; nil leaves it unmounted.
+	Account  *account.Handler
 	Reports  *reports.Service
 	Ingest   *reports.Ingest
 	Uploads  *reports.Uploads
@@ -127,6 +130,9 @@ func NewRouter(d Deps) http.Handler {
 	}
 	if d.Accounts != nil {
 		auth.Mount(mux, d.Accounts, d.TrustedProxyHops)
+	}
+	if d.Account != nil {
+		account.Mount(mux, d.Account)
 	}
 	if d.Reports != nil {
 		reports.Mount(mux, d.Reports)

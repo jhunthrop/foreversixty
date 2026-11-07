@@ -93,7 +93,7 @@ public extension Endpoint where Response == Me {
 }
 
 public extension Endpoint where Response == AccountDeletion {
-    /// DELETE /v1/me: Delete the account (in-app deletion, App Store 5.1.1(v); dark until its handler lands)
+    /// DELETE /v1/me: Delete the account (self-service; App Store 5.1.1(v), Google Play account deletion)
     static func deleteAccount(_ body: AccountDeletionRequest) throws(APIError) -> Endpoint {
         try .json(.delete, "/v1/me", body: body)
     }
@@ -527,7 +527,7 @@ public enum ContractRoutes {
         FixtureRoute(.delete, "/v1/builds/{id}", fixture: nil, status: 204),
         FixtureRoute(.get, "/v1/me", fixture: "me", status: 200),
         FixtureRoute(.patch, "/v1/me", fixture: "me.patch", status: 200),
-        FixtureRoute(.delete, "/v1/me", fixture: "me.delete", status: 202),
+        FixtureRoute(.delete, "/v1/me", fixture: "me.delete", status: 200),
         FixtureRoute(.get, "/v1/devices", fixture: "devices.list", status: 200),
         FixtureRoute(.delete, "/v1/devices/{id}", fixture: nil, status: 204),
         FixtureRoute(.get, "/v1/reports", fixture: "reports.list", status: 200),

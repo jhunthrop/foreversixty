@@ -125,7 +125,7 @@ struct DevicesScreen: View {
             case .done:
                 failedRevoke = nil
                 await load()
-            case .failed:
+            case .failed, .refused, .confirmMismatch:
                 failedRevoke = row.id
             case .needsBrowser:
                 openURL(AccountLinks.account)

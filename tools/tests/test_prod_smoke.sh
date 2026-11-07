@@ -41,7 +41,7 @@ while (($# > 1)); do
 done
 url=$1
 status=200 location='' body='<title data-og="title">Forever Sixty</title><h1 class="x">Guides</h1>
-<h3 id="priority" data-c>Priority</h3> Best in slot <h1>Tier list</h1><h1>Simulator</h1>
+<div id="priority" data-c><div data-testid="guide-rotation-priority-row"></div></div> Best in slot <h1>Tier list</h1><h1>Simulator</h1>
 {"ok":true,"data":{"status":"ok"}}'
 [[ $url == */go/* ]] && status=302 location="https://site.test/?golink=discord" body=''
 if [[ -n ${STUB_URL:-} && $url == *"$STUB_URL"* ]]; then

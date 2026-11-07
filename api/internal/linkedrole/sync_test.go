@@ -114,3 +114,44 @@ func TestReconcileCountsAndFailsOnlyWhenEveryAccountFailed(t *testing.T) {
 		t.Fatalf("result = %+v, err = %v", r, err)
 	}
 }
+
+func TestRevokeClearsTheRoleRevokesTheRotatedTokenAndDeletesTheLink(t *testing.T) {
+	s, store, discord := newSyncer()
+	store.links[7] = Link{UserID: 7, DiscordUserID: "d7", RefreshBox: []byte("sealed:r0")}
+	store.profiles[7] = Profile{Premium: true, Battletag: "hunthrop#1894"}
+	if err := s.Revoke(context.Background(), 7); err != nil {
+		t.Fatal(err)
+	}
+	want := push{Access: "a-r0-1", Conn: Connection{Premium: false}}
+	if len(discord.pushes) != 1 || discord.pushes[0] != want {
+		t.Fatalf("pushes = %+v, want %+v (premium false, no username)", discord.pushes, want)
+	}
+	if len(discord.revokedTokens) != 1 || discord.revokedTokens[0] != "r0+1" {
+		t.Fatalf("revoked = %v, want the rotated refresh token", discord.revokedTokens)
+	}
+	if _, ok := store.links[7]; ok {
+		t.Fatal("the link is still stored")
+	}
+}
+
+func TestRevokeWithNoLinkDoesNothing(t *testing.T) {
+	s, _, discord := newSyncer()
+	if err := s.Revoke(context.Background(), 7); err != nil {
+		t.Fatal(err)
+	}
+	if len(discord.pushes) != 0 || len(discord.revokedTokens) != 0 {
+		t.Fatalf("pushes %v, revoked %v; want no Discord call", discord.pushes, discord.revokedTokens)
+	}
+}
+
+func TestRevokeOfATokenDiscordAlreadyRevokedJustRemovesTheLink(t *testing.T) {
+	s, store, discord := newSyncer()
+	store.links[7] = Link{UserID: 7, DiscordUserID: "d7", RefreshBox: []byte("sealed:r0")}
+	discord.revoked["r0"] = true
+	if err := s.Revoke(context.Background(), 7); err != nil {
+		t.Fatal(err)
+	}
+	if _, ok := store.links[7]; ok || len(discord.revokedTokens) != 0 {
+		t.Fatalf("link kept %v, revoked %v; want the link removed and no revoke call", ok, discord.revokedTokens)
+	}
+}

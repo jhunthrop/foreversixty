@@ -99,3 +99,11 @@ export function renderAccountMocks(mocks: readonly string[]): string {
   run(process.env.PYTHON ?? 'python3', [path.join(generators, 'ws_premium.py'), ...mocks]);
   return dir;
 }
+
+/** Opens the Delete account dialog over an open /account and puts the page back at its top, so
+ *  the fixed dialog and the regions under it are measured from the same scroll as the mock. */
+export async function openAccountDeleteDialog(page: Page): Promise<void> {
+  await page.getByTestId('account-delete-open').click();
+  await expect(page.getByTestId('account-delete-dialog')).toBeVisible();
+  await page.evaluate(() => window.scrollTo(0, 0));
+}

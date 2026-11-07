@@ -111,7 +111,7 @@ object ApiEndpoints {
     fun updateMe(body: MePatch): Endpoint<Me> =
         Endpoint(HttpMethod.Patch, "/v1/me", Me.serializer(), body = ApiJson.encodeToString(MePatch.serializer(), body))
 
-    /** DELETE /v1/me: Delete the account (in-app deletion, App Store 5.1.1(v); dark until its handler lands) */
+    /** DELETE /v1/me: Delete the account (self-service; App Store 5.1.1(v), Google Play account deletion) */
     fun deleteAccount(body: AccountDeletionRequest): Endpoint<AccountDeletion> =
         Endpoint(HttpMethod.Delete, "/v1/me", AccountDeletion.serializer(), body = ApiJson.encodeToString(AccountDeletionRequest.serializer(), body))
 
@@ -381,7 +381,7 @@ object ContractRoutes {
         FixtureRoute(HttpMethod.Delete, "/v1/builds/{id}", null, HttpStatusCode.fromValue(204)),
         FixtureRoute(HttpMethod.Get, "/v1/me", "me", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Patch, "/v1/me", "me.patch", HttpStatusCode.fromValue(200)),
-        FixtureRoute(HttpMethod.Delete, "/v1/me", "me.delete", HttpStatusCode.fromValue(202)),
+        FixtureRoute(HttpMethod.Delete, "/v1/me", "me.delete", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Get, "/v1/devices", "devices.list", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Delete, "/v1/devices/{id}", null, HttpStatusCode.fromValue(204)),
         FixtureRoute(HttpMethod.Get, "/v1/reports", "reports.list", HttpStatusCode.fromValue(200)),

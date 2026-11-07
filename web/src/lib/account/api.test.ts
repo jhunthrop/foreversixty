@@ -14,6 +14,7 @@ import {
   connectDeviceDeny,
   connectDeviceLookup,
   csrfToken,
+  deleteAccount,
   effectiveServerSims,
   fetchMe,
   fetchMeOnce,
@@ -575,5 +576,82 @@ describe('reportNightAt', () => {
     expect(reportNightAt({ created_at: '2026-11-05T15:00:00Z', started_at: null })).toBe(
       '2026-11-05T15:00:00Z',
     );
+  });
+});
+
+describe('deleteAccount', () => {
+  const failure = (status: number, code: string, message: string): Response =>
+    new Response(JSON.stringify({ ok: false, data: null, error: { code, message }, request_id: 'r' }), {
+      status,
+      headers: { 'content-type': 'application/json' },
+    });
+
+  it('sends DELETE /v1/me with what was typed and the CSRF header, then forgets the session', async () => {
+    const apiBase = `${API}/delete-ok`;
+    document.cookie = 'fs_csrf=tok; path=/';
+    const me = { user: { id: 1 }, characters: [], guilds: [], entitlements: mockEntitlements() };
+    const upstream = vi
+      .fn<GlobalFetch>()
+      .mockResolvedValueOnce(envelope(me))
+      .mockResolvedValueOnce(envelope({ deleted_at: '2026-11-07T21:41:00Z' }))
+      .mockResolvedValueOnce(envelope(null, 401));
+    vi.stubGlobal('fetch', upstream);
+    await fetchMeOnce(apiBase);
+
+    await expect(deleteAccount(' Felsnap#1234 ', apiBase)).resolves.toEqual({
+      deleted_at: '2026-11-07T21:41:00Z',
+    });
+
+    const request = upstream.mock.calls[1][0] as Request;
+    expect(request.method).toBe('DELETE');
+    expect(request.url).toBe(`${apiBase}/v1/me`);
+    expect(request.headers.get('x-csrf-token')).toBe('tok');
+    expect(request.credentials).toBe('include');
+    expect(await request.json()).toEqual({ confirm: ' Felsnap#1234 ' });
+    // The cached /v1/me went with the account: the next read asks the API again.
+    await expect(fetchMeOnce(apiBase)).resolves.toBeNull();
+    expect(upstream).toHaveBeenCalledTimes(3);
+  });
+
+  it.each([
+    [
+      409,
+      'guild_obligation',
+      'You hold the claim on Olympus XXVII, so deleting your account would cancel its Guild plan.',
+    ],
+    [400, 'confirm_mismatch', 'Type your BattleTag or delete to confirm.'],
+    [503, 'billing_unavailable', 'Could not cancel your subscription just now, so nothing was deleted.'],
+  ])('a %i %s throws the API message and keeps the session', async (status, code, message) => {
+    const apiBase = `${API}/delete-${code}`;
+    const me = { user: { id: 1 }, characters: [], guilds: [], entitlements: mockEntitlements() };
+    vi.stubGlobal(
+      'fetch',
+      vi
+        .fn<GlobalFetch>()
+        .mockResolvedValueOnce(envelope(me))
+        .mockResolvedValueOnce(failure(status, code, message)),
+    );
+    await fetchMeOnce(apiBase);
+    const statuses: string[] = [];
+    const unsubscribe = subscribe(meKey(apiBase), (state) => statuses.push(state.status));
+
+    const thrown = await deleteAccount('delete', apiBase).catch((error: unknown) => error);
+    unsubscribe();
+
+    expect(thrown).toBeInstanceOf(AccountError);
+    expect((thrown as AccountError).message).toBe(message);
+    expect((thrown as AccountError).status).toBe(status);
+    expect((thrown as AccountError).code).toBe(code);
+    expect(statuses).toEqual(['ready']);
+  });
+
+  it('a network failure throws the generic account message', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn<GlobalFetch>(async () => {
+        throw new TypeError('offline');
+      }),
+    );
+    await expect(deleteAccount('delete', `${API}/delete-offline`)).rejects.toThrow(ACCOUNT_FAILED);
   });
 });

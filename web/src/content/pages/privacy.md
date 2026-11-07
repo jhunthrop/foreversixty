@@ -1,7 +1,7 @@
 ---
 title: Privacy policy
 description: What Forever Sixty collects, how it is used, and how long it is kept.
-updated: 2026-11-03
+updated: 2026-11-07
 sources:
   - label: This site
     url: https://foreversixty.gg/privacy
@@ -43,6 +43,20 @@ are built from that record and would be wrong without it. Session rows expire wi
 session. If a storage limit ever becomes necessary it will be announced on the changelog
 with dates before anything is removed.
 
+When you delete your account, it is gone at once: your BattleTag, email and Battle.net
+sign-in, every signed-in browser, companion and app, your Discord link and Premium role, your
+notification settings and watch list, your private reports, saved sims, addon exports and
+characters known only from your addon, and your guild memberships, applications and raid
+sign-ups. Any Premium subscription is cancelled at once, with no automatic refund; the
+[refund policy](/refunds) applies. Only this is kept:
+
+- Stripe billing records, kept at Stripe for tax and legal reasons, with our link to them
+  removed.
+- Public, unlisted and guild reports, with you removed as the uploader.
+- Character data from public sources, such as Battle.net public profiles and public logs, no
+  longer linked to you. Battle.net data still ages out within thirty days, as above.
+- Builds you shared, as anonymous links.
+
 ## Who is responsible
 
 This service is operated by Commish LLC d/b/a Forever Sixty, an Arkansas limited liability
@@ -52,8 +66,12 @@ States.
 
 ## Requests and contact
 
-To see, export, correct or delete what the site holds about you, email
-[help@foreversixty.gg](mailto:help@foreversixty.gg) from the address or Battle.net account the
-request is about. You get an answer within thirty days, and usually much sooner. Those rights
-are yours wherever you live; the site runs no advertising, sells no data and builds no
-profiles, so there is nothing to opt out of beyond deleting your account.
+To delete your account yourself, open Your account, choose Delete account and type your
+BattleTag to confirm; it is done at once, as described under Data retention. If the account
+holds a guild's claim or pays for a guild's plan, release that first; the page says how.
+
+To see, export or correct what the site holds about you, or to have your account deleted for
+you instead, email [help@foreversixty.gg](mailto:help@foreversixty.gg) from the address or
+Battle.net account the request is about. You get an answer within thirty days, and usually
+much sooner. Those rights are yours wherever you live; the site runs no advertising, sells no
+data and builds no profiles, so there is nothing to opt out of beyond deleting your account.

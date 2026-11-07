@@ -6,7 +6,7 @@
 //    sample coach review (coach-sample.ts over src/data/premium-coach-sample.json; spell icons from the build's spellicons.json);
 //  - /premium/checkout: lib/billing/copy.ts checkoutCopy, checkout-guild-copy.ts, premium-owned.ts premiumOwnedView;
 //  - /account: lib/account/account-page-copy.ts, character-list-copy.ts, devices-copy.ts, signin-copy.ts, discord-link-copy.ts,
-//    discord-role-copy.ts, notifications-copy.ts, lib/guild/copy.ts guildConsentCopy, lib/billing/account-plan-copy.ts; the models
+//    discord-role-copy.ts, notifications-copy.ts, delete-confirm.ts (the delete dialog's confirm word), lib/guild/copy.ts guildConsentCopy, lib/billing/account-plan-copy.ts; the models
 //    accountPlanLine and guildRowPlanLine (plan-line.ts), guildPlanTag / notVerifiedMark / guildRowNextStep (guild-row-line.ts),
 //    characterDescriptor, mainCharacter, setupAnswer (the head answer), deviceStatusLine, premiumRowValue / premiumRowLinked /
 //    blockState (notifications.ts), offerStatusLine; the planner's shared-link copy for /b/:id.
@@ -58,6 +58,7 @@ import { deviceStatusLine } from ${src("src/lib/reports/device-status.ts")};
 import { premiumRowValue, premiumRowLinked, premiumRowVisible, blockState } from ${src("src/lib/account/notifications.ts")};
 import { offerStatusLine } from ${src("src/lib/account/seat-offer-flow.ts")};
 import { ACCOUNT_FAILED } from ${src("src/lib/account/api.ts")};
+import { confirmWordFor } from ${src("src/lib/account/delete-confirm.ts")};
 import { pairingCopy } from ${src("src/lib/reports/copy.ts")};
 import { myReportsCopy } from ${src("src/lib/reports/my-reports-copy.ts")};
 import { settingsWords } from ${src("src/lib/guild/settings-view.ts")};
@@ -150,6 +151,9 @@ const view = (me, key) => {
   return {
     key, source: premiumSource(me, NOW), plan,
     battletag: me.user.battletag,
+    // The delete dialog's field label: what this account types to confirm (its BattleTag, or "delete").
+    deleteConfirm: accountPageCopy.deleteDialog.confirmLabel(confirmWordFor(me.user.battletag)),
+    deleteWord: confirmWordFor(me.user.battletag),
     answer: setupAnswer(me, null, NOW),
     characters: me.characters.map((c) => ({ name: c.name, cls: (c.class ?? '').toLowerCase(), descriptor: characterDescriptor(c), guild: c.guild?.name ?? null,
       main: main?.key === c.key, source: c.build ? c.build.source : null, level: c.level ?? null })),

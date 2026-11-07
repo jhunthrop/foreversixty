@@ -243,6 +243,14 @@ func (s *Service) upsertSubscriptionOf(ctx context.Context, subscriptionID, acto
 	if !ok {
 		return subscriptionSubject{}, false, nil
 	}
+	exists, err := s.Store.userExists(ctx, subject.billingUserID)
+	if err != nil {
+		return subscriptionSubject{}, false, err
+	}
+	if !exists {
+		s.logger().Info("billing", "op", "deleted_account_event_acknowledged", "subscription_id", subscriptionID)
+		return subscriptionSubject{}, false, nil
+	}
 	return subject, true, subject.withLock(ctx, s.Store, func(ctx context.Context) error {
 		sub, err := s.Gateway.GetSubscription(ctx, subscriptionID)
 		if err != nil {

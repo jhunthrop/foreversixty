@@ -29,8 +29,8 @@ public enum SignedOutNotice: Equatable, Sendable {
     case signInFailed(SignInFailure)
     /// A 401 (`unauthorized` or `session_expired`) ended the session without asking.
     case sessionEnded
-    /// `DELETE /v1/me` was accepted; the data is gone by this date.
-    case accountDeleted(completeBy: Date)
+    /// `DELETE /v1/me` answered 200: the account is gone.
+    case accountDeleted
 }
 
 /// The known sign-in failures (spec F1.4); each has one sentence in the copy catalog.

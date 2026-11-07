@@ -822,12 +822,63 @@
   "downloadCompanionHref": "/setup#companion",
   "pairADevice": "Use a pairing code instead",
   "pseudonymLabel": "Show a pseudonym instead of my character names",
-  "pseudonymNote": "Applies everywhere your characters appear, on reports and rankings alike. Your reports are kept until you delete them or your account.",
+  "pseudonymNote": "Applies everywhere your characters appear, on reports and rankings alike. Private reports go when you delete them or your account; public and guild reports stay, with your name removed.",
   "signedInBanner": "[fn]",
   "signedInBannerEmpty": "[fn]",
   "reportsLink": "Your reports",
-  "deleteTitle": "Delete your account",
-  "deleteBody": "Email help@foreversixty.gg with your BattleTag and we delete your account and everything on it, within thirty days.",
+  "deleteSection": {
+   "title": "Delete account",
+   "line": "Delete your account and the data that is only yours. The next step lists exactly what goes and what stays.",
+   "button": "Delete account"
+  },
+  "deleteDialog": {
+   "title": "Delete your account?",
+   "intro": "This can't be undone.",
+   "deletedLabel": "Deleted",
+   "deleted": [
+    {
+     "text": "Any Premium subscription is cancelled at once. There is no automatic refund; the refund policy applies.",
+     "link": {
+      "label": "refund policy",
+      "href": "/refunds"
+     }
+    },
+    {
+     "text": "Your BattleTag, email and Battle.net sign-in. Every browser, companion and app is signed out."
+    },
+    {
+     "text": "Your Discord link and Premium role, notification settings and watch list."
+    },
+    {
+     "text": "Your private reports, saved sims, addon exports, and characters known only from your addon."
+    },
+    {
+     "text": "Your guild memberships, applications and raid sign-ups."
+    }
+   ],
+   "keptLabel": "Kept",
+   "kept": [
+    {
+     "text": "Stripe billing records, which we must keep for tax and legal reasons. Your link to them is removed."
+    },
+    {
+     "text": "Public and guild reports, with your name removed."
+    },
+    {
+     "text": "Character data from public sources, such as the Battle.net profile and public logs, no longer linked to you."
+    },
+    {
+     "text": "Builds you shared, as anonymous links."
+    }
+   ],
+   "confirmLabel": "[fn]",
+   "confirmWord": "delete",
+   "mismatch": "[fn]",
+   "confirm": "Delete account",
+   "busy": "Deleting",
+   "cancel": "Cancel"
+  },
+  "deletedNotice": "Your account is deleted. Thanks for playing with us.",
   "signOutAsk": "Sign out of Forever Sixty on this browser?"
  },
  "characters_copy": {
@@ -841,7 +892,7 @@
   "pasteAnExport": "Paste an export",
   "pasteHref": "/setup#paste",
   "refreshFromBattlenet": "Refresh from Battle.net",
-  "importedFrom": "[fn]",
+  "updatedFrom": "[fn]",
   "verified": "Verified",
   "main": "Main",
   "current": "Current",
@@ -855,8 +906,7 @@
   "tryAgain": "Try again",
   "updatedJustNow": "[fn]",
   "noChanges": "[fn]",
-  "importedJustNow": "Imported from Battle.net just now.",
-  "introBattlenetLine": "Your characters come from Battle.net each time you sign in.",
+  "introBattlenetLine": "Your characters come from Battle.net and update on their own.",
   "introInstallAddonLink": "Install the addon and the companion",
   "introAddonTail": "for bags, bank and live sync. In Korea, or Battle.net is down?",
   "introPasteLink": "Paste an export",
@@ -873,7 +923,10 @@
   "codeFallbackLine": "Only for a companion that cannot open a browser; the companion signs in with Battle.net by itself."
  },
  "signin": {
-  "reason": "Sign in with Battle.net and your Forever characters come straight in, with your builds, sims and logs saved. Reading reports and rankings never needs an account."
+  "reason": "Sign in with Battle.net and your Forever characters come straight in, with your builds, sims and logs saved. Reading reports and rankings never needs an account.",
+  "title": "Sign in",
+  "privacy": "Battle.net tells the site your BattleTag and your characters. It never sees a password here.",
+  "goAccount": "Your account"
  },
  "discord_link": {
   "lead": "Link your Discord account so your guild's sign-up buttons and Forever Sixty commands know your characters.",
@@ -1032,11 +1085,13 @@
     "ended": null
    },
    "battletag": "Hunthrop#1894",
+   "deleteConfirm": "Type Hunthrop#1894 to confirm",
+   "deleteWord": "Hunthrop#1894",
    "answer": {
     "name": "Felsnap",
     "classSlug": "hunter",
     "levelLine": "Level 34 Beast Mastery Hunter",
-    "imported": "Imported from Battle.net 2 days ago.",
+    "imported": "Updated 2 d ago from Battle.net",
     "open": {
      "label": "Open Felsnap",
      "href": "/character/us/normal/felsnap"
@@ -1057,7 +1112,7 @@
      "level": 34
     }
    ],
-   "imported": "Imported from Battle.net 2 days ago.",
+   "imported": "Updated 2 d ago from Battle.net",
    "guilds": [],
    "premiumRow": {
     "value": "Premium only",
@@ -1101,9 +1156,11 @@
     "ended": null
    },
    "battletag": "Hunthrop#1894",
+   "deleteConfirm": "Type Hunthrop#1894 to confirm",
+   "deleteWord": "Hunthrop#1894",
    "answer": null,
    "characters": [],
-   "imported": "Imported from Battle.net 2 days ago.",
+   "imported": "Updated 2 d ago from Battle.net",
    "guilds": [],
    "premiumRow": {
     "value": "Premium only",
@@ -1147,11 +1204,13 @@
     "ended": null
    },
    "battletag": "Hunthrop#1894",
+   "deleteConfirm": "Type Hunthrop#1894 to confirm",
+   "deleteWord": "Hunthrop#1894",
    "answer": {
     "name": "Felsnap",
     "classSlug": "hunter",
     "levelLine": "Level 34 Beast Mastery Hunter",
-    "imported": "Imported from Battle.net 2 days ago.",
+    "imported": "Updated 2 d ago from Battle.net",
     "open": {
      "label": "Open Felsnap",
      "href": "/character/us/normal/felsnap"
@@ -1190,7 +1249,7 @@
      "level": 27
     }
    ],
-   "imported": "Imported from Battle.net 2 days ago.",
+   "imported": "Updated 2 d ago from Battle.net",
    "guilds": [],
    "premiumRow": {
     "value": "Premium only",
@@ -1237,11 +1296,13 @@
     "ended": null
    },
    "battletag": "Hunthrop#1894",
+   "deleteConfirm": "Type Hunthrop#1894 to confirm",
+   "deleteWord": "Hunthrop#1894",
    "answer": {
     "name": "Thandrel",
     "classSlug": "warrior",
     "levelLine": "Level 60 Fury Warrior",
-    "imported": "Imported from Battle.net 2 days ago.",
+    "imported": "Updated 2 d ago from Battle.net",
     "open": {
      "label": "Open Thandrel",
      "href": "/character/us/normal/thandrel"
@@ -1262,7 +1323,7 @@
      "level": 60
     }
    ],
-   "imported": "Imported from Battle.net 2 days ago.",
+   "imported": "Updated 2 d ago from Battle.net",
    "guilds": [
     {
      "name": "Olympus XXVII",
@@ -1352,11 +1413,13 @@
     "ended": null
    },
    "battletag": "Hunthrop#1894",
+   "deleteConfirm": "Type Hunthrop#1894 to confirm",
+   "deleteWord": "Hunthrop#1894",
    "answer": {
     "name": "Felsnap",
     "classSlug": "hunter",
     "levelLine": "Level 34 Beast Mastery Hunter",
-    "imported": "Imported from Battle.net 2 days ago.",
+    "imported": "Updated 2 d ago from Battle.net",
     "open": {
      "label": "Open Felsnap",
      "href": "/character/us/normal/felsnap"
@@ -1377,7 +1440,7 @@
      "level": 34
     }
    ],
-   "imported": "Imported from Battle.net 2 days ago.",
+   "imported": "Updated 2 d ago from Battle.net",
    "guilds": [],
    "premiumRow": {
     "value": "Off · set up",
@@ -1443,11 +1506,13 @@
     "ended": null
    },
    "battletag": "Hunthrop#1894",
+   "deleteConfirm": "Type Hunthrop#1894 to confirm",
+   "deleteWord": "Hunthrop#1894",
    "answer": {
     "name": "Felsnap",
     "classSlug": "hunter",
     "levelLine": "Level 34 Beast Mastery Hunter",
-    "imported": "Imported from Battle.net 2 days ago.",
+    "imported": "Updated 2 d ago from Battle.net",
     "open": {
      "label": "Open Felsnap",
      "href": "/character/us/normal/felsnap"
@@ -1468,7 +1533,7 @@
      "level": 34
     }
    ],
-   "imported": "Imported from Battle.net 2 days ago.",
+   "imported": "Updated 2 d ago from Battle.net",
    "guilds": [],
    "premiumRow": {
     "value": "Off · set up",
@@ -1531,11 +1596,13 @@
     "ended": null
    },
    "battletag": "Hunthrop#1894",
+   "deleteConfirm": "Type Hunthrop#1894 to confirm",
+   "deleteWord": "Hunthrop#1894",
    "answer": {
     "name": "Felsnap",
     "classSlug": "hunter",
     "levelLine": "Level 34 Beast Mastery Hunter",
-    "imported": "Imported from Battle.net 2 days ago.",
+    "imported": "Updated 2 d ago from Battle.net",
     "open": {
      "label": "Open Felsnap",
      "href": "/character/us/normal/felsnap"
@@ -1556,7 +1623,7 @@
      "level": 34
     }
    ],
-   "imported": "Imported from Battle.net 2 days ago.",
+   "imported": "Updated 2 d ago from Battle.net",
    "guilds": [],
    "premiumRow": {
     "value": "Off · set up",
@@ -1620,11 +1687,13 @@
     "ended": null
    },
    "battletag": "Hunthrop#1894",
+   "deleteConfirm": "Type Hunthrop#1894 to confirm",
+   "deleteWord": "Hunthrop#1894",
    "answer": {
     "name": "Felsnap",
     "classSlug": "hunter",
     "levelLine": "Level 34 Beast Mastery Hunter",
-    "imported": "Imported from Battle.net 2 days ago.",
+    "imported": "Updated 2 d ago from Battle.net",
     "open": {
      "label": "Open Felsnap",
      "href": "/character/us/normal/felsnap"
@@ -1645,7 +1714,7 @@
      "level": 34
     }
    ],
-   "imported": "Imported from Battle.net 2 days ago.",
+   "imported": "Updated 2 d ago from Battle.net",
    "guilds": [
     {
      "name": "Olympus XXVII",
@@ -1719,11 +1788,13 @@
     "ended": null
    },
    "battletag": "Hunthrop#1894",
+   "deleteConfirm": "Type Hunthrop#1894 to confirm",
+   "deleteWord": "Hunthrop#1894",
    "answer": {
     "name": "Felsnap",
     "classSlug": "hunter",
     "levelLine": "Level 34 Beast Mastery Hunter",
-    "imported": "Imported from Battle.net 2 days ago.",
+    "imported": "Updated 2 d ago from Battle.net",
     "open": {
      "label": "Open Felsnap",
      "href": "/character/us/normal/felsnap"
@@ -1744,7 +1815,7 @@
      "level": 34
     }
    ],
-   "imported": "Imported from Battle.net 2 days ago.",
+   "imported": "Updated 2 d ago from Battle.net",
    "guilds": [],
    "premiumRow": {
     "value": "Off · set up",
@@ -1817,11 +1888,13 @@
     }
    },
    "battletag": "Hunthrop#1894",
+   "deleteConfirm": "Type Hunthrop#1894 to confirm",
+   "deleteWord": "Hunthrop#1894",
    "answer": {
     "name": "Felsnap",
     "classSlug": "hunter",
     "levelLine": "Level 34 Beast Mastery Hunter",
-    "imported": "Imported from Battle.net 2 days ago.",
+    "imported": "Updated 2 d ago from Battle.net",
     "open": {
      "label": "Open Felsnap",
      "href": "/character/us/normal/felsnap"
@@ -1842,7 +1915,7 @@
      "level": 34
     }
    ],
-   "imported": "Imported from Battle.net 2 days ago.",
+   "imported": "Updated 2 d ago from Battle.net",
    "guilds": [],
    "premiumRow": {
     "value": "Premium only",
@@ -1889,11 +1962,13 @@
     "ended": null
    },
    "battletag": "Hunthrop#1894",
+   "deleteConfirm": "Type Hunthrop#1894 to confirm",
+   "deleteWord": "Hunthrop#1894",
    "answer": {
     "name": "Felsnap",
     "classSlug": "hunter",
     "levelLine": "Level 34 Beast Mastery Hunter",
-    "imported": "Imported from Battle.net 2 days ago.",
+    "imported": "Updated 2 d ago from Battle.net",
     "open": {
      "label": "Open Felsnap",
      "href": "/character/us/normal/felsnap"
@@ -1914,7 +1989,7 @@
      "level": 34
     }
    ],
-   "imported": "Imported from Battle.net 2 days ago.",
+   "imported": "Updated 2 d ago from Battle.net",
    "guilds": [],
    "premiumRow": {
     "value": "Off · set up",
@@ -1977,11 +2052,13 @@
     "ended": null
    },
    "battletag": "Hunthrop#1894",
+   "deleteConfirm": "Type Hunthrop#1894 to confirm",
+   "deleteWord": "Hunthrop#1894",
    "answer": {
     "name": "Thandrel",
     "classSlug": "warrior",
     "levelLine": "Level 60 Fury Warrior",
-    "imported": "Imported from Battle.net 2 days ago.",
+    "imported": "Updated 2 d ago from Battle.net",
     "open": {
      "label": "Open Thandrel",
      "href": "/character/us/normal/thandrel"
@@ -2002,7 +2079,7 @@
      "level": 60
     }
    ],
-   "imported": "Imported from Battle.net 2 days ago.",
+   "imported": "Updated 2 d ago from Battle.net",
    "guilds": [
     {
      "name": "Olympus XXVII",

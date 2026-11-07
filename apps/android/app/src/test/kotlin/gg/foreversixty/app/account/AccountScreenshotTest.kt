@@ -16,6 +16,7 @@ import com.github.takahirom.roborazzi.ExperimentalRoborazziApi
 import com.github.takahirom.roborazzi.RoborazziOptions
 import com.github.takahirom.roborazzi.captureRoboImage
 import com.github.takahirom.roborazzi.captureScreenRoboImage
+import gg.foreversixty.app.auth.session.AccountActionOutcome
 import gg.foreversixty.app.auth.session.DeletionConsequence
 import gg.foreversixty.app.auth.session.DeviceList
 import gg.foreversixty.app.auth.session.DeviceRow
@@ -35,6 +36,7 @@ import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -94,7 +96,7 @@ class AccountScreenshotTest {
 
     @Test fun `signed out after deletion`() = tab("signedout-deleted") {
         SignedOutScreen(
-            AccountCopy.notice(SignedOutNotice.AccountDeleted(Instant.parse("2026-11-29T21:41:00Z"))),
+            AccountCopy.notice(SignedOutNotice.AccountDeleted),
             signingIn = false,
             onSignIn = {},
             onPickClass = {},
@@ -140,22 +142,30 @@ class AccountScreenshotTest {
 
     @Test fun `delete account, Premium founder`() = delete("delete-premium", "me.premium.json")
 
-    @Test fun `delete account, guild plan payer`() = delete("delete-guild-payer", "me.guild-payer.json")
-
     @Test fun `delete account, seat holder`() = delete("delete-seat", "me.seat.json")
 
-    @Test fun `delete account, failed`() = delete("delete-failed", "me.json", failed = true)
+    @Test fun `delete account, failed`() = delete("delete-failed", "me.json", outcome = AccountActionOutcome.Failed)
 
-    @Test fun `delete confirmation, Premium founder`() {
-        val consequences = DeletionConsequence.of(me("me.premium.json"))
-        screen("delete-confirm") { DeleteAccountScreen(consequences, false, false, {}, initiallyConfirming = true) }
-    }
+    @Test fun `delete account, refused for a guild obligation`() =
+        delete("delete-guild-obligation", "me.guild-payer.json", outcome = AccountActionOutcome.Refused(errorMessage("me.delete.error-guild-obligation.json")))
+
+    @Test fun `delete account, typed BattleTag mismatch`() =
+        delete("delete-mismatch", "me.json", typed = "Yell#16", outcome = AccountActionOutcome.ConfirmMismatch)
+
+    @Test fun `delete account, BattleTag typed`() = delete("delete-ready", "me.json", typed = "yell#1604")
 
     @Test fun `about`() = tab("about-default", ForeverTab.You) { AboutScreen(VERSION) }
 
-    private fun delete(name: String, file: String, failed: Boolean = false) {
-        val consequences = DeletionConsequence.of(me(file))
-        tab(name, ForeverTab.You) { DeleteAccountScreen(consequences, false, failed, {}) }
+    private fun errorMessage(name: String): String =
+        requireNotNull(ApiJson.parseToJsonElement(fixture(name)).jsonObject["error"]?.jsonObject?.get("message")) { "no message in $name" }
+            .jsonPrimitive.content
+
+    private fun delete(name: String, file: String, typed: String = "", outcome: AccountActionOutcome? = null) {
+        val me = me(file)
+        val consequences = DeletionConsequence.of(me)
+        tab(name, ForeverTab.You) {
+            DeleteAccountScreen(consequences, me.user.battletag, typed, {}, deleting = false, outcome = outcome, onDelete = {})
+        }
     }
 
     @Composable

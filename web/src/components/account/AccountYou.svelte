@@ -1,10 +1,8 @@
 <!-- web/src/components/account/AccountYou.svelte -->
 <!-- /account's You section in the rail (premium spec 2026-11-08 section 7.7): the pseudonym Switch
-     and what it does, then how to delete the account (the privacy page's own route, by email, until
-     a self-serve delete exists: gap G6). -->
+     and what it does. Deleting the account is its own Section under it (AccountDelete). -->
 <script lang="ts">
   import { accountPageCopy } from '../../lib/account/account-page-copy';
-  import Row from '../ui/Row.svelte';
   import Section from '../ui/Section.svelte';
   import Switch from '../ui/Switch.svelte';
 
@@ -40,13 +38,5 @@
     {#if error !== ''}<p class="text-wipe text-[13px]" role="alert" data-testid="account-you-error">
         {error}
       </p>{/if}
-    <div>
-      <Row
-        title={accountPageCopy.deleteTitle}
-        sub={accountPageCopy.deleteBody}
-        open
-        testid="account-delete"
-      />
-    </div>
   </div>
 </Section>

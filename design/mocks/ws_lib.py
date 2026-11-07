@@ -23,7 +23,7 @@ OUT = Path(os.environ.get('FS_MOCK_OUT') or Path(__file__).resolve().parent / 'w
 REGION = {'site_header': 'site-header', 'site_footer': 'site-footer', 'head': 'head', 'head_title': 'head-title', 'head_meta': 'head-meta', 'head_answer': 'head-answer',
           'controls': 'controls', 'countdowns': 'countdowns', 'summary': 'summary', 'notes': 'notes', 'plate': 'plate', 'slots': 'slots',
           'inspector': 'inspector', 'inspector_inline': 'inspector-inline', 'footer_note': 'footer-note',
-          'intro': 'intro'}
+          'intro': 'intro', 'dialog': 'dialog'}
 
 
 def region_slug(title: str) -> str:

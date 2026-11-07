@@ -2200,23 +2200,41 @@ enum Copy {
     /// Delete account
     static var accountDeleteTitle: String { text("account.delete.title") }
 
-    /// Deleting your account removes what Forever Sixty holds about you:
+    /// This can't be undone.
     static var accountDeleteIntro: String { text("account.delete.intro") }
 
-    /// Your Battle.net sign-in and email address
-    static var accountDeleteItemIdentity: String { text("account.delete.item.identity") }
+    /// Deleted
+    static var accountDeleteDeletedTitle: String { text("account.delete.deleted.title") }
 
-    /// Your characters, their addon exports and sync history
-    static var accountDeleteItemCharacters: String { text("account.delete.item.characters") }
+    /// Any Premium subscription is cancelled at once. There is no automatic refund; the refund policy applies.
+    static var accountDeleteDeletedSubscription: String { text("account.delete.deleted.subscription") }
 
-    /// The combat logs you uploaded
-    static var accountDeleteItemLogs: String { text("account.delete.item.logs") }
+    /// Your BattleTag, email and Battle.net sign-in. Every browser, companion and app is signed out.
+    static var accountDeleteDeletedIdentity: String { text("account.delete.deleted.identity") }
 
-    /// Your saved sims and builds, and the ratings derived from them
-    static var accountDeleteItemSims: String { text("account.delete.item.sims") }
+    /// Your Discord link and Premium role, notification settings and watch list.
+    static var accountDeleteDeletedDiscord: String { text("account.delete.deleted.discord") }
 
-    /// Your notification settings, Discord link and devices
-    static var accountDeleteItemLinks: String { text("account.delete.item.links") }
+    /// Your private reports, saved sims, addon exports, and characters known only from your addon.
+    static var accountDeleteDeletedPrivate: String { text("account.delete.deleted.private") }
+
+    /// Your guild memberships, applications and raid sign-ups.
+    static var accountDeleteDeletedGuild: String { text("account.delete.deleted.guild") }
+
+    /// Kept
+    static var accountDeleteKeptTitle: String { text("account.delete.kept.title") }
+
+    /// Stripe billing records, which we must keep for tax and legal reasons. Your link to them is removed.
+    static var accountDeleteKeptBilling: String { text("account.delete.kept.billing") }
+
+    /// Public and guild reports, with your name removed.
+    static var accountDeleteKeptReports: String { text("account.delete.kept.reports") }
+
+    /// Character data from public sources, such as the Battle.net profile and public logs, no longer linked to you.
+    static var accountDeleteKeptCharacters: String { text("account.delete.kept.characters") }
+
+    /// Builds you shared, as anonymous links.
+    static var accountDeleteKeptBuilds: String { text("account.delete.kept.builds") }
 
     /// Billing and seats
     static var accountDeleteLoseTitle: String { text("account.delete.lose.title") }
@@ -2227,21 +2245,21 @@ enum Copy {
     /// Your founder price is gone for good. A plan taken later is billed at the full price.
     static var accountDeleteLoseFounder: String { text("account.delete.lose.founder") }
 
-    /// The {guild} plan you pay for is cancelled, and its seats end for every member.
-    static func accountDeleteLoseGuildPlan(guild: String) -> String {
-        format("account.delete.lose.guildPlan", guild)
-    }
-
     /// Your Premium seat from {guild} ends.
     static func accountDeleteLoseSeat(guild: String) -> String {
         format("account.delete.lose.seat", guild)
     }
 
-    /// Guild reports stay for the raiders in them. Your name on them becomes Former raider.
-    static var accountDeleteReports: String { text("account.delete.reports") }
+    /// Type {battletag} to confirm
+    static func accountDeleteConfirmBattletag(battletag: String) -> String {
+        format("account.delete.confirm.battletag", battletag)
+    }
 
-    /// Every device is signed out at once. Everything listed is deleted within thirty days, and usually much sooner.
-    static var accountDeleteTiming: String { text("account.delete.timing") }
+    /// Type delete to confirm
+    static var accountDeleteConfirmWord: String { text("account.delete.confirm.word") }
+
+    /// That doesn't match. Type your BattleTag or delete.
+    static var accountDeleteConfirmMismatch: String { text("account.delete.confirm.mismatch") }
 
     /// You can also ask by email at help@foreversixty.gg.
     static var accountDeleteEmail: String { text("account.delete.email") }
@@ -2249,19 +2267,11 @@ enum Copy {
     /// Delete account
     static var accountDeleteButton: String { text("account.delete.button") }
 
-    /// Delete your Forever Sixty account?
-    static var accountDeleteConfirmTitle: String { text("account.delete.confirm.title") }
-
-    /// Your characters, logs and sims are removed within thirty days. Every device is signed out now.
-    static var accountDeleteConfirmBody: String { text("account.delete.confirm.body") }
-
     /// Could not delete your account just now. Try again.
     static var accountDeleteFailed: String { text("account.delete.failed") }
 
-    /// Your account is deleted. Everything is removed by {date}.
-    static func accountDeleteDone(date: String) -> String {
-        format("account.delete.done", date)
-    }
+    /// Your account is deleted. Thanks for playing with us.
+    static var accountDeleteDone: String { text("account.delete.done") }
 
     /// Character
     static var accountYouCharacter: String { text("account.you.character") }

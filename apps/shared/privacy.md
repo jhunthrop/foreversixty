@@ -109,14 +109,25 @@ If notification preferences are tied to the account, add nothing; review this wh
 - Does the app collect or share any of the required user data types? **Yes.**
 - Is all user data encrypted in transit? **Yes.** HTTPS only. The network security config
   allows no cleartext traffic.
-- Do you provide a way for users to request that their data be deleted? **Yes.** Today a
-  player emails help@foreversixty.gg, as https://foreversixty.gg/privacy ("Requests and
-  contact") says. That page is the deletion URL the form asks for.
-  - **Open item:** Apple's guideline 5.1.1(v) requires an app that creates accounts to let the
-    player start deleting the account inside the app.
-  - Battle.net sign-in creates one, so lane F1's account screen needs a "Delete account" entry
-    before App Review.
-  - A link to the request flow is acceptable if there is no in-app deletion API.
+- Do you provide a way for users to request that their data be deleted? **Yes.** Both apps
+  have You > Delete account, and the site has the same flow on the account page; the email
+  route at help@foreversixty.gg (https://foreversixty.gg/privacy, "Requests and contact")
+  stays as the alternative and is the deletion URL the form asks for.
+  - The player types their BattleTag (or the word delete) and the account is deleted at once
+    (`DELETE /v1/me`). Every browser, companion and app is signed out.
+  - Deleted: any Premium subscription (cancelled at once, no automatic refund; the refund
+    policy applies), the BattleTag, email and Battle.net sign-in, the Discord link and Premium
+    role, notification settings and push tokens, the watch list, private reports, saved sims,
+    addon exports, characters known only from the player's addon, and guild memberships,
+    applications and raid sign-ups.
+  - Kept: Stripe billing records, held at Stripe for tax and legal reasons, with our link to
+    them removed; public, unlisted and guild reports, with the uploader removed; character data
+    from public sources (the Battle.net profile, public logs), no longer linked to the player;
+    shared builds, as anonymous links.
+  - Refused until resolved: an account that holds a guild's claim or pays for a guild's live
+    Guild plan (the app shows the API's message naming the guild and the fix), and a staff
+    account, which support closes.
+  - This satisfies Apple's guideline 5.1.1(v) and Google Play's account deletion requirement.
 - Shared with third parties? **No.** Sentry is a service provider processing on our behalf, so
   under Play's definition it is not "sharing".
 

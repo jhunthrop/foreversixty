@@ -505,6 +505,41 @@ def Sheet(title: str, body: str, actions: str) -> str:
     return (f'<div class="sheet-scrim" aria-hidden="true"></div><div class="sheet" role="dialog" aria-modal="true" aria-label="{title}">'
             f'<div class="sheet-h"><h2>{title}</h2><a class="x" href="#" aria-label="Close">&times;</a></div>'
             f'<div class="sheet-b">{body}</div><div class="sheet-f">{actions}</div></div>')
+# ------------------------------------------------ Dialog (added by the account-delete lane, 2026-11-07)
+# The shipped confirm dialog (ui/Overlay kind 'sheet' over a scrim; AccountDeleteDialog.svelte): from 768 a 560 px box centred
+# in the viewport with the overlay's full edge and radius; below, a full-width bottom sheet of at most 88vh, top corners
+# rounded, no bottom edge. Its head (title, one line) and foot (actions) stay put; the body scrolls. Region `dialog`.
+PRIM_CSS += '''
+.dlg-scrim{position:fixed;inset:0;background:#05070bcc;z-index:60}
+.dlg{position:fixed;z-index:61;left:0;right:0;bottom:0;display:flex;flex-direction:column;max-height:88vh;outline:none}
+.dlg>.dlg-box{display:flex;flex-direction:column;min-height:0;flex:1;background:var(--raised);border:1px solid var(--line);border-bottom:0;
+ border-radius:6px 6px 0 0;box-shadow:0 12px 32px rgba(0,0,0,.6)}
+@media(min-width:768px){.dlg{left:50%;right:auto;bottom:auto;top:50%;transform:translate(-50%,-50%);width:560px;max-width:calc(100vw - 48px);max-height:calc(100vh - 64px)}
+ .dlg>.dlg-box{border-bottom:1px solid var(--line);border-radius:6px}}
+.dlg-form{display:contents}.dlg-h{display:flex;flex-direction:column;gap:4px;padding:20px 20px 4px}
+.dlg-h h2{margin:0;font:700 20px/24px var(--font-body);color:var(--strong)}
+.dlg-h p{margin:0;font-size:15px;line-height:22px}
+.dlg-b{flex:1;min-height:0;overflow:auto;padding:8px 20px 20px;display:flex;flex-direction:column}
+.dlg-b h3{margin:16px 0 6px;font:700 12px/16px var(--font-body);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.dlg-b h3.wipe{color:var(--wipe)}
+.dlg-b ul{margin:0;padding-left:20px;list-style:disc;display:flex;flex-direction:column;gap:6px;font-size:15px;line-height:22px}
+.dlg-b li::marker{color:var(--muted)}
+.dlg-f{display:flex;flex-direction:column;gap:6px;margin-top:20px}.dlg-f label{font-size:15px;line-height:22px}
+.dlg-f input{box-sizing:border-box;width:100%;height:44px;padding:0 12px;border:1px solid var(--line);border-radius:4px;background:var(--bg);color:var(--strong);font:14px var(--font-body)}
+@media(min-width:768px){.dlg-f input{height:40px}}
+.dlg-f .err{font-size:13px;line-height:20px;color:var(--wipe)}
+.dlg-alert{margin:12px 0 0;font-size:14px;line-height:20px;color:var(--wipe)}
+.dlg-a{display:flex;gap:12px;padding:16px 20px;border-top:1px solid var(--line-soft)}
+@media(max-width:767px){.dlg-a{padding-bottom:calc(16px + env(safe-area-inset-bottom))}.dlg-a .btn{flex:1}}
+'''
+
+
+def Dialog(title: str, line: str, body: str, actions: str, title_id: str = 'dlg-title') -> str:
+    """A modal confirm: title and one line, a scrolling body, a foot of actions; rendered after the page body."""
+    return (f'<div class="dlg-scrim" aria-hidden="true"></div>'
+            f'<div class="dlg" role="dialog" aria-modal="true" aria-labelledby="{title_id}" tabindex="-1" data-region="{REGION["dialog"]}">'
+            f'<div class="dlg-box" role="none"><form class="dlg-form"><div class="dlg-h"><h2 id="{title_id}">{title}</h2><p>{line}</p></div>'
+            f'<div class="dlg-b">{body}</div><div class="dlg-a">{actions}</div></form></div></div>')
 # ------------------------------------------------ Paperdoll (moved from ws_bis.py 2026-11-06; the shipped `Paperdoll`, web/src/components/ui)
 # The slot cells on the page's one Plate: two columns of slots ("By slot"), or the slots grouped by where they drop
 # ("Where to go"). A cell is line 1 slot label and level flag, icon, name and short stats, the gain figure; line 2 the

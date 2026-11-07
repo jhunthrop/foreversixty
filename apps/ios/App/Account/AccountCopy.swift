@@ -10,7 +10,7 @@ enum AccountCopy {
         switch notice {
         case let .signInFailed(failure): signInFailure(failure)
         case .sessionEnded: Copy.signinSignedOut
-        case let .accountDeleted(completeBy): Copy.accountDeleteDone(date: longDate(completeBy))
+        case .accountDeleted: Copy.accountDeleteDone
         }
     }
 
@@ -42,8 +42,25 @@ enum AccountCopy {
         switch consequence {
         case .premiumPlan: Copy.accountDeleteLosePremium
         case .founderPrice: Copy.accountDeleteLoseFounder
-        case let .guildPlan(guild): Copy.accountDeleteLoseGuildPlan(guild: guild)
         case let .seat(guild): Copy.accountDeleteLoseSeat(guild: guild)
+        }
+    }
+
+    /// The field's label: the account's BattleTag, or the word when it has none.
+    static func deletionPrompt(battleTag: String?) -> String {
+        let expected = DeletionConfirmation.expected(battleTag: battleTag)
+        return expected == DeletionConfirmation.word
+            ? Copy.accountDeleteConfirmWord
+            : Copy.accountDeleteConfirmBattletag(battletag: expected)
+    }
+
+    /// The line under the button after a deletion that did not happen: the API's own sentence for
+    /// a 409, 429 or 503, the catalog's for anything else. A mismatch shows under the field instead.
+    static func deletionFailure(_ outcome: AccountActionOutcome?) -> String? {
+        switch outcome {
+        case let .refused(message): message
+        case .failed: Copy.accountDeleteFailed
+        case .none, .done, .needsBrowser, .confirmMismatch: nil
         }
     }
 

@@ -3,7 +3,6 @@ package gg.foreversixty.app.auth.session
 import gg.foreversixty.app.auth.SignInOutcome
 import gg.foreversixty.app.model.Me
 import gg.foreversixty.app.network.ApiError
-import java.time.Instant
 
 /** Where the app's account stands; the views draw one screen per phase (spec §5.1). */
 sealed interface SessionPhase {
@@ -31,8 +30,8 @@ sealed interface SignedOutNotice {
     /** A 401 (`unauthorized` or `session_expired`) ended the session without asking. */
     data object SessionEnded : SignedOutNotice
 
-    /** `DELETE /v1/me` was accepted; the data is gone by [completeBy]. */
-    data class AccountDeleted(val completeBy: Instant) : SignedOutNotice
+    /** `DELETE /v1/me` answered 200: the account is gone. */
+    data object AccountDeleted : SignedOutNotice
 }
 
 /** The known sign-in failures (spec F1.4); each has one sentence in the copy catalog. */
