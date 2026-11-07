@@ -885,6 +885,7 @@ components:
       properties:
         sim_id: { type: string }
         title: { type: string, description: "The run's saved title; omitted when it has none." }
+        previous_dps: { type: number, description: "GET /v1/sims/{id} only: the DPS of the same character's previous finished sim of the same spec, band and preset (the result's vs last sim, ruling R9); omitted when the sim has no character or no previous one." }
         engine_version: { type: string }
         request: { $ref: '#/components/schemas/SimRequest' }
         lane: { type: string, enum: [browser, server] }
@@ -3915,13 +3916,42 @@ components:
             - { type: "null" }
     HomeBlocks:
       type: object
-      description: The signed-in home's own blocks; each is null when it has nothing true to say.
-      required: [import_sim, spec_week, movers, guild_sims]
+      description: >-
+        The signed-in home's own blocks; each is null when it has nothing true to say. sections
+        is the apps' home, its blocks in order for this viewer (design/specs/2026-11-07-mobile-redesign.md
+        section 2.3): at 60 in a guild head, upgrades, countdowns, feed, guild_sims, spec_week,
+        movers, next; under 60 the countdowns are one line after the feed; with no guild
+        guild_sims_cta replaces guild_sims and the feed drops the guild filter; once raids are
+        open, on the guild's raid day, countdowns moves second. HOME_SECTIONS switches each rule
+        off, turns blocks off, reorders them and adds a notice. The web keeps its own composition.
+      required: [sections, import_sim, spec_week, movers, guild_sims]
       properties:
+        sections: { type: array, items: { $ref: '#/components/schemas/HomeSection' } }
         import_sim: { oneOf: [ { $ref: '#/components/schemas/HomeImportSim' }, { type: "null" } ] }
         spec_week: { oneOf: [ { $ref: '#/components/schemas/HomeSpecWeek' }, { type: "null" } ] }
         movers: { oneOf: [ { $ref: '#/components/schemas/HomeMovers' }, { type: "null" } ] }
         guild_sims: { oneOf: [ { $ref: '#/components/schemas/HomeGuildSims' }, { type: "null" } ] }
+
+    HomeSection:
+      type: object
+      description: >-
+        One block of the apps' home. An app renders the types it knows, in order, and skips any
+        other (logging it once per session); an unknown style falls back to the type's default.
+        Fields a type does not use are omitted.
+      required: [type]
+      properties:
+        type:
+          type: string
+          description: >-
+            head, upgrades, countdowns, feed, guild_sims, guild_sims_cta, spec_week, movers, next or
+            notice signed in; head_out, class_picker, countdowns, feed or how_to_start_link signed
+            out. Open: new types may appear.
+        limit: { type: integer, minimum: 1, description: "Rows to show (upgrades 3, feed 7, guild_sims 5)." }
+        style: { type: string, description: "countdowns: full (the panels) or line (one row)." }
+        filters: { type: array, items: { type: string, enum: [all, spec, guild, logs] }, description: "feed: the segments; [] for none (signed out, All only)." }
+        more_filters: { type: array, items: { type: string, enum: [all, spec, guild, logs] }, description: "feed: the filters behind the filter button." }
+        text: { type: string, description: "notice: the standing message." }
+        href: { type: string, description: "notice: a site path it links to." }
 
     # App sign-in, devices, notifications and config ---------------------------------------
     AppExchangeRequest:
@@ -4064,8 +4094,14 @@ components:
         update screen. A feature ships behind a features key, dark in both apps, and the key
         turns it on in both at once: a key the app does not know is ignored, and a key the
         answer leaves out takes the app's bundled default (apps/shared/features.json).
-      required: [web_checkout_regions, min_app_version, active_build, features]
+      required: [web_checkout_regions, min_app_version, active_build, features, home_sections_out]
       properties:
+        home_sections_out:
+          type: array
+          items: { $ref: '#/components/schemas/HomeSection' }
+          description: >-
+            The signed-out home's blocks in order: apps/shared/home-sections.json, which the apps
+            also bundle, or the HOME_SECTIONS signed_out override.
         web_checkout_regions: { type: array, items: { type: string, pattern: '^[A-Z]{2}$' }, description: "ISO 3166-1 alpha-2, upper case; never null." }
         min_app_version:
           type: object
@@ -4879,6 +4915,7 @@ components:
       required: [generated_at, character, guild, next_raid, last_raid, upgrades, live]
       properties:
         generated_at: { type: string, format: date-time }
+        first_raids_at: { type: string, format: date, description: "The day the first raids open (dates.json role raids): the no-guild widget's countdown (ruling R13). The API always sends it; optional so a snapshot an older build cached still decodes." }
         character: { oneOf: [{ $ref: '#/components/schemas/WidgetCharacter' }, { type: "null" }], description: "null for an account with no characters." }
         guild: { oneOf: [{ $ref: '#/components/schemas/WidgetGuild' }, { type: "null" }], description: "null when the character is on no guild's roster (`No guild yet`)." }
         next_raid: { oneOf: [{ $ref: '#/components/schemas/WidgetNextRaid' }, { type: "null" }], description: "null when the guild has nothing planned (`No raid planned`)." }
@@ -6124,6 +6161,39 @@ paths:
                 allOf:
                   - $ref: '#/components/schemas/Envelope'
                   - { type: object, properties: { data: { type: array, items: { $ref: '#/components/schemas/Device' } } } }
+        '401':
+          description: "No session or device token, or a dead one"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  /v1/devices/revoke-others:
+    post:
+      operationId: revokeOtherDevices
+      tags: [app]
+      summary: Sign out everywhere else
+      description: >-
+        Revokes every live device of the account but the caller's own (mobile redesign ruling
+        R16). From a browser session, which is no device, every device is revoked. revoked is
+        how many were.
+      parameters:
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
+      responses:
+        '426': { $ref: '#/components/responses/UpdateRequired' }
+        '200':
+          description: "How many devices were revoked"
+          x-fixtures: [devices.revoke-others]
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        title: RevokedDevices
+                        required: [revoked]
+                        properties:
+                          revoked: { type: integer, minimum: 0 }
         '401':
           description: "No session or device token, or a dead one"
           content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }

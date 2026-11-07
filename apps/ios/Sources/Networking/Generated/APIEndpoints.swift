@@ -104,6 +104,11 @@ public extension Endpoint where Response == [Device] {
     static var listDevices: Endpoint { Endpoint(method: .get, path: "/v1/devices") }
 }
 
+public extension Endpoint where Response == RevokedDevices {
+    /// POST /v1/devices/revoke-others: Sign out everywhere else
+    static var revokeOtherDevices: Endpoint { Endpoint(method: .post, path: "/v1/devices/revoke-others") }
+}
+
 public extension Endpoint where Response == ReportList {
     /// GET /v1/reports: The caller's own reports, newest first (session)
     static func listMyReports(page: Int? = nil) -> Endpoint {
@@ -529,6 +534,7 @@ public enum ContractRoutes {
         FixtureRoute(.patch, "/v1/me", fixture: "me.patch", status: 200),
         FixtureRoute(.delete, "/v1/me", fixture: "me.delete", status: 200),
         FixtureRoute(.get, "/v1/devices", fixture: "devices.list", status: 200),
+        FixtureRoute(.post, "/v1/devices/revoke-others", fixture: "devices.revoke-others", status: 200),
         FixtureRoute(.delete, "/v1/devices/{id}", fixture: nil, status: 204),
         FixtureRoute(.get, "/v1/reports", fixture: "reports.list", status: 200),
         FixtureRoute(.get, "/v1/reports/{id}", fixture: "reports.get", status: 200),

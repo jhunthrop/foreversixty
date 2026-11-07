@@ -667,3 +667,47 @@ func TestADeviceCanBeRevokedByItsOwnID(t *testing.T) {
 		t.Fatal("revoking twice should report nothing changed")
 	}
 }
+
+// Sign out everywhere else: every live device but the caller's is revoked, never another
+// account's.
+func TestRevokeOtherDevicesKeepsTheCaller(t *testing.T) {
+	s := testStore(t)
+	ctx := context.Background()
+	u, err := s.UpsertEmailUser(ctx, "many@example.com")
+	if err != nil {
+		t.Fatal(err)
+	}
+	other, err := s.UpsertEmailUser(ctx, "other@example.com")
+	if err != nil {
+		t.Fatal(err)
+	}
+	device := func(userID int64, name string) (Device, string) {
+		token, hash := NewDeviceToken()
+		d, err := s.CreateDevice(ctx, userID, name, "ios", hash)
+		if err != nil {
+			t.Fatal(err)
+		}
+		return d, token
+	}
+	phone, phoneToken := device(u.ID, "Phone")
+	_, padToken := device(u.ID, "Pad")
+	_, pcToken := device(u.ID, "PC")
+	_, otherToken := device(other.ID, "Theirs")
+	if n, err := s.RevokeOtherDevices(ctx, u.ID, phone.ID); err != nil || n != 2 {
+		t.Fatalf("revoked %d, %v; want 2", n, err)
+	}
+	if _, err := s.DeviceByToken(ctx, TokenHash(phoneToken)); err != nil {
+		t.Fatalf("the caller was revoked: %v", err)
+	}
+	for _, token := range []string{padToken, pcToken} {
+		if _, err := s.DeviceByToken(ctx, TokenHash(token)); err != ErrNotFound {
+			t.Fatalf("another device survived: %v", err)
+		}
+	}
+	if _, err := s.DeviceByToken(ctx, TokenHash(otherToken)); err != nil {
+		t.Fatalf("another account's device was revoked: %v", err)
+	}
+	if n, _ := s.RevokeOtherDevices(ctx, u.ID, ""); n != 1 {
+		t.Fatalf("from a browser every device goes: %d", n)
+	}
+}

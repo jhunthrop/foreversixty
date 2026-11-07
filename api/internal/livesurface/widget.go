@@ -9,6 +9,7 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/guilds"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
+	"github.com/jhunthrop/foreversixty/api/internal/sitedates"
 )
 
 // Widget is GET /v1/me/widget (W3-C12): one small answer every home-screen widget, lock-screen
@@ -22,6 +23,9 @@ type Widget struct {
 	LastRaid    *guilds.WidgetLastRaid `json:"last_raid"`
 	Upgrades    *WidgetUpgrades        `json:"upgrades"`
 	Live        WidgetLive             `json:"live"`
+	// FirstRaidsAt is the day the first raids open (dates.json): the no-guild widget's
+	// countdown before raids open (ruling R13).
+	FirstRaidsAt string `json:"first_raids_at"`
 }
 
 // WidgetCharacter is the character the snapshot is for. SpecName is its primary tree, null
@@ -89,7 +93,7 @@ func (s *Service) widget(w http.ResponseWriter, r *http.Request) {
 // an empty or unknown key reads the account's main, else its first character.
 func (s *Service) WidgetFor(ctx context.Context, userID int64, want string) (Widget, error) {
 	now := s.now()
-	out := Widget{GeneratedAt: now.UTC().Truncate(time.Minute)}
+	out := Widget{GeneratedAt: now.UTC().Truncate(time.Minute), FirstRaidsAt: sitedates.FirstRaids}
 	char, err := s.pickCharacter(ctx, userID, want)
 	if err != nil || char == nil {
 		return out, err

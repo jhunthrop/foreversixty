@@ -61,5 +61,8 @@ Public, with no credential. Cached `private, max-age=300` with `Vary: X-App` (th
 | `min_app_version` | `{ ios, android }` | `APP_MIN_VERSION_IOS` and `APP_MIN_VERSION_ANDROID`, default `1.0.0`, in the form `x.y.z`. An older build shows the blocking update screen. |
 | `active_build` | string | The API's active client build (`trees.Data.Active()`), the one the static data serves. |
 | `features` | `{ key: bool }` | `APP_FEATURES`, a comma list of `apps/shared/features.json` keys, each sent as `true`. Unset gives `{}`, and each app keeps its bundled defaults. |
+| `home_sections_out` | `HomeSection[]` | The signed-out home's blocks in order: `apps/shared/home-sections.json` (the apps bundle the same file; the API's copy in `api/internal/homesections` is held equal by a test), or the `signed_out` list of `HOME_SECTIONS`. |
+
+`HOME_SECTIONS` (a JSON object, unset is none) is the owner's switch over the apps' home without a release (design/specs/2026-11-07-mobile-redesign.md section 2.3). It is read at start-up and refused there when malformed. Keys: `rules` (`under_60_line`, `no_guild_cta`, `raid_day_first`; `false` switches a rule off), `off` (block types removed), `order` (types put first, in this order), `notice` (`{ text, href }`, a standing message under the head; `href` a site path) and `signed_out` (replaces `home_sections_out`). The signed-in list is `GET /v1/home`'s `sections`. Example: `{"off":["movers"],"notice":{"text":"Servers restart at 10:00.","href":"/changelog"}}`.
 
 Fixture: `app.config.json`.

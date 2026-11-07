@@ -35,6 +35,7 @@ func TestAppConfig_RefusesMalformedValues(t *testing.T) {
 	for name, value := range map[string]string{
 		"APP_WEB_CHECKOUT_REGIONS_IOS": "USA", "APP_WEB_CHECKOUT_REGIONS_ANDROID": "u1",
 		"APP_MIN_VERSION_IOS": "1.0", "APP_MIN_VERSION_ANDROID": "v1.0.0", "APP_FEATURES": "Raids",
+		"HOME_SECTIONS": `{"off":["hero"]}`,
 	} {
 		if _, err := loadApp(env(map[string]string{name: value})); err == nil || !strings.Contains(err.Error(), name) {
 			t.Errorf("%s=%s: %v", name, value, err)

@@ -180,6 +180,7 @@ func Mount(mux *http.ServeMux, s *Service, trustedProxyHops int) {
 	mux.HandleFunc("POST /v1/devices/connect/approve", RequireSession(s.connectApprove))
 	mux.HandleFunc("POST /v1/devices/connect/deny", RequireSession(s.connectDeny))
 	mux.HandleFunc("GET /v1/devices", RequireSession(s.listDevices))
+	mux.HandleFunc("POST /v1/devices/revoke-others", RequireSession(s.revokeOtherDevices))
 	// The literal wins over {id}: a companion forgets itself with its own token.
 	mux.HandleFunc("DELETE /v1/devices/self", RequireDevice(s.revokeSelf))
 	mux.HandleFunc("DELETE /v1/devices/{id}", RequireSession(s.revokeDevice))
@@ -651,6 +652,23 @@ func (s *Service) revokeDevice(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.WriteHeader(http.StatusNoContent)
+}
+
+// RevokedDevices is POST /v1/devices/revoke-others' answer.
+type RevokedDevices struct {
+	Revoked int64 `json:"revoked"`
+}
+
+// revokeOtherDevices is Sign out everywhere else (mobile redesign ruling R16): every device
+// of the account but the caller's own is revoked; from a browser session, every device.
+func (s *Service) revokeOtherDevices(w http.ResponseWriter, r *http.Request) {
+	actor := ActorFrom(r.Context())
+	n, err := s.Store.RevokeOtherDevices(r.Context(), actor.UserID, actor.DeviceID)
+	if err != nil {
+		s.fail(w, r, "devices", err, "could not sign your other devices out just now")
+		return
+	}
+	httpx.WriteOK(w, r, http.StatusOK, RevokedDevices{Revoked: n})
 }
 
 // normalizeEmail parses and lowercases an address, rejecting anything

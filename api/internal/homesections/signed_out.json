@@ -1,0 +1,10 @@
+{
+  "$note": "The signed-out home's blocks, in order (design/specs/2026-11-07-mobile-redesign.md section 2.3, ruling R3). Both apps bundle this file and use it until GET /v1/app/config answers home_sections_out, which the API serves from its copy (api/internal/homesections/signed_out.json, held equal by a test) or from the HOME_SECTIONS signed_out override.",
+  "sections": [
+    { "type": "head_out" },
+    { "type": "class_picker" },
+    { "type": "countdowns", "style": "full" },
+    { "type": "feed", "filters": [], "limit": 7 },
+    { "type": "how_to_start_link" }
+  ]
+}

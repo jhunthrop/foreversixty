@@ -12,7 +12,14 @@
     "features": {
       "raids": true,
       "sign_in": false
-    }
+    },
+    "home_sections_out": [
+      { "type": "head_out" },
+      { "type": "class_picker" },
+      { "type": "countdowns", "style": "full" },
+      { "type": "feed", "filters": [], "limit": 7 },
+      { "type": "how_to_start_link" }
+    ]
   },
   "error": null,
   "request_id": "9f2c41d07ab3e655"

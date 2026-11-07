@@ -55,7 +55,7 @@ func wireActivity(ctx context.Context, w activityWiring, deps *server.Deps) {
 	if deps.Guilds != nil {
 		deps.Guilds.Activity = &activity.GuildRaidWriter{Store: store, Log: w.log}
 	}
-	home := &activity.Home{Store: store}
+	home := &activity.Home{Store: store, Sections: w.cfg.App.HomeSections}
 	if deps.Sims != nil && deps.Sims.Jobs != nil {
 		home.Imports = deps.Sims
 		if deps.Addon != nil {

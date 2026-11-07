@@ -57,6 +57,7 @@ import gg.foreversixty.app.model.RankingsPage
 import gg.foreversixty.app.model.Report
 import gg.foreversixty.app.model.ReportList
 import gg.foreversixty.app.model.ReportMe
+import gg.foreversixty.app.model.RevokedDevices
 import gg.foreversixty.app.model.SearchIndex
 import gg.foreversixty.app.model.SignedOut
 import gg.foreversixty.app.model.SignupAnswer
@@ -118,6 +119,10 @@ object ApiEndpoints {
     /** GET /v1/devices: The account's devices */
     fun listDevices(): Endpoint<List<Device>> =
         Endpoint(HttpMethod.Get, "/v1/devices", ListSerializer(Device.serializer()))
+
+    /** POST /v1/devices/revoke-others: Sign out everywhere else */
+    fun revokeOtherDevices(): Endpoint<RevokedDevices> =
+        Endpoint(HttpMethod.Post, "/v1/devices/revoke-others", RevokedDevices.serializer())
 
     /** DELETE /v1/devices/{id}: Revoke a device; its token answers 401 at once */
     fun revokeDevice(id: String): Endpoint<Unit> =
@@ -383,6 +388,7 @@ object ContractRoutes {
         FixtureRoute(HttpMethod.Patch, "/v1/me", "me.patch", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Delete, "/v1/me", "me.delete", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Get, "/v1/devices", "devices.list", HttpStatusCode.fromValue(200)),
+        FixtureRoute(HttpMethod.Post, "/v1/devices/revoke-others", "devices.revoke-others", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Delete, "/v1/devices/{id}", null, HttpStatusCode.fromValue(204)),
         FixtureRoute(HttpMethod.Get, "/v1/reports", "reports.list", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Get, "/v1/reports/{id}", "reports.get", HttpStatusCode.fromValue(200)),

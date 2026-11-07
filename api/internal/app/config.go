@@ -5,6 +5,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/jhunthrop/foreversixty/api/internal/homesections"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
 )
 
@@ -26,6 +27,9 @@ type Config struct {
 	ActiveBuild string `json:"active_build"`
 	// Features are the feature switches by key; {} when none is turned on.
 	Features map[string]bool `json:"features"`
+	// HomeSectionsOut is the signed-out home's blocks in order (apps/shared/home-sections.json,
+	// or the HOME_SECTIONS signed_out override).
+	HomeSectionsOut []homesections.Section `json:"home_sections_out"`
 }
 
 // MinAppVersion is a minimum version per platform.
@@ -75,5 +79,6 @@ func (s *Service) config(w http.ResponseWriter, r *http.Request) {
 		ActiveBuild:        build,
 		MinAppVersion:      MinAppVersion{IOS: s.Settings.MinVersionIOS, Android: s.Settings.MinVersionAndroid},
 		Features:           s.Settings.featureMap(),
+		HomeSectionsOut:    homesections.SignedOut(s.Settings.HomeSections),
 	})
 }

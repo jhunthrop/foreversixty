@@ -11,6 +11,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/jhunthrop/foreversixty/api/internal/homesections"
 	"github.com/jhunthrop/foreversixty/api/internal/rankings"
 	"github.com/jhunthrop/foreversixty/api/internal/trees"
 )
@@ -52,6 +53,8 @@ type Settings struct {
 	MinVersionIOS, MinVersionAndroid string
 	// Features are the feature switches turned on; the answer sends each as true.
 	Features []string
+	// HomeSections is HOME_SECTIONS; its signed_out list, when set, replaces the bundled one.
+	HomeSections homesections.Override
 }
 
 // Service serves the app routes.

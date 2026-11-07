@@ -10,7 +10,9 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/character"
 	"github.com/jhunthrop/foreversixty/api/internal/fs1"
+	"github.com/jhunthrop/foreversixty/api/internal/homesections"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
+	"github.com/jhunthrop/foreversixty/api/internal/sitedates"
 )
 
 // ImportSimmer queues a character's import run; sims.Service satisfies it. It answers
@@ -27,6 +29,8 @@ const importStartTimeout = 10 * time.Second
 type Home struct {
 	Store   *Store
 	Imports ImportSimmer
+	// Sections is HOME_SECTIONS, the owner's switches over the apps' home composition.
+	Sections homesections.Override
 }
 
 // homeCharacter is what the blocks are read for.
@@ -101,6 +105,9 @@ func (h *Home) character(ctx context.Context, key string) (homeCharacter, bool, 
 func (h *Home) answer(ctx context.Context, c homeCharacter, now time.Time) (HomeAnswer, error) {
 	var out HomeAnswer
 	var err error
+	if out.Sections, err = h.sections(ctx, c, now); err != nil {
+		return out, err
+	}
 	if out.ImportSim, err = h.importSim(ctx, c); err != nil {
 		return out, err
 	}
@@ -116,6 +123,16 @@ func (h *Home) answer(ctx context.Context, c homeCharacter, now time.Time) (Home
 	}
 	out.GuildSims, err = h.Store.guildSims(ctx, c, band, now)
 	return out, err
+}
+
+// sections composes the apps' home for c (rulings R2 and R4, HOME_SECTIONS).
+func (h *Home) sections(ctx context.Context, c homeCharacter, now time.Time) ([]homesections.Section, error) {
+	inGuild, raidDay, err := h.Store.guildDay(ctx, c.key, now)
+	if err != nil {
+		return nil, err
+	}
+	view := homesections.View{Level: c.level, InGuild: inGuild, RaidsOpen: sitedates.RaidsOpen(now), RaidDay: raidDay}
+	return homesections.SignedIn(view, h.Sections), nil
 }
 
 func (h *Home) importSim(ctx context.Context, c homeCharacter) (*ImportSim, error) {

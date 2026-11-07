@@ -135,3 +135,35 @@ func (s *Store) guildSims(ctx context.Context, c homeCharacter, band int, now ti
 	g.Rows = ladder[:min(guildSimsShown, len(ladder))]
 	return &g, nil
 }
+
+// guildDay is the character's guild membership and whether its guild raids today: a raid (a
+// raid zone, planned or locked, not yet over) starting on today's date in the guild's raid
+// time zone (UTC when it has none or names an unknown zone).
+func (s *Store) guildDay(ctx context.Context, key string, now time.Time) (inGuild, raidDay bool, err error) {
+	var tz string
+	var next *time.Time
+	err = s.Pool.QueryRow(ctx,
+		`select coalesce(g.raid_timezone, ''),
+		        (select r.starts_at from guild_raids r where r.guild_id = gc.guild_id and r.status in ('planned', 'locked')
+		           and starts_with(r.zone, 'raid:') and r.starts_at + make_interval(mins => r.duration_minutes) > $2
+		         order by r.starts_at limit 1)
+		 from guild_characters gc join guilds g on g.id = gc.guild_id
+		 where gc.character_key = $1 and gc.verified_at is not null
+		 order by gc.guild_id limit 1`, key, now).Scan(&tz, &next)
+	if isNoRows(err) {
+		return false, false, nil
+	}
+	if err != nil {
+		return false, false, fmt.Errorf("activity: guild day of %s: %w", key, err)
+	}
+	return true, next != nil && sameDay(*next, now, tz), nil
+}
+
+// sameDay reports whether a and b fall on one calendar date in the named zone.
+func sameDay(a, b time.Time, tz string) bool {
+	loc, err := time.LoadLocation(tz)
+	if err != nil || tz == "" {
+		loc = time.UTC
+	}
+	return a.In(loc).Format(time.DateOnly) == b.In(loc).Format(time.DateOnly)
+}

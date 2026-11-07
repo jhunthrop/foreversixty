@@ -675,7 +675,8 @@ func serve(log *slog.Logger) error {
 		deps.App = &app.Service{
 			Characters: deps.Rankings, Data: guildService, Exports: &app.Store{Pool: pool}, Log: log,
 			Settings: app.Settings{WebCheckoutRegions: cfg.App.WebCheckoutRegions, Features: cfg.App.Features,
-				MinVersionIOS: cfg.App.MinVersionIOS, MinVersionAndroid: cfg.App.MinVersionAndroid},
+				MinVersionIOS: cfg.App.MinVersionIOS, MinVersionAndroid: cfg.App.MinVersionAndroid,
+				HomeSections: cfg.App.HomeSections},
 		}
 		log.Info("app", "state", "APP_API is on", "effect", "the app home and config routes are mounted")
 	}

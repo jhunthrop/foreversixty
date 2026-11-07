@@ -214,8 +214,7 @@ func (s *Store) GetRow(ctx context.Context, id string) (StoredSim, error) {
 		body []byte
 		out  StoredSim
 	)
-	err := s.Pool.QueryRow(ctx,
-		`select result, coalesce(title, ''), created_at from sims where id = $1`, id).Scan(&body, &out.Title, &out.CreatedAt)
+	err := s.Pool.QueryRow(ctx, getRowSQL, id).Scan(&body, &out.Title, &out.CreatedAt, &out.PreviousDPS)
 	if isNoRows(err) {
 		return StoredSim{}, ErrNotFound
 	}
@@ -229,12 +228,25 @@ func (s *Store) GetRow(ctx context.Context, id string) (StoredSim, error) {
 	return out, nil
 }
 
+// getRowSQL reads one sim and, when it is linked to a character (character_sims), the DPS of
+// that character's previous finished sim of the same spec, band and preset: the result's
+// "vs last sim" (mobile redesign ruling R9). Null when there is no such sim.
+const getRowSQL = `select s.result, coalesce(s.title, ''), s.created_at,
+	(select ps.dps_mean::float8 from character_sims cur
+	   join character_sims p on p.character_key = cur.character_key and p.sim_id <> cur.sim_id
+	    and p.spec = cur.spec and p.band = cur.band and p.preset = cur.preset and p.created_at < cur.created_at
+	   join sims ps on ps.id = p.sim_id and ps.state = 'done'
+	 where cur.sim_id = s.id order by p.created_at desc limit 1)
+	from sims s where s.id = $1`
+
 // StoredSim is one row of the sims table as GET /v1/sims/{id} reads it: the
-// result, and the two facts about the row that live beside it.
+// result, and the facts about the row that live beside it.
 type StoredSim struct {
 	Result    simapi.SimResult
 	Title     string
 	CreatedAt time.Time
+	// PreviousDPS is the character's previous comparable sim's DPS, nil without one.
+	PreviousDPS *float64
 }
 
 // ForBuild answers the newest done sim run against a build: the row

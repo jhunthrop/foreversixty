@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"regexp"
 	"strings"
+
+	"github.com/jhunthrop/foreversixty/api/internal/homesections"
 )
 
 // AppConfig is the mobile apps' API settings. Enabled (APP_API=true) mounts the app routes;
@@ -22,6 +24,10 @@ type AppConfig struct {
 	// Features are the app feature switches turned on (APP_FEATURES, a comma list of
 	// apps/shared/features.json keys; unset is none, and each app keeps its bundled default).
 	Features []string
+	// HomeSections overrides the apps' home composition (HOME_SECTIONS, a JSON object; unset
+	// is none): it switches a rule off, turns blocks off, reorders them, adds a notice or
+	// replaces the signed-out list. GET /v1/home and GET /v1/app/config read it.
+	HomeSections homesections.Override
 }
 
 // AppPlatforms are the platforms an X-App header names, each with its checkout variable and
@@ -69,6 +75,9 @@ func loadApp(getenv func(string) string) (AppConfig, error) {
 		return AppConfig{}, err
 	}
 	c.Features = features
+	if c.HomeSections, err = homesections.ParseOverride(getenv("HOME_SECTIONS")); err != nil {
+		return AppConfig{}, fmt.Errorf("config: %w", err)
+	}
 	return c, nil
 }
 

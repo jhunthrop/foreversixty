@@ -112,3 +112,27 @@ func TestAppContractPatchMe(t *testing.T) {
 		appBody(t, h.do(t, http.MethodPatch, "/v1/me", `{"main_character_key":"us/pvp/nobody"}`), http.StatusBadRequest),
 		contract.Options{})
 }
+
+// Sign out everywhere else from the app: every other device goes, the caller's stays, and the
+// answer counts them (mobile redesign ruling R16).
+func TestAppContractRevokeOtherDevices(t *testing.T) {
+	h := newHarness(t)
+	h.withAppSignIn(t)
+	uid := h.seedUser(t, "contract-revoke@example.com")
+	token, hash := NewDeviceToken()
+	if _, err := h.svc.Store.CreateAppDevice(t.Context(), uid, "iPhone", "ios", hash); err != nil {
+		t.Fatal(err)
+	}
+	for _, name := range []string{"Pixel 9", "Raid PC"} {
+		_, other := NewDeviceToken()
+		if _, err := h.svc.Store.CreateDevice(t.Context(), uid, name, "android", other); err != nil {
+			t.Fatal(err)
+		}
+	}
+	res := bearer(t, h, http.MethodPost, "/v1/devices/revoke-others", token)
+	contract.AssertFixture(t, "devices.revoke-others", appBody(t, res, http.StatusOK), contract.Options{})
+	devices, err := h.svc.Store.Devices(t.Context(), uid)
+	if err != nil || len(devices) != 1 || devices[0].Name != "iPhone" {
+		t.Fatalf("devices left: %+v, %v", devices, err)
+	}
+}

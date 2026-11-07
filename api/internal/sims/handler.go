@@ -187,6 +187,10 @@ type GetOutput struct {
 	simapi.SimResult
 	Title     string    `json:"title,omitempty"`
 	CreatedAt time.Time `json:"created_at,omitzero"`
+	// PreviousDPS is the DPS of the same character's previous sim of the same spec, band and
+	// preset (the result's "vs last sim"); omitted when the sim has no character or no
+	// previous one.
+	PreviousDPS *float64 `json:"previous_dps,omitempty"`
 }
 
 func (s *Service) get(w http.ResponseWriter, r *http.Request) {
@@ -198,7 +202,7 @@ func (s *Service) get(w http.ResponseWriter, r *http.Request) {
 		s.fail(w, r, "get", err, "could not read that sim just now")
 	default:
 		httpx.CachePublic(w, publicObjectMaxAge, publicObjectStale)
-		httpx.WriteOK(w, r, http.StatusOK, GetOutput{SimResult: stored.Result, Title: stored.Title, CreatedAt: stored.CreatedAt})
+		httpx.WriteOK(w, r, http.StatusOK, GetOutput{SimResult: stored.Result, Title: stored.Title, CreatedAt: stored.CreatedAt, PreviousDPS: stored.PreviousDPS})
 	}
 }
 

@@ -1,6 +1,8 @@
 package sims
 
 import (
+	"context"
+	"fmt"
 	"io"
 	"net/http"
 	"testing"
@@ -74,7 +76,7 @@ func TestAppContractSimResult(t *testing.T) {
 	res := h.do(http.MethodGet, "/v1/sims/"+id, "", nil)
 	assertCache(t, res, "public, max-age=60, stale-while-revalidate=600")
 	contract.AssertFixture(t, "sims.result", body(t, res, http.StatusOK), contract.Options{
-		Optional: []string{"data.title"},
+		Optional: []string{"data.title", "data.previous_dps"},
 	})
 }
 
@@ -137,4 +139,30 @@ func TestAppContractSimInput(t *testing.T) {
 	contract.AssertFixture(t, "character.sim-input.error-not-found",
 		body(t, h.do(http.MethodGet, "/v1/characters/us/normal/nobody/sim-input", "", nil), http.StatusNotFound),
 		contract.Options{})
+}
+
+// "vs last sim" (ruling R9): a sim linked to a character carries that character's previous
+// finished sim of the same spec, band and preset; the first one carries none.
+func TestSimResultCarriesThePreviousDPS(t *testing.T) {
+	h := newHarness(t)
+	ctx := context.Background()
+	at := time.Date(2026, 11, 6, 18, 0, 0, 0, time.UTC)
+	for i, dps := range []float64{800, 842} {
+		id := fmt.Sprintf("prevdps%05d", i)
+		if _, err := h.store.Pool.Exec(ctx, `insert into sims (id, user_id, spec, engine_version, lane, dps_mean, dps_error, iterations, result, state, created_at, finished_at)
+			values ($1, $2, 'hunter-survival', 'e', 'server', $3, 6, 3000, '{}', 'done', $4, $4)`, id, h.owner, dps, at.Add(time.Duration(i)*time.Hour)); err != nil {
+			t.Fatal(err)
+		}
+		if _, err := h.store.Pool.Exec(ctx, `insert into character_sims (sim_id, character_key, user_id, kind, spec, role, band, preset, created_at)
+			values ($1, 'us/normal/felsnap', $2, 'saved', 'hunter-survival', 'dps', 60, 'raid', $3)`, id, h.owner, at.Add(time.Duration(i)*time.Hour)); err != nil {
+			t.Fatal(err)
+		}
+	}
+	latest, err := h.store.GetRow(ctx, "prevdps00001")
+	if err != nil || latest.PreviousDPS == nil || *latest.PreviousDPS != 800 {
+		t.Fatalf("latest: %+v, %v", latest.PreviousDPS, err)
+	}
+	if first, _ := h.store.GetRow(ctx, "prevdps00000"); first.PreviousDPS != nil {
+		t.Fatalf("the first sim has a previous one: %v", *first.PreviousDPS)
+	}
 }

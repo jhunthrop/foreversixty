@@ -213,6 +213,8 @@ public struct ActiveBuild: Codable, Sendable, Equatable {
 
 /// GET /v1/app/config, read once at launch and cached. Show "See plans" exactly when the storefront country is in web_checkout_regions. Below min_app_version, block with the update screen. A feature ships behind a features key, dark in both apps, and the key turns it on in both at once: a key the app does not know is ignored, and a key the answer leaves out takes the app's bundled default (apps/shared/features.json).
 public struct AppConfig: Codable, Sendable, Equatable {
+    /// The signed-out home's blocks in order: apps/shared/home-sections.json, which the apps also bundle, or the HOME_SECTIONS signed_out override.
+    public let homeSectionsOut: [HomeSection]
     /// ISO 3166-1 alpha-2, upper case; never null.
     public let webCheckoutRegions: [String]
     public let minAppVersion: MinAppVersion
@@ -222,11 +224,13 @@ public struct AppConfig: Codable, Sendable, Equatable {
     public let features: [String: Bool]
 
     public init(
+        homeSectionsOut: [HomeSection] = [],
         webCheckoutRegions: [String] = [],
         minAppVersion: MinAppVersion,
         activeBuild: String,
         features: [String: Bool] = [:]
     ) {
+        self.homeSectionsOut = homeSectionsOut
         self.webCheckoutRegions = webCheckoutRegions
         self.minAppVersion = minAppVersion
         self.activeBuild = activeBuild
@@ -235,6 +239,7 @@ public struct AppConfig: Codable, Sendable, Equatable {
 
     public init(from decoder: any Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
+        homeSectionsOut = try c.decodeIfPresent([HomeSection].self, forKey: .homeSectionsOut) ?? []
         webCheckoutRegions = try c.decodeIfPresent([String].self, forKey: .webCheckoutRegions) ?? []
         minAppVersion = try c.decode(MinAppVersion.self, forKey: .minAppVersion)
         activeBuild = try c.decode(String.self, forKey: .activeBuild)
@@ -3529,23 +3534,35 @@ public struct HomeAlreadyBest: Codable, Sendable, Equatable {
     }
 }
 
-/// The signed-in home's own blocks; each is null when it has nothing true to say.
+/// The signed-in home's own blocks; each is null when it has nothing true to say. sections is the apps' home, its blocks in order for this viewer (design/specs/2026-11-07-mobile-redesign.md section 2.3): at 60 in a guild head, upgrades, countdowns, feed, guild_sims, spec_week, movers, next; under 60 the countdowns are one line after the feed; with no guild guild_sims_cta replaces guild_sims and the feed drops the guild filter; once raids are open, on the guild's raid day, countdowns moves second. HOME_SECTIONS switches each rule off, turns blocks off, reorders them and adds a notice. The web keeps its own composition.
 public struct HomeBlocks: Codable, Sendable, Equatable {
+    public let sections: [HomeSection]
     public let importSim: HomeImportSim?
     public let specWeek: HomeSpecWeek?
     public let movers: HomeMovers?
     public let guildSims: HomeGuildSims?
 
     public init(
+        sections: [HomeSection] = [],
         importSim: HomeImportSim? = nil,
         specWeek: HomeSpecWeek? = nil,
         movers: HomeMovers? = nil,
         guildSims: HomeGuildSims? = nil
     ) {
+        self.sections = sections
         self.importSim = importSim
         self.specWeek = specWeek
         self.movers = movers
         self.guildSims = guildSims
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        sections = try c.decodeIfPresent([HomeSection].self, forKey: .sections) ?? []
+        importSim = try c.decodeIfPresent(HomeImportSim.self, forKey: .importSim)
+        specWeek = try c.decodeIfPresent(HomeSpecWeek.self, forKey: .specWeek)
+        movers = try c.decodeIfPresent(HomeMovers.self, forKey: .movers)
+        guildSims = try c.decodeIfPresent(HomeGuildSims.self, forKey: .guildSims)
     }
 }
 
@@ -3772,6 +3789,42 @@ public struct HomePick: Codable, Sendable, Equatable {
         self.itemLevel = itemLevel
         self.sourceLine = sourceLine
         self.dropChance = dropChance
+    }
+}
+
+/// One block of the apps' home. An app renders the types it knows, in order, and skips any other (logging it once per session); an unknown style falls back to the type's default. Fields a type does not use are omitted.
+public struct HomeSection: Codable, Sendable, Equatable {
+    /// head, upgrades, countdowns, feed, guild_sims, guild_sims_cta, spec_week, movers, next or notice signed in; head_out, class_picker, countdowns, feed or how_to_start_link signed out. Open: new types may appear.
+    public let type: String
+    /// Rows to show (upgrades 3, feed 7, guild_sims 5).
+    public let limit: Int?
+    /// countdowns: full (the panels) or line (one row).
+    public let style: String?
+    /// feed: the segments; [] for none (signed out, All only).
+    public let filters: [String]?
+    /// feed: the filters behind the filter button.
+    public let moreFilters: [String]?
+    /// notice: the standing message.
+    public let text: String?
+    /// notice: a site path it links to.
+    public let href: String?
+
+    public init(
+        type: String,
+        limit: Int? = nil,
+        style: String? = nil,
+        filters: [String]? = nil,
+        moreFilters: [String]? = nil,
+        text: String? = nil,
+        href: String? = nil
+    ) {
+        self.type = type
+        self.limit = limit
+        self.style = style
+        self.filters = filters
+        self.moreFilters = moreFilters
+        self.text = text
+        self.href = href
     }
 }
 
@@ -7289,6 +7342,16 @@ public struct ReportRow: Codable, Sendable, Equatable {
     }
 }
 
+public struct RevokedDevices: Codable, Sendable, Equatable {
+    public let revoked: Int
+
+    public init(
+        revoked: Int
+    ) {
+        self.revoked = revoked
+    }
+}
+
 public struct RosterBestParse: Codable, Sendable, Equatable {
     public let metric: String
     public let value: Double
@@ -7873,6 +7936,8 @@ public struct SimResult: Codable, Sendable, Equatable {
     public let simId: String?
     /// The run's saved title; omitted when it has none.
     public let title: String?
+    /// GET /v1/sims/{id} only: the DPS of the same character's previous finished sim of the same spec, band and preset (the result's vs last sim, ruling R9); omitted when the sim has no character or no previous one.
+    public let previousDps: Double?
     public let engineVersion: String
     public let request: SimRequest?
     public let lane: String
@@ -7900,6 +7965,7 @@ public struct SimResult: Codable, Sendable, Equatable {
     public init(
         simId: String? = nil,
         title: String? = nil,
+        previousDps: Double? = nil,
         engineVersion: String,
         request: SimRequest? = nil,
         lane: String,
@@ -7919,6 +7985,7 @@ public struct SimResult: Codable, Sendable, Equatable {
     ) {
         self.simId = simId
         self.title = title
+        self.previousDps = previousDps
         self.engineVersion = engineVersion
         self.request = request
         self.lane = lane
@@ -8517,6 +8584,8 @@ public struct WeightsSpec: Codable, Sendable, Equatable {
 /// GET /v1/me/widget (W3-C12): the one snapshot every widget, lock-screen widget, Live Activity and ongoing notification draws from, so no two surfaces disagree. The apps keep it in their shared container (iOS App Group, Android DataStore). generated_at is to the minute; staleness (`Updated {n} h ago` past 12 hours) is measured from when the app last fetched it, a 304 included.
 public struct Widget: Codable, Sendable, Equatable {
     public let generatedAt: Date
+    /// The day the first raids open (dates.json role raids): the no-guild widget's countdown (ruling R13). The API always sends it; optional so a snapshot an older build cached still decodes.
+    public let firstRaidsAt: String?
     /// null for an account with no characters.
     public let character: WidgetCharacter?
     /// null when the character is on no guild's roster (`No guild yet`).
@@ -8530,6 +8599,7 @@ public struct Widget: Codable, Sendable, Equatable {
 
     public init(
         generatedAt: Date,
+        firstRaidsAt: String? = nil,
         character: WidgetCharacter? = nil,
         guild: WidgetGuild? = nil,
         nextRaid: WidgetNextRaid? = nil,
@@ -8538,6 +8608,7 @@ public struct Widget: Codable, Sendable, Equatable {
         live: WidgetLive
     ) {
         self.generatedAt = generatedAt
+        self.firstRaidsAt = firstRaidsAt
         self.character = character
         self.guild = guild
         self.nextRaid = nextRaid

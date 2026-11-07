@@ -81,6 +81,8 @@ data class ActiveBuild(
 /** GET /v1/app/config, read once at launch and cached. Show "See plans" exactly when the storefront country is in web_checkout_regions. Below min_app_version, block with the update screen. A feature ships behind a features key, dark in both apps, and the key turns it on in both at once: a key the app does not know is ignored, and a key the answer leaves out takes the app's bundled default (apps/shared/features.json). */
 @Serializable
 data class AppConfig(
+    /** The signed-out home's blocks in order: apps/shared/home-sections.json, which the apps also bundle, or the HOME_SECTIONS signed_out override. */
+    @SerialName("home_sections_out") val homeSectionsOut: List<HomeSection> = emptyList(),
     /** ISO 3166-1 alpha-2, upper case; never null. */
     @SerialName("web_checkout_regions") val webCheckoutRegions: List<String> = emptyList(),
     @SerialName("min_app_version") val minAppVersion: MinAppVersion,
@@ -1318,9 +1320,10 @@ data class HomeAlreadyBest(
     @SerialName("item") val item: HomeItem,
 )
 
-/** The signed-in home's own blocks; each is null when it has nothing true to say. */
+/** The signed-in home's own blocks; each is null when it has nothing true to say. sections is the apps' home, its blocks in order for this viewer (design/specs/2026-11-07-mobile-redesign.md section 2.3): at 60 in a guild head, upgrades, countdowns, feed, guild_sims, spec_week, movers, next; under 60 the countdowns are one line after the feed; with no guild guild_sims_cta replaces guild_sims and the feed drops the guild filter; once raids are open, on the guild's raid day, countdowns moves second. HOME_SECTIONS switches each rule off, turns blocks off, reorders them and adds a notice. The web keeps its own composition. */
 @Serializable
 data class HomeBlocks(
+    @SerialName("sections") val sections: List<HomeSection> = emptyList(),
     @SerialName("import_sim") val importSim: HomeImportSim? = null,
     @SerialName("spec_week") val specWeek: HomeSpecWeek? = null,
     @SerialName("movers") val movers: HomeMovers? = null,
@@ -1403,6 +1406,25 @@ data class HomePick(
     @SerialName("source_line") val sourceLine: String,
     /** Percent (0 to 100) when the source names one; absent or null otherwise. */
     @SerialName("drop_chance") val dropChance: Double? = null,
+)
+
+/** One block of the apps' home. An app renders the types it knows, in order, and skips any other (logging it once per session); an unknown style falls back to the type's default. Fields a type does not use are omitted. */
+@Serializable
+data class HomeSection(
+    /** head, upgrades, countdowns, feed, guild_sims, guild_sims_cta, spec_week, movers, next or notice signed in; head_out, class_picker, countdowns, feed or how_to_start_link signed out. Open: new types may appear. */
+    @SerialName("type") val type: String,
+    /** Rows to show (upgrades 3, feed 7, guild_sims 5). */
+    @SerialName("limit") val limit: Int? = null,
+    /** countdowns: full (the panels) or line (one row). */
+    @SerialName("style") val style: String? = null,
+    /** feed: the segments; [] for none (signed out, All only). */
+    @SerialName("filters") val filters: List<String>? = null,
+    /** feed: the filters behind the filter button. */
+    @SerialName("more_filters") val moreFilters: List<String>? = null,
+    /** notice: the standing message. */
+    @SerialName("text") val text: String? = null,
+    /** notice: a site path it links to. */
+    @SerialName("href") val href: String? = null,
 )
 
 /** The spec on the tier list's rules at the character's band and faction this reset week. */
@@ -2699,6 +2721,11 @@ data class ReportRow(
 )
 
 @Serializable
+data class RevokedDevices(
+    @SerialName("revoked") val revoked: Int,
+)
+
+@Serializable
 data class RosterBestParse(
     @SerialName("metric") val metric: String,
     @SerialName("value") val value: Double,
@@ -2927,6 +2954,8 @@ data class SimResult(
     @SerialName("sim_id") val simId: String? = null,
     /** The run's saved title; omitted when it has none. */
     @SerialName("title") val title: String? = null,
+    /** GET /v1/sims/{id} only: the DPS of the same character's previous finished sim of the same spec, band and preset (the result's vs last sim, ruling R9); omitted when the sim has no character or no previous one. */
+    @SerialName("previous_dps") val previousDps: Double? = null,
     @SerialName("engine_version") val engineVersion: String,
     @SerialName("request") val request: SimRequest? = null,
     @SerialName("lane") val lane: String,
@@ -3176,6 +3205,8 @@ data class WeightsSpec(
 @Serializable
 data class Widget(
     @SerialName("generated_at") val generatedAt: String,
+    /** The day the first raids open (dates.json role raids): the no-guild widget's countdown (ruling R13). The API always sends it; optional so a snapshot an older build cached still decodes. */
+    @SerialName("first_raids_at") val firstRaidsAt: String? = null,
     /** null for an account with no characters. */
     @SerialName("character") val character: WidgetCharacter? = null,
     /** null when the character is on no guild's roster (`No guild yet`). */

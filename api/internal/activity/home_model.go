@@ -1,13 +1,20 @@
 package activity
 
-import "time"
+import (
+	"time"
+
+	"github.com/jhunthrop/foreversixty/api/internal/homesections"
+)
 
 // HomeAnswer is GET /v1/home's body. Every block is null when it has nothing true to say.
+// Sections is the apps' home, its blocks in order for this viewer (mobile redesign spec 2.3);
+// the web keeps its own composition.
 type HomeAnswer struct {
-	ImportSim *ImportSim `json:"import_sim"`
-	SpecWeek  *SpecWeek  `json:"spec_week"`
-	Movers    *Movers    `json:"movers"`
-	GuildSims *GuildSims `json:"guild_sims"`
+	Sections  []homesections.Section `json:"sections"`
+	ImportSim *ImportSim             `json:"import_sim"`
+	SpecWeek  *SpecWeek              `json:"spec_week"`
+	Movers    *Movers                `json:"movers"`
+	GuildSims *GuildSims             `json:"guild_sims"`
 }
 
 // The import sim's states.

@@ -2,6 +2,7 @@
   "ok": true,
   "data": {
     "sim_id": "km3xibdrsiyr",
+    "previous_dps": 836.4,
     "engine_version": "1f542def3",
     "request": {
       "engine_version": "1f542def3",

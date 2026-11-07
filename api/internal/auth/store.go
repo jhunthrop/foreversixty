@@ -520,6 +520,17 @@ func (s *Store) RevokeDevice(ctx context.Context, userID int64, id string) (bool
 	return tag.RowsAffected() == 1, nil
 }
 
+// RevokeOtherDevices revokes every live device of userID but keepID (empty keeps none: a
+// browser session signing every device out) and answers how many it revoked.
+func (s *Store) RevokeOtherDevices(ctx context.Context, userID int64, keepID string) (int64, error) {
+	tag, err := s.Pool.Exec(ctx,
+		`update devices set revoked_at = now() where user_id = $1 and revoked_at is null and id <> $2`, userID, keepID)
+	if err != nil {
+		return 0, fmt.Errorf("auth: revoke other devices: %w", err)
+	}
+	return tag.RowsAffected(), nil
+}
+
 // characterColumns is every column both Characters and CharactersByKeys
 // select, in the order scanCharacterRows reads them.
 const characterColumns = `c.key, c.region, c.ruleset, c.name, coalesce(c.class, ''),
