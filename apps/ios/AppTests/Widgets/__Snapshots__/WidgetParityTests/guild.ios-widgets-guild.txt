@@ -1,10 +1,10 @@
 Widgets
 Home screen widgets: small
 Olympus XXVII, 33d 8h, Onyxia's Lair. Wed 9 Dec, 8:00 pm CST. In, as Thandrel, Damage
-Next upgrade, Lionheart Helm, +14.5 DPS
+Next upgrade, Lionheart Helm, Blacksmithing, +14.5 DPS
 Medium
 Olympus XXVII, 33d 8h, Onyxia's Lair. Wed 9 Dec, 8:00 pm CST. In, as Thandrel, Damage
-Next upgrade, Lionheart Helm, +14.5 DPS
+Next upgrade, Lionheart Helm, Blacksmithing, +14.5 DPS
 Medium, answer the raid
 Olympus XXVII, 33d 8h, Onyxia's Lair. Wed 9 Dec, 8:00 pm CST. In, as Thandrel, Damage
 In
@@ -13,4 +13,4 @@ Bench
 Out
 Lock screen
 Olympus XXVII, 33d 8h, Onyxia's Lair. Wed 9 Dec, 8:00 pm CST. In, as Thandrel, Damage
-Next upgrade, Lionheart Helm, +14.5 DPS
+Next upgrade, Lionheart Helm, Blacksmithing, +14.5 DPS
