@@ -1,0 +1,569 @@
+{
+ "admin": {
+  "copy": {
+   "pageTitle": "Creators",
+   "job": "Who brought players, what they earned this month, and whether Stripe can pay them.",
+   "pageDescription": "The owner’s creator program: players, earnings and payouts.",
+   "signedOut": "Sign in with the owner’s account to see the creators.",
+   "notOwner": "This page is for the site’s owner.",
+   "loadFailed": "The creators didn’t load.",
+   "stripeOff": "Stripe isn’t configured, so codes and payouts are off.",
+   "tableTitle": "Your creators",
+   "tableMeta": "[fn]",
+   "empty": "No creators yet. Add the first one.",
+   "sub": "[fn]",
+   "columns": {
+    "clicks": "Clicks",
+    "signUps": "Signed up",
+    "returning": "Returning",
+    "revenue": "Premium net",
+    "owed": "Owed now"
+   },
+   "ofCap": "[fn]",
+   "capReached": "cap reached",
+   "edit": "Edit",
+   "editLabel": "[fn]",
+   "statementsLink": "Monthly statements",
+   "addTitle": "Add a creator",
+   "editTitle": "[fn]",
+   "formJob": "The link and the code are made once and can’t change after.",
+   "fields": {
+    "name": {
+     "label": "Name",
+     "hint": "What the creator goes by on stream.",
+     "placeholder": "e.g. Grimbrew"
+    },
+    "channel": {
+     "label": "Channel",
+     "hint": "Their Twitch or YouTube address.",
+     "placeholder": "https://twitch.tv/…"
+    },
+    "slug": {
+     "label": "Link",
+     "hint": "Becomes foreversixty.gg/go/your-slug.",
+     "placeholder": "e.g. grimbrew"
+    },
+    "code": {
+     "label": "Promo code",
+     "hint": "Capitals and digits, 4 to 20. 10% off a first payment.",
+     "placeholder": "e.g. GRIMBREW"
+    },
+    "startsOn": {
+     "label": "Starts on",
+     "hint": "Players who signed up before this day never count.",
+     "placeholder": "2026-11-08"
+    },
+    "cap": {
+     "label": "Monthly cap",
+     "hint": "Dollars a month at most, like 500.",
+     "placeholder": "500"
+    }
+   },
+   "add": "Add creator",
+   "save": "Save",
+   "saving": "Saving",
+   "cancelEdit": "Cancel",
+   "added": "[fn]",
+   "saved": "Saved.",
+   "saveFailed": "That wasn’t saved; try again.",
+   "invite": "Copy onboarding invite",
+   "inviteCopied": "Invite copied. It works once, for 14 days.",
+   "inviteFailed": "The invite wasn’t made; try again.",
+   "refresh": "Refresh Stripe status",
+   "refreshed": "Stripe status read just now.",
+   "refreshFailed": "Stripe didn’t answer; try again.",
+   "fixed": "[fn]"
+  },
+  "meta": "3 creators · this month so far",
+  "rows": [
+   {
+    "name": "Grimbrew",
+    "sub": "/go/grimbrew · code GRIMBREW · since 8 Nov 2026",
+    "status": "Payouts ready",
+    "tone": "success",
+    "edit": "Edit",
+    "figures": [
+     {
+      "key": "clicks",
+      "label": "Clicks",
+      "value": "1,840",
+      "note": "",
+      "lead": false
+     },
+     {
+      "key": "sign-ups",
+      "label": "Signed up",
+      "value": "212",
+      "note": "",
+      "lead": false
+     },
+     {
+      "key": "returning",
+      "label": "Returning",
+      "value": "131",
+      "note": "",
+      "lead": false
+     },
+     {
+      "key": "revenue",
+      "label": "Premium net",
+      "value": "$618.40",
+      "note": "",
+      "lead": false
+     },
+     {
+      "key": "owed",
+      "label": "Owed now",
+      "value": "$184.20",
+      "note": "of $500 cap",
+      "lead": true
+     }
+    ]
+   },
+   {
+    "name": "Lunawick",
+    "sub": "/go/lunawick · code LUNAWICK · since 12 Nov 2026",
+    "status": "Needs info",
+    "tone": "warn",
+    "edit": "Edit",
+    "figures": [
+     {
+      "key": "clicks",
+      "label": "Clicks",
+      "value": "932",
+      "note": "",
+      "lead": false
+     },
+     {
+      "key": "sign-ups",
+      "label": "Signed up",
+      "value": "88",
+      "note": "",
+      "lead": false
+     },
+     {
+      "key": "returning",
+      "label": "Returning",
+      "value": "51",
+      "note": "",
+      "lead": false
+     },
+     {
+      "key": "revenue",
+      "label": "Premium net",
+      "value": "$201.10",
+      "note": "",
+      "lead": false
+     },
+     {
+      "key": "owed",
+      "label": "Owed now",
+      "value": "$250.00",
+      "note": "cap reached",
+      "lead": true
+     }
+    ]
+   },
+   {
+    "name": "Tallowmere",
+    "sub": "/go/tallowmere · code TALLOW · since 30 Nov 2026",
+    "status": "Not started",
+    "tone": "muted",
+    "edit": "Edit",
+    "figures": [
+     {
+      "key": "clicks",
+      "label": "Clicks",
+      "value": "0",
+      "note": "",
+      "lead": false
+     },
+     {
+      "key": "sign-ups",
+      "label": "Signed up",
+      "value": "0",
+      "note": "",
+      "lead": false
+     },
+     {
+      "key": "returning",
+      "label": "Returning",
+      "value": "0",
+      "note": "",
+      "lead": false
+     },
+     {
+      "key": "revenue",
+      "label": "Premium net",
+      "value": "$0.00",
+      "note": "",
+      "lead": false
+     },
+     {
+      "key": "owed",
+      "label": "Owed now",
+      "value": "$0.00",
+      "note": "of $500 cap",
+      "lead": true
+     }
+    ]
+   }
+  ],
+  "editTitle": "Edit Grimbrew",
+  "fields": [
+   {
+    "label": "Name",
+    "hint": "What the creator goes by on stream.",
+    "placeholder": "e.g. Grimbrew"
+   },
+   {
+    "label": "Channel",
+    "hint": "Their Twitch or YouTube address.",
+    "placeholder": "https://twitch.tv/…"
+   },
+   {
+    "label": "Link",
+    "hint": "Becomes foreversixty.gg/go/your-slug.",
+    "placeholder": "e.g. grimbrew"
+   },
+   {
+    "label": "Promo code",
+    "hint": "Capitals and digits, 4 to 20. 10% off a first payment.",
+    "placeholder": "e.g. GRIMBREW"
+   },
+   {
+    "label": "Starts on",
+    "hint": "Players who signed up before this day never count.",
+    "placeholder": "2026-11-08"
+   },
+   {
+    "label": "Monthly cap",
+    "hint": "Dollars a month at most, like 500.",
+    "placeholder": "500"
+   }
+  ]
+ },
+ "payouts": {
+  "copy": {
+   "pageTitle": "Statements",
+   "job": "Each creator’s month. Nothing is paid until you approve it.",
+   "pageDescription": "The owner’s monthly creator statements and payouts.",
+   "monthLabel": "Month",
+   "openMonth": "[fn]",
+   "loadFailed": "The statements didn’t load.",
+   "tableTitle": "[fn]",
+   "tableMeta": "[fn]",
+   "empty": "No creators yet.",
+   "back": "Creators",
+   "columns": {
+    "bounties": "Returning",
+    "share": "Share",
+    "refunds": "Refunds",
+    "cap": "Over cap",
+    "total": "Total"
+   },
+   "bounties": "[fn]",
+   "status": {
+    "open": "Month still open",
+    "ready": "Ready to approve",
+    "nothing": "Nothing owed",
+    "blocked": "Stripe can’t pay yet: onboarding not finished",
+    "paid": "[fn]",
+    "settled": "[fn]"
+   },
+   "notReady": "Stripe not ready",
+   "approve": "[fn]",
+   "approving": "Paying",
+   "settle": "Settle $0.00",
+   "confirmTitle": "[fn]",
+   "confirmBody": "[fn]",
+   "confirmPay": "[fn]",
+   "cancel": "Cancel",
+   "approveFailed": "[fn]",
+   "lines": "Lines",
+   "linesLabel": "[fn]",
+   "linesTitle": "[fn]",
+   "linesEmpty": "No lines this month.",
+   "line": {
+    "bounty": "[fn]",
+    "share": "[fn]",
+    "refund": "[fn]"
+   }
+  },
+  "month": "November 2026",
+  "title": "3 creators",
+  "meta": "$168.60 to pay",
+  "rows": [
+   {
+    "name": "Grimbrew",
+    "sub": "Ready to approve",
+    "action": "Approve $168.60",
+    "lines": "Lines",
+    "notReady": "",
+    "figures": [
+     {
+      "key": "total",
+      "label": "Total",
+      "value": "$168.60",
+      "note": "",
+      "lead": true
+     },
+     {
+      "key": "bounties",
+      "label": "Returning",
+      "value": "$128.00",
+      "note": "64 × $2.00",
+      "lead": false
+     },
+     {
+      "key": "share",
+      "label": "Share",
+      "value": "$43.10",
+      "note": "",
+      "lead": false
+     },
+     {
+      "key": "refunds",
+      "label": "Refunds",
+      "value": "$2.50",
+      "note": "",
+      "lead": false
+     },
+     {
+      "key": "cap",
+      "label": "Over cap",
+      "value": "$0.00",
+      "note": "",
+      "lead": false
+     }
+    ]
+   },
+   {
+    "name": "Lunawick",
+    "sub": "Stripe can’t pay yet: onboarding not finished",
+    "action": "",
+    "lines": "Lines",
+    "notReady": "Stripe not ready",
+    "figures": [
+     {
+      "key": "total",
+      "label": "Total",
+      "value": "$74.40",
+      "note": "",
+      "lead": true
+     },
+     {
+      "key": "bounties",
+      "label": "Returning",
+      "value": "$62.00",
+      "note": "31 × $2.00",
+      "lead": false
+     },
+     {
+      "key": "share",
+      "label": "Share",
+      "value": "$12.40",
+      "note": "",
+      "lead": false
+     },
+     {
+      "key": "refunds",
+      "label": "Refunds",
+      "value": "$0.00",
+      "note": "",
+      "lead": false
+     },
+     {
+      "key": "cap",
+      "label": "Over cap",
+      "value": "$0.00",
+      "note": "",
+      "lead": false
+     }
+    ]
+   },
+   {
+    "name": "Tallowmere",
+    "sub": "Nothing owed",
+    "action": "Settle $0.00",
+    "lines": "Lines",
+    "notReady": "",
+    "figures": [
+     {
+      "key": "total",
+      "label": "Total",
+      "value": "$0.00",
+      "note": "",
+      "lead": true
+     },
+     {
+      "key": "bounties",
+      "label": "Returning",
+      "value": "$0.00",
+      "note": "0 × $2.00",
+      "lead": false
+     },
+     {
+      "key": "share",
+      "label": "Share",
+      "value": "$0.00",
+      "note": "",
+      "lead": false
+     },
+     {
+      "key": "refunds",
+      "label": "Refunds",
+      "value": "$0.00",
+      "note": "",
+      "lead": false
+     },
+     {
+      "key": "cap",
+      "label": "Over cap",
+      "value": "$0.00",
+      "note": "",
+      "lead": false
+     }
+    ]
+   }
+  ],
+  "linesTitle": "Lines · Grimbrew",
+  "lines": [
+   {
+    "text": "Player #10412 · returning · 10 Nov 2026",
+    "amount": "$2.00",
+    "refund": false
+   },
+   {
+    "text": "Player #10412 · paid 11 Nov 2026",
+    "amount": "$2.03",
+    "refund": false
+   },
+   {
+    "text": "Player #10577 · returning · 14 Nov 2026",
+    "amount": "$2.00",
+    "refund": false
+   },
+   {
+    "text": "Player #10498 · refund 21 Nov 2026",
+    "amount": "−$2.50",
+    "refund": true
+   }
+  ],
+  "confirm": {
+   "title": "Pay Grimbrew $168.60 for November 2026?",
+   "body": "Stripe transfers $168.60 to their account now. This can’t be undone here.",
+   "pay": "Pay $168.60",
+   "cancel": "Cancel"
+  }
+ },
+ "onboarding": {
+  "copy": {
+   "pageTitle": "Creator payouts",
+   "pageDescription": "Set up payouts for the Forever Sixty creator program.",
+   "inviteTitle": "Your invite",
+   "stripeTitle": "Stripe",
+   "inviteSignedOut": "Sign in with Battle.net to accept your invite to the creator program.",
+   "inviteJoin": "[fn]",
+   "accept": "Accept and set up payouts",
+   "accepting": "Accepting",
+   "stripeLead": "Stripe handles your payout details. We never see your bank account.",
+   "continue": "Continue to Stripe",
+   "continuing": "Opening Stripe",
+   "doneReady": "You’re set up. Payouts arrive after each month is approved.",
+   "doneNotReady": "Stripe still needs a few details.",
+   "checking": "Checking with Stripe",
+   "statsLink": "Your stats",
+   "notCreator": "This page is for creators in the program. Ask us for an invite.",
+   "badInvite": "That invite has expired or was already used. Ask us for a new one.",
+   "failed": "Stripe didn’t answer; try again."
+  },
+  "join": "You’re joining the creator program as Grimbrew."
+ },
+ "stats": {
+  "copy": {
+   "pageDescription": "Your players and payouts in the Forever Sixty creator program.",
+   "meta": "[fn]",
+   "loadFailed": "Your stats didn’t load.",
+   "signedOut": "Sign in with Battle.net to see your creator stats.",
+   "summaryLabel": "This month",
+   "figures": {
+    "month": "This month",
+    "players": "Players",
+    "returning": "Returning",
+    "paying": "Paying"
+   },
+   "monthNote": "[fn]",
+   "playersTitle": "Your players",
+   "playersMeta": "by week · no names, by design",
+   "playersEmpty": "No players yet. Share your link or your code.",
+   "signedUp": "[fn]",
+   "playersCapped": "Showing the newest 100.",
+   "returningTag": "Returning",
+   "payingTag": "Paying",
+   "payoutsTitle": "Payouts",
+   "payoutsEmpty": "No payouts yet. Each month is paid after it closes and is approved.",
+   "setup": "Set up payouts"
+  },
+  "name": "Grimbrew",
+  "meta": "foreversixty.gg/go/grimbrew · code GRIMBREW",
+  "figures": [
+   {
+    "key": "month",
+    "label": "This month",
+    "value": "$184.20",
+    "note": "estimated, $500 cap max",
+    "lead": true
+   },
+   {
+    "key": "players",
+    "label": "Players",
+    "value": "212",
+    "note": "",
+    "lead": false
+   },
+   {
+    "key": "returning",
+    "label": "Returning",
+    "value": "131",
+    "note": "",
+    "lead": false
+   },
+   {
+    "key": "paying",
+    "label": "Paying",
+    "value": "37",
+    "note": "",
+    "lead": false
+   }
+  ],
+  "players": [
+   {
+    "text": "Signed up week of 30 Nov 2026",
+    "returning": false,
+    "paying": false
+   },
+   {
+    "text": "Signed up week of 23 Nov 2026",
+    "returning": true,
+    "paying": true
+   },
+   {
+    "text": "Signed up week of 23 Nov 2026",
+    "returning": true,
+    "paying": false
+   },
+   {
+    "text": "Signed up week of 16 Nov 2026",
+    "returning": false,
+    "paying": false
+   }
+  ],
+  "payouts": [
+   {
+    "text": "November 2026",
+    "amount": "$168.60"
+   }
+  ]
+ }
+}

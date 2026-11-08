@@ -1,0 +1,65 @@
+// The copy and figures the creator program's reference mocks render (ws_creators.py), from the
+// pages' own modules, never retyped:
+//   node design/mocks/creators_facts.mjs [out.json]  ->  design/mocks/data/creators-facts.json (or out.json)
+// Bundles web/src/lib/creators/{copy,model}.ts with esbuild over the sample creators the e2e and parity
+// specs serve (web/tests/e2e/fixtures/creators/*.json). The clock is 2026-12-02T12:00Z (November closed).
+import { createRequire } from "node:module";
+import { mkdtempSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { pathToFileURL } from "node:url";
+
+const WEB = new URL("../../web/", import.meta.url).pathname;
+const require = createRequire(join(WEB, "package.json"));
+const esbuild = require("esbuild");
+const OUT = process.argv[2] ? pathToFileURL(process.argv[2]) : new URL("./data/creators-facts.json", import.meta.url);
+const src = (p) => JSON.stringify(WEB + p);
+
+const entry = `
+import * as copy from ${src("src/lib/creators/copy.ts")};
+import * as m from ${src("src/lib/creators/model.ts")};
+import creators from ${src("tests/e2e/fixtures/creators/creators.json")};
+import statements from ${src("tests/e2e/fixtures/creators/statements.json")};
+import me from ${src("tests/e2e/fixtures/creators/me.json")};
+
+const strip = (o) => JSON.parse(JSON.stringify(o, (k, v) => (typeof v === 'function' ? '[fn]' : v)));
+const a = copy.adminCreatorsCopy, p = copy.payoutsCopy, st = copy.creatorStatsCopy, ob = copy.onboardingCopy;
+const adminRows = creators.map((c) => ({
+  name: c.name,
+  sub: a.sub(c.slug, c.code, m.dayLabel(c.starts_on)),
+  status: copy.stripeStatusCopy[c.stripe_status], tone: m.STATUS_TONE[c.stripe_status],
+  edit: a.edit, figures: m.creatorFigures(c),
+}));
+
+const action = (s) => ({ approve: p.approve(m.money(s.total_cents)), settle: p.settle, none: '' })[m.statementAction(s)];
+const stRows = statements.map((s) => ({
+  name: s.name, sub: m.statementStatusLine(s), action: action(s), lines: p.lines,
+  notReady: s.status === 'blocked' ? p.notReady : '', figures: m.statementFigures(s),
+}));
+const first = statements[0];
+const lines = first.lines.map(m.lineText);
+
+export default {
+  admin: {
+    copy: strip(a), meta: a.tableMeta(creators.length), rows: adminRows, editTitle: a.editTitle(creators[0].name),
+    fields: Object.values(a.fields).map((f) => strip(f)),
+  },
+  payouts: {
+    copy: strip(p), month: m.monthLabel(first.month), title: p.tableTitle(statements.length), meta: p.tableMeta(m.money(m.toPay(statements))),
+    rows: stRows, linesTitle: p.linesTitle(first.name), lines,
+    confirm: { title: p.confirmTitle(first.name, m.money(first.total_cents), m.monthLabel(first.month)), body: p.confirmBody(m.money(first.total_cents)), pay: p.confirmPay(m.money(first.total_cents)), cancel: p.cancel },
+  },
+  onboarding: { copy: strip(ob), join: ob.inviteJoin(me.name) },
+  stats: {
+    copy: strip(st), name: me.name, meta: st.meta(me.slug, me.code), figures: m.statsFigures(me),
+    players: me.recent.map((r) => ({ text: st.signedUp(m.dayLabel(r.week_of)), returning: r.returning === true, paying: r.paying === true })),
+    payouts: me.payouts.map((x) => ({ text: m.monthLabel(x.month), amount: m.money(x.amount_cents) })),
+  },
+};`;
+const dir = mkdtempSync(join(tmpdir(), "creators-facts-"));
+const outfile = join(dir, "facts.mjs");
+await esbuild.build({ stdin: { contents: entry, resolveDir: WEB, loader: "ts" }, bundle: true, platform: "node", format: "esm",
+  outfile, logLevel: "error", define: { "import.meta.env": "{}" }, loader: { ".json": "json", ".svelte": "empty" } });
+const facts = (await import(pathToFileURL(outfile).href)).default;
+writeFileSync(OUT, JSON.stringify(facts, null, 1) + "\n");
+console.log(OUT.pathname);

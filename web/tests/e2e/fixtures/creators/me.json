@@ -1,0 +1,18 @@
+{
+  "name": "Grimbrew",
+  "slug": "grimbrew",
+  "code": "GRIMBREW",
+  "cap_cents": 50000,
+  "month_cents": 18420,
+  "players": 212,
+  "returning": 131,
+  "paying": 37,
+  "stripe_status": "ready",
+  "recent": [
+    { "week_of": "2026-11-30", "returning": null, "paying": null },
+    { "week_of": "2026-11-23", "returning": true, "paying": true },
+    { "week_of": "2026-11-23", "returning": true, "paying": false },
+    { "week_of": "2026-11-16", "returning": false, "paying": false }
+  ],
+  "payouts": [{ "month": "2026-11", "amount_cents": 16860, "paid_at": "2026-12-02T12:00:00Z" }]
+}
