@@ -18,6 +18,7 @@ import gg.foreversixty.app.raids.logic.RaidClock
 import java.text.NumberFormat
 import java.time.Duration
 import java.time.Instant
+import java.time.LocalDate
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Locale
@@ -71,10 +72,19 @@ data class ScoreView(
     val tierQuality: Int?,
     val mostToGain: String?,
     val parts: List<Pair<String, String>>,
+    /** The five parts as bars over their caps. */
+    val bars: List<ScoreBar>,
+    /** `score_history[]` as 0..1 points, oldest first; drawn with two or more. */
+    val sparkline: List<Float>,
+    /** `As of 17 Dec`. */
+    val asOf: String?,
 )
 
 /** One best fight (C6). */
 data class BestRow(val fight: CharacterFight, val boss: String, val sub: String, val percentile: Int?, val value: String, val unit: String)
+
+/** One recent fight, kill or wipe (each opens its report). */
+data class RecentRow(val fight: CharacterFight, val boss: String, val sub: String, val kill: Boolean, val value: String, val unit: String)
 
 /** One build seen (C7). */
 data class BuildRow(val split: String, val sub: String)
@@ -92,10 +102,13 @@ data class CharacterPageView(
     val standing: List<LinkedLine>,
     val gearMeta: String?,
     val cells: List<GearCell>,
+    /** `36.0 points`: the Gear component points the band's picks would add; null when unscored. */
+    val gearGap: String?,
     val score: ScoreView?,
     val noScoreLine: String,
     val best: List<BestRow>,
     val allFights: Int,
+    val recent: List<RecentRow>,
     val builds: List<BuildRow>,
     val activity: List<FeedRow>,
     val owner: OwnerSections?,
@@ -119,6 +132,7 @@ class CharacterPageComposer(private val res: Resources, private val specs: SpecC
             standing = if (owner) standing(extras, spec, profile, now) else emptyList(),
             gearMeta = extras.home?.band?.let(::bandLabel),
             cells = cells(slots, if (owner) home else null),
+            gearGap = profile.gearGapTotal?.let { res.getString(R.string.char_gapPoints, ItemNumbers.tenths(it)) },
             score = score(profile),
             noScoreLine = res.getString(
                 when {
@@ -129,6 +143,7 @@ class CharacterPageComposer(private val res: Resources, private val specs: SpecC
             ),
             best = profile.best.take(FIGHTS_SHOWN).map(::bestRow),
             allFights = profile.history.size,
+            recent = profile.history.take(FIGHTS_SHOWN).map { recentRow(it, now) },
             builds = profile.buildsSeen.sortedByDescending { it.firstSeen }.take(BUILDS_SHOWN).map { BuildRow(it.talentSplit, buildSub(it.spec, it.firstSeen)) },
             activity = extras.activity,
             owner = if (owner && profile.score != null) OwnerSections(history = viewer.history, coach = viewer.history) else null,
@@ -264,6 +279,9 @@ class CharacterPageComposer(private val res: Resources, private val specs: SpecC
             tierQuality = CharacterCard.tierQuality(profile.tier),
             mostToGain = most?.let { res.getString(R.string.char_page_mostToGain, res.getString(it.component.label), it.cap - it.value) },
             parts = bars.map { res.getString(it.component.label) to res.getString(R.string.char_page_partSub, it.value, it.cap) },
+            bars = bars,
+            sparkline = CharacterCard.sparkline(profile.scoreHistory),
+            asOf = profile.asOf?.let { d -> runCatching { LocalDate.parse(d) }.getOrNull()?.let { res.getString(R.string.char_asOf, DAY_MONTH.format(it)) } },
         )
     }
 
@@ -286,6 +304,20 @@ class CharacterPageComposer(private val res: Resources, private val specs: SpecC
         value = grouped(fight.value.roundToInt()),
         unit = if (fight.metric == HPS) res.getString(R.string.rank_unit_hps) else res.getString(R.string.rank_unit_dps),
     )
+
+    /** `Kill · 3 d ago` or `Wipe · 3 d ago`, the value in the fight's unit. */
+    private fun recentRow(fight: CharacterFight, now: Instant): RecentRow {
+        val kill = fight.kill != false
+        val outcome = res.getString(if (kill) R.string.char_kill else R.string.char_wipe)
+        return RecentRow(
+            fight = fight,
+            boss = fight.encounter,
+            sub = res.getString(R.string.char_fightMeta, outcome, rankings.age(fight.foughtAt, now)),
+            kill = kill,
+            value = grouped(fight.value.roundToInt()),
+            unit = if (fight.metric == HPS) res.getString(R.string.rank_unit_hps) else res.getString(R.string.rank_unit_dps),
+        )
+    }
 
     private fun buildSub(spec: String, firstSeen: String): String {
         val seen = res.getString(R.string.char_page_firstSeen, dayMonth(firstSeen, year = true).orEmpty())

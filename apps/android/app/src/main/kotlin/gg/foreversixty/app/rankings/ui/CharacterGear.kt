@@ -61,6 +61,7 @@ fun CharacterGear(view: CharacterPageView, build: String, actions: CharacterActi
         onAction = { actions.open(CharacterLink.Bis) },
         meta = view.gearMeta,
         top = FsSpace.space5,
+        actionColor = FsColor.gold,
     ) {
         FlowGap(FsSpace.space3)
         FlowPlate {
@@ -68,6 +69,7 @@ fun CharacterGear(view: CharacterPageView, build: String, actions: CharacterActi
                 view.cells.forEach { GearCellRow(it, build, actions) }
             }
         }
+        view.gearGap?.let { CharacterGearGap(it) }
     }
 }
 

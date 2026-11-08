@@ -7,6 +7,7 @@ import gg.foreversixty.app.model.Report
 import gg.foreversixty.app.model.ReportMe
 import gg.foreversixty.app.model.ReportRow
 import gg.foreversixty.app.model.TrashGroup
+import java.time.Duration
 import java.time.Instant
 import kotlin.math.roundToInt
 import kotlin.time.Duration.Companion.seconds
@@ -30,19 +31,42 @@ data class ReportsViewer(
     val signedIn: Boolean,
     /** `entitlements.log_coach`: the coach card's one gate. */
     val logCoach: Boolean,
+    /** The account's characters, key to class slug, for the logging character's crest. */
+    val classes: Map<String, String>,
+    /** The account's current character's class, when the logging character is not one of them. */
+    val fallbackClass: String?,
 ) {
     companion object {
-        val SignedOut = ReportsViewer(signedIn = false, logCoach = false)
+        val SignedOut = ReportsViewer(signedIn = false, logCoach = false, classes = emptyMap(), fallbackClass = null)
 
-        /** The signed-in account ([me]). */
-        fun of(me: Me): ReportsViewer = ReportsViewer(true, me.entitlements.logCoach)
+        /** The signed-in account ([me]), with [currentKey] its current character. */
+        fun of(me: Me, currentKey: String?): ReportsViewer {
+            val classes = me.characters.mapNotNull { c -> c.className?.let { c.key to it } }.toMap()
+            return ReportsViewer(true, me.entitlements.logCoach, classes, currentKey?.let { classes[it] })
+        }
     }
 }
 
+/** The list's two sections (spec F10.1), each newest first as the server sends them. */
+data class ReportSections(val thisWeek: List<ReportRow>, val earlier: List<ReportRow>)
+
 /** The rules under Your reports (spec F10): pure data in, data out. Every sentence is in `ReportsCopy`. */
 object Reports {
+    /** `This week` is the last seven days of now. */
+    val WEEK: Duration = Duration.ofDays(7)
+
     /** A live report re-reads `GET /v1/reports/{id}` this often while its screen is open. */
     val LIVE_POLL = 20.seconds
+
+    fun sections(rows: List<ReportRow>, now: Instant): ReportSections {
+        val since = now.minus(WEEK)
+        val (week, earlier) = rows.partition { row -> instantOrNull(row.createdAt)?.let { !it.isBefore(since) } ?: false }
+        return ReportSections(week, earlier)
+    }
+
+    /** The logging character's class: theirs when the account holds them, else the current character's, else none. */
+    fun crestClass(row: ReportRow, viewer: ReportsViewer): String? =
+        row.loggingCharacter?.key?.let { viewer.classes[it] } ?: viewer.fallbackClass
 
     /** The report head's title: its zone, else its title; null for an upload not read yet. */
     fun headTitle(report: Report): String? = report.zone?.takeIf { it.isNotEmpty() } ?: report.title.takeIf { it.isNotEmpty() }

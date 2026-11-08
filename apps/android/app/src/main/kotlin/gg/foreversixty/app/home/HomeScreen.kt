@@ -170,7 +170,7 @@ fun HomeRoute(
     if (session != null && sessionMe != null) {
         val character = session.currentCharacter(phase, picked)
         if (character != null) {
-            val reports = HomeReports(ReportsViewer.of(sessionMe), signIn, RankingsViewer.of(sessionMe, character.key))
+            val reports = HomeReports(ReportsViewer.of(sessionMe, character.key), signIn, RankingsViewer.of(sessionMe, character.key))
             HomeCharacterScreen(HomeCharacter.from(character), dependencies, openBis, sessionMe.entitlements.serverSims, reports, flows) {
                 RootSearchBar(onSearch) { ProfileBar(session) }
             }
@@ -191,7 +191,7 @@ private fun HomeFromMe(dependencies: HomeDependencies, openBis: () -> Unit, sign
     val answer = me
     val character = (answer as? ApiResult.Success)?.data?.mainCharacter
     if (answer is ApiResult.Success && character != null) {
-        val reports = HomeReports(ReportsViewer.of(answer.data), signIn, RankingsViewer.of(answer.data, character.key))
+        val reports = HomeReports(ReportsViewer.of(answer.data, character.key), signIn, RankingsViewer.of(answer.data, character.key))
         HomeCharacterScreen(HomeCharacter.from(character), dependencies, openBis, answer.data.entitlements.serverSims, reports, flows, topBar)
         return
     }

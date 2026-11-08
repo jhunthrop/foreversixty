@@ -48,10 +48,24 @@ class ReportsLogicTest {
 
     // F10.1 list
 
+    @Test fun `sections split at seven days`() {
+        val sections = Reports.sections(ReportsTestData.list().rows, now)
+        assertEquals(listOf("m4xk9d2pqz7a", "ewlrx3enxbeb", "q7c2v9tk4mzh"), sections.thisWeek.map { it.id })
+        assertEquals(listOf("t3n8b5xw2kqe"), sections.earlier.map { it.id })
+    }
+
+    @Test fun `crest is the logging character's class, else the current character's`() {
+        val row = ReportsTestData.list().rows.first()
+        assertEquals("warrior", Reports.crestClass(row, ReportsTestData.viewer()))
+        val stranger = row.copy(loggingCharacter = row.loggingCharacter?.copy(key = "us/pvp/someone"))
+        assertEquals("warrior", Reports.crestClass(stranger, ReportsTestData.viewer()))
+        assertNull(Reports.crestClass(stranger, ReportsViewer.SignedOut))
+    }
+
     @Test fun `row words follow the state`() {
         val rows = ReportsTestData.list().rows.associateBy { it.id }
         assertEquals("Updated 20 s ago", copy().rowSub(rows.getValue("m4xk9d2pqz7a"), now))
-        assertEquals("1 boss · 1 kill · Guild", copy().rowSub(rows.getValue("ewlrx3enxbeb"), now))
+        assertEquals("1 boss · 1 kill", copy().rowSub(rows.getValue("ewlrx3enxbeb"), now))
         assertEquals("14 Dec", copy().rowDate(rows.getValue("ewlrx3enxbeb")))
         assertEquals("Could not be read", copy().rowSub(rows.getValue("t3n8b5xw2kqe"), now))
         assertEquals(ReportState.Processing, ReportState.of(rows.getValue("q7c2v9tk4mzh").status))

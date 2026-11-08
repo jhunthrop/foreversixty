@@ -1123,7 +1123,7 @@
     </plurals>
     <string name="reports_upload">Upload a log</string>
     <string name="reports_sample">Open the sample report ›</string>
-    <string name="reports_rowSub">%1$s · %2$s · %3$s</string>
+    <string name="reports_rowSub">%1$s · %2$s</string>
     <string name="reports_unreadableSub">Could not be read</string>
     <string name="report_title">Report</string>
     <string name="report_upload">Your upload</string>

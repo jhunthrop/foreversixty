@@ -56,6 +56,23 @@ class CharacterLogicTest {
 
     private val elyraOwner get() = page(CharacterFixtures.elyra, CharacterFixtures.elyraOwnerExtras, CharacterFixtures.owner(CharacterFixtures.ELYRA_KEY))
 
+    @Test fun `the sparkline runs oldest first from lowest to highest`() {
+        val points = CharacterCard.sparkline(RankingsTestData.voltaris().scoreHistory.reversed())
+        assertEquals(5, points.size)
+        assertEquals(0f, points.first())
+        assertEquals(1f, points.last())
+        assertTrue(CharacterCard.sparkline(emptyList()).isEmpty())
+    }
+
+    @Test fun `recent fights keep their wipes, and the gear gap reads in points`() {
+        val profile = RankingsTestData.voltaris()
+        val view = page(profile, CharacterExtras(), RankingsViewer.SignedOut)
+        assertEquals(profile.history.take(view.recent.size).map { it.kill != false }, view.recent.map { it.kill })
+        assertTrue(view.recent.all { it.sub.startsWith("Kill · ") || it.sub.startsWith("Wipe · ") })
+        assertEquals(profile.gearGapTotal?.let { "%.1f points".format(it) }, view.gearGap)
+        assertEquals(5, view.score?.bars?.size)
+    }
+
     @Test fun `the head names level, race, spec, split, guild, realm, ruleset, the supporter tag and the owner's sync`() {
         assertEquals(
             listOf("Level 60 Night Elf", "Holy Priest", "15/31/5", "<Cx66 Olympus>", "Doomhowl", "Hardcore US", "Supporter", "Addon · 1 d ago"),

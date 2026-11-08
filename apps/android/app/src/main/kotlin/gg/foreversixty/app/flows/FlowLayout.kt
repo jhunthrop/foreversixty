@@ -132,7 +132,8 @@ fun FlowHeadIcon(icon: String?, build: String?) {
 
 /**
  * A titled section (the mock's Section): 28 above, the title (18/24) with its action or meta on the
- * right, 10 under it and a rule, then [content]. Its region is `section-<slug of the title>`.
+ * right ([actionColor]: gold for a link that leaves the page), 10 under it and a rule, then [content]. Its
+ * region is `section-<slug of the title>`.
  */
 @Composable
 fun FlowSection(
@@ -141,6 +142,7 @@ fun FlowSection(
     onAction: () -> Unit = {},
     meta: String? = null,
     top: Dp = FsSpace.space7,
+    actionColor: Color = FsColor.strong,
     content: @Composable ColumnScope.() -> Unit,
 ) {
     Column(Modifier.padding(top = top).fillMaxWidth().parityRegion(ParityRegion.section(title))) {
@@ -153,7 +155,7 @@ fun FlowSection(
                 Text(
                     action,
                     style = ACTION,
-                    color = FsColor.strong,
+                    color = actionColor,
                     modifier = Modifier.padding(top = ACTION_DROP).clickable(role = Role.Button, onClick = onAction),
                 )
             }

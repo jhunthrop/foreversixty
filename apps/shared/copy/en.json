@@ -1089,7 +1089,7 @@
     "reports.count": { "count": "n", "one": "1 report", "other": "{n} reports" },
     "reports.upload": "Upload a log",
     "reports.sample": "Open the sample report ›",
-    "reports.rowSub": "{bosses} · {kills} · {visibility}",
+    "reports.rowSub": "{bosses} · {kills}",
     "reports.unreadableSub": "Could not be read",
     "report.title": "Report",
     "report.upload": "Your upload",

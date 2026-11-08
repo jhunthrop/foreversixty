@@ -50,7 +50,7 @@ class ReportsParityTest {
     }
 
     @Composable
-    private fun YourReports(phase: ReportsPhase) = ReportsList(phase, pageFailed = false, now = now, zone = zone)
+    private fun YourReports(phase: ReportsPhase) = ReportsList(phase, pageFailed = false, viewer = ReportsTestData.viewer(), now = now, zone = zone)
 
     @Composable
     private fun OneReport(phase: ReportPhase) =

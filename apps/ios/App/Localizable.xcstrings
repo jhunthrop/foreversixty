@@ -16178,13 +16178,13 @@
       }
     },
     "reports.rowSub": {
-      "comment": "Arguments: 1 bosses (string), 2 kills (string), 3 visibility (string)",
+      "comment": "Arguments: 1 bosses (string), 2 kills (string)",
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@ · %2$@ · %3$@"
+            "value": "%1$@ · %2$@"
           }
         }
       }

@@ -3755,9 +3755,9 @@ enum Copy {
     /// Open the sample report ›
     static var reportsSample: String { text("reports.sample") }
 
-    /// {bosses} · {kills} · {visibility}
-    static func reportsRowSub(bosses: String, kills: String, visibility: String) -> String {
-        format("reports.rowSub", bosses, kills, visibility)
+    /// {bosses} · {kills}
+    static func reportsRowSub(bosses: String, kills: String) -> String {
+        format("reports.rowSub", bosses, kills)
     }
 
     /// Could not be read

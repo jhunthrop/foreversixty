@@ -150,7 +150,7 @@ fun ReportsRoute(feature: ReportsFeature, viewer: ReportsViewer, signIn: () -> U
     Column(Modifier.fillMaxSize().background(FsColor.bg)) {
         FlowBackBar(stringResource(R.string.tab_home), onBack)
         PullToRefreshBox(isRefreshing = refreshing, onRefresh = refresh, modifier = Modifier.fillMaxSize()) {
-            ReportsList(store.phase, store.pageFailed, feature.now(), actions, feature.zone)
+            ReportsList(store.phase, store.pageFailed, viewer, feature.now(), actions, feature.zone)
         }
     }
 }

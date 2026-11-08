@@ -5,6 +5,7 @@ import androidx.annotation.StringRes
 import gg.foreversixty.app.R
 import gg.foreversixty.app.bis.SpecCatalog
 import gg.foreversixty.app.model.CharacterProfile
+import gg.foreversixty.app.model.ScorePoint
 import gg.foreversixty.app.model.ScoreComponentCaps
 import gg.foreversixty.app.model.ScoreComponents
 import java.util.Locale
@@ -55,6 +56,17 @@ object CharacterCard {
             ScoreBar(ScoreComponent.Discipline, components.discipline, caps.discipline),
         )
     }
+
+    /** The sparkline's points, oldest first, each 0 (lowest) to 1 (highest); flat at the middle when all equal. */
+    fun sparkline(history: List<ScorePoint>): List<Float> {
+        val scores = history.sortedBy { it.date }.map { it.score }
+        val low = scores.minOrNull() ?: return emptyList()
+        val high = scores.max()
+        if (high == low) return scores.map { HALF }
+        return scores.map { (it - low).toFloat() / (high - low) }
+    }
+
+    private const val HALF = 0.5f
 
     fun isYours(profile: CharacterProfile, viewer: RankingsViewer): Boolean = profile.character.key in viewer.accountKeys
 

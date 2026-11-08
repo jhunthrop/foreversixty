@@ -37,9 +37,9 @@ enum class Visibility(@param:StringRes val word: Int) {
 class ReportsCopy(private val res: Resources, private val zone: ZoneId = ZoneId.systemDefault()) {
     // List (F10.1)
 
-    /** `1 boss · 1 kill · Guild`; a live row `Updated 20 s ago`; a failed row `Could not be read`. */
+    /** `1 boss · 1 kill`; a live row `Updated 20 s ago`; a failed row `Could not be read`. */
     fun rowSub(row: ReportRow, now: Instant): String {
-        val counts = res.getString(R.string.reports_rowSub, bosses(row.bossCount), kills(row.killCount), visibility(row.visibility))
+        val counts = res.getString(R.string.reports_rowSub, bosses(row.bossCount), kills(row.killCount))
         return when (ReportState.of(row.status)) {
             ReportState.Failed -> res.getString(R.string.reports_unreadableSub)
             ReportState.Live -> updated(row, now) ?: counts

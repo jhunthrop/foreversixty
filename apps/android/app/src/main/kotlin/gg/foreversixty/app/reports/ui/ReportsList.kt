@@ -9,14 +9,19 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalResources
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import gg.foreversixty.app.R
 import gg.foreversixty.app.common.OfflineStamp
@@ -27,6 +32,7 @@ import gg.foreversixty.app.designsystem.Tag
 import gg.foreversixty.app.flows.FlowButton
 import gg.foreversixty.app.flows.FlowGap
 import gg.foreversixty.app.flows.FlowHead
+import gg.foreversixty.app.flows.FlowLead
 import gg.foreversixty.app.flows.FlowLink
 import gg.foreversixty.app.flows.FlowNote
 import gg.foreversixty.app.flows.FlowPage
@@ -35,6 +41,7 @@ import gg.foreversixty.app.flows.FlowPlateMessage
 import gg.foreversixty.app.flows.FlowPlateRetry
 import gg.foreversixty.app.flows.FlowRow
 import gg.foreversixty.app.flows.FlowRule
+import gg.foreversixty.app.flows.FlowSection
 import gg.foreversixty.app.flows.FlowSkeleton
 import gg.foreversixty.app.model.ReportRow
 import gg.foreversixty.app.reports.logic.ReportState
@@ -42,6 +49,8 @@ import gg.foreversixty.app.reports.logic.Reports
 import gg.foreversixty.app.reports.logic.ReportsContent
 import gg.foreversixty.app.reports.logic.ReportsCopy
 import gg.foreversixty.app.reports.logic.ReportsPhase
+import gg.foreversixty.app.reports.logic.ReportsViewer
+import gg.foreversixty.app.reports.logic.Visibility
 import java.time.Instant
 import java.time.ZoneId
 
@@ -66,6 +75,7 @@ data class ReportsListActions(
 fun ReportsList(
     phase: ReportsPhase,
     pageFailed: Boolean,
+    viewer: ReportsViewer,
     now: Instant,
     actions: ReportsListActions = ReportsListActions(),
     zone: ZoneId = ZoneId.systemDefault(),
@@ -89,7 +99,7 @@ fun ReportsList(
                     FlowButton(stringResource(R.string.signin_button), actions.signIn, primary = true, small = false)
                 }
             }
-            is ReportsPhase.Loaded -> Loaded(phase.content, pageFailed, now, copy, actions)
+            is ReportsPhase.Loaded -> Loaded(phase.content, pageFailed, viewer, now, copy, actions)
         }
     }
 }
@@ -100,7 +110,7 @@ private fun TryAgain(retry: () -> Unit) {
 }
 
 @Composable
-private fun Loaded(content: ReportsContent, pageFailed: Boolean, now: Instant, copy: ReportsCopy, actions: ReportsListActions) {
+private fun Loaded(content: ReportsContent, pageFailed: Boolean, viewer: ReportsViewer, now: Instant, copy: ReportsCopy, actions: ReportsListActions) {
     if (content.rows.isEmpty()) {
         FlowPlate {
             FlowPlateMessage(listOf(stringResource(R.string.reports_empty))) {
@@ -110,9 +120,18 @@ private fun Loaded(content: ReportsContent, pageFailed: Boolean, now: Instant, c
         }
         return
     }
-    FlowPlate {
-        content.rows.forEachIndexed { index, row -> ReportRowView(row, now, copy, last = index == content.rows.lastIndex, open = actions.open) }
-    }
+    val sections = Reports.sections(content.rows, now)
+    // This week, then Earlier, each its plate; the first sits where the one plate of the mock sits.
+    listOf(R.string.reports_thisWeek to sections.thisWeek, R.string.reports_earlier to sections.earlier)
+        .filter { it.second.isNotEmpty() }
+        .forEachIndexed { index, (title, rows) ->
+            FlowSection(stringResource(title), top = if (index == 0) 0.dp else FsSpace.space7) {
+                FlowGap(FsSpace.space3)
+                FlowPlate {
+                    rows.forEachIndexed { i, row -> ReportRowView(row, viewer, now, copy, last = i == rows.lastIndex, open = actions.open) }
+                }
+            }
+        }
     Footer(content, pageFailed, actions)
 }
 
@@ -132,19 +151,21 @@ private fun Footer(content: ReportsContent, pageFailed: Boolean, actions: Report
     }
 }
 
-/** One report (`.plate .row`, no lead): its name, counts and visibility, then its date and any state tag. */
+/** One report (`.plate .row`): the logger's crest, its name and counts, then its date, any state tag and the visibility glyph. */
 @Composable
-fun ReportRowView(row: ReportRow, now: Instant, copy: ReportsCopy, last: Boolean, open: (ReportRow) -> Unit) {
+fun ReportRowView(row: ReportRow, viewer: ReportsViewer, now: Instant, copy: ReportsCopy, last: Boolean, open: (ReportRow) -> Unit) {
     val state = ReportState.of(row.status)
     FlowRow(
         Reports.name(row),
         copy.rowSub(row, now),
+        lead = Reports.crestClass(row, viewer)?.let(FlowLead::Crest),
         last = last,
         inset = FsSpace.space4,
         trail = {
             Row(horizontalArrangement = Arrangement.spacedBy(FsSpace.space3), verticalAlignment = Alignment.CenterVertically) {
                 FlowNote(copy.rowDate(row))
                 copy.stateTag(state)?.let { StateTag(state, it) }
+                VisibilityGlyph(Visibility.of(row.visibility))
             }
         },
         onClick = { open(row) },
@@ -159,6 +180,19 @@ private fun StateTag(state: ReportState, text: String) {
         ReportState.Failed -> Tag(text, FsColor.wipe)
         ReportState.Done -> Unit
     }
+}
+
+/** The muted 16 dp visibility glyph, with its word for TalkBack. */
+@Composable
+fun VisibilityGlyph(visibility: Visibility, size: Dp = GLYPH) {
+    val word = stringResource(visibility.word)
+    val icon = when (visibility) {
+        Visibility.Public -> R.drawable.ic_visibility_public
+        Visibility.Unlisted -> R.drawable.ic_visibility_unlisted
+        Visibility.Guild -> R.drawable.ic_visibility_guild
+        Visibility.Private -> R.drawable.ic_visibility_private
+    }
+    Icon(painterResource(icon), contentDescription = null, tint = FsColor.muted, modifier = Modifier.size(size).semantics { contentDescription = word })
 }
 
 /** Loading: three rows' worth of placeholders in the plate. */
@@ -176,6 +210,7 @@ private fun Skeleton() {
     }
 }
 
+private val GLYPH = 16.dp
 private const val SKELETON_ROWS = 3
 private val ROW_PAD = 10.dp
 private val SKELETON_TITLE = 180.dp

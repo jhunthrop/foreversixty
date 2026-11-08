@@ -141,7 +141,7 @@ fun MenuScreen(features: ShellFeatures, destination: MenuDestination, onPickClas
     val current = phase?.let { session.currentCharacter(it, picked) }
     val context = LocalContext.current
     val signIn = { account?.let { it.session.beginSignIn(it.browser(context)) } ?: Unit }
-    val reportsViewer = me?.let { ReportsViewer.of(it) } ?: ReportsViewer.SignedOut
+    val reportsViewer = me?.let { ReportsViewer.of(it, current?.key) } ?: ReportsViewer.SignedOut
     val scope = rememberCoroutineScope()
     when (destination) {
         MenuDestination.Guides, MenuDestination.Tiers, MenuDestination.PatchNotes -> features.guides?.let { guides ->

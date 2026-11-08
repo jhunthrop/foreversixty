@@ -93,7 +93,7 @@ class ReportsScreenshotTest {
     }
 
     private fun list(name: String, phase: ReportsPhase, large: Boolean = false, pageFailed: Boolean = false) =
-        capture(name, large, scrolls = false) { ReportsList(phase, pageFailed, now, zone = zone) }
+        capture(name, large, scrolls = false) { ReportsList(phase, pageFailed, ReportsTestData.viewer(), now, zone = zone) }
 
     private fun loaded(list: ReportList, offline: Instant? = null) =
         ReportsPhase.Loaded(ReportsContent(list.rows, list.total, list.page, offline))

@@ -65,6 +65,7 @@ fun CharacterScore(view: CharacterPageView, actions: CharacterActions, top: Dp) 
             CharacterFigure(stringResource(R.string.char_page_scoreFigure), score.score, modifier = Modifier.weight(1f))
             CharacterFigure(stringResource(R.string.char_page_tier), score.tier, color = ItemQuality(score.tierQuality).text, modifier = Modifier.weight(1f))
         }
+        CharacterScoreTrend(score)
         score.mostToGain?.let { most ->
             val how = stringResource(R.string.char_page_howScored)
             Text(
@@ -95,6 +96,7 @@ fun CharacterFights(view: CharacterPageView, reportsOn: Boolean, actions: Charac
             action = if (view.allFights > 0) stringResource(R.string.char_page_allFights, view.allFights) else null,
             onAction = { actions.open(CharacterLink.AllFights) },
             top = SECTION_GAP,
+            actionColor = FsColor.gold,
         ) {
             FlowGap(FsSpace.space3)
             view.best.forEachIndexed { i, row ->
@@ -106,6 +108,7 @@ fun CharacterFights(view: CharacterPageView, reportsOn: Boolean, actions: Charac
             }
         }
     }
+    CharacterRecentFights(view, reportsOn) { actions.openFight(it.fight) }
     if (view.builds.isNotEmpty()) {
         FlowSection(stringResource(R.string.char_builds), top = SECTION_GAP) {
             FlowGap(FsSpace.space3)
