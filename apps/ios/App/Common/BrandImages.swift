@@ -25,6 +25,9 @@ enum BrandImages {
 struct ClassCrest: View {
     let className: String?
     let size: CGFloat
+    /// The flat system's crest (mobile redesign 3.4): the ring at 55%, no glow. The old screens
+    /// keep the glow until they are restyled; then this becomes the only crest.
+    var flat = false
 
     var body: some View {
         let color = ClassColor.of(className)
@@ -36,9 +39,10 @@ struct ClassCrest: View {
         }
         .frame(width: size, height: size)
         .clipShape(.circle)
-        .overlay(Circle().stroke(color.opacity(0.6), lineWidth: 2))
-        .shadow(color: color.opacity(0.35), radius: 7)
+        .overlay(Circle().stroke(color.opacity(flat ? 0.55 : 0.6), lineWidth: FSStroke.crestRing))
+        .shadow(color: flat ? .clear : color.opacity(0.35), radius: flat ? 0 : 7)
         .accessibilityHidden(true)
+        .parityItem(.image)
     }
 }
 

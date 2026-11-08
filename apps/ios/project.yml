@@ -76,12 +76,16 @@ targets:
         buildPhase: resources
       - path: ../../web/src/data/dates.json
         buildPhase: resources
+      # The site's outside links (the Discord invite the menu's Help opens).
+      - path: ../../web/src/data/links.json
+        buildPhase: resources
     dependencies:
       - package: ForeverKit
         products: [Models, Networking, Auth, DesignSystem, Telemetry, Routing]
       - package: Sentry
         product: Sentry
       - target: ForeverSixtyWidgets
+      - target: ForeverSixtyNotificationContent
     # Lane F14: the App Group the widget extension shares (snapshot file, settings, and the
     # device token's keychain group). Under the ad-hoc "Sign to Run Locally" identity the
     # simulator honours it with no Team ID; a device build needs the group registered (lane O).
@@ -202,6 +206,61 @@ targets:
       base:
         PRODUCT_NAME: ForeverSixtyWidgets
         PRODUCT_BUNDLE_IDENTIFIER: gg.foreversixty.app.widgets
+        TARGETED_DEVICE_FAMILY: "1"
+        GENERATE_INFOPLIST_FILE: NO
+        API_BASE_URL: https://api.foreversixty.gg
+        SKIP_INSTALL: YES
+      configs:
+        Debug:
+          API_MODE: fixture
+        Release:
+          API_MODE: live
+  # Flows spec F1: the raid notification's Late chips (15, 30, 60 min). It answers through the
+  # same sign-up PUT as the app, with the token the app shares through the App Group keychain.
+  ForeverSixtyNotificationContent:
+    type: app-extension
+    platform: iOS
+    sources:
+      - path: NotificationContent
+      - path: Widgets/Shared/AppGroupClient.swift
+      - path: Widgets/Shared/Intents/IntentCalls.swift
+      - path: Widgets/Shared/Push/RaidPushAnswer.swift
+      - path: App/Generated/Copy.swift
+      - path: App/Localizable.xcstrings
+      - path: ../../docs/contracts/fixtures/app
+        name: Fixtures
+        type: folder
+        buildPhase: resources
+    dependencies:
+      - package: ForeverKit
+        products: [Models, Networking, Auth, Routing]
+      - sdk: UserNotificationsUI.framework
+    entitlements:
+      path: NotificationContent/ForeverSixtyNotificationContent.entitlements
+      properties:
+        com.apple.security.application-groups: [group.gg.foreversixty.app]
+    configFiles:
+      Debug: Version.xcconfig
+      Release: Version.xcconfig
+    info:
+      path: Generated/NotificationContent-Info.plist
+      properties:
+        CFBundleDisplayName: Forever Sixty
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.usernotifications.content-extension
+          NSExtensionPrincipalClass: $(PRODUCT_MODULE_NAME).NotificationViewController
+          NSExtensionAttributes:
+            UNNotificationExtensionCategory: RAID_SIGNUP
+            UNNotificationExtensionInitialContentSizeRatio: 0.01
+            UNNotificationExtensionUserInteractionEnabled: false
+        FSAPIBaseURL: $(API_BASE_URL)
+        FSAPIMode: $(API_MODE)
+    settings:
+      base:
+        PRODUCT_NAME: ForeverSixtyNotificationContent
+        PRODUCT_BUNDLE_IDENTIFIER: gg.foreversixty.app.notification-content
         TARGETED_DEVICE_FAMILY: "1"
         GENERATE_INFOPLIST_FILE: NO
         API_BASE_URL: https://api.foreversixty.gg

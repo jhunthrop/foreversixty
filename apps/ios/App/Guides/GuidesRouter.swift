@@ -15,8 +15,6 @@ enum GuidesRoute: Hashable {
 enum GuidesSegment: String, CaseIterable, Identifiable {
     case guides, tiers, changes
 
-    static let storageKey = "gg.foreversixty.guides.segment"
-
     var id: String { rawValue }
 
     var title: String {
@@ -37,11 +35,12 @@ enum GuidesSegment: String, CaseIterable, Identifiable {
     }
 }
 
-/// The Guides tab's stack, which guide links push onto.
+/// Where guide links go: the shell pushes Guides, and Guides takes the pending route and pushes it.
 @MainActor
 @Observable
 final class GuidesRouter {
-    var path: [GuidesRoute] = []
+    /// A guide a link asked for, waiting for Guides to push it.
+    private(set) var pending: GuidesRoute?
 
     /// The guide file's key: `{class}-{spec}` (app-v1.md W3-C1).
     static func key(className: String, spec: String) -> String { "\(className)-\(spec)" }
@@ -53,12 +52,23 @@ final class GuidesRouter {
         }
     }
 
-    /// `/app/guides` shows the tab's root; `/app/guides/{class}/{spec}` that guide over it.
+    /// `/app/guides` opens Guides; `/app/guides/{class}/{spec}` that guide over it.
     func open(_ link: DeepLink) {
         switch link {
-        case .guides: path = []
-        case let .guide(className, spec): path = [.guide(Self.key(className: className, spec: spec))]
+        case .guides: pending = nil
+        case let .guide(className, spec): pending = .guide(Self.key(className: className, spec: spec))
         default: return
         }
+    }
+
+    /// `/guides/{class}`: that class's page over Guides. Always true, so the caller opens Guides.
+    func openClass(_ className: String) -> Bool {
+        pending = .classPage(className)
+        return true
+    }
+
+    func takePending() -> GuidesRoute? {
+        defer { pending = nil }
+        return pending
     }
 }

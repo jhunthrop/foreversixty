@@ -2013,6 +2013,205 @@ enum Copy {
     /// Your plan, payments and guild approval
     static var pushGroupAccountLine: String { text("push.group.account.line") }
 
+    /// Pick your main
+    static var firstPickMainTitle: String { text("first.pickMain.title") }
+
+    /// From Battle.net, level 10 and up.
+    static var firstPickMainMeta: String { text("first.pickMain.meta") }
+
+    /// Home answers for your main, and your raid sign-ups are for it. Switch any time from your portrait, top left.
+    static var firstPickMainLead: String { text("first.pickMain.lead") }
+
+    /// Your characters
+    static var firstPickMainSection: String { text("first.pickMain.section") }
+
+    /// Continue with {name}
+    static func firstPickMainContinue(name: String) -> String {
+        format("first.pickMain.continue", name)
+    }
+
+    /// That did not save. Try again.
+    static var firstPickMainFailed: String { text("first.pickMain.failed") }
+
+    /// You’re in
+    static var firstPermissionEyebrow: String { text("first.permission.eyebrow") }
+
+    /// Get raid sign-ups here. Answer In, Late, Bench or Out from the notification, without opening the app.
+    static var firstPermissionBody: String { text("first.permission.body") }
+
+    /// Turn on notifications
+    static var firstPermissionTurnOn: String { text("first.permission.turnOn") }
+
+    /// Not now
+    static var firstPermissionNotNow: String { text("first.permission.notNow") }
+
+    /// {kind} · {n}
+    static func menuCharacterLine(kind: String, n: Int) -> String {
+        format("menu.character.line", kind, n)
+    }
+
+    /// {kind} · {n} · {guild}
+    static func menuCharacterLineGuild(kind: String, n: Int, guild: String) -> String {
+        format("menu.character.lineGuild", kind, n, guild)
+    }
+
+    /// Main
+    static var menuCharacterMain: String { text("menu.character.main") }
+
+    /// Open menu
+    static var menuOpen: String { text("menu.open") }
+
+    /// Menu
+    static var menuTitle: String { text("menu.title") }
+
+    /// Refresh
+    static var menuRefresh: String { text("menu.refresh") }
+
+    /// Switch character
+    static var menuSwitch: String { text("menu.switch") }
+
+    /// Show low-level characters ({n})
+    static func menuLowLevelShow(n: Int) -> String {
+        format("menu.lowLevel.show", n)
+    }
+
+    /// Hide low-level characters
+    static var menuLowLevelHide: String { text("menu.lowLevel.hide") }
+
+    /// Tools
+    static var menuTools: String { text("menu.tools") }
+
+    /// Guides
+    static var menuToolGuides: String { text("menu.tool.guides") }
+
+    /// Your spec’s guide, then every class
+    static var menuToolGuidesLine: String { text("menu.tool.guides.line") }
+
+    /// Tiers
+    static var menuToolTiers: String { text("menu.tool.tiers") }
+
+    /// Every spec, this week
+    static var menuToolTiersLine: String { text("menu.tool.tiers.line") }
+
+    /// Patch notes
+    static var menuToolPatchNotes: String { text("menu.tool.patchNotes") }
+
+    /// The game and the site
+    static var menuToolPatchNotesLine: String { text("menu.tool.patchNotes.line") }
+
+    /// Sims
+    static var menuToolSims: String { text("menu.tool.sims") }
+
+    /// Your server runs and saved sims
+    static var menuToolSimsLine: String { text("menu.tool.sims.line") }
+
+    /// Logs and reports
+    static var menuToolReports: String { text("menu.tool.reports") }
+
+    /// Your reports and the coach
+    static var menuToolReportsLine: String { text("menu.tool.reports.line") }
+
+    /// Planner
+    static var menuToolPlanner: String { text("menu.tool.planner") }
+
+    /// Your builds and the guide builds
+    static var menuToolPlannerLine: String { text("menu.tool.planner.line") }
+
+    /// Rankings
+    static var menuToolRankings: String { text("menu.tool.rankings") }
+
+    /// Your spec and your guild
+    static var menuToolRankingsLine: String { text("menu.tool.rankings.line") }
+
+    /// Account
+    static var menuAccount: String { text("menu.account") }
+
+    /// Notifications
+    static var menuNotifications: String { text("menu.notifications") }
+
+    /// {groups} on
+    static func menuNotificationsOn(groups: String) -> String {
+        format("menu.notifications.on", groups)
+    }
+
+    /// All off
+    static var menuNotificationsOff: String { text("menu.notifications.off") }
+
+    /// Plan
+    static var menuPlan: String { text("menu.plan") }
+
+    /// Devices
+    static var menuDevices: String { text("menu.devices") }
+
+    /// {n} signed in
+    static func menuDevicesLine(n: Int) -> String {
+        format("menu.devices.line", n)
+    }
+
+    /// Offline data
+    static var menuOffline: String { text("menu.offline") }
+
+    /// {size} on this phone
+    static func menuOfflineLine(size: String) -> String {
+        format("menu.offline.line", size)
+    }
+
+    /// Settings
+    static var menuSettings: String { text("menu.settings") }
+
+    /// Sign out, delete account
+    static var menuSettingsLine: String { text("menu.settings.line") }
+
+    /// Help
+    static var menuHelp: String { text("menu.help") }
+
+    /// Privacy
+    static var menuPrivacy: String { text("menu.privacy") }
+
+    /// All
+    static var activityFilterAll: String { text("activity.filter.all") }
+
+    /// Today
+    static var activityToday: String { text("activity.today") }
+
+    /// Yesterday
+    static var activityYesterday: String { text("activity.yesterday") }
+
+    /// This week
+    static var activityThisWeek: String { text("activity.thisWeek") }
+
+    /// Earlier
+    static var activityEarlier: String { text("activity.earlier") }
+
+    /// Mark all read
+    static var activityMarkAllRead: String { text("activity.markAllRead") }
+
+    /// Unread
+    static var activityUnread: String { text("activity.unread") }
+
+    /// Nothing yet. Loot, sims, reports and your guild's raids arrive here as they happen.
+    static var activityEmpty: String { text("activity.empty") }
+
+    /// What changed for your characters: loot, sims, reports, raids.
+    static var activitySignedOut: String { text("activity.signedOut") }
+
+    /// Send me
+    static var notificationsSendMe: String { text("notifications.sendMe") }
+
+    /// When
+    static var notificationsWhen: String { text("notifications.when") }
+
+    /// Raid-day reminder
+    static var notificationsReminder: String { text("notifications.reminder") }
+
+    /// If you have not answered: {time} your time
+    static func notificationsReminderLine(time: String) -> String {
+        format("notifications.reminderLine", time)
+    }
+
+    /// Change
+    static var notificationsChange: String { text("notifications.change") }
+
     /// You
     static var youTitle: String { text("you.title") }
 
@@ -2089,27 +2288,6 @@ enum Copy {
     /// All
     static var activityAll: String { text("activity.all") }
 
-    /// Today
-    static var activityToday: String { text("activity.today") }
-
-    /// Yesterday
-    static var activityYesterday: String { text("activity.yesterday") }
-
-    /// This week
-    static var activityThisWeek: String { text("activity.thisWeek") }
-
-    /// Earlier
-    static var activityEarlier: String { text("activity.earlier") }
-
-    /// Mark all read
-    static var activityMarkAllRead: String { text("activity.markAllRead") }
-
-    /// Unread
-    static var activityUnread: String { text("activity.unread") }
-
-    /// Nothing yet. Loot, sims, reports and your guild's raids arrive here as they happen.
-    static var activityEmpty: String { text("activity.empty") }
-
     /// What changed for your characters: loot, sims, reports, raids.
     static var activityOut: String { text("activity.out") }
 
@@ -2130,12 +2308,6 @@ enum Copy {
         format("menu.updated", age)
     }
 
-    /// Refresh
-    static var menuRefresh: String { text("menu.refresh") }
-
-    /// Switch character
-    static var menuSwitch: String { text("menu.switch") }
-
     /// Show low-level characters ({n})
     static func menuShowLow(n: Int) -> String {
         format("menu.showLow", n)
@@ -2143,9 +2315,6 @@ enum Copy {
 
     /// Hide low-level characters
     static var menuHideLow: String { text("menu.hideLow") }
-
-    /// Tools
-    static var menuTools: String { text("menu.tools") }
 
     /// Guides
     static var menuGuides: String { text("menu.guides") }
@@ -2189,23 +2358,6 @@ enum Copy {
     /// Your spec and your guild
     static var menuRankingsLine: String { text("menu.rankings.line") }
 
-    /// Account
-    static var menuAccount: String { text("menu.account") }
-
-    /// Notifications
-    static var menuNotifications: String { text("menu.notifications") }
-
-    /// Plan
-    static var menuPlan: String { text("menu.plan") }
-
-    /// Devices
-    static var menuDevices: String { text("menu.devices") }
-
-    /// {n} signed in
-    static func menuDevicesLine(n: Int) -> String {
-        format("menu.devices.line", n)
-    }
-
     /// Offline data
     static var menuOfflineData: String { text("menu.offlineData") }
 
@@ -2213,18 +2365,6 @@ enum Copy {
     static func menuOfflineDataLine(size: String) -> String {
         format("menu.offlineData.line", size)
     }
-
-    /// Settings
-    static var menuSettings: String { text("menu.settings") }
-
-    /// Sign out, delete account
-    static var menuSettingsLine: String { text("menu.settings.line") }
-
-    /// Help
-    static var menuHelp: String { text("menu.help") }
-
-    /// Privacy
-    static var menuPrivacy: String { text("menu.privacy") }
 
     /// Forever Sixty
     static var menuOutTitle: String { text("menu.out.title") }

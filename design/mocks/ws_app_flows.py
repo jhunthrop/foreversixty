@@ -33,6 +33,7 @@ FLOWS_CSS = '''
 .ap .t-title{font-size:32px;line-height:38px}
 .ap section{margin-top:28px}
 .center{text-align:center}.center .t-small{max-width:300px;margin:8px auto 0}
+.center .eyebrow{margin:0 auto -12px}.center .t-title{text-wrap:balance}
 .seal{display:block;width:84px;height:84px;margin:40px auto 8px}
 .lbl{margin:24px 0 8px;font:700 12px/16px var(--font-body);color:var(--muted)}
 .btns{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.btns .btn{justify-content:center}
@@ -492,11 +493,16 @@ def pick_main(platform: str) -> str:
     return app_page(platform, _page(body, 'Pick your main'), None, navbar=False)
 
 
-def permission(platform: str) -> str:
-    body = ('<div class="center"><img class="seal" src="../../../web/public/seal-400.png" alt="">' + PageHeader('You&rsquo;re in Olympus XXVII')
-            + '<p class="t-small">Get raid sign-ups here. Answer In, Late, Bench or Out from the notification, without opening the app.</p></div>'
-            + '<div class="vstack">' + Button('Turn on notifications', primary=True) + Button('Not now') + '</div>')
-    return app_page(platform, _page(body, 'Notifications'), None, navbar=False)
+def permission(guild: str):
+    """F8 step 3: `You're in` on the small line, the guild alone as the title (coordinator ruling 2026-11-08), so no
+    guild name's length decides how the head breaks: a long one wraps over two balanced lines on both engines."""
+    def b(platform: str) -> str:
+        body = ('<div class="center"><img class="seal" src="../../../web/public/seal-400.png" alt="">'
+                + '<p class="t-small eyebrow">You&rsquo;re in</p>' + PageHeader(guild)
+                + '<p class="t-small">Get raid sign-ups here. Answer In, Late, Bench or Out from the notification, without opening the app.</p></div>'
+                + '<div class="vstack">' + Button('Turn on notifications', primary=True) + Button('Not now') + '</div>')
+        return app_page(platform, _page(body, 'Notifications'), None, navbar=False)
+    return b
 
 
 def notification_settings(platform: str) -> str:
@@ -556,6 +562,7 @@ SCREENS = {
     'raid-applicant': applicant('review'),
     'raid-applicant-accepted': applicant('accepted'),
     'first-pick-main': pick_main,
-    'first-permission': permission,
+    'first-permission': permission('Olympus XXVII'),
+    'first-permission-long': permission('Ranchers of Thunderbluff'),
     'item-sheet': item_sheet,
 }

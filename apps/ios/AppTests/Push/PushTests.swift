@@ -25,15 +25,15 @@ struct PushLandingTests {
     func webLinks() throws {
         let sim = try #require(URL(string: "https://foreversixty.gg/sim/abc"))
         let report = try #require(URL(string: "https://foreversixty.gg/reports/r1"))
-        #expect(PushLanding.destination(kind: "sim.finished", link: sim, data: [:]) == .link(.sim(id: "abc")))
-        #expect(PushLanding.destination(kind: "report.ready", link: report, data: [:]) == .link(.report(id: "r1")))
-        #expect(PushLanding.destination(kind: "coach.ready", link: report, data: [:]) == .link(.report(id: "r1")))
+        #expect(PushLanding.destination(kind: "sim.finished", link: sim, data: [:]) == .link(.simPage(id: "abc")))
+        #expect(PushLanding.destination(kind: "report.ready", link: report, data: [:]) == .link(.reportPage(id: "r1")))
+        #expect(PushLanding.destination(kind: "coach.ready", link: report, data: [:]) == .link(.reportPage(id: "r1")))
     }
 
     @Test("loot and gear events open the gear list; a linked character opens itself")
     func gear() {
         for kind in ["loot.awarded", "bis.changed", "band.entered", "game.milestone"] {
-            #expect(PushLanding.destination(kind: kind, link: nil, data: ["item_id": "19364"]) == .tab(.bis))
+            #expect(PushLanding.destination(kind: kind, link: nil, data: ["item_id": "19364"]) == .tab(.gear))
         }
         #expect(PushLanding.destination(kind: "character.linked", link: nil, data: ["character_key": "us/forever/thandrel"])
             == .character(key: "us/forever/thandrel"))
@@ -49,7 +49,7 @@ struct PushLandingTests {
     func fallback() throws {
         let character = try #require(URL(string: "https://foreversixty.gg/character/us/forever/kaelra"))
         #expect(PushLanding.destination(kind: "something.new", link: character, data: [:])
-            == .link(.player(region: "us", ruleset: "forever", name: "kaelra")))
+            == .link(.characterPage(region: "us", ruleset: "forever", name: "kaelra")))
         #expect(PushLanding.destination(kind: "something.new", link: nil, data: [:]) == nil)
         let elsewhere = try #require(URL(string: "https://example.com/sim/abc"))
         #expect(PushLanding.destination(kind: nil, link: elsewhere, data: [:]) == nil)
@@ -64,7 +64,7 @@ struct PushLandingTests {
     @Test("Bench is a background answer like In, Late and Out")
     @MainActor
     func bench() {
-        #expect(RaidPushCategory.state(forAction: RaidPushCategory.actionBench) == .bench)
+        #expect(RaidPushCategory.signup(forAction: RaidPushCategory.actionBench) == PushSignup(state: "bench"))
         let signup = RaidNotificationCenter.categories.first { $0.identifier == RaidPushCategory.signup }
         #expect(signup?.actions.map(\.identifier) == ["signup_in", "signup_late", "signup_bench", "signup_out"])
     }

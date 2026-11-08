@@ -2,20 +2,6 @@ import Foundation
 import Models
 import Networking
 
-/// The App Group both the app and the widget extension belong to (project.yml entitlements).
-enum AppGroup {
-    static let id = "group.gg.foreversixty.app"
-
-    /// The shared container; nil when the process lacks the entitlement (a unit-test host
-    /// built without signing), where the caller falls back to its own Application Support.
-    static var containerURL: URL? {
-        FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: id)
-    }
-
-    /// Settings both processes read (the Live surfaces switches).
-    static var defaults: UserDefaults { UserDefaults(suiteName: id) ?? .standard }
-}
-
 /// An answer pressed on a widget, drawn at once while the server is asked (spec §5.6).
 struct PendingAnswer: Codable, Equatable, Sendable {
     let raidID: Int64

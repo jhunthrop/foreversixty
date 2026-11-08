@@ -1,5 +1,6 @@
 import Auth
 import DesignSystem
+import Models
 import SwiftUI
 import UIKit
 
@@ -61,58 +62,75 @@ struct SignedOutPanel: View {
     private var noticeIsFailure: Bool { signedOutNotice.map(AccountCopy.isFailure) ?? true }
 }
 
-/// The You tab: the account section when signed in, the sign-in panel when not.
-struct YouScreen: View {
+/// The menu's Settings (flows spec 3, F10): the account rows the You tab had (characters, Discord,
+/// plan, devices, live surfaces, calendar, offline data, help, about, sign out, delete account),
+/// pushed under the tab the menu was opened on. Signed out the menu has no Settings row.
+struct SettingsScreen: View {
     let session: SessionStore
     /// You's version line and About's version (`AccountCopy.version`).
     let version: String
-    let onPickClass: () -> Void
     /// Lane F8: See plans and Manage billing, where the store allows them.
     let plansLink: PlansLink
-    /// Lane F14: whether the widgets switch is on, so You lists Live surfaces.
+    /// Lane F14: whether the widgets switch is on, so Settings lists Live surfaces.
     var liveSurfaces = false
     /// Lane F14: the Live Activities redraw when a switch changes.
     var onLiveSettingsChange: () -> Void = {}
-    /// Lane F16: You › Calendar, nil while `guild_extras` is off.
+    /// Lane F16: Calendar, nil while `guild_extras` is off.
     var calendar: (extras: GuildExtrasDependencies, sync: CalendarSyncController)?
-    /// Lane F15: You › Offline data's model, nil while `system` is off.
+    /// Lane F15: Offline data's model, nil while `system` is off.
     var offlineData: (@MainActor () -> OfflineDataModel)?
     @State private var deviceCount: Int?
 
     var body: some View {
-        NavigationStack {
-            if let me = session.phase.me {
-                let summary = YouSummary(me: me, current: session.currentCharacter, deviceCount: deviceCount, version: version)
-                YouView(
-                    summary: summary, mayLink: plansLink.mayLink, showsLiveSurfaces: liveSurfaces, showsCalendar: calendar != nil,
-                    showsOfflineData: offlineData != nil
-                ) {
-                    Task { await session.signOut() }
-                }
-                .navigationDestination(for: YouRoute.self) { route in
-                    switch route {
-                    case .plan: PlanView(plan: summary.plan, mayLink: plansLink.mayLink)
-                    case .devices: DevicesScreen(session: session) { deviceCount = $0 }
-                    case .deleteAccount: DeleteAccountScreen(session: session)
-                    case .about: AboutView(version: version)
-                    case .liveSurfaces:
-                        LiveSurfacesScreen(showsSim: me.entitlements.serverSims, onChange: onLiveSettingsChange)
-                    case .calendar:
-                        if let calendar {
-                            CalendarRoute(extras: calendar.extras, sync: calendar.sync, account: String(me.user.id))
-                        }
-                    case .offlineData:
-                        if let offlineData {
-                            OfflineDataScreen(model: offlineData(), now: { Date() })
-                        }
-                    }
-                }
-                .task { deviceCount = (try? await session.devices())?.count }
-                .task { await plansLink.resolve() }
-            } else if session.phase.isSignedIn {
-                ProgressView().frame(maxWidth: .infinity, maxHeight: .infinity).background(FSColor.bg)
-            } else {
-                SignedOutPanel(session: session, onPickClass: onPickClass)
+        if let me = session.phase.me {
+            let summary = YouSummary(me: me, current: session.currentCharacter, deviceCount: deviceCount, version: version)
+            YouView(
+                summary: summary, mayLink: plansLink.mayLink, showsLiveSurfaces: liveSurfaces, showsCalendar: calendar != nil,
+                showsOfflineData: offlineData != nil
+            ) {
+                Task { await session.signOut() }
+            }
+            .navigationDestination(for: YouRoute.self) { route in
+                AccountRouteScreen(
+                    route: route, me: me, summary: summary, session: session, plansLink: plansLink,
+                    onLiveSettingsChange: onLiveSettingsChange, calendar: calendar, offlineData: offlineData
+                ) { deviceCount = $0 }
+            }
+            .task { deviceCount = (try? await session.devices())?.count }
+            .task { await plansLink.resolve() }
+        } else {
+            ProgressView().frame(maxWidth: .infinity, maxHeight: .infinity).background(FSColor.bg)
+        }
+    }
+}
+
+/// One account screen, by route: Settings' rows and the menu's Plan, Devices and Offline data.
+struct AccountRouteScreen: View {
+    let route: YouRoute
+    let me: Me
+    let summary: YouSummary
+    let session: SessionStore
+    let plansLink: PlansLink
+    var onLiveSettingsChange: () -> Void = {}
+    var calendar: (extras: GuildExtrasDependencies, sync: CalendarSyncController)?
+    var offlineData: (@MainActor () -> OfflineDataModel)?
+    var onDevices: (Int) -> Void = { _ in }
+
+    var body: some View {
+        switch route {
+        case .plan: PlanView(plan: summary.plan, mayLink: plansLink.mayLink)
+        case .devices: DevicesScreen(session: session, onCountChange: onDevices)
+        case .deleteAccount: DeleteAccountScreen(session: session)
+        case .about: AboutView(version: summary.version)
+        case .liveSurfaces:
+            LiveSurfacesScreen(showsSim: me.entitlements.serverSims, onChange: onLiveSettingsChange)
+        case .calendar:
+            if let calendar {
+                CalendarRoute(extras: calendar.extras, sync: calendar.sync, account: String(me.user.id))
+            }
+        case .offlineData:
+            if let offlineData {
+                OfflineDataScreen(model: offlineData(), now: { Date() })
             }
         }
     }

@@ -58,7 +58,7 @@ struct LiveIntentCalls: IntentCalls {
 extension LiveIntentCalls {
     /// The process's own client, as the widget's intents build it (the App Group keychain token).
     static func fromBundle(_ bundle: Bundle = .main) -> LiveIntentCalls? {
-        LiveWidgetCalls.fromBundle(bundle).map { LiveIntentCalls(client: $0.client) }
+        APIClient.appGroup(bundle).map(LiveIntentCalls.init(client:))
     }
 }
 

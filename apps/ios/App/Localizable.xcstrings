@@ -214,6 +214,17 @@
         }
       }
     },
+    "activity.filter.all": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "All"
+          }
+        }
+      }
+    },
     "activity.markAllRead": {
       "extractionState": "manual",
       "localizations": {
@@ -237,6 +248,17 @@
       }
     },
     "activity.out": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "What changed for your characters: loot, sims, reports, raids."
+          }
+        }
+      }
+    },
+    "activity.signedOut": {
       "extractionState": "manual",
       "localizations": {
         "en": {
@@ -2237,6 +2259,117 @@
           "stringUnit": {
             "state": "translated",
             "value": "Devices"
+          }
+        }
+      }
+    },
+    "first.permission.body": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Get raid sign-ups here. Answer In, Late, Bench or Out from the notification, without opening the app."
+          }
+        }
+      }
+    },
+    "first.permission.eyebrow": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You’re in"
+          }
+        }
+      }
+    },
+    "first.permission.notNow": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not now"
+          }
+        }
+      }
+    },
+    "first.permission.turnOn": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Turn on notifications"
+          }
+        }
+      }
+    },
+    "first.pickMain.continue": {
+      "comment": "Arguments: 1 name (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Continue with %1$@"
+          }
+        }
+      }
+    },
+    "first.pickMain.failed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "That did not save. Try again."
+          }
+        }
+      }
+    },
+    "first.pickMain.lead": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Home answers for your main, and your raid sign-ups are for it. Switch any time from your portrait, top left."
+          }
+        }
+      }
+    },
+    "first.pickMain.meta": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "From Battle.net, level 10 and up."
+          }
+        }
+      }
+    },
+    "first.pickMain.section": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your characters"
+          }
+        }
+      }
+    },
+    "first.pickMain.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pick your main"
           }
         }
       }
@@ -6081,6 +6214,41 @@
         }
       }
     },
+    "menu.character.line": {
+      "comment": "Arguments: 1 kind (string), 2 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$lld"
+          }
+        }
+      }
+    },
+    "menu.character.lineGuild": {
+      "comment": "Arguments: 1 kind (string), 2 n (int), 3 guild (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$lld · %3$@"
+          }
+        }
+      }
+    },
+    "menu.character.main": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Main"
+          }
+        }
+      }
+    },
     "menu.devices": {
       "extractionState": "manual",
       "localizations": {
@@ -6170,6 +6338,29 @@
         }
       }
     },
+    "menu.lowLevel.hide": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hide low-level characters"
+          }
+        }
+      }
+    },
+    "menu.lowLevel.show": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Show low-level characters (%1$lld)"
+          }
+        }
+      }
+    },
     "menu.main": {
       "extractionState": "manual",
       "localizations": {
@@ -6188,6 +6379,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "Notifications"
+          }
+        }
+      }
+    },
+    "menu.notifications.off": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "All off"
+          }
+        }
+      }
+    },
+    "menu.notifications.on": {
+      "comment": "Arguments: 1 groups (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ on"
+          }
+        }
+      }
+    },
+    "menu.offline": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Offline data"
+          }
+        }
+      }
+    },
+    "menu.offline.line": {
+      "comment": "Arguments: 1 size (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ on this phone"
           }
         }
       }
@@ -6211,6 +6448,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "%1$@ on this phone"
+          }
+        }
+      }
+    },
+    "menu.open": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open menu"
           }
         }
       }
@@ -6404,6 +6652,171 @@
       }
     },
     "menu.tiers.line": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Every spec, this week"
+          }
+        }
+      }
+    },
+    "menu.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Menu"
+          }
+        }
+      }
+    },
+    "menu.tool.guides": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guides"
+          }
+        }
+      }
+    },
+    "menu.tool.guides.line": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your spec’s guide, then every class"
+          }
+        }
+      }
+    },
+    "menu.tool.patchNotes": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Patch notes"
+          }
+        }
+      }
+    },
+    "menu.tool.patchNotes.line": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The game and the site"
+          }
+        }
+      }
+    },
+    "menu.tool.planner": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Planner"
+          }
+        }
+      }
+    },
+    "menu.tool.planner.line": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your builds and the guide builds"
+          }
+        }
+      }
+    },
+    "menu.tool.rankings": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rankings"
+          }
+        }
+      }
+    },
+    "menu.tool.rankings.line": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your spec and your guild"
+          }
+        }
+      }
+    },
+    "menu.tool.reports": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Logs and reports"
+          }
+        }
+      }
+    },
+    "menu.tool.reports.line": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your reports and the coach"
+          }
+        }
+      }
+    },
+    "menu.tool.sims": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sims"
+          }
+        }
+      }
+    },
+    "menu.tool.sims.line": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your server runs and saved sims"
+          }
+        }
+      }
+    },
+    "menu.tool.tiers": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tiers"
+          }
+        }
+      }
+    },
+    "menu.tool.tiers.line": {
       "extractionState": "manual",
       "localizations": {
         "en": {
@@ -7288,6 +7701,62 @@
           "stringUnit": {
             "state": "translated",
             "value": "To"
+          }
+        }
+      }
+    },
+    "notifications.change": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Change"
+          }
+        }
+      }
+    },
+    "notifications.reminder": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Raid-day reminder"
+          }
+        }
+      }
+    },
+    "notifications.reminderLine": {
+      "comment": "Arguments: 1 time (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "If you have not answered: %1$@ your time"
+          }
+        }
+      }
+    },
+    "notifications.sendMe": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Send me"
+          }
+        }
+      }
+    },
+    "notifications.when": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "When"
           }
         }
       }

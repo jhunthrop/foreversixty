@@ -53,3 +53,36 @@ public struct WrapLayout: Layout {
         return rows
     }
 }
+
+/// A column as wide as its widest child (within the offer), every child laid at that width: the
+/// web's shrink-to-fit block whose children fill it (the page head's title and meta line).
+public struct MatchedWidthStack: Layout {
+    public var spacing: CGFloat
+
+    public init(spacing: CGFloat = 0) {
+        self.spacing = spacing
+    }
+
+    public func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache _: inout ()) -> CGSize {
+        let width = columnWidth(proposal.width, subviews)
+        let heights = subviews.map { $0.sizeThatFits(.init(width: width, height: nil)).height }
+        return CGSize(width: width, height: heights.reduce(0, +) + spacing * CGFloat(max(subviews.count - 1, 0)))
+    }
+
+    public func placeSubviews(in bounds: CGRect, proposal _: ProposedViewSize, subviews: Subviews, cache _: inout ()) {
+        var y = bounds.minY
+        for subview in subviews {
+            let height = subview.sizeThatFits(.init(width: bounds.width, height: nil)).height
+            subview.place(at: CGPoint(x: bounds.minX, y: y), proposal: .init(width: bounds.width, height: height))
+            y += height + spacing
+        }
+    }
+
+    /// The widest child's natural width: a maxWidth-infinity frame reports its content's ideal
+    /// width when offered nil, so each child is measured at its ideal and capped at the offer.
+    private func columnWidth(_ offer: CGFloat?, _ subviews: Subviews) -> CGFloat {
+        let natural = subviews.map { $0.sizeThatFits(.unspecified).width }.max() ?? 0
+        guard let offer else { return natural }
+        return min(natural, offer)
+    }
+}
