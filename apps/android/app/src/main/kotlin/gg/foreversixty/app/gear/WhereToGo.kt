@@ -4,8 +4,18 @@ import gg.foreversixty.app.model.BisSlot
 import gg.foreversixty.app.model.HomeUpgrade
 import gg.foreversixty.app.model.LootFile
 
-/** Where an item comes from (`/data/{build}/loot.json`): the source's kind and name, and the drop chance when known. */
-data class ItemSource(val kind: String, val name: String, val chance: Double?, val boss: String? = null)
+/**
+ * Where an item comes from (`/data/{build}/loot.json`): the source's kind and name, the drop chance when
+ * known, the boss, a crafted source's profession and a reputation source's standing.
+ */
+data class ItemSource(
+    val kind: String,
+    val name: String,
+    val chance: Double?,
+    val boss: String? = null,
+    val profession: String? = null,
+    val standing: String? = null,
+)
 
 /** One upgrade the player can go and get: the item, its gain over what is worn, and where it comes from. */
 data class RunPick(val slot: String, val itemId: Int, val itemName: String, val gain: Double, val source: ItemSource)
@@ -30,7 +40,9 @@ object WhereToGo {
                 boss.items.forEach { id -> add(id, ItemSource(source.kind, source.name, chance(boss.itemChances, id) ?: chance(source.itemChances, id), boss.name.ifBlank { null })) }
             }
             source.trash.orEmpty().forEach { id -> add(id, ItemSource(source.kind, source.name, chance(source.itemChances, id))) }
-            source.items.orEmpty().forEach { id -> add(id, ItemSource(source.kind, source.name, chance(source.itemChances, id))) }
+            source.items.orEmpty().forEach { id ->
+                add(id, ItemSource(source.kind, source.name, chance(source.itemChances, id), profession = source.profession, standing = source.standing))
+            }
         }
         return out
     }

@@ -143,7 +143,7 @@ private fun LeadImage(lead: FlowLead) {
  * the item's tooltip), its source, and the gain on the right (`+14.5` with its unit small).
  */
 @Composable
-fun FlowItemRow(look: ItemLook, build: String, source: String, gain: String?, unit: String?, onClick: () -> Unit) {
+fun FlowItemRow(look: ItemLook, build: String, source: String, gain: String?, unit: String?, gainNote: String? = null, onClick: () -> Unit) {
     Row(
         Modifier
             .fillMaxWidth()
@@ -161,7 +161,11 @@ fun FlowItemRow(look: ItemLook, build: String, source: String, gain: String?, un
         }
         if (gain != null) {
             Spacer(Modifier.width(FsSpace.space3))
-            Text(gainText(gain, unit), style = FsType.figureSm, color = FsColor.strong)
+            // The gain's basis sits under it at the right (the item sheet's `over your worn`).
+            Column(horizontalAlignment = Alignment.End) {
+                Text(gainText(gain, unit), style = FsType.figureSm, color = FsColor.strong)
+                if (gainNote != null) Text(gainNote, style = SUB, color = FsColor.muted)
+            }
         }
     }
 }

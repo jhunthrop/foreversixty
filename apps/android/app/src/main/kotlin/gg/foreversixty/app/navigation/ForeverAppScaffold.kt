@@ -20,6 +20,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.saveable.rememberSaveableStateHolder
@@ -38,13 +39,14 @@ import gg.foreversixty.app.R
 import gg.foreversixty.app.account.AccountDeps
 import gg.foreversixty.app.account.HomeAccountGate
 import gg.foreversixty.app.activity.ActivityFeature
+import gg.foreversixty.app.gear.flows.GearDeps
+import gg.foreversixty.app.gear.flows.GearOwner
+import gg.foreversixty.app.gear.flows.GearRoute
 import gg.foreversixty.app.activity.ActivityLanding
 import gg.foreversixty.app.activity.ActivityTab
 import gg.foreversixty.app.auth.session.SessionPhase
 import gg.foreversixty.app.auth.session.me
 import gg.foreversixty.app.bis.BisModel
-import gg.foreversixty.app.bis.BisOwner
-import gg.foreversixty.app.bis.BisRoute
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.FsType
 import gg.foreversixty.app.guides.GuidesFeature
@@ -260,15 +262,16 @@ private fun searchExits(features: ShellFeatures, select: (ForeverTab) -> Unit): 
     select(ForeverTab.Gear)
 }
 
-/** Gear (until its rebuild, the lane F3 list) for the session's current character. */
+/** Gear (spec 2026-11-08 4.3) for the session's current character. */
 @Composable
 private fun GearTab(bis: BisModel, home: HomeDependencies, account: AccountDeps?, onSearch: (() -> Unit)?) {
     val session = account?.session
     val phase = session?.phase?.collectAsStateWithLifecycle()?.value
     val picked = session?.pickedKey?.collectAsStateWithLifecycle()?.value
-    val characterKey = phase?.let { session.currentCharacter(it, picked)?.key }
+    val character = phase?.let { session.currentCharacter(it, picked) }
     val waiting = phase == SessionPhase.Importing || (phase is SessionPhase.SignedIn && phase.me == null)
-    BisRoute(bis, home.catalog, BisOwner(characterKey, waiting), onSearch) { ProfileBar(session) }
+    val deps = remember(home) { GearDeps(home.catalog, home.cache, home.client) }
+    GearRoute(bis, deps, GearOwner(character?.key, character?.guild?.id, waiting), onSearch) { ProfileBar(session) }
 }
 
 /** Raid (lane F4) for the session's current character's guild. */

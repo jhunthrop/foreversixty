@@ -2212,6 +2212,110 @@ enum Copy {
     /// Change
     static var notificationsChange: String { text("notifications.change") }
 
+    /// {n} of {total} slots on the list
+    static func gearOnList(n: Int, total: Int) -> String {
+        format("gear.onList", n, total)
+    }
+
+    /// Change
+    static var gearChange: String { text("gear.change") }
+
+    /// Where to go tonight
+    static var gearWhereTonight: String { text("gear.whereTonight") }
+
+    /// Every slot
+    static var gearEverySlot: String { text("gear.everySlot") }
+
+    /// Worn
+    static var gearWorn: String { text("gear.worn") }
+
+    /// {items} · {boss}, {chance}
+    static func gearWhereDrop(items: String, boss: String, chance: String) -> String {
+        format("gear.where.drop", items, boss, chance)
+    }
+
+    /// {items} · {boss}
+    static func gearWhereBoss(items: String, boss: String) -> String {
+        format("gear.where.boss", items, boss)
+    }
+
+    /// {items} · ask a {crafter}
+    static func gearWhereAsk(items: String, crafter: String) -> String {
+        format("gear.where.ask", items, crafter)
+    }
+
+    /// {items}, needs {standing}
+    static func gearWhereRep(items: String, standing: String) -> String {
+        format("gear.where.rep", items, standing)
+    }
+
+    /// blacksmith
+    static var gearCrafterBlacksmithing: String { text("gear.crafter.blacksmithing") }
+
+    /// leatherworker
+    static var gearCrafterLeatherworking: String { text("gear.crafter.leatherworking") }
+
+    /// tailor
+    static var gearCrafterTailoring: String { text("gear.crafter.tailoring") }
+
+    /// engineer
+    static var gearCrafterEngineering: String { text("gear.crafter.engineering") }
+
+    /// alchemist
+    static var gearCrafterAlchemy: String { text("gear.crafter.alchemy") }
+
+    /// enchanter
+    static var gearCrafterEnchanting: String { text("gear.crafter.enchanting") }
+
+    /// Best in slot for your class
+    static var gearOutTitle: String { text("gear.out.title") }
+
+    /// Pick a class, then a spec and a level range.
+    static var gearOutMeta: String { text("gear.out.meta") }
+
+    /// Classes
+    static var gearOutClasses: String { text("gear.out.classes") }
+
+    /// over your worn
+    static var gearSheetOverWorn: String { text("gear.sheet.overWorn") }
+
+    /// Where to get it
+    static var gearSheetWhere: String { text("gear.sheet.where") }
+
+    /// Runner-up
+    static var gearSheetRunnerUp: String { text("gear.sheet.runnerUp") }
+
+    /// Who in the guild needs it
+    static var gearSheetNeeds: String { text("gear.sheet.needs") }
+
+    /// {spec} · needs it, the pick on their list
+    static func gearSheetNeedsPick(spec: String) -> String {
+        format("gear.sheet.needsPick", spec)
+    }
+
+    /// {spec} · needs it, a runner-up on their list
+    static func gearSheetNeedsRunnerUp(spec: String) -> String {
+        format("gear.sheet.needsRunnerUp", spec)
+    }
+
+    /// {spec} · has it
+    static func gearSheetHas(spec: String) -> String {
+        format("gear.sheet.has", spec)
+    }
+
+    /// Nobody in the guild has it on their list.
+    static var gearSheetNobody: String { text("gear.sheet.nobody") }
+
+    /// {n} guildmates have not shared their gear yet
+    static func gearSheetUnknown(n: Int) -> String {
+        format("gear.sheet.unknown", n)
+    }
+
+    /// {chance} drop chance
+    static func gearSheetDropChance(chance: String) -> String {
+        format("gear.sheet.dropChance", chance)
+    }
+
     /// You
     static var youTitle: String { text("you.title") }
 

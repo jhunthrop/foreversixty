@@ -673,6 +673,37 @@
     <string name="notifications_reminder">Raid-day reminder</string>
     <string name="notifications_reminderLine">If you have not answered: %1$s your time</string>
     <string name="notifications_change">Change</string>
+    <string name="gear_onList" tools:ignore="PluralsCandidate">%1$d of %2$d slots on the list</string>
+    <string name="gear_change">Change</string>
+    <string name="gear_whereTonight">Where to go tonight</string>
+    <string name="gear_everySlot">Every slot</string>
+    <string name="gear_worn">Worn</string>
+    <string name="gear_where_drop">%1$s · %2$s, %3$s</string>
+    <string name="gear_where_boss">%1$s · %2$s</string>
+    <string name="gear_where_ask">%1$s · ask a %2$s</string>
+    <string name="gear_where_rep">%1$s, needs %2$s</string>
+    <string name="gear_crafter_blacksmithing">blacksmith</string>
+    <string name="gear_crafter_leatherworking">leatherworker</string>
+    <string name="gear_crafter_tailoring">tailor</string>
+    <string name="gear_crafter_engineering">engineer</string>
+    <string name="gear_crafter_alchemy">alchemist</string>
+    <string name="gear_crafter_enchanting">enchanter</string>
+    <string name="gear_out_title">Best in slot for your class</string>
+    <string name="gear_out_meta">Pick a class, then a spec and a level range.</string>
+    <string name="gear_out_classes">Classes</string>
+    <string name="gear_sheet_overWorn">over your worn</string>
+    <string name="gear_sheet_where">Where to get it</string>
+    <string name="gear_sheet_runnerUp">Runner-up</string>
+    <string name="gear_sheet_needs">Who in the guild needs it</string>
+    <string name="gear_sheet_needsPick">%1$s · needs it, the pick on their list</string>
+    <string name="gear_sheet_needsRunnerUp">%1$s · needs it, a runner-up on their list</string>
+    <string name="gear_sheet_has">%1$s · has it</string>
+    <string name="gear_sheet_nobody">Nobody in the guild has it on their list.</string>
+    <plurals name="gear_sheet_unknown">
+        <item quantity="one">1 guildmate has not shared their gear yet</item>
+        <item quantity="other">%1$d guildmates have not shared their gear yet</item>
+    </plurals>
+    <string name="gear_sheet_dropChance">%1$s drop chance</string>
     <string name="you_title">You</string>
     <string name="you_signedInWith">Signed in with Battle.net</string>
     <string name="you_plan">Plan</string>

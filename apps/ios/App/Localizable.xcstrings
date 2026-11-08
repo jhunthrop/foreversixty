@@ -2397,6 +2397,83 @@
         }
       }
     },
+    "gear.change": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Change"
+          }
+        }
+      }
+    },
+    "gear.crafter.alchemy": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "alchemist"
+          }
+        }
+      }
+    },
+    "gear.crafter.blacksmithing": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "blacksmith"
+          }
+        }
+      }
+    },
+    "gear.crafter.enchanting": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "enchanter"
+          }
+        }
+      }
+    },
+    "gear.crafter.engineering": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "engineer"
+          }
+        }
+      }
+    },
+    "gear.crafter.leatherworking": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "leatherworker"
+          }
+        }
+      }
+    },
+    "gear.crafter.tailoring": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "tailor"
+          }
+        }
+      }
+    },
     "gear.emptySlot": {
       "extractionState": "manual",
       "localizations": {
@@ -2404,6 +2481,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Empty"
+          }
+        }
+      }
+    },
+    "gear.everySlot": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Every slot"
           }
         }
       }
@@ -2420,6 +2508,178 @@
         }
       }
     },
+    "gear.onList": {
+      "comment": "Arguments: 1 n (int), 2 total (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld of %2$lld slots on the list"
+          }
+        }
+      }
+    },
+    "gear.out.classes": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Classes"
+          }
+        }
+      }
+    },
+    "gear.out.meta": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pick a class, then a spec and a level range."
+          }
+        }
+      }
+    },
+    "gear.out.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Best in slot for your class"
+          }
+        }
+      }
+    },
+    "gear.sheet.dropChance": {
+      "comment": "Arguments: 1 chance (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ drop chance"
+          }
+        }
+      }
+    },
+    "gear.sheet.has": {
+      "comment": "Arguments: 1 spec (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · has it"
+          }
+        }
+      }
+    },
+    "gear.sheet.needs": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Who in the guild needs it"
+          }
+        }
+      }
+    },
+    "gear.sheet.needsPick": {
+      "comment": "Arguments: 1 spec (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · needs it, the pick on their list"
+          }
+        }
+      }
+    },
+    "gear.sheet.needsRunnerUp": {
+      "comment": "Arguments: 1 spec (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · needs it, a runner-up on their list"
+          }
+        }
+      }
+    },
+    "gear.sheet.nobody": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nobody in the guild has it on their list."
+          }
+        }
+      }
+    },
+    "gear.sheet.overWorn": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "over your worn"
+          }
+        }
+      }
+    },
+    "gear.sheet.runnerUp": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Runner-up"
+          }
+        }
+      }
+    },
+    "gear.sheet.unknown": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "1 guildmate has not shared their gear yet"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%1$lld guildmates have not shared their gear yet"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "gear.sheet.where": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Where to get it"
+          }
+        }
+      }
+    },
     "gear.title": {
       "extractionState": "manual",
       "localizations": {
@@ -2427,6 +2687,76 @@
           "stringUnit": {
             "state": "translated",
             "value": "Your gear"
+          }
+        }
+      }
+    },
+    "gear.where.ask": {
+      "comment": "Arguments: 1 items (string), 2 crafter (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · ask a %2$@"
+          }
+        }
+      }
+    },
+    "gear.where.boss": {
+      "comment": "Arguments: 1 items (string), 2 boss (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$@"
+          }
+        }
+      }
+    },
+    "gear.where.drop": {
+      "comment": "Arguments: 1 items (string), 2 boss (string), 3 chance (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$@, %3$@"
+          }
+        }
+      }
+    },
+    "gear.where.rep": {
+      "comment": "Arguments: 1 items (string), 2 standing (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, needs %2$@"
+          }
+        }
+      }
+    },
+    "gear.whereTonight": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Where to go tonight"
+          }
+        }
+      }
+    },
+    "gear.worn": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Worn"
           }
         }
       }
