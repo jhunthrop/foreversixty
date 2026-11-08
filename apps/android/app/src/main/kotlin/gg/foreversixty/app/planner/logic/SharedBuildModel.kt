@@ -1,11 +1,13 @@
 package gg.foreversixty.app.planner.logic
 
+import gg.foreversixty.app.bis.SpecCatalog
 import gg.foreversixty.app.model.Build
 import gg.foreversixty.app.model.ClassInfo
 import gg.foreversixty.app.model.RaceInfo
 import gg.foreversixty.app.model.TalentsFile
 import gg.foreversixty.app.network.ApiError
 import gg.foreversixty.app.network.ApiResult
+import gg.foreversixty.app.talents.TalentRules
 import gg.foreversixty.app.talents.isMissingFile
 import java.time.Instant
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,7 +24,13 @@ data class SharedBuildView(
     val raceName: String,
     /** When the offline copy shown was fetched, else null. */
     val offlineSinceMillis: Long? = null,
+    /** The build against the guide build of the band it reaches (`Guide build`), when the spec's file has one. */
+    val band: BandCompare? = null,
+    val raceSlug: String = "",
 ) {
+    /** A shared build has no character: its level is the one its points reach. */
+    val level: Int get() = (build.pointOrder.size + TalentRules.BASE_LEVEL).coerceIn(PlannerEditor.MIN_LEVEL, PlannerEditor.MAX_LEVEL)
+
     val index: TalentIndex get() = TalentIndex(file)
     val totals: List<Int> get() = PlannerRules.pointsPerTree(index, build.pointOrder)
     val ranks: Map<Int, Int> get() = PlannerRules.ranks(build.pointOrder)
@@ -40,7 +48,7 @@ sealed interface SharedBuildPhase {
 }
 
 /** The `/b/{id}` viewer's loading (spec F13.5). iOS: SharedBuildModel.swift. */
-class SharedBuildModel(private val source: PlannerSource, val id: String) {
+class SharedBuildModel(private val source: PlannerSource, val id: String, private val catalog: SpecCatalog = SpecCatalog(emptyList())) {
     private val mutable = MutableStateFlow<SharedBuildPhase>(SharedBuildPhase.Loading)
     val phase: StateFlow<SharedBuildPhase> = mutable.asStateFlow()
 
@@ -64,8 +72,18 @@ class SharedBuildModel(private val source: PlannerSource, val id: String) {
             is ApiResult.Failure -> return if (talents.error is ApiError.Network) SharedBuildPhase.Offline else SharedBuildPhase.Failed
         }
         val races: List<RaceInfo> = (source.races(build.treeVersion) as? ApiResult.Success)?.data?.value.orEmpty()
-        val race = races.firstOrNull { it.id == build.raceId }?.name.orEmpty()
-        return SharedBuildPhase.Loaded(SharedBuildView(build, file, cls.slug, cls.name, race, offlineSince))
+        val race = races.firstOrNull { it.id == build.raceId }
+        val view = SharedBuildView(build, file, cls.slug, cls.name, race?.name.orEmpty(), offlineSince, raceSlug = race?.slug.orEmpty())
+        return SharedBuildPhase.Loaded(view.copy(band = band(view, race?.faction)))
+    }
+
+    /** The guide build of the band the shared build reaches, read from the active build's BiS file. */
+    private suspend fun band(view: SharedBuildView, faction: String?): BandCompare? {
+        val index = view.index
+        val spec = PlannerBand.specFor(catalog, index, view.build.pointOrder) ?: return null
+        val file = (source.bis(source.activeBuild(), spec.spec) as? ApiResult.Success)?.data?.value ?: return null
+        val build = PlannerBand.build(spec, file, PlannerBand.bandFor(view.build.pointOrder.size, null), faction) ?: return null
+        return PlannerBand.compare(index, view.build.pointOrder, build, characterPoints = null)
     }
 
     private fun failure(error: ApiError): SharedBuildPhase = when {

@@ -6286,6 +6286,306 @@ enum Copy {
     /// Check your connection
     static var homeErrorLine: String { text("home.error.line") }
 
+    /// {className} talents
+    static func plannerPageH1(className: String) -> String {
+        format("plannerPage.h1", className)
+    }
+
+    /// Points left
+    static var plannerPagePointsLeft: String { text("plannerPage.pointsLeft") }
+
+    /// {spent} of {available} spent at level {level}
+    static func plannerPageSpentAtLevel(spent: Int, available: Int, level: Int) -> String {
+        format("plannerPage.spentAtLevel", spent, available, level)
+    }
+
+    /// {spent} of {available} spent
+    static func plannerPageSpentOf(spent: Int, available: Int) -> String {
+        format("plannerPage.spentOf", spent, available)
+    }
+
+    /// {spent} of {available} spent · level {level}
+    static func plannerPageSpentOfLevel(spent: Int, available: Int, level: Int) -> String {
+        format("plannerPage.spentOfLevel", spent, available, level)
+    }
+
+    /// DPS
+    static var plannerPageDps: String { text("plannerPage.dps") }
+
+    /// HPS
+    static var plannerPageHps: String { text("plannerPage.hps") }
+
+    /// with the {phrase} gear set
+    static func plannerPageScoreBasis(phrase: String) -> String {
+        format("plannerPage.scoreBasis", phrase)
+    }
+
+    /// Sim this build ›
+    static var plannerPageSimThisBuild: String { text("plannerPage.simThisBuild") }
+
+    /// Change ▾
+    static var plannerPageChange: String { text("plannerPage.change") }
+
+    /// Class
+    static var plannerPageClassLabel: String { text("plannerPage.classLabel") }
+
+    /// Race
+    static var plannerPageRaceLabel: String { text("plannerPage.raceLabel") }
+
+    /// Level
+    static var plannerPageLevelLabel: String { text("plannerPage.levelLabel") }
+
+    /// {className} · {race}
+    static func plannerPageBar(className: String, race: String) -> String {
+        format("plannerPage.bar", className, race)
+    }
+
+    /// {race} · Level {level}
+    static func plannerPageMetaLevel(race: String, level: Int) -> String {
+        format("plannerPage.metaLevel", race, level)
+    }
+
+    /// {race} · Level {level} · {spec} {className}
+    static func plannerPageMetaSpec(race: String, level: Int, spec: String, className: String) -> String {
+        format("plannerPage.metaSpec", race, level, spec, className)
+    }
+
+    /// Loaded at level {level} · {points} points
+    static func plannerPageLoadedAt(level: Int, points: Int) -> String {
+        format("plannerPage.loadedAt", level, points)
+    }
+
+    /// Loaded for level {level} · {points} of {of} points
+    static func plannerPageLoadedFor(level: Int, points: Int, of: Int) -> String {
+        format("plannerPage.loadedFor", level, points, of)
+    }
+
+    /// From a link; one way to level into this build.
+    static var plannerPageLinkedNote: String { text("plannerPage.linkedNote") }
+
+    /// Talents loaded from a character. The order points were spent in is not recorded in game, so this is one way to level into the same tree: the main tree first, each talent as soon as its row opens.
+    static var plannerPageImportedNote: String { text("plannerPage.importedNote") }
+
+    /// Talent trees read from the game client, build {build}.
+    static func plannerPageTreeSource(build: String) -> String {
+        format("plannerPage.treeSource", build)
+    }
+
+    /// Reset…
+    static var plannerPageReset: String { text("plannerPage.reset") }
+
+    /// Talent data did not load
+    static var plannerPageLoadFailed: String { text("plannerPage.loadFailed") }
+
+    /// Build {build} did not return the files the planner needs.
+    static func plannerPageLoadFailedDetail(build: String) -> String {
+        format("plannerPage.loadFailedDetail", build)
+    }
+
+    /// Retry
+    static var plannerPageRetry: String { text("plannerPage.retry") }
+
+    /// Level {n}
+    static func plannerPageBandLevel(n: Int) -> String {
+        format("plannerPage.bandLevel", n)
+    }
+
+    /// Levels {from} to {to}
+    static func plannerPageBandLevels(from: Int, to: Int) -> String {
+        format("plannerPage.bandLevels", from, to)
+    }
+
+    /// {phrase} build
+    static func plannerPageBandHeading(phrase: String) -> String {
+        format("plannerPage.bandHeading", phrase)
+    }
+
+    /// Guide build
+    static var plannerPageGuideHeading: String { text("plannerPage.guideHeading") }
+
+    /// Matches
+    static var plannerPageMatches: String { text("plannerPage.matches") }
+
+    /// +{n} beyond the build
+    static func plannerPageBeyond(n: Int) -> String {
+        format("plannerPage.beyond", n)
+    }
+
+    /// {n} of this build's points still to take
+    static func plannerPageToTake(n: Int) -> String {
+        format("plannerPage.toTake", n)
+    }
+
+    /// {n} points
+    static func plannerPagePoints(n: Int) -> String {
+        format("plannerPage.points", n)
+    }
+
+    /// Differs by {points}: {sides}.
+    static func plannerPageDiffers(points: String, sides: String) -> String {
+        format("plannerPage.differs", points, sides)
+    }
+
+    /// this build takes {list}
+    static func plannerPageMineTakes(list: String) -> String {
+        format("plannerPage.mineTakes", list)
+    }
+
+    /// the {phrase} build takes {list}
+    static func plannerPageTheirsTake(phrase: String, list: String) -> String {
+        format("plannerPage.theirsTake", phrase, list)
+    }
+
+    /// {first}; {second}
+    static func plannerPageSidesJoin(first: String, second: String) -> String {
+        format("plannerPage.sidesJoin", first, second)
+    }
+
+    /// {rest} and {last}
+    static func plannerPageListAnd(rest: String, last: String) -> String {
+        format("plannerPage.listAnd", rest, last)
+    }
+
+    /// This build covers {covered} of your {total} points; the next {rest} follow the {phrase} build.
+    static func plannerPageCoversFewer(covered: Int, total: Int, rest: Int, phrase: String) -> String {
+        format("plannerPage.coversFewer", covered, total, rest, phrase)
+    }
+
+    /// Load the {phrase} build
+    static func plannerPageLoad(phrase: String) -> String {
+        format("plannerPage.load", phrase)
+    }
+
+    /// See what differs
+    static var plannerPageSeeWhatDiffers: String { text("plannerPage.seeWhatDiffers") }
+
+    /// Loading replaces every point you have spent with this level range's own build. Load anyway?
+    static var plannerPageLoadAsk: String { text("plannerPage.loadAsk") }
+
+    /// Load it
+    static var plannerPageLoadYes: String { text("plannerPage.loadYes") }
+
+    /// Keep my build
+    static var plannerPageLoadNo: String { text("plannerPage.loadNo") }
+
+    /// Gear for {range}
+    static func plannerPageGearFor(range: String) -> String {
+        format("plannerPage.gearFor", range)
+    }
+
+    /// Best in slot list ›
+    static var plannerPageBisList: String { text("plannerPage.bisList") }
+
+    /// In the game
+    static var plannerPageInGame: String { text("plannerPage.inGame") }
+
+    /// Send this build to {name}
+    static func plannerPageSendTo(name: String) -> String {
+        format("plannerPage.sendTo", name)
+    }
+
+    /// Copy for the game
+    static var plannerPageCopyForGame: String { text("plannerPage.copyForGame") }
+
+    /// Copied
+    static var plannerPageCopied: String { text("plannerPage.copied") }
+
+    /// Paste this in game with /fs; the Forever Sixty line and the talent window follow it from then on.
+    static var plannerPageGameHint: String { text("plannerPage.gameHint") }
+
+    /// Get the addon and companion ›
+    static var plannerPageGetAddon: String { text("plannerPage.getAddon") }
+
+    /// Point order
+    static var plannerPagePointOrder: String { text("plannerPage.pointOrder") }
+
+    /// {n} spent
+    static func plannerPageSpent(n: Int) -> String {
+        format("plannerPage.spent", n)
+    }
+
+    /// Level {level}: {name} {rank}
+    static func plannerPagePointAt(level: Int, name: String, rank: Int) -> String {
+        format("plannerPage.pointAt", level, name, rank)
+    }
+
+    /// Next point: level {level}
+    static func plannerPageNextPoint(level: Int) -> String {
+        format("plannerPage.nextPoint", level)
+    }
+
+    /// Share this build
+    static var plannerPageShareTitle: String { text("plannerPage.shareTitle") }
+
+    /// Title
+    static var plannerPageTitleLabel: String { text("plannerPage.titleLabel") }
+
+    /// Optional
+    static var plannerPageTitlePlaceholder: String { text("plannerPage.titlePlaceholder") }
+
+    /// Share
+    static var plannerPageShare: String { text("plannerPage.share") }
+
+    /// {race} {className} · {trees} · Level {level}
+    static func plannerPageSummary(race: String, className: String, trees: String, level: Int) -> String {
+        format("plannerPage.summary", race, className, trees, level)
+    }
+
+    /// {tree} {n}
+    static func plannerPageTreePoints(tree: String, n: Int) -> String {
+        format("plannerPage.treePoints", tree, n)
+    }
+
+    /// Copy as text
+    static var plannerPageCopyAsText: String { text("plannerPage.copyAsText") }
+
+    /// Your builds ›
+    static var plannerPageYourBuilds: String { text("plannerPage.yourBuilds") }
+
+    /// Sign in to keep your builds ›
+    static var plannerPageSignInForBuilds: String { text("plannerPage.signInForBuilds") }
+
+    /// Import from addon
+    static var plannerPageImportTitle: String { text("plannerPage.importTitle") }
+
+    /// FS1:…
+    static var plannerPageImportPlaceholder: String { text("plannerPage.importPlaceholder") }
+
+    /// Import
+    static var plannerPageImport: String { text("plannerPage.import") }
+
+    /// That is not an addon export. Copy it again from the addon.
+    static var plannerPageImportBad: String { text("plannerPage.importBad") }
+
+    /// Don't have an export?
+    static var plannerPageNoExport: String { text("plannerPage.noExport") }
+
+    /// Get the addon and companion ›
+    static var plannerPageAddonLink: String { text("plannerPage.addonLink") }
+
+    /// Shared build
+    static var plannerPageSharedMeta: String { text("plannerPage.sharedMeta") }
+
+    /// {n} views
+    static func plannerPageViews(n: Int) -> String {
+        format("plannerPage.views", n)
+    }
+
+    /// This build was shared as a link. Edit a copy to spend points of your own.
+    static var plannerPageSharedNote: String { text("plannerPage.sharedNote") }
+
+    /// Edit a copy
+    static var plannerPageEditCopy: String { text("plannerPage.editCopy") }
+
+    /// Your talents against the guide ›
+    static var plannerPageTalentsLink: String { text("plannerPage.talentsLink") }
+
+    /// Compare with mine ›
+    static var plannerPageCompareLink: String { text("plannerPage.compareLink") }
+
+    /// Undo
+    static var plannerPageUndo: String { text("plannerPage.undo") }
+
     /// Get the addon and companion
     static var sharedCtaGetAddonAndCompanion: String { text("shared.cta.getAddonAndCompanion") }
 

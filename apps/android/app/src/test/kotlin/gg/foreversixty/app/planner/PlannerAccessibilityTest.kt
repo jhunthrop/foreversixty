@@ -14,6 +14,7 @@ import gg.foreversixty.app.designsystem.ForeverTheme
 import gg.foreversixty.app.home.HomeFixtures
 import gg.foreversixty.app.items.LocalItemIconPainter
 import gg.foreversixty.app.planner.logic.EditorPhase
+import gg.foreversixty.app.planner.logic.EditorRequest
 import gg.foreversixty.app.planner.logic.EditorState
 import gg.foreversixty.app.planner.logic.EditorView
 import gg.foreversixty.app.planner.logic.TalentIndex
@@ -42,13 +43,13 @@ class PlannerAccessibilityTest {
     private val removed = mutableListOf<Int>()
     private val opened = mutableListOf<Int>()
 
-    private fun show() {
-        val state = EditorState("shaman", "orc", 60, emptyList())
+    private fun show(touched: Int? = null) {
+        val state = EditorState("shaman", "orc", 60, emptyList(), touched = touched)
         val phase = EditorPhase.Ready(EditorView(shaman, index, "Shaman", emptyList(), state))
         compose.setContent {
             ForeverTheme {
                 CompositionLocalProvider(LocalItemIconPainter provides HomeFixtures.repoIcons) {
-                    PlannerEditorPage(EditorPageState(phase, BisTestData.BUILD, 0), EditorActions(add = { added += it }, remove = { removed += it }, openTalent = { opened += it }))
+                    PlannerEditorPage(EditorPageState(phase, BisTestData.BUILD, 0, EditorRequest.Draft("shaman")), EditorActions(add = { added += it }, remove = { removed += it }, openTalent = { opened += it }))
                 }
             }
         }
@@ -73,14 +74,15 @@ class PlannerAccessibilityTest {
         assertEquals(listOf(convection.id), removed)
     }
 
-    @Test fun `the strip's words open the rank sheet`() {
-        show()
-        compose.onNodeWithText(convection.name, substring = true).performClick()
-        assertEquals(listOf(convection.id), opened)
+    @Test fun `the status line's minus removes a point from the selected talent`() {
+        show(touched = convection.id)
+        compose.onNodeWithContentDescription("Remove a point").performClick()
+        assertEquals(listOf(convection.id), removed)
     }
 
-    @Test fun `the class crest names the class`() {
-        show()
-        compose.onNodeWithContentDescription("Shaman").assertExists()
+    @Test fun `the status line's talent opens the rank sheet`() {
+        show(touched = convection.id)
+        compose.onNodeWithText("${convection.name} 0/5").performClick()
+        assertEquals(listOf(convection.id), opened)
     }
 }

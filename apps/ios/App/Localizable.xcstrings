@@ -11583,6 +11583,933 @@
         }
       }
     },
+    "plannerPage.addonLink": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Get the addon and companion ›"
+          }
+        }
+      }
+    },
+    "plannerPage.bandHeading": {
+      "comment": "Arguments: 1 phrase (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ build"
+          }
+        }
+      }
+    },
+    "plannerPage.bandLevel": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Level %1$lld"
+          }
+        }
+      }
+    },
+    "plannerPage.bandLevels": {
+      "comment": "Arguments: 1 from (int), 2 to (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Levels %1$lld to %2$lld"
+          }
+        }
+      }
+    },
+    "plannerPage.bar": {
+      "comment": "Arguments: 1 className (string), 2 race (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$@"
+          }
+        }
+      }
+    },
+    "plannerPage.beyond": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "+%1$lld beyond the build"
+          }
+        }
+      }
+    },
+    "plannerPage.bisList": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Best in slot list ›"
+          }
+        }
+      }
+    },
+    "plannerPage.change": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Change ▾"
+          }
+        }
+      }
+    },
+    "plannerPage.classLabel": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Class"
+          }
+        }
+      }
+    },
+    "plannerPage.compareLink": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Compare with mine ›"
+          }
+        }
+      }
+    },
+    "plannerPage.copied": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copied"
+          }
+        }
+      }
+    },
+    "plannerPage.copyAsText": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copy as text"
+          }
+        }
+      }
+    },
+    "plannerPage.copyForGame": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copy for the game"
+          }
+        }
+      }
+    },
+    "plannerPage.coversFewer": {
+      "comment": "Arguments: 1 covered (int), 2 total (int), 3 rest (int), 4 phrase (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This build covers %1$lld of your %2$lld points; the next %3$lld follow the %4$@ build."
+          }
+        }
+      }
+    },
+    "plannerPage.differs": {
+      "comment": "Arguments: 1 points (string), 2 sides (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Differs by %1$@: %2$@."
+          }
+        }
+      }
+    },
+    "plannerPage.dps": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "DPS"
+          }
+        }
+      }
+    },
+    "plannerPage.editCopy": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Edit a copy"
+          }
+        }
+      }
+    },
+    "plannerPage.gameHint": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Paste this in game with /fs; the Forever Sixty line and the talent window follow it from then on."
+          }
+        }
+      }
+    },
+    "plannerPage.gearFor": {
+      "comment": "Arguments: 1 range (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gear for %1$@"
+          }
+        }
+      }
+    },
+    "plannerPage.getAddon": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Get the addon and companion ›"
+          }
+        }
+      }
+    },
+    "plannerPage.guideHeading": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guide build"
+          }
+        }
+      }
+    },
+    "plannerPage.h1": {
+      "comment": "Arguments: 1 className (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ talents"
+          }
+        }
+      }
+    },
+    "plannerPage.hps": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HPS"
+          }
+        }
+      }
+    },
+    "plannerPage.import": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Import"
+          }
+        }
+      }
+    },
+    "plannerPage.importBad": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "That is not an addon export. Copy it again from the addon."
+          }
+        }
+      }
+    },
+    "plannerPage.importedNote": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Talents loaded from a character. The order points were spent in is not recorded in game, so this is one way to level into the same tree: the main tree first, each talent as soon as its row opens."
+          }
+        }
+      }
+    },
+    "plannerPage.importPlaceholder": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "FS1:…"
+          }
+        }
+      }
+    },
+    "plannerPage.importTitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Import from addon"
+          }
+        }
+      }
+    },
+    "plannerPage.inGame": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In the game"
+          }
+        }
+      }
+    },
+    "plannerPage.levelLabel": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Level"
+          }
+        }
+      }
+    },
+    "plannerPage.linkedNote": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "From a link; one way to level into this build."
+          }
+        }
+      }
+    },
+    "plannerPage.listAnd": {
+      "comment": "Arguments: 1 rest (string), 2 last (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ and %2$@"
+          }
+        }
+      }
+    },
+    "plannerPage.load": {
+      "comment": "Arguments: 1 phrase (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Load the %1$@ build"
+          }
+        }
+      }
+    },
+    "plannerPage.loadAsk": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Loading replaces every point you have spent with this level range's own build. Load anyway?"
+          }
+        }
+      }
+    },
+    "plannerPage.loadedAt": {
+      "comment": "Arguments: 1 level (int), 2 points (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Loaded at level %1$lld · %2$lld points"
+          }
+        }
+      }
+    },
+    "plannerPage.loadedFor": {
+      "comment": "Arguments: 1 level (int), 2 points (int), 3 of (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Loaded for level %1$lld · %2$lld of %3$lld points"
+          }
+        }
+      }
+    },
+    "plannerPage.loadFailed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Talent data did not load"
+          }
+        }
+      }
+    },
+    "plannerPage.loadFailedDetail": {
+      "comment": "Arguments: 1 build (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Build %1$@ did not return the files the planner needs."
+          }
+        }
+      }
+    },
+    "plannerPage.loadNo": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keep my build"
+          }
+        }
+      }
+    },
+    "plannerPage.loadYes": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Load it"
+          }
+        }
+      }
+    },
+    "plannerPage.matches": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Matches"
+          }
+        }
+      }
+    },
+    "plannerPage.metaLevel": {
+      "comment": "Arguments: 1 race (string), 2 level (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · Level %2$lld"
+          }
+        }
+      }
+    },
+    "plannerPage.metaSpec": {
+      "comment": "Arguments: 1 race (string), 2 level (int), 3 spec (string), 4 className (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · Level %2$lld · %3$@ %4$@"
+          }
+        }
+      }
+    },
+    "plannerPage.mineTakes": {
+      "comment": "Arguments: 1 list (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "this build takes %1$@"
+          }
+        }
+      }
+    },
+    "plannerPage.nextPoint": {
+      "comment": "Arguments: 1 level (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Next point: level %1$lld"
+          }
+        }
+      }
+    },
+    "plannerPage.noExport": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Don't have an export?"
+          }
+        }
+      }
+    },
+    "plannerPage.pointAt": {
+      "comment": "Arguments: 1 level (int), 2 name (string), 3 rank (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Level %1$lld: %2$@ %3$lld"
+          }
+        }
+      }
+    },
+    "plannerPage.pointOrder": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Point order"
+          }
+        }
+      }
+    },
+    "plannerPage.points": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "1 point"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%1$lld points"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "plannerPage.pointsLeft": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Points left"
+          }
+        }
+      }
+    },
+    "plannerPage.raceLabel": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Race"
+          }
+        }
+      }
+    },
+    "plannerPage.reset": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reset…"
+          }
+        }
+      }
+    },
+    "plannerPage.retry": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Retry"
+          }
+        }
+      }
+    },
+    "plannerPage.scoreBasis": {
+      "comment": "Arguments: 1 phrase (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "with the %1$@ gear set"
+          }
+        }
+      }
+    },
+    "plannerPage.seeWhatDiffers": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "See what differs"
+          }
+        }
+      }
+    },
+    "plannerPage.sendTo": {
+      "comment": "Arguments: 1 name (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Send this build to %1$@"
+          }
+        }
+      }
+    },
+    "plannerPage.share": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Share"
+          }
+        }
+      }
+    },
+    "plannerPage.sharedMeta": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shared build"
+          }
+        }
+      }
+    },
+    "plannerPage.sharedNote": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This build was shared as a link. Edit a copy to spend points of your own."
+          }
+        }
+      }
+    },
+    "plannerPage.shareTitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Share this build"
+          }
+        }
+      }
+    },
+    "plannerPage.sidesJoin": {
+      "comment": "Arguments: 1 first (string), 2 second (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@; %2$@"
+          }
+        }
+      }
+    },
+    "plannerPage.signInForBuilds": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sign in to keep your builds ›"
+          }
+        }
+      }
+    },
+    "plannerPage.simThisBuild": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sim this build ›"
+          }
+        }
+      }
+    },
+    "plannerPage.spent": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld spent"
+          }
+        }
+      }
+    },
+    "plannerPage.spentAtLevel": {
+      "comment": "Arguments: 1 spent (int), 2 available (int), 3 level (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld of %2$lld spent at level %3$lld"
+          }
+        }
+      }
+    },
+    "plannerPage.spentOf": {
+      "comment": "Arguments: 1 spent (int), 2 available (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld of %2$lld spent"
+          }
+        }
+      }
+    },
+    "plannerPage.spentOfLevel": {
+      "comment": "Arguments: 1 spent (int), 2 available (int), 3 level (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld of %2$lld spent · level %3$lld"
+          }
+        }
+      }
+    },
+    "plannerPage.summary": {
+      "comment": "Arguments: 1 race (string), 2 className (string), 3 trees (string), 4 level (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ %2$@ · %3$@ · Level %4$lld"
+          }
+        }
+      }
+    },
+    "plannerPage.talentsLink": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your talents against the guide ›"
+          }
+        }
+      }
+    },
+    "plannerPage.theirsTake": {
+      "comment": "Arguments: 1 phrase (string), 2 list (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "the %1$@ build takes %2$@"
+          }
+        }
+      }
+    },
+    "plannerPage.titleLabel": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Title"
+          }
+        }
+      }
+    },
+    "plannerPage.titlePlaceholder": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Optional"
+          }
+        }
+      }
+    },
+    "plannerPage.toTake": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "1 of this build's points still to take"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%1$lld of this build's points still to take"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "plannerPage.treePoints": {
+      "comment": "Arguments: 1 tree (string), 2 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ %2$lld"
+          }
+        }
+      }
+    },
+    "plannerPage.treeSource": {
+      "comment": "Arguments: 1 build (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Talent trees read from the game client, build %1$@."
+          }
+        }
+      }
+    },
+    "plannerPage.undo": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Undo"
+          }
+        }
+      }
+    },
+    "plannerPage.views": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "1 view"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%1$lld views"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "plannerPage.yourBuilds": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your builds ›"
+          }
+        }
+      }
+    },
     "push.action.askSpec": {
       "extractionState": "manual",
       "localizations": {

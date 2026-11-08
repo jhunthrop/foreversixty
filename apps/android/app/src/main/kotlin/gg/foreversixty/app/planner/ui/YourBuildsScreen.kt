@@ -51,6 +51,8 @@ import gg.foreversixty.app.reports.ui.Chevron
 import gg.foreversixty.app.reports.ui.ErrorRegion
 import gg.foreversixty.app.reports.ui.ReportsBar
 import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 /** `Plan a new build`'s row: the current character's class and level. */
 data class NewBuildRow(val classSlug: String, val className: String, val level: Int)
@@ -192,3 +194,6 @@ private const val REMOVE_ALPHA = 0.35f
 private const val NBSP = "\u00A0"
 private const val SEPARATOR = " · "
 private const val SEPARATOR_KEPT = " ·\u00A0"
+
+/** `{d Mon}`: `4 Nov`. */
+val DAY_MONTH: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMM", Locale.US)

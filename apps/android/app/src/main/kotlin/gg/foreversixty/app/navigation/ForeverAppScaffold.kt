@@ -63,6 +63,7 @@ import gg.foreversixty.app.menu.ProfileMenuDrawer
 import gg.foreversixty.app.menu.MenuScreen
 import gg.foreversixty.app.menu.ProfileBar
 import gg.foreversixty.app.planner.PlannerFeature
+import gg.foreversixty.app.planner.PlannerHost
 import gg.foreversixty.app.planner.PlannerScreenHost
 import gg.foreversixty.app.planner.logic.PlannerScreen
 import gg.foreversixty.app.raids.RaidsFeature
@@ -112,21 +113,18 @@ fun ForeverAppScaffold(features: ShellFeatures) {
         pushed = null
     }
     FollowRequests(features, select) { pushed = it }
-    // Lane F13: the planner's editor covers the shell; the tabs' saved state outlives it.
     val plannerTop = features.planner?.navigator?.top
-    if (features.planner != null && plannerTop is PlannerScreen.Editor) {
-        // The editor is a full-screen task with no tab bar (spec F13.1).
-        PlannerScreenHost(features.planner, plannerTop)
-        return
-    }
     BackHandler(enabled = pushed != null) { pushed = null }
     val openMenu = { scope.launch { drawer.open() }; Unit }
+    // Spec 2026-11-08-app-flows section 2: the menu's Planner row opens the planner on the current
+    // character under the tab; without the planner it is the Talents compare.
     val onOpen = { destination: MenuDestination ->
-        if (destination == MenuDestination.Planner) features.planner?.open(DeepLink.Builds) else pushed = destination
+        val planner = features.planner
+        if (destination == MenuDestination.Planner && planner != null) planner.openForCharacter() else pushed = destination
         Unit
     }
     ProfileMenuDrawer(features, drawer, gesturesEnabled = pushed == null && plannerTop == null, onOpen = onOpen) {
-        ShellBody(features, selected, select, pushed, openMenu) { pushed = null }
+        ShellBody(features, selected, select, pushed, openMenu, openPushed = { pushed = it }) { pushed = null }
         val search = features.search
         if (search != null) {
             SearchOverlay(search, searchOwner(features.account), searchExits(features, select), features.home.rankings?.searchLink(), features.guides?.let { g -> { link -> g.navigator.open(link) } })
@@ -142,6 +140,7 @@ private fun ShellBody(
     select: (ForeverTab) -> Unit,
     pushed: MenuDestination?,
     openMenu: () -> Unit,
+    openPushed: (MenuDestination) -> Unit,
     closePushed: () -> Unit,
 ) {
     val search = features.search
@@ -156,8 +155,9 @@ private fun ShellBody(
         Box(if (searchOpen) Modifier.fillMaxSize().clearAndSetSemantics {} else Modifier.fillMaxSize()) {
             ForeverTabScaffold(selected = selected, onSelect = select, badges = badges) {
                 when {
-                    // Lane F13: a shared build and Your builds are pushed over the current tab.
-                    features.planner != null && plannerTop != null -> PlannerScreenHost(features.planner, plannerTop)
+                    // Lane F13: the planner, a shared build and Your builds are pushed over the current tab.
+                    features.planner != null && plannerTop != null ->
+                        PlannerScreenHost(features.planner, plannerTop, plannerHost(features, selected, openPushed))
                     pushed != null -> MenuScreen(features, pushed, onPickClass = { select(ForeverTab.Gear) }, onBack = closePushed)
                     else -> shell.SaveableStateProvider(selected.name) {
                         CompositionLocalProvider(LocalOpenMenu provides openMenu) { TabRoot(features, selected, select, onSearch) }
@@ -166,6 +166,29 @@ private fun ShellBody(
             }
         }
     }
+}
+
+/**
+ * What the planner's screens get from the shell: Back names the tab they sit under, the sign-in,
+ * the app's links (the planner closes first), and the Talents compare as the menu's pushed screen.
+ */
+@Composable
+private fun plannerHost(features: ShellFeatures, selected: ForeverTab, openPushed: (MenuDestination) -> Unit): PlannerHost {
+    val context = LocalContext.current
+    val planner = features.planner
+    val account = features.account
+    val talents = planner?.takeIf { features.home.talents != null && it.character() != null }?.let { feature ->
+        {
+            feature.navigator.close()
+            openPushed(MenuDestination.Planner)
+        }
+    }
+    return PlannerHost(
+        backTo = stringResource(selected.label),
+        signIn = { account?.let { it.session.beginSignIn(it.browser(context)) } },
+        openLink = features.openLink,
+        openTalents = talents,
+    )
 }
 
 /** A tab's root screen. Home and Gear keep their lanes' screens until their own rebuilds. */

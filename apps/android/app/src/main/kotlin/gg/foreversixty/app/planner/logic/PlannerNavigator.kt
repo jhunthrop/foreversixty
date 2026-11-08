@@ -31,6 +31,21 @@ class PlannerNavigator {
         stack = stack.dropLast(1)
     }
 
+    /** The top screen swapped for [screen] (the Change panel's class, another class's import). */
+    fun replaceTop(screen: PlannerScreen) {
+        stack = stack.dropLast(1) + screen
+    }
+
+    /** The editor alone, replacing whatever planner screens were open. */
+    fun openEditor(request: EditorRequest) {
+        stack = listOf(PlannerScreen.Editor(request))
+    }
+
+    /** Every planner screen closed: a link out of the planner lands on the app under it. */
+    fun close() {
+        stack = emptyList()
+    }
+
     /**
      * `/app/planner/{class}` opens the editor (a code loads its build), `/app/builds` Your builds
      * (signed in only) and `/b/{id}` the viewer. Each replaces whatever planner screens were open.
