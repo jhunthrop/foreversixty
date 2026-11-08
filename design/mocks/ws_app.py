@@ -179,11 +179,11 @@ def offline(state: str):
     def b(platform: str) -> str:
         rows = [('Guides', 'Fury Warrior, Beast Mastery Hunter &middot; 4.2 MB &middot; Updated today'),
                 ('Best in slot lists', 'All specs &middot; 1.1 MB &middot; Updated today'), ('Talents', '9 classes &middot; 0.6 MB &middot; Updated yesterday'),
-                ('Search index', '2.3 MB &middot; Updated today'), ('Item icons', '18.4 MB &middot; Updated today')]
+                ('Search index', '2.3 MB &middot; Updated today'), ('Item icons', '18 MB &middot; Updated today')]
         strip = Notice('Offline. Showing what you had at 4:12 pm. Sign-ups need a connection.', tone='neutral') if state == 'offline' else ''
         sec_body = Rows([Row(n, s, link=False) for n, s in rows], open_=True) if state != 'empty' else (
             '<p class="t-small" style="padding-top:12px">Nothing is saved on this phone yet. Guides and lists save here the first time you open them.</p>')
-        body = (title('Offline data') + strip + Section('On this phone, 26.6 MB' if state != 'empty' else 'On this phone', sec_body)
+        body = (title('Offline data') + strip + Section('On this phone, 27 MB' if state != 'empty' else 'On this phone', sec_body)
                 + Section('Updates', Rows([Row('Keep my classes ready', 'Saves the guide, lists and talents for every class you have a character in.', trail=Switch('Keep my classes ready'), link=False),
                                           Row('Download on Wi-Fi only', 'Icons and new guides wait for Wi-Fi.', trail=Switch('Download on Wi-Fi only'), link=False)], open_=True))
                 + '<div class="stack">' + Button('Update now') + Button('Remove downloaded data', tone='danger') + '</div>'

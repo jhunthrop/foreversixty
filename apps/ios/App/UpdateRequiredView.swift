@@ -29,38 +29,38 @@ final class UpdateGate: UpdateRequiredSink {
     }
 }
 
-/// The blocking screen the gate shows: no tabs, no way past it but the store.
+/// The blocking screen the gate shows (mock ios-update-required): the seal, the title, why, and
+/// the store button; no tabs, no way past it but the store.
 struct UpdateRequiredView: View {
     let storeURL: URL
     @Environment(\.openURL) private var openURL
 
+    /// `.seal`: 84 pt, 40 over and 8 under; `.stack .btn`: 48 high, 20 under the line.
+    static let sealSize: CGFloat = 84
+    static let sealTop: CGFloat = 40
+    static let sealBottom: CGFloat = FSSpace.space2
+    static let buttonHeight: CGFloat = 48
+
     var body: some View {
-        VStack(spacing: Theme.Spacing.md) {
-            Spacer()
-            Text(Copy.updateRequiredTitle)
-                .font(Theme.Typography.title)
-                .foregroundStyle(Theme.Palette.strong)
-                .multilineTextAlignment(.center)
-            Text(Copy.updateRequiredBody)
-                .font(Theme.Typography.body)
-                .foregroundStyle(Theme.Palette.text)
-                .multilineTextAlignment(.center)
-            Button {
-                openURL(storeURL)
-            } label: {
-                Text(Copy.updateRequiredAction)
-                    .font(Theme.Typography.meta)
-                    .foregroundStyle(Theme.Palette.background)
-                    .frame(maxWidth: .infinity)
+        ScrollView {
+            VStack(spacing: 0) {
+                Seal(size: Self.sealSize).padding(.top, Self.sealTop).padding(.bottom, Self.sealBottom)
+                PageHeader(title: Copy.updateRequiredTitle, alignment: .center)
+                Text(Copy.updateRequiredBody)
+                    .type(FSType.small).foregroundStyle(FSColor.muted)
+                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .frame(maxWidth: 300)
+                Button(Copy.updateRequiredAction) { openURL(storeURL) }
+                    .buttonStyle(FSButtonStyle(.primary))
+                    .frame(minHeight: Self.buttonHeight)
+                    .padding(.top, FSSpace.space5)
             }
-            .buttonStyle(.borderedProminent)
-            .tint(Theme.Palette.accent)
-            .controlSize(.large)
-            Spacer()
+            .padding(.top, FSSpace.space2)
+            .padding(.horizontal, FSSpace.gutterPhone)
+            .parityContent()
         }
-        .padding(Theme.Spacing.lg)
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Theme.Palette.background)
+        .background(FSColor.bg)
     }
 }
 

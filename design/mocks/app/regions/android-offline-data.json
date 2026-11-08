@@ -6,18 +6,18 @@
  "regions": {
   "head": {
    "box": [
-    32,
+    16,
     8,
-    348,
+    380,
     68
    ],
    "inventory": {}
   },
   "head-title": {
    "box": [
-    32,
+    16,
     24,
-    348,
+    380,
     38
    ],
    "inventory": {}

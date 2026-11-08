@@ -5,7 +5,7 @@ import SwiftUI
 import Testing
 
 /// The account chores against their mocks (design/parity.md "Native"): ios-devices,
-/// ios-offline-data, ios-offline-data-empty and ios-offline-strip.
+/// ios-offline-data, ios-offline-data-empty, ios-offline-strip and ios-update-required.
 @MainActor
 @Suite("Account parity")
 struct AccountParityTests {
@@ -30,8 +30,18 @@ struct AccountParityTests {
         )
     }
 
+    /// The mock's phone: Fury Warrior and Beast Mastery Hunter guides, a list, talents, the search
+    /// index and the icons, 27 MB in all.
     private var saved: OfflineReport {
-        SystemStory.offlineReport(savedAt: SystemStory.now.addingTimeInterval(-600))
+        let build = "1.60.1.70707"
+        let savedAt = SystemStory.now.addingTimeInterval(-600)
+        return OfflineReport.build(files: [
+            SavedStaticFile(relativePath: "\(build)/guides/warrior-fury.json", bytes: 2_100_000, savedAt: savedAt),
+            SavedStaticFile(relativePath: "\(build)/guides/hunter-beast-mastery.json", bytes: 2_100_000, savedAt: savedAt),
+            SavedStaticFile(relativePath: "\(build)/bis/warrior-fury.json", bytes: 1_100_000, savedAt: savedAt),
+            SavedStaticFile(relativePath: "\(build)/talents/warrior.json", bytes: 600_000, savedAt: savedAt),
+            SavedStaticFile(relativePath: "\(build)/search.json", bytes: 2_300_000, savedAt: savedAt),
+        ], iconBytes: 18_400_000, iconsUpdated: savedAt)
     }
 
     @Test("ios-offline-data")
@@ -42,6 +52,11 @@ struct AccountParityTests {
     @Test("ios-offline-data-empty")
     func offlineDataEmpty() throws {
         try ParityCheck.assert(offline(OfflineReport(rows: [])), screen: "offline-data-empty", size: Self.device)
+    }
+
+    @Test("ios-update-required")
+    func updateRequired() throws {
+        try ParityCheck.assert(UpdateRequiredView(storeURL: UpdateGate.fallbackStoreURL), screen: "update-required", size: Self.device)
     }
 
     @Test("ios-offline-strip")
