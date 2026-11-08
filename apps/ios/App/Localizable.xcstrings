@@ -8994,6 +8994,39 @@
         }
       }
     },
+    "notifications.discord": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Discord"
+          }
+        }
+      }
+    },
+    "notifications.officerDms": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Let officers DM me on Discord"
+          }
+        }
+      }
+    },
+    "notifications.officerDmsLine": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "When you have not answered a raid; off, they mention you in the channel"
+          }
+        }
+      }
+    },
     "notifications.reminder": {
       "extractionState": "manual",
       "localizations": {

@@ -674,6 +674,9 @@
     <string name="notifications_reminder">Raid-day reminder</string>
     <string name="notifications_reminderLine">If you have not answered: %1$s your time</string>
     <string name="notifications_change">Change</string>
+    <string name="notifications_discord">Discord</string>
+    <string name="notifications_officerDms">Let officers DM me on Discord</string>
+    <string name="notifications_officerDmsLine">When you have not answered a raid; off, they mention you in the channel</string>
     <string name="gear_onList" tools:ignore="PluralsCandidate">%1$d of %2$d slots on the list</string>
     <string name="gear_change">Change</string>
     <string name="gear_whereTonight">Where to go tonight</string>

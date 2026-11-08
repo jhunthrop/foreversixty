@@ -656,6 +656,9 @@
     "notifications.reminder": "Raid-day reminder",
     "notifications.reminderLine": "If you have not answered: {time} your time",
     "notifications.change": "Change",
+    "notifications.discord": "Discord",
+    "notifications.officerDms": "Let officers DM me on Discord",
+    "notifications.officerDmsLine": "When you have not answered a raid; off, they mention you in the channel",
 
     "gear.onList": {"text": "{n} of {total} slots on the list", "notPlural": true, "args": {"n": "int", "total": "int"}},
     "gear.change": "Change",

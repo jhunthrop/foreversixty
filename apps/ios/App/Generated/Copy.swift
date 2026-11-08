@@ -2215,6 +2215,15 @@ enum Copy {
     /// Change
     static var notificationsChange: String { text("notifications.change") }
 
+    /// Discord
+    static var notificationsDiscord: String { text("notifications.discord") }
+
+    /// Let officers DM me on Discord
+    static var notificationsOfficerDms: String { text("notifications.officerDms") }
+
+    /// When you have not answered a raid; off, they mention you in the channel
+    static var notificationsOfficerDmsLine: String { text("notifications.officerDmsLine") }
+
     /// {n} of {total} slots on the list
     static func gearOnList(n: Int, total: Int) -> String {
         format("gear.onList", n, total)

@@ -506,7 +506,8 @@ def permission(guild: str):
 
 
 def notification_settings(platform: str) -> str:
-    """The groups (F4), each switch on its title row (review S12); Raids and Guild ladder show to a guild member, Officer to an officer."""
+    """The groups (F4), each switch on its title row (review S12); Raids and Guild ladder show to a guild member, Officer to an officer;
+    the raid-day reminder; the officer DM opt-in (a guild member's)."""
     groups = [('Raids', 'Posted, moved, your answer due, raid night', True), ('Gear and sims', 'An upgrade dropped, a sim finished, BiS changed', True),
               ('Logs', 'A report or the coach is ready, a new best', True), ('Guild ladder', 'A guildmate passed you', False),
               ('Tiers', 'Your spec moved this week', False)]  # Officer shows to officers only; Thandrel is a member
@@ -514,7 +515,11 @@ def notification_settings(platform: str) -> str:
     rows = ['<div class="row setrow"><div class="b"><div class="ttl">' + n + '</div><div class="sub">' + s + '</div></div>'
             + Switch('', on) + '</div>' for n, s, on in groups]
     nudge = Rows([Row('Raid-day reminder', 'If you have not answered: 3:00 pm your time', trail='<a class="link" href="#">Change</a>', link=False)], open_=True)
-    body = PageHeader('Notifications') + Section('Send me', Rows(rows, open_=True)) + Section('When', nudge)
+    # officer_dms (D16, off by default): channel mentions are the default; on, the officers' Not answered row gets a DM link.
+    dms = Rows(['<div class="row setrow"><div class="b"><div class="ttl">Let officers DM me on Discord</div>'
+                '<div class="sub">When you have not answered a raid; off, they mention you in the channel</div></div>'
+                + Switch('', False) + '</div>'], open_=True)
+    body = PageHeader('Notifications') + Section('Send me', Rows(rows, open_=True)) + Section('When', nudge) + Section('Discord', dms)
     return app_page(platform, _page(body, 'Notifications'), 'home', back='Home', title='Notifications')
 
 
