@@ -534,7 +534,7 @@ def item_sheet(platform: str) -> str:
     where = Rows([Row('Onyxia, Onyxia&rsquo;s Lair', '8% drop chance &middot; raid &middot; Wed with Olympus XXVII', icon(ONY, 40), link=False)], open_=True)
     runners = Rows([Row('Vis&rsquo;kag the Bloodletter', 'Onyxia &middot; 8% &middot; &minus;1.8 DPS', icon('inv_sword_18', 40, 'q4'),
                         title_color='#b866f5', link=False)], open_=True)
-    needs = Rows([Row('Grunvald', 'Protection Warrior &middot; needs it, also on his list', crest_img('warrior', 40), title_color=WARRIOR, link=False),
+    needs = Rows([Row('Grunvald', 'Protection Warrior &middot; needs it, also on their list', crest_img('warrior', 40), title_color=WARRIOR, link=False),
                   Row('Torvak', 'Enhancement Shaman &middot; has it', crest_img('shaman', 40), title_color=CLASS_COLOR['shaman'], link=False)], open_=True)
     sheet = ('<div class="dim" style="height:120px"></div><div class="sheetp" role="dialog" aria-label="Deathbringer"><span class="sheet-grab"></span>'
              + ItemRow('Deathbringer', 4, icon(DEATHBRINGER[1], 40, 'q4'), 'Main hand', gain=('+12.6', 'DPS', 'over your worn'))

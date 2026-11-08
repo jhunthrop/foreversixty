@@ -169,7 +169,7 @@ enum ItemSheetBuilder {
             let spec = specName(need.spec, need.className)
             return ItemSheetRow(
                 id: "need-\(need.characterKey)", title: need.name, titleClass: need.className,
-                sub: need.pick ? Copy.itemsSheetNeedsPick(spec: spec) : Copy.itemsSheetNeedsAlt(spec: spec),
+                sub: need.pick ? Copy.gearSheetNeedsPick(spec: spec) : Copy.gearSheetNeedsRunnerUp(spec: spec),
                 lead: .crest(className: need.className.lowercased())
             )
         }
@@ -182,9 +182,9 @@ enum ItemSheetBuilder {
         }
         let rows = needs + has
         let note: String? = if rows.isEmpty {
-            Copy.itemsSheetNobody
+            Copy.gearSheetNobody
         } else if answer.unknownGear > 0 {
-            Copy.itemsSheetUnknownGear(n: answer.unknownGear)
+            Copy.gearSheetUnknown(n: answer.unknownGear)
         } else {
             nil
         }

@@ -714,10 +714,10 @@
     "gear.sheet.where": "Where to get it",
     "gear.sheet.runnerUp": "Runner-up",
     "gear.sheet.needs": "Who in the guild needs it",
-    "gear.sheet.needsPick": "{spec} · needs it, the pick on their list",
+    "gear.sheet.needsPick": "{spec} · needs it, also on their list",
     "gear.sheet.needsRunnerUp": "{spec} · needs it, a runner-up on their list",
     "gear.sheet.has": "{spec} · has it",
-    "gear.sheet.nobody": "Nobody in the guild has it on their list.",
+    "gear.sheet.nobody": "Nobody in the guild needs it or has it.",
     "gear.sheet.unknown": { "count": "n", "one": "1 guildmate has not shared their gear yet", "other": "{n} guildmates have not shared their gear yet" },
     "gear.sheet.dropChance": "{chance} drop chance",
 
@@ -1741,10 +1741,6 @@
     "items.sheet.raid": "raid",
     "items.sheet.dungeon": "dungeon",
     "items.sheet.needsStanding": "needs {standing}",
-    "items.sheet.needsPick": "{spec} · needs it",
-    "items.sheet.needsAlt": "{spec} · needs it, a runner-up on the list",
-    "items.sheet.nobody": "Nobody in the guild needs it or has it.",
-    "items.sheet.unknownGear": {"count": "n", "one": "1 more has no gear on file.", "other": "{n} more have no gear on file."},
     "items.sheet.guildFailed": "Who needs it did not load."
   }
 }

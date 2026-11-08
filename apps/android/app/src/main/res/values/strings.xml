@@ -740,10 +740,10 @@
     <string name="gear_sheet_where">Where to get it</string>
     <string name="gear_sheet_runnerUp">Runner-up</string>
     <string name="gear_sheet_needs">Who in the guild needs it</string>
-    <string name="gear_sheet_needsPick">%1$s · needs it, the pick on their list</string>
+    <string name="gear_sheet_needsPick">%1$s · needs it, also on their list</string>
     <string name="gear_sheet_needsRunnerUp">%1$s · needs it, a runner-up on their list</string>
     <string name="gear_sheet_has">%1$s · has it</string>
-    <string name="gear_sheet_nobody">Nobody in the guild has it on their list.</string>
+    <string name="gear_sheet_nobody">Nobody in the guild needs it or has it.</string>
     <plurals name="gear_sheet_unknown">
         <item quantity="one">1 guildmate has not shared their gear yet</item>
         <item quantity="other">%1$d guildmates have not shared their gear yet</item>
@@ -1854,13 +1854,6 @@
     <string name="items_sheet_raid">raid</string>
     <string name="items_sheet_dungeon">dungeon</string>
     <string name="items_sheet_needsStanding">needs %1$s</string>
-    <string name="items_sheet_needsPick">%1$s · needs it</string>
-    <string name="items_sheet_needsAlt">%1$s · needs it, a runner-up on the list</string>
-    <string name="items_sheet_nobody">Nobody in the guild needs it or has it.</string>
-    <plurals name="items_sheet_unknownGear">
-        <item quantity="one">1 more has no gear on file.</item>
-        <item quantity="other">%1$d more have no gear on file.</item>
-    </plurals>
     <string name="items_sheet_guildFailed">Who needs it did not load.</string>
     <string name="shared_cta_getAddonAndCompanion">Get the addon and companion</string>
     <string name="shared_cta_installAddonAndCompanion">Install the addon and the companion</string>

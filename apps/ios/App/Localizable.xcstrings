@@ -2630,7 +2630,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@ · needs it, the pick on their list"
+            "value": "%1$@ · needs it, also on their list"
           }
         }
       }
@@ -2653,7 +2653,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Nobody in the guild has it on their list."
+            "value": "Nobody in the guild needs it or has it."
           }
         }
       }
@@ -6409,30 +6409,6 @@
         }
       }
     },
-    "items.sheet.needsAlt": {
-      "comment": "Arguments: 1 spec (string)",
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$@ · needs it, a runner-up on the list"
-          }
-        }
-      }
-    },
-    "items.sheet.needsPick": {
-      "comment": "Arguments: 1 spec (string)",
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$@ · needs it"
-          }
-        }
-      }
-    },
     "items.sheet.needsStanding": {
       "comment": "Arguments: 1 standing (string)",
       "extractionState": "manual",
@@ -6445,17 +6421,6 @@
         }
       }
     },
-    "items.sheet.nobody": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nobody in the guild needs it or has it."
-          }
-        }
-      }
-    },
     "items.sheet.raid": {
       "extractionState": "manual",
       "localizations": {
@@ -6463,30 +6428,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "raid"
-          }
-        }
-      }
-    },
-    "items.sheet.unknownGear": {
-      "comment": "Arguments: 1 n (int)",
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "variations": {
-            "plural": {
-              "one": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "1 more has no gear on file."
-                }
-              },
-              "other": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "%1$lld more have no gear on file."
-                }
-              }
-            }
           }
         }
       }

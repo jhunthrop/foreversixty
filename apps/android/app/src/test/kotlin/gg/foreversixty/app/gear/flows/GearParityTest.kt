@@ -92,7 +92,7 @@ class GearParityTest {
         val res = ApplicationProvider.getApplicationContext<android.content.Context>().resources
         val row = GearSlotRow("head", ItemLook(2, "Lionheart Helm", 4), "Head", "+14.5", worn = false, row = GearFixtures.list.rows.first())
         val sheet = GearSheetComposer(res, BUILD).content(row, "DPS", null, emptyList(), GearFixtures.needs)
-        assertEquals(listOf("Protection Warrior · needs it, the pick on their list", "Enhancement Shaman · has it"), sheet.guild?.map { it.line })
+        assertEquals(listOf("Protection Warrior · needs it, also on their list", "Enhancement Shaman · has it"), sheet.guild?.map { it.line })
         assertEquals(null, sheet.guildNote)
     }
 
@@ -177,7 +177,7 @@ object GearFixtures {
             FlowLead.Item(ItemLook(17075, "Vis'kag the Bloodletter", 4, "inv_sword_18"), BUILD), titleColor = null,
         ),
         guild = listOf(
-            GearSheetLine("Grunvald", "Protection Warrior · needs it, the pick on their list", FlowLead.Crest("warrior")),
+            GearSheetLine("Grunvald", "Protection Warrior · needs it, also on their list", FlowLead.Crest("warrior")),
             GearSheetLine("Torvak", "Enhancement Shaman · has it", FlowLead.Crest("shaman")),
         ),
         guildNote = null,

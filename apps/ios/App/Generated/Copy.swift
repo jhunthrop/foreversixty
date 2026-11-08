@@ -2420,7 +2420,7 @@ enum Copy {
     /// Who in the guild needs it
     static var gearSheetNeeds: String { text("gear.sheet.needs") }
 
-    /// {spec} · needs it, the pick on their list
+    /// {spec} · needs it, also on their list
     static func gearSheetNeedsPick(spec: String) -> String {
         format("gear.sheet.needsPick", spec)
     }
@@ -2435,7 +2435,7 @@ enum Copy {
         format("gear.sheet.has", spec)
     }
 
-    /// Nobody in the guild has it on their list.
+    /// Nobody in the guild needs it or has it.
     static var gearSheetNobody: String { text("gear.sheet.nobody") }
 
     /// {n} guildmates have not shared their gear yet
@@ -6184,24 +6184,6 @@ enum Copy {
     /// needs {standing}
     static func itemsSheetNeedsStanding(standing: String) -> String {
         format("items.sheet.needsStanding", standing)
-    }
-
-    /// {spec} · needs it
-    static func itemsSheetNeedsPick(spec: String) -> String {
-        format("items.sheet.needsPick", spec)
-    }
-
-    /// {spec} · needs it, a runner-up on the list
-    static func itemsSheetNeedsAlt(spec: String) -> String {
-        format("items.sheet.needsAlt", spec)
-    }
-
-    /// Nobody in the guild needs it or has it.
-    static var itemsSheetNobody: String { text("items.sheet.nobody") }
-
-    /// {n} more have no gear on file.
-    static func itemsSheetUnknownGear(n: Int) -> String {
-        format("items.sheet.unknownGear", n)
     }
 
     /// Who needs it did not load.

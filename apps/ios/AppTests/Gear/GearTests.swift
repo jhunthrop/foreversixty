@@ -203,10 +203,10 @@ struct GearLogicTests {
         guard case let .loaded(rows, note) = ItemSheetBuilder.guildRows(answer) else { Issue.record("not loaded"); return }
         #expect(rows.map(\.title) == ["Kraggor", "Brightwen", "Ironhide"])
         #expect(rows.map(\.sub) == [
-            "Fury Warrior · needs it", "Combat Rogue · needs it, a runner-up on the list", "Protection Warrior · has it",
+            "Fury Warrior · needs it, also on their list", "Combat Rogue · needs it, a runner-up on their list", "Protection Warrior · has it",
         ])
         #expect(rows.first?.lead == .crest(className: "warrior"))
-        #expect(note == "3 more have no gear on file.")
+        #expect(note == "3 guildmates have not shared their gear yet")
         let empty = ItemNeeds(itemId: 1, needs: [], has: [], unknownGear: 0)
         #expect(ItemSheetBuilder.guildRows(empty) == .loaded(rows: [], note: "Nobody in the guild needs it or has it."))
     }
