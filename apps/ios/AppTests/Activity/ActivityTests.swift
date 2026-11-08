@@ -147,8 +147,8 @@ struct ActivityParityTests {
 
     @Test("ios-activity")
     func list() throws {
-        // On the CI runner this list's hosting view vends no accessibility children (run
-        // 42481050975's dump), so its words come from the sections the view draws, in the
+        // On the CI runner the Activity suite's hosting view vended no accessibility children
+        // (run 42481050975's dump), so its words come from the sections the view draws, in the
         // order VoiceOver reads them.
         try ParityCheck.assert(view(ActivityTestData.rows), screen: "activity", size: Self.device, text: Self.words(ActivityTestData.rows))
     }
@@ -158,6 +158,7 @@ struct ActivityParityTests {
     static func words(_ rows: [ActivityRow]) -> [String] {
         let sections = ActivitySections(rows, filter: .all, now: ActivityTestData.now, calendar: ActivityTestData.calendar).sections
         var lines = [Copy.tabActivity] + ActivityFilter.allCases.map(\.title)
+        if sections.isEmpty { return lines + [Copy.activityEmpty] }
         for (index, section) in sections.enumerated() {
             lines.append(section.day.title)
             if index == 0, section.rows.contains(where: { !$0.row.read }) { lines.append(Copy.activityMarkAllRead) }
@@ -171,7 +172,7 @@ struct ActivityParityTests {
 
     @Test("ios-activity-empty")
     func empty() throws {
-        try ParityCheck.assert(view([]), screen: "activity-empty", size: Self.device)
+        try ParityCheck.assert(view([]), screen: "activity-empty", size: Self.device, text: Self.words([]))
     }
 
     @Test("ios-activity-out")

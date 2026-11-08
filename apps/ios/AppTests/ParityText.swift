@@ -27,6 +27,9 @@ enum ParityText {
         let deadline = Date().addingTimeInterval(settleTimeout)
         var last = elements(under: root).compactMap(line)
         while Date() < deadline {
+            // Spinning the run loop lets another suite's test run and take the key window; only
+            // the key window's tree is vended, so take it back before each read.
+            root.window?.makeKeyAndVisible()
             RunLoop.main.run(until: Date().addingTimeInterval(settleStep))
             let next = elements(under: root).compactMap(line)
             if !next.isEmpty, next == last { return next }
