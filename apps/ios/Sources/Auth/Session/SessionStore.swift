@@ -123,6 +123,14 @@ public final class SessionStore {
         pickedKey = key
     }
 
+    /// Marks `key` the account's main (`PATCH /v1/me`, flows spec F8) and makes it the current
+    /// character. Throws when the API refused or could not be reached; nothing changes then.
+    public func setMain(_ key: String) async throws(APIError) {
+        let me = try await client.send(.updateMe(MePatch(mainCharacterKey: key)))
+        if phase.isSignedIn { phase = .signedIn(me) }
+        pick(key)
+    }
+
     /// You › Sign out: revoke this device on the server, then forget everything local.
     public func signOut() async {
         endingOnPurpose = true

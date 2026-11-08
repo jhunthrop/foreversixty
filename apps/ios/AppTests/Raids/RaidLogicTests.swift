@@ -443,46 +443,62 @@ struct RaidPushTests {
         return try #require(RaidPushPayload(userInfo: userInfo))
     }
 
-    @Test("the payload names the raid, the character and the answers")
+    private func answer(_ service: FakeRaidService, _ signup: PushSignup, _ extra: [String: String] = [:]) async throws -> RaidPushOutcome {
+        await RaidPushAnswerer(calls: service).answer(try payload(extra), signup)
+    }
+
+    @Test("the payload names the raid and the character; every action maps to its answer")
     func parse() throws {
         let push = try payload()
         #expect(push.guild == 2 && push.raid == 31)
         #expect(push.characterKey == "us/pvp/obnoxious-yell")
         #expect(!push.askSpec)
-        #expect(push.answers["in"]?.title == "You are In for Onyxia's Lair")
-        #expect(RaidPushCategory.state(forAction: "signup_late") == .late)
+        #expect(RaidPushCategory.signup(forAction: "signup_late") == PushSignup(state: "late"))
+        #expect(RaidPushCategory.signup(forAction: "signup_bench") == PushSignup(state: "bench"))
+        #expect(RaidPushCategory.signup(forAction: "signup_late_30") == PushSignup(state: "late", lateMinutes: 30))
+        #expect(RaidPushCategory.signup(forAction: "signup_late_45") == nil)
+        #expect(RaidPushCategory.signup(forAction: "ask_spec") == nil)
     }
 
-    @Test("In from the lock screen sends the PUT for the chosen character, keeping its note")
+    @Test("In from the lock screen sends the PUT for the chosen character, keeping its note, and posts the server's confirmation")
     func answersIn() async throws {
         let service = FakeRaidService()
-        let outcome = await RaidPushAnswerer(service: service).answer(try payload(), state: .signedIn)
+        let outcome = try await answer(service, PushSignup(state: "in"))
         #expect(service.signups.first?.key == "us/pvp/obnoxious-yell")
         #expect(service.signups.first?.request.state == "in")
-        guard case let .answered(answer) = outcome else { Issue.record("not answered"); return }
-        #expect(answer.title == "You are In for Onyxia's Lair")
+        #expect(service.signups.first?.request.lateMinutes == nil)
+        #expect(outcome == .answered(.init(title: "You're In for Onyxia's Lair", body: "Obnoxious Yell, pull at 7:00 pm CST.")))
     }
 
-    @Test("a moved character is named after the answer (R3)")
+    @Test("a Late chip sends its minutes")
+    func lateMinutes() async throws {
+        let service = FakeRaidService()
+        _ = try await answer(service, PushSignup(state: "late", lateMinutes: 30))
+        #expect(service.signups.first?.request.state == "late")
+        #expect(service.signups.first?.request.lateMinutes == 30)
+    }
+
+    @Test("a moved character is named in the server's confirmation (R3)")
     func moved() async throws {
         let service = FakeRaidService()
         let moved = try RaidFixture.load(SignupAnswer.self, "guild.signup.moved")
         service.signupAnswer = { _ in moved }
-        let outcome = await RaidPushAnswerer(service: service).answer(try payload(), state: .signedIn)
-        guard case let .answered(answer) = outcome else { Issue.record("not answered"); return }
-        #expect(answer.body.hasSuffix(" Obnoxious Yell moved to Bench."))
+        guard case let .answered(confirmation) = try await answer(service, PushSignup(state: "in")) else {
+            Issue.record("not answered")
+            return
+        }
+        #expect(confirmation.body.hasSuffix(" Obnoxious Yell moved to Bench."))
     }
 
-    @Test("a locked raid posts the locked answer; a failure posts the failed one")
+    @Test("a locked raid posts the locked line; a failure posts the failed one")
     func refused() async throws {
         let service = FakeRaidService()
         service.signupAnswer = { _ throws(APIError) in throw (try? RaidFixture.error("guild.signup.error-raid-locked", status: 409)) ?? .unexpectedStatus(0) }
-        let locked = await RaidPushAnswerer(service: service).answer(try payload(), state: .late)
-        #expect(locked == .answered(.init(title: "Sign-ups for Onyxia's Lair are locked", body: "An officer can still change yours.")))
+        let locked = try await answer(service, PushSignup(state: "late"))
+        #expect(locked == .answered(.init(title: Copy.raidLocked, body: "")))
         service.raidAnswer = { () throws(APIError) in throw .transport("offline") }
-        let failed = await RaidPushAnswerer(service: service).answer(try payload(), state: .late)
-        guard case let .answered(answer) = failed else { Issue.record("not answered"); return }
-        #expect(answer.title == "That did not save")
+        let failed = try await answer(service, PushSignup(state: "late"))
+        #expect(failed == .answered(.init(title: Copy.commonFailed, body: "")))
     }
 
     @Test("a character with no spec opens the raid page with the spec sheet")
@@ -490,7 +506,7 @@ struct RaidPushTests {
         let service = FakeRaidService()
         let ask = try RaidFixture.raid("guild.raid.ask-spec")
         service.raidAnswer = { ask }
-        let outcome = await RaidPushAnswerer(service: service).answer(try payload(["character_key": "us/pvp/lightningbolltz"]), state: .signedIn)
+        let outcome = try await answer(service, PushSignup(state: "in"), ["character_key": "us/pvp/lightningbolltz"])
         #expect(outcome == .open(.raid(guild: 2, raid: 31, spec: "ask", state: nil)))
         #expect(service.signups.isEmpty)
     }

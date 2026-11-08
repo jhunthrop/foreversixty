@@ -16,6 +16,16 @@ enum AccountLinks {
     /// F8.4's `Manage billing on foreversixty.gg`, link regions only.
     static let billing = page("/account#plan")
 
+    /// The menu's Help: the Discord server, from the site's own links file (web/src/data/links.json,
+    /// bundled by project.yml), else the site.
+    static let help: URL = {
+        struct Links: Decodable { let discordInvite: URL }
+        let links = Bundle.main.url(forResource: "links", withExtension: "json")
+            .flatMap { try? Data(contentsOf: $0) }
+            .flatMap { try? JSONDecoder().decode(Links.self, from: $0) }
+        return links?.discordInvite ?? page("/")
+    }()
+
     private static func page(_ path: String) -> URL {
         guard let url = URL(string: site + path) else { preconditionFailure("bad site path \(path)") }
         return url

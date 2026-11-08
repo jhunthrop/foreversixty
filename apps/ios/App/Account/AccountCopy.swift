@@ -95,30 +95,14 @@ enum AccountCopy {
         }
     }
 
-    /// `Orc Fury Warrior · Level 58` (switcher rows).
-    static func switcherDetail(_ character: AccountCharacter) -> String {
-        let kind = [character.race, character.spec, character.className]
-            .compactMap { $0.map(words) }
-            .joined(separator: " ")
-        guard let level = character.level else { return kind }
-        return Copy.accountSwitcherDetail(kind: kind, n: level)
-    }
-
-    /// `Fury · 58` (the selector's short line); the class when no spec is saved.
-    static func selectorDetail(_ character: AccountCharacter) -> String? {
-        guard let level = character.level else { return nil }
-        let spec = (character.spec ?? character.className).map(words) ?? ""
-        return Copy.accountSelectorDetail(spec: spec, n: level)
-    }
-
-    /// The VoiceOver line: `Character, Lightningbolltz, Elemental Shaman, level 60`.
-    static func selectorLabel(_ character: AccountCharacter) -> String {
-        Copy.selectorA11y(
-            name: character.name,
-            spec: character.spec.map(words) ?? "",
-            className: character.className.map(words) ?? "",
-            n: character.level ?? 0
-        )
+    /// `Fury Warrior · 60 · Olympus XXVII`: the menu's and Pick your main's line under a name.
+    static func characterLine(_ character: AccountCharacter) -> String {
+        let kind = [character.spec, character.className].compactMap { $0.map(words) }.joined(separator: " ")
+        let level = character.level ?? 0
+        if let guild = character.guild?.name {
+            return Copy.menuCharacterLineGuild(kind: kind, n: level, guild: guild)
+        }
+        return Copy.menuCharacterLine(kind: kind, n: level)
     }
 
     /// The API's lower-case words (`night elf`, `warrior`) as display words.

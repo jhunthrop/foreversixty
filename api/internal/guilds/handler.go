@@ -82,6 +82,8 @@ type Service struct {
 	limiterOnce   sync.Once
 	// Events publishes the player notifications (events.Router); nil publishes nothing.
 	Events events.Publisher
+	// Scores reads the applicant sheet's Forever Score; nil leaves it null.
+	Scores ApplicantScorer
 	// Nudges finds who a raid-day nudge goes to and when (events.Store); nil sends no nudge.
 	Nudges NudgeReader
 	// AppSignups (APP_NOTIFICATIONS_ENABLED) lets a signed-in app's token answer the sign-up
@@ -108,6 +110,8 @@ func Mount(mux *http.ServeMux, s *Service, trustedProxyHops int) {
 	mux.HandleFunc("POST /v1/guilds/{id}/claim/reopen", s.reopenClaimCooldown)
 	// Public, like the guild page itself: the router's per-client limit is its rate limit.
 	mux.HandleFunc("GET /v1/guilds/search", s.searchGuilds)
+	mux.HandleFunc("GET /v1/guilds/recruiting", s.recruiting)
+	mux.HandleFunc("GET /v1/characters/{region}/{ruleset}/{name}/ready", auth.RequireSession(s.readyCheck))
 	mux.HandleFunc("GET /v1/guilds/{id}/settings", auth.RequireSession(s.getSettings))
 	mux.HandleFunc("PATCH /v1/guilds/{id}/settings", auth.RequireSession(s.patchSettings))
 	mux.HandleFunc("POST /v1/guilds/{id}/invite/rotate", auth.RequireSession(s.rotateInvite))

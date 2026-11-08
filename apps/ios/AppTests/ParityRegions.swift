@@ -71,10 +71,12 @@ enum ParityRegions {
         return diffs
     }
 
-    /// The items whose centre lies inside `region`, counted by kind (kinds with none left out).
+    /// The items whose centre lies inside `region`, counted by kind (kinds with none left out). An
+    /// item past the region's right edge on its rows counts too: content a region scrolls sideways
+    /// (a row of filter chips) is in the region on the web, which counts by the DOM.
     static func inventory(of region: CGRect, items: [ParityItem]) -> [String: Int] {
         var counts: [String: Int] = [:]
-        for item in items where region.contains(CGPoint(x: item.frame.midX, y: item.frame.midY)) {
+        for item in items where (region.minY ... region.maxY).contains(item.frame.midY) && item.frame.midX >= region.minX {
             counts[item.kind.rawValue, default: 0] += 1
         }
         return counts

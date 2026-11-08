@@ -125,7 +125,7 @@ struct OpenRaidIntent: OpenIntent {
 
     @MainActor
     func perform() async throws -> some IntentResult {
-        IntentRouter.shared.open(target.link.map(IntentDestination.link) ?? .tab(.raids))
+        IntentRouter.shared.open(target.link.map(IntentDestination.link) ?? .tab(.raid))
         return .result()
     }
 }
@@ -138,7 +138,7 @@ struct OpenGuideIntent: OpenIntent {
 
     @MainActor
     func perform() async throws -> some IntentResult {
-        IntentRouter.shared.open(target.link.map(IntentDestination.link) ?? .tab(.guides))
+        IntentRouter.shared.open(target.link.map(IntentDestination.link) ?? .link(.guides))
         return .result()
     }
 }

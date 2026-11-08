@@ -40,7 +40,7 @@ enum PushLanding {
             return .link(.raidNight(guild: guild, raid: raid))
         case _ where kind == Kind.lootAwarded || Kind.gear.contains(kind):
             // The item sheet and the Gear tab replace this with the navigation step (spec 4.3).
-            return .tab(.bis)
+            return .tab(.gear)
         case Kind.characterLinked:
             return data["character_key"].map { .character(key: $0) }
         case _ where Kind.account.contains(kind):
@@ -51,19 +51,8 @@ enum PushLanding {
         }
     }
 
-    /// An app link, or the site's own page for the screens the app has (`/sim/{id}`,
-    /// `/reports/{id}`, `/character/{region}/{ruleset}/{name}`, `/guides/{class}/{spec}`, `/b/{id}`).
+    /// The screen a notification's link names (an app link or one of the site pages the app opens).
     static func link(from url: URL) -> DeepLink? {
-        if let app = DeepLink(url: url) { return app }
-        guard url.scheme == "https", url.host == DeepLink.host else { return nil }
-        let parts = url.pathComponents.filter { $0 != "/" }
-        switch parts.first {
-        case "sim" where parts.count == 2: return .sim(id: parts[1])
-        case "reports" where parts.count == 2: return .report(id: parts[1])
-        case "character" where parts.count == 4: return .player(region: parts[1], ruleset: parts[2], name: parts[3])
-        case "guides" where parts.count == 3: return .guide(className: parts[1], spec: parts[2])
-        case "guides" where parts.count == 1: return .guides
-        default: return nil
-        }
+        DeepLink(url: url)
     }
 }

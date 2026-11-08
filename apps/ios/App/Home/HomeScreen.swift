@@ -212,7 +212,7 @@ struct HomeCharacterScreen: View {
             .navigationDestination(isPresented: reportsShown) { reports }
             .navigationDestination(isPresented: rankingsShown) { rankings }
             .navigationDestination(item: playerShown) { player($0) }
-            .characterSelector(isOn: showsSelector)
+            .tabRootChrome()
             .searchButton()
         }
         .sheet(item: $tooltip) { request in

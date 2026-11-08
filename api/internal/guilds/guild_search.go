@@ -77,27 +77,33 @@ func (s *Store) SearchGuilds(ctx context.Context, q GuildSearch) ([]GuildSearchH
 // guildSearchQuery validates the request; it writes the 400 itself when a parameter is bad.
 func guildSearchQuery(w http.ResponseWriter, r *http.Request) (GuildSearch, bool) {
 	p := r.URL.Query()
-	q := GuildSearch{
-		Text:    strings.TrimSpace(p.Get("q")),
-		Region:  strings.ToLower(p.Get("region")),
-		Ruleset: strings.ToLower(p.Get("ruleset")),
-	}
+	q := GuildSearch{Text: strings.TrimSpace(p.Get("q"))}
 	if n := utf8.RuneCountInString(q.Text); n < guildSearchMinChars || n > guildSearchMaxChars {
 		span := strconv.Itoa(guildSearchMinChars) + " to " + strconv.Itoa(guildSearchMaxChars) + " characters"
 		httpx.WriteError(w, r, http.StatusBadRequest, "bad_request", "q must be "+span, map[string]string{"q": span})
 		return q, false
 	}
-	if q.Region != "" && !character.ValidRegion(q.Region) {
+	var ok bool
+	q.Region, q.Ruleset, ok = realmFilter(w, r)
+	return q, ok
+}
+
+// realmFilter reads the optional region and ruleset query parameters, lower-cased; it writes the
+// 400 itself when one is given and is not valid.
+func realmFilter(w http.ResponseWriter, r *http.Request) (region, ruleset string, ok bool) {
+	p := r.URL.Query()
+	region, ruleset = strings.ToLower(p.Get("region")), strings.ToLower(p.Get("ruleset"))
+	if region != "" && !character.ValidRegion(region) {
 		httpx.WriteError(w, r, http.StatusBadRequest, "bad_request", "that is not a region",
 			map[string]string{"region": strings.Join(character.Regions, ", ")})
-		return q, false
+		return "", "", false
 	}
-	if q.Ruleset != "" && !character.ValidRuleset(q.Ruleset) {
+	if ruleset != "" && !character.ValidRuleset(ruleset) {
 		httpx.WriteError(w, r, http.StatusBadRequest, "bad_request", "that is not a ruleset",
 			map[string]string{"ruleset": strings.Join(character.Rulesets, ", ")})
-		return q, false
+		return "", "", false
 	}
-	return q, true
+	return region, ruleset, true
 }
 
 // searchGuilds is GET /v1/guilds/search.

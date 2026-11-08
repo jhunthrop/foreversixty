@@ -56,7 +56,7 @@ struct BisScreen: View {
             // F12's universal search replaces it. The leading slot is the character selector
             // (lane F1), the same on Home.
             .modifier(BisSearchMode(text: $model.searchText, isUniversal: search != nil))
-            .characterSelector(isOn: session != nil)
+            .tabRootChrome()
             .toolbarBackground(FSColor.bg, for: .navigationBar)
             .sheet(isPresented: $model.isPickerPresented) {
                 BisPickerSheet(context: model.context, catalog: model.catalog, build: model.build) { selection in

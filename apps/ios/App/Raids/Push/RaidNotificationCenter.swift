@@ -29,7 +29,7 @@ final class RaidNotificationCenter: NSObject, UNUserNotificationCenterDelegate {
     static var categories: Set<UNNotificationCategory> {
         let signIn = UNNotificationAction(identifier: RaidPushCategory.actionIn, title: Copy.pushActionIn, options: [])
         let late = UNNotificationAction(identifier: RaidPushCategory.actionLate, title: Copy.pushActionLate, options: [])
-        let bench = UNNotificationAction(identifier: RaidPushCategory.actionBench, title: Copy.raidStateBench, options: [])
+        let bench = UNNotificationAction(identifier: RaidPushCategory.actionBench, title: Copy.pushActionBench, options: [])
         let out = UNNotificationAction(identifier: RaidPushCategory.actionOut, title: Copy.pushActionOut, options: [])
         let askSpec = UNNotificationAction(identifier: RaidPushCategory.actionAskSpec, title: Copy.pushActionAskSpec, options: [.foreground])
         let choose = UNNotificationAction(identifier: RaidPushCategory.actionChoose, title: Copy.pushActionChoose, options: [.foreground])
@@ -60,9 +60,9 @@ final class RaidNotificationCenter: NSObject, UNUserNotificationCenterDelegate {
 
     /// A background answer posts in place; a tap lands on the event's answer (flows spec F4).
     private func handle(payload: RaidPushPayload?, landing: IntentDestination?, action: String, identifier: String, thread: String) async {
-        if let payload, let state = RaidPushCategory.state(forAction: action), let answerer {
-            switch await answerer.answer(payload, state: state) {
-            case let .answered(answer): await post(answer, replacing: identifier, thread: thread)
+        if let payload, let signup = RaidPushCategory.signup(forAction: action), let answerer {
+            switch await answerer.answer(payload, signup) {
+            case let .answered(confirmation): await confirmation.post(replacing: identifier, thread: thread)
             case let .open(link): open(.link(link))
             }
             return
@@ -78,15 +78,5 @@ final class RaidNotificationCenter: NSObject, UNUserNotificationCenterDelegate {
 
     private func open(_ destination: IntentDestination) {
         if let onOpen { onOpen(destination) } else { pending = destination }
-    }
-
-    /// The answer replaces the question: the same identifier, the same thread, no actions.
-    private func post(_ answer: RaidPushPayload.Answer, replacing identifier: String, thread: String) async {
-        let content = UNMutableNotificationContent()
-        content.title = answer.title
-        content.body = answer.body
-        content.threadIdentifier = thread
-        let request = UNNotificationRequest(identifier: identifier, content: content, trigger: nil)
-        try? await UNUserNotificationCenter.current().add(request)
     }
 }

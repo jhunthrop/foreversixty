@@ -71,6 +71,11 @@ jobs:
       - uses: actions/setup-java@v4
         with: { distribution: temurin, java-version: '21' }
       - uses: gradle/actions/setup-gradle@v4
+      - name: Fetch Gradle
+        working-directory: apps/android
+        run: |
+          for i in 1 2 3 4 5; do ./gradlew --version -q && exit 0; echo "::warning::Gradle download failed (try $i)"; sleep 30; done
+          exit 1
       # 24 runs tools/play-upload.ts as TypeScript with no packages.
       - uses: actions/setup-node@v4
         with: { node-version: 24 }
@@ -82,10 +87,15 @@ jobs:
           xcode-version: ${{ env.XCODE_VERSION }}
       - name: Install XcodeGen
         run: |
-          curl -fsSL -o "$RUNNER_TEMP/xcodegen.zip" \
-            "https://github.com/yonaskolb/XcodeGen/releases/download/${XCODEGEN_VERSION}/xcodegen.zip"
-          unzip -q "$RUNNER_TEMP/xcodegen.zip" -d "$RUNNER_TEMP"
-          echo "$RUNNER_TEMP/xcodegen/bin" >> "$GITHUB_PATH"
+          # GitHub release downloads 504 now and then: retry, then fall back to Homebrew.
+          if curl -fsSL --retry 6 --retry-all-errors --retry-delay 10 -o "$RUNNER_TEMP/xcodegen.zip" \
+              "https://github.com/yonaskolb/XcodeGen/releases/download/${XCODEGEN_VERSION}/xcodegen.zip"; then
+            unzip -q "$RUNNER_TEMP/xcodegen.zip" -d "$RUNNER_TEMP"
+            echo "$RUNNER_TEMP/xcodegen/bin" >> "$GITHUB_PATH"
+          else
+            echo "::warning::XcodeGen ${XCODEGEN_VERSION} download failed; installing from Homebrew"
+            brew install xcodegen
+          fi
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: '3.4'

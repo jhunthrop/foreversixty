@@ -3,7 +3,7 @@ import Models
 import Networking
 
 /// The raid calls the screens make. Live goes through `APIClient`; tests pass a fake.
-protocol RaidService: Sendable {
+protocol RaidService: PushSignupCalls {
     func me() async throws(APIError) -> Me
     func raids(guild: Int64) async throws(APIError) -> GuildRaids
     func raid(guild: Int64, raid: Int64) async throws(APIError) -> RaidView

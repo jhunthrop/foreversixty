@@ -22,8 +22,15 @@ type NotSignedRaider struct {
 	Class         string `json:"class"`
 	AccountKey    string `json:"account_key"`
 	DiscordLinked bool   `json:"discord_linked"`
-	// discordUserID is the linked Discord user the ping mentions; never marshaled.
+	// Role is the row's sign-up role (tank, healer, dps), from its roster group.
+	Role string `json:"role"`
+	// LastWeek is the account's answer for the raid the week before (raids_last_week.go): in,
+	// late, bench, out or missed; null with no such raid. Officers' rows only fill it.
+	LastWeek *string `json:"last_week"`
+	// discordUserID is the linked Discord user the ping mentions; userID the account; never
+	// marshaled.
 	discordUserID string
+	userID        int64
 }
 
 // rosterFact is what the officer lists read of one verified character beyond the raid roster.
@@ -112,7 +119,7 @@ func notSignedRaiders(v RaidView, facts map[string]rosterFact) []NotSignedRaider
 		f := facts[c.CharacterKey]
 		out = append(out, NotSignedRaider{
 			CharacterKey: c.CharacterKey, Name: c.Name, Class: c.Class, AccountKey: accountKeyFor(uid),
-			DiscordLinked: f.discordUserID != "", discordUserID: f.discordUserID,
+			DiscordLinked: f.discordUserID != "", Role: groupRoles[c.Group], discordUserID: f.discordUserID, userID: uid,
 		})
 	}
 	sort.Slice(out, func(i, j int) bool { return out[i].Name < out[j].Name })
