@@ -1218,6 +1218,7 @@
     <string name="live_pullTitleOne">%1$s starts in 1 minute</string>
     <string name="live_pullTitle" tools:ignore="PluralsCandidate">%1$s starts in %2$d minutes</string>
     <string name="live_pullTitleNow">%1$s starts now</string>
+    <string name="live_counts" tools:ignore="PluralsCandidate">%1$d in, %2$d late · %3$d tanks, %4$d heals</string>
     <string name="live_sim" tools:ignore="PluralsCandidate">%1$d of %2$d combinations</string>
     <plurals name="live_simLeft">
         <item quantity="one">about 1 min left</item>

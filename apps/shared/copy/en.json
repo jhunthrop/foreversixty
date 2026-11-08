@@ -1167,6 +1167,7 @@
     "live.pullTitleOne": "{zone} starts in 1 minute",
     "live.pullTitle": {"text": "{zone} starts in {n} minutes", "notPlural": true, "args": {"n": "int"}},
     "live.pullTitleNow": "{zone} starts now",
+    "live.counts": {"text": "{in} in, {late} late · {tanks} tanks, {healers} heals", "notPlural": true, "args": {"in": "int", "late": "int", "tanks": "int", "healers": "int"}},
     "live.sim": {"text": "{n} of {m} combinations", "notPlural": true, "args": {"n": "int", "m": "int"}},
     "live.simLeft": {"count": "n", "one": "about 1 min left", "other": "about {n} min left"},
     "live.finished": "Finished",

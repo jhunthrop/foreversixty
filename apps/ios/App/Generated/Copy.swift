@@ -4072,6 +4072,11 @@ enum Copy {
         format("live.pullTitleNow", zone)
     }
 
+    /// {in} in, {late} late · {tanks} tanks, {healers} heals
+    static func liveCounts(`in`: Int, late: Int, tanks: Int, healers: Int) -> String {
+        format("live.counts", `in`, late, tanks, healers)
+    }
+
     /// {n} of {m} combinations
     static func liveSim(n: Int, m: Int) -> String {
         format("live.sim", n, m)

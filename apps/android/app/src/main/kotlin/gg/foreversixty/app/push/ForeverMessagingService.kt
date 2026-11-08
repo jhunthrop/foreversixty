@@ -8,6 +8,7 @@ import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import gg.foreversixty.app.ForeverApplication
+import gg.foreversixty.app.widgets.logic.LivePush
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -32,6 +33,12 @@ class ForeverMessagingService : FirebaseMessagingService() {
     }
 
     override fun onMessageReceived(message: RemoteMessage) {
+        // Live surfaces (live.raid.*, live.sim.*, widget.refresh) draw the ongoing notifications and widgets.
+        if (LivePush.parse(message.data) != null) {
+            val widgets = (application as ForeverApplication).graph.widgets ?: return
+            scope.launch { widgets.handlePush(message.data) }
+            return
+        }
         val parsed = PushMessage.parse(
             data = message.data,
             notificationTitle = message.notification?.title,

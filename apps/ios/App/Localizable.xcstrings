@@ -6843,6 +6843,18 @@
         }
       }
     },
+    "live.counts": {
+      "comment": "Arguments: 1 in (int), 2 late (int), 3 tanks (int), 4 healers (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld in, %2$lld late · %3$lld tanks, %4$lld heals"
+          }
+        }
+      }
+    },
     "live.failed": {
       "extractionState": "manual",
       "localizations": {
