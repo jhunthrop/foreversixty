@@ -666,7 +666,7 @@
     <string name="activity_earlier">Earlier</string>
     <string name="activity_markAllRead">Mark all read</string>
     <string name="activity_unread">Unread</string>
-    <string name="activity_empty">Nothing yet. Loot, sims, reports and your guild’s raids arrive here as they happen.</string>
+    <string name="activity_empty">Nothing yet. Loot, sims, reports and your guild\'s raids arrive here as they happen.</string>
     <string name="activity_signedOut">What changed for your characters: loot, sims, reports, raids.</string>
     <string name="notifications_sendMe">Send me</string>
     <string name="notifications_when">When</string>
