@@ -44,11 +44,12 @@ private final class FakeBisSource: BisDataSource, Sendable {
     func cachedClasses(build _: String) -> CachedFile<[ClassInfo]>? { nil }
     func currentCharacter() async -> AccountCharacter? { state.withLock { $0.character } }
     func keyDates() async -> [KeyDate] { (try? BisTestData.fixture("cdn.dates")) ?? [] }
+    func loot(build _: String) async -> LootFile? { LootFile() }
+    func characterHome(_: AccountCharacter) async -> CharacterHome? { nil }
 }
 
 private final class MemoryPreferences: BisPreferences, @unchecked Sendable {
     var lastSelection: BisSelection?
-    var hasOpenedPicker = false
 }
 
 @MainActor
@@ -82,18 +83,28 @@ struct BisModelTests {
         #expect(list.rows.count == 17)
     }
 
-    @Test("signed out, first visit: Warrior preselected and the picker open, once")
-    func signedOutFirstVisit() async throws {
+    @Test("signed out: no picker until a class is picked, then its first spec with the picker open")
+    func signedOutPickClass() async throws {
         let source = try FakeBisSource(.init(bis: fresh(), character: nil))
-        let preferences = MemoryPreferences()
-        let model = BisModel(source: source, catalog: catalog, preferences: preferences)
+        let model = BisModel(source: source, catalog: catalog, preferences: MemoryPreferences())
         await model.start()
+        #expect(model.isPickerPresented == false)
+        #expect(model.context.isYours == false)
+        await model.pickClass("warrior")
         #expect(model.isPickerPresented)
         #expect(model.context.selection.classSlug == "warrior")
-        #expect(model.context.isYours == false)
-        let again = BisModel(source: source, catalog: catalog, preferences: preferences)
-        await again.start()
-        #expect(again.isPickerPresented == false)
+        #expect(model.context.selection.spec == catalog.specs(of: "warrior").first?.spec)
+    }
+
+    @Test("signed in: Gear's inputs carry the shown list's band and the loot file")
+    func gearInputs() async throws {
+        let source = try FakeBisSource(.init(bis: fresh(), character: main))
+        let model = BisModel(source: source, catalog: catalog, preferences: MemoryPreferences())
+        await model.start()
+        let inputs = try #require(model.gearInputs)
+        #expect(inputs.band.band == 50)
+        #expect(inputs.loot != nil)
+        #expect(inputs.level == main.level)
     }
 
     @Test("a choice applies at once and Back returns to the character's list")

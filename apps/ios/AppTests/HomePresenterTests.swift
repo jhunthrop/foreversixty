@@ -156,22 +156,4 @@ struct ItemTooltipTests {
         #expect(model.look.name == "Fallback")
         #expect(model.source == "Somewhere")
     }
-
-    @Test("Your gear: 17 rows in frame order; the off hand names the two-hander")
-    func gear() throws {
-        let home = try HomeFixtures.home()
-        let sources = try HomeFixtures.tooltipSources()
-        let band = ItemTooltipModel.band(for: try request(0), in: sources.bis)
-        let blocker = GearModel.offHandBlocker(home: home, gear: [:], items: sources.items, band: band)
-        #expect(blocker == "Legionite Glaive")
-        let rows = GearModel.rows(home: home, gear: [:], items: sources.items, offHandBlockedBy: blocker)
-        #expect(rows.map(\.slot) == ItemVocabulary.frameSlots)
-        #expect(rows.count == 17)
-        #expect(rows.first { $0.slot == "off_hand" }?.wornName == "Two-hand in main hand")
-        let trinket = try #require(rows.first { $0.slot == "trinket2" })
-        #expect(trinket.worn == nil && trinket.wornName == "Empty" && trinket.pick?.id == 249_469)
-        #expect(rows.first { $0.slot == "shoulder" }?.isBestInSlot == true)
-        #expect(rows.first { $0.slot == "wrist" }?.wornName == "Wrist · Item 999999")
-        #expect(rows.first { $0.slot == "hands" }?.wornName == "Mourning Handguards")
-    }
 }

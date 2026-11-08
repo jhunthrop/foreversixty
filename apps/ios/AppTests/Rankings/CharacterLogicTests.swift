@@ -178,20 +178,6 @@ struct CharacterLogicTests {
         let empty = PaperdollSlot(slot: "ranged", state: .empty, better: false)
         #expect(PaperdollModel.a11y(empty) == "Ranged, empty.")
     }
-
-    @Test func paperdoll_fromHome_dotsEveryUpgrade() throws {
-        let home = try HomeFixtures.home()
-        let sources = try HomeFixtures.tooltipSources()
-        let rows = GearModel.rows(home: home, gear: [:], items: sources.items, offHandBlockedBy: "Arcanite Reaper")
-        let slots = PaperdollModel.home(rows)
-        #expect(slots.count == 17)
-        // Only measured gains carry a dot: the unknown Wrist and the empty Trinket 2 do not.
-        #expect(Set(slots.filter(\.better).map(\.slot)) == Set(rows.filter(\.gains).map(\.slot)))
-        #expect(slots.first { $0.slot == "wrist" }?.better == false)
-        #expect(slots.first { $0.slot == "trinket2" }?.better == false)
-        #expect(slots.first { $0.slot == "wrist" }.map(PaperdollModel.name) == "Wrist · Item 999999")
-        #expect(slots.first { $0.slot == "off_hand" }?.state == .twoHandOff)
-    }
 }
 
 extension Item {

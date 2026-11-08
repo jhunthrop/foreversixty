@@ -3,24 +3,34 @@ import DesignSystem
 import Networking
 import SwiftUI
 
-/// The BiS tab (spec F3): the list, its picker and the item tooltip, over `BisModel`.
-/// Signed in (lane F1), the list follows the session's current character under the selector.
+/// The Gear tab (flows spec 4.3, F5). Signed in: the character's list against what it wears,
+/// Where to go tonight and every slot, over `BisModel`; Change opens the picker. Signed out: the
+/// class rows, then the class's list (spec F3) with the picker for the spec and the level range.
+/// Every item opens the item sheet.
 struct BisScreen: View {
     @State private var model: BisModel
-    @State private var tooltip: ItemTooltipRequest?
-    /// Lane F12: the item page, pushed from the tooltip's `More about this item`.
+    @State private var sheet: ItemSheetRequest?
+    /// Signed out: the class's list, pushed over the class rows.
+    @State private var listShown = false
+    /// Lane F12: the item page, pushed from the sheet's `More about this item`.
     @State private var itemPage: ItemPageRoute?
     @Environment(\.searchNavigator) private var search
     @Environment(\.scenePhase) private var scenePhase
     private let catalog: ItemCatalog
+    /// Who in the guild needs an item; nil signed out.
+    private let needs: (any ItemNeedsSource)?
     /// Lane F1's account, nil while its feature switch is off.
     private let session: SessionStore?
     /// Lists other tabs and links ask for (a guide's Gear row, `/app/bis`).
     private let router: BisRouter?
 
-    init(model: BisModel, catalog: ItemCatalog, session: SessionStore? = nil, router: BisRouter? = nil) {
+    init(
+        model: BisModel, catalog: ItemCatalog, needs: (any ItemNeedsSource)? = nil, session: SessionStore? = nil,
+        router: BisRouter? = nil
+    ) {
         _model = State(initialValue: model)
         self.catalog = catalog
+        self.needs = needs
         self.session = session
         self.router = router
     }
@@ -39,38 +49,30 @@ struct BisScreen: View {
     var body: some View {
         @Bindable var model = model
         NavigationStack {
-            BisView(
-                phase: model.phase,
-                context: model.context,
-                catalog: model.catalog,
-                searchText: $model.searchText,
-                onOpenPicker: { model.isPickerPresented = true },
-                onTryAgain: { Task { await model.refresh() } },
-                onOpenItem: { tooltip = $0 },
-                build: model.build,
-                newData: model.newData,
-                onUpdate: { Task { await model.applyNewData() } }
+            root
+                .refreshable { await model.refresh() }
+                .modifier(BisSearchMode(text: $model.searchText, isUniversal: search != nil))
+                .tabRootChrome()
+                .toolbarBackground(FSColor.bg, for: .navigationBar)
+                .navigationDestination(isPresented: $listShown) {
+                    list.refreshable { await model.refresh() }
+                }
+                .navigationDestination(item: $itemPage) { route in
+                    if let search {
+                        ItemPageScreen(route: route, dependencies: search.dependencies) { search.openList($0) }
+                    }
+                }
+        }
+        .sheet(isPresented: $model.isPickerPresented) {
+            BisPickerSheet(context: model.context, catalog: model.catalog, build: model.build) { selection in
+                Task { await model.select(selection) }
+            }
+        }
+        .sheet(item: $sheet) { request in
+            ItemSheetScreen(
+                request: request, catalog: catalog, needs: needs,
+                moreAbout: search.map { _ in { openItemPage(request.tooltip) } }
             )
-            .refreshable { await model.refresh() }
-            // The system search, minimised to the bar's trailing button (spec F3.1), until lane
-            // F12's universal search replaces it. The leading slot is the character selector
-            // (lane F1), the same on Home.
-            .modifier(BisSearchMode(text: $model.searchText, isUniversal: search != nil))
-            .tabRootChrome()
-            .toolbarBackground(FSColor.bg, for: .navigationBar)
-            .sheet(isPresented: $model.isPickerPresented) {
-                BisPickerSheet(context: model.context, catalog: model.catalog, build: model.build) { selection in
-                    Task { await model.select(selection) }
-                }
-            }
-            .sheet(item: $tooltip) { request in
-                ItemTooltipSheet(request: request, catalog: catalog, moreAbout: search.map { _ in { openItemPage(request) } })
-            }
-            .navigationDestination(item: $itemPage) { route in
-                if let search {
-                    ItemPageScreen(route: route, dependencies: search.dependencies) { search.openList($0) }
-                }
-            }
         }
         .onChange(of: search?.bisRequest) { Task { await takeBisRequest() } }
         .onChange(of: router?.request) { _, request in Task { await apply(request) } }
@@ -91,8 +93,63 @@ struct BisScreen: View {
         }
     }
 
+    /// Signed in: Gear once the list is drawn (the list's own states before); signed out: the classes.
+    @ViewBuilder
+    private var root: some View {
+        if model.context.characterSelection == nil {
+            GearClassesView(classes: GearClassesView.classes(model.catalog), name: model.context.className) { slug in
+                listShown = true
+                Task { await model.pickClass(slug) }
+            }
+        } else if case let .loaded(list, offlineSince) = model.phase, let inputs = model.gearInputs {
+            GearListView(
+                content: GearPresenter(context: model.context).content(list: list, inputs: inputs),
+                build: model.build ?? "",
+                actions: GearActions(openPicker: { model.isPickerPresented = true }, openItem: open)
+            )
+            .safeAreaInset(edge: .top, spacing: 0) { strips(offlineSince) }
+        } else {
+            list
+        }
+    }
+
+    private var list: some View {
+        @Bindable var model = model
+        return BisView(
+            phase: model.phase,
+            context: model.context,
+            catalog: model.catalog,
+            searchText: $model.searchText,
+            onOpenPicker: { model.isPickerPresented = true },
+            onTryAgain: { Task { await model.refresh() } },
+            onOpenItem: { sheet = ItemSheetRequest(tooltip: $0, gain: nil, guildID: guildID) },
+            build: model.build,
+            newData: model.newData,
+            onUpdate: { Task { await model.applyNewData() } }
+        )
+    }
+
+    private func strips(_ offlineSince: Date?) -> some View {
+        VStack(spacing: 0) {
+            if let offlineSince { OfflineStrip(text: Copy.offlineStrip(time: OfflineStamp.format(offlineSince, now: .now))) }
+            NewDataStrip(model.newData) { Task { await model.applyNewData() } }
+        }
+    }
+
+    private var guildID: Int64? { model.context.isYours ? model.character?.guild?.id : nil }
+
+    /// A Gear row's item: the slot's pick or one of its runners-up, in the item sheet.
+    private func open(_ ref: GearItemRef) {
+        guard case let .loaded(list, _) = model.phase, let build = model.build,
+              let row = list.rows.first(where: { $0.slot == ref.slot }), let pick = row.pick
+        else { return }
+        let runnerUp = ref.itemID == pick.item.id ? nil : pick.runnersUp.first { $0.item.id == ref.itemID }
+        let tooltip = BisTooltip.request(row: row, pick: pick, list: list, context: model.context, build: build, runnerUp: runnerUp)
+        sheet = ItemSheetRequest(tooltip: tooltip, gain: ref.gain, guildID: guildID)
+    }
+
     private func openItemPage(_ request: ItemTooltipRequest) {
-        tooltip = nil
+        sheet = nil
         itemPage = ItemPageRoute(itemID: request.itemID, fallback: request.fallback, classSlug: request.classSlug)
     }
 
@@ -101,6 +158,7 @@ struct BisScreen: View {
         guard model.build != nil, let request = search?.takeBisRequest() else { return }
         itemPage = nil
         if let selection = request.selection ?? model.context.characterSelection {
+            if model.context.characterSelection == nil { listShown = true }
             await model.select(selection)
         }
     }
@@ -109,6 +167,7 @@ struct BisScreen: View {
     private func apply(_ request: BisRequest?) async {
         guard let request, let spec = model.catalog.spec(request.spec) else { return }
         model.isPickerPresented = false
+        if model.context.characterSelection == nil { listShown = true }
         let faction = model.context.selection.faction
         await model.select(BisSelection(classSlug: spec.classSlug, spec: spec.spec, range: request.range, faction: faction))
     }
@@ -121,6 +180,7 @@ struct BisScreen: View {
             let defaults = UserDefaults.standard
             if let spec = defaults.string(forKey: "FSBisSpec") {
                 model.isPickerPresented = false
+                if model.context.characterSelection == nil { listShown = true }
                 let classSlug = String(spec.prefix { $0 != "-" })
                 let range = BisRange(band: BisRange.lastBand, preset: BisRange.raidPreset)
                 await model.select(BisSelection(classSlug: classSlug, spec: spec, range: range, faction: "horde"))
@@ -129,7 +189,8 @@ struct BisScreen: View {
                   let build = model.build, let row = list.rows.first(where: { $0.slot == slot }), let pick = row.pick
             else { return }
             try? await Task.sleep(for: .seconds(1))
-            tooltip = BisTooltip.request(row: row, pick: pick, list: list, context: model.context, build: build)
+            let tooltip = BisTooltip.request(row: row, pick: pick, list: list, context: model.context, build: build)
+            sheet = ItemSheetRequest(tooltip: tooltip, gain: nil, guildID: guildID)
         }
     #endif
 }
@@ -142,12 +203,16 @@ extension BisScreen {
             files: environment.staticData.files,
             appConfig: environment.appConfig,
             character: { session?.currentCharacter },
-            bundledBuild: BundledBuild.read()
+            bundledBuild: BundledBuild.read(),
+            home: GearHome.live(client: environment.client, cache: FileHomeCache.standard() ?? MemoryHomeCache())
         )
         let model = BisModel(source: source, catalog: .bundled(), preferences: UserDefaultsBisPreferences())
         let store = environment.staticData
         model.latestBuild = { await store.latestBuild() }
-        return BisScreen(model: model, catalog: ItemCatalog(store: environment.staticData), session: session, router: router)
+        return BisScreen(
+            model: model, catalog: ItemCatalog(store: environment.staticData),
+            needs: session == nil ? nil : LiveItemNeedsSource(client: environment.client), session: session, router: router
+        )
     }
 }
 

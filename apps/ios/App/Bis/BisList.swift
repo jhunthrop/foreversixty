@@ -196,7 +196,7 @@ struct BisListBuilder {
         }
     }
 
-    private static let pvpRankPrefix = "PvP rank"
+    static let pvpRankPrefix = "PvP rank"
 
     static func nextLine(_ runnerUp: BisRunnerUp?, unit: BisUnit) -> String {
         guard let runnerUp else { return Copy.tooltipNothingElse }

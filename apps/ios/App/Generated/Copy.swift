@@ -5440,6 +5440,152 @@ enum Copy {
     /// Check again
     static var homeNewCheck: String { text("home.new.check") }
 
+    /// {spec} · {band} · {faction}
+    static func gearList(spec: String, band: String, faction: String) -> String {
+        format("gear.list", spec, band, faction)
+    }
+
+    /// {band} raid
+    static func gearBandRaid(band: String) -> String {
+        format("gear.bandRaid", band)
+    }
+
+    /// {n} of {total} slots on the list
+    static func gearOnList(n: Int, total: Int) -> String {
+        format("gear.onList", n, total)
+    }
+
+    /// Change
+    static var gearChange: String { text("gear.change") }
+
+    /// Where to go tonight
+    static var gearTonight: String { text("gear.tonight") }
+
+    /// Every slot
+    static var gearEverySlot: String { text("gear.everySlot") }
+
+    /// Worn
+    static var gearWorn: String { text("gear.worn") }
+
+    /// {name}, vendor
+    static func gearSourceVendor(name: String) -> String {
+        format("gear.sourceVendor", name)
+    }
+
+    /// {source}, {chance}
+    static func gearSourceChance(source: String, chance: String) -> String {
+        format("gear.sourceChance", source, chance)
+    }
+
+    /// {items} · {boss}, {chance}
+    static func gearWhereBoss(items: String, boss: String, chance: String) -> String {
+        format("gear.where.boss", items, boss, chance)
+    }
+
+    /// {items} · {boss}
+    static func gearWhereBossOnly(items: String, boss: String) -> String {
+        format("gear.where.bossOnly", items, boss)
+    }
+
+    /// {items} · ask {crafter}
+    static func gearWhereCrafter(items: String, crafter: String) -> String {
+        format("gear.where.crafter", items, crafter)
+    }
+
+    /// {items}, needs {standing}
+    static func gearWhereStanding(items: String, standing: String) -> String {
+        format("gear.where.standing", items, standing)
+    }
+
+    /// an alchemist
+    static var gearCrafterAlchemy: String { text("gear.crafter.alchemy") }
+
+    /// a blacksmith
+    static var gearCrafterBlacksmithing: String { text("gear.crafter.blacksmithing") }
+
+    /// an enchanter
+    static var gearCrafterEnchanting: String { text("gear.crafter.enchanting") }
+
+    /// an engineer
+    static var gearCrafterEngineering: String { text("gear.crafter.engineering") }
+
+    /// a leatherworker
+    static var gearCrafterLeatherworking: String { text("gear.crafter.leatherworking") }
+
+    /// a tailor
+    static var gearCrafterTailoring: String { text("gear.crafter.tailoring") }
+
+    /// a crafter
+    static var gearCrafterOther: String { text("gear.crafter.other") }
+
+    /// Best in slot for your class
+    static var gearOutTitle: String { text("gear.out.title") }
+
+    /// Pick a class, then a spec and a level range.
+    static var gearOutMeta: String { text("gear.out.meta") }
+
+    /// Classes
+    static var gearOutClasses: String { text("gear.out.classes") }
+
+    /// over your worn
+    static var itemsSheetOverWorn: String { text("items.sheet.overWorn") }
+
+    /// Where to get it
+    static var itemsSheetWhere: String { text("items.sheet.where") }
+
+    /// Runner-up
+    static var itemsSheetRunnerUp: String { text("items.sheet.runnerUp") }
+
+    /// Who in the guild needs it
+    static var itemsSheetGuild: String { text("items.sheet.guild") }
+
+    /// {boss}, {place}
+    static func itemsSheetBossPlace(boss: String, place: String) -> String {
+        format("items.sheet.bossPlace", boss, place)
+    }
+
+    /// {chance} drop chance
+    static func itemsSheetDropChance(chance: String) -> String {
+        format("items.sheet.dropChance", chance)
+    }
+
+    /// raid
+    static var itemsSheetRaid: String { text("items.sheet.raid") }
+
+    /// dungeon
+    static var itemsSheetDungeon: String { text("items.sheet.dungeon") }
+
+    /// needs {standing}
+    static func itemsSheetNeedsStanding(standing: String) -> String {
+        format("items.sheet.needsStanding", standing)
+    }
+
+    /// {spec} · needs it
+    static func itemsSheetNeedsPick(spec: String) -> String {
+        format("items.sheet.needsPick", spec)
+    }
+
+    /// {spec} · needs it, a runner-up on the list
+    static func itemsSheetNeedsAlt(spec: String) -> String {
+        format("items.sheet.needsAlt", spec)
+    }
+
+    /// {spec} · has it
+    static func itemsSheetHas(spec: String) -> String {
+        format("items.sheet.has", spec)
+    }
+
+    /// Nobody in the guild needs it or has it.
+    static var itemsSheetNobody: String { text("items.sheet.nobody") }
+
+    /// {n} more have no gear on file.
+    static func itemsSheetUnknownGear(n: Int) -> String {
+        format("items.sheet.unknownGear", n)
+    }
+
+    /// Who needs it did not load.
+    static var itemsSheetGuildFailed: String { text("items.sheet.guildFailed") }
+
     /// Get the addon and companion
     static var sharedCtaGetAddonAndCompanion: String { text("shared.cta.getAddonAndCompanion") }
 

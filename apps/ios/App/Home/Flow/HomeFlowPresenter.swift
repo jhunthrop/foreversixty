@@ -105,7 +105,7 @@ struct HomeFlowPresenter {
     func bestRunLine(_ run: BestRun, unit: String) -> String {
         let gain = Copy.homeUpgradesGain(figure: ItemNumbers.signedTenths(run.gain), unit: unit)
         guard let chance = run.chance else { return Copy.homeBestRun(place: run.place, item: run.item, gain: gain) }
-        return Copy.homeBestRunChance(place: run.place, item: run.item, gain: gain, chance: "\(Int(chance.rounded()))%")
+        return Copy.homeBestRunChance(place: run.place, item: run.item, gain: gain, chance: ItemNumbers.percent(chance))
     }
 
     // MARK: The next raid

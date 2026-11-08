@@ -11,6 +11,8 @@ struct ItemLineView: View {
     let source: String
     /// The gain's figure and unit (`+14.5`, `DPS`); nil for none.
     var gain: (figure: String, unit: String)?
+    /// The words under the gain (`over your worn`); nil for none.
+    var caption: String?
     let build: String
 
     static let minHeight: CGFloat = 58
@@ -25,11 +27,18 @@ struct ItemLineView: View {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             if let gain {
-                HStack(alignment: .firstTextBaseline, spacing: FSSpace.space1) {
-                    Text(gain.figure).type(FSType.figureSm).foregroundStyle(FSColor.strong)
-                    Text(gain.unit)
-                        .font(.custom(FSFont.bodySemibold, size: 13, relativeTo: .footnote))
-                        .foregroundStyle(FSColor.muted)
+                VStack(alignment: .trailing, spacing: 2) {
+                    HStack(alignment: .firstTextBaseline, spacing: FSSpace.space1) {
+                        Text(gain.figure).type(FSType.figureSm).foregroundStyle(FSColor.strong)
+                        if !gain.unit.isEmpty {
+                            Text(gain.unit)
+                                .font(.custom(FSFont.bodySemibold, size: 13, relativeTo: .footnote))
+                                .foregroundStyle(FSColor.muted)
+                        }
+                    }
+                    if let caption {
+                        Text(caption).type(RowType.detail).foregroundStyle(FSColor.muted)
+                    }
                 }
                 .fixedSize()
             }
