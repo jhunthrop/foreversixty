@@ -47,7 +47,7 @@
   "countdowns": {
    "box": [
     16,
-    1125,
+    758,
     380,
     210
    ],
@@ -58,12 +58,12 @@
     0,
     495,
     412,
-    630
+    263
    ],
    "inventory": {
-    "row": 7,
+    "row": 2,
     "segment": 3,
-    "image": 7
+    "image": 2
    }
   },
   "section-your-upgrades": {
@@ -81,7 +81,7 @@
   "section-your-spec-this-week": {
    "box": [
     0,
-    1411,
+    1000,
     412,
     124
    ],
@@ -92,7 +92,7 @@
   "section-top-movers": {
    "box": [
     0,
-    1567,
+    1156,
     412,
     266
    ],

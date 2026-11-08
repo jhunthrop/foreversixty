@@ -1,0 +1,73 @@
+{
+ "device": {
+  "width": 412,
+  "height": 915
+ },
+ "regions": {
+  "head": {
+   "box": [
+    32,
+    44,
+    285,
+    120
+   ],
+   "inventory": {
+    "image": 1
+   }
+  },
+  "head-title": {
+   "box": [
+    32,
+    60,
+    285,
+    90
+   ],
+   "inventory": {
+    "image": 1
+   }
+  },
+  "head-meta": {
+   "box": [
+    104,
+    104,
+    213,
+    46
+   ],
+   "inventory": {}
+  },
+  "section-your-characters": {
+   "box": [
+    16,
+    214,
+    317,
+    387
+   ],
+   "inventory": {
+    "row": 5,
+    "image": 5
+   }
+  },
+  "section-tools": {
+   "box": [
+    16,
+    625,
+    317,
+    392
+   ],
+   "inventory": {
+    "row": 6
+   }
+  },
+  "section-account": {
+   "box": [
+    16,
+    1041,
+    317,
+    333
+   ],
+   "inventory": {
+    "row": 5
+   }
+  }
+ }
+}

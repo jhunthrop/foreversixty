@@ -6,134 +6,64 @@
  "regions": {
   "head": {
    "box": [
-    16,
-    0,
-    380,
-    259
-   ],
-   "inventory": {
-    "button": 1,
-    "image": 1
-   }
-  },
-  "head-title": {
-   "box": [
-    16,
-    16,
-    380,
-    84
-   ],
-   "inventory": {
-    "image": 1
-   }
-  },
-  "head-meta": {
-   "box": [
-    96,
-    60,
-    300,
-    40
+    32,
+    8,
+    348,
+    94
    ],
    "inventory": {}
   },
-  "section-action-needed": {
+  "head-title": {
    "box": [
-    16,
-    287,
-    380,
-    458
+    32,
+    24,
+    348,
+    64
    ],
-   "inventory": {
-    "row": 4,
-    "button": 4
-   }
+   "inventory": {}
+  },
+  "head-meta": {
+   "box": [
+    32,
+    68,
+    220,
+    20
+   ],
+   "inventory": {}
   },
   "section-next-raid": {
    "box": [
     16,
-    793,
+    130,
     380,
-    407
+    383
+   ],
+   "inventory": {
+    "row": 1,
+    "button": 4
+   }
+  },
+  "section-needs-you": {
+   "box": [
+    16,
+    541,
+    380,
+    196
    ],
    "inventory": {
     "row": 2,
-    "segment": 4,
-    "image": 2
+    "button": 1
    }
   },
-  "plate": {
+  "section-the-guild": {
    "box": [
     16,
-    841,
+    765,
     380,
-    359
+    270
    ],
    "inventory": {
-    "row": 2,
-    "segment": 4,
-    "image": 2
-   }
-  },
-  "section-comp-against-the-target": {
-   "box": [
-    16,
-    1248,
-    380,
-    174
-   ],
-   "inventory": {}
-  },
-  "section-buff-and-debuff-cover": {
-   "box": [
-    16,
-    1446,
-    380,
-    1264
-   ],
-   "inventory": {
-    "image": 24
-   }
-  },
-  "section-raid-ready": {
-   "box": [
-    16,
-    2742,
-    380,
-    181
-   ],
-   "inventory": {
-    "row": 1
-   }
-  },
-  "section-attendance-last-4-raids": {
-   "box": [
-    16,
-    2955,
-    380,
-    247
-   ],
-   "inventory": {}
-  },
-  "section-last-raid": {
-   "box": [
-    16,
-    3234,
-    380,
-    137
-   ],
-   "inventory": {
-    "row": 1
-   }
-  },
-  "section-recruitment": {
-   "box": [
-    16,
-    3403,
-    380,
-    105
-   ],
-   "inventory": {
-    "row": 1
+    "row": 4
    }
   }
  }

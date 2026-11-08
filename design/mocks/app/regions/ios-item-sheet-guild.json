@@ -1,0 +1,44 @@
+{
+ "device": {
+  "width": 393,
+  "height": 852
+ },
+ "regions": {
+  "section-where-to-get-it": {
+   "box": [
+    16,
+    349,
+    361,
+    95
+   ],
+   "inventory": {
+    "row": 1,
+    "image": 1
+   }
+  },
+  "section-runner-up": {
+   "box": [
+    16,
+    444,
+    361,
+    95
+   ],
+   "inventory": {
+    "row": 1,
+    "image": 1
+   }
+  },
+  "section-who-in-the-guild-needs-it": {
+   "box": [
+    16,
+    539,
+    361,
+    156
+   ],
+   "inventory": {
+    "row": 2,
+    "image": 2
+   }
+  }
+ }
+}

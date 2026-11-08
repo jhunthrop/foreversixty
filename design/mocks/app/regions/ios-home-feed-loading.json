@@ -44,21 +44,10 @@
    ],
    "inventory": {}
   },
-  "countdowns": {
-   "box": [
-    16,
-    209,
-    361,
-    368
-   ],
-   "inventory": {
-    "image": 3
-   }
-  },
   "section-forever-right-now": {
    "box": [
     0,
-    863,
+    635,
     393,
     428
    ],
@@ -69,7 +58,7 @@
   "section-your-upgrades": {
    "box": [
     0,
-    609,
+    241,
     393,
     222
    ],
@@ -81,7 +70,7 @@
   "section-your-spec-this-week": {
    "box": [
     0,
-    1323,
+    1095,
     393,
     124
    ],
@@ -92,13 +81,26 @@
   "section-top-movers": {
    "box": [
     0,
-    1479,
+    1251,
     393,
     266
    ],
    "inventory": {
     "row": 3,
     "image": 3
+   }
+  },
+  "countdowns": {
+   "box": [
+    0,
+    463,
+    393,
+    140
+   ],
+   "inventory": {
+    "row": 1,
+    "button": 4,
+    "image": 1
    }
   }
  }

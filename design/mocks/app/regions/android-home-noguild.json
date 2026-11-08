@@ -1,0 +1,119 @@
+{
+ "device": {
+  "width": 412,
+  "height": 915
+ },
+ "regions": {
+  "head": {
+   "box": [
+    16,
+    0,
+    380,
+    209
+   ],
+   "inventory": {
+    "image": 1
+   }
+  },
+  "head-title": {
+   "box": [
+    16,
+    16,
+    380,
+    90
+   ],
+   "inventory": {
+    "image": 1
+   }
+  },
+  "head-meta": {
+   "box": [
+    88,
+    60,
+    308,
+    46
+   ],
+   "inventory": {}
+  },
+  "head-answer": {
+   "box": [
+    16,
+    122,
+    380,
+    73
+   ],
+   "inventory": {}
+  },
+  "section-forever-right-now": {
+   "box": [
+    0,
+    495,
+    412,
+    652
+   ],
+   "inventory": {
+    "row": 7,
+    "segment": 3,
+    "image": 7
+   }
+  },
+  "section-your-upgrades": {
+   "box": [
+    0,
+    241,
+    412,
+    222
+   ],
+   "inventory": {
+    "row": 3,
+    "image": 3
+   }
+  },
+  "section-your-spec-this-week": {
+   "box": [
+    0,
+    1179,
+    412,
+    124
+   ],
+   "inventory": {
+    "row": 1
+   }
+  },
+  "section-top-3-for-fury-warrior-60": {
+   "box": [
+    0,
+    1555,
+    412,
+    180
+   ],
+   "inventory": {
+    "row": 3,
+    "image": 3
+   }
+  },
+  "countdowns": {
+   "box": [
+    0,
+    1303,
+    412,
+    92
+   ],
+   "inventory": {
+    "row": 1,
+    "image": 1
+   }
+  },
+  "section-find-a-guild": {
+   "box": [
+    0,
+    1395,
+    412,
+    128
+   ],
+   "inventory": {
+    "button": 1
+   }
+  }
+ }
+}

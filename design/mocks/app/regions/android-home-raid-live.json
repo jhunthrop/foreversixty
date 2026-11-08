@@ -1,0 +1,52 @@
+{
+ "device": {
+  "width": 412,
+  "height": 915
+ },
+ "regions": {
+  "head": {
+   "box": [
+    16,
+    0,
+    380,
+    86
+   ],
+   "inventory": {
+    "image": 1
+   }
+  },
+  "head-title": {
+   "box": [
+    16,
+    16,
+    380,
+    56
+   ],
+   "inventory": {
+    "image": 1
+   }
+  },
+  "section-forever-right-now": {
+   "box": [
+    0,
+    282,
+    412,
+    354
+   ],
+   "inventory": {
+    "row": 3,
+    "segment": 3,
+    "image": 3
+   }
+  },
+  "countdowns": {
+   "box": [
+    0,
+    86,
+    412,
+    164
+   ],
+   "inventory": {}
+  }
+ }
+}

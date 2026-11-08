@@ -6,101 +6,52 @@
  "regions": {
   "head": {
    "box": [
-    16,
-    0,
-    361,
-    239
+    32,
+    8,
+    329,
+    94
    ],
-   "inventory": {
-    "image": 2
-   }
+   "inventory": {}
   },
   "head-title": {
    "box": [
-    16,
-    16,
-    361,
-    116
+    32,
+    24,
+    329,
+    64
    ],
-   "inventory": {
-    "image": 2
-   }
+   "inventory": {}
   },
   "head-meta": {
    "box": [
-    96,
-    60,
-    281,
-    72
+    32,
+    68,
+    220,
+    20
    ],
-   "inventory": {
-    "image": 1
-   }
+   "inventory": {}
   },
   "section-next-raid": {
    "box": [
     16,
-    339,
+    130,
     361,
-    260
+    383
    ],
    "inventory": {
-    "row": 2,
-    "segment": 4,
-    "image": 2
+    "row": 1,
+    "button": 4
    }
   },
-  "plate": {
+  "section-the-guild": {
    "box": [
     16,
-    386,
+    541,
     361,
-    213
+    270
    ],
    "inventory": {
-    "row": 2,
-    "segment": 4,
-    "image": 2
-   }
-  },
-  "section-before-the-raid": {
-   "box": [
-    16,
-    647,
-    361,
-    391
-   ],
-   "inventory": {
-    "row": 5
-   }
-  },
-  "section-your-numbers": {
-   "box": [
-    16,
-    1086,
-    361,
-    89
-   ],
-   "inventory": {}
-  },
-  "section-the-raid-s-comp": {
-   "box": [
-    16,
-    1199,
-    361,
-    149
-   ],
-   "inventory": {}
-  },
-  "section-last-raid": {
-   "box": [
-    16,
-    1380,
-    361,
-    137
-   ],
-   "inventory": {
-    "row": 1
+    "row": 4
    }
   }
  }
