@@ -66,7 +66,7 @@ struct RaidFlowPresenter {
     }
 
     /// The guild's pages; a figure the app does not have leaves its row's line out.
-    func pages(guild: String, members: Int?, atCap: Int?, planned: [RaidView], lootLast: Int?) -> GuildPagesContent {
+    func pages(guild: String, members: Int?, atCap: Int?, planned: [RaidView], badge: RaidBadge?) -> GuildPagesContent {
         let roster = members.map { n in
             let words = Copy.raidPagesMembers(n: n)
             return atCap.map { Copy.raidPagesMembersAtCap(members: words, n: $0) } ?? words
@@ -78,8 +78,8 @@ struct RaidFlowPresenter {
         return GuildPagesContent(guild: guild, rows: [
             GuildPageRow(page: .roster, sub: roster),
             GuildPageRow(page: .calendar, sub: calendar),
-            GuildPageRow(page: .loot, sub: lootLast.map { Copy.raidPagesLootLast(n: $0) }),
-            GuildPageRow(page: .sims, sub: nil),
+            GuildPageRow(page: .loot, sub: badge?.lastRaidLoot.map { Copy.raidPagesLootLast(n: $0.count) }),
+            GuildPageRow(page: .sims, sub: badge?.simsRank.map { Copy.raidPagesSimsRank(position: $0.position, of: $0.of) }),
         ])
     }
 

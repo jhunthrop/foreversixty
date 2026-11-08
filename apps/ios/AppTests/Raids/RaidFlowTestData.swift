@@ -11,8 +11,8 @@ enum RaidFlowTestData {
     static let pages = GuildPagesContent(guild: "Olympus XXVII", rows: [
         GuildPageRow(page: .roster, sub: "38 members, 31 at 60"),
         GuildPageRow(page: .calendar, sub: "Onyxia Wed, Barrow Deeps Sat"),
-        GuildPageRow(page: .loot, sub: "Last raid: 4 pieces"),
-        GuildPageRow(page: .sims, sub: "You are #7 of 14 DPS"),
+        GuildPageRow(page: .loot, sub: Copy.raidPagesLootLast(n: 4)),
+        GuildPageRow(page: .sims, sub: Copy.raidPagesSimsRank(position: 7, of: 14)),
     ])
 
     static let officer = OfficerContent(

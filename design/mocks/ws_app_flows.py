@@ -281,7 +281,7 @@ def raid(state: str):
     guild's raid pages. Live: raid night leads. No guild: find, join or claim one. Signed out: sign in, then the same."""
     def b(platform: str) -> str:
         pages = Section('Olympus XXVII', Rows([Row('Roster', '38 members, 31 at 60'), Row('Calendar', 'Onyxia Wed, Barrow Deeps Sat'),
-                                               Row('Loot history', 'Last raid: 4 pieces'), Row('Guild sims', 'You are #7 of 14 DPS')], open_=True))
+                                               Row('Loot history', 'Last raid: 4 pieces'), Row('Guild sims', 'You are #7 of 14')], open_=True))
         if state in ('member', 'officer'):
             needs = Section('Needs you', _needs_you(), meta='6 open') if state == 'officer' else ''
             body = Section('Next raid', _blk(_raid_card())) + needs + pages

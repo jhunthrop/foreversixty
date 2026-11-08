@@ -1378,6 +1378,11 @@ enum Copy {
         format("raid.pages.lootLast", n)
     }
 
+    /// You are #{position} of {of}
+    static func raidPagesSimsRank(position: Int, of: Int) -> String {
+        format("raid.pages.simsRank", position, of)
+    }
+
     /// No raid planned yet. Your officers plan raids on the site; a push tells you the moment one is posted.
     static var raidNoRaid: String { text("raid.noRaid") }
 

@@ -393,6 +393,7 @@
     "raid.pages.membersAtCap": { "text": "{members}, {n} at 60", "args": { "n": "int" }, "notPlural": true },
     "raid.pages.calendarItem": "{zone} {weekday}",
     "raid.pages.lootLast": { "count": "n", "one": "Last raid: 1 piece", "other": "Last raid: {n} pieces" },
+    "raid.pages.simsRank": { "text": "You are #{position} of {of}", "args": { "position": "int", "of": "int" }, "notPlural": true },
     "raid.noRaid": "No raid planned yet. Your officers plan raids on the site; a push tells you the moment one is posted.",
     "raid.needsYou": "Needs you",
     "raid.needsYouOpen": { "text": "{n} open", "args": { "n": "int" }, "notPlural": true },

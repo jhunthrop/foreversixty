@@ -63,7 +63,7 @@ struct RaidRootComposer {
             needsYou: presenter.needsYou(inputs, raid: inputs.raid),
             pages: presenter.pages(
                 guild: content.head.name, members: members ?? content.head.members, atCap: atCap, planned: content.planned,
-                lootLast: nil
+                badge: extras.badge
             ),
             offlineStamp: content.offlineSince.map(stamp),
             staleStamp: content.staleSince.map(stamp)

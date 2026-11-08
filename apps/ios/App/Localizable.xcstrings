@@ -13022,6 +13022,18 @@
         }
       }
     },
+    "raid.pages.simsRank": {
+      "comment": "Arguments: 1 position (int), 2 of (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You are #%1$lld of %2$lld"
+          }
+        }
+      }
+    },
     "raid.pull": {
       "comment": "Arguments: 1 clock (string)",
       "extractionState": "manual",
