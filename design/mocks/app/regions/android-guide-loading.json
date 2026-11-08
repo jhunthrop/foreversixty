@@ -62,7 +62,7 @@
     16,
     374,
     380,
-    1079
+    1077
    ],
    "inventory": {
     "row": 4,
@@ -73,18 +73,18 @@
   "section-overview": {
    "box": [
     16,
-    1501,
+    1499,
     380,
-    805
+    801
    ],
    "inventory": {}
   },
   "section-talents-and-builds": {
    "box": [
     16,
-    2354,
+    2348,
     380,
-    1726
+    1682
    ],
    "inventory": {
     "row": 9,
@@ -94,7 +94,7 @@
   "section-rotation-and-priority": {
    "box": [
     16,
-    4128,
+    4078,
     380,
     2456
    ],
@@ -106,18 +106,18 @@
   "section-stat-priority": {
    "box": [
     16,
-    6632,
+    6582,
     380,
-    1263
+    1261
    ],
    "inventory": {}
   },
   "section-best-in-slot": {
    "box": [
     16,
-    7943,
+    7891,
     380,
-    1660
+    1633
    ],
    "inventory": {
     "row": 17,
@@ -127,7 +127,7 @@
   "section-enchants-and-consumables": {
    "box": [
     16,
-    9651,
+    9572,
     380,
     1455
    ],
@@ -139,9 +139,9 @@
   "section-races": {
    "box": [
     16,
-    11154,
+    11075,
     380,
-    1441
+    1435
    ],
    "inventory": {
     "row": 8,
@@ -151,7 +151,7 @@
   "section-professions": {
    "box": [
     16,
-    12643,
+    12558,
     380,
     291
    ],
@@ -160,9 +160,9 @@
   "section-leveling": {
    "box": [
     16,
-    12982,
+    12897,
     380,
-    2988
+    2935
    ],
    "inventory": {
     "button": 2,
@@ -172,7 +172,7 @@
   "section-sources": {
    "box": [
     16,
-    16018,
+    15880,
     380,
     505
    ],
@@ -183,7 +183,7 @@
   "footer-note": {
    "box": [
     16,
-    16571,
+    16433,
     380,
     56
    ],

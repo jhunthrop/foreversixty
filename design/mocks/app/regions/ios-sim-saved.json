@@ -63,7 +63,7 @@
     16,
     446,
     361,
-    853
+    825
    ],
    "inventory": {
     "image": 9
@@ -72,9 +72,9 @@
   "plate": {
    "box": [
     16,
-    494,
+    493,
     361,
-    805
+    778
    ],
    "inventory": {
     "image": 9
@@ -83,9 +83,9 @@
   "section-timeline": {
    "box": [
     16,
-    1773,
+    1744,
     361,
-    1059
+    1057
    ],
    "inventory": {
     "row": 1,
@@ -97,9 +97,9 @@
   "section-gear": {
    "box": [
     16,
-    2880,
+    2849,
     361,
-    1601
+    1600
    ],
    "inventory": {
     "row": 17,
@@ -109,7 +109,7 @@
   "slots": {
    "box": [
     16,
-    2928,
+    2896,
     361,
     1275
    ],
@@ -121,9 +121,9 @@
   "section-talents": {
    "box": [
     16,
-    4529,
+    4497,
     361,
-    1110
+    1109
    ],
    "inventory": {
     "image": 53
@@ -132,9 +132,9 @@
   "section-rage": {
    "box": [
     16,
-    5687,
+    5654,
     361,
-    1368
+    1360
    ],
    "inventory": {
     "image": 13
@@ -143,9 +143,9 @@
   "section-buffs-and-debuffs": {
    "box": [
     16,
-    7103,
+    7062,
     361,
-    1574
+    1573
    ],
    "inventory": {
     "image": 33
@@ -154,18 +154,18 @@
   "section-dps-spread": {
    "box": [
     16,
-    1347,
+    1319,
     361,
-    378
+    377
    ],
    "inventory": {}
   },
   "section-this-run": {
    "box": [
     16,
-    8725,
+    8683,
     361,
-    1309
+    1308
    ],
    "inventory": {
     "button": 3,
@@ -175,9 +175,9 @@
   "section-rotation": {
    "box": [
     16,
-    10082,
+    10039,
     361,
-    1851
+    1832
    ],
    "inventory": {
     "row": 14,

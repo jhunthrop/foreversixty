@@ -67,7 +67,7 @@
     16,
     1805,
     380,
-    1616
+    1614
    ],
    "inventory": {
     "button": 2
@@ -76,7 +76,7 @@
   "section-how-the-guild-plans-work": {
    "box": [
     16,
-    3469,
+    3467,
     380,
     1075
    ],
@@ -87,9 +87,9 @@
   "section-questions": {
    "box": [
     16,
-    4592,
+    4590,
     380,
-    549
+    548
    ],
    "inventory": {
     "row": 5
@@ -98,9 +98,9 @@
   "section-what-the-coach-says-after-a-raid": {
    "box": [
     16,
-    5165,
+    5162,
     380,
-    635
+    634
    ],
    "inventory": {
     "row": 4,

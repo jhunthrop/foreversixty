@@ -30,7 +30,7 @@
    "box": [
     88,
     60,
-    211,
+    210,
     20
    ],
    "inventory": {}
@@ -81,9 +81,9 @@
   "section-point-order": {
    "box": [
     16,
-    1481,
+    1480,
     361,
-    491
+    490
    ],
    "inventory": {
     "image": 51
@@ -105,7 +105,7 @@
     16,
     1251,
     361,
-    182
+    181
    ],
    "inventory": {
     "button": 1
@@ -114,7 +114,7 @@
   "section-share-this-build": {
    "box": [
     16,
-    2020,
+    2018,
     361,
     277
    ],
@@ -126,9 +126,9 @@
   "section-import-from-addon": {
    "box": [
     16,
-    2345,
+    2343,
     361,
-    206
+    205
    ],
    "inventory": {
     "button": 1

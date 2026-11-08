@@ -70,9 +70,9 @@
   "section-point-order": {
    "box": [
     16,
-    1547,
+    1546,
     361,
-    491
+    490
    ],
    "inventory": {
     "image": 51
@@ -83,7 +83,7 @@
     16,
     1051,
     361,
-    182
+    181
    ],
    "inventory": {
     "button": 1
@@ -92,7 +92,7 @@
   "section-guide-build": {
    "box": [
     16,
-    1281,
+    1280,
     361,
     218
    ],

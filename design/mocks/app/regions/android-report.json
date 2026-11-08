@@ -60,7 +60,7 @@
     16,
     385,
     380,
-    344
+    343
    ],
    "inventory": {
     "image": 5
@@ -69,7 +69,7 @@
   "plate": {
    "box": [
     16,
-    433,
+    432,
     380,
     296
    ],
@@ -80,7 +80,7 @@
   "section-damage-over-the-fight": {
    "box": [
     16,
-    777,
+    776,
     380,
     79
    ],
@@ -89,16 +89,16 @@
   "section-damage-taken-by-ability": {
    "box": [
     16,
-    904,
+    903,
     380,
-    492
+    491
    ],
    "inventory": {}
   },
   "footer-note": {
    "box": [
     16,
-    1444,
+    1442,
     380,
     36
    ],
@@ -107,16 +107,16 @@
   "section-this-pull": {
    "box": [
     16,
-    1504,
+    1502,
     380,
-    241
+    240
    ],
    "inventory": {}
   },
   "section-deaths": {
    "box": [
     16,
-    1777,
+    1774,
     380,
     91
    ],
@@ -125,7 +125,7 @@
   "section-performance-rating": {
    "box": [
     16,
-    1900,
+    1897,
     380,
     91
    ],
