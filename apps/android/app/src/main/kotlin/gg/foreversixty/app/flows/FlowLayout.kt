@@ -48,16 +48,17 @@ import gg.foreversixty.app.items.GameIconImage
 
 /**
  * The flows screens' layout (design/mocks/ws_app_flows.py `.ap`, spec 2026-11-08): one scrolling column
- * under the profile bar, 8 above, 16 at the sides, 24 below. Home, Raid and Gear are built from these.
+ * under the profile bar, 8 above, 16 at the sides, 24 below. Home, Raid and Gear are built from these; the
+ * web-derived screens (reports, rankings, the character) start their head flush under the back bar ([top] 0).
  */
 @Composable
-fun FlowPage(modifier: Modifier = Modifier, content: @Composable ColumnScope.() -> Unit) {
+fun FlowPage(modifier: Modifier = Modifier, top: Dp = FsSpace.space2, content: @Composable ColumnScope.() -> Unit) {
     Column(
         modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
             .parityContent()
-            .padding(start = FsSpace.space4, end = FsSpace.space4, top = FsSpace.space2, bottom = FsSpace.space6),
+            .padding(start = FsSpace.space4, end = FsSpace.space4, top = top, bottom = FsSpace.space6),
         content = content,
     )
 }
