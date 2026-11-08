@@ -13902,6 +13902,414 @@
         }
       }
     },
+    "rank.flows.allRulesets": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "All rulesets"
+          }
+        }
+      }
+    },
+    "rank.flows.answerNote": {
+      "comment": "Arguments: 1 encounter (string), 2 scope (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "On %1$@, %2$@"
+          }
+        }
+      }
+    },
+    "rank.flows.answerUnit": {
+      "comment": "Arguments: 1 total (int), 2 cohort (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "of %1$lld %2$@s"
+          }
+        }
+      }
+    },
+    "rank.flows.answerUnitKills": {
+      "comment": "Arguments: 1 total (int), 2 cohort (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "of %1$lld %2$@ kills"
+          }
+        }
+      }
+    },
+    "rank.flows.build": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Build"
+          }
+        }
+      }
+    },
+    "rank.flows.characters": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Characters"
+          }
+        }
+      }
+    },
+    "rank.flows.choose": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choose an encounter"
+          }
+        }
+      }
+    },
+    "rank.flows.cohortPlural": {
+      "comment": "Arguments: 1 cohort (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@s"
+          }
+        }
+      }
+    },
+    "rank.flows.encounterLine": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Characters and guilds, every class and spec"
+          }
+        }
+      }
+    },
+    "rank.flows.everyClass": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Every class and spec"
+          }
+        }
+      }
+    },
+    "rank.flows.everyClassField": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Every class"
+          }
+        }
+      }
+    },
+    "rank.flows.everySpec": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Every spec"
+          }
+        }
+      }
+    },
+    "rank.flows.executed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Executed"
+          }
+        }
+      }
+    },
+    "rank.flows.facts": {
+      "comment": "Arguments: 1 cohort (string), 2 ruleset (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rankings · %1$@ · %2$@"
+          }
+        }
+      }
+    },
+    "rank.flows.guilds": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guilds"
+          }
+        }
+      }
+    },
+    "rank.flows.jump": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jump to your row ›"
+          }
+        }
+      }
+    },
+    "rank.flows.legend": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rank colour is the percentile:"
+          }
+        }
+      }
+    },
+    "rank.flows.length": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Length"
+          }
+        }
+      }
+    },
+    "rank.flows.lineIn": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Where your character stands among characters like it."
+          }
+        }
+      }
+    },
+    "rank.flows.lineOut": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "How characters rank on each encounter, kill by kill."
+          }
+        }
+      }
+    },
+    "rank.flows.noneYet": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No encounters have been ranked yet."
+          }
+        }
+      }
+    },
+    "rank.flows.openBoard": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open the board ›"
+          }
+        }
+      }
+    },
+    "rank.flows.openGuilds": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open the Guilds board ›"
+          }
+        }
+      }
+    },
+    "rank.flows.parses": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "See your parses ›"
+          }
+        }
+      }
+    },
+    "rank.flows.ranked": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "1 encounter ranked"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%1$lld encounters ranked"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "rank.flows.report": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Report"
+          }
+        }
+      }
+    },
+    "rank.flows.rulesetScope": {
+      "comment": "Arguments: 1 ruleset (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ ruleset"
+          }
+        }
+      }
+    },
+    "rank.flows.sectionMeta": {
+      "comment": "Arguments: 1 total (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld ranked, each character’s best kill"
+          }
+        }
+      }
+    },
+    "rank.flows.sectionMetaKills": {
+      "comment": "Arguments: 1 total (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld ranked kills"
+          }
+        }
+      }
+    },
+    "rank.flows.size": {
+      "comment": "Arguments: 1 size (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld-man"
+          }
+        }
+      }
+    },
+    "rank.flows.tierLink": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tier list ›"
+          }
+        }
+      }
+    },
+    "rank.flows.tierQuestion": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Comparing specs, not characters?"
+          }
+        }
+      }
+    },
+    "rank.flows.tryGuilds": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The Guilds board ranks guild progress across every encounter and needs none."
+          }
+        }
+      }
+    },
+    "rank.flows.under": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "under 25"
+          }
+        }
+      }
+    },
+    "rank.flows.updated": {
+      "comment": "Arguments: 1 date (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Updated %1$@"
+          }
+        }
+      }
+    },
     "rank.jump": {
       "comment": "Arguments: 1 ordinal (string)",
       "extractionState": "manual",

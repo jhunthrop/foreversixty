@@ -40,6 +40,10 @@ import gg.foreversixty.app.bis.BisRange
 import gg.foreversixty.app.bis.BisSelection
 import gg.foreversixty.app.bis.ClassSpecSections
 import gg.foreversixty.app.designsystem.FsColor
+import gg.foreversixty.app.flows.FlowBackBar
+import gg.foreversixty.app.navigation.DeepLink
+import gg.foreversixty.app.R
+import androidx.compose.ui.res.stringResource
 import gg.foreversixty.app.designsystem.GameColors
 import gg.foreversixty.app.items.ItemTooltipRequest
 import gg.foreversixty.app.items.ItemTooltipSheet
@@ -107,10 +111,17 @@ private fun BoardRoute(feature: RankingsFeature, viewer: RankingsViewer, reports
     BackHandler(onBack = onBack)
     val refresh: () -> Unit = { scope.launch { refreshing = true; store.load(); refreshing = false } }
     val actions = RankingsActions(
-        back = onBack,
         retry = refresh,
+        choose = { slug -> scope.launch { store.choose(slug) } },
         openFilters = { filtersOpen = true },
+        openEncounters = {
+            choosingEncounter = true
+            filtersOpen = true
+        },
         chooseSpec = { pickerOpen = true },
+        setMeasure = { measure -> store.filters?.let { f -> scope.launch { store.apply(f.copy(measure = measure)) } } },
+        openTiers = { AccountLinks.open(context, DeepLink.TiersPage.url()) },
+        openGuilds = { AccountLinks.open(context, RankingsFeature.GUILDS_BOARD) },
         open = { row -> feature.navigator.character = CharacterRoute.ofKey(row.player.key, row.player.name) },
         loadMore = { scope.launch { store.loadMore() } },
         jump = { scope.launch { scroll.animateScrollTo((scroll.value + ownAt - top).toInt().coerceAtLeast(0)) } },
@@ -120,9 +131,12 @@ private fun BoardRoute(feature: RankingsFeature, viewer: RankingsViewer, reports
         share = { row -> CharacterCard.shareUrl(row.player.key)?.let { RankingsFeature.share(context, it) } },
     )
     val state = RankingsScreenState(store.phase, store.filters, store.encounterNames, viewer, store.pageFailed, store.watched, reports != null)
-    PullToRefreshBox(isRefreshing = refreshing, onRefresh = refresh, modifier = Modifier.fillMaxSize().background(FsColor.bg)) {
-        Box(Modifier.fillMaxSize().onGloballyPositioned { top = it.positionInRoot().y }.verticalScroll(scroll)) {
-            RankingsContent(state, feature.now(), actions, feature.zone)
+    Column(Modifier.fillMaxSize().background(FsColor.bg)) {
+        FlowBackBar(stringResource(R.string.tab_home), onBack)
+        PullToRefreshBox(isRefreshing = refreshing, onRefresh = refresh, modifier = Modifier.fillMaxSize()) {
+            Box(Modifier.fillMaxSize().onGloballyPositioned { top = it.positionInRoot().y }.verticalScroll(scroll)) {
+                RankingsContent(state, feature.now(), actions, feature.zone)
+            }
         }
     }
     val filters = store.filters

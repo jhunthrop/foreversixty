@@ -15,9 +15,6 @@ import java.time.format.DateTimeFormatter
 import java.util.Locale
 import kotlin.math.roundToInt
 
-/** The answer card's meta: the sentence, and the character name it opens with (drawn in gold). */
-data class AnswerMeta(val text: String, val name: String)
-
 /** Every F11 sentence built from data (spec §5.3); the words themselves live in the copy catalog. */
 class RankingsCopy(private val res: Resources, private val zone: ZoneId = ZoneId.systemDefault()) {
     // Filters
@@ -60,20 +57,6 @@ class RankingsCopy(private val res: Resources, private val zone: ZoneId = ZoneId
 
     fun className(slug: String?): String = slug?.let { GameClass.of(it)?.label?.let(res::getString) ?: HomePresenter.words(it) }.orEmpty()
 
-    /**
-     * `{Encounter} · {Ruleset} · {Region} · {Phase} · {Measure}`, then a faction and `Today only`
-     * when chosen; every part in words, never cut (the web's phone rule).
-     */
-    fun filterLine(filters: RankingsFilters, encounterNames: Map<String, String>): String = listOfNotNull(
-        encounterNames[filters.encounter] ?: filters.encounter,
-        rulesetLabel(filters.ruleset),
-        if (filters.region.isEmpty()) res.getString(R.string.rank_line_allRegions) else filters.region.uppercase(Locale.ROOT),
-        if (filters.phase.isEmpty()) null else phaseLabel(filters.phase),
-        measureLabel(filters.measure),
-        if (filters.faction.isEmpty()) null else factionLabel(filters.faction),
-        if (filters.todayOnly) res.getString(R.string.rank_filter_today) else null,
-    ).filter { it.isNotEmpty() }.joinToString(SEPARATOR)
-
     /** `Onyxia's Lair · 40 players · 38 ranked kills`. */
     fun encounterMeta(encounter: RankedEncounter): String {
         val kills = res.getQuantityString(R.plurals.rank_kills, encounter.kills, encounter.kills)
@@ -82,43 +65,59 @@ class RankingsCopy(private val res: Resources, private val zone: ZoneId = ZoneId
         return if (zone != null && size != null) res.getString(R.string.rank_encounterMeta, zone, size, kills) else kills
     }
 
-    // Answer card
+    // The page (design/mocks/web web-rankings*)
 
+    /** The head's line: where you stand signed in, how the board ranks signed out. */
+    fun line(signedIn: Boolean): String = res.getString(if (signedIn) R.string.rank_flows_lineIn else R.string.rank_flows_lineOut)
+
+    /** `Fury Warriors`, or `Every class and spec`. */
+    fun cohortTitle(cohort: Cohort?): String =
+        cohortName(cohort).ifEmpty { null }?.let { res.getString(R.string.rank_flows_cohortPlural, it) } ?: res.getString(R.string.rank_flows_everyClass)
+
+    /** `Normal ruleset`, or `All rulesets`. */
+    fun rulesetScope(ruleset: String): String =
+        if (ruleset.isEmpty()) res.getString(R.string.rank_flows_allRulesets) else res.getString(R.string.rank_flows_rulesetScope, rulesetLabel(ruleset))
+
+    /** The head's facts: `Rankings · Fury Warriors · Normal ruleset`, then `Updated 13 Dec`. */
+    fun facts(filters: RankingsFilters, updatedAt: String): List<String> = listOfNotNull(
+        res.getString(R.string.rank_flows_facts, cohortTitle(filters.cohort), rulesetScope(filters.ruleset)),
+        runCatching { Instant.parse(updatedAt) }.getOrNull()?.let { res.getString(R.string.rank_flows_updated, shortDate(it)) },
+    )
+
+    /** `of 212 Fury Warriors` once each row is a character's best kill, else `of 212 Fury Warrior kills`. */
     fun answerUnit(total: Int, cohort: Cohort?, deduped: Boolean): String {
-        val spec = cohort?.specName.orEmpty()
-        val cls = className(cohort?.classSlug)
-        val id = if (deduped) R.string.rank_unit else R.string.rank_unitKills
-        return collapse(res.getString(id, total, spec, cls))
+        val name = cohortName(cohort).ifEmpty { res.getString(R.string.rank_flows_everyClassField) }
+        return res.getString(if (deduped) R.string.rank_flows_answerUnit else R.string.rank_flows_answerUnitKills, total, name)
     }
 
-    /** `Lightningbolltz · best kill on Onyxia, Normal, Phase 1.`: the card names its character on the page and off it. */
-    fun answerMeta(row: RankingRow, filters: RankingsFilters, encounterNames: Map<String, String>): AnswerMeta {
-        val encounter = encounterNames[filters.encounter] ?: filters.encounter
-        val ruleset = rulesetLabel(filters.ruleset)
-        val phase = if (filters.phase.isEmpty()) "" else phaseLabel(filters.phase)
-        return AnswerMeta(res.getString(R.string.rank_metaNamed, row.player.name, encounter, ruleset, phase), row.player.name)
-    }
+    /** `On Onyxia, Normal ruleset`. */
+    fun answerNote(filters: RankingsFilters, encounterNames: Map<String, String>): String =
+        res.getString(R.string.rank_flows_answerNote, encounterName(filters, encounterNames), rulesetScope(filters.ruleset))
+
+    fun encounterName(filters: RankingsFilters, encounterNames: Map<String, String>): String = encounterNames[filters.encounter] ?: filters.encounter
 
     fun unranked(filters: RankingsFilters, encounterNames: Map<String, String>): String =
-        res.getString(R.string.rank_none, encounterNames[filters.encounter] ?: filters.encounter)
+        res.getString(R.string.rank_none, encounterName(filters, encounterNames))
 
-    fun jump(rank: Int): String = res.getString(R.string.rank_jump, Rankings.ordinal(rank))
+    /** `212 ranked, each character's best kill`, or `212 ranked kills`. */
+    fun sectionMeta(total: Int, deduped: Boolean): String =
+        res.getString(if (deduped) R.string.rank_flows_sectionMeta else R.string.rank_flows_sectionMetaKills, total)
 
     // Board rows
 
     fun unit(measure: Measure): String = res.getString(measure.unit)
 
-    /**
-     * `Hordebreakers · 40 players · 3:13 · 2 d ago`. Each part is bound with no-break spaces and each
-     * separator stays at the end of its line, so a wrap never leaves `ago` or `· 2 d ago` an orphan.
-     */
-    fun rowMeta(row: RankingRow, now: Instant): String {
-        val time = FightRows.clock(row.durationMs.toLong())
-        val age = bind(age(row.foughtAt, now))
-        val guild = row.guild?.name
-        val text = if (guild != null) res.getString(R.string.rank_rowMeta, guild, row.size, time, age) else res.getString(R.string.rank_rowMetaNoGuild, row.size, time, age)
-        return text.replace(SEPARATOR, BOUND_SEPARATOR).replace(PLAYERS_GAP, PLAYERS_BOUND)
+    /** `Olympus XXVII · Fury Warrior · 40-man`: the guild when filed to one, the spec and class, the raid size. */
+    fun rowSub(row: RankingRow): String {
+        val who = listOfNotNull(row.player.spec, className(row.player.className?.lowercase(Locale.ROOT))).filter { it.isNotEmpty() }.joinToString(" ")
+        return listOfNotNull(row.guild?.name, who.ifEmpty { null }, res.getString(R.string.rank_flows_size, row.size)).joinToString(SEPARATOR)
     }
+
+    /** `90%` executed, when the kill has an execution score. */
+    fun executed(row: RankingRow): String? = row.executionScore?.let { "${(it * PERCENT).roundToInt()}$PERCENT_SIGN" }
+
+    /** The kill's length, `2:41`. */
+    fun length(row: RankingRow): String = FightRows.clock(row.durationMs.toLong())
 
     /** `Rank 14 of 212, Lightningbolltz, 398 damage per second, Hordebreakers, your character`. */
     fun rowLabel(row: RankingRow, total: Int, measure: Measure, yours: Boolean): String {
@@ -140,16 +139,8 @@ class RankingsCopy(private val res: Resources, private val zone: ZoneId = ZoneId
 
     companion object {
         const val SEPARATOR = " · "
-        private const val NBSP = '\u00A0'
-
-        /** The separator bound to the word before it, so a line breaks after the dot, never before. */
-        private const val BOUND_SEPARATOR = "\u00A0· "
-        private const val PLAYERS_GAP = " players"
-        private const val PLAYERS_BOUND = "\u00A0players"
-
-        /** A phrase that must not wrap (`2 d ago`). */
-        fun bind(text: String): String = text.replace(' ', NBSP)
         private const val PERCENT = 100.0
+        private const val PERCENT_SIGN = "%"
         private val SHORT_DATE: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMM", Locale.US)
 
         /** A sentence with an empty part (no spec) keeps single spaces. */

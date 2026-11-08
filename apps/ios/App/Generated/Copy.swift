@@ -5994,6 +5994,133 @@ enum Copy {
     /// We could not load this application
     static var raidApplicantFailed: String { text("raid.applicant.failed") }
 
+    /// How characters rank on each encounter, kill by kill.
+    static var rankFlowsLineOut: String { text("rank.flows.lineOut") }
+
+    /// Where your character stands among characters like it.
+    static var rankFlowsLineIn: String { text("rank.flows.lineIn") }
+
+    /// Comparing specs, not characters?
+    static var rankFlowsTierQuestion: String { text("rank.flows.tierQuestion") }
+
+    /// Tier list ›
+    static var rankFlowsTierLink: String { text("rank.flows.tierLink") }
+
+    /// Choose an encounter
+    static var rankFlowsChoose: String { text("rank.flows.choose") }
+
+    /// {n} encounters ranked
+    static func rankFlowsRanked(n: Int) -> String {
+        format("rank.flows.ranked", n)
+    }
+
+    /// Characters and guilds, every class and spec
+    static var rankFlowsEncounterLine: String { text("rank.flows.encounterLine") }
+
+    /// Open the board ›
+    static var rankFlowsOpenBoard: String { text("rank.flows.openBoard") }
+
+    /// No encounters have been ranked yet.
+    static var rankFlowsNoneYet: String { text("rank.flows.noneYet") }
+
+    /// The Guilds board ranks guild progress across every encounter and needs none.
+    static var rankFlowsTryGuilds: String { text("rank.flows.tryGuilds") }
+
+    /// Open the Guilds board ›
+    static var rankFlowsOpenGuilds: String { text("rank.flows.openGuilds") }
+
+    /// Rank colour is the percentile:
+    static var rankFlowsLegend: String { text("rank.flows.legend") }
+
+    /// under 25
+    static var rankFlowsUnder: String { text("rank.flows.under") }
+
+    /// Rankings · {cohort} · {ruleset}
+    static func rankFlowsFacts(cohort: String, ruleset: String) -> String {
+        format("rank.flows.facts", cohort, ruleset)
+    }
+
+    /// {ruleset} ruleset
+    static func rankFlowsRulesetScope(ruleset: String) -> String {
+        format("rank.flows.rulesetScope", ruleset)
+    }
+
+    /// All rulesets
+    static var rankFlowsAllRulesets: String { text("rank.flows.allRulesets") }
+
+    /// Updated {date}
+    static func rankFlowsUpdated(date: String) -> String {
+        format("rank.flows.updated", date)
+    }
+
+    /// Every class and spec
+    static var rankFlowsEveryClass: String { text("rank.flows.everyClass") }
+
+    /// {cohort}s
+    static func rankFlowsCohortPlural(cohort: String) -> String {
+        format("rank.flows.cohortPlural", cohort)
+    }
+
+    /// of {total} {cohort}s
+    static func rankFlowsAnswerUnit(total: Int, cohort: String) -> String {
+        format("rank.flows.answerUnit", total, cohort)
+    }
+
+    /// of {total} {cohort} kills
+    static func rankFlowsAnswerUnitKills(total: Int, cohort: String) -> String {
+        format("rank.flows.answerUnitKills", total, cohort)
+    }
+
+    /// On {encounter}, {scope}
+    static func rankFlowsAnswerNote(encounter: String, scope: String) -> String {
+        format("rank.flows.answerNote", encounter, scope)
+    }
+
+    /// See your parses ›
+    static var rankFlowsParses: String { text("rank.flows.parses") }
+
+    /// Jump to your row ›
+    static var rankFlowsJump: String { text("rank.flows.jump") }
+
+    /// Every class
+    static var rankFlowsEveryClassField: String { text("rank.flows.everyClassField") }
+
+    /// Every spec
+    static var rankFlowsEverySpec: String { text("rank.flows.everySpec") }
+
+    /// Characters
+    static var rankFlowsCharacters: String { text("rank.flows.characters") }
+
+    /// Guilds
+    static var rankFlowsGuilds: String { text("rank.flows.guilds") }
+
+    /// {total} ranked, each character’s best kill
+    static func rankFlowsSectionMeta(total: Int) -> String {
+        format("rank.flows.sectionMeta", total)
+    }
+
+    /// {total} ranked kills
+    static func rankFlowsSectionMetaKills(total: Int) -> String {
+        format("rank.flows.sectionMetaKills", total)
+    }
+
+    /// {size}-man
+    static func rankFlowsSize(size: Int) -> String {
+        format("rank.flows.size", size)
+    }
+
+    /// Executed
+    static var rankFlowsExecuted: String { text("rank.flows.executed") }
+
+    /// Length
+    static var rankFlowsLength: String { text("rank.flows.length") }
+
+    /// Report
+    static var rankFlowsReport: String { text("rank.flows.report") }
+
+    /// Build
+    static var rankFlowsBuild: String { text("rank.flows.build") }
+
     /// Get the addon and companion
     static var sharedCtaGetAddonAndCompanion: String { text("shared.cta.getAddonAndCompanion") }
 
