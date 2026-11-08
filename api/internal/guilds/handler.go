@@ -82,6 +82,8 @@ type Service struct {
 	limiterOnce   sync.Once
 	// Events publishes the player notifications (events.Router); nil publishes nothing.
 	Events events.Publisher
+	// Coach reads the raid night's coach teaser; nil leaves it null.
+	Coach RaidNightCoach
 	// Scores reads the applicant sheet's Forever Score; nil leaves it null.
 	Scores ApplicantScorer
 	// Nudges finds who a raid-day nudge goes to and when (events.Store); nil sends no nudge.
@@ -111,6 +113,7 @@ func Mount(mux *http.ServeMux, s *Service, trustedProxyHops int) {
 	// Public, like the guild page itself: the router's per-client limit is its rate limit.
 	mux.HandleFunc("GET /v1/guilds/search", s.searchGuilds)
 	mux.HandleFunc("GET /v1/guilds/recruiting", s.recruiting)
+	mux.HandleFunc("GET /v1/me/raid-nights/{raid}", auth.RequireSession(s.raidNight))
 	mux.HandleFunc("GET /v1/characters/{region}/{ruleset}/{name}/ready", auth.RequireSession(s.readyCheck))
 	mux.HandleFunc("GET /v1/guilds/{id}/settings", auth.RequireSession(s.getSettings))
 	mux.HandleFunc("PATCH /v1/guilds/{id}/settings", auth.RequireSession(s.patchSettings))

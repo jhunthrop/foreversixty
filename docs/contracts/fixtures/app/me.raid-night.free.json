@@ -4,9 +4,12 @@
     "raid_id": 29,
     "guild_id": 2,
     "guild_name": "OLYMPUS XXVII",
+    "zone_key": "raid:onyxias-lair",
     "zone_name": "Onyxia's Lair",
     "starts_at": "2026-12-15T01:00:00Z",
-    "report_id": "ewlrx3enxbeb",
+    "ends_at": "2026-12-15T04:00:00Z",
+    "status": "done",
+    "phase": "after",
     "character": {
       "character_key": "us/pvp/obnoxious-yell",
       "name": "Obnoxious Yell",
@@ -15,6 +18,46 @@
       "spec_name": "Fury",
       "role": "dps"
     },
+    "you": {
+      "state": "in",
+      "late_minutes": null,
+      "note": ""
+    },
+    "coming": {
+      "in": 36,
+      "late": 2,
+      "bench": 3,
+      "out": 1,
+      "tanks": [
+        {
+          "name": "Grunvald",
+          "class": "warrior",
+          "state": "in",
+          "late_minutes": null,
+          "note": ""
+        }
+      ],
+      "healers": [
+        {
+          "name": "Brightwen",
+          "class": "priest",
+          "state": "late",
+          "late_minutes": 15,
+          "note": "Work runs late"
+        }
+      ],
+      "damage": [
+        {
+          "name": "Obnoxious Yell",
+          "class": "warrior",
+          "state": "in",
+          "late_minutes": null,
+          "note": ""
+        }
+      ]
+    },
+    "ready": null,
+    "report_id": "ewlrx3enxbeb",
     "kills": 1,
     "wipes": 0,
     "new_bests": 1,
