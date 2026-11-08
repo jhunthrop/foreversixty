@@ -109,6 +109,7 @@ func (s *Service) raidPost(g Guild, v RaidView) notify.RaidPosted {
 	in := notify.RaidPosted{
 		GuildName: g.Name, Title: v.Title, StartsAt: v.StartsAt,
 		RaidID:  v.ID,
+		Zone:    v.Zone,
 		RaidURL: strings.TrimRight(s.PublicBaseURL, "/") + RaidPagePath(GuildPagePath(g), v.ID),
 		Counts: notify.RaidCounts{
 			In: v.Counts.In, Late: v.Counts.Late, Bench: v.Counts.Bench, Out: v.Counts.Out,

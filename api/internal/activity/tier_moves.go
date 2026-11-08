@@ -14,6 +14,7 @@ import (
 	"time"
 
 	"github.com/jhunthrop/foreversixty/api/internal/events"
+	"github.com/jhunthrop/foreversixty/sim/specs"
 )
 
 // tierMoveCopy is the words of the tier move.
@@ -130,6 +131,7 @@ func tierMoveEvent(m tierMove, week time.Time, users []int64, publicBaseURL stri
 		Title:     fmt.Sprintf(tierMoveCopy.Title, SpecName(m.spec), m.grade),
 		Body:      fmt.Sprintf(body, m.last, BandWords(m.band), titleWord(m.faction)),
 		Link:      publicBaseURL + tierMoveCopy.TiersPath,
+		Icon:      specs.ByKey[m.spec].Icon,
 		Data: map[string]string{"spec": m.spec, "band": fmt.Sprint(m.band), "faction": m.faction,
 			"grade": m.grade, "last_grade": m.last},
 	}

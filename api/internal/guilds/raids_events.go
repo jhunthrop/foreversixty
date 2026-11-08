@@ -19,6 +19,7 @@ import (
 
 	"github.com/jhunthrop/foreversixty/api/internal/events"
 	"github.com/jhunthrop/foreversixty/api/internal/notify"
+	"github.com/jhunthrop/foreversixty/api/internal/zoneicons"
 )
 
 // raidCopy is the words of the raid notifications. Every line names only what the raid page
@@ -79,7 +80,7 @@ func signupActions(guildID, raidID int64) []events.Action {
 // raid and a collapse id per kind and raid.
 func raidEvent(kind events.Kind, guildID int64, p notify.RaidPosted, key string, aud events.Audience) events.Event {
 	return events.Event{
-		Kind: kind, Audience: aud, DedupeKey: key, Title: p.Title, Link: p.RaidURL,
+		Kind: kind, Audience: aud, DedupeKey: key, Title: p.Title, Link: p.RaidURL, Icon: zoneicons.For(p.Zone),
 		Thread: events.RaidThread(p.RaidID), Collapse: events.RaidCollapse(kind, p.RaidID),
 		Data: map[string]string{"guild_id": strconv.FormatInt(guildID, 10), "raid_id": strconv.FormatInt(p.RaidID, 10)},
 	}

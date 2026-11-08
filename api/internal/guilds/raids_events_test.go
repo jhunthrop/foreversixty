@@ -57,7 +57,7 @@ func (p *recordingPublisher) waitFor(t *testing.T, kind events.Kind, n int) []ev
 }
 
 func samplePosted() notify.RaidPosted {
-	return notify.RaidPosted{RaidID: 9, Title: "Onyxia", RaidURL: "https://foreversixty.gg/guild/us/hardcore/olympus/raids/9",
+	return notify.RaidPosted{RaidID: 9, Zone: "raid:onyxias-lair", Title: "Onyxia", RaidURL: "https://foreversixty.gg/guild/us/hardcore/olympus/raids/9",
 		StartsAt: time.Date(2026, 11, 5, 2, 0, 0, 0, time.UTC), Timezone: "America/Chicago",
 		Counts: notify.RaidCounts{In: 10, Late: 2}, Size: 40, SizeKnown: true}
 }
@@ -72,6 +72,9 @@ func TestRaidEventsReadPlainlyAndThreadPerRaid(t *testing.T) {
 		posted.Actions[2].Body["state"] != SignupBench || posted.Actions[3].Body["state"] != SignupOut ||
 		posted.Actions[1].Method != http.MethodPut {
 		t.Fatalf("actions %+v", posted.Actions)
+	}
+	if posted.Icon != "inv_misc_head_dragon_black" {
+		t.Fatalf("posted icon %q", posted.Icon)
 	}
 	if posted.Audience.Kind != events.ToGuildMembers || posted.Data["raid_id"] != "9" {
 		t.Fatalf("posted %+v", posted)

@@ -95,7 +95,7 @@ func (w *GuildSimWriter) passedEvent(f simFacts, simID string, r LadderRow) even
 		Title:     fmt.Sprintf(passedCopy.Title, f.name),
 		Body: fmt.Sprintf(passedCopy.Body, FormatFigure(f.value), unit, formatLead(f.value, r.Value),
 			FormatFigure(r.Value), SpecName(f.spec), words),
-		Link: fmt.Sprintf(guildLinkFormat, w.PublicBaseURL, f.guildID),
+		Link: fmt.Sprintf(guildLinkFormat, w.PublicBaseURL, f.guildID), Icon: events.CrestIcon(f.class),
 		Data: map[string]string{
 			"guild_id": strconv.FormatInt(f.guildID, 10), "sim_id": simID, "character_key": f.key,
 			"role": f.role, "band": strconv.Itoa(f.band), "preset": f.preset,

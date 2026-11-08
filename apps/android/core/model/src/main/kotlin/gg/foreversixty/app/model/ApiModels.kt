@@ -110,6 +110,8 @@ data class ActivityRow(
     /** RFC 3339, UTC */
     @SerialName("occurred_at") val occurredAt: String,
     @SerialName("read") val read: Boolean,
+    /** The row's icon, set by its producer: a name under /data/{build}/icons (loot.awarded the item's, sim.finished and tier.moved the spec's, raid events and report.ready the raid zone's, inv_misc_book_09 for a zone with none) or crest:<class> for a character (guildsim.passed, the guildmate who passed you). null when none, as on rows written before icons: draw the group's fixed icon. */
+    @SerialName("icon") val icon: String? = null,
 )
 
 @Serializable

@@ -1,26 +1,17 @@
 package activity
 
 import (
-	"net/url"
-	"strings"
-
 	"context"
 	"fmt"
-	"github.com/jhunthrop/foreversixty/api/internal/character"
 	"log/slog"
+	"net/url"
 	"strconv"
+	"strings"
 	"time"
+
+	"github.com/jhunthrop/foreversixty/api/internal/character"
+	"github.com/jhunthrop/foreversixty/api/internal/zoneicons"
 )
-
-// raidIcons are the HD icons the first-tier raids show (the home mock's set); any other zone
-// shows the generic one.
-var raidIcons = map[string]string{
-	"raid:barrow-deeps": "spell_shadow_raisedead",
-	"raid:hyjal-summit": "spell_nature_timestop",
-	"raid:onyxias-lair": "inv_misc_head_dragon_black",
-}
-
-const genericRaidIcon = "inv_misc_book_09"
 
 // GuildRaidWriter keeps one Your guild row per planned raid (ruling P3): written when the
 // raid is posted and rewritten with its counts as members sign up. guilds.Service calls it.
@@ -78,10 +69,7 @@ func guildRaidEvent(f raidFacts) Event {
 		loc = time.UTC
 	}
 	day := f.startsAt.In(loc).Format("Mon 2 Jan")
-	icon := raidIcons[f.zone]
-	if icon == "" {
-		icon = genericRaidIcon
-	}
+	icon := zoneicons.For(f.zone)
 	return Event{
 		Kind: KindGuildRaid, OccurredAt: f.createdAt, GuildID: f.guildID, Icon: icon,
 		Href: guildPath(f.region, f.ruleset, f.guild) + "/raids/" + strconv.FormatInt(f.id, 10),

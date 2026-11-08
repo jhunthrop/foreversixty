@@ -263,6 +263,8 @@ public struct ActivityRow: Codable, Sendable, Equatable {
     /// RFC 3339, UTC
     public let occurredAt: Date
     public let read: Bool
+    /// The row's icon, set by its producer: a name under /data/{build}/icons (loot.awarded the item's, sim.finished and tier.moved the spec's, raid events and report.ready the raid zone's, inv_misc_book_09 for a zone with none) or crest:<class> for a character (guildsim.passed, the guildmate who passed you). null when none, as on rows written before icons: draw the group's fixed icon.
+    public let icon: String?
 
     public init(
         id: Int64,
@@ -272,7 +274,8 @@ public struct ActivityRow: Codable, Sendable, Equatable {
         body: String,
         link: String,
         occurredAt: Date,
-        read: Bool
+        read: Bool,
+        icon: String? = nil
     ) {
         self.id = id
         self.kind = kind
@@ -282,6 +285,7 @@ public struct ActivityRow: Codable, Sendable, Equatable {
         self.link = link
         self.occurredAt = occurredAt
         self.read = read
+        self.icon = icon
     }
 }
 

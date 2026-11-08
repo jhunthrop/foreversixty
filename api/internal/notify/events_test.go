@@ -8,6 +8,8 @@ import (
 	"time"
 
 	"github.com/jhunthrop/foreversixty/api/internal/events"
+	"github.com/jhunthrop/foreversixty/api/internal/zoneicons"
+	"github.com/jhunthrop/foreversixty/sim/specs"
 )
 
 // memRouterStore is an events.RouterStore over plain maps: the router's own reads are
@@ -128,7 +130,18 @@ func TestSimAndUploadEventsReadPlainly(t *testing.T) {
 		t.Fatalf("upload %+v", up)
 	}
 	named := SimFinished{UserID: 1, SimID: "s", Character: `**Bold**`, Spec: "nope"}
-	if e := SimFinishedEvent("", named); e.Title != "Your sim finished" {
+	if e := SimFinishedEvent("", named); e.Title != "Your sim finished" || e.Icon != "" {
 		t.Fatalf("unknown spec %+v", e)
+	}
+}
+
+// The Activity icons: a sim shows its spec's, a report its zone's (the generic raid icon for a
+// zone with none of its own).
+func TestSimAndUploadEventsCarryTheirIcon(t *testing.T) {
+	if e := SimFinishedEvent("", sampleSim(4)); e.Icon != specs.ByKey["warrior-fury"].Icon || e.Icon == "" {
+		t.Fatalf("sim icon %q", e.Icon)
+	}
+	if e := UploadParsedEvent("", sampleUpload(4, false)); e.Icon != zoneicons.Generic {
+		t.Fatalf("report icon %q", e.Icon)
 	}
 }
