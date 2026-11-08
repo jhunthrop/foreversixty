@@ -1,6 +1,7 @@
 package contract
 
 import (
+	"encoding/json"
 	"os"
 	"path/filepath"
 	"strings"
@@ -90,19 +91,45 @@ func TestPushFixturesCarryThePayloadFields(t *testing.T) {
 					t.Errorf("a payload with actions has the RAID_SIGNUP category, got %v", aps["category"])
 				}
 			case strings.HasSuffix(name, ".fcm"):
-				msg, _ := doc["message"].(map[string]any)
-				requireKeys(t, msg, "token", "notification", "data", "android")
-				data, _ := msg["data"].(map[string]any)
-				requireKeys(t, data, "kind", "link", "thread")
-				for key, value := range data {
-					if _, isString := value.(string); !isString {
-						t.Errorf("FCM data values are strings; %q is %T", key, value)
-					}
-				}
+				assertDataOnlyFCM(t, doc)
 			default:
 				t.Fatalf("a push fixture ends in .apns or .fcm: %s", name)
 			}
 		})
+	}
+}
+
+// assertDataOnlyFCM holds an FCM fixture to the data-only message Android is sent (since
+// a8ad9c882): no notification block, so the app's own service draws every push with its group;
+// everything the app shows or does is a string in data, the actions a JSON list beside the
+// RAID_SIGNUP category.
+func assertDataOnlyFCM(t *testing.T, doc map[string]any) {
+	t.Helper()
+	msg, _ := doc["message"].(map[string]any)
+	requireKeys(t, msg, "token", "data", "android")
+	if _, ok := msg["notification"]; ok {
+		t.Error("an FCM message is data-only: it carries no notification block")
+	}
+	data, _ := msg["data"].(map[string]any)
+	requireKeys(t, data, "kind", "group", "title", "body", "link", "thread", "collapse")
+	for key, value := range data {
+		if _, isString := value.(string); !isString {
+			t.Errorf("FCM data values are strings; %q is %T", key, value)
+		}
+	}
+	raw, hasActions := data["actions"].(string)
+	if !hasActions {
+		return
+	}
+	if data["category"] != "RAID_SIGNUP" {
+		t.Errorf("a payload with actions has the RAID_SIGNUP category, got %v", data["category"])
+	}
+	var actions []map[string]any
+	if err := json.Unmarshal([]byte(raw), &actions); err != nil || len(actions) == 0 {
+		t.Errorf("data.actions is a JSON list of actions: %v (%s)", err, raw)
+	}
+	for _, a := range actions {
+		requireKeys(t, a, "id", "title", "method", "path")
 	}
 }
 
