@@ -5296,9 +5296,9 @@ enum Copy {
         format("home.raid.lineSub", counts, name, role)
     }
 
-    /// {in} in, {late} late
-    static func homeRaidCounts(in: Int, late: Int) -> String {
-        format("home.raid.counts", in, late)
+    /// {n} in, {late} late
+    static func homeRaidCounts(n: Int, late: Int) -> String {
+        format("home.raid.counts", n, late)
     }
 
     /// {n} things before you pull

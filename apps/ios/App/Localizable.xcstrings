@@ -4062,7 +4062,7 @@
       }
     },
     "home.raid.counts": {
-      "comment": "Arguments: 1 in (int), 2 late (int)",
+      "comment": "Arguments: 1 n (int), 2 late (int)",
       "extractionState": "manual",
       "localizations": {
         "en": {
