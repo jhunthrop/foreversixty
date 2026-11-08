@@ -38,6 +38,7 @@
   import Plate from '../ui/Plate.svelte';
   import SetupAddon from './SetupAddon.svelte';
   import SetupAnswer from './SetupAnswer.svelte';
+  import CompanionDownload from './CompanionDownload.svelte';
   import SetupCompanion from './SetupCompanion.svelte';
   import SetupRail from './SetupRail.svelte';
   import SetupStepList from './SetupStepList.svelte';
@@ -178,24 +179,32 @@
   const signedIn = $derived(session === 'in' && me !== null);
   const answer = $derived(signedIn ? setupAnswer(me, current, now) : null);
   const addonDone = $derived(rows[1]?.mark === 'ok');
-  const companionDone = $derived(rows[2]?.mark === 'ok');
 </script>
 
 {#snippet answerContent()}
   {#if answer !== null}
     <SetupAnswer {answer} />
-  {:else}
+  {:else if !settled}
     <span class="setup-answer-reserve" aria-hidden="true"></span>
   {/if}
+  <!-- The companion's download at the top, in every state (owner 2026-11-08), never gold: the plate
+       keeps the page's one primary. -->
+  <div class="setup-head-download">
+    <CompanionDownload
+      {platform}
+      {release}
+      primary={false}
+      {copied}
+      onCopyLink={() => void copyLink()}
+      idPrefix="setup-head"
+      end
+    />
+  </div>
 {/snippet}
 
 <Page layout="split" testid="setup-grid">
   {#snippet header()}
-    <PageHeader
-      title={addonCopy.setupPageTitle}
-      answer={answer !== null || !settled ? answerContent : undefined}
-      testid="setup-head"
-    >
+    <PageHeader title={addonCopy.setupPageTitle} answer={answerContent} testid="setup-head">
       {#snippet meta()}<span>{addonCopy.setupSubline}</span>{/snippet}
     </PageHeader>
     <SetupBackToClaim />
@@ -205,7 +214,7 @@
     <div class={mounted ? undefined : 'setup-hint'} data-hint={mounted ? undefined : 'out'}>
       <SetupStepList
         rows={mounted ? rows : HINT_OUT_ROWS}
-        platform={mounted ? platform : 'unknown'}
+        {platform}
         {release}
         {refreshing}
         {copied}
@@ -226,7 +235,8 @@
   <SetupCompanion
     {platform}
     {release}
-    {companionDone}
+    {copied}
+    onCopyLink={() => void copyLink()}
     {signedIn}
     devices={devices ?? []}
     {now}
@@ -264,6 +274,11 @@
     display: block;
     width: 300px;
     height: 94px;
+  }
+  /* Under the character (or its reserved box), the download sits apart from the answer's links. */
+  :global(.setup-answer-links) ~ .setup-head-download,
+  :global(html[data-session='1'][data-pointer='1']) .setup-answer-reserve ~ .setup-head-download {
+    margin-top: 8px;
   }
   /* The Sections' shared body: a column, reading lines, quiet link rows. */
   :global(.setup-body) {
