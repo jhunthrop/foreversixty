@@ -12,7 +12,9 @@ enum ParityText {
     @MainActor
     static func lines(of view: some View, size: CGSize) -> [String] {
         AccessibilityAutomation.enable()
-        return ParityHost.render(view, size: size) { host in settledLines(under: host.view) }
+        let lines = ParityHost.render(view, size: size) { host in settledLines(under: host.view) }
+        // A host made while the switch was still taking can stay treeless; a fresh one is not.
+        return lines.isEmpty ? ParityHost.render(view, size: size) { host in settledLines(under: host.view) } : lines
     }
 
     /// How long the tree may take to appear: SwiftUI builds it asynchronously once automation is
@@ -112,7 +114,7 @@ private enum AccessibilityAutomation {
     private typealias SetEnabled = @convention(c) (Int32) -> Void
 
     @MainActor private static var enabled = false
-    private static let warmUp: TimeInterval = 1
+    private static let warmUp: TimeInterval = 10
 
     @MainActor
     static func enable() {
@@ -124,9 +126,16 @@ private enum AccessibilityAutomation {
         }
         unsafeBitCast(symbol, to: SetEnabled.self)(1)
         enabled = true
-        // UIKit hears the switch through a notification on a later run-loop turn; a hosting view
-        // made before then never builds its tree (on a fresh CI simulator the first parity screen,
-        // Activity's, read as empty). Let it arrive before any screen is made.
-        RunLoop.main.run(until: Date().addingTimeInterval(warmUp))
+        // On a fresh CI simulator the first screen rendered after the switch never builds its tree
+        // (Activity's, the first parity suite, read as empty). Render a probe until its tree
+        // appears, so every real screen comes after the switch has taken.
+        let deadline = Date().addingTimeInterval(warmUp)
+        while Date() < deadline {
+            let ready = ParityHost.render(Text(verbatim: "probe").accessibilityLabel("probe"), size: CGSize(width: 100, height: 100)) { host in
+                RunLoop.main.run(until: Date().addingTimeInterval(0.1))
+                return !ParityText.elements(under: host.view).isEmpty
+            }
+            if ready { return }
+        }
     }
 }
