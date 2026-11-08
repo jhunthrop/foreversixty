@@ -2,9 +2,9 @@ name: ios
 on:
   push:
     branches: [main, 'land/**']
-    paths: ['apps/ios/**', 'apps/shared/**', 'web/src/data/specs.json', 'apps/VERSION', 'docs/contracts/**', '.github/workflows/ios.yml']
+    paths: ['apps/ios/**', 'apps/shared/**', 'web/src/data/specs.json', 'apps/VERSION', 'docs/contracts/**', '.github/workflows/ios.yml', 'tools/ios-ci-simulator.sh']
   pull_request:
-    paths: ['apps/ios/**', 'apps/shared/**', 'web/src/data/specs.json', 'apps/VERSION', 'docs/contracts/**', '.github/workflows/ios.yml']
+    paths: ['apps/ios/**', 'apps/shared/**', 'web/src/data/specs.json', 'apps/VERSION', 'docs/contracts/**', '.github/workflows/ios.yml', 'tools/ios-ci-simulator.sh']
   workflow_dispatch:
     inputs:
       record:
@@ -46,18 +46,13 @@ jobs:
         with:
           xcode-version: ${{ env.XCODE_VERSION }}
       # The runtime build, not just its version: 26.5 resolves to 23F73 while the lanes run 23F77.
-      # Installing it also creates default devices in the background, so a name would match twice:
-      # the job makes its own iPhone 17 and tests on it by id (SIMULATOR).
-      - name: Install the iOS ${{ env.IOS_RUNTIME_VERSION }} (${{ env.IOS_RUNTIME_BUILD }}) simulator
-        run: |
-          runtime="com.apple.CoreSimulator.SimRuntime.iOS-${IOS_RUNTIME_VERSION//./-}"
-          installed="iOS $IOS_RUNTIME_VERSION ($IOS_RUNTIME_VERSION - $IOS_RUNTIME_BUILD)"
-          if ! xcrun simctl list runtimes | grep -qF "$installed"; then
-            xcodebuild -downloadPlatform iOS -buildVersion "$IOS_RUNTIME_BUILD"
-          fi
-          xcrun simctl list runtimes | grep -F "$installed"
-          udid=$(xcrun simctl create "Forever Sixty CI (iPhone 17)" com.apple.CoreSimulator.SimDeviceType.iPhone-17 "$runtime")
-          echo "SIMULATOR=platform=iOS Simulator,id=$udid" >> "$GITHUB_ENV"
+      # tools/ios-ci-simulator.sh picks (or downloads) that runtime, makes its own iPhone 17 on it,
+      # boots it with retries and exports SIMULATOR (id=, never a name: installing a runtime creates
+      # default devices too). A freshly downloaded runtime tested on too early was lost mid-run
+      # ("cannot determine the runtime bundle", run 42503034639).
+      - name: Boot the iOS ${{ env.IOS_RUNTIME_VERSION }} (${{ env.IOS_RUNTIME_BUILD }}) simulator
+        working-directory: .
+        run: tools/ios-ci-simulator.sh "$IOS_RUNTIME_VERSION" "$IOS_RUNTIME_BUILD"
       - name: Install XcodeGen
         run: |
           # GitHub release downloads 504 now and then: retry, then fall back to Homebrew.
