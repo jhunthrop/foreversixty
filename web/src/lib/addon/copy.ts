@@ -166,8 +166,6 @@ export const addonCopy = {
   setupHandInstall: 'Installing by hand',
   setupHandInstallBody:
     'Unzip both into World of Warcraft\\<your Forever game folder>\\Interface\\AddOns: the addon zip holds ForeverSixty and ForeverSixtyInbox, the data zip holds ForeverSixtyData.',
-  /** The companion's download once row 3 is done: a second PC still installs (rulings U4). */
-  setupDownloadAnother: 'Download for another PC',
   /** The paste field's label (the Section title is `setupTryExport`). */
   pasteFieldLabel: 'Addon export',
   setupCompanionLine: (device: string, seen: string): string =>

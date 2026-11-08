@@ -312,7 +312,8 @@ type SavedVariables struct {
 }
 
 // scanSaved reads one SavedVariables file once for both of its parts.
-// It only ever reads the file: the game owns it.
+// It only ever reads the file: the game owns it (ClearRaidAnswers is the
+// one edit the companion makes to it).
 func scanSaved(path string) (SavedVariables, error) {
 	b, err := os.ReadFile(path)
 	if err != nil {
@@ -385,6 +386,7 @@ func RenderInbox(in Inbox, at time.Time) []byte {
 	fmt.Fprintf(&b, "%s = {\n", InboxGlobal)
 	fmt.Fprintf(&b, "\t[\"format\"] = %d,\n", InboxFormat)
 	fmt.Fprintf(&b, "\t[\"generated_at\"] = %s,\n", quote(at.UTC().Format(time.RFC3339)))
+	b.WriteString(acceptsLine)
 	b.WriteString("\t[\"builds\"] = {\n")
 	for _, bd := range in.Builds {
 		b.WriteString("\t\t{\n")
@@ -571,7 +573,8 @@ func InboxPath(savedVariables string) string {
 // WriteInbox writes the inbox file unless the bytes already there are
 // identical. It reports whether it wrote.
 //
-// It writes ForeverSixtyInbox.lua and nothing else: any other path is
+// It writes ForeverSixtyInbox.lua and nothing else (the raid answers'
+// clear, ClearRaidAnswers, is its own narrow edit): any other path is
 // refused, so the game's own ForeverSixty.lua (ForeverSixtyDB, which
 // the game owns and rewrites at logout) can never be overwritten by a
 // path mistake. The write goes to ForeverSixtyInbox.lua.tmp in the same folder,

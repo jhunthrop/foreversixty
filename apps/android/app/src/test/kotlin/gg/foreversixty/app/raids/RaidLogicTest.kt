@@ -5,6 +5,7 @@ import gg.foreversixty.app.model.GuildRaids
 import gg.foreversixty.app.model.Me
 import gg.foreversixty.app.model.SignupAnswer
 import gg.foreversixty.app.navigation.DeepLink
+import gg.foreversixty.app.navigation.RAID_VIEW_UNANSWERED
 import gg.foreversixty.app.network.ApiError
 import gg.foreversixty.app.raids.logic.CompositionRead
 import gg.foreversixty.app.raids.logic.NotesText
@@ -553,8 +554,8 @@ class RaidLogicTest {
 
     @Test
     fun `view unanswered opens Not answered, and an officer's raid push asks for it`() {
-        val link = DeepLink.parse(DeepLink.Raid(2, 41, view = DeepLink.Raid.UNANSWERED).url())
-        assertEquals(DeepLink.Raid(2, 41, view = DeepLink.Raid.UNANSWERED), link)
+        val link = DeepLink.parse(DeepLink.Raid(2, 41, view = RAID_VIEW_UNANSWERED).url())
+        assertEquals(DeepLink.Raid(2, 41, view = RAID_VIEW_UNANSWERED), link)
         val navigator = RaidsNavigator()
         navigator.open(requireNotNull(link))
         assertEquals(listOf(RaidsDestination.NotAnswered(2, 41)), navigator.stack.toList())

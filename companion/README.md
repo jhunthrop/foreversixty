@@ -141,9 +141,11 @@ you chose on the site, your newest sim, your last raid and what the site last sa
 loads the next time the game starts or you `/reload`. The game reads that file only for the small
 `ForeverSixtyInbox` addon that ships in the same download as ForeverSixty (both folders go into
 `Interface/AddOns`); without it the inbox is never seen. The status page's Addon row shows "Last synced 4 minutes ago"
-(the time of day later on, then "yesterday") once the site has your export. The companion only ever writes `ForeverSixtyInbox.lua`;
-`ForeverSixty.lua` is the game's. The game rewrites its own saved variables at logout, so an inbox written mid-session
-may be replaced; the next pass puts it back.
+(the time of day later on, then "yesterday") once the site has your export. The companion writes `ForeverSixtyInbox.lua`;
+`ForeverSixty.lua` is the game's, with one exception: the raid answers you give with the addon panel's Tonight buttons
+(`ForeverSixtyDB.outbox.raid_answer`) go up with the sync, and once the site has taken or refused one the companion takes
+it out of that list, after the game has finished saving, and changes nothing else in the file. The game rewrites its own
+saved variables at logout, so an inbox written mid-session may be replaced; the next pass puts it back.
 
 ### Keeping the addon up to date
 

@@ -13,18 +13,22 @@ import (
 	"slices"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
 	"github.com/jhunthrop/foreversixty/api/internal/upgrades"
 )
 
-// ItemNeeds is the body of GET …/items/{item}/needs.
+// ItemNeeds is the body of GET …/items/{item}/needs. NextRaid is the guild's next raid in the
+// zone that drops the item (item_next_raid.go), null when none is planned or no table raid
+// drops it.
 type ItemNeeds struct {
-	ItemID      int          `json:"item_id"`
-	Needs       []ItemNeed   `json:"needs"`
-	Has         []ItemHolder `json:"has"`
-	UnknownGear int          `json:"unknown_gear"`
+	ItemID      int           `json:"item_id"`
+	Needs       []ItemNeed    `json:"needs"`
+	Has         []ItemHolder  `json:"has"`
+	UnknownGear int           `json:"unknown_gear"`
+	NextRaid    *ItemNextRaid `json:"next_raid"`
 }
 
 // ItemNeed is one character whose band names the item. Pick is true when it is the slot's pick,
@@ -66,8 +70,13 @@ func (s *Service) itemNeeds(w http.ResponseWriter, r *http.Request) {
 		s.fail(w, r, "item_needs", err, "could not load who needs that just now")
 		return
 	}
+	out := s.Store.guildItemNeeds(lr.roster, itemID)
+	if out.NextRaid, err = s.Store.itemNextRaid(r.Context(), guildID, itemID, time.Now()); err != nil {
+		s.fail(w, r, "item_needs", err, "could not load who needs that just now")
+		return
+	}
 	httpx.CachePrivate(w)
-	httpx.WriteOK(w, r, http.StatusOK, s.Store.guildItemNeeds(lr.roster, itemID))
+	httpx.WriteOK(w, r, http.StatusOK, out)
 }
 
 // guildItemNeeds sorts the verified roster into who needs itemID, who has it, and how many have

@@ -553,6 +553,27 @@ public struct ApplicantSim: Codable, Sendable, Equatable {
     }
 }
 
+public struct ApplicationInput: Codable, Sendable, Equatable {
+    /// One of the applicant's own characters, on the guild's region and ruleset.
+    public let characterKey: String
+    public let message: String?
+    public let availability: String?
+    /// "Message me on Discord about this application"; off by default. The bot DMs the decision only when on.
+    public let discordDm: Bool?
+
+    public init(
+        characterKey: String,
+        message: String? = nil,
+        availability: String? = nil,
+        discordDm: Bool? = nil
+    ) {
+        self.characterKey = characterKey
+        self.message = message
+        self.availability = availability
+        self.discordDm = discordDm
+    }
+}
+
 /// The device token (shown only here), the device row and the GET /v1/me body.
 public struct AppSession: Codable, Sendable, Equatable {
     public let token: String
@@ -1540,8 +1561,10 @@ public struct CharacterHome: Codable, Sendable, Equatable {
     }
 }
 
-/// GET /v1/characters/{region}/{ruleset}/{name}: the public character card. Every score field is null for a character with no rated fight: render "no logs yet", never 0.
+/// GET /v1/characters/{region}/{ruleset}/{name}: the public character card. Every score field is null for a character with no rated fight: render "no logs yet", never 0. When score_hidden is true the owner hid the Forever Score from everyone else: every score field is null, score_history is [], and the page shows no score block at all (no "no logs yet", no label, no blank row). The owner's own view carries the score as usual, and a hidden character's page is never shared-cached.
 public struct CharacterProfile: Codable, Sendable, Equatable {
+    /// True when the owner hid the Forever Score and the viewer is someone else; absent otherwise. Show no score block.
+    public let scoreHidden: Bool?
     public let character: CharacterProfileHeader
     public let best: [CharacterFight]
     public let history: [CharacterFight]
@@ -1561,6 +1584,7 @@ public struct CharacterProfile: Codable, Sendable, Equatable {
     public let experience: ScoreExperience?
 
     public init(
+        scoreHidden: Bool? = nil,
         character: CharacterProfileHeader,
         best: [CharacterFight] = [],
         history: [CharacterFight] = [],
@@ -1578,6 +1602,7 @@ public struct CharacterProfile: Codable, Sendable, Equatable {
         componentCaps: ScoreComponentCaps? = nil,
         experience: ScoreExperience? = nil
     ) {
+        self.scoreHidden = scoreHidden
         self.character = character
         self.best = best
         self.history = history
@@ -1598,6 +1623,7 @@ public struct CharacterProfile: Codable, Sendable, Equatable {
 
     public init(from decoder: any Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
+        scoreHidden = try c.decodeIfPresent(Bool.self, forKey: .scoreHidden)
         character = try c.decode(CharacterProfileHeader.self, forKey: .character)
         best = try c.decodeIfPresent([CharacterFight].self, forKey: .best) ?? []
         history = try c.decodeIfPresent([CharacterFight].self, forKey: .history) ?? []
@@ -3142,6 +3168,41 @@ public struct GuildAddonSnapshot: Codable, Sendable, Equatable {
     }
 }
 
+/// One application as its applicant reads it.
+public struct GuildApplication: Codable, Sendable, Equatable {
+    public let id: Int64
+    public let guildId: Int64
+    public let status: String
+    public let createdAt: Date
+    public let decidedAt: Date?
+    public let message: String
+    public let availability: String
+    public let discordDm: Bool
+    public let character: ApplicantCharacter
+
+    public init(
+        id: Int64,
+        guildId: Int64,
+        status: String,
+        createdAt: Date,
+        decidedAt: Date? = nil,
+        message: String,
+        availability: String,
+        discordDm: Bool,
+        character: ApplicantCharacter
+    ) {
+        self.id = id
+        self.guildId = guildId
+        self.status = status
+        self.createdAt = createdAt
+        self.decidedAt = decidedAt
+        self.message = message
+        self.availability = availability
+        self.discordDm = discordDm
+        self.character = character
+    }
+}
+
 public struct GuildApplicationDecision: Codable, Sendable, Equatable {
     public let application: GuildOfficerApplication
     public let discordRole: DiscordOutcome
@@ -3155,6 +3216,21 @@ public struct GuildApplicationDecision: Codable, Sendable, Equatable {
         self.application = application
         self.discordRole = discordRole
         self.discordDm = discordDm
+    }
+}
+
+public struct GuildApplications: Codable, Sendable, Equatable {
+    public let rows: [GuildApplication]
+
+    public init(
+        rows: [GuildApplication] = []
+    ) {
+        self.rows = rows
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        rows = try c.decodeIfPresent([GuildApplication].self, forKey: .rows) ?? []
     }
 }
 
@@ -4586,7 +4662,7 @@ public struct ItemNeed: Codable, Sendable, Equatable {
     public let className: String
     public let spec: String
     public let level: Int
-    /// The level band whose list names it (20
+    /// The level band whose list names it (20, 30, 40, 50, 60).
     public let band: Int
     /// The band's slot that names it.
     public let slot: String
@@ -4631,17 +4707,21 @@ public struct ItemNeeds: Codable, Sendable, Equatable {
     public let has: [ItemHolder]
     /// Verified characters with no gear on file.
     public let unknownGear: Int
+    /// The guild's next raid in the zone whose boss drops the item, for "Onyxia's Lair, Wed 9 Dec 8:00 pm": planned or locked, not over, the soonest. null when none is planned or no raid boss of the loot table drops the item. Always sent.
+    public let nextRaid: ItemNextRaid?
 
     public init(
         itemId: Int,
         needs: [ItemNeed] = [],
         has: [ItemHolder] = [],
-        unknownGear: Int
+        unknownGear: Int,
+        nextRaid: ItemNextRaid? = nil
     ) {
         self.itemId = itemId
         self.needs = needs
         self.has = has
         self.unknownGear = unknownGear
+        self.nextRaid = nextRaid
     }
 
     public init(from decoder: any Decoder) throws {
@@ -4650,6 +4730,24 @@ public struct ItemNeeds: Codable, Sendable, Equatable {
         needs = try c.decodeIfPresent([ItemNeed].self, forKey: .needs) ?? []
         has = try c.decodeIfPresent([ItemHolder].self, forKey: .has) ?? []
         unknownGear = try c.decode(Int.self, forKey: .unknownGear)
+        nextRaid = try c.decodeIfPresent(ItemNextRaid.self, forKey: .nextRaid)
+    }
+}
+
+public struct ItemNextRaid: Codable, Sendable, Equatable {
+    public let raidId: Int64
+    /// raid:onyxias-lair
+    public let zoneKey: String
+    public let startsAt: Date
+
+    public init(
+        raidId: Int64,
+        zoneKey: String,
+        startsAt: Date
+    ) {
+        self.raidId = raidId
+        self.zoneKey = zoneKey
+        self.startsAt = startsAt
     }
 }
 
@@ -5372,6 +5470,8 @@ public struct LootSource: Codable, Sendable, Equatable {
     /// world_drop: the pool's level range. dungeon and raid: the instance's level range, the client's Group Finder row.
     public let levelMin: Int?
     public let levelMax: Int?
+    /// dungeon and raid: the instance's icon, a name under /data/{build}/icons (the API's zoneicons table: inv_misc_head_dragon_black for Onyxia's Lair, inv_misc_book_09 for an instance with none of its own). Written by the nightly loot run; absent on a build generated before it.
+    public let icon: String?
     /// crafted only: item id -> the profession skill its recipe needs; an item with no known skill is absent.
     public let requiredSkill: [String: Int]?
     public let rareSpawn: Bool?
@@ -5400,6 +5500,7 @@ public struct LootSource: Codable, Sendable, Equatable {
         titleRank: Int? = nil,
         levelMin: Int? = nil,
         levelMax: Int? = nil,
+        icon: String? = nil,
         requiredSkill: [String: Int]? = nil,
         rareSpawn: Bool? = nil,
         sourceOrigin: String? = nil,
@@ -5426,6 +5527,7 @@ public struct LootSource: Codable, Sendable, Equatable {
         self.titleRank = titleRank
         self.levelMin = levelMin
         self.levelMax = levelMax
+        self.icon = icon
         self.requiredSkill = requiredSkill
         self.rareSpawn = rareSpawn
         self.sourceOrigin = sourceOrigin
@@ -6211,6 +6313,10 @@ public struct RaidBadge: Codable, Sendable, Equatable {
     public let unanswered: Int
     /// Officer: the pending applications.
     public let applicants: Int
+    /// The Raid tab's Guild sims row: the viewer's main (the account's marked main when it is verified in the guild, else its highest level verified character there) on the guild's sims ladder, the same place Home's Guild sims block shows (its role, level band and latest preset; sims within 30 days; no ladder under 3 members). null when it has none. Always sent.
+    public let simsRank: RaidBadgeSimsRank?
+    /// The Raid tab's Loot history row: what the guild's most recent done raid gave out, its loot awards plus the copies of each addon-recorded drop no award on the raid names. null with no done raid. Always sent.
+    public let lastRaidLoot: RaidBadgeLastRaidLoot?
 
     public init(
         count: Int,
@@ -6218,7 +6324,9 @@ public struct RaidBadge: Codable, Sendable, Equatable {
         youUnanswered: Bool,
         officer: Bool,
         unanswered: Int,
-        applicants: Int
+        applicants: Int,
+        simsRank: RaidBadgeSimsRank? = nil,
+        lastRaidLoot: RaidBadgeLastRaidLoot? = nil
     ) {
         self.count = count
         self.raidId = raidId
@@ -6226,6 +6334,36 @@ public struct RaidBadge: Codable, Sendable, Equatable {
         self.officer = officer
         self.unanswered = unanswered
         self.applicants = applicants
+        self.simsRank = simsRank
+        self.lastRaidLoot = lastRaidLoot
+    }
+}
+
+public struct RaidBadgeLastRaidLoot: Codable, Sendable, Equatable {
+    public let count: Int
+    public let raidId: Int64
+
+    public init(
+        count: Int,
+        raidId: Int64
+    ) {
+        self.count = count
+        self.raidId = raidId
+    }
+}
+
+public struct RaidBadgeSimsRank: Codable, Sendable, Equatable {
+    /// 1 is the top.
+    public let position: Int
+    /// How many are on the ladder.
+    public let of: Int
+
+    public init(
+        position: Int,
+        of: Int
+    ) {
+        self.position = position
+        self.of = of
     }
 }
 

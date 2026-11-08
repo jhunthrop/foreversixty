@@ -215,6 +215,16 @@ data class ApplicantSim(
     @SerialName("unit") val unit: String,
 )
 
+@Serializable
+data class ApplicationInput(
+    /** One of the applicant's own characters, on the guild's region and ruleset. */
+    @SerialName("character_key") val characterKey: String,
+    @SerialName("message") val message: String? = null,
+    @SerialName("availability") val availability: String? = null,
+    /** "Message me on Discord about this application"; off by default. The bot DMs the decision only when on. */
+    @SerialName("discord_dm") val discordDm: Boolean? = null,
+)
+
 /** The device token (shown only here), the device row and the GET /v1/me body. */
 @Serializable
 data class AppSession(
@@ -607,9 +617,11 @@ data class CharacterHome(
     @SerialName("talents") val talents: HomeTalents,
 )
 
-/** GET /v1/characters/{region}/{ruleset}/{name}: the public character card. Every score field is null for a character with no rated fight: render "no logs yet", never 0. */
+/** GET /v1/characters/{region}/{ruleset}/{name}: the public character card. Every score field is null for a character with no rated fight: render "no logs yet", never 0. When score_hidden is true the owner hid the Forever Score from everyone else: every score field is null, score_history is [], and the page shows no score block at all (no "no logs yet", no label, no blank row). The owner's own view carries the score as usual, and a hidden character's page is never shared-cached. */
 @Serializable
 data class CharacterProfile(
+    /** True when the owner hid the Forever Score and the viewer is someone else; absent otherwise. Show no score block. */
+    @SerialName("score_hidden") val scoreHidden: Boolean? = null,
     @SerialName("character") val character: CharacterProfileHeader,
     @SerialName("best") val best: List<CharacterFight> = emptyList(),
     @SerialName("history") val history: List<CharacterFight> = emptyList(),
@@ -1179,11 +1191,30 @@ data class GuildAddonSnapshot(
     @SerialName("members") val members: Int,
 )
 
+/** One application as its applicant reads it. */
+@Serializable
+data class GuildApplication(
+    @SerialName("id") val id: Long,
+    @SerialName("guild_id") val guildId: Long,
+    @SerialName("status") val status: String,
+    @SerialName("created_at") val createdAt: String,
+    @SerialName("decided_at") val decidedAt: String? = null,
+    @SerialName("message") val message: String,
+    @SerialName("availability") val availability: String,
+    @SerialName("discord_dm") val discordDm: Boolean,
+    @SerialName("character") val character: ApplicantCharacter,
+)
+
 @Serializable
 data class GuildApplicationDecision(
     @SerialName("application") val application: GuildOfficerApplication,
     @SerialName("discord_role") val discordRole: DiscordOutcome,
     @SerialName("discord_dm") val discordDm: DiscordOutcome,
+)
+
+@Serializable
+data class GuildApplications(
+    @SerialName("rows") val rows: List<GuildApplication> = emptyList(),
 )
 
 /** voters is how many verified officers (guild master included) the guild has; mine the viewer's own vote. */
@@ -1717,7 +1748,7 @@ data class ItemNeed(
     @SerialName("class") val className: String,
     @SerialName("spec") val spec: String,
     @SerialName("level") val level: Int,
-    /** The level band whose list names it (20 */
+    /** The level band whose list names it (20, 30, 40, 50, 60). */
     @SerialName("band") val band: Int,
     /** The band's slot that names it. */
     @SerialName("slot") val slot: String,
@@ -1732,6 +1763,16 @@ data class ItemNeeds(
     @SerialName("has") val has: List<ItemHolder> = emptyList(),
     /** Verified characters with no gear on file. */
     @SerialName("unknown_gear") val unknownGear: Int,
+    /** The guild's next raid in the zone whose boss drops the item, for "Onyxia's Lair, Wed 9 Dec 8:00 pm": planned or locked, not over, the soonest. null when none is planned or no raid boss of the loot table drops the item. Always sent. */
+    @SerialName("next_raid") val nextRaid: ItemNextRaid? = null,
+)
+
+@Serializable
+data class ItemNextRaid(
+    @SerialName("raid_id") val raidId: Long,
+    /** raid:onyxias-lair */
+    @SerialName("zone_key") val zoneKey: String,
+    @SerialName("starts_at") val startsAt: String,
 )
 
 /** One item set of /data/{build}/sets.json. */
@@ -2021,6 +2062,8 @@ data class LootSource(
     /** world_drop: the pool's level range. dungeon and raid: the instance's level range, the client's Group Finder row. */
     @SerialName("level_min") val levelMin: Int? = null,
     @SerialName("level_max") val levelMax: Int? = null,
+    /** dungeon and raid: the instance's icon, a name under /data/{build}/icons (the API's zoneicons table: inv_misc_head_dragon_black for Onyxia's Lair, inv_misc_book_09 for an instance with none of its own). Written by the nightly loot run; absent on a build generated before it. */
+    @SerialName("icon") val icon: String? = null,
     /** crafted only: item id -> the profession skill its recipe needs; an item with no known skill is absent. */
     @SerialName("required_skill") val requiredSkill: Map<String, Int>? = null,
     @SerialName("rare_spawn") val rareSpawn: Boolean? = null,
@@ -2332,6 +2375,24 @@ data class RaidBadge(
     @SerialName("unanswered") val unanswered: Int,
     /** Officer: the pending applications. */
     @SerialName("applicants") val applicants: Int,
+    /** The Raid tab's Guild sims row: the viewer's main (the account's marked main when it is verified in the guild, else its highest level verified character there) on the guild's sims ladder, the same place Home's Guild sims block shows (its role, level band and latest preset; sims within 30 days; no ladder under 3 members). null when it has none. Always sent. */
+    @SerialName("sims_rank") val simsRank: RaidBadgeSimsRank? = null,
+    /** The Raid tab's Loot history row: what the guild's most recent done raid gave out, its loot awards plus the copies of each addon-recorded drop no award on the raid names. null with no done raid. Always sent. */
+    @SerialName("last_raid_loot") val lastRaidLoot: RaidBadgeLastRaidLoot? = null,
+)
+
+@Serializable
+data class RaidBadgeLastRaidLoot(
+    @SerialName("count") val count: Int,
+    @SerialName("raid_id") val raidId: Long,
+)
+
+@Serializable
+data class RaidBadgeSimsRank(
+    /** 1 is the top. */
+    @SerialName("position") val position: Int,
+    /** How many are on the ladder. */
+    @SerialName("of") val of: Int,
 )
 
 @Serializable

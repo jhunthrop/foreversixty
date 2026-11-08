@@ -1,0 +1,9 @@
+{
+  "note": "The raid zones' HD icons by zone key, the one table the API (zoneicons.go embeds it) and the data pipeline's loot run (data/pipeline/loot/zone_icons.py, the dungeon and raid sources' icon in loot.json) both read. Each icon is a name under /data/{build}/icons; a zone with none of its own reads as generic. The same names as web/src/lib/first-raids.ts.",
+  "generic": "inv_misc_book_09",
+  "zones": [
+    { "key": "raid:barrow-deeps", "name": "Barrow Deeps", "icon": "spell_shadow_raisedead" },
+    { "key": "raid:hyjal-summit", "name": "Hyjal Summit", "icon": "spell_nature_timestop" },
+    { "key": "raid:onyxias-lair", "name": "Onyxia's Lair", "icon": "inv_misc_head_dragon_black" }
+  ]
+}

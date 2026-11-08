@@ -5,6 +5,7 @@
     "/app/raid/*/*",
     "/app/raid/*/*/night",
     "/app/guild/*",
+    "/app/guild/*/applicants/*",
     "/app/bis/*/*",
     "/app/sim/*",
     "/app/report/*",
