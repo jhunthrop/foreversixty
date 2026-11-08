@@ -31,15 +31,6 @@ final class FakeNotificationSettingsService: NotificationSettingsService, @unche
     var settings = NotificationTestData.member
     var patches: [NotificationsPatch] = []
     var fails = false
-    var dms = false
-
-    func officerDMs() async throws(APIError) -> Bool { dms }
-
-    func setOfficerDMs(_ on: Bool) async throws(APIError) -> Bool {
-        if fails { throw .transport("offline") }
-        dms = on
-        return on
-    }
 
     func load() async throws(APIError) -> NotificationSettings { settings }
 
@@ -47,6 +38,12 @@ final class FakeNotificationSettingsService: NotificationSettingsService, @unche
         if fails { throw .transport("offline") }
         patches.append(patch)
         settings = NotificationSettingsModel.applying(patch, to: settings)
+        if let on = patch.officerDms {
+            settings = NotificationSettings(
+                timeZone: settings.timeZone, quietHours: settings.quietHours, officerDms: on, raidReminder: settings.raidReminder,
+                events: settings.events
+            )
+        }
         return settings
     }
 }
@@ -116,7 +113,7 @@ struct OfficerDMsTests {
         await model.load()
         #expect(model.officerDMs == false)
         await model.setOfficerDMs(true)
-        #expect(model.officerDMs && service.dms)
+        #expect(model.officerDMs && service.patches.last?.officerDms == true)
         service.fails = true
         await model.setOfficerDMs(false)
         #expect(model.officerDMs)

@@ -8,9 +8,6 @@ import SwiftUI
 protocol NotificationSettingsService: Sendable {
     func load() async throws(APIError) -> NotificationSettings
     func save(_ patch: NotificationsPatch) async throws(APIError) -> NotificationSettings
-    /// `officer_dms`: officers of the player's guild may DM them on Discord (off by default).
-    func officerDMs() async throws(APIError) -> Bool
-    func setOfficerDMs(_ on: Bool) async throws(APIError) -> Bool
 }
 
 struct LiveNotificationSettingsService: NotificationSettingsService {
@@ -24,22 +21,6 @@ struct LiveNotificationSettingsService: NotificationSettingsService {
         try await client.send(.updateNotificationSettings(patch))
     }
 
-    /// The generated `NotificationSettings` and `NotificationsPatch` do not carry `officer_dms` yet
-    /// (land/api-ping-role); these two calls read and write it on the same route until they do.
-    private struct OfficerDMs: Codable, Sendable {
-        let officerDms: Bool?
-    }
-
-    private static let path = "/v1/me/notifications"
-
-    func officerDMs() async throws(APIError) -> Bool {
-        try await client.send(Endpoint<OfficerDMs>(method: .get, path: Self.path)).officerDms ?? false
-    }
-
-    func setOfficerDMs(_ on: Bool) async throws(APIError) -> Bool {
-        let endpoint: Endpoint<OfficerDMs> = try .json(.patch, Self.path, body: OfficerDMs(officerDms: on))
-        return try await client.send(endpoint).officerDms ?? on
-    }
 }
 
 /// The notification groups in the order the settings and Activity's filters list them (flows
@@ -115,8 +96,6 @@ final class NotificationSettingsModel {
 
     private(set) var phase: Phase = .loading
     private(set) var saveFailed = false
-    /// Officers may DM the player on Discord; off until the server says otherwise.
-    private(set) var officerDMs = false
     private let service: any NotificationSettingsService
 
     init(service: any NotificationSettingsService) {
@@ -126,7 +105,6 @@ final class NotificationSettingsModel {
     func load() async {
         do {
             phase = .loaded(try await service.load())
-            officerDMs = (try? await service.officerDMs()) ?? officerDMs
         } catch {
             if case .loaded = phase { return }
             phase = .failed
@@ -138,7 +116,8 @@ final class NotificationSettingsModel {
         guard case let .loaded(settings) = phase else { return }
         saveFailed = false
         phase = .loaded(NotificationSettings(
-            timeZone: settings.timeZone, quietHours: settings.quietHours, raidReminder: hhmm, events: settings.events
+            timeZone: settings.timeZone, quietHours: settings.quietHours, officerDms: settings.officerDms, raidReminder: hhmm,
+            events: settings.events
         ))
         do {
             phase = .loaded(try await service.save(NotificationsPatch(raidReminder: hhmm)))
@@ -148,15 +127,21 @@ final class NotificationSettingsModel {
         }
     }
 
+    /// Officers may DM the player on Discord (`officer_dms`, off by default).
+    var officerDMs: Bool {
+        if case let .loaded(settings) = phase { return settings.officerDms ?? false }
+        return false
+    }
+
     /// Let officers DM me on Discord, drawn at once; a refused save puts it back with the line.
     func setOfficerDMs(_ on: Bool) async {
-        let previous = officerDMs
-        officerDMs = on
+        guard case let .loaded(settings) = phase else { return }
         saveFailed = false
+        phase = .loaded(settings.with(officerDMs: on))
         do {
-            officerDMs = try await service.setOfficerDMs(on)
+            phase = .loaded(try await service.save(NotificationsPatch(officerDms: on)))
         } catch {
-            officerDMs = previous
+            phase = .loaded(settings)
             saveFailed = true
         }
     }
@@ -183,8 +168,15 @@ final class NotificationSettingsModel {
             return event.withPush(on)
         }
         return NotificationSettings(
-            timeZone: settings.timeZone, quietHours: settings.quietHours, raidReminder: settings.raidReminder, events: events
+            timeZone: settings.timeZone, quietHours: settings.quietHours, officerDms: settings.officerDms,
+            raidReminder: settings.raidReminder, events: events
         )
+    }
+}
+
+private extension NotificationSettings {
+    func with(officerDMs on: Bool) -> NotificationSettings {
+        NotificationSettings(timeZone: timeZone, quietHours: quietHours, officerDms: on, raidReminder: raidReminder, events: events)
     }
 }
 

@@ -182,13 +182,13 @@ struct RaidFlowPresenter {
         }
     }
 
-    /// The applicant's sheet; `origin` (`Alliance Dwarf`) when the API names the faction and race.
-    func applicant(_ application: GuildOfficerApplication, guild: String, origin: String?, accepted: Bool) -> ApplicantContent {
+    /// The applicant's sheet; the head names faction and race (`Alliance Dwarf`) when the API does.
+    func applicant(_ application: GuildOfficerApplication, guild: String, accepted: Bool) -> ApplicantContent {
         let character = application.character
         let kind = Self.kind(spec: character.specName, className: character.className)
         let facts = [
             character.level.map { Copy.raidApplicantKind(kind: kind, level: $0) } ?? kind,
-            origin,
+            character.origin,
             Copy.raidApplicantApplied(age: RelativeAge(from: application.createdAt, to: now).phrase),
         ].compactMap(\.self).filter { !$0.isEmpty }
         let sheet = application.sheet

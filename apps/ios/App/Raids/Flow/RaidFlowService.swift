@@ -34,35 +34,20 @@ protocol RaidSiteActions: Sendable {
     var guilds: URL { get }
 }
 
-/// The ping's body and answer. The generated client does not carry the `role` body yet
-/// (land/api-ping-role); `pingGuildRaid` replaces this endpoint once it does.
 struct LiveRaidPingService: RaidPingService {
-    private struct Body: Encodable, Sendable {
-        let role: String?
-    }
-
-    private struct Answer: Decodable, Sendable {
-        let mentioned: Int
-    }
-
     let client: APIClient
 
     func ping(guild: Int64, raid: Int64, role: String?) async throws(APIError) -> Int {
-        let endpoint: Endpoint<Answer> = try .json(.post, "/v1/guilds/\(guild)/raids/\(raid)/ping", body: Body(role: role))
-        return try await client.send(endpoint).mentioned
+        try await client.send(.pingGuildRaid(id: guild, raid: raid, RaidPingRequest(role: role))).mentioned
     }
 }
 
 extension ApplicantCharacter {
-    /// `Alliance Dwarf`. The generated `race` and `faction` replace this once land/api-ping-role
-    /// is in the client.
-    var origin: String? { nil }
-}
-
-extension RaidNotSignedRaider {
-    /// The member's Discord DM link, set only when they let officers DM them (`officer_dms`).
-    /// The generated `discord_dm_url` replaces this once land/api-ping-role is in the client.
-    var discordDM: URL? { nil }
+    /// `Alliance Dwarf`, when the API names them.
+    var origin: String? {
+        let words = [faction?.capitalized, race.map(HomePresenter.words)].compactMap(\.self).filter { !$0.isEmpty }
+        return words.isEmpty ? nil : words.joined(separator: " ")
+    }
 }
 
 struct LiveRaidFlowService: RaidFlowService {

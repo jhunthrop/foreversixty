@@ -102,7 +102,7 @@ struct ApplicantScreen: View {
     var body: some View {
         Group {
             if case let .loaded(application) = model.phase {
-                let content = RaidFlowPresenter(now: now()).applicant(application, guild: guildName, origin: application.character.origin, accepted: model.accepted)
+                let content = RaidFlowPresenter(now: now()).applicant(application, guild: guildName, accepted: model.accepted)
                 ApplicantView(
                     content: content, busy: model.busy, error: model.error,
                     actions: ApplicantActions(

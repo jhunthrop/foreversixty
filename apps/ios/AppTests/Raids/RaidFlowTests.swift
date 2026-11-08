@@ -106,15 +106,15 @@ struct RaidFlowLogicTests {
         let page = try RaidFixture.load(GuildOfficerApplications.self, "guild.applications")
         let row = try #require(page.rows.first)
         let now = row.createdAt.addingTimeInterval(120)
-        let content = RaidFlowPresenter(now: now, clock: RaidTime.clock).applicant(row, guild: "Olympus XXVII", origin: nil, accepted: false)
-        #expect(content.facts == ["Holy Paladin · 60", "applied 2 min ago"])
+        let content = RaidFlowPresenter(now: now, clock: RaidTime.clock).applicant(row, guild: "Olympus XXVII", accepted: false)
+        #expect(content.facts == ["Holy Paladin · 60", "Alliance Dwarf", "applied 2 min ago"])
         #expect(content.figures.map(\.value) == ["74", "612", "63"])
         #expect(content.figures[1].unit == "HPS")
         #expect(content.ready.map(\.title) == ["Attuned to Onyxia's Lair", "Enchants", "Best in slot gap"])
         #expect(content.ready[1].sub == "2 of 4 slots · cloak and boots missing")
         #expect(content.history.first?.sub.hasPrefix("14 raids · last raid ") == true)
         #expect(content.accepted == nil)
-        let accepted = RaidFlowPresenter(now: now).applicant(row, guild: "Olympus XXVII", origin: nil, accepted: true)
+        let accepted = RaidFlowPresenter(now: now).applicant(row, guild: "Olympus XXVII", accepted: true)
         #expect(accepted.accepted == "Accepted into Olympus XXVII. Invite Test Applicant in game:")
         #expect(accepted.invite == "/ginvite Test Applicant")
     }
@@ -136,7 +136,7 @@ struct RaidFlowLogicTests {
         var data = try #require(json["data"] as? [String: Any])
         data["comp_target"] = ["tanks": 3, "healers": 8, "melee": 6, "ranged": 8, "source": "guild"]
         data["not_signed_raiders"] = [
-            ["character_key": "us/pvp/zulmara", "name": "Zulmara", "class": "hunter", "account_key": "a1", "discord_linked": true, "role": "dps", "last_week": "in"],
+            ["character_key": "us/pvp/zulmara", "name": "Zulmara", "class": "hunter", "account_key": "a1", "discord_linked": true, "role": "dps", "last_week": "in", "discord_dm_url": "https://discord.com/users/1"],
             ["character_key": "us/pvp/mira", "name": "Mira", "class": "priest", "account_key": "a2", "discord_linked": true, "role": "healer", "last_week": "late"],
             ["character_key": "us/pvp/brokk", "name": "Brokk", "class": "warrior", "account_key": "a3", "discord_linked": false, "role": "dps", "last_week": NSNull()],
         ]
@@ -229,7 +229,7 @@ struct RaidFlowLogicTests {
     func directMessage() throws {
         let content = NotAnsweredPresenter(raid: try shortRaid(), guild: "Olympus XXVII", marks: [:], clock: RaidTime.clock)
             .content(filter: .notAnswered)
-        #expect(content.rows.allSatisfy { $0.dm == nil })
+        #expect(content.rows.filter { $0.dm != nil }.map(\.name) == ["Zulmara"])
     }
 
     @Test("the root: under 60 the leveler before any guild; with no character, the recruiting guilds")
