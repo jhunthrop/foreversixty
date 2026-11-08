@@ -28,6 +28,28 @@ func TestPingMentionsOnlyTheRoleAsked(t *testing.T) {
 	}
 }
 
+// The throttle is per member: the healers first, then everyone mentions only who was not
+// mentioned in the last 6 hours; with nobody left it is 429.
+func TestPingThrottlesEachMemberNotTheRaid(t *testing.T) {
+	w, raid, pinger := pingWorld(t)
+	if _, err := w.h.pool.Exec(t.Context(), `update guild_characters set raid_spec = 'priest-holy' where character_key = $1`,
+		member2Key); err != nil {
+		t.Fatal(err)
+	}
+	w.as(w.officer)
+	w.h.data(w.h.do(http.MethodPost, w.path("/raids/%d/ping", raid.ID), `{"role":"healer"}`), &PingResult{})
+	var all PingResult
+	w.h.data(w.h.do(http.MethodPost, w.path("/raids/%d/ping", raid.ID), ""), &all)
+	if !all.Posted || all.Mentioned != 1 || all.RecentlyMentioned != 1 || len(pinger.pings) != 2 ||
+		!slices.Equal(pinger.pings[1].MentionIDs, []string{officerDiscord}) {
+		t.Fatalf("everyone after the healers %+v pings %+v", all, pinger.pings)
+	}
+	expectError(t, w.h.do(http.MethodPost, w.path("/raids/%d/ping", raid.ID), ""), http.StatusTooManyRequests, "ping_throttled")
+	if len(pinger.pings) != 2 {
+		t.Fatal("a ping with nobody left posted")
+	}
+}
+
 // A ping with no body mentions every linked not-signed raider, as before.
 func TestPingWithNoRoleMentionsEveryone(t *testing.T) {
 	w, raid, pinger := pingWorld(t)

@@ -2423,16 +2423,17 @@ components:
       required: [last_pinged_at, next_allowed_at]
       properties:
         last_pinged_at: { type: [string, "null"], format: date-time }
-        next_allowed_at: { type: [string, "null"], format: date-time, description: last_pinged_at plus 6 hours; null before the first ping. }
+        next_allowed_at: { type: [string, "null"], format: date-time, description: "last_pinged_at plus 6 hours, when the raiders the last ping mentioned may be mentioned again (others may be pinged any time); null before the first ping." }
     RaidPingResult:
       type: object
       required: [posted, mentioned, no_discord, no_discord_names, next_allowed_at]
       properties:
         posted: { type: boolean, description: False when no non-signer has linked Discord (nothing posted, the throttle unspent). }
-        mentioned: { type: integer }
+        mentioned: { type: integer, description: 'How many the message mentioned ("Mentioned 2 healers").' }
         no_discord: { type: integer }
         no_discord_names: { type: array, items: { type: string } }
-        next_allowed_at: { type: [string, "null"], format: date-time }
+        next_allowed_at: { type: [string, "null"], format: date-time, description: When the raiders this ping mentioned may be mentioned again. }
+        recently_mentioned: { type: integer, description: "Linked raiders left out because a ping mentioned them for this raid in the last 6 hours. Always sent; optional for older bodies." }
     MemberChecklist:
       type: object
       description: >-
@@ -8512,9 +8513,12 @@ paths:
         <t:unix:F>, and the raid page's link. An optional body {"role": "tank"|"healer"|"dps"}
         mentions only the not-signed raiders of that role ("Mention the 2 healers"); no body
         mentions them all (422 invalid, field role, for any other role). No DMs, no other pings
-        (allowed_mentions names only them). One ping per raid per 6 hours whatever the role; a
-        ping with no one to mention posts nothing and spends nothing. Verified officer, the plan,
-        claim not frozen, the raid planned or locked.
+        (allowed_mentions names only them). The throttle is per member: a ping mentions only the
+        raiders no ping mentioned for this raid in the last 6 hours (recently_mentioned counts the
+        rest), so the healers first and everyone later never pings anyone twice; 429
+        ping_throttled (next_allowed_at in fields) when that leaves nobody. A ping with no one
+        linked to mention posts nothing and spends nothing. Verified officer, the plan, claim not
+        frozen, the raid planned or locked.
       operationId: pingGuildRaid
       tags: [app]
       parameters:

@@ -7184,23 +7184,29 @@ public struct RaidPingRequest: Codable, Sendable, Equatable {
 public struct RaidPingResult: Codable, Sendable, Equatable {
     /// False when no non-signer has linked Discord (nothing posted
     public let posted: Bool
+    /// How many the message mentioned ("Mentioned 2 healers").
     public let mentioned: Int
     public let noDiscord: Int
     public let noDiscordNames: [String]
+    /// When the raiders this ping mentioned may be mentioned again.
     public let nextAllowedAt: Date?
+    /// Linked raiders left out because a ping mentioned them for this raid in the last 6 hours. Always sent; optional for older bodies.
+    public let recentlyMentioned: Int?
 
     public init(
         posted: Bool,
         mentioned: Int,
         noDiscord: Int,
         noDiscordNames: [String] = [],
-        nextAllowedAt: Date? = nil
+        nextAllowedAt: Date? = nil,
+        recentlyMentioned: Int? = nil
     ) {
         self.posted = posted
         self.mentioned = mentioned
         self.noDiscord = noDiscord
         self.noDiscordNames = noDiscordNames
         self.nextAllowedAt = nextAllowedAt
+        self.recentlyMentioned = recentlyMentioned
     }
 
     public init(from decoder: any Decoder) throws {
@@ -7210,12 +7216,13 @@ public struct RaidPingResult: Codable, Sendable, Equatable {
         noDiscord = try c.decode(Int.self, forKey: .noDiscord)
         noDiscordNames = try c.decodeIfPresent([String].self, forKey: .noDiscordNames) ?? []
         nextAllowedAt = try c.decodeIfPresent(Date.self, forKey: .nextAllowedAt)
+        recentlyMentioned = try c.decodeIfPresent(Int.self, forKey: .recentlyMentioned)
     }
 }
 
 public struct RaidPingState: Codable, Sendable, Equatable {
     public let lastPingedAt: Date?
-    /// last_pinged_at plus 6 hours; null before the first ping.
+    /// last_pinged_at plus 6 hours, when the raiders the last ping mentioned may be mentioned again (others may be pinged any time); null before the first ping.
     public let nextAllowedAt: Date?
 
     public init(

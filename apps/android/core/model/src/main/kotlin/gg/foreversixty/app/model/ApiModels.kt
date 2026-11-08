@@ -2691,16 +2691,20 @@ data class RaidPingRequest(
 data class RaidPingResult(
     /** False when no non-signer has linked Discord (nothing posted */
     @SerialName("posted") val posted: Boolean,
+    /** How many the message mentioned ("Mentioned 2 healers"). */
     @SerialName("mentioned") val mentioned: Int,
     @SerialName("no_discord") val noDiscord: Int,
     @SerialName("no_discord_names") val noDiscordNames: List<String> = emptyList(),
+    /** When the raiders this ping mentioned may be mentioned again. */
     @SerialName("next_allowed_at") val nextAllowedAt: String? = null,
+    /** Linked raiders left out because a ping mentioned them for this raid in the last 6 hours. Always sent; optional for older bodies. */
+    @SerialName("recently_mentioned") val recentlyMentioned: Int? = null,
 )
 
 @Serializable
 data class RaidPingState(
     @SerialName("last_pinged_at") val lastPingedAt: String? = null,
-    /** last_pinged_at plus 6 hours; null before the first ping. */
+    /** last_pinged_at plus 6 hours, when the raiders the last ping mentioned may be mentioned again (others may be pinged any time); null before the first ping. */
     @SerialName("next_allowed_at") val nextAllowedAt: String? = null,
 )
 
