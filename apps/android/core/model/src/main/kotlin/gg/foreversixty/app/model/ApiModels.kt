@@ -659,6 +659,20 @@ data class CharacterRank(
     @SerialName("row") val row: RankingRow,
 )
 
+/** GET /v1/characters/{region}/{ruleset}/{name}/rating (Go rating.characterRatingDTO). */
+@Serializable
+data class CharacterRating(
+    @SerialName("player_key") val playerKey: String,
+    /** The rated fights in this page. */
+    @SerialName("sample_size") val sampleSize: Int,
+    @SerialName("trend") val trend: List<RatingTrendPoint> = emptyList(),
+    /** Present when another page exists. */
+    @SerialName("next_cursor") val nextCursor: String? = null,
+    @SerialName("latest") val latest: RatingCard? = null,
+    @SerialName("best_component") val bestComponent: String? = null,
+    @SerialName("worst_component") val worstComponent: String? = null,
+)
+
 @Serializable
 data class CharacterSearch(
     @SerialName("rows") val rows: List<CharacterSearchRow> = emptyList(),
@@ -2936,6 +2950,56 @@ data class RankingsPage(
     @SerialName("deduped") val deduped: Boolean,
     /** Where the requested character stands on this filtered board, with its best kill; absent when none was asked for or it has no ranked kill in the cohort */
     @SerialName("character_rank") val characterRank: CharacterRank? = null,
+)
+
+/** One fight's rating card for one player. overall is 0 to 100 (overall_uncapped before the cap; overall_capped true when it bit); coverage is the share of the fight measured; insufficient cards carry zero overalls and insufficient_reason. */
+@Serializable
+data class RatingCard(
+    @SerialName("player_key") val playerKey: String,
+    @SerialName("player_name") val playerName: String,
+    @SerialName("class") val className: String,
+    @SerialName("spec") val spec: String,
+    @SerialName("role") val role: String,
+    @SerialName("overall") val overall: Double,
+    @SerialName("overall_uncapped") val overallUncapped: Double,
+    @SerialName("overall_capped") val overallCapped: Boolean,
+    @SerialName("coverage") val coverage: Double,
+    @SerialName("insufficient") val insufficient: Boolean,
+    @SerialName("insufficient_reason") val insufficientReason: String? = null,
+    @SerialName("components") val components: List<RatingComponent> = emptyList(),
+)
+
+/** One scored part of a card; score null when excluded (reason says why). */
+@Serializable
+data class RatingComponent(
+    @SerialName("name") val name: String,
+    @SerialName("score") val score: Double? = null,
+    @SerialName("weight") val weight: Double,
+    @SerialName("basis") val basis: String,
+    @SerialName("percentile") val percentile: Double? = null,
+    @SerialName("bracket_n") val bracketN: Long? = null,
+    @SerialName("excluded") val excluded: Boolean,
+    @SerialName("reason") val reason: String? = null,
+    @SerialName("moments") val moments: List<RatingMoment> = emptyList(),
+)
+
+@Serializable
+data class RatingMoment(
+    @SerialName("kind") val kind: String,
+    @SerialName("at_ms") val atMs: Long,
+    @SerialName("spell_id") val spellId: Long? = null,
+    @SerialName("spell_name") val spellName: String? = null,
+    @SerialName("avoidable") val avoidable: Boolean? = null,
+    @SerialName("anchor") val anchor: String? = null,
+)
+
+@Serializable
+data class RatingTrendPoint(
+    @SerialName("fought_at") val foughtAt: String,
+    /** 0 to 100. */
+    @SerialName("overall") val overall: Double,
+    @SerialName("report_id") val reportId: String,
+    @SerialName("fight_index") val fightIndex: Int,
 )
 
 @Serializable

@@ -20,6 +20,7 @@ import gg.foreversixty.app.model.CalendarFeed
 import gg.foreversixty.app.model.Changelog
 import gg.foreversixty.app.model.CharacterHome
 import gg.foreversixty.app.model.CharacterProfile
+import gg.foreversixty.app.model.CharacterRating
 import gg.foreversixty.app.model.CharacterSearch
 import gg.foreversixty.app.model.ClassInfo
 import gg.foreversixty.app.model.CoachNight
@@ -240,6 +241,10 @@ object ApiEndpoints {
     /** GET /v1/characters/{region}/{ruleset}/{name}/ready: Your character's ready check (owner only) */
     fun getCharacterReady(region: String, ruleset: String, name: String, raid: Long? = null): Endpoint<ReadyCheck> =
         Endpoint(HttpMethod.Get, "/v1/characters/${region.encodeURLPathPart()}/${ruleset.encodeURLPathPart()}/${name.encodeURLPathPart()}/ready", ReadyCheck.serializer(), query = listOfNotNull(raid?.let { "raid" to it.toString() }))
+
+    /** GET /v1/characters/{region}/{ruleset}/{name}/rating: A character's Forever rating, its latest fight card and its trend (public) */
+    fun getCharacterRating(region: String, ruleset: String, name: String, limit: Int? = null, cursor: String? = null): Endpoint<CharacterRating> =
+        Endpoint(HttpMethod.Get, "/v1/characters/${region.encodeURLPathPart()}/${ruleset.encodeURLPathPart()}/${name.encodeURLPathPart()}/rating", CharacterRating.serializer(), query = listOfNotNull(limit?.let { "limit" to it.toString() }, cursor?.let { "cursor" to it }))
 
     /** GET /v1/characters/{region}/{ruleset}/{name}/home: The home answer for a character (dark, APP_API) */
     fun getCharacterHome(region: String, ruleset: String, name: String): Endpoint<CharacterHome> =
@@ -472,6 +477,7 @@ object ContractRoutes {
         FixtureRoute(HttpMethod.Get, "/v1/guilds/{id}/home", "guild.home", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Get, "/v1/guilds/recruiting", "guild.recruiting", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Get, "/v1/characters/{region}/{ruleset}/{name}/ready", "character.ready", HttpStatusCode.fromValue(200)),
+        FixtureRoute(HttpMethod.Get, "/v1/characters/{region}/{ruleset}/{name}/rating", "character.rating", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Get, "/v1/characters/{region}/{ruleset}/{name}/home", "character.home", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Get, "/v1/guilds/{id}/raids", "guild.raids", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Get, "/v1/guilds/{id}/raids/{raid}", "guild.raid", HttpStatusCode.fromValue(200)),
