@@ -46,6 +46,16 @@ struct PushLandingTests {
         #expect(PushLanding.destination(kind: "premium.seat", link: nil, data: [:]) == .link(.plan))
     }
 
+    @Test("a new applicant opens its review; Decline reads the same guild and application")
+    func applicant() {
+        let data = ["guild_id": "2", "application_id": "17"]
+        #expect(PushLanding.destination(kind: "guild.applicant", link: nil, data: data) == .link(.guildApplicant(guild: 2, application: 17)))
+        #expect(PushLanding.applicant(data: data)?.guild == 2)
+        #expect(PushLanding.applicant(data: data)?.application == 17)
+        #expect(PushLanding.applicant(data: ["guild_id": "2"]) == nil)
+        #expect(PushLanding.destination(kind: "guild.applicant", link: nil, data: ["guild_id": "2"]) == nil)
+    }
+
     @Test("an unknown kind falls back to its link, else nothing")
     func fallback() throws {
         let character = try #require(URL(string: "https://foreversixty.gg/character/us/forever/kaelra"))

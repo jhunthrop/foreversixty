@@ -523,13 +523,15 @@ struct RaidPushTests {
 @MainActor
 @Suite("Raid links")
 struct RaidRouterTests {
-    @Test("a raid link pushes the raid page; night pushes raid night; spec=ask presses In")
+    @Test("a raid link pushes the raid page; night pushes the page then the night; spec=ask presses In; an applicant opens its review")
     func routes() throws {
         let router = RaidsRouter()
         router.open(.raid(guild: 2, raid: 41, spec: "ask", state: nil))
         #expect(router.path == [.raid(guild: 2, raid: 41, roster: false, open: RaidOpenAction(state: .signedIn))])
         router.open(.raidNight(guild: 2, raid: 41))
-        #expect(router.path == [.night(raid: 41)])
+        #expect(router.path == [.raid(guild: 2, raid: 41, roster: false, open: nil), .night(raid: 41)])
+        router.open(.guildApplicant(guild: 2, application: 17))
+        #expect(router.path == [.applicant(guild: 2, application: 17)])
         router.open(.guild(guild: 2))
         #expect(router.path.isEmpty)
         #expect(!RaidsRouter.handles(.plan))

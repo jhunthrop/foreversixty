@@ -97,8 +97,9 @@ final class RaidsRouter {
             path = [.raid(guild: guild, raid: raid, roster: false, open: press.map(RaidOpenAction.init))]
         case let .raidNight(guild, raid):
             path = [.raid(guild: guild, raid: raid, roster: false, open: nil), .night(raid: raid)]
-        case .guild, .guildApplicant:
-            // The applicant sheet (guild.applicant) lands on the tab's root, which shows Needs you.
+        case let .guildApplicant(guild, application):
+            path = [.applicant(guild: guild, application: application)]
+        case .guild:
             path = []
         default:
             break

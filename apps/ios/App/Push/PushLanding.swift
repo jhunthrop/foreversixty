@@ -15,12 +15,26 @@ enum PushLanding {
         static let gear: Set<String> = ["bis.changed", "band.entered", "game.milestone"]
         static let characterLinked = "character.linked"
         static let account: Set<String> = ["billing.failed", "premium.seat"]
+        /// An officer's: a new guild application; the tap opens its review.
+        static let guildApplicant = "guild.applicant"
+    }
+
+    /// The application a `guild.applicant` payload names (its data's guild_id and application_id).
+    static func applicant(data: [String: String]) -> (guild: Int64, application: Int64)? {
+        guard let guild = data["guild_id"].flatMap(Int64.init),
+              let application = data["application_id"].flatMap(Int64.init) else { return nil }
+        return (guild, application)
+    }
+
+    /// The payload's data strings, as APNs delivers them in userInfo.
+    static func data(userInfo: [AnyHashable: Any]) -> [String: String] {
+        (userInfo["data"] as? [String: Any] ?? [:]).compactMapValues { $0 as? String }
     }
 
     /// The destination for a notification's userInfo, or nil when it names nothing the app opens
     /// (the app then simply comes forward on its current screen).
     static func destination(userInfo: [AnyHashable: Any]) -> IntentDestination? {
-        let data = (userInfo["data"] as? [String: Any] ?? [:]).compactMapValues { $0 as? String }
+        let data = data(userInfo: userInfo)
         let link = (userInfo["link"] as? String).flatMap(URL.init(string:))
         return destination(kind: userInfo["kind"] as? String, link: link, data: data)
     }
@@ -46,6 +60,8 @@ enum PushLanding {
         case _ where kind == Kind.lootAwarded || Kind.gear.contains(kind):
             // The item sheet and the Gear tab replace this with the navigation step (spec 4.3).
             return .tab(.gear)
+        case Kind.guildApplicant:
+            return applicant(data: data).map { .link(.guildApplicant(guild: $0.guild, application: $0.application)) }
         case Kind.characterLinked:
             return data["character_key"].map { .character(key: $0) }
         case _ where Kind.account.contains(kind):
