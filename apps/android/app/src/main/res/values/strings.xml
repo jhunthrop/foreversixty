@@ -1237,6 +1237,20 @@
     <string name="live_a11y_raidPull">%1$s starts in %2$s. You are %3$s.</string>
     <string name="live_tile_title">Next raid</string>
     <string name="live_tile_sub">%1$s · %2$s</string>
+    <string name="widget_card_firstRaids">First raids</string>
+    <string name="widget_card_firstRaidsOn">First raids %1$s</string>
+    <string name="widget_card_raidsOpen">Raids open now</string>
+    <string name="widget_card_open">Open</string>
+    <string name="widget_card_now">Now</string>
+    <string name="widget_card_noRaid">No raid planned yet</string>
+    <string name="widget_card_line">%1$s · %2$s</string>
+    <string name="widget_card_daysHours" tools:ignore="PluralsCandidate">%1$dd %2$dh</string>
+    <string name="widget_card_hoursMinutes" tools:ignore="PluralsCandidate">%1$dh %2$dm</string>
+    <string name="widget_card_counts" tools:ignore="PluralsCandidate">%1$d in, %2$d late</string>
+    <string name="widget_card_upgrades">Upgrades</string>
+    <string name="widget_card_nextUpgrade">next upgrade</string>
+    <string name="widget_card_item">%1$s, %2$s</string>
+    <string name="widget_card_lock">%1$s · %2$s</string>
     <string name="tab_guides">Guides</string>
     <string name="guides_title">Guides</string>
     <string name="guides_segment_guides">Guides</string>

@@ -4134,6 +4134,62 @@ enum Copy {
         format("live.tile.sub", time, answer)
     }
 
+    /// First raids
+    static var widgetCardFirstRaids: String { text("widget.card.firstRaids") }
+
+    /// First raids {date}
+    static func widgetCardFirstRaidsOn(date: String) -> String {
+        format("widget.card.firstRaidsOn", date)
+    }
+
+    /// Raids open now
+    static var widgetCardRaidsOpen: String { text("widget.card.raidsOpen") }
+
+    /// Open
+    static var widgetCardOpen: String { text("widget.card.open") }
+
+    /// Now
+    static var widgetCardNow: String { text("widget.card.now") }
+
+    /// No raid planned yet
+    static var widgetCardNoRaid: String { text("widget.card.noRaid") }
+
+    /// {when} · {answer}
+    static func widgetCardLine(when: String, answer: String) -> String {
+        format("widget.card.line", when, answer)
+    }
+
+    /// {days}d {hours}h
+    static func widgetCardDaysHours(days: Int, hours: Int) -> String {
+        format("widget.card.daysHours", days, hours)
+    }
+
+    /// {hours}h {minutes}m
+    static func widgetCardHoursMinutes(hours: Int, minutes: Int) -> String {
+        format("widget.card.hoursMinutes", hours, minutes)
+    }
+
+    /// {in} in, {late} late
+    static func widgetCardCounts(`in`: Int, late: Int) -> String {
+        format("widget.card.counts", `in`, late)
+    }
+
+    /// Upgrades
+    static var widgetCardUpgrades: String { text("widget.card.upgrades") }
+
+    /// next upgrade
+    static var widgetCardNextUpgrade: String { text("widget.card.nextUpgrade") }
+
+    /// {item}, {source}
+    static func widgetCardItem(item: String, source: String) -> String {
+        format("widget.card.item", item, source)
+    }
+
+    /// {big} · {name}
+    static func widgetCardLock(big: String, name: String) -> String {
+        format("widget.card.lock", big, name)
+    }
+
     /// Guides
     static var tabGuides: String { text("tab.guides") }
 

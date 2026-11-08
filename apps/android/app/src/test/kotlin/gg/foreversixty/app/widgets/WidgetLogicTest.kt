@@ -212,16 +212,20 @@ class WidgetLogicTest {
     }
 
     @Test
-    fun `the tile says the raid and the answer, else No raid planned`() {
+    fun `the tile says the card's label over its one line, active only while a raid is planned`() {
         val figures = WidgetFigures(resources(), ZoneId.of("America/Chicago"))
         val tile = TileFigures.of(figures.raid(WidgetTestData.snapshot(), now), resources())
-        assertEquals("Next raid", tile.label)
-        assertEquals("Thu 8 pm · In", tile.subtitle)
+        assertEquals("OLYMPUS XXVII", tile.label)
+        assertEquals("2d 2h · Onyxia's Lair", tile.subtitle)
         assertTrue(tile.active)
         val base = WidgetTestData.snapshot()
         val none = TileFigures.of(figures.raid(base.copy(widget = base.widget.copy(nextRaid = null)), now), resources())
-        assertEquals("No raid planned", none.subtitle)
+        assertEquals("OLYMPUS XXVII", none.label)
+        assertEquals("6h 21m · First raids Wed 9 Dec", none.subtitle)
         assertFalse(none.active)
+        val signedOut = TileFigures.of(figures.raid(null, now), resources())
+        assertEquals("Next raid", signedOut.label)
+        assertFalse(signedOut.active)
     }
 
     @Test
