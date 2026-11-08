@@ -72,7 +72,7 @@ func (s *Store) PrefsOf(ctx context.Context, userIDs []int64) (map[int64]Prefs, 
 	for _, uid := range userIDs {
 		out[uid] = DefaultPrefs()
 	}
-	rows, err := s.Pool.Query(ctx, `select user_id, time_zone, quiet_enabled, quiet_start, quiet_end
+	rows, err := s.Pool.Query(ctx, `select user_id, time_zone, quiet_enabled, quiet_start, quiet_end, raid_reminder
 		from notification_settings where user_id = any($1)`, userIDs)
 	if err != nil {
 		return nil, fmt.Errorf("events: read settings: %w", err)
@@ -81,7 +81,7 @@ func (s *Store) PrefsOf(ctx context.Context, userIDs []int64) (map[int64]Prefs, 
 	for rows.Next() {
 		var uid int64
 		var p Prefs
-		if err := rows.Scan(&uid, &p.TimeZone, &p.Quiet.Enabled, &p.Quiet.Start, &p.Quiet.End); err != nil {
+		if err := rows.Scan(&uid, &p.TimeZone, &p.Quiet.Enabled, &p.Quiet.Start, &p.Quiet.End, &p.RaidReminder); err != nil {
 			return nil, fmt.Errorf("events: read settings: %w", err)
 		}
 		out[uid] = p
@@ -133,18 +133,25 @@ type PrefChange struct {
 type SettingsChange struct {
 	TimeZone *string
 	Quiet    *QuietHours
-	Prefs    []PrefChange
+	// RaidReminder is the raid-day reminder in minutes after local midnight.
+	RaidReminder *int
+	Prefs        []PrefChange
+}
+
+// settingsRow reports whether c changes the notification_settings row.
+func (c SettingsChange) settingsRow() bool {
+	return c.TimeZone != nil || c.Quiet != nil || c.RaidReminder != nil
 }
 
 var errEmptyChange = errors.New("events: nothing to change")
 
 // SaveSettings applies change to the account's preferences in one transaction.
 func (s *Store) SaveSettings(ctx context.Context, userID int64, change SettingsChange) error {
-	if change.TimeZone == nil && change.Quiet == nil && len(change.Prefs) == 0 {
+	if !change.settingsRow() && len(change.Prefs) == 0 {
 		return errEmptyChange
 	}
 	return pgx.BeginFunc(ctx, s.Pool, func(tx pgx.Tx) error {
-		if change.TimeZone != nil || change.Quiet != nil {
+		if change.settingsRow() {
 			if err := saveSettingsRow(ctx, tx, userID, change); err != nil {
 				return err
 			}
@@ -167,14 +174,17 @@ func saveSettingsRow(ctx context.Context, tx pgx.Tx, userID int64, change Settin
 	if q := change.Quiet; q != nil {
 		enabled, start, end = &q.Enabled, &q.Start, &q.End
 	}
-	_, err := tx.Exec(ctx, `insert into notification_settings (user_id, time_zone, quiet_enabled, quiet_start, quiet_end)
-		values ($1, coalesce($2::text, $6::text), coalesce($3::boolean, false), coalesce($4::smallint, $7::smallint), coalesce($5::smallint, $8::smallint))
+	_, err := tx.Exec(ctx, `insert into notification_settings (user_id, time_zone, quiet_enabled, quiet_start, quiet_end, raid_reminder)
+		values ($1, coalesce($2::text, $6::text), coalesce($3::boolean, false), coalesce($4::smallint, $7::smallint), coalesce($5::smallint, $8::smallint),
+		  coalesce($9::smallint, $10::smallint))
 		on conflict (user_id) do update set
 		  time_zone = coalesce($2::text, notification_settings.time_zone),
 		  quiet_enabled = coalesce($3::boolean, notification_settings.quiet_enabled),
 		  quiet_start = coalesce($4::smallint, notification_settings.quiet_start),
 		  quiet_end = coalesce($5::smallint, notification_settings.quiet_end),
-		  updated_at = now()`, userID, zone, enabled, start, end, DefaultTimeZone, DefaultQuietStart, DefaultQuietEnd)
+		  raid_reminder = coalesce($9::smallint, notification_settings.raid_reminder),
+		  updated_at = now()`, userID, zone, enabled, start, end, DefaultTimeZone, DefaultQuietStart, DefaultQuietEnd,
+		change.RaidReminder, DefaultRaidReminder)
 	if err != nil {
 		return fmt.Errorf("events: save settings: %w", err)
 	}

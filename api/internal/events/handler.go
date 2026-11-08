@@ -55,7 +55,9 @@ type QuietHoursView struct {
 
 // EventPrefView is one event's switches.
 type EventPrefView struct {
-	Kind        Kind   `json:"kind"`
+	Kind Kind `json:"kind"`
+	// Group is the kind's notification group (GroupOf): the apps show one switch per group.
+	Group       Group  `json:"group"`
 	Who         string `json:"who"`
 	Officer     bool   `json:"officer"`
 	QuietExempt bool   `json:"quiet_exempt"`
@@ -66,9 +68,11 @@ type EventPrefView struct {
 
 // PrefsView is the GET body.
 type PrefsView struct {
-	TimeZone   string          `json:"time_zone"`
-	QuietHours QuietHoursView  `json:"quiet_hours"`
-	Events     []EventPrefView `json:"events"`
+	TimeZone   string         `json:"time_zone"`
+	QuietHours QuietHoursView `json:"quiet_hours"`
+	// RaidReminder is the raid-day reminder, "HH:MM" in TimeZone.
+	RaidReminder string          `json:"raid_reminder"`
+	Events       []EventPrefView `json:"events"`
 }
 
 // ViewOf is p as the routes show it, every catalogue event in its order.
@@ -78,16 +82,17 @@ func ViewOf(p Prefs) PrefsView {
 		zone = DefaultTimeZone
 	}
 	v := PrefsView{
-		TimeZone:   zone,
-		QuietHours: QuietHoursView{Enabled: p.Quiet.Enabled, Start: clock(p.Quiet.Start), End: clock(p.Quiet.End)},
-		Events:     make([]EventPrefView, len(Catalogue)),
+		TimeZone:     zone,
+		QuietHours:   QuietHoursView{Enabled: p.Quiet.Enabled, Start: clock(p.Quiet.Start), End: clock(p.Quiet.End)},
+		RaidReminder: clock(p.RaidReminder),
+		Events:       make([]EventPrefView, len(Catalogue)),
 	}
 	for i, s := range Catalogue {
 		channels := make(map[Channel]bool, len(Channels))
 		for _, ch := range Channels {
 			channels[ch] = p.Allows(s.Kind, ch)
 		}
-		v.Events[i] = EventPrefView{Kind: s.Kind, Who: s.Who, Officer: s.Officer, QuietExempt: s.QuietExempt,
+		v.Events[i] = EventPrefView{Kind: s.Kind, Group: GroupOf(s.Kind), Who: s.Who, Officer: s.Officer, QuietExempt: s.QuietExempt,
 			TimeSensitive: s.TimeSensitive, Channels: channels}
 	}
 	return v
@@ -122,7 +127,9 @@ func (h *Handler) get(w http.ResponseWriter, r *http.Request) {
 type patchRequest struct {
 	TimeZone   *string         `json:"time_zone"`
 	QuietHours *QuietHoursView `json:"quiet_hours"`
-	Events     []struct {
+	// RaidReminder is "HH:MM" on a 15-minute step.
+	RaidReminder *string `json:"raid_reminder"`
+	Events       []struct {
 		Kind    Kind    `json:"kind"`
 		Channel Channel `json:"channel"`
 		Enabled *bool   `json:"enabled"`
@@ -171,6 +178,13 @@ func (req patchRequest) change() (SettingsChange, map[string]string) {
 			fields["quiet_hours"] = "start and end are HH:MM and differ"
 		}
 		c.Quiet = &quiet
+	}
+	if req.RaidReminder != nil {
+		at, ok := parseClock(*req.RaidReminder)
+		if !ok || !ValidRaidReminder(at) {
+			fields["raid_reminder"] = "HH:MM from 00:00 to 23:45, on a 15-minute step"
+		}
+		c.RaidReminder = &at
 	}
 	if len(req.Events) > len(Catalogue)*len(Channels) {
 		fields["events"] = "too many changes"

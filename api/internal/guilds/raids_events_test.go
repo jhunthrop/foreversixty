@@ -89,7 +89,7 @@ func TestRaidEventsReadPlainlyAndThreadPerRaid(t *testing.T) {
 	}
 	later := p
 	later.StartsAt = later.StartsAt.Add(time.Hour)
-	if raidNudgeEvent(3, p).DedupeKey == raidNudgeEvent(3, later).DedupeKey {
+	if raidNudgeEvent(3, p, []int64{1}).DedupeKey == raidNudgeEvent(3, later, []int64{1}).DedupeKey {
 		t.Fatal("a moved raid is not nudged again")
 	}
 	if e := lateChangeEvent(3, p, "k", "Kraggor", 5*time.Hour); e.Body != "Kraggor changed to Out, 5 hours before the start." {
@@ -98,7 +98,7 @@ func TestRaidEventsReadPlainlyAndThreadPerRaid(t *testing.T) {
 	if e := rosterSetEvent(3, p, 7, SignupBench, time.Unix(1, 0)); e.Body != raidEventCopy.RosterBench || e.Audience.UserIDs[0] != 7 {
 		t.Fatalf("roster %+v", e)
 	}
-	for _, e := range []events.Event{posted, moved, raidNudgeEvent(3, p), raidStartingEvent(3, p, time.Hour), raidShortEvent(3, p)} {
+	for _, e := range []events.Event{posted, moved, raidNudgeEvent(3, p, []int64{1}), raidStartingEvent(3, p, time.Hour), raidShortEvent(3, p)} {
 		if err := e.Validate(); err != nil {
 			t.Fatalf("%s: %v", e.Kind, err)
 		}
@@ -117,7 +117,7 @@ func TestDueKinds(t *testing.T) {
 		{at(postHorizon, RaidPlanned), []events.Kind{events.RaidPosted}},
 		{at(postHorizon-30*time.Minute, RaidPlanned), []events.Kind{events.RaidPosted}},
 		{at(postHorizon-2*time.Hour, RaidPlanned), nil},
-		{at(24*time.Hour, RaidPlanned), []events.Kind{events.RaidSignupNudge, events.RaidShort}},
+		{at(24*time.Hour, RaidPlanned), []events.Kind{events.RaidShort}},
 		{at(24*time.Hour, RaidLocked), nil},
 		{at(30*time.Minute, RaidLocked), []events.Kind{events.RaidStarting}},
 		{at(60*time.Minute, RaidPlanned), []events.Kind{events.RaidStarting}},
@@ -202,11 +202,9 @@ func TestRunEventSchedulePublishesWhatIsDue(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if run.Nudged != 1 || run.Short != 1 {
+	// The nudge goes at each player's reminder (raids_nudge_test.go), never 24 hours out.
+	if run.Nudged != 0 || run.Short != 1 || len(pub.ofKind(events.RaidSignupNudge)) != 0 {
 		t.Fatalf("run %+v", run)
-	}
-	if e := pub.ofKind(events.RaidSignupNudge); len(e) != 1 || e[0].Audience.Kind != events.ToUnanswered || len(e[0].Actions) != 4 {
-		t.Fatalf("nudge %+v", e)
 	}
 	if len(pub.ofKind(events.RaidShort)) != 1 {
 		t.Fatal("an empty Onyxia is short")

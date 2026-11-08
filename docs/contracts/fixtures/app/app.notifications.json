@@ -7,9 +7,11 @@
       "start": "22:00",
       "end": "08:00"
     },
+    "raid_reminder": "15:00",
     "events": [
       {
         "kind": "raid.posted",
+        "group": "raids",
         "who": "guild_members",
         "officer": false,
         "quiet_exempt": false,
@@ -21,6 +23,7 @@
       },
       {
         "kind": "raid.starting",
+        "group": "raids",
         "who": "in_and_late",
         "officer": false,
         "quiet_exempt": true,
@@ -32,6 +35,7 @@
       },
       {
         "kind": "bis.changed",
+        "group": "gear",
         "who": "player",
         "officer": false,
         "quiet_exempt": false,
@@ -43,6 +47,7 @@
       },
       {
         "kind": "roster.pending",
+        "group": "officer",
         "who": "officers",
         "officer": true,
         "quiet_exempt": false,
@@ -50,6 +55,30 @@
         "channels": {
           "push": true,
           "discord": true
+        }
+      },
+      {
+        "kind": "guildsim.passed",
+        "group": "ladder",
+        "who": "player",
+        "officer": false,
+        "quiet_exempt": false,
+        "time_sensitive": false,
+        "channels": {
+          "push": false,
+          "discord": false
+        }
+      },
+      {
+        "kind": "tier.moved",
+        "group": "tiers",
+        "who": "player",
+        "officer": false,
+        "quiet_exempt": false,
+        "time_sensitive": false,
+        "channels": {
+          "push": false,
+          "discord": false
         }
       }
     ]

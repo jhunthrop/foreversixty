@@ -43,11 +43,19 @@ const (
 	DefaultTimeZone   = "UTC"
 	DefaultQuietStart = 22 * 60
 	DefaultQuietEnd   = 7 * 60
+	// DefaultRaidReminder is the raid-day reminder hour, 15:00 local (migration 0088).
+	DefaultRaidReminder = 15 * 60
+	// RaidReminderStep is the reminder's step in minutes.
+	RaidReminderStep = 15
 )
+
+// ValidRaidReminder reports whether m is a reminder minute of the day on the 15-minute step.
+func ValidRaidReminder(m int) bool { return m >= 0 && m < minutesPerDay && m%RaidReminderStep == 0 }
 
 // DefaultPrefs is the catalogue's defaults, in UTC, with quiet hours off.
 func DefaultPrefs() Prefs {
-	return Prefs{TimeZone: DefaultTimeZone, Quiet: QuietHours{Start: DefaultQuietStart, End: DefaultQuietEnd}}
+	return Prefs{TimeZone: DefaultTimeZone, Quiet: QuietHours{Start: DefaultQuietStart, End: DefaultQuietEnd},
+		RaidReminder: DefaultRaidReminder}
 }
 
 // PrefKey is one event on one channel.
@@ -59,9 +67,11 @@ type PrefKey struct {
 // Prefs is a player's notification settings: the overrides of the catalogue's defaults, the
 // quiet hours and the zone they are read in ("" is UTC).
 type Prefs struct {
-	TimeZone  string
-	Quiet     QuietHours
-	Overrides map[PrefKey]bool
+	TimeZone string
+	Quiet    QuietHours
+	// RaidReminder is the raid-day reminder, minutes after local midnight in TimeZone.
+	RaidReminder int
+	Overrides    map[PrefKey]bool
 }
 
 // Allows reports whether kind goes out on channel: the player's override, else the

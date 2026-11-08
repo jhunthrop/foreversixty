@@ -4085,11 +4085,19 @@ components:
       type: object
       description: >-
         The player's choices per event and channel, every catalogue event in catalogue order.
-        Show copy from the app's own strings keyed by kind; hide an unknown kind.
+        Show copy from the app's own strings keyed by kind; hide an unknown kind. The apps show
+        one switch per group, built from each event's group (no kind to group map in the apps).
       required: [time_zone, quiet_hours, events]
       properties:
         time_zone: { type: string, description: An IANA name. }
         quiet_hours: { $ref: '#/components/schemas/QuietHours' }
+        raid_reminder:
+          type: string
+          description: >-
+            The raid-day reminder, "HH:MM" in time_zone (default "15:00"): on a raid's day in the
+            player's zone, at this time, raid.signup_nudge goes to a member who has not answered.
+            A reminder at or after the start goes two hours before it. Always sent; optional so an
+            older body still decodes.
         events:
           type: array
           items:
@@ -4098,6 +4106,10 @@ components:
             required: [kind, who, officer, quiet_exempt, time_sensitive, channels]
             properties:
               kind: { type: string, description: "The catalogue's name: raid.posted, raid.starting, sim.finished, ..." }
+              group:
+                type: string
+                enum: [raids, gear, logs, ladder, tiers, officer, account]
+                description: "The kind's group (events.GroupOf); always sent, optional so an older body still decodes."
               who: { type: string, description: "player, guild_members, signed_up, in_and_late, raiders, officers, payer, everyone" }
               officer: { type: boolean, description: Show only to officers. }
               quiet_exempt: { type: boolean }
@@ -4118,10 +4130,11 @@ components:
         discord: { type: boolean }
     NotificationsPatch:
       type: object
-      description: Every key optional but at least one.
+      description: Every key optional but at least one. 422 invalid names each bad key in fields.
       properties:
         time_zone: { type: string }
         quiet_hours: { $ref: '#/components/schemas/QuietHours' }
+        raid_reminder: { type: string, description: '"HH:MM" from 00:00 to 23:45 on a 15-minute step; anything else is 422 with fields.raid_reminder.' }
         events:
           type: array
           items:

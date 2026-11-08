@@ -82,6 +82,8 @@ type Service struct {
 	limiterOnce   sync.Once
 	// Events publishes the player notifications (events.Router); nil publishes nothing.
 	Events events.Publisher
+	// Nudges finds who a raid-day nudge goes to and when (events.Store); nil sends no nudge.
+	Nudges NudgeReader
 	// AppSignups (APP_NOTIFICATIONS_ENABLED) lets a signed-in app's token answer the sign-up
 	// PUT, the route the apps' In, Late and Out buttons call. Off, it takes a browser session.
 	AppSignups bool
