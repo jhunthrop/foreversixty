@@ -13,6 +13,8 @@ export interface CreatorFigures {
   sign_ups: number;
   returning: number;
   revenue_cents: number;
+  /** The open month owed_cents covers, "2026-12"; the four counts above are all time. */
+  month: string;
   owed_cents: number;
   capped: boolean;
 }
@@ -63,12 +65,20 @@ export interface Statement {
   lines: StatementLine[];
 }
 
-/** One of the creator's players as the creator may see them: the week they signed up (a Monday), and
- *  whether they returned and pay, null while the player is under 7 days old (section 1, Privacy). */
-export interface CreatorPlayer {
+/** The month a statements read covers, and whether the server lets a payout be made at all. */
+export interface StatementsPage {
+  month: string;
+  payouts_enabled: boolean;
+  statements: Statement[];
+}
+
+/** One week (a Monday, UTC) of a creator's sign-ups as the creator may see it: returning and paying
+ *  are null while the week is still running (section 1, Privacy). */
+export interface CreatorWeek {
   week_of: string;
-  returning: boolean | null;
-  paying: boolean | null;
+  signed_up: number;
+  returning: number | null;
+  paying: number | null;
 }
 
 export interface CreatorPayout {
@@ -82,11 +92,13 @@ export interface CreatorMe {
   slug: string;
   code: string;
   cap_cents: number;
+  /** The open month the estimate covers, "2026-12". */
+  month: string;
   month_cents: number;
   players: number;
   returning: number;
   paying: number;
-  recent: CreatorPlayer[];
+  weeks: CreatorWeek[];
   payouts: CreatorPayout[];
   stripe_status: StripeStatus;
 }
@@ -142,12 +154,10 @@ export const STATUS_TONE: Readonly<Record<StripeStatus, TagTone>> = {
   none: 'muted',
 };
 
-/** The one action a statement offers: pay it, settle a $0 month, or nothing. */
-export type StatementAction = 'approve' | 'settle' | 'none';
-
-export function statementAction(s: Pick<Statement, 'status' | 'total_cents'>): StatementAction {
-  if (s.status !== 'ready' && s.status !== 'nothing') return 'none';
-  return s.total_cents > 0 ? 'approve' : 'settle';
+/** A statement offers one action, Approve, and only when it is ready and owes money. A month that
+ *  owes nothing has no button: its lines (a refund that outweighed the earnings) roll into the next. */
+export function canApprove(s: Pick<Statement, 'status' | 'total_cents'>): boolean {
+  return s.status === 'ready' && s.total_cents > 0;
 }
 
 /** The month's total still to pay across creators (the ready ones). */
@@ -169,16 +179,17 @@ function shown(key: string, label: string, value: string, note = '', lead = fals
   return { key, label, value, note, lead };
 }
 
-/** A creator Row's foot on /admin/creators: four totals since the start, then what is owed now. */
+/** A creator Row's foot on /admin/creators: four all-time totals, then what the open month owes so far. */
 export function creatorFigures(c: Pick<Creator, 'figures' | 'cap_cents'>): ShownFigure[] {
   const k = adminCreatorsCopy.columns;
   const f = c.figures;
-  const owedNote = f.capped ? adminCreatorsCopy.capReached : adminCreatorsCopy.ofCap(capDollars(c.cap_cents));
+  const all = adminCreatorsCopy.allTime;
+  const owedNote = adminCreatorsCopy.owedNote(monthLabel(f.month), capDollars(c.cap_cents), f.capped);
   return [
-    shown('clicks', k.clicks, count(f.clicks)),
-    shown('sign-ups', k.signUps, count(f.sign_ups)),
-    shown('returning', k.returning, count(f.returning)),
-    shown('revenue', k.revenue, money(f.revenue_cents)),
+    shown('clicks', k.clicks, count(f.clicks), all),
+    shown('sign-ups', k.signUps, count(f.sign_ups), all),
+    shown('returning', k.returning, count(f.returning), all),
+    shown('revenue', k.revenue, money(f.revenue_cents), all),
     shown('owed', k.owed, money(f.owed_cents), owedNote, true),
   ];
 }
@@ -197,13 +208,24 @@ export function statementFigures(s: Statement): ShownFigure[] {
 
 /** The creator's own four figures on /creators/stats. */
 export function statsFigures(me: CreatorMe): ShownFigure[] {
-  const k = creatorStatsCopy.figures;
+  const c = creatorStatsCopy;
+  const k = c.figures;
   return [
-    shown('month', k.month, money(me.month_cents), creatorStatsCopy.monthNote(capDollars(me.cap_cents)), true),
-    shown('players', k.players, count(me.players)),
-    shown('returning', k.returning, count(me.returning)),
-    shown('paying', k.paying, count(me.paying)),
+    shown('month', k.month, money(me.month_cents), c.monthNote(monthLabel(me.month), capDollars(me.cap_cents)), true),
+    shown('players', k.players, count(me.players), c.allTime),
+    shown('returning', k.returning, count(me.returning), c.allTime),
+    shown('paying', k.paying, count(me.paying), c.payingNote),
   ];
+}
+
+/** A week of sign-ups as the creator's page lists it ("23 Nov"). */
+export function weekText(w: CreatorWeek): string {
+  const day = new Date(`${w.week_of}T00:00:00Z`).toLocaleDateString('en-GB', {
+    day: 'numeric',
+    month: 'short',
+    timeZone: 'UTC',
+  });
+  return creatorStatsCopy.week(day, w.signed_up, w.returning, w.paying);
 }
 
 /** A statement Row's sub line. */

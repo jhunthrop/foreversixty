@@ -8,6 +8,7 @@
    "notOwner": "This page is for the site’s owner.",
    "loadFailed": "The creators didn’t load.",
    "stripeOff": "Stripe isn’t configured, so codes and payouts are off.",
+   "payoutsOff": "Payouts are switched off on the server. Statements can be read but not paid.",
    "tableTitle": "Your creators",
    "tableMeta": "[fn]",
    "empty": "No creators yet. Add the first one.",
@@ -17,10 +18,10 @@
     "signUps": "Signed up",
     "returning": "Returning",
     "revenue": "Premium net",
-    "owed": "Owed now"
+    "owed": "Owed so far"
    },
-   "ofCap": "[fn]",
-   "capReached": "cap reached",
+   "allTime": "all time",
+   "owedNote": "[fn]",
    "edit": "Edit",
    "editLabel": "[fn]",
    "statementsLink": "Monthly statements",
@@ -45,7 +46,7 @@
     },
     "code": {
      "label": "Promo code",
-     "hint": "Capitals and digits, 4 to 20. 10% off a first payment.",
+     "hint": "Capitals and digits, 4 to 20. Players get the creator discount on a first payment.",
      "placeholder": "e.g. GRIMBREW"
     },
     "startsOn": {
@@ -74,7 +75,7 @@
    "refreshFailed": "Stripe didn’t answer; try again.",
    "fixed": "[fn]"
   },
-  "meta": "3 creators · this month so far",
+  "meta": "3 creators",
   "rows": [
    {
     "name": "Grimbrew",
@@ -87,35 +88,35 @@
       "key": "clicks",
       "label": "Clicks",
       "value": "1,840",
-      "note": "",
+      "note": "all time",
       "lead": false
      },
      {
       "key": "sign-ups",
       "label": "Signed up",
       "value": "212",
-      "note": "",
+      "note": "all time",
       "lead": false
      },
      {
       "key": "returning",
       "label": "Returning",
       "value": "131",
-      "note": "",
+      "note": "all time",
       "lead": false
      },
      {
       "key": "revenue",
       "label": "Premium net",
-      "value": "$618.40",
-      "note": "",
+      "value": "$186.60",
+      "note": "all time",
       "lead": false
      },
      {
       "key": "owed",
-      "label": "Owed now",
+      "label": "Owed so far",
       "value": "$184.20",
-      "note": "of $500 cap",
+      "note": "December 2026 · of $500 cap",
       "lead": true
      }
     ]
@@ -131,35 +132,35 @@
       "key": "clicks",
       "label": "Clicks",
       "value": "932",
-      "note": "",
+      "note": "all time",
       "lead": false
      },
      {
       "key": "sign-ups",
       "label": "Signed up",
       "value": "88",
-      "note": "",
+      "note": "all time",
       "lead": false
      },
      {
       "key": "returning",
       "label": "Returning",
       "value": "51",
-      "note": "",
+      "note": "all time",
       "lead": false
      },
      {
       "key": "revenue",
       "label": "Premium net",
-      "value": "$201.10",
-      "note": "",
+      "value": "$50.80",
+      "note": "all time",
       "lead": false
      },
      {
       "key": "owed",
-      "label": "Owed now",
-      "value": "$250.00",
-      "note": "cap reached",
+      "label": "Owed so far",
+      "value": "$50.00",
+      "note": "December 2026 · $50 cap reached",
       "lead": true
      }
     ]
@@ -175,35 +176,35 @@
       "key": "clicks",
       "label": "Clicks",
       "value": "0",
-      "note": "",
+      "note": "all time",
       "lead": false
      },
      {
       "key": "sign-ups",
       "label": "Signed up",
       "value": "0",
-      "note": "",
+      "note": "all time",
       "lead": false
      },
      {
       "key": "returning",
       "label": "Returning",
       "value": "0",
-      "note": "",
+      "note": "all time",
       "lead": false
      },
      {
       "key": "revenue",
       "label": "Premium net",
       "value": "$0.00",
-      "note": "",
+      "note": "all time",
       "lead": false
      },
      {
       "key": "owed",
-      "label": "Owed now",
+      "label": "Owed so far",
       "value": "$0.00",
-      "note": "of $500 cap",
+      "note": "December 2026 · of $500 cap",
       "lead": true
      }
     ]
@@ -228,7 +229,7 @@
    },
    {
     "label": "Promo code",
-    "hint": "Capitals and digits, 4 to 20. 10% off a first payment.",
+    "hint": "Capitals and digits, 4 to 20. Players get the creator discount on a first payment.",
     "placeholder": "e.g. GRIMBREW"
    },
    {
@@ -248,6 +249,7 @@
    "pageTitle": "Statements",
    "job": "Each creator’s month. Nothing is paid until you approve it.",
    "pageDescription": "The owner’s monthly creator statements and payouts.",
+   "payoutsOff": "Payouts are switched off on the server. Statements can be read but not paid.",
    "monthLabel": "Month",
    "openMonth": "[fn]",
    "loadFailed": "The statements didn’t load.",
@@ -274,7 +276,6 @@
    "notReady": "Stripe not ready",
    "approve": "[fn]",
    "approving": "Paying",
-   "settle": "Settle $0.00",
    "confirmTitle": "[fn]",
    "confirmBody": "[fn]",
    "confirmPay": "[fn]",
@@ -290,6 +291,7 @@
     "refund": "[fn]"
    }
   },
+  "off": "Payouts are switched off on the server. Statements can be read but not paid.",
   "month": "November 2026",
   "title": "3 creators",
   "meta": "$168.60 to pay",
@@ -348,7 +350,7 @@
      {
       "key": "total",
       "label": "Total",
-      "value": "$74.40",
+      "value": "$50.00",
       "note": "",
       "lead": true
      },
@@ -376,7 +378,7 @@
      {
       "key": "cap",
       "label": "Over cap",
-      "value": "$0.00",
+      "value": "$24.40",
       "note": "",
       "lead": false
      }
@@ -385,7 +387,7 @@
    {
     "name": "Tallowmere",
     "sub": "Nothing owed",
-    "action": "Settle $0.00",
+    "action": "",
     "lines": "Lines",
     "notReady": "",
     "figures": [
@@ -486,21 +488,21 @@
    "meta": "[fn]",
    "loadFailed": "Your stats didn’t load.",
    "signedOut": "Sign in with Battle.net to see your creator stats.",
-   "summaryLabel": "This month",
+   "summaryLabel": "Your figures",
    "figures": {
-    "month": "This month",
+    "month": "Earned so far",
     "players": "Players",
     "returning": "Returning",
     "paying": "Paying"
    },
    "monthNote": "[fn]",
+   "allTime": "all time",
+   "payingNote": "paying now",
    "playersTitle": "Your players",
    "playersMeta": "by week · no names, by design",
    "playersEmpty": "No players yet. Share your link or your code.",
-   "signedUp": "[fn]",
-   "playersCapped": "Showing the newest 100.",
-   "returningTag": "Returning",
-   "payingTag": "Paying",
+   "week": "[fn]",
+   "weeksCapped": "Showing the last 26 weeks.",
    "payoutsTitle": "Payouts",
    "payoutsEmpty": "No payouts yet. Each month is paid after it closes and is approved.",
    "setup": "Set up payouts"
@@ -510,60 +512,42 @@
   "figures": [
    {
     "key": "month",
-    "label": "This month",
+    "label": "Earned so far",
     "value": "$184.20",
-    "note": "estimated, $500 cap max",
+    "note": "December 2026, estimated, $500 cap max",
     "lead": true
    },
    {
     "key": "players",
     "label": "Players",
     "value": "212",
-    "note": "",
+    "note": "all time",
     "lead": false
    },
    {
     "key": "returning",
     "label": "Returning",
     "value": "131",
-    "note": "",
+    "note": "all time",
     "lead": false
    },
    {
     "key": "paying",
     "label": "Paying",
     "value": "37",
-    "note": "",
+    "note": "paying now",
     "lead": false
    }
   ],
-  "players": [
-   {
-    "text": "Signed up week of 30 Nov 2026",
-    "returning": false,
-    "paying": false
-   },
-   {
-    "text": "Signed up week of 23 Nov 2026",
-    "returning": true,
-    "paying": true
-   },
-   {
-    "text": "Signed up week of 23 Nov 2026",
-    "returning": true,
-    "paying": false
-   },
-   {
-    "text": "Signed up week of 16 Nov 2026",
-    "returning": false,
-    "paying": false
-   }
+  "weeks": [
+   "Week of 7 Dec: 18 signed up so far",
+   "Week of 30 Nov: 61 signed up · 38 returning · 11 paying",
+   "Week of 23 Nov: 54 signed up · 36 returning · 10 paying",
+   "Week of 16 Nov: 47 signed up · 33 returning · 9 paying",
+   "Week of 9 Nov: 29 signed up · 22 returning · 6 paying",
+   "Week of 2 Nov: 3 signed up · 2 returning · 1 paying"
   ],
-  "payouts": [
-   {
-    "text": "November 2026",
-    "amount": "$168.60"
-   }
-  ]
+  "payoutsEmpty": "No payouts yet. Each month is paid after it closes and is approved.",
+  "payouts": []
  }
 }

@@ -2,7 +2,7 @@
 // pages' own modules, never retyped:
 //   node design/mocks/creators_facts.mjs [out.json]  ->  design/mocks/data/creators-facts.json (or out.json)
 // Bundles web/src/lib/creators/{copy,model}.ts with esbuild over the sample creators the e2e and parity
-// specs serve (web/tests/e2e/fixtures/creators/*.json). The clock is 2026-12-02T12:00Z (November closed).
+// specs serve (web/tests/e2e/fixtures/creators/*.json). The clock is 2026-12-09 (November closed, December open).
 import { createRequire } from "node:module";
 import { mkdtempSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -19,7 +19,8 @@ const entry = `
 import * as copy from ${src("src/lib/creators/copy.ts")};
 import * as m from ${src("src/lib/creators/model.ts")};
 import creators from ${src("tests/e2e/fixtures/creators/creators.json")};
-import statements from ${src("tests/e2e/fixtures/creators/statements.json")};
+import page from ${src("tests/e2e/fixtures/creators/statements.json")};
+const statements = page.statements;
 import me from ${src("tests/e2e/fixtures/creators/me.json")};
 
 const strip = (o) => JSON.parse(JSON.stringify(o, (k, v) => (typeof v === 'function' ? '[fn]' : v)));
@@ -31,7 +32,7 @@ const adminRows = creators.map((c) => ({
   edit: a.edit, figures: m.creatorFigures(c),
 }));
 
-const action = (s) => ({ approve: p.approve(m.money(s.total_cents)), settle: p.settle, none: '' })[m.statementAction(s)];
+const action = (s) => (m.canApprove(s) ? p.approve(m.money(s.total_cents)) : '');
 const stRows = statements.map((s) => ({
   name: s.name, sub: m.statementStatusLine(s), action: action(s), lines: p.lines,
   notReady: s.status === 'blocked' ? p.notReady : '', figures: m.statementFigures(s),
@@ -45,14 +46,14 @@ export default {
     fields: Object.values(a.fields).map((f) => strip(f)),
   },
   payouts: {
-    copy: strip(p), month: m.monthLabel(first.month), title: p.tableTitle(statements.length), meta: p.tableMeta(m.money(m.toPay(statements))),
+    copy: strip(p), off: p.payoutsOff, month: m.monthLabel(first.month), title: p.tableTitle(statements.length), meta: p.tableMeta(m.money(m.toPay(statements))),
     rows: stRows, linesTitle: p.linesTitle(first.name), lines,
     confirm: { title: p.confirmTitle(first.name, m.money(first.total_cents), m.monthLabel(first.month)), body: p.confirmBody(m.money(first.total_cents)), pay: p.confirmPay(m.money(first.total_cents)), cancel: p.cancel },
   },
   onboarding: { copy: strip(ob), join: ob.inviteJoin(me.name) },
   stats: {
     copy: strip(st), name: me.name, meta: st.meta(me.slug, me.code), figures: m.statsFigures(me),
-    players: me.recent.map((r) => ({ text: st.signedUp(m.dayLabel(r.week_of)), returning: r.returning === true, paying: r.paying === true })),
+    weeks: me.weeks.map(m.weekText), payoutsEmpty: st.payoutsEmpty,
     payouts: me.payouts.map((x) => ({ text: m.monthLabel(x.month), amount: m.money(x.amount_cents) })),
   },
 };`;

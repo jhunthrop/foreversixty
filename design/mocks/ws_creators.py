@@ -30,7 +30,7 @@ CREATOR = ('Grimbrew', 'mage', 'Level 60')
 CSS = '''<style>
 /* page-level layout only (no surfaces) */
 .stack{display:flex;flex-direction:column;gap:12px;min-width:0}.acts{display:flex;gap:10px 12px;flex-wrap:wrap;align-items:center}
-.figs5{display:flex;flex-wrap:wrap;gap:8px 20px}.figs5>span{width:104px;display:flex;flex-direction:column}
+.figs5{display:flex;flex-wrap:wrap;gap:8px 20px}.figs5>span{width:104px;display:flex;flex-direction:column}.figs5>span.lead{width:168px}.btn[disabled]{opacity:.45;cursor:not-allowed}
 .f{display:flex;flex-direction:column;gap:6px;min-width:0}.f .t-small{font-size:12px;line-height:16px}
 .ro{font-family:var(--mono,monospace);font-size:14px}.status{min-height:22px}.page-foot{padding-bottom:48px}
 .trail-end{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.amt{font-variant-numeric:tabular-nums}
@@ -58,7 +58,7 @@ def Input(placeholder: str) -> str:
 
 def figures(items: list[dict]) -> str:
     return '<span class="figs5">' + ''.join(
-        f'<span>{Figure(e(f["value"]), e(f["label"]), size="sm", tone="gold" if f["lead"] else "")}<span class="t-small">{e(f["note"])}</span></span>' for f in items) + '</span>'
+        f'<span{" class=\"lead\"" if f["lead"] else ""}>{Figure(e(f["value"]), e(f["label"]), size="sm", tone="gold" if f["lead"] else "")}<span class="t-small">{e(f["note"])}</span></span>' for f in items) + '</span>'
 
 
 def render(title: str, body: str, who: tuple, note: str) -> str:
@@ -107,15 +107,17 @@ def admin_creators(rail: str) -> str:
 
 
 # ================================================================================================ /admin/creators/payouts
-def payouts(dialog: bool = False) -> str:
+def payouts(dialog: bool = False, off: bool = False) -> str:
+    """off: the server's payout switch is off (CREATOR_PAYOUTS): the Notice above the Plate, Approve disabled."""
     c = P['copy']
     def trail(r: dict) -> str:
-        act = Btn(e(r['action']), primary=r['action'].startswith('Approve')) if r['action'] else ''
+        act = Btn(e(r['action']), primary=True, disabled=off) if r['action'] else ''
         tag = Tag(e(r["notReady"]), "warn") if r["notReady"] else ''
         return f'<span class="trail-end">{tag}{act}{Btn(e(r["lines"]))}</span>'
     rows = [Row(e(r['name']), e(r['sub']), link=False, selected=(i == 0), trail=trail(r), foot=figures(r['figures'])) for i, r in enumerate(P['rows'])]
     control = f'<span aria-label="{e(c["monthLabel"])}">{Select(e(P["month"]))}</span>'
-    main = Section(e(P["title"]), Plate(Rows(rows), e(P["month"])), meta=e(P["meta"]), action=control)
+    notice = f'<p class="notice wipe" style="margin-bottom:16px">{e(P["off"])}</p>' if off else ''
+    main = Section(e(P["title"]), notice + Plate(Rows(rows), e(P["month"])), meta=e(P["meta"]), action=control)
     lines = RowsSlim([Row(e(l['text']), link=False, slim=True, trail=f'<span class="amt{" wipe" if l["refund"] else ""}">{e(l["amount"])}</span>') for l in P["lines"]])
     rail = Section(e(P['linesTitle']), lines)
     head = PageHeader(e(c['pageTitle']), lead=e(c['job']), actions=Link('&lsaquo; ' + e(c['back'])))
@@ -123,7 +125,7 @@ def payouts(dialog: bool = False) -> str:
     if dialog:
         d = P['confirm']
         body += Dialog(e(d['title']), e(d['body']), '', Btn(e(d['cancel']), small=False) + Btn(e(d['pay']), primary=True, small=False), 'pay-title')
-    return render('Statements · Forever Sixty', body, OWNER, '/admin/creators/payouts mock (the owner, November closed); data creators-facts.json.')
+    return render('Statements · Forever Sixty', body, OWNER, '/admin/creators/payouts mock (the owner, 2026-12-09: November closed); data creators-facts.json.')
 
 
 # ================================================================================================ /creators/onboarding
@@ -141,11 +143,10 @@ def onboarding(state: str) -> str:
 def stats() -> str:
     c = S['copy']
     summary = Plate(f'<div style="padding:16px">{figures(S["figures"])}</div>', e(c['summaryLabel']))
-    def tags(p: dict) -> str:
-        return (Tag(e(c['returningTag']), 'kill') if p['returning'] else '') + (Tag(e(c['payingTag']), 'gold') if p['paying'] else '')
-    players = Section(e(c['playersTitle']), RowsSlim([Row(e(p['text']), link=False, slim=True, trail=f'<span class="trail-end">{tags(p)}</span>') for p in S['players']]),
-                      meta=e(c['playersMeta']))
-    payouts_ = Section(e(c['payoutsTitle']), RowsSlim([Row(e(p['text']), link=False, slim=True, trail=f'<span class="amt">{e(p["amount"])}</span>') for p in S['payouts']]))
+    players = Section(e(c['playersTitle']), RowsSlim([Row(e(w), link=False, slim=True) for w in S['weeks']]), meta=e(c['playersMeta']))
+    paid = (RowsSlim([Row(e(p['text']), link=False, slim=True, trail=f'<span class="amt">{e(p["amount"])}</span>') for p in S['payouts']])
+            if S['payouts'] else f'<p class="t-small">{e(S["payoutsEmpty"])}</p>')
+    payouts_ = Section(e(c['payoutsTitle']), paid)
     body = PageHeader(e(S['name']), meta=[e(S['meta'])]) + f'<div class="page-foot">{Page("split", f'<div class="stack" style="gap:32px">{summary}{players}</div>', payouts_)}</div>'
     return render('Creator stats · Forever Sixty', body, CREATOR, '/creators/stats mock (the creator); data creators-facts.json.')
 
@@ -155,6 +156,7 @@ PAGES = {
     'web-admin-creators-edit': lambda: admin_creators(edit_form()),
     'web-admin-creators-payouts': lambda: payouts(),
     'web-admin-creators-confirm': lambda: payouts(dialog=True),
+    'web-admin-creators-payouts-off': lambda: payouts(off=True),
     'web-creators-invite': lambda: onboarding('invite'),
     'web-creators-done': lambda: onboarding('done'),
     'web-creators-stats': stats,
