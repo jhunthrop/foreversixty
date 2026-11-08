@@ -173,6 +173,30 @@ describe("hiding one's own Forever Score", function()
 			.export.score_visible)
 	end)
 
+	-- The API, the companion and the addon each pin docs/contracts/fixtures/inbox-own-score.json.
+	it("reads the shared own_score fixture as a record", function()
+		local json = require("dkjson")
+		local text
+		for _, root in ipairs({ "../docs/contracts/fixtures/", "docs/contracts/fixtures/" }) do
+			local file = io.open(root .. "inbox-own-score.json", "rb")
+			if file then
+				text = file:read("a")
+				file:close()
+				break
+			end
+		end
+		assert(text, "no inbox-own-score.json fixture")
+		local message = json.decode(text)
+		local Score = helper.load("Score")
+		local record = Score.ownRecord({ format = 2, messages = { message } }, message.character)
+		assert.are.equal(message.score, record.score)
+		assert.are.equal(message.tier, record.tier)
+		assert.are.equal(message.as_of, record.as_of)
+		for _, part in ipairs({ "gear", "experience", "parses", "attendance", "discipline" }) do
+			assert.are.equal(message[part], record.components[part], part)
+		end
+	end)
+
 	it("reads the player's own score from the inbox's own_score when the Data addon leaves them out", function()
 		local Score = helper.load("Score")
 		local inbox = { format = 2, messages = { { type = "own_score", character = "us/normal/bow", score = 1240,
