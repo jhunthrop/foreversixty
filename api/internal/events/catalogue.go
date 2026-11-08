@@ -37,6 +37,7 @@ const (
 	GameMilestone   Kind = "game.milestone"
 	GuildSimPassed  Kind = "guildsim.passed"
 	TierMoved       Kind = "tier.moved"
+	GuildApplicant  Kind = "guild.applicant"
 )
 
 // Channel is one way a notification reaches a player.
@@ -114,6 +115,8 @@ var Catalogue = []Spec{
 	{Kind: GuildSimPassed, Who: WhoPlayer, DefaultOn: false},
 	// tier.moved is the weekly tier move to a spec's mains, the Tiers group, off by default.
 	{Kind: TierMoved, Who: WhoPlayer, DefaultOn: false},
+	// guild.applicant tells the officers someone applied (spec 2026-11-08-app-flows F3).
+	{Kind: GuildApplicant, Who: WhoOfficers, DefaultOn: true, Officer: true},
 }
 
 // Lookup is kind's catalogue entry; ok is false for a kind the catalogue does not name.

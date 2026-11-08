@@ -88,6 +88,8 @@ type Service struct {
 	Coach RaidNightCoach
 	// Scores reads the applicant sheet's Forever Score; nil leaves it null.
 	Scores ApplicantScorer
+	// SimsRanks reads the raid badge's sims_rank (activity.Home); nil leaves it null.
+	SimsRanks SimsRanker
 	// Nudges finds who a raid-day nudge goes to and when (events.Store); nil sends no nudge.
 	Nudges NudgeReader
 	// AppSignups (APP_NOTIFICATIONS_ENABLED) lets a signed-in app's token answer the sign-up
