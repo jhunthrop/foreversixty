@@ -28,7 +28,8 @@ CHARACTER_CSS = '''
 .gold-link{color:var(--gold);font-weight:600}
 .answer-col{display:flex;flex-direction:column;gap:8px}
 .answer-col .links{display:flex;gap:16px;flex-wrap:wrap}
-.score-line{display:flex;align-items:center;gap:12px;margin-top:8px}
+.score-line{display:flex;align-items:center;gap:12px;margin-top:8px}.score-line .t-small{white-space:nowrap}
+.blk.score-bars .tally{grid-template-columns:minmax(0,1fr)}
 .ck{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;font-weight:700}
 .ck.ok{color:var(--kill)}.ck.miss{color:var(--wipe)}
 .dot{display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--muted)}.dot.kill{background:var(--kill)}.dot.wipe{background:var(--wipe)}
@@ -159,10 +160,10 @@ def score_section() -> str:
     figs = ('<div class="figs" style="--c:3">' + Figure('1,830', 'Score') + Figure('Epic', 'Tier', tone='epic')
             + Figure('65', 'Rating', ' of 100') + '</div>')
     line = f'<div class="score-line"><span class="t-small">As of 5 Nov</span>{Spark(SCORE_HISTORY, "#a335ee")}</div>'
-    bars = Tally([('', label, have, want, f'{have} / {want}') for label, have, want in SCORE_PARTS])
+    bars = Tally([('', label, have, want) for label, have, want in SCORE_PARTS])
     most = f'<p class="t-small" style="margin-top:12px">Most to gain: Experience, 180 points to the top. {link("How it is scored")}</p>'
     parts = Disclosure('Score parts', Rows([Row(n, f'{h} of {w}', link=False, slim=True) for n, h, w in SCORE_PARTS], open_=True))
-    return Section('Forever Score', figs + line + f'<div class="blk">{bars}</div>' + most + parts)
+    return Section('Forever Score', figs + line + f'<div class="blk score-bars">{bars}</div>' + most + parts)
 
 
 def best_section(unit: str) -> str:
