@@ -74,6 +74,12 @@ class PlannerAccessibilityTest {
         assertEquals(listOf(convection.id), removed)
     }
 
+    @Test fun `the status line's minus removes a point from the selected talent`() {
+        show(touched = convection.id)
+        compose.onNodeWithContentDescription("Remove a point").performClick()
+        assertEquals(listOf(convection.id), removed)
+    }
+
     @Test fun `the status line's talent opens the rank sheet`() {
         show(touched = convection.id)
         compose.onNodeWithText("${convection.name} 0/5").performClick()

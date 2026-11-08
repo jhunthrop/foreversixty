@@ -30,7 +30,7 @@ const val PLANNER_LARGE_TEXT = 1.5f
 fun isLargeText(): Boolean = LocalDensity.current.fontScale >= PLANNER_LARGE_TEXT
 
 /**
- * The level sheet's round `−` and `+` (48). [dimmed] draws it at 40% while it stays tappable; a
+ * The round `−` and `+` (48): the level sheet's, and the plate status line's `−` for the selected talent. [dimmed] draws it at 40% while it stays tappable; a
  * disabled one is dimmed and inert.
  */
 @Composable

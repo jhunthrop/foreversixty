@@ -3,8 +3,10 @@ package gg.foreversixty.app.planner.ui
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.focusable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,6 +19,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.input.key.Key
@@ -255,17 +258,24 @@ private fun StatusLine(view: EditorView, tree: Int, actions: EditorActions) {
     val strip = PlannerCells.strip(view.index, view.state, tree)?.takeIf { view.state.touched != null } ?: return
     val refusal = strip.refusal?.let(PlannerCopy(LocalResources.current)::refusal)
     val text = refusal ?: "${strip.talent.name} ${stringResource(R.string.plan_rank, strip.rank, strip.talent.maxRank)}"
-    Text(
-        text,
-        style = STATUS,
-        color = if (refusal != null) FsColor.wipe else FsColor.strong,
-        maxLines = 2,
-        overflow = TextOverflow.Ellipsis,
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(role = Role.Button) { actions.openTalent(strip.talent.id) }
-            .semantics { liveRegion = LiveRegionMode.Polite },
-    )
+    // Removing a point stays visible (coordinator ruling): `−` beside the rank, as well as the long press.
+    Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(FsSpace.space3)) {
+        Text(
+            text,
+            style = STATUS,
+            color = if (refusal != null) FsColor.wipe else FsColor.strong,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier
+                .weight(1f)
+                .clickable(role = Role.Button) { actions.openTalent(strip.talent.id) }
+                .semantics { liveRegion = LiveRegionMode.Polite },
+        )
+        StepButton(
+            painterResource(R.drawable.ic_minus), stringResource(R.string.plan_removePoint), enabled = true,
+            onClick = { actions.remove(strip.talent.id) }, dimmed = !strip.canRemove,
+        )
+    }
 }
 
 /** The arrows move the status line's talent, `+` and `−` add and remove (hardware keyboard). */
