@@ -1,5 +1,12 @@
 # Forever Sixty
 
+## 2.0.37
+
+- The line beside the minimap is easier to find: it always has words ("Next talent at 25", or "Forever Sixty" when there is nothing to do) and never fades. On your first logins a gold ring breathes around it a few times until you hover or click it.
+- Raid day: from the evening before, the line leads with your raid, "Tonight 8:00 pm: Onyxia's Lair". Click it for your raid jobs.
+- Its hover is two short lines: what a click does and how to hide it.
+- Settings: "Tooltips only" turns off everything but the tooltip lines in one step. The bag and character pane marks have their own switch. The minimap button is off on a new install (your choice is kept if you set it).
+
 ## 2.0.36
 
 - Cleaner tooltips: one line under the item says what it means for you ("Upgrade +2.2 DPS" behind the green arrow, "Your best in slot", "Sidegrade"), with at most one line under it. Hold Shift for the details: what the number is made of, other good choices, and where the weights came from.

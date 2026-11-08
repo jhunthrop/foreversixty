@@ -709,6 +709,17 @@ function Compat.clockText(hour, minute)
 	return string.format(L.timeTwelve, shown, minute, hour >= 12 and L.timePm or L.timeAm)
 end
 
+--- The client's local date and time for epoch `seconds` (`date("*t", ...)`: hour, min, ...), or
+--- nil where the client has no date function or `seconds` is not a number.
+function Compat.localTime(seconds)
+	local dateFn = Compat.clientGlobal("date", "function") or (type(os) == "table" and os.date or nil)
+	if type(seconds) ~= "number" or dateFn == nil then
+		return nil
+	end
+	local ok, stamp = pcall(dateFn, "*t", seconds)
+	return ok and type(stamp) == "table" and stamp or nil
+end
+
 --- "18:21" (the export's own wall time) as Compat.clockText prints it; the text itself when it
 --- is not a 24-hour "HH:MM".
 function Compat.clockOf(text)

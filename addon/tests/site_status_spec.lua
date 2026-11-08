@@ -583,7 +583,10 @@ describe("what the site has and what the inbox holds", function()
 			assert.are.equal("idle", model.chosen.kind)
 			assert.are.equal("inbox", model.chosen.action)
 			local joined = table.concat(Chip.tooltipLines(model), "\n")
-			assert.is_truthy(joined:find("A build from the site is waiting. Click to open.", 1, true))
+			assert.is_truthy(joined:find(L.chipHintBuildWindow, 1, true))
+			-- The long form leads the hover when the chip had to shorten its line.
+			assert.is_truthy(table.concat(Chip.tooltipLines(model, true), "\n")
+				:find("A build from the site is waiting. Click to open.", 1, true))
 			assert.are.equal("A build from the site is waiting. Click to open.", L.chipInboxWaiting)
 		end)
 

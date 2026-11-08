@@ -260,10 +260,11 @@ describe("the idle chip's words", function()
 		assert.are.equal(L.chipIdleInbox, chosen.text)
 	end)
 
-	it("stays the class icon alone, dimmed, for a finished build with nothing to say", function()
+	-- design/specs/2026-11-08-addon-ux.md 3.2: never an icon without words, never dimmed.
+	it("says Forever Sixty at full opacity for a finished build with nothing to say", function()
 		local model = Chip.model(idleInputs({ progress = { matched = 3, total = 3 }, pointName = false }))
-		assert.are.equal("", model.chosen.text)
-		assert.are.equal(Chip.IDLE_ALPHA, model.iconAlpha)
+		assert.are.equal(L.addonName, model.chosen.text)
+		assert.are.equal(1, model.iconAlpha)
 	end)
 
 	it("is cut to fit like every other line when the talent's name is long", function()

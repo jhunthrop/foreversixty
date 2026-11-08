@@ -28,8 +28,10 @@ local Progress = ns.Progress or require("Progress")
 local Score = ns.Score or require("Score")
 local TalentGlow = ns.TalentGlow or require("TalentGlow")
 local ItemTooltip = ns.ItemTooltip or require("ItemTooltip")
+local RaidAssign = ns.RaidAssign or require("RaidAssign")
 
 local Chip = {}
+
 
 Chip.FRAME_NAME = "ForeverSixtyChip"
 Chip.CARD_NAME = "ForeverSixtyChipPath"
@@ -44,10 +46,22 @@ Chip.RAID_CHECK_OPEN = 120
 Chip.RAID_CHECK_AFTER = 30
 --- Days a logged raid stays worth a "last night" line.
 Chip.LAST_RAID_DAYS = 14
---- The idle chip's icon alpha (the chip itself stays opaque), and the
---- chip's alpha in combat when it stays shown.
-Chip.IDLE_ALPHA = 0.4
+--- The chip's alpha in combat when it stays shown. Out of combat the chip and its icon are at full
+--- opacity in every state (design/specs/2026-11-08-addon-ux.md 3.2: the dimmed idle icon is why the
+--- owner missed it).
 Chip.COMBAT_ALPHA = 0.25
+--- The first-run pulse (spec 3.2): a gold ring breathing 0.3 to 1.0 and back over PULSE_SECONDS,
+--- PULSE_CYCLES times after each login, until the chip is first clicked or hovered
+--- (ForeverSixtyDB.chipSeenAt), giving up after PULSE_LOGINS logins (ForeverSixtyDB.chipPulses).
+Chip.PULSE_SECONDS = 1.6
+Chip.PULSE_CYCLES = 5
+Chip.PULSE_LOGINS = 3
+Chip.PULSE_LOW = 0.3
+--- The raid-day state (spec 3.2): from this long before a raid's start (and until
+--- RaidAssign.SHOWN_FOR_SECONDS after it) the raid leads the chip; once the panel has been opened
+--- that day it drops back to normal priority until RAID_URGENT_SECONDS before the pull.
+Chip.RAID_LEAD_SECONDS = 18 * 60 * 60
+Chip.RAID_URGENT_SECONDS = 60 * 60
 --- The level cap: a right-click there hides the chip until /fs chip.
 Chip.MAX_LEVEL = 60
 --- Where the chip goes on a client with no minimap frame to sit beside.
@@ -60,9 +74,6 @@ Chip.FRAME_LEVEL = 100
 --- to its own refreshSurfaces, so the talent marks follow the new build too.
 Chip.afterChoice = nil
 
---- Injection point: whether the paper-doll and bag marks are drawing (surfaces/SlotMarks.lua
---- sets it); the chip's hover carries their legend only then. nil: no legend.
-Chip.marksShown = nil
 
 --- Item ids whose names the chip is waiting on; GET_ITEM_INFO_RECEIVED for
 --- one of them redraws it.
@@ -437,11 +448,55 @@ local function completeState(input)
 	}
 end
 
+--- The raid the chip leads with (spec 3.2): RaidAssign.tonight's raid ({ raid, start, ... }) while
+--- `now` is within RAID_LEAD_SECONDS before its start and SHOWN_FOR_SECONDS after it. `seenAt`
+--- (the panel opened that day, epoch seconds) drops it to normal priority until
+--- RAID_URGENT_SECONDS before the pull: answers the state and whether it is demoted. Pure.
+function Chip.raidDay(tonight, now, seenAt)
+	if type(tonight) ~= "table" or type(tonight.start) ~= "number" or type(now) ~= "number" then
+		return nil
+	end
+	if now < tonight.start - Chip.RAID_LEAD_SECONDS
+		or now > tonight.start + RaidAssign.SHOWN_FOR_SECONDS then
+		return nil
+	end
+	local demoted = type(seenAt) == "number" and seenAt >= tonight.start - Chip.RAID_LEAD_SECONDS
+		and now < tonight.start - Chip.RAID_URGENT_SECONDS
+	return demoted
+end
+
+--- "Tonight 8:00 pm: Onyxia's Lair", the client's own clock for the start (Compat.clockText).
+local function raidText(tonight)
+	local stamp = Compat.localTime(tonight.start)
+	local clock = stamp ~= nil and Compat.clockText(stamp.hour, stamp.min) or ""
+	return string.format(L.chipTonight, clock, tonight.raid or "")
+end
+
+--- The raid-day state, at the top (or, demoted, after the actionable states).
+local function raidState(input, demotedWanted)
+	local demoted = Chip.raidDay(input.tonight, input.clock, input.raidSeenAt)
+	if demoted == nil or demoted ~= demotedWanted then
+		return nil
+	end
+	return {
+		kind = "raid", icon = input.classIcon, text = raidText(input.tonight), short = input.tonight.raid,
+		action = "raidjobs", hint = L.chipHintRaidJobs,
+	}
+end
+
+local function raidTopState(input)
+	return raidState(input, false)
+end
+
+local function raidLaterState(input)
+	return raidState(input, true)
+end
+
 --- Every state, highest first (spec section 4.1, with "pick a path" and the
 --- below-10 next talent above the point, spec section 5.1).
 Chip.STATES = {
-	pathState, nextState, pointState, lootState, upgradeState, hereState, raidCheckState, lastNightState,
-	completeState,
+	raidTopState, pathState, nextState, pointState, lootState, upgradeState, hereState, raidCheckState,
+	lastNightState, raidLaterState, completeState,
 }
 
 --- The idle chip (A.1): what is true when nothing else is. With a build followed and its next talent
@@ -459,13 +514,13 @@ local function idleState(input)
 	if point == nil and (input.unspent or 0) == 0 and type(input.nextLevel) == "number" and input.progress ~= nil
 		and input.progress.total ~= nil and input.progress.total > 0 then
 		-- The plan has no point left but the level will bring one (a 15-point build at level 24): the
-		-- line says so and stays, "Build complete · next point at level 25" (A.2). At the cap, the icon alone.
+		-- line says so and stays, "Build complete · next point at level 25" (A.2).
 		idle.text = string.format(L.chipCompleteNext, input.nextLevel)
 		idle.muted = true
 		return idle
 	end
 	if point ~= nil and input.pointName == nil and (input.unspent or 0) == 0 and type(input.nextLevel) == "number" then
-		-- A next talent the data cannot name: the level alone.
+		-- A next talent the data cannot name: the level alone, "Next talent at 25".
 		idle.text = string.format(L.chipNextTalentAtUnnamed, input.nextLevel)
 		idle.muted = true
 		return idle
@@ -479,7 +534,10 @@ local function idleState(input)
 			idle.text = string.format(L.talentStripNextTalent, label)
 		end
 		idle.muted = true
+		return idle
 	end
+	-- Nothing to do (a finished build at the cap): never an icon without words (spec 3.2).
+	idle.text, idle.muted = L.addonName, true
 	return idle
 end
 
@@ -521,7 +579,8 @@ function Chip.model(input)
 	local inboxWaiting = input.build == nil and (input.inboxWaiting or 0) > 0 and states[1] == nil
 	local chosen = states[1] or idleState(input)
 	if inboxWaiting then
-		chosen = { kind = "idle", icon = input.classIcon, text = L.chipIdleInbox, action = "inbox" }
+		chosen = { kind = "idle", icon = input.classIcon, text = L.chipIdleInbox, action = "inbox",
+			hint = L.chipHintBuildWindow, tip = L.chipInboxWaiting }
 	end
 	local hiddenByLevel = input.hiddenUntilLevel ~= nil and (input.level or 0) < input.hiddenUntilLevel
 	local hiddenBy
@@ -544,7 +603,7 @@ function Chip.model(input)
 		states = states,
 		chosen = chosen,
 		buildName = input.buildName,
-		marksLegend = input.marksLegend == true,
+		level = input.level,
 		inboxWaiting = inboxWaiting,
 		waiting = waiting,
 		nextLine = nextLine(input),
@@ -552,8 +611,7 @@ function Chip.model(input)
 		visible = hiddenBy == nil,
 		hiddenBy = hiddenBy,
 		alpha = input.inCombat and Chip.COMBAT_ALPHA or 1,
-		-- Dimmed only on a chip at full alpha: never 40 % inside the 25 % combat fade.
-		iconAlpha = (chosen.kind == "idle" and chosen.text == "" and not input.inCombat) and Chip.IDLE_ALPHA or 1,
+		iconAlpha = 1,
 		mouse = not input.inCombat,
 		ring = chosen.ring == true,
 	}
@@ -564,58 +622,28 @@ local function hinted(text)
 	return string.format("|cff%s%s|r", Theme.dimHex("muted", Theme.ALPHA.hint), text)
 end
 
---- A legend line: its key words (`key`, the line's leading text) in `hexKey`'s colour and
---- the rest muted, as separate colour runs (the client does not nest them); the whole
---- line muted when it does not start with `key`.
-local function legendLine(hexKey, key, line)
-	if type(key) ~= "string" or key == "" or line:sub(1, #key) ~= key then
-		return colored("muted", line)
+--- The right-click hint: "Right-click: hide until level 25", at the cap "Right-click: hide until
+--- /fs chip".
+function Chip.rightClickHint(level)
+	local untilLevel = Chip.hideFor(level)
+	if untilLevel == 0 then
+		return L.chipRightHideCap
 	end
-	return colored(hexKey, key) .. colored("muted", line:sub(#key + 1))
+	return string.format(L.chipRightHideLevel, untilLevel)
 end
 
---- The hover for a model: "Forever Sixty" in gold, then the build in force muted; one line per state in
---- priority order, the shown one first, in body colour (a muted state
---- muted, in its fuller `tip` form); the muted next-talent line; a gap; then
---- the dimmer hints: what a click does on the shown state (every state has
---- one, idle too), the right-click and the shift-drag.
-function Chip.tooltipLines(model)
-	-- L3.8: the build in force names itself after the addon, muted ("Forever Sixty · Marksmanship
-	-- leveling", the item tooltip's own header form), so even the idle chip says a build is followed.
-	local header = colored("gold", L.addonName)
-	if model.buildName ~= nil then
-		header = header .. colored("muted", L.exportTreeSeparator .. model.buildName)
+--- The hover for a model (spec 3.2): two dim lines, what a click does and how to hide the chip;
+--- the chip's own line first only when the chip had to shorten it (`shortened`). The build, the
+--- other states, the legend and the move hint live in the panel, the welcome and Settings.
+function Chip.tooltipLines(model, shortened)
+	local lines = {}
+	if shortened and model.chosen.text ~= nil and model.chosen.text ~= "" then
+		lines[1] = colored(model.chosen.muted and "muted" or "body", model.chosen.tip or model.chosen.text)
 	end
-	local lines = { header }
-	for _, state in ipairs(model.states) do
-		lines[#lines + 1] = colored(state.muted and "muted" or "body", state.tip or state.text)
-		if state.tipExtra ~= nil then
-			lines[#lines + 1] = colored("muted", state.tipExtra)
-		end
-	end
-	if model.inboxWaiting then
-		lines[#lines + 1] = colored("body", L.chipInboxWaiting)
-	end
-	if model.nextLine ~= nil then
-		lines[#lines + 1] = colored("muted", model.nextLine)
-	end
-	-- Hotfix 2.0.2: below the spec's first gear band, where the gear picks begin.
-	if model.picksStart ~= nil then
-		lines[#lines + 1] = colored("muted", string.format(L.chipHintPicksStart, model.picksStart))
-	end
-	-- What the paper doll's and the bags' marks mean, while they are on (L4.1 fix round 5);
-	-- each key word in its mark's colour, the arrow's upgrade green and the corner's gold
-	-- (fix round 7).
-	if model.marksLegend then
-		lines[#lines + 1] = legendLine("success", L.chipMarksLegendArrowKey, L.chipMarksLegendArrow)
-		lines[#lines + 1] = legendLine("gold", L.chipMarksLegendCornerKey, L.chipMarksLegendCorner)
-	end
-	lines[#lines + 1] = " "
 	if model.chosen.hint ~= nil then
 		lines[#lines + 1] = hinted(model.chosen.hint)
 	end
-	lines[#lines + 1] = hinted(string.format(L.chipRightClick, L.chipHideUntilLevel))
-	lines[#lines + 1] = hinted(L.chipShiftDrag)
+	lines[#lines + 1] = hinted(Chip.rightClickHint(model.level))
 	return lines
 end
 
@@ -991,9 +1019,9 @@ function Chip.inputs(data)
 		healing = type(perSpec) == "table" and perSpec.healing == true,
 		-- The marks stand in for the chip only while they are drawn (TalentMarks sets windowMarks).
 		talentsOpen = TalentGlow.openFrame() ~= nil and (Chip.windowMarks == nil or Chip.windowMarks()),
-		-- The legend follows the slot marks themselves (L4.1 fix rounds 5-6): off with "Gear tips on
-		-- item tooltips", and off once the marks have turned themselves off (Chip.marksShown).
-		marksLegend = Chip.marksShown ~= nil and Chip.marksShown() == true or false,
+		-- The raid the chip leads with on raid day, and when the panel was opened that day.
+		tonight = RaidAssign.tonight(ForeverSixtyInbox, Export.characterKey(), Score.clock()),
+		raidSeenAt = Chip.raidSeenAt,
 		-- Builds from the site waiting in the inbox (X.3): the idle chip says so while none is followed.
 		inboxWaiting = build == nil and Chip.inboxWaiting(data) or 0,
 	}
@@ -1127,12 +1155,17 @@ function Chip.handlerFor(chosen)
 		return Chip.openInbox
 	elseif action == "path" then
 		return Chip.togglePath
+	elseif action == "raidjobs" then
+		return function()
+			Theme.say(RaidAssign.command(ForeverSixtyInbox, Export.characterKey(), RaidAssign.now()))
+		end
 	end
 	return nil
 end
 
 function Chip.onClick(_, mouseButton)
 	Theme.hideTooltip()
+	Chip.markSeen()
 	if mouseButton == "RightButton" then
 		Theme.say(Chip.hideUntilNextLevel())
 		return
@@ -1198,6 +1231,7 @@ function Chip.setCombat(inCombat)
 	Chip.combat = inCombat == true
 	if Chip.combat then
 		Chip.closePath()
+		Chip.stopPulse()
 	end
 end
 
@@ -1488,8 +1522,10 @@ function Chip.ensure()
 	frame:SetScript("OnClick", Chip.onClick)
 	frame:SetScript("OnEnter", function(self)
 		Chip.paintEdge(true)
+		Chip.markSeen()
 		if Chip.current ~= nil then
-			Theme.showLines(self, Chip.tooltipLines(Chip.current), "ANCHOR_BOTTOMLEFT")
+			local shortened = Chip.lastDraw ~= nil and Chip.lastDraw.shortened or false
+			Theme.showLines(self, Chip.tooltipLines(Chip.current, shortened), "ANCHOR_BOTTOMLEFT")
 		end
 	end)
 	frame:SetScript("OnLeave", function()
@@ -1518,19 +1554,104 @@ function Chip.ensure()
 	return frame
 end
 
---- The chip's edge: the border colour, except the idle chip's, which is the
---- muted colour at Theme.ALPHA.idleEdge until the cursor is over it.
-function Chip.paintEdge(hovered)
+--- The chip's edge: the border colour in every state (spec 3.2: full opacity, the idle chip too).
+function Chip.paintEdge(_hovered)
 	if Chip.edges == nil then
 		return
 	end
-	local idle = Chip.current ~= nil and Chip.current.chosen.kind == "idle"
 	for _, edge in ipairs(Chip.edges) do
-		if idle and not hovered then
-			Theme.paint(edge, "muted", Theme.ALPHA.idleEdge)
-		else
-			Theme.paint(edge, "border")
+		Theme.paint(edge, "border")
+	end
+end
+
+-- The first-run pulse (spec 3.2) ------------------------------------------------------------
+
+--- Whether the first-run pulse plays now: the chip never clicked or hovered on this account
+--- (`db.chipSeenAt` unset), fewer than PULSE_LOGINS logins pulsed already, not this session yet,
+--- not in combat and the chip on screen. Pure.
+function Chip.pulseDue(db, inCombat, visible, playedThisSession)
+	if type(db) ~= "table" or db.chipSeenAt ~= nil or playedThisSession or inCombat or not visible then
+		return false
+	end
+	return (tonumber(db.chipPulses) or 0) < Chip.PULSE_LOGINS
+end
+
+--- The chip was clicked or hovered: the first-run pulse stops now and never plays again on the
+--- account.
+function Chip.markSeen()
+	if type(ForeverSixtyDB) == "table" and ForeverSixtyDB.chipSeenAt == nil then
+		ForeverSixtyDB.chipSeenAt = type(time) == "function" and time() or 0
+	end
+	Chip.stopPulse()
+end
+
+--- The gold ring round the whole chip, breathing through one AnimationGroup of 2 x PULSE_CYCLES
+--- ordered fades (0.3 to 1.0, then back, each PULSE_SECONDS / 2, eased in and out), which ends on
+--- its own and hides the ring (OnFinished): no OnUpdate, no timer. Built the first time it plays;
+--- nil on a client without animations, which shows no ring at all.
+local function pulseRing(frame)
+	if Chip.pulseFrame ~= nil then
+		return Chip.pulseFrame
+	end
+	if type(frame.CreateAnimationGroup) ~= "function" then
+		return nil
+	end
+	local S = Theme.SIZES
+	local ring = CreateFrame("Frame", nil, frame)
+	Theme.noteFrame("Chip first-run pulse", "the first login before the chip is clicked")
+	ring:SetPoint("TOPLEFT", frame, "TOPLEFT", -S.chipRingInset, S.chipRingInset)
+	ring:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", S.chipRingInset, -S.chipRingInset)
+	Theme.outline(ring, S.chipRingThickness, "clientGold")
+	local group = type(ring.CreateAnimationGroup) == "function" and ring:CreateAnimationGroup() or nil
+	if type(group) ~= "table" or type(group.CreateAnimation) ~= "function" then
+		return nil
+	end
+	for step = 1, Chip.PULSE_CYCLES * 2 do
+		local fade = group:CreateAnimation("Alpha")
+		local rising = step % 2 == 1
+		fade:SetFromAlpha(rising and Chip.PULSE_LOW or 1)
+		fade:SetToAlpha(rising and 1 or Chip.PULSE_LOW)
+		fade:SetDuration(Chip.PULSE_SECONDS / 2)
+		fade:SetOrder(step)
+		if type(fade.SetSmoothing) == "function" then
+			fade:SetSmoothing("IN_OUT")
 		end
+	end
+	group:SetScript("OnFinished", function()
+		ring:Hide()
+	end)
+	ring:Hide()
+	Chip.pulseFrame, Chip.pulseGroup = ring, group
+	return ring
+end
+
+--- Plays the first-run pulse once this session when it is due (Chip.pulseDue), counting the
+--- login; it ends by itself after PULSE_CYCLES breaths. True when it started.
+function Chip.startPulse(model)
+	local db = ForeverSixtyDB
+	if Chip.frame == nil or not Chip.pulseDue(db, model ~= nil and model.alpha < 1, Chip.frame:IsShown(),
+		Chip.pulsedThisSession) then
+		return false
+	end
+	local ring = pulseRing(Chip.frame)
+	if ring == nil then
+		return false
+	end
+	Chip.pulsedThisSession = true
+	db.chipPulses = (tonumber(db.chipPulses) or 0) + 1
+	ring:Show()
+	Chip.pulseGroup:Play()
+	return true
+end
+
+--- Stops the first-run pulse and hides its ring (a click, a hover, combat or the chip hidden).
+function Chip.stopPulse()
+	if Chip.pulseGroup ~= nil then
+
+		Chip.pulseGroup:Stop()
+	end
+	if Chip.pulseFrame ~= nil then
+		Chip.pulseFrame:Hide()
 	end
 end
 
@@ -1664,6 +1785,7 @@ function Chip.refresh(data)
 	local state = Chip.state(data)
 	local model = Chip.current
 	if not model.visible or Chip.inCinematic then
+		Chip.stopPulse()
 		if Chip.frame ~= nil then
 			Chip.frame:Hide()
 		end
@@ -1672,6 +1794,7 @@ function Chip.refresh(data)
 		return state
 	end
 	draw(model)
+	Chip.startPulse(model)
 	noteLastNight(model, true)
 	Chip.selfCheck()
 	return state

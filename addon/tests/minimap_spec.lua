@@ -24,8 +24,26 @@ describe("Minimap", function()
 		Prefs = helper.load("Prefs")
 		Follow = helper.load("Follow")
 		Button = helper.load("Minimap")
+		-- The button is off for a new install (design/specs/2026-11-08-addon-ux.md 1.6); these
+		-- examples are about a player who turned it on.
+		Prefs.set("minimap", "shown", true)
 		return state
 	end
+
+	it("is off for a new install: the chip is the one door", function()
+		start()
+		assert.is_false(Prefs.DEFAULTS.minimap.shown)
+		_G.ForeverSixtyDB = nil
+		Prefs = helper.load("Prefs")
+		assert.is_false(Prefs.get("minimap", "shown"))
+	end)
+
+	it("keeps an existing install's saved choice", function()
+		start()
+		_G.ForeverSixtyDB = { ui = { minimap = { angle = 120, shown = true } } }
+		Prefs = helper.load("Prefs")
+		assert.is_true(Prefs.get("minimap", "shown"))
+	end)
 
 	after_each(function()
 		mock.uninstall()

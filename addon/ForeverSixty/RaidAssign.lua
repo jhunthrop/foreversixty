@@ -80,7 +80,22 @@ function RaidAssign.jobs(inbox, key, now)
 	return jobs
 end
 
+--- The character's next raid for the chip's raid-day line and the panel's Tonight region
+--- (design/specs/2026-11-08-addon-ux.md 3.2 and 4.3): { raid_id, raid, title, start } from its
+--- soonest assignment still on (RaidAssign.jobs), or nil with none. Until the inbox carries
+--- `raid_signup`, an assignment is the only sign of a raid (it is sent only to In, Late or Bench).
+function RaidAssign.tonight(inbox, key, now)
+	local jobs = RaidAssign.jobs(inbox, key, now)
+	local first = jobs[1]
+	if first == nil then
+		return nil
+	end
+	return { raid_id = first.raid_id, raid = first.raid, title = first.title,
+		start = RaidAssign.epochOf(first.starts_at), jobs = jobs }
+end
+
 --- One line per job, under a header naming the raid: "Main tank with Thornhide: Picks her up...".
+
 function RaidAssign.lines(jobs)
 	local first = jobs[1]
 	if first == nil then

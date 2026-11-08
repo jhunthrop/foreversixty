@@ -42,7 +42,15 @@ Prefs.DEFAULTS = {
 	-- or none ("Marks on the talent window"; TalentMarks.enabled is the one reader).
 	talentMarks = true,
 	-- The minimap button: where it sits on the ring, and the "Show the minimap button" switch.
-	minimap = { angle = 200, shown = true },
+	-- Off for new installs (design/specs/2026-11-08-addon-ux.md 1.6: the chip is the one door); an install
+	-- that saved its choice keeps it.
+	minimap = { angle = 200, shown = false },
+	-- The green arrow and gold corner on the bags and the character pane ("Marks on your bags and
+	-- character pane"; SlotMarks.enabled is the one reader).
+	slotMarks = true,
+	-- "Tooltips only" (spec 3.3): on, it turned the chip, the talent marks and the slot marks off in one
+	-- step; each keeps its own switch afterwards.
+	tooltipsOnly = false,
 	-- On by default: the export written at logout is what feeds the
 	-- companion, and a player who installed the companion did not ask to
 	-- turn it on a second time.

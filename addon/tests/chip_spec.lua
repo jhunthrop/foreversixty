@@ -110,23 +110,22 @@ describe("Chip.model", function()
 		assert.are.equal("Improved Heroic Strike", model.chosen.short)
 		assert.are.equal(string.format(L.chipTake, Chip.pointLabel("Improved Heroic Strike", { have = 0, want = 3 })),
 			model.chosen.text)
-		local lines = Chip.tooltipLines(model)
-		assert.are.equal("|cffe9e4d8Take Improved Heroic Strike (1 of 3)|r", lines[2])
+		local lines = Chip.tooltipLines(model, true)
+		assert.are.equal("|cffe9e4d8Take Improved Heroic Strike (1 of 3)|r", lines[1])
 		local single = Chip.model(inputs({ level = 21, progress = pointAt(1, 21), unspent = 12,
 			pointName = "Anger Management", pointRank = { have = 0, want = 1 } }))
 		assert.are.equal("Take Anger Management", single.chosen.text)
 	end)
 
-	-- Fix round 2: idle keeps its dark ground and border at full alpha (the
-	-- 40 percent chip vanished over a bright roof); only the icon dims.
-	it("is idle with nothing to do: the class icon at 40 percent on a full-alpha chip, no text, no ring", function()
+	-- design/specs/2026-11-08-addon-ux.md 3.2: never an icon without words, always full opacity.
+	it("is idle with nothing to do: the class icon at full opacity and the words Forever Sixty, no ring", function()
 		local model = Chip.model(inputs())
 		assert.are.equal("idle", model.chosen.kind)
 		assert.are.equal(CLASS_ICON, model.chosen.icon)
-		assert.are.equal("", model.chosen.text)
+		assert.are.equal(L.addonName, model.chosen.text)
 		assert.is_false(model.ring)
 		assert.are.equal(1, model.alpha)
-		assert.are.equal(0.4, model.iconAlpha)
+		assert.are.equal(1, model.iconAlpha)
 		-- Fix round 3: a click on the idle chip opens the talent window.
 		assert.are.equal("talents", model.chosen.action)
 		assert.are.equal(L.chipHintTalents, model.chosen.hint)
@@ -332,15 +331,16 @@ describe("Chip.model", function()
 
 	it("words the hover in full, with the build's spec, a colon before the loss and the raid's date", function()
 		local build = { name = "Arms leveling", spec = "warrior-arms", order = { {}, {}, {} } }
-		local lines = Chip.tooltipLines(Chip.model(inputs({ lastRaid = LAST_RAID, build = build, buildSpec = build.spec })))
-		assert.are.equal("|cff" .. Theme.HEX.body .. "Lucifron: 71st percentile for Arms, biggest loss: downtime|r", lines[2])
-		assert.are.equal("|cff" .. Theme.HEX.muted .. "as of 8 Dec|r", lines[3])
+		-- The full form leads the hover when the chip had to shorten it (spec 3.2).
+		local lines = Chip.tooltipLines(Chip.model(inputs({ lastRaid = LAST_RAID, build = build, buildSpec = build.spec })),
+			true)
+		assert.are.equal("|cff" .. Theme.HEX.body .. "Lucifron: 71st percentile for Arms, biggest loss: downtime|r", lines[1])
 		-- No spec on the build: the spec words are left out; no loss: the loss is.
-		lines = Chip.tooltipLines(Chip.model(inputs({ lastRaid = LAST_RAID })))
-		assert.are.equal("|cff" .. Theme.HEX.body .. "Lucifron: 71st percentile, biggest loss: downtime|r", lines[2])
+		lines = Chip.tooltipLines(Chip.model(inputs({ lastRaid = LAST_RAID })), true)
+		assert.are.equal("|cff" .. Theme.HEX.body .. "Lucifron: 71st percentile, biggest loss: downtime|r", lines[1])
 		local bare = { date = "2026-12-08", bosses = { { name = "Lucifron", percentile = 71 } } }
-		lines = Chip.tooltipLines(Chip.model(inputs({ lastRaid = bare, build = build, buildSpec = build.spec })))
-		assert.are.equal("|cff" .. Theme.HEX.body .. "Lucifron: 71st percentile for Arms|r", lines[2])
+		lines = Chip.tooltipLines(Chip.model(inputs({ lastRaid = bare, build = build, buildSpec = build.spec })), true)
+		assert.are.equal("|cff" .. Theme.HEX.body .. "Lucifron: 71st percentile for Arms|r", lines[1])
 	end)
 
 	-- L5.3 fix rounds 3-4: a saved build has no `.spec`; Chip.inputs names the tree its order
@@ -369,7 +369,7 @@ describe("Chip.model", function()
 			Follow.build = build
 			local given = Chip.inputs(data)
 			given.lastRaid = LAST_RAID
-			return Chip.tooltipLines(Chip.model(given))[2], given
+			return Chip.tooltipLines(Chip.model(given), true)[1], given
 		end
 
 		it("names the tree a saved build's order weights, and keeps an explicit spec", function()
@@ -467,145 +467,56 @@ describe("Chip.model", function()
 end)
 
 describe("Chip.tooltipLines", function()
-	local function gold(text)
-		return "|cff" .. Theme.HEX.gold .. text .. "|r"
-	end
-	local function body(text)
-		return "|cff" .. Theme.HEX.body .. text .. "|r"
-	end
 	local function muted(text)
 		return "|cff" .. Theme.HEX.muted .. text .. "|r"
 	end
 
-	-- L4.1 fix round 5: what the paper doll's and the bags' marks mean, while they are on.
-	-- Fix round 6: two short lines, so the chip's tooltip (which never wraps) is not widened.
-	-- L4.1 fix round 7 (designer's tiers): the key words in the marks' own colours, "Green
-	-- arrow" in the arrow's upgrade green and "Gold corner" in the corner's gold, the rest muted.
-	it("carries the marks' legend as two lines while the marks are on, and not otherwise", function()
-		local arrow = "|cff" .. Theme.HEX.success .. L.chipMarksLegendArrowKey .. "|r"
-			.. muted(L.chipMarksLegendArrow:sub(#L.chipMarksLegendArrowKey + 1))
-		local corner = "|cff" .. Theme.HEX.gold .. L.chipMarksLegendCornerKey .. "|r"
-			.. muted(L.chipMarksLegendCorner:sub(#L.chipMarksLegendCornerKey + 1))
-		local on = Chip.tooltipLines(Chip.model(inputs({ marksLegend = true })))
-		local found
-		for index, line in ipairs(on) do
-			if line == arrow then
-				found = index
-			end
-		end
-		assert.is_not_nil(found)
-		assert.are.equal(corner, on[found + 1])
-		assert.are.equal(" ", on[found + 2])
-		for _, line in ipairs(Chip.tooltipLines(Chip.model(inputs({ marksLegend = false })))) do
-			assert.are_not.equal(arrow, line)
-			assert.are_not.equal(corner, line)
-		end
-		assert.are.equal("Green arrow", L.chipMarksLegendArrowKey)
-		assert.are.equal("Gold corner", L.chipMarksLegendCornerKey)
-		assert.are.equal("Green arrow: a bag item beats what you wear.", L.chipMarksLegendArrow)
-		assert.are.equal("Gold corner: next upgrade to chase.", L.chipMarksLegendCorner)
-		assert.are.equal("6fcf8e", Theme.HEX.success)
-		assert.are.equal("e5b955", Theme.HEX.gold)
-		-- Plain text no wider than 48 characters, so the chip's tooltip is not widened.
-		for _, line in ipairs({ on[found], on[found + 1] }) do
-			local plain = line:gsub("|c%x%x%x%x%x%x%x%x", ""):gsub("|r", "")
-			assert.is_true(#plain <= 48)
-		end
-		assert.is_nil(L.chipMarksLegend)
-	end)
 	-- Fix round 3: the hints sit one step dimmer than the muted info line.
 	local function hint(text)
 		return "|cff" .. Theme.dimHex("muted", Theme.ALPHA.hint) .. text .. "|r"
 	end
 
-	it("leads with the addon's name, lists every state, then the hints after a gap", function()
+	-- design/specs/2026-11-08-addon-ux.md 3.2: the hover is two dim lines, what a click does and how
+	-- to hide the chip; the chip's own line leads only when the chip had to shorten it.
+	it("is two dim lines: the click and the right-click", function()
 		local model = Chip.model(inputs({
 			level = 22, progress = pointAt(13, 22), unspent = 1, pointName = "Improved Tactical Mastery",
 			upgrades = { { name = "Belt", delta = 3, unit = "score" } },
 		}))
 		assert.are.same({
-			gold(L.addonName),
-			body("Take Improved Tactical Mastery"),
-			body("Equip Belt, +3 score"),
-			" ",
 			hint(L.chipHintTalents),
-			hint(string.format(L.chipRightClick, L.chipHideUntilLevel)),
-			hint(L.chipShiftDrag),
+			hint(string.format(L.chipRightHideLevel, 23)),
 		}, Chip.tooltipLines(model))
+		assert.are.equal("Right-click: hide until level 23", string.format(L.chipRightHideLevel, 23))
 	end)
 
-	-- L3.8: the build in force names itself on the first line, so even the idle chip says one is followed.
-	it("names the build in force after the addon's name, muted, on the idle chip too", function()
-		local model = Chip.model(inputs({ buildName = "Marksmanship leveling" }))
-		assert.are.equal("idle", model.chosen.kind)
-		assert.are.equal("", model.chosen.text)
-		assert.are.equal(gold(L.addonName) .. muted(" · Marksmanship leveling"), Chip.tooltipLines(model)[1])
-		assert.are.equal(gold(L.addonName), Chip.tooltipLines(Chip.model(inputs({ build = nil })))[1])
-	end)
-
-	it("adds the muted Next at line when the next point is not spendable yet", function()
-		local model = Chip.model(inputs({
-			level = 21, progress = pointAt(13, 22), pointName = "Improved Tactical Mastery",
-			upgrades = { { name = "Belt", delta = 3, unit = "score" } },
-		}))
-		local lines = Chip.tooltipLines(model)
-		assert.are.equal(body("Equip Belt, +3 score"), lines[2])
-		assert.are.equal(muted("Next talent at 22: Improved Tactical Mastery"), lines[3])
-		assert.are.equal(" ", lines[4])
-		assert.are.equal(hint(L.chipHintEquip), lines[5])
-	end)
-
-	-- Hotfix 2.0.2: from level 1 and below the spec's first gear band the hover says where the picks start.
-	it("adds the muted Gear picks start line below the first band, after the next talent", function()
-		local model = Chip.model(inputs({ level = 15, picksStart = 20, progress = pointAt(1, 15), unspent = 6,
-			pointName = "Improved Heroic Strike" }))
-		assert.are.equal("Gear picks start at level 20.", string.format(L.chipHintPicksStart, 20))
-		assert.are.equal(20, model.picksStart)
-		local lines = Chip.tooltipLines(model)
-		assert.are.equal(muted("Gear picks start at level 20."), lines[3])
-		assert.are.equal(" ", lines[4])
-		-- No upgrade or here-for-you state comes with it.
-		assert.are.same({ "point" }, kinds(model))
-		assert.is_nil(Chip.model(inputs({ level = 21 })).picksStart)
-		for _, line in ipairs(Chip.tooltipLines(Chip.model(inputs({ level = 21 })))) do
-			assert.is_nil(line:find("picks start", 1, true))
-		end
-	end)
-
-	it("says where the gear picks start at level 6, before any talent point", function()
-		local model = Chip.model(inputs({ level = 6, picksStart = 20 }))
-		assert.are.equal(20, model.picksStart)
-		local found = false
-		for _, line in ipairs(Chip.tooltipLines(model)) do
-			if line == muted(string.format(L.chipHintPicksStart, 20)) then
-				found = true
-			end
-		end
-		assert.is_true(found)
-	end)
-
-	it("shows the next talent and the idle click when that is all there is", function()
-		local next = Chip.model(inputs({ level = 21, progress = pointAt(13, 22), pointName = "Improved Tactical Mastery" }))
-		assert.are.same({
-			gold(L.addonName),
-			muted("Next talent at 22: Improved Tactical Mastery"),
-			" ",
-			hint(L.chipHintTalents),
-			hint(string.format(L.chipRightClick, L.chipHideUntilLevel)),
-			hint(L.chipShiftDrag),
-		}, Chip.tooltipLines(next))
-		assert.are.same({
-			gold(L.addonName),
-			" ",
-			hint(L.chipHintTalents),
-			hint(string.format(L.chipRightClick, L.chipHideUntilLevel)),
-			hint(L.chipShiftDrag),
-		}, Chip.tooltipLines(Chip.model(inputs())))
-	end)
-
-	it("puts the long next-talent line in the hover for the short one on the chip", function()
+	it("leads with the chip's own line in full only when the chip shortened it", function()
 		local model = Chip.model(inputs({ level = 9, progress = pointAt(1, 10), pointName = "Improved Heroic Strike" }))
-		assert.are.equal(muted("Next talent at 10: Improved Heroic Strike"), Chip.tooltipLines(model)[2])
+		local lines = Chip.tooltipLines(model, true)
+		assert.are.equal(muted(model.chosen.tip or model.chosen.text), lines[1])
+		assert.are.equal(3, #lines)
+		assert.are.equal(2, #Chip.tooltipLines(model, false))
+	end)
+
+	it("says hide until /fs chip at the level cap", function()
+		local lines = Chip.tooltipLines(Chip.model(inputs({ level = 60 })))
+		assert.are.equal(hint(L.chipRightHideCap), lines[#lines])
+		assert.are.equal("Right-click: hide until /fs chip", L.chipRightHideCap)
+	end)
+
+	it("carries no build header, no state list, no legend and no move hint", function()
+		local model = Chip.model(inputs({ buildName = "Marksmanship leveling", level = 15, picksStart = 20,
+			progress = pointAt(1, 15), unspent = 6, pointName = "Improved Heroic Strike",
+			upgrades = { { name = "Belt", delta = 3, unit = "score" } } }))
+		for _, line in ipairs(Chip.tooltipLines(model, true)) do
+			assert.is_nil(line:find(L.addonName, 1, true))
+			assert.is_nil(line:find("Marksmanship leveling", 1, true))
+			assert.is_nil(line:find("Belt", 1, true))
+			assert.is_nil(line:find("Shift", 1, true))
+			assert.is_nil(line:find("arrow", 1, true))
+		end
+		assert.is_nil(L.chipMarksLegendArrow)
+		assert.is_nil(L.chipShiftDrag)
 	end)
 end)
 
@@ -1017,5 +928,107 @@ describe("the chip's words and numbers", function()
 			end
 			assert.is_true(words <= 8, slug .. ": " .. line)
 		end
+	end)
+end)
+
+-- design/specs/2026-11-08-addon-ux.md 3.2: the raid-day line leads the chip from 18 hours before a
+-- raid until six hours after its start; once the panel has been opened that day it drops back to
+-- normal priority until an hour before the pull.
+describe("Chip, the raid-day line", function()
+	local RaidAssign = require("RaidAssign")
+	local START = CLOCK + 3 * 3600
+	local TONIGHT = { raid_id = 42, raid = "Onyxia's Lair", start = START }
+	local UPGRADE = { { name = "Belt", delta = 3, unit = "score" } }
+
+	it("is due from RAID_LEAD_SECONDS before the start until SHOWN_FOR_SECONDS after it", function()
+		assert.are.equal(18 * 3600, Chip.RAID_LEAD_SECONDS)
+		assert.is_nil(Chip.raidDay(TONIGHT, START - Chip.RAID_LEAD_SECONDS - 1, nil))
+		assert.is_false(Chip.raidDay(TONIGHT, START - Chip.RAID_LEAD_SECONDS, nil))
+		assert.is_false(Chip.raidDay(TONIGHT, START + RaidAssign.SHOWN_FOR_SECONDS, nil))
+		assert.is_nil(Chip.raidDay(TONIGHT, START + RaidAssign.SHOWN_FOR_SECONDS + 1, nil))
+		assert.is_nil(Chip.raidDay(nil, START, nil))
+		assert.is_nil(Chip.raidDay({ raid = "Onyxia's Lair" }, START, nil))
+	end)
+
+	it("leads every other state, the raid named with its start on the client's clock", function()
+		local model = Chip.model(inputs({ tonight = TONIGHT, upgrades = UPGRADE }))
+		assert.are.equal("raid", model.chosen.kind)
+		local stamp = os.date("*t", START)
+		local clock = require("Compat").clockText(stamp.hour, stamp.min)
+		assert.are.equal(string.format(L.chipTonight, clock, "Onyxia's Lair"), model.chosen.text)
+		assert.are.equal("Onyxia's Lair", model.chosen.short)
+		assert.are.equal(L.chipHintRaidJobs, model.chosen.hint)
+		assert.are.equal("raidjobs", model.chosen.action)
+		assert.is_truthy(model.chosen.text:find("^Tonight "))
+	end)
+
+	it("drops to normal priority once the panel was opened that day, until an hour before the pull", function()
+		local seen = START - 5 * 3600
+		local model = Chip.model(inputs({ tonight = TONIGHT, raidSeenAt = seen, upgrades = UPGRADE }))
+		assert.are.same({ "upgrade", "raid" }, kinds(model))
+		local urgent = Chip.model(inputs({ tonight = TONIGHT, raidSeenAt = seen, upgrades = UPGRADE,
+			clock = START - Chip.RAID_URGENT_SECONDS }))
+		assert.are.equal("raid", urgent.chosen.kind)
+		-- A look at the panel the day before does not count.
+		local yesterday = Chip.model(inputs({ tonight = TONIGHT, raidSeenAt = START - 30 * 3600, upgrades = UPGRADE }))
+		assert.are.equal("raid", yesterday.chosen.kind)
+	end)
+
+	it("reads the soonest assignment still on from the inbox", function()
+		local key = "us/normal/obnoxious"
+		local inbox = { format = 2, messages = {
+			{ type = "raid_assignment", character = key, raid_id = 42, raid = "Onyxia's Lair",
+				starts_at = "2026-12-10T02:00:00Z", label = "Off tank" },
+			{ type = "raid_assignment", character = key, raid_id = 43, raid = "Molten Core",
+				starts_at = "2026-12-12T02:00:00Z", label = "Main tank" },
+		} }
+		local tonight = RaidAssign.tonight(inbox, key, RaidAssign.epochOf("2026-12-09T12:00:00Z"))
+		assert.are.equal(42, tonight.raid_id)
+		assert.are.equal("Onyxia's Lair", tonight.raid)
+		assert.are.equal(RaidAssign.epochOf("2026-12-10T02:00:00Z"), tonight.start)
+		assert.is_nil(RaidAssign.tonight({ format = 2, messages = {} }, key, 0))
+	end)
+end)
+
+-- design/specs/2026-11-08-addon-ux.md 3.2: five breaths after each login until the chip is first
+-- clicked or hovered, giving up after three logins, never in combat or while hidden.
+describe("Chip, the first-run pulse", function()
+	it("is due on an account that never clicked or hovered the chip, for three logins", function()
+		assert.is_true(Chip.pulseDue({}, false, true, false))
+		assert.is_true(Chip.pulseDue({ chipPulses = 2 }, false, true, false))
+		assert.is_false(Chip.pulseDue({ chipPulses = 3 }, false, true, false))
+		assert.is_false(Chip.pulseDue({ chipSeenAt = 1 }, false, true, false))
+	end)
+
+	it("never plays in combat, while the chip is hidden, twice a session or without the saved table", function()
+		assert.is_false(Chip.pulseDue({}, true, true, false))
+		assert.is_false(Chip.pulseDue({}, false, false, false))
+		assert.is_false(Chip.pulseDue({}, false, true, true))
+		assert.is_false(Chip.pulseDue(nil, false, true, false))
+	end)
+
+	it("breathes 0.3 to 1.0 and back over 1.6 s, five times", function()
+		assert.are.equal(0.3, Chip.PULSE_LOW)
+		assert.are.equal(1.6, Chip.PULSE_SECONDS)
+		assert.are.equal(5, Chip.PULSE_CYCLES)
+		assert.are.equal(3, Chip.PULSE_LOGINS)
+	end)
+
+	it("is stamped seen by a click or a hover, once", function()
+		local saved = _G.ForeverSixtyDB
+		_G.ForeverSixtyDB = {}
+		Chip.markSeen()
+		assert.is_number(_G.ForeverSixtyDB.chipSeenAt)
+		local first = _G.ForeverSixtyDB.chipSeenAt
+		Chip.markSeen()
+		assert.are.equal(first, _G.ForeverSixtyDB.chipSeenAt)
+		_G.ForeverSixtyDB = saved
+	end)
+end)
+
+describe("Chip.rightClickHint", function()
+	it("names the next level below the cap and /fs chip at it", function()
+		assert.are.equal(string.format(L.chipRightHideLevel, 25), Chip.rightClickHint(24))
+		assert.are.equal(L.chipRightHideCap, Chip.rightClickHint(60))
 	end)
 end)

@@ -25,15 +25,32 @@ describe("SettingsPage, the switches", function()
 		_G.ForeverSixtyDB = nil
 	end)
 
-	-- L4.4: the eighth, "Score badges in chat", after the tooltips (spec section 4.11).
-	-- L3.7 item 49: the ninth, "Ask the group about rare drops too", last.
-	it("lists nine switches in page order", function()
+	-- design/specs/2026-11-08-addon-ux.md 3.3: "Tooltips only" first, the slot marks after the talent marks.
+	it("lists eleven switches in page order, Tooltips only first", function()
 		local keys = {}
 		for index, switch in ipairs(SettingsPage.switches()) do
 			keys[index] = switch.key
 		end
-		assert.are.same({ "chip.shown", "chip.combatHide", "talentMarks", "minimap.shown", "tooltip", "badges",
-			"broadcast", "autoSave", "lootRares" }, keys)
+		assert.are.same({ "tooltipsOnly", "chip.shown", "chip.combatHide", "talentMarks", "slotMarks", "minimap.shown",
+			"tooltip", "badges", "broadcast", "autoSave", "lootRares" }, keys)
+	end)
+
+	it("turns the chip, the talent marks and the slot marks off in one step with Tooltips only", function()
+		assert.is_false(SettingsPage.defaultOf("tooltipsOnly"))
+		SettingsPage.apply("tooltipsOnly", true)
+		assert.is_true(Prefs.flag("tooltipsOnly"))
+		assert.is_false(Prefs.get("chip", "shown"))
+		assert.is_false(Prefs.flag("talentMarks"))
+		assert.is_false(Prefs.flag("slotMarks"))
+		assert.is_true(Prefs.flag("tooltip"))
+		-- Each keeps its own switch: one can come back alone.
+		SettingsPage.apply("talentMarks", true)
+		assert.is_true(Prefs.flag("talentMarks"))
+		assert.is_false(Prefs.get("chip", "shown"))
+		-- Turning it off changes nothing else.
+		SettingsPage.apply("tooltipsOnly", false)
+		assert.is_false(Prefs.get("chip", "shown"))
+		assert.is_false(Prefs.flag("slotMarks"))
 	end)
 
 	it("gives every switch a label, a hint and its default from Prefs.DEFAULTS", function()
@@ -55,15 +72,20 @@ describe("SettingsPage, the switches", function()
 			words[#words + 1] = { switch.label, switch.hint }
 		end
 		assert.are.same({
-			{ "Show the Forever Sixty line", "The small icon and line beside the minimap with your next step." },
+			{ "Tooltips only", "Keeps the gear and score lines on tooltips and turns off the line by the minimap, "
+				.. "the marks and the welcome." },
+			{ "Show the Forever Sixty line", "Your next step beside the minimap. Click it to open Forever Sixty. "
+				.. "Shift-drag moves it." },
 			{ "Hide the Forever Sixty line in combat", "On: the line hides when combat starts. Off: it stays, faded to 25%." },
 			{ "Marks on the talent window",
 				"Numbers your build's talents in order, rings the next one and adds a progress strip." },
+			{ "Marks on your bags and character pane", "A green arrow on gear that beats what you wear, and a gold "
+				.. "corner on a slot with an upgrade to chase." },
 			{ "Show the minimap button", "Left-click pastes or copies a build; right-click opens this page. "
 				.. "Off: type /fs options or use Options > AddOns." },
 			{ "Gear tips on item tooltips",
-				"Adds a line when an item is in your build or beats what you wear. "
-				.. "Off: hides player scores too." },
+				"One line on gear saying what it means for you; hold Shift for the details. "
+				.. "Off: hides player scores and the quest reward and loot roll marks too." },
 			{ "Score badges in chat",
 				"Shows a player's Forever Score before their message in LFG, Trade, guild chat and whispers." },
 			{ "Share my build with my guild",

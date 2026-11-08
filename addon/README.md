@@ -214,8 +214,11 @@ Run on one character per role and tick here:
       carries `defaultBuilds` (leveling below 60, raid at 60).
 - [ ] The tracker appears, drags, locks, and says "Build complete" at the end.
 - [ ] The talent window glows the next talent (record which mapping in row 22).
-- [ ] The minimap button shows the LX seal, drags around the ring, opens the build dialog on
-      a left click and the Settings page (Options > AddOns > Forever Sixty) on a right click.
+- [ ] The minimap button is off on a new install; turned on in Settings it shows the LX seal, drags
+      around the ring, opens the build dialog on a left click and the Settings page (Options > AddOns >
+      Forever Sixty) on a right click.
+- [ ] The chip always has words and full opacity; on an account that never clicked or hovered it, a
+      gold ring breathes round it five times after login (three logins at most), never in combat.
 - [ ] Logging out writes `ForeverSixtyDB.characters`, `savedAt` and `ForeverSixtyDB.outbox`
       (`format = 1`, an `export`, and a `roster_snapshot` when guilded and guildmates were
       heard); the companion picks it up. Turning auto-save off stops it.

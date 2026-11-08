@@ -471,7 +471,7 @@ local function visible(frame)
 end
 
 local function enabled()
-	return not SlotMarks.disabled and Prefs.flag("tooltip") ~= false
+	return not SlotMarks.disabled and Prefs.flag("slotMarks") ~= false
 end
 
 --- A failure here must never become a Lua error on every bag update: the marks
@@ -612,12 +612,10 @@ function SlotMarks.bagUpgradeFor(slot)
 end
 ItemTooltip.bagUpgradeFor = SlotMarks.bagUpgradeFor
 
---- Whether the marks are drawing: the switch on and the marks not turned off (Chip.marksShown:
---- the chip's legend follows them, L4.1 fix round 6).
+--- Whether the marks are drawing: the switch on and the marks not turned off.
 function SlotMarks.shown()
 	return enabled()
 end
-Chip.marksShown = SlotMarks.shown
 
 --- Hides every mark already drawn (the switch went off, or the marks failed).
 function SlotMarks.hideAll()

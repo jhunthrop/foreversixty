@@ -76,8 +76,6 @@ Theme.ALPHA = {
 	window = 0.96,
 	--- The chip's hover hints: one step dimmer than the muted info line.
 	hint = 0.6,
-	--- The idle chip's edge, in the muted colour, so it reads on a dark scene.
-	idleEdge = 0.4,
 	--- A row the player has already matched, and a disabled button.
 	dim = 0.55,
 	disabled = 0.4,

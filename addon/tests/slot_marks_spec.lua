@@ -511,7 +511,7 @@ describe("SlotMarks", function()
 			SlotMarks.drawPaperDoll()
 			assert.is_true(arrowOn(chest))
 			assert.is_true(targetOn(legs))
-			Prefs.setFlag("tooltip", false)
+			Prefs.setFlag("slotMarks", false)
 			SlotMarks.refresh(DATA)
 			assert.is_false(arrowOn(chest))
 			assert.is_false(targetOn(legs))
@@ -1123,16 +1123,19 @@ describe("SlotMarks", function()
 			assert.are.equal(#SlotMarks.ARROW_PARTS, #SlotMarks.marksOn(chest).arrowParts)
 		end)
 
-		-- Fix round 6, 4: the legend follows the marks: off with the switch, and off once the
-		-- marks have turned themselves off.
-		it("hides the chip's legend once the marks have turned themselves off", function()
+		-- design/specs/2026-11-08-addon-ux.md 3.3: the marks follow their own switch ("Tooltips only"
+		-- turns it off), not the tooltip switch, and stop once they have turned themselves off.
+		it("follow the slot marks switch, not the tooltip switch, and stop once turned off", function()
 			start({ chest = WORN_CHEST }, { BAG_CHEST })
-			assert.is_true(Chip.inputs(DATA).marksLegend)
+			assert.is_true(SlotMarks.shown())
 			Prefs.setFlag("tooltip", false)
-			assert.is_false(Chip.inputs(DATA).marksLegend)
-			Prefs.setFlag("tooltip", true)
+			assert.is_true(SlotMarks.shown())
+			Prefs.setFlag("slotMarks", false)
+			assert.is_false(SlotMarks.shown())
+			Prefs.setFlag("slotMarks", true)
 			SlotMarks.disabled = true
-			assert.is_false(Chip.inputs(DATA).marksLegend)
+			assert.is_false(SlotMarks.shown())
+			assert.is_nil(Chip.inputs(DATA).marksLegend)
 		end)
 
 		-- 4: the bracket clears the quality border, with a shadow behind the gold.

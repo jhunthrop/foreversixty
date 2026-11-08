@@ -1,6 +1,6 @@
 -- addon/ForeverSixty/surfaces/Settings.lua
 -- The Settings page (spec section 4.11, L3.5): the client's own Settings, one canvas.
--- Eight switches, Reset positions, the /fs command list, and two lines at the foot: whether
+-- The switches ("Tooltips only" first), Reset positions, the /fs command list, and two lines at the foot: whether
 -- the addon's data is for this client's patch, and the player ratings' state. The first of
 -- those in the warning colour is repeated under the title, its whole sentence in that colour.
 --
@@ -33,9 +33,11 @@ SettingsPage.FRAME_NAME = "ForeverSixtySettingsPanel"
 --- after the tooltips). A key is a Prefs section and field ("chip.shown") or a top-level flag
 --- ("tooltip").
 SettingsPage.SWITCHES = {
+	{ key = "tooltipsOnly", label = L.settingsTooltipsOnly, hint = L.settingsTooltipsOnlyHint },
 	{ key = "chip.shown", label = L.settingsChipShown, hint = L.settingsChipShownHint },
 	{ key = "chip.combatHide", label = L.settingsCombatHide, hint = L.settingsCombatHideHint },
 	{ key = "talentMarks", label = L.settingsTalentMarks, hint = L.settingsTalentMarksHint },
+	{ key = "slotMarks", label = L.settingsSlotMarks, hint = L.settingsSlotMarksHint },
 	{ key = "minimap.shown", label = L.settingsMinimap, hint = L.settingsMinimapHint },
 	{ key = "tooltip", label = L.settingsTooltip, hint = L.settingsTooltipHint },
 	{ key = "badges", label = L.settingsBadges, hint = L.settingsBadgesHint },
@@ -114,8 +116,18 @@ function SettingsPage.apply(key, value)
 	if key == "chip.shown" then
 		Chip.clearHidden()
 	end
+	if key == "tooltipsOnly" and value then
+		-- One step to quiet: the chip, the talent marks and the slot marks off; their own switches show
+		-- it and can be turned back on one by one (spec 3.3). Turning it off changes nothing else.
+		for _, quiet in ipairs(SettingsPage.TOOLTIPS_ONLY_OFF) do
+			SettingsPage.apply(quiet, false)
+		end
+	end
 	return value
 end
+
+--- The switches "Tooltips only" turns off.
+SettingsPage.TOOLTIPS_ONLY_OFF = { "chip.shown", "talentMarks", "slotMarks" }
 
 --- A toggle's click: write it, then let Options redraw.
 function SettingsPage.onToggle(key, value)
