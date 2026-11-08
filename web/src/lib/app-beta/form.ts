@@ -3,7 +3,7 @@
 // under the button (failed), or the line that replaces the form (done). Pure over its sender so
 // every outcome is tested without a DOM; ui TesterForm.svelte only draws it.
 import { AccountError } from '../account/api';
-import { signUpTester, type SignupStatus, type TesterSignup } from './api';
+import { signUpTester, type TesterSignup } from './api';
 import { appBetaCopy as copy } from './copy';
 import { isEmailShaped, type Platform } from './platform';
 
@@ -12,7 +12,7 @@ export type SignupOutcome =
   | { kind: 'invalid'; message: string }
   | { kind: 'failed'; message: string };
 
-type Send = (signup: TesterSignup) => Promise<SignupStatus>;
+type Send = (signup: TesterSignup) => Promise<void>;
 
 const TOO_MANY = 429;
 const UNPROCESSABLE = 422;
@@ -34,8 +34,8 @@ export async function submitSignup(
   const email = rawEmail.trim();
   if (!isEmailShaped(email)) return { kind: 'invalid', message: copy.invalidEmail };
   try {
-    const status = await send({ email, platform });
-    return { kind: 'done', message: status === 'created' ? copy.created(platform) : copy.exists(platform) };
+    await send({ email, platform });
+    return { kind: 'done', message: copy.received(platform) };
   } catch (error) {
     return failure(error);
   }

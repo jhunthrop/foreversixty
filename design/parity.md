@@ -51,7 +51,7 @@ Each run writes `web/test-results/parity/<page>-<state>.png`: mock | build at th
 
 ## The app beta states
 
-`web/tests/e2e/parity-app-beta.spec.ts`: /app (the page the apps' QR codes open) as `web-app` (the signup), `web-app-done` (signed up), `web-app-exists` (already on the list), `web-app-invalid` (the address refused) and `web-app-failed` (the try-again line), each at 1440 and 390 (where the QR rail is gone on both sides; `head:box` is the known 390 inset drift), and the owner's /admin/testers as `web-admin-testers` at 1440. `design/mocks/app_beta_facts.mjs` bundles `web/src/lib/app-beta/copy.ts`, `admin.ts` and `qr.ts` (the same QR SVG the page inlines) over `web/tests/e2e/fixtures/app-beta/testers.json`; `design/mocks/ws_app_beta.py` draws them. The store buttons (`web/src/data/apps.json` with a link) have no mock while both links are null; they are covered by `components/app-beta/app-beta.test.ts`.
+`web/tests/e2e/parity-app-beta.spec.ts`: /app (the page the apps' QR codes open) as `web-app` (the signup), `web-app-done` (received: a new address and a repeat read the same), `web-app-invalid` (the address refused) and `web-app-failed` (the try-again line), each at 1440 and 390 (where the QR rail is gone on both sides; `head:box` is the known 390 inset drift), and the owner's /admin/testers as `web-admin-testers` at 1440. `design/mocks/app_beta_facts.mjs` bundles `web/src/lib/app-beta/copy.ts`, `admin.ts` and `qr.ts` (the same QR SVG the page inlines) over `web/tests/e2e/fixtures/app-beta/testers.json`; `design/mocks/ws_app_beta.py` draws them. The store buttons (`web/src/data/apps.json` with a link) have no mock while both links are null; they are covered by `components/app-beta/app-beta.test.ts`.
 
 ## The simulator tool states
 

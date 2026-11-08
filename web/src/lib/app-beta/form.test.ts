@@ -11,20 +11,12 @@ describe('sending the tester form', () => {
   });
 
   it('sends the trimmed address and says the phone it signed up', async () => {
-    const send = vi.fn(async () => 'created' as const);
+    const send = vi.fn(async () => undefined);
     expect(await submitSignup('  you@example.com ', 'android', send)).toEqual({
       kind: 'done',
-      message: copy.created('android'),
+      message: copy.received('android'),
     });
     expect(send).toHaveBeenCalledWith({ email: 'you@example.com', platform: 'android' });
-  });
-
-  it('says so when the address was already on the list', async () => {
-    const send = vi.fn(async () => 'exists' as const);
-    expect(await submitSignup('you@example.com', 'ios', send)).toEqual({
-      kind: 'done',
-      message: copy.exists('ios'),
-    });
   });
 
   it('puts the API refusal of the address on the field', async () => {

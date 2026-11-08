@@ -10067,13 +10067,14 @@ paths:
       description: >-
         No auth. A signed-in browser still sends X-CSRF-Token like any write; the site's form
         sends no cookie. 5 an hour per IP on top of the router's budget. One row per address and
-        platform; the answer never carries a stored row.
+        platform (unique), a repeat stores nothing. A new address and one already on the list get
+        the same 201, so the route cannot tell who signed up; the answer never carries a row.
       requestBody:
         required: true
         content: { application/json: { schema: { $ref: '#/components/schemas/AppTesterInput' } } }
       responses:
         '201':
-          description: Signed up
+          description: Received (a new signup or one already on the list, told apart by nothing)
           content:
             application/json:
               schema:
@@ -10081,17 +10082,7 @@ paths:
                   - $ref: '#/components/schemas/Envelope'
                   - type: object
                     properties:
-                      data: { type: object, required: [status], properties: { status: { type: string, enum: [created] } } }
-        '200':
-          description: That address already asked for that platform
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: '#/components/schemas/Envelope'
-                  - type: object
-                    properties:
-                      data: { type: object, required: [status], properties: { status: { type: string, enum: [exists] } } }
+                      data: { type: object, required: [status], properties: { status: { type: string, enum: [received] } } }
         '400':
           description: The body is not JSON
           content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }

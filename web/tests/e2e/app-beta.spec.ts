@@ -1,6 +1,6 @@
 // web/tests/e2e/app-beta.spec.ts
-// foreversixty.gg/app, the page the apps' QR codes open: the tester signup (created, already on
-// the list, a refused address, a failure), the QR on a desktop and none on a phone, the phone's
+// foreversixty.gg/app, the page the apps' QR codes open: the tester signup (received, whether or
+// not already listed; a refused address; a failure), the QR on a desktop and none on a phone, the phone's
 // own platform chosen for it; and the owner's /admin/testers list with its copy buttons.
 import type { Page, Request } from '@playwright/test';
 import { appBetaCopy as copy } from '../../src/lib/app-beta/copy';
@@ -27,7 +27,7 @@ async function answerSignup(
   const seen: Request[] = [];
   await page.route('**/v1/app-testers', (route) => {
     seen.push(route.request());
-    return route.fulfill(envelope(status, { status: status === 201 ? 'created' : 'exists' }, fields));
+    return route.fulfill(envelope(status, { status: 'received' }, fields));
   });
   return seen;
 }
@@ -52,18 +52,20 @@ test.describe('/app', () => {
     await page.goto('/app');
     await page.getByTestId('app-beta-platform-android').click();
     await fillAndSend(page, '  Tester@Example.com ');
-    await expect(page.getByTestId('app-beta-done')).toHaveText(copy.created('android'));
+    await expect(page.getByTestId('app-beta-done')).toHaveText(copy.received('android'));
     await expect(page.getByTestId('app-beta-form')).toHaveCount(0);
     expect(seen).toHaveLength(1);
     expect(seen[0].postDataJSON()).toEqual({ email: 'Tester@Example.com', platform: 'android' });
     expect(await seen[0].headerValue('cookie')).toBeNull();
   });
 
-  test('says when the address is already on the list', async ({ page }) => {
-    await answerSignup(page, 200);
+  test('reads the same whether or not the address was already on the list', async ({ page }) => {
+    await answerSignup(page, 201);
     await page.goto('/app');
+    await page.getByTestId('app-beta-platform-ios').click();
     await fillAndSend(page, 'tester@example.com');
-    await expect(page.getByTestId('app-beta-done')).toHaveText(/already on the list/);
+    await expect(page.getByTestId('app-beta-done')).toHaveText(copy.received('ios'));
+    await expect(page.getByText(/already/)).toHaveCount(0);
   });
 
   test('stops a malformed address before sending, and shows the API refusal on the field', async ({

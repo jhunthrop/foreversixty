@@ -1,6 +1,6 @@
 // web/tests/e2e/parity-app-beta.spec.ts
 // /app and /admin/testers against their mocks (design/parity.md; ws_app_beta.py): /app in every
-// signup state (idle, signed up, already on the list, a refused address, a failure) at 1440 and
+// signup state (idle, received, a refused address, a failure) at 1440 and
 // 390, where the QR rail is gone on both sides; /admin/testers for the owner at 1440. Every
 // region compared for its blocks and box, plus what lies outside them. The mocks are rendered
 // before the tests from this checkout's copy modules and QR (app_beta_facts.mjs).
@@ -37,7 +37,6 @@ const envelope = (status: number, data: unknown, fields: Record<string, string> 
 const STATES = [
   { id: 'idle', mock: 'web-app', send: null },
   { id: 'done', mock: 'web-app-done', send: { status: 201, email: 'tester@example.com' } },
-  { id: 'exists', mock: 'web-app-exists', send: { status: 200, email: 'tester@example.com' } },
   { id: 'invalid', mock: 'web-app-invalid', send: { status: 201, email: 'not-an-email' } },
   { id: 'failed', mock: 'web-app-failed', send: { status: 500, email: 'tester@example.com' } },
 ] as const;
@@ -95,9 +94,7 @@ test.describe('/app and /admin/testers mock parity', () => {
         await prepareParityPage(page);
         await page.route('**/v1/me', (route) => route.fulfill({ status: 401, body: '' }));
         await page.route('**/v1/app-testers', (route) =>
-          route.fulfill(
-            envelope(send?.status ?? 201, { status: send?.status === 200 ? 'exists' : 'created' }),
-          ),
+          route.fulfill(envelope(send?.status ?? 201, { status: 'received' })),
         );
         await page.goto('/app');
         await settleParityPage(page);

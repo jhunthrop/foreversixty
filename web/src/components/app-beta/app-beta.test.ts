@@ -45,7 +45,7 @@ describe('StoreButtons', () => {
 
 describe('the copy', () => {
   it('has no em dash anywhere', () => {
-    const every = JSON.stringify(copy) + copy.created('ios') + copy.exists('android');
+    const every = JSON.stringify(copy) + copy.received('ios') + copy.received('android');
     expect(every).not.toContain('—');
   });
 });

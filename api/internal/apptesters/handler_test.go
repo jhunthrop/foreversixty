@@ -76,23 +76,31 @@ func decode(t *testing.T, rec *httptest.ResponseRecorder) envelope {
 	return e
 }
 
-func TestSignupIsCreatedThenAlreadyThere(t *testing.T) {
+// A new address and one already on the list get the same answer, byte for byte, so the form
+// cannot be used to learn who signed up; the repeat stores nothing.
+func TestSignupAnswersTheSameForANewAndARepeatedAddress(t *testing.T) {
 	f := &fakeTesters{}
 	mux := newMux(f)
 	body := `{"email":" Thandrel@Example.com ","platform":"ios"}`
-	rec := serveOn(mux, "POST", SignupPath, body, "203.0.113.1", anonymous)
-	if rec.Code != http.StatusCreated {
-		t.Fatalf("first: %d %s", rec.Code, rec.Body)
+	first := serveOn(mux, "POST", SignupPath, body, "203.0.113.1", anonymous)
+	again := serveOn(mux, "POST", SignupPath, body, "203.0.113.1", anonymous)
+	for _, rec := range []*httptest.ResponseRecorder{first, again} {
+		if rec.Code != http.StatusCreated {
+			t.Fatalf("status %d %s", rec.Code, rec.Body)
+		}
+		if got := string(decode(t, rec).Data); got != `{"status":"received"}` {
+			t.Fatalf("data %s", got)
+		}
 	}
-	if got := string(decode(t, rec).Data); got != `{"status":"created"}` {
-		t.Fatalf("first data %s", got)
+	strip := func(rec *httptest.ResponseRecorder) string {
+		var e map[string]any
+		_ = json.Unmarshal(rec.Body.Bytes(), &e)
+		delete(e, "request_id")
+		b, _ := json.Marshal(e)
+		return string(b)
 	}
-	rec = serveOn(mux, "POST", SignupPath, body, "203.0.113.1", anonymous)
-	if rec.Code != http.StatusOK {
-		t.Fatalf("again: %d %s", rec.Code, rec.Body)
-	}
-	if got := string(decode(t, rec).Data); got != `{"status":"exists"}` {
-		t.Fatalf("again data %s", got)
+	if strip(first) != strip(again) {
+		t.Fatalf("answers differ: %s vs %s", first.Body, again.Body)
 	}
 	if len(f.rows) != 1 || f.rows[0].Email != "thandrel@example.com" || f.rows[0].Platform != PlatformIOS {
 		t.Fatalf("stored %+v", f.rows)

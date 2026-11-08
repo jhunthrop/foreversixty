@@ -2,7 +2,7 @@
   - web-app: foreversixty.gg/app, the permanent link the apps' QR codes open. The PageHeader (the apps, the Coming soon
     Tag, the lead), then a split Page: What the apps do (four lines) and Test the apps (the signup form) in main, On your
     phone (the QR for this page, from 768 only) in the rail;
-  - web-app-done / web-app-exists: the form replaced by its one status line (signed up; already on the list);
+  - web-app-done: the form replaced by its one status line (a new address and a repeat read the same: no enumeration);
   - web-app-invalid: the address refused, its line under the field; web-app-failed: the try-again line under the button;
   - web-admin-testers: the owner's /admin/testers (PageHeader, a ledger Page: the copy buttons over the Grid of sign-ups).
 Data and copy are read at render time from design/mocks/data/app-beta-facts.json (node design/mocks/app_beta_facts.mjs),
@@ -79,7 +79,7 @@ def email_field(error: str = '') -> str:
 def signup(state: str) -> str:
     """Test the apps: the job line, then the form, or the one status line once sent."""
     job = f'<p class="job">{e(C["formJob"])}</p>'
-    if state in ('done', 'exists'):
+    if state == 'done':
         return f'<div class="beta">{job}<p class="done" role="status">{e(A[state])}</p></div>'
     platform = (f'<div class="f"><span class="t-label" aria-hidden="true">{e(C["platformLabel"])}</span>'
                 + Segmented([(e(A['platforms']['ios']), True), (e(A['platforms']['android']), False)]).replace(
@@ -113,7 +113,7 @@ def admin_testers() -> str:
                   '/admin/testers mock (the owner); data app-beta-facts.json (admin.ts over fixtures/app-beta/testers.json).', OWNER)
 
 
-APP_STATES = ['idle', 'done', 'exists', 'invalid', 'failed']
+APP_STATES = ['idle', 'done', 'invalid', 'failed']
 PAGES = {('web-app' if s == 'idle' else f'web-app-{s}'): (lambda s=s: app_page(s)) for s in APP_STATES}
 PAGES['web-admin-testers'] = admin_testers
 

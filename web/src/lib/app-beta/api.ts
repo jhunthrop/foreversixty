@@ -15,26 +15,20 @@ export interface TesterSignup {
   platform: Platform;
 }
 
-/** 201 created, 200 exists. */
-export type SignupStatus = 'created' | 'exists';
-
 export interface AppTester {
   email: string;
   platform: Platform;
   created_at: string;
 }
 
-/** Signs the address up; throws AccountError (422 with fields, 429, 5xx, offline). */
-export async function signUpTester(
-  signup: TesterSignup,
-  apiBase: string = API_BASE_URL,
-): Promise<SignupStatus> {
-  const { status } = await requestEnvelope<{ status: SignupStatus }>(APP_TESTERS_PATH, apiBase, {
+/** Signs the address up; throws AccountError (422 with fields, 429, 5xx, offline). The API
+ *  answers a new address and one already on the list alike, so there is nothing to return. */
+export async function signUpTester(signup: TesterSignup, apiBase: string = API_BASE_URL): Promise<void> {
+  await requestEnvelope<{ status: 'received' }>(APP_TESTERS_PATH, apiBase, {
     method: 'POST',
     body: signup,
     credentials: 'omit',
   });
-  return status === 201 ? 'created' : 'exists';
 }
 
 /** Every signup, newest first (the owner only: 401 and 403 throw). */

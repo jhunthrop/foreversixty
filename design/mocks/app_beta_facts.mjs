@@ -29,8 +29,7 @@ export default {
   app: {
     copy: strip(appBetaCopy),
     platforms: PLATFORM_NAMES,
-    done: appBetaCopy.created('ios'),
-    exists: appBetaCopy.exists('ios'),
+    done: appBetaCopy.received('ios'),
     qr: await appQrSvg(),
   },
   admin: {

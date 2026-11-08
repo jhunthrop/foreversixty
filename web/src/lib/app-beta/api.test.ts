@@ -12,27 +12,19 @@ const answer = (status: number, body: unknown): Response =>
 afterEach(() => vi.unstubAllGlobals());
 
 describe('the tester signup', () => {
-  it('posts the address and phone with no cookie, and reads created', async () => {
+  it('posts the address and phone with no cookie', async () => {
     const upstream = vi.fn<GlobalFetch>(async () =>
-      answer(201, { ok: true, data: { status: 'created' }, error: null }),
+      answer(201, { ok: true, data: { status: 'received' }, error: null }),
     );
     vi.stubGlobal('fetch', upstream);
-    await expect(signUpTester({ email: 'you@example.com', platform: 'android' }, API)).resolves.toBe(
-      'created',
-    );
+    await expect(
+      signUpTester({ email: 'you@example.com', platform: 'android' }, API),
+    ).resolves.toBeUndefined();
     const request = upstream.mock.calls[0][0] as Request;
     expect(request.url).toBe(`${API}${APP_TESTERS_PATH}`);
     expect(request.method).toBe('POST');
     expect(request.credentials).toBe('omit');
     expect(await request.json()).toEqual({ email: 'you@example.com', platform: 'android' });
-  });
-
-  it('reads an address already on the list', async () => {
-    vi.stubGlobal(
-      'fetch',
-      vi.fn<GlobalFetch>(async () => answer(200, { ok: true, data: { status: 'exists' }, error: null })),
-    );
-    await expect(signUpTester({ email: 'you@example.com', platform: 'ios' }, API)).resolves.toBe('exists');
   });
 
   it('throws the API refusal with its fields', async () => {

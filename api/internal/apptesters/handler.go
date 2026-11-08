@@ -84,16 +84,13 @@ func (s *Service) signup(w http.ResponseWriter, r *http.Request) {
 		httpx.WriteError(w, r, http.StatusUnprocessableEntity, "invalid", "that signup cannot be saved", fields)
 		return
 	}
-	created, err := s.Testers.Add(r.Context(), email, in.Platform)
-	if err != nil {
+	// Whether the row is new is never told: the same answer for a repeat keeps the form from
+	// confirming who is on the list. The address is never logged.
+	if _, err := s.Testers.Add(r.Context(), email, in.Platform); err != nil {
 		s.fail(w, r, "signup", err)
 		return
 	}
-	if created {
-		httpx.WriteOK(w, r, http.StatusCreated, map[string]string{"status": "created"})
-		return
-	}
-	httpx.WriteOK(w, r, http.StatusOK, map[string]string{"status": "exists"})
+	httpx.WriteOK(w, r, http.StatusCreated, map[string]string{"status": "received"})
 }
 
 func (s *Service) list(w http.ResponseWriter, r *http.Request) {

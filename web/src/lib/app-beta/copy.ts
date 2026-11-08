@@ -35,10 +35,9 @@ export const appBetaCopy = {
   invalidEmail: 'Enter one email address, like you@example.com.',
   failed: "That didn't go through. Try again in a moment.",
   tooMany: 'Too many sign-ups from here. Try again in an hour.',
-  created: (platform: Platform): string =>
+  /** The one line after a send, a new address or a repeat alike (the API tells them apart to no one). */
+  received: (platform: Platform): string =>
     `You're on the list for ${PLATFORM_NAMES[platform]}. We'll email you when the beta opens.`,
-  exists: (platform: Platform): string =>
-    `That email is already on the list for ${PLATFORM_NAMES[platform]}. We'll email you when the beta opens.`,
   qrTitle: 'On your phone',
   qrLine: 'Scan with your phone to open this page.',
   qrAlt: 'QR code for foreversixty.gg/app',
