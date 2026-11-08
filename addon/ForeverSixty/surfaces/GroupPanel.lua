@@ -1366,6 +1366,10 @@ end
 --- line where `measure` (GroupPanel.measure) finds it within `room`, else a sentence a line, so
 --- "/fs ready tries the check on you." is never cut. Pure.
 function GroupPanel.soloHint(measure, room)
+	-- design/specs/2026-11-08-addon-ux.md 1.9: the solo text is one sentence, the counts line's own.
+	if #L.groupSoloHint == 0 then
+		return {}
+	end
 	local oneLine = table.concat(L.groupSoloHint, " ")
 	if ItemTooltip.fitPlain(oneLine, measure, room) == oneLine then
 		return { oneLine }

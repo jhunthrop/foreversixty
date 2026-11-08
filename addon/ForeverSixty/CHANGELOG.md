@@ -1,5 +1,11 @@
 # Forever Sixty
 
+## 2.0.39
+
+- The talent window is quieter: numbers stay only on the points you still have to take, and the strip under it reads "Next at 25: Lethal Attacks · 12 of 15 · 3 off plan".
+- A talent's tooltip says "Your build: points 8–11 and 36" in one line.
+- The guild tab's count line is just "97 members · 3 online", and the group panel says one thing when you are alone: "Join a group to see its specs, gear and buffs."
+
 ## 2.0.38
 
 - A home in game: click the line beside the minimap (or the Forever Sixty button on your character pane, or your keybind) to open one panel with what to do next on this character: tonight's raid, your next upgrades, your next talent and your rotation at your level.

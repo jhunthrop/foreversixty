@@ -1331,15 +1331,17 @@ describe("GroupPanel", function()
 
 		-- A.3 ruling 4: alone, the panel shows the player's own row and "Invite someone and their row
 		-- appears here." under it, the headers and the holder showing as for a group.
-		it("shows the player's own row and the invite line under it out of a group", function()
+		-- design/specs/2026-11-08-addon-ux.md 1.9: out of a group, one sentence and no second line.
+		it("shows the player's own row and one sentence out of a group", function()
 			start({ solo = true })
 			local flyout = open()
 			assert.are.equal(L.groupNotInGroup, GroupPanel.countsLine:GetText())
+			assert.are.equal("Join a group to see its specs, gear and buffs.", L.groupNotInGroup)
 			assert.are.equal(Theme.HEX.body, colorOf(GroupPanel.countsLine))
-			assert.are.equal("Invite someone and their row appears here.", L.groupSoloHint[1])
-			assert.are.equal("Invite someone and their row appears here.", GroupPanel.soloLines[1]:GetText())
-			assert.are.equal(Theme.HEX.muted, colorOf(GroupPanel.soloLines[1]))
-			assert.is_true(GroupPanel.soloLines[1]:IsShown())
+			assert.are.same({}, L.groupSoloHint)
+			for _, line in ipairs(GroupPanel.soloLines or {}) do
+				assert.is_false(line:IsShown())
+			end
 			local own = drawnRow("Tester")
 			assert.is_not_nil(own)
 			assert.is_true(own.entry.own)
@@ -1348,23 +1350,21 @@ describe("GroupPanel", function()
 				assert.is_true(header.button:IsShown())
 			end
 			assert.is_true(GroupPanel.holder:IsShown())
-			-- The line sits under the row.
+			-- Nothing under the row but the padding.
 			local below = GroupPanel.rowsTop() + GroupPanel.rowsHeight(1) + Theme.SIZES.panelRowGap
-			local point = GroupPanel.soloLines[1].points[#GroupPanel.soloLines[1].points]
-			assert.are.equal(-below, point[5])
-			assert.are.equal(below + GroupPanel.lineHeight() + Theme.SIZES.panelPadding, flyout:GetHeight())
+			assert.is_true(flyout:GetHeight() <= below + GroupPanel.lineHeight() + Theme.SIZES.panelPadding)
 			assert.is_false(GroupPanel.checkFrame:IsShown())
 			-- A dry run alone does not change what the flyout holds.
 			GroupPanel.handleReady()
 			assert.are.equal(L.groupNotInGroup, GroupPanel.countsLine:GetText())
 		end)
 
-		it("draws the invite line whole, one line, and sizes a flyout with no own row to it", function()
+		it("draws no second solo line, and sizes a flyout with no own row to its one sentence", function()
 			start()
-			local whole = table.concat(L.groupSoloHint, " ")
-			assert.are.same({ whole }, GroupPanel.soloHint(nil, 460))
-			assert.are.equal(GroupPanel.countsTop() + 2 * GroupPanel.lineHeight() + Theme.SIZES.panelPadding,
+			assert.are.same({}, GroupPanel.soloHint(nil, 460))
+			assert.are.equal(GroupPanel.countsTop() + GroupPanel.lineHeight() + Theme.SIZES.panelPadding,
 				GroupPanel.soloHeight())
+
 		end)
 
 		-- A.3 ruling 4: the Raid tab's button reads "Forever Sixty · solo" alone and opens that panel.
