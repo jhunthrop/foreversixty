@@ -12,8 +12,17 @@ enum ParityText {
     @MainActor
     static func lines(of view: some View, size: CGSize) -> [String] {
         AccessibilityAutomation.enable()
+        // On the CI runner the first screen read in the process stays treeless (Activity's, then
+        // First run's, as each became first), so a treeless read is retried in a fresh host.
+        for _ in 1 ..< freshHostAttempts {
+            let lines = ParityHost.render(view, size: size) { host in settledLines(under: host.view) }
+            if !lines.isEmpty { return lines }
+        }
         return ParityHost.render(view, size: size) { host in settledLines(under: host.view) }
     }
+
+    /// Fresh hosts a treeless state is read in before it records as empty (up to 15 s).
+    static let freshHostAttempts = 5
 
     /// How long the tree may take to appear: SwiftUI builds it asynchronously once automation is
     /// on, and the first screen after the switch (on CI, Activity's) can read before it exists.
