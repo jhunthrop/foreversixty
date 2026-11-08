@@ -314,6 +314,16 @@ public extension Endpoint where Response == ReadyCheck {
     }
 }
 
+public extension Endpoint where Response == CharacterRating {
+    /// GET /v1/characters/{region}/{ruleset}/{name}/rating: A character's Forever rating, its latest fight card and its trend (public)
+    static func getCharacterRating(region: String, ruleset: String, name: String, limit: Int? = nil, cursor: String? = nil) -> Endpoint {
+        Endpoint(method: .get, path: "/v1/characters/\(region)/\(ruleset)/\(name)/rating", query: [
+            limit.map { URLQueryItem(name: "limit", value: "\($0)") },
+            cursor.map { URLQueryItem(name: "cursor", value: "\($0)") },
+        ].compactMap { $0 }, authenticated: false)
+    }
+}
+
 public extension Endpoint where Response == CharacterHome {
     /// GET /v1/characters/{region}/{ruleset}/{name}/home: The home answer for a character (dark, APP_API)
     static func getCharacterHome(region: String, ruleset: String, name: String) -> Endpoint {
@@ -647,6 +657,7 @@ public enum ContractRoutes {
         FixtureRoute(.get, "/v1/guilds/{id}/home", fixture: "guild.home", status: 200),
         FixtureRoute(.get, "/v1/guilds/recruiting", fixture: "guild.recruiting", status: 200),
         FixtureRoute(.get, "/v1/characters/{region}/{ruleset}/{name}/ready", fixture: "character.ready", status: 200),
+        FixtureRoute(.get, "/v1/characters/{region}/{ruleset}/{name}/rating", fixture: "character.rating", status: 200),
         FixtureRoute(.get, "/v1/characters/{region}/{ruleset}/{name}/home", fixture: "character.home", status: 200),
         FixtureRoute(.get, "/v1/guilds/{id}/raids", fixture: "guild.raids", status: 200),
         FixtureRoute(.get, "/v1/guilds/{id}/raids/{raid}", fixture: "guild.raid", status: 200),

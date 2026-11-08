@@ -45,7 +45,11 @@ describe('mobile copy codegen', () => {
 
   it('escapes a placeholder named after a Swift keyword', () => {
     const swift = swiftAccessor(
-      parseEntry('home.raid.counts', { text: '{in} in, {late} late', notPlural: true, args: { in: 'int', late: 'int' } }),
+      parseEntry('home.raid.counts', {
+        text: '{in} in, {late} late',
+        notPlural: true,
+        args: { in: 'int', late: 'int' },
+      }),
     );
     expect(swift).toContain('static func homeRaidCounts(`in`: Int, late: Int) -> String');
     expect(swift).toContain('format("home.raid.counts", `in`, late)');
