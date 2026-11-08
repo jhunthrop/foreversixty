@@ -52,7 +52,7 @@ jobs:
       # ("cannot determine the runtime bundle", run 42503034639).
       - name: Boot the iOS ${{ env.IOS_RUNTIME_VERSION }} (${{ env.IOS_RUNTIME_BUILD }}) simulator
         working-directory: .
-        run: tools/ios-ci-simulator.sh "$IOS_RUNTIME_VERSION" "$IOS_RUNTIME_BUILD"
+        run: bash tools/ios-ci-simulator.sh "$IOS_RUNTIME_VERSION" "$IOS_RUNTIME_BUILD"
       - name: Install XcodeGen
         run: |
           # GitHub release downloads 504 now and then: retry, then fall back to Homebrew.
