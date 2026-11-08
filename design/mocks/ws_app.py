@@ -96,7 +96,7 @@ APP_CSS2 = '''
 .wd .s{font-size:13px;line-height:18px;color:var(--muted)}
 .wd .g{color:var(--gold)}
 .wd .it{display:flex;align-items:center;gap:6px;font:700 13px/18px var(--font-body)}
-.wd .ans{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;align-content:center}.wd .ans .btn{height:44px;padding:0}
+.wd.m>div.ans{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;align-content:center}.wd.m>div.ans .btn{height:44px;padding:0}
 .lock{background:linear-gradient(180deg,#17202f,#07090d);border-radius:24px;padding:20px 16px;display:flex;flex-direction:column;gap:14px}
 .lock .tm{font:600 64px/1 var(--font-body);text-align:center;color:var(--strong)}
 .lock .row3{display:flex;gap:10px;justify-content:center}
