@@ -90,20 +90,20 @@ struct GearParityTests {
     static let device = CGSize(width: 393, height: 852)
 
     @Test("ios-gear")
-    func gear() throws {
+    func gear() async throws {
         let view = GearListView(content: GearTestData.content, build: GearTestData.build)
             .environment(\.itemIconSource, RepoItemIconSource())
-        try ParityCheck.assert(view, screen: "gear", size: Self.device)
+        try await ParityCheck.assert(view, screen: "gear", size: Self.device)
     }
 
     @Test("ios-gear-out")
-    func signedOut() throws {
+    func signedOut() async throws {
         let view = GearClassesView(classes: try BisTestData.classes().map(\.slug), name: { $0.capitalized })
-        try ParityCheck.assert(view, screen: "gear-out", size: Self.device)
+        try await ParityCheck.assert(view, screen: "gear-out", size: Self.device)
     }
 
     @Test("ios-item-sheet")
-    func itemSheet() throws {
+    func itemSheet() async throws {
         // The mock's sheet sits 120 under the status bar, over the dimmed screen.
         let view = VStack(spacing: 0) {
             Color.black.opacity(0.45).frame(height: 120)
@@ -113,7 +113,7 @@ struct GearParityTests {
         .background(FSColor.bg)
         .parityContent()
         .environment(\.itemIconSource, RepoItemIconSource())
-        try ParityCheck.assert(view, screen: "item-sheet", size: Self.device)
+        try await ParityCheck.assert(view, screen: "item-sheet", size: Self.device)
     }
 }
 

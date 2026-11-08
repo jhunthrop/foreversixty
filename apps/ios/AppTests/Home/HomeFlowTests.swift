@@ -12,83 +12,83 @@ struct HomeFlowParityTests {
     static let device = CGSize(width: 393, height: 852)
     typealias T = HomeFlowTestData
 
-    private func check(_ content: HomeFlowContent, _ screen: String, testName: String = #function) throws {
+    private func check(_ content: HomeFlowContent, _ screen: String, testName: String = #function) async throws {
         let view = HomeFlowView(content: content, build: T.build).environment(\.itemIconSource, RepoItemIconSource())
-        try ParityCheck.assert(view, screen: screen, size: Self.device, testName: testName)
+        try await ParityCheck.assert(view, screen: screen, size: Self.device, testName: testName)
     }
 
     @Test("ios-home-raid-day")
-    func raidDay() throws {
-        try check(T.content([.raidCard(T.raid()), T.upgrades(bestRun: false), T.newForYou("day")]), "home-raid-day")
+    func raidDay() async throws {
+        try await check(T.content([.raidCard(T.raid()), T.upgrades(bestRun: false), T.newForYou("day")]), "home-raid-day")
     }
 
     @Test("ios-home-raid-day-late")
-    func raidDayLate() throws {
-        try check(T.content([.raidCard(T.raid(late: true)), T.upgrades(bestRun: false), T.newForYou("day")]), "home-raid-day-late")
+    func raidDayLate() async throws {
+        try await check(T.content([.raidCard(T.raid(late: true)), T.upgrades(bestRun: false), T.newForYou("day")]), "home-raid-day-late")
     }
 
     @Test("ios-home-raid-day-officer")
-    func raidDayOfficer() throws {
-        try check(
+    func raidDayOfficer() async throws {
+        try await check(
             T.content([.raidCard(T.raid(officer: true)), T.upgrades(bestRun: false), T.newForYou("day")]),
             "home-raid-day-officer"
         )
     }
 
     @Test("ios-home-raid-live")
-    func raidLive() throws {
-        try check(T.content([T.raidLive, T.newForYou("live")]), "home-raid-live")
+    func raidLive() async throws {
+        try await check(T.content([T.raidLive, T.newForYou("live")]), "home-raid-live")
     }
 
     @Test("ios-home-after-raid")
-    func afterRaid() throws {
-        try check(T.content([T.lastNight, T.upgrades(bestRun: true), T.newForYou("day")]), "home-after-raid")
+    func afterRaid() async throws {
+        try await check(T.content([T.lastNight, T.upgrades(bestRun: true), T.newForYou("day")]), "home-after-raid")
     }
 
     @Test("ios-home-60")
-    func sixty() throws {
-        try check(T.content([T.upgrades(bestRun: true), .raidLine(T.raid()), T.newForYou("day")]), "home-60")
+    func sixty() async throws {
+        try await check(T.content([T.upgrades(bestRun: true), .raidLine(T.raid()), T.newForYou("day")]), "home-60")
     }
 
     @Test("ios-home-60-noavatar")
-    func sixtyNoAvatar() throws {
-        try check(T.content([T.upgrades(bestRun: true), .raidLine(T.raid()), T.newForYou("day")]), "home-60-noavatar")
+    func sixtyNoAvatar() async throws {
+        try await check(T.content([T.upgrades(bestRun: true), .raidLine(T.raid()), T.newForYou("day")]), "home-60-noavatar")
     }
 
     @Test("ios-home-60-answered")
-    func sixtyAnswered() throws {
-        try check(T.content([T.upgrades(bestRun: true), .raidLine(T.raid(answered: .signedIn)), T.newForYou("day")]), "home-60-answered")
+    func sixtyAnswered() async throws {
+        try await check(T.content([T.upgrades(bestRun: true), .raidLine(T.raid(answered: .signedIn)), T.newForYou("day")]), "home-60-answered")
     }
 
     @Test("ios-home-noguild")
-    func noGuild() throws {
-        try check(
+    func noGuild() async throws {
+        try await check(
             T.content([T.upgrades(bestRun: true), T.newForYou("day", unread: 2), .findGuild(Copy.homeFindGuildLine)]),
             "home-noguild"
         )
     }
 
     @Test("ios-home-34")
-    func leveler() throws {
+    func leveler() async throws {
         let upgrades = HomeBlockContent.upgrades(HomeUpgradesContent(
             rows: T.levelerRows, bestRun: "Best run: Blackfathom Deeps, Grimclaw +0.9 DPS", note: nil
         ))
-        try check(T.content([upgrades, T.newForYou("leveler", unread: 1)], head: T.felsnap), "home-34")
+        try await check(T.content([upgrades, T.newForYou("leveler", unread: 1)], head: T.felsnap), "home-34")
     }
 
     @Test("ios-home-loading")
-    func loading() throws {
-        try check(HomeFlowContent(head: T.thandrel, phase: .loading), "home-loading")
+    func loading() async throws {
+        try await check(HomeFlowContent(head: T.thandrel, phase: .loading), "home-loading")
     }
 
     @Test("ios-home-error")
-    func error() throws {
-        try check(HomeFlowContent(head: T.thandrel, phase: .failed), "home-error")
+    func error() async throws {
+        try await check(HomeFlowContent(head: T.thandrel, phase: .failed), "home-error")
     }
 
     @Test("ios-home-new")
-    func noCharacter() throws {
-        try ParityCheck.assert(HomeNoCharacterView {}, screen: "home-new", size: Self.device)
+    func noCharacter() async throws {
+        try await ParityCheck.assert(HomeNoCharacterView {}, screen: "home-new", size: Self.device)
     }
 }
 
