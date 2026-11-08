@@ -1,9 +1,12 @@
 <!-- web/src/components/setup/CompanionDownload.svelte -->
-<!-- Row 3's download (lib/setup/downloads.ts, lib/setup/release.ts). Windows or Mac: one button for
-     the visitor's own build, linking straight to the release's file, its version and size under it,
-     and a quiet "Other platforms" disclosure with the rest. A system the page cannot name (the
-     server's render, Linux, ChromeOS): every build side by side, none gold, so nothing is a wrong
-     guess before hydration. The meta line keeps its height while the manifest is in flight. -->
+<!-- The companion's download, the one drawing of it on /setup (lib/setup/downloads.ts,
+     lib/setup/release.ts): row 3's action, the head's answer and the top of The companion (owner
+     2026-11-08: "a download link at the top and in the companion section"). Windows or Mac: one
+     button for the visitor's own build, linking straight to the release's file, its version and size
+     under it, and a quiet "Other platforms" disclosure with the rest. A system the page cannot name
+     (the server's render, Linux, ChromeOS): every build side by side, none gold, so nothing is a
+     wrong guess before hydration. A phone: "runs on your PC or Mac" and Copy link (row 3 draws its
+     own from lib/setup/steps.ts). The meta line keeps its height while the manifest is in flight. -->
 <script lang="ts">
   import { addonCopy } from '../../lib/addon/copy';
   import { downloadFor, otherDownloads, type CompanionDownload } from '../../lib/setup/downloads';
@@ -16,12 +19,24 @@
     platform,
     release,
     primary,
+    copied = false,
+    onCopyLink,
+    idPrefix = 'setup',
+    end = false,
   }: {
     platform: VisitorPlatform;
     /** The feed's newest release; null until (or unless) the manifest answers. */
     release: CompanionRelease | null;
     /** Row 3 is the page's next step: the visitor's own build is the one gold button. */
     primary: boolean;
+    /** A phone's Copy link has just copied: its button says so. */
+    copied?: boolean;
+    /** A phone's Copy link was pressed. */
+    onCopyLink?: () => void;
+    /** Each placement's testids start with it: row 3 `setup`, the head `setup-head`. */
+    idPrefix?: string;
+    /** Right-aligned from 900, as the head's answer is. */
+    end?: boolean;
   } = $props();
 
   const own = $derived(downloadFor(platform));
@@ -29,18 +44,25 @@
   const label = (download: CompanionDownload): string => addonCopy.setupCompanionDownload(download.platform);
 </script>
 
-{#if own !== null}
+{#if platform === 'mobile'}
+  <div class="flex flex-col items-start gap-2" class:dl-end={end} data-testid="{idPrefix}-copy">
+    <span class="text-small text-muted">{addonCopy.setupCompanionMobile}</span>
+    <Button onclick={() => onCopyLink?.()} testid="{idPrefix}-action-copylink"
+      >{copied ? addonCopy.setupLinkCopied : addonCopy.setupCopyLink}</Button
+    >
+  </div>
+{:else if own !== null}
   {@const meta = releaseMeta(own.asset, release)}
-  <div class="flex flex-col gap-1" data-testid="setup-download">
-    <div class="flex flex-wrap items-center gap-x-4 gap-y-2">
+  <div class="flex flex-col gap-1" class:dl-end={end} data-testid="{idPrefix}-download">
+    <div class="dl-row flex flex-wrap items-center gap-x-4 gap-y-2">
       <Button
         tone={primary ? 'primary' : 'secondary'}
         href={downloadHref(own.asset, release)}
         rel="noopener"
-        testid="setup-action-download">{label(own)}</Button
+        testid="{idPrefix}-action-download">{label(own)}</Button
       >
       {#if others.length > 0}
-        <details class="setup-other" data-testid="setup-other-platforms">
+        <details class="setup-other" data-testid="{idPrefix}-other-platforms">
           <summary class="{LINK} inline-flex min-h-11 cursor-pointer items-center md:min-h-0"
             >{addonCopy.setupOtherPlatforms}</summary
           >
@@ -52,7 +74,7 @@
                   class={LINK}
                   href={downloadHref(other.asset, release)}
                   rel="noopener"
-                  data-testid="setup-download-{other.os}">{label(other)} ›</a
+                  data-testid="{idPrefix}-download-{other.os}">{label(other)} ›</a
                 >{#if otherMeta !== null}<span class="text-muted"> {otherMeta}</span>{/if}
               </li>
             {/each}
@@ -60,26 +82,38 @@
         </details>
       {/if}
     </div>
-    <span class="text-small text-muted min-h-5" data-testid="setup-download-meta">{meta ?? ''}</span>
+    <span class="text-small text-muted min-h-5" data-testid="{idPrefix}-download-meta">{meta ?? ''}</span>
   </div>
 {:else}
   <div
     class="flex flex-col gap-1"
+    class:dl-end={end}
     role="group"
     aria-label={addonCopy.setupDownloadCompanion}
-    data-testid="setup-download"
+    data-testid="{idPrefix}-download"
   >
-    <div class="flex flex-wrap items-center gap-3">
+    <div class="dl-row flex flex-wrap items-center gap-3">
       {#each others as download (download.asset)}
         <Button
           href={downloadHref(download.asset, release)}
           rel="noopener"
-          testid="setup-download-{download.os}">{label(download)}</Button
+          testid="{idPrefix}-download-{download.os}">{label(download)}</Button
         >
       {/each}
     </div>
-    <span class="text-small text-muted min-h-5" data-testid="setup-download-meta"
+    <span class="text-small text-muted min-h-5" data-testid="{idPrefix}-download-meta"
       >{release === null ? '' : addonCopy.setupCompanionVersion(release.version)}</span
     >
   </div>
 {/if}
+
+<style>
+  @media (min-width: 900px) {
+    .dl-end {
+      align-items: flex-end;
+    }
+    .dl-end .dl-row {
+      justify-content: flex-end;
+    }
+  }
+</style>
