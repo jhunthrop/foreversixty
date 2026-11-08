@@ -133,6 +133,9 @@ The apps are held to their mocks the way the site is (spec `design/specs/2026-11
 - Captures for people: `node design/mocks/ws_app_shoot.mjs && python3 design/mocks/ws_app.py pack` write `design/reviews/2026-11-07-mobile/<platform>-<screen>.png`.
 - Staleness is blocking (wired by the spec's lane T): the web `parity` job runs `python3 design/mocks/ws_app.py && node design/mocks/app_regions.mjs --check`; a mock change without its region files fails, naming each file and the command. The committed region files are rendered on that Linux runner (when the check fails, the job uploads the files it rendered as the `app-regions` artifact: `gh run download <run> -n app-regions -D design/mocks/app/regions`): a Mac's Chromium lays some mocks out differently.
 
+- Not native parity states: `notifications` (the lock-screen push, its actions and the content extension are system surfaces; the Android and iOS builds test them in their own push suites), `sim-saved` (a saved sim is a Your sims row that opens the one result screen, `sim-result`) and `guide-you` (the guide reader carries no per-character answer). Their mocks and region files are removed (2026-11-08).
+- The secondary screens (Guides, Patch notes, Sims, the guild's Roster, Calendar, raid page and Raid history, Settings and Plan) are app-composed in `design/mocks/ws_app_secondary.py` from the app's contract fixtures (`docs/contracts/fixtures/app`): they restyle what the app does, and where the site has more, one row at the end opens it.
+
 ### The tools
 - iOS: `swift-snapshot-testing` 1.19.7 (already in `apps/ios/project.yml`, target `ForeverSixtyTests`), on CI's iOS 26.5 simulator (`.github/workflows/ios.yml`), device iPhone 17 Pro at 393 x 852.
 - Android: Roborazzi 1.77.0 (already in `apps/android/app/build.gradle.kts`), Robolectric with the Pixel 9 qualifier at 412 x 915 dp (`.github/workflows/android.yml`, `:app:verifyRoborazziDebug`).

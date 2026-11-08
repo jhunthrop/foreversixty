@@ -11,7 +11,7 @@ states say so); the guild's raid is Onyxia's Lair, Wed 6 Jan, 8:00 pm CST, four 
 from __future__ import annotations
 
 from mocklib import CLASS_COLOR
-from ws_app_frame import DEFAULT, app_page, glyph, portrait
+from ws_app_frame import DEFAULT, app_page, portrait
 from ws_prims import (Button, Checklist, Countdown, Figures, ItemRow, PageHeader, Row, Rows, Section, Skeleton, Switch,
                       Tag, Tally, build_page, crest_img, icon)
 
@@ -65,30 +65,17 @@ FLOWS_CSS = '''
 .chiprow .btn{flex:none}
 .chiprow{-webkit-mask-image:linear-gradient(90deg,#000 85%,transparent);mask-image:linear-gradient(90deg,#000 85%,transparent)}
 .stampl{margin-top:8px}
-/* a notification on the lock screen */
-.lockbg{background:linear-gradient(180deg,#17202f,#07090d);border-radius:24px;padding:16px 12px;display:flex;flex-direction:column;gap:12px}
-.nt{background:#1b2230;border-radius:20px;padding:12px 14px;display:flex;flex-direction:column;gap:8px}
-[data-platform=android] .nt{border-radius:16px;background:#202734}
-.nt .top{display:flex;align-items:center;gap:8px;font:600 13px/16px var(--font-body);color:var(--muted)}
-.nt .top .app{display:inline-flex;width:20px;height:20px;border-radius:5px;background:var(--bg);color:var(--gold);align-items:center;justify-content:center}
-.nt .nm{font:700 15px/20px var(--font-body);color:var(--strong)}
-.nt .ln{font:400 15px/20px var(--font-body);color:var(--text)}
-.nt .acts{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid #ffffff1f;margin:4px -14px -12px}
-.nt .acts a{display:flex;align-items:center;justify-content:center;min-height:44px;color:var(--strong);font:600 15px/20px var(--font-body)}
-.nt .acts a+a{border-left:1px solid #ffffff1f}
-[data-platform=android] .nt .acts{display:flex;gap:16px;border:0;margin:0}
-[data-platform=android] .nt .acts a{min-height:48px;color:var(--gold);justify-content:flex-start}[data-platform=android] .nt .acts a+a{border:0}
 .sheetp{background:var(--raised);border-radius:12px 12px 0 0;border-top:1px solid var(--line);padding:0 16px 24px}
 .sheet-grab{display:block;width:36px;height:5px;border-radius:3px;background:var(--line);margin:8px auto 4px}
 '''
 
 
-def _page(body: str, title: str) -> str:
+def page(body: str, title: str) -> str:
     return build_page(title, f'<div class="ap">{body}</div><style>{FLOWS_CSS}</style>',
                       note='Native app mock (design/specs/2026-11-08-app-flows.md).')
 
 
-def _signup_buttons(selected: str = '') -> str:
+def signup_buttons(selected: str = '') -> str:
     return '<div class="btns" role="group" aria-label="Your answer">' + ''.join(
         Button(x, primary=(x == selected), small=True) for x in ('In', 'Late', 'Bench', 'Out')) + '</div>'
 
@@ -106,7 +93,7 @@ def _raid_card(officer: bool = False, answered: str = '', late: bool = False) ->
     me = f'<p class="t-small me">{"You are " + answered if answered else "You have not answered"}, {AS_ME}</p>'
     how_late = '<p class="t-small me">How late?</p>' + _late_chips() if late else ''
     ready = Rows([Row('2 things before you pull', 'No flask in your bags; boots not enchanted &middot; from your last log-out, 9 h ago', slim=True)], open_=True)
-    return cd + me + _signup_buttons(answered) + how_late + Tally(ROLES) + ready + (_needs_you() if officer else '')
+    return cd + me + signup_buttons(answered) + how_late + Tally(ROLES) + ready + (_needs_you() if officer else '')
 
 
 def _needs_you() -> str:
@@ -223,14 +210,14 @@ def _changed(kind: str, unread: int = 3) -> str:
 
 def _home(blocks: str, title: str, badges: dict, who: str = 'warrior', avatar=DEFAULT):
     def b(platform: str) -> str:
-        return app_page(platform, _page(blocks, title), 'home', badges=badges, who=who, avatar=avatar)
+        return app_page(platform, page(blocks, title), 'home', badges=badges, who=who, avatar=avatar)
     return b
 
 
 def _raid_line(answered: str = '') -> str:
     sub = f'You are {answered}, {AS_ME}' if answered else f'{COUNTS} &middot; you have not answered, {AS_ME}'
     row = Rows([Row(f'{RAID} &middot; {WHEN}', sub, icon(ONY, 40))], open_=True)
-    return _blk(row + _signup_buttons(answered))
+    return _blk(row + signup_buttons(answered))
 
 
 def _raid_live() -> str:
@@ -312,12 +299,12 @@ def raid(state: str):
                     + '<p class="t-small" style="margin-top:8px">Onyxia&rsquo;s Lair, Barrow Deeps and Hyjal Summit open at 60. '
                     'Join a guild on the way and its raids show here.</p>'
                     + '<div class="vstack">' + Button('Find a guild') + '</div>')
-            return app_page(platform, _page(body, 'Raid'), 'raid', badges={'activity': 1}, who='hunter')
+            return app_page(platform, page(body, 'Raid'), 'raid', badges={'activity': 1}, who='hunter')
         else:  # out
             body = (PageHeader('Raid with a guild', meta=['Sign up for your guild&rsquo;s raids from your phone.'])
                     + '<div class="vstack">' + Button('Sign in with Battle.net', primary=True) + '</div>')
             badges = {}
-        return app_page(platform, _page(body, 'Raid'), 'raid', badges=badges, who=None if state == 'out' else 'warrior')
+        return app_page(platform, page(body, 'Raid'), 'raid', badges=badges, who=None if state == 'out' else 'warrior')
     return b
 
 
@@ -352,7 +339,7 @@ def gear(state: str):
             body = (PageHeader('Best in slot for your class', meta=['Pick a class, then a spec and a level range.'])
                     + Section('Classes', Rows([Row(c.capitalize(), '', crest_img(c, 40), title_color=CLASS_COLOR[c])
                                                for c in ('warrior', 'paladin', 'hunter', 'rogue', 'priest', 'shaman', 'mage', 'warlock', 'druid')], open_=True)))
-            return app_page(platform, _page(body, 'Gear'), 'gear', who=None)
+            return app_page(platform, page(body, 'Gear'), 'gear', who=None)
         summary = Rows([Row('Fury Warrior &middot; 60 raid &middot; Alliance', '4 of 17 slots on the list', trail='<a class="link" href="#">Change</a>', link=False)], open_=True)
         where = Rows([Row('Blackrock Spire', 'Blackcrow &middot; Shadow Hunter Vosh&rsquo;gajin, 8%', icon('inv_weapon_crossbow_04', 40, 'q3')),
                       Row('Blacksmithing', 'Lionheart Helm, Greenhammer, Ironwood Blade &middot; ask a blacksmith', icon('inv_helmet_36', 40, 'q4')),
@@ -362,7 +349,7 @@ def gear(state: str):
         body = ('<div data-region="controls">' + summary + '</div>'
                 + Section('Where to go tonight', where)
                 + Section('Every slot', '<div data-region="slots">' + ''.join(cells) + '</div>'))
-        return app_page(platform, _page(body, 'Gear'), 'gear', badges=MEMBER)
+        return app_page(platform, page(body, 'Gear'), 'gear', badges=MEMBER)
     return b
 
 
@@ -387,46 +374,19 @@ def activity(state: str):
         if state == 'out':
             body = (PageHeader('Activity', meta=['What changed for your characters: loot, sims, reports, raids.'])
                     + '<div class="vstack">' + Button('Sign in with Battle.net', primary=True) + '</div>')
-            return app_page(platform, _page(body, 'Activity'), 'activity', who=None)
+            return app_page(platform, page(body, 'Activity'), 'activity', who=None)
         chips = '<div class="chiprow" data-region="controls">' + ''.join(Button(g, primary=(g == 'All'), small=True) for g in GROUPS) + '</div>'
         if state == 'empty':
             body = (PageHeader('Activity') + chips
                     + '<p class="t-small" style="margin-top:16px">Nothing yet. Loot, sims, reports and your guild&rsquo;s raids arrive here as they happen.</p>')
-            return app_page(platform, _page(body, 'Activity'), 'activity')
+            return app_page(platform, page(body, 'Activity'), 'activity')
         secs = ''
         for when, rows in ACTIVITY:
             secs += Section(when, Rows([_act_row(i, t, f'{s}<span class="when">{at}</span>', u)
                                         for i, t, s, g, at, u in rows], open_=True), action='Mark all read' if when == 'Today' else '')
         body = PageHeader('Activity') + chips + secs
-        return app_page(platform, _page(body, 'Activity'), 'activity', badges={'raid': 0, 'activity': 3})
+        return app_page(platform, page(body, 'Activity'), 'activity', badges={'raid': 0, 'activity': 3})
     return b
-
-
-def notifications(platform: str) -> str:
-    """F1: the raid push, long-pressed with the four answers, Late's minutes, and the quiet confirmation; F2: the raid-night
-    end state; F3: the applicant push (Review, not Accept, on the lock screen: review M3)."""
-    app = f'<span class="app">{glyph("guild", 14)}</span>'
-    acts = '<div class="acts">' + ''.join(f'<a href="#">{x}</a>' for x in ('In', 'Late', 'Bench', 'Out')) + '</div>'
-    raid = (f'<div class="nt"><div class="top">{app}Forever Sixty &middot; now</div>'
-            f'<span class="nm">{RAID} &middot; {WHEN}</span>'
-            f'<span class="ln">Are you in, {AS_ME}? {COUNTS}. Answer by 6:00 pm CST.</span>')
-    press = 'long-pressed' if platform == 'ios' else 'expanded'
-    confirm = lambda nm, ln: (f'<div class="lockbg"><div class="nt"><div class="top">{app}Forever Sixty &middot; now</div>'
-                              f'<span class="nm">{nm}</span><span class="ln">{ln}</span></div></div>')
-    applicant = (f'<div class="nt"><div class="top">{app}Forever Sixty &middot; 2 min</div><span class="nm">New applicant: Mirelle, Holy Priest 60</span>'
-                 '<span class="ln">Forever Score 74 &middot; attuned to Onyxia &middot; healers are 3 short</span>'
-                 '<div class="acts" style="grid-template-columns:1fr 1fr"><a href="#">Review</a><a href="#">Decline</a></div></div>')
-    ended = (f'<div class="nt"><div class="top">{app}Forever Sixty &middot; 11:46 pm</div><span class="nm">{RAID} done &middot; 1 kill</span>'
-             '<span class="ln">You got Deathbringer. The report is ready: 87th percentile.</span></div>')
-    body = (PageHeader('Notifications')
-            + f'<p class="lbl">Raid, {press} on the lock screen</p><div class="lockbg">' + raid + acts + '</div></div>'
-            + f'<p class="lbl">After Late, the minutes ({"a notification content extension" if platform == "ios" else "the expanded notification"})</p>'
-            + '<div class="lockbg">' + raid + '<span class="ln">How late?</span>' + _late_chips() + '</div></div>'
-            + '<p class="lbl">The answer, sent without opening the app</p>' + confirm('You&rsquo;re In for Onyxia, 8:00 pm CST', f'{AS_ME_CAP} &middot; 19 in, 3 late.')
-            + confirm('You&rsquo;re Late (30 min) for Onyxia', f'{AS_ME_CAP} &middot; arriving 8:30 pm CST.')
-            + '<p class="lbl">Raid night ends</p><div class="lockbg">' + ended + '</div>'
-            + '<p class="lbl">Officer: an applicant</p><div class="lockbg">' + applicant + '</div>')
-    return app_page(platform, _page(body, 'Notifications'), None, navbar=False)
 
 
 # ------------------------------------------------------------------------------------------------ F3: the officer's raid page
@@ -456,7 +416,7 @@ def raid_unanswered(platform: str) -> str:
             + Section('Not answered', Rows(rows, open_=True), meta='4 of 31, healers first')
             + Section('Healers on the bench', bench + '<p class="t-small stampl">If Mirethil, Selka and Aurelith are In, healers are full.</p>')
             + '<p class="t-small" style="margin-top:16px">Creating and editing raids stays on the site. <a class="link" href="#">Edit on the site &rsaquo;</a></p>')
-    return app_page(platform, _page(body, RAID), 'raid', back='Raid', title=RAID, share=True, badges=OFFICER)
+    return app_page(platform, page(body, RAID), 'raid', back='Raid', title=RAID, share=True, badges=OFFICER)
 
 
 def applicant(state: str):
@@ -479,7 +439,7 @@ def applicant(state: str):
                     + Section('Their note', '<p class="t-prose" style="padding-top:8px">Holy main since launch. Wednesday and Sunday nights work for me.</p>')
                     + '<div class="sticky">' + Button('Accept into guild', primary=True) + Button('Decline') + '</div>'
                     + '<p class="t-small" style="margin-top:8px">Her raid role comes from her spec when she answers a raid.</p>')
-        return app_page(platform, _page(body, 'Mirelle'), 'raid', back='Raid', title='Mirelle', badges=OFFICER)
+        return app_page(platform, page(body, 'Mirelle'), 'raid', back='Raid', title='Mirelle', badges=OFFICER)
     return b
 
 
@@ -490,7 +450,7 @@ def pick_main(platform: str) -> str:
             + '<p class="t-small" style="margin-top:8px">Home answers for your main, and your raid sign-ups are for it. '
             'Switch any time from your portrait, top left.</p>'
             + Section('Your characters', Rows(rows, open_=True)) + '<div class="vstack">' + Button('Continue with Thandrel', primary=True) + '</div>')
-    return app_page(platform, _page(body, 'Pick your main'), None, navbar=False)
+    return app_page(platform, page(body, 'Pick your main'), None, navbar=False)
 
 
 def permission(guild: str):
@@ -501,7 +461,7 @@ def permission(guild: str):
                 + '<p class="t-small eyebrow">You&rsquo;re in</p>' + PageHeader(guild)
                 + '<p class="t-small">Get raid sign-ups here. Answer In, Late, Bench or Out from the notification, without opening the app.</p></div>'
                 + '<div class="vstack">' + Button('Turn on notifications', primary=True) + Button('Not now') + '</div>')
-        return app_page(platform, _page(body, 'Notifications'), None, navbar=False)
+        return app_page(platform, page(body, 'Notifications'), None, navbar=False)
     return b
 
 
@@ -515,7 +475,7 @@ def notification_settings(platform: str) -> str:
             + Switch('', on) + '</div>' for n, s, on in groups]
     nudge = Rows([Row('Raid-day reminder', 'If you have not answered: 3:00 pm your time', trail='<a class="link" href="#">Change</a>', link=False)], open_=True)
     body = PageHeader('Notifications') + Section('Send me', Rows(rows, open_=True)) + Section('When', nudge)
-    return app_page(platform, _page(body, 'Notifications'), 'home', back='Home', title='Notifications')
+    return app_page(platform, page(body, 'Notifications'), 'home', back='Home', title='Notifications')
 
 
 # ------------------------------------------------------------------------------------------------ F4, F5: the item sheet
@@ -556,7 +516,6 @@ SCREENS = {
     'activity': activity('in'),
     'activity-empty': activity('empty'),
     'activity-out': activity('out'),
-    'notifications': notifications,
     'notification-settings': notification_settings,
     'raid-unanswered': raid_unanswered,
     'raid-applicant': applicant('review'),

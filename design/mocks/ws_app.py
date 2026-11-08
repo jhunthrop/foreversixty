@@ -22,6 +22,7 @@ from html import escape
 from mocklib import ROOT, CLASS_COLOR
 from ws_app_frame import DEVICES, app_page, from_web, glyph, write_app
 import ws_app_flows as flows
+import ws_app_secondary as secondary
 from ws_home import NOW, RAIDS, clock_to, day_text, raids_open
 from ws_prims import (Button, Checklist, Countdown, Figure, Notice, PageHeader, Rows, Row, Section, Switch, Tag, Meter, build_page,
                       crest_img, icon)
@@ -313,23 +314,12 @@ SCREENS: dict = {
     'bis-spec-60': W('web-bis-dps-60', 'gear', back='Gear', title='Marksmanship', share=True),
     'bis-spec-healer-60': W('web-bis-healer-60', 'gear', back='Gear', title='Holy', share=True),
     'bis-spec-20': W('web-bis-low-20', 'gear', back='Gear', title='Beast Mastery', share=True),
-    # Guides (tab Guides): Guide | Tiers | What changed segments
+    # Guides and Tiers (menu tools); the reader, the class page and Patch notes are app-composed in ws_app_secondary.py
     'guides': W('web-guides', 'home', back='Home', title='Guides'),
     'guides-you': W('web-guides-you', 'home', back='Home', title='Guides'),
-    'guides-class': W('web-guides-hunter', 'home', back='Guides', title='Hunter'),
-    'guide': W('web-guides-hunter-survival', 'home', back='Hunter', title='Survival', share=True),
-    'guide-you': W('web-guides-hunter-survival-you', 'home', back='Hunter', title='Survival', share=True),
-    'guide-loading': W('web-guides-hunter-survival-loading', 'home', back='Hunter'),
-    'guide-error': W('web-guides-hunter-survival-error', 'home', back='Hunter'),
     'tiers': W('web-tiers', 'home', back='Home', title='Tiers'),
     'tiers-you': W('web-tiers-you', 'home', back='Home', title='Tiers'),
-    'changes': W('web-changelog-game', 'home', back='Home', title='What changed'),
-    # Sims, talents and the planner (from Home's Next rows)
-    'sim': W('web-sim', 'home', back='Home'),
-    'sim-you': W('web-sim-you', 'home', back='Home'),
-    'sim-running': W('web-sim-running', 'home', back='Sims'),
-    'sim-result': W('web-sim-result', 'home', back='Sims', title='Sim result', share=True),
-    'sim-saved': W('web-sim-saved', 'home', back='Sims'),
+    # Talents and the planner (the Sims screens are app-composed in ws_app_secondary.py)
     'planner-you': W('web-planner-you', 'home', back='Home', title='Talents', share=True),
     'planner-guide': W('web-planner-guide', 'home', back='Home', title='Talents', share=True),
     'planner-loading': W('web-planner-loading', 'home', back='Home'),
@@ -348,19 +338,10 @@ SCREENS: dict = {
     'rankings': W('web-rankings', 'home', back='Home'),
     'rankings-you': W('web-rankings-you', 'home', back='Home'),
     'rankings-empty': W('web-rankings-empty', 'home', back='Home'),
-    # Guild (tab Guild) and raids
-    'guild-raids': W('web-guild-raids', 'raid', back='Raid'),
-    'guild-raid': W('web-guild-raid', 'raid', back='Raids', share=True),
-    'guild-roster': W('web-guild-roster', 'raid', back='Raid'),
-    'guild-loot': W('web-guild-loot', 'raid', back='Raid'),
+    # Raid night (the guild's Roster, Calendar, raid page and Raid history are in ws_app_secondary.py)
     'raid-night-live': raid_night('live'),
     'raid-night-signup': raid_night('signup'),
-    # You, account, premium, system
-    'account': W('web-account', 'home', back='Home'),
-    'account-premium': W('web-account-premium', 'home', back='Home'),
-    'account-loading': W('web-account-loading', 'home', back='Home'),
-    'account-error': W('web-account-error', 'home', back='Home'),
-    'premium': W('web-premium-free', 'home', back='Plan'),
+    # Account chores and system (Settings and Plan are in ws_app_secondary.py)
     'devices': devices,
     'delete-free': delete('free'),
     'delete-premium': delete('premium'),
@@ -375,6 +356,7 @@ SCREENS: dict = {
     'widgets-open': widgets('open'),
     'live-activity': live_activity,
     **flows.SCREENS,
+    **secondary.SCREENS,
 }
 
 
