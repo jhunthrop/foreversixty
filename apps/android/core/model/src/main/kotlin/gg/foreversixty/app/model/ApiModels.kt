@@ -78,6 +78,46 @@ data class ActiveBuild(
     @SerialName("build") val build: String,
 )
 
+@Serializable
+data class ActivityPage(
+    /** Newest first. */
+    @SerialName("rows") val rows: List<ActivityRow> = emptyList(),
+    /** The account's whole unread count, for the tab badge; not the page's. */
+    @SerialName("unread") val unread: Int,
+    /** The before of the next page; null on the last page. */
+    @SerialName("next_before") val nextBefore: Long? = null,
+)
+
+@Serializable
+data class ActivityReadRequest(
+    /** Every row with an id at or below it is marked read. */
+    @SerialName("through") val through: Long,
+)
+
+/** One notification event the player was a recipient of, recorded whatever their push and Discord choices and quiet hours. Show copy from title and body; open link on a tap. */
+@Serializable
+data class ActivityRow(
+    /** Rising; the cursor of before and through. */
+    @SerialName("id") val id: Long,
+    /** The catalogue's name: raid.posted, sim.finished, ... */
+    @SerialName("kind") val kind: String,
+    /** raids, gear, logs, ladder, tiers, officer or account. The app shows the first six as filters and account rows under All only; treat an unknown group as account. */
+    @SerialName("group") val group: String,
+    @SerialName("title") val title: String,
+    @SerialName("body") val body: String,
+    /** The deep link, an https://foreversixty.gg/... URL; empty when there is none. */
+    @SerialName("link") val link: String,
+    /** RFC 3339, UTC */
+    @SerialName("occurred_at") val occurredAt: String,
+    @SerialName("read") val read: Boolean,
+)
+
+@Serializable
+data class ActivityUnread(
+    /** The account's unread count after the change. */
+    @SerialName("unread") val unread: Int,
+)
+
 /** GET /v1/app/config, read once at launch and cached. Show "See plans" exactly when the storefront country is in web_checkout_regions. Below min_app_version, block with the update screen. A feature ships behind a features key, dark in both apps, and the key turns it on in both at once: a key the app does not know is ignored, and a key the answer leaves out takes the app's bundled default (apps/shared/features.json). */
 @Serializable
 data class AppConfig(

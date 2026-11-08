@@ -4067,6 +4067,42 @@ components:
               kind: { type: string }
               channel: { type: string, enum: [push, discord] }
               enabled: { type: boolean }
+    ActivityRow:
+      type: object
+      description: >-
+        One notification event the player was a recipient of, recorded whatever their push and
+        Discord choices and quiet hours. Show copy from title and body; open link on a tap.
+      required: [id, kind, group, title, body, link, occurred_at, read]
+      properties:
+        id: { type: integer, format: int64, description: "Rising; the cursor of before and through." }
+        kind: { type: string, description: "The catalogue's name: raid.posted, sim.finished, ..." }
+        group:
+          type: string
+          description: >-
+            raids, gear, logs, ladder, tiers, officer or account. The app shows the first six as
+            filters and account rows under All only; treat an unknown group as account.
+        title: { type: string }
+        body: { type: string }
+        link: { type: string, description: "The deep link, an https://foreversixty.gg/... URL; empty when there is none." }
+        occurred_at: { type: string, format: date-time, description: "RFC 3339, UTC" }
+        read: { type: boolean }
+    ActivityPage:
+      type: object
+      required: [rows, unread, next_before]
+      properties:
+        rows: { type: array, items: { $ref: '#/components/schemas/ActivityRow' }, description: Newest first. }
+        unread: { type: integer, description: "The account's whole unread count, for the tab badge; not the page's." }
+        next_before: { type: [integer, "null"], format: int64, description: "The before of the next page; null on the last page." }
+    ActivityReadRequest:
+      type: object
+      required: [through]
+      properties:
+        through: { type: integer, format: int64, minimum: 1, description: "Every row with an id at or below it is marked read." }
+    ActivityUnread:
+      type: object
+      required: [unread]
+      properties:
+        unread: { type: integer, description: "The account's unread count after the change." }
     PushTokenRequest:
       type: object
       required: [platform, token]
@@ -8704,6 +8740,66 @@ paths:
         '422':
           description: "invalid, with fields time_zone, quiet_hours, events or events[i]; or nothing to change"
           x-fixtures: [app.notifications.patch.error-invalid]
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  /v1/me/activity:
+    get:
+      summary: The player's Activity inbox (dark, APP_NOTIFICATIONS_ENABLED)
+      description: >-
+        Session or device token. Every notification event the player got, newest first, whatever
+        their channel choices, kept 90 days. Cache-Control no-store.
+      operationId: getActivity
+      tags: [app]
+      parameters:
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
+        - { name: group, in: query, schema: { type: string, enum: [raids, gear, logs, ladder, tiers, officer, account] }, description: Omitted for All. }
+        - { name: before, in: query, schema: { type: integer, format: int64, minimum: 1 }, description: The next_before of a previous page. }
+        - { name: limit, in: query, schema: { type: integer, minimum: 1, maximum: 50, default: 30 } }
+      responses:
+        '426': { $ref: '#/components/responses/UpdateRequired' }
+        '200':
+          description: "One page of the inbox"
+          x-fixtures: [activity.list, activity.list.empty]
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/ActivityPage' } } }
+        '400':
+          description: "invalid, with fields group, before or limit"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '401':
+          description: "Not signed in"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  /v1/me/activity/read:
+    post:
+      summary: Mark the player's Activity read through a row (dark, APP_NOTIFICATIONS_ENABLED)
+      description: Session or device token. Marks every row with an id at or below through read.
+      operationId: markActivityRead
+      tags: [app]
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: '#/components/schemas/ActivityReadRequest' } } }
+      parameters:
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
+      responses:
+        '426': { $ref: '#/components/responses/UpdateRequired' }
+        '200':
+          description: "The unread count left"
+          x-fixtures: [activity.read]
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/ActivityUnread' } } }
+        '400':
+          description: "invalid: a body that is not JSON, or through missing or below 1"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '401':
+          description: "Not signed in"
           content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
   /v1/me/push-tokens:
     post:

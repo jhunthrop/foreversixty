@@ -31,6 +31,11 @@ func (f fakePrune) PruneDeliveries(context.Context, time.Time, int) (int64, erro
 	return 3, nil
 }
 
+func (f fakePrune) PruneActivity(context.Context, time.Time, int) (int64, error) {
+	*f.order = append(*f.order, "prune_activity")
+	return 4, nil
+}
+
 func TestRaidPostsRunsTheEventScheduleAfterTheDrain(t *testing.T) {
 	var order []string
 	var buf bytes.Buffer
@@ -41,10 +46,10 @@ func TestRaidPostsRunsTheEventScheduleAfterTheDrain(t *testing.T) {
 	if err := raidPosts(context.Background(), slog.New(slog.NewTextHandler(&buf, nil)), svc, time.Now()); err != nil {
 		t.Fatal(err)
 	}
-	if got := strings.Join(order, ","); got != "schedule,drain,drain,drain,drain,drain,events,prune" {
+	if got := strings.Join(order, ","); got != "schedule,drain,drain,drain,drain,drain,events,prune,prune_activity" {
 		t.Fatalf("order %s", got)
 	}
-	for _, want := range []string{"nudged=2", "starting=1", "pruned=3"} {
+	for _, want := range []string{"nudged=2", "starting=1", "pruned=3", "pruned_activity=4"} {
 		if !strings.Contains(buf.String(), want) {
 			t.Fatalf("log %q lacks %s", buf.String(), want)
 		}

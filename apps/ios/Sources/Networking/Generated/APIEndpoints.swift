@@ -380,6 +380,24 @@ public extension Endpoint where Response == NotificationSettings {
     }
 }
 
+public extension Endpoint where Response == ActivityPage {
+    /// GET /v1/me/activity: The player's Activity inbox (dark, APP_NOTIFICATIONS_ENABLED)
+    static func getActivity(group: String? = nil, before: Int64? = nil, limit: Int? = nil) -> Endpoint {
+        Endpoint(method: .get, path: "/v1/me/activity", query: [
+            group.map { URLQueryItem(name: "group", value: "\($0)") },
+            before.map { URLQueryItem(name: "before", value: "\($0)") },
+            limit.map { URLQueryItem(name: "limit", value: "\($0)") },
+        ].compactMap { $0 })
+    }
+}
+
+public extension Endpoint where Response == ActivityUnread {
+    /// POST /v1/me/activity/read: Mark the player's Activity read through a row (dark, APP_NOTIFICATIONS_ENABLED)
+    static func markActivityRead(_ body: ActivityReadRequest) throws(APIError) -> Endpoint {
+        try .json(.post, "/v1/me/activity/read", body: body)
+    }
+}
+
 public extension Endpoint where Response == PushTokenRegistered {
     /// POST /v1/me/push-tokens: Register this device's push token (dark, APP_NOTIFICATIONS_ENABLED; device token only)
     static func registerPushToken(_ body: PushTokenRequest) throws(APIError) -> Endpoint {
@@ -573,6 +591,8 @@ public enum ContractRoutes {
         FixtureRoute(.post, "/v1/auth/app/logout", fixture: "app.logout", status: 200),
         FixtureRoute(.get, "/v1/me/notifications", fixture: "app.notifications", status: 200),
         FixtureRoute(.patch, "/v1/me/notifications", fixture: "app.notifications", status: 200),
+        FixtureRoute(.get, "/v1/me/activity", fixture: "activity.list", status: 200),
+        FixtureRoute(.post, "/v1/me/activity/read", fixture: "activity.read", status: 200),
         FixtureRoute(.post, "/v1/me/push-tokens", fixture: "app.push-tokens.register", status: 201),
         FixtureRoute(.delete, "/v1/me/push-tokens/{token}", fixture: nil, status: 204),
         FixtureRoute(.get, "/v1/me/widget", fixture: "widget.get", status: 200),

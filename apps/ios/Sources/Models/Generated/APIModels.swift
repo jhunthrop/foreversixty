@@ -211,6 +211,91 @@ public struct ActiveBuild: Codable, Sendable, Equatable {
     }
 }
 
+public struct ActivityPage: Codable, Sendable, Equatable {
+    /// Newest first.
+    public let rows: [ActivityRow]
+    /// The account's whole unread count, for the tab badge; not the page's.
+    public let unread: Int
+    /// The before of the next page; null on the last page.
+    public let nextBefore: Int64?
+
+    public init(
+        rows: [ActivityRow] = [],
+        unread: Int,
+        nextBefore: Int64? = nil
+    ) {
+        self.rows = rows
+        self.unread = unread
+        self.nextBefore = nextBefore
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        rows = try c.decodeIfPresent([ActivityRow].self, forKey: .rows) ?? []
+        unread = try c.decode(Int.self, forKey: .unread)
+        nextBefore = try c.decodeIfPresent(Int64.self, forKey: .nextBefore)
+    }
+}
+
+public struct ActivityReadRequest: Codable, Sendable, Equatable {
+    /// Every row with an id at or below it is marked read.
+    public let through: Int64
+
+    public init(
+        through: Int64
+    ) {
+        self.through = through
+    }
+}
+
+/// One notification event the player was a recipient of, recorded whatever their push and Discord choices and quiet hours. Show copy from title and body; open link on a tap.
+public struct ActivityRow: Codable, Sendable, Equatable {
+    /// Rising; the cursor of before and through.
+    public let id: Int64
+    /// The catalogue's name: raid.posted, sim.finished, ...
+    public let kind: String
+    /// raids, gear, logs, ladder, tiers, officer or account. The app shows the first six as filters and account rows under All only; treat an unknown group as account.
+    public let group: String
+    public let title: String
+    public let body: String
+    /// The deep link, an https://foreversixty.gg/... URL; empty when there is none.
+    public let link: String
+    /// RFC 3339, UTC
+    public let occurredAt: Date
+    public let read: Bool
+
+    public init(
+        id: Int64,
+        kind: String,
+        group: String,
+        title: String,
+        body: String,
+        link: String,
+        occurredAt: Date,
+        read: Bool
+    ) {
+        self.id = id
+        self.kind = kind
+        self.group = group
+        self.title = title
+        self.body = body
+        self.link = link
+        self.occurredAt = occurredAt
+        self.read = read
+    }
+}
+
+public struct ActivityUnread: Codable, Sendable, Equatable {
+    /// The account's unread count after the change.
+    public let unread: Int
+
+    public init(
+        unread: Int
+    ) {
+        self.unread = unread
+    }
+}
+
 /// GET /v1/app/config, read once at launch and cached. Show "See plans" exactly when the storefront country is in web_checkout_regions. Below min_app_version, block with the update screen. A feature ships behind a features key, dark in both apps, and the key turns it on in both at once: a key the app does not know is ignored, and a key the answer leaves out takes the app's bundled default (apps/shared/features.json).
 public struct AppConfig: Codable, Sendable, Equatable {
     /// The signed-out home's blocks in order: apps/shared/home-sections.json, which the apps also bundle, or the HOME_SECTIONS signed_out override.

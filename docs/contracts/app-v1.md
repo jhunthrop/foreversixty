@@ -815,6 +815,22 @@ events: [{ kind, channel ("push"|"discord"), enabled }] }`. Answer 200 the GET b
 (`time_zone`, `quiet_hours`, `events`, `events[i]`; `app.notifications.patch.error-invalid`), and
 422 "nothing to change".
 
+### GET /v1/me/activity and POST /v1/me/activity/read
+Auth session or device. Caching **no-store**. The Activity tab: every notification event the
+player was a recipient of, newest first, recorded whatever their push and Discord choices and
+quiet hours, kept 90 days. A republished event (the same dedupe key) is one row. Query `group`
+(`raids`, `gear`, `logs`, `ladder`, `tiers`, `officer`, `account`; omitted for All), `before` (the
+`next_before` of a previous page) and `limit` (1 to 50, default 30). Answer `{ rows[], unread,
+next_before }`; a row is `{ id, kind, group, title, body, link, occurred_at, read }`. `unread` is
+the account's whole unread count, for the tab badge, not the page's; `next_before` is null on the
+last page. Show the first six groups as filters and `account` rows under All only; treat an
+unknown `group` as `account`. Fixtures `activity.list`, `activity.list.empty`. Errors: 400
+`invalid` with `fields` (`group`, `before`, `limit`).
+
+`POST /v1/me/activity/read` with `{ through }` marks every row with an id at or below `through`
+read, and answers `{ unread }` (`activity.read`). Errors: 400 `invalid` for a body that is not
+JSON or a missing or non-positive `through`.
+
 ### POST /v1/me/push-tokens and DELETE /v1/me/push-tokens/{token}
 Auth device only (a cookie is refused). Register after the permission prompt and again whenever
 the OS rotates the token. Body `{ platform ("ios"|"android"), token, app_version }`: an iOS token is

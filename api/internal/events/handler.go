@@ -21,16 +21,22 @@ type PrefsStore interface {
 	SaveSettings(ctx context.Context, userID int64, change SettingsChange) error
 }
 
-// Handler serves GET and PATCH /v1/me/notifications.
+// Handler serves GET and PATCH /v1/me/notifications and, with Activity set, the Activity
+// inbox (GET /v1/me/activity, POST /v1/me/activity/read).
 type Handler struct {
 	Store PrefsStore
-	Log   *slog.Logger
+	// Activity is the inbox; nil leaves its routes unmounted.
+	Activity ActivityStore
+	Log      *slog.Logger
 }
 
-// Mount adds the preference routes. A session or a device token reaches them.
+// Mount adds the preference and inbox routes. A session or a device token reaches them.
 func Mount(mux *http.ServeMux, h *Handler) {
 	mux.HandleFunc("GET /v1/me/notifications", auth.Require(h.get))
 	mux.HandleFunc("PATCH /v1/me/notifications", auth.Require(h.patch))
+	if h.Activity != nil {
+		mountActivity(mux, h)
+	}
 }
 
 func (h *Handler) logger() *slog.Logger {

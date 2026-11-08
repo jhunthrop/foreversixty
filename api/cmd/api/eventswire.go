@@ -38,7 +38,8 @@ func newEventsRouter(ctx context.Context, cfg config.Config, pool *pgxpool.Pool,
 	if len(sinks) == 0 {
 		return nil
 	}
-	return &events.Router{Store: &events.Store{Pool: pool}, Sinks: sinks, Log: log}
+	store := &events.Store{Pool: pool}
+	return &events.Router{Store: store, Sinks: sinks, Inbox: store, Log: log}
 }
 
 // pushSenders is a sender per platform that can send. A key that does not parse, or no
@@ -95,14 +96,15 @@ func newJobNotifier(ctx context.Context, cfg config.Config, pool *pgxpool.Pool, 
 	return &notify.EventProducer{Publisher: router, PublicBaseURL: cfg.PublicBaseURL, Log: log}
 }
 
-// wireEvents connects serve's producers and, with the flag on, mounts the preference and
-// push token routes and lets a device token answer a raid sign-up. deps.Notify must already
+// wireEvents connects serve's producers and, with the flag on, mounts the preference, Activity
+// inbox and push token routes and lets a device token answer a raid sign-up. deps.Notify must already
 // be wired.
 func wireEvents(ctx context.Context, cfg config.Config, pool *pgxpool.Pool, deps *server.Deps, log *slog.Logger) {
 	if !cfg.Push.Enabled {
 		return
 	}
-	deps.Notifications = &events.Handler{Store: &events.Store{Pool: pool}, Log: log}
+	store := &events.Store{Pool: pool}
+	deps.Notifications = &events.Handler{Store: store, Activity: store, Log: log}
 	deps.PushTokens = &push.Handler{Store: &push.Store{Pool: pool}, Log: log}
 	if deps.Guilds != nil {
 		deps.Guilds.AppSignups = true

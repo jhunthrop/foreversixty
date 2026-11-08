@@ -4,6 +4,9 @@ package gg.foreversixty.app.network
 import gg.foreversixty.app.model.AccountDeletion
 import gg.foreversixty.app.model.AccountDeletionRequest
 import gg.foreversixty.app.model.ActiveBuild
+import gg.foreversixty.app.model.ActivityPage
+import gg.foreversixty.app.model.ActivityReadRequest
+import gg.foreversixty.app.model.ActivityUnread
 import gg.foreversixty.app.model.ApiJson
 import gg.foreversixty.app.model.AppConfig
 import gg.foreversixty.app.model.AppExchangeRequest
@@ -276,6 +279,14 @@ object ApiEndpoints {
     fun updateNotificationSettings(body: NotificationsPatch): Endpoint<NotificationSettings> =
         Endpoint(HttpMethod.Patch, "/v1/me/notifications", NotificationSettings.serializer(), body = ApiJson.encodeToString(NotificationsPatch.serializer(), body))
 
+    /** GET /v1/me/activity: The player's Activity inbox (dark, APP_NOTIFICATIONS_ENABLED) */
+    fun getActivity(group: String? = null, before: Long? = null, limit: Int? = null): Endpoint<ActivityPage> =
+        Endpoint(HttpMethod.Get, "/v1/me/activity", ActivityPage.serializer(), query = listOfNotNull(group?.let { "group" to it }, before?.let { "before" to it.toString() }, limit?.let { "limit" to it.toString() }))
+
+    /** POST /v1/me/activity/read: Mark the player's Activity read through a row (dark, APP_NOTIFICATIONS_ENABLED) */
+    fun markActivityRead(body: ActivityReadRequest): Endpoint<ActivityUnread> =
+        Endpoint(HttpMethod.Post, "/v1/me/activity/read", ActivityUnread.serializer(), body = ApiJson.encodeToString(ActivityReadRequest.serializer(), body))
+
     /** POST /v1/me/push-tokens: Register this device's push token (dark, APP_NOTIFICATIONS_ENABLED; device token only) */
     fun registerPushToken(body: PushTokenRequest): Endpoint<PushTokenRegistered> =
         Endpoint(HttpMethod.Post, "/v1/me/push-tokens", PushTokenRegistered.serializer(), body = ApiJson.encodeToString(PushTokenRequest.serializer(), body))
@@ -427,6 +438,8 @@ object ContractRoutes {
         FixtureRoute(HttpMethod.Post, "/v1/auth/app/logout", "app.logout", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Get, "/v1/me/notifications", "app.notifications", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Patch, "/v1/me/notifications", "app.notifications", HttpStatusCode.fromValue(200)),
+        FixtureRoute(HttpMethod.Get, "/v1/me/activity", "activity.list", HttpStatusCode.fromValue(200)),
+        FixtureRoute(HttpMethod.Post, "/v1/me/activity/read", "activity.read", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Post, "/v1/me/push-tokens", "app.push-tokens.register", HttpStatusCode.fromValue(201)),
         FixtureRoute(HttpMethod.Delete, "/v1/me/push-tokens/{token}", null, HttpStatusCode.fromValue(204)),
         FixtureRoute(HttpMethod.Get, "/v1/me/widget", "widget.get", HttpStatusCode.fromValue(200)),

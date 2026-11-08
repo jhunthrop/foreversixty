@@ -16,9 +16,11 @@ func TestAppNotificationRoutesAreUnmountedByDefault(t *testing.T) {
 		{http.MethodPatch, "/v1/me/notifications"},
 		{http.MethodPost, "/v1/me/push-tokens"},
 		{http.MethodDelete, "/v1/me/push-tokens/abc"},
+		{http.MethodGet, "/v1/me/activity"},
+		{http.MethodPost, "/v1/me/activity/read"},
 	}
 	dark := NewRouter(Deps{})
-	lit := NewRouter(Deps{Notifications: &events.Handler{}, PushTokens: &push.Handler{}})
+	lit := NewRouter(Deps{Notifications: &events.Handler{Activity: &events.Store{}}, PushTokens: &push.Handler{}})
 	for _, r := range routes {
 		rec := httptest.NewRecorder()
 		dark.ServeHTTP(rec, httptest.NewRequest(r.method, r.path, nil))

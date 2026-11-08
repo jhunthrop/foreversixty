@@ -230,3 +230,72 @@ func TestASinkThatDoesNotRenderAKindIsSkippedBeforeAnyRead(t *testing.T) {
 		t.Fatalf("sim: %v %v", err, sink.got)
 	}
 }
+
+type fakeInbox struct {
+	got map[int64][]Kind
+	err error
+}
+
+func (f *fakeInbox) Record(_ context.Context, uids []int64, e Event) error {
+	if f.got == nil {
+		f.got = map[int64][]Kind{}
+	}
+	for _, uid := range uids {
+		f.got[uid] = append(f.got[uid], e.Kind)
+	}
+	return f.err
+}
+
+func TestTheInboxRecordsEveryRecipientWithPushesOff(t *testing.T) {
+	off := Prefs{}.With(RaidPosted, ChannelPush, false).With(RaidPosted, ChannelDiscord, false)
+	quiet := Prefs{Quiet: QuietHours{Enabled: true, Start: 0, End: 23*60 + 59}}
+	st := &fakeStore{users: []int64{1, 2}, prefs: map[int64]Prefs{1: off, 2: quiet}}
+	r, push, discord := newRouter(st)
+	inbox := &fakeInbox{}
+	r.Inbox = inbox
+	if err := r.Publish(context.Background(), raidPosted(1)); err != nil {
+		t.Fatal(err)
+	}
+	if len(inbox.got[1]) != 1 || len(inbox.got[2]) != 1 {
+		t.Fatalf("inbox %v", inbox.got)
+	}
+	if len(push.got) != 0 || len(discord.got) != 1 || discord.got[0].uid != 2 {
+		t.Fatalf("push %v discord %v", push.got, discord.got)
+	}
+	// Off by default on every channel still lands in the inbox.
+	if err := r.Publish(context.Background(), Event{Kind: BisChanged, Audience: Users(1), DedupeKey: "bis:w1"}); err != nil {
+		t.Fatal(err)
+	}
+	if len(inbox.got[1]) != 2 {
+		t.Fatalf("inbox %v", inbox.got)
+	}
+}
+
+func TestAnInboxFailureDoesNotStopDelivery(t *testing.T) {
+	st := &fakeStore{}
+	r, push, discord := newRouter(st)
+	r.Inbox = &fakeInbox{err: errors.New("db")}
+	if err := r.Publish(context.Background(), Event{Kind: SimFinished, Audience: Users(1), DedupeKey: "s"}); err != nil {
+		t.Fatal(err)
+	}
+	if len(push.got) != 1 || len(discord.got) != 1 {
+		t.Fatalf("push %v discord %v", push.got, discord.got)
+	}
+}
+
+func TestTheInboxRecordsAKindNoSinkRenders(t *testing.T) {
+	st := &fakeStore{users: []int64{1}}
+	sink := &simOnlySink{}
+	inbox := &fakeInbox{}
+	r := &Router{Store: st, Sinks: map[Channel]Sink{ChannelDiscord: sink}, Inbox: inbox}
+	if err := r.Publish(context.Background(), raidPosted(1)); err != nil {
+		t.Fatal(err)
+	}
+	if len(inbox.got[1]) != 1 || len(sink.got) != 0 || len(st.claims) != 0 {
+		t.Fatalf("inbox %v sink %v claims %v", inbox.got, sink.got, st.claims)
+	}
+	noSinks := &fakeInbox{}
+	if err := (&Router{Store: st, Inbox: noSinks}).Publish(context.Background(), raidPosted(2)); err != nil || len(noSinks.got[1]) != 1 {
+		t.Fatalf("no sinks: %v %v", err, noSinks.got)
+	}
+}

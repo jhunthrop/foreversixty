@@ -1,0 +1,31 @@
+{
+  "ok": true,
+  "data": {
+    "rows": [
+      {
+        "id": 4182,
+        "kind": "raid.posted",
+        "group": "raids",
+        "title": "Molten Core posted",
+        "body": "Thursday 8:00 PM. Sign up In, Late or Out.",
+        "link": "https://foreversixty.gg/guild/olympus-xxvii/raids/311",
+        "occurred_at": "2026-11-07T18:04:11Z",
+        "read": false
+      },
+      {
+        "id": 4151,
+        "kind": "sim.finished",
+        "group": "gear",
+        "title": "Your sim finished",
+        "body": "Obnoxious Yell: 1,184 DPS in Fury.",
+        "link": "https://foreversixty.gg/sim/r/9f2c41d0",
+        "occurred_at": "2026-11-07T15:40:02Z",
+        "read": true
+      }
+    ],
+    "unread": 3,
+    "next_before": 4151
+  },
+  "error": null,
+  "request_id": "9f2c41d07ab3e655"
+}

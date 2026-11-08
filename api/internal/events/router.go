@@ -32,11 +32,19 @@ type RouterStore interface {
 	Unclaim(ctx context.Context, userID int64, key string, channel Channel) error
 }
 
+// Inbox keeps the player's Activity rows (Store): one per recipient of every routed event,
+// whatever the channel preferences, so a player with pushes off still sees what changed.
+type Inbox interface {
+	Record(ctx context.Context, userIDs []int64, e Event) error
+}
+
 // Router sends a published event to each recipient's channels, per preference. A channel
 // with no sink is off for everyone.
 type Router struct {
 	Store RouterStore
 	Sinks map[Channel]Sink
+	// Inbox records every routed event per recipient; nil records nothing.
+	Inbox Inbox
 	// Now is the clock quiet hours are read against; nil is time.Now.
 	Now func() time.Time
 	Log *slog.Logger
@@ -70,7 +78,8 @@ func (r *Router) Publish(ctx context.Context, e Event) error {
 	if spec.Officer && e.Audience.Kind != ToGuildOfficers {
 		return errOfficerAudience
 	}
-	if !r.anySinkRenders(e.Kind) {
+	renders := r.anySinkRenders(e.Kind)
+	if !renders && r.Inbox == nil {
 		return nil
 	}
 	users, err := r.Store.Recipients(ctx, e.Audience)
@@ -78,6 +87,10 @@ func (r *Router) Publish(ctx context.Context, e Event) error {
 		return fmt.Errorf("events: recipients of %s: %w", e.Kind, err)
 	}
 	if len(users) == 0 {
+		return nil
+	}
+	r.record(ctx, users, e)
+	if !renders {
 		return nil
 	}
 	prefs, err := r.Store.PrefsOf(ctx, users)
@@ -96,6 +109,16 @@ func (r *Router) Publish(ctx context.Context, e Event) error {
 		}
 	}
 	return errors.Join(errs...)
+}
+
+// record keeps e in each recipient's inbox. A failure is logged and never stops delivery.
+func (r *Router) record(ctx context.Context, users []int64, e Event) {
+	if r.Inbox == nil {
+		return
+	}
+	if err := r.Inbox.Record(ctx, users, e); err != nil {
+		r.logger().Error("events", "op", "inbox", "kind", string(e.Kind), "recipients", len(users), "err", err)
+	}
 }
 
 // deliverOne sends e to one account on one channel when the preference and the quiet hours
@@ -145,7 +168,7 @@ func Quietly(ctx context.Context, p Publisher, log *slog.Logger, e Event) {
 }
 
 // anySinkRenders reports whether some sink can deliver kind, so an event no channel renders
-// costs no read.
+// costs no read beyond the inbox's.
 func (r *Router) anySinkRenders(kind Kind) bool {
 	for _, sink := range r.Sinks {
 		if f, ok := sink.(KindFilter); !ok || f.Renders(kind) {

@@ -77,12 +77,13 @@ type eventScheduler interface {
 	RunEventSchedule(ctx context.Context, now time.Time) (guilds.EventScheduleRun, error)
 }
 
-// deliveryPruner forgets old deliveries (events.Store).
+// deliveryPruner forgets old deliveries and old Activity rows (events.Store).
 type deliveryPruner interface {
 	PruneDeliveries(ctx context.Context, now time.Time, limit int) (int64, error)
+	PruneActivity(ctx context.Context, now time.Time, limit int) (int64, error)
 }
 
-// pruneBatch bounds the deliveries one run forgets.
+// pruneBatch bounds the deliveries, and separately the Activity rows, one run forgets.
 const pruneBatch = 5000
 
 // raidPostsServices is what the job runs. Drainer is nil when the bot is not configured, and
@@ -161,8 +162,8 @@ func raidPosts(ctx context.Context, log *slog.Logger, svc raidPostsServices, now
 	return nil
 }
 
-// runEvents publishes the due player events and prunes the delivery log; a no-op until the
-// app notifications are on.
+// runEvents publishes the due player events and prunes the delivery log and the Activity
+// rows; a no-op until the app notifications are on.
 func runEvents(ctx context.Context, log *slog.Logger, svc raidPostsServices, now time.Time) error {
 	if svc.Events == nil {
 		return nil
@@ -172,13 +173,16 @@ func runEvents(ctx context.Context, log *slog.Logger, svc raidPostsServices, now
 	if err != nil {
 		errs = append(errs, fmt.Errorf("events: %w", err))
 	}
-	var pruned int64
+	var pruned, prunedActivity int64
 	if svc.Prune != nil {
 		if pruned, err = svc.Prune.PruneDeliveries(ctx, now, pruneBatch); err != nil {
 			errs = append(errs, fmt.Errorf("prune: %w", err))
 		}
+		if prunedActivity, err = svc.Prune.PruneActivity(ctx, now, pruneBatch); err != nil {
+			errs = append(errs, fmt.Errorf("prune activity: %w", err))
+		}
 	}
 	log.Info("raid-posts", "events_posted", run.Posted, "nudged", run.Nudged, "short", run.Short,
-		"starting", run.Starting, "pending", run.Pending, "pruned", pruned)
+		"starting", run.Starting, "pending", run.Pending, "pruned", pruned, "pruned_activity", prunedActivity)
 	return errors.Join(errs...)
 }
