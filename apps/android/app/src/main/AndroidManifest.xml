@@ -105,6 +105,9 @@
         <!-- In, Late, Bench and Out (and Late's minutes) answered from the notification, in the background. -->
         <receiver android:name=".raids.push.RaidActionReceiver" android:exported="false" />
 
+        <!-- Decline on a guild.applicant notification, answered in the background. -->
+        <receiver android:name=".raids.push.ApplicantActionReceiver" android:exported="false" />
+
         <!-- Push (spec 2026-11-08 F1, F4): FCM tokens and data messages, drawn by PushNotifier. -->
         <service android:name=".push.ForeverMessagingService" android:exported="false">
             <intent-filter>

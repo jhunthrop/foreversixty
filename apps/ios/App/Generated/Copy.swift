@@ -2016,6 +2016,23 @@ enum Copy {
     /// Your plan, payments and guild approval
     static var pushGroupAccountLine: String { text("push.group.account.line") }
 
+    /// Declined {name}
+    static func pushApplicantDeclined(name: String) -> String {
+        format("push.applicant.declined", name)
+    }
+
+    /// They got a Discord message saying so.
+    static var pushApplicantDeclinedDm: String { text("push.applicant.declinedDm") }
+
+    /// Already decided
+    static var pushApplicantDecided: String { text("push.applicant.decided") }
+
+    /// Another officer answered this application first.
+    static var pushApplicantDecidedLine: String { text("push.applicant.decidedLine") }
+
+    /// The decline did not go through. Try again.
+    static var pushApplicantFailed: String { text("push.applicant.failed") }
+
     /// Pick your main
     static var firstPickMainTitle: String { text("first.pickMain.title") }
 

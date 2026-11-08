@@ -13,6 +13,8 @@ import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import gg.foreversixty.app.MainActivity
 import gg.foreversixty.app.R
+import gg.foreversixty.app.raids.push.ApplicantNotificationActions
+import gg.foreversixty.app.raids.push.ApplicantPushPayload
 import gg.foreversixty.app.raids.push.RaidNotificationActions
 
 /**
@@ -33,10 +35,19 @@ object PushNotifier {
             .setContentIntent(openIntent(context, message.landing(), tag))
             .setAutoCancel(true)
         message.data[PushMessage.KEY_RAID]?.let { builder.setGroup("raid-$it") }
-        message.category?.let { category ->
-            RaidNotificationActions.actions(context, category, message.data, tag, id).forEach(builder::addAction)
-        }
+        actions(context, message, tag, id).forEach(builder::addAction)
         notify(context, tag, id, builder.build())
+    }
+
+    /**
+     * The buttons: an applicant's Decline by its kind (the server names every actionable push
+     * RAID_SIGNUP), else the raid answers its category names.
+     */
+    private fun actions(context: Context, message: PushMessage, tag: String, id: Int): List<NotificationCompat.Action> {
+        if (message.kind == ApplicantPushPayload.KIND) {
+            return ApplicantPushPayload.parse(message.data)?.let { ApplicantNotificationActions.actions(context, it, tag, id) }.orEmpty()
+        }
+        return message.category?.let { RaidNotificationActions.actions(context, it, message.data, tag, id) }.orEmpty()
     }
 
     /** Posts when the player allowed notifications (Android 13 and up ask; 9 to 12 never do). */
