@@ -68,7 +68,9 @@
   }
 
   function choose(event: MouseEvent, option: ControlOption): void {
-    if (onchange === undefined || option.href !== undefined) return;
+    if (onchange === undefined || (option.href !== undefined && option.inPlace !== true)) return;
+    // A modified click on a page's own link (a new tab, a new window) keeps the link's own way.
+    if (option.inPlace === true && (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey)) return;
     event.preventDefault();
     if (option.disabled) return;
     const change = checkRadio(event.currentTarget as HTMLElement);
@@ -139,7 +141,7 @@
                       : undefined}
                   tabindex={checked ? 0 : -1}
                   data-value={option.value}
-                  data-navigate={option.href !== undefined ? 'true' : undefined}
+                  data-navigate={option.href !== undefined && option.inPlace !== true ? 'true' : undefined}
                   data-testid={`control-${group.param}-${option.value}`}
                   onclick={(event) => choose(event, option)}
                 >

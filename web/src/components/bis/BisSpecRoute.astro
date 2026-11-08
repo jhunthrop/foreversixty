@@ -1,0 +1,183 @@
+---
+// web/src/components/bis/BisSpecRoute.astro
+// The Best in slot page (web layout spec 2026-11-05 §5, mock web-bis rev 3) for one spec at one
+// band: /bis/<class>/<spec> is its first band, /bis/<class>/<spec>/<band> each other one
+// (lib/bis/band-path.ts), every one its own server-rendered URL with its own title, description,
+// canonical, h1 and breadcrumb, so a crawler reads each band's list without running the page.
+// One island (components/bis/BisSpecPage.svelte) server-rendered at the page's band, so first
+// paint needs no script. The page builds the compact per-band view models once
+// (lib/bis/page-data.ts), registers the page band's slice for the server render and inlines it
+// as one JSON script for the island; the raw BiS file never ships. Tooltips stay with
+// BisTooltipHost (cells carry data-bis-item).
+import Base from '../../layouts/Base.astro';
+import PageHeader from '../ui/PageHeader.svelte';
+import Notice from '../ui/Notice.svelte';
+import BisSpecPage from './BisSpecPage.svelte';
+import BisTooltipHost from '../BisTooltipHost.svelte';
+import classes from '../../data/classes.json';
+import activeBuild from '../../data/active-build.json';
+import { bisCopy } from '../../lib/bis/copy';
+import { bisSeoCopy } from '../../lib/bis/seo-copy';
+import { bisBandPath, bisSpecPath } from '../../lib/bis/band-path';
+import { readSpecCatalog } from '../../lib/bis/load';
+import { bisPreRaid, bisServerPage, defaultSlice } from '../../lib/bis/page-server';
+import { BIS_PAGE_DATA_ID, bisPageDataJson, registerBisPageData } from '../../lib/bis/page-registry';
+import { BIS_PENDING_SCRIPT } from '../../lib/bis/page-pending';
+import { publishedIcon } from '../../lib/bis/spec-icon';
+import { classCrestSrc } from '../../lib/class-crest';
+import { classColorVar } from '../../lib/report/format';
+import { classRows, racesForClass } from '../../lib/planner/reference';
+import { breadcrumbListLd } from '../../lib/seo';
+import type { Faction, SpecCatalogEntry } from '../../lib/bis/types';
+import type { ControlOption } from '../../lib/ui/primitives';
+
+interface Props {
+  spec: SpecCatalogEntry;
+  /** The band this URL names; the spec's first band when absent (/bis/<class>/<spec>). */
+  band?: number;
+}
+
+const { spec: specEntry, band: pathBand } = Astro.props;
+const classSlug = specEntry.class_slug;
+const className = classes.find((c) => c.slug === classSlug)?.name ?? classSlug;
+const specPath = bisSpecPath(classSlug, specEntry.spec_slug);
+const guideHref = `/guides/${classSlug}/${specEntry.spec_slug}`;
+const build = activeBuild.build;
+
+const server = bisServerPage(specEntry.spec, classSlug) ?? undefined;
+const firstBand = server?.data.bands[0];
+const band = pathBand ?? firstBand;
+const subject = { specName: specEntry.name, className, preRaid: bisPreRaid(specEntry.spec) };
+const isBandPage = pathBand !== undefined && pathBand !== firstBand;
+const path =
+  band === undefined || firstBand === undefined
+    ? specPath
+    : bisBandPath(classSlug, specEntry.spec_slug, band, firstBand);
+const title =
+  firstBand === undefined || band === undefined
+    ? `${className} ${specEntry.name} leveling BiS`
+    : isBandPage
+      ? bisSeoCopy.bandTitle(subject, band)
+      : bisSeoCopy.specTitle(subject, firstBand);
+const description =
+  firstBand === undefined || band === undefined
+    ? bisCopy.metaDescription(specEntry.name, className)
+    : isBandPage
+      ? bisSeoCopy.bandDescription(subject, band)
+      : bisSeoCopy.specDescription(subject, firstBand);
+const jsonLd =
+  band === undefined
+    ? []
+    : [
+        breadcrumbListLd([
+          { name: 'Best in slot', path: '/bis' },
+          { name: bisSeoCopy.crumb(subject), path: specPath },
+          ...(isBandPage ? [{ name: bisSeoCopy.heading(subject, band), path }] : []),
+        ]),
+      ];
+
+// Only the page band's state ships in the HTML (and the server renders from the same slice, so
+// hydration matches it); the island fetches the rest from the JSON endpoint after mount.
+const inlineData = server === undefined ? undefined : defaultSlice(server.data, band);
+if (inlineData !== undefined) registerBisPageData(inlineData);
+const tooltipModelsJson = JSON.stringify(server?.tooltips ?? {}).replace(/</g, '\\u003c');
+
+const specOptions: ControlOption[] = readSpecCatalog()
+  .filter((s) => s.class_slug === classSlug)
+  .sort((a, b) => a.tree_index - b.tree_index)
+  .map((s) => {
+    const icon = publishedIcon(build, s.icon);
+    return {
+      value: s.spec,
+      label: s.name,
+      href: bisSpecPath(s.class_slug, s.spec_slug),
+      ...(icon === undefined ? {} : { icon: `/data/${build}/icons/${icon}.webp` }),
+    };
+  });
+
+const classRow = classRows.find((c) => c.slug === classSlug);
+const races = classRow ? racesForClass(classRow.id) : [];
+const raceOptionsFor = (faction: Faction) =>
+  races.filter((r) => r.faction === faction).map((r) => ({ value: r.slug, label: r.name }));
+const raceOptions: Record<Faction, { value: string; label: string }[]> = {
+  alliance: raceOptionsFor('alliance'),
+  horde: raceOptionsFor('horde'),
+};
+---
+
+<Base title={title} description={description} path={path} jsonLd={jsonLd} wide>
+  <script is:inline set:html={BIS_PENDING_SCRIPT}></script>
+  <main id="main" tabindex="-1" class="bis-page">
+    {server === undefined || band === undefined ? (
+      <div class="bis-empty" data-testid="bis-empty-state">
+        <PageHeader title={`${specEntry.name} ${className}`} tone={{ classSlug } as never} />
+        <Notice
+          text={`${bisCopy.noDataYet} ${bisCopy.noDataYetBody}`}
+          action={{ label: `${specEntry.name} guide`, href: guideHref }}
+          tone="neutral"
+        />
+      </div>
+    ) : (
+      <Fragment>
+        {/* Both islands hydrate with `client:idle-after-load` (src/directives/idle-after-load.ts):
+            a plain idle callback can land before first paint in the Lighthouse trace and its
+            module fetches then count toward the simulated LCP. */}
+        <BisTooltipHost client:idle-after-load build={build} />
+        <BisSpecPage
+          client:idle-after-load
+          spec={specEntry.spec}
+          classSlug={classSlug}
+          specSlug={specEntry.spec_slug}
+          className={className}
+          specName={specEntry.name}
+          pathBand={band}
+          preRaid={subject.preRaid}
+          crestSrc={classCrestSrc(classSlug)}
+          crestColor={classColorVar(className)}
+          specOptions={specOptions}
+          raceOptions={raceOptions}
+          guideHref={guideHref}
+          dataHref={`${specPath}.json`}
+        />
+        {/* The data the islands read at hydration sits after the markup, so the first paint never
+            waits on it streaming in (the page band's state is already server-rendered above). */}
+        <script
+          is:inline
+          type="application/json"
+          id="bis-tooltip-models"
+          set:html={tooltipModelsJson}
+        ></script>
+        <script
+          is:inline
+          type="application/json"
+          id={BIS_PAGE_DATA_ID}
+          set:html={bisPageDataJson(inlineData!)}
+        ></script>
+      </Fragment>
+    )}
+  </main>
+</Base>
+
+<style>
+  .bis-page {
+    padding-bottom: 40px;
+  }
+  .bis-empty {
+    display: grid;
+    gap: 16px;
+    padding: 28px var(--page-inset);
+  }
+</style>
+
+<script>
+  // The header selector is the one way to switch character: follow it. With no band in the URL
+  // (neither a band path nor `?band=`) the page opens on the selected character's band (the
+  // island applies it via `bis:show`).
+  import { applyBisDefaultBand, mountBisFollow } from '../../lib/bis/follow-selector-client';
+
+  const root = document.querySelector<HTMLElement>('[data-testid="bis-page"][data-bis-spec]');
+  if (root !== null) {
+    mountBisFollow(root);
+    applyBisDefaultBand(root);
+  }
+</script>

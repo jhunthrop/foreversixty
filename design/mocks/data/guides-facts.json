@@ -35,6 +35,8 @@
   "raidBuildLegend": "Raid build only: needs a talent only the raid build takes. Not on the raid build? Skip that row.",
   "bisCaption": "[fn]",
   "fullListLink": "Full list and alternatives",
+  "bisByLevelLabel": "Best in slot by level:",
+  "tierListLink": "Where it ranks at 60",
   "preRaidNote": "These are the best picks before the first raid tier. Raid loot is not itemized in the client yet, and this list updates when it is.",
   "notSimChecked": "Ranked by stats only",
   "enchants": "Enchants",
@@ -673,7 +675,7 @@
    ],
    "band": {
     "isRaidBuild": false,
-    "code": "FS1:1.60.1.70790:hunter:night-elf:5/005005001/500230231051222151:",
+    "code": "FS1:1.60.1.70790:hunter:night-elf:5/005005201/500230230050222151:",
     "trees": [
      {
       "name": "Beast Mastery",
@@ -1294,7 +1296,7 @@
          }
         ],
         "spell_id": 415405,
-        "rank": 0
+        "rank": 2
        },
        {
         "id": 105006,
@@ -1519,7 +1521,7 @@
         "rank": 0
        }
       ],
-      "points": 11
+      "points": 13
      },
      {
       "name": "Survival",
@@ -1773,7 +1775,7 @@
          }
         ],
         "spell_id": 19263,
-        "rank": 1
+        "rank": 0
        },
        {
         "id": 104988,
@@ -1847,7 +1849,7 @@
          }
         ],
         "spell_id": 19306,
-        "rank": 1
+        "rank": 0
        },
        {
         "id": 104983,
@@ -1986,7 +1988,7 @@
         "rank": 1
        }
       ],
-      "points": 35
+      "points": 33
      }
     ],
     "rotationBand": "60",
@@ -2011,15 +2013,6 @@
       "rankText": "Rank 8"
      },
      {
-      "spellId": 20910,
-      "name": "Counterattack",
-      "rank": 4,
-      "icon": "ability_warrior_challange",
-      "clause": "The moment it lights up after you parry",
-      "tipKey": "spell:20910",
-      "rankText": "Rank 4"
-     },
-     {
       "spellId": 14271,
       "name": "Mongoose Bite",
       "rank": 4,
@@ -2027,68 +2020,77 @@
       "clause": "The moment it lights up",
       "tipKey": "spell:14271",
       "rankText": "Rank 4"
+     },
+     {
+      "spellId": 1299332,
+      "name": "Lacerate",
+      "rank": 4,
+      "icon": "ability_gouge",
+      "clause": "Whenever its bleed is not on the target",
+      "tipKey": "spell:1299332",
+      "rankText": "Rank 4"
      }
     ],
     "filler": null,
     "stats": [
      {
-      "label": "Hit",
-      "ratingFactor": 10,
+      "label": "Agility",
       "reading": "value",
       "value": 1,
-      "perPoint": 1.1327159347985434,
+      "perPoint": 0.6293455011734292,
       "valueText": "1.00",
-      "perPointText": "1.13"
+      "perPointText": "0.63"
      },
      {
       "label": "Critical strike",
       "ratingFactor": 14,
       "reading": "value",
-      "value": 0.6468806889598404,
-      "perPoint": 0.7327320642982714,
-      "valueText": "0.65",
-      "perPointText": "0.73"
+      "value": 0.9416793402279844,
+      "perPoint": 0.5926416563204451,
+      "valueText": "0.94",
+      "perPointText": "0.59"
      },
      {
-      "label": "Agility",
+      "label": "Hit",
+      "ratingFactor": 10,
       "reading": "value",
-      "value": 0.5234680337607084,
-      "perPoint": 0.5929405831984162,
-      "valueText": "0.52",
-      "perPointText": "0.59"
+      "value": 0.7481239626223685,
+      "perPoint": 0.4708284501964263,
+      "valueText": "0.75",
+      "perPointText": "0.47"
      },
      {
       "label": "Intellect",
       "reading": "value",
-      "value": 0.2456550575247724,
-      "perPoint": 0.27825739812216255,
-      "valueText": "0.25",
-      "perPointText": "0.28"
+      "value": 0.5721824893835628,
+      "perPoint": 0.3601004755437587,
+      "valueText": "0.57",
+      "perPointText": "0.36"
      },
      {
       "label": "Strength",
       "reading": "value",
-      "value": 0.23176536802155623,
-      "perPoint": 0.2625243254924655,
-      "valueText": "0.23",
-      "perPointText": "0.26"
+      "value": 0.5465273704508278,
+      "perPoint": 0.34395454186137264,
+      "valueText": "0.55",
+      "perPointText": "0.34"
      },
      {
       "label": "Attack power",
       "reading": "value",
-      "value": 0.19154162646409417,
-      "perPoint": 0.21696225247310985,
-      "valueText": "0.19",
-      "perPointText": "0.22"
+      "value": 0.4516755127692824,
+      "perPoint": 0.2842599519515497,
+      "valueText": "0.45",
+      "perPointText": "0.28"
      }
     ],
     "hitCap": {
-     "text": "Hit cap: reached (special attacks), 28% (white swings), 16% (spells) · 6.2% hit from BiS gear and buffs, 3% from Surefooted, 6.8% still to find for spells",
+     "text": "Hit cap: 9% (special attacks), 28% (white swings), 16% (spells) · 4.9% hit from BiS gear and buffs, 3% from Surefooted, 1.1% still to find",
      "title": "Hit is worth its full weight until the cap and nothing past it for your weapon attacks. Your damage spells miss until 16% against a boss three levels up, so past the weapon cap the same hit still lands more of them. The weights above are per rating point: 10 hit rating and 14 crit rating are 1%.",
-     "cap": "Hit cap: reached (special attacks), 28% (white swings), 16% (spells)",
-     "detail": "6.2% hit from BiS gear and buffs, 3% from Surefooted, 6.8% still to find for spells"
+     "cap": "Hit cap: 9% (special attacks), 28% (white swings), 16% (spells)",
+     "detail": "4.9% hit from BiS gear and buffs, 3% from Surefooted, 1.1% still to find"
     },
-    "unitLine": "1 hit rating = 1.13 DPS at level 60."
+    "unitLine": "1 point of agility = 0.63 DPS at level 60"
    },
    "overview": {
     "strengths": "<ul>\n<li>Lone Wolf’s 20% damage on every attack, with no pet to keep alive</li>\n<li><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:104985:2\">Expose Prey</span> opens <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14271\">Mongoose Bite</span> off your own hits on a marked target, so it fires even on a boss that never swings at you</li>\n<li><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:104983:2\">Resourcefulness</span> takes 60% off your melee and trap costs, so you do not run dry</li>\n<li><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:3045\">Rapid Fire</span> speeds your melee swings as well as your shots</li>\n</ul>\n",
@@ -2101,7 +2103,7 @@
       "kind": "both",
       "id": "leveling-and-raid-build",
       "label": "Level 60 and raid build",
-      "code": "FS1:1.60.1.70790:hunter:night-elf:5/005005001/500230231051222151:",
+      "code": "FS1:1.60.1.70790:hunter:night-elf:5/005005201/500230230050222151:",
       "trees": [
        {
         "name": "Beast Mastery",
@@ -2722,7 +2724,7 @@
            }
           ],
           "spell_id": 415405,
-          "rank": 0
+          "rank": 2
          },
          {
           "id": 105006,
@@ -2947,7 +2949,7 @@
           "rank": 0
          }
         ],
-        "points": 11
+        "points": 13
        },
        {
         "name": "Survival",
@@ -3201,7 +3203,7 @@
            }
           ],
           "spell_id": 19263,
-          "rank": 1
+          "rank": 0
          },
          {
           "id": 104988,
@@ -3275,7 +3277,7 @@
            }
           ],
           "spell_id": 19306,
-          "rank": 1
+          "rank": 0
          },
          {
           "id": 104983,
@@ -3414,11 +3416,11 @@
           "rank": 1
          }
         ],
-        "points": 35
+        "points": 33
        }
       ],
-      "load": "/planner?code=FS1%3A1.60.1.70790%3Ahunter%3Anight-elf%3A5%2F005005001%2F500230231051222151%3A",
-      "sim": "/sim?code=FS1%3A1.60.1.70790%3Ahunter%3Anight-elf%3A5%2F005005001%2F500230231051222151%3A"
+      "load": "/planner?code=FS1%3A1.60.1.70790%3Ahunter%3Anight-elf%3A5%2F005005201%2F500230230050222151%3A",
+      "sim": "/sim?code=FS1%3A1.60.1.70790%3Ahunter%3Anight-elf%3A5%2F005005201%2F500230230050222151%3A"
      }
     ],
     "keyTalents": [
@@ -3543,7 +3545,7 @@
       "why": "60% off melee and trap costs, and your special crits keep half your mana regeneration running"
      }
     ],
-    "prose": "<p>Thirty-five points in Survival take every melee damage talent, eleven in Marksmanship take <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105008:5\">Careful Aim</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105007:1\">Lone Wolf</span>, and five in Beast Mastery take <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:104960:5\">Deadly Aspects</span>.</p>\n<p><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105008:5\">Careful Aim</span> (5 points) turns Intellect into attack power and is the way to <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105007:1\">Lone Wolf</span>. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105011:5\">Lethal Attacks</span> (5 points) is 5% crit on everything. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:104987:3\">Surefooted</span> is 3% hit, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1317257\">Strider Kick</span> is a third melee special, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:104991:2\">Clever Traps</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:110860:2\">Survivalist’s Discipline</span> turn <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14305\">Immolation Trap</span> into a damage button. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:20910\">Counterattack</span> comes with <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:19263\">Deterrence</span> on the way down. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:104996:5\">Improved Tracking</span> (5 points) is 5% damage against the creature type you track. Track covers Beasts, Demons, Dragonkin, Elementals, Giants, Humanoids and Undead, which takes in most raid bosses, so set it to the boss’s type before the pull whenever Track covers it.</p>\n<p>The build skips the Marksmanship shot talents: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105002:0\">Mortal Shots</span> is ranged only, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105013:0\">Hawk Eye</span> is range on a bow you never fire, and Efficiency’s 15% comes on top of Resourcefulness’s 60%, so it saves little. The same build is the raid build. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105005:0\">Rapid Killing</span> sits on Lone Wolf’s row, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105011:5\">Lethal Attacks</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105008:5\">Careful Aim</span> are exactly the ten points that open it, so its two points would have to come out of the Survival talents or <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:104960:5\">Deadly Aspects</span>, and two fewer points of <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:104960:5\">Deadly Aspects</span> cost you more than a shorter <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:3045\">Rapid Fire</span> gives back.</p>\n"
+    "prose": "<p>Thirty-three points in Survival take every melee damage talent, thirteen in Marksmanship take <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105008:5\">Careful Aim</span>, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105005:2\">Rapid Killing</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105007:1\">Lone Wolf</span>, and five in Beast Mastery take <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:104960:5\">Deadly Aspects</span>.</p>\n<p><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105008:5\">Careful Aim</span> (5 points) turns Intellect into attack power and is the way to <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105007:1\">Lone Wolf</span>. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105011:5\">Lethal Attacks</span> (5 points) is 5% crit on everything. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:104987:3\">Surefooted</span> is 3% hit, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1317257\">Strider Kick</span> is a third melee special, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:104991:2\">Clever Traps</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:110860:2\">Survivalist’s Discipline</span> turn <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14305\">Immolation Trap</span> into a damage button. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:104996:5\">Improved Tracking</span> (5 points) is 5% damage against the creature type you track. Track covers Beasts, Demons, Dragonkin, Elementals, Giants, Humanoids and Undead, which takes in most raid bosses, so set it to the boss’s type before the pull whenever Track covers it.</p>\n<p>The build skips the Marksmanship shot talents: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105002:0\">Mortal Shots</span> is ranged only, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105013:0\">Hawk Eye</span> is range on a bow you never fire, and Efficiency’s 15% comes on top of Resourcefulness’s 60%, so it saves little. The same build is the raid build. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105005:2\">Rapid Killing</span> (2 points) sits on Lone Wolf’s row, which <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105011:5\">Lethal Attacks</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105008:5\">Careful Aim</span> open, and takes two minutes off <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:3045\">Rapid Fire</span>, so a fight that runs past three minutes gets a second one. Its points come from <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:19263\">Deterrence</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:20910\">Counterattack</span>: behind a boss that is hitting the tank you never parry, so <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:20910\">Counterattack</span> never lights up, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:19263\">Deterrence</span> only answers a hit you are not taking.</p>\n"
    },
    "rotation": {
     "lists": {
@@ -3585,15 +3587,6 @@
        "clause": "On every swing it is ready, with an older rank on your bar at 26 to 29, at 31, and at 46 and 47, and to 49 on most Horde characters",
        "tipKey": "spell:14266",
        "rankText": "Rank 8"
-      },
-      {
-       "spellId": 20910,
-       "name": "Counterattack",
-       "rank": 4,
-       "icon": "ability_warrior_challange",
-       "clause": "The moment it lights up after you parry",
-       "tipKey": "spell:20910",
-       "rankText": "Rank 4"
       },
       {
        "spellId": 14271,
@@ -3650,17 +3643,10 @@
        "rankText": "Rank 5"
       },
       {
-       "spellId": 19263,
-       "name": "Deterrence",
-       "icon": "ability_whirlwind",
-       "clause": "3 min cooldown",
-       "tipKey": "spell:19263"
-      },
-      {
        "spellId": 3045,
        "name": "Rapid Fire",
        "icon": "ability_hunter_runningshot",
-       "clause": "5 min cooldown",
+       "clause": "3 min cooldown",
        "tipKey": "spell:3045"
       },
       {
@@ -3670,83 +3656,83 @@
      ]
     },
     "forRaidBuild": false,
-    "prose": "<p>In a raid, dismiss your pet before the pull; <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105007:1\">Lone Wolf</span> only works with no pet out. Mark the boss with <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14325\">Hunter’s Mark</span> first, so the mana is back by the pull, then put up <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1299447\">Aspect of the Beast</span> and leave it up. At 60, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:469145\">Aspect of the Falcon</span> gives the same melee attack power as Beast (10 more once you own Hawk’s Ahn’Qiraj rank), and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:104960:5\">Deadly Aspects</span> procs from your swings under either one, so Falcon is not a clear upgrade. From 30 to 59 Beast is the only melee aspect you have. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:104985:2\">Expose Prey</span> needs a mark on the target, so if no other hunter has marked it, you do, and on a fight longer than two minutes you mark it again when it falls off.</p>\n<p>Walk in behind the boss with the rogues once the tank has it. On the pull, press <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:3045\">Rapid Fire</span>, your trinkets and your racial (<span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Elune's Light\">Elune’s Light</span>, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Blood Fury\">Blood Fury</span> or <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Berserking\">Berserking</span>) together. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:3045\">Rapid Fire</span> speeds your melee swings in Forever, so it is a melee cooldown for you. Its five minute cooldown gives you one in a normal boss fight.</p>\n<p>Then work through your melee priority: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14266\">Raptor Strike</span>, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:20910\">Counterattack</span>, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14271\">Mongoose Bite</span>, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1299332\">Lacerate</span>, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1317257\">Strider Kick</span>, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14305\">Immolation Trap</span>. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14266\">Raptor Strike</span> replaces your next white hit instead of costing a global, so the only mistake is letting it sit unqueued. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14271\">Mongoose Bite</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:20910\">Counterattack</span> are the buttons you watch for: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:104985:2\">Expose Prey</span> opens <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14271\">Mongoose Bite</span> off your own hits, while <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:20910\">Counterattack</span> needs a parry, and from behind a boss you will not parry, so it is mostly an add and trash button. Keep Lacerate’s bleed on the boss between Mongoose Bites; it crits like every bleed in Forever, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1317257\">Strider Kick</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14305\">Immolation Trap</span> fill what is left. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14268\">Wing Clip</span> is only a filler while a Windfury Totem reaches you; in a group without a shaman, leave it alone.</p>\n<p>You fire no shots in this spec. Your bow or gun is there for its stats.</p>\n<p><strong>Threat.</strong> You sit on a fresh tank’s heels in the opener. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14273\">Disengage</span> trims some threat on a 5 second cooldown, but it turns off your auto attack, so start swinging again the moment it lands. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:5384\">Feign Death</span> drops all of your threat if it lands; check the message, because either can miss or be resisted. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:19263\">Deterrence</span> is your emergency button when something turns on you.</p>\n<p><strong>Trash.</strong> Survival has little cleave of its own. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14317\">Explosive Trap</span> under the pack is your AoE, and Engineering’s explosives are the rest. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14311\">Freezing Trap</span> is your crowd control, laid before the pull.</p>\n<p><strong>Movement.</strong> Stay on the boss’s back. Every second you are not swinging is lost white damage and lost <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:104985:2\">Expose Prey</span> procs.</p>\n"
+    "prose": "<p>In a raid, dismiss your pet before the pull; <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105007:1\">Lone Wolf</span> only works with no pet out. Mark the boss with <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14325\">Hunter’s Mark</span> first, so the mana is back by the pull, then put up <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1299447\">Aspect of the Beast</span> and leave it up. At 60, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:469145\">Aspect of the Falcon</span> gives the same melee attack power as Beast (10 more once you own Hawk’s Ahn’Qiraj rank), and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:104960:5\">Deadly Aspects</span> procs from your swings under either one, so Falcon is not a clear upgrade. From 30 to 59 Beast is the only melee aspect you have. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:104985:2\">Expose Prey</span> needs a mark on the target, so if no other hunter has marked it, you do, and on a fight longer than two minutes you mark it again when it falls off.</p>\n<p>Walk in behind the boss with the rogues once the tank has it. On the pull, press <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:3045\">Rapid Fire</span>, your trinkets and your racial (<span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Elune's Light\">Elune’s Light</span>, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Blood Fury\">Blood Fury</span> or <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Berserking\">Berserking</span>) together. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:3045\">Rapid Fire</span> speeds your melee swings in Forever, so it is a melee cooldown for you. Its five minute cooldown gives you one in a normal boss fight.</p>\n<p>Then work through your melee priority: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14266\">Raptor Strike</span>, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14271\">Mongoose Bite</span>, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1299332\">Lacerate</span>, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1317257\">Strider Kick</span>, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14305\">Immolation Trap</span>. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14266\">Raptor Strike</span> replaces your next white hit instead of costing a global, so the only mistake is letting it sit unqueued. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14271\">Mongoose Bite</span> is the button you watch for: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:104985:2\">Expose Prey</span> opens it off your own hits. Keep Lacerate’s bleed on the boss between Mongoose Bites; it crits like every bleed in Forever, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1317257\">Strider Kick</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14305\">Immolation Trap</span> fill what is left. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14268\">Wing Clip</span> is only a filler while a Windfury Totem reaches you; in a group without a shaman, leave it alone.</p>\n<p>You fire no shots in this spec. Your bow or gun is there for its stats.</p>\n<p><strong>Threat.</strong> You sit on a fresh tank’s heels in the opener. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14273\">Disengage</span> trims some threat on a 5 second cooldown, but it turns off your auto attack, so start swinging again the moment it lands. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:5384\">Feign Death</span> drops all of your threat if it lands; check the message, because either can miss or be resisted. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:5384\">Feign Death</span> is also your answer when something turns on you.</p>\n<p><strong>Trash.</strong> Survival has little cleave of its own. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14317\">Explosive Trap</span> under the pack is your AoE, and Engineering’s explosives are the rest. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14311\">Freezing Trap</span> is your crowd control, laid before the pull.</p>\n<p><strong>Movement.</strong> Stay on the boss’s back. Every second you are not swinging is lost white damage and lost <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:104985:2\">Expose Prey</span> procs.</p>\n"
    },
    "stats": {
     "table": {
      "hitCap": {
-      "text": "Hit cap: reached (special attacks), 28% (white swings), 16% (spells) · 6.2% hit from BiS gear and buffs, 3% from Surefooted, 6.8% still to find for spells",
+      "text": "Hit cap: 9% (special attacks), 28% (white swings), 16% (spells) · 4.9% hit from BiS gear and buffs, 3% from Surefooted, 1.1% still to find",
       "title": "Hit is worth its full weight until the cap and nothing past it for your weapon attacks. Your damage spells miss until 16% against a boss three levels up, so past the weapon cap the same hit still lands more of them. The weights above are per rating point: 10 hit rating and 14 crit rating are 1%.",
-      "cap": "Hit cap: reached (special attacks), 28% (white swings), 16% (spells)",
-      "detail": "6.2% hit from BiS gear and buffs, 3% from Surefooted, 6.8% still to find for spells"
+      "cap": "Hit cap: 9% (special attacks), 28% (white swings), 16% (spells)",
+      "detail": "4.9% hit from BiS gear and buffs, 3% from Surefooted, 1.1% still to find"
      },
      "role": "dps",
      "rows": [
       {
-       "label": "Hit",
-       "ratingFactor": 10,
+       "label": "Agility",
        "reading": "value",
        "value": 1,
-       "perPoint": 1.1327159347985434,
+       "perPoint": 0.6293455011734292,
        "valueText": "1.00",
-       "perPointText": "1.13"
+       "perPointText": "0.63"
       },
       {
        "label": "Critical strike",
        "ratingFactor": 14,
        "reading": "value",
-       "value": 0.6468806889598404,
-       "perPoint": 0.7327320642982714,
-       "valueText": "0.65",
-       "perPointText": "0.73"
+       "value": 0.9416793402279844,
+       "perPoint": 0.5926416563204451,
+       "valueText": "0.94",
+       "perPointText": "0.59"
       },
       {
-       "label": "Agility",
+       "label": "Hit",
+       "ratingFactor": 10,
        "reading": "value",
-       "value": 0.5234680337607084,
-       "perPoint": 0.5929405831984162,
-       "valueText": "0.52",
-       "perPointText": "0.59"
+       "value": 0.7481239626223685,
+       "perPoint": 0.4708284501964263,
+       "valueText": "0.75",
+       "perPointText": "0.47"
       },
       {
        "label": "Intellect",
        "reading": "value",
-       "value": 0.2456550575247724,
-       "perPoint": 0.27825739812216255,
-       "valueText": "0.25",
-       "perPointText": "0.28"
+       "value": 0.5721824893835628,
+       "perPoint": 0.3601004755437587,
+       "valueText": "0.57",
+       "perPointText": "0.36"
       },
       {
        "label": "Strength",
        "reading": "value",
-       "value": 0.23176536802155623,
-       "perPoint": 0.2625243254924655,
-       "valueText": "0.23",
-       "perPointText": "0.26"
+       "value": 0.5465273704508278,
+       "perPoint": 0.34395454186137264,
+       "valueText": "0.55",
+       "perPointText": "0.34"
       },
       {
        "label": "Attack power",
        "reading": "value",
-       "value": 0.19154162646409417,
-       "perPoint": 0.21696225247310985,
-       "valueText": "0.19",
-       "perPointText": "0.22"
+       "value": 0.4516755127692824,
+       "perPoint": 0.2842599519515497,
+       "valueText": "0.45",
+       "perPointText": "0.28"
       },
       {
        "label": "Attack speed",
        "perPercent": "haste",
        "reading": "not-on-items",
-       "value": 8.414883149361616,
+       "value": 8.080690469053737,
        "valueText": "Not on any item",
        "perPointText": ""
       }
      ],
-     "unitLine": "1 hit rating = 1.13 DPS at level 60.",
-     "ratingNote": "Hit and Critical strike are per rating point: 10 hit rating is 1% hit and 14 critical strike rating is 1% critical strike.",
+     "unitLine": "1 point of agility = 0.63 DPS at level 60",
+     "ratingNote": "Critical strike and Hit are per rating point: 14 critical strike rating is 1% critical strike and 10 hit rating is 1% hit.",
      "perPointHead": "DPS per point or rating",
-     "weightHead": "Weight (Hit = 1.00)",
+     "weightHead": "Weight (Agility = 1.00)",
      "notes": [
-      "Attack speed: 8.4 DPS per 1%, but no item at level 60 has it."
+      "Attack speed: 8.1 DPS per 1%, but no item at level 60 has it."
      ]
     },
     "prose": "<p>The table above gives the order for your gear; here is why each stat counts. Hit matters up to 9%, the cap for your special attacks against a raid boss; <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:104987:3\">Surefooted</span> gives you 3% of it, so you need 6% from gear, or 5% as a Dwarf. Your white swings have a much higher cap that you will not reach, and hit past the special cap still raises white damage. Crit pays off on your melee specials: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:110861:5\">Predator’s Edge</span> makes their crits hit for 230% of a normal hit instead of double, and every special crit keeps half your mana regeneration running through <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:104983:2\">Resourcefulness</span>. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:104993:2\">Savage Strikes</span> adds 4% crit chance to those specials on top of what your gear gives. Agility is attack power and crit together, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:110859:5\">Lightning Reflexes</span> raises it by 15%. Intellect is attack power through <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105008:5\">Careful Aim</span>, and Strength is attack power directly. Plain attack power gives only itself. Haste is rare on gear but strong when you find it.</p>\n"
@@ -4227,14 +4213,14 @@
          "slot": "head",
          "slotLabel": "Head",
          "empty": false,
-         "itemId": 7719,
-         "itemName": "Raging Berserker's Helm",
-         "quality": 3,
-         "icon": "inv_helmet_25",
-         "sourceKind": "dungeon",
-         "sourceDetail": "Scarlet Monastery · Herod",
+         "itemId": 10008,
+         "itemName": "White Bandit Mask",
+         "quality": 2,
+         "icon": "inv_misc_cape_11",
+         "sourceKind": "crafted",
+         "sourceDetail": "Crafted: Tailoring",
          "notSimChecked": false,
-         "typeLabel": "Mail"
+         "typeLabel": "Cloth"
         },
         {
          "slot": "neck",
@@ -4449,14 +4435,14 @@
          "slot": "head",
          "slotLabel": "Head",
          "empty": false,
-         "itemId": 7719,
-         "itemName": "Raging Berserker's Helm",
+         "itemId": 17715,
+         "itemName": "Eye of Theradras",
          "quality": 3,
-         "icon": "inv_helmet_25",
+         "icon": "inv_crown_01",
          "sourceKind": "dungeon",
-         "sourceDetail": "Scarlet Monastery · Herod",
+         "sourceDetail": "Maraudon · Princess Theradras",
          "notSimChecked": false,
-         "typeLabel": "Mail"
+         "typeLabel": "Cloth"
         },
         {
          "slot": "neck",
@@ -4474,10 +4460,10 @@
          "slot": "shoulder",
          "slotLabel": "Shoulder",
          "empty": false,
-         "itemId": 252535,
-         "itemName": "Skulker's Leather Shoulder",
+         "itemId": 252534,
+         "itemName": "Prowler's Leather Shoulders",
          "quality": 3,
-         "icon": "inv_shoulders_mail_warfrontsforsaken_d_01",
+         "icon": "inv_shoulder_17",
          "sourceKind": "crafted",
          "sourceDetail": "Crafted: Leatherworking",
          "notSimChecked": false,
@@ -4539,12 +4525,12 @@
          "slot": "waist",
          "slotLabel": "Waist",
          "empty": false,
-         "itemId": 252474,
-         "itemName": "Skulker's Leather Waistguard",
+         "itemId": 17778,
+         "itemName": "Sagebrush Girdle",
          "quality": 3,
-         "icon": "inv_belt_43",
-         "sourceKind": "crafted",
-         "sourceDetail": "Crafted: Leatherworking",
+         "icon": "inv_belt_25",
+         "sourceKind": "quest",
+         "sourceDetail": "Quest: Vyletongue Corruption · requires level 41",
          "notSimChecked": false,
          "typeLabel": "Leather"
         },
@@ -4565,14 +4551,14 @@
          "slot": "feet",
          "slotLabel": "Feet",
          "empty": false,
-         "itemId": 17728,
-         "itemName": "Albino Crocscale Boots",
+         "itemId": 11627,
+         "itemName": "Fleetfoot Greaves",
          "quality": 3,
-         "icon": "inv_boots_05",
+         "icon": "inv_boots_01",
          "sourceKind": "dungeon",
-         "sourceDetail": "Maraudon · Rotgrip",
+         "sourceDetail": "Blackrock Depths · Houndmaster Grebmar",
          "notSimChecked": false,
-         "typeLabel": "Leather"
+         "typeLabel": "Mail"
         },
         {
          "slot": "finger1",
@@ -4639,14 +4625,14 @@
          "slot": "off_hand",
          "slotLabel": "Off hand",
          "empty": false,
-         "itemId": 12774,
-         "itemName": "Dawn's Edge",
-         "quality": 3,
-         "icon": "inv_axe_05",
-         "sourceKind": "crafted",
-         "sourceDetail": "Crafted: Blacksmithing",
+         "itemId": 2163,
+         "itemName": "Shadowblade",
+         "quality": 4,
+         "icon": "inv_sword_12",
+         "sourceKind": "world_drop",
+         "sourceDetail": "World drop (BoE) · mob levels 49-57",
          "notSimChecked": false,
-         "typeLabel": "Axe"
+         "typeLabel": "Dagger"
         },
         {
          "slot": "ranged",
@@ -4689,12 +4675,12 @@
          "slot": "neck",
          "slotLabel": "Neck",
          "empty": false,
-         "itemId": 15411,
-         "itemName": "Mark of Fordring",
+         "itemId": 13089,
+         "itemName": "Skibi's Pendant",
          "quality": 3,
-         "icon": "inv_jewelry_talisman_07",
-         "sourceKind": "quest",
-         "sourceDetail": "Quest: In Dreams · requires level 52",
+         "icon": "inv_jewelry_amulet_07",
+         "sourceKind": "world_drop",
+         "sourceDetail": "World drop (BoE) · mob levels 45-53",
          "notSimChecked": false
         },
         {
@@ -4714,12 +4700,12 @@
          "slot": "back",
          "slotLabel": "Back",
          "empty": false,
-         "itemId": 272414,
-         "itemName": "Howler's Furs",
+         "itemId": 13340,
+         "itemName": "Cape of the Black Baron",
          "quality": 3,
-         "icon": "inv_misc_cape_10",
-         "sourceKind": "vendor",
-         "sourceDetail": "Vendor: Pix Xizzix",
+         "icon": "inv_misc_cape_20",
+         "sourceKind": "dungeon",
+         "sourceDetail": "Stratholme · Baron Rivendare",
          "notSimChecked": false,
          "typeLabel": "Cloth"
         },
@@ -4753,12 +4739,12 @@
          "slot": "hands",
          "slotLabel": "Hands",
          "empty": false,
-         "itemId": 867,
-         "itemName": "Gloves of Holy Might",
+         "itemId": 271948,
+         "itemName": "Theramore Gloves",
          "quality": 4,
-         "icon": "inv_gauntlets_06",
-         "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · mob levels 38-46",
+         "icon": "inv_gauntlets_27",
+         "sourceKind": "rep",
+         "sourceDetail": "Theramore Expeditionary Force (exalted)",
          "notSimChecked": false,
          "typeLabel": "Leather"
         },
@@ -4792,14 +4778,14 @@
          "slot": "feet",
          "slotLabel": "Feet",
          "empty": false,
-         "itemId": 16711,
-         "itemName": "Shadowcraft Boots",
+         "itemId": 275618,
+         "itemName": "Scalegut Treaders",
          "quality": 3,
-         "icon": "inv_boots_08",
-         "sourceKind": "dungeon",
-         "sourceDetail": "16% from Rattlegore",
+         "icon": "inv_boots_chain_11",
+         "sourceKind": "crafted",
+         "sourceDetail": "Crafted: Leatherworking",
          "notSimChecked": false,
-         "typeLabel": "Leather"
+         "typeLabel": "Mail"
         },
         {
          "slot": "finger1",
@@ -4841,12 +4827,12 @@
          "slot": "trinket2",
          "slotLabel": "Trinket",
          "empty": false,
-         "itemId": 249470,
-         "itemName": "Molten Heart of the Mountain",
+         "itemId": 19991,
+         "itemName": "Devilsaur Eye",
          "quality": 3,
-         "icon": "inv_misc_gem_ruby_01",
-         "sourceKind": "crafted",
-         "sourceDetail": "Crafted: Enchanting",
+         "icon": "inv_misc_eye_01",
+         "sourceKind": "quest",
+         "sourceDetail": "Quest: The Green Drake · requires level 50",
          "notSimChecked": false
         },
         {
@@ -5337,14 +5323,14 @@
          "slot": "head",
          "slotLabel": "Head",
          "empty": false,
-         "itemId": 7719,
-         "itemName": "Raging Berserker's Helm",
-         "quality": 3,
-         "icon": "inv_helmet_25",
-         "sourceKind": "dungeon",
-         "sourceDetail": "Scarlet Monastery · Herod",
+         "itemId": 10008,
+         "itemName": "White Bandit Mask",
+         "quality": 2,
+         "icon": "inv_misc_cape_11",
+         "sourceKind": "crafted",
+         "sourceDetail": "Crafted: Tailoring",
          "notSimChecked": false,
-         "typeLabel": "Mail"
+         "typeLabel": "Cloth"
         },
         {
          "slot": "neck",
@@ -5559,14 +5545,14 @@
          "slot": "head",
          "slotLabel": "Head",
          "empty": false,
-         "itemId": 7719,
-         "itemName": "Raging Berserker's Helm",
+         "itemId": 17715,
+         "itemName": "Eye of Theradras",
          "quality": 3,
-         "icon": "inv_helmet_25",
+         "icon": "inv_crown_01",
          "sourceKind": "dungeon",
-         "sourceDetail": "Scarlet Monastery · Herod",
+         "sourceDetail": "Maraudon · Princess Theradras",
          "notSimChecked": false,
-         "typeLabel": "Mail"
+         "typeLabel": "Cloth"
         },
         {
          "slot": "neck",
@@ -5584,10 +5570,10 @@
          "slot": "shoulder",
          "slotLabel": "Shoulder",
          "empty": false,
-         "itemId": 252535,
-         "itemName": "Skulker's Leather Shoulder",
+         "itemId": 252534,
+         "itemName": "Prowler's Leather Shoulders",
          "quality": 3,
-         "icon": "inv_shoulders_mail_warfrontsforsaken_d_01",
+         "icon": "inv_shoulder_17",
          "sourceKind": "crafted",
          "sourceDetail": "Crafted: Leatherworking",
          "notSimChecked": false,
@@ -5649,12 +5635,12 @@
          "slot": "waist",
          "slotLabel": "Waist",
          "empty": false,
-         "itemId": 252474,
-         "itemName": "Skulker's Leather Waistguard",
+         "itemId": 17778,
+         "itemName": "Sagebrush Girdle",
          "quality": 3,
-         "icon": "inv_belt_43",
-         "sourceKind": "crafted",
-         "sourceDetail": "Crafted: Leatherworking",
+         "icon": "inv_belt_25",
+         "sourceKind": "quest",
+         "sourceDetail": "Quest: Vyletongue Corruption · requires level 41",
          "notSimChecked": false,
          "typeLabel": "Leather"
         },
@@ -5675,14 +5661,14 @@
          "slot": "feet",
          "slotLabel": "Feet",
          "empty": false,
-         "itemId": 17728,
-         "itemName": "Albino Crocscale Boots",
+         "itemId": 11627,
+         "itemName": "Fleetfoot Greaves",
          "quality": 3,
-         "icon": "inv_boots_05",
+         "icon": "inv_boots_01",
          "sourceKind": "dungeon",
-         "sourceDetail": "Maraudon · Rotgrip",
+         "sourceDetail": "Blackrock Depths · Houndmaster Grebmar",
          "notSimChecked": false,
-         "typeLabel": "Leather"
+         "typeLabel": "Mail"
         },
         {
          "slot": "finger1",
@@ -5749,14 +5735,14 @@
          "slot": "off_hand",
          "slotLabel": "Off hand",
          "empty": false,
-         "itemId": 12774,
-         "itemName": "Dawn's Edge",
-         "quality": 3,
-         "icon": "inv_axe_05",
-         "sourceKind": "crafted",
-         "sourceDetail": "Crafted: Blacksmithing",
+         "itemId": 2163,
+         "itemName": "Shadowblade",
+         "quality": 4,
+         "icon": "inv_sword_12",
+         "sourceKind": "world_drop",
+         "sourceDetail": "World drop (BoE) · mob levels 49-57",
          "notSimChecked": false,
-         "typeLabel": "Axe"
+         "typeLabel": "Dagger"
         },
         {
          "slot": "ranged",
@@ -5799,12 +5785,12 @@
          "slot": "neck",
          "slotLabel": "Neck",
          "empty": false,
-         "itemId": 15411,
-         "itemName": "Mark of Fordring",
+         "itemId": 13089,
+         "itemName": "Skibi's Pendant",
          "quality": 3,
-         "icon": "inv_jewelry_talisman_07",
-         "sourceKind": "quest",
-         "sourceDetail": "Quest: In Dreams · requires level 52",
+         "icon": "inv_jewelry_amulet_07",
+         "sourceKind": "world_drop",
+         "sourceDetail": "World drop (BoE) · mob levels 45-53",
          "notSimChecked": false
         },
         {
@@ -6457,11 +6443,11 @@
     "lines": [],
     "prose": "<p>Night Elf for the Alliance: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Elune's Light\">Elune’s Light</span> is 10% crit for 15 seconds, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:110861:5\">Predator’s Edge</span> makes your special crits hit harder, so press it with <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:3045\">Rapid Fire</span> on the pull. Human’s <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Ruthless\">Ruthless</span> is next, and Dwarf’s 1% hit comes last even for a dual-wielder. Humans can be Hunters for the first time in Forever.</p>\n<p>Orc and Troll are level for the Horde. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Blood Fury\">Blood Fury</span> is 10% attack power for 15 seconds every two minutes, so it goes on the pull with <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:3045\">Rapid Fire</span> and again at two and four minutes. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Berserking\">Berserking</span> is 10% attack speed for 15 seconds every three minutes and stacks with <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:3045\">Rapid Fire</span> on your swings.</p>\n<p>Skyborne, a paid unlock with the Heroic Pack, can be Hunters on either faction: Wind Blessed’s 2% haste speeds both of your weapons, and it lands in the middle of the pack, so it is the paid option, never the pick.</p>\n"
    },
-   "professions": "<p>Enchanting is the profession your best in slot list asks for. <span class=\"gtip gtip-item text-rarity-rare-text\" tabindex=\"0\" data-bis-item=\"249470\">Molten Heart of the Mountain</span> and <span class=\"gtip gtip-item text-rarity-rare-text\" tabindex=\"0\" data-bis-item=\"249469\">Frozen Heart of the Mountain</span> are Enchanting trinkets that bind on pickup, so nobody can make them for you. Heartseeker, the blacksmith’s dagger in your off hand, binds when equipped, so buy one and do not train Blacksmithing for it. Engineering gives Survival the AoE it lacks: grenades and explosives on trash. Skinning pays for your leveling.</p>\n",
+   "professions": "<p>Enchanting is the profession your best in slot list asks for. Molten Heart of the Mountain and <span class=\"gtip gtip-item text-rarity-rare-text\" tabindex=\"0\" data-bis-item=\"249469\">Frozen Heart of the Mountain</span> are Enchanting trinkets that bind on pickup, so nobody can make them for you. Heartseeker, the blacksmith’s dagger in your off hand, binds when equipped, so buy one and do not train Blacksmithing for it. Engineering gives Survival the AoE it lacks: grenades and explosives on trash. Skinning pays for your leveling.</p>\n",
    "leveling": {
     "early": "<h3 id=\"levels-1-to-19\">Levels 1 to 19</h3>\n<p>Train <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:409580\">Heart of the Lion</span> at level 1 and keep it up all the way to 60: 10% more stats and extra attack power (280 at 60) for everyone near you, and another 10% stats for you. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14266\">Raptor Strike</span> from level 1 is your main button, with new ranks at 8 and 16. Train <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:13163\">Aspect of the Monkey</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25295\">Serpent Sting</span> at 4, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14325\">Hunter’s Mark</span> at 6, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14268\">Wing Clip</span> at 12 and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14271\">Mongoose Bite</span> at 16, which lights up after you dodge.</p>\n<p>At 10 your trainer starts the taming quests, which end by teaching <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1515\">Tame Beast</span>. Tame a beast at your level, feed it to keep it happy, and train <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:13544\">Mend Pet</span> at 12.</p>\n<p>Your first five points go into <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:104996:5\">Improved Tracking</span>, 1% damage per point against whatever you are tracking: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1494\">Track Beasts</span> from level 1, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:19883\">Track Humanoids</span> at 10, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:19884\">Track Undead</span> at 18. Keep the right one on. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:104993:2\">Savage Strikes</span> at 15 and 16 adds 2% crit to your melee abilities per point, then <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:104992:3\">Survivalist</span> from 17 adds 2% health per point.</p>\n<p>Take quest rewards over vendor gear, Agility first. Your melee weapon is your damage: replace the starting one with the first slow two-handed quest reward you find, since <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14266\">Raptor Strike</span> adds its damage on top of the weapon hit. Wear leather until 40. From 40 you can wear mail, but keep a leather piece whenever it is the better one.</p>\n",
     "stripHeading": "Levels 20 to 60",
-    "late": "<p>Survival levels in melee. Keep a pet out while you level: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105007:1\">Lone Wolf</span> is the last point this build takes, at 60, and until then the pet holds aggro and adds damage. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105007:1\">Lone Wolf</span> pays off in a raid, where you get the raid buffs and your pet gets none, so your own hits carry more of the damage. Out in the world at 60 a pet still adds a little more damage than <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105007:1\">Lone Wolf</span> does and takes the hits for you, so keep it out while you quest and farm. The talent does nothing while your pet is out, so dismiss the pet before a raid pull and call it back afterwards.</p>\n<p>Open with <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14325\">Hunter’s Mark</span>, send the pet, then walk in and queue <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14266\">Raptor Strike</span>. Press <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14271\">Mongoose Bite</span> whenever it lights up, and from 30 keep <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1299332\">Lacerate</span> on anything that will live long enough to bleed. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14268\">Wing Clip</span> a runner. Wear <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:13163\">Aspect of the Monkey</span> until 30: its dodges open <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14271\">Mongoose Bite</span>. At 30 switch to <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1299447\">Aspect of the Beast</span> and keep it up. Throw <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14305\">Immolation Trap</span> under anything that will live long enough to burn. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:5384\">Feign Death</span> at 30 resets a bad pull. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:5118\">Aspect of the Cheetah</span> at 20 is your run speed between quests, but it dazes you when you are hit, so never wear it into a fight.</p>\n<p>Spend 25 to 29 on <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:110861:5\">Predator’s Edge</span> and take <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1317257\">Strider Kick</span> at 30, then <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:104983:2\">Resourcefulness</span>, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:104985:2\">Expose Prey</span>, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:110860:2\">Survivalist’s Discipline</span> and a point of <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:110859:5\">Lightning Reflexes</span>. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:19263\">Deterrence</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:20910\">Counterattack</span> wait for 38 and 39: one is an emergency button and the other needs a parry, and while your pet holds the mob neither adds damage.</p>\n<p>At 26 <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14305\">Immolation Trap</span> rank 2 arrives, and with a trap on every pull your mana runs short. From 26 to 29 keep <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14266\">Raptor Strike</span> rank 3 on your bar instead of rank 4: most of the hit is your weapon, so it does nearly what rank 4 does for less mana, and the mana it saves goes into traps. On a Horde character rank 2 is better again: an Orc, a Troll or a Windshaper Skyborne at 26 and 27, a Tauren at 26 to 28. Drag the lower rank onto your bar from the spellbook at 26 and put rank 4 back at 30.</p>\n<p>At 31 you have only the first point of <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:104983:2\">Resourcefulness</span>, and for that one level <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14266\">Raptor Strike</span> rank 1 is the better button: it costs almost nothing, and the mana goes into traps. Drag it onto the bar at 31 and put rank 5 on at 32, when you train it and the second point makes every rank cheap.</p>\n<p>Mail at 40 is the biggest armor upgrade you will get, and from 20 you can carry two weapons.</p>\n<p>At 46 the new <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14305\">Immolation Trap</span> rank costs more, and with a trap on every pull your mana starts to run short over a chain of them. Rank 6 of <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14266\">Raptor Strike</span>, trained at 40, is the one to use until then, though a Troll does a touch better keeping rank 5 at 40 itself. For 46 and 47, keep rank 5 on your bar instead: most of the hit is your weapon, so it does nearly what rank 6 does for less mana, and the mana it saves goes into traps. Drag rank 5 back from the spellbook as you did at 26. At 48 put rank 7 on the bar. On a Horde character rank 5 is still the better button: an Orc, Troll or Tauren at 48 and 49, a Windshaper Skyborne at 48.</p>\n",
+    "late": "<p>Survival levels in melee. Keep a pet out while you level: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105007:1\">Lone Wolf</span> is the last point this build takes, at 60, and until then the pet holds aggro and adds damage. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105007:1\">Lone Wolf</span> pays off in a raid, where you get the raid buffs and your pet gets none, so your own hits carry more of the damage. Out in the world at 60 a pet still adds a little more damage than <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105007:1\">Lone Wolf</span> does and takes the hits for you, so keep it out while you quest and farm. The talent does nothing while your pet is out, so dismiss the pet before a raid pull and call it back afterwards.</p>\n<p>Open with <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14325\">Hunter’s Mark</span>, send the pet, then walk in and queue <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14266\">Raptor Strike</span>. Press <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14271\">Mongoose Bite</span> whenever it lights up, and from 30 keep <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1299332\">Lacerate</span> on anything that will live long enough to bleed. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14268\">Wing Clip</span> a runner. Wear <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:13163\">Aspect of the Monkey</span> until 30: its dodges open <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14271\">Mongoose Bite</span>. At 30 switch to <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1299447\">Aspect of the Beast</span> and keep it up. Throw <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14305\">Immolation Trap</span> under anything that will live long enough to burn. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:5384\">Feign Death</span> at 30 resets a bad pull. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:5118\">Aspect of the Cheetah</span> at 20 is your run speed between quests, but it dazes you when you are hit, so never wear it into a fight.</p>\n<p>Spend 25 to 29 on <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:110861:5\">Predator’s Edge</span> and take <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1317257\">Strider Kick</span> at 30, then <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:104983:2\">Resourcefulness</span>, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:104985:2\">Expose Prey</span>, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:110860:2\">Survivalist’s Discipline</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:110859:5\">Lightning Reflexes</span>, with <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:104984:1\">Lacerating Strikes</span> at 40 and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:110859:5\">Lightning Reflexes</span> full at 42. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:104960:5\">Deadly Aspects</span> from 43, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105011:5\">Lethal Attacks</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105008:5\">Careful Aim</span> take you to 57, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105005:2\">Rapid Killing</span> comes at 58 and 59, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105007:1\">Lone Wolf</span> is the last point at 60.</p>\n<p>At 26 <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14305\">Immolation Trap</span> rank 2 arrives, and with a trap on every pull your mana runs short. From 26 to 29 keep <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14266\">Raptor Strike</span> rank 3 on your bar instead of rank 4: most of the hit is your weapon, so it does nearly what rank 4 does for less mana, and the mana it saves goes into traps. On a Horde character rank 2 is better again: an Orc, a Troll or a Windshaper Skyborne at 26 and 27, a Tauren at 26 to 28. Drag the lower rank onto your bar from the spellbook at 26 and put rank 4 back at 30.</p>\n<p>At 31 you have only the first point of <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:104983:2\">Resourcefulness</span>, and for that one level <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14266\">Raptor Strike</span> rank 1 is the better button: it costs almost nothing, and the mana goes into traps. Drag it onto the bar at 31 and put rank 5 on at 32, when you train it and the second point makes every rank cheap.</p>\n<p>Mail at 40 is the biggest armor upgrade you will get, and from 20 you can carry two weapons.</p>\n<p>At 46 the new <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14305\">Immolation Trap</span> rank costs more, and with a trap on every pull your mana starts to run short over a chain of them. Rank 6 of <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14266\">Raptor Strike</span>, trained at 40, is the one to use until then, though a Troll does a touch better keeping rank 5 at 40 itself. For 46 and 47, keep rank 5 on your bar instead: most of the hit is your weapon, so it does nearly what rank 6 does for less mana, and the mana it saves goes into traps. Drag rank 5 back from the spellbook as you did at 26. At 48 put rank 7 on the bar. On a Horde character rank 5 is still the better button: an Orc, Troll or Tauren at 48 and 49, a Windshaper Skyborne at 48.</p>\n",
     "steps": 51,
     "ladder": [
      {
@@ -6578,11 +6564,11 @@
      },
      {
       "level": 38,
-      "name": "Deterrence"
+      "name": "Lightning Reflexes"
      },
      {
       "level": 39,
-      "name": "Counterattack"
+      "name": "Lightning Reflexes"
      },
      {
       "level": 40,
@@ -6598,11 +6584,11 @@
      },
      {
       "level": 43,
-      "name": "Lightning Reflexes"
+      "name": "Deadly Aspects"
      },
      {
       "level": 44,
-      "name": "Lightning Reflexes"
+      "name": "Deadly Aspects"
      },
      {
       "level": 45,
@@ -6618,11 +6604,11 @@
      },
      {
       "level": 48,
-      "name": "Deadly Aspects"
+      "name": "Lethal Attacks"
      },
      {
       "level": 49,
-      "name": "Deadly Aspects"
+      "name": "Lethal Attacks"
      },
      {
       "level": 50,
@@ -6638,11 +6624,11 @@
      },
      {
       "level": 53,
-      "name": "Lethal Attacks"
+      "name": "Careful Aim"
      },
      {
       "level": 54,
-      "name": "Lethal Attacks"
+      "name": "Careful Aim"
      },
      {
       "level": 55,
@@ -6658,11 +6644,11 @@
      },
      {
       "level": 58,
-      "name": "Careful Aim"
+      "name": "Rapid Killing"
      },
      {
       "level": 59,
-      "name": "Careful Aim"
+      "name": "Rapid Killing"
      },
      {
       "level": 60,
@@ -8618,7 +8604,7 @@
            }
           ],
           "spell_id": 415405,
-          "rank": 0
+          "rank": 2
          },
          {
           "id": 105006,
@@ -8843,7 +8829,7 @@
           "rank": 0
          }
         ],
-        "points": 11
+        "points": 13
        },
        {
         "name": "Survival",
@@ -9097,7 +9083,7 @@
            }
           ],
           "spell_id": 19263,
-          "rank": 1
+          "rank": 0
          },
          {
           "id": 104988,
@@ -9171,7 +9157,7 @@
            }
           ],
           "spell_id": 19306,
-          "rank": 1
+          "rank": 0
          },
          {
           "id": 104983,
@@ -9310,7 +9296,7 @@
           "rank": 1
          }
         ],
-        "points": 35
+        "points": 33
        }
       ]
      }
@@ -9388,7 +9374,7 @@
    "title": "Fire Mage",
    "description": "Fire Mage in Forever: the pre-pull Pyroblast, Fireball, Heating Up and Combustion, Ignite and threat, mana over a boss fight, talents, stats and leveling.",
    "summary": "Fire casts a 3 second Fireball, keeps its own Improved Scorch stacks up, turns crits into fast Pyroblasts with Heating Up, and cashes Combustion into a run of Ignites.",
-   "meta": "DPS · Updated 6 Nov",
+   "meta": "DPS · Updated 7 Nov",
    "tabs": [
     {
      "slug": "arcane",
@@ -13795,7 +13781,7 @@
        "name": "Fireball",
        "rank": 11,
        "icon": "spell_fire_flamebolt",
-       "clause": "The filler once you have Arcane Blast, which the leveling build takes at 57",
+       "clause": "The filler once you have Arcane Blast, which the leveling build takes at 54",
        "needs": [
         "Arcane Blast"
        ],
@@ -14624,12 +14610,12 @@
          "slot": "shoulder",
          "slotLabel": "Shoulder",
          "empty": false,
-         "itemId": 11624,
-         "itemName": "Kentic Amice",
+         "itemId": 17732,
+         "itemName": "Rotgrip Mantle",
          "quality": 3,
-         "icon": "inv_shoulder_25",
+         "icon": "inv_shoulder_05",
          "sourceKind": "dungeon",
-         "sourceDetail": "Blackrock Depths · High Interrogator Gerstahn ",
+         "sourceDetail": "Maraudon · Rotgrip",
          "notSimChecked": false,
          "typeLabel": "Cloth"
         },
@@ -14650,12 +14636,12 @@
          "slot": "chest",
          "slotLabel": "Chest",
          "empty": false,
-         "itemId": 12462,
-         "itemName": "Embrace of the Wind Serpent",
-         "quality": 4,
+         "itemId": 10021,
+         "itemName": "Dreamweave Vest",
+         "quality": 3,
          "icon": "inv_chest_cloth_42",
-         "sourceKind": "world",
-         "sourceDetail": "<1% from Avatar of Hakkar",
+         "sourceKind": "crafted",
+         "sourceDetail": "Crafted: Tailoring",
          "notSimChecked": false,
          "typeLabel": "Cloth"
         },
@@ -14752,24 +14738,24 @@
          "slot": "trinket1",
          "slotLabel": "Trinket",
          "empty": false,
-         "itemId": 744,
-         "itemName": "Thunderbrew's Boot Flask",
-         "quality": 2,
-         "icon": "inv_drink_01",
-         "sourceKind": "quest",
-         "sourceDetail": "Quest: Sweet Amber · requires level 40",
-         "notSimChecked": false
-        },
-        {
-         "slot": "trinket2",
-         "slotLabel": "Trinket",
-         "empty": false,
          "itemId": 249469,
          "itemName": "Frozen Heart of the Mountain",
          "quality": 3,
          "icon": "inv_misc_gem_sapphire_01",
          "sourceKind": "crafted",
          "sourceDetail": "Crafted: Enchanting",
+         "notSimChecked": false
+        },
+        {
+         "slot": "trinket2",
+         "slotLabel": "Trinket",
+         "empty": false,
+         "itemId": 744,
+         "itemName": "Thunderbrew's Boot Flask",
+         "quality": 2,
+         "icon": "inv_drink_01",
+         "sourceKind": "quest",
+         "sourceDetail": "Quest: Sweet Amber · requires level 40",
          "notSimChecked": false
         },
         {
@@ -15719,12 +15705,12 @@
          "slot": "shoulder",
          "slotLabel": "Shoulder",
          "empty": false,
-         "itemId": 254053,
-         "itemName": "Netherflame Shoulders",
+         "itemId": 17732,
+         "itemName": "Rotgrip Mantle",
          "quality": 3,
-         "icon": "inv_shoulder_23",
-         "sourceKind": "crafted",
-         "sourceDetail": "Crafted: Tailoring",
+         "icon": "inv_shoulder_05",
+         "sourceKind": "dungeon",
+         "sourceDetail": "Maraudon · Rotgrip",
          "notSimChecked": false,
          "typeLabel": "Cloth"
         },
@@ -15745,12 +15731,12 @@
          "slot": "chest",
          "slotLabel": "Chest",
          "empty": false,
-         "itemId": 12462,
-         "itemName": "Embrace of the Wind Serpent",
-         "quality": 4,
+         "itemId": 10021,
+         "itemName": "Dreamweave Vest",
+         "quality": 3,
          "icon": "inv_chest_cloth_42",
-         "sourceKind": "world",
-         "sourceDetail": "<1% from Avatar of Hakkar",
+         "sourceKind": "crafted",
+         "sourceDetail": "Crafted: Tailoring",
          "notSimChecked": false,
          "typeLabel": "Cloth"
         },
@@ -15784,12 +15770,12 @@
          "slot": "waist",
          "slotLabel": "Waist",
          "empty": false,
-         "itemId": 254085,
-         "itemName": "Fiery Waistcord",
+         "itemId": 11662,
+         "itemName": "Ban'thok Sash",
          "quality": 3,
-         "icon": "inv_belt_37a",
-         "sourceKind": "crafted",
-         "sourceDetail": "Crafted: Tailoring",
+         "icon": "inv_belt_29",
+         "sourceKind": "dungeon",
+         "sourceDetail": "Blackrock Depths · Ok'thor the Breaker",
          "notSimChecked": false,
          "typeLabel": "Cloth"
         },
@@ -15797,12 +15783,12 @@
          "slot": "legs",
          "slotLabel": "Legs",
          "empty": false,
-         "itemId": 9484,
-         "itemName": "Spellshock Leggings",
+         "itemId": 10807,
+         "itemName": "Kilt of the Atal'ai Prophet",
          "quality": 3,
-         "icon": "inv_pants_08",
+         "icon": "inv_pants_11",
          "sourceKind": "dungeon",
-         "sourceDetail": "Zul'Farrak · Chief Ukorz Sandscalp",
+         "sourceDetail": "Sunken Temple · Jammal'an the Prophet",
          "notSimChecked": false,
          "typeLabel": "Cloth"
         },
@@ -15823,24 +15809,24 @@
          "slot": "finger1",
          "slotLabel": "Ring",
          "empty": false,
-         "itemId": 11824,
-         "itemName": "Cyclopean Band",
-         "quality": 3,
-         "icon": "inv_jewelry_ring_08",
-         "sourceKind": "dungeon",
-         "sourceDetail": "15% from Ok'thor the Breaker",
-         "notSimChecked": false
-        },
-        {
-         "slot": "finger2",
-         "slotLabel": "Ring",
-         "empty": false,
          "itemId": 19519,
          "itemName": "Advisor's Ring",
          "quality": 3,
          "icon": "inv_jewelry_ring_20",
          "sourceKind": "rep",
          "sourceDetail": "Warsong Outriders (honored)",
+         "notSimChecked": false
+        },
+        {
+         "slot": "finger2",
+         "slotLabel": "Ring",
+         "empty": false,
+         "itemId": 6440,
+         "itemName": "Brainlash",
+         "quality": 3,
+         "icon": "inv_belt_30",
+         "sourceKind": "dungeon",
+         "sourceDetail": "Zul'Farrak · Chief Ukorz Sandscalp",
          "notSimChecked": false
         },
         {
@@ -15859,12 +15845,12 @@
          "slot": "trinket2",
          "slotLabel": "Trinket",
          "empty": false,
-         "itemId": 249469,
-         "itemName": "Frozen Heart of the Mountain",
+         "itemId": 272061,
+         "itemName": "Darkspear Voodoo Seal",
          "quality": 3,
-         "icon": "inv_misc_gem_sapphire_01",
-         "sourceKind": "crafted",
-         "sourceDetail": "Crafted: Enchanting",
+         "icon": "inv_misc_rune_06",
+         "sourceKind": "vendor",
+         "sourceDetail": "Vendor: Creeg Bothunk",
          "notSimChecked": false
         },
         {
@@ -16504,7 +16490,7 @@
    "leveling": {
     "early": "<h3 id=\"levels-1-to-19\">Levels 1 to 19</h3>\n<p><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25306\">Fireball</span> is trained at 1 with new ranks at 6, 12 and 18, so visit the trainer every even level. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25304\">Frostbolt</span> at 4 is your slow, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10199\">Fire Blast</span> at 6 is the instant finisher, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10230\">Frost Nova</span> at 10 buys distance and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10216\">Flamestrike</span> at 16 hits packs.</p>\n<p>From 10 to 14 put five points into <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105796:5\">Incineration</span>, 10% more crit on <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10199\">Fire Blast</span>, then <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105795:5\">Accelerant</span> at 15 to cut 0.1 sec off <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25306\">Fireball</span>, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105794:5\">Ignite</span> from 16 to 19 so every Fire crit burns for more.</p>\n<p>Wand mobs down from half health to save mana: Lesser Magic Wand at 5 and Greater Magic Wand at 13 come from Enchanting, and Riptear’s Spare Arm (Rear Guard Patrol, Horde) or Elven Wand (Alliance, Bashal’Aran, Darkshore) are early quest wands. Your trainer’s level 10 class quest pays a staff or an orb; take the staff and retire the starter one. Wear cloth quest rewards over vendor gear, Intellect and Stamina first.</p>\n",
     "stripHeading": "Levels 20 to 60",
-    "late": "<p><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:18809\">Pyroblast</span> comes at 20 and Ignite’s last point at 21, then three more points of <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105795:5\">Accelerant</span> at 22 to 24 make <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25306\">Fireball</span> a 3.1 second cast. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25306\">Fireball</span> stays your nuke through the 20s, with <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10199\">Fire Blast</span> on cooldown: at the ranks you have in the 20s <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25306\">Fireball</span> does more damage for its mana than <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10207\">Scorch</span>, and mana is what runs out first. Improved Scorch’s first point at 27 lands a stack only one <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10207\">Scorch</span> in three, so at 27 build the stacks only on a mob or elite that lives a minute or more. From 28, with two points, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10207\">Scorch</span> to 5 stacks first on anything that lives 20 seconds. From 30, with <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105786:1\">Heating Up</span> in, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10207\">Scorch</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10199\">Fire Blast</span> take over on single targets: every <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10207\">Scorch</span> crit is a <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105786:1\">Heating Up</span> stack, two Scorches roll twice the crits of one <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25306\">Fireball</span>, and every few crits turn into a fast <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:18809\">Pyroblast</span>. On leveling mana the cheap ranks win here, because each one earns the same <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105786:1\">Heating Up</span> stack for less: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10207\">Scorch</span> rank 1 from 28 to 39, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10199\">Fire Blast</span> rank 2 to 35 and rank 3 from 36 to 39, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:18809\">Pyroblast</span> rank 2 to 37, except rank 3 at 34 and 35. Open on a mob with <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:18809\">Pyroblast</span> from range, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25306\">Fireball</span> (<span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10207\">Scorch</span> from 30) as it closes, and finish it with <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10199\">Fire Blast</span>. Keep <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10230\">Frost Nova</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1953\">Blink</span> for anything that reaches you, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25304\">Frostbolt</span> for kiting: none of your Fire spells slow until <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1237313\">Frostfire Bolt</span> at 40, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25304\">Frostbolt</span> is still the cheaper slow after that. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10216\">Flamestrike</span> into <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10202\">Arcane Explosion</span> clears packs once you have the Stamina for it. Train <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:22783\">Mage Armor</span> at 34 and wear it for the mana; switch to <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10220\">Ice Armor</span> when you are taking melee hits in the open world.</p>\n<p>After <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:11129\">Combustion</span> at 40, <strong><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105815:0\">Wand Specialization</span></strong> at 41 and 42 adds a quarter to the wand you finish mobs with. Accelerant’s last point at 43 and two points of <strong><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105789:2\">Burning Soul</span></strong> at 44 and 45 keep a mob’s hits from pushing back half your Fire casts, then <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105813:5\">Improved Channeling</span>, a point of <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105812:1\">Arcane Subtlety</span>, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105810:5\">Arcane Concentration</span> from 50 and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105809:2\">Missile Barrage</span> at 55 and 56, which procs off <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25306\">Fireball</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1239700\">Arcane Blast</span> and so waits for 57. <strong><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1239700\">Arcane Blast</span></strong> at 57 changes the loop: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25306\">Fireball</span> is the filler again, as in a raid, with the <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1239700\">Arcane Blast</span> buff kept up and every <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105809:2\">Missile Barrage</span> proc spent on a fast <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25345\">Arcane Missiles</span>. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105778:3\">Precision</span> takes the last three points for 6% hit.</p>\n",
+    "late": "<p><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:18809\">Pyroblast</span> comes at 20 and Ignite’s last point at 21, then three more points of <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105795:5\">Accelerant</span> at 22 to 24 make <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25306\">Fireball</span> a 3.1 second cast. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25306\">Fireball</span> stays your nuke through the 20s, with <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10199\">Fire Blast</span> on cooldown: at the ranks you have in the 20s <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25306\">Fireball</span> does more damage for its mana than <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10207\">Scorch</span>, and mana is what runs out first. Improved Scorch’s first point at 27 lands a stack only one <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10207\">Scorch</span> in three, so at 27 build the stacks only on a mob or elite that lives a minute or more. From 28, with two points, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10207\">Scorch</span> to 5 stacks first on anything that lives 20 seconds. From 30, with <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105786:1\">Heating Up</span> in, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10207\">Scorch</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10199\">Fire Blast</span> take over on single targets: every <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10207\">Scorch</span> crit is a <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105786:1\">Heating Up</span> stack, two Scorches roll twice the crits of one <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25306\">Fireball</span>, and every few crits turn into a fast <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:18809\">Pyroblast</span>. On leveling mana the cheap ranks win here, because each one earns the same <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105786:1\">Heating Up</span> stack for less: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10207\">Scorch</span> rank 1 from 28 to 39, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10199\">Fire Blast</span> rank 2 to 35 and rank 3 from 36 to 39, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:18809\">Pyroblast</span> rank 2 to 37, except rank 3 at 34 and 35. Open on a mob with <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:18809\">Pyroblast</span> from range, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25306\">Fireball</span> (<span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10207\">Scorch</span> from 30) as it closes, and finish it with <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10199\">Fire Blast</span>. Keep <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10230\">Frost Nova</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1953\">Blink</span> for anything that reaches you, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25304\">Frostbolt</span> for kiting: none of your Fire spells slow until <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1237313\">Frostfire Bolt</span> at 40, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25304\">Frostbolt</span> is still the cheaper slow after that. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10216\">Flamestrike</span> into <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10202\">Arcane Explosion</span> clears packs once you have the Stamina for it. Train <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:22783\">Mage Armor</span> at 34 and wear it for the mana; switch to <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10220\">Ice Armor</span> when you are taking melee hits in the open world.</p>\n<p>After <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:11129\">Combustion</span> at 40, <strong><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105778:3\">Precision</span></strong> takes 41 to 43 for 6% spell hit: against a mob above your level every miss loses a whole cast, and the crit it might have been never turns into <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105794:5\">Ignite</span> or a <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105786:1\">Heating Up</span> stack. <strong><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105815:0\">Wand Specialization</span></strong> at 44 and 45 adds a quarter to the wand you finish mobs with, then <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105813:5\">Improved Channeling</span> at 46 to 48 opens <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105810:5\">Arcane Concentration</span> at 49 to 53. <strong><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1239700\">Arcane Blast</span></strong> at 54 changes the loop: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25306\">Fireball</span> is the filler again, as in a raid, with the <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1239700\">Arcane Blast</span> buff kept up, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105809:2\">Missile Barrage</span> at 55 and 56 turns its procs into fast <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25345\">Arcane Missiles</span>. Accelerant’s last point at 57 makes that <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25306\">Fireball</span> a 3 second cast, and two points of <strong><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105789:2\">Burning Soul</span></strong> at 58 and 59 and a point of <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105812:1\">Arcane Subtlety</span> at 60 finish the build.</p>\n",
     "steps": 51,
     "ladder": [
      {
@@ -16633,23 +16619,23 @@
      },
      {
       "level": 41,
-      "name": "Wand Specialization"
+      "name": "Precision"
      },
      {
       "level": 42,
-      "name": "Wand Specialization"
+      "name": "Precision"
      },
      {
       "level": 43,
-      "name": "Accelerant"
+      "name": "Precision"
      },
      {
       "level": 44,
-      "name": "Burning Soul"
+      "name": "Wand Specialization"
      },
      {
       "level": 45,
-      "name": "Burning Soul"
+      "name": "Wand Specialization"
      },
      {
       "level": 46,
@@ -16665,7 +16651,7 @@
      },
      {
       "level": 49,
-      "name": "Arcane Subtlety"
+      "name": "Arcane Concentration"
      },
      {
       "level": 50,
@@ -16685,7 +16671,7 @@
      },
      {
       "level": 54,
-      "name": "Arcane Concentration"
+      "name": "Arcane Blast"
      },
      {
       "level": 55,
@@ -16697,19 +16683,19 @@
      },
      {
       "level": 57,
-      "name": "Arcane Blast"
+      "name": "Accelerant"
      },
      {
       "level": 58,
-      "name": "Precision"
+      "name": "Burning Soul"
      },
      {
       "level": 59,
-      "name": "Precision"
+      "name": "Burning Soul"
      },
      {
       "level": 60,
-      "name": "Precision"
+      "name": "Arcane Subtlety"
      }
     ],
     "at": {
@@ -18043,9 +18029,9 @@
      },
      "60": {
       "level": 60,
-      "name": "Precision",
-      "rank": 3,
-      "point": "Level 60: Precision, rank 3",
+      "name": "Arcane Subtlety",
+      "rank": 1,
+      "point": "Level 60: Arcane Subtlety, rank 1",
       "spent": "51 points spent, all placed",
       "trees": [
        {
@@ -19413,7 +19399,7 @@
    "title": "Holy Priest",
    "description": "How to heal as a Holy Priest in Forever: talents, downranking, Prayer of Mending, Prayer of Healing, Lightwell, mana over a long fight, assignments and races.",
    "summary": "Holy is the priest who heals everything: Prayer of Mending and Renew on the tank, Greater Heal as the filler, and Prayer of Healing for a hurt group.",
-   "meta": "Healer · Updated 6 Nov",
+   "meta": "Healer · Updated 7 Nov",
    "tabs": [
     {
      "slug": "discipline",
@@ -22987,12 +22973,12 @@
          "slot": "hands",
          "slotLabel": "Hands",
          "empty": false,
-         "itemId": 9395,
-         "itemName": "Gloves of Old",
-         "quality": 3,
-         "icon": "inv_gauntlets_24",
-         "sourceKind": "world_drop",
-         "sourceDetail": "World drop (BoE) · mob levels 30-37",
+         "itemId": 7049,
+         "itemName": "Truefaith Gloves",
+         "quality": 2,
+         "icon": "inv_gauntlets_16",
+         "sourceKind": "crafted",
+         "sourceDetail": "Crafted: Tailoring",
          "notSimChecked": false,
          "typeLabel": "Cloth"
         },
@@ -23051,12 +23037,12 @@
          "slot": "finger2",
          "slotLabel": "Ring",
          "empty": false,
-         "itemId": 273030,
-         "itemName": "Ring of Power Regulation",
+         "itemId": 273031,
+         "itemName": "Runemender's Seal",
          "quality": 3,
          "icon": "inv_jewelry_ring_28",
-         "sourceKind": "dungeon",
-         "sourceDetail": "Excavation Site: Wetlands · Relic Guardian",
+         "sourceKind": "world",
+         "sourceDetail": "Arcane Anomaly",
          "notSimChecked": false
         },
         {
@@ -23102,12 +23088,12 @@
          "slot": "ranged",
          "slotLabel": "Ranged",
          "empty": false,
-         "itemId": 273043,
-         "itemName": "Wand of Mana Concentration",
+         "itemId": 13062,
+         "itemName": "Thunderwood",
          "quality": 3,
-         "icon": "inv_wand_06",
-         "sourceKind": "world",
-         "sourceDetail": "Arcanic Enigma",
+         "icon": "inv_staff_02",
+         "sourceKind": "world_drop",
+         "sourceDetail": "World drop (BoE) · mob levels 23-30",
          "notSimChecked": false,
          "typeLabel": "Wand"
         }
@@ -23203,10 +23189,10 @@
          "slot": "hands",
          "slotLabel": "Hands",
          "empty": false,
-         "itemId": 10019,
-         "itemName": "Dreamweave Gloves",
+         "itemId": 254021,
+         "itemName": "Gilded Handwraps",
          "quality": 3,
-         "icon": "inv_gauntlets_18",
+         "icon": "inv_gauntlets_29",
          "sourceKind": "crafted",
          "sourceDetail": "Crafted: Tailoring",
          "notSimChecked": false,
@@ -23267,12 +23253,12 @@
          "slot": "finger2",
          "slotLabel": "Ring",
          "empty": false,
-         "itemId": 19524,
-         "itemName": "Lorekeeper's Ring",
+         "itemId": 273031,
+         "itemName": "Runemender's Seal",
          "quality": 3,
          "icon": "inv_jewelry_ring_28",
-         "sourceKind": "rep",
-         "sourceDetail": "Silverwing Sentinels (honored)",
+         "sourceKind": "world",
+         "sourceDetail": "Arcane Anomaly",
          "notSimChecked": false
         },
         {
@@ -23481,24 +23467,24 @@
          "slot": "finger1",
          "slotLabel": "Ring",
          "empty": false,
-         "itemId": 19523,
-         "itemName": "Lorekeeper's Ring",
-         "quality": 3,
-         "icon": "inv_jewelry_ring_28",
-         "sourceKind": "rep",
-         "sourceDetail": "Silverwing Sentinels (honored)",
-         "notSimChecked": false
-        },
-        {
-         "slot": "finger2",
-         "slotLabel": "Ring",
-         "empty": false,
          "itemId": 6440,
          "itemName": "Brainlash",
          "quality": 3,
          "icon": "inv_belt_30",
          "sourceKind": "dungeon",
          "sourceDetail": "Zul'Farrak · Chief Ukorz Sandscalp",
+         "notSimChecked": false
+        },
+        {
+         "slot": "finger2",
+         "slotLabel": "Ring",
+         "empty": false,
+         "itemId": 19523,
+         "itemName": "Lorekeeper's Ring",
+         "quality": 3,
+         "icon": "inv_jewelry_ring_28",
+         "sourceKind": "rep",
+         "sourceDetail": "Silverwing Sentinels (honored)",
          "notSimChecked": false
         },
         {
@@ -24485,12 +24471,12 @@
          "slot": "back",
          "slotLabel": "Back",
          "empty": false,
-         "itemId": 11623,
-         "itemName": "Spritecaster Cape",
+         "itemId": 19527,
+         "itemName": "Battle Healer's Cloak",
          "quality": 3,
-         "icon": "inv_misc_cape_20",
-         "sourceKind": "dungeon",
-         "sourceDetail": "Blackrock Depths · High Interrogator Gerstahn ",
+         "icon": "inv_misc_cape_18",
+         "sourceKind": "rep",
+         "sourceDetail": "Warsong Outriders (honored)",
          "notSimChecked": false,
          "typeLabel": "Cloth"
         },
@@ -24576,12 +24562,12 @@
          "slot": "finger1",
          "slotLabel": "Ring",
          "empty": false,
-         "itemId": 281635,
-         "itemName": "Philanthropist's Ring",
+         "itemId": 6440,
+         "itemName": "Brainlash",
          "quality": 3,
-         "icon": "inv_jewelry_ring_14",
-         "sourceKind": "quest",
-         "sourceDetail": "Quest: Greater Friend of the Library · requires level 20",
+         "icon": "inv_belt_30",
+         "sourceKind": "dungeon",
+         "sourceDetail": "Zul'Farrak · Chief Ukorz Sandscalp",
          "notSimChecked": false
         },
         {
@@ -25269,34 +25255,34 @@
    },
    "professions": "<p>Tailoring makes healing cloth you will wear into the first raids. Enchanting saves you the enchanting bill. Alchemy makes the flask and the elixirs you burn every raid, and that is the profession that saves a healer the most gold.</p>\n",
    "leveling": {
-    "early": "<h3 id=\"levels-1-to-19\">Levels 1 to 19</h3>\n<p>Until <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:15261\">Holy Fire</span> at 20, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10934\">Smite</span> is your damage: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10894\">Shadow Word: Pain</span> at 4 first, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10934\">Smite</span>, then the wand. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10901\">Power Word: Shield</span> at 6 and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25315\">Renew</span> at 8 matter most, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10952\">Inner Fire</span> follows at 12. Healing a group before you learn <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:6064\">Heal</span> at 16, keep <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25315\">Renew</span> on the tank and use <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:2053\">Lesser Heal</span> rank 3 as your filler. Keep <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25315\">Renew</span> on rank 1 through your twenties, except at 16, the level <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:6064\">Heal</span> arrives, when rank 2 is worth its mana.</p>\n<p>Three points of <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105867:3\">Twilight Focus</span> from 10 to 12 mean most hits no longer push back your casts. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105866:3\">Improved Renew</span> takes 13 to 15 for 15% bigger Renews, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:110855:5\">Holy Specialization</span> starts at 16 for more crit on your Holy spells.</p>\n<p>Wear cloth, take quest rewards over vendor gear, and swap the starting mace for the first quest staff or caster mace. Get a wand early: a Lesser Magic Wand from an Enchanter at 5, a Greater Magic Wand at 13, or a quest wand such as the Elven Wand (Bashal’Aran, Darkshore) or the Cinder Wand (Arugal’s Folly, Silverpine Forest).</p>\n",
+    "early": "<h3 id=\"levels-1-to-19\">Levels 1 to 19</h3>\n<p>Until <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:15261\">Holy Fire</span> at 20, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10934\">Smite</span> is your damage: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10894\">Shadow Word: Pain</span> at 4 first, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10934\">Smite</span>, then the wand. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10901\">Power Word: Shield</span> at 6 and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25315\">Renew</span> at 8 matter most, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10952\">Inner Fire</span> follows at 12. Healing a group before you learn <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:6064\">Heal</span> at 16, keep <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25315\">Renew</span> on the tank and use <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:2053\">Lesser Heal</span> rank 3 as your filler. Keep <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25315\">Renew</span> on rank 1 through your twenties, except at 16, the level <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:6064\">Heal</span> arrives, when rank 2 is worth its mana.</p>\n<p><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105866:3\">Improved Renew</span> takes 10 to 12 for 15% bigger Renews, your main heal at these levels, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:110855:5\">Holy Specialization</span> 13 to 17 for more crit on your Holy spells. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105863:5\">Divine Fury</span> at 18 and 19 takes a fifth of a second off <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:6064\">Heal</span>.</p>\n<p>Wear cloth, take quest rewards over vendor gear, and swap the starting mace for the first quest staff or caster mace. Get a wand early: a Lesser Magic Wand from an Enchanter at 5, a Greater Magic Wand at 13, or a quest wand such as the Elven Wand (Bashal’Aran, Darkshore) or the Cinder Wand (Arugal’s Folly, Silverpine Forest).</p>\n",
     "stripHeading": "Levels 20 to 60",
-    "late": "<p>From 20 you can keep leveling Holy in groups, or respec to Shadow at the trainer for faster solo questing and come back to Holy at 60. Solo, Holy is slow: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10934\">Smite</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:15261\">Holy Fire</span> hit hard, but they cost so much mana that you drink after every pull. If you level Holy, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:15261\">Holy Fire</span> opens, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10934\">Smite</span> finishes, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10901\">Power Word: Shield</span> keeps you casting. In dungeons, keep <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25315\">Renew</span> on the tank, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:6064\">Heal</span> as the filler from level 16, and learn to downrank early.</p>\n<p><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:6064\">Heal</span> rank 1 is the filler through most of your twenties and early thirties: it keeps your whole healing bonus until 33 and heals more for its mana than any later rank, so a long pull ends with mana to spare. A later rank takes over at a few levels: rank 2 at 27 for a Human, Gnome or Night Elf (a Human stays on it at 28), rank 3 at 28 for a Dwarf, Gnome, Night Elf or Troll, rank 3 at 30 and 31 for an Undead or Troll, and rank 2 or 3 at 32 for everyone but a Troll. From 34 rank 1 has started to lose its bonus, and rank 4 costs more mana than its extra healing is worth in its first levels, so keep rank 3 from 34 to 37 before you move to rank 4, and to 38 as an Undead. A Troll stays on rank 1 at 34 and casts rank 2 at 38 and 39, and an Undead casts rank 2 at 39.</p>\n<p><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25315\">Renew</span> steps down too: through your twenties the tank’s <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25315\">Renew</span> is rank 1, a fraction of the top rank’s cost that still keeps most of your healing bonus. Rank 2 and then rank 3 take over between 28 and 36, at levels that differ a little by race, so you finish the dungeon with mana to spare. From there <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25315\">Renew</span> keeps stepping: rank 4 from 40, rank 5 from 45 and rank 6 from about 52 cost far less and keep all or nearly all of your healing bonus, so you can keep <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25315\">Renew</span> up all dungeon; rank 7 takes over at 59, already at 58 as a Human.</p>\n<p><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25314\">Greater Heal</span> is the same story: keep rank 1 as the filler all the way to 60, even after rank 4 arrives at 58. A dungeon tank rarely needs the bigger ranks, so the mana they cost is better spent on more casts. At 60, rank 3 and rank 4 heal about the same for their mana.</p>\n",
+    "late": "<p>From 20 you can keep leveling Holy in groups, or respec to Shadow at the trainer for faster solo questing and come back to Holy at 60. Solo, Holy is slow: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10934\">Smite</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:15261\">Holy Fire</span> hit hard, but they cost so much mana that you drink after every pull. If you level Holy, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:15261\">Holy Fire</span> opens, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10934\">Smite</span> finishes, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10901\">Power Word: Shield</span> keeps you casting. In dungeons, keep <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25315\">Renew</span> on the tank, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:6064\">Heal</span> as the filler from level 16, and learn to downrank early.</p>\n<p>Your points from 20: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105860:3\">Inspiration</span> from 20 to 22, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105867:3\">Twilight Focus</span> at 23 and 24 so most hits stop pushing back your casts, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105856:1\">Holy Binding</span> at 25, the first level its row opens, since your Flash Heals on the group then heal you as well, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105858:3\">Improved Healing</span> from 26 to 28. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105867:3\">Twilight Focus</span> is full at 29, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105855:2\">Litany of Light</span> takes 30 and 31, then <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105853:4\">Spiritual Guidance</span>, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105854:1\">Spirit of Redemption</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105852:3\">Spiritual Healing</span>, so that all thirty Holy points are in for <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1240827\">Prayer of Mending</span> at 40. From 41 go to Discipline: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105849:5\">Twin Disciplines</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105837:5\">Mental Strength</span> open the row for <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105843:3\">Meditation</span>, which keeps half your mana regeneration going while you cast and is in by 53, then <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14751\">Inner Focus</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105842:3\">Mental Agility</span>. The last three points of <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105863:5\">Divine Fury</span> close the build at 58 to 60.</p>\n<p><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:6064\">Heal</span> rank 1 is the filler through most of your twenties and early thirties: it keeps your whole healing bonus until 33 and heals more for its mana than any later rank, so a long pull ends with mana to spare. A later rank takes over at a few levels: rank 2 at 27 for a Human, Gnome or Night Elf (a Human stays on it at 28), rank 3 at 28 for a Dwarf, Gnome, Night Elf or Troll, rank 3 at 30 and 31 for an Undead or Troll, and rank 2 or 3 at 32 for everyone but a Troll. From 34 rank 1 has started to lose its bonus, and rank 4 costs more mana than its extra healing is worth in its first levels, so keep rank 3 from 34 to 37 before you move to rank 4, and to 38 as an Undead. A Troll stays on rank 1 at 34 and casts rank 2 at 38 and 39, and an Undead casts rank 2 at 39.</p>\n<p><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25315\">Renew</span> steps down too: through your twenties the tank’s <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25315\">Renew</span> is rank 1, a fraction of the top rank’s cost that still keeps most of your healing bonus. Rank 2 and then rank 3 take over between 28 and 36, at levels that differ a little by race, so you finish the dungeon with mana to spare. From there <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25315\">Renew</span> keeps stepping: rank 4 from 40, rank 5 from 45 and rank 6 from about 52 cost far less and keep all or nearly all of your healing bonus, so you can keep <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25315\">Renew</span> up all dungeon; rank 7 takes over at 59, already at 58 as a Human.</p>\n<p><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25314\">Greater Heal</span> is the same story: keep rank 1 as the filler all the way to 60, even after rank 4 arrives at 58. A dungeon tank rarely needs the bigger ranks, so the mana they cost is better spent on more casts. At 60, rank 3 and rank 4 heal about the same for their mana.</p>\n",
     "steps": 51,
     "ladder": [
      {
       "level": 10,
-      "name": "Twilight Focus"
+      "name": "Improved Renew"
      },
      {
       "level": 11,
-      "name": "Twilight Focus"
+      "name": "Improved Renew"
      },
      {
       "level": 12,
-      "name": "Twilight Focus"
+      "name": "Improved Renew"
      },
      {
       "level": 13,
-      "name": "Improved Renew"
+      "name": "Holy Specialization"
      },
      {
       "level": 14,
-      "name": "Improved Renew"
+      "name": "Holy Specialization"
      },
      {
       "level": 15,
-      "name": "Improved Renew"
+      "name": "Holy Specialization"
      },
      {
       "level": 16,
@@ -25308,71 +25294,71 @@
      },
      {
       "level": 18,
-      "name": "Holy Specialization"
+      "name": "Divine Fury"
      },
      {
       "level": 19,
-      "name": "Holy Specialization"
+      "name": "Divine Fury"
      },
      {
       "level": 20,
-      "name": "Holy Specialization"
+      "name": "Inspiration"
      },
      {
       "level": 21,
-      "name": "Divine Fury"
+      "name": "Inspiration"
      },
      {
       "level": 22,
-      "name": "Divine Fury"
+      "name": "Inspiration"
      },
      {
       "level": 23,
-      "name": "Divine Fury"
+      "name": "Twilight Focus"
      },
      {
       "level": 24,
-      "name": "Divine Fury"
+      "name": "Twilight Focus"
      },
      {
       "level": 25,
-      "name": "Divine Fury"
-     },
-     {
-      "level": 26,
-      "name": "Inspiration"
-     },
-     {
-      "level": 27,
-      "name": "Inspiration"
-     },
-     {
-      "level": 28,
-      "name": "Inspiration"
-     },
-     {
-      "level": 29,
-      "name": "Improved Healing"
-     },
-     {
-      "level": 30,
-      "name": "Improved Healing"
-     },
-     {
-      "level": 31,
-      "name": "Improved Healing"
-     },
-     {
-      "level": 32,
       "name": "Holy Binding"
      },
      {
-      "level": 33,
+      "level": 26,
+      "name": "Improved Healing"
+     },
+     {
+      "level": 27,
+      "name": "Improved Healing"
+     },
+     {
+      "level": 28,
+      "name": "Improved Healing"
+     },
+     {
+      "level": 29,
+      "name": "Twilight Focus"
+     },
+     {
+      "level": 30,
       "name": "Litany of Light"
      },
      {
-      "level": 34,
+      "level": 31,
       "name": "Litany of Light"
+     },
+     {
+      "level": 32,
+      "name": "Spiritual Guidance"
+     },
+     {
+      "level": 33,
+      "name": "Spiritual Guidance"
+     },
+     {
+      "level": 34,
+      "name": "Spirit of Redemption"
      },
      {
       "level": 35,
@@ -25388,7 +25374,7 @@
      },
      {
       "level": 38,
-      "name": "Spirit of Redemption"
+      "name": "Spiritual Guidance"
      },
      {
       "level": 39,
@@ -25400,15 +25386,15 @@
      },
      {
       "level": 41,
-      "name": "Spiritual Guidance"
+      "name": "Twin Disciplines"
      },
      {
       "level": 42,
-      "name": "Spiritual Guidance"
+      "name": "Twin Disciplines"
      },
      {
       "level": 43,
-      "name": "Spiritual Guidance"
+      "name": "Twin Disciplines"
      },
      {
       "level": 44,
@@ -25420,15 +25406,15 @@
      },
      {
       "level": 46,
-      "name": "Twin Disciplines"
+      "name": "Mental Strength"
      },
      {
       "level": 47,
-      "name": "Twin Disciplines"
+      "name": "Mental Strength"
      },
      {
       "level": 48,
-      "name": "Twin Disciplines"
+      "name": "Mental Strength"
      },
      {
       "level": 49,
@@ -25440,19 +25426,19 @@
      },
      {
       "level": 51,
-      "name": "Mental Strength"
+      "name": "Meditation"
      },
      {
       "level": 52,
-      "name": "Mental Strength"
+      "name": "Meditation"
      },
      {
       "level": 53,
-      "name": "Mental Strength"
+      "name": "Meditation"
      },
      {
       "level": 54,
-      "name": "Mental Agility"
+      "name": "Inner Focus"
      },
      {
       "level": 55,
@@ -25464,27 +25450,27 @@
      },
      {
       "level": 57,
-      "name": "Inner Focus"
+      "name": "Mental Agility"
      },
      {
       "level": 58,
-      "name": "Meditation"
+      "name": "Divine Fury"
      },
      {
       "level": 59,
-      "name": "Meditation"
+      "name": "Divine Fury"
      },
      {
       "level": 60,
-      "name": "Meditation"
+      "name": "Divine Fury"
      }
     ],
     "at": {
      "34": {
       "level": 34,
-      "name": "Litany of Light",
-      "rank": 2,
-      "point": "Level 34: Litany of Light, rank 2",
+      "name": "Spirit of Redemption",
+      "rank": 1,
+      "point": "Level 34: Spirit of Redemption, rank 1",
       "spent": "25 points spent, 26 to go",
       "trees": [
        {
@@ -26106,7 +26092,7 @@
            }
           ],
           "spell_id": 18530,
-          "rank": 5
+          "rank": 2
          },
          {
           "id": 105862,
@@ -26304,7 +26290,7 @@
            }
           ],
           "spell_id": 20711,
-          "rank": 0
+          "rank": 1
          },
          {
           "id": 105853,
@@ -26338,7 +26324,7 @@
            }
           ],
           "spell_id": 14901,
-          "rank": 0
+          "rank": 2
          },
          {
           "id": 105852,
@@ -26832,9 +26818,9 @@
      },
      "60": {
       "level": 60,
-      "name": "Meditation",
-      "rank": 3,
-      "point": "Level 60: Meditation, rank 3",
+      "name": "Divine Fury",
+      "rank": 5,
+      "point": "Level 60: Divine Fury, rank 5",
       "spent": "51 points spent, all placed",
       "trees": [
        {
@@ -28227,7 +28213,7 @@
    "raid_build": false,
    "rotation": {
     "opener": 1,
-    "priority": 8,
+    "priority": 9,
     "cooldowns": 6
    },
    "stat_rows": 10,
@@ -28292,8 +28278,8 @@
    "raid_build": false,
    "rotation": {
     "opener": 2,
-    "priority": 8,
-    "cooldowns": 4
+    "priority": 7,
+    "cooldowns": 3
    },
    "stat_rows": 7,
    "bis": 5,
@@ -28464,9 +28450,9 @@
     "priority": 8,
     "cooldowns": 2
    },
-   "stat_rows": 7,
-   "bis": 5,
-   "extras": "4/7",
+   "stat_rows": 0,
+   "bis": 0,
+   "extras": null,
    "ranked": true
   },
   "shaman/enhancement": {
@@ -28477,9 +28463,9 @@
     "priority": 7,
     "cooldowns": 2
    },
-   "stat_rows": 8,
-   "bis": 5,
-   "extras": "6/7",
+   "stat_rows": 0,
+   "bis": 0,
+   "extras": null,
    "ranked": true
   },
   "shaman/restoration": {
@@ -28490,9 +28476,9 @@
     "priority": 10,
     "cooldowns": 3
    },
-   "stat_rows": 5,
-   "bis": 5,
-   "extras": "4/9",
+   "stat_rows": 0,
+   "bis": 0,
+   "extras": null,
    "ranked": true
   },
   "warlock/affliction": {
@@ -28653,7 +28639,14 @@
    "40": "Level 40 to 49",
    "50": "Level 50 to 59",
    "60": "Level 60"
-  }
+  },
+  "bandSlugs": [
+   "20-29",
+   "30-39",
+   "40-49",
+   "50-59",
+   "60"
+  ]
  },
  "markup": {
   "statHead": "Stat",

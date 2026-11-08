@@ -55,6 +55,7 @@ import { readSpecCatalog } from ${src("src/lib/bis/load.ts")};
 import { bandTopLevel } from ${src("src/lib/bis/rotation-view.ts")};
 import { latest } from ${src("src/lib/dates.ts")};
 import { guidesCopy } from ${src("src/lib/guides/copy.ts")};
+import { bandSlug } from ${src("src/lib/bis/band-path.ts")};
 import { pillLabelFor } from ${src("src/lib/sources.ts")};
 import { addonCopy } from ${src("src/lib/addon/copy.ts")};
 import { tiersCopy as tierCopy } from ${src("src/lib/tiers/tier-copy.ts")};
@@ -139,7 +140,8 @@ export async function run(entries, SPECS, CLASSES) {
     source_labels: Object.fromEntries(['blizzard', 'datamined', 'community', 'site'].map((k) => [k, pillLabelFor(k)])), setup_title: addonCopy.setupPageTitle,
     fns: { signedInCallout: { bm: guidesCopy.signedInCallout('Beast Mastery', 'Hunter'), survival: guidesCopy.signedInCallout('Survival', 'Hunter'), fury: guidesCopy.signedInCallout('Fury', 'Warrior') },
       dataSourceLine: guidesCopy.dataSourceLine(build), unknown: tierCopy.answer.unknown('Felsnap'),
-      levelRangeLabel: Object.fromEntries([20, 30, 40, 50, 60].map((b) => [b, guidesCopy.levelRangeLabel(b)])) } };
+      levelRangeLabel: Object.fromEntries([20, 30, 40, 50, 60].map((b) => [b, guidesCopy.levelRangeLabel(b)])),
+      bandSlugs: [20, 30, 40, 50, 60].map(bandSlug) } };
 }
 
 async function specPage(entry) {

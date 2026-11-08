@@ -1,11 +1,11 @@
 {
  "dps-60": {
   "id": "dps-60",
-  "path": "/bis/hunter/marksmanship?band=60",
+  "path": "/bis/hunter/marksmanship/60",
   "mock": "web-bis-dps-60.html",
   "class": "hunter",
   "spec": "marksmanship",
-  "title": "Marksmanship Hunter",
+  "title": "Marksmanship Hunter Pre-Raid BiS",
   "meta": "Best in slot",
   "answer": {
    "figure": {
@@ -637,11 +637,11 @@
  },
  "healer-60": {
   "id": "healer-60",
-  "path": "/bis/priest/holy?band=60",
+  "path": "/bis/priest/holy/60",
   "mock": "web-bis-healer-60.html",
   "class": "priest",
   "spec": "holy",
-  "title": "Holy Priest",
+  "title": "Holy Priest Pre-Raid BiS",
   "meta": "Best in slot",
   "answer": {
    "figure": {
@@ -1287,11 +1287,11 @@
  },
  "tank-60": {
   "id": "tank-60",
-  "path": "/bis/warrior/protection?band=60",
+  "path": "/bis/warrior/protection/60",
   "mock": "web-bis-tank-60.html",
   "class": "warrior",
   "spec": "protection",
-  "title": "Protection Warrior",
+  "title": "Protection Warrior Pre-Raid BiS",
   "meta": "Best in slot",
   "answer": {
    "figure": null,
@@ -1995,11 +1995,11 @@
  },
  "low-20": {
   "id": "low-20",
-  "path": "/bis/hunter/beast-mastery?band=20",
+  "path": "/bis/hunter/beast-mastery",
   "mock": "web-bis-low-20.html",
   "class": "hunter",
   "spec": "beast-mastery",
-  "title": "Beast Mastery Hunter",
+  "title": "Beast Mastery Hunter BiS, Levels 20 to 29",
   "meta": "Best in slot",
   "answer": {
    "figure": {

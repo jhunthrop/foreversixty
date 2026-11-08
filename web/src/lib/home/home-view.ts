@@ -65,6 +65,15 @@ export const homeCopy = {
   pasteSub: sharedHomePasteSub,
   getAddon: ctaCopy.getAddonAndCompanion,
   getAddonSub: sharedHomeStepAddonSub,
+  /** The signed-out rail's free tools, each named for what it does (SEO lane 2026-11-08: the home
+   *  page links every main section with words a reader and a search engine understand). */
+  toolsTitle: 'Free tools',
+  tools: [
+    { title: 'DPS simulator', sub: 'Sim your character in the browser: your DPS and why.', href: '/sim' },
+    { title: 'Talent calculator', sub: 'Plan every talent in order and share the build.', href: '/planner' },
+    { title: 'Best in slot by level', sub: 'Every spec, from level 20 to 60.', href: '/bis' },
+    { title: 'Tier list', sub: 'Every spec ranked at level 60.', href: '/tiers' },
+  ],
 } as const;
 
 export const homeHrefs = {

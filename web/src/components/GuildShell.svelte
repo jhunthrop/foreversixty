@@ -1,5 +1,5 @@
 <!-- web/src/components/GuildShell.svelte -->
-<!-- Every /guild/* path is one built asset (guild.html, worker.ts's SHELL_ROUTES), so this
+<!-- Every /guild/* path is one built asset (guild-shell.html, worker.ts's SHELL_ROUTES), so this
      is the one place that picks which of the guild views to render, by reading the
      path -- passed as a prop so this is testable with svelte/server's render (which never
      sees `window`) and falling back to window.location.pathname at runtime, the same

@@ -191,11 +191,21 @@ def how_to_start() -> str:
     ], open_=True))
 
 
+def free_tools() -> str:
+    """The signed-out rail's free tools (web/src/lib/home/home-view.ts homeCopy.tools, SEO lane 2026-11-08)."""
+    return sec('Free tools', Rows([
+        Row('DPS simulator', 'Sim your character in the browser: your DPS and why.'),
+        Row('Talent calculator', 'Plan every talent in order and share the build.'),
+        Row('Best in slot by level', 'Every spec, from level 20 to 60.'),
+        Row('Tier list', 'Every spec ranked at level 60.'),
+    ], open_=True))
+
+
 def state_out() -> str:
     head = PageHeader('Play your class better.', meta=['Pick your class.', f'First raids {short_date(raids_open())}'],
                       actions=Button('Sign in with Battle.net', True))
     return (head + Page('ledger', class_picker()) + countdowns()
-            + Page('split', feed_section(J('feed-out.json')['rows'], None), how_to_start()))
+            + Page('split', feed_section(J('feed-out.json')['rows'], None), how_to_start() + free_tools()))
 
 
 # ------------------------------------------------------------------------------------------------ signed in

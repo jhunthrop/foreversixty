@@ -645,10 +645,10 @@ const SHELL_HTML = `<!doctype html><html><head><title>Report · Forever Sixty</t
 <meta property="og:image" content="https://foreversixty.gg/og/reports.png" data-og="og-image" />
 </head><body><div id="report" data-report-mount><h1 data-testid="report-shell-title"><span class="skeleton-block"></span></h1></div></body></html>`;
 
-/** Assets a shell request may resolve to: report-shell.html for the report shell, guild.html
+/** Assets a shell request may resolve to: report-shell.html for the report shell, guild-shell.html
  *  for the claim/settings/invite shells this task adds (the plain guild shell arrives
  *  with a later task and is still unhandled here). */
-const SHELL_ASSET_PATHS = new Set(['/report-shell.html', '/guild.html']);
+const SHELL_ASSET_PATHS = new Set(['/report-shell.html', '/guild-shell.html']);
 
 function shellEnv() {
   return {

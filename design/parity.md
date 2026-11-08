@@ -41,7 +41,7 @@ Each run writes `web/test-results/parity/<page>-<state>.png`: mock | build at th
 
 ## The BiS states
 
-`design/mocks/web/bis-parity.json`: `dps-60` (marksmanship hunter, raid), `healer-60` (holy priest), `tank-60` (protection warrior), `low-20` (beast mastery hunter, 20 to 29, Where to go). Mocks `web-bis-<state>.html`, rev 4 of `design/mocks/ws_bis.py` (spec 5 and the 5.13 build decisions).
+`design/mocks/web/bis-parity.json`: `dps-60` (marksmanship hunter, raid), `healer-60` (holy priest), `tank-60` (protection warrior), `low-20` (beast mastery hunter, 20 to 29, Where to go). Each band is its own page (`web/src/lib/bis/band-path.ts`): the 60 states open `/bis/<class>/<spec>/60`, `low-20` the spec's own path, so the band pages are held to the same mocks. Mocks `web-bis-<state>.html`, rev 4 of `design/mocks/ws_bis.py` (spec 5 and the 5.13 build decisions).
 
 `design/mocks/bis_facts.mjs` reads names, numbers, sources and group membership from a running build; `design/mocks/ws_bis.py` renders the mocks from those facts. The facts carry no structure, so a block the build grows never reaches the mock.
 

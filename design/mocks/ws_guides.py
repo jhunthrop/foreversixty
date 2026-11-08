@@ -192,6 +192,9 @@ def gear(g: dict, band_no: int = 60, faction: str = 'alliance', data: bool = Tru
         note = f'<p class="t-small">{e(C["preRaidNote"])}</p>' if band_no == 60 else ''
         lane = LaneBlock(e(F['fns']['levelRangeLabel'][str(band_no)]), f'<div class="items">{"".join(items)}</div>' + note, e(caption))
     lane += f'<p>{Link(rsaquo(C["fullListLink"]))}</p>'
+    # Every band's own BiS page and the role's tier list (SEO lane 2026-11-08), one quiet block under the full list.
+    bands = ''.join(Link(e(s)) for s in F['fns']['bandSlugs'])
+    lane += f'<p class="t-small gbands">{e(C["bisByLevelLabel"])}{bands}</p><p class="gtier">{Link(rsaquo(C["tierListLink"]))}</p>'
     return ReadingSection(SEC['best-in-slot'], Prose(b['prose']), lane, 'best-in-slot')
 
 
@@ -362,6 +365,7 @@ PAGE_CSS = '''<style>
 /* page-level layout only (no surfaces): the answer box's inner rows, column splits, spacing */
 .ans-row{display:flex;align-items:center;gap:12px}.ans-who{display:flex;flex-direction:column;min-width:0}.ans-name{font:700 18px/22px var(--font-body)}
 .ans-links{display:flex;gap:4px 16px;flex-wrap:wrap}
+.gbands{display:flex;flex-wrap:wrap;gap:4px 12px;margin-top:-16px}.gtier{margin-top:-16px}
 @media(min-width:900px){.ans-row{flex-direction:row-reverse}.ans-who{align-items:flex-end}.ans-links{justify-content:flex-end}}
 .glance{padding-top:20px}.specs{padding-bottom:var(--section-gap)}
 .sw{display:grid;gap:20px var(--gap);grid-template-columns:minmax(0,1fr)}@media(min-width:768px){.sw{grid-template-columns:repeat(2,minmax(0,1fr))}}

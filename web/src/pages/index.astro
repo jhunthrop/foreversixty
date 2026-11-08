@@ -80,6 +80,11 @@ const signInHref = battlenetStartUrl('/account?signed_in=1');
             />
             <Row rank="2" title={homeCopy.steps[1].title} sub={homeCopy.steps[1].sub} href="/setup" open />
           </Section>
+          <Section title={homeCopy.toolsTitle} testid="home-tools">
+            {homeCopy.tools.map((tool) => (
+              <Row title={tool.title} sub={tool.sub} href={tool.href} open />
+            ))}
+          </Section>
         </Fragment>
       </Page>
     </div>

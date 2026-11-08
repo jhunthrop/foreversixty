@@ -68,7 +68,7 @@ test('choosing Bare swaps the numbers and writes ?preset=bare without a reload',
   });
   await chooseControl(page, 'preset', 'bare');
   await expect(page).toHaveURL(/[?&]preset=bare/);
-  await expect(page).toHaveURL(/[?&]band=60/);
+  await expect(page).toHaveURL(/\/60\?/);
   await expect(option(page, 'bare')).toHaveAttribute('aria-checked', 'true');
   await expect(answer(page)).toContainText(BARE_FIGURE);
   await expect(page.getByTestId('bis-trust-line')).toContainText('no raid buffs');

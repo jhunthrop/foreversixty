@@ -30,6 +30,7 @@ import Footer from '../components/Footer.astro';
 import CharacterSelector from '../components/nav/CharacterSelector.svelte';
 
 import { SITE_NAME, SITE_URL, pageTitle, toJsonLd, websiteLd } from '../lib/seo';
+import { isNoindexPath } from '../lib/noindex-paths.mjs';
 // The character selector's first frame (spec 2026-10-09-nav-character-selector.md section 8):
 // the inline scripts below set `data-pointer-class` before paint and fill the selector's
 // server-rendered link with the stored pointer's name and spec, and the cached `/v1/me`
@@ -64,6 +65,8 @@ const { title, description, path, jsonLd = [], wide = false } = Astro.props;
 const site = SITE_URL;
 const fullTitle = pageTitle(path, title);
 const ldNodes = path === '/' ? [websiteLd(), ...jsonLd] : jsonLd;
+// A personal page or a step in a flow (lib/noindex-paths.mjs, the sitemap's own list).
+const noindex = isNoindexPath(path);
 // The literal storage key the selector's `/v1/me` query writes under, for the fill script.
 const meStorageKey = storageKey(meKey(API_BASE_URL));
 ---
@@ -76,6 +79,7 @@ const meStorageKey = storageKey(meKey(API_BASE_URL));
     <title data-og="title">{fullTitle}</title>
     <meta name="description" content={description} data-og="description" />
     <link rel="canonical" href={`${site}${path}`} data-og="canonical" />
+    {noindex && <meta name="robots" content="noindex" />}
     <link rel="preload" href={barlow400Url} as="font" type="font/woff2" crossorigin />
     <link rel="preload" href={barlow600Url} as="font" type="font/woff2" crossorigin />
     <link rel="preload" href={barlow700Url} as="font" type="font/woff2" crossorigin />

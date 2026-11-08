@@ -1,0 +1,9 @@
+---
+// web/src/pages/guild-shell.astro
+// The shell src/worker.ts serves for /guild/<region>/<ruleset>/<name> (and its views). The island
+// reads the segments out of the path; the Worker rewrites the head from the API. Plumbing, kept
+// out of the sitemap (astro.config.mjs).
+import GuildRoute from '../components/guild/GuildRoute.astro';
+---
+
+<GuildRoute />
