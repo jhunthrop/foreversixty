@@ -1378,7 +1378,7 @@ enum Copy {
         format("raid.pages.lootLast", n)
     }
 
-    /// You are #{position} of {of}
+    /// #{position} of {of} in guild sims
     static func raidPagesSimsRank(position: Int, of: Int) -> String {
         format("raid.pages.simsRank", position, of)
     }

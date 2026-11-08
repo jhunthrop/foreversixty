@@ -13029,7 +13029,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "You are #%1$lld of %2$lld"
+            "value": "#%1$lld of %2$lld in guild sims"
           }
         }
       }

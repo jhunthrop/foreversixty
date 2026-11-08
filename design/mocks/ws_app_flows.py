@@ -281,7 +281,7 @@ def raid(state: str):
     guild's raid pages. Live: raid night leads. No guild: find, join or claim one. Signed out: sign in, then the same."""
     def b(platform: str) -> str:
         pages = Section('Olympus XXVII', Rows([Row('Roster', '38 members, 31 at 60'), Row('Calendar', 'Onyxia Wed, Barrow Deeps Sat'),
-                                               Row('Loot history', 'Last raid: 4 pieces'), Row('Guild sims', 'You are #7 of 14')], open_=True))
+                                               Row('Loot history', 'Last raid: 4 pieces'), Row('Guild sims', '#7 of 14 in guild sims')], open_=True))
         if state in ('member', 'officer'):
             needs = Section('Needs you', _needs_you(), meta='6 open') if state == 'officer' else ''
             body = Section('Next raid', _blk(_raid_card())) + needs + pages
@@ -531,7 +531,9 @@ def item_sheet(platform: str) -> str:
                '114 - 213 Damage &middot; Speed 2.90<br>(56.4 damage per second)<br>'
                '<span style="color:var(--kill)">Chance on hit: Sends a shadowy bolt at the enemy causing 125 Shadow damage.</span><br>'
                'Requires Level 60</div><div style="height:8px"></div>')
-    where = Rows([Row('Onyxia, Onyxia&rsquo;s Lair', '8% drop chance &middot; raid &middot; Wed with Olympus XXVII', icon(ONY, 40), link=False)], open_=True)
+    # the guild's next raid to that zone (needs.next_raid, only when its zone is the drop's), in the device's locale; it opens that raid
+    where = Rows([Row('Onyxia, Onyxia&rsquo;s Lair', '8% drop chance &middot; raid', icon(ONY, 40), link=False),
+                  Row('Next raid: Onyxia&rsquo;s Lair, Wed 8:00 pm')], open_=True)
     runners = Rows([Row('Vis&rsquo;kag the Bloodletter', 'Onyxia &middot; 8% &middot; &minus;1.8 DPS', icon('inv_sword_18', 40, 'q4'),
                         title_color='#b866f5', link=False)], open_=True)
     needs = Rows([Row('Grunvald', 'Protection Warrior &middot; needs it, also on their list', crest_img('warrior', 40), title_color=WARRIOR, link=False),

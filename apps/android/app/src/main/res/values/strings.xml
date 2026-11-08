@@ -415,7 +415,7 @@
         <item quantity="one">Last raid: 1 piece</item>
         <item quantity="other">Last raid: %1$d pieces</item>
     </plurals>
-    <string name="raid_pages_simsRank" tools:ignore="PluralsCandidate">You are #%1$d of %2$d</string>
+    <string name="raid_pages_simsRank" tools:ignore="PluralsCandidate">#%1$d of %2$d in guild sims</string>
     <string name="raid_noRaid">No raid planned yet. Your officers plan raids on the site; a push tells you the moment one is posted.</string>
     <string name="raid_needsYou">Needs you</string>
     <string name="raid_needsYouOpen" tools:ignore="PluralsCandidate">%1$d open</string>
