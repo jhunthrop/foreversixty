@@ -71,6 +71,11 @@ jobs:
       - uses: actions/setup-java@v4
         with: { distribution: temurin, java-version: '21' }
       - uses: gradle/actions/setup-gradle@v4
+      - name: Fetch Gradle
+        working-directory: apps/android
+        run: |
+          for i in 1 2 3 4 5; do ./gradlew --version -q && exit 0; echo "::warning::Gradle download failed (try $i)"; sleep 30; done
+          exit 1
       # 24 runs tools/play-upload.ts as TypeScript with no packages.
       - uses: actions/setup-node@v4
         with: { node-version: 24 }
