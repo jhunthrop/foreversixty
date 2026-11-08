@@ -32,6 +32,7 @@ import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.content.TextContent
 import io.ktor.http.headersOf
+import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -40,7 +41,6 @@ import kotlinx.coroutines.withTimeout
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestScope
-import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
@@ -158,8 +158,9 @@ class SessionManagerTest {
             engine = answering(HttpStatusCode.Unauthorized, fixture("error-session-expired.json")),
         )
         session.start()
-        backgroundScope.launch { session.watchForDeadTokens() }
-        advanceUntilIdle()
+        // The 401 arrives on Ktor's threads; the watcher runs off the test scheduler too (subscribed
+        // before launch returns), so the real-time wait below never depends on the scheduler (CI timed out).
+        backgroundScope.launch(Dispatchers.Default, start = CoroutineStart.UNDISPATCHED) { session.watchForDeadTokens() }
         session.devices()
         session.awaitPhase { it is SessionPhase.SignedOut }
         assertEquals(SessionPhase.SignedOut(SignedOutNotice.SessionEnded), session.phase.value)

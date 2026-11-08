@@ -38,6 +38,12 @@ final class FakeNotificationSettingsService: NotificationSettingsService, @unche
         if fails { throw .transport("offline") }
         patches.append(patch)
         settings = NotificationSettingsModel.applying(patch, to: settings)
+        if let on = patch.officerDms {
+            settings = NotificationSettings(
+                timeZone: settings.timeZone, quietHours: settings.quietHours, officerDms: on, raidReminder: settings.raidReminder,
+                events: settings.events
+            )
+        }
         return settings
     }
 }
@@ -94,6 +100,24 @@ struct NotificationSettingsParityTests {
     func parity() async throws {
         let view = NotificationSettingsView(phase: .loaded(NotificationTestData.member))
         try await ParityCheck.assert(view, screen: "notification-settings", size: CGSize(width: 393, height: 852))
+    }
+}
+
+@MainActor
+@Suite("Officer DMs")
+struct OfficerDMsTests {
+    @Test("Let officers DM me on Discord: off by default, saved at once, put back when refused")
+    func toggle() async {
+        let service = FakeNotificationSettingsService()
+        let model = NotificationSettingsModel(service: service)
+        await model.load()
+        #expect(model.officerDMs == false)
+        await model.setOfficerDMs(true)
+        #expect(model.officerDMs && service.patches.last?.officerDms == true)
+        service.fails = true
+        await model.setOfficerDMs(false)
+        #expect(model.officerDMs)
+        #expect(model.saveFailed)
     }
 }
 

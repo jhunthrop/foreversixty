@@ -39,11 +39,24 @@ struct NextRaidCardView: View {
                 }
                 .buttonStyle(RowPressStyle())
             }
-            if content.officer != nil {
+            if let officer = content.officer {
                 // The officer's items are a list of their own (`.blk .rows { margin-top: 8px }`).
                 Color.clear.frame(height: FSSpace.space2)
+                OfficerItemsView(items: officer, actions: actions)
             }
-            if let unanswered = content.officer?.unanswered {
+        }
+    }
+}
+
+/// An officer's open items (F3): who has not answered with Preview mention, the applicants. On
+/// Home's raid-day card and under the Raid tab's Needs you.
+struct OfficerItemsView: View {
+    let items: OfficerContent
+    let actions: NextRaidActions
+
+    var body: some View {
+        VStack(spacing: 0) {
+            if let unanswered = items.unanswered {
                 FSRow(
                     title: unanswered.title, sub: unanswered.sub.isEmpty ? nil : unanswered.sub, inset: 0, trailPlacement: .below
                 ) {
@@ -53,7 +66,7 @@ struct NextRaidCardView: View {
                         .buttonStyle(FSButtonStyle(fullWidth: false, small: true))
                 }
             }
-            if let applicants = content.officer?.applicants {
+            if let applicants = items.applicants {
                 Button(action: actions.openApplicants) {
                     FSRow(title: applicants.title, sub: applicants.sub.isEmpty ? nil : applicants.sub, inset: 0) { EmptyView() }
                 }

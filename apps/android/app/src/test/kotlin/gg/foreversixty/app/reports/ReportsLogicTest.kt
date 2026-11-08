@@ -151,19 +151,6 @@ class ReportsLogicTest {
         assertEquals("Onyxia · pull 3 of 3", copy().headName(MetersTarget.Pull(kill.fight, kill.pull)))
     }
 
-    @Test fun `home's last raid is the newest finished report with a boss pull`() {
-        val rows = ReportsTestData.list().rows
-        assertEquals("ewlrx3enxbeb", Reports.lastRaid(rows)?.id)
-        assertNull(Reports.lastRaid(rows.filter { it.id != "ewlrx3enxbeb" }))
-    }
-
-    @Test fun `home's logs line names the last raid, never the live run`() = runTest {
-        val store = ReportsStore(FakeReportsService(), MemoryRaidCache(), { now })
-        assertEquals("Onyxia's Lair", store.lastRaid()?.zone)
-        val none = FakeReportsService().apply { listAnswer = { ok(ReportsTestData.emptyList()) } }
-        assertNull(ReportsStore(none, MemoryRaidCache(), { now }).lastRaid())
-    }
-
     // Parses
 
     @Test fun `parse ladder floors`() {

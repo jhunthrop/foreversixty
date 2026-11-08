@@ -43,6 +43,17 @@
    "inventory": {
     "row": 1
    }
+  },
+  "section-discord": {
+   "box": [
+    16,
+    644,
+    361,
+    111
+   ],
+   "inventory": {
+    "row": 1
+   }
   }
  }
 }

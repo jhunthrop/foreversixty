@@ -34,7 +34,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.unit.dp
@@ -52,9 +51,7 @@ import gg.foreversixty.app.guides.logic.Loadable
 import gg.foreversixty.app.guides.ui.GuidesHome
 import gg.foreversixty.app.guides.ui.GuidesHomeActions
 import gg.foreversixty.app.guides.ui.GuidesHomeState
-import gg.foreversixty.app.home.HomeAnswer
 import gg.foreversixty.app.home.HomeFixtures
-import gg.foreversixty.app.home.HomePhase
 import gg.foreversixty.app.items.LocalItemIconPainter
 import gg.foreversixty.app.navigation.ForeverTab
 import gg.foreversixty.app.navigation.ForeverTabScaffold
@@ -164,23 +161,7 @@ class SystemScreenshotTest {
 
     @Test fun offlineDataNoConnection() = offlineData("f15-offline-data-offline", false, report, online = false)
 
-    // F15.5 the strip's three states, on Home and a guide
-
-    private fun home(name: String, large: Boolean, stale: Boolean) = capture(name, large, ForeverTab.Home) {
-        val presenter = HomeFixtures.presenter(LocalResources.current)
-        val at = Instant.parse("2026-11-06T03:41:00Z")
-        Box(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
-            HomeAnswer(HomePhase.Loaded(HomeFixtures.home(), at, stale = stale), presenter, HomeFixtures.BUILD, "9:41 pm")
-        }
-    }
-
-    @Test fun stripOffline() = home("f15-strip-offline", false, stale = false)
-
-    @Test fun stripOfflineLarge() = home("f15-strip-offline", true, stale = false)
-
-    @Test fun stripStale() = home("f15-strip-stale", false, stale = true)
-
-    @Test fun stripStaleLarge() = home("f15-strip-stale", true, stale = true)
+    // F15.5 the new data strip, on a guide
 
     private fun newData(large: Boolean) = capture("f15-strip-newdata", large, ForeverTab.Home) {
         val index = GuidesTestData.index()

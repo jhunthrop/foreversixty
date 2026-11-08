@@ -8,6 +8,8 @@ enum PushLanding {
     /// The event kinds the API sends (api/internal/events/catalogue.go), by their landing.
     enum Kind {
         static let raidStarting = "raid.starting"
+        /// An officer's: the raid is short, so the raid page opens filtered to Not answered (F3).
+        static let raidShort = "raid.short"
         static let raidSummary = "raid.summary"
         static let lootAwarded = "loot.awarded"
         static let gear: Set<String> = ["bis.changed", "band.entered", "game.milestone"]
@@ -38,6 +40,9 @@ enum PushLanding {
         case Kind.raidStarting:
             guard let guild, let raid else { return nil }
             return .link(.raidNight(guild: guild, raid: raid))
+        case Kind.raidShort:
+            guard let guild, let raid else { return nil }
+            return .raid(.notAnswered(guild: guild, raid: raid))
         case _ where kind == Kind.lootAwarded || Kind.gear.contains(kind):
             // The item sheet and the Gear tab replace this with the navigation step (spec 4.3).
             return .tab(.gear)

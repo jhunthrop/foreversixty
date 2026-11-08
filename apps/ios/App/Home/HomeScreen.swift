@@ -233,13 +233,25 @@ struct HomeCharacterScreen: View {
 
     private var flowActions: HomeFlowActions {
         let raidTab = { open(.tab(.raid)) }
+        // Each raid action opens its screen under Raid; without the raid loaded, the tab.
+        let raidScreen = { (route: (Int64, Int64) -> RaidsRoute?) in
+            guard let guild = flow?.character.guildID, let raid = flow?.inputs.raid?.id, let screen = route(guild, raid) else {
+                raidTab()
+                return
+            }
+            open(.raid(screen))
+        }
+        let raidNight = { raidScreen { _, raid in .night(raid: raid) } }
         return HomeFlowActions(
             raid: NextRaidActions(
                 answer: { state in Task { await flow?.answer(state) } },
                 late: { minutes in Task { await flow?.late(minutes) } },
-                openRaid: raidTab, openReady: raidTab, previewMention: raidTab, openApplicants: raidTab
+                openRaid: { raidScreen { .raid(guild: $0, raid: $1, roster: false, open: nil) } },
+                openReady: raidNight,
+                previewMention: { raidScreen { .notAnswered(guild: $0, raid: $1) } },
+                openApplicants: { raidScreen { guild, _ in flow?.inputs.applicants.first.map { .applicant(guild: guild, application: $0.id) } } }
             ),
-            openRaidNight: raidTab,
+            openRaidNight: raidNight,
             openItem: { row in
                 if let home { sheet = request(for: row.look, home: home, sourceLine: row.sourceLine, wornID: row.wornID, gain: row.gain) }
             },

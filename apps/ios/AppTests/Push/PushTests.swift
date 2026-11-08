@@ -7,9 +7,10 @@ import Testing
 struct PushLandingTests {
     private let raidData = ["guild_id": "2", "raid_id": "41"]
 
-    @Test("raid events open the raid page; raid.starting opens raid night")
+    @Test("raid events open the raid page; raid.short opens Not answered; raid.starting opens raid night")
     func raids() {
-        for kind in ["raid.posted", "raid.signup_nudge", "raid.changed", "raid.short", "roster.pending", "raid.late_change"] {
+        #expect(PushLanding.destination(kind: "raid.short", link: nil, data: raidData) == .raid(.notAnswered(guild: 2, raid: 41)))
+        for kind in ["raid.posted", "raid.signup_nudge", "raid.changed", "roster.pending", "raid.late_change"] {
             #expect(PushLanding.destination(kind: kind, link: nil, data: raidData) == .link(.raid(guild: 2, raid: 41)))
         }
         #expect(PushLanding.destination(kind: "raid.starting", link: nil, data: raidData) == .link(.raidNight(guild: 2, raid: 41)))
