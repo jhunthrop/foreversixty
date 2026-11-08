@@ -7,6 +7,8 @@ characters; TestFlight's "What to Test" at 4,000.
 
 ## Unreleased
 
+## 0.1.0 (13), 2026-11-08
+
 ## 0.1.0 (12), 2026-11-08
 
 ## 0.1.0 (11), 2026-11-08
