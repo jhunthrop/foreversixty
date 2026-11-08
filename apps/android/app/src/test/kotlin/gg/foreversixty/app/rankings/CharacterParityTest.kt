@@ -1,5 +1,8 @@
 package gg.foreversixty.app.rankings
 
+import androidx.compose.runtime.CompositionLocalProvider
+import gg.foreversixty.app.home.HomeFixtures
+import gg.foreversixty.app.items.LocalItemIconPainter
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -94,10 +97,13 @@ class CharacterParityTest {
 
     @Composable
     private fun Shell(backTo: String, share: Boolean, content: @Composable () -> Unit) {
-        ForeverTabScaffold(selected = ForeverTab.Home, onSelect = {}, badges = TabBadges(raid = 1, activity = 3)) {
-            Column {
-                FlowBackBar(backTo, {}, if (share) ({}) else null)
-                content()
+        // The repo's icons, so every gear slot draws its item.
+        CompositionLocalProvider(LocalItemIconPainter provides HomeFixtures.repoIcons) {
+            ForeverTabScaffold(selected = ForeverTab.Home, onSelect = {}, badges = TabBadges(raid = 1, activity = 3)) {
+                Column {
+                    FlowBackBar(backTo, {}, if (share) ({}) else null)
+                    content()
+                }
             }
         }
     }
