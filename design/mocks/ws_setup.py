@@ -64,7 +64,7 @@ section>.sec-h+*{margin-top:12px}
 .hand{display:flex;flex-direction:column;gap:6px;padding-top:12px;border-top:1px solid var(--line-soft)}
 .hand .acts{gap:20px}
 .ans-who{display:flex;align-items:center;gap:12px}.ans-who b{font:700 18px/22px var(--font-body)}.ans-links{display:flex;gap:16px;flex-wrap:wrap}
-@media(min-width:900px){.head .ans{min-width:300px}.ans-who{justify-content:flex-end}.ans-links{justify-content:flex-end}}
+@media(min-width:900px){.head .ans:has(.ans-who){min-width:300px}.ans-who{justify-content:flex-end}.ans-links{justify-content:flex-end}}
 .pair{display:flex;flex-direction:column;gap:8px;align-items:flex-start;padding-top:12px;border-top:1px solid var(--line-soft)}
 .paste textarea{width:100%;min-height:72px;resize:vertical;font:600 14px/20px ui-monospace,'SF Mono',Menlo,monospace}
 .kv code.c{font-size:14px}.kv dd .t-small{font-weight:400}
@@ -77,7 +77,9 @@ section>.sec-h+*{margin-top:12px}
 /* the built sm Button is a 44 px target below 1024 (web/src/lib/ui/button.ts BUTTON_SM) */@media(max-width:1023px){.btn.sm{height:44px}}
 .tm{display:inline-flex;align-items:center;gap:12px}
 .dl{display:flex;flex-direction:column;gap:4px}.dl .acts{column-gap:16px;row-gap:8px}.dl-meta{min-height:20px}
-.dl-other summary{cursor:pointer;color:var(--gold)}.dl-other ul{margin-top:8px;display:flex;flex-direction:column;gap:4px;list-style:none;padding:0}
+.dl-copy{gap:8px;align-items:flex-start}.ans-links~.dl-head{margin-top:8px}
+@media(min-width:900px){.head .ans .dl{align-items:flex-end}.head .ans .dl .acts{justify-content:flex-end}}
+.dl-other summary{cursor:pointer;color:var(--gold);display:inline-flex;align-items:center}.dl-other ul{margin-top:8px;display:flex;flex-direction:column;gap:4px;list-style:none;padding:0}
 .mark-ok{width:40px;height:40px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font:700 20px/40px var(--font-body);color:#07090d;background:var(--kill);flex:none}
 </style>'''
 
@@ -106,8 +108,12 @@ def platform_of(state: str) -> str:
 
 
 def download_block(state: str, primary: bool) -> str:
-    """Row 3's download (components/setup/CompanionDownload.svelte): the own build's button, its version and size, and
-    Other platforms; or, for a system the page cannot name, every build side by side with the version alone."""
+    """The companion's download (components/setup/CompanionDownload.svelte): the own build's button, its version and size,
+    and Other platforms; for a system the page cannot name, every build side by side with the version alone; on a phone,
+    "runs on your PC or Mac" and Copy link (row 3 draws its phone row from steps.ts, so only the head and the Section
+    reach that branch)."""
+    if platform_of(state) == 'mobile':
+        return f'<div class="dl dl-copy"><span class="t-small">{escape(A["setupCompanionMobile"])}</span>{Button(A["setupCopyLink"])}</div>'
     d = FACTS['download_for'][platform_of(state)]
     meta = lambda text: f'<span class="t-small dl-meta">{escape(text or "")}</span>'
     if d['own'] is None:
@@ -136,7 +142,7 @@ def step_rows(state: str) -> list[tuple]:
     return [(r['mark'], r['n'], r['title'], '<br>'.join(_line(l) for l in r['lines']), _action(r['action'], state)) for r in FACTS['rows'][state]]
 
 
-def answer(state: str) -> str:
+def character_answer(state: str) -> str:
     """Signed in with a character: the character, and where to take it next (tenet 14). lib/setup/answer.ts on me-34."""
     if state not in ('bnet', 'addon', 'pairing', 'done'):
         return ''
@@ -147,6 +153,12 @@ def answer(state: str) -> str:
             f'<span class="t-small" style="display:block">{escape(a["levelLine"])}</span></span></span>'
             f'<span class="t-small">{escape(a["imported"] or "")}</span>'
             f'<span class="ans-links">{links}</span>')
+
+
+def answer(state: str) -> str:
+    """The head's answer: the character when there is one, then the companion's download in every state (owner
+    2026-11-08: "a download link at the top"), never gold (the plate keeps the page's one primary)."""
+    return character_answer(state) + f'<div class="dl-head">{download_block(state, primary=False)}</div>'
 
 
 def row_done(state: str, n: int) -> bool:
@@ -193,9 +205,8 @@ def companion_section(state: str) -> str:
         plat = ''.join(f'<p class="t-small">{escape(b["platform"])}: {escape(b["firstRun"])}</p>' for b in comp['others'])
     else:
         plat = ''
-    # U4 (rulings): once row 3 is ticked, the own build's download stays here for another PC.
-    another = f'<div class="acts">{arrow(A["setupDownloadAnother"])}</div>' if row_done(state, 3) and comp['own'] is not None else ''
-    body = (f'<div class="body" id="companion"><p>{escape(lead_sentence)}</p>{plat}{another}'
+    # Owner 2026-11-08: the download right under the heading, in every state (it replaces U4's quiet "another PC" link).
+    body = (f'<div class="body" id="companion">{download_block(state, primary=False)}<p>{escape(lead_sentence)}</p>{plat}'
             f'{rows}{pic}{pair}</div>')
     return Section(A['setupStep3Title'], body, meta=escape(A['setupCompanionNote']))
 
