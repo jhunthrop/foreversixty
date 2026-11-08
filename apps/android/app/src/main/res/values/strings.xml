@@ -1677,6 +1677,12 @@
     <string name="raid_list_and">%1$s and %2$s</string>
     <string name="flows_backTo">Back to %1$s</string>
     <string name="raid_recruit_line">%1$s · %2$s · needs %3$s</string>
+    <string name="raid_night_short" tools:ignore="PluralsCandidate">%1$s · %2$d short</string>
+    <string name="raid_night_more" tools:ignore="PluralsCandidate">%1$s and %2$d more</string>
+    <string name="raid_night_aside">%1$s · %2$s</string>
+    <string name="raid_night_youAre">You are %1$s</string>
+    <string name="raid_night_beforePull">Before you pull</string>
+    <string name="raid_night_roster">Roster ›</string>
     <string name="raid_applicant_score">Forever Score</string>
     <string name="raid_applicant_sim">Sim</string>
     <string name="raid_applicant_itemLevel">Item level</string>

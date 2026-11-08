@@ -106,11 +106,7 @@ fun RaidCard(raid: RaidCardModel, actions: HomeActions) {
     FlowCountdown(raid.eyebrow, raid.clock, raid.clockLabel) { FlowNote(raid.aside) }
     FlowNote(raid.me, Modifier.padding(top = FsSpace.space2))
     Answers(raid, Modifier.padding(top = FsSpace.space3), actions)
-    if (raid.lateOpen) {
-        FlowNote(stringResource(R.string.push_late_question), Modifier.padding(top = FsSpace.space2))
-        val chips = LATE_MINUTES.map { stringResource(R.string.push_late_minutes, it) }
-        FlowButtonRow(chips, null) { actions.onLate(raid.raidId, LATE_MINUTES[it]) }
-    }
+    if (raid.lateOpen) LateChips { actions.onLate(raid.raidId, it) }
     FlowTally(raid.tally, Modifier.padding(top = FsSpace.space4))
     raid.ready?.let {
         Column(Modifier.padding(top = FsSpace.space2)) { FlowRow(it.title, it.sub, slim = true, last = true, onClick = { actions.onReady(raid.raidId) }) }
@@ -130,10 +126,24 @@ private fun Officer(raidId: Long, officer: OfficerItems, actions: HomeActions) {
 
 @Composable
 private fun Answers(raid: RaidCardModel, modifier: Modifier, actions: HomeActions) {
+    RaidAnswerButtons(raid.answer, modifier) { actions.onAnswer(raid.raidId, it) }
+}
+
+/** In, Late, Bench, Out sharing a row, the current answer selected (F1). */
+@Composable
+fun RaidAnswerButtons(selected: SignupState?, modifier: Modifier = Modifier, onAnswer: (SignupState) -> Unit) {
     val labels = SignupState.entries.map { stringResource(it.label) }
     Column(modifier) {
-        FlowButtonRow(labels, raid.answer?.let { stringResource(it.label) }) { actions.onAnswer(raid.raidId, SignupState.entries[it]) }
+        FlowButtonRow(labels, selected?.let { stringResource(it.label) }) { onAnswer(SignupState.entries[it]) }
     }
+}
+
+/** How late? with the 15, 30 and 60 min chips, shown after Late (F1). */
+@Composable
+fun LateChips(onLate: (Int) -> Unit) {
+    FlowNote(stringResource(R.string.push_late_question), Modifier.padding(top = FsSpace.space2))
+    val chips = LATE_MINUTES.map { stringResource(R.string.push_late_minutes, it) }
+    FlowButtonRow(chips, null) { onLate(LATE_MINUTES[it]) }
 }
 
 /** Any other day: one line with the raid and its answers, the current one selected (F1). */

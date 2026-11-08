@@ -417,7 +417,7 @@ class RaidLogicTest {
         val model = tab(FakeRaidService())
         model.currentKey = "us/pvp/yellfury"
         model.load()
-        assertEquals(RaidsTabState.NoGuild("Yellfury", 31), model.state)
+        assertEquals(RaidsTabState.NoGuild("Yellfury", 31), (model.state as RaidsTabState.NoGuild).copy(character = null))
     }
 
     @Test

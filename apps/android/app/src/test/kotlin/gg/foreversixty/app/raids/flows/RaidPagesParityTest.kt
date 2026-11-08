@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import gg.foreversixty.app.flows.ClockPart
 import gg.foreversixty.app.flows.FlowBackBar
 import gg.foreversixty.app.flows.FlowFigure
 import gg.foreversixty.app.navigation.ForeverTab
@@ -37,6 +38,14 @@ class RaidPagesParityTest {
         ApplicantScreen(RaidPagesFixtures.applicant(accepted = true), ApplicantActions())
     }
 
+    @Test fun nightLive() = pushed("raid-night-live", "Raid", share = true) {
+        RaidNightPageScreen(RaidPagesFixtures.night(answered = true), BUILD, RaidNightPageActions())
+    }
+
+    @Test fun nightSignup() = pushed("raid-night-signup", "Raid", share = true) {
+        RaidNightPageScreen(RaidPagesFixtures.night(answered = false), BUILD, RaidNightPageActions())
+    }
+
     private fun pushed(screen: String, backTo: String, share: Boolean = false, content: @Composable () -> Unit) =
         ParityCheck.state(compose, screen) {
             ForeverTabScaffold(selected = ForeverTab.Raid, onSelect = {}, badges = TabBadges(raid = 6, activity = 3)) {
@@ -54,6 +63,34 @@ class RaidPagesParityTest {
 
 /** The mock's officer page: healers short by 3, two healers unanswered, Grunvald marked In, Aurelith on the bench. */
 object RaidPagesFixtures {
+    /** Onyxia tonight in 42 minutes (ws_app.py `raid_night`): you are In, or not signed up yet. */
+    fun night(answered: Boolean) = RaidNightPageContent(
+        title = "Onyxia's Lair",
+        icon = "inv_misc_head_dragon_black",
+        facts = listOf("Olympus XXVII", "Wed 6 Jan, 8:00 pm CST"),
+        eyebrow = "Olympus XXVII · Onyxia's Lair tonight",
+        clock = listOf(ClockPart("00", "hours"), ClockPart("42", "min")),
+        clockLabel = "0 hours 42 minutes",
+        live = true,
+        aside = "Wed 6 Jan, 8:00 pm CST · 18 in, 3 late",
+        tag = if (answered) "You are In" else "Not signed up",
+        answered = answered,
+        selected = if (answered) SignupState.In else null,
+        lateOpen = false,
+        roles = listOf(
+            "Tanks 2 of 2" to "Grunvald, Brakka",
+            "Healers 5 of 8" to "Mirethil, Selka, Hollowmend, Aenwyn, Brightwen · 3 short",
+            "Damage 11 of 30" to "Thandrel, Kaelra, Thalrin and 8 more",
+        ),
+        ready = listOf(
+            ReadyItem(ReadyTone.Ok, "Drakefire Amulet", "Attuned to Onyxia's Lair", null),
+            ReadyItem(ReadyTone.Ok, "Elixir of the Mongoose", "3 in your bags, from the addon's last export", null),
+            ReadyItem(ReadyTone.Miss, "Flask of the Titans", "None in your bags", "Auction house"),
+            ReadyItem(ReadyTone.Warn, "Boots not enchanted", "Enchant Boots: Greater Agility", "Where to get it"),
+        ),
+        readyStamp = "From your last log-out, 9 h ago",
+    )
+
     /** Mirelle, Holy Priest 60, applied 2 min ago (mock `applicant`; the API has no guild rank, so the history shows raids and the last one). */
     fun applicant(accepted: Boolean = false) = ApplicantContent(
         name = "Mirelle",

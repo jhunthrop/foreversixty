@@ -73,6 +73,7 @@ import gg.foreversixty.app.raids.logic.RaidLinks
 import gg.foreversixty.app.home.flows.HomeFlowState
 import gg.foreversixty.app.model.AccountCharacter
 import gg.foreversixty.app.raids.flows.NotAnsweredRoute
+import gg.foreversixty.app.raids.flows.RaidNightRoute
 import gg.foreversixty.app.raids.logic.RaidsTabContent
 import gg.foreversixty.app.home.flows.HomeActions
 import kotlinx.coroutines.CoroutineScope
@@ -351,7 +352,12 @@ fun RaidsRoute(
             is RaidsDestination.Night -> {
                 val model = remember(top) { RaidNightModel(top.raid, feature.service, feature.cache, feature.now, connectivity = feature.connectivity) }
                 val openReport: ((String) -> Unit)? = reports?.let { { id -> feature.navigator.push(RaidsDestination.Report(id)) } }
-                RaidNightScreen(model, clock, feature.now, openReport) { feature.navigator.pop() }
+                val raid = content?.planned?.firstOrNull { it.id == top.raid }
+                RaidNightRoute(
+                    model, clock, feature.now, raid?.compTarget, iconBuild, openReport,
+                    openRoster = { content?.head?.id?.let { feature.navigator.push(RaidsDestination.Raid(it, top.raid)) } },
+                    openWeb = uri::openUri,
+                ) { feature.navigator.pop() }
             }
             is RaidsDestination.Report -> reports?.let {
                 ReportRouteScreen(it.feature, ReportRoute(top.id), it.viewer) { feature.navigator.pop() }

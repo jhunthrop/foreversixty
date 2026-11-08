@@ -11644,6 +11644,76 @@
         }
       }
     },
+    "raid.night.aside": {
+      "comment": "Arguments: 1 when (string), 2 counts (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$@"
+          }
+        }
+      }
+    },
+    "raid.night.beforePull": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Before you pull"
+          }
+        }
+      }
+    },
+    "raid.night.more": {
+      "comment": "Arguments: 1 names (string), 2 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ and %2$lld more"
+          }
+        }
+      }
+    },
+    "raid.night.roster": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Roster ›"
+          }
+        }
+      }
+    },
+    "raid.night.short": {
+      "comment": "Arguments: 1 names (string), 2 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$lld short"
+          }
+        }
+      }
+    },
+    "raid.night.youAre": {
+      "comment": "Arguments: 1 state (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You are %1$@"
+          }
+        }
+      }
+    },
     "raid.notAvailable": {
       "extractionState": "manual",
       "localizations": {

@@ -20,6 +20,7 @@ import gg.foreversixty.app.model.RaidView
 import gg.foreversixty.app.model.mainCharacter
 import gg.foreversixty.app.network.ApiError
 import gg.foreversixty.app.network.ApiResult
+import gg.foreversixty.app.model.SignupRequest
 import java.time.Instant
 import java.util.Locale
 import kotlinx.coroutines.delay
@@ -336,6 +337,32 @@ class RaidNightModel(
         private set
 
     private val key get() = "night-$raidId"
+
+    /** The answer pressed on the raid night page, shown at once; null once the night says it. */
+    var pressed: SignupState? by mutableStateOf(null)
+        private set
+
+    /** Late opens the minutes under the answers (spec F1). */
+    var lateOpen: Boolean by mutableStateOf(false)
+        private set
+    var answerError: String? by mutableStateOf(null)
+        private set
+
+    /** Answers for the night's character (the one signed, else the main), then reads the night again. */
+    suspend fun answer(state: SignupState, lateMinutes: Int? = null, res: android.content.res.Resources) {
+        val night = (this.state as? State.Loaded)?.night ?: return
+        pressed = state
+        lateOpen = state == SignupState.Late && lateMinutes == null
+        answerError = null
+        val request = SignupRequest(state = state.wire, role = night.character.role.ifEmpty { null }, note = night.you.note, lateMinutes = lateMinutes)
+        when (val result = service.signup(night.guildId, raidId, night.character.characterKey, request)) {
+            is ApiResult.Success -> load()
+            is ApiResult.Failure -> {
+                pressed = null
+                answerError = SignupRefusal.sentence(result.error, res)
+            }
+        }
+    }
 
     suspend fun load() {
         if (state == State.Loading) cache.read(key, RaidNightSummary.serializer())?.let { state = State.Loaded(it.value) }

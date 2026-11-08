@@ -1593,6 +1593,12 @@
     "raid.list.and": "{first} and {last}",
     "flows.backTo": "Back to {screen}",
     "raid.recruit.line": "{faction} · {schedule} · needs {needs}",
+    "raid.night.short": { "text": "{names} · {n} short", "args": { "n": "int" }, "notPlural": true },
+    "raid.night.more": { "text": "{names} and {n} more", "args": { "n": "int" }, "notPlural": true },
+    "raid.night.aside": "{when} · {counts}",
+    "raid.night.youAre": "You are {state}",
+    "raid.night.beforePull": "Before you pull",
+    "raid.night.roster": "Roster ›",
 
     "raid.applicant.score": "Forever Score",
     "raid.applicant.sim": "Sim",

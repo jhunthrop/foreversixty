@@ -159,16 +159,20 @@ private fun Needs(raidId: Long, needs: OfficerItems, actions: HomeActions, openA
 
 @Composable
 private fun ReadyCheck(view: RaidTabView.Guild, actions: RaidTabActions) {
-    FlowSection(stringResource(R.string.raid_tab_readyCheck)) {
-        view.ready.forEachIndexed { index, item ->
-            FlowRow(
-                item.title,
-                item.sub,
-                FlowLead.Check(item.tone == ReadyTone.Ok, item.tone == ReadyTone.Miss),
-                last = index == view.ready.lastIndex,
-                trail = item.where?.let { where -> { FlowLink(where) { actions.onWhere(item) } } },
-            )
-        }
-        view.readyStamp?.let { Column(Modifier.padding(top = FsSpace.space2)) { FlowNote(it, color = FsColor.muted) } }
+    FlowSection(stringResource(R.string.raid_tab_readyCheck)) { ReadyList(view.ready, view.readyStamp, actions.onWhere) }
+}
+
+/** The Ready check's rows, each miss with where to get it, then the export's age (spec F2). */
+@Composable
+fun ReadyList(items: List<ReadyItem>, stamp: String?, onWhere: (ReadyItem) -> Unit) {
+    items.forEachIndexed { index, item ->
+        FlowRow(
+            item.title,
+            item.sub,
+            FlowLead.Check(item.tone == ReadyTone.Ok, item.tone == ReadyTone.Miss),
+            last = index == items.lastIndex,
+            trail = item.where?.let { where -> { FlowLink(where) { onWhere(item) } } },
+        )
     }
+    stamp?.let { Column(Modifier.padding(top = FsSpace.space2)) { FlowNote(it, color = FsColor.muted) } }
 }

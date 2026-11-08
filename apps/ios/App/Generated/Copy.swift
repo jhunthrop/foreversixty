@@ -5602,6 +5602,32 @@ enum Copy {
         format("raid.recruit.line", faction, schedule, needs)
     }
 
+    /// {names} · {n} short
+    static func raidNightShort(names: String, n: Int) -> String {
+        format("raid.night.short", names, n)
+    }
+
+    /// {names} and {n} more
+    static func raidNightMore(names: String, n: Int) -> String {
+        format("raid.night.more", names, n)
+    }
+
+    /// {when} · {counts}
+    static func raidNightAside(when: String, counts: String) -> String {
+        format("raid.night.aside", when, counts)
+    }
+
+    /// You are {state}
+    static func raidNightYouAre(state: String) -> String {
+        format("raid.night.youAre", state)
+    }
+
+    /// Before you pull
+    static var raidNightBeforePull: String { text("raid.night.beforePull") }
+
+    /// Roster ›
+    static var raidNightRoster: String { text("raid.night.roster") }
+
     /// Forever Score
     static var raidApplicantScore: String { text("raid.applicant.score") }
 

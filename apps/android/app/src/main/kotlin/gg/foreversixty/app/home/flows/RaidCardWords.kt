@@ -27,9 +27,7 @@ class RaidCardWords(private val res: Resources, private val clock: RaidClock, pr
         val zone = runCatching { ZoneId.of(raid.guildTimezone) }.getOrDefault(clock.zone)
         val whenText = res.getString(R.string.home_raid_when, clock.shortDate(facts.startsAt), clock.guildClock(facts.startsAt, zone))
         val aside = whenText
-        val until = Duration.between(now, facts.startsAt).coerceAtLeast(Duration.ZERO)
-        val hours = until.toHours().toInt()
-        val minutes = (until.toMinutes() % MINUTES_PER_HOUR).toInt()
+        val (clock, clockLabel) = countdown(facts.startsAt)
         val who = raid.viewer.characters.firstOrNull { it.characterKey == characterKey } ?: raid.viewer.characters.firstOrNull()
         val name = who?.name.orEmpty()
         val role = roleWord(who?.role)
@@ -39,8 +37,8 @@ class RaidCardWords(private val res: Resources, private val clock: RaidClock, pr
             raidId = raid.id,
             icon = RaidIcons.of(raid),
             eyebrow = res.getString(R.string.home_raid_tonight, guild, raid.zoneName),
-            clock = listOf(ClockPart(twoDigits(hours), res.getString(R.string.home_raid_hours)), ClockPart(twoDigits(minutes), res.getString(R.string.home_raid_min))),
-            clockLabel = res.getString(R.string.home_raid_clock, hours, minutes),
+            clock = clock,
+            clockLabel = clockLabel,
             aside = aside,
             title = res.getString(R.string.home_raid_lineTitle, raid.zoneName, whenText),
             sub = if (answer == null) res.getString(R.string.home_raid_lineSub, counts(raid), name, role) else me,
@@ -52,6 +50,24 @@ class RaidCardWords(private val res: Resources, private val clock: RaidClock, pr
             officer = badge?.takeIf { it.officer }?.let { officer(raid, it) },
         )
     }
+
+    /** The clock to [start] (`02 hours 48 min`) and the timer read aloud. */
+    fun countdown(start: Instant): Pair<List<ClockPart>, String> {
+        val until = Duration.between(now, start).coerceAtLeast(Duration.ZERO)
+        val hours = until.toHours().toInt()
+        val minutes = (until.toMinutes() % MINUTES_PER_HOUR).toInt()
+        val parts = listOf(ClockPart(twoDigits(hours), res.getString(R.string.home_raid_hours)), ClockPart(twoDigits(minutes), res.getString(R.string.home_raid_min)))
+        return parts to res.getString(R.string.home_raid_clock, hours, minutes)
+    }
+
+    /** `Damage`, `Healer`, `Tank`: how the answer names the role. */
+    fun roleWord(role: String?): String = res.getString(
+        when (role) {
+            TANK -> R.string.raid_role_tank
+            HEALER -> R.string.raid_role_healer
+            else -> R.string.raid_group_damage
+        },
+    )
 
     /** The raid live card: pulled how long ago, the counts, your answer. */
     fun live(raid: RaidView, guild: String, characterKey: String?, answer: SignupState?): RaidLiveModel {
@@ -95,14 +111,6 @@ class RaidCardWords(private val res: Resources, private val clock: RaidClock, pr
         val applicants = badge.applicants.takeIf { it > 0 }?.let { res.getQuantityString(R.plurals.home_officer_applicants, it, it) }
         return OfficerItems(unanswered, shortLine?.takeIf { unanswered != null }, applicants, null)
     }
-
-    private fun roleWord(role: String?): String = res.getString(
-        when (role) {
-            TANK -> R.string.raid_role_tank
-            HEALER -> R.string.raid_role_healer
-            else -> R.string.raid_group_damage
-        },
-    )
 
     private fun twoDigits(n: Int) = n.toString().padStart(2, '0')
 

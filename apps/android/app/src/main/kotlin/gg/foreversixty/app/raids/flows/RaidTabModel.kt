@@ -62,20 +62,6 @@ class RaidTabPresenter(private val res: Resources, private val clock: RaidClock,
         return RecruitingGuild(row.guildId, row.name, res.getString(R.string.raid_recruit_line, faction, row.schedule, needs))
     }
 
-    /** The Ready check's rows and the export's age; empty without an export. */
-    private fun ready(check: ReadyCheck?): Pair<List<ReadyItem>, String?> {
-        val exported = check?.exportedAt ?: return emptyList<ReadyItem>() to null
-        val items = check.items.map {
-            val tone = when (it.state) {
-                OK -> ReadyTone.Ok
-                MISS -> ReadyTone.Miss
-                else -> ReadyTone.Warn
-            }
-            ReadyItem(tone, it.title, it.line, it.whereToGet?.label, it.whereToGet?.link)
-        }
-        return items to res.getString(R.string.raid_tab_stamp, RelativeAge.of(Instant.parse(exported), now).phrase(res))
-    }
-
     private fun guild(content: RaidsTabContent, controller: SignupController?, badge: RaidBadge?, hasExtras: Boolean, extras: RaidTabExtras): RaidTabView.Guild {
         val words = RaidCardWords(res, clock, now)
         val key = content.character.key
@@ -86,7 +72,7 @@ class RaidTabPresenter(private val res: Resources, private val clock: RaidClock,
         }
         val live = content.planned.firstOrNull { HomeFlowState.isLive(it, now) }
         val applicantLine = extras.applicant?.let { ApplicantPresenter(res, clock, now).line(it) }
-        val (ready, stamp) = ready(extras.ready)
+        val (ready, stamp) = ReadyRows.of(res, extras.ready, now)
         return RaidTabView.Guild(
             guild = content.head.name,
             next = next,
@@ -135,7 +121,24 @@ class RaidTabPresenter(private val res: Resources, private val clock: RaidClock,
         const val HEALER = "healer"
         const val CALENDAR_ITEMS = 2
         const val HORDE = "horde"
-        const val OK = "ok"
-        const val MISS = "miss"
+    }
+}
+
+/** The Ready check's rows (ticked, missing, a warning, where to get it) and the export's age; empty without an export. */
+object ReadyRows {
+    private const val OK = "ok"
+    private const val MISS = "miss"
+
+    fun of(res: Resources, check: ReadyCheck?, now: Instant): Pair<List<ReadyItem>, String?> {
+        val exported = check?.exportedAt ?: return emptyList<ReadyItem>() to null
+        val items = check.items.map {
+            val tone = when (it.state) {
+                OK -> ReadyTone.Ok
+                MISS -> ReadyTone.Miss
+                else -> ReadyTone.Warn
+            }
+            ReadyItem(tone, it.title, it.line, it.whereToGet?.label, it.whereToGet?.link)
+        }
+        return items to res.getString(R.string.raid_tab_stamp, RelativeAge.of(Instant.parse(exported), now).phrase(res))
     }
 }
