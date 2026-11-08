@@ -4160,6 +4160,106 @@ public struct Item: Codable, Sendable, Equatable {
     }
 }
 
+public struct ItemHolder: Codable, Sendable, Equatable {
+    public let characterKey: String
+    public let name: String
+    public let className: String
+    public let spec: String
+
+    public init(
+        characterKey: String,
+        name: String,
+        className: String,
+        spec: String
+    ) {
+        self.characterKey = characterKey
+        self.name = name
+        self.className = className
+        self.spec = spec
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case characterKey
+        case name
+        case className = "class"
+        case spec
+    }
+}
+
+/// A character whose band names the item; pick is false for a listed alternative.
+public struct ItemNeed: Codable, Sendable, Equatable {
+    public let characterKey: String
+    public let name: String
+    public let className: String
+    public let spec: String
+    public let level: Int
+    /// The level band whose list names it (20
+    public let band: Int
+    /// The band's slot that names it.
+    public let slot: String
+    public let pick: Bool
+
+    public init(
+        characterKey: String,
+        name: String,
+        className: String,
+        spec: String,
+        level: Int,
+        band: Int,
+        slot: String,
+        pick: Bool
+    ) {
+        self.characterKey = characterKey
+        self.name = name
+        self.className = className
+        self.spec = spec
+        self.level = level
+        self.band = band
+        self.slot = slot
+        self.pick = pick
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case characterKey
+        case name
+        case className = "class"
+        case spec
+        case level
+        case band
+        case slot
+        case pick
+    }
+}
+
+/// GET /v1/guilds/{id}/items/{item}/needs.
+public struct ItemNeeds: Codable, Sendable, Equatable {
+    public let itemId: Int
+    public let needs: [ItemNeed]
+    public let has: [ItemHolder]
+    /// Verified characters with no gear on file.
+    public let unknownGear: Int
+
+    public init(
+        itemId: Int,
+        needs: [ItemNeed] = [],
+        has: [ItemHolder] = [],
+        unknownGear: Int
+    ) {
+        self.itemId = itemId
+        self.needs = needs
+        self.has = has
+        self.unknownGear = unknownGear
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        itemId = try c.decode(Int.self, forKey: .itemId)
+        needs = try c.decodeIfPresent([ItemNeed].self, forKey: .needs) ?? []
+        has = try c.decodeIfPresent([ItemHolder].self, forKey: .has) ?? []
+        unknownGear = try c.decode(Int.self, forKey: .unknownGear)
+    }
+}
+
 /// One item set of /data/{build}/sets.json.
 public struct ItemSet: Codable, Sendable, Equatable {
     public let id: Int
@@ -5651,6 +5751,37 @@ public struct RaidAttendanceRow: Codable, Sendable, Equatable {
         case autoOutcome
         case autoExcused
         case override
+    }
+}
+
+/// GET /v1/guilds/{id}/raid-badge. unanswered and applicants are 0 for a member.
+public struct RaidBadge: Codable, Sendable, Equatable {
+    /// The badge; 0 shows none.
+    public let count: Int
+    /// The raid counted; null with none planned.
+    public let raidId: Int64?
+    /// The viewer's account has not answered that raid.
+    public let youUnanswered: Bool
+    public let officer: Bool
+    /// Officer: the raid's unanswered accounts.
+    public let unanswered: Int
+    /// Officer: the pending applications.
+    public let applicants: Int
+
+    public init(
+        count: Int,
+        raidId: Int64? = nil,
+        youUnanswered: Bool,
+        officer: Bool,
+        unanswered: Int,
+        applicants: Int
+    ) {
+        self.count = count
+        self.raidId = raidId
+        self.youUnanswered = youUnanswered
+        self.officer = officer
+        self.unanswered = unanswered
+        self.applicants = applicants
     }
 }
 

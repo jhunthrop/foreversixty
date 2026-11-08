@@ -306,5 +306,5 @@ func (s *Service) seesEveryAttendanceRow(ctx context.Context, guildID, viewerID 
 	if err != nil {
 		return false, err
 	}
-	return verified && (rank == "officer" || rank == "leader"), nil
+	return verified && isOfficerRank(rank), nil
 }

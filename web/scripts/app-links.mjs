@@ -6,8 +6,10 @@
 // into public/.well-known/ so the static build serves them at /.well-known/.
 //
 // Only the configured paths open the apps: /app/*, plus the site pages apps/shared/links.json
-// marks `site: true` (a shared build's /b/*), which web/app-link-paths.json lists as
-// site_pages. Every other URL stays on the site. The API's app sign-in hands its one-time code
+// marks `site: true` (a shared build's /b/*, the BiS, guide, sim, report, character, guild raid
+// and tier pages), which web/app-link-paths.json lists as site_pages. `exclude` names the pages
+// under those patterns that stay on the site (the sim tools under /sim/*); Apple reads the
+// excluded components first. Every other URL stays on the site. The API's app sign-in hands its one-time code
 // to /app/auth (api/internal/auth/app_auth.go).
 //
 // `npm run sync:app-links` rewrites the files. `npm run sync` (predev and prebuild) runs it,
@@ -42,6 +44,10 @@ export function readAppLinksConfig(file = configPath, sitePages = readSitePages(
       throw new Error(`app-links.json: ${key} must be a non-empty list`);
   }
   const allowed = (p) => typeof p === 'string' && (p.startsWith('/app/') || sitePages.includes(p));
+  const exclude = cfg.exclude ?? [];
+  if (!Array.isArray(exclude) || !exclude.every((p) => typeof p === 'string' && p.startsWith('/'))) {
+    throw new Error('app-links.json: exclude must be a list of site paths');
+  }
   if (!cfg.paths.every(allowed)) {
     throw new Error(
       'app-links.json: every path must sit under /app/ or be a site page of links.json, so no other page opens the apps',
@@ -55,7 +61,15 @@ export function appleAppSiteAssociation(cfg) {
   const appID = `${cfg.appleTeamId}.${cfg.iosBundleId}`;
   return {
     applinks: {
-      details: [{ appIDs: [appID], components: cfg.paths.map((p) => ({ '/': p })) }],
+      details: [
+        {
+          appIDs: [appID],
+          components: [
+            ...(cfg.exclude ?? []).map((p) => ({ '/': p, exclude: true })),
+            ...cfg.paths.map((p) => ({ '/': p })),
+          ],
+        },
+      ],
     },
     webcredentials: { apps: [appID] },
   };

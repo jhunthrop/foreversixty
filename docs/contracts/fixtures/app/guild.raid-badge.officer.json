@@ -1,0 +1,13 @@
+{
+  "ok": true,
+  "data": {
+    "count": 6,
+    "raid_id": 31,
+    "you_unanswered": false,
+    "officer": true,
+    "unanswered": 5,
+    "applicants": 1
+  },
+  "error": null,
+  "request_id": "9f2c41d07ab3e655"
+}

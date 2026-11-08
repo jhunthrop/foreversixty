@@ -35,6 +35,8 @@ const (
 	PremiumSeat     Kind = "premium.seat"
 	BillingFailed   Kind = "billing.failed"
 	GameMilestone   Kind = "game.milestone"
+	GuildSimPassed  Kind = "guildsim.passed"
+	TierMoved       Kind = "tier.moved"
 )
 
 // Channel is one way a notification reaches a player.
@@ -108,6 +110,10 @@ var Catalogue = []Spec{
 	{Kind: PremiumSeat, Who: WhoPlayer, DefaultOn: true},
 	{Kind: BillingFailed, Who: WhoPayer, DefaultOn: true},
 	{Kind: GameMilestone, Who: WhoEveryone, DefaultOn: true},
+	// guildsim.passed is the Guild ladder group, off by default (spec 2026-11-08-app-flows F4).
+	{Kind: GuildSimPassed, Who: WhoPlayer, DefaultOn: false},
+	// tier.moved is the weekly tier move to a spec's mains, the Tiers group, off by default.
+	{Kind: TierMoved, Who: WhoPlayer, DefaultOn: false},
 }
 
 // Lookup is kind's catalogue entry; ok is false for a kind the catalogue does not name.

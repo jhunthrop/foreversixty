@@ -98,10 +98,11 @@ func newJobNotifier(ctx context.Context, cfg config.Config, pool *pgxpool.Pool, 
 
 // wireEvents connects serve's producers and, with the flag on, mounts the preference, Activity
 // inbox and push token routes and lets a device token answer a raid sign-up. deps.Notify must already
-// be wired.
-func wireEvents(ctx context.Context, cfg config.Config, pool *pgxpool.Pool, deps *server.Deps, log *slog.Logger) {
+// be wired. It answers the router for the producers wired later (the activity loop), nil when
+// the flag is off or no channel exists.
+func wireEvents(ctx context.Context, cfg config.Config, pool *pgxpool.Pool, deps *server.Deps, log *slog.Logger) events.Publisher {
 	if !cfg.Push.Enabled {
-		return
+		return nil
 	}
 	store := &events.Store{Pool: pool}
 	deps.Notifications = &events.Handler{Store: store, Activity: store, Log: log}
@@ -111,9 +112,10 @@ func wireEvents(ctx context.Context, cfg config.Config, pool *pgxpool.Pool, deps
 	}
 	router := newEventsRouter(ctx, cfg, pool, deps.Notify, log)
 	if router == nil {
-		return
+		return nil
 	}
 	connectProducers(deps, router, cfg.PublicBaseURL)
+	return router
 }
 
 // connectProducers gives every producer serve holds the router.

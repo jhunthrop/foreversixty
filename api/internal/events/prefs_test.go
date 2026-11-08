@@ -13,8 +13,8 @@ func TestEveryKindHasOneSpec(t *testing.T) {
 		}
 		seen[s.Kind] = true
 	}
-	if len(seen) != 22 {
-		t.Fatalf("catalogue has %d kinds, want the plan's 20 and the ruling's two", len(seen))
+	if len(seen) != 24 {
+		t.Fatalf("catalogue has %d kinds, want the plan's 20, the ruling's two and the flows spec's two", len(seen))
 	}
 	if s, _ := Lookup(RaidStarting); !s.QuietExempt {
 		t.Fatal("raid.starting must be exempt from quiet hours")

@@ -7,6 +7,8 @@ import (
 	"math"
 	"strconv"
 	"time"
+
+	"github.com/jhunthrop/foreversixty/api/internal/events"
 )
 
 // postChange is the smallest move in a member's figure that posts a new row (ruling P7).
@@ -17,8 +19,12 @@ const postChange = 0.02
 // non-anonymised guild member writes anything.
 type GuildSimWriter struct {
 	Store *Store
-	Log   *slog.Logger
-	Now   func() time.Time
+	// Events, when set, receives guildsim.passed for each member the sim moved above
+	// (guildsim_passed.go); PublicBaseURL roots its link.
+	Events        events.Publisher
+	PublicBaseURL string
+	Log           *slog.Logger
+	Now           func() time.Time
 }
 
 type simFacts struct {
@@ -63,12 +69,15 @@ func (w *GuildSimWriter) write(ctx context.Context, simID string) error {
 	if err != nil {
 		return fmt.Errorf("sim facts: %w", err)
 	}
-	if f.last != nil && *f.last > 0 && math.Abs(f.value-*f.last)/(*f.last) < postChange {
-		return nil
-	}
 	ladder, err := w.Store.GuildLadder(ctx, LadderGroup{f.guildID, f.role, f.band, f.preset}, w.now())
 	if err != nil {
 		return err
+	}
+	if err := w.publishPassed(ctx, f, simID, ladder); err != nil {
+		return err
+	}
+	if f.last != nil && *f.last > 0 && math.Abs(f.value-*f.last)/(*f.last) < postChange {
+		return nil
 	}
 	if err := w.Store.Upsert(ctx, guildSimEvent(f, simID, ladder), false); err != nil {
 		return err

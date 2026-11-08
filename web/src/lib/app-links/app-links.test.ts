@@ -1,5 +1,25 @@
-// The universal links and App Links files open only /app/* in the native apps, and the
-// committed copies under public/.well-known match web/app-links.json.
+// The universal links and App Links files open only /app/* and the site pages links.json names
+// in the native apps, and the committed copies under public/.well-known match web/app-links.json.
+
+const SITE_PAGES = [
+  '/b/*',
+  '/bis/*/*',
+  '/guides/*',
+  '/guides/*/*',
+  '/sim/*',
+  '/reports/*',
+  '/character/*/*/*',
+  '/guild/*/*/*/raids/*',
+  '/tiers',
+];
+const SIM_TOOLS = [
+  '/sim/specs',
+  '/sim/gear',
+  '/sim/drops',
+  '/sim/talents',
+  '/sim/weights',
+  '/reports/sample',
+];
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
@@ -17,12 +37,15 @@ import {
 const cfg = { ...readAppLinksConfig() };
 
 describe('app links', () => {
-  it('opens only /app/* and the shared build pages on iOS, for the Team ID and bundle id', () => {
+  it('opens only /app/* and the site pages on iOS, the sim tools excluded, for the Team ID and bundle id', () => {
     const aasa = appleAppSiteAssociation({ ...cfg, appleTeamId: 'ABCDE12345' });
     expect(aasa.applinks.details).toEqual([
       {
         appIDs: ['ABCDE12345.gg.foreversixty.app'],
-        components: [{ '/': '/app/*' }, { '/': '/b/*' }],
+        components: [
+          ...SIM_TOOLS.map((p) => ({ '/': p, exclude: true })),
+          ...['/app/*', ...SITE_PAGES].map((p) => ({ '/': p })),
+        ],
       },
     ]);
     expect(aasa.webcredentials.apps).toEqual(['ABCDE12345.gg.foreversixty.app']);
@@ -44,8 +67,8 @@ describe('app links', () => {
   });
 
   it('admits a page outside /app/ only when links.json names it a site page', () => {
-    expect(readSitePages()).toEqual(['/b/*']);
-    expect(cfg.paths).toContain('/b/*');
+    expect(readSitePages()).toEqual(SITE_PAGES);
+    expect(cfg.paths).toEqual(['/app/*', ...SITE_PAGES]);
     const file = path.join(import.meta.dirname, 'bad-app-links.fixture.json');
     expect(() => readAppLinksConfig(file, ['/account'])).not.toThrow();
   });

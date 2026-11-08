@@ -13,10 +13,13 @@ import (
 // The tier list's DPS tiers, best first: the letter starts at this many percent behind the
 // top spec. The site's own rules are web/src/lib/tiers/tier-rules.ts (TIER_BANDS);
 // TestTierBandsMatchTheSite holds the two together. Only damage roles get a letter.
-var tierBands = []struct {
+var tierBands = []tierBand{{"S", 0}, {"A", 5}, {"B", 10}, {"C", 20}, {"D", 30}}
+
+// tierBand is one tier: its letter and the gap behind the top spec it starts at.
+type tierBand struct {
 	letter string
 	from   float64
-}{{"S", 0}, {"A", 5}, {"B", 10}, {"C", 20}, {"D", 30}}
+}
 
 const gapPrecision = 1e6
 

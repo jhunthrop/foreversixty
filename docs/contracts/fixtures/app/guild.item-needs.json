@@ -1,0 +1,39 @@
+{
+  "ok": true,
+  "data": {
+    "item_id": 18205,
+    "needs": [
+      {
+        "character_key": "us/pvp/kraggor",
+        "name": "Kraggor",
+        "class": "Warrior",
+        "spec": "Fury",
+        "level": 60,
+        "band": 60,
+        "slot": "neck",
+        "pick": true
+      },
+      {
+        "character_key": "us/pvp/brightwen",
+        "name": "Brightwen",
+        "class": "Rogue",
+        "spec": "Combat",
+        "level": 60,
+        "band": 60,
+        "slot": "neck",
+        "pick": false
+      }
+    ],
+    "has": [
+      {
+        "character_key": "us/pvp/ironhide",
+        "name": "Ironhide",
+        "class": "Warrior",
+        "spec": "Protection"
+      }
+    ],
+    "unknown_gear": 3
+  },
+  "error": null,
+  "request_id": "9f2c41d07ab3e655"
+}
