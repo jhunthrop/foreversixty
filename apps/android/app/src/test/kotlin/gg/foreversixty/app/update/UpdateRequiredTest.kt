@@ -50,7 +50,7 @@ class UpdateRequiredTest {
             "src/test/screenshots/update_required.png",
             roborazziOptions = STRICT_SNAPSHOT,
         )
-        compose.onNodeWithText("Open Google Play").performClick()
+        compose.onNodeWithText("Update in Google Play").performClick()
         assertEquals(1, opened)
     }
 

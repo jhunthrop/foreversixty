@@ -87,7 +87,7 @@ class SearchLogicTest {
         val local = SearchLogic.filter(index, "ele", "shaman")
         val characters = (1..3).map { data.character("Ele$it") }
         val sections = SearchLogic.sections(local, characters, SearchScope.All)
-        assertEquals(listOf(SearchGroup.Guides, SearchGroup.Talents, SearchGroup.Items, SearchGroup.Characters), sections.map { it.group })
+        assertEquals(listOf(SearchGroup.Characters, SearchGroup.Items, SearchGroup.Guides, SearchGroup.Talents), sections.map { it.group })
         val items = sections.first { it.group == SearchGroup.Items }
         assertEquals(5, items.rows.size)
         assertEquals(7, items.total)

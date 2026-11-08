@@ -2811,10 +2811,10 @@ enum Copy {
     /// Update Forever Sixty
     static var updateRequiredTitle: String { text("update.required.title") }
 
-    /// This version no longer works with Forever Sixty. Update to keep your character, raids and lists in sync.
+    /// This version is too old. Update to keep signing up and simming. Your characters and sign-ups are safe.
     static var updateRequiredBody: String { text("update.required.body") }
 
-    /// Open the App Store
+    /// Update in App Store
     static var updateRequiredAction: String { text("update.required.action") }
 
     /// Devices
@@ -2847,7 +2847,7 @@ enum Copy {
     /// Could not revoke that device. Try again.
     static var devicesRevokeFailed: String { text("devices.revoke.failed") }
 
-    /// Revoke signs a device out at once. To sign this one out, use Sign out on You.
+    /// Revoke signs a device out at once. To sign this one out, use Sign out in Settings.
     static var devicesFooter: String { text("devices.footer") }
 
     /// iPhone
@@ -6818,6 +6818,96 @@ enum Copy {
     static func tiersNotesTankGear(gear: String, fresh: String) -> String {
         format("tiers.notes.tank.gear", gear, fresh)
     }
+
+    /// Signed in
+    static var devicesSection: String { text("devices.section") }
+
+    /// {name} · This device
+    static func devicesThisName(name: String) -> String {
+        format("devices.thisName", name)
+    }
+
+    /// This device
+    static var devicesThisTag: String { text("devices.thisTag") }
+
+    /// {signedIn} · {lastUsed}
+    static func devicesMeta(signedIn: String, lastUsed: String) -> String {
+        format("devices.meta", signedIn, lastUsed)
+    }
+
+    /// Sign out everywhere else
+    static var devicesSignOutOthers: String { text("devices.signOutOthers") }
+
+    /// Sign out every other device?
+    static var devicesSignOutOthersTitle: String { text("devices.signOutOthers.title") }
+
+    /// Each one is signed out of Forever Sixty at once.
+    static var devicesSignOutOthersBody: String { text("devices.signOutOthers.body") }
+
+    /// Some devices did not sign out. Try again.
+    static var devicesSignOutOthersFailed: String { text("devices.signOutOthers.failed") }
+
+    /// Delete your account
+    static var deleteHead: String { text("delete.head") }
+
+    /// This removes your characters, sims and guild sign-ups. It cannot be undone.
+    static var deleteLead: String { text("delete.lead") }
+
+    /// What goes
+    static var deleteWhatGoes: String { text("delete.whatGoes") }
+
+    /// Your characters, sims, builds and logs you uploaded
+    static var deleteGoesCharacters: String { text("delete.goes.characters") }
+
+    /// Your guild sign-ups and your place on guild rosters
+    static var deleteGoesGuild: String { text("delete.goes.guild") }
+
+    /// Your devices: every phone and the companion are signed out
+    static var deleteGoesDevices: String { text("delete.goes.devices") }
+
+    /// When
+    static var deleteWhen: String { text("delete.when") }
+
+    /// At once from the app and the site. Backups clear within 30 days.
+    static var deleteWhenLine: String { text("delete.whenLine") }
+
+    /// What stays: billing records we must keep, public and guild reports without your name, public character data no longer linked to you, and builds you shared as anonymous links.
+    static var deleteStays: String { text("delete.stays") }
+
+    /// Delete my account
+    static var deleteAction: String { text("delete.action") }
+
+    /// That did not go through. Nothing was deleted. Try again.
+    static var deleteFailed: String { text("delete.failed") }
+
+    /// Account deleted
+    static var deleteDoneTitle: String { text("delete.done.title") }
+
+    /// Everything is removed within 30 days. You can sign in with Battle.net again any time to start fresh.
+    static var deleteDoneLine: String { text("delete.done.line") }
+
+    /// Done
+    static var deleteDoneAction: String { text("delete.done.action") }
+
+    /// Sign in again
+    static var expiredTitle: String { text("expired.title") }
+
+    /// Your Battle.net link expired. Sign in again to bring your characters back.
+    static var expiredLine: String { text("expired.line") }
+
+    /// Offline. Showing what you had at {time}. Sign-ups need a connection.
+    static func offlineDataOffline(time: String) -> String {
+        format("offlineData.offline", time)
+    }
+
+    /// On this phone
+    static var offlineDataSectionEmpty: String { text("offlineData.sectionEmpty") }
+
+    /// Nothing is saved on this phone yet. Guides and lists save here the first time you open them.
+    static var offlineDataEmptyLine: String { text("offlineData.emptyLine") }
+
+    /// Find a character by name, or an item to see where it drops and who wants it.
+    static var searchHint: String { text("search.hint") }
 
     /// Get the addon and companion
     static var sharedCtaGetAddonAndCompanion: String { text("shared.cta.getAddonAndCompanion") }

@@ -202,7 +202,8 @@ class SessionManagerTest {
         assertTrue(rows.first().isThisDevice)
         assertFalse(rows.first().canRevoke)
         assertTrue(rows.drop(1).all { it.canRevoke })
-        assertEquals(gg.foreversixty.app.auth.session.DeviceRow.Meta.LastUsed(RelativeAge.Hours(2)), rows[1].meta)
+        assertEquals(RelativeAge.Hours(2), rows[1].lastUsed)
+        assertEquals(RelativeAge.Now, rows.first().lastUsed)
     }
 
     @Test

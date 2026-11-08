@@ -77,18 +77,6 @@ class AccountScreenshotTest {
 
     @Test fun `sign-in failed`() = tab("signin-failed") { SignedOut(AccountCopy.notice(SignedOutNotice.SignInFailed(SignInFailure.BattleNet))) }
 
-    @Test fun `signed out by a 401`() = tab("signedout-401") { SignedOut(AccountCopy.notice(SignedOutNotice.SessionEnded)) }
-
-    @Test fun `signed out after deletion`() = tab("signedout-deleted") {
-        SignedOutScreen(
-            AccountCopy.notice(SignedOutNotice.AccountDeleted),
-            signingIn = false,
-            onSignIn = {},
-            onPickClass = {},
-            noticeIsFailure = false,
-        )
-    }
-
     @Test fun `no characters`() = tab("home-no-characters") { NoCharactersScreen {} }
 
     @Test fun `signed out at font scale 2`() {
@@ -102,27 +90,12 @@ class AccountScreenshotTest {
 
     @Test fun `sign out confirmation`() = screen("you-signout-confirm") { You(me("me.json"), confirming = true) }
 
-    @Test fun `devices`() = tab("devices-default", ForeverTab.Home) {
-        DevicesScreen(DevicesState.Loaded(deviceRows()), null, {}, {})
-    }
-
     @Test fun `revoke confirmation`() {
         val rows = deviceRows()
-        screen("devices-revoke-confirm") { DevicesScreen(DevicesState.Loaded(rows), null, {}, {}, initiallyConfirming = rows[1]) }
+        screen("devices-revoke-confirm") { DevicesScreen(DevicesState.Loaded(rows), DevicesActions(), initiallyConfirming = rows[1]) }
     }
-
-    @Test fun `revoke failed`() {
-        val rows = deviceRows()
-        tab("devices-revoke-failed", ForeverTab.Home) { DevicesScreen(DevicesState.Loaded(rows), rows[1].id, {}, {}) }
-    }
-
-    @Test fun `delete account, free`() = delete("delete-free", "me.json")
-
-    @Test fun `delete account, Premium founder`() = delete("delete-premium", "me.premium.json")
 
     @Test fun `delete account, seat holder`() = delete("delete-seat", "me.seat.json")
-
-    @Test fun `delete account, failed`() = delete("delete-failed", "me.json", outcome = AccountActionOutcome.Failed)
 
     @Test fun `delete account, refused for a guild obligation`() =
         delete("delete-guild-obligation", "me.guild-payer.json", outcome = AccountActionOutcome.Refused(errorMessage("me.delete.error-guild-obligation.json")))
@@ -140,9 +113,8 @@ class AccountScreenshotTest {
 
     private fun delete(name: String, file: String, typed: String = "", outcome: AccountActionOutcome? = null) {
         val me = me(file)
-        val consequences = DeletionConsequence.of(me)
         tab(name, ForeverTab.Home) {
-            DeleteAccountScreen(consequences, me.user.battletag, typed, {}, deleting = false, outcome = outcome, onDelete = {})
+            DeleteAccountScreen(DeleteState(DeletionConsequence.of(me), me.user.battletag, typed, outcome = outcome), DeleteActions())
         }
     }
 

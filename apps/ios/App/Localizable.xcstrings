@@ -2841,13 +2841,167 @@
         }
       }
     },
+    "delete.action": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete my account"
+          }
+        }
+      }
+    },
+    "delete.done.action": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Done"
+          }
+        }
+      }
+    },
+    "delete.done.line": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Everything is removed within 30 days. You can sign in with Battle.net again any time to start fresh."
+          }
+        }
+      }
+    },
+    "delete.done.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Account deleted"
+          }
+        }
+      }
+    },
+    "delete.failed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "That did not go through. Nothing was deleted. Try again."
+          }
+        }
+      }
+    },
+    "delete.goes.characters": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your characters, sims, builds and logs you uploaded"
+          }
+        }
+      }
+    },
+    "delete.goes.devices": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your devices: every phone and the companion are signed out"
+          }
+        }
+      }
+    },
+    "delete.goes.guild": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your guild sign-ups and your place on guild rosters"
+          }
+        }
+      }
+    },
+    "delete.head": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete your account"
+          }
+        }
+      }
+    },
+    "delete.lead": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This removes your characters, sims and guild sign-ups. It cannot be undone."
+          }
+        }
+      }
+    },
+    "delete.stays": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "What stays: billing records we must keep, public and guild reports without your name, public character data no longer linked to you, and builds you shared as anonymous links."
+          }
+        }
+      }
+    },
+    "delete.whatGoes": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "What goes"
+          }
+        }
+      }
+    },
+    "delete.when": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "When"
+          }
+        }
+      }
+    },
+    "delete.whenLine": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "At once from the app and the site. Backups clear within 30 days."
+          }
+        }
+      }
+    },
     "devices.footer": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Revoke signs a device out at once. To sign this one out, use Sign out on You."
+            "value": "Revoke signs a device out at once. To sign this one out, use Sign out in Settings."
           }
         }
       }
@@ -2860,6 +3014,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Last used %1$@"
+          }
+        }
+      }
+    },
+    "devices.meta": {
+      "comment": "Arguments: 1 signedIn (string), 2 lastUsed (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$@"
           }
         }
       }
@@ -2909,6 +3075,17 @@
         }
       }
     },
+    "devices.section": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Signed in"
+          }
+        }
+      }
+    },
     "devices.signedIn": {
       "comment": "Arguments: 1 date (string)",
       "extractionState": "manual",
@@ -2917,6 +3094,50 @@
           "stringUnit": {
             "state": "translated",
             "value": "Signed in %1$@"
+          }
+        }
+      }
+    },
+    "devices.signOutOthers": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sign out everywhere else"
+          }
+        }
+      }
+    },
+    "devices.signOutOthers.body": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Each one is signed out of Forever Sixty at once."
+          }
+        }
+      }
+    },
+    "devices.signOutOthers.failed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Some devices did not sign out. Try again."
+          }
+        }
+      }
+    },
+    "devices.signOutOthers.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sign out every other device?"
           }
         }
       }
@@ -2932,6 +3153,29 @@
         }
       }
     },
+    "devices.thisName": {
+      "comment": "Arguments: 1 name (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · This device"
+          }
+        }
+      }
+    },
+    "devices.thisTag": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This device"
+          }
+        }
+      }
+    },
     "devices.title": {
       "extractionState": "manual",
       "localizations": {
@@ -2939,6 +3183,28 @@
           "stringUnit": {
             "state": "translated",
             "value": "Devices"
+          }
+        }
+      }
+    },
+    "expired.line": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your Battle.net link expired. Sign in again to bring your characters back."
+          }
+        }
+      }
+    },
+    "expired.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sign in again"
           }
         }
       }
@@ -10103,6 +10369,17 @@
         }
       }
     },
+    "offlineData.emptyLine": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nothing is saved on this phone yet. Guides and lists save here the first time you open them."
+          }
+        }
+      }
+    },
     "offlineData.emptySub": {
       "extractionState": "manual",
       "localizations": {
@@ -10177,6 +10454,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Saves the guide, lists and talents for every class you have a character in."
+          }
+        }
+      }
+    },
+    "offlineData.offline": {
+      "comment": "Arguments: 1 time (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Offline. Showing what you had at %1$@. Sign-ups need a connection."
           }
         }
       }
@@ -10257,6 +10546,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "On this phone, %1$@"
+          }
+        }
+      }
+    },
+    "offlineData.sectionEmpty": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "On this phone"
           }
         }
       }
@@ -17840,6 +18140,17 @@
         }
       }
     },
+    "search.hint": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Find a character by name, or an item to see where it drops and who wants it."
+          }
+        }
+      }
+    },
     "search.indexFailed": {
       "extractionState": "manual",
       "localizations": {
@@ -22248,7 +22559,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Open the App Store"
+            "value": "Update in App Store"
           }
         }
       }
@@ -22259,7 +22570,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "This version no longer works with Forever Sixty. Update to keep your character, raids and lists in sync."
+            "value": "This version is too old. Update to keep signing up and simming. Your characters and sign-ups are safe."
           }
         }
       }

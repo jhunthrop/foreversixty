@@ -68,13 +68,14 @@ class OfflineDataTest {
         assertNull(OfflineData.classOf("/data/$build/items/mage.json"))
     }
 
-    @Test fun `sizes read in whole KB, one decimal MB under ten, whole MB above`() {
+    @Test fun `sizes read in whole KB, one decimal MB under a hundred, whole MB above`() {
         assertEquals("0 KB", OfflineData.size(0))
         assertEquals("1 KB", OfflineData.size(120))
         assertEquals("410 KB", OfflineData.size(410_000))
         assertEquals("2.4 MB", OfflineData.size(2_400_000))
         assertEquals("9.9 MB", OfflineData.size(9_940_000))
-        assertEquals("41 MB", OfflineData.size(41_000_000))
+        assertEquals("41.0 MB", OfflineData.size(41_000_000))
+        assertEquals("120 MB", OfflineData.size(120_000_000))
     }
 
     @Test fun `the report rows match the board's words`() {
@@ -89,8 +90,8 @@ class OfflineDataTest {
         assertEquals("Shaman · 3.1 MB · Updated today", metas[1])
         assertEquals("Shaman · 600 KB · Updated today", metas[2])
         assertEquals("400 KB · Updated today", metas[3])
-        assertEquals("41 MB", metas[4])
-        assertEquals("On this phone, 48 MB", copy.section(report))
+        assertEquals("41.0 MB", metas[4])
+        assertEquals("On this phone, 47.5 MB", copy.section(report))
     }
 
     @Test fun `updated reads today, yesterday, a weekday, then a date`() {

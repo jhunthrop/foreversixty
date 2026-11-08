@@ -63,5 +63,12 @@ fun ProfileBar(session: SessionManager?) {
     Box(Modifier.fillMaxWidth()) { ProfileButton(session) }
 }
 
+/** The same bar for a character already known: its portrait (or the person glyph) in its faction's ring. */
+@Composable
+fun ProfilePortraitBar(avatarUrl: String?, faction: String?) {
+    val open = LocalOpenMenu.current ?: return
+    Box(Modifier.fillMaxWidth()) { PortraitButton(avatarUrl, faction, open, Modifier) }
+}
+
 private val SIZE = 32.dp
 private val TOUCH = 48.dp

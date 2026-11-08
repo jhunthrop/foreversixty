@@ -11,6 +11,7 @@ import gg.foreversixty.app.flows.TallyItem
 import gg.foreversixty.app.items.ItemLook
 import gg.foreversixty.app.menu.LocalOpenMenu
 import gg.foreversixty.app.menu.ProfileBar
+import gg.foreversixty.app.menu.ProfilePortraitBar
 import gg.foreversixty.app.model.ActivityRow
 import gg.foreversixty.app.navigation.ForeverTab
 import gg.foreversixty.app.navigation.ForeverTabScaffold
@@ -44,6 +45,16 @@ class HomeParityTest {
     @Test fun afterRaid() = state("home-after-raid", HomeFixtures.afterRaid())
 
     @Test fun normalDay() = state("home-60", HomeFixtures.normalDay(), raid = 1)
+
+    /** No Battle.net portrait yet: the person glyph in the Alliance ring with the badge. */
+    @Test fun normalDayNoAvatar() = ParityCheck.state(compose, "home-60-noavatar") {
+        ForeverTabScaffold(selected = ForeverTab.Home, onSelect = {}, badges = TabBadges(raid = 1, activity = 3)) {
+            Column {
+                CompositionLocalProvider(LocalOpenMenu provides {}) { ProfilePortraitBar(null, "alliance") }
+                HomeFlowScreen(HomeFixtures.normalDay(), HomeActions())
+            }
+        }
+    }
 
     @Test fun normalDayAt1_5() = state("home-60", HomeFixtures.normalDay(), raid = 1, fontScale = 1.5f)
 

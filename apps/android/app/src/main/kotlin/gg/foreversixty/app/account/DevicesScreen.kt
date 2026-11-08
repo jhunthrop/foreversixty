@@ -1,68 +1,81 @@
 package gg.foreversixty.app.account
 
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.LiveRegionMode
-import androidx.compose.ui.semantics.liveRegion
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import gg.foreversixty.app.R
 import gg.foreversixty.app.auth.session.DeviceRow
-import gg.foreversixty.app.designsystem.BrandButton
-import gg.foreversixty.app.designsystem.BrandButtonKind
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.FsSpace
-import gg.foreversixty.app.designsystem.ScaledType
+import gg.foreversixty.app.flows.FlowButton
+import gg.foreversixty.app.flows.FlowInsetHead
+import gg.foreversixty.app.flows.FlowNote
+import gg.foreversixty.app.flows.FlowPage
+import gg.foreversixty.app.flows.FlowRow
+import gg.foreversixty.app.flows.FlowSection
+import gg.foreversixty.app.flows.FlowSkeleton
+import gg.foreversixty.app.flows.FlowStack
+import gg.foreversixty.app.flows.FlowStackButton
+import gg.foreversixty.app.flows.FlowTag
 
-/** What F1.6 shows: the rows, or the load failure. */
+/** What Devices shows: the rows, or the load failure. */
 sealed interface DevicesState {
     data object Loading : DevicesState
     data class Loaded(val rows: List<DeviceRow>) : DevicesState
     data object Failed : DevicesState
 }
 
-/** F1.6 You › Devices, stateless over its state apart from the open confirmation. */
+/** What Devices hands back. */
+data class DevicesActions(
+    val revoke: (DeviceRow) -> Unit = {},
+    val retry: () -> Unit = {},
+    val signOutOthers: () -> Unit = {},
+)
+
+/**
+ * Devices (mock `devices`): Signed in, this device first with its tag, the others with Revoke; Sign out
+ * everywhere else; the line on signing this one out. Each revoke asks first. [failedRevoke] is the row
+ * whose revoke failed; [othersFailed] says Sign out everywhere else left some signed in.
+ */
 @Composable
 fun DevicesScreen(
     state: DevicesState,
-    failedRevoke: String?,
-    onRevoke: (DeviceRow) -> Unit,
-    onRetry: () -> Unit,
+    actions: DevicesActions,
+    failedRevoke: String? = null,
+    othersFailed: Boolean = false,
     initiallyConfirming: DeviceRow? = null,
 ) {
     var confirming by remember { mutableStateOf(initiallyConfirming) }
-    AccountPage(stringResource(R.string.devices_title)) {
+    var confirmingOthers by remember { mutableStateOf(false) }
+    FlowPage {
+        FlowInsetHead(stringResource(R.string.devices_title))
         when (state) {
-            DevicesState.Loading -> AccountCard {
-                repeat(3) { AccountRow(painterResource(R.drawable.ic_smartphone), " ", subtitle = " ") }
+            DevicesState.Loading -> FlowSection(stringResource(R.string.devices_section)) {
+                repeat(LOADING_ROWS) { FlowSkeleton(SKELETON_WIDTH, SKELETON_HEIGHT, Modifier.padding(vertical = FsSpace.space3)) }
             }
-            is DevicesState.Loaded -> AccountCard {
-                state.rows.forEachIndexed { index, row ->
-                    DeviceItem(row, failedRevoke == row.id) { confirming = row }
-                    if (index < state.rows.lastIndex) HorizontalDivider(color = FsColor.lineSoft)
+            is DevicesState.Loaded -> {
+                FlowSection(stringResource(R.string.devices_section)) {
+                    state.rows.forEachIndexed { index, row ->
+                        DeviceItem(row, failedRevoke == row.id, last = index == state.rows.lastIndex) { confirming = row }
+                    }
+                }
+                if (state.rows.any { it.canRevoke }) {
+                    FlowStack { FlowStackButton(stringResource(R.string.devices_signOutOthers), { confirmingOthers = true }, danger = true) }
+                    if (othersFailed) FlowNote(stringResource(R.string.devices_signOutOthers_failed), Modifier.padding(top = FsSpace.space2), FsColor.wipe)
                 }
             }
-            DevicesState.Failed -> Column {
-                Text(
-                    stringResource(R.string.account_devices_loadFailed),
-                    style = ScaledType.body,
-                    color = FsColor.wipe,
-                    modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite },
-                )
-                BrandButton(stringResource(R.string.common_tryAgain), BrandButtonKind.Secondary, onRetry, height = 44.dp)
+            DevicesState.Failed -> {
+                FlowNote(stringResource(R.string.account_devices_loadFailed), Modifier.padding(top = FsSpace.space2), FsColor.wipe)
+                FlowStack { FlowStackButton(stringResource(R.string.common_tryAgain), actions.retry) }
             }
         }
-        Text(stringResource(R.string.devices_footer), style = ScaledType.meta, color = FsColor.muted)
+        FlowNote(stringResource(R.string.devices_footer), Modifier.padding(top = FsSpace.space4))
     }
     confirming?.let { row ->
         ConfirmDialog(
@@ -71,29 +84,41 @@ fun DevicesScreen(
             action = stringResource(R.string.devices_revoke),
             onConfirm = {
                 confirming = null
-                onRevoke(row)
+                actions.revoke(row)
             },
             onDismiss = { confirming = null },
+        )
+    }
+    if (confirmingOthers) {
+        ConfirmDialog(
+            title = stringResource(R.string.devices_signOutOthers_title),
+            body = stringResource(R.string.devices_signOutOthers_body),
+            action = stringResource(R.string.devices_signOutOthers),
+            onConfirm = {
+                confirmingOthers = false
+                actions.signOutOthers()
+            },
+            onDismiss = { confirmingOthers = false },
         )
     }
 }
 
 @Composable
-private fun DeviceItem(row: DeviceRow, revokeFailed: Boolean, onRevoke: () -> Unit) {
-    Column {
-        val icon = if (row.isCompanion) R.drawable.ic_desktop else R.drawable.ic_smartphone
-        AccountRow(painterResource(icon), AccountCopy.deviceName(row), subtitle = AccountCopy.deviceMeta(row)) {
+private fun DeviceItem(row: DeviceRow, revokeFailed: Boolean, last: Boolean, onRevoke: () -> Unit) {
+    FlowRow(
+        title = AccountCopy.deviceName(row),
+        sub = listOfNotNull(AccountCopy.deviceMeta(row), if (revokeFailed) stringResource(R.string.devices_revoke_failed) else null).joinToString("\n"),
+        last = last,
+        trail = {
             if (row.canRevoke) {
-                BrandButton(stringResource(R.string.devices_revoke), BrandButtonKind.Destructive, onRevoke, height = 44.dp, fill = false)
+                FlowButton(stringResource(R.string.devices_revoke), onRevoke, danger = true)
+            } else {
+                FlowTag(stringResource(R.string.devices_thisTag))
             }
-        }
-        if (revokeFailed) {
-            Text(
-                stringResource(R.string.devices_revoke_failed),
-                style = ScaledType.meta,
-                color = FsColor.wipe,
-                modifier = Modifier.padding(start = FsSpace.space4, end = FsSpace.space4, bottom = FsSpace.space3),
-            )
-        }
-    }
+        },
+    )
 }
+
+private const val LOADING_ROWS = 3
+private val SKELETON_WIDTH = 240.dp
+private val SKELETON_HEIGHT = 38.dp

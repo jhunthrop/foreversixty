@@ -177,5 +177,8 @@ class OfflineDataCopy(private val res: Resources, private val zone: ZoneId = Zon
         return res.getString(R.string.offlineData_footer, whenText)
     }
 
+    /** `Offline. Showing what you had at 4:12 pm. Sign-ups need a connection.` */
+    fun offline(checkedAt: Instant?, now: Instant): String = res.getString(R.string.offlineData_offline, OfflineData.time(checkedAt ?: now, zone))
+
     private fun className(slug: String): String = GameClass.of(slug)?.let { res.getString(it.label) } ?: slug
 }
