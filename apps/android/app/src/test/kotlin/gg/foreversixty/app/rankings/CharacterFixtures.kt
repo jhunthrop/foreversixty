@@ -11,6 +11,8 @@ import gg.foreversixty.app.model.CharacterHome
 import gg.foreversixty.app.model.CharacterProfile
 import gg.foreversixty.app.model.CharacterProfileGuild
 import gg.foreversixty.app.model.CharacterProfileHeader
+import gg.foreversixty.app.model.CharacterRating
+import gg.foreversixty.app.raids.RaidFixture
 import gg.foreversixty.app.model.FeedRow
 import gg.foreversixty.app.model.FeedSegment
 import gg.foreversixty.app.model.HomeAlreadyBest
@@ -191,6 +193,11 @@ object CharacterFixtures {
         you = HomeLadderRow(3, "Elyra Duskvale", "priest", ELYRA_KEY, 912.0, simmedAt = ago(Duration.ofMinutes(30)), simId = "s1", you = true),
     )
 
+    /** The mock's `Rating 65 of 100` over 6 rated fights: the contract fixture with Elyra's figures. */
+    private val elyraRating: CharacterRating = RaidFixture.load(CharacterRating.serializer(), "character.rating").let { r ->
+        r.copy(playerKey = ELYRA_KEY, sampleSize = 6, latest = r.latest?.copy(playerKey = ELYRA_KEY, playerName = "Elyra Duskvale", overall = 65.0))
+    }
+
     private val elyraHome = home(ELYRA_KEY, 60, "HPS", 128.9, elyraDoll)
     private val felsnapHome = home(FELSNAP_KEY, 30, "DPS", 7.7, felsnapDoll)
 
@@ -200,9 +207,10 @@ object CharacterFixtures {
         nextRaid = raid,
         activity = elyraActivity,
         own = own(ELYRA_KEY, "Elyra Duskvale", 60, listOf(15, 31, 5)),
+        rating = elyraRating,
     )
 
-    val elyraVisitorExtras = CharacterExtras(home = elyraHome, activity = elyraActivity.drop(1))
+    val elyraVisitorExtras = CharacterExtras(home = elyraHome, activity = elyraActivity.drop(1), rating = elyraRating)
 
     val felsnapOwnerExtras = CharacterExtras(
         home = felsnapHome,

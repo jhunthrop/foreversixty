@@ -1125,6 +1125,12 @@
     <string name="reports_sample">Open the sample report ›</string>
     <string name="reports_rowSub">%1$s · %2$s</string>
     <string name="reports_unreadableSub">Could not be read</string>
+    <string name="char_page_rating">Rating</string>
+    <string name="char_page_ratingOf">of 100</string>
+    <plurals name="char_page_ratedFights">
+        <item quantity="one">1 rated fight</item>
+        <item quantity="other">%1$d rated fights</item>
+    </plurals>
     <string name="report_title">Report</string>
     <string name="report_upload">Your upload</string>
     <string name="report_uploaded">Uploaded %1$s</string>

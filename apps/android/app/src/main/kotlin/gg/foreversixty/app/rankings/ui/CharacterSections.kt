@@ -54,7 +54,7 @@ import gg.foreversixty.app.rankings.logic.CharacterPageView
 @Composable
 fun CharacterScore(view: CharacterPageView, actions: CharacterActions, top: Dp) {
     val title = stringResource(R.string.char_score)
-    FlowSection(title, top = top) {
+    FlowSection(title, top = top, meta = view.score?.ratedFights) {
         FlowGap(FsSpace.space3)
         val score = view.score
         if (score == null) {
@@ -64,6 +64,12 @@ fun CharacterScore(view: CharacterPageView, actions: CharacterActions, top: Dp) 
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(FsSpace.space6)) {
             CharacterFigure(stringResource(R.string.char_page_scoreFigure), score.score, modifier = Modifier.weight(1f))
             CharacterFigure(stringResource(R.string.char_page_tier), score.tier, color = ItemQuality(score.tierQuality).text, modifier = Modifier.weight(1f))
+        }
+        score.rating?.let { rating ->
+            Row(Modifier.fillMaxWidth().padding(top = FsSpace.space5), horizontalArrangement = Arrangement.spacedBy(FsSpace.space6)) {
+                CharacterFigure(stringResource(R.string.char_page_rating), rating, unit = stringResource(R.string.char_page_ratingOf), modifier = Modifier.weight(1f))
+                Spacer(Modifier.weight(1f))
+            }
         }
         CharacterScoreTrend(score)
         score.mostToGain?.let { most ->

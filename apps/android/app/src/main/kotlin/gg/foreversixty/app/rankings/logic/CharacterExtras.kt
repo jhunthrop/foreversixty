@@ -2,6 +2,7 @@ package gg.foreversixty.app.rankings.logic
 
 import gg.foreversixty.app.model.AccountCharacter
 import gg.foreversixty.app.model.CharacterHome
+import gg.foreversixty.app.model.CharacterRating
 import gg.foreversixty.app.model.FeedPage
 import gg.foreversixty.app.model.FeedRow
 import gg.foreversixty.app.model.GuildHome
@@ -23,6 +24,9 @@ interface CharacterExtrasService {
     suspend fun guild(id: Long): ApiResult<GuildHome>
     suspend fun activity(characterKey: String): ApiResult<FeedPage>
     suspend fun me(): ApiResult<Me>
+
+    /** The character's Rating (C5); a 404 is no rating yet, not an error. */
+    suspend fun rating(region: String, ruleset: String, name: String): ApiResult<CharacterRating>
 }
 
 class LiveCharacterExtras(private val client: ApiClient) : CharacterExtrasService {
@@ -31,6 +35,7 @@ class LiveCharacterExtras(private val client: ApiClient) : CharacterExtrasServic
     override suspend fun guild(id: Long) = client.send(ApiEndpoints.getGuildHome(id))
     override suspend fun activity(characterKey: String) = client.send(ApiEndpoints.getFeed(character = characterKey, limit = ACTIVITY_ROWS))
     override suspend fun me() = client.send(ApiEndpoints.getMe())
+    override suspend fun rating(region: String, ruleset: String, name: String) = client.send(ApiEndpoints.getCharacterRating(region, ruleset, name, limit = 1))
 
     companion object {
         /** C18: the activity rows the page shows. */
@@ -46,17 +51,20 @@ data class CharacterExtras(
     val activity: List<FeedRow> = emptyList(),
     /** The owner's account character: its level and exported talents decide `spend your points`. */
     val own: AccountCharacter? = null,
+    /** The character's Rating; null with none (a 404) or until it answers. */
+    val rating: CharacterRating? = null,
 ) {
     companion object {
         /** Reads the extras for [route]; the owner's pieces only when [owner]. A failed read leaves its piece out. */
         suspend fun load(service: CharacterExtrasService, route: CharacterRoute, characterKey: String, owner: Boolean): CharacterExtras {
             val home = service.home(route.region, route.ruleset, route.name).data()
             val activity = service.activity(characterKey).data()?.rows.orEmpty()
-            if (!owner) return CharacterExtras(home = home, activity = activity)
+            val rating = service.rating(route.region, route.ruleset, route.name).data()
+            if (!owner) return CharacterExtras(home = home, activity = activity, rating = rating)
             val blocks = service.blocks(characterKey).data()
             val raid = blocks?.guildSims?.guildId?.let { service.guild(it).data()?.nextRaid }
             val own = service.me().data()?.characters?.firstOrNull { it.key == characterKey }
-            return CharacterExtras(home, blocks, raid, activity, own)
+            return CharacterExtras(home, blocks, raid, activity, own, rating)
         }
 
         private fun <T> ApiResult<T>.data(): T? = (this as? ApiResult.Success)?.data

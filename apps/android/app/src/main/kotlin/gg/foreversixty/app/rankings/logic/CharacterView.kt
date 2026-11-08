@@ -7,6 +7,7 @@ import gg.foreversixty.app.home.HomePresenter
 import gg.foreversixty.app.items.ItemLook
 import gg.foreversixty.app.items.ItemNumbers
 import gg.foreversixty.app.model.CharacterFight
+import gg.foreversixty.app.model.CharacterRating
 import gg.foreversixty.app.model.CharacterHome
 import gg.foreversixty.app.model.CharacterProfile
 import gg.foreversixty.app.model.FeedRow
@@ -78,6 +79,10 @@ data class ScoreView(
     val sparkline: List<Float>,
     /** `As of 17 Dec`. */
     val asOf: String?,
+    /** The Rating, `65` (of 100), from the newest rated fight; null with none. */
+    val rating: String?,
+    /** `6 rated fights` beside the section title; null with no rating. */
+    val ratedFights: String?,
 )
 
 /** One best fight (C6). */
@@ -133,7 +138,7 @@ class CharacterPageComposer(private val res: Resources, private val specs: SpecC
             gearMeta = extras.home?.band?.let(::bandLabel),
             cells = cells(slots, if (owner) home else null),
             gearGap = profile.gearGapTotal?.let { res.getString(R.string.char_gapPoints, ItemNumbers.tenths(it)) },
-            score = score(profile),
+            score = score(profile, extras.rating),
             noScoreLine = res.getString(
                 when {
                     profile.best.isNotEmpty() -> R.string.char_page_noScoreYet
@@ -269,7 +274,7 @@ class CharacterPageComposer(private val res: Resources, private val specs: SpecC
 
     // The score (C5)
 
-    private fun score(profile: CharacterProfile): ScoreView? {
+    private fun score(profile: CharacterProfile, rating: CharacterRating?): ScoreView? {
         val score = profile.score ?: return null
         val bars = CharacterCard.bars(profile.components, profile.componentCaps)
         val most = bars.filter { it.cap > it.value }.maxByOrNull { it.cap - it.value }
@@ -281,6 +286,8 @@ class CharacterPageComposer(private val res: Resources, private val specs: SpecC
             parts = bars.map { res.getString(it.component.label) to res.getString(R.string.char_page_partSub, it.value, it.cap) },
             bars = bars,
             sparkline = CharacterCard.sparkline(profile.scoreHistory),
+            rating = rating?.latest?.overall?.roundToInt()?.toString(),
+            ratedFights = rating?.takeIf { it.latest != null }?.sampleSize?.let { res.getQuantityString(R.plurals.char_page_ratedFights, it, it) },
             asOf = profile.asOf?.let { d -> runCatching { LocalDate.parse(d) }.getOrNull()?.let { res.getString(R.string.char_asOf, DAY_MONTH.format(it)) } },
         )
     }

@@ -3763,6 +3763,17 @@ enum Copy {
     /// Could not be read
     static var reportsUnreadableSub: String { text("reports.unreadableSub") }
 
+    /// Rating
+    static var charPageRating: String { text("char.page.rating") }
+
+    /// of 100
+    static var charPageRatingOf: String { text("char.page.ratingOf") }
+
+    /// {n} rated fights
+    static func charPageRatedFights(n: Int) -> String {
+        format("char.page.ratedFights", n)
+    }
+
     /// Report
     static var reportTitle: String { text("report.title") }
 

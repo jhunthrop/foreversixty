@@ -2166,6 +2166,52 @@
         }
       }
     },
+    "char.page.ratedFights": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "1 rated fight"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%1$lld rated fights"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "char.page.rating": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rating"
+          }
+        }
+      }
+    },
+    "char.page.ratingOf": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "of 100"
+          }
+        }
+      }
+    },
     "char.page.scoreFigure": {
       "extractionState": "manual",
       "localizations": {
