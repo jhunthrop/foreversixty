@@ -1462,7 +1462,6 @@
     "home.raid.min": "min",
     "home.raid.clock": {"text": "{h} hours {m} minutes", "notPlural": true, "args": {"h": "int", "m": "int"}},
     "home.raid.when": "{date}, {time}",
-    "home.raid.answerBy": "{when} · answer by {time}",
     "home.raid.notAnswered": "You have not answered, as {name}, {role}",
     "home.raid.answered": "You are {answer}, as {name}, {role}",
     "home.raid.lineTitle": "{raid} · {when}",

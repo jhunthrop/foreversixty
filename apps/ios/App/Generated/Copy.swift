@@ -5136,11 +5136,6 @@ enum Copy {
         format("home.raid.when", date, time)
     }
 
-    /// {when} · answer by {time}
-    static func homeRaidAnswerBy(when: String, time: String) -> String {
-        format("home.raid.answerBy", when, time)
-    }
-
     /// You have not answered, as {name}, {role}
     static func homeRaidNotAnswered(name: String, role: String) -> String {
         format("home.raid.notAnswered", name, role)

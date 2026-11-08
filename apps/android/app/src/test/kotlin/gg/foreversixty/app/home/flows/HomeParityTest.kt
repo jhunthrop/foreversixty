@@ -116,7 +116,7 @@ object HomeFixtures {
         eyebrow = "Olympus XXVII · Onyxia's Lair tonight",
         clock = listOf(ClockPart("02", "hours"), ClockPart("48", "min")),
         clockLabel = "2 hours 48 minutes",
-        aside = "Wed 6 Jan, 8:00 pm CST · answer by 6:00 pm CST",
+        aside = "Wed 6 Jan, 8:00 pm CST",
         title = "Onyxia's Lair · Wed 6 Jan, 8:00 pm CST",
         sub = if (answer == null) "18 in, 3 late · you have not answered, as Thandrel, Damage" else "You are In, as Thandrel, Damage",
         me = if (answer == null) "You have not answered, as Thandrel, Damage" else "You are ${answer.name}, as Thandrel, Damage",

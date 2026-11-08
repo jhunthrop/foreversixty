@@ -25,7 +25,7 @@ class RaidCardWords(private val res: Resources, private val clock: RaidClock, pr
         val facts = RaidFacts(raid, now)
         val zone = runCatching { ZoneId.of(raid.guildTimezone) }.getOrDefault(clock.zone)
         val whenText = res.getString(R.string.home_raid_when, clock.shortDate(facts.startsAt), clock.guildClock(facts.startsAt, zone))
-        val aside = facts.inviteAt?.let { res.getString(R.string.home_raid_answerBy, whenText, clock.guildClock(it, zone)) } ?: whenText
+        val aside = whenText
         val until = Duration.between(now, facts.startsAt).coerceAtLeast(Duration.ZERO)
         val hours = until.toHours().toInt()
         val minutes = (until.toMinutes() % MINUTES_PER_HOUR).toInt()

@@ -1545,7 +1545,6 @@
     <string name="home_raid_min">min</string>
     <string name="home_raid_clock" tools:ignore="PluralsCandidate">%1$d hours %2$d minutes</string>
     <string name="home_raid_when">%1$s, %2$s</string>
-    <string name="home_raid_answerBy">%1$s · answer by %2$s</string>
     <string name="home_raid_notAnswered">You have not answered, as %1$s, %2$s</string>
     <string name="home_raid_answered">You are %1$s, as %2$s, %3$s</string>
     <string name="home_raid_lineTitle">%1$s · %2$s</string>

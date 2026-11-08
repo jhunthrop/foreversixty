@@ -3892,18 +3892,6 @@
         }
       }
     },
-    "home.raid.answerBy": {
-      "comment": "Arguments: 1 when (string), 2 time (string)",
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$@ · answer by %2$@"
-          }
-        }
-      }
-    },
     "home.raid.answered": {
       "comment": "Arguments: 1 answer (string), 2 name (string), 3 role (string)",
       "extractionState": "manual",
