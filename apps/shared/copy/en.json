@@ -1510,7 +1510,7 @@
     "home.raid.answered": "You are {answer}, as {name}, {role}",
     "home.raid.lineTitle": "{raid} · {when}",
     "home.raid.lineSub": "{counts} · you have not answered, as {name}, {role}",
-    "home.raid.counts": {"text": "{n} in, {late} late", "notPlural": true, "args": {"n": "int", "late": "int"}},
+    "home.raid.counts": {"text": "{in} in, {late} late", "notPlural": true, "args": {"in": "int", "late": "int"}},
     "home.raid.ready": {"count": "n", "one": "1 thing before you pull", "other": "{n} things before you pull"},
     "home.raid.readySub": "{items} · from your last log-out, {age}",
     "home.officer.unanswered": {"text": "{n} have not answered", "notPlural": true, "args": {"n": "int"}},

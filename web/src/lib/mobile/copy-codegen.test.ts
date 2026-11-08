@@ -9,6 +9,7 @@ import {
   parseEntry,
   renderAndroid,
   renderXcstrings,
+  swiftAccessor,
 } from '../../../scripts/gen-mobile-copy.mjs';
 
 const HINT = 'run `node web/scripts/gen-mobile-copy.mjs` and commit the result';
@@ -40,6 +41,15 @@ describe('mobile copy codegen', () => {
     expect(renderAndroid([entry], '// x')).toContain('<item quantity="other">%1$d points unspent.</item>');
     const ios = JSON.parse(renderXcstrings([entry])).strings['talents.unspent'].localizations.en;
     expect(ios.variations.plural.other.stringUnit.value).toBe('%1$lld points unspent.');
+  });
+
+  it('escapes a placeholder named after a Swift keyword', () => {
+    const swift = swiftAccessor(
+      parseEntry('home.raid.counts', { text: '{in} in, {late} late', notPlural: true, args: { in: 'int', late: 'int' } }),
+    );
+    expect(swift).toContain('static func homeRaidCounts(`in`: Int, late: Int) -> String');
+    expect(swift).toContain('format("home.raid.counts", `in`, late)');
+    expect(swiftAccessor(parseEntry('a.b', 'Hi {class}'))).toContain('(className: String)');
   });
 
   it('keeps edge spaces and escapes apostrophes for aapt', () => {
