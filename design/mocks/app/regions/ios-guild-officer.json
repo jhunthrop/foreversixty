@@ -53,7 +53,7 @@
     16,
     793,
     361,
-    409
+    407
    ],
    "inventory": {
     "row": 2,
@@ -64,9 +64,9 @@
   "plate": {
    "box": [
     16,
-    842,
+    841,
     361,
-    360
+    359
    ],
    "inventory": {
     "row": 2,
@@ -77,18 +77,18 @@
   "section-comp-against-the-target": {
    "box": [
     16,
-    1250,
+    1248,
     361,
-    175
+    174
    ],
    "inventory": {}
   },
   "section-buff-and-debuff-cover": {
    "box": [
     16,
-    1449,
+    1446,
     361,
-    1265
+    1264
    ],
    "inventory": {
     "image": 24
@@ -97,9 +97,9 @@
   "section-raid-ready": {
    "box": [
     16,
-    2746,
+    2742,
     361,
-    183
+    181
    ],
    "inventory": {
     "row": 1
@@ -108,18 +108,18 @@
   "section-attendance-last-4-raids": {
    "box": [
     16,
-    2961,
+    2955,
     361,
-    248
+    247
    ],
    "inventory": {}
   },
   "section-last-raid": {
    "box": [
     16,
-    3241,
+    3234,
     361,
-    138
+    137
    ],
    "inventory": {
     "row": 1
@@ -128,7 +128,7 @@
   "section-recruitment": {
    "box": [
     16,
-    3411,
+    3403,
     361,
     105
    ],

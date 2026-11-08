@@ -32,8 +32,9 @@ env:
   IOS_RUNTIME_BUILD: '23F77'
 jobs:
   build-test:
-    # Skipped in launch mode (docs/runbooks/landing.md, "Launch mode").
-    if: vars.LAUNCH_MODE != 'true'
+    # Skipped in launch mode (docs/runbooks/landing.md, "Launch mode"), except a run started by
+    # hand (a record run, `make -C apps/ios snapshots`), which is never a push's check.
+    if: vars.LAUNCH_MODE != 'true' || github.event_name == 'workflow_dispatch'
     runs-on: xcode-27
     timeout-minutes: 40
     defaults:

@@ -39,7 +39,6 @@ import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.unit.dp
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.takahirom.roborazzi.RoborazziOptions
 import com.github.takahirom.roborazzi.captureRoboImage
 import gg.foreversixty.app.account.CharacterSelector
 import gg.foreversixty.app.designsystem.ForeverTheme
@@ -83,6 +82,7 @@ import org.junit.runner.RunWith
 import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.GraphicsMode
+import gg.foreversixty.app.testing.STRICT_SNAPSHOT
 
 /**
  * Lane F15's in-app surfaces on a Pixel 9 (412 x 915 dp) at the default size and font scale 2.0:
@@ -119,7 +119,7 @@ class SystemScreenshotTest {
         }
         val file = "$name${if (large) "-large" else ""}-and"
         val path = "src/test/screenshots/system/$file.png"
-        compose.onRoot().captureRoboImage(path, roborazziOptions = TOLERANT)
+        compose.onRoot().captureRoboImage(path, roborazziOptions = STRICT_SNAPSHOT)
         File(path).takeIf { it.exists() }?.copyTo(File(File(REVIEW_DIR).apply { mkdirs() }, "$file.png"), overwrite = true)
     }
 
@@ -296,9 +296,6 @@ class SystemScreenshotTest {
     @Test @Config(qualifiers = PIXEL_9_XL)
     fun sharedCompareLarge() = compare(true)
 }
-
-/** Goldens are recorded on macOS and verified on Linux CI; allow anti-aliasing noise only. */
-private val TOLERANT = RoborazziOptions(compareOptions = RoborazziOptions.CompareOptions(changeThreshold = 0.005F))
 
 private const val LARGE_SCALE = 2f
 private const val SAVED_AGO = 3_600L

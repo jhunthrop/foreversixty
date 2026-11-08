@@ -3,6 +3,9 @@
 //   node design/mocks/app_regions.mjs           -> design/mocks/app/regions/<platform>-<screen>.json
 //   node design/mocks/app_regions.mjs --check   -> exit 1 naming each region file that differs from a fresh render
 // Run `python3 design/mocks/ws_app.py` first (the web-derived mocks are generated, not committed).
+// The committed files are rendered on the Linux runner the web parity job checks them on
+// (the web parity job uploads them as app-regions when its check fails); a Mac lays some
+// mocks out differently.
 // PLAYWRIGHT_FROM: another package.json whose node_modules carries @playwright/test.
 import { createRequire } from "node:module";
 import { mkdirSync, readdirSync, readFileSync, writeFileSync, existsSync } from "node:fs";

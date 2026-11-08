@@ -12,7 +12,6 @@ import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.unit.dp
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.takahirom.roborazzi.RoborazziOptions
 import com.github.takahirom.roborazzi.captureRoboImage
 import gg.foreversixty.app.account.CharacterSelector
 import gg.foreversixty.app.designsystem.ForeverTheme
@@ -51,6 +50,7 @@ import org.junit.runner.RunWith
 import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.GraphicsMode
+import gg.foreversixty.app.testing.STRICT_SNAPSHOT
 
 /**
  * Every F9 screen and state on a Pixel 9 (412 x 915 dp) with the five-tab bar, at the default size
@@ -83,7 +83,7 @@ class GuidesScreenshotTest {
             }
         }
         val path = "src/test/screenshots/guides/$name.png"
-        compose.onRoot().captureRoboImage(path, roborazziOptions = TOLERANT)
+        compose.onRoot().captureRoboImage(path, roborazziOptions = STRICT_SNAPSHOT)
         copyForReview(path, name)
     }
 
@@ -231,9 +231,6 @@ class GuidesScreenshotTest {
         ClassPage("shaman", Loadable.Loaded(index, offlineAt), saved, now, back = {}) {}
     }
 }
-
-/** Goldens are recorded on macOS and verified on Linux CI; allow anti-aliasing noise only. */
-private val TOLERANT = RoborazziOptions(compareOptions = RoborazziOptions.CompareOptions(changeThreshold = 0.005F))
 
 private const val LARGE_SCALE = 2f
 private const val ELEMENTAL_BYTES = 21_800L

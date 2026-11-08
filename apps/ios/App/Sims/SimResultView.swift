@@ -107,7 +107,7 @@ struct SimResultView: View {
     }
 
     /// The 52 pt figure, growing with the text size (to 64 at AX5, spec F5.3).
-    static let figureFont = Font.custom("BarlowCondensed-ExtraBold", size: 52, relativeTo: .largeTitle)
+    static let figureFont = Font.custom(FSFont.bodyBold, size: 52, relativeTo: .largeTitle)
 
     private func gear(_ model: SimResultModel) -> some View {
         VStack(alignment: .leading, spacing: 8) {

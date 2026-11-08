@@ -63,7 +63,7 @@ import gg.foreversixty.app.designsystem.pillSurface
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.FsRadius
 import gg.foreversixty.app.designsystem.GameColors
-import gg.foreversixty.app.designsystem.HeadingFamily
+import gg.foreversixty.app.designsystem.FsFont
 import gg.foreversixty.app.items.ItemIcon
 import gg.foreversixty.app.items.ItemLook
 import gg.foreversixty.app.items.ItemTooltipRequest
@@ -143,7 +143,7 @@ private fun TitleRow(isYours: Boolean) {
     ) {
         Text(
             stringResource(R.string.bis_title).uppercase(),
-            style = MaterialTheme.typography.headlineMedium.copy(fontFamily = HeadingFamily, fontWeight = FontWeight.ExtraBold),
+            style = MaterialTheme.typography.headlineMedium.copy(fontFamily = FsFont.body, fontWeight = FontWeight.ExtraBold),
             color = FsColor.strong,
             modifier = Modifier.weight(1f, fill = false).semantics { heading() },
         )

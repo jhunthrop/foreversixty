@@ -47,7 +47,7 @@
   "countdowns": {
    "box": [
     16,
-    1180,
+    1147,
     361,
     210
    ],
@@ -56,9 +56,9 @@
   "section-forever-right-now": {
    "box": [
     0,
-    496,
+    495,
     393,
-    684
+    652
    ],
    "inventory": {
     "row": 7,
@@ -71,7 +71,7 @@
     0,
     241,
     393,
-    223
+    222
    ],
    "inventory": {
     "row": 3,
@@ -81,9 +81,9 @@
   "section-your-spec-this-week": {
    "box": [
     0,
-    1467,
+    1433,
     393,
-    125
+    124
    ],
    "inventory": {
     "row": 1
@@ -92,9 +92,9 @@
   "section-top-movers": {
    "box": [
     0,
-    1624,
+    1589,
     393,
-    267
+    266
    ],
    "inventory": {
     "row": 3,

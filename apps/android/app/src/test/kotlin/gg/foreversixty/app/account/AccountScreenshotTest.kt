@@ -13,7 +13,6 @@ import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.unit.dp
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.takahirom.roborazzi.ExperimentalRoborazziApi
-import com.github.takahirom.roborazzi.RoborazziOptions
 import com.github.takahirom.roborazzi.captureRoboImage
 import com.github.takahirom.roborazzi.captureScreenRoboImage
 import gg.foreversixty.app.auth.session.AccountActionOutcome
@@ -44,6 +43,7 @@ import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.GraphicsMode
 import java.time.Instant
+import gg.foreversixty.app.testing.STRICT_SNAPSHOT
 
 /**
  * F1's states at Pixel 9 size (spec §15), default and font scale 2.0 for the switcher and the
@@ -204,7 +204,7 @@ class AccountScreenshotTest {
 
     private fun capture(name: String, screen: @Composable () -> Unit) {
         compose.setContent { ForeverTheme { screen() } }
-        compose.onRoot().captureRoboImage("src/test/screenshots/account_$name.png", roborazziOptions = TOLERANT)
+        compose.onRoot().captureRoboImage("src/test/screenshots/account_$name.png", roborazziOptions = STRICT_SNAPSHOT)
     }
 
     /** Dialogs live in their own window, so these capture the whole screen. */
@@ -212,14 +212,9 @@ class AccountScreenshotTest {
     private fun screen(name: String, content: @Composable () -> Unit) {
         compose.setContent { ForeverTheme { ForeverTabScaffold(selected = ForeverTab.You, onSelect = {}) { content() } } }
         compose.waitForIdle()
-        captureScreenRoboImage("src/test/screenshots/account_$name.png", roborazziOptions = TOLERANT)
+        captureScreenRoboImage("src/test/screenshots/account_$name.png", roborazziOptions = STRICT_SNAPSHOT)
     }
 }
-
-/** Goldens are recorded on macOS and verified on Linux CI; allow anti-aliasing noise only. */
-private val TOLERANT = RoborazziOptions(
-    compareOptions = RoborazziOptions.CompareOptions(changeThreshold = 0.005F),
-)
 
 private const val VERSION = "Version 0.1.0 (1) · data 1.60.1.70658"
 

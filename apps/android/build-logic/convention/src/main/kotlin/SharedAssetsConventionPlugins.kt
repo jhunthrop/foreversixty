@@ -18,7 +18,13 @@ import javax.inject.Inject
  */
 private const val SHARED_DIR = "../shared"
 
-/** The six faces in apps/shared/fonts, as `res/font/barlow_regular.ttf` and so on. */
+/**
+ * The apps' faces from apps/shared/fonts, as `res/font/barlow_regular.ttf` and so on: Barlow 400,
+ * 600 and 700 and Marcellus 400 (design/tokens/tokens.json `font`, Tokens.kt `FsFont`). Barlow
+ * Condensed and Cinzel stay in apps/shared/fonts for the mocks and the Discord assets only.
+ */
+internal val APP_FONTS = listOf("Barlow-Regular.ttf", "Barlow-SemiBold.ttf", "Barlow-Bold.ttf", "Marcellus-Regular.ttf")
+
 class SharedFontsConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) = with(target) {
         val copy = tasks.register("copySharedFonts", CopySharedFonts::class.java) {
@@ -57,7 +63,7 @@ abstract class CopySharedFonts @Inject constructor(
     @TaskAction
     fun copy() {
         fs.sync {
-            from(sourceDir) { include("*.ttf") }
+            from(sourceDir) { include(APP_FONTS) }
             into(outputDir.dir("font"))
             rename { resourceName(it) }
         }

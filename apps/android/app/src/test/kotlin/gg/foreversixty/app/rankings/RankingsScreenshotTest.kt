@@ -24,7 +24,6 @@ import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.unit.dp
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.takahirom.roborazzi.RoborazziOptions
 import com.github.takahirom.roborazzi.ExperimentalRoborazziApi
 import com.github.takahirom.roborazzi.captureRoboImage
 import com.github.takahirom.roborazzi.captureScreenRoboImage
@@ -74,6 +73,7 @@ import org.junit.runner.RunWith
 import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.GraphicsMode
+import gg.foreversixty.app.testing.STRICT_SNAPSHOT
 
 /**
  * Every F11 screen and state on a Pixel 9 (412 x 915 dp), at the default size and at font scale 2.0
@@ -96,7 +96,7 @@ class RankingsScreenshotTest {
 
     private fun capture(name: String, large: Boolean = false, scrolls: Boolean = true, tabs: Boolean = true, screen: @Composable () -> Unit) {
         setContent(large, scrolls, tabs, screen)
-        compose.onRoot().captureRoboImage("src/test/screenshots/rankings/$name.png", roborazziOptions = TOLERANT)
+        compose.onRoot().captureRoboImage("src/test/screenshots/rankings/$name.png", roborazziOptions = STRICT_SNAPSHOT)
     }
 
     private fun setContent(large: Boolean, scrolls: Boolean, tabs: Boolean, screen: @Composable () -> Unit) {
@@ -142,7 +142,7 @@ class RankingsScreenshotTest {
         }
         compose.onNode(hasContentDescription("Rank 2 of", substring = true)).performTouchInput { longClick() }
         compose.waitForIdle()
-        captureScreenRoboImage("src/test/screenshots/rankings/rankings-menu-and.png", roborazziOptions = TOLERANT)
+        captureScreenRoboImage("src/test/screenshots/rankings/rankings-menu-and.png", roborazziOptions = STRICT_SNAPSHOT)
     }
 
     @Test fun unranked() = board("rankings-empty-and", loaded(RankingsTestData.empty()))
@@ -293,9 +293,6 @@ private val LIGHTNINGBOLLTZ_ACCOUNT = gg.foreversixty.app.model.AccountCharacter
     source = "addon", className = LIGHTNINGBOLLTZ.className, level = LIGHTNINGBOLLTZ.level, faction = LIGHTNINGBOLLTZ.faction,
     race = LIGHTNINGBOLLTZ.race, spec = LIGHTNINGBOLLTZ.specName,
 )
-
-/** Goldens are recorded on macOS and verified on Linux CI; allow anti-aliasing noise only. */
-private val TOLERANT = RoborazziOptions(compareOptions = RoborazziOptions.CompareOptions(changeThreshold = 0.005F))
 
 /** Pixel 9: 412 x 915 dp at 420 dpi. */
 private const val PIXEL_9 = "w412dp-h915dp-normal-long-notround-any-420dpi-keyshidden-nonav"

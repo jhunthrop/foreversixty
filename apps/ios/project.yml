@@ -49,12 +49,14 @@ targets:
         name: Fixtures
         type: folder
         buildPhase: resources
-      # The brand faces from apps/shared/fonts (lane T), copied flat into the bundle and
-      # registered under UIAppFonts; FSFont names them by PostScript name.
+      # The brand faces from apps/shared/fonts (Barlow 400, 600, 700 and Marcellus 400), copied
+      # flat into the bundle and registered under UIAppFonts; FSFont names them by PostScript name.
       - path: ../shared/fonts
         name: Fonts
         buildPhase: resources
-        excludes: ["*.txt"]
+        # Barlow Condensed and Cinzel stay in apps/shared/fonts for the mocks and the Discord
+        # assets; the apps use Barlow and Marcellus only (mobile redesign spec 2.1).
+        excludes: ["*.txt", "BarlowCondensed-*.ttf", "Cinzel-*.ttf"]
       - path: ../shared/brand/ios/Brand.xcassets
         buildPhase: resources
       # The bundled repo files, each the repo's one copy: the HD class crests, the faction marks and
@@ -108,9 +110,6 @@ targets:
           - Barlow-SemiBold.ttf
           - Barlow-Bold.ttf
           - Marcellus-Regular.ttf
-          - BarlowCondensed-Bold.ttf
-          - BarlowCondensed-ExtraBold.ttf
-          - Cinzel-Bold.ttf
         UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait]
         ITSAppUsesNonExemptEncryption: false
         # Lane F4: Add to calendar writes the raid with write-only access (iOS 17+).
@@ -163,7 +162,9 @@ targets:
       - path: ../shared/fonts
         name: Fonts
         buildPhase: resources
-        excludes: ["*.txt"]
+        # Barlow Condensed and Cinzel stay in apps/shared/fonts for the mocks and the Discord
+        # assets; the apps use Barlow and Marcellus only (mobile redesign spec 2.1).
+        excludes: ["*.txt", "BarlowCondensed-*.ttf", "Cinzel-*.ttf"]
       - path: ../../web/public/icons/hd/crests
         type: folder
         buildPhase: resources
@@ -192,9 +193,6 @@ targets:
           - Barlow-SemiBold.ttf
           - Barlow-Bold.ttf
           - Marcellus-Regular.ttf
-          - BarlowCondensed-Bold.ttf
-          - BarlowCondensed-ExtraBold.ttf
-          - Cinzel-Bold.ttf
         FSAPIBaseURL: $(API_BASE_URL)
         FSAPIMode: $(API_MODE)
     settings:

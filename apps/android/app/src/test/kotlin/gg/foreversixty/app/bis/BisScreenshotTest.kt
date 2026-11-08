@@ -6,7 +6,6 @@ import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onRoot
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.takahirom.roborazzi.RoborazziOptions
 import com.github.takahirom.roborazzi.captureRoboImage
 import gg.foreversixty.app.R
 import gg.foreversixty.app.designsystem.ForeverTheme
@@ -30,6 +29,7 @@ import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.GraphicsMode
 import java.time.ZoneOffset
+import gg.foreversixty.app.testing.STRICT_SNAPSHOT
 
 /**
  * The BiS tab's states (spec F3) at Pixel 9 size, at the default font scale and at 2.0, with the
@@ -111,7 +111,7 @@ class BisScreenshotTest {
             }
         }
         scrollTo?.let { compose.onNodeWithText(it).performScrollTo() }
-        compose.onRoot().captureRoboImage("src/test/screenshots/$name.png", roborazziOptions = TOLERANT)
+        compose.onRoot().captureRoboImage("src/test/screenshots/$name.png", roborazziOptions = STRICT_SNAPSHOT)
     }
 
     private companion object {
@@ -119,9 +119,6 @@ class BisScreenshotTest {
         const val LARGE = 2f
     }
 }
-
-/** Goldens are recorded on macOS and verified on Linux CI; allow anti-aliasing noise only. */
-private val TOLERANT = RoborazziOptions(compareOptions = RoborazziOptions.CompareOptions(changeThreshold = 0.005F))
 
 /** Pixel 9: 412 x 915 dp at 420 dpi. */
 private const val PIXEL_9 = "w412dp-h915dp-normal-long-notround-any-420dpi-keyshidden-nonav"

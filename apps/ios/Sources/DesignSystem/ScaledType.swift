@@ -3,15 +3,16 @@ import SwiftUI
 
 /// The spec's type roles (design/specs/2026-10-30-mobile-apps.md §4.2), each scaling with
 /// Dynamic Type through `relativeTo`. `FSFont` (generated) has fixed sizes only, so the faces
-/// are named here once, with the same PostScript names lane T bundles under UIAppFonts.
-/// JetBrains Mono is not bundled yet (apps/shared/fonts), so `mono` uses the system mono.
+/// are the generated `FSFont` PostScript names. Headings are Barlow 700, as on the site (Barlow
+/// Condensed left the apps with the flat redesign), and so is the wordmark until the app lanes
+/// draw it as the site's SVG. JetBrains Mono is not bundled, so `mono` uses the system mono.
 public enum ScaledType {
     private enum Face {
-        static let heading = "BarlowCondensed-ExtraBold"
-        static let body = "Barlow-Regular"
-        static let bodySemibold = "Barlow-SemiBold"
-        static let bodyBold = "Barlow-Bold"
-        static let wordmark = "Cinzel-Bold"
+        static let heading = FSFont.bodyBold
+        static let body = FSFont.body
+        static let bodySemibold = FSFont.bodySemibold
+        static let bodyBold = FSFont.bodyBold
+        static let wordmark = FSFont.bodyBold
     }
 
     /// Spec sizes the tokens do not carry.

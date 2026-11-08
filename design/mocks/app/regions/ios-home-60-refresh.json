@@ -47,9 +47,9 @@
   "countdowns": {
    "box": [
     16,
-    558,
+    303,
     361,
-    482
+    466
    ],
    "inventory": {
     "image": 3
@@ -58,9 +58,9 @@
   "section-forever-right-now": {
    "box": [
     0,
-    1072,
+    1055,
     393,
-    683
+    674
    ],
    "inventory": {
     "row": 7,
@@ -71,9 +71,9 @@
   "section-your-upgrades": {
    "box": [
     0,
-    335,
+    801,
     393,
-    223
+    222
    ],
    "inventory": {
     "row": 3,
@@ -83,9 +83,9 @@
   "section-guild-sims": {
    "box": [
     0,
-    1787,
+    1761,
     393,
-    498
+    497
    ],
    "inventory": {
     "row": 6,
@@ -95,9 +95,9 @@
   "section-your-spec-this-week": {
    "box": [
     0,
-    2317,
+    2290,
     393,
-    125
+    124
    ],
    "inventory": {
     "row": 1
@@ -106,9 +106,9 @@
   "section-top-3-for-fury-warrior-60": {
    "box": [
     0,
-    2474,
+    2446,
     393,
-    181
+    180
    ],
    "inventory": {
     "row": 3,

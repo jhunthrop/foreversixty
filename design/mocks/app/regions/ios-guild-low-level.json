@@ -42,7 +42,7 @@
     16,
     299,
     361,
-    220
+    204
    ],
    "inventory": {
     "image": 3
@@ -51,9 +51,9 @@
   "section-before-raids-open": {
    "box": [
     16,
-    567,
+    551,
     361,
-    380
+    379
    ],
    "inventory": {
     "button": 1
@@ -62,9 +62,9 @@
   "section-guild-activity": {
    "box": [
     16,
-    995,
+    978,
     361,
-    345
+    342
    ],
    "inventory": {
     "row": 3,
@@ -74,9 +74,9 @@
   "section-last-raid": {
    "box": [
     16,
-    1364,
+    1344,
     361,
-    68
+    67
    ],
    "inventory": {}
   }

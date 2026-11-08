@@ -40,9 +40,9 @@
   "countdowns": {
    "box": [
     16,
-    299,
+    279,
     380,
-    220
+    204
    ],
    "inventory": {
     "image": 3
@@ -51,9 +51,9 @@
   "section-before-raids-open": {
    "box": [
     16,
-    567,
+    531,
     380,
-    380
+    379
    ],
    "inventory": {
     "button": 1
@@ -62,9 +62,9 @@
   "section-guild-activity": {
    "box": [
     16,
-    995,
+    958,
     380,
-    323
+    320
    ],
    "inventory": {
     "row": 3,
@@ -74,9 +74,9 @@
   "section-last-raid": {
    "box": [
     16,
-    1342,
+    1302,
     380,
-    68
+    67
    ],
    "inventory": {}
   }

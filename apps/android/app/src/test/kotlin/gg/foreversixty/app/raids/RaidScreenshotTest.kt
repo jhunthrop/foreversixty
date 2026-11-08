@@ -8,7 +8,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onRoot
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.takahirom.roborazzi.RoborazziOptions
 import com.github.takahirom.roborazzi.captureRoboImage
 import gg.foreversixty.app.designsystem.ForeverTheme
 import gg.foreversixty.app.designsystem.FsColor
@@ -39,6 +38,7 @@ import org.junit.runner.RunWith
 import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.GraphicsMode
+import gg.foreversixty.app.testing.STRICT_SNAPSHOT
 
 /**
  * Every F4 screen and state on a Pixel 9 (412 x 915 dp), at the default size and at font scale 2.0
@@ -57,7 +57,7 @@ class RaidScreenshotTest {
         compose.setContent {
             ForeverTheme { Box(Modifier.fillMaxSize().background(FsColor.bg)) { screen() } }
         }
-        compose.onRoot().captureRoboImage("src/test/screenshots/raids/$name.png", roborazziOptions = TOLERANT)
+        compose.onRoot().captureRoboImage("src/test/screenshots/raids/$name.png", roborazziOptions = STRICT_SNAPSHOT)
     }
 
     private val now = { RaidTime.now }
@@ -263,9 +263,6 @@ class RaidScreenshotTest {
     @Config(qualifiers = "w412dp-h2400dp-normal-long-notround-any-420dpi-keyshidden-nonav")
     fun raidNight_xl() = capture("raid-night-xl-and", large = true) { Night("me.raid-night") }
 }
-
-/** Goldens are recorded on macOS and verified on Linux CI; allow anti-aliasing noise only. */
-private val TOLERANT = RoborazziOptions(compareOptions = RoborazziOptions.CompareOptions(changeThreshold = 0.005F))
 
 /** Pixel 9: 412 x 915 dp at 420 dpi. */
 private const val PIXEL_9 = "w412dp-h915dp-normal-long-notround-any-420dpi-keyshidden-nonav"

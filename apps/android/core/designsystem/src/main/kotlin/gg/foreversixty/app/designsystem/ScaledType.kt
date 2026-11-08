@@ -15,23 +15,23 @@ import androidx.compose.ui.unit.sp
  * uses the system mono.
  */
 object ScaledType {
-    val title = TextStyle(fontFamily = HeadingFamily, fontWeight = FontWeight.ExtraBold, fontSize = FsTextSize.h1Phone)
-    val h2 = TextStyle(fontFamily = HeadingFamily, fontWeight = FontWeight.ExtraBold, fontSize = FsTextSize.h2)
-    val stat = TextStyle(fontFamily = HeadingFamily, fontWeight = FontWeight.ExtraBold, fontSize = FsTextSize.stat)
-    val sec = TextStyle(fontFamily = HeadingFamily, fontWeight = FontWeight.ExtraBold, fontSize = FsTextSize.cardTitle)
+    val title = TextStyle(fontFamily = FsFont.body, fontWeight = FontWeight.ExtraBold, fontSize = FsTextSize.h1Phone)
+    val h2 = TextStyle(fontFamily = FsFont.body, fontWeight = FontWeight.ExtraBold, fontSize = FsTextSize.h2)
+    val stat = TextStyle(fontFamily = FsFont.body, fontWeight = FontWeight.ExtraBold, fontSize = FsTextSize.stat)
+    val sec = TextStyle(fontFamily = FsFont.body, fontWeight = FontWeight.ExtraBold, fontSize = FsTextSize.cardTitle)
     /** A raid card's title (spec F4.1). */
-    val cardHead = TextStyle(fontFamily = HeadingFamily, fontWeight = FontWeight.ExtraBold, fontSize = 22.sp)
-    val name = TextStyle(fontFamily = BodyFamily, fontWeight = FontWeight.Bold, fontSize = NAME_SIZE.sp)
-    val lead = TextStyle(fontFamily = BodyFamily, fontWeight = FontWeight.SemiBold, fontSize = 17.sp, lineHeight = 24.sp)
-    val body = TextStyle(fontFamily = BodyFamily, fontWeight = FontWeight.Normal, fontSize = FsType.body.fontSize, lineHeight = FsType.body.lineHeight)
+    val cardHead = TextStyle(fontFamily = FsFont.body, fontWeight = FontWeight.ExtraBold, fontSize = 22.sp)
+    val name = TextStyle(fontFamily = FsFont.body, fontWeight = FontWeight.Bold, fontSize = NAME_SIZE.sp)
+    val lead = TextStyle(fontFamily = FsFont.body, fontWeight = FontWeight.SemiBold, fontSize = 17.sp, lineHeight = 24.sp)
+    val body = TextStyle(fontFamily = FsFont.body, fontWeight = FontWeight.Normal, fontSize = FsType.body.fontSize, lineHeight = FsType.body.lineHeight)
     val bodyStrong = body.copy(fontWeight = FontWeight.SemiBold)
-    val tooltip = TextStyle(fontFamily = BodyFamily, fontWeight = FontWeight.Normal, fontSize = 16.sp, lineHeight = 22.sp)
-    val meta = TextStyle(fontFamily = BodyFamily, fontWeight = FontWeight.Normal, fontSize = FsTextSize.meta, lineHeight = 18.sp)
-    val micro = TextStyle(fontFamily = BodyFamily, fontWeight = FontWeight.Bold, fontSize = FsTextSize.micro, letterSpacing = 0.14.em)
+    val tooltip = TextStyle(fontFamily = FsFont.body, fontWeight = FontWeight.Normal, fontSize = 16.sp, lineHeight = 22.sp)
+    val meta = TextStyle(fontFamily = FsFont.body, fontWeight = FontWeight.Normal, fontSize = FsTextSize.meta, lineHeight = 18.sp)
+    val micro = TextStyle(fontFamily = FsFont.body, fontWeight = FontWeight.Bold, fontSize = FsTextSize.micro, letterSpacing = 0.14.em)
     /** A segmented control's label (the sign-up segments, spec F4.3). */
-    val segment = TextStyle(fontFamily = BodyFamily, fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
-    val button = TextStyle(fontFamily = BodyFamily, fontWeight = FontWeight.Bold, fontSize = 13.sp, letterSpacing = 0.07.em)
-    val wordmark = TextStyle(fontFamily = DisplayFamily, fontWeight = FontWeight.Bold, fontSize = 22.sp, letterSpacing = 0.1.em)
+    val segment = TextStyle(fontFamily = FsFont.body, fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
+    val button = TextStyle(fontFamily = FsFont.body, fontWeight = FontWeight.Bold, fontSize = 13.sp, letterSpacing = 0.07.em)
+    val wordmark = TextStyle(fontFamily = FsFont.body, fontWeight = FontWeight.Bold, fontSize = 22.sp, letterSpacing = 0.1.em)
     val mono = TextStyle(fontFamily = FontFamily.Monospace, fontWeight = FontWeight.SemiBold, fontSize = FsType.body.fontSize)
     /** Clock digits beside meta text. */
     val monoMeta = TextStyle(fontFamily = FontFamily.Monospace, fontSize = FsTextSize.meta)

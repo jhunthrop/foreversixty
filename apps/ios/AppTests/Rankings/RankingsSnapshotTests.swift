@@ -32,7 +32,7 @@ struct RankingsSnapshotTests {
             of: sized,
             as: keyWindow
                 ? .keyWindowImage(layout: .device(config: config), traits: traits)
-                : .image(precision: 0.99, perceptualPrecision: 0.98, layout: .device(config: config), traits: traits),
+                : .image(precision: SnapshotTolerance.precision, perceptualPrecision: SnapshotTolerance.perceptualPrecision, layout: .device(config: config), traits: traits),
             testName: name
         )
     }

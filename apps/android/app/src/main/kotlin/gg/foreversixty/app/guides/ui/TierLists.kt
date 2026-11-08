@@ -54,7 +54,7 @@ import gg.foreversixty.app.common.OfflineStamp
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.ScaledType
 import gg.foreversixty.app.designsystem.GameColors
-import gg.foreversixty.app.designsystem.HeadingFamily
+import gg.foreversixty.app.designsystem.FsFont
 import gg.foreversixty.app.designsystem.MicroLabel
 import gg.foreversixty.app.designsystem.OfflineStrip
 import gg.foreversixty.app.designsystem.Tag
@@ -239,7 +239,7 @@ private fun TierChip(letter: String, tone: TierTone) {
     val shape = RoundedCornerShape(percent = PILL_PERCENT)
     // 28 dp, growing with the letter at large text so it is never cut.
     Box(Modifier.defaultMinSize(CHIP, CHIP).border(1.5.dp, color, shape).padding(horizontal = 4.dp), contentAlignment = Alignment.Center) {
-        Text(letter, style = ScaledType.bodyStrong.copy(fontFamily = HeadingFamily), color = color)
+        Text(letter, style = ScaledType.bodyStrong.copy(fontFamily = FsFont.body), color = color)
     }
 }
 
