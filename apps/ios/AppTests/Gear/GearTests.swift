@@ -79,7 +79,7 @@ enum GearTestData {
         ),
         guild: .loaded(rows: [
             ItemSheetRow(id: "g", title: "Grunvald", titleClass: "Warrior", sub: Copy.gearSheetNeedsPick(spec: "Protection Warrior"), lead: .crest(className: "warrior")),
-            ItemSheetRow(id: "t", title: "Torvak", titleClass: "Shaman", sub: "Enhancement Shaman · has it", lead: .crest(className: "shaman")),
+            ItemSheetRow(id: "t", title: "Torvak", titleClass: "Shaman", sub: Copy.gearSheetHas(spec: "Enhancement Shaman"), lead: .crest(className: "shaman")),
         ], note: nil)
     )
 }
