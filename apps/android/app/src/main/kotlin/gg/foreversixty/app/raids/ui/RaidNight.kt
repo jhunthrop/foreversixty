@@ -99,9 +99,10 @@ private fun NightContent(night: RaidNightSummary, clock: RaidClock, openReport: 
         color = FsColor.muted,
     )
     val figures = @Composable {
-        Figure(night.kills, pluralStringResource(R.plurals.night_kill, night.kills, night.kills))
-        Figure(night.wipes, pluralStringResource(R.plurals.night_wipes, night.wipes, night.wipes))
-        Figure(night.newBests, pluralStringResource(R.plurals.night_best, night.newBests, night.newBests))
+        // Before the log (phase before or live) the figures are null and stay off the card.
+        night.kills?.let { Figure(it, pluralStringResource(R.plurals.night_kill, it, it)) }
+        night.wipes?.let { Figure(it, pluralStringResource(R.plurals.night_wipes, it, it)) }
+        night.newBests?.let { Figure(it, pluralStringResource(R.plurals.night_best, it, it)) }
     }
     val who = @Composable { alignment: Alignment.Horizontal, modifier: Modifier ->
         Column(horizontalAlignment = alignment, modifier = modifier) {
@@ -139,10 +140,12 @@ private fun NightContent(night: RaidNightSummary, clock: RaidClock, openReport: 
         }
     }
     // Lane F10: with `reports` on, the report opens in the app; otherwise on the site.
+    // No report before the log is uploaded.
+    val reportId = night.reportId ?: return
     if (openReport != null) {
-        GoldLink(stringResource(R.string.night_openReport), { openReport(night.reportId) })
+        GoldLink(stringResource(R.string.night_openReport), { openReport(reportId) })
     } else {
-        GoldLink(stringResource(R.string.night_report), { uri.openUri(RaidLinks.report(night.reportId)) })
+        GoldLink(stringResource(R.string.night_report), { uri.openUri(RaidLinks.report(reportId)) })
     }
 }
 
@@ -195,7 +198,7 @@ private fun BestRow(best: RaidNightBest) {
         }
         Column(horizontalAlignment = Alignment.End) {
             Text(stringResource(R.string.raids_night_dps, String.format(Locale.US, "%.1f", best.dps)), style = ScaledType.mono, color = FsColor.strong)
-            Text(stringResource(R.string.night_percentile, ordinal(best.percentile)), style = ScaledType.meta, color = GameColors.parse(best.percentile))
+            best.percentile?.let { Text(stringResource(R.string.night_percentile, ordinal(it)), style = ScaledType.meta, color = GameColors.parse(it)) }
         }
     }
 }

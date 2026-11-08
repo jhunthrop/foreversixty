@@ -269,7 +269,7 @@ object ApiEndpoints {
     fun putRaidSignup(id: Long, raid: Long, region: String, ruleset: String, name: String, body: SignupRequest): Endpoint<SignupAnswer> =
         Endpoint(HttpMethod.Put, "/v1/guilds/$id/raids/$raid/signups/${region.encodeURLPathPart()}/${ruleset.encodeURLPathPart()}/${name.encodeURLPathPart()}", SignupAnswer.serializer(), body = ApiJson.encodeToString(SignupRequest.serializer(), body))
 
-    /** GET /v1/me/raid-nights/{raid}: Your raid night, the after-raid summary (dark; lane F4 contract, handler pending) */
+    /** GET /v1/me/raid-nights/{raid}: Your raid night, before the pull and after the log */
     fun getRaidNight(raid: Long): Endpoint<RaidNightSummary> =
         Endpoint(HttpMethod.Get, "/v1/me/raid-nights/$raid", RaidNightSummary.serializer())
 

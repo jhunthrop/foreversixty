@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"github.com/jhunthrop/foreversixty/api/internal/raidspec"
+	"github.com/jhunthrop/foreversixty/api/internal/zoneicons"
 )
 
 // RaidCounts are a raid's sign-up totals. Tanks, Healers, DPS, Melee and Ranged count `in` rows
@@ -139,7 +140,11 @@ type RaidView struct {
 	Status          string    `json:"status"`
 	Size            *int      `json:"size"`
 	GuildTimezone   *string   `json:"guild_timezone"`
-	NotesHTML       string    `json:"notes_html"`
+	// ZoneIcon is the zone's icon (zoneicons), a name under /data/{build}/icons.
+	ZoneIcon string `json:"zone_icon"`
+	// AnswerBy is the sign-up deadline; no guild stores one yet, so it is always null.
+	AnswerBy  *time.Time `json:"answer_by"`
+	NotesHTML string     `json:"notes_html"`
 	// Notes is the raw markdown the officer typed, for the edit form; members get it too (it
 	// is the same text notes_html renders).
 	Notes     string          `json:"notes"`
@@ -286,7 +291,7 @@ func buildRaidView(r Raid, signups []Signup, vc raidViewContext) (RaidView, erro
 		ID: r.ID, Zone: r.Zone, ZoneName: zone.Name, ZoneKind: zone.Kind, KeyItem: zone.KeyItem,
 		Title: r.Title, StartsAt: r.StartsAt.UTC(),
 		DurationMinutes: r.DurationMinutes, Status: r.Status, Size: zone.Size, GuildTimezone: vc.timezone,
-		NotesHTML: notesHTML, Notes: r.Notes, Signups: []SignupView{}, NotSigned: []RaidCharacter{},
+		NotesHTML: notesHTML, Notes: r.Notes, Signups: []SignupView{}, NotSigned: []RaidCharacter{}, ZoneIcon: zoneicons.For(r.Zone),
 		Viewer: RaidViewer{Characters: []ViewerCharacter{}},
 	}
 	byKey := make(map[string]Signup, len(signups))

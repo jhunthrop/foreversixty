@@ -61,6 +61,7 @@ func mountCoach(ctx context.Context, w coachWiring) *coach.Service {
 	w.rating.Hook = profileWriter(svc.Tables, w.log)
 	if w.deps != nil && w.deps.Guilds != nil {
 		w.deps.Guilds.CoachHolders = svc
+		w.deps.Guilds.Coach = raidNightCoach{svc: svc}
 	}
 	return svc
 }
