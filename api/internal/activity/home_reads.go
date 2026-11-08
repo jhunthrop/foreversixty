@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"sort"
 	"time"
+
+	"github.com/jhunthrop/foreversixty/api/internal/homesections"
 )
 
 // movers shown in the block.
@@ -136,13 +138,33 @@ func (s *Store) guildSims(ctx context.Context, c homeCharacter, band int, now ti
 	return &g, nil
 }
 
-// inGuild reports whether the character is a verified member of a guild.
-func (s *Store) inGuild(ctx context.Context, key string) (bool, error) {
-	var in bool
+// guildRaids is what the time-aware Home reads about the character's guild (flows spec section 4):
+// whether it is a verified member, the guild's raid time zone (UTC when it has none or names an
+// unknown one), the start of the next raid that is not over (it may have started), and the start
+// of the last raid that has started. Raids only, not dungeon runs or guild events.
+func (s *Store) guildRaids(ctx context.Context, key string, now time.Time) (homesections.View, error) {
+	var v homesections.View
+	var tz string
 	err := s.Pool.QueryRow(ctx,
-		`select exists(select 1 from guild_characters where character_key = $1 and verified_at is not null)`, key).Scan(&in)
-	if err != nil {
-		return false, fmt.Errorf("activity: guild of %s: %w", key, err)
+		`select coalesce(g.raid_timezone, ''),
+		        (select r.starts_at from guild_raids r where r.guild_id = gc.guild_id and r.status in ('planned', 'locked')
+		           and starts_with(r.zone, 'raid:') and r.starts_at + make_interval(mins => r.duration_minutes) > $2
+		         order by r.starts_at limit 1),
+		        (select r.starts_at from guild_raids r where r.guild_id = gc.guild_id and r.status <> 'cancelled'
+		           and starts_with(r.zone, 'raid:') and r.starts_at <= $2
+		         order by r.starts_at desc limit 1)
+		 from guild_characters gc join guilds g on g.id = gc.guild_id
+		 where gc.character_key = $1 and gc.verified_at is not null
+		 order by gc.guild_id limit 1`, key, now).Scan(&tz, &v.NextRaid, &v.LastRaid)
+	if isNoRows(err) {
+		return v, nil
 	}
-	return in, nil
+	if err != nil {
+		return v, fmt.Errorf("activity: guild raids of %s: %w", key, err)
+	}
+	v.InGuild = true
+	if loc, err := time.LoadLocation(tz); err == nil && tz != "" {
+		v.Zone = loc
+	}
+	return v, nil
 }

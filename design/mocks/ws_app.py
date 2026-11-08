@@ -8,7 +8,7 @@ Two kinds of screen (spec section 4):
   390 px layout) inside the app frame (ws_app_frame.py). The phone deltas the persona rulings add (home order R2, the
   level 34 home R4, the feed filters R5) are CSS over the same markup, so the web mock stays the one source of structure
   and data. A web mock that changes changes the app mock on the next run.
-- APP: app-only screens (switcher, devices, deletion, offline data, update required, raid night, widgets, Live Activity,
+- APP: app-only screens (the profile menu and the flows screens in ws_app_flows.py, devices, deletion, offline data, update required, raid night, widgets, Live Activity,
   search, the signed-out gate) composed from ws_prims primitives alone, in the same system.
 Data: the home and guild fixtures (web/tests/e2e/fixtures/home/*.json): Thandrel (Fury Warrior 60, Olympus XXVII) and
 Felsnap (Beast Mastery Hunter 34, no guild). The clock is ws_home.NOW (Fri 6 Nov 2026, 18:00 UTC).
@@ -21,8 +21,9 @@ from html import escape
 
 from mocklib import ROOT, CLASS_COLOR
 from ws_app_frame import DEVICES, app_page, from_web, glyph, write_app
+import ws_app_flows as flows
 from ws_home import NOW, RAIDS, clock_to, day_text, raids_open
-from ws_prims import (Button, Countdown, Figure, Notice, PageHeader, Rows, Row, Section, Switch, Tag, Meter, build_page,
+from ws_prims import (Button, Checklist, Countdown, Figure, Notice, PageHeader, Rows, Row, Section, Switch, Tag, Meter, build_page,
                       crest_img, icon)
 
 FIX = ROOT / 'web/tests/e2e/fixtures/home'
@@ -47,12 +48,8 @@ main>.pc:has(>.layout-split),main .layout-split,main .layout-split>.main,main .l
 main section[data-region^="section-"]{padding-inline:16px;margin-top:32px;order:6}
 main>.pc:has([data-region="countdowns"]){order:3}
 '''
-HOME_ORDER = _FLAT + '''
-main>.pc:has([data-region="countdowns"]){order:2}
-main section[data-region="section-your-upgrades"]{order:3}
-main section[data-region="section-forever-right-now"]{order:4}
-main section[data-region="section-guild-sims"]{order:5}
-'''
+# Flows spec section 4, any other day in a guild: Next upgrade · Next raid (one line) · Feed · Guild sims.
+HOME_ORDER = flows.HOME_STATES['normal'][0]
 # R5: three filter segments full width under the feed title; Logs moves behind the filter button at the end.
 FEED_FILTERS = '''
 [data-region="section-forever-right-now"] .sec-h{flex-wrap:wrap;row-gap:10px}
@@ -76,11 +73,6 @@ HOME_OUT = '''
 '''
 
 
-def _34_ladder_line() -> str:
-    return ('<div class="pc" style="order:5;padding-top:24px"><p class="t-small">Join a guild to see how you sim against it. '
-            '<a class="link" href="#">Guilds &rsaquo;</a></p></div>')
-
-
 def _out_footer() -> str:
     return '<div class="pc" style="order:9;padding-top:24px"><a class="link" href="#">How to start &rsaquo;</a></div>'
 
@@ -90,9 +82,9 @@ def _ptr() -> str:
 
 
 def web_screen(mock: str, tab: str | None, back: str = '', title: str = '', share: bool = False, css: str = '', inject: str = '',
-               ptr: bool = False):
+               ptr: bool = False, who: str | None = 'warrior', badge: int = 0):
     def build(platform: str) -> str:
-        html = from_web(mock, platform, tab, back, title, share, extra_css=css)
+        html = from_web(mock, platform, tab, back, title, share, extra_css=css, who=who, badge=badge)
         if inject or ptr:
             html = html.replace('<main>', '<main>' + (_ptr() if ptr else ''), 1).replace('</main>', inject + '</main>', 1)
         return html
@@ -154,27 +146,6 @@ def thandrel_crest(px: int = 40) -> str:
     return crest_img('warrior', px)
 
 
-def characters_rows(show_low: bool) -> str:
-    chars = [('Thandrel', 'warrior', 'Level 60 Fury Warrior', 'Main', True), ('Felsnap', 'hunter', 'Level 34 Beast Mastery Hunter', '', False),
-             ('Brewmist', 'shaman', 'Level 22 Enhancement Shaman', '', False)]
-    low = [('Pockets', 'rogue', 'Level 6 Rogue'), ('Bankalt', 'mage', 'Level 1 Mage')]
-    rows = [Row(n, s, crest_img(c, 40), (Tag(t) if t else '') + (glyph('bis', 20) if cur else ''), CLASS_COLOR[c], selected=cur) for n, c, s, t, cur in chars]
-    if show_low:
-        rows += [Row(n, s, crest_img(c, 40), '', CLASS_COLOR[c]) for n, c, s in low]
-    toggle = f'<a class="rowbtn" href="#">{"Hide low-level characters" if show_low else "Show low-level characters (2)"}</a>'
-    return Rows(rows) + toggle
-
-
-def switcher(show_low: bool):
-    def b(platform: str) -> str:
-        sheet = ('<div class="scrim"></div><div class="sheetp" role="dialog" aria-label="Characters"><span class="sheet-grab"></span>'
-                 '<h2>Characters</h2><p class="t-small">Updated 2 h ago from Battle.net &middot; <a class="link" href="#">Refresh</a></p>'
-                 + characters_rows(show_low) + '</div>')
-        html = build_page('Characters', sheet + f'<style>{APP_CSS2}</style>', note='Switcher sheet mock.')
-        return app_page(platform, html, 'home', navbar=False)
-    return b
-
-
 def devices(platform: str) -> str:
     phone = 'iPhone 16 Pro' if platform == 'ios' else 'Pixel 9'
     rows = [Row(f'{phone} &middot; This device', 'Signed in 30 Oct &middot; Last used just now', trail=Tag('This device', 'muted'), link=False),
@@ -182,8 +153,8 @@ def devices(platform: str) -> str:
             Row('iPad Air', 'Signed in 2 Nov &middot; Last used 3 d ago', trail=Button('Revoke', small=True, tone='danger'), link=False)]
     body = (title('Devices') + Section('Signed in', Rows(rows, open_=True))
             + '<div class="stack">' + Button('Sign out everywhere else', tone='danger') + '</div>'
-            + '<p class="t-small" style="margin-top:16px">Revoke signs a device out at once. To sign this one out, use Sign out on You.</p>')
-    return app_page(platform, page(body, 'Devices'), 'you', back='You', title='Devices')
+            + '<p class="t-small" style="margin-top:16px">Revoke signs a device out at once. To sign this one out, use Sign out in Settings.</p>')
+    return app_page(platform, page(body, 'Devices'), 'home', back='Home', title='Devices')
 
 
 DELETE_STATES = {
@@ -205,7 +176,7 @@ def delete(state: str):
         if state == 'failed':
             n = Notice('That did not go through. Nothing was deleted. Try again.', tone='neutral')
             body = title('Delete your account') + n + '<div class="stack">' + Button('Try again', primary=True) + Button('Cancel') + '</div>'
-            return app_page(platform, page(body, 'Delete your account'), 'you', back='You')
+            return app_page(platform, page(body, 'Delete your account'), 'home', back='Home')
         head, lose, warn = DELETE_STATES[state]
         rows = Rows([Row(x, link=False, slim=True) for x in lose], open_=True)
         body = (title(head) + '<p class="t-lead" style="margin-top:8px">This removes your characters, sims and guild sign-ups. It cannot be undone.</p>'
@@ -213,7 +184,7 @@ def delete(state: str):
                 + (Notice(warn) if warn else '')
                 + Section('When', '<p class="t-small" style="padding-top:12px">At once from the app and the site. Backups clear within 30 days.</p>')
                 + '<div class="stack">' + Button('Delete my account', tone='danger') + Button('Cancel') + '</div>')
-        return app_page(platform, page(body, head), 'you', back='You', title=head)
+        return app_page(platform, page(body, head), 'home', back='Home', title=head)
     return b
 
 
@@ -230,7 +201,7 @@ def offline(state: str):
                                           Row('Download on Wi-Fi only', 'Icons and new guides wait for Wi-Fi.', trail=Switch('Download on Wi-Fi only'), link=False)], open_=True))
                 + '<div class="stack">' + Button('Update now') + Button('Remove downloaded data', tone='danger') + '</div>'
                 + '<p class="t-small" style="margin-top:16px">Checked today at 4:12 pm. Your characters, sign-ups and sims are not stored here; they load when you are online.</p>')
-        return app_page(platform, page(body, 'Offline data'), 'you', back='You', title='Offline data')
+        return app_page(platform, page(body, 'Offline data'), 'home', back='Home', title='Offline data')
     return b
 
 
@@ -254,12 +225,16 @@ def raid_night(state: str):
     def b(platform: str) -> str:
         clock = [('00', 'hours'), ('42', 'min')]
         you = Tag('You are In', 'kill') if state == 'live' else Tag('Not signed up', 'muted')
-        cd = Countdown("Olympus XXVII &middot; Onyxia's Lair tonight", clock, f'<p class="t-small">Wed 9 Dec, 8:00 pm &middot; 18 in, 3 late</p>{you}', 'guild', live=True)
+        cd = Countdown("Olympus XXVII &middot; Onyxia's Lair tonight", clock, f'<p class="t-small">Wed 9 Dec, 8:00 pm CST &middot; 18 in, 3 late</p>{you}', 'guild', live=True)
         buttons = ''.join(Button(x, primary=(x == 'In' and state == 'live'), small=True) for x in ('In', 'Late', 'Bench', 'Out'))
-        counts = Rows([Row('Tanks', trail='<b class="num">3</b> of 3', link=False, slim=True), Row('Healers', trail='<b class="num">6</b> of 8', link=False, slim=True),
-                       Row('Damage', trail='<b class="num">12</b> of 29', link=False, slim=True)], open_=True)
-        ready = Rows([Row('Enchant your chest and boots', link=False, slim=True), Row('Bring a Flask of the Titans or Elixir of the Mongoose', link=False, slim=True)], open_=True)
-        body = (title("Onyxia's Lair", 'var(--strong)', icon('inv_misc_head_dragon_black', 56), ['Olympus XXVII', 'Wed 9 Dec, 8:00 pm']) + cd
+        counts = Rows([Row('Tanks 2 of 2', 'Grunvald, Brakka', link=False, slim=True),
+                       Row('Healers 5 of 8', 'Mirethil, Lightvow, Selka, Hollowmend, Aenwyn &middot; 3 short', link=False, slim=True),
+                       Row('Damage 11 of 30', 'Thandrel, Kaelra, Thalrin and 8 more', link=False, slim=True)], open_=True)
+        ready = Checklist([('ok', 'Drakefire Amulet', 'Attuned to Onyxia&rsquo;s Lair', None),
+                           ('ok', 'Elixir of the Mongoose', '3 in your bags, from the addon&rsquo;s last export', None),
+                           ('miss', 'Flask of the Titans', 'None in your bags', 'Where to buy'),
+                           ('warn', 'Boots not enchanted', 'Enchant Boots: Greater Agility', 'Where to get it')])
+        body = (title("Onyxia's Lair", 'var(--strong)', icon('inv_misc_head_dragon_black', 56), ['Olympus XXVII', 'Wed 9 Dec, 8:00 pm CST']) + cd
                 + Section('Your sign-up', f'<div class="la bare"><div class="btns">{buttons}</div></div>')
                 + Section('Who is coming', counts, 'Roster &rsaquo;')
                 + Section('Before you pull', ready))
@@ -272,7 +247,7 @@ def widgets(state: str):
     def b(platform: str) -> str:
         at = raids_open()
         if state == 'guild':
-            k, big, nm, s = "Olympus XXVII", '33d 8h', "Onyxia's Lair", 'Wed 9 Dec, 8:00 pm &middot; You are In'
+            k, big, nm, s = "Olympus XXVII", '33d 8h', "Onyxia's Lair", 'Wed 9 Dec, 8:00 pm CST &middot; You are In'
             up = ('+48.1 DPS', 'from 3 upgrades', 'Lionheart Helm, Greenhammer, Don Julio&rsquo;s Band')
         elif state == 'noguild':
             d = clock_to(at)
@@ -301,7 +276,9 @@ def live_activity(platform: str) -> str:
     if platform == 'ios':
         body = (title('Live Activity') + '<p class="lbl">Lock screen</p>'
                 + f'<div class="la"><div class="top">{ony}<span><span class="nm">Onyxia&rsquo;s Lair</span><br><span class="t-small">Olympus XXVII &middot; You are In</span></span><span class="clk">42:00</span></div>'
-                + '<span class="t-small">Starts 8:00 pm &middot; 18 in, 3 late</span></div>'
+                + '<span class="t-small">Starts 8:00 pm CST &middot; 18 in, 3 late &middot; 2 tanks, 5 heals</span></div>'
+                + '<p class="lbl">Raid done</p><div class="la"><div class="top">' + ony + '<span><span class="nm">Onyxia&rsquo;s Lair done</span><br>'
+                + '<span class="t-small">1 kill &middot; you got Deathbringer &middot; report ready</span></span></div></div>'
                 + '<p class="lbl">Dynamic Island, compact</p><div class="island"><span>Ony</span><span class="g">42:00</span></div>'
                 + f'<p class="lbl">Dynamic Island, expanded</p><div class="island x"><div class="top" style="display:flex;gap:10px;align-items:center">{ony}<span>Onyxia&rsquo;s Lair</span><span class="g" style="margin-left:auto">42:00</span></div>'
                 + f'<div class="la bare"><div class="btns">{buttons}</div></div></div>'
@@ -329,27 +306,6 @@ def search(state: str):
     return b
 
 
-def you_native(state: str):
-    """The You tab (R1, R15, R16): the character, the Updated stamp, Guild, Logs, plan, devices, offline data, account."""
-    def b(platform: str) -> str:
-        if state == 'out':
-            body = (title('You') + '<p class="t-lead" style="margin-top:8px">Sign in and your characters arrive with their gear and talents.</p>'
-                    + '<div class="stack">' + Button('Sign in with Battle.net', primary=True) + '</div>'
-                    + Section('This app', Rows([Row('Offline data', 'Guides, lists and talents on this phone'), Row('About Forever Sixty')], open_=True)))
-            return app_page(platform, page(body, 'You'), 'you', navbar=False)
-        head = title('Thandrel', WARRIOR, thandrel_crest(56), ['Level 60 Fury Warrior', 'Alliance Human', '&lt;Olympus XXVII&gt;'])
-        stamp = '<p class="t-small" style="margin-top:8px">Updated 2 h ago from Battle.net &middot; <a class="link" href="#">Refresh</a></p>'
-        body = (head + stamp
-                + Section('Your character', Rows([Row('Character page', 'Gear, Forever Score, fights and activity'), Row('Switch character', '3 characters, 2 low-level')], open_=True))
-                + Section('Play', Rows([Row('Guild', 'Olympus XXVII &middot; Officer'), Row('Logs', 'Your reports and the coach'), Row('Your builds', 'Talent builds you saved')], open_=True))
-                + Section('Account', Rows([Row('Plan', 'Premium &middot; Founder price', trail=Tag('Supporter')), Row('Devices', '3 signed in'),
-                                           Row('Notifications', 'Raids on, sims on'), Row('Offline data', '26.6 MB on this phone'),
-                                           Row('Delete account', title_color='var(--wipe)')], open_=True))
-                + '<div class="stack">' + Button('Sign out') + '</div>')
-        return app_page(platform, page(body, 'You'), 'you', navbar=False)
-    return b
-
-
 # ------------------------------------------------------------------------------------------------ the catalogue
 # id: (builder(platform) -> html). Order follows the build order (spec section 7).
 def W(mock, tab, **kw):
@@ -358,30 +314,33 @@ def W(mock, tab, **kw):
 
 SCREENS: dict = {
     # Home (tab Home)
-    'home-out': W('web-home-out', 'home', css=HOME_OUT + FEED_FILTERS, inject=_out_footer()),
+    'home-out': W('web-home-out', 'home', css=HOME_OUT + FEED_FILTERS, inject=_out_footer(), who=None),
     'home-loading': W('web-home-loading', 'home'),
     'home-error': W('web-home-error', 'home', css=HOME_ORDER),
-    'home-new': W('web-home-new', 'home'),
-    'home-34': W('web-home-34', 'home', css=HOME_34 + FEED_FILTERS, inject=_34_ladder_line()),
-    'home-60': W('web-home-60', 'home', css=HOME_ORDER + FEED_FILTERS),
-    'home-60-refresh': W('web-home-60', 'home', css=HOME_ORDER + FEED_FILTERS, ptr=True),
-    'home-feed-empty': W('web-home-feed-empty', 'home', css=HOME_ORDER + FEED_FILTERS),
-    'home-feed-loading': W('web-home-feed-loading', 'home', css=HOME_ORDER + FEED_FILTERS),
-    'switcher': switcher(False),
-    'switcher-low': switcher(True),
+    'home-new': W('web-home-new', 'home', who=None),
+    'home-34': flows.leveling(FEED_FILTERS, HOME_34),
+    'home-60': W('web-home-60', 'home', css=HOME_ORDER + FEED_FILTERS, inject=flows.normal_block(), badge=1),
+    'home-raid-day': flows.home_state('raid-day', FEED_FILTERS),
+    'home-raid-day-officer': flows.home_state('raid-day-officer', FEED_FILTERS),
+    'home-raid-live': flows.home_state('raid-live', FEED_FILTERS),
+    'home-after-raid': flows.home_state('after-raid', FEED_FILTERS),
+    'home-noguild': flows.home_state('noguild', FEED_FILTERS),
+    'home-60-refresh': W('web-home-60', 'home', css=HOME_ORDER + FEED_FILTERS, inject=flows.normal_block(), ptr=True, badge=1),
+    'home-feed-empty': W('web-home-feed-empty', 'home', css=HOME_ORDER + FEED_FILTERS, inject=flows.normal_block(), badge=1),
+    'home-feed-loading': W('web-home-feed-loading', 'home', css=HOME_ORDER + FEED_FILTERS, inject=flows.normal_block(), badge=1),
     'expired': expired,
     'search': search('empty'),
     'search-results': search('results'),
     # Character (pushed from Home's head or You)
-    'character-owner-34': W('web-character-owner-34', 'you', back='You', title='Felsnap', share=True),
-    'character-owner-60': W('web-character-owner-60-premium', 'you', back='You', title='Thandrel', share=True),
+    'character-owner-34': W('web-character-owner-34', 'home', back='Home', title='Felsnap', share=True),
+    'character-owner-60': W('web-character-owner-60-premium', 'home', back='Home', title='Thandrel', share=True),
     'character-visitor-60': W('web-character-visitor-60', 'home', back='Search', title='Elyra Duskvale', share=True),
-    'character-no-score': W('web-character-no-score', 'you', back='You'),
+    'character-no-score': W('web-character-no-score', 'home', back='Home'),
     'character-not-found': W('web-character-not-found', 'home', back='Search'),
-    'character-loading': W('web-character-loading', 'you', back='You'),
-    'character-error': W('web-character-error', 'you', back='You'),
+    'character-loading': W('web-character-loading', 'home', back='Home'),
+    'character-error': W('web-character-error', 'home', back='Home'),
     # BiS (tab BiS): the landing answers for your character; the spec list is the paperdoll page
-    'bis-out': W('web-bis-landing-out-60', 'bis'),
+    'bis-out': W('web-bis-landing-out-60', 'bis', who=None),
     'bis-24': W('web-bis-landing-24', 'bis'),
     'bis-34': W('web-bis-landing-34', 'bis'),
     'bis-60': W('web-bis-landing-60', 'bis'),
@@ -415,23 +374,21 @@ SCREENS: dict = {
     'planner-error': W('web-planner-error', 'home', back='Home'),
     'build-shared': W('web-b', 'home', back='Home', share=True),
     # Logs, reports and rankings (You > Logs; Home's Next rows)
-    'reports': W('web-reports-list', 'you', back='You'),
-    'reports-empty': W('web-reports-empty', 'you', back='You'),
-    'reports-failed': W('web-reports-failed', 'you', back='You'),
-    'report': W('web-report-summary', 'you', back='Logs', share=True),
-    'report-player': W('web-report-player', 'you', back='Report', share=True),
-    'report-coach': W('web-report-coach', 'you', back='Report'),
-    'report-processing': W('web-report-processing', 'you', back='Logs'),
-    'report-loading': W('web-report-loading', 'you', back='Logs'),
-    'report-error': W('web-report-error', 'you', back='Logs'),
+    'reports': W('web-reports-list', 'home', back='Home'),
+    'reports-empty': W('web-reports-empty', 'home', back='Home'),
+    'reports-failed': W('web-reports-failed', 'home', back='Home'),
+    'report': W('web-report-summary', 'home', back='Logs', share=True),
+    'report-player': W('web-report-player', 'home', back='Report', share=True),
+    'report-coach': W('web-report-coach', 'home', back='Report'),
+    'report-processing': W('web-report-processing', 'home', back='Logs'),
+    'report-loading': W('web-report-loading', 'home', back='Logs'),
+    'report-error': W('web-report-error', 'home', back='Logs'),
     'rankings': W('web-rankings', 'home', back='Home'),
     'rankings-you': W('web-rankings-you', 'home', back='Home'),
     'rankings-empty': W('web-rankings-empty', 'home', back='Home'),
     # Guild (tab Guild) and raids
-    'guild-out': W('web-guild-landing-out', 'guild'),
+    'guild-out': W('web-guild-landing-out', 'guild', who=None),
     'guild-none': W('web-guild-landing-in', 'guild'),
-    'guild-member': W('web-guild-member', 'guild', share=True),
-    'guild-officer': W('web-guild-officer', 'guild', share=True),
     'guild-no-raid': W('web-guild-no-raid', 'guild'),
     'guild-low-level': W('web-guild-low-level', 'guild'),
     'guild-raids': W('web-guild-raids', 'guild', back='Guild'),
@@ -441,13 +398,11 @@ SCREENS: dict = {
     'raid-night-live': raid_night('live'),
     'raid-night-signup': raid_night('signup'),
     # You, account, premium, system
-    'you': you_native('in'),
-    'you-out': you_native('out'),
-    'account': W('web-account', 'you', back='You'),
-    'account-premium': W('web-account-premium', 'you', back='You'),
-    'account-loading': W('web-account-loading', 'you', back='You'),
-    'account-error': W('web-account-error', 'you', back='You'),
-    'premium': W('web-premium-free', 'you', back='Plan'),
+    'account': W('web-account', 'home', back='Home'),
+    'account-premium': W('web-account-premium', 'home', back='Home'),
+    'account-loading': W('web-account-loading', 'home', back='Home'),
+    'account-error': W('web-account-error', 'home', back='Home'),
+    'premium': W('web-premium-free', 'home', back='Plan'),
     'devices': devices,
     'delete-free': delete('free'),
     'delete-premium': delete('premium'),
@@ -461,13 +416,14 @@ SCREENS: dict = {
     'widgets-noguild': widgets('noguild'),
     'widgets-open': widgets('open'),
     'live-activity': live_activity,
+    **flows.SCREENS,
 }
 
 
-def pack() -> None:
+def pack(folder: str = 'design/reviews/2026-11-07-mobile') -> None:
     """Shrinks the captures to a 256-colour palette (about a third of the size; the gate reads region files, not pixels)."""
     from PIL import Image
-    shots = ROOT / 'design/reviews/2026-11-07-mobile'
+    shots = ROOT / folder
     for p in sorted(shots.glob('*.png')):
         im = Image.open(p)
         if im.mode != 'P':
@@ -481,8 +437,8 @@ def write_ignore() -> None:
 
 
 def main(filters: list[str]) -> None:
-    if filters == ['pack']:
-        pack()
+    if filters[:1] == ['pack']:
+        pack(*filters[1:2])
         return
     write_ignore()
     n = 0

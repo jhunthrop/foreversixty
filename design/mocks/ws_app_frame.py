@@ -27,8 +27,10 @@ BARS = {
     'android': {'status': 32, 'nav': 64, 'tab': 80, 'home': 16},
 }
 
-# The five tabs (ruling R1). id, label, glyph.
-TABS = [('home', 'Home'), ('bis', 'BiS'), ('guides', 'Guides'), ('guild', 'Guild'), ('you', 'You')]
+# The four tabs (design/specs/2026-11-08-app-flows.md section 3; You moved into the profile menu). id, label, glyph.
+TABS = [('home', 'Home'), ('bis', 'BiS'), ('guides', 'Guides'), ('guild', 'Guild')]
+# The crest that opens the profile menu sits top left on every tab root (flows spec section 3).
+CREST = '../../../web/public/icons/hd/crests/{cls}.webp'
 
 _GLYPH = {
     'home': '<path d="M4 11 12 4l8 7v9h-5v-6H9v6H4z"/>',
@@ -79,10 +81,16 @@ main{min-height:calc(var(--dev-h) - var(--top) - var(--bottom));flex:1 0 auto}
 .app-nav .ttl.hidden{visibility:hidden}
 [data-platform=android] .app-nav{padding:0 4px}[data-platform=android] .app-nav a{min-width:48px;height:48px;color:var(--strong)}
 [data-platform=android] .app-nav .ttl{text-align:left;font-size:20px;line-height:28px;padding-left:4px}
-.app-tabs{position:relative;flex:none;height:calc(var(--bottom) - var(--home));z-index:49;display:grid;grid-template-columns:repeat(5,1fr);align-items:start;
+.app-tabs{position:relative;flex:none;height:calc(var(--bottom) - var(--home));z-index:49;display:grid;grid-template-columns:repeat(4,1fr);align-items:start;
   background:color-mix(in srgb,var(--bg) 94%,transparent);backdrop-filter:blur(12px);border-top:1px solid var(--line-soft);padding-top:6px}
 .app-tabs a{display:flex;flex-direction:column;align-items:center;gap:3px;min-height:44px;color:var(--nav);font:600 12px/14px var(--font-body)}
 .app-tabs a.on{color:var(--gold)}
+.app-tabs a{position:relative}.app-tabs .badge{position:absolute;top:-2px;left:calc(50% + 6px);min-width:18px;height:18px;padding:0 5px;border-radius:9px;
+  background:var(--wipe);color:#17110a;font:700 12px/18px var(--font-body);text-align:center}
+[data-platform=android] .app-tabs .badge{top:2px;left:calc(50% + 10px)}
+.app-nav .menu-crest{position:relative;width:44px;height:44px}
+.app-nav .menu-crest img,.app-nav .menu-crest .anon{width:32px;height:32px;border-radius:50%;box-shadow:0 0 0 2px var(--ring,#9a9484);background:var(--raised)}
+.app-nav .menu-crest .anon{display:flex;align-items:center;justify-content:center;color:var(--muted)}
 [data-platform=android] .app-tabs{padding-top:12px;border-top:0;background:var(--raised)}
 [data-platform=android] .app-tabs a{gap:4px;min-height:48px}
 [data-platform=android] .app-tabs a .ind{display:flex;align-items:center;justify-content:center;width:64px;height:32px;border-radius:16px}
@@ -109,9 +117,20 @@ def status_bar(platform: str) -> str:
     return '<div class="app-status" aria-hidden="true"><span>9:41</span><span class="sys"><i></i><i></i><i class="b"></i></span></div>'
 
 
-def nav_bar(platform: str, back: str = '', title: str = '', share: bool = False, show_title: bool = False) -> str:
+def menu_crest(who: str | None) -> str:
+    """The profile menu's door: the selected character's crest (who is its class slug), or a person glyph signed out."""
+    if who:
+        return (f'<a href="#" class="menu-crest" aria-label="Open menu" style="--ring:var(--color-class-{who})">'
+                f'<img src="{CREST.format(cls=who)}" alt=""></a>')
+    return f'<a href="#" class="menu-crest" aria-label="Open menu"><span class="anon">{glyph("you", 20)}</span></a>'
+
+
+def nav_bar(platform: str, back: str = '', title: str = '', share: bool = False, show_title: bool = False,
+            who: str | None = None, menu: bool = False) -> str:
     left = ''
-    if back:
+    if menu and not back:
+        left = menu_crest(who)
+    elif back:
         g = glyph('back_ios' if platform == 'ios' else 'back_android', 22 if platform == 'ios' else 24, 2.2 if platform == 'ios' else 1.8)
         left = f'<a href="#" aria-label="Back to {back}">{g}{back if platform == "ios" else ""}</a>'
     else:
@@ -121,42 +140,46 @@ def nav_bar(platform: str, back: str = '', title: str = '', share: bool = False,
     return f'<nav class="app-nav" aria-label="Navigation">{left}{ttl}{right}</nav>'
 
 
-def tab_bar(platform: str, active: str) -> str:
+def tab_bar(platform: str, active: str, badge: int = 0) -> str:
     items = ''
     for tid, label in TABS:
         on = ' on' if tid == active else ''
         cur = ' aria-current="page"' if on else ''
         g = glyph(tid, 24)
         inner = f'<span class="ind">{g}</span>' if platform == 'android' else g
-        items += f'<a href="#" class="{on.strip()}"{cur}>{inner}<span>{label}</span></a>'
+        mark = f'<span class="badge" aria-label="{badge} open">{badge}</span>' if tid == 'guild' and badge else ''
+        items += f'<a href="#" class="{on.strip()}"{cur}>{inner}{mark}<span>{label}</span></a>'
     return f'<nav class="app-tabs" aria-label="Tabs">{items}</nav>'
 
 
-def chrome(platform: str, tab: str | None, back: str = '', title: str = '', share: bool = False, navbar: bool = True) -> tuple[str, str, str]:
-    """(body style vars, top html, bottom html)."""
-    top = status_bar(platform) + (nav_bar(platform, back, title, share) if navbar else '')
-    bottom = (tab_bar(platform, tab) if tab else '') + '<span class="app-home" aria-hidden="true"></span>'
+def chrome(platform: str, tab: str | None, back: str = '', title: str = '', share: bool = False, navbar: bool = True,
+           who: str | None = 'warrior', badge: int = 0) -> tuple[str, str, str]:
+    """(body style vars, top html, bottom html). A tab root (a tab, no back) carries the menu crest of `who` (the selected
+    character's class; None signed out); `badge` is the Guild tab's open count."""
+    top = status_bar(platform) + (nav_bar(platform, back, title, share, who=who, menu=bool(tab)) if navbar else '')
+    bottom = (tab_bar(platform, tab, badge) if tab else '') + '<span class="app-home" aria-hidden="true"></span>'
     return frame_vars(platform, bool(tab), navbar), top, bottom
 
 
-def _inject(html: str, platform: str, tab: str | None, back: str, title: str, share: bool, navbar: bool, extra_css: str = '') -> str:
-    style, top, bottom = chrome(platform, tab, back, title, share, navbar)
+def _inject(html: str, platform: str, tab: str | None, back: str, title: str, share: bool, navbar: bool, extra_css: str = '',
+            who: str | None = 'warrior', badge: int = 0) -> str:
+    style, top, bottom = chrome(platform, tab, back, title, share, navbar, who, badge)
     html = html.replace('</head>', f'<style>{APP_CSS}{extra_css}</style></head>', 1)
     html = re.sub(r'<body([^>]*)>', lambda m: f'<body{m.group(1)} data-platform="{platform}" style="{style}">{top}', html, count=1)
     return html.replace('</body>', f'{bottom}</body>', 1)
 
 
 def from_web(mock: str, platform: str, tab: str | None, back: str = '', title: str = '', share: bool = False,
-             navbar: bool = True, extra_css: str = '') -> str:
+             navbar: bool = True, extra_css: str = '', who: str | None = 'warrior', badge: int = 0) -> str:
     """The committed web mock as an app screen. Relative asset paths still resolve: design/mocks/app is a sibling of web."""
     src = (WEB / f'{mock}.html').read_text()
-    return _inject(src, platform, tab, back, title, share, navbar, extra_css)
+    return _inject(src, platform, tab, back, title, share, navbar, extra_css, who, badge)
 
 
 def app_page(platform: str, html: str, tab: str | None, back: str = '', title: str = '', share: bool = False, navbar: bool = True,
-             extra_css: str = '') -> str:
+             extra_css: str = '', who: str | None = 'warrior', badge: int = 0) -> str:
     """An app-only screen built with ws_prims.build_page (its HTML already carries the system CSS)."""
-    return _inject(html, platform, tab, back, title, share, navbar, extra_css)
+    return _inject(html, platform, tab, back, title, share, navbar, extra_css, who, badge)
 
 
 def write_app(name: str, html: str) -> Path:

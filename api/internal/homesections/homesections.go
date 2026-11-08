@@ -1,5 +1,5 @@
 // Package homesections composes the apps' home: its blocks and their order, computed for the
-// viewer (design/specs/2026-11-07-mobile-redesign.md section 2.3, rulings R0, R2, R3 and R4), so the
+// viewer (design/specs/2026-11-07-mobile-redesign.md section 2.3, the flows spec 2026-11-08 section 4 and ruling R3), so the
 // order changes without an app release. GET /v1/home answers the signed-in list; GET
 // /v1/app/config answers the signed-out one. HOME_SECTIONS (a JSON override, like APP_FEATURES)
 // switches each rule off, turns blocks off, reorders them and adds a standing notice.
@@ -19,6 +19,9 @@ import (
 const (
 	Head          = "head"
 	Upgrades      = "upgrades"
+	NextRaid      = "next_raid"
+	RaidLive      = "raid_live"
+	RaidSummary   = "raid_summary"
 	Countdowns    = "countdowns"
 	Feed          = "feed"
 	GuildSims     = "guild_sims"
@@ -32,10 +35,13 @@ const (
 	HowToStartURL = "how_to_start_link"
 )
 
-// The countdowns' two styles.
+// Styles: the countdowns full or one line; the next raid a card (raid day) or one line; the head
+// compact (one line) when a raid block leads.
 const (
-	StyleFull = "full"
-	StyleLine = "line"
+	StyleFull    = "full"
+	StyleLine    = "line"
+	StyleCard    = "card"
+	StyleCompact = "compact"
 )
 
 // The feed filters.
@@ -46,11 +52,13 @@ const (
 	FilterLogs  = "logs"
 )
 
-// The rules HOME_SECTIONS can switch off, by key.
+// The rules HOME_SECTIONS can switch off, by key (design/specs/2026-11-08-app-flows.md section 4):
+// the three raid moments (raid day, raid live, the day after), the leveling order under 60, and
+// the Join a guild row in place of the ladder.
 const (
-	RuleUnder60Line    = "under_60_line"
-	RuleNoGuildCTA     = "no_guild_cta"
-	RuleGuildRaidFirst = "guild_raid_first"
+	RuleRaidMoments = "raid_moments"
+	RuleLeveling    = "leveling"
+	RuleNoGuildCTA  = "no_guild_cta"
 )
 
 const (
@@ -61,9 +69,9 @@ const (
 	maxNoticeLength = 280
 )
 
-var signedInTypes = []string{Head, Upgrades, Countdowns, Feed, GuildSims, GuildSimsCTA, SpecWeek, Movers, Next, Notice}
+var signedInTypes = []string{Head, Upgrades, NextRaid, RaidLive, RaidSummary, Countdowns, Feed, GuildSims, GuildSimsCTA, SpecWeek, Movers, Next, Notice}
 
-var rules = []string{RuleUnder60Line, RuleNoGuildCTA, RuleGuildRaidFirst}
+var rules = []string{RuleRaidMoments, RuleLeveling, RuleNoGuildCTA}
 
 //go:embed signed_out.json
 var signedOutJSON []byte
@@ -76,15 +84,10 @@ type Section struct {
 	Style       string   `json:"style,omitempty"`
 	Filters     []string `json:"filters,omitzero"`
 	MoreFilters []string `json:"more_filters,omitzero"`
-	Text        string   `json:"text,omitempty"`
-	Href        string   `json:"href,omitempty"`
-}
-
-// View is what the signed-in composition reads about the viewer's character.
-type View struct {
-	Level int
-	// InGuild: the character is a verified member of a guild.
-	InGuild bool
+	// Selected is the feed filter the block opens on (the guild's on raid night); omitted, the first.
+	Selected string `json:"selected,omitempty"`
+	Text     string `json:"text,omitempty"`
+	Href     string `json:"href,omitempty"`
 }
 
 // Override is HOME_SECTIONS. The zero value changes nothing.
@@ -146,36 +149,6 @@ func ParseOverride(raw string) (Override, error) {
 func (o Override) ruleOn(key string) bool {
 	on, set := o.Rules[key]
 	return !set || on
-}
-
-// SignedIn is the signed-in home for v under o (rulings R0, R2 and R4): in a guild the next raid and
-// your sign-up come second, before the upgrades and the feed; without one the first-raids countdown
-// follows the feed and the Join a guild row replaces the ladder; under 60 the countdown is one line.
-func SignedIn(v View, o Override) []Section {
-	inGuild := v.InGuild || !o.ruleOn(RuleNoGuildCTA)
-	filters := []string{FilterAll, FilterSpec}
-	guild := Section{Type: GuildSimsCTA}
-	if inGuild {
-		filters = append(filters, FilterGuild)
-		guild = Section{Type: GuildSims, Limit: guildSimsShown}
-	}
-	countdowns := Section{Type: Countdowns, Style: StyleFull}
-	if v.Level < maxLevel && o.ruleOn(RuleUnder60Line) {
-		countdowns.Style = StyleLine
-	}
-	head := Section{Type: Head}
-	upgrades := Section{Type: Upgrades, Limit: upgradesShown}
-	feed := Section{Type: Feed, Filters: filters, MoreFilters: []string{FilterLogs}, Limit: feedRows}
-	rest := []Section{guild, {Type: SpecWeek}, {Type: Movers}, {Type: Next}}
-
-	out := slices.Concat([]Section{head, upgrades, feed, countdowns}, rest)
-	if v.InGuild && o.ruleOn(RuleGuildRaidFirst) {
-		out = slices.Concat([]Section{head, countdowns, upgrades, feed}, rest)
-	}
-	if o.Notice != nil {
-		out = slices.Insert(out, 1, Section{Type: Notice, Text: o.Notice.Text, Href: o.Notice.Href})
-	}
-	return o.apply(out)
 }
 
 // SignedOut is the signed-out home: the override's list, else the bundled one

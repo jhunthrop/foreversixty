@@ -110,10 +110,16 @@ main{min-height:calc(var(--dev-h) - var(--top) - var(--bottom));flex:1 0 auto}
 .app-nav .ttl.hidden{visibility:hidden}
 [data-platform=android] .app-nav{padding:0 4px}[data-platform=android] .app-nav a{min-width:48px;height:48px;color:var(--strong)}
 [data-platform=android] .app-nav .ttl{text-align:left;font-size:20px;line-height:28px;padding-left:4px}
-.app-tabs{position:relative;flex:none;height:calc(var(--bottom) - var(--home));z-index:49;display:grid;grid-template-columns:repeat(5,1fr);align-items:start;
+.app-tabs{position:relative;flex:none;height:calc(var(--bottom) - var(--home));z-index:49;display:grid;grid-template-columns:repeat(4,1fr);align-items:start;
   background:color-mix(in srgb,var(--bg) 94%,transparent);backdrop-filter:blur(12px);border-top:1px solid var(--line-soft);padding-top:6px}
 .app-tabs a{display:flex;flex-direction:column;align-items:center;gap:3px;min-height:44px;color:var(--nav);font:600 12px/14px var(--font-body)}
 .app-tabs a.on{color:var(--gold)}
+.app-tabs a{position:relative}.app-tabs .badge{position:absolute;top:-2px;left:calc(50% + 6px);min-width:18px;height:18px;padding:0 5px;border-radius:9px;
+  background:var(--wipe);color:#17110a;font:700 12px/18px var(--font-body);text-align:center}
+[data-platform=android] .app-tabs .badge{top:2px;left:calc(50% + 10px)}
+.app-nav .menu-crest{position:relative;width:44px;height:44px}
+.app-nav .menu-crest img,.app-nav .menu-crest .anon{width:32px;height:32px;border-radius:50%;box-shadow:0 0 0 2px var(--ring,#9a9484);background:var(--raised)}
+.app-nav .menu-crest .anon{display:flex;align-items:center;justify-content:center;color:var(--muted)}
 [data-platform=android] .app-tabs{padding-top:12px;border-top:0;background:var(--raised)}
 [data-platform=android] .app-tabs a{gap:4px;min-height:48px}
 [data-platform=android] .app-tabs a .ind{display:flex;align-items:center;justify-content:center;width:64px;height:32px;border-radius:16px}

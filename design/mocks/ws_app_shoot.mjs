@@ -10,7 +10,8 @@ import { routeFonts } from "./app_fonts.mjs";
 const require = createRequire(process.env.PLAYWRIGHT_FROM ?? new URL("../../web/package.json", import.meta.url));
 const { chromium } = require("@playwright/test");
 const SRC = new URL("./app/", import.meta.url).pathname;
-const OUT = new URL("../reviews/2026-11-07-mobile/", import.meta.url).pathname;
+// SHOOT_OUT: another folder for the captures (a review round of its own, e.g. design/reviews/2026-11-08-app-flows).
+const OUT = process.env.SHOOT_OUT ? `${process.env.SHOOT_OUT.replace(/\/$/, "")}/` : new URL("../reviews/2026-11-07-mobile/", import.meta.url).pathname;
 const DEVICE = { ios: { width: 393, height: 852 }, android: { width: 412, height: 915 } };
 const filter = process.argv[2] ?? "";
 mkdirSync(OUT, { recursive: true });

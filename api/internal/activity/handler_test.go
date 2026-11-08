@@ -127,15 +127,35 @@ func TestHomeStartsTheFirstImportSim(t *testing.T) {
 
 const sampleExport = "FS1:1.60.1.70790:warrior:orc:0/0505/0:head=16866,chest=11726|level=20"
 
-// A verified guild member is in a guild; a character on no roster is not.
-func TestInGuild(t *testing.T) {
+// The time-aware Home's guild facts: membership, the raid zone, the next raid not yet over and the
+// last raid started; a dungeon run is not a raid, and a character on no roster has no guild.
+func TestGuildRaids(t *testing.T) {
 	s := testStore(t)
 	ctx := context.Background()
-	guildOf(t, s, 1)
-	if in, err := s.inGuild(ctx, "us/normal/ma"); err != nil || !in {
-		t.Fatalf("member: %v, %v", in, err)
+	g, users := guildOf(t, s, 1)
+	v, err := s.guildRaids(ctx, "us/normal/ma", testNow)
+	if err != nil || !v.InGuild || v.NextRaid != nil || v.LastRaid != nil || v.Zone != nil {
+		t.Fatalf("no raids: %+v, %v", v, err)
 	}
-	if in, _ := s.inGuild(ctx, "us/normal/nobody"); in {
+	raid := func(zone string, start time.Time) {
+		exec(t, s.Pool, `insert into guild_raids (guild_id, zone, title, starts_at, duration_minutes, created_by, created_at)
+			values ($1, $2, 'Night', $3, 180, $4, $5)`, g, zone, start, users[0], testNow.Add(-72*time.Hour))
+	}
+	raid("raid:onyxias-lair", testNow.Add(-26*time.Hour))
+	raid("raid:onyxias-lair", testNow.Add(6*time.Hour))
+	raid("dungeon:ubrs", testNow.Add(2*time.Hour))
+	exec(t, s.Pool, `update guilds set raid_timezone = 'America/Chicago' where id = $1`, g)
+	v, err = s.guildRaids(ctx, "us/normal/ma", testNow)
+	if err != nil || v.Zone == nil || v.Zone.String() != "America/Chicago" {
+		t.Fatalf("zone: %+v, %v", v, err)
+	}
+	if v.NextRaid == nil || !v.NextRaid.Equal(testNow.Add(6*time.Hour)) {
+		t.Fatalf("next raid %v", v.NextRaid)
+	}
+	if v.LastRaid == nil || !v.LastRaid.Equal(testNow.Add(-26*time.Hour)) {
+		t.Fatalf("last raid %v", v.LastRaid)
+	}
+	if v, _ := s.guildRaids(ctx, "us/normal/nobody", testNow); v.InGuild {
 		t.Fatal("a character with no guild is in one")
 	}
 }

@@ -7,6 +7,7 @@ import (
 	"slices"
 	"strings"
 	"testing"
+	"time"
 )
 
 func types(ss []Section) string {
@@ -20,29 +21,73 @@ func types(ss []Section) string {
 	return strings.Join(out, " ")
 }
 
-func TestSignedInRules(t *testing.T) {
+var (
+	chicago, _ = time.LoadLocation("America/Chicago")
+	// 3:00 pm in Chicago, Wednesday 9 Dec 2026.
+	wed3pm = time.Date(2026, 12, 9, 21, 0, 0, 0, time.UTC)
+	// 8:00 pm in Chicago that day.
+	raid8pm = time.Date(2026, 12, 10, 2, 0, 0, 0, time.UTC)
+)
+
+func at(t time.Time) *time.Time { return &t }
+
+func TestMoments(t *testing.T) {
+	guild := View{Level: 60, InGuild: true, Zone: chicago}
+	with := func(now time.Time, next, last *time.Time) View {
+		v := guild
+		v.Now, v.NextRaid, v.LastRaid = now, next, last
+		return v
+	}
+	cases := []struct {
+		name string
+		view View
+		want Moment
+	}{
+		{"raid day, before the raid", with(wed3pm, at(raid8pm), nil), MomentRaidDay},
+		{"the raid started 1 h ago", with(raid8pm.Add(time.Hour), at(raid8pm), at(raid8pm)), MomentRaidLive},
+		{"4 h after an 8 pm start it is midnight in Chicago: the day after", with(raid8pm.Add(4*time.Hour), at(raid8pm), at(raid8pm)), MomentDayAfter},
+		{"3 h 59 after the start it is still live", with(raid8pm.Add(4*time.Hour-time.Minute), at(raid8pm), at(raid8pm)), MomentRaidLive},
+		{"the next day in Chicago", with(raid8pm.Add(18*time.Hour), nil, at(raid8pm)), MomentDayAfter},
+		{"two days later", with(raid8pm.Add(42*time.Hour), nil, at(raid8pm)), MomentGuild},
+		{"a raid tomorrow is not raid day", with(wed3pm.Add(-24*time.Hour), at(raid8pm), nil), MomentGuild},
+		{"8 pm Chicago is 2 am UTC the next day; raid day follows the guild's zone", with(wed3pm, at(raid8pm), nil), MomentRaidDay},
+		{"under 60 with no raid", View{Level: 34, InGuild: true, Now: wed3pm}, MomentLeveling},
+		{"under 60 on raid day still answers the raid", View{Level: 34, InGuild: true, Now: wed3pm, Zone: chicago, NextRaid: at(raid8pm)}, MomentRaidDay},
+		{"no guild at 60", View{Level: 60, Now: wed3pm}, MomentNoGuild},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			if got := MomentOf(c.view, Override{}); got != c.want {
+				t.Errorf("got %s, want %s", got, c.want)
+			}
+		})
+	}
+}
+
+func TestSignedInOrders(t *testing.T) {
 	cases := []struct {
 		name string
 		view View
 		o    Override
 		want string
 	}{
-		{"60 in a guild: the next raid second (R0)", View{Level: 60, InGuild: true}, Override{},
-			"head countdowns:full upgrades feed guild_sims spec_week movers next"},
-		{"under 60 in a guild: the next raid second, one line (R0, R4)", View{Level: 34, InGuild: true}, Override{},
-			"head countdowns:line upgrades feed guild_sims spec_week movers next"},
-		{"60 with no guild: the countdown after the feed, the Join a guild row (R0, R4)", View{Level: 60}, Override{},
-			"head upgrades feed countdowns:full guild_sims_cta spec_week movers next"},
-		{"34 with no guild", View{Level: 34}, Override{},
+		{"raid day: the next raid leads", View{Level: 60, InGuild: true, Now: wed3pm, Zone: chicago, NextRaid: at(raid8pm)}, Override{},
+			"head:compact next_raid:card upgrades feed guild_sims spec_week movers next"},
+		{"raid live: the raid and the guild feed", View{Level: 60, InGuild: true, Now: raid8pm.Add(time.Hour), Zone: chicago, NextRaid: at(raid8pm)}, Override{},
+			"head:compact raid_live feed"},
+		{"the day after: the summary", View{Level: 60, InGuild: true, Now: raid8pm.Add(18 * time.Hour), Zone: chicago, LastRaid: at(raid8pm)}, Override{},
+			"head raid_summary upgrades feed guild_sims spec_week movers next"},
+		{"any other day in a guild", View{Level: 60, InGuild: true, Now: wed3pm}, Override{},
+			"head upgrades next_raid:line feed guild_sims spec_week movers next"},
+		{"no guild", View{Level: 60, Now: wed3pm}, Override{},
+			"head upgrades feed spec_week countdowns:line guild_sims_cta movers next"},
+		{"leveling", View{Level: 34, Now: wed3pm}, Override{},
 			"head upgrades feed countdowns:line guild_sims_cta spec_week movers next"},
-		{"rules switched off", View{Level: 34, InGuild: true},
-			Override{Rules: map[string]bool{RuleUnder60Line: false, RuleGuildRaidFirst: false}},
-			"head upgrades feed countdowns:full guild_sims spec_week movers next"},
-		{"no_guild_cta off keeps the ladder", View{Level: 60}, Override{Rules: map[string]bool{RuleNoGuildCTA: false}},
-			"head upgrades feed countdowns:full guild_sims spec_week movers next"},
-		{"off, order and a notice", View{Level: 60, InGuild: true},
+		{"raid moments switched off", View{Level: 60, InGuild: true, Now: wed3pm, Zone: chicago, NextRaid: at(raid8pm)},
+			Override{Rules: map[string]bool{RuleRaidMoments: false}}, "head upgrades next_raid:line feed guild_sims spec_week movers next"},
+		{"off, order and a notice", View{Level: 60, InGuild: true, Now: wed3pm},
 			Override{Off: []string{Movers}, Order: []string{Feed, Head}, Notice: &NoticeOverride{Text: "Servers restart at 10."}},
-			"feed head notice countdowns:full upgrades guild_sims spec_week next"},
+			"feed head notice upgrades next_raid:line guild_sims spec_week next"},
 	}
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
@@ -53,16 +98,20 @@ func TestSignedInRules(t *testing.T) {
 	}
 }
 
+func TestRaidLiveOpensTheGuildFeed(t *testing.T) {
+	out := SignedIn(View{Level: 60, InGuild: true, Now: raid8pm.Add(time.Hour), NextRaid: at(raid8pm)}, Override{})
+	if out[2].Type != Feed || out[2].Selected != FilterGuild {
+		t.Errorf("feed = %+v", out[2])
+	}
+}
+
 func TestSignedInFeedAndLimits(t *testing.T) {
-	in := SignedIn(View{Level: 60, InGuild: true}, Override{})
+	in := SignedIn(View{Level: 60, InGuild: true, Now: wed3pm}, Override{})
 	feed := in[slices.IndexFunc(in, func(s Section) bool { return s.Type == Feed })]
 	if !reflect.DeepEqual(feed.Filters, []string{"all", "spec", "guild"}) || !reflect.DeepEqual(feed.MoreFilters, []string{"logs"}) || feed.Limit != 7 {
 		t.Errorf("feed = %+v", feed)
 	}
-	if up := in[slices.IndexFunc(in, func(s Section) bool { return s.Type == Upgrades })]; up.Limit != 3 {
-		t.Errorf("upgrades limit = %d", up.Limit)
-	}
-	out := SignedIn(View{Level: 60}, Override{})
+	out := SignedIn(View{Level: 60, Now: wed3pm}, Override{})
 	feed = out[slices.IndexFunc(out, func(s Section) bool { return s.Type == Feed })]
 	if slices.Contains(feed.Filters, FilterGuild) {
 		t.Errorf("no guild still filters by guild: %v", feed.Filters)
@@ -73,8 +122,8 @@ func TestParseOverride(t *testing.T) {
 	if o, err := ParseOverride(""); err != nil || !reflect.DeepEqual(o, Override{}) {
 		t.Fatalf("empty = %+v, %v", o, err)
 	}
-	o, err := ParseOverride(`{"rules":{"guild_raid_first":false},"off":["movers"],"notice":{"text":"Hi","href":"/guild"}}`)
-	if err != nil || o.ruleOn(RuleGuildRaidFirst) || !o.ruleOn(RuleUnder60Line) {
+	o, err := ParseOverride(`{"rules":{"raid_moments":false},"off":["movers"],"notice":{"text":"Hi","href":"/guild"}}`)
+	if err != nil || o.ruleOn(RuleRaidMoments) || !o.ruleOn(RuleLeveling) {
 		t.Fatalf("parsed %+v, %v", o, err)
 	}
 	for _, bad := range []string{

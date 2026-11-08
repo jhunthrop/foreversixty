@@ -1320,7 +1320,7 @@ data class HomeAlreadyBest(
     @SerialName("item") val item: HomeItem,
 )
 
-/** The signed-in home's own blocks; each is null when it has nothing true to say. sections is the apps' home, its blocks in order for this viewer (design/specs/2026-11-07-mobile-redesign.md section 2.3, rulings R0 and R4): in a guild head, countdowns (the next raid and your sign-up), upgrades, feed, guild_sims, spec_week, movers, next; with no guild head, upgrades, feed, countdowns, guild_sims_cta, spec_week, movers, next, and the feed drops the guild filter; under 60 the countdowns are one line. HOME_SECTIONS switches each rule off, turns blocks off, reorders them and adds a notice. The web keeps its own composition. */
+/** The signed-in home's own blocks; each is null when it has nothing true to say. sections is the apps' home, its blocks in order for this viewer (design/specs/2026-11-07-mobile-redesign.md section 2.3; the order is design/specs/2026-11-08-app-flows.md section 4, time-aware): raid day (a guild raid today in the guild's zone, before it starts) head compact, next_raid card, upgrades, feed, guild_sims; raid live (start to start + 4 h) head compact, raid_live, feed opened on the guild filter; the day after a raid head, raid_summary, upgrades, feed; any other day in a guild head, upgrades, next_raid line, feed, guild_sims; under 60 head, upgrades, feed, countdowns line (first raids); no guild head, upgrades, feed, spec_week, countdowns line, guild_sims_cta. Secondary blocks (spec_week, movers, next) follow the feed; with no guild the feed drops the guild filter. HOME_SECTIONS switches each rule off, turns blocks off, reorders them and adds a notice. The web keeps its own composition. */
 @Serializable
 data class HomeBlocks(
     @SerialName("sections") val sections: List<HomeSection> = emptyList(),
@@ -1411,12 +1411,14 @@ data class HomePick(
 /** One block of the apps' home. An app renders the types it knows, in order, and skips any other (logging it once per session); an unknown style falls back to the type's default. Fields a type does not use are omitted. */
 @Serializable
 data class HomeSection(
-    /** head, upgrades, countdowns, feed, guild_sims, guild_sims_cta, spec_week, movers, next or notice signed in; head_out, class_picker, countdowns, feed or how_to_start_link signed out. Open: new types may appear. */
+    /** head, upgrades, next_raid, raid_live, raid_summary, countdowns, feed, guild_sims, guild_sims_cta, spec_week, movers, next or notice signed in; head_out, class_picker, countdowns, feed or how_to_start_link signed out. Open: new types may appear. */
     @SerialName("type") val type: String,
     /** Rows to show (upgrades 3, feed 7, guild_sims 5). */
     @SerialName("limit") val limit: Int? = null,
-    /** countdowns: full (the panels) or line (one row). */
+    /** countdowns: full (the panels) or line (one row); next_raid: card (the countdown, your sign-up buttons, who is coming) or line; head: compact (one line, when a raid block leads). */
     @SerialName("style") val style: String? = null,
+    /** feed: the filter it opens on (guild on raid night); omitted, the first. */
+    @SerialName("selected") val selected: String? = null,
     /** feed: the segments; [] for none (signed out, All only). */
     @SerialName("filters") val filters: List<String>? = null,
     /** feed: the filters behind the filter button. */
