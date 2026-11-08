@@ -601,7 +601,7 @@ def board_panel_leveller():
                f'<span class="btn" style="{SMALL_BTN}">Talents</span></div>')
     rotation = ('<div class="sect">Rotation at 24<span class="r">hover for the full rule</span></div>'
                 + spell_row('ability_hunter_snipershot', "Hunter's Mark", 'Whenever the target is not marked')
-                + spell_row('inv_spear_07', 'Aimed Shot', 'Whenever the shared cooldown is up')
+                + spell_row('inv_spear_07', 'Aimed Shot', 'When its cooldown, shared with Multi-Shot, is up')
                 + spell_row('ability_upgrademoonglaive', 'Multi-Shot', 'On cooldown, above a quarter mana')
                 + spell_row('ability_hunter_quickshot', 'Serpent Sting', 'Under 1.5 seconds left')
                 + spell_row('ability_impalingbolt', 'Arcane Shot', 'To fill a gap')
@@ -617,19 +617,19 @@ def answer_buttons():
     return ''.join(f'<span class="btn grey" style="{SMALL_BTN}">{a}</span>' for a in ('In', 'Late', 'Out'))
 
 
-def tonight(answer_html, buttons):
+def tonight(answer_html, buttons, sub='as Ashvale, Damage'):
     row = (f'<div class="sect">Tonight<span class="r">8:00 pm · in 3 h 12 min</span></div>'
            f'<div class="irow">{img("inv_misc_head_dragon_black", 30)}<div class="tx"><div class="n">'
-           f'<span>Onyxia\'s Lair</span>{answer_html}</div><div class="s">as Ashvale, Damage</div></div></div>')
+           f'<span>Onyxia\'s Lair</span>{answer_html}</div><div class="s">{sub}</div></div></div>')
     if buttons:
         row += f'<div style="display:flex;gap:6px;margin:0 0 8px 39px">{answer_buttons()}</div>'
     return (row + f'<div style="margin-left:39px;font-size:13px">Your job: <span style="color:{C["gold"]}">Phase 2 '
-            f'ranged, west side</span> <span class="small">· with Thornhide</span></div>')
+            f'ranged, west side</span></div><div class="small" style="margin-left:39px">with Thornhide</div>')
 
 
 def board_panel_raider():
     upgrades = (f'<div class="sect">Upgrades<span class="r">your sim · 2 days ago · '
-                f'<span style="color:{C["gold"]}">Sim again</span></span></div>'
+                f'<span class="btn grey" style="height:18px;padding:0 6px;font-size:11.5px">Sim again</span></span></div>'
                 + upgrade_row('inv_weapon_bow_11', iname(13023), '6.4', 'Ranged · World drop')
                 + upgrade_row('inv_gauntlets_11', iname(279257), '4.1', 'Hands · Leatherworking')
                 + upgrade_row('inv_pants_03', iname(237819), '3.0', 'Legs · Illiyana Moonblaze · Vendor'))
@@ -637,11 +637,15 @@ def board_panel_raider():
     fact, score = 'Level 60 Hunter · Employed Millennials', score_fact(1840, 'Epic')
     p1 = panel('Ashvale', fact, [tonight(f'<span style="color:{C["gold"]}">Not answered</span>', True),
                                  upgrades, rotation], score=score)
+    pq = panel('Ashvale', fact, [tonight('<span style="color:#ffffff">In, not sent yet</span>', False,
+                                         sub='as Ashvale, Damage<br>Sends when the companion app runs'),
+                                 upgrades, rotation], score=score)
     p2 = panel('Ashvale', fact, [tonight(f'<span style="color:{C["green"]}">You\'re In</span>', False),
                                  upgrades, rotation], score=score)
-    body = (f'<p class="cap"><b>Raid day</b> · a level 60 Beast Mastery hunter in a guild. Left: not answered yet '
-            f'(the answer queues for the companion to send). Right: answered. Gains at 60 are layout figures.</p>'
-            f'<div class="row" style="padding:16px 0 0 16px;gap:40px">{p1}{p2}</div>')
+    body = (f'<p class="cap"><b>Raid day</b> · a level 60 Beast Mastery hunter in a guild. Left: not answered. '
+            f'Middle: In pressed, queued in the companion outbox, buttons gone. Right: the site confirmed it. '
+            f'Gains at 60 are layout figures.</p>'
+            f'<div class="row" style="padding:16px 0 0 16px;gap:36px">{p1}{pq}{p2}</div>')
     return page(body)
 
 
@@ -651,7 +655,8 @@ def board_panel_fresh():
              ('ability_hunter_swiftstrike', 'Survival', 'Melee hunter, traps and Lacerating Strikes')]
     path = ('<div class="sect">Pick your path<span class="r">you can change it later</span></div>'
             + ''.join(f'<div class="irow">{img(i, 30)}<div class="tx"><div class="n"><span>{n}</span></div>'
-                      f'<div class="s">{t}</div></div><span class="btn" style="{SMALL_BTN}">Pick</span></div>'
+                      f'<div class="s" style="white-space:normal">{t}</div></div>'
+                      f'<span class="btn" style="{SMALL_BTN}">Pick</span></div>'
                       for i, n, t in specs)
             + '<div class="small">Loads that path\'s leveling build. Your first talent point comes at level 10.</div>')
     rotation = ('<div class="sect">Rotation at 6</div>'
