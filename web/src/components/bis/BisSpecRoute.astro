@@ -72,7 +72,7 @@ const jsonLd =
         breadcrumbListLd([
           { name: 'Best in slot', path: '/bis' },
           { name: bisSeoCopy.crumb(subject), path: specPath },
-          ...(isBandPage ? [{ name: bisSeoCopy.heading(subject, band), path }] : []),
+          ...(isBandPage ? [{ name: bisSeoCopy.bandCrumb(subject, band), path }] : []),
         ]),
       ];
 

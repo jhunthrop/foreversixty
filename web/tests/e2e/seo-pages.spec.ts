@@ -16,7 +16,8 @@ test.describe('without JavaScript, as a crawler fetches', () => {
       'href',
       'https://foreversixty.gg/bis/warrior/fury/40-49',
     );
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Fury Warrior BiS, Levels 40 to 49');
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Fury Warrior BiS 40-49');
+    await expect(page.getByTestId('bis-page-sub')).toHaveText('Best in slot · Levels 40 to 49');
     await expect(page.getByTestId('bis-band-alliance-40')).toBeVisible();
     await expect(page.getByTestId('bis-doll')).toContainText(/\S/);
     // Every band is a real link to its own page; the first band is the spec's own path.
@@ -36,7 +37,7 @@ test.describe('without JavaScript, as a crawler fetches', () => {
       'href',
       'https://foreversixty.gg/bis/warrior/fury',
     );
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Fury Warrior BiS, Levels 20 to 29');
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Fury Warrior BiS 20-29');
   });
 
   test('/guild is the Find a guild landing, not a loading shell', async ({ page }) => {

@@ -289,7 +289,7 @@
             data-testid={`class-crest-${classSlug}`}
           />
         {/snippet}
-        {#snippet meta()}<span data-testid="bis-page-sub">Best in slot</span>{/snippet}
+        {#snippet meta()}<span data-testid="bis-page-sub">{bisSeoCopy.meta(state.band)}</span>{/snippet}
         {#snippet answer()}
           <div class="bis-pending-hide">
             <BisAnswer answer={model.answer} {figure} unit={model.unit} {raceNote} />

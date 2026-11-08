@@ -27,12 +27,14 @@ describe('bisSeoCopy', () => {
 
   it('says Pre-Raid only while the level 60 list holds no raid drop', () => {
     expect(bisSeoCopy.heading(fury, 60)).toBe('Fury Warrior Pre-Raid BiS');
-    expect(bisSeoCopy.heading(furyRaids, 60)).toBe('Fury Warrior BiS, Level 60');
+    expect(bisSeoCopy.heading(furyRaids, 60)).toBe('Fury Warrior BiS 60');
+    expect(bisSeoCopy.bandCrumb(furyRaids, 60)).toBe('Fury Warrior BiS, Level 60');
     expect(bisSeoCopy.specTitle(furyRaids, 20)).not.toContain('Pre-Raid');
     expect(bisSeoCopy.bandTitle(furyRaids, 60)).toBe('Fury Warrior BiS, Level 60, WoW Forever');
   });
 
-  it('names the band in every band h1 below 60', () => {
-    expect(bisSeoCopy.heading(fury, 20)).toBe('Fury Warrior BiS, Levels 20 to 29');
+  it('names the band in every h1 as its short label, the words in the meta line', () => {
+    expect(bisSeoCopy.heading(fury, 20)).toBe('Fury Warrior BiS 20-29');
+    expect(bisSeoCopy.meta(40)).toBe('Best in slot · Levels 40 to 49');
   });
 });

@@ -12,6 +12,7 @@ import {
   guildRaidHref,
   guildRecruitHref,
   guildSettingsHref,
+  REGIONS,
 } from './lib/characters';
 import { DUCKDB_WASM_VERSION, duckdbRuntimeUrl } from './lib/report/duckdb-runtime';
 import { fixtureResult } from './test-support/sim-api';
@@ -1102,9 +1103,17 @@ describe('/_sim/<artifact>/sim.wasm.gz', () => {
 });
 
 describe('every guild route the site and the API link to is served', () => {
-  /** Every foreversixty.gg/guild/ link in the API's app fixtures: the Discord raid post, the push
-   *  notifications and the calendar all build theirs with the same Go helpers (raids_discord.go). */
+  /** Every foreversixty.gg/guild/<region>/ link in the API's app fixtures: the Discord raid post, the
+   *  push notifications, the calendar and the activity feed all build theirs with the same Go helpers
+   *  (raids_discord.go, activity/guildraids.go guildPath), so a guild page always starts with a region.
+   *  A hand-written fixture link without one (activity.list.json's `/guild/olympus-xxvii/raids/311`,
+   *  2026-11-08, reported to the api lane) is not a URL the API sends, so it is not served here. */
   function apiGuildLinks(): string[] {
+    const regionPrefix = new RegExp(`^/guild/(${REGIONS.join('|')})/`);
+    return fixtureGuildLinks().filter((link) => regionPrefix.test(link) || link.startsWith('/guild/invite/'));
+  }
+
+  function fixtureGuildLinks(): string[] {
     const dir = path.join(path.dirname(fileURLToPath(import.meta.url)), '../../docs/contracts/fixtures/app');
     const found = new Set<string>();
     for (const file of readdirSync(dir)) {

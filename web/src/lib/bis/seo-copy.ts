@@ -2,7 +2,7 @@
 // What a BiS spec page and each of its band pages (lib/bis/band-path.ts) tell a search engine and
 // say in their h1: spec before class, the way players search ("Fury Warrior BiS"), the band in
 // words, "Pre-Raid" only while the level 60 list holds no raid drop (page-server.ts bisPreRaid).
-import { bandWords } from './band-path';
+import { bandSlug, bandWords } from './band-path';
 import { MAX_BAND } from './band-levels';
 
 export interface BisSeoSubject {
@@ -27,8 +27,16 @@ export const bisSeoCopy = {
     band >= MAX_BAND && subject.preRaid
       ? `${who(subject)} Pre-Raid BiS, ${bandWords(band)}, ${GAME}`
       : `${who(subject)} BiS, ${bandWords(band)}, ${GAME}`,
-  /** The h1, naming the band shown: "Fury Warrior BiS, Levels 20 to 29", "Fury Warrior Pre-Raid BiS". */
+  /** The h1, one line at 1440, naming the band shown as its short label: "Fury Warrior BiS 40-49",
+   *  "Fury Warrior Pre-Raid BiS". The full words are the meta line (`meta`) and the <title>. */
   heading: (subject: BisSeoSubject, band: number): string =>
+    band >= MAX_BAND && subject.preRaid
+      ? `${who(subject)} Pre-Raid BiS`
+      : `${who(subject)} BiS ${bandSlug(band)}`,
+  /** The head's meta line under the h1: "Best in slot · Levels 40 to 49". */
+  meta: (band: number): string => `Best in slot · ${bandWords(band)}`,
+  /** The band page's breadcrumb name: "Fury Warrior BiS, Levels 40 to 49". */
+  bandCrumb: (subject: BisSeoSubject, band: number): string =>
     band >= MAX_BAND && subject.preRaid
       ? `${who(subject)} Pre-Raid BiS`
       : `${who(subject)} BiS, ${bandWords(band)}`,
