@@ -2530,6 +2530,10 @@ data class RaidNightLoot(
     @SerialName("boss") val boss: String,
     /** The awarding officer's character name; "" when unknown. */
     @SerialName("awarded_by") val awardedBy: String,
+    /** The upgrade over the worn gear, the Loot tab's gain for the character's band; null when the band cannot say. */
+    @SerialName("gain") val gain: Double? = null,
+    /** What gain counts. */
+    @SerialName("unit") val unit: String? = null,
     /** The item it replaced; null until the export after the night says. */
     @SerialName("replaces") val replaces: RaidNightReplaces? = null,
 )
@@ -2580,6 +2584,8 @@ data class RaidNightSummary(
     @SerialName("guild_name") val guildName: String,
     @SerialName("zone_key") val zoneKey: String,
     @SerialName("zone_name") val zoneName: String,
+    /** The zone's icon, a name under /data/{build}/icons. Always sent; optional for older bodies. */
+    @SerialName("zone_icon") val zoneIcon: String? = null,
     @SerialName("starts_at") val startsAt: String,
     /** starts_at plus the raid's length. */
     @SerialName("ends_at") val endsAt: String,
@@ -2738,6 +2744,10 @@ data class RaidView(
     @SerialName("status") val status: String,
     @SerialName("size") val size: Int? = null,
     @SerialName("guild_timezone") val guildTimezone: String,
+    /** The zone's icon, a name under /data/{build}/icons (inv_misc_head_dragon_black for Onyxia's Lair). Always sent; optional for older bodies. */
+    @SerialName("zone_icon") val zoneIcon: String? = null,
+    /** The sign-up deadline. No guild stores one yet, so it is null; officers lock a raid by hand. */
+    @SerialName("answer_by") val answerBy: String? = null,
     @SerialName("notes") val notes: String,
     /** Sanitised HTML of notes; render it. */
     @SerialName("notes_html") val notesHtml: String,

@@ -10,6 +10,7 @@ import (
 	"context"
 	"fmt"
 	"math"
+	"strings"
 )
 
 // fillRaidNightLog fills out's log fields from reportID for char.
@@ -135,9 +136,16 @@ func (s *Service) nightLootOf(ctx context.Context, guildID int64, reportID strin
 	if err := rows.Err(); err != nil {
 		return nil, fmt.Errorf("guilds: night loot: %w", err)
 	}
+	row, hasRow, err := s.Store.lootRow(ctx, guildID, char.CharacterKey)
+	if err != nil {
+		return nil, err
+	}
 	out := make([]RaidNightLoot, 0, len(awards))
 	for _, a := range awards {
 		l := s.Store.nightItem(a.item, char.Class)
+		if item, ok := lootItemByID(a.item); ok && hasRow {
+			l.Gain, l.Unit = s.Store.nightLootGain(row, item)
+		}
 		l.Boss = bossName(a.encounter)
 		if a.by != nil {
 			ref, err := s.Store.claimHolderRef(ctx, guildID, *a.by)
@@ -151,6 +159,35 @@ func (s *Service) nightLootOf(ctx context.Context, guildID int64, reportID strin
 		out = append(out, l)
 	}
 	return out, nil
+}
+
+// lootRow is key's row on the guild's loot roster (gear read at consent); false without one.
+func (s *Store) lootRow(ctx context.Context, guildID int64, key string) (RosterRow, bool, error) {
+	lr, err := s.lootRoster(ctx, guildID)
+	if err != nil {
+		return RosterRow{}, false, err
+	}
+	for _, row := range lr.roster {
+		if row.CharacterKey == key {
+			return row, true, nil
+		}
+	}
+	return RosterRow{}, false, nil
+}
+
+// nightLootGain is item's gain for row, the Loot tab's tier-0 verdict (bisMatch) in its band's
+// unit upper-cased; nil, nil when the band does not name the item or measured no gap.
+func (s *Store) nightLootGain(row RosterRow, item lootItem) (*float64, *string) {
+	level, ok := rosterLevel(row)
+	if !ok {
+		level = raidLevel
+	}
+	match, ok := s.bisMatch(row, item, characterSlots(row, item, level))
+	if !ok || match.verdict.GainDps == nil {
+		return nil, nil
+	}
+	unit := strings.ToUpper(match.unit)
+	return match.verdict.GainDps, &unit
 }
 
 // nightItem is an item's name, quality, icon and slot words: the loot table's row, else the

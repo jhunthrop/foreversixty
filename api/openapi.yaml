@@ -2718,6 +2718,11 @@ components:
         status: { type: string, enum: [planned, locked, done, cancelled] }
         size: { type: [integer, "null"] }
         guild_timezone: { type: string }
+        zone_icon: { type: string, description: "The zone's icon, a name under /data/{build}/icons (inv_misc_head_dragon_black for Onyxia's Lair). Always sent; optional for older bodies." }
+        answer_by:
+          type: [string, "null"]
+          format: date-time
+          description: The sign-up deadline. No guild stores one yet, so it is null; officers lock a raid by hand.
         notes: { type: string }
         notes_html: { type: string, description: Sanitised HTML of notes; render it. }
         counts: { $ref: '#/components/schemas/RaidCounts' }
@@ -3442,6 +3447,7 @@ components:
         guild_name: { type: string }
         zone_key: { type: string }
         zone_name: { type: string }
+        zone_icon: { type: string, description: "The zone's icon, a name under /data/{build}/icons. Always sent; optional for older bodies." }
         starts_at: { type: string, format: date-time }
         ends_at: { type: string, format: date-time, description: starts_at plus the raid's length. }
         status: { type: string, enum: [planned, locked, done, cancelled] }
@@ -3502,6 +3508,8 @@ components:
               slot: { type: string, description: The slot label, e.g. Back. }
               boss: { type: string }
               awarded_by: { type: string, description: The awarding officer's character name; "" when unknown. }
+              gain: { type: [number, "null"], description: "The upgrade over the worn gear, the Loot tab's gain for the character's band; null when the band cannot say." }
+              unit: { type: [string, "null"], enum: [DPS, HPS, TPS, null], description: What gain counts. }
               replaces:
                 type: [object, "null"]
                 title: RaidNightReplaces

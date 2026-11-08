@@ -50,6 +50,7 @@ type RaidNightSummary struct {
 	GuildName  string             `json:"guild_name"`
 	ZoneKey    string             `json:"zone_key"`
 	ZoneName   string             `json:"zone_name"`
+	ZoneIcon   string             `json:"zone_icon"`
 	StartsAt   time.Time          `json:"starts_at"`
 	EndsAt     time.Time          `json:"ends_at"`
 	Status     string             `json:"status"`
@@ -114,6 +115,10 @@ type RaidNightLoot struct {
 	Boss      string            `json:"boss"`
 	AwardedBy string            `json:"awarded_by"`
 	Replaces  *RaidNightReplace `json:"replaces"`
+	// Gain is the upgrade the item is over the worn gear, the Loot tab's gain (bisMatch) in
+	// Unit (DPS, HPS or TPS); both null when the character's band cannot say.
+	Gain *float64 `json:"gain"`
+	Unit *string  `json:"unit"`
 }
 
 // RaidNightReplace is the item a drop replaced; the night does not know it yet, so it is null.
@@ -199,7 +204,7 @@ func (s *Service) RaidNightOf(ctx context.Context, viewerID, raidID int64, now t
 func raidNightHead(g Guild, raid Raid, view RaidView, now time.Time) RaidNightSummary {
 	start := raid.StartsAt.UTC()
 	out := RaidNightSummary{
-		RaidID: raid.ID, GuildID: g.ID, GuildName: g.Name, ZoneKey: raid.Zone, ZoneName: view.ZoneName,
+		RaidID: raid.ID, GuildID: g.ID, GuildName: g.Name, ZoneKey: raid.Zone, ZoneName: view.ZoneName, ZoneIcon: view.ZoneIcon,
 		StartsAt: start, EndsAt: start.Add(time.Duration(raid.DurationMinutes) * time.Minute), Status: raid.Status,
 		Loot: []RaidNightLoot{}, Bests: []RaidNightBest{},
 	}

@@ -6726,6 +6726,10 @@ public struct RaidNightLoot: Codable, Sendable, Equatable {
     public let boss: String
     /// The awarding officer's character name; "" when unknown.
     public let awardedBy: String
+    /// The upgrade over the worn gear, the Loot tab's gain for the character's band; null when the band cannot say.
+    public let gain: Double?
+    /// What gain counts.
+    public let unit: String?
     /// The item it replaced; null until the export after the night says.
     public let replaces: RaidNightReplaces?
 
@@ -6737,6 +6741,8 @@ public struct RaidNightLoot: Codable, Sendable, Equatable {
         slot: String,
         boss: String,
         awardedBy: String,
+        gain: Double? = nil,
+        unit: String? = nil,
         replaces: RaidNightReplaces? = nil
     ) {
         self.itemId = itemId
@@ -6746,6 +6752,8 @@ public struct RaidNightLoot: Codable, Sendable, Equatable {
         self.slot = slot
         self.boss = boss
         self.awardedBy = awardedBy
+        self.gain = gain
+        self.unit = unit
         self.replaces = replaces
     }
 }
@@ -6879,6 +6887,8 @@ public struct RaidNightSummary: Codable, Sendable, Equatable {
     public let guildName: String
     public let zoneKey: String
     public let zoneName: String
+    /// The zone's icon, a name under /data/{build}/icons. Always sent; optional for older bodies.
+    public let zoneIcon: String?
     public let startsAt: Date
     /// starts_at plus the raid's length.
     public let endsAt: Date
@@ -6909,6 +6919,7 @@ public struct RaidNightSummary: Codable, Sendable, Equatable {
         guildName: String,
         zoneKey: String,
         zoneName: String,
+        zoneIcon: String? = nil,
         startsAt: Date,
         endsAt: Date,
         status: String,
@@ -6930,6 +6941,7 @@ public struct RaidNightSummary: Codable, Sendable, Equatable {
         self.guildName = guildName
         self.zoneKey = zoneKey
         self.zoneName = zoneName
+        self.zoneIcon = zoneIcon
         self.startsAt = startsAt
         self.endsAt = endsAt
         self.status = status
@@ -6954,6 +6966,7 @@ public struct RaidNightSummary: Codable, Sendable, Equatable {
         guildName = try c.decode(String.self, forKey: .guildName)
         zoneKey = try c.decode(String.self, forKey: .zoneKey)
         zoneName = try c.decode(String.self, forKey: .zoneName)
+        zoneIcon = try c.decodeIfPresent(String.self, forKey: .zoneIcon)
         startsAt = try c.decode(Date.self, forKey: .startsAt)
         endsAt = try c.decode(Date.self, forKey: .endsAt)
         status = try c.decode(String.self, forKey: .status)
@@ -7316,6 +7329,10 @@ public struct RaidView: Codable, Sendable, Equatable {
     public let status: String
     public let size: Int?
     public let guildTimezone: String
+    /// The zone's icon, a name under /data/{build}/icons (inv_misc_head_dragon_black for Onyxia's Lair). Always sent; optional for older bodies.
+    public let zoneIcon: String?
+    /// The sign-up deadline. No guild stores one yet, so it is null; officers lock a raid by hand.
+    public let answerBy: Date?
     public let notes: String
     /// Sanitised HTML of notes; render it.
     public let notesHtml: String
@@ -7355,6 +7372,8 @@ public struct RaidView: Codable, Sendable, Equatable {
         status: String,
         size: Int? = nil,
         guildTimezone: String,
+        zoneIcon: String? = nil,
+        answerBy: Date? = nil,
         notes: String,
         notesHtml: String,
         counts: RaidCounts,
@@ -7385,6 +7404,8 @@ public struct RaidView: Codable, Sendable, Equatable {
         self.status = status
         self.size = size
         self.guildTimezone = guildTimezone
+        self.zoneIcon = zoneIcon
+        self.answerBy = answerBy
         self.notes = notes
         self.notesHtml = notesHtml
         self.counts = counts
@@ -7418,6 +7439,8 @@ public struct RaidView: Codable, Sendable, Equatable {
         status = try c.decode(String.self, forKey: .status)
         size = try c.decodeIfPresent(Int.self, forKey: .size)
         guildTimezone = try c.decode(String.self, forKey: .guildTimezone)
+        zoneIcon = try c.decodeIfPresent(String.self, forKey: .zoneIcon)
+        answerBy = try c.decodeIfPresent(Date.self, forKey: .answerBy)
         notes = try c.decode(String.self, forKey: .notes)
         notesHtml = try c.decode(String.self, forKey: .notesHtml)
         counts = try c.decode(RaidCounts.self, forKey: .counts)

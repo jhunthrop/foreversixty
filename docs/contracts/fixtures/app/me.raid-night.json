@@ -6,6 +6,7 @@
     "guild_name": "OLYMPUS XXVII",
     "zone_key": "raid:onyxias-lair",
     "zone_name": "Onyxia's Lair",
+    "zone_icon": "inv_misc_head_dragon_black",
     "starts_at": "2026-12-15T01:00:00Z",
     "ends_at": "2026-12-15T04:00:00Z",
     "status": "done",
@@ -75,7 +76,9 @@
           "name": "Cape of the Black Baron",
           "quality": 3,
           "item_level": 63
-        }
+        },
+        "gain": 12.6,
+        "unit": "DPS"
       }
     ],
     "bests": [
