@@ -20,7 +20,7 @@ The flows primitives every new screen uses: `flows/FlowLayout.kt` (FlowPage, Flo
 
 ## Next
 6. Gear: summary line with Change, Where to go tonight (`WhereToGo.picks` grouped by `source.kind`/`name`: instance, profession, reputation), Every slot (`home/GearModel` and `GearScreen` hold the old Your gear rows; reuse or delete them, `HomeScreenshotTest` still draws them), the item sheet with `GET /v1/guilds/{id}/items/{item}/needs` (`ApiEndpoints.getGuildItemNeeds`). Mocks `gear`, `gear-out`, `item-sheet`.
-7. Glance widgets, LiveNotifier, the QS tile, restyled (mocks `widgets-guild`, `-noguild`, `-open`).
+7. Glance widgets, LiveNotifier, the QS tile, restyled (mocks `widgets-guild`, `-noguild`, `-open`). api-live is on main (60e6adbb0): FCM data kinds `live.raid.start` and `live.raid.end` drive the ongoing raid-night notification (`widgets/live/LiveNotifier`); `POST /v1/me/live-activities/start-token {platform: "android", kind: "raid", token}` registers the FCM token for it; the widget answer gains `source_line`, `first_raids_zones` and the next raid's counts. Shapes: the session scratchpad's `api-flows-shapes.md` and `api/openapi.yaml`.
 8. The secondary screens restyled, among them the in-app Notification settings (mock `notification-settings`; the menu row opens Android's own channel screen today) with the `officer_dms` toggle (see below).
 
 ## api-ping-role (wired)
