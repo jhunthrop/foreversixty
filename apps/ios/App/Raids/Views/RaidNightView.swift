@@ -158,8 +158,9 @@ struct RaidNightView: View {
                 }
             }
         }
-        if let openReport {
-            Button { openReport(night.reportId) } label: {
+        // The log's links wait for a matched log (report_id null before it).
+        if let openReport, let reportId = night.reportId {
+            Button { openReport(reportId) } label: {
                 HStack {
                     Text(Copy.nightOpenReport).font(ScaledType.bodyStrong).foregroundStyle(FSColor.strong)
                     Spacer()
@@ -172,14 +173,19 @@ struct RaidNightView: View {
             .buttonStyle(RowPressStyle())
             .raidCardBox(0).quietCard()
         }
-        Button(Copy.nightReport) { openURL(RaidLinks.report(night.reportId)) }.buttonStyle(GoldLinkStyle())
+        if let reportId = night.reportId {
+            Button(Copy.nightReport) { openURL(RaidLinks.report(reportId)) }.buttonStyle(GoldLinkStyle())
+        }
     }
 
     @ViewBuilder
     private func figures(_ night: RaidNightSummary) -> some View {
-        figure(night.kills, Copy.nightKill(n: night.kills))
-        figure(night.wipes, Copy.nightWipes(n: night.wipes))
-        figure(night.newBests, Copy.nightBest(n: night.newBests))
+        // The night's figures come with its log; before it they are null and not drawn.
+        if let kills = night.kills, let wipes = night.wipes, let newBests = night.newBests {
+            figure(kills, Copy.nightKill(n: kills))
+            figure(wipes, Copy.nightWipes(n: wipes))
+            figure(newBests, Copy.nightBest(n: newBests))
+        }
     }
 
     private func who(_ night: RaidNightSummary, alignment: HorizontalAlignment) -> some View {
@@ -239,8 +245,10 @@ struct RaidNightView: View {
             VStack(alignment: .trailing, spacing: 2) {
                 Text(Copy.raidsNightDps(dps: best.dps.formatted(.number.precision(.fractionLength(1)))))
                     .font(ScaledType.mono).foregroundStyle(FSColor.strong)
-                Text(Copy.nightPercentile(ordinal: Self.ordinal(best.percentile)))
-                    .font(ScaledType.meta).foregroundStyle(GameColors.parse(best.percentile))
+                if let percentile = best.percentile {
+                    Text(Copy.nightPercentile(ordinal: Self.ordinal(percentile)))
+                        .font(ScaledType.meta).foregroundStyle(GameColors.parse(percentile))
+                }
             }
         }
         .padding(14)
