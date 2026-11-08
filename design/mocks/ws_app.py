@@ -67,14 +67,34 @@ def _ptr() -> str:
 
 
 def web_screen(mock: str, tab: str | None, back: str = '', title: str = '', share: bool = False, css: str = '', inject: str = '',
-               ptr: bool = False, who: str | None = 'warrior', badges: dict | None = None):
+               ptr: bool = False, who: str | None = 'warrior', badges: dict | None = None, patch: dict[str, str] | None = None):
+    """patch: exact replacements where the app differs from the web page (each must match once, so a web change fails loudly)."""
     def build(platform: str) -> str:
         html = from_web(mock, platform, tab, back, title, share, extra_css=css, who=who, badges=badges)
+        for old, new in (patch or {}).items():
+            if html.count(old) != 1:
+                raise ValueError(f'{mock}: the app patch expects one {old!r}')
+            html = html.replace(old, new)
         if inject or ptr:
             html = html.replace('<main>', '<main>' + (_ptr() if ptr else ''), 1).replace('</main>', inject + '</main>', 1)
         return html
     build.web = True
     return build
+
+
+# The planner's app deltas (coordinator 2026-11-08): the status line names the selected talent with its rank and a visible
+# remove-a-point button (a tap on the talent still adds one); a build from a link arrives with the app's own note.
+PLANNER_STATUS = '<p class="st2" role="status" aria-live="polite"></p>'
+
+
+def _selected(name: str, rank: int, mx: int) -> dict[str, str]:
+    return {PLANNER_STATUS: (f'<p class="st2" role="status" aria-live="polite">{name} &middot; {rank}/{mx} '
+                             '<button type="button" class="btn sm" aria-label="Remove a point">&minus;</button></p>')}
+
+
+PLANNER_YOU = _selected('Endurance Training', 4, 5)
+PLANNER_GUIDE = {**_selected('Deadly Aspects', 5, 5),
+                 "Loaded in the Survival guide's levelling order.": 'From a link; one way to level into this build.'}
 
 
 # ------------------------------------------------------------------------------------------------ app-only screens
@@ -314,8 +334,8 @@ SCREENS: dict = {
     'tiers': W('web-tiers', 'home', back='Home', title='Tiers'),
     'tiers-you': W('web-tiers-you', 'home', back='Home', title='Tiers'),
     # Talents and the planner (the Sims screens are app-composed in ws_app_secondary.py)
-    'planner-you': W('web-planner-you', 'home', back='Home', title='Talents', share=True),
-    'planner-guide': W('web-planner-guide', 'home', back='Home', title='Talents', share=True),
+    'planner-you': W('web-planner-you', 'home', back='Home', title='Talents', share=True, patch=PLANNER_YOU),
+    'planner-guide': W('web-planner-guide', 'home', back='Home', title='Talents', share=True, patch=PLANNER_GUIDE),
     'planner-loading': W('web-planner-loading', 'home', back='Home'),
     'planner-error': W('web-planner-error', 'home', back='Home'),
     'build-shared': W('web-b', 'home', back='Home', share=True),
