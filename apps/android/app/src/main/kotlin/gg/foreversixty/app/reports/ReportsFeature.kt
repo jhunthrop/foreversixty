@@ -28,7 +28,6 @@ import androidx.lifecycle.compose.LifecycleResumeEffect
 import gg.foreversixty.app.account.AccountLinks
 import gg.foreversixty.app.bis.SpecCatalog
 import gg.foreversixty.app.designsystem.FsColor
-import gg.foreversixty.app.model.ReportRow
 import gg.foreversixty.app.navigation.DeepLink
 import gg.foreversixty.app.network.ApiClient
 import gg.foreversixty.app.network.StaticDataClient
@@ -97,9 +96,6 @@ class ReportsFeature(
     val enabled: Boolean get() = isAvailable()
 
     suspend fun iconBuild(): String? = build()
-
-    /** Home's Logs row: the last raid with a boss pull, or null with none. */
-    suspend fun lastRaid(): ReportRow? = ReportsStore(service, cache, now).lastRaid()
 
     companion object {
         fun create(

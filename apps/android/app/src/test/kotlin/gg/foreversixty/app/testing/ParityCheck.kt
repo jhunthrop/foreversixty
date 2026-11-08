@@ -51,11 +51,12 @@ object ParityCheck {
         rule.waitForIdle()
         val suffix = if (fontScale == 1f) "" else "-x${fontScale.toString().replace(".", "_")}"
         val path = "parity/android-$screen$suffix"
+        // The image first, so a failing comparison still leaves the capture to read beside the mock.
+        rule.onRoot().captureRoboImage("src/test/screenshots/$path.png", roborazziOptions = STRICT_SNAPSHOT)
         if (fontScale == 1f) {
             val diffs = ParityRegions.compare(ParityRegions.capture(recorder, density), ParityRegions.reference(screen))
             assertEquals("android-$screen against its mock", expectedDrift.sorted(), diffs.sorted())
             ParityText.assertText(rule, path)
         }
-        rule.onRoot().captureRoboImage("src/test/screenshots/$path.png", roborazziOptions = STRICT_SNAPSHOT)
     }
 }

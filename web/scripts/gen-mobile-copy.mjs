@@ -32,8 +32,70 @@ const SCRIPT = 'web/scripts/gen-mobile-copy.mjs';
 const PLATFORMS = ['ios', 'android'];
 const PLACEHOLDER = /\{([a-zA-Z][a-zA-Z0-9]*)\}/g;
 const KEY = /^[a-z][a-zA-Z0-9]*(\.[a-zA-Z][a-zA-Z0-9]*)*$/;
-/** Placeholder names that are reserved words in Swift: the accessor's label is renamed. */
+/** Placeholder names given a friendlier Swift label than the escaped keyword. */
 const SWIFT_LABELS = { class: 'className' };
+/**
+ * Swift's reserved words (declarations, statements, expressions and patterns). A placeholder named
+ * after one is escaped with backticks, so `{in} in, {late} late` reads `homeRaidCounts(in:late:)`.
+ * The Android side is a strings.xml with positional placeholders, so no Kotlin name is generated.
+ */
+export const SWIFT_RESERVED = new Set([
+  'associatedtype',
+  'class',
+  'deinit',
+  'enum',
+  'extension',
+  'fileprivate',
+  'func',
+  'import',
+  'init',
+  'inout',
+  'internal',
+  'let',
+  'open',
+  'operator',
+  'private',
+  'precedencegroup',
+  'protocol',
+  'public',
+  'rethrows',
+  'static',
+  'struct',
+  'subscript',
+  'typealias',
+  'var',
+  'break',
+  'case',
+  'catch',
+  'continue',
+  'default',
+  'defer',
+  'do',
+  'else',
+  'fallthrough',
+  'for',
+  'guard',
+  'if',
+  'in',
+  'repeat',
+  'return',
+  'throw',
+  'switch',
+  'where',
+  'while',
+  'Any',
+  'as',
+  'await',
+  'false',
+  'is',
+  'nil',
+  'self',
+  'Self',
+  'super',
+  'throws',
+  'true',
+  'try',
+]);
 /** The spec's banned words (section 13), never in any string; "Unlock sign-ups" is the officer action, not an upsell. */
 export const BANNED = [/Go Premium/, /\bUnlock\b(?! sign-ups)/, /\bPro\b/, /Limited time/, /!/];
 
@@ -156,9 +218,9 @@ export function renderXcstrings(entries) {
   return `${JSON.stringify({ sourceLanguage: 'en', strings, version: '1.0' }, null, 2)}\n`;
 }
 
-const swiftLabel = (name) => SWIFT_LABELS[name] ?? name;
+export const swiftLabel = (name) => SWIFT_LABELS[name] ?? (SWIFT_RESERVED.has(name) ? `\`${name}\`` : name);
 
-function swiftAccessor(e) {
+export function swiftAccessor(e) {
   const name = camel(e.key.replaceAll('.', '_'));
   const sample = e.plural ? e.forms.ios.other : e.forms.ios.text;
   const doc = `    /// ${docLine(sample)}`;

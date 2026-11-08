@@ -6,7 +6,6 @@ import gg.foreversixty.app.search.SearchRankings
 import gg.foreversixty.app.common.Connectivity
 import android.content.Context
 import android.content.Intent
-import android.content.res.Resources
 import gg.foreversixty.app.bis.SpecCatalog
 import gg.foreversixty.app.items.ItemCatalog
 import gg.foreversixty.app.navigation.DeepLink
@@ -15,10 +14,8 @@ import gg.foreversixty.app.network.StaticDataClient
 import gg.foreversixty.app.network.dataOrNull
 import gg.foreversixty.app.raids.logic.FileRaidCache
 import gg.foreversixty.app.raids.logic.RaidCache
-import gg.foreversixty.app.rankings.logic.BoardPhase
 import gg.foreversixty.app.rankings.logic.CharacterRoute
 import gg.foreversixty.app.rankings.logic.LiveRankingsService
-import gg.foreversixty.app.rankings.logic.RankingsCopy
 import gg.foreversixty.app.rankings.logic.RankingsService
 import gg.foreversixty.app.rankings.logic.RankingsStore
 import gg.foreversixty.app.rankings.logic.RankingsViewer
@@ -102,18 +99,6 @@ class RankingsFeature(
     suspend fun iconBuild(): String? = build()
 
     fun store(viewer: RankingsViewer) = RankingsStore(service, cache, viewer, specs, connectivity, now)
-
-    /**
-     * Home's Rankings row (spec F11.1): one read of the current character's board with its
-     * defaults; null while it cannot be read, so the row keeps an empty sub line.
-     */
-    suspend fun homeLine(viewer: RankingsViewer, res: Resources): String? {
-        val store = store(viewer)
-        store.load()
-        val board = (store.phase as? BoardPhase.Loaded)?.board ?: return null
-        val filters = store.filters ?: return null
-        return RankingsCopy(res, zone).homeLine(board.characterRank, board.total, filters, store.encounterNames)
-    }
 
     companion object {
         fun create(

@@ -673,6 +673,37 @@
     <string name="notifications_reminder">Raid-day reminder</string>
     <string name="notifications_reminderLine">If you have not answered: %1$s your time</string>
     <string name="notifications_change">Change</string>
+    <string name="gear_onList" tools:ignore="PluralsCandidate">%1$d of %2$d slots on the list</string>
+    <string name="gear_change">Change</string>
+    <string name="gear_whereTonight">Where to go tonight</string>
+    <string name="gear_everySlot">Every slot</string>
+    <string name="gear_worn">Worn</string>
+    <string name="gear_where_drop">%1$s · %2$s, %3$s</string>
+    <string name="gear_where_boss">%1$s · %2$s</string>
+    <string name="gear_where_ask">%1$s · ask a %2$s</string>
+    <string name="gear_where_rep">%1$s, needs %2$s</string>
+    <string name="gear_crafter_blacksmithing">blacksmith</string>
+    <string name="gear_crafter_leatherworking">leatherworker</string>
+    <string name="gear_crafter_tailoring">tailor</string>
+    <string name="gear_crafter_engineering">engineer</string>
+    <string name="gear_crafter_alchemy">alchemist</string>
+    <string name="gear_crafter_enchanting">enchanter</string>
+    <string name="gear_out_title">Best in slot for your class</string>
+    <string name="gear_out_meta">Pick a class, then a spec and a level range.</string>
+    <string name="gear_out_classes">Classes</string>
+    <string name="gear_sheet_overWorn">over your worn</string>
+    <string name="gear_sheet_where">Where to get it</string>
+    <string name="gear_sheet_runnerUp">Runner-up</string>
+    <string name="gear_sheet_needs">Who in the guild needs it</string>
+    <string name="gear_sheet_needsPick">%1$s · needs it, the pick on their list</string>
+    <string name="gear_sheet_needsRunnerUp">%1$s · needs it, a runner-up on their list</string>
+    <string name="gear_sheet_has">%1$s · has it</string>
+    <string name="gear_sheet_nobody">Nobody in the guild has it on their list.</string>
+    <plurals name="gear_sheet_unknown">
+        <item quantity="one">1 guildmate has not shared their gear yet</item>
+        <item quantity="other">%1$d guildmates have not shared their gear yet</item>
+    </plurals>
+    <string name="gear_sheet_dropChance">%1$s drop chance</string>
     <string name="you_title">You</string>
     <string name="you_signedInWith">Signed in with Battle.net</string>
     <string name="you_plan">Plan</string>
@@ -1187,6 +1218,7 @@
     <string name="live_pullTitleOne">%1$s starts in 1 minute</string>
     <string name="live_pullTitle" tools:ignore="PluralsCandidate">%1$s starts in %2$d minutes</string>
     <string name="live_pullTitleNow">%1$s starts now</string>
+    <string name="live_counts" tools:ignore="PluralsCandidate">%1$d in, %2$d late · %3$d tanks, %4$d heals</string>
     <string name="live_sim" tools:ignore="PluralsCandidate">%1$d of %2$d combinations</string>
     <plurals name="live_simLeft">
         <item quantity="one">about 1 min left</item>
@@ -1573,18 +1605,169 @@
     <string name="share_tiers">%1$s tier list</string>
     <string name="share_report">%1$s · %2$s</string>
     <string name="share_action">Share</string>
-    <string name="home_head_level" tools:ignore="PluralsCandidate">Level %1$d %2$s</string>
+    <string name="raid_group_damage">Damage</string>
+    <string name="home_head_level">Level %1$d %2$s</string>
     <string name="home_head_toBand" tools:ignore="PluralsCandidate">%1$d levels to band %2$d</string>
+    <string name="home_head_toBandOne">1 level to band %1$d</string>
+    <string name="home_upgrades_next">Next upgrades</string>
+    <string name="home_upgrades_gear">Gear ›</string>
+    <string name="home_bestRun">Best run: %1$s, %2$s %3$s</string>
+    <string name="home_bestRun_chance">Best run: %1$s, %2$s %3$s, %4$s</string>
     <string name="home_raid_tonight">%1$s · %2$s tonight</string>
-    <string name="home_raid_inProgress">%1$s · %2$s in progress</string>
+    <string name="home_raid_live">%1$s · %2$s in progress</string>
     <string name="home_raid_hours">hours</string>
-    <string name="home_raid_minutes">min</string>
+    <string name="home_raid_min">min</string>
+    <string name="home_raid_clock" tools:ignore="PluralsCandidate">%1$d hours %2$d minutes</string>
     <string name="home_raid_when">%1$s, %2$s</string>
-    <string name="home_raid_as">as %1$s, %2$s</string>
-    <string name="home_raid_notAnswered">You have not answered, %1$s</string>
-    <string name="home_raid_answered">You are %1$s, %2$s</string>
-    <string name="home_raid_counts" tools:ignore="PluralsCandidate">%1$d in, %2$d late</string>
+    <string name="home_raid_notAnswered">You have not answered, as %1$s, %2$s</string>
+    <string name="home_raid_answered">You are %1$s, as %2$s, %3$s</string>
     <string name="home_raid_lineTitle">%1$s · %2$s</string>
+    <string name="home_raid_lineSub">%1$s · you have not answered, as %2$s, %3$s</string>
+    <string name="home_raid_counts" tools:ignore="PluralsCandidate">%1$d in, %2$d late</string>
+    <plurals name="home_raid_ready">
+        <item quantity="one">1 thing before you pull</item>
+        <item quantity="other">%1$d things before you pull</item>
+    </plurals>
+    <string name="home_raid_readySub">%1$s · from your last log-out, %2$s</string>
+    <string name="home_officer_unanswered" tools:ignore="PluralsCandidate">%1$d have not answered</string>
+    <string name="home_officer_unansweredRole" tools:ignore="PluralsCandidate">%1$d have not answered, %2$d of them %3$s</string>
+    <string name="home_officer_role_tanks">tanks</string>
+    <string name="home_officer_role_healers">healers</string>
+    <string name="home_officer_role_damage">damage</string>
+    <string name="home_officer_short" tools:ignore="PluralsCandidate">%1$s short by %2$d</string>
+    <string name="home_officer_preview">Preview mention</string>
+    <plurals name="home_officer_applicants">
+        <item quantity="one">1 applicant</item>
+        <item quantity="other">%1$d applicants</item>
+    </plurals>
+    <string name="home_live_line">Pulled %1$s · %2$s · you are %3$s as %4$s, %5$s</string>
+    <string name="home_live_lineNoAnswer">Pulled %1$s · %2$s</string>
+    <string name="home_live_open">Open raid night ›</string>
+    <string name="home_lastNight">Last night</string>
+    <string name="home_lastNight_sim">Sim again with your new gear</string>
+    <string name="home_lastNight_simSub">Your sim is from before last night</string>
+    <string name="home_newForYou">New for you</string>
+    <string name="home_allActivity">All activity ›</string>
+    <string name="home_allActivity_count" tools:ignore="PluralsCandidate">All activity (%1$d) ›</string>
+    <string name="home_findGuild_line">Raid with a guild that plans its nights here, and answer its raids from the app.</string>
+    <string name="home_findGuild_firstRaids">Raid with a guild that plans its nights here, and answer its raids from the app. The first raids open %1$s.</string>
+    <string name="home_findGuild">Find a guild</string>
+    <string name="home_error_title">We could not load your home</string>
+    <string name="home_error_sub">Check your connection</string>
+    <string name="home_new_title">Your characters are on their way</string>
+    <string name="home_new_line">Battle.net lists a character after you play it and log out.</string>
+    <string name="home_new_check">Check again</string>
+    <string name="home_yesterday">yesterday</string>
+    <string name="raid_tab_nextRaid">Next raid</string>
+    <string name="raid_tab_needsYou">Needs you</string>
+    <string name="raid_tab_open" tools:ignore="PluralsCandidate">%1$d open</string>
+    <string name="raid_tab_noRaid">No raid planned yet. Your officers plan raids on the site; a push tells you the moment one is posted.</string>
+    <string name="raid_tab_raidNight">Raid night</string>
+    <string name="raid_tab_roleLine" tools:ignore="PluralsCandidate">%1$s %2$d of %3$d</string>
+    <string name="raid_tab_lateNote" tools:ignore="PluralsCandidate">%1$s (Late, %2$d min)</string>
+    <string name="raid_tab_readyCheck">Ready check</string>
+    <string name="raid_tab_stamp">From your last log-out, %1$s</string>
+    <string name="raid_tab_roster">Roster</string>
+    <string name="raid_tab_calendar">Calendar</string>
+    <string name="raid_tab_loot">Loot history</string>
+    <string name="raid_tab_sims">Guild sims</string>
+    <string name="raid_tab_calendarItem">%1$s %2$s</string>
+    <string name="raid_tab_withGuild">Raid with a guild</string>
+    <string name="raid_tab_withGuildLine">Guilds that plan their raids here</string>
+    <string name="raid_tab_recruiting">Guilds recruiting a %1$s</string>
+    <string name="raid_tab_apply">Apply</string>
+    <string name="raid_tab_notHere">Your guild is not here?</string>
+    <string name="raid_tab_claimLine">Claim it: a guild master or an officer confirms with the addon or Battle.net.</string>
+    <string name="raid_tab_claim">Claim your guild</string>
+    <string name="raid_tab_leveler">Raids start at 60</string>
+    <string name="raid_tab_levelsToGo" tools:ignore="PluralsCandidate">%1$d levels to go</string>
+    <string name="raid_tab_levelerLine">Onyxia\'s Lair, Barrow Deeps and Hyjal Summit open at 60. Join a guild on the way and its raids show here.</string>
+    <string name="raid_tab_outLine">Sign up for your guild\'s raids from your phone.</string>
+    <string name="raid_na_title">Not answered</string>
+    <string name="raid_na_all">All</string>
+    <string name="raid_na_filter" tools:ignore="PluralsCandidate">%1$s %2$d</string>
+    <string name="raid_na_mentionRole">Mention the %1$s in Discord</string>
+    <string name="raid_na_mentionAll" tools:ignore="PluralsCandidate">Mention all %1$d</string>
+    <string name="raid_na_preview">%1$s: %2$s is %3$s and we need %4$s. Answer In, Late, Bench or Out in the app or on the raid page.</string>
+    <string name="raid_na_previewAll">%1$s: %2$s is %3$s. Answer In, Late, Bench or Out in the app or on the raid page.</string>
+    <string name="raid_na_meta" tools:ignore="PluralsCandidate">%1$d of %2$d, %3$s first</string>
+    <string name="raid_na_metaPlain" tools:ignore="PluralsCandidate">%1$d of %2$d</string>
+    <string name="raid_na_markIn">Mark In</string>
+    <string name="raid_na_discordDM">Discord DM</string>
+    <string name="raid_na_marked">Marked %1$s</string>
+    <string name="raid_na_undo">Undo</string>
+    <string name="raid_na_lastWeek">was %1$s last week</string>
+    <string name="raid_na_missed">missed last week</string>
+    <string name="raid_na_new">new this week</string>
+    <string name="raid_na_sub">%1$s · %2$s</string>
+    <string name="raid_na_bench">%1$s on the bench</string>
+    <string name="raid_na_onBench">on the bench</string>
+    <string name="raid_na_fills">If %1$s are In, %2$s are full.</string>
+    <string name="raid_na_site">Creating and editing raids stays on the site.</string>
+    <string name="raid_na_siteLink">Edit on the site ›</string>
+    <string name="raid_na_empty">Everyone has answered.</string>
+    <string name="raid_na_mentioned">Mentioned %1$s in Discord.</string>
+    <string name="raid_na_mentionedAll" tools:ignore="PluralsCandidate">Mentioned %1$d in Discord.</string>
+    <string name="raid_na_noDiscord">Nobody to mention: none of them has linked Discord.</string>
+    <plurals name="raid_na_recently">
+        <item quantity="one">1 was mentioned in the last 6 hours and was left out.</item>
+        <item quantity="other">%1$d were mentioned in the last 6 hours and were left out.</item>
+    </plurals>
+    <string name="raid_list_and">%1$s and %2$s</string>
+    <string name="flows_backTo">Back to %1$s</string>
+    <string name="raid_recruit_line">%1$s · %2$s · needs %3$s</string>
+    <string name="raid_night_short" tools:ignore="PluralsCandidate">%1$s · %2$d short</string>
+    <string name="raid_night_more" tools:ignore="PluralsCandidate">%1$s and %2$d more</string>
+    <string name="raid_night_aside">%1$s · %2$s</string>
+    <string name="raid_night_youAre">You are %1$s</string>
+    <string name="raid_night_beforePull">Before you pull</string>
+    <string name="raid_night_roster">Roster ›</string>
+    <string name="raid_applicant_score">Forever Score</string>
+    <string name="raid_applicant_sim">Sim</string>
+    <string name="raid_applicant_itemLevel">Item level</string>
+    <string name="raid_applicant_ready">Raid ready</string>
+    <string name="raid_applicant_attuned">Attuned to %1$s</string>
+    <string name="raid_applicant_notAttuned">Not attuned to %1$s</string>
+    <string name="raid_applicant_attuneUnknown">%1$s: attunement not seen yet</string>
+    <string name="raid_applicant_enchants">Enchants</string>
+    <string name="raid_applicant_enchantsLine" tools:ignore="PluralsCandidate">%1$d of %2$d slots</string>
+    <string name="raid_applicant_enchantsMissing">%1$s · %2$s missing</string>
+    <string name="raid_applicant_slot_back">cloak</string>
+    <string name="raid_applicant_slot_feet">boots</string>
+    <string name="raid_applicant_slot_hands">gloves</string>
+    <string name="raid_applicant_slot_wrist">bracers</string>
+    <string name="raid_applicant_slot_chest">chest</string>
+    <string name="raid_applicant_slot_legs">legs</string>
+    <string name="raid_applicant_slot_shoulder">shoulders</string>
+    <string name="raid_applicant_slot_head">head</string>
+    <string name="raid_applicant_slot_weapon">weapon</string>
+    <string name="raid_applicant_gap">Best in slot gap</string>
+    <plurals name="raid_applicant_pieces">
+        <item quantity="one">1 piece</item>
+        <item quantity="other">%1$d pieces</item>
+    </plurals>
+    <string name="raid_applicant_gapLine">%1$s from the %2$s list</string>
+    <string name="raid_applicant_history">Guild history</string>
+    <plurals name="raid_applicant_raids">
+        <item quantity="one">1 raid</item>
+        <item quantity="other">%1$d raids</item>
+    </plurals>
+    <string name="raid_applicant_historyLine">%1$s · last raid %2$s</string>
+    <string name="raid_applicant_note">Their note</string>
+    <string name="raid_applicant_accept">Accept into guild</string>
+    <string name="raid_applicant_decline">Decline</string>
+    <string name="raid_applicant_role">Their raid role comes from their spec when they answer a raid.</string>
+    <string name="raid_applicant_kind" tools:ignore="PluralsCandidate">%1$s · %2$d</string>
+    <string name="raid_applicant_applied">applied %1$s</string>
+    <string name="raid_applicant_accepted">Accepted into %1$s. Invite %2$s in game:</string>
+    <string name="raid_applicant_ginvite">/ginvite %1$s</string>
+    <string name="raid_applicant_copy">Copy</string>
+    <string name="raid_applicant_after">%1$s shows on the roster once the addon or Battle.net sees the character in the guild.</string>
+    <string name="raid_applicant_line" tools:ignore="PluralsCandidate">%1$s, %2$s %3$d, %4$s</string>
+    <string name="raid_applicant_failed">We could not load this application</string>
+    <string name="home_raid_inProgress">%1$s · %2$s in progress</string>
+    <string name="home_raid_minutes">min</string>
+    <string name="home_raid_as">as %1$s, %2$s</string>
     <string name="home_raid_lineOpen">%1$s · you have not answered, %2$s</string>
     <string name="home_raid_pulled">Pulled %1$s ago · %2$s · you are %3$s %4$s</string>
     <string name="home_raid_openNight">Open raid night ›</string>
@@ -1595,27 +1778,12 @@
         <item quantity="other">%1$d things before you pull</item>
     </plurals>
     <string name="home_ready_line">%1$s · from your last log-out, %2$s</string>
-    <plurals name="home_officer_unanswered">
-        <item quantity="one">1 has not answered</item>
-        <item quantity="other">%1$d have not answered</item>
-    </plurals>
-    <string name="home_officer_unansweredRole" tools:ignore="PluralsCandidate">%1$d have not answered, %2$d of them %3$s</string>
-    <string name="home_officer_short" tools:ignore="PluralsCandidate">%1$s short by %2$d</string>
     <string name="home_officer_previewMention">Preview mention</string>
-    <plurals name="home_officer_applicants">
-        <item quantity="one">1 applicant</item>
-        <item quantity="other">%1$d applicants</item>
-    </plurals>
     <string name="home_officer_applicant" tools:ignore="PluralsCandidate">%1$s, %2$s %3$d, %4$s</string>
     <string name="home_role_tanks">tanks</string>
     <string name="home_role_healers">healers</string>
     <string name="home_role_damage">damage</string>
-    <string name="home_upgrades_next">Next upgrades</string>
-    <string name="home_upgrades_gear">Gear ›</string>
     <string name="home_upgrades_gain">%1$s %2$s</string>
-    <string name="home_bestRun">Best run: %1$s, %2$s %3$s</string>
-    <string name="home_bestRun_chance">Best run: %1$s, %2$s %3$s, %4$s</string>
-    <string name="home_lastNight">Last night</string>
     <string name="home_lastNight_loot">You got it from %1$s · %2$s</string>
     <string name="home_lastNight_lootGain">You got it from %1$s · %2$s, %3$s over your worn</string>
     <string name="home_lastNight_report">%1$s report</string>
@@ -1626,19 +1794,12 @@
     </plurals>
     <string name="home_lastNight_simAgain">Sim again with %1$s</string>
     <string name="home_lastNight_simAgainLine">Your sim is from before it dropped</string>
-    <string name="home_newForYou">New for you</string>
     <string name="home_newForYou_all">All activity ›</string>
     <string name="home_newForYou_allUnread" tools:ignore="PluralsCandidate">All activity (%1$d) ›</string>
     <string name="home_newForYou_line">%1$s · %2$s</string>
     <string name="home_findGuild_title">Raid with a guild</string>
-    <string name="home_findGuild_line">Raid with a guild that plans its nights here, and answer its raids from the app.</string>
-    <string name="home_findGuild_firstRaids">Raid with a guild that plans its nights here, and answer its raids from the app. The first raids open %1$s.</string>
     <string name="home_findGuild_button">Find a guild</string>
-    <string name="home_error_title">We could not load your home</string>
     <string name="home_error_line">Check your connection</string>
-    <string name="home_new_title">Your characters are on their way</string>
-    <string name="home_new_line">Battle.net lists a character after you play it and log out.</string>
-    <string name="home_new_check">Check again</string>
     <string name="shared_cta_getAddonAndCompanion">Get the addon and companion</string>
     <string name="shared_cta_installAddonAndCompanion">Install the addon and the companion</string>
     <string name="shared_cta_installAddonAndCompanionInline">install the addon and the companion</string>

@@ -63,6 +63,14 @@ class ActivityFeature(
         (service.page(null, null) as? ApiResult.Success)?.data?.let { unread = it.unread }
     }
 
+    /** Home's New for you: the newest page across every group, and the badge's count with it. */
+    suspend fun preview(): List<ActivityRow>? {
+        if (!signedIn()) return null
+        val page = (service.page(null, null) as? ApiResult.Success)?.data ?: return null
+        unread = page.unread
+        return page.rows
+    }
+
     suspend fun load(filter: ActivityFilter = this.filter) {
         this.filter = filter
         if (state !is ActivityState.Loaded) state = ActivityState.Loading

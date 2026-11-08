@@ -152,6 +152,13 @@ class SignupController(
         save(key, state, null)
     }
 
+    /** Late's minutes (spec 2026-11-08 F1): Late again with how late; the chips show once Late is the answer. */
+    suspend fun pressLate(key: String, minutes: Int) {
+        if (!segmentsEnabled(key) || block(key).busy) return
+        deps.haptics.selection()
+        save(key, SignupState.Late, null, minutes)
+    }
+
     fun changeSpec(key: String) {
         if (segmentsEnabled(key)) specAsk = SpecAsk.Change(key)
     }
@@ -174,11 +181,11 @@ class SignupController(
         specAsk = null
     }
 
-    private suspend fun save(key: String, state: SignupState, spec: RaidSpecOption?) {
+    private suspend fun save(key: String, state: SignupState, spec: RaidSpecOption?, lateMinutes: Int? = null) {
         val previous = block(key).shown
         val name = character(key)?.name.orEmpty()
         update(key) { it.copy(shown = state, busy = true, status = null) }
-        val request = SignupRequest(state = state.wire, note = notes[key].orEmpty(), spec = spec?.spec)
+        val request = SignupRequest(state = state.wire, note = notes[key].orEmpty(), spec = spec?.spec, lateMinutes = lateMinutes)
         when (val result = deps.service.signup(guild, raid.id, key, request)) {
             is ApiResult.Success -> {
                 offline = false
