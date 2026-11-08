@@ -14,11 +14,15 @@ struct ItemLineView: View {
     let build: String
 
     static let minHeight: CGFloat = 58
+    /// Measured on the mocks' rows: a one-line-source row is 62 high.
+    static let iconDescent: CGFloat = 6
 
     var body: some View {
         HStack(spacing: FSSpace.space3) {
             ItemIconView(icon: icon, quality: quality, build: build, size: FSSize.icon40)
                 .parityItem(.image)
+                // The web's `.irow` icon is inline, so its row carries the line's descent under it.
+                .padding(.bottom, Self.iconDescent)
             VStack(alignment: .leading, spacing: 0) {
                 Text(name).type(FSType.item).foregroundStyle(ItemQuality(value: quality).text)
                 Text(source).type(RowType.sub).foregroundStyle(FSColor.muted)
