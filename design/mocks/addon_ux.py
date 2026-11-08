@@ -239,7 +239,7 @@ def board_item_before():
         l(f'<span style="color:{m}">Next upgrade:</span> {iname(3021)} <span style="color:{ADDON["success"]}">+3.5 DPS</span>'),
         l('(+1 Agi, +3.4 weapon DPS)', color=m),
         l('Planned for your build', color=ADDON['gold']),
-        l('World drop · check the AH', color=m),
+        l('World drop', color=m),
         l('Also good:', color=m),
         l(f'&nbsp;&nbsp;&nbsp;&nbsp;{iname(13136)} <span style="color:{m}">+2.2</span>', color=m),
         l('&nbsp;&nbsp;&nbsp;&nbsp;(needs bullets)', color=m),
@@ -274,7 +274,7 @@ def shift_block_bow():
 
 
 def board_item_after():
-    lines = short_ash_bow() + verdict_next(3021, '3.5', 'World drop · check the AH')
+    lines = short_ash_bow() + verdict_next(3021, '3.5', 'World drop')
     compare = tooltip(ranger_bow(), tag='Next upgrade', width=262)
     body = (f'<p class="cap"><b>After</b> · the same hover: one answer, one supporting line, no header, no gap</p>'
             f'<div class="row" style="padding-top:18px">{tooltip(lines, width=290)}{compare}</div>')
@@ -282,7 +282,7 @@ def board_item_after():
 
 
 def board_item_after_shift():
-    lines = short_ash_bow() + verdict_next(3021, '3.5', 'World drop · check the AH') + shift_block_bow()
+    lines = short_ash_bow() + verdict_next(3021, '3.5', 'World drop') + shift_block_bow()
     compare = tooltip(ranger_bow(), tag='Next upgrade', width=262)
     body = (f'<p class="cap"><b>After, Shift held</b> · the client\'s compare and our details arrive together</p>'
             f'<div class="row" style="padding-top:18px">{tooltip(lines, width=330)}{compare}</div>')
@@ -310,7 +310,7 @@ def board_item_states():
              '<b>3 · Worn, and it is the pick</b>'),
         mini(iname(3039), [l(f'{up}In your bags: {iname(3021)} <span style="color:{green}">+3.5 DPS</span>')],
              '<b>4 · Worn, a bag item beats it</b> · the slot carries the arrow'),
-        mini(iname(285279), [l('Sidegrade', color=g)], '<b>5 · Sidegrade</b> · the size sits behind Shift'),
+        mini(iname(285279), [l('Sidegrade', color=g)], '<b>5 · Sidegrade</b> · +0.8 DPS, under the 1.0 floor; the size sits behind Shift'),
         mini(iname(13136), [l('Downgrade −1.3 DPS', color=g)], '<b>6 · Downgrade</b>'),
         mini(iname(6087), [l('Not for you until level 40', color=g)],
              '<b>7 · A Forever rule</b> · hunters wear mail at 40; the client\'s red line says why'),
@@ -416,26 +416,22 @@ def board_player_before():
 def board_player_after():
     g = C['grey']
     base = player_lines()
-    plain = base + [l('Forever Score 1240', color=TIER['Rare']), '<div class="gap"></div>',
-                    l('&lt;Right click for Frame Settings&gt;', color=C['green'])]
+    plain = base + [l('Forever Score 1240', color=TIER['Rare'])]
     shift = base + [
         l('Forever Score 1240', color=TIER['Rare']),
         l('Gear', '310', color=g, rcolor='#fff'), l('Experience', '220', color=g, rcolor='#fff'),
         l('Parses', '410', color=g, rcolor='#fff'), l('Attendance', '180', color=g, rcolor='#fff'),
-        l('Preparation', '120', color=g, rcolor='#fff'),
-        l('Level 24 Beast Mastery · gear gap 12, live', color=g),
-        l('As of 13 Oct · /fs link opens their page', color='#8a8a8a'),
-        '<div class="gap"></div>', l('&lt;Right click for Frame Settings&gt;', color=C['green']),
+        l('Preparation (flasks, food, enchants)', '120', color=g, rcolor='#fff'),
     ]
     stale = base[:1] + [l('…', color='#777'), l('Forever Score 1240 (13 Oct)', color=TIER['Rare'])]
     body = (f'<p class="cap"><b>After</b> · one line in the tier\'s colour (the colour is the tier), Shift for the '
             f'parts; a score over a week old carries its date</p>'
             f'<div class="row">'
             f'<div class="col"><div class="note"><b>Default</b></div>{tooltip(plain, width=330)}</div>'
-            f'<div class="col"><div class="note"><b>Shift held</b> (parts are illustrative; the record sums to 1240)</div>'
-            f'{tooltip(shift, width=330)}</div>'
+            f'<div class="col"><div class="note"><b>Shift held</b> (part values are layout figures; the record sums '
+            f'to 1240)</div>{tooltip(shift, width=330)}</div>'
             f'<div class="col"><div class="note"><b>Score older than 7 days</b></div>{tooltip(stale, width=250)}'
-            f'<div class="note">No logs, no record, or "Gear tips" off: no line at all.</div></div></div>')
+            f'<div class="note">No record or no rated fights, or "Gear tips" off: no line at all.</div></div></div>')
     return page(body)
 
 
@@ -465,74 +461,106 @@ def board_chip():
     text = 'Next talent at 25: Lethal Attacks'
     frames = ''.join(
         f'<div class="col" style="gap:4px"><div class="note">{t}</div>{minimap(chip(text, ring=r), 120)}</div>'
-        for t, r in (('0.0 s', .3), ('0.8 s', 1.0), ('1.6 s, and around again', .3)))
+        for t, r in (('0.0 s', .3), ('0.8 s', 1.0), ('1.6 s; five cycles, then still', .3)))
     hover = tooltip([
-        l(text, color='#fff'),
         l('Click: open Forever Sixty', color='#8a8a8a'),
         l('Right-click: hide until level 25', color='#8a8a8a'),
-    ], width=270)
+    ], width=250)
+    raid = chip('Tonight 8:00 pm: Onyxia\'s Lair')
     before = minimap(chip('', icon_alpha=.4), 140)
     body = (f'<p class="cap"><b>Before</b> · the idle chip today: a class icon at 40% beside the minimap, no words '
             f'(the owner missed it)</p>{before}'
-            f'<p class="cap" style="margin-top:18px"><b>After</b> · the chip always says one thing in words, and pulses '
-            f'a gold ring (1.6 s, ease in and out) until it is clicked once on this account</p>'
+            f'<p class="cap" style="margin-top:18px"><b>After</b> · the chip always says one thing in words. Until it is '
+            f'clicked or hovered once, it pulses a gold ring for five cycles (8 s) after each login, for at most three '
+            f'logins, never in combat</p>'
             f'<div class="row">{frames}</div>'
-            f'<p class="cap" style="margin-top:18px"><b>After, hover</b> · three lines; the build, the legend and the '
-            f'move hint moved to the panel and the welcome</p>'
-            f'<div class="row">{minimap(chip(text), 120)}{hover}</div>')
+            f'<p class="cap" style="margin-top:18px"><b>After, hover</b> · the two things a click does; the line itself '
+            f'repeats only when the chip had to shorten it</p>'
+            f'<div class="row">{minimap(chip(text), 120)}{hover}</div>'
+            f'<p class="cap" style="margin-top:18px"><b>After, raid day at 60</b> · the raid outranks every other state '
+            f'from 18 hours before the pull</p>{minimap(raid, 120)}')
     return page(body)
 
 
 # =================================================================================================
-# Welcome
+# Welcome: a callout docked to the chip, not a window in the middle of the screen
 # =================================================================================================
 def bag_slot_illustration():
-    return (f'<div style="position:relative;width:46px;height:46px;border-radius:4px;background:#1b1e26;'
-            f'box-shadow:inset 0 0 0 1px #000,0 0 0 1px #4a4f5c">'
-            f'<img src="{icon_uri("inv_weapon_bow_11")}" style="position:absolute;inset:3px;width:40px;height:40px;'
+    return (f'<div style="position:relative;width:40px;height:40px;border-radius:4px;background:#1b1e26;'
+            f'box-shadow:inset 0 0 0 1px #000,0 0 0 1px #4a4f5c;flex:none">'
+            f'<img src="{icon_uri("inv_weapon_bow_11")}" style="position:absolute;inset:3px;width:34px;height:34px;'
             f'border-radius:3px;box-shadow:0 0 0 1px {QUALITY[3]}">'
-            f'<div style="position:absolute;top:-4px;right:-5px">{arrow(17)}</div></div>')
+            f'<div style="position:absolute;top:-4px;right:-5px">{arrow(15)}</div></div>')
 
 
 def talent_illustration():
-    return (f'<div style="position:relative;width:46px;height:46px">'
-            f'<img src="{icon_uri("ability_searingarrow")}" style="position:absolute;inset:4px;width:38px;height:38px;'
-            f'border-radius:4px;box-shadow:0 0 0 2px #ffd100,0 0 10px 3px rgba(255,209,0,.6)">'
-            f'<div style="position:absolute;right:-6px;bottom:-5px;font-size:11px;padding:0 4px;border-radius:7px;'
+    return (f'<div style="position:relative;width:40px;height:40px;flex:none">'
+            f'<img src="{icon_uri("ability_searingarrow")}" style="position:absolute;inset:4px;width:32px;height:32px;'
+            f'border-radius:4px;box-shadow:0 0 0 2px #ffd100,0 0 8px 2px rgba(255,209,0,.55)">'
+            f'<div style="position:absolute;right:-6px;bottom:-5px;font-size:10.5px;padding:0 4px;border-radius:7px;'
             f'background:#ffd100;color:#1a1200">13</div></div>')
-
-
-def chip_illustration():
-    return f'<div style="width:46px;display:flex;justify-content:center">{chip("", ring=.9)}</div>'
 
 
 def board_welcome():
     rows = [
-        (bag_slot_illustration(), 'A green arrow on a bag item', 'It beats what you wear. Hover it to see by how much.'),
-        (talent_illustration(), 'A gold ring in your talents', 'Your next point. The numbers are your build\'s order.'),
-        (chip_illustration(), 'This line by your minimap', 'Your next step. Click it for upgrades, talents and rotation.'),
+        (bag_slot_illustration(), 'Green arrow: it beats what you wear. Hover for how much.'),
+        (talent_illustration(), 'Gold ring: your next talent point.'),
     ]
     items = ''.join(
-        f'<div style="display:flex;gap:14px;align-items:center;margin-bottom:14px">{ill}'
-        f'<div><div style="color:{C["gold"]};font-size:14px">{h}</div>'
-        f'<div style="font-size:13px;color:#e8e8e8;line-height:17px">{t}</div></div></div>' for ill, h, t in rows)
-    panel = (f'<div class="frame" style="width:380px"><div class="portrait" style="background-image:url({CREST})"></div>'
-             f'<div class="title">Forever Sixty is on</div><div class="x">×</div>'
-             f'<div class="body" style="padding:16px 18px 14px">{items}'
-             f'<div style="font-size:13px;color:#e8e8e8;margin:4px 0 14px">Hold <span style="color:{C["gold"]}">Shift</span> '
-             f'over any tooltip for the details.</div>'
-             f'<div style="display:flex;justify-content:space-between;align-items:center">'
-             f'<span class="small">/fs help shows this again</span><span class="btn" style="padding:0 22px">Got it</span>'
-             f'</div></div></div>')
-    body = (f'<p class="cap"><b>First login only</b> · once per account, 5 s after entering the world, never in '
-            f'combat or an instance</p>{panel}')
+        f'<div style="display:flex;gap:12px;align-items:center;margin-bottom:10px">{ill}'
+        f'<div style="font-size:13px;color:#e8e8e8;line-height:17px">{t}</div></div>' for ill, t in rows)
+    callout = (f'<div class="tt" style="width:300px;padding:10px 12px 10px">'
+               f'<div style="color:{C["gold"]};font-size:14px;margin-bottom:8px">Forever Sixty is on</div>'
+               f'<div style="font-size:13px;color:#e8e8e8;line-height:17px;margin-bottom:10px">This line is your next '
+               f'step. Click it for your upgrades, talents and rotation.</div>{items}'
+               f'<div style="font-size:13px;color:#e8e8e8;margin:2px 0 10px">Hold '
+               f'<span style="color:{C["gold"]}">Shift</span> on a tooltip for the details.</div>'
+               f'<div style="display:flex;justify-content:space-between;align-items:center">'
+               f'<span class="small">/fs help shows this again</span>'
+               f'<span class="btn" style="padding:0 18px">Got it</span></div>'
+               f'<div style="position:absolute;top:14px;right:-9px;width:0;height:0;border-top:8px solid transparent;'
+               f'border-bottom:8px solid transparent;border-left:9px solid #9095a3"></div></div>')
+    scene = (f'<div style="position:relative;width:800px;height:420px;margin-top:20px">'
+             f'<div style="position:absolute;left:0;top:0">{callout}</div>'
+             f'<div style="position:absolute;left:330px;top:30px">'
+             f'{minimap(chip("Next talent at 25: Lethal Attacks", ring=.9), 160)}</div></div>')
+    body = (f'<p class="cap"><b>First login only</b> · a callout docked to the chip, once per account, never in combat '
+            f'or an instance; Got it, Escape or a click on the chip dismisses it for good</p>{scene}')
+    return page(body)
+
+
+# =================================================================================================
+# Loot roll
+# =================================================================================================
+def roll_frame(verdict_html, marked=True):
+    it = item(17069)
+    mark = f'<div style="position:absolute;top:-5px;right:-6px">{arrow(15)}</div>' if marked else ''
+    buttons = ''.join(f'<span class="btn grey" style="padding:0 7px">{b}</span>' for b in ('Need', 'Greed', 'Pass'))
+    return (f'<div class="frame" style="width:400px;padding:8px 10px;display:flex;gap:10px;align-items:center">'
+            f'<div style="position:relative">{img(it["icon"], 40)}{mark}</div>'
+            f'<div style="flex:1"><div style="color:{QUALITY[4]};font-size:14px">{it["name"]}</div>'
+            f'<div style="font-size:12.5px;white-space:nowrap">{verdict_html}</div></div>'
+            f'<div style="display:flex;gap:4px">{buttons}</div></div>')
+
+
+def board_loot_roll():
+    up = roll_frame(f'<span style="color:{C["green"]}">+5.8 DPS</span>')
+    bis = roll_frame(f'<span style="color:{C["green"]}">+5.8 DPS</span> · '
+                     f'<span style="color:{C["gold"]}">Best in slot</span>')
+    no = roll_frame(f'<span style="color:{C["grey"]}">Not for you</span>', marked=False)
+    body = (f'<p class="cap"><b>After</b> · the group loot roll frame: the same verdict in a few words beside the item, '
+            f'no source (it is dropping in front of you)</p>'
+            f'<div class="col"><div class="note"><b>An upgrade</b> · Striker\'s Mark from Magmadar; the gain is a layout '
+            f'figure</div>{up}<div class="note"><b>An upgrade that is the pick</b></div>{bis}'
+            f'<div class="note"><b>Not usable, or nothing your spec wants</b></div>{no}</div>')
     return page(body)
 
 
 # =================================================================================================
 # The addon panel
 # =================================================================================================
-EQUIP = '<span class="btn" style="height:20px;padding:0 8px;font-size:12px">Equip</span>'
+SMALL_BTN = 'height:20px;padding:0 8px;font-size:12px'
+EQUIP = f'<span class="btn" style="{SMALL_BTN}">Equip</span>'
 
 
 def upgrade_row(icon, name_html, gain, source, bag=False):
@@ -542,82 +570,78 @@ def upgrade_row(icon, name_html, gain, source, bag=False):
             f'{EQUIP if bag else ""}</div>')
 
 
-def spell_row(icon, name, cond, rank=None, dim=False):
-    r = f' <span class="small">Rank {rank}</span>' if rank else ''
+def spell_row(icon, name, cond, dim=False):
     return (f'<div class="irow {"dim" if dim else ""}" style="margin-bottom:5px">{img(icon, 22)}<div class="tx">'
-            f'<div class="n" style="font-size:13px"><span>{name}{r}</span></div>'
+            f'<div class="n" style="font-size:13px"><span>{name}</span></div>'
             f'<div class="s">{cond}</div></div></div>')
 
 
-def panel(name, fact, sections, footer, width=340):
+def panel(name, fact, sections, width=340, score=''):
     body = '<div class="rule"></div>'.join(sections)
     return (f'<div class="frame" style="width:{width}px"><div class="portrait" style="background-image:url({CREST})"></div>'
             f'<div class="title" style="padding-left:30px">Forever Sixty</div><div class="x">×</div>'
-            f'<div class="body"><div style="margin:0 0 10px 34px"><div style="color:#aad372;font-size:15px">{name}</div>'
-            f'<div class="small">{fact}</div></div>{body}'
-            f'<div class="rule"></div><div style="display:flex;justify-content:space-between;align-items:center">'
-            f'{footer}</div></div></div>')
+            f'<div class="body"><div style="margin:0 0 10px 34px"><div style="display:flex;justify-content:space-between;'
+            f'align-items:baseline"><span style="color:#aad372;font-size:15px">{name}</span>{score}</div>'
+            f'<div class="small">{fact}</div></div>{body}</div></div>')
 
 
-def score_line(score, tier, as_of):
-    return (f'<div style="display:flex;justify-content:space-between;align-items:baseline">'
-            f'<span style="color:{TIER[tier]};font-size:13.5px">Forever Score {score}</span>'
-            f'<span class="small">{tier} · as of {as_of}</span></div>')
-
-
-def footer_buttons(sim=False):
-    left = '<span class="btn grey">Change build</span>'
-    right = '<span class="btn grey">Sim me</span>' if sim else '<span class="btn grey">Copy for the site</span>'
-    return left + right
+def score_fact(score, tier):
+    return f'<span class="small">Forever Score <span style="color:{TIER[tier]}">{score}</span></span>'
 
 
 def board_panel_leveller():
-    upgrades = ('<div class="sect">Upgrades<span class="r">Beast Mastery estimate</span></div>'
-                + upgrade_row('inv_weapon_bow_11', iname(3021), '3.5', 'Ranged · World drop · check the AH')
+    upgrades = ('<div class="sect">Upgrades</div>'
+                + upgrade_row('inv_weapon_bow_11', iname(3021), '3.5', 'Ranged · World drop')
                 + upgrade_row('inv_belt_26', iname(10403), '1.1', 'Waist · The Deadmines · Captain Greenskin · 30%')
                 + '<div class="small">Your other slots are best for your level.</div>')
-    talents = (f'<div class="sect">Talents<span class="r">12 of 15 on plan · <span style="color:#ff6b5c">3 off plan</span>'
-               f'</span></div><div class="irow">{img("ability_searingarrow", 30)}<div class="tx"><div class="n">'
+    talents = (f'<div class="sect">Talents<span class="r">12 of 15 on plan · <span style="color:#ff6b5c">3 off plan'
+               f'</span></span></div><div class="irow">{img("ability_searingarrow", 30)}<div class="tx"><div class="n">'
                f'<span>Level 25: Lethal Attacks</span><span class="small">1 of 5</span></div>'
-               f'<div class="s">Beast Mastery / Marksmanship leveling build</div></div>'
-               f'<span class="btn" style="height:20px;padding:0 8px;font-size:12px">Talents</span></div>')
+               f'<div class="s">Beast Mastery leveling · <span style="color:{C["gold"]}">Change</span></div></div>'
+               f'<span class="btn" style="{SMALL_BTN}">Talents</span></div>')
     rotation = ('<div class="sect">Rotation at 24<span class="r">hover for the full rule</span></div>'
                 + spell_row('ability_hunter_snipershot', "Hunter's Mark", 'Whenever the target is not marked')
                 + spell_row('inv_spear_07', 'Aimed Shot', 'Whenever the shared cooldown is up')
                 + spell_row('ability_upgrademoonglaive', 'Multi-Shot', 'On cooldown, above a quarter mana')
                 + spell_row('ability_hunter_quickshot', 'Serpent Sting', 'Under 1.5 seconds left')
+                + spell_row('ability_impalingbolt', 'Arcane Shot', 'To fill a gap')
                 + spell_row('ability_hunter_runningshot', 'Rapid Fire', 'At level 26', dim=True))
-    p = panel('Bow Jackzon', 'Level 24 Hunter · Employed Millennials',
-              [upgrades, talents, rotation, score_line(1240, 'Rare', '13 Oct')], footer_buttons())
-    body = (f'<p class="cap"><b>Levelling</b> · Bow Jackzon, level 24 Beast Mastery, guild without a planned raid</p>'
-            f'<div style="padding:16px 0 0 16px">{p}</div>')
+    p = panel('Bow Jackzon', 'Level 24 Hunter · Employed Millennials', [upgrades, talents, rotation],
+              score=score_fact(1240, 'Rare'))
+    body = (f'<p class="cap"><b>Levelling</b> · Bow Jackzon, level 24 Beast Mastery, guild without a planned raid; '
+            f'the rotation is Data.lua\'s band 22, every line</p><div style="padding:16px 0 0 16px">{p}</div>')
     return page(body)
 
 
+def answer_buttons():
+    return ''.join(f'<span class="btn grey" style="{SMALL_BTN}">{a}</span>' for a in ('In', 'Late', 'Out'))
+
+
+def tonight(answer_html, buttons):
+    row = (f'<div class="sect">Tonight<span class="r">8:00 pm · in 3 h 12 min</span></div>'
+           f'<div class="irow">{img("inv_misc_head_dragon_black", 30)}<div class="tx"><div class="n">'
+           f'<span>Onyxia\'s Lair</span>{answer_html}</div><div class="s">as Ashvale, Damage</div></div></div>')
+    if buttons:
+        row += f'<div style="display:flex;gap:6px;margin:0 0 8px 39px">{answer_buttons()}</div>'
+    return (row + f'<div style="margin-left:39px;font-size:13px">Your job: <span style="color:{C["gold"]}">Phase 2 '
+            f'ranged, west side</span> <span class="small">· with Thornhide</span></div>')
+
+
 def board_panel_raider():
-    raid = (f'<div class="sect">Tonight<span class="r">8:00 pm · in 3 h 12 min</span></div>'
-            f'<div class="irow">{img("inv_misc_head_dragon_black", 30)}<div class="tx"><div class="n">'
-            f'<span>Onyxia\'s Lair</span><span style="color:{C["green"]}">You\'re In</span></div>'
-            f'<div class="s">as Damage · answer on the app or the site</div></div></div>'
-            f'<div style="margin:2px 0 0 39px"><div style="font-size:13px">Your job: '
-            f'<span style="color:{C["gold"]}">Phase 2 ranged, west side</span></div>'
-            f'<div class="small" style="line-height:15px;margin-top:2px">Spread along the west wall and keep casting while she is in '
-            f'the air. With Thornhide, Brightwen and 7 more.</div></div>')
-    upgrades = ('<div class="sect">Upgrades<span class="r">your sim · 2 days ago</span></div>'
-                + upgrade_row('inv_weapon_bow_11', iname(13023), '6.4', 'Ranged · World drop · check the AH')
+    upgrades = (f'<div class="sect">Upgrades<span class="r">your sim · 2 days ago · '
+                f'<span style="color:{C["gold"]}">Sim again</span></span></div>'
+                + upgrade_row('inv_weapon_bow_11', iname(13023), '6.4', 'Ranged · World drop')
                 + upgrade_row('inv_gauntlets_11', iname(279257), '4.1', 'Hands · Leatherworking')
                 + upgrade_row('inv_pants_03', iname(237819), '3.0', 'Legs · Illiyana Moonblaze · Vendor'))
-    rotation = ('<div class="sect">Rotation at 60<span class="r">hover for the full rule</span></div>'
-                + spell_row('ability_druid_ferociousbite', 'Bestial Wrath', 'On the pull with Rapid Fire and trinkets')
-                + spell_row('ability_hunter_runningshot', 'Rapid Fire', 'On the pull, then with Bestial Wrath')
-                + spell_row('inv_spear_07', 'Aimed Shot', 'Whenever the shared cooldown is up')
-                + spell_row('ability_upgrademoonglaive', 'Multi-Shot', 'On cooldown, above a quarter mana'))
-    talents = ('<div class="sect" style="margin-bottom:0">Talents<span class="r">Beast Mastery raid · '
-               '51 of 51 on plan</span></div>')
-    p = panel('Ashvale', 'Level 60 Hunter · Employed Millennials',
-              [raid, upgrades, rotation, talents, score_line(1840, 'Epic', '7 Nov')], footer_buttons(sim=True))
-    body = (f'<p class="cap"><b>Raid day</b> · a level 60 Beast Mastery hunter in a guild, signed In for tonight. '
-            f'Gains at 60 are layout figures.</p><div style="padding:16px 0 0 16px">{p}</div>')
+    rotation = '<div class="sect" style="margin-bottom:0">Rotation at 60<span class="r">show</span></div>'
+    fact, score = 'Level 60 Hunter · Employed Millennials', score_fact(1840, 'Epic')
+    p1 = panel('Ashvale', fact, [tonight(f'<span style="color:{C["gold"]}">Not answered</span>', True),
+                                 upgrades, rotation], score=score)
+    p2 = panel('Ashvale', fact, [tonight(f'<span style="color:{C["green"]}">You\'re In</span>', False),
+                                 upgrades, rotation], score=score)
+    body = (f'<p class="cap"><b>Raid day</b> · a level 60 Beast Mastery hunter in a guild. Left: not answered yet '
+            f'(the answer queues for the companion to send). Right: answered. Gains at 60 are layout figures.</p>'
+            f'<div class="row" style="padding:16px 0 0 16px;gap:40px">{p1}{p2}</div>')
     return page(body)
 
 
@@ -627,8 +651,8 @@ def board_panel_fresh():
              ('ability_hunter_swiftstrike', 'Survival', 'Melee hunter, traps and Lacerating Strikes')]
     path = ('<div class="sect">Pick your path<span class="r">you can change it later</span></div>'
             + ''.join(f'<div class="irow">{img(i, 30)}<div class="tx"><div class="n"><span>{n}</span></div>'
-                      f'<div class="s">{t}</div></div><span class="btn" style="height:20px;padding:0 8px;'
-                      f'font-size:12px">Pick</span></div>' for i, n, t in specs)
+                      f'<div class="s">{t}</div></div><span class="btn" style="{SMALL_BTN}">Pick</span></div>'
+                      for i, n, t in specs)
             + '<div class="small">Loads that path\'s leveling build. Your first talent point comes at level 10.</div>')
     rotation = ('<div class="sect">Rotation at 6</div>'
                 + spell_row('ability_hunter_snipershot', "Hunter's Mark", 'Whenever the target is not marked')
@@ -637,9 +661,7 @@ def board_panel_fresh():
     gear = ('<div class="sect" style="margin-bottom:2px">Upgrades</div>'
             '<div class="small">Gear picks start at level 20. Until then, the green arrow on your bags marks '
             'anything that beats what you wear.</div>')
-    p = panel('Bow Jackzon', 'Level 6 Hunter', [path, rotation, gear],
-              '<span class="small" style="max-width:300px">Your raids and Forever Score show here once the '
-              'companion app has run.</span>')
+    p = panel('Bow Jackzon', 'Level 6 Hunter', [path, rotation, gear])
     body = (f'<p class="cap"><b>Fresh install</b> · level 6, no build picked, no companion, no Data addon, no guild'
             f'</p><div style="padding:16px 0 0 16px">{p}</div>')
     return page(body)
@@ -652,6 +674,7 @@ BOARDS = {
     'item-tooltip-states': board_item_states,
     'quest-reward-before': board_quest_before,
     'quest-reward-after': board_quest_after,
+    'loot-roll-after': board_loot_roll,
     'player-tooltip-before': board_player_before,
     'player-tooltip-after': board_player_after,
     'chip-pulse': board_chip,
