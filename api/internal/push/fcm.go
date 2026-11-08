@@ -128,6 +128,21 @@ func (s *FCMSender) Send(ctx context.Context, m Message) error {
 	if err != nil {
 		return fmt.Errorf("push: fcm body: %w", err)
 	}
+	return s.post(ctx, body)
+}
+
+// SendBody posts a whole FCM v1 send body ({"message": ...}), as the live surfaces build them
+// (livesurface.FCMData).
+func (s *FCMSender) SendBody(ctx context.Context, body map[string]any) error {
+	raw, err := json.Marshal(body)
+	if err != nil {
+		return fmt.Errorf("push: fcm body: %w", err)
+	}
+	return s.post(ctx, raw)
+}
+
+// post sends one send body to FCM.
+func (s *FCMSender) post(ctx context.Context, body []byte) error {
 	tok, err := s.tokens.Token()
 	if err != nil {
 		return errors.New("push: no FCM access token")

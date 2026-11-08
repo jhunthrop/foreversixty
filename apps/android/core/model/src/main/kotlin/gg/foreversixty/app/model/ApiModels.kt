@@ -1820,6 +1820,20 @@ data class LiveActivityRequest(
     @SerialName("object_id") val objectId: String,
 )
 
+/** POST /v1/me/live-activities/start-token: the app install's push-to-start token (iOS ActivityKit; the FCM registration token on Android), one per install and kind, replaced on each call. */
+@Serializable
+data class LiveStartTokenRequest(
+    @SerialName("platform") val platform: String,
+    @SerialName("kind") val kind: String,
+    @SerialName("token") val token: String,
+)
+
+@Serializable
+data class LiveStartTokenStored(
+    @SerialName("kind") val kind: String,
+    @SerialName("platform") val platform: String,
+)
+
 @Serializable
 data class LoggingCharacter(
     @SerialName("key") val key: String,
@@ -3575,6 +3589,8 @@ data class Widget(
     @SerialName("generated_at") val generatedAt: String,
     /** The day the first raids open (dates.json role raids): the no-guild widget's countdown (ruling R13). The API always sends it; optional so a snapshot an older build cached still decodes. */
     @SerialName("first_raids_at") val firstRaidsAt: String? = null,
+    /** The first raids' names in the countdown's order (Barrow Deeps, Hyjal Summit, Onyxia's Lair). Always sent; optional for older snapshots. */
+    @SerialName("first_raids_zones") val firstRaidsZones: List<String>? = null,
     /** null for an account with no characters. */
     @SerialName("character") val character: WidgetCharacter? = null,
     /** null when the character is on no guild's roster (`No guild yet`). */
@@ -3640,6 +3656,16 @@ data class WidgetNextRaid(
     @SerialName("my") val my: WidgetMine,
     /** The character may answer In, Late or Out now: open, not ended, verified. */
     @SerialName("can_sign_up") val canSignUp: Boolean,
+    /** The zone's icon, a name under /data/{build}/icons. Always sent; optional for older snapshots. */
+    @SerialName("zone_icon") val zoneIcon: String? = null,
+    /** Signed In. */
+    @SerialName("in") val inCount: Int? = null,
+    /** Signed Late. */
+    @SerialName("late") val late: Int? = null,
+    /** Tanks signed In. */
+    @SerialName("tanks") val tanks: Int? = null,
+    /** Healers signed In. */
+    @SerialName("healers") val healers: Int? = null,
 )
 
 @Serializable
@@ -3649,6 +3675,8 @@ data class WidgetUpgradePick(
     @SerialName("quality") val quality: Int,
     @SerialName("icon") val icon: String,
     @SerialName("item_level") val itemLevel: Int,
+    /** Where it comes from, Home's HomePick source_line. Always sent; optional for older snapshots. */
+    @SerialName("source_line") val sourceLine: String? = null,
 )
 
 @Serializable

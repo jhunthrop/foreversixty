@@ -1,6 +1,7 @@
 package livesurface
 
 import (
+	"encoding/json"
 	"strconv"
 	"time"
 
@@ -38,6 +39,8 @@ type RaidAttributes struct {
 	GuildName     string `json:"guild_name"`
 	ZoneName      string `json:"zone_name"`
 	CharacterName string `json:"character_name"`
+	// ZoneIcon is the zone's icon (zoneicons), a name under /data/{build}/icons.
+	ZoneIcon string `json:"zone_icon"`
 }
 
 // RaidState is the raid countdown's changing state (ActivityKit content-state). Times are Unix
@@ -52,7 +55,26 @@ type RaidState struct {
 	Role     string  `json:"role"`
 	SignedUp int     `json:"signed_up"`
 	Size     *int    `json:"size"`
+	// In, Late, Tanks and Healers are the answers' counts (Tanks and Healers count the In).
+	In      int `json:"in"`
+	Late    int `json:"late"`
+	Tanks   int `json:"tanks"`
+	Healers int `json:"healers"`
+	// Kills, Loot and ReportReady come with the raid's end (Status done) only.
+	Kills       *int       `json:"kills,omitempty"`
+	Loot        []LiveLoot `json:"loot,omitempty"`
+	ReportReady *bool      `json:"report_ready,omitempty"`
 }
+
+// LiveLoot is one item the character got, as the ended Live Activity lists it.
+type LiveLoot struct {
+	Name    string `json:"name"`
+	Quality int    `json:"quality"`
+	Icon    string `json:"icon"`
+}
+
+// RaidStatusDone is the ended raid's status on a live surface.
+const RaidStatusDone = "done"
 
 // SimAttributes are a server run's fixed facts.
 type SimAttributes struct {
@@ -80,17 +102,37 @@ type Alert struct {
 func RaidLive(raid guilds.WidgetNextRaid, characterName string) (RaidAttributes, RaidState) {
 	attrs := RaidAttributes{
 		RaidID: strconv.FormatInt(raid.RaidID, 10), GuildID: strconv.FormatInt(raid.GuildID, 10),
-		GuildName: raid.GuildName, ZoneName: raid.ZoneName, CharacterName: characterName,
+		GuildName: raid.GuildName, ZoneName: raid.ZoneName, CharacterName: characterName, ZoneIcon: raid.ZoneIcon,
 	}
 	state := RaidState{
 		StartsAt: raid.StartsAt.Unix(), Status: raid.Status, MyState: raid.My.State, Role: raid.My.Role,
-		SignedUp: raid.SignedUp, Size: raid.Size,
+		SignedUp: raid.SignedUp, Size: raid.Size, In: raid.In, Late: raid.Late, Tanks: raid.Tanks, Healers: raid.Healers,
 	}
 	if raid.InviteAt != nil {
 		at := raid.InviteAt.Unix()
 		state.InviteAt = &at
 	}
 	return attrs, state
+}
+
+// RaidEnd is the ended raid's state from the raider's raid night: done, the night's kills, the
+// loot they got and whether the report is ready.
+func RaidEnd(night guilds.RaidNightSummary) RaidState {
+	state := RaidState{
+		StartsAt: night.StartsAt.Unix(), Status: RaidStatusDone, MyState: night.You.State, Role: night.Character.Role,
+		SignedUp: night.Coming.In + night.Coming.Late, In: night.Coming.In, Late: night.Coming.Late,
+		Tanks: len(night.Coming.Tanks), Healers: len(night.Coming.Healers), Loot: []LiveLoot{},
+	}
+	kills := 0
+	if night.Kills != nil {
+		kills = *night.Kills
+	}
+	ready := night.ReportID != nil
+	state.Kills, state.ReportReady = &kills, &ready
+	for _, l := range night.Loot {
+		state.Loot = append(state.Loot, LiveLoot{Name: l.Name, Quality: l.Quality, Icon: l.Icon})
+	}
+	return state
 }
 
 // APNsLive is the APNs body of a Live Activity event: "start" (push-to-start, which names the
@@ -154,7 +196,20 @@ func RaidData(attrs RaidAttributes, state RaidState) map[string]string {
 		"raid_id": attrs.RaidID, "guild_id": attrs.GuildID, "guild_name": attrs.GuildName,
 		"zone_name": attrs.ZoneName, "character_name": attrs.CharacterName,
 		"starts_at": strconv.FormatInt(state.StartsAt, 10), "status": state.Status, "role": state.Role,
-		"signed_up": strconv.Itoa(state.SignedUp),
+		"signed_up": strconv.Itoa(state.SignedUp), "zone_icon": attrs.ZoneIcon,
+		"in": strconv.Itoa(state.In), "late": strconv.Itoa(state.Late),
+		"tanks": strconv.Itoa(state.Tanks), "healers": strconv.Itoa(state.Healers),
+	}
+	if state.Kills != nil {
+		d["kills"] = strconv.Itoa(*state.Kills)
+	}
+	if state.ReportReady != nil {
+		d["report_ready"] = strconv.FormatBool(*state.ReportReady)
+	}
+	if state.Loot != nil {
+		if raw, err := json.Marshal(state.Loot); err == nil {
+			d["loot"] = string(raw)
+		}
 	}
 	setInt64(d, "invite_at", state.InviteAt)
 	if state.MyState != nil {

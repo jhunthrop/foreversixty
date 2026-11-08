@@ -82,6 +82,8 @@ type Service struct {
 	limiterOnce   sync.Once
 	// Events publishes the player notifications (events.Router); nil publishes nothing.
 	Events events.Publisher
+	// LiveRaids starts and ends the raid Live Activities; nil sends none.
+	LiveRaids LiveRaids
 	// Coach reads the raid night's coach teaser; nil leaves it null.
 	Coach RaidNightCoach
 	// Scores reads the applicant sheet's Forever Score; nil leaves it null.
