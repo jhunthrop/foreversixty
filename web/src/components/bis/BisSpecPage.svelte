@@ -273,7 +273,7 @@
   <Page layout="ledger" testid="bis-ledger">
     {#snippet header()}
       <PageHeader
-        title={bisSeoCopy.heading(seoSubject, state.band)}
+        title={bisSeoCopy.heading(seoSubject)}
         tone={{ classSlug } as never}
         minRowHeight={HEAD_ROW_MIN_HEIGHT}
         testid="bis-page-head"
@@ -289,7 +289,8 @@
             data-testid={`class-crest-${classSlug}`}
           />
         {/snippet}
-        {#snippet meta()}<span data-testid="bis-page-sub">{bisSeoCopy.meta(state.band)}</span>{/snippet}
+        {#snippet meta()}<span data-testid="bis-page-sub">{bisSeoCopy.meta(seoSubject, state.band)}</span
+          >{/snippet}
         {#snippet answer()}
           <div class="bis-pending-hide">
             <BisAnswer answer={model.answer} {figure} unit={model.unit} {raceNote} />

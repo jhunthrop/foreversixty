@@ -2,7 +2,7 @@
 // What a BiS spec page and each of its band pages (lib/bis/band-path.ts) tell a search engine and
 // say in their h1: spec before class, the way players search ("Fury Warrior BiS"), the band in
 // words, "Pre-Raid" only while the level 60 list holds no raid drop (page-server.ts bisPreRaid).
-import { bandSlug, bandWords } from './band-path';
+import { bandWords } from './band-path';
 import { MAX_BAND } from './band-levels';
 
 export interface BisSeoSubject {
@@ -27,14 +27,13 @@ export const bisSeoCopy = {
     band >= MAX_BAND && subject.preRaid
       ? `${who(subject)} Pre-Raid BiS, ${bandWords(band)}, ${GAME}`
       : `${who(subject)} BiS, ${bandWords(band)}, ${GAME}`,
-  /** The h1, one line at 1440, naming the band shown as its short label: "Fury Warrior BiS 40-49",
-   *  "Fury Warrior Pre-Raid BiS". The full words are the meta line (`meta`) and the <title>. */
-  heading: (subject: BisSeoSubject, band: number): string =>
-    band >= MAX_BAND && subject.preRaid
-      ? `${who(subject)} Pre-Raid BiS`
-      : `${who(subject)} BiS ${bandSlug(band)}`,
-  /** The head's meta line under the h1: "Best in slot · Levels 40 to 49". */
-  meta: (band: number): string => `Best in slot · ${bandWords(band)}`,
+  /** The h1, one line at 1440 for every spec (the longest, "Marksmanship Hunter BiS", is 470 px of
+   *  the head's 520): "Fury Warrior BiS". The band is named under it (`meta`) and in the <title>. */
+  heading: (subject: BisSeoSubject): string => `${who(subject)} BiS`,
+  /** The head's meta line under the h1, naming the band shown: "Best in slot · Levels 40 to 49",
+   *  "Pre-raid best in slot · Level 60". */
+  meta: (subject: BisSeoSubject, band: number): string =>
+    `${band >= MAX_BAND && subject.preRaid ? 'Pre-raid best in slot' : 'Best in slot'} · ${bandWords(band)}`,
   /** The band page's breadcrumb name: "Fury Warrior BiS, Levels 40 to 49". */
   bandCrumb: (subject: BisSeoSubject, band: number): string =>
     band >= MAX_BAND && subject.preRaid
@@ -44,6 +43,4 @@ export const bisSeoCopy = {
     `${who(subject)} best in slot gear for ${GAME}, from leveling ${firstBand} to ${MAX_BAND} to ${subject.preRaid ? 'pre-raid ' : ''}level ${MAX_BAND}: every slot ranked by the simulator, with where each item comes from.`,
   bandDescription: (subject: BisSeoSubject, band: number): string =>
     `${who(subject)} best in slot gear at ${bandWords(band).toLowerCase()} in ${GAME}: every slot ranked by the simulator, with the dungeon, quest or vendor each item comes from.`,
-  /** The breadcrumb's name for the spec's BiS: "Fury Warrior BiS". */
-  crumb: (subject: BisSeoSubject): string => `${who(subject)} BiS`,
 } as const;
