@@ -21,7 +21,7 @@ class ApplicantTest {
     @Test
     fun `the head, the numbers, raid ready and the history`() {
         val c = ApplicantPresenter(resources(), clock(), now).content(app, "Olympus XXVII", accepted = false)
-        assertEquals(listOf("Holy Paladin · 60", "applied 2 min ago"), c.facts)
+        assertEquals(listOf("Holy Paladin · 60", "Alliance Dwarf", "applied 2 min ago"), c.facts)
         assertEquals(listOf("74", "612", "63"), c.figures.map { it.value })
         assertEquals("HPS", c.figures[1].unit)
         assertEquals("Attuned to Onyxia's Lair", c.ready[0].title)
