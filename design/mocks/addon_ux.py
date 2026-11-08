@@ -672,11 +672,12 @@ def dots(current, total):
 
 def onboarding(page, heading, content, next_label='Next', extra_right='', total=PAGES):
     left_extra = ('<span class="btn grey" style="padding:0 10px">Just the tooltips</span>' if page == 1 else '')
+    skip = '' if page == total else '<span class="btn grey" style="padding:0 14px">Skip tour</span>'
     back = ('<span class="btn grey" style="visibility:hidden">Back</span>' if page == 1
             else '<span class="btn grey">Back</span>')
     footer = (f'<div style="position:absolute;left:16px;right:16px;bottom:14px;display:flex;align-items:center;'
               f'justify-content:space-between"><span style="display:flex;gap:8px;align-items:center">'
-              f'<span class="btn grey" style="padding:0 14px">Skip tour</span>{left_extra}</span>'
+              f'{skip}{left_extra}</span>'
               f'<span>{dots(page, total)}</span><span style="display:flex;gap:8px">{back}{extra_right}'
               f'<span class="btn" style="padding:0 20px">{next_label}</span></span></div>')
     return (f'<div class="frame" style="width:{OB_W}px;height:{OB_H}px">'
@@ -707,13 +708,14 @@ def flow_arrow(direction):
     return f'<div style="color:#b8913f;font-size:20px;width:22px;text-align:center;flex:none">{glyph}</div>'
 
 
-def board_onboarding_1():
+def board_onboarding_1(guild=True):
     top = [loop_cell(node_icon(CREST, 36, round_=True), 'Your character', 'Sign in with Battle.net; it comes to the site.'),
            loop_cell(node_icon(MARK, 36), 'foreversixty.gg', 'Best in slot for your level, the sim on your gear, '
                      'guides, tiers.'),
            loop_cell(node_icon(icon_uri('inv_misc_bag_08'), 36), 'In game', 'The arrow on your bags, the talent '
                      'ring, your panel.')]
-    bottom = [loop_cell(node_icon(BANNER, 36), 'Your guild', 'Raids from the site, in your Discord and in game.'),
+    guild_cell = loop_cell(node_icon(BANNER, 36), 'Your guild', 'Raids from the site, in your Discord and in game.')
+    bottom = [guild_cell if guild else '<div style="width:172px"></div>',
               loop_cell(node_icon(icon_uri('inv_misc_book_09'), 36), 'Back on the site', 'Your fights rated, the '
                         'coach, your Forever Score.'),
               loop_cell(node_icon(icon_uri('ability_warrior_battleshout'), 36), 'Your fights', 'The companion app '
@@ -722,14 +724,21 @@ def board_onboarding_1():
            f'{flow_arrow("right")}{top[2]}</div>'
     down = (f'<div style="display:flex;justify-content:flex-end;padding-right:150px;margin:6px 0">'
             f'{flow_arrow("down")}</div>')
-    row2 = f'<div style="display:flex;align-items:flex-start;gap:6px">{bottom[0]}{flow_arrow("left")}{bottom[1]}' \
+    first_arrow = flow_arrow('left') if guild else '<div style="width:22px"></div>'
+    row2 = f'<div style="display:flex;align-items:flex-start;gap:6px">{bottom[0]}{first_arrow}{bottom[1]}' \
            f'{flow_arrow("left")}{bottom[2]}</div>'
     caption = (f'<div style="font-size:13.5px;color:#e8e8e8;margin:22px 0 0;text-align:center">What you plan on the '
-               f'site shows up here. What you do here goes back to the site, and to your guild.</div>')
+               f'site shows up here. What you do here goes back to the site{", and to your guild" if guild else ""}.</div>')
     diagram = f'<div style="width:586px;padding-top:6px">{row1}{down}{row2}{caption}</div>'
     return ob_board('<b>Onboarding, page 1 of 5</b> (4 for a character with no guild) · how the pieces connect. '
                     'Skip tour (and Escape) ends it for good; Just the tooltips turns on Tooltips only and ends it',
-                    onboarding(1, 'How Forever Sixty works', diagram))
+                    onboarding(1, 'How Forever Sixty works', diagram, total=PAGES if guild else PAGES - 1))
+
+
+def board_onboarding_1_solo():
+    return board_onboarding_1(guild=False).replace(
+        'Onboarding, page 1 of 5</b> (4 for a character with no guild)',
+        'Onboarding, page 1 of 4, a character with no guild</b> (no guild node, no guild clause)')
 
 
 def give_row(source, result_ill, result, text):
@@ -931,6 +940,7 @@ BOARDS = {
     'panel-raider-60': board_panel_raider,
     'panel-fresh-install': board_panel_fresh,
     'onboarding-1-loop': board_onboarding_1,
+    'onboarding-1-loop-solo': board_onboarding_1_solo,
     'onboarding-2-site-in-game': board_onboarding_2,
     'onboarding-3-game-to-site': board_onboarding_3,
     'onboarding-4-guild': board_onboarding_4,
