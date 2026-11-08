@@ -146,7 +146,8 @@ def stats() -> str:
     players = Section(e(c['playersTitle']), RowsSlim([Row(e(w), link=False, slim=True) for w in S['weeks']]), meta=e(c['playersMeta']))
     paid = (RowsSlim([Row(e(p['text']), link=False, slim=True, trail=f'<span class="amt">{e(p["amount"])}</span>') for p in S['payouts']])
             if S['payouts'] else f'<p class="t-small">{e(S["payoutsEmpty"])}</p>')
-    payouts_ = Section(e(c['payoutsTitle']), paid)
+    dash = f'<div class="acts" style="margin-top:16px">{Btn(e(S["dashboard"]), small=False)}</div>' if S['dashboard'] else ''
+    payouts_ = Section(e(c['payoutsTitle']), paid + dash)
     body = PageHeader(e(S['name']), meta=[e(S['meta'])]) + f'<div class="page-foot">{Page("split", f'<div class="stack" style="gap:32px">{summary}{players}</div>', payouts_)}</div>'
     return render('Creator stats · Forever Sixty', body, CREATOR, '/creators/stats mock (the creator); data creators-facts.json.')
 

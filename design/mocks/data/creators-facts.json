@@ -504,6 +504,10 @@
    "week": "[fn]",
    "weeksCapped": "Showing the last 26 weeks.",
    "payoutsTitle": "Payouts",
+   "dashboard": "Payouts and tax forms",
+   "dashboardOpening": "Opening Stripe",
+   "dashboardFailed": "Stripe didn’t open; try again.",
+   "menuItem": "Creator stats",
    "payoutsEmpty": "No payouts yet. Each month is paid after it closes and is approved.",
    "setup": "Set up payouts"
   },
@@ -548,6 +552,7 @@
    "Week of 2 Nov: 3 signed up · 2 returning · 1 paying"
   ],
   "payoutsEmpty": "No payouts yet. Each month is paid after it closes and is approved.",
+  "dashboard": "Payouts and tax forms",
   "payouts": []
  }
 }

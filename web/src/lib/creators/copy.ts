@@ -158,6 +158,12 @@ export const creatorStatsCopy = {
       : `Week of ${week}: ${signedUp} signed up · ${returning} returning · ${paying} paying`,
   weeksCapped: 'Showing the last 26 weeks.',
   payoutsTitle: 'Payouts',
+  /** Opens the creator's Stripe Express dashboard (payouts, bank details, the 1099) by a fresh login link. */
+  dashboard: 'Payouts and tax forms',
+  dashboardOpening: 'Opening Stripe',
+  dashboardFailed: 'Stripe didn’t open; try again.',
+  /** The profile and account menu item for a signed-in creator. */
+  menuItem: 'Creator stats',
   payoutsEmpty: 'No payouts yet. Each month is paid after it closes and is approved.',
   setup: 'Set up payouts',
 } as const;

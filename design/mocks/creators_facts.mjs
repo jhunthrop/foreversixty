@@ -53,7 +53,7 @@ export default {
   onboarding: { copy: strip(ob), join: ob.inviteJoin(me.name) },
   stats: {
     copy: strip(st), name: me.name, meta: st.meta(me.slug, me.code), figures: m.statsFigures(me),
-    weeks: me.weeks.map(m.weekText), payoutsEmpty: st.payoutsEmpty,
+    weeks: me.weeks.map(m.weekText), payoutsEmpty: st.payoutsEmpty, dashboard: me.stripe_status === 'ready' ? st.dashboard : '',
     payouts: me.payouts.map((x) => ({ text: m.monthLabel(x.month), amount: m.money(x.amount_cents) })),
   },
 };`;
