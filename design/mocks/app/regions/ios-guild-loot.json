@@ -39,7 +39,7 @@
   "controls": {
    "box": [
     0,
-    376,
+    356,
     393,
     62
    ],
@@ -50,7 +50,7 @@
   "section-onyxia-drops": {
    "box": [
     16,
-    466,
+    446,
     361,
     680
    ],
@@ -63,7 +63,7 @@
   "plate": {
    "box": [
     16,
-    537,
+    517,
     361,
     535
    ],
@@ -75,7 +75,7 @@
   "section-candidates-for-vis-kag-the-bloodletter": {
    "box": [
     16,
-    1170,
+    1150,
     361,
     584
    ],
@@ -88,9 +88,9 @@
   "section-decision-record": {
    "box": [
     16,
-    1786,
+    1766,
     361,
-    183
+    166
    ],
    "inventory": {
     "row": 2,

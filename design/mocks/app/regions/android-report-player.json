@@ -9,7 +9,7 @@
     16,
     0,
     380,
-    295
+    296
    ],
    "inventory": {
     "button": 2
@@ -38,7 +38,7 @@
     16,
     134,
     380,
-    92
+    93
    ],
    "inventory": {
     "button": 1
@@ -47,7 +47,7 @@
   "controls": {
    "box": [
     0,
-    295,
+    296,
     412,
     62
    ],
@@ -59,9 +59,9 @@
   "section-soren-everhart-rsquo-s-damage": {
    "box": [
     16,
-    385,
+    386,
     380,
-    302
+    283
    ],
    "inventory": {
     "button": 4,
@@ -73,7 +73,7 @@
     16,
     473,
     380,
-    214
+    196
    ],
    "inventory": {
     "button": 3,
@@ -83,7 +83,7 @@
   "section-damage-over-the-fight": {
    "box": [
     16,
-    735,
+    717,
     380,
     79
    ],
@@ -92,7 +92,7 @@
   "section-gear-at-the-pull": {
    "box": [
     16,
-    862,
+    844,
     380,
     115
    ],
@@ -101,7 +101,7 @@
   "footer-note": {
    "box": [
     16,
-    1025,
+    1007,
     380,
     36
    ],
@@ -110,7 +110,7 @@
   "section-this-pull": {
    "box": [
     16,
-    1085,
+    1067,
     380,
     240
    ],
@@ -119,7 +119,7 @@
   "section-targets": {
    "box": [
     16,
-    1357,
+    1339,
     380,
     484
    ],

@@ -56,7 +56,7 @@
     16,
     404,
     380,
-    1353
+    1354
    ],
    "inventory": {
     "button": 1
@@ -65,9 +65,9 @@
   "section-for-guild-leaders": {
    "box": [
     16,
-    1805,
+    1806,
     380,
-    1614
+    1554
    ],
    "inventory": {
     "button": 2
@@ -76,9 +76,9 @@
   "section-how-the-guild-plans-work": {
    "box": [
     16,
-    3467,
+    3408,
     380,
-    1075
+    1057
    ],
    "inventory": {
     "row": 10
@@ -87,7 +87,7 @@
   "section-questions": {
    "box": [
     16,
-    4590,
+    4513,
     380,
     548
    ],
@@ -98,7 +98,7 @@
   "section-what-the-coach-says-after-a-raid": {
    "box": [
     16,
-    5162,
+    5085,
     380,
     634
    ],

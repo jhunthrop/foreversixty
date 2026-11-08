@@ -38,7 +38,7 @@
   "section-raid-ready": {
    "box": [
     16,
-    281,
+    282,
     361,
     187
    ],
@@ -49,7 +49,7 @@
   "section-guild-history": {
    "box": [
     16,
-    496,
+    497,
     361,
     152
    ],
@@ -60,7 +60,7 @@
   "section-their-note": {
    "box": [
     16,
-    676,
+    677,
     361,
     95
    ],
