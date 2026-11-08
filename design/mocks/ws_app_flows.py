@@ -11,7 +11,7 @@ states say so); the guild's raid is Onyxia's Lair, Wed 6 Jan, 8:00 pm CST, four 
 from __future__ import annotations
 
 from mocklib import CLASS_COLOR
-from ws_app_frame import AVATAR, DEFAULT, app_page, glyph
+from ws_app_frame import DEFAULT, app_page, glyph, portrait
 from ws_prims import (Button, Checklist, Countdown, Figures, ItemRow, PageHeader, Row, Rows, Section, Skeleton, Switch,
                       Tag, Tally, build_page, crest_img, icon)
 
@@ -119,23 +119,14 @@ def _blk(inner: str, region: str = 'countdowns') -> str:
 
 
 # ------------------------------------------------------------------------------------------------ the profile menu
-CHARACTERS = [  # name, class, line, tag, Battle.net avatar (None: no avatar_url yet, the crest stands in)
-    ('Thandrel', 'warrior', 'Fury Warrior &middot; 60 &middot; Olympus XXVII', 'Main', 'thandrel'),
-    ('Lightvow', 'paladin', 'Holy Paladin &middot; 60 &middot; Olympus XXVII', '', 'lightvow'),
-    ('Kaelor', 'mage', 'Frost Mage &middot; 47', '', 'kaelor'),
-    ('Felsnap', 'hunter', 'Beast Mastery Hunter &middot; 34', '', 'felsnap'),
-    ('Brewmist', 'shaman', 'Enhancement Shaman &middot; 22', '', 'brewmist'),
-    ('Ashmantle', 'warlock', 'Affliction Warlock &middot; 18', '', None),
+CHARACTERS = [  # name, class, line, tag, Battle.net avatar (None: no avatar_url yet, the crest stands in), faction
+    ('Thandrel', 'warrior', 'Fury Warrior &middot; 60 &middot; Olympus XXVII', 'Main', 'thandrel', 'alliance'),
+    ('Lightvow', 'paladin', 'Holy Paladin &middot; 60 &middot; Olympus XXVII', '', 'lightvow', 'alliance'),
+    ('Kaelor', 'mage', 'Frost Mage &middot; 47', '', 'kaelor', 'horde'),
+    ('Felsnap', 'hunter', 'Beast Mastery Hunter &middot; 34', '', 'felsnap', 'alliance'),
+    ('Brewmist', 'shaman', 'Enhancement Shaman &middot; 22', '', 'brewmist', 'horde'),
+    ('Ashmantle', 'warlock', 'Affliction Warlock &middot; 18', '', None, 'alliance'),
 ]
-
-
-def avatar_img(cls: str, avatar: str | None, px: int) -> str:
-    """A character in the profile menu (owner exception to the one crest language, flows spec section 3): its Battle.net
-    avatar in a class-colour ring, or its crest when it has no avatar."""
-    if not avatar:
-        return crest_img(cls, px)
-    return (f'<img class="crest" src="{AVATAR.format(name=avatar)}" alt="" '
-            f'style="width:{px}px;height:{px}px;object-fit:cover;--c:{CLASS_COLOR[cls]}">')
 LOW = [('Pockets', 'rogue', 'Rogue &middot; 6'), ('Bankalt', 'mage', 'Mage &middot; 1')]
 # The tools, in the order the owner ruled (2026-11-08); the ones a signed-out visitor can use carry True.
 TOOLS = [('Guides', 'Your spec&rsquo;s guide, then every class', True), ('Tiers', 'Every spec, this week', True),
@@ -155,10 +146,10 @@ def menu(state: str):
             body = you + Section('Tools', Rows([Row(n, s) for n, s, out in TOOLS if out], open_=True))
         else:
             me = CHARACTERS[0]
-            you = (PageHeader(me[0], WARRIOR, avatar_img(me[1], me[4], 56), [me[2], Tag('Main')])
+            you = (PageHeader(me[0], WARRIOR, portrait(me[5], me[4], 56), [me[2], Tag('Main')])
                    + '<p class="t-small stamp">Updated 2 h ago from Battle.net &middot; <a class="link" href="#">Refresh</a></p>')
             others = CHARACTERS[1:] if state != 'one' else []
-            rows = [Row(n, s, avatar_img(c, av, 40), '', CLASS_COLOR[c]) for n, c, s, _, av in others]
+            rows = [Row(n, s, portrait(f, av, 40), '', CLASS_COLOR[c]) for n, c, s, _, av, f in others]
             if state == 'low':
                 rows += [Row(n, s, crest_img(c, 40), '', CLASS_COLOR[c]) for n, c, s in LOW]
             fold = (f'<a class="rowbtn" href="#">{"Hide low-level characters" if state == "low" else "Show low-level characters (2)"}</a>'
@@ -176,11 +167,11 @@ def menu(state: str):
 
 # ------------------------------------------------------------------------------------------------ Home (section 4)
 def _head(leveler: bool = False) -> str:
-    """One head on every Home state: the name in the class colour and the fact line; the class crest is the nav bar's menu
-    trigger, as on every tab root, so it is drawn once (owner, round 5)."""
+    """One head on every Home state: the class crest, the name in the class colour and the fact line. The profile button
+    above it is the portrait, a different image, so the character is never drawn twice the same way (owner, 2026-11-08)."""
     if leveler:
-        return PageHeader('Felsnap', HUNTER, '', ['Level 34 Beast Mastery Hunter', '6 levels to band 40'])
-    return PageHeader('Thandrel', WARRIOR, '', ['Level 60 Fury Warrior', 'Olympus XXVII'])
+        return PageHeader('Felsnap', HUNTER, crest_img('hunter', 56), ['Level 34 Beast Mastery Hunter', '6 levels to band 40'])
+    return PageHeader('Thandrel', WARRIOR, crest_img('warrior', 56), ['Level 60 Fury Warrior', 'Olympus XXVII'])
 
 
 def _upgrades(leveler: bool = False, tonight: bool = True) -> str:
@@ -493,7 +484,7 @@ def applicant(state: str):
 
 # ------------------------------------------------------------------------------------------------ F8: first run
 def pick_main(platform: str) -> str:
-    rows = [Row(n, s, crest_img(c, 40), Tag('Main') if i == 0 else '', CLASS_COLOR[c], selected=(i == 0)) for i, (n, c, s, _, av) in enumerate(CHARACTERS)]
+    rows = [Row(n, s, crest_img(c, 40), Tag('Main') if i == 0 else '', CLASS_COLOR[c], selected=(i == 0)) for i, (n, c, s, *_) in enumerate(CHARACTERS)]
     body = (PageHeader('Pick your main', meta=['From Battle.net, level 10 and up.'])
             + '<p class="t-small" style="margin-top:8px">Home answers for your main, and your raid sign-ups are for it. '
             'Switch any time from your portrait, top left.</p>'
