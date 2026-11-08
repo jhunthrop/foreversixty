@@ -147,40 +147,16 @@ struct ActivityParityTests {
 
     @Test("ios-activity")
     func list() throws {
-        // On the CI runner the first accessibility read in this suite vends no tree, whichever
-        // state it is (runs 42481050975 to 42489848844; every other suite reads fine), so the
-        // Activity states take their words from what the view draws, in VoiceOver's order.
-        // Follow-up: the runner's cause.
-        try ParityCheck.assert(view(ActivityTestData.rows), screen: "activity", size: Self.device, text: Self.words(ActivityTestData.rows))
-    }
-
-    /// The list's words in reading order: the title, the filters, then each day with its rows
-    /// (title, line, time, and Unread on an unread row); Mark all read on the first day with one.
-    static func words(_ rows: [ActivityRow]) -> [String] {
-        let sections = ActivitySections(rows, filter: .all, now: ActivityTestData.now, calendar: ActivityTestData.calendar).sections
-        var lines = [Copy.tabActivity] + ActivityFilter.allCases.map(\.title)
-        if sections.isEmpty { return lines + [Copy.activityEmpty] }
-        for (index, section) in sections.enumerated() {
-            lines.append(section.day.title)
-            if index == 0, section.rows.contains(where: { !$0.row.read }) { lines.append(Copy.activityMarkAllRead) }
-            lines += section.rows.map { item in
-                let words = "\(item.row.title), \(item.row.body), \(item.when)"
-                return item.row.read ? words : "\(words): \(Copy.activityUnread)"
-            }
-        }
-        return lines
+        try ParityCheck.assert(view(ActivityTestData.rows), screen: "activity", size: Self.device)
     }
 
     @Test("ios-activity-empty")
     func empty() throws {
-        try ParityCheck.assert(view([]), screen: "activity-empty", size: Self.device, text: Self.words([]))
+        try ParityCheck.assert(view([]), screen: "activity-empty", size: Self.device)
     }
 
     @Test("ios-activity-out")
     func signedOut() throws {
-        try ParityCheck.assert(
-            ActivitySignedOutView(signingIn: false) {}, screen: "activity-out", size: Self.device,
-            text: [Copy.tabActivity, Copy.activitySignedOut, Copy.signinButton]
-        )
+        try ParityCheck.assert(ActivitySignedOutView(signingIn: false) {}, screen: "activity-out", size: Self.device)
     }
 }
