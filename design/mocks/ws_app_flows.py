@@ -12,6 +12,8 @@ as CSS and the raid blocks injected; the rest are composed from ws_prims alone.
 """
 from __future__ import annotations
 
+import re
+
 from mocklib import CLASS_COLOR
 from ws_app_frame import app_page, from_web, glyph
 from ws_prims import (Button, Checklist, Countdown, Figures, ItemRow, PageHeader, Row, Rows, Section, Segmented, Switch,
@@ -22,6 +24,7 @@ ONY = 'inv_misc_head_dragon_black'
 RAID = 'Onyxia&rsquo;s Lair'
 WHEN = 'Wed 9 Dec, 8:00 pm CST'
 AS_ME = 'as Thandrel, Damage'
+AS_ME_CAP = 'As Thandrel, Damage'
 COUNTS = '18 in, 3 late'
 ROLES = [('', 'Tanks', 2, 2), ('', 'Healers', 5, 8), ('', 'Damage', 11, 30)]
 DEATHBRINGER = ('Deathbringer', 'inv_axe_09')
@@ -36,7 +39,7 @@ FLOWS_CSS = '''
 .btns{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.btns .btn{justify-content:center}
 .chips{display:flex;gap:8px}.chips .btn{flex:1;justify-content:center}
 .vstack{display:flex;flex-direction:column;gap:12px;margin-top:20px}.vstack .btn{justify-content:center}
-.sticky{position:sticky;bottom:0;display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:12px 0 4px;background:var(--bg);border-top:1px solid var(--line-soft);margin-top:24px}
+.sticky{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:12px 0 4px;background:var(--bg);border-top:1px solid var(--line-soft);margin-top:24px}
 .sticky .btn{justify-content:center}
 .codeline{display:flex;align-items:center;gap:8px;margin-top:8px;padding:10px 12px;border:1px solid var(--line);border-radius:4px;font:500 14px/20px var(--font-mono)}
 .codeline span{flex:1}
@@ -49,6 +52,7 @@ FLOWS_CSS = '''
 .drawer .stamp{margin-top:6px}
 .drawer .foot{margin-top:28px;display:flex;flex-direction:column;gap:6px}
 .dim{background:#000000a6}
+.setrow{display:flex!important;align-items:center;gap:12px}.setrow .b{flex:1;min-width:0}.setrow .swt{flex:none}
 .rowbtn{display:flex;align-items:center;min-height:44px;color:var(--gold);font:600 15px/20px var(--font-body)}
 /* a notification on the lock screen */
 .lockbg{background:linear-gradient(180deg,#17202f,#07090d);border-radius:24px;padding:16px 12px;display:flex;flex-direction:column;gap:12px}
@@ -64,11 +68,11 @@ FLOWS_CSS = '''
 [data-platform=android] .nt .acts{display:flex;gap:16px;border:0;margin:0}
 [data-platform=android] .nt .acts a{min-height:48px;color:var(--gold);justify-content:flex-start}[data-platform=android] .nt .acts a+a{border:0}
 /* the injected Home blocks */
-.hb{padding:24px 16px 0}
-.hb .btns{margin-top:12px}
-.hb .tally{margin-top:16px;grid-template-columns:repeat(3,minmax(0,1fr))}
-.hb .me{margin-top:8px}
-.hb .rows{margin-top:8px}
+.fl-blk{padding:24px 16px 0}
+.fl-blk .btns{margin-top:12px}
+.fl-blk .tally{margin-top:16px;grid-template-columns:repeat(3,minmax(0,1fr))}
+.fl-blk .me{margin-top:8px}
+.fl-blk .rows{margin-top:8px}
 '''
 
 
@@ -92,7 +96,7 @@ def _raid_card(officer: bool = False) -> str:
                    f'<p class="t-small">{WHEN} &middot; answer by 6:00 pm CST</p>', 'guild')
     me = f'<p class="t-small me">You have not answered, {AS_ME}</p>'
     ready = Rows([Row('2 things before you pull', 'No flask in your bags; boots not enchanted', link=True, slim=True)], open_=True)
-    short = (Rows([Row('5 have not answered', 'Healers short by 3 &middot; Mention in Discord', link=True, slim=True)], open_=True)
+    short = (Rows([Row('5 have not answered', 'Healers short by 3', trail=Button('Mention in Discord', small=True), link=False)], open_=True)
              if officer else '')
     return cd + me + _signup_buttons() + Tally(ROLES) + ready + short
 
@@ -179,8 +183,16 @@ SEG_SPEC = ('aria-checked="true" class="on">All</a><a href="#" role="radio" aria
             'aria-checked="false" class="">All</a><a href="#" role="radio" aria-checked="true" class="on">Your spec</a>')
 
 
+_FROW = re.compile(r'<a class="frow" href="#">.*?<span class="k">([^<]*)</span></span></a>', re.S)
+
+
+def _filter_feed(html: str, tags: set[str]) -> str:
+    """The feed after a filter: the rows whose tag the filter keeps (review round 2: a selected filter must filter)."""
+    return _FROW.sub(lambda m: m.group(0) if m.group(1) in tags else '', html)
+
+
 def _block(order: int, inner: str, region: str = 'countdowns') -> str:
-    return f'<div class="hb" style="order:{order}" data-region="{region}">{inner}</div>'
+    return f'<div class="fl-blk" style="order:{order}" data-region="{region}">{inner}</div>'
 
 
 def _raid_line(order: int) -> str:
@@ -200,33 +212,29 @@ def _after_raid(order: int) -> str:
     rows = [Row('Deathbringer', 'You got it &middot; Onyxia &middot; main hand, +12.6 DPS over your worn', icon(DEATHBRINGER[1], 40, 'q4'),
                 title_color='#b866f5'),
             Row(f'{RAID} report ready', '87th percentile &middot; the coach has 2 notes', icon(ONY, 40)),
-            Row('Your best on Onyxia', '94th percentile, a new best', icon(ONY, 40))]
+            Row('Your best on Onyxia', '94th percentile, a new best', icon(ONY, 40)),
+            Row('Sim again with Deathbringer', 'Your sim is from before it dropped', link=True, slim=True)]
     return f'<div class="pc" style="order:{order}">' + Section('Last night', Rows(rows, open_=True)) + '</div>'
-
-
-def _run_tonight(order: int, line: str) -> str:
-    """M4 on Home (review M4): the upgrades grouped by where they drop, one line under Your upgrades, to Where to go."""
-    return _block(order, Rows([Row(line, 'Where to go: your upgrades by instance', slim=True)], open_=True), 'notes')
 
 
 HOME_STATES = {
     # in a guild, raid day before the raid: Next raid (card) · Next upgrade · Feed · Guild sims
-    'raid-day': (_FLAT + _HEAD_LINE + _order(UP, 3) + _order(FEED, 4) + _order(GSIMS, 5), lambda: _raid_card(), 1, None),
+    'raid-day': (_FLAT + _HEAD_LINE + _order(UP, 3) + _order(FEED, 4) + _order(GSIMS, 5), lambda: _block(2, _raid_card()), 1, None),
     # the officer's raid day: the same card with the open count (review S3)
-    'raid-day-officer': (_FLAT + _HEAD_LINE + _order(UP, 3) + _order(FEED, 4) + _order(GSIMS, 5), lambda: _raid_card(officer=True), 6, None),
+    'raid-day-officer': (_FLAT + _HEAD_LINE + _order(UP, 3) + _order(FEED, 4) + _order(GSIMS, 5), lambda: _block(2, _raid_card(officer=True)), 6, None),
     # raid in progress: Raid night card · Feed (Your guild); the rest waits
     'raid-live': (_FLAT + _HEAD_LINE + _order(FEED, 3) + _hide(UP, GSIMS, WEEK, MOVERS), lambda: _raid_live(2), 0, SEG_GUILD),
     # the day after: Raid summary · Next upgrade · Feed
     'after-raid': (_FLAT + _order(UP, 3) + _order(FEED, 4) + _order(GSIMS, 5), lambda: _after_raid(2), 0, None),
     # any other day in a guild: Next upgrade · Next raid (one line, its answers) · Feed · Guild sims
     'normal': (_FLAT + _order(UP, 2) + _order(FEED, 4) + _order(GSIMS, 5),
-               lambda: _run_tonight(2, f'Run {RAID} Wed: 1 upgrade, 8% drop') + _raid_line(3), 1, None),
+               lambda: _raid_line(3), 1, None),
     # no guild at 60: Next upgrade · Feed · Your spec this week · First raids (one line) · Find a guild (review S10)
     'noguild': (_FLAT + _order(UP, 2) + _order(FEED, 3) + _order(WEEK, 4) + _hide(GSIMS),
-                lambda: (_run_tonight(2, 'Run Blackrock Spire: 2 upgrades') + _block(5, Rows([Row(
-                    'First raids &middot; Wed 9 Dec', 'Barrow Deeps, Hyjal Summit, Onyxia&rsquo;s Lair', icon(ONY, 40), Tag('In 33 days', 'muted'))],
-                    open_=True)) + _block(6, Rows([Row('Find a guild', 'Raid with a guild that plans its nights here; sign up from the app', link=True)],
-                                                  open_=True), 'section-find-a-guild')), 0, None),
+                lambda: (_block(5, Rows([Row('First raids &middot; Wed 9 Dec', 'In 33 days &middot; Barrow Deeps, Hyjal Summit, Onyxia&rsquo;s Lair',
+                                              icon(ONY, 40))], open_=True))
+                         + _block(6, '<p class="t-small">Raid with a guild that plans its nights here, and answer its raids from the app.</p>'
+                                  + '<div class="vstack">' + Button('Find a guild') + '</div>', 'section-find-a-guild')), 0, None),
 }
 # The web home mock at 60 is a guild member; the no-guild state takes the guild out of the head's facts.
 NO_GUILD_SUBS = [('&lt;Olympus XXVII&gt;', '')]
@@ -246,7 +254,7 @@ def home_state(state: str, feed_filters_css: str):
             for old, new in NO_GUILD_SUBS:
                 html = html.replace(old, new)
         if seg:
-            html = html.replace(*seg)
+            html = _filter_feed(html.replace(*seg), {'Your guild'})
         return html.replace('</main>', block() + '</main>', 1)
     b.web = True
     return b
@@ -259,7 +267,7 @@ def leveling(feed_filters_css: str, base_css: str):
         html = from_web('web-home-34', platform, 'home', extra_css=base_css + feed_filters_css + FLOWS_CSS, who='hunter')
         assert SEG_SPEC[0] in html, 'web-home-34 changed its feed segments'
         html = html.replace(*SEG_SPEC)
-        return html.replace('</main>', _run_tonight(2, 'Run Razorfen Kraul: 2 upgrades') + '</main>', 1)
+        return _filter_feed(html, {'Your spec'})
     b.web = True
     return b
 
@@ -268,7 +276,7 @@ def leveling(feed_filters_css: str, base_css: str):
 def guild_home(officer: bool):
     """R10 and F1/F3: the next raid first with your answers, then (officer) what needs you, then the guild's pages."""
     def b(platform: str) -> str:
-        needs = (Section('Needs you', Rows([Row(f'5 have not answered for {RAID}', 'Healers short by 3 &middot; Mention in Discord'),
+        needs = (Section('Needs you', Rows([Row(f'5 have not answered for {RAID}', 'Healers short by 3', trail=Button('Mention', small=True), link=False),
                                             Row('1 applicant', 'Mirelle, Holy Priest 60, applied 2 min ago')], open_=True), meta='6 open')
                  if officer else '')
         pages = Section('The guild', Rows([Row('Raids', 'Onyxia&rsquo;s Lair Wed, then Barrow Deeps Sat'), Row('Roster', '38 members, 26 at 60'),
@@ -300,8 +308,8 @@ def notifications(platform: str) -> str:
             + f'<p class="lbl">Raid, {press} on the lock screen</p><div class="lockbg">' + raid + acts + '</div></div>'
             + f'<p class="lbl">After Late, the minutes ({"a notification content extension" if platform == "ios" else "the expanded notification"})</p>'
             + '<div class="lockbg">' + raid + '<span class="ln">How late?</span>' + _late_chips() + '</div></div>'
-            + '<p class="lbl">The answer, sent without opening the app</p>' + confirm('You&rsquo;re In for Onyxia, 8:00 pm CST', f'{AS_ME.capitalize()} &middot; 19 in, 3 late.')
-            + confirm('You&rsquo;re Late (30 min) for Onyxia', f'{AS_ME.capitalize()} &middot; arriving 8:30 pm CST.')
+            + '<p class="lbl">The answer, sent without opening the app</p>' + confirm('You&rsquo;re In for Onyxia, 8:00 pm CST', f'{AS_ME_CAP} &middot; 19 in, 3 late.')
+            + confirm('You&rsquo;re Late (30 min) for Onyxia', f'{AS_ME_CAP} &middot; arriving 8:30 pm CST.')
             + '<p class="lbl">Raid night ends</p><div class="lockbg">' + ended + '</div>'
             + '<p class="lbl">Officer: an applicant</p><div class="lockbg">' + applicant + '</div>')
     return app_page(platform, _page(body, 'Notifications'), None, navbar=False)
@@ -339,13 +347,13 @@ def applicant(state: str):
                         Row('Ashen Vow', 'Member &middot; 6 raids &middot; left 18 Oct', link=False)], open_=True)
         head = PageHeader('Mirelle', CLASS_COLOR['priest'], crest_img('priest', 56), ['Holy Priest &middot; 60', 'Alliance Dwarf', 'applied 2 min ago'])
         if state == 'accepted':
-            body = (head + '<p class="t-lead" style="margin-top:12px">Accepted. Invite her in game:</p>'
+            body = (head + '<p class="t-lead" style="margin-top:12px">Accepted. Invite them in game:</p>'
                     + '<div class="codeline"><span>/ginvite Mirelle</span>' + Button('Copy', small=True) + '</div>'
                     + '<p class="t-small" style="margin-top:12px">She shows on the roster once the addon or Battle.net sees her in the guild.</p>')
         else:
             body = (head + Figures([('74', 'Forever Score'), ('612', 'Sim', 'HPS'), ('63', 'Item level')])
                     + Section('Raid ready', ready) + Section('Guild history', history)
-                    + Section('Her note', '<p class="t-prose" style="padding-top:8px">Holy main since launch. Wednesday and Sunday nights work for me.</p>')
+                    + Section('Their note', '<p class="t-prose" style="padding-top:8px">Holy main since launch. Wednesday and Sunday nights work for me.</p>')
                     + '<div class="sticky">' + Button('Accept', primary=True) + Button('Decline') + '</div>')
         return app_page(platform, _page(body, 'Mirelle'), 'guild', back='Guild', title='Mirelle', badge=6)
     return b
@@ -373,7 +381,9 @@ def notification_settings(platform: str) -> str:
     groups = [('Raids', 'Posted, moved, your answer due, raid night', True), ('Your gear and sims', 'An upgrade dropped, a sim finished, BiS changed', True),
               ('Logs', 'A report or the coach is ready, a new best', True), ('Guild ladder', 'A guildmate passed you', False),
               ('Tier lists', 'Your spec moved this week', False), ('Officer', 'Short on a role, applicants, late changes', True)]
-    rows = [Row(n, s, trail=Switch('', on), link=False) for n, s, on in groups]
+    # The switch stays on the title row at every width (a Row's trail drops under its body below 600).
+    rows = ['<div class="row setrow"><div class="b"><div class="ttl">' + n + '</div><div class="sub">' + s + '</div></div>'
+            + Switch('', on) + '</div>' for n, s, on in groups]
     nudge = Rows([Row('Raid-day reminder', 'If you have not answered: 3:00 pm your time', trail='<a class="link" href="#">Change</a>', link=False)], open_=True)
     body = PageHeader('Notifications') + Section('Send me', Rows(rows, open_=True)) + Section('When', nudge)
     return app_page(platform, _page(body, 'Notifications'), 'home', back='Home', title='Notifications')
@@ -383,7 +393,7 @@ def notification_settings(platform: str) -> str:
 def item_sheet(platform: str) -> str:
     """Deathbringer from Onyxia (data/builds 1.60.1.70790: 8%, item level 75): the client's tooltip lines, where it drops,
     the runner-up from the same boss, and who in the guild has it or needs it (review S1)."""
-    tooltip = ('<div class="t-small" style="margin-top:8px;line-height:20px">Binds when picked up<br>Main Hand &middot; Axe<br>'
+    tooltip = ('<div class="t-small" style="margin-top:8px;line-height:20px">Binds when picked up<br>One-Hand &middot; Axe<br>'
                '114 - 213 Damage &middot; Speed 2.90<br>(56.4 damage per second)<br>'
                '<span style="color:var(--kill)">Chance on hit: Sends a shadowy bolt at the enemy causing 125 Shadow damage.</span><br>'
                'Requires Level 60</div>')

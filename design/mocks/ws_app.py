@@ -228,11 +228,11 @@ def raid_night(state: str):
         cd = Countdown("Olympus XXVII &middot; Onyxia's Lair tonight", clock, f'<p class="t-small">Wed 9 Dec, 8:00 pm CST &middot; 18 in, 3 late</p>{you}', 'guild', live=True)
         buttons = ''.join(Button(x, primary=(x == 'In' and state == 'live'), small=True) for x in ('In', 'Late', 'Bench', 'Out'))
         counts = Rows([Row('Tanks 2 of 2', 'Grunvald, Brakka', link=False, slim=True),
-                       Row('Healers 5 of 8', 'Mirethil, Lightvow, Selka, Hollowmend, Aenwyn &middot; 3 short', link=False, slim=True),
+                       Row('Healers 5 of 8', 'Mirethil, Selka, Hollowmend, Aenwyn, Brightwen &middot; 3 short', link=False, slim=True),
                        Row('Damage 11 of 30', 'Thandrel, Kaelra, Thalrin and 8 more', link=False, slim=True)], open_=True)
         ready = Checklist([('ok', 'Drakefire Amulet', 'Attuned to Onyxia&rsquo;s Lair', None),
                            ('ok', 'Elixir of the Mongoose', '3 in your bags, from the addon&rsquo;s last export', None),
-                           ('miss', 'Flask of the Titans', 'None in your bags', 'Where to buy'),
+                           ('miss', 'Flask of the Titans', 'None in your bags', 'Auction house'),
                            ('warn', 'Boots not enchanted', 'Enchant Boots: Greater Agility', 'Where to get it')])
         body = (title("Onyxia's Lair", 'var(--strong)', icon('inv_misc_head_dragon_black', 56), ['Olympus XXVII', 'Wed 9 Dec, 8:00 pm CST']) + cd
                 + Section('Your sign-up', f'<div class="la bare"><div class="btns">{buttons}</div></div>')
