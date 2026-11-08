@@ -51,6 +51,12 @@ jobs:
       - uses: actions/setup-java@v4
         with: { distribution: temurin, java-version: '21' }
       - uses: gradle/actions/setup-gradle@v4
+      # services.gradle.org 504s now and then: fetch the wrapper's distribution with retries
+      # before any Gradle step, so a flaky download fails here after 5 tries, not mid-test.
+      - name: Fetch Gradle
+        run: |
+          for i in 1 2 3 4 5; do ./gradlew --version -q && exit 0; echo "::warning::Gradle download failed (try $i)"; sleep 30; done
+          exit 1
       # Push: Firebase's client config from the GOOGLE_SERVICES_JSON secret; without it the
       # build passes and has no push. This workflow never signs or uploads (apps-release.yml does).
       - uses: ./.github/actions/google-services
