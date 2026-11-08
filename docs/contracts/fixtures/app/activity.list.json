@@ -10,7 +10,8 @@
         "body": "Thursday 8:00 PM. Sign up In, Late or Out.",
         "link": "https://foreversixty.gg/guild/olympus-xxvii/raids/311",
         "occurred_at": "2026-11-07T18:04:11Z",
-        "read": false
+        "read": false,
+        "icon": "inv_misc_head_dragon_black"
       },
       {
         "id": 4151,
@@ -20,7 +21,8 @@
         "body": "Obnoxious Yell: 1,184 DPS in Fury.",
         "link": "https://foreversixty.gg/sim/r/9f2c41d0",
         "occurred_at": "2026-11-07T15:40:02Z",
-        "read": true
+        "read": true,
+        "icon": "inv_misc_pocketwatch_01"
       }
     ],
     "unread": 3,

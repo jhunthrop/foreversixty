@@ -263,6 +263,8 @@ public struct ActivityRow: Codable, Sendable, Equatable {
     /// RFC 3339, UTC
     public let occurredAt: Date
     public let read: Bool
+    /// The row's icon, a name under /data/{build}/icons, always sent, as the app mocks draw them: loot.awarded the item's; raid kinds and report.ready the instance's (inv_misc_head_dragon_black for Onyxia's Lair, inv_misc_book_09 for one with none); sim.finished inv_misc_pocketwatch_01; bis.changed and tier.moved inv_misc_book_09; guildsim.passed the passer's spec icon (ability_warrior_innerrage for a Fury warrior). Any other row, and rows written before icons, its group's: raids inv_misc_book_09, gear inv_misc_bag_10, logs inv_misc_book_11, ladder inv_misc_pocketwatch_01, tiers inv_misc_book_09, officer inv_scroll_08, account inv_misc_gear_01.
+    public let icon: String
 
     public init(
         id: Int64,
@@ -272,7 +274,8 @@ public struct ActivityRow: Codable, Sendable, Equatable {
         body: String,
         link: String,
         occurredAt: Date,
-        read: Bool
+        read: Bool,
+        icon: String
     ) {
         self.id = id
         self.kind = kind
@@ -282,6 +285,7 @@ public struct ActivityRow: Codable, Sendable, Equatable {
         self.link = link
         self.occurredAt = occurredAt
         self.read = read
+        self.icon = icon
     }
 }
 
@@ -5284,6 +5288,8 @@ public struct NotificationChoice: Codable, Sendable, Equatable {
 public struct NotificationEvent: Codable, Sendable, Equatable {
     /// The catalogue's name: raid.posted, raid.starting, sim.finished, ...
     public let kind: String
+    /// The kind's group (events.GroupOf); always sent, optional so an older body still decodes.
+    public let group: String?
     /// player, guild_members, signed_up, in_and_late, raiders, officers, payer, everyone
     public let who: String
     /// Show only to officers.
@@ -5294,6 +5300,7 @@ public struct NotificationEvent: Codable, Sendable, Equatable {
 
     public init(
         kind: String,
+        group: String? = nil,
         who: String,
         officer: Bool,
         quietExempt: Bool,
@@ -5301,6 +5308,7 @@ public struct NotificationEvent: Codable, Sendable, Equatable {
         channels: NotificationChannels
     ) {
         self.kind = kind
+        self.group = group
         self.who = who
         self.officer = officer
         self.quietExempt = quietExempt
@@ -5309,20 +5317,24 @@ public struct NotificationEvent: Codable, Sendable, Equatable {
     }
 }
 
-/// The player's choices per event and channel, every catalogue event in catalogue order. Show copy from the app's own strings keyed by kind; hide an unknown kind.
+/// The player's choices per event and channel, every catalogue event in catalogue order. Show copy from the app's own strings keyed by kind; hide an unknown kind. The apps show one switch per group, built from each event's group (no kind to group map in the apps).
 public struct NotificationSettings: Codable, Sendable, Equatable {
     /// An IANA name.
     public let timeZone: String
     public let quietHours: QuietHours
+    /// The raid-day reminder, "HH:MM" in time_zone (default "15:00"): on a raid's day in the player's zone, at this time, raid.signup_nudge goes to a member who has not answered. A reminder at or after the start goes two hours before it. Always sent; optional so an older body still decodes.
+    public let raidReminder: String?
     public let events: [NotificationEvent]
 
     public init(
         timeZone: String,
         quietHours: QuietHours,
+        raidReminder: String? = nil,
         events: [NotificationEvent] = []
     ) {
         self.timeZone = timeZone
         self.quietHours = quietHours
+        self.raidReminder = raidReminder
         self.events = events
     }
 
@@ -5330,23 +5342,28 @@ public struct NotificationSettings: Codable, Sendable, Equatable {
         let c = try decoder.container(keyedBy: CodingKeys.self)
         timeZone = try c.decode(String.self, forKey: .timeZone)
         quietHours = try c.decode(QuietHours.self, forKey: .quietHours)
+        raidReminder = try c.decodeIfPresent(String.self, forKey: .raidReminder)
         events = try c.decodeIfPresent([NotificationEvent].self, forKey: .events) ?? []
     }
 }
 
-/// Every key optional but at least one.
+/// Every key optional but at least one. 422 invalid names each bad key in fields.
 public struct NotificationsPatch: Codable, Sendable, Equatable {
     public let timeZone: String?
     public let quietHours: QuietHours?
+    /// "HH:MM" from 00:00 to 23:45 on a 15-minute step; anything else is 422 with fields.raid_reminder.
+    public let raidReminder: String?
     public let events: [NotificationChoice]?
 
     public init(
         timeZone: String? = nil,
         quietHours: QuietHours? = nil,
+        raidReminder: String? = nil,
         events: [NotificationChoice]? = nil
     ) {
         self.timeZone = timeZone
         self.quietHours = quietHours
+        self.raidReminder = raidReminder
         self.events = events
     }
 }

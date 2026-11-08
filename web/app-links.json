@@ -17,6 +17,5 @@
     "/character/*/*/*",
     "/guild/*/*/*/raids/*",
     "/tiers"
-  ],
-  "exclude": ["/sim/specs", "/sim/gear", "/sim/drops", "/sim/talents", "/sim/weights", "/reports/sample"]
+  ]
 }

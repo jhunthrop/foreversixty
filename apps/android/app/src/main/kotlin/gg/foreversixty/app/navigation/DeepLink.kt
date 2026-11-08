@@ -195,11 +195,15 @@ sealed interface DeepLink {
     companion object {
         const val HOST = "foreversixty.gg"
 
+        /** The pages a route's pattern matches that stay on the site (links.json `exclude`). */
+        val SITE_ONLY: Set<String> = setOf("/sim/specs", "/sim/gear", "/sim/drops", "/sim/talents", "/sim/weights", "/reports/sample")
+
         /** The screen [link] opens, or null for any URL that is not one of the app links. */
         fun parse(link: String): DeepLink? {
             val uri = runCatching { URI(link) }.getOrNull() ?: return null
             if (uri.scheme != "https" || uri.host != HOST) return null
             val s = uri.path.orEmpty().split('/').filter { it.isNotEmpty() }
+            if (s.joinToString("/", prefix = "/") in SITE_ONLY) return null
             val q = query(uri.rawQuery)
             return matchCharacter(s)
                 ?: matchRaid(s, q)

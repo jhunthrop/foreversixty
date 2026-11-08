@@ -106,7 +106,9 @@ type RaidCounts struct {
 
 // RaidPosted is what the raid create holds for one new raid. Counts are those at posting.
 type RaidPosted struct {
-	RaidID           int64
+	RaidID int64
+	// Zone is the raid's zone key ("raid:onyxias-lair"); its icon is the raid events' Activity icon.
+	Zone             string
 	GuildName, Title string
 	StartsAt         time.Time
 	// Timezone is the guild's IANA zone; empty reads as UTC and shows no Guild time.

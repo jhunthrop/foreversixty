@@ -19,6 +19,7 @@ import (
 
 	"github.com/jhunthrop/foreversixty/api/internal/events"
 	"github.com/jhunthrop/foreversixty/api/internal/notify"
+	"github.com/jhunthrop/foreversixty/api/internal/zoneicons"
 )
 
 // raidCopy is the words of the raid notifications. Every line names only what the raid page
@@ -30,7 +31,7 @@ var raidEventCopy = struct {
 	ActionIn, ActionLate, ActionBench, ActionOut                        string
 }{
 	Posted:      "Sign-ups are open: %s.",
-	Nudge:       "%s starts in 24 hours. Are you coming?",
+	Nudge:       "%s is today at %s. Are you coming?",
 	Moved:       "Moved to %s.",
 	Cancelled:   "This raid was cancelled.",
 	RosterIn:    "The roster is set. You are In.",
@@ -79,7 +80,7 @@ func signupActions(guildID, raidID int64) []events.Action {
 // raid and a collapse id per kind and raid.
 func raidEvent(kind events.Kind, guildID int64, p notify.RaidPosted, key string, aud events.Audience) events.Event {
 	return events.Event{
-		Kind: kind, Audience: aud, DedupeKey: key, Title: p.Title, Link: p.RaidURL,
+		Kind: kind, Audience: aud, DedupeKey: key, Title: p.Title, Link: p.RaidURL, Icon: zoneicons.For(p.Zone),
 		Thread: events.RaidThread(p.RaidID), Collapse: events.RaidCollapse(kind, p.RaidID),
 		Data: map[string]string{"guild_id": strconv.FormatInt(guildID, 10), "raid_id": strconv.FormatInt(p.RaidID, 10)},
 	}
@@ -103,10 +104,10 @@ func raidPostedEvent(guildID int64, p notify.RaidPosted) events.Event {
 	return e
 }
 
-func raidNudgeEvent(guildID int64, p notify.RaidPosted) events.Event {
-	e := raidEvent(events.RaidSignupNudge, guildID, p, raidKey(events.RaidSignupNudge, p),
-		events.Audience{Kind: events.ToUnanswered, GuildID: guildID, RaidID: p.RaidID})
-	e.Body = fmt.Sprintf(raidEventCopy.Nudge, p.Title)
+func raidNudgeEvent(guildID int64, p notify.RaidPosted, users []int64) events.Event {
+	e := raidEvent(events.RaidSignupNudge, guildID, p, raidKey(events.RaidSignupNudge, p), events.Users(users...))
+	pull := p.StartsAt.In(raidLocation(p.Timezone)).Format(confirmationTimeLayout)
+	e.Body = fmt.Sprintf(raidEventCopy.Nudge, p.Title, pull)
 	e.Actions = signupActions(guildID, p.RaidID)
 	return e
 }

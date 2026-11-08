@@ -1,8 +1,8 @@
 // api/internal/guilds/raids_events_schedule.go
 //
 // The time-based raid events, run by the raid-posts job every ten minutes: raid.posted as a
-// raid enters the posting horizon, raid.signup_nudge and raid.short 24 hours out, and
-// raid.starting at the reminder lead. Each fires while its due time is inside the catch-up
+// raid enters the posting horizon, raid.short 24 hours out, raid.signup_nudge at each player's
+// raid-day reminder (raids_nudge.go), and raid.starting at the reminder lead. Each fires while its due time is inside the catch-up
 // window, so a missed run is made up; the events' dedupe keys hold each to once per event,
 // raid and player.
 package guilds
@@ -49,7 +49,7 @@ func dueKinds(r scheduledRaid, now time.Time) []events.Kind {
 		out = append(out, events.RaidPosted)
 	}
 	if r.Status == RaidPlanned && dueWithin(r.StartsAt.Add(-reminderLead), now) {
-		out = append(out, events.RaidSignupNudge, events.RaidShort)
+		out = append(out, events.RaidShort)
 	}
 	if r.StartsAt.After(now) && dueWithin(r.StartsAt.Add(-startingLead), now) {
 		out = append(out, events.RaidStarting)
@@ -71,6 +71,13 @@ func (s *Service) RunEventSchedule(ctx context.Context, now time.Time) (EventSch
 	for _, r := range raids {
 		if ctx.Err() != nil {
 			break
+		}
+		if s.Nudges != nil && nudgeable(r, now) {
+			nudged, err := s.publishNudge(ctx, r, now)
+			if err != nil {
+				s.logger().Error("guilds", "op", "event_nudge", "raid_id", r.ID, "err", err)
+			}
+			run = run.add([]events.Kind{events.RaidSignupNudge}, nudged)
 		}
 		kinds := dueKinds(r, now)
 		if len(kinds) == 0 {
@@ -157,8 +164,6 @@ func (s *Service) publishDue(ctx context.Context, raidID int64, kinds []events.K
 		switch k {
 		case events.RaidPosted:
 			out = append(out, raidPostedEvent(facts.GuildID, p))
-		case events.RaidSignupNudge:
-			out = append(out, raidNudgeEvent(facts.GuildID, p))
 		case events.RaidShort:
 			if p.SizeKnown && p.Counts.In+p.Counts.Late < p.Size {
 				out = append(out, raidShortEvent(facts.GuildID, p))

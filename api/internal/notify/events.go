@@ -6,6 +6,7 @@ import (
 	"log/slog"
 
 	"github.com/jhunthrop/foreversixty/api/internal/events"
+	"github.com/jhunthrop/foreversixty/api/internal/zoneicons"
 	"github.com/jhunthrop/foreversixty/sim/specs"
 )
 
@@ -103,7 +104,7 @@ func SimFinishedEvent(publicBaseURL string, e SimFinished) events.Event {
 	}
 	return events.Event{
 		Kind: events.SimFinished, Audience: events.Users(e.UserID), DedupeKey: "sim.finished:" + e.SimID,
-		Title: title, Body: body, Link: absoluteURL(publicBaseURL, simPathPrefix+e.SimID),
+		Title: title, Body: body, Link: absoluteURL(publicBaseURL, simPathPrefix+e.SimID), Icon: events.IconSim,
 		Data: map[string]string{"sim_id": e.SimID}, Source: e,
 	}
 }
@@ -119,10 +120,14 @@ func UploadParsedEvent(publicBaseURL string, e UploadParsed) events.Event {
 	if zone := collapse(e.Zone); zone != "" {
 		body = fmt.Sprintf(pushCopy.LogBody, zone, fights)
 	}
+	icon := ""
+	if zone := collapse(e.Zone); zone != "" {
+		icon = zoneicons.ForName(zone)
+	}
 	return events.Event{
 		Kind: events.ReportReady, Audience: events.Users(e.UserID), DedupeKey: "report.ready:" + e.ReportID,
 		Title: title, Body: body, Link: absoluteURL(publicBaseURL, reportPathPrefix+e.ReportID),
-		Data: map[string]string{"report_id": e.ReportID}, Source: e,
+		Data: map[string]string{"report_id": e.ReportID}, Source: e, Icon: icon,
 	}
 }
 

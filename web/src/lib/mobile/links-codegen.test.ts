@@ -9,6 +9,7 @@ import {
   appLinkPaths,
   buildRoutes,
   codeName,
+  excludedPaths,
   generate,
   renderKotlin,
   renderSwift,
@@ -59,6 +60,25 @@ describe('mobile deep-link codegen', () => {
     expect(() => buildRoutes(table([route, { ...route, path: '/app/sim/{x}', screen: 'other' }]))).toThrow(
       /same links/,
     );
+  });
+
+  it("keeps a route's excluded pages on the site, in both parsers and the path list", () => {
+    const route = {
+      path: '/sim/{id}',
+      site: true,
+      screen: 'simPage',
+      example: '/sim/a',
+      exclude: ['/sim/gear'],
+    };
+    const model = buildRoutes(table([route]));
+    expect(excludedPaths(model)).toEqual(['/sim/gear']);
+    expect(renderSwift(model, '')).toContain('static let siteOnly: Set<String> = ["/sim/gear"]');
+    expect(renderKotlin(model, '')).toContain('val SITE_ONLY: Set<String> = setOf("/sim/gear")');
+    expect(() => buildRoutes(table([{ ...route, exclude: ['/reports/gear'] }]))).toThrow(
+      /not a path this route/,
+    );
+    expect(() => buildRoutes(table([{ ...route, exclude: ['/sim/{id}'] }]))).toThrow(/not a path this route/);
+    expect(() => buildRoutes(table([{ ...route, exclude: ['/sim/a/b'] }]))).toThrow(/not a path this route/);
   });
 
   it('renames a keyword param in the code and keeps it in the URL', () => {

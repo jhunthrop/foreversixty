@@ -132,6 +132,7 @@ func (s *Service) publishLootAwarded(ctx context.Context, guildID, awardID int64
 		e.Body = fmt.Sprintf(memberEventCopy.LootBody, c.Name, g.Name)
 		if item, ok := s.Store.ItemIn(s.Store.BisBuild(), c.Class, itemID); ok && item.Name != "" {
 			e.Body = fmt.Sprintf(memberEventCopy.LootBodyNamed, c.Name, item.Name, g.Name)
+			e.Icon = item.Icon
 		}
 		e.Data["item_id"] = strconv.Itoa(itemID)
 		return []events.Event{e}

@@ -21,7 +21,7 @@ func (m *memPrefs) Prefs(_ context.Context, uid int64) (Prefs, error) {
 }
 
 func (m *memPrefs) SaveSettings(_ context.Context, uid int64, c SettingsChange) error {
-	if c.TimeZone == nil && c.Quiet == nil && len(c.Prefs) == 0 {
+	if !c.settingsRow() && len(c.Prefs) == 0 {
 		return errEmptyChange
 	}
 	p, _ := m.Prefs(context.Background(), uid)
@@ -30,6 +30,9 @@ func (m *memPrefs) SaveSettings(_ context.Context, uid int64, c SettingsChange) 
 	}
 	if c.Quiet != nil {
 		p.Quiet = *c.Quiet
+	}
+	if c.RaidReminder != nil {
+		p.RaidReminder = *c.RaidReminder
 	}
 	for _, ch := range c.Prefs {
 		p = p.With(ch.Kind, ch.Channel, ch.Enabled)

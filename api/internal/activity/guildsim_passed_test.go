@@ -48,7 +48,7 @@ func TestGuildSimPassedTellsEachMemberPassed(t *testing.T) {
 	if md.Body != "585 DPS, +15 over your 570 (Fury Warrior, 60 raid)." {
 		t.Fatalf("Md's event %+v", md)
 	}
-	if mc.Data["guild_id"] == "" || mc.Link != "https://foreversixty.gg/app/guild/"+mc.Data["guild_id"] {
+	if mc.Icon != "ability_warrior_innerrage" || mc.Data["guild_id"] == "" || mc.Link != "https://foreversixty.gg/app/guild/"+mc.Data["guild_id"] {
 		t.Fatalf("Mc's link or icon %+v", mc)
 	}
 }

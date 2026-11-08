@@ -7,10 +7,11 @@
 //
 // Only the configured paths open the apps: /app/*, plus the site pages apps/shared/links.json
 // marks `site: true` (a shared build's /b/*, the BiS, guide, sim, report, character, guild raid
-// and tier pages), which web/app-link-paths.json lists as site_pages. `exclude` names the pages
+// and tier pages), which web/app-link-paths.json lists as site_pages. Its `exclude` (from the
+// routes' `exclude` in links.json, the one list both apps' parsers also refuse) names the pages
 // under those patterns that stay on the site (the sim tools under /sim/*); Apple reads the
-// excluded components first. Every other URL stays on the site. The API's app sign-in hands its one-time code
-// to /app/auth (api/internal/auth/app_auth.go).
+// excluded components first. Every other URL stays on the site. The API's app sign-in hands its
+// one-time code to /app/auth (api/internal/auth/app_auth.go).
 //
 // `npm run sync:app-links` rewrites the files. `npm run sync` (predev and prebuild) runs it,
 // so a deploy always carries the config's current values.
@@ -32,8 +33,21 @@ export function readSitePages(file = linkPathsPath) {
   return pages;
 }
 
+/** The pages under those patterns that stay on the site (generated from links.json `exclude`). */
+export function readExcludedPaths(file = linkPathsPath) {
+  const exclude = JSON.parse(readFileSync(file, 'utf8')).exclude ?? [];
+  if (!Array.isArray(exclude) || !exclude.every((p) => typeof p === 'string' && p.startsWith('/'))) {
+    throw new Error('app-link-paths.json: exclude must be a list of site paths');
+  }
+  return exclude;
+}
+
 /** Reads and checks web/app-links.json; a missing or empty field fails loudly. */
-export function readAppLinksConfig(file = configPath, sitePages = readSitePages()) {
+export function readAppLinksConfig(
+  file = configPath,
+  sitePages = readSitePages(),
+  exclude = readExcludedPaths(),
+) {
   const cfg = JSON.parse(readFileSync(file, 'utf8'));
   for (const key of ['appleTeamId', 'iosBundleId', 'androidPackage']) {
     if (typeof cfg[key] !== 'string' || cfg[key] === '')
@@ -44,16 +58,15 @@ export function readAppLinksConfig(file = configPath, sitePages = readSitePages(
       throw new Error(`app-links.json: ${key} must be a non-empty list`);
   }
   const allowed = (p) => typeof p === 'string' && (p.startsWith('/app/') || sitePages.includes(p));
-  const exclude = cfg.exclude ?? [];
-  if (!Array.isArray(exclude) || !exclude.every((p) => typeof p === 'string' && p.startsWith('/'))) {
-    throw new Error('app-links.json: exclude must be a list of site paths');
+  if ('exclude' in cfg) {
+    throw new Error("app-links.json: exclude lives in apps/shared/links.json (a route's exclude), not here");
   }
   if (!cfg.paths.every(allowed)) {
     throw new Error(
       'app-links.json: every path must sit under /app/ or be a site page of links.json, so no other page opens the apps',
     );
   }
-  return cfg;
+  return { ...cfg, exclude };
 }
 
 /** Apple's universal links file: the app id is "<Team ID>.<bundle id>". */

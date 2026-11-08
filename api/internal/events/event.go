@@ -66,6 +66,9 @@ type Event struct {
 	Actions  []Action
 	// Data is extra key-value data the app reads (raid id, guild id).
 	Data map[string]string
+	// Icon is the Activity row's icon, a name under /data/{build}/icons (icons.go); "" takes the
+	// kind's group's.
+	Icon string
 	// Source is the producer's typed fact, for a channel that renders it in full (the
 	// Discord embeds read notify.SimFinished and notify.UploadParsed). nil otherwise.
 	Source any

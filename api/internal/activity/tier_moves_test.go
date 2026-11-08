@@ -52,7 +52,7 @@ func TestTierMovesTellTheSpecsMains(t *testing.T) {
 		t.Fatalf("event %+v", e)
 	}
 	if e.Title != "Fury Warrior moved to S" || e.Body != "Up from A last week, level 60, Alliance." ||
-		e.Link != "https://foreversixty.gg/tiers" || e.Data["spec"] != "warrior-fury" {
+		e.Link != "https://foreversixty.gg/tiers" || e.Data["spec"] != "warrior-fury" || e.Icon != events.IconBook {
 		t.Fatalf("event words %+v", e)
 	}
 	// The next pass has nothing new to say.

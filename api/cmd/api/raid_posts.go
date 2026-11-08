@@ -119,8 +119,9 @@ func newRaidPostsServices(cfg config.Config, pool *pgxpool.Pool, log *slog.Logge
 	}
 	svc := raidPostsServices{Guilds: guildService}
 	if router := newEventsRouter(context.Background(), cfg, pool, deps.Notify, log); cfg.Push.Enabled && router != nil {
-		guildService.Events = router
-		svc.Events, svc.Prune = guildService, &events.Store{Pool: pool}
+		store := &events.Store{Pool: pool}
+		guildService.Events, guildService.Nudges = router, store
+		svc.Events, svc.Prune = guildService, store
 	}
 	if !botEnabled(cfg, deps, log) {
 		return svc, nil

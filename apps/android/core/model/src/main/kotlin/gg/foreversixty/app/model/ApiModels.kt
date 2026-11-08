@@ -110,6 +110,8 @@ data class ActivityRow(
     /** RFC 3339, UTC */
     @SerialName("occurred_at") val occurredAt: String,
     @SerialName("read") val read: Boolean,
+    /** The row's icon, a name under /data/{build}/icons, always sent, as the app mocks draw them: loot.awarded the item's; raid kinds and report.ready the instance's (inv_misc_head_dragon_black for Onyxia's Lair, inv_misc_book_09 for one with none); sim.finished inv_misc_pocketwatch_01; bis.changed and tier.moved inv_misc_book_09; guildsim.passed the passer's spec icon (ability_warrior_innerrage for a Fury warrior). Any other row, and rows written before icons, its group's: raids inv_misc_book_09, gear inv_misc_bag_10, logs inv_misc_book_11, ladder inv_misc_pocketwatch_01, tiers inv_misc_book_09, officer inv_scroll_08, account inv_misc_gear_01. */
+    @SerialName("icon") val icon: String,
 )
 
 @Serializable
@@ -1977,6 +1979,8 @@ data class NotificationChoice(
 data class NotificationEvent(
     /** The catalogue's name: raid.posted, raid.starting, sim.finished, ... */
     @SerialName("kind") val kind: String,
+    /** The kind's group (events.GroupOf); always sent, optional so an older body still decodes. */
+    @SerialName("group") val group: String? = null,
     /** player, guild_members, signed_up, in_and_late, raiders, officers, payer, everyone */
     @SerialName("who") val who: String,
     /** Show only to officers. */
@@ -1986,20 +1990,24 @@ data class NotificationEvent(
     @SerialName("channels") val channels: NotificationChannels,
 )
 
-/** The player's choices per event and channel, every catalogue event in catalogue order. Show copy from the app's own strings keyed by kind; hide an unknown kind. */
+/** The player's choices per event and channel, every catalogue event in catalogue order. Show copy from the app's own strings keyed by kind; hide an unknown kind. The apps show one switch per group, built from each event's group (no kind to group map in the apps). */
 @Serializable
 data class NotificationSettings(
     /** An IANA name. */
     @SerialName("time_zone") val timeZone: String,
     @SerialName("quiet_hours") val quietHours: QuietHours,
+    /** The raid-day reminder, "HH:MM" in time_zone (default "15:00"): on a raid's day in the player's zone, at this time, raid.signup_nudge goes to a member who has not answered. A reminder at or after the start goes two hours before it. Always sent; optional so an older body still decodes. */
+    @SerialName("raid_reminder") val raidReminder: String? = null,
     @SerialName("events") val events: List<NotificationEvent> = emptyList(),
 )
 
-/** Every key optional but at least one. */
+/** Every key optional but at least one. 422 invalid names each bad key in fields. */
 @Serializable
 data class NotificationsPatch(
     @SerialName("time_zone") val timeZone: String? = null,
     @SerialName("quiet_hours") val quietHours: QuietHours? = null,
+    /** "HH:MM" from 00:00 to 23:45 on a 15-minute step; anything else is 422 with fields.raid_reminder. */
+    @SerialName("raid_reminder") val raidReminder: String? = null,
     @SerialName("events") val events: List<NotificationChoice>? = null,
 )
 
