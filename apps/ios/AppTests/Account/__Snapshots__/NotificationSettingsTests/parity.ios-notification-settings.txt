@@ -5,7 +5,7 @@ Gear and sims, An upgrade dropped, a sim finished, BiS changed: 1
 Logs, A report or the coach is ready, a new best: 1
 Guild ladder, A guildmate passed you: 0
 Tiers, Your spec moved this week: 0
-Discord
-Let officers DM me on Discord, Your guild's officers can message you about a raid you have not answered: 0
 When
 Raid-day reminder, If you have not answered: 3:00 pm your time
+Discord
+Let officers DM me on Discord, When you have not answered a raid; off, they mention you in the channel: 0
