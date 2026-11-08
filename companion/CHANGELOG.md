@@ -1,5 +1,9 @@
 # Companion changelog
 
+## 0.2.39
+
+- Raid answers from the game reach the site: when you answer a raid with the addon panel's Tonight buttons, the companion sends the answer with your next sync, and once the site has taken it (or refused it, because you answered later on the site, the app or Discord, or the raid closed) it takes the answer out of the addon's saved file. Nothing else in that file is touched. The inbox tells the addon this companion carries raid answers, so the panel offers them only with a companion that sends them.
+
 ## 0.2.37
 
 - A Mac companion: one app for Apple silicon and Intel Macs on macOS 12 or later, signed with Commish LLC's Developer ID and notarized by Apple, shipped as a disk image to drag into Applications. It finds the game in /Applications/World of Warcraft, sits in the menu bar, hides when its window is closed, has the Edit menu that makes Command-V paste a pairing code, keeps the device token in the macOS Keychain, waits for the Mac client to close before it updates the addon, and updates itself by replacing the whole signed app.
