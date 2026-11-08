@@ -8,10 +8,20 @@ const Generic = "inv_misc_book_09"
 
 type zone struct{ key, name, icon string }
 
+// zones are the first raids, in the order web/src/lib/first-raids.ts lists them.
 var zones = []zone{
 	{"raid:barrow-deeps", "Barrow Deeps", "spell_shadow_raisedead"},
 	{"raid:hyjal-summit", "Hyjal Summit", "spell_nature_timestop"},
 	{"raid:onyxias-lair", "Onyxia's Lair", "inv_misc_head_dragon_black"},
+}
+
+// Names is the first raids' names, in that order.
+func Names() []string {
+	out := make([]string, len(zones))
+	for i, z := range zones {
+		out[i] = z.name
+	}
+	return out
 }
 
 // For is the icon of the zone with this key ("raid:onyxias-lair"), Generic for any other.

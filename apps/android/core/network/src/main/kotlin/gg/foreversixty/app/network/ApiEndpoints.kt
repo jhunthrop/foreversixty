@@ -20,6 +20,7 @@ import gg.foreversixty.app.model.CalendarFeed
 import gg.foreversixty.app.model.Changelog
 import gg.foreversixty.app.model.CharacterHome
 import gg.foreversixty.app.model.CharacterProfile
+import gg.foreversixty.app.model.CharacterRating
 import gg.foreversixty.app.model.CharacterSearch
 import gg.foreversixty.app.model.ClassInfo
 import gg.foreversixty.app.model.CoachNight
@@ -43,6 +44,8 @@ import gg.foreversixty.app.model.ItemsFile
 import gg.foreversixty.app.model.KeyDate
 import gg.foreversixty.app.model.LiveActivityRegistered
 import gg.foreversixty.app.model.LiveActivityRequest
+import gg.foreversixty.app.model.LiveStartTokenRequest
+import gg.foreversixty.app.model.LiveStartTokenStored
 import gg.foreversixty.app.model.LootFile
 import gg.foreversixty.app.model.Me
 import gg.foreversixty.app.model.MePatch
@@ -239,6 +242,10 @@ object ApiEndpoints {
     fun getCharacterReady(region: String, ruleset: String, name: String, raid: Long? = null): Endpoint<ReadyCheck> =
         Endpoint(HttpMethod.Get, "/v1/characters/${region.encodeURLPathPart()}/${ruleset.encodeURLPathPart()}/${name.encodeURLPathPart()}/ready", ReadyCheck.serializer(), query = listOfNotNull(raid?.let { "raid" to it.toString() }))
 
+    /** GET /v1/characters/{region}/{ruleset}/{name}/rating: A character's Forever rating, its latest fight card and its trend (public) */
+    fun getCharacterRating(region: String, ruleset: String, name: String, limit: Int? = null, cursor: String? = null): Endpoint<CharacterRating> =
+        Endpoint(HttpMethod.Get, "/v1/characters/${region.encodeURLPathPart()}/${ruleset.encodeURLPathPart()}/${name.encodeURLPathPart()}/rating", CharacterRating.serializer(), query = listOfNotNull(limit?.let { "limit" to it.toString() }, cursor?.let { "cursor" to it }))
+
     /** GET /v1/characters/{region}/{ruleset}/{name}/home: The home answer for a character (dark, APP_API) */
     fun getCharacterHome(region: String, ruleset: String, name: String): Endpoint<CharacterHome> =
         Endpoint(HttpMethod.Get, "/v1/characters/${region.encodeURLPathPart()}/${ruleset.encodeURLPathPart()}/${name.encodeURLPathPart()}/home", CharacterHome.serializer())
@@ -326,6 +333,10 @@ object ApiEndpoints {
     /** GET /v1/me/widget: The home-screen and lock-screen snapshot (dark, APP_WIDGETS) */
     fun getWidget(character: String? = null): Endpoint<Widget> =
         Endpoint(HttpMethod.Get, "/v1/me/widget", Widget.serializer(), query = listOfNotNull(character?.let { "character" to it }))
+
+    /** POST /v1/me/live-activities/start-token: Store the app install's push-to-start token (APP_WIDGETS) */
+    fun storeLiveStartToken(body: LiveStartTokenRequest): Endpoint<LiveStartTokenStored> =
+        Endpoint(HttpMethod.Post, "/v1/me/live-activities/start-token", LiveStartTokenStored.serializer(), body = ApiJson.encodeToString(LiveStartTokenRequest.serializer(), body))
 
     /** POST /v1/me/live-activities: Keep a Live Activity or ongoing notification current (dark, APP_WIDGETS) */
     fun registerLiveActivity(body: LiveActivityRequest): Endpoint<LiveActivityRegistered> =
@@ -466,6 +477,7 @@ object ContractRoutes {
         FixtureRoute(HttpMethod.Get, "/v1/guilds/{id}/home", "guild.home", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Get, "/v1/guilds/recruiting", "guild.recruiting", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Get, "/v1/characters/{region}/{ruleset}/{name}/ready", "character.ready", HttpStatusCode.fromValue(200)),
+        FixtureRoute(HttpMethod.Get, "/v1/characters/{region}/{ruleset}/{name}/rating", "character.rating", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Get, "/v1/characters/{region}/{ruleset}/{name}/home", "character.home", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Get, "/v1/guilds/{id}/raids", "guild.raids", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Get, "/v1/guilds/{id}/raids/{raid}", "guild.raid", HttpStatusCode.fromValue(200)),
@@ -487,6 +499,7 @@ object ContractRoutes {
         FixtureRoute(HttpMethod.Post, "/v1/me/push-tokens", "app.push-tokens.register", HttpStatusCode.fromValue(201)),
         FixtureRoute(HttpMethod.Delete, "/v1/me/push-tokens/{token}", null, HttpStatusCode.fromValue(204)),
         FixtureRoute(HttpMethod.Get, "/v1/me/widget", "widget.get", HttpStatusCode.fromValue(200)),
+        FixtureRoute(HttpMethod.Post, "/v1/me/live-activities/start-token", "live.start-token", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Post, "/v1/me/live-activities", "live.register", HttpStatusCode.fromValue(201)),
         FixtureRoute(HttpMethod.Delete, "/v1/me/live-activities/{id}", null, HttpStatusCode.fromValue(204)),
         FixtureRoute(HttpMethod.Get, "/v1/me/calendar-feed", "calendar.feed", HttpStatusCode.fromValue(200)),

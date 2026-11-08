@@ -74,7 +74,12 @@ struct GuidesLogicTests {
         #expect(GuideCopy.ranks(fury) == "5 ranks")
         let rows = GuideBuildRows.rows(guide.talents)
         #expect(rows.map(\.title) == ["Raid build", "Leveling build"])
-        #expect(rows.map(\.totals) == ["31 / 10 / 10", "31 / 5 / 15"])
+        // The builds are live guide data (data contracts are floors): each total is the three trees'
+        // points, and the raid build at 60 spends all 51.
+        let points = rows.map { $0.totals.split(separator: "/").compactMap { Int($0.trimmingCharacters(in: .whitespaces)) } }
+        #expect(points.allSatisfy { $0.count == 3 && $0.allSatisfy { $0 >= 0 } })
+        #expect(points.first?.reduce(0, +) == 51)
+        #expect(points.allSatisfy { $0.reduce(0, +) <= 51 })
     }
 
     @Test func rotation_numbersEachListAndPrintsRanks() throws {

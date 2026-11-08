@@ -10,6 +10,7 @@ package guilds
 import (
 	"context"
 	"fmt"
+	"slices"
 	"time"
 
 	"github.com/jackc/pgx/v5"
@@ -173,6 +174,9 @@ func (s *Service) publishDue(ctx context.Context, raidID int64, kinds []events.K
 		}
 	}
 	s.publishAll(ctx, out)
+	if s.LiveRaids != nil && slices.Contains(kinds, events.RaidStarting) {
+		s.LiveRaids.RaidStarting(ctx, raidID)
+	}
 	return true
 }
 

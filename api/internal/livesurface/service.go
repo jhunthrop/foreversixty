@@ -79,6 +79,7 @@ func Mount(mux *http.ServeMux, s *Service) {
 	mux.HandleFunc("GET /v1/me/widget", auth.RequireSession(s.widget))
 	mux.HandleFunc("POST /v1/me/live-activities", auth.RequireSession(s.register))
 	mux.HandleFunc("DELETE /v1/me/live-activities/{id}", auth.RequireSession(s.unregister))
+	mux.HandleFunc("POST /v1/me/live-activities/start-token", auth.RequireSession(s.storeStartToken))
 }
 
 func (s *Service) now() time.Time {

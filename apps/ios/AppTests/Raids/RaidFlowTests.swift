@@ -12,43 +12,43 @@ struct RaidFlowParityTests {
     static let device = CGSize(width: 393, height: 852)
     typealias T = RaidFlowTestData
 
-    private func root(_ content: RaidRootContent, _ screen: String, testName: String = #function) throws {
+    private func root(_ content: RaidRootContent, _ screen: String, testName: String = #function) async throws {
         let view = RaidRootView(content: content).environment(\.itemIconSource, RepoItemIconSource())
-        try ParityCheck.assert(view, screen: screen, size: Self.device, testName: testName)
+        try await ParityCheck.assert(view, screen: screen, size: Self.device, testName: testName)
     }
 
-    @Test("ios-raid") func member() throws { try root(T.member(), "raid") }
-    @Test("ios-raid-officer") func officer() throws { try root(T.member(officer: true), "raid-officer") }
-    @Test("ios-raid-live") func live() throws { try root(T.live, "raid-live") }
-    @Test("ios-raid-no-raid") func noRaid() throws { try root(T.noRaid, "raid-no-raid") }
-    @Test("ios-raid-none") func noGuild() throws { try root(T.recruiting, "raid-none") }
-    @Test("ios-raid-leveler") func leveler() throws { try root(.leveler(toGo: "26 levels to go"), "raid-leveler") }
-    @Test("ios-raid-out") func signedOut() throws { try root(.signedOut, "raid-out") }
+    @Test("ios-raid") func member() async throws { try await root(T.member(), "raid") }
+    @Test("ios-raid-officer") func officer() async throws { try await root(T.member(officer: true), "raid-officer") }
+    @Test("ios-raid-live") func live() async throws { try await root(T.live, "raid-live") }
+    @Test("ios-raid-no-raid") func noRaid() async throws { try await root(T.noRaid, "raid-no-raid") }
+    @Test("ios-raid-none") func noGuild() async throws { try await root(T.recruiting, "raid-none") }
+    @Test("ios-raid-leveler") func leveler() async throws { try await root(.leveler(toGo: "26 levels to go"), "raid-leveler") }
+    @Test("ios-raid-out") func signedOut() async throws { try await root(.signedOut, "raid-out") }
 
     @Test("ios-raid-unanswered")
-    func unanswered() throws {
+    func unanswered() async throws {
         let view = NotAnsweredView(content: T.notAnswered, build: HomeFlowTestData.build).environment(\.itemIconSource, RepoItemIconSource())
-        try ParityCheck.assert(view, screen: "raid-unanswered", size: Self.device)
+        try await ParityCheck.assert(view, screen: "raid-unanswered", size: Self.device)
     }
 
     @Test("ios-raid-applicant")
-    func applicant() throws {
-        try ParityCheck.assert(ApplicantView(content: T.applicant(accepted: false)), screen: "raid-applicant", size: Self.device)
+    func applicant() async throws {
+        try await ParityCheck.assert(ApplicantView(content: T.applicant(accepted: false)), screen: "raid-applicant", size: Self.device)
     }
 
     @Test("ios-raid-applicant-accepted")
-    func applicantAccepted() throws {
-        try ParityCheck.assert(ApplicantView(content: T.applicant(accepted: true)), screen: "raid-applicant-accepted", size: Self.device)
+    func applicantAccepted() async throws {
+        try await ParityCheck.assert(ApplicantView(content: T.applicant(accepted: true)), screen: "raid-applicant-accepted", size: Self.device)
     }
 
-    private func night(_ answered: Bool, _ screen: String, testName: String = #function) throws {
+    private func night(_ answered: Bool, _ screen: String, testName: String = #function) async throws {
         let view = RaidNightPageView(content: T.night(answered: answered), build: HomeFlowTestData.build)
             .environment(\.itemIconSource, RepoItemIconSource())
-        try ParityCheck.assert(view, screen: screen, size: Self.device, testName: testName)
+        try await ParityCheck.assert(view, screen: screen, size: Self.device, testName: testName)
     }
 
-    @Test("ios-raid-night-live") func nightLive() throws { try night(true, "raid-night-live") }
-    @Test("ios-raid-night-signup") func nightSignup() throws { try night(false, "raid-night-signup") }
+    @Test("ios-raid-night-live") func nightLive() async throws { try await night(true, "raid-night-live") }
+    @Test("ios-raid-night-signup") func nightSignup() async throws { try await night(false, "raid-night-signup") }
 }
 
 /// The Raid tab's words and rules, from the API's shapes.

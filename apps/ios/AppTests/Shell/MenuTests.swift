@@ -146,22 +146,22 @@ struct MenuParityTests {
     private var everyone: [AccountCharacter] { [MenuTestData.thandrel] + MenuTestData.others + MenuTestData.low }
 
     @Test("ios-menu")
-    func full() throws {
-        try ParityCheck.assert(menu(everyone), screen: "menu", size: Self.size)
+    func full() async throws {
+        try await ParityCheck.assert(menu(everyone), screen: "menu", size: Self.size)
     }
 
     @Test("ios-menu-one")
-    func one() throws {
-        try ParityCheck.assert(menu([MenuTestData.thandrel]), screen: "menu-one", size: Self.size)
+    func one() async throws {
+        try await ParityCheck.assert(menu([MenuTestData.thandrel]), screen: "menu-one", size: Self.size)
     }
 
     @Test("ios-menu-low")
-    func low() throws {
-        try ParityCheck.assert(menu(everyone, low: true), screen: "menu-low", size: Self.size)
+    func low() async throws {
+        try await ParityCheck.assert(menu(everyone, low: true), screen: "menu-low", size: Self.size)
     }
 
     @Test("ios-menu-out")
-    func out() throws {
-        try ParityCheck.assert(menu(nil), screen: "menu-out", size: Self.size)
+    func out() async throws {
+        try await ParityCheck.assert(menu(nil), screen: "menu-out", size: Self.size)
     }
 }
