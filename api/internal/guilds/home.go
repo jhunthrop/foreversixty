@@ -513,42 +513,50 @@ func (s *Store) scanRosterRow(rows pgx.Rows, g Guild, actorID int64, moderator, 
 		row.specStr = *row.Spec
 	}
 	if export != nil {
-		decoded, ok := fs1.Decode(*export)
-		if ok {
-			row.gear, row.enchants = decoded.Gear, decoded.Enchants
-			row.bags, row.hasBagsSection, row.prep = decoded.Bags, decoded.HasBags, prepOf(decoded)
-			row.Professions = decoded.Professions
-			row.talentPointsSpent, row.hasTalents = sumPoints(decoded.Talents.Points), true
-			if decoded.HasLevel {
-				level := decoded.Level
-				row.Level = &level
-			}
-			// Class comes from fight_metrics first (a logged fight is live evidence of
-			// what was actually played), the FS1 export second - the export always
-			// carries a class (fs1.Decoded.ClassSlug), so a character with gear consent
-			// but no fight_metrics row yet (readiness/standing's own "no fight data"
-			// case) still gets a class instead of reading empty and drawing a broken
-			// crest web-side. The export carries no spec field at all, so specStr has
-			// no equivalent second source.
-			if row.className == "" && decoded.ClassSlug != "" {
-				row.className = decoded.ClassSlug
-				class := decoded.ClassSlug
-				row.Class = &class
-			}
-			// faction has no fight_metrics source at all (that table carries no
-			// faction column - see factionForRace's own doc comment), so the export's
-			// race is the only place this ever comes from.
-			if row.faction == "" {
-				if f, ok := s.factionForRace(decoded.RaceSlug); ok {
-					row.faction = f
-				}
-			}
-			if level, ok := equippedItemLevel(decoded, sims.GearItem); ok {
-				row.ItemLevel = &level
-			}
-		}
+		s.applyExport(&row, *export)
 	}
 	return row, nil
+}
+
+// applyExport fills row from its addon export: gear, enchants, bags and the prep sections,
+// professions, talents, level, and the class, faction and item level the export carries. An
+// export that does not decode leaves the row as it was.
+func (s *Store) applyExport(row *RosterRow, export string) {
+	decoded, ok := fs1.Decode(export)
+	if !ok {
+		return
+	}
+	row.gear, row.enchants = decoded.Gear, decoded.Enchants
+	row.bags, row.hasBagsSection, row.prep = decoded.Bags, decoded.HasBags, prepOf(decoded)
+	row.Professions = decoded.Professions
+	row.talentPointsSpent, row.hasTalents = sumPoints(decoded.Talents.Points), true
+	if decoded.HasLevel {
+		level := decoded.Level
+		row.Level = &level
+	}
+	// Class comes from fight_metrics first (a logged fight is live evidence of
+	// what was actually played), the FS1 export second - the export always
+	// carries a class (fs1.Decoded.ClassSlug), so a character with gear consent
+	// but no fight_metrics row yet (readiness/standing's own "no fight data"
+	// case) still gets a class instead of reading empty and drawing a broken
+	// crest web-side. The export carries no spec field at all, so specStr has
+	// no equivalent second source.
+	if row.className == "" && decoded.ClassSlug != "" {
+		row.className = decoded.ClassSlug
+		class := decoded.ClassSlug
+		row.Class = &class
+	}
+	// faction has no fight_metrics source at all (that table carries no
+	// faction column - see factionForRace's own doc comment), so the export's
+	// race is the only place this ever comes from.
+	if row.faction == "" {
+		if f, ok := s.factionForRace(decoded.RaceSlug); ok {
+			row.faction = f
+		}
+	}
+	if level, ok := equippedItemLevel(decoded, sims.GearItem); ok {
+		row.ItemLevel = &level
+	}
 }
 
 // itemLookup is an item in a build's per-class table: sims.GearItem, the table the character

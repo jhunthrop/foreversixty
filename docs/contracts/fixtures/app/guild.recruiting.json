@@ -1,0 +1,25 @@
+{
+  "ok": true,
+  "data": {
+    "rows": [
+      {
+        "guild_id": 2,
+        "name": "Olympus XXVII",
+        "faction": "alliance",
+        "schedule": "Wed and Sat, 8:00 pm CST",
+        "needs": "damage",
+        "crest_url": "https://api.foreversixty.gg/v1/guilds/2/crest?v=3"
+      },
+      {
+        "guild_id": 7,
+        "name": "Takes Anyone",
+        "faction": "alliance",
+        "schedule": "",
+        "needs": "damage",
+        "crest_url": null
+      }
+    ]
+  },
+  "error": null,
+  "request_id": "9f2c41d07ab3e655"
+}

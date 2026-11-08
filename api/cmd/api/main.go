@@ -658,6 +658,7 @@ func serve(log *slog.Logger) error {
 	// lane and share one read of the character.
 	deps.Rankings.Scores = deps.Rating
 	deps.Rankings.ScoreGear = deps.Rating
+	guildService.Scores = applicantScores{deps.Rating}
 	deps.Coach = mountCoach(ctx, coachWiring{cfg: cfg, pool: pool, deps: &deps, rating: ratingStore, reports: reportStore, auth: authStore, entitle: entStore, sims: simStore, summaries: bucketOrNil(client), log: log})
 
 	layouts := talentLayouts(cfg.TreeDataDir, treeData, log)

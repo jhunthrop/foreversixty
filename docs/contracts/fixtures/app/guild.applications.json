@@ -36,7 +36,48 @@
         },
         "decided_by": null,
         "role_outcome": null,
-        "dm_outcome": null
+        "dm_outcome": null,
+        "sheet": {
+          "score": 74,
+          "sim": {
+            "value": 612.4,
+            "unit": "hps"
+          },
+          "attunement": {
+            "zone_name": "Onyxia's Lair",
+            "state": "ok",
+            "item": {
+              "id": 16309,
+              "name": "Drakefire Amulet",
+              "quality": 4
+            }
+          },
+          "enchants": {
+            "slots": 4,
+            "enchanted": 2,
+            "missing": [
+              "back",
+              "feet"
+            ]
+          },
+          "bis_gap": {
+            "pieces": 9,
+            "list": "Holy Paladin, 60 raid"
+          },
+          "history": [
+            {
+              "guild_name": "Dawnbreak",
+              "raids": 14,
+              "last_raid_at": "2026-11-02T03:10:00Z"
+            },
+            {
+              "guild_name": "Ashen Vow",
+              "raids": 6,
+              "last_raid_at": "2026-10-18T02:40:00Z"
+            }
+          ],
+          "exported_at": "2026-12-14T08:12:40Z"
+        }
       },
       {
         "id": 38,
@@ -69,7 +110,48 @@
           "character_key": "us/pvp/obnoxious-yell"
         },
         "role_outcome": "granted",
-        "dm_outcome": "not_opted_in"
+        "dm_outcome": "not_opted_in",
+        "sheet": {
+          "score": 74,
+          "sim": {
+            "value": 612.4,
+            "unit": "hps"
+          },
+          "attunement": {
+            "zone_name": "Onyxia's Lair",
+            "state": "ok",
+            "item": {
+              "id": 16309,
+              "name": "Drakefire Amulet",
+              "quality": 4
+            }
+          },
+          "enchants": {
+            "slots": 4,
+            "enchanted": 2,
+            "missing": [
+              "back",
+              "feet"
+            ]
+          },
+          "bis_gap": {
+            "pieces": 9,
+            "list": "Holy Paladin, 60 raid"
+          },
+          "history": [
+            {
+              "guild_name": "Dawnbreak",
+              "raids": 14,
+              "last_raid_at": "2026-11-02T03:10:00Z"
+            },
+            {
+              "guild_name": "Ashen Vow",
+              "raids": 6,
+              "last_raid_at": "2026-10-18T02:40:00Z"
+            }
+          ],
+          "exported_at": "2026-12-14T08:12:40Z"
+        }
       }
     ],
     "pending": 1,

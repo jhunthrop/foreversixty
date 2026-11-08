@@ -143,6 +143,75 @@ data class AppExchangeRequest(
     @SerialName("device_name") val deviceName: String? = null,
 )
 
+@Serializable
+data class ApplicantAttunement(
+    @SerialName("zone_name") val zoneName: String,
+    @SerialName("state") val state: String,
+    @SerialName("item") val item: ZoneKeyItem? = null,
+)
+
+@Serializable
+data class ApplicantBestParse(
+    @SerialName("metric") val metric: String,
+    @SerialName("value") val value: Double,
+    @SerialName("percentile") val percentile: Double? = null,
+    @SerialName("encounter") val encounter: String,
+    @SerialName("report_id") val reportId: String,
+    @SerialName("fight_index") val fightIndex: Int,
+)
+
+@Serializable
+data class ApplicantBisGap(
+    @SerialName("pieces") val pieces: Int,
+    /** "Holy Paladin, 60 raid". */
+    @SerialName("list") val list: String,
+)
+
+/** The character an application names. class and level from the character, spec from its newest ranked fight in a public, unflagged report, item_level the Battle.net equipped figure else that fight's. best_parse is the roster's best boss parse rule over every report (an applicant has none of the guild's own yet); null with none. */
+@Serializable
+data class ApplicantCharacter(
+    @SerialName("character_key") val characterKey: String,
+    @SerialName("name") val name: String,
+    @SerialName("class") val className: String? = null,
+    @SerialName("spec") val spec: String? = null,
+    @SerialName("spec_name") val specName: String? = null,
+    @SerialName("level") val level: Int? = null,
+    @SerialName("item_level") val itemLevel: Int? = null,
+    @SerialName("best_parse") val bestParse: ApplicantBestParse? = null,
+)
+
+@Serializable
+data class ApplicantEnchants(
+    @SerialName("slots") val slots: Int,
+    @SerialName("enchanted") val enchanted: Int,
+    @SerialName("missing") val missing: List<String> = emptyList(),
+)
+
+@Serializable
+data class ApplicantGuild(
+    @SerialName("guild_name") val guildName: String,
+    @SerialName("raids") val raids: Int,
+    @SerialName("last_raid_at") val lastRaidAt: String,
+)
+
+/** The applicant sheet (spec 2026-11-08-app-flows F3), read by officers before Accept. score is the character page's Forever Score; sim the newest finished sim (unit dps, hps or tps); attunement the attunement to the guild's next raid (state ok, miss, or unknown when the export cannot say; null with no raid planned or a zone that asks for none); enchants the enchantable slots with an item (main hand, chest, cloak, boots), how many are enchanted and the missing ones; bis_gap the pieces short of the spec's 60 raid list; history the other guilds the character logged raids with in public reports, newest first; exported_at the addon export they read. Applying shares the gear with the guild's officers, never the bags. Each part is null when its source has nothing. Always sent on officer rows; optional so an older body still decodes. */
+@Serializable
+data class ApplicantSheet(
+    @SerialName("score") val score: Int? = null,
+    @SerialName("sim") val sim: ApplicantSim? = null,
+    @SerialName("attunement") val attunement: ApplicantAttunement? = null,
+    @SerialName("enchants") val enchants: ApplicantEnchants? = null,
+    @SerialName("bis_gap") val bisGap: ApplicantBisGap? = null,
+    @SerialName("history") val history: List<ApplicantGuild> = emptyList(),
+    @SerialName("exported_at") val exportedAt: String? = null,
+)
+
+@Serializable
+data class ApplicantSim(
+    @SerialName("value") val value: Double,
+    @SerialName("unit") val unit: String,
+)
+
 /** The device token (shown only here), the device row and the GET /v1/me body. */
 @Serializable
 data class AppSession(
@@ -778,6 +847,13 @@ data class DiscordLink(
     @SerialName("display_name") val displayName: String,
 )
 
+/** One bot step on a decision. done is true when it happened; else reason is no_role_set (no recruit role configured), no_bot (no bot in the guild's server), not_linked (the applicant has no linked Discord account), not_opted_in (the DM only: the applicant left "Message me on Discord" off), not_accepted (the role only: a decline grants nothing), discord_refused (Discord said no: not in the server, missing Manage Roles, role above the bot's) or failed (the bot could not be reached). The decision stands either way. */
+@Serializable
+data class DiscordOutcome(
+    @SerialName("done") val done: Boolean,
+    @SerialName("reason") val reason: String? = null,
+)
+
 /** Every Premium feature pre-resolved for the caller (Go auth.EntitlementsView). A feature is available exactly when its flag is true. */
 @Serializable
 data class Entitlements(
@@ -1086,6 +1162,22 @@ data class GuildAddonSnapshot(
     @SerialName("members") val members: Int,
 )
 
+@Serializable
+data class GuildApplicationDecision(
+    @SerialName("application") val application: GuildOfficerApplication,
+    @SerialName("discord_role") val discordRole: DiscordOutcome,
+    @SerialName("discord_dm") val discordDm: DiscordOutcome,
+)
+
+/** voters is how many verified officers (guild master included) the guild has; mine the viewer's own vote. */
+@Serializable
+data class GuildApplicationVotes(
+    @SerialName("yes") val yes: Int,
+    @SerialName("no") val no: Int,
+    @SerialName("voters") val voters: Int,
+    @SerialName("mine") val mine: String? = null,
+)
+
 /** A guild roster row's attendance (roster[].attendance and pending[].attendance on GET /v1/guilds/{id}/home, candidates[].attendance on GET /v1/guilds/{id}/loot). A character was present in a report when it has a ranked or rated row there (fight_metrics not removed, or rating_scores), read by its character key, never by the log's GUIDs (fights.players). The window is the guild's last 8 non-private, unflagged reports that carry at least one ranked or rated row, so a night nobody can be present in (a private, tampered, unverified or trash-only report, or one not ranked yet) is never everyone's absence. */
 @Serializable
 data class GuildAttendance(
@@ -1093,6 +1185,14 @@ data class GuildAttendance(
     @SerialName("present") val present: Int? = null,
     /** How many reports the window holds: 8, or fewer while the guild has logged fewer such reports. The same for every row of the roster. */
     @SerialName("nights") val nights: Int? = null,
+)
+
+/** An account named by its character on the guild's roster. */
+@Serializable
+data class GuildCharacterRef(
+    @SerialName("name") val name: String,
+    @SerialName("class") val className: String? = null,
+    @SerialName("character_key") val characterKey: String,
 )
 
 /** The claim holder's character on this guild's roster; null when no claim is held or the holder has no character on it. Never an account tag. */
@@ -1200,6 +1300,34 @@ data class GuildMemberCounts(
     /** Characters waiting for approval (guild round 3; the round-1 accounts rule is superseded), the Waiting for approval panel's rows and summary.waiting_for_approval. */
     @SerialName("waiting") val waiting: Int,
     @SerialName("not_seen") val notSeen: Int,
+)
+
+/** One application as officers read it: the applicant's fields, the votes, the deciding officer by their character on the roster (null while pending or withdrawn), and what the bot did on the decision (role_outcome, dm_outcome; DiscordOutcome's reason words or granted / sent), null until one is made. */
+@Serializable
+data class GuildOfficerApplication(
+    @SerialName("id") val id: Long,
+    @SerialName("guild_id") val guildId: Long,
+    @SerialName("status") val status: String,
+    @SerialName("created_at") val createdAt: String,
+    @SerialName("decided_at") val decidedAt: String? = null,
+    @SerialName("message") val message: String,
+    @SerialName("availability") val availability: String,
+    @SerialName("discord_dm") val discordDm: Boolean,
+    @SerialName("character") val character: ApplicantCharacter,
+    @SerialName("votes") val votes: GuildApplicationVotes,
+    @SerialName("decided_by") val decidedBy: GuildCharacterRef? = null,
+    @SerialName("role_outcome") val roleOutcome: String? = null,
+    @SerialName("dm_outcome") val dmOutcome: String? = null,
+    @SerialName("sheet") val sheet: ApplicantSheet? = null,
+)
+
+/** Every pending application, oldest first, then the latest 20 decided ones, newest first. */
+@Serializable
+data class GuildOfficerApplications(
+    @SerialName("rows") val rows: List<GuildOfficerApplication> = emptyList(),
+    /** How many rows are pending. */
+    @SerialName("pending") val pending: Int,
+    @SerialName("discord_role_id") val discordRoleId: String? = null,
 )
 
 /** A guild's billing state, shown only to its verified officers (Go auth.GuildBillingView). */
@@ -2420,6 +2548,8 @@ data class RaidNightRow(
 /** GET /v1/me/raid-nights/{raid}: one raider's night (spec C5). loot and bests are [] when there are none; coach_notes is null without log_coach. */
 @Serializable
 data class RaidNightSummary(
+    /** The character's ready check for this raid, the same items as GET /v1/characters/{region}/{ruleset}/{name}/ready?raid=. */
+    @SerialName("ready") val ready: ReadyCheck? = null,
     @SerialName("raid_id") val raidId: Long,
     @SerialName("guild_id") val guildId: Long,
     @SerialName("guild_name") val guildName: String,
@@ -2463,6 +2593,10 @@ data class RaidNotSignedRaider(
     @SerialName("account_key") val accountKey: String,
     /** True when the account linked Discord */
     @SerialName("discord_linked") val discordLinked: Boolean,
+    /** The row's sign-up role, from its roster group. Always sent; optional for older bodies. */
+    @SerialName("role") val role: String? = null,
+    /** The account's answer for the guild's raid of the week before (its latest raid that started in the 8 days before this one, cancelled aside; the best answer across its characters), missed when it gave none; null when there was no such raid. */
+    @SerialName("last_week") val lastWeek: String? = null,
 )
 
 @Serializable
@@ -2706,6 +2840,43 @@ data class RankingsPage(
     @SerialName("deduped") val deduped: Boolean,
     /** Where the requested character stands on this filtered board, with its best kill; absent when none was asked for or it has no ranked kill in the cohort */
     @SerialName("character_rank") val characterRank: CharacterRank? = null,
+)
+
+@Serializable
+data class ReadyCheck(
+    @SerialName("exported_at") val exportedAt: String? = null,
+    @SerialName("items") val items: List<ReadyItem> = emptyList(),
+)
+
+@Serializable
+data class ReadyItem(
+    /** level, attune.<zone slug>, enchant.<slot>, enchants, flask, food. */
+    @SerialName("key") val key: String,
+    @SerialName("state") val state: String,
+    @SerialName("title") val title: String,
+    @SerialName("line") val line: String,
+    @SerialName("where") val whereToGet: ReadyWhere? = null,
+)
+
+@Serializable
+data class ReadyWhere(
+    @SerialName("label") val label: String,
+    @SerialName("link") val link: String? = null,
+)
+
+@Serializable
+data class RecruitingGuild(
+    @SerialName("guild_id") val guildId: Long,
+    @SerialName("name") val name: String,
+    @SerialName("faction") val faction: String,
+    @SerialName("schedule") val schedule: String,
+    @SerialName("needs") val needs: String,
+    @SerialName("crest_url") val crestUrl: String? = null,
+)
+
+@Serializable
+data class RecruitingGuilds(
+    @SerialName("rows") val rows: List<RecruitingGuild> = emptyList(),
 )
 
 @Serializable
@@ -3416,4 +3587,12 @@ data class WidgetUpgrades(
     @SerialName("total_gain") val totalGain: Double? = null,
     @SerialName("unit") val unit: String,
     @SerialName("rows") val rows: List<WidgetUpgradeRow> = emptyList(),
+)
+
+@Serializable
+data class ZoneKeyItem(
+    @SerialName("id") val id: Int,
+    @SerialName("name") val name: String,
+    @SerialName("quality") val quality: Int,
+    @SerialName("door") val door: String? = null,
 )
