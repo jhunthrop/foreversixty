@@ -271,11 +271,16 @@ local function weightIn(stat, slot, weights, weapon)
 	return (weights or {})[stat] or 0
 end
 
+--- The stats a breakdown lists whenever they move, even at a weight of nothing.
+Progress.ALWAYS_LISTED = { stamina = true, armor = true }
+
 --- What a gain is made of: per stat, `plan`'s amount minus every worn
 --- side's (`plan` and each of `worn` are { stats, slot }; the worn stats
 --- already carry their enchant, Gear.readEquipped), as { stat, delta,
 --- weighted }, sorted by the weighted size, biggest first. A stat the weights
---- do not count is left out. Weighted in score units (reference-stat points).
+--- do not count is left out, except Progress.ALWAYS_LISTED (Stamina and Armor: the tooltip's
+--- Shift breakdown shows what a swap costs in survival, spec 2.3) when it moves. Weighted in
+--- score units (reference-stat points).
 function Progress.contributions(plan, worn, weights, weapon)
 	local stats = {}
 	for stat in pairs(plan.stats or {}) do
@@ -296,7 +301,7 @@ function Progress.contributions(plan, worn, weights, weapon)
 			delta = delta - wornAmount
 			weighted = weighted - wornAmount * weightIn(stat, side.slot, weights, weapon)
 		end
-		if math.abs(weighted) > 1e-9 then
+		if math.abs(weighted) > 1e-9 or (Progress.ALWAYS_LISTED[stat] and math.abs(delta) > 1e-9) then
 			list[#list + 1] = { stat = stat, delta = delta, weighted = weighted }
 		end
 	end

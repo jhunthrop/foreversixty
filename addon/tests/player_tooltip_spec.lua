@@ -1,39 +1,38 @@
 -- addon/tests/player_tooltip_spec.lua
--- The player tooltip (spec section 4.6, L4.4): after the client's own lines, the Forever
--- Score in its tier colour, a guildmate's live line, the components as double lines and their
--- total while Shift is held (a muted hint otherwise, which also names the /fs link step), "no
--- logs yet" and the link step for a character the record does not have, and nothing for a
--- non-player. It takes over the unit hook from the
--- item tooltip, registered by the same rule. Folds in what ratings_spec.lua covered for the
--- tooltip. The client-frame recorder stays empty in every example.
+-- The player tooltip (design/specs/2026-11-08-addon-ux.md section 2.5): after the client's own
+-- lines, "Forever Score 1240" in the tier's colour, the date only once the record is more than a
+-- week old, the five parts as double lines while Shift is held, and nothing at all for a
+-- character with no record or no rated fights, or a non-player. No hint, no live line, no total.
+-- It takes over the unit hook from the item tooltip, registered by the same rule. The
+-- client-frame recorder stays empty in every example.
 local helper = require("spec_helper")
 local mock = require("wow_mock")
 local L = require("Locale")
-
-local DOT = "\194\183" -- the middle dot in L.exportTreeSeparator
 
 local QUALITY = {
 	[1] = { r = 1, g = 1, b = 1 }, [2] = { r = 0.12, g = 1, b = 0 }, [3] = { r = 0, g = 0.44, b = 0.87 },
 	[4] = { r = 0.64, g = 0.21, b = 0.93 }, [5] = { r = 1, g = 0.5, b = 0 },
 }
 
+--- Today's date as the record writes it: a record from today shows no date.
+local TODAY = os.date("!%Y-%m-%d")
+
 local function record()
 	return {
 		format = 2,
-		generated = os.date("!%Y-%m-%d"),
+		generated = TODAY,
 		characters = {
 			["Bow Jackzon-ClassicBetaPvP"] = {
-				score = 1240, tier = "rare", as_of = "2026-11-04",
+				score = 1240, tier = "rare", as_of = TODAY,
 				components = { gear = 380, experience = 410, parses = 300, attendance = 100, discipline = 50 },
 				fights = 9, profile = "/character/us/pvp/bow-jackzon",
 			},
-			["Facep Alm-ClassicBetaPvP"] = { score = 0, tier = "common", as_of = "2026-11-04", fights = 0 },
-			["Bob-Whitemane"] = { score = 700, tier = "uncommon", as_of = "2026-11-03", fights = 2 },
+			["Facep Alm-ClassicBetaPvP"] = { score = 0, tier = "common", as_of = TODAY, fights = 0 },
+			["Bob-Whitemane"] = { score = 700, tier = "uncommon", as_of = "2020-10-13", fights = 2 },
 		},
 		guilds = {},
 	}
 end
-
 describe("PlayerTooltip", function()
 	local state, PlayerTooltip, Prefs, Comms, Theme, Score
 	-- What UnitName answers for each unit token: { first, second }.
@@ -105,212 +104,78 @@ describe("PlayerTooltip", function()
 	end
 
 	describe("a logged character", function()
-		it("leads with the score, its tier and date, in the tier's colour", function()
+		it("is one line, the score in the tier's colour, no tier word and no date while it is recent", function()
 			start(record())
 			local lines, tooltip = hover()
-			assert.are.equal("Forever Score 1240 " .. DOT .. " Rare " .. DOT .. " as of 4 Nov", lines[1].text)
+			assert.are.equal(1, #lines)
+			assert.are.equal(string.format(L.scoreLine, 1240), lines[1].text)
+			assert.are.equal("Forever Score 1240", lines[1].text)
 			assert.are.same({ 0, 0.44, 0.87 }, { lines[1].r, lines[1].g, lines[1].b })
 			assert.are.equal(1, mock.countCalls(tooltip, "Show"))
 		end)
 
-		-- Fix round 2, item 4: the hint names the step (/fs link reads the target).
-		it("hides the components behind Shift, with a hint that names the /fs link step, at the body white", function()
-			start(record())
-			local lines = hover()
-			assert.are.equal(2, #lines)
-			assert.are.equal(L.scoreShiftHint .. L.exportTreeSeparator .. L.scoreLinkHint, lines[2].text)
-			assert.are.equal("Shift: score details " .. DOT .. " target them, then /fs link", lines[2].text)
-			-- A.2: the tooltip's own body contrast, not grey on grey.
-			assert.are.same(rgbOf("tooltipBody"), { lines[2].r, lines[2].g, lines[2].b })
-			assert.is_nil(lines[2].right)
-		end)
-
-		-- Fix round 2, item 3: a secondary block, label muted left, value right-aligned, then
-		-- the sum stated.
-		it("lists the five components as double lines while Shift is held, then the total, and drops the hint",
-			function()
-				start(record())
-				shift = true
-				local lines = hover()
-				assert.are.equal(7, #lines)
-				local expected = {
-					{ "Gear", "380" }, { "Experience", "410" }, { "Parses", "300" }, { "Attendance", "100" },
-					{ "Preparation", "50" },
-				}
-				for index, pair in ipairs(expected) do
-					local entry = lines[index + 1]
-					assert.are.same(pair, { entry.text, entry.right }, "component " .. index)
-					assert.are.same(rgbOf("tooltipMuted"), { entry.r, entry.g, entry.b })
-					assert.are.same(rgbOf("tooltipText"), { entry.rr, entry.rg, entry.rb })
-				end
-				local total = lines[7]
-				assert.are.equal(" ", total.text)
-				assert.are.equal("= 1240", total.right)
-				assert.are.equal(string.format(L.scoreTotal, 1240), total.right)
-				assert.are.same(rgbOf("tooltipMuted"), { total.rr, total.rg, total.rb })
-				for _, entry in ipairs(lines) do
-					assert.is_nil(entry.text:find("Shift", 1, true))
-					assert.is_nil(entry.text:find("/fs link", 1, true))
-				end
-			end)
-
-		it("states the record's score as the total, whatever the parts sum to", function()
-			local data = record()
-			data.characters["Bow Jackzon-ClassicBetaPvP"].components = { gear = 380, parses = 300 }
-			start(data)
-			shift = true
-			local lines = hover()
-			assert.are.equal(4, #lines)
-			assert.are.same({ "Gear", "380" }, { lines[2].text, lines[2].right })
-			assert.are.same({ "Parses", "300" }, { lines[3].text, lines[3].right })
-			assert.are.equal("= 1240", lines[4].right)
-		end)
-
-		it("offers no Shift for a record without components, only the link step", function()
+		it("dates a record more than a week old: Forever Score 700 (13 Oct)", function()
 			start(record())
 			names.mouseover = { "Bob", "Whitemane" }
 			local lines = hover()
-			assert.are.equal("Forever Score 700 " .. DOT .. " Uncommon " .. DOT .. " as of 3 Nov", lines[1].text)
-			assert.are.equal(L.scoreLinkAlone, lines[2].text)
-			assert.are.equal("Target them, then /fs link opens their site page", lines[2].text)
-			shift = true
-			assert.are.equal(2, #hover())
+			assert.are.equal(1, #lines)
+			assert.are.equal(string.format(L.scoreDated, 700, "13 Oct"), lines[1].text)
 		end)
 
-		it("draws an unknown tier uncoloured, in the tooltip's text colour", function()
+		it("dates on the record's own as_of, after seven days and not before", function()
+			start(record())
+			local base = { score = 900, as_of = "2026-11-01" }
+			local day = 24 * 60 * 60
+			local midnight = Score.dateSeconds("2026-11-01")
+			assert.are.equal(7 * day, PlayerTooltip.DATED_AFTER_SECONDS)
+			assert.are.equal("Forever Score 900", PlayerTooltip.scoreText(base, midnight + 7 * day))
+			assert.are.equal("Forever Score 900 (1 Nov)", PlayerTooltip.scoreText(base, midnight + 7 * day + 1))
+			assert.are.equal("Forever Score 900", PlayerTooltip.scoreText({ score = 900 }, midnight + 30 * day))
+		end)
+
+		it("lists the five parts as double lines while Shift is held, Preparation saying what it measures", function()
+			start(record())
+			shift = true
+			local lines = hover()
+			assert.are.equal(6, #lines)
+			local expected = {
+				{ "Gear", "380" }, { "Experience", "410" }, { "Parses", "300" }, { "Attendance", "100" },
+				{ L.scoreDisciplineLong, "50" },
+			}
+			assert.are.equal("Preparation (flasks, food, enchants)", L.scoreDisciplineLong)
+			for index, pair in ipairs(expected) do
+				local entry = lines[index + 1]
+				assert.are.same(pair, { entry.text, entry.right }, "component " .. index)
+				assert.are.same(rgbOf("tooltipMuted"), { entry.r, entry.g, entry.b })
+				assert.are.same(rgbOf("tooltipBody"), { entry.rr, entry.rg, entry.rb })
+			end
+		end)
+
+		it("prints no total and no hint, with or without Shift", function()
+			start(record())
+			for _, held in ipairs({ false, true }) do
+				shift = held
+				for _, entry in ipairs(hover()) do
+					assert.is_nil(entry.text:find("Shift", 1, true))
+					assert.is_nil(entry.text:find("/fs link", 1, true))
+					assert.is_nil((entry.right or ""):find("=", 1, true))
+				end
+			end
+		end)
+
+		it("offers no Shift block for a record without components", function()
+			start(record())
+			names.mouseover = { "Bob", "Whitemane" }
+			shift = true
+			assert.are.equal(1, #hover())
+		end)
+
+		it("draws an unknown tier in the tooltip's white", function()
 			local data = record()
 			data.characters["Bow Jackzon-ClassicBetaPvP"].tier = "mythic"
 			start(data)
 			local lines = hover()
-			assert.are.same(rgbOf("tooltipText"), { lines[1].r, lines[1].g, lines[1].b })
-		end)
-	end)
-
-	describe("no logs", function()
-		-- Fix round 2, item 4: the link step shows on a no-logs player too.
-		it("reads no logs yet for a character the record does not have, then the link step, both at body white",
-			function()
-			start(record())
-			names.mouseover = { "Smoke Gouda", "" }
-			local lines = hover()
-			assert.are.equal(2, #lines)
-			assert.are.equal("Forever Score: no logs yet", lines[1].text)
 			assert.are.same(rgbOf("tooltipBody"), { lines[1].r, lines[1].g, lines[1].b })
-			assert.are.equal("Target them, then /fs link opens their site page", lines[2].text)
-			assert.are.same(rgbOf("tooltipBody"), { lines[2].r, lines[2].g, lines[2].b })
-			assert.are.equal("ffffff", Theme.HEX.tooltipBody)
-			shift = true
-			assert.are.equal(2, #hover())
-		end)
-
-		-- L3.7 item 34: below level 10 nothing is said (no logs is the ordinary state of a new character).
-		it("says nothing at all for a character under level 10 the record does not have", function()
-			assert.are.same({}, PlayerTooltip.section(nil, true, nil, false, 9))
-			assert.are.equal(2, #PlayerTooltip.section(nil, true, nil, false, 10))
-			assert.are.equal(2, #PlayerTooltip.section(nil, true, nil, false, nil))
-			-- A live line still shows.
-			assert.are.equal(1, #PlayerTooltip.section(nil, true, { level = 5, spec = "-", gearGap = 0 }, false, 5))
-		end)
-
-		it("never shows a zero for a character with no logs", function()
-			start(record())
-			names.mouseover = { "Facep Alm", "" }
-			local lines = hover()
-			assert.are.equal(2, #lines)
-			assert.are.equal(L.scoreNoLogs, lines[1].text)
-			assert.is_nil(lines[1].text:find("0", 1, true))
-			assert.are.equal(L.scoreLinkAlone, lines[2].text)
-		end)
-
-		it("says nothing about a score when the data addon is not installed or cannot be read", function()
-			start(nil)
-			assert.are.same({}, hover())
-			start({ format = 3, generated = "2026-11-04", characters = {}, guilds = {} })
-			assert.are.same({}, hover())
-		end)
-	end)
-
-	-- A.2: a command hint on every hover forever is noise: it shows the first three times in a session.
-	describe("the link hint", function()
-		it("shows three times in a session on a player with no logs, then goes, the score line staying", function()
-			start(record())
-			names.mouseover = { "Smoke Gouda", "" }
-			assert.are.equal(3, PlayerTooltip.HINT_TIMES)
-			for _ = 1, 3 do
-				local lines = hover()
-				assert.are.equal(2, #lines)
-				assert.are.equal(L.scoreLinkAlone, lines[2].text)
-			end
-			for _ = 1, 3 do
-				local lines = hover()
-				assert.are.equal(1, #lines)
-				assert.are.equal(L.scoreNoLogs, lines[1].text)
-			end
-		end)
-
-		it("goes from a scored player's line too, leaving Shift: score details", function()
-			start(record())
-			for _ = 1, 3 do
-				assert.are.equal(L.scoreShiftHint .. L.exportTreeSeparator .. L.scoreLinkHint, hover()[2].text)
-			end
-			local after = hover()
-			assert.are.equal(2, #after)
-			assert.are.equal("Shift: score details", after[2].text)
-			assert.is_nil(after[2].text:find("/fs link", 1, true))
-			-- A record without components has only the link step: nothing after the third time.
-			names.mouseover = { "Bob", "Whitemane" }
-			assert.are.equal(1, #hover())
-		end)
-
-		it("counts only the hovers that carried it", function()
-			start(record())
-			names.mouseover = { "Smoke Gouda", "" }
-			hover()
-			players.mouseover = false
-			hover()
-			hover()
-			players.mouseover = true
-			hover()
-			assert.are.equal(2, #hover(), "the third hover that carried one")
-			assert.are.equal(1, #hover())
-		end)
-
-		it("is part of the pure section, shown unless told otherwise", function()
-			assert.are.equal(2, #PlayerTooltip.section(nil, true, nil, false, 20))
-			assert.are.equal(2, #PlayerTooltip.section(nil, true, nil, false, 20, true))
-			assert.are.equal(1, #PlayerTooltip.section(nil, true, nil, false, 20, false))
-		end)
-	end)
-
-	describe("the live line", function()
-		it("follows the score, muted, while a guildmate's hello is fresh", function()
-			start(record())
-			Comms.seen["Bow Jackzon-ClassicBetaPvP"] = {
-				level = 24, spec = "marksmanship", gearGap = 12, time = Theme.now(), channel = "GUILD",
-			}
-			local lines = hover()
-			assert.are.equal(3, #lines)
-			-- Fix round 2, item 5: the gap names its unit.
-			assert.are.equal("Level 24 Marksmanship " .. DOT .. " gear gap 12 (live)", lines[2].text)
-			assert.are.same(rgbOf("tooltipMuted"), { lines[2].r, lines[2].g, lines[2].b })
-			assert.are.equal(L.scoreShiftHint .. L.exportTreeSeparator .. L.scoreLinkHint, lines[3].text)
-		end)
-
-		it("is current before any log exists", function()
-			start(record())
-			names.mouseover = { "Smoke Gouda", "" }
-			Comms.seen["Smoke Gouda-ClassicBetaPvP"] = { level = 19, spec = "fury", gearGap = 3, time = Theme.now() }
-			local lines = hover()
-			assert.are.same({ L.scoreNoLogs, "Level 19 Fury " .. DOT .. " gear gap 3 (live)", L.scoreLinkAlone },
-				{ lines[1].text, lines[2].text, lines[3].text })
-		end)
-
-		it("matches a sender heard by first name on a client with last names", function()
-			start(record(), { globals = { UnitFullName = function() return "Bow", "Jackzon" end } })
-			names.mouseover = { "Smoke", "Gouda" }
-			Comms.seen["Smoke-ClassicBetaPvP"] = { level = 19, spec = "fury", gearGap = 3, time = Theme.now() }
-			local lines = hover()
-			assert.are.equal("Level 19 Fury " .. DOT .. " gear gap 3 (live)", lines[2].text)
 		end)
 
 		it("reads this character by its full name on a client with last names", function()
@@ -320,24 +185,45 @@ describe("PlayerTooltip", function()
 			} })
 			names.target = { "Bow" }
 			players.target = true
-			assert.are.equal("Forever Score 1240 " .. DOT .. " Rare " .. DOT .. " as of 4 Nov", hover("player")[1].text)
-			assert.are.equal("Forever Score 1240 " .. DOT .. " Rare " .. DOT .. " as of 4 Nov", hover("target")[1].text)
+			assert.are.equal("Forever Score 1240", hover("player")[1].text)
+			assert.are.equal("Forever Score 1240", hover("target")[1].text)
+		end)
+	end)
+
+	describe("nothing to say", function()
+		it("says nothing for a character the record does not have", function()
+			start(record())
+			names.mouseover = { "Smoke Gouda", "" }
+			assert.are.same({}, hover())
+			shift = true
+			assert.are.same({}, hover())
 		end)
 
-		it("ignores a sender on another realm and one heard too long ago", function()
+		it("never shows a zero for a character with no rated fights", function()
 			start(record())
-			Comms.seen["Bow Jackzon-Whitemane"] = { level = 30, spec = "fury", gearGap = 1, time = Theme.now() }
-			assert.are.equal(2, #hover())
-			Comms.seen = { ["Bow Jackzon-ClassicBetaPvP"] = {
-				level = 24, spec = "marksmanship", gearGap = 12, time = Theme.now() - Comms.SEEN_FOR - 1,
-			} }
-			assert.are.equal(2, #hover())
+			names.mouseover = { "Facep Alm", "" }
+			assert.are.same({}, hover())
 		end)
 
-		it("leaves out a spec the sender has not got", function()
+		it("says nothing when the data addon is not installed or cannot be read", function()
+			start(nil)
+			assert.are.same({}, hover())
+			start({ format = 3, generated = "2026-11-04", characters = {}, guilds = {} })
+			assert.are.same({}, hover())
+		end)
+
+		it("is pure: no record, no lines", function()
 			start(record())
-			Comms.seen["Bow Jackzon-ClassicBetaPvP"] = { level = 5, spec = "-", gearGap = 0, time = Theme.now() }
-			assert.are.equal("Level 5 " .. DOT .. " gear gap 0 (live)", hover()[2].text)
+			assert.are.same({}, PlayerTooltip.section(nil, true, 0))
+			assert.are.same({}, PlayerTooltip.section({ tier = "rare" }, false, 0))
+		end)
+
+		it("draws no live line even while a guildmate's hello is fresh", function()
+			start(record())
+			Comms.seen["Bow Jackzon-ClassicBetaPvP"] = {
+				level = 24, spec = "marksmanship", gearGap = 12, time = Theme.now(), channel = "GUILD",
+			}
+			assert.are.equal(1, #hover())
 		end)
 	end)
 
@@ -502,8 +388,9 @@ describe("PlayerTooltip", function()
 		end)
 	end)
 
-	it("reads the score from Score, the one reader", function()
+	it("reads the record from Score, the one reader", function()
 		start(record())
-		assert.are.same(Score.lines(Score.forCharacter("Bow Jackzon"))[1], hover()[1].text)
+		local record_ = Score.forCharacter("Bow Jackzon")
+		assert.are.same(PlayerTooltip.scoreText(record_, Score.clock()), hover()[1].text)
 	end)
 end)

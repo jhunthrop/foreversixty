@@ -1,19 +1,16 @@
 -- addon/ForeverSixty/surfaces/PlayerTooltip.lua
--- The player tooltip (spec section 4.6, L4.4): after the client's own lines on a player's
--- tooltip, the Forever Score in its tier's colour ("Forever Score 1830 · Epic · as of 4
--- Nov"); a guildmate's live line ("Level 24 Marksmanship · gear gap 12 (live)", muted) while
--- their hello or snapshot is fresh; the score's components while Shift is held (label muted
--- left, value right-aligned, then "= 1830"), else one muted hint ("Shift: score details ·
--- target them, then /fs link"). A character the record does not have, or with no logs,
--- reads "Forever Score: no logs yet", never a zero, then "Target them, then /fs link: site
--- page". Nothing for a non-player, and nothing at all while "Gear tips on item tooltips" is
--- off.
+-- The player tooltip (design/specs/2026-11-08-addon-ux.md section 2.5): after the client's own
+-- lines on a player's tooltip, one line, "Forever Score 1240" in its tier's colour (Common
+-- white, Uncommon green, Rare blue, Epic purple, Legendary orange), "Forever Score 1240 (13 Oct)"
+-- once the record is more than a week old. While Shift is held, the five parts under it: the
+-- label muted left, the points right-aligned in white. Nothing at all for a character with no
+-- record or no rated fights, a non-player, or while "Gear tips on item tooltips" is off: the
+-- absence says it.
 --
--- Pure model, thin hook: PlayerTooltip.section builds the lines from plain values (the
--- record from Score.forCharacter, the live entry from Comms.seen); the hook reads the
--- client and draws. It took the unit hook over from the item tooltip, registered by the
--- same rule: the TooltipDataProcessor unit post-call where the client has it, else
--- GameTooltip's OnTooltipSetUnit. Holding or letting go of Shift over a player redraws the
+-- Pure model, thin hook: PlayerTooltip.section builds the lines from plain values (the record
+-- from Score.forCharacter); the hook reads the client and draws. It is registered by the same
+-- rule as the item tooltip: the TooltipDataProcessor unit post-call where the client has it,
+-- else GameTooltip's OnTooltipSetUnit. Holding or letting go of Shift over a player redraws the
 -- tooltip through the client's own SetUnit, from an event on a frame of this file's own.
 local _, ns = ...
 ns = type(ns) == "table" and ns or {}
@@ -22,30 +19,18 @@ local Compat = ns.Compat or require("Compat")
 local Theme = ns.Theme or require("Theme")
 local Prefs = ns.Prefs or require("Prefs")
 local Score = ns.Score or require("Score")
-local Comms = ns.Comms or require("Comms")
 local Export = ns.Export or require("Export")
-local Talents = ns.Talents or require("Talents")
 
 local PlayerTooltip = {}
 
---- The "target them, then /fs link" hint shows this many times a session, then goes (A.2: a command
---- hint on every hover forever is noise).
-PlayerTooltip.HINT_TIMES = 3
-PlayerTooltip.hintsShown = 0
+--- A record older than this (from its own date) shows its date on the score line.
+PlayerTooltip.DATED_AFTER_SECONDS = 7 * 24 * 60 * 60
 
 -- The section, pure ---------------------------------------------------------------------
 
 local function line(text, hexKey)
 	local r, g, b = Theme.rgb(Theme.HEX[hexKey])
 	return { text = text, r = r, g = g, b = b }
-end
-
---- The live line for a Comms.seen entry: "Level 24 Marksmanship · gear gap 12 (live)". A
---- sender with no spec ("-") reads "Level 5 · gear gap 0 (live)". Pure.
-function PlayerTooltip.liveLine(entry)
-	local spec = Talents.titleCase(entry.spec ~= "-" and entry.spec or "")
-	local text = string.format(L.scoreLive, entry.level or 0, spec, entry.gearGap or 0)
-	return (text:gsub("  +", " "))
 end
 
 --- A double line: `left` in the `leftKey` colour, `right` right-aligned in the `rightKey`
@@ -57,87 +42,46 @@ local function double(left, right, leftKey, rightKey)
 	return entry
 end
 
---- The lines after the client's own, each { text, r, g, b }, a double line also { right,
---- rr, rg, rb }: `record` is Score.forCharacter's (nil for none), `available` whether the
---- data addon can be read at all (without it nothing is said about a score), `live` a
---- Comms.seen entry or nil, `shift` whether Shift is held. While Shift is held the
---- components are a secondary block: the label muted on the left, the value right-aligned
---- in the text colour, then a muted right-aligned total ("= 1240", the record's score).
---- Otherwise one muted hint naming the step to the site page. `level` (optional) is the player's:
---- under Score.LEVEL_FLOOR a character the record does not have gets no "no logs" or link line. Pure.
-function PlayerTooltip.section(record, available, live, shift, level, showHint)
+--- The score line's text: "Forever Score 1240", or with the record's date, "Forever Score 1240
+--- (13 Oct)", when its `as_of` is more than PlayerTooltip.DATED_AFTER_SECONDS before `now`
+--- (seconds since the epoch). Pure.
+function PlayerTooltip.scoreText(record, now)
+	local dated = Score.dateSeconds(record.as_of)
+	local shortDate = Compat.shortDate(record.as_of)
+	if dated ~= nil and shortDate ~= nil and type(now) == "number" and now - dated > PlayerTooltip.DATED_AFTER_SECONDS then
+		return string.format(L.scoreDated, record.score, shortDate)
+	end
+	return string.format(L.scoreLine, record.score)
+end
+
+--- The lines after the client's own, each { text, r, g, b }, a double line also { right, rr,
+--- rg, rb }: `record` is Score.forCharacter's (nil for none: no lines), `shift` whether Shift
+--- is held, `now` the epoch clock (Score.clock). The score line in the tier's colour; while
+--- Shift is held each part, the label muted left and the points right in white (Preparation
+--- says what it measures). Pure.
+function PlayerTooltip.section(record, shift, now)
 	local out = {}
-	-- `showHint` (default true) is whether the link hint is still said this session; `hinted` tells
-	-- the caller one was in the lines.
-	showHint = showHint ~= false
-	-- Under level 10 nothing is said about logs (L3.7 item 34).
-	if type(level) == "number" and level < Score.LEVEL_FLOOR then
-		available = false
-	end
-	local lines = Score.lines(record)
-	if #lines > 0 then
-		local color = record.tierColor
-		if color ~= nil then
-			out[1] = { text = lines[1], r = color.r, g = color.g, b = color.b }
-		else
-			out[1] = line(lines[1], "tooltipText")
-		end
-	elseif available then
-		out[1] = line(L.scoreNoLogs, "tooltipBody")
-	end
-	if live ~= nil then
-		out[#out + 1] = line(PlayerTooltip.liveLine(live), "tooltipMuted")
-	end
-	if #lines == 0 then
-		if available and showHint then
-			out[#out + 1] = line(L.scoreLinkAlone, "tooltipBody")
-			out.hinted = true
-		end
+	if type(record) ~= "table" or type(record.score) ~= "number" then
 		return out
 	end
-	local parts = Score.components(record)
-	if shift and #parts > 0 then
-		for _, part in ipairs(parts) do
-			out[#out + 1] = double(part.label, tostring(part.value), "tooltipMuted", "tooltipText")
+	local text = PlayerTooltip.scoreText(record, now)
+	local color = record.tierColor
+	if color ~= nil then
+		out[1] = { text = text, r = color.r, g = color.g, b = color.b }
+	else
+		out[1] = line(text, "tooltipBody")
+	end
+	if shift then
+		for _, part in ipairs(Score.components(record)) do
+			local label = part.label == L.scoreDiscipline and L.scoreDisciplineLong or part.label
+			out[#out + 1] = double(label, tostring(part.value), "tooltipMuted", "tooltipBody")
 		end
-		out[#out + 1] = double(" ", string.format(L.scoreTotal, record.score), "tooltipMuted", "tooltipMuted")
-	elseif #parts > 0 then
-		if showHint then
-			out[#out + 1] = line(L.scoreShiftHint .. L.exportTreeSeparator .. L.scoreLinkHint, "tooltipBody")
-			out.hinted = true
-		else
-			out[#out + 1] = line(L.scoreShiftHint, "tooltipBody")
-		end
-	elseif showHint then
-		out[#out + 1] = line(L.scoreLinkAlone, "tooltipBody")
-		out.hinted = true
 	end
 	return out
 end
-
 --- A realm with its spaces and hyphens gone, the form addon-message senders carry.
 local function compact(realm)
 	return ((realm or ""):gsub("[%s%-]", ""))
-end
-
---- The Comms.seen entry for a player: a sender on the same realm whose name is the player's
---- full name, or their first name alone (a client with last names may send either), heard
---- within Comms.SEEN_FOR of `now`. `realm` nil is this client's own (`ownRealm`). Pure.
-function PlayerTooltip.liveEntry(seen, fullName, firstName, realm, ownRealm, now)
-	local wanted = compact(realm or ownRealm)
-	for sender, entry in pairs(seen or {}) do
-		local name, senderRealm = sender:match("^(.-)%-([^%-]+)$")
-		if name == nil or name == "" then
-			name, senderRealm = sender, nil
-		end
-		local sameRealm = compact(senderRealm or ownRealm) == wanted
-		local sameName = name == fullName or (firstName ~= nil and name == firstName)
-		if sameRealm and sameName and type(entry) == "table" and type(entry.time) == "number"
-			and now - entry.time <= Comms.SEEN_FOR then
-			return entry
-		end
-	end
-	return nil
 end
 
 --- A character's page on the site: the record's own `profile` where it has one, else
@@ -163,9 +107,7 @@ local function isPlayer(unit)
 	return type(UnitIsPlayer) == "function" and UnitIsPlayer(unit) == true
 end
 
-local function ownRealm()
-	return type(GetRealmName) == "function" and GetRealmName() or ""
-end
+
 
 --- A unit's full name and realm (nil: this realm). This character itself through
 --- Compat.playerName: on a client with last names UnitName("player") gives the first name
@@ -189,18 +131,9 @@ local function addLines(tooltip, unit)
 	if type(name) ~= "string" or name == "" then
 		return
 	end
-	local firstName = type(UnitName) == "function" and UnitName(unit) or nil
-	local record = Score.forCharacter(name, realm)
-	local available = record ~= nil or Score.status().available
-	local live = PlayerTooltip.liveEntry(Comms.seen, name, firstName, realm, ownRealm(), Theme.now())
-	local level = type(UnitLevel) == "function" and tonumber(UnitLevel(unit)) or nil
-	local lines = PlayerTooltip.section(record, available, live, Theme.shiftDown(), level,
-		PlayerTooltip.hintsShown < PlayerTooltip.HINT_TIMES)
+	local lines = PlayerTooltip.section(Score.forCharacter(name, realm), Theme.shiftDown(), Score.clock())
 	if #lines == 0 then
 		return
-	end
-	if lines.hinted then
-		PlayerTooltip.hintsShown = PlayerTooltip.hintsShown + 1
 	end
 	for _, entry in ipairs(lines) do
 		if entry.right ~= nil then

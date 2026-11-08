@@ -222,8 +222,10 @@ Run on one character per role and tick here:
 - [ ] The saved export includes a `|guild=` section for a guilded character and
       none for an unguilded one (`/dump` the saved string).
 - [ ] `/fs diag` lists nothing unexpected.
-- [ ] Hovering a planned or upgrade-worthy item shows a "Forever Sixty" tooltip line; turning the
-      tooltip setting off removes it.
+- [ ] Hovering gear adds one verdict line straight after the client's own lines (no blank row, no
+      header), at most one grey or gold line under it; holding Shift adds the details and the dim
+      "Forever Sixty · <spec> estimate" line last, letting go removes them; turning the tooltip
+      setting off removes it all (design/specs/2026-11-08-addon-ux.md section 2).
 - [ ] Levelling up (or gaining a talent point) with a build loaded pops the toast, fades after a
       few seconds, and clicking it prints the command list; it does not appear mid-combat and
       shows once combat ends.
@@ -245,9 +247,9 @@ Run on one character per role and tick here:
       window bare, and the chip stays beside the minimap while the window is open.
 - [ ] The keybind (Key Bindings > AddOns > Forever Sixty) prints the command list.
 - [ ] `/fs help` prints the command list, and `/fs help all` adds the two muted testers' lines.
-- [ ] With the data addon installed, a logged player's tooltip ends with the Forever Score in its
-      tier colour and the muted Shift hint; Shift shows the components; a player with no logs reads
-      "Forever Score: no logs yet"; a guildmate heard on GUILD adds the live line (rows 51-54).
+- [ ] With the data addon installed, a logged player's tooltip ends with "Forever Score <n>" in its
+      tier colour (the date in brackets once the record is over a week old) and nothing else; Shift
+      shows the five parts; a player with no logs gets no line at all (spec section 2.5).
 - [ ] Trade, LookingForGroup, guild chat and received whispers put the sender's score in front of
       the message, the name still a working link and R still replying to the right player;
       "Score badges in chat" off leaves every line plain (rows 55-56).

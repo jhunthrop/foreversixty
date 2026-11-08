@@ -1091,7 +1091,7 @@ end
 --- Another member's spec as their row shows it (GroupPanel.rows: their addon's, else the
 --- inspect's, else the record's); nil where none says (fix round 4, A: no imbue claimed then).
 local function shownSpec(unit, name, realm, ownRealm, now)
-	local live = PlayerTooltip.liveEntry(Comms.seen, name, (try(client("UnitName"), unit)), realm, ownRealm, now)
+	local live = Comms.liveEntry(Comms.seen, name, (try(client("UnitName"), unit)), realm, ownRealm, now)
 	local inspect = Inspect.get(Inspect.keyOf(unit) or name)
 	local record = Score.forCharacter(name, realm)
 	return validSpec(live ~= nil and live.spec or nil) or validSpec(inspect ~= nil and inspect.spec or nil)
@@ -1147,7 +1147,7 @@ function GroupPanel.members(data, soloOwn)
 				member.live, member.inspect, member.gear = ownFields(data)
 			else
 				member.inspect = Inspect.get(Inspect.keyOf(unit) or name)
-				member.live = PlayerTooltip.liveEntry(Comms.seen, name, (try(client("UnitName"), unit)), realm, ownRealm,
+				member.live = Comms.liveEntry(Comms.seen, name, (try(client("UnitName"), unit)), realm, ownRealm,
 					now)
 				if GroupPanel.hasGear(member.inspect) then
 					local spec = validSpec(member.inspect.spec) or validSpec(member.live ~= nil and member.live.spec or nil)

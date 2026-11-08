@@ -1,5 +1,13 @@
 # Forever Sixty
 
+## 2.0.36
+
+- Cleaner tooltips: one line under the item says what it means for you ("Upgrade +2.2 DPS" behind the green arrow, "Your best in slot", "Sidegrade"), with at most one line under it. Hold Shift for the details: what the number is made of, other good choices, and where the weights came from.
+- Gold now means only your pick: "Your best in slot", and "Your best in slot until level 30" under an upgrade that is the pick.
+- Quest rewards: the green arrow marks the reward that is an upgrade, "Best in slot" names your pick, and when nothing helps, "Sells for most" names the one to take to a vendor.
+- Group loot rolls: the green arrow on an upgrade and one short line under the item's name, "+5.8 DPS · Best in slot", "Sidegrade" or "Not for you".
+- Player tooltips: just "Forever Score 1240" in the tier's colour, dated once it is over a week old. Shift shows the five parts. No more hint lines.
+
 ## 2.0.35
 
 - Feral bear: Lacerate fills every empty global cooldown, for more threat and damage from 25.

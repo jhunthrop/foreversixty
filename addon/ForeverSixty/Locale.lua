@@ -440,16 +440,11 @@ local L = {
 	scoreLine = "Forever Score %d",
 	-- A character the record does not have, or with no logs: never a zero (spec section 4.6).
 	scoreNoLogs = "Forever Score: no logs yet",
-	-- A guildmate's hello or snapshot, after the score: level, spec, gear gap (L4.4).
-	scoreLive = "Level %d %s · gear gap %d (live)",
-	-- The player tooltip's muted hint, its parts joined by exportTreeSeparator: "Shift: score
-	-- details · target them, then /fs link" (fix round 2: /fs link reads the target).
-	scoreShiftHint = "Shift: score details",
-	scoreLinkHint = "target them, then /fs link",
-	-- The hint alone, where there is no Shift: a no-logs player, a record without components.
-	scoreLinkAlone = "Target them, then /fs link opens their site page",
-	-- After the components while Shift is held, right-aligned and muted: the record's score.
-	scoreTotal = "= %d",
+	-- The player tooltip's score line when the record is older than a week (spec 2.5):
+	-- "Forever Score 1240 (13 Oct)".
+	scoreDated = "Forever Score %d (%s)",
+	-- The fifth part's label under Shift on the player tooltip: what Preparation measures.
+	scoreDisciplineLong = "Preparation (flasks, food, enchants)",
 	-- The score before a message in chat, in the tier colour, then a muted badgeMark
 	-- (surfaces/ChatBadges.lua): "FS 1240 · testing". Fix round 2: never in square brackets,
 	-- which read as an item link.
@@ -565,91 +560,64 @@ local L = {
 	-- at (Progress.levelForPoint): talents start at 10, one per level.
 	progressTakeAt = "Take at level %d",
 
-	-- Lane addon-v2 L3.3 (2026-10-11, fix round 1): the item tooltip's
-	-- section (spec section 4.3). The verdict prints one decimal in DPS or
-	-- HPS and none in score; "Upgrade" and "Downgrade" start at a gain of 1.0
-	-- in the unit (Progress.MIN_GAIN, the chip's own floor), "Sidegrade (+0.3
-	-- DPS)" below it. The downgrade's sign is U+2212 (tooltipMinus); if the
-	-- client's font has no glyph for it, the fallback is the ASCII hyphen.
-	tooltipVerdictDps = "Upgrade +%.1f DPS over %s",
-	tooltipVerdictHps = "Upgrade +%.1f HPS over %s",
-	tooltipVerdictScore = "Upgrade +%d score over %s",
-	tooltipSide = "Sidegrade",
-	-- "Sidegrade (+0.3 DPS)": the sign (+ or tooltipMinus), the size, the unit.
-	tooltipSideGain = "Sidegrade (%s%.1f %s)",
+	-- The item tooltip (design/specs/2026-11-08-addon-ux.md section 2): one verdict line, at
+	-- most one support line, everything else while Shift is held. Figures print one decimal in
+	-- DPS or HPS and none in score; "Upgrade" and "Downgrade" start at a gain of 1.0 in the unit
+	-- (Progress.MIN_GAIN). The minus is U+2212 (tooltipMinus).
+	-- A figure: the sign, the size, the unit ("+2.2 DPS", "−1.3 HPS"); a score has no decimal.
+	tooltipFigure = "%s%.1f %s",
+	tooltipFigureScore = "%s%d score",
 	tooltipMinus = "−",
-	-- "Downgrade −4.2 DPS over Smite's Mighty Hammer": the unit, then the worn item.
-	tooltipDown = "Downgrade −%.1f %s over %s",
-	tooltipDownScore = "Downgrade −%d score over %s",
-	tooltipFills = "Fills an empty slot, +%.1f %s",
-	tooltipFillsScore = "Fills an empty slot, +%d score",
-	-- Muted, right of the header on the item worn (or of the next row when the header
-	-- needs the room: ItemTooltip.fitHeader).
-	tooltipEquipped = "Equipped",
 	tooltipUnitDps = "DPS",
 	tooltipUnitHps = "HPS",
-	-- The breakdown under a figure: "(−11 Str, −4 Agi, −6.9 weapon DPS)", the five
-	-- primary stats by their short names, a weapon's own DPS as "weapon DPS".
-	tooltipBreakdown = "(%s)",
-	tooltipBreakdownPart = "%s %s",
-	tooltipBreakdownJoin = ", ",
-	tooltipWeaponDps = "weapon DPS",
-	statAbbrev = { strength = "Str", agility = "Agi", stamina = "Sta", intellect = "Int", spirit = "Spi" },
-	-- An off hand, a shield or a held item while a two-hander is worn.
+	-- After the green arrow: "Upgrade +2.2 DPS"; a ring, trinket or a dual wielder's one-hander
+	-- names the worn item it replaces; one the character cannot wear yet names the level.
+	tooltipUpgrade = "Upgrade %s",
+	tooltipUpgradeOver = "Upgrade %s over %s",
+	tooltipUpgradeAt = "Upgrade at level %d: %s",
+	tooltipUpgradePair = "Upgrade %s as a pair with %s",
+	tooltipSide = "Sidegrade",
+	tooltipDown = "Downgrade %s",
+	-- Gold: the band's pick (spec 2.2 cases 8, 11, 18).
+	tooltipYourBis = "Your best in slot",
+	tooltipYourBisUntil = "Your best in slot until level %d",
+	tooltipYourBisAt = "Your best in slot at level %d",
+	-- A worn item whose slot's pick gains under the floor (case 19).
+	tooltipNoUpgradeUntil = "No upgrade until level %d",
+	tooltipNoUpgradeSlot = "No upgrade for this slot",
+	-- Grey refusals (cases 4 to 6, 14, 21): the client's own red line already names the armor
+	-- or skill, so the reason waits under Shift.
+	tooltipNotUntil = "Not for you until level %d",
+	tooltipNotFor = "Not for %s",
 	tooltipTwoHander = "Not with your two-hander",
-	-- L3.7 item 11: a one-hander under a worn two-hander, with the best one carried for the other
-	-- hand: "With Goblin Hammer: Upgrade +14.0 DPS over Smite's Mighty Hammer".
-	tooltipPairWith = "As a pair with %s: %s",
-	-- The item worn is the band's own pick (or the pick is worn beside it, or
-	-- the next pick gains under the floor): it holds until the ladder's next
-	-- rung, "Best until level 30"; in the top band, "Best for now".
-	tooltipBestUntil = "Best until level %d",
-	tooltipBestForNow = "Best for now",
-	-- The band's own pick is one the client cannot show, and so are its alternatives.
-	tooltipBestKnown = "Best known for now",
-	-- An empty paper-doll slot the band names no pick for (L4.1 fix round 1): the web
-	-- panel's own wording, muted, never silence.
-	tooltipNoPick = "No pick for your band yet",
-	-- Hotfix 2.0.2: below the spec's first gear band (the data's start at 20), the
-	-- first band's picks are upcoming, never a "Next upgrade". Muted first line on a worn item and an
-	-- empty slot, then the "At level 20" line; a bag item the plan names says so instead of a verdict.
+	tooltipNotForBuild = "Not for your build",
+	tooltipNoPick = "No pick for this slot yet",
+	-- The reason under Shift: "Mail armor at 40", "Rogues cannot use two-handed swords",
+	-- "Shamans cannot dual wield".
+	tooltipReasonUntil = "%s at %d",
+	tooltipReasonNever = "%s cannot use %s",
+	tooltipReasonTwoWeapons = "%s cannot dual wield",
+	-- Below the spec's first gear band (the data's start at 20): a worn item and an empty slot.
 	tooltipUntilFirstBand = "Picks start at level %d",
-	tooltipPlannedFirstBand = "Planned for your build at level %d",
-	-- L4.1 fix round 5 (the personas): a slot carrying the green arrow leads its hover with the
-	-- bag fact; a plan line too wide for the build's name; a world drop that binds when
-	-- equipped; a ranged alternative firing other ammo than the worn ranged weapon.
-	tooltipInYourBags = "In your bags",
+	-- The worn item of a slot carrying the green arrow (case 15): "In your bags: <item> +3.5 DPS".
+	tooltipInBags = "In your bags: %s %s",
+	-- The panel's bag row source (the character pane's flyout; it goes with the flyout).
 	tooltipRightClickEquip = "Right-click it in your bags to equip.",
-	tooltipPlannedYourBuild = "Planned for your build",
-	tooltipPlannedYourBuildAt = "Planned for your build at %d",
-	tooltipCheckAH = "check the AH",
+	-- A thrown weapon in the ranged slot, and a ranged alternative firing other ammo.
 	tooltipNeedsBullets = "(needs bullets)",
 	tooltipNeedsArrows = "(needs arrows)",
-	-- L3.7 item 14: a thrown weapon in the ranged slot (a hammer among bows).
 	tooltipThrown = "(thrown)",
-	-- Muted under "Best until level 30": the next rung's pick and, in a word or two, where
-	-- it comes from (the instance, "Vendor", "Quest" or the kind's word; no boss, no chance).
-	tooltipAtBand = "At level %d: %s · %s",
+	-- The support line under a worn pick: the next rung's pick, the item alone (case 18).
 	tooltipAtBandName = "At level %d: %s",
-	-- The At line's source on its own muted line when the whole line would widen the tooltip.
-	tooltipAtSource = "· %s",
-	-- Gear no weights score and no pick names for its slot.
-	tooltipNotForPlan = "Not for your plan",
-	-- "Planned for Arms at 30" (the spec's tree, the level band), or the
-	-- loaded build's own name when the build names the item.
-	tooltipPlanned = "Planned for %s at %d",
-	tooltipPlannedBuild = "Planned for %s",
-	-- The band's pick for the slot: "Next upgrade: Mutant Scale Breastplate
-	-- +6.1 DPS" (the label muted, the name in its quality colour, the gain in
-	-- the upgrade green), its source on the next line. Never without its gain.
+	-- The support line under an upgrade the band's pick beats (case 9): "Better: <pick> +3.5 ·
+	-- The Deadmines"; without a short source, the pick and its gain.
+	tooltipBetter = "Better: %s %s · %s",
+	tooltipBetterBare = "Better: %s %s",
+	-- The worn item's slot's next upgrade (case 16), white label, item in its quality colour,
+	-- gain green; its source on the support line.
 	tooltipNextLabel = "Next upgrade:",
-	-- L3.7 item 6: a weapon pick the client has not sent stats for (its gain would be a lower bound).
-	tooltipStatsPending = "\194\183 stats pending",
 	tooltipNextGain = "+%.1f %s",
 	tooltipNextGainScore = "+%d score",
-	-- Muted at the end of the gain when the worn item's enchant could not be read (a
-	-- read enchant is netted into every comparison, Gear.readEquipped).
-	tooltipEnchantNote = "(enchant not counted)",
 	-- The compare tooltip's tab, where the client lets it carry one.
 	tooltipCompareLabel = "Next upgrade",
 	-- Where the item comes from: "Wailing Caverns · Mutanus the Devourer ·
@@ -657,17 +625,29 @@ local L = {
 	tooltipSourceDrop = "%s · %s · %d%% drop",
 	tooltipSourcePair = "%s · %s",
 	tooltipSourceChance = "%s · %d%% drop",
-	tooltipAlternatives = "Also good: %s, %s",
+	tooltipAtSource = "· %s",
+	-- Shift (spec 2.3): the breakdown without brackets, "+7 Agi, +2 Sta, +6 Armor".
+	tooltipBreakdownPart = "%s %s",
+	tooltipBreakdownJoin = ", ",
+	tooltipWeaponDps = "weapon DPS",
+	tooltipArmor = "Armor",
+	statAbbrev = { strength = "Str", agility = "Agi", stamina = "Sta", intellect = "Int", spirit = "Spi" },
+	-- Shift: alternatives, one per line, the second aligned under the first item's name.
 	tooltipAlternativesOne = "Also good: %s",
-	-- Too wide for one line (L4.1 fix round 7, hunter-20): the label alone on its row, then
-	-- each alternative whole on its own indented row (its tag, "(needs bullets)", on a muted
-	-- row under it when still too wide), no row ending in a comma; none is dropped.
 	tooltipAlternativesLabel = "Also good:",
-	tooltipAlternativesRow = "    %s",
-	-- One alternative with its gain over what is worn, muted: "Veteran's Chain Shirt +1.1".
+	-- One alternative with its gain over what is worn: "Veteran's Chain Shirt +1.1".
 	tooltipAlternativeGain = "%s %s",
 	tooltipAltGain = "%s%.1f",
 	tooltipAltGainScore = "%s%d",
+	tooltipInBuildList = "In your build's gear list",
+	tooltipEnchantNote = "Enchant not counted",
+	-- A two-hander's figure is net of both worn hands.
+	tooltipCompared = "Compared with %s and %s",
+	-- The last Shift line, dimmer: where the weights came from.
+	tooltipAttribution = "Forever Sixty · %s",
+	tooltipAttrEstimate = "%s estimate",
+	tooltipAttrSim = "%s, your sim",
+	tooltipAttrBuild = "%s, your build",
 	-- The worn item's enchant, read from its own tooltip (every comparison against it is
 	-- net of it): the client's "Enchanted: %s" line and weapon-speed word where it has no
 	-- global, and the weapon-damage enchant wording, which no client global carries.
@@ -676,17 +656,6 @@ local L = {
 	enchantWeaponDamage = "Weapon Damage",
 	-- A name the client has not sent yet (and the end of a shortened name).
 	tooltipNamePending = "…",
-	-- The section's header: "Forever Sixty · Arms · Your sim" (the spec's
-	-- tree, then where the weights came from), joined by this separator.
-	tooltipHeaderSep = " · ",
-	tooltipTagSim = "Your sim",
-	tooltipTagBuild = "Your build",
-	-- The shipped weights and DPS per point, not the player's own sim.
-	tooltipTagEstimate = "Estimate",
-	-- "Not for you: rogues cannot use two-handed swords" (the second %s is
-	-- the rules engine's reason). tooltipUntil is rulesUntilLevel, set below.
-	tooltipNever = "Not for you: %s cannot use %s",
-	tooltipNeverTwoWeapons = "Not for you: %s cannot wield two weapons",
 	-- /fs diag verbose: which of the client's two tooltip hooks the section is drawn through.
 	diagItemTooltipHook = "Item tooltip: drawn through the %s hook",
 	-- Lane addon-v2 L4.1 (2026-10-12): the paper-doll and bag marks. /fs diag names a bag
@@ -698,11 +667,14 @@ local L = {
 	diagBagHooks = "Bag marks: hooked through %s",
 	diagNoBagHook = "Bag marks: this client has no bag hook; the bag marks are off.",
 	diagSlotMarksFailed = "The paper-doll and bag marks failed once and turned themselves off until /reload: %s",
-	-- Lane addon-v2 L4.2 (2026-10-13): the quest reward and roll marks (spec section 4.4).
-	-- "Best for Arms" (the spec's tree) on the reward the weights prefer, in gold; "Vendor",
-	-- muted, on each reward when none is of any use to the character now.
-	rewardBest = "Best for %s",
-	rewardVendor = "Vendor",
+	-- The quest reward and roll marks (design/specs/2026-11-08-addon-ux.md section 2.4): gold
+	-- under the band's pick, muted under the reward that sells for the most when none helps.
+	rewardBest = "Best in slot",
+	rewardSellsForMost = "Sells for most",
+	-- The roll frame's short verdict: "+5.8 DPS · Best in slot".
+	rollBestJoin = " · ",
+	rollNotForYou = "Not for you",
+	rollDowngrade = "Downgrade",
 	diagRewardMarksFailed = "The quest reward and roll marks failed once and turned themselves off until /reload: %s",
 	tooltipClassPlural = {
 		WARRIOR = "warriors", PALADIN = "paladins", HUNTER = "hunters", ROGUE = "rogues",
@@ -1115,7 +1087,7 @@ L.panelTabHint = {
 }
 -- A slot the bag arrow marks: its row is the bag item, as its hover leads with it ("In your
 -- bags: Bag Chest +2.0 DPS", then "Chest · Right-click it in your bags to equip.").
-L.panelInYourBags = L.tooltipInYourBags .. ":"
+L.panelInYourBags = "In your bags:"
 -- Under a region cut short (at most 8 rotation rows, 6 raid bosses; fix round 1, item 3).
 L.panelMore = "%d more"
 -- The build: its split in the dialog's words ("Arms 31 / Fury 20"), then these two.
@@ -1581,8 +1553,7 @@ L.timeTwelve = "%02d:%02d %s"
 L.timeAm = "am"
 L.timePm = "pm"
 
--- The item tooltip's refusal reads exactly as the rules engine's own.
-L.tooltipUntil = L.rulesUntilLevel
+
 
 -- /fs drops (RaidDrops.lua): the raid nights the loot window recorded for the export's drops=.
 L.dropsNone = "No raid drops recorded on this character yet. Open a boss corpse in a raid."
