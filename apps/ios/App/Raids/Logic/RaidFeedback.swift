@@ -14,8 +14,8 @@ struct SystemNotificationPermission: NotificationPermission {
     }
 
     func request() async {
-        // Lane F7 registers the APNs token once permission is granted.
         _ = try? await UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge])
+        await PushRegistrar.shared.permissionAnswered()
     }
 }
 

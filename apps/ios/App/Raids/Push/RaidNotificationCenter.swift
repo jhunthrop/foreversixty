@@ -2,21 +2,21 @@ import Foundation
 import Routing
 import UserNotifications
 
-/// The raid notifications' delegate: registers the categories, answers In, Late and Out in the
-/// background and posts the answer in place, and hands taps to the app as deep links. Lane F7
-/// owns permission and token registration; its own delegate work joins this one.
+/// The notifications' delegate: registers the categories, answers In, Late, Bench and Out in the
+/// background and posts the answer in place, and lands every tap on its answer (PushLanding).
+/// Permission and the device token are PushRegistrar's.
 @MainActor
 final class RaidNotificationCenter: NSObject, UNUserNotificationCenterDelegate {
     static let shared = RaidNotificationCenter()
 
     private var answerer: RaidPushAnswerer?
-    /// The app's router; links that arrive before it is set wait in `pending`.
-    var onOpen: ((DeepLink) -> Void)? {
+    /// The app's router; a tap that arrives before it is set (a cold launch) waits in `pending`.
+    var onOpen: ((IntentDestination) -> Void)? {
         didSet {
-            if let link = pending, let onOpen { pending = nil; onOpen(link) }
+            if let destination = pending, let onOpen { pending = nil; onOpen(destination) }
         }
     }
-    private var pending: DeepLink?
+    private var pending: IntentDestination?
 
     /// Installs the delegate and the categories, once at launch.
     func install(answerer: RaidPushAnswerer) {
@@ -29,11 +29,12 @@ final class RaidNotificationCenter: NSObject, UNUserNotificationCenterDelegate {
     static var categories: Set<UNNotificationCategory> {
         let signIn = UNNotificationAction(identifier: RaidPushCategory.actionIn, title: Copy.pushActionIn, options: [])
         let late = UNNotificationAction(identifier: RaidPushCategory.actionLate, title: Copy.pushActionLate, options: [])
+        let bench = UNNotificationAction(identifier: RaidPushCategory.actionBench, title: Copy.raidStateBench, options: [])
         let out = UNNotificationAction(identifier: RaidPushCategory.actionOut, title: Copy.pushActionOut, options: [])
         let askSpec = UNNotificationAction(identifier: RaidPushCategory.actionAskSpec, title: Copy.pushActionAskSpec, options: [.foreground])
         let choose = UNNotificationAction(identifier: RaidPushCategory.actionChoose, title: Copy.pushActionChoose, options: [.foreground])
         return [
-            UNNotificationCategory(identifier: RaidPushCategory.signup, actions: [signIn, late, out], intentIdentifiers: []),
+            UNNotificationCategory(identifier: RaidPushCategory.signup, actions: [signIn, late, bench, out], intentIdentifiers: []),
             UNNotificationCategory(identifier: RaidPushCategory.askSpec, actions: [askSpec, out], intentIdentifiers: []),
             UNNotificationCategory(identifier: RaidPushCategory.choose, actions: [choose], intentIdentifiers: []),
         ]
@@ -49,26 +50,34 @@ final class RaidNotificationCenter: NSObject, UNUserNotificationCenterDelegate {
     nonisolated func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse) async {
         let request = response.notification.request
         let content = request.content
-        guard let payload = RaidPushPayload(userInfo: content.userInfo) else { return }
-        let action = response.actionIdentifier
-        let identifier = request.identifier
-        let thread = content.threadIdentifier
-        await handle(payload: payload, action: action, identifier: identifier, thread: thread)
+        let payload = RaidPushPayload(userInfo: content.userInfo)
+        let landing = PushLanding.destination(userInfo: content.userInfo)
+        await handle(
+            payload: payload, landing: landing, action: response.actionIdentifier,
+            identifier: request.identifier, thread: content.threadIdentifier
+        )
     }
 
-    private func handle(payload: RaidPushPayload, action: String, identifier: String, thread: String) async {
-        if let state = RaidPushCategory.state(forAction: action), let answerer {
+    /// A background answer posts in place; a tap lands on the event's answer (flows spec F4).
+    private func handle(payload: RaidPushPayload?, landing: IntentDestination?, action: String, identifier: String, thread: String) async {
+        if let payload, let state = RaidPushCategory.state(forAction: action), let answerer {
             switch await answerer.answer(payload, state: state) {
             case let .answered(answer): await post(answer, replacing: identifier, thread: thread)
-            case let .open(link): open(link)
+            case let .open(link): open(.link(link))
             }
             return
         }
-        open(payload.deepLink(askingSpec: action == RaidPushCategory.actionAskSpec))
+        if let payload, action == RaidPushCategory.actionAskSpec || action == RaidPushCategory.actionChoose {
+            open(.link(payload.deepLink(askingSpec: action == RaidPushCategory.actionAskSpec)))
+        } else if let landing {
+            open(landing)
+        } else if let payload {
+            open(.link(payload.deepLink()))
+        }
     }
 
-    private func open(_ link: DeepLink) {
-        if let onOpen { onOpen(link) } else { pending = link }
+    private func open(_ destination: IntentDestination) {
+        if let onOpen { onOpen(destination) } else { pending = destination }
     }
 
     /// The answer replaces the question: the same identifier, the same thread, no actions.
