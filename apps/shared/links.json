@@ -115,6 +115,7 @@
     },
     {
       "path": "/sim/{id}",
+      "exclude": ["/sim/specs", "/sim/gear", "/sim/drops", "/sim/talents", "/sim/weights"],
       "site": true,
       "screen": "simPage",
       "opens": "The sim result, pushed under Home. The sim tool pages (/sim/specs, gear, drops, talents, weights) stay on the site. A real site page (spec 2026-11-08-app-flows F6): the link opens the app when it is installed and the web page when it is not.",
@@ -122,6 +123,7 @@
     },
     {
       "path": "/reports/{id}",
+      "exclude": ["/reports/sample"],
       "site": true,
       "screen": "reportPage",
       "opens": "The report, pushed under Home (read only when it is not yours); /reports/sample stays on the site. A real site page (spec 2026-11-08-app-flows F6): the link opens the app when it is installed and the web page when it is not.",

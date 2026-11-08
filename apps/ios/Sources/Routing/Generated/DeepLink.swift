@@ -59,10 +59,14 @@ public enum DeepLink: Equatable, Sendable {
 
     public static let host = "foreversixty.gg"
 
+    /// The pages a route's pattern matches that stay on the site (links.json `exclude`).
+    static let siteOnly: Set<String> = ["/sim/specs", "/sim/gear", "/sim/drops", "/sim/talents", "/sim/weights", "/reports/sample"]
+
     /// The screen a link opens, or nil for any URL that is not one of the app links.
     public init?(url: URL) {
         guard url.scheme == "https", url.host == Self.host else { return nil }
         let s = url.pathComponents.filter { $0 != "/" }
+        guard !Self.siteOnly.contains("/" + s.joined(separator: "/")) else { return nil }
         let items = URLComponents(url: url, resolvingAgainstBaseURL: false)?.queryItems ?? []
         let q = Dictionary(items.compactMap { item in item.value.map { (item.name, $0) } }) { first, _ in first }
         let matchers: [([String], [String: String]) -> DeepLink?] = [

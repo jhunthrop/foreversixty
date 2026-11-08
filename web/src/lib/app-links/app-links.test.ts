@@ -29,10 +29,12 @@ import {
   appleAppSiteAssociation,
   assetLinks,
   readAppLinksConfig,
+  readExcludedPaths,
   readSitePages,
   renderAppLinks,
   wellKnownDir,
 } from '../../../scripts/app-links.mjs';
+import { buildRoutes, excludedPaths } from '../../../scripts/gen-mobile-links.mjs';
 
 const cfg = { ...readAppLinksConfig() };
 
@@ -71,6 +73,23 @@ describe('app links', () => {
     expect(cfg.paths).toEqual(['/app/*', ...SITE_PAGES]);
     const file = path.join(import.meta.dirname, 'bad-app-links.fixture.json');
     expect(() => readAppLinksConfig(file, ['/account'])).not.toThrow();
+  });
+
+  it('excludes exactly the pages links.json routes exclude, from one list', () => {
+    const model = buildRoutes(
+      readFileSync(path.join(import.meta.dirname, '../../../../apps/shared/links.json'), 'utf8'),
+    );
+    expect(readExcludedPaths()).toEqual(excludedPaths(model));
+    expect(cfg.exclude).toEqual(SIM_TOOLS);
+    const excluded = appleAppSiteAssociation(cfg)
+      .applinks.details[0].components.filter((c: { exclude?: boolean }) => c.exclude)
+      .map((c: { '/': string }) => c['/']);
+    expect(excluded).toEqual(excludedPaths(model));
+  });
+
+  it('refuses an exclude list in app-links.json: it lives in links.json', () => {
+    const file = path.join(import.meta.dirname, 'exclude-app-links.fixture.json');
+    expect(() => readAppLinksConfig(file)).toThrow(/lives in apps\/shared\/links.json/);
   });
 
   it('keeps the committed .well-known files in step with app-links.json', () => {

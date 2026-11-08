@@ -1,0 +1,8 @@
+{
+  "appleTeamId": "T",
+  "iosBundleId": "b",
+  "androidPackage": "p",
+  "androidSha256Fingerprints": ["f"],
+  "paths": ["/app/*"],
+  "exclude": ["/sim/gear"]
+}
