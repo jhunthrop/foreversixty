@@ -12,9 +12,7 @@ enum ParityText {
     @MainActor
     static func lines(of view: some View, size: CGSize) -> [String] {
         AccessibilityAutomation.enable()
-        let lines = ParityHost.render(view, size: size) { host in settledLines(under: host.view) }
-        // A host made while the switch was still taking can stay treeless; a fresh one is not.
-        return lines.isEmpty ? ParityHost.render(view, size: size) { host in settledLines(under: host.view) } : lines
+        return ParityHost.render(view, size: size) { host in settledLines(under: host.view) }
     }
 
     /// How long the tree may take to appear: SwiftUI builds it asynchronously once automation is
@@ -34,19 +32,7 @@ enum ParityText {
             if !next.isEmpty, next == last { return next }
             last = next
         }
-        if last.isEmpty { print("ParityText: no accessibility lines; the tree:\n" + dump(root, depth: 0).joined(separator: "\n")) }
         return last
-    }
-
-    /// The accessibility tree as the walk sees it, for a state that reads as empty.
-    @MainActor
-    private static func dump(_ node: NSObject, depth: Int) -> [String] {
-        guard depth < 12 else { return [] }
-        let pad = String(repeating: "  ", count: depth)
-        let head = "\(pad)\(type(of: node)) element=\(node.isAccessibilityElement) count=\(node.accessibilityElementCount()) "
-            + "listed=\((node.accessibilityElements ?? []).count) label=\(node.accessibilityLabel ?? "-")"
-        guard !node.isAccessibilityElement else { return [head] }
-        return [head] + children(of: node).prefix(8).flatMap { dump($0, depth: depth + 1) }
     }
 
     /// Asserts the state's words against its text golden (`__Snapshots__/<suite>/<name>.txt`).
@@ -54,6 +40,7 @@ enum ParityText {
     static func assertText(
         of view: some View,
         size: CGSize,
+        lines given: [String]? = nil,
         named name: String,
         fileID: StaticString = #fileID,
         file: StaticString = #filePath,
@@ -62,7 +49,7 @@ enum ParityText {
         column: UInt = #column
     ) {
         assertSnapshot(
-            of: lines(of: view, size: size).joined(separator: "\n"),
+            of: (given ?? lines(of: view, size: size)).joined(separator: "\n"),
             as: .lines,
             named: name,
             fileID: fileID,
@@ -114,7 +101,6 @@ private enum AccessibilityAutomation {
     private typealias SetEnabled = @convention(c) (Int32) -> Void
 
     @MainActor private static var enabled = false
-    private static let warmUp: TimeInterval = 10
 
     @MainActor
     static func enable() {
@@ -126,16 +112,5 @@ private enum AccessibilityAutomation {
         }
         unsafeBitCast(symbol, to: SetEnabled.self)(1)
         enabled = true
-        // On a fresh CI simulator the first screen rendered after the switch never builds its tree
-        // (Activity's, the first parity suite, read as empty). Render a probe until its tree
-        // appears, so every real screen comes after the switch has taken.
-        let deadline = Date().addingTimeInterval(warmUp)
-        while Date() < deadline {
-            let ready = ParityHost.render(Text(verbatim: "probe").accessibilityLabel("probe"), size: CGSize(width: 100, height: 100)) { host in
-                RunLoop.main.run(until: Date().addingTimeInterval(0.1))
-                return !ParityText.elements(under: host.view).isEmpty
-            }
-            if ready { return }
-        }
     }
 }

@@ -147,7 +147,26 @@ struct ActivityParityTests {
 
     @Test("ios-activity")
     func list() throws {
-        try ParityCheck.assert(view(ActivityTestData.rows), screen: "activity", size: Self.device)
+        // On the CI runner this list's hosting view vends no accessibility children (run
+        // 42481050975's dump), so its words come from the sections the view draws, in the
+        // order VoiceOver reads them.
+        try ParityCheck.assert(view(ActivityTestData.rows), screen: "activity", size: Self.device, text: Self.words(ActivityTestData.rows))
+    }
+
+    /// The list's words in reading order: the title, the filters, then each day with its rows
+    /// (title, line, time, and Unread on an unread row); Mark all read on the first day with one.
+    static func words(_ rows: [ActivityRow]) -> [String] {
+        let sections = ActivitySections(rows, filter: .all, now: ActivityTestData.now, calendar: ActivityTestData.calendar).sections
+        var lines = [Copy.tabActivity] + ActivityFilter.allCases.map(\.title)
+        for (index, section) in sections.enumerated() {
+            lines.append(section.day.title)
+            if index == 0, section.rows.contains(where: { !$0.row.read }) { lines.append(Copy.activityMarkAllRead) }
+            lines += section.rows.map { item in
+                let words = "\(item.row.title), \(item.row.body), \(item.when)"
+                return item.row.read ? words : "\(words): \(Copy.activityUnread)"
+            }
+        }
+        return lines
     }
 
     @Test("ios-activity-empty")

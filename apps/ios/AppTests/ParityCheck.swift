@@ -28,10 +28,14 @@ enum ParityCheck {
         return CGSize(width: size.width, height: max(size.height, (bottoms.max() ?? 0) + textSlack))
     }
 
+    /// `text`: the state's words from its own model, in reading order, for a screen whose
+    /// accessibility tree the CI runner does not vend (Activity's list, 2026-11-08); nil reads
+    /// the tree.
     static func assert(
         _ view: some View,
         screen: String,
         size: CGSize,
+        text: [String]? = nil,
         fileID: StaticString = #fileID,
         file: StaticString = #filePath,
         testName: String = #function,
@@ -50,7 +54,7 @@ enum ParityCheck {
         // The words of the whole content, as the regions count it: the text pass renders a window
         // tall enough that nothing scrolls (on CI a list taller than the screen read as empty).
         ParityText.assertText(
-            of: screenView, size: textSize(size, capture: capture), named: "ios-\(screen)",
+            of: screenView, size: textSize(size, capture: capture), lines: text, named: "ios-\(screen)",
             fileID: fileID, file: file, testName: testName, line: line, column: column
         )
         for (suffix, category) in [("", UIContentSizeCategory.large), ("-ax5", .accessibilityExtraExtraExtraLarge)] {
