@@ -71,7 +71,7 @@ struct HomeFlowParityTests {
     @Test("ios-home-34")
     func leveler() throws {
         let upgrades = HomeBlockContent.upgrades(HomeUpgradesContent(
-            rows: T.levelerRows, bestRun: "Best run: Blackfathom Deeps, Ring of Precision +0.6 DPS", note: nil
+            rows: T.levelerRows, bestRun: "Best run: Blackfathom Deeps, Grimclaw +0.9 DPS", note: nil
         ))
         try check(T.content([upgrades, T.newForYou("leveler", unread: 1)], head: T.felsnap), "home-34")
     }

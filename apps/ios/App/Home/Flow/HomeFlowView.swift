@@ -214,6 +214,9 @@ struct LastNightSection: View {
 
 /// New for you (F4, M7): the three newest Activity rows, unread dotted, All activity (N).
 struct NewForYouSection: View {
+    /// The descent under an inline 40 pt icon in a web row.
+    static let iconDescent: CGFloat = 3
+
     let content: NewForYouContent
     let build: String
     let open: (ActivityRow) -> Void
@@ -227,7 +230,11 @@ struct NewForYouSection: View {
                 ForEach(content.rows) { item in
                     Button { open(item.row) } label: {
                         FSRow(title: item.row.title, sub: item.line, inset: 0) {
-                            ItemIconView(icon: item.row.icon, quality: nil, build: build, size: FSSize.icon40).parityItem(.image)
+                            ItemIconView(icon: item.row.icon, quality: nil, build: build, size: FSSize.icon40)
+                                .parityItem(.image)
+                                // The web's inline icon sits on the text baseline and takes its line's
+                                // descent below it, so a two-line row is the icon plus that gap.
+                                .padding(.bottom, Self.iconDescent)
                         }
                         .overlay(alignment: .topLeading) {
                             if !item.row.read {
