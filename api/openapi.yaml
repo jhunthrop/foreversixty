@@ -3365,6 +3365,34 @@ components:
         officer: { type: boolean }
         unanswered: { type: integer, description: "Officer: the raid's unanswered accounts." }
         applicants: { type: integer, description: "Officer: the pending applications." }
+        sims_rank:
+          description: >-
+            The Raid tab's Guild sims row: the viewer's main (the account's marked main when it is
+            verified in the guild, else its highest level verified character there) on the guild's
+            sims ladder, the same place Home's Guild sims block shows (its role, level band and
+            latest preset; sims within 30 days; no ladder under 3 members). null when it has none.
+            Always sent.
+          oneOf:
+            - type: object
+              title: RaidBadgeSimsRank
+              required: [position, of]
+              properties:
+                position: { type: integer, description: 1 is the top. }
+                of: { type: integer, description: How many are on the ladder. }
+            - { type: "null" }
+        last_raid_loot:
+          description: >-
+            The Raid tab's Loot history row: what the guild's most recent done raid gave out, its
+            loot awards plus the copies of each addon-recorded drop no award on the raid names.
+            null with no done raid. Always sent.
+          oneOf:
+            - type: object
+              title: RaidBadgeLastRaidLoot
+              required: [count, raid_id]
+              properties:
+                count: { type: integer }
+                raid_id: { type: integer, format: int64 }
+            - { type: "null" }
     ItemNeeds:
       type: object
       description: GET /v1/guilds/{id}/items/{item}/needs.
@@ -3374,6 +3402,20 @@ components:
         needs: { type: array, items: { $ref: '#/components/schemas/ItemNeed' } }
         has: { type: array, items: { $ref: '#/components/schemas/ItemHolder' } }
         unknown_gear: { type: integer, description: Verified characters with no gear on file. }
+        next_raid:
+          description: >-
+            The guild's next raid in the zone whose boss drops the item, for "Onyxia's Lair, Wed 9
+            Dec 8:00 pm": planned or locked, not over, the soonest. null when none is planned or no
+            raid boss of the loot table drops the item. Always sent.
+          oneOf:
+            - type: object
+              title: ItemNextRaid
+              required: [raid_id, zone_key, starts_at]
+              properties:
+                raid_id: { type: integer, format: int64 }
+                zone_key: { type: string, description: "raid:onyxias-lair" }
+                starts_at: { type: string, format: date-time }
+            - { type: "null" }
     ItemHolder:
       type: object
       required: [character_key, name, class, spec]
@@ -3392,7 +3434,7 @@ components:
         class: { type: string, x-name: className }
         spec: { type: string }
         level: { type: integer }
-        band: { type: integer, description: The level band whose list names it (20, 30, 40, 50, 60). }
+        band: { type: integer, description: "The level band whose list names it (20, 30, 40, 50, 60)." }
         slot: { type: string, description: The band's slot that names it. }
         pick: { type: boolean }
     SignupConfirmation:
@@ -4864,6 +4906,7 @@ components:
         title_rank: { type: integer, description: "Era honor rank the item's title implies, on a pvp source with no rank lock (rank absent); eligibility only, not a lock." }
         level_min: { type: integer, description: "world_drop: the pool's level range. dungeon and raid: the instance's level range, the client's Group Finder row." }
         level_max: { type: integer }
+        icon: { type: string, description: "dungeon and raid: the instance's icon, a name under /data/{build}/icons (the API's zoneicons table: inv_misc_head_dragon_black for Onyxia's Lair, inv_misc_book_09 for an instance with none of its own). Written by the nightly loot run; absent on a build generated before it." }
         required_skill: { type: object, additionalProperties: { type: integer }, description: "crafted only: item id -> the profession skill its recipe needs; an item with no known skill is absent." }
         rare_spawn: { type: boolean }
         source_origin: { type: string }
@@ -10184,13 +10227,16 @@ paths:
         invalid) or not on the guild's region and ruleset (400 wrong_realm), for a verified
         member (409 already_member) and with one already open (409 already_applied).
       operationId: applyToGuild
-      tags: [web]
+      tags: [web, app]
       parameters:
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
         - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
       requestBody:
         required: true
         content: { application/json: { schema: { $ref: '#/components/schemas/ApplicationInput' } } }
       responses:
+        '426': { $ref: '#/components/responses/UpdateRequired' }
         '201':
           description: "The application, pending"
           x-fixtures: [guild.application]
@@ -10246,10 +10292,13 @@ paths:
     get:
       summary: Your own applications to the guild, newest first
       operationId: myGuildApplications
-      tags: [web]
+      tags: [web, app]
       parameters:
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
         - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
       responses:
+        '426': { $ref: '#/components/responses/UpdateRequired' }
         '200':
           description: "Your applications; rows is [] when you have none"
           x-fixtures: [guild.applications.mine]
@@ -10266,11 +10315,14 @@ paths:
     post:
       summary: Withdraw your own pending application
       operationId: withdrawGuildApplication
-      tags: [web]
+      tags: [web, app]
       parameters:
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
         - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
         - { name: app, in: path, required: true, schema: { type: integer, format: int64 } }
       responses:
+        '426': { $ref: '#/components/responses/UpdateRequired' }
         '200':
           description: "The application, withdrawn"
           content:

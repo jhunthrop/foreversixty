@@ -30,6 +30,7 @@ import gg.foreversixty.app.guild.HistoryRoute
 import gg.foreversixty.app.guild.RosterRoute
 import gg.foreversixty.app.guild.logic.CalendarInput
 import gg.foreversixty.app.navigation.DeepLink
+import gg.foreversixty.app.navigation.RAID_VIEW_UNANSWERED
 import gg.foreversixty.app.model.RaidBadge
 import gg.foreversixty.app.network.ApiClient
 import gg.foreversixty.app.network.ApiResult
@@ -124,7 +125,7 @@ class RaidsNavigator {
         val destinations = when (link) {
             is DeepLink.Raid -> {
                 val press = if (link.spec == "ask") SignupState.In else SignupState.of(link.state)
-                if (link.view == DeepLink.Raid.UNANSWERED) {
+                if (link.view == RAID_VIEW_UNANSWERED) {
                     listOf(RaidsDestination.NotAnswered(link.guild, link.raid))
                 } else {
                     listOf(RaidsDestination.Raid(link.guild, link.raid, open = press?.let(::RaidOpenAction)))
@@ -132,6 +133,7 @@ class RaidsNavigator {
             }
             is DeepLink.RaidNight -> listOf(RaidsDestination.Raid(link.guild, link.raid), RaidsDestination.Night(link.raid))
             is DeepLink.Guild -> emptyList()
+            is DeepLink.GuildApplicant -> listOf(RaidsDestination.Applicant(link.guild, link.application))
             else -> return false
         }
         stack.clear()
