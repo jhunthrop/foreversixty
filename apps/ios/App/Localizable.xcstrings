@@ -881,6 +881,686 @@
         }
       }
     },
+    "bisSpec.bar": {
+      "comment": "Arguments: 1 spec (string), 2 band (string), 3 faction (string), 4 profile (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$@ · %3$@ · %4$@"
+          }
+        }
+      }
+    },
+    "bisSpec.barBare": {
+      "comment": "Arguments: 1 spec (string), 2 band (string), 3 faction (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$@ · %3$@"
+          }
+        }
+      }
+    },
+    "bisSpec.bySlot": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "By slot"
+          }
+        }
+      }
+    },
+    "bisSpec.change": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Change ▾"
+          }
+        }
+      }
+    },
+    "bisSpec.guideLead": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Talents, rotation and stat priority for this spec:"
+          }
+        }
+      }
+    },
+    "bisSpec.guideLink": {
+      "comment": "Arguments: 1 spec (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ guide ›"
+          }
+        }
+      }
+    },
+    "bisSpec.healingPerMana": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Healing per mana"
+          }
+        }
+      }
+    },
+    "bisSpec.itemLevel": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Level %1$lld"
+          }
+        }
+      }
+    },
+    "bisSpec.level": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Level"
+          }
+        }
+      }
+    },
+    "bisSpec.line": {
+      "comment": "Arguments: 1 level (int), 2 race (string), 3 points (int), 4 profile (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Level %1$lld %2$@ · %3$lld talent points · %4$@"
+          }
+        }
+      }
+    },
+    "bisSpec.manaLasts": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mana lasts"
+          }
+        }
+      }
+    },
+    "bisSpec.meta": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Best in slot"
+          }
+        }
+      }
+    },
+    "bisSpec.nextBand": {
+      "comment": "Arguments: 1 from (string), 2 to (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Changes from %1$@: see %2$@ ›"
+          }
+        }
+      }
+    },
+    "bisSpec.nextVs": {
+      "comment": "Arguments: 1 delta (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "next: %1$@ vs"
+          }
+        }
+      }
+    },
+    "bisSpec.noAlternative": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No close alternative"
+          }
+        }
+      }
+    },
+    "bisSpec.nothing": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nothing better yet"
+          }
+        }
+      }
+    },
+    "bisSpec.openSim": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open in simulator"
+          }
+        }
+      }
+    },
+    "bisSpec.overheal": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Overheal"
+          }
+        }
+      }
+    },
+    "bisSpec.pieces": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "1 piece"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%1$lld pieces"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "bisSpec.place.crafted": {
+      "comment": "Arguments: 1 profession (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Crafted · %1$@"
+          }
+        }
+      }
+    },
+    "bisSpec.place.quest": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quest"
+          }
+        }
+      }
+    },
+    "bisSpec.place.vendor": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vendor"
+          }
+        }
+      }
+    },
+    "bisSpec.place.world": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "World / BoE"
+          }
+        }
+      }
+    },
+    "bisSpec.planner": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Talents in planner"
+          }
+        }
+      }
+    },
+    "bisSpec.profile": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Profile"
+          }
+        }
+      }
+    },
+    "bisSpec.profile.bare": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bare"
+          }
+        }
+      }
+    },
+    "bisSpec.profile.raid": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Raid-ready"
+          }
+        }
+      }
+    },
+    "bisSpec.race": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Race"
+          }
+        }
+      }
+    },
+    "bisSpec.rankingSim": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "View ranking sim ›"
+          }
+        }
+      }
+    },
+    "bisSpec.same": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Same"
+          }
+        }
+      }
+    },
+    "bisSpec.share": {
+      "comment": "Arguments: 1 spec (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ best in slot"
+          }
+        }
+      }
+    },
+    "bisSpec.signIn": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sign in"
+          }
+        }
+      }
+    },
+    "bisSpec.signInTail": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "to see them against your gear."
+          }
+        }
+      }
+    },
+    "bisSpec.simmed": {
+      "comment": "Arguments: 1 date (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This set, simmed %1$@"
+          }
+        }
+      }
+    },
+    "bisSpec.sources": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sources"
+          }
+        }
+      }
+    },
+    "bisSpec.sources.all": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "All sources"
+          }
+        }
+      }
+    },
+    "bisSpec.sources.kind.crafted": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Crafted"
+          }
+        }
+      }
+    },
+    "bisSpec.sources.kind.dungeon": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dungeons"
+          }
+        }
+      }
+    },
+    "bisSpec.sources.kind.other": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Other"
+          }
+        }
+      }
+    },
+    "bisSpec.sources.kind.pvp": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "PvP"
+          }
+        }
+      }
+    },
+    "bisSpec.sources.kind.quest": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quests"
+          }
+        }
+      }
+    },
+    "bisSpec.sources.kind.raid": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Raids"
+          }
+        }
+      }
+    },
+    "bisSpec.sources.kind.reputation": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reputation"
+          }
+        }
+      }
+    },
+    "bisSpec.sources.kind.vendor": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vendors"
+          }
+        }
+      }
+    },
+    "bisSpec.sources.kind.world": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "World drops and the auction house"
+          }
+        }
+      }
+    },
+    "bisSpec.sources.some": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sources (%1$lld)"
+          }
+        }
+      }
+    },
+    "bisSpec.stack": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "What to stack"
+          }
+        }
+      }
+    },
+    "bisSpec.stack.addon": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The Forever Sixty addon rates every item in your bags and tooltips with these weights."
+          }
+        }
+      }
+    },
+    "bisSpec.stack.addonLink": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Use these weights in the addon ›"
+          }
+        }
+      }
+    },
+    "bisSpec.stack.insignificant": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not significant"
+          }
+        }
+      }
+    },
+    "bisSpec.stack.legend": {
+      "comment": "Arguments: 1 stat (string), 2 unit (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Normalized to %1$@ = 1.00. Per point of stat, with %2$@ per point and the sim error."
+          }
+        }
+      }
+    },
+    "bisSpec.stack.perPoint": {
+      "comment": "Arguments: 1 value (string), 2 unit (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ %2$@ per point"
+          }
+        }
+      }
+    },
+    "bisSpec.stack.three": {
+      "comment": "Arguments: 1 first (string), 2 second (string), 3 third (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stack %1$@, then %2$@, then %3$@."
+          }
+        }
+      }
+    },
+    "bisSpec.stack.two": {
+      "comment": "Arguments: 1 first (string), 2 second (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stack %1$@, then %2$@."
+          }
+        }
+      }
+    },
+    "bisSpec.summary": {
+      "comment": "Arguments: 1 n (int), 2 total (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld of %2$lld slots have a pick at this level."
+          }
+        }
+      }
+    },
+    "bisSpec.twoHander": {
+      "comment": "Arguments: 1 item (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ is a two-hander: the off hand stays empty."
+          }
+        }
+      }
+    },
+    "bisSpec.twoHanderSlot": {
+      "comment": "Arguments: 1 item (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ is a two-hander; the off hand is taken."
+          }
+        }
+      }
+    },
+    "bisSpec.vs": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "vs"
+          }
+        }
+      }
+    },
+    "bisSpec.whereToGo": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Where to go"
+          }
+        }
+      }
+    },
     "calendar.addToCalendar": {
       "extractionState": "manual",
       "localizations": {

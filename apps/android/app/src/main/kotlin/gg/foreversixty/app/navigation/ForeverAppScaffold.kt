@@ -323,7 +323,10 @@ private fun GearTab(bis: BisModel, home: HomeDependencies, account: AccountDeps?
     val picked = session?.pickedKey?.collectAsStateWithLifecycle()?.value
     val character = phase?.let { session.currentCharacter(it, picked) }
     val waiting = phase == SessionPhase.Importing || (phase is SessionPhase.SignedIn && phase.me == null)
-    val deps = remember(home) { GearDeps(home.catalog, home.cache, home.client) }
+    val context = LocalContext.current
+    val deps = remember(home, account) {
+        GearDeps(home.catalog, home.cache, home.client, signIn = { account?.let { it.session.beginSignIn(it.browser(context)) } })
+    }
     GearRoute(bis, deps, GearOwner(character?.key, character?.guild?.id, waiting), onSearch) { ProfileBar(session) }
 }
 

@@ -706,6 +706,68 @@
         <item quantity="other">%1$d guildmates have not shared their gear yet</item>
     </plurals>
     <string name="gear_sheet_dropChance">%1$s drop chance</string>
+    <string name="bisSpec_meta">Best in slot</string>
+    <string name="bisSpec_share">%1$s best in slot</string>
+    <string name="bisSpec_simmed">This set, simmed %1$s</string>
+    <string name="bisSpec_line" tools:ignore="PluralsCandidate">Level %1$d %2$s · %3$d talent points · %4$s</string>
+    <string name="bisSpec_rankingSim">View ranking sim ›</string>
+    <string name="bisSpec_openSim">Open in simulator</string>
+    <string name="bisSpec_planner">Talents in planner</string>
+    <string name="bisSpec_change">Change ▾</string>
+    <string name="bisSpec_bar">%1$s · %2$s · %3$s · %4$s</string>
+    <string name="bisSpec_barBare">%1$s · %2$s · %3$s</string>
+    <string name="bisSpec_level">Level</string>
+    <string name="bisSpec_profile">Profile</string>
+    <string name="bisSpec_profile_raid">Raid-ready</string>
+    <string name="bisSpec_profile_bare">Bare</string>
+    <string name="bisSpec_race">Race</string>
+    <string name="bisSpec_sources">Sources</string>
+    <string name="bisSpec_sources_all">All sources</string>
+    <string name="bisSpec_sources_some" tools:ignore="PluralsCandidate">Sources (%1$d)</string>
+    <string name="bisSpec_sources_kind_raid">Raids</string>
+    <string name="bisSpec_sources_kind_dungeon">Dungeons</string>
+    <string name="bisSpec_sources_kind_crafted">Crafted</string>
+    <string name="bisSpec_sources_kind_reputation">Reputation</string>
+    <string name="bisSpec_sources_kind_quest">Quests</string>
+    <string name="bisSpec_sources_kind_vendor">Vendors</string>
+    <string name="bisSpec_sources_kind_world">World drops and the auction house</string>
+    <string name="bisSpec_sources_kind_pvp">PvP</string>
+    <string name="bisSpec_sources_kind_other">Other</string>
+    <string name="bisSpec_summary" tools:ignore="PluralsCandidate">%1$d of %2$d slots have a pick at this level.</string>
+    <string name="bisSpec_signIn">Sign in</string>
+    <string name="bisSpec_signInTail">to see them against your gear.</string>
+    <string name="bisSpec_nextBand">Changes from %1$s: see %2$s ›</string>
+    <string name="bisSpec_bySlot">By slot</string>
+    <string name="bisSpec_whereToGo">Where to go</string>
+    <string name="bisSpec_twoHander">%1$s is a two-hander: the off hand stays empty.</string>
+    <string name="bisSpec_twoHanderSlot">%1$s is a two-hander; the off hand is taken.</string>
+    <string name="bisSpec_itemLevel" tools:ignore="PluralsCandidate">Level %1$d</string>
+    <string name="bisSpec_nothing">Nothing better yet</string>
+    <string name="bisSpec_same">Same</string>
+    <string name="bisSpec_nextVs">next: %1$s vs</string>
+    <string name="bisSpec_vs">vs</string>
+    <string name="bisSpec_noAlternative">No close alternative</string>
+    <plurals name="bisSpec_pieces">
+        <item quantity="one">1 piece</item>
+        <item quantity="other">%1$d pieces</item>
+    </plurals>
+    <string name="bisSpec_place_crafted">Crafted · %1$s</string>
+    <string name="bisSpec_place_quest">Quest</string>
+    <string name="bisSpec_place_world">World / BoE</string>
+    <string name="bisSpec_place_vendor">Vendor</string>
+    <string name="bisSpec_stack">What to stack</string>
+    <string name="bisSpec_stack_two">Stack %1$s, then %2$s.</string>
+    <string name="bisSpec_stack_three">Stack %1$s, then %2$s, then %3$s.</string>
+    <string name="bisSpec_stack_legend">Normalized to %1$s = 1.00. Per point of stat, with %2$s per point and the sim error.</string>
+    <string name="bisSpec_stack_perPoint">%1$s %2$s per point</string>
+    <string name="bisSpec_stack_insignificant">Not significant</string>
+    <string name="bisSpec_stack_addon">The Forever Sixty addon rates every item in your bags and tooltips with these weights.</string>
+    <string name="bisSpec_stack_addonLink">Use these weights in the addon ›</string>
+    <string name="bisSpec_guideLead">Talents, rotation and stat priority for this spec:</string>
+    <string name="bisSpec_guideLink">%1$s guide ›</string>
+    <string name="bisSpec_overheal">Overheal</string>
+    <string name="bisSpec_manaLasts">Mana lasts</string>
+    <string name="bisSpec_healingPerMana">Healing per mana</string>
     <string name="you_title">You</string>
     <string name="you_signedInWith">Signed in with Battle.net</string>
     <string name="you_plan">Plan</string>
