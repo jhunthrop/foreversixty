@@ -33,10 +33,21 @@
     "row": 5
    }
   },
-  "section-when": {
+  "section-discord": {
    "box": [
     16,
     491,
+    361,
+    111
+   ],
+   "inventory": {
+    "row": 1
+   }
+  },
+  "section-when": {
+   "box": [
+    16,
+    630,
     361,
     125
    ],
