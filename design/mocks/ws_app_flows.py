@@ -276,7 +276,7 @@ def leveling(feed_filters_css: str, base_css: str):
 def guild_home(officer: bool):
     """R10 and F1/F3: the next raid first with your answers, then (officer) what needs you, then the guild's pages."""
     def b(platform: str) -> str:
-        needs = (Section('Needs you', Rows([Row(f'5 have not answered for {RAID}', 'Healers short by 3', trail=Button('Mention', small=True), link=False),
+        needs = (Section('Needs you', Rows([Row(f'5 have not answered for {RAID}', 'Healers short by 3', trail=Button('Mention in Discord', small=True), link=False),
                                             Row('1 applicant', 'Mirelle, Holy Priest 60, applied 2 min ago')], open_=True), meta='6 open')
                  if officer else '')
         pages = Section('The guild', Rows([Row('Raids', 'Onyxia&rsquo;s Lair Wed, then Barrow Deeps Sat'), Row('Roster', '38 members, 26 at 60'),

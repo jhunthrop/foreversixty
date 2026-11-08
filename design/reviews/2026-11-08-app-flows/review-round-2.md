@@ -33,3 +33,6 @@ Raider HOLD (MUSTs 2, 5, 6); Officer HOLD (1, 2, Mention on the row); Leveler HO
 | 6 | Fixed: As Thandrel, Damage. |
 | M2 end | Fixed: Lightvow is off the healer list. |
 | SHOULDs | Fixed: Mention on the Needs you row; Sim again with Deathbringer; Their note, Invite them; switches on the title rows; Flask from the auction house; Find a guild is a button and the first-raids row carries "In 33 days" in its line. Open: drop chance on the web home's upgrade rows (the web fixture); the level-34 items to the accuracy reviewer. |
+
+## Round 3
+All six round-2 MUSTs and the Lightvow loose end are fixed, and nothing new blocks. **Raider SHIP, Officer SHIP, Leveler SHIP.** Two notes for later: one label (the Guild tab's Mention now reads Mention in Discord, as on Home); and a leveler's "what to run tonight" is 2 taps (Best in slot, Where to go) where the upgrades are not dungeon drops, so the instance line comes back wherever they are (spec F5).
