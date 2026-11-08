@@ -9,7 +9,7 @@
 // PLAYWRIGHT_FROM: another package.json whose node_modules carries @playwright/test.
 import { createRequire } from "node:module";
 import { mkdirSync, readdirSync, readFileSync, writeFileSync, existsSync } from "node:fs";
-import { routeFonts } from "./app_fonts.mjs";
+import { assertFonts, routeFonts } from "./app_fonts.mjs";
 
 const require = createRequire(process.env.PLAYWRIGHT_FROM ?? new URL("../../web/package.json", import.meta.url));
 const { chromium } = require("@playwright/test");
@@ -59,6 +59,7 @@ for (const file of files) {
   const page = await context.newPage();
   await page.goto(`file://${SRC}${file}`, { waitUntil: "networkidle" });
   await page.evaluate(() => document.fonts.ready);
+  await assertFonts(page, file);
   const regions = await measure(page);
   const json = JSON.stringify({ device: DEVICE[platform], regions }, null, 1) + "\n";
   const target = `${OUT}${file.replace(/\.html$/, ".json")}`;

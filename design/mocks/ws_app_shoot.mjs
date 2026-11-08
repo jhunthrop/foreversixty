@@ -4,7 +4,7 @@
 // Playwright is found through web/. Fonts are the repo's own (app_fonts.mjs), so captures match offline and in CI.
 import { createRequire } from "node:module";
 import { mkdirSync, readdirSync } from "node:fs";
-import { routeFonts } from "./app_fonts.mjs";
+import { assertFonts, routeFonts } from "./app_fonts.mjs";
 
 // PLAYWRIGHT_FROM: another package.json whose node_modules carries @playwright/test (a checkout without web/node_modules).
 const require = createRequire(process.env.PLAYWRIGHT_FROM ?? new URL("../../web/package.json", import.meta.url));
@@ -34,6 +34,8 @@ for (const file of names) {
   const platform = file.startsWith("android-") ? "android" : "ios";
   const pg = await contexts[platform].newPage();
   await pg.goto(`file://${SRC}${file}`, { waitUntil: "networkidle" });
+  await pg.evaluate(() => document.fonts.ready);
+  await assertFonts(pg, file);
   await pg.evaluate(() => Promise.all([...document.images].map((i) => i.decode().catch(() => null))));
   await pg.waitForTimeout(150);
   await pg.screenshot({ path: `${OUT}${file.replace(/\.html$/, ".png")}`, fullPage: true });

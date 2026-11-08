@@ -1,0 +1,40 @@
+# Renders the native app mocks on the Linux runner the web parity job checks them on, and uploads
+# what to commit: the region files (design/mocks/app/regions) and the review captures
+# (design/reviews/2026-11-08-app-flows). Run it after a mock or mock-tooling change, then:
+#   gh run download <run> --name app-mocks --dir design
+# A push to a mocks/** branch runs it too (a new workflow cannot be dispatched before it is on
+# main). A Mac's Chromium lays some mocks out differently, so these are never rendered locally.
+name: app-mocks
+on:
+  workflow_dispatch:
+  push:
+    branches: ['mocks/**']
+permissions:
+  contents: read
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: web/.node-version
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - run: npm ci
+        working-directory: web
+      - run: npx playwright install --with-deps chromium
+        working-directory: web
+      - name: the mocks, their region files and the captures
+        run: |
+          python3 design/mocks/ws_app.py
+          node design/mocks/app_regions.mjs
+          SHOOT_OUT=design/reviews/2026-11-08-app-flows node design/mocks/ws_app_shoot.mjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: app-mocks
+          path: |
+            design/mocks/app/regions/
+            design/reviews/2026-11-08-app-flows/*.png
+          retention-days: 7
