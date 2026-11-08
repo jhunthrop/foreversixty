@@ -74,7 +74,7 @@ struct GuidesLogicTests {
         #expect(GuideCopy.ranks(fury) == "5 ranks")
         let rows = GuideBuildRows.rows(guide.talents)
         #expect(rows.map(\.title) == ["Raid build", "Leveling build"])
-        #expect(rows.map(\.totals) == ["31 / 10 / 10", "30 / 3 / 18"])
+        #expect(rows.map(\.totals) == ["31 / 10 / 10", "31 / 5 / 15"])
     }
 
     @Test func rotation_numbersEachListAndPrintsRanks() throws {
