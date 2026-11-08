@@ -11,6 +11,7 @@ import gg.foreversixty.app.model.ApiJson
 import gg.foreversixty.app.model.AppConfig
 import gg.foreversixty.app.model.AppExchangeRequest
 import gg.foreversixty.app.model.AppSession
+import gg.foreversixty.app.model.ApplicationInput
 import gg.foreversixty.app.model.BisFile
 import gg.foreversixty.app.model.Build
 import gg.foreversixty.app.model.BuildInput
@@ -31,7 +32,9 @@ import gg.foreversixty.app.model.FeedPage
 import gg.foreversixty.app.model.FightMeters
 import gg.foreversixty.app.model.GuideFile
 import gg.foreversixty.app.model.GuideIndex
+import gg.foreversixty.app.model.GuildApplication
 import gg.foreversixty.app.model.GuildApplicationDecision
+import gg.foreversixty.app.model.GuildApplications
 import gg.foreversixty.app.model.GuildHome
 import gg.foreversixty.app.model.GuildLoot
 import gg.foreversixty.app.model.GuildOfficerApplications
@@ -362,6 +365,18 @@ object ApiEndpoints {
     fun listGuildApplications(id: Long): Endpoint<GuildOfficerApplications> =
         Endpoint(HttpMethod.Get, "/v1/guilds/$id/applications", GuildOfficerApplications.serializer())
 
+    /** POST /v1/guilds/{id}/applications: Apply to the guild with one of your characters */
+    fun applyToGuild(id: Long, body: ApplicationInput): Endpoint<GuildApplication> =
+        Endpoint(HttpMethod.Post, "/v1/guilds/$id/applications", GuildApplication.serializer(), body = ApiJson.encodeToString(ApplicationInput.serializer(), body))
+
+    /** GET /v1/guilds/{id}/applications/mine: Your own applications to the guild, newest first */
+    fun myGuildApplications(id: Long): Endpoint<GuildApplications> =
+        Endpoint(HttpMethod.Get, "/v1/guilds/$id/applications/mine", GuildApplications.serializer())
+
+    /** POST /v1/guilds/{id}/applications/{app}/withdraw: Withdraw your own pending application */
+    fun withdrawGuildApplication(id: Long, app: Long): Endpoint<GuildApplication> =
+        Endpoint(HttpMethod.Post, "/v1/guilds/$id/applications/$app/withdraw", GuildApplication.serializer())
+
     /** POST /v1/guilds/{id}/applications/{app}/accept: An officer accepts an application */
     fun acceptGuildApplication(id: Long, app: Long): Endpoint<GuildApplicationDecision> =
         Endpoint(HttpMethod.Post, "/v1/guilds/$id/applications/$app/accept", GuildApplicationDecision.serializer())
@@ -506,6 +521,8 @@ object ContractRoutes {
         FixtureRoute(HttpMethod.Post, "/v1/me/calendar-feed/reset", "calendar.feed", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Get, "/v1/app/config", "app.config", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Get, "/v1/guilds/{id}/applications", "guild.applications", HttpStatusCode.fromValue(200)),
+        FixtureRoute(HttpMethod.Post, "/v1/guilds/{id}/applications", "guild.application", HttpStatusCode.fromValue(201)),
+        FixtureRoute(HttpMethod.Get, "/v1/guilds/{id}/applications/mine", "guild.applications.mine", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Post, "/v1/guilds/{id}/applications/{app}/accept", "guild.application.accept", HttpStatusCode.fromValue(200)),
     )
 

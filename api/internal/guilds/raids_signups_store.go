@@ -47,7 +47,14 @@ type Signup struct {
 	// KeepNote is a write-time flag, never stored: an existing row keeps its note rather
 	// than taking Note (a first answer still starts from Note).
 	KeepNote bool
+	// AnsweredAt is a write-time flag, never stored: when set, the write happens only when the
+	// character's stored row is older (an addon answer from the game, made while offline, never
+	// overwrites a later answer from the app, the site or Discord); ErrSignupStale otherwise.
+	AnsweredAt *time.Time
 }
+
+// ErrSignupStale is a write with an AnsweredAt no later than the stored row's last change.
+var ErrSignupStale = errors.New("guilds: a later answer is already stored")
 
 func isAttending(state string) bool { return state == SignupIn || state == SignupLate }
 
@@ -80,6 +87,9 @@ func (s *Store) upsertSignup(ctx context.Context, sg Signup, skipSame bool) (*st
 		return nil, false, err
 	}
 	if err := checkRaidOpen(ctx, tx, sg); err != nil {
+		return nil, false, err
+	}
+	if err := checkFresher(ctx, tx, sg); err != nil {
 		return nil, false, err
 	}
 	if skipSame {
@@ -119,6 +129,27 @@ func signupHolds(ctx context.Context, tx pgx.Tx, sg Signup) (bool, error) {
 	}
 	return state == sg.State && role == sg.Role && sameMinutes(late, sg.LateMinutes) &&
 		(sg.KeepNote || note == sg.Note), nil
+}
+
+// checkFresher refuses an answer made no later than the stored row's last change (sg.AnsweredAt
+// set); the row is already locked by lockOwnSignups.
+func checkFresher(ctx context.Context, tx pgx.Tx, sg Signup) error {
+	if sg.AnsweredAt == nil {
+		return nil
+	}
+	var updated time.Time
+	err := tx.QueryRow(ctx, `select updated_at from guild_raid_signups where raid_id = $1 and character_key = $2`,
+		sg.RaidID, sg.CharacterKey).Scan(&updated)
+	if errors.Is(err, pgx.ErrNoRows) {
+		return nil
+	}
+	if err != nil {
+		return fmt.Errorf("guilds: upsert signup: read updated_at: %w", err)
+	}
+	if !sg.AnsweredAt.After(updated) {
+		return ErrSignupStale
+	}
+	return nil
 }
 
 // sameMinutes reports whether two optional minute counts are equal.

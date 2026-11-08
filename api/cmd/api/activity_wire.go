@@ -55,10 +55,12 @@ func wireActivity(ctx context.Context, w activityWiring, deps *server.Deps) {
 	if deps.Ingest != nil {
 		deps.Ingest.Completed = reports.CompletedAll{deps.Ingest.Completed, writer}
 	}
+	home := &activity.Home{Store: store, Sections: w.cfg.App.HomeSections}
 	if deps.Guilds != nil {
 		deps.Guilds.Activity = &activity.GuildRaidWriter{Store: store, Log: w.log}
+		// The raid badge's sims_rank reads the same ladder as Home's Guild sims block.
+		deps.Guilds.SimsRanks = home
 	}
-	home := &activity.Home{Store: store, Sections: w.cfg.App.HomeSections}
 	if deps.Sims != nil && deps.Sims.Jobs != nil {
 		home.Imports = deps.Sims
 		if deps.Addon != nil {

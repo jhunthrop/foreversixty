@@ -659,6 +659,8 @@ func serve(log *slog.Logger) error {
 	deps.Rankings.Scores = deps.Rating
 	deps.Rankings.ScoreGear = deps.Rating
 	guildService.Scores = applicantScores{deps.Rating}
+	// The addon's raid answer loop: raid_signup in the inbox, raid_answer from the outbox.
+	deps.Addon.RaidAnswers = guildService
 	deps.Coach = mountCoach(ctx, coachWiring{cfg: cfg, pool: pool, deps: &deps, rating: ratingStore, reports: reportStore, auth: authStore, entitle: entStore, sims: simStore, summaries: bucketOrNil(client), log: log})
 
 	layouts := talentLayouts(cfg.TreeDataDir, treeData, log)

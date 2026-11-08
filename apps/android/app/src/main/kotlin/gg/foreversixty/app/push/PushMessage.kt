@@ -1,6 +1,7 @@
 package gg.foreversixty.app.push
 
 import gg.foreversixty.app.navigation.DeepLink
+import gg.foreversixty.app.navigation.RAID_VIEW_UNANSWERED
 
 /**
  * One FCM message as the app reads it (app-v1.md "Push payloads"). FCM data values are strings.
@@ -67,7 +68,7 @@ object PushLanding {
     fun of(message: PushMessage): DeepLink? {
         message.raid?.let { (guild, raid) ->
             // An officer's raid push opens the page filtered to Not answered (spec 2026-11-08 F3).
-            val view = DeepLink.Raid.UNANSWERED.takeIf { message.kind in UNANSWERED_KINDS }
+            val view = RAID_VIEW_UNANSWERED.takeIf { message.kind in UNANSWERED_KINDS }
             return DeepLink.Raid(guild, raid, view = view)
         }
         return message.link?.let(DeepLink::parse)
