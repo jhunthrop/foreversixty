@@ -128,7 +128,7 @@ struct HomeFlowPresenter {
                 title: Copy.homeRaidLineTitle(zone: raid.zoneName, when: time),
                 sub: selected == nil ? Copy.homeRaidLineOpen(counts: counts, who: who) : answer
             ),
-            icon: RaidIcons.zone(raid.zone),
+            icon: raid.zoneIcon ?? RaidIcons.generic,
             answer: answer,
             selected: selected,
             lateOpen: inputs.lateOpen && selected == .late,
@@ -221,21 +221,33 @@ struct HomeFlowPresenter {
         let loot = night.loot.map { item in
             LastNightLoot(
                 look: HomeItemLook(id: item.itemId, name: item.name, quality: item.quality, icon: item.icon, itemLevel: nil),
-                line: Copy.homeLastNightLoot(boss: item.boss, slot: item.slot.lowercased())
+                line: lootLine(item)
             )
         }
-        let report: HomeLine? = night.bests.first.map { best in
-            let rank = ReportsCopy.ordinal(best.percentile)
-            var parts = [night.newBests > 0
-                ? Copy.homeLastNightPercentile(rank: rank, boss: best.boss)
-                : Copy.nightPercentile(ordinal: rank)]
+        // The report row needs the report; its line names the best percentile when the night has one.
+        let report: HomeLine? = night.reportId.map { _ in
+            var parts: [String] = []
+            if let best = night.bests.first, let percentile = best.percentile {
+                let rank = ReportsCopy.ordinal(percentile)
+                parts.append((night.newBests ?? 0) > 0
+                    ? Copy.homeLastNightPercentile(rank: rank, boss: best.boss)
+                    : Copy.nightPercentile(ordinal: rank))
+            }
             if let notes = night.coachNotes, !notes.isEmpty { parts.append(Copy.homeLastNightCoach(n: notes.count)) }
             return HomeLine(title: Copy.homeLastNightReport(zone: night.zoneName), sub: parts.joined(separator: " · "))
         }
         let simAgain = night.loot.first.map {
             HomeLine(title: Copy.homeLastNightSimAgain(item: $0.name), sub: Copy.homeLastNightSimAgainLine)
         }
-        return LastNightContent(loot: loot, report: report, reportIcon: RaidIcons.zoneName(night.zoneName), reportID: night.reportId, simAgain: simAgain)
+        return LastNightContent(loot: loot, report: report, reportIcon: night.zoneIcon ?? RaidIcons.generic, reportID: night.reportId, simAgain: simAgain)
+    }
+
+    /// `You got it from Onyxia · main hand, +12.6 DPS over your worn`; the slot alone without a gain.
+    func lootLine(_ item: RaidNightLoot) -> String {
+        let slot = item.slot.lowercased()
+        guard let gain = item.gain, gain > 0 else { return Copy.homeLastNightLoot(boss: item.boss, slot: slot) }
+        let figure = Copy.homeUpgradesGain(figure: ItemNumbers.signedTenths(gain), unit: item.unit ?? "")
+        return Copy.homeLastNightLootGain(boss: item.boss, slot: slot, gain: figure)
     }
 
     // MARK: New for you, Find a guild

@@ -193,9 +193,9 @@ struct LastNightSection: View {
                     .buttonStyle(RowPressStyle())
                     .accessibilityHint(Copy.itemsA11yHint)
                 }
-                if let report = content.report {
-                    Button { actions.openReport(content.reportID) } label: {
-                        FSRow(title: report.title, sub: report.sub, inset: 0) {
+                if let report = content.report, let reportID = content.reportID {
+                    Button { actions.openReport(reportID) } label: {
+                        FSRow(title: report.title, sub: report.sub.isEmpty ? nil : report.sub, inset: 0) {
                             ItemIconView(icon: content.reportIcon, quality: nil, build: build, size: FSSize.icon40).parityItem(.image)
                         }
                     }

@@ -86,7 +86,7 @@ struct LastNightContent: Equatable {
     let loot: [LastNightLoot]
     let report: HomeLine?
     let reportIcon: String?
-    let reportID: String
+    let reportID: String?
     let simAgain: HomeLine?
 }
 

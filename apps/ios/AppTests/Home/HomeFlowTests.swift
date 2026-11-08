@@ -210,6 +210,15 @@ struct HomeFlowLogicTests {
         #expect(presenter.ready(ReadyCheck(exportedAt: nil, items: [item("flask", "ok", "Flask")])) == nil)
     }
 
+    @Test("Last night's loot line carries the gain over the worn piece when the night has one")
+    func lootLine() throws {
+        let night = try RaidFixture.load(RaidNightSummary.self, "me.raid-night")
+        let loot = try #require(night.loot.first)
+        #expect(presenter.lootLine(loot).hasPrefix("You got it from \(loot.boss) · \(loot.slot.lowercased())"))
+        let content = presenter.lastNight(night)
+        #expect(content.reportIcon == (night.zoneIcon ?? RaidIcons.generic))
+    }
+
     @Test("rows read measured gains largest first, then not modelled, then empty")
     func presentationOrder() throws {
         let rows = HomePresenter.presentationOrder(try HomeFixtures.home().upgrades)
