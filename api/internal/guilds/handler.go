@@ -160,6 +160,7 @@ func Mount(mux *http.ServeMux, s *Service, trustedProxyHops int) {
 	mux.HandleFunc("GET /v1/guilds/{id}/attendance/recent", auth.RequireSession(s.recentAttendance))
 	mux.HandleFunc("GET /v1/guilds/{id}/officer/actions", auth.RequireSession(s.officerActions))
 	mux.HandleFunc("GET /v1/guilds/{id}/raid-badge", auth.RequireSession(s.raidBadge))
+	mux.HandleFunc("GET /v1/guilds/{id}/items/{item}/needs", auth.RequireSession(s.itemNeeds))
 	// CSV exports are officer reads by rank in any plan state (history is never locked).
 	mux.HandleFunc("GET /v1/guilds/{id}/export/attendance.csv", auth.RequireSession(s.exportAttendance))
 	mux.HandleFunc("GET /v1/guilds/{id}/export/loot.csv", auth.RequireSession(s.exportLoot))

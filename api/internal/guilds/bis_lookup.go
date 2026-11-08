@@ -60,6 +60,11 @@ const bisBandLevel = raidLevel
 // the same "a data gap is an honest null, not a 500" rule fs1.Decode's own package comment
 // states.
 func (s *Store) loadBandFor(classSlug, specName, faction string) (bis.Band, bool) {
+	return s.loadBandAt(classSlug, specName, faction, bisBandLevel)
+}
+
+// loadBandAt is loadBandFor at level band (20, 30, ... 60), under that band's preset.
+func (s *Store) loadBandAt(classSlug, specName, faction string, level int) (bis.Band, bool) {
 	if specName == "" || faction == "" {
 		return bis.Band{}, false
 	}
@@ -67,7 +72,7 @@ func (s *Store) loadBandFor(classSlug, specName, faction string) (bis.Band, bool
 	if !ok {
 		return bis.Band{}, false
 	}
-	band, ok, err := bis.LoadPresetBand(s.DataDir, s.BisBuild(), fileSlug, bisBandLevel, faction, upgrades.PresetFor(bisBandLevel))
+	band, ok, err := bis.LoadPresetBand(s.DataDir, s.BisBuild(), fileSlug, level, faction, upgrades.PresetFor(level))
 	if err != nil || !ok {
 		return bis.Band{}, false
 	}

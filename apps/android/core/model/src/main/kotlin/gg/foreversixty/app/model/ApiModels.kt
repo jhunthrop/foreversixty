@@ -1554,6 +1554,39 @@ data class Item(
     @SerialName("weapon_slot") val weaponSlot: String? = null,
 )
 
+@Serializable
+data class ItemHolder(
+    @SerialName("character_key") val characterKey: String,
+    @SerialName("name") val name: String,
+    @SerialName("class") val className: String,
+    @SerialName("spec") val spec: String,
+)
+
+/** A character whose band names the item; pick is false for a listed alternative. */
+@Serializable
+data class ItemNeed(
+    @SerialName("character_key") val characterKey: String,
+    @SerialName("name") val name: String,
+    @SerialName("class") val className: String,
+    @SerialName("spec") val spec: String,
+    @SerialName("level") val level: Int,
+    /** The level band whose list names it (20 */
+    @SerialName("band") val band: Int,
+    /** The band's slot that names it. */
+    @SerialName("slot") val slot: String,
+    @SerialName("pick") val pick: Boolean,
+)
+
+/** GET /v1/guilds/{id}/items/{item}/needs. */
+@Serializable
+data class ItemNeeds(
+    @SerialName("item_id") val itemId: Int,
+    @SerialName("needs") val needs: List<ItemNeed> = emptyList(),
+    @SerialName("has") val has: List<ItemHolder> = emptyList(),
+    /** Verified characters with no gear on file. */
+    @SerialName("unknown_gear") val unknownGear: Int,
+)
+
 /** One item set of /data/{build}/sets.json. */
 @Serializable
 data class ItemSet(

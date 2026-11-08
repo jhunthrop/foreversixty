@@ -3328,6 +3328,36 @@ components:
         officer: { type: boolean }
         unanswered: { type: integer, description: "Officer: the raid's unanswered accounts." }
         applicants: { type: integer, description: "Officer: the pending applications." }
+    ItemNeeds:
+      type: object
+      description: GET /v1/guilds/{id}/items/{item}/needs.
+      required: [item_id, needs, has, unknown_gear]
+      properties:
+        item_id: { type: integer }
+        needs: { type: array, items: { $ref: '#/components/schemas/ItemNeed' } }
+        has: { type: array, items: { $ref: '#/components/schemas/ItemHolder' } }
+        unknown_gear: { type: integer, description: Verified characters with no gear on file. }
+    ItemHolder:
+      type: object
+      required: [character_key, name, class, spec]
+      properties:
+        character_key: { type: string }
+        name: { type: string }
+        class: { type: string, x-name: className }
+        spec: { type: string }
+    ItemNeed:
+      type: object
+      description: A character whose band names the item; pick is false for a listed alternative.
+      required: [character_key, name, class, spec, level, band, slot, pick]
+      properties:
+        character_key: { type: string }
+        name: { type: string }
+        class: { type: string, x-name: className }
+        spec: { type: string }
+        level: { type: integer }
+        band: { type: integer, description: The level band whose list names it (20, 30, 40, 50, 60). }
+        slot: { type: string, description: The band's slot that names it. }
+        pick: { type: boolean }
     SignupConfirmation:
       type: object
       description: >-
@@ -8432,6 +8462,40 @@ paths:
           content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
         '404':
           description: "Not a verified member of the guild"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  /v1/guilds/{id}/items/{item}/needs:
+    get:
+      summary: Who in the guild needs an item, and who has it (verified members)
+      description: >-
+        The item sheet's guild line (spec 2026-11-08-app-flows F5). needs is every verified
+        character whose spec's BiS band at its own level band (the raid preset at 60, as the
+        site's BiS page) names the item as a slot's pick or a listed alternative and that does
+        not wear it, picks first, then by name; has is every verified character wearing it.
+        Gear is known only at gear consent: a character with none on file is in neither list,
+        only counted in unknown_gear. Not a verified member, or an item id under 1: 404.
+      operationId: getGuildItemNeeds
+      tags: [app]
+      parameters:
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
+        - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
+        - { name: item, in: path, required: true, schema: { type: integer } }
+      responses:
+        '426': { $ref: '#/components/responses/UpdateRequired' }
+        '200':
+          description: "Who needs it and who has it"
+          x-fixtures: [guild.item-needs]
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/ItemNeeds' } } }
+        '401':
+          description: "No session or device token"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '404':
+          description: "Not a verified member of the guild, or no such item"
           content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
   /v1/guilds/{id}/readiness:
     get:
