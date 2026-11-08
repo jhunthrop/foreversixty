@@ -2371,7 +2371,7 @@ enum Copy {
         format("gear.where.boss", items, boss)
     }
 
-    /// {items} · ask a {crafter}
+    /// {items} · ask {crafter}
     static func gearWhereAsk(items: String, crafter: String) -> String {
         format("gear.where.ask", items, crafter)
     }
@@ -2381,22 +2381,22 @@ enum Copy {
         format("gear.where.rep", items, standing)
     }
 
-    /// blacksmith
+    /// a blacksmith
     static var gearCrafterBlacksmithing: String { text("gear.crafter.blacksmithing") }
 
-    /// leatherworker
+    /// a leatherworker
     static var gearCrafterLeatherworking: String { text("gear.crafter.leatherworking") }
 
-    /// tailor
+    /// a tailor
     static var gearCrafterTailoring: String { text("gear.crafter.tailoring") }
 
-    /// engineer
+    /// an engineer
     static var gearCrafterEngineering: String { text("gear.crafter.engineering") }
 
-    /// alchemist
+    /// an alchemist
     static var gearCrafterAlchemy: String { text("gear.crafter.alchemy") }
 
-    /// enchanter
+    /// an enchanter
     static var gearCrafterEnchanting: String { text("gear.crafter.enchanting") }
 
     /// Best in slot for your class
@@ -6157,9 +6157,6 @@ enum Copy {
         format("gear.bandRaid", band)
     }
 
-    /// Where to go tonight
-    static var gearTonight: String { text("gear.tonight") }
-
     /// {name}, vendor
     static func gearSourceVendor(name: String) -> String {
         format("gear.sourceVendor", name)
@@ -6170,44 +6167,12 @@ enum Copy {
         format("gear.sourceChance", source, chance)
     }
 
-    /// {items} · {boss}
-    static func gearWhereBossOnly(items: String, boss: String) -> String {
-        format("gear.where.bossOnly", items, boss)
-    }
-
-    /// {items} · ask {crafter}
-    static func gearWhereCrafter(items: String, crafter: String) -> String {
-        format("gear.where.crafter", items, crafter)
-    }
-
-    /// {items}, needs {standing}
-    static func gearWhereStanding(items: String, standing: String) -> String {
-        format("gear.where.standing", items, standing)
-    }
-
     /// a crafter
     static var gearCrafterOther: String { text("gear.crafter.other") }
-
-    /// over your worn
-    static var itemsSheetOverWorn: String { text("items.sheet.overWorn") }
-
-    /// Where to get it
-    static var itemsSheetWhere: String { text("items.sheet.where") }
-
-    /// Runner-up
-    static var itemsSheetRunnerUp: String { text("items.sheet.runnerUp") }
-
-    /// Who in the guild needs it
-    static var itemsSheetGuild: String { text("items.sheet.guild") }
 
     /// {boss}, {place}
     static func itemsSheetBossPlace(boss: String, place: String) -> String {
         format("items.sheet.bossPlace", boss, place)
-    }
-
-    /// {chance} drop chance
-    static func itemsSheetDropChance(chance: String) -> String {
-        format("items.sheet.dropChance", chance)
     }
 
     /// raid
@@ -6229,11 +6194,6 @@ enum Copy {
     /// {spec} · needs it, a runner-up on the list
     static func itemsSheetNeedsAlt(spec: String) -> String {
         format("items.sheet.needsAlt", spec)
-    }
-
-    /// {spec} · has it
-    static func itemsSheetHas(spec: String) -> String {
-        format("items.sheet.has", spec)
     }
 
     /// Nobody in the guild needs it or has it.

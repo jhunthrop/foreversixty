@@ -119,14 +119,14 @@ struct GearPresenter {
         switch group.place.kind {
         case .instance:
             guard group.entries.count == 1, let top = group.entries.first, let boss = top.place.boss else { return names }
-            guard let chance = top.chance else { return Copy.gearWhereBossOnly(items: names, boss: boss) }
-            return Copy.gearWhereBoss(items: names, boss: boss, chance: ItemNumbers.percent(chance))
+            guard let chance = top.chance else { return Copy.gearWhereBoss(items: names, boss: boss) }
+            return Copy.gearWhereDrop(items: names, boss: boss, chance: ItemNumbers.percent(chance))
         case .profession:
-            return Copy.gearWhereCrafter(items: names, crafter: crafter(group.place.profession))
+            return Copy.gearWhereAsk(items: names, crafter: crafter(group.place.profession))
         case .reputation:
             guard let standing = group.standing else { return names }
             let word = ItemVocabulary.standingName(standing)?.lowercased() ?? standing
-            return Copy.gearWhereStanding(items: names, standing: word)
+            return Copy.gearWhereRep(items: names, standing: word)
         }
     }
 

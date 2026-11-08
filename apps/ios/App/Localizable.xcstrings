@@ -2426,7 +2426,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "alchemist"
+            "value": "an alchemist"
           }
         }
       }
@@ -2437,7 +2437,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "blacksmith"
+            "value": "a blacksmith"
           }
         }
       }
@@ -2448,7 +2448,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "enchanter"
+            "value": "an enchanter"
           }
         }
       }
@@ -2459,7 +2459,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "engineer"
+            "value": "an engineer"
           }
         }
       }
@@ -2470,7 +2470,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "leatherworker"
+            "value": "a leatherworker"
           }
         }
       }
@@ -2492,7 +2492,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "tailor"
+            "value": "a tailor"
           }
         }
       }
@@ -2750,17 +2750,6 @@
         }
       }
     },
-    "gear.tonight": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Where to go tonight"
-          }
-        }
-      }
-    },
     "gear.where.ask": {
       "comment": "Arguments: 1 items (string), 2 crafter (string)",
       "extractionState": "manual",
@@ -2768,7 +2757,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@ · ask a %2$@"
+            "value": "%1$@ · ask %2$@"
           }
         }
       }
@@ -2781,30 +2770,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "%1$@ · %2$@"
-          }
-        }
-      }
-    },
-    "gear.where.bossOnly": {
-      "comment": "Arguments: 1 items (string), 2 boss (string)",
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$@ · %2$@"
-          }
-        }
-      }
-    },
-    "gear.where.crafter": {
-      "comment": "Arguments: 1 items (string), 2 crafter (string)",
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$@ · ask %2$@"
           }
         }
       }
@@ -2822,18 +2787,6 @@
       }
     },
     "gear.where.rep": {
-      "comment": "Arguments: 1 items (string), 2 standing (string)",
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$@, needs %2$@"
-          }
-        }
-      }
-    },
-    "gear.where.standing": {
       "comment": "Arguments: 1 items (string), 2 standing (string)",
       "extractionState": "manual",
       "localizations": {
@@ -6434,18 +6387,6 @@
         }
       }
     },
-    "items.sheet.dropChance": {
-      "comment": "Arguments: 1 chance (string)",
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$@ drop chance"
-          }
-        }
-      }
-    },
     "items.sheet.dungeon": {
       "extractionState": "manual",
       "localizations": {
@@ -6457,17 +6398,6 @@
         }
       }
     },
-    "items.sheet.guild": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Who in the guild needs it"
-          }
-        }
-      }
-    },
     "items.sheet.guildFailed": {
       "extractionState": "manual",
       "localizations": {
@@ -6475,18 +6405,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Who needs it did not load."
-          }
-        }
-      }
-    },
-    "items.sheet.has": {
-      "comment": "Arguments: 1 spec (string)",
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$@ · has it"
           }
         }
       }
@@ -6538,17 +6456,6 @@
         }
       }
     },
-    "items.sheet.overWorn": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "over your worn"
-          }
-        }
-      }
-    },
     "items.sheet.raid": {
       "extractionState": "manual",
       "localizations": {
@@ -6556,17 +6463,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "raid"
-          }
-        }
-      }
-    },
-    "items.sheet.runnerUp": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Runner-up"
           }
         }
       }
@@ -6591,17 +6487,6 @@
                 }
               }
             }
-          }
-        }
-      }
-    },
-    "items.sheet.where": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Where to get it"
           }
         }
       }

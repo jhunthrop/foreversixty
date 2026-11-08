@@ -22,7 +22,7 @@ struct GearListView: View {
         GearPage {
             GearSummaryRow(line: content.summary, change: actions.openPicker)
             if !content.tonight.isEmpty {
-                FSSection(Copy.gearTonight) {
+                FSSection(Copy.gearWhereTonight) {
                     VStack(alignment: .leading, spacing: 0) {
                         ForEach(content.tonight) { place in
                             Button { actions.openItem(place.item) } label: { GearPlaceRowView(place: place, build: build) }

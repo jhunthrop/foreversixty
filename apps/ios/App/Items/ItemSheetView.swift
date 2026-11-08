@@ -78,12 +78,12 @@ struct ItemSheetView: View {
                 ItemLineView(
                     name: content.look.name ?? Copy.itemsNotInData, quality: content.look.quality, icon: content.look.icon,
                     source: content.slotLabel, gain: content.gain.map { ($0.figure, $0.unit) },
-                    caption: content.gain == nil ? nil : Copy.itemsSheetOverWorn, build: build
+                    caption: content.gain == nil ? nil : Copy.gearSheetOverWorn, build: build
                 )
                 .accessibilityAddTraits(.isHeader)
                 lines
-                if let source = content.source { section(Copy.itemsSheetWhere, [source]) }
-                if let runnerUp = content.runnerUp { section(Copy.itemsSheetRunnerUp, [runnerUp]) }
+                if let source = content.source { section(Copy.gearSheetWhere, [source]) }
+                if let runnerUp = content.runnerUp { section(Copy.gearSheetRunnerUp, [runnerUp]) }
                 guild
                 if let moreAbout {
                     SectionLink(title: Copy.itemPageMoreAbout, action: moreAbout).padding(.top, FSSpace.space4)
@@ -120,16 +120,16 @@ struct ItemSheetView: View {
         case .none:
             EmptyView()
         case .loading:
-            FSSection(Copy.itemsSheetGuild) { FSSkeleton(height: FSSize.row).padding(.top, FSSpace.space2) }
+            FSSection(Copy.gearSheetNeeds) { FSSkeleton(height: FSSize.row).padding(.top, FSSpace.space2) }
         case let .loaded(rows, note):
-            FSSection(Copy.itemsSheetGuild) {
+            FSSection(Copy.gearSheetNeeds) {
                 VStack(alignment: .leading, spacing: 0) {
                     ForEach(rows) { ItemSheetRowView(row: $0, build: build) }
                     if let note { SmallText(note).padding(.top, FSSpace.space2) }
                 }
             }
         case .failed:
-            FSSection(Copy.itemsSheetGuild) { SmallText(Copy.itemsSheetGuildFailed).padding(.top, FSSpace.space2) }
+            FSSection(Copy.gearSheetNeeds) { SmallText(Copy.itemsSheetGuildFailed).padding(.top, FSSpace.space2) }
         }
     }
 

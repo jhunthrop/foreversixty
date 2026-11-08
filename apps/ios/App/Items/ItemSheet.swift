@@ -137,7 +137,7 @@ enum ItemSheetBuilder {
         case .instance:
             let title = place.boss.map { Copy.itemsSheetBossPlace(boss: $0, place: place.name) } ?? place.name
             let raid = place.sourceKind == ItemPlaces.raidKind
-            let parts = [place.chance.map { Copy.itemsSheetDropChance(chance: ItemNumbers.percent($0)) },
+            let parts = [place.chance.map { Copy.gearSheetDropChance(chance: ItemNumbers.percent($0)) },
                          raid ? Copy.itemsSheetRaid : Copy.itemsSheetDungeon]
             return ItemSheetRow(id: "source", title: title, sub: parts.compactMap(\.self).joined(separator: separator), lead: lead)
         case .profession:
@@ -176,7 +176,7 @@ enum ItemSheetBuilder {
         let has = answer.has.map { holder in
             ItemSheetRow(
                 id: "has-\(holder.characterKey)", title: holder.name, titleClass: holder.className,
-                sub: Copy.itemsSheetHas(spec: specName(holder.spec, holder.className)),
+                sub: Copy.gearSheetHas(spec: specName(holder.spec, holder.className)),
                 lead: .crest(className: holder.className.lowercased())
             )
         }
