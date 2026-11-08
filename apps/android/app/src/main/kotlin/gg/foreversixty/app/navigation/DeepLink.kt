@@ -24,11 +24,18 @@ sealed interface DeepLink {
         override fun url(): String = link("/app/character/${enc(region)}/${enc(ruleset)}/${enc(name)}")
     }
 
-    /** Raids tab, the raid page. spec=ask opens the spec sheet with In pending; state=in presses In on open. /app/raid/{guild}/{raid} */
-    data class Raid(val guild: Long, val raid: Long, val spec: String? = null, val state: String? = null) : DeepLink {
+    /**
+     * Raids tab, the raid page. spec=ask opens the spec sheet with In pending; state=in presses In on open;
+     * view=unanswered opens it filtered to Not answered (spec 2026-11-08 F3). /app/raid/{guild}/{raid}
+     */
+    data class Raid(val guild: Long, val raid: Long, val spec: String? = null, val state: String? = null, val view: String? = null) : DeepLink {
         override val screen: String get() = "raid"
 
-        override fun url(): String = link("/app/raid/$guild/$raid", "spec" to spec, "state" to state)
+        override fun url(): String = link("/app/raid/$guild/$raid", "spec" to spec, "state" to state, "view" to view)
+
+        companion object {
+            const val UNANSWERED = "unanswered"
+        }
     }
 
     /** Raids tab, the raid page, Your raid night. /app/raid/{guild}/{raid}/night */
@@ -241,7 +248,7 @@ sealed interface DeepLink {
             if (s.size != 4 || s[0] != "app" || s[1] != "raid") return null
             val guild = s[2].toLongOrNull() ?: return null
             val raid = s[3].toLongOrNull() ?: return null
-            return Raid(guild, raid, allowed(q["spec"], "ask"), allowed(q["state"], "in", "late", "bench", "out"))
+            return Raid(guild, raid, allowed(q["spec"], "ask"), allowed(q["state"], "in", "late", "bench", "out"), allowed(q["view"], Raid.UNANSWERED))
         }
 
         private fun matchRaidNight(s: List<String>): DeepLink? {

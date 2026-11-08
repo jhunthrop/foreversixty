@@ -2374,6 +2374,18 @@
         }
       }
     },
+    "flows.backTo": {
+      "comment": "Arguments: 1 screen (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Back to %1$@"
+          }
+        }
+      }
+    },
     "gear.bis": {
       "extractionState": "manual",
       "localizations": {
@@ -10853,6 +10865,18 @@
         }
       }
     },
+    "raid.list.and": {
+      "comment": "Arguments: 1 first (string), 2 last (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ and %2$@"
+          }
+        }
+      }
+    },
     "raid.locked": {
       "extractionState": "manual",
       "localizations": {
@@ -10905,6 +10929,271 @@
           "stringUnit": {
             "state": "translated",
             "value": "%1$@ moved to Bench."
+          }
+        }
+      }
+    },
+    "raid.na.all": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "All"
+          }
+        }
+      }
+    },
+    "raid.na.bench": {
+      "comment": "Arguments: 1 role (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ on the bench"
+          }
+        }
+      }
+    },
+    "raid.na.discordDM": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Discord DM"
+          }
+        }
+      }
+    },
+    "raid.na.empty": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Everyone has answered."
+          }
+        }
+      }
+    },
+    "raid.na.fills": {
+      "comment": "Arguments: 1 names (string), 2 role (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "If %1$@ are In, %2$@ are full."
+          }
+        }
+      }
+    },
+    "raid.na.filter": {
+      "comment": "Arguments: 1 label (string), 2 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ %2$lld"
+          }
+        }
+      }
+    },
+    "raid.na.lastWeek": {
+      "comment": "Arguments: 1 state (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "was %1$@ last week"
+          }
+        }
+      }
+    },
+    "raid.na.marked": {
+      "comment": "Arguments: 1 state (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Marked %1$@"
+          }
+        }
+      }
+    },
+    "raid.na.markIn": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mark In"
+          }
+        }
+      }
+    },
+    "raid.na.mentionAll": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mention all %1$lld"
+          }
+        }
+      }
+    },
+    "raid.na.mentionRole": {
+      "comment": "Arguments: 1 people (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mention the %1$@ in Discord"
+          }
+        }
+      }
+    },
+    "raid.na.meta": {
+      "comment": "Arguments: 1 n (int), 2 total (int), 3 role (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld of %2$lld, %3$@ first"
+          }
+        }
+      }
+    },
+    "raid.na.metaPlain": {
+      "comment": "Arguments: 1 n (int), 2 total (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld of %2$lld"
+          }
+        }
+      }
+    },
+    "raid.na.missed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "missed last week"
+          }
+        }
+      }
+    },
+    "raid.na.new": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "new this week"
+          }
+        }
+      }
+    },
+    "raid.na.onBench": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "on the bench"
+          }
+        }
+      }
+    },
+    "raid.na.preview": {
+      "comment": "Arguments: 1 names (string), 2 zone (string), 3 when (string), 4 role (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@: %2$@ is %3$@ and we need %4$@. Answer In, Late, Bench or Out in the app or on the raid page."
+          }
+        }
+      }
+    },
+    "raid.na.previewAll": {
+      "comment": "Arguments: 1 names (string), 2 zone (string), 3 when (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@: %2$@ is %3$@. Answer In, Late, Bench or Out in the app or on the raid page."
+          }
+        }
+      }
+    },
+    "raid.na.site": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Creating and editing raids stays on the site."
+          }
+        }
+      }
+    },
+    "raid.na.siteLink": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Edit on the site ›"
+          }
+        }
+      }
+    },
+    "raid.na.sub": {
+      "comment": "Arguments: 1 kind (string), 2 line (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$@"
+          }
+        }
+      }
+    },
+    "raid.na.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not answered"
+          }
+        }
+      }
+    },
+    "raid.na.undo": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Undo"
           }
         }
       }

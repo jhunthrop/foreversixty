@@ -5494,6 +5494,109 @@ enum Copy {
     /// Sign up for your guild's raids from your phone.
     static var raidTabOutLine: String { text("raid.tab.outLine") }
 
+    /// Not answered
+    static var raidNaTitle: String { text("raid.na.title") }
+
+    /// All
+    static var raidNaAll: String { text("raid.na.all") }
+
+    /// {label} {n}
+    static func raidNaFilter(label: String, n: Int) -> String {
+        format("raid.na.filter", label, n)
+    }
+
+    /// Mention the {people} in Discord
+    static func raidNaMentionRole(people: String) -> String {
+        format("raid.na.mentionRole", people)
+    }
+
+    /// Mention all {n}
+    static func raidNaMentionAll(n: Int) -> String {
+        format("raid.na.mentionAll", n)
+    }
+
+    /// {names}: {zone} is {when} and we need {role}. Answer In, Late, Bench or Out in the app or on the raid page.
+    static func raidNaPreview(names: String, zone: String, when: String, role: String) -> String {
+        format("raid.na.preview", names, zone, when, role)
+    }
+
+    /// {names}: {zone} is {when}. Answer In, Late, Bench or Out in the app or on the raid page.
+    static func raidNaPreviewAll(names: String, zone: String, when: String) -> String {
+        format("raid.na.previewAll", names, zone, when)
+    }
+
+    /// {n} of {total}, {role} first
+    static func raidNaMeta(n: Int, total: Int, role: String) -> String {
+        format("raid.na.meta", n, total, role)
+    }
+
+    /// {n} of {total}
+    static func raidNaMetaPlain(n: Int, total: Int) -> String {
+        format("raid.na.metaPlain", n, total)
+    }
+
+    /// Mark In
+    static var raidNaMarkIn: String { text("raid.na.markIn") }
+
+    /// Discord DM
+    static var raidNaDiscordDM: String { text("raid.na.discordDM") }
+
+    /// Marked {state}
+    static func raidNaMarked(state: String) -> String {
+        format("raid.na.marked", state)
+    }
+
+    /// Undo
+    static var raidNaUndo: String { text("raid.na.undo") }
+
+    /// was {state} last week
+    static func raidNaLastWeek(state: String) -> String {
+        format("raid.na.lastWeek", state)
+    }
+
+    /// missed last week
+    static var raidNaMissed: String { text("raid.na.missed") }
+
+    /// new this week
+    static var raidNaNew: String { text("raid.na.new") }
+
+    /// {kind} · {line}
+    static func raidNaSub(kind: String, line: String) -> String {
+        format("raid.na.sub", kind, line)
+    }
+
+    /// {role} on the bench
+    static func raidNaBench(role: String) -> String {
+        format("raid.na.bench", role)
+    }
+
+    /// on the bench
+    static var raidNaOnBench: String { text("raid.na.onBench") }
+
+    /// If {names} are In, {role} are full.
+    static func raidNaFills(names: String, role: String) -> String {
+        format("raid.na.fills", names, role)
+    }
+
+    /// Creating and editing raids stays on the site.
+    static var raidNaSite: String { text("raid.na.site") }
+
+    /// Edit on the site ›
+    static var raidNaSiteLink: String { text("raid.na.siteLink") }
+
+    /// Everyone has answered.
+    static var raidNaEmpty: String { text("raid.na.empty") }
+
+    /// {first} and {last}
+    static func raidListAnd(first: String, last: String) -> String {
+        format("raid.list.and", first, last)
+    }
+
+    /// Back to {screen}
+    static func flowsBackTo(screen: String) -> String {
+        format("flows.backTo", screen)
+    }
+
     /// Get the addon and companion
     static var sharedCtaGetAddonAndCompanion: String { text("shared.cta.getAddonAndCompanion") }
 

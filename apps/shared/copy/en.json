@@ -1565,6 +1565,32 @@
     "raid.tab.leveler": "Raids start at 60",
     "raid.tab.levelsToGo": {"text": "{n} levels to go", "notPlural": true, "args": {"n": "int"}},
     "raid.tab.levelerLine": "Onyxia's Lair, Barrow Deeps and Hyjal Summit open at 60. Join a guild on the way and its raids show here.",
-    "raid.tab.outLine": "Sign up for your guild's raids from your phone."
+    "raid.tab.outLine": "Sign up for your guild's raids from your phone.",
+
+    "raid.na.title": "Not answered",
+    "raid.na.all": "All",
+    "raid.na.filter": { "text": "{label} {n}", "args": { "n": "int" }, "notPlural": true },
+    "raid.na.mentionRole": "Mention the {people} in Discord",
+    "raid.na.mentionAll": { "text": "Mention all {n}", "args": { "n": "int" }, "notPlural": true },
+    "raid.na.preview": "{names}: {zone} is {when} and we need {role}. Answer In, Late, Bench or Out in the app or on the raid page.",
+    "raid.na.previewAll": "{names}: {zone} is {when}. Answer In, Late, Bench or Out in the app or on the raid page.",
+    "raid.na.meta": { "text": "{n} of {total}, {role} first", "args": { "n": "int", "total": "int" }, "notPlural": true },
+    "raid.na.metaPlain": { "text": "{n} of {total}", "args": { "n": "int", "total": "int" }, "notPlural": true },
+    "raid.na.markIn": "Mark In",
+    "raid.na.discordDM": "Discord DM",
+    "raid.na.marked": "Marked {state}",
+    "raid.na.undo": "Undo",
+    "raid.na.lastWeek": "was {state} last week",
+    "raid.na.missed": "missed last week",
+    "raid.na.new": "new this week",
+    "raid.na.sub": "{kind} · {line}",
+    "raid.na.bench": "{role} on the bench",
+    "raid.na.onBench": "on the bench",
+    "raid.na.fills": "If {names} are In, {role} are full.",
+    "raid.na.site": "Creating and editing raids stays on the site.",
+    "raid.na.siteLink": "Edit on the site ›",
+    "raid.na.empty": "Everyone has answered.",
+    "raid.list.and": "{first} and {last}",
+    "flows.backTo": "Back to {screen}"
   }
 }

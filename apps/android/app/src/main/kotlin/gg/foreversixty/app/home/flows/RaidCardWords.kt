@@ -10,6 +10,7 @@ import gg.foreversixty.app.model.RaidView
 import gg.foreversixty.app.phrase
 import gg.foreversixty.app.raids.logic.RaidClock
 import gg.foreversixty.app.raids.logic.RaidFacts
+import gg.foreversixty.app.raids.logic.ShortRole
 import gg.foreversixty.app.raids.logic.SignupState
 import java.time.Duration
 import java.time.Instant
@@ -36,7 +37,7 @@ class RaidCardWords(private val res: Resources, private val clock: RaidClock, pr
             ?: res.getString(R.string.home_raid_notAnswered, name, role)
         return RaidCardModel(
             raidId = raid.id,
-            icon = ZONE_ICONS[raid.zone] ?: GENERIC_ICON,
+            icon = RaidIcons.of(raid),
             eyebrow = res.getString(R.string.home_raid_tonight, guild, raid.zoneName),
             clock = listOf(ClockPart(twoDigits(hours), res.getString(R.string.home_raid_hours)), ClockPart(twoDigits(minutes), res.getString(R.string.home_raid_min))),
             clockLabel = res.getString(R.string.home_raid_clock, hours, minutes),
@@ -82,7 +83,7 @@ class RaidCardWords(private val res: Resources, private val clock: RaidClock, pr
 
     /** `5 have not answered, 2 of them healers`, `Healers short by 3`, `1 applicant`. */
     private fun officer(raid: RaidView, badge: RaidBadge): OfficerItems {
-        val short = shortRole(raid)
+        val short = ShortRole.of(raid)
         val unansweredInRole = short?.let { role -> raid.notSigned.count { it.role == role.wire } } ?: 0
         val unanswered = when {
             badge.unanswered <= 0 -> null
@@ -94,19 +95,6 @@ class RaidCardWords(private val res: Resources, private val clock: RaidClock, pr
         val applicants = badge.applicants.takeIf { it > 0 }?.let { res.getQuantityString(R.plurals.home_officer_applicants, it, it) }
         return OfficerItems(unanswered, shortLine?.takeIf { unanswered != null }, applicants, null)
     }
-
-    /** The role furthest under its target (healers first on a tie), or null when every role is met. */
-    private fun shortRole(raid: RaidView): ShortRole? {
-        val target = raid.compTarget ?: return null
-        val c = raid.counts
-        return listOf(
-            ShortRole(HEALER, R.string.raid_group_healers, R.string.home_officer_role_healers, target.healers - c.healers),
-            ShortRole(TANK, R.string.raid_group_tanks, R.string.home_officer_role_tanks, target.tanks - c.tanks),
-            ShortRole(DPS, R.string.raid_group_damage, R.string.home_officer_role_damage, target.melee + target.ranged - c.melee - c.ranged),
-        ).filter { it.missing > 0 }.maxByOrNull { it.missing }
-    }
-
-    private data class ShortRole(val wire: String, val group: Int, val lower: Int, val missing: Int)
 
     private fun roleWord(role: String?): String = res.getString(
         when (role) {
@@ -121,15 +109,20 @@ class RaidCardWords(private val res: Resources, private val clock: RaidClock, pr
     private companion object {
         const val TANK = "tank"
         const val HEALER = "healer"
-        const val DPS = "dps"
-        const val GENERIC_ICON = "inv_misc_book_09"
         const val MINUTES_PER_HOUR = 60L
-
-        /** The raid icons the server gives its Activity rows (api/internal/zoneicons), the generic book otherwise. */
-        val ZONE_ICONS = mapOf(
-            "raid:barrow-deeps" to "spell_shadow_raisedead",
-            "raid:hyjal-summit" to "spell_nature_timestop",
-            "raid:onyxias-lair" to "inv_misc_head_dragon_black",
-        )
     }
+}
+
+/** A raid's zone icon: the server's `zone_icon`, else the icons of api/internal/zoneicons, else the generic book. */
+object RaidIcons {
+    private const val GENERIC = "inv_misc_book_09"
+    private val ZONES = mapOf(
+        "raid:barrow-deeps" to "spell_shadow_raisedead",
+        "raid:hyjal-summit" to "spell_nature_timestop",
+        "raid:onyxias-lair" to "inv_misc_head_dragon_black",
+    )
+
+    fun of(raid: RaidView): String = of(raid.zone, raid.zoneIcon)
+
+    fun of(zoneKey: String, zoneIcon: String?): String = zoneIcon ?: ZONES[zoneKey] ?: GENERIC
 }

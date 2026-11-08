@@ -63,6 +63,8 @@ import gg.foreversixty.app.raids.flows.GuildPage
 import gg.foreversixty.app.raids.flows.RaidTabActions
 import gg.foreversixty.app.raids.flows.RaidTabPresenter
 import gg.foreversixty.app.raids.flows.RaidTabScreen
+import gg.foreversixty.app.raids.flows.NotAnsweredModel
+import gg.foreversixty.app.raids.flows.NotAnsweredRoute
 import gg.foreversixty.app.raids.logic.RaidsTabContent
 import gg.foreversixty.app.home.flows.HomeActions
 import kotlinx.coroutines.CoroutineScope
@@ -74,7 +76,10 @@ import kotlinx.coroutines.launch
 
 /** A screen pushed on the Raids stack. */
 sealed interface RaidsDestination {
-    data class Raid(val guild: Long, val raid: Long, val roster: Boolean = false, val open: RaidOpenAction? = null) : RaidsDestination
+    data class Raid(val guild: Long, val raid: Long, val open: RaidOpenAction? = null) : RaidsDestination
+
+    /** The raid page filtered to Not answered (spec 2026-11-08 F3), an officer's. */
+    data class NotAnswered(val guild: Long, val raid: Long) : RaidsDestination
     data class Night(val raid: Long) : RaidsDestination
 
     /** Lane F10: a report pushed from Your raid night. */
@@ -107,7 +112,11 @@ class RaidsNavigator {
         val destinations = when (link) {
             is DeepLink.Raid -> {
                 val press = if (link.spec == "ask") SignupState.In else SignupState.of(link.state)
-                listOf(RaidsDestination.Raid(link.guild, link.raid, open = press?.let(::RaidOpenAction)))
+                if (link.view == DeepLink.Raid.UNANSWERED) {
+                    listOf(RaidsDestination.NotAnswered(link.guild, link.raid))
+                } else {
+                    listOf(RaidsDestination.Raid(link.guild, link.raid, open = press?.let(::RaidOpenAction)))
+                }
             }
             is DeepLink.RaidNight -> listOf(RaidsDestination.Raid(link.guild, link.raid), RaidsDestination.Night(link.raid))
             is DeepLink.Guild -> emptyList()
@@ -256,7 +265,7 @@ fun RaidsRoute(
                         clock = clock,
                         now = feature.now,
                         nextController = next,
-                        openRaid = { raid, roster -> feature.navigator.push(RaidsDestination.Raid(content?.head?.id ?: 0, raid.id, roster)) },
+                        openRaid = { raid, unanswered -> feature.navigator.push(raidDestination(content?.head?.id ?: 0, raid.id, unanswered)) },
                         openNight = { feature.navigator.push(RaidsDestination.Night(it)) },
                         openWeb = { uri.openUri(it) },
                         retry = { scope.launch { reload() } },
@@ -286,6 +295,10 @@ fun RaidsRoute(
                     back = { feature.navigator.pop() },
                     requestPermission = requestPermission,
                 )
+            }
+            is RaidsDestination.NotAnswered -> {
+                val model = remember(top) { NotAnsweredModel(top.guild, top.raid, feature.service, res, scope, HOLD, replaced) }
+                NotAnsweredRoute(model, clock, content?.head?.name.orEmpty(), content?.head?.webUrl, iconBuild, uri::openUri) { feature.navigator.pop() }
             }
             is RaidsDestination.Night -> {
                 val model = remember(top) { RaidNightModel(top.raid, feature.service, feature.cache, feature.now, connectivity = feature.connectivity) }
@@ -319,7 +332,7 @@ private fun raidTabActions(
 ): RaidTabActions {
     val guild = content?.head
     val key = content?.character?.key
-    val openRaid = { raid: Long, roster: Boolean -> guild?.let { feature.navigator.push(RaidsDestination.Raid(it.id, raid, roster)) } ?: Unit }
+    val openRaid = { raid: Long, unanswered: Boolean -> guild?.let { feature.navigator.push(raidDestination(it.id, raid, unanswered)) } ?: Unit }
     val guildPage = { guild?.webUrl?.let(openWeb) ?: Unit }
     return RaidTabActions(
         card = HomeActions(
@@ -343,6 +356,10 @@ private fun raidTabActions(
         onSignIn = signIn,
     )
 }
+
+/** The raid page, or an officer's Not answered view of it. */
+fun raidDestination(guild: Long, raid: Long, unanswered: Boolean): RaidsDestination =
+    if (unanswered) RaidsDestination.NotAnswered(guild, raid) else RaidsDestination.Raid(guild, raid)
 
 /** The site's guild finder, where a player applies to or claims a guild. */
 private const val GUILDS = "https://foreversixty.gg/guild"

@@ -51,6 +51,9 @@ sealed interface FlowLead {
     data class Icon(val icon: String?, val build: String?) : FlowLead
     data class Item(val look: ItemLook, val build: String) : FlowLead
 
+    /** A character: the class crest (rosters, the unanswered, the applicant's guildmates). */
+    data class Crest(val className: String) : FlowLead
+
     /** A checklist mark (Ready check): ticked, missing or a warning; a glyph, not an image. */
     data class Check(val ok: Boolean, val miss: Boolean) : FlowLead
 }
@@ -121,6 +124,7 @@ private fun LeadImage(lead: FlowLead) {
                 .border(1.dp, FsColor.line, RoundedCornerShape(FsRadius.control)),
         ) { GameIconImage(lead.icon, lead.build, LEAD) }
         is FlowLead.Item -> ItemIcon(lead.look.icon, lead.look.quality, lead.build, LEAD, Modifier.parityItem(ParityItemKind.Image))
+        is FlowLead.Crest -> gg.foreversixty.app.common.ClassCrest(lead.className, LEAD, Modifier.parityItem(ParityItemKind.Image))
         is FlowLead.Check -> {
             val (mark, color) = when {
                 lead.ok -> CHECK_OK to FsColor.kill

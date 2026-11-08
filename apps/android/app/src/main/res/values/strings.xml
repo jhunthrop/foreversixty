@@ -1651,6 +1651,31 @@
     <string name="raid_tab_levelsToGo" tools:ignore="PluralsCandidate">%1$d levels to go</string>
     <string name="raid_tab_levelerLine">Onyxia\'s Lair, Barrow Deeps and Hyjal Summit open at 60. Join a guild on the way and its raids show here.</string>
     <string name="raid_tab_outLine">Sign up for your guild\'s raids from your phone.</string>
+    <string name="raid_na_title">Not answered</string>
+    <string name="raid_na_all">All</string>
+    <string name="raid_na_filter" tools:ignore="PluralsCandidate">%1$s %2$d</string>
+    <string name="raid_na_mentionRole">Mention the %1$s in Discord</string>
+    <string name="raid_na_mentionAll" tools:ignore="PluralsCandidate">Mention all %1$d</string>
+    <string name="raid_na_preview">%1$s: %2$s is %3$s and we need %4$s. Answer In, Late, Bench or Out in the app or on the raid page.</string>
+    <string name="raid_na_previewAll">%1$s: %2$s is %3$s. Answer In, Late, Bench or Out in the app or on the raid page.</string>
+    <string name="raid_na_meta" tools:ignore="PluralsCandidate">%1$d of %2$d, %3$s first</string>
+    <string name="raid_na_metaPlain" tools:ignore="PluralsCandidate">%1$d of %2$d</string>
+    <string name="raid_na_markIn">Mark In</string>
+    <string name="raid_na_discordDM">Discord DM</string>
+    <string name="raid_na_marked">Marked %1$s</string>
+    <string name="raid_na_undo">Undo</string>
+    <string name="raid_na_lastWeek">was %1$s last week</string>
+    <string name="raid_na_missed">missed last week</string>
+    <string name="raid_na_new">new this week</string>
+    <string name="raid_na_sub">%1$s · %2$s</string>
+    <string name="raid_na_bench">%1$s on the bench</string>
+    <string name="raid_na_onBench">on the bench</string>
+    <string name="raid_na_fills">If %1$s are In, %2$s are full.</string>
+    <string name="raid_na_site">Creating and editing raids stays on the site.</string>
+    <string name="raid_na_siteLink">Edit on the site ›</string>
+    <string name="raid_na_empty">Everyone has answered.</string>
+    <string name="raid_list_and">%1$s and %2$s</string>
+    <string name="flows_backTo">Back to %1$s</string>
     <string name="shared_cta_getAddonAndCompanion">Get the addon and companion</string>
     <string name="shared_cta_installAddonAndCompanion">Install the addon and the companion</string>
     <string name="shared_cta_installAddonAndCompanionInline">install the addon and the companion</string>

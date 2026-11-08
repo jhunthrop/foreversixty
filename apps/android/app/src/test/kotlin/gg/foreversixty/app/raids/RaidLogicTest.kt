@@ -551,6 +551,19 @@ class RaidLogicTest {
         assertFalse(navigator.open(DeepLink.Plan))
     }
 
+    @Test
+    fun `view unanswered opens Not answered, and an officer's raid push asks for it`() {
+        val link = DeepLink.parse(DeepLink.Raid(2, 41, view = DeepLink.Raid.UNANSWERED).url())
+        assertEquals(DeepLink.Raid(2, 41, view = DeepLink.Raid.UNANSWERED), link)
+        val navigator = RaidsNavigator()
+        navigator.open(requireNotNull(link))
+        assertEquals(listOf(RaidsDestination.NotAnswered(2, 41)), navigator.stack.toList())
+        val short = gg.foreversixty.app.push.PushMessage.parse(
+            mapOf("kind" to "raid.short", "title" to "Healers short", "guild_id" to "2", "raid_id" to "41"), null, null, null,
+        )
+        assertEquals(link.url(), short?.landing())
+    }
+
     // Notes
 
     @Test

@@ -21,6 +21,7 @@ import gg.foreversixty.app.home.HomeStore
 import gg.foreversixty.app.model.CharacterHome
 import gg.foreversixty.app.model.RaidBadge
 import gg.foreversixty.app.raids.RaidsDestination
+import gg.foreversixty.app.raids.raidDestination
 import gg.foreversixty.app.raids.RaidsFeature
 import gg.foreversixty.app.raids.logic.RaidClock
 import gg.foreversixty.app.raids.logic.RaidsTabModel
@@ -103,7 +104,7 @@ fun HomeFlowContent(
             exits.openRaidTab()
         },
         onReady = { id -> openRaid(raids, guild?.id, id, exits) },
-        onPreviewMention = { id -> openRaid(raids, guild?.id, id, exits, roster = true) },
+        onPreviewMention = { id -> openRaid(raids, guild?.id, id, exits, unanswered = true) },
         onApplicants = exits.openRaidTab,
         onActivityRow = { row -> Activity.landing(row)?.let(exits.openLanding) },
         onAllActivity = exits.openActivity,
@@ -124,10 +125,10 @@ fun HomeFlowContent(
     HomeFlowScreen(view, actions)
 }
 
-private fun openRaid(raids: RaidsFeature?, guild: Long?, raid: Long, exits: HomeExits, roster: Boolean = false) {
+private fun openRaid(raids: RaidsFeature?, guild: Long?, raid: Long, exits: HomeExits, unanswered: Boolean = false) {
     if (raids != null && guild != null) {
         raids.navigator.stack.clear()
-        raids.navigator.push(RaidsDestination.Raid(guild, raid, roster))
+        raids.navigator.push(raidDestination(guild, raid, unanswered))
     }
     exits.openRaidTab()
 }

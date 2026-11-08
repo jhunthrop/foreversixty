@@ -1,11 +1,13 @@
 package gg.foreversixty.app.flows
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -23,6 +25,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.heading
@@ -32,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import gg.foreversixty.app.common.ClassCrest
 import gg.foreversixty.app.designsystem.FsColor
+import gg.foreversixty.app.designsystem.FsRadius
 import gg.foreversixty.app.designsystem.FsSpace
 import gg.foreversixty.app.designsystem.FsType
 import gg.foreversixty.app.designsystem.ParityItemKind
@@ -39,6 +43,7 @@ import gg.foreversixty.app.designsystem.ParityRegion
 import gg.foreversixty.app.designsystem.parityContent
 import gg.foreversixty.app.designsystem.parityItem
 import gg.foreversixty.app.designsystem.parityRegion
+import gg.foreversixty.app.items.GameIconImage
 
 /**
  * The flows screens' layout (design/mocks/ws_app_flows.py `.ap`, spec 2026-11-08): one scrolling column
@@ -61,25 +66,50 @@ fun FlowPage(modifier: Modifier = Modifier, content: @Composable ColumnScope.() 
  * 16 above the title block, 14 below it.
  */
 @Composable
-fun FlowHead(title: String, facts: List<String>, titleColor: Color = FsColor.strong, crest: String? = null) {
+fun FlowHead(
+    title: String,
+    facts: List<String>,
+    titleColor: Color = FsColor.strong,
+    crest: String? = null,
+    lead: (@Composable () -> Unit)? = null,
+) {
     Column(Modifier.fillMaxWidth().parityRegion(ParityRegion.HEAD).padding(top = FsSpace.space4, bottom = HEAD_BOTTOM)) {
         Row(Modifier.fillMaxWidth().parityRegion(ParityRegion.HEAD_TITLE), verticalAlignment = Alignment.CenterVertically) {
-            if (crest != null) {
-                ClassCrest(crest, CREST, Modifier.parityItem(ParityItemKind.Image))
+            val image: (@Composable () -> Unit)? = lead ?: crest?.let { { ClassCrest(it, CREST, Modifier.parityItem(ParityItemKind.Image)) } }
+            if (image != null) {
+                image()
                 Spacer(Modifier.width(FsSpace.space4))
             }
             // The title block is as wide as its widest line (the mock's shrink-wrapped head), the facts across it.
-            val bounded = if (crest != null) Modifier.weight(1f, fill = false) else Modifier
+            val bounded = if (image != null) Modifier.weight(1f, fill = false) else Modifier
             Column(bounded.width(IntrinsicSize.Max)) {
                 Text(title, style = FsType.title, color = titleColor, modifier = Modifier.semantics { heading() })
                 if (facts.isNotEmpty()) {
-                    Row(Modifier.padding(top = META_GAP).fillMaxWidth().parityRegion(ParityRegion.HEAD_META), horizontalArrangement = Arrangement.spacedBy(FsSpace.space4)) {
+                    // The facts wrap (`.ph-meta`, gap 6 by 16) when they outgrow one line.
+                    FlowRow(
+                        Modifier.padding(top = META_GAP).fillMaxWidth().parityRegion(ParityRegion.HEAD_META),
+                        horizontalArrangement = Arrangement.spacedBy(FsSpace.space4),
+                        verticalArrangement = Arrangement.spacedBy(META_GAP),
+                    ) {
                         facts.forEach { Text(it, style = FsType.small, color = FsColor.muted) }
                     }
                 }
             }
         }
     }
+}
+
+/** The head's game icon (a raid's zone), 56 in the rounded frame of a row's lead. */
+@Composable
+fun FlowHeadIcon(icon: String?, build: String?) {
+    Box(
+        Modifier
+            .size(CREST)
+            .parityItem(ParityItemKind.Image)
+            .clip(RoundedCornerShape(FsRadius.control))
+            .background(FsColor.raised)
+            .border(1.dp, FsColor.line, RoundedCornerShape(FsRadius.control)),
+    ) { GameIconImage(icon, build, CREST) }
 }
 
 /**
