@@ -75,7 +75,10 @@ extension RootView {
                 )
             }
         case .planner:
-            YourBuildsScreen(dependencies: plannerRouter.dependencies, router: plannerRouter, newBuild: plannerNewBuild())
+            YourBuildsScreen(
+                dependencies: plannerRouter.dependencies, router: plannerRouter, newBuild: plannerNewBuild(),
+                talents: plannerTalents(session?.currentCharacter)
+            )
         case .notifications:
             NotificationSettingsScreen(service: LiveNotificationSettingsService(client: environment.client))
         case .plan, .devices, .offlineData:
@@ -95,6 +98,13 @@ extension RootView {
                 offlineData: offlineData
             )
         }
+    }
+
+    /// Your talents against the guide, for a character with a class and the talents data on.
+    private func plannerTalents(_ character: AccountCharacter?) -> PlannerTalentsEntry? {
+        let home = HomeDependencies.live(environment)
+        guard let character, character.className != nil, let source = home.talents else { return nil }
+        return PlannerTalentsEntry(character: HomeCharacter(character), source: source, latestBuild: home.latestBuild)
     }
 
     private var menuVersion: String {

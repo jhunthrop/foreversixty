@@ -25,7 +25,7 @@ struct OfflineDataView: View {
             VStack(alignment: .leading, spacing: 0) {
                 PageHeader(title: Copy.offlineDataTitle)
                 if !online {
-                    Notice(Copy.offlineStrip(time: OfflineStamp.format(checkedAt ?? now, now: now)))
+                    Notice("\(Copy.offlineStrip(time: OfflineStamp.format(checkedAt ?? now, now: now))) \(Copy.offlineSignupsNeedConnection)")
                 }
                 FSSection(report.isEmpty ? Copy.offlineDataSectionEmpty : Copy.offlineDataSection(size: OfflineWords.size(report.totalBytes))) {
                     if report.isEmpty { empty } else { rows }

@@ -125,6 +125,7 @@ public struct LabelledSwitch: View {
         }
         .tint(FSColor.gold)
         .fixedSize()
+        .frame(minHeight: FSTarget.min)
     }
 }
 

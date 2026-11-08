@@ -749,6 +749,8 @@
     "devices.revoke.body": "It is signed out of Forever Sixty at once.",
     "devices.revoke.failed": "Could not revoke that device. Try again.",
     "devices.signedInTitle": "Signed in",
+    "plan.builds.compare": "Your talents against the guide",
+    "plan.builds.compareSub": "{name}’s build beside the guide build, talent by talent",
     "devices.thisTag": "This device",
     "devices.signOutOthers": "Sign out everywhere else",
     "devices.signOutOthers.title": "Sign out every other device?",
@@ -1415,6 +1417,7 @@
     "offline.stale": "Forever Sixty did not answer. Showing what you had at {time}.",
     "offline.retry": "Retry",
     "offline.needsConnection": "{thing} needs a connection.",
+    "offline.signupsNeedConnection": "Sign-ups need a connection.",
 
     "offlineData.title": "Offline data",
     "offlineData.youRow.sub": "Guides, lists and talents on this phone",

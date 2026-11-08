@@ -24,6 +24,9 @@ struct YourBuildsView: View {
     var undo: () -> Void = {}
     var plan: (PlannerNewBuild) -> Void = { _ in }
     var retry: () -> Void = {}
+    /// The selected character's name when its talents can be set beside the guide build.
+    var compareName: String?
+    var compare: () -> Void = {}
 
     var body: some View {
         List {
@@ -32,6 +35,13 @@ struct YourBuildsView: View {
                 .accessibilityAddTraits(.isHeader)
                 .plainRow(EdgeInsets(top: 8, leading: 16, bottom: 12, trailing: 16))
             content
+            if let compareName {
+                Button(action: compare) {
+                    FSRow(title: Copy.planBuildsCompare, sub: Copy.planBuildsCompareSub(name: compareName), inset: 0) { EmptyView() }
+                }
+                .buttonStyle(RowPressStyle())
+                .plainRow(EdgeInsets(top: 22, leading: 16, bottom: 0, trailing: 16))
+            }
             if let newBuild {
                 MicroLabel(Copy.planBuildsNewHeader)
                     .accessibilityAddTraits(.isHeader)
@@ -177,15 +187,20 @@ private extension View {
 struct YourBuildsScreen: View {
     @State private var model: YourBuildsModel
     @State private var shown: String?
+    @State private var comparing = false
     let dependencies: PlannerDependencies
     let router: PlannerRouter
     let newBuild: PlannerNewBuild?
+    /// Your talents against the guide build (TalentsScreen), for the selected character; its only
+    /// way in since Home's Next rows left (flows spec appendix C).
+    let talents: PlannerTalentsEntry?
 
-    init(dependencies: PlannerDependencies, router: PlannerRouter, newBuild: PlannerNewBuild?) {
+    init(dependencies: PlannerDependencies, router: PlannerRouter, newBuild: PlannerNewBuild?, talents: PlannerTalentsEntry? = nil) {
         _model = State(initialValue: YourBuildsModel(source: dependencies.source))
         self.dependencies = dependencies
         self.router = router
         self.newBuild = newBuild
+        self.talents = talents
     }
 
     var body: some View {
@@ -197,7 +212,9 @@ struct YourBuildsScreen: View {
             plan: { build in
                 router.openEditor(PlannerLaunch(classSlug: build.classSlug, raceSlug: build.raceSlug, level: build.level))
             },
-            retry: { Task { await model.load() } }
+            retry: { Task { await model.load() } },
+            compareName: talents?.character.name,
+            compare: { comparing = true }
         )
         .navigationTitle("")
         .navigationBarTitleDisplayMode(.inline)
@@ -205,11 +222,28 @@ struct YourBuildsScreen: View {
         .navigationDestination(item: $shown) { id in
             SharedBuildScreen(id: id, dependencies: dependencies, router: router)
         }
+        .navigationDestination(isPresented: $comparing) {
+            if let talents {
+                TalentsScreen(character: talents.character, model: talents.model(), latestBuild: talents.latestBuild)
+            }
+        }
         .task { await model.load() }
         .task(id: model.removed?.summary.id) {
             guard model.removed != nil else { return }
             try? await Task.sleep(for: .seconds(YourBuildsModel.snackbarSeconds))
             if !Task.isCancelled { model.dismissSnackbar() }
         }
+    }
+}
+
+/// What the Planner needs to open Your talents against the guide build for the selected character.
+struct PlannerTalentsEntry {
+    let character: HomeCharacter
+    let source: any TalentsSource
+    let latestBuild: @Sendable () async -> String?
+
+    @MainActor
+    func model() -> TalentsModel {
+        TalentsModel(source: source, character: TalentCharacter(character), catalog: .bundled())
     }
 }

@@ -8050,6 +8050,17 @@
         }
       }
     },
+    "offline.signupsNeedConnection": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sign-ups need a connection."
+          }
+        }
+      }
+    },
     "offline.stale": {
       "comment": "Arguments: 1 time (string)",
       "extractionState": "manual",
@@ -8555,6 +8566,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Add a point"
+          }
+        }
+      }
+    },
+    "plan.builds.compare": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your talents against the guide"
+          }
+        }
+      }
+    },
+    "plan.builds.compareSub": {
+      "comment": "Arguments: 1 name (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@’s build beside the guide build, talent by talent"
           }
         }
       }

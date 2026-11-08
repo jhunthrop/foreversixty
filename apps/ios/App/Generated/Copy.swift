@@ -2523,6 +2523,14 @@ enum Copy {
     /// Signed in
     static var devicesSignedInTitle: String { text("devices.signedInTitle") }
 
+    /// Your talents against the guide
+    static var planBuildsCompare: String { text("plan.builds.compare") }
+
+    /// {name}’s build beside the guide build, talent by talent
+    static func planBuildsCompareSub(name: String) -> String {
+        format("plan.builds.compareSub", name)
+    }
+
     /// This device
     static var devicesThisTag: String { text("devices.thisTag") }
 
@@ -4938,6 +4946,9 @@ enum Copy {
     static func offlineNeedsConnection(thing: String) -> String {
         format("offline.needsConnection", thing)
     }
+
+    /// Sign-ups need a connection.
+    static var offlineSignupsNeedConnection: String { text("offline.signupsNeedConnection") }
 
     /// Offline data
     static var offlineDataTitle: String { text("offlineData.title") }

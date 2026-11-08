@@ -765,6 +765,8 @@
     <string name="devices_revoke_body">It is signed out of Forever Sixty at once.</string>
     <string name="devices_revoke_failed">Could not revoke that device. Try again.</string>
     <string name="devices_signedInTitle">Signed in</string>
+    <string name="plan_builds_compare">Your talents against the guide</string>
+    <string name="plan_builds_compareSub">%1$s’s build beside the guide build, talent by talent</string>
     <string name="devices_thisTag">This device</string>
     <string name="devices_signOutOthers">Sign out everywhere else</string>
     <string name="devices_signOutOthers_title">Sign out every other device?</string>
@@ -1499,6 +1501,7 @@
     <string name="offline_stale">Forever Sixty did not answer. Showing what you had at %1$s.</string>
     <string name="offline_retry">Retry</string>
     <string name="offline_needsConnection">%1$s needs a connection.</string>
+    <string name="offline_signupsNeedConnection">Sign-ups need a connection.</string>
     <string name="offlineData_title">Offline data</string>
     <string name="offlineData_youRow_sub">Guides, lists and talents on this phone</string>
     <string name="offlineData_section">On this phone, %1$s</string>
