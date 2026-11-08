@@ -63,6 +63,7 @@ class MainActivity : ComponentActivity() {
                             system = graph.system.navigator,
                             planner = graph.planner,
                             activity = graph.activity,
+                            notifications = graph.notificationSettings,
                             openLink = { link -> handleAppLink(Intent(Intent.ACTION_VIEW, link.toUri())) },
                         ),
                     )

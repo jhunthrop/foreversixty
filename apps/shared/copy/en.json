@@ -655,6 +655,9 @@
     "notifications.reminder": "Raid-day reminder",
     "notifications.reminderLine": "If you have not answered: {time} your time",
     "notifications.change": "Change",
+    "notifications.discord": "Discord",
+    "notifications.officerDms": "Let officers DM me on Discord",
+    "notifications.officerDmsLine": "When you have not answered a raid; off, they mention you in the channel",
 
     "you.title": "You",
     "you.signedInWith": "Signed in with Battle.net",

@@ -37,6 +37,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import gg.foreversixty.app.R
 import gg.foreversixty.app.account.AccountDeps
 import gg.foreversixty.app.account.HomeAccountGate
+import gg.foreversixty.app.account.notifications.NotificationSettingsFeature
 import gg.foreversixty.app.activity.ActivityFeature
 import gg.foreversixty.app.activity.ActivityLanding
 import gg.foreversixty.app.activity.ActivityTab
@@ -90,6 +91,8 @@ data class ShellFeatures(
     val system: SystemNavigator? = null,
     val planner: PlannerFeature? = null,
     val activity: ActivityFeature? = null,
+    /** Notifications (the menu's row); null while `notifications` is off, when Android's own channel screen serves. */
+    val notifications: NotificationSettingsFeature? = null,
     /** Opens an app link the way MainActivity routes one (a notification, an Activity row). */
     val openLink: (String) -> Unit = {},
 )
@@ -156,7 +159,7 @@ private fun ShellBody(
                 when {
                     // Lane F13: a shared build and Your builds are pushed over the current tab.
                     features.planner != null && plannerTop != null -> PlannerScreenHost(features.planner, plannerTop)
-                    pushed != null -> MenuScreen(features, pushed, onPickClass = { select(ForeverTab.Gear) }, onBack = closePushed)
+                    pushed != null -> MenuScreen(features, pushed, backTo = stringResource(selected.label), onPickClass = { select(ForeverTab.Gear) }, onBack = closePushed)
                     else -> shell.SaveableStateProvider(selected.name) {
                         CompositionLocalProvider(LocalOpenMenu provides openMenu) { TabRoot(features, selected, select, onSearch) }
                     }

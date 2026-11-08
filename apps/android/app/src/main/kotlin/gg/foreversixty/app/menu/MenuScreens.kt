@@ -30,6 +30,8 @@ import gg.foreversixty.app.account.AccountDeps
 import gg.foreversixty.app.account.AccountLinks
 import gg.foreversixty.app.account.AccountPage
 import gg.foreversixty.app.account.AccountRoute
+import gg.foreversixty.app.account.notifications.NotificationSettingsRoute
+import gg.foreversixty.app.flows.FlowBackBar
 import gg.foreversixty.app.auth.session.SessionPhase
 import gg.foreversixty.app.bis.BisSelection
 import gg.foreversixty.app.designsystem.FsColor
@@ -132,7 +134,7 @@ private fun MenuContent(account: AccountDeps?, open: Boolean, act: ((((MenuDesti
 
 /** A menu row's screen, pushed under the current tab; [onBack] returns to the tab's root. */
 @Composable
-fun MenuScreen(features: ShellFeatures, destination: MenuDestination, onPickClass: () -> Unit, onBack: () -> Unit) {
+fun MenuScreen(features: ShellFeatures, destination: MenuDestination, backTo: String, onPickClass: () -> Unit, onBack: () -> Unit) {
     val account = features.account
     val session = account?.session
     val phase = session?.phase?.collectAsStateWithLifecycle()?.value
@@ -163,13 +165,15 @@ fun MenuScreen(features: ShellFeatures, destination: MenuDestination, onPickClas
             val viewer = me?.let { RankingsViewer.of(it, current?.key) } ?: RankingsViewer.SignedOut
             RankingsRoute(rankings, viewer, features.home.reports?.let { RankingsReports(it, reportsViewer) }, onBack)
         }
-        MenuDestination.Notifications -> {
-            // Each group is its own channel (PushGroup), so Android's own screen sets them until
-            // the in-app settings screen lands with the restyle.
-            LaunchedEffect(Unit) {
-                context.startActivity(Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName))
-                onBack()
+        MenuDestination.Notifications -> features.notifications?.takeIf { me != null }?.let { notifications ->
+            Column(Modifier.fillMaxSize()) {
+                FlowBackBar(backTo, onBack)
+                NotificationSettingsRoute(notifications)
             }
+        } ?: LaunchedEffect(Unit) {
+            // Signed out or with the switch off, each group's channel (PushGroup) is set on Android's own screen.
+            context.startActivity(Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName))
+            onBack()
         }
         // Owner ruling 2026-11-08: the Talents compare page lives under the Talent planner row.
         MenuDestination.Planner -> {
