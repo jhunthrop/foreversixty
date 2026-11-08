@@ -6,6 +6,7 @@ import (
 	"log/slog"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 	"time"
 
@@ -87,6 +88,24 @@ func TestAppContractCharacterCardWithoutLogs(t *testing.T) {
 	h.seedOwnedCharacter("freshling", &h.owner)
 
 	contract.AssertFixture(t, "character.card.empty", readAll(t, h.get("/v1/characters/us/hardcore/freshling"), http.StatusOK),
+		contract.Options{Optional: characterOptional})
+}
+
+// A character whose owner hid the Forever Score, read by anyone else: no score, score_hidden.
+func TestAppContractCharacterCardHidden(t *testing.T) {
+	h := newHarness(t)
+	serveContract(t, h)
+	h.seedReport("report-one")
+	h.seedFight("report-one", 1, engine.FixtureBase, nil)
+	h.seedOwnedCharacter("baelgrim", &h.owner)
+	if _, err := h.pool.Exec(t.Context(), `update characters set score_visible = false where key = 'us/hardcore/baelgrim'`); err != nil {
+		t.Fatal(err)
+	}
+	res := h.get("/v1/characters/us/hardcore/baelgrim")
+	if got := res.Header.Get("Cache-Control"); !strings.Contains(got, "private") {
+		t.Errorf("Cache-Control = %q, want private", got)
+	}
+	contract.AssertFixture(t, "character.card.hidden", readAll(t, res, http.StatusOK),
 		contract.Options{Optional: characterOptional})
 }
 
