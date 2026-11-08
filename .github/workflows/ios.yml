@@ -83,14 +83,24 @@ jobs:
           TEST_RUNNER_SNAPSHOT_TESTING_RECORD: ${{ inputs.record == true && 'failed' || 'missing' }}
           # The runner is ~3x slower than a local Mac; SearchLogicTests' keystroke budget scales by it.
           TEST_RUNNER_SEARCH_BUDGET_SCALE: '3'
+        # The booted simulator has lost its runtime between steps (run 42515970747), so the device is
+        # ensured again here, and a run that cannot find it (exit 70, before any test runs) gets one
+        # more ensure and try.
         run: |
-          set -o pipefail
-          xcodebuild test \
-            -project ForeverSixty.xcodeproj \
-            -scheme ForeverSixty \
-            -destination "$SIMULATOR" \
-            -derivedDataPath build/DerivedData \
-            -resultBundlePath build/ForeverSixty.xcresult
+          for attempt in 1 2; do
+            destination=$(bash ../../tools/ios-ci-simulator.sh "$IOS_RUNTIME_VERSION" "$IOS_RUNTIME_BUILD" "$SIMULATOR_UDID")
+            SIMULATOR_UDID=${destination##*id=}
+            rm -rf build/ForeverSixty.xcresult
+            status=0
+            xcodebuild test \
+              -project ForeverSixty.xcodeproj \
+              -scheme ForeverSixty \
+              -destination "$destination" \
+              -derivedDataPath build/DerivedData \
+              -resultBundlePath build/ForeverSixty.xcresult || status=$?
+            if [ "$status" -ne 70 ] || [ "$attempt" -eq 2 ]; then exit "$status"; fi
+            echo "::warning::xcodebuild could not use $destination (exit 70); ensuring the simulator and retrying"
+          done
       - name: Upload the recorded snapshots
         if: inputs.record == true
         uses: actions/upload-artifact@v4
