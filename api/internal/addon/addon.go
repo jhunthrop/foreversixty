@@ -512,6 +512,9 @@ type Service struct {
 	// Assignments produces the raid_assignment messages (raid_assignments.go): each
 	// character's own slots in its next raid. Nil sends none.
 	Assignments AssignmentSource
+	// RaidAnswers produces the raid_signup messages and applies the outbox's raid_answer
+	// entries (raid_answers.go). Nil sends none and defers every answer.
+	RaidAnswers RaidAnswerSource
 	// SimRequests turns an outbox's sim_request into a server run.
 	// sims.Service satisfies it. Nil answers every request
 	// "unavailable"; the export it rode in with is still stored.

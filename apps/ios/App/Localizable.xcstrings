@@ -8574,6 +8574,17 @@
         }
       }
     },
+    "notif.event.applicant": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Someone applies to the guild"
+          }
+        }
+      }
+    },
     "notif.event.bandEntered": {
       "extractionState": "manual",
       "localizations": {

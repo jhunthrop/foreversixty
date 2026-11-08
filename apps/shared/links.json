@@ -11,9 +11,9 @@
     {
       "path": "/app/raid/{guild}/{raid}",
       "params": { "guild": "int", "raid": "int" },
-      "query": { "spec": ["ask"], "state": ["in", "late", "bench", "out"] },
+      "query": { "spec": ["ask"], "state": ["in", "late", "bench", "out"], "view": ["unanswered"] },
       "screen": "raid",
-      "opens": "Raids tab, the raid page. spec=ask opens the spec sheet with In pending; state=in presses In on open.",
+      "opens": "Raids tab, the raid page. spec=ask opens the spec sheet with In pending; state=in presses In on open; view=unanswered opens it filtered to Not answered (spec 2026-11-08 F3).",
       "example": "/app/raid/2/41?spec=ask"
     },
     {
@@ -29,6 +29,13 @@
       "screen": "guild",
       "opens": "Raids tab for that guild.",
       "example": "/app/guild/2"
+    },
+    {
+      "path": "/app/guild/{guild}/applicants/{application}",
+      "params": { "guild": "int", "application": "int" },
+      "screen": "guildApplicant",
+      "opens": "Raids tab for that guild, the applicant's sheet (guild.applicant). An application already decided opens the sheet's decided state.",
+      "example": "/app/guild/2/applicants/41"
     },
     {
       "path": "/app/bis/{spec}/{band}",

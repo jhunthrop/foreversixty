@@ -500,6 +500,25 @@ public extension Endpoint where Response == GuildOfficerApplications {
     }
 }
 
+public extension Endpoint where Response == GuildApplication {
+    /// POST /v1/guilds/{id}/applications: Apply to the guild with one of your characters
+    static func applyToGuild(id: Int64, _ body: ApplicationInput) throws(APIError) -> Endpoint {
+        try .json(.post, "/v1/guilds/\(id)/applications", body: body)
+    }
+
+    /// POST /v1/guilds/{id}/applications/{app}/withdraw: Withdraw your own pending application
+    static func withdrawGuildApplication(id: Int64, app: Int64) -> Endpoint {
+        Endpoint(method: .post, path: "/v1/guilds/\(id)/applications/\(app)/withdraw")
+    }
+}
+
+public extension Endpoint where Response == GuildApplications {
+    /// GET /v1/guilds/{id}/applications/mine: Your own applications to the guild, newest first
+    static func myGuildApplications(id: Int64) -> Endpoint {
+        Endpoint(method: .get, path: "/v1/guilds/\(id)/applications/mine")
+    }
+}
+
 public extension Endpoint where Response == GuildApplicationDecision {
     /// POST /v1/guilds/{id}/applications/{app}/accept: An officer accepts an application
     static func acceptGuildApplication(id: Int64, app: Int64) -> Endpoint {
@@ -686,6 +705,8 @@ public enum ContractRoutes {
         FixtureRoute(.post, "/v1/me/calendar-feed/reset", fixture: "calendar.feed", status: 200),
         FixtureRoute(.get, "/v1/app/config", fixture: "app.config", status: 200),
         FixtureRoute(.get, "/v1/guilds/{id}/applications", fixture: "guild.applications", status: 200),
+        FixtureRoute(.post, "/v1/guilds/{id}/applications", fixture: "guild.application", status: 201),
+        FixtureRoute(.get, "/v1/guilds/{id}/applications/mine", fixture: "guild.applications.mine", status: 200),
         FixtureRoute(.post, "/v1/guilds/{id}/applications/{app}/accept", fixture: "guild.application.accept", status: 200),
     ]
 
