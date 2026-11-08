@@ -51,7 +51,9 @@ struct ReportsAccount: Equatable, Sendable {
 
 /// The site pages F10 opens in the browser.
 enum ReportsLinks {
-    static let companion = HomeLinks.setup
+    /// The logs landing: upload a log, or set up the companion.
+    static let upload = StaticSite.url.appending(path: "logs")
+    static let sample = StaticSite.url.appending(path: "reports/sample")
 
     static func web(_ id: String) -> URL { RaidLinks.report(id) }
 }

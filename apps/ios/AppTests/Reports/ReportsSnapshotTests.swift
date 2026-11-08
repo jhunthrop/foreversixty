@@ -46,10 +46,9 @@ struct ReportsSnapshotTests {
         }
     }
 
-    private func list(_ phase: ReportsPhase, account: ReportsAccount? = nil) throws -> some View {
-        let account = try account ?? ReportsTestData.account(premium: false)
-        return pushed(back: Copy.tabHome, trailing: "arrow.clockwise") {
-            ReportsListView(phase: phase, account: account, now: now, clock: clock)
+    private func list(_ phase: ReportsPhase) -> some View {
+        pushed(back: Copy.tabHome, trailing: "arrow.clockwise") {
+            ReportsListView(phase: phase, now: now, clock: clock)
         }
     }
 
@@ -79,33 +78,33 @@ struct ReportsSnapshotTests {
     // MARK: F10.1 Your reports
 
     @Test func reports_list() throws {
-        snap(try list(.loaded(try listContent)), "reports-list-ios")
+        snap(list(.loaded(try listContent)), "reports-list-ios")
     }
 
     @Test func reports_list_large() throws {
-        snap(try list(.loaded(try listContent)), "reports-list-large-ios", height: 2400, large: true)
+        snap(list(.loaded(try listContent)), "reports-list-large-ios", height: 2400, large: true)
     }
 
     @Test func reports_empty() throws {
-        snap(try list(.loaded(ReportsContent(rows: [], total: 0, page: 1, offlineSince: nil))), "reports-empty-ios")
+        snap(list(.loaded(ReportsContent(rows: [], total: 0, page: 1, offlineSince: nil))), "reports-empty-ios")
     }
 
     @Test func reports_loading() throws {
-        snap(try list(.loading), "reports-loading-ios")
+        snap(list(.loading), "reports-loading-ios")
     }
 
     @Test func reports_error() throws {
-        snap(try list(.failed), "reports-error-ios")
+        snap(list(.failed), "reports-error-ios")
     }
 
     @Test func reports_offline() throws {
         let rows = try ReportsTestData.list()
         let since = RaidTime.date("2026-12-15T21:41:00Z")
-        snap(try list(.loaded(ReportsContent(rows: rows.rows, total: rows.total, page: rows.page, offlineSince: since))), "reports-offline-ios")
+        snap(list(.loaded(ReportsContent(rows: rows.rows, total: rows.total, page: rows.page, offlineSince: since))), "reports-offline-ios")
     }
 
     @Test func reports_signedOut() throws {
-        snap(try list(.signedOut, account: .signedOut), "reports-signed-out-ios")
+        snap(list(.signedOut), "reports-signed-out-ios")
     }
 
     // MARK: F10.2 A report
@@ -184,13 +183,12 @@ struct ReportsSnapshotTests {
         let content = try listContent
         let phase = loaded(try ReportsTestData.report())
         let me = try ReportsTestData.me()
-        let account = try ReportsTestData.account(premium: false)
         let path = (router.showsList ? [ReportsDeepLinkStep.list] : []) + (router.report != nil ? [.report] : [])
         let view = NavigationStack(path: .constant(path)) {
             Color.clear.navigationTitle(Copy.tabHome).navigationDestination(for: ReportsDeepLinkStep.self) { step in
                 switch step {
                 case .list:
-                    ScrollView { ReportsListView(phase: .loaded(content), account: account, now: now, clock: clock) }
+                    ScrollView { ReportsListView(phase: .loaded(content), now: now, clock: clock) }
                         .background(FSColor.bg)
                         .reportsBar(title: Copy.reportsBack) { Button {} label: { Image(systemName: "arrow.clockwise") } }
                 case .report:

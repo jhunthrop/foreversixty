@@ -2520,6 +2520,24 @@ enum Copy {
     /// Could not revoke that device. Try again.
     static var devicesRevokeFailed: String { text("devices.revoke.failed") }
 
+    /// Signed in
+    static var devicesSignedInTitle: String { text("devices.signedInTitle") }
+
+    /// This device
+    static var devicesThisTag: String { text("devices.thisTag") }
+
+    /// Sign out everywhere else
+    static var devicesSignOutOthers: String { text("devices.signOutOthers") }
+
+    /// Sign out every other device?
+    static var devicesSignOutOthersTitle: String { text("devices.signOutOthers.title") }
+
+    /// Every other phone and the companion are signed out at once.
+    static var devicesSignOutOthersBody: String { text("devices.signOutOthers.body") }
+
+    /// That did not go through. Try again.
+    static var devicesSignOutOthersFailed: String { text("devices.signOutOthers.failed") }
+
     /// Revoke signs a device out at once. To sign this one out, use Sign out on You.
     static var devicesFooter: String { text("devices.footer") }
 
@@ -3368,6 +3386,20 @@ enum Copy {
 
     /// Your reports
     static var reportsTitle: String { text("reports.title") }
+
+    /// Every fight you logged, newest first.
+    static var reportsLead: String { text("reports.lead") }
+
+    /// {n} reports
+    static func reportsCount(n: Int) -> String {
+        format("reports.count", n)
+    }
+
+    /// Upload a log
+    static var reportsUpload: String { text("reports.upload") }
+
+    /// Open the sample report
+    static var reportsSample: String { text("reports.sample") }
 
     /// Reports
     static var reportsBack: String { text("reports.back") }
@@ -4917,6 +4949,9 @@ enum Copy {
     static func offlineDataSection(size: String) -> String {
         format("offlineData.section", size)
     }
+
+    /// On this phone
+    static var offlineDataSectionEmpty: String { text("offlineData.sectionEmpty") }
 
     /// Guides
     static var offlineDataGuides: String { text("offlineData.guides") }

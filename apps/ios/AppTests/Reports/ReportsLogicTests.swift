@@ -10,13 +10,6 @@ struct ReportsLogicTests {
 
     // MARK: F10.1 list
 
-    @Test func sections_splitAtSevenDays() throws {
-        let rows = try ReportsTestData.list().rows
-        let sections = ReportsList.sections(rows, now: now)
-        #expect(sections.thisWeek.map(\.id) == ["m4xk9d2pqz7a", "ewlrx3enxbeb", "q7c2v9tk4mzh"])
-        #expect(sections.earlier.map(\.id) == ["t3n8b5xw2kqe"])
-    }
-
     @Test func rowWords_followTheState() throws {
         let rows = try ReportsTestData.list().rows
         #expect(ReportsCopy.rowMeta(rows[0], now: now, clock: clock) == "Updated 20 s ago")
@@ -32,14 +25,6 @@ struct ReportsLogicTests {
         let words = ReportsCopy.rowA11y(row, now: now, clock: clock)
         #expect(words.hasPrefix("Blackrock Spire, Tuesday 15 December, 0 bosses, 0 kills, Private"))
         #expect(words.hasSuffix("live, updated 20 seconds ago"))
-    }
-
-    @Test func crest_usesTheLoggerThenTheCurrentCharacter() throws {
-        let row = try ReportsTestData.list().rows[0]
-        let account = try ReportsTestData.account(premium: false)
-        #expect(ReportsList.crestClass(row, characters: account.characters, currentClass: "hunter") == "warrior")
-        #expect(ReportsList.crestClass(row, characters: [], currentClass: "hunter") == "hunter")
-        #expect(ReportsList.crestClass(row, characters: [], currentClass: nil) == nil)
     }
 
     @Test func visibility_glyphs() {

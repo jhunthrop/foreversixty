@@ -153,6 +153,17 @@ public final class SessionStore {
         }
     }
 
+    /// Devices › Sign out everywhere else (`POST /v1/devices/revoke-others`): every device but
+    /// this one is signed out at once.
+    public func revokeOthers() async -> AccountActionOutcome {
+        do throws(APIError) {
+            _ = try await client.send(.revokeOtherDevices)
+            return .done
+        } catch {
+            return AccountActionOutcome(error)
+        }
+    }
+
     /// `DELETE /v1/me` with what the person typed (`DeletionConfirmation`). On 200 the account is
     /// gone and every device signed out, so the app forgets its token without calling logout.
     public func deleteAccount(confirm typed: String) async -> AccountActionOutcome {

@@ -78,6 +78,7 @@ def web_screen(mock: str, tab: str | None, back: str = '', title: str = '', shar
 # ------------------------------------------------------------------------------------------------ app-only screens
 APP_CSS2 = '''
 .ap{padding:8px 16px 24px}
+.ap.flush .pc{padding-inline:0!important}
 .ap .t-title{font-size:32px;line-height:38px}
 .ap section{margin-top:28px}
 .sheet-grab{display:block;width:36px;height:5px;border-radius:3px;background:var(--line);margin:8px auto 4px}
@@ -117,8 +118,11 @@ APP_CSS2 = '''
 '''
 
 
-def page(body: str, title: str) -> str:
-    return build_page(title, f'<div class="ap">{body}</div><style>{APP_CSS2}</style>', note='Native app mock (design/specs/2026-11-07-mobile-redesign.md).')
+def page(body: str, title: str, flush: bool = False) -> str:
+    """`flush`: the head sits on the screen's 16 pt gutter, as on the flows screens (ws_app_flows.py `.ap .pc`), instead of a
+    second 16 inside it. The account chores (devices, deletion, offline data, update required, sign in again) are flush."""
+    cls = 'ap flush' if flush else 'ap'
+    return build_page(title, f'<div class="{cls}">{body}</div><style>{APP_CSS2}</style>', note='Native app mock (design/specs/2026-11-07-mobile-redesign.md).')
 
 
 def title(text: str, color: str = '', crest: str = '', meta: list[str] | None = None, answer: str = '') -> str:
@@ -137,7 +141,7 @@ def devices(platform: str) -> str:
     body = (title('Devices') + Section('Signed in', Rows(rows, open_=True))
             + '<div class="stack">' + Button('Sign out everywhere else', tone='danger') + '</div>'
             + '<p class="t-small" style="margin-top:16px">Revoke signs a device out at once. To sign this one out, use Sign out in Settings.</p>')
-    return app_page(platform, page(body, 'Devices'), 'home', back='Home', title='Devices')
+    return app_page(platform, page(body, 'Devices', flush=True), 'home', back='Home', title='Devices')
 
 
 DELETE_STATES = {
@@ -155,11 +159,11 @@ def delete(state: str):
             body = (f'<div class="center"><img class="seal" src="../../../web/public/seal-400.png" alt="">'
                     + title('Account deleted') + '<p class="t-small">Everything is removed within 30 days. You can sign in with Battle.net again any time to start fresh.</p>'
                     + '<div class="stack">' + Button('Done', primary=True) + '</div></div>')
-            return app_page(platform, page(body, 'Account deleted'), None, navbar=False)
+            return app_page(platform, page(body, 'Account deleted', flush=True), None, navbar=False)
         if state == 'failed':
             n = Notice('That did not go through. Nothing was deleted. Try again.', tone='neutral')
             body = title('Delete your account') + n + '<div class="stack">' + Button('Try again', primary=True) + Button('Cancel') + '</div>'
-            return app_page(platform, page(body, 'Delete your account'), 'home', back='Home')
+            return app_page(platform, page(body, 'Delete your account', flush=True), 'home', back='Home')
         head, lose, warn = DELETE_STATES[state]
         rows = Rows([Row(x, link=False, slim=True) for x in lose], open_=True)
         body = (title(head) + '<p class="t-lead" style="margin-top:8px">This removes your characters, sims and guild sign-ups. It cannot be undone.</p>'
@@ -167,7 +171,7 @@ def delete(state: str):
                 + (Notice(warn) if warn else '')
                 + Section('When', '<p class="t-small" style="padding-top:12px">At once from the app and the site. Backups clear within 30 days.</p>')
                 + '<div class="stack">' + Button('Delete my account', tone='danger') + Button('Cancel') + '</div>')
-        return app_page(platform, page(body, head), 'home', back='Home', title=head)
+        return app_page(platform, page(body, head, flush=True), 'home', back='Home', title=head)
     return b
 
 
@@ -184,7 +188,7 @@ def offline(state: str):
                                           Row('Download on Wi-Fi only', 'Icons and new guides wait for Wi-Fi.', trail=Switch('Download on Wi-Fi only'), link=False)], open_=True))
                 + '<div class="stack">' + Button('Update now') + Button('Remove downloaded data', tone='danger') + '</div>'
                 + '<p class="t-small" style="margin-top:16px">Checked today at 4:12 pm. Your characters, sign-ups and sims are not stored here; they load when you are online.</p>')
-        return app_page(platform, page(body, 'Offline data'), 'home', back='Home', title='Offline data')
+        return app_page(platform, page(body, 'Offline data', flush=True), 'home', back='Home', title='Offline data')
     return b
 
 
@@ -193,14 +197,14 @@ def update_required(platform: str) -> str:
     body = (f'<div class="center"><img class="seal" src="../../../web/public/seal-400.png" alt="">' + title('Update Forever Sixty')
             + '<p class="t-small">This version is too old. Update to keep signing up and simming. Your characters and sign-ups are safe.</p>'
             + '<div class="stack">' + Button(f'Update in {store}', primary=True) + '</div></div>')
-    return app_page(platform, page(body, 'Update Forever Sixty'), None, navbar=False)
+    return app_page(platform, page(body, 'Update Forever Sixty', flush=True), None, navbar=False)
 
 
 def expired(platform: str) -> str:
     body = (f'<div class="center"><img class="seal" src="../../../web/public/seal-400.png" alt="">' + title('Sign in again')
             + '<p class="t-small">Your Battle.net link expired. Sign in again to bring your characters back.</p>'
             + '<div class="stack">' + Button('Sign in with Battle.net', primary=True) + '</div></div>')
-    return app_page(platform, page(body, 'Sign in again'), 'home', navbar=False)
+    return app_page(platform, page(body, 'Sign in again', flush=True), 'home', navbar=False)
 
 
 def raid_night(state: str):

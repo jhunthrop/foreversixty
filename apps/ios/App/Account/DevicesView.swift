@@ -10,25 +10,44 @@ enum DevicesState: Equatable {
     case failed
 }
 
-/// F1.6 You › Devices. Pure over its state; `DevicesScreen` loads and acts.
+/// Devices (mock ios-devices): Signed in, a row per device with Revoke (this one tagged), Sign out
+/// everywhere else, and the footer. Pure over its state; `DevicesScreen` loads and acts.
 struct DevicesView: View {
     let state: DevicesState
     /// The row whose revoke failed: `Could not revoke that device.` shows under it.
     let failedRevoke: String?
+    var othersFailed = false
     let onRevoke: (DeviceRow) -> Void
+    var onRevokeOthers: () -> Void = {}
     let onRetry: () -> Void
     @State private var confirming: DeviceRow?
+    @State private var confirmingOthers = false
+
+    /// `.ap section { margin-top: 28px }`; `.stack { margin-top: 20px }`.
+    static let sectionGap: CGFloat = 28
+    static let stackGap: CGFloat = FSSpace.space5
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: FSSpace.space4) {
-                content
-                Text(Copy.devicesFooter).font(ScaledType.meta).foregroundStyle(FSColor.muted)
+            VStack(alignment: .leading, spacing: 0) {
+                PageHeader(title: Copy.devicesTitle)
+                FSSection(Copy.devicesSignedInTitle) { content }
+                    .padding(.top, Self.sectionGap)
+                if case let .loaded(rows) = state, rows.contains(where: \.canRevoke) {
+                    FSButton(Copy.devicesSignOutOthers, kind: .danger) { confirmingOthers = true }
+                        .padding(.top, Self.stackGap)
+                    if othersFailed { SmallText(Copy.devicesSignOutOthersFailed, color: FSColor.wipe).padding(.top, FSSpace.space2) }
+                }
+                SmallText(Copy.devicesFooter).padding(.top, FSSpace.space4)
             }
-            .padding(FSSpace.space4)
+            .padding(.top, FSSpace.space2)
+            .padding(.horizontal, FSSpace.gutterPhone)
+            .padding(.bottom, FSSpace.space6)
+            .parityContent()
         }
         .background(FSColor.bg)
         .navigationTitle(Copy.devicesTitle)
+        .navigationBarTitleDisplayMode(.inline)
         .alert(
             confirming.map { Copy.devicesRevokeTitle(device: $0.name) } ?? "",
             isPresented: Binding(get: { confirming != nil }, set: { if !$0 { confirming = nil } }),
@@ -39,6 +58,12 @@ struct DevicesView: View {
         } message: { _ in
             Text(Copy.devicesRevokeBody)
         }
+        .alert(Copy.devicesSignOutOthersTitle, isPresented: $confirmingOthers) {
+            Button(Copy.commonCancel, role: .cancel) {}
+            Button(Copy.devicesSignOutOthers, role: .destructive, action: onRevokeOthers)
+        } message: {
+            Text(Copy.devicesSignOutOthersBody)
+        }
     }
 
     @ViewBuilder
@@ -47,50 +72,31 @@ struct DevicesView: View {
         case .loading:
             VStack(spacing: 0) {
                 ForEach(0..<3, id: \.self) { _ in
-                    AccountRow(icon: "iphone", title: "Placeholder device", subtitle: "Last used")
+                    FSRow(title: "Placeholder device", sub: "Last used", inset: 0) { EmptyView() }
                 }
             }
             .redacted(reason: .placeholder)
-            .quietCard()
         case let .loaded(rows):
             VStack(spacing: 0) {
-                ForEach(rows) { row in
-                    deviceRow(row)
-                    if row.id != rows.last?.id { Divider().overlay(FSColor.lineSoft) }
-                }
+                ForEach(rows) { row in deviceRow(row) }
             }
-            .quietCard()
         case .failed:
-            VStack(alignment: .leading, spacing: FSSpace.space3) {
-                Text(Copy.accountDevicesLoadFailed)
-                    .font(ScaledType.body)
-                    .foregroundStyle(FSColor.wipe)
-                    .accessibilityAddTraits(.isStaticText)
-                Button(Copy.commonTryAgain, action: onRetry).buttonStyle(BrandButtonStyle(.secondary, height: 44))
-            }
+            LoadError(Copy.accountDevicesLoadFailed, retryTitle: Copy.commonTryAgain, retry: onRetry)
         }
     }
 
     private func deviceRow(_ row: DeviceRow) -> some View {
-        VStack(alignment: .leading, spacing: FSSpace.space1) {
-            HStack {
-                AccountRow(
-                    icon: row.isCompanion ? "desktopcomputer" : "iphone",
-                    title: AccountCopy.deviceName(row),
-                    subtitle: AccountCopy.deviceMeta(row)
-                )
+        FSRow(title: row.name, sub: AccountCopy.deviceMeta(row), inset: 0, trailPlacement: .below, lead: { EmptyView() }) {
+            VStack(alignment: .leading, spacing: FSSpace.space2) {
                 if row.canRevoke {
                     Button(Copy.devicesRevoke) { confirming = row }
-                        .buttonStyle(BrandButtonStyle(.destructive, height: 44))
-                        .fixedSize()
-                        .padding(.trailing, FSSpace.space4)
+                        .buttonStyle(FSButtonStyle(.danger, fullWidth: false, small: true))
+                } else {
+                    FSTag(Copy.devicesThisTag)
                 }
-            }
-            if failedRevoke == row.id {
-                Text(Copy.devicesRevokeFailed)
-                    .font(ScaledType.meta)
-                    .foregroundStyle(FSColor.wipe)
-                    .padding([.horizontal, .bottom], FSSpace.space4)
+                if failedRevoke == row.id {
+                    SmallText(Copy.devicesRevokeFailed, color: FSColor.wipe)
+                }
             }
         }
     }
@@ -103,9 +109,13 @@ struct DevicesScreen: View {
     @Environment(\.openURL) private var openURL
     @State private var state: DevicesState = .loading
     @State private var failedRevoke: String?
+    @State private var othersFailed = false
 
     var body: some View {
-        DevicesView(state: state, failedRevoke: failedRevoke, onRevoke: revoke, onRetry: { Task { await load() } })
+        DevicesView(
+            state: state, failedRevoke: failedRevoke, othersFailed: othersFailed, onRevoke: revoke, onRevokeOthers: revokeOthers,
+            onRetry: { Task { await load() } }
+        )
             .task { await load() }
     }
 
@@ -116,6 +126,20 @@ struct DevicesScreen: View {
             onCountChange(rows.count)
         } catch {
             state = .failed
+        }
+    }
+
+    private func revokeOthers() {
+        Task {
+            switch await session.revokeOthers() {
+            case .done:
+                othersFailed = false
+                await load()
+            case .failed, .refused, .confirmMismatch:
+                othersFailed = true
+            case .needsBrowser:
+                openURL(AccountLinks.account)
+            }
         }
     }
 

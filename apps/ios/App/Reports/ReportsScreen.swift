@@ -28,7 +28,7 @@ struct ReportsScreen: View {
     var body: some View {
         ScrollView {
             ReportsListView(
-                phase: store.phase, account: account, pageFailed: store.pageFailed, isSigningIn: isSigningIn,
+                phase: store.phase, pageFailed: store.pageFailed, isSigningIn: isSigningIn,
                 now: dependencies.now(), clock: dependencies.clock, actions: actions
             )
         }
@@ -49,7 +49,8 @@ struct ReportsScreen: View {
             open: { router.report = ReportRoute(id: $0.id) },
             retry: { Task { await store.load() } },
             loadMore: { Task { await store.loadMore() } },
-            getCompanion: { openURL(ReportsLinks.companion) },
+            upload: { openURL(ReportsLinks.upload) },
+            sample: { openURL(ReportsLinks.sample) },
             signIn: signIn
         )
     }

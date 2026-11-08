@@ -14,16 +14,6 @@ enum OfflineCategory: String, CaseIterable, Sendable {
         }
     }
 
-    var systemImage: String {
-        switch self {
-        case .guides: "book"
-        case .bis: "shield"
-        case .talents: "point.3.connected.trianglepath.dotted"
-        case .search: "magnifyingglass"
-        case .icons: "square.grid.2x2"
-        }
-    }
-
     /// Which category a saved file under a build belongs to; nil for files the screen does not
     /// list (the active build and dates at the root).
     static func of(relativePath: String) -> OfflineCategory? {

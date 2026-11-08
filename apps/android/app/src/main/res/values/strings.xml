@@ -764,6 +764,12 @@
     <string name="devices_revoke_title">Revoke %1$s?</string>
     <string name="devices_revoke_body">It is signed out of Forever Sixty at once.</string>
     <string name="devices_revoke_failed">Could not revoke that device. Try again.</string>
+    <string name="devices_signedInTitle">Signed in</string>
+    <string name="devices_thisTag">This device</string>
+    <string name="devices_signOutOthers">Sign out everywhere else</string>
+    <string name="devices_signOutOthers_title">Sign out every other device?</string>
+    <string name="devices_signOutOthers_body">Every other phone and the companion are signed out at once.</string>
+    <string name="devices_signOutOthers_failed">That did not go through. Try again.</string>
     <string name="devices_footer">Revoke signs a device out at once. To sign this one out, use Sign out on You.</string>
     <string name="account_deviceWord">phone</string>
     <string name="account_selector_detail" tools:ignore="PluralsCandidate">%1$s · %2$d</string>
@@ -1004,6 +1010,13 @@
     <string name="paperdoll_a11y_better">A better item is on your best in slot list.</string>
     <string name="paperdoll_detail" tools:ignore="PluralsCandidate">%1$s · ilvl %2$d</string>
     <string name="reports_title">Your reports</string>
+    <string name="reports_lead">Every fight you logged, newest first.</string>
+    <plurals name="reports_count">
+        <item quantity="one">1 report</item>
+        <item quantity="other">%1$d reports</item>
+    </plurals>
+    <string name="reports_upload">Upload a log</string>
+    <string name="reports_sample">Open the sample report</string>
     <string name="reports_back">Reports</string>
     <string name="reports_thisWeek">This week</string>
     <string name="reports_earlier">Earlier</string>
@@ -1489,6 +1502,7 @@
     <string name="offlineData_title">Offline data</string>
     <string name="offlineData_youRow_sub">Guides, lists and talents on this phone</string>
     <string name="offlineData_section">On this phone, %1$s</string>
+    <string name="offlineData_sectionEmpty">On this phone</string>
     <string name="offlineData_guides">Guides</string>
     <string name="offlineData_bis">Best in slot lists</string>
     <string name="offlineData_talents">Talents</string>

@@ -25,15 +25,26 @@ struct ReportView: View {
             case .loading:
                 ReportSkeleton()
             case .failed:
-                ReportsErrorCard(text: Copy.reportFailed, retry: actions.retry).padding(16)
+                unavailable { LoadError(Copy.reportFailed, retryTitle: Copy.commonTryAgain, inline: true, retry: actions.retry) }
             case .notYours:
-                ReportStateCard(title: Copy.reportNotYoursTitle, detail: Copy.reportNotYoursBody, color: FSColor.strong).padding(16)
+                unavailable { ReportStateLines(title: Copy.reportNotYoursTitle, detail: Copy.reportNotYoursBody, color: FSColor.strong) }
             case let .loaded(content):
                 loaded(content)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.bottom, SimsListView.tabBarClearance)
+        .padding(.bottom, FSSpace.space6)
+        .parityContent()
+    }
+
+    /// A report that cannot show (mock ios-report-error): the plain title, then the one Plate
+    /// with why, 20 under it.
+    private func unavailable(@ViewBuilder _ message: () -> some View) -> some View {
+        VStack(alignment: .leading, spacing: ReportsListView.plateGap) {
+            PageHeader(title: Copy.reportTag)
+            Plate { message() }
+        }
+        .padding(.horizontal, FSSpace.gutterPhone)
     }
 
     @ViewBuilder
@@ -95,22 +106,31 @@ struct ReportView: View {
     }
 }
 
-/// A report state's two lines in a quiet card (spec F10.5).
+/// A report state's two lines in the Plate (spec F10.5).
 struct ReportStateCard: View {
     let title: String
     let detail: String
     let color: Color
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text(title).font(ScaledType.lead).foregroundStyle(color)
-                .fixedSize(horizontal: false, vertical: true)
-            Text(detail).font(ScaledType.meta).foregroundStyle(FSColor.muted)
-                .fixedSize(horizontal: false, vertical: true)
+        Plate { ReportStateLines(title: title, detail: detail, color: color) }
+    }
+}
+
+/// A state's sentence in its colour over the muted detail, padded as a Plate's message.
+struct ReportStateLines: View {
+    let title: String
+    let detail: String
+    let color: Color
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: FSSpace.space1) {
+            Text(title).type(FSType.body).foregroundStyle(color).fixedSize(horizontal: false, vertical: true)
+            Text(detail).type(FSType.small).foregroundStyle(FSColor.muted).fixedSize(horizontal: false, vertical: true)
         }
-        .padding(16)
+        .padding(.top, 18)
+        .padding([.horizontal, .bottom], FSSpace.space4)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .quietCard()
         .accessibilityElement(children: .combine)
     }
 }

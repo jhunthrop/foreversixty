@@ -51,27 +51,10 @@ enum ReportVisibility: Equatable, Sendable {
 
 /// The list's rules (spec F10.1): pure data in, data out. Every sentence is in `ReportsCopy`.
 enum ReportsList {
-    /// `This week` holds reports created within this window of now.
-    static let thisWeek: TimeInterval = 7 * 24 * 60 * 60
-
-    /// The rows split into `This week` and `Earlier`, each keeping the server's newest-first order.
-    static func sections(_ rows: [ReportRow], now: Date) -> (thisWeek: [ReportRow], earlier: [ReportRow]) {
-        let recent = rows.filter { now.timeIntervalSince($0.createdAt) < thisWeek }
-        let older = rows.filter { now.timeIntervalSince($0.createdAt) >= thisWeek }
-        return (recent, older)
-    }
-
     /// Whole seconds since the companion last spoke (heartbeat, else the last upload), never negative.
     static func secondsSinceUpdate(_ row: ReportRow, now: Date) -> Int {
         let last = row.heartbeatAt ?? row.lastUploadAt ?? row.createdAt
         return max(0, Int(now.timeIntervalSince(last)))
-    }
-
-    /// The row's crest: the logging character's class from the account, else the current
-    /// character's class, else nil (the neutral crest).
-    static func crestClass(_ row: ReportRow, characters: [AccountCharacter], currentClass: String?) -> String? {
-        let logger = row.loggingCharacter.flatMap { logger in characters.first { $0.key == logger.key } }
-        return logger?.className ?? currentClass
     }
 
     /// Home's `Your last raid`: a finished report with at least one boss pull.

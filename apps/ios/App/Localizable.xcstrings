@@ -2241,6 +2241,61 @@
         }
       }
     },
+    "devices.signedInTitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Signed in"
+          }
+        }
+      }
+    },
+    "devices.signOutOthers": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sign out everywhere else"
+          }
+        }
+      }
+    },
+    "devices.signOutOthers.body": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Every other phone and the companion are signed out at once."
+          }
+        }
+      }
+    },
+    "devices.signOutOthers.failed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "That did not go through. Try again."
+          }
+        }
+      }
+    },
+    "devices.signOutOthers.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sign out every other device?"
+          }
+        }
+      }
+    },
     "devices.this": {
       "extractionState": "manual",
       "localizations": {
@@ -2248,6 +2303,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "This iPhone"
+          }
+        }
+      }
+    },
+    "devices.thisTag": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This device"
           }
         }
       }
@@ -8222,6 +8288,17 @@
         }
       }
     },
+    "offlineData.sectionEmpty": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "On this phone"
+          }
+        }
+      }
+    },
     "offlineData.talents": {
       "extractionState": "manual",
       "localizations": {
@@ -12930,6 +13007,30 @@
         }
       }
     },
+    "reports.count": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "1 report"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%1$lld reports"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "reports.earlier": {
       "extractionState": "manual",
       "localizations": {
@@ -13009,6 +13110,17 @@
         }
       }
     },
+    "reports.lead": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Every fight you logged, newest first."
+          }
+        }
+      }
+    },
     "reports.refresh": {
       "extractionState": "manual",
       "localizations": {
@@ -13028,6 +13140,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "%1$@ · %2$@ · %3$@"
+          }
+        }
+      }
+    },
+    "reports.sample": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open the sample report"
           }
         }
       }
@@ -13118,6 +13241,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Updated %1$lld s ago"
+          }
+        }
+      }
+    },
+    "reports.upload": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Upload a log"
           }
         }
       }

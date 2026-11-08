@@ -88,19 +88,23 @@ public struct FSButton: View {
 }
 
 /// `ui/PageHeader`: the Marcellus title (32/38) once per screen, in the class colour or `strong`,
-/// an optional lead (a crest) and one wrapping meta line. Reports `head`, `head-title` and
-/// `head-meta`.
-public struct PageHeader<Lead: View, Meta: View>: View {
+/// an optional lead (a crest), one wrapping meta line and, under them, the actions (the web's
+/// `.ph-actions`). Reports `head`, `head-title` and `head-meta`.
+public struct PageHeader<Lead: View, Meta: View, Actions: View>: View {
     private let title: String
     private let titleColor: Color
     private let alignment: HorizontalAlignment
     private let balanced: Bool
     private let lead: Lead
     private let meta: Meta
+    private let actions: Actions
     private let hasMeta: Bool
+    private let hasActions: Bool
 
     static var padTop: CGFloat { FSSpace.space4 }
     static var padBottom: CGFloat { 14 }
+    /// `.ph-actions` sits 16 under the title block.
+    static var actionsGap: CGFloat { FSSpace.space4 }
 
     public init(
         title: String,
@@ -108,7 +112,8 @@ public struct PageHeader<Lead: View, Meta: View>: View {
         alignment: HorizontalAlignment = .leading,
         balanced: Bool = false,
         @ViewBuilder lead: () -> Lead,
-        @ViewBuilder meta: () -> Meta
+        @ViewBuilder meta: () -> Meta,
+        @ViewBuilder actions: () -> Actions
     ) {
         self.title = title
         self.titleColor = titleColor
@@ -116,7 +121,9 @@ public struct PageHeader<Lead: View, Meta: View>: View {
         self.balanced = balanced
         self.lead = lead()
         self.meta = meta()
+        self.actions = actions()
         hasMeta = Meta.self != EmptyView.self
+        hasActions = Actions.self != EmptyView.self
     }
 
     /// The title on one line when it fits; balanced (the web's `text-wrap: balance`) over two lines
@@ -134,26 +141,29 @@ public struct PageHeader<Lead: View, Meta: View>: View {
     }
 
     public var body: some View {
-        HStack(spacing: FSSpace.space4) {
-            lead
-            // The web's shrink-to-fit block: as wide as the title or the meta line, whichever is
-            // wider, and the meta line fills it.
-            MatchedWidthStack(spacing: 6) {
-                titleText
-                    .type(FSType.title)
-                    .foregroundStyle(titleColor)
-                    .multilineTextAlignment(alignment == .center ? .center : .leading)
-                    .frame(maxWidth: .infinity, alignment: Alignment(horizontal: alignment, vertical: .center))
-                    .accessibilityLabel(title)
-                    .accessibilityAddTraits(.isHeader)
-                if hasMeta {
-                    meta.frame(maxWidth: .infinity, alignment: Alignment(horizontal: alignment, vertical: .center))
-                        .parityRegion(.headMeta)
+        VStack(alignment: alignment, spacing: Self.actionsGap) {
+            HStack(spacing: FSSpace.space4) {
+                lead
+                // The web's shrink-to-fit block: as wide as the title or the meta line, whichever is
+                // wider, and the meta line fills it.
+                MatchedWidthStack(spacing: 6) {
+                    titleText
+                        .type(FSType.title)
+                        .foregroundStyle(titleColor)
+                        .multilineTextAlignment(alignment == .center ? .center : .leading)
+                        .frame(maxWidth: .infinity, alignment: Alignment(horizontal: alignment, vertical: .center))
+                        .accessibilityLabel(title)
+                        .accessibilityAddTraits(.isHeader)
+                    if hasMeta {
+                        meta.frame(maxWidth: .infinity, alignment: Alignment(horizontal: alignment, vertical: .center))
+                            .parityRegion(.headMeta)
+                    }
                 }
+                .frame(maxWidth: .infinity, alignment: Alignment(horizontal: alignment, vertical: .center))
             }
-            .frame(maxWidth: .infinity, alignment: Alignment(horizontal: alignment, vertical: .center))
+            .parityRegion(.headTitle)
+            if hasActions { actions }
         }
-        .parityRegion(.headTitle)
         .padding(.top, Self.padTop)
         .padding(.bottom, Self.padBottom)
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -161,16 +171,42 @@ public struct PageHeader<Lead: View, Meta: View>: View {
     }
 }
 
-public extension PageHeader where Lead == EmptyView {
-    init(title: String, titleColor: Color = FSColor.strong, alignment: HorizontalAlignment = .leading, @ViewBuilder meta: () -> Meta) {
-        self.init(title: title, titleColor: titleColor, alignment: alignment, lead: { EmptyView() }, meta: meta)
+public extension PageHeader where Actions == EmptyView {
+    init(
+        title: String,
+        titleColor: Color = FSColor.strong,
+        alignment: HorizontalAlignment = .leading,
+        balanced: Bool = false,
+        @ViewBuilder lead: () -> Lead,
+        @ViewBuilder meta: () -> Meta
+    ) {
+        self.init(
+            title: title, titleColor: titleColor, alignment: alignment, balanced: balanced, lead: lead, meta: meta,
+            actions: { EmptyView() }
+        )
     }
 }
 
-public extension PageHeader where Lead == EmptyView, Meta == EmptyView {
+public extension PageHeader where Lead == EmptyView {
+    init(
+        title: String, titleColor: Color = FSColor.strong, alignment: HorizontalAlignment = .leading,
+        @ViewBuilder meta: () -> Meta, @ViewBuilder actions: () -> Actions
+    ) {
+        self.init(title: title, titleColor: titleColor, alignment: alignment, lead: { EmptyView() }, meta: meta, actions: actions)
+    }
+}
+
+public extension PageHeader where Lead == EmptyView, Actions == EmptyView {
+    init(title: String, titleColor: Color = FSColor.strong, alignment: HorizontalAlignment = .leading, @ViewBuilder meta: () -> Meta) {
+        self.init(title: title, titleColor: titleColor, alignment: alignment, lead: { EmptyView() }, meta: meta, actions: { EmptyView() })
+    }
+}
+
+public extension PageHeader where Lead == EmptyView, Meta == EmptyView, Actions == EmptyView {
     init(title: String, titleColor: Color = FSColor.strong, alignment: HorizontalAlignment = .leading, balanced: Bool = false) {
         self.init(
-            title: title, titleColor: titleColor, alignment: alignment, balanced: balanced, lead: { EmptyView() }, meta: { EmptyView() }
+            title: title, titleColor: titleColor, alignment: alignment, balanced: balanced, lead: { EmptyView() }, meta: { EmptyView() },
+            actions: { EmptyView() }
         )
     }
 }

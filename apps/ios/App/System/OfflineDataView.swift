@@ -1,8 +1,9 @@
 import DesignSystem
 import SwiftUI
 
-/// You › Offline data (spec §5.7 F15.4, board F15.4), pure over its inputs so the snapshot tests
-/// draw every state: the saved data by kind, the two switches, Update now and Remove.
+/// Offline data (mocks ios-offline-data, -empty, -strip), pure over its inputs so the snapshot
+/// tests draw every state: On this phone by kind, Updates with the two switches, Update now,
+/// Remove downloaded data and the footer; offline, the Notice under the title.
 struct OfflineDataView: View {
     let report: OfflineReport
     let update: OfflineUpdateState
@@ -21,18 +22,24 @@ struct OfflineDataView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: FSSpace.space4) {
-                SimsTitle(text: Copy.offlineDataTitle).padding(.horizontal, -16)
-                SectionLabel(text: Copy.offlineDataSection(size: OfflineWords.size(report.totalBytes)))
-                if report.isEmpty { empty } else { rows }
-                SectionLabel(text: Copy.offlineDataUpdates).padding(.top, FSSpace.space2)
-                switches
-                actions
-                Text(words.footer(checkedAt: checkedAt, now: now))
-                    .font(ScaledType.meta).foregroundStyle(FSColor.muted)
-                    .fixedSize(horizontal: false, vertical: true)
+            VStack(alignment: .leading, spacing: 0) {
+                PageHeader(title: Copy.offlineDataTitle)
+                if !online {
+                    Notice(Copy.offlineStrip(time: OfflineStamp.format(checkedAt ?? now, now: now)))
+                }
+                FSSection(report.isEmpty ? Copy.offlineDataSectionEmpty : Copy.offlineDataSection(size: OfflineWords.size(report.totalBytes))) {
+                    if report.isEmpty { empty } else { rows }
+                }
+                .padding(.top, DevicesView.sectionGap)
+                FSSection(Copy.offlineDataUpdates) { switches }
+                    .padding(.top, DevicesView.sectionGap)
+                actions.padding(.top, DevicesView.stackGap)
+                SmallText(words.footer(checkedAt: checkedAt, now: now)).padding(.top, FSSpace.space4)
             }
-            .padding(FSSpace.space4)
+            .padding(.top, FSSpace.space2)
+            .padding(.horizontal, FSSpace.gutterPhone)
+            .padding(.bottom, FSSpace.space6)
+            .parityContent()
         }
         .background(FSColor.bg)
         .alert(Copy.offlineDataRemoveConfirm, isPresented: $confirmingRemove) {
@@ -43,48 +50,37 @@ struct OfflineDataView: View {
 
     private var rows: some View {
         VStack(spacing: 0) {
-            ForEach(Array(report.rows.enumerated()), id: \.element.id) { index, row in
-                if index > 0 { Divider().overlay(FSColor.lineSoft) }
-                OfflineDataRow(row: row, meta: words.meta(row, now: now))
+            ForEach(report.rows) { row in
+                FSRow(title: row.category.title, sub: words.meta(row, now: now), inset: 0) { EmptyView() }
             }
         }
-        .quietCard()
     }
 
     private var empty: some View {
-        VStack(alignment: .leading, spacing: FSSpace.space1) {
-            Text(Copy.offlineDataEmpty).font(ScaledType.bodyStrong).foregroundStyle(FSColor.strong)
-            Text(Copy.offlineDataEmptySub).font(ScaledType.meta).foregroundStyle(FSColor.muted)
-        }
-        .fixedSize(horizontal: false, vertical: true)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(FSSpace.space4)
-        .quietCard()
+        SmallText("\(Copy.offlineDataEmpty) \(Copy.offlineDataEmptySub)").padding(.top, FSSpace.space3)
     }
 
     private var switches: some View {
         VStack(spacing: 0) {
-            OfflineToggle(title: Copy.offlineDataKeep, note: Copy.offlineDataKeepNote, isOn: $keepClassesReady)
-            Divider().overlay(FSColor.lineSoft)
-            OfflineToggle(title: Copy.offlineDataWifi, note: Copy.offlineDataWifiNote, isOn: $wifiOnly)
+            toggleRow(Copy.offlineDataKeep, note: Copy.offlineDataKeepNote, isOn: $keepClassesReady)
+            toggleRow(Copy.offlineDataWifi, note: Copy.offlineDataWifiNote, isOn: $wifiOnly)
         }
-        .quietCard()
+    }
+
+    private func toggleRow(_ title: String, note: String, isOn: Binding<Bool>) -> some View {
+        FSRow(title: title, sub: note, inset: 0, trailPlacement: .below, lead: { EmptyView() }) {
+            LabelledSwitch(title, isOn: isOn)
+        }
     }
 
     private var actions: some View {
         VStack(alignment: .leading, spacing: FSSpace.space3) {
-            Button(action: updateNow) {
-                Label(update == .updating ? Copy.offlineDataUpdating : Copy.offlineDataUpdateNow, systemImage: "arrow.clockwise")
-            }
-            .buttonStyle(BrandButtonStyle(.primary, height: 48))
-            .disabled(!online || update == .updating)
-            .opacity(online ? 1 : Self.disabledOpacity)
-            if let status { Text(status).font(ScaledType.meta).foregroundStyle(FSColor.muted) }
-            Button { confirmingRemove = true } label: {
-                Text(Copy.offlineDataRemove).foregroundStyle(FSColor.wipe)
-            }
-            .buttonStyle(BrandButtonStyle(.secondary, height: 48))
-            .disabled(report.isEmpty)
+            FSButton(update == .updating ? Copy.offlineDataUpdating : Copy.offlineDataUpdateNow, action: updateNow)
+                .disabled(!online || update == .updating)
+                .opacity(online ? 1 : Self.disabledOpacity)
+            if let status { SmallText(status) }
+            FSButton(Copy.offlineDataRemove, kind: .danger) { confirmingRemove = true }
+                .disabled(report.isEmpty)
         }
     }
 
@@ -96,72 +92,6 @@ struct OfflineDataView: View {
         case .failed: return Copy.offlineUpdateFailed
         default: return nil
         }
-    }
-}
-
-/// One saved kind: a 40 pt tile beside the name and its line at every size (board F15.4).
-private struct OfflineDataRow: View {
-    let row: OfflineRow
-    let meta: String
-
-    private static let tile: CGFloat = 40
-
-    var body: some View {
-        HStack(alignment: .top, spacing: FSSpace.space3) {
-            Image(systemName: row.category.systemImage)
-                .font(.system(size: 16))
-                .foregroundStyle(FSColor.gold)
-                .frame(width: Self.tile, height: Self.tile)
-                .background(FSColor.gold.opacity(0.12), in: .rect(cornerRadius: FSRadius.legacyPill))
-                .accessibilityHidden(true)
-            VStack(alignment: .leading, spacing: 2) {
-                Text(row.category.title).font(ScaledType.bodyStrong).foregroundStyle(FSColor.strong)
-                MetaParts(meta: meta)
-            }
-            .fixedSize(horizontal: false, vertical: true)
-            Spacer(minLength: 0)
-        }
-        .padding(.horizontal, FSSpace.space4)
-        .padding(.vertical, FSSpace.space3)
-        .accessibilityElement(children: .combine)
-    }
-}
-
-/// A row line that wraps only between its ` · ` parts, each keeping its separator at the end, so
-/// a wrapped line never starts with a bare dot.
-private struct MetaParts: View {
-    let meta: String
-    @ScaledMetric(relativeTo: .footnote) private var gap: CGFloat = 3
-
-    var body: some View {
-        let parts = meta.components(separatedBy: " · ")
-        WrapLayout(spacing: gap) {
-            ForEach(Array(parts.enumerated()), id: \.offset) { index, part in
-                Text(index < parts.count - 1 ? part + " ·" : part).font(ScaledType.meta).foregroundStyle(FSColor.muted)
-            }
-        }
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel(meta)
-    }
-}
-
-/// A switch with its note under the title (board F15.4).
-private struct OfflineToggle: View {
-    let title: String
-    let note: String
-    @Binding var isOn: Bool
-
-    var body: some View {
-        Toggle(isOn: $isOn) {
-            VStack(alignment: .leading, spacing: 2) {
-                Text(title).font(ScaledType.bodyStrong).foregroundStyle(FSColor.text)
-                Text(note).font(ScaledType.meta).foregroundStyle(FSColor.muted).fixedSize(horizontal: false, vertical: true)
-            }
-        }
-        .tint(FSColor.gold)
-        .padding(.horizontal, FSSpace.space4)
-        .padding(.vertical, FSSpace.space3)
-        .frame(minHeight: 56)
     }
 }
 
