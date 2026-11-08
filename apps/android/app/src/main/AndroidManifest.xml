@@ -99,15 +99,14 @@
             android:taskAffinity=""
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
-        <!-- Lane F4: In, Late and Out answered from the notification, in the background. -->
+        <!-- In, Late, Bench and Out (and Late's minutes) answered from the notification, in the background. -->
         <receiver android:name=".raids.push.RaidActionReceiver" android:exported="false" />
 
-        <!--
-            TODO(lane A2, lane F7, owner): FCM. Needs the owner's Firebase project
-            (google-services.json, never committed; CI writes it from a secret), the
-            com.google.gms.google-services plugin, firebase-messaging, a
-            FirebaseMessagingService that registers its token with lane A2's push_tokens
-            endpoint, and POST_NOTIFICATIONS requested at the moment F7's spec names.
-        -->
+        <!-- Push (spec 2026-11-08 F1, F4): FCM tokens and data messages, drawn by PushNotifier. -->
+        <service android:name=".push.ForeverMessagingService" android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
     </application>
 </manifest>

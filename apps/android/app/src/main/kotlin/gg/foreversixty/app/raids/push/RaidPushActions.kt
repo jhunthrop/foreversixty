@@ -30,7 +30,12 @@ object RaidPushCategory {
 
     const val ACTION_IN = "signup_in"
     const val ACTION_LATE = "signup_late"
+    const val ACTION_BENCH = "signup_bench"
     const val ACTION_OUT = "signup_out"
+
+    /** Spec F1: after Late, how late, as `signup_late_30`; with no choice the answer stays plain Late. */
+    const val ACTION_LATE_MINUTES = "signup_late_"
+    val LATE_MINUTES = listOf(15, 30, 60)
     const val ACTION_ASK_SPEC = "ask_spec"
     const val ACTION_CHOOSE = "choose"
 
@@ -38,9 +43,14 @@ object RaidPushCategory {
     fun stateFor(action: String): SignupState? = when (action) {
         ACTION_IN -> SignupState.In
         ACTION_LATE -> SignupState.Late
+        ACTION_BENCH -> SignupState.Bench
         ACTION_OUT -> SignupState.Out
-        else -> null
+        else -> lateMinutes(action)?.let { SignupState.Late }
     }
+
+    /** The minutes a `signup_late_30` action names, else null. */
+    fun lateMinutes(action: String): Int? =
+        action.removePrefix(ACTION_LATE_MINUTES).takeIf { action.startsWith(ACTION_LATE_MINUTES) }?.toIntOrNull()?.takeIf { it in LATE_MINUTES }
 }
 
 /** A raid push's payload, read from the FCM data map (strings only). */
@@ -95,6 +105,19 @@ data class RaidPushPayload(
     }
 }
 
+/**
+ * Puts Late's minutes on the sign-up PUT. The API's `late_minutes` is being added (the app-api lane);
+ * until the generated [SignupRequest] carries it, [Unsupported] records plain Late, which is what the
+ * spec records when no minutes are chosen.
+ */
+fun interface LateMinutesField {
+    fun apply(request: SignupRequest, minutes: Int?): SignupRequest
+
+    companion object {
+        val Unsupported = LateMinutesField { request, _ -> request }
+    }
+}
+
 /** What an action did: the answer to post in place of the notification, or a screen to open. */
 sealed interface RaidPushOutcome {
     data class Answered(val answer: RaidPushPayload.Answer) : RaidPushOutcome
@@ -105,8 +128,12 @@ sealed interface RaidPushOutcome {
  * Answers a background In, Late or Out: the PUT with the chosen character, keeping its note (the
  * PUT writes note too), then the server's answer text for the result.
  */
-class RaidPushAnswerer(private val service: RaidService, private val res: Resources) {
-    suspend fun answer(payload: RaidPushPayload, state: SignupState): RaidPushOutcome {
+class RaidPushAnswerer(
+    private val service: RaidService,
+    private val res: Resources,
+    private val lateMinutes: LateMinutesField = LateMinutesField.Unsupported,
+) {
+    suspend fun answer(payload: RaidPushPayload, state: SignupState, minutes: Int? = null): RaidPushOutcome {
         val view = when (val result = service.raid(payload.guild, payload.raid)) {
             is ApiResult.Success -> result.data
             is ApiResult.Failure -> return RaidPushOutcome.Answered(payload.answer(RaidPushPayload.FAILED, res))
@@ -116,7 +143,7 @@ class RaidPushAnswerer(private val service: RaidService, private val res: Resour
             return RaidPushOutcome.Open(payload.deepLink(askingSpec = true))
         }
         val note = view.signups.firstOrNull { it.characterKey == character.characterKey }?.note.orEmpty()
-        val request = SignupRequest(state = state.wire, note = note)
+        val request = lateMinutes.apply(SignupRequest(state = state.wire, note = note), minutes.takeIf { state == SignupState.Late })
         return when (val result = service.signup(payload.guild, payload.raid, character.characterKey, request)) {
             is ApiResult.Success -> {
                 val reply = payload.answer(state.wire, res)

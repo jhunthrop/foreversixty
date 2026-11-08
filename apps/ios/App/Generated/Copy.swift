@@ -1937,6 +1937,65 @@ enum Copy {
     /// Open billing
     static var pushActionOpenBilling: String { text("push.action.openBilling") }
 
+    /// Bench
+    static var pushActionBench: String { text("push.action.bench") }
+
+    /// Review
+    static var pushActionReview: String { text("push.action.review") }
+
+    /// Decline
+    static var pushActionDecline: String { text("push.action.decline") }
+
+    /// How late?
+    static var pushLateQuestion: String { text("push.late.question") }
+
+    /// {n} min
+    static func pushLateMinutes(n: Int) -> String {
+        format("push.late.minutes", n)
+    }
+
+    /// Raids
+    static var pushGroupRaids: String { text("push.group.raids") }
+
+    /// Posted, moved, your answer due, raid night
+    static var pushGroupRaidsLine: String { text("push.group.raids.line") }
+
+    /// Gear and sims
+    static var pushGroupGear: String { text("push.group.gear") }
+
+    /// An upgrade dropped, a sim finished, BiS changed
+    static var pushGroupGearLine: String { text("push.group.gear.line") }
+
+    /// Logs
+    static var pushGroupLogs: String { text("push.group.logs") }
+
+    /// A report or the coach is ready, a new best
+    static var pushGroupLogsLine: String { text("push.group.logs.line") }
+
+    /// Guild ladder
+    static var pushGroupLadder: String { text("push.group.ladder") }
+
+    /// A guildmate passed you
+    static var pushGroupLadderLine: String { text("push.group.ladder.line") }
+
+    /// Tiers
+    static var pushGroupTiers: String { text("push.group.tiers") }
+
+    /// Your spec moved this week
+    static var pushGroupTiersLine: String { text("push.group.tiers.line") }
+
+    /// Officer
+    static var pushGroupOfficer: String { text("push.group.officer") }
+
+    /// Who has not answered, a raid short, an applicant
+    static var pushGroupOfficerLine: String { text("push.group.officer.line") }
+
+    /// Account
+    static var pushGroupAccount: String { text("push.group.account") }
+
+    /// Your plan, payments and guild approval
+    static var pushGroupAccountLine: String { text("push.group.account.line") }
+
     /// You
     static var youTitle: String { text("you.title") }
 

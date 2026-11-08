@@ -189,7 +189,7 @@ class SessionManager(
         picked.save(null)
         mutablePicked.value = null
         clearCaches()
-        // TODO(lane A2, F7): unregister this device's push token before the token goes.
+        // The push token goes with the device on the server (migration 0062): nothing to unregister.
         mutablePhase.value = SessionPhase.SignedOut(notice)
     }
 }

@@ -25,6 +25,12 @@ import gg.foreversixty.app.navigation.ForeverAppScaffold
 import gg.foreversixty.app.network.Feature
 import gg.foreversixty.app.update.PLAY_STORE_URL
 import gg.foreversixty.app.update.UpdateRequiredScreen
+import gg.foreversixty.app.auth.session.isSignedIn
+import gg.foreversixty.app.push.FcmToken
+import gg.foreversixty.app.push.PushGroup
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
@@ -69,6 +75,14 @@ class MainActivity : ComponentActivity() {
         lifecycleScope.launch { graph.session.watchForDeadTokens() }
         // Lane F15: the dynamic shortcuts follow the session too (its characters arrive after launch).
         lifecycleScope.launch { graph.session.phase.collect { graph.system.refreshShortcuts() } }
+        // Push: the groups' channels exist from the first launch; the token registers on each sign-in.
+        PushGroup.createChannels(this)
+        lifecycleScope.launch {
+            graph.session.phase.map { it.isSignedIn }.distinctUntilChanged().filter { it }.collect {
+                FcmToken.request(this@MainActivity)
+                graph.push.register()
+            }
+        }
         // Lane F14: the 30-minute snapshot refresh behind the widgets, tile and countdown.
         if (graph.widgets != null) gg.foreversixty.app.widgets.WidgetRefreshWork.periodic(this)
     }

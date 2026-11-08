@@ -8657,6 +8657,17 @@
         }
       }
     },
+    "push.action.bench": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bench"
+          }
+        }
+      }
+    },
     "push.action.choose": {
       "extractionState": "manual",
       "localizations": {
@@ -8664,6 +8675,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Choose a character"
+          }
+        }
+      }
+    },
+    "push.action.decline": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Decline"
           }
         }
       }
@@ -8730,6 +8752,194 @@
           "stringUnit": {
             "state": "translated",
             "value": "Out"
+          }
+        }
+      }
+    },
+    "push.action.review": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Review"
+          }
+        }
+      }
+    },
+    "push.group.account": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Account"
+          }
+        }
+      }
+    },
+    "push.group.account.line": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your plan, payments and guild approval"
+          }
+        }
+      }
+    },
+    "push.group.gear": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gear and sims"
+          }
+        }
+      }
+    },
+    "push.group.gear.line": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "An upgrade dropped, a sim finished, BiS changed"
+          }
+        }
+      }
+    },
+    "push.group.ladder": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guild ladder"
+          }
+        }
+      }
+    },
+    "push.group.ladder.line": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A guildmate passed you"
+          }
+        }
+      }
+    },
+    "push.group.logs": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Logs"
+          }
+        }
+      }
+    },
+    "push.group.logs.line": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A report or the coach is ready, a new best"
+          }
+        }
+      }
+    },
+    "push.group.officer": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Officer"
+          }
+        }
+      }
+    },
+    "push.group.officer.line": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Who has not answered, a raid short, an applicant"
+          }
+        }
+      }
+    },
+    "push.group.raids": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Raids"
+          }
+        }
+      }
+    },
+    "push.group.raids.line": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Posted, moved, your answer due, raid night"
+          }
+        }
+      }
+    },
+    "push.group.tiers": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tiers"
+          }
+        }
+      }
+    },
+    "push.group.tiers.line": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your spec moved this week"
+          }
+        }
+      }
+    },
+    "push.late.minutes": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld min"
+          }
+        }
+      }
+    },
+    "push.late.question": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "How late?"
           }
         }
       }

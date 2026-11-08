@@ -14,6 +14,10 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
         await Self.onWidgetRefresh?()
         return .newData
     }
+
+    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        Task { @MainActor in await PushRegistrar.shared.received(deviceToken: deviceToken) }
+    }
 }
 
 /// When the snapshot refreshes from inside the app: every foreground, a sign-up saved in the

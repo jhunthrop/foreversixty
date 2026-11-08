@@ -52,6 +52,8 @@ import gg.foreversixty.app.update.InstallId
 import gg.foreversixty.app.widgets.WidgetsFeature
 import gg.foreversixty.app.auth.session.me
 import gg.foreversixty.app.auth.session.isSignedIn
+import gg.foreversixty.app.push.PushRegistrar
+import gg.foreversixty.app.push.FcmToken
 
 /**
  * The app's object graph, built once per process and passed down explicitly. Feature lanes add
@@ -195,6 +197,15 @@ class AppGraph(context: Context, val config: ApiConfig = ApiConfig.fromBuildConf
             }
         }
     }
+
+    /** Push (spec 2026-11-08 F1, F4): this install's FCM token, registered while signed in. */
+    val push = PushRegistrar(
+        api = apiClient,
+        appVersion = identity.version,
+        fcmToken = { FcmToken.current(context) },
+        signedIn = { tokens.bearerToken() != null },
+        enabled = { isAvailable(Feature.Notifications) },
+    )
 
     val signIn = AppSignIn(
         baseUrl = config.baseUrl,

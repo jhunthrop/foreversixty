@@ -588,6 +588,25 @@
     <string name="push_action_openList">Open the list</string>
     <string name="push_action_openLoot">Open</string>
     <string name="push_action_openBilling">Open billing</string>
+    <string name="push_action_bench">Bench</string>
+    <string name="push_action_review">Review</string>
+    <string name="push_action_decline">Decline</string>
+    <string name="push_late_question">How late?</string>
+    <string name="push_late_minutes" tools:ignore="PluralsCandidate">%1$d min</string>
+    <string name="push_group_raids">Raids</string>
+    <string name="push_group_raids_line">Posted, moved, your answer due, raid night</string>
+    <string name="push_group_gear">Gear and sims</string>
+    <string name="push_group_gear_line">An upgrade dropped, a sim finished, BiS changed</string>
+    <string name="push_group_logs">Logs</string>
+    <string name="push_group_logs_line">A report or the coach is ready, a new best</string>
+    <string name="push_group_ladder">Guild ladder</string>
+    <string name="push_group_ladder_line">A guildmate passed you</string>
+    <string name="push_group_tiers">Tiers</string>
+    <string name="push_group_tiers_line">Your spec moved this week</string>
+    <string name="push_group_officer">Officer</string>
+    <string name="push_group_officer_line">Who has not answered, a raid short, an applicant</string>
+    <string name="push_group_account">Account</string>
+    <string name="push_group_account_line">Your plan, payments and guild approval</string>
     <string name="you_title">You</string>
     <string name="you_signedInWith">Signed in with Battle.net</string>
     <string name="you_plan">Plan</string>

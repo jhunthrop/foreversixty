@@ -87,11 +87,12 @@ targets:
     # simulator honours it with no Team ID; a device build needs the group registered (lane O).
     # Universal links: the Battle.net sign-in callback (https://foreversixty.gg/app/auth) and
     # shared /b/* links open the app. The site serves apple-app-site-association for both.
-    # TODO(lane A2, F7): the aps-environment entitlement and the Push
-    # Notifications capability join the same entitlements file.
+    # Push (flows spec 5.1): aps-environment per configuration, development for Debug and
+    # production for Release (APS_ENVIRONMENT below); Xcode expands it when it signs.
     entitlements:
       path: App/ForeverSixty.entitlements
       properties:
+        aps-environment: $(APS_ENVIRONMENT)
         com.apple.security.application-groups: [group.gg.foreversixty.app]
         com.apple.developer.associated-domains: ["applinks:foreversixty.gg", "webcredentials:foreversixty.gg"]
     # MARKETING_VERSION and CURRENT_PROJECT_VERSION come from apps/VERSION, through this file.
@@ -141,8 +142,10 @@ targets:
         # override with `xcodebuild ... API_MODE=live`.
         Debug:
           API_MODE: fixture
+          APS_ENVIRONMENT: development
         Release:
           API_MODE: live
+          APS_ENVIRONMENT: production
   # Lane F14: the home-screen and lock-screen widgets and the Live Activities.
   ForeverSixtyWidgets:
     type: app-extension
