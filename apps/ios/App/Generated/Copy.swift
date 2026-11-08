@@ -5076,6 +5076,289 @@ enum Copy {
     /// Share
     static var shareAction: String { text("share.action") }
 
+    /// Damage
+    static var raidGroupDamage: String { text("raid.group.damage") }
+
+    /// Level {n} {who}
+    static func homeHeadLevel(n: Int, who: String) -> String {
+        format("home.head.level", n, who)
+    }
+
+    /// {n} levels to band {band}
+    static func homeHeadToBand(n: Int, band: Int) -> String {
+        format("home.head.toBand", n, band)
+    }
+
+    /// 1 level to band {band}
+    static func homeHeadToBandOne(band: Int) -> String {
+        format("home.head.toBandOne", band)
+    }
+
+    /// Next upgrades
+    static var homeUpgradesNext: String { text("home.upgrades.next") }
+
+    /// Gear ›
+    static var homeUpgradesGear: String { text("home.upgrades.gear") }
+
+    /// Best run: {place}, {item} {gain}
+    static func homeBestRun(place: String, item: String, gain: String) -> String {
+        format("home.bestRun", place, item, gain)
+    }
+
+    /// Best run: {place}, {item} {gain}, {chance}
+    static func homeBestRunChance(place: String, item: String, gain: String, chance: String) -> String {
+        format("home.bestRun.chance", place, item, gain, chance)
+    }
+
+    /// {guild} · {raid} tonight
+    static func homeRaidTonight(guild: String, raid: String) -> String {
+        format("home.raid.tonight", guild, raid)
+    }
+
+    /// {guild} · {raid} in progress
+    static func homeRaidLive(guild: String, raid: String) -> String {
+        format("home.raid.live", guild, raid)
+    }
+
+    /// hours
+    static var homeRaidHours: String { text("home.raid.hours") }
+
+    /// min
+    static var homeRaidMin: String { text("home.raid.min") }
+
+    /// {h} hours {m} minutes
+    static func homeRaidClock(h: Int, m: Int) -> String {
+        format("home.raid.clock", h, m)
+    }
+
+    /// {date}, {time}
+    static func homeRaidWhen(date: String, time: String) -> String {
+        format("home.raid.when", date, time)
+    }
+
+    /// {when} · answer by {time}
+    static func homeRaidAnswerBy(when: String, time: String) -> String {
+        format("home.raid.answerBy", when, time)
+    }
+
+    /// You have not answered, as {name}, {role}
+    static func homeRaidNotAnswered(name: String, role: String) -> String {
+        format("home.raid.notAnswered", name, role)
+    }
+
+    /// You are {answer}, as {name}, {role}
+    static func homeRaidAnswered(answer: String, name: String, role: String) -> String {
+        format("home.raid.answered", answer, name, role)
+    }
+
+    /// {raid} · {when}
+    static func homeRaidLineTitle(raid: String, when: String) -> String {
+        format("home.raid.lineTitle", raid, when)
+    }
+
+    /// {counts} · you have not answered, as {name}, {role}
+    static func homeRaidLineSub(counts: String, name: String, role: String) -> String {
+        format("home.raid.lineSub", counts, name, role)
+    }
+
+    /// {in} in, {late} late
+    static func homeRaidCounts(in: Int, late: Int) -> String {
+        format("home.raid.counts", in, late)
+    }
+
+    /// {n} things before you pull
+    static func homeRaidReady(n: Int) -> String {
+        format("home.raid.ready", n)
+    }
+
+    /// {items} · from your last log-out, {age}
+    static func homeRaidReadySub(items: String, age: String) -> String {
+        format("home.raid.readySub", items, age)
+    }
+
+    /// {n} have not answered
+    static func homeOfficerUnanswered(n: Int) -> String {
+        format("home.officer.unanswered", n)
+    }
+
+    /// {n} have not answered, {m} of them {role}
+    static func homeOfficerUnansweredRole(n: Int, m: Int, role: String) -> String {
+        format("home.officer.unansweredRole", n, m, role)
+    }
+
+    /// tanks
+    static var homeOfficerRoleTanks: String { text("home.officer.role.tanks") }
+
+    /// healers
+    static var homeOfficerRoleHealers: String { text("home.officer.role.healers") }
+
+    /// damage
+    static var homeOfficerRoleDamage: String { text("home.officer.role.damage") }
+
+    /// {role} short by {n}
+    static func homeOfficerShort(role: String, n: Int) -> String {
+        format("home.officer.short", role, n)
+    }
+
+    /// Preview mention
+    static var homeOfficerPreview: String { text("home.officer.preview") }
+
+    /// {n} applicants
+    static func homeOfficerApplicants(n: Int) -> String {
+        format("home.officer.applicants", n)
+    }
+
+    /// Pulled {age} · {counts} · you are {answer} as {name}, {role}
+    static func homeLiveLine(age: String, counts: String, answer: String, name: String, role: String) -> String {
+        format("home.live.line", age, counts, answer, name, role)
+    }
+
+    /// Pulled {age} · {counts}
+    static func homeLiveLineNoAnswer(age: String, counts: String) -> String {
+        format("home.live.lineNoAnswer", age, counts)
+    }
+
+    /// Open raid night ›
+    static var homeLiveOpen: String { text("home.live.open") }
+
+    /// Last night
+    static var homeLastNight: String { text("home.lastNight") }
+
+    /// Sim again with your new gear
+    static var homeLastNightSim: String { text("home.lastNight.sim") }
+
+    /// Your sim is from before last night
+    static var homeLastNightSimSub: String { text("home.lastNight.simSub") }
+
+    /// New for you
+    static var homeNewForYou: String { text("home.newForYou") }
+
+    /// All activity ›
+    static var homeAllActivity: String { text("home.allActivity") }
+
+    /// All activity ({n}) ›
+    static func homeAllActivityCount(n: Int) -> String {
+        format("home.allActivity.count", n)
+    }
+
+    /// Raid with a guild that plans its nights here, and answer its raids from the app.
+    static var homeFindGuildLine: String { text("home.findGuild.line") }
+
+    /// Raid with a guild that plans its nights here, and answer its raids from the app. The first raids open {date}.
+    static func homeFindGuildFirstRaids(date: String) -> String {
+        format("home.findGuild.firstRaids", date)
+    }
+
+    /// Find a guild
+    static var homeFindGuild: String { text("home.findGuild") }
+
+    /// We could not load your home
+    static var homeErrorTitle: String { text("home.error.title") }
+
+    /// Check your connection
+    static var homeErrorSub: String { text("home.error.sub") }
+
+    /// Your characters are on their way
+    static var homeNewTitle: String { text("home.new.title") }
+
+    /// Battle.net lists a character after you play it and log out.
+    static var homeNewLine: String { text("home.new.line") }
+
+    /// Check again
+    static var homeNewCheck: String { text("home.new.check") }
+
+    /// yesterday
+    static var homeYesterday: String { text("home.yesterday") }
+
+    /// Next raid
+    static var raidTabNextRaid: String { text("raid.tab.nextRaid") }
+
+    /// Needs you
+    static var raidTabNeedsYou: String { text("raid.tab.needsYou") }
+
+    /// {n} open
+    static func raidTabOpen(n: Int) -> String {
+        format("raid.tab.open", n)
+    }
+
+    /// No raid planned yet. Your officers plan raids on the site; a push tells you the moment one is posted.
+    static var raidTabNoRaid: String { text("raid.tab.noRaid") }
+
+    /// Raid night
+    static var raidTabRaidNight: String { text("raid.tab.raidNight") }
+
+    /// {role} {have} of {want}
+    static func raidTabRoleLine(role: String, have: Int, want: Int) -> String {
+        format("raid.tab.roleLine", role, have, want)
+    }
+
+    /// {name} (Late, {n} min)
+    static func raidTabLateNote(name: String, n: Int) -> String {
+        format("raid.tab.lateNote", name, n)
+    }
+
+    /// Ready check
+    static var raidTabReadyCheck: String { text("raid.tab.readyCheck") }
+
+    /// From your last log-out, {age}
+    static func raidTabStamp(age: String) -> String {
+        format("raid.tab.stamp", age)
+    }
+
+    /// Roster
+    static var raidTabRoster: String { text("raid.tab.roster") }
+
+    /// Calendar
+    static var raidTabCalendar: String { text("raid.tab.calendar") }
+
+    /// Loot history
+    static var raidTabLoot: String { text("raid.tab.loot") }
+
+    /// Guild sims
+    static var raidTabSims: String { text("raid.tab.sims") }
+
+    /// {zone} {day}
+    static func raidTabCalendarItem(zone: String, day: String) -> String {
+        format("raid.tab.calendarItem", zone, day)
+    }
+
+    /// Raid with a guild
+    static var raidTabWithGuild: String { text("raid.tab.withGuild") }
+
+    /// Guilds that plan their raids here
+    static var raidTabWithGuildLine: String { text("raid.tab.withGuildLine") }
+
+    /// Guilds recruiting a {spec}
+    static func raidTabRecruiting(spec: String) -> String {
+        format("raid.tab.recruiting", spec)
+    }
+
+    /// Apply
+    static var raidTabApply: String { text("raid.tab.apply") }
+
+    /// Your guild is not here?
+    static var raidTabNotHere: String { text("raid.tab.notHere") }
+
+    /// Claim it: a guild master or an officer confirms with the addon or Battle.net.
+    static var raidTabClaimLine: String { text("raid.tab.claimLine") }
+
+    /// Claim your guild
+    static var raidTabClaim: String { text("raid.tab.claim") }
+
+    /// Raids start at 60
+    static var raidTabLeveler: String { text("raid.tab.leveler") }
+
+    /// {n} levels to go
+    static func raidTabLevelsToGo(n: Int) -> String {
+        format("raid.tab.levelsToGo", n)
+    }
+
+    /// Onyxia's Lair, Barrow Deeps and Hyjal Summit open at 60. Join a guild on the way and its raids show here.
+    static var raidTabLevelerLine: String { text("raid.tab.levelerLine") }
+
+    /// Sign up for your guild's raids from your phone.
+    static var raidTabOutLine: String { text("raid.tab.outLine") }
+
     /// Get the addon and companion
     static var sharedCtaGetAddonAndCompanion: String { text("shared.cta.getAddonAndCompanion") }
 

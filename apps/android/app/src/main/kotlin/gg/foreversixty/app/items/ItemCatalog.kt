@@ -1,6 +1,8 @@
 package gg.foreversixty.app.items
 
+import gg.foreversixty.app.model.BisFile
 import gg.foreversixty.app.model.Item
+import gg.foreversixty.app.model.LootFile
 import gg.foreversixty.app.network.StaticDataStore
 import gg.foreversixty.app.network.StaticEndpoints
 import gg.foreversixty.app.network.dataOrNull
@@ -22,6 +24,12 @@ class ItemCatalog(private val store: StaticDataStore) {
         val bis = request.spec?.let { store.get(StaticEndpoints.getBis(request.build, it)).dataOrNull() }
         return ItemTooltipSources(items, sets, bis)
     }
+
+    /** A spec's best in slot file, or null when it did not load. */
+    suspend fun bis(build: String, spec: String): BisFile? = store.get(StaticEndpoints.getBis(build, spec)).dataOrNull()
+
+    /** Where every item of the build comes from, or null when the file did not load. */
+    suspend fun loot(build: String): LootFile? = store.get(StaticEndpoints.getLoot(build)).dataOrNull()
 
     /** A class's items by id (lane F11: a character page's gear), or null when the file did not load. */
     suspend fun items(build: String, classSlug: String): Map<Int, Item>? =
