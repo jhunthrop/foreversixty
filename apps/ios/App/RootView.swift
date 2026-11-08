@@ -124,6 +124,11 @@ struct RootView: View {
         .task { await environment.appConfig.refresh() }
         .task { await environment.session.refresh() }
         .task { await environment.session.watchForDeadTokens() }
+        // Flows spec 5.1: the device token follows the account; the ask itself comes in context (E6).
+        .task(id: PushTrigger(signedIn: environment.session.phase.isSignedIn, active: scenePhase == .active)) {
+            PushRegistrar.shared.calls = PushTokenCalls(client: environment.client, appVersion: environment.identity.version)
+            await PushRegistrar.shared.sync(signedIn: environment.session.phase.isSignedIn)
+        }
         .widgetRefreshTriggers(environment)
         .task(id: GuidesPrefetchTrigger(active: scenePhase == .active, classes: playerClasses)) { await prefetchGuides() }
         .onOpenURL { url in DeepLink(url: url).map(openLink) }
@@ -138,7 +143,7 @@ struct RootView: View {
             current: environment.session.currentCharacter?.key, enabled: environment.isAvailable(.system)
         )) { await refreshSpotlight() }
         .task {
-            RaidNotificationCenter.shared.onOpen = openRaids
+            RaidNotificationCenter.shared.onOpen = openIntent
             #if DEBUG
                 // Review captures only: the launch arguments in Raids/Debug/RaidDebugLaunch.swift.
                 // Lane F13's captures open the planner the same way (UITests/PlannerCaptureTests),
@@ -352,4 +357,11 @@ struct PlaceholderScreen: View {
                 .navigationTitle(title)
         }
     }
+}
+
+/// When the push token is checked: a sign-in or sign-out, and every foreground (a permission
+/// turned on in Settings registers on return).
+private struct PushTrigger: Equatable {
+    let signedIn: Bool
+    let active: Bool
 }

@@ -6,7 +6,7 @@ import Routing
 /// The raid notification's categories and actions (app-v1.md "Push payloads", spec 6.3). The
 /// server names the category; the app registers it once at launch with these action ids.
 enum RaidPushCategory {
-    /// In, Late and Out, all answered in the background.
+    /// In, Late, Bench and Out, all answered in the background (flows spec F1).
     static let signup = "RAID_SIGNUP"
     /// `Choose a spec` (foreground, opens the spec sheet) and Out (background).
     static let askSpec = "RAID_ASK_SPEC"
@@ -15,6 +15,7 @@ enum RaidPushCategory {
 
     static let actionIn = "signup_in"
     static let actionLate = "signup_late"
+    static let actionBench = "signup_bench"
     static let actionOut = "signup_out"
     static let actionAskSpec = "ask_spec"
     static let actionChoose = "choose"
@@ -24,6 +25,7 @@ enum RaidPushCategory {
         switch id {
         case actionIn: .signedIn
         case actionLate: .late
+        case actionBench: .bench
         case actionOut: .out
         default: nil
         }
