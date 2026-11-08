@@ -1,6 +1,5 @@
 package gg.foreversixty.app.home
 
-import gg.foreversixty.app.common.NewBuildStrip
 import android.content.Context
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
@@ -75,7 +74,6 @@ import gg.foreversixty.app.sims.SimsRoute
 import gg.foreversixty.app.talents.TalentsFeature
 import gg.foreversixty.app.talents.TalentCharacter
 import gg.foreversixty.app.talents.TalentsModel
-import gg.foreversixty.app.talents.TalentsRoute
 import java.io.File
 import kotlinx.coroutines.launch
 
@@ -227,19 +225,12 @@ fun HomeCharacterScreen(
     val scope = rememberCoroutineScope()
     val store = remember(character.key) { HomeStore.live(dependencies.client, dependencies.cache, dependencies.connectivity) }
     val phase by store.phase.collectAsStateWithLifecycle()
-    var showGear by rememberSaveable { mutableStateOf(false) }
-    var showTalents by rememberSaveable { mutableStateOf(false) }
     var tooltip by remember { mutableStateOf<ItemTooltipRequest?>(null) }
     LaunchedEffect(character.key) { store.load(character) }
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) { scope.launch { store.refreshIfStale(character) } }
 
     val home = phase.homeOrNull()
     val res = LocalResources.current
-    // Lane F6: one Talents model per character, loaded ahead of the pushed screen.
-    val talentsModel = remember(character.key) {
-        dependencies.talents?.let { TalentsModel(it.source, TalentCharacter.from(character), it.catalog) }
-    }
-    LaunchedEffect(talentsModel) { talentsModel?.load() }
     val reportsFeature = dependencies.reports
     val rankingsFeature = dependencies.rankings
     val openItem = { look: ItemLook, sourceLine: String?, wornId: Int? ->
@@ -247,7 +238,6 @@ fun HomeCharacterScreen(
     }
 
     val sims = dependencies.sims
-    val talents = dependencies.talents
     if (sims != null && sims.navigator.showsList) {
         SimsRoute(sims, serverSims, onBack = { sims.navigator.showsList = false })
     } else if (reportsFeature != null && reportsFeature.navigator.showsList) {
@@ -255,17 +245,6 @@ fun HomeCharacterScreen(
     } else if (rankingsFeature != null && (rankingsFeature.navigator.showsBoard || rankingsFeature.navigator.character != null)) {
         val reportsLink = reportsFeature?.let { RankingsReports(it, reports.viewer) }
         RankingsRoute(rankingsFeature, reports.rankings, reportsLink, onBack = { rankingsFeature.navigator.showsBoard = false })
-    } else if (showTalents && talents != null) {
-        BackHandler { showTalents = false }
-        val shownModel = talentsModel ?: remember(character.key) { TalentsModel(talents.source, TalentCharacter.from(character), talents.catalog) }
-        // Lane F15: a newer build waits behind the strip above Talents; Update reloads it on that build.
-        Column(Modifier.fillMaxSize()) {
-            NewBuildStrip(shownModel) { scope.launch { shownModel.load() } }
-            TalentsRoute(character, shownModel, talents.planner) { showTalents = false }
-        }
-    } else if (showGear && home != null) {
-        BackHandler { showGear = false }
-        GearPage(home, character, dependencies.catalog) { look, wornId -> openItem(look, null, wornId) }
     } else {
         Column(Modifier.fillMaxSize().background(FsColor.bg)) {
             topBar()
@@ -295,24 +274,6 @@ data class HomeReports(
     val signIn: () -> Unit = {},
     val rankings: RankingsViewer = RankingsViewer.SignedOut,
 )
-
-/** Your gear, with the build's items file loaded for the slots the answer does not name. */
-@Composable
-private fun GearPage(home: CharacterHome, character: HomeCharacter, catalog: ItemCatalog, open: (ItemLook, Int?) -> Unit) {
-    val res = LocalResources.current
-    val probe = HomePresenter.tooltipRequest(ItemLook(0), home, character, res)
-    val sources by produceState<ItemTooltipSources?>(null, home) { value = catalog.sources(probe) }
-    val items = sources?.items.orEmpty()
-    val blocker = GearModel.offHandBlocker(home, character.gear, items, ItemTooltipModel.band(probe, sources?.bis))
-    Box(Modifier.fillMaxSize().background(FsColor.bg).verticalScroll(rememberScrollState())) {
-        GearList(
-            rows = GearModel.rows(home, character.gear, items, res, blocker),
-            intro = stringResource(R.string.gear_intro, HomePresenter.bandHead(home, character, res).orEmpty()),
-            build = home.dataBuild,
-            open = open,
-        )
-    }
-}
 
 private fun HomePhase.homeOrNull(): CharacterHome? = when (this) {
     is HomePhase.Loaded -> home
