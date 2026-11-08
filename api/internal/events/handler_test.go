@@ -34,6 +34,9 @@ func (m *memPrefs) SaveSettings(_ context.Context, uid int64, c SettingsChange) 
 	if c.RaidReminder != nil {
 		p.RaidReminder = *c.RaidReminder
 	}
+	if c.OfficerDMs != nil {
+		p.OfficerDMs = *c.OfficerDMs
+	}
 	for _, ch := range c.Prefs {
 		p = p.With(ch.Kind, ch.Channel, ch.Enabled)
 	}

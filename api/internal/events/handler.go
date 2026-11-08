@@ -71,8 +71,10 @@ type PrefsView struct {
 	TimeZone   string         `json:"time_zone"`
 	QuietHours QuietHoursView `json:"quiet_hours"`
 	// RaidReminder is the raid-day reminder, "HH:MM" in TimeZone.
-	RaidReminder string          `json:"raid_reminder"`
-	Events       []EventPrefView `json:"events"`
+	RaidReminder string `json:"raid_reminder"`
+	// OfficerDMs lets the guild's officers open a Discord DM from their not-answered list.
+	OfficerDMs bool            `json:"officer_dms"`
+	Events     []EventPrefView `json:"events"`
 }
 
 // ViewOf is p as the routes show it, every catalogue event in its order.
@@ -85,6 +87,7 @@ func ViewOf(p Prefs) PrefsView {
 		TimeZone:     zone,
 		QuietHours:   QuietHoursView{Enabled: p.Quiet.Enabled, Start: clock(p.Quiet.Start), End: clock(p.Quiet.End)},
 		RaidReminder: clock(p.RaidReminder),
+		OfficerDMs:   p.OfficerDMs,
 		Events:       make([]EventPrefView, len(Catalogue)),
 	}
 	for i, s := range Catalogue {
@@ -129,6 +132,7 @@ type patchRequest struct {
 	QuietHours *QuietHoursView `json:"quiet_hours"`
 	// RaidReminder is "HH:MM" on a 15-minute step.
 	RaidReminder *string `json:"raid_reminder"`
+	OfficerDMs   *bool   `json:"officer_dms"`
 	Events       []struct {
 		Kind    Kind    `json:"kind"`
 		Channel Channel `json:"channel"`
@@ -186,6 +190,7 @@ func (req patchRequest) change() (SettingsChange, map[string]string) {
 		}
 		c.RaidReminder = &at
 	}
+	c.OfficerDMs = req.OfficerDMs
 	if len(req.Events) > len(Catalogue)*len(Channels) {
 		fields["events"] = "too many changes"
 	}
