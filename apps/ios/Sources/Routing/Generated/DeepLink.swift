@@ -8,12 +8,14 @@ import Foundation
 public enum DeepLink: Equatable, Sendable {
     /// Home on that character; it becomes the current character. /app/character/{region}/{ruleset}/{name}
     case character(region: String, ruleset: String, name: String)
-    /// Raids tab, the raid page. spec=ask opens the spec sheet with In pending; state=in presses In on open. /app/raid/{guild}/{raid}
-    case raid(guild: Int64, raid: Int64, spec: String? = nil, state: String? = nil)
+    /// Raids tab, the raid page. spec=ask opens the spec sheet with In pending; state=in presses In on open; view=unanswered opens it filtered to Not answered (spec 2026-11-08 F3). /app/raid/{guild}/{raid}
+    case raid(guild: Int64, raid: Int64, spec: String? = nil, state: String? = nil, view: String? = nil)
     /// Raids tab, the raid page, Your raid night. /app/raid/{guild}/{raid}/night
     case raidNight(guild: Int64, raid: Int64)
     /// Raids tab for that guild. /app/guild/{guild}
     case guild(guild: Int64)
+    /// Raids tab for that guild, the applicant's sheet (guild.applicant). An application already decided opens the sheet's decided state. /app/guild/{guild}/applicants/{application}
+    case guildApplicant(guild: Int64, application: Int64)
     /// BiS on that list; band is 20 to 60 or p1. /app/bis/{spec}/{band}
     case bis(spec: String, band: String)
     /// Home, Sims, the result. /app/sim/{id}
@@ -74,6 +76,7 @@ public enum DeepLink: Equatable, Sendable {
             Self.matchRaid,
             Self.matchRaidNight,
             Self.matchGuild,
+            Self.matchGuildApplicant,
             Self.matchBis,
             Self.matchSim,
             Self.matchReport,
@@ -107,6 +110,7 @@ public enum DeepLink: Equatable, Sendable {
         case .raid: "raid"
         case .raidNight: "raidNight"
         case .guild: "guild"
+        case .guildApplicant: "guildApplicant"
         case .bis: "bis"
         case .sim: "sim"
         case .report: "report"
@@ -135,9 +139,10 @@ public enum DeepLink: Equatable, Sendable {
     public var url: URL {
         switch self {
         case let .character(region, ruleset, name): Self.link("/app/character/\(region)/\(ruleset)/\(name)", [])
-        case let .raid(guild, raid, spec, state): Self.link("/app/raid/\(guild)/\(raid)", [("spec", spec), ("state", state)])
+        case let .raid(guild, raid, spec, state, view): Self.link("/app/raid/\(guild)/\(raid)", [("spec", spec), ("state", state), ("view", view)])
         case let .raidNight(guild, raid): Self.link("/app/raid/\(guild)/\(raid)/night", [])
         case let .guild(guild): Self.link("/app/guild/\(guild)", [])
+        case let .guildApplicant(guild, application): Self.link("/app/guild/\(guild)/applicants/\(application)", [])
         case let .bis(spec, band): Self.link("/app/bis/\(spec)/\(band)", [])
         case let .sim(id): Self.link("/app/sim/\(id)", [])
         case let .report(id): Self.link("/app/report/\(id)", [])
@@ -169,7 +174,7 @@ public enum DeepLink: Equatable, Sendable {
 
     private static func matchRaid(_ s: [String], _ q: [String: String]) -> DeepLink? {
         guard s.count == 4, s[0] == "app", s[1] == "raid", let guild = Int64(s[2]), let raid = Int64(s[3]) else { return nil }
-        return .raid(guild: guild, raid: raid, spec: allowed(q["spec"], ["ask"]), state: allowed(q["state"], ["in","late","bench","out"]))
+        return .raid(guild: guild, raid: raid, spec: allowed(q["spec"], ["ask"]), state: allowed(q["state"], ["in","late","bench","out"]), view: allowed(q["view"], ["unanswered"]))
     }
 
     private static func matchRaidNight(_ s: [String], _ q: [String: String]) -> DeepLink? {
@@ -180,6 +185,11 @@ public enum DeepLink: Equatable, Sendable {
     private static func matchGuild(_ s: [String], _ q: [String: String]) -> DeepLink? {
         guard s.count == 3, s[0] == "app", s[1] == "guild", let guild = Int64(s[2]) else { return nil }
         return .guild(guild: guild)
+    }
+
+    private static func matchGuildApplicant(_ s: [String], _ q: [String: String]) -> DeepLink? {
+        guard s.count == 5, s[0] == "app", s[1] == "guild", let guild = Int64(s[2]), s[3] == "applicants", let application = Int64(s[4]) else { return nil }
+        return .guildApplicant(guild: guild, application: application)
     }
 
     private static func matchBis(_ s: [String], _ q: [String: String]) -> DeepLink? {

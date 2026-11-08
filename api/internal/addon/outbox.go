@@ -62,6 +62,7 @@ type outboxWire struct {
 	Export         *OutboxExport   `json:"export"`
 	SimRequest     json.RawMessage `json:"sim_request"`
 	RosterSnapshot json.RawMessage `json:"roster_snapshot"`
+	RaidAnswer     json.RawMessage `json:"raid_answer"`
 }
 
 // Outbox is a read format 1 outbox. A part the outbox carried whose
@@ -77,6 +78,9 @@ type Outbox struct {
 	// DroppedMembers counts the snapshot's members that failed
 	// validation and were left out of what is stored.
 	DroppedMembers int
+
+	// RaidAnswers is the raid_answer list (raid_answers.go), nil when the outbox carried none.
+	RaidAnswers []RaidAnswerEntry
 }
 
 // OutboxExport is the outbox's export: Character is Name-Realm, Code the
@@ -117,6 +121,10 @@ type OutboxResult struct {
 	// DroppedMembers is how many snapshot members failed validation and
 	// were not stored.
 	DroppedMembers int `json:"dropped_members,omitempty"`
+	// RaidAnswer is, entry by entry in the outbox's order, what became of each raid_answer:
+	// accepted or refused (the companion removes it from the game's file) or deferred (kept and
+	// sent again). Absent when the outbox carried none.
+	RaidAnswer []RaidAnswerResult `json:"raid_answer,omitempty"`
 }
 
 // readOutbox reads the outbox's format and, for format 1, the outbox
@@ -153,6 +161,9 @@ func readOutbox(w http.ResponseWriter, r *http.Request, raw json.RawMessage) (*O
 	}
 	if present(wire.RosterSnapshot) {
 		ob.RosterSnapshot, ob.DroppedMembers, ob.RosterInvalid = readRoster(wire.RosterSnapshot)
+	}
+	if present(wire.RaidAnswer) {
+		ob.RaidAnswers = readRaidAnswers(wire.RaidAnswer)
 	}
 	return ob, true
 }
@@ -315,6 +326,12 @@ func (s *Service) applyOutbox(ctx context.Context, userID int64, ob *Outbox) (*O
 	exports, err := s.Store.Exports(ctx, userID)
 	if err != nil {
 		return nil, "", err
+	}
+	// The answers name their own characters, so they apply whatever becomes of the export.
+	if len(ob.RaidAnswers) > 0 {
+		if res.RaidAnswer, err = s.applyRaidAnswers(ctx, userID, exports, ob.RaidAnswers); err != nil {
+			return nil, "", err
+		}
 	}
 	own, ok := resolveOwn(exports, ob.Export.Character)
 	if !ok {
