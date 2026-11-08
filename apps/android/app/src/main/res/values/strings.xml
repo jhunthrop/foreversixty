@@ -1674,8 +1674,11 @@
         <item quantity="other">%1$d things before you pull</item>
     </plurals>
     <string name="home_raid_readySub">%1$s · from your last log-out, %2$s</string>
-    <string name="home_officer_unanswered" tools:ignore="PluralsCandidate">%1$d have not answered</string>
-    <string name="home_officer_unansweredRole" tools:ignore="PluralsCandidate">%1$d have not answered, %2$d of them %3$s</string>
+    <plurals name="home_officer_unanswered">
+        <item quantity="one">1 has not answered</item>
+        <item quantity="other">%1$d have not answered</item>
+    </plurals>
+    <string name="home_officer_unansweredRole" tools:ignore="PluralsCandidate">%1$s, %2$d of them %3$s</string>
     <string name="home_officer_role_tanks">tanks</string>
     <string name="home_officer_role_healers">healers</string>
     <string name="home_officer_role_damage">damage</string>

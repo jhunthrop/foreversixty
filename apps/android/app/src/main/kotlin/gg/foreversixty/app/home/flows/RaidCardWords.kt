@@ -101,11 +101,12 @@ class RaidCardWords(private val res: Resources, private val clock: RaidClock, pr
     private fun officer(raid: RaidView, badge: RaidBadge): OfficerItems {
         val short = ShortRole.of(raid)
         val unansweredInRole = short?.let { role -> raid.notSigned.count { it.role == role.wire } } ?: 0
+        val notAnswered = res.getQuantityString(R.plurals.home_officer_unanswered, badge.unanswered, badge.unanswered)
         val unanswered = when {
             badge.unanswered <= 0 -> null
             short != null && unansweredInRole > 0 ->
-                res.getString(R.string.home_officer_unansweredRole, badge.unanswered, unansweredInRole, res.getString(short.lower))
-            else -> res.getString(R.string.home_officer_unanswered, badge.unanswered)
+                res.getString(R.string.home_officer_unansweredRole, notAnswered, unansweredInRole, res.getString(short.lower))
+            else -> notAnswered
         }
         val shortLine = short?.let { res.getString(R.string.home_officer_short, res.getString(it.group), it.missing) }
         val applicants = badge.applicants.takeIf { it > 0 }?.let { res.getQuantityString(R.plurals.home_officer_applicants, it, it) }

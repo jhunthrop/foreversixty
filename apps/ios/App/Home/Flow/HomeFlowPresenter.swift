@@ -192,7 +192,7 @@ struct HomeFlowPresenter {
         guard let short = RaidShortRole.of(raid) else { return HomeLine(title: Copy.homeOfficerUnanswered(n: count), sub: "") }
         let ofRole = raid.notSigned.filter { $0.role == short.role }.count
         let title = ofRole > 0
-            ? Copy.homeOfficerUnansweredRole(n: count, m: ofRole, role: short.lowerWord)
+            ? Copy.homeOfficerUnansweredRole(unanswered: Copy.homeOfficerUnanswered(n: count), m: ofRole, role: short.lowerWord)
             : Copy.homeOfficerUnanswered(n: count)
         return HomeLine(title: title, sub: Copy.homeOfficerShort(role: short.word, n: short.missing))
     }

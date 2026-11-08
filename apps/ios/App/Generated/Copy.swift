@@ -5557,9 +5557,9 @@ enum Copy {
         format("home.officer.unanswered", n)
     }
 
-    /// {n} have not answered, {m} of them {role}
-    static func homeOfficerUnansweredRole(n: Int, m: Int, role: String) -> String {
-        format("home.officer.unansweredRole", n, m, role)
+    /// {unanswered}, {m} of them {role}
+    static func homeOfficerUnansweredRole(unanswered: String, m: Int, role: String) -> String {
+        format("home.officer.unansweredRole", unanswered, m, role)
     }
 
     /// tanks

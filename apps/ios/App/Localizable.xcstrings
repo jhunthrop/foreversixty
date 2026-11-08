@@ -4593,21 +4593,33 @@
       "extractionState": "manual",
       "localizations": {
         "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$lld have not answered"
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "1 has not answered"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%1$lld have not answered"
+                }
+              }
+            }
           }
         }
       }
     },
     "home.officer.unansweredRole": {
-      "comment": "Arguments: 1 n (int), 2 m (int), 3 role (string)",
+      "comment": "Arguments: 1 unanswered (string), 2 m (int), 3 role (string)",
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$lld have not answered, %2$lld of them %3$@"
+            "value": "%1$@, %2$lld of them %3$@"
           }
         }
       }
