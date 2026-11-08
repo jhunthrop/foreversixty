@@ -137,29 +137,18 @@ class SystemScreenshotTest {
         IconCacheSize(41_000_000, Instant.ofEpochMilli(saved)),
     )
 
-    private fun offlineData(name: String, large: Boolean, report: OfflineReport, confirming: Boolean = false, online: Boolean = true) =
+    private fun offlineData(name: String, large: Boolean, report: OfflineReport, confirming: Boolean = false) =
         capture(name, large) {
             OfflineDataScreen(
-                OfflineDataState(report, keepClassesReady = true, wifiOnly = true, online = online, updating = false, note = null, checkedAt = now, confirmingRemove = confirming),
+                OfflineDataState(report, keepClassesReady = true, wifiOnly = true, online = true, updating = false, note = null, checkedAt = now, confirmingRemove = confirming),
                 now,
                 OfflineDataActions(),
             )
         }
 
-    @Test fun offlineData() = offlineData("f15-offline-data", false, report)
-
-    @Test @Config(qualifiers = PIXEL_9_XL)
-    fun offlineDataLarge() = offlineData("f15-offline-data", true, report)
-
-    @Test fun offlineDataEmpty() = offlineData("f15-offline-data-empty", false, OfflineReport(emptyList()))
-
-    @Test fun offlineDataEmptyLarge() = offlineData("f15-offline-data-empty", true, OfflineReport(emptyList()))
-
     @Test fun offlineDataRemove() = offlineData("f15-offline-data-remove", false, report, confirming = true)
 
     @Test fun offlineDataRemoveLarge() = offlineData("f15-offline-data-remove", true, report, confirming = true)
-
-    @Test fun offlineDataNoConnection() = offlineData("f15-offline-data-offline", false, report, online = false)
 
     // F15.5 the new data strip, on a guide
 

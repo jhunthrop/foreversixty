@@ -1,20 +1,13 @@
 package gg.foreversixty.app.search.ui
 
-import androidx.annotation.DrawableRes
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.HorizontalDivider
@@ -23,28 +16,16 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import gg.foreversixty.app.R
-import gg.foreversixty.app.common.ClassCrest
 import gg.foreversixty.app.designsystem.FsColor
-import gg.foreversixty.app.designsystem.FsRadius
-import gg.foreversixty.app.designsystem.ScaledType
-import gg.foreversixty.app.designsystem.GameColors
 import gg.foreversixty.app.designsystem.MicroLabel
-import gg.foreversixty.app.designsystem.Tag
 import gg.foreversixty.app.designsystem.classColor
 import gg.foreversixty.app.designsystem.quietCard
-import gg.foreversixty.app.items.GameIconImage
-import gg.foreversixty.app.items.ItemIcon
 import gg.foreversixty.app.items.ItemQuality
-import gg.foreversixty.app.items.SpecIcon
 import gg.foreversixty.app.search.logic.SearchTarget
 
 /** Row sizes (spec F12.2): item icon 40, the others 36; rows at least 64 tall, so every target is 48+. */
@@ -100,89 +81,6 @@ fun titleColor(target: SearchTarget): Color = when (target) {
     is SearchTarget.Character -> classColor(target.character.className)
     is SearchTarget.Guide -> classColor(target.guide.className)
     is SearchTarget.Talent -> FsColor.strong
-}
-
-/** The row's leading art: item icon 40, ringed crest 36, spec icon 36 or talent icon 36. */
-@Composable
-fun TargetIcon(target: SearchTarget, build: String) {
-    when (target) {
-        is SearchTarget.Item -> ItemIcon(target.item.icon, target.item.quality, build, SearchLayout.itemIcon)
-        is SearchTarget.Character -> ClassCrest(target.character.className, SearchLayout.icon)
-        is SearchTarget.Guide -> SpecIcon(target.guide.icon, build, SearchLayout.icon)
-        is SearchTarget.Talent -> TalentIcon(target.talent.icon, target.talent.name, build, SearchLayout.icon)
-    }
-}
-
-/** A talent's icon on its tile, with the name's first letters while the art loads. */
-@Composable
-fun TalentIcon(icon: String, name: String, build: String, size: Dp) {
-    val shape = RoundedCornerShape(FsRadius.legacyPill)
-    Box(Modifier.size(size).clip(shape).background(FsColor.cardTop).border(1.dp, GameColors.iconLine, shape)) {
-        GameIconImage(icon, build, size, fallback = name.take(2))
-    }
-}
-
-/** One result or Recent row: art, the coloured title (with `You` on the account's own), the meta. */
-@Composable
-fun TargetRow(
-    target: SearchTarget,
-    title: String,
-    meta: String,
-    build: String,
-    titleColor: Color,
-    youTag: String? = null,
-    trailing: RowTrailing = RowTrailing.None,
-    onClick: () -> Unit,
-) {
-    TappableRow(onClick) {
-        TargetIcon(target, build)
-        Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-            FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.Center) {
-                Text(title, style = ScaledType.lead.copy(fontWeight = FontWeight.Medium), color = titleColor)
-                youTag?.let { Tag(it, FsColor.gold, Modifier.align(Alignment.CenterVertically)) }
-            }
-            Text(meta, style = ScaledType.body, color = FsColor.muted)
-        }
-        Trailing(trailing)
-    }
-}
-
-/** A quick link of the For card: a 32 tile with its glyph, the label, a chevron. */
-@Composable
-fun LinkRow(@DrawableRes icon: Int, label: String, trailing: RowTrailing = RowTrailing.Chevron, onClick: () -> Unit) {
-    TappableRow(onClick, minHeight = SearchLayout.linkRowHeight) {
-        Box(
-            Modifier.size(SearchLayout.tile).background(FsColor.cardTop, RoundedCornerShape(FsRadius.legacyControl)),
-            contentAlignment = Alignment.Center,
-        ) {
-            Icon(painterResource(icon), contentDescription = null, tint = FsColor.gold, modifier = Modifier.size(18.dp))
-        }
-        Text(label, style = ScaledType.lead.copy(fontWeight = FontWeight.Medium), color = FsColor.strong, modifier = Modifier.weight(1f))
-        Trailing(trailing)
-    }
-}
-
-/** A row's end: nothing, a chevron (opens in the app) or the external-link glyph (opens the website). */
-enum class RowTrailing {
-    None,
-    Chevron,
-    External,
-    ;
-
-    companion object {
-        fun of(opensWebsite: Boolean, inApp: RowTrailing = None): RowTrailing = if (opensWebsite) External else inApp
-    }
-}
-
-@Composable
-fun Trailing(trailing: RowTrailing) {
-    when (trailing) {
-        RowTrailing.None -> Unit
-        RowTrailing.Chevron -> Chevron()
-        RowTrailing.External -> Icon(
-            painterResource(R.drawable.ic_open_external), contentDescription = null, tint = FsColor.muted, modifier = Modifier.size(18.dp),
-        )
-    }
 }
 
 @Composable

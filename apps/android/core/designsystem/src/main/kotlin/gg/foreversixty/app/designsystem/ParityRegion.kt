@@ -58,14 +58,21 @@ data class ParityItem(val kind: ParityItemKind, val bounds: Rect, val scroll: St
  */
 class ParityRecorder {
     val regions: MutableMap<String, Rect> = linkedMapOf()
-    private val itemsByElement: MutableMap<Any, ParityItem> = linkedMapOf()
+    private val itemsByElement: MutableMap<Any, Pair<ParityItem, LayoutCoordinates>> = linkedMapOf()
     private var root: LayoutCoordinates? = null
 
-    /** Every counted element, once each however often it was laid out. */
-    val items: List<ParityItem> get() = itemsByElement.values.toList()
+    /**
+     * Every counted element, once each however often it was laid out, measured against the content
+     * root when read: an element placed before the root (the profile button above the page) is not
+     * left in window coordinates.
+     */
+    val items: List<ParityItem>
+        get() = itemsByElement.values.map { (item, coordinates) ->
+            if (coordinates.isAttached) item.copy(bounds = boundsOf(coordinates)) else item
+        }
 
-    internal fun item(element: Any, item: ParityItem) {
-        itemsByElement[element] = item
+    internal fun item(element: Any, item: ParityItem, coordinates: LayoutCoordinates) {
+        itemsByElement[element] = item to coordinates
     }
 
     internal fun root(coordinates: LayoutCoordinates) {
@@ -108,7 +115,7 @@ fun Modifier.parityItem(kind: ParityItemKind): Modifier = composed {
         val element = remember { Any() }
         val scroll = LocalParityScroll.current
         Modifier.onGloballyPositioned { coordinates ->
-            recorder.item(element, ParityItem(kind, recorder.boundsOf(coordinates), scroll))
+            recorder.item(element, ParityItem(kind, recorder.boundsOf(coordinates), scroll), coordinates)
         }
     }
 }

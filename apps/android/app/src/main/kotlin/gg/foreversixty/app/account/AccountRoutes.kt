@@ -6,6 +6,8 @@ import android.content.Context
 import android.content.Intent
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
+import gg.foreversixty.app.flows.FlowBackBar
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.CircularProgressIndicator
@@ -27,8 +29,10 @@ import gg.foreversixty.app.R
 import gg.foreversixty.app.auth.BrowserLauncher
 import gg.foreversixty.app.auth.session.AccountActionOutcome
 import gg.foreversixty.app.auth.session.DeletionConsequence
+import gg.foreversixty.app.auth.session.DeviceRow
 import gg.foreversixty.app.auth.session.SessionManager
 import gg.foreversixty.app.auth.session.SessionPhase
+import gg.foreversixty.app.auth.session.SignedOutNotice
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.guild.CalendarRoute
 import gg.foreversixty.app.guild.GuildExtrasFeature
@@ -110,27 +114,34 @@ fun HomeAccountGate(deps: AccountDeps, onPickClass: () -> Unit, signedIn: @Compo
     }
 }
 
-/** F1.1 bound to the session: the sign-in tap, the spinner and the notice. */
+/**
+ * F1.1 bound to the session: the sign-in tap, the spinner and the notice. A session that ended draws
+ * Sign in again (mock `expired`), a deleted account draws Account deleted (mock `delete-done`).
+ */
 @Composable
 fun SignedOutPanel(deps: AccountDeps, onPickClass: () -> Unit, variant: SignedOutVariant = SignedOutVariant.Home) {
     val phase by deps.session.phase.collectAsStateWithLifecycle()
     val context = LocalContext.current
     val signedOutNotice = (phase as? SessionPhase.SignedOut)?.notice
-    val notice = signedOutNotice?.let { AccountCopy.notice(it) }
-    SignedOutScreen(
-        notice = notice,
-        signingIn = phase == SessionPhase.SigningIn,
-        onSignIn = {
-            deps.session.dismissNotice()
-            deps.session.beginSignIn(deps.browser(context))
-        },
-        onPickClass = {
-            deps.session.dismissNotice()
-            onPickClass()
-        },
-        variant = variant,
-        noticeIsFailure = signedOutNotice?.let(AccountCopy::isFailure) ?: true,
-    )
+    val signIn = {
+        deps.session.dismissNotice()
+        deps.session.beginSignIn(deps.browser(context))
+    }
+    when (signedOutNotice) {
+        SignedOutNotice.SessionEnded -> SessionExpiredScreen(signIn)
+        SignedOutNotice.AccountDeleted -> AccountDeletedScreen { deps.session.dismissNotice() }
+        else -> SignedOutScreen(
+            notice = signedOutNotice?.let { AccountCopy.notice(it) },
+            signingIn = phase == SessionPhase.SigningIn,
+            onSignIn = signIn,
+            onPickClass = {
+                deps.session.dismissNotice()
+                onPickClass()
+            },
+            variant = variant,
+            noticeIsFailure = signedOutNotice?.let(AccountCopy::isFailure) ?: true,
+        )
+    }
 }
 
 /** The account screens the menu's Account rows open (spec 2026-11-08 section 3); Settings is the old You. */
@@ -158,22 +169,46 @@ fun AccountRoute(deps: AccountDeps, start: AccountPage, onPickClass: () -> Unit,
 private fun SignedInAccount(deps: AccountDeps, start: AccountPage, onBack: () -> Unit) {
     val session = deps.session
     val phase by session.phase.collectAsStateWithLifecycle()
-    val picked by session.pickedKey.collectAsStateWithLifecycle()
     val me = phase.let { (it as? SessionPhase.SignedIn)?.me } ?: return
     var page by rememberSaveable(start) { mutableStateOf(start) }
     var deviceCount by remember { mutableStateOf<Int?>(null) }
-    val scope = rememberCoroutineScope()
-    val context = LocalContext.current
     val version = AccountCopy.version(deps.versionName, deps.versionCode, deps.dataBuild())
     val mayLink by deps.plansLink.mayLink.collectAsStateWithLifecycle()
     val plan = PlanSummary.of(me, Instant.now())
-    val offlineData = remember(deps) { deps.offlineData() }
     val back = { if (page == start) onBack() else page = start }
     BackHandler(enabled = page != start) { page = start }
     LaunchedEffect(Unit) {
         deviceCount = (session.devices() as? ApiResult.Success)?.data?.size
     }
     LaunchedEffect(Unit) { deps.plansLink.resolve() }
+    Column(Modifier.fillMaxSize().background(FsColor.bg)) {
+        FlowBackBar(stringResource(if (page == start) R.string.menu_title else R.string.menu_settings), back)
+        AccountPageContent(deps, page, me, plan, mayLink, version, deviceCount, AccountPageNav({ page = it }, back), { deviceCount = it })
+    }
+}
+
+/** How an account page moves: to another page, or back. */
+private class AccountPageNav(val go: (AccountPage) -> Unit, val back: () -> Unit)
+
+@Composable
+private fun AccountPageContent(
+    deps: AccountDeps,
+    page: AccountPage,
+    me: Me,
+    plan: PlanSummary,
+    mayLink: Boolean,
+    version: String,
+    deviceCount: Int?,
+    nav: AccountPageNav,
+    onCount: (Int) -> Unit,
+) {
+    val session = deps.session
+    val phase by session.phase.collectAsStateWithLifecycle()
+    val picked by session.pickedKey.collectAsStateWithLifecycle()
+    val scope = rememberCoroutineScope()
+    val context = LocalContext.current
+    val offlineData = remember(deps) { deps.offlineData() }
+    val back = nav.back
     when (page) {
         AccountPage.Settings -> YouScreen(
             summary = YouSummary(
@@ -189,22 +224,22 @@ private fun SignedInAccount(deps: AccountDeps, start: AccountPage, onBack: () ->
             ),
             actions = YouActions(
                 onSeePlans = { AccountLinks.open(context, AccountLinks.PREMIUM) },
-                onPlan = { page = AccountPage.Plan },
-                onDevices = { page = AccountPage.Devices },
+                onPlan = { nav.go(AccountPage.Plan) },
+                onDevices = { nav.go(AccountPage.Devices) },
                 onPrivacy = { AccountLinks.open(context, AccountLinks.PRIVACY) },
                 onTerms = { AccountLinks.open(context, AccountLinks.TERMS) },
-                onAbout = { page = AccountPage.About },
-                onDeleteAccount = { page = AccountPage.Delete },
+                onAbout = { nav.go(AccountPage.About) },
+                onDeleteAccount = { nav.go(AccountPage.Delete) },
                 onSignOut = { scope.launch { session.signOut() } },
-                onCalendar = deps.guildExtras?.let { { page = AccountPage.Calendar } },
-                onOfflineData = offlineData?.let { { page = AccountPage.OfflineData } },
+                onCalendar = deps.guildExtras?.let { { nav.go(AccountPage.Calendar) } },
+                onOfflineData = offlineData?.let { { nav.go(AccountPage.OfflineData) } },
             ),
             mayLink = mayLink,
             liveSurfaces = deps.liveSurfaces?.let { settings -> { LiveSurfacesCard(settings) } },
         )
         AccountPage.Plan -> PlanScreen(plan, mayLink) { AccountLinks.open(context, AccountLinks.BILLING) }
-        AccountPage.Devices -> DevicesRoute(session) { deviceCount = it }
-        AccountPage.Delete -> DeleteRoute(session, me)
+        AccountPage.Devices -> DevicesRoute(session, onCount)
+        AccountPage.Delete -> DeleteRoute(session, me) { back() }
         AccountPage.About -> AboutScreen(version)
         AccountPage.OfflineData -> offlineData?.let { model -> OfflineDataRoute(model) { back() } }
         AccountPage.Calendar -> deps.guildExtras?.let { extras ->
@@ -227,52 +262,62 @@ private fun DevicesRoute(session: SessionManager, onCount: (Int) -> Unit) {
         }
     }
     LaunchedEffect(Unit) { load() }
+    var othersFailed by remember { mutableStateOf(false) }
+    val revoke: suspend (DeviceRow) -> AccountActionOutcome = { row ->
+        session.revoke(row.id).also { if (it == AccountActionOutcome.NeedsBrowser) AccountLinks.open(context, AccountLinks.ACCOUNT) }
+    }
     DevicesScreen(
         state = state,
         failedRevoke = failedRevoke,
-        onRevoke = { row ->
-            scope.launch {
-                when (session.revoke(row.id)) {
-                    AccountActionOutcome.Done -> {
-                        failedRevoke = null
-                        load()
+        othersFailed = othersFailed,
+        actions = DevicesActions(
+            revoke = { row ->
+                scope.launch {
+                    failedRevoke = when (revoke(row)) {
+                        AccountActionOutcome.Done -> null
+                        AccountActionOutcome.NeedsBrowser -> failedRevoke
+                        AccountActionOutcome.Failed, AccountActionOutcome.ConfirmMismatch, is AccountActionOutcome.Refused -> row.id
                     }
-                    AccountActionOutcome.NeedsBrowser -> AccountLinks.open(context, AccountLinks.ACCOUNT)
-                    AccountActionOutcome.Failed, AccountActionOutcome.ConfirmMismatch, is AccountActionOutcome.Refused ->
-                        failedRevoke = row.id
+                    load()
                 }
-            }
-        },
-        onRetry = { scope.launch { load() } },
+            },
+            retry = { scope.launch { load() } },
+            signOutOthers = {
+                val others = (state as? DevicesState.Loaded)?.rows.orEmpty().filter { it.canRevoke }
+                scope.launch {
+                    othersFailed = others.map { revoke(it) }.any { it != AccountActionOutcome.Done }
+                    load()
+                }
+            },
+        ),
     )
 }
 
-/** Runs `DELETE /v1/me` with what the person typed; on success the session shows signed out. */
+/** Runs `DELETE /v1/me` with what the person typed; on success the session shows Account deleted. */
 @Composable
-private fun DeleteRoute(session: SessionManager, me: Me) {
+private fun DeleteRoute(session: SessionManager, me: Me, onCancel: () -> Unit) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     var typed by rememberSaveable { mutableStateOf("") }
     var deleting by remember { mutableStateOf(false) }
     var outcome by remember { mutableStateOf<AccountActionOutcome?>(null) }
     DeleteAccountScreen(
-        consequences = DeletionConsequence.of(me),
-        battleTag = me.user.battletag,
-        typed = typed,
-        onTyped = {
-            typed = it
-            if (outcome == AccountActionOutcome.ConfirmMismatch) outcome = null
-        },
-        deleting = deleting,
-        outcome = outcome,
-        onDelete = {
-            deleting = true
-            scope.launch {
-                val result = session.deleteAccount(typed)
-                deleting = false
-                outcome = result.takeUnless { it == AccountActionOutcome.Done }
-                if (result == AccountActionOutcome.NeedsBrowser) AccountLinks.open(context, AccountLinks.ACCOUNT)
-            }
-        },
+        DeleteState(DeletionConsequence.of(me), me.user.battletag, typed, deleting, outcome),
+        DeleteActions(
+            typed = {
+                typed = it
+                if (outcome == AccountActionOutcome.ConfirmMismatch) outcome = null
+            },
+            delete = {
+                deleting = true
+                scope.launch {
+                    val result = session.deleteAccount(typed)
+                    deleting = false
+                    outcome = result.takeUnless { it == AccountActionOutcome.Done }
+                    if (result == AccountActionOutcome.NeedsBrowser) AccountLinks.open(context, AccountLinks.ACCOUNT)
+                }
+            },
+            cancel = onCancel,
+        ),
     )
 }

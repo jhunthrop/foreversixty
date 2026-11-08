@@ -27,7 +27,7 @@ data class IconCacheSize(val bytes: Long, val updated: Instant?)
 object OfflineData {
     private const val KB = 1_000.0
     private const val MB = 1_000_000.0
-    private const val WHOLE_MB_FROM = 10.0
+    private const val WHOLE_MB_FROM = 100.0
     private const val DAYS_PER_WEEK = 7L
 
     /** The row a saved `/data/...` file belongs to; null for files no row shows (the active build pointer). */
@@ -84,7 +84,7 @@ object OfflineData {
         return OfflineReport(rows)
     }
 
-    /** `410 KB`, `2.4 MB` (one decimal under 10 MB), `41 MB` (whole above). Decimal units, as iOS. */
+    /** `410 KB`, `18.4 MB` (one decimal under 100 MB, mock `offline-data`), `120 MB` (whole above). Decimal units. */
     fun size(bytes: Long): String = when {
         bytes < MB -> "${Math.round(bytes / KB).coerceAtLeast(if (bytes > 0) 1 else 0)} KB"
         bytes / MB < WHOLE_MB_FROM -> String.format(Locale.US, "%.1f MB", bytes / MB)

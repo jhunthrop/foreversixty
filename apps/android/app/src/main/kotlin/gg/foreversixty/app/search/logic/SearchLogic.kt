@@ -11,12 +11,12 @@ import kotlinx.serialization.Serializable
 /** The scope chips (spec F12.1), in the chips' order. */
 enum class SearchScope { All, Items, Characters, Guides, Talents }
 
-/** The result groups, in the order `All` draws them (spec F12.2), each with the scope that lifts its cap. */
+/** The result groups, in the order `All` draws them (flows F7), each with the scope that lifts its cap. */
 enum class SearchGroup(val scope: SearchScope) {
+    Characters(SearchScope.Characters),
+    Items(SearchScope.Items),
     Guides(SearchScope.Guides),
     Talents(SearchScope.Talents),
-    Items(SearchScope.Items),
-    Characters(SearchScope.Characters),
 }
 
 /** How a name matches the query, best first (spec F12.2): exact, prefix, word prefix, contains. */
@@ -170,14 +170,15 @@ object SearchLogic {
 
     /**
      * The groups to draw: under `All` every group with a match, five rows each, in the order
-     * Guides, Talents, Items, Characters; under a scope only its group, uncapped.
+     * Characters, Items, Guides, Talents (flows F7, mock `search-results`: look someone up first);
+     * under a scope only its group, uncapped.
      */
     fun sections(local: LocalResults, characters: List<CharacterSearchRow>, scope: SearchScope): List<SearchSection> {
         val all = listOf(
+            SearchGroup.Characters to characters.map { SearchTarget.Character(it) },
+            SearchGroup.Items to local.items.map { SearchTarget.Item(it) },
             SearchGroup.Guides to local.guides.map { SearchTarget.Guide(it) },
             SearchGroup.Talents to local.talents.map { SearchTarget.Talent(it) },
-            SearchGroup.Items to local.items.map { SearchTarget.Item(it) },
-            SearchGroup.Characters to characters.map { SearchTarget.Character(it) },
         )
         return all.filter { (group, rows) -> rows.isNotEmpty() && (scope == SearchScope.All || group.scope == scope) }
             .map { (group, rows) -> SearchSection(group, if (scope == SearchScope.All) rows.take(GROUP_CAP) else rows, rows.size) }

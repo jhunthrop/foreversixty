@@ -785,8 +785,8 @@
     <string name="plan_a11y_rowFounder">Plan, %1$s, Founder</string>
     <string name="plan_a11y_manage">Manage billing on foreversixty.gg, opens in browser</string>
     <string name="update_required_title">Update Forever Sixty</string>
-    <string name="update_required_body">This version no longer works with Forever Sixty. Update to keep your character, raids and lists in sync.</string>
-    <string name="update_required_action">Open Google Play</string>
+    <string name="update_required_body">This version is too old. Update to keep signing up and simming. Your characters and sign-ups are safe.</string>
+    <string name="update_required_action">Update in Google Play</string>
     <string name="devices_title">Devices</string>
     <string name="devices_this">This phone</string>
     <string name="devices_lastUsed">Last used %1$s</string>
@@ -795,7 +795,7 @@
     <string name="devices_revoke_title">Revoke %1$s?</string>
     <string name="devices_revoke_body">It is signed out of Forever Sixty at once.</string>
     <string name="devices_revoke_failed">Could not revoke that device. Try again.</string>
-    <string name="devices_footer">Revoke signs a device out at once. To sign this one out, use Sign out on You.</string>
+    <string name="devices_footer">Revoke signs a device out at once. To sign this one out, use Sign out in Settings.</string>
     <string name="account_deviceWord">phone</string>
     <string name="account_selector_detail" tools:ignore="PluralsCandidate">%1$s · %2$d</string>
     <string name="account_switcher_detail" tools:ignore="PluralsCandidate">%1$s · Level %2$d</string>
@@ -1779,6 +1779,34 @@
     <string name="raid_applicant_after">%1$s shows on the roster once the addon or Battle.net sees the character in the guild.</string>
     <string name="raid_applicant_line" tools:ignore="PluralsCandidate">%1$s, %2$s %3$d, %4$s</string>
     <string name="raid_applicant_failed">We could not load this application</string>
+    <string name="devices_section">Signed in</string>
+    <string name="devices_thisName">%1$s · This device</string>
+    <string name="devices_thisTag">This device</string>
+    <string name="devices_meta">%1$s · %2$s</string>
+    <string name="devices_signOutOthers">Sign out everywhere else</string>
+    <string name="devices_signOutOthers_title">Sign out every other device?</string>
+    <string name="devices_signOutOthers_body">Each one is signed out of Forever Sixty at once.</string>
+    <string name="devices_signOutOthers_failed">Some devices did not sign out. Try again.</string>
+    <string name="delete_head">Delete your account</string>
+    <string name="delete_lead">This removes your characters, sims and guild sign-ups. It cannot be undone.</string>
+    <string name="delete_whatGoes">What goes</string>
+    <string name="delete_goes_characters">Your characters, sims, builds and logs you uploaded</string>
+    <string name="delete_goes_guild">Your guild sign-ups and your place on guild rosters</string>
+    <string name="delete_goes_devices">Your devices: every phone and the companion are signed out</string>
+    <string name="delete_when">When</string>
+    <string name="delete_whenLine">At once from the app and the site. Backups clear within 30 days.</string>
+    <string name="delete_stays">What stays: billing records we must keep, public and guild reports without your name, public character data no longer linked to you, and builds you shared as anonymous links.</string>
+    <string name="delete_action">Delete my account</string>
+    <string name="delete_failed">That did not go through. Nothing was deleted. Try again.</string>
+    <string name="delete_done_title">Account deleted</string>
+    <string name="delete_done_line">Everything is removed within 30 days. You can sign in with Battle.net again any time to start fresh.</string>
+    <string name="delete_done_action">Done</string>
+    <string name="expired_title">Sign in again</string>
+    <string name="expired_line">Your Battle.net link expired. Sign in again to bring your characters back.</string>
+    <string name="offlineData_offline">Offline. Showing what you had at %1$s. Sign-ups need a connection.</string>
+    <string name="offlineData_sectionEmpty">On this phone</string>
+    <string name="offlineData_emptyLine">Nothing is saved on this phone yet. Guides and lists save here the first time you open them.</string>
+    <string name="search_hint">Find a character by name, or an item to see where it drops and who wants it.</string>
     <string name="shared_cta_getAddonAndCompanion">Get the addon and companion</string>
     <string name="shared_cta_installAddonAndCompanion">Install the addon and the companion</string>
     <string name="shared_cta_installAddonAndCompanionInline">install the addon and the companion</string>

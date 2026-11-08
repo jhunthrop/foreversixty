@@ -21,6 +21,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -179,7 +180,8 @@ private fun gainText(gain: String, unit: String?) = buildAnnotatedString {
 
 /**
  * The flows' button (`.btn`): 36 tall small, 44 otherwise; [primary] is the gold fill, the selected
- * answer among the raid's four.
+ * answer among the raid's four; [danger] the red outline (`.btn.danger`: Revoke, Delete my account).
+ * A button that is not [enabled] is dimmed and does nothing.
  */
 @Composable
 fun FlowButton(
@@ -189,22 +191,35 @@ fun FlowButton(
     primary: Boolean = false,
     small: Boolean = true,
     selectedState: Boolean? = null,
+    danger: Boolean = false,
+    enabled: Boolean = true,
 ) {
     val shape = RoundedCornerShape(FsRadius.control)
     val fill = if (primary) Modifier.background(Brush.verticalGradient(listOf(FsColor.goldHover, FsColor.gold)), shape) else Modifier.background(FsColor.raised, shape)
+    val edge = when {
+        primary -> FsColor.gold
+        danger -> FsColor.wipe.copy(alpha = DANGER_EDGE)
+        else -> FsColor.line
+    }
+    val ink = when {
+        primary -> FsColor.bg
+        danger -> FsColor.wipe
+        else -> FsColor.strong
+    }
     Box(
         modifier
             .heightIn(min = if (small) SMALL_BUTTON else BUTTON)
             .parityItem(ParityItemKind.Button)
+            .alpha(if (enabled) 1f else DISABLED_ALPHA)
             .clip(shape)
             .then(fill)
-            .border(1.dp, if (primary) FsColor.gold else FsColor.line, shape)
-            .clickable(role = Role.Button, onClick = onClick)
+            .border(1.dp, edge, shape)
+            .clickable(enabled = enabled, role = Role.Button, onClick = onClick)
             .then(selectedState?.let { on -> Modifier.semantics { selected = on } } ?: Modifier)
             .padding(horizontal = BUTTON_PAD),
         contentAlignment = Alignment.Center,
     ) {
-        Text(label, style = BUTTON_TEXT, color = if (primary) FsColor.bg else FsColor.strong, maxLines = 1)
+        Text(label, style = BUTTON_TEXT, color = ink, maxLines = 1)
     }
 }
 
@@ -249,4 +264,6 @@ private val ITEM_ROW_BODY: Dp = 46.dp
 private val SMALL_BUTTON = 36.dp
 private val BUTTON = 44.dp
 private val BUTTON_PAD = 18.dp
+private const val DANGER_EDGE = 0.4f
+private const val DISABLED_ALPHA = 0.45f
 private val BUTTON_TEXT = FsType.bodyStrong.copy(fontSize = 13.sp, lineHeight = 16.sp, fontWeight = FontWeight.Bold)

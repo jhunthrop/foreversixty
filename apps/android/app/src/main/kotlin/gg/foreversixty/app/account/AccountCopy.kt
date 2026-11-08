@@ -101,14 +101,16 @@ object AccountCopy {
     @Composable
     fun age(age: RelativeAge): String = age.phrase(LocalResources.current)
 
+    /** `Pixel 9 · This device`, or the device's own name. */
     @Composable
-    fun deviceName(row: DeviceRow): String = if (row.isThisDevice) stringResource(R.string.devices_this) else row.name
+    fun deviceName(row: DeviceRow): String = if (row.isThisDevice) stringResource(R.string.devices_thisName, row.name) else row.name
 
+    /** `Signed in 30 Oct · Last used 12 min ago`, either half alone when the other is unknown. */
     @Composable
-    fun deviceMeta(row: DeviceRow): String? = when (val meta = row.meta) {
-        is DeviceRow.Meta.SignedIn -> stringResource(R.string.devices_signedIn, shortDate(meta.at))
-        is DeviceRow.Meta.LastUsed -> stringResource(R.string.devices_lastUsed, age(meta.age))
-        DeviceRow.Meta.None -> null
+    fun deviceMeta(row: DeviceRow): String? {
+        val signedIn = row.signedIn?.let { stringResource(R.string.devices_signedIn, shortDate(it)) }
+        val lastUsed = row.lastUsed?.let { stringResource(R.string.devices_lastUsed, age(it)) }
+        return if (signedIn != null && lastUsed != null) stringResource(R.string.devices_meta, signedIn, lastUsed) else signedIn ?: lastUsed
     }
 
     /** `Orc Fury Warrior · Level 58` (switcher rows). */

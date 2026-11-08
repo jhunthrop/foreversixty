@@ -4,28 +4,21 @@ import gg.foreversixty.app.model.Device
 import java.time.Duration
 import java.time.Instant
 
-/** One row of You › Devices (spec F1.6), ordered and dated; the view supplies the words. */
+/** One row of Devices (mock `devices`): signed in on a date, last used an age ago; the view supplies the words. */
 data class DeviceRow(
     val id: String,
-    /** The API's name; the view shows `This phone` instead when [isThisDevice]. */
+    /** The API's name (`Pixel 9`); the view adds `This device` when [isThisDevice]. */
     val name: String,
     val isThisDevice: Boolean,
-    val meta: Meta,
-    /** The desktop companion, drawn with a monitor rather than a phone. */
+    /** When it signed in; null when the API sent no date. */
+    val signedIn: Instant?,
+    /** How long since it was last used; this device is used now. */
+    val lastUsed: RelativeAge?,
+    /** The desktop companion. */
     val isCompanion: Boolean = false,
 ) {
     /** Every device but this one carries Revoke. */
     val canRevoke: Boolean get() = !isThisDevice
-
-    sealed interface Meta {
-        /** This device: `Signed in {date}`. */
-        data class SignedIn(val at: Instant) : Meta
-
-        /** Another device: `Last used {age}`. */
-        data class LastUsed(val age: RelativeAge) : Meta
-
-        data object None : Meta
-    }
 }
 
 object DeviceList {
@@ -42,12 +35,8 @@ object DeviceList {
         parse(device.lastSeenAt ?: device.createdAt) ?: Instant.EPOCH
 
     private fun row(device: Device, isThis: Boolean, now: Instant): DeviceRow {
-        val meta = if (isThis) {
-            parse(device.createdAt)?.let { DeviceRow.Meta.SignedIn(it) }
-        } else {
-            parse(device.lastSeenAt ?: device.createdAt)?.let { DeviceRow.Meta.LastUsed(RelativeAge.of(it, now)) }
-        }
-        return DeviceRow(device.id, device.name, isThis, meta ?: DeviceRow.Meta.None, isCompanion = device.kind == COMPANION)
+        val lastUsed = if (isThis) RelativeAge.Now else parse(device.lastSeenAt ?: device.createdAt)?.let { RelativeAge.of(it, now) }
+        return DeviceRow(device.id, device.name, isThis, parse(device.createdAt), lastUsed, isCompanion = device.kind == COMPANION)
     }
 
     private fun parse(stamp: String?): Instant? = stamp?.let { runCatching { Instant.parse(it) }.getOrNull() }
