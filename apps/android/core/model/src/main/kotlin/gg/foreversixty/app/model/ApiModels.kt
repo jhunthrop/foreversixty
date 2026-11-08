@@ -2414,6 +2414,8 @@ data class RaidOwnSignup(
     @SerialName("state") val state: String,
     @SerialName("role") val role: String,
     @SerialName("note") val note: String,
+    /** How late a Late answer said it would be: 15, 30 or 60; null for a Late with no minutes and for every other state. */
+    @SerialName("late_minutes") val lateMinutes: Int? = null,
 )
 
 /** The officer's whole raid form. */
@@ -2453,6 +2455,8 @@ data class RaidSignup(
     @SerialName("role") val role: String,
     @SerialName("state") val state: String,
     @SerialName("note") val note: String,
+    /** How late a Late answer said it would be: 15, 30 or 60; null for a Late with no minutes and for every other state. */
+    @SerialName("late_minutes") val lateMinutes: Int? = null,
     @SerialName("own") val own: Boolean,
     @SerialName("group") val group: String,
     /** The specs.json key of the spec, e.g. "hunter-beast-mastery"; null when it does not resolve. */
@@ -2900,6 +2904,14 @@ data class SignupAnswer(
     @SerialName("raid") val raid: RaidView,
     /** Your other character the server moved to Bench; tell the player. */
     @SerialName("moved") val moved: String? = null,
+    @SerialName("confirmation") val confirmation: SignupConfirmation? = null,
+)
+
+/** The notification the app posts in place of the raid push after answering from it without opening (spec 2026-11-08-app-flows F1), composed on the server after the write. title is "You're In for Onyxia's Lair", "You're Late (30 min) for Onyxia's Lair", "You're on the Bench for ..." or "You're Out for ..."; body names the character, with the pull time (In, Late) or the arrival time (Late with minutes) in the guild's raid time zone ("Kraggor, arriving 8:30 pm CST."), and " Sunderfel moved to Bench." when the server benched another of the account's characters. The server always sends it; it is optional on SignupAnswer only so a client built before it still decodes. */
+@Serializable
+data class SignupConfirmation(
+    @SerialName("title") val title: String,
+    @SerialName("body") val body: String,
 )
 
 @Serializable
@@ -2911,6 +2923,8 @@ data class SignupRequest(
     @SerialName("note") val note: String? = null,
     /** A specs.json key such as "warrior-fury", saved as the raid spec first. */
     @SerialName("spec") val spec: String? = null,
+    /** How late, from the Late chips (spec 2026-11-08-app-flows F1). Only with state late (422 invalid, field late_minutes, otherwise); leave it out for a Late with no minutes. Any answer without it clears stored minutes. */
+    @SerialName("late_minutes") val lateMinutes: Int? = null,
 )
 
 /** The character model a sim starts from. gear is the FS1 export string for an export (source addon or blizzard) and { trinkets } for a fight: branch on source, not on the shape. */

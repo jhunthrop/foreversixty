@@ -49,6 +49,8 @@ type SignupCommand struct {
 	CharacterKey, State      string
 	Role                     string
 	Note                     *string
+	// LateMinutes is a Late answer's minutes, nil for none; any other state stores none.
+	LateMinutes *int16
 }
 
 // SignupCandidate is one of an account's characters in a guild.
@@ -113,6 +115,9 @@ func (s *Service) signUp(ctx context.Context, cmd SignupCommand, skipUnchanged b
 	}
 	if cmd.Note != nil {
 		sg.Note = *cmd.Note
+	}
+	if cmd.State == SignupLate {
+		sg.LateMinutes = cmd.LateMinutes
 	}
 	was, err := s.rosterPlaceBefore(ctx, raid, cmd, char, asOfficer)
 	if err != nil {

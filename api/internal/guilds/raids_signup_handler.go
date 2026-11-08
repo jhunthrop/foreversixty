@@ -35,6 +35,8 @@ const raidEndedMessage = "This raid has ended."
 type signupAnswerView struct {
 	Raid  RaidView `json:"raid"`
 	Moved *string  `json:"moved"`
+	// Confirmation is the line the app posts after answering from a notification.
+	Confirmation SignupConfirmation `json:"confirmation"`
 }
 
 // signupRateLimit budgets sign-up writes per account against the Service's shared limiter;
@@ -76,7 +78,7 @@ func (s *Service) putSignup(w http.ResponseWriter, r *http.Request) {
 	actorID := auth.ActorFrom(r.Context()).UserID
 	cmd := SignupCommand{
 		GuildID: guildID, RaidID: raid.ID, ActorID: actorID,
-		CharacterKey: key, State: req.State, Role: req.Role, Note: &req.Note,
+		CharacterKey: key, State: req.State, Role: req.Role, Note: &req.Note, LateMinutes: req.LateMinutes,
 	}
 	spec := RaidSpecCommand{GuildID: guildID, ActorID: actorID, RaidID: raid.ID, CharacterKey: key, Spec: req.Spec}
 	if req.Spec != "" {
@@ -103,7 +105,8 @@ func (s *Service) putSignup(w http.ResponseWriter, r *http.Request) {
 		res.Raid = s.saveSignupSpec(r.Context(), spec, cmd, res.Raid)
 	}
 	httpx.CachePrivate(w)
-	httpx.WriteOK(w, r, http.StatusOK, signupAnswerView{Raid: res.Raid, Moved: res.Moved})
+	confirmation := signupConfirmation(res.Raid, res.Character.Name, cmd.State, cmd.LateMinutes, res.Moved)
+	httpx.WriteOK(w, r, http.StatusOK, signupAnswerView{Raid: res.Raid, Moved: res.Moved, Confirmation: confirmation})
 }
 
 // saveSignupSpec saves the spec of a sign-up that stood and answers the raid as it now reads

@@ -2272,6 +2272,7 @@ components:
                 state: { type: string, enum: [in, late, bench, out] }
                 role: { type: string, enum: [tank, healer, dps] }
                 note: { type: string }
+                late_minutes: { type: [integer, "null"], description: 'How late a Late answer said it would be: 15, 30 or 60; null for a Late with no minutes and for every other state.' }
             - { type: "null" }
     GuildRaids:
       type: object
@@ -2727,6 +2728,7 @@ components:
               role: { type: string, enum: [tank, healer, dps] }
               state: { type: string, enum: [in, late, bench, out] }
               note: { type: string }
+              late_minutes: { type: [integer, "null"], description: 'How late a Late answer said it would be: 15, 30 or 60; null for a Late with no minutes and for every other state.' }
               own: { type: boolean }
               group: { $ref: '#/components/schemas/RaidGroup' }
               spec_key: { type: [string, "null"], description: 'The specs.json key of the spec, e.g. "hunter-beast-mastery"; null when it does not resolve.' }
@@ -3301,12 +3303,35 @@ components:
         role: { type: string, enum: ["", tank, healer, dps], description: Empty takes the spec's default. }
         note: { type: string, maxLength: 140, description: The PUT writes note; leaving it out clears the stored note. }
         spec: { type: string, description: 'A specs.json key such as "warrior-fury", saved as the raid spec first.' }
+        late_minutes:
+          type: integer
+          enum: [15, 30, 60]
+          description: >-
+            How late, from the Late chips (spec 2026-11-08-app-flows F1). Only with state late
+            (422 invalid, field late_minutes, otherwise); leave it out for a Late with no minutes.
+            Any answer without it clears stored minutes.
     SignupAnswer:
       type: object
       required: [raid, moved]
       properties:
         raid: { $ref: '#/components/schemas/RaidView' }
         moved: { type: [string, "null"], description: Your other character the server moved to Bench; tell the player. }
+        confirmation: { $ref: '#/components/schemas/SignupConfirmation' }
+    SignupConfirmation:
+      type: object
+      description: >-
+        The notification the app posts in place of the raid push after answering from it
+        without opening (spec 2026-11-08-app-flows F1), composed on the server after the write.
+        title is "You're In for Onyxia's Lair", "You're Late (30 min) for Onyxia's Lair",
+        "You're on the Bench for ..." or "You're Out for ..."; body names the character, with
+        the pull time (In, Late) or the arrival time (Late with minutes) in the guild's raid
+        time zone ("Kraggor, arriving 8:30 pm CST."), and " Sunderfel moved to Bench." when the
+        server benched another of the account's characters. The server always sends it; it is
+        optional on SignupAnswer only so a client built before it still decodes.
+      required: [title, body]
+      properties:
+        title: { type: string }
+        body: { type: string }
     RaidComposition:
       type: object
       description: >-
@@ -4876,6 +4901,10 @@ components:
             category: { type: string, enum: [RAID_SIGNUP] }
             interruption-level: { type: string, enum: [time-sensitive] }
         kind: { type: string }
+        group:
+          type: string
+          enum: [raids, gear, logs, ladder, tiers, officer, account]
+          description: The kind's notification group (the Activity filters and notification settings).
         link: { type: string, format: uri }
         actions: { type: array, items: { $ref: '#/components/schemas/PushAction' } }
         data:
@@ -4896,22 +4925,24 @@ components:
       properties:
         message:
           type: object
-          required: [token, notification, data, android]
+          description: >-
+            Data-only: no notification block, so the Android app draws every notification itself
+            from data (its channel by group, the tag from collapse, the actions and Late chips).
+            Raid kinds and time-sensitive kinds go at HIGH priority, the rest NORMAL.
+          required: [token, data, android]
           properties:
             token: { type: string }
-            notification:
-              type: object
-              required: [title, body]
-              properties:
-                title: { type: string }
-                body: { type: string }
             data:
               type: object
               description: Strings only; actions is the actions array as a JSON string.
-              required: [kind, link]
+              required: [kind, group, title, body, link]
               additionalProperties: { type: string }
               properties:
                 kind: { type: string }
+                group: { type: string, enum: [raids, gear, logs, ladder, tiers, officer, account] }
+                title: { type: string }
+                body: { type: string }
+                collapse: { type: string, description: The notification tag; a later one with the same tag replaces it. }
                 link: { type: string }
                 thread: { type: string }
                 category: { type: string }
@@ -4923,26 +4954,24 @@ components:
                 answers: { type: string, description: As ApnsPayload.data, a JSON string. }
             android:
               type: object
-              required: [priority, collapse_key, notification]
+              required: [priority, collapse_key]
               properties:
                 priority: { type: string, enum: [HIGH, NORMAL] }
                 collapse_key: { type: string }
-                notification:
-                  type: object
-                  required: [tag]
-                  properties:
-                    tag: { type: string }
-                    click_action: { type: string }
     PushAction:
       type: object
       description: 'One notification button. The app replaces {character} in path with the region/ruleset/name it answers for.'
       required: [id, title, method, path, body]
       properties:
-        id: { type: string, enum: [signup_in, signup_late, signup_out] }
+        id: { type: string, enum: [signup_in, signup_late, signup_bench, signup_out] }
         title: { type: string }
         method: { type: string, enum: [PUT] }
         path: { type: string }
-        body: { type: object, required: [state], properties: { state: { type: string, enum: [in, late, out] } } }
+        body:
+          type: object
+          required: [state]
+          description: The PUT's body; the app adds late_minutes when a Late chip was picked.
+          properties: { state: { type: string, enum: [in, late, bench, out] } }
     # Live surfaces (Wave 3 lane F14, api/internal/livesurface) ----------------------------
     Widget:
       type: object
@@ -8008,9 +8037,13 @@ paths:
       summary: Answer for one character (In, Late, Bench, Out)
       description: >-
         A member answers for their own verified characters; an officer of a guild with the
-        plan answers for any verified roster character and may write to a locked raid. A device
-        token is admitted while APP_NOTIFICATIONS_ENABLED is on (lane A2). Budget 30 writes a
-        minute per account. A sign-up refreshes the guild's Discord raid post.
+        plan answers for any verified roster character and may write to a locked raid. The app's
+        own session token (POST /v1/auth/app/exchange) is admitted while APP_NOTIFICATIONS_ENABLED
+        is on, so a notification action (In, Late with late_minutes, Bench, Out) calls this route
+        as a background request without opening the app; a companion's token is refused (401).
+        It is idempotent: the same answer again writes the same row and answers the same body.
+        Budget 30 writes a minute per account. A sign-up refreshes the guild's Discord raid post.
+        The answer's confirmation is the line to post after a background answer.
       operationId: putRaidSignup
       tags: [app]
       parameters:

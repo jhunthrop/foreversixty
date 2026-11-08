@@ -67,7 +67,7 @@ func (e *ServiceError) Error() string {
 	return fmt.Sprintf("push: %s answered %d %s", e.Service, e.Status, e.Reason)
 }
 
-// RaidSignupCategory is the button set of the raid events: In, Late and Out.
+// RaidSignupCategory is the button set of the raid events: In, Late, Bench and Out.
 const RaidSignupCategory = "RAID_SIGNUP"
 
 // maxCollapseBytes is APNs' limit on apns-collapse-id.

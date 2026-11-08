@@ -6453,17 +6453,21 @@ public struct RaidOwnSignup: Codable, Sendable, Equatable {
     public let state: String
     public let role: String
     public let note: String
+    /// How late a Late answer said it would be: 15, 30 or 60; null for a Late with no minutes and for every other state.
+    public let lateMinutes: Int?
 
     public init(
         characterKey: String,
         state: String,
         role: String,
-        note: String
+        note: String,
+        lateMinutes: Int? = nil
     ) {
         self.characterKey = characterKey
         self.state = state
         self.role = role
         self.note = note
+        self.lateMinutes = lateMinutes
     }
 }
 
@@ -6538,6 +6542,8 @@ public struct RaidSignup: Codable, Sendable, Equatable {
     public let role: String
     public let state: String
     public let note: String
+    /// How late a Late answer said it would be: 15, 30 or 60; null for a Late with no minutes and for every other state.
+    public let lateMinutes: Int?
     public let own: Bool
     public let group: String
     /// The specs.json key of the spec, e.g. "hunter-beast-mastery"; null when it does not resolve.
@@ -6557,6 +6563,7 @@ public struct RaidSignup: Codable, Sendable, Equatable {
         role: String,
         state: String,
         note: String,
+        lateMinutes: Int? = nil,
         own: Bool,
         group: String,
         specKey: String? = nil,
@@ -6571,6 +6578,7 @@ public struct RaidSignup: Codable, Sendable, Equatable {
         self.role = role
         self.state = state
         self.note = note
+        self.lateMinutes = lateMinutes
         self.own = own
         self.group = group
         self.specKey = specKey
@@ -6587,6 +6595,7 @@ public struct RaidSignup: Codable, Sendable, Equatable {
         case role
         case state
         case note
+        case lateMinutes
         case own
         case group
         case specKey
@@ -6604,6 +6613,7 @@ public struct RaidSignup: Codable, Sendable, Equatable {
         role = try c.decode(String.self, forKey: .role)
         state = try c.decode(String.self, forKey: .state)
         note = try c.decode(String.self, forKey: .note)
+        lateMinutes = try c.decodeIfPresent(Int.self, forKey: .lateMinutes)
         own = try c.decode(Bool.self, forKey: .own)
         group = try c.decode(String.self, forKey: .group)
         specKey = try c.decodeIfPresent(String.self, forKey: .specKey)
@@ -7773,13 +7783,30 @@ public struct SignupAnswer: Codable, Sendable, Equatable {
     public let raid: RaidView
     /// Your other character the server moved to Bench; tell the player.
     public let moved: String?
+    public let confirmation: SignupConfirmation?
 
     public init(
         raid: RaidView,
-        moved: String? = nil
+        moved: String? = nil,
+        confirmation: SignupConfirmation? = nil
     ) {
         self.raid = raid
         self.moved = moved
+        self.confirmation = confirmation
+    }
+}
+
+/// The notification the app posts in place of the raid push after answering from it without opening (spec 2026-11-08-app-flows F1), composed on the server after the write. title is "You're In for Onyxia's Lair", "You're Late (30 min) for Onyxia's Lair", "You're on the Bench for ..." or "You're Out for ..."; body names the character, with the pull time (In, Late) or the arrival time (Late with minutes) in the guild's raid time zone ("Kraggor, arriving 8:30 pm CST."), and " Sunderfel moved to Bench." when the server benched another of the account's characters. The server always sends it; it is optional on SignupAnswer only so a client built before it still decodes.
+public struct SignupConfirmation: Codable, Sendable, Equatable {
+    public let title: String
+    public let body: String
+
+    public init(
+        title: String,
+        body: String
+    ) {
+        self.title = title
+        self.body = body
     }
 }
 
@@ -7791,17 +7818,21 @@ public struct SignupRequest: Codable, Sendable, Equatable {
     public let note: String?
     /// A specs.json key such as "warrior-fury", saved as the raid spec first.
     public let spec: String?
+    /// How late, from the Late chips (spec 2026-11-08-app-flows F1). Only with state late (422 invalid, field late_minutes, otherwise); leave it out for a Late with no minutes. Any answer without it clears stored minutes.
+    public let lateMinutes: Int?
 
     public init(
         state: String,
         role: String? = nil,
         note: String? = nil,
-        spec: String? = nil
+        spec: String? = nil,
+        lateMinutes: Int? = nil
     ) {
         self.state = state
         self.role = role
         self.note = note
         self.spec = spec
+        self.lateMinutes = lateMinutes
     }
 }
 

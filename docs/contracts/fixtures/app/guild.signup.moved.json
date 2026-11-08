@@ -177,7 +177,8 @@
           "spec_icon": "inv_shield_06",
           "group": "tank",
           "spec_key": "warrior-protection",
-          "also": []
+          "also": [],
+          "late_minutes": null
         },
         {
           "character_key": "us/pvp/ironhide",
@@ -192,7 +193,8 @@
           "spec_icon": "inv_shield_06",
           "group": "tank",
           "spec_key": "warrior-protection",
-          "also": []
+          "also": [],
+          "late_minutes": null
         },
         {
           "character_key": "us/pvp/bramblehoof",
@@ -207,7 +209,8 @@
           "spec_icon": "ability_racial_bearform",
           "group": "tank",
           "spec_key": "druid-feral-bear",
-          "also": []
+          "also": [],
+          "late_minutes": null
         },
         {
           "character_key": "us/pvp/mendara",
@@ -222,7 +225,8 @@
           "spec_icon": "spell_holy_guardianspirit",
           "group": "healer",
           "spec_key": "priest-holy",
-          "also": []
+          "also": [],
+          "late_minutes": null
         },
         {
           "character_key": "us/pvp/gravemend",
@@ -237,7 +241,8 @@
           "spec_icon": "spell_holy_guardianspirit",
           "group": "healer",
           "spec_key": "priest-holy",
-          "also": []
+          "also": [],
+          "late_minutes": null
         },
         {
           "character_key": "us/pvp/rainspeaker",
@@ -252,7 +257,8 @@
           "spec_icon": "spell_nature_magicimmunity",
           "group": "healer",
           "spec_key": "shaman-restoration",
-          "also": []
+          "also": [],
+          "late_minutes": null
         },
         {
           "character_key": "us/pvp/tidecaller",
@@ -267,7 +273,8 @@
           "spec_icon": "spell_nature_magicimmunity",
           "group": "healer",
           "spec_key": "shaman-restoration",
-          "also": []
+          "also": [],
+          "late_minutes": null
         },
         {
           "character_key": "us/pvp/oakenmother",
@@ -282,7 +289,8 @@
           "spec_icon": "spell_nature_healingtouch",
           "group": "healer",
           "spec_key": "druid-restoration",
-          "also": []
+          "also": [],
+          "late_minutes": null
         },
         {
           "character_key": "us/pvp/soothfang",
@@ -297,7 +305,8 @@
           "spec_icon": "spell_holy_wordfortitude",
           "group": "healer",
           "spec_key": "priest-discipline",
-          "also": []
+          "also": [],
+          "late_minutes": null
         },
         {
           "character_key": "us/pvp/draknar",
@@ -312,7 +321,8 @@
           "spec_icon": "ability_warrior_innerrage",
           "group": "melee",
           "spec_key": "warrior-fury",
-          "also": []
+          "also": [],
+          "late_minutes": null
         },
         {
           "character_key": "us/pvp/ruzga",
@@ -327,7 +337,8 @@
           "spec_icon": "ability_warrior_innerrage",
           "group": "melee",
           "spec_key": "warrior-fury",
-          "also": []
+          "also": [],
+          "late_minutes": null
         },
         {
           "character_key": "us/pvp/ashfang",
@@ -342,7 +353,8 @@
           "spec_icon": "ability_marksmanship",
           "group": "ranged",
           "spec_key": "hunter-marksmanship",
-          "also": []
+          "also": [],
+          "late_minutes": null
         },
         {
           "character_key": "us/pvp/talonmaw",
@@ -357,7 +369,8 @@
           "spec_icon": "ability_hunter_swiftstrike",
           "group": "melee",
           "spec_key": "hunter-survival",
-          "also": []
+          "also": [],
+          "late_minutes": null
         },
         {
           "character_key": "us/pvp/skarn",
@@ -372,7 +385,8 @@
           "spec_icon": "ability_backstab",
           "group": "melee",
           "spec_key": "rogue-combat",
-          "also": []
+          "also": [],
+          "late_minutes": null
         },
         {
           "character_key": "us/pvp/zekra",
@@ -387,7 +401,8 @@
           "spec_icon": "ability_backstab",
           "group": "melee",
           "spec_key": "rogue-combat",
-          "also": []
+          "also": [],
+          "late_minutes": null
         },
         {
           "character_key": "us/pvp/grimshade",
@@ -402,7 +417,8 @@
           "spec_icon": "spell_shadow_shadowwordpain",
           "group": "ranged",
           "spec_key": "priest-shadow",
-          "also": []
+          "also": [],
+          "late_minutes": null
         },
         {
           "character_key": "us/pvp/lightningbolltz",
@@ -417,7 +433,8 @@
           "spec_icon": "spell_nature_lightning",
           "group": "ranged",
           "spec_key": "shaman-elemental",
-          "also": []
+          "also": [],
+          "late_minutes": null
         },
         {
           "character_key": "us/pvp/emberfang",
@@ -432,7 +449,8 @@
           "spec_icon": "spell_fire_firebolt02",
           "group": "ranged",
           "spec_key": "mage-fire",
-          "also": []
+          "also": [],
+          "late_minutes": null
         },
         {
           "character_key": "us/pvp/frostjaw",
@@ -447,7 +465,8 @@
           "spec_icon": "spell_frost_frostbolt02",
           "group": "ranged",
           "spec_key": "mage-frost",
-          "also": []
+          "also": [],
+          "late_minutes": null
         },
         {
           "character_key": "us/pvp/vexmora",
@@ -462,7 +481,8 @@
           "spec_icon": "spell_shadow_rainoffire",
           "group": "ranged",
           "spec_key": "warlock-destruction",
-          "also": []
+          "also": [],
+          "late_minutes": null
         },
         {
           "character_key": "us/pvp/hexbane",
@@ -477,7 +497,8 @@
           "spec_icon": "spell_shadow_deathcoil",
           "group": "ranged",
           "spec_key": "warlock-affliction",
-          "also": []
+          "also": [],
+          "late_minutes": null
         },
         {
           "character_key": "us/pvp/moonclaw",
@@ -492,7 +513,8 @@
           "spec_icon": "spell_nature_starfall",
           "group": "ranged",
           "spec_key": "druid-balance",
-          "also": []
+          "also": [],
+          "late_minutes": null
         },
         {
           "character_key": "us/pvp/gorehowl",
@@ -507,7 +529,8 @@
           "spec_icon": "spell_nature_lightningshield",
           "group": "melee",
           "spec_key": "shaman-enhancement",
-          "also": []
+          "also": [],
+          "late_minutes": null
         },
         {
           "character_key": "us/pvp/varkas",
@@ -522,7 +545,8 @@
           "spec_icon": "spell_shadow_metamorphosis",
           "group": "ranged",
           "spec_key": "warlock-demonology",
-          "also": []
+          "also": [],
+          "late_minutes": null
         },
         {
           "character_key": "us/pvp/snaggle",
@@ -537,7 +561,8 @@
           "spec_icon": "ability_rogue_eviscerate",
           "group": "melee",
           "spec_key": "rogue-assassination",
-          "also": []
+          "also": [],
+          "late_minutes": null
         },
         {
           "character_key": "us/pvp/wyrmtalon",
@@ -552,7 +577,8 @@
           "spec_icon": "ability_hunter_beasttaming",
           "group": "ranged",
           "spec_key": "hunter-beast-mastery",
-          "also": []
+          "also": [],
+          "late_minutes": null
         },
         {
           "character_key": "us/pvp/felgrin",
@@ -567,7 +593,8 @@
           "spec_icon": "spell_holy_magicalsentry",
           "group": "ranged",
           "spec_key": "mage-arcane",
-          "also": []
+          "also": [],
+          "late_minutes": null
         },
         {
           "character_key": "us/pvp/yellfury",
@@ -591,7 +618,8 @@
               "spec_key": "warrior-fury",
               "state": "bench"
             }
-          ]
+          ],
+          "late_minutes": null
         }
       ],
       "not_signed": [
@@ -1095,7 +1123,11 @@
         }
       ]
     },
-    "moved": "Obnoxious Yell"
+    "moved": "Obnoxious Yell",
+    "confirmation": {
+      "title": "You're In for Onyxia's Lair",
+      "body": "Yellfury, pull at 7:00 pm CST. Obnoxious Yell moved to Bench."
+    }
   },
   "error": null,
   "request_id": "9f2c41d07ab3e655"

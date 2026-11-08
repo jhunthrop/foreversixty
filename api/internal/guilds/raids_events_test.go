@@ -68,8 +68,9 @@ func TestRaidEventsReadPlainlyAndThreadPerRaid(t *testing.T) {
 	if posted.Body != "Sign-ups are open: Wed 4 Nov, 20:00 CST." || posted.Thread != "raid-9" || posted.Collapse != "raid.posted-9" {
 		t.Fatalf("posted %+v", posted)
 	}
-	if len(posted.Actions) != 3 || posted.Actions[0].Path != "/v1/guilds/3/raids/9/signups/{character}" ||
-		posted.Actions[2].Body["state"] != SignupOut || posted.Actions[1].Method != http.MethodPut {
+	if len(posted.Actions) != 4 || posted.Actions[0].Path != "/v1/guilds/3/raids/9/signups/{character}" ||
+		posted.Actions[2].Body["state"] != SignupBench || posted.Actions[3].Body["state"] != SignupOut ||
+		posted.Actions[1].Method != http.MethodPut {
 		t.Fatalf("actions %+v", posted.Actions)
 	}
 	if posted.Audience.Kind != events.ToGuildMembers || posted.Data["raid_id"] != "9" {
@@ -201,7 +202,7 @@ func TestRunEventSchedulePublishesWhatIsDue(t *testing.T) {
 	if run.Nudged != 1 || run.Short != 1 {
 		t.Fatalf("run %+v", run)
 	}
-	if e := pub.ofKind(events.RaidSignupNudge); len(e) != 1 || e[0].Audience.Kind != events.ToUnanswered || len(e[0].Actions) != 3 {
+	if e := pub.ofKind(events.RaidSignupNudge); len(e) != 1 || e[0].Audience.Kind != events.ToUnanswered || len(e[0].Actions) != 4 {
 		t.Fatalf("nudge %+v", e)
 	}
 	if len(pub.ofKind(events.RaidShort)) != 1 {

@@ -44,7 +44,9 @@ type SignupView struct {
 	Role         string `json:"role"`
 	State        string `json:"state"`
 	Note         string `json:"note"`
-	Own          bool   `json:"own"`
+	// LateMinutes is a Late row's minutes, null when it gave none.
+	LateMinutes *int16 `json:"late_minutes"`
+	Own         bool   `json:"own"`
 	// Group is the roster group the row fights in (tank, healer, melee or ranged), from
 	// raidspec.Group; SpecKey is the catalogue key of its spec, null when it does not resolve.
 	Group   string  `json:"group"`
@@ -211,6 +213,8 @@ type NextRaidOwn struct {
 	Role         string `json:"role"`
 	// Note travels with the sign-up so a press on the band keeps it without a second read.
 	Note string `json:"note"`
+	// LateMinutes is a Late answer's minutes, null when it gave none.
+	LateMinutes *int16 `json:"late_minutes"`
 }
 
 // NextRaidView is home.next_raid: the guild band's raid line.
@@ -296,7 +300,7 @@ func buildRaidView(r Raid, signups []Signup, vc raidViewContext) (RaidView, erro
 	for _, sg := range shown {
 		v.Signups = append(v.Signups, SignupView{
 			CharacterKey: sg.CharacterKey, Name: sg.Name, Class: sg.Class, Spec: sg.Spec,
-			Role: sg.Role, State: sg.State, Note: sg.Note, Own: vc.owns(sg),
+			Role: sg.Role, State: sg.State, Note: sg.Note, LateMinutes: sg.LateMinutes, Own: vc.owns(sg),
 			Group: raidspec.Group(sg.Class, sg.Spec, sg.Role), SpecKey: specKey(sg.Class, sg.Spec, sg.Role),
 			Also: alsoSignups(also[sg.SignedBy]),
 		})
@@ -577,7 +581,7 @@ func ownSignup(signups []Signup, vc raidViewContext, headerKey *string) *NextRai
 			continue
 		}
 		if headerKey != nil && sg.CharacterKey == *headerKey {
-			return &NextRaidOwn{CharacterKey: sg.CharacterKey, State: sg.State, Role: sg.Role, Note: sg.Note}
+			return nextRaidOwn(sg)
 		}
 		if first == nil {
 			first = &signups[i]
@@ -586,5 +590,9 @@ func ownSignup(signups []Signup, vc raidViewContext, headerKey *string) *NextRai
 	if first == nil {
 		return nil
 	}
-	return &NextRaidOwn{CharacterKey: first.CharacterKey, State: first.State, Role: first.Role, Note: first.Note}
+	return nextRaidOwn(*first)
+}
+
+func nextRaidOwn(sg Signup) *NextRaidOwn {
+	return &NextRaidOwn{CharacterKey: sg.CharacterKey, State: sg.State, Role: sg.Role, Note: sg.Note, LateMinutes: sg.LateMinutes}
 }

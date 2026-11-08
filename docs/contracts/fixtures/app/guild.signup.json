@@ -171,7 +171,8 @@
           "spec_icon": "ability_warrior_innerrage",
           "group": "melee",
           "spec_key": "warrior-fury",
-          "also": []
+          "also": [],
+          "late_minutes": null
         },
         {
           "character_key": "us/pvp/kraggor",
@@ -186,7 +187,8 @@
           "spec_icon": "inv_shield_06",
           "group": "tank",
           "spec_key": "warrior-protection",
-          "also": []
+          "also": [],
+          "late_minutes": null
         }
       ],
       "not_signed": [
@@ -600,7 +602,11 @@
         }
       ]
     },
-    "moved": null
+    "moved": null,
+    "confirmation": {
+      "title": "You're In for Onyxia's Lair",
+      "body": "Obnoxious Yell, pull at 7:00 pm CST."
+    }
   },
   "error": null,
   "request_id": "9f2c41d07ab3e655"

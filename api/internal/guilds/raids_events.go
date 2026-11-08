@@ -27,7 +27,7 @@ var raidEventCopy = struct {
 	Posted, Nudge, Moved, Cancelled, RosterIn, RosterBench, RosterOther string
 	Starting, Short, ShortOpen, LateChange                              string
 	MovedIn, MovedBench, MovedLate, MovedOut                            string
-	ActionIn, ActionLate, ActionOut                                     string
+	ActionIn, ActionLate, ActionBench, ActionOut                        string
 }{
 	Posted:      "Sign-ups are open: %s.",
 	Nudge:       "%s starts in 24 hours. Are you coming?",
@@ -46,6 +46,7 @@ var raidEventCopy = struct {
 	MovedOut:    "An officer took %s off the roster.",
 	ActionIn:    "In",
 	ActionLate:  "Late",
+	ActionBench: "Bench",
 	ActionOut:   "Out",
 }
 
@@ -58,24 +59,19 @@ const SignupCharacterPlaceholder = "{character}"
 
 // raidWhen is p's start in its zone (UTC when the guild set none).
 func raidWhen(p notify.RaidPosted) string {
-	loc := time.UTC
-	if p.Timezone != "" {
-		if l, err := time.LoadLocation(p.Timezone); err == nil {
-			loc = l
-		}
-	}
-	return p.StartsAt.In(loc).Format(raidWhenLayout)
+	return p.StartsAt.In(raidLocation(p.Timezone)).Format(raidWhenLayout)
 }
 
-// signupActions are the In, Late and Out buttons: the sign-up PUT the app calls with its
-// device token.
+// signupActions are the In, Late, Bench and Out buttons: the sign-up PUT the app calls with
+// its own session token, in the background (Late's minutes, when picked, join the body).
 func signupActions(guildID, raidID int64) []events.Action {
 	path := fmt.Sprintf("/v1/guilds/%d/raids/%d/signups/%s", guildID, raidID, SignupCharacterPlaceholder)
 	action := func(state, title string) events.Action {
 		return events.Action{ID: "signup_" + state, Title: title, Method: "PUT", Path: path, Body: map[string]string{"state": state}}
 	}
 	return []events.Action{
-		action(SignupIn, raidEventCopy.ActionIn), action(SignupLate, raidEventCopy.ActionLate), action(SignupOut, raidEventCopy.ActionOut),
+		action(SignupIn, raidEventCopy.ActionIn), action(SignupLate, raidEventCopy.ActionLate),
+		action(SignupBench, raidEventCopy.ActionBench), action(SignupOut, raidEventCopy.ActionOut),
 	}
 }
 

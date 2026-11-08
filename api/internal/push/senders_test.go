@@ -225,8 +225,60 @@ func TestFCMSendsTheV1Message(t *testing.T) {
 	if err := json.Unmarshal([]byte(data["actions"].(string)), &actions); err != nil || actions[0].ID != "signup_in" {
 		t.Fatalf("actions %v %v", data["actions"], err)
 	}
-	if android["collapse_key"] != "raid.posted-9" || android["notification"].(map[string]any)["tag"] != "raid.posted-9" {
+	if android["collapse_key"] != "raid.posted-9" || android["notification"] != nil {
 		t.Fatalf("android %v", android)
+	}
+}
+
+// Android messages are data-only: the app draws every notification itself from data (title,
+// body, group and the collapse tag), so its own channels, actions and Late chips always apply.
+func TestFCMMessagesAreDataOnly(t *testing.T) {
+	raw, err := fcmBody(raidMessage("t"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var body struct {
+		Message map[string]any `json:"message"`
+	}
+	if err := json.Unmarshal(raw, &body); err != nil {
+		t.Fatal(err)
+	}
+	if _, ok := body.Message["notification"]; ok {
+		t.Fatalf("a notification block: %s", raw)
+	}
+	data := body.Message["data"].(map[string]any)
+	want := map[string]string{"title": "Molten Core", "body": "Thursday 20:00", "group": "raids", "collapse": "raid.posted-9", "category": RaidSignupCategory}
+	for k, v := range want {
+		if data[k] != v {
+			t.Errorf("data[%s] = %v, want %q", k, data[k], v)
+		}
+	}
+}
+
+// Every raid kind wakes an Android device at once, time-sensitive or not: a sign-up answered
+// an hour late is no answer.
+func TestFCMRaidKindsGoAtHighPriority(t *testing.T) {
+	for _, c := range []struct {
+		kind events.Kind
+		want string
+	}{
+		{events.RaidPosted, `"priority":"HIGH"`}, {events.RaidSignupNudge, `"priority":"HIGH"`},
+		{events.SimFinished, `"priority":"NORMAL"`},
+	} {
+		m := raidMessage("t")
+		m.Kind = c.kind
+		raw, _ := fcmBody(m)
+		if !strings.Contains(string(raw), c.want) {
+			t.Errorf("%s: %s", c.kind, raw)
+		}
+	}
+}
+
+// APNs carries the event's group beside its kind, for the app's notification settings.
+func TestAPNsCarriesTheGroup(t *testing.T) {
+	raw, _ := apnsBody(raidMessage("t"))
+	if !strings.Contains(string(raw), `"group":"raids"`) {
+		t.Fatalf("apns %s", raw)
 	}
 }
 
@@ -283,7 +335,9 @@ func TestTimeSensitiveMessagesBreakThrough(t *testing.T) {
 		t.Fatalf("plain apns %s", plain)
 	}
 	hi, _ := fcmBody(m)
-	lo, _ := fcmBody(raidMessage("aa"))
+	sim := raidMessage("aa")
+	sim.Kind = events.SimFinished
+	lo, _ := fcmBody(sim)
 	if !strings.Contains(string(hi), `"priority":"HIGH"`) || !strings.Contains(string(lo), `"priority":"NORMAL"`) {
 		t.Fatalf("fcm %s / %s", hi, lo)
 	}

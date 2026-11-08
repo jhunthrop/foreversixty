@@ -7,6 +7,7 @@ package guilds
 import (
 	"errors"
 	"fmt"
+	"slices"
 	"strings"
 	"time"
 	"unicode/utf8"
@@ -196,6 +197,17 @@ type signupRequest struct {
 	// Spec, when set, is a specs.json key saved as the character's raid spec before the sign-up,
 	// whose role the sign-up then takes (spec 2026-10-28 §P.10.7).
 	Spec string `json:"spec"`
+	// LateMinutes is how late a Late answer will be, one of the app's chips; only with late.
+	LateMinutes *int16 `json:"late_minutes"`
+}
+
+// lateMinuteChips are the minutes a Late answer may carry: the app's 15, 30 and 60 chips
+// (spec 2026-11-08-app-flows F1); the migration 0085 check holds the same set.
+var lateMinuteChips = []int16{15, 30, 60}
+
+// validLateMinutes reports whether m may go with state: none at all, or a chip with Late.
+func validLateMinutes(state string, m *int16) bool {
+	return m == nil || (state == SignupLate && slices.Contains(lateMinuteChips, *m))
 }
 
 // RoleNotOfClassError is a sign-up asking for a role the character's class cannot play (a
@@ -249,6 +261,9 @@ func validateSignup(req signupRequest) (signupRequest, map[string]string) {
 	case "", RoleTank, RoleHealer, RoleDPS:
 	default:
 		fields["role"] = "Pick tank, healer or DPS."
+	}
+	if !validLateMinutes(req.State, req.LateMinutes) {
+		fields["late_minutes"] = "Pick 15, 30 or 60 minutes, with Late."
 	}
 	req.Note = strings.TrimSpace(req.Note)
 	if utf8.RuneCountInString(req.Note) > signupNoteMax {

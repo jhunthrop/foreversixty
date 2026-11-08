@@ -9,6 +9,7 @@
     "interruption-level": "time-sensitive"
   },
   "kind": "raid.starting",
+  "group": "raids",
   "link": "https://foreversixty.gg/guild/us/pvp/olympus-xxvii/raids/7",
   "data": {
     "guild_id": "2",

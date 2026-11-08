@@ -9,9 +9,12 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"strings"
 
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
+
+	"github.com/jhunthrop/foreversixty/api/internal/events"
 )
 
 // FCMBaseURL is the FCM HTTP v1 host.
@@ -54,39 +57,47 @@ func newFCM(project, baseURL string, tokens oauth2.TokenSource, client *http.Cli
 	return &FCMSender{project: project, baseURL: baseURL, tokens: oauth2.ReuseTokenSource(nil, tokens), client: client}
 }
 
-type fcmAndroidNotification struct {
-	Tag                  string `json:"tag,omitempty"`
-	ClickAction          string `json:"click_action,omitempty"`
-	NotificationPriority string `json:"notification_priority,omitempty"`
-}
-
-// The FCM priorities: high wakes the device at once and is kept for time-sensitive messages.
+// The FCM priorities: high wakes the device at once; it goes to time-sensitive messages and
+// every raid kind (a sign-up answered an hour late is no answer).
 const (
 	fcmPriorityHigh   = "HIGH"
 	fcmPriorityNormal = "NORMAL"
 )
 
+// raidKindPrefix marks the raid kinds, which always go at high priority.
+const raidKindPrefix = "raid."
+
+// fcmMessage is data-only: the Android app draws every notification itself from data (title,
+// body, group, collapse), so its channels, actions and Late chips always apply, in the
+// foreground and the background alike.
 type fcmMessage struct {
-	Token        string            `json:"token"`
-	Notification map[string]string `json:"notification"`
-	Data         map[string]string `json:"data,omitempty"`
-	Android      struct {
-		Priority     string                 `json:"priority"`
-		CollapseKey  string                 `json:"collapse_key,omitempty"`
-		Notification fcmAndroidNotification `json:"notification"`
+	Token   string            `json:"token"`
+	Data    map[string]string `json:"data"`
+	Android struct {
+		Priority    string `json:"priority"`
+		CollapseKey string `json:"collapse_key,omitempty"`
 	} `json:"android"`
 }
 
-// fcmBody is the send request. FCM data values are strings, so the actions travel as JSON.
-func fcmBody(m Message) ([]byte, error) {
-	msg := fcmMessage{Token: m.Token, Notification: map[string]string{"title": m.Title, "body": m.Body}}
-	msg.Data = map[string]string{"kind": string(m.Kind)}
-	for k, v := range m.Data {
-		msg.Data[k] = v
+// fcmPriority is m's Android delivery priority.
+func fcmPriority(m Message) string {
+	if m.TimeSensitive || strings.HasPrefix(string(m.Kind), raidKindPrefix) {
+		return fcmPriorityHigh
 	}
-	for k, v := range map[string]string{"link": m.Link, "thread": m.Thread, "category": m.Category} {
+	return fcmPriorityNormal
+}
+
+// fcmData is m's data map. FCM data values are strings, so the actions travel as JSON.
+func fcmData(m Message) (map[string]string, error) {
+	data := map[string]string{"kind": string(m.Kind), "group": string(events.GroupOf(m.Kind))}
+	for k, v := range m.Data {
+		data[k] = v
+	}
+	for k, v := range map[string]string{
+		"title": m.Title, "body": m.Body, "link": m.Link, "thread": m.Thread, "category": m.Category, "collapse": m.Collapse,
+	} {
 		if v != "" {
-			msg.Data[k] = v
+			data[k] = v
 		}
 	}
 	if len(m.Actions) > 0 {
@@ -94,15 +105,20 @@ func fcmBody(m Message) ([]byte, error) {
 		if err != nil {
 			return nil, err
 		}
-		msg.Data["actions"] = string(actions)
+		data["actions"] = string(actions)
 	}
-	msg.Android.Priority = fcmPriorityNormal
+	return data, nil
+}
+
+// fcmBody is the send request.
+func fcmBody(m Message) ([]byte, error) {
+	data, err := fcmData(m)
+	if err != nil {
+		return nil, err
+	}
+	msg := fcmMessage{Token: m.Token, Data: data}
+	msg.Android.Priority = fcmPriority(m)
 	msg.Android.CollapseKey = m.Collapse
-	msg.Android.Notification = fcmAndroidNotification{Tag: m.Collapse, ClickAction: m.Category}
-	if m.TimeSensitive {
-		msg.Android.Priority = fcmPriorityHigh
-		msg.Android.Notification.NotificationPriority = "PRIORITY_HIGH"
-	}
 	return json.Marshal(map[string]fcmMessage{"message": msg})
 }
 

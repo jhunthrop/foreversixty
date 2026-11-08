@@ -37,10 +37,13 @@ type Signup struct {
 	Role         string
 	State        string
 	Note         string
-	SignedBy     int64
-	ActedBy      int64
-	UpdatedAt    time.Time
-	AsOfficer    bool
+	// LateMinutes is how late a Late answer said it would be, nil when it did not say (and for
+	// every other state).
+	LateMinutes *int16
+	SignedBy    int64
+	ActedBy     int64
+	UpdatedAt   time.Time
+	AsOfficer   bool
 	// KeepNote is a write-time flag, never stored: an existing row keeps its note rather
 	// than taking Note (a first answer still starts from Note).
 	KeepNote bool
@@ -104,16 +107,26 @@ func (s *Store) upsertSignup(ctx context.Context, sg Signup, skipSame bool) (*st
 // (unless the note is kept) note.
 func signupHolds(ctx context.Context, tx pgx.Tx, sg Signup) (bool, error) {
 	var state, role, note string
+	var late *int16
 	err := tx.QueryRow(ctx,
-		`select state, role, note from guild_raid_signups where raid_id = $1 and character_key = $2`,
-		sg.RaidID, sg.CharacterKey).Scan(&state, &role, &note)
+		`select state, role, note, late_minutes from guild_raid_signups where raid_id = $1 and character_key = $2`,
+		sg.RaidID, sg.CharacterKey).Scan(&state, &role, &note, &late)
 	if errors.Is(err, pgx.ErrNoRows) {
 		return false, nil
 	}
 	if err != nil {
 		return false, fmt.Errorf("guilds: upsert signup: read row: %w", err)
 	}
-	return state == sg.State && role == sg.Role && (sg.KeepNote || note == sg.Note), nil
+	return state == sg.State && role == sg.Role && sameMinutes(late, sg.LateMinutes) &&
+		(sg.KeepNote || note == sg.Note), nil
+}
+
+// sameMinutes reports whether two optional minute counts are equal.
+func sameMinutes(a, b *int16) bool {
+	if a == nil || b == nil {
+		return a == b
+	}
+	return *a == *b
 }
 
 // lockOwnSignups serialises one account's writes to one raid: the advisory lock covers the
@@ -159,7 +172,7 @@ func checkRaidOpen(ctx context.Context, tx pgx.Tx, sg Signup) error {
 
 func benchOtherOwn(ctx context.Context, tx pgx.Tx, sg Signup) (*string, error) {
 	rows, err := tx.Query(ctx, `
-		update guild_raid_signups set state = 'bench', acted_by = $4, updated_at = now()
+		update guild_raid_signups set state = 'bench', late_minutes = null, acted_by = $4, updated_at = now()
 		where raid_id = $1 and signed_by = $2 and character_key <> $3 and state in ('in','late')
 		returning name`, sg.RaidID, sg.SignedBy, sg.CharacterKey, sg.ActedBy)
 	if err != nil {
@@ -184,15 +197,15 @@ func benchOtherOwn(ctx context.Context, tx pgx.Tx, sg Signup) (*string, error) {
 
 func writeSignup(ctx context.Context, tx pgx.Tx, sg Signup) error {
 	if _, err := tx.Exec(ctx, `
-		insert into guild_raid_signups (raid_id, character_key, name, class, spec, role, state, note, signed_by, acted_by)
-		values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+		insert into guild_raid_signups (raid_id, character_key, name, class, spec, role, state, note, signed_by, acted_by, late_minutes)
+		values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $12)
 		on conflict (raid_id, character_key) do update set
 			name = excluded.name, class = excluded.class, spec = excluded.spec, role = excluded.role,
-			state = excluded.state, signed_by = excluded.signed_by,
+			state = excluded.state, signed_by = excluded.signed_by, late_minutes = excluded.late_minutes,
 			note = case when $11 then guild_raid_signups.note else excluded.note end,
 			acted_by = excluded.acted_by, updated_at = now()`,
 		sg.RaidID, sg.CharacterKey, sg.Name, sg.Class, sg.Spec, sg.Role, sg.State, sg.Note, sg.SignedBy, sg.ActedBy,
-		sg.KeepNote); err != nil {
+		sg.KeepNote, sg.LateMinutes); err != nil {
 		return fmt.Errorf("guilds: upsert signup: write: %w", err)
 	}
 	return nil
@@ -223,7 +236,7 @@ func signupsByRaid(ctx context.Context, q dbQuerier, raidIDs []int64) (map[int64
 		return out, nil
 	}
 	rows, err := q.Query(ctx, `
-		select raid_id, character_key, name, class, spec, role, state, note, signed_by, acted_by, updated_at
+		select raid_id, character_key, name, class, spec, role, state, note, signed_by, acted_by, updated_at, late_minutes
 		from guild_raid_signups where raid_id = any($1) order by raid_id, name, character_key`, raidIDs)
 	if err != nil {
 		return nil, fmt.Errorf("guilds: raid signups: %w", err)
@@ -232,7 +245,7 @@ func signupsByRaid(ctx context.Context, q dbQuerier, raidIDs []int64) (map[int64
 	for rows.Next() {
 		var sg Signup
 		if err := rows.Scan(&sg.RaidID, &sg.CharacterKey, &sg.Name, &sg.Class, &sg.Spec, &sg.Role,
-			&sg.State, &sg.Note, &sg.SignedBy, &sg.ActedBy, &sg.UpdatedAt); err != nil {
+			&sg.State, &sg.Note, &sg.SignedBy, &sg.ActedBy, &sg.UpdatedAt, &sg.LateMinutes); err != nil {
 			return nil, fmt.Errorf("guilds: raid signups: %w", err)
 		}
 		out[sg.RaidID] = append(out[sg.RaidID], sg)

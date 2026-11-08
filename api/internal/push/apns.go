@@ -17,6 +17,8 @@ import (
 	"net/url"
 	"sync"
 	"time"
+
+	"github.com/jhunthrop/foreversixty/api/internal/events"
 )
 
 // The APNs hosts.
@@ -154,7 +156,9 @@ type apnsPayload struct {
 		// (active, the default).
 		InterruptionLevel string `json:"interruption-level,omitempty"`
 	} `json:"aps"`
-	Kind    string            `json:"kind"`
+	Kind string `json:"kind"`
+	// Group is the kind's notification group (events.GroupOf), as the FCM data carries it.
+	Group   string            `json:"group"`
 	Link    string            `json:"link,omitempty"`
 	Actions any               `json:"actions,omitempty"`
 	Data    map[string]string `json:"data,omitempty"`
@@ -164,7 +168,7 @@ func apnsBody(m Message) ([]byte, error) {
 	var p apnsPayload
 	p.APS.Alert.Title, p.APS.Alert.Body = m.Title, m.Body
 	p.APS.Sound, p.APS.ThreadID, p.APS.Category = "default", m.Thread, m.Category
-	p.Kind, p.Link, p.Data = string(m.Kind), m.Link, m.Data
+	p.Kind, p.Group, p.Link, p.Data = string(m.Kind), string(events.GroupOf(m.Kind)), m.Link, m.Data
 	if m.TimeSensitive {
 		p.APS.InterruptionLevel = "time-sensitive"
 	}
