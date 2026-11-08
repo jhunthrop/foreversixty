@@ -1841,6 +1841,93 @@
     <string name="raid_applicant_after">%1$s shows on the roster once the addon or Battle.net sees the character in the guild.</string>
     <string name="raid_applicant_line" tools:ignore="PluralsCandidate">%1$s, %2$s %3$d, %4$s</string>
     <string name="raid_applicant_failed">We could not load this application</string>
+    <string name="plannerPage_h1">%1$s talents</string>
+    <string name="plannerPage_pointsLeft">Points left</string>
+    <string name="plannerPage_spentAtLevel" tools:ignore="PluralsCandidate">%1$d of %2$d spent at level %3$d</string>
+    <string name="plannerPage_spentOf" tools:ignore="PluralsCandidate">%1$d of %2$d spent</string>
+    <string name="plannerPage_spentOfLevel" tools:ignore="PluralsCandidate">%1$d of %2$d spent · level %3$d</string>
+    <string name="plannerPage_dps">DPS</string>
+    <string name="plannerPage_hps">HPS</string>
+    <string name="plannerPage_scoreBasis">with the %1$s gear set</string>
+    <string name="plannerPage_simThisBuild">Sim this build ›</string>
+    <string name="plannerPage_change">Change ▾</string>
+    <string name="plannerPage_classLabel">Class</string>
+    <string name="plannerPage_raceLabel">Race</string>
+    <string name="plannerPage_levelLabel">Level</string>
+    <string name="plannerPage_bar">%1$s · %2$s</string>
+    <string name="plannerPage_metaLevel" tools:ignore="PluralsCandidate">%1$s · Level %2$d</string>
+    <string name="plannerPage_metaSpec" tools:ignore="PluralsCandidate">%1$s · Level %2$d · %3$s %4$s</string>
+    <string name="plannerPage_loadedAt" tools:ignore="PluralsCandidate">Loaded at level %1$d · %2$d points</string>
+    <string name="plannerPage_loadedFor" tools:ignore="PluralsCandidate">Loaded for level %1$d · %2$d of %3$d points</string>
+    <string name="plannerPage_linkedNote">From a link; one way to level into this build.</string>
+    <string name="plannerPage_importedNote">Talents loaded from a character. The order points were spent in is not recorded in game, so this is one way to level into the same tree: the main tree first, each talent as soon as its row opens.</string>
+    <string name="plannerPage_treeSource">Talent trees read from the game client, build %1$s.</string>
+    <string name="plannerPage_reset">Reset…</string>
+    <string name="plannerPage_loadFailed">Talent data did not load</string>
+    <string name="plannerPage_loadFailedDetail">Build %1$s did not return the files the planner needs.</string>
+    <string name="plannerPage_retry">Retry</string>
+    <string name="plannerPage_bandLevel" tools:ignore="PluralsCandidate">Level %1$d</string>
+    <string name="plannerPage_bandLevels" tools:ignore="PluralsCandidate">Levels %1$d to %2$d</string>
+    <string name="plannerPage_bandHeading">%1$s build</string>
+    <string name="plannerPage_guideHeading">Guide build</string>
+    <string name="plannerPage_matches">Matches</string>
+    <string name="plannerPage_beyond" tools:ignore="PluralsCandidate">+%1$d beyond the build</string>
+    <plurals name="plannerPage_toTake">
+        <item quantity="one">1 of this build\'s points still to take</item>
+        <item quantity="other">%1$d of this build\'s points still to take</item>
+    </plurals>
+    <plurals name="plannerPage_points">
+        <item quantity="one">1 point</item>
+        <item quantity="other">%1$d points</item>
+    </plurals>
+    <string name="plannerPage_differs">Differs by %1$s: %2$s.</string>
+    <string name="plannerPage_mineTakes">this build takes %1$s</string>
+    <string name="plannerPage_theirsTake">the %1$s build takes %2$s</string>
+    <string name="plannerPage_sidesJoin">%1$s; %2$s</string>
+    <string name="plannerPage_listAnd">%1$s and %2$s</string>
+    <string name="plannerPage_coversFewer" tools:ignore="PluralsCandidate">This build covers %1$d of your %2$d points; the next %3$d follow the %4$s build.</string>
+    <string name="plannerPage_load">Load the %1$s build</string>
+    <string name="plannerPage_seeWhatDiffers">See what differs</string>
+    <string name="plannerPage_loadAsk">Loading replaces every point you have spent with this level range\'s own build. Load anyway?</string>
+    <string name="plannerPage_loadYes">Load it</string>
+    <string name="plannerPage_loadNo">Keep my build</string>
+    <string name="plannerPage_gearFor">Gear for %1$s</string>
+    <string name="plannerPage_bisList">Best in slot list ›</string>
+    <string name="plannerPage_inGame">In the game</string>
+    <string name="plannerPage_sendTo">Send this build to %1$s</string>
+    <string name="plannerPage_copyForGame">Copy for the game</string>
+    <string name="plannerPage_copied">Copied</string>
+    <string name="plannerPage_gameHint">Paste this in game with /fs; the Forever Sixty line and the talent window follow it from then on.</string>
+    <string name="plannerPage_getAddon">Get the addon and companion ›</string>
+    <string name="plannerPage_pointOrder">Point order</string>
+    <string name="plannerPage_spent" tools:ignore="PluralsCandidate">%1$d spent</string>
+    <string name="plannerPage_pointAt" tools:ignore="PluralsCandidate">Level %1$d: %2$s %3$d</string>
+    <string name="plannerPage_nextPoint" tools:ignore="PluralsCandidate">Next point: level %1$d</string>
+    <string name="plannerPage_shareTitle">Share this build</string>
+    <string name="plannerPage_titleLabel">Title</string>
+    <string name="plannerPage_titlePlaceholder">Optional</string>
+    <string name="plannerPage_share">Share</string>
+    <string name="plannerPage_summary" tools:ignore="PluralsCandidate">%1$s %2$s · %3$s · Level %4$d</string>
+    <string name="plannerPage_treePoints" tools:ignore="PluralsCandidate">%1$s %2$d</string>
+    <string name="plannerPage_copyAsText">Copy as text</string>
+    <string name="plannerPage_yourBuilds">Your builds ›</string>
+    <string name="plannerPage_signInForBuilds">Sign in to keep your builds ›</string>
+    <string name="plannerPage_importTitle">Import from addon</string>
+    <string name="plannerPage_importPlaceholder">FS1:…</string>
+    <string name="plannerPage_import">Import</string>
+    <string name="plannerPage_importBad">That is not an addon export. Copy it again from the addon.</string>
+    <string name="plannerPage_noExport">Don\'t have an export?</string>
+    <string name="plannerPage_addonLink">Get the addon and companion ›</string>
+    <string name="plannerPage_sharedMeta">Shared build</string>
+    <plurals name="plannerPage_views">
+        <item quantity="one">1 view</item>
+        <item quantity="other">%1$d views</item>
+    </plurals>
+    <string name="plannerPage_sharedNote">This build was shared as a link. Edit a copy to spend points of your own.</string>
+    <string name="plannerPage_editCopy">Edit a copy</string>
+    <string name="plannerPage_talentsLink">Your talents against the guide ›</string>
+    <string name="plannerPage_compareLink">Compare with mine ›</string>
+    <string name="plannerPage_undo">Undo</string>
     <string name="shared_cta_getAddonAndCompanion">Get the addon and companion</string>
     <string name="shared_cta_installAddonAndCompanion">Install the addon and the companion</string>
     <string name="shared_cta_installAddonAndCompanionInline">install the addon and the companion</string>

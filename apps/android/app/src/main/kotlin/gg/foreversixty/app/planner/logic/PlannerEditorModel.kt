@@ -1,6 +1,9 @@
 package gg.foreversixty.app.planner.logic
 
+import gg.foreversixty.app.bis.SpecCatalog
+import gg.foreversixty.app.bis.SpecInfo
 import gg.foreversixty.app.common.Haptics
+import gg.foreversixty.app.model.BisFile
 import gg.foreversixty.app.model.Build
 import gg.foreversixty.app.model.RaceClassCombo
 import gg.foreversixty.app.model.RaceInfo
@@ -16,7 +19,13 @@ sealed interface EditorRequest {
     val classSlug: String
 
     /** `Plan a build` (Talents, Your builds, a bare planner link): the class's draft, else empty. */
-    data class Draft(override val classSlug: String, val raceSlug: String? = null, val level: Int? = null) : EditorRequest
+    data class Draft(
+        override val classSlug: String,
+        val raceSlug: String? = null,
+        val level: Int? = null,
+        /** The character's spec (`Beast Mastery`): with no draft, its band build at [level] loads. */
+        val specName: String? = null,
+    ) : EditorRequest
 
     /** A guide's build or a rankings row: an FS1 code read as one legal order. */
     data class Code(override val classSlug: String, val code: String, val raceSlug: String? = null) : EditorRequest
@@ -37,9 +46,55 @@ data class EditorView(
     /** The last share's problem, shown under the editor until the next edit. */
     val shareProblem: ShareOutcome? = null,
     val sharing: Boolean = false,
+    /** The class's BiS files by spec key: their bands carry the level bands' builds. */
+    val bands: Map<String, BisFile> = emptyMap(),
+    val catalog: SpecCatalog = SpecCatalog(emptyList()),
+    /** Where the build on screen came from; shown while its order is unchanged. */
+    val note: EditorNote? = null,
+    /** The spec the editor opened for, before any point says otherwise. */
+    val specName: String? = null,
 ) {
     val totals: List<Int> get() = PlannerRules.pointsPerTree(index, state.order)
     val race: RaceInfo? get() = races.firstOrNull { it.slug == state.raceSlug }
+
+    /** The spec the build reads as: the tree with the most points. */
+    val spec: SpecInfo? get() = PlannerBand.specFor(catalog, index, state.order, specName)
+
+    /** The build against its band's published build, when the spec's file has that band. */
+    val band: BandCompare?
+        get() {
+            val spec = spec ?: return null
+            val file = bands[spec.spec] ?: return null
+            val build = PlannerBand.build(spec, file, PlannerBand.bandFor(state.spent, state.level), race?.faction) ?: return null
+            return PlannerBand.compare(index, state.order, build, PlannerRules.pointsAvailable(state.level))
+        }
+
+    /** The note, while the order it was written for is still the one on screen. */
+    val shownNote: EditorNote? get() = note?.takeIf { it.order == state.order }
+}
+
+/** Where the build on screen came from (`copy.ts` notes): each holds the order it describes. */
+sealed interface EditorNote {
+    val order: List<Int>
+
+    /** `Loaded at level 34 · 21 points`, or `Loaded for level 34 · 25 of 31 points` when cut. */
+    data class Loaded(override val order: List<Int>, val level: Int, val fullPoints: Int) : EditorNote
+
+    /** A code from a link (a guide's build, a rankings row). */
+    data class Linked(override val order: List<Int>) : EditorNote
+
+    /** An addon export: the game records ranks, never the order. */
+    data class Imported(override val order: List<Int>) : EditorNote
+}
+
+/** What `Import` did with a pasted export. */
+sealed interface ImportOutcome {
+    data object Loaded : ImportOutcome
+
+    /** Another class's export: the editor reopens on that class with the code. */
+    data class OtherClass(val classSlug: String, val code: String) : ImportOutcome
+
+    data object Unreadable : ImportOutcome
 }
 
 sealed interface EditorPhase {
@@ -58,6 +113,7 @@ class PlannerEditorModel(
     private val drafts: PlannerDrafts,
     val request: EditorRequest,
     private val haptics: Haptics,
+    private val catalog: SpecCatalog = SpecCatalog(emptyList()),
 ) {
     private val mutable = MutableStateFlow<EditorPhase>(EditorPhase.Loading)
     val phase: StateFlow<EditorPhase> = mutable.asStateFlow()
@@ -81,10 +137,32 @@ class PlannerEditorModel(
         val races = legalRaces(file.classId, allRaces, combos)
         val classes = (source.classes(build) as? ApiResult.Success)?.data?.value.orEmpty()
         val className = classes.firstOrNull { it.id == file.classId }?.name ?: titleCase(file.classSlug)
+        val arrivesOnBand = arrivesOnBand(file.classSlug)
         val opened = opening(index, allRaces)
         val state = opened.copy(raceSlug = opened.raceSlug?.takeIf { slug -> races.any { it.slug == slug } } ?: races.firstOrNull()?.slug)
-        drafts.save(state.draft)
-        mutable.value = EditorPhase.Ready(EditorView(file, index, className, races, state))
+        val bands = catalog.specsOf(file.classSlug).mapNotNull { spec ->
+            (source.bis(build, spec.spec) as? ApiResult.Success)?.data?.value?.let { spec.spec to it }
+        }.toMap()
+        val specName = (request as? EditorRequest.Draft)?.specName
+        val note = (request as? EditorRequest.Code)?.let { EditorNote.Linked(state.order) }
+        val view = EditorView(file, index, className, races, state, bands = bands, catalog = catalog, note = note, specName = specName)
+        val arrived = if (arrivesOnBand) withBand(view) ?: view else view
+        drafts.save(arrived.state.draft)
+        mutable.value = EditorPhase.Ready(arrived)
+    }
+
+    /** A character's planner with nothing saved opens on its band's build at its level (the web's arrival). */
+    private fun arrivesOnBand(classSlug: String): Boolean {
+        val draft = request as? EditorRequest.Draft ?: return false
+        return draft.level != null && drafts.load(classSlug) == null
+    }
+
+    /** The view with its band's build loaded, cut at its level; null when it has no band build. */
+    private fun withBand(view: EditorView): EditorView? {
+        val band = view.band ?: return null
+        val load = PlannerBand.loadAtLevel(view.index, band.build.talents, view.state.level)
+        val state = PlannerEditor.load(view.state, load.order, null)
+        return view.copy(state = state, note = EditorNote.Loaded(state.order, state.level, load.fullPoints))
     }
 
     /** The state the editor opens on: the draft, or the request's points over it. */
@@ -119,6 +197,28 @@ class PlannerEditorModel(
     fun setLevel(level: Int) = edit { Edit(PlannerEditor.setLevel(it.state, level), EditOutcome.Unchanged) }
 
     fun setRace(raceSlug: String) = edit { Edit(PlannerEditor.setRace(it.state, raceSlug), EditOutcome.Unchanged) }
+
+    /** `Load the levels 30 to 39 build`: the band's build replaces the points, one undo away. */
+    fun loadBand() {
+        val view = ready ?: return
+        val loaded = withBand(view) ?: return
+        haptics.play(EditOutcome.Added)
+        drafts.save(loaded.state.draft)
+        mutable.value = EditorPhase.Ready(loaded.copy(shareProblem = null))
+    }
+
+    /** `Import`: an addon export of this class loads as one legal order; another class reopens the editor. */
+    fun import(code: String): ImportOutcome {
+        val view = ready ?: return ImportOutcome.Unreadable
+        val decoded = Fs1.decode(code) ?: return ImportOutcome.Unreadable
+        if (decoded.classSlug != view.file.classSlug) return ImportOutcome.OtherClass(decoded.classSlug, code.trim())
+        val order = PlannerRules.orderFromRanks(view.index, decoded.treeRanks).order
+        val race = decoded.raceSlug.takeIf { slug -> view.races.any { it.slug == slug } }
+        val state = PlannerEditor.load(view.state, order, race)
+        drafts.save(state.draft)
+        mutable.value = EditorPhase.Ready(view.copy(state = state, note = EditorNote.Imported(state.order), shareProblem = null))
+        return ImportOutcome.Loaded
+    }
 
     /** The strip's talent, chosen without a point (the hardware keyboard's arrows). */
     fun touch(talentId: Int) = edit { Edit(it.state.copy(touched = talentId, refusal = null), EditOutcome.Unchanged) }

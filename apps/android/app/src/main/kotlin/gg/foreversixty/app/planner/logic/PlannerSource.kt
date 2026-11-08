@@ -1,6 +1,7 @@
 package gg.foreversixty.app.planner.logic
 
 import gg.foreversixty.app.model.ApiJson
+import gg.foreversixty.app.model.BisFile
 import gg.foreversixty.app.model.Build
 import gg.foreversixty.app.model.BuildInput
 import gg.foreversixty.app.model.BuildList
@@ -26,6 +27,9 @@ interface PlannerSource {
     suspend fun classes(build: String): ApiResult<CachedFile<List<ClassInfo>>>
     suspend fun races(build: String): ApiResult<CachedFile<List<RaceInfo>>>
     suspend fun combos(build: String): ApiResult<CachedFile<List<RaceClassCombo>>>
+
+    /** A spec's BiS file: its bands carry the level bands' builds and their set scores. */
+    suspend fun bis(build: String, spec: String): ApiResult<CachedFile<BisFile>>
 
     /** `POST /v1/builds`: never queued offline. */
     suspend fun save(input: BuildInput): ApiResult<BuildSaved>
@@ -54,6 +58,7 @@ class LivePlannerSource(
     override suspend fun classes(build: String) = files.load(StaticEndpoints.getClasses(build))
     override suspend fun races(build: String) = files.load(StaticEndpoints.getRaces(build))
     override suspend fun combos(build: String) = files.load(StaticEndpoints.getCombos(build))
+    override suspend fun bis(build: String, spec: String) = talentsSource.bis(build, spec)
     override suspend fun save(input: BuildInput) = api.send(ApiEndpoints.saveBuild(input))
     override suspend fun myBuilds() = api.send(ApiEndpoints.listMyBuilds())
     override suspend fun remove(id: String) = api.send(ApiEndpoints.removeBuild(id))

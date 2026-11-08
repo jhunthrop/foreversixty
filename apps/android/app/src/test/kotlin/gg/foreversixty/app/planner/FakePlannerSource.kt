@@ -1,6 +1,7 @@
 package gg.foreversixty.app.planner
 
 import gg.foreversixty.app.bis.BisTestData
+import gg.foreversixty.app.model.BisFile
 import gg.foreversixty.app.model.Build
 import gg.foreversixty.app.model.BuildInput
 import gg.foreversixty.app.model.BuildList
@@ -19,6 +20,7 @@ class FakePlannerSource(
     var buildAnswer: ApiResult<CachedFile<Build>> = ApiResult.Success(CachedFile(PlannerTestData.sharedBuild(), 0, false), "r"),
     var listAnswer: ApiResult<BuildList> = ApiResult.Success(BuildList(listOf(PlannerTestData.sharedBuild()), 1, 1, 100), "r"),
     var removeAnswer: ApiResult<Unit> = ApiResult.Success(Unit, "r"),
+    private val bisFiles: Map<String, BisFile> = emptyMap(),
 ) : PlannerSource {
     val saved = mutableListOf<BuildInput>()
     val removed = mutableListOf<String>()
@@ -29,6 +31,8 @@ class FakePlannerSource(
     override suspend fun classes(build: String) = ApiResult.Success(CachedFile(PlannerTestData.classes(), 0, false), "r")
     override suspend fun races(build: String) = ApiResult.Success(CachedFile(PlannerTestData.races(), 0, false), "r")
     override suspend fun combos(build: String) = ApiResult.Success(CachedFile(PlannerTestData.combos(), 0, false), "r")
+    override suspend fun bis(build: String, spec: String) =
+        bisFiles[spec]?.let { ApiResult.Success(CachedFile(it, 0, false), "r") } ?: ApiResult.Failure(ApiError.Status(404))
     override suspend fun save(input: BuildInput): ApiResult<BuildSaved> = saveAnswer.also { saved += input }
     override suspend fun build(id: String) = buildAnswer
     override suspend fun myBuilds() = listAnswer

@@ -34,6 +34,7 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -102,9 +103,18 @@ fun LevelSheetContent(level: Int, minLevel: Int, change: (Int) -> Unit) {
 }
 
 /** Reset asks once: `Clear all {n} points?`, Clear in the error colour, and Cancel. */
+@Composable
+fun ResetDialog(points: Int, clear: () -> Unit, cancel: () -> Unit) =
+    ConfirmDialog(stringResource(R.string.plan_resetConfirm, points), stringResource(R.string.common_cancel), stringResource(R.string.plan_resetProceed), FsColor.wipe, clear, cancel)
+
+/** A band load over spent points asks once: it replaces every point (`loadConfirmMessage`). */
+@Composable
+fun LoadBandDialog(load: () -> Unit, cancel: () -> Unit) =
+    ConfirmDialog(stringResource(R.string.plannerPage_loadAsk), stringResource(R.string.plannerPage_loadNo), stringResource(R.string.plannerPage_loadYes), FsColor.gold, load, cancel)
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ResetDialog(points: Int, clear: () -> Unit, cancel: () -> Unit) {
+private fun ConfirmDialog(question: String, cancelLabel: String, proceedLabel: String, proceedColor: Color, proceed: () -> Unit, cancel: () -> Unit) {
     // Material's alert with no body line: the question, Material's 24 dp, then the buttons. The
     // stock AlertDialog keeps its body gap even with no body, so the frame is drawn here.
     BasicAlertDialog(
@@ -116,10 +126,10 @@ fun ResetDialog(points: Int, clear: () -> Unit, cancel: () -> Unit) {
             Column(
                 Modifier.width(IntrinsicSize.Max).padding(start = DIALOG_PADDING, end = DIALOG_PADDING, top = DIALOG_PADDING, bottom = 16.dp),
             ) {
-                Text(stringResource(R.string.plan_resetConfirm, points), style = ScaledType.lead, color = FsColor.strong, modifier = Modifier.semantics { heading() })
+                Text(question, style = ScaledType.lead, color = FsColor.strong, modifier = Modifier.semantics { heading() })
                 Row(Modifier.fillMaxWidth().padding(top = DIALOG_PADDING - BUTTON_INSET), horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.End)) {
-                    TextButton(onClick = cancel) { Text(stringResource(R.string.common_cancel), style = ScaledType.bodyStrong, color = FsColor.text) }
-                    TextButton(onClick = clear) { Text(stringResource(R.string.plan_resetProceed), style = ScaledType.bodyStrong, color = FsColor.wipe) }
+                    TextButton(onClick = cancel) { Text(cancelLabel, style = ScaledType.bodyStrong, color = FsColor.text) }
+                    TextButton(onClick = proceed) { Text(proceedLabel, style = ScaledType.bodyStrong, color = proceedColor) }
                 }
             }
         }
