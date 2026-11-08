@@ -3,71 +3,84 @@ import DesignSystem
 import Models
 import SwiftUI
 
-/// The Guides tab (spec F9): the segments over Guides, Tier lists and What changed, and the
-/// stack of class pages, guides and changelog entries.
+/// Guides, Tier lists and What changed (spec F9), pushed from the profile menu under the tab it
+/// was opened on (flows spec 2): the segments, preselected by the menu row, and the class pages,
+/// guides and changelog entries it pushes in turn.
 struct GuidesScreen: View {
     let dependencies: GuidesDependencies
     /// Lane F1's account, nil while its feature switch is off.
     let session: SessionStore?
     /// `guide_tiers`: the Tier lists segment.
     let tiersOn: Bool
+    /// The segment the menu row opens.
+    let initialSegment: GuidesSegment
     @Bindable var router: GuidesRouter
-    /// A guide's Gear row: the BiS tab on that list.
+    /// A guide's Gear row: the Gear tab on that list.
     let openBis: (GuideGear) -> Void
 
     @State private var home: GuidesHomeStore
     @State private var tiers: TiersStore
     @State private var changes: ChangesStore
-    @AppStorage(GuidesSegment.storageKey) private var storedSegment = GuidesSegment.guides.rawValue
+    @State private var segment: GuidesSegment
+    @State private var pushed: GuidesRoute?
 
-    init(dependencies: GuidesDependencies, session: SessionStore?, tiersOn: Bool, router: GuidesRouter, openBis: @escaping (GuideGear) -> Void) {
+    init(
+        dependencies: GuidesDependencies, session: SessionStore?, tiersOn: Bool, initialSegment: GuidesSegment = .guides,
+        router: GuidesRouter, openBis: @escaping (GuideGear) -> Void
+    ) {
         self.dependencies = dependencies
         self.session = session
         self.tiersOn = tiersOn
+        self.initialSegment = initialSegment
         self.router = router
         self.openBis = openBis
         _home = State(initialValue: GuidesHomeStore(source: dependencies.source))
         _tiers = State(initialValue: TiersStore(source: dependencies.source, choice: .fallback))
         _changes = State(initialValue: ChangesStore(source: dependencies.source, now: dependencies.now))
+        _segment = State(initialValue: GuidesSegment.resolved(initialSegment.rawValue, tiersOn: tiersOn))
     }
 
     private var character: AccountCharacter? { session?.currentCharacter }
-    private var segment: GuidesSegment { GuidesSegment.resolved(storedSegment, tiersOn: tiersOn) }
 
     var body: some View {
-        NavigationStack(path: $router.path) {
-            GuidesRootView(
-                segment: segment, tiersOn: tiersOn, homePhase: home.phase, character: character,
-                tiersPhase: tiers.phase, choice: tiers.choice, yourSpec: TiersLogic.specKey(character, specs: dependencies.specs),
-                dates: changes.dates, changelog: changes.changelog, now: dependencies.now(), actions: rootActions
-            )
-            .refreshable { await load(segment) }
-            .navigationTitle(Copy.guidesTitle)
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar(removing: .title)
-            .characterSelector(isOn: session != nil)
-            .toolbar {
-                if segment == .tiers {
-                    ToolbarItem(placement: .topBarTrailing) {
-                        ShareButton(ShareText.tiers(tiers.choice.role), accessibility: Copy.shareAction)
-                    }
+        GuidesRootView(
+            segment: segment, tiersOn: tiersOn, homePhase: home.phase, character: character,
+            tiersPhase: tiers.phase, choice: tiers.choice, yourSpec: TiersLogic.specKey(character, specs: dependencies.specs),
+            dates: changes.dates, changelog: changes.changelog, now: dependencies.now(), actions: rootActions
+        )
+        .refreshable { await load(segment) }
+        .navigationTitle(Copy.guidesTitle)
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar(removing: .title)
+        .toolbar {
+            if segment == .tiers {
+                ToolbarItem(placement: .topBarTrailing) {
+                    ShareButton(ShareText.tiers(tiers.choice.role), accessibility: Copy.shareAction)
                 }
             }
-            .searchButton()
-            .toolbarBackground(FSColor.bg, for: .navigationBar)
-            .navigationDestination(for: GuidesRoute.self, destination: destination)
+        }
+        .toolbarBackground(FSColor.bg, for: .navigationBar)
+        .navigationDestination(item: $pushed) { route in
+            GuidesRouteScreen(route: route, destination: destination)
         }
         .task { await home.load() }
         .task(id: segment) { await load(segment) }
         .task(id: character?.key) { tiers.choice = TierChoice.defaults(character, specs: dependencies.specs) }
+        .onAppear { takePending() }
+        .onChange(of: router.pending) { takePending() }
+    }
+
+    /// A guide link that arrived for this screen.
+    private func takePending() {
+        if let route = router.takePending() { pushed = route }
     }
 
     private var rootActions: GuidesRootActions {
         GuidesRootActions(
-            selectSegment: { storedSegment = $0.rawValue },
-            openGuide: { router.path.append(.guide($0)) },
-            openClass: { router.path.append(.classPage($0)) },
-            openEntry: { router.path.append(.entry($0.id)) },
+            selectSegment: { segment = $0 },
+            openGuide: { pushed = .guide($0) },
+            openClass: { pushed = .classPage($0) },
+            openEntry: { pushed = .entry($0.id) },
             selectTiers: { tiers.choice = $0 },
             retry: { Task { await load(segment) } }
         )
@@ -81,14 +94,15 @@ struct GuidesScreen: View {
         }
     }
 
+    /// One pushed screen; `push` opens the next one over it.
     @ViewBuilder
-    private func destination(_ route: GuidesRoute) -> some View {
+    private func destination(_ route: GuidesRoute, push: @escaping (GuidesRoute) -> Void) -> some View {
         switch route {
         case let .classPage(slug):
             ScrollView {
                 if case let .loaded(loaded, since) = home.phase {
                     GuideClassView(classSlug: slug, home: loaded, offlineSince: since, now: dependencies.now()) {
-                        router.path.append(.guide($0.spec))
+                        push(.guide($0.spec))
                     }
                 } else {
                     GuidesHomeSkeleton().padding(GuidesLayout.gutter)
@@ -107,6 +121,19 @@ struct GuidesScreen: View {
             .background(FSColor.bg)
             .navigationBarTitleDisplayMode(.inline)
         }
+    }
+}
+
+/// A pushed Guides screen that can push one more over itself (a class page opens a guide), so the
+/// stack needs no typed path and works under any tab.
+private struct GuidesRouteScreen<Content: View>: View {
+    let route: GuidesRoute
+    let destination: (GuidesRoute, @escaping (GuidesRoute) -> Void) -> Content
+    @State private var next: GuidesRoute?
+
+    var body: some View {
+        destination(route) { next = $0 }
+            .navigationDestination(item: $next) { GuidesRouteScreen(route: $0, destination: destination) }
     }
 }
 

@@ -103,7 +103,7 @@ object FsFont {
 }
 
 object FsType {
-    val title = TextStyle(fontFamily = FsFont.title, fontWeight = FontWeight.Normal, fontSize = 32.sp, lineHeight = 38.sp, letterSpacing = 0.em, lineHeightStyle = CenteredLines)
+    val title = TextStyle(fontFamily = FsFont.title, fontWeight = FontWeight.Normal, fontSize = 32.sp, lineHeight = 38.sp, letterSpacing = 0.01.em, lineHeightStyle = CenteredLines)
     val sectionReading = TextStyle(fontFamily = FsFont.body, fontWeight = FontWeight.Bold, fontSize = 20.sp, lineHeight = 26.sp, letterSpacing = 0.em, lineHeightStyle = CenteredLines)
     val section = TextStyle(fontFamily = FsFont.body, fontWeight = FontWeight.Bold, fontSize = 18.sp, lineHeight = 24.sp, letterSpacing = 0.em, lineHeightStyle = CenteredLines)
     val itemLg = TextStyle(fontFamily = FsFont.body, fontWeight = FontWeight.Bold, fontSize = 18.sp, lineHeight = 22.sp, letterSpacing = 0.em, lineHeightStyle = CenteredLines)

@@ -33,13 +33,7 @@ extension LiveWidgetCalls {
     /// The extension's own client, from its Info.plist (the same FSAPI keys as the app) and the
     /// token the app shares through the App Group keychain. Fixture builds answer from fixtures.
     static func fromBundle(_ bundle: Bundle = .main) -> LiveWidgetCalls? {
-        guard let configuration = try? APIConfiguration(infoDictionary: bundle.infoDictionary ?? [:]) else { return nil }
-        let tokens: any TokenStore = switch configuration.mode {
-        case .live: KeychainTokenStore(accessGroup: AppGroup.id)
-        case .fixture: InMemoryTokenStore(token: "fsd_fixture")
-        }
-        let identity = ClientIdentity.bundled(bundle, installID: InstallID.current(in: AppGroup.defaults))
-        return LiveWidgetCalls(client: .make(configuration, tokens: tokens, identity: identity, bundle: bundle))
+        APIClient.appGroup(bundle).map(LiveWidgetCalls.init(client:))
     }
 }
 

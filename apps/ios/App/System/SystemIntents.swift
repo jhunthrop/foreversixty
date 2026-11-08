@@ -81,7 +81,7 @@ struct OpenBisIntent: AppIntent {
 
     @MainActor
     func perform() async throws -> some IntentResult {
-        IntentRouter.shared.open(.tab(.bis))
+        IntentRouter.shared.open(.tab(.gear))
         return .result()
     }
 }

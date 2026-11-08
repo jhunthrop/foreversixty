@@ -127,7 +127,7 @@ public enum FSFont {
 }
 
 public enum FSType {
-    public static let title = FSTextRole(face: FSFont.title, size: 32, lineHeight: 38, tracking: 0, scalesWith: .title, tabular: false)
+    public static let title = FSTextRole(face: FSFont.title, size: 32, lineHeight: 38, tracking: 0.01, scalesWith: .title, tabular: false)
     public static let sectionReading = FSTextRole(face: FSFont.bodyBold, size: 20, lineHeight: 26, tracking: 0, scalesWith: .title3, tabular: false)
     public static let section = FSTextRole(face: FSFont.bodyBold, size: 18, lineHeight: 24, tracking: 0, scalesWith: .headline, tabular: false)
     public static let itemLg = FSTextRole(face: FSFont.bodyBold, size: 18, lineHeight: 22, tracking: 0, scalesWith: .headline, tabular: false)

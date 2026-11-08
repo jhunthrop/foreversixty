@@ -36,18 +36,6 @@ struct AccountSnapshotTests {
 
     @Test func signedOutLargest() { snap(signedOutView(notice: nil), "signedout-ax5", size: .accessibility5) }
 
-    // MARK: F1.5
-
-    @Test func switcher() throws {
-        let me = try Self.threeCharacters()
-        snap(switcherHost(me), "switcher-default")
-    }
-
-    @Test func switcherLargest() throws {
-        let me = try Self.threeCharacters()
-        snap(switcherHost(me), "switcher-ax5", size: .accessibility5)
-    }
-
     // MARK: You, Devices, Delete account
 
     @Test func youFree() throws {
@@ -122,22 +110,6 @@ struct AccountSnapshotTests {
         SignedOutView(notice: notice, noticeIsFailure: failure, isSigningIn: signingIn, onSignIn: {}, onPickClass: {})
     }
 
-    /// The selector open over a dimmed screen, and the sheet drawn as it presents.
-    private func switcherHost(_ me: Me) -> some View {
-        let current = me.characters.first
-        return VStack(spacing: 0) {
-            HStack {
-                if let current { CharacterSelector(character: current, isOpen: true) {} }
-                Spacer()
-            }
-            .padding(16)
-            SwitcherSheet(me: me, currentKey: current?.key) { _ in }
-                .clipShape(.rect(topLeadingRadius: 28, topTrailingRadius: 28))
-        }
-        .frame(maxHeight: .infinity, alignment: .top)
-        .background(Color.black)
-    }
-
     private func snap(_ view: some View, _ name: String, size: DynamicTypeSize = .large) {
         let traits = UITraitCollection { traits in
             traits.userInterfaceStyle = .dark
@@ -161,22 +133,6 @@ struct AccountSnapshotTests {
     static func me(_ file: String) throws -> Me {
         let data = try Data(contentsOf: fixtures.appending(path: file))
         return try #require(try WireFormat.decoder().decode(Envelope<Me>.self, from: data).data)
-    }
-
-    /// me.json plus a third character with no guild, as the spec's F1.5 capture asks.
-    static func threeCharacters() throws -> Me {
-        let data = try Data(contentsOf: fixtures.appending(path: "me.json"))
-        var root = try #require(try JSONSerialization.jsonObject(with: data) as? [String: Any])
-        var me = try #require(root["data"] as? [String: Any])
-        var characters = try #require(me["characters"] as? [[String: Any]])
-        characters.append([
-            "key": "us/pvp/sablewhisper", "region": "us", "ruleset": "pvp", "name": "Sablewhisper",
-            "class": "priest", "spec": "Shadow", "race": "undead", "level": 23, "source": "bnet",
-        ])
-        me["characters"] = characters
-        root["data"] = me
-        let patched = try JSONSerialization.data(withJSONObject: root)
-        return try #require(try WireFormat.decoder().decode(Envelope<Me>.self, from: patched).data)
     }
 
     static func deviceRows() throws -> [DeviceRow] {

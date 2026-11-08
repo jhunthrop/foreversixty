@@ -3,39 +3,6 @@ import Models
 import Routing
 import SwiftUI
 
-/// The app's tabs, in the spec's order (Wave 3 §3.1): Home, Raids, BiS, Guides, You. Guides shows
-/// only with its `guides` switch. Feature lanes plug their root screen into `RootView.screen(for:)`.
-enum AppTab: String, CaseIterable, Identifiable {
-    case home, raids, bis, guides, you
-
-    var id: String { rawValue }
-
-    var title: String {
-        switch self {
-        case .home: Copy.tabHome
-        case .raids: Copy.tabRaids
-        case .bis: Copy.tabBis
-        case .guides: Copy.tabGuides
-        case .you: Copy.tabYou
-        }
-    }
-
-    var systemImage: String {
-        switch self {
-        case .home: "house"
-        case .raids: "calendar"
-        case .bis: "shield"
-        case .guides: "book"
-        case .you: "person"
-        }
-    }
-
-    /// The tabs a build shows: Guides only while its switch is on.
-    static func visible(guides: Bool) -> [AppTab] {
-        allCases.filter { $0 != .guides || guides }
-    }
-}
-
 extension AppTab {
     /// The tab the app opens on: Home, or in debug builds the `-FSTab <tab>` launch argument, so
     /// a capture script can open a tab on the shared simulator without taps.
@@ -47,40 +14,51 @@ extension AppTab {
     }
 }
 
+/// The app: the four tabs (Home, Raid, Gear, Activity) under the profile menu (flows spec 3), the
+/// links, pushes and intents that land on their answers, and the account's background work.
 struct RootView: View {
     let environment: AppEnvironment
-    @State private var selection: AppTab = .launchTab
-    /// Lane F4: the Raids tab's stack, which raid links and notifications push onto.
-    @State private var raidsRouter = RaidsRouter()
+    @State var shell = AppShell(selection: .launchTab)
+    /// Lane F4: the Raid tab's stack, which raid links and notifications push onto.
+    @State var raidsRouter = RaidsRouter()
     /// Lane F5: Home's Sims stack, which sim links push onto.
-    @State private var simsRouter = SimsRouter()
-    /// Lane F12: the search cover and the BiS list a result asks for.
-    @State private var search: SearchNavigator
+    @State var simsRouter = SimsRouter()
+    /// Lane F12: the search cover and the list a result asks the Gear tab for.
+    @State var search: SearchNavigator
     /// Lane F10: Home's Your reports stack, which report links push onto.
-    @State private var reportsRouter = ReportsRouter()
+    @State var reportsRouter = ReportsRouter()
     /// Lane F11: Home's Rankings and character pages, which rankings and player links push onto.
-    @State private var rankingsRouter = RankingsRouter()
-    /// Lane F9: the Guides tab's stack, which guide links push onto.
-    @State private var guidesRouter = GuidesRouter()
-    /// Lane F9: lists a guide's Gear row and `/app/bis` links ask the BiS tab for.
-    @State private var bisRouter = BisRouter()
+    @State var rankingsRouter = RankingsRouter()
+    /// Lane F9: guide links, pushed under Home.
+    @State var guidesRouter = GuidesRouter()
+    /// Lane F9: lists a guide's Gear row and `/app/bis` links ask the Gear tab for.
+    @State var bisRouter = BisRouter()
     /// Lane F9: keeps the guides of the player's classes saved.
     @State private var guidesPrefetcher: GuidesPrefetcher?
     @Environment(\.scenePhase) private var scenePhase
     /// Lane F15: where an intent or a Spotlight tap asks the app to go.
     @State private var intentRouter = IntentRouter.shared
-    /// Lane F16: the app's raid calendar, kept up to date from the Raids tab. It never asks for
+    /// Lane F16: the app's raid calendar, kept up to date from the Raid tab. It never asks for
     /// access until the player flips its switch.
-    @State private var calendarSync: CalendarSyncController
+    @State var calendarSync: CalendarSyncController
     /// Lane F13: the planner's editor and link pages, behind `planner`.
-    @State private var plannerRouter: PlannerRouter
-    @Environment(\.openURL) private var openURL
+    @State var plannerRouter: PlannerRouter
+    @Environment(\.openURL) var openURL
+    /// Flows spec F8: Pick your main, then the guild member's notification ask.
+    @State private var firstRun: FirstRunModel
+    /// Answers saved anywhere in the app: the Raid badge reads again after each.
+    @State private var raidSignupSaves = 0
 
     init(environment: AppEnvironment) {
         self.environment = environment
+        let session = environment.session
+        _firstRun = State(initialValue: FirstRunModel(dependencies: .init(
+            setMain: { key in try await session.setMain(key) },
+            permission: SystemNotificationPermission(),
+            asked: DefaultsFirstRunAskStore()
+        )))
         _search = State(initialValue: SearchNavigator(dependencies: .live(environment)))
         let service = RaidsDependencies.live(environment).service
-        let session = environment.session
         let loader = CalendarInputLoader(service: service, currentKey: { session.currentCharacter?.key })
         _calendarSync = State(initialValue: CalendarSyncController(
             adapter: EventKitCalendarAdapter(), store: UserDefaultsCalendarSyncStore(), now: AppClock.now, clock: RaidClock(),
@@ -100,14 +78,16 @@ struct RootView: View {
     }
 
     private var tabs: some View {
-        TabView(selection: $selection) {
-            ForEach(AppTab.visible(guides: environment.isAvailable(.guides))) { tab in
+        TabView(selection: $shell.selection) {
+            ForEach(AppTab.allCases) { tab in
                 Tab(tab.title, systemImage: tab.systemImage, value: tab) {
-                    screen(for: tab)
+                    screen(for: tab).environment(\.tabChrome, chrome(for: tab))
                 }
+                .badge(shell.badges[tab] ?? 0)
             }
         }
         .tint(Theme.Palette.accent)
+        .modifier(ProfileDrawer(shell: shell) { menu })
         .environment(environment.session)
         .environment(simsRouter)
         .environment(\.searchNavigator, searchIsOn ? search : nil)
@@ -115,7 +95,7 @@ struct RootView: View {
             SearchScreen(navigator: search).tint(Theme.Palette.accent)
         }
         .onChange(of: search.bisRequest) { _, request in
-            if request != nil { selection = .bis }
+            if request != nil { shell.selection = .gear }
         }
         .environment(reportsRouter)
         .environment(rankingsRouter)
@@ -130,6 +110,12 @@ struct RootView: View {
             await PushRegistrar.shared.sync(signedIn: environment.session.phase.isSignedIn)
         }
         .widgetRefreshTriggers(environment)
+        // The Raid tab's badge, for the selected character's guild, on every foreground.
+        .task(id: RaidBadgeTrigger(guild: raidBadgeGuild, active: scenePhase == .active, signupSaves: raidSignupSaves)) {
+            shell.badges[.raid] = await RaidBadgeCount.load(guild: raidBadgeGuild, client: environment.client)
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .raidSignupSaved)) { _ in raidSignupSaves += 1 }
+        .modifier(FirstRunHost(session: environment.session, model: firstRun, isOn: signInAvailable))
         .task(id: GuidesPrefetchTrigger(active: scenePhase == .active, classes: playerClasses)) { await prefetchGuides() }
         .onOpenURL { url in DeepLink(url: url).map(openLink) }
         // Lane F15: Siri, Shortcuts and Spotlight taps open what they name.
@@ -155,12 +141,20 @@ struct RootView: View {
     }
 
     /// Lane F12: universal search, its button and the item page.
-    private var searchIsOn: Bool { environment.isAvailable(.search) }
+    var searchIsOn: Bool { environment.isAvailable(.search) }
 
-    /// Lane F1: the account states and the character selector.
-    private var signInAvailable: Bool { environment.isAvailable(.signIn) }
+    /// Lane F1: the account states and the selected character.
+    var signInAvailable: Bool { environment.isAvailable(.signIn) }
 
-    /// The tab slots. Each lane replaces its placeholder line: F2 Home, F4 Raids, F3 BiS, F1 You.
+    /// What each tab root needs from the shell: the profile button's character and the menu's pushes.
+    private func chrome(for tab: AppTab) -> TabChrome {
+        TabChrome(
+            tab: tab, shell: shell, character: signInAvailable ? environment.session.currentCharacter : nil,
+            destination: { AnyView(menuScreen($0)) }
+        )
+    }
+
+    /// The tab roots. Each screen marks its root with `.tabRootChrome()` inside its stack.
     @ViewBuilder
     private func screen(for tab: AppTab) -> some View {
         switch tab {
@@ -170,128 +164,45 @@ struct RootView: View {
                 dependencies: HomeDependencies.live(environment).rankings,
                 account: RankingsAccount.of(environment.session.phase.me, current: nil), router: rankingsRouter
             ) {
-                HomeAccountGate(session: environment.session, onPickClass: { selection = .bis }) { EmptyView() }
+                HomeAccountGate(session: environment.session, onPickClass: { shell.selection = .gear }) { EmptyView() }
             }
         case .home where signInAvailable:
-            HomeAccountGate(session: environment.session, onPickClass: { selection = .bis }) {
-                HomeTab(dependencies: .live(environment), session: environment.session, openBis: { selection = .bis })
+            HomeAccountGate(session: environment.session, onPickClass: { shell.selection = .gear }) {
+                HomeTab(dependencies: .live(environment), session: environment.session, openBis: { shell.selection = .gear })
             }
-        case .home: HomeTab(dependencies: .live(environment), openBis: { selection = .bis })
-        case .raids where environment.isAvailable(.raids):
+        case .home: HomeTab(dependencies: .live(environment), openBis: { shell.selection = .gear })
+        case .raid where environment.isAvailable(.raids):
             RaidsTab(
                 dependencies: .live(environment), router: raidsRouter, session: signInAvailable ? environment.session : nil,
                 extras: guildExtras, calendar: guildExtras == nil ? nil : calendarSync
             )
-        case .raids: PlaceholderScreen(title: tab.title)
-        case .bis where environment.isAvailable(.bis):
+        case .raid: PlaceholderScreen(title: tab.title)
+        case .gear where environment.isAvailable(.bis):
             BisScreen.live(environment, session: signInAvailable ? environment.session : nil, router: bisRouter)
-        case .bis: PlaceholderScreen(title: tab.title)
-        case .guides:
-            GuidesScreen(
-                dependencies: .live(environment, session: signInAvailable ? environment.session : nil),
+        case .gear: PlaceholderScreen(title: tab.title)
+        case .activity:
+            ActivityScreen(
+                service: LiveActivityService(client: environment.client),
                 session: signInAvailable ? environment.session : nil,
-                tiersOn: environment.isAvailable(.guideTiers),
-                router: guidesRouter,
-                openBis: { gear in
-                    selection = .bis
-                    bisRouter.openRaid(spec: gear.spec, band: gear.band)
-                }
+                build: environment.appConfig.current?.activeBuild ?? BundledBuild.read() ?? "",
+                onUnread: { shell.badges[.activity] = $0 },
+                open: openIntent
             )
-        case .you where signInAvailable:
-            YouScreen(
-                session: environment.session,
-                version: AccountCopy.version(environment.identity, data: environment.appConfig.current?.activeBuild),
-                onPickClass: { selection = .bis },
-                plansLink: environment.plansLink,
-                liveSurfaces: environment.isAvailable(.widgets),
-                onLiveSettingsChange: { Task { await environment.liveActivities.syncRaid(WidgetSnapshotStore.shared().load()) } },
-                calendar: guildExtras.map { ($0, calendarSync) },
-                offlineData: offlineData
-            )
-        case .you: PlaceholderScreen(title: tab.title)
         }
     }
-}
 
-extension RootView {
     /// Lane F16: the guild extras' dependencies, nil while `guild_extras` is off.
-    private var guildExtras: GuildExtrasDependencies? {
+    var guildExtras: GuildExtrasDependencies? {
         environment.isAvailable(.guildExtras) ? .live(environment) : nil
     }
 
     /// Lane F15: the Offline data screen's model factory, nil while `system` is off. The closure is
     /// main-actor isolated by name: Swift 6.2 (CI's Xcode 26.6) does not carry the parameter's
     /// `@MainActor` type into a closure literal inside a ternary and rejects it as non-Sendable.
-    private var offlineData: (@MainActor () -> OfflineDataModel)? {
+    var offlineData: (@MainActor () -> OfflineDataModel)? {
         guard environment.isAvailable(.system) else { return nil }
         let environment = environment
         return { @MainActor in OfflineDataModel.live(environment) }
-    }
-
-    /// A link selects its tab: sim, report, rankings and player links Home (lanes F5, F10, F11),
-    /// guide links Guides and list links BiS (lane F9), raid links Raids (lane F4).
-    private func openLink(_ link: DeepLink) {
-        if PlannerRouter.handles(link) {
-            // Lane F13: with the switch off, a pasted /b/ link opens the site's page instead.
-            if !plannerRouter.open(link), case .sharedBuild = link { openURL(link.url) }
-        } else if SimsRouter.handles(link) {
-            guard environment.isAvailable(.sims) else { return }
-            selection = .home
-            simsRouter.open(link)
-        } else if ReportsRouter.handles(link) {
-            guard environment.isAvailable(.reports) else { return }
-            selection = .home
-            reportsRouter.open(link)
-        } else if RankingsRouter.handles(link) {
-            guard environment.isAvailable(.rankings) else { return }
-            selection = .home
-            rankingsRouter.open(link)
-        } else if GuidesRouter.handles(link) {
-            guard environment.isAvailable(.guides) else { return }
-            selection = .guides
-            guidesRouter.open(link)
-        } else if BisRouter.handles(link) {
-            guard environment.isAvailable(.bis) else { return }
-            selection = .bis
-            bisRouter.open(link)
-        } else {
-            openRaids(link)
-        }
-    }
-
-    /// Lane F4: a raid, raid-night or guild link selects the Raids tab and pushes its screen.
-    private func openRaids(_ link: DeepLink) {
-        guard environment.isAvailable(.raids), RaidsRouter.handles(link) else { return }
-        selection = .raids
-        raidsRouter.open(link)
-    }
-
-    /// Lane F15: an intent's or a Spotlight tap's destination, opened as the in-app link would be.
-    private func openIntent(_ destination: IntentDestination) {
-        switch destination {
-        case let .link(link): openLink(link)
-        case let .tab(tab): selection = tab
-        case let .character(key): openCharacter(key)
-        case .rankingsBoard:
-            guard environment.isAvailable(.rankings) else { return }
-            selection = .home
-            rankingsRouter.player = nil
-            rankingsRouter.encounter = nil
-            rankingsRouter.showsBoard = true
-        }
-    }
-
-    /// A character opens F11.4 when `rankings` is on; else Home on it (your own characters only).
-    private func openCharacter(_ key: String) {
-        let parts = key.split(separator: "/").map(String.init)
-        if environment.isAvailable(.rankings), parts.count == 3 {
-            openLink(.player(region: parts[0], ruleset: parts[1], name: parts[2]))
-            return
-        }
-        if environment.session.phase.me?.characters.contains(where: { $0.key == key }) == true {
-            environment.session.pick(key)
-        }
-        selection = .home
     }
 
     private func refreshSpotlight() async {
@@ -318,9 +229,15 @@ extension RootView {
     }
 
     /// Lane F13: Your builds' `Plan a new build` row, for the current character.
-    private func plannerNewBuild() -> PlannerNewBuild? {
+    func plannerNewBuild() -> PlannerNewBuild? {
         let character = environment.session.currentCharacter
         return PlannerNewBuild(className: character?.className, race: character?.race, level: character?.level)
+    }
+
+    /// The selected character's guild, whose raids the Raid badge counts.
+    private var raidBadgeGuild: Int64? {
+        guard signInAvailable, environment.isAvailable(.raids) else { return nil }
+        return environment.session.currentCharacter?.guild?.id
     }
 
     /// The classes the signed-in player has characters in.
@@ -339,6 +256,13 @@ private struct SpotlightTrigger: Equatable {
     let enabled: Bool
 }
 
+/// Reads the Raid badge again for a new guild, a foreground, or a saved answer.
+private struct RaidBadgeTrigger: Equatable {
+    let guild: Int64?
+    let active: Bool
+    let signupSaves: Int
+}
+
 /// Runs the guide prefetch again when the app comes forward or the player's classes change.
 private struct GuidesPrefetchTrigger: Equatable {
     let active: Bool
@@ -355,6 +279,7 @@ struct PlaceholderScreen: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(Theme.Palette.background)
                 .navigationTitle(title)
+                .tabRootChrome()
         }
     }
 }
