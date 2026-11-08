@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -62,8 +63,10 @@ fun FlowPage(modifier: Modifier = Modifier, content: @Composable ColumnScope.() 
 }
 
 /**
- * The page head (the mock's PageHeader): an optional 56 crest, the title in its colour and the fact line;
- * 16 above the title block, 14 below it.
+ * The page head (the mock's PageHeader): an optional 56 crest, the title in its colour and the fact line
+ * ([meta] adds links and tags after the [facts]); 16 above the title block, 14 below it. The web-derived
+ * screens add the head's answer, its actions and its tab strip under the title, 16 apart, the strip 8
+ * under the block and the head's bottom.
  */
 @Composable
 fun FlowHead(
@@ -72,8 +75,12 @@ fun FlowHead(
     titleColor: Color = FsColor.strong,
     crest: String? = null,
     lead: (@Composable () -> Unit)? = null,
+    meta: (@Composable () -> Unit)? = null,
+    answer: (@Composable ColumnScope.() -> Unit)? = null,
+    actions: (@Composable RowScope.() -> Unit)? = null,
+    tabs: (@Composable () -> Unit)? = null,
 ) {
-    Column(Modifier.fillMaxWidth().parityRegion(ParityRegion.HEAD).padding(top = FsSpace.space4, bottom = HEAD_BOTTOM)) {
+    Column(Modifier.fillMaxWidth().parityRegion(ParityRegion.HEAD).padding(top = FsSpace.space4, bottom = if (tabs == null) HEAD_BOTTOM else 0.dp)) {
         Row(Modifier.fillMaxWidth().parityRegion(ParityRegion.HEAD_TITLE), verticalAlignment = Alignment.CenterVertically) {
             val image: (@Composable () -> Unit)? = lead ?: crest?.let { { ClassCrest(it, CREST, Modifier.parityItem(ParityItemKind.Image)) } }
             if (image != null) {
@@ -84,7 +91,7 @@ fun FlowHead(
             val bounded = if (image != null) Modifier.weight(1f, fill = false) else Modifier
             Column(bounded.width(IntrinsicSize.Max)) {
                 Text(title, style = FsType.title, color = titleColor, modifier = Modifier.semantics { heading() })
-                if (facts.isNotEmpty()) {
+                if (facts.isNotEmpty() || meta != null) {
                     // The facts wrap (`.ph-meta`, gap 6 by 16) when they outgrow one line.
                     FlowRow(
                         Modifier.padding(top = META_GAP).fillMaxWidth().parityRegion(ParityRegion.HEAD_META),
@@ -92,9 +99,19 @@ fun FlowHead(
                         verticalArrangement = Arrangement.spacedBy(META_GAP),
                     ) {
                         facts.forEach { Text(it, style = FsType.small, color = FsColor.muted) }
+                        meta?.invoke()
                     }
                 }
             }
+        }
+        // The head's answer (`.ans`), its actions (`.ph-actions`) and its tab strip (`.ph-tabs`), in that order.
+        if (answer != null) Column(Modifier.padding(top = FsSpace.space4).fillMaxWidth().parityRegion(ParityRegion.HEAD_ANSWER), content = answer)
+        if (actions != null) {
+            Row(Modifier.padding(top = FsSpace.space4).fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(FsSpace.space3), content = actions)
+        }
+        if (tabs != null) {
+            Spacer(Modifier.height(HEAD_BOTTOM + TABS_GAP))
+            tabs()
         }
     }
 }
@@ -177,6 +194,7 @@ fun FlowGap(height: Dp) {
 
 private val CREST = 56.dp
 private val HEAD_BOTTOM = 14.dp
+private val TABS_GAP = 8.dp
 private val META_GAP = 6.dp
 private val SECTION_TITLE_GAP = 10.dp
 private val ACTION_DROP = 2.dp

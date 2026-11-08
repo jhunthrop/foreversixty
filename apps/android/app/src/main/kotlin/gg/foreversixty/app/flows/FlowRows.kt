@@ -62,6 +62,7 @@ sealed interface FlowLead {
  * One row (the mock's Row): an optional 40 lead, the title (15/20 bold) and its line (13/18), and a
  * trailing control that drops under the text at phone width. [slim] rows are 6 above and below and at
  * least 44 tall; others are 10. [unread] puts the gold dot in the gutter. A rule follows unless [last].
+ * [inset] pads the row's sides inside a plate (`.plate .row`, 16), the rule still edge to edge.
  */
 @Composable
 fun FlowRow(
@@ -72,6 +73,7 @@ fun FlowRow(
     slim: Boolean = false,
     unread: Boolean = false,
     last: Boolean = false,
+    inset: Dp = 0.dp,
     trail: (@Composable () -> Unit)? = null,
     onClick: (() -> Unit)? = null,
 ) {
@@ -83,7 +85,7 @@ fun FlowRow(
             .parityItem(ParityItemKind.Row)
             .then(tap)
             .heightIn(min = if (slim) SLIM_MIN else 0.dp)
-            .padding(vertical = if (slim) SLIM_PAD else ROW_PAD),
+            .padding(horizontal = inset, vertical = if (slim) SLIM_PAD else ROW_PAD),
         verticalArrangement = Arrangement.Center,
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
