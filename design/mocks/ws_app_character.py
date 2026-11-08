@@ -30,6 +30,8 @@ CHARACTER_CSS = '''
 .answer-col .links{display:flex;gap:16px;flex-wrap:wrap}
 .score-line{display:flex;align-items:center;gap:12px;margin-top:8px}.score-line .t-small{white-space:nowrap}
 .blk.score-bars .tally{grid-template-columns:minmax(0,1fr)}
+/* Best in slot in the small face, so a long worn name (Dormant Heart of the Mountain) sits well clear of its column's edge */
+.irow .g .v .bis{font:600 13px/18px var(--font-body)}
 .ck{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;font-weight:700}
 .ck.ok{color:var(--kill)}.ck.miss{color:var(--wipe)}
 .dot{display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--muted)}.dot.kill{background:var(--kill)}.dot.wipe{background:var(--wipe)}
@@ -140,7 +142,7 @@ def gear_cell(cls: str, owner: bool, unit: str, cell: tuple) -> str:
     if not owner:
         g = None
     elif gain is None:
-        g = ('Best in slot', '', '')
+        g = ('<span class="bis">Best in slot</span>', '', '')
     else:
         g = (gain, '' if gain == 'Same' else unit, f'vs <span style="color:var(--q{QUALITY[pq]},inherit)">{pick}</span>')
     return ItemRow(name, QUALITY[q], item_icon(cls, name, QUALITY[q]), f'{slot}{DOT}Item level {ilvl}', gain=g)
@@ -163,7 +165,7 @@ def score_section() -> str:
     bars = Tally([('', label, have, want) for label, have, want in SCORE_PARTS])
     most = f'<p class="t-small" style="margin-top:12px">Most to gain: Experience, 180 points to the top. {link("How it is scored")}</p>'
     parts = Disclosure('Score parts', Rows([Row(n, f'{h} of {w}', link=False, slim=True) for n, h, w in SCORE_PARTS], open_=True))
-    return Section('Forever Score', figs + line + f'<div class="blk score-bars">{bars}</div>' + most + parts)
+    return Section('Forever Score', figs + line + f'<div class="blk score-bars">{bars}</div>' + most + parts, meta='6 rated fights')
 
 
 def best_section(unit: str) -> str:
