@@ -15,6 +15,8 @@ from pipeline.addonrotation import (
     coach_persona_spell_ids,
     coach_spell_ids,
     compute_spell_icons,
+    load_talent_spells,
+    load_trainable_ids,
     raid_cover_spell_ids,
     rank_siblings,
 )
@@ -130,6 +132,57 @@ def test_an_unranked_family_with_no_trainable_id_keeps_its_rows(tmp_path):
         for band in build_rotation("warrior-fury", tmp_path, _RECKLESSNESS_RANKS)
     }
     assert [line.spell_id for line in bands[30]] == [13847]
+
+
+#: A Season of Discovery rune the client still carries (AcquireMethod 3): no trainer row, no talent.
+_RUNE_RANKS = {
+    "build": BUILD,
+    "classes": {"warrior": {"Rune Strike": [{"id": 402927, "level": 20, "rank": 0}]}},
+}
+
+
+def test_a_family_neither_trainable_nor_a_talent_never_reaches_a_band(tmp_path):
+    """The addon panel's trainables gate (design/specs/2026-11-08-addon-ux.md 4.3): once the
+    class has a trainables file, a spell no trainer teaches and no talent gives is a rune a
+    Forever player never learns, and no band names it."""
+    _write_apl(tmp_path, "warrior-fury", [_cast(402927, notes="Rune Strike.")])
+    bands = build_rotation("warrior-fury", tmp_path, _RUNE_RANKS, trainable_ids=frozenset({1719}))
+    assert all(line.spell_id != 402927 for band in bands for line in band.lines)
+
+
+def test_a_talent_spell_outside_the_trainables_keeps_its_rows(tmp_path):
+    """Water Shield (408510) is a Restoration talent on 1.60.1.70790 that the trainables file does
+    not list: the talent keeps it, from the level its tier opens."""
+    _write_apl(tmp_path, "warrior-fury", [_cast(402927, notes="Rune Strike.")])
+    bands = {
+        band.level: band.lines
+        for band in build_rotation(
+            "warrior-fury",
+            tmp_path,
+            _RUNE_RANKS,
+            trainable_ids=frozenset({1719}),
+            talent_spells={"Rune Strike": [(20, 402927)]},
+        )
+    }
+    assert [line.spell_id for line in bands[20]] == [402927]
+
+
+def test_the_committed_rotations_name_only_trainable_or_talent_spells():
+    """Every rotation line on the active build is a spell the class learns from a trainer or a
+    talent of its tree: never a rune."""
+    build = json.loads(Path("../web/src/data/active-build.json").read_text())["build"]
+    for spec, bands in build_rotations(Path("builds"), build).items():
+        class_slug = spec.split("-", 1)[0]
+        known = load_trainable_ids(Path("builds") / build, class_slug) | {
+            spell_id
+            for pairs in load_talent_spells(Path("builds") / build, class_slug).values()
+            for _, spell_id in pairs
+        }
+        for band in bands:
+            for line in band.lines:
+                assert line.spell_id in known or line.name in load_talent_spells(
+                    Path("builds") / build, class_slug
+                ), (spec, band.level, line.name, line.spell_id)
 
 
 def test_the_committed_rotations_never_show_an_ability_before_its_trainer_level():

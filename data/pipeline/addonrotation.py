@@ -158,6 +158,18 @@ def _family_ranks(
         # Keep them only when the family states no level at all.
         levelled = [pair for pair in pairs if pair[0] > 0]
         families[name] = levelled or pairs
+    # A family with no id in the class's trainables and no talent spell is a Season of
+    # Discovery rune (SkillLineAbility AcquireMethod 3): a Forever player never learns it, so
+    # no rotation line may name it (Water Shield 408510 sat in Restoration's band 20 on
+    # 1.60.1.70790; design/specs/2026-11-08-addon-ux.md section 4.3, the trainables gate).
+    # With no trainables file for the class there is nothing to judge by, and every family stays.
+    if trainable_ids:
+        talent_ids = {spell_id for pairs in talent_spells.values() for _, spell_id in pairs}
+        families = {
+            name: pairs
+            for name, pairs in families.items()
+            if any(spell_id in trainable_ids or spell_id in talent_ids for _, spell_id in pairs)
+        }
     # A talent's own spell (Stormstrike, Adrenaline Rush, Cold Blood) is in no
     # trainer's table, so spellranks.json does not track it; the sim casts it
     # once the build takes the talent, so the rotation names it from the
