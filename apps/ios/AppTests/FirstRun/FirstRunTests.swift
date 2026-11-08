@@ -169,19 +169,19 @@ struct FirstRunParityTests {
     }
 
     @Test("ios-first-pick-main")
-    func pickMainParity() throws {
-        try ParityCheck.assert(pickMain, screen: "first-pick-main", size: Self.device)
+    func pickMainParity() async throws {
+        try await ParityCheck.assert(pickMain, screen: "first-pick-main", size: Self.device)
     }
 
     @Test("ios-first-permission")
-    func permissionParity() throws {
-        try ParityCheck.assert(permission, screen: "first-permission", size: Self.device)
+    func permissionParity() async throws {
+        try await ParityCheck.assert(permission, screen: "first-permission", size: Self.device)
     }
 
     @Test("ios-first-permission-long: a long guild name wraps over two balanced lines")
-    func permissionLongParity() throws {
+    func permissionLongParity() async throws {
         let view = FirstPermissionView(guild: "Ranchers of Thunderbluff", onTurnOn: {}, onNotNow: {})
-        try ParityCheck.assert(view, screen: "first-permission-long", size: Self.device)
+        try await ParityCheck.assert(view, screen: "first-permission-long", size: Self.device)
     }
 
     @Test("the balanced break makes the longer line shortest")
