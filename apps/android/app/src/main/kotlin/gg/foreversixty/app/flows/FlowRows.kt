@@ -52,7 +52,8 @@ import gg.foreversixty.app.items.ItemQuality
 
 /** A row's leading image: a game icon (instance, spec, event) or an item in its quality frame. */
 sealed interface FlowLead {
-    data class Icon(val icon: String?, val build: String?) : FlowLead
+    /** A game icon in its rounded frame; [size] 28 in a slim list's spec rows (Guides). */
+    data class Icon(val icon: String?, val build: String?, val size: Dp = LEAD) : FlowLead
     data class Item(val look: ItemLook, val build: String) : FlowLead
 
     /** A character: the class crest (rosters, the unanswered, the applicant's guildmates); signed-out Home's classes are 44. */
@@ -128,12 +129,12 @@ fun FlowLeadImage(lead: FlowLead) {
     when (lead) {
         is FlowLead.Icon -> Box(
             Modifier
-                .size(LEAD)
+                .size(lead.size)
                 .parityItem(ParityItemKind.Image)
                 .clip(RoundedCornerShape(FsRadius.control))
                 .background(FsColor.raised)
                 .border(1.dp, FsColor.line, RoundedCornerShape(FsRadius.control)),
-        ) { GameIconImage(lead.icon, lead.build, LEAD) }
+        ) { GameIconImage(lead.icon, lead.build, lead.size) }
         is FlowLead.Item -> ItemIcon(lead.look.icon, lead.look.quality, lead.build, LEAD, Modifier.parityItem(ParityItemKind.Image))
         is FlowLead.Crest -> gg.foreversixty.app.common.ClassCrest(lead.className, lead.size, Modifier.parityItem(ParityItemKind.Image))
         is FlowLead.Check -> {

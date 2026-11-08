@@ -10,7 +10,6 @@ import gg.foreversixty.app.guides.logic.Loadable
 import gg.foreversixty.app.model.GuideFile
 import gg.foreversixty.app.model.GuideIndex
 import gg.foreversixty.app.navigation.DeepLink
-import gg.foreversixty.app.auth.session.MemoryValue
 import java.time.Instant
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
@@ -149,7 +148,7 @@ class GuidesStoreTest {
     }
 
     @Test
-    fun `guide links open the tab and the guide, and the segment persists`() {
+    fun `guide links open the tab and the guide, and Tiers falls back to Guides while off`() {
         val navigator = GuidesNavigator()
         assertTrue(navigator.open(requireNotNull(DeepLink.parse(DeepLink.Guide("shaman", "elemental").url()))))
         assertTrue(navigator.wantsTab)
@@ -162,14 +161,9 @@ class GuidesStoreTest {
         navigator.pop()
         assertEquals(listOf(GuidesScreen.ClassPage("mage")), navigator.stack)
 
-        val stored = MemoryValue()
-        assertEquals(GuidesSegment.Guides, GuidesSegment.load(stored))
-        GuidesSegment.save(stored, GuidesSegment.Changes)
-        assertEquals(GuidesSegment.Changes, GuidesSegment.load(stored))
-        GuidesSegment.save(stored, GuidesSegment.Tiers)
-        assertEquals(GuidesSegment.Tiers, GuidesSegment.load(stored))
-        // With guide_tiers off a saved Tier lists segment opens Guides.
-        assertEquals(GuidesSegment.Guides, GuidesSegment.load(stored, tiersOn = false))
-        assertEquals(listOf(GuidesSegment.Guides, GuidesSegment.Changes), GuidesSegment.visible(tiersOn = false))
+        // With guide_tiers off the Tiers row draws Guides.
+        assertEquals(GuidesSegment.Guides, GuidesSegment.Tiers.shown(tiersOn = false))
+        assertEquals(GuidesSegment.Tiers, GuidesSegment.Tiers.shown(tiersOn = true))
+        assertEquals(GuidesSegment.Changes, GuidesSegment.Changes.shown(tiersOn = false))
     }
 }

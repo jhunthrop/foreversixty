@@ -46,7 +46,6 @@ import gg.foreversixty.app.designsystem.NewDataStrip
 import gg.foreversixty.app.guides.GuidesRootLayout
 import gg.foreversixty.app.guides.GuidesTestData
 import gg.foreversixty.app.guides.logic.Guides
-import gg.foreversixty.app.guides.logic.GuidesSegment
 import gg.foreversixty.app.guides.logic.Loadable
 import gg.foreversixty.app.guides.ui.GuidesHome
 import gg.foreversixty.app.guides.ui.GuidesHomeActions
@@ -167,8 +166,8 @@ class SystemScreenshotTest {
         val index = GuidesTestData.index()
         Column {
             NewDataStrip("New game data is ready.", "Update", {})
-            GuidesRootLayout(GuidesSegment.visible(tiersOn = true), GuidesSegment.Guides, {}) {
-                GuidesHome(GuidesHomeState(Loadable.Loaded(index, null), savedGuides, Guides.yourGuide(index, GuidesTestData.lightningbolltz)), GuidesHomeActions())
+            GuidesRootLayout {
+                GuidesHome(guidesState(index), GuidesHomeActions())
             }
         }
     }
@@ -181,12 +180,15 @@ class SystemScreenshotTest {
 
     private fun guidesBar(large: Boolean) = capture("f15-guides-search", large, ForeverTab.Home) {
         val index = GuidesTestData.index()
-        GuidesRootLayout(GuidesSegment.visible(tiersOn = true), GuidesSegment.Guides, {}, selector = {
+        GuidesRootLayout(selector = {
             RootSearchBar({}) { Row(Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) { CharacterPortrait(GuidesTestData.lightningbolltz.avatarUrl, GuidesTestData.lightningbolltz.faction, 36.dp) } }
         }) {
-            GuidesHome(GuidesHomeState(Loadable.Loaded(index, null), savedGuides, Guides.yourGuide(index, GuidesTestData.lightningbolltz)), GuidesHomeActions())
+            GuidesHome(guidesState(index), GuidesHomeActions())
         }
     }
+
+    private fun guidesState(index: gg.foreversixty.app.model.GuideIndex) =
+        GuidesHomeState(Loadable.Loaded(index, null), savedGuides, GuidesTestData.lightningbolltz, Guides.yourGuide(index, GuidesTestData.lightningbolltz))
 
     @Test fun guidesSearch() = guidesBar(false)
 

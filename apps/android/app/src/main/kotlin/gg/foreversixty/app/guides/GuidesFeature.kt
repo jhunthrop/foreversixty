@@ -1,8 +1,5 @@
 package gg.foreversixty.app.guides
 
-import android.content.Context
-import gg.foreversixty.app.PrefsValue
-import gg.foreversixty.app.auth.session.StoredValue
 import gg.foreversixty.app.guides.logic.GuideFiles
 import gg.foreversixty.app.guides.logic.GuidesNavigator
 import gg.foreversixty.app.guides.logic.GuidesStore
@@ -19,8 +16,6 @@ import java.time.ZoneId
  */
 class GuidesFeature(
     val files: GuideFiles,
-    /** The segment the tab opens on, per device (spec F9.1). */
-    val segment: StoredValue,
     private val tiersOn: () -> Boolean,
     /** The account's characters: their classes' guides are kept ready offline. */
     private val characters: () -> List<AccountCharacter>,
@@ -53,10 +48,9 @@ class GuidesFeature(
     companion object {
         private val SYNC_INTERVAL: Duration = Duration.ofHours(1)
 
-        fun create(context: Context, statics: StaticDataStore, tiersOn: () -> Boolean, characters: () -> List<AccountCharacter>): GuidesFeature {
+        fun create(statics: StaticDataStore, tiersOn: () -> Boolean, characters: () -> List<AccountCharacter>): GuidesFeature {
             return GuidesFeature(
                 files = LiveGuideFiles(statics),
-                segment = PrefsValue(context, PrefsValue.GUIDES_SEGMENT),
                 tiersOn = tiersOn,
                 characters = characters,
             )

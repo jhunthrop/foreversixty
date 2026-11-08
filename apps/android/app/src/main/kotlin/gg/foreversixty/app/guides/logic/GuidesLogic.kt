@@ -16,9 +16,6 @@ import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
 import java.util.Locale
 
-/** A cell of `All classes` (spec F9.1). */
-data class ClassCell(val classSlug: String, val className: String)
-
 /** `Saved on this phone: {classes} · {size}` (spec F9.1 footer). */
 data class SavedSummary(val classNames: List<String>, val bytes: Long)
 
@@ -52,8 +49,8 @@ data class BuildRow(val kind: BuildKind, val totals: String, val build: GuideBui
 object Guides {
     private const val TOTALS_SEPARATOR = " / "
 
-    /** Nine cells, always: the index's classes in its (classes.json) order. */
-    fun classCells(index: GuideIndex): List<ClassCell> = index.classes.map { ClassCell(it.classSlug, it.className) }
+    /** The page's `Updated` day: the newest guide's (ISO days sort as text); null with no guides. */
+    fun updated(index: GuideIndex): String? = index.classes.flatMap { it.specs }.maxOfOrNull { it.updated }
 
     /** The current character's guide: its class, and the spec its primary tree names. */
     fun yourGuide(index: GuideIndex, character: AccountCharacter?): GuideIndexSpec? {

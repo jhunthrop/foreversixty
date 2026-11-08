@@ -55,7 +55,7 @@ import gg.foreversixty.app.items.GameIconImage
 /**
  * The flows screens' layout (design/mocks/ws_app_flows.py `.ap`, spec 2026-11-08): one scrolling column
  * under the profile bar, 8 above, 16 at the sides, 24 below. Home, Raid and Gear are built from these.
- * [top] is 0 for a page the web draws (signed-out Home, whose head starts at the bar).
+ * [top] is 0 for a page whose head starts at the bar (signed-out Home, Guides, Tiers).
  */
 @Composable
 fun FlowPage(modifier: Modifier = Modifier, top: Dp = FsSpace.space2, content: @Composable ColumnScope.() -> Unit) {
@@ -70,9 +70,11 @@ fun FlowPage(modifier: Modifier = Modifier, top: Dp = FsSpace.space2, content: @
 }
 
 /**
- * The page head (the mock's PageHeader): an optional 56 crest, the title in its colour and the fact line;
- * 16 above the title block, 14 below it. [actions] sit under the title block inside the head (`.ph-actions`,
- * 16 above), as signed-out Home's Sign in. [balanced] breaks a long title over balanced lines (a guild's name).
+ * The page head (the mock's PageHeader): an optional 56 crest, the title in its colour, the fact line and
+ * the [summary] paragraph (`.ph-lead`, 10 under the facts); then the [answer] for your character (`.ans`,
+ * its own region, 16 under the title block). [actions] sit under that inside the head (`.ph-actions`, 16
+ * above), as signed-out Home's Sign in. [balanced] breaks a long title over balanced lines (a guild's name).
+ * 16 above the title block, 14 below the head.
  */
 @Composable
 fun FlowHead(
@@ -81,6 +83,7 @@ fun FlowHead(
     titleColor: Color = FsColor.strong,
     crest: String? = null,
     lead: (@Composable () -> Unit)? = null,
+    summary: String? = null,
     /** The head's answer under the title block, 16 below it (the mock's `.ans`): a secondary page's figure and its line. */
     answer: (@Composable ColumnScope.() -> Unit)? = null,
     actions: (@Composable () -> Unit)? = null,
@@ -112,6 +115,7 @@ fun FlowHead(
                         facts.forEach { Text(it, style = FsType.small, color = FsColor.muted) }
                     }
                 }
+                if (summary != null) Text(summary, style = SUMMARY, color = FsColor.text, modifier = Modifier.padding(top = SUMMARY_GAP))
             }
         }
         if (answer != null) {
@@ -210,5 +214,7 @@ private val HEAD_BOTTOM = 14.dp
 private val META_GAP = 6.dp
 private val SECTION_TITLE_GAP = 10.dp
 private val ACTION_DROP = 2.dp
+private val SUMMARY_GAP = 10.dp
+private val SUMMARY = FsType.prose.copy(lineHeight = 24.sp)
 private val SKELETON_RADIUS = 6.dp
 private val ACTION = FsType.bodyStrong.copy(fontSize = 14.sp, lineHeight = 24.sp)

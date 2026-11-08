@@ -8,11 +8,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -22,9 +19,6 @@ import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.SegmentedButton
-import androidx.compose.material3.SegmentedButtonDefaults
-import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -41,7 +35,6 @@ import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import gg.foreversixty.app.R
@@ -54,7 +47,6 @@ import gg.foreversixty.app.designsystem.pillSurface
 import gg.foreversixty.app.designsystem.quietCard
 import gg.foreversixty.app.model.GuideSourceLink
 import gg.foreversixty.app.raids.ui.SectionLabel
-import gg.foreversixty.app.reports.ui.isLargeText
 import gg.foreversixty.app.reports.ui.scaledSize
 
 /** Spacing of the guide screens (spec W3 §8): 22 before a section label, 14 inside cards, 16 margins. */
@@ -70,43 +62,7 @@ internal object GuideSpace {
 internal val TARGET = 48.dp
 internal val PILL = 36.dp
 
-/**
- * Equal segments (spec F9.1). At the largest text a label would break mid-phrase in a third of the
- * width, so the segments become one-line pills that wrap whole (spec W3 §9: never cut).
- */
-@OptIn(ExperimentalLayoutApi::class)
-@Composable
-internal fun EqualSegments(labels: List<String>, selected: Int, onSelect: (Int) -> Unit) {
-    if (isLargeText()) {
-        FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            labels.forEachIndexed { index, label -> PillChip(label, selected = index == selected, onClick = { if (index != selected) onSelect(index) }) }
-        }
-        return
-    }
-    SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth().height(IntrinsicSize.Min)) {
-        labels.forEachIndexed { index, label ->
-            SegmentedButton(
-                selected = index == selected,
-                onClick = { if (index != selected) onSelect(index) },
-                shape = SegmentedButtonDefaults.itemShape(index, labels.size),
-                modifier = Modifier.fillMaxHeight().heightIn(min = TARGET),
-                icon = {},
-                colors = SegmentedButtonDefaults.colors(
-                    activeContainerColor = GameColors.pressedWash,
-                    activeContentColor = FsColor.strong,
-                    activeBorderColor = FsColor.line,
-                    inactiveContainerColor = GameColors.controlFill,
-                    inactiveContentColor = FsColor.muted,
-                    inactiveBorderColor = FsColor.line,
-                ),
-            ) {
-                Text(label, style = ScaledType.segment, maxLines = 2, overflow = TextOverflow.Clip)
-            }
-        }
-    }
-}
-
-/** A 36 dp pill in a 48 dp target: a guide section chip or a tier role chip; [selected] is gold. */
+/** A 36 dp pill in a 48 dp target: a guide section chip; [selected] is gold. */
 @Composable
 internal fun PillChip(label: String, selected: Boolean, description: String = label, onClick: () -> Unit, leading: @Composable () -> Unit = {}, trailing: @Composable () -> Unit = {}) {
     val line = if (selected) FsColor.gold else FsColor.line

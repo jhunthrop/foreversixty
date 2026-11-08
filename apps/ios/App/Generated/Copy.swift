@@ -6594,6 +6594,231 @@ enum Copy {
     /// Undo
     static var plannerPageUndo: String { text("plannerPage.undo") }
 
+    /// Change ▾
+    static var flowsChange: String { text("flows.change") }
+
+    /// Talents, rotation and gear for every spec, from your first talent point to the raid at 60.
+    static var guidesLead: String { text("guides.lead") }
+
+    /// Updated {date}
+    static func guidesUpdated(date: String) -> String {
+        format("guides.updated", date)
+    }
+
+    /// Your character
+    static var guidesYourCharacter: String { text("guides.yourCharacter") }
+
+    /// Level {n} · {who}
+    static func guidesCharacterLine(n: Int, who: String) -> String {
+        format("guides.characterLine", n, who)
+    }
+
+    /// Your guide: {spec} ›
+    static func guidesYourGuideLink(spec: String) -> String {
+        format("guides.yourGuideLink", spec)
+    }
+
+    /// Tier list
+    static var tiersTitle: String { text("tiers.title") }
+
+    /// Level 60 · {preset} · Updated {date}
+    static func tiersFacts(preset: String, date: String) -> String {
+        format("tiers.facts", preset, date)
+    }
+
+    /// Role
+    static var tiersRole: String { text("tiers.role") }
+
+    /// Faction
+    static var tiersFaction: String { text("tiers.faction") }
+
+    /// {role} · {faction}
+    static func tiersSummary(role: String, faction: String) -> String {
+        format("tiers.summary", role, faction)
+    }
+
+    /// Your spec · {role}
+    static func tiersYourSpec(role: String) -> String {
+        format("tiers.yourSpec", role)
+    }
+
+    /// Tier {letter} · {gap} behind {top}
+    static func tiersAnswerTier(letter: String, gap: String, top: String) -> String {
+        format("tiers.answer.tier", letter, gap, top)
+    }
+
+    /// {gap} behind {top}
+    static func tiersAnswerBehind(gap: String, top: String) -> String {
+        format("tiers.answer.behind", gap, top)
+    }
+
+    /// Level with the top spec.
+    static var tiersAnswerTop: String { text("tiers.answer.top") }
+
+    /// of {n}
+    static func tiersAnswerOf(n: Int) -> String {
+        format("tiers.answer.of", n)
+    }
+
+    /// {n}st
+    static func tiersOrdinalSt(n: Int) -> String {
+        format("tiers.ordinal.st", n)
+    }
+
+    /// {n}nd
+    static func tiersOrdinalNd(n: Int) -> String {
+        format("tiers.ordinal.nd", n)
+    }
+
+    /// {n}rd
+    static func tiersOrdinalRd(n: Int) -> String {
+        format("tiers.ordinal.rd", n)
+    }
+
+    /// {n}th
+    static func tiersOrdinalTh(n: Int) -> String {
+        format("tiers.ordinal.th", n)
+    }
+
+    /// Your best in slot ›
+    static var tiersLinkYourBis: String { text("tiers.link.yourBis") }
+
+    /// Guide ›
+    static var tiersLinkYourGuide: String { text("tiers.link.yourGuide") }
+
+    /// Sim your character ›
+    static var tiersLinkYourSim: String { text("tiers.link.yourSim") }
+
+    /// BiS
+    static var tiersLinkBis: String { text("tiers.link.bis") }
+
+    /// Guide
+    static var tiersLinkGuide: String { text("tiers.link.guide") }
+
+    /// Planner
+    static var tiersLinkPlanner: String { text("tiers.link.planner") }
+
+    /// Sim
+    static var tiersLinkSim: String { text("tiers.link.sim") }
+
+    /// Within {end} of the top
+    static func tiersBandTop(end: String) -> String {
+        format("tiers.band.top", end)
+    }
+
+    /// {start} to {end} behind
+    static func tiersBandBetween(start: String, end: String) -> String {
+        format("tiers.band.between", start, end)
+    }
+
+    /// {start} or more behind
+    static func tiersBandBeyond(start: String) -> String {
+        format("tiers.band.beyond", start)
+    }
+
+    /// {n} specs
+    static func tiersGroupCount(n: Int) -> String {
+        format("tiers.groupCount", n)
+    }
+
+    /// ≈ tie with {names}
+    static func tiersTieWith(names: String) -> String {
+        format("tiers.tieWith", names)
+    }
+
+    /// {first} and {last}
+    static func tiersAnd(first: String, last: String) -> String {
+        format("tiers.and", first, last)
+    }
+
+    /// Sign in
+    static var tiersSignIn: String { text("tiers.signIn") }
+
+    /// to see your spec marked.
+    static var tiersSignInLine: String { text("tiers.signInLine") }
+
+    /// Damage per second, one target for 180 seconds. The bar is the share of the top spec’s damage; ≈ tie is within {tie}.
+    static func tiersCaptionDps(tie: String) -> String {
+        format("tiers.caption.dps", tie)
+    }
+
+    /// Effective healing per second over 300 seconds of a stand-in Phase 1 fight. ≈ tie: the sim cannot order the pair.
+    static var tiersCaptionHealer: String { text("tiers.caption.healer") }
+
+    /// Damage taken per second against a stand-in level 63 boss, lower is better.
+    static var tiersCaptionTank: String { text("tiers.caption.tank") }
+
+    /// How to read this
+    static var tiersHowToRead: String { text("tiers.howToRead") }
+
+    /// How we check the sim ›
+    static var tiersHowWeCheck: String { text("tiers.howWeCheck") }
+
+    /// What the number is
+    static var tiersNotesNumber: String { text("tiers.notes.number") }
+
+    /// What it leaves out
+    static var tiersNotesLeavesOut: String { text("tiers.notes.leavesOut") }
+
+    /// Letters and ties
+    static var tiersNotesLetters: String { text("tiers.notes.letters") }
+
+    /// Ties and ranks
+    static var tiersNotesTies: String { text("tiers.notes.ties") }
+
+    /// The boss
+    static var tiersNotesBoss: String { text("tiers.notes.boss") }
+
+    /// The gear
+    static var tiersNotesGearTitle: String { text("tiers.notes.gearTitle") }
+
+    /// Every spec is simmed in its best {preset} gear, with enchants a fresh level 60 can buy, raid buffs and consumables, as the guide’s recommended {faction} race, named under it.
+    static func tiersNotesGear(preset: String, faction: String) -> String {
+        format("tiers.notes.gear", preset, faction)
+    }
+
+    /// At a fresh 60 the order differs: see the leveling bands.
+    static var tiersNotesFresh: String { text("tiers.notes.fresh") }
+
+    /// Damage per second from our own sim against one target for 180 seconds. {gear}
+    static func tiersNotesDpsNumber(gear: String) -> String {
+        format("tiers.notes.dps.number", gear)
+    }
+
+    /// Cleave, add fights, movement and what a spec brings the raid are not counted, so a spec can sit lower here than it plays in your raid. For how specs do in real raid logs, see the log rankings. {fresh}
+    static func tiersNotesDpsLeavesOut(fresh: String) -> String {
+        format("tiers.notes.dps.leavesOut", fresh)
+    }
+
+    /// S is within {s} of the top, A within {a}, B within {b}, C within {c}, D beyond. ≈ tie names the specs within {tie} of a spec; a tie across a line names the other letter, and the two are a tie.
+    static func tiersNotesDpsLetters(s: String, a: String, b: String, c: String, tie: String) -> String {
+        format("tiers.notes.dps.letters", s, a, b, c, tie)
+    }
+
+    /// Effective healing per second over 300 seconds against a stand-in Phase 1 fight: tank hits and raid-wide pulses, not a named boss. Overhealing is not counted. {gear}
+    static func tiersNotesHealerNumber(gear: String) -> String {
+        format("tiers.notes.healer.number", gear)
+    }
+
+    /// Mana and raid utility are not ranked here. No level-60 log is behind this order yet: it rests on the sim’s heal model until launch logs exist. {fresh}
+    static func tiersNotesHealerLeavesOut(fresh: String) -> String {
+        format("tiers.notes.healer.leavesOut", fresh)
+    }
+
+    /// Gap to the top is less healing in this fight, not a verdict on the class. ≈ tie means the sim cannot order the pair: their order changes with the heal profile’s tuning, or their gap is within the measured error.
+    static var tiersNotesHealerTies: String { text("tiers.notes.healer.ties") }
+
+    /// Damage taken per second, lower is better: it is the sim’s outcome against the boss, where effective health is only the hit-point pool going in.
+    static var tiersNotesTankNumber: String { text("tiers.notes.tank.number") }
+
+    /// A stand-in level 63 target with one melee swing every 2 seconds, not a named boss.
+    static var tiersNotesTankBoss: String { text("tiers.notes.tank.boss") }
+
+    /// {gear} {fresh}
+    static func tiersNotesTankGear(gear: String, fresh: String) -> String {
+        format("tiers.notes.tank.gear", gear, fresh)
+    }
+
     /// Get the addon and companion
     static var sharedCtaGetAddonAndCompanion: String { text("shared.cta.getAddonAndCompanion") }
 

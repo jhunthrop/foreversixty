@@ -1965,6 +1965,66 @@
     <string name="plannerPage_talentsLink">Your talents against the guide ›</string>
     <string name="plannerPage_compareLink">Compare with mine ›</string>
     <string name="plannerPage_undo">Undo</string>
+    <string name="flows_change">Change ▾</string>
+    <string name="guides_lead">Talents, rotation and gear for every spec, from your first talent point to the raid at 60.</string>
+    <string name="guides_updated">Updated %1$s</string>
+    <string name="guides_yourCharacter">Your character</string>
+    <string name="guides_characterLine" tools:ignore="PluralsCandidate">Level %1$d · %2$s</string>
+    <string name="guides_yourGuideLink">Your guide: %1$s ›</string>
+    <string name="tiers_title">Tier list</string>
+    <string name="tiers_facts">Level 60 · %1$s · Updated %2$s</string>
+    <string name="tiers_role">Role</string>
+    <string name="tiers_faction">Faction</string>
+    <string name="tiers_summary">%1$s · %2$s</string>
+    <string name="tiers_yourSpec">Your spec · %1$s</string>
+    <string name="tiers_answer_tier">Tier %1$s · %2$s behind %3$s</string>
+    <string name="tiers_answer_behind">%1$s behind %2$s</string>
+    <string name="tiers_answer_top">Level with the top spec.</string>
+    <string name="tiers_answer_of" tools:ignore="PluralsCandidate">of %1$d</string>
+    <string name="tiers_ordinal_st" tools:ignore="PluralsCandidate">%1$dst</string>
+    <string name="tiers_ordinal_nd" tools:ignore="PluralsCandidate">%1$dnd</string>
+    <string name="tiers_ordinal_rd" tools:ignore="PluralsCandidate">%1$drd</string>
+    <string name="tiers_ordinal_th" tools:ignore="PluralsCandidate">%1$dth</string>
+    <string name="tiers_link_yourBis">Your best in slot ›</string>
+    <string name="tiers_link_yourGuide">Guide ›</string>
+    <string name="tiers_link_yourSim">Sim your character ›</string>
+    <string name="tiers_link_bis">BiS</string>
+    <string name="tiers_link_guide">Guide</string>
+    <string name="tiers_link_planner">Planner</string>
+    <string name="tiers_link_sim">Sim</string>
+    <string name="tiers_band_top">Within %1$s of the top</string>
+    <string name="tiers_band_between">%1$s to %2$s behind</string>
+    <string name="tiers_band_beyond">%1$s or more behind</string>
+    <plurals name="tiers_groupCount">
+        <item quantity="one">1 spec</item>
+        <item quantity="other">%1$d specs</item>
+    </plurals>
+    <string name="tiers_tieWith">≈ tie with %1$s</string>
+    <string name="tiers_and">%1$s and %2$s</string>
+    <string name="tiers_signIn">Sign in</string>
+    <string name="tiers_signInLine">to see your spec marked.</string>
+    <string name="tiers_caption_dps">Damage per second, one target for 180 seconds. The bar is the share of the top spec’s damage; ≈ tie is within %1$s.</string>
+    <string name="tiers_caption_healer">Effective healing per second over 300 seconds of a stand-in Phase 1 fight. ≈ tie: the sim cannot order the pair.</string>
+    <string name="tiers_caption_tank">Damage taken per second against a stand-in level 63 boss, lower is better.</string>
+    <string name="tiers_howToRead">How to read this</string>
+    <string name="tiers_howWeCheck">How we check the sim ›</string>
+    <string name="tiers_notes_number">What the number is</string>
+    <string name="tiers_notes_leavesOut">What it leaves out</string>
+    <string name="tiers_notes_letters">Letters and ties</string>
+    <string name="tiers_notes_ties">Ties and ranks</string>
+    <string name="tiers_notes_boss">The boss</string>
+    <string name="tiers_notes_gearTitle">The gear</string>
+    <string name="tiers_notes_gear">Every spec is simmed in its best %1$s gear, with enchants a fresh level 60 can buy, raid buffs and consumables, as the guide’s recommended %2$s race, named under it.</string>
+    <string name="tiers_notes_fresh">At a fresh 60 the order differs: see the leveling bands.</string>
+    <string name="tiers_notes_dps_number">Damage per second from our own sim against one target for 180 seconds. %1$s</string>
+    <string name="tiers_notes_dps_leavesOut">Cleave, add fights, movement and what a spec brings the raid are not counted, so a spec can sit lower here than it plays in your raid. For how specs do in real raid logs, see the log rankings. %1$s</string>
+    <string name="tiers_notes_dps_letters">S is within %1$s of the top, A within %2$s, B within %3$s, C within %4$s, D beyond. ≈ tie names the specs within %5$s of a spec; a tie across a line names the other letter, and the two are a tie.</string>
+    <string name="tiers_notes_healer_number">Effective healing per second over 300 seconds against a stand-in Phase 1 fight: tank hits and raid-wide pulses, not a named boss. Overhealing is not counted. %1$s</string>
+    <string name="tiers_notes_healer_leavesOut">Mana and raid utility are not ranked here. No level-60 log is behind this order yet: it rests on the sim’s heal model until launch logs exist. %1$s</string>
+    <string name="tiers_notes_healer_ties">Gap to the top is less healing in this fight, not a verdict on the class. ≈ tie means the sim cannot order the pair: their order changes with the heal profile’s tuning, or their gap is within the measured error.</string>
+    <string name="tiers_notes_tank_number">Damage taken per second, lower is better: it is the sim’s outcome against the boss, where effective health is only the hit-point pool going in.</string>
+    <string name="tiers_notes_tank_boss">A stand-in level 63 target with one melee swing every 2 seconds, not a named boss.</string>
+    <string name="tiers_notes_tank_gear">%1$s %2$s</string>
     <string name="shared_cta_getAddonAndCompanion">Get the addon and companion</string>
     <string name="shared_cta_installAddonAndCompanion">Install the addon and the companion</string>
     <string name="shared_cta_installAddonAndCompanionInline">install the addon and the companion</string>
