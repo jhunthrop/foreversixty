@@ -9,17 +9,17 @@
     16,
     356,
     380,
-    95
+    152
    ],
    "inventory": {
-    "row": 1,
+    "row": 2,
     "image": 1
    }
   },
   "section-runner-up": {
    "box": [
     16,
-    451,
+    508,
     380,
     95
    ],
@@ -31,7 +31,7 @@
   "section-who-in-the-guild-needs-it": {
    "box": [
     16,
-    546,
+    603,
     380,
     156
    ],
