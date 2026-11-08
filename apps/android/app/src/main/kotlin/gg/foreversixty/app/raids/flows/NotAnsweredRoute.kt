@@ -20,6 +20,7 @@ import gg.foreversixty.app.flows.FlowNote
 import gg.foreversixty.app.flows.FlowPage
 import gg.foreversixty.app.raids.logic.RaidClock
 import gg.foreversixty.app.raids.logic.RaidLinks
+import kotlinx.coroutines.launch
 
 /**
  * Not answered on the Raid tab's stack: loads the raid, then the page. The mention, a Discord DM and
@@ -37,6 +38,7 @@ fun NotAnsweredRoute(
 ) {
     val res = LocalResources.current
     val context = LocalContext.current
+    val scope = androidx.compose.runtime.rememberCoroutineScope()
     LaunchedEffect(model) { model.load() }
     val share = RaidLinks.share(model.guild, model.raidId)
     val page = guildUrl?.let { "$it/raids/${model.raidId}" } ?: share
@@ -56,19 +58,17 @@ fun NotAnsweredRoute(
                     build,
                     NotAnsweredActions(
                         select = { model.filter = it },
-                        mentionRole = { openWeb(page) },
-                        mentionAll = { openWeb(page) },
+                        mentionRole = { content.mention?.let { m -> scope.launch { model.mention(m, role = true) } } },
+                        mentionAll = { content.mention?.let { m -> scope.launch { model.mention(m, role = false) } } },
                         mark = { row, state -> model.mark(row, state) },
                         undo = { model.undo(it) },
-                        message = { openWeb(DISCORD_DM) },
+                        message = { row -> row.dmUrl?.let(openWeb) },
                         editOnSite = { openWeb(page) },
                     ),
                     model.error,
+                    model.mentionNote,
                 )
             }
         }
     }
 }
-
-/** Discord's direct messages; the app has no raider's Discord id to open one conversation. */
-private const val DISCORD_DM = "https://discord.com/channels/@me"

@@ -5587,6 +5587,24 @@ enum Copy {
     /// Everyone has answered.
     static var raidNaEmpty: String { text("raid.na.empty") }
 
+    /// Mentioned {people} in Discord.
+    static func raidNaMentioned(people: String) -> String {
+        format("raid.na.mentioned", people)
+    }
+
+    /// Mentioned {n} in Discord.
+    static func raidNaMentionedAll(n: Int) -> String {
+        format("raid.na.mentionedAll", n)
+    }
+
+    /// Nobody to mention: none of them has linked Discord.
+    static var raidNaNoDiscord: String { text("raid.na.noDiscord") }
+
+    /// {n} were mentioned in the last 6 hours and were left out.
+    static func raidNaRecently(n: Int) -> String {
+        format("raid.na.recently", n)
+    }
+
     /// {first} and {last}
     static func raidListAnd(first: String, last: String) -> String {
         format("raid.list.and", first, last)

@@ -35,14 +35,13 @@ data class AcceptedContent(val line: String, val command: String, val after: Str
  * after Accept the `/ginvite` line. Formats the server's sheet; absent parts are left out.
  */
 class ApplicantPresenter(private val res: Resources, private val clock: RaidClock, private val now: Instant) {
-    /** [origin] is the faction and race (`Alliance Dwarf`) once the application carries them. */
-    fun content(app: GuildOfficerApplication, guild: String, accepted: Boolean, origin: String? = null): ApplicantContent {
+    fun content(app: GuildOfficerApplication, guild: String, accepted: Boolean): ApplicantContent {
         val character = app.character
         val sheet = app.sheet
         return ApplicantContent(
             name = character.name,
             className = character.className,
-            facts = listOfNotNull(kindLine(app), origin, applied(app)),
+            facts = listOfNotNull(kindLine(app), origin(app), applied(app)),
             figures = figures(sheet, character.itemLevel),
             ready = sheet?.let(::ready).orEmpty(),
             history = sheet?.history.orEmpty().map {
@@ -74,6 +73,14 @@ class ApplicantPresenter(private val res: Resources, private val clock: RaidCloc
         // The application's spec_name already names the class (`Holy Paladin`).
         if (spec != null && cls != null && spec.endsWith(cls)) return spec
         return listOfNotNull(spec, cls).joinToString(" ").ifEmpty { null }
+    }
+
+    /** `Alliance Dwarf`: the faction and the race, either alone when the other is unknown. */
+    private fun origin(app: GuildOfficerApplication): String? {
+        val faction = app.character.faction?.let {
+            res.getString(if (it == HORDE) R.string.bis_faction_horde else R.string.bis_faction_alliance)
+        }
+        return listOfNotNull(faction, app.character.race?.takeIf { it.isNotBlank() }).joinToString(" ").ifEmpty { null }
     }
 
     private fun applied(app: GuildOfficerApplication): String =
@@ -124,6 +131,7 @@ class ApplicantPresenter(private val res: Resources, private val clock: RaidCloc
     private companion object {
         const val OK = "ok"
         const val MISS = "miss"
+        const val HORDE = "horde"
         val SLOTS = mapOf(
             "back" to R.string.raid_applicant_slot_back,
             "feet" to R.string.raid_applicant_slot_feet,

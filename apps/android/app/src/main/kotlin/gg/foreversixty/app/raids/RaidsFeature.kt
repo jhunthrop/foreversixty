@@ -339,7 +339,7 @@ fun RaidsRoute(
                 )
             }
             is RaidsDestination.NotAnswered -> {
-                val model = remember(top) { NotAnsweredModel(top.guild, top.raid, feature.service, res, scope, HOLD, replaced) }
+                val model = remember(top) { NotAnsweredModel(top.guild, top.raid, feature.service, feature.flows, res, scope, HOLD, replaced) }
                 NotAnsweredRoute(model, clock, content?.head?.name.orEmpty(), content?.head?.webUrl, iconBuild, uri::openUri) { feature.navigator.pop() }
             }
             is RaidsDestination.Applicant -> {

@@ -75,7 +75,7 @@ class NotAnsweredTest {
     @Test
     fun `a mark is sent once the hold runs out, and Undo keeps it from being sent`() = runTest {
         val service = FakeRaidService().apply { raidAnswer = { gg.foreversixty.app.raids.ok(raid) } }
-        val model = NotAnsweredModel(2, raid.id, service, resources(), backgroundScope, HOLD)
+        val model = NotAnsweredModel(2, raid.id, service, NoFlows, resources(), backgroundScope, HOLD)
         model.load()
         val row = content().rows.first()
         model.mark(row, SignupState.In)
@@ -93,5 +93,15 @@ class NotAnsweredTest {
 
     private companion object {
         val HOLD = 4.seconds
+    }
+
+    /** Not answered sends no ping in these tests. */
+    private object NoFlows : RaidFlowService {
+        override suspend fun applications(guild: Long) = error("unused")
+        override suspend fun accept(guild: Long, application: Long) = error("unused")
+        override suspend fun decline(guild: Long, application: Long) = error("unused")
+        override suspend fun recruiting(spec: String, faction: String, region: String?, ruleset: String?) = error("unused")
+        override suspend fun ping(guild: Long, raid: Long, role: String?) = error("unused")
+        override suspend fun ready(characterKey: String, raid: Long) = error("unused")
     }
 }

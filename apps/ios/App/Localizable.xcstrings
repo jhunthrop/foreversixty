@@ -11495,6 +11495,30 @@
         }
       }
     },
+    "raid.na.mentioned": {
+      "comment": "Arguments: 1 people (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mentioned %1$@ in Discord."
+          }
+        }
+      }
+    },
+    "raid.na.mentionedAll": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mentioned %1$lld in Discord."
+          }
+        }
+      }
+    },
     "raid.na.mentionRole": {
       "comment": "Arguments: 1 people (string)",
       "extractionState": "manual",
@@ -11553,6 +11577,17 @@
         }
       }
     },
+    "raid.na.noDiscord": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nobody to mention: none of them has linked Discord."
+          }
+        }
+      }
+    },
     "raid.na.onBench": {
       "extractionState": "manual",
       "localizations": {
@@ -11584,6 +11619,30 @@
           "stringUnit": {
             "state": "translated",
             "value": "%1$@: %2$@ is %3$@. Answer In, Late, Bench or Out in the app or on the raid page."
+          }
+        }
+      }
+    },
+    "raid.na.recently": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "1 was mentioned in the last 6 hours and was left out."
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%1$lld were mentioned in the last 6 hours and were left out."
+                }
+              }
+            }
           }
         }
       }

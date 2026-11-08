@@ -25,6 +25,7 @@ class NotAnsweredModel(
     val guild: Long,
     val raidId: Long,
     private val service: RaidService,
+    private val flows: RaidFlowService,
     private val res: Resources,
     private val scope: CoroutineScope,
     private val hold: Duration,
@@ -42,6 +43,11 @@ class NotAnsweredModel(
     var error: String? by mutableStateOf(null)
         private set
     val marks = mutableStateMapOf<String, SignupState>()
+
+    /** What the last mention did (`Mentioned 2 healers in Discord.`); null before one. */
+    var mentionNote: String? by mutableStateOf(null)
+        private set
+    private var mentioning = false
     private val holds = mutableMapOf<String, Job>()
 
     suspend fun load() {
@@ -60,6 +66,30 @@ class NotAnsweredModel(
             delay(hold)
             send(row, state)
         }
+    }
+
+    /** Mentions the unanswered in Discord: [role] only (the short role's button) or all of them. */
+    suspend fun mention(mention: MentionContent, role: Boolean) {
+        if (mentioning) return
+        mentioning = true
+        error = null
+        val result = flows.ping(guild, raidId, mention.roleWire.takeIf { role })
+        mentioning = false
+        when (result) {
+            is ApiResult.Success -> mentionNote = mentionLine(result.data, mention.people.takeIf { role })
+            is ApiResult.Failure -> error = SignupRefusal.sentence(result.error, res)
+        }
+    }
+
+    private fun mentionLine(result: gg.foreversixty.app.model.RaidPingResult, people: String?): String {
+        if (!result.posted) return res.getString(gg.foreversixty.app.R.string.raid_na_noDiscord)
+        val said = if (people != null && result.mentioned > 0) {
+            res.getString(gg.foreversixty.app.R.string.raid_na_mentioned, people)
+        } else {
+            res.getString(gg.foreversixty.app.R.string.raid_na_mentionedAll, result.mentioned)
+        }
+        val recent = result.recentlyMentioned?.takeIf { it > 0 }?.let { res.getQuantityString(gg.foreversixty.app.R.plurals.raid_na_recently, it, it) }
+        return listOfNotNull(said, recent).joinToString(" ")
     }
 
     fun undo(row: NotAnsweredRow) {

@@ -1674,6 +1674,13 @@
     <string name="raid_na_site">Creating and editing raids stays on the site.</string>
     <string name="raid_na_siteLink">Edit on the site ›</string>
     <string name="raid_na_empty">Everyone has answered.</string>
+    <string name="raid_na_mentioned">Mentioned %1$s in Discord.</string>
+    <string name="raid_na_mentionedAll" tools:ignore="PluralsCandidate">Mentioned %1$d in Discord.</string>
+    <string name="raid_na_noDiscord">Nobody to mention: none of them has linked Discord.</string>
+    <plurals name="raid_na_recently">
+        <item quantity="one">1 was mentioned in the last 6 hours and was left out.</item>
+        <item quantity="other">%1$d were mentioned in the last 6 hours and were left out.</item>
+    </plurals>
     <string name="raid_list_and">%1$s and %2$s</string>
     <string name="flows_backTo">Back to %1$s</string>
     <string name="raid_recruit_line">%1$s · %2$s · needs %3$s</string>

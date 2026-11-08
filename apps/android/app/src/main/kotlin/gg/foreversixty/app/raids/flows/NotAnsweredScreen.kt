@@ -57,11 +57,12 @@ data class NotAnsweredActions(
  * Undo), Bench, Discord DM; the bench that can close the gap.
  */
 @Composable
-fun NotAnsweredScreen(content: NotAnsweredContent, build: String?, actions: NotAnsweredActions, error: String? = null) {
+fun NotAnsweredScreen(content: NotAnsweredContent, build: String?, actions: NotAnsweredActions, error: String? = null, note: String? = null) {
     FlowPage {
         FlowHead(content.title, content.facts, lead = { FlowHeadIcon(content.icon, build) })
         Chips(content, actions.select)
         content.mention?.let { Mention(it, actions) }
+        note?.let { FlowNote(it, Modifier.padding(top = FsSpace.space3)) }
         error?.let { FlowNote(it, Modifier.padding(top = FsSpace.space3), color = FsColor.wipe) }
         FlowSection(content.listTitle, meta = content.listMeta) {
             if (content.rows.isEmpty()) FlowNote(stringResource(R.string.raid_na_empty), Modifier.padding(top = FsSpace.space2))
@@ -131,7 +132,7 @@ private fun Raider(row: NotAnsweredRow, rowActions: RowActions, last: Boolean, a
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(FsSpace.space2)) {
                 FlowButton(stringResource(R.string.raid_na_markIn), { actions.mark(row, SignupState.In) }, Modifier.weight(1f))
                 FlowButton(stringResource(SignupState.Bench.label), { actions.mark(row, SignupState.Bench) }, Modifier.weight(1f))
-                FlowButton(stringResource(R.string.raid_na_discordDM), { actions.message(row) }, Modifier.weight(1f))
+                if (row.dmUrl != null) FlowButton(stringResource(R.string.raid_na_discordDM), { actions.message(row) }, Modifier.weight(1f))
             }
         } }
         rowActions == RowActions.MarkIn -> { { FlowButton(stringResource(R.string.raid_na_markIn), { actions.mark(row, SignupState.In) }) } }

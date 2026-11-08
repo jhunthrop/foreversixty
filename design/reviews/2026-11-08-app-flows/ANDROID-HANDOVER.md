@@ -21,13 +21,13 @@ The flows primitives every new screen uses: `flows/FlowLayout.kt` (FlowPage, Flo
 ## Next
 6. Gear: summary line with Change, Where to go tonight (`WhereToGo.picks` grouped by `source.kind`/`name`: instance, profession, reputation), Every slot (`home/GearModel` and `GearScreen` hold the old Your gear rows; reuse or delete them, `HomeScreenshotTest` still draws them), the item sheet with `GET /v1/guilds/{id}/items/{item}/needs` (`ApiEndpoints.getGuildItemNeeds`). Mocks `gear`, `gear-out`, `item-sheet`.
 7. Glance widgets, LiveNotifier, the QS tile, restyled (mocks `widgets-guild`, `-noguild`, `-open`).
-8. The secondary screens restyled, among them the in-app Notification settings (mock `notification-settings`; the menu row opens Android's own channel screen today) with the new `officer_dms` toggle ("Let officers DM me on Discord").
+8. The secondary screens restyled, among them the in-app Notification settings (mock `notification-settings`; the menu row opens Android's own channel screen today) with the `officer_dms` toggle (see below).
 
-## Coming in land/api-ping-role (the coordinator sends the final shapes)
-- `POST /v1/guilds/{id}/raids/{raid}/ping` with optional `{"role"}`, the count mentioned: wire `NotAnsweredActions.mentionRole`/`mentionAll` in `NotAnsweredRoute` (today both open the raid page on the site) and confirm `Mentioned 2 healers`.
-- `ApplicantCharacter.race` and `.faction`: pass `origin` (`Alliance Dwarf`) to `ApplicantPresenter.content` (the parity fixture already shows it).
-- `RaidNotSignedRaider.discord_dm_url` (opted-in members only): the row's Discord DM opens it; hide the button when null.
-- `officer_dms` on `GET/PATCH /v1/me/notifications`: the toggle above.
+## api-ping-role (wired)
+- Not answered's Mention buttons call `POST /v1/guilds/{id}/raids/{raid}/ping` (`{"role"}` for the short role's button) and say what happened under the preview (`Mentioned 2 healers in Discord.`, nobody linked, the recently mentioned left out).
+- Discord DM shows only on rows whose `discord_dm_url` is set (members who opted in) and opens it.
+- The applicant's head carries `Alliance Dwarf` from `ApplicantCharacter.faction` and `.race`.
+- Still to build: the in-app Notification settings screen (mock `notification-settings`) with the `officer_dms` toggle, "Let officers DM me on Discord" (GET/PATCH `/v1/me/notifications`, default off). The mock has no row for it yet: add it to `ws_app_flows.py` `notification_settings` (both platforms), regenerate the region files on the Linux runner (the web parity job's `app-regions` artifact), and tell the iOS lane. The menu's Notifications row opens Android's own channel screen until then.
 
 ## Open
 - The old Raids root views in `raids/ui/RaidsTab.kt` (`Loaded`, `NextRaidCard`, NoGuild/SignedOut) are reached only for Loading, Failed and Waiting; the old raid page `raids/ui/RaidPage.kt` still serves a plain raid link. Delete what the restyle does not reuse in step 8.

@@ -31,10 +31,12 @@ data class NotAnsweredRow(
     val sub: String,
     val role: String?,
     val marked: SignupState? = null,
+    /** The member's Discord DM link, only when they let officers DM them; Discord DM shows only then. */
+    val dmUrl: String? = null,
 )
 
 /** The mention: the short role's button (null when none of it is unanswered), Mention all, and the message it posts. */
-data class MentionContent(val role: String?, val all: String, val preview: String)
+data class MentionContent(val role: String?, val all: String, val preview: String, val roleWire: String? = null, val people: String? = null)
 
 /** What Not answered draws (mock raid-unanswered). */
 data class NotAnsweredContent(
@@ -141,7 +143,7 @@ class NotAnsweredPresenter(
                 NotAnsweredRow(
                     raider.characterKey, raider.name, raider.className,
                     res.getString(R.string.raid_na_sub, kind(spec, raider.className), lastWeek(raider.lastWeek)),
-                    raider.role, marks[raider.characterKey],
+                    raider.role, marks[raider.characterKey], raider.discordDmUrl,
                 )
             }
     }
@@ -193,6 +195,8 @@ class NotAnsweredPresenter(
         }
         return MentionContent(
             role = short?.takeIf { ofRole.isNotEmpty() }?.let { res.getString(R.string.raid_na_mentionRole, ShortRole.people(res, it.wire, ofRole.size)) },
+            roleWire = short?.takeIf { ofRole.isNotEmpty() }?.wire,
+            people = short?.takeIf { ofRole.isNotEmpty() }?.let { ShortRole.people(res, it.wire, ofRole.size) },
             all = res.getString(R.string.raid_na_mentionAll, open.size),
             preview = preview,
         )

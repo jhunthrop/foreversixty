@@ -119,7 +119,7 @@ object RaidPagesFixtures {
     )
 
     private fun row(name: String, cls: String, sub: String, role: String, marked: SignupState? = null) =
-        NotAnsweredRow("us/pvp/${name.lowercase()}", name, cls, sub, role, marked)
+        NotAnsweredRow("us/pvp/${name.lowercase()}", name, cls, sub, role, marked, "https://discord.com/users/${name.length}")
 
     val unanswered = NotAnsweredContent(
         title = "Onyxia's Lair",
