@@ -12,7 +12,7 @@
     120
    ],
    "inventory": {
-    "image": 1
+    "image": 2
    }
   },
   "head-title": {
@@ -23,7 +23,7 @@
     90
    ],
    "inventory": {
-    "image": 1
+    "image": 2
    }
   },
   "head-meta": {
@@ -44,7 +44,7 @@
    ],
    "inventory": {
     "row": 7,
-    "image": 7
+    "image": 11
    }
   },
   "section-tools": {

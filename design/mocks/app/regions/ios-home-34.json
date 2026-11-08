@@ -9,32 +9,36 @@
     16,
     8,
     361,
-    94
+    120
    ],
-   "inventory": {}
+   "inventory": {
+    "image": 1
+   }
   },
   "head-title": {
    "box": [
     16,
     24,
     361,
-    64
+    90
    ],
-   "inventory": {}
+   "inventory": {
+    "image": 1
+   }
   },
   "head-meta": {
    "box": [
-    16,
+    88,
     68,
-    304,
-    20
+    289,
+    46
    ],
    "inventory": {}
   },
   "section-next-upgrades": {
    "box": [
     16,
-    130,
+    156,
     361,
     286
    ],
@@ -46,7 +50,7 @@
   "section-new-for-you": {
    "box": [
     16,
-    444,
+    470,
     361,
     218
    ],

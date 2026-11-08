@@ -11,7 +11,9 @@
     361,
     94
    ],
-   "inventory": {}
+   "inventory": {
+    "image": 1
+   }
   },
   "head-title": {
    "box": [
@@ -20,11 +22,13 @@
     361,
     64
    ],
-   "inventory": {}
+   "inventory": {
+    "image": 1
+   }
   },
   "head-meta": {
    "box": [
-    16,
+    88,
     68,
     229,
     20
