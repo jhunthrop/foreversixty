@@ -146,17 +146,17 @@ struct ActivityParityTests {
     }
 
     @Test("ios-activity")
-    func list() throws {
-        try ParityCheck.assert(view(ActivityTestData.rows), screen: "activity", size: Self.device)
+    func list() async throws {
+        try await ParityCheck.assert(view(ActivityTestData.rows), screen: "activity", size: Self.device)
     }
 
     @Test("ios-activity-empty")
-    func empty() throws {
-        try ParityCheck.assert(view([]), screen: "activity-empty", size: Self.device)
+    func empty() async throws {
+        try await ParityCheck.assert(view([]), screen: "activity-empty", size: Self.device)
     }
 
     @Test("ios-activity-out")
-    func signedOut() throws {
-        try ParityCheck.assert(ActivitySignedOutView(signingIn: false) {}, screen: "activity-out", size: Self.device)
+    func signedOut() async throws {
+        try await ParityCheck.assert(ActivitySignedOutView(signingIn: false) {}, screen: "activity-out", size: Self.device)
     }
 }

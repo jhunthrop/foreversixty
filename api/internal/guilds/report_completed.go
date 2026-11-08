@@ -23,6 +23,7 @@ func (s *Service) ReportCompleted(ctx context.Context, reportID string) {
 	}
 	s.markRaid(ctx, raid.ID)
 	s.fillPullDigests(ctx, reportID)
+	s.liveRaidEnded(ctx, raid.ID)
 	s.logger().Info("guilds", "op", "report_completed", "report", reportID, "raid", raid.ID, "matched", true)
 	if s.Events != nil {
 		s.publishAll(ctx, s.summaryEvents(ctx, raid.ID, reportID))

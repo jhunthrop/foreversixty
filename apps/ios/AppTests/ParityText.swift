@@ -9,10 +9,57 @@ import UIKit
 enum ParityText {
     /// The accessibility labels and values of `view` rendered at `size`, one line per element in
     /// reading order (`label: value` when an element has both).
+    /// How long the main actor is let go after the automation switch, once per process.
+    static let switchDrain: Duration = .seconds(1)
+
+    /// Turns automation on and lets the main queue drain before the first read. UIKit takes the
+    /// switch up in work queued on the main queue, which never runs inside a synchronous test that
+    /// spins the run loop: on the CI runner the first parity state of the process read as treeless
+    /// whatever was tried within it (runs 42481050975 to 42496479635), and every later one read fine.
+    @MainActor
+    static func prepare() async {
+        if let preparation {
+            await preparation.value
+            return
+        }
+        let task = Task { @MainActor in
+            AccessibilityAutomation.enable()
+            try? await Task.sleep(for: switchDrain)
+        }
+        preparation = task
+        await task.value
+    }
+
+    /// The one preparation every parity test waits for, so tests running in parallel all read after it.
+    @MainActor private static var preparation: Task<Void, Never>?
+
     @MainActor
     static func lines(of view: some View, size: CGSize) -> [String] {
         AccessibilityAutomation.enable()
-        return ParityHost.render(view, size: size) { host in elements(under: host.view).compactMap(line) }
+        return ParityHost.render(view, size: size) { host in settledLines(under: host.view) }
+    }
+
+    /// How long the tree may take to appear: SwiftUI builds it asynchronously once automation is
+    /// on, and the first screen after the switch (on CI, Activity's) can read before it exists.
+    static let settleTimeout: TimeInterval = 3
+    static let settleStep: TimeInterval = 0.05
+
+    /// The lines once the tree has appeared and two reads in a row agree, so a state never
+    /// records a half-built (or empty) tree.
+    @MainActor
+    private static func settledLines(under root: UIView) -> [String] {
+        let deadline = Date().addingTimeInterval(settleTimeout)
+        var last = elements(under: root).compactMap(line)
+        while Date() < deadline {
+            // Spinning the run loop lets another suite's test run and take the key window; only
+            // the key window's tree is vended, so take it back before each read.
+            root.window?.makeKeyAndVisible()
+            RunLoop.main.run(until: Date().addingTimeInterval(settleStep))
+            let next = elements(under: root).compactMap(line)
+            if !next.isEmpty, next == last { return next }
+            last = next
+        }
+        return last
     }
 
     /// Asserts the state's words against its text golden (`__Snapshots__/<suite>/<name>.txt`).
