@@ -85,25 +85,52 @@ describe('loadSetupState', () => {
 });
 
 describe('stepHref', () => {
-  it('sends each link action where it goes, and nothing for a button', () => {
-    expect(stepHref('signin', 'x.exe')).toContain(encodeURIComponent(SETUP_SIGNED_IN));
-    expect(stepHref('curseforge', 'x.exe')).toBe(CURSEFORGE_URL);
-    expect(stepHref('download', 'x.exe')).toMatch(/^\/dl\/.*x\.exe$/);
-    expect(stepHref('paste', 'x.exe')).toBe('#paste');
-    expect(stepHref('retry', 'x.exe')).toBeNull();
-    expect(stepHref('refresh', 'x.exe')).toBeNull();
+  it('sends each link action where it goes, and nothing for a button or the download', () => {
+    expect(stepHref('signin')).toContain(encodeURIComponent(SETUP_SIGNED_IN));
+    expect(stepHref('curseforge')).toBe(CURSEFORGE_URL);
+    expect(stepHref('paste')).toBe('#paste');
+    expect(stepHref('download')).toBeNull();
+    expect(stepHref('copylink')).toBeNull();
+    expect(stepHref('retry')).toBeNull();
+    expect(stepHref('refresh')).toBeNull();
     expect(SETUP_REFRESHED).toBe('/setup?refreshed=1');
   });
 });
 
+const UA = {
+  windows:
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0 Safari/537.36',
+  mac: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 14_0) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Safari/605.1.15',
+  iphone:
+    'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148',
+  android:
+    'Mozilla/5.0 (Linux; Android 15; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0 Mobile Safari/537.36',
+  linux: 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0 Safari/537.36',
+};
+
 describe('visitorPlatform', () => {
-  it('reads a Mac from the client hints, the platform or the user agent; everything else is Windows', () => {
-    expect(visitorPlatform(undefined)).toBe('windows');
-    expect(visitorPlatform({ userAgentData: { platform: 'macOS' } })).toBe('mac');
-    expect(visitorPlatform({ platform: 'MacIntel' })).toBe('mac');
-    expect(visitorPlatform({ userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 14_0)' })).toBe('mac');
-    expect(visitorPlatform({ platform: 'Win32' })).toBe('windows');
+  it('reads Windows and a Mac from the client hints, the platform or the user agent', () => {
+    expect(visitorPlatform({ userAgentData: { platform: 'macOS', mobile: false } })).toBe('mac');
+    expect(visitorPlatform({ platform: 'MacIntel', maxTouchPoints: 0 })).toBe('mac');
+    expect(visitorPlatform({ userAgent: UA.mac })).toBe('mac');
+    expect(visitorPlatform({ userAgentData: { platform: 'Windows', mobile: false } })).toBe('windows');
+    expect(visitorPlatform({ platform: 'Win32', userAgent: UA.windows })).toBe('windows');
     expect(visitorPlatform({ userAgentData: { platform: 'Windows' }, platform: 'MacIntel' })).toBe('windows');
+  });
+
+  it('reads a phone or tablet, an iPad asking for the desktop site included', () => {
+    expect(visitorPlatform({ userAgentData: { platform: 'Android', mobile: true } })).toBe('mobile');
+    expect(visitorPlatform({ userAgentData: { platform: 'Android', mobile: false } })).toBe('mobile');
+    expect(visitorPlatform({ platform: 'iPhone', userAgent: UA.iphone })).toBe('mobile');
+    expect(visitorPlatform({ platform: 'Linux armv81', userAgent: UA.android })).toBe('mobile');
+    expect(visitorPlatform({ platform: 'MacIntel', userAgent: UA.mac, maxTouchPoints: 5 })).toBe('mobile');
+  });
+
+  it('calls everything else unknown, the server render included', () => {
+    expect(visitorPlatform(undefined)).toBe('unknown');
+    expect(visitorPlatform({ platform: 'Linux x86_64', userAgent: UA.linux })).toBe('unknown');
+    expect(visitorPlatform({ userAgentData: { platform: 'Chrome OS', mobile: false } })).toBe('unknown');
+    expect(visitorPlatform({})).toBe('unknown');
   });
 });
 

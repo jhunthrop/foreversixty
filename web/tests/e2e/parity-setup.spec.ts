@@ -1,6 +1,7 @@
 // web/tests/e2e/parity-setup.spec.ts
 // /setup against its mocks (design/parity.md, design/specs/2026-11-07-setup.md section 12):
-// signed out, signed in with no character, a Battle.net character and everything done, at 1440
+// signed out on Windows, a Mac, a phone and a system it cannot name, signed in with no character,
+// a Battle.net character and everything done, at 1440
 // and 390, each region (head, head-title, head-meta, head-answer with a character, plate and every
 // Section) compared for its blocks and box (support/parity.ts). The mocks are rendered before the
 // tests from the copy modules and the fixtures this spec serves (support/setup-page.ts), at the
@@ -22,6 +23,9 @@ import { openSetupState, renderSetupMocks, type SetupPageState } from './support
 
 const STATES: readonly { id: string; state: SetupPageState; mock: string }[] = [
   { id: 'setup', state: 'out', mock: 'web-setup' },
+  { id: 'setup-mac', state: 'mac', mock: 'web-setup-mac' },
+  { id: 'setup-mobile', state: 'mobile', mock: 'web-setup-mobile' },
+  { id: 'setup-unknown', state: 'unknown', mock: 'web-setup-unknown' },
   { id: 'setup-none', state: 'none', mock: 'web-setup-none' },
   { id: 'setup-bnet', state: 'bnet', mock: 'web-setup-bnet' },
   { id: 'setup-done', state: 'done', mock: 'web-setup-done' },

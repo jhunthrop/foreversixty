@@ -1,10 +1,9 @@
 // web/src/lib/setup/links.ts
 // Where /setup's actions go. CurseForge is addressed by project id (the ids in the two TOCs'
 // X-Curse-Project-ID lines; the site redirects an id to the project's page, whatever its slug),
-// Wago by the slug its pages answer to. The zip, the data pack and the companion go through the
-// site's own /dl/ paths (lib/downloads/redirect.ts).
+// Wago by the slug its pages answer to. The companion's download is its own component
+// (components/setup/CompanionDownload.svelte, lib/setup/release.ts).
 import { battlenetStartUrl } from '../account/api';
-import { companionDownloadPath } from '../downloads/paths';
 import type { StepActionId } from './steps';
 
 export const CURSEFORGE_URL = 'https://www.curseforge.com/projects/1706689';
@@ -14,15 +13,13 @@ export const WAGO_URL = 'https://addons.wago.io/addons/foreversixty';
 export const SETUP_SIGNED_IN = '/setup?signed_in=1';
 export const SETUP_REFRESHED = '/setup?refreshed=1';
 
-/** The href of a step's link action; null for a button (retry, refresh). */
-export function stepHref(id: StepActionId, companionAsset: string): string | null {
+/** The href of a step's link action; null for a button (retry, refresh, copy link) and the download. */
+export function stepHref(id: StepActionId): string | null {
   switch (id) {
     case 'signin':
       return battlenetStartUrl(SETUP_SIGNED_IN);
     case 'curseforge':
       return CURSEFORGE_URL;
-    case 'download':
-      return companionDownloadPath(companionAsset);
     case 'paste':
       return '#paste';
     default:

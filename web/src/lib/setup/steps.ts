@@ -8,14 +8,8 @@ import { characterListCopy } from '../account/character-list-copy';
 import { pairingCopy } from '../reports/copy';
 import { yourReportsPageCopy } from '../reports/my-reports-copy';
 import { addonCopy } from '../addon/copy';
-import {
-  addonLine,
-  companionLine,
-  companionPlatformsLine,
-  newestAddonCharacter,
-  signInLine,
-} from './progress';
-import { isMacPlatform } from './downloads';
+import { addonLine, companionLine, newestAddonCharacter, signInLine } from './progress';
+import { downloadFor } from './downloads';
 import type { VisitorPlatform } from './visitor-platform';
 
 /** `ok` done, `next` the first step not done (the page's one primary), `todo` optional or later,
@@ -34,7 +28,7 @@ export interface StepLineOut {
   skeleton?: boolean;
 }
 
-export type StepActionId = 'signin' | 'retry' | 'refresh' | 'curseforge' | 'download' | 'paste';
+export type StepActionId = 'signin' | 'retry' | 'refresh' | 'curseforge' | 'download' | 'paste' | 'copylink';
 
 export interface StepAction {
   id: StepActionId;
@@ -97,26 +91,18 @@ function act(id: StepActionId, label: string, kind: StepAction['kind'] = 'link-b
 const SIGN_IN = act('signin', addonCopy.setupSignInAction);
 const CURSEFORGE = act('curseforge', addonCopy.installCurseForge);
 
-function downloadLabel(platform: string): string {
-  return addonCopy.setupCompanionDownload(platform);
-}
-
-/** The platform word of the build this visitor downloads, or null on a Mac without a Mac build. */
-function downloadPlatform(platform: VisitorPlatform, platforms: readonly string[]): string | null {
-  const mac = platform === 'mac';
-  const own = platforms.find((name) => isMacPlatform(name) === mac);
-  if (own !== undefined) return own;
-  return mac ? null : (platforms[0] ?? 'Windows');
-}
-
-/** Row 3 not done: the visitor's own download, or on a Mac without a Mac build the export route (U10). */
-function companionTodo(platform: VisitorPlatform, text: string, platforms: readonly string[]): StepRow {
-  const download = downloadPlatform(platform, platforms);
-  if (download === null) {
-    const macLine = companionPlatformsLine(platforms) ?? text;
-    return row(3, 'todo', [line(macLine)], act('paste', addonCopy.setupTryExport, 'link'));
+/** Row 3 not done. Windows and Mac: their own build. A system the page cannot name: both builds
+ *  (the action's label is the group's name; ui draws one button per build). A phone or tablet: no
+ *  download, the link to open on the computer instead. */
+function companionTodo(platform: VisitorPlatform, text: string): StepRow {
+  if (platform === 'mobile') {
+    const lines = [line(text), line(addonCopy.setupCompanionMobile)];
+    return row(3, 'todo', lines, act('copylink', addonCopy.setupCopyLink, 'button'));
   }
-  return row(3, 'todo', [line(text)], act('download', downloadLabel(download)));
+  const own = downloadFor(platform);
+  const label =
+    own === null ? addonCopy.setupDownloadCompanion : addonCopy.setupCompanionDownload(own.platform);
+  return row(3, 'todo', [line(text)], act('download', label));
 }
 
 function row(n: 1 | 2 | 3, mark: StepMark, lines: StepLineOut[], action: StepAction | null): StepRow {
@@ -141,12 +127,12 @@ function primary(action: StepAction): StepAction {
 }
 
 /** Signed out, failed or loading: no account to read. */
-function anonymousRows(input: SetupInputs, platforms: readonly string[]): StepRow[] {
+function anonymousRows(input: SetupInputs): StepRow[] {
   const addon =
     input.pointer === true
       ? row(2, 'ok', [line(addonCopy.setupAddonDoneLine, 'ok')], null)
       : row(2, 'todo', [line(addonCopy.setupAddonNote)], CURSEFORGE);
-  const companion = companionTodo(input.platform, addonCopy.setupCompanionNote, platforms);
+  const companion = companionTodo(input.platform, addonCopy.setupCompanionNote);
   if (input.session === 'loading') {
     return [
       row(1, 'ok', [SKELETON], null),
@@ -205,27 +191,27 @@ function signInRow(me: Me, input: SetupInputs, now: Date): StepRow {
   );
 }
 
-function companionRow(me: Me, input: SetupInputs, platforms: readonly string[], now: Date): StepRow {
+function companionRow(me: Me, input: SetupInputs, now: Date): StepRow {
   const status = companionLine(me, input.devices, now);
   if (status?.done === true) return row(3, 'ok', [line(status.text, 'ok')], null);
   if (input.pairingCode != null && input.pairingCode !== '') {
     return row(3, 'busy', [line(pairingCopy.waiting, 'muted', { code: input.pairingCode })], null);
   }
-  return companionTodo(input.platform, status?.text ?? addonCopy.setupCompanionNote, platforms);
+  return companionTodo(input.platform, status?.text ?? addonCopy.setupCompanionNote);
 }
 
-/** Every row of the plate for one state. `platforms` is companion.json's download platforms. */
-export function setupSteps(input: SetupInputs, platforms: readonly string[]): StepRow[] {
+/** Every row of the plate for one state. */
+export function setupSteps(input: SetupInputs): StepRow[] {
   const now = input.now ?? new Date();
   const me = input.me;
-  if (input.session !== 'in' || me === null) return promoteFirst(anonymousRows(input, platforms));
+  if (input.session !== 'in' || me === null) return promoteFirst(anonymousRows(input));
   const first = signInRow(me, input, now);
   const addonDone = newestAddonCharacter(me.characters) !== null;
   const addonText = addonLine(me, now)?.text ?? addonCopy.setupAddonNote;
   const addon = addonDone
     ? row(2, 'ok', [line(addonText, 'ok')], null)
     : row(2, 'todo', [line(addonText)], CURSEFORGE);
-  return promoteFirst([first, addon, companionRow(me, input, platforms, now)]);
+  return promoteFirst([first, addon, companionRow(me, input, now)]);
 }
 
 /** The session the page reads from `/v1/me`'s answer: a 401 (or no session) is signed out, anything else that fails is an error (B1). */

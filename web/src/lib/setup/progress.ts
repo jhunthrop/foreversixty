@@ -6,7 +6,6 @@
 import type { Device, Me, MeCharacter } from '../account/api';
 import { addonCopy } from '../addon/copy';
 import { relativeTime } from '../dates';
-import { isMacPlatform } from './downloads';
 
 /** A step's line under its action: `done` draws the check, otherwise the line is muted waiting text. */
 export interface StepLine {
@@ -75,10 +74,4 @@ export function companionLine(
       relativeTime(new Date(device.last_seen_at ?? device.created_at), now),
     ),
   };
-}
-
-/** "Windows only; Mac is not supported yet. ..." while companion.json lists no Mac build; nothing once it does. */
-export function companionPlatformsLine(platforms: readonly string[]): string | null {
-  if (platforms.some(isMacPlatform)) return null;
-  return addonCopy.setupCompanionPlatforms(platforms.join(' and '));
 }

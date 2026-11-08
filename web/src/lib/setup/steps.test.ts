@@ -20,7 +20,6 @@ import {
 } from './steps';
 
 const NOW = new Date('2026-11-06T10:00:00Z');
-const PLATFORMS = ['Windows'];
 const me34 = me34Json as unknown as Me;
 const meNew = meNewJson as unknown as Me;
 const devices = devicesJson as unknown as Device[];
@@ -30,10 +29,7 @@ const meBnet: Me = {
 };
 
 function steps(input: Partial<SetupInputs>): StepRow[] {
-  return setupSteps(
-    { session: 'in', me: null, devices: [], platform: 'windows', now: NOW, ...input },
-    PLATFORMS,
-  );
+  return setupSteps({ session: 'in', me: null, devices: [], platform: 'windows', now: NOW, ...input });
 }
 const marks = (rows: StepRow[]) => rows.map((r) => r.mark);
 const primaries = (rows: StepRow[]) =>
@@ -56,28 +52,29 @@ describe('setupSteps: signed out', () => {
     expect(rows[2].action).toMatchObject({ id: 'download', label: 'Download for Windows' });
   });
 
-  it('web-setup-mac: row 3 says Windows only and links to Try an export (U10)', () => {
-    const rows = steps({ session: 'out', platform: 'mac' });
-    expect(texts(rows[2])).toEqual([
-      'Windows only; Mac is not supported yet. On a Mac, paste an export instead.',
-    ]);
-    expect(rows[2].action).toMatchObject({
-      id: 'paste',
-      kind: 'link',
-      label: addonCopy.setupTryExport,
-      primary: false,
+  it('web-setup-mac: row 3 is the Mac download, Windows keeps its own', () => {
+    const mac = steps({ session: 'out', platform: 'mac' });
+    expect(texts(mac[2])).toEqual([addonCopy.setupCompanionNote]);
+    expect(mac[2].action).toMatchObject({ id: 'download', label: 'Download for Mac', kind: 'link-button' });
+    expect(steps({ me: me34, platform: 'mac' })[2].action).toMatchObject({
+      id: 'download',
+      label: 'Download for Mac',
     });
   });
 
-  it('web-setup-mac with a Mac build: row 3 is the Mac download, Windows keeps its own', () => {
-    const both = ['Windows', 'Mac'];
-    const mac = setupSteps({ session: 'out', me: null, devices: [], platform: 'mac', now: NOW }, both);
-    expect(texts(mac[2])).toEqual([addonCopy.setupCompanionNote]);
-    expect(mac[2].action).toMatchObject({ id: 'download', label: 'Download for Mac', kind: 'link-button' });
-    const win = setupSteps({ session: 'out', me: null, devices: [], platform: 'windows', now: NOW }, both);
-    expect(win[2].action).toMatchObject({ id: 'download', label: 'Download for Windows' });
-    const signedIn = setupSteps({ session: 'in', me: me34, devices: [], platform: 'mac', now: NOW }, both);
-    expect(signedIn[2].action).toMatchObject({ id: 'download', label: 'Download for Mac' });
+  it('web-setup-unknown: a system the page cannot name offers every build under one name', () => {
+    const rows = steps({ session: 'out', platform: 'unknown' });
+    expect(rows[2].action).toMatchObject({ id: 'download', label: addonCopy.setupDownloadCompanion });
+  });
+
+  it('web-setup-mobile: a phone gets the link to copy, never a download', () => {
+    const rows = steps({ session: 'out', platform: 'mobile' });
+    expect(texts(rows[2])).toEqual([addonCopy.setupCompanionNote, addonCopy.setupCompanionMobile]);
+    expect(rows[2].action).toMatchObject({ id: 'copylink', kind: 'button', label: addonCopy.setupCopyLink });
+    const signedIn = steps({ me: me34, platform: 'mobile' });
+    expect(texts(signedIn[2])).toEqual([addonCopy.setupCompanionWaiting, addonCopy.setupCompanionMobile]);
+    expect(signedIn[2].action).toMatchObject({ id: 'copylink', primary: true });
+    expect(signedIn[2].mark).toBe('next');
   });
 
   it('web-setup-export: an export loaded ticks the addon row', () => {
@@ -197,12 +194,6 @@ describe('setupSteps: signed in', () => {
   it('claims nothing about the companion when the device list did not load', () => {
     const rows = steps({ me: me34, devices: null });
     expect(texts(rows[2])).toEqual([addonCopy.setupCompanionNote]);
-  });
-
-  it('on a Mac, a signed-in row 3 offers the export route, never a download', () => {
-    const rows = steps({ me: me34, platform: 'mac' });
-    expect(rows[2].action).toMatchObject({ id: 'paste', kind: 'link', primary: false });
-    expect(rows[2].mark).toBe('next');
   });
 });
 

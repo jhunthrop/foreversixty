@@ -95,14 +95,124 @@
     "mark": "todo",
     "lines": [
      {
-      "text": "Windows only; Mac is not supported yet. On a Mac, paste an export instead.",
+      "text": "Optional. Sends bags, bank and live logs after every session.",
       "tone": "muted"
      }
     ],
     "action": {
-     "id": "paste",
-     "label": "Try an export",
-     "kind": "link",
+     "id": "download",
+     "label": "Download for Mac",
+     "kind": "link-button",
+     "primary": false
+    }
+   }
+  ],
+  "mobile": [
+   {
+    "n": 1,
+    "title": "Sign in",
+    "mark": "next",
+    "lines": [
+     {
+      "text": "Brings your Forever characters in from Battle.net, and saves your builds, sims and logs.",
+      "tone": "muted"
+     }
+    ],
+    "action": {
+     "id": "signin",
+     "label": "Sign in with Battle.net",
+     "kind": "link-button",
+     "primary": true
+    }
+   },
+   {
+    "n": 2,
+    "title": "The addon",
+    "mark": "todo",
+    "lines": [
+     {
+      "text": "Optional. Gear tips on every tooltip, talent marks, bags and bank.",
+      "tone": "muted"
+     }
+    ],
+    "action": {
+     "id": "curseforge",
+     "label": "Install from CurseForge",
+     "kind": "link-button",
+     "primary": false
+    }
+   },
+   {
+    "n": 3,
+    "title": "The companion",
+    "mark": "todo",
+    "lines": [
+     {
+      "text": "Optional. Sends bags, bank and live logs after every session.",
+      "tone": "muted"
+     },
+     {
+      "text": "The companion runs on your PC or Mac.",
+      "tone": "muted"
+     }
+    ],
+    "action": {
+     "id": "copylink",
+     "label": "Copy link",
+     "kind": "button",
+     "primary": false
+    }
+   }
+  ],
+  "unknown": [
+   {
+    "n": 1,
+    "title": "Sign in",
+    "mark": "next",
+    "lines": [
+     {
+      "text": "Brings your Forever characters in from Battle.net, and saves your builds, sims and logs.",
+      "tone": "muted"
+     }
+    ],
+    "action": {
+     "id": "signin",
+     "label": "Sign in with Battle.net",
+     "kind": "link-button",
+     "primary": true
+    }
+   },
+   {
+    "n": 2,
+    "title": "The addon",
+    "mark": "todo",
+    "lines": [
+     {
+      "text": "Optional. Gear tips on every tooltip, talent marks, bags and bank.",
+      "tone": "muted"
+     }
+    ],
+    "action": {
+     "id": "curseforge",
+     "label": "Install from CurseForge",
+     "kind": "link-button",
+     "primary": false
+    }
+   },
+   {
+    "n": 3,
+    "title": "The companion",
+    "mark": "todo",
+    "lines": [
+     {
+      "text": "Optional. Sends bags, bank and live logs after every session.",
+      "tone": "muted"
+     }
+    ],
+    "action": {
+     "id": "download",
+     "label": "Download the companion",
+     "kind": "link-button",
      "primary": false
     }
    }
@@ -950,28 +1060,107 @@
   "JHUNT-PC · Windows · last seen 3 minutes ago"
  ],
  "imported": "Updated 1 h ago from Battle.net",
- "platforms_line": "Windows only; Mac is not supported yet. On a Mac, paste an export instead.",
  "companion": {
   "downloads": [
    {
+    "os": "windows",
     "platform": "Windows",
     "asset": "foreversixty-companion_windows_amd64.exe",
     "firstRun": "Signed by Commish LLC. If SmartScreen still asks while the certificate is new, choose More info, then Run anyway."
+   },
+   {
+    "os": "mac",
+    "platform": "Mac",
+    "asset": "foreversixty-companion_darwin_universal.dmg",
+    "firstRun": "Signed by Commish LLC and notarized by Apple. Open the disk image, then drag Forever Sixty to Applications. macOS 12 or later."
    }
   ]
  },
  "download_for": {
   "windows": {
-   "platform": "Windows",
-   "asset": "foreversixty-companion_windows_amd64.exe",
-   "firstRun": "Signed by Commish LLC. If SmartScreen still asks while the certificate is new, choose More info, then Run anyway."
+   "own": {
+    "os": "windows",
+    "platform": "Windows",
+    "firstRun": "Signed by Commish LLC. If SmartScreen still asks while the certificate is new, choose More info, then Run anyway.",
+    "label": "Download for Windows",
+    "href": "/dl/companion/companion-v0.2.37/foreversixty-companion_windows_amd64.exe",
+    "meta": "Version 0.2.37 · 16.4 MB"
+   },
+   "others": [
+    {
+     "os": "mac",
+     "platform": "Mac",
+     "firstRun": "Signed by Commish LLC and notarized by Apple. Open the disk image, then drag Forever Sixty to Applications. macOS 12 or later.",
+     "label": "Download for Mac",
+     "href": "/dl/companion/companion-v0.2.37/foreversixty-companion_darwin_universal.dmg",
+     "meta": "Version 0.2.37 · 16.8 MB"
+    }
+   ]
   },
-  "mac": null
+  "mac": {
+   "own": {
+    "os": "mac",
+    "platform": "Mac",
+    "firstRun": "Signed by Commish LLC and notarized by Apple. Open the disk image, then drag Forever Sixty to Applications. macOS 12 or later.",
+    "label": "Download for Mac",
+    "href": "/dl/companion/companion-v0.2.37/foreversixty-companion_darwin_universal.dmg",
+    "meta": "Version 0.2.37 · 16.8 MB"
+   },
+   "others": [
+    {
+     "os": "windows",
+     "platform": "Windows",
+     "firstRun": "Signed by Commish LLC. If SmartScreen still asks while the certificate is new, choose More info, then Run anyway.",
+     "label": "Download for Windows",
+     "href": "/dl/companion/companion-v0.2.37/foreversixty-companion_windows_amd64.exe",
+     "meta": "Version 0.2.37 · 16.4 MB"
+    }
+   ]
+  },
+  "unknown": {
+   "own": null,
+   "others": [
+    {
+     "os": "windows",
+     "platform": "Windows",
+     "firstRun": "Signed by Commish LLC. If SmartScreen still asks while the certificate is new, choose More info, then Run anyway.",
+     "label": "Download for Windows",
+     "href": "/dl/companion/companion-v0.2.37/foreversixty-companion_windows_amd64.exe",
+     "meta": "Version 0.2.37 · 16.4 MB"
+    },
+    {
+     "os": "mac",
+     "platform": "Mac",
+     "firstRun": "Signed by Commish LLC and notarized by Apple. Open the disk image, then drag Forever Sixty to Applications. macOS 12 or later.",
+     "label": "Download for Mac",
+     "href": "/dl/companion/companion-v0.2.37/foreversixty-companion_darwin_universal.dmg",
+     "meta": "Version 0.2.37 · 16.8 MB"
+    }
+   ]
+  },
+  "mobile": {
+   "own": null,
+   "others": [
+    {
+     "os": "windows",
+     "platform": "Windows",
+     "firstRun": "Signed by Commish LLC. If SmartScreen still asks while the certificate is new, choose More info, then Run anyway.",
+     "label": "Download for Windows",
+     "href": "/dl/companion/companion-v0.2.37/foreversixty-companion_windows_amd64.exe",
+     "meta": "Version 0.2.37 · 16.4 MB"
+    },
+    {
+     "os": "mac",
+     "platform": "Mac",
+     "firstRun": "Signed by Commish LLC and notarized by Apple. Open the disk image, then drag Forever Sixty to Applications. macOS 12 or later.",
+     "label": "Download for Mac",
+     "href": "/dl/companion/companion-v0.2.37/foreversixty-companion_darwin_universal.dmg",
+     "meta": "Version 0.2.37 · 16.8 MB"
+    }
+   ]
+  }
  },
- "download": {
-  "label": "Download for Windows",
-  "href": "/dl/companion/foreversixty-companion_windows_amd64.exe"
- },
+ "version_line": "Version 0.2.37",
  "paths": {
   "addon_zip": "/dl/addon",
   "data": "/dl/data"
@@ -1104,8 +1293,14 @@
   "setupCompanionWaiting": "No companion signed in yet",
   "setupHowItWorks": "How the addon works",
   "setupCompanionPair": "Sign in with Battle.net inside the companion; it connects itself.",
-  "setupCompanionPlatforms": "[fn]",
+  "setupCompanionMobile": "The companion runs on your PC or Mac.",
+  "setupCopyLink": "Copy link",
+  "setupLinkCopied": "Link copied",
+  "setupCompanionVersion": "[fn]",
+  "setupCompanionFileMeta": "[fn]",
+  "setupOtherPlatforms": "Other platforms",
   "setupCompanionDownload": "[fn]",
+  "setupDownloadCompanion": "Download the companion",
   "setupCompanionCapture": {
    "src": "/addon/companion-status.jpg",
    "width": 1600,

@@ -76,6 +76,8 @@ section>.sec-h+*{margin-top:12px}
 @media(max-width:600px){.steps .row{align-items:start}}
 /* the built sm Button is a 44 px target below 1024 (web/src/lib/ui/button.ts BUTTON_SM) */@media(max-width:1023px){.btn.sm{height:44px}}
 .tm{display:inline-flex;align-items:center;gap:12px}
+.dl{display:flex;flex-direction:column;gap:4px}.dl .acts{column-gap:16px;row-gap:8px}.dl-meta{min-height:20px}
+.dl-other summary{cursor:pointer;color:var(--gold)}.dl-other ul{margin-top:8px;display:flex;flex-direction:column;gap:4px;list-style:none;padding:0}
 .mark-ok{width:40px;height:40px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font:700 20px/40px var(--font-body);color:#07090d;background:var(--kill);flex:none}
 </style>'''
 
@@ -95,9 +97,33 @@ def _line(l: dict) -> str:
     return f'<span{tone}{role}>{escape(l["text"])}</span>{code}'
 
 
-def _action(a: dict | None) -> str:
+PLATFORM_OF = {'mac': 'mac', 'mobile': 'mobile', 'unknown': 'unknown'}
+
+
+def platform_of(state: str) -> str:
+    """The visitor's system each state is drawn for (web/tests/e2e/support/setup-page.ts): Windows unless named."""
+    return PLATFORM_OF.get(state, 'windows')
+
+
+def download_block(state: str, primary: bool) -> str:
+    """Row 3's download (components/setup/CompanionDownload.svelte): the own build's button, its version and size, and
+    Other platforms; or, for a system the page cannot name, every build side by side with the version alone."""
+    d = FACTS['download_for'][platform_of(state)]
+    meta = lambda text: f'<span class="t-small dl-meta">{escape(text or "")}</span>'
+    if d['own'] is None:
+        buttons = ''.join(LinkButton(b['label']) for b in d['others'])
+        return f'<div class="dl" role="group" aria-label="{escape(A["setupDownloadCompanion"])}"><div class="acts">{buttons}</div>{meta(FACTS["version_line"])}</div>'
+    own = d['own']
+    other = ''.join(f'<li class="t-small">{arrow(b["label"])} <span>{escape(b["meta"] or "")}</span></li>' for b in d['others'])
+    fold = f'<details class="dl-other"><summary class="link">{escape(A["setupOtherPlatforms"])}</summary><ul>{other}</ul></details>' if other else ''
+    return f'<div class="dl"><div class="acts">{LinkButton(own["label"], primary=primary)}{fold}</div>{meta(own["meta"])}</div>'
+
+
+def _action(a: dict | None, state: str = 'out') -> str:
     if a is None:
         return ''
+    if a['id'] == 'download':
+        return download_block(state, a['primary'])
     if a['kind'] == 'link':
         return arrow(a['label'])
     if a['kind'] == 'button':
@@ -107,7 +133,7 @@ def _action(a: dict | None) -> str:
 
 def step_rows(state: str) -> list[tuple]:
     """The three steps for a state: lib/setup/steps.ts's rows on the fixtures (FACTS['rows'])."""
-    return [(r['mark'], r['n'], r['title'], '<br>'.join(_line(l) for l in r['lines']), _action(r['action'])) for r in FACTS['rows'][state]]
+    return [(r['mark'], r['n'], r['title'], '<br>'.join(_line(l) for l in r['lines']), _action(r['action'], state)) for r in FACTS['rows'][state]]
 
 
 def answer(state: str) -> str:
@@ -139,8 +165,8 @@ def addon_section(state: str) -> str:
 
 
 def companion_section(state: str) -> str:
-    # The visitor's own build (lib/setup/downloads.ts): None on a Mac while companion.json lists no Mac build.
-    comp = FACTS['download_for']['mac' if state == 'mac' else 'windows']
+    # The visitor's own build (lib/setup/downloads.ts): None on a phone or an unknown system.
+    comp = FACTS['download_for'][platform_of(state)]
     steps = sentences(A['setupCompanionBody'])   # [what it is, the setting, /combatlog each time you log in]
     lead_sentence, rest = steps[0], steps[1:]
     howto = [A['setupCompanionPair']] + rest
@@ -150,7 +176,7 @@ def companion_section(state: str) -> str:
     cap = A['setupCompanionCapture']
     pic = Capture(img(cap['src']), cap['width'], cap['height'], cap['alt'], tag=cap['exampleLabel'], lazy=False)
     pair = ''
-    if state not in ('out', 'mac', 'export', 'error', 'loading', 'signin-failed'):
+    if state not in ('out', 'mac', 'mobile', 'unknown', 'export', 'error', 'loading', 'signin-failed'):
         lc = FACTS['logs_companion']
         if state == 'done':
             status = ''.join(f'<p class="t-small" style="color:var(--text)">{escape(x)}</p>' for x in FACTS['device_status'])
@@ -160,14 +186,15 @@ def companion_section(state: str) -> str:
                     f'<p class="t-small">{escape(PC["code_line"])}</p></div>')
         else:
             pair = f'<div class="pair"><span class="t-label">{escape(lc["pairLabel"])}</span><p class="t-small">{escape(PC["companionFirst"])}</p><div class="acts">{Button(PC["action"], small=True)}</div></div>'
-    # A Mac without a Mac build reads "Windows only" once, on row 3; the section drops that line and the SmartScreen one
-    # (U7, rulings). With a Mac build the Mac visitor gets its own signing line, and no platforms line once Mac ships.
-    plat = ''
-    if comp is not None:
-        line = FACTS['platforms_line']
-        plat = (f'<p class="t-small">{escape(line)}</p>' if line else '') + f'<p class="t-small">{escape(comp["firstRun"])}</p>'
-    # U4 (rulings): once row 3 is ticked, the download stays here for another PC.
-    another = f'<div class="acts">{arrow(A["setupDownloadAnother"])}</div>' if row_done(state, 3) else ''
+    # The signing and first-run line (U7): the own build's; every build's, named, for an unknown system; none on a phone.
+    if comp['own'] is not None:
+        plat = f'<p class="t-small">{escape(comp["own"]["firstRun"])}</p>'
+    elif platform_of(state) == 'unknown':
+        plat = ''.join(f'<p class="t-small">{escape(b["platform"])}: {escape(b["firstRun"])}</p>' for b in comp['others'])
+    else:
+        plat = ''
+    # U4 (rulings): once row 3 is ticked, the own build's download stays here for another PC.
+    another = f'<div class="acts">{arrow(A["setupDownloadAnother"])}</div>' if row_done(state, 3) and comp['own'] is not None else ''
     body = (f'<div class="body" id="companion"><p>{escape(lead_sentence)}</p>{plat}{another}'
             f'{rows}{pic}{pair}</div>')
     return Section(A['setupStep3Title'], body, meta=escape(A['setupCompanionNote']))
@@ -282,7 +309,7 @@ def connect_page(state: str) -> str:
     return render(C['title'], body, '', None, chrome, note)
 
 
-SETUP_STATES = ['out', 'mac', 'export', 'paste-error', 'signin-failed', 'error', 'loading', 'none', 'importing', 'failed', 'bnet', 'addon', 'pairing', 'done']
+SETUP_STATES = ['out', 'mac', 'mobile', 'unknown', 'export', 'paste-error', 'signin-failed', 'error', 'loading', 'none', 'importing', 'failed', 'bnet', 'addon', 'pairing', 'done']
 CONNECT_STATES = ['out', 'loading', 'pending', 'connecting', 'success', 'cancelled', 'expired', 'used', 'failed']
 PAGES = {('web-setup' if s == 'out' else f'web-setup-{s}'): (lambda s=s: setup_page(s)) for s in SETUP_STATES}
 PAGES |= {('web-connect' if s == 'out' else f'web-connect-{s}'): (lambda s=s: connect_page(s)) for s in CONNECT_STATES}

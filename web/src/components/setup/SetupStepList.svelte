@@ -3,13 +3,18 @@
      rows: each row's mark, its lines (the done line in --color-text, a warning in gold, a failure in
      the wipe colour with role="alert", a pairing code as Code, a reserved Skeleton line while the
      reads are in flight) and its one action. A link action is the system Button with its href, a
-     button action calls back (Try again, Refresh from Battle.net), a text link is gold with `›`. -->
+     button action calls back (Try again, Refresh from Battle.net, Copy link), a text link is gold
+     with `›`, and the Download step is the visitor's own build (CompanionDownload). -->
 <script lang="ts">
   import { characterListCopy } from '../../lib/account/character-list-copy';
+  import { addonCopy } from '../../lib/addon/copy';
+  import type { CompanionRelease } from '../../lib/setup/release';
+  import type { VisitorPlatform } from '../../lib/setup/visitor-platform';
   import { stepHref } from '../../lib/setup/links';
   import type { StepAction, StepLineOut, StepRow } from '../../lib/setup/steps';
   import { LINK } from '../../lib/ui/primitives';
   import Button from '../ui/Button.svelte';
+  import CompanionDownload from './CompanionDownload.svelte';
   import Code from '../ui/Code.svelte';
   import Steps from '../ui/Steps.svelte';
 
@@ -17,16 +22,22 @@
 
   let {
     rows,
-    companionAsset,
+    platform,
+    release = null,
     refreshing = false,
+    copied = false,
     onAction,
     testid,
   }: {
     rows: readonly StepRow[];
-    /** The visitor's own companion build (lib/setup/downloads.ts): the file the Download step links to. */
-    companionAsset: string;
+    /** The visitor's system: which build the Download step offers (lib/setup/downloads.ts). */
+    platform: VisitorPlatform;
+    /** The feed's newest companion release, for the download's link, version and size. */
+    release?: CompanionRelease | null;
     /** Refresh from Battle.net has started: its button reads `refreshing` and is disabled. */
     refreshing?: boolean;
+    /** Copy link has just copied: its button says so. */
+    copied?: boolean;
     /** A button action was pressed (retry, refresh). */
     onAction?: (action: StepAction) => void;
     testid?: string;
@@ -69,8 +80,10 @@
   {@const step = byKey.get(item.key)}
   {#if step?.action}
     {@const act = step.action}
-    {@const href = stepHref(act.id, companionAsset)}
-    {#if act.kind === 'link'}
+    {@const href = stepHref(act.id)}
+    {#if act.id === 'download'}
+      <CompanionDownload {platform} {release} primary={act.primary} />
+    {:else if act.kind === 'link'}
       <a
         class="{LINK} inline-flex min-h-11 items-center md:min-h-0"
         href={href ?? '#'}
@@ -85,11 +98,13 @@
       >
     {:else}
       {@const busy = act.id === 'refresh' && refreshing}
+      {@const done = act.id === 'copylink' && copied}
       <Button
         tone={act.primary ? 'primary' : 'secondary'}
         disabled={busy}
         onclick={() => onAction?.(act)}
-        testid="setup-action-{act.id}">{busy ? characterListCopy.refreshing : act.label}</Button
+        testid="setup-action-{act.id}"
+        >{busy ? characterListCopy.refreshing : done ? addonCopy.setupLinkCopied : act.label}</Button
       >
     {/if}
   {/if}

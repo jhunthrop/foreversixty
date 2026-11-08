@@ -4,11 +4,12 @@
 //  - the copy modules: lib/addon/copy.ts, lib/addon/cta-copy.ts, lib/account/connect-copy.ts,
 //    lib/account/character-list-copy.ts, lib/reports/copy.ts (pairing, the companion pointer), lib/reports/my-reports-copy.ts;
 //  - the page's own line builders evaluated on the fixtures at a pinned clock: lib/setup/progress.ts (signInLine,
-//    addonLine, companionLine, companionPlatformsLine), lib/reports/device-status.ts, lib/account/connect-flow.ts;
+//    addonLine, companionLine), lib/reports/device-status.ts, lib/account/connect-flow.ts;
 //  - data: web/src/data/companion.json, active-build.json, lib/downloads/paths.ts;
 //  - fixtures: web/tests/e2e/fixtures/home/me-34.json, me-new.json, web/tests/e2e/fixtures/setup/*.json.
 //  - the plate's rows and the head answer: lib/setup/steps.ts and lib/setup/answer.ts, the page's own models;
-//  - which build each visitor downloads: lib/setup/downloads.ts (a Mac gets none while companion.json lists no Mac build).
+//  - which build each visitor downloads: lib/setup/downloads.ts and lib/setup/release.ts on the feed manifest fixture
+//    (fixtures/setup/companion-latest.json): Windows and Mac their own, an unknown system both, a phone none.
 import { createRequire } from "node:module";
 import { existsSync, mkdtempSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -29,14 +30,16 @@ import { connectCopy } from ${src("src/lib/account/connect-copy.ts")};
 import { characterListCopy } from ${src("src/lib/account/character-list-copy.ts")};
 import { pairingCopy, logsCompanionCopy } from ${src("src/lib/reports/copy.ts")};
 import { yourReportsPageCopy } from ${src("src/lib/reports/my-reports-copy.ts")};
-import { signInLine, addonLine, companionLine, companionPlatformsLine } from ${src("src/lib/setup/progress.ts")};
+import { signInLine, addonLine, companionLine } from ${src("src/lib/setup/progress.ts")};
 import { deviceStatusLine } from ${src("src/lib/reports/device-status.ts")};
 import { displayCode } from ${src("src/lib/account/connect-flow.ts")};
 import { setupSteps } from ${src("src/lib/setup/steps.ts")};
 import { setupAnswer } from ${src("src/lib/setup/answer.ts")};
-import { downloadFor } from ${src("src/lib/setup/downloads.ts")};
+import { downloadFor, otherDownloads } from ${src("src/lib/setup/downloads.ts")};
+import { parseRelease, downloadHref, releaseMeta } from ${src("src/lib/setup/release.ts")};
+import latest from ${src("tests/e2e/fixtures/setup/companion-latest.json")};
 import { relativeTime } from ${src("src/lib/dates.ts")};
-import { ADDON_DOWNLOAD_PATH, DATA_DOWNLOAD_PATH, companionDownloadPath } from ${src("src/lib/downloads/paths.ts")};
+import { ADDON_DOWNLOAD_PATH, DATA_DOWNLOAD_PATH } from ${src("src/lib/downloads/paths.ts")};
 import companion from ${src("src/data/companion.json")};
 import activeBuild from ${src("src/data/active-build.json")};
 import me34 from ${src("tests/e2e/fixtures/home/me-34.json")};
@@ -52,11 +55,15 @@ const lines = (me, devs) => ({ signin: signInLine(me), addon: addonLine(me, NOW)
 const ch = me34.characters[0];
 // The import still running (the API's /v1/me bnet_import, setup spec G1): me-new with the field set.
 const meImporting = { ...meNew, bnet_import: { state: 'running', at: '2026-11-06T09:59:30Z' } };
-const platforms = companion.downloads.map((d) => d.platform);
-const steps = (session, me, devs, extra = {}) => setupSteps({ session, me, devices: devs, platform: 'windows', now: NOW, ...extra }, platforms);
+const steps = (session, me, devs, extra = {}) => setupSteps({ session, me, devices: devs, platform: 'windows', now: NOW, ...extra });
+const release = parseRelease(latest);
+const build = (d) => ({ os: d.os, platform: d.platform, firstRun: d.firstRun, label: addonCopy.setupCompanionDownload(d.platform), href: downloadHref(d.asset, release), meta: releaseMeta(d.asset, release) });
+// Row 3's download per visitor system (components/setup/CompanionDownload.svelte draws the same).
+const downloadOf = (p) => ({ own: downloadFor(p) && build(downloadFor(p)), others: otherDownloads(p).map(build) });
 // Every mocked state's plate rows, from lib/setup/steps.ts itself (the page's island draws the same rows).
 const STATES = {
-  out: steps('out', null, []), mac: steps('out', null, [], { platform: 'mac' }), export: steps('out', null, [], { pointer: true }),
+  out: steps('out', null, []), mac: steps('out', null, [], { platform: 'mac' }),
+  mobile: steps('out', null, [], { platform: 'mobile' }), unknown: steps('out', null, [], { platform: 'unknown' }), export: steps('out', null, [], { pointer: true }),
   'paste-error': steps('out', null, []), 'signin-failed': steps('out', null, [], { signinFailed: true }), error: steps('error', null, null),
   loading: steps('loading', null, null), none: steps('in', meNew, []), importing: steps('in', meImporting, []),
   failed: steps('in', meNew, [], { refreshFailed: true }), bnet: steps('in', meBnet, []), addon: steps('in', me34, []),
@@ -73,10 +80,9 @@ export default {
   lines: { out: lines(null, []), none: lines(meNew, []), bnet: lines(meBnet, []), addon: lines(me34, []), done: lines(me34, devices) },
   device_status: devices.map((d) => deviceStatusLine(d, NOW)),
   imported: characterListCopy.updatedFrom(me34.bnet_imported_at, NOW),
-  platforms_line: companionPlatformsLine(companion.downloads.map((d) => d.platform)),
   companion,
-  download_for: { windows: downloadFor('windows'), mac: downloadFor('mac') },
-  download: { label: addonCopy.setupCompanionDownload(companion.downloads[0].platform), href: companionDownloadPath(companion.downloads[0].asset) },
+  download_for: { windows: downloadOf('windows'), mac: downloadOf('mac'), unknown: downloadOf('unknown'), mobile: downloadOf('mobile') },
+  version_line: addonCopy.setupCompanionVersion(release.version),
   paths: { addon_zip: ADDON_DOWNLOAD_PATH, data: DATA_DOWNLOAD_PATH },
   data_build: addonCopy.currentDataBuild(activeBuild.build),
   addon_arrived: addonCopy.setupAddonArrived(ch.name, relativeTime(new Date(ch.build.captured_at), NOW)),

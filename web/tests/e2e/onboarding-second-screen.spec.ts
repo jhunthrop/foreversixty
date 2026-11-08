@@ -11,8 +11,6 @@ import { CHARACTER, CHARACTER_PATH, CHARACTER_URL, routeCharacterSearch } from '
 import { expectFixtureNotFound } from './support/character-not-found';
 import { routeSampleReportMeta } from './support/logs-sample-fixture';
 import { addonCopy } from '../../src/lib/addon/copy';
-import { COMPANION_PLATFORMS } from '../../src/lib/setup/downloads';
-import { companionPlatformsLine } from '../../src/lib/setup/progress';
 
 const SHOTS = process.env.W9_SHOTS ?? 'test-results/w9';
 const SIZES = [
@@ -72,6 +70,7 @@ for (const size of SIZES) {
 
     test('/setup signed out: three steps in one plate, one gold button, the hand install open', async ({
       page,
+      isMobile,
     }) => {
       await signedOut(page);
       await page.goto('/setup');
@@ -79,9 +78,9 @@ for (const size of SIZES) {
       await expect(page.getByRole('heading', { name: 'Get set up', level: 1 })).toBeVisible();
       await expect(page.getByRole('link', { name: 'Sign in with Battle.net' })).toBeVisible();
       await expect(page.getByRole('link', { name: 'Install from CurseForge' })).toBeVisible();
-      await expect(page.getByRole('link', { name: 'Download for Windows' })).toBeVisible();
-      const platformsLine = companionPlatformsLine(COMPANION_PLATFORMS);
-      if (platformsLine !== null) await expect(page.getByText(platformsLine)).toBeVisible();
+      // A phone gets the link to copy (the companion is a desktop app); a desktop gets a download.
+      if (isMobile) await expect(page.getByRole('button', { name: 'Copy link' })).toBeVisible();
+      else await expect(page.getByRole('link', { name: 'Download for Windows' })).toBeVisible();
       await expect(page.getByTestId('setup-steps-step-1')).not.toContainText('Signed in as');
       await expect(page.getByTestId('addon-paste-box')).toBeVisible();
       await expect(page.getByTestId('setup-hand-install')).toBeVisible();

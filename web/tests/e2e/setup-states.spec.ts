@@ -9,8 +9,7 @@ import { guildClaimCopy } from '../../src/lib/guild/copy';
 import { pairingCopy } from '../../src/lib/reports/copy';
 import { yourReportsPageCopy } from '../../src/lib/reports/my-reports-copy';
 import { storePointer } from './support/selector';
-import { companionDownloadPath } from '../../src/lib/downloads/paths';
-import { downloadFor } from '../../src/lib/setup/downloads';
+import { COMPANION_DOWNLOADS, downloadFor } from '../../src/lib/setup/downloads';
 import { CLAIM_NEXT, openSetupState } from './support/setup-page';
 import { expect, test } from './support/test';
 
@@ -54,26 +53,59 @@ test('back from a refresh Battle.net did not answer: the refresh error and Try a
   expect(new URL(page.url()).search).toBe('');
 });
 
-test('a Mac visitor: the Mac download with its own signing line, or while there is no Mac build Try an export and no SmartScreen line (U7, U10)', async ({
+const LATEST = 'companion-v0.2.37';
+const releasePath = (asset: string) => `/dl/companion/${LATEST}/${asset}`;
+
+for (const os of ['windows', 'mac'] as const) {
+  test(`a ${os} visitor: one button for the own build, straight to the release file, its version and size, the rest under Other platforms`, async ({
+    page,
+  }) => {
+    await openSetupState(page, os === 'mac' ? 'mac' : 'out');
+    const own = downloadFor(os);
+    if (own === null) throw new Error(`companion.json lists no ${os} build`);
+    const button = page.getByTestId('setup-action-download');
+    await expect(button).toHaveText(addonCopy.setupCompanionDownload(own.platform));
+    await expect(button).toHaveAttribute('href', releasePath(own.asset));
+    await expect(page.getByTestId('setup-download-meta')).toHaveText(/^Version 0\.2\.37 · \d+\.\d MB$/);
+    await expect(page.getByTestId('setup-companion-first-run')).toHaveText(own.firstRun);
+    const other = COMPANION_DOWNLOADS.find((build) => build.os !== os);
+    if (other === undefined) return;
+    const others = page.getByTestId('setup-other-platforms');
+    await others.getByText(addonCopy.setupOtherPlatforms).click();
+    await expect(others.getByTestId(`setup-download-${other.os}`)).toHaveAttribute(
+      'href',
+      releasePath(other.asset),
+    );
+  });
+}
+
+test('a system the page cannot name: every build side by side, none gold, as the server drew it', async ({
   page,
 }) => {
-  await openSetupState(page, 'mac');
-  const mac = downloadFor('mac');
-  await expect(page.getByTestId('setup-companion-platforms')).toHaveCount(0);
-  if (mac === null) {
-    await expect(page.getByTestId('setup-action-paste')).toHaveAttribute('href', '#paste');
-    await expect(page.getByTestId('setup-action-download')).toHaveCount(0);
-    await expect(page.getByTestId('setup-companion-first-run')).toHaveCount(0);
-    return;
+  await openSetupState(page, 'unknown');
+  await expect(page.getByTestId('setup-action-download')).toHaveCount(0);
+  for (const build of COMPANION_DOWNLOADS) {
+    await expect(page.getByTestId(`setup-download-${build.os}`)).toHaveText(
+      addonCopy.setupCompanionDownload(build.platform),
+    );
   }
-  await expect(page.getByTestId('setup-action-download')).toHaveAttribute(
-    'href',
-    companionDownloadPath(mac.asset),
-  );
-  await expect(page.getByTestId('setup-action-download')).toHaveText(
-    addonCopy.setupCompanionDownload(mac.platform),
-  );
-  await expect(page.getByTestId('setup-companion-first-run')).toHaveText(mac.firstRun);
+  await expect(page.getByTestId('setup-download-meta')).toHaveText('Version 0.2.37');
+  await expect(page.getByTestId('setup-companion-first-run')).toHaveCount(COMPANION_DOWNLOADS.length);
+});
+
+test('a phone: the companion runs on a PC or Mac, Copy link copies this page, and no download', async ({
+  page,
+  context,
+}) => {
+  await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+  await openSetupState(page, 'mobile');
+  await expect(page.getByTestId('setup-steps-step-3')).toContainText(addonCopy.setupCompanionMobile);
+  await expect(page.getByTestId('setup-download')).toHaveCount(0);
+  await expect(page.getByTestId('setup-companion-first-run')).toHaveCount(0);
+  const copy = page.getByTestId('setup-action-copylink');
+  await copy.click();
+  await expect(copy).toHaveText(addonCopy.setupLinkCopied);
+  expect(await page.evaluate(() => navigator.clipboard.readText())).toMatch(/\/setup$/);
 });
 
 test('a pairing code out: row 3 waits with the code, no gold step', async ({ page }) => {

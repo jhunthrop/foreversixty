@@ -13,8 +13,7 @@ import { createPageContainer } from '../test-support/page-container';
 import { describe, expect, it, beforeAll } from 'vitest';
 import { addonCopy } from '../lib/addon/copy';
 import { SETUP_NAV_ITEM } from '../lib/nav';
-import { COMPANION_PLATFORMS, downloadFor } from '../lib/setup/downloads';
-import { companionPlatformsLine } from '../lib/setup/progress';
+import { COMPANION_DOWNLOADS } from '../lib/setup/downloads';
 import { CURSEFORGE_URL, WAGO_URL } from '../lib/setup/links';
 import activeBuild from '../data/active-build.json';
 import companion from '../data/companion.json';
@@ -115,8 +114,9 @@ describe('/setup', () => {
 
   it('links every download through the site’s own /dl/ paths, never the release host', () => {
     expect(source).not.toMatch(/github\.com/i);
-    // The server draws the Windows rows; a Mac's build is swapped in after hydration, through the same path.
-    expect(html).toContain(`href="${companionDownloadPath(downloadFor('windows')?.asset ?? '')}"`);
+    // The server offers every build; the visitor's own is picked after hydration, through the same paths.
+    for (const build of COMPANION_DOWNLOADS)
+      expect(html).toContain(`href="${companionDownloadPath(build.asset)}"`);
     for (const entry of companion.downloads)
       expect(companionDownloadPath(entry.asset)).toBe(`/dl/companion/${entry.asset}`);
     expect(html).not.toMatch(/github\.com/i);
@@ -457,14 +457,13 @@ describe('/setup: The companion', () => {
     expect(capture.width).toBeGreaterThanOrEqual(1600);
   });
 
-  it('says Mac is not supported only while companion.json lists no Mac build, and the signing line (U7)', () => {
+  it('server-renders every build and its signing line, with no word of Windows only (U7)', () => {
     const companionHtml = section('setup-companion');
-    const platformsLine = companionPlatformsLine(COMPANION_PLATFORMS);
-    if (platformsLine === null) expect(companionHtml).not.toContain('Mac is not supported');
-    else expect(companionHtml).toContain(platformsLine);
-    expect(companionHtml).toContain(companion.downloads[0].firstRun);
-    expect(companionHtml).not.toMatch(/macOS next/i);
-    expect(companionPlatformsLine(['Windows', 'macOS'])).toBeNull();
+    for (const build of COMPANION_DOWNLOADS) {
+      expect(html).toContain(`href="${companionDownloadPath(build.asset)}"`);
+      expect(companionHtml).toContain(`${build.platform}: ${build.firstRun}`);
+    }
+    expect(html).not.toMatch(/Windows[ -]only|not supported yet/i);
   });
 
   it('draws no pairing block signed out', () => {

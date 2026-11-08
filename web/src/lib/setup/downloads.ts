@@ -1,12 +1,16 @@
 // web/src/lib/setup/downloads.ts
-// Which companion build a visitor is offered. companion.json lists the builds the release feed
-// carries (the owner adds the Mac entry once the first signed and notarized Mac build is in the
-// feed), and this is the one place that turns a visitor's platform into one of them: Windows gets
-// the Windows build, a Mac gets the Mac build when there is one and the export route when not.
+// The companion builds /setup offers, and which one is a visitor's own. companion.json lists the
+// builds the release feed carries (the feed's Worker serves only those names, lib/downloads/serve.ts);
+// this turns a visitor's system (lib/setup/visitor-platform.ts) into one of them, and the feed's
+// manifest (lib/setup/release.ts) adds the version and size.
 import companion from '../../data/companion.json' with { type: 'json' };
 import type { VisitorPlatform } from './visitor-platform';
 
+export type CompanionOs = 'windows' | 'mac';
+
 export interface CompanionDownload {
+  /** The system the build runs on. */
+  os: CompanionOs;
   /** The word on the button: "Download for Windows", "Download for Mac". */
   platform: string;
   /** The file's name in the feed's companion manifest. */
@@ -15,25 +19,27 @@ export interface CompanionDownload {
   firstRun: string;
 }
 
-export const COMPANION_DOWNLOADS: readonly CompanionDownload[] = companion.downloads;
+export const COMPANION_DOWNLOADS: readonly CompanionDownload[] = companion.downloads.map((entry) => {
+  if (entry.os !== 'windows' && entry.os !== 'mac') {
+    throw new Error(`companion.json: "${entry.os}" is not windows or mac`);
+  }
+  return { ...entry, os: entry.os };
+});
 
-/** Every build's platform word, in companion.json's order: what lib/setup/steps.ts reads. */
-export const COMPANION_PLATFORMS: readonly string[] = COMPANION_DOWNLOADS.map((entry) => entry.platform);
-
-/** "Mac" or "macOS": the platform word of a Mac build. */
-export function isMacPlatform(platform: string): boolean {
-  return platform.toLowerCase().startsWith('mac');
-}
-
-export function isMacDownload(download: CompanionDownload): boolean {
-  return isMacPlatform(download.platform);
-}
-
-/** The build this visitor downloads, or null on a Mac while the feed carries no Mac build. */
+/** The visitor's own build: null on a phone and when the system is unknown (both are offered). */
 export function downloadFor(
   platform: VisitorPlatform,
   downloads: readonly CompanionDownload[] = COMPANION_DOWNLOADS,
 ): CompanionDownload | null {
-  if (platform === 'mac') return downloads.find(isMacDownload) ?? null;
-  return downloads.find((download) => !isMacDownload(download)) ?? downloads[0] ?? null;
+  if (platform !== 'windows' && platform !== 'mac') return null;
+  return downloads.find((download) => download.os === platform) ?? null;
+}
+
+/** Every build but the visitor's own: the "Other platforms" list, or all of them when there is no own build. */
+export function otherDownloads(
+  platform: VisitorPlatform,
+  downloads: readonly CompanionDownload[] = COMPANION_DOWNLOADS,
+): CompanionDownload[] {
+  const own = downloadFor(platform, downloads);
+  return downloads.filter((download) => download !== own);
 }

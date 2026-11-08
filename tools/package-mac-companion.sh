@@ -97,16 +97,23 @@ codesign_item() { # codesign_item <path>
 }
 
 notarize() { # notarize <file>: submits, waits, and prints Apple's log when it is refused
-	local result id status
+	local result json id status
+	# A refusal or a timeout is printed on stderr, as JSON like the answer; both are read.
 	result=$(xcrun notarytool submit "$1" --key "$NOTARY_KEY_FILE" --key-id "$NOTARY_KEY_ID" \
-		--issuer "$NOTARY_ISSUER" --wait --timeout 30m --output-format json) || true
-	id=$(jq -r '.id // empty' <<<"$result")
-	status=$(jq -r '.status // empty' <<<"$result")
-	echo "notarization of $(basename "$1"): ${status:-no answer} (${id:-no id})"
+		--issuer "$NOTARY_ISSUER" --wait --timeout 30m --output-format json 2>&1) || true
+	json=$(grep '^{' <<<"$result" | tail -1 || true)
+	id=$(jq -r '.id // empty' <<<"$json" 2>/dev/null || true)
+	status=$(jq -r '.status // empty' <<<"$json" 2>/dev/null || true)
+	echo "notarization of $(basename "$1"): ${status:-no status} (${id:-no id})"
 	if [[ $status != Accepted ]]; then
 		echo "$result" >&2
-		[[ -n $id ]] && xcrun notarytool log "$id" --key "$NOTARY_KEY_FILE" \
-			--key-id "$NOTARY_KEY_ID" --issuer "$NOTARY_ISSUER" >&2
+		if [[ -z $status && -n $id ]]; then
+			# The 2026-11-07 run: Apple took longer than the wait on a team's first submissions.
+			echo "package-mac-companion: Apple was still processing $id when the wait ran out; rerun the job" >&2
+		elif [[ -n $id ]]; then
+			xcrun notarytool log "$id" --key "$NOTARY_KEY_FILE" --key-id "$NOTARY_KEY_ID" \
+				--issuer "$NOTARY_ISSUER" >&2 || true
+		fi
 		echo "package-mac-companion: Apple did not accept $(basename "$1")" >&2
 		exit 1
 	fi

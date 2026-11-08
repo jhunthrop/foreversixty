@@ -175,13 +175,20 @@ export const addonCopy = {
   setupCompanionWaiting: 'No companion signed in yet',
   setupHowItWorks: 'How the addon works',
   setupCompanionPair: 'Sign in with Battle.net inside the companion; it connects itself.',
-  /** Said while companion.json lists no Mac build: companion.yml builds, signs and notarizes the
-   *  Mac companion, and the owner adds its entry once the first signed build is in the feed. Until
-   *  then a Mac visitor is sent to the export instead, with no promise of a date. */
-  setupCompanionPlatforms: (available: string): string =>
-    `${available} only; Mac is not supported yet. On a Mac, paste an export instead.`,
+  /** Row 3 on a phone or tablet: the companion is a desktop app, so no download is offered. */
+  setupCompanionMobile: 'The companion runs on your PC or Mac.',
+  /** The button that copies this page's address, to open it on the computer. */
+  setupCopyLink: 'Copy link',
+  setupLinkCopied: 'Link copied',
+  /** Under a download button, from the feed's manifest: "Version 0.2.37", then " · 16.8 MB" for one file. */
+  setupCompanionVersion: (version: string): string => `Version ${version}`,
+  setupCompanionFileMeta: (version: string, size: string): string => `Version ${version} · ${size}`,
+  /** The quiet disclosure under the visitor's own download that lists the other builds. */
+  setupOtherPlatforms: 'Other platforms',
   /** The primary download button: "Download for Windows", "Download for Mac". */
   setupCompanionDownload: (platform: string): string => `Download for ${platform}`,
+  /** Both builds side by side, when the page cannot tell the visitor's system: the group's name. */
+  setupDownloadCompanion: 'Download the companion',
   /** A 2x crop of the 0.2.11 companion's Status page, the Logging state credited to a fictional
    *  two-word name (docs/superpowers/reviews/companion-premium/). */
   setupCompanionCapture: {

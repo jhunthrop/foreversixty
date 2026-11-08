@@ -124,6 +124,9 @@ Until then a Mac visitor reads the export route, as before.
 
 ### When the Mac build fails
 
+- **"Apple was still processing ... when the wait ran out"**: notarization took longer than the
+  job's 30-minute wait (a team's first submissions can; 0.2.37's first run did). Rerun the failed
+  job.
 - **Notarization "Invalid"**: the job prints Apple's log. The usual causes are a binary signed
   without `--options runtime` or `--timestamp`, or a file in the bundle left unsigned.
 - **"The certificate does not carry APPLE_SIGNING_IDENTITY"**: the variable and the .p12 name

@@ -1,0 +1,20 @@
+{
+  "schema": 1,
+  "family": "companion",
+  "tag_name": "companion-v0.2.37",
+  "published_at": "2026-11-07T23:59:00Z",
+  "assets": [
+    {
+      "name": "foreversixty-companion_windows_amd64.exe",
+      "browser_download_url": "https://foreversixty.gg/dl/companion/companion-v0.2.37/foreversixty-companion_windows_amd64.exe",
+      "size": 16425752,
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "foreversixty-companion_darwin_universal.dmg",
+      "browser_download_url": "https://foreversixty.gg/dl/companion/companion-v0.2.37/foreversixty-companion_darwin_universal.dmg",
+      "size": 16762780,
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    }
+  ]
+}

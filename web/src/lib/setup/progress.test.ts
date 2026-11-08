@@ -3,13 +3,7 @@
 import { describe, expect, it } from 'vitest';
 import type { Device, Me, MeCharacter } from '../account/api';
 import { addonCopy } from '../addon/copy';
-import {
-  addonLine,
-  companionLine,
-  companionPlatformsLine,
-  newestAddonCharacter,
-  signInLine,
-} from './progress';
+import { addonLine, companionLine, newestAddonCharacter, signInLine } from './progress';
 
 describe('the setup done lines (progress.ts)', () => {
   const NOW = new Date('2026-10-20T12:00:00Z');
@@ -98,12 +92,5 @@ describe('the setup done lines (progress.ts)', () => {
   it('says no companion has signed in, and claims nothing when the device list did not load', () => {
     expect(companionLine(me([]), [], NOW)).toEqual({ done: false, text: 'No companion signed in yet' });
     expect(companionLine(me([]), null, NOW)).toBeNull();
-  });
-
-  it('says Mac is not supported while the release carries no Mac bundle', () => {
-    expect(companionPlatformsLine(['Windows', 'macOS'])).toBeNull();
-    expect(companionPlatformsLine(['Windows'])).toBe(
-      'Windows only; Mac is not supported yet. On a Mac, paste an export instead.',
-    );
   });
 });

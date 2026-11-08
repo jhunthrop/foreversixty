@@ -6,7 +6,9 @@
      rows), The addon, The companion and What it does in the game; the rail holds Try an export, the
      commands, the handshake and the two flows.
 
-     The server markup is the signed-out page. Until the island mounts, the plate draws the rows the
+     The server markup is the signed-out page, with both companion builds offered: the island
+     reads the visitor's system on mount and the Download step becomes their own build (or, on a
+     phone, the link to copy). Until the island mounts, the plate draws the rows the
      pre-paint hints on <html> point at (data-session: the loading rows; data-pointer: the addon
      ticked), so nothing flips after paint (W.10); a hinted visitor with a stored character has the
      head answer's box reserved. -->
@@ -25,7 +27,7 @@
   import { onCurrentCharacterChange } from '../../lib/current-character-events';
   import { sessionHinted } from '../../lib/data/query';
   import { setupAnswer } from '../../lib/setup/answer';
-  import { COMPANION_DOWNLOADS, COMPANION_PLATFORMS, downloadFor } from '../../lib/setup/downloads';
+  import { fetchCompanionRelease, type CompanionRelease } from '../../lib/setup/release';
   import { SETUP_REFRESHED } from '../../lib/setup/links';
   import { loadSetupState } from '../../lib/setup/state';
   import { setupSteps, type SessionState, type StepAction } from '../../lib/setup/steps';
@@ -43,15 +45,16 @@
 
   /** While Battle.net's import runs, `/v1/me` is read again this often (setup spec G1). */
   const IMPORT_POLL_MS = 5000;
-  const PLATFORMS = COMPANION_PLATFORMS;
-  /** The server draws the Windows rows; a Mac swaps to its own build after hydration. */
-  const WINDOWS_ASSET = downloadFor('windows')?.asset ?? COMPANION_DOWNLOADS[0].asset;
+  /** How long Copy link says "Link copied". */
+  const COPIED_MS = 2000;
 
   let mounted = $state(false);
   let session = $state<SessionState>('out');
   let me = $state<Me | null>(null);
   let devices = $state<readonly Device[] | null>([]);
-  let platform = $state<VisitorPlatform>('windows');
+  let platform = $state<VisitorPlatform>('unknown');
+  let release = $state<CompanionRelease | null>(null);
+  let copied = $state(false);
   let pointer = $state(false);
   let current = $state<CurrentCharacter | null>(null);
   let signinFailed = $state(false);
@@ -87,6 +90,7 @@
   onMount(() => {
     mounted = true;
     platform = visitorPlatform(navigator);
+    void fetchCompanionRelease().then((fresh) => (release = fresh));
     current = readCurrent();
     pointer = current !== null;
     const params = new URLSearchParams(window.location.search);
@@ -124,7 +128,22 @@
     return () => clearTimeout(timer);
   });
 
+  /** Copy link: this page's address, to open on the computer the companion runs on. */
+  async function copyLink(): Promise<void> {
+    try {
+      await navigator.clipboard.writeText(`${window.location.origin}${window.location.pathname}`);
+    } catch {
+      return; // no clipboard (an insecure context, a refused permission): the address bar still has it
+    }
+    copied = true;
+    setTimeout(() => (copied = false), COPIED_MS);
+  }
+
   function onAction(action: StepAction): void {
+    if (action.id === 'copylink') {
+      void copyLink();
+      return;
+    }
     if (action.id === 'retry') {
       session = 'loading';
       invalidateMe();
@@ -139,30 +158,22 @@
   }
 
   const rows = $derived(
-    setupSteps(
-      { session, me, devices, platform, signinFailed, refreshFailed, pointer, pairingCode, now },
-      PLATFORMS,
-    ),
+    setupSteps({ session, me, devices, platform, signinFailed, refreshFailed, pointer, pairingCode, now }),
   );
   /** Before the island mounts, the server draws the signed-out rows as the live list (kept, not
    *  replaced, on mount: the first paint's text stays the page's largest paint) beside the rows the
    *  other pre-paint hints point at, swapped by CSS. */
-  const HINT_OUT_ROWS = setupSteps({ session: 'out', me: null, devices: [], platform: 'windows' }, PLATFORMS);
+  const HINT_OUT_ROWS = setupSteps({ session: 'out', me: null, devices: [], platform: 'unknown' });
   const hintRows = [
     {
       key: 'pointer',
-      rows: setupSteps(
-        { session: 'out', me: null, devices: [], platform: 'windows', pointer: true },
-        PLATFORMS,
-      ),
+      rows: setupSteps({ session: 'out', me: null, devices: [], platform: 'unknown', pointer: true }),
     },
     {
       key: 'in',
-      rows: setupSteps({ session: 'loading', me: null, devices: null, platform: 'windows' }, PLATFORMS),
+      rows: setupSteps({ session: 'loading', me: null, devices: null, platform: 'unknown' }),
     },
   ];
-  /** The Download step's file: the visitor's own build (a Mac without one has no Download step). */
-  const companionAsset = $derived(downloadFor(platform)?.asset ?? WINDOWS_ASSET);
   const settled = $derived(mounted && session !== 'loading');
   const signedIn = $derived(session === 'in' && me !== null);
   const answer = $derived(signedIn ? setupAnswer(me, current, now) : null);
@@ -194,8 +205,10 @@
     <div class={mounted ? undefined : 'setup-hint'} data-hint={mounted ? undefined : 'out'}>
       <SetupStepList
         rows={mounted ? rows : HINT_OUT_ROWS}
-        companionAsset={mounted ? companionAsset : WINDOWS_ASSET}
+        platform={mounted ? platform : 'unknown'}
+        {release}
         {refreshing}
+        {copied}
         {onAction}
         testid="setup-steps"
       />
@@ -203,7 +216,7 @@
     {#if !mounted}
       {#each hintRows as hint (hint.key)}
         <div class="setup-hint" data-hint={hint.key}>
-          <SetupStepList rows={hint.rows} companionAsset={WINDOWS_ASSET} />
+          <SetupStepList rows={hint.rows} platform="unknown" />
         </div>
       {/each}
     {/if}
@@ -212,6 +225,7 @@
   <SetupAddon {addonDone} />
   <SetupCompanion
     {platform}
+    {release}
     {companionDone}
     {signedIn}
     devices={devices ?? []}

@@ -21,6 +21,8 @@ export const SETUP_NOW = new Date('2026-11-06T10:00:00Z');
 export type SetupPageState =
   | 'out'
   | 'mac'
+  | 'mobile'
+  | 'unknown'
   | 'signin-failed'
   | 'error'
   | 'loading'
@@ -36,6 +38,8 @@ export type SetupPageState =
 export const SETUP_STATES: readonly SetupPageState[] = [
   'out',
   'mac',
+  'mobile',
+  'unknown',
   'signin-failed',
   'error',
   'loading',
@@ -76,8 +80,38 @@ const envelope = (data: unknown) => json({ ok: true, data, error: null, request_
 const failure = (status: number) =>
   json({ ok: false, data: null, error: { message: 'setup fixture' }, request_id: 'setup' }, status);
 
-const MAC_UA =
-  'Mozilla/5.0 (Macintosh; Intel Mac OS X 14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36';
+/** The system each state's browser reports (lib/setup/visitor-platform.ts): Windows unless the
+ *  state is about another one, so every other state draws the Windows rows its mock draws. */
+const SYSTEMS = {
+  windows: {
+    hints: { platform: 'Windows', mobile: false },
+    platform: 'Win32',
+    ua: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36',
+    touch: 0,
+  },
+  mac: {
+    hints: { platform: 'macOS', mobile: false },
+    platform: 'MacIntel',
+    ua: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36',
+    touch: 0,
+  },
+  mobile: {
+    hints: { platform: 'Android', mobile: true },
+    platform: 'Linux armv81',
+    ua: 'Mozilla/5.0 (Linux; Android 15; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Mobile Safari/537.36',
+    touch: 5,
+  },
+  unknown: {
+    hints: { platform: 'Linux', mobile: false },
+    platform: 'Linux x86_64',
+    ua: 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36',
+    touch: 0,
+  },
+} as const;
+
+function systemOf(state: SetupPageState): keyof typeof SYSTEMS {
+  return state === 'mac' || state === 'mobile' || state === 'unknown' ? state : 'windows';
+}
 
 /** The account each signed-in state reads. */
 function accountOf(state: SetupPageState): unknown {
@@ -102,7 +136,7 @@ function accountOf(state: SetupPageState): unknown {
   }
 }
 
-const SIGNED_OUT: readonly SetupPageState[] = ['out', 'mac', 'signin-failed'];
+const SIGNED_OUT: readonly SetupPageState[] = ['out', 'mac', 'mobile', 'unknown', 'signin-failed'];
 /** A claim page a guild claim's `?next=` names (spec 4.6; G7). */
 export const CLAIM_NEXT = '/guild/us/normal/employed-millennials/claim';
 
@@ -117,13 +151,15 @@ function pathOf(state: SetupPageState): string {
 /** Routes everything `state` reads and pins the clock. */
 export async function routeSetupState(page: Page, state: SetupPageState): Promise<void> {
   await page.clock.setFixedTime(SETUP_NOW);
-  if (state === 'mac') {
-    await page.addInitScript((ua) => {
-      Object.defineProperty(navigator, 'userAgentData', { get: () => ({ platform: 'macOS' }) });
-      Object.defineProperty(navigator, 'platform', { get: () => 'MacIntel' });
-      Object.defineProperty(navigator, 'userAgent', { get: () => ua });
-    }, MAC_UA);
-  }
+  await page.addInitScript((system) => {
+    Object.defineProperty(navigator, 'userAgentData', { get: () => system.hints });
+    Object.defineProperty(navigator, 'platform', { get: () => system.platform });
+    Object.defineProperty(navigator, 'userAgent', { get: () => system.ua });
+    Object.defineProperty(navigator, 'maxTouchPoints', { get: () => system.touch });
+  }, SYSTEMS[systemOf(state)]);
+  await page.route('**/dl/companion/latest.json', (route) =>
+    route.fulfill(json(fixture('setup/companion-latest.json'))),
+  );
   if (SIGNED_OUT.includes(state)) {
     await page.route('**/v1/me', (route) => route.fulfill(failure(401)));
     return;

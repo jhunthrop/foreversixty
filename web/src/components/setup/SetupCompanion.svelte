@@ -1,17 +1,15 @@
 <!-- web/src/components/setup/SetupCompanion.svelte -->
-<!-- /setup's Section "The companion" (setup spec 4, rulings U4, U7, U8): what it is, the visitor's
-     own build's platforms line and signing line (a Mac visitor without a Mac build reads "Windows
-     only" once, on row 3, and neither line here), a quiet
-     download link once row 3 is ticked, the three ranked how-to Rows (`/combatlog` as Code), the
+<!-- /setup's Section "The companion" (setup spec 4, rulings U4, U7, U8): what it is, the signing
+     and first-run line of the visitor's own build (every build's while the system is not known; none
+     on a phone), a quiet download link once row 3 is ticked, the three ranked how-to Rows (`/combatlog` as Code), the
      Status capture with its Example tag and, signed in, the pairing block under a hairline (each
      paired device's status line first). -->
 <script lang="ts">
   import type { Device } from '../../lib/account/api';
   import { addonCopy } from '../../lib/addon/copy';
   import { deviceStatusLine } from '../../lib/reports/device-status';
-  import { COMPANION_PLATFORMS, downloadFor } from '../../lib/setup/downloads';
-  import { companionPlatformsLine } from '../../lib/setup/progress';
-  import { stepHref } from '../../lib/setup/links';
+  import { COMPANION_DOWNLOADS, downloadFor } from '../../lib/setup/downloads';
+  import { downloadHref, type CompanionRelease } from '../../lib/setup/release';
   import type { VisitorPlatform } from '../../lib/setup/visitor-platform';
   import { LINK } from '../../lib/ui/primitives';
   import PairingBlock from '../companion/PairingBlock.svelte';
@@ -25,6 +23,7 @@
 
   let {
     platform,
+    release = null,
     companionDone,
     signedIn,
     devices,
@@ -33,6 +32,7 @@
     onPaired,
   }: {
     platform: VisitorPlatform;
+    release?: CompanionRelease | null;
     companionDone: boolean;
     signedIn: boolean;
     devices: readonly Device[];
@@ -41,14 +41,15 @@
     onPaired?: (device: Device) => void;
   } = $props();
 
-  /** The visitor's own build; null on a Mac while the feed carries no Mac build. */
+  /** The visitor's own build; null on a phone or while the system is not known. */
   const download = $derived(downloadFor(platform));
-  /** The quiet link for a second computer: the visitor's own build, else the Windows one. */
-  const another = $derived(download ?? downloadFor('windows'));
+  /** The first-run lines: the visitor's own build's, every build's when the system is not known. */
+  const firstRuns = $derived(
+    download !== null ? [download] : platform === 'unknown' ? COMPANION_DOWNLOADS : [],
+  );
   /** `setupCompanionBody` at its sentences: what it is, then the two how-to steps after the pairing one. */
   const [lead, ...rest] = addonCopy.setupCompanionBody.split(/(?<=\.)\s+(?=[A-Z])/);
   const howTo = [addonCopy.setupCompanionPair, ...rest];
-  const platformsLine = companionPlatformsLine(COMPANION_PLATFORMS);
   const capture = addonCopy.setupCompanionCapture;
 </script>
 
@@ -67,17 +68,16 @@
 >
   <div class="setup-body">
     <p data-testid="setup-companion-lead">{lead}</p>
-    {#if download !== null}
-      {#if platformsLine !== null}<p class="text-small text-muted" data-testid="setup-companion-platforms">
-          {platformsLine}
-        </p>{/if}
-      <p class="text-small text-muted" data-testid="setup-companion-first-run">{download.firstRun}</p>
-    {/if}
-    {#if companionDone && another !== null}
+    {#each firstRuns as build (build.asset)}
+      <p class="text-small text-muted" data-testid="setup-companion-first-run">
+        {firstRuns.length > 1 ? `${build.platform}: ${build.firstRun}` : build.firstRun}
+      </p>
+    {/each}
+    {#if companionDone && download !== null}
       <div class="setup-acts">
         <a
           class={LINK}
-          href={stepHref('download', another.asset) ?? '#'}
+          href={downloadHref(download.asset, release)}
           rel="noopener"
           data-testid="setup-download-another">{addonCopy.setupDownloadAnother} ›</a
         >
