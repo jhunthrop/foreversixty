@@ -18,11 +18,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalResources
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import gg.foreversixty.app.bis.BisModel
-import gg.foreversixty.app.bis.BisOwner
 import gg.foreversixty.app.bis.BisPhase
 import gg.foreversixty.app.bis.BisPickerContent
-import gg.foreversixty.app.bis.BisRoute
 import gg.foreversixty.app.bis.BisSelection
+import gg.foreversixty.app.bis.spec.BisSpecRoute
 import gg.foreversixty.app.bis.band
 import gg.foreversixty.app.designsystem.GameColors
 import gg.foreversixty.app.gear.WhereToGo
@@ -42,6 +41,8 @@ class GearDeps(
     val catalog: ItemCatalog,
     val homeCache: HomeCache,
     val client: ApiClient,
+    /** Battle.net sign-in, for the spec page's Sign in (a player not signed in). */
+    val signIn: () -> Unit = {},
 ) {
     suspend fun needs(guildId: Long, item: Int): ItemNeeds? =
         (client.send(ApiEndpoints.getGuildItemNeeds(guildId, item)) as? ApiResult.Success)?.data
@@ -137,13 +138,13 @@ private fun Picker(model: BisModel) {
     }
 }
 
-/** Signed out: the classes (mock `gear-out`); a class opens its list, the BiS screen with its picker. */
+/** Signed out: the classes (mock `gear-out`); a class pushes its list (mocks `bis-spec-*`). */
 @Composable
 private fun SignedOutGear(model: BisModel, deps: GearDeps, onSearch: (() -> Unit)?, selector: @Composable () -> Unit) {
     var browsing by rememberSaveable { mutableStateOf(false) }
     val state by model.state.collectAsStateWithLifecycle()
     if (browsing) {
-        BisRoute(model, deps.catalog, BisOwner(), onSearch, selector)
+        BisSpecRoute(model, deps.catalog, onBack = { browsing = false }, onSignIn = deps.signIn)
         return
     }
     val classes = state.context.classes.map { it.slug to it.name }.ifEmpty { DEFAULT_CLASSES }

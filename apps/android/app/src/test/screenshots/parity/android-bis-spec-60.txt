@@ -1,0 +1,175 @@
+Back to Gear
+Share
+Marksmanship Hunter
+Best in slot
+This set, simmed 7 nov
+1083.6 DPS
+Level 60 Night-elf · 51 talent points · level 63 unknown, 180 s · Raid-ready, Phase 1: 14 buffs, 8 debuffs and 6 consumables. · 3,000 runs · View ranking sim ›
+Open in simulator
+·
+Talents in planner
+Marksmanship · 60 · Alliance · Raid-ready
+Change ▾
+Spec
+Beast Mastery
+Marksmanship
+Survival
+Level
+20-29
+30-39
+40-49
+50-59
+60
+Faction
+Alliance
+Horde
+Profile
+Raid-ready
+Bare
+Race
+Night Elf
+Sources
+All sources
+16 of 17 slots have a pick at this level. Sign in to see them against your gear.
+By slot
+Where to go
+Hit to cap: 1.1% for specials, 8.1% for spells
+Legionite Glaive is a two-hander: the off hand stays empty.
+Head
+Level 56
+Black Dragonscale Helm
++21 Agi · +38 Int
+Crafted · Leatherworking
+Same
+next: −1.8 vs Lieutenant Commander's Chain Helm
+Neck
+Level 58
+Sentinel's Medallion
++15 Agi · +10 Sta
+Silverwing Sentinels reputation · Honored
+Same
+next: −1.8 vs Skibi's Pendant
+Shoulder
+Level 60
+Theramore Pauldrons
++27 Agi · +12 Sta
+Theramore Expeditionary Force reputation · Exalted
+Same
+next: −7.9 vs Field Marshal's Chain Spaulders
+Back
+Level 58
+Cape of the Black Baron
++15 Agi · +20 AP
+Baron Rivendare · Stratholme (58-60)
++4.0 DPS
+vs Shadow Prowler's Cloak
+Chest
+Level 56
+Dawn Armor
++37 Agi · +14 Crit
+Crafted · Leatherworking
+Same
+next: −26.3 vs Savage Gladiator Chain
+Wrist
+Level 60
+Forest Stalker's Bracers
++19 Agi · +11 Str
+Silverwing Sentinels reputation · Exalted
+Same
+next: −1.8 vs Knight-Captain's Chain Armguards
+Main hand
+Level 58
+Legionite Glaive
++16 Agi · +54 AP
+Crafted · Blacksmithing
+Same
+next: −1.0 vs Grand Marshal's Stave
+Off hand
+Nothing better yet
+Legionite Glaive is a two-hander; the off hand is taken.
+Ranged
+Level 58
+Eaglehorn Long Bow
++10 Agi · +4 Sta
+World drop (59-62) · BoE · on the AH
+Same
+next: −20.0 vs Hyper Deluxe Sniper Rifle Mk XVII
+Hands
+Level 60
+Theramore Gloves
++27 Agi · +11 Str
+Theramore Expeditionary Force reputation · Exalted
+Same
+next: −0.8 vs Mourning Handguards
+Waist
+Level 60
+Ranger's Belt
++24 Agi · +14 Int
+Vendor: Pix Xizzix
++4.1 DPS
+vs Marshal's Chain Girdle
+Legs
+Level 60
+Sentinel's Chain Leggings
++35 Agi · +26 Sta
+Vendor: Illiyana Moonblaze
++7.2 DPS
+vs Marshal's Chain Legguards
+Feet
+Level 54
+Beaststalker's Boots
++21 Agi · +9 Sta
+Nerub'enkan · Stratholme (58-60)
+Same
+No close alternative
+Ring
+Level 40
+Masons Fraternity Ring
++14 Agi · +5 Sta
+Quest: Divino-matic Rod · requires level 40
+Same
+No close alternative
+Ring
+Level 55
+Don Julio's Band
++10 Sta · +14 Crit
+Stormpike Guard reputation · Exalted
+Same
+next: −1.5 vs Cutthroat's Signet
+Trinket
+Devilsaur Eye
+Quest: The Green Drake · requires level 50
+Same
+No close alternative
+Trinket
+Level 50
+Frozen Heart of the Mountain
++7 Fire res · +7 Nature res
+Crafted · Enchanting
+Same
+next: −6.3 vs Heart of Wyrmthalak
+What to stack
+Stack agility, then crit rating, then intellect.
+Normalized to Agility = 1.00. Per point of stat, normalized to Agility = 1.00, with DPS per point and the sim error. Haste: 6.83 per 1%, not in the table because no item at this level range has it
+Agility
+1.00
+0.891 DPS per point
+Crit rating
+0.82
+0.728 DPS per point
+Intellect
+0.36
+0.323 DPS per point
+Ranged attack power
+0.30
+0.270 DPS per point
+Hit rating
+Not significant
+Spell power
+Not significant
+The Forever Sixty addon rates every item in your bags and tooltips with these weights. Use these weights in the addon ›
+Talents, rotation and stat priority for this spec: Marksmanship Hunter guide ›
+Home
+Raid
+Gear
+Activity

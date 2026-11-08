@@ -1,0 +1,171 @@
+Back to Gear
+Share
+Beast Mastery Hunter
+Best in slot
+This set, simmed 7 nov
+91.0 DPS
+Level 29 Night-elf · 11 talent points · level 23 unknown, 180 s · Bare character: no raid buffs, debuffs or consumables. · 3,000 runs
+Open in simulator
+·
+Talents in planner
+Beast Mastery · 20-29 · Alliance
+Change ▾
+Spec
+Beast Mastery
+Marksmanship
+Survival
+Level
+20-29
+30-39
+40-49
+50-59
+60
+Faction
+Alliance
+Horde
+Race
+Night Elf
+Sources
+Sources (7)
+14 of 17 slots have a pick at this level. Sign in to see them against your gear. Changes from 20 to 29: see 30 to 39 ›
+By slot
+Where to go
+Reputation above Friendly is off below level 60, so those slots are re-picked without it. Turn it on in Sources to include it.
+Hit to cap: 9% for specials, 16% for spells
+Impaling Harpoon is a two-hander: the off hand stays empty.
+Wailing Caverns
+4 pieces
+Shoulder
+Level 18
+Serpent's Shoulders
++7 Spi · +5 Agi
+Lady Anacondra · Wailing Caverns (15-24) · 40%
++0.1 DPS
+vs Magician's Mantle
+Back
+Level 18
+Glowing Lizardscale Cloak
++6 Agi · +2 Nature res
+Skum · Wailing Caverns (15-24) · 50%
++0.3 DPS
+vs Cape of the Brotherhood
+Hands
+Level 14
+Gloves of the Fang
++6 Agi · +4 Str
+Druid of the Fang · Wailing Caverns (15-24) · 2%
+Same
+next: −0.1 vs Trapper's Leather Gloves
+Legs
+Level 17
+Leggings of the Fang
++5 Str · +4 Sta
+Lord Cobrahn · Wailing Caverns (15-24) · 20%
+Same
+next: −0.3 vs Duty Bound Leggings
+The Deadmines
+3 pieces
+Waist
+Level 17
+Blackened Defias Belt
++18 AP
+Captain Greenskin · The Deadmines (17-26) · 30%
++0.1 DPS
+vs Trapper's Leather Belt
+Ring
+Level 17
+Lavishly Jeweled Ring
++2 Agi · +6 Int
+Gilnid · The Deadmines (17-26) · 45%
++1.1 DPS
+vs Volcanic Rock Ring
+Main hand
+Level 17
+Impaling Harpoon
++9 Agi · +5 Int
+Captain Greenskin · The Deadmines (17-26) · 30%
++0.4 DPS
+vs Bronze Dory
+Crafted · Leatherworking
+1 piece
+Head
+Level 20
+Brawler's Leather Hood
++10 Sta · +8 Agi
+Crafted · Leatherworking
++1.0 DPS
+vs Trapper's Leather Hood
+Silverwing Sentinels reputation
+2 pieces
+Neck
+Level 18
+Sentinel's Medallion
++6 Agi · +2 Sta
+Silverwing Sentinels reputation · Honored
++1.2 DPS
+vs Erudite's Amulet
+Ring
+Level 18
+Protector's Band
++4 Str · +4 Agi
+Silverwing Sentinels reputation · Honored
++0.8 DPS
+vs Volcanic Rock Ring
+Quest
+1 piece
+Chest
+Level 14
+Tunic of Westfall
++5 Sta · +11 Agi
+Quest: The Defias Brotherhood · requires level 14
++0.3 DPS
+vs Trapper's Leather Armor
+World / BoE
+3 pieces
+Wrist
+Level 19
+Forest Leather Bracers
++5 Agi
+World drop (20-26) · BoE · on the AH
++0.3 DPS
+vs Wolf Bracers
+Feet
+Level 19
+Feet of the Lynx
++8 Agi · +3 Str
+World drop (20-27) · BoE · on the AH
++0.3 DPS
+vs Trapper's Leather Boots
+Ranged
+Level 20
+Ranger Bow
++1 Agi
+World drop (21-28) · BoE · on the AH
++0.3 DPS
+vs Venomstrike
+What to stack
+Stack agility, then intellect, then ranged attack power.
+Normalized to Agility = 1.00. Per point of stat, normalized to Agility = 1.00, with DPS per point and the sim error. Haste: 1.40 per 1%, not in the table because no item at this level range has it
+Agility
+1.00
+0.316 DPS per point
+Intellect
+0.51
+0.162 DPS per point
+Ranged attack power
+0.32
+0.100 DPS per point
+Hit rating
+0.31
+0.097 DPS per point
+Crit rating
+0.21
+0.066 DPS per point
+Spell power
+Not significant
+The Forever Sixty addon rates every item in your bags and tooltips with these weights. Use these weights in the addon ›
+Talents, rotation and stat priority for this spec: Beast Mastery Hunter guide ›
+Home
+Raid
+Gear
+Activity
