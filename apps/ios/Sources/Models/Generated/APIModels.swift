@@ -418,6 +418,9 @@ public struct ApplicantCharacter: Codable, Sendable, Equatable {
     public let specName: String?
     public let level: Int?
     public let itemLevel: Int?
+    /// Battle.net's race name ("Dwarf"), else the export's race; null when neither says.
+    public let race: String?
+    public let faction: String?
     public let bestParse: ApplicantBestParse?
 
     public init(
@@ -428,6 +431,8 @@ public struct ApplicantCharacter: Codable, Sendable, Equatable {
         specName: String? = nil,
         level: Int? = nil,
         itemLevel: Int? = nil,
+        race: String? = nil,
+        faction: String? = nil,
         bestParse: ApplicantBestParse? = nil
     ) {
         self.characterKey = characterKey
@@ -437,6 +442,8 @@ public struct ApplicantCharacter: Codable, Sendable, Equatable {
         self.specName = specName
         self.level = level
         self.itemLevel = itemLevel
+        self.race = race
+        self.faction = faction
         self.bestParse = bestParse
     }
 
@@ -448,6 +455,8 @@ public struct ApplicantCharacter: Codable, Sendable, Equatable {
         case specName
         case level
         case itemLevel
+        case race
+        case faction
         case bestParse
     }
 }
@@ -5660,6 +5669,8 @@ public struct NotificationSettings: Codable, Sendable, Equatable {
     /// An IANA name.
     public let timeZone: String
     public let quietHours: QuietHours
+    /// The opt-in to Discord DMs from the guild's officers (D16; channel mentions are the default): only when true does the officers' not-answered list carry a DM link. Off by default. Always sent; optional for older bodies.
+    public let officerDms: Bool?
     /// The raid-day reminder, "HH:MM" in time_zone (default "15:00"): on a raid's day in the player's zone, at this time, raid.signup_nudge goes to a member who has not answered. A reminder at or after the start goes two hours before it. Always sent; optional so an older body still decodes.
     public let raidReminder: String?
     public let events: [NotificationEvent]
@@ -5667,11 +5678,13 @@ public struct NotificationSettings: Codable, Sendable, Equatable {
     public init(
         timeZone: String,
         quietHours: QuietHours,
+        officerDms: Bool? = nil,
         raidReminder: String? = nil,
         events: [NotificationEvent] = []
     ) {
         self.timeZone = timeZone
         self.quietHours = quietHours
+        self.officerDms = officerDms
         self.raidReminder = raidReminder
         self.events = events
     }
@@ -5680,6 +5693,7 @@ public struct NotificationSettings: Codable, Sendable, Equatable {
         let c = try decoder.container(keyedBy: CodingKeys.self)
         timeZone = try c.decode(String.self, forKey: .timeZone)
         quietHours = try c.decode(QuietHours.self, forKey: .quietHours)
+        officerDms = try c.decodeIfPresent(Bool.self, forKey: .officerDms)
         raidReminder = try c.decodeIfPresent(String.self, forKey: .raidReminder)
         events = try c.decodeIfPresent([NotificationEvent].self, forKey: .events) ?? []
     }
@@ -5691,17 +5705,20 @@ public struct NotificationsPatch: Codable, Sendable, Equatable {
     public let quietHours: QuietHours?
     /// "HH:MM" from 00:00 to 23:45 on a 15-minute step; anything else is 422 with fields.raid_reminder.
     public let raidReminder: String?
+    public let officerDms: Bool?
     public let events: [NotificationChoice]?
 
     public init(
         timeZone: String? = nil,
         quietHours: QuietHours? = nil,
         raidReminder: String? = nil,
+        officerDms: Bool? = nil,
         events: [NotificationChoice]? = nil
     ) {
         self.timeZone = timeZone
         self.quietHours = quietHours
         self.raidReminder = raidReminder
+        self.officerDms = officerDms
         self.events = events
     }
 }
@@ -7061,6 +7078,8 @@ public struct RaidNotSignedRaider: Codable, Sendable, Equatable {
     public let discordLinked: Bool
     /// The row's sign-up role, from its roster group. Always sent; optional for older bodies.
     public let role: String?
+    /// https://discord.com/users/<id>, where Message opens a DM, only when the member opted into officer DMs (notification settings officer_dms) and linked Discord; null otherwise. No Discord id is ever sent for a member who did not opt in.
+    public let discordDmUrl: String?
     /// The account's answer for the guild's raid of the week before (its latest raid that started in the 8 days before this one, cancelled aside; the best answer across its characters), missed when it gave none; null when there was no such raid.
     public let lastWeek: String?
 
@@ -7071,6 +7090,7 @@ public struct RaidNotSignedRaider: Codable, Sendable, Equatable {
         accountKey: String,
         discordLinked: Bool,
         role: String? = nil,
+        discordDmUrl: String? = nil,
         lastWeek: String? = nil
     ) {
         self.characterKey = characterKey
@@ -7079,6 +7099,7 @@ public struct RaidNotSignedRaider: Codable, Sendable, Equatable {
         self.accountKey = accountKey
         self.discordLinked = discordLinked
         self.role = role
+        self.discordDmUrl = discordDmUrl
         self.lastWeek = lastWeek
     }
 
@@ -7089,6 +7110,7 @@ public struct RaidNotSignedRaider: Codable, Sendable, Equatable {
         case accountKey
         case discordLinked
         case role
+        case discordDmUrl
         case lastWeek
     }
 }
@@ -7146,6 +7168,48 @@ public struct RaidPatch: Codable, Sendable, Equatable {
         self.timezone = timezone
         self.postToDiscord = postToDiscord
         self.remindDayBefore = remindDayBefore
+    }
+}
+
+public struct RaidPingRequest: Codable, Sendable, Equatable {
+    public let role: String?
+
+    public init(
+        role: String? = nil
+    ) {
+        self.role = role
+    }
+}
+
+public struct RaidPingResult: Codable, Sendable, Equatable {
+    /// False when no non-signer has linked Discord (nothing posted
+    public let posted: Bool
+    public let mentioned: Int
+    public let noDiscord: Int
+    public let noDiscordNames: [String]
+    public let nextAllowedAt: Date?
+
+    public init(
+        posted: Bool,
+        mentioned: Int,
+        noDiscord: Int,
+        noDiscordNames: [String] = [],
+        nextAllowedAt: Date? = nil
+    ) {
+        self.posted = posted
+        self.mentioned = mentioned
+        self.noDiscord = noDiscord
+        self.noDiscordNames = noDiscordNames
+        self.nextAllowedAt = nextAllowedAt
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        posted = try c.decode(Bool.self, forKey: .posted)
+        mentioned = try c.decode(Int.self, forKey: .mentioned)
+        noDiscord = try c.decode(Int.self, forKey: .noDiscord)
+        noDiscordNames = try c.decodeIfPresent([String].self, forKey: .noDiscordNames) ?? []
+        nextAllowedAt = try c.decodeIfPresent(Date.self, forKey: .nextAllowedAt)
     }
 }
 

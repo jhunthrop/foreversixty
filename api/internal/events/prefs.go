@@ -71,7 +71,9 @@ type Prefs struct {
 	Quiet    QuietHours
 	// RaidReminder is the raid-day reminder, minutes after local midnight in TimeZone.
 	RaidReminder int
-	Overrides    map[PrefKey]bool
+	// OfficerDMs is the opt-in to Discord DMs from the guild's officers (D16), off by default.
+	OfficerDMs bool
+	Overrides  map[PrefKey]bool
 }
 
 // Allows reports whether kind goes out on channel: the player's override, else the

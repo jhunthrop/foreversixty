@@ -57,6 +57,8 @@ import gg.foreversixty.app.model.RaidBadge
 import gg.foreversixty.app.model.RaidCancel
 import gg.foreversixty.app.model.RaidNightSummary
 import gg.foreversixty.app.model.RaidPatch
+import gg.foreversixty.app.model.RaidPingRequest
+import gg.foreversixty.app.model.RaidPingResult
 import gg.foreversixty.app.model.RaidView
 import gg.foreversixty.app.model.RankedEncounters
 import gg.foreversixty.app.model.RankingPercentile
@@ -272,6 +274,10 @@ object ApiEndpoints {
     /** GET /v1/me/raid-nights/{raid}: Your raid night, before the pull and after the log */
     fun getRaidNight(raid: Long): Endpoint<RaidNightSummary> =
         Endpoint(HttpMethod.Get, "/v1/me/raid-nights/$raid", RaidNightSummary.serializer())
+
+    /** POST /v1/guilds/{id}/raids/{raid}/ping: An officer pings the raid's non-signers on Discord */
+    fun pingGuildRaid(id: Long, raid: Long, body: RaidPingRequest): Endpoint<RaidPingResult> =
+        Endpoint(HttpMethod.Post, "/v1/guilds/$id/raids/$raid/ping", RaidPingResult.serializer(), body = ApiJson.encodeToString(RaidPingRequest.serializer(), body))
 
     /** GET /v1/guilds/{id}/raid-badge: The Raid tab's badge (verified members) */
     fun getGuildRaidBadge(id: Long): Endpoint<RaidBadge> =

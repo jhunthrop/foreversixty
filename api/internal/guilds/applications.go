@@ -17,6 +17,7 @@ import (
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgconn"
 
+	"github.com/jhunthrop/foreversixty/api/internal/fs1"
 	"github.com/jhunthrop/foreversixty/api/internal/rating/presence"
 )
 
@@ -76,6 +77,10 @@ type ApplicantCharacter struct {
 	Level        *int       `json:"level"`
 	ItemLevel    *int       `json:"item_level"`
 	BestParse    *BestParse `json:"best_parse"`
+	// Race and Faction are the character's from Battle.net, else its export's race; null when
+	// neither says.
+	Race    *string `json:"race"`
+	Faction *string `json:"faction"`
 }
 
 // Application is one application as its applicant reads it.
@@ -259,9 +264,11 @@ func (s *Store) applicantCharacters(ctx context.Context, keys []string) (map[str
 	}
 	rows, err := s.Pool.Query(ctx, `
 		select c.key, c.name, coalesce(nullif(c.class, ''), fm.class), c.level,
-		       coalesce(c.equipped_item_level, fm.ilvl), nullif(fm.spec, ''), coalesce(fm.role, '')
+		       coalesce(c.equipped_item_level, fm.ilvl), nullif(fm.spec, ''), coalesce(fm.role, ''),
+		       nullif(c.race, ''), nullif(c.faction, ''), ae.export
 		from characters c
 		left join lateral (`+newestEvidenceFight("c.key")+`) fm on true
+		left join addon_exports ae on ae.character_key = c.key
 		where c.key = any($1)`, keys)
 	if err != nil {
 		return nil, fmt.Errorf("guilds: applicant characters: %w", err)
@@ -270,9 +277,12 @@ func (s *Store) applicantCharacters(ctx context.Context, keys []string) (map[str
 	for rows.Next() {
 		var c ApplicantCharacter
 		var role string
-		if err := rows.Scan(&c.CharacterKey, &c.Name, &c.Class, &c.Level, &c.ItemLevel, &c.Spec, &role); err != nil {
+		var export *string
+		if err := rows.Scan(&c.CharacterKey, &c.Name, &c.Class, &c.Level, &c.ItemLevel, &c.Spec, &role,
+			&c.Race, &c.Faction, &export); err != nil {
 			return nil, fmt.Errorf("guilds: applicant characters: %w", err)
 		}
+		s.raceFromExport(&c, export)
 		if sp, ok := resolveSpec(c.Class, c.Spec, role); ok {
 			c.SpecName = &sp.Name
 		}
@@ -282,6 +292,37 @@ func (s *Store) applicantCharacters(ctx context.Context, keys []string) (map[str
 		return nil, err
 	}
 	return s.withBestParses(ctx, keys, out)
+}
+
+// raceFromExport fills a missing race and faction from the export's race.
+func (s *Store) raceFromExport(c *ApplicantCharacter, export *string) {
+	if export == nil || (c.Race != nil && c.Faction != nil) {
+		return
+	}
+	d, ok := fs1.Decode(*export)
+	if !ok || d.RaceSlug == "" {
+		return
+	}
+	if c.Race == nil {
+		race := raceWords(d.RaceSlug)
+		c.Race = &race
+	}
+	if c.Faction == nil {
+		if f, ok := s.factionForRace(d.RaceSlug); ok {
+			c.Faction = &f
+		}
+	}
+}
+
+// raceWords is a race slug as a name: "night-elf" reads "Night Elf".
+func raceWords(slug string) string {
+	parts := strings.Split(slug, "-")
+	for i, p := range parts {
+		if p != "" {
+			parts[i] = strings.ToUpper(p[:1]) + p[1:]
+		}
+	}
+	return strings.Join(parts, " ")
 }
 
 // newestEvidenceFight is the newest ranked fight of the character keyRef names in a public,

@@ -372,6 +372,13 @@ public extension Endpoint where Response == RaidNightSummary {
     }
 }
 
+public extension Endpoint where Response == RaidPingResult {
+    /// POST /v1/guilds/{id}/raids/{raid}/ping: An officer pings the raid's non-signers on Discord
+    static func pingGuildRaid(id: Int64, raid: Int64, _ body: RaidPingRequest) throws(APIError) -> Endpoint {
+        try .json(.post, "/v1/guilds/\(id)/raids/\(raid)/ping", body: body)
+    }
+}
+
 public extension Endpoint where Response == RaidBadge {
     /// GET /v1/guilds/{id}/raid-badge: The Raid tab's badge (verified members)
     static func getGuildRaidBadge(id: Int64) -> Endpoint {

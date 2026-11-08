@@ -2405,6 +2405,12 @@ components:
         account_key: { type: string, description: 'The account handle, "u:42".' }
         discord_linked: { type: boolean, description: True when the account linked Discord, so a ping mentions it. }
         role: { type: string, enum: [tank, healer, dps], description: "The row's sign-up role, from its roster group. Always sent; optional for older bodies." }
+        discord_dm_url:
+          type: [string, "null"]
+          description: >-
+            https://discord.com/users/<id>, where Message opens a DM, only when the member opted
+            into officer DMs (notification settings officer_dms) and linked Discord; null
+            otherwise. No Discord id is ever sent for a member who did not opt in.
         last_week:
           type: [string, "null"]
           enum: [in, late, bench, out, missed, null]
@@ -4153,6 +4159,12 @@ components:
       properties:
         time_zone: { type: string, description: An IANA name. }
         quiet_hours: { $ref: '#/components/schemas/QuietHours' }
+        officer_dms:
+          type: boolean
+          description: >-
+            The opt-in to Discord DMs from the guild's officers (D16; channel mentions are the
+            default): only when true does the officers' not-answered list carry a DM link. Off by
+            default. Always sent; optional for older bodies.
         raid_reminder:
           type: string
           description: >-
@@ -4197,6 +4209,7 @@ components:
         time_zone: { type: string }
         quiet_hours: { $ref: '#/components/schemas/QuietHours' }
         raid_reminder: { type: string, description: '"HH:MM" from 00:00 to 23:45 on a 15-minute step; anything else is 422 with fields.raid_reminder.' }
+        officer_dms: { type: boolean }
         events:
           type: array
           items:
@@ -5451,6 +5464,8 @@ components:
         spec_name: { type: [string, "null"] }
         level: { type: [integer, "null"] }
         item_level: { type: [integer, "null"] }
+        race: { type: [string, "null"], description: 'Battle.net''s race name ("Dwarf"), else the export''s race; null when neither says.' }
+        faction: { type: [string, "null"], enum: [alliance, horde, null] }
         best_parse:
           oneOf:
             - type: object
@@ -8494,14 +8509,30 @@ paths:
       description: >-
         The bot posts one message, a reply under the raid's live post (else in its channel),
         mentioning the not_signed_raiders who linked Discord: the raid's title, its start as
-        <t:unix:F>, and the raid page's link. No DMs, no other pings (allowed_mentions names only
-        them). One ping per raid per 6 hours; a ping with no one to mention posts nothing and
-        spends nothing. Verified officer, the plan, claim not frozen, the raid planned or locked.
+        <t:unix:F>, and the raid page's link. An optional body {"role": "tank"|"healer"|"dps"}
+        mentions only the not-signed raiders of that role ("Mention the 2 healers"); no body
+        mentions them all (422 invalid, field role, for any other role). No DMs, no other pings
+        (allowed_mentions names only them). One ping per raid per 6 hours whatever the role; a
+        ping with no one to mention posts nothing and spends nothing. Verified officer, the plan,
+        claim not frozen, the raid planned or locked.
       operationId: pingGuildRaid
+      tags: [app]
       parameters:
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
         - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
         - { name: raid, in: path, required: true, schema: { type: integer, format: int64 } }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              title: RaidPingRequest
+              properties:
+                role: { type: string, enum: [tank, healer, dps] }
       responses:
+        '426': { $ref: '#/components/responses/UpdateRequired' }
         '200':
           description: "What was posted"
           content:

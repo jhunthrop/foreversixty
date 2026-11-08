@@ -2,12 +2,17 @@
 //
 // POST /v1/guilds/{id}/raids/{raid}/ping (spec 2026-11-05-web-layout §7.1 "Ping on Discord",
 // D16): the bot posts one message in the raid's channel @mentioning the raiders who have not
-// answered and have linked Discord. No DMs. One ping per raid per six hours (pingEvery).
+// answered and have linked Discord. An optional body {"role": "tank"|"healer"|"dps"} mentions
+// only the not-signed raiders of that role ("Mention the 2 healers"); no body mentions them all.
+// No DMs. One ping per raid per six hours (pingEvery), whatever the role.
 package guilds
 
 import (
 	"context"
+	"encoding/json"
+	"errors"
 	"fmt"
+	"io"
 	"net/http"
 	"regexp"
 	"strconv"
@@ -72,6 +77,41 @@ func splitPingTargets(rows []NotSignedRaider) PingResult {
 	return out
 }
 
+// pingRequest is the ping's optional body.
+type pingRequest struct {
+	Role string `json:"role"`
+}
+
+// pingRole reads the optional role ("" for every role); it answers 400 for a body that is not
+// JSON and 422 for an unknown role, and ok is false then.
+func pingRole(w http.ResponseWriter, r *http.Request) (string, bool) {
+	var req pingRequest
+	if err := json.NewDecoder(http.MaxBytesReader(w, r.Body, maxJSONBody)).Decode(&req); err != nil && !errors.Is(err, io.EOF) {
+		httpx.WriteError(w, r, http.StatusBadRequest, "invalid", "body must be JSON", nil)
+		return "", false
+	}
+	switch req.Role {
+	case "", RoleTank, RoleHealer, RoleDPS:
+		return req.Role, true
+	}
+	writeInvalid(w, r, map[string]string{"role": "Pick tank, healer or dps."})
+	return "", false
+}
+
+// rowsOfRole is the rows of role; every row for "".
+func rowsOfRole(rows []NotSignedRaider, role string) []NotSignedRaider {
+	if role == "" {
+		return rows
+	}
+	out := []NotSignedRaider{}
+	for _, r := range rows {
+		if r.Role == role {
+			out = append(out, r)
+		}
+	}
+	return out
+}
+
 // pingContent is the message: the raid, its start in each reader's own time, the mentions and
 // the link to sign up.
 func pingContent(title string, startsAt time.Time, raidURL string, ids []string) string {
@@ -97,13 +137,17 @@ func (s *Service) pingRaid(w http.ResponseWriter, r *http.Request) {
 		httpx.WriteError(w, r, http.StatusConflict, "discord_not_connected", pingNotConnected, nil)
 		return
 	}
+	role, ok := pingRole(w, r)
+	if !ok {
+		return
+	}
 	actor := auth.ActorFrom(r.Context()).UserID
 	view, err := s.raidViewOf(r.Context(), guildID, actor, raid)
 	if err != nil {
 		s.fail(w, r, "raid_ping", err, raidFailMessage)
 		return
 	}
-	res := splitPingTargets(*view.NotSignedRaiders)
+	res := splitPingTargets(rowsOfRole(*view.NotSignedRaiders, role))
 	if res.Mentioned == 0 {
 		httpx.WriteOK(w, r, http.StatusOK, res)
 		return
