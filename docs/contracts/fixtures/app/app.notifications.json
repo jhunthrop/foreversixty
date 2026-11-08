@@ -7,6 +7,7 @@
       "start": "22:00",
       "end": "08:00"
     },
+    "officer_dms": false,
     "raid_reminder": "15:00",
     "events": [
       {

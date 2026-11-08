@@ -31,7 +31,12 @@
         "spec": "Elemental",
         "role": "dps"
       },
-      "can_sign_up": true
+      "can_sign_up": true,
+      "zone_icon": "inv_misc_head_dragon_black",
+      "in": 24,
+      "late": 0,
+      "tanks": 2,
+      "healers": 5
     },
     "last_raid": {
       "zone_name": "Onyxia's Lair",
@@ -52,7 +57,8 @@
             "name": "Knowledge of the Timbermaw",
             "quality": 4,
             "icon": "inv_belt_09",
-            "item_level": 65
+            "item_level": 65,
+            "source_line": "Blacksmithing"
           },
           "gain": 5.3
         },
@@ -64,7 +70,8 @@
             "name": "Dryad's Wrist Bindings",
             "quality": 4,
             "icon": "inv_bracer_13",
-            "item_level": 45
+            "item_level": 45,
+            "source_line": "Blacksmithing"
           },
           "gain": 4.0
         },
@@ -76,7 +83,8 @@
             "name": "Arcanoweave Cloak",
             "quality": 3,
             "icon": "inv_misc_cape_05",
-            "item_level": 65
+            "item_level": 65,
+            "source_line": "Blacksmithing"
           },
           "gain": 3.1
         }
@@ -84,7 +92,12 @@
     },
     "live": {
       "sim_runs_running": 0
-    }
+    },
+    "first_raids_zones": [
+      "Barrow Deeps",
+      "Hyjal Summit",
+      "Onyxia's Lair"
+    ]
   },
   "error": null,
   "request_id": "9f2c41d07ab3e655"

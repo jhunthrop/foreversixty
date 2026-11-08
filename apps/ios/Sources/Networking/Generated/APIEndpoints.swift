@@ -372,6 +372,13 @@ public extension Endpoint where Response == RaidNightSummary {
     }
 }
 
+public extension Endpoint where Response == RaidPingResult {
+    /// POST /v1/guilds/{id}/raids/{raid}/ping: An officer pings the raid's non-signers on Discord
+    static func pingGuildRaid(id: Int64, raid: Int64, _ body: RaidPingRequest) throws(APIError) -> Endpoint {
+        try .json(.post, "/v1/guilds/\(id)/raids/\(raid)/ping", body: body)
+    }
+}
+
 public extension Endpoint where Response == RaidBadge {
     /// GET /v1/guilds/{id}/raid-badge: The Raid tab's badge (verified members)
     static func getGuildRaidBadge(id: Int64) -> Endpoint {
@@ -446,6 +453,13 @@ public extension Endpoint where Response == Widget {
         Endpoint(method: .get, path: "/v1/me/widget", query: [
             character.map { URLQueryItem(name: "character", value: "\($0)") },
         ].compactMap { $0 })
+    }
+}
+
+public extension Endpoint where Response == LiveStartTokenStored {
+    /// POST /v1/me/live-activities/start-token: Store the app install's push-to-start token (APP_WIDGETS)
+    static func storeLiveStartToken(_ body: LiveStartTokenRequest) throws(APIError) -> Endpoint {
+        try .json(.post, "/v1/me/live-activities/start-token", body: body)
     }
 }
 
@@ -654,6 +668,7 @@ public enum ContractRoutes {
         FixtureRoute(.post, "/v1/me/push-tokens", fixture: "app.push-tokens.register", status: 201),
         FixtureRoute(.delete, "/v1/me/push-tokens/{token}", fixture: nil, status: 204),
         FixtureRoute(.get, "/v1/me/widget", fixture: "widget.get", status: 200),
+        FixtureRoute(.post, "/v1/me/live-activities/start-token", fixture: "live.start-token", status: 200),
         FixtureRoute(.post, "/v1/me/live-activities", fixture: "live.register", status: 201),
         FixtureRoute(.delete, "/v1/me/live-activities/{id}", fixture: nil, status: 204),
         FixtureRoute(.get, "/v1/me/calendar-feed", fixture: "calendar.feed", status: 200),

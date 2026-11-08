@@ -177,6 +177,9 @@ data class ApplicantCharacter(
     @SerialName("spec_name") val specName: String? = null,
     @SerialName("level") val level: Int? = null,
     @SerialName("item_level") val itemLevel: Int? = null,
+    /** Battle.net's race name ("Dwarf"), else the export's race; null when neither says. */
+    @SerialName("race") val race: String? = null,
+    @SerialName("faction") val faction: String? = null,
     @SerialName("best_parse") val bestParse: ApplicantBestParse? = null,
 )
 
@@ -1817,6 +1820,20 @@ data class LiveActivityRequest(
     @SerialName("object_id") val objectId: String,
 )
 
+/** POST /v1/me/live-activities/start-token: the app install's push-to-start token (iOS ActivityKit; the FCM registration token on Android), one per install and kind, replaced on each call. */
+@Serializable
+data class LiveStartTokenRequest(
+    @SerialName("platform") val platform: String,
+    @SerialName("kind") val kind: String,
+    @SerialName("token") val token: String,
+)
+
+@Serializable
+data class LiveStartTokenStored(
+    @SerialName("kind") val kind: String,
+    @SerialName("platform") val platform: String,
+)
+
 @Serializable
 data class LoggingCharacter(
     @SerialName("key") val key: String,
@@ -2124,6 +2141,8 @@ data class NotificationSettings(
     /** An IANA name. */
     @SerialName("time_zone") val timeZone: String,
     @SerialName("quiet_hours") val quietHours: QuietHours,
+    /** The opt-in to Discord DMs from the guild's officers (D16; channel mentions are the default): only when true does the officers' not-answered list carry a DM link. Off by default. Always sent; optional for older bodies. */
+    @SerialName("officer_dms") val officerDms: Boolean? = null,
     /** The raid-day reminder, "HH:MM" in time_zone (default "15:00"): on a raid's day in the player's zone, at this time, raid.signup_nudge goes to a member who has not answered. A reminder at or after the start goes two hours before it. Always sent; optional so an older body still decodes. */
     @SerialName("raid_reminder") val raidReminder: String? = null,
     @SerialName("events") val events: List<NotificationEvent> = emptyList(),
@@ -2136,6 +2155,7 @@ data class NotificationsPatch(
     @SerialName("quiet_hours") val quietHours: QuietHours? = null,
     /** "HH:MM" from 00:00 to 23:45 on a 15-minute step; anything else is 422 with fields.raid_reminder. */
     @SerialName("raid_reminder") val raidReminder: String? = null,
+    @SerialName("officer_dms") val officerDms: Boolean? = null,
     @SerialName("events") val events: List<NotificationChoice>? = null,
 )
 
@@ -2646,6 +2666,8 @@ data class RaidNotSignedRaider(
     @SerialName("discord_linked") val discordLinked: Boolean,
     /** The row's sign-up role, from its roster group. Always sent; optional for older bodies. */
     @SerialName("role") val role: String? = null,
+    /** https://discord.com/users/<id>, where Message opens a DM, only when the member opted into officer DMs (notification settings officer_dms) and linked Discord; null otherwise. No Discord id is ever sent for a member who did not opt in. */
+    @SerialName("discord_dm_url") val discordDmUrl: String? = null,
     /** The account's answer for the guild's raid of the week before (its latest raid that started in the 8 days before this one, cancelled aside; the best answer across its characters), missed when it gave none; null when there was no such raid. */
     @SerialName("last_week") val lastWeek: String? = null,
 )
@@ -2675,9 +2697,28 @@ data class RaidPatch(
 )
 
 @Serializable
+data class RaidPingRequest(
+    @SerialName("role") val role: String? = null,
+)
+
+@Serializable
+data class RaidPingResult(
+    /** False when no non-signer has linked Discord (nothing posted */
+    @SerialName("posted") val posted: Boolean,
+    /** How many the message mentioned ("Mentioned 2 healers"). */
+    @SerialName("mentioned") val mentioned: Int,
+    @SerialName("no_discord") val noDiscord: Int,
+    @SerialName("no_discord_names") val noDiscordNames: List<String> = emptyList(),
+    /** When the raiders this ping mentioned may be mentioned again. */
+    @SerialName("next_allowed_at") val nextAllowedAt: String? = null,
+    /** Linked raiders left out because a ping mentioned them for this raid in the last 6 hours. Always sent; optional for older bodies. */
+    @SerialName("recently_mentioned") val recentlyMentioned: Int? = null,
+)
+
+@Serializable
 data class RaidPingState(
     @SerialName("last_pinged_at") val lastPingedAt: String? = null,
-    /** last_pinged_at plus 6 hours; null before the first ping. */
+    /** last_pinged_at plus 6 hours, when the raiders the last ping mentioned may be mentioned again (others may be pinged any time); null before the first ping. */
     @SerialName("next_allowed_at") val nextAllowedAt: String? = null,
 )
 
@@ -3548,6 +3589,8 @@ data class Widget(
     @SerialName("generated_at") val generatedAt: String,
     /** The day the first raids open (dates.json role raids): the no-guild widget's countdown (ruling R13). The API always sends it; optional so a snapshot an older build cached still decodes. */
     @SerialName("first_raids_at") val firstRaidsAt: String? = null,
+    /** The first raids' names in the countdown's order (Barrow Deeps, Hyjal Summit, Onyxia's Lair). Always sent; optional for older snapshots. */
+    @SerialName("first_raids_zones") val firstRaidsZones: List<String>? = null,
     /** null for an account with no characters. */
     @SerialName("character") val character: WidgetCharacter? = null,
     /** null when the character is on no guild's roster (`No guild yet`). */
@@ -3613,6 +3656,16 @@ data class WidgetNextRaid(
     @SerialName("my") val my: WidgetMine,
     /** The character may answer In, Late or Out now: open, not ended, verified. */
     @SerialName("can_sign_up") val canSignUp: Boolean,
+    /** The zone's icon, a name under /data/{build}/icons. Always sent; optional for older snapshots. */
+    @SerialName("zone_icon") val zoneIcon: String? = null,
+    /** Signed In. */
+    @SerialName("in") val inCount: Int? = null,
+    /** Signed Late. */
+    @SerialName("late") val late: Int? = null,
+    /** Tanks signed In. */
+    @SerialName("tanks") val tanks: Int? = null,
+    /** Healers signed In. */
+    @SerialName("healers") val healers: Int? = null,
 )
 
 @Serializable
@@ -3622,6 +3675,8 @@ data class WidgetUpgradePick(
     @SerialName("quality") val quality: Int,
     @SerialName("icon") val icon: String,
     @SerialName("item_level") val itemLevel: Int,
+    /** Where it comes from, Home's HomePick source_line. Always sent; optional for older snapshots. */
+    @SerialName("source_line") val sourceLine: String? = null,
 )
 
 @Serializable

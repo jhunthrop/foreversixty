@@ -43,6 +43,8 @@ import gg.foreversixty.app.model.ItemsFile
 import gg.foreversixty.app.model.KeyDate
 import gg.foreversixty.app.model.LiveActivityRegistered
 import gg.foreversixty.app.model.LiveActivityRequest
+import gg.foreversixty.app.model.LiveStartTokenRequest
+import gg.foreversixty.app.model.LiveStartTokenStored
 import gg.foreversixty.app.model.LootFile
 import gg.foreversixty.app.model.Me
 import gg.foreversixty.app.model.MePatch
@@ -57,6 +59,8 @@ import gg.foreversixty.app.model.RaidBadge
 import gg.foreversixty.app.model.RaidCancel
 import gg.foreversixty.app.model.RaidNightSummary
 import gg.foreversixty.app.model.RaidPatch
+import gg.foreversixty.app.model.RaidPingRequest
+import gg.foreversixty.app.model.RaidPingResult
 import gg.foreversixty.app.model.RaidView
 import gg.foreversixty.app.model.RankedEncounters
 import gg.foreversixty.app.model.RankingPercentile
@@ -273,6 +277,10 @@ object ApiEndpoints {
     fun getRaidNight(raid: Long): Endpoint<RaidNightSummary> =
         Endpoint(HttpMethod.Get, "/v1/me/raid-nights/$raid", RaidNightSummary.serializer())
 
+    /** POST /v1/guilds/{id}/raids/{raid}/ping: An officer pings the raid's non-signers on Discord */
+    fun pingGuildRaid(id: Long, raid: Long, body: RaidPingRequest): Endpoint<RaidPingResult> =
+        Endpoint(HttpMethod.Post, "/v1/guilds/$id/raids/$raid/ping", RaidPingResult.serializer(), body = ApiJson.encodeToString(RaidPingRequest.serializer(), body))
+
     /** GET /v1/guilds/{id}/raid-badge: The Raid tab's badge (verified members) */
     fun getGuildRaidBadge(id: Long): Endpoint<RaidBadge> =
         Endpoint(HttpMethod.Get, "/v1/guilds/$id/raid-badge", RaidBadge.serializer())
@@ -320,6 +328,10 @@ object ApiEndpoints {
     /** GET /v1/me/widget: The home-screen and lock-screen snapshot (dark, APP_WIDGETS) */
     fun getWidget(character: String? = null): Endpoint<Widget> =
         Endpoint(HttpMethod.Get, "/v1/me/widget", Widget.serializer(), query = listOfNotNull(character?.let { "character" to it }))
+
+    /** POST /v1/me/live-activities/start-token: Store the app install's push-to-start token (APP_WIDGETS) */
+    fun storeLiveStartToken(body: LiveStartTokenRequest): Endpoint<LiveStartTokenStored> =
+        Endpoint(HttpMethod.Post, "/v1/me/live-activities/start-token", LiveStartTokenStored.serializer(), body = ApiJson.encodeToString(LiveStartTokenRequest.serializer(), body))
 
     /** POST /v1/me/live-activities: Keep a Live Activity or ongoing notification current (dark, APP_WIDGETS) */
     fun registerLiveActivity(body: LiveActivityRequest): Endpoint<LiveActivityRegistered> =
@@ -481,6 +493,7 @@ object ContractRoutes {
         FixtureRoute(HttpMethod.Post, "/v1/me/push-tokens", "app.push-tokens.register", HttpStatusCode.fromValue(201)),
         FixtureRoute(HttpMethod.Delete, "/v1/me/push-tokens/{token}", null, HttpStatusCode.fromValue(204)),
         FixtureRoute(HttpMethod.Get, "/v1/me/widget", "widget.get", HttpStatusCode.fromValue(200)),
+        FixtureRoute(HttpMethod.Post, "/v1/me/live-activities/start-token", "live.start-token", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Post, "/v1/me/live-activities", "live.register", HttpStatusCode.fromValue(201)),
         FixtureRoute(HttpMethod.Delete, "/v1/me/live-activities/{id}", null, HttpStatusCode.fromValue(204)),
         FixtureRoute(HttpMethod.Get, "/v1/me/calendar-feed", "calendar.feed", HttpStatusCode.fromValue(200)),

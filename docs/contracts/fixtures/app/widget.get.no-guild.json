@@ -22,7 +22,12 @@
     },
     "live": {
       "sim_runs_running": 0
-    }
+    },
+    "first_raids_zones": [
+      "Barrow Deeps",
+      "Hyjal Summit",
+      "Onyxia's Lair"
+    ]
   },
   "error": null,
   "request_id": "9f2c41d07ab3e655"
