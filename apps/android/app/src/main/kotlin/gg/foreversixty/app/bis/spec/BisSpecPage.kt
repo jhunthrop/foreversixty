@@ -155,8 +155,7 @@ private fun Summary(summary: BisSpecSummary, view: BisSpecView, actions: BisSpec
 @Composable
 private fun Notes(notes: List<String>) {
     DpColumn(Modifier.fillMaxWidth().parityRegion(ParityRegion.NOTES), spacing = FsSpace.space2) {
-        // 2 short of the column (the mock's note wraps a word earlier on the Linux renderer the region files come from).
-        notes.forEach { Text(it, style = FsType.small, color = FsColor.muted, modifier = Modifier.padding(end = NOTE_INSET)) }
+        notes.forEach { Text(it, style = FsType.small, color = FsColor.muted) }
     }
 }
 
@@ -184,7 +183,6 @@ private fun figure(value: String, unit: String): AnnotatedString = buildAnnotate
 private const val DOT = " · "
 private const val SIGN_IN = "sign-in"
 private val FIGURE_BOX = 49.dp
-private val NOTE_INSET = 2.dp
 private val LINKS_HEIGHT = 24.dp
 private val BAR_PAD = 6.dp
 private val BAR_ROW = 48.dp

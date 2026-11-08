@@ -55,6 +55,10 @@ fun BisSpecPlate(content: BisSpecContent, view: BisSpecView, build: String, acti
         Modifier.fillMaxWidth().clip(shape).background(FsColor.raised).border(1.dp, FsColor.line, shape).parityRegion(ParityRegion.PLATE),
     ) {
         DpColumn(Modifier.padding(1.dp).fillMaxWidth().parityRegion(ParityRegion.SLOTS)) {
+            val shown = if (view == BisSpecView.BySlot) content.cells.size else content.groups.size
+            if (shown == 0) {
+                Text(stringResource(R.string.bis_searchEmpty), style = FsType.small, color = FsColor.muted, modifier = Modifier.padding(FsSpace.space4))
+            }
             when (view) {
                 BisSpecView.BySlot -> content.cells.forEach { Cell(it, build, actions.onItem) }
                 BisSpecView.WhereToGo -> content.groups.forEach { group ->

@@ -54,6 +54,15 @@ class BisSpecComposerTest {
         assertTrue(content.controls.profiles.isEmpty())
     }
 
+    @Test fun `the search keeps the cells whose pick or runner-up names match`() {
+        val sixty = BisSpecFixtures.sixty.filtered("theramore")
+        assertEquals(listOf("Theramore Pauldrons", "Theramore Gloves"), sixty.cells.map { it.look?.name })
+        val twenty = BisSpecFixtures.twenty.filtered("volcanic")
+        assertEquals(listOf("The Deadmines", "Silverwing Sentinels reputation"), twenty.groups.map { it.place })
+        assertTrue(BisSpecFixtures.sixty.filtered("nothing like it").cells.isEmpty())
+        assertEquals(BisSpecFixtures.sixty, BisSpecFixtures.sixty.filtered("  "))
+    }
+
     @Test fun `a source turned off falls to the next runner-up`() {
         val all = composer.content(input())
         val kinds = composer.sources(input().band)

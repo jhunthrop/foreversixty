@@ -90,3 +90,14 @@ data class BisSpecActions(
     val onAddon: () -> Unit = {},
     val onGuide: () -> Unit = {},
 )
+
+/** The cells whose pick or runner-up names contain [query] (the list's search), groups with none left out. */
+fun BisSpecContent.filtered(query: String): BisSpecContent {
+    val needle = query.trim()
+    if (needle.isEmpty()) return this
+    fun BisSpecCell.matches() = listOfNotNull(look?.name, versusItem?.name).any { it.contains(needle, ignoreCase = true) }
+    return copy(
+        cells = cells.filter { it.matches() },
+        groups = groups.mapNotNull { group -> group.cells.filter { it.matches() }.takeIf { it.isNotEmpty() }?.let { group.copy(cells = it) } },
+    )
+}

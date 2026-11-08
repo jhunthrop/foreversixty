@@ -9,10 +9,16 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -83,10 +89,30 @@ fun BisSpecRoute(model: BisModel, catalog: ItemCatalog, onBack: () -> Unit, onSi
     val phase = state.phase
     val published = (phase as? BisPhase.Loaded)?.published
     val build = state.build.orEmpty()
+    var searching by rememberSaveable { mutableStateOf(false) }
+    var query by rememberSaveable { mutableStateOf("") }
     val content = published?.let { composer.content(BisSpecInput(it.file, it.band, it.items, selection, state.context.className(selection.classSlug), off)) }
     val pick: (BisSelection) -> Unit = { scope.launch { model.select(it) } }
     Column(Modifier.fillMaxSize()) {
-        FlowBackBar(stringResource(R.string.tab_gear), onBack, content?.let { page -> { ShareText.send(context, ShareMessage(res.getString(R.string.bisSpec_share, page.title), BisSpecLinks.list(selection))) } })
+        val share = content?.let { page -> { ShareText.send(context, ShareMessage(res.getString(R.string.bisSpec_share, page.title), BisSpecLinks.list(selection))) } }
+        FlowBackBar(stringResource(R.string.tab_gear), onBack, share) {
+            // The list's own search (the old BiS screen's): the bar's button opens the field under it.
+            IconButton(onClick = {
+                searching = !searching
+                if (!searching) query = ""
+            }) {
+                Icon(if (searching) Icons.Filled.Close else Icons.Filled.Search, contentDescription = stringResource(R.string.bis_search), tint = FsColor.strong)
+            }
+        }
+        if (searching) {
+            OutlinedTextField(
+                value = query,
+                onValueChange = { query = it },
+                placeholder = { Text(stringResource(R.string.bis_search)) },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth().padding(horizontal = FsSpace.space4, vertical = FsSpace.space2),
+            )
+        }
         NewBuildStrip(model) { scope.launch { model.update() } }
         offlineSince(phase)?.let { OfflineStrip(stringResource(R.string.offline_strip, OfflineStamp.format(Instant.ofEpochMilli(it), Instant.now()))) }
         PullToRefreshBox(
@@ -106,7 +132,7 @@ fun BisSpecRoute(model: BisModel, catalog: ItemCatalog, onBack: () -> Unit, onSi
                     onAddon = { context.open(AccountLinks.SETUP) },
                     onGuide = { context.open(BisSpecLinks.guide(selection)) },
                 )
-                BisSpecPage(content, view, build, panel, { panel = !panel }, actions)
+                BisSpecPage(content.filtered(query), view, build, panel, { panel = !panel }, actions)
             } else {
                 Status(phase) { scope.launch { model.refresh() } }
             }
