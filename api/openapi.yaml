@@ -2718,6 +2718,11 @@ components:
         status: { type: string, enum: [planned, locked, done, cancelled] }
         size: { type: [integer, "null"] }
         guild_timezone: { type: string }
+        zone_icon: { type: string, description: "The zone's icon, a name under /data/{build}/icons (inv_misc_head_dragon_black for Onyxia's Lair). Always sent; optional for older bodies." }
+        answer_by:
+          type: [string, "null"]
+          format: date-time
+          description: The sign-up deadline. No guild stores one yet, so it is null; officers lock a raid by hand.
         notes: { type: string }
         notes_html: { type: string, description: Sanitised HTML of notes; render it. }
         counts: { $ref: '#/components/schemas/RaidCounts' }
@@ -3429,35 +3434,66 @@ components:
     RaidNightSummary:
       type: object
       description: >-
-        GET /v1/me/raid-nights/{raid}: one raider's night (spec C5). loot and bests are [] when
-        there are none; coach_notes is null without log_coach.
-      required: [raid_id, guild_id, guild_name, zone_name, starts_at, report_id, character, kills, wipes, new_bests, loot, bests, coach_notes]
+        GET /v1/me/raid-nights/{raid}: one raider's raid night (spec 2026-11-08-app-flows F2).
+        phase is before (now before starts_at), live (from the start to 4 hours after, while the
+        raid is not done or cancelled) or after. Before and live: you, coming and ready answer
+        the pull. Once a log is matched to the raid: report_id, kills, wipes, bests, new_bests,
+        loot and coach_notes; every log field is null (loot and bests []) until then. ready is
+        null after. coach_notes is null without the log coach, never an upsell.
+      required: [raid_id, guild_id, guild_name, zone_key, zone_name, starts_at, ends_at, status, phase, character, you, coming, ready, report_id, kills, wipes, new_bests, loot, bests, coach_notes]
       properties:
-        ready:
-          oneOf:
-            - { $ref: '#/components/schemas/ReadyCheck' }
-            - { type: "null" }
-          description: The character's ready check for this raid, the same items as GET /v1/characters/{region}/{ruleset}/{name}/ready?raid=.
         raid_id: { type: integer, format: int64 }
         guild_id: { type: integer, format: int64 }
         guild_name: { type: string }
+        zone_key: { type: string }
         zone_name: { type: string }
+        zone_icon: { type: string, description: "The zone's icon, a name under /data/{build}/icons. Always sent; optional for older bodies." }
         starts_at: { type: string, format: date-time }
-        report_id: { type: string, description: "The matched report; the full report opens at /reports/{report_id} on the web." }
+        ends_at: { type: string, format: date-time, description: starts_at plus the raid's length. }
+        status: { type: string, enum: [planned, locked, done, cancelled] }
+        phase: { type: string, enum: [before, live, after] }
         character:
           type: object
           title: RaidNightCharacter
+          description: The character you signed with, else your main, else your first verified one.
           required: [character_key, name, class, spec, spec_name, role]
           properties:
             character_key: { type: string }
             name: { type: string }
             class: { type: string, x-name: className }
-            spec: { type: string }
+            spec: { type: string, description: 'The specs.json key, "" when unknown.' }
             spec_name: { type: string }
-            role: { type: string, enum: [tank, healer, dps] }
-        kills: { type: integer }
-        wipes: { type: integer }
-        new_bests: { type: integer }
+            role: { type: string, description: "tank, healer or dps; \"\" when the spec is unknown." }
+        you:
+          type: object
+          title: RaidNightYou
+          required: [state, late_minutes, note]
+          properties:
+            state: { type: [string, "null"], enum: [in, late, bench, out, null] }
+            late_minutes: { type: [integer, "null"] }
+            note: { type: string }
+        coming:
+          type: object
+          title: RaidNightComing
+          description: The answers' counts, and who is In or Late by role (one row per account).
+          required: [in, late, bench, out, tanks, healers, damage]
+          properties:
+            in: { type: integer, x-name: inCount }
+            late: { type: integer }
+            bench: { type: integer }
+            out: { type: integer }
+            tanks: { type: array, items: { $ref: '#/components/schemas/RaidNightPerson' } }
+            healers: { type: array, items: { $ref: '#/components/schemas/RaidNightPerson' } }
+            damage: { type: array, items: { $ref: '#/components/schemas/RaidNightPerson' } }
+        ready:
+          oneOf:
+            - { $ref: '#/components/schemas/ReadyCheck' }
+            - { type: "null" }
+          description: Your character's ready check for this raid (GET /v1/characters/{region}/{ruleset}/{name}/ready?raid=); null after.
+        report_id: { type: [string, "null"], description: "The matched report; it opens at /reports/{report_id}." }
+        kills: { type: [integer, "null"] }
+        wipes: { type: [integer, "null"] }
+        new_bests: { type: [integer, "null"], description: "Kills where your figure beat every earlier kill of that boss." }
         loot:
           type: array
           items:
@@ -3471,10 +3507,13 @@ components:
               icon: { type: string, description: The icon stem. }
               slot: { type: string, description: The slot label, e.g. Back. }
               boss: { type: string }
-              awarded_by: { type: string, description: The awarding officer's main character name. }
+              awarded_by: { type: string, description: The awarding officer's character name; "" when unknown. }
+              gain: { type: [number, "null"], description: "The upgrade over the worn gear, the Loot tab's gain for the character's band; null when the band cannot say." }
+              unit: { type: [string, "null"], enum: [DPS, HPS, TPS, null], description: What gain counts. }
               replaces:
                 type: [object, "null"]
                 title: RaidNightReplaces
+                description: The item it replaced; null until the export after the night says.
                 required: [item_id, name, quality, item_level]
                 properties:
                   item_id: { type: integer }
@@ -3483,19 +3522,29 @@ components:
                   item_level: { type: integer }
         bests:
           type: array
+          description: Your figure on each boss kill of the night, in pull order.
           items:
             type: object
             title: RaidNightBest
             required: [boss, dps, percentile, kill_ms]
             properties:
               boss: { type: string }
-              dps: { type: number }
-              percentile: { type: integer, description: 0 to 100, the parse colour band. }
+              dps: { type: number, description: DPS, or HPS for a healer. }
+              percentile: { type: [integer, "null"], description: "The fight's Forever rating, 0 to 100 (the parse colour band); null when unrated." }
               kill_ms: { type: integer, format: int64 }
         coach_notes:
           type: [array, "null"]
-          description: Up to three; null without log_coach.
+          description: The coach teaser, the character's night lines; null without log_coach.
           items: { type: string }
+    RaidNightPerson:
+      type: object
+      required: [name, class, state, late_minutes, note]
+      properties:
+        name: { type: string }
+        class: { type: string, x-name: className }
+        state: { type: string, enum: [in, late] }
+        late_minutes: { type: [integer, "null"] }
+        note: { type: string }
     RaidPatch:
       type: object
       description: The officer's whole raid form.
@@ -8351,14 +8400,12 @@ paths:
           content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
   /v1/me/raid-nights/{raid}:
     get:
-      summary: Your raid night, the after-raid summary (dark; lane F4 contract, handler pending)
+      summary: Your raid night, before the pull and after the log
       description: >-
-        The summary behind the app's Your raid night screen and the raid.summary push (spec
-        2026-10-30-mobile-apps C5): the night's kills and wipes, the loot awarded to the
-        viewer's character in it, its new personal bests, and coach notes when the account has
-        log_coach (null otherwise, never an upsell). The character is the viewer's character in
-        the matched log. 404 not_found when the raid has no matched log, or the viewer has no
-        character in it, or the raid is not theirs to see.
+        Raid night (spec 2026-11-08-app-flows F2): before the pull the countdown, your answer, who
+        is coming by role with the late notes and your ready check; once a log is matched, the
+        night's kills and wipes, the loot you got, your bests and the coach teaser. A verified
+        member of the raid's guild; 404 not_found for anyone else or a raid that does not exist.
       operationId: getRaidNight
       tags: [app]
       parameters:
@@ -8369,7 +8416,7 @@ paths:
         '426': { $ref: '#/components/responses/UpdateRequired' }
         '200':
           description: "Your raid night"
-          x-fixtures: [me.raid-night, me.raid-night.free]
+          x-fixtures: [me.raid-night, me.raid-night.before, me.raid-night.free]
           content:
             application/json:
               schema:
@@ -8380,7 +8427,7 @@ paths:
           description: "No session or device token, or a dead one"
           content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
         '404':
-          description: "No matched log, not in it, or not yours to see"
+          description: "No such raid, or not yours to see"
           x-fixtures: [me.raid-night.error-not-found]
           content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
   /v1/guilds/{id}/raids/{raid}/comp-target:

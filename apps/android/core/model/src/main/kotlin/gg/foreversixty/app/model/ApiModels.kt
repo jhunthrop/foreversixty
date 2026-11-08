@@ -2474,20 +2474,36 @@ data class RaidNight(
 @Serializable
 data class RaidNightBest(
     @SerialName("boss") val boss: String,
+    /** DPS */
     @SerialName("dps") val dps: Double,
-    /** 0 to 100 */
-    @SerialName("percentile") val percentile: Int,
+    /** The fight's Forever rating, 0 to 100 (the parse colour band); null when unrated. */
+    @SerialName("percentile") val percentile: Int? = null,
     @SerialName("kill_ms") val killMs: Long,
 )
 
+/** The character you signed with, else your main, else your first verified one. */
 @Serializable
 data class RaidNightCharacter(
     @SerialName("character_key") val characterKey: String,
     @SerialName("name") val name: String,
     @SerialName("class") val className: String,
+    /** The specs.json key, "" when unknown. */
     @SerialName("spec") val spec: String,
     @SerialName("spec_name") val specName: String,
+    /** tank, healer or dps; "" when the spec is unknown. */
     @SerialName("role") val role: String,
+)
+
+/** The answers' counts, and who is In or Late by role (one row per account). */
+@Serializable
+data class RaidNightComing(
+    @SerialName("in") val inCount: Int,
+    @SerialName("late") val late: Int,
+    @SerialName("bench") val bench: Int,
+    @SerialName("out") val out: Int,
+    @SerialName("tanks") val tanks: List<RaidNightPerson> = emptyList(),
+    @SerialName("healers") val healers: List<RaidNightPerson> = emptyList(),
+    @SerialName("damage") val damage: List<RaidNightPerson> = emptyList(),
 )
 
 @Serializable
@@ -2512,11 +2528,26 @@ data class RaidNightLoot(
     /** The slot label */
     @SerialName("slot") val slot: String,
     @SerialName("boss") val boss: String,
-    /** The awarding officer's main character name. */
+    /** The awarding officer's character name; "" when unknown. */
     @SerialName("awarded_by") val awardedBy: String,
+    /** The upgrade over the worn gear, the Loot tab's gain for the character's band; null when the band cannot say. */
+    @SerialName("gain") val gain: Double? = null,
+    /** What gain counts. */
+    @SerialName("unit") val unit: String? = null,
+    /** The item it replaced; null until the export after the night says. */
     @SerialName("replaces") val replaces: RaidNightReplaces? = null,
 )
 
+@Serializable
+data class RaidNightPerson(
+    @SerialName("name") val name: String,
+    @SerialName("class") val className: String,
+    @SerialName("state") val state: String,
+    @SerialName("late_minutes") val lateMinutes: Int? = null,
+    @SerialName("note") val note: String,
+)
+
+/** The item it replaced; null until the export after the night says. */
 @Serializable
 data class RaidNightReplaces(
     @SerialName("item_id") val itemId: Int,
@@ -2545,26 +2576,46 @@ data class RaidNightRow(
     @SerialName("top_dps") val topDps: RaidTopParse? = null,
 )
 
-/** GET /v1/me/raid-nights/{raid}: one raider's night (spec C5). loot and bests are [] when there are none; coach_notes is null without log_coach. */
+/** GET /v1/me/raid-nights/{raid}: one raider's raid night (spec 2026-11-08-app-flows F2). phase is before (now before starts_at), live (from the start to 4 hours after, while the raid is not done or cancelled) or after. Before and live: you, coming and ready answer the pull. Once a log is matched to the raid: report_id, kills, wipes, bests, new_bests, loot and coach_notes; every log field is null (loot and bests []) until then. ready is null after. coach_notes is null without the log coach, never an upsell. */
 @Serializable
 data class RaidNightSummary(
-    /** The character's ready check for this raid, the same items as GET /v1/characters/{region}/{ruleset}/{name}/ready?raid=. */
-    @SerialName("ready") val ready: ReadyCheck? = null,
     @SerialName("raid_id") val raidId: Long,
     @SerialName("guild_id") val guildId: Long,
     @SerialName("guild_name") val guildName: String,
+    @SerialName("zone_key") val zoneKey: String,
     @SerialName("zone_name") val zoneName: String,
+    /** The zone's icon, a name under /data/{build}/icons. Always sent; optional for older bodies. */
+    @SerialName("zone_icon") val zoneIcon: String? = null,
     @SerialName("starts_at") val startsAt: String,
-    /** The matched report; the full report opens at /reports/{report_id} on the web. */
-    @SerialName("report_id") val reportId: String,
+    /** starts_at plus the raid's length. */
+    @SerialName("ends_at") val endsAt: String,
+    @SerialName("status") val status: String,
+    @SerialName("phase") val phase: String,
+    /** The character you signed with, else your main, else your first verified one. */
     @SerialName("character") val character: RaidNightCharacter,
-    @SerialName("kills") val kills: Int,
-    @SerialName("wipes") val wipes: Int,
-    @SerialName("new_bests") val newBests: Int,
+    @SerialName("you") val you: RaidNightYou,
+    /** The answers' counts, and who is In or Late by role (one row per account). */
+    @SerialName("coming") val coming: RaidNightComing,
+    /** Your character's ready check for this raid (GET /v1/characters/{region}/{ruleset}/{name}/ready?raid=); null after. */
+    @SerialName("ready") val ready: ReadyCheck? = null,
+    /** The matched report; it opens at /reports/{report_id}. */
+    @SerialName("report_id") val reportId: String? = null,
+    @SerialName("kills") val kills: Int? = null,
+    @SerialName("wipes") val wipes: Int? = null,
+    /** Kills where your figure beat every earlier kill of that boss. */
+    @SerialName("new_bests") val newBests: Int? = null,
     @SerialName("loot") val loot: List<RaidNightLoot> = emptyList(),
+    /** Your figure on each boss kill of the night, in pull order. */
     @SerialName("bests") val bests: List<RaidNightBest> = emptyList(),
-    /** Up to three; null without log_coach. */
+    /** The coach teaser, the character's night lines; null without log_coach. */
     @SerialName("coach_notes") val coachNotes: List<String>? = null,
+)
+
+@Serializable
+data class RaidNightYou(
+    @SerialName("state") val state: String? = null,
+    @SerialName("late_minutes") val lateMinutes: Int? = null,
+    @SerialName("note") val note: String,
 )
 
 @Serializable
@@ -2693,6 +2744,10 @@ data class RaidView(
     @SerialName("status") val status: String,
     @SerialName("size") val size: Int? = null,
     @SerialName("guild_timezone") val guildTimezone: String,
+    /** The zone's icon, a name under /data/{build}/icons (inv_misc_head_dragon_black for Onyxia's Lair). Always sent; optional for older bodies. */
+    @SerialName("zone_icon") val zoneIcon: String? = null,
+    /** The sign-up deadline. No guild stores one yet, so it is null; officers lock a raid by hand. */
+    @SerialName("answer_by") val answerBy: String? = null,
     @SerialName("notes") val notes: String,
     /** Sanitised HTML of notes; render it. */
     @SerialName("notes_html") val notesHtml: String,

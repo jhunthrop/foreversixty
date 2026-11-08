@@ -366,7 +366,7 @@ public extension Endpoint where Response == SignupAnswer {
 }
 
 public extension Endpoint where Response == RaidNightSummary {
-    /// GET /v1/me/raid-nights/{raid}: Your raid night, the after-raid summary (dark; lane F4 contract, handler pending)
+    /// GET /v1/me/raid-nights/{raid}: Your raid night, before the pull and after the log
     static func getRaidNight(raid: Int64) -> Endpoint {
         Endpoint(method: .get, path: "/v1/me/raid-nights/\(raid)")
     }
