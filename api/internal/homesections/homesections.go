@@ -1,5 +1,5 @@
 // Package homesections composes the apps' home: its blocks and their order, computed for the
-// viewer (design/specs/2026-11-07-mobile-redesign.md section 2.3, rulings R2, R3 and R4), so the
+// viewer (design/specs/2026-11-07-mobile-redesign.md section 2.3, rulings R0, R2, R3 and R4), so the
 // order changes without an app release. GET /v1/home answers the signed-in list; GET
 // /v1/app/config answers the signed-out one. HOME_SECTIONS (a JSON override, like APP_FEATURES)
 // switches each rule off, turns blocks off, reorders them and adds a standing notice.
@@ -48,9 +48,9 @@ const (
 
 // The rules HOME_SECTIONS can switch off, by key.
 const (
-	RuleUnder60Line  = "under_60_line"
-	RuleNoGuildCTA   = "no_guild_cta"
-	RuleRaidDayFirst = "raid_day_first"
+	RuleUnder60Line    = "under_60_line"
+	RuleNoGuildCTA     = "no_guild_cta"
+	RuleGuildRaidFirst = "guild_raid_first"
 )
 
 const (
@@ -63,7 +63,7 @@ const (
 
 var signedInTypes = []string{Head, Upgrades, Countdowns, Feed, GuildSims, GuildSimsCTA, SpecWeek, Movers, Next, Notice}
 
-var rules = []string{RuleUnder60Line, RuleNoGuildCTA, RuleRaidDayFirst}
+var rules = []string{RuleUnder60Line, RuleNoGuildCTA, RuleGuildRaidFirst}
 
 //go:embed signed_out.json
 var signedOutJSON []byte
@@ -85,10 +85,6 @@ type View struct {
 	Level int
 	// InGuild: the character is a verified member of a guild.
 	InGuild bool
-	// RaidsOpen: the first raids have opened (dates.json role raids).
-	RaidsOpen bool
-	// RaidDay: the guild has a raid today, in the guild's raid time zone.
-	RaidDay bool
 }
 
 // Override is HOME_SECTIONS. The zero value changes nothing.
@@ -152,8 +148,9 @@ func (o Override) ruleOn(key string) bool {
 	return !set || on
 }
 
-// SignedIn is the signed-in home for v under o: ruling R2's order, R4's level and guild rules,
-// the countdowns second on the guild's raid day once raids are open, then o's switches.
+// SignedIn is the signed-in home for v under o (rulings R0, R2 and R4): in a guild the next raid and
+// your sign-up come second, before the upgrades and the feed; without one the first-raids countdown
+// follows the feed and the Join a guild row replaces the ladder; under 60 the countdown is one line.
 func SignedIn(v View, o Override) []Section {
 	inGuild := v.InGuild || !o.ruleOn(RuleNoGuildCTA)
 	filters := []string{FilterAll, FilterSpec}
@@ -163,20 +160,17 @@ func SignedIn(v View, o Override) []Section {
 		guild = Section{Type: GuildSims, Limit: guildSimsShown}
 	}
 	countdowns := Section{Type: Countdowns, Style: StyleFull}
+	if v.Level < maxLevel && o.ruleOn(RuleUnder60Line) {
+		countdowns.Style = StyleLine
+	}
+	head := Section{Type: Head}
+	upgrades := Section{Type: Upgrades, Limit: upgradesShown}
 	feed := Section{Type: Feed, Filters: filters, MoreFilters: []string{FilterLogs}, Limit: feedRows}
-	head := []Section{{Type: Head}, {Type: Upgrades, Limit: upgradesShown}}
 	rest := []Section{guild, {Type: SpecWeek}, {Type: Movers}, {Type: Next}}
 
-	var out []Section
-	switch {
-	case v.Level < maxLevel && o.ruleOn(RuleUnder60Line):
-		countdowns.Style = StyleLine
-		out = slices.Concat(head, []Section{feed, countdowns}, rest)
-	default:
-		out = slices.Concat(head, []Section{countdowns, feed}, rest)
-	}
-	if v.InGuild && v.RaidsOpen && v.RaidDay && o.ruleOn(RuleRaidDayFirst) {
-		out = moveTo(out, Countdowns, 1)
+	out := slices.Concat([]Section{head, upgrades, feed, countdowns}, rest)
+	if v.InGuild && o.ruleOn(RuleGuildRaidFirst) {
+		out = slices.Concat([]Section{head, countdowns, upgrades, feed}, rest)
 	}
 	if o.Notice != nil {
 		out = slices.Insert(out, 1, Section{Type: Notice, Text: o.Notice.Text, Href: o.Notice.Href})
@@ -219,15 +213,4 @@ func (o Override) apply(in []Section) []Section {
 	}
 	slices.SortStableFunc(out, func(a, b Section) int { return rank(a) - rank(b) })
 	return out
-}
-
-// moveTo moves the first section of type t to index at.
-func moveTo(in []Section, t string, at int) []Section {
-	i := slices.IndexFunc(in, func(s Section) bool { return s.Type == t })
-	if i < 0 {
-		return in
-	}
-	s := in[i]
-	out := slices.Delete(slices.Clone(in), i, i+1)
-	return slices.Insert(out, min(at, len(out)), s)
 }

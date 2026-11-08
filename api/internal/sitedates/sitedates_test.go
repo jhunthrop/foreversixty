@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"os"
 	"testing"
-	"time"
 )
 
 func TestFirstRaidsMatchesTheSiteCalendar(t *testing.T) {
@@ -28,13 +27,4 @@ func TestFirstRaidsMatchesTheSiteCalendar(t *testing.T) {
 		}
 	}
 	t.Error("dates.json has no raids date")
-}
-
-func TestRaidsOpen(t *testing.T) {
-	if RaidsOpen(time.Date(2026, 12, 8, 23, 59, 0, 0, time.UTC)) {
-		t.Error("open the day before")
-	}
-	if !RaidsOpen(time.Date(2026, 12, 9, 0, 0, 0, 0, time.UTC)) {
-		t.Error("closed on the day")
-	}
 }

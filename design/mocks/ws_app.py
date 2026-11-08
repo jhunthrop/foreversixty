@@ -38,7 +38,8 @@ NEXT_RAID = GUILD60['next_raid']
 WARRIOR = CLASS_COLOR['warrior']
 
 # ------------------------------------------------------------------------------------------------ phone deltas (CSS)
-# R2: the home sections in the default server order (head, upgrades, countdowns, feed, guild sims, spec week, movers).
+# R0/R2: the home sections in the default server order. In a guild: head, countdowns (the next raid and your sign-up),
+# upgrades, feed, guild sims, spec week, movers. Without one (HOME_34): head, upgrades, feed, countdowns.
 # The split's wrappers dissolve so each section is one flex item of <main>, ordered as /v1/home's `sections` array.
 _FLAT = '''
 main{display:flex;flex-direction:column}
@@ -47,7 +48,8 @@ main section[data-region^="section-"]{padding-inline:16px;margin-top:32px;order:
 main>.pc:has([data-region="countdowns"]){order:3}
 '''
 HOME_ORDER = _FLAT + '''
-main section[data-region="section-your-upgrades"]{order:2}
+main>.pc:has([data-region="countdowns"]){order:2}
+main section[data-region="section-your-upgrades"]{order:3}
 main section[data-region="section-forever-right-now"]{order:4}
 main section[data-region="section-guild-sims"]{order:5}
 '''

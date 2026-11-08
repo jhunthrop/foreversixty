@@ -3919,10 +3919,10 @@ components:
       description: >-
         The signed-in home's own blocks; each is null when it has nothing true to say. sections
         is the apps' home, its blocks in order for this viewer (design/specs/2026-11-07-mobile-redesign.md
-        section 2.3): at 60 in a guild head, upgrades, countdowns, feed, guild_sims, spec_week,
-        movers, next; under 60 the countdowns are one line after the feed; with no guild
-        guild_sims_cta replaces guild_sims and the feed drops the guild filter; once raids are
-        open, on the guild's raid day, countdowns moves second. HOME_SECTIONS switches each rule
+        section 2.3, rulings R0 and R4): in a guild head, countdowns (the next raid and your
+        sign-up), upgrades, feed, guild_sims, spec_week, movers, next; with no guild head,
+        upgrades, feed, countdowns, guild_sims_cta, spec_week, movers, next, and the feed drops
+        the guild filter; under 60 the countdowns are one line. HOME_SECTIONS switches each rule
         off, turns blocks off, reorders them and adds a notice. The web keeps its own composition.
       required: [sections, import_sim, spec_week, movers, guild_sims]
       properties:

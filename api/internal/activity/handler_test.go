@@ -127,25 +127,15 @@ func TestHomeStartsTheFirstImportSim(t *testing.T) {
 
 const sampleExport = "FS1:1.60.1.70790:warrior:orc:0/0505/0:head=16866,chest=11726|level=20"
 
-// The guild's raid day is today's date in the guild's raid time zone, for a raid not yet over.
-func TestGuildDayReadsTheRaidTimeZone(t *testing.T) {
+// A verified guild member is in a guild; a character on no roster is not.
+func TestInGuild(t *testing.T) {
 	s := testStore(t)
 	ctx := context.Background()
-	g, users := guildOf(t, s, 1)
-	if in, day, err := s.guildDay(ctx, "us/normal/ma", testNow); err != nil || !in || day {
-		t.Fatalf("no raid: in %v, day %v, %v", in, day, err)
+	guildOf(t, s, 1)
+	if in, err := s.inGuild(ctx, "us/normal/ma"); err != nil || !in {
+		t.Fatalf("member: %v, %v", in, err)
 	}
-	// 01:00 UTC on the 8th is the evening of the 7th in Chicago, testNow's day there.
-	exec(t, s.Pool, `insert into guild_raids (guild_id, zone, title, starts_at, duration_minutes, created_by, created_at)
-		values ($1, 'raid:onyxias-lair', 'Onyxia''s Lair', $2, 120, $3, $4)`, g, testNow.Add(7*time.Hour), users[0], testNow.Add(-time.Hour))
-	if _, day, _ := s.guildDay(ctx, "us/normal/ma", testNow); day {
-		t.Fatal("UTC: the raid is tomorrow")
-	}
-	exec(t, s.Pool, `update guilds set raid_timezone = 'America/Chicago' where id = $1`, g)
-	if _, day, _ := s.guildDay(ctx, "us/normal/ma", testNow); !day {
-		t.Fatal("Chicago: the raid is tonight")
-	}
-	if in, _, _ := s.guildDay(ctx, "us/normal/nobody", testNow); in {
+	if in, _ := s.inGuild(ctx, "us/normal/nobody"); in {
 		t.Fatal("a character with no guild is in one")
 	}
 }

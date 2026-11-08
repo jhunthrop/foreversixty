@@ -3,8 +3,8 @@
   "data": {
     "sections": [
       { "type": "head" },
-      { "type": "upgrades", "limit": 3 },
       { "type": "countdowns", "style": "full" },
+      { "type": "upgrades", "limit": 3 },
       { "type": "feed", "filters": ["all", "spec", "guild"], "more_filters": ["logs"], "limit": 7 },
       { "type": "guild_sims", "limit": 5 },
       { "type": "spec_week" },

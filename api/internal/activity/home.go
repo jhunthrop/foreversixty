@@ -12,7 +12,6 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/fs1"
 	"github.com/jhunthrop/foreversixty/api/internal/homesections"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
-	"github.com/jhunthrop/foreversixty/api/internal/sitedates"
 )
 
 // ImportSimmer queues a character's import run; sims.Service satisfies it. It answers
@@ -105,7 +104,7 @@ func (h *Home) character(ctx context.Context, key string) (homeCharacter, bool, 
 func (h *Home) answer(ctx context.Context, c homeCharacter, now time.Time) (HomeAnswer, error) {
 	var out HomeAnswer
 	var err error
-	if out.Sections, err = h.sections(ctx, c, now); err != nil {
+	if out.Sections, err = h.sections(ctx, c); err != nil {
 		return out, err
 	}
 	if out.ImportSim, err = h.importSim(ctx, c); err != nil {
@@ -125,14 +124,13 @@ func (h *Home) answer(ctx context.Context, c homeCharacter, now time.Time) (Home
 	return out, err
 }
 
-// sections composes the apps' home for c (rulings R2 and R4, HOME_SECTIONS).
-func (h *Home) sections(ctx context.Context, c homeCharacter, now time.Time) ([]homesections.Section, error) {
-	inGuild, raidDay, err := h.Store.guildDay(ctx, c.key, now)
+// sections composes the apps' home for c (rulings R0, R2 and R4, HOME_SECTIONS).
+func (h *Home) sections(ctx context.Context, c homeCharacter) ([]homesections.Section, error) {
+	inGuild, err := h.Store.inGuild(ctx, c.key)
 	if err != nil {
 		return nil, err
 	}
-	view := homesections.View{Level: c.level, InGuild: inGuild, RaidsOpen: sitedates.RaidsOpen(now), RaidDay: raidDay}
-	return homesections.SignedIn(view, h.Sections), nil
+	return homesections.SignedIn(homesections.View{Level: c.level, InGuild: inGuild}, h.Sections), nil
 }
 
 func (h *Home) importSim(ctx context.Context, c homeCharacter) (*ImportSim, error) {
