@@ -355,6 +355,13 @@ Notes for the reader:
   `answered_at` (the row's `updated_at`, RFC 3339 UTC; absent with no row).
   `docs/contracts/fixtures/inbox-raid-signup.json` is one such message. None is sent for a
   character with no guild or no raid in the window.
+- **`own_score`** (added 2026-11-08, a player hiding their Forever Score): the character's own
+  record, sent only to its owner, so a player who hid the score (contract 4 `export.score_visible`
+  false) still sees it although the nightly Data addon (contract 5) leaves them out. Flat:
+  `score`, `tier` (`"common"` ... `"legendary"`), `as_of` (`YYYY-MM-DD`), `fights`, and the five
+  parts `gear`, `experience`, `parses`, `attendance`, `discipline` (each a number, absent when the
+  record has none). Sent for every character of an account with a record, hidden or not; the
+  addon reads it only when the Data addon has nothing for the character itself.
 - **`accepts`** (top level, added 2026-11-08): a list of the outbox entry names the companion
   uploads beyond `export`, `sim_request` and `roster_snapshot`; today at most
   `{ "raid_answer" }`. The companion writes it; the API's `GET /v1/addon/inbox` body omits it.
@@ -380,7 +387,8 @@ holds it under one key so the companion has one place to look.
 ```lua
 ForeverSixtyDB.outbox = {
   format = 1,
-  export = { character = "Obnoxious-Yell", code = "FS1:...", saved_at = "2026-11-04 14:02" },
+  export = { character = "Obnoxious-Yell", code = "FS1:...", saved_at = "2026-11-04 14:02", score_visible = false | nil },
+
   sim_request = { character = ..., spec = "warrior-arms", requested_at = ..., gear_code = "FS1:..." } | nil,
   roster_snapshot = { guild = "OLYMPUS XXVII", members = { { name=..., level=20, spec="warrior-arms", gear_gap=14, build="Arms leveling", seen_at=..., class="WARRIOR" }, ... } } | nil,
   raid_answer = { { character = ..., raid_id = 42, answer = "in", late_minutes = nil, answered_at = 1796753040 }, ... } | nil,
@@ -393,6 +401,11 @@ Notes for the reader:
   it (first and last name on a client with last names, "Obnoxious Yell"), then the realm name
   with its spaces and hyphens removed ("ClassicBetaPvP"): "Obnoxious Yell-ClassicBetaPvP". The
   example above is a character with no last name on a realm called Yell.
+- `export.score_visible` (added 2026-11-08) is `false` when the player turned off "Show my Forever
+  Score to others" in Settings, absent (visible) otherwise. The site keeps the choice per character
+  and leaves a hidden character out of the nightly Data addon (contract 5), so no other player's
+  tooltip, chat badge, guild tab or group panel shows it; the inbox's `own_score` (contract 3)
+  keeps showing it to the player.
 - `export.saved_at` is the player's local wall time as `YYYY-MM-DD HH:MM`. It is what the build
   dialog compares the site's ack against; the site's own time is in the inbox `ack`, not here.
 - `sim_request` exists only after the player asked for a sim; `requested_at` and `gear_code` are

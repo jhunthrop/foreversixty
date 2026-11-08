@@ -621,102 +621,67 @@ describe("what the site has and what the inbox holds", function()
 		end)
 	end)
 
-	-- X.7: a first login says what the addon does, once per account.
-	describe("the first-login welcome", function()
+	-- design/specs/2026-11-08-addon-ux.md 3.1: the first login opens the tour (no chat lines), once per
+	-- account, five seconds in; the tour stamps the account when the player ends it.
+	describe("the first-login tour", function()
+		local opened
+
 		local function login()
 			fire("PLAYER_ENTERING_WORLD", true, false)
 			mock.runTimers(state)
 		end
 
-		local function welcome()
-			local out = {}
-			for index, text in ipairs({ L.welcomeOn, L.welcomeNext, L.welcomeSite }) do
-				out[index] = Theme.chatLine(text)
-			end
-			return out
-		end
-
 		before_each(function()
 			welcomed = false
 			state.printed = {}
+			opened = 0
+			SiteStatus.openTour = function()
+				opened = opened + 1
+			end
 		end)
 
 		after_each(function()
 			welcomed = true
+			SiteStatus.openTour = nil
 		end)
 
-		it("names the line you can see, /fs, /fs help and the logout, in three sentences", function()
-			-- A.2: the name once.
-			assert.are.equal("Forever Sixty is on. The line beside your minimap shows your next step.", L.welcomeOn)
-			assert.are.equal("/fs opens the build window; builds you send from the site wait there. "
-				.. "/fs help lists the commands.", L.welcomeNext)
-			assert.are.equal("Install the companion on your PC and it sends your character to foreversixty.gg "
-				.. "when you log out.", L.welcomeSite)
-			for _, text in ipairs({ L.welcomeOn, L.welcomeNext, L.welcomeSite }) do
-				assert.is_nil(text:lower():find("chip", 1, true))
-			end
-		end)
-
-		it("is said five seconds in, once, and stamps the account", function()
+		it("opens the tour five seconds in and says no welcome in chat", function()
 			record(GEAR)
 			inbox(ack(3600))
 			fire("PLAYER_ENTERING_WORLD", true, false)
 			assert.is_true(timersAt(5) >= 1)
-			assert.are.same({}, state.printed)
+			assert.are.equal(0, opened)
 			mock.runTimers(state)
-			assert.are.same(welcome(), state.printed)
-			assert.is_number(_G.ForeverSixtyDB.welcomedAt)
+			assert.are.equal(1, opened)
+			assert.are.same({}, state.printed)
+			assert.is_nil(L.welcomeOn)
+			assert.is_nil(SiteStatus.welcome)
 		end)
 
-		it("comes before the inbox's own line that session", function()
+		it("opens it once when the world is entered twice before the five seconds are up", function()
 			record(GEAR)
-			inbox(ack(3600), build("Arms raid", ARMS))
-			login()
-			local expected = welcome()
-			expected[4] = Theme.chatLine(string.format(L.siteLoginBuild, "Bob", "Arms raid"))
-			assert.are.same(expected, state.printed)
+			inbox(ack(3600))
+			fire("PLAYER_ENTERING_WORLD", true, false)
+			fire("PLAYER_ENTERING_WORLD", true, false)
+			mock.runTimers(state)
+			assert.are.equal(1, opened)
 		end)
 
-		it("is not said at a second login, a reload or a loading screen, but the inbox still is", function()
+		it("does not open it at a reload or a loading screen, but the inbox still speaks", function()
 			record(GEAR)
 			inbox(ack(3600), build("Arms raid", ARMS))
+			_G.ForeverSixtyDB.welcomedAt = 1793000000
 			login()
-			state.printed = {}
-			login()
+			assert.are.equal(0, opened)
 			assert.are.same({ Theme.chatLine(string.format(L.siteLoginBuild, "Bob", "Arms raid")) }, state.printed)
-			state.printed = {}
-			fire("PLAYER_ENTERING_WORLD", false, true)
-			fire("PLAYER_ENTERING_WORLD", false, false)
-			mock.runTimers(state)
-			for _, line in ipairs(state.printed) do
-				assert.is_nil(line:find(L.welcomeOn, 1, true))
-			end
 		end)
 
-		it("is said once when the world is entered twice before the five seconds are up", function()
-			record(GEAR)
-			inbox(ack(3600))
-			fire("PLAYER_ENTERING_WORLD", true, false)
-			fire("PLAYER_ENTERING_WORLD", true, false)
-			mock.runTimers(state)
-			assert.are.same(welcome(), state.printed)
-		end)
-
-		it("is one stamp for the account: another character that finds it set hears nothing", function()
+		it("is one stamp for the account: another character that finds it set sees nothing", function()
 			record(GEAR)
 			inbox(ack(3600))
 			_G.ForeverSixtyDB.welcomedAt = 1793000000
 			login()
-			assert.are.same({}, state.printed)
-		end)
-
-		it("is said again by /fs welcome, without changing the stamp", function()
-			record(GEAR)
-			_G.ForeverSixtyDB.welcomedAt = 1793000000
-			local lines = Options.handle("welcome")
-			-- No chip is drawn in this spec, so the first sentence names what is there.
-			assert.are.same({ L.welcomeOnNoLine, L.welcomeNext, L.welcomeSite }, lines)
-			assert.are.equal(1793000000, _G.ForeverSixtyDB.welcomedAt)
+			assert.are.equal(0, opened)
 		end)
 
 		it("runs no OnUpdate", function()

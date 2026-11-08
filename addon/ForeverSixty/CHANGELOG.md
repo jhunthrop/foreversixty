@@ -1,5 +1,10 @@
 # Forever Sixty
 
+## 2.0.40
+
+- A short tour on your first login shows how Forever Sixty works: what the site puts in your game, what your fights send back, your guild's raids, and setting your character up. Skip it any time; /fs help opens it again. "Just the tooltips" on its first page turns everything but the tooltip lines off.
+- Settings: "Show my Forever Score to others". Turn it off and other players see no score for you; you still see your own.
+
 ## 2.0.39
 
 - The talent window is quieter: numbers stay only on the points you still have to take, and the strip under it reads "Next at 25: Lethal Attacks · 12 of 15 · 3 off plan".

@@ -558,6 +558,14 @@ local function rosterMembers(seen, now, wallNow, classes)
 	return members
 end
 
+--- Contract 4's `export.score_visible`: false when the player hid the score, absent (nil) otherwise.
+function Export.scoreVisibleField(visible)
+	if visible == false then
+		return false
+	end
+	return nil
+end
+
 --- The outbox, built from plain values: { character, code, wallNow, simRequest, raidAnswers, guild (a name,
 --- or nil/false outside a guild), seen, now, classes }. Pure.
 function Export.outbox(parts)
@@ -574,6 +582,8 @@ function Export.outbox(parts)
 			character = parts.character,
 			code = parts.code,
 			saved_at = date(Export.SAVED_AT_FORMAT, parts.wallNow),
+			-- Contract 4: false when the player hid their score from others; absent (visible) otherwise.
+			score_visible = Export.scoreVisibleField(parts.scoreVisible),
 		},
 		sim_request = parts.simRequest,
 		roster_snapshot = roster,
@@ -660,6 +670,7 @@ function Export.saveOutbox(data, code)
 		code = code,
 		wallNow = time(),
 		simRequest = Export.simRequest,
+		scoreVisible = (ns.Prefs or require("Prefs")).flag("showScore") ~= false,
 		-- Answers the companion has not cleared from the file yet, with this session's (contract 4).
 		raidAnswers = Export.mergeRaidAnswers(type(ForeverSixtyDB.outbox) == "table"
 			and ForeverSixtyDB.outbox.raid_answer or nil, Export.raidAnswers, time()),
