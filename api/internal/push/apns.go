@@ -184,21 +184,44 @@ func (s *APNsSender) Send(ctx context.Context, m Message) error {
 	if err != nil {
 		return fmt.Errorf("push: apns body: %w", err)
 	}
+	return s.post(ctx, m.Token, body, apnsHeaders{pushType: "alert", topic: s.cfg.Topic, collapse: m.Collapse})
+}
+
+// liveTopicSuffix is the topic suffix ActivityKit pushes go to.
+const liveTopicSuffix = ".push-type.liveactivity"
+
+// SendLive posts a Live Activity payload (an "aps" with event start, update or end) to an
+// ActivityKit token: a push-to-start token for "start", the activity's update token otherwise.
+func (s *APNsSender) SendLive(ctx context.Context, token string, payload map[string]any) error {
+	body, err := json.Marshal(payload)
+	if err != nil {
+		return fmt.Errorf("push: apns live body: %w", err)
+	}
+	return s.post(ctx, token, body, apnsHeaders{pushType: "liveactivity", topic: s.cfg.Topic + liveTopicSuffix})
+}
+
+// apnsHeaders are the per-push APNs headers.
+type apnsHeaders struct {
+	pushType, topic, collapse string
+}
+
+// post sends body to the device token with h, at priority 10.
+func (s *APNsSender) post(ctx context.Context, deviceToken string, body []byte, h apnsHeaders) error {
 	token, err := s.providerToken()
 	if err != nil {
 		return err
 	}
-	req, err := http.NewRequestWithContext(ctx, http.MethodPost, s.cfg.BaseURL+"/3/device/"+url.PathEscape(m.Token), bytes.NewReader(body))
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, s.cfg.BaseURL+"/3/device/"+url.PathEscape(deviceToken), bytes.NewReader(body))
 	if err != nil {
 		return errors.New("push: apns request could not be built")
 	}
 	req.Header.Set("authorization", "bearer "+token)
-	req.Header.Set("apns-topic", s.cfg.Topic)
-	req.Header.Set("apns-push-type", "alert")
+	req.Header.Set("apns-topic", h.topic)
+	req.Header.Set("apns-push-type", h.pushType)
 	req.Header.Set("apns-priority", "10")
 	req.Header.Set("content-type", "application/json")
-	if m.Collapse != "" {
-		req.Header.Set("apns-collapse-id", collapseID(m.Collapse))
+	if h.collapse != "" {
+		req.Header.Set("apns-collapse-id", collapseID(h.collapse))
 	}
 	res, err := s.client.Do(req)
 	if err != nil {

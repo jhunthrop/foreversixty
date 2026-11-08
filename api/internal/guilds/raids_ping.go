@@ -2,12 +2,18 @@
 //
 // POST /v1/guilds/{id}/raids/{raid}/ping (spec 2026-11-05-web-layout §7.1 "Ping on Discord",
 // D16): the bot posts one message in the raid's channel @mentioning the raiders who have not
-// answered and have linked Discord. No DMs. One ping per raid per six hours (pingEvery).
+// answered and have linked Discord. An optional body {"role": "tank"|"healer"|"dps"} mentions
+// only the not-signed raiders of that role ("Mention the 2 healers"); no body mentions them all.
+// No DMs. The throttle is per member: a ping mentions only the raiders not mentioned for this
+// raid in the last six hours (pingEvery, raids_ping_claim.go), and is 429 when that leaves nobody.
 package guilds
 
 import (
 	"context"
+	"encoding/json"
+	"errors"
 	"fmt"
+	"io"
 	"net/http"
 	"regexp"
 	"strconv"
@@ -35,13 +41,31 @@ type RaidPinger interface {
 
 // PingResult is the ping's answer.
 type PingResult struct {
-	Posted         bool      `json:"posted"`
-	Mentioned      int       `json:"mentioned"`
-	NoDiscord      int       `json:"no_discord"`
-	NoDiscordNames []string  `json:"no_discord_names"`
-	NextAllowedAt  *string   `json:"next_allowed_at"`
-	mentionIDs     []string  // the Discord users the message names
-	at             time.Time // the claim's time
+	Posted         bool     `json:"posted"`
+	Mentioned      int      `json:"mentioned"`
+	NoDiscord      int      `json:"no_discord"`
+	NoDiscordNames []string `json:"no_discord_names"`
+	NextAllowedAt  *string  `json:"next_allowed_at"`
+	// RecentlyMentioned is the linked raiders left out because a ping mentioned them for this
+	// raid in the last six hours.
+	RecentlyMentioned int          `json:"recently_mentioned"`
+	targets           []pingTarget // the raiders the message names
+	at                time.Time    // the claim's time
+}
+
+// pingTarget is one raider a ping may mention: the account and its Discord user.
+type pingTarget struct {
+	userID    int64
+	discordID string
+}
+
+// mentionIDs is the targets' Discord users, in order.
+func (p PingResult) mentionIDs() []string {
+	out := make([]string, len(p.targets))
+	for i, t := range p.targets {
+		out[i] = t.discordID
+	}
+	return out
 }
 
 // discordSnowflake is a Discord user id; anything else is never put in a message.
@@ -54,7 +78,7 @@ const maxPingMentions = 100
 const (
 	pingNotConnected = "Connect the Forever Sixty bot to a channel to ping on Discord."
 	pingRefused      = "Discord did not take the message. Try again in a minute."
-	pingThrottled    = "You pinged this raid in the last 6 hours."
+	pingThrottled    = "Everyone left to ping was mentioned in the last 6 hours."
 )
 
 // splitPingTargets is the rows' linked Discord users (capped at maxPingMentions) and the names
@@ -62,13 +86,48 @@ const (
 func splitPingTargets(rows []NotSignedRaider) PingResult {
 	out := PingResult{NoDiscordNames: []string{}}
 	for _, r := range rows {
-		if r.DiscordLinked && discordSnowflake.MatchString(r.discordUserID) && len(out.mentionIDs) < maxPingMentions {
-			out.mentionIDs = append(out.mentionIDs, r.discordUserID)
+		if r.DiscordLinked && discordSnowflake.MatchString(r.discordUserID) && len(out.targets) < maxPingMentions {
+			out.targets = append(out.targets, pingTarget{userID: r.userID, discordID: r.discordUserID})
 			continue
 		}
 		out.NoDiscordNames = append(out.NoDiscordNames, r.Name)
 	}
-	out.Mentioned, out.NoDiscord = len(out.mentionIDs), len(out.NoDiscordNames)
+	out.Mentioned, out.NoDiscord = len(out.targets), len(out.NoDiscordNames)
+	return out
+}
+
+// pingRequest is the ping's optional body.
+type pingRequest struct {
+	Role string `json:"role"`
+}
+
+// pingRole reads the optional role ("" for every role); it answers 400 for a body that is not
+// JSON and 422 for an unknown role, and ok is false then.
+func pingRole(w http.ResponseWriter, r *http.Request) (string, bool) {
+	var req pingRequest
+	if err := json.NewDecoder(http.MaxBytesReader(w, r.Body, maxJSONBody)).Decode(&req); err != nil && !errors.Is(err, io.EOF) {
+		httpx.WriteError(w, r, http.StatusBadRequest, "invalid", "body must be JSON", nil)
+		return "", false
+	}
+	switch req.Role {
+	case "", RoleTank, RoleHealer, RoleDPS:
+		return req.Role, true
+	}
+	writeInvalid(w, r, map[string]string{"role": "Pick tank, healer or dps."})
+	return "", false
+}
+
+// rowsOfRole is the rows of role; every row for "".
+func rowsOfRole(rows []NotSignedRaider, role string) []NotSignedRaider {
+	if role == "" {
+		return rows
+	}
+	out := []NotSignedRaider{}
+	for _, r := range rows {
+		if r.Role == role {
+			out = append(out, r)
+		}
+	}
 	return out
 }
 
@@ -97,13 +156,17 @@ func (s *Service) pingRaid(w http.ResponseWriter, r *http.Request) {
 		httpx.WriteError(w, r, http.StatusConflict, "discord_not_connected", pingNotConnected, nil)
 		return
 	}
+	role, ok := pingRole(w, r)
+	if !ok {
+		return
+	}
 	actor := auth.ActorFrom(r.Context()).UserID
 	view, err := s.raidViewOf(r.Context(), guildID, actor, raid)
 	if err != nil {
 		s.fail(w, r, "raid_ping", err, raidFailMessage)
 		return
 	}
-	res := splitPingTargets(*view.NotSignedRaiders)
+	res := splitPingTargets(rowsOfRole(*view.NotSignedRaiders, role))
 	if res.Mentioned == 0 {
 		httpx.WriteOK(w, r, http.StatusOK, res)
 		return
@@ -111,24 +174,25 @@ func (s *Service) pingRaid(w http.ResponseWriter, r *http.Request) {
 	s.sendPing(w, r, guildID, raid, view, res)
 }
 
-// sendPing claims the raid's throttle, posts the message and answers; a post that did not land
-// gives the claim back.
+// sendPing claims the targets not mentioned in the last six hours, posts the message and
+// answers; a post that did not land gives the claim back.
 func (s *Service) sendPing(w http.ResponseWriter, r *http.Request, guildID int64, raid Raid, view RaidView, res PingResult) {
 	ctx := r.Context()
 	// timestamptz keeps microseconds: the release matches the stored value exactly.
 	res.at = time.Now().UTC().Truncate(time.Microsecond)
-	claimed, prev, err := s.Store.claimPing(ctx, raid.ID, auth.ActorFrom(ctx).UserID, res.Mentioned, res.at)
+	claim, err := s.Store.claimMentions(ctx, raid.ID, auth.ActorFrom(ctx).UserID, res.targets, res.at)
 	if err != nil {
 		s.fail(w, r, "raid_ping", err, raidFailMessage)
 		return
 	}
-	if !claimed {
-		writePingThrottled(w, r, prev)
+	if len(claim.kept) == 0 {
+		writePingThrottled(w, r, claim.earliest)
 		return
 	}
+	res.targets, res.Mentioned, res.RecentlyMentioned = claim.kept, len(claim.kept), len(claim.skipped)
 	g, err := s.Store.getGuild(ctx, guildID)
 	if err != nil {
-		s.releasePing(ctx, raid.ID, res.at, prev)
+		s.releaseMentions(ctx, raid.ID, res.at, claim)
 		s.fail(w, r, "raid_ping", err, raidFailMessage)
 		return
 	}
@@ -136,10 +200,10 @@ func (s *Service) sendPing(w http.ResponseWriter, r *http.Request, guildID int64
 	postCtx, cancel := s.postContext(ctx)
 	defer cancel()
 	posted, err := s.RaidPings.PingRaid(postCtx, guildID, RaidPing{
-		RaidID: raid.ID, Content: pingContent(view.Title, view.StartsAt, url, res.mentionIDs), MentionIDs: res.mentionIDs,
+		RaidID: raid.ID, Content: pingContent(view.Title, view.StartsAt, url, res.mentionIDs()), MentionIDs: res.mentionIDs(),
 	})
 	if err != nil || !posted {
-		s.releasePing(ctx, raid.ID, res.at, prev)
+		s.releaseMentions(ctx, raid.ID, res.at, claim)
 		s.answerPingFailure(w, r, guildID, err)
 		return
 	}
@@ -172,38 +236,4 @@ func writePingThrottled(w http.ResponseWriter, r *http.Request, prev *time.Time)
 		}
 	}
 	httpx.WriteError(w, r, http.StatusTooManyRequests, "ping_throttled", pingThrottled, fields)
-}
-
-// claimPing stamps the raid's ping at at when its last one is pingEvery old or there is none;
-// claimed is false otherwise. prev is the last ping before this call (nil: never).
-func (s *Store) claimPing(ctx context.Context, raidID, by int64, mentioned int, at time.Time) (claimed bool, prev *time.Time, err error) {
-	err = s.Pool.QueryRow(ctx, `
-		with prev as (select last_pinged_at from guild_raid_pings where raid_id = $1),
-		up as (
-		  insert into guild_raid_pings (raid_id, last_pinged_at, pinged_by, mentioned) values ($1, $2, $3, $4)
-		  on conflict (raid_id) do update set last_pinged_at = excluded.last_pinged_at,
-		    pinged_by = excluded.pinged_by, mentioned = excluded.mentioned
-		  where guild_raid_pings.last_pinged_at <= $2::timestamptz - make_interval(secs => $5)
-		  returning 1)
-		select exists (select 1 from up), (select last_pinged_at from prev)`,
-		raidID, at, by, mentioned, pingEvery.Seconds()).Scan(&claimed, &prev)
-	if err != nil {
-		return false, nil, fmt.Errorf("guilds: claim ping: %w", err)
-	}
-	return claimed, prev, nil
-}
-
-// releasePing gives back a claim made at at: the row returns to prev, or goes when there was
-// none. A failure is logged: the throttle then holds for six hours, never the other way.
-func (s *Service) releasePing(ctx context.Context, raidID int64, at time.Time, prev *time.Time) {
-	var err error
-	if prev == nil {
-		_, err = s.Store.Pool.Exec(ctx, `delete from guild_raid_pings where raid_id = $1 and last_pinged_at = $2`, raidID, at)
-	} else {
-		_, err = s.Store.Pool.Exec(ctx, `update guild_raid_pings set last_pinged_at = $3
-			where raid_id = $1 and last_pinged_at = $2`, raidID, at, *prev)
-	}
-	if err != nil {
-		s.logger().Error("guilds", "op", "raid_ping_release", "raid_id", raidID, "err", err)
-	}
 }

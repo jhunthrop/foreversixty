@@ -177,6 +177,9 @@ data class ApplicantCharacter(
     @SerialName("spec_name") val specName: String? = null,
     @SerialName("level") val level: Int? = null,
     @SerialName("item_level") val itemLevel: Int? = null,
+    /** Battle.net's race name ("Dwarf"), else the export's race; null when neither says. */
+    @SerialName("race") val race: String? = null,
+    @SerialName("faction") val faction: String? = null,
     @SerialName("best_parse") val bestParse: ApplicantBestParse? = null,
 )
 
@@ -654,6 +657,20 @@ data class CharacterProfileHeader(
 data class CharacterRank(
     @SerialName("rank") val rank: Int,
     @SerialName("row") val row: RankingRow,
+)
+
+/** GET /v1/characters/{region}/{ruleset}/{name}/rating (Go rating.characterRatingDTO). */
+@Serializable
+data class CharacterRating(
+    @SerialName("player_key") val playerKey: String,
+    /** The rated fights in this page. */
+    @SerialName("sample_size") val sampleSize: Int,
+    @SerialName("trend") val trend: List<RatingTrendPoint> = emptyList(),
+    /** Present when another page exists. */
+    @SerialName("next_cursor") val nextCursor: String? = null,
+    @SerialName("latest") val latest: RatingCard? = null,
+    @SerialName("best_component") val bestComponent: String? = null,
+    @SerialName("worst_component") val worstComponent: String? = null,
 )
 
 @Serializable
@@ -1817,6 +1834,20 @@ data class LiveActivityRequest(
     @SerialName("object_id") val objectId: String,
 )
 
+/** POST /v1/me/live-activities/start-token: the app install's push-to-start token (iOS ActivityKit; the FCM registration token on Android), one per install and kind, replaced on each call. */
+@Serializable
+data class LiveStartTokenRequest(
+    @SerialName("platform") val platform: String,
+    @SerialName("kind") val kind: String,
+    @SerialName("token") val token: String,
+)
+
+@Serializable
+data class LiveStartTokenStored(
+    @SerialName("kind") val kind: String,
+    @SerialName("platform") val platform: String,
+)
+
 @Serializable
 data class LoggingCharacter(
     @SerialName("key") val key: String,
@@ -2124,6 +2155,8 @@ data class NotificationSettings(
     /** An IANA name. */
     @SerialName("time_zone") val timeZone: String,
     @SerialName("quiet_hours") val quietHours: QuietHours,
+    /** The opt-in to Discord DMs from the guild's officers (D16; channel mentions are the default): only when true does the officers' not-answered list carry a DM link. Off by default. Always sent; optional for older bodies. */
+    @SerialName("officer_dms") val officerDms: Boolean? = null,
     /** The raid-day reminder, "HH:MM" in time_zone (default "15:00"): on a raid's day in the player's zone, at this time, raid.signup_nudge goes to a member who has not answered. A reminder at or after the start goes two hours before it. Always sent; optional so an older body still decodes. */
     @SerialName("raid_reminder") val raidReminder: String? = null,
     @SerialName("events") val events: List<NotificationEvent> = emptyList(),
@@ -2136,6 +2169,7 @@ data class NotificationsPatch(
     @SerialName("quiet_hours") val quietHours: QuietHours? = null,
     /** "HH:MM" from 00:00 to 23:45 on a 15-minute step; anything else is 422 with fields.raid_reminder. */
     @SerialName("raid_reminder") val raidReminder: String? = null,
+    @SerialName("officer_dms") val officerDms: Boolean? = null,
     @SerialName("events") val events: List<NotificationChoice>? = null,
 )
 
@@ -2646,6 +2680,8 @@ data class RaidNotSignedRaider(
     @SerialName("discord_linked") val discordLinked: Boolean,
     /** The row's sign-up role, from its roster group. Always sent; optional for older bodies. */
     @SerialName("role") val role: String? = null,
+    /** https://discord.com/users/<id>, where Message opens a DM, only when the member opted into officer DMs (notification settings officer_dms) and linked Discord; null otherwise. No Discord id is ever sent for a member who did not opt in. */
+    @SerialName("discord_dm_url") val discordDmUrl: String? = null,
     /** The account's answer for the guild's raid of the week before (its latest raid that started in the 8 days before this one, cancelled aside; the best answer across its characters), missed when it gave none; null when there was no such raid. */
     @SerialName("last_week") val lastWeek: String? = null,
 )
@@ -2675,9 +2711,28 @@ data class RaidPatch(
 )
 
 @Serializable
+data class RaidPingRequest(
+    @SerialName("role") val role: String? = null,
+)
+
+@Serializable
+data class RaidPingResult(
+    /** False when no non-signer has linked Discord (nothing posted */
+    @SerialName("posted") val posted: Boolean,
+    /** How many the message mentioned ("Mentioned 2 healers"). */
+    @SerialName("mentioned") val mentioned: Int,
+    @SerialName("no_discord") val noDiscord: Int,
+    @SerialName("no_discord_names") val noDiscordNames: List<String> = emptyList(),
+    /** When the raiders this ping mentioned may be mentioned again. */
+    @SerialName("next_allowed_at") val nextAllowedAt: String? = null,
+    /** Linked raiders left out because a ping mentioned them for this raid in the last 6 hours. Always sent; optional for older bodies. */
+    @SerialName("recently_mentioned") val recentlyMentioned: Int? = null,
+)
+
+@Serializable
 data class RaidPingState(
     @SerialName("last_pinged_at") val lastPingedAt: String? = null,
-    /** last_pinged_at plus 6 hours; null before the first ping. */
+    /** last_pinged_at plus 6 hours, when the raiders the last ping mentioned may be mentioned again (others may be pinged any time); null before the first ping. */
     @SerialName("next_allowed_at") val nextAllowedAt: String? = null,
 )
 
@@ -2895,6 +2950,56 @@ data class RankingsPage(
     @SerialName("deduped") val deduped: Boolean,
     /** Where the requested character stands on this filtered board, with its best kill; absent when none was asked for or it has no ranked kill in the cohort */
     @SerialName("character_rank") val characterRank: CharacterRank? = null,
+)
+
+/** One fight's rating card for one player. overall is 0 to 100 (overall_uncapped before the cap; overall_capped true when it bit); coverage is the share of the fight measured; insufficient cards carry zero overalls and insufficient_reason. */
+@Serializable
+data class RatingCard(
+    @SerialName("player_key") val playerKey: String,
+    @SerialName("player_name") val playerName: String,
+    @SerialName("class") val className: String,
+    @SerialName("spec") val spec: String,
+    @SerialName("role") val role: String,
+    @SerialName("overall") val overall: Double,
+    @SerialName("overall_uncapped") val overallUncapped: Double,
+    @SerialName("overall_capped") val overallCapped: Boolean,
+    @SerialName("coverage") val coverage: Double,
+    @SerialName("insufficient") val insufficient: Boolean,
+    @SerialName("insufficient_reason") val insufficientReason: String? = null,
+    @SerialName("components") val components: List<RatingComponent> = emptyList(),
+)
+
+/** One scored part of a card; score null when excluded (reason says why). */
+@Serializable
+data class RatingComponent(
+    @SerialName("name") val name: String,
+    @SerialName("score") val score: Double? = null,
+    @SerialName("weight") val weight: Double,
+    @SerialName("basis") val basis: String,
+    @SerialName("percentile") val percentile: Double? = null,
+    @SerialName("bracket_n") val bracketN: Long? = null,
+    @SerialName("excluded") val excluded: Boolean,
+    @SerialName("reason") val reason: String? = null,
+    @SerialName("moments") val moments: List<RatingMoment> = emptyList(),
+)
+
+@Serializable
+data class RatingMoment(
+    @SerialName("kind") val kind: String,
+    @SerialName("at_ms") val atMs: Long,
+    @SerialName("spell_id") val spellId: Long? = null,
+    @SerialName("spell_name") val spellName: String? = null,
+    @SerialName("avoidable") val avoidable: Boolean? = null,
+    @SerialName("anchor") val anchor: String? = null,
+)
+
+@Serializable
+data class RatingTrendPoint(
+    @SerialName("fought_at") val foughtAt: String,
+    /** 0 to 100. */
+    @SerialName("overall") val overall: Double,
+    @SerialName("report_id") val reportId: String,
+    @SerialName("fight_index") val fightIndex: Int,
 )
 
 @Serializable
@@ -3548,6 +3653,8 @@ data class Widget(
     @SerialName("generated_at") val generatedAt: String,
     /** The day the first raids open (dates.json role raids): the no-guild widget's countdown (ruling R13). The API always sends it; optional so a snapshot an older build cached still decodes. */
     @SerialName("first_raids_at") val firstRaidsAt: String? = null,
+    /** The first raids' names in the countdown's order (Barrow Deeps, Hyjal Summit, Onyxia's Lair). Always sent; optional for older snapshots. */
+    @SerialName("first_raids_zones") val firstRaidsZones: List<String>? = null,
     /** null for an account with no characters. */
     @SerialName("character") val character: WidgetCharacter? = null,
     /** null when the character is on no guild's roster (`No guild yet`). */
@@ -3613,6 +3720,16 @@ data class WidgetNextRaid(
     @SerialName("my") val my: WidgetMine,
     /** The character may answer In, Late or Out now: open, not ended, verified. */
     @SerialName("can_sign_up") val canSignUp: Boolean,
+    /** The zone's icon, a name under /data/{build}/icons. Always sent; optional for older snapshots. */
+    @SerialName("zone_icon") val zoneIcon: String? = null,
+    /** Signed In. */
+    @SerialName("in") val inCount: Int? = null,
+    /** Signed Late. */
+    @SerialName("late") val late: Int? = null,
+    /** Tanks signed In. */
+    @SerialName("tanks") val tanks: Int? = null,
+    /** Healers signed In. */
+    @SerialName("healers") val healers: Int? = null,
 )
 
 @Serializable
@@ -3622,6 +3739,8 @@ data class WidgetUpgradePick(
     @SerialName("quality") val quality: Int,
     @SerialName("icon") val icon: String,
     @SerialName("item_level") val itemLevel: Int,
+    /** Where it comes from, Home's HomePick source_line. Always sent; optional for older snapshots. */
+    @SerialName("source_line") val sourceLine: String? = null,
 )
 
 @Serializable

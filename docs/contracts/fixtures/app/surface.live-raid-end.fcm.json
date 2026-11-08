@@ -1,0 +1,30 @@
+{
+  "message": {
+    "token": "fcm-registration-token",
+    "data": {
+      "kind": "live.raid.end",
+      "raid_id": "7",
+      "guild_id": "2",
+      "guild_name": "OLYMPUS XXVII",
+      "zone_name": "Onyxia's Lair",
+      "character_name": "Lightningbolltz",
+      "zone_icon": "inv_misc_head_dragon_black",
+      "starts_at": "1796954400",
+      "status": "done",
+      "my_state": "in",
+      "role": "dps",
+      "signed_up": "38",
+      "in": "36",
+      "late": "2",
+      "tanks": "2",
+      "healers": "5",
+      "kills": "1",
+      "report_ready": "true",
+      "loot": "[{\"name\":\"Sapphiron Drape\",\"quality\":4,\"icon\":\"inv_misc_cape_16\"}]"
+    },
+    "android": {
+      "priority": "HIGH",
+      "collapse_key": "live-raid-7"
+    }
+  }
+}
