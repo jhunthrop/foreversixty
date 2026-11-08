@@ -1,30 +1,19 @@
-# iOS build lane 2: handover
+# iOS lane 2: handover (2026-11-08, evening)
 
-State of `apps/ios` against `design/specs/2026-11-08-app-flows.md` after lane 2's step 3, for whoever continues steps 4 and 6 (read `HANDOFF.md` and `ANDROID-HANDOVER.md` beside this file for the shared gotchas).
+Landed on main:
+- ios-sim-runtime, 4f212eefe: tools/ios-ci-simulator.sh picks/verifies/downloads the iOS 26.5 runtime (falls back to an installed 26.x with a warning, ::error:: with none), creates the iPhone 17 on that runtime id, boots with 3 retries, and ios.yml re-checks the device right before testing (job timeout 60 min).
+- ios-main-green, 7724893b8: parity text fix (ParityCheck.assert is `async throws`; first call turns accessibility automation on and awaits a 1 s main-queue drain; text pass renders a window tall enough that nothing scrolls, re-takes the key window, reads after the image snapshots); GuidesLogicTests talent totals are floors.
+- ios-home, 49a474255: flows spec step 3 (time-aware Home from /v1/home, the shared next raid card, Best run, New for you, capture UITests on four tabs with DEBUG `-FSMenu`). Spec appendix A no longer quotes "answer by".
 
-## Done
-| Step | What a player gets | Where |
-|---|---|---|
-| 3 Home | `/v1/home` sections in the server's order under one head (crest, name, `Level 60 Fury Warrior · Olympus XXVII`, a leveler's levels to the next band): raid live, the raid-day card, Last night, Next upgrades with Best run, the next raid line with its answers, New for you, Find a guild, notices; loading, error, no character | `App/Home/Flow/` (HomeBlocks, HomeFlowContent, HomeFlowPresenter, HomeFlowModel, HomeFlowView, HomeFlowLive), `App/Home/HomeScreen.swift` |
-| 3 the next raid card | countdown, `as Thandrel, Damage`, In/Late/Bench/Out with the current one selected, Late's chips (`late_minutes`), the tally against the comp target, `N things before you pull` (ready check), an officer's unanswered (short role) and applicants | `App/Raids/Views/NextRaidBlock.swift` (NextRaidCardView, NextRaidLineView, RaidAnswerButtons, LateMinutesChips); content type `NextRaidContent` |
-| 3 Best run | computed from the cached BiS and loot files (no endpoint) | `App/Bis/BestRun.swift` |
-| 3 captures | `CaptureLaunch` signs in and opens a tab plus a menu row (DEBUG `-FSMenu <row>`) | `UITests/CaptureLaunch.swift` |
+Ready, each pushed, not landed (land in this order, each after the coordinator's go; before each: merge origin/main, run ios.yml + web.yml + android.yml on the branch and put all three run ids in the go request; ios.yml on land/** is skipped in launch mode but tools/land.sh dispatches it itself):
+1. `ios2-raid` (step 4; the coordinator's go is given; order: Android widgets, then ios-raid, then Android mocks/secondary, then ios-gear and ios-widgets, Raid tab: every mocked state, Not answered with role pings, applicant, raid night + ready check, officer_dms toggle from Android's shared mock commit 065266372). Head c0ef2f58a (main 49a474255 merged) green on all three: ios 42518967121, web 42518969783, android 42518971940. Merge main again (4f212eefe + Android widgets) before landing.
+2. `ios2-gear` (step 6, Gear: summary + Change, Where to go tonight from WhereToGo/ItemPlaces (Best run reads from it), Every slot, the new item sheet with who needs it; old GearScreen/GearView/GearModel deleted). Head e4388741c green on all three (ios 42505621854, web 42508164282, android 42508166554) before Home landed; needs main merged after Raid lands (HomeScreen.swift item-sheet switch + raid routing both touch flowActions).
+3. `ios2-widgets` (step 7, widgets R13 + Live Activity + Control widget + push-to-start on api-live fields). Head c851cb730 green on all three (ios 42503087367, web 42506891270, android 42506893650) on main 7724893b8; needs main merged.
+4. `ios2-restyle` (step 8, partial: Your reports, Devices, Offline data, Update required restyled with parity; Talents entry from Planner; SurfaceGuardTests per-file ratchet). Head 6675970a9, no goldens recorded yet (CI download outage at the time). Its handover: design/reviews/2026-11-08-app-flows/IOS-RESTYLE-HANDOVER.md on that branch. Coordinator ruling since: guide/guides-class, patch notes, account/premium, guild roster/raids/loot and sim are re-mocked by Android lane 5's land/mocks-secondary; build no parity for those until it lands. api-rating (5910432f8) gives the character page "Rating N of 100" (getCharacterRating; 404 hides the row).
 
-New design-system pieces: `FSCountdown` + `FSClockPart`, `FSTally`, `FSMeter`, `FSSkeleton` (`Sources/DesignSystem/Countdown.swift`), `WrapLayout(lineSpacing:)`, `ItemLineView` (`App/Items`, `ui/ItemRow`).
+Follow-ups:
+- RankingsStore.homeLine / ReportsStore.homeLine and their Copy helpers are dead since Home landed (only HomeAnswerView used them); delete when ios2-restyle merges main.
+- SurfaceGuardTests (on ios2-restyle) ratchets per file: lower/delete Home/Raid/Bis lines when they merge.
+- API asks still open: applyToGuild for the app (Apply opens the site), an applicant event kind, guild sims rank and last raid loot count for the Raid tab's page rows, an icon on dungeon/raid sources in loot.json and the guild's next raid per zone for the item sheet.
 
-Parity: `AppTests/Home/HomeFlowTests.swift` (13 home states, no EXPECTED_DRIFT) with `HomeFlowTestData` (the mocks' scenario as content values).
-
-## Next, in the spec's order
-4. **Raid tab**: built on `ios2-raid` (sub-lane of lane 2): `App/Raids/Flow/` (RaidRootView per state, NotAnsweredView with the 4 s Mark hold and Undo, ApplicantView, RaidNightPageView, ReadyChecklistView; presenters and models), `RaidsTab` rewired (routes `notAnswered`, `applicant`, `calendar`; `night` is the raid night page, Your raid night after it), Home's raid actions and `raid.short` routed via `IntentDestination.raid`. Parity `AppTests/Raids/RaidFlowTests.swift` (12 states). Mention pings by role (pingGuildRaid), Discord DM shows only with discord_dm_url, the applicant head names race and faction, Notifications has Let officers DM me on Discord (officer_dms; the Notifications mock gained its Discord section, so Android needs the toggle for its notification-settings parity). Left for the API: applying from the app (applyToGuild is web-only; Apply opens /app/guild/{id}), an applicant event kind (Review from a push), the guild sims rank and the last raid's loot count (those rows print no line until then).
-6. **Gear** (mocks ios-gear, -gear-out, -item-sheet): summary line with Change (the picker, preselected), Where to go tonight (generalise `BestRun`'s dungeon index to every source kind: instance, profession, reputation), Every slot (Worn or the gain), the item sheet with `GET /v1/guilds/{id}/items/{item}/needs`. Delete `GearScreen` / `GearView` / `GearModel` in `App/Home` once Gear replaces them; `HomeSnapshotTests`' tooltip cases go with the old sheet.
-
-## Open items
-- `answer_by` is always null (no guild stores a cutoff): Home prints the raid time alone; the mock fixture dropped "answer by" (spec appendix A still quotes it).
-- `zone_icon` and Last night's loot `gain`/`unit` arrive with api-raidnight (optional); until then `RaidIcons` mirrors `api/internal/zoneicons` and the loot line stops at the slot.
-- `RankingsStore.homeLine`, `ReportsStore.homeLine` and their Copy helpers are dead now Home's rows are gone: delete them once the restyle branch and this one are both on main (see IOS-RESTYLE-HANDOVER.md).
-- `SurfaceGuardTests` (restyle sub-lane) ratchets per file: lower or delete the Home/Raid/Bis allowance lines when those files drop a retired style.
-
-## Gotchas
-- Local tests: `apps/ios/build/ios2-test.sh LOG Suite...` (git-ignored) builds once and runs the suites under the simulator lock; other lanes queue on the same lock, so a run can wait 20 minutes.
-- Goldens only from CI: push a non-land branch, `gh workflow run ios.yml --ref <branch> -f record=true`, download `ios-snapshots` into `apps/ios/AppTests`, commit, then a plain run must be green. ios.yml and android.yml are skipped on `land/**` in launch mode.
-- A copy placeholder named after a Swift keyword (`{as}`) breaks the generated Copy.swift; `%` is not allowed in copy (pass it in the value).
+Gotchas: poll GitHub at most every 3 minutes (shared token); `git commit` messages containing some flag-like words trip the block-no-verify hook, use `git commit -F <file>`; ios.yml simulator boot flakes ("runtime bundle", "iOS Simulator (null)") just need `gh run rerun` until the CI hardening lands.
