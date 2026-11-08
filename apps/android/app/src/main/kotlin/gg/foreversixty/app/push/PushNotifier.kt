@@ -14,12 +14,11 @@ import androidx.core.net.toUri
 import gg.foreversixty.app.MainActivity
 import gg.foreversixty.app.R
 import gg.foreversixty.app.raids.push.ApplicantNotificationActions
-import gg.foreversixty.app.raids.push.ApplicantPushPayload
 import gg.foreversixty.app.raids.push.RaidNotificationActions
 
 /**
- * Draws a push on its group's channel (spec 2026-11-08 F1, F4): the title and line, the raid answers
- * for RAID_SIGNUP, and a tap that opens its answer. One notification per collapse id, so a later
+ * Draws a push on its group's channel (spec 2026-11-08 F1, F4): the title and line, the buttons its
+ * category names (the raid answers, an applicant's Decline), and a tap that opens its answer. One notification per collapse id, so a later
  * message for the same raid replaces the earlier one.
  */
 object PushNotifier {
@@ -39,16 +38,13 @@ object PushNotifier {
         notify(context, tag, id, builder.build())
     }
 
-    /**
-     * The buttons: an applicant's Decline by its kind (the server names every actionable push
-     * RAID_SIGNUP), else the raid answers its category names.
-     */
-    private fun actions(context: Context, message: PushMessage, tag: String, id: Int): List<NotificationCompat.Action> {
-        if (message.kind == ApplicantPushPayload.KIND) {
-            return ApplicantPushPayload.parse(message.data)?.let { ApplicantNotificationActions.actions(context, it, tag, id) }.orEmpty()
+    /** The buttons the message's category names ([PushActionSet]). */
+    private fun actions(context: Context, message: PushMessage, tag: String, id: Int): List<NotificationCompat.Action> =
+        when (val set = PushActionSet.of(message)) {
+            is PushActionSet.Raid -> RaidNotificationActions.actions(context, set.category, message.data, tag, id)
+            is PushActionSet.Applicant -> ApplicantNotificationActions.actions(context, set.payload, tag, id)
+            PushActionSet.None -> emptyList()
         }
-        return message.category?.let { RaidNotificationActions.actions(context, it, message.data, tag, id) }.orEmpty()
-    }
 
     /** Posts when the player allowed notifications (Android 13 and up ask; 9 to 12 never do). */
     fun notify(context: Context, tag: String?, id: Int, notification: Notification) {

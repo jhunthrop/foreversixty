@@ -615,9 +615,6 @@
     <string name="push_group_account_line">Your plan, payments and guild approval</string>
     <string name="push_applicant_declined">Declined %1$s</string>
     <string name="push_applicant_declinedDm">They got a Discord message saying so.</string>
-    <string name="push_applicant_decided">Already decided</string>
-    <string name="push_applicant_decidedLine">Another officer answered this application first.</string>
-    <string name="push_applicant_failed">The decline did not go through. Try again.</string>
     <string name="first_pickMain_title">Pick your main</string>
     <string name="first_pickMain_meta">From Battle.net, level 10 and up.</string>
     <string name="first_pickMain_lead">Home answers for your main, and your raid sign-ups are for it. Switch any time from your portrait, top left.</string>

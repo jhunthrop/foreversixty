@@ -3,7 +3,6 @@ package gg.foreversixty.app.raids.push
 import android.content.res.Resources
 import gg.foreversixty.app.R
 import gg.foreversixty.app.navigation.DeepLink
-import gg.foreversixty.app.network.ApiError
 import gg.foreversixty.app.network.ApiResult
 import gg.foreversixty.app.raids.flows.RaidFlowService
 
@@ -18,6 +17,7 @@ data class ApplicantPushPayload(val guild: Long, val application: Long) {
 
     companion object {
         const val KIND = "guild.applicant"
+        const val CATEGORY = "GUILD_APPLICANT"
         const val ACTION_DECLINE = "application_decline"
 
         private const val KEY_GUILD = "guild_id"
@@ -33,17 +33,17 @@ data class ApplicantPushPayload(val guild: Long, val application: Long) {
 
 /** What Decline from the shade did. */
 sealed interface ApplicantDeclineOutcome {
-    /** The notification's new words; [retry] keeps Decline on it. */
-    data class Answered(val title: String, val body: String, val retry: Boolean = false) : ApplicantDeclineOutcome
+    /** The notification's new words. */
+    data class Answered(val title: String, val body: String) : ApplicantDeclineOutcome
 
-    /** A refusal the shade cannot word (no longer an officer, no such application): the sheet opens. */
+    /** A refused or failed decline: the applicant sheet opens. */
     data class Open(val link: DeepLink) : ApplicantDeclineOutcome
 }
 
 /**
- * Declines from the shade: the POST, then the answer that replaces the notification. Declined names
- * the applicant and says when the bot told them on Discord; an application another officer already
- * decided says so; a lost connection keeps Decline to try again.
+ * Declines from the shade: the POST, then the answer that replaces the notification, naming the
+ * applicant and saying when the bot told them on Discord. A decline the server refuses, or that
+ * fails, opens the applicant sheet, where the officer sees the application as it stands.
  */
 class ApplicantPushDecliner(private val service: RaidFlowService, private val res: Resources) {
     suspend fun decline(payload: ApplicantPushPayload): ApplicantDeclineOutcome =
@@ -53,22 +53,9 @@ class ApplicantPushDecliner(private val service: RaidFlowService, private val re
                 val body = if (decision.discordDm.done) res.getString(R.string.push_applicant_declinedDm) else ""
                 ApplicantDeclineOutcome.Answered(res.getString(R.string.push_applicant_declined, decision.application.character.name), body)
             }
-            is ApiResult.Failure -> refusal(payload, result.error)
+            is ApiResult.Failure -> failed(payload)
         }
 
-    /** The answer when the decline did not finish in time. */
-    fun failed(): ApplicantDeclineOutcome.Answered =
-        ApplicantDeclineOutcome.Answered(res.getString(R.string.push_applicant_failed), "", retry = true)
-
-    private fun refusal(payload: ApplicantPushPayload, error: ApiError): ApplicantDeclineOutcome = when {
-        error !is ApiError.Server -> failed()
-        error.code == APPLICATION_CLOSED ->
-            ApplicantDeclineOutcome.Answered(res.getString(R.string.push_applicant_decided), res.getString(R.string.push_applicant_decidedLine))
-        else -> ApplicantDeclineOutcome.Open(payload.deepLink)
-    }
-
-    private companion object {
-        /** 409: the application is already accepted, declined or withdrawn. */
-        const val APPLICATION_CLOSED = "application_closed"
-    }
+    /** A decline that did not go through: refused, failed or out of time. */
+    fun failed(payload: ApplicantPushPayload): ApplicantDeclineOutcome = ApplicantDeclineOutcome.Open(payload.deepLink)
 }

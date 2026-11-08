@@ -11068,28 +11068,6 @@
         }
       }
     },
-    "push.applicant.decided": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Already decided"
-          }
-        }
-      }
-    },
-    "push.applicant.decidedLine": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Another officer answered this application first."
-          }
-        }
-      }
-    },
     "push.applicant.declined": {
       "comment": "Arguments: 1 name (string)",
       "extractionState": "manual",
@@ -11109,17 +11087,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "They got a Discord message saying so."
-          }
-        }
-      }
-    },
-    "push.applicant.failed": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "The decline did not go through. Try again."
           }
         }
       }

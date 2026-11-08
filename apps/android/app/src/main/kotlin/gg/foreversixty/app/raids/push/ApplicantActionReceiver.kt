@@ -19,7 +19,7 @@ import kotlinx.coroutines.withTimeoutOrNull
 /**
  * Decline on a guild.applicant notification, answered in the background like the raid answers
  * ([RaidActionReceiver]): `goAsync`, the POST inside the receiver's window, then the answer replaces
- * the notification by its tag. A refusal the shade cannot word opens the applicant sheet.
+ * the notification by its tag. A refused or failed decline opens the applicant sheet.
  */
 class ApplicantActionReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
@@ -34,7 +34,7 @@ class ApplicantActionReceiver : BroadcastReceiver() {
         val decliner = ApplicantPushDecliner(LiveRaidFlowService(app.graph.apiClient), context.resources)
         CoroutineScope(SupervisorJob() + Dispatchers.IO).launch {
             try {
-                when (val outcome = withTimeoutOrNull(BUDGET_MILLIS) { decliner.decline(payload) } ?: decliner.failed()) {
+                when (val outcome = withTimeoutOrNull(BUDGET_MILLIS) { decliner.decline(payload) } ?: decliner.failed(payload)) {
                     is ApplicantDeclineOutcome.Answered -> post(context, outcome, payload, tag, id)
                     is ApplicantDeclineOutcome.Open -> PushNotifier.open(context, outcome.link.url())
                 }
@@ -44,7 +44,7 @@ class ApplicantActionReceiver : BroadcastReceiver() {
         }
     }
 
-    /** The answer replaces the applicant: the same tag and id; a failure keeps Decline. */
+    /** The answer replaces the applicant: the same tag and id. */
     private fun post(context: Context, answer: ApplicantDeclineOutcome.Answered, payload: ApplicantPushPayload, tag: String?, id: Int) {
         val builder = NotificationCompat.Builder(context, PushGroup.Officer.channelId)
             .setSmallIcon(R.drawable.ic_notification_seal)
@@ -53,9 +53,6 @@ class ApplicantActionReceiver : BroadcastReceiver() {
             .setStyle(NotificationCompat.BigTextStyle().bigText(answer.body))
             .setContentIntent(PushNotifier.openIntent(context, payload.deepLink.url(), tag))
             .setAutoCancel(true)
-        if (answer.retry) {
-            ApplicantNotificationActions.actions(context, payload, tag, id).forEach(builder::addAction)
-        }
         PushNotifier.notify(context, tag, id, builder.build())
     }
 

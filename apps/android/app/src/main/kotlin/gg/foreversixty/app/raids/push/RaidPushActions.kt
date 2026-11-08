@@ -28,6 +28,9 @@ object RaidPushCategory {
     /** Lane F14: the ongoing raid countdown's Late and Out (spec §5.6). */
     const val LIVE = "RAID_LIVE"
 
+    /** Every category that draws raid answers. */
+    val ALL = setOf(SIGNUP, ASK_SPEC, CHOOSE, LIVE)
+
     const val ACTION_IN = "signup_in"
     const val ACTION_LATE = "signup_late"
     const val ACTION_BENCH = "signup_bench"

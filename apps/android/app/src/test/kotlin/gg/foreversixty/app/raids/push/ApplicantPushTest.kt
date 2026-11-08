@@ -7,6 +7,7 @@ import gg.foreversixty.app.model.GuildOfficerApplications
 import gg.foreversixty.app.navigation.DeepLink
 import gg.foreversixty.app.network.ApiError
 import gg.foreversixty.app.network.ApiResult
+import gg.foreversixty.app.push.PushActionSet
 import gg.foreversixty.app.push.PushMessage
 import gg.foreversixty.app.raids.RaidFixture
 import gg.foreversixty.app.raids.RaidsDestination
@@ -30,7 +31,7 @@ class ApplicantPushTest {
         "title" to "New applicant: Test Applicant, Holy Paladin 60",
         "body" to "Applied to Olympus XXVII.",
         "link" to "https://foreversixty.gg/app/guild/2/applicants/41",
-        "category" to RaidPushCategory.SIGNUP,
+        "category" to ApplicantPushPayload.CATEGORY,
         "guild_id" to "2",
         "application_id" to "41",
     )
@@ -90,25 +91,41 @@ class ApplicantPushTest {
     }
 
     @Test
-    fun `an application already decided says so, without Decline`() = runTest {
-        val (outcome) = decline(server(409, "application_closed"))
-        assertEquals(
-            ApplicantDeclineOutcome.Answered("Already decided", "Another officer answered this application first."),
-            outcome,
+    fun `a refused or failed decline opens the applicant sheet`() = runTest {
+        val sheet = ApplicantDeclineOutcome.Open(DeepLink.GuildApplicant(2, 41))
+        assertEquals(sheet, decline(server(409, "application_closed")).first)
+        assertEquals(sheet, decline(server(403, "forbidden")).first)
+        assertEquals(sheet, decline(ApiResult.Failure(ApiError.Network(IOException("offline")))).first)
+        assertEquals(sheet, decline(ApiResult.Failure(ApiError.Status(503))).first)
+        assertEquals(sheet, ApplicantPushDecliner(FakeFlows(server(500, "x")), resources()).failed(payload))
+    }
+
+    @Test
+    fun `GUILD_APPLICANT draws only Decline, RAID_SIGNUP the raid answers`() {
+        val applicant = requireNotNull(PushMessage.parse(data, null, null, null))
+        assertEquals(PushActionSet.Applicant(payload), PushActionSet.of(applicant))
+        val raid = requireNotNull(
+            PushMessage.parse(
+                mapOf("kind" to "raid.posted", "title" to "Onyxia's Lair", "category" to RaidPushCategory.SIGNUP, "guild_id" to "2", "raid_id" to "31"),
+                null, null, null,
+            ),
         )
+        assertEquals(PushActionSet.Raid(RaidPushCategory.SIGNUP), PushActionSet.of(raid))
     }
 
     @Test
-    fun `a refusal the shade cannot word opens the sheet`() = runTest {
-        assertEquals(ApplicantDeclineOutcome.Open(DeepLink.GuildApplicant(2, 41)), decline(server(403, "forbidden")).first)
-        assertEquals(ApplicantDeclineOutcome.Open(DeepLink.GuildApplicant(2, 41)), decline(server(404, "not_found")).first)
-    }
-
-    @Test
-    fun `a lost connection keeps Decline to try again`() = runTest {
-        val expected = ApplicantDeclineOutcome.Answered("The decline did not go through. Try again.", "", retry = true)
-        assertEquals(expected, decline(ApiResult.Failure(ApiError.Network(IOException("offline")))).first)
-        assertEquals(expected, decline(ApiResult.Failure(ApiError.Status(503))).first)
+    fun `the category decides, never the kind or the actions`() {
+        // An applicant sent as RAID_SIGNUP (the old API) carries no raid, so it draws nothing.
+        val old = requireNotNull(PushMessage.parse(data + ("category" to RaidPushCategory.SIGNUP), null, null, null))
+        assertEquals(PushActionSet.None, PushActionSet.of(old))
+        val unknown = requireNotNull(PushMessage.parse(data + ("category" to "SOMETHING_NEW"), null, null, null))
+        assertEquals(PushActionSet.None, PushActionSet.of(unknown))
+        // No buttons, but the tap still opens the sheet.
+        assertEquals(DeepLink.GuildApplicant(2, 41).url(), unknown.landing())
+        val none = requireNotNull(PushMessage.parse(data - "category", null, null, null))
+        assertEquals(PushActionSet.None, PushActionSet.of(none))
+        val missingIds = requireNotNull(PushMessage.parse(data - "application_id", null, null, null))
+        assertEquals(PushActionSet.None, PushActionSet.of(missingIds))
     }
 
     private class FakeFlows(private val result: ApiResult<GuildApplicationDecision>) : RaidFlowService {

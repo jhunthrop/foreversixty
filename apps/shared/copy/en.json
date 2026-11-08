@@ -596,9 +596,6 @@
 
     "push.applicant.declined": "Declined {name}",
     "push.applicant.declinedDm": "They got a Discord message saying so.",
-    "push.applicant.decided": "Already decided",
-    "push.applicant.decidedLine": "Another officer answered this application first.",
-    "push.applicant.failed": "The decline did not go through. Try again.",
 
     "first.pickMain.title": "Pick your main",
     "first.pickMain.meta": "From Battle.net, level 10 and up.",
