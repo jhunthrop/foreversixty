@@ -333,7 +333,10 @@ PLANNED = [  # weekday block, zone, when, count line, your answer (None: not sig
 def guild_calendar(platform: str) -> str:
     """F16.4: the planned raids, then the phone's calendar (the switch, which raids, the alert) and the link to share."""
     rows = [Row(zone, f'{when}{DOT}{count}', date_block(day), Tag(you, 'kill') if you else Tag('Not signed up')) for day, zone, when, count, you in PLANNED]
-    sync = Rows([Row('Raids in my calendar', 'A calendar called Forever Sixty raids. The app keeps it up to date.', trail=Switch('Raids in my calendar'), link=False),
+    # The switch stays on the title row (a Row's trail drops under its body below 600), as Notifications' groups.
+    switch = ('<div class="row setrow"><div class="b"><div class="ttl">Raids in my calendar</div><div class="sub">A calendar called Forever '
+              'Sixty raids. The app keeps it up to date.</div></div>' + Switch('') + '</div>')
+    sync = Rows([switch,
                  Row('Which raids', 'Only ones I am In or Late for'),
                  Row('Alert', '1 hour before invites')], open_=True)
     share = (Rows([Row('Calendar link', 'For Google Calendar on the web, Outlook and other people. Anyone with the link sees your guild&rsquo;s raid times.',
