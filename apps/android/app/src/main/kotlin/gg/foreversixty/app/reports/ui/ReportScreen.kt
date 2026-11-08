@@ -1,148 +1,153 @@
 package gg.foreversixty.app.reports.ui
 
-import androidx.compose.material3.Icon
-import androidx.compose.material.icons.filled.Share
-import androidx.compose.material.icons.Icons
-import androidx.compose.material3.IconButton
-import gg.foreversixty.app.system.logic.ShareText
-import gg.foreversixty.app.system.logic.ShareMessage
-import gg.foreversixty.app.common.SavedAnswerStrip
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.shape.RoundedCornerShape
-import gg.foreversixty.app.designsystem.FsRadius
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Text
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
+import gg.foreversixty.app.designsystem.FsRadius
+import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.clearAndSetSemantics
-import androidx.compose.ui.unit.dp
 import gg.foreversixty.app.R
+import gg.foreversixty.app.auth.session.RelativeAge
 import gg.foreversixty.app.common.OfflineStamp
+import gg.foreversixty.app.common.SavedAnswerStrip
 import gg.foreversixty.app.designsystem.FsColor
-import gg.foreversixty.app.designsystem.ScaledType
-import gg.foreversixty.app.designsystem.MicroLabel
+import gg.foreversixty.app.designsystem.FsSpace
 import gg.foreversixty.app.designsystem.Tag
-import gg.foreversixty.app.designsystem.quietCard
+import gg.foreversixty.app.flows.FlowGap
+import gg.foreversixty.app.flows.FlowHead
+import gg.foreversixty.app.flows.FlowNote
+import gg.foreversixty.app.flows.FlowPage
+import gg.foreversixty.app.flows.FlowPlate
+import gg.foreversixty.app.flows.FlowPlateMessage
+import gg.foreversixty.app.flows.FlowPlateRetry
 import gg.foreversixty.app.model.Report
+import gg.foreversixty.app.phrase
 import gg.foreversixty.app.reports.logic.CoachPhase
-import gg.foreversixty.app.reports.logic.MetersTarget
 import gg.foreversixty.app.reports.logic.ParsesPhase
 import gg.foreversixty.app.reports.logic.ReportPhase
 import gg.foreversixty.app.reports.logic.ReportState
 import gg.foreversixty.app.reports.logic.Reports
 import gg.foreversixty.app.reports.logic.ReportsCopy
+import gg.foreversixty.app.reports.logic.MetersTarget
 import java.time.Instant
 import java.time.ZoneId
 
 /** What the report screen hands back. */
 data class ReportActions(
-    val back: () -> Unit = {},
     val openWeb: () -> Unit = {},
     val retry: () -> Unit = {},
     val retryParses: () -> Unit = {},
     val retryCoach: () -> Unit = {},
     val openMeters: (MetersTarget) -> Unit = {},
-    /** Lane F15: a public or unlisted report's share; null (and for guild or private ones) no button. */
-    val share: ((ShareMessage) -> Unit)? = null,
 )
 
-/** Everything F10.2 draws, apart from the store so screenshots drive every state. */
+/** Everything F10.2 draws, apart from the store so the tests drive every state. */
 data class ReportScreenState(
     val phase: ReportPhase,
     val parses: ParsesPhase,
     val coach: CoachPhase,
-    /** The bar's title before the report answers: the list row's zone, when pushed from it. */
+    /** The head's title before the report answers: the list row's zone, when pushed from it. */
     val title: String = "",
 )
 
-/** F10.2 and F10.5: a report, or the state that stands in for it. */
+/**
+ * A report (design/mocks `report-*`): the head (its name, date and visibility, the Summary tab and More,
+ * which opens the full report on the site), then your parses, the fights and the coach; or the state
+ * that stands in for it (`report-error`, `report-processing`).
+ */
 @Composable
 fun ReportContent(state: ReportScreenState, now: Instant, actions: ReportActions = ReportActions(), zone: ZoneId = ZoneId.systemDefault()) {
     val copy = ReportsCopy(LocalResources.current, zone)
-    val report = (state.phase as? ReportPhase.Loaded)?.report
-    Column(Modifier.fillMaxWidth().padding(bottom = 24.dp)) {
-        val res = LocalResources.current
-        val message = report?.let { r -> ShareText.report(res, r.id, r.zone ?: r.title, Instant.parse(r.createdAt), r.visibility, zone) }
-        val openWeb = BarAction.openWeb(actions.openWeb)
-        ReportsBar(report?.zone ?: state.title, stringResource(R.string.reports_back), actions.back) {
-            val share = actions.share
-            if (message != null && share != null) {
-                IconButton(onClick = { share(message) }) {
-                    Icon(Icons.Filled.Share, contentDescription = stringResource(R.string.share_action), tint = FsColor.strong)
-                }
-            }
-            IconButton(onClick = openWeb.run) { Icon(openWeb.icon(), contentDescription = openWeb.label, tint = FsColor.strong) }
-        }
+    FlowPage(top = 0.dp) {
         when (val phase = state.phase) {
-            ReportPhase.Loading -> ReportSkeleton()
-            ReportPhase.Failed -> ErrorRegion(stringResource(R.string.report_failed), actions.retry)
-            ReportPhase.NotYours -> Notice(stringResource(R.string.report_notYours_title), stringResource(R.string.report_notYours_body), FsColor.strong)
+            ReportPhase.Loading -> Loading(state.title)
+            ReportPhase.Failed -> {
+                FlowHead(stringResource(R.string.report_title), emptyList())
+                FlowGap(FsSpace.space5)
+                FlowPlate { FlowPlateRetry(stringResource(R.string.report_failed), stringResource(R.string.common_tryAgain), actions.retry) }
+            }
+            ReportPhase.NotYours -> {
+                FlowHead(stringResource(R.string.report_title), emptyList())
+                FlowGap(FsSpace.space5)
+                FlowPlate { FlowPlateMessage(listOf(stringResource(R.string.report_notYours_title), stringResource(R.string.report_notYours_body))) }
+            }
             is ReportPhase.Loaded -> {
+                Head(phase.report, now, copy, actions.openWeb)
                 phase.offlineSince?.let { SavedAnswerStrip(OfflineStamp.format(it, now, zone), phase.stale, actions.retry) }
-                Loaded(phase.report, state, now, copy, actions)
+                Body(phase.report, state, now, copy, actions)
             }
         }
     }
 }
 
 @Composable
-private fun Loaded(report: Report, state: ReportScreenState, now: Instant, copy: ReportsCopy, actions: ReportActions) {
-    Column(Modifier.padding(horizontal = 16.dp), verticalArrangement = Arrangement.spacedBy(22.dp)) {
-        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                MicroLabel(stringResource(R.string.report_tag), color = FsColor.gold)
-                Tag(copy.visibility(report.visibility), FsColor.nav)
-            }
-            Text(copy.reportMeta(report), style = ScaledType.meta, color = FsColor.muted)
-        }
-        when (ReportState.of(report.status)) {
-            ReportState.Processing -> {
-                Notice(stringResource(R.string.report_processing_title), stringResource(R.string.report_processing_body), FsColor.strong, inset = false)
-                return@Column
-            }
-            ReportState.Failed -> {
-                Notice(stringResource(R.string.report_unreadable_title), stringResource(R.string.report_unreadable_body), FsColor.wipe, inset = false)
-                return@Column
-            }
-            ReportState.Live -> {
+private fun Head(report: Report, now: Instant, copy: ReportsCopy, openWeb: () -> Unit) {
+    val res = LocalResources.current
+    val processing = ReportState.of(report.status) == ReportState.Processing
+    val title = Reports.headTitle(report) ?: stringResource(R.string.report_upload)
+    // A report still being read has no date or logger yet: its upload's age stands in.
+    val facts = if (processing) {
+        listOfNotNull(Reports.instantOrNull(report.createdAt)?.let { stringResource(R.string.report_uploaded, RelativeAge.of(it, now).phrase(res)) })
+    } else {
+        listOf(copy.reportMeta(report))
+    }
+    FlowHead(
+        title,
+        facts,
+        meta = if (processing) null else ({ Tag(copy.visibility(report.visibility), FsColor.muted) }),
+        tabs = { ReportTabs(openWeb) },
+    )
+}
+
+@Composable
+private fun Body(report: Report, state: ReportScreenState, now: Instant, copy: ReportsCopy, actions: ReportActions) {
+    when (ReportState.of(report.status)) {
+        ReportState.Processing -> Message(listOf(stringResource(R.string.report_processing_title), stringResource(R.string.report_processing_body)))
+        ReportState.Failed -> Message(listOf(stringResource(R.string.report_unreadable_title), stringResource(R.string.report_unreadable_body)))
+        ReportState.Live, ReportState.Done -> {
+            if (ReportState.of(report.status) == ReportState.Live) {
                 val seconds = Reports.secondsSinceUpdate(report.heartbeatAt, report.lastUploadAt, now) ?: 0
-                Notice(stringResource(R.string.report_live_title, seconds.toInt()), stringResource(R.string.report_live_body), FsColor.kill, inset = false)
+                Message(listOf(stringResource(R.string.report_live_title, seconds.toInt()), stringResource(R.string.report_live_body)))
             }
-            ReportState.Done -> Unit
+            ParsesSection(state.parses, copy, actions.retryParses)
+            FightsSection(report, copy, actions.openMeters)
+            CoachBlock(state.coach, copy, actions.retryCoach)
+            FlowNote(stringResource(R.string.report_footerMore), Modifier.padding(top = FsSpace.space6))
         }
-        ParsesCard(state.parses, copy, actions.retryParses)
-        FightsCard(report, copy, actions.openMeters)
-        CoachCard(state.coach, copy, actions.retryCoach)
-        Text(stringResource(R.string.report_footer), style = ScaledType.meta, color = FsColor.muted)
-    }
-}
-
-/** A report state's two lines in a quiet card (spec F10.5). */
-@Composable
-fun Notice(title: String, body: String, color: Color, inset: Boolean = true) {
-    val outer = if (inset) Modifier.padding(16.dp) else Modifier
-    Column(outer.fillMaxWidth().quietCard().padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-        Text(title, style = ScaledType.lead, color = color)
-        Text(body, style = ScaledType.meta, color = FsColor.muted)
     }
 }
 
 @Composable
-private fun ReportSkeleton() {
-    Column(Modifier.padding(16.dp).clearAndSetSemantics {}, verticalArrangement = Arrangement.spacedBy(14.dp)) {
-        SkeletonBar(80.dp, 18.dp)
-        SkeletonBar(260.dp, 12.dp)
-        Box(Modifier.fillMaxWidth().height(96.dp).background(FsColor.cardTop, RoundedCornerShape(FsRadius.legacyPanel)))
-        Box(Modifier.fillMaxWidth().height(220.dp).background(FsColor.cardTop, RoundedCornerShape(FsRadius.legacyPanel)))
+private fun Message(lines: List<String>) {
+    FlowGap(FsSpace.space5)
+    FlowPlate { FlowPlateMessage(lines) }
+}
+
+/** Loading: the head's title as the list row named it, then the plates' placeholders. */
+@Composable
+private fun Loading(title: String) {
+    FlowHead(title.ifEmpty { stringResource(R.string.report_title) }, emptyList())
+    FlowGap(FsSpace.space5)
+    Column(Modifier.clearAndSetSemantics {}, verticalArrangement = Arrangement.spacedBy(FsSpace.space5)) {
+        Placeholder(SKELETON_PARSES)
+        Placeholder(SKELETON_FIGHTS)
     }
 }
+
+@Composable
+private fun Placeholder(height: Dp) {
+    Box(Modifier.fillMaxWidth().height(height).background(FsColor.raised, RoundedCornerShape(FsRadius.plate)))
+}
+
+private val SKELETON_PARSES = 96.dp
+private val SKELETON_FIGHTS = 220.dp

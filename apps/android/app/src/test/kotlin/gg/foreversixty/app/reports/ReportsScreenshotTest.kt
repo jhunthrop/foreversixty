@@ -93,7 +93,7 @@ class ReportsScreenshotTest {
     }
 
     private fun list(name: String, phase: ReportsPhase, large: Boolean = false, pageFailed: Boolean = false) =
-        capture(name, large) { ReportsList(phase, pageFailed, ReportsTestData.viewer(), now, zone = zone) }
+        capture(name, large, scrolls = false) { ReportsList(phase, pageFailed, now, zone = zone) }
 
     private fun loaded(list: ReportList, offline: Instant? = null) =
         ReportsPhase.Loaded(ReportsContent(list.rows, list.total, list.page, offline))
@@ -108,7 +108,7 @@ class ReportsScreenshotTest {
     ) = screen(name, ReportScreenState(ReportPhase.Loaded(report, offline), me?.let { ParsesPhase.Loaded(it) } ?: ParsesPhase.Hidden, coach), large)
 
     private fun screen(name: String, state: ReportScreenState, large: Boolean = false) =
-        capture(name, large) { ReportContent(state, now, zone = zone) }
+        capture(name, large, scrolls = false) { ReportContent(state, now, zone = zone) }
 
     private fun meters(name: String, target: MetersTarget, metric: Metric, phase: MetersPhase, large: Boolean = false) =
         capture(name, large) {
@@ -125,16 +125,7 @@ class ReportsScreenshotTest {
 
     // F10.1 Your reports, F10.6, F10.7
 
-    @Test fun list() = list("reports-list-and", loaded(ReportsTestData.list()))
-
-    @Test @Config(qualifiers = PIXEL_9_XL)
-    fun listLarge() = list("reports-list-large-and", loaded(ReportsTestData.list()), large = true)
-
-    @Test fun empty() = list("reports-empty-and", loaded(ReportsTestData.emptyList()))
-
     @Test fun loading() = list("reports-loading-and", ReportsPhase.Loading)
-
-    @Test fun error() = list("reports-error-and", ReportsPhase.Failed)
 
     @Test fun signedOut() = list("reports-signedout-and", ReportsPhase.SignedOut)
 

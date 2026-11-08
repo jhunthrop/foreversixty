@@ -14560,6 +14560,17 @@
         }
       }
     },
+    "report.footerMore": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Meters, casts and deaths for every fight are under More, on foreversixty.gg."
+          }
+        }
+      }
+    },
     "report.inProgress": {
       "extractionState": "manual",
       "localizations": {
@@ -14614,6 +14625,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "%1$@ %2$@ · logged by %3$@"
+          }
+        }
+      }
+    },
+    "report.more": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "More"
           }
         }
       }
@@ -14800,7 +14822,29 @@
         }
       }
     },
+    "report.summary": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Summary"
+          }
+        }
+      }
+    },
     "report.tag": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Report"
+          }
+        }
+      }
+    },
+    "report.title": {
       "extractionState": "manual",
       "localizations": {
         "en": {
@@ -14901,6 +14945,29 @@
         }
       }
     },
+    "report.upload": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your upload"
+          }
+        }
+      }
+    },
+    "report.uploaded": {
+      "comment": "Arguments: 1 age (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uploaded %1$@"
+          }
+        }
+      }
+    },
     "report.wipeMeta": {
       "comment": "Arguments: 1 time (string), 2 percent (string)",
       "extractionState": "manual",
@@ -14995,6 +15062,30 @@
         }
       }
     },
+    "reports.count": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "1 report"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%1$lld reports"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "reports.earlier": {
       "extractionState": "manual",
       "localizations": {
@@ -15074,6 +15165,17 @@
         }
       }
     },
+    "reports.lead": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Every fight you logged, newest first."
+          }
+        }
+      }
+    },
     "reports.refresh": {
       "extractionState": "manual",
       "localizations": {
@@ -15093,6 +15195,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "%1$@ · %2$@ · %3$@"
+          }
+        }
+      }
+    },
+    "reports.rowSub": {
+      "comment": "Arguments: 1 bosses (string), 2 kills (string), 3 visibility (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$@ · %3$@"
+          }
+        }
+      }
+    },
+    "reports.sample": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open the sample report ›"
           }
         }
       }
@@ -15175,6 +15300,17 @@
         }
       }
     },
+    "reports.unreadableSub": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Could not be read"
+          }
+        }
+      }
+    },
     "reports.updated": {
       "comment": "Arguments: 1 n (int)",
       "extractionState": "manual",
@@ -15183,6 +15319,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Updated %1$lld s ago"
+          }
+        }
+      }
+    },
+    "reports.upload": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Upload a log"
           }
         }
       }

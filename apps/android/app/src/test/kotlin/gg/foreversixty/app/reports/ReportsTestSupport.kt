@@ -42,7 +42,7 @@ object ReportsTestData {
     fun coach(): CoachReview = RaidFixture.load(CoachReview.serializer(), "coach.fight")
     fun account(premium: Boolean): Me = RaidFixture.load(Me.serializer(), if (premium) "me.premium" else "me")
 
-    fun viewer(premium: Boolean = true): ReportsViewer = ReportsViewer.of(account(premium), ME_KEY)
+    fun viewer(premium: Boolean = true): ReportsViewer = ReportsViewer.of(account(premium))
 
     /** The night without its kill: fight 9 and its /me row dropped. */
     fun onlyWipes(): Report = report().let { r -> r.copy(fights = r.fights.filter { it.index != KILL_FIGHT }) }

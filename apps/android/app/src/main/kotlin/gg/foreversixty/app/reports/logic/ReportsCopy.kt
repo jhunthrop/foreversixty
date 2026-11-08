@@ -37,15 +37,18 @@ enum class Visibility(@param:StringRes val word: Int) {
 class ReportsCopy(private val res: Resources, private val zone: ZoneId = ZoneId.systemDefault()) {
     // List (F10.1)
 
-    /** `15 Dec · 1 boss · 1 kill`; a live row only `Updated 20 s ago`; a failed row `29 Nov · could not be read`. */
-    fun rowMeta(row: ReportRow, now: Instant): String {
-        val date = Reports.instantOrNull(row.createdAt)?.let(::shortDate).orEmpty()
+    /** `1 boss · 1 kill · Guild`; a live row `Updated 20 s ago`; a failed row `Could not be read`. */
+    fun rowSub(row: ReportRow, now: Instant): String {
+        val counts = res.getString(R.string.reports_rowSub, bosses(row.bossCount), kills(row.killCount), visibility(row.visibility))
         return when (ReportState.of(row.status)) {
-            ReportState.Failed -> res.getString(R.string.reports_unreadable, date)
-            ReportState.Live -> updated(row, now) ?: res.getString(R.string.reports_rowMeta, date, bosses(row.bossCount), kills(row.killCount))
-            ReportState.Processing, ReportState.Done -> res.getString(R.string.reports_rowMeta, date, bosses(row.bossCount), kills(row.killCount))
+            ReportState.Failed -> res.getString(R.string.reports_unreadableSub)
+            ReportState.Live -> updated(row, now) ?: counts
+            ReportState.Processing, ReportState.Done -> counts
         }
     }
+
+    /** The row's date under it: `15 Dec`. */
+    fun rowDate(row: ReportRow): String = Reports.instantOrNull(row.createdAt)?.let(::shortDate).orEmpty()
 
     fun bosses(n: Int): String = res.getQuantityString(R.plurals.reports_bosses, n, n)
 
@@ -62,18 +65,6 @@ class ReportsCopy(private val res: Resources, private val zone: ZoneId = ZoneId.
     }
 
     fun visibility(value: String): String = res.getString(Visibility.of(value).word)
-
-    /** `Onyxia's Lair, Monday 14 December, 1 boss, 1 kill, Guild` and, live, `live, updated 20 seconds ago`. */
-    fun rowLabel(row: ReportRow, now: Instant): String {
-        val date = Reports.instantOrNull(row.createdAt)?.let { "${WEEKDAY.format(it.atZone(zone))} ${DAY_MONTH.format(it.atZone(zone))}" }.orEmpty()
-        val base = res.getString(R.string.reports_a11y_row, Reports.name(row), date, bosses(row.bossCount), kills(row.killCount), visibility(row.visibility))
-        val seconds = Reports.secondsSinceUpdate(row.heartbeatAt, row.lastUploadAt, now)
-        return if (ReportState.of(row.status) == ReportState.Live && seconds != null) {
-            "$base, ${res.getString(R.string.reports_a11y_live, seconds.toString())}"
-        } else {
-            base
-        }
-    }
 
     // Report (F10.2)
 
@@ -239,7 +230,6 @@ class ReportsCopy(private val res: Resources, private val zone: ZoneId = ZoneId.
         const val MS_PER_SECOND = 1000L
         const val SECONDS_PER_MINUTE = 60
         val SHORT_DATE: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMM", Locale.US)
-        val DAY_MONTH: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMMM", Locale.US)
         val LONG_DATE: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy", Locale.US)
         val WEEKDAY: DateTimeFormatter = DateTimeFormatter.ofPattern("EEEE", Locale.US)
     }

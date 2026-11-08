@@ -15,6 +15,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -28,7 +29,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.contentDescription
@@ -45,7 +45,6 @@ import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.ScaledType
 import gg.foreversixty.app.designsystem.GameColors
 import gg.foreversixty.app.reports.logic.ParseTier
-import gg.foreversixty.app.reports.logic.Visibility
 import java.util.Locale
 
 /** A pushed screen's bar: back with its label, the uppercase title (a guide's in its class colour), and one trailing action. */
@@ -90,9 +89,6 @@ class BarAction(val label: String, val icon: @Composable () -> Painter, val run:
     companion object {
         @Composable
         fun refresh(run: () -> Unit) = BarAction(stringResource(R.string.reports_refresh), { androidx.compose.ui.graphics.vector.rememberVectorPainter(Icons.Filled.Refresh) }, run)
-
-        @Composable
-        fun openWeb(run: () -> Unit) = BarAction(stringResource(R.string.report_openWeb), { painterResource(R.drawable.ic_open_external) }, run)
     }
 }
 
@@ -120,6 +116,12 @@ fun isLargeText(): Boolean = LocalDensity.current.fontScale >= LARGE_TEXT_SCALE
 /** From this font scale rows switch to their largest-text layout. */
 const val LARGE_TEXT_SCALE = 1.3f
 
+/** A row's trailing chevron, muted. */
+@Composable
+fun Chevron(size: Dp) {
+    Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null, tint = FsColor.muted, modifier = Modifier.size(size))
+}
+
 @Composable
 fun SkeletonBar(width: Dp, height: Dp, modifier: Modifier = Modifier) {
     Box(modifier.width(width).height(height).background(FsColor.cardTop, RoundedCornerShape(4.dp)))
@@ -134,19 +136,6 @@ fun SkeletonDot(size: Dp) {
 @Composable
 fun OutcomeDot(color: Color) {
     Box(Modifier.size(10.dp).background(color, CircleShape))
-}
-
-/** The muted 16 dp visibility glyph, with its word for TalkBack. */
-@Composable
-fun VisibilityGlyph(visibility: Visibility, size: Dp = 16.dp) {
-    val word = stringResource(visibility.word)
-    val icon = when (visibility) {
-        Visibility.Public -> R.drawable.ic_visibility_public
-        Visibility.Unlisted -> R.drawable.ic_visibility_unlisted
-        Visibility.Guild -> R.drawable.ic_visibility_guild
-        Visibility.Private -> R.drawable.ic_visibility_private
-    }
-    Icon(painterResource(icon), contentDescription = null, tint = FsColor.muted, modifier = Modifier.size(size).semantics { contentDescription = word })
 }
 
 /** The parse number's colour: the text steps of `--color-parse-*` (spec W3 §4). */

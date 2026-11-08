@@ -1,5 +1,10 @@
 package gg.foreversixty.app.reports.ui
 
+import gg.foreversixty.app.designsystem.FsSpace
+import gg.foreversixty.app.flows.FlowGap
+import gg.foreversixty.app.flows.FlowPlate
+import gg.foreversixty.app.flows.FlowSection
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -20,7 +25,6 @@ import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.ScaledType
 import gg.foreversixty.app.designsystem.MicroLabel
 import gg.foreversixty.app.designsystem.Tag
-import gg.foreversixty.app.designsystem.quietCard
 import gg.foreversixty.app.model.CoachReview
 import gg.foreversixty.app.reports.logic.CoachPhase
 import gg.foreversixty.app.reports.logic.CoachSection
@@ -29,17 +33,17 @@ import java.util.Locale
 
 /** F10.4: Premium only, and only with a night line. The coach's words are printed as given. */
 @Composable
-fun CoachCard(phase: CoachPhase, copy: ReportsCopy, retry: () -> Unit) {
+fun CoachBlock(phase: CoachPhase, copy: ReportsCopy, retry: () -> Unit) {
     if (phase == CoachPhase.Hidden) return
-    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        MicroLabel(stringResource(R.string.report_coach))
-        CoachBody(phase, copy, retry)
+    FlowSection(stringResource(R.string.report_coach)) {
+        FlowGap(FsSpace.space3)
+        FlowPlate(padded = true) { CoachBody(phase, copy, retry) }
     }
 }
 
 @Composable
 private fun CoachBody(phase: CoachPhase, copy: ReportsCopy, retry: () -> Unit) {
-    Column(Modifier.fillMaxWidth().quietCard().padding(16.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
+    Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
         when (phase) {
             CoachPhase.Hidden -> Unit
             CoachPhase.Loading -> Column(verticalArrangement = Arrangement.spacedBy(10.dp)) { SkeletonBar(200.dp, 18.dp); SkeletonBar(260.dp, 13.dp) }

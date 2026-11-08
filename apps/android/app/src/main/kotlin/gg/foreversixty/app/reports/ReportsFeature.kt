@@ -8,6 +8,7 @@ import android.view.View
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -24,6 +25,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
+import gg.foreversixty.app.reports.logic.ReportPhase
+import androidx.compose.ui.platform.LocalResources
+import androidx.compose.ui.res.stringResource
+import gg.foreversixty.app.R
+import gg.foreversixty.app.flows.FlowBackBar
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import gg.foreversixty.app.account.AccountLinks
 import gg.foreversixty.app.bis.SpecCatalog
@@ -39,6 +45,7 @@ import gg.foreversixty.app.reports.logic.LiveReportsService
 import gg.foreversixty.app.reports.logic.MetersStore
 import gg.foreversixty.app.reports.logic.ReportStore
 import gg.foreversixty.app.reports.logic.Reports
+import gg.foreversixty.app.reports.logic.ReportsLinks
 import gg.foreversixty.app.reports.logic.ReportsService
 import gg.foreversixty.app.reports.logic.ReportsStore
 import gg.foreversixty.app.reports.logic.ReportsViewer
@@ -133,16 +140,17 @@ fun ReportsRoute(feature: ReportsFeature, viewer: ReportsViewer, signIn: () -> U
     BackHandler(onBack = onBack)
     val refresh: () -> Unit = { scope.launch { refreshing = true; store.load(); refreshing = false } }
     val actions = ReportsListActions(
-        back = onBack,
         refresh = refresh,
         open = { row -> feature.navigator.report = ReportRoute(row.id, row.zone) },
         loadMore = { scope.launch { store.loadMore() } },
-        getCompanion = { AccountLinks.open(context, AccountLinks.SETUP) },
+        upload = { AccountLinks.open(context, ReportsLinks.UPLOAD) },
+        openSample = { AccountLinks.open(context, ReportsLinks.SAMPLE) },
         signIn = signIn,
     )
-    PullToRefreshBox(isRefreshing = refreshing, onRefresh = refresh, modifier = Modifier.fillMaxSize().background(FsColor.bg)) {
-        Box(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
-            ReportsList(store.phase, store.pageFailed, viewer, feature.now(), actions, feature.zone)
+    Column(Modifier.fillMaxSize().background(FsColor.bg)) {
+        FlowBackBar(stringResource(R.string.tab_home), onBack)
+        PullToRefreshBox(isRefreshing = refreshing, onRefresh = refresh, modifier = Modifier.fillMaxSize()) {
+            ReportsList(store.phase, store.pageFailed, feature.now(), actions, feature.zone)
         }
     }
 }
@@ -173,20 +181,24 @@ fun ReportRouteScreen(feature: ReportsFeature, route: ReportRoute, viewer: Repor
     }
     BackHandler(onBack = back)
     val actions = ReportActions(
-        back = back,
         openWeb = { AccountLinks.open(context, RaidLinks.report(route.id)) },
         retry = { scope.launch { store.load() } },
         retryParses = { scope.launch { store.loadParses() } },
         retryCoach = { scope.launch { store.loadParses() } },
         openMeters = { target -> meters = MetersStore(route.id, target, feature.service).also { scope.launch { it.load() } } },
-        share = { message -> ShareText.send(context, message) },
     )
-    PullToRefreshBox(
-        isRefreshing = refreshing,
-        onRefresh = { scope.launch { refreshing = true; store.load(); refreshing = false } },
-        modifier = Modifier.fillMaxSize().background(FsColor.bg),
-    ) {
-        Box(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
+    val res = LocalResources.current
+    // A public or unlisted report's share; a guild or private one has none.
+    val message = (store.phase as? ReportPhase.Loaded)?.report?.let { r ->
+        ShareText.report(res, r.id, r.zone ?: r.title, Instant.parse(r.createdAt), r.visibility, feature.zone)
+    }
+    Column(Modifier.fillMaxSize().background(FsColor.bg)) {
+        FlowBackBar(stringResource(R.string.reports_back), back, message?.let { m -> { ShareText.send(context, m) } })
+        PullToRefreshBox(
+            isRefreshing = refreshing,
+            onRefresh = { scope.launch { refreshing = true; store.load(); refreshing = false } },
+            modifier = Modifier.fillMaxSize(),
+        ) {
             ReportContent(ReportScreenState(store.phase, store.parses, store.coach, route.title), feature.now(), actions, feature.zone)
         }
     }

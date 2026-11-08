@@ -1,39 +1,54 @@
 package gg.foreversixty.app.reports.ui
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.onClick
+import androidx.compose.ui.semantics.selected
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import java.util.Locale
 import gg.foreversixty.app.R
-import gg.foreversixty.app.common.ClassCrest
 import gg.foreversixty.app.designsystem.FsColor
-import gg.foreversixty.app.designsystem.ScaledType
-import gg.foreversixty.app.designsystem.MicroLabel
+import gg.foreversixty.app.designsystem.FsSpace
+import gg.foreversixty.app.designsystem.FsType
+import gg.foreversixty.app.designsystem.ParityItemKind
 import gg.foreversixty.app.designsystem.Tag
-import gg.foreversixty.app.designsystem.primaryCard
-import gg.foreversixty.app.designsystem.quietCard
+import gg.foreversixty.app.designsystem.parityItem
+import gg.foreversixty.app.flows.FlowGap
+import gg.foreversixty.app.flows.FlowLead
+import gg.foreversixty.app.flows.FlowPlate
+import gg.foreversixty.app.flows.FlowPlateMessage
+import gg.foreversixty.app.flows.FlowPlateRetry
+import gg.foreversixty.app.flows.FlowRow
+import gg.foreversixty.app.flows.FlowRule
+import gg.foreversixty.app.flows.FlowSection
+import gg.foreversixty.app.flows.FlowSkeleton
+import gg.foreversixty.app.flows.SUB
 import gg.foreversixty.app.model.Report
 import gg.foreversixty.app.reports.logic.FightRow
 import gg.foreversixty.app.reports.logic.FightRows
@@ -44,35 +59,56 @@ import gg.foreversixty.app.reports.logic.Parses
 import gg.foreversixty.app.reports.logic.ParsesPhase
 import gg.foreversixty.app.reports.logic.ReportsCopy
 
-object ReportCardLayout {
-    val parseRowHeight = 72.dp
-    val fightRowHeight = 64.dp
-    val crest = 36.dp
-    val crestCap = 44.dp
-    val figureSize = 20.sp
+/**
+ * The report's tab strip (`.strip-tabs`): Summary, this screen, and More, which opens the whole report
+ * (meters, casts, deaths, the timeline) on foreversixty.gg.
+ */
+@Composable
+fun ReportTabs(openWeb: () -> Unit) {
+    Column(Modifier.fillMaxWidth()) {
+        Row(Modifier.horizontalScroll(rememberScrollState())) {
+            Tab(stringResource(R.string.report_summary), current = true, onClick = null)
+            Tab(stringResource(R.string.report_more), current = false, onClick = openWeb)
+        }
+        HorizontalDivider(color = FsColor.line)
+    }
 }
 
-/** `Your parses`, the report's one primary card (spec F10.2); hidden when nobody is signed in. */
 @Composable
-fun ParsesCard(phase: ParsesPhase, copy: ReportsCopy, retry: () -> Unit) {
+private fun Tab(label: String, current: Boolean, onClick: (() -> Unit)?) {
+    val tap = onClick?.let { Modifier.parityItem(ParityItemKind.Button).clickable(role = Role.Button, onClick = it) } ?: Modifier.semantics { selected = current }
+    // The current tab's gold underline sits on the strip's rule.
+    val underline = if (current) {
+        Modifier.drawBehind {
+            val stroke = UNDERLINE.toPx()
+            drawRect(FsColor.gold, topLeft = Offset(0f, size.height - stroke), size = Size(size.width, stroke))
+        }
+    } else {
+        Modifier
+    }
+    Box(Modifier.height(TAB).then(underline).then(tap).padding(horizontal = FsSpace.space3), contentAlignment = Alignment.Center) {
+        Text(if (onClick != null) "$label$MORE_MARK" else label, style = TAB_TEXT, color = if (current) FsColor.strong else FsColor.text)
+    }
+}
+
+/** `Your parses` (spec F10.2): each kill of yours with its figure and parse; hidden signed out. */
+@Composable
+fun ParsesSection(phase: ParsesPhase, copy: ReportsCopy, retry: () -> Unit) {
     if (phase == ParsesPhase.Hidden) return
-    Column(Modifier.fillMaxWidth().primaryCard().padding(vertical = 14.dp)) {
-        MicroLabel(stringResource(R.string.report_yourParses), Modifier.padding(horizontal = 16.dp), color = FsColor.gold)
-        when (phase) {
-            ParsesPhase.Hidden -> Unit
-            ParsesPhase.Loading -> Row(Modifier.padding(16.dp), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                SkeletonDot(ReportCardLayout.crest)
-                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) { SkeletonBar(140.dp, 15.dp); SkeletonBar(200.dp, 12.dp) }
-            }
-            ParsesPhase.Failed -> ErrorRegion(stringResource(R.string.report_parsesFailed), retry)
-            is ParsesPhase.Loaded -> {
-                val rows = Parses.rows(phase.me)
-                if (rows.isEmpty()) {
-                    Text(stringResource(R.string.report_noKills), style = ScaledType.body, color = FsColor.text, modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp))
+    FlowSection(stringResource(R.string.report_yourParses)) {
+        FlowGap(FsSpace.space3)
+        FlowPlate {
+            when (phase) {
+                ParsesPhase.Hidden -> Unit
+                ParsesPhase.Loading -> Column(Modifier.padding(FsSpace.space4).clearAndSetSemantics {}, verticalArrangement = Arrangement.spacedBy(FsSpace.space2)) {
+                    FlowSkeleton(SKELETON_TITLE, SKELETON_LINE)
+                    FlowSkeleton(SKELETON_SUB, SKELETON_SMALL)
                 }
-                rows.forEachIndexed { index, row ->
-                    if (index > 0) HorizontalDivider(color = FsColor.lineSoft)
-                    ParseRowView(row, copy)
+                ParsesPhase.Failed -> FlowPlateRetry(stringResource(R.string.report_parsesFailed), stringResource(R.string.common_tryAgain), retry)
+                is ParsesPhase.Loaded -> {
+                    val rows = Parses.rows(phase.me)
+                    if (rows.isEmpty()) FlowPlateMessage(listOf(stringResource(R.string.report_noKills)))
+                    rows.forEachIndexed { index, row -> ParseRowView(row, copy, last = index == rows.lastIndex) }
                 }
             }
         }
@@ -80,111 +116,102 @@ fun ParsesCard(phase: ParsesPhase, copy: ReportsCopy, retry: () -> Unit) {
 }
 
 @Composable
-private fun ParseRowView(row: ParseRow, copy: ReportsCopy) {
+private fun ParseRowView(row: ParseRow, copy: ReportsCopy, last: Boolean) {
     val label = copy.parseLabel(row)
-    val stacked = isLargeText()
-    Row(
-        Modifier.fillMaxWidth().heightIn(min = ReportCardLayout.parseRowHeight).padding(horizontal = 16.dp, vertical = 10.dp)
-            .clearAndSetSemantics { contentDescription = label },
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-    ) {
-        ClassCrest(row.className, scaledSize(ReportCardLayout.crest, ReportCardLayout.crestCap))
-        Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-            Text(row.fight.encounter, style = ScaledType.bodyStrong.copy(fontWeight = FontWeight.Bold), color = FsColor.strong)
-            Text(copy.parseMeta(row), style = ScaledType.meta, color = FsColor.muted)
-            if (row.fight.newBest) Row(Modifier.padding(top = 4.dp)) { Tag(stringResource(R.string.report_newBest), FsColor.gold) }
-            if (stacked) Figure(row, copy, Alignment.Start)
-        }
-        if (!stacked) Figure(row, copy, Alignment.End)
-    }
+    Box(Modifier.clearAndSetSemantics { contentDescription = label }) { ParseRowBody(row, copy, last) }
 }
 
-/** `712 DPS` in mono 20, the parse number in its ladder colour and `percentile` under it. */
 @Composable
-private fun Figure(row: ParseRow, copy: ReportsCopy, alignment: Alignment.Horizontal) {
+private fun ParseRowBody(row: ParseRow, copy: ReportsCopy, last: Boolean) {
+    FlowRow(
+        row.fight.encounter,
+        copy.parseMeta(row),
+        lead = FlowLead.Crest(row.className),
+        last = last,
+        inset = FsSpace.space4,
+        trail = { ParseFigure(row, copy) },
+    )
+}
+
+/** `712 DPS · 91 percentile`, the parse in its ladder colour, and `New best` when it is one. */
+@Composable
+private fun ParseFigure(row: ParseRow, copy: ReportsCopy) {
     val fight = row.fight
-    Column(horizontalAlignment = alignment) {
+    val percentileWord = stringResource(R.string.report_percentile)
+    Row(horizontalArrangement = Arrangement.spacedBy(FsSpace.space3), verticalAlignment = Alignment.CenterVertically) {
         Text(
             buildAnnotatedString {
                 append(Parses.figure(fight.value))
-                withStyle(SpanStyle(fontSize = ScaledType.meta.fontSize, color = FsColor.muted)) { append(" " + copy.unit(fight.unit)) }
+                withStyle(SpanStyle(fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = FsColor.muted)) { append(" " + copy.unit(fight.unit)) }
+                fight.percentile?.let { percentile ->
+                    withStyle(SpanStyle(fontSize = 13.sp, fontWeight = FontWeight.Normal, color = FsColor.muted)) { append(" · ") }
+                    withStyle(SpanStyle(color = parseColor(ParseTier.of(percentile)))) { append(percentile.toString()) }
+                    withStyle(SpanStyle(fontSize = 13.sp, fontWeight = FontWeight.Normal, color = FsColor.muted)) { append(" $percentileWord") }
+                }
             },
-            style = ScaledType.mono.copy(fontSize = ReportCardLayout.figureSize), color = FsColor.strong,
+            style = FsType.figureSm,
+            color = FsColor.strong,
         )
-        fight.percentile?.let { percentile ->
-            Text(
-                buildAnnotatedString {
-                    withStyle(SpanStyle(color = parseColor(ParseTier.of(percentile)), fontFamily = ScaledType.mono.fontFamily, fontWeight = FontWeight.Bold)) {
-                        append(percentile.toString())
-                    }
-                    append(" " + stringResource(R.string.report_percentile))
-                },
-                style = ScaledType.meta, color = FsColor.muted,
-            )
-        }
+        if (fight.newBest) Tag(stringResource(R.string.report_newBest), FsColor.gold)
     }
 }
 
-/** `Fights`: every boss pull, each zone's trash as one row, and the boss-pull count (spec F10.2). */
+/** `Fights`: every boss pull, each zone's trash as one row, and the boss-pull count; a row opens its meters. */
 @Composable
-fun FightsCard(report: Report, copy: ReportsCopy, open: (MetersTarget) -> Unit) {
+fun FightsSection(report: Report, copy: ReportsCopy, open: (MetersTarget) -> Unit) {
     val rows = FightRows.of(report)
-    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        val count = copy.bossPulls(FightRows.bossPulls(report))
-        // Largest text: the label sits over the count, and the count never splits.
-        if (isLargeText()) {
-            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                MicroLabel(stringResource(R.string.report_fights))
-                Text(count.uppercase(Locale.ROOT), style = ScaledType.micro, color = FsColor.muted, maxLines = 1, softWrap = false)
-            }
-        } else {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                MicroLabel(stringResource(R.string.report_fights), Modifier.weight(1f))
-                MicroLabel(count)
-            }
-        }
-        if (rows.isEmpty()) return@Column
-        Column(Modifier.fillMaxWidth().quietCard()) {
+    FlowSection(stringResource(R.string.report_fights), meta = copy.bossPulls(FightRows.bossPulls(report))) {
+        if (rows.isEmpty()) return@FlowSection
+        FlowGap(FsSpace.space3)
+        FlowPlate {
             rows.forEachIndexed { index, row ->
-                if (index > 0) HorizontalDivider(color = FsColor.lineSoft)
+                val last = index == rows.lastIndex
                 when (row) {
                     is FightRow.Boss -> FightRowView(
-                        copy.bossTitle(row.fight, row.pull), copy.bossMeta(row), if (row.fight.kill) FsColor.kill else FsColor.wipe, copy.bossLabel(row),
+                        copy.bossTitle(row.fight, row.pull), copy.bossMeta(row), if (row.fight.kill) FsColor.kill else FsColor.wipe, last, copy.bossLabel(row),
                         if (row.inProgress) null else { { open(MetersTarget.Pull(row.fight, row.pull)) } },
                     )
-                    is FightRow.Trash -> FightRowView(
-                        copy.trashTitle(row.group.zone), copy.trashMeta(row), FsColor.muted, copy.trashLabel(row),
-                    ) { open(MetersTarget.Trash(row.group)) }
-                    is FightRow.LoosePull -> FightRowView(copy.looseTitle(), copy.looseMeta(row), FsColor.muted, null) { open(MetersTarget.Pull(row.fight)) }
+                    is FightRow.Trash -> FightRowView(copy.trashTitle(row.group.zone), copy.trashMeta(row), FsColor.muted, last, copy.trashLabel(row)) {
+                        open(MetersTarget.Trash(row.group))
+                    }
+                    is FightRow.LoosePull -> FightRowView(copy.looseTitle(), copy.looseMeta(row), FsColor.muted, last, null) { open(MetersTarget.Pull(row.fight)) }
                 }
             }
         }
     }
 }
 
+/** A fight: its name and outcome line, the line in the kill or wipe colour's dot ahead of it. */
 @Composable
-private fun FightRowView(title: String, meta: String, dot: Color, label: String?, open: (() -> Unit)?) {
+private fun FightRowView(title: String, meta: String, dot: Color, last: Boolean, label: String?, open: (() -> Unit)?) {
     val hint = stringResource(R.string.report_a11y_showsMeters)
     val words = label ?: "$title, $meta"
-    val large = isLargeText()
-    val tap = if (open != null) Modifier.clickable(onClickLabel = hint, onClick = open) else Modifier
-    Row(
-        Modifier.fillMaxWidth().then(tap).heightIn(min = ReportCardLayout.fightRowHeight).padding(horizontal = 16.dp, vertical = 10.dp)
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .parityItem(ParityItemKind.Row)
+            .then(open?.let { Modifier.clickable(role = Role.Button, onClickLabel = hint, onClick = it) } ?: Modifier)
             .clearAndSetSemantics {
                 contentDescription = words
                 if (open != null) onClick(hint) { open(); true }
-            },
-        // Largest text: the dot and chevron centre on the first line, not the whole row.
-        verticalAlignment = if (large) Alignment.Top else Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(14.dp),
+            }
+            .padding(horizontal = FsSpace.space4, vertical = ROW_PAD),
     ) {
-        val line = if (large) Modifier.height(firstLine(ScaledType.bodyStrong)) else Modifier
-        Box(line, contentAlignment = Alignment.Center) { OutcomeDot(dot) }
-        Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-            Text(title, style = ScaledType.bodyStrong, color = FsColor.strong)
-            Text(meta, style = ScaledType.meta, color = FsColor.muted)
+        Text(title, style = FsType.item, color = FsColor.strong)
+        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(FsSpace.space2)) {
+            OutcomeDot(dot)
+            Text(meta, style = SUB, color = FsColor.muted)
         }
-        if (open != null) Box(line, contentAlignment = Alignment.Center) { Chevron(scaledSize(24.dp, ReportsLayout.glyphCap)) }
     }
+    if (!last) FlowRule()
 }
+
+private val TAB = 46.dp
+private val UNDERLINE = 2.dp
+private val ROW_PAD = 10.dp
+private val SKELETON_TITLE = 160.dp
+private val SKELETON_SUB = 220.dp
+private val SKELETON_LINE = 16.dp
+private val SKELETON_SMALL = 12.dp
+private const val MORE_MARK = " ▾"
+private val TAB_TEXT = FsType.bodyStrong.copy(fontSize = 14.sp, lineHeight = 16.sp)

@@ -1064,6 +1064,21 @@
     <string name="reports_signedOut">Sign in to see your reports.</string>
     <string name="reports_a11y_row">%1$s, %2$s, %3$s, %4$s, %5$s</string>
     <string name="reports_a11y_live">live, updated %1$s seconds ago</string>
+    <string name="reports_lead">Every fight you logged, newest first.</string>
+    <plurals name="reports_count">
+        <item quantity="one">1 report</item>
+        <item quantity="other">%1$d reports</item>
+    </plurals>
+    <string name="reports_upload">Upload a log</string>
+    <string name="reports_sample">Open the sample report ›</string>
+    <string name="reports_rowSub">%1$s · %2$s · %3$s</string>
+    <string name="reports_unreadableSub">Could not be read</string>
+    <string name="report_title">Report</string>
+    <string name="report_upload">Your upload</string>
+    <string name="report_uploaded">Uploaded %1$s</string>
+    <string name="report_summary">Summary</string>
+    <string name="report_more">More</string>
+    <string name="report_footerMore">Meters, casts and deaths for every fight are under More, on foreversixty.gg.</string>
     <string name="report_openWeb">Open on foreversixty.gg</string>
     <string name="report_meta">%1$s %2$s · logged by %3$s</string>
     <string name="report_tag">Report</string>

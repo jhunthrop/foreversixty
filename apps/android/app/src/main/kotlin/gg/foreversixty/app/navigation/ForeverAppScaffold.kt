@@ -284,7 +284,7 @@ private fun RaidTab(raids: RaidsFeature, account: AccountDeps?, reports: Reports
     val characterKey = phase?.let { session.currentCharacter(it, picked)?.key }
     // Lane F10: Your raid night's `Open the full report` pushes the report on this stack.
     val me = (phase as? SessionPhase.SignedIn)?.me
-    val reportsLink = reports?.let { RaidsReports(it, me?.let { m -> ReportsViewer.of(m, characterKey) } ?: ReportsViewer.SignedOut) }
+    val reportsLink = reports?.let { RaidsReports(it, me?.let { m -> ReportsViewer.of(m) } ?: ReportsViewer.SignedOut) }
     RaidsRoute(raids, characterKey, reportsLink, signIn = { account?.let { it.session.beginSignIn(it.browser(context)) } }, selector = bar)
 }
 

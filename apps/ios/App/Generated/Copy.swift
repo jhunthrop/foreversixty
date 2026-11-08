@@ -3556,6 +3556,48 @@ enum Copy {
         format("reports.a11y.live", n)
     }
 
+    /// Every fight you logged, newest first.
+    static var reportsLead: String { text("reports.lead") }
+
+    /// {n} reports
+    static func reportsCount(n: Int) -> String {
+        format("reports.count", n)
+    }
+
+    /// Upload a log
+    static var reportsUpload: String { text("reports.upload") }
+
+    /// Open the sample report ›
+    static var reportsSample: String { text("reports.sample") }
+
+    /// {bosses} · {kills} · {visibility}
+    static func reportsRowSub(bosses: String, kills: String, visibility: String) -> String {
+        format("reports.rowSub", bosses, kills, visibility)
+    }
+
+    /// Could not be read
+    static var reportsUnreadableSub: String { text("reports.unreadableSub") }
+
+    /// Report
+    static var reportTitle: String { text("report.title") }
+
+    /// Your upload
+    static var reportUpload: String { text("report.upload") }
+
+    /// Uploaded {age}
+    static func reportUploaded(age: String) -> String {
+        format("report.uploaded", age)
+    }
+
+    /// Summary
+    static var reportSummary: String { text("report.summary") }
+
+    /// More
+    static var reportMore: String { text("report.more") }
+
+    /// Meters, casts and deaths for every fight are under More, on foreversixty.gg.
+    static var reportFooterMore: String { text("report.footerMore") }
+
     /// Open on foreversixty.gg
     static var reportOpenWeb: String { text("report.openWeb") }
 
