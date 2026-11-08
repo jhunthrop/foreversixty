@@ -33,23 +33,23 @@
     "row": 5
    }
   },
-  "section-discord": {
+  "section-when": {
    "box": [
     16,
     491,
     361,
-    111
+    125
    ],
    "inventory": {
     "row": 1
    }
   },
-  "section-when": {
+  "section-discord": {
    "box": [
     16,
-    630,
+    644,
     361,
-    125
+    111
    ],
    "inventory": {
     "row": 1

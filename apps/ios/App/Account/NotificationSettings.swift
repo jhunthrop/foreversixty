@@ -254,13 +254,6 @@ struct NotificationSettingsView: View {
             }
         }
         .padding(.top, FSSpace.space7)
-        // A guild member's: officers may DM them about a raid they have not answered (F3).
-        if summary.rows.contains(where: { $0.group == .raids }) {
-            FSSection(Copy.notificationsDiscord) {
-                SwitchRow(title: Copy.notificationsOfficerDms, sub: Copy.notificationsOfficerDmsLine, on: officerDMs, set: setOfficerDMs)
-            }
-            .padding(.top, FSSpace.space7)
-        }
         FSSection(Copy.notificationsWhen) {
             FSRow(
                 title: Copy.notificationsReminder,
@@ -273,6 +266,13 @@ struct NotificationSettingsView: View {
             }
         }
         .padding(.top, FSSpace.space7)
+        // A guild member's: officers may DM them about a raid they have not answered (F3).
+        if summary.rows.contains(where: { $0.group == .raids }) {
+            FSSection(Copy.notificationsDiscord) {
+                SwitchRow(title: Copy.notificationsOfficerDms, sub: Copy.notificationsOfficerDmsLine, on: officerDMs, set: setOfficerDMs)
+            }
+            .padding(.top, FSSpace.space7)
+        }
     }
 }
 

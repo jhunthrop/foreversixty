@@ -2608,7 +2608,7 @@ enum Copy {
     /// Let officers DM me on Discord
     static var notificationsOfficerDms: String { text("notifications.officerDms") }
 
-    /// Your guild's officers can message you about a raid you have not answered
+    /// When you have not answered a raid; off, they mention you in the channel
     static var notificationsOfficerDmsLine: String { text("notifications.officerDmsLine") }
 
     /// You

@@ -757,7 +757,7 @@
     "notifications.change": "Change",
     "notifications.discord": "Discord",
     "notifications.officerDms": "Let officers DM me on Discord",
-    "notifications.officerDmsLine": "Your guild's officers can message you about a raid you have not answered",
+    "notifications.officerDmsLine": "When you have not answered a raid; off, they mention you in the channel",
 
     "you.title": "You",
     "you.signedInWith": "Signed in with Battle.net",
