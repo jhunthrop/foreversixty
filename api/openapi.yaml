@@ -5595,6 +5595,74 @@ components:
               schedule: { type: string }
               needs: { type: string, enum: [damage, healer, tank] }
               crest_url: { type: [string, "null"] }
+    CharacterRating:
+      type: object
+      description: GET /v1/characters/{region}/{ruleset}/{name}/rating (Go rating.characterRatingDTO).
+      required: [player_key, sample_size, trend]
+      properties:
+        player_key: { type: string }
+        sample_size: { type: integer, description: The rated fights in this page. }
+        trend:
+          type: array
+          items:
+            type: object
+            title: RatingTrendPoint
+            required: [fought_at, overall, report_id, fight_index]
+            properties:
+              fought_at: { type: string, format: date-time }
+              overall: { type: number, description: 0 to 100. }
+              report_id: { type: string }
+              fight_index: { type: integer }
+        next_cursor: { type: string, description: Present when another page exists. }
+        latest: { $ref: '#/components/schemas/RatingCard' }
+        best_component: { type: string }
+        worst_component: { type: string }
+    RatingCard:
+      type: object
+      description: >-
+        One fight's rating card for one player. overall is 0 to 100 (overall_uncapped before the
+        cap; overall_capped true when it bit); coverage is the share of the fight measured;
+        insufficient cards carry zero overalls and insufficient_reason.
+      required: [player_key, player_name, class, spec, role, overall, overall_uncapped, overall_capped, coverage, insufficient, components]
+      properties:
+        player_key: { type: string }
+        player_name: { type: string }
+        class: { type: string, x-name: className }
+        spec: { type: string }
+        role: { type: string }
+        overall: { type: number }
+        overall_uncapped: { type: number }
+        overall_capped: { type: boolean }
+        coverage: { type: number }
+        insufficient: { type: boolean }
+        insufficient_reason: { type: string }
+        components: { type: array, items: { $ref: '#/components/schemas/RatingComponent' } }
+    RatingComponent:
+      type: object
+      description: One scored part of a card; score null when excluded (reason says why).
+      required: [name, score, weight, basis, excluded, moments]
+      properties:
+        name: { type: string }
+        score: { type: [number, "null"] }
+        weight: { type: number }
+        basis: { type: string }
+        percentile: { type: number }
+        bracket_n: { type: integer, format: int64 }
+        excluded: { type: boolean }
+        reason: { type: string }
+        moments:
+          type: array
+          items:
+            type: object
+            title: RatingMoment
+            required: [kind, at_ms]
+            properties:
+              kind: { type: string }
+              at_ms: { type: integer, format: int64 }
+              spell_id: { type: integer, format: int64 }
+              spell_name: { type: string }
+              avoidable: { type: boolean }
+              anchor: { type: string }
     ReadyCheck:
       type: object
       required: [exported_at, items]
@@ -8070,6 +8138,42 @@ paths:
           content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
         '404':
           description: "Not your character, or a raid not of its guilds"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  /v1/characters/{region}/{ruleset}/{name}/rating:
+    get:
+      summary: A character's Forever rating, its latest fight card and its trend (public)
+      description: >-
+        The character page's rating ("Rating 65 of 100" is latest.overall): the character's rated
+        fights in public, unflagged reports, newest first, insufficient cards left out. trend is
+        one point per fight (overall 0 to 100); latest is the newest fight's full card with its
+        components; best_component and worst_component name the latest card's highest and lowest
+        scoring component. ?limit= pages the trend and ?cursor= (next_cursor) continues it. 404
+        not_found for an unknown region or ruleset, an anonymised character, or one with no rated
+        fight. Cached publicly.
+      operationId: getCharacterRating
+      tags: [app]
+      x-authenticated: false
+      parameters:
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
+        - { name: region, in: path, required: true, schema: { type: string } }
+        - { name: ruleset, in: path, required: true, schema: { type: string } }
+        - { name: name, in: path, required: true, schema: { type: string } }
+        - { name: limit, in: query, schema: { type: integer } }
+        - { name: cursor, in: query, schema: { type: string } }
+      responses:
+        '426': { $ref: '#/components/responses/UpdateRequired' }
+        '200':
+          description: "The rating"
+          x-fixtures: [character.rating]
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/CharacterRating' } } }
+        '404':
+          description: "not_found: no such character, anonymised, or no rated fight"
           content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
   /v1/characters/{region}/{ruleset}/{name}/home:
     get:
