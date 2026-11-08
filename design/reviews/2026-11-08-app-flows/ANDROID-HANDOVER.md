@@ -20,11 +20,12 @@ The flows primitives every new screen uses: `flows/FlowLayout.kt` (FlowPage, Flo
 7. Glance widgets, LiveNotifier, the QS tile, restyled.
 8. The secondary screens restyled.
 
-## Waiting on the API (asked 2026-11-08; the coordinator routed them to app-api)
+## API landed, not yet used (api-raidtab, 7c40f7991; shapes appended to the session scratchpad's `api-flows-shapes.md`, and in `api/openapi.yaml`)
 - Guilds recruiting a spec (Raid, no guild): `RaidTabView.NoGuild.guilds` is empty until it lands; the section hides.
 - Applications in the app client (list, accept, decline): Home's and Needs you's applicant line (`OfficerItems.applicantLine`) is null; the row opens the guild page.
 - Ready check: `GET /v1/characters/{region}/{ruleset}/{name}/ready?raid={id}` (also in `/v1/me/raid-nights/{raid}`). `RaidCardModel.ready` and `RaidTabView.Guild.ready` are empty until then.
 - Not answered's history line (`last_week`) and role on `RaidNotSignedRaider`.
+- Swap each placeholder above onto the generated endpoints (listGuildApplications, accept, decline, recruiting, ready). `answer_by` stays null: the raid card shows no answer-by time (dropped 2026-11-08); pick up the iOS lane's mock region change for it when it lands.
 
 ## Open
 - Home no longer reaches the Talents and Your gear pages (`showTalents`, `showGear` in `HomeCharacterScreen` are never set): Gear replaces Your gear in step 6; Talents needs a menu row or a decision to fold into the Planner.
