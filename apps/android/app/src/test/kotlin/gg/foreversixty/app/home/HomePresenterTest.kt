@@ -10,7 +10,6 @@ import gg.foreversixty.app.items.ItemNumbers
 import gg.foreversixty.app.items.ItemTooltipModel
 import gg.foreversixty.app.items.ItemVocabulary
 import gg.foreversixty.app.model.CharacterHome
-import gg.foreversixty.app.model.FinishedSim
 import gg.foreversixty.app.network.ApiClient
 import gg.foreversixty.app.network.ApiConfig
 import gg.foreversixty.app.network.ApiError
@@ -23,7 +22,6 @@ import gg.foreversixty.app.network.StaticDataStore
 import gg.foreversixty.app.network.TokenProvider
 import gg.foreversixty.app.network.ApiResult
 import java.io.IOException
-import java.time.ZoneOffset
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -33,39 +31,22 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 /**
- * F2's logic, one test list shared with iOS (`HomePresenterTests.swift`): Home renders the
- * server's answer in the server's order and formats it; it never ranks or computes a gain.
+ * F2's shared logic, one test list shared with iOS (`HomePresenterTests.swift`): Home keeps the
+ * server's gains and only arranges them; its band is the site rule over the character's level.
  */
 @RunWith(AndroidJUnit4::class)
 class HomePresenterTest {
     private val res: Resources = ApplicationProvider.getApplicationContext<android.content.Context>().resources
-    private val presenter = HomeFixtures.presenter(res)
-
-    private fun upgrades(model: HomeAnswerModel) = model.body as HomeAnswerBody.Upgrades
 
     @Test
-    fun `rows read measured gains largest first, then not modelled, then empty, and the card shows five`() {
+    fun `rows read measured gains largest first, then not modelled, then empty`() {
         val home = HomeFixtures.home()
-        val ordered = HomePresenter.presentationOrder(home.upgrades).map { it.slot }
+        val ordered = HomePresenter.presentationOrder(home.upgrades)
         assertEquals(
             listOf("main_hand", "ranged", "legs", "feet", "chest", "head", "waist", "hands", "back", "finger2", "wrist", "trinket2"),
-            ordered,
+            ordered.map { it.slot },
         )
-        val body = upgrades(presenter.model(home))
-        assertEquals(ordered.take(5), body.rows.map { it.slot })
-        assertEquals("7 more upgrades · all 17 slots", body.footer)
-    }
-
-    @Test
-    fun `the hero shows two figures, the note with the unmodelled count, the sync age`() {
-        val model = presenter.model(HomeFixtures.home())
-        assertEquals("Orc Beast Mastery Hunter · Level 60 · Olympus XXVII", model.heroMeta)
-        assertEquals("12 upgrades", model.count)
-        assertEquals("+102.5", model.gainFigure)
-        assertEquals("DPS", model.gainUnit)
-        assertEquals("Best in slot for 60, together · 2 gains not modelled yet", model.note)
-        assertEquals("Synced 2 h ago from the addon", model.synced)
-        assertEquals("60 · raid", model.bandHead)
+        assertEquals("Gain not modelled yet", ordered.last().gainWords)
     }
 
     @Test
@@ -77,7 +58,7 @@ class HomePresenterTest {
             val range = HomePresenter.range(home, character)
             assertEquals("level $level", BisRange.forLevel(level), range)
             assertEquals("level $level", band, range?.band)
-            assertEquals("level $level", head, HomeFixtures.presenter(res, character = character).model(home).bandHead)
+            assertEquals("level $level", head, HomePresenter.bandHead(home, character, res))
             val tooltip = HomePresenter.tooltipRequest(ItemLook(1), home, character, res)
             assertEquals("level $level", Triple(range?.band, range?.preset, head), Triple(tooltip.band, tooltip.preset, tooltip.bandLabel))
         }
@@ -89,82 +70,8 @@ class HomePresenterTest {
     }
 
     @Test
-    fun `a measured gain is the server's figure, the source the server's formatted line`() {
-        val home = HomeFixtures.home()
-        val rows = upgrades(presenter.model(home)).rows
-        assertEquals(HomeUpgradeRow.Gain.Measured("+21.2", "DPS"), rows[0].gain)
-        assertEquals("Main hand · Crafted: Blacksmithing", rows[0].meta)
-        assertEquals("Gain not modelled yet", HomePresenter.presentationOrder(home.upgrades).last().gainWords)
-    }
-
-    @Test
     fun `a negative gain keeps its true minus`() {
         assertEquals("−0.8", ItemNumbers.signedTenths(-0.8))
-    }
-
-    @Test
-    fun `what a row replaces - the worn item, an empty slot, or an item our data does not know`() {
-        val upgrades = HomeFixtures.home().upgrades
-        assertEquals("Replaces Dark Iron Rifle, ilvl 55", HomePresenter.replaces(upgrades.first { it.slot == "ranged" }.worn, res))
-        assertEquals("Empty slot", HomePresenter.replaces(null, res))
-        assertEquals("Not in our item data yet", HomePresenter.replaces(upgrades.first { it.slot == "wrist" }.worn, res))
-    }
-
-    @Test
-    fun `every slot matching says so in place of the figures, with the Already line`() {
-        val model = presenter.model(HomeFixtures.home("character.home.empty"))
-        assertEquals(HomeAnswerBody.AllMatch("Every slot matches the 60 list."), model.body)
-        assertNull(model.count)
-        assertTrue(model.already.orEmpty().startsWith("Already best in slot: Head, Neck, Shoulder"))
-    }
-
-    @Test
-    fun `no gear export shows the sentence, Get the addon, the list button and the note`() {
-        val model = presenter.model(HomeFixtures.home("character.home.no-gear"))
-        val body = model.body as HomeAnswerBody.Message
-        assertEquals("Add the addon to see which slots you can upgrade.", body.text)
-        assertEquals(listOf(HomeAction.Kind.GetAddon, HomeAction.Kind.OpenList), body.buttons.map { it.kind })
-        assertEquals(listOf("Get the addon and companion", "Beast Mastery 60 list"), body.buttons.map { it.title })
-        assertTrue(body.note.orEmpty().startsWith("The addon sends your gear"))
-        assertEquals(
-            "Not available yet: no talent export for this character. Open the addon once to send it.",
-            model.next.first().line,
-        )
-        assertEquals("No sim yet.", model.next.last().line)
-    }
-
-    @Test
-    fun `under 20, no spec and no list each have their sentence`() {
-        mapOf(
-            "under_20" to "Best in slot starts at 20.",
-            "no_spec" to "Set a spec in the planner to see this.",
-            "no_list" to "No best in slot list published yet for this spec and level range.",
-        ).forEach { (state, sentence) ->
-            assertEquals(sentence, (presenter.model(HomeFixtures.home(state = state)).body as HomeAnswerBody.Message).text)
-        }
-    }
-
-    @Test
-    fun `talents show the differ count and its tag`() {
-        val row = presenter.model(HomeFixtures.home()).next.first()
-        assertEquals("1 of your 51 points differ from the 60 guide build", row.line)
-        assertEquals(HomeNextRow.Tag.Differs, row.tag)
-    }
-
-    @Test
-    fun `sims show the newest finished run for this spec`() {
-        val sim = FinishedSim("s1", "hunter-beast-mastery", "t", 812.4, "2026-10-29T23:15:00Z")
-        val row = HomeFixtures.presenter(res, listOf(sim)).model(HomeFixtures.home()).next.last()
-        assertEquals("Your Beast Mastery sim finished: 812 DPS", row.line)
-    }
-
-    @Test
-    fun `the offline stamp reads today, this week, older`() {
-        val time = HomeTime(HomeFixtures.now, ZoneOffset.UTC)
-        val hour = 3600L
-        assertEquals("9:15 pm", time.stamp(HomeFixtures.now.minusSeconds(2 * hour)))
-        assertEquals("Tue 11:15 pm", time.stamp(HomeFixtures.now.minusSeconds(48 * hour)))
-        assertEquals("29 Sep, 11:15 pm", time.stamp(HomeFixtures.now.minusSeconds(30 * 24 * hour)))
     }
 }
 

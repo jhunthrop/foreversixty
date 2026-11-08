@@ -218,7 +218,7 @@ struct RaidFlowLogicTests {
     func mention() async {
         let sent = NotAnsweredModel(guild: 2, raid: 41, service: FakeRaidService(), ping: FakeRaidPing(), hold: .seconds(4))
         #expect(await sent.mention(role: "healer") == false)
-        #expect(sent.mentionStatus == "Mentioned 2 raiders in Discord.")
+        #expect(sent.mentionStatus == "Mentioned 2 healers in Discord.")
         let noBot = APIError.server(status: 409, body: ErrorBody(code: NotAnsweredModel.noBot, message: ""), requestID: nil)
         let bare = NotAnsweredModel(guild: 2, raid: 41, service: FakeRaidService(), ping: FakeRaidPing(failure: noBot), hold: .seconds(4))
         #expect(await bare.mention(role: nil) == true)
@@ -252,8 +252,10 @@ struct FakeRaidPing: RaidPingService {
     var mentioned = 2
     var failure: APIError?
 
-    func ping(guild: Int64, raid: Int64, role: String?) async throws(APIError) -> Int {
+    func ping(guild: Int64, raid: Int64, role: String?) async throws(APIError) -> RaidPingResult {
         if let failure { throw failure }
-        return mentioned
+        return RaidPingResult(
+            posted: mentioned > 0, mentioned: mentioned, noDiscord: 0, noDiscordNames: [], nextAllowedAt: nil, recentlyMentioned: nil
+        )
     }
 }

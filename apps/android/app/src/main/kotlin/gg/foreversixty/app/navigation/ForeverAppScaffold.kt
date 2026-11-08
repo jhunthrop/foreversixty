@@ -20,6 +20,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.saveable.rememberSaveableStateHolder
@@ -38,17 +39,21 @@ import gg.foreversixty.app.R
 import gg.foreversixty.app.account.AccountDeps
 import gg.foreversixty.app.account.HomeAccountGate
 import gg.foreversixty.app.activity.ActivityFeature
+import gg.foreversixty.app.gear.flows.GearDeps
+import gg.foreversixty.app.gear.flows.GearOwner
+import gg.foreversixty.app.gear.flows.GearRoute
 import gg.foreversixty.app.activity.ActivityLanding
 import gg.foreversixty.app.activity.ActivityTab
 import gg.foreversixty.app.auth.session.SessionPhase
 import gg.foreversixty.app.auth.session.me
 import gg.foreversixty.app.bis.BisModel
-import gg.foreversixty.app.bis.BisOwner
-import gg.foreversixty.app.bis.BisRoute
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.FsType
 import gg.foreversixty.app.guides.GuidesFeature
 import gg.foreversixty.app.home.HomeDependencies
+import gg.foreversixty.app.home.HomeFlows
+import gg.foreversixty.app.home.flows.HomeExits
+import androidx.compose.ui.platform.LocalUriHandler
 import gg.foreversixty.app.home.HomeRoute
 import gg.foreversixty.app.items.ItemLook
 import gg.foreversixty.app.items.LocalItemPageOpener
@@ -143,7 +148,7 @@ private fun ShellBody(
     val onSearch = search?.let { feature -> { feature.navigator.openSearch() } }
     val openItemPage = search?.let { feature -> { look: ItemLook -> feature.navigator.openItem(look, selected.label) } }
     val searchOpen = search?.navigator?.stack?.isNotEmpty() == true
-    val badges = features.activity?.let { TabBadges(activity = it.unread) } ?: TabBadges()
+    val badges = TabBadges(raid = features.raids?.badge?.count ?: 0, activity = features.activity?.unread ?: 0)
     val plannerTop = features.planner?.navigator?.top
     val shell = rememberSaveableStateHolder()
     CompositionLocalProvider(LocalItemPageOpener provides openItemPage) {
@@ -171,12 +176,23 @@ private fun TabRoot(features: ShellFeatures, tab: ForeverTab, select: (ForeverTa
     val openGear = { select(ForeverTab.Gear) }
     val context = LocalContext.current
     val bar: @Composable () -> Unit = { RootSearchBar(onSearch) { ProfileBar(session) } }
+    val uri = LocalUriHandler.current
+    val flows = HomeFlows(
+        raids = features.raids?.takeIf { it.enabled },
+        activity = features.activity,
+        exits = HomeExits(
+            openActivity = { select(ForeverTab.Activity) },
+            openRaidTab = { select(ForeverTab.Raid) },
+            openLanding = { landing -> openLanding(features, landing, select) },
+            openWeb = { path -> uri.openUri(if (path.startsWith("http")) path else SITE + path) },
+        ),
+    )
     when (tab) {
         ForeverTab.Home -> when {
             account == null -> HomeRoute(features.home, openBis = openGear, onSearch = onSearch) { Unavailable(tab) }
             publicRankings(features.home, account) -> PublicRankings(features.home, account)
             else -> HomeAccountGate(account, openGear) {
-                HomeRoute(features.home, session, openGear, onSearch, signIn = { account.session.beginSignIn(account.browser(context)) }) { Unavailable(tab) }
+                HomeRoute(features.home, session, openGear, onSearch, signIn = { account.session.beginSignIn(account.browser(context)) }, flows = flows) { Unavailable(tab) }
             }
         }
         ForeverTab.Raid -> features.raids?.let { RaidTab(it, account, features.home.reports, bar) } ?: Unavailable(tab)
@@ -246,28 +262,30 @@ private fun searchExits(features: ShellFeatures, select: (ForeverTab) -> Unit): 
     select(ForeverTab.Gear)
 }
 
-/** Gear (until its rebuild, the lane F3 list) for the session's current character. */
+/** Gear (spec 2026-11-08 4.3) for the session's current character. */
 @Composable
 private fun GearTab(bis: BisModel, home: HomeDependencies, account: AccountDeps?, onSearch: (() -> Unit)?) {
     val session = account?.session
     val phase = session?.phase?.collectAsStateWithLifecycle()?.value
     val picked = session?.pickedKey?.collectAsStateWithLifecycle()?.value
-    val characterKey = phase?.let { session.currentCharacter(it, picked)?.key }
+    val character = phase?.let { session.currentCharacter(it, picked) }
     val waiting = phase == SessionPhase.Importing || (phase is SessionPhase.SignedIn && phase.me == null)
-    BisRoute(bis, home.catalog, BisOwner(characterKey, waiting), onSearch) { ProfileBar(session) }
+    val deps = remember(home) { GearDeps(home.catalog, home.cache, home.client) }
+    GearRoute(bis, deps, GearOwner(character?.key, character?.guild?.id, waiting), onSearch) { ProfileBar(session) }
 }
 
 /** Raid (lane F4) for the session's current character's guild. */
 @Composable
 private fun RaidTab(raids: RaidsFeature, account: AccountDeps?, reports: ReportsFeature?, bar: @Composable () -> Unit) {
     val session = account?.session
+    val context = LocalContext.current
     val phase = session?.phase?.collectAsStateWithLifecycle()?.value
     val picked = session?.pickedKey?.collectAsStateWithLifecycle()?.value
     val characterKey = phase?.let { session.currentCharacter(it, picked)?.key }
     // Lane F10: Your raid night's `Open the full report` pushes the report on this stack.
     val me = (phase as? SessionPhase.SignedIn)?.me
     val reportsLink = reports?.let { RaidsReports(it, me?.let { m -> ReportsViewer.of(m, characterKey) } ?: ReportsViewer.SignedOut) }
-    RaidsRoute(raids, characterKey, reportsLink, bar)
+    RaidsRoute(raids, characterKey, reportsLink, signIn = { account?.let { it.session.beginSignIn(it.browser(context)) } }, selector = bar)
 }
 
 /**
@@ -340,6 +358,9 @@ fun ForeverTabScaffold(
         Box(Modifier.fillMaxSize().padding(padding)) { content() }
     }
 }
+
+/** The site a notice's path opens on. */
+private const val SITE = "https://foreversixty.gg"
 
 /** The largest font scale a tab label grows to; past it the label stays one line (spec §10). */
 private const val TAB_LABEL_MAX_FONT_SCALE = 1.3f

@@ -187,6 +187,32 @@ class WidgetFigures(private val res: Resources, private val zone: ZoneId = ZoneI
         return parts.joinToString(" ")
     }
 
+    /**
+     * The ongoing raid notification from a `live.raid.start` message alone (fixture surface.live-raid-start.fcm),
+     * for when the snapshot draws none: the zone, the pull's countdown, your answer and who is coming.
+     */
+    fun pushedLive(data: Map<String, String>, now: Instant): RaidLiveContent? {
+        val guildId = data["guild_id"]?.toLongOrNull() ?: return null
+        val raidId = data["raid_id"]?.toLongOrNull() ?: return null
+        val zone = data["zone_name"]?.takeIf { it.isNotBlank() } ?: return null
+        val start = data["starts_at"]?.toLongOrNull()?.let(Instant::ofEpochSecond) ?: return null
+        val state = SignupState.of(data["my_state"])?.takeIf { it.isComing } ?: return null
+        val minutes = ceilMinutes(Duration.between(now, start))
+        val title = when {
+            minutes <= 0 -> res.getString(R.string.live_pullTitleNow, zone)
+            minutes == 1L -> res.getString(R.string.live_pullTitleOne, zone)
+            else -> res.getString(R.string.live_pullTitle, zone, minutes.toInt())
+        }
+        val you = res.getString(R.string.live_you, res.getString(state.label), roleLabel(data["role"].orEmpty()), data["character_name"].orEmpty())
+        val counts = listOf("in", "late", "tanks", "healers").mapNotNull { data[it]?.toIntOrNull() }
+        val coming = counts.takeIf { it.size == COUNTS }?.let { (n, late, tanks, heals) -> res.getString(R.string.live_counts, n, late, tanks, heals) }
+        return RaidLiveContent(
+            title = title, text = you, guild = data["guild_name"].orEmpty(),
+            bigText = listOfNotNull(res.getString(R.string.live_starts, clock.clock(start)), you, coming).joinToString("\n"),
+            countdownTo = start, guildId = guildId, raidId = raidId, description = listOf(title, you).joinToString(". "),
+        )
+    }
+
     fun upgrades(snapshot: WidgetSnapshot?): UpgradeFigures {
         val name = snapshot?.widget?.character?.name.orEmpty()
         val className = snapshot?.widget?.character?.className
@@ -226,7 +252,7 @@ class WidgetFigures(private val res: Resources, private val zone: ZoneId = ZoneI
         else -> unit.uppercase(LOCALE)
     }
 
-    private fun roleLabel(role: String): String = when (role) {
+    fun roleLabel(role: String): String = when (role) {
         "tank" -> res.getString(R.string.raid_role_tank)
         "healer" -> res.getString(R.string.raid_role_healer)
         else -> res.getString(R.string.raid_role_dps)
@@ -297,6 +323,9 @@ class WidgetFigures(private val res: Resources, private val zone: ZoneId = ZoneI
 
         /** The raid countdown runs from an hour before invites to 15 minutes past the pull (spec §5.6). */
         val LIVE_LEAD: Duration = Duration.ofMinutes(60)
+
+        /** A start message's four counts: in, late, tanks, healers. */
+        private const val COUNTS = 4
         val LIVE_TAIL: Duration = Duration.ofMinutes(15)
 
         fun ceilMinutes(duration: Duration): Long = ceil(duration.toMillis() / MILLIS_PER_MINUTE).toLong()

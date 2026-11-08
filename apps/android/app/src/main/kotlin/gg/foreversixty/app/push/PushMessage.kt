@@ -62,8 +62,14 @@ data class PushMessage(
  * in the data), else the link the server sent, an app link or a site page MainActivity routes.
  */
 object PushLanding {
+    private val UNANSWERED_KINDS = setOf("raid.short", "roster.pending", "raid.late_change")
+
     fun of(message: PushMessage): DeepLink? {
-        message.raid?.let { (guild, raid) -> return DeepLink.Raid(guild, raid) }
+        message.raid?.let { (guild, raid) ->
+            // An officer's raid push opens the page filtered to Not answered (spec 2026-11-08 F3).
+            val view = DeepLink.Raid.UNANSWERED.takeIf { message.kind in UNANSWERED_KINDS }
+            return DeepLink.Raid(guild, raid, view = view)
+        }
         return message.link?.let(DeepLink::parse)
     }
 }

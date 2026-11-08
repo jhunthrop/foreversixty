@@ -48,7 +48,7 @@ final class NotAnsweredModel {
         mentioning = true
         defer { mentioning = false }
         do {
-            mentionStatus = Copy.raidNaMentioned(n: try await ping.ping(guild: guild, raid: raidID, role: role))
+            mentionStatus = Self.status(try await ping.ping(guild: guild, raid: raidID, role: role), role: role)
             return false
         } catch {
             if case let .server(_, body, _) = error {
@@ -65,6 +65,16 @@ final class NotAnsweredModel {
             mentionStatus = SignupRefusal.sentence(for: error)
             return false
         }
+    }
+
+    /// What a ping did: who it mentioned (the role's word, or the count), nobody with Discord, and
+    /// those left out for a mention in the last 6 hours.
+    static func status(_ result: RaidPingResult, role: String?) -> String {
+        guard result.posted, result.mentioned > 0 else { return Copy.raidNaNoDiscord }
+        let mentioned = role.map { Copy.raidNaMentioned(people: NotAnsweredPresenter.people($0, n: result.mentioned)) }
+            ?? Copy.raidNaMentionedAll(n: result.mentioned)
+        guard let recent = result.recentlyMentioned, recent > 0 else { return mentioned }
+        return "\(mentioned) \(Copy.raidNaRecently(n: recent))"
     }
 
     var raid: RaidView? {

@@ -30,7 +30,9 @@ import gg.foreversixty.app.guild.HistoryRoute
 import gg.foreversixty.app.guild.RosterRoute
 import gg.foreversixty.app.guild.logic.CalendarInput
 import gg.foreversixty.app.navigation.DeepLink
+import gg.foreversixty.app.model.RaidBadge
 import gg.foreversixty.app.network.ApiClient
+import gg.foreversixty.app.network.ApiResult
 import gg.foreversixty.app.network.StaticDataClient
 import gg.foreversixty.app.network.dataOrNull
 import gg.foreversixty.app.raids.logic.FileRaidCache
@@ -57,6 +59,25 @@ import gg.foreversixty.app.reports.ReportsFeature
 import gg.foreversixty.app.reports.logic.ReportsViewer
 import gg.foreversixty.app.raids.ui.RaidPageScreen
 import gg.foreversixty.app.raids.ui.RaidsTabContentView
+import gg.foreversixty.app.raids.flows.GuildPage
+import gg.foreversixty.app.raids.flows.RaidTabActions
+import gg.foreversixty.app.raids.flows.RaidTabPresenter
+import gg.foreversixty.app.raids.flows.RaidTabScreen
+import gg.foreversixty.app.raids.flows.NotAnsweredModel
+import gg.foreversixty.app.raids.flows.ApplicantModel
+import gg.foreversixty.app.raids.flows.ApplicantRoute
+import gg.foreversixty.app.raids.flows.LiveRaidFlowService
+import gg.foreversixty.app.raids.flows.RaidFlowService
+import gg.foreversixty.app.raids.flows.RaidTabExtras
+import gg.foreversixty.app.raids.logic.RaidLinks
+import gg.foreversixty.app.home.flows.HomeFlowState
+import gg.foreversixty.app.model.AccountCharacter
+import gg.foreversixty.app.raids.flows.NotAnsweredRoute
+import gg.foreversixty.app.raids.flows.RaidNightRoute
+import gg.foreversixty.app.raids.logic.RaidsTabContent
+import gg.foreversixty.app.home.flows.HomeActions
+import kotlinx.coroutines.CoroutineScope
+import gg.foreversixty.app.common.SavedAnswerStrip
 import java.io.File
 import java.time.Instant
 import kotlin.time.Duration.Companion.seconds
@@ -64,7 +85,13 @@ import kotlinx.coroutines.launch
 
 /** A screen pushed on the Raids stack. */
 sealed interface RaidsDestination {
-    data class Raid(val guild: Long, val raid: Long, val roster: Boolean = false, val open: RaidOpenAction? = null) : RaidsDestination
+    data class Raid(val guild: Long, val raid: Long, val open: RaidOpenAction? = null) : RaidsDestination
+
+    /** An application to the guild, for its officers (spec 2026-11-08 F3). */
+    data class Applicant(val guild: Long, val application: Long) : RaidsDestination
+
+    /** The raid page filtered to Not answered (spec 2026-11-08 F3), an officer's. */
+    data class NotAnswered(val guild: Long, val raid: Long) : RaidsDestination
     data class Night(val raid: Long) : RaidsDestination
 
     /** Lane F10: a report pushed from Your raid night. */
@@ -97,7 +124,11 @@ class RaidsNavigator {
         val destinations = when (link) {
             is DeepLink.Raid -> {
                 val press = if (link.spec == "ask") SignupState.In else SignupState.of(link.state)
-                listOf(RaidsDestination.Raid(link.guild, link.raid, open = press?.let(::RaidOpenAction)))
+                if (link.view == DeepLink.Raid.UNANSWERED) {
+                    listOf(RaidsDestination.NotAnswered(link.guild, link.raid))
+                } else {
+                    listOf(RaidsDestination.Raid(link.guild, link.raid, open = press?.let(::RaidOpenAction)))
+                }
             }
             is DeepLink.RaidNight -> listOf(RaidsDestination.Raid(link.guild, link.raid), RaidsDestination.Night(link.raid))
             is DeepLink.Guild -> emptyList()
@@ -120,6 +151,7 @@ class RaidsFeature(
     private val isAvailable: () -> Boolean,
 ) {
     val service: RaidService = LiveRaidService(apiClient)
+    val flows: RaidFlowService = LiveRaidFlowService(apiClient)
     val cache: RaidCache = FileRaidCache(File(context.filesDir, "raids"))
     val askStore: ReminderAskStore = PrefsReminderAskStore(context.getSharedPreferences("forever_raids", Context.MODE_PRIVATE))
     val navigator = RaidsNavigator()
@@ -132,6 +164,43 @@ class RaidsFeature(
     val enabled: Boolean get() = isAvailable()
 
     suspend fun iconBuild(): String? = statics.activeBuild().dataOrNull()?.build
+
+    /** The Raid tab's badge (spec 2026-11-08 3): the member's unanswered raid or the officer's open items. */
+    var badge: RaidBadge? by mutableStateOf(null)
+        private set
+
+    /** Reads the badge for [guild]; the tab bar and the officer's Needs you show its count. */
+    suspend fun refreshBadge(guild: Long?) {
+        badge = guild?.let { (service.badge(it) as? ApiResult.Success)?.data }
+    }
+
+    /** The applicant, recruiting guilds and Ready check the Raid tab shows beside the raids. */
+    var tabExtras: RaidTabExtras by mutableStateOf(RaidTabExtras())
+        private set
+
+    /** Reads what [state] needs: an officer's newest applicant, the guilds recruiting a guildless spec, tonight's Ready check. */
+    suspend fun refreshExtras(state: RaidsTabState, liveRaid: Long?) {
+        tabExtras = when (state) {
+            is RaidsTabState.NoGuild -> RaidTabExtras(recruiting = recruiting(state.character))
+            is RaidsTabState.Loaded -> {
+                val guild = state.content.head.id
+                val applicant = if ((badge?.applicants ?: 0) > 0 && badge?.officer == true) newestApplicant(guild) else null
+                val ready = liveRaid?.let { (flows.ready(state.content.character.key, it) as? ApiResult.Success)?.data }
+                RaidTabExtras(applicant = applicant, ready = ready)
+            }
+            else -> RaidTabExtras()
+        }
+    }
+
+    private suspend fun newestApplicant(guild: Long) = (flows.applications(guild) as? ApiResult.Success)?.data?.rows
+        ?.filter { it.status == ApplicantModel.PENDING }
+        ?.maxByOrNull { it.createdAt }
+
+    private suspend fun recruiting(character: AccountCharacter?): List<gg.foreversixty.app.model.RecruitingGuild> {
+        val spec = character?.specKey() ?: return emptyList()
+        val faction = character.faction ?: return emptyList()
+        return (flows.recruiting(spec, faction, character.region, character.ruleset) as? ApiResult.Success)?.data?.rows.orEmpty()
+    }
 }
 
 /**
@@ -139,7 +208,13 @@ class RaidsFeature(
  * F1), null to follow `/v1/me`'s main; [selector] is the character selector row over the root.
  */
 @Composable
-fun RaidsRoute(feature: RaidsFeature, characterKey: String? = null, reports: RaidsReports? = null, selector: @Composable () -> Unit = {}) {
+fun RaidsRoute(
+    feature: RaidsFeature,
+    characterKey: String? = null,
+    reports: RaidsReports? = null,
+    signIn: () -> Unit = {},
+    selector: @Composable () -> Unit = {},
+) {
     val context = LocalContext.current
     val view = LocalView.current
     val uri = LocalUriHandler.current
@@ -206,6 +281,8 @@ fun RaidsRoute(feature: RaidsFeature, characterKey: String? = null, reports: Rai
         syncNext()
         syncCalendar()
         val loaded = (tab.state as? RaidsTabState.Loaded)?.content
+        feature.refreshBadge(loaded?.head?.id)
+        feature.refreshExtras(tab.state, loaded?.planned?.firstOrNull { HomeFlowState.isLive(it, feature.now()) }?.id)
         if (extras != null && loaded != null) extras.roster(loaded.head.id).load()
     }
 
@@ -220,26 +297,32 @@ fun RaidsRoute(feature: RaidsFeature, characterKey: String? = null, reports: Rai
         when (val top = feature.navigator.stack.lastOrNull()) {
             null -> Column(Modifier.fillMaxSize().background(FsColor.bg)) {
                 selector()
-                RaidsTabContentView(
-                    state = tab.state,
-                    clock = clock,
-                    now = feature.now,
-                    nextController = next,
-                    openRaid = { raid, roster -> feature.navigator.push(RaidsDestination.Raid(content?.head?.id ?: 0, raid.id, roster)) },
-                    openNight = { feature.navigator.push(RaidsDestination.Night(it)) },
-                    openWeb = { uri.openUri(it) },
-                    retry = { scope.launch { reload() } },
-                    requestPermission = requestPermission,
-                    guildRows = { loaded ->
-                        if (extras != null) {
-                            GuildExtrasRows(
-                                onRoster = extras.roster(loaded.head.id).onRoster,
-                                openRoster = { feature.navigator.push(RaidsDestination.Roster(loaded.head.id)) },
-                                openHistory = { feature.navigator.push(RaidsDestination.History(loaded.head.id)) },
-                            )
-                        }
-                    },
-                )
+                val view = RaidTabPresenter(res, clock, feature.now()).view(tab.state, next, feature.badge, extras != null, feature.tabExtras)
+                if (view != null) {
+                    content?.offlineSince?.let { SavedAnswerStrip(clock.stripTime(it, feature.now()), content.stale, { scope.launch { reload() } }) }
+                    RaidTabScreen(view, raidTabActions(feature, content, next, scope, uri::openUri, signIn))
+                } else {
+                    RaidsTabContentView(
+                        state = tab.state,
+                        clock = clock,
+                        now = feature.now,
+                        nextController = next,
+                        openRaid = { raid, unanswered -> feature.navigator.push(raidDestination(content?.head?.id ?: 0, raid.id, unanswered)) },
+                        openNight = { feature.navigator.push(RaidsDestination.Night(it)) },
+                        openWeb = { uri.openUri(it) },
+                        retry = { scope.launch { reload() } },
+                        requestPermission = requestPermission,
+                        guildRows = { loaded ->
+                            if (extras != null) {
+                                GuildExtrasRows(
+                                    onRoster = extras.roster(loaded.head.id).onRoster,
+                                    openRoster = { feature.navigator.push(RaidsDestination.Roster(loaded.head.id)) },
+                                    openHistory = { feature.navigator.push(RaidsDestination.History(loaded.head.id)) },
+                                )
+                            }
+                        },
+                    )
+                }
             }
             is RaidsDestination.Raid -> {
                 val model = remember(top) { RaidPageModel(top.guild, top.raid, deps, feature.cache, top.open, replaced, feature.connectivity) }
@@ -255,10 +338,26 @@ fun RaidsRoute(feature: RaidsFeature, characterKey: String? = null, reports: Rai
                     requestPermission = requestPermission,
                 )
             }
+            is RaidsDestination.NotAnswered -> {
+                val model = remember(top) { NotAnsweredModel(top.guild, top.raid, feature.service, feature.flows, res, scope, HOLD, replaced) }
+                NotAnsweredRoute(model, clock, content?.head?.name.orEmpty(), content?.head?.webUrl, iconBuild, uri::openUri) { feature.navigator.pop() }
+            }
+            is RaidsDestination.Applicant -> {
+                val model = remember(top) { ApplicantModel(top.guild, top.application, feature.flows, res) }
+                ApplicantRoute(model, clock, content?.head?.name.orEmpty(), feature.now) {
+                    feature.navigator.pop()
+                    scope.launch { feature.refreshBadge(top.guild) }
+                }
+            }
             is RaidsDestination.Night -> {
                 val model = remember(top) { RaidNightModel(top.raid, feature.service, feature.cache, feature.now, connectivity = feature.connectivity) }
                 val openReport: ((String) -> Unit)? = reports?.let { { id -> feature.navigator.push(RaidsDestination.Report(id)) } }
-                RaidNightScreen(model, clock, feature.now, openReport) { feature.navigator.pop() }
+                val raid = content?.planned?.firstOrNull { it.id == top.raid }
+                RaidNightRoute(
+                    model, clock, feature.now, raid?.compTarget, iconBuild, openReport,
+                    openRoster = { content?.head?.id?.let { feature.navigator.push(RaidsDestination.Raid(it, top.raid)) } },
+                    openWeb = uri::openUri,
+                ) { feature.navigator.pop() }
             }
             is RaidsDestination.Report -> reports?.let {
                 ReportRouteScreen(it.feature, ReportRoute(top.id), it.viewer) { feature.navigator.pop() }
@@ -276,5 +375,57 @@ fun RaidsRoute(feature: RaidsFeature, characterKey: String? = null, reports: Rai
     }
 }
 
+/** The Raid tab root's taps: answers through the next raid's controller, pages pushed on the tab's stack. */
+private fun raidTabActions(
+    feature: RaidsFeature,
+    content: RaidsTabContent?,
+    next: SignupController?,
+    scope: CoroutineScope,
+    openWeb: (String) -> Unit,
+    signIn: () -> Unit,
+): RaidTabActions {
+    val guild = content?.head
+    val key = content?.character?.key
+    val openRaid = { raid: Long, unanswered: Boolean -> guild?.let { feature.navigator.push(raidDestination(it.id, raid, unanswered)) } ?: Unit }
+    val guildPage = { guild?.webUrl?.let(openWeb) ?: Unit }
+    return RaidTabActions(
+        card = HomeActions(
+            onAnswer = { _, state -> if (key != null) scope.launch { next?.press(key, state) } },
+            onLate = { _, minutes -> if (key != null) scope.launch { next?.pressLate(key, minutes) } },
+            onRaid = { openRaid(it, false) },
+            onReady = { openRaid(it, false) },
+            onPreviewMention = { openRaid(it, true) },
+            onApplicants = guildPage,
+        ),
+        onPage = { page ->
+            when (page) {
+                GuildPage.Roster -> guild?.let { feature.navigator.push(RaidsDestination.Roster(it.id)) }
+                GuildPage.Loot -> guild?.let { feature.navigator.push(RaidsDestination.History(it.id)) }
+                GuildPage.Calendar, GuildPage.Sims -> guildPage()
+            }
+        },
+        onApply = { openWeb("${RaidLinks.SITE}/app/guild/${it.id}") },
+        onClaim = { openWeb(GUILDS) },
+        onFindGuild = { openWeb(GUILDS) },
+        onSignIn = signIn,
+        onApplicant = { id -> guild?.let { feature.navigator.push(RaidsDestination.Applicant(it.id, id)) } },
+        onWhere = { item -> item.link?.let(openWeb) },
+    )
+}
+
+/** The raid page, or an officer's Not answered view of it. */
+fun raidDestination(guild: Long, raid: Long, unanswered: Boolean): RaidsDestination =
+    if (unanswered) RaidsDestination.NotAnswered(guild, raid) else RaidsDestination.Raid(guild, raid)
+
+/** The site's guild finder, where a player applies to or claims a guild. */
+private const val GUILDS = "https://foreversixty.gg/guild"
+
 /** `Saved.`, `Copied` and the lock toast stay 4 s (spec F4.3, F4.18, F4.21). */
 private val HOLD = 4.seconds
+
+/** The specs.json key (`warrior-fury`) from the character's class slug and spec name; null when either is unknown. */
+internal fun AccountCharacter.specKey(): String? {
+    val cls = className?.takeIf { it.isNotBlank() } ?: return null
+    val name = spec?.takeIf { it.isNotBlank() } ?: return null
+    return "${cls.lowercase()}-${name.lowercase().replace(' ', '-')}"
+}

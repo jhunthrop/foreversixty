@@ -46,6 +46,13 @@ import gg.foreversixty.app.reports.ReportsRoute
 import gg.foreversixty.app.reports.logic.ReportsViewer
 import gg.foreversixty.app.sims.SimsRoute
 import gg.foreversixty.app.system.offline.OfflineData
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import gg.foreversixty.app.home.HomeCharacter
+import gg.foreversixty.app.talents.TalentsModel
+import gg.foreversixty.app.talents.TalentCharacter
+import gg.foreversixty.app.talents.TalentsRoute
+import gg.foreversixty.app.common.NewBuildStrip
 import kotlinx.coroutines.launch
 import java.time.Instant
 
@@ -135,6 +142,7 @@ fun MenuScreen(features: ShellFeatures, destination: MenuDestination, onPickClas
     val context = LocalContext.current
     val signIn = { account?.let { it.session.beginSignIn(it.browser(context)) } ?: Unit }
     val reportsViewer = me?.let { ReportsViewer.of(it, current?.key) } ?: ReportsViewer.SignedOut
+    val scope = rememberCoroutineScope()
     when (destination) {
         MenuDestination.Guides, MenuDestination.Tiers, MenuDestination.PatchNotes -> features.guides?.let { guides ->
             // The row's segment is saved before the root reads it on its first frame.
@@ -163,7 +171,21 @@ fun MenuScreen(features: ShellFeatures, destination: MenuDestination, onPickClas
                 onBack()
             }
         }
-        MenuDestination.Planner -> LaunchedEffect(Unit) { onBack() }
+        // Owner ruling 2026-11-08: the Talents compare page lives under the Talent planner row.
+        MenuDestination.Planner -> {
+            val talents = features.home.talents
+            if (talents != null && current != null) {
+                val character = remember(current.key) { HomeCharacter.from(current) }
+                val model = remember(current.key) { TalentsModel(talents.source, TalentCharacter.from(character), talents.catalog) }
+                LaunchedEffect(model) { model.load() }
+                Column(Modifier.fillMaxSize()) {
+                    NewBuildStrip(model) { scope.launch { model.load() } }
+                    TalentsRoute(character, model, talents.planner, onBack)
+                }
+            } else {
+                LaunchedEffect(Unit) { onBack() }
+            }
+        }
         MenuDestination.Plan -> account?.let { AccountRoute(it, AccountPage.Plan, onPickClass, onBack) }
         MenuDestination.Devices -> account?.let { AccountRoute(it, AccountPage.Devices, onPickClass, onBack) }
         MenuDestination.OfflineData -> account?.let { AccountRoute(it, AccountPage.OfflineData, onPickClass, onBack) }

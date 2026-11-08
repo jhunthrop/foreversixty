@@ -54,7 +54,7 @@ struct HomeFlowPresenter {
         var facts: [String] = []
         if let level = character.level {
             let kind = [character.specName, character.className.map(HomePresenter.words)].compactMap(\.self).joined(separator: " ")
-            facts.append(Copy.homeHeadLevel(n: level, kind: kind))
+            facts.append(Copy.homeHeadLevel(n: level, who: kind))
             if level < Self.maxLevel {
                 let band = min(Self.maxLevel, (level / Self.bandStep + 1) * Self.bandStep)
                 facts.append(Copy.homeHeadToBand(n: band - level, band: band))
@@ -115,19 +115,21 @@ struct HomeFlowPresenter {
     func nextRaid(_ inputs: HomeFlowInputs) -> NextRaidContent? {
         guard let raid = inputs.raid else { return nil }
         let viewer = raid.viewer.characters.first { $0.characterKey == inputs.character.key } ?? raid.viewer.characters.first
-        let who = Copy.homeRaidAs(name: viewer?.name ?? inputs.character.name, role: Self.roleWord(viewer?.role))
+        let name = viewer?.name ?? inputs.character.name
+        let role = Self.roleWord(viewer?.role)
+        let who = Copy.homeRaidAs(name: name, role: role)
         let selected = inputs.answer ?? viewer?.state.flatMap(SignupState.init(rawValue:))
         let zone = TimeZone(identifier: raid.guildTimezone) ?? clock.zone
         let time = Copy.homeRaidWhen(date: clock.shortDate(raid.startsAt), time: clock.guildClock(raid.startsAt, guildZone: zone))
-        let counts = Copy.homeRaidCounts(n: raid.counts.signedIn, late: raid.counts.late)
-        let answer = selected.map { Copy.homeRaidAnswered(state: $0.label, who: who) } ?? Copy.homeRaidNotAnswered(who: who)
+        let counts = Copy.homeRaidCounts(in: raid.counts.signedIn, late: raid.counts.late)
+        let answer = selected.map { Copy.homeRaidAnswered(answer: $0.label, name: name, role: role) } ?? Copy.homeRaidNotAnswered(name: name, role: role)
         return NextRaidContent(
             guildID: inputs.character.guildID ?? 0, raidID: raid.id, characterKey: viewer?.characterKey ?? inputs.character.key,
-            eyebrow: Copy.homeRaidTonight(guild: inputs.character.guild ?? "", zone: raid.zoneName),
+            eyebrow: Copy.homeRaidTonight(guild: inputs.character.guild ?? "", raid: raid.zoneName),
             clock: clockParts(to: raid.startsAt),
             when: time,
             line: HomeLine(
-                title: Copy.homeRaidLineTitle(zone: raid.zoneName, when: time),
+                title: Copy.homeRaidLineTitle(raid: raid.zoneName, when: time),
                 sub: selected == nil ? Copy.homeRaidLineOpen(counts: counts, who: who) : answer
             ),
             icon: raid.zoneIcon ?? RaidIcons.generic,
@@ -207,7 +209,7 @@ struct HomeFlowPresenter {
 
     func raidLive(_ inputs: HomeFlowInputs) -> RaidLiveContent? {
         guard let raid = inputs.raid, let next = nextRaid(inputs) else { return nil }
-        let counts = Copy.homeRaidCounts(n: raid.counts.signedIn, late: raid.counts.late)
+        let counts = Copy.homeRaidCounts(in: raid.counts.signedIn, late: raid.counts.late)
         let viewer = raid.viewer.characters.first { $0.characterKey == next.characterKey }
         let who = Copy.homeRaidAs(name: viewer?.name ?? inputs.character.name, role: Self.roleWord(viewer?.role))
         let state = next.selected?.label ?? Copy.raidChipNotSigned

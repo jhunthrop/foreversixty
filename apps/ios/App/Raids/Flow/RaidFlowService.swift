@@ -18,9 +18,9 @@ protocol RaidFlowService: Sendable {
 }
 
 /// The officer's Discord mention (F3): `POST /v1/guilds/{id}/raids/{raid}/ping` with an optional
-/// role (`tank`, `healer`, `dps`; none mentions everyone unanswered). Answers how many it mentioned.
+/// role (`tank`, `healer`, `dps`; none mentions everyone unanswered).
 protocol RaidPingService: Sendable {
-    func ping(guild: Int64, raid: Int64, role: String?) async throws(APIError) -> Int
+    func ping(guild: Int64, raid: Int64, role: String?) async throws(APIError) -> RaidPingResult
 }
 
 /// What the app cannot do itself yet, so the site does it: applying to a guild and claiming one
@@ -37,8 +37,8 @@ protocol RaidSiteActions: Sendable {
 struct LiveRaidPingService: RaidPingService {
     let client: APIClient
 
-    func ping(guild: Int64, raid: Int64, role: String?) async throws(APIError) -> Int {
-        try await client.send(.pingGuildRaid(id: guild, raid: raid, RaidPingRequest(role: role))).mentioned
+    func ping(guild: Int64, raid: Int64, role: String?) async throws(APIError) -> RaidPingResult {
+        try await client.send(.pingGuildRaid(id: guild, raid: raid, RaidPingRequest(role: role)))
     }
 }
 

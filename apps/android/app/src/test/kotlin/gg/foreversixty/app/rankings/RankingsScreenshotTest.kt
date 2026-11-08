@@ -4,9 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -27,19 +25,13 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.takahirom.roborazzi.ExperimentalRoborazziApi
 import com.github.takahirom.roborazzi.captureRoboImage
 import com.github.takahirom.roborazzi.captureScreenRoboImage
-import gg.foreversixty.app.menu.CharacterPortrait
 import gg.foreversixty.app.designsystem.ForeverTheme
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.GameColors
 import gg.foreversixty.app.home.GearList
 import gg.foreversixty.app.home.GearModel
-import gg.foreversixty.app.home.HomeAnswer
 import gg.foreversixty.app.home.HomeFixtures
-import gg.foreversixty.app.home.HomeLogs
-import gg.foreversixty.app.home.HomePhase
 import gg.foreversixty.app.home.HomePresenter
-import gg.foreversixty.app.home.HomeRankings
-import gg.foreversixty.app.home.HomeTime
 import gg.foreversixty.app.items.ItemLook
 import gg.foreversixty.app.items.ItemTooltipModel
 import gg.foreversixty.app.items.LocalItemIconPainter
@@ -52,7 +44,6 @@ import gg.foreversixty.app.rankings.logic.BoardPhase
 import gg.foreversixty.app.rankings.logic.CharacterPhase
 import gg.foreversixty.app.rankings.logic.CharacterRoute
 import gg.foreversixty.app.rankings.logic.Rankings
-import gg.foreversixty.app.rankings.logic.RankingsCopy
 import gg.foreversixty.app.rankings.logic.RankingsViewer
 import gg.foreversixty.app.rankings.logic.WatchState
 import gg.foreversixty.app.rankings.ui.CharacterContent
@@ -62,11 +53,8 @@ import gg.foreversixty.app.rankings.ui.FiltersSheetContent
 import gg.foreversixty.app.rankings.ui.FiltersSheetState
 import gg.foreversixty.app.rankings.ui.RankingsContent
 import gg.foreversixty.app.rankings.ui.RankingsScreenState
-import gg.foreversixty.app.reports.logic.Reports
-import gg.foreversixty.app.reports.ReportsTestData
 import gg.foreversixty.app.reports.ui.MetersDragHandle
 import java.time.Instant
-import java.time.ZoneOffset
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -238,27 +226,7 @@ class RankingsScreenshotTest {
     @Test @Config(qualifiers = PIXEL_9_XXL)
     fun gearLarge() = character("character-gear-large-and", profile(RankingsTestData.voltaris()), large = true)
 
-    // Home: the Rankings row under Logs, and Your gear as the Paperdoll
-
-    @Test @Config(qualifiers = PIXEL_9_HOME)
-    fun homeRankings() = capture("home-rankings-and") {
-        val res = LocalResources.current
-        val viewer = RankingsTestData.viewer()
-        val line = RankingsCopy(res, zone).homeLine(RankingsTestData.page(), Rankings.defaults(viewer, specs, phases, now, "onyxia"), names)
-        val presenter = HomePresenter(
-            LIGHTNINGBOLLTZ, emptyList(), HomeTime(HomeFixtures.now, ZoneOffset.UTC), res,
-            logs = HomeLogs(Reports.lastRaid(ReportsTestData.list().rows)), rankings = HomeRankings(line),
-        )
-        // Lightningbolltz's own Home answer (character.home.yours): the six upgrades behind his six gold dots.
-        val home = HomeFixtures.home("character.home.yours")
-        Column {
-            // The profile portrait as the bar draws it for the session's current character.
-            Row(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp).heightIn(min = 48.dp), verticalAlignment = Alignment.CenterVertically) {
-                CharacterPortrait(LIGHTNINGBOLLTZ_ACCOUNT.avatarUrl, LIGHTNINGBOLLTZ_ACCOUNT.faction, 36.dp)
-            }
-            HomeAnswer(HomePhase.Loaded(home), presenter, home.dataBuild, null)
-        }
-    }
+    // Home: Your gear as the Paperdoll
 
     @Test @Config(qualifiers = PIXEL_9_TALL)
     fun homeGear() = capture("home-gear-and") { HomeGear() }
@@ -281,23 +249,9 @@ class RankingsScreenshotTest {
     }
 }
 
-/** Home's character for the Rankings row: the board's own Elemental Shaman. */
-private val LIGHTNINGBOLLTZ = gg.foreversixty.app.home.HomeCharacter(
-    key = "us/normal/lightningbolltz", region = "us", ruleset = "normal", name = "Lightningbolltz", race = "troll",
-    className = "shaman", specName = "Elemental", level = 60, guild = "Hordebreakers", faction = "horde",
-)
-
-/** The same character as the account's, for the selector. */
-private val LIGHTNINGBOLLTZ_ACCOUNT = gg.foreversixty.app.model.AccountCharacter(
-    key = LIGHTNINGBOLLTZ.key, region = LIGHTNINGBOLLTZ.region, ruleset = LIGHTNINGBOLLTZ.ruleset, name = LIGHTNINGBOLLTZ.name,
-    source = "addon", className = LIGHTNINGBOLLTZ.className, level = LIGHTNINGBOLLTZ.level, faction = LIGHTNINGBOLLTZ.faction,
-    race = LIGHTNINGBOLLTZ.race, spec = LIGHTNINGBOLLTZ.specName,
-)
-
 /** Pixel 9: 412 x 915 dp at 420 dpi. */
 private const val PIXEL_9 = "w412dp-h915dp-normal-long-notround-any-420dpi-keyshidden-nonav"
 private const val PIXEL_9_TALL = "w412dp-h1300dp-normal-long-notround-any-420dpi-keyshidden-nonav"
 private const val PIXEL_9_XTALL = "w412dp-h2000dp-normal-long-notround-any-420dpi-keyshidden-nonav"
-private const val PIXEL_9_HOME = "w412dp-h2400dp-normal-long-notround-any-420dpi-keyshidden-nonav"
 private const val PIXEL_9_XL = "w412dp-h2600dp-normal-long-notround-any-420dpi-keyshidden-nonav"
 private const val PIXEL_9_XXL = "w412dp-h4400dp-normal-long-notround-any-420dpi-keyshidden-nonav"

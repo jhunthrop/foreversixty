@@ -1,6 +1,5 @@
 package gg.foreversixty.app.home
 
-import android.content.res.Resources
 import android.graphics.BitmapFactory
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -12,12 +11,10 @@ import gg.foreversixty.app.items.ItemTooltipSources
 import gg.foreversixty.app.model.ApiJson
 import gg.foreversixty.app.model.BisFile
 import gg.foreversixty.app.model.CharacterHome
-import gg.foreversixty.app.model.FinishedSim
 import gg.foreversixty.app.model.ItemSet
 import gg.foreversixty.app.model.ItemsFile
 import java.io.File
 import java.time.Instant
-import java.time.ZoneOffset
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.json.JsonArray
@@ -67,9 +64,6 @@ object HomeFixtures {
         sets = staticFile("cdn.sets", ListSerializer(ItemSet.serializer())),
         bis = staticFile("cdn.bis.hunter-beast-mastery", BisFile.serializer()),
     )
-
-    fun presenter(res: Resources, sims: List<FinishedSim> = emptyList(), character: HomeCharacter = velaren) =
-        HomePresenter(character, sims, HomeTime(now, ZoneOffset.UTC), res)
 
     /** The repo root, from the app module's working directory (apps/android/app). */
     private val repoRoot: File = File(System.getProperty("user.dir").orEmpty()).absoluteFile.parentFile?.parentFile?.parentFile

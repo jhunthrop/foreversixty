@@ -1407,32 +1407,6 @@ enum Copy {
         format("raid.night.lateNameOnly", name)
     }
 
-    /// {names} · {n} short
-    static func raidNightShort(names: String, n: Int) -> String {
-        format("raid.night.short", names, n)
-    }
-
-    /// {names} and {n} more
-    static func raidNightMore(names: String, n: Int) -> String {
-        format("raid.night.more", names, n)
-    }
-
-    /// {when} · {counts}
-    static func raidNightAside(when: String, counts: String) -> String {
-        format("raid.night.aside", when, counts)
-    }
-
-    /// You are {state}
-    static func raidNightYouAre(state: String) -> String {
-        format("raid.night.youAre", state)
-    }
-
-    /// Before you pull
-    static var raidNightBeforePull: String { text("raid.night.beforePull") }
-
-    /// Roster ›
-    static var raidNightRoster: String { text("raid.night.roster") }
-
     /// Ready check
     static var raidReadyTitle: String { text("raid.ready.title") }
 
@@ -1461,11 +1435,6 @@ enum Copy {
     /// Guilds recruiting an {kind}
     static func raidRecruitHeadingVowel(kind: String) -> String {
         format("raid.recruit.headingVowel", kind)
-    }
-
-    /// {faction} · {schedule} · needs {needs}
-    static func raidRecruitLine(faction: String, schedule: String, needs: String) -> String {
-        format("raid.recruit.line", faction, schedule, needs)
     }
 
     /// Apply
@@ -1497,247 +1466,11 @@ enum Copy {
     /// Sign up for your guild's raids from your phone.
     static var raidOutLine: String { text("raid.out.line") }
 
-    /// Not answered
-    static var raidNaTitle: String { text("raid.na.title") }
-
-    /// All
-    static var raidNaAll: String { text("raid.na.all") }
-
-    /// {label} {n}
-    static func raidNaFilter(label: String, n: Int) -> String {
-        format("raid.na.filter", label, n)
-    }
-
-    /// Mention the {people} in Discord
-    static func raidNaMentionRole(people: String) -> String {
-        format("raid.na.mentionRole", people)
-    }
-
-    /// Mention all {n}
-    static func raidNaMentionAll(n: Int) -> String {
-        format("raid.na.mentionAll", n)
-    }
-
-    /// {names}: {zone} is {when} and we need {role}. Answer In, Late, Bench or Out in the app or on the raid page.
-    static func raidNaPreview(names: String, zone: String, when: String, role: String) -> String {
-        format("raid.na.preview", names, zone, when, role)
-    }
-
-    /// {names}: {zone} is {when}. Answer In, Late, Bench or Out in the app or on the raid page.
-    static func raidNaPreviewAll(names: String, zone: String, when: String) -> String {
-        format("raid.na.previewAll", names, zone, when)
-    }
-
-    /// {n} of {total}, {role} first
-    static func raidNaMeta(n: Int, total: Int, role: String) -> String {
-        format("raid.na.meta", n, total, role)
-    }
-
-    /// {n} of {total}
-    static func raidNaMetaPlain(n: Int, total: Int) -> String {
-        format("raid.na.metaPlain", n, total)
-    }
-
-    /// Mark In
-    static var raidNaMarkIn: String { text("raid.na.markIn") }
-
-    /// Discord DM
-    static var raidNaDiscordDM: String { text("raid.na.discordDM") }
-
-    /// Mentioned {n} raiders in Discord.
-    static func raidNaMentioned(n: Int) -> String {
-        format("raid.na.mentioned", n)
-    }
-
     /// This guild has no Discord bot yet. Connect it on the raid's page.
     static var raidNaNoBot: String { text("raid.na.noBot") }
 
     /// They were mentioned a moment ago. Try again later.
     static var raidNaThrottled: String { text("raid.na.throttled") }
-
-    /// Marked {state}
-    static func raidNaMarked(state: String) -> String {
-        format("raid.na.marked", state)
-    }
-
-    /// Undo
-    static var raidNaUndo: String { text("raid.na.undo") }
-
-    /// was {state} last week
-    static func raidNaLastWeek(state: String) -> String {
-        format("raid.na.lastWeek", state)
-    }
-
-    /// missed last week
-    static var raidNaMissed: String { text("raid.na.missed") }
-
-    /// new this week
-    static var raidNaNew: String { text("raid.na.new") }
-
-    /// {kind} · {line}
-    static func raidNaSub(kind: String, line: String) -> String {
-        format("raid.na.sub", kind, line)
-    }
-
-    /// {role} on the bench
-    static func raidNaBench(role: String) -> String {
-        format("raid.na.bench", role)
-    }
-
-    /// on the bench
-    static var raidNaOnBench: String { text("raid.na.onBench") }
-
-    /// If {names} are In, {role} are full.
-    static func raidNaFills(names: String, role: String) -> String {
-        format("raid.na.fills", names, role)
-    }
-
-    /// Creating and editing raids stays on the site.
-    static var raidNaSite: String { text("raid.na.site") }
-
-    /// Edit on the site ›
-    static var raidNaSiteLink: String { text("raid.na.siteLink") }
-
-    /// Everyone has answered.
-    static var raidNaEmpty: String { text("raid.na.empty") }
-
-    /// {first} and {last}
-    static func raidListAnd(first: String, last: String) -> String {
-        format("raid.list.and", first, last)
-    }
-
-    /// Forever Score
-    static var raidApplicantScore: String { text("raid.applicant.score") }
-
-    /// Sim
-    static var raidApplicantSim: String { text("raid.applicant.sim") }
-
-    /// Item level
-    static var raidApplicantItemLevel: String { text("raid.applicant.itemLevel") }
-
-    /// Raid ready
-    static var raidApplicantReady: String { text("raid.applicant.ready") }
-
-    /// Attuned to {zone}
-    static func raidApplicantAttuned(zone: String) -> String {
-        format("raid.applicant.attuned", zone)
-    }
-
-    /// Not attuned to {zone}
-    static func raidApplicantNotAttuned(zone: String) -> String {
-        format("raid.applicant.notAttuned", zone)
-    }
-
-    /// {zone}: attunement not seen yet
-    static func raidApplicantAttuneUnknown(zone: String) -> String {
-        format("raid.applicant.attuneUnknown", zone)
-    }
-
-    /// Enchants
-    static var raidApplicantEnchants: String { text("raid.applicant.enchants") }
-
-    /// {n} of {slots} slots
-    static func raidApplicantEnchantsLine(n: Int, slots: Int) -> String {
-        format("raid.applicant.enchantsLine", n, slots)
-    }
-
-    /// {line} · {missing} missing
-    static func raidApplicantEnchantsMissing(line: String, missing: String) -> String {
-        format("raid.applicant.enchantsMissing", line, missing)
-    }
-
-    /// cloak
-    static var raidApplicantSlotBack: String { text("raid.applicant.slot.back") }
-
-    /// boots
-    static var raidApplicantSlotFeet: String { text("raid.applicant.slot.feet") }
-
-    /// gloves
-    static var raidApplicantSlotHands: String { text("raid.applicant.slot.hands") }
-
-    /// bracers
-    static var raidApplicantSlotWrist: String { text("raid.applicant.slot.wrist") }
-
-    /// chest
-    static var raidApplicantSlotChest: String { text("raid.applicant.slot.chest") }
-
-    /// legs
-    static var raidApplicantSlotLegs: String { text("raid.applicant.slot.legs") }
-
-    /// shoulders
-    static var raidApplicantSlotShoulder: String { text("raid.applicant.slot.shoulder") }
-
-    /// head
-    static var raidApplicantSlotHead: String { text("raid.applicant.slot.head") }
-
-    /// weapon
-    static var raidApplicantSlotWeapon: String { text("raid.applicant.slot.weapon") }
-
-    /// Best in slot gap
-    static var raidApplicantGap: String { text("raid.applicant.gap") }
-
-    /// {n} pieces
-    static func raidApplicantPieces(n: Int) -> String {
-        format("raid.applicant.pieces", n)
-    }
-
-    /// {pieces} from the {list} list
-    static func raidApplicantGapLine(pieces: String, list: String) -> String {
-        format("raid.applicant.gapLine", pieces, list)
-    }
-
-    /// Guild history
-    static var raidApplicantHistory: String { text("raid.applicant.history") }
-
-    /// {n} raids
-    static func raidApplicantRaids(n: Int) -> String {
-        format("raid.applicant.raids", n)
-    }
-
-    /// {raids} · last raid {date}
-    static func raidApplicantHistoryLine(raids: String, date: String) -> String {
-        format("raid.applicant.historyLine", raids, date)
-    }
-
-    /// Their note
-    static var raidApplicantNote: String { text("raid.applicant.note") }
-
-    /// Accept into guild
-    static var raidApplicantAccept: String { text("raid.applicant.accept") }
-
-    /// Decline
-    static var raidApplicantDecline: String { text("raid.applicant.decline") }
-
-    /// Their raid role comes from their spec when they answer a raid.
-    static var raidApplicantRole: String { text("raid.applicant.role") }
-
-    /// {kind} · {level}
-    static func raidApplicantKind(kind: String, level: Int) -> String {
-        format("raid.applicant.kind", kind, level)
-    }
-
-    /// applied {age}
-    static func raidApplicantApplied(age: String) -> String {
-        format("raid.applicant.applied", age)
-    }
-
-    /// Accepted into {guild}. Invite {name} in game:
-    static func raidApplicantAccepted(guild: String, name: String) -> String {
-        format("raid.applicant.accepted", guild, name)
-    }
-
-    /// /ginvite {name}
-    static func raidApplicantGinvite(name: String) -> String {
-        format("raid.applicant.ginvite", name)
-    }
-
-    /// Copy
-    static var raidApplicantCopy: String { text("raid.applicant.copy") }
-
-    /// {name} shows on the roster once the addon or Battle.net sees the character in the guild.
-    static func raidApplicantAfter(name: String) -> String {
-        format("raid.applicant.after", name)
-    }
 
     /// Officer
     static var officerLabel: String { text("officer.label") }
@@ -2610,6 +2343,110 @@ enum Copy {
 
     /// When you have not answered a raid; off, they mention you in the channel
     static var notificationsOfficerDmsLine: String { text("notifications.officerDmsLine") }
+
+    /// {n} of {total} slots on the list
+    static func gearOnList(n: Int, total: Int) -> String {
+        format("gear.onList", n, total)
+    }
+
+    /// Change
+    static var gearChange: String { text("gear.change") }
+
+    /// Where to go tonight
+    static var gearWhereTonight: String { text("gear.whereTonight") }
+
+    /// Every slot
+    static var gearEverySlot: String { text("gear.everySlot") }
+
+    /// Worn
+    static var gearWorn: String { text("gear.worn") }
+
+    /// {items} · {boss}, {chance}
+    static func gearWhereDrop(items: String, boss: String, chance: String) -> String {
+        format("gear.where.drop", items, boss, chance)
+    }
+
+    /// {items} · {boss}
+    static func gearWhereBoss(items: String, boss: String) -> String {
+        format("gear.where.boss", items, boss)
+    }
+
+    /// {items} · ask a {crafter}
+    static func gearWhereAsk(items: String, crafter: String) -> String {
+        format("gear.where.ask", items, crafter)
+    }
+
+    /// {items}, needs {standing}
+    static func gearWhereRep(items: String, standing: String) -> String {
+        format("gear.where.rep", items, standing)
+    }
+
+    /// blacksmith
+    static var gearCrafterBlacksmithing: String { text("gear.crafter.blacksmithing") }
+
+    /// leatherworker
+    static var gearCrafterLeatherworking: String { text("gear.crafter.leatherworking") }
+
+    /// tailor
+    static var gearCrafterTailoring: String { text("gear.crafter.tailoring") }
+
+    /// engineer
+    static var gearCrafterEngineering: String { text("gear.crafter.engineering") }
+
+    /// alchemist
+    static var gearCrafterAlchemy: String { text("gear.crafter.alchemy") }
+
+    /// enchanter
+    static var gearCrafterEnchanting: String { text("gear.crafter.enchanting") }
+
+    /// Best in slot for your class
+    static var gearOutTitle: String { text("gear.out.title") }
+
+    /// Pick a class, then a spec and a level range.
+    static var gearOutMeta: String { text("gear.out.meta") }
+
+    /// Classes
+    static var gearOutClasses: String { text("gear.out.classes") }
+
+    /// over your worn
+    static var gearSheetOverWorn: String { text("gear.sheet.overWorn") }
+
+    /// Where to get it
+    static var gearSheetWhere: String { text("gear.sheet.where") }
+
+    /// Runner-up
+    static var gearSheetRunnerUp: String { text("gear.sheet.runnerUp") }
+
+    /// Who in the guild needs it
+    static var gearSheetNeeds: String { text("gear.sheet.needs") }
+
+    /// {spec} · needs it, the pick on their list
+    static func gearSheetNeedsPick(spec: String) -> String {
+        format("gear.sheet.needsPick", spec)
+    }
+
+    /// {spec} · needs it, a runner-up on their list
+    static func gearSheetNeedsRunnerUp(spec: String) -> String {
+        format("gear.sheet.needsRunnerUp", spec)
+    }
+
+    /// {spec} · has it
+    static func gearSheetHas(spec: String) -> String {
+        format("gear.sheet.has", spec)
+    }
+
+    /// Nobody in the guild has it on their list.
+    static var gearSheetNobody: String { text("gear.sheet.nobody") }
+
+    /// {n} guildmates have not shared their gear yet
+    static func gearSheetUnknown(n: Int) -> String {
+        format("gear.sheet.unknown", n)
+    }
+
+    /// {chance} drop chance
+    static func gearSheetDropChance(chance: String) -> String {
+        format("gear.sheet.dropChance", chance)
+    }
 
     /// You
     static var youTitle: String { text("you.title") }
@@ -4367,6 +4204,11 @@ enum Copy {
         format("live.pullTitleNow", zone)
     }
 
+    /// {in} in, {late} late · {tanks} tanks, {healers} heals
+    static func liveCounts(`in`: Int, late: Int, tanks: Int, healers: Int) -> String {
+        format("live.counts", `in`, late, tanks, healers)
+    }
+
     /// {n} of {m} combinations
     static func liveSim(n: Int, m: Int) -> String {
         format("live.sim", n, m)
@@ -5615,9 +5457,12 @@ enum Copy {
     /// Share
     static var shareAction: String { text("share.action") }
 
-    /// Level {n} {kind}
-    static func homeHeadLevel(n: Int, kind: String) -> String {
-        format("home.head.level", n, kind)
+    /// Damage
+    static var raidGroupDamage: String { text("raid.group.damage") }
+
+    /// Level {n} {who}
+    static func homeHeadLevel(n: Int, who: String) -> String {
+        format("home.head.level", n, who)
     }
 
     /// {n} levels to band {band}
@@ -5625,50 +5470,575 @@ enum Copy {
         format("home.head.toBand", n, band)
     }
 
-    /// {guild} · {zone} tonight
-    static func homeRaidTonight(guild: String, zone: String) -> String {
-        format("home.raid.tonight", guild, zone)
+    /// 1 level to band {band}
+    static func homeHeadToBandOne(band: Int) -> String {
+        format("home.head.toBandOne", band)
     }
 
-    /// {guild} · {zone} in progress
-    static func homeRaidInProgress(guild: String, zone: String) -> String {
-        format("home.raid.inProgress", guild, zone)
+    /// Next upgrades
+    static var homeUpgradesNext: String { text("home.upgrades.next") }
+
+    /// Gear ›
+    static var homeUpgradesGear: String { text("home.upgrades.gear") }
+
+    /// Best run: {place}, {item} {gain}
+    static func homeBestRun(place: String, item: String, gain: String) -> String {
+        format("home.bestRun", place, item, gain)
+    }
+
+    /// Best run: {place}, {item} {gain}, {chance}
+    static func homeBestRunChance(place: String, item: String, gain: String, chance: String) -> String {
+        format("home.bestRun.chance", place, item, gain, chance)
+    }
+
+    /// {guild} · {raid} tonight
+    static func homeRaidTonight(guild: String, raid: String) -> String {
+        format("home.raid.tonight", guild, raid)
+    }
+
+    /// {guild} · {raid} in progress
+    static func homeRaidLive(guild: String, raid: String) -> String {
+        format("home.raid.live", guild, raid)
     }
 
     /// hours
     static var homeRaidHours: String { text("home.raid.hours") }
 
     /// min
-    static var homeRaidMinutes: String { text("home.raid.minutes") }
+    static var homeRaidMin: String { text("home.raid.min") }
+
+    /// {h} hours {m} minutes
+    static func homeRaidClock(h: Int, m: Int) -> String {
+        format("home.raid.clock", h, m)
+    }
 
     /// {date}, {time}
     static func homeRaidWhen(date: String, time: String) -> String {
         format("home.raid.when", date, time)
     }
 
+    /// You have not answered, as {name}, {role}
+    static func homeRaidNotAnswered(name: String, role: String) -> String {
+        format("home.raid.notAnswered", name, role)
+    }
+
+    /// You are {answer}, as {name}, {role}
+    static func homeRaidAnswered(answer: String, name: String, role: String) -> String {
+        format("home.raid.answered", answer, name, role)
+    }
+
+    /// {raid} · {when}
+    static func homeRaidLineTitle(raid: String, when: String) -> String {
+        format("home.raid.lineTitle", raid, when)
+    }
+
+    /// {counts} · you have not answered, as {name}, {role}
+    static func homeRaidLineSub(counts: String, name: String, role: String) -> String {
+        format("home.raid.lineSub", counts, name, role)
+    }
+
+    /// {in} in, {late} late
+    static func homeRaidCounts(`in`: Int, late: Int) -> String {
+        format("home.raid.counts", `in`, late)
+    }
+
+    /// {n} things before you pull
+    static func homeRaidReady(n: Int) -> String {
+        format("home.raid.ready", n)
+    }
+
+    /// {items} · from your last log-out, {age}
+    static func homeRaidReadySub(items: String, age: String) -> String {
+        format("home.raid.readySub", items, age)
+    }
+
+    /// {n} have not answered
+    static func homeOfficerUnanswered(n: Int) -> String {
+        format("home.officer.unanswered", n)
+    }
+
+    /// {n} have not answered, {m} of them {role}
+    static func homeOfficerUnansweredRole(n: Int, m: Int, role: String) -> String {
+        format("home.officer.unansweredRole", n, m, role)
+    }
+
+    /// tanks
+    static var homeOfficerRoleTanks: String { text("home.officer.role.tanks") }
+
+    /// healers
+    static var homeOfficerRoleHealers: String { text("home.officer.role.healers") }
+
+    /// damage
+    static var homeOfficerRoleDamage: String { text("home.officer.role.damage") }
+
+    /// {role} short by {n}
+    static func homeOfficerShort(role: String, n: Int) -> String {
+        format("home.officer.short", role, n)
+    }
+
+    /// Preview mention
+    static var homeOfficerPreview: String { text("home.officer.preview") }
+
+    /// {n} applicants
+    static func homeOfficerApplicants(n: Int) -> String {
+        format("home.officer.applicants", n)
+    }
+
+    /// Pulled {age} · {counts} · you are {answer} as {name}, {role}
+    static func homeLiveLine(age: String, counts: String, answer: String, name: String, role: String) -> String {
+        format("home.live.line", age, counts, answer, name, role)
+    }
+
+    /// Pulled {age} · {counts}
+    static func homeLiveLineNoAnswer(age: String, counts: String) -> String {
+        format("home.live.lineNoAnswer", age, counts)
+    }
+
+    /// Open raid night ›
+    static var homeLiveOpen: String { text("home.live.open") }
+
+    /// Last night
+    static var homeLastNight: String { text("home.lastNight") }
+
+    /// Sim again with your new gear
+    static var homeLastNightSim: String { text("home.lastNight.sim") }
+
+    /// Your sim is from before last night
+    static var homeLastNightSimSub: String { text("home.lastNight.simSub") }
+
+    /// New for you
+    static var homeNewForYou: String { text("home.newForYou") }
+
+    /// All activity ›
+    static var homeAllActivity: String { text("home.allActivity") }
+
+    /// All activity ({n}) ›
+    static func homeAllActivityCount(n: Int) -> String {
+        format("home.allActivity.count", n)
+    }
+
+    /// Raid with a guild that plans its nights here, and answer its raids from the app.
+    static var homeFindGuildLine: String { text("home.findGuild.line") }
+
+    /// Raid with a guild that plans its nights here, and answer its raids from the app. The first raids open {date}.
+    static func homeFindGuildFirstRaids(date: String) -> String {
+        format("home.findGuild.firstRaids", date)
+    }
+
+    /// Find a guild
+    static var homeFindGuild: String { text("home.findGuild") }
+
+    /// We could not load your home
+    static var homeErrorTitle: String { text("home.error.title") }
+
+    /// Check your connection
+    static var homeErrorSub: String { text("home.error.sub") }
+
+    /// Your characters are on their way
+    static var homeNewTitle: String { text("home.new.title") }
+
+    /// Battle.net lists a character after you play it and log out.
+    static var homeNewLine: String { text("home.new.line") }
+
+    /// Check again
+    static var homeNewCheck: String { text("home.new.check") }
+
+    /// yesterday
+    static var homeYesterday: String { text("home.yesterday") }
+
+    /// Next raid
+    static var raidTabNextRaid: String { text("raid.tab.nextRaid") }
+
+    /// Needs you
+    static var raidTabNeedsYou: String { text("raid.tab.needsYou") }
+
+    /// {n} open
+    static func raidTabOpen(n: Int) -> String {
+        format("raid.tab.open", n)
+    }
+
+    /// No raid planned yet. Your officers plan raids on the site; a push tells you the moment one is posted.
+    static var raidTabNoRaid: String { text("raid.tab.noRaid") }
+
+    /// Raid night
+    static var raidTabRaidNight: String { text("raid.tab.raidNight") }
+
+    /// {role} {have} of {want}
+    static func raidTabRoleLine(role: String, have: Int, want: Int) -> String {
+        format("raid.tab.roleLine", role, have, want)
+    }
+
+    /// {name} (Late, {n} min)
+    static func raidTabLateNote(name: String, n: Int) -> String {
+        format("raid.tab.lateNote", name, n)
+    }
+
+    /// Ready check
+    static var raidTabReadyCheck: String { text("raid.tab.readyCheck") }
+
+    /// From your last log-out, {age}
+    static func raidTabStamp(age: String) -> String {
+        format("raid.tab.stamp", age)
+    }
+
+    /// Roster
+    static var raidTabRoster: String { text("raid.tab.roster") }
+
+    /// Calendar
+    static var raidTabCalendar: String { text("raid.tab.calendar") }
+
+    /// Loot history
+    static var raidTabLoot: String { text("raid.tab.loot") }
+
+    /// Guild sims
+    static var raidTabSims: String { text("raid.tab.sims") }
+
+    /// {zone} {day}
+    static func raidTabCalendarItem(zone: String, day: String) -> String {
+        format("raid.tab.calendarItem", zone, day)
+    }
+
+    /// Raid with a guild
+    static var raidTabWithGuild: String { text("raid.tab.withGuild") }
+
+    /// Guilds that plan their raids here
+    static var raidTabWithGuildLine: String { text("raid.tab.withGuildLine") }
+
+    /// Guilds recruiting a {spec}
+    static func raidTabRecruiting(spec: String) -> String {
+        format("raid.tab.recruiting", spec)
+    }
+
+    /// Apply
+    static var raidTabApply: String { text("raid.tab.apply") }
+
+    /// Your guild is not here?
+    static var raidTabNotHere: String { text("raid.tab.notHere") }
+
+    /// Claim it: a guild master or an officer confirms with the addon or Battle.net.
+    static var raidTabClaimLine: String { text("raid.tab.claimLine") }
+
+    /// Claim your guild
+    static var raidTabClaim: String { text("raid.tab.claim") }
+
+    /// Raids start at 60
+    static var raidTabLeveler: String { text("raid.tab.leveler") }
+
+    /// {n} levels to go
+    static func raidTabLevelsToGo(n: Int) -> String {
+        format("raid.tab.levelsToGo", n)
+    }
+
+    /// Onyxia's Lair, Barrow Deeps and Hyjal Summit open at 60. Join a guild on the way and its raids show here.
+    static var raidTabLevelerLine: String { text("raid.tab.levelerLine") }
+
+    /// Sign up for your guild's raids from your phone.
+    static var raidTabOutLine: String { text("raid.tab.outLine") }
+
+    /// Not answered
+    static var raidNaTitle: String { text("raid.na.title") }
+
+    /// All
+    static var raidNaAll: String { text("raid.na.all") }
+
+    /// {label} {n}
+    static func raidNaFilter(label: String, n: Int) -> String {
+        format("raid.na.filter", label, n)
+    }
+
+    /// Mention the {people} in Discord
+    static func raidNaMentionRole(people: String) -> String {
+        format("raid.na.mentionRole", people)
+    }
+
+    /// Mention all {n}
+    static func raidNaMentionAll(n: Int) -> String {
+        format("raid.na.mentionAll", n)
+    }
+
+    /// {names}: {zone} is {when} and we need {role}. Answer In, Late, Bench or Out in the app or on the raid page.
+    static func raidNaPreview(names: String, zone: String, when: String, role: String) -> String {
+        format("raid.na.preview", names, zone, when, role)
+    }
+
+    /// {names}: {zone} is {when}. Answer In, Late, Bench or Out in the app or on the raid page.
+    static func raidNaPreviewAll(names: String, zone: String, when: String) -> String {
+        format("raid.na.previewAll", names, zone, when)
+    }
+
+    /// {n} of {total}, {role} first
+    static func raidNaMeta(n: Int, total: Int, role: String) -> String {
+        format("raid.na.meta", n, total, role)
+    }
+
+    /// {n} of {total}
+    static func raidNaMetaPlain(n: Int, total: Int) -> String {
+        format("raid.na.metaPlain", n, total)
+    }
+
+    /// Mark In
+    static var raidNaMarkIn: String { text("raid.na.markIn") }
+
+    /// Discord DM
+    static var raidNaDiscordDM: String { text("raid.na.discordDM") }
+
+    /// Marked {state}
+    static func raidNaMarked(state: String) -> String {
+        format("raid.na.marked", state)
+    }
+
+    /// Undo
+    static var raidNaUndo: String { text("raid.na.undo") }
+
+    /// was {state} last week
+    static func raidNaLastWeek(state: String) -> String {
+        format("raid.na.lastWeek", state)
+    }
+
+    /// missed last week
+    static var raidNaMissed: String { text("raid.na.missed") }
+
+    /// new this week
+    static var raidNaNew: String { text("raid.na.new") }
+
+    /// {kind} · {line}
+    static func raidNaSub(kind: String, line: String) -> String {
+        format("raid.na.sub", kind, line)
+    }
+
+    /// {role} on the bench
+    static func raidNaBench(role: String) -> String {
+        format("raid.na.bench", role)
+    }
+
+    /// on the bench
+    static var raidNaOnBench: String { text("raid.na.onBench") }
+
+    /// If {names} are In, {role} are full.
+    static func raidNaFills(names: String, role: String) -> String {
+        format("raid.na.fills", names, role)
+    }
+
+    /// Creating and editing raids stays on the site.
+    static var raidNaSite: String { text("raid.na.site") }
+
+    /// Edit on the site ›
+    static var raidNaSiteLink: String { text("raid.na.siteLink") }
+
+    /// Everyone has answered.
+    static var raidNaEmpty: String { text("raid.na.empty") }
+
+    /// Mentioned {people} in Discord.
+    static func raidNaMentioned(people: String) -> String {
+        format("raid.na.mentioned", people)
+    }
+
+    /// Mentioned {n} in Discord.
+    static func raidNaMentionedAll(n: Int) -> String {
+        format("raid.na.mentionedAll", n)
+    }
+
+    /// Nobody to mention: none of them has linked Discord.
+    static var raidNaNoDiscord: String { text("raid.na.noDiscord") }
+
+    /// {n} were mentioned in the last 6 hours and were left out.
+    static func raidNaRecently(n: Int) -> String {
+        format("raid.na.recently", n)
+    }
+
+    /// {first} and {last}
+    static func raidListAnd(first: String, last: String) -> String {
+        format("raid.list.and", first, last)
+    }
+
+    /// Back to {screen}
+    static func flowsBackTo(screen: String) -> String {
+        format("flows.backTo", screen)
+    }
+
+    /// {faction} · {schedule} · needs {needs}
+    static func raidRecruitLine(faction: String, schedule: String, needs: String) -> String {
+        format("raid.recruit.line", faction, schedule, needs)
+    }
+
+    /// {names} · {n} short
+    static func raidNightShort(names: String, n: Int) -> String {
+        format("raid.night.short", names, n)
+    }
+
+    /// {names} and {n} more
+    static func raidNightMore(names: String, n: Int) -> String {
+        format("raid.night.more", names, n)
+    }
+
+    /// {when} · {counts}
+    static func raidNightAside(when: String, counts: String) -> String {
+        format("raid.night.aside", when, counts)
+    }
+
+    /// You are {state}
+    static func raidNightYouAre(state: String) -> String {
+        format("raid.night.youAre", state)
+    }
+
+    /// Before you pull
+    static var raidNightBeforePull: String { text("raid.night.beforePull") }
+
+    /// Roster ›
+    static var raidNightRoster: String { text("raid.night.roster") }
+
+    /// Forever Score
+    static var raidApplicantScore: String { text("raid.applicant.score") }
+
+    /// Sim
+    static var raidApplicantSim: String { text("raid.applicant.sim") }
+
+    /// Item level
+    static var raidApplicantItemLevel: String { text("raid.applicant.itemLevel") }
+
+    /// Raid ready
+    static var raidApplicantReady: String { text("raid.applicant.ready") }
+
+    /// Attuned to {zone}
+    static func raidApplicantAttuned(zone: String) -> String {
+        format("raid.applicant.attuned", zone)
+    }
+
+    /// Not attuned to {zone}
+    static func raidApplicantNotAttuned(zone: String) -> String {
+        format("raid.applicant.notAttuned", zone)
+    }
+
+    /// {zone}: attunement not seen yet
+    static func raidApplicantAttuneUnknown(zone: String) -> String {
+        format("raid.applicant.attuneUnknown", zone)
+    }
+
+    /// Enchants
+    static var raidApplicantEnchants: String { text("raid.applicant.enchants") }
+
+    /// {n} of {slots} slots
+    static func raidApplicantEnchantsLine(n: Int, slots: Int) -> String {
+        format("raid.applicant.enchantsLine", n, slots)
+    }
+
+    /// {line} · {missing} missing
+    static func raidApplicantEnchantsMissing(line: String, missing: String) -> String {
+        format("raid.applicant.enchantsMissing", line, missing)
+    }
+
+    /// cloak
+    static var raidApplicantSlotBack: String { text("raid.applicant.slot.back") }
+
+    /// boots
+    static var raidApplicantSlotFeet: String { text("raid.applicant.slot.feet") }
+
+    /// gloves
+    static var raidApplicantSlotHands: String { text("raid.applicant.slot.hands") }
+
+    /// bracers
+    static var raidApplicantSlotWrist: String { text("raid.applicant.slot.wrist") }
+
+    /// chest
+    static var raidApplicantSlotChest: String { text("raid.applicant.slot.chest") }
+
+    /// legs
+    static var raidApplicantSlotLegs: String { text("raid.applicant.slot.legs") }
+
+    /// shoulders
+    static var raidApplicantSlotShoulder: String { text("raid.applicant.slot.shoulder") }
+
+    /// head
+    static var raidApplicantSlotHead: String { text("raid.applicant.slot.head") }
+
+    /// weapon
+    static var raidApplicantSlotWeapon: String { text("raid.applicant.slot.weapon") }
+
+    /// Best in slot gap
+    static var raidApplicantGap: String { text("raid.applicant.gap") }
+
+    /// {n} pieces
+    static func raidApplicantPieces(n: Int) -> String {
+        format("raid.applicant.pieces", n)
+    }
+
+    /// {pieces} from the {list} list
+    static func raidApplicantGapLine(pieces: String, list: String) -> String {
+        format("raid.applicant.gapLine", pieces, list)
+    }
+
+    /// Guild history
+    static var raidApplicantHistory: String { text("raid.applicant.history") }
+
+    /// {n} raids
+    static func raidApplicantRaids(n: Int) -> String {
+        format("raid.applicant.raids", n)
+    }
+
+    /// {raids} · last raid {date}
+    static func raidApplicantHistoryLine(raids: String, date: String) -> String {
+        format("raid.applicant.historyLine", raids, date)
+    }
+
+    /// Their note
+    static var raidApplicantNote: String { text("raid.applicant.note") }
+
+    /// Accept into guild
+    static var raidApplicantAccept: String { text("raid.applicant.accept") }
+
+    /// Decline
+    static var raidApplicantDecline: String { text("raid.applicant.decline") }
+
+    /// Their raid role comes from their spec when they answer a raid.
+    static var raidApplicantRole: String { text("raid.applicant.role") }
+
+    /// {kind} · {level}
+    static func raidApplicantKind(kind: String, level: Int) -> String {
+        format("raid.applicant.kind", kind, level)
+    }
+
+    /// applied {age}
+    static func raidApplicantApplied(age: String) -> String {
+        format("raid.applicant.applied", age)
+    }
+
+    /// Accepted into {guild}. Invite {name} in game:
+    static func raidApplicantAccepted(guild: String, name: String) -> String {
+        format("raid.applicant.accepted", guild, name)
+    }
+
+    /// /ginvite {name}
+    static func raidApplicantGinvite(name: String) -> String {
+        format("raid.applicant.ginvite", name)
+    }
+
+    /// Copy
+    static var raidApplicantCopy: String { text("raid.applicant.copy") }
+
+    /// {name} shows on the roster once the addon or Battle.net sees the character in the guild.
+    static func raidApplicantAfter(name: String) -> String {
+        format("raid.applicant.after", name)
+    }
+
+    /// {name}, {kind} {level}, {age}
+    static func raidApplicantLine(name: String, kind: String, level: Int, age: String) -> String {
+        format("raid.applicant.line", name, kind, level, age)
+    }
+
+    /// We could not load this application
+    static var raidApplicantFailed: String { text("raid.applicant.failed") }
+
+    /// {guild} · {zone} in progress
+    static func homeRaidInProgress(guild: String, zone: String) -> String {
+        format("home.raid.inProgress", guild, zone)
+    }
+
+    /// min
+    static var homeRaidMinutes: String { text("home.raid.minutes") }
+
     /// as {name}, {role}
     static func homeRaidAs(name: String, role: String) -> String {
         format("home.raid.as", name, role)
-    }
-
-    /// You have not answered, {who}
-    static func homeRaidNotAnswered(who: String) -> String {
-        format("home.raid.notAnswered", who)
-    }
-
-    /// You are {state}, {who}
-    static func homeRaidAnswered(state: String, who: String) -> String {
-        format("home.raid.answered", state, who)
-    }
-
-    /// {n} in, {late} late
-    static func homeRaidCounts(n: Int, late: Int) -> String {
-        format("home.raid.counts", n, late)
-    }
-
-    /// {zone} · {when}
-    static func homeRaidLineTitle(zone: String, when: String) -> String {
-        format("home.raid.lineTitle", zone, when)
     }
 
     /// {counts} · you have not answered, {who}
@@ -5700,28 +6070,8 @@ enum Copy {
         format("home.ready.line", items, age)
     }
 
-    /// {n} have not answered
-    static func homeOfficerUnanswered(n: Int) -> String {
-        format("home.officer.unanswered", n)
-    }
-
-    /// {n} have not answered, {m} of them {role}
-    static func homeOfficerUnansweredRole(n: Int, m: Int, role: String) -> String {
-        format("home.officer.unansweredRole", n, m, role)
-    }
-
-    /// {role} short by {n}
-    static func homeOfficerShort(role: String, n: Int) -> String {
-        format("home.officer.short", role, n)
-    }
-
     /// Preview mention
     static var homeOfficerPreviewMention: String { text("home.officer.previewMention") }
-
-    /// {n} applicants
-    static func homeOfficerApplicants(n: Int) -> String {
-        format("home.officer.applicants", n)
-    }
 
     /// {name}, {kind} {level}, {age}
     static func homeOfficerApplicant(name: String, kind: String, level: Int, age: String) -> String {
@@ -5737,29 +6087,10 @@ enum Copy {
     /// damage
     static var homeRoleDamage: String { text("home.role.damage") }
 
-    /// Next upgrades
-    static var homeUpgradesNext: String { text("home.upgrades.next") }
-
-    /// Gear ›
-    static var homeUpgradesGear: String { text("home.upgrades.gear") }
-
     /// {figure} {unit}
     static func homeUpgradesGain(figure: String, unit: String) -> String {
         format("home.upgrades.gain", figure, unit)
     }
-
-    /// Best run: {place}, {item} {gain}
-    static func homeBestRun(place: String, item: String, gain: String) -> String {
-        format("home.bestRun", place, item, gain)
-    }
-
-    /// Best run: {place}, {item} {gain}, {chance}
-    static func homeBestRunChance(place: String, item: String, gain: String, chance: String) -> String {
-        format("home.bestRun.chance", place, item, gain, chance)
-    }
-
-    /// Last night
-    static var homeLastNight: String { text("home.lastNight") }
 
     /// You got it from {boss} · {slot}
     static func homeLastNightLoot(boss: String, slot: String) -> String {
@@ -5794,9 +6125,6 @@ enum Copy {
     /// Your sim is from before it dropped
     static var homeLastNightSimAgainLine: String { text("home.lastNight.simAgainLine") }
 
-    /// New for you
-    static var homeNewForYou: String { text("home.newForYou") }
-
     /// All activity ›
     static var homeNewForYouAll: String { text("home.newForYou.all") }
 
@@ -5813,31 +6141,11 @@ enum Copy {
     /// Raid with a guild
     static var homeFindGuildTitle: String { text("home.findGuild.title") }
 
-    /// Raid with a guild that plans its nights here, and answer its raids from the app.
-    static var homeFindGuildLine: String { text("home.findGuild.line") }
-
-    /// Raid with a guild that plans its nights here, and answer its raids from the app. The first raids open {date}.
-    static func homeFindGuildFirstRaids(date: String) -> String {
-        format("home.findGuild.firstRaids", date)
-    }
-
     /// Find a guild
     static var homeFindGuildButton: String { text("home.findGuild.button") }
 
-    /// We could not load your home
-    static var homeErrorTitle: String { text("home.error.title") }
-
     /// Check your connection
     static var homeErrorLine: String { text("home.error.line") }
-
-    /// Your characters are on their way
-    static var homeNewTitle: String { text("home.new.title") }
-
-    /// Battle.net lists a character after you play it and log out.
-    static var homeNewLine: String { text("home.new.line") }
-
-    /// Check again
-    static var homeNewCheck: String { text("home.new.check") }
 
     /// Get the addon and companion
     static var sharedCtaGetAddonAndCompanion: String { text("shared.cta.getAddonAndCompanion") }

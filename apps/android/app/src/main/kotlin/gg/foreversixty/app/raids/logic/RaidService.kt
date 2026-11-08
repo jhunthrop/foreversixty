@@ -4,6 +4,7 @@ import android.content.res.Resources
 import gg.foreversixty.app.R
 import gg.foreversixty.app.model.GuildRaids
 import gg.foreversixty.app.model.Me
+import gg.foreversixty.app.model.RaidBadge
 import gg.foreversixty.app.model.RaidNightSummary
 import gg.foreversixty.app.model.RaidView
 import gg.foreversixty.app.model.SignupAnswer
@@ -22,6 +23,9 @@ interface RaidService {
     suspend fun lock(guild: Long, raid: Long): ApiResult<RaidView>
     suspend fun unlock(guild: Long, raid: Long): ApiResult<RaidView>
     suspend fun night(raid: Long): ApiResult<RaidNightSummary>
+
+    /** The Raid tab's badge (`GET /v1/guilds/{id}/raid-badge`); null where the service has none. */
+    suspend fun badge(guild: Long): ApiResult<RaidBadge>? = null
 }
 
 class LiveRaidService(private val client: ApiClient) : RaidService {
@@ -38,6 +42,7 @@ class LiveRaidService(private val client: ApiClient) : RaidService {
     override suspend fun lock(guild: Long, raid: Long) = client.send(ApiEndpoints.lockGuildRaid(guild, raid))
     override suspend fun unlock(guild: Long, raid: Long) = client.send(ApiEndpoints.unlockGuildRaid(guild, raid))
     override suspend fun night(raid: Long) = client.send(ApiEndpoints.getRaidNight(raid))
+    override suspend fun badge(guild: Long) = client.send(ApiEndpoints.getGuildRaidBadge(guild))
 }
 
 /** A character key, `region/ruleset/name-slug`, split for the sign-up route. */
