@@ -110,8 +110,8 @@ data class ActivityRow(
     /** RFC 3339, UTC */
     @SerialName("occurred_at") val occurredAt: String,
     @SerialName("read") val read: Boolean,
-    /** The row's icon, set by its producer: a name under /data/{build}/icons (loot.awarded the item's, sim.finished and tier.moved the spec's, raid events and report.ready the raid zone's, inv_misc_book_09 for a zone with none) or crest:<class> for a character (guildsim.passed, the guildmate who passed you). null when none, as on rows written before icons: draw the group's fixed icon. */
-    @SerialName("icon") val icon: String? = null,
+    /** The row's icon, a name under /data/{build}/icons, always sent, as the app mocks draw them: loot.awarded the item's; raid kinds and report.ready the instance's (inv_misc_head_dragon_black for Onyxia's Lair, inv_misc_book_09 for one with none); sim.finished inv_misc_pocketwatch_01; bis.changed and tier.moved inv_misc_book_09; guildsim.passed the passer's spec icon (ability_warrior_innerrage for a Fury warrior). Any other row, and rows written before icons, its group's: raids inv_misc_book_09, gear inv_misc_bag_10, logs inv_misc_book_11, ladder inv_misc_pocketwatch_01, tiers inv_misc_book_09, officer inv_scroll_08, account inv_misc_gear_01. */
+    @SerialName("icon") val icon: String,
 )
 
 @Serializable

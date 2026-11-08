@@ -4150,7 +4150,7 @@ components:
       description: >-
         One notification event the player was a recipient of, recorded whatever their push and
         Discord choices and quiet hours. Show copy from title and body; open link on a tap.
-      required: [id, kind, group, title, body, link, occurred_at, read]
+      required: [id, kind, group, title, body, link, occurred_at, read, icon]
       properties:
         id: { type: integer, format: int64, description: "Rising; the cursor of before and through." }
         kind: { type: string, description: "The catalogue's name: raid.posted, sim.finished, ..." }
@@ -4165,13 +4165,16 @@ components:
         occurred_at: { type: string, format: date-time, description: "RFC 3339, UTC" }
         read: { type: boolean }
         icon:
-          type: [string, "null"]
+          type: string
           description: >-
-            The row's icon, set by its producer: a name under /data/{build}/icons (loot.awarded the
-            item's, sim.finished and tier.moved the spec's, raid events and report.ready the raid
-            zone's, inv_misc_book_09 for a zone with none) or crest:<class> for a character
-            (guildsim.passed, the guildmate who passed you). null when none, as on rows written
-            before icons: draw the group's fixed icon.
+            The row's icon, a name under /data/{build}/icons, always sent, as the app mocks draw
+            them: loot.awarded the item's; raid kinds and report.ready the instance's
+            (inv_misc_head_dragon_black for Onyxia's Lair, inv_misc_book_09 for one with none);
+            sim.finished inv_misc_pocketwatch_01; bis.changed and tier.moved inv_misc_book_09;
+            guildsim.passed the passer's spec icon (ability_warrior_innerrage for a Fury warrior).
+            Any other row, and rows written before icons, its group's: raids inv_misc_book_09,
+            gear inv_misc_bag_10, logs inv_misc_book_11, ladder inv_misc_pocketwatch_01, tiers
+            inv_misc_book_09, officer inv_scroll_08, account inv_misc_gear_01.
     ActivityPage:
       type: object
       required: [rows, unread, next_before]

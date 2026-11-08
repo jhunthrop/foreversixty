@@ -104,7 +104,7 @@ func SimFinishedEvent(publicBaseURL string, e SimFinished) events.Event {
 	}
 	return events.Event{
 		Kind: events.SimFinished, Audience: events.Users(e.UserID), DedupeKey: "sim.finished:" + e.SimID,
-		Title: title, Body: body, Link: absoluteURL(publicBaseURL, simPathPrefix+e.SimID), Icon: specs.ByKey[e.Spec].Icon,
+		Title: title, Body: body, Link: absoluteURL(publicBaseURL, simPathPrefix+e.SimID), Icon: events.IconSim,
 		Data: map[string]string{"sim_id": e.SimID}, Source: e,
 	}
 }

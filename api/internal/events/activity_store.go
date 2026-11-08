@@ -25,8 +25,8 @@ type ActivityRow struct {
 	Link       string    `json:"link"`
 	OccurredAt time.Time `json:"occurred_at"`
 	Read       bool      `json:"read"`
-	// Icon is Event.Icon, null when the producer set none or the row predates icons.
-	Icon *string `json:"icon"`
+	// Icon is the row's icon (IconOf): its producer's, else its group's; never empty.
+	Icon string `json:"icon"`
 }
 
 // ActivityQuery is one page request. An empty Group is every group; Before 0 is the newest
@@ -44,9 +44,9 @@ func (s *Store) Record(ctx context.Context, userIDs []int64, e Event) error {
 		return nil
 	}
 	_, err := s.Pool.Exec(ctx, `insert into user_activity (user_id, kind, title, body, link, dedupe_key, icon)
-		select uid, $2, $3, $4, $5, $6, nullif($7, '') from unnest($1::bigint[]) as uid
+		select uid, $2, $3, $4, $5, $6, $7 from unnest($1::bigint[]) as uid
 		on conflict (user_id, dedupe_key) do nothing`,
-		userIDs, string(e.Kind), e.Title, e.Body, e.Link, e.DedupeKey, e.Icon)
+		userIDs, string(e.Kind), e.Title, e.Body, e.Link, e.DedupeKey, IconOf(e.Kind, e.Icon))
 	if err != nil {
 		return fmt.Errorf("events: record activity: %w", err)
 	}
@@ -60,7 +60,7 @@ func (s *Store) Activity(ctx context.Context, userID int64, q ActivityQuery) ([]
 	for _, k := range KindsOf(q.Group) {
 		kinds = append(kinds, string(k))
 	}
-	rows, err := s.Pool.Query(ctx, `select id, kind, title, body, link, occurred_at, read_at is not null, icon
+	rows, err := s.Pool.Query(ctx, `select id, kind, title, body, link, occurred_at, read_at is not null, coalesce(icon, '')
 		from user_activity
 		where user_id = $1 and (not $2 or kind = any($3)) and ($4::bigint = 0 or id < $4::bigint)
 		order by id desc limit $5`, userID, q.Group != "", kinds, q.Before, q.Limit+1)
@@ -71,7 +71,7 @@ func (s *Store) Activity(ctx context.Context, userID int64, q ActivityQuery) ([]
 		var a ActivityRow
 		var kind string
 		err := row.Scan(&a.ID, &kind, &a.Title, &a.Body, &a.Link, &a.OccurredAt, &a.Read, &a.Icon)
-		a.Kind, a.Group = Kind(kind), GroupOf(Kind(kind))
+		a.Kind, a.Group, a.Icon = Kind(kind), GroupOf(Kind(kind)), IconOf(Kind(kind), a.Icon)
 		return a, err
 	})
 	if err != nil {

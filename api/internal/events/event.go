@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"strings"
 )
 
 // AudienceKind is how an event's recipients are found.
@@ -67,19 +66,13 @@ type Event struct {
 	Actions  []Action
 	// Data is extra key-value data the app reads (raid id, guild id).
 	Data map[string]string
-	// Icon is the Activity row's icon: a name under /data/{build}/icons (an item, spec or zone
-	// icon), or CrestIcon(class) for a character; "" for none (the apps draw the group's).
+	// Icon is the Activity row's icon, a name under /data/{build}/icons (icons.go); "" takes the
+	// kind's group's.
 	Icon string
 	// Source is the producer's typed fact, for a channel that renders it in full (the
 	// Discord embeds read notify.SimFinished and notify.UploadParsed). nil otherwise.
 	Source any
 }
-
-// crestPrefix marks an icon that is a character's class crest.
-const crestPrefix = "crest:"
-
-// CrestIcon is the Activity icon of a character of class ("Warrior"): crest:warrior.
-func CrestIcon(class string) string { return crestPrefix + strings.ToLower(strings.TrimSpace(class)) }
 
 // Publisher is what a producer calls; Router implements it.
 type Publisher interface {
