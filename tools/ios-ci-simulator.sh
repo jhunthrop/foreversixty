@@ -19,7 +19,8 @@ set -euo pipefail
 readonly DEVICE_NAME="Forever Sixty CI (iPhone 17)"
 readonly DEVICE_TYPE="com.apple.CoreSimulator.SimDeviceType.iPhone-17"
 readonly BOOT_ATTEMPTS=3
-readonly BOOT_TIMEOUT_SECONDS=300
+# A fresh runtime's first boot took 6m18s on the xcode-27 image (run 42512503765).
+readonly BOOT_TIMEOUT_SECONDS=600
 readonly RUNTIME_READY_TIMEOUT_SECONDS=180
 readonly DOWNLOAD_ATTEMPTS=2
 readonly POLL_SECONDS=5
@@ -96,18 +97,17 @@ pick_runtime() {
 
 # Runs "$@" for at most $1 seconds; macOS ships no timeout(1).
 run_with_timeout() {
-	local seconds="$1" pid waited=0
+	local deadline=$((SECONDS + $1)) pid
 	shift
 	"$@" &
 	pid=$!
 	while kill -0 "$pid" 2>/dev/null; do
-		if [ "$waited" -ge "$seconds" ]; then
+		if [ "$SECONDS" -ge "$deadline" ]; then
 			kill "$pid" 2>/dev/null || true
 			wait "$pid" 2>/dev/null || true
 			return 124
 		fi
 		sleep 1
-		waited=$((waited + 1))
 	done
 	wait "$pid"
 }

@@ -36,7 +36,9 @@ jobs:
     # hand (a record run, `make -C apps/ios snapshots`), which is never a push's check.
     if: vars.LAUNCH_MODE != 'true' || github.event_name == 'workflow_dispatch'
     runs-on: xcode-27
-    timeout-minutes: 40
+    # A green run with a runtime download and a first boot takes ~36 minutes (run 42512503765);
+    # the headroom covers a boot retry (tools/ios-ci-simulator.sh).
+    timeout-minutes: 60
     defaults:
       run:
         working-directory: apps/ios
