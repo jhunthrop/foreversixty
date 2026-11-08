@@ -7,124 +7,51 @@
   "head": {
    "box": [
     16,
-    0,
+    8,
     361,
-    296
+    94
    ],
-   "inventory": {
-    "button": 2
-   }
+   "inventory": {}
   },
   "head-title": {
    "box": [
     16,
-    16,
+    24,
     361,
-    102
+    64
    ],
    "inventory": {}
   },
   "head-meta": {
    "box": [
     16,
-    98,
-    361,
+    68,
+    248,
     20
    ],
    "inventory": {}
   },
-  "head-answer": {
-   "box": [
-    16,
-    134,
-    361,
-    93
-   ],
-   "inventory": {
-    "button": 1
-   }
-  },
   "controls": {
    "box": [
-    0,
-    296,
-    393,
-    62
+    16,
+    102,
+    361,
+    48
    ],
    "inventory": {
-    "button": 1,
-    "field": 6
+    "button": 3
    }
   },
-  "section-soren-everhart-rsquo-s-damage": {
+  "section-damage": {
    "box": [
     16,
-    386,
+    178,
     361,
-    283
+    1145
    ],
    "inventory": {
-    "button": 4,
-    "image": 1
-   }
-  },
-  "plate": {
-   "box": [
-    16,
-    473,
-    361,
-    196
-   ],
-   "inventory": {
-    "button": 3,
-    "image": 1
-   }
-  },
-  "section-damage-over-the-fight": {
-   "box": [
-    16,
-    717,
-    361,
-    79
-   ],
-   "inventory": {}
-  },
-  "section-gear-at-the-pull": {
-   "box": [
-    16,
-    844,
-    361,
-    115
-   ],
-   "inventory": {}
-  },
-  "footer-note": {
-   "box": [
-    16,
-    1007,
-    361,
-    36
-   ],
-   "inventory": {}
-  },
-  "section-this-pull": {
-   "box": [
-    16,
-    1067,
-    361,
-    240
-   ],
-   "inventory": {}
-  },
-  "section-targets": {
-   "box": [
-    16,
-    1339,
-    361,
-    484
-   ],
-   "inventory": {
-    "row": 6
+    "row": 11,
+    "image": 11
    }
   }
  }

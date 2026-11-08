@@ -7,9 +7,9 @@
   "head": {
    "box": [
     16,
-    0,
+    8,
     361,
-    257
+    319
    ],
    "inventory": {
     "image": 1
@@ -18,7 +18,7 @@
   "head-title": {
    "box": [
     16,
-    16,
+    24,
     361,
     116
    ],
@@ -29,7 +29,7 @@
   "head-meta": {
    "box": [
     88,
-    60,
+    68,
     289,
     72
    ],
@@ -38,30 +38,18 @@
   "head-answer": {
    "box": [
     16,
-    148,
+    156,
     361,
-    95
+    157
    ],
    "inventory": {}
   },
   "section-gear": {
    "box": [
     16,
-    277,
+    355,
     361,
-    1312
-   ],
-   "inventory": {
-    "row": 17,
-    "image": 16
-   }
-  },
-  "plate": {
-   "box": [
-    16,
-    326,
-    361,
-    1263
+    1079
    ],
    "inventory": {
     "row": 17,
@@ -70,10 +58,10 @@
   },
   "slots": {
    "box": [
-    17,
-    327,
-    359,
-    1261
+    16,
+    392,
+    361,
+    1042
    ],
    "inventory": {
     "row": 17,
@@ -83,9 +71,9 @@
   "section-forever-score": {
    "box": [
     16,
-    1637,
+    1462,
     361,
-    277
+    531
    ],
    "inventory": {
     "row": 5
@@ -94,9 +82,20 @@
   "section-best-per-encounter": {
    "box": [
     16,
-    1962,
+    2021,
     361,
-    513
+    491
+   ],
+   "inventory": {
+    "row": 5
+   }
+  },
+  "section-recent-fights": {
+   "box": [
+    16,
+    2540,
+    361,
+    469
    ],
    "inventory": {
     "row": 5
@@ -105,9 +104,9 @@
   "section-builds-seen": {
    "box": [
     16,
-    2523,
+    3037,
     361,
-    223
+    187
    ],
    "inventory": {
     "row": 3
@@ -116,9 +115,9 @@
   "section-activity": {
    "box": [
     16,
-    2794,
+    3252,
     361,
-    254
+    271
    ],
    "inventory": {
     "row": 3,

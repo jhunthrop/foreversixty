@@ -7,129 +7,72 @@
   "head": {
    "box": [
     16,
-    0,
+    8,
     380,
-    296
+    94
    ],
-   "inventory": {
-    "button": 2
-   }
+   "inventory": {}
   },
   "head-title": {
    "box": [
     16,
-    16,
+    24,
     380,
-    102
+    64
    ],
    "inventory": {}
   },
   "head-meta": {
    "box": [
     16,
-    98,
-    380,
+    68,
+    354,
     20
    ],
    "inventory": {}
   },
-  "head-answer": {
-   "box": [
-    16,
-    134,
-    380,
-    93
-   ],
-   "inventory": {
-    "button": 1
-   }
-  },
   "controls": {
    "box": [
-    0,
-    296,
-    412,
-    62
-   ],
-   "inventory": {
-    "field": 3
-   }
-  },
-  "section-players": {
-   "box": [
     16,
-    386,
+    110,
     380,
-    343
-   ],
-   "inventory": {
-    "image": 5
-   }
-  },
-  "plate": {
-   "box": [
-    16,
-    433,
-    380,
-    296
-   ],
-   "inventory": {
-    "image": 5
-   }
-  },
-  "section-damage-over-the-fight": {
-   "box": [
-    16,
-    777,
-    380,
-    79
+    43
    ],
    "inventory": {}
   },
-  "section-damage-taken-by-ability": {
+  "section-your-parses": {
    "box": [
     16,
-    904,
+    181,
     380,
-    488
+    123
    ],
-   "inventory": {}
+   "inventory": {
+    "row": 1,
+    "image": 1
+   }
+  },
+  "section-fights": {
+   "box": [
+    16,
+    332,
+    380,
+    270
+   ],
+   "inventory": {
+    "row": 4
+   }
   },
   "footer-note": {
    "box": [
     16,
-    1440,
+    658,
     380,
-    36
+    58
    ],
-   "inventory": {}
-  },
-  "section-this-pull": {
-   "box": [
-    16,
-    1500,
-    380,
-    240
-   ],
-   "inventory": {}
-  },
-  "section-deaths": {
-   "box": [
-    16,
-    1772,
-    380,
-    91
-   ],
-   "inventory": {}
-  },
-  "section-performance-rating": {
-   "box": [
-    16,
-    1895,
-    380,
-    91
-   ],
-   "inventory": {}
+   "inventory": {
+    "row": 1
+   }
   }
  }
 }

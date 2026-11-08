@@ -7,89 +7,81 @@
   "head": {
    "box": [
     16,
-    0,
+    8,
     380,
-    296
+    94
    ],
-   "inventory": {
-    "button": 2
-   }
+   "inventory": {}
   },
   "head-title": {
    "box": [
     16,
-    16,
+    24,
     380,
-    102
+    64
    ],
    "inventory": {}
   },
   "head-meta": {
    "box": [
     16,
-    98,
-    380,
+    68,
+    354,
     20
    ],
    "inventory": {}
   },
-  "head-answer": {
-   "box": [
-    16,
-    134,
-    380,
-    93
-   ],
-   "inventory": {
-    "button": 1
-   }
-  },
   "controls": {
    "box": [
-    0,
-    296,
-    412,
-    62
+    16,
+    110,
+    380,
+    43
+   ],
+   "inventory": {}
+  },
+  "section-your-parses": {
+   "box": [
+    16,
+    181,
+    380,
+    123
    ],
    "inventory": {
-    "field": 3
+    "row": 1,
+    "image": 1
+   }
+  },
+  "section-fights": {
+   "box": [
+    16,
+    332,
+    380,
+    270
+   ],
+   "inventory": {
+    "row": 4
    }
   },
   "section-coach": {
    "box": [
     16,
-    386,
+    630,
     380,
-    105
-   ],
-   "inventory": {}
-  },
-  "plate": {
-   "box": [
-    16,
-    433,
-    380,
-    58
+    845
    ],
    "inventory": {}
   },
   "footer-note": {
    "box": [
     16,
-    539,
+    1531,
     380,
-    36
+    58
    ],
-   "inventory": {}
-  },
-  "section-this-pull": {
-   "box": [
-    16,
-    599,
-    380,
-    240
-   ],
-   "inventory": {}
+   "inventory": {
+    "row": 1
+   }
   }
  }
 }

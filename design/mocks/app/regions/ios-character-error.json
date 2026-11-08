@@ -7,29 +7,34 @@
   "head": {
    "box": [
     16,
-    0,
+    8,
     361,
-    68
+    86
    ],
-   "inventory": {}
+   "inventory": {
+    "image": 1
+   }
   },
   "head-title": {
    "box": [
     16,
-    16,
+    24,
     361,
-    38
-   ],
-   "inventory": {}
-  },
-  "plate": {
-   "box": [
-    16,
-    88,
-    361,
-    78
+    56
    ],
    "inventory": {
+    "image": 1
+   }
+  },
+  "section-error": {
+   "box": [
+    16,
+    118,
+    361,
+    84
+   ],
+   "inventory": {
+    "row": 1,
     "button": 1
    }
   }

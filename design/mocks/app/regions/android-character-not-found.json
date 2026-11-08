@@ -7,7 +7,7 @@
   "head": {
    "box": [
     16,
-    0,
+    8,
     380,
     68
    ],
@@ -16,39 +16,30 @@
   "head-title": {
    "box": [
     16,
-    16,
+    24,
     380,
     38
-   ],
-   "inventory": {}
-  },
-  "summary": {
-   "box": [
-    16,
-    68,
-    380,
-    42
    ],
    "inventory": {}
   },
   "section-look-up-a-character": {
    "box": [
     16,
-    130,
+    146,
     380,
-    109
+    157
    ],
    "inventory": {
-    "button": 1,
-    "field": 1
+    "row": 1,
+    "button": 1
    }
   },
   "section-add-this-character": {
    "box": [
     16,
-    287,
+    331,
     380,
-    164
+    152
    ],
    "inventory": {
     "row": 2

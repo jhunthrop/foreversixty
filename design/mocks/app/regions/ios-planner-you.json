@@ -71,17 +71,17 @@
     16,
     342,
     361,
-    595
+    619
    ],
    "inventory": {
-    "button": 20,
+    "button": 21,
     "image": 20
    }
   },
   "section-point-order": {
    "box": [
     16,
-    1478,
+    1502,
     361,
     490
    ],
@@ -92,7 +92,7 @@
   "section-levels-30-to-39-build": {
    "box": [
     16,
-    985,
+    1009,
     361,
     196
    ],
@@ -103,7 +103,7 @@
   "section-in-the-game": {
    "box": [
     16,
-    1229,
+    1253,
     361,
     201
    ],
@@ -114,7 +114,7 @@
   "section-share-this-build": {
    "box": [
     16,
-    2016,
+    2040,
     361,
     277
    ],
@@ -126,7 +126,7 @@
   "section-import-from-addon": {
    "box": [
     16,
-    2341,
+    2365,
     361,
     205
    ],

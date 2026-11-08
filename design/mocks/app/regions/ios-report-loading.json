@@ -7,76 +7,36 @@
   "head": {
    "box": [
     16,
-    0,
+    8,
     361,
-    243
+    68
    ],
-   "inventory": {
-    "button": 1
-   }
+   "inventory": {}
   },
   "head-title": {
    "box": [
     16,
-    16,
+    24,
     361,
-    62
+    38
    ],
    "inventory": {}
   },
-  "head-meta": {
+  "section-your-parses": {
    "box": [
     16,
-    62,
+    100,
     361,
-    16
+    96
    ],
    "inventory": {}
   },
-  "head-answer": {
+  "section-fights": {
    "box": [
     16,
-    94,
+    220,
     361,
-    80
-   ],
-   "inventory": {}
-  },
-  "controls": {
-   "box": [
-    0,
-    243,
-    393,
-    62
-   ],
-   "inventory": {
-    "field": 3
-   }
-  },
-  "section-players": {
-   "box": [
-    16,
-    333,
-    361,
-    510
-   ],
-   "inventory": {}
-  },
-  "plate": {
-   "box": [
-    16,
-    380,
-    361,
-    463
-   ],
-   "inventory": {}
-  },
-  "section-this-pull": {
-   "box": [
-    16,
-    867,
-    361,
-    115
+    220
    ],
    "inventory": {}
   }

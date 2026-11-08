@@ -7,7 +7,7 @@
   "head": {
    "box": [
     16,
-    0,
+    8,
     361,
     154
    ],
@@ -18,7 +18,7 @@
   "head-title": {
    "box": [
     16,
-    16,
+    24,
     361,
     64
    ],
@@ -27,21 +27,34 @@
   "head-meta": {
    "box": [
     16,
-    60,
-    264,
+    68,
+    272,
     20
    ],
    "inventory": {}
   },
-  "plate": {
+  "section-this-week": {
    "box": [
     16,
-    174,
+    190,
     361,
-    88
+    212
    ],
    "inventory": {
-    "row": 1
+    "row": 2,
+    "image": 2
+   }
+  },
+  "section-earlier": {
+   "box": [
+    16,
+    430,
+    361,
+    212
+   ],
+   "inventory": {
+    "row": 2,
+    "image": 2
    }
   }
  }
