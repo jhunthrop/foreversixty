@@ -73,7 +73,7 @@ struct RaidFactsTests {
         // No fixture has a single tank and nobody late, so the raid fixture's counts are patched.
         var object = try #require(try JSONSerialization.jsonObject(with: RaidFixture.data("guild.raid")) as? [String: Any])
         var data = try #require(object["data"] as? [String: Any])
-        data["counts"] = ["in": 8, "late": 0, "bench": 0, "out": 0, "tanks": 1, "healers": 2, "dps": 5]
+        data["counts"] = ["in": 8, "late": 0, "bench": 0, "out": 0, "tanks": 1, "healers": 2, "dps": 5, "melee": 3, "ranged": 2]
         object["data"] = data
         let patched = try JSONSerialization.data(withJSONObject: object)
         struct Envelope: Decodable { let data: RaidView }
