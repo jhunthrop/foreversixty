@@ -175,17 +175,4 @@ struct TalentsPresenterTests {
         #expect(try #require(model.sheet(.yours, talentID: open.id)).requirements.isEmpty)
     }
 
-    @Test("Home's Talents row says what the Talents screen says")
-    func homeRowFollowsTheScreen() throws {
-        let status = presenter().status
-        let home = HomePresenter(
-            character: HomeFixtures.velaren, finishedSims: [], time: HomeTime(now: HomeFixtures.now), talentStatus: status
-        )
-        let row = try #require(home.model(try HomeFixtures.home()).next.first { $0.kind == .talents })
-        #expect(row.line == "2 of your 48 points differ from the 60 guide build.")
-        #expect(row.tag == .differs)
-        let noExport = presenter(yours: nil).status
-        let muted = HomePresenter(character: HomeFixtures.velaren, finishedSims: [], time: HomeTime(now: HomeFixtures.now), talentStatus: noExport)
-        #expect(muted.nextRowsWithoutAnswer().first == HomeNextRow(kind: .talents, title: Copy.homeNextTalents, line: Copy.homeNextTalentsNone, tag: nil))
-    }
 }

@@ -244,15 +244,6 @@ struct ReportsSnapshotTests {
 
     // MARK: Home
 
-    @Test func home_logsRow() throws {
-        var presenter = HomeFixtures.presenter()
-        presenter.logsLine = ReportsCopy.homeLine(try ReportsTestData.list())
-        let phase = HomePhase.loaded(try HomeFixtures.home(), offlineSince: nil)
-        let view = HomeCaptureFrame {
-            HomeAnswerView(phase: phase, presenter: presenter, build: ReportsTestData.build)
-        }
-        snap(view, "home-logs-ios", height: 2100)
-    }
 }
 
 /// The two screens a report link pushes over Home.

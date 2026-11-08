@@ -5216,6 +5216,230 @@ enum Copy {
     /// Share
     static var shareAction: String { text("share.action") }
 
+    /// Level {n} {kind}
+    static func homeHeadLevel(n: Int, kind: String) -> String {
+        format("home.head.level", n, kind)
+    }
+
+    /// {n} levels to band {band}
+    static func homeHeadToBand(n: Int, band: Int) -> String {
+        format("home.head.toBand", n, band)
+    }
+
+    /// {guild} · {zone} tonight
+    static func homeRaidTonight(guild: String, zone: String) -> String {
+        format("home.raid.tonight", guild, zone)
+    }
+
+    /// {guild} · {zone} in progress
+    static func homeRaidInProgress(guild: String, zone: String) -> String {
+        format("home.raid.inProgress", guild, zone)
+    }
+
+    /// hours
+    static var homeRaidHours: String { text("home.raid.hours") }
+
+    /// min
+    static var homeRaidMinutes: String { text("home.raid.minutes") }
+
+    /// {date}, {time}
+    static func homeRaidWhen(date: String, time: String) -> String {
+        format("home.raid.when", date, time)
+    }
+
+    /// as {name}, {role}
+    static func homeRaidAs(name: String, role: String) -> String {
+        format("home.raid.as", name, role)
+    }
+
+    /// You have not answered, {who}
+    static func homeRaidNotAnswered(who: String) -> String {
+        format("home.raid.notAnswered", who)
+    }
+
+    /// You are {state}, {who}
+    static func homeRaidAnswered(state: String, who: String) -> String {
+        format("home.raid.answered", state, who)
+    }
+
+    /// {n} in, {late} late
+    static func homeRaidCounts(n: Int, late: Int) -> String {
+        format("home.raid.counts", n, late)
+    }
+
+    /// {zone} · {when}
+    static func homeRaidLineTitle(zone: String, when: String) -> String {
+        format("home.raid.lineTitle", zone, when)
+    }
+
+    /// {counts} · you have not answered, {who}
+    static func homeRaidLineOpen(counts: String, who: String) -> String {
+        format("home.raid.lineOpen", counts, who)
+    }
+
+    /// Pulled {span} ago · {counts} · you are {state} {who}
+    static func homeRaidPulled(span: String, counts: String, state: String, who: String) -> String {
+        format("home.raid.pulled", span, counts, state, who)
+    }
+
+    /// Open raid night ›
+    static var homeRaidOpenNight: String { text("home.raid.openNight") }
+
+    /// Damage
+    static var homeRaidDamage: String { text("home.raid.damage") }
+
+    /// Your answer
+    static var homeRaidAnswers: String { text("home.raid.answers") }
+
+    /// {n} things before you pull
+    static func homeReadyTitle(n: Int) -> String {
+        format("home.ready.title", n)
+    }
+
+    /// {items} · from your last log-out, {age}
+    static func homeReadyLine(items: String, age: String) -> String {
+        format("home.ready.line", items, age)
+    }
+
+    /// {n} have not answered
+    static func homeOfficerUnanswered(n: Int) -> String {
+        format("home.officer.unanswered", n)
+    }
+
+    /// {n} have not answered, {m} of them {role}
+    static func homeOfficerUnansweredRole(n: Int, m: Int, role: String) -> String {
+        format("home.officer.unansweredRole", n, m, role)
+    }
+
+    /// {role} short by {n}
+    static func homeOfficerShort(role: String, n: Int) -> String {
+        format("home.officer.short", role, n)
+    }
+
+    /// Preview mention
+    static var homeOfficerPreviewMention: String { text("home.officer.previewMention") }
+
+    /// {n} applicants
+    static func homeOfficerApplicants(n: Int) -> String {
+        format("home.officer.applicants", n)
+    }
+
+    /// {name}, {kind} {level}, {age}
+    static func homeOfficerApplicant(name: String, kind: String, level: Int, age: String) -> String {
+        format("home.officer.applicant", name, kind, level, age)
+    }
+
+    /// tanks
+    static var homeRoleTanks: String { text("home.role.tanks") }
+
+    /// healers
+    static var homeRoleHealers: String { text("home.role.healers") }
+
+    /// damage
+    static var homeRoleDamage: String { text("home.role.damage") }
+
+    /// Next upgrades
+    static var homeUpgradesNext: String { text("home.upgrades.next") }
+
+    /// Gear ›
+    static var homeUpgradesGear: String { text("home.upgrades.gear") }
+
+    /// {figure} {unit}
+    static func homeUpgradesGain(figure: String, unit: String) -> String {
+        format("home.upgrades.gain", figure, unit)
+    }
+
+    /// Best run: {place}, {item} {gain}
+    static func homeBestRun(place: String, item: String, gain: String) -> String {
+        format("home.bestRun", place, item, gain)
+    }
+
+    /// Best run: {place}, {item} {gain}, {chance}
+    static func homeBestRunChance(place: String, item: String, gain: String, chance: String) -> String {
+        format("home.bestRun.chance", place, item, gain, chance)
+    }
+
+    /// Last night
+    static var homeLastNight: String { text("home.lastNight") }
+
+    /// You got it from {boss} · {slot}
+    static func homeLastNightLoot(boss: String, slot: String) -> String {
+        format("home.lastNight.loot", boss, slot)
+    }
+
+    /// You got it from {boss} · {slot}, {gain} over your worn
+    static func homeLastNightLootGain(boss: String, slot: String, gain: String) -> String {
+        format("home.lastNight.lootGain", boss, slot, gain)
+    }
+
+    /// {zone} report
+    static func homeLastNightReport(zone: String) -> String {
+        format("home.lastNight.report", zone)
+    }
+
+    /// {rank} percentile, your best on {boss}
+    static func homeLastNightPercentile(rank: String, boss: String) -> String {
+        format("home.lastNight.percentile", rank, boss)
+    }
+
+    /// the coach has {n} notes
+    static func homeLastNightCoach(n: Int) -> String {
+        format("home.lastNight.coach", n)
+    }
+
+    /// Sim again with {item}
+    static func homeLastNightSimAgain(item: String) -> String {
+        format("home.lastNight.simAgain", item)
+    }
+
+    /// Your sim is from before it dropped
+    static var homeLastNightSimAgainLine: String { text("home.lastNight.simAgainLine") }
+
+    /// New for you
+    static var homeNewForYou: String { text("home.newForYou") }
+
+    /// All activity ›
+    static var homeNewForYouAll: String { text("home.newForYou.all") }
+
+    /// All activity ({n}) ›
+    static func homeNewForYouAllUnread(n: Int) -> String {
+        format("home.newForYou.allUnread", n)
+    }
+
+    /// {body} · {when}
+    static func homeNewForYouLine(body: String, when: String) -> String {
+        format("home.newForYou.line", body, when)
+    }
+
+    /// Raid with a guild
+    static var homeFindGuildTitle: String { text("home.findGuild.title") }
+
+    /// Raid with a guild that plans its nights here, and answer its raids from the app.
+    static var homeFindGuildLine: String { text("home.findGuild.line") }
+
+    /// Raid with a guild that plans its nights here, and answer its raids from the app. The first raids open {date}.
+    static func homeFindGuildFirstRaids(date: String) -> String {
+        format("home.findGuild.firstRaids", date)
+    }
+
+    /// Find a guild
+    static var homeFindGuildButton: String { text("home.findGuild.button") }
+
+    /// We could not load your home
+    static var homeErrorTitle: String { text("home.error.title") }
+
+    /// Check your connection
+    static var homeErrorLine: String { text("home.error.line") }
+
+    /// Your characters are on their way
+    static var homeNewTitle: String { text("home.new.title") }
+
+    /// Battle.net lists a character after you play it and log out.
+    static var homeNewLine: String { text("home.new.line") }
+
+    /// Check again
+    static var homeNewCheck: String { text("home.new.check") }
+
     /// Get the addon and companion
     static var sharedCtaGetAddonAndCompanion: String { text("shared.cta.getAddonAndCompanion") }
 

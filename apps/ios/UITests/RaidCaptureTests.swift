@@ -100,39 +100,27 @@ final class RaidCaptureTests: XCTestCase {
         _ = app
     }
 
-    /// Integration C: signed in on the fixtures, the Raids tab under the one character selector
-    /// (the same toolbar slot as Home and BiS), then Home's for the side-by-side.
+    /// Integration C: signed in on the fixtures, the Raid tab under the profile button (the same
+    /// slot on every tab root), the switch from its menu, then Home's and Gear's for the
+    /// side-by-side.
     func testRaidsTabUnderTheSelector() throws {
-        let app = launch(["-FSTab", "you"])
-        // A session kept from an earlier run is already signed in (You shows Sign out).
-        let signIn = app.buttons.matching(NSPredicate(format: "label CONTAINS[c] 'Battle.net'")).firstMatch
-        if !app.buttons["Sign out"].waitForExistence(timeout: 5) {
-            XCTAssertTrue(signIn.waitForExistence(timeout: 15))
-            signIn.tap()
-        }
-        app.tabBars.buttons["Raids"].tap()
-        // The guild head reads as one element, so wait on the next raid card's link.
+        let app = CaptureLaunch.signedIn(tab: "raid")
+        // Wait on the next raid card's link.
         XCTAssertTrue(app.buttons.matching(NSPredicate(format: "label BEGINSWITH 'Who is coming'")).firstMatch.waitForExistence(timeout: 15))
         sleep(3)
         try save("selector-raids-ios.png")
-        // The switch: Raids follows the picked character's guild (Yellfury has none).
-        app.navigationBars.buttons.matching(NSPredicate(format: "label CONTAINS 'Obnoxious Yell'")).firstMatch.tap()
-        let alt = app.buttons.matching(NSPredicate(format: "label CONTAINS 'Yellfury'")).firstMatch
-        XCTAssertTrue(alt.waitForExistence(timeout: 5))
+        // The switch: Raid follows the picked character's guild (Yellfury has none).
+        CaptureLaunch.openMenu(app)
         sleep(1)
         try save("selector-open-raids-ios.png")
-        alt.tap()
-        sleep(4)
+        CaptureLaunch.pick(app, "Yellfury")
+        sleep(1)
         try save("selector-raids-switched-ios.png")
-        app.navigationBars.buttons.matching(NSPredicate(format: "label CONTAINS 'Yellfury'")).firstMatch.tap()
-        let main = app.buttons.matching(NSPredicate(format: "label CONTAINS 'Obnoxious Yell'")).firstMatch
-        XCTAssertTrue(main.waitForExistence(timeout: 5))
-        main.tap()
-        sleep(3)
+        CaptureLaunch.switchCharacter(app, to: "Obnoxious Yell")
         app.tabBars.buttons["Home"].tap()
         sleep(4)
         try save("selector-home-ios.png")
-        app.tabBars.buttons["BiS"].tap()
+        app.tabBars.buttons["Gear"].tap()
         sleep(4)
         try save("selector-bis-ios.png")
     }

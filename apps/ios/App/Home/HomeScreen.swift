@@ -27,6 +27,8 @@ struct HomeDependencies {
     var rankings: RankingsDependencies?
     /// Lane F15: the CDN's active build now, for Talents' new-data strip.
     var latestBuild: @Sendable () async -> String? = { nil }
+    /// The time-aware Home's calls (flows spec 4.1).
+    var flow: HomeFlowDependencies?
 
     @MainActor
     static func live(_ environment: AppEnvironment) -> HomeDependencies {
@@ -41,7 +43,8 @@ struct HomeDependencies {
             talents: environment.isAvailable(.talents) ? LiveTalentsSource.make(environment) : nil,
             reports: reports,
             rankings: environment.isAvailable(.rankings) ? .live(environment, catalog: catalog, reports: reports) : nil,
-            latestBuild: { [store = environment.staticData] in await store.latestBuild() }
+            latestBuild: { [store = environment.staticData] in await store.latestBuild() },
+            flow: .live(environment)
         )
     }
 }
@@ -51,6 +54,8 @@ struct HomeDependencies {
 struct HomeTab: View {
     /// Switches to the BiS tab on the character's list (lane F3 owns that tab).
     let openBis: () -> Void
+    /// Opens a destination elsewhere in the app (a tab, a link): Home's raid, report and activity rows.
+    let open: (IntentDestination) -> Void
     /// Lane F1's account, nil while its feature switch is off.
     let session: SessionStore?
 
@@ -74,13 +79,12 @@ struct HomeTab: View {
         } else if let me, let character {
             HomeCharacterScreen(
                 character: HomeCharacter(character),
-                finishedSims: me.finishedSims,
                 serverSims: me.entitlements.serverSims,
                 reportsAccount: ReportsAccount.of(me, current: character),
                 rankingsAccount: RankingsAccount.of(me, current: character),
                 dependencies: dependencies,
-                showsSelector: session != nil,
-                openBis: openBis
+                openBis: openBis,
+                open: open
             )
             .id(character.key)
         } else {
@@ -103,7 +107,11 @@ struct HomeTab: View {
         }
     }
 
-    init(dependencies: HomeDependencies, session: SessionStore? = nil, openBis: @escaping () -> Void = {}) {
+    init(
+        dependencies: HomeDependencies, session: SessionStore? = nil, openBis: @escaping () -> Void = {},
+        open: @escaping (IntentDestination) -> Void = { _ in }
+    ) {
+        self.open = open
         _dependencies = State(initialValue: dependencies)
         self.session = session
         self.openBis = openBis
@@ -122,7 +130,6 @@ struct HomeTab: View {
 /// Home for one character: the answer, Your gear and the tooltip sheet.
 struct HomeCharacterScreen: View {
     let character: HomeCharacter
-    let finishedSims: [FinishedSim]
     /// `entitlements.server_sims`, for Sims' Server runs section (lane F5).
     let serverSims: Bool
     /// Lane F10: who reads Your reports (crests, the coach card's `log_coach`).
@@ -130,80 +137,51 @@ struct HomeCharacterScreen: View {
     /// Lane F11: who reads Rankings (the aim, your row, the `You` tags, Parse history).
     let rankingsAccount: RankingsAccount
     let dependencies: HomeDependencies
-    /// Signed in, the toolbar carries lane F1's selector in place of the name title.
-    let showsSelector: Bool
     let openBis: () -> Void
+    let open: (IntentDestination) -> Void
 
     @State private var store: HomeStore
+    /// The time-aware Home (flows spec 4.1); nil while its calls are not wired (tests).
+    @State private var flow: HomeFlowModel?
     @State private var tooltip: ItemTooltipRequest?
     /// Lane F12: the item page, pushed from the tooltip's `More about this item`.
     @State private var itemPage: ItemPageRoute?
     @Environment(\.searchNavigator) private var search
-    @State private var showGear = false
     @Environment(SimsRouter.self) private var simsRouter: SimsRouter?
     @Environment(ReportsRouter.self) private var reportsRouter: ReportsRouter?
-    /// Lane F10: the Logs row's sub, from the newest report; nil until read.
-    @State private var logsLine: String?
     @Environment(RankingsRouter.self) private var rankingsRouter: RankingsRouter?
-    /// Lane F11: the Rankings row's sub; nil until read.
-    @State private var rankingsLine: String?
     /// Lane F11: the watch list of a character page a player link pushes on Home.
     @State private var watchList: WatchList?
-    @State private var showTalents = false
-    /// Lane F6: one Talents model per character, shared by Home's row and the pushed screen.
-    @State private var talentsModel: TalentsModel?
-    @Environment(\.openURL) private var openURL
     @Environment(\.scenePhase) private var scenePhase
 
     init(
         character: HomeCharacter,
-        finishedSims: [FinishedSim],
         serverSims: Bool = false,
         reportsAccount: ReportsAccount = .signedOut,
         rankingsAccount: RankingsAccount = .signedOut,
         dependencies: HomeDependencies,
-        showsSelector: Bool = false,
-        openBis: @escaping () -> Void
+        openBis: @escaping () -> Void,
+        open: @escaping (IntentDestination) -> Void = { _ in }
     ) {
+        self.open = open
         self.character = character
-        self.finishedSims = finishedSims
         self.serverSims = serverSims
         self.reportsAccount = reportsAccount
         self.rankingsAccount = rankingsAccount
         self.dependencies = dependencies
-        self.showsSelector = showsSelector
         self.openBis = openBis
-        _store = State(initialValue: .live(client: dependencies.client, cache: dependencies.cache))
-        _talentsModel = State(initialValue: dependencies.talents.map {
-            TalentsModel(source: $0, character: TalentCharacter(character), catalog: .bundled())
-        })
+        let store = HomeStore.live(client: dependencies.client, cache: dependencies.cache)
+        _store = State(initialValue: store)
+        _flow = State(initialValue: dependencies.flow.map { HomeFlowModel(character: character, home: store, dependencies: $0) })
     }
 
     var body: some View {
         NavigationStack {
-            ScrollView {
-                HomeAnswerView(
-                    phase: store.phase,
-                    presenter: HomePresenter(
-                        character: character, finishedSims: finishedSims, time: HomeTime(now: Date()),
-                        talentStatus: talentsModel?.phase.presenter?.status,
-                        logsLine: dependencies.reports == nil ? nil : logsLine ?? "",
-                        rankingsLine: dependencies.rankings == nil ? nil : rankingsLine ?? ""
-                    ),
-                    build: home?.dataBuild ?? "",
-                    offlineStamp: offlineStamp,
-                    staleStamp: store.staleSince.map { HomeTime(now: Date()).stamp($0) },
-                    retry: { Task { await store.refresh(character) } },
-                    send: handle
-                )
-            }
-            .background(FSColor.bg)
-            .refreshable { await store.refresh(character) }
-            .navigationTitle(showsSelector ? "" : character.name)
-            .navigationBarTitleDisplayMode(.inline)
-            .navigationDestination(isPresented: $showGear) { gear }
-            .navigationDestination(isPresented: simsShown) { sims }
-            .navigationDestination(isPresented: $showTalents) { talents }
+            HomeFlowView(content: flowContent, build: home?.dataBuild ?? "", actions: flowActions)
+                .refreshable { await flow?.refresh() }
+                .navigationTitle("")
+                .navigationBarTitleDisplayMode(.inline)
+                .navigationDestination(isPresented: simsShown) { sims }
             .navigationDestination(item: $itemPage) { route in
                 if let search {
                     ItemPageScreen(route: route, dependencies: search.dependencies) { search.openList($0) }
@@ -221,12 +199,9 @@ struct HomeCharacterScreen: View {
                 itemPage = ItemPageRoute(itemID: request.itemID, fallback: request.fallback, classSlug: request.classSlug)
             } })
         }
-        .task { await store.load(character) }
-        .task { await talentsModel?.load() }
-        .task { await loadLogsLine() }
-        .task { await loadRankingsLine() }
+        .task { if let flow { await flow.load() } else { await store.load(character) } }
         .onChange(of: scenePhase) { _, phase in
-            if phase == .active { Task { await store.refreshIfStale(character) } }
+            if phase == .active { Task { await store.refreshIfStale(character); await flow?.refresh() } }
         }
     }
 
@@ -238,54 +213,50 @@ struct HomeCharacterScreen: View {
         }
     }
 
+    /// What Home draws: the head always, the blocks once `/v1/home` answers.
+    private var flowContent: HomeFlowContent {
+        let presenter = HomeFlowPresenter(now: dependencies.flow?.now() ?? Date())
+        let phase: HomeFlowPhase = switch flow?.phase {
+        case .loaded: .loaded(flow.map { presenter.blocks($0.blocks, $0.inputs) } ?? [])
+        case .failed: .failed
+        case .loading, nil: .loading
+        }
+        return HomeFlowContent(
+            head: presenter.head(character), phase: phase,
+            staleStamp: store.staleSince.map { HomeTime(now: Date()).stamp($0) }, offlineStamp: offlineStamp
+        )
+    }
+
+    private var flowActions: HomeFlowActions {
+        let raidTab = { open(.tab(.raid)) }
+        return HomeFlowActions(
+            raid: NextRaidActions(
+                answer: { state in Task { await flow?.answer(state) } },
+                late: { minutes in Task { await flow?.late(minutes) } },
+                openRaid: raidTab, openReady: raidTab, previewMention: raidTab, openApplicants: raidTab
+            ),
+            openRaidNight: raidTab,
+            openItem: { row in
+                if let home { tooltip = request(for: row.look, home: home, sourceLine: row.sourceLine, wornID: row.wornID) }
+            },
+            openGear: openBis,
+            openLoot: { loot in if let home { tooltip = request(for: loot.look, home: home, sourceLine: nil, wornID: nil) } },
+            openReport: { id in open(.link(.reportPage(id: id))) },
+            simAgain: { simsRouter?.showsList = dependencies.sims != nil },
+            openActivity: { row in
+                PushLanding.destination(kind: row.kind, link: URL(string: row.link), data: [:]).map(open)
+            },
+            allActivity: { open(.tab(.activity)) },
+            findGuild: raidTab,
+            retry: { Task { await flow?.refresh() } }
+        )
+    }
+
     private var offlineStamp: String? {
         guard case let .loaded(_, since?) = store.phase else { return nil }
         return HomeTime(now: Date()).stamp(since)
     }
 
-    @ViewBuilder
-    private var gear: some View {
-        if let home {
-            GearScreen(home: home, character: character, catalog: dependencies.catalog) { look, wornID in
-                tooltip = request(for: look, home: home, sourceLine: nil, wornID: wornID)
-            }
-        }
-    }
-
-    @ViewBuilder
-    private var talents: some View {
-        if let talentsModel {
-            TalentsScreen(character: character, model: talentsModel, latestBuild: dependencies.latestBuild)
-        }
-    }
-
-    private func handle(_ intent: HomeIntent) {
-        switch intent {
-        case let .openItem(look, sourceLine, wornID):
-            if let home { tooltip = request(for: look, home: home, sourceLine: sourceLine, wornID: wornID) }
-        case .openGear:
-            showGear = true
-        case .action(.getAddon):
-            openURL(HomeLinks.setup)
-        case .action(.openPlanner):
-            openURL(HomeLinks.planner)
-        case .action(.openList):
-            openBis()
-        case .openNext(.sims):
-            simsRouter?.showsList = dependencies.sims != nil
-        case .openNext(.talents):
-            showTalents = talentsModel != nil
-        case .openNext(.logs):
-            reportsRouter?.showsList = dependencies.reports != nil
-        case .openNext(.rankings):
-            rankingsRouter?.encounter = nil
-            rankingsRouter?.showsBoard = dependencies.rankings != nil
-        case .openNext:
-            break
-        case .retry:
-            Task { await store.refresh(character) }
-        }
-    }
 
     /// Lane F5: Sims on Home's stack, driven by the router so a sim link can push it too.
     private var simsShown: Binding<Bool> {
@@ -338,17 +309,6 @@ struct HomeCharacterScreen: View {
         }
     }
 
-    private func loadRankingsLine() async {
-        guard let deps = dependencies.rankings, let current = rankingsAccount.current else { return }
-        rankingsLine = await RankingsStore.homeLine(
-            service: deps.service, cache: deps.cache, specs: deps.specs, now: deps.now(), current: current
-        ) ?? ""
-    }
-
-    private func loadLogsLine() async {
-        guard let deps = dependencies.reports, reportsAccount.signedIn else { return }
-        logsLine = await ReportsStore.homeLine(service: deps.service, cache: deps.cache, now: deps.now)
-    }
 
     private func request(for look: HomeItemLook, home: CharacterHome, sourceLine: String?, wornID: Int?) -> ItemTooltipRequest {
         .forHome(look, home: home, character: character, sourceLine: sourceLine, wornID: wornID)

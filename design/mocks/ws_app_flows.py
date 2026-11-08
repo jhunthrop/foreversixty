@@ -101,7 +101,7 @@ def _raid_card(officer: bool = False, answered: str = '', late: bool = False) ->
     """The next raid (F1): the countdown, who you answer as, the four answers (the current one selected, so a change is one
     tap), who is coming, what is not ready; an officer's open items with their one action. late: Late's minutes are open."""
     cd = Countdown(f'Olympus XXVII &middot; {RAID} tonight', [('02', 'hours'), ('48', 'min')],
-                   f'<p class="t-small">{WHEN} &middot; answer by 6:00 pm CST</p>', 'guild')
+                   f'<p class="t-small">{WHEN}</p>', 'guild')
     answered = 'Late' if late else answered
     me = f'<p class="t-small me">{"You are " + answered if answered else "You have not answered"}, {AS_ME}</p>'
     how_late = '<p class="t-small me">How late?</p>' + _late_chips() if late else ''

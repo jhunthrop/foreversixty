@@ -1573,6 +1573,72 @@
     <string name="share_tiers">%1$s tier list</string>
     <string name="share_report">%1$s · %2$s</string>
     <string name="share_action">Share</string>
+    <string name="home_head_level" tools:ignore="PluralsCandidate">Level %1$d %2$s</string>
+    <string name="home_head_toBand" tools:ignore="PluralsCandidate">%1$d levels to band %2$d</string>
+    <string name="home_raid_tonight">%1$s · %2$s tonight</string>
+    <string name="home_raid_inProgress">%1$s · %2$s in progress</string>
+    <string name="home_raid_hours">hours</string>
+    <string name="home_raid_minutes">min</string>
+    <string name="home_raid_when">%1$s, %2$s</string>
+    <string name="home_raid_as">as %1$s, %2$s</string>
+    <string name="home_raid_notAnswered">You have not answered, %1$s</string>
+    <string name="home_raid_answered">You are %1$s, %2$s</string>
+    <string name="home_raid_counts" tools:ignore="PluralsCandidate">%1$d in, %2$d late</string>
+    <string name="home_raid_lineTitle">%1$s · %2$s</string>
+    <string name="home_raid_lineOpen">%1$s · you have not answered, %2$s</string>
+    <string name="home_raid_pulled">Pulled %1$s ago · %2$s · you are %3$s %4$s</string>
+    <string name="home_raid_openNight">Open raid night ›</string>
+    <string name="home_raid_damage">Damage</string>
+    <string name="home_raid_answers">Your answer</string>
+    <plurals name="home_ready_title">
+        <item quantity="one">1 thing before you pull</item>
+        <item quantity="other">%1$d things before you pull</item>
+    </plurals>
+    <string name="home_ready_line">%1$s · from your last log-out, %2$s</string>
+    <plurals name="home_officer_unanswered">
+        <item quantity="one">1 has not answered</item>
+        <item quantity="other">%1$d have not answered</item>
+    </plurals>
+    <string name="home_officer_unansweredRole" tools:ignore="PluralsCandidate">%1$d have not answered, %2$d of them %3$s</string>
+    <string name="home_officer_short" tools:ignore="PluralsCandidate">%1$s short by %2$d</string>
+    <string name="home_officer_previewMention">Preview mention</string>
+    <plurals name="home_officer_applicants">
+        <item quantity="one">1 applicant</item>
+        <item quantity="other">%1$d applicants</item>
+    </plurals>
+    <string name="home_officer_applicant" tools:ignore="PluralsCandidate">%1$s, %2$s %3$d, %4$s</string>
+    <string name="home_role_tanks">tanks</string>
+    <string name="home_role_healers">healers</string>
+    <string name="home_role_damage">damage</string>
+    <string name="home_upgrades_next">Next upgrades</string>
+    <string name="home_upgrades_gear">Gear ›</string>
+    <string name="home_upgrades_gain">%1$s %2$s</string>
+    <string name="home_bestRun">Best run: %1$s, %2$s %3$s</string>
+    <string name="home_bestRun_chance">Best run: %1$s, %2$s %3$s, %4$s</string>
+    <string name="home_lastNight">Last night</string>
+    <string name="home_lastNight_loot">You got it from %1$s · %2$s</string>
+    <string name="home_lastNight_lootGain">You got it from %1$s · %2$s, %3$s over your worn</string>
+    <string name="home_lastNight_report">%1$s report</string>
+    <string name="home_lastNight_percentile">%1$s percentile, your best on %2$s</string>
+    <plurals name="home_lastNight_coach">
+        <item quantity="one">the coach has 1 note</item>
+        <item quantity="other">the coach has %1$d notes</item>
+    </plurals>
+    <string name="home_lastNight_simAgain">Sim again with %1$s</string>
+    <string name="home_lastNight_simAgainLine">Your sim is from before it dropped</string>
+    <string name="home_newForYou">New for you</string>
+    <string name="home_newForYou_all">All activity ›</string>
+    <string name="home_newForYou_allUnread" tools:ignore="PluralsCandidate">All activity (%1$d) ›</string>
+    <string name="home_newForYou_line">%1$s · %2$s</string>
+    <string name="home_findGuild_title">Raid with a guild</string>
+    <string name="home_findGuild_line">Raid with a guild that plans its nights here, and answer its raids from the app.</string>
+    <string name="home_findGuild_firstRaids">Raid with a guild that plans its nights here, and answer its raids from the app. The first raids open %1$s.</string>
+    <string name="home_findGuild_button">Find a guild</string>
+    <string name="home_error_title">We could not load your home</string>
+    <string name="home_error_line">Check your connection</string>
+    <string name="home_new_title">Your characters are on their way</string>
+    <string name="home_new_line">Battle.net lists a character after you play it and log out.</string>
+    <string name="home_new_check">Check again</string>
     <string name="shared_cta_getAddonAndCompanion">Get the addon and companion</string>
     <string name="shared_cta_installAddonAndCompanion">Install the addon and the companion</string>
     <string name="shared_cta_installAddonAndCompanionInline">install the addon and the companion</string>
