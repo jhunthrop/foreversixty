@@ -285,7 +285,6 @@ class AppGraph(context: Context, val config: ApiConfig = ApiConfig.fromBuildConf
      */
     val guides: GuidesFeature? = if (isAvailable(Feature.Guides)) {
         GuidesFeature.create(
-            context = context,
             statics = statics,
             tiersOn = { isAvailable(Feature.GuideTiers) },
             characters = { session.phase.value.me?.characters.orEmpty() },

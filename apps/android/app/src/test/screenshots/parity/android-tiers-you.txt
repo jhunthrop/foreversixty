@@ -1,0 +1,259 @@
+Back to Home
+Tier list
+Level 60 · Raid-ready, Phase 1 · Updated 1 Nov
+Your spec · DPS
+Fury Warrior
+Tier A · 7.3% behind Marksmanship Hunter
+2nd of 20
+Your best in slot ›
+Guide ›
+Sim your character ›
+DPS · Alliance
+Change ▾
+Role
+DPS
+20
+Tank
+3
+Healer
+5
+Faction
+Alliance
+Horde
+Damage per second, one target for 180 seconds. The bar is the share of the top spec’s damage; ≈ tie is within 1%.
+S
+Within 5% of the top
+1 spec
+Marksmanship Hunter, rank 1 of 20, tier S, top spec, Night Elf
+1
+Marksmanship
+Hunter · Night Elf
+1,083.6 DPS
+Top
+BiS
+Guide
+Planner
+Sim
+A
+5 to 10% behind
+1 spec
+Fury Warrior, rank 2 of 20, tier A, 7.3 percent behind the top, Night Elf
+2
+Fury
+Your spec
+Warrior · Night Elf
+1,004.2 DPS
+−7.3%
+BiS
+Guide
+Planner
+Sim
+B
+10 to 20% behind
+9 specs
+Survival Hunter, rank 3 of 20, tier B, 10.6 percent behind the top, Night Elf, Within 1 percent of the next spec
+3
+Survival
+Hunter · Night Elf
+968.5 DPS
+−10.6%
+≈ tie with Beast Mastery
+BiS
+Guide
+Planner
+Sim
+Beast Mastery Hunter, rank 4 of 20, tier B, 11.5 percent behind the top, Night Elf, Within 1 percent of the next spec
+4
+Beast Mastery
+Hunter · Night Elf
+958.8 DPS
+−11.5%
+≈ tie with Arms
+BiS
+Guide
+Planner
+Sim
+Arms Warrior, rank 5 of 20, tier B, 11.9 percent behind the top, Night Elf, Within 1 percent of the next spec
+5
+Arms
+Warrior · Night Elf
+954.2 DPS
+−11.9%
+≈ tie with Feral
+BiS
+Guide
+Planner
+Sim
+Feral Druid, rank 6 of 20, tier B, 12.6 percent behind the top, Night Elf, Within 1 percent of the next spec
+6
+Feral
+Druid · Night Elf
+947.6 DPS
+−12.6%
+≈ tie with Arms
+BiS
+Guide
+Planner
+Sim
+Enhancement Shaman, rank 7 of 20, tier B, 14.9 percent behind the top, Dwarf
+7
+Enhancement
+Shaman · Dwarf
+922.3 DPS
+−14.9%
+BiS
+Guide
+Planner
+Sim
+Assassination Rogue, rank 8 of 20, tier B, 15.9 percent behind the top, Night Elf
+8
+Assassination
+Rogue · Night Elf
+911.5 DPS
+−15.9%
+BiS
+Guide
+Planner
+Sim
+Combat Rogue, rank 9 of 20, tier B, 17.9 percent behind the top, Gnome
+9
+Combat
+Rogue · Gnome
+889.5 DPS
+−17.9%
+BiS
+Guide
+Planner
+Sim
+Subtlety Rogue, rank 10 of 20, tier B, 18.9 percent behind the top, Night Elf
+10
+Subtlety
+Rogue · Night Elf
+878.6 DPS
+−18.9%
+BiS
+Guide
+Planner
+Sim
+Destruction Warlock, rank 11 of 20, tier B, 19.8 percent behind the top, Human
+11
+Destruction
+Warlock · Human
+868.9 DPS
+−19.8%
+BiS
+Guide
+Planner
+Sim
+C
+20 to 30% behind
+6 specs
+Retribution Paladin, rank 12 of 20, tier C, 21.2 percent behind the top, Human
+12
+Retribution
+Paladin · Human
+853.7 DPS
+−21.2%
+BiS
+Guide
+Planner
+Sim
+Affliction Warlock, rank 13 of 20, tier C, 22.4 percent behind the top, Human
+13
+Affliction
+Warlock · Human
+840.4 DPS
+−22.4%
+BiS
+Guide
+Planner
+Sim
+Fire Mage, rank 14 of 20, tier C, 25.2 percent behind the top, Human, Within 1 percent of the next spec
+14
+Fire
+Mage · Human
+810.9 DPS
+−25.2%
+≈ tie with Arcane
+BiS
+Guide
+Planner
+Sim
+Arcane Mage, rank 15 of 20, tier C, 25.8 percent behind the top, Gnome, Within 1 percent of the next spec
+15
+Arcane
+Mage · Gnome
+803.9 DPS
+−25.8%
+≈ tie with Fire
+BiS
+Guide
+Planner
+Sim
+Demonology Warlock, rank 16 of 20, tier C, 26.6 percent behind the top, Human
+16
+Demonology
+Warlock · Human
+795.2 DPS
+−26.6%
+BiS
+Guide
+Planner
+Sim
+Shadow Priest, rank 17 of 20, tier C, 27.7 percent behind the top, Human
+17
+Shadow
+Priest · Human
+783.4 DPS
+−27.7%
+BiS
+Guide
+Planner
+Sim
+D
+30% or more behind
+3 specs
+Elemental Shaman, rank 18 of 20, tier D, 32.5 percent behind the top, Dwarf, Within 1 percent of the next spec
+18
+Elemental
+Shaman · Dwarf
+731.4 DPS
+−32.5%
+≈ tie with Balance
+BiS
+Guide
+Planner
+Sim
+Balance Druid, rank 19 of 20, tier D, 33.0 percent behind the top, Night Elf, Within 1 percent of the next spec
+19
+Balance
+Druid · Night Elf
+725.5 DPS
+−33.0%
+≈ tie with Elemental
+BiS
+Guide
+Planner
+Sim
+Frost Mage, rank 20 of 20, tier D, 37.3 percent behind the top, Gnome
+20
+Frost
+Mage · Gnome
+679.1 DPS
+−37.3%
+BiS
+Guide
+Planner
+Sim
+How to read this
+How we check the sim ›
+What the number is
+Damage per second from our own sim against one target for 180 seconds. Every spec is simmed in its best Raid-ready, Phase 1 gear, with enchants a fresh level 60 can buy, raid buffs and consumables, as the guide’s recommended Alliance race, named under it.
+What it leaves out
+Cleave, add fights, movement and what a spec brings the raid are not counted, so a spec can sit lower here than it plays in your raid. For how specs do in real raid logs, see the log rankings. At a fresh 60 the order differs: see the leveling bands.
+Letters and ties
+S is within 5% of the top, A within 10%, B within 20%, C within 30%, D beyond. ≈ tie names the specs within 1% of a spec; a tie across a line names the other letter, and the two are a tie.
+Home
+Raid
+Gear
+Activity

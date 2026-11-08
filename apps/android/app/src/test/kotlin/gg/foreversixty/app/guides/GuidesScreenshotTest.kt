@@ -2,6 +2,9 @@ package gg.foreversixty.app.guides
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -18,7 +21,6 @@ import gg.foreversixty.app.designsystem.ForeverTheme
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.guides.logic.GuideSection
 import gg.foreversixty.app.guides.logic.Guides
-import gg.foreversixty.app.guides.logic.GuidesSegment
 import gg.foreversixty.app.guides.logic.Loadable
 import gg.foreversixty.app.guides.logic.TierChoice
 import gg.foreversixty.app.guides.logic.Tiers
@@ -96,8 +98,10 @@ class GuidesScreenshotTest {
     }
 
     @Composable
-    private fun Root(segment: GuidesSegment, character: AccountCharacter?, content: @Composable () -> Unit) {
-        GuidesRootLayout(GuidesSegment.visible(tiersOn = true), segment, {}, selector = { Selector(character) }, content = content)
+    private fun Root(character: AccountCharacter?, scrolls: Boolean = false, content: @Composable () -> Unit) {
+        GuidesRootLayout(selector = { Selector(character) }) {
+            if (scrolls) Column(Modifier.verticalScroll(rememberScrollState())) { content() } else content()
+        }
     }
 
     @Composable
@@ -107,8 +111,8 @@ class GuidesScreenshotTest {
 
     private fun home(name: String, character: AccountCharacter?, large: Boolean = false, phase: Loadable<gg.foreversixty.app.model.GuideIndex> = Loadable.Loaded(index, null)) =
         capture(name, large) {
-            Root(GuidesSegment.Guides, character) {
-                GuidesHome(GuidesHomeState(phase, saved, character?.let { Guides.yourGuide(index, it) }), GuidesHomeActions())
+            Root(character) {
+                GuidesHome(GuidesHomeState(phase, saved, character, character?.let { Guides.yourGuide(index, it) }), GuidesHomeActions())
             }
         }
 
@@ -124,9 +128,15 @@ class GuidesScreenshotTest {
     }
 
     private fun tiers(name: String, character: AccountCharacter?, choice: TierChoice? = null, large: Boolean = false) = capture(name, large) {
-        Root(GuidesSegment.Tiers, character) {
+        Root(character) {
             TierListContent(
-                TierListState(Loadable.Loaded(GuidesTestData.tiers(), null), choice ?: Tiers.defaultChoice(index, character), character?.let { Guides.yourGuide(index, it)?.spec }),
+                TierListState(
+                    Loadable.Loaded(GuidesTestData.tiers(), null),
+                    choice ?: Tiers.defaultChoice(index, character),
+                    character?.let { Guides.yourGuide(index, it)?.spec },
+                    index,
+                    signedIn = character != null,
+                ),
                 now,
                 TierListActions(),
             )
@@ -201,7 +211,7 @@ class GuidesScreenshotTest {
 
     @Test @Config(qualifiers = PIXEL_9_TALL)
     fun changes() = capture("f9-changes-and") {
-        Root(GuidesSegment.Changes, GuidesTestData.lightningbolltz) {
+        Root(GuidesTestData.lightningbolltz, scrolls = true) {
             WhatChangedContent(
                 WhatChangedState(Loadable.Loaded(GuidesTestData.dates(), null), Loadable.Loaded(GuidesTestData.changelog(), null), now.atZone(GuidesTestData.zone).toLocalDate()),
                 now,
@@ -211,7 +221,7 @@ class GuidesScreenshotTest {
     }
 
     @Test fun changesFailed() = capture("f9-changes-error-and") {
-        Root(GuidesSegment.Changes, GuidesTestData.lightningbolltz) {
+        Root(GuidesTestData.lightningbolltz, scrolls = true) {
             WhatChangedContent(WhatChangedState(Loadable.Loaded(GuidesTestData.dates(), null), Loadable.Failed, now.atZone(GuidesTestData.zone).toLocalDate()), now, WhatChangedActions())
         }
     }

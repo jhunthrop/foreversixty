@@ -2386,6 +2386,17 @@
         }
       }
     },
+    "flows.change": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Change ▾"
+          }
+        }
+      }
+    },
     "gear.bis": {
       "extractionState": "manual",
       "localizations": {
@@ -2808,6 +2819,18 @@
         }
       }
     },
+    "guides.characterLine": {
+      "comment": "Arguments: 1 n (int), 2 who (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Level %1$lld · %2$@"
+          }
+        }
+      }
+    },
     "guides.classes": {
       "extractionState": "manual",
       "localizations": {
@@ -2918,6 +2941,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "In a raid"
+          }
+        }
+      }
+    },
+    "guides.lead": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Talents, rotation and gear for every spec, from your first talent point to the raid at 60."
           }
         }
       }
@@ -3288,6 +3322,18 @@
         }
       }
     },
+    "guides.updated": {
+      "comment": "Arguments: 1 date (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Updated %1$@"
+          }
+        }
+      }
+    },
     "guides.weaknesses": {
       "extractionState": "manual",
       "localizations": {
@@ -3295,6 +3341,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Weaknesses"
+          }
+        }
+      }
+    },
+    "guides.yourCharacter": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your character"
+          }
+        }
+      }
+    },
+    "guides.yourGuideLink": {
+      "comment": "Arguments: 1 spec (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your guide: %1$@ ›"
           }
         }
       }
@@ -19236,6 +19305,135 @@
         }
       }
     },
+    "tiers.and": {
+      "comment": "Arguments: 1 first (string), 2 last (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ and %2$@"
+          }
+        }
+      }
+    },
+    "tiers.answer.behind": {
+      "comment": "Arguments: 1 gap (string), 2 top (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ behind %2$@"
+          }
+        }
+      }
+    },
+    "tiers.answer.of": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "of %1$lld"
+          }
+        }
+      }
+    },
+    "tiers.answer.tier": {
+      "comment": "Arguments: 1 letter (string), 2 gap (string), 3 top (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tier %1$@ · %2$@ behind %3$@"
+          }
+        }
+      }
+    },
+    "tiers.answer.top": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Level with the top spec."
+          }
+        }
+      }
+    },
+    "tiers.band.between": {
+      "comment": "Arguments: 1 start (string), 2 end (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ to %2$@ behind"
+          }
+        }
+      }
+    },
+    "tiers.band.beyond": {
+      "comment": "Arguments: 1 start (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ or more behind"
+          }
+        }
+      }
+    },
+    "tiers.band.top": {
+      "comment": "Arguments: 1 end (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Within %1$@ of the top"
+          }
+        }
+      }
+    },
+    "tiers.caption.dps": {
+      "comment": "Arguments: 1 tie (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Damage per second, one target for 180 seconds. The bar is the share of the top spec’s damage; ≈ tie is within %1$@."
+          }
+        }
+      }
+    },
+    "tiers.caption.healer": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Effective healing per second over 300 seconds of a stand-in Phase 1 fight. ≈ tie: the sim cannot order the pair."
+          }
+        }
+      }
+    },
+    "tiers.caption.tank": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Damage taken per second against a stand-in level 63 boss, lower is better."
+          }
+        }
+      }
+    },
     "tiers.error": {
       "extractionState": "manual",
       "localizations": {
@@ -19243,6 +19441,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "The tier list did not load."
+          }
+        }
+      }
+    },
+    "tiers.faction": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Faction"
           }
         }
       }
@@ -19269,6 +19478,141 @@
         }
       }
     },
+    "tiers.facts": {
+      "comment": "Arguments: 1 preset (string), 2 date (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Level 60 · %1$@ · Updated %2$@"
+          }
+        }
+      }
+    },
+    "tiers.groupCount": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "1 spec"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%1$lld specs"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "tiers.howToRead": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "How to read this"
+          }
+        }
+      }
+    },
+    "tiers.howWeCheck": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "How we check the sim ›"
+          }
+        }
+      }
+    },
+    "tiers.link.bis": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "BiS"
+          }
+        }
+      }
+    },
+    "tiers.link.guide": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guide"
+          }
+        }
+      }
+    },
+    "tiers.link.planner": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Planner"
+          }
+        }
+      }
+    },
+    "tiers.link.sim": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sim"
+          }
+        }
+      }
+    },
+    "tiers.link.yourBis": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your best in slot ›"
+          }
+        }
+      }
+    },
+    "tiers.link.yourGuide": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guide ›"
+          }
+        }
+      }
+    },
+    "tiers.link.yourSim": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sim your character ›"
+          }
+        }
+      }
+    },
     "tiers.loading": {
       "extractionState": "manual",
       "localizations": {
@@ -19280,6 +19624,293 @@
         }
       }
     },
+    "tiers.notes.boss": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The boss"
+          }
+        }
+      }
+    },
+    "tiers.notes.dps.leavesOut": {
+      "comment": "Arguments: 1 fresh (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cleave, add fights, movement and what a spec brings the raid are not counted, so a spec can sit lower here than it plays in your raid. For how specs do in real raid logs, see the log rankings. %1$@"
+          }
+        }
+      }
+    },
+    "tiers.notes.dps.letters": {
+      "comment": "Arguments: 1 s (string), 2 a (string), 3 b (string), 4 c (string), 5 tie (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "S is within %1$@ of the top, A within %2$@, B within %3$@, C within %4$@, D beyond. ≈ tie names the specs within %5$@ of a spec; a tie across a line names the other letter, and the two are a tie."
+          }
+        }
+      }
+    },
+    "tiers.notes.dps.number": {
+      "comment": "Arguments: 1 gear (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Damage per second from our own sim against one target for 180 seconds. %1$@"
+          }
+        }
+      }
+    },
+    "tiers.notes.fresh": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "At a fresh 60 the order differs: see the leveling bands."
+          }
+        }
+      }
+    },
+    "tiers.notes.gear": {
+      "comment": "Arguments: 1 preset (string), 2 faction (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Every spec is simmed in its best %1$@ gear, with enchants a fresh level 60 can buy, raid buffs and consumables, as the guide’s recommended %2$@ race, named under it."
+          }
+        }
+      }
+    },
+    "tiers.notes.gearTitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The gear"
+          }
+        }
+      }
+    },
+    "tiers.notes.healer.leavesOut": {
+      "comment": "Arguments: 1 fresh (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mana and raid utility are not ranked here. No level-60 log is behind this order yet: it rests on the sim’s heal model until launch logs exist. %1$@"
+          }
+        }
+      }
+    },
+    "tiers.notes.healer.number": {
+      "comment": "Arguments: 1 gear (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Effective healing per second over 300 seconds against a stand-in Phase 1 fight: tank hits and raid-wide pulses, not a named boss. Overhealing is not counted. %1$@"
+          }
+        }
+      }
+    },
+    "tiers.notes.healer.ties": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gap to the top is less healing in this fight, not a verdict on the class. ≈ tie means the sim cannot order the pair: their order changes with the heal profile’s tuning, or their gap is within the measured error."
+          }
+        }
+      }
+    },
+    "tiers.notes.leavesOut": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "What it leaves out"
+          }
+        }
+      }
+    },
+    "tiers.notes.letters": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Letters and ties"
+          }
+        }
+      }
+    },
+    "tiers.notes.number": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "What the number is"
+          }
+        }
+      }
+    },
+    "tiers.notes.tank.boss": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A stand-in level 63 target with one melee swing every 2 seconds, not a named boss."
+          }
+        }
+      }
+    },
+    "tiers.notes.tank.gear": {
+      "comment": "Arguments: 1 gear (string), 2 fresh (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ %2$@"
+          }
+        }
+      }
+    },
+    "tiers.notes.tank.number": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Damage taken per second, lower is better: it is the sim’s outcome against the boss, where effective health is only the hit-point pool going in."
+          }
+        }
+      }
+    },
+    "tiers.notes.ties": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ties and ranks"
+          }
+        }
+      }
+    },
+    "tiers.ordinal.nd": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lldnd"
+          }
+        }
+      }
+    },
+    "tiers.ordinal.rd": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lldrd"
+          }
+        }
+      }
+    },
+    "tiers.ordinal.st": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lldst"
+          }
+        }
+      }
+    },
+    "tiers.ordinal.th": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lldth"
+          }
+        }
+      }
+    },
+    "tiers.role": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Role"
+          }
+        }
+      }
+    },
+    "tiers.signIn": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sign in"
+          }
+        }
+      }
+    },
+    "tiers.signInLine": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "to see your spec marked."
+          }
+        }
+      }
+    },
+    "tiers.summary": {
+      "comment": "Arguments: 1 role (string), 2 faction (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$@"
+          }
+        }
+      }
+    },
     "tiers.tie": {
       "extractionState": "manual",
       "localizations": {
@@ -19287,6 +19918,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "≈"
+          }
+        }
+      }
+    },
+    "tiers.tieWith": {
+      "comment": "Arguments: 1 names (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "≈ tie with %1$@"
+          }
+        }
+      }
+    },
+    "tiers.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tier list"
           }
         }
       }
@@ -19309,6 +19963,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Your spec"
+          }
+        }
+      }
+    },
+    "tiers.yourSpec": {
+      "comment": "Arguments: 1 role (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your spec · %1$@"
           }
         }
       }

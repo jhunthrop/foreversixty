@@ -145,16 +145,16 @@ fun MenuScreen(features: ShellFeatures, destination: MenuDestination, onPickClas
     val scope = rememberCoroutineScope()
     when (destination) {
         MenuDestination.Guides, MenuDestination.Tiers, MenuDestination.PatchNotes -> features.guides?.let { guides ->
-            // The row's segment is saved before the root reads it on its first frame.
-            remember(destination) { segmentOf(destination)?.also { GuidesSegment.save(guides.segment, it) } }
             GuidesRoute(
                 guides,
+                segmentOf(destination) ?: GuidesSegment.Guides,
                 current,
-                openBis = { guide ->
-                    features.bis?.request(BisSelection.forGuide(guide.classSlug, guide.gear?.spec ?: guide.spec, current?.faction))
+                openBis = { classSlug, spec ->
+                    features.bis?.request(BisSelection.forGuide(classSlug, spec, current?.faction))
                     onPickClass()
                 },
                 planner = features.planner,
+                signIn = signIn,
             ) { BackButton(onBack) }
         }
         MenuDestination.Sims -> features.home.sims?.let { SimsRoute(it, me?.entitlements?.serverSims == true, onBack) }

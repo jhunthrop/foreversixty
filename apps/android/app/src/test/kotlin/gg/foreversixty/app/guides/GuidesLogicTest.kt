@@ -33,11 +33,9 @@ class GuidesLogicTest {
     // F9.1 the Guides tab
 
     @Test
-    fun `the class grid is the index's nine classes in its order`() {
-        val cells = Guides.classCells(index)
-        assertEquals(9, cells.size)
-        assertEquals("warrior", cells.first().classSlug)
-        assertEquals(listOf("Warrior", "Paladin", "Hunter", "Rogue", "Priest", "Shaman", "Mage", "Warlock", "Druid"), cells.map { it.className })
+    fun `the page's Updated day is the newest guide's, and none without guides`() {
+        assertEquals("2026-11-01", Guides.updated(index))
+        assertEquals(null, Guides.updated(index.copy(classes = emptyList())))
     }
 
     @Test
@@ -161,23 +159,25 @@ class GuidesLogicTest {
     // F9.4 tier lists
 
     @Test
-    fun `the tier list opens on the character's role and faction, else DPS and Horde`() {
+    fun `the tier list opens on the character's role and faction, else DPS and Alliance`() {
         assertEquals(TierChoice("dps", "horde"), Tiers.defaultChoice(index, GuidesTestData.emberquill))
         assertEquals(TierChoice("tank", "horde"), Tiers.defaultChoice(index, GuidesTestData.kraggor))
         assertEquals(TierChoice("tank", "alliance"), Tiers.defaultChoice(index, GuidesTestData.kraggor.copy(faction = "alliance")))
-        assertEquals(TierChoice("dps", "horde"), Tiers.defaultChoice(index, null))
+        assertEquals(TierChoice("dps", "alliance"), Tiers.defaultChoice(index, null))
     }
 
     @Test
-    fun `rows keep the file's order and letters, mark ties and your row`() {
-        val list = Tiers.list(GuidesTestData.tiers(), TierChoice("dps", "horde"))
-        val rows = Tiers.rows(list, GuidesTestData.FIRE)
+    fun `rows keep the file's order and letters, name ties both ways and mark your row`() {
+        val list = Tiers.list(GuidesTestData.tiers(), TierChoice("dps", "alliance"))
+        val rows = Tiers.rows(list, index, "warrior-arms")
         assertEquals(list.rows.map { it.rank }, rows.map { it.row.rank })
-        assertEquals("Top", rows.first().gap)
+        assertEquals("Fury", rows[0].specName)
+        assertEquals("Warrior", rows[0].className)
         assertEquals(TierTone.Legendary, rows.first().tone)
-        val tied = rows.first { it.row.tie != null }
-        assertEquals("≈ ${tied.row.gapText}", tied.gap)
-        assertEquals(listOf(GuidesTestData.FIRE), rows.filter { it.isYours }.map { it.row.spec })
+        assertEquals(listOf("Destruction"), rows[1].ties)
+        assertEquals(listOf("Arms"), rows[2].ties)
+        assertEquals(emptyList<String>(), rows[0].ties)
+        assertEquals(listOf("warrior-arms"), rows.filter { it.isYours }.map { it.row.spec })
         assertEquals(TierTone.Muted, Tiers.tone("D"))
         assertEquals(TierTone.Epic, Tiers.tone("A"))
         assertEquals(TierTone.Rare, Tiers.tone("B"))
@@ -186,26 +186,37 @@ class GuidesLogicTest {
     }
 
     @Test
-    fun `the callout is your spec's row with the list's last note, and absent without one`() {
-        val list = Tiers.list(GuidesTestData.tiers(), TierChoice("dps", "horde"))
-        val callout = requireNotNull(Tiers.callout(list, GuidesTestData.FIRE))
-        assertTrue(callout.row.title.startsWith("Fire Mage is "))
-        assertEquals(list.notes.last(), callout.note)
-        assertNull(Tiers.callout(list, null))
-        assertNull(Tiers.callout(list, GuidesTestData.PROTECTION))
+    fun `lettered rows group by letter with their bands, and tank lists have no groups`() {
+        val file = GuidesTestData.tiers()
+        val groups = Tiers.groups(Tiers.rows(Tiers.list(file, TierChoice("dps", "alliance")), index, null))
+        assertEquals(listOf("S", "A", "B", "C", "D"), groups.map { it.letter })
+        assertEquals(listOf(0 to 5, 30 to null), listOf(groups.first(), groups.last()).map { it.start to it.end })
+        assertEquals(20, groups.sumOf { it.rows.size })
+        assertTrue(Tiers.groups(Tiers.rows(Tiers.list(file, TierChoice("tank", "alliance")), index, null)).isEmpty())
+        assertEquals(mapOf("dps" to 20, "tank" to 3, "healer" to 5), Tiers.counts(file, "alliance"))
+    }
+
+    @Test
+    fun `the answer is your row with its place and the top spec, and absent without one`() {
+        val rows = Tiers.rows(Tiers.list(GuidesTestData.tiers(), TierChoice("dps", "alliance")), index, "warrior-arms")
+        val answer = requireNotNull(Tiers.answer(rows))
+        assertEquals(2, answer.row.row.rank)
+        assertEquals(20, answer.count)
+        assertEquals("warrior-fury", answer.top.spec)
+        assertNull(Tiers.answer(Tiers.rows(Tiers.list(GuidesTestData.tiers(), TierChoice("dps", "alliance")), index, null)))
     }
 
     @Test
     fun `tier rows read rank, letter, gap and race to TalkBack`() {
         val dps = Tiers.list(GuidesTestData.tiers(), TierChoice("dps", "horde"))
-        val rows = Tiers.rows(dps, null)
+        val rows = Tiers.rows(dps, index, null)
         assertEquals("Fury Warrior, rank 1 of 20, tier S, top spec, Troll", copy().tierLabel(rows[0], rows.size))
         val second = rows[1].row
         val gap = String.format(java.util.Locale.US, "%.1f", second.gapPercent)
         assertEquals("${second.name}, rank 2 of 20, tier ${second.tier}, $gap percent behind the top, ${second.race}", copy().tierLabel(rows[1], rows.size))
         val tied = rows.first { it.row.tie != null }
         assertTrue(copy().tierLabel(tied, rows.size).endsWith(", Within 1 percent of the next spec"))
-        val tank = Tiers.rows(Tiers.list(GuidesTestData.tiers(), TierChoice("tank", "horde")), null)
+        val tank = Tiers.rows(Tiers.list(GuidesTestData.tiers(), TierChoice("tank", "horde")), index, null)
         assertEquals("Protection Warrior, rank 1 of 3, top spec, Tauren", copy().tierLabel(tank[0], tank.size))
     }
 

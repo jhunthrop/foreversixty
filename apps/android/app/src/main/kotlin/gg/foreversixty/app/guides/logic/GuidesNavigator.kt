@@ -3,7 +3,6 @@ package gg.foreversixty.app.guides.logic
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import gg.foreversixty.app.auth.session.StoredValue
 import gg.foreversixty.app.navigation.DeepLink
 
 /** A screen pushed on the Guides tab (spec §3.1): a class page, a guide, a changelog entry. */
@@ -49,19 +48,13 @@ class GuidesNavigator {
     }
 }
 
-/** The tab's segments (spec F9.1); Tier lists only behind `guide_tiers`. Persisted per device. */
-enum class GuidesSegment(val key: String) {
-    Guides("guides"),
-    Tiers("tiers"),
-    Changes("changes"),
+/** The menu's three tools this route draws (spec 2026-11-08): Guides, Tiers, Patch notes. */
+enum class GuidesSegment {
+    Guides,
+    Tiers,
+    Changes,
     ;
 
-    companion object {
-        fun visible(tiersOn: Boolean): List<GuidesSegment> = if (tiersOn) entries else listOf(Guides, Changes)
-
-        fun load(stored: StoredValue, tiersOn: Boolean = true): GuidesSegment =
-            entries.firstOrNull { it.key == stored.load() }?.takeIf { it in visible(tiersOn) } ?: Guides
-
-        fun save(stored: StoredValue, segment: GuidesSegment) = stored.save(segment.key)
-    }
+    /** The page drawn: Tiers only behind `guide_tiers`, else Guides. */
+    fun shown(tiersOn: Boolean): GuidesSegment = if (this == Tiers && !tiersOn) Guides else this
 }
