@@ -233,13 +233,13 @@ describe("ItemTooltip.fitAlternatives", function()
 		assert.is_truthy(lines[2]:find("|cff0070ddSmi", 1, true))
 	end)
 
-	it("keeps an alternative's gain and its ammo tag on its row", function()
+	it("keeps an alternative's gain and its type tag on its row", function()
 		local lines = ItemTooltip.fitAlternatives({
-			{ name = "Lil Timmy's Peashooter", hex = "1eff00", gain = 2.2, unit = "dps", flag = L.tooltipNeedsBullets },
+			{ name = "Lil Timmy's Peashooter", hex = "1eff00", gain = 2.2, unit = "dps", flag = L.tooltipTypeGun },
 			{ name = "Cracked Blacksmith Hammer", hex = "ffffff", gain = 0.8, unit = "dps" },
 		}, measure, 200)
 		assert.are.equal(string.format(L.tooltipAlternativesOne,
-			"|cff1eff00Lil Timmy's Peashooter|r |cffb8b8b8+2.2|r |cffb8b8b8" .. L.tooltipNeedsBullets .. "|r"), lines[1])
+			"|cff1eff00Lil Timmy's Peashooter|r |cffb8b8b8+2.2|r |cffb8b8b8" .. L.tooltipTypeGun .. "|r"), lines[1])
 		assert.are.equal(INDENT .. "|cffffffffCracked Blacksmith Hammer|r |cffb8b8b8+0.8|r", lines[2])
 	end)
 
@@ -1389,23 +1389,24 @@ describe("ItemTooltip.section", function()
 			return ctx(base)
 		end
 
-		it("flags the alternative that fires the other ammo, and only that one", function()
+		-- The owner, 2026-11-08: name the type in the game's words, never what it implies.
+		it("names the alternative's type when it differs from the worn bow's, and only that one", function()
 			local alternatives = find(ItemTooltip.section(wornBow()), "alternatives")
-			assert.are.equal(L.tooltipNeedsBullets, alternatives.entries[1].flag)
+			assert.are.equal(L.tooltipTypeGun, alternatives.entries[1].flag)
 			assert.is_nil(alternatives.entries[2].flag)
-			assert.is_truthy(ItemTooltip.fitAlternatives(alternatives.entries)[1]:find(L.tooltipNeedsBullets, 1, true))
+			assert.is_truthy(ItemTooltip.fitAlternatives(alternatives.entries)[1]:find("(gun)", 1, true))
 		end)
 
 		it("names a thrown pick on the Next line and tags a thrown alternative", function()
 			local thrown = { [600] = 16, [601] = 16 }
 			local lines = ItemTooltip.section(wornBow({
 				subClassOf = function(item) return thrown[item] or SUB[item] end }))
-			assert.are.equal(ItemTooltip.nextLine("Ranger Bow", lines[1].upgrade.gain, "dps", L.tooltipThrown),
+			assert.are.equal(ItemTooltip.nextLine("Ranger Bow", lines[1].upgrade.gain, "dps", L.tooltipTypeThrown),
 				lines[1].text)
-			assert.are.equal("(thrown)", L.tooltipThrown)
+			assert.are.equal("(thrown)", L.tooltipTypeThrown)
 			local alternatives = find(lines, "alternatives")
-			assert.are.equal(L.tooltipThrown, alternatives.entries[1].flag)
-			assert.is_nil(ItemTooltip.section(wornBow())[1].text:find(L.tooltipThrown, 1, true))
+			assert.are.equal(L.tooltipTypeThrown, alternatives.entries[1].flag)
+			assert.is_nil(ItemTooltip.section(wornBow())[1].text:find(L.tooltipTypeThrown, 1, true))
 		end)
 
 		it("keeps the thrown tag on the Next line when the name is cut to fit", function()
@@ -1413,7 +1414,7 @@ describe("ItemTooltip.section", function()
 				subClassOf = function(item) return item == 600 and 16 or SUB[item] end }))
 			local fitted = ItemTooltip.fitLine(lines[1], function(text) return #ItemTooltip.stripEscapes(text) end, 30)
 			assert.are.equal(1, #fitted)
-			assert.is_truthy(fitted[1]:find(L.tooltipThrown, 1, true))
+			assert.is_truthy(fitted[1]:find(L.tooltipTypeThrown, 1, true))
 		end)
 
 		it("reads World drop alone for a pick that binds when equipped: no check the AH", function()
@@ -1947,14 +1948,19 @@ describe("fitting each line to the client's width", function()
 		assert.are.equal("Crafted", ItemTooltip.sourceLine({ kind = "C" }))
 	end)
 
-	-- L4.1 fix round 5: a ranged alternative firing other ammo is kept, flagged.
-	it("flags a ranged alternative that needs the other ammo", function()
-		assert.are.equal(L.tooltipNeedsBullets, ItemTooltip.ammoFlag(2, 3))
-		assert.are.equal(L.tooltipNeedsArrows, ItemTooltip.ammoFlag(3, 18))
-		assert.is_nil(ItemTooltip.ammoFlag(2, 18))
-		assert.is_nil(ItemTooltip.ammoFlag(2, 16))
-		assert.is_nil(ItemTooltip.ammoFlag(nil, 3))
-		assert.are.equal("(needs bullets)", L.tooltipNeedsBullets)
+	-- The owner, 2026-11-08: a ranged item of another type than the worn one is named by its type in
+	-- the game's own words, never by what it implies ("(gun)", never "(needs bullets)").
+	it("names a ranged item's type when it differs from the worn ranged weapon's", function()
+		assert.are.equal("(gun)", ItemTooltip.typeTag(2, 3))
+		assert.are.equal("(crossbow)", ItemTooltip.typeTag(3, 18))
+		assert.are.equal("(thrown)", ItemTooltip.typeTag(2, 16))
+		assert.are.equal("(wand)", ItemTooltip.typeTag(2, 19))
+		assert.are.equal("(bow)", ItemTooltip.typeTag(nil, 2))
+		assert.is_nil(ItemTooltip.typeTag(2, 2))
+		assert.is_nil(ItemTooltip.typeTag(2, 7))
+		assert.is_nil(L.tooltipNeedsBullets)
+		assert.is_nil(L.tooltipNeedsArrows)
+		assert.is_nil(ItemTooltip.ammoFlag)
 	end)
 
 	it("never splits a multibyte character when it shortens a name", function()
@@ -2645,11 +2651,14 @@ describe("the breakdown under a figure", function()
 		stats = { strength = 11, agility = 4, weapon_dps = 19.7 } }, { stats = { weapon_dps = 4 / 3.5 }, unparsed = false })
 	local mace = { itemId = 5197, equipLocation = "INVTYPE_WEAPON", stats = { spirit = 4, weapon_dps = 13.9 } }
 
-	it("lists every contributor, signed, in the player's words, without brackets", function()
+	-- The owner, 2026-11-08: the weapon's own DPS is left out, so the headline's DPS never sits beside a
+	-- near-identical "weapon DPS" figure.
+	it("lists every stat that changes, signed, in the player's words, without brackets or weapon DPS", function()
 		local verdict = Progress.itemVerdict("main_hand", mace, { main_hand = smite }, arms, perPoint, weapon)
-		assert.are.equal(L.tooltipMinus .. "11 Str, " .. L.tooltipMinus .. "4 Agi, " .. L.tooltipMinus
-			.. "6.9 weapon DPS", ItemTooltip.breakdownText(verdict.contributions))
+		assert.are.equal(L.tooltipMinus .. "11 Str, " .. L.tooltipMinus .. "4 Agi",
+			ItemTooltip.breakdownText(verdict.contributions))
 		assert.are.equal("weapon_dps", verdict.contributions[1].stat)
+		assert.is_nil(ItemTooltip.breakdownText({ { stat = "weapon_dps", delta = 3.4, weighted = 3 } }))
 	end)
 
 	-- Stamina and Armor are listed whenever they move, though the weights price them at
@@ -2676,7 +2685,7 @@ describe("the breakdown under a figure", function()
 		local verdict = Progress.itemVerdict("main_hand", mace, { main_hand = smite }, arms, perPoint, weapon)
 		local all = ItemTooltip.breakdownText(verdict.contributions)
 		assert.are.same({ all }, ItemTooltip.fitBreakdown(verdict.contributions, visible, 200))
-		for _, room in ipairs({ 30, 20 }) do
+		for _, room in ipairs({ 12, 9 }) do
 			local rows = ItemTooltip.fitBreakdown(verdict.contributions, visible, room)
 			assert.is_true(#rows > 1)
 			assert.are.equal(all, table.concat(rows, L.tooltipBreakdownJoin))

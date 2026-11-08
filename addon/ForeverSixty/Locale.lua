@@ -603,10 +603,13 @@ local L = {
 	tooltipInBags = "In your bags: %s %s",
 	-- The panel's bag row source (the character pane's flyout; it goes with the flyout).
 	tooltipRightClickEquip = "Right-click it in your bags to equip.",
-	-- A thrown weapon in the ranged slot, and a ranged alternative firing other ammo.
-	tooltipNeedsBullets = "(needs bullets)",
-	tooltipNeedsArrows = "(needs arrows)",
-	tooltipThrown = "(thrown)",
+	-- A ranged item named beside a worn ranged weapon of another type: the type in the game's own
+	-- words, never what it implies (the owner, 2026-11-08: "(gun)", never "(needs bullets)").
+	tooltipTypeBow = "(bow)",
+	tooltipTypeGun = "(gun)",
+	tooltipTypeCrossbow = "(crossbow)",
+	tooltipTypeThrown = "(thrown)",
+	tooltipTypeWand = "(wand)",
 	-- The support line under a worn pick: the next rung's pick, the item alone (case 18).
 	tooltipAtBandName = "At level %d: %s",
 	-- The support line under an upgrade the band's pick beats (case 9): "Better: <pick> +3.5 ·

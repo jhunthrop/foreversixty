@@ -481,23 +481,25 @@ local function entryText(entry, name, bare)
 	return text
 end
 
---- Ranged weapon subclass ids -> the ammo they fire (bows and crossbows arrows, guns
---- bullets); none for thrown weapons and wands.
-ItemTooltip.AMMO_BY_SUBCLASS = { [2] = "arrows", [18] = "arrows", [3] = "bullets" }
+--- Ranged weapon subclass ids -> the type's word in the game's own terms (the owner, 2026-11-08:
+--- name the type, never explain what it implies, so "(gun)", never "(needs bullets)").
+ItemTooltip.RANGED_TYPE_KEYS = {
+	[2] = "tooltipTypeBow", [3] = "tooltipTypeGun", [16] = "tooltipTypeThrown", [18] = "tooltipTypeCrossbow",
+	[19] = "tooltipTypeWand",
+}
 
 --- The weapon subclass id of thrown weapons (the client's).
 ItemTooltip.THROWN_SUBCLASS = 16
 
---- "(needs bullets)" for an alternative firing other ammo than the worn ranged weapon,
---- from the two items' subclass ids (`wornSub`, `altSub`); nil when they match or either
---- fires none. Pure.
-function ItemTooltip.ammoFlag(wornSub, altSub)
-	local worn = ItemTooltip.AMMO_BY_SUBCLASS[tonumber(wornSub)]
-	local alt = ItemTooltip.AMMO_BY_SUBCLASS[tonumber(altSub)]
-	if worn == nil or alt == nil or worn == alt then
+--- "(gun)", "(bow)", "(crossbow)", "(thrown)" or "(wand)" for a ranged item whose type differs from
+--- the worn ranged weapon's, from the two items' subclass ids (`wornSub`, `itemSub`); nil when they
+--- match or the item is no ranged type this table knows. Nothing worn: the type is named. Pure.
+function ItemTooltip.typeTag(wornSub, itemSub)
+	local key = ItemTooltip.RANGED_TYPE_KEYS[tonumber(itemSub)]
+	if key == nil or (wornSub ~= nil and tonumber(wornSub) == tonumber(itemSub)) then
 		return nil
 	end
-	return alt == "bullets" and L.tooltipNeedsBullets or L.tooltipNeedsArrows
+	return L[key]
 end
 
 --- The alternatives as printed lines (spec 2.3 item 2), for `entries` ({ name, hex, gain,
@@ -763,16 +765,20 @@ function ItemTooltip.breakdownParts(contributions)
 		return left.stat < right.stat
 	end)
 	local parts = {}
-	for index, entry in ipairs(chosen) do
-		local size = math.abs(entry.delta)
-		local amount
-		if entry.stat ~= "weapon_dps" and math.abs(size - math.floor(size + 0.5)) < 1e-9 then
-			amount = string.format("%d", math.floor(size + 0.5))
-		else
-			amount = string.format("%.1f", size)
+	for _, entry in ipairs(chosen) do
+		-- The weapon's own DPS is left out (the owner, 2026-11-08): beside "+3.5 DPS" on the headline,
+		-- "+3.4 weapon DPS" read as the same number twice. The breakdown names the stats that change.
+		if entry.stat ~= "weapon_dps" then
+			local size = math.abs(entry.delta)
+			local amount
+			if math.abs(size - math.floor(size + 0.5)) < 1e-9 then
+				amount = string.format("%d", math.floor(size + 0.5))
+			else
+				amount = string.format("%.1f", size)
+			end
+			local sign = entry.delta < 0 and L.tooltipMinus or "+"
+			parts[#parts + 1] = string.format(L.tooltipBreakdownPart, sign .. amount, breakdownWord(entry.stat))
 		end
-		local sign = entry.delta < 0 and L.tooltipMinus or "+"
-		parts[index] = string.format(L.tooltipBreakdownPart, sign .. amount, breakdownWord(entry.stat))
 	end
 	return parts
 end
@@ -1157,13 +1163,13 @@ function ItemTooltip.section(ctx)
 	local judged = ItemTooltip.judge(ctx, pending)
 	local wornSlot, usable, slot = judged.wornSlot, judged.usable, judged.slot
 	local heldByTwoHander = judged.heldByTwoHander
-	--- "(thrown)" for a thrown weapon (subclass 16) named in the ranged slot, else nil.
-	local function thrownTag(itemId)
+	--- The ranged type's word ("(gun)", "(thrown)") for an item named in the ranged slot whose
+	--- type differs from the worn ranged weapon's (ItemTooltip.typeTag), else nil.
+	local function typeTagOf(itemId)
 		if slot ~= "ranged" then
 			return nil
 		end
-		local sub = subClassOf(itemId)
-		return tonumber(sub) == ItemTooltip.THROWN_SUBCLASS and L.tooltipThrown or nil
+		return ItemTooltip.typeTag(wornSub, subClassOf(itemId))
 	end
 	local specWord = specName(data, ctx.spec)
 	local head = { specWord = specWord, tag = current ~= nil and current.tag or nil,
@@ -1243,7 +1249,7 @@ function ItemTooltip.section(ctx)
 	if pick ~= nil and not isPick and not pickWorn then
 		local name = pickName(pick.item_id)
 		local gain, nextVerdict, cold = gainOf(pick.item_id)
-		local tag = thrownTag(pick.item_id)
+		local tag = typeTagOf(pick.item_id)
 		if cold and name ~= nil then
 			local upgrade = { name = name, hex = qualityHex(pick.item_id), unit = unit, tag = tag }
 			nextLine = { kind = "next", itemId = pick.item_id, upgrade = upgrade, color = "tooltipBody",
@@ -1291,8 +1297,7 @@ function ItemTooltip.section(ctx)
 					pending[id] = true
 				else
 					entries[#entries + 1] = { name = name, hex = qualityHex(id), gain = gainOf(id), unit = unit,
-						flag = (slot == "ranged" and wornSub ~= nil and ItemTooltip.ammoFlag(wornSub, subClassOf(id)))
-							or thrownTag(id) }
+						flag = typeTagOf(id) }
 				end
 			end
 		end
