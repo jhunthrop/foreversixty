@@ -344,6 +344,24 @@ Notes for the reader:
   `docs/contracts/fixtures/inbox-raid-assignment.json` is one such message; the API, the
   companion and the addon each pin it. None is sent when the character holds no slot.
 
+- **`raid_signup`** (added 2026-11-08, the addon panel's Tonight answer; spec
+  `design/specs/2026-11-08-addon-ux.md` §4.3): one message per raid of the character's guild
+  that is planned or locked, not over, and starts within the next 7 days, whether or not the
+  character answered. Flat, strings and numbers only, so the companion carries it through as a
+  type it does not know: `raid_id`, `raid` (the zone's name), `title`, `starts_at` (RFC 3339
+  UTC), `answer` (`"in"`, `"late"`, `"bench"`, `"out"`, or `"none"` when the character has no
+  sign-up row), `role` (`"tank"`, `"healer"`, `"dps"`: the stored row's; absent with no row),
+  `late_minutes` (15, 30 or 60; only with `"late"` and only when the answer said) and
+  `answered_at` (the row's `updated_at`, RFC 3339 UTC; absent with no row).
+  `docs/contracts/fixtures/inbox-raid-signup.json` is one such message. None is sent for a
+  character with no guild or no raid in the window.
+- **`accepts`** (top level, added 2026-11-08): a list of the outbox entry names the companion
+  uploads beyond `export`, `sim_request` and `roster_snapshot`; today at most
+  `{ "raid_answer" }`. The companion writes it; the API's `GET /v1/addon/inbox` body omits it.
+  The addon offers an action that writes such an entry only when its name is listed (the
+  feature check), so a player on an older companion is never left with an answer that never
+  sends.
+
 ---
 
 ## 4. Companion outbox (`ForeverSixtyDB.outbox`)
@@ -365,6 +383,7 @@ ForeverSixtyDB.outbox = {
   export = { character = "Obnoxious-Yell", code = "FS1:...", saved_at = "2026-11-04 14:02" },
   sim_request = { character = ..., spec = "warrior-arms", requested_at = ..., gear_code = "FS1:..." } | nil,
   roster_snapshot = { guild = "OLYMPUS XXVII", members = { { name=..., level=20, spec="warrior-arms", gear_gap=14, build="Arms leveling", seen_at=..., class="WARRIOR" }, ... } } | nil,
+  raid_answer = { { character = ..., raid_id = 42, answer = "in", late_minutes = nil, answered_at = 1796753040 }, ... } | nil,
 }
 ```
 
@@ -385,6 +404,20 @@ Notes for the reader:
   holds the score itself. `seen_at` is `YYYY-MM-DD HH:MM` local. `class` is the classFilename
   from `GetGuildRosterInfo` ("WARRIOR"), absent for a name the client's guild roster does not
   hold yet. A snapshot carries only the members the guild tab has live data for.
+- `raid_answer` (added 2026-11-08) is a list, one entry per raid the player answered in game
+  (the addon panel's Tonight buttons) since the companion last cleared it; a second answer for
+  the same raid replaces the first. `character` is the `export.character` form; `answer` is
+  `"in"`, `"late"`, `"bench"` or `"out"`; `late_minutes` is absent from the panel (it offers
+  no minutes) and otherwise 15, 30 or 60 with `"late"`; `answered_at` is the client's `time()`,
+  Unix seconds UTC. The addon writes it at the click, not only at logout, and only when the
+  inbox's `accepts` lists `raid_answer`. The companion uploads the entries, then removes from
+  the file those the site accepted or refused, leaving every other key untouched. The API
+  applies an entry only when the raid is still open to the character and `answered_at` is
+  later than the stored sign-up's `updated_at` (a newer answer from the app, site or Discord
+  wins), keeping the stored role, else the role of the character's spec, and rule R3 (one
+  character per account in or late) as any sign-up does. The addon treats its answer as sent
+  once a `raid_signup` for the raid carries an `answered_at` at or after the click.
+  `docs/contracts/fixtures/outbox-raid-answer.json` is one outbox with one entry.
 
 ---
 

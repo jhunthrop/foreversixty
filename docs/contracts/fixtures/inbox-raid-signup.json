@@ -1,0 +1,12 @@
+{
+  "type": "raid_signup",
+  "character": "us/normal/obnoxious",
+  "raid_id": 42,
+  "raid": "Onyxia's Lair",
+  "title": "Onyxia",
+  "starts_at": "2026-12-10T02:00:00Z",
+  "answer": "late",
+  "role": "dps",
+  "late_minutes": 15,
+  "answered_at": "2026-12-08T19:04:00Z"
+}

@@ -54,7 +54,7 @@ const STRING_COPY_KEYS = [
   'setupCompanionPair',
   'setupHandInstall',
   'setupHandInstallBody',
-  'setupDownloadAnother',
+  'setupCompanionMobile',
   'surfacesShow',
 ] as const;
 
@@ -120,6 +120,19 @@ describe('/setup', () => {
     for (const entry of companion.downloads)
       expect(companionDownloadPath(entry.asset)).toBe(`/dl/companion/${entry.asset}`);
     expect(html).not.toMatch(/github\.com/i);
+  });
+
+  it('offers the companion at the top and right under The companion heading, never gold (owner 2026-11-08)', () => {
+    const head = html.slice(html.indexOf('data-region="head-answer"'), html.indexOf('data-region="plate"'));
+    const companionSection = section('setup-companion');
+    for (const markup of [head, companionSection]) {
+      for (const build of COMPANION_DOWNLOADS)
+        expect(markup).toContain(`href="${companionDownloadPath(build.asset)}"`);
+    }
+    expect(companionSection.indexOf('setup-companion-download')).toBeLessThan(
+      companionSection.indexOf('setup-companion-lead'),
+    );
+    expect(head).not.toContain('#f0cc6c');
   });
 
   it('is reachable from the primary nav as "Get set up"', () => {
