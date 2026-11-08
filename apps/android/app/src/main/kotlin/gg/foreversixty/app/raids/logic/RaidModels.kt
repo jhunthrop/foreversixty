@@ -61,7 +61,7 @@ sealed interface RaidsTabState {
     data object Loading : RaidsTabState
     data object SignedOut : RaidsTabState
     /** No guild yet; [level] and [spec] (`Fury Warrior`) say whether raids are open and what guilds recruit. */
-    data class NoGuild(val name: String, val level: Int? = null, val spec: String? = null) : RaidsTabState
+    data class NoGuild(val name: String, val level: Int? = null, val spec: String? = null, val character: AccountCharacter? = null) : RaidsTabState
     data class Waiting(val head: GuildHead, val character: AccountCharacter) : RaidsTabState
     data class Loaded(val content: RaidsTabContent) : RaidsTabState
     data object Failed : RaidsTabState
@@ -133,7 +133,7 @@ class RaidsTabModel(
             return
         }
         val membership = character.guild ?: run {
-            state = RaidsTabState.NoGuild(character.name, character.level, specWords(character))
+            state = RaidsTabState.NoGuild(character.name, character.level, specWords(character), character)
             return
         }
         val head = GuildHead.of(membership, me.guilds.firstOrNull { it.id == membership.id }, res)

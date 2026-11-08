@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import gg.foreversixty.app.flows.FlowBackBar
+import gg.foreversixty.app.flows.FlowFigure
 import gg.foreversixty.app.navigation.ForeverTab
 import gg.foreversixty.app.navigation.ForeverTabScaffold
 import gg.foreversixty.app.navigation.TabBadges
@@ -28,6 +29,14 @@ class RaidPagesParityTest {
         NotAnsweredScreen(RaidPagesFixtures.unanswered, BUILD, NotAnsweredActions())
     }
 
+    @Test fun applicant() = pushed("raid-applicant", "Raid") {
+        ApplicantScreen(RaidPagesFixtures.applicant(), ApplicantActions())
+    }
+
+    @Test fun applicantAccepted() = pushed("raid-applicant-accepted", "Raid") {
+        ApplicantScreen(RaidPagesFixtures.applicant(accepted = true), ApplicantActions())
+    }
+
     private fun pushed(screen: String, backTo: String, share: Boolean = false, content: @Composable () -> Unit) =
         ParityCheck.state(compose, screen) {
             ForeverTabScaffold(selected = ForeverTab.Raid, onSelect = {}, badges = TabBadges(raid = 6, activity = 3)) {
@@ -45,6 +54,33 @@ class RaidPagesParityTest {
 
 /** The mock's officer page: healers short by 3, two healers unanswered, Grunvald marked In, Aurelith on the bench. */
 object RaidPagesFixtures {
+    /** Mirelle, Holy Priest 60, applied 2 min ago (mock `applicant`; the API has no guild rank, so the history shows raids and the last one). */
+    fun applicant(accepted: Boolean = false) = ApplicantContent(
+        name = "Mirelle",
+        className = "priest",
+        facts = listOf("Holy Priest · 60", "Alliance Dwarf", "applied 2 min ago"),
+        figures = listOf(FlowFigure("Forever Score", "74"), FlowFigure("Sim", "612", "HPS"), FlowFigure("Item level", "63")),
+        ready = listOf(
+            ApplicantLine("Attuned to Onyxia's Lair", "Drakefire Amulet"),
+            ApplicantLine("Enchants", "6 of 8 slots · cloak and boots missing"),
+            ApplicantLine("Best in slot gap", "9 pieces from the Holy Priest 60 raid list"),
+        ),
+        history = listOf(
+            ApplicantLine("Dawnbreak", "14 raids · last raid Mon 2 Nov"),
+            ApplicantLine("Ashen Vow", "6 raids · last raid Sun 18 Oct"),
+        ),
+        note = "Holy main since launch. Wednesday and Sunday nights work for me.",
+        accepted = if (accepted) {
+            AcceptedContent(
+                "Accepted into Olympus XXVII. Invite Mirelle in game:",
+                "/ginvite Mirelle",
+                "Mirelle shows on the roster once the addon or Battle.net sees the character in the guild.",
+            )
+        } else {
+            null
+        },
+    )
+
     private fun row(name: String, cls: String, sub: String, role: String, marked: SignupState? = null) =
         NotAnsweredRow("us/pvp/${name.lowercase()}", name, cls, sub, role, marked)
 

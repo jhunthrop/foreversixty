@@ -1676,6 +1676,50 @@
     <string name="raid_na_empty">Everyone has answered.</string>
     <string name="raid_list_and">%1$s and %2$s</string>
     <string name="flows_backTo">Back to %1$s</string>
+    <string name="raid_recruit_line">%1$s · %2$s · needs %3$s</string>
+    <string name="raid_applicant_score">Forever Score</string>
+    <string name="raid_applicant_sim">Sim</string>
+    <string name="raid_applicant_itemLevel">Item level</string>
+    <string name="raid_applicant_ready">Raid ready</string>
+    <string name="raid_applicant_attuned">Attuned to %1$s</string>
+    <string name="raid_applicant_notAttuned">Not attuned to %1$s</string>
+    <string name="raid_applicant_attuneUnknown">%1$s: attunement not seen yet</string>
+    <string name="raid_applicant_enchants">Enchants</string>
+    <string name="raid_applicant_enchantsLine" tools:ignore="PluralsCandidate">%1$d of %2$d slots</string>
+    <string name="raid_applicant_enchantsMissing">%1$s · %2$s missing</string>
+    <string name="raid_applicant_slot_back">cloak</string>
+    <string name="raid_applicant_slot_feet">boots</string>
+    <string name="raid_applicant_slot_hands">gloves</string>
+    <string name="raid_applicant_slot_wrist">bracers</string>
+    <string name="raid_applicant_slot_chest">chest</string>
+    <string name="raid_applicant_slot_legs">legs</string>
+    <string name="raid_applicant_slot_shoulder">shoulders</string>
+    <string name="raid_applicant_slot_head">head</string>
+    <string name="raid_applicant_slot_weapon">weapon</string>
+    <string name="raid_applicant_gap">Best in slot gap</string>
+    <plurals name="raid_applicant_pieces">
+        <item quantity="one">1 piece</item>
+        <item quantity="other">%1$d pieces</item>
+    </plurals>
+    <string name="raid_applicant_gapLine">%1$s from the %2$s list</string>
+    <string name="raid_applicant_history">Guild history</string>
+    <plurals name="raid_applicant_raids">
+        <item quantity="one">1 raid</item>
+        <item quantity="other">%1$d raids</item>
+    </plurals>
+    <string name="raid_applicant_historyLine">%1$s · last raid %2$s</string>
+    <string name="raid_applicant_note">Their note</string>
+    <string name="raid_applicant_accept">Accept into guild</string>
+    <string name="raid_applicant_decline">Decline</string>
+    <string name="raid_applicant_role">Their raid role comes from their spec when they answer a raid.</string>
+    <string name="raid_applicant_kind" tools:ignore="PluralsCandidate">%1$s · %2$d</string>
+    <string name="raid_applicant_applied">applied %1$s</string>
+    <string name="raid_applicant_accepted">Accepted into %1$s. Invite %2$s in game:</string>
+    <string name="raid_applicant_ginvite">/ginvite %1$s</string>
+    <string name="raid_applicant_copy">Copy</string>
+    <string name="raid_applicant_after">%1$s shows on the roster once the addon or Battle.net sees the character in the guild.</string>
+    <string name="raid_applicant_line" tools:ignore="PluralsCandidate">%1$s, %2$s %3$d, %4$s</string>
+    <string name="raid_applicant_failed">We could not load this application</string>
     <string name="shared_cta_getAddonAndCompanion">Get the addon and companion</string>
     <string name="shared_cta_installAddonAndCompanion">Install the addon and the companion</string>
     <string name="shared_cta_installAddonAndCompanionInline">install the addon and the companion</string>

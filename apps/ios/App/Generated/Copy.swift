@@ -5597,6 +5597,152 @@ enum Copy {
         format("flows.backTo", screen)
     }
 
+    /// {faction} · {schedule} · needs {needs}
+    static func raidRecruitLine(faction: String, schedule: String, needs: String) -> String {
+        format("raid.recruit.line", faction, schedule, needs)
+    }
+
+    /// Forever Score
+    static var raidApplicantScore: String { text("raid.applicant.score") }
+
+    /// Sim
+    static var raidApplicantSim: String { text("raid.applicant.sim") }
+
+    /// Item level
+    static var raidApplicantItemLevel: String { text("raid.applicant.itemLevel") }
+
+    /// Raid ready
+    static var raidApplicantReady: String { text("raid.applicant.ready") }
+
+    /// Attuned to {zone}
+    static func raidApplicantAttuned(zone: String) -> String {
+        format("raid.applicant.attuned", zone)
+    }
+
+    /// Not attuned to {zone}
+    static func raidApplicantNotAttuned(zone: String) -> String {
+        format("raid.applicant.notAttuned", zone)
+    }
+
+    /// {zone}: attunement not seen yet
+    static func raidApplicantAttuneUnknown(zone: String) -> String {
+        format("raid.applicant.attuneUnknown", zone)
+    }
+
+    /// Enchants
+    static var raidApplicantEnchants: String { text("raid.applicant.enchants") }
+
+    /// {n} of {slots} slots
+    static func raidApplicantEnchantsLine(n: Int, slots: Int) -> String {
+        format("raid.applicant.enchantsLine", n, slots)
+    }
+
+    /// {line} · {missing} missing
+    static func raidApplicantEnchantsMissing(line: String, missing: String) -> String {
+        format("raid.applicant.enchantsMissing", line, missing)
+    }
+
+    /// cloak
+    static var raidApplicantSlotBack: String { text("raid.applicant.slot.back") }
+
+    /// boots
+    static var raidApplicantSlotFeet: String { text("raid.applicant.slot.feet") }
+
+    /// gloves
+    static var raidApplicantSlotHands: String { text("raid.applicant.slot.hands") }
+
+    /// bracers
+    static var raidApplicantSlotWrist: String { text("raid.applicant.slot.wrist") }
+
+    /// chest
+    static var raidApplicantSlotChest: String { text("raid.applicant.slot.chest") }
+
+    /// legs
+    static var raidApplicantSlotLegs: String { text("raid.applicant.slot.legs") }
+
+    /// shoulders
+    static var raidApplicantSlotShoulder: String { text("raid.applicant.slot.shoulder") }
+
+    /// head
+    static var raidApplicantSlotHead: String { text("raid.applicant.slot.head") }
+
+    /// weapon
+    static var raidApplicantSlotWeapon: String { text("raid.applicant.slot.weapon") }
+
+    /// Best in slot gap
+    static var raidApplicantGap: String { text("raid.applicant.gap") }
+
+    /// {n} pieces
+    static func raidApplicantPieces(n: Int) -> String {
+        format("raid.applicant.pieces", n)
+    }
+
+    /// {pieces} from the {list} list
+    static func raidApplicantGapLine(pieces: String, list: String) -> String {
+        format("raid.applicant.gapLine", pieces, list)
+    }
+
+    /// Guild history
+    static var raidApplicantHistory: String { text("raid.applicant.history") }
+
+    /// {n} raids
+    static func raidApplicantRaids(n: Int) -> String {
+        format("raid.applicant.raids", n)
+    }
+
+    /// {raids} · last raid {date}
+    static func raidApplicantHistoryLine(raids: String, date: String) -> String {
+        format("raid.applicant.historyLine", raids, date)
+    }
+
+    /// Their note
+    static var raidApplicantNote: String { text("raid.applicant.note") }
+
+    /// Accept into guild
+    static var raidApplicantAccept: String { text("raid.applicant.accept") }
+
+    /// Decline
+    static var raidApplicantDecline: String { text("raid.applicant.decline") }
+
+    /// Their raid role comes from their spec when they answer a raid.
+    static var raidApplicantRole: String { text("raid.applicant.role") }
+
+    /// {kind} · {level}
+    static func raidApplicantKind(kind: String, level: Int) -> String {
+        format("raid.applicant.kind", kind, level)
+    }
+
+    /// applied {age}
+    static func raidApplicantApplied(age: String) -> String {
+        format("raid.applicant.applied", age)
+    }
+
+    /// Accepted into {guild}. Invite {name} in game:
+    static func raidApplicantAccepted(guild: String, name: String) -> String {
+        format("raid.applicant.accepted", guild, name)
+    }
+
+    /// /ginvite {name}
+    static func raidApplicantGinvite(name: String) -> String {
+        format("raid.applicant.ginvite", name)
+    }
+
+    /// Copy
+    static var raidApplicantCopy: String { text("raid.applicant.copy") }
+
+    /// {name} shows on the roster once the addon or Battle.net sees the character in the guild.
+    static func raidApplicantAfter(name: String) -> String {
+        format("raid.applicant.after", name)
+    }
+
+    /// {name}, {kind} {level}, {age}
+    static func raidApplicantLine(name: String, kind: String, level: Int, age: String) -> String {
+        format("raid.applicant.line", name, kind, level, age)
+    }
+
+    /// We could not load this application
+    static var raidApplicantFailed: String { text("raid.applicant.failed") }
+
     /// Get the addon and companion
     static var sharedCtaGetAddonAndCompanion: String { text("shared.cta.getAddonAndCompanion") }
 

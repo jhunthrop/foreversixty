@@ -35,7 +35,7 @@ enum class GuildPage { Roster, Calendar, Loot, Sims }
 data class RecruitingGuild(val id: Long, val name: String, val line: String)
 
 /** One item of Ready check: ticked, missing or a warning, and where to get it. */
-data class ReadyItem(val tone: ReadyTone, val title: String, val sub: String, val where: String?)
+data class ReadyItem(val tone: ReadyTone, val title: String, val sub: String, val where: String?, val link: String? = null)
 
 enum class ReadyTone { Ok, Miss, Warn }
 
@@ -54,6 +54,8 @@ sealed interface RaidTabView {
         val next: RaidCardModel?,
         /** An officer's open items and their count, the badge's number. */
         val needs: OfficerItems?,
+        /** The newest pending applicant the applicant row opens; null opens the guild page. */
+        val applicantId: Long? = null,
         val needsCount: Int,
         val live: RaidLiveModel?,
         /** Raid night's roles with names (`Tanks 2 of 2`, `Grunvald, Brakka`). */
@@ -73,6 +75,7 @@ data class RaidTabActions(
     val onFindGuild: () -> Unit = {},
     val onSignIn: () -> Unit = {},
     val onWhere: (ReadyItem) -> Unit = {},
+    val onApplicant: (Long) -> Unit = {},
 )
 
 /** The Raid tab root: the next raid first with your answer, then what needs an officer, then the guild's pages. */
@@ -133,7 +136,7 @@ private fun Guild(view: RaidTabView.Guild, actions: RaidTabActions) {
         }
         view.needs?.let { needs ->
             FlowSection(stringResource(R.string.raid_tab_needsYou), meta = stringResource(R.string.raid_tab_open, view.needsCount)) {
-                Needs(view.next?.raidId ?: 0L, needs, actions.card)
+                Needs(view.next?.raidId ?: 0L, needs, actions.card) { view.applicantId?.let(actions.onApplicant) ?: actions.card.onApplicants() }
             }
         }
     }
@@ -145,13 +148,13 @@ private fun Guild(view: RaidTabView.Guild, actions: RaidTabActions) {
 }
 
 @Composable
-private fun Needs(raidId: Long, needs: OfficerItems, actions: HomeActions) {
+private fun Needs(raidId: Long, needs: OfficerItems, actions: HomeActions, openApplicant: () -> Unit) {
     needs.unanswered?.let { line ->
         FlowRow(line, needs.short, last = needs.applicants == null, trail = {
             FlowButton(stringResource(R.string.home_officer_preview), { actions.onPreviewMention(raidId) })
         })
     }
-    needs.applicants?.let { FlowRow(it, needs.applicantLine, last = true, onClick = actions.onApplicants) }
+    needs.applicants?.let { FlowRow(it, needs.applicantLine, last = true, onClick = openApplicant) }
 }
 
 @Composable
