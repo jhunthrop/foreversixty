@@ -22,7 +22,7 @@ describe("/fs diag on a fresh session", function()
 		helper.load("GroupPanel")
 		Options = helper.load("Options")
 		NO_BUILD = string.format(L.diagBuildNone, L.diagBuildNotYet)
-		PANEL = string.format(L.diagPanel, L.diagPanelClosed, 0, 0)
+		PANEL = string.format(L.diagPanelState, L.diagPanelClosed)
 		GUILD = string.format(L.diagGuildTab, L.diagPanelClosed, 0, 0, L.diagGuildTabNo)
 		-- L5.2 fix round 2: out of a group the count is the player alone.
 		GROUP = string.format(L.diagGroupPanelYou, L.diagPanelClosed, L.diagGroupNone)

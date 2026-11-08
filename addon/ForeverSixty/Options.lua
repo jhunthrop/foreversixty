@@ -41,6 +41,7 @@ local GroupPanel = ns.GroupPanel or require("GroupPanel")
 local LootCouncil = ns.LootCouncil or require("LootCouncil")
 local RaidDrops = ns.RaidDrops or require("RaidDrops")
 local SiteStatus = ns.SiteStatus or require("SiteStatus")
+local Panel = ns.Panel or require("Panel")
 
 local Options = {}
 Options.data = Data
@@ -683,9 +684,10 @@ function Options.register()
 	-- auto-loads that file from the addon's own folder with no TOC entry.
 	BINDING_HEADER_FOREVERSIXTY = L.bindingHeader
 	BINDING_NAME_FOREVERSIXTY_TOGGLE = L.bindingToggle
+	-- The keybind toggles the addon panel (design/specs/2026-11-08-addon-ux.md 4.2).
 	FOREVERSIXTY_TOGGLE_WINDOW = function()
-		BuildDialog.data = Options.data
-		return BuildDialog.toggle()
+		Panel.data = Options.data
+		return Panel.toggle("key")
 	end
 
 	SLASH_FOREVERSIXTY1 = "/fs"
@@ -709,6 +711,14 @@ function Options.register()
 	-- The character-panel tab (L4.3): its button the first time a refresh finds the pane, its
 	-- flyout on the first click. Nothing on the pane is hooked.
 	PanelTab.data = Options.data
+	-- The addon panel (spec 4): built on its first open; the chip, the pane button, the keybind and
+	-- the compartment entry are its doors.
+	Panel.data = Options.data
+	Panel.register()
+	MinimapButton.openPanel = function()
+		Panel.data = Options.data
+		return Panel.toggle("compartment")
+	end
 	-- The guild tab (L5.1): its button once the guild frame loads, its flyout on the first
 	-- click; it listens for the guild's snapshot! answers. Nothing on the guild frame is hooked.
 	GuildTab.data = Options.data

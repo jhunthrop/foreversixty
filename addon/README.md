@@ -248,7 +248,10 @@ Run on one character per role and tick here:
       under it, with and without the line under the title.
 - [ ] `/fs options` opens the Settings page; "Marks on the talent window" off leaves the talent
       window bare, and the chip stays beside the minimap while the window is open.
-- [ ] The keybind (Key Bindings > AddOns > Forever Sixty) prints the command list.
+- [ ] The keybind (Key Bindings > AddOns > Forever Sixty), a chip click, the character pane's
+      button and the addon compartment entry each open the panel (design/specs/2026-11-08-addon-ux.md
+      section 4); it never opens in combat, closes when combat starts, closes on Escape, and a dragged
+      spot is kept until Reset positions.
 - [ ] `/fs help` prints the command list, and `/fs help all` adds the two muted testers' lines.
 - [ ] With the data addon installed, a logged player's tooltip ends with "Forever Score <n>" in its
       tier colour (the date in brackets once the record is over a week old) and nothing else; Shift

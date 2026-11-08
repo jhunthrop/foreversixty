@@ -148,9 +148,19 @@ function MinimapButton.clickedButton(...)
 	return "LeftButton"
 end
 
---- The compartment entry's click: the minimap button's own two actions.
+--- Injection point: the addon panel's toggle (Options sets it). The compartment entry opens the
+--- panel on a left click (design/specs/2026-11-08-addon-ux.md 1.6), the Settings page on a right.
+MinimapButton.openPanel = nil
+
+--- The compartment entry's click: the panel on a left click (the build dialog where no panel is
+--- wired), the Settings page on a right.
 function MinimapButton.onCompartmentClick(...)
-	launch(MinimapButton.clickedButton(...))
+	local mouseButton = MinimapButton.clickedButton(...)
+	if mouseButton ~= "RightButton" and MinimapButton.openPanel ~= nil then
+		MinimapButton.openPanel()
+		return
+	end
+	launch(mouseButton)
 end
 
 local function wire(button)

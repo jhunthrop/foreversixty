@@ -483,6 +483,46 @@ Export.OUTBOX_FORMAT = 1
 --- requested_at, gear_code }, all as of the request.
 Export.simRequest = nil
 
+--- The raid answers queued in game this session (the addon panel's Tonight buttons), each
+--- { character, raid_id, answer, late_minutes?, answered_at }: contract 4's `raid_answer`.
+Export.raidAnswers = nil
+
+--- A queued answer older than this is dropped from the outbox (its raid is long over).
+Export.RAID_ANSWER_KEEP_SECONDS = 7 * 24 * 60 * 60
+
+--- The queued `raid_answer` entries (contract 4), from the outbox the companion has not cleared
+--- yet and this session's, newest per raid, none older than ANSWER_KEEP_SECONDS. Pure.
+function Export.mergeRaidAnswers(saved, added, now)
+	local byRaid, order = {}, {}
+	local function take(entry)
+		if type(entry) ~= "table" or entry.raid_id == nil or type(entry.answered_at) ~= "number" then
+			return
+		end
+		if type(now) == "number" and now - entry.answered_at > Export.RAID_ANSWER_KEEP_SECONDS then
+			return
+		end
+		local key = tostring(entry.character) .. "\n" .. tostring(entry.raid_id)
+		local kept = byRaid[key]
+		if kept == nil then
+			order[#order + 1] = key
+		end
+		if kept == nil or entry.answered_at >= kept.answered_at then
+			byRaid[key] = entry
+		end
+	end
+	for _, entry in ipairs(saved or {}) do
+		take(entry)
+	end
+	for _, entry in ipairs(added or {}) do
+		take(entry)
+	end
+	local list = {}
+	for _, key in ipairs(order) do
+		list[#list + 1] = byRaid[key]
+	end
+	return list
+end
+
 --- The class tokens of the client's guild roster, by name without the realm. Empty where the
 --- client has not sent the roster yet.
 local function rosterClasses()
@@ -518,7 +558,7 @@ local function rosterMembers(seen, now, wallNow, classes)
 	return members
 end
 
---- The outbox, built from plain values: { character, code, wallNow, simRequest, guild (a name,
+--- The outbox, built from plain values: { character, code, wallNow, simRequest, raidAnswers, guild (a name,
 --- or nil/false outside a guild), seen, now, classes }. Pure.
 function Export.outbox(parts)
 	local roster
@@ -537,6 +577,7 @@ function Export.outbox(parts)
 		},
 		sim_request = parts.simRequest,
 		roster_snapshot = roster,
+		raid_answer = parts.raidAnswers ~= nil and #parts.raidAnswers > 0 and parts.raidAnswers or nil,
 	}
 end
 
@@ -619,6 +660,9 @@ function Export.saveOutbox(data, code)
 		code = code,
 		wallNow = time(),
 		simRequest = Export.simRequest,
+		-- Answers the companion has not cleared from the file yet, with this session's (contract 4).
+		raidAnswers = Export.mergeRaidAnswers(type(ForeverSixtyDB.outbox) == "table"
+			and ForeverSixtyDB.outbox.raid_answer or nil, Export.raidAnswers, time()),
 		guild = guild ~= nil and guild.name or nil,
 		seen = Comms.seen,
 		now = now,

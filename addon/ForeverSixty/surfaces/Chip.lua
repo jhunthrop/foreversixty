@@ -75,6 +75,10 @@ Chip.FRAME_LEVEL = 100
 Chip.afterChoice = nil
 
 
+--- Injection point: the addon panel's toggle (Panel.register sets it). With it the chip's click
+--- opens the panel and its hover says so.
+Chip.openPanel = nil
+
 --- Item ids whose names the chip is waiting on; GET_ITEM_INFO_RECEIVED for
 --- one of them redraws it.
 Chip.pending = {}
@@ -640,8 +644,9 @@ function Chip.tooltipLines(model, shortened)
 	if shortened and model.chosen.text ~= nil and model.chosen.text ~= "" then
 		lines[1] = colored(model.chosen.muted and "muted" or "body", model.chosen.tip or model.chosen.text)
 	end
-	if model.chosen.hint ~= nil then
-		lines[#lines + 1] = hinted(model.chosen.hint)
+	local hint = Chip.openPanel ~= nil and L.chipHintOpen or model.chosen.hint
+	if hint ~= nil then
+		lines[#lines + 1] = hinted(hint)
 	end
 	lines[#lines + 1] = hinted(Chip.rightClickHint(model.level))
 	return lines
@@ -1168,6 +1173,12 @@ function Chip.onClick(_, mouseButton)
 	Chip.markSeen()
 	if mouseButton == "RightButton" then
 		Theme.say(Chip.hideUntilNextLevel())
+		return
+	end
+	-- One click, one meaning (spec 1.5): the chip opens the addon panel, whose first row holds the
+	-- state's action.
+	if Chip.openPanel ~= nil then
+		Chip.openPanel()
 		return
 	end
 	local handler = Chip.handlerFor(Chip.current ~= nil and Chip.current.chosen or nil)

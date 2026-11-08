@@ -38,6 +38,10 @@ describe("the TOC", function()
 		-- The character-panel tab (L4.3): reads the tooltip's Next lines, the rotation, the
 		-- build dialog's split and opens it; Options refreshes it.
 		"surfaces/PanelTab.lua",
+		-- The addon panel (design/specs/2026-11-08-addon-ux.md 4): reads the chip, the tooltip's
+		-- sections and PanelTab's readers; the chip, the pane button, the keybind and the compartment
+		-- open it.
+		"surfaces/Panel.lua",
 		-- The guild tab (L5.1): reads Score, Comms.seen and the inbox; Options refreshes it.
 		"surfaces/GuildTab.lua",
 		-- The group panel (L5.2): reads Inspect, Score, Comms.seen and the chip's ready-check

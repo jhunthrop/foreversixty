@@ -782,7 +782,6 @@ local L = {
 	-- A.2: a finished plan below the cap names the next point (the level it arrives at).
 	chipCompleteNext = "Build complete · next point at level %d",
 	chipInCombat = "In combat",
-	chipHideUntilLevel = "Hide until next level",
 	-- The hover's last line, dim (design/specs/2026-11-08-addon-ux.md 3.2): how to put the chip away.
 	chipRightHideLevel = "Right-click: hide until level %d",
 	chipRightHideCap = "Right-click: hide until /fs chip",
@@ -849,8 +848,6 @@ local L = {
 	-- The upgrade's hint in combat; the chip line itself says "In combat".
 	chipHintInCombat = "Click: nothing until combat ends",
 	chipHintLastRaid = "Click: Show the line",
-	-- Hotfix 2.0.2: the hover's muted line until the spec's first gear band.
-	chipHintPicksStart = "Gear picks start at level %d.",
 	-- Right-click and /fs chip.
 	chipHiddenLine = "Forever Sixty line hidden until level %d. /fs chip brings it back.",
 	chipHiddenMaxLine = "Forever Sixty line hidden. /fs chip brings it back.",
@@ -1059,51 +1056,12 @@ L.diagDialogFocus = "The build dialog opened without the keyboard; click its box
 -- client's tabs, and the flyout's header and region titles.
 L.panelTabLabel = L.addonName
 L.panelHeader = L.addonName
-L.panelTargets = "Next targets"
-L.panelRotation = "Rotation"
-L.panelBuild = "Build"
-L.panelSim = "Sim"
-L.panelLastRaid = "Last raid"
--- "Last raid · as of 9 Dec" (contract 3: the message's date as "as of 9 Dec").
-L.panelLastRaidAsOf = "Last raid · as of %s"
 -- A target's second line: the slot in the client's own word, then the item tooltip's own
 -- source line ("Chest · Wailing Caverns · Mutanus the Devourer · 33% drop").
 L.panelTargetDetail = "%s · %s"
--- Fix round 3, item 4: the worn item a target replaces, muted at the end of that line when it
--- fits ("Waist · The Deadmines · Captain Greenskin · 30% drop · over Cord of the Wild").
-L.panelTargetOver = " · over %s"
--- Fix round 3, item 6: under fewer than five targets.
-L.panelTargetsRest = "Nothing better for your level in other slots."
--- Hotfix 2.0.2: below the spec's first gear band the rows are upcoming picks ("At level 20:" before
--- the slot and source, no figure) and the rest line says where the picks start.
-L.panelTargetAt = "At level %d:"
-L.panelPicksStart = "Picks start at level %d."
--- A learned rotation line's number, before its name ("1. Aimed Shot Rank 1").
-L.panelRotationNumber = "%d."
 -- An ability the character has not learned yet, muted and listed last; the next band's
 -- abilities not learned yet come after them (fix round 1, item 4).
 L.panelRotationAt = "at level %d"
--- Fix round 3, item 2: a rotation row's hover, after its name and its full condition, for an
--- ability not learned yet.
-L.panelRotationLearnedAt = "Learned at level %d"
--- Fix round 3, item 3: the button's hover, muted under "Forever Sixty" in gold.
-L.panelTabHint = {
-	"Your next targets, rotation and build.",
-	"Click to open or close.",
-}
--- A slot the bag arrow marks: its row is the bag item, as its hover leads with it ("In your
--- bags: Bag Chest +2.0 DPS", then "Chest · Right-click it in your bags to equip.").
-L.panelInYourBags = "In your bags:"
--- Under a region cut short (at most 8 rotation rows, 6 raid bosses; fix round 1, item 3).
-L.panelMore = "%d more"
--- The build: its split in the dialog's words ("Arms 31 / Fury 20"), then these two.
--- Fix round 3, item 1: the split reads as the plan ("Plan: Beast Mastery 31 / Marksmanship 20"),
--- and the progress counts against the points the level allows (level - 9, at most the plan's).
-L.panelPlanSplit = "Plan: %s"
-L.panelProgress = "%d of %d points on plan"
--- L3.7 item 21: a muted tag on that line while the talent window holds clicks not yet applied.
-L.panelStaged = "(staged)"
-L.panelOffPlan = "%d off plan"
 -- The off-plan count's hover, one talent a line: a node the plan never touches ("Improved
 -- Wrath · Balance · Rank 2/5"), and a planned node holding more than the plan asks
 -- ("Improved Wrath · Balance · Rank 4/5 (plan 3)").
@@ -1111,45 +1069,10 @@ L.panelOffPlan = "%d off plan"
 -- ("B · Arms · 1 off plan (Rank 1/1)", "C · Fury · 2 off plan (Rank 3/5, plan 1)").
 L.panelOffPlanTalent = "%s · %s · %d off plan (Rank %d/%d)"
 L.panelOverPlanTalent = "%s · %s · %d off plan (Rank %d/%d, plan %d)"
--- L3.7 item 23: under the off-plan talents on that hover, what to do about them and when the
--- next planned point arrives.
-L.panelOffPlanAction = "Not in your plan. Respec to fix this."
-L.panelOffPlanNext = "Next point at level %d: %s"
-L.panelUseOther = "Use a different build"
-L.panelCopy = L.dialogCopy
--- At 60: the sim. "Your sim: 412.6 DPS", then the top three weights: "Strength: 0.92 DPS
--- per point" ("Strength: 2.20" with no DPS per point to price it).
-L.panelSimDps = "Your sim: %.1f %s"
-L.panelSimWeight = "%s: %.2f %s per point"
-L.panelSimWeightScore = "%s: %.2f"
-L.panelSimMe = "Sim me"
-L.panelSimQueued = "Sim queued; results after your next login"
--- Sim me's hover: what it does, and the sim entitlement it needs on the site (L6.2 ruling).
-L.panelSimMeHint = {
-	"Asks the site to sim this character when you next log out.",
-	"Sims need the site's sim access (a premium account).",
-}
--- At 60: the last raid, per boss. "Lucifron · 71st percentile", then, muted, "biggest loss
--- downtime · 0 deaths · missed flask · rotation 82%".
-L.panelRaidBoss = "%s · %s percentile"
-L.panelRaidLoss = "biggest loss %s"
-L.panelRaidDeaths = "%d deaths"
-L.panelRaidDeath = "%d death"
-L.panelRaidMissed = "missed %s"
-L.panelRaidMissedJoin = ", "
-L.panelRaidAdherence = "rotation %d%%"
-L.panelRaidJoin = " · "
--- Every region empty (no build, nothing to chase): the flyout says so rather than stand blank.
-L.panelEmpty = "Nothing to show yet. Load a build with /fs."
--- /fs diag: "Panel: closed, 3 targets, rotation 4 rows" (L4.3 ruling 7, for the captures).
-L.diagPanel = "Panel: %s, %d targets, rotation %d rows"
--- Below the spec's first gear band: "Panel: closed, picks start at level 20, rotation 4 rows".
-L.diagPanelPicksStart = "Panel: %s, picks start at level %d, rotation %d rows"
 L.diagPanelOpen = "open"
 L.diagPanelClosed = "closed"
 L.diagPanelFailed = "The character panel tab failed and is off until /reload: %s"
 L.diagPanelNoPane = "Panel: this client has no character pane (CharacterFrame); the tab is off"
-L.diagPanelTall = "Panel: the flyout is taller than the screen"
 
 -- The player tooltip and the chat badges (L4.4).
 L.diagPlayerTooltipHook = "Player tooltip: drawn through the %s hook"
@@ -1558,6 +1481,80 @@ L.timeTwentyFour = "%02d:%02d"
 L.timeTwelve = "%02d:%02d %s"
 L.timeAm = "am"
 L.timePm = "pm"
+
+-- The addon panel, the in-game home (surfaces/Panel.lua, design/specs/2026-11-08-addon-ux.md section 4).
+L.panelScore = "Forever Score %s"
+L.panelTabOpens = "Opens your upgrades, talents and rotation."
+L.diagPanelState = "Panel: %s"
+-- The chip's hover once the panel is wired: its click opens the panel.
+L.chipHintOpen = "Click: open Forever Sixty"
+-- "Level 24 Hunter", then " · <guild>" when in one.
+L.panelFact = "Level %d %s"
+L.panelTonight = "Tonight"
+-- The heading note: the start on the client's clock, then how long until it.
+L.panelTonightNote = "%s · %s"
+L.panelInHours = "in %d h %d min"
+L.panelInMinutes = "in %d min"
+L.panelTonightNow = "now"
+L.panelAs = "as %s"
+L.panelAsRole = "as %s, %s"
+L.panelRoleTank = "Tank"
+L.panelRoleHealer = "Healer"
+L.panelRoleDamage = "Damage"
+L.panelAnswerIn = "You're In"
+L.panelAnswerLate = "Late"
+L.panelAnswerBench = "Bench"
+L.panelAnswerOut = "Out"
+L.panelAnswerNone = "Not answered"
+-- Without the raid_signup contract an assignment is the only sign of the raid (sent to In, Late or Bench).
+L.panelOnRoster = "On the roster"
+L.panelButtonIn = "In"
+L.panelButtonLate = "Late"
+L.panelButtonBench = "Bench"
+L.panelButtonOut = "Out"
+-- An answer queued in the companion outbox the site has not confirmed yet.
+L.panelAnswerPending = "%s, not sent yet"
+L.panelSendsLater = "Sends when the companion app runs"
+L.panelJob = "Your job: %s"
+L.panelWith = "with %s"
+L.panelWithJoin = " and "
+L.panelLastRaidTitle = "Last raid"
+L.homeRaidBoss = "%s %s"
+L.panelWorstLoss = "Biggest loss on %s: %s"
+L.panelUpgrades = "Upgrades"
+L.panelInBags = "In your bags"
+L.panelEquip = "Equip"
+-- After a row's source when the item asks for a higher level: " · level 27".
+L.panelAtLevel = " · level %d"
+L.panelOthersBest = "Your other slots are best for your level."
+L.panelAllBest = "Every slot is best for your build."
+L.homePicksStart = "Gear picks start at level %d. Until then, the green arrow on your bags marks anything "
+	.. "that beats what you wear."
+L.panelSimNote = "your sim · %s"
+L.panelSimNoteBare = "your sim"
+L.panelSimAgain = "Sim again"
+L.homeSimQueued = "Sim queued"
+L.panelDaysAgo = "%d days ago"
+L.panelDayAgo = "a day ago"
+L.panelHoursAgo = "%d h ago"
+L.panelJustNow = "just now"
+L.panelTalents = "Talents"
+L.panelOnPlan = "%d of %d on plan"
+L.panelOffPlanCount = "%d off plan"
+L.panelTalentAt = "Level %d: %s"
+L.panelNextTalentUnnamed = "Your next talent"
+L.panelSpendNow = "Spend %d now"
+L.panelRankOf = "%d of %d"
+L.panelChange = "Change"
+L.panelTalentsButton = "Talents"
+L.panelPickPath = "Pick your path"
+L.panelPathNote = "you can change it later"
+L.panelPick = "Pick"
+L.panelPathFoot = "Loads that path's leveling build. Your first talent point comes at level 10."
+L.homeRotationTitle = "Rotation at %d"
+L.panelRotationNote = "hover for the full rule"
+L.panelShow = "show"
+L.panelAtLevelRow = "At level %d"
 
 
 

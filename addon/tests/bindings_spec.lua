@@ -42,14 +42,15 @@ describe("the keybind", function()
 			assert.are.equal(L.bindingToggle, _G.BINDING_NAME_FOREVERSIXTY_TOGGLE)
 		end)
 
-		it("toggles the build dialog through the global the binding calls", function()
-			local toggled = 0
-			require("BuildDialog").toggle = function()
-				toggled = toggled + 1
+		-- design/specs/2026-11-08-addon-ux.md 4.2: the keybind toggles the addon panel.
+		it("toggles the addon panel through the global the binding calls", function()
+			local toggled = {}
+			require("Panel").toggle = function(from)
+				toggled[#toggled + 1] = from
 			end
 			Options.register()
 			_G.FOREVERSIXTY_TOGGLE_WINDOW()
-			assert.are.equal(1, toggled)
+			assert.are.same({ "key" }, toggled)
 		end)
 
 		it("leaves no binding globals behind for the next spec file", function()

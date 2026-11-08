@@ -676,19 +676,23 @@ describe("Options", function()
 		assert.are.equal("|cffe5b955Forever Sixty|r: " .. Locale.settingsCommands[1], state.printed[1])
 	end)
 
-	it("has the minimap button and the compartment open the dialog, and the keybind toggle it", function()
+	-- design/specs/2026-11-08-addon-ux.md 1.6 and 4.2: the minimap button opens the build dialog;
+	-- the compartment entry and the keybind open the addon panel.
+	it("has the minimap button open the dialog, and the compartment and the keybind toggle the panel", function()
 		local BuildDialog = require("BuildDialog")
+		local Panel = require("Panel")
 		local calls = {}
 		BuildDialog.open = function(mode)
 			calls[#calls + 1] = "open " .. tostring(mode)
 		end
-		BuildDialog.toggle = function()
-			calls[#calls + 1] = "toggle"
+		Panel.toggle = function(from)
+			calls[#calls + 1] = "panel " .. tostring(from)
 		end
 		Options.register()
 		require("Minimap").open()
+		require("Minimap").openPanel()
 		_G.FOREVERSIXTY_TOGGLE_WINDOW()
-		assert.are.same({ "open paste", "toggle" }, calls)
+		assert.are.same({ "open paste", "panel compartment", "panel key" }, calls)
 		-- Right-click is the Settings page's (L3.5), or the commands where it cannot open.
 		assert.are.equal(Options.openSettings, require("Minimap").openSettings)
 		-- The dialog falls back to the command list when it cannot show itself.
