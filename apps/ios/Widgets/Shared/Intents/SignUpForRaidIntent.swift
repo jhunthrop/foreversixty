@@ -44,7 +44,7 @@ struct SignUpForRaidIntent: AppIntent {
             now: { Date() }, enabled: { SystemSwitch.isOn() }
         )
         let reply = try await signup.run(state: state.rawValue, character: character?.characterKey, askFirst: askFirst, asker: SiriAsker(intent: self))
-        if reply.saved { WidgetCenter.shared.reloadAllTimelines() }
+        if reply.saved { WidgetReload.all() }
         return .result(dialog: IntentDialog(stringLiteral: reply.sentence))
     }
 }

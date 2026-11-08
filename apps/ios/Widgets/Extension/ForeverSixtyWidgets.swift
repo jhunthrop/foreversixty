@@ -5,25 +5,30 @@ import Routing
 import SwiftUI
 import WidgetKit
 
-/// Lane F14's extension: the Next raid and Next upgrade widgets on the home screen and lock
-/// screen, and the raid and server-sim Live Activities.
+/// The extension (flows spec step 7): the Next raid, Next upgrade and Raid and upgrade widgets on
+/// the home screen and lock screen, the raid and server-sim Live Activities, and the Control.
 @main
 struct ForeverSixtyWidgets: WidgetBundle {
     var body: some SwiftUI.Widget {
         NextRaidWidget()
         NextRaidCountdownWidget()
         NextUpgradeWidget()
+        RaidAndUpgradeWidget()
         RaidLiveActivity()
         SimLiveActivity()
-        RaidInControl()
+        RaidControl()
     }
 }
 
-/// One timeline entry: the snapshot as of `date`, read through WidgetFigures at that moment.
+/// One timeline entry: the snapshot as of `date`, read through the glances at that moment.
 struct SnapshotEntry: TimelineEntry {
     let date: Date
     let snapshot: WidgetSnapshot?
     let characterKey: String?
+
+    var raid: RaidGlance { RaidGlance(snapshot, now: date, zone: .current) }
+    var upgrade: UpgradeGlance { UpgradeGlance(snapshot) }
+    var figures: WidgetFigures { WidgetFigures(snapshot, now: date, zone: .current) }
 }
 
 /// Reads the App Group snapshot for the configured character; when a character other than the
@@ -63,11 +68,14 @@ private func raidURL(_ snapshot: WidgetSnapshot?) -> URL? {
     return DeepLink.raid(guild: raid.guildId, raid: raid.raidId).url
 }
 
-private func lastRaidLine(_ snapshot: WidgetSnapshot?) -> String? {
-    guard let last = snapshot?.widget.lastRaid else { return nil }
-    return Copy.widgetLastRaid(zone: last.zoneName, date: WidgetClock(zone: .current).dayMonth(last.startsAt))
+/// The deep link an upgrade widget opens: the character's page (no item route exists in
+/// apps/shared/links.json yet).
+private func characterURL(_ snapshot: WidgetSnapshot?) -> URL? {
+    guard let parts = snapshot?.widget.character?.key.split(separator: "/").map(String.init), parts.count == 3 else { return nil }
+    return DeepLink.character(region: parts[0], ruleset: parts[1], name: parts[2]).url
 }
 
+/// Next raid (flows F1): small, the glance; medium, the glance and the four answers.
 struct NextRaidWidget: SwiftUI.Widget {
     var body: some WidgetConfiguration {
         AppIntentConfiguration(kind: "gg.foreversixty.next-raid", intent: CharacterConfigurationIntent.self, provider: SnapshotProvider()) { entry in
@@ -84,15 +92,14 @@ struct NextRaidEntryView: View {
     let entry: SnapshotEntry
 
     var body: some View {
-        let figures = WidgetFigures(entry.snapshot, now: entry.date, zone: .current)
         Group {
             switch family {
             case .systemMedium:
-                NextRaidMediumView(figures: figures, lastRaid: lastRaidLine(entry.snapshot), raid: entry.snapshot?.widget.nextRaid, characterKey: entry.characterKey)
-            case .accessoryInline: RaidInlineView(figures: figures)
-            case .accessoryRectangular: RaidRectangularView(figures: figures)
-            case .accessoryCircular: RaidSignedUpCircularView(figures: figures)
-            default: NextRaidSmallView(figures: figures, lastRaid: lastRaidLine(entry.snapshot))
+                RaidAnswerMediumView(glance: entry.raid, raid: entry.snapshot?.widget.nextRaid, characterKey: entry.characterKey)
+            case .accessoryInline: RaidInlineView(glance: entry.raid)
+            case .accessoryRectangular: RaidRectangularView(glance: entry.raid)
+            case .accessoryCircular: RaidSignedUpCircularView(figures: entry.figures)
+            default: NextRaidSmallView(glance: entry.raid)
             }
         }
         .widgetCardBackground()
@@ -104,7 +111,7 @@ struct NextRaidEntryView: View {
 struct NextRaidCountdownWidget: SwiftUI.Widget {
     var body: some WidgetConfiguration {
         AppIntentConfiguration(kind: "gg.foreversixty.next-raid-countdown", intent: CharacterConfigurationIntent.self, provider: SnapshotProvider()) { entry in
-            RaidCountdownCircularView(figures: WidgetFigures(entry.snapshot, now: entry.date, zone: .current))
+            RaidCountdownCircularView(figures: entry.figures)
                 .widgetCardBackground()
                 .widgetURL(raidURL(entry.snapshot))
         }
@@ -114,6 +121,7 @@ struct NextRaidCountdownWidget: SwiftUI.Widget {
     }
 }
 
+/// Next upgrade (flows F5): the next upgrade's gain, never a total.
 struct NextUpgradeWidget: SwiftUI.Widget {
     var body: some WidgetConfiguration {
         AppIntentConfiguration(kind: "gg.foreversixty.next-upgrade", intent: CharacterConfigurationIntent.self, provider: SnapshotProvider()) { entry in
@@ -121,7 +129,7 @@ struct NextUpgradeWidget: SwiftUI.Widget {
         }
         .configurationDisplayName(Copy.widgetNextUpgrade)
         .description(Copy.widgetGalleryUpgrade)
-        .supportedFamilies([.systemSmall, .systemMedium, .accessoryRectangular])
+        .supportedFamilies([.systemSmall, .accessoryRectangular])
     }
 }
 
@@ -130,45 +138,51 @@ struct NextUpgradeEntryView: View {
     let entry: SnapshotEntry
 
     var body: some View {
-        let figures = UpgradeFigures(entry.snapshot)
-        let character = entry.snapshot?.widget.character
         Group {
             switch family {
-            case .systemMedium: UpgradeMediumView(figures: figures, className: character?.className, icons: .shared)
-            case .accessoryRectangular: UpgradeRectangularView(figures: figures)
-            default: UpgradeSmallView(figures: figures, className: character?.className, icons: .shared)
+            case .accessoryRectangular: UpgradeRectangularView(glance: entry.upgrade)
+            default: UpgradeSmallView(glance: entry.upgrade, icons: .shared)
             }
         }
         .widgetCardBackground()
-        // No item route exists in apps/shared/links.json yet, so a tap opens Home on the character.
-        .widgetURL(character.flatMap { homeURL($0.key) })
-    }
-
-    private func homeURL(_ key: String) -> URL? {
-        let parts = key.split(separator: "/").map(String.init)
-        guard parts.count == 3 else { return nil }
-        return DeepLink.character(region: parts[0], ruleset: parts[1], name: parts[2]).url
+        .widgetURL(characterURL(entry.snapshot))
     }
 }
 
+/// Raid and upgrade, medium (the mocks' Medium): the next raid beside the next upgrade.
+struct RaidAndUpgradeWidget: SwiftUI.Widget {
+    var body: some WidgetConfiguration {
+        AppIntentConfiguration(kind: "gg.foreversixty.raid-and-upgrade", intent: CharacterConfigurationIntent.self, provider: SnapshotProvider()) { entry in
+            GlanceMediumView(raid: entry.raid, upgrade: entry.upgrade, icons: .shared)
+                .widgetCardBackground()
+                .widgetURL(raidURL(entry.snapshot) ?? characterURL(entry.snapshot))
+        }
+        .configurationDisplayName(Copy.widgetGlanceName)
+        .description(Copy.widgetGalleryGlance)
+        .supportedFamilies([.systemMedium])
+    }
+}
+
+/// The raid night Live Activity (flows F2): the lock screen, the compact `Ony 42:00` and the
+/// expanded Island with the four answers.
 struct RaidLiveActivity: SwiftUI.Widget {
     var body: some WidgetConfiguration {
         ActivityConfiguration(for: RaidActivityAttributes.self) { context in
-            RaidLiveLockView(attributes: context.attributes, state: context.state)
+            RaidLiveLockView(attributes: context.attributes, state: context.state, icons: .shared)
                 .activityBackgroundTint(FSColor.raised)
                 .widgetURL(DeepLink.raid(guild: Int64(context.attributes.guildID) ?? 0, raid: Int64(context.attributes.raidID) ?? 0).url)
         } dynamicIsland: { context in
             DynamicIsland {
                 DynamicIslandExpandedRegion(.bottom) {
-                    RaidIslandExpandedView(attributes: context.attributes, state: context.state)
+                    RaidIslandExpandedView(attributes: context.attributes, state: context.state, icons: .shared)
                 }
             } compactLeading: {
-                SealMark()
+                RaidIslandCompactLeading(attributes: context.attributes, state: context.state)
             } compactTrailing: {
-                LiveCountdown(target: context.state.targetDate, fixedNow: nil, font: .system(.footnote, design: .monospaced, weight: .semibold))
-                    .frame(maxWidth: 44)
+                LiveCountdown(target: context.state.startDate, fixedNow: nil, role: LiveType.island)
+                    .frame(maxWidth: 48)
             } minimal: {
-                SealMark()
+                RaidIslandCompactLeading(attributes: context.attributes, state: context.state)
             }
         }
     }

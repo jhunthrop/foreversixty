@@ -3877,7 +3877,7 @@ enum Copy {
     /// Current character
     static var widgetCurrentCharacter: String { text("widget.currentCharacter") }
 
-    /// Your guild's next raid and your answer. Answer In, Late or Out from here.
+    /// Your guild's next raid and your answer. Answer In, Late, Bench or Out from here.
     static var widgetGalleryRaid: String { text("widget.gallery.raid") }
 
     /// Your next upgrades, measured for your character.
@@ -3921,6 +3921,52 @@ enum Copy {
     /// Next upgrade, {slot}, {item}, {gain}.
     static func widgetA11yUpgrade(slot: String, item: String, gain: String) -> String {
         format("widget.a11y.upgrade", slot, item, gain)
+    }
+
+    /// Damage
+    static var widgetRoleDamage: String { text("widget.role.damage") }
+
+    /// {answer}, as {name}, {role}
+    static func widgetAs(answer: String, name: String, role: String) -> String {
+        format("widget.as", answer, name, role)
+    }
+
+    /// Not answered
+    static var widgetNotAnswered: String { text("widget.notAnswered") }
+
+    /// First raids
+    static var widgetFirstRaids: String { text("widget.firstRaids") }
+
+    /// Barrow Deeps, Hyjal Summit, Onyxia's Lair
+    static var widgetFirstRaidsZones: String { text("widget.firstRaids.zones") }
+
+    /// Raids open now
+    static var widgetRaidsOpen: String { text("widget.raidsOpen") }
+
+    /// Open
+    static var widgetOpen: String { text("widget.open") }
+
+    /// No raid planned yet
+    static var widgetNoRaidYet: String { text("widget.noRaidYet") }
+
+    /// Find a guild in the app
+    static var widgetFindGuild: String { text("widget.findGuild") }
+
+    /// Upgrades
+    static var widgetUpgradesLabel: String { text("widget.upgradesLabel") }
+
+    /// next upgrade
+    static var widgetNextUpgradeLine: String { text("widget.nextUpgradeLine") }
+
+    /// Raid and upgrade
+    static var widgetGlanceName: String { text("widget.glance.name") }
+
+    /// Your next raid and your next upgrade, side by side.
+    static var widgetGalleryGlance: String { text("widget.gallery.glance") }
+
+    /// {label}, {big}, {name}. {lines}
+    static func widgetA11yNext(label: String, big: String, name: String, lines: String) -> String {
+        format("widget.a11y.next", label, big, name, lines)
     }
 
     /// until invites at {time}
@@ -4023,6 +4069,49 @@ enum Copy {
     /// {time} · {answer}
     static func liveTileSub(time: String, answer: String) -> String {
         format("live.tile.sub", time, answer)
+    }
+
+    /// Starts {time}
+    static func liveStartsAt(time: String) -> String {
+        format("live.startsAt", time)
+    }
+
+    /// {n} in, {late} late
+    static func liveCounts(n: Int, late: Int) -> String {
+        format("live.counts", n, late)
+    }
+
+    /// {n} tanks
+    static func liveTanks(n: Int) -> String {
+        format("live.tanks", n)
+    }
+
+    /// {n} heals
+    static func liveHeals(n: Int) -> String {
+        format("live.heals", n)
+    }
+
+    /// {zone} done
+    static func liveDone(zone: String) -> String {
+        format("live.done", zone)
+    }
+
+    /// {n} kills
+    static func liveKills(n: Int) -> String {
+        format("live.kills", n)
+    }
+
+    /// you got {item}
+    static func liveLoot(item: String) -> String {
+        format("live.loot", item)
+    }
+
+    /// report ready
+    static var liveReportReady: String { text("live.reportReady") }
+
+    /// Sim: {title}
+    static func liveSimTitle(title: String) -> String {
+        format("live.simTitle", title)
     }
 
     /// Guides

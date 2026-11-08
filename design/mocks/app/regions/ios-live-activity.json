@@ -21,6 +21,58 @@
     38
    ],
    "inventory": {}
+  },
+  "live-lock": {
+   "box": [
+    16,
+    122,
+    361,
+    106
+   ],
+   "inventory": {
+    "image": 1
+   }
+  },
+  "live-done": {
+   "box": [
+    16,
+    274,
+    361,
+    76
+   ],
+   "inventory": {
+    "image": 1
+   }
+  },
+  "island-compact": {
+   "box": [
+    72,
+    396,
+    250,
+    37
+   ],
+   "inventory": {}
+  },
+  "island-expanded": {
+   "box": [
+    16,
+    479,
+    361,
+    134
+   ],
+   "inventory": {
+    "button": 4,
+    "image": 1
+   }
+  },
+  "live-sim": {
+   "box": [
+    16,
+    659,
+    361,
+    74
+   ],
+   "inventory": {}
   }
  }
 }

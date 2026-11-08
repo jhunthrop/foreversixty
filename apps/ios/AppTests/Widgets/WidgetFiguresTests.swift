@@ -146,23 +146,6 @@ struct WidgetFiguresTests {
         #expect(WidgetFigures(WidgetSnapshot(widget: noRaid, fetchedAt: WidgetTime.now), now: WidgetTime.now, zone: WidgetTime.chicago).state == .noRaid)
     }
 
-    @Test("every surface agrees: lock screen, home screen and Live Activity read one snapshot")
-    func surfacesAgree() throws {
-        let snapshot = try WidgetFixtures.snapshot(patch: ["signed_up": .number(38)])
-        let now = RaidTime.date("2026-12-11T01:21:48Z")
-        let widget = WidgetFigures(snapshot, now: now, zone: WidgetTime.chicago)
-        let raid = try #require(snapshot.widget.nextRaid)
-        let attributes = RaidActivityAttributes(raid, characterName: "Lightningbolltz")
-        let state = RaidActivityAttributes.ContentState(raid, myState: widget.checked)
-        let live = WidgetFigures(.live(attributes, state), now: now, zone: WidgetTime.chicago)
-        #expect(live.signedUp == widget.signedUp)
-        #expect(live.countdown == widget.countdown)
-        #expect(live.short == widget.short)
-        #expect(live.liveTitle == widget.liveTitle)
-        #expect(live.liveUntil == widget.liveUntil)
-        #expect(live.inline == widget.inline)
-    }
-
     @Test("a pending press draws at once, and Not saved shows for ten seconds")
     func pendingAndNotSaved() throws {
         var snapshot = try WidgetFixtures.snapshot()

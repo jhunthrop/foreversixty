@@ -29,7 +29,7 @@ final class WidgetRefresher {
         calls: any WidgetCalls, store: WidgetSnapshotStore = .shared(), icons: any ItemIconSource = RemoteItemIconSource.shared,
         iconBuild: @escaping @MainActor () -> String?, enabled: @escaping @MainActor () -> Bool,
         now: @escaping @Sendable () -> Date = { Date() },
-        reload: @escaping @Sendable () -> Void = { WidgetCenter.shared.reloadAllTimelines() }
+        reload: @escaping @Sendable () -> Void = { WidgetReload.all() }
     ) {
         self.calls = calls
         self.store = store
@@ -78,13 +78,15 @@ final class WidgetRefresher {
         }
     }
 
-    /// The extension cannot fetch while it draws, so the upgrade rows' icons go in the container.
+    /// The extension cannot fetch while it draws, so the upgrade rows' icons and the next raid's
+    /// instance icon (the Live Activity's) go in the container.
     private func saveIcons(_ widget: Widget) async {
-        guard let build = iconBuild(), let rows = widget.upgrades?.rows else { return }
-        for row in rows {
-            let url = store.iconURL(row.pick.icon)
+        guard let build = iconBuild() else { return }
+        let names = (widget.upgrades?.rows ?? []).map(\.pick.icon) + [widget.nextRaid.flatMap { RaidZoneIcon.of($0.zoneName) }].compactMap { $0 }
+        for name in names {
+            let url = store.iconURL(name)
             guard !FileManager.default.fileExists(atPath: url.path),
-                  let image = await icons.load(icon: row.pick.icon, build: build), let data = image.pngData() else { continue }
+                  let image = await icons.load(icon: name, build: build), let data = image.pngData() else { continue }
             try? FileManager.default.createDirectory(at: url.deletingLastPathComponent(), withIntermediateDirectories: true)
             try? data.write(to: url, options: .atomic)
         }

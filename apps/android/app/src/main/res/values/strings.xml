@@ -1159,7 +1159,7 @@
     <string name="widget_noGain">—</string>
     <string name="widget_characterSetting">Character</string>
     <string name="widget_currentCharacter">Current character</string>
-    <string name="widget_gallery_raid">Your guild\'s next raid and your answer. Answer In, Late or Out from here.</string>
+    <string name="widget_gallery_raid">Your guild\'s next raid and your answer. Answer In, Late, Bench or Out from here.</string>
     <string name="widget_gallery_upgrade">Your next upgrades, measured for your character.</string>
     <string name="widget_a11y_raid">Next raid, %1$s, %2$s, %3$s.</string>
     <string name="widget_a11y_you">You are %1$s as %2$s.</string>
@@ -1178,6 +1178,20 @@
     </plurals>
     <string name="widget_a11y_in">in %1$s</string>
     <string name="widget_a11y_upgrade">Next upgrade, %1$s, %2$s, %3$s.</string>
+    <string name="widget_role_damage">Damage</string>
+    <string name="widget_as">%1$s, as %2$s, %3$s</string>
+    <string name="widget_notAnswered">Not answered</string>
+    <string name="widget_firstRaids">First raids</string>
+    <string name="widget_firstRaids_zones">Barrow Deeps, Hyjal Summit, Onyxia\'s Lair</string>
+    <string name="widget_raidsOpen">Raids open now</string>
+    <string name="widget_open">Open</string>
+    <string name="widget_noRaidYet">No raid planned yet</string>
+    <string name="widget_findGuild">Find a guild in the app</string>
+    <string name="widget_upgradesLabel">Upgrades</string>
+    <string name="widget_nextUpgradeLine">next upgrade</string>
+    <string name="widget_glance_name">Raid and upgrade</string>
+    <string name="widget_gallery_glance">Your next raid and your next upgrade, side by side.</string>
+    <string name="widget_a11y_next">%1$s, %2$s, %3$s. %4$s</string>
     <string name="live_invites">until invites at %1$s</string>
     <string name="live_starts">until the pull at %1$s</string>
     <string name="live_you">You are %1$s · %2$s · %3$s</string>
@@ -1205,6 +1219,24 @@
     <string name="live_a11y_raidPull">%1$s starts in %2$s. You are %3$s.</string>
     <string name="live_tile_title">Next raid</string>
     <string name="live_tile_sub">%1$s · %2$s</string>
+    <string name="live_startsAt">Starts %1$s</string>
+    <string name="live_counts" tools:ignore="PluralsCandidate">%1$d in, %2$d late</string>
+    <plurals name="live_tanks">
+        <item quantity="one">1 tank</item>
+        <item quantity="other">%1$d tanks</item>
+    </plurals>
+    <plurals name="live_heals">
+        <item quantity="one">1 heal</item>
+        <item quantity="other">%1$d heals</item>
+    </plurals>
+    <string name="live_done">%1$s done</string>
+    <plurals name="live_kills">
+        <item quantity="one">1 kill</item>
+        <item quantity="other">%1$d kills</item>
+    </plurals>
+    <string name="live_loot">you got %1$s</string>
+    <string name="live_reportReady">report ready</string>
+    <string name="live_simTitle">Sim: %1$s</string>
     <string name="tab_guides">Guides</string>
     <string name="guides_title">Guides</string>
     <string name="guides_segment_guides">Guides</string>

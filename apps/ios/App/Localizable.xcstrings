@@ -5947,6 +5947,30 @@
         }
       }
     },
+    "live.counts": {
+      "comment": "Arguments: 1 n (int), 2 late (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld in, %2$lld late"
+          }
+        }
+      }
+    },
+    "live.done": {
+      "comment": "Arguments: 1 zone (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ done"
+          }
+        }
+      }
+    },
     "live.failed": {
       "extractionState": "manual",
       "localizations": {
@@ -5981,6 +6005,30 @@
         }
       }
     },
+    "live.heals": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "1 heal"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%1$lld heals"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "live.invites": {
       "comment": "Arguments: 1 time (string)",
       "extractionState": "manual",
@@ -5989,6 +6037,42 @@
           "stringUnit": {
             "state": "translated",
             "value": "until invites at %1$@"
+          }
+        }
+      }
+    },
+    "live.kills": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "1 kill"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%1$lld kills"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "live.loot": {
+      "comment": "Arguments: 1 item (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "you got %1$@"
           }
         }
       }
@@ -6087,6 +6171,17 @@
         }
       }
     },
+    "live.reportReady": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "report ready"
+          }
+        }
+      }
+    },
     "live.settings": {
       "extractionState": "manual",
       "localizations": {
@@ -6145,6 +6240,18 @@
         }
       }
     },
+    "live.simTitle": {
+      "comment": "Arguments: 1 title (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sim: %1$@"
+          }
+        }
+      }
+    },
     "live.starts": {
       "comment": "Arguments: 1 time (string)",
       "extractionState": "manual",
@@ -6153,6 +6260,42 @@
           "stringUnit": {
             "state": "translated",
             "value": "until the pull at %1$@"
+          }
+        }
+      }
+    },
+    "live.startsAt": {
+      "comment": "Arguments: 1 time (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Starts %1$@"
+          }
+        }
+      }
+    },
+    "live.tanks": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "1 tank"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%1$lld tanks"
+                }
+              }
+            }
           }
         }
       }
@@ -17639,6 +17782,18 @@
         }
       }
     },
+    "widget.a11y.next": {
+      "comment": "Arguments: 1 label (string), 2 big (string), 3 name (string), 4 lines (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, %2$@, %3$@. %4$@"
+          }
+        }
+      }
+    },
     "widget.a11y.raid": {
       "comment": "Arguments: 1 zone (string), 2 when (string), 3 countdown (string)",
       "extractionState": "manual",
@@ -17699,6 +17854,18 @@
         }
       }
     },
+    "widget.as": {
+      "comment": "Arguments: 1 answer (string), 2 name (string), 3 role (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, as %2$@, %3$@"
+          }
+        }
+      }
+    },
     "widget.cancelled": {
       "extractionState": "manual",
       "localizations": {
@@ -17743,6 +17910,39 @@
         }
       }
     },
+    "widget.findGuild": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Find a guild in the app"
+          }
+        }
+      }
+    },
+    "widget.firstRaids": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "First raids"
+          }
+        }
+      }
+    },
+    "widget.firstRaids.zones": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Barrow Deeps, Hyjal Summit, Onyxia's Lair"
+          }
+        }
+      }
+    },
     "widget.gain": {
       "comment": "Arguments: 1 gain (string), 2 unit (string)",
       "extractionState": "manual",
@@ -17755,13 +17955,24 @@
         }
       }
     },
+    "widget.gallery.glance": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your next raid and your next upgrade, side by side."
+          }
+        }
+      }
+    },
     "widget.gallery.raid": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Your guild's next raid and your answer. Answer In, Late or Out from here."
+            "value": "Your guild's next raid and your answer. Answer In, Late, Bench or Out from here."
           }
         }
       }
@@ -17773,6 +17984,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Your next upgrades, measured for your character."
+          }
+        }
+      }
+    },
+    "widget.glance.name": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Raid and upgrade"
           }
         }
       }
@@ -17918,6 +18140,17 @@
         }
       }
     },
+    "widget.nextUpgradeLine": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "next upgrade"
+          }
+        }
+      }
+    },
     "widget.noCharacter": {
       "extractionState": "manual",
       "localizations": {
@@ -17984,6 +18217,28 @@
         }
       }
     },
+    "widget.noRaidYet": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No raid planned yet"
+          }
+        }
+      }
+    },
+    "widget.notAnswered": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not answered"
+          }
+        }
+      }
+    },
     "widget.notSaved": {
       "extractionState": "manual",
       "localizations": {
@@ -18029,6 +18284,17 @@
         }
       }
     },
+    "widget.open": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open"
+          }
+        }
+      }
+    },
     "widget.openApp": {
       "extractionState": "manual",
       "localizations": {
@@ -18036,6 +18302,28 @@
           "stringUnit": {
             "state": "translated",
             "value": "Open the app"
+          }
+        }
+      }
+    },
+    "widget.raidsOpen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Raids open now"
+          }
+        }
+      }
+    },
+    "widget.role.damage": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Damage"
           }
         }
       }
@@ -18142,6 +18430,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "%1$@ · +%2$@ %3$@"
+          }
+        }
+      }
+    },
+    "widget.upgradesLabel": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Upgrades"
           }
         }
       }

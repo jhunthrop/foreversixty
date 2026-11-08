@@ -21,6 +21,35 @@
     38
    ],
    "inventory": {}
+  },
+  "widget-raid-small": {
+   "box": [
+    16,
+    122,
+    173,
+    176
+   ],
+   "inventory": {}
+  },
+  "widget-upgrade-small": {
+   "box": [
+    205,
+    122,
+    173,
+    173
+   ],
+   "inventory": {}
+  },
+  "widget-medium": {
+   "box": [
+    16,
+    344,
+    361,
+    170
+   ],
+   "inventory": {
+    "image": 1
+   }
   }
  }
 }

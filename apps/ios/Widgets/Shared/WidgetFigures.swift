@@ -295,6 +295,12 @@ struct WidgetClock: Sendable {
     func weekday(_ date: Date) -> String { format("EEEE", date) }
     /// `Thu`
     func shortWeekday(_ date: Date) -> String { format("EEE", date) }
+    /// `Wed 9 Dec`
+    func dayDate(_ date: Date) -> String { format("EEE d MMM", date) }
+    /// `Wed 9 Dec, 8:00 pm CST`: every raid time carries its zone (flows E7).
+    func dayDateTimeZone(_ date: Date) -> String { format("EEE d MMM, h:mm a zzz", date) }
+    /// `8:00 pm CST`
+    func timeWithZone(_ date: Date) -> String { format("h:mm a zzz", date) }
     /// `8 pm`, minutes kept when not on the hour (`8:30 pm`).
     func hourTime(_ date: Date) -> String { onTheHour(date) ? format("h a", date) : time(date) }
 }

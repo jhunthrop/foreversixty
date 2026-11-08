@@ -65,7 +65,7 @@ struct CharacterConfigurationIntent: WidgetConfigurationIntent {
     var characterKey: String? { character?.characterKey }
 }
 
-/// In, Late or Out pressed on the medium widget: answered without opening the app (spec §5.6).
+/// In, Late, Bench or Out pressed on the medium widget: answered without opening the app (flows F1).
 struct RaidAnswerIntent: AppIntent {
     static let title: LocalizedStringResource = "widget.nextRaid"
     static let isDiscoverable = false
@@ -84,14 +84,14 @@ struct RaidAnswerIntent: AppIntent {
         guard let calls = LiveWidgetCalls.fromBundle() else { return .result() }
         let signup = WidgetSignup(
             store: .shared(), character: character, calls: calls, now: { Date() },
-            reload: { WidgetCenter.shared.reloadAllTimelines() }
+            reload: { WidgetReload.all() }
         )
         await signup.answer(state)
         return .result()
     }
 }
 
-/// Late or Out pressed on the raid Live Activity. A LiveActivityIntent runs in the app's process,
+/// An answer pressed on the raid Live Activity's expanded Island (flows F2). A LiveActivityIntent runs in the app's process,
 /// which then redraws or ends the activity from the new snapshot (LiveSurfaceHooks).
 struct RaidLiveAnswerIntent: LiveActivityIntent {
     static let title: LocalizedStringResource = "widget.nextRaid"
@@ -109,11 +109,19 @@ struct RaidLiveAnswerIntent: LiveActivityIntent {
         guard let calls = LiveWidgetCalls.fromBundle() else { return .result() }
         let signup = WidgetSignup(
             store: .shared(), character: nil, calls: calls, now: { Date() },
-            reload: { WidgetCenter.shared.reloadAllTimelines() }
+            reload: { WidgetReload.all() }
         )
         await signup.answer(state)
         await LiveSurfaceHooks.afterLiveAnswer()
         return .result()
+    }
+}
+
+/// Every surface that draws the snapshot redraws: the widgets and the Control (flows F1).
+enum WidgetReload {
+    static func all() {
+        WidgetCenter.shared.reloadAllTimelines()
+        ControlCenter.shared.reloadAllControls()
     }
 }
 

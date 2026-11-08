@@ -15,11 +15,25 @@ struct RaidActivityAttributes: ActivityAttributes {
         var role: String
         var signedUp: Int
         var size: Int?
+        /// Who is coming (flows F2: `18 in, 3 late · 2 tanks, 5 heals`). Optional until the
+        /// API's content-state sends them; without them the line reads `38 of 40 signed up`.
+        var inCount: Int? = nil
+        var late: Int? = nil
+        var tanks: Int? = nil
+        var healers: Int? = nil
+        /// The night's summary on the end event (`status` "done"): `1 kill · you got
+        /// Deathbringer · report ready`.
+        var kills: Int? = nil
+        var loot: RaidLiveLoot? = nil
+        var reportReady: Bool? = nil
 
         enum CodingKeys: String, CodingKey {
             case startsAt = "starts_at", inviteAt = "invite_at", status, myState = "my_state", role
             case signedUp = "signed_up", size
+            case inCount = "in", late, tanks, healers, kills, loot, reportReady = "report_ready"
         }
+
+        static let done = "done"
     }
 
     var raidID: String
@@ -27,18 +41,42 @@ struct RaidActivityAttributes: ActivityAttributes {
     var guildName: String
     var zoneName: String
     var characterName: String
+    /// The instance's icon under /data/{build}/icons; the first raids' when the server sends none.
+    var zoneIcon: String? = nil
 
     enum CodingKeys: String, CodingKey {
         case raidID = "raid_id", guildID = "guild_id", guildName = "guild_name", zoneName = "zone_name"
-        case characterName = "character_name"
+        case characterName = "character_name", zoneIcon = "zone_icon"
     }
+
+    /// The icon the views draw: the server's, else the first raids' own.
+    var icon: String? { zoneIcon ?? RaidZoneIcon.of(zoneName) }
+}
+
+/// The item a player got, as the raid's end event names it.
+struct RaidLiveLoot: Codable, Hashable, Sendable {
+    var name: String
+    var quality: Int
+    var icon: String
+}
+
+/// The first raid tier's icons, as web/src/lib/first-raids.ts `FIRST_RAIDS` draws them (home's
+/// countdowns, the guild's next raid). Any other zone has none until the API sends `zone_icon`.
+enum RaidZoneIcon {
+    static let firstRaids: [String: String] = [
+        "Barrow Deeps": "spell_shadow_raisedead",
+        "Hyjal Summit": "spell_nature_timestop",
+        "Onyxia's Lair": "inv_misc_head_dragon_black",
+    ]
+
+    static func of(_ zoneName: String) -> String? { firstRaids[zoneName] }
 }
 
 extension RaidActivityAttributes {
     init(_ raid: WidgetNextRaid, characterName: String) {
         self.init(
             raidID: String(raid.raidId), guildID: String(raid.guildId), guildName: raid.guildName,
-            zoneName: raid.zoneName, characterName: characterName
+            zoneName: raid.zoneName, characterName: characterName, zoneIcon: RaidZoneIcon.of(raid.zoneName)
         )
     }
 }
