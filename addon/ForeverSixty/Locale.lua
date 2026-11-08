@@ -816,7 +816,7 @@ local L = {
 	-- L3.8: /fs diag's one line for the build in force (Follow.diagLine), and why there is none.
 	diagBuildDefault = "Build: %s (default for %s)",
 	diagBuildSaved = "Build: %s (saved)",
-	diagBuildNone = "Build: none — %s",
+	diagBuildNone = "Build: none: %s",
 	diagBuildNotYet = "not worked out yet",
 	diagBuildNoDefaults = "the addon's data carries no default builds",
 	diagBuildNoClass = "this class is not in the addon's data",
@@ -1467,7 +1467,7 @@ L.lootUsage = "Type /fs loot, then shift-click an item, to see what it is worth 
 L.lootNotInGroup = "You are not in a group."
 -- "Ranger Bow (Ranged): +3.5 DPS over Short Ash Bow, on your list"; the level gate is a prefix.
 L.lootCmdLine = "%s: %s over %s, %s"
-L.lootCmdNeeds = "%s: needs level %d — %s over %s, %s"
+L.lootCmdNeeds = "%s: needs level %d, %s over %s, %s"
 L.lootCmdSlot = "%s (%s)"
 L.lootOnYourList = "on your list"
 L.lootNotOnYourList = "not on your list"

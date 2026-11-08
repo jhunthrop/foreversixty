@@ -247,13 +247,13 @@ export const addonCopy = {
     {
       section: '4.3',
       title: 'Item tooltip',
-      body: 'Every item tooltip gains a Forever Sixty section that says whether the item is an upgrade and by how much, the next upgrade for that slot and where it comes from, and two alternatives.',
+      body: 'Every item tooltip gains one line that says whether the item is an upgrade and by how much, or, on what you wear, the next upgrade for that slot and where it drops. Hold Shift for the details: what the number is made of and two alternatives.',
       images: [
         {
           src: '/addon/item-tooltip-ranged.jpg',
           width: 910,
           height: 615,
-          alt: 'A level 24 hunter’s worn Short Ash Bow tooltip on the character panel, ending in the Forever Sixty section: “Forever Sixty · Beast Mastery · Estimate”, “Equipped”, “Next upgrade: Ranger Bow +3.5 DPS”, “(+1 Agi, +3.4 weapon DPS)”, “Planned for your build”, “World drop · check the AH”, and “Also good:” Lil Timmy’s Peashooter +2.2 (needs bullets) and Cracked Blacksmith Hammer +0.8, with the Ranger Bow’s own tooltip beside it.',
+          alt: 'A level 24 hunter’s worn Short Ash Bow tooltip on the character panel. Straight after the game’s own lines, one white line, “Next upgrade: Ranger Bow +3.5 DPS”, and under it “World drop”, with the Ranger Bow’s own tooltip beside it. Held Shift adds “+1 Agi”, “Also good: Lil Timmy’s Peashooter +2.2 (gun)” and “Cracked Blacksmith Hammer +0.8 (thrown)”.',
         },
       ],
     },
