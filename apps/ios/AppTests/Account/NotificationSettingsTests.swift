@@ -91,9 +91,9 @@ struct NotificationSettingsModelTests {
 @Suite("Notification settings parity")
 struct NotificationSettingsParityTests {
     @Test("ios-notification-settings")
-    func parity() throws {
+    func parity() async throws {
         let view = NotificationSettingsView(phase: .loaded(NotificationTestData.member))
-        try ParityCheck.assert(view, screen: "notification-settings", size: CGSize(width: 393, height: 852))
+        try await ParityCheck.assert(view, screen: "notification-settings", size: CGSize(width: 393, height: 852))
     }
 }
 

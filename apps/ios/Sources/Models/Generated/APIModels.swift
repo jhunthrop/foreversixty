@@ -1700,6 +1700,48 @@ public struct CharacterRank: Codable, Sendable, Equatable {
     }
 }
 
+/// GET /v1/characters/{region}/{ruleset}/{name}/rating (Go rating.characterRatingDTO).
+public struct CharacterRating: Codable, Sendable, Equatable {
+    public let playerKey: String
+    /// The rated fights in this page.
+    public let sampleSize: Int
+    public let trend: [RatingTrendPoint]
+    /// Present when another page exists.
+    public let nextCursor: String?
+    public let latest: RatingCard?
+    public let bestComponent: String?
+    public let worstComponent: String?
+
+    public init(
+        playerKey: String,
+        sampleSize: Int,
+        trend: [RatingTrendPoint] = [],
+        nextCursor: String? = nil,
+        latest: RatingCard? = nil,
+        bestComponent: String? = nil,
+        worstComponent: String? = nil
+    ) {
+        self.playerKey = playerKey
+        self.sampleSize = sampleSize
+        self.trend = trend
+        self.nextCursor = nextCursor
+        self.latest = latest
+        self.bestComponent = bestComponent
+        self.worstComponent = worstComponent
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        playerKey = try c.decode(String.self, forKey: .playerKey)
+        sampleSize = try c.decode(Int.self, forKey: .sampleSize)
+        trend = try c.decodeIfPresent([RatingTrendPoint].self, forKey: .trend) ?? []
+        nextCursor = try c.decodeIfPresent(String.self, forKey: .nextCursor)
+        latest = try c.decodeIfPresent(RatingCard.self, forKey: .latest)
+        bestComponent = try c.decodeIfPresent(String.self, forKey: .bestComponent)
+        worstComponent = try c.decodeIfPresent(String.self, forKey: .worstComponent)
+    }
+}
+
 public struct CharacterSearch: Codable, Sendable, Equatable {
     public let rows: [CharacterSearchRow]
 
@@ -7874,6 +7916,174 @@ public struct RankingsPage: Codable, Sendable, Equatable {
         updatedAt = try c.decode(Date.self, forKey: .updatedAt)
         deduped = try c.decode(Bool.self, forKey: .deduped)
         characterRank = try c.decodeIfPresent(CharacterRank.self, forKey: .characterRank)
+    }
+}
+
+/// One fight's rating card for one player. overall is 0 to 100 (overall_uncapped before the cap; overall_capped true when it bit); coverage is the share of the fight measured; insufficient cards carry zero overalls and insufficient_reason.
+public struct RatingCard: Codable, Sendable, Equatable {
+    public let playerKey: String
+    public let playerName: String
+    public let className: String
+    public let spec: String
+    public let role: String
+    public let overall: Double
+    public let overallUncapped: Double
+    public let overallCapped: Bool
+    public let coverage: Double
+    public let insufficient: Bool
+    public let insufficientReason: String?
+    public let components: [RatingComponent]
+
+    public init(
+        playerKey: String,
+        playerName: String,
+        className: String,
+        spec: String,
+        role: String,
+        overall: Double,
+        overallUncapped: Double,
+        overallCapped: Bool,
+        coverage: Double,
+        insufficient: Bool,
+        insufficientReason: String? = nil,
+        components: [RatingComponent] = []
+    ) {
+        self.playerKey = playerKey
+        self.playerName = playerName
+        self.className = className
+        self.spec = spec
+        self.role = role
+        self.overall = overall
+        self.overallUncapped = overallUncapped
+        self.overallCapped = overallCapped
+        self.coverage = coverage
+        self.insufficient = insufficient
+        self.insufficientReason = insufficientReason
+        self.components = components
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case playerKey
+        case playerName
+        case className = "class"
+        case spec
+        case role
+        case overall
+        case overallUncapped
+        case overallCapped
+        case coverage
+        case insufficient
+        case insufficientReason
+        case components
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        playerKey = try c.decode(String.self, forKey: .playerKey)
+        playerName = try c.decode(String.self, forKey: .playerName)
+        className = try c.decode(String.self, forKey: .className)
+        spec = try c.decode(String.self, forKey: .spec)
+        role = try c.decode(String.self, forKey: .role)
+        overall = try c.decode(Double.self, forKey: .overall)
+        overallUncapped = try c.decode(Double.self, forKey: .overallUncapped)
+        overallCapped = try c.decode(Bool.self, forKey: .overallCapped)
+        coverage = try c.decode(Double.self, forKey: .coverage)
+        insufficient = try c.decode(Bool.self, forKey: .insufficient)
+        insufficientReason = try c.decodeIfPresent(String.self, forKey: .insufficientReason)
+        components = try c.decodeIfPresent([RatingComponent].self, forKey: .components) ?? []
+    }
+}
+
+/// One scored part of a card; score null when excluded (reason says why).
+public struct RatingComponent: Codable, Sendable, Equatable {
+    public let name: String
+    public let score: Double?
+    public let weight: Double
+    public let basis: String
+    public let percentile: Double?
+    public let bracketN: Int64?
+    public let excluded: Bool
+    public let reason: String?
+    public let moments: [RatingMoment]
+
+    public init(
+        name: String,
+        score: Double? = nil,
+        weight: Double,
+        basis: String,
+        percentile: Double? = nil,
+        bracketN: Int64? = nil,
+        excluded: Bool,
+        reason: String? = nil,
+        moments: [RatingMoment] = []
+    ) {
+        self.name = name
+        self.score = score
+        self.weight = weight
+        self.basis = basis
+        self.percentile = percentile
+        self.bracketN = bracketN
+        self.excluded = excluded
+        self.reason = reason
+        self.moments = moments
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        name = try c.decode(String.self, forKey: .name)
+        score = try c.decodeIfPresent(Double.self, forKey: .score)
+        weight = try c.decode(Double.self, forKey: .weight)
+        basis = try c.decode(String.self, forKey: .basis)
+        percentile = try c.decodeIfPresent(Double.self, forKey: .percentile)
+        bracketN = try c.decodeIfPresent(Int64.self, forKey: .bracketN)
+        excluded = try c.decode(Bool.self, forKey: .excluded)
+        reason = try c.decodeIfPresent(String.self, forKey: .reason)
+        moments = try c.decodeIfPresent([RatingMoment].self, forKey: .moments) ?? []
+    }
+}
+
+public struct RatingMoment: Codable, Sendable, Equatable {
+    public let kind: String
+    public let atMs: Int64
+    public let spellId: Int64?
+    public let spellName: String?
+    public let avoidable: Bool?
+    public let anchor: String?
+
+    public init(
+        kind: String,
+        atMs: Int64,
+        spellId: Int64? = nil,
+        spellName: String? = nil,
+        avoidable: Bool? = nil,
+        anchor: String? = nil
+    ) {
+        self.kind = kind
+        self.atMs = atMs
+        self.spellId = spellId
+        self.spellName = spellName
+        self.avoidable = avoidable
+        self.anchor = anchor
+    }
+}
+
+public struct RatingTrendPoint: Codable, Sendable, Equatable {
+    public let foughtAt: Date
+    /// 0 to 100.
+    public let overall: Double
+    public let reportId: String
+    public let fightIndex: Int
+
+    public init(
+        foughtAt: Date,
+        overall: Double,
+        reportId: String,
+        fightIndex: Int
+    ) {
+        self.foughtAt = foughtAt
+        self.overall = overall
+        self.reportId = reportId
+        self.fightIndex = fightIndex
     }
 }
 
