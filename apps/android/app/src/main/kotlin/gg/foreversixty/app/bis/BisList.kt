@@ -2,6 +2,8 @@ package gg.foreversixty.app.bis
 
 import android.content.res.Resources
 import gg.foreversixty.app.R
+import gg.foreversixty.app.items.ItemLook
+import gg.foreversixty.app.items.ItemTooltipRequest
 import gg.foreversixty.app.items.ItemVocabulary
 import gg.foreversixty.app.model.BisBand
 import gg.foreversixty.app.model.BisFile
@@ -190,4 +192,24 @@ class BisListBuilder(
         /** One decimal, halves away from zero, as the site's `toFixed(1)` reads. */
         fun figure(value: Double): String = BigDecimal.valueOf(value).setScale(1, RoundingMode.HALF_UP).toPlainString()
     }
+}
+
+/** The tooltip request of a list row, in F2's entry point's terms (`ItemTooltipSheet(request, catalog, onDismiss)`). */
+fun tooltipRequest(row: BisRow, pick: BisPick, list: BisList, context: BisContext, build: String): ItemTooltipRequest {
+    val selection = context.selection
+    val item = pick.item.item
+    return ItemTooltipRequest(
+        itemId = pick.item.id,
+        fallback = ItemLook(pick.item.id, pick.item.name, item?.quality, item?.icon, item?.itemLevel),
+        build = build,
+        classSlug = selection.classSlug,
+        spec = selection.spec,
+        specName = list.specLabel,
+        band = selection.range.band,
+        bandLabel = list.rangeLabel,
+        preset = selection.range.preset,
+        faction = selection.faction,
+        sourceLine = pick.source,
+        wornId = pick.runnersUp.firstOrNull { it.isWorn }?.item?.id ?: pick.item.id.takeIf { pick.isWorn },
+    )
 }

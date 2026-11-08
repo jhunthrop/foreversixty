@@ -2316,6 +2316,221 @@ enum Copy {
         format("gear.sheet.dropChance", chance)
     }
 
+    /// Best in slot
+    static var bisSpecMeta: String { text("bisSpec.meta") }
+
+    /// {spec} best in slot
+    static func bisSpecShare(spec: String) -> String {
+        format("bisSpec.share", spec)
+    }
+
+    /// This set, simmed {date}
+    static func bisSpecSimmed(date: String) -> String {
+        format("bisSpec.simmed", date)
+    }
+
+    /// Level {level} {race} · {points} talent points · {profile}
+    static func bisSpecLine(level: Int, race: String, points: Int, profile: String) -> String {
+        format("bisSpec.line", level, race, points, profile)
+    }
+
+    /// View ranking sim ›
+    static var bisSpecRankingSim: String { text("bisSpec.rankingSim") }
+
+    /// Open in simulator
+    static var bisSpecOpenSim: String { text("bisSpec.openSim") }
+
+    /// Talents in planner
+    static var bisSpecPlanner: String { text("bisSpec.planner") }
+
+    /// Change ▾
+    static var bisSpecChange: String { text("bisSpec.change") }
+
+    /// {spec} · {band} · {faction} · {profile}
+    static func bisSpecBar(spec: String, band: String, faction: String, profile: String) -> String {
+        format("bisSpec.bar", spec, band, faction, profile)
+    }
+
+    /// {spec} · {band} · {faction}
+    static func bisSpecBarBare(spec: String, band: String, faction: String) -> String {
+        format("bisSpec.barBare", spec, band, faction)
+    }
+
+    /// Level
+    static var bisSpecLevel: String { text("bisSpec.level") }
+
+    /// Profile
+    static var bisSpecProfile: String { text("bisSpec.profile") }
+
+    /// Raid-ready
+    static var bisSpecProfileRaid: String { text("bisSpec.profile.raid") }
+
+    /// Bare
+    static var bisSpecProfileBare: String { text("bisSpec.profile.bare") }
+
+    /// Race
+    static var bisSpecRace: String { text("bisSpec.race") }
+
+    /// Sources
+    static var bisSpecSources: String { text("bisSpec.sources") }
+
+    /// All sources
+    static var bisSpecSourcesAll: String { text("bisSpec.sources.all") }
+
+    /// Sources ({n})
+    static func bisSpecSourcesSome(n: Int) -> String {
+        format("bisSpec.sources.some", n)
+    }
+
+    /// Raids
+    static var bisSpecSourcesKindRaid: String { text("bisSpec.sources.kind.raid") }
+
+    /// Dungeons
+    static var bisSpecSourcesKindDungeon: String { text("bisSpec.sources.kind.dungeon") }
+
+    /// Crafted
+    static var bisSpecSourcesKindCrafted: String { text("bisSpec.sources.kind.crafted") }
+
+    /// Reputation
+    static var bisSpecSourcesKindReputation: String { text("bisSpec.sources.kind.reputation") }
+
+    /// Quests
+    static var bisSpecSourcesKindQuest: String { text("bisSpec.sources.kind.quest") }
+
+    /// Vendors
+    static var bisSpecSourcesKindVendor: String { text("bisSpec.sources.kind.vendor") }
+
+    /// World drops and the auction house
+    static var bisSpecSourcesKindWorld: String { text("bisSpec.sources.kind.world") }
+
+    /// PvP
+    static var bisSpecSourcesKindPvp: String { text("bisSpec.sources.kind.pvp") }
+
+    /// Other
+    static var bisSpecSourcesKindOther: String { text("bisSpec.sources.kind.other") }
+
+    /// {n} of {total} slots have a pick at this level.
+    static func bisSpecSummary(n: Int, total: Int) -> String {
+        format("bisSpec.summary", n, total)
+    }
+
+    /// Sign in
+    static var bisSpecSignIn: String { text("bisSpec.signIn") }
+
+    /// to see them against your gear.
+    static var bisSpecSignInTail: String { text("bisSpec.signInTail") }
+
+    /// Changes from {from}: see {to} ›
+    static func bisSpecNextBand(from: String, to: String) -> String {
+        format("bisSpec.nextBand", from, to)
+    }
+
+    /// By slot
+    static var bisSpecBySlot: String { text("bisSpec.bySlot") }
+
+    /// Where to go
+    static var bisSpecWhereToGo: String { text("bisSpec.whereToGo") }
+
+    /// {item} is a two-hander: the off hand stays empty.
+    static func bisSpecTwoHander(item: String) -> String {
+        format("bisSpec.twoHander", item)
+    }
+
+    /// {item} is a two-hander; the off hand is taken.
+    static func bisSpecTwoHanderSlot(item: String) -> String {
+        format("bisSpec.twoHanderSlot", item)
+    }
+
+    /// Level {n}
+    static func bisSpecItemLevel(n: Int) -> String {
+        format("bisSpec.itemLevel", n)
+    }
+
+    /// Nothing better yet
+    static var bisSpecNothing: String { text("bisSpec.nothing") }
+
+    /// Same
+    static var bisSpecSame: String { text("bisSpec.same") }
+
+    /// next: {delta} vs
+    static func bisSpecNextVs(delta: String) -> String {
+        format("bisSpec.nextVs", delta)
+    }
+
+    /// vs
+    static var bisSpecVs: String { text("bisSpec.vs") }
+
+    /// No close alternative
+    static var bisSpecNoAlternative: String { text("bisSpec.noAlternative") }
+
+    /// {n} pieces
+    static func bisSpecPieces(n: Int) -> String {
+        format("bisSpec.pieces", n)
+    }
+
+    /// Crafted · {profession}
+    static func bisSpecPlaceCrafted(profession: String) -> String {
+        format("bisSpec.place.crafted", profession)
+    }
+
+    /// Quest
+    static var bisSpecPlaceQuest: String { text("bisSpec.place.quest") }
+
+    /// World / BoE
+    static var bisSpecPlaceWorld: String { text("bisSpec.place.world") }
+
+    /// Vendor
+    static var bisSpecPlaceVendor: String { text("bisSpec.place.vendor") }
+
+    /// What to stack
+    static var bisSpecStack: String { text("bisSpec.stack") }
+
+    /// Stack {first}, then {second}.
+    static func bisSpecStackTwo(first: String, second: String) -> String {
+        format("bisSpec.stack.two", first, second)
+    }
+
+    /// Stack {first}, then {second}, then {third}.
+    static func bisSpecStackThree(first: String, second: String, third: String) -> String {
+        format("bisSpec.stack.three", first, second, third)
+    }
+
+    /// Normalized to {stat} = 1.00. Per point of stat, with {unit} per point and the sim error.
+    static func bisSpecStackLegend(stat: String, unit: String) -> String {
+        format("bisSpec.stack.legend", stat, unit)
+    }
+
+    /// {value} {unit} per point
+    static func bisSpecStackPerPoint(value: String, unit: String) -> String {
+        format("bisSpec.stack.perPoint", value, unit)
+    }
+
+    /// Not significant
+    static var bisSpecStackInsignificant: String { text("bisSpec.stack.insignificant") }
+
+    /// The Forever Sixty addon rates every item in your bags and tooltips with these weights.
+    static var bisSpecStackAddon: String { text("bisSpec.stack.addon") }
+
+    /// Use these weights in the addon ›
+    static var bisSpecStackAddonLink: String { text("bisSpec.stack.addonLink") }
+
+    /// Talents, rotation and stat priority for this spec:
+    static var bisSpecGuideLead: String { text("bisSpec.guideLead") }
+
+    /// {spec} guide ›
+    static func bisSpecGuideLink(spec: String) -> String {
+        format("bisSpec.guideLink", spec)
+    }
+
+    /// Overheal
+    static var bisSpecOverheal: String { text("bisSpec.overheal") }
+
+    /// Mana lasts
+    static var bisSpecManaLasts: String { text("bisSpec.manaLasts") }
+
+    /// Healing per mana
+    static var bisSpecHealingPerMana: String { text("bisSpec.healingPerMana") }
+
     /// You
     static var youTitle: String { text("you.title") }
 

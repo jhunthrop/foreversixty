@@ -6,6 +6,7 @@ import androidx.core.content.edit
 import gg.foreversixty.app.R
 import gg.foreversixty.app.model.AccountCharacter
 import gg.foreversixty.app.model.ApiJson
+import gg.foreversixty.app.model.BisBand
 import gg.foreversixty.app.model.BisFile
 import gg.foreversixty.app.model.ClassInfo
 import gg.foreversixty.app.model.Item
@@ -112,7 +113,12 @@ sealed interface BisPhase {
     data object Loading : BisPhase
 
     /** The list; [offlineSinceMillis] is when the saved copy was fetched, shown in the offline strip. */
-    data class Loaded(val list: BisList, val offlineSinceMillis: Long?) : BisPhase
+    data class Loaded(
+        val list: BisList,
+        val offlineSinceMillis: Long?,
+        /** The published file, band and the build's items the list was worded from (the spec page words them its own way). */
+        val published: BisPublished? = null,
+    ) : BisPhase
 
     /** The file has no list for this range and faction. */
     data class NoList(val offlineSinceMillis: Long?) : BisPhase
@@ -123,6 +129,9 @@ sealed interface BisPhase {
     /** The CDN answered with an error. */
     data object Failed : BisPhase
 }
+
+/** What a loaded list was worded from. */
+data class BisPublished(val file: BisFile, val band: BisBand, val items: List<Item>)
 
 /** The picker's choices and the character the tab belongs to. */
 data class BisContext(
@@ -286,7 +295,7 @@ class BisModel(
         val selection = state.value.context.selection
         val band = file.band(selection.range, selection.faction) ?: return BisPhase.NoList(offlineSince)
         val list = BisListBuilder(res, items, worn).list(file, band, specLabel(selection), BisLabels.range(res, selection.range))
-        return BisPhase.Loaded(list, offlineSince)
+        return BisPhase.Loaded(list, offlineSince, BisPublished(file, band, items))
     }
 
     fun specLabel(selection: BisSelection): String {

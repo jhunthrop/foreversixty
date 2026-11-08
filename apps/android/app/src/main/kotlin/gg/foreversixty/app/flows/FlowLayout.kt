@@ -23,14 +23,20 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import gg.foreversixty.app.common.ClassCrest
@@ -72,6 +78,8 @@ fun FlowHead(
     titleColor: Color = FsColor.strong,
     crest: String? = null,
     lead: (@Composable () -> Unit)? = null,
+    /** The head's answer under the title block, 16 below it (the mock's `.ans`): a secondary page's figure and its line. */
+    answer: (@Composable ColumnScope.() -> Unit)? = null,
 ) {
     Column(Modifier.fillMaxWidth().parityRegion(ParityRegion.HEAD).padding(top = FsSpace.space4, bottom = HEAD_BOTTOM)) {
         Row(Modifier.fillMaxWidth().parityRegion(ParityRegion.HEAD_TITLE), verticalAlignment = Alignment.CenterVertically) {
@@ -83,7 +91,12 @@ fun FlowHead(
             // The title block is as wide as its widest line (the mock's shrink-wrapped head), the facts across it.
             val bounded = if (image != null) Modifier.weight(1f, fill = false) else Modifier
             Column(bounded.width(IntrinsicSize.Max)) {
-                Text(title, style = FsType.title, color = titleColor, modifier = Modifier.semantics { heading() })
+                // A title that wraps keeps two lines of 38 (Marcellus overshoots its box on the outer lines); one line is unchanged.
+                var lines by remember { mutableIntStateOf(1) }
+                Text(
+                    title, style = FsType.title, color = titleColor, onTextLayout = { lines = it.lineCount },
+                    modifier = Modifier.semantics { heading() }.then(if (lines > 1) Modifier.linesBox(FsType.title.lineHeight, lines) else Modifier),
+                )
                 if (facts.isNotEmpty()) {
                     // The facts wrap (`.ph-meta`, gap 6 by 16) when they outgrow one line.
                     FlowRow(
@@ -95,6 +108,9 @@ fun FlowHead(
                     }
                 }
             }
+        }
+        if (answer != null) {
+            Column(Modifier.padding(top = FsSpace.space4).fillMaxWidth().parityRegion(ParityRegion.HEAD_ANSWER), content = answer)
         }
     }
 }
@@ -173,6 +189,13 @@ fun FlowRule() {
 @Composable
 fun FlowGap(height: Dp) {
     Spacer(Modifier.size(width = 0.dp, height = height))
+}
+
+/** Holds wrapped text to [lines] lines of [lineHeight], centred, as a CSS line box does. */
+fun Modifier.linesBox(lineHeight: TextUnit, lines: Int): Modifier = layout { measurable, constraints ->
+    val placeable = measurable.measure(constraints)
+    val box = minOf(placeable.height, (lineHeight * lines).roundToPx())
+    layout(placeable.width, box) { placeable.place(0, (box - placeable.height) / 2) }
 }
 
 private val CREST = 56.dp

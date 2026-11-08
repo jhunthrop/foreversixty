@@ -1,0 +1,179 @@
+Back to Gear
+Share
+Holy Priest
+Best in slot
+This set, simmed 7 nov
+867.3 HPS
+OVERHEAL
+6%
+MANA LASTS
+2:00
+HEALING PER MANA
+6.6
+Level 60 Human · 51 talent points · level 63 unknown, 180 s · Raid-ready, Phase 1: 14 buffs, 8 debuffs and 10 consumables. · 3,003 runs
+Talents in planner
+Holy · 60 · Alliance · Raid-ready
+Change ▾
+Spec
+Discipline
+Holy
+Shadow
+Level
+20-29
+30-39
+40-49
+50-59
+60
+Faction
+Alliance
+Horde
+Profile
+Raid-ready
+Bare
+Race
+Human
+Sources
+All sources
+16 of 17 slots have a pick at this level. Sign in to see them against your gear.
+By slot
+Where to go
+Glowing Brightwood Staff is a two-hander: the off hand stays empty.
+Head
+Level 57
+Devout Crown
++24 Int · +15 Spi
+Darkmaster Gandling · Scholomance (58-60)
+Same
+next: −18.4 vs Mooncloth Circlet
+Neck
+Level 36
+Glowing Eye of Mordresh
++20 Healing · +8 Int
+Mordresh Fire Eye · Razorfen Downs (37-46)
+Same
+next: −2.9 vs Lady Maye's Pendant
+Shoulder
+Level 56
+Mooncloth Shoulders
++37 Healing · +13 SP
+Crafted · Tailoring
+Same
+next: −5.5 vs Earthenweave Mantle
+Back
+Level 60
+Drape of Recovery
++31 Healing · +10 SP
+Vendor: Pix Xizzix
++3.9 HPS
+vs Caretaker's Cape
+Chest
+Level 57
+Truefaith Vestments
++14 Sta · +73 Healing
+Crafted · Tailoring
++0.8 HPS
+vs Field Marshal's Satin Tunic
+Wrist
+Level 52
+Devout Bracers
++8 Int · +10 Spi
+Thuzadin Shadowcaster · Stratholme (58-60) · 1%
+Same
+No close alternative
+Main hand
+Level 49
+Glowing Brightwood Staff
++29 Int · +15 Sta
+World drop (50-57) · BoE · on the AH
++21.1 HPS
+vs Resurgence Rod
+Off hand
+Nothing better yet
+Glowing Brightwood Staff is a two-hander; the off hand is taken.
+Ranged
+Level 60
+Torch of Light
++17 Healing · +6 SP
+Crafted · Enchanting
++5.3 HPS
+vs Brilliant Wand
+Hands
+Level 54
+Devout Gloves
++17 Spi · +10 Int
+Archivist Galford · Stratholme (58-60)
+Same
+next: −15.7 vs Hands of the Exalted Herald
+Waist
+Level 53
+Wisdom of the Timbermaw
++14 Int · +31 Healing
+Crafted · Tailoring
++3.4 HPS
+vs Penitent's Cinch
+Legs
+Level 56
+Devout Skirt
++23 Spi · +15 Int
+Baron Rivendare · Stratholme (58-60)
+Same
+next: −25.7 vs Earthenweave Leggings
+Feet
+Level 54
+Devout Sandals
++17 Spi · +10 Int
+Maleki the Pallid · Stratholme (58-60)
+Same
+next: −16.1 vs Faith Healer's Boots
+Ring
+Level 60
+Blessed Band of Light
++31 Healing · +10 SP
+Vendor: Pix Xizzix
+Same
+next: −0.5 vs Rosewine Circle
+Ring
+Level 57
+Band of Mending
++7 Sta · +7 Int
+Balnazzar · Stratholme (58-60)
+Same
+next: −1.4 vs Rosewine Circle
+Trinket
+Level 60
+Serenity Field
++42 Healing · +14 SP
+Vendor: Pix Xizzix
++8.3 HPS
+vs Weakness Analyzer
+Trinket
+Level 50
+Dormant Heart of the Mountain
++7 Fire res · +7 Nature res
+Crafted · Enchanting
+Same
+No close alternative
+What to stack
+Stack mp5, then healing power, then spirit.
+Normalized to MP5 = 1.00. Per point of stat, normalized to MP5 = 1.00, with HPS per point and the sim error. Haste: not significant
+MP5
+1.00
+0.569 HPS per point
+Healing power
+0.73
+0.417 HPS per point
+Spirit
+0.55
+0.312 HPS per point
+Intellect
+0.38
+0.214 HPS per point
+Crit rating
+0.30
+0.171 HPS per point
+The Forever Sixty addon rates every item in your bags and tooltips with these weights. Use these weights in the addon ›
+Talents, rotation and stat priority for this spec: Holy Priest guide ›
+Home
+Raid
+Gear
+Activity

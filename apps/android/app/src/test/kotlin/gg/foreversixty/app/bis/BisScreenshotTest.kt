@@ -32,7 +32,7 @@ import java.time.ZoneOffset
 import gg.foreversixty.app.testing.STRICT_SNAPSHOT
 
 /**
- * The BiS tab's states (spec F3) at Pixel 9 size, at the default font scale and at 2.0, with the
+ * The list picker and the item tooltip (spec F3) at Pixel 9 size, at the default font scale and at 2.0, with the
  * repo's own icon files (as Home's tests draw them).
  * Record: ./gradlew :app:recordRoborazziDebug   Verify: ./gradlew :app:verifyRoborazziDebug
  */
@@ -58,20 +58,6 @@ class BisScreenshotTest {
         RaidsOpening.from(BisTestData.fixture("cdn.dates", ListSerializer(KeyDate.serializer()))),
     )
     private val catalog = BisTestData.catalog()
-
-    private fun content(phase: BisPhase) = @Composable {
-        BisContent(BisUiState(phase, context, build = BisTestData.BUILD), catalog, query = "", nowMillis = BisTestData.NOW)
-    }
-
-    @Test fun `list`() = both("bis_list", content(BisPhase.Loaded(list, null)))
-
-    @Test fun `offline`() = both("bis_offline", content(BisPhase.Loaded(list, BisTestData.NOW - DAY)))
-
-    @Test fun `loading`() = both("bis_loading", content(BisPhase.Loading))
-
-    @Test fun `error`() = both("bis_error", content(BisPhase.Failed))
-
-    @Test fun `not cached`() = both("bis_not_cached", content(BisPhase.NotCached))
 
     /** The sheets draw over the tab bar on a device, so they are captured alone, as the sheet's content. */
     @Test fun `picker`() = both("bis_picker", screen = { PickerSheet() }, inShell = false)
@@ -115,7 +101,6 @@ class BisScreenshotTest {
     }
 
     private companion object {
-        const val DAY = 86_400_000L
         const val LARGE = 2f
     }
 }
