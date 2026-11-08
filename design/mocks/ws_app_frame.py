@@ -12,6 +12,7 @@ The frame is chrome, not content: the parity gate for native compares the conten
 """
 from __future__ import annotations
 
+import json
 import re
 from pathlib import Path
 
@@ -32,6 +33,16 @@ BARS = {
 TABS = [('home', 'Home'), ('raid', 'Raid'), ('gear', 'Gear'), ('activity', 'Activity')]
 # The crest that opens the profile menu sits top left on every tab root (flows spec section 3).
 CREST = '../../../web/public/icons/hd/crests/{cls}.webp'
+# Battle.net avatar stand-ins (the client's race portraits, 84 px like the render CDN's avatar.jpg): the selected character's
+# avatar_url on the profile button and the menu rows (owner exception to the one crest language, flows spec section 3).
+AVATAR = '../data/avatars/{name}.jpg'
+_TOKENS = json.loads((HERE.parent / 'tokens' / 'tokens.json').read_text())['color']['faction']
+FACTION_RING = {'alliance': _TOKENS['allianceBar']['$value'], 'horde': _TOKENS['hordeBar']['$value']}
+SELECTED = {'warrior': ('thandrel', 'alliance'), 'hunter': ('felsnap', 'alliance')}  # the scenario's selected character
+DEFAULT = object()  # avatar: the selected character's own
+BADGE = 0.4  # the faction badge, as a share of the portrait's diameter
+# The tier list's faction toggle mark (web/src/lib/faction-mark.ts factionMarkSrc): the client's unit-frame emblem in HD.
+FACTION_MARK = '../../../web/public/icons/hd/faction/{faction}.webp'
 
 _GLYPH = {
     'home': '<path d="M4 11 12 4l8 7v9h-5v-6H9v6H4z"/>',
@@ -93,7 +104,11 @@ main{min-height:calc(var(--dev-h) - var(--top) - var(--bottom));flex:1 0 auto}
   background:var(--wipe);color:#17110a;font:700 12px/18px var(--font-body);text-align:center}
 [data-platform=android] .app-tabs .badge{top:2px;left:calc(50% + 10px)}
 .app-nav .menu-crest{position:relative;width:44px;height:44px}
-.app-nav .menu-crest img,.app-nav .menu-crest .anon{width:32px;height:32px;border-radius:50%;box-shadow:0 0 0 2px var(--ring,#9a9484);background:var(--raised)}
+.app-nav .menu-crest .anon{width:32px;height:32px;border-radius:50%;box-shadow:0 0 0 2px #9a9484;background:var(--raised)}
+.pf{position:relative;display:inline-block;flex:none}
+.pf-img{width:100%;height:100%;border-radius:50%;object-fit:cover;box-shadow:0 0 0 2px var(--ring);background:var(--raised);display:block}
+.pf-anon{display:flex!important;align-items:center;justify-content:center;color:var(--muted)}
+.pf-badge{position:absolute;top:-3px;right:-4px;object-fit:contain;filter:drop-shadow(0 0 1px var(--bg)) drop-shadow(0 0 1px var(--bg))}
 .app-nav .menu-crest .anon{display:flex;align-items:center;justify-content:center;color:var(--muted)}
 [data-platform=android] .app-tabs{padding-top:12px;border-top:0;background:var(--raised)}
 [data-platform=android] .app-tabs a{gap:4px;min-height:48px}
@@ -121,19 +136,34 @@ def status_bar(platform: str) -> str:
     return '<div class="app-status" aria-hidden="true"><span>9:41</span><span class="sys"><i></i><i></i><i class="b"></i></span></div>'
 
 
-def menu_crest(who: str | None) -> str:
-    """The profile menu's door: the selected character's crest (who is its class slug), or a person glyph signed out."""
+def portrait(faction: str, avatar: str | None, px: int) -> str:
+    """A character on the profile button and in the menu (owner, 2026-11-08): the Battle.net portrait says "me"; the ring in
+    the faction's colour and the faction emblem badge on its top right say "which faction" (the class is Home's header
+    crest). With no avatar (a new character, a failed fetch) the default profile image, the person glyph signed out
+    uses, fills the ring and the badge stays: never the class crest, so the class icon is never drawn twice on Home."""
+    b = round(px * BADGE)
+    face = (f'<img class="pf-img" src="{AVATAR.format(name=avatar)}" alt="">' if avatar
+            else f'<span class="pf-img pf-anon">{glyph("you", round(px * 0.6))}</span>')
+    badge = f'<img class="pf-badge" src="{FACTION_MARK.format(faction=faction)}" alt="" style="width:{b}px;height:{b}px">'
+    return (f'<span class="pf" style="width:{px}px;height:{px}px;--ring:{FACTION_RING[faction]}">'
+            f'{face}{badge}</span>')
+
+
+def menu_crest(who: str | None, avatar=DEFAULT) -> str:
+    """The profile menu's door, top left on every tab root inside a 44 pt / 48 dp target: the selected character's
+    portrait (who is its class slug), or a person glyph signed out."""
     if who:
-        return (f'<a href="#" class="menu-crest" aria-label="Open menu" style="--ring:var(--color-class-{who})">'
-                f'<img src="{CREST.format(cls=who)}" alt=""></a>')
+        av, faction = SELECTED.get(who, (None, 'alliance'))
+        av = av if avatar is DEFAULT else avatar
+        return f'<a href="#" class="menu-crest" aria-label="Open menu">{portrait(faction, av, 32)}</a>'
     return f'<a href="#" class="menu-crest" aria-label="Open menu"><span class="anon">{glyph("you", 20)}</span></a>'
 
 
 def nav_bar(platform: str, back: str = '', title: str = '', share: bool = False, show_title: bool = False,
-            who: str | None = None, menu: bool = False) -> str:
+            who: str | None = None, menu: bool = False, avatar=DEFAULT) -> str:
     left = ''
     if menu and not back:
-        left = menu_crest(who)
+        left = menu_crest(who, avatar)
     elif back:
         g = glyph('back_ios' if platform == 'ios' else 'back_android', 22 if platform == 'ios' else 24, 2.2 if platform == 'ios' else 1.8)
         left = f'<a href="#" aria-label="Back to {back}">{g}{back if platform == "ios" else ""}</a>'
@@ -160,19 +190,19 @@ def tab_bar(platform: str, active: str, badges: dict | None = None) -> str:
 
 
 def chrome(platform: str, tab: str | None, back: str = '', title: str = '', share: bool = False, navbar: bool = True,
-           who: str | None = 'warrior', badges: dict | None = None) -> tuple[str, str, str]:
+           who: str | None = 'warrior', badges: dict | None = None, avatar=DEFAULT) -> tuple[str, str, str]:
     """(body style vars, top html, bottom html). A tab root (a tab, no back) carries the menu crest of `who` (the selected
-    character's class; None signed out), except Home with a character: its head's crest and name open the menu, so the
-    crest is not drawn twice (flows spec section 3). `badges` are the tabs' counts."""
-    menu = bool(tab) and not (tab == 'home' and who)
-    top = status_bar(platform) + (nav_bar(platform, back, title, share, who=who, menu=menu) if navbar else '')
+    character's class; the person glyph signed out), on all four tabs in the same place (flows spec section 3). `badges`
+    are the tabs' counts."""
+    menu = bool(tab)
+    top = status_bar(platform) + (nav_bar(platform, back, title, share, who=who, menu=menu, avatar=avatar) if navbar else '')
     bottom = (tab_bar(platform, tab, badges) if tab else '') + '<span class="app-home" aria-hidden="true"></span>'
     return frame_vars(platform, bool(tab), navbar), top, bottom
 
 
 def _inject(html: str, platform: str, tab: str | None, back: str, title: str, share: bool, navbar: bool, extra_css: str = '',
-            who: str | None = 'warrior', badges: dict | None = None) -> str:
-    style, top, bottom = chrome(platform, tab, back, title, share, navbar, who, badges)
+            who: str | None = 'warrior', badges: dict | None = None, avatar=DEFAULT) -> str:
+    style, top, bottom = chrome(platform, tab, back, title, share, navbar, who, badges, avatar)
     html = html.replace('</head>', f'<style>{APP_CSS}{extra_css}</style></head>', 1)
     html = re.sub(r'<body([^>]*)>', lambda m: f'<body{m.group(1)} data-platform="{platform}" style="{style}">{top}', html, count=1)
     return html.replace('</body>', f'{bottom}</body>', 1)
@@ -186,9 +216,9 @@ def from_web(mock: str, platform: str, tab: str | None, back: str = '', title: s
 
 
 def app_page(platform: str, html: str, tab: str | None, back: str = '', title: str = '', share: bool = False, navbar: bool = True,
-             extra_css: str = '', who: str | None = 'warrior', badges: dict | None = None) -> str:
+             extra_css: str = '', who: str | None = 'warrior', badges: dict | None = None, avatar=DEFAULT) -> str:
     """An app-only screen built with ws_prims.build_page (its HTML already carries the system CSS)."""
-    return _inject(html, platform, tab, back, title, share, navbar, extra_css, who, badges)
+    return _inject(html, platform, tab, back, title, share, navbar, extra_css, who, badges, avatar)
 
 
 def write_app(name: str, html: str) -> Path:
