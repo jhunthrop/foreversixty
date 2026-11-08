@@ -23,6 +23,7 @@ from mocklib import ROOT, CLASS_COLOR
 from ws_app_frame import DEVICES, app_page, from_web, glyph, write_app
 import ws_app_flows as flows
 import ws_app_secondary as secondary
+import ws_app_character as character
 from ws_home import NOW, RAIDS, clock_to, day_text, raids_open
 from ws_prims import (Button, Checklist, Countdown, Figure, Notice, PageHeader, Rows, Row, Section, Switch, Tag, Meter, build_page,
                       crest_img, icon)
@@ -302,14 +303,7 @@ SCREENS: dict = {
     'expired': expired,
     'search': search('empty'),
     'search-results': search('results'),
-    # Character (pushed from Home's head or You)
-    'character-owner-34': W('web-character-owner-34', 'home', back='Home', title='Felsnap', share=True),
-    'character-owner-60': W('web-character-owner-60-premium', 'home', back='Home', title='Thandrel', share=True),
-    'character-visitor-60': W('web-character-visitor-60', 'home', back='Search', title='Elyra Duskvale', share=True),
-    'character-no-score': W('web-character-no-score', 'home', back='Home'),
-    'character-not-found': W('web-character-not-found', 'home', back='Search'),
-    'character-loading': W('web-character-loading', 'home', back='Home'),
-    'character-error': W('web-character-error', 'home', back='Home'),
+    # Character, reports and the report are app-composed in ws_app_character.py
     # BiS (tab BiS): the landing answers for your character; the spec list is the paperdoll page
     'bis-spec-60': W('web-bis-dps-60', 'gear', back='Gear', title='Marksmanship', share=True),
     'bis-spec-healer-60': W('web-bis-healer-60', 'gear', back='Gear', title='Holy', share=True),
@@ -325,15 +319,8 @@ SCREENS: dict = {
     'planner-loading': W('web-planner-loading', 'home', back='Home'),
     'planner-error': W('web-planner-error', 'home', back='Home'),
     'build-shared': W('web-b', 'home', back='Home', share=True),
-    # Logs, reports and rankings (You > Logs; Home's Next rows)
-    'reports': W('web-reports-list', 'home', back='Home'),
-    'reports-empty': W('web-reports-empty', 'home', back='Home'),
-    'reports-failed': W('web-reports-failed', 'home', back='Home'),
-    'report': W('web-report-summary', 'home', back='Logs', share=True),
-    'report-player': W('web-report-player', 'home', back='Report', share=True),
-    'report-coach': W('web-report-coach', 'home', back='Report'),
+    # Report processing and error, and rankings (web-derived)
     'report-processing': W('web-report-processing', 'home', back='Logs'),
-    'report-loading': W('web-report-loading', 'home', back='Logs'),
     'report-error': W('web-report-error', 'home', back='Logs'),
     'rankings': W('web-rankings', 'home', back='Home'),
     'rankings-you': W('web-rankings-you', 'home', back='Home'),
@@ -357,6 +344,7 @@ SCREENS: dict = {
     'live-activity': live_activity,
     **flows.SCREENS,
     **secondary.SCREENS,
+    **character.SCREENS,
 }
 
 
