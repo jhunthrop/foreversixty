@@ -42,3 +42,4 @@ src/data/specs.json
 
 # Written by api/internal/site's TestSharedBuildParityFixtures (-update): the API page's bytes, byte for byte.
 tests/e2e/fixtures/shared-build/
+src/lib/copy/shared/*.generated.ts

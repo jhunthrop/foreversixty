@@ -1,6 +1,7 @@
 import { ctaCopy } from '../addon/cta-copy';
 import { compactAgo } from '../dates';
-import { sharedText } from '../copy/shared';
+import { fillShared } from '../copy/shared';
+import { sharedCharactersUpdatedFrom } from '../copy/shared/characters.generated';
 // web/src/lib/account/character-list-copy.ts
 // Every visible string CharacterList.svelte and Account.svelte's ?refreshed=1 toast use.
 // Voice, per design/DESIGN-SYSTEM.md: reference, not pitch. State the thing and stop.
@@ -31,7 +32,7 @@ export const characterListCopy = {
   /** The account's Battle.net freshness: "Updated 2 h ago from Battle.net" (users.bnet_imported_at,
    *  which every sign-in, visit refresh and background refresh moves). */
   updatedFrom: (at: string, now?: Date): string =>
-    sharedText('shared.characters.updatedFrom', { ago: compactAgo(new Date(at), now) }),
+    fillShared(sharedCharactersUpdatedFrom, { ago: compactAgo(new Date(at), now) }),
   verified: 'Verified',
   /** The main character's pill, and the control on every alt. */
   main: 'Main',

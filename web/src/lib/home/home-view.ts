@@ -9,7 +9,27 @@ import { bisHref } from '../character-profile';
 import { guildHref, guildRaidHref } from '../characters';
 import type { SlotUpgrade } from './upgrades';
 import { slotSourceLine } from './source-line';
-import { sharedText } from '../copy/shared';
+import { fillShared } from '../copy/shared';
+import {
+  sharedHomeCheckAgain,
+  sharedHomeCheckAgainSub,
+  sharedHomeFirstRaids,
+  sharedHomeGetIn,
+  sharedHomeHowToStart,
+  sharedHomeNoCharacter,
+  sharedHomeOpenBis,
+  sharedHomePaste,
+  sharedHomePasteSub,
+  sharedHomePickClass,
+  sharedHomeSignIn,
+  sharedHomeSignedInAs,
+  sharedHomeSignedOutMeta,
+  sharedHomeSignedOutTitle,
+  sharedHomeStepAddonSub,
+  sharedHomeStepSignInSub,
+  sharedHomeVsEmpty,
+  sharedHomeVsWorn,
+} from '../copy/shared/home.generated';
 
 /** How many upgrades home lists (ruling R1). */
 export const UPGRADES_SHOWN = 3;
@@ -17,34 +37,34 @@ const MAX_LEVEL = 60;
 const BAND_SPAN = 9;
 
 export const homeCopy = {
-  signedOutTitle: sharedText('shared.home.signedOutTitle'),
-  signedOutMeta: sharedText('shared.home.signedOutMeta'),
-  signIn: sharedText('shared.home.signIn'),
-  pickClass: sharedText('shared.home.pickClass'),
-  howToStart: sharedText('shared.home.howToStart'),
+  signedOutTitle: sharedHomeSignedOutTitle,
+  signedOutMeta: sharedHomeSignedOutMeta,
+  signIn: sharedHomeSignIn,
+  pickClass: sharedHomePickClass,
+  howToStart: sharedHomeHowToStart,
   steps: [
     {
-      title: sharedText('shared.home.signIn'),
-      sub: sharedText('shared.home.stepSignInSub'),
+      title: sharedHomeSignIn,
+      sub: sharedHomeStepSignInSub,
     },
     {
       title: ctaCopy.installAddonAndCompanion,
-      sub: sharedText('shared.home.stepAddonSub'),
+      sub: sharedHomeStepAddonSub,
     },
   ],
-  firstRaids: (date: string) => sharedText('shared.home.firstRaids', { date }),
-  openBis: sharedText('shared.home.openBis'),
-  vsWorn: (name: string) => sharedText('shared.home.vsWorn', { name }),
-  vsEmpty: sharedText('shared.home.vsEmpty'),
-  noCharacter: sharedText('shared.home.noCharacter'),
-  signedInAs: (tag: string) => sharedText('shared.home.signedInAs', { tag }),
-  getIn: sharedText('shared.home.getIn'),
-  checkAgain: sharedText('shared.home.checkAgain'),
-  checkAgainSub: sharedText('shared.home.checkAgainSub'),
-  paste: sharedText('shared.home.paste'),
-  pasteSub: sharedText('shared.home.pasteSub'),
+  firstRaids: (date: string) => fillShared(sharedHomeFirstRaids, { date }),
+  openBis: sharedHomeOpenBis,
+  vsWorn: (name: string) => fillShared(sharedHomeVsWorn, { name }),
+  vsEmpty: sharedHomeVsEmpty,
+  noCharacter: sharedHomeNoCharacter,
+  signedInAs: (tag: string) => fillShared(sharedHomeSignedInAs, { tag }),
+  getIn: sharedHomeGetIn,
+  checkAgain: sharedHomeCheckAgain,
+  checkAgainSub: sharedHomeCheckAgainSub,
+  paste: sharedHomePaste,
+  pasteSub: sharedHomePasteSub,
   getAddon: ctaCopy.getAddonAndCompanion,
-  getAddonSub: sharedText('shared.home.stepAddonSub'),
+  getAddonSub: sharedHomeStepAddonSub,
 } as const;
 
 export const homeHrefs = {

@@ -1,53 +1,30 @@
 // web/src/lib/copy/shared.ts
 // The words the site and both apps show (apps/shared/copy/shared.json, mobile redesign spec 2.2).
-// The web copy modules read their shared words through these two functions and keep their own
-// names and exports, so no call site changes. Keys are typed from the JSON itself: a key that is
-// not in the catalog does not compile.
-import catalog from '../../../../apps/shared/copy/shared.json';
-
-type Strings = typeof catalog.strings;
-export type SharedKey = keyof Strings;
+// Each word is its own export in shared/<group>.generated.ts (web/scripts/gen-mobile-copy.mjs), one
+// module per key group, so a page bundles only the groups it reads; the copy modules fill their placeholders here and keep their
+// own names and exports, so no call site changes.
 
 type Values = Readonly<Record<string, string | number>>;
-interface TextEntry {
-  text: string;
-}
-interface PluralEntry {
-  count: string;
-  one: string;
-  other: string;
+
+/** A plural entry: its `one` form, and the `other` form naming the count placeholder. */
+export interface SharedPlural {
+  readonly count: string;
+  readonly one: string;
+  readonly other: string;
 }
 
 const PLACEHOLDER = /\{([a-zA-Z][a-zA-Z0-9]*)\}/g;
 
-function entry(key: SharedKey): unknown {
-  return (catalog.strings as Record<string, unknown>)[key];
-}
-
 /** `{name}` placeholders filled from `values`; a placeholder without a value fails loudly. */
-function fill(key: SharedKey, template: string, values: Values): string {
+export function fillShared(template: string, values: Values): string {
   return template.replace(PLACEHOLDER, (_, name: string) => {
     const value = values[name];
-    if (value === undefined) throw new Error(`shared copy ${key}: no value for {${name}}`);
+    if (value === undefined) throw new Error(`shared copy "${template}": no value for {${name}}`);
     return String(value);
   });
 }
 
-/** A shared string, its placeholders filled. */
-export function sharedText(key: SharedKey, values: Values = {}): string {
-  const raw = entry(key);
-  if (typeof raw === 'string') return fill(key, raw, values);
-  if (raw !== null && typeof raw === 'object' && 'text' in raw)
-    return fill(key, (raw as TextEntry).text, values);
-  throw new Error(`shared copy ${key}: not a text entry`);
-}
-
-/** A shared plural: its `one` form at 1, else `other` with the count filled in. */
-export function sharedPlural(key: SharedKey, count: number): string {
-  const raw = entry(key);
-  if (raw === null || typeof raw !== 'object' || !('count' in raw)) {
-    throw new Error(`shared copy ${key}: not a plural entry`);
-  }
-  const plural = raw as PluralEntry;
-  return fill(key, count === 1 ? plural.one : plural.other, { [plural.count]: count });
+/** A plural's `one` form at 1, else `other` with the count filled in. */
+export function pluralShared(entry: SharedPlural, count: number): string {
+  return fillShared(count === 1 ? entry.one : entry.other, { [entry.count]: count });
 }

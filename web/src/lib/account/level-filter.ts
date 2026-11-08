@@ -3,14 +3,15 @@
 // character is imported whatever its level, but a list shows level 10 and up by default and
 // folds the rest behind "Show low-level characters (N)". A character whose level is unknown is
 // never folded, and a kept key (the current character, the main) always shows.
-import { sharedText } from '../copy/shared';
+import { fillShared } from '../copy/shared';
+import { sharedLowLevelHide, sharedLowLevelShow } from '../copy/shared/lowLevel.generated';
 
 /** Characters below this level are folded by default. */
 export const LOW_LEVEL_BELOW = 10;
 
 export const lowLevelCopy = {
-  show: (count: number): string => sharedText('shared.lowLevel.show', { count }),
-  hide: sharedText('shared.lowLevel.hide'),
+  show: (count: number): string => fillShared(sharedLowLevelShow, { count }),
+  hide: sharedLowLevelHide,
 } as const;
 
 export function isLowLevel(item: { level?: number }): boolean {

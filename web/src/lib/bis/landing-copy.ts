@@ -4,7 +4,22 @@
 // the spec page's much larger copy object.
 import { bandLabel } from './landing-bands';
 import { ctaCopy } from '../addon/cta-copy';
-import { sharedText } from '../copy/shared';
+import { fillShared } from '../copy/shared';
+import {
+  sharedBisLandingAnswerLabel,
+  sharedBisLandingCountFailed,
+  sharedBisLandingCountLabel,
+  sharedBisLandingCountLabelStale,
+  sharedBisLandingCountUnit,
+  sharedBisLandingExcludedMany,
+  sharedBisLandingExcludedOne,
+  sharedBisLandingFallbackAction,
+  sharedBisLandingLeadButton,
+  sharedBisLandingNoCharacter,
+  sharedBisLandingNoSync,
+  sharedBisLandingSetupLink,
+  sharedBisLandingUnder20,
+} from '../copy/shared/bisLanding.generated';
 
 export const landingCopy = {
   title: 'Best in slot',
@@ -18,29 +33,29 @@ export const landingCopy = {
   tierHref: '/tiers',
 
   /** The head's answer (ui/CharacterAnswer with a figure). */
-  answerLabel: sharedText('shared.bisLanding.answerLabel'),
+  answerLabel: sharedBisLandingAnswerLabel,
   /** The caption under the count: how many of the band's best-in-slot pieces the character wears. */
-  countLabel: sharedText('shared.bisLanding.countLabel'),
-  countLabelStale: sharedText('shared.bisLanding.countLabelStale'),
-  countFailed: sharedText('shared.bisLanding.countFailed'),
+  countLabel: sharedBisLandingCountLabel,
+  countLabelStale: sharedBisLandingCountLabelStale,
+  countFailed: sharedBisLandingCountFailed,
   retry: 'Try again',
-  noSync: sharedText('shared.bisLanding.noSync'),
+  noSync: sharedBisLandingNoSync,
   noSyncLink: ctaCopy.getAddonAndCompanion,
   noSyncHref: '/setup',
-  under20: sharedText('shared.bisLanding.under20'),
-  noCharacter: sharedText('shared.bisLanding.noCharacter'),
-  setupLink: sharedText('shared.bisLanding.setupLink'),
+  under20: sharedBisLandingUnder20,
+  noCharacter: sharedBisLandingNoCharacter,
+  setupLink: sharedBisLandingSetupLink,
   setupHref: '/setup',
   /** `of 17 slots`: the muted unit after the figure. */
-  countUnit: (total: number): string => sharedText('shared.bisLanding.countUnit', { total }),
+  countUnit: (total: number): string => fillShared(sharedBisLandingCountUnit, { total }),
   /** `Trinkets have no pick at this level range.` / `Neck has no pick at this level range.` */
   excludedNote: (slots: string, plural: boolean): string =>
-    sharedText(plural ? 'shared.bisLanding.excludedMany' : 'shared.bisLanding.excludedOne', { slots }),
+    fillShared(plural ? sharedBisLandingExcludedMany : sharedBisLandingExcludedOne, { slots }),
   /** The one button, sentence case: `Fury gear for 40 to 49`, `Fury gear for 60`. */
   leadButton: (specName: string, band: number): string =>
-    sharedText('shared.bisLanding.leadButton', { spec: specName, band: bandLabel(band) }),
+    fillShared(sharedBisLandingLeadButton, { spec: specName, band: bandLabel(band) }),
   /** A character whose class the site does not know: the action points at the classes below. */
-  fallbackAction: sharedText('shared.bisLanding.fallbackAction'),
+  fallbackAction: sharedBisLandingFallbackAction,
   fallbackHref: '#bis-classes',
 
   /** The ControlBar's one group. */

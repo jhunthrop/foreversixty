@@ -16,6 +16,7 @@ import { join } from 'node:path';
 import {
   ANDROID_ROOT,
   IOS_ROOT,
+  REPO_ROOT,
   camel,
   docLine,
   fail,
@@ -230,6 +231,35 @@ export function renderAndroid(entries, banner) {
   ].join('\n');
 }
 
+// Web ---------------------------------------------------------------------------------------
+
+/** Where the site's shared words go: one module per key group (shared.<group>.*), so a page
+ *  bundles only the groups it reads. One module for the whole catalog put every shared word in
+ *  one chunk that every page loaded (2026-11-08, the BiS page over its budget). */
+export const WEB_DIR = join(REPO_ROOT, 'web/src/lib/copy/shared');
+
+/** shared.json's entries as `{ <file>: <module> }`, one export per key; the site reads them
+ *  through src/lib/copy/shared.ts's fillShared and pluralShared. */
+export function renderWeb(entries, banner) {
+  const quote = (text) => `'${text.replaceAll('\\', '\\\\').replaceAll("'", "\\'")}'`;
+  const groups = new Map();
+  for (const e of entries.filter((entry) => entry.key.startsWith(SHARED_PREFIX))) {
+    const group = e.key.split('.')[1];
+    const forms = e.forms.ios;
+    const value = e.plural
+      ? `{ count: ${quote(e.plural)}, one: ${quote(forms.one)}, other: ${quote(forms.other)} } as const`
+      : quote(forms.text);
+    const line = `/** ${docLine(e.plural ? forms.other : forms.text)} */\nexport const ${camel(e.key.replaceAll('.', '_'))} = ${value};`;
+    groups.set(group, [...(groups.get(group) ?? []), line]);
+  }
+  return Object.fromEntries(
+    [...groups].map(([group, lines]) => [
+      join(WEB_DIR, `${group}.generated.ts`),
+      [banner, '', ...lines, ''].join('\n'),
+    ]),
+  );
+}
+
 export function generate(json = readRepoFile(SOURCE), sharedJson = readRepoFile(SHARED_SOURCE)) {
   const entries = buildCatalog(json, sharedJson);
   const banner = header(SCRIPT, [SOURCE, SHARED_SOURCE]);
@@ -237,6 +267,7 @@ export function generate(json = readRepoFile(SOURCE), sharedJson = readRepoFile(
     [OUTPUTS.xcstrings]: renderXcstrings(entries),
     [OUTPUTS.swift]: renderSwift(entries, banner),
     [OUTPUTS.android]: renderAndroid(entries, banner),
+    ...renderWeb(entries, banner),
   };
 }
 

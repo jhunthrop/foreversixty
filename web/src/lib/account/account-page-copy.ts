@@ -1,5 +1,29 @@
 import { ctaCopy } from '../addon/cta-copy';
-import { sharedText } from '../copy/shared';
+import { fillShared } from '../copy/shared';
+import {
+  sharedAccountDeleteBusy,
+  sharedAccountDeleteButton,
+  sharedAccountDeleteConfirmLabel,
+  sharedAccountDeleteConfirmWord,
+  sharedAccountDeleteDeletedDiscord,
+  sharedAccountDeleteDeletedGuild,
+  sharedAccountDeleteDeletedIdentity,
+  sharedAccountDeleteDeletedPrivate,
+  sharedAccountDeleteDeletedRefundPolicy,
+  sharedAccountDeleteDeletedSubscription,
+  sharedAccountDeleteDeletedTitle,
+  sharedAccountDeleteDone,
+  sharedAccountDeleteIntro,
+  sharedAccountDeleteKeptBilling,
+  sharedAccountDeleteKeptBuilds,
+  sharedAccountDeleteKeptCharacters,
+  sharedAccountDeleteKeptReports,
+  sharedAccountDeleteKeptTitle,
+  sharedAccountDeleteLine,
+  sharedAccountDeleteMismatch,
+  sharedAccountDeleteQuestion,
+  sharedAccountDeleteTitle,
+} from '../copy/shared/account.generated';
 // web/src/lib/account/account-page-copy.ts
 // Every visible string /account's head and sections use (premium spec 2026-11-08 sections 7, 10)
 // that character-list-copy.ts and signin-copy.ts do not already carry.
@@ -36,44 +60,44 @@ export const accountPageCopy = {
   reportsLink: 'Your reports',
   /** The rail's last Section (gap G6, closed by the account-delete lane 2026-11-07). */
   deleteSection: {
-    title: sharedText('shared.account.delete.title'),
-    line: sharedText('shared.account.delete.line'),
-    button: sharedText('shared.account.delete.button'),
+    title: sharedAccountDeleteTitle,
+    line: sharedAccountDeleteLine,
+    button: sharedAccountDeleteButton,
   },
   /** The confirm dialog the Section opens (DELETE /v1/me, operation deleteAccount). */
   deleteDialog: {
-    title: sharedText('shared.account.delete.question'),
-    intro: sharedText('shared.account.delete.intro'),
-    deletedLabel: sharedText('shared.account.delete.deleted.title'),
+    title: sharedAccountDeleteQuestion,
+    intro: sharedAccountDeleteIntro,
+    deletedLabel: sharedAccountDeleteDeletedTitle,
     /** Each line, and the words in it that link (the refund policy). */
     deleted: [
       {
-        text: sharedText('shared.account.delete.deleted.subscription'),
-        link: { label: sharedText('shared.account.delete.deleted.refundPolicy'), href: '/refunds' },
+        text: sharedAccountDeleteDeletedSubscription,
+        link: { label: sharedAccountDeleteDeletedRefundPolicy, href: '/refunds' },
       },
-      { text: sharedText('shared.account.delete.deleted.identity') },
-      { text: sharedText('shared.account.delete.deleted.discord') },
-      { text: sharedText('shared.account.delete.deleted.private') },
-      { text: sharedText('shared.account.delete.deleted.guild') },
+      { text: sharedAccountDeleteDeletedIdentity },
+      { text: sharedAccountDeleteDeletedDiscord },
+      { text: sharedAccountDeleteDeletedPrivate },
+      { text: sharedAccountDeleteDeletedGuild },
     ],
-    keptLabel: sharedText('shared.account.delete.kept.title'),
+    keptLabel: sharedAccountDeleteKeptTitle,
     kept: [
-      { text: sharedText('shared.account.delete.kept.billing') },
-      { text: sharedText('shared.account.delete.kept.reports') },
-      { text: sharedText('shared.account.delete.kept.characters') },
-      { text: sharedText('shared.account.delete.kept.builds') },
+      { text: sharedAccountDeleteKeptBilling },
+      { text: sharedAccountDeleteKeptReports },
+      { text: sharedAccountDeleteKeptCharacters },
+      { text: sharedAccountDeleteKeptBuilds },
     ],
     /** The field's label: the account's BattleTag, or the word for an account with none. */
-    confirmLabel: (word: string): string => sharedText('shared.account.delete.confirmLabel', { word }),
+    confirmLabel: (word: string): string => fillShared(sharedAccountDeleteConfirmLabel, { word }),
     /** What an account without a BattleTag types (the server takes it from every account). */
-    confirmWord: sharedText('shared.account.delete.confirmWord'),
+    confirmWord: sharedAccountDeleteConfirmWord,
     /** Under the field after the server refused what was typed (400 confirm_mismatch, invalid). */
-    mismatch: (word: string): string => sharedText('shared.account.delete.mismatch', { battletag: word }),
-    confirm: sharedText('shared.account.delete.button'),
-    busy: sharedText('shared.account.delete.busy'),
+    mismatch: (word: string): string => fillShared(sharedAccountDeleteMismatch, { battletag: word }),
+    confirm: sharedAccountDeleteButton,
+    busy: sharedAccountDeleteBusy,
     cancel: 'Cancel',
   },
   /** The home page's one-time notice after a deletion (`/?deleted=1`, read once). */
-  deletedNotice: sharedText('shared.account.delete.done'),
+  deletedNotice: sharedAccountDeleteDone,
   signOutAsk: 'Sign out of Forever Sixty on this browser?',
 } as const;

@@ -10,7 +10,18 @@ import type { FeedPage } from '../home/feed';
 import type { GuildSims, SpecWeek } from '../home/home-answer';
 import { API_BASE_URL } from '../planner/config';
 import { clockLabel, clockParts } from '../ui/countdown';
-import { sharedText } from '../copy/shared';
+import { fillShared } from '../copy/shared';
+import { sharedCharacterActivity, sharedCharacterActivityFailed } from '../copy/shared/character.generated';
+import {
+  sharedStandingGraded,
+  sharedStandingPlace,
+  sharedStandingRaid,
+  sharedStandingRaidSigned,
+  sharedStandingRank,
+  sharedStandingRoleDps,
+  sharedStandingRoleHealer,
+  sharedStandingRoleTank,
+} from '../copy/shared/standing.generated';
 
 /** C18: the activity rows the page shows. */
 export const ACTIVITY_ROWS = 5;
@@ -18,14 +29,14 @@ const FEED_TTL_MS = 60_000;
 const MAX_LEVEL = 60;
 
 const ROLE_WORD = {
-  dps: sharedText('shared.standing.role.dps'),
-  healer: sharedText('shared.standing.role.healer'),
-  tank: sharedText('shared.standing.role.tank'),
+  dps: sharedStandingRoleDps,
+  healer: sharedStandingRoleHealer,
+  tank: sharedStandingRoleTank,
 } as const;
 
 export const standingCopy = {
-  activity: sharedText('shared.character.activity'),
-  failed: sharedText('shared.character.activityFailed'),
+  activity: sharedCharacterActivity,
+  failed: sharedCharacterActivityFailed,
 } as const;
 
 export function activityPath(characterKey: string, limit = ACTIVITY_ROWS): string {
@@ -59,7 +70,7 @@ export function guildRankLine(sims: GuildSims | null): string | null {
   if (own === null) return null;
   const band = sims.band >= MAX_LEVEL ? String(MAX_LEVEL) : `${sims.band} to ${sims.band + 9}`;
   const preset = sims.preset === 'raid' ? ' raid' : '';
-  return sharedText('shared.standing.rank', {
+  return fillShared(sharedStandingRank, {
     rank: own.rank,
     of: sims.of,
     role: ROLE_WORD[sims.role],
@@ -72,8 +83,8 @@ export function guildRankLine(sims: GuildSims | null): string | null {
 export function gradeLine(week: SpecWeek | null, specName: string | null): string | null {
   if (week === null || specName === null) return null;
   return week.grade === null
-    ? sharedText('shared.standing.place', { spec: specName, place: week.place, of: week.of })
-    : sharedText('shared.standing.graded', { spec: specName, grade: week.grade });
+    ? fillShared(sharedStandingPlace, { spec: specName, place: week.place, of: week.of })
+    : fillShared(sharedStandingGraded, { spec: specName, grade: week.grade });
 }
 
 /** C21: "Onyxia's Lair in 33 days, 8 hours, 0 min, 18 in"; null once it has started. */
@@ -83,6 +94,6 @@ export function raidLine(raid: NextRaidView | null, now: Date): string | null {
   if (parts === null) return null;
   const values = { raid: raid.title, clock: clockLabel(parts) };
   return raid.counts.in > 0
-    ? sharedText('shared.standing.raidSigned', { ...values, n: raid.counts.in })
-    : sharedText('shared.standing.raid', values);
+    ? fillShared(sharedStandingRaidSigned, { ...values, n: raid.counts.in })
+    : fillShared(sharedStandingRaid, values);
 }

@@ -4,7 +4,6 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import {
-  OUTPUTS,
   buildCatalog,
   generate,
   parseEntry,
@@ -17,7 +16,7 @@ const HINT = 'run `node web/scripts/gen-mobile-copy.mjs` and commit the result';
 describe('mobile copy codegen', () => {
   const generated = generate() as Record<string, string>;
 
-  it.each(Object.values(OUTPUTS) as string[])('%s matches the generator', (file) => {
+  it.each(Object.keys(generated))('%s matches the generator', (file) => {
     expect(readFileSync(file, 'utf8'), HINT).toBe(generated[file]);
   });
 

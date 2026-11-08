@@ -5,7 +5,25 @@
 import { requestEnvelope } from '../account/api';
 import { query } from '../data/query';
 import { API_BASE_URL } from '../planner/config';
-import { sharedText } from '../copy/shared';
+import {
+  sharedFeedFailed,
+  sharedFeedFilterAll,
+  sharedFeedFilterGuild,
+  sharedFeedFilterLabel,
+  sharedFeedFilterLogs,
+  sharedFeedFilterSpec,
+  sharedFeedGuildEmpty,
+  sharedFeedLogsEmpty,
+  sharedFeedTagBestInSlot,
+  sharedFeedTagGuides,
+  sharedFeedTagLogs,
+  sharedFeedTagPatch,
+  sharedFeedTagRankings,
+  sharedFeedTagYourGuild,
+  sharedFeedTagYourSpec,
+  sharedFeedTitle,
+  sharedFeedUploadLog,
+} from '../copy/shared/feed.generated';
 
 export type FeedFilter = 'all' | 'spec' | 'guild' | 'logs';
 /** The API's tags (one per event kind, api/internal/activity KindTag) plus `guides`, which only
@@ -73,27 +91,27 @@ const HOUR_MINUTES = 60;
 const DAY_HOURS = 24;
 
 export const feedCopy = {
-  title: sharedText('shared.feed.title'),
+  title: sharedFeedTitle,
   filters: {
-    all: sharedText('shared.feed.filter.all'),
-    spec: sharedText('shared.feed.filter.spec'),
-    guild: sharedText('shared.feed.filter.guild'),
-    logs: sharedText('shared.feed.filter.logs'),
+    all: sharedFeedFilterAll,
+    spec: sharedFeedFilterSpec,
+    guild: sharedFeedFilterGuild,
+    logs: sharedFeedFilterLogs,
   } satisfies Record<FeedFilter, string>,
-  filterLabel: sharedText('shared.feed.filterLabel'),
+  filterLabel: sharedFeedFilterLabel,
   tags: {
-    your_spec: sharedText('shared.feed.tag.yourSpec'),
-    logs: sharedText('shared.feed.tag.logs'),
-    rankings: sharedText('shared.feed.tag.rankings'),
-    best_in_slot: sharedText('shared.feed.tag.bestInSlot'),
-    guides: sharedText('shared.feed.tag.guides'),
-    your_guild: sharedText('shared.feed.tag.yourGuild'),
-    patch: sharedText('shared.feed.tag.patch'),
+    your_spec: sharedFeedTagYourSpec,
+    logs: sharedFeedTagLogs,
+    rankings: sharedFeedTagRankings,
+    best_in_slot: sharedFeedTagBestInSlot,
+    guides: sharedFeedTagGuides,
+    your_guild: sharedFeedTagYourGuild,
+    patch: sharedFeedTagPatch,
   } satisfies Record<FeedTag, string>,
-  failed: sharedText('shared.feed.failed'),
-  guildEmpty: sharedText('shared.feed.guildEmpty'),
-  logsEmpty: sharedText('shared.feed.logsEmpty'),
-  uploadLog: sharedText('shared.feed.uploadLog'),
+  failed: sharedFeedFailed,
+  guildEmpty: sharedFeedGuildEmpty,
+  logsEmpty: sharedFeedLogsEmpty,
+  uploadLog: sharedFeedUploadLog,
 } as const;
 
 /** The feed filters a viewer gets: signed out none (All only, no bar); Your guild only in a guild. */

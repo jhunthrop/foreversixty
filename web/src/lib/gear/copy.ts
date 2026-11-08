@@ -6,7 +6,19 @@
 // character can wear. The line under the title says so with both numbers (fix round 1 ruling 3).
 import { dropPercentLabel } from '../items/drop-chance';
 import { itemNotInDataPhrase } from '../items/unknown-item-copy';
-import { sharedText } from '../copy/shared';
+import {
+  sharedPaperdollBest,
+  sharedPaperdollEmpty,
+  sharedPaperdollNotScored,
+  sharedPaperdollNotSimChecked,
+  sharedPaperdollNothingBetter,
+  sharedPaperdollSame,
+  sharedPaperdollTwoHand,
+  sharedPaperdollVersus,
+  sharedPaperdollVersusYour,
+  sharedPaperdollWorn,
+  sharedPaperdollYouHaveThis,
+} from '../copy/shared/paperdoll.generated';
 
 /** "+18.4 pts", one decimal as the API serves it, a whole number without its ".0". */
 export function points(value: number): string {
@@ -46,23 +58,23 @@ export const gearCopy = {
     shirt: 'Shirt',
     tabard: 'Tabard',
     /** An empty slot's line 1 on a worn doll. */
-    emptyTitle: sharedText('shared.paperdoll.empty'),
-    twoHand: sharedText('shared.paperdoll.twoHand'),
-    best: sharedText('shared.paperdoll.best'),
-    notScored: sharedText('shared.paperdoll.notScored'),
+    emptyTitle: sharedPaperdollEmpty,
+    twoHand: sharedPaperdollTwoHand,
+    best: sharedPaperdollBest,
+    notScored: sharedPaperdollNotScored,
     /** A tie with the pick (lib/bis/doll-view.ts `isTie`). */
-    same: sharedText('shared.paperdoll.same'),
+    same: sharedPaperdollSame,
     /** A gain the rule cannot price (a weapon no sim checked): never 0. */
-    notSimChecked: sharedText('shared.paperdoll.notSimChecked'),
+    notSimChecked: sharedPaperdollNotSimChecked,
     /** Before the pick under a gain: "vs Lionheart Helm". */
-    versus: sharedText('shared.paperdoll.versus'),
+    versus: sharedPaperdollVersus,
     /** Before the worn item under an upgrade's gain: "vs your Lionheart Helm". */
-    versusYour: sharedText('shared.paperdoll.versusYour'),
+    versusYour: sharedPaperdollVersusYour,
     /** A pick the character already wears, and its line 2. */
-    worn: sharedText('shared.paperdoll.worn'),
-    youHaveThis: sharedText('shared.paperdoll.youHaveThis'),
+    worn: sharedPaperdollWorn,
+    youHaveThis: sharedPaperdollYouHaveThis,
     /** A pick slot with nothing to wear yet. */
-    nothingBetter: sharedText('shared.paperdoll.nothingBetter'),
+    nothingBetter: sharedPaperdollNothingBetter,
     /** A worn cell's line 2 when it has no enchant: "Item level 62". */
     itemLevelLine: (level: number): string => `Item level ${level}`,
     /** The average over the equipped slots, beside the heading. */

@@ -11,7 +11,7 @@
      `data-bis-item`, so the page's one tooltip host opens the real item. -->
 <script lang="ts">
   import type { Snippet } from 'svelte';
-  import { sharedText } from '../../lib/copy/shared';
+  import { sharedPaperdollNothingBetter } from '../../lib/copy/shared/paperdoll.generated';
   import { REGION } from '../../lib/ui/regions';
   import { onMount } from 'svelte';
   import { rarityClassFor } from '../../lib/planner/items';
@@ -28,7 +28,7 @@
   import ItemIcon from './ItemIcon.svelte';
   import LoadError from './LoadError.svelte';
 
-  const NOTHING_BETTER = sharedText('shared.paperdoll.nothingBetter');
+  const NOTHING_BETTER = sharedPaperdollNothingBetter;
 
   let {
     cells,
