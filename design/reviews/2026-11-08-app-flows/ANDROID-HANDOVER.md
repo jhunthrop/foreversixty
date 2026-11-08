@@ -13,7 +13,8 @@ State of `apps/android` against `design/specs/2026-11-08-app-flows.md` (with `HA
 Parity tests: `menu/MenuParityTest.kt` (menu, menu-one, menu-low, menu-out) and `activity/ActivityParityTest.kt` (activity, activity-empty, activity-out), each with 1.5x / 2x golden-only captures, through `testing/ParityCheck.kt`.
 
 ## Next, in the spec's order
-0. **First, once land/ios-shell is on main** (not done by this lane): merge main and re-record the goldens on CI for its token change (the title `letterSpacing` 0em to 0.01em regenerates `Tokens.kt`; every title moves a pixel) and the new first-permission head layout; commit `android-snapshots` and land it alone.
+Note: the title `letterSpacing` token change (0em to 0.01em) arrives with land/ios-shell, which re-records the Android goldens it moves; merge main after it lands before starting.
+
 3. **Home** in its six moments from `/v1/home` `sections` (head with the class crest, never a trigger; Next upgrades with the Best run line computed from the cached BiS and loot files; next raid card or line with the four answers and Late's chips; raid live; Last night; New for you = the three newest Activity rows with `exclude_kinds`; Find a guild), plus first run (Pick your main, then the notification ask in context: E6, F8). The old Home (`home/HomeScreen.kt`, `HomeAnswer.kt`) is still what Home shows; replace it.
 4. **Raid**: next raid card, Needs you (officer), Not answered with the mentions, raid night with Ready check, the applicant. Raid badge: `GET /v1/guilds/{id}/raid-badge` (`TabBadges.raid`, now always 0).
 6. **Gear**: summary line with Change, Where to go tonight, Every slot, the item sheet with `GET /v1/guilds/{id}/items/{item}/needs`. Gear still shows the lane F3 BiS list (`bis/`).
