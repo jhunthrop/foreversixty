@@ -37,7 +37,7 @@ func TestGroupsMatchTheAppsSettings(t *testing.T) {
 		GroupGear:    {BandEntered, BisChanged, LootAwarded, SimFinished, GameMilestone},
 		GroupLogs:    {ReportReady, RaidSummary, CoachReady, RankingBest},
 		GroupLadder:  {GuildSimPassed},
-		GroupTiers:   nil,
+		GroupTiers:   {TierMoved},
 		GroupOfficer: {RosterPending, RaidShort, RaidLateChange},
 		GroupAccount: {CharacterLinked, GuildApproved, PremiumSeat, BillingFailed},
 	}

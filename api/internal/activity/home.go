@@ -67,38 +67,54 @@ func (s *Service) home(w http.ResponseWriter, r *http.Request) {
 
 func (h *Home) character(ctx context.Context, key string) (homeCharacter, bool, error) {
 	c := homeCharacter{key: key}
-	var export, class, simSpec *string
-	var level *int
+	var f characterFacts
 	err := h.Store.Pool.QueryRow(ctx,
 		`select coalesce(c.user_id, 0), c.level, coalesce(c.faction, 'alliance'), c.class, x.export,
 		        (select cs.spec from character_sims cs where cs.character_key = c.key order by cs.created_at desc limit 1)
 		 from characters c left join addon_exports x on x.character_key = c.key where c.key = $1`, key).
-		Scan(&c.userID, &level, &c.faction, &class, &export, &simSpec)
+		Scan(&c.userID, &f.level, &f.faction, &f.class, &f.export, &f.simSpec)
 	if isNoRows(err) {
 		return c, false, nil
 	}
 	if err != nil {
 		return c, false, fmt.Errorf("activity: home character %s: %w", key, err)
 	}
-	if level != nil {
-		c.level = *level
+	c.faction = f.faction
+	c.spec, c.level, c.hasGear = f.resolve()
+	return c, true, nil
+}
+
+// characterFacts is what a character's spec, level and faction are read from: the stored level
+// and class, the addon export, and the spec of its latest sim.
+type characterFacts struct {
+	level                  *int
+	faction                string
+	class, export, simSpec *string
+}
+
+// resolve is the character's spec (its latest sim's, else the export's talents', else its
+// class's default), its level (the export's, else the stored one) and whether the export
+// carries gear.
+func (f characterFacts) resolve() (spec string, level int, hasGear bool) {
+	if f.level != nil {
+		level = *f.level
 	}
-	if export != nil {
-		if d, ok := fs1.Decode(*export); ok {
-			c.hasGear = len(d.Gear) > 0
-			c.spec, _ = character.SpecFor(d.ClassSlug, "", d.Talents.Points)
+	if f.export != nil {
+		if d, ok := fs1.Decode(*f.export); ok {
+			hasGear = len(d.Gear) > 0
+			spec, _ = character.SpecFor(d.ClassSlug, "", d.Talents.Points)
 			if d.HasLevel {
-				c.level = d.Level
+				level = d.Level
 			}
 		}
 	}
-	if simSpec != nil {
-		c.spec = *simSpec
+	if f.simSpec != nil {
+		spec = *f.simSpec
 	}
-	if c.spec == "" && class != nil {
-		c.spec, _ = character.SpecFor(strings.ToLower(*class), "", nil)
+	if spec == "" && f.class != nil {
+		spec, _ = character.SpecFor(strings.ToLower(*f.class), "", nil)
 	}
-	return c, true, nil
+	return spec, level, hasGear
 }
 
 func (h *Home) answer(ctx context.Context, c homeCharacter, now time.Time) (HomeAnswer, error) {

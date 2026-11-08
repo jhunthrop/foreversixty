@@ -11,6 +11,7 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/bis"
 	"github.com/jhunthrop/foreversixty/api/internal/bnetimport"
 	"github.com/jhunthrop/foreversixty/api/internal/config"
+	"github.com/jhunthrop/foreversixty/api/internal/events"
 	"github.com/jhunthrop/foreversixty/api/internal/jobs"
 	"github.com/jhunthrop/foreversixty/api/internal/reports"
 	"github.com/jhunthrop/foreversixty/api/internal/server"
@@ -26,7 +27,9 @@ type activityWiring struct {
 	trees    *trees.Data
 	auth     *auth.Store
 	accounts *auth.Service
-	log      *slog.Logger
+	// events is the router the loop's tier moves go through; nil sends none.
+	events events.Publisher
+	log    *slog.Logger
 }
 
 // curatedOrEmpty reads the feed's curated files; without them the feed still serves, with
@@ -68,6 +71,7 @@ func wireActivity(ctx context.Context, w activityWiring, deps *server.Deps) {
 	deps.Activity = &activity.Service{Store: store, Guilds: w.auth, Home: home, Log: w.log}
 	loop := &activity.Loop{
 		Store: store, DataDir: w.cfg.TreeDataDir, Curated: curated, Log: w.log,
+		Events: w.events, PublicBaseURL: w.cfg.PublicBaseURL,
 		Build: bis.SourceBuild(w.cfg.TreeDataDir, activeVersion(w.trees)),
 	}
 	go loop.Run(ctx)

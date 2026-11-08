@@ -691,7 +691,7 @@ func serve(log *slog.Logger) error {
 		guildStore: guildStore, mailer: mailer, log: log})
 	deps.Account = accountHandler(pool, deps.Billing, roleSyncer, client, authenticator, log)
 	// After every producer exists (guilds, addon, billing, seats): the events router reaches them all.
-	wireEvents(ctx, cfg, pool, &deps, log)
+	publisher := wireEvents(ctx, cfg, pool, &deps, log)
 
 	var sampler *parse.Worker
 	var scorer *sims.Scorer
@@ -741,7 +741,8 @@ func serve(log *slog.Logger) error {
 		}
 	}
 
-	wireActivity(ctx, activityWiring{cfg: cfg, pool: pool, trees: treeData, auth: authStore, accounts: accounts, log: log}, &deps)
+	wireActivity(ctx, activityWiring{cfg: cfg, pool: pool, trees: treeData, auth: authStore, accounts: accounts,
+		events: publisher, log: log}, &deps)
 	wireBnetRefresh(ctx, cfg, accounts, authenticator, log)
 	srv := &http.Server{
 		Addr:              net.JoinHostPort(cfg.ListenHost, cfg.Port),

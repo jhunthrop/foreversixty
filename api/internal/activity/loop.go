@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"log/slog"
 	"time"
+
+	"github.com/jhunthrop/foreversixty/api/internal/events"
 )
 
 // loopLock is the advisory lock one API instance holds while it runs a pass, so the
@@ -18,13 +20,17 @@ const DefaultInterval = time.Hour
 // BiS diff, this week's tier grades and spec boards (with their ranking rows) and the purge.
 // It runs at startup and then every Interval.
 type Loop struct {
-	Store    *Store
-	DataDir  string
-	Build    string
-	Curated  Curated
-	Interval time.Duration
-	Log      *slog.Logger
-	Now      func() time.Time
+	Store *Store
+	// Events, when set, receives the weekly tier moves after each tier snapshot; PublicBaseURL
+	// roots their link.
+	Events        events.Publisher
+	PublicBaseURL string
+	DataDir       string
+	Build         string
+	Curated       Curated
+	Interval      time.Duration
+	Log           *slog.Logger
+	Now           func() time.Time
 }
 
 // Run passes until ctx ends.
@@ -79,6 +85,7 @@ func (l *Loop) Pass(ctx context.Context) error {
 	if l.Build != "" {
 		step("bis diff", func() (int, error) { return l.Store.DiffBis(ctx, l.DataDir, l.Build) })
 		step("tier snapshot", func() (int, error) { return l.Store.SnapshotTiers(ctx, l.DataDir, l.Build, WeekOf(now)) })
+		step("tier moves", func() (int, error) { return l.Store.PublishTierMoves(ctx, l.Events, l.PublicBaseURL, now) })
 	}
 	if len(l.Curated.ZoneBands) > 0 {
 		step("boards", func() (int, error) { return l.Store.RefreshBoards(ctx, l.Curated.ZoneBands, now) })
