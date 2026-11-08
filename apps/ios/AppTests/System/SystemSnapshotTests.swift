@@ -137,11 +137,16 @@ struct SystemSnapshotTests {
     // MARK: F15.5 Strips
 
     private func homeStrip(offline: String? = nil, stale: String? = nil) throws -> some View {
-        let home = try HomeFixtures.home()
+        let presenter = HomeFlowPresenter(now: HomeFixtures.now)
+        let blocks = presenter.blocks([.upgrades(limit: HomeBlock.defaultUpgrades)], HomeFlowInputs(
+            character: HomeFixtures.velaren, home: try HomeFixtures.home()
+        ))
         return HomeCaptureFrame {
-            HomeAnswerView(
-                phase: .loaded(home, offlineSince: nil), presenter: HomeFixtures.presenter(),
-                build: "1.60.1.70658", offlineStamp: offline, staleStamp: stale
+            HomeFlowView(
+                content: HomeFlowContent(
+                    head: presenter.head(HomeFixtures.velaren), phase: .loaded(blocks), staleStamp: stale, offlineStamp: offline
+                ),
+                build: "1.60.1.70658"
             )
         }
     }

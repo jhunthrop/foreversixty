@@ -1536,7 +1536,6 @@
     "share.tiers": "{role} tier list",
     "share.report": "{zone} · {date}",
     "share.action": "Share",
-
     "raid.group.damage": "Damage",
     "home.head.level": {"text": "Level {n} {who}", "args": {"n": "int"}},
     "home.head.toBand": {"text": "{n} levels to band {band}", "notPlural": true, "args": {"n": "int", "band": "int"}},
@@ -1583,9 +1582,7 @@
     "home.new.title": "Your characters are on their way",
     "home.new.line": "Battle.net lists a character after you play it and log out.",
     "home.new.check": "Check again",
-
     "home.yesterday": "yesterday",
-
     "raid.tab.nextRaid": "Next raid",
     "raid.tab.needsYou": "Needs you",
     "raid.tab.open": {"text": "{n} open", "notPlural": true, "args": {"n": "int"}},
@@ -1611,7 +1608,6 @@
     "raid.tab.levelsToGo": {"text": "{n} levels to go", "notPlural": true, "args": {"n": "int"}},
     "raid.tab.levelerLine": "Onyxia's Lair, Barrow Deeps and Hyjal Summit open at 60. Join a guild on the way and its raids show here.",
     "raid.tab.outLine": "Sign up for your guild's raids from your phone.",
-
     "raid.na.title": "Not answered",
     "raid.na.all": "All",
     "raid.na.filter": { "text": "{label} {n}", "args": { "n": "int" }, "notPlural": true },
@@ -1648,7 +1644,6 @@
     "raid.night.youAre": "You are {state}",
     "raid.night.beforePull": "Before you pull",
     "raid.night.roster": "Roster ›",
-
     "raid.applicant.score": "Forever Score",
     "raid.applicant.sim": "Sim",
     "raid.applicant.itemLevel": "Item level",
@@ -1685,6 +1680,35 @@
     "raid.applicant.copy": "Copy",
     "raid.applicant.after": "{name} shows on the roster once the addon or Battle.net sees the character in the guild.",
     "raid.applicant.line": { "text": "{name}, {kind} {level}, {age}", "args": { "level": "int" }, "notPlural": true },
-    "raid.applicant.failed": "We could not load this application"
+    "raid.applicant.failed": "We could not load this application",
+    "home.raid.inProgress": "{guild} · {zone} in progress",
+    "home.raid.minutes": "min",
+    "home.raid.as": "as {name}, {role}",
+    "home.raid.lineOpen": "{counts} · you have not answered, {who}",
+    "home.raid.pulled": "Pulled {span} ago · {counts} · you are {state} {who}",
+    "home.raid.openNight": "Open raid night ›",
+    "home.raid.damage": "Damage",
+    "home.raid.answers": "Your answer",
+    "home.ready.title": {"count": "n", "one": "1 thing before you pull", "other": "{n} things before you pull"},
+    "home.ready.line": "{items} · from your last log-out, {age}",
+    "home.officer.previewMention": "Preview mention",
+    "home.officer.applicant": {"text": "{name}, {kind} {level}, {age}", "args": {"level": "int"}, "notPlural": true},
+    "home.role.tanks": "tanks",
+    "home.role.healers": "healers",
+    "home.role.damage": "damage",
+    "home.upgrades.gain": "{figure} {unit}",
+    "home.lastNight.loot": "You got it from {boss} · {slot}",
+    "home.lastNight.lootGain": "You got it from {boss} · {slot}, {gain} over your worn",
+    "home.lastNight.report": "{zone} report",
+    "home.lastNight.percentile": "{rank} percentile, your best on {boss}",
+    "home.lastNight.coach": {"count": "n", "one": "the coach has 1 note", "other": "the coach has {n} notes"},
+    "home.lastNight.simAgain": "Sim again with {item}",
+    "home.lastNight.simAgainLine": "Your sim is from before it dropped",
+    "home.newForYou.all": "All activity ›",
+    "home.newForYou.allUnread": {"text": "All activity ({n}) ›", "args": {"n": "int"}, "notPlural": true},
+    "home.newForYou.line": "{body} · {when}",
+    "home.findGuild.title": "Raid with a guild",
+    "home.findGuild.button": "Find a guild",
+    "home.error.line": "Check your connection"
   }
 }

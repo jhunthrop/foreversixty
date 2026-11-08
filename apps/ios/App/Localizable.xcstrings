@@ -3877,6 +3877,17 @@
         }
       }
     },
+    "home.error.line": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Check your connection"
+          }
+        }
+      }
+    },
     "home.error.sub": {
       "extractionState": "manual",
       "localizations": {
@@ -3910,6 +3921,17 @@
         }
       }
     },
+    "home.findGuild.button": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Find a guild"
+          }
+        }
+      }
+    },
     "home.findGuild.firstRaids": {
       "comment": "Arguments: 1 date (string)",
       "extractionState": "manual",
@@ -3929,6 +3951,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Raid with a guild that plans its nights here, and answer its raids from the app."
+          }
+        }
+      }
+    },
+    "home.findGuild.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Raid with a guild"
           }
         }
       }
@@ -3992,6 +4025,78 @@
         }
       }
     },
+    "home.lastNight.coach": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "the coach has 1 note"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "the coach has %1$lld notes"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "home.lastNight.loot": {
+      "comment": "Arguments: 1 boss (string), 2 slot (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You got it from %1$@ · %2$@"
+          }
+        }
+      }
+    },
+    "home.lastNight.lootGain": {
+      "comment": "Arguments: 1 boss (string), 2 slot (string), 3 gain (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You got it from %1$@ · %2$@, %3$@ over your worn"
+          }
+        }
+      }
+    },
+    "home.lastNight.percentile": {
+      "comment": "Arguments: 1 rank (string), 2 boss (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ percentile, your best on %2$@"
+          }
+        }
+      }
+    },
+    "home.lastNight.report": {
+      "comment": "Arguments: 1 zone (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ report"
+          }
+        }
+      }
+    },
     "home.lastNight.sim": {
       "extractionState": "manual",
       "localizations": {
@@ -3999,6 +4104,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Sim again with your new gear"
+          }
+        }
+      }
+    },
+    "home.lastNight.simAgain": {
+      "comment": "Arguments: 1 item (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sim again with %1$@"
+          }
+        }
+      }
+    },
+    "home.lastNight.simAgainLine": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your sim is from before it dropped"
           }
         }
       }
@@ -4123,6 +4251,41 @@
           "stringUnit": {
             "state": "translated",
             "value": "New for you"
+          }
+        }
+      }
+    },
+    "home.newForYou.all": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "All activity ›"
+          }
+        }
+      }
+    },
+    "home.newForYou.allUnread": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "All activity (%1$lld) ›"
+          }
+        }
+      }
+    },
+    "home.newForYou.line": {
+      "comment": "Arguments: 1 body (string), 2 when (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$@"
           }
         }
       }
@@ -4263,6 +4426,18 @@
         }
       }
     },
+    "home.officer.applicant": {
+      "comment": "Arguments: 1 name (string), 2 kind (string), 3 level (int), 4 age (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, %2$@ %3$lld, %4$@"
+          }
+        }
+      }
+    },
     "home.officer.applicants": {
       "comment": "Arguments: 1 n (int)",
       "extractionState": "manual",
@@ -4288,6 +4463,17 @@
       }
     },
     "home.officer.preview": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Preview mention"
+          }
+        }
+      }
+    },
+    "home.officer.previewMention": {
       "extractionState": "manual",
       "localizations": {
         "en": {
@@ -4379,6 +4565,29 @@
         }
       }
     },
+    "home.raid.answers": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your answer"
+          }
+        }
+      }
+    },
+    "home.raid.as": {
+      "comment": "Arguments: 1 name (string), 2 role (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "as %1$@, %2$@"
+          }
+        }
+      }
+    },
     "home.raid.clock": {
       "comment": "Arguments: 1 h (int), 2 m (int)",
       "extractionState": "manual",
@@ -4403,6 +4612,17 @@
         }
       }
     },
+    "home.raid.damage": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Damage"
+          }
+        }
+      }
+    },
     "home.raid.hours": {
       "extractionState": "manual",
       "localizations": {
@@ -4410,6 +4630,30 @@
           "stringUnit": {
             "state": "translated",
             "value": "hours"
+          }
+        }
+      }
+    },
+    "home.raid.inProgress": {
+      "comment": "Arguments: 1 guild (string), 2 zone (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$@ in progress"
+          }
+        }
+      }
+    },
+    "home.raid.lineOpen": {
+      "comment": "Arguments: 1 counts (string), 2 who (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · you have not answered, %2$@"
           }
         }
       }
@@ -4461,6 +4705,17 @@
         }
       }
     },
+    "home.raid.minutes": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "min"
+          }
+        }
+      }
+    },
     "home.raid.notAnswered": {
       "comment": "Arguments: 1 name (string), 2 role (string)",
       "extractionState": "manual",
@@ -4469,6 +4724,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "You have not answered, as %1$@, %2$@"
+          }
+        }
+      }
+    },
+    "home.raid.openNight": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open raid night ›"
+          }
+        }
+      }
+    },
+    "home.raid.pulled": {
+      "comment": "Arguments: 1 span (string), 2 counts (string), 3 state (string), 4 who (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pulled %1$@ ago · %2$@ · you are %3$@ %4$@"
           }
         }
       }
@@ -4567,6 +4845,75 @@
         }
       }
     },
+    "home.ready.line": {
+      "comment": "Arguments: 1 items (string), 2 age (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · from your last log-out, %2$@"
+          }
+        }
+      }
+    },
+    "home.ready.title": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "1 thing before you pull"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%1$lld things before you pull"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "home.role.damage": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "damage"
+          }
+        }
+      }
+    },
+    "home.role.healers": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "healers"
+          }
+        }
+      }
+    },
+    "home.role.tanks": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "tanks"
+          }
+        }
+      }
+    },
     "home.upgrades.allSlots": {
       "extractionState": "manual",
       "localizations": {
@@ -4609,6 +4956,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Empty slot"
+          }
+        }
+      }
+    },
+    "home.upgrades.gain": {
+      "comment": "Arguments: 1 figure (string), 2 unit (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ %2$@"
           }
         }
       }

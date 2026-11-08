@@ -265,17 +265,6 @@ struct RankingsSnapshotTests {
         className: "shaman", specName: "Elemental", level: 60, guild: "Hordebreakers", faction: "horde"
     )
 
-    @Test func home_rankingsRow() throws {
-        var presenter = HomeFixtures.presenter(character: Self.lightningHome)
-        presenter.logsLine = ReportsCopy.homeLine(try ReportsTestData.list())
-        presenter.rankingsLine = RankingsCopy.homeLine(page: try RankingsTestData.page(), filters: RankingsTestData.filters, encounterName: "Onyxia")
-        let home = try HomeFixtures.home("character.home.yours")
-        let view = HomeCaptureFrame(title: Self.lightningHome.name) {
-            HomeAnswerView(phase: .loaded(home, offlineSince: nil), presenter: presenter, build: home.dataBuild)
-        }
-        snap(view, "home-rankings-ios", height: 2200)
-    }
-
     /// Lightningbolltz's Your gear: his Home answer's upgrades over the shaman items file, the
     /// same dots his character page draws.
     @Test func home_gearYours() throws {

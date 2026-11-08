@@ -1,8 +1,8 @@
 import XCTest
 
 /// Lane F15 review captures from the real system surfaces: the Offline data screen with its
-/// switches and its remove alert, the share sheet with a guide's and a character's message, the
-/// Guides root bar with its search button, and Spotlight. Siri cannot be driven from a UI test.
+/// switches and its remove alert, the share sheet with a guide's and a character's message, and
+/// Spotlight. Siri cannot be driven from a UI test.
 /// Runs on the shared simulator only through `make -C apps/ios captures`; the PNGs land in
 /// design/reviews/2026-11-01-mobile-integration/build/ios.
 @MainActor
@@ -25,11 +25,10 @@ final class SystemCaptureTests: XCTestCase {
         try XCUIScreen.main.screenshot().pngRepresentation.write(to: Self.out.appending(path: "\(name)-ios.png"))
     }
 
-    private func begins(_ text: String) -> NSPredicate { NSPredicate(format: "label BEGINSWITH %@", text) }
-
-    private func launch(tab: String = "home", link: String? = nil, large: Bool = false) -> XCUIApplication {
+    /// On Home, with `link` opened through the debug `-FSOpenLink`.
+    private func launch(link: String? = nil) -> XCUIApplication {
         let app = XCUIApplication()
-        app.launchArguments = ["-FSTab", tab] + (link.map { ["-FSOpenLink", $0] } ?? []) + (large ? Self.largest : [])
+        app.launchArguments = ["-FSTab", "home"] + (link.map { ["-FSOpenLink", $0] } ?? [])
         app.launch()
         return app
     }
@@ -45,31 +44,24 @@ final class SystemCaptureTests: XCTestCase {
     }
 
     func testGuideShareSheet() throws {
-        try share(launch(tab: "guides", link: "https://foreversixty.gg/app/guides/shaman/elemental"), "f15-share-guide-system")
+        try share(launch(link: "https://foreversixty.gg/app/guides/shaman/elemental"), "f15-share-guide-system")
     }
 
     func testCharacterShareSheet() throws {
         try share(launch(link: "https://foreversixty.gg/app/player/us/normal/voltaris"), "f15-share-character-system")
     }
 
-    /// The Guides root's real bar: the character selector and the search magnifier.
+    /// The Guides root bar (its character selector and search magnifier) went with the Guides tab:
+    /// Guides is now a menu tool pushed under a tab, its bar a pushed screen's.
     func testGuidesRootBar() throws {
-        for large in [false, true] {
-            let app = launch(tab: "guides", large: large)
-            XCTAssertTrue(app.buttons.matching(NSPredicate(format: "label CONTAINS[c] %@", "Search")).firstMatch.waitForExistence(timeout: 20))
-            sleep(3)
-            try save(large ? "f15-guides-searchbutton-large" : "f15-guides-searchbutton")
-            app.terminate()
-        }
+        throw XCTSkip("the Guides tab and its root bar were cut by the flows spec (2026-11-08-app-flows.md appendix C, \"The BiS, Guides and Guild tabs\")")
     }
 
+    /// Offline data, pushed from the profile menu's Account rows.
     func testOfflineDataAndRemoveAlert() throws {
         for large in [false, true] {
-            let app = launch(tab: "you", large: large)
-            let row = app.buttons.containing(begins("Offline data")).firstMatch
-            for _ in 0..<6 where !row.exists { app.swipeUp() }
-            XCTAssertTrue(row.waitForExistence(timeout: 20))
-            row.tap()
+            let app = CaptureLaunch.signedIn(menu: "offlineData", extra: large ? Self.largest : [])
+            XCTAssertTrue(app.staticTexts["Offline data"].firstMatch.waitForExistence(timeout: 20), "Offline data did not open")
             sleep(3)
             try save(large ? "f15-offlinedata-app-large" : "f15-offlinedata-app")
             let remove = app.buttons["Remove downloaded data"].firstMatch

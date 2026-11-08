@@ -9,60 +9,6 @@ import Testing
 @MainActor
 @Suite("Home answer")
 struct HomePresenterTests {
-    @Test("rows read measured gains largest first, then not modelled, then empty; the card shows five")
-    func presentationOrder() throws {
-        let home = try HomeFixtures.home()
-        let ordered = HomePresenter.presentationOrder(home.upgrades).map(\.slot)
-        #expect(ordered == ["main_hand", "ranged", "legs", "feet", "chest", "head", "waist", "hands", "back", "finger2", "wrist", "trinket2"])
-        let model = HomeFixtures.presenter().model(home)
-        guard case let .upgrades(rows, footer) = model.body else { Issue.record("no rows"); return }
-        #expect(rows.map(\.slot) == Array(ordered.prefix(5)))
-        #expect(footer == "7 more upgrades · all 17 slots")
-    }
-
-    @Test("the hero: two figures, the note with the unmodelled count, the sync age")
-    func hero() throws {
-        let model = HomeFixtures.presenter().model(try HomeFixtures.home())
-        #expect(model.heroMeta == "Orc Beast Mastery Hunter · Level 60 · Olympus XXVII")
-        #expect(model.count == "12 upgrades")
-        #expect(model.gain?.figure == "+102.5")
-        #expect(model.gain?.unit == "DPS")
-        #expect(model.note == "Best in slot for 60, together · 2 gains not modelled yet")
-        #expect(model.synced == "Synced 2 h ago from the addon")
-        #expect(model.bandHead == "60 · raid")
-    }
-
-    @Test(
-        "Home's band is the site rule over the character's level, the list BiS opens on",
-        arguments: [(49, 40, "40 to 49"), (50, 50, "50 to 59"), (59, 50, "50 to 59"), (60, 60, "60 · raid")]
-    )
-    func bandFollowsTheLevel(level: Int, band: Int, head: String) throws {
-        let home = try HomeFixtures.home()
-        let character = HomeFixtures.velaren(level: level)
-        let range = try #require(HomePresenter.range(home, character: character))
-        #expect(range == BisRange.forLevel(level))
-        #expect(range.band == band)
-        #expect(HomeFixtures.presenter(character: character).model(home).bandHead == head)
-        let tooltip = ItemTooltipRequest.forHome(HomeItemLook(id: 1, name: nil, quality: nil, icon: nil, itemLevel: nil),
-                                                 home: home, character: character)
-        #expect(tooltip.band == range.band && tooltip.preset == range.preset && tooltip.bandLabel == head)
-    }
-
-    @Test("with no level known, the server's band goes through the same rule")
-    func bandWithoutALevel() throws {
-        let home = try HomeFixtures.home()
-        #expect(HomePresenter.range(home, character: HomeFixtures.velaren(level: nil)) == BisRange.forLevel(60))
-    }
-
-    @Test("a measured gain is the server's figure, the source the server's formatted line")
-    func gains() throws {
-        let home = try HomeFixtures.home()
-        let model = HomeFixtures.presenter().model(home)
-        guard case let .upgrades(rows, _) = model.body else { Issue.record("no rows"); return }
-        #expect(rows[0].gain == .measured(figure: "+21.2", unit: "DPS"))
-        #expect(rows[0].meta == "Main hand · Crafted: Blacksmithing")
-        #expect(HomePresenter.presentationOrder(home.upgrades).last?.gainWords == "Gain not modelled yet")
-    }
 
     @Test("a negative gain keeps its true minus")
     func negativeGain() {
@@ -75,51 +21,6 @@ struct HomePresenterTests {
         #expect(HomePresenter.replaces(upgrades.first { $0.slot == "ranged" }?.worn) == "Replaces Dark Iron Rifle, ilvl 55")
         #expect(HomePresenter.replaces(nil) == "Empty slot")
         #expect(HomePresenter.replaces(upgrades.first { $0.slot == "wrist" }?.worn) == "Not in our item data yet")
-    }
-
-    @Test("every slot matching says so in place of the figures, with the Already line")
-    func allMatch() throws {
-        let model = HomeFixtures.presenter().model(try HomeFixtures.home("character.home.empty"))
-        #expect(model.body == .allMatch("Every slot matches the 60 list."))
-        #expect(model.count == nil)
-        #expect(model.already?.hasPrefix("Already best in slot: Head, Neck, Shoulder") == true)
-    }
-
-    @Test("no gear export: the sentence, Get the addon, the list button and the note")
-    func noGear() throws {
-        let model = HomeFixtures.presenter().model(try HomeFixtures.home("character.home.no-gear"))
-        guard case let .message(text, buttons, note) = model.body else { Issue.record("no message"); return }
-        #expect(text == "Add the addon to see which slots you can upgrade.")
-        #expect(buttons.map(\.kind) == [.getAddon, .openList])
-        #expect(buttons.map(\.title) == ["Get the addon and companion", "Beast Mastery 60 list"])
-        #expect(note?.hasPrefix("The addon sends your gear") == true)
-        #expect(model.next.first?.line == "Not available yet: no talent export for this character. Open the addon once to send it.")
-        #expect(model.next.last?.line == "No sim yet.")
-    }
-
-    @Test("under 20, no spec and no list each have their sentence", arguments: [
-        ("under_20", "Best in slot starts at 20."),
-        ("no_spec", "Set a spec in the planner to see this."),
-        ("no_list", "No best in slot list published yet for this spec and level range."),
-    ])
-    func emptyStates(state: String, sentence: String) throws {
-        let model = HomeFixtures.presenter().model(try HomeFixtures.home(state: state))
-        guard case let .message(text, _, _) = model.body else { Issue.record("no message"); return }
-        #expect(text == sentence)
-    }
-
-    @Test("talents: the differ count and its tag")
-    func talents() throws {
-        let row = HomeFixtures.presenter().model(try HomeFixtures.home()).next.first
-        #expect(row?.line == "1 of your 51 points differ from the 60 guide build")
-        #expect(row?.tag == .differs)
-    }
-
-    @Test("sims: the newest finished run for this spec")
-    func sims() throws {
-        let sim = FinishedSim(simId: "s1", spec: "hunter-beast-mastery", title: "t", dps: 812.4, finishedAt: HomeFixtures.now)
-        let row = HomeFixtures.presenter(sims: [sim]).model(try HomeFixtures.home()).next.last
-        #expect(row?.line == "Your Beast Mastery sim finished: 812 DPS")
     }
 
     @Test("the offline stamp: today, this week, older")

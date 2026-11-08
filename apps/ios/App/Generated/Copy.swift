@@ -5952,6 +5952,125 @@ enum Copy {
     /// We could not load this application
     static var raidApplicantFailed: String { text("raid.applicant.failed") }
 
+    /// {guild} · {zone} in progress
+    static func homeRaidInProgress(guild: String, zone: String) -> String {
+        format("home.raid.inProgress", guild, zone)
+    }
+
+    /// min
+    static var homeRaidMinutes: String { text("home.raid.minutes") }
+
+    /// as {name}, {role}
+    static func homeRaidAs(name: String, role: String) -> String {
+        format("home.raid.as", name, role)
+    }
+
+    /// {counts} · you have not answered, {who}
+    static func homeRaidLineOpen(counts: String, who: String) -> String {
+        format("home.raid.lineOpen", counts, who)
+    }
+
+    /// Pulled {span} ago · {counts} · you are {state} {who}
+    static func homeRaidPulled(span: String, counts: String, state: String, who: String) -> String {
+        format("home.raid.pulled", span, counts, state, who)
+    }
+
+    /// Open raid night ›
+    static var homeRaidOpenNight: String { text("home.raid.openNight") }
+
+    /// Damage
+    static var homeRaidDamage: String { text("home.raid.damage") }
+
+    /// Your answer
+    static var homeRaidAnswers: String { text("home.raid.answers") }
+
+    /// {n} things before you pull
+    static func homeReadyTitle(n: Int) -> String {
+        format("home.ready.title", n)
+    }
+
+    /// {items} · from your last log-out, {age}
+    static func homeReadyLine(items: String, age: String) -> String {
+        format("home.ready.line", items, age)
+    }
+
+    /// Preview mention
+    static var homeOfficerPreviewMention: String { text("home.officer.previewMention") }
+
+    /// {name}, {kind} {level}, {age}
+    static func homeOfficerApplicant(name: String, kind: String, level: Int, age: String) -> String {
+        format("home.officer.applicant", name, kind, level, age)
+    }
+
+    /// tanks
+    static var homeRoleTanks: String { text("home.role.tanks") }
+
+    /// healers
+    static var homeRoleHealers: String { text("home.role.healers") }
+
+    /// damage
+    static var homeRoleDamage: String { text("home.role.damage") }
+
+    /// {figure} {unit}
+    static func homeUpgradesGain(figure: String, unit: String) -> String {
+        format("home.upgrades.gain", figure, unit)
+    }
+
+    /// You got it from {boss} · {slot}
+    static func homeLastNightLoot(boss: String, slot: String) -> String {
+        format("home.lastNight.loot", boss, slot)
+    }
+
+    /// You got it from {boss} · {slot}, {gain} over your worn
+    static func homeLastNightLootGain(boss: String, slot: String, gain: String) -> String {
+        format("home.lastNight.lootGain", boss, slot, gain)
+    }
+
+    /// {zone} report
+    static func homeLastNightReport(zone: String) -> String {
+        format("home.lastNight.report", zone)
+    }
+
+    /// {rank} percentile, your best on {boss}
+    static func homeLastNightPercentile(rank: String, boss: String) -> String {
+        format("home.lastNight.percentile", rank, boss)
+    }
+
+    /// the coach has {n} notes
+    static func homeLastNightCoach(n: Int) -> String {
+        format("home.lastNight.coach", n)
+    }
+
+    /// Sim again with {item}
+    static func homeLastNightSimAgain(item: String) -> String {
+        format("home.lastNight.simAgain", item)
+    }
+
+    /// Your sim is from before it dropped
+    static var homeLastNightSimAgainLine: String { text("home.lastNight.simAgainLine") }
+
+    /// All activity ›
+    static var homeNewForYouAll: String { text("home.newForYou.all") }
+
+    /// All activity ({n}) ›
+    static func homeNewForYouAllUnread(n: Int) -> String {
+        format("home.newForYou.allUnread", n)
+    }
+
+    /// {body} · {when}
+    static func homeNewForYouLine(body: String, when: String) -> String {
+        format("home.newForYou.line", body, when)
+    }
+
+    /// Raid with a guild
+    static var homeFindGuildTitle: String { text("home.findGuild.title") }
+
+    /// Find a guild
+    static var homeFindGuildButton: String { text("home.findGuild.button") }
+
+    /// Check your connection
+    static var homeErrorLine: String { text("home.error.line") }
+
     /// Get the addon and companion
     static var sharedCtaGetAddonAndCompanion: String { text("shared.cta.getAddonAndCompanion") }
 

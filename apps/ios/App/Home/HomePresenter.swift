@@ -13,6 +13,8 @@ struct HomeCharacter: Equatable, Sendable {
     let specName: String?
     let level: Int?
     let guild: String?
+    /// The guild's id, for its raids; nil outside a guild.
+    let guildID: Int64?
     let faction: String?
     /// Worn item ids by slot from the last export, for the gear rows the answer does not name.
     let gear: [String: Int]
@@ -24,16 +26,18 @@ struct HomeCharacter: Equatable, Sendable {
         self.init(
             key: character.key, region: character.region, ruleset: character.ruleset, name: character.name,
             race: character.race, className: character.className, specName: character.spec, level: character.level,
-            guild: character.guild?.name, faction: character.faction, gear: character.build?.gear ?? [:],
+            guild: character.guild?.name, guildID: character.guild?.id, faction: character.faction,
+            gear: character.build?.gear ?? [:],
             talents: character.build?.talents, dataBuild: character.build?.dataBuild
         )
     }
 
     init(
         key: String, region: String, ruleset: String, name: String, race: String?, className: String?,
-        specName: String?, level: Int?, guild: String?, faction: String?, gear: [String: Int] = [:],
+        specName: String?, level: Int?, guild: String?, guildID: Int64? = nil, faction: String?, gear: [String: Int] = [:],
         talents: BuildTalents? = nil, dataBuild: String? = nil
     ) {
+        self.guildID = guildID
         self.key = key
         self.region = region
         self.ruleset = ruleset
@@ -53,136 +57,17 @@ struct HomeCharacter: Equatable, Sendable {
     var slug: String { key.split(separator: "/").last.map(String.init) ?? name.lowercased() }
 }
 
-/// One upgrade row (spec F2.1 item 2).
-struct HomeUpgradeRow: Equatable, Identifiable {
-    enum Gain: Equatable {
-        /// `+5.3` over `DPS`.
-        case measured(figure: String, unit: String)
-        /// The server's words for a gain it did not model (`Gain not modelled yet`).
-        case words(String)
-    }
-
-    let slot: String
-    let pick: HomeItemLook
-    let wornID: Int?
-    let meta: String
-    let replaces: String
-    let gain: Gain
-    let sourceLine: String
-
-    var id: String { slot }
-}
-
-/// What the answer region says (spec F2.1 to F2.4 and the empty states).
-enum HomeAnswerBody: Equatable {
-    case upgrades(rows: [HomeUpgradeRow], footer: String)
-    case allMatch(String)
-    case message(String, buttons: [HomeAction], note: String?)
-}
-
-/// A button on an answer sentence.
-struct HomeAction: Equatable {
-    enum Kind: Equatable { case getAddon, openList, openPlanner }
-    let kind: Kind
-    let title: String
-    let primary: Bool
-}
-
-/// One "Next for {name}" row.
-struct HomeNextRow: Equatable, Identifiable {
-    enum Kind: Equatable { case talents, sims, logs, rankings }
-    enum Tag: Equatable { case matches, differs }
-    let kind: Kind
-    let title: String
-    let line: String
-    let tag: Tag?
-    var id: Kind { kind }
-}
-
-/// Everything Home draws for one answer. Built by `HomePresenter`, rendered by `HomeAnswerView`.
-struct HomeAnswerModel: Equatable {
-    let heroMeta: String
-    let count: String?
-    let gain: (figure: String, unit: String)?
-    let note: String?
-    let synced: String?
-    let bandHead: String?
-    let body: HomeAnswerBody
-    let already: String?
-    let nextTitle: String
-    let next: [HomeNextRow]
-
-    static func == (lhs: Self, rhs: Self) -> Bool {
-        lhs.heroMeta == rhs.heroMeta && lhs.count == rhs.count && lhs.gain?.figure == rhs.gain?.figure
-            && lhs.gain?.unit == rhs.gain?.unit && lhs.note == rhs.note && lhs.synced == rhs.synced
-            && lhs.bandHead == rhs.bandHead && lhs.body == rhs.body && lhs.already == rhs.already
-            && lhs.nextTitle == rhs.nextTitle && lhs.next == rhs.next
-    }
-}
-
-/// Turns the API's home answer into words. It formats and never ranks: the rows keep the
-/// server's order and every gain is the server's (plan guard rail "one behaviour, one place").
-struct HomePresenter {
+/// The home answer's words that outlive the old answer card: the band, the rows' order, what a row
+/// replaces. Formats only; every gain and pick is the server's.
+enum HomePresenter {
+    /// The rows the loading skeleton draws.
     static let visibleRows = 5
 
-    let character: HomeCharacter
-    let finishedSims: [FinishedSim]
-    let time: HomeTime
-    /// Lane F6: the Talents screen's own status line. While the home endpoint's talents are a
-    /// fixture (lane A3 held), the row says what F6 says, from the same compare (spec F6 §3).
-    var talentStatus: TalentStatusLine?
-    /// Lane F10: the Logs row's sub (empty while unread); nil drops the row (the switch is off).
-    var logsLine: String?
-    /// Lane F11: the Rankings row's sub (empty while unread); nil drops the row (the switch is off).
-    var rankingsLine: String?
-
-    func model(_ home: CharacterHome) -> HomeAnswerModel {
-        let isAnswer = home.state == "ok" && home.upgradeCount > 0
-        return HomeAnswerModel(
-            heroMeta: heroMeta,
-            count: isAnswer ? Copy.homeAnswerUpgrades(n: home.upgradeCount) : nil,
-            gain: isAnswer ? home.totalGain.map { (ItemNumbers.signedTenths($0), home.unitWord ?? "") } : nil,
-            note: isAnswer ? note(home) : nil,
-            synced: synced(home),
-            bandHead: bandHead(home),
-            body: body(home),
-            already: already(home),
-            nextTitle: Copy.homeNextTitle(name: character.name),
-            next: next(home)
-        )
-    }
-
-    /// The Next rows alone, for the error state with nothing cached.
-    func nextRowsWithoutAnswer() -> [HomeNextRow] {
-        [talentStatus.map(Self.talentsRow), simsRow(spec: nil), logsRow, rankingsRow].compactMap(\.self)
-    }
-
-    /// The Talents row from F6's status: its tag (Matches or Differs) and its sentence.
-    static func talentsRow(_ status: TalentStatusLine) -> HomeNextRow {
-        let tag: HomeNextRow.Tag? = switch status.tagKind {
-        case .matches: .matches
-        case .differs: .differs
-        case .muted: nil
-        }
-        return HomeNextRow(kind: .talents, title: Copy.homeNextTalents, line: status.sentence, tag: tag)
-    }
-
-    /// `Orc Beast Mastery Hunter · Level 60 · Olympus XXVII`.
-    var heroMeta: String {
-        let who = [character.race, character.specName, character.className]
-            .compactMap { $0.map(Self.words) }
-            .joined(separator: " ")
-        return [who.isEmpty ? nil : who, character.level.map { Copy.homeHeroLevel(n: $0) }, character.guild]
-            .compactMap(\.self)
-            .joined(separator: " · ")
-    }
-
-    /// `60 · raid` for the raid list, the band's words (`50 to 59`) otherwise.
-    func bandHead(_ home: CharacterHome) -> String? { Self.bandHead(home, character: character) }
 
     static func bandHead(_ home: CharacterHome, character: HomeCharacter) -> String? {
         range(home, character: character).map(BisLabels.head)
     }
+
 
     /// The list Home answers from: the character's level through the site's band rule
     /// (`BisRange.forLevel`), the rule BiS opens the character's list with. The server's band
@@ -191,67 +76,6 @@ struct HomePresenter {
         (character.level ?? home.band).map(BisRange.forLevel)
     }
 
-    /// The band's words for the sentences (`50 to 59`, `60`), empty when no band is known.
-    private func bandWords(_ home: CharacterHome) -> String? {
-        Self.range(home, character: character).map(BisLabels.band)
-    }
-
-    private func note(_ home: CharacterHome) -> String? {
-        guard let label = bandWords(home) else { return nil }
-        let base = Copy.homeAnswerNote(band: label)
-        return home.notModelledCount > 0 ? base + Copy.homeAnswerNotModelled(n: home.notModelledCount) : base
-    }
-
-    private func synced(_ home: CharacterHome) -> String? {
-        guard let at = home.syncedAt else { return nil }
-        let age = time.age(since: at)
-        return home.syncedFrom == "blizzard" ? Copy.sharedCharactersUpdatedFrom(ago: age) : Copy.homeAnswerSyncedAddon(age: age)
-    }
-
-    private func body(_ home: CharacterHome) -> HomeAnswerBody {
-        let spec = character.specName ?? ""
-        let band = bandWords(home) ?? ""
-        switch home.state {
-        case "no_gear":
-            return .message(Copy.homeAnswerNoGear, buttons: [
-                HomeAction(kind: .getAddon, title: Copy.sharedCtaGetAddonAndCompanion, primary: true),
-                HomeAction(kind: .openList, title: Copy.homeAnswerListButton(spec: spec, band: band), primary: false),
-            ], note: Copy.homeAnswerNoGearNote)
-        case "under_20":
-            return .message(Copy.homeAnswerUnder20, buttons: [
-                HomeAction(kind: .openList, title: Copy.homeAnswerUnder20Button(spec: spec), primary: false),
-            ], note: nil)
-        case "no_spec":
-            return .message(Copy.homeAnswerPickSpec, buttons: [
-                HomeAction(kind: .openPlanner, title: Copy.homeAnswerOpenPlanner, primary: false),
-            ], note: nil)
-        case "no_list":
-            return .message(Copy.homeAnswerNoList, buttons: [], note: nil)
-        default:
-            guard home.upgradeCount > 0 else { return .allMatch(Copy.homeAnswerAllMatch(band: band)) }
-            let rows = Self.presentationOrder(home.upgrades).prefix(Self.visibleRows).map { row($0, unit: home.unitWord ?? "") }
-            let more = home.upgradeCount - rows.count
-            return .upgrades(rows: rows, footer: more > 0 ? Copy.homeUpgradesMore(n: more) : Copy.homeUpgradesAllSlots)
-        }
-    }
-
-    private func row(_ upgrade: HomeUpgrade, unit: String) -> HomeUpgradeRow {
-        let pick = HomeItemLook(
-            id: upgrade.pick.id, name: upgrade.pick.name, quality: upgrade.pick.quality,
-            icon: upgrade.pick.icon, itemLevel: upgrade.pick.itemLevel
-        )
-        return HomeUpgradeRow(
-            slot: upgrade.slot,
-            pick: pick,
-            wornID: upgrade.worn?.id,
-            meta: "\(upgrade.slotLabel) · \(upgrade.pick.sourceLine)",
-            replaces: Self.replaces(upgrade.worn),
-            gain: upgrade.modelled && upgrade.gain != nil
-                ? .measured(figure: ItemNumbers.signedTenths(upgrade.gain ?? 0), unit: unit)
-                : .words(upgrade.gainWords),
-            sourceLine: upgrade.pick.sourceLine
-        )
-    }
 
     /// The rows in the coordinator's order (F2 fix round, 2026-10-31), for presentation only:
     /// measured gains largest first, then gains not modelled yet, then empty slots. The gains
@@ -269,6 +93,7 @@ struct HomePresenter {
         }.map(\.element)
     }
 
+
     /// `Replaces Belt of the Archmage, ilvl 62`; the server's own label for an item our data
     /// does not know (`Not in our item data yet`); `Empty slot` when nothing is worn.
     static func replaces(_ worn: HomeWorn?) -> String {
@@ -277,50 +102,6 @@ struct HomePresenter {
         return Copy.homeUpgradesReplaces(item: name, n: level)
     }
 
-    private func already(_ home: CharacterHome) -> String? {
-        guard !home.alreadyBest.isEmpty else { return nil }
-        return Copy.homeUpgradesAlready(slots: home.alreadyBest.map(\.slotLabel).joined(separator: ", "))
-    }
-
-    private func next(_ home: CharacterHome) -> [HomeNextRow] {
-        [talentsRow(home), simsRow(spec: home.spec), logsRow, rankingsRow].compactMap(\.self)
-    }
-
-    /// Lane F10: Logs, under Talents and Sims, while the reports switch is on.
-    private var logsRow: HomeNextRow? {
-        logsLine.map { HomeNextRow(kind: .logs, title: Copy.homeLogs, line: $0, tag: nil) }
-    }
-
-    /// Lane F11: Rankings, under Logs, while the rankings switch is on.
-    private var rankingsRow: HomeNextRow? {
-        rankingsLine.map { HomeNextRow(kind: .rankings, title: Copy.homeRankings, line: $0, tag: nil) }
-    }
-
-    private func talentsRow(_ home: CharacterHome) -> HomeNextRow {
-        if let talentStatus { return Self.talentsRow(talentStatus) }
-        let band = bandWords(home) ?? ""
-        let talents = home.talents
-        switch talents.state {
-        case "optimized":
-            return HomeNextRow(kind: .talents, title: Copy.homeNextTalents,
-                               line: Copy.homeNextTalentsMatch(spec: character.specName ?? "", band: band), tag: .matches)
-        case "differs":
-            return HomeNextRow(kind: .talents, title: Copy.homeNextTalents,
-                               line: Copy.homeNextTalentsDiffer(n: talents.pointsDiffer ?? 0, m: talents.bandPoints ?? 0, band: band),
-                               tag: .differs)
-        case "no_build":
-            return HomeNextRow(kind: .talents, title: Copy.homeNextTalents, line: Copy.homeNextTalentsNoBuild, tag: nil)
-        default:
-            return HomeNextRow(kind: .talents, title: Copy.homeNextTalents, line: Copy.homeNextTalentsNone, tag: nil)
-        }
-    }
-
-    /// The newest unseen finished server run for this spec (`/v1/me` `finished_sims`, newest first).
-    private func simsRow(spec: String?) -> HomeNextRow {
-        let sim = finishedSims.first { $0.spec == spec }
-        let line = sim.map { Copy.homeNextSimFinished(spec: character.specName ?? "", dps: String(Int($0.dps.rounded()))) }
-        return HomeNextRow(kind: .sims, title: Copy.homeNextSims, line: line ?? Copy.homeNextNoSim, tag: nil)
-    }
 
     /// `night_elf` → `Night Elf`; the API's slugs are lowercase.
     static func words(_ slug: String) -> String {

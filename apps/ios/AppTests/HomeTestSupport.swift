@@ -60,9 +60,6 @@ enum HomeFixtures {
         )
     }
 
-    static func presenter(sims: [FinishedSim] = [], character: HomeCharacter = velaren) -> HomePresenter {
-        HomePresenter(character: character, finishedSims: sims, time: HomeTime(now: now, calendar: utc))
-    }
 
     /// Velaren at another level, for the band boundaries.
     static func velaren(level: Int?) -> HomeCharacter {
