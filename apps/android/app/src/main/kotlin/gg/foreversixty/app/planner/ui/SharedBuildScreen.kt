@@ -118,7 +118,7 @@ private fun Loaded(view: SharedBuildView, state: SharedPageState, actions: Share
     val answer = PlannerAnswer(listOfNotNull(left, score), sim = { actions.sim(view) })
     Box(Modifier.padding(horizontal = FsSpace.space4)) {
         val title = view.build.title?.takeIf { it.isNotBlank() } ?: stringResource(R.string.plannerPage_h1, view.className)
-        FlowHead(title, facts, classColor(view.classSlug), crest = view.classSlug) { PlannerAnswerBlock(answer) }
+        FlowHead(title, facts, classColor(view.classSlug), crest = view.classSlug, answer = { PlannerAnswerBlock(answer) })
     }
     Column(
         Modifier.padding(horizontal = FsSpace.space4).fillMaxWidth().parityRegion(ParityRegion.NOTES).padding(top = NOTE_TOP, bottom = FsSpace.space1),

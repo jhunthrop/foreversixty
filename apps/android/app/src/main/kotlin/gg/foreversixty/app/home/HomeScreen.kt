@@ -34,7 +34,10 @@ import gg.foreversixty.app.R
 import gg.foreversixty.app.activity.ActivityFeature
 import gg.foreversixty.app.home.flows.HomeExits
 import gg.foreversixty.app.home.flows.HomeFlowContent
+import gg.foreversixty.app.home.flows.HomeOutService
 import gg.foreversixty.app.home.flows.LiveHomeFlowService
+import gg.foreversixty.app.home.flows.LiveHomeOutService
+import gg.foreversixty.app.bis.BisDataSource
 import gg.foreversixty.app.raids.RaidsFeature
 import gg.foreversixty.app.common.Connectivity
 import gg.foreversixty.app.menu.ProfileBar
@@ -99,6 +102,8 @@ class HomeDependencies(
     private val rankingsFeature: RankingsFeature? = null,
     /** Lane F15: whether a failed refresh is offline or stale. */
     val connectivity: Connectivity = Connectivity.Unknown,
+    /** Signed-out Home's feed, dates and classes (R3); null where the app has no static data (tests). */
+    val signedOut: HomeOutService? = null,
 ) {
     val sims: SimsFeature? get() = simsFeature?.takeIf { it.enabled }
 
@@ -121,6 +126,8 @@ class HomeDependencies(
             isRankingsOn: () -> Boolean = { false },
             mayLinkToPlans: suspend () -> Boolean = { false },
             connectivity: Connectivity = Connectivity.of(context),
+            /** The BiS tab's data source: signed-out Home's active build and key dates. */
+            bisData: BisDataSource? = null,
             isOn: () -> Boolean,
         ): HomeDependencies {
             val engine = ForeverHttpClient.engineFor(config, AssetFixtureSource(context.assets))
@@ -137,6 +144,7 @@ class HomeDependencies(
                 reportsFeature = ReportsFeature.create(context, client, StaticDataClient(engine), sims.specs, isReportsOn, connectivity),
                 rankingsFeature = RankingsFeature.create(context, client, StaticDataClient(engine), sims.specs, catalog, isRankingsOn, connectivity),
                 connectivity = connectivity,
+                signedOut = bisData?.let { LiveHomeOutService(client, it, sims.specs) },
             )
         }
     }

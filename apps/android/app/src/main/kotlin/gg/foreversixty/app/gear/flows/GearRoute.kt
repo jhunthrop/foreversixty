@@ -6,6 +6,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -43,6 +44,8 @@ class GearDeps(
     val client: ApiClient,
     /** Battle.net sign-in, for the spec page's Sign in (a player not signed in). */
     val signIn: () -> Unit = {},
+    /** Signed out, whether the spec page is pushed; held by the shell so signed-out Home's classes can push it. */
+    val specPage: MutableState<Boolean>? = null,
 ) {
     suspend fun needs(guildId: Long, item: Int): ItemNeeds? =
         (client.send(ApiEndpoints.getGuildItemNeeds(guildId, item)) as? ApiResult.Success)?.data
@@ -141,7 +144,8 @@ private fun Picker(model: BisModel) {
 /** Signed out: the classes (mock `gear-out`); a class pushes its list (mocks `bis-spec-*`). */
 @Composable
 private fun SignedOutGear(model: BisModel, deps: GearDeps, onSearch: (() -> Unit)?, selector: @Composable () -> Unit) {
-    var browsing by rememberSaveable { mutableStateOf(false) }
+    val own = rememberSaveable { mutableStateOf(false) }
+    var browsing by deps.specPage ?: own
     val state by model.state.collectAsStateWithLifecycle()
     if (browsing) {
         BisSpecRoute(model, deps.catalog, onBack = { browsing = false }, onSignIn = deps.signIn)

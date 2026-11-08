@@ -35,6 +35,7 @@ import androidx.compose.ui.layout.layout
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.style.LineBreak
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
@@ -54,22 +55,24 @@ import gg.foreversixty.app.items.GameIconImage
 /**
  * The flows screens' layout (design/mocks/ws_app_flows.py `.ap`, spec 2026-11-08): one scrolling column
  * under the profile bar, 8 above, 16 at the sides, 24 below. Home, Raid and Gear are built from these.
+ * [top] is 0 for a page the web draws (signed-out Home, whose head starts at the bar).
  */
 @Composable
-fun FlowPage(modifier: Modifier = Modifier, content: @Composable ColumnScope.() -> Unit) {
+fun FlowPage(modifier: Modifier = Modifier, top: Dp = FsSpace.space2, content: @Composable ColumnScope.() -> Unit) {
     Column(
         modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
             .parityContent()
-            .padding(start = FsSpace.space4, end = FsSpace.space4, top = FsSpace.space2, bottom = FsSpace.space6),
+            .padding(start = FsSpace.space4, end = FsSpace.space4, top = top, bottom = FsSpace.space6),
         content = content,
     )
 }
 
 /**
  * The page head (the mock's PageHeader): an optional 56 crest, the title in its colour and the fact line;
- * 16 above the title block, 14 below it.
+ * 16 above the title block, 14 below it. [actions] sit under the title block inside the head (`.ph-actions`,
+ * 16 above), as signed-out Home's Sign in. [balanced] breaks a long title over balanced lines (a guild's name).
  */
 @Composable
 fun FlowHead(
@@ -80,6 +83,8 @@ fun FlowHead(
     lead: (@Composable () -> Unit)? = null,
     /** The head's answer under the title block, 16 below it (the mock's `.ans`): a secondary page's figure and its line. */
     answer: (@Composable ColumnScope.() -> Unit)? = null,
+    actions: (@Composable () -> Unit)? = null,
+    balanced: Boolean = false,
 ) {
     Column(Modifier.fillMaxWidth().parityRegion(ParityRegion.HEAD).padding(top = FsSpace.space4, bottom = HEAD_BOTTOM)) {
         Row(Modifier.fillMaxWidth().parityRegion(ParityRegion.HEAD_TITLE), verticalAlignment = Alignment.CenterVertically) {
@@ -94,7 +99,7 @@ fun FlowHead(
                 // A title that wraps keeps two lines of 38 (Marcellus overshoots its box on the outer lines); one line is unchanged.
                 var lines by remember { mutableIntStateOf(1) }
                 Text(
-                    title, style = FsType.title, color = titleColor, onTextLayout = { lines = it.lineCount },
+                    title, style = if (balanced) BALANCED_TITLE else FsType.title, color = titleColor, onTextLayout = { lines = it.lineCount },
                     modifier = Modifier.semantics { heading() }.then(if (lines > 1) Modifier.linesBox(FsType.title.lineHeight, lines) else Modifier),
                 )
                 if (facts.isNotEmpty()) {
@@ -112,6 +117,7 @@ fun FlowHead(
         if (answer != null) {
             Column(Modifier.padding(top = FsSpace.space4).fillMaxWidth().parityRegion(ParityRegion.HEAD_ANSWER), content = answer)
         }
+        if (actions != null) Box(Modifier.padding(top = FsSpace.space4)) { actions() }
     }
 }
 
@@ -199,6 +205,7 @@ fun Modifier.linesBox(lineHeight: TextUnit, lines: Int): Modifier = layout { mea
 }
 
 private val CREST = 56.dp
+private val BALANCED_TITLE = FsType.title.copy(lineBreak = LineBreak.Heading)
 private val HEAD_BOTTOM = 14.dp
 private val META_GAP = 6.dp
 private val SECTION_TITLE_GAP = 10.dp

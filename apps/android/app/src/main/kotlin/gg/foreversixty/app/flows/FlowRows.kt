@@ -17,17 +17,21 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -51,8 +55,8 @@ sealed interface FlowLead {
     data class Icon(val icon: String?, val build: String?) : FlowLead
     data class Item(val look: ItemLook, val build: String) : FlowLead
 
-    /** A character: the class crest (rosters, the unanswered, the applicant's guildmates). */
-    data class Crest(val className: String) : FlowLead
+    /** A character: the class crest (rosters, the unanswered, the applicant's guildmates); signed-out Home's classes are 44. */
+    data class Crest(val className: String, val size: Dp = LEAD) : FlowLead
 
     /** A checklist mark (Ready check): ticked, missing or a warning; a glyph, not an image. */
     data class Check(val ok: Boolean, val miss: Boolean) : FlowLead
@@ -62,6 +66,8 @@ sealed interface FlowLead {
  * One row (the mock's Row): an optional 40 lead, the title (15/20 bold) and its line (13/18), and a
  * trailing control that drops under the text at phone width. [slim] rows are 6 above and below and at
  * least 44 tall; others are 10. [unread] puts the gold dot in the gutter. A rule follows unless [last].
+ * [inset] pads the row at the sides (`.rgrid .row`, 16); [selected] is the current pick (`.row.cur`): the
+ * gold wash, the gold bar at the left and 16 at the sides.
  */
 @Composable
 fun FlowRow(
@@ -72,6 +78,8 @@ fun FlowRow(
     slim: Boolean = false,
     unread: Boolean = false,
     last: Boolean = false,
+    inset: Dp = 0.dp,
+    selected: Boolean = false,
     trail: (@Composable () -> Unit)? = null,
     onClick: (() -> Unit)? = null,
 ) {
@@ -82,7 +90,9 @@ fun FlowRow(
             .fillMaxWidth()
             .parityItem(ParityItemKind.Row)
             .then(tap)
+            .then(if (selected) Modifier.semantics { this.selected = true }.background(FsColor.selected).drawBehind { drawRect(FsColor.gold, size = Size(SELECTED_BAR.toPx(), size.height)) } else Modifier)
             .heightIn(min = if (slim) SLIM_MIN else 0.dp)
+            .padding(horizontal = if (selected) FsSpace.rowPadX else inset)
             .padding(vertical = if (slim) SLIM_PAD else ROW_PAD),
         verticalArrangement = Arrangement.Center,
     ) {
@@ -99,7 +109,7 @@ fun FlowRow(
                 }
             }
             if (lead != null) {
-                LeadImage(lead)
+                FlowLeadImage(lead)
                 Spacer(Modifier.width(FsSpace.space3))
             }
             Column(Modifier.weight(1f)) {
@@ -112,8 +122,9 @@ fun FlowRow(
     if (!last) FlowRule()
 }
 
+/** A row's lead on its own (the first raids' icons under the countdown). */
 @Composable
-private fun LeadImage(lead: FlowLead) {
+fun FlowLeadImage(lead: FlowLead) {
     when (lead) {
         is FlowLead.Icon -> Box(
             Modifier
@@ -124,7 +135,7 @@ private fun LeadImage(lead: FlowLead) {
                 .border(1.dp, FsColor.line, RoundedCornerShape(FsRadius.control)),
         ) { GameIconImage(lead.icon, lead.build, LEAD) }
         is FlowLead.Item -> ItemIcon(lead.look.icon, lead.look.quality, lead.build, LEAD, Modifier.parityItem(ParityItemKind.Image))
-        is FlowLead.Crest -> gg.foreversixty.app.common.ClassCrest(lead.className, LEAD, Modifier.parityItem(ParityItemKind.Image))
+        is FlowLead.Crest -> gg.foreversixty.app.common.ClassCrest(lead.className, lead.size, Modifier.parityItem(ParityItemKind.Image))
         is FlowLead.Check -> {
             val (mark, color) = when {
                 lead.ok -> CHECK_OK to FsColor.kill
@@ -179,7 +190,8 @@ private fun gainText(gain: String, unit: String?) = buildAnnotatedString {
 
 /**
  * The flows' button (`.btn`): 36 tall small, 44 otherwise; [primary] is the gold fill, the selected
- * answer among the raid's four.
+ * answer among the raid's four. [busy] holds the button's size with a spinner in place of the label and
+ * ignores taps (Sign in while the browser is open).
  */
 @Composable
 fun FlowButton(
@@ -189,6 +201,7 @@ fun FlowButton(
     primary: Boolean = false,
     small: Boolean = true,
     selectedState: Boolean? = null,
+    busy: Boolean = false,
 ) {
     val shape = RoundedCornerShape(FsRadius.control)
     val fill = if (primary) Modifier.background(Brush.verticalGradient(listOf(FsColor.goldHover, FsColor.gold)), shape) else Modifier.background(FsColor.raised, shape)
@@ -199,12 +212,15 @@ fun FlowButton(
             .clip(shape)
             .then(fill)
             .border(1.dp, if (primary) FsColor.gold else FsColor.line, shape)
-            .clickable(role = Role.Button, onClick = onClick)
+            .clickable(enabled = !busy, role = Role.Button, onClick = onClick)
             .then(selectedState?.let { on -> Modifier.semantics { selected = on } } ?: Modifier)
             .padding(horizontal = BUTTON_PAD),
         contentAlignment = Alignment.Center,
     ) {
-        Text(label, style = BUTTON_TEXT, color = if (primary) FsColor.bg else FsColor.strong, maxLines = 1)
+        val ink = if (primary) FsColor.bg else FsColor.strong
+        // The label stays (transparent) under the spinner so the button keeps its width.
+        Text(label, style = BUTTON_TEXT, color = if (busy) Color.Transparent else ink, maxLines = 1)
+        if (busy) CircularProgressIndicator(Modifier.size(SPINNER), color = ink, strokeWidth = SPINNER_STROKE)
     }
 }
 
@@ -230,6 +246,45 @@ fun FlowLink(text: String, modifier: Modifier = Modifier, onClick: () -> Unit) {
     Text(text, style = FsType.bodyStrong.copy(lineHeight = 24.sp), color = FsColor.gold, modifier = modifier.clickable(role = Role.Button, onClick = onClick))
 }
 
+/** A small gold tag (`.tag`): `Main` under the picked character. */
+@Composable
+fun FlowTag(text: String) {
+    Text(
+        text,
+        style = TAG,
+        color = FsColor.gold,
+        modifier = Modifier
+            .border(1.dp, FsColor.gold.copy(alpha = TAG_BORDER), RoundedCornerShape(TAG_RADIUS))
+            .padding(horizontal = TAG_PAD_X, vertical = TAG_PAD_Y),
+    )
+}
+
+/**
+ * One line of a feed (the site's FeedRow, `Forever right now`): the 40 lead, the sentence (15/22, its
+ * names and items styled by the caller) and, on the right, when and its kind; a rule under every line.
+ */
+@Composable
+fun FlowFeedRow(lead: FlowLead, sentence: AnnotatedString, time: String, kind: String, onClick: () -> Unit) {
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .parityItem(ParityItemKind.Row)
+            .clickable(role = Role.Button, onClick = onClick)
+            .padding(vertical = FsSpace.space3),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        FlowLeadImage(lead)
+        Spacer(Modifier.width(FEED_GAP))
+        Text(sentence, style = FsType.body, color = FsColor.text, modifier = Modifier.weight(1f))
+        Spacer(Modifier.width(FEED_GAP))
+        Column(horizontalAlignment = Alignment.End) {
+            Text(time, style = FsType.small, color = FsColor.muted, maxLines = 1)
+            Text(kind, style = FEED_KIND, color = FsColor.muted, maxLines = 1)
+        }
+    }
+    FlowRule()
+}
+
 /** The row's line (`.row .sub`, 13/18). */
 val SUB = FsType.small.copy(lineHeight = 18.sp)
 
@@ -249,4 +304,14 @@ private val ITEM_ROW_BODY: Dp = 46.dp
 private val SMALL_BUTTON = 36.dp
 private val BUTTON = 44.dp
 private val BUTTON_PAD = 18.dp
+private val SELECTED_BAR = 3.dp
+private val SPINNER = 18.dp
+private val SPINNER_STROKE = 2.dp
+private val TAG_RADIUS = 4.dp
+private val TAG_PAD_X = 7.dp
+private val TAG_PAD_Y = 1.dp
+private const val TAG_BORDER = 0.6f
+private val TAG = FsType.small.copy(fontSize = 12.sp, lineHeight = 16.sp, fontWeight = FontWeight.SemiBold)
+private val FEED_GAP = 14.dp
+private val FEED_KIND = FsType.small.copy(fontSize = 12.sp, lineHeight = 16.sp, fontWeight = FontWeight.Bold)
 private val BUTTON_TEXT = FsType.bodyStrong.copy(fontSize = 13.sp, lineHeight = 16.sp, fontWeight = FontWeight.Bold)

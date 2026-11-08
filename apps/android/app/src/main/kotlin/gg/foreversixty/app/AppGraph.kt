@@ -150,6 +150,7 @@ class AppGraph(context: Context, val config: ApiConfig = ApiConfig.fromBuildConf
         isSimsOn = { isAvailable(Feature.Sims) },
         isReportsOn = { isAvailable(Feature.Reports) },
         isRankingsOn = { isAvailable(Feature.Rankings) },
+        bisData = createBisDataSource(context, statics, appConfig),
         mayLinkToPlans = {
             plansLink.resolve()
             plansLink.mayLink.value

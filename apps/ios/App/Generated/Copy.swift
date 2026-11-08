@@ -2045,6 +2045,14 @@ enum Copy {
     /// Not now
     static var firstPermissionNotNow: String { text("first.permission.notNow") }
 
+    /// days
+    static var homeOutDays: String { text("home.out.days") }
+
+    /// {d} days {h} hours {m} minutes
+    static func homeOutClock(d: Int, h: Int, m: Int) -> String {
+        format("home.out.clock", d, h, m)
+    }
+
     /// {kind} · {n}
     static func menuCharacterLine(kind: String, n: Int) -> String {
         format("menu.character.line", kind, n)

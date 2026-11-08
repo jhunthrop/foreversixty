@@ -5,6 +5,7 @@ import gg.foreversixty.app.auth.BrowserLauncher
 import gg.foreversixty.app.auth.SignInOutcome
 import gg.foreversixty.app.model.AccountCharacter
 import gg.foreversixty.app.model.AccountDeletionRequest
+import gg.foreversixty.app.model.MePatch
 import gg.foreversixty.app.network.ApiClient
 import gg.foreversixty.app.network.ApiEndpoints
 import gg.foreversixty.app.network.ApiError
@@ -137,6 +138,20 @@ class SessionManager(
         picked.save(key)
         mutablePicked.value = key
     }
+
+    /**
+     * Marks [key] the account's main (`PATCH /v1/me`, flows spec F8, iOS `SessionStore.setMain`) and makes
+     * it the current character. False when the API refused or could not be reached; nothing changes then.
+     */
+    suspend fun setMain(key: String): Boolean =
+        when (val result = client.send(ApiEndpoints.updateMe(MePatch(mainCharacterKey = key)))) {
+            is ApiResult.Success -> {
+                if (phase.value.isSignedIn) mutablePhase.value = SessionPhase.SignedIn(result.data)
+                pick(key)
+                true
+            }
+            is ApiResult.Failure -> false
+        }
 
     /** You › Sign out: revoke this device on the server, then forget everything local. */
     suspend fun signOut() {

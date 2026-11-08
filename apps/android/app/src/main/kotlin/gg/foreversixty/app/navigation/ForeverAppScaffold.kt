@@ -79,6 +79,14 @@ import gg.foreversixty.app.search.SearchOverlay
 import gg.foreversixty.app.search.SearchOwner
 import gg.foreversixty.app.search.ui.RootSearchBar
 import gg.foreversixty.app.system.SystemNavigator
+import gg.foreversixty.app.firstrun.FirstRunHost
+import gg.foreversixty.app.home.flows.HomeOutActions
+import gg.foreversixty.app.home.flows.HomeOutClassRoute
+import androidx.compose.runtime.MutableState
+import gg.foreversixty.app.home.flows.HomeOutRoute
+import gg.foreversixty.app.home.flows.HomeOutSignIn
+import gg.foreversixty.app.account.AccountCopy
+import gg.foreversixty.app.account.AccountLinks
 import kotlinx.coroutines.launch
 
 /** What the shell draws; built once in MainActivity from the app graph. */
@@ -123,13 +131,18 @@ fun ForeverAppScaffold(features: ShellFeatures) {
         if (destination == MenuDestination.Planner && planner != null) planner.openForCharacter() else pushed = destination
         Unit
     }
-    ProfileMenuDrawer(features, drawer, gesturesEnabled = pushed == null && plannerTop == null, onOpen = onOpen) {
-        ShellBody(features, selected, select, pushed, openMenu, openPushed = { pushed = it }) { pushed = null }
-        val search = features.search
-        if (search != null) {
-            SearchOverlay(search, searchOwner(features.account), searchExits(features, select), features.home.rankings?.searchLink(), features.guides?.let { g -> { link -> g.navigator.open(link) } })
+    val shell: @Composable () -> Unit = {
+        ProfileMenuDrawer(features, drawer, gesturesEnabled = pushed == null && plannerTop == null, onOpen = onOpen) {
+            ShellBody(features, selected, select, pushed, openMenu, openPushed = { pushed = it }) { pushed = null }
+            val search = features.search
+            if (search != null) {
+                SearchOverlay(search, searchOwner(features.account), searchExits(features, select), features.home.rankings?.searchLink(), features.guides?.let { g -> { link -> g.navigator.open(link) } })
+            }
         }
     }
+    // Flows spec F8: Pick your main and the guild member's notification ask cover the shell after sign-in.
+    val session = features.account?.session
+    if (session != null) FirstRunHost(session, shell) else shell()
 }
 
 /** The tab bar and the current tab's content: the pushed menu screen, else the tab's root. */
@@ -150,6 +163,8 @@ private fun ShellBody(
     val badges = TabBadges(raid = features.raids?.badge?.count ?: 0, activity = features.activity?.unread ?: 0)
     val plannerTop = features.planner?.navigator?.top
     val shell = rememberSaveableStateHolder()
+    // Signed out, Gear's spec page; held here so a class on signed-out Home can push it (spec R3).
+    val gearSpecPage = rememberSaveable { mutableStateOf(false) }
     CompositionLocalProvider(LocalItemPageOpener provides openItemPage) {
         // While Search covers the app, the tabs under it are hidden from TalkBack.
         Box(if (searchOpen) Modifier.fillMaxSize().clearAndSetSemantics {} else Modifier.fillMaxSize()) {
@@ -160,7 +175,7 @@ private fun ShellBody(
                         PlannerScreenHost(features.planner, plannerTop, plannerHost(features, selected, openPushed))
                     pushed != null -> MenuScreen(features, pushed, onPickClass = { select(ForeverTab.Gear) }, onBack = closePushed)
                     else -> shell.SaveableStateProvider(selected.name) {
-                        CompositionLocalProvider(LocalOpenMenu provides openMenu) { TabRoot(features, selected, select, onSearch) }
+                        CompositionLocalProvider(LocalOpenMenu provides openMenu) { TabRoot(features, selected, select, onSearch, gearSpecPage) }
                     }
                 }
             }
@@ -193,7 +208,7 @@ private fun plannerHost(features: ShellFeatures, selected: ForeverTab, openPushe
 
 /** A tab's root screen. Home and Gear keep their lanes' screens until their own rebuilds. */
 @Composable
-private fun TabRoot(features: ShellFeatures, tab: ForeverTab, select: (ForeverTab) -> Unit, onSearch: (() -> Unit)?) {
+private fun TabRoot(features: ShellFeatures, tab: ForeverTab, select: (ForeverTab) -> Unit, onSearch: (() -> Unit)?, gearSpecPage: MutableState<Boolean>) {
     val account = features.account
     val session = account?.session
     val openGear = { select(ForeverTab.Gear) }
@@ -214,16 +229,65 @@ private fun TabRoot(features: ShellFeatures, tab: ForeverTab, select: (ForeverTa
         ForeverTab.Home -> when {
             account == null -> HomeRoute(features.home, openBis = openGear, onSearch = onSearch) { Unavailable(tab) }
             publicRankings(features.home, account) -> PublicRankings(features.home, account)
-            else -> HomeAccountGate(account, openGear) {
-                HomeRoute(features.home, session, openGear, onSearch, signIn = { account.session.beginSignIn(account.browser(context)) }, flows = flows) { Unavailable(tab) }
+            else -> SignedOutHome(features.home, account, classRoute(features, gearSpecPage, openGear), flows.exits.openWeb, bar) {
+                HomeAccountGate(account, openGear) {
+                    HomeRoute(features.home, session, openGear, onSearch, signIn = { account.session.beginSignIn(account.browser(context)) }, flows = flows) { Unavailable(tab) }
+                }
             }
         }
         ForeverTab.Raid -> features.raids?.let { RaidTab(it, account, features.home.reports, bar) } ?: Unavailable(tab)
-        ForeverTab.Gear -> features.bis?.let { GearTab(it, features.home, account, onSearch) } ?: Unavailable(tab)
+        ForeverTab.Gear -> features.bis?.let { GearTab(it, features.home, account, onSearch, gearSpecPage) } ?: Unavailable(tab)
         ForeverTab.Activity -> features.activity?.let { activity ->
             ActivityTab(activity, account, onOpen = { landing -> openLanding(features, landing, select) }) { ProfileBar(session) }
         } ?: Unavailable(tab)
     }
+}
+
+/** Signed out (or signing in), Home is the flows' signed-out Home (R3, F8 step 1); otherwise [otherwise], the account gate. */
+@Composable
+private fun SignedOutHome(
+    home: HomeDependencies,
+    account: AccountDeps,
+    classRoute: (String) -> Unit,
+    openWeb: (String) -> Unit,
+    bar: @Composable () -> Unit,
+    otherwise: @Composable () -> Unit,
+) {
+    val session = account.session
+    val phase by session.phase.collectAsStateWithLifecycle()
+    val service = home.signedOut
+    val signingIn = phase == SessionPhase.SigningIn
+    val out = phase as? SessionPhase.SignedOut
+    if (service == null || (out == null && !signingIn)) {
+        otherwise()
+        return
+    }
+    val context = LocalContext.current
+    val notice = out?.notice
+    HomeOutRoute(
+        service,
+        HomeOutSignIn(signingIn, notice?.let { AccountCopy.notice(it) }, notice?.let(AccountCopy::isFailure) ?: true),
+        HomeOutActions(
+            onSignIn = {
+                session.dismissNotice()
+                session.beginSignIn(account.browser(context))
+            },
+            onClass = { slug ->
+                session.dismissNotice()
+                classRoute(slug)
+            },
+            onFeedRow = openWeb,
+            onHowToStart = { AccountLinks.open(context, AccountLinks.SETUP) },
+        ),
+        bar,
+    )
+}
+
+/** Signed-out Home's class tap: that class's BiS at 60 raid, the spec page pushed under Gear; without BiS, Gear. */
+private fun classRoute(features: ShellFeatures, specPage: MutableState<Boolean>, openGear: () -> Unit): (String) -> Unit {
+    val bis = features.bis ?: return { openGear() }
+    val route = HomeOutClassRoute(bis.catalog, { bis.currentFaction }, bis::request, { specPage.value = true }, openGear)
+    return { slug -> route.open(slug) }
 }
 
 private fun openLanding(features: ShellFeatures, landing: ActivityLanding, select: (ForeverTab) -> Unit) = when (landing) {
@@ -287,7 +351,7 @@ private fun searchExits(features: ShellFeatures, select: (ForeverTab) -> Unit): 
 
 /** Gear (spec 2026-11-08 4.3) for the session's current character. */
 @Composable
-private fun GearTab(bis: BisModel, home: HomeDependencies, account: AccountDeps?, onSearch: (() -> Unit)?) {
+private fun GearTab(bis: BisModel, home: HomeDependencies, account: AccountDeps?, onSearch: (() -> Unit)?, specPage: MutableState<Boolean>) {
     val session = account?.session
     val phase = session?.phase?.collectAsStateWithLifecycle()?.value
     val picked = session?.pickedKey?.collectAsStateWithLifecycle()?.value
@@ -295,7 +359,7 @@ private fun GearTab(bis: BisModel, home: HomeDependencies, account: AccountDeps?
     val waiting = phase == SessionPhase.Importing || (phase is SessionPhase.SignedIn && phase.me == null)
     val context = LocalContext.current
     val deps = remember(home, account) {
-        GearDeps(home.catalog, home.cache, home.client, signIn = { account?.let { it.session.beginSignIn(it.browser(context)) } })
+        GearDeps(home.catalog, home.cache, home.client, signIn = { account?.let { it.session.beginSignIn(it.browser(context)) } }, specPage = specPage)
     }
     GearRoute(bis, deps, GearOwner(character?.key, character?.guild?.id, waiting), onSearch) { ProfileBar(session) }
 }
