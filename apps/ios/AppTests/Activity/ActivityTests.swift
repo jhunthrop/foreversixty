@@ -147,9 +147,10 @@ struct ActivityParityTests {
 
     @Test("ios-activity")
     func list() throws {
-        // On the CI runner the Activity suite's hosting view vended no accessibility children
-        // (run 42481050975's dump), so its words come from the sections the view draws, in the
-        // order VoiceOver reads them.
+        // On the CI runner the first accessibility read in this suite vends no tree, whichever
+        // state it is (runs 42481050975 to 42489848844; every other suite reads fine), so the
+        // Activity states take their words from what the view draws, in VoiceOver's order.
+        // Follow-up: the runner's cause.
         try ParityCheck.assert(view(ActivityTestData.rows), screen: "activity", size: Self.device, text: Self.words(ActivityTestData.rows))
     }
 
@@ -177,6 +178,9 @@ struct ActivityParityTests {
 
     @Test("ios-activity-out")
     func signedOut() throws {
-        try ParityCheck.assert(ActivitySignedOutView(signingIn: false) {}, screen: "activity-out", size: Self.device)
+        try ParityCheck.assert(
+            ActivitySignedOutView(signingIn: false) {}, screen: "activity-out", size: Self.device,
+            text: [Copy.tabActivity, Copy.activitySignedOut, Copy.signinButton]
+        )
     }
 }

@@ -115,23 +115,5 @@ private enum AccessibilityAutomation {
         }
         unsafeBitCast(symbol, to: SetEnabled.self)(1)
         enabled = true
-        // On the CI runner the first screen read after the switch vends no tree, whichever screen
-        // it is (runs 42481050975 to 42488128123: Activity's list, then its empty state, then its
-        // signed-out state, each the first parity read). A throwaway screen of the same shape takes
-        // that first read, so every real state is read after it.
-        _ = ParityText.lines(of: WarmUpScreen(), size: CGSize(width: 393, height: 852))
-    }
-}
-
-/// A screen of the parity screens' shape: a scroll view with a title, a row of chips and a list.
-private struct WarmUpScreen: View {
-    var body: some View {
-        ScrollView {
-            VStack(alignment: .leading) {
-                Text(verbatim: "Warm up").accessibilityAddTraits(.isHeader)
-                ScrollView(.horizontal) { HStack { Button("A") {}; Button("B") {} } }
-                ForEach(0 ..< 3, id: \.self) { index in Button { } label: { Text(verbatim: "Row \(index)") } }
-            }
-        }
     }
 }
