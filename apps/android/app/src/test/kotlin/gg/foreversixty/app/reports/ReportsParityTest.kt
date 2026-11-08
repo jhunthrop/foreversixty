@@ -35,25 +35,25 @@ class ReportsParityTest {
     private val now = ReportsTestData.now
     private val zone = ReportsTestData.zone
 
-    @Test fun reports() = pushed("reports", "Home") { list(loaded(ReportsParityFixtures.oneReport())) }
+    @Test fun reports() = pushed("reports", "Home") { YourReports(loaded(ReportsParityFixtures.oneReport())) }
 
-    @Test fun reportsAt2() = pushed("reports", "Home", fontScale = 2f) { list(loaded(ReportsParityFixtures.oneReport())) }
+    @Test fun reportsAt2() = pushed("reports", "Home", fontScale = 2f) { YourReports(loaded(ReportsParityFixtures.oneReport())) }
 
-    @Test fun reportsEmpty() = pushed("reports-empty", "Home") { list(loaded(ReportsTestData.emptyList())) }
+    @Test fun reportsEmpty() = pushed("reports-empty", "Home") { YourReports(loaded(ReportsTestData.emptyList())) }
 
-    @Test fun reportsFailed() = pushed("reports-failed", "Home") { list(ReportsPhase.Failed) }
+    @Test fun reportsFailed() = pushed("reports-failed", "Home") { YourReports(ReportsPhase.Failed) }
 
-    @Test fun reportError() = pushed("report-error", "Logs") { report(ReportPhase.Failed) }
+    @Test fun reportError() = pushed("report-error", "Logs") { OneReport(ReportPhase.Failed) }
 
     @Test fun reportProcessing() = pushed("report-processing", "Logs") {
-        report(ReportPhase.Loaded(ReportsParityFixtures.processing(now), null))
+        OneReport(ReportPhase.Loaded(ReportsParityFixtures.processing(now), null))
     }
 
     @Composable
-    private fun list(phase: ReportsPhase) = ReportsList(phase, pageFailed = false, now = now, zone = zone)
+    private fun YourReports(phase: ReportsPhase) = ReportsList(phase, pageFailed = false, now = now, zone = zone)
 
     @Composable
-    private fun report(phase: ReportPhase) =
+    private fun OneReport(phase: ReportPhase) =
         ReportContent(ReportScreenState(phase, ParsesPhase.Hidden, CoachPhase.Hidden), now, zone = zone)
 
     private fun loaded(list: ReportList) = ReportsPhase.Loaded(ReportsContent(list.rows, list.total, list.page, null))
