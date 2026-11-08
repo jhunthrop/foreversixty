@@ -10,6 +10,7 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/guilds"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
 	"github.com/jhunthrop/foreversixty/api/internal/sitedates"
+	"github.com/jhunthrop/foreversixty/api/internal/zoneicons"
 )
 
 // Widget is GET /v1/me/widget (W3-C12): one small answer every home-screen widget, lock-screen
@@ -26,6 +27,8 @@ type Widget struct {
 	// FirstRaidsAt is the day the first raids open (dates.json): the no-guild widget's
 	// countdown before raids open (ruling R13).
 	FirstRaidsAt string `json:"first_raids_at"`
+	// FirstRaidsZones names the first raids, in the countdown's order.
+	FirstRaidsZones []string `json:"first_raids_zones"`
 }
 
 // WidgetCharacter is the character the snapshot is for. SpecName is its primary tree, null
@@ -66,6 +69,8 @@ type UpgradePick struct {
 	Quality   int    `json:"quality"`
 	Icon      string `json:"icon"`
 	ItemLevel int    `json:"item_level"`
+	// SourceLine is where it comes from, Home's HomePick source_line.
+	SourceLine string `json:"source_line"`
 }
 
 // WidgetLive is what the live surfaces need beside the raid: the caller's server runs still
@@ -93,7 +98,8 @@ func (s *Service) widget(w http.ResponseWriter, r *http.Request) {
 // an empty or unknown key reads the account's main, else its first character.
 func (s *Service) WidgetFor(ctx context.Context, userID int64, want string) (Widget, error) {
 	now := s.now()
-	out := Widget{GeneratedAt: now.UTC().Truncate(time.Minute), FirstRaidsAt: sitedates.FirstRaids}
+	out := Widget{GeneratedAt: now.UTC().Truncate(time.Minute), FirstRaidsAt: sitedates.FirstRaids,
+		FirstRaidsZones: zoneicons.Names()}
 	char, err := s.pickCharacter(ctx, userID, want)
 	if err != nil || char == nil {
 		return out, err

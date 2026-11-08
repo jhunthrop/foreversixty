@@ -5126,6 +5126,7 @@ components:
       properties:
         generated_at: { type: string, format: date-time }
         first_raids_at: { type: string, format: date, description: "The day the first raids open (dates.json role raids): the no-guild widget's countdown (ruling R13). The API always sends it; optional so a snapshot an older build cached still decodes." }
+        first_raids_zones: { type: array, items: { type: string }, description: "The first raids' names in the countdown's order (Barrow Deeps, Hyjal Summit, Onyxia's Lair). Always sent; optional for older snapshots." }
         character: { oneOf: [{ $ref: '#/components/schemas/WidgetCharacter' }, { type: "null" }], description: "null for an account with no characters." }
         guild: { oneOf: [{ $ref: '#/components/schemas/WidgetGuild' }, { type: "null" }], description: "null when the character is on no guild's roster (`No guild yet`)." }
         next_raid: { oneOf: [{ $ref: '#/components/schemas/WidgetNextRaid' }, { type: "null" }], description: "null when the guild has nothing planned (`No raid planned`)." }
@@ -5173,6 +5174,11 @@ components:
         status: { type: string, enum: [open, locked, cancelled] }
         my: { $ref: '#/components/schemas/WidgetMine' }
         can_sign_up: { type: boolean, description: "The character may answer In, Late or Out now: open, not ended, verified." }
+        zone_icon: { type: string, description: "The zone's icon, a name under /data/{build}/icons. Always sent; optional for older snapshots." }
+        in: { type: integer, x-name: inCount, description: Signed In. }
+        late: { type: integer, description: Signed Late. }
+        tanks: { type: integer, description: Tanks signed In. }
+        healers: { type: integer, description: Healers signed In. }
     WidgetMine:
       type: object
       required: [state, spec, role]
@@ -5215,6 +5221,7 @@ components:
             quality: { type: integer }
             icon: { type: string }
             item_level: { type: integer }
+            source_line: { type: string, description: "Where it comes from, Home's HomePick source_line. Always sent; optional for older snapshots." }
         gain: { type: [number, "null"], description: "null: `Gain not modelled yet`, drawn as `—`." }
     LiveActivityRequest:
       type: object
@@ -5229,6 +5236,23 @@ components:
         push_token: { type: string }
         push_to_start_token: { type: string }
         object_id: { type: string }
+    LiveStartTokenRequest:
+      type: object
+      description: >-
+        POST /v1/me/live-activities/start-token: the app install's push-to-start token (iOS
+        ActivityKit; the FCM registration token on Android), one per install and kind, replaced
+        on each call.
+      required: [platform, kind, token]
+      properties:
+        platform: { type: string, enum: [ios, android] }
+        kind: { type: string, enum: [raid] }
+        token: { type: string }
+    LiveStartTokenStored:
+      type: object
+      required: [kind, platform]
+      properties:
+        kind: { type: string }
+        platform: { type: string }
     LiveActivityRegistered:
       type: object
       required: [id]
@@ -5244,6 +5268,7 @@ components:
         guild_name: { type: string }
         zone_name: { type: string }
         character_name: { type: string }
+        zone_icon: { type: string, description: "The zone's icon, a name under /data/{build}/icons. Always sent; optional for older activities." }
     RaidActivityState:
       type: object
       description: >-
@@ -5254,11 +5279,28 @@ components:
       properties:
         starts_at: { type: integer, format: int64 }
         invite_at: { type: [integer, "null"], format: int64 }
-        status: { type: string, enum: [open, locked, cancelled] }
+        status: { type: string, enum: [open, locked, cancelled, done] }
         my_state: { type: [string, "null"] }
         role: { type: string }
         signed_up: { type: integer }
         size: { type: [integer, "null"] }
+        in: { type: integer, x-name: inCount, description: Signed In. Always sent; optional for older activities. }
+        late: { type: integer, description: Signed Late. }
+        tanks: { type: integer, description: Tanks signed In. }
+        healers: { type: integer, description: Healers signed In. }
+        kills: { type: integer, description: "The end only (status done): the night's boss kills." }
+        loot:
+          type: array
+          description: "The end only: the items the raider got."
+          items:
+            type: object
+            title: LiveActivityLoot
+            required: [name, quality, icon]
+            properties:
+              name: { type: string }
+              quality: { type: integer }
+              icon: { type: string }
+        report_ready: { type: boolean, description: "The end only: the report is matched and ready." }
     SimActivityAttributes:
       type: object
       required: [sim_id, title]
@@ -5289,12 +5331,14 @@ components:
         kind: { type: string, enum: [widget.refresh] }
     ApnsLiveActivity:
       type: object
-      x-fixtures: [surface.live-raid-start.apns, surface.live-sim-update.apns]
+      x-fixtures: [surface.live-raid-start.apns, surface.live-raid-end.apns, surface.live-sim-update.apns]
       description: >-
         A Live Activity push (apns-push-type liveactivity, topic <bundle id>.push-type.liveactivity):
-        live.raid.start is a push-to-start with attributes-type, attributes and alert;
-        live.*.update an update; live.*.end an end with dismissal-date. content-state is a
-        RaidActivityState or a SimActivityState.
+        live.raid.start is a push-to-start with attributes-type, attributes and alert, sent on
+        raid.starting to the start token of each account In or Late with no countdown running;
+        live.*.update an update; live.*.end an end with dismissal-date (a raid's when it is
+        marked done or its report matches: status done, kills, loot, report_ready). content-state
+        is a RaidActivityState or a SimActivityState.
       required: [aps]
       properties:
         aps:
@@ -5323,7 +5367,7 @@ components:
             dismissal-date: { type: integer, format: int64 }
     FcmLiveData:
       type: object
-      x-fixtures: [surface.widget-refresh.fcm, surface.live-raid-start.fcm, surface.live-sim-update.fcm]
+      x-fixtures: [surface.widget-refresh.fcm, surface.live-raid-start.fcm, surface.live-raid-end.fcm, surface.live-sim-update.fcm]
       description: >-
         An FCM data message for the live surfaces: Android draws the ongoing notification (or
         refreshes its widgets) from these strings itself. kind is widget.refresh, live.raid.*
@@ -9316,6 +9360,43 @@ paths:
                   - { type: object, properties: { data: { $ref: '#/components/schemas/Widget' } } }
         '401':
           description: "Not signed in: the widget shows its signed-out state"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  /v1/me/live-activities/start-token:
+    post:
+      summary: Store the app install's push-to-start token (APP_WIDGETS)
+      description: >-
+        An app's device token only (403 for a browser session); 30 a minute per account. Keeps
+        one push-to-start token per install and kind, replaced on each call. On raid.starting the
+        server starts the raid's Live Activity with it (APNs push-to-start; on Android a
+        live.raid.start data message) for each account In or Late with no countdown running for
+        that raid. A token the push service refuses goes. Tokens are never logged or answered back.
+      operationId: storeLiveStartToken
+      tags: [app]
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: '#/components/schemas/LiveStartTokenRequest' } } }
+      parameters:
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
+      responses:
+        '426': { $ref: '#/components/responses/UpdateRequired' }
+        '200':
+          description: "Stored"
+          x-fixtures: [live.start-token]
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/LiveStartTokenStored' } } }
+        '403':
+          description: "forbidden: not an app's device"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '422':
+          description: "invalid, with fields platform, kind or token"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '429':
+          description: "rate_limited"
           content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
   /v1/me/live-activities:
     post:

@@ -4864,6 +4864,36 @@ public struct LiveActivityRequest: Codable, Sendable, Equatable {
     }
 }
 
+/// POST /v1/me/live-activities/start-token: the app install's push-to-start token (iOS ActivityKit; the FCM registration token on Android), one per install and kind, replaced on each call.
+public struct LiveStartTokenRequest: Codable, Sendable, Equatable {
+    public let platform: String
+    public let kind: String
+    public let token: String
+
+    public init(
+        platform: String,
+        kind: String,
+        token: String
+    ) {
+        self.platform = platform
+        self.kind = kind
+        self.token = token
+    }
+}
+
+public struct LiveStartTokenStored: Codable, Sendable, Equatable {
+    public let kind: String
+    public let platform: String
+
+    public init(
+        kind: String,
+        platform: String
+    ) {
+        self.kind = kind
+        self.platform = platform
+    }
+}
+
 public struct LoggingCharacter: Codable, Sendable, Equatable {
     public let key: String
     public let name: String
@@ -9539,6 +9569,8 @@ public struct Widget: Codable, Sendable, Equatable {
     public let generatedAt: Date
     /// The day the first raids open (dates.json role raids): the no-guild widget's countdown (ruling R13). The API always sends it; optional so a snapshot an older build cached still decodes.
     public let firstRaidsAt: String?
+    /// The first raids' names in the countdown's order (Barrow Deeps, Hyjal Summit, Onyxia's Lair). Always sent; optional for older snapshots.
+    public let firstRaidsZones: [String]?
     /// null for an account with no characters.
     public let character: WidgetCharacter?
     /// null when the character is on no guild's roster (`No guild yet`).
@@ -9553,6 +9585,7 @@ public struct Widget: Codable, Sendable, Equatable {
     public init(
         generatedAt: Date,
         firstRaidsAt: String? = nil,
+        firstRaidsZones: [String]? = nil,
         character: WidgetCharacter? = nil,
         guild: WidgetGuild? = nil,
         nextRaid: WidgetNextRaid? = nil,
@@ -9562,6 +9595,7 @@ public struct Widget: Codable, Sendable, Equatable {
     ) {
         self.generatedAt = generatedAt
         self.firstRaidsAt = firstRaidsAt
+        self.firstRaidsZones = firstRaidsZones
         self.character = character
         self.guild = guild
         self.nextRaid = nextRaid
@@ -9669,6 +9703,16 @@ public struct WidgetNextRaid: Codable, Sendable, Equatable {
     public let my: WidgetMine
     /// The character may answer In, Late or Out now: open, not ended, verified.
     public let canSignUp: Bool
+    /// The zone's icon, a name under /data/{build}/icons. Always sent; optional for older snapshots.
+    public let zoneIcon: String?
+    /// Signed In.
+    public let inCount: Int?
+    /// Signed Late.
+    public let late: Int?
+    /// Tanks signed In.
+    public let tanks: Int?
+    /// Healers signed In.
+    public let healers: Int?
 
     public init(
         raidId: Int64,
@@ -9684,7 +9728,12 @@ public struct WidgetNextRaid: Codable, Sendable, Equatable {
         signedUp: Int,
         status: String,
         my: WidgetMine,
-        canSignUp: Bool
+        canSignUp: Bool,
+        zoneIcon: String? = nil,
+        inCount: Int? = nil,
+        late: Int? = nil,
+        tanks: Int? = nil,
+        healers: Int? = nil
     ) {
         self.raidId = raidId
         self.guildId = guildId
@@ -9700,6 +9749,33 @@ public struct WidgetNextRaid: Codable, Sendable, Equatable {
         self.status = status
         self.my = my
         self.canSignUp = canSignUp
+        self.zoneIcon = zoneIcon
+        self.inCount = inCount
+        self.late = late
+        self.tanks = tanks
+        self.healers = healers
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case raidId
+        case guildId
+        case guildName
+        case zone
+        case zoneName
+        case startsAt
+        case inviteAt
+        case pullAt
+        case endsAt
+        case size
+        case signedUp
+        case status
+        case my
+        case canSignUp
+        case zoneIcon
+        case inCount = "in"
+        case late
+        case tanks
+        case healers
     }
 }
 
@@ -9709,19 +9785,23 @@ public struct WidgetUpgradePick: Codable, Sendable, Equatable {
     public let quality: Int
     public let icon: String
     public let itemLevel: Int
+    /// Where it comes from, Home's HomePick source_line. Always sent; optional for older snapshots.
+    public let sourceLine: String?
 
     public init(
         id: Int,
         name: String,
         quality: Int,
         icon: String,
-        itemLevel: Int
+        itemLevel: Int,
+        sourceLine: String? = nil
     ) {
         self.id = id
         self.name = name
         self.quality = quality
         self.icon = icon
         self.itemLevel = itemLevel
+        self.sourceLine = sourceLine
     }
 }
 

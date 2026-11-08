@@ -6,6 +6,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/jhunthrop/foreversixty/api/internal/app"
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/contract"
 	"github.com/jhunthrop/foreversixty/api/internal/guilds"
@@ -89,6 +90,17 @@ func TestWidgetCarriesTheFirstThreeUpgradesAndTheWholeTotal(t *testing.T) {
 	}
 	if w.Live.SimRunsRunning != 1 || !w.GeneratedAt.Equal(testNow.Truncate(time.Minute)) {
 		t.Fatalf("live = %+v, generated_at = %v", w.Live, w.GeneratedAt)
+	}
+	if len(w.FirstRaidsZones) != 3 || w.FirstRaidsZones[2] != "Onyxia's Lair" {
+		t.Fatalf("first raids zones = %v", w.FirstRaidsZones)
+	}
+}
+
+// A pick's source line is Home's.
+func TestUpgradePickCarriesTheSourceLine(t *testing.T) {
+	name := "Lionheart Helm"
+	if got := pickOf(app.Pick{Item: app.Item{ID: 12640, Name: &name}, SourceLine: "Blacksmithing"}); got.SourceLine != "Blacksmithing" || got.Name != name {
+		t.Fatalf("pick %+v", got)
 	}
 }
 

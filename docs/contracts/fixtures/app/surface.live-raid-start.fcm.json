@@ -13,7 +13,12 @@
       "my_state": "in",
       "role": "dps",
       "signed_up": "38",
-      "size": "40"
+      "size": "40",
+      "zone_icon": "inv_misc_head_dragon_black",
+      "in": "36",
+      "late": "2",
+      "tanks": "2",
+      "healers": "5"
     },
     "android": {
       "priority": "HIGH",
