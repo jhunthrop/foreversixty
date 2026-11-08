@@ -19,8 +19,8 @@ const (
 // Groups is every group, in the order the app lists them.
 var Groups = []Group{GroupRaids, GroupGear, GroupLogs, GroupLadder, GroupTiers, GroupOfficer, GroupAccount}
 
-// kindGroups is the one table of which group each catalogue kind belongs to. Ladder and tiers
-// have no kind yet.
+// kindGroups is the one table of which group each catalogue kind belongs to. Tiers has no kind
+// yet.
 var kindGroups = map[Kind]Group{
 	RaidPosted:      GroupRaids,
 	RaidSignupNudge: GroupRaids,
@@ -44,6 +44,7 @@ var kindGroups = map[Kind]Group{
 	GuildApproved:   GroupAccount,
 	PremiumSeat:     GroupAccount,
 	BillingFailed:   GroupAccount,
+	GuildSimPassed:  GroupLadder,
 }
 
 // GroupOf is kind's group. A kind the catalogue no longer names reads as account, so an old

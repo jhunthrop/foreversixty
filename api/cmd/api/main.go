@@ -273,12 +273,13 @@ func runSim(ctx context.Context, log *slog.Logger, args []string) error {
 		return fmt.Errorf("%s needs R2 credentials", sims.SimRunJobCommand)
 	}
 	log.Info(sims.SimRunJobCommand, "sim", args[0], "engine", enginever.Version)
+	finished := &activity.GuildSimWriter{Store: &activity.Store{Pool: pool}, Log: log}
 	deps := sims.JobDeps{
-		Store: &sims.Store{Pool: pool}, Put: client, Engine: simEngine(log), Log: log,
-		Finished: &activity.GuildSimWriter{Store: &activity.Store{Pool: pool}, Log: log},
+		Store: &sims.Store{Pool: pool}, Put: client, Engine: simEngine(log), Log: log, Finished: finished,
 	}
 	if notifier := newJobNotifier(ctx, cfg, pool, log); notifier != nil {
 		deps.Notify = notifier
+		finished.Events, finished.PublicBaseURL = notifier.Publisher, cfg.PublicBaseURL
 	}
 	return sims.Run(ctx, deps, args[0])
 }
