@@ -36,6 +36,7 @@ data class PushMessage(
         const val KEY_BODY = "body"
         const val KEY_LINK = "link"
         const val KEY_CATEGORY = "category"
+        const val KEY_COLLAPSE = "collapse"
         const val KEY_GUILD = "guild_id"
         const val KEY_RAID = "raid_id"
 
@@ -50,7 +51,7 @@ data class PushMessage(
                 body = data[KEY_BODY] ?: notificationBody.orEmpty(),
                 link = data[KEY_LINK]?.takeIf { it.isNotBlank() },
                 category = data[KEY_CATEGORY]?.takeIf { it.isNotBlank() },
-                collapse = collapse ?: data[KEY_RAID]?.let { "$kind-$it" },
+                collapse = data[KEY_COLLAPSE]?.takeIf { it.isNotBlank() } ?: collapse ?: data[KEY_RAID]?.let { "$kind-$it" },
                 data = data,
             )
         }
