@@ -106,8 +106,14 @@ jobs:
         run: shellcheck tools/*.sh tools/engine/*.sh tools/tests/*.sh tools/engine/tests/*.sh
       - name: actionlint
         run: |
-          curl -sSL -o /tmp/actionlint.tgz "https://github.com/rhysd/actionlint/releases/download/v${ACTIONLINT_VERSION}/actionlint_${ACTIONLINT_VERSION}_linux_amd64.tar.gz"
-          tar -xzf /tmp/actionlint.tgz -C /tmp actionlint
+          # GitHub release downloads 504 now and then: retry, then build it from the Go module proxy.
+          if curl -fsSL --retry 6 --retry-all-errors --retry-delay 10 -o /tmp/actionlint.tgz \
+              "https://github.com/rhysd/actionlint/releases/download/v${ACTIONLINT_VERSION}/actionlint_${ACTIONLINT_VERSION}_linux_amd64.tar.gz"; then
+            tar -xzf /tmp/actionlint.tgz -C /tmp actionlint
+          else
+            echo "::warning::actionlint ${ACTIONLINT_VERSION} download failed; building it with go install"
+            GOBIN=/tmp go install "github.com/rhysd/actionlint/cmd/actionlint@v${ACTIONLINT_VERSION}"
+          fi
           # Every workflow, with .github/actionlint.yaml (the xcode-27 runner label and the
           # held data.yml's shellcheck findings).
           /tmp/actionlint
