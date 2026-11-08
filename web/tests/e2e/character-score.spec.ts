@@ -102,7 +102,9 @@ test('a character with ranked fights and no score yet says so and draws no Figur
   await expect(page.getByTestId('character-score')).not.toContainText(/\b0\b/);
 });
 
-test('a score its owner hid is no score block at all: no figure, no "no logs", no label', async ({ page }) => {
+test('a score its owner hid is no score block at all: no figure, no "no logs", no label', async ({
+  page,
+}) => {
   await stub(page, { ...CHARACTER.data, ...UNSCORED, score_history: [], score_hidden: true });
   await page.goto(CHARACTER_PATH);
 
