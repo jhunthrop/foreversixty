@@ -55,6 +55,9 @@ func (s *Service) fillOfficerOverview(ctx context.Context, guildID int64, views 
 	}
 	for i := range views {
 		rows := notSignedRaiders(views[i], facts)
+		if err := s.Store.fillLastWeek(ctx, guildID, views[i], rows); err != nil {
+			return err
+		}
 		views[i].NotSignedRaiders = &rows
 		views[i].Ping = pingStateOf(pings[views[i].ID])
 	}

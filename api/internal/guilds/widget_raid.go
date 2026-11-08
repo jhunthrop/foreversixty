@@ -15,6 +15,7 @@ import (
 	"github.com/jackc/pgx/v5"
 
 	"github.com/jhunthrop/foreversixty/api/internal/raidspec"
+	"github.com/jhunthrop/foreversixty/api/internal/zoneicons"
 )
 
 // Widget raid statuses: the raid page's planned reads "open" on a widget.
@@ -54,6 +55,13 @@ type WidgetNextRaid struct {
 	EndsAt    time.Time  `json:"ends_at"`
 	Size      *int       `json:"size"`
 	SignedUp  int        `json:"signed_up"`
+	// ZoneIcon is the zone's icon (zoneicons); In, Late, Tanks and Healers the answers' counts
+	// (Tanks and Healers count the In), for the Live Activity.
+	ZoneIcon  string     `json:"zone_icon"`
+	In        int        `json:"in"`
+	Late      int        `json:"late"`
+	Tanks     int        `json:"tanks"`
+	Healers   int        `json:"healers"`
 	Status    string     `json:"status"`
 	My        WidgetMine `json:"my"`
 	CanSignUp bool       `json:"can_sign_up"`
@@ -129,6 +137,7 @@ func (s *Service) widgetNextRaid(ctx context.Context, raid Raid, guildName strin
 		RaidID: raid.ID, GuildID: raid.GuildID, GuildName: guildName, Zone: raid.Zone, ZoneName: zone.Name,
 		StartsAt: raid.StartsAt.UTC(), PullAt: raid.StartsAt.UTC(), EndsAt: raid.EndsAt().UTC(),
 		Size: zone.Size, SignedUp: c.In + c.Late, Status: widgetStatus(raid.Status),
+		ZoneIcon: zoneicons.For(raid.Zone), In: c.In, Late: c.Late, Tanks: c.Tanks, Healers: c.Healers,
 	}
 	if len(chars) == 0 {
 		return view, nil

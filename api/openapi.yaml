@@ -2404,21 +2404,36 @@ components:
         class: { type: string, x-name: className }
         account_key: { type: string, description: 'The account handle, "u:42".' }
         discord_linked: { type: boolean, description: True when the account linked Discord, so a ping mentions it. }
+        role: { type: string, enum: [tank, healer, dps], description: "The row's sign-up role, from its roster group. Always sent; optional for older bodies." }
+        discord_dm_url:
+          type: [string, "null"]
+          description: >-
+            https://discord.com/users/<id>, where Message opens a DM, only when the member opted
+            into officer DMs (notification settings officer_dms) and linked Discord; null
+            otherwise. No Discord id is ever sent for a member who did not opt in.
+        last_week:
+          type: [string, "null"]
+          enum: [in, late, bench, out, missed, null]
+          description: >-
+            The account's answer for the guild's raid of the week before (its latest raid that
+            started in the 8 days before this one, cancelled aside; the best answer across its
+            characters), missed when it gave none; null when there was no such raid.
     RaidPingState:
       type: object
       required: [last_pinged_at, next_allowed_at]
       properties:
         last_pinged_at: { type: [string, "null"], format: date-time }
-        next_allowed_at: { type: [string, "null"], format: date-time, description: last_pinged_at plus 6 hours; null before the first ping. }
+        next_allowed_at: { type: [string, "null"], format: date-time, description: "last_pinged_at plus 6 hours, when the raiders the last ping mentioned may be mentioned again (others may be pinged any time); null before the first ping." }
     RaidPingResult:
       type: object
       required: [posted, mentioned, no_discord, no_discord_names, next_allowed_at]
       properties:
         posted: { type: boolean, description: False when no non-signer has linked Discord (nothing posted, the throttle unspent). }
-        mentioned: { type: integer }
+        mentioned: { type: integer, description: 'How many the message mentioned ("Mentioned 2 healers").' }
         no_discord: { type: integer }
         no_discord_names: { type: array, items: { type: string } }
-        next_allowed_at: { type: [string, "null"], format: date-time }
+        next_allowed_at: { type: [string, "null"], format: date-time, description: When the raiders this ping mentioned may be mentioned again. }
+        recently_mentioned: { type: integer, description: "Linked raiders left out because a ping mentioned them for this raid in the last 6 hours. Always sent; optional for older bodies." }
     MemberChecklist:
       type: object
       description: >-
@@ -2710,6 +2725,11 @@ components:
         status: { type: string, enum: [planned, locked, done, cancelled] }
         size: { type: [integer, "null"] }
         guild_timezone: { type: string }
+        zone_icon: { type: string, description: "The zone's icon, a name under /data/{build}/icons (inv_misc_head_dragon_black for Onyxia's Lair). Always sent; optional for older bodies." }
+        answer_by:
+          type: [string, "null"]
+          format: date-time
+          description: The sign-up deadline. No guild stores one yet, so it is null; officers lock a raid by hand.
         notes: { type: string }
         notes_html: { type: string, description: Sanitised HTML of notes; render it. }
         counts: { $ref: '#/components/schemas/RaidCounts' }
@@ -3421,30 +3441,66 @@ components:
     RaidNightSummary:
       type: object
       description: >-
-        GET /v1/me/raid-nights/{raid}: one raider's night (spec C5). loot and bests are [] when
-        there are none; coach_notes is null without log_coach.
-      required: [raid_id, guild_id, guild_name, zone_name, starts_at, report_id, character, kills, wipes, new_bests, loot, bests, coach_notes]
+        GET /v1/me/raid-nights/{raid}: one raider's raid night (spec 2026-11-08-app-flows F2).
+        phase is before (now before starts_at), live (from the start to 4 hours after, while the
+        raid is not done or cancelled) or after. Before and live: you, coming and ready answer
+        the pull. Once a log is matched to the raid: report_id, kills, wipes, bests, new_bests,
+        loot and coach_notes; every log field is null (loot and bests []) until then. ready is
+        null after. coach_notes is null without the log coach, never an upsell.
+      required: [raid_id, guild_id, guild_name, zone_key, zone_name, starts_at, ends_at, status, phase, character, you, coming, ready, report_id, kills, wipes, new_bests, loot, bests, coach_notes]
       properties:
         raid_id: { type: integer, format: int64 }
         guild_id: { type: integer, format: int64 }
         guild_name: { type: string }
+        zone_key: { type: string }
         zone_name: { type: string }
+        zone_icon: { type: string, description: "The zone's icon, a name under /data/{build}/icons. Always sent; optional for older bodies." }
         starts_at: { type: string, format: date-time }
-        report_id: { type: string, description: "The matched report; the full report opens at /reports/{report_id} on the web." }
+        ends_at: { type: string, format: date-time, description: starts_at plus the raid's length. }
+        status: { type: string, enum: [planned, locked, done, cancelled] }
+        phase: { type: string, enum: [before, live, after] }
         character:
           type: object
           title: RaidNightCharacter
+          description: The character you signed with, else your main, else your first verified one.
           required: [character_key, name, class, spec, spec_name, role]
           properties:
             character_key: { type: string }
             name: { type: string }
             class: { type: string, x-name: className }
-            spec: { type: string }
+            spec: { type: string, description: 'The specs.json key, "" when unknown.' }
             spec_name: { type: string }
-            role: { type: string, enum: [tank, healer, dps] }
-        kills: { type: integer }
-        wipes: { type: integer }
-        new_bests: { type: integer }
+            role: { type: string, description: "tank, healer or dps; \"\" when the spec is unknown." }
+        you:
+          type: object
+          title: RaidNightYou
+          required: [state, late_minutes, note]
+          properties:
+            state: { type: [string, "null"], enum: [in, late, bench, out, null] }
+            late_minutes: { type: [integer, "null"] }
+            note: { type: string }
+        coming:
+          type: object
+          title: RaidNightComing
+          description: The answers' counts, and who is In or Late by role (one row per account).
+          required: [in, late, bench, out, tanks, healers, damage]
+          properties:
+            in: { type: integer, x-name: inCount }
+            late: { type: integer }
+            bench: { type: integer }
+            out: { type: integer }
+            tanks: { type: array, items: { $ref: '#/components/schemas/RaidNightPerson' } }
+            healers: { type: array, items: { $ref: '#/components/schemas/RaidNightPerson' } }
+            damage: { type: array, items: { $ref: '#/components/schemas/RaidNightPerson' } }
+        ready:
+          oneOf:
+            - { $ref: '#/components/schemas/ReadyCheck' }
+            - { type: "null" }
+          description: Your character's ready check for this raid (GET /v1/characters/{region}/{ruleset}/{name}/ready?raid=); null after.
+        report_id: { type: [string, "null"], description: "The matched report; it opens at /reports/{report_id}." }
+        kills: { type: [integer, "null"] }
+        wipes: { type: [integer, "null"] }
+        new_bests: { type: [integer, "null"], description: "Kills where your figure beat every earlier kill of that boss." }
         loot:
           type: array
           items:
@@ -3458,10 +3514,13 @@ components:
               icon: { type: string, description: The icon stem. }
               slot: { type: string, description: The slot label, e.g. Back. }
               boss: { type: string }
-              awarded_by: { type: string, description: The awarding officer's main character name. }
+              awarded_by: { type: string, description: The awarding officer's character name; "" when unknown. }
+              gain: { type: [number, "null"], description: "The upgrade over the worn gear, the Loot tab's gain for the character's band; null when the band cannot say." }
+              unit: { type: [string, "null"], enum: [DPS, HPS, TPS, null], description: What gain counts. }
               replaces:
                 type: [object, "null"]
                 title: RaidNightReplaces
+                description: The item it replaced; null until the export after the night says.
                 required: [item_id, name, quality, item_level]
                 properties:
                   item_id: { type: integer }
@@ -3470,19 +3529,29 @@ components:
                   item_level: { type: integer }
         bests:
           type: array
+          description: Your figure on each boss kill of the night, in pull order.
           items:
             type: object
             title: RaidNightBest
             required: [boss, dps, percentile, kill_ms]
             properties:
               boss: { type: string }
-              dps: { type: number }
-              percentile: { type: integer, description: 0 to 100, the parse colour band. }
+              dps: { type: number, description: DPS, or HPS for a healer. }
+              percentile: { type: [integer, "null"], description: "The fight's Forever rating, 0 to 100 (the parse colour band); null when unrated." }
               kill_ms: { type: integer, format: int64 }
         coach_notes:
           type: [array, "null"]
-          description: Up to three; null without log_coach.
+          description: The coach teaser, the character's night lines; null without log_coach.
           items: { type: string }
+    RaidNightPerson:
+      type: object
+      required: [name, class, state, late_minutes, note]
+      properties:
+        name: { type: string }
+        class: { type: string, x-name: className }
+        state: { type: string, enum: [in, late] }
+        late_minutes: { type: [integer, "null"] }
+        note: { type: string }
     RaidPatch:
       type: object
       description: The officer's whole raid form.
@@ -4091,6 +4160,12 @@ components:
       properties:
         time_zone: { type: string, description: An IANA name. }
         quiet_hours: { $ref: '#/components/schemas/QuietHours' }
+        officer_dms:
+          type: boolean
+          description: >-
+            The opt-in to Discord DMs from the guild's officers (D16; channel mentions are the
+            default): only when true does the officers' not-answered list carry a DM link. Off by
+            default. Always sent; optional for older bodies.
         raid_reminder:
           type: string
           description: >-
@@ -4135,6 +4210,7 @@ components:
         time_zone: { type: string }
         quiet_hours: { $ref: '#/components/schemas/QuietHours' }
         raid_reminder: { type: string, description: '"HH:MM" from 00:00 to 23:45 on a 15-minute step; anything else is 422 with fields.raid_reminder.' }
+        officer_dms: { type: boolean }
         events:
           type: array
           items:
@@ -5050,6 +5126,7 @@ components:
       properties:
         generated_at: { type: string, format: date-time }
         first_raids_at: { type: string, format: date, description: "The day the first raids open (dates.json role raids): the no-guild widget's countdown (ruling R13). The API always sends it; optional so a snapshot an older build cached still decodes." }
+        first_raids_zones: { type: array, items: { type: string }, description: "The first raids' names in the countdown's order (Barrow Deeps, Hyjal Summit, Onyxia's Lair). Always sent; optional for older snapshots." }
         character: { oneOf: [{ $ref: '#/components/schemas/WidgetCharacter' }, { type: "null" }], description: "null for an account with no characters." }
         guild: { oneOf: [{ $ref: '#/components/schemas/WidgetGuild' }, { type: "null" }], description: "null when the character is on no guild's roster (`No guild yet`)." }
         next_raid: { oneOf: [{ $ref: '#/components/schemas/WidgetNextRaid' }, { type: "null" }], description: "null when the guild has nothing planned (`No raid planned`)." }
@@ -5097,6 +5174,11 @@ components:
         status: { type: string, enum: [open, locked, cancelled] }
         my: { $ref: '#/components/schemas/WidgetMine' }
         can_sign_up: { type: boolean, description: "The character may answer In, Late or Out now: open, not ended, verified." }
+        zone_icon: { type: string, description: "The zone's icon, a name under /data/{build}/icons. Always sent; optional for older snapshots." }
+        in: { type: integer, x-name: inCount, description: Signed In. }
+        late: { type: integer, description: Signed Late. }
+        tanks: { type: integer, description: Tanks signed In. }
+        healers: { type: integer, description: Healers signed In. }
     WidgetMine:
       type: object
       required: [state, spec, role]
@@ -5139,6 +5221,7 @@ components:
             quality: { type: integer }
             icon: { type: string }
             item_level: { type: integer }
+            source_line: { type: string, description: "Where it comes from, Home's HomePick source_line. Always sent; optional for older snapshots." }
         gain: { type: [number, "null"], description: "null: `Gain not modelled yet`, drawn as `—`." }
     LiveActivityRequest:
       type: object
@@ -5153,6 +5236,23 @@ components:
         push_token: { type: string }
         push_to_start_token: { type: string }
         object_id: { type: string }
+    LiveStartTokenRequest:
+      type: object
+      description: >-
+        POST /v1/me/live-activities/start-token: the app install's push-to-start token (iOS
+        ActivityKit; the FCM registration token on Android), one per install and kind, replaced
+        on each call.
+      required: [platform, kind, token]
+      properties:
+        platform: { type: string, enum: [ios, android] }
+        kind: { type: string, enum: [raid] }
+        token: { type: string }
+    LiveStartTokenStored:
+      type: object
+      required: [kind, platform]
+      properties:
+        kind: { type: string }
+        platform: { type: string }
     LiveActivityRegistered:
       type: object
       required: [id]
@@ -5168,6 +5268,7 @@ components:
         guild_name: { type: string }
         zone_name: { type: string }
         character_name: { type: string }
+        zone_icon: { type: string, description: "The zone's icon, a name under /data/{build}/icons. Always sent; optional for older activities." }
     RaidActivityState:
       type: object
       description: >-
@@ -5178,11 +5279,28 @@ components:
       properties:
         starts_at: { type: integer, format: int64 }
         invite_at: { type: [integer, "null"], format: int64 }
-        status: { type: string, enum: [open, locked, cancelled] }
+        status: { type: string, enum: [open, locked, cancelled, done] }
         my_state: { type: [string, "null"] }
         role: { type: string }
         signed_up: { type: integer }
         size: { type: [integer, "null"] }
+        in: { type: integer, x-name: inCount, description: Signed In. Always sent; optional for older activities. }
+        late: { type: integer, description: Signed Late. }
+        tanks: { type: integer, description: Tanks signed In. }
+        healers: { type: integer, description: Healers signed In. }
+        kills: { type: integer, description: "The end only (status done): the night's boss kills." }
+        loot:
+          type: array
+          description: "The end only: the items the raider got."
+          items:
+            type: object
+            title: LiveActivityLoot
+            required: [name, quality, icon]
+            properties:
+              name: { type: string }
+              quality: { type: integer }
+              icon: { type: string }
+        report_ready: { type: boolean, description: "The end only: the report is matched and ready." }
     SimActivityAttributes:
       type: object
       required: [sim_id, title]
@@ -5213,12 +5331,14 @@ components:
         kind: { type: string, enum: [widget.refresh] }
     ApnsLiveActivity:
       type: object
-      x-fixtures: [surface.live-raid-start.apns, surface.live-sim-update.apns]
+      x-fixtures: [surface.live-raid-start.apns, surface.live-raid-end.apns, surface.live-sim-update.apns]
       description: >-
         A Live Activity push (apns-push-type liveactivity, topic <bundle id>.push-type.liveactivity):
-        live.raid.start is a push-to-start with attributes-type, attributes and alert;
-        live.*.update an update; live.*.end an end with dismissal-date. content-state is a
-        RaidActivityState or a SimActivityState.
+        live.raid.start is a push-to-start with attributes-type, attributes and alert, sent on
+        raid.starting to the start token of each account In or Late with no countdown running;
+        live.*.update an update; live.*.end an end with dismissal-date (a raid's when it is
+        marked done or its report matches: status done, kills, loot, report_ready). content-state
+        is a RaidActivityState or a SimActivityState.
       required: [aps]
       properties:
         aps:
@@ -5247,7 +5367,7 @@ components:
             dismissal-date: { type: integer, format: int64 }
     FcmLiveData:
       type: object
-      x-fixtures: [surface.widget-refresh.fcm, surface.live-raid-start.fcm, surface.live-sim-update.fcm]
+      x-fixtures: [surface.widget-refresh.fcm, surface.live-raid-start.fcm, surface.live-raid-end.fcm, surface.live-sim-update.fcm]
       description: >-
         An FCM data message for the live surfaces: Android draws the ongoing notification (or
         refreshes its widgets) from these strings itself. kind is widget.refresh, live.raid.*
@@ -5384,11 +5504,13 @@ components:
       properties:
         character_key: { type: string }
         name: { type: string }
-        class: { type: [string, "null"] }
+        class: { type: [string, "null"], x-name: className }
         spec: { type: [string, "null"] }
         spec_name: { type: [string, "null"] }
         level: { type: [integer, "null"] }
         item_level: { type: [integer, "null"] }
+        race: { type: [string, "null"], description: 'Battle.net''s race name ("Dwarf"), else the export''s race; null when neither says.' }
+        faction: { type: [string, "null"], enum: [alliance, horde, null] }
         best_parse:
           oneOf:
             - type: object
@@ -5455,13 +5577,123 @@ components:
             - { type: "null" }
         role_outcome: { type: [string, "null"] }
         dm_outcome: { type: [string, "null"] }
+        sheet: { $ref: '#/components/schemas/ApplicantSheet' }
+    RecruitingGuilds:
+      type: object
+      required: [rows]
+      properties:
+        rows:
+          type: array
+          items:
+            type: object
+            title: RecruitingGuild
+            required: [guild_id, name, faction, schedule, needs, crest_url]
+            properties:
+              guild_id: { type: integer, format: int64 }
+              name: { type: string }
+              faction: { type: string, enum: [alliance, horde] }
+              schedule: { type: string }
+              needs: { type: string, enum: [damage, healer, tank] }
+              crest_url: { type: [string, "null"] }
+    ReadyCheck:
+      type: object
+      required: [exported_at, items]
+      properties:
+        exported_at: { type: [string, "null"], format: date-time }
+        items: { type: array, items: { $ref: '#/components/schemas/ReadyItem' } }
+    ReadyItem:
+      type: object
+      required: [key, state, title, line, where]
+      properties:
+        key: { type: string, description: 'level, attune.<zone slug>, enchant.<slot>, enchants, flask, food.' }
+        state: { type: string, enum: [ok, miss, warn] }
+        title: { type: string }
+        line: { type: string }
+        where:
+          x-name: whereToGet
+          oneOf:
+            - type: object
+              title: ReadyWhere
+              required: [label, link]
+              properties:
+                label: { type: string }
+                link: { type: [string, "null"] }
+            - { type: "null" }
+    ApplicantSheet:
+      type: object
+      description: >-
+        The applicant sheet (spec 2026-11-08-app-flows F3), read by officers before Accept. score
+        is the character page's Forever Score; sim the newest finished sim (unit dps, hps or tps);
+        attunement the attunement to the guild's next raid (state ok, miss, or unknown when the
+        export cannot say; null with no raid planned or a zone that asks for none); enchants the
+        enchantable slots with an item (main hand, chest, cloak, boots), how many are enchanted
+        and the missing ones; bis_gap the pieces short of the spec's 60 raid list; history the
+        other guilds the character logged raids with in public reports, newest first; exported_at
+        the addon export they read. Applying shares the gear with the guild's officers, never the
+        bags. Each part is null when its source has nothing. Always sent on officer rows;
+        optional so an older body still decodes.
+      required: [score, sim, attunement, enchants, bis_gap, history, exported_at]
+      properties:
+        score: { type: [integer, "null"] }
+        sim:
+          oneOf:
+            - type: object
+              title: ApplicantSim
+              required: [value, unit]
+              properties:
+                value: { type: number }
+                unit: { type: string, enum: [dps, hps, tps] }
+            - { type: "null" }
+        attunement:
+          oneOf:
+            - type: object
+              title: ApplicantAttunement
+              required: [zone_name, state, item]
+              properties:
+                zone_name: { type: string }
+                state: { type: string, enum: [ok, miss, unknown] }
+                item:
+                  oneOf:
+                    - { $ref: '#/components/schemas/ZoneKeyItem' }
+                    - { type: "null" }
+            - { type: "null" }
+        enchants:
+          oneOf:
+            - type: object
+              title: ApplicantEnchants
+              required: [slots, enchanted, missing]
+              properties:
+                slots: { type: integer }
+                enchanted: { type: integer }
+                missing: { type: array, items: { type: string } }
+            - { type: "null" }
+        bis_gap:
+          oneOf:
+            - type: object
+              title: ApplicantBisGap
+              required: [pieces, list]
+              properties:
+                pieces: { type: integer }
+                list: { type: string, description: '"Holy Paladin, 60 raid".' }
+            - { type: "null" }
+        history:
+          type: array
+          items:
+            type: object
+            title: ApplicantGuild
+            required: [guild_name, raids, last_raid_at]
+            properties:
+              guild_name: { type: string }
+              raids: { type: integer }
+              last_raid_at: { type: string, format: date-time }
+        exported_at: { type: [string, "null"], format: date-time }
     GuildCharacterRef:
       type: object
       description: An account named by its character on the guild's roster.
       required: [name, class, character_key]
       properties:
         name: { type: string }
-        class: { type: [string, "null"] }
+        class: { type: [string, "null"], x-name: className }
         character_key: { type: string }
     GuildOfficerApplications:
       type: object
@@ -7553,6 +7785,41 @@ paths:
         '404':
           description: "No such guild: an id that is not a positive number, or a guild gone by the time the home is read"
           content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  /v1/guilds/recruiting:
+    get:
+      summary: Guilds recruiting a spec (public)
+      description: >-
+        The Raid tab with no guild (spec 2026-11-08-app-flows). A guild is listed while it
+        recruits, on the faction asked (and region and ruleset when given), when its wanted list
+        names the spec, its class with no spec, or nothing (open to everyone); newest recruiting
+        edit first, at most 20. schedule is the officers' raid nights, else the weekdays and the
+        first start of its planned raids over the next two weeks in its raid time zone ("Wed and
+        Sat, 8:00 pm CST"), "" with neither; needs is the spec's role (damage, healer, tank).
+        Cached 60 s. 400 bad_request on an unknown spec, faction, region or ruleset.
+      operationId: listRecruitingGuilds
+      tags: [app]
+      x-authenticated: false
+      parameters:
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
+        - { name: spec, in: query, required: true, schema: { type: string }, description: 'A specs.json key, "warrior-fury".' }
+        - { name: faction, in: query, required: true, schema: { type: string, enum: [alliance, horde] } }
+        - { name: region, in: query, schema: { type: string } }
+        - { name: ruleset, in: query, schema: { type: string } }
+      responses:
+        '426': { $ref: '#/components/responses/UpdateRequired' }
+        '200':
+          description: "The guilds"
+          x-fixtures: [guild.recruiting]
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/RecruitingGuilds' } } }
+        '400':
+          description: "bad_request, with the field"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
   /v1/guilds/search:
     get:
       operationId: searchGuilds
@@ -7766,6 +8033,44 @@ paths:
   # Native apps v1 (docs/contracts/app-v1.md). Routes marked dark are unmounted until their
   # flag is on: APP_SIGN_IN (lane A1), APP_NOTIFICATIONS_ENABLED (lane A2), APP_API (lane A3).
   # -----------------------------------------------------------------------------------------
+  /v1/characters/{region}/{ruleset}/{name}/ready:
+    get:
+      summary: Your character's ready check (owner only)
+      description: >-
+        Raid night's Ready check and Home's "2 things before you pull" (spec 2026-11-08-app-flows
+        F2), from the character's last addon export, graded by the D12 checklist's logic. With
+        ?raid= (a raid of a guild the character is verified in) it adds the attunement line for
+        that raid's zone. Items in order: level (only when short), attune.<zone> (ok, miss, or
+        warn when the addon has not seen the keys), enchant.<slot> (warn per unenchanted slot;
+        one enchants ok line when all are), flask and food (ok with the stack, or miss with
+        where). A check the export cannot answer is left out. exported_at null and items [] with
+        no export. 404 for a character not on your account or a raid not of its guilds.
+      operationId: getCharacterReady
+      tags: [app]
+      parameters:
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
+        - { name: region, in: path, required: true, schema: { type: string } }
+        - { name: ruleset, in: path, required: true, schema: { type: string } }
+        - { name: name, in: path, required: true, schema: { type: string } }
+        - { name: raid, in: query, schema: { type: integer, format: int64 } }
+      responses:
+        '426': { $ref: '#/components/responses/UpdateRequired' }
+        '200':
+          description: "The ready check"
+          x-fixtures: [character.ready]
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/ReadyCheck' } } }
+        '401':
+          description: "No session or device token"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '404':
+          description: "Not your character, or a raid not of its guilds"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
   /v1/characters/{region}/{ruleset}/{name}/home:
     get:
       summary: The home answer for a character (dark, APP_API)
@@ -8155,14 +8460,12 @@ paths:
           content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
   /v1/me/raid-nights/{raid}:
     get:
-      summary: Your raid night, the after-raid summary (dark; lane F4 contract, handler pending)
+      summary: Your raid night, before the pull and after the log
       description: >-
-        The summary behind the app's Your raid night screen and the raid.summary push (spec
-        2026-10-30-mobile-apps C5): the night's kills and wipes, the loot awarded to the
-        viewer's character in it, its new personal bests, and coach notes when the account has
-        log_coach (null otherwise, never an upsell). The character is the viewer's character in
-        the matched log. 404 not_found when the raid has no matched log, or the viewer has no
-        character in it, or the raid is not theirs to see.
+        Raid night (spec 2026-11-08-app-flows F2): before the pull the countdown, your answer, who
+        is coming by role with the late notes and your ready check; once a log is matched, the
+        night's kills and wipes, the loot you got, your bests and the coach teaser. A verified
+        member of the raid's guild; 404 not_found for anyone else or a raid that does not exist.
       operationId: getRaidNight
       tags: [app]
       parameters:
@@ -8173,7 +8476,7 @@ paths:
         '426': { $ref: '#/components/responses/UpdateRequired' }
         '200':
           description: "Your raid night"
-          x-fixtures: [me.raid-night, me.raid-night.free]
+          x-fixtures: [me.raid-night, me.raid-night.before, me.raid-night.free]
           content:
             application/json:
               schema:
@@ -8184,7 +8487,7 @@ paths:
           description: "No session or device token, or a dead one"
           content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
         '404':
-          description: "No matched log, not in it, or not yours to see"
+          description: "No such raid, or not yours to see"
           x-fixtures: [me.raid-night.error-not-found]
           content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
   /v1/guilds/{id}/raids/{raid}/comp-target:
@@ -8251,14 +8554,33 @@ paths:
       description: >-
         The bot posts one message, a reply under the raid's live post (else in its channel),
         mentioning the not_signed_raiders who linked Discord: the raid's title, its start as
-        <t:unix:F>, and the raid page's link. No DMs, no other pings (allowed_mentions names only
-        them). One ping per raid per 6 hours; a ping with no one to mention posts nothing and
-        spends nothing. Verified officer, the plan, claim not frozen, the raid planned or locked.
+        <t:unix:F>, and the raid page's link. An optional body {"role": "tank"|"healer"|"dps"}
+        mentions only the not-signed raiders of that role ("Mention the 2 healers"); no body
+        mentions them all (422 invalid, field role, for any other role). No DMs, no other pings
+        (allowed_mentions names only them). The throttle is per member: a ping mentions only the
+        raiders no ping mentioned for this raid in the last 6 hours (recently_mentioned counts the
+        rest), so the healers first and everyone later never pings anyone twice; 429
+        ping_throttled (next_allowed_at in fields) when that leaves nobody. A ping with no one
+        linked to mention posts nothing and spends nothing. Verified officer, the plan, claim not
+        frozen, the raid planned or locked.
       operationId: pingGuildRaid
+      tags: [app]
       parameters:
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
         - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
         - { name: raid, in: path, required: true, schema: { type: integer, format: int64 } }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              title: RaidPingRequest
+              properties:
+                role: { type: string, enum: [tank, healer, dps] }
       responses:
+        '426': { $ref: '#/components/responses/UpdateRequired' }
         '200':
           description: "What was posted"
           content:
@@ -9039,6 +9361,43 @@ paths:
         '401':
           description: "Not signed in: the widget shows its signed-out state"
           content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  /v1/me/live-activities/start-token:
+    post:
+      summary: Store the app install's push-to-start token (APP_WIDGETS)
+      description: >-
+        An app's device token only (403 for a browser session); 30 a minute per account. Keeps
+        one push-to-start token per install and kind, replaced on each call. On raid.starting the
+        server starts the raid's Live Activity with it (APNs push-to-start; on Android a
+        live.raid.start data message) for each account In or Late with no countdown running for
+        that raid. A token the push service refuses goes. Tokens are never logged or answered back.
+      operationId: storeLiveStartToken
+      tags: [app]
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: '#/components/schemas/LiveStartTokenRequest' } } }
+      parameters:
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
+      responses:
+        '426': { $ref: '#/components/responses/UpdateRequired' }
+        '200':
+          description: "Stored"
+          x-fixtures: [live.start-token]
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/LiveStartTokenStored' } } }
+        '403':
+          description: "forbidden: not an app's device"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '422':
+          description: "invalid, with fields platform, kind or token"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '429':
+          description: "rate_limited"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
   /v1/me/live-activities:
     post:
       summary: Keep a Live Activity or ongoing notification current (dark, APP_WIDGETS)
@@ -9681,10 +10040,13 @@ paths:
       summary: The officers' application list
       description: A verified officer or the guild master. Pending first (oldest first), then the latest 20 decisions.
       operationId: listGuildApplications
-      tags: [web]
+      tags: [app]
       parameters:
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
         - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
       responses:
+        '426': { $ref: '#/components/responses/UpdateRequired' }
         '200':
           description: "The list"
           x-fixtures: [guild.applications]
@@ -9820,11 +10182,14 @@ paths:
         to the applicant's linked Discord user and, only if the applicant opted in, DMs the
         decision. Neither step can undo the accept; discord_role and discord_dm say what happened.
       operationId: acceptGuildApplication
-      tags: [web]
+      tags: [app]
       parameters:
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
         - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
         - { name: app, in: path, required: true, schema: { type: integer, format: int64 } }
       responses:
+        '426': { $ref: '#/components/responses/UpdateRequired' }
         '200':
           description: "The decision"
           x-fixtures: [guild.application.accept]
@@ -9848,11 +10213,14 @@ paths:
       summary: An officer declines an application
       description: Grants nothing (discord_role reason not_accepted); DMs the decision only if the applicant opted in.
       operationId: declineGuildApplication
-      tags: [web]
+      tags: [app]
       parameters:
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
         - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
         - { name: app, in: path, required: true, schema: { type: integer, format: int64 } }
       responses:
+        '426': { $ref: '#/components/responses/UpdateRequired' }
         '200':
           description: "The decision"
           content:

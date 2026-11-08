@@ -67,7 +67,7 @@ func sentenceFor(state string) *string {
 }
 
 func pickOf(p app.Pick) UpgradePick {
-	out := UpgradePick{ID: p.ID}
+	out := UpgradePick{ID: p.ID, SourceLine: p.SourceLine}
 	if p.Name != nil {
 		out.Name = *p.Name
 	}

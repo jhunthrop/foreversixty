@@ -354,6 +354,205 @@ public struct AppExchangeRequest: Codable, Sendable, Equatable {
     }
 }
 
+public struct ApplicantAttunement: Codable, Sendable, Equatable {
+    public let zoneName: String
+    public let state: String
+    public let item: ZoneKeyItem?
+
+    public init(
+        zoneName: String,
+        state: String,
+        item: ZoneKeyItem? = nil
+    ) {
+        self.zoneName = zoneName
+        self.state = state
+        self.item = item
+    }
+}
+
+public struct ApplicantBestParse: Codable, Sendable, Equatable {
+    public let metric: String
+    public let value: Double
+    public let percentile: Double?
+    public let encounter: String
+    public let reportId: String
+    public let fightIndex: Int
+
+    public init(
+        metric: String,
+        value: Double,
+        percentile: Double? = nil,
+        encounter: String,
+        reportId: String,
+        fightIndex: Int
+    ) {
+        self.metric = metric
+        self.value = value
+        self.percentile = percentile
+        self.encounter = encounter
+        self.reportId = reportId
+        self.fightIndex = fightIndex
+    }
+}
+
+public struct ApplicantBisGap: Codable, Sendable, Equatable {
+    public let pieces: Int
+    /// "Holy Paladin, 60 raid".
+    public let list: String
+
+    public init(
+        pieces: Int,
+        list: String
+    ) {
+        self.pieces = pieces
+        self.list = list
+    }
+}
+
+/// The character an application names. class and level from the character, spec from its newest ranked fight in a public, unflagged report, item_level the Battle.net equipped figure else that fight's. best_parse is the roster's best boss parse rule over every report (an applicant has none of the guild's own yet); null with none.
+public struct ApplicantCharacter: Codable, Sendable, Equatable {
+    public let characterKey: String
+    public let name: String
+    public let className: String?
+    public let spec: String?
+    public let specName: String?
+    public let level: Int?
+    public let itemLevel: Int?
+    /// Battle.net's race name ("Dwarf"), else the export's race; null when neither says.
+    public let race: String?
+    public let faction: String?
+    public let bestParse: ApplicantBestParse?
+
+    public init(
+        characterKey: String,
+        name: String,
+        className: String? = nil,
+        spec: String? = nil,
+        specName: String? = nil,
+        level: Int? = nil,
+        itemLevel: Int? = nil,
+        race: String? = nil,
+        faction: String? = nil,
+        bestParse: ApplicantBestParse? = nil
+    ) {
+        self.characterKey = characterKey
+        self.name = name
+        self.className = className
+        self.spec = spec
+        self.specName = specName
+        self.level = level
+        self.itemLevel = itemLevel
+        self.race = race
+        self.faction = faction
+        self.bestParse = bestParse
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case characterKey
+        case name
+        case className = "class"
+        case spec
+        case specName
+        case level
+        case itemLevel
+        case race
+        case faction
+        case bestParse
+    }
+}
+
+public struct ApplicantEnchants: Codable, Sendable, Equatable {
+    public let slots: Int
+    public let enchanted: Int
+    public let missing: [String]
+
+    public init(
+        slots: Int,
+        enchanted: Int,
+        missing: [String] = []
+    ) {
+        self.slots = slots
+        self.enchanted = enchanted
+        self.missing = missing
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        slots = try c.decode(Int.self, forKey: .slots)
+        enchanted = try c.decode(Int.self, forKey: .enchanted)
+        missing = try c.decodeIfPresent([String].self, forKey: .missing) ?? []
+    }
+}
+
+public struct ApplicantGuild: Codable, Sendable, Equatable {
+    public let guildName: String
+    public let raids: Int
+    public let lastRaidAt: Date
+
+    public init(
+        guildName: String,
+        raids: Int,
+        lastRaidAt: Date
+    ) {
+        self.guildName = guildName
+        self.raids = raids
+        self.lastRaidAt = lastRaidAt
+    }
+}
+
+/// The applicant sheet (spec 2026-11-08-app-flows F3), read by officers before Accept. score is the character page's Forever Score; sim the newest finished sim (unit dps, hps or tps); attunement the attunement to the guild's next raid (state ok, miss, or unknown when the export cannot say; null with no raid planned or a zone that asks for none); enchants the enchantable slots with an item (main hand, chest, cloak, boots), how many are enchanted and the missing ones; bis_gap the pieces short of the spec's 60 raid list; history the other guilds the character logged raids with in public reports, newest first; exported_at the addon export they read. Applying shares the gear with the guild's officers, never the bags. Each part is null when its source has nothing. Always sent on officer rows; optional so an older body still decodes.
+public struct ApplicantSheet: Codable, Sendable, Equatable {
+    public let score: Int?
+    public let sim: ApplicantSim?
+    public let attunement: ApplicantAttunement?
+    public let enchants: ApplicantEnchants?
+    public let bisGap: ApplicantBisGap?
+    public let history: [ApplicantGuild]
+    public let exportedAt: Date?
+
+    public init(
+        score: Int? = nil,
+        sim: ApplicantSim? = nil,
+        attunement: ApplicantAttunement? = nil,
+        enchants: ApplicantEnchants? = nil,
+        bisGap: ApplicantBisGap? = nil,
+        history: [ApplicantGuild] = [],
+        exportedAt: Date? = nil
+    ) {
+        self.score = score
+        self.sim = sim
+        self.attunement = attunement
+        self.enchants = enchants
+        self.bisGap = bisGap
+        self.history = history
+        self.exportedAt = exportedAt
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        score = try c.decodeIfPresent(Int.self, forKey: .score)
+        sim = try c.decodeIfPresent(ApplicantSim.self, forKey: .sim)
+        attunement = try c.decodeIfPresent(ApplicantAttunement.self, forKey: .attunement)
+        enchants = try c.decodeIfPresent(ApplicantEnchants.self, forKey: .enchants)
+        bisGap = try c.decodeIfPresent(ApplicantBisGap.self, forKey: .bisGap)
+        history = try c.decodeIfPresent([ApplicantGuild].self, forKey: .history) ?? []
+        exportedAt = try c.decodeIfPresent(Date.self, forKey: .exportedAt)
+    }
+}
+
+public struct ApplicantSim: Codable, Sendable, Equatable {
+    public let value: Double
+    public let unit: String
+
+    public init(
+        value: Double,
+        unit: String
+    ) {
+        self.value = value
+        self.unit = unit
+    }
+}
+
 /// The device token (shown only here), the device row and the GET /v1/me body.
 public struct AppSession: Codable, Sendable, Equatable {
     public let token: String
@@ -2021,6 +2220,20 @@ public struct DiscordLink: Codable, Sendable, Equatable {
     }
 }
 
+/// One bot step on a decision. done is true when it happened; else reason is no_role_set (no recruit role configured), no_bot (no bot in the guild's server), not_linked (the applicant has no linked Discord account), not_opted_in (the DM only: the applicant left "Message me on Discord" off), not_accepted (the role only: a decline grants nothing), discord_refused (Discord said no: not in the server, missing Manage Roles, role above the bot's) or failed (the bot could not be reached). The decision stands either way.
+public struct DiscordOutcome: Codable, Sendable, Equatable {
+    public let done: Bool
+    public let reason: String?
+
+    public init(
+        done: Bool,
+        reason: String? = nil
+    ) {
+        self.done = done
+        self.reason = reason
+    }
+}
+
 /// Every Premium feature pre-resolved for the caller (Go auth.EntitlementsView). A feature is available exactly when its flag is true.
 public struct Entitlements: Codable, Sendable, Equatable {
     public let serverSims: Bool
@@ -2887,6 +3100,42 @@ public struct GuildAddonSnapshot: Codable, Sendable, Equatable {
     }
 }
 
+public struct GuildApplicationDecision: Codable, Sendable, Equatable {
+    public let application: GuildOfficerApplication
+    public let discordRole: DiscordOutcome
+    public let discordDm: DiscordOutcome
+
+    public init(
+        application: GuildOfficerApplication,
+        discordRole: DiscordOutcome,
+        discordDm: DiscordOutcome
+    ) {
+        self.application = application
+        self.discordRole = discordRole
+        self.discordDm = discordDm
+    }
+}
+
+/// voters is how many verified officers (guild master included) the guild has; mine the viewer's own vote.
+public struct GuildApplicationVotes: Codable, Sendable, Equatable {
+    public let yes: Int
+    public let no: Int
+    public let voters: Int
+    public let mine: String?
+
+    public init(
+        yes: Int,
+        no: Int,
+        voters: Int,
+        mine: String? = nil
+    ) {
+        self.yes = yes
+        self.no = no
+        self.voters = voters
+        self.mine = mine
+    }
+}
+
 /// A guild roster row's attendance (roster[].attendance and pending[].attendance on GET /v1/guilds/{id}/home, candidates[].attendance on GET /v1/guilds/{id}/loot). A character was present in a report when it has a ranked or rated row there (fight_metrics not removed, or rating_scores), read by its character key, never by the log's GUIDs (fights.players). The window is the guild's last 8 non-private, unflagged reports that carry at least one ranked or rated row, so a night nobody can be present in (a private, tampered, unverified or trash-only report, or one not ranked yet) is never everyone's absence.
 public struct GuildAttendance: Codable, Sendable, Equatable {
     /// How many of the window's reports the character was present in, 0 to nights; a report with several of its fights counts once.
@@ -2900,6 +3149,29 @@ public struct GuildAttendance: Codable, Sendable, Equatable {
     ) {
         self.present = present
         self.nights = nights
+    }
+}
+
+/// An account named by its character on the guild's roster.
+public struct GuildCharacterRef: Codable, Sendable, Equatable {
+    public let name: String
+    public let className: String?
+    public let characterKey: String
+
+    public init(
+        name: String,
+        className: String? = nil,
+        characterKey: String
+    ) {
+        self.name = name
+        self.className = className
+        self.characterKey = characterKey
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case name
+        case className = "class"
+        case characterKey
     }
 }
 
@@ -3191,6 +3463,81 @@ public struct GuildMemberCounts: Codable, Sendable, Equatable {
         self.inGameNoAccount = inGameNoAccount
         self.waiting = waiting
         self.notSeen = notSeen
+    }
+}
+
+/// One application as officers read it: the applicant's fields, the votes, the deciding officer by their character on the roster (null while pending or withdrawn), and what the bot did on the decision (role_outcome, dm_outcome; DiscordOutcome's reason words or granted / sent), null until one is made.
+public struct GuildOfficerApplication: Codable, Sendable, Equatable {
+    public let id: Int64
+    public let guildId: Int64
+    public let status: String
+    public let createdAt: Date
+    public let decidedAt: Date?
+    public let message: String
+    public let availability: String
+    public let discordDm: Bool
+    public let character: ApplicantCharacter
+    public let votes: GuildApplicationVotes
+    public let decidedBy: GuildCharacterRef?
+    public let roleOutcome: String?
+    public let dmOutcome: String?
+    public let sheet: ApplicantSheet?
+
+    public init(
+        id: Int64,
+        guildId: Int64,
+        status: String,
+        createdAt: Date,
+        decidedAt: Date? = nil,
+        message: String,
+        availability: String,
+        discordDm: Bool,
+        character: ApplicantCharacter,
+        votes: GuildApplicationVotes,
+        decidedBy: GuildCharacterRef? = nil,
+        roleOutcome: String? = nil,
+        dmOutcome: String? = nil,
+        sheet: ApplicantSheet? = nil
+    ) {
+        self.id = id
+        self.guildId = guildId
+        self.status = status
+        self.createdAt = createdAt
+        self.decidedAt = decidedAt
+        self.message = message
+        self.availability = availability
+        self.discordDm = discordDm
+        self.character = character
+        self.votes = votes
+        self.decidedBy = decidedBy
+        self.roleOutcome = roleOutcome
+        self.dmOutcome = dmOutcome
+        self.sheet = sheet
+    }
+}
+
+/// Every pending application, oldest first, then the latest 20 decided ones, newest first.
+public struct GuildOfficerApplications: Codable, Sendable, Equatable {
+    public let rows: [GuildOfficerApplication]
+    /// How many rows are pending.
+    public let pending: Int
+    public let discordRoleId: String?
+
+    public init(
+        rows: [GuildOfficerApplication] = [],
+        pending: Int,
+        discordRoleId: String? = nil
+    ) {
+        self.rows = rows
+        self.pending = pending
+        self.discordRoleId = discordRoleId
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        rows = try c.decodeIfPresent([GuildOfficerApplication].self, forKey: .rows) ?? []
+        pending = try c.decode(Int.self, forKey: .pending)
+        discordRoleId = try c.decodeIfPresent(String.self, forKey: .discordRoleId)
     }
 }
 
@@ -4517,6 +4864,36 @@ public struct LiveActivityRequest: Codable, Sendable, Equatable {
     }
 }
 
+/// POST /v1/me/live-activities/start-token: the app install's push-to-start token (iOS ActivityKit; the FCM registration token on Android), one per install and kind, replaced on each call.
+public struct LiveStartTokenRequest: Codable, Sendable, Equatable {
+    public let platform: String
+    public let kind: String
+    public let token: String
+
+    public init(
+        platform: String,
+        kind: String,
+        token: String
+    ) {
+        self.platform = platform
+        self.kind = kind
+        self.token = token
+    }
+}
+
+public struct LiveStartTokenStored: Codable, Sendable, Equatable {
+    public let kind: String
+    public let platform: String
+
+    public init(
+        kind: String,
+        platform: String
+    ) {
+        self.kind = kind
+        self.platform = platform
+    }
+}
+
 public struct LoggingCharacter: Codable, Sendable, Equatable {
     public let key: String
     public let name: String
@@ -5322,6 +5699,8 @@ public struct NotificationSettings: Codable, Sendable, Equatable {
     /// An IANA name.
     public let timeZone: String
     public let quietHours: QuietHours
+    /// The opt-in to Discord DMs from the guild's officers (D16; channel mentions are the default): only when true does the officers' not-answered list carry a DM link. Off by default. Always sent; optional for older bodies.
+    public let officerDms: Bool?
     /// The raid-day reminder, "HH:MM" in time_zone (default "15:00"): on a raid's day in the player's zone, at this time, raid.signup_nudge goes to a member who has not answered. A reminder at or after the start goes two hours before it. Always sent; optional so an older body still decodes.
     public let raidReminder: String?
     public let events: [NotificationEvent]
@@ -5329,11 +5708,13 @@ public struct NotificationSettings: Codable, Sendable, Equatable {
     public init(
         timeZone: String,
         quietHours: QuietHours,
+        officerDms: Bool? = nil,
         raidReminder: String? = nil,
         events: [NotificationEvent] = []
     ) {
         self.timeZone = timeZone
         self.quietHours = quietHours
+        self.officerDms = officerDms
         self.raidReminder = raidReminder
         self.events = events
     }
@@ -5342,6 +5723,7 @@ public struct NotificationSettings: Codable, Sendable, Equatable {
         let c = try decoder.container(keyedBy: CodingKeys.self)
         timeZone = try c.decode(String.self, forKey: .timeZone)
         quietHours = try c.decode(QuietHours.self, forKey: .quietHours)
+        officerDms = try c.decodeIfPresent(Bool.self, forKey: .officerDms)
         raidReminder = try c.decodeIfPresent(String.self, forKey: .raidReminder)
         events = try c.decodeIfPresent([NotificationEvent].self, forKey: .events) ?? []
     }
@@ -5353,17 +5735,20 @@ public struct NotificationsPatch: Codable, Sendable, Equatable {
     public let quietHours: QuietHours?
     /// "HH:MM" from 00:00 to 23:45 on a 15-minute step; anything else is 422 with fields.raid_reminder.
     public let raidReminder: String?
+    public let officerDms: Bool?
     public let events: [NotificationChoice]?
 
     public init(
         timeZone: String? = nil,
         quietHours: QuietHours? = nil,
         raidReminder: String? = nil,
+        officerDms: Bool? = nil,
         events: [NotificationChoice]? = nil
     ) {
         self.timeZone = timeZone
         self.quietHours = quietHours
         self.raidReminder = raidReminder
+        self.officerDms = officerDms
         self.events = events
     }
 }
@@ -6242,15 +6627,16 @@ public struct RaidNight: Codable, Sendable, Equatable {
 
 public struct RaidNightBest: Codable, Sendable, Equatable {
     public let boss: String
+    /// DPS
     public let dps: Double
-    /// 0 to 100
-    public let percentile: Int
+    /// The fight's Forever rating, 0 to 100 (the parse colour band); null when unrated.
+    public let percentile: Int?
     public let killMs: Int64
 
     public init(
         boss: String,
         dps: Double,
-        percentile: Int,
+        percentile: Int? = nil,
         killMs: Int64
     ) {
         self.boss = boss
@@ -6260,12 +6646,15 @@ public struct RaidNightBest: Codable, Sendable, Equatable {
     }
 }
 
+/// The character you signed with, else your main, else your first verified one.
 public struct RaidNightCharacter: Codable, Sendable, Equatable {
     public let characterKey: String
     public let name: String
     public let className: String
+    /// The specs.json key, "" when unknown.
     public let spec: String
     public let specName: String
+    /// tank, healer or dps; "" when the spec is unknown.
     public let role: String
 
     public init(
@@ -6291,6 +6680,56 @@ public struct RaidNightCharacter: Codable, Sendable, Equatable {
         case spec
         case specName
         case role
+    }
+}
+
+/// The answers' counts, and who is In or Late by role (one row per account).
+public struct RaidNightComing: Codable, Sendable, Equatable {
+    public let inCount: Int
+    public let late: Int
+    public let bench: Int
+    public let out: Int
+    public let tanks: [RaidNightPerson]
+    public let healers: [RaidNightPerson]
+    public let damage: [RaidNightPerson]
+
+    public init(
+        inCount: Int,
+        late: Int,
+        bench: Int,
+        out: Int,
+        tanks: [RaidNightPerson] = [],
+        healers: [RaidNightPerson] = [],
+        damage: [RaidNightPerson] = []
+    ) {
+        self.inCount = inCount
+        self.late = late
+        self.bench = bench
+        self.out = out
+        self.tanks = tanks
+        self.healers = healers
+        self.damage = damage
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case inCount = "in"
+        case late
+        case bench
+        case out
+        case tanks
+        case healers
+        case damage
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        inCount = try c.decode(Int.self, forKey: .inCount)
+        late = try c.decode(Int.self, forKey: .late)
+        bench = try c.decode(Int.self, forKey: .bench)
+        out = try c.decode(Int.self, forKey: .out)
+        tanks = try c.decodeIfPresent([RaidNightPerson].self, forKey: .tanks) ?? []
+        healers = try c.decodeIfPresent([RaidNightPerson].self, forKey: .healers) ?? []
+        damage = try c.decodeIfPresent([RaidNightPerson].self, forKey: .damage) ?? []
     }
 }
 
@@ -6332,8 +6771,13 @@ public struct RaidNightLoot: Codable, Sendable, Equatable {
     /// The slot label
     public let slot: String
     public let boss: String
-    /// The awarding officer's main character name.
+    /// The awarding officer's character name; "" when unknown.
     public let awardedBy: String
+    /// The upgrade over the worn gear, the Loot tab's gain for the character's band; null when the band cannot say.
+    public let gain: Double?
+    /// What gain counts.
+    public let unit: String?
+    /// The item it replaced; null until the export after the night says.
     public let replaces: RaidNightReplaces?
 
     public init(
@@ -6344,6 +6788,8 @@ public struct RaidNightLoot: Codable, Sendable, Equatable {
         slot: String,
         boss: String,
         awardedBy: String,
+        gain: Double? = nil,
+        unit: String? = nil,
         replaces: RaidNightReplaces? = nil
     ) {
         self.itemId = itemId
@@ -6353,10 +6799,43 @@ public struct RaidNightLoot: Codable, Sendable, Equatable {
         self.slot = slot
         self.boss = boss
         self.awardedBy = awardedBy
+        self.gain = gain
+        self.unit = unit
         self.replaces = replaces
     }
 }
 
+public struct RaidNightPerson: Codable, Sendable, Equatable {
+    public let name: String
+    public let className: String
+    public let state: String
+    public let lateMinutes: Int?
+    public let note: String
+
+    public init(
+        name: String,
+        className: String,
+        state: String,
+        lateMinutes: Int? = nil,
+        note: String
+    ) {
+        self.name = name
+        self.className = className
+        self.state = state
+        self.lateMinutes = lateMinutes
+        self.note = note
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case name
+        case className = "class"
+        case state
+        case lateMinutes
+        case note
+    }
+}
+
+/// The item it replaced; null until the export after the night says.
 public struct RaidNightReplaces: Codable, Sendable, Equatable {
     public let itemId: Int
     public let name: String
@@ -6448,35 +6927,58 @@ public struct RaidNightRow: Codable, Sendable, Equatable {
     }
 }
 
-/// GET /v1/me/raid-nights/{raid}: one raider's night (spec C5). loot and bests are [] when there are none; coach_notes is null without log_coach.
+/// GET /v1/me/raid-nights/{raid}: one raider's raid night (spec 2026-11-08-app-flows F2). phase is before (now before starts_at), live (from the start to 4 hours after, while the raid is not done or cancelled) or after. Before and live: you, coming and ready answer the pull. Once a log is matched to the raid: report_id, kills, wipes, bests, new_bests, loot and coach_notes; every log field is null (loot and bests []) until then. ready is null after. coach_notes is null without the log coach, never an upsell.
 public struct RaidNightSummary: Codable, Sendable, Equatable {
     public let raidId: Int64
     public let guildId: Int64
     public let guildName: String
+    public let zoneKey: String
     public let zoneName: String
+    /// The zone's icon, a name under /data/{build}/icons. Always sent; optional for older bodies.
+    public let zoneIcon: String?
     public let startsAt: Date
-    /// The matched report; the full report opens at /reports/{report_id} on the web.
-    public let reportId: String
+    /// starts_at plus the raid's length.
+    public let endsAt: Date
+    public let status: String
+    public let phase: String
+    /// The character you signed with, else your main, else your first verified one.
     public let character: RaidNightCharacter
-    public let kills: Int
-    public let wipes: Int
-    public let newBests: Int
+    public let you: RaidNightYou
+    /// The answers' counts, and who is In or Late by role (one row per account).
+    public let coming: RaidNightComing
+    /// Your character's ready check for this raid (GET /v1/characters/{region}/{ruleset}/{name}/ready?raid=); null after.
+    public let ready: ReadyCheck?
+    /// The matched report; it opens at /reports/{report_id}.
+    public let reportId: String?
+    public let kills: Int?
+    public let wipes: Int?
+    /// Kills where your figure beat every earlier kill of that boss.
+    public let newBests: Int?
     public let loot: [RaidNightLoot]
+    /// Your figure on each boss kill of the night, in pull order.
     public let bests: [RaidNightBest]
-    /// Up to three; null without log_coach.
+    /// The coach teaser, the character's night lines; null without log_coach.
     public let coachNotes: [String]?
 
     public init(
         raidId: Int64,
         guildId: Int64,
         guildName: String,
+        zoneKey: String,
         zoneName: String,
+        zoneIcon: String? = nil,
         startsAt: Date,
-        reportId: String,
+        endsAt: Date,
+        status: String,
+        phase: String,
         character: RaidNightCharacter,
-        kills: Int,
-        wipes: Int,
-        newBests: Int,
+        you: RaidNightYou,
+        coming: RaidNightComing,
+        ready: ReadyCheck? = nil,
+        reportId: String? = nil,
+        kills: Int? = nil,
+        wipes: Int? = nil,
+        newBests: Int? = nil,
         loot: [RaidNightLoot] = [],
         bests: [RaidNightBest] = [],
         coachNotes: [String]? = nil
@@ -6484,10 +6986,18 @@ public struct RaidNightSummary: Codable, Sendable, Equatable {
         self.raidId = raidId
         self.guildId = guildId
         self.guildName = guildName
+        self.zoneKey = zoneKey
         self.zoneName = zoneName
+        self.zoneIcon = zoneIcon
         self.startsAt = startsAt
-        self.reportId = reportId
+        self.endsAt = endsAt
+        self.status = status
+        self.phase = phase
         self.character = character
+        self.you = you
+        self.coming = coming
+        self.ready = ready
+        self.reportId = reportId
         self.kills = kills
         self.wipes = wipes
         self.newBests = newBests
@@ -6501,16 +7011,40 @@ public struct RaidNightSummary: Codable, Sendable, Equatable {
         raidId = try c.decode(Int64.self, forKey: .raidId)
         guildId = try c.decode(Int64.self, forKey: .guildId)
         guildName = try c.decode(String.self, forKey: .guildName)
+        zoneKey = try c.decode(String.self, forKey: .zoneKey)
         zoneName = try c.decode(String.self, forKey: .zoneName)
+        zoneIcon = try c.decodeIfPresent(String.self, forKey: .zoneIcon)
         startsAt = try c.decode(Date.self, forKey: .startsAt)
-        reportId = try c.decode(String.self, forKey: .reportId)
+        endsAt = try c.decode(Date.self, forKey: .endsAt)
+        status = try c.decode(String.self, forKey: .status)
+        phase = try c.decode(String.self, forKey: .phase)
         character = try c.decode(RaidNightCharacter.self, forKey: .character)
-        kills = try c.decode(Int.self, forKey: .kills)
-        wipes = try c.decode(Int.self, forKey: .wipes)
-        newBests = try c.decode(Int.self, forKey: .newBests)
+        you = try c.decode(RaidNightYou.self, forKey: .you)
+        coming = try c.decode(RaidNightComing.self, forKey: .coming)
+        ready = try c.decodeIfPresent(ReadyCheck.self, forKey: .ready)
+        reportId = try c.decodeIfPresent(String.self, forKey: .reportId)
+        kills = try c.decodeIfPresent(Int.self, forKey: .kills)
+        wipes = try c.decodeIfPresent(Int.self, forKey: .wipes)
+        newBests = try c.decodeIfPresent(Int.self, forKey: .newBests)
         loot = try c.decodeIfPresent([RaidNightLoot].self, forKey: .loot) ?? []
         bests = try c.decodeIfPresent([RaidNightBest].self, forKey: .bests) ?? []
         coachNotes = try c.decodeIfPresent([String].self, forKey: .coachNotes)
+    }
+}
+
+public struct RaidNightYou: Codable, Sendable, Equatable {
+    public let state: String?
+    public let lateMinutes: Int?
+    public let note: String
+
+    public init(
+        state: String? = nil,
+        lateMinutes: Int? = nil,
+        note: String
+    ) {
+        self.state = state
+        self.lateMinutes = lateMinutes
+        self.note = note
     }
 }
 
@@ -6572,19 +7106,31 @@ public struct RaidNotSignedRaider: Codable, Sendable, Equatable {
     public let accountKey: String
     /// True when the account linked Discord
     public let discordLinked: Bool
+    /// The row's sign-up role, from its roster group. Always sent; optional for older bodies.
+    public let role: String?
+    /// https://discord.com/users/<id>, where Message opens a DM, only when the member opted into officer DMs (notification settings officer_dms) and linked Discord; null otherwise. No Discord id is ever sent for a member who did not opt in.
+    public let discordDmUrl: String?
+    /// The account's answer for the guild's raid of the week before (its latest raid that started in the 8 days before this one, cancelled aside; the best answer across its characters), missed when it gave none; null when there was no such raid.
+    public let lastWeek: String?
 
     public init(
         characterKey: String,
         name: String,
         className: String,
         accountKey: String,
-        discordLinked: Bool
+        discordLinked: Bool,
+        role: String? = nil,
+        discordDmUrl: String? = nil,
+        lastWeek: String? = nil
     ) {
         self.characterKey = characterKey
         self.name = name
         self.className = className
         self.accountKey = accountKey
         self.discordLinked = discordLinked
+        self.role = role
+        self.discordDmUrl = discordDmUrl
+        self.lastWeek = lastWeek
     }
 
     enum CodingKeys: String, CodingKey {
@@ -6593,6 +7139,9 @@ public struct RaidNotSignedRaider: Codable, Sendable, Equatable {
         case className = "class"
         case accountKey
         case discordLinked
+        case role
+        case discordDmUrl
+        case lastWeek
     }
 }
 
@@ -6652,9 +7201,58 @@ public struct RaidPatch: Codable, Sendable, Equatable {
     }
 }
 
+public struct RaidPingRequest: Codable, Sendable, Equatable {
+    public let role: String?
+
+    public init(
+        role: String? = nil
+    ) {
+        self.role = role
+    }
+}
+
+public struct RaidPingResult: Codable, Sendable, Equatable {
+    /// False when no non-signer has linked Discord (nothing posted
+    public let posted: Bool
+    /// How many the message mentioned ("Mentioned 2 healers").
+    public let mentioned: Int
+    public let noDiscord: Int
+    public let noDiscordNames: [String]
+    /// When the raiders this ping mentioned may be mentioned again.
+    public let nextAllowedAt: Date?
+    /// Linked raiders left out because a ping mentioned them for this raid in the last 6 hours. Always sent; optional for older bodies.
+    public let recentlyMentioned: Int?
+
+    public init(
+        posted: Bool,
+        mentioned: Int,
+        noDiscord: Int,
+        noDiscordNames: [String] = [],
+        nextAllowedAt: Date? = nil,
+        recentlyMentioned: Int? = nil
+    ) {
+        self.posted = posted
+        self.mentioned = mentioned
+        self.noDiscord = noDiscord
+        self.noDiscordNames = noDiscordNames
+        self.nextAllowedAt = nextAllowedAt
+        self.recentlyMentioned = recentlyMentioned
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        posted = try c.decode(Bool.self, forKey: .posted)
+        mentioned = try c.decode(Int.self, forKey: .mentioned)
+        noDiscord = try c.decode(Int.self, forKey: .noDiscord)
+        noDiscordNames = try c.decodeIfPresent([String].self, forKey: .noDiscordNames) ?? []
+        nextAllowedAt = try c.decodeIfPresent(Date.self, forKey: .nextAllowedAt)
+        recentlyMentioned = try c.decodeIfPresent(Int.self, forKey: .recentlyMentioned)
+    }
+}
+
 public struct RaidPingState: Codable, Sendable, Equatable {
     public let lastPingedAt: Date?
-    /// last_pinged_at plus 6 hours; null before the first ping.
+    /// last_pinged_at plus 6 hours, when the raiders the last ping mentioned may be mentioned again (others may be pinged any time); null before the first ping.
     public let nextAllowedAt: Date?
 
     public init(
@@ -6832,6 +7430,10 @@ public struct RaidView: Codable, Sendable, Equatable {
     public let status: String
     public let size: Int?
     public let guildTimezone: String
+    /// The zone's icon, a name under /data/{build}/icons (inv_misc_head_dragon_black for Onyxia's Lair). Always sent; optional for older bodies.
+    public let zoneIcon: String?
+    /// The sign-up deadline. No guild stores one yet, so it is null; officers lock a raid by hand.
+    public let answerBy: Date?
     public let notes: String
     /// Sanitised HTML of notes; render it.
     public let notesHtml: String
@@ -6871,6 +7473,8 @@ public struct RaidView: Codable, Sendable, Equatable {
         status: String,
         size: Int? = nil,
         guildTimezone: String,
+        zoneIcon: String? = nil,
+        answerBy: Date? = nil,
         notes: String,
         notesHtml: String,
         counts: RaidCounts,
@@ -6901,6 +7505,8 @@ public struct RaidView: Codable, Sendable, Equatable {
         self.status = status
         self.size = size
         self.guildTimezone = guildTimezone
+        self.zoneIcon = zoneIcon
+        self.answerBy = answerBy
         self.notes = notes
         self.notesHtml = notesHtml
         self.counts = counts
@@ -6934,6 +7540,8 @@ public struct RaidView: Codable, Sendable, Equatable {
         status = try c.decode(String.self, forKey: .status)
         size = try c.decodeIfPresent(Int.self, forKey: .size)
         guildTimezone = try c.decode(String.self, forKey: .guildTimezone)
+        zoneIcon = try c.decodeIfPresent(String.self, forKey: .zoneIcon)
+        answerBy = try c.decodeIfPresent(Date.self, forKey: .answerBy)
         notes = try c.decode(String.self, forKey: .notes)
         notesHtml = try c.decode(String.self, forKey: .notesHtml)
         counts = try c.decode(RaidCounts.self, forKey: .counts)
@@ -7266,6 +7874,109 @@ public struct RankingsPage: Codable, Sendable, Equatable {
         updatedAt = try c.decode(Date.self, forKey: .updatedAt)
         deduped = try c.decode(Bool.self, forKey: .deduped)
         characterRank = try c.decodeIfPresent(CharacterRank.self, forKey: .characterRank)
+    }
+}
+
+public struct ReadyCheck: Codable, Sendable, Equatable {
+    public let exportedAt: Date?
+    public let items: [ReadyItem]
+
+    public init(
+        exportedAt: Date? = nil,
+        items: [ReadyItem] = []
+    ) {
+        self.exportedAt = exportedAt
+        self.items = items
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        exportedAt = try c.decodeIfPresent(Date.self, forKey: .exportedAt)
+        items = try c.decodeIfPresent([ReadyItem].self, forKey: .items) ?? []
+    }
+}
+
+public struct ReadyItem: Codable, Sendable, Equatable {
+    /// level, attune.<zone slug>, enchant.<slot>, enchants, flask, food.
+    public let key: String
+    public let state: String
+    public let title: String
+    public let line: String
+    public let whereToGet: ReadyWhere?
+
+    public init(
+        key: String,
+        state: String,
+        title: String,
+        line: String,
+        whereToGet: ReadyWhere? = nil
+    ) {
+        self.key = key
+        self.state = state
+        self.title = title
+        self.line = line
+        self.whereToGet = whereToGet
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case key
+        case state
+        case title
+        case line
+        case whereToGet = "where"
+    }
+}
+
+public struct ReadyWhere: Codable, Sendable, Equatable {
+    public let label: String
+    public let link: String?
+
+    public init(
+        label: String,
+        link: String? = nil
+    ) {
+        self.label = label
+        self.link = link
+    }
+}
+
+public struct RecruitingGuild: Codable, Sendable, Equatable {
+    public let guildId: Int64
+    public let name: String
+    public let faction: String
+    public let schedule: String
+    public let needs: String
+    public let crestUrl: String?
+
+    public init(
+        guildId: Int64,
+        name: String,
+        faction: String,
+        schedule: String,
+        needs: String,
+        crestUrl: String? = nil
+    ) {
+        self.guildId = guildId
+        self.name = name
+        self.faction = faction
+        self.schedule = schedule
+        self.needs = needs
+        self.crestUrl = crestUrl
+    }
+}
+
+public struct RecruitingGuilds: Codable, Sendable, Equatable {
+    public let rows: [RecruitingGuild]
+
+    public init(
+        rows: [RecruitingGuild] = []
+    ) {
+        self.rows = rows
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        rows = try c.decodeIfPresent([RecruitingGuild].self, forKey: .rows) ?? []
     }
 }
 
@@ -8858,6 +9569,8 @@ public struct Widget: Codable, Sendable, Equatable {
     public let generatedAt: Date
     /// The day the first raids open (dates.json role raids): the no-guild widget's countdown (ruling R13). The API always sends it; optional so a snapshot an older build cached still decodes.
     public let firstRaidsAt: String?
+    /// The first raids' names in the countdown's order (Barrow Deeps, Hyjal Summit, Onyxia's Lair). Always sent; optional for older snapshots.
+    public let firstRaidsZones: [String]?
     /// null for an account with no characters.
     public let character: WidgetCharacter?
     /// null when the character is on no guild's roster (`No guild yet`).
@@ -8872,6 +9585,7 @@ public struct Widget: Codable, Sendable, Equatable {
     public init(
         generatedAt: Date,
         firstRaidsAt: String? = nil,
+        firstRaidsZones: [String]? = nil,
         character: WidgetCharacter? = nil,
         guild: WidgetGuild? = nil,
         nextRaid: WidgetNextRaid? = nil,
@@ -8881,6 +9595,7 @@ public struct Widget: Codable, Sendable, Equatable {
     ) {
         self.generatedAt = generatedAt
         self.firstRaidsAt = firstRaidsAt
+        self.firstRaidsZones = firstRaidsZones
         self.character = character
         self.guild = guild
         self.nextRaid = nextRaid
@@ -8988,6 +9703,16 @@ public struct WidgetNextRaid: Codable, Sendable, Equatable {
     public let my: WidgetMine
     /// The character may answer In, Late or Out now: open, not ended, verified.
     public let canSignUp: Bool
+    /// The zone's icon, a name under /data/{build}/icons. Always sent; optional for older snapshots.
+    public let zoneIcon: String?
+    /// Signed In.
+    public let inCount: Int?
+    /// Signed Late.
+    public let late: Int?
+    /// Tanks signed In.
+    public let tanks: Int?
+    /// Healers signed In.
+    public let healers: Int?
 
     public init(
         raidId: Int64,
@@ -9003,7 +9728,12 @@ public struct WidgetNextRaid: Codable, Sendable, Equatable {
         signedUp: Int,
         status: String,
         my: WidgetMine,
-        canSignUp: Bool
+        canSignUp: Bool,
+        zoneIcon: String? = nil,
+        inCount: Int? = nil,
+        late: Int? = nil,
+        tanks: Int? = nil,
+        healers: Int? = nil
     ) {
         self.raidId = raidId
         self.guildId = guildId
@@ -9019,6 +9749,33 @@ public struct WidgetNextRaid: Codable, Sendable, Equatable {
         self.status = status
         self.my = my
         self.canSignUp = canSignUp
+        self.zoneIcon = zoneIcon
+        self.inCount = inCount
+        self.late = late
+        self.tanks = tanks
+        self.healers = healers
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case raidId
+        case guildId
+        case guildName
+        case zone
+        case zoneName
+        case startsAt
+        case inviteAt
+        case pullAt
+        case endsAt
+        case size
+        case signedUp
+        case status
+        case my
+        case canSignUp
+        case zoneIcon
+        case inCount = "in"
+        case late
+        case tanks
+        case healers
     }
 }
 
@@ -9028,19 +9785,23 @@ public struct WidgetUpgradePick: Codable, Sendable, Equatable {
     public let quality: Int
     public let icon: String
     public let itemLevel: Int
+    /// Where it comes from, Home's HomePick source_line. Always sent; optional for older snapshots.
+    public let sourceLine: String?
 
     public init(
         id: Int,
         name: String,
         quality: Int,
         icon: String,
-        itemLevel: Int
+        itemLevel: Int,
+        sourceLine: String? = nil
     ) {
         self.id = id
         self.name = name
         self.quality = quality
         self.icon = icon
         self.itemLevel = itemLevel
+        self.sourceLine = sourceLine
     }
 }
 
@@ -9097,5 +9858,24 @@ public struct WidgetUpgrades: Codable, Sendable, Equatable {
         totalGain = try c.decodeIfPresent(Double.self, forKey: .totalGain)
         unit = try c.decode(String.self, forKey: .unit)
         rows = try c.decodeIfPresent([WidgetUpgradeRow].self, forKey: .rows) ?? []
+    }
+}
+
+public struct ZoneKeyItem: Codable, Sendable, Equatable {
+    public let id: Int
+    public let name: String
+    public let quality: Int
+    public let door: String?
+
+    public init(
+        id: Int,
+        name: String,
+        quality: Int,
+        door: String? = nil
+    ) {
+        self.id = id
+        self.name = name
+        self.quality = quality
+        self.door = door
     }
 }

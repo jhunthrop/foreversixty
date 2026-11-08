@@ -658,6 +658,7 @@ func serve(log *slog.Logger) error {
 	// lane and share one read of the character.
 	deps.Rankings.Scores = deps.Rating
 	deps.Rankings.ScoreGear = deps.Rating
+	guildService.Scores = applicantScores{deps.Rating}
 	deps.Coach = mountCoach(ctx, coachWiring{cfg: cfg, pool: pool, deps: &deps, rating: ratingStore, reports: reportStore, auth: authStore, entitle: entStore, sims: simStore, summaries: bucketOrNil(client), log: log})
 
 	layouts := talentLayouts(cfg.TreeDataDir, treeData, log)
@@ -684,6 +685,7 @@ func serve(log *slog.Logger) error {
 	wireNotify(cfg, pool, entStore, accounts, &deps, log)
 	deps.LiveSurface = newLiveSurface(ctx, liveSurfaceWiring{cfg: cfg, pool: pool, auth: authStore,
 		guilds: guildService, sims: simStore, entitle: entStore, homes: deps.App, log: log})
+	wireLivePusher(ctx, cfg, pool, guildService, log)
 	wireDiscord(ctx, cfg, pool, &deps, accounts, treeData, log)
 	wireLinkedRole(ctx, cfg, roleSyncer, &deps, log)
 

@@ -30,8 +30,10 @@ import gg.foreversixty.app.model.FeedPage
 import gg.foreversixty.app.model.FightMeters
 import gg.foreversixty.app.model.GuideFile
 import gg.foreversixty.app.model.GuideIndex
+import gg.foreversixty.app.model.GuildApplicationDecision
 import gg.foreversixty.app.model.GuildHome
 import gg.foreversixty.app.model.GuildLoot
+import gg.foreversixty.app.model.GuildOfficerApplications
 import gg.foreversixty.app.model.GuildRaids
 import gg.foreversixty.app.model.HomeBlocks
 import gg.foreversixty.app.model.ItemNeeds
@@ -41,6 +43,8 @@ import gg.foreversixty.app.model.ItemsFile
 import gg.foreversixty.app.model.KeyDate
 import gg.foreversixty.app.model.LiveActivityRegistered
 import gg.foreversixty.app.model.LiveActivityRequest
+import gg.foreversixty.app.model.LiveStartTokenRequest
+import gg.foreversixty.app.model.LiveStartTokenStored
 import gg.foreversixty.app.model.LootFile
 import gg.foreversixty.app.model.Me
 import gg.foreversixty.app.model.MePatch
@@ -55,10 +59,14 @@ import gg.foreversixty.app.model.RaidBadge
 import gg.foreversixty.app.model.RaidCancel
 import gg.foreversixty.app.model.RaidNightSummary
 import gg.foreversixty.app.model.RaidPatch
+import gg.foreversixty.app.model.RaidPingRequest
+import gg.foreversixty.app.model.RaidPingResult
 import gg.foreversixty.app.model.RaidView
 import gg.foreversixty.app.model.RankedEncounters
 import gg.foreversixty.app.model.RankingPercentile
 import gg.foreversixty.app.model.RankingsPage
+import gg.foreversixty.app.model.ReadyCheck
+import gg.foreversixty.app.model.RecruitingGuilds
 import gg.foreversixty.app.model.Report
 import gg.foreversixty.app.model.ReportList
 import gg.foreversixty.app.model.ReportMe
@@ -225,6 +233,14 @@ object ApiEndpoints {
     fun getGuildHome(id: Long, cursor: String? = null): Endpoint<GuildHome> =
         Endpoint(HttpMethod.Get, "/v1/guilds/$id/home", GuildHome.serializer(), query = listOfNotNull(cursor?.let { "cursor" to it }))
 
+    /** GET /v1/guilds/recruiting: Guilds recruiting a spec (public) */
+    fun listRecruitingGuilds(spec: String, faction: String, region: String? = null, ruleset: String? = null): Endpoint<RecruitingGuilds> =
+        Endpoint(HttpMethod.Get, "/v1/guilds/recruiting", RecruitingGuilds.serializer(), query = listOfNotNull("spec" to spec, "faction" to faction, region?.let { "region" to it }, ruleset?.let { "ruleset" to it }))
+
+    /** GET /v1/characters/{region}/{ruleset}/{name}/ready: Your character's ready check (owner only) */
+    fun getCharacterReady(region: String, ruleset: String, name: String, raid: Long? = null): Endpoint<ReadyCheck> =
+        Endpoint(HttpMethod.Get, "/v1/characters/${region.encodeURLPathPart()}/${ruleset.encodeURLPathPart()}/${name.encodeURLPathPart()}/ready", ReadyCheck.serializer(), query = listOfNotNull(raid?.let { "raid" to it.toString() }))
+
     /** GET /v1/characters/{region}/{ruleset}/{name}/home: The home answer for a character (dark, APP_API) */
     fun getCharacterHome(region: String, ruleset: String, name: String): Endpoint<CharacterHome> =
         Endpoint(HttpMethod.Get, "/v1/characters/${region.encodeURLPathPart()}/${ruleset.encodeURLPathPart()}/${name.encodeURLPathPart()}/home", CharacterHome.serializer())
@@ -257,9 +273,13 @@ object ApiEndpoints {
     fun putRaidSignup(id: Long, raid: Long, region: String, ruleset: String, name: String, body: SignupRequest): Endpoint<SignupAnswer> =
         Endpoint(HttpMethod.Put, "/v1/guilds/$id/raids/$raid/signups/${region.encodeURLPathPart()}/${ruleset.encodeURLPathPart()}/${name.encodeURLPathPart()}", SignupAnswer.serializer(), body = ApiJson.encodeToString(SignupRequest.serializer(), body))
 
-    /** GET /v1/me/raid-nights/{raid}: Your raid night, the after-raid summary (dark; lane F4 contract, handler pending) */
+    /** GET /v1/me/raid-nights/{raid}: Your raid night, before the pull and after the log */
     fun getRaidNight(raid: Long): Endpoint<RaidNightSummary> =
         Endpoint(HttpMethod.Get, "/v1/me/raid-nights/$raid", RaidNightSummary.serializer())
+
+    /** POST /v1/guilds/{id}/raids/{raid}/ping: An officer pings the raid's non-signers on Discord */
+    fun pingGuildRaid(id: Long, raid: Long, body: RaidPingRequest): Endpoint<RaidPingResult> =
+        Endpoint(HttpMethod.Post, "/v1/guilds/$id/raids/$raid/ping", RaidPingResult.serializer(), body = ApiJson.encodeToString(RaidPingRequest.serializer(), body))
 
     /** GET /v1/guilds/{id}/raid-badge: The Raid tab's badge (verified members) */
     fun getGuildRaidBadge(id: Long): Endpoint<RaidBadge> =
@@ -309,6 +329,10 @@ object ApiEndpoints {
     fun getWidget(character: String? = null): Endpoint<Widget> =
         Endpoint(HttpMethod.Get, "/v1/me/widget", Widget.serializer(), query = listOfNotNull(character?.let { "character" to it }))
 
+    /** POST /v1/me/live-activities/start-token: Store the app install's push-to-start token (APP_WIDGETS) */
+    fun storeLiveStartToken(body: LiveStartTokenRequest): Endpoint<LiveStartTokenStored> =
+        Endpoint(HttpMethod.Post, "/v1/me/live-activities/start-token", LiveStartTokenStored.serializer(), body = ApiJson.encodeToString(LiveStartTokenRequest.serializer(), body))
+
     /** POST /v1/me/live-activities: Keep a Live Activity or ongoing notification current (dark, APP_WIDGETS) */
     fun registerLiveActivity(body: LiveActivityRequest): Endpoint<LiveActivityRegistered> =
         Endpoint(HttpMethod.Post, "/v1/me/live-activities", LiveActivityRegistered.serializer(), body = ApiJson.encodeToString(LiveActivityRequest.serializer(), body))
@@ -328,6 +352,18 @@ object ApiEndpoints {
     /** GET /v1/app/config: What the apps read once at launch (APP_API) */
     fun getAppConfig(): Endpoint<AppConfig> =
         Endpoint(HttpMethod.Get, "/v1/app/config", AppConfig.serializer())
+
+    /** GET /v1/guilds/{id}/applications: The officers' application list */
+    fun listGuildApplications(id: Long): Endpoint<GuildOfficerApplications> =
+        Endpoint(HttpMethod.Get, "/v1/guilds/$id/applications", GuildOfficerApplications.serializer())
+
+    /** POST /v1/guilds/{id}/applications/{app}/accept: An officer accepts an application */
+    fun acceptGuildApplication(id: Long, app: Long): Endpoint<GuildApplicationDecision> =
+        Endpoint(HttpMethod.Post, "/v1/guilds/$id/applications/$app/accept", GuildApplicationDecision.serializer())
+
+    /** POST /v1/guilds/{id}/applications/{app}/decline: An officer declines an application */
+    fun declineGuildApplication(id: Long, app: Long): Endpoint<GuildApplicationDecision> =
+        Endpoint(HttpMethod.Post, "/v1/guilds/$id/applications/$app/decline", GuildApplicationDecision.serializer())
 }
 
 /** The site's static data files (https://foreversixty.gg/data/...). */
@@ -434,6 +470,8 @@ object ContractRoutes {
         FixtureRoute(HttpMethod.Get, "/v1/characters/search", "character.search", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Get, "/v1/characters/{region}/{ruleset}/{name}", "character.card", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Get, "/v1/guilds/{id}/home", "guild.home", HttpStatusCode.fromValue(200)),
+        FixtureRoute(HttpMethod.Get, "/v1/guilds/recruiting", "guild.recruiting", HttpStatusCode.fromValue(200)),
+        FixtureRoute(HttpMethod.Get, "/v1/characters/{region}/{ruleset}/{name}/ready", "character.ready", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Get, "/v1/characters/{region}/{ruleset}/{name}/home", "character.home", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Get, "/v1/guilds/{id}/raids", "guild.raids", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Get, "/v1/guilds/{id}/raids/{raid}", "guild.raid", HttpStatusCode.fromValue(200)),
@@ -455,11 +493,14 @@ object ContractRoutes {
         FixtureRoute(HttpMethod.Post, "/v1/me/push-tokens", "app.push-tokens.register", HttpStatusCode.fromValue(201)),
         FixtureRoute(HttpMethod.Delete, "/v1/me/push-tokens/{token}", null, HttpStatusCode.fromValue(204)),
         FixtureRoute(HttpMethod.Get, "/v1/me/widget", "widget.get", HttpStatusCode.fromValue(200)),
+        FixtureRoute(HttpMethod.Post, "/v1/me/live-activities/start-token", "live.start-token", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Post, "/v1/me/live-activities", "live.register", HttpStatusCode.fromValue(201)),
         FixtureRoute(HttpMethod.Delete, "/v1/me/live-activities/{id}", null, HttpStatusCode.fromValue(204)),
         FixtureRoute(HttpMethod.Get, "/v1/me/calendar-feed", "calendar.feed", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Post, "/v1/me/calendar-feed/reset", "calendar.feed", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Get, "/v1/app/config", "app.config", HttpStatusCode.fromValue(200)),
+        FixtureRoute(HttpMethod.Get, "/v1/guilds/{id}/applications", "guild.applications", HttpStatusCode.fromValue(200)),
+        FixtureRoute(HttpMethod.Post, "/v1/guilds/{id}/applications/{app}/accept", "guild.application.accept", HttpStatusCode.fromValue(200)),
     )
 
     val staticData: List<FixtureRoute> = listOf(

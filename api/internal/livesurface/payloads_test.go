@@ -42,7 +42,32 @@ func liveRaid() guilds.WidgetNextRaid {
 	return guilds.WidgetNextRaid{
 		RaidID: 7, GuildID: 2, GuildName: "OLYMPUS XXVII", ZoneName: "Onyxia's Lair", StartsAt: starts, PullAt: starts,
 		Size: ptr(40), SignedUp: 38, Status: guilds.WidgetRaidOpen, My: guilds.WidgetMine{State: ptr("in"), Role: "dps"},
+		ZoneIcon: "inv_misc_head_dragon_black", In: 36, Late: 2, Tanks: 2, Healers: 5,
 	}
+}
+
+// liveNight is the raider's night after the log: one kill, a cloak, the report ready.
+func liveNight() guilds.RaidNightSummary {
+	kills, report, in := 1, "ewlrx3enxbeb", "in"
+	return guilds.RaidNightSummary{
+		RaidID: 7, GuildID: 2, GuildName: "OLYMPUS XXVII", ZoneName: "Onyxia's Lair", ZoneIcon: "inv_misc_head_dragon_black",
+		StartsAt: time.Unix(1796954400, 0).UTC(), Character: guilds.RaidNightCharacter{Name: "Lightningbolltz", Role: "dps"},
+		You: guilds.RaidNightYou{State: &in}, Kills: &kills, ReportID: &report,
+		Coming: guilds.RaidNightComing{In: 36, Late: 2, Tanks: []guilds.RaidNightPerson{{}, {}},
+			Healers: []guilds.RaidNightPerson{{}, {}, {}, {}, {}}},
+		Loot: []guilds.RaidNightLoot{{Name: "Sapphiron Drape", Quality: 4, Icon: "inv_misc_cape_16"}},
+	}
+}
+
+func TestRaidEndPayloads(t *testing.T) {
+	now := time.Unix(1796968800, 0)
+	dismissal := now.Add(liveEndDismissal)
+	night := liveNight()
+	state := RaidEnd(night)
+	attrs := RaidAttributes{RaidID: "7", GuildID: "2", GuildName: night.GuildName, ZoneName: night.ZoneName,
+		CharacterName: night.Character.Name, ZoneIcon: night.ZoneIcon}
+	assertBuilt(t, "surface.live-raid-end.apns", APNsLive("end", now, RaidActivityType, nil, state, nil, nil, &dismissal))
+	assertBuilt(t, "surface.live-raid-end.fcm", FCMData("fcm-registration-token", EventRaidEnd, RaidData(attrs, state), true))
 }
 
 func TestRaidStartPayloads(t *testing.T) {

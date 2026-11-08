@@ -34,6 +34,8 @@ type OfficerApplication struct {
 	// null until one is made.
 	RoleOutcome *string `json:"role_outcome"`
 	DMOutcome   *string `json:"dm_outcome"`
+	// Sheet is what the officer reads before Accept (applicant_sheet.go).
+	Sheet *ApplicantSheet `json:"sheet"`
 }
 
 // officerVoters is how many verified officer and guild master accounts guildID has.
@@ -103,9 +105,18 @@ func (s *Store) officerViews(ctx context.Context, guildID, viewerID int64, apps 
 	if err != nil {
 		return nil, err
 	}
+	zone, err := s.nextZone(ctx, guildID)
+	if err != nil {
+		return nil, err
+	}
 	out := make([]OfficerApplication, 0, len(apps))
 	for _, a := range apps {
 		view := OfficerApplication{Application: a, Votes: votes[a.ID], RoleOutcome: a.roleOutcome, DMOutcome: a.dmOutcome}
+		sheet, err := s.applicantSheet(ctx, guildID, a, zone)
+		if err != nil {
+			return nil, err
+		}
+		view.Sheet = &sheet
 		if a.decidedBy != nil && a.Status != ApplicationWithdrawn {
 			if view.DecidedBy, err = s.claimHolderRef(ctx, guildID, *a.decidedBy); err != nil {
 				return nil, err

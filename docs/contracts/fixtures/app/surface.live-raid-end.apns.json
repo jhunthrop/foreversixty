@@ -1,0 +1,29 @@
+{
+  "aps": {
+    "timestamp": 1796968800,
+    "event": "end",
+    "content-state": {
+      "starts_at": 1796954400,
+      "invite_at": null,
+      "status": "done",
+      "my_state": "in",
+      "role": "dps",
+      "signed_up": 38,
+      "size": null,
+      "in": 36,
+      "late": 2,
+      "tanks": 2,
+      "healers": 5,
+      "kills": 1,
+      "loot": [
+        {
+          "name": "Sapphiron Drape",
+          "quality": 4,
+          "icon": "inv_misc_cape_16"
+        }
+      ],
+      "report_ready": true
+    },
+    "dismissal-date": 1796983200
+  }
+}
