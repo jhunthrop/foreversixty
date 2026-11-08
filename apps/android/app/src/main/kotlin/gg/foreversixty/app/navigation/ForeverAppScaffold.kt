@@ -78,6 +78,12 @@ import gg.foreversixty.app.search.SearchOverlay
 import gg.foreversixty.app.search.SearchOwner
 import gg.foreversixty.app.search.ui.RootSearchBar
 import gg.foreversixty.app.system.SystemNavigator
+import gg.foreversixty.app.firstrun.FirstRunHost
+import gg.foreversixty.app.home.flows.HomeOutActions
+import gg.foreversixty.app.home.flows.HomeOutRoute
+import gg.foreversixty.app.home.flows.HomeOutSignIn
+import gg.foreversixty.app.account.AccountCopy
+import gg.foreversixty.app.account.AccountLinks
 import kotlinx.coroutines.launch
 
 /** What the shell draws; built once in MainActivity from the app graph. */
@@ -125,13 +131,18 @@ fun ForeverAppScaffold(features: ShellFeatures) {
         if (destination == MenuDestination.Planner) features.planner?.open(DeepLink.Builds) else pushed = destination
         Unit
     }
-    ProfileMenuDrawer(features, drawer, gesturesEnabled = pushed == null && plannerTop == null, onOpen = onOpen) {
-        ShellBody(features, selected, select, pushed, openMenu) { pushed = null }
-        val search = features.search
-        if (search != null) {
-            SearchOverlay(search, searchOwner(features.account), searchExits(features, select), features.home.rankings?.searchLink(), features.guides?.let { g -> { link -> g.navigator.open(link) } })
+    val shell: @Composable () -> Unit = {
+        ProfileMenuDrawer(features, drawer, gesturesEnabled = pushed == null && plannerTop == null, onOpen = onOpen) {
+            ShellBody(features, selected, select, pushed, openMenu) { pushed = null }
+            val search = features.search
+            if (search != null) {
+                SearchOverlay(search, searchOwner(features.account), searchExits(features, select), features.home.rankings?.searchLink(), features.guides?.let { g -> { link -> g.navigator.open(link) } })
+            }
         }
     }
+    // Flows spec F8: Pick your main and the guild member's notification ask cover the shell after sign-in.
+    val session = features.account?.session
+    if (session != null) FirstRunHost(session, shell) else shell()
 }
 
 /** The tab bar and the current tab's content: the pushed menu screen, else the tab's root. */
@@ -191,8 +202,10 @@ private fun TabRoot(features: ShellFeatures, tab: ForeverTab, select: (ForeverTa
         ForeverTab.Home -> when {
             account == null -> HomeRoute(features.home, openBis = openGear, onSearch = onSearch) { Unavailable(tab) }
             publicRankings(features.home, account) -> PublicRankings(features.home, account)
-            else -> HomeAccountGate(account, openGear) {
-                HomeRoute(features.home, session, openGear, onSearch, signIn = { account.session.beginSignIn(account.browser(context)) }, flows = flows) { Unavailable(tab) }
+            else -> SignedOutHome(features.home, account, openGear, flows.exits.openWeb, bar) {
+                HomeAccountGate(account, openGear) {
+                    HomeRoute(features.home, session, openGear, onSearch, signIn = { account.session.beginSignIn(account.browser(context)) }, flows = flows) { Unavailable(tab) }
+                }
             }
         }
         ForeverTab.Raid -> features.raids?.let { RaidTab(it, account, features.home.reports, bar) } ?: Unavailable(tab)
@@ -201,6 +214,46 @@ private fun TabRoot(features: ShellFeatures, tab: ForeverTab, select: (ForeverTa
             ActivityTab(activity, account, onOpen = { landing -> openLanding(features, landing, select) }) { ProfileBar(session) }
         } ?: Unavailable(tab)
     }
+}
+
+/** Signed out (or signing in), Home is the flows' signed-out Home (R3, F8 step 1); otherwise [otherwise], the account gate. */
+@Composable
+private fun SignedOutHome(
+    home: HomeDependencies,
+    account: AccountDeps,
+    openGear: () -> Unit,
+    openWeb: (String) -> Unit,
+    bar: @Composable () -> Unit,
+    otherwise: @Composable () -> Unit,
+) {
+    val session = account.session
+    val phase by session.phase.collectAsStateWithLifecycle()
+    val service = home.signedOut
+    val signingIn = phase == SessionPhase.SigningIn
+    val out = phase as? SessionPhase.SignedOut
+    if (service == null || (out == null && !signingIn)) {
+        otherwise()
+        return
+    }
+    val context = LocalContext.current
+    val notice = out?.notice
+    HomeOutRoute(
+        service,
+        HomeOutSignIn(signingIn, notice?.let { AccountCopy.notice(it) }, notice?.let(AccountCopy::isFailure) ?: true),
+        HomeOutActions(
+            onSignIn = {
+                session.dismissNotice()
+                session.beginSignIn(account.browser(context))
+            },
+            onClass = {
+                session.dismissNotice()
+                openGear()
+            },
+            onFeedRow = openWeb,
+            onHowToStart = { AccountLinks.open(context, AccountLinks.SETUP) },
+        ),
+        bar,
+    )
 }
 
 private fun openLanding(features: ShellFeatures, landing: ActivityLanding, select: (ForeverTab) -> Unit) = when (landing) {

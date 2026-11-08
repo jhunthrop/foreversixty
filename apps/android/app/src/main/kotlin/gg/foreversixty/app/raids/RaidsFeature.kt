@@ -1,11 +1,8 @@
 package gg.foreversixty.app.raids
 
 import gg.foreversixty.app.common.rememberHaptics
-import android.Manifest
 import android.content.Context
 import androidx.activity.compose.BackHandler
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -51,6 +48,7 @@ import gg.foreversixty.app.raids.logic.ReminderAskStore
 import gg.foreversixty.app.raids.logic.SignupController
 import gg.foreversixty.app.raids.logic.SignupState
 import gg.foreversixty.app.raids.logic.SystemNotificationPermission
+import gg.foreversixty.app.push.rememberNotificationRequest
 import gg.foreversixty.app.raids.ui.LocalRaidIconBuild
 import gg.foreversixty.app.raids.ui.RaidNightScreen
 import gg.foreversixty.app.reports.ReportRoute
@@ -221,13 +219,7 @@ fun RaidsRoute(
     val scope = rememberCoroutineScope()
     val res = androidx.compose.ui.platform.LocalResources.current
     val clock = remember(res) { RaidClock(res) }
-    val permissionLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { }
-    val requestPermission = {
-        // Lane F7 registers the FCM token once permission is granted.
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
-            permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
-        }
-    }
+    val requestPermission = rememberNotificationRequest()
     val haptics = rememberHaptics()
     val deps = remember(feature, haptics) {
         SignupController.Dependencies(

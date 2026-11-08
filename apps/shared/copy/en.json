@@ -604,6 +604,9 @@
     "first.permission.turnOn": "Turn on notifications",
     "first.permission.notNow": "Not now",
 
+    "home.out.days": "days",
+    "home.out.clock": {"text": "{d} days {h} hours {m} minutes", "notPlural": true, "args": {"d": "int", "h": "int", "m": "int"}},
+
     "menu.character.line": { "text": "{kind} · {n}", "args": { "n": "int" }, "notPlural": true },
     "menu.character.lineGuild": { "text": "{kind} · {n} · {guild}", "args": { "n": "int" }, "notPlural": true },
     "menu.character.main": "Main",

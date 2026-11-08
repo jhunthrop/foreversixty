@@ -177,6 +177,25 @@ class SessionManagerTest {
     }
 
     @Test
+    fun `picking the main saves it and makes it the current character`() = runTest {
+        val (session, _) = manager(token = "fsd_x")
+        session.start()
+        val key = "us/normal/thandrel"
+        assertTrue(session.setMain(key))
+        assertEquals(key, session.pickedKey.value)
+        assertNotNull(session.phase.value.me)
+    }
+
+    @Test
+    fun `a refused main changes nothing`() = runTest {
+        val (session, _) = manager(token = "fsd_x", engine = answering(HttpStatusCode.NotFound, fixture("devices.revoke.error-not-found.json")))
+        session.start()
+        assertFalse(session.setMain("us/normal/nope"))
+        assertNull(session.pickedKey.value)
+        assertEquals(SessionPhase.SignedIn(null), session.phase.value)
+    }
+
+    @Test
     fun `this device is listed first and cannot be revoked`() = runTest {
         val (session, _) = manager(token = "fsd_x")
         val rows = (session.devices(Instant.parse("2026-10-30T21:41:00Z")) as ApiResult.Success).data

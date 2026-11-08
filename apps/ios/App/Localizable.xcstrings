@@ -4367,6 +4367,29 @@
         }
       }
     },
+    "home.out.clock": {
+      "comment": "Arguments: 1 d (int), 2 h (int), 3 m (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld days %2$lld hours %3$lld minutes"
+          }
+        }
+      }
+    },
+    "home.out.days": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "days"
+          }
+        }
+      }
+    },
     "home.raid.answered": {
       "comment": "Arguments: 1 answer (string), 2 name (string), 3 role (string)",
       "extractionState": "manual",

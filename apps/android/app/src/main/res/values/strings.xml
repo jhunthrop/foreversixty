@@ -622,6 +622,8 @@
     <string name="first_permission_body">Get raid sign-ups here. Answer In, Late, Bench or Out from the notification, without opening the app.</string>
     <string name="first_permission_turnOn">Turn on notifications</string>
     <string name="first_permission_notNow">Not now</string>
+    <string name="home_out_days">days</string>
+    <string name="home_out_clock" tools:ignore="PluralsCandidate">%1$d days %2$d hours %3$d minutes</string>
     <string name="menu_character_line" tools:ignore="PluralsCandidate">%1$s · %2$d</string>
     <string name="menu_character_lineGuild" tools:ignore="PluralsCandidate">%1$s · %2$d · %3$s</string>
     <string name="menu_character_main">Main</string>
