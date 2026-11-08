@@ -478,7 +478,27 @@ class RaidLogicTest {
         val outcome = RaidPushAnswerer(service, resources()).answer(payload(), SignupState.In)
         assertEquals("us/pvp/obnoxious-yell", service.signups.first().first)
         assertEquals("in", service.signups.first().second.state)
-        assertEquals("You are In for Onyxia's Lair", (outcome as RaidPushOutcome.Answered).answer.title)
+        // The server's confirmation names the character and the pull time.
+        assertEquals(
+            RaidPushPayload.Answer("You're In for Onyxia's Lair", "Obnoxious Yell, pull at 7:00 pm CST."),
+            (outcome as RaidPushOutcome.Answered).answer,
+        )
+    }
+
+    @Test
+    fun `Late's minutes go on the PUT, and only with Late`() = runTest {
+        val service = FakeRaidService()
+        RaidPushAnswerer(service, resources()).answer(payload(), SignupState.Late, minutes = 30)
+        RaidPushAnswerer(service, resources()).answer(payload(), SignupState.In, minutes = 30)
+        assertEquals(listOf(30, null), service.signups.map { it.second.lateMinutes })
+    }
+
+    @Test
+    fun `without a confirmation the payload's answer is posted`() = runTest {
+        val service = FakeRaidService()
+        service.signupAnswer = { ok(RaidFixture.load(SignupAnswer.serializer(), "guild.signup").copy(confirmation = null)) }
+        val outcome = RaidPushAnswerer(service, resources()).answer(payload(), SignupState.In) as RaidPushOutcome.Answered
+        assertEquals("You are In for Onyxia's Lair", outcome.answer.title)
     }
 
     @Test
@@ -487,6 +507,7 @@ class RaidLogicTest {
         service.signupAnswer = { ok(RaidFixture.load(SignupAnswer.serializer(), "guild.signup.moved")) }
         val outcome = RaidPushAnswerer(service, resources()).answer(payload(), SignupState.In) as RaidPushOutcome.Answered
         assertTrue(outcome.answer.body.endsWith(" Obnoxious Yell moved to Bench."))
+        assertEquals("Yellfury, pull at 7:00 pm CST. Obnoxious Yell moved to Bench.", outcome.answer.body)
     }
 
     @Test

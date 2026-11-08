@@ -54,6 +54,12 @@ class PushMessageTest {
     }
 
     @Test
+    fun `the server's collapse id wins`() {
+        val parsed = message(mapOf("kind" to "raid.changed", "title" to "Moved", "raid_id" to "7", "collapse" to "raid.posted-7"))
+        assertEquals("raid.posted-7", parsed?.collapse)
+    }
+
+    @Test
     fun `a sim and a report land on their result`() {
         val sim = message(mapOf("kind" to "sim.finished", "title" to "Sim done", "link" to "https://foreversixty.gg/sim/abc123"))
         assertEquals(DeepLink.Sim("abc123").url(), sim?.landing())
