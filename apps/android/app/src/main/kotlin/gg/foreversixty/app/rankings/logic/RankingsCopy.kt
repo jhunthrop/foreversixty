@@ -4,10 +4,8 @@ import android.content.res.Resources
 import gg.foreversixty.app.R
 import gg.foreversixty.app.auth.session.RelativeAge
 import gg.foreversixty.app.home.HomePresenter
-import gg.foreversixty.app.model.CharacterRank
 import gg.foreversixty.app.model.RankedEncounter
 import gg.foreversixty.app.model.RankingRow
-import gg.foreversixty.app.model.RankingsPage
 import gg.foreversixty.app.phrase
 import gg.foreversixty.app.raids.logic.GameClass
 import gg.foreversixty.app.reports.logic.FightRows
@@ -105,21 +103,6 @@ class RankingsCopy(private val res: Resources, private val zone: ZoneId = ZoneId
         res.getString(R.string.rank_none, encounterNames[filters.encounter] ?: filters.encounter)
 
     fun jump(rank: Int): String = res.getString(R.string.rank_jump, Rankings.ordinal(rank))
-
-    /** Home's Rankings row: `14th of 212 Elemental Shaman characters on Onyxia`, or `Not ranked yet.` */
-    fun homeLine(page: RankingsPage, filters: RankingsFilters, encounterNames: Map<String, String>): String =
-        homeLine(page.characterRank, page.total, filters, encounterNames)
-
-    fun homeLine(placed: CharacterRank?, total: Int, filters: RankingsFilters, encounterNames: Map<String, String>): String {
-        placed ?: return res.getString(R.string.home_rankings_none)
-        val cohort = filters.cohort
-        return collapse(
-            res.getString(
-                R.string.home_rankings_line, Rankings.ordinal(placed.rank), total, cohort?.specName.orEmpty(),
-                className(cohort?.classSlug), encounterNames[filters.encounter] ?: filters.encounter,
-            ),
-        )
-    }
 
     // Board rows
 

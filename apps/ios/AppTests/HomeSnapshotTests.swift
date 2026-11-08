@@ -37,58 +37,6 @@ struct HomeSnapshotTests {
         )
     }
 
-    private func home(_ phase: HomePhase, offline: String? = nil) -> some View {
-        HomeCaptureFrame {
-            HomeAnswerView(
-                phase: phase,
-                presenter: HomeFixtures.presenter(),
-                build: "1.60.1.70658",
-                offlineStamp: offline
-            )
-        }
-    }
-
-    @Test("F2.1 the answer, default and AX5")
-    func answer() throws {
-        let phase = HomePhase.loaded(try HomeFixtures.home(), offlineSince: nil)
-        snap(home(phase), named: "home-default")
-        snap(home(phase), large: true, named: "home-default-xl")
-    }
-
-    @Test("F2.1 the answer, full length")
-    func answerFull() throws {
-        snap(home(.loaded(try HomeFixtures.home(), offlineSince: nil)), tall: true, named: "home-full")
-    }
-
-    @Test("F2.2 loading")
-    func loading() { snap(home(.loading), named: "home-loading") }
-
-    @Test("F2.3 offline with the stamp")
-    func offline() throws {
-        let phase = HomePhase.loaded(try HomeFixtures.home(), offlineSince: HomeFixtures.now)
-        snap(home(phase, offline: "Thu 9:41 pm"), named: "home-offline")
-    }
-
-    @Test("F2.4 no gear export")
-    func noGear() throws {
-        snap(home(.loaded(try HomeFixtures.home("character.home.no-gear"), offlineSince: nil)), named: "home-nogear")
-    }
-
-    @Test("the empty states: under 20, no spec, no list, every slot matches", arguments: ["under_20", "no_spec", "no_list"])
-    func emptyStates(state: String) throws {
-        snap(home(.loaded(try HomeFixtures.home(state: state), offlineSince: nil)), named: "home-\(state.replacingOccurrences(of: "_", with: ""))")
-    }
-
-    @Test("every slot matches")
-    func allMatch() throws {
-        snap(home(.loaded(try HomeFixtures.home("character.home.empty"), offlineSince: nil)), named: "home-allmatch")
-    }
-
-    @Test("F2.5 error, with the cached Next rows")
-    func error() throws {
-        snap(home(.failed(cached: try HomeFixtures.home())), named: "home-error")
-    }
-
     @Test("F2.6 the tooltip at the medium and large detents, default and AX5")
     func tooltip() throws {
         let request = ItemTooltipRequest.forHome(
@@ -96,7 +44,7 @@ struct HomeSnapshotTests {
             home: try HomeFixtures.home(), character: HomeFixtures.velaren, sourceLine: "Crafted: Leatherworking", wornID: 279_253
         )
         let model = ItemTooltipModel.build(request, sources: try HomeFixtures.tooltipSources())
-        let behind = home(.loaded(try HomeFixtures.home(), offlineSince: nil))
+        let behind = FSColor.bg
         snap(SheetFrame(height: 470, behind: behind) { ItemTooltipContent(request: request, phase: .loaded(model)) }, named: "tooltip-medium")
         snap(SheetFrame(height: 800, behind: behind) { ItemTooltipContent(request: request, phase: .loaded(model)) }, named: "tooltip-large")
         snap(SheetFrame(height: 800, behind: behind) { ItemTooltipContent(request: request, phase: .loaded(model)) }, large: true, named: "tooltip-large-xl")

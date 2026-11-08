@@ -24,14 +24,13 @@ final class GuildCaptureTests: XCTestCase {
         try XCUIScreen.main.screenshot().pngRepresentation.write(to: Self.out.appending(path: name))
     }
 
-    /// The app on You › Calendar.
+    /// The app on Settings › Calendar (the profile menu's Settings row holds the old You rows).
     private func openCalendarScreen() -> XCUIApplication {
-        let app = XCUIApplication()
-        app.launchArguments = ["-FSTab", "you"] + Self.fixtureNow
-        app.launch()
+        let app = CaptureLaunch.signedIn(tab: "home", menu: "settings", extra: Self.fixtureNow)
         let row = app.buttons.containing(NSPredicate(format: "label BEGINSWITH %@", "Calendar")).firstMatch
+        for _ in 0..<6 where !row.exists { app.swipeUp() }
         if !row.waitForExistence(timeout: 20) {
-            try? save("debug-you-tab.png")
+            try? save("debug-settings.png")
             XCTFail("no Calendar row")
         }
         row.tap()
@@ -86,12 +85,11 @@ final class GuildCaptureTests: XCTestCase {
 
     private func begins(_ text: String) -> NSPredicate { NSPredicate(format: "label BEGINSWITH %@", text) }
 
-    /// The app on the Raids tab, pushed to one of the guild rows.
+    /// The app on the Raid tab, scrolled to one of the guild rows.
     private func openRaidsRow(_ title: String) -> XCUIApplication {
-        let app = XCUIApplication()
-        app.launchArguments = ["-FSTab", "raids"] + Self.fixtureNow
-        app.launch()
+        let app = CaptureLaunch.signedIn(tab: "raid", extra: Self.fixtureNow)
         let row = app.buttons.containing(begins(title)).firstMatch
+        for _ in 0..<6 where !(row.exists && row.isHittable) { app.swipeUp() }
         XCTAssertTrue(row.waitForExistence(timeout: 20))
         sleep(3)
         return app

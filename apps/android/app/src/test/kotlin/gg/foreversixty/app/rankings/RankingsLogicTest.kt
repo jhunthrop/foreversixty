@@ -6,18 +6,7 @@ import gg.foreversixty.app.raids.MemoryRaidCache
 import gg.foreversixty.app.raids.fail
 import gg.foreversixty.app.raids.ok
 import gg.foreversixty.app.raids.resources
-import gg.foreversixty.app.items.ItemCatalog
 import gg.foreversixty.app.navigation.DeepLink
-import gg.foreversixty.app.network.ApiClient
-import gg.foreversixty.app.network.ApiConfig
-import gg.foreversixty.app.network.ApiMode
-import gg.foreversixty.app.network.ClasspathFixtureSource
-import gg.foreversixty.app.network.FixtureEngine
-import gg.foreversixty.app.network.ForeverHttpClient
-import gg.foreversixty.app.network.StaticDataClient
-import gg.foreversixty.app.network.StaticDataStore
-import gg.foreversixty.app.network.TokenProvider
-import gg.foreversixty.app.rankings.logic.LiveRankingsService
 import gg.foreversixty.app.rankings.logic.BoardPhase
 import gg.foreversixty.app.rankings.logic.CharacterRoute
 import gg.foreversixty.app.rankings.logic.Cohort
@@ -256,12 +245,6 @@ class RankingsLogicTest {
         )
     }
 
-    @Test fun `Home's line from one read`() {
-        val names = mapOf("onyxia" to "Onyxia")
-        assertEquals("14th of 212 Elemental Shaman characters on Onyxia", copy().homeLine(RankingsTestData.page(), filters(), names))
-        assertEquals("Not ranked yet.", copy().homeLine(RankingsTestData.empty(), filters(), names))
-    }
-
     @Test fun `a jump link reads the ordinal`() {
         assertEquals("Jump to your row, 14th", copy().jump(14))
     }
@@ -367,20 +350,5 @@ class RankingsLogicTest {
         val s = store(service)
         s.load("227")
         assertEquals("emperor-dagran-thaurissan", service.queries.single().encounter)
-    }
-
-    @Test fun `Home's line comes from one board read, in fixture mode through the generated endpoints`() = runTest {
-        val source = ClasspathFixtureSource(requireNotNull(javaClass.classLoader))
-        val config = ApiConfig(baseUrl = "https://api.example.test", mode = ApiMode.Fixture)
-        val client = ApiClient(ForeverHttpClient.create(config, NoToken, FixtureEngine.create(source)))
-        val catalog = ItemCatalog(StaticDataStore(StaticDataClient(FixtureEngine.create(source))))
-        val feature = RankingsFeature(LiveRankingsService(client), MemoryRaidCache(), specs, catalog, { null }, { true }, { now })
-        assertEquals("14th of 212 Elemental Shaman characters on Onyxia", feature.homeLine(RankingsTestData.viewer(), resources()))
-        assertTrue(catalog.items(RankingsTestData.BUILD, "shaman").orEmpty().containsKey(RankingsTestData.voltaris().gear.first().worn?.id))
-    }
-
-    private object NoToken : TokenProvider {
-        override suspend fun bearerToken(): String? = null
-        override suspend fun discardBearerToken() = Unit
     }
 }

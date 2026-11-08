@@ -4,15 +4,18 @@ import SwiftUI
 /// (spec F3.1: the chips wrap).
 public struct WrapLayout: Layout {
     public var spacing: CGFloat
+    /// The gap between wrapped lines; the item gap when not given.
+    public var lineSpacing: CGFloat
 
-    public init(spacing: CGFloat = 8) {
+    public init(spacing: CGFloat = 8, lineSpacing: CGFloat? = nil) {
         self.spacing = spacing
+        self.lineSpacing = lineSpacing ?? spacing
     }
 
     public func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache _: inout ()) -> CGSize {
         let rows = arrange(width: proposal.width ?? .infinity, subviews: subviews)
         let width = rows.map(\.width).max() ?? 0
-        let height = rows.map(\.height).reduce(0, +) + spacing * CGFloat(max(rows.count - 1, 0))
+        let height = rows.map(\.height).reduce(0, +) + lineSpacing * CGFloat(max(rows.count - 1, 0))
         return CGSize(width: proposal.width ?? width, height: height)
     }
 
@@ -25,7 +28,7 @@ public struct WrapLayout: Layout {
                 subviews[index].place(at: CGPoint(x: x, y: y), proposal: .init(width: size.width, height: size.height))
                 x += size.width + spacing
             }
-            y += row.height + spacing
+            y += row.height + lineSpacing
         }
     }
 

@@ -1,0 +1,21 @@
+Open the menu
+Best in slot for your class
+Pick a class, then a spec and a level range.
+Classes
+Warrior
+Paladin
+Hunter
+Rogue
+Priest
+Shaman
+Mage
+Warlock
+Druid
+Home
+1 new
+Raid
+1
+Gear
+3 new
+Activity
+3

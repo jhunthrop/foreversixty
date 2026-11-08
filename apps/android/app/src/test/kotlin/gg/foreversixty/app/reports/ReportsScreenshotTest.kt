@@ -13,7 +13,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.unit.dp
@@ -22,12 +21,7 @@ import com.github.takahirom.roborazzi.captureRoboImage
 import gg.foreversixty.app.designsystem.ForeverTheme
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.GameColors
-import gg.foreversixty.app.home.HomeAnswer
 import gg.foreversixty.app.home.HomeFixtures
-import gg.foreversixty.app.home.HomeLogs
-import gg.foreversixty.app.home.HomePhase
-import gg.foreversixty.app.home.HomePresenter
-import gg.foreversixty.app.home.HomeTime
 import gg.foreversixty.app.items.LocalItemIconPainter
 import gg.foreversixty.app.model.Report
 import gg.foreversixty.app.model.ReportList
@@ -39,7 +33,6 @@ import gg.foreversixty.app.raids.MemoryRaidCache
 import gg.foreversixty.app.reports.logic.CoachPhase
 import gg.foreversixty.app.reports.logic.FightRow
 import gg.foreversixty.app.reports.logic.FightRows
-import gg.foreversixty.app.reports.logic.Reports
 import gg.foreversixty.app.reports.logic.MetersPhase
 import gg.foreversixty.app.reports.logic.MetersTarget
 import gg.foreversixty.app.reports.logic.Metric
@@ -56,7 +49,6 @@ import gg.foreversixty.app.reports.ui.ReportScreenState
 import gg.foreversixty.app.reports.ui.ReportsList
 import gg.foreversixty.app.sims.SimsTestData
 import java.time.Instant
-import java.time.ZoneOffset
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Rule
@@ -224,23 +216,10 @@ class ReportsScreenshotTest {
         assertEquals(ReportsTestData.ID, feature.navigator.report?.id)
         capture("report-deeplink-and", scrolls = false) { ReportsRoute(feature, ReportsTestData.viewer(premium = false), signIn = {}, onBack = {}) }
     }
-
-    // F10.8 Home with the Logs row
-
-    @Test @Config(qualifiers = PIXEL_9_HOME)
-    fun homeLogs() = capture("home-logs-and") {
-        val res = LocalResources.current
-        val presenter = HomePresenter(
-            HomeFixtures.velaren, emptyList(), HomeTime(HomeFixtures.now, ZoneOffset.UTC), res,
-            logs = HomeLogs(Reports.lastRaid(ReportsTestData.list().rows)),
-        )
-        HomeAnswer(HomePhase.Loaded(HomeFixtures.home()), presenter, HomeFixtures.BUILD, null)
-    }
 }
 
 /** Pixel 9: 412 x 915 dp at 420 dpi. */
 private const val PIXEL_9 = "w412dp-h915dp-normal-long-notround-any-420dpi-keyshidden-nonav"
 private const val PIXEL_9_TALL = "w412dp-h1300dp-normal-long-notround-any-420dpi-keyshidden-nonav"
 private const val PIXEL_9_XTALL = "w412dp-h2000dp-normal-long-notround-any-420dpi-keyshidden-nonav"
-private const val PIXEL_9_HOME = "w412dp-h2400dp-normal-long-notround-any-420dpi-keyshidden-nonav"
 private const val PIXEL_9_XL = "w412dp-h2600dp-normal-long-notround-any-420dpi-keyshidden-nonav"

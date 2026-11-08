@@ -17,6 +17,7 @@ import gg.foreversixty.app.widgets.glance.NextRaidWidget
 import gg.foreversixty.app.widgets.glance.NextUpgradeWidget
 import gg.foreversixty.app.widgets.live.LiveNotifier
 import gg.foreversixty.app.widgets.live.LiveRegistrations
+import gg.foreversixty.app.push.FcmToken
 import gg.foreversixty.app.widgets.logic.LivePush
 import gg.foreversixty.app.widgets.logic.RaidLiveContent
 import gg.foreversixty.app.widgets.logic.SimLive
@@ -45,7 +46,7 @@ class WidgetsFeature(
     val store = WidgetStore(context)
     private val service = LiveWidgetService(apiClient)
     private val notifier = LiveNotifier(context)
-    private val registrations = LiveRegistrations(service, store)
+    private val registrations = LiveRegistrations(service, store) { FcmToken.current(context) }
     private val throttle = SimThrottle()
 
     val refresher = WidgetRefresher(service, store, signedIn, currentCharacter, now) { redraw() }
@@ -101,9 +102,26 @@ class WidgetsFeature(
     suspend fun handlePush(data: Map<String, String>) {
         when (val push = LivePush.parse(data) ?: return) {
             LivePush.WidgetRefresh -> refresher.refresh()
-            is LivePush.Raid -> refresher.refresh()
+            is LivePush.Raid -> raidPush(push, data)
             is LivePush.Sim -> showSim(push.sim)
         }
+    }
+
+    /**
+     * `live.raid.start|update` redraws from a fresh snapshot; when that draws no countdown (the fetch
+     * failed, or the snapshot lags the server) a start message draws it from its own fields.
+     * `live.raid.end` takes the countdown down.
+     */
+    private suspend fun raidPush(push: LivePush.Raid, data: Map<String, String>) {
+        if (push.event == LivePush.Event.End) {
+            notifier.cancelRaid()
+            registrations.end(LiveKind.Raid)
+            return
+        }
+        refresher.refresh()
+        if (push.event != LivePush.Event.Start || !store.liveSetting(LiveKind.Raid)) return
+        val drawn = RaidLiveContent.of(figures().raid(store.snapshot(), now(), store.overlay()), context.resources)
+        if (drawn == null) figures().pushedLive(data, now())?.let(notifier::showRaid)
     }
 
     /** Sign-out: every surface returns to its signed-out words and nothing stays registered. */

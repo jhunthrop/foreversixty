@@ -30,7 +30,6 @@ import gg.foreversixty.app.items.ItemTooltipPhase
 import gg.foreversixty.app.items.LocalItemIconPainter
 import gg.foreversixty.app.navigation.ForeverTab
 import gg.foreversixty.app.navigation.ForeverTabScaffold
-import java.time.Instant
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -40,8 +39,8 @@ import org.robolectric.annotation.GraphicsMode
 import gg.foreversixty.app.testing.STRICT_SNAPSHOT
 
 /**
- * F2's states inside the tab shell at Pixel 9 size, at the default text size and font scale 2.0,
- * from the contract fixtures with the repo's own icons. The same list is drawn on iOS
+ * F2's tooltip sheet and Your gear inside the tab shell at Pixel 9 size, at the default text size
+ * and font scale 2.0, from the contract fixtures with the repo's own icons. The same list is drawn on iOS
  * (`HomeSnapshotTests.swift`); the PNGs are also the review captures.
  * Record: ./gradlew :app:recordRoborazziDebug   Verify: ./gradlew :app:verifyRoborazziDebug
  */
@@ -51,49 +50,6 @@ import gg.foreversixty.app.testing.STRICT_SNAPSHOT
 class HomeScreenshotTest {
     @get:Rule
     val compose = createComposeRule()
-
-    @Composable
-    private fun Answer(phase: HomePhase, offline: String? = null) {
-        val presenter = HomeFixtures.presenter(LocalResources.current)
-        Box(Modifier.fillMaxSize().background(FsColor.bg).verticalScroll(rememberScrollState())) {
-            HomeAnswer(phase, presenter, HomeFixtures.BUILD, offline)
-        }
-    }
-
-    @Test
-    fun `F2_1 the answer`() = capture("home-default") { Answer(HomePhase.Loaded(HomeFixtures.home())) }
-
-    @Test
-    fun `F2_1 the answer at font scale 2`() {
-        RuntimeEnvironment.setFontScale(2f)
-        capture("home-default-xl") { Answer(HomePhase.Loaded(HomeFixtures.home())) }
-    }
-
-    @Test
-    fun `F2_2 loading`() = capture("home-loading") { Answer(HomePhase.Loading) }
-
-    @Test
-    fun `F2_3 offline with the stamp`() = capture("home-offline") {
-        Answer(HomePhase.Loaded(HomeFixtures.home(), Instant.parse("2026-10-29T21:41:00Z")), "Thu 9:41 pm")
-    }
-
-    @Test
-    fun `F2_4 no gear export`() = capture("home-nogear") { Answer(HomePhase.Loaded(HomeFixtures.home("character.home.no-gear"))) }
-
-    @Test
-    fun `under 20`() = capture("home-under20") { Answer(HomePhase.Loaded(HomeFixtures.home(state = "under_20"))) }
-
-    @Test
-    fun `no spec`() = capture("home-nospec") { Answer(HomePhase.Loaded(HomeFixtures.home(state = "no_spec"))) }
-
-    @Test
-    fun `no list`() = capture("home-nolist") { Answer(HomePhase.Loaded(HomeFixtures.home(state = "no_list"))) }
-
-    @Test
-    fun `every slot matches`() = capture("home-allmatch") { Answer(HomePhase.Loaded(HomeFixtures.home("character.home.empty"))) }
-
-    @Test
-    fun `F2_5 error with the cached Next rows`() = capture("home-error") { Answer(HomePhase.Failed(HomeFixtures.home())) }
 
     @Test
     fun `F2_6 the tooltip partly expanded`() = capture("tooltip-medium") { TooltipOver(252605, 470) }
@@ -121,10 +77,6 @@ class HomeScreenshotTest {
     fun `F2_7 Your gear, all 17 slots`() = capture("gear-full") { Gear() }
 
     @Test
-    @Config(qualifiers = PIXEL_9_TALL)
-    fun `F2_1 the answer, full length`() = capture("home-full") { Answer(HomePhase.Loaded(HomeFixtures.home())) }
-
-    @Test
     fun `F2_7 Your gear at font scale 2`() {
         RuntimeEnvironment.setFontScale(2f)
         capture("gear-default-xl") { Gear() }
@@ -146,7 +98,7 @@ class HomeScreenshotTest {
         }
     }
 
-    /** A sheet at a height over the dimmed Home, for the tooltip captures. */
+    /** A sheet at a height over a dimmed page, for the tooltip captures. */
     @Composable
     private fun TooltipOver(id: Int, height: Int) {
         val res = LocalResources.current
@@ -159,7 +111,7 @@ class HomeScreenshotTest {
         )
         val model = ItemTooltipModel.build(request, sources, res)
         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
-            Answer(HomePhase.Loaded(home))
+            Box(Modifier.fillMaxSize().background(FsColor.bg))
             Box(Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.45f)))
             Column(
                 Modifier.fillMaxWidth().height(height.dp).clip(RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp))

@@ -135,6 +135,11 @@ struct RootView: View {
                 // Lane F13's captures open the planner the same way (UITests/PlannerCaptureTests),
                 // and lane F15's open guides and character pages (UITests/SystemCaptureTests).
                 if let link = RaidDebugLaunch.link { openLink(link) }
+                // `-FSMenu <row>` pushes a menu row on the launch tab (Settings, Notifications...),
+                // as a tap on the profile menu would, so a capture opens it without taps.
+                if let row = UserDefaults.standard.string(forKey: "FSMenu").flatMap(MenuDestination.init(rawValue:)) {
+                    shell.open(row)
+                }
                 await RaidDebugLaunch.postRaidPushIfAsked()
             #endif
         }
@@ -168,9 +173,9 @@ struct RootView: View {
             }
         case .home where signInAvailable:
             HomeAccountGate(session: environment.session, onPickClass: { shell.selection = .gear }) {
-                HomeTab(dependencies: .live(environment), session: environment.session, openBis: { shell.selection = .gear })
+                HomeTab(dependencies: .live(environment), session: environment.session, openBis: { shell.selection = .gear }, open: openIntent)
             }
-        case .home: HomeTab(dependencies: .live(environment), openBis: { shell.selection = .gear })
+        case .home: HomeTab(dependencies: .live(environment), openBis: { shell.selection = .gear }, open: openIntent)
         case .raid where environment.isAvailable(.raids):
             RaidsTab(
                 dependencies: .live(environment), router: raidsRouter, session: signInAvailable ? environment.session : nil,

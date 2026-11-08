@@ -124,13 +124,6 @@ class ReportsStore(
         phase = ReportsPhase.Loaded(current.copy(rows = current.rows + next.rows, total = next.total, page = next.page))
     }
 
-    /** Home's Logs row: the last raid with a boss pull, from the network or the cache; null when there is none. */
-    suspend fun lastRaid(): ReportRow? {
-        val fresh = (service.list(1) as? ApiResult.Success)?.data
-        if (fresh != null) cache.write(CACHE_KEY, ReportList.serializer(), fresh, now())
-        return (fresh ?: cache.read(CACHE_KEY, ReportList.serializer())?.value)?.rows?.let(Reports::lastRaid)
-    }
-
     companion object {
         const val CACHE_KEY = "reports"
 

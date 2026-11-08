@@ -20,6 +20,7 @@ import gg.foreversixty.app.model.RaidView
 import gg.foreversixty.app.model.mainCharacter
 import gg.foreversixty.app.network.ApiError
 import gg.foreversixty.app.network.ApiResult
+import gg.foreversixty.app.model.SignupRequest
 import java.time.Instant
 import java.util.Locale
 import kotlinx.coroutines.delay
@@ -60,7 +61,8 @@ data class GuildHead(
 sealed interface RaidsTabState {
     data object Loading : RaidsTabState
     data object SignedOut : RaidsTabState
-    data class NoGuild(val name: String) : RaidsTabState
+    /** No guild yet; [level] and [spec] (`Fury Warrior`) say whether raids are open and what guilds recruit. */
+    data class NoGuild(val name: String, val level: Int? = null, val spec: String? = null, val character: AccountCharacter? = null) : RaidsTabState
     data class Waiting(val head: GuildHead, val character: AccountCharacter) : RaidsTabState
     data class Loaded(val content: RaidsTabContent) : RaidsTabState
     data object Failed : RaidsTabState
@@ -81,6 +83,13 @@ data class RaidsTabContent(
 }
 
 /** Loads `/v1/me` for the current character's guild, then the guild's raids; the cache draws first. */
+/** `Fury Warrior`: the character's spec and class in words, null when either is unknown. */
+private fun specWords(character: AccountCharacter): String? {
+    val spec = character.spec ?: return null
+    val cls = character.className ?: return null
+    return listOf(spec, cls).joinToString(" ") { word -> word.replace('_', ' ').split(' ').joinToString(" ") { it.replaceFirstChar(Char::uppercaseChar) } }
+}
+
 class RaidsTabModel(
     private val service: RaidService,
     private val cache: RaidCache,
@@ -125,7 +134,7 @@ class RaidsTabModel(
             return
         }
         val membership = character.guild ?: run {
-            state = RaidsTabState.NoGuild(character.name)
+            state = RaidsTabState.NoGuild(character.name, character.level, specWords(character), character)
             return
         }
         val head = GuildHead.of(membership, me.guilds.firstOrNull { it.id == membership.id }, res)
@@ -328,6 +337,32 @@ class RaidNightModel(
         private set
 
     private val key get() = "night-$raidId"
+
+    /** The answer pressed on the raid night page, shown at once; null once the night says it. */
+    var pressed: SignupState? by mutableStateOf(null)
+        private set
+
+    /** Late opens the minutes under the answers (spec F1). */
+    var lateOpen: Boolean by mutableStateOf(false)
+        private set
+    var answerError: String? by mutableStateOf(null)
+        private set
+
+    /** Answers for the night's character (the one signed, else the main), then reads the night again. */
+    suspend fun answer(state: SignupState, lateMinutes: Int? = null, res: android.content.res.Resources) {
+        val night = (this.state as? State.Loaded)?.night ?: return
+        pressed = state
+        lateOpen = state == SignupState.Late && lateMinutes == null
+        answerError = null
+        val request = SignupRequest(state = state.wire, role = night.character.role.ifEmpty { null }, note = night.you.note, lateMinutes = lateMinutes)
+        when (val result = service.signup(night.guildId, raidId, night.character.characterKey, request)) {
+            is ApiResult.Success -> load()
+            is ApiResult.Failure -> {
+                pressed = null
+                answerError = SignupRefusal.sentence(result.error, res)
+            }
+        }
+    }
 
     suspend fun load() {
         if (state == State.Loading) cache.read(key, RaidNightSummary.serializer())?.let { state = State.Loaded(it.value) }

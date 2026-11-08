@@ -99,6 +99,15 @@ final class HomeStore {
         self.connectivity = connectivity
     }
 
+    /// The answer shown: the loaded one, or a failed refresh's cached one.
+    var answer: CharacterHome? {
+        switch phase {
+        case let .loaded(home, _): home
+        case let .failed(cached): cached
+        case .loading: nil
+        }
+    }
+
     /// The live store: `GET /v1/characters/{region}/{ruleset}/{name}/home`.
     static func live(client: APIClient, cache: any HomeCache) -> HomeStore {
         HomeStore(fetch: { character throws(APIError) in

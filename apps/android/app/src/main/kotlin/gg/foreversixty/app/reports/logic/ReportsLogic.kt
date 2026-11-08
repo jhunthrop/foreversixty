@@ -68,12 +68,6 @@ object Reports {
     fun crestClass(row: ReportRow, viewer: ReportsViewer): String? =
         row.loggingCharacter?.key?.let { viewer.classes[it] } ?: viewer.fallbackClass
 
-    /**
-     * Home's `Your last raid`: the newest finished report with a boss pull (never a live dungeon
-     * run); null when there is none.
-     */
-    fun lastRaid(rows: List<ReportRow>): ReportRow? = rows.firstOrNull { ReportState.of(it.status) == ReportState.Done && it.bossCount > 0 }
-
     /** `title` when the report has one, the zone otherwise. */
     fun name(row: ReportRow): String = row.title.ifEmpty { row.zone }
 
