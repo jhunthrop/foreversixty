@@ -1,5 +1,8 @@
 package gg.foreversixty.app.rankings
 
+import gg.foreversixty.app.rankings.logic.CharacterExtrasService
+import gg.foreversixty.app.rankings.logic.LiveCharacterExtras
+
 import gg.foreversixty.app.network.ApiResult
 import gg.foreversixty.app.model.CharacterSearchRow
 import gg.foreversixty.app.search.SearchRankings
@@ -69,6 +72,8 @@ class RankingsFeature(
     val zone: ZoneId = ZoneId.systemDefault(),
     /** Lane F15: whether a failed refresh is offline or stale. */
     val connectivity: Connectivity = Connectivity.Unknown,
+    /** A character page's reads beside its card (upgrades, standing, activity); null reads the card alone. */
+    val extras: CharacterExtrasService? = null,
 ) {
     val navigator = RankingsNavigator()
 
@@ -117,6 +122,7 @@ class RankingsFeature(
             build = { statics.activeBuild().dataOrNull()?.build },
             isAvailable = isAvailable,
             connectivity = connectivity,
+            extras = LiveCharacterExtras(apiClient),
         )
 
         /** The system share sheet with a web link. */

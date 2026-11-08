@@ -34,12 +34,18 @@ class CharacterStore(
     private val cache: RaidCache,
     private val viewer: RankingsViewer,
     private val connectivity: Connectivity = Connectivity.Unknown,
+    /** The reads beside the card; null reads none (the card alone). */
+    private val extrasService: CharacterExtrasService? = null,
     private val now: () -> Instant,
 ) {
     var phase: CharacterPhase by mutableStateOf(CharacterPhase.Loading)
         private set
 
     var watch: WatchState? by mutableStateOf(null)
+        private set
+
+    /** The band's upgrades, the owner's standing and the activity; empty until they answer. */
+    var extras: CharacterExtras by mutableStateOf(CharacterExtras())
         private set
 
     private val cacheKey: String get() = CACHE_KEY + "${route.region}-${route.ruleset}-${route.slug}"
@@ -53,6 +59,13 @@ class CharacterStore(
             is ApiResult.Failure -> fail(answer.error)
         }
         if (viewer.signedIn) loadWatching()
+        loadExtras()
+    }
+
+    private suspend fun loadExtras() {
+        val service = extrasService ?: return
+        val profile = (phase as? CharacterPhase.Loaded)?.profile ?: return
+        extras = CharacterExtras.load(service, route, profile.character.key, CharacterCard.isYours(profile, viewer))
     }
 
     private fun fail(error: ApiError) {

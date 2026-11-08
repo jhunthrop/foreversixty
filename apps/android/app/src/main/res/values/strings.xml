@@ -1011,7 +1011,7 @@
     <string name="char_component_experience">Experience</string>
     <string name="char_component_parses">Parses</string>
     <string name="char_component_attendance">Attendance</string>
-    <string name="char_component_discipline">Discipline</string>
+    <string name="char_component_discipline">Preparation</string>
     <string name="char_tier_common">Common</string>
     <string name="char_tier_uncommon">Uncommon</string>
     <string name="char_tier_rare">Rare</string>
@@ -1029,6 +1029,58 @@
     <string name="char_parseHistory">Parse history</string>
     <string name="char_a11y_score">Forever Score %1$s, %2$s.</string>
     <string name="char_a11y_component" tools:ignore="PluralsCandidate">%1$s %2$d of %3$d.</string>
+    <string name="char_page_answer">Upgrades available</string>
+    <string name="char_page_openSim">Open in simulator ›</string>
+    <string name="char_page_openPlanner">Talents in planner ›</string>
+    <string name="char_page_bisAction">Best in slot ›</string>
+    <string name="char_page_band60">Level 60 raid</string>
+    <string name="char_page_band" tools:ignore="PluralsCandidate">Levels %1$d to %2$d</string>
+    <string name="char_page_itemLevel" tools:ignore="PluralsCandidate">Item level %1$d</string>
+    <string name="char_page_guild">&lt;%1$s></string>
+    <string name="char_page_chip">%1$s %2$s</string>
+    <string name="char_page_syncAddon">Addon · %1$s</string>
+    <string name="char_page_syncBlizzard">Battle.net · %1$s</string>
+    <string name="char_page_next">Next: get %1$s from %2$s.</string>
+    <plurals name="char_page_talentPoints">
+        <item quantity="one">1 talent point</item>
+        <item quantity="other">%1$d talent points</item>
+    </plurals>
+    <string name="char_page_nextTalents">Next: spend your %1$s.</string>
+    <string name="char_page_nextTalentsThen">Next: spend your %1$s, then get %2$s.</string>
+    <string name="char_page_nothingWaiting">Nothing waiting.</string>
+    <string name="char_page_openBis">Open best in slot ›</string>
+    <string name="char_page_openPlannerNext">Open the planner ›</string>
+    <string name="char_page_standingLink">%1$s ›</string>
+    <string name="char_page_bandRaid">%1$s raid</string>
+    <string name="char_page_bandRange" tools:ignore="PluralsCandidate">%1$d to %2$d</string>
+    <string name="char_page_scoreFigure">Score</string>
+    <string name="char_page_tier">Tier</string>
+    <string name="char_page_mostToGain" tools:ignore="PluralsCandidate">Most to gain: %1$s, %2$d points to the top.</string>
+    <string name="char_page_howScored">How it is scored ›</string>
+    <string name="char_page_parts">Score parts</string>
+    <string name="char_page_partSub" tools:ignore="PluralsCandidate">%1$d of %2$d</string>
+    <string name="char_page_noLogsOwner">No logs yet. Upload a log to get a rating.</string>
+    <string name="char_page_noScoreYet">No Forever Score yet. It is worked out from the rated fights below.</string>
+    <string name="char_page_best">Best per encounter</string>
+    <string name="char_page_allFights" tools:ignore="PluralsCandidate">All ranked fights (%1$d) ›</string>
+    <string name="char_page_firstSeen">first seen %1$s</string>
+    <string name="char_page_history">History</string>
+    <string name="char_page_historyLead">Score over time, then parse per boss</string>
+    <string name="char_page_historyLockTitle">Score over time and parse per boss</string>
+    <string name="char_page_historyLockSub">Premium keeps every rated fight.</string>
+    <string name="char_page_seePlans">See plans ›</string>
+    <string name="char_page_coach">Coach history</string>
+    <string name="char_page_coachLead">Every review the coach wrote for this character</string>
+    <string name="char_page_failed">We could not load this character.</string>
+    <string name="char_page_notFound">No character named %1$s on %2$s %3$s.</string>
+    <string name="char_page_lookup">Look up a character</string>
+    <string name="char_page_lookupName">Name</string>
+    <string name="char_page_lookupSubmit">Look up</string>
+    <string name="char_page_add">Add this character</string>
+    <string name="char_page_signIn">Sign in to see your characters</string>
+    <string name="char_page_signInSub">Battle.net lists every character on your account.</string>
+    <string name="char_page_addonSub">Export with the addon and the companion to add this character.</string>
+    <string name="char_page_level" tools:ignore="PluralsCandidate">Level %1$d</string>
     <string name="paperdoll_a11y_socket">%1$s, %2$s, %3$s, item level %4$s.</string>
     <string name="paperdoll_a11y_empty">%1$s, empty.</string>
     <string name="items_unknownItem">%1$s · Item %2$s</string>
