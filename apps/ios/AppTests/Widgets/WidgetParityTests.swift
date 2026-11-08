@@ -19,33 +19,38 @@ enum WidgetMockData {
         return (try? Data(contentsOf: url)).flatMap(UIImage.init(data:))
     }
 
-    private static func upgrades(_ name: String, quality: Int, icon: String, gain: Double) -> WidgetUpgrades {
-        WidgetUpgrades(state: "ok", count: 3, totalGain: gain + 9, unit: "dps", rows: [
-            WidgetUpgradeRow(slot: "head", slotLabel: "Head", pick: WidgetUpgradePick(id: 1, name: name, quality: quality, icon: icon, itemLevel: 62), gain: gain),
+    private static func upgrades(_ name: String, quality: Int, icon: String, source: String, gain: Double) -> WidgetUpgrades {
+        let pick = WidgetUpgradePick(id: 1, name: name, quality: quality, icon: icon, itemLevel: 62, sourceLine: source)
+        return WidgetUpgrades(state: "ok", count: 3, totalGain: gain + 9, unit: "dps", rows: [
+            WidgetUpgradeRow(slot: "head", slotLabel: "Head", pick: pick, gain: gain),
         ])
     }
 
+    private static let zones = ["Barrow Deeps", "Hyjal Summit", "Onyxia's Lair"]
+    private static let helm = upgrades("Lionheart Helm", quality: 4, icon: "inv_helmet_36", source: "Blacksmithing", gain: 14.5)
     private static let thandrel = WidgetCharacter(key: "us/pvp/thandrel", name: "Thandrel", className: "warrior", specName: "Fury")
     private static let guild = WidgetGuild(id: 2, name: "Olympus XXVII")
 
     static let raid = WidgetNextRaid(
         raidId: 7, guildId: 2, guildName: "Olympus XXVII", zone: "raid:onyxias-lair", zoneName: "Onyxia's Lair",
         startsAt: onyxia, pullAt: onyxia, endsAt: onyxia.addingTimeInterval(3 * 3600), size: 40, signedUp: 21, status: "open",
-        my: WidgetMine(state: "in", spec: "Fury", role: "dps"), canSignUp: true
+        my: WidgetMine(state: "in", spec: "Fury", role: "dps"), canSignUp: true,
+        zoneIcon: "inv_misc_head_dragon_black", inCount: 18, late: 3, tanks: 2, healers: 5
     )
 
     static func snapshot(_ state: String) -> WidgetSnapshot {
         let widget: Models.Widget = switch state {
         case "guild":
-            Models.Widget(generatedAt: now, firstRaidsAt: "2026-12-09", character: thandrel, guild: guild, nextRaid: raid,
-                   upgrades: upgrades("Lionheart Helm", quality: 4, icon: "inv_helmet_36", gain: 14.5), live: WidgetLive(simRunsRunning: 0))
+            Models.Widget(generatedAt: now, firstRaidsAt: "2026-12-09", firstRaidsZones: zones, character: thandrel, guild: guild,
+                          nextRaid: raid, upgrades: helm, live: WidgetLive(simRunsRunning: 0))
         case "noguild":
-            Models.Widget(generatedAt: now, firstRaidsAt: "2026-12-09",
-                   character: WidgetCharacter(key: "us/pvp/felsnap", name: "Felsnap", className: "hunter", specName: "Marksmanship"),
-                   upgrades: upgrades("Felbough Arm", quality: 3, icon: "inv_spear_08", gain: 1.3), live: WidgetLive(simRunsRunning: 0))
+            Models.Widget(generatedAt: now, firstRaidsAt: "2026-12-09", firstRaidsZones: zones,
+                          character: WidgetCharacter(key: "us/pvp/felsnap", name: "Felsnap", className: "hunter", specName: "Marksmanship"),
+                          upgrades: upgrades("Felbough Arm", quality: 3, icon: "inv_spear_08", source: "Ashenvale", gain: 1.3),
+                          live: WidgetLive(simRunsRunning: 0))
         default:
-            Models.Widget(generatedAt: now, firstRaidsAt: "2026-12-09", character: thandrel, guild: guild,
-                   upgrades: upgrades("Lionheart Helm", quality: 4, icon: "inv_helmet_36", gain: 14.5), live: WidgetLive(simRunsRunning: 0))
+            Models.Widget(generatedAt: now, firstRaidsAt: "2026-12-09", firstRaidsZones: zones, character: thandrel, guild: guild,
+                          upgrades: helm, live: WidgetLive(simRunsRunning: 0))
         }
         return WidgetSnapshot(widget: widget, fetchedAt: now)
     }
@@ -57,20 +62,13 @@ enum WidgetMockData {
 
     static let attributes = RaidActivityAttributes(raid, characterName: "Thandrel")
     /// 42 minutes before the pull, 18 in and 3 late, 2 tanks and 5 heals.
-    static var live: RaidActivityAttributes.ContentState {
-        var state = RaidActivityAttributes.ContentState(raid, myState: "in")
-        state.inCount = 18
-        state.late = 3
-        state.tanks = 2
-        state.healers = 5
-        return state
-    }
+    static let live = RaidActivityAttributes.ContentState(raid, myState: "in")
 
     static var done: RaidActivityAttributes.ContentState {
         var state = live
         state.status = RaidActivityAttributes.ContentState.done
         state.kills = 1
-        state.loot = RaidLiveLoot(name: "Deathbringer", quality: 4, icon: "inv_axe_09")
+        state.loot = [RaidLiveLoot(name: "Deathbringer", quality: 4, icon: "inv_axe_09")]
         state.reportReady = true
         return state
     }

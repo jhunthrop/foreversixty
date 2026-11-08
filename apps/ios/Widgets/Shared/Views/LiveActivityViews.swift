@@ -21,7 +21,7 @@ struct RaidLiveFigures: Equatable, Sendable {
     let doneTitle: String
     /// The summary's parts before the loot (`1 kill`), the loot line, and after it (`report ready`).
     let doneLead: [String]
-    let loot: RaidLiveLoot?
+    let loot: [RaidLiveLoot]
     let doneTail: [String]
 
     init(_ attributes: RaidActivityAttributes, _ state: RaidActivityAttributes.ContentState, zone timeZone: TimeZone) {
@@ -43,7 +43,7 @@ struct RaidLiveFigures: Equatable, Sendable {
         done = state.status == RaidActivityAttributes.ContentState.done
         doneTitle = Copy.liveDone(zone: attributes.zoneName)
         doneLead = state.kills.map { [Copy.liveKills(n: $0)] } ?? []
-        loot = state.loot
+        loot = state.loot ?? []
         doneTail = state.reportReady == true ? [Copy.liveReportReady] : []
     }
 
@@ -51,10 +51,12 @@ struct RaidLiveFigures: Equatable, Sendable {
     var doneLine: AttributedString {
         let separator = AttributedString(" · ")
         var pieces = doneLead.map(AttributedString.init)
-        if let loot {
-            let whole = Copy.liveLoot(item: loot.name)
-            var line = AttributedString(whole)
-            if let range = line.range(of: loot.name) { line[range].foregroundColor = ItemQuality(value: loot.quality).text }
+        if !loot.isEmpty {
+            // `you got Deathbringer, Sapphiron Drape`: each name in its quality colour.
+            var line = AttributedString(Copy.liveLoot(item: loot.map(\.name).joined(separator: ", ")))
+            for item in loot {
+                if let range = line.range(of: item.name) { line[range].foregroundColor = ItemQuality(value: item.quality).text }
+            }
             pieces.append(line)
         }
         pieces += doneTail.map(AttributedString.init)
@@ -158,7 +160,7 @@ struct RaidLiveLockView: View {
     }
 
     private var zoneIcon: some View {
-        WidgetItemIcon(icon: attributes.icon ?? "", size: LiveMetrics.icon, icons: icons)
+        WidgetItemIcon(icon: attributes.zoneIcon ?? "", size: LiveMetrics.icon, icons: icons)
     }
 }
 
@@ -183,7 +185,7 @@ struct RaidIslandExpandedView: View {
     var body: some View {
         VStack(spacing: LiveMetrics.gap) {
             HStack(spacing: LiveMetrics.gap) {
-                WidgetItemIcon(icon: attributes.icon ?? "", size: LiveMetrics.icon, icons: icons)
+                WidgetItemIcon(icon: attributes.zoneIcon ?? "", size: LiveMetrics.icon, icons: icons)
                 Text(attributes.zoneName).type(LiveType.island).foregroundStyle(FSColor.strong).lineLimit(1)
                 Spacer(minLength: 0)
                 if state.status == "cancelled" {

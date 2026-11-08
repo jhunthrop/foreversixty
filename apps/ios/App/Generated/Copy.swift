@@ -3937,9 +3937,6 @@ enum Copy {
     /// First raids
     static var widgetFirstRaids: String { text("widget.firstRaids") }
 
-    /// Barrow Deeps, Hyjal Summit, Onyxia's Lair
-    static var widgetFirstRaidsZones: String { text("widget.firstRaids.zones") }
-
     /// Raids open now
     static var widgetRaidsOpen: String { text("widget.raidsOpen") }
 

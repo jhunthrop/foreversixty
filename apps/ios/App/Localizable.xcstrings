@@ -17932,17 +17932,6 @@
         }
       }
     },
-    "widget.firstRaids.zones": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Barrow Deeps, Hyjal Summit, Onyxia's Lair"
-          }
-        }
-      }
-    },
     "widget.gain": {
       "comment": "Arguments: 1 gain (string), 2 unit (string)",
       "extractionState": "manual",

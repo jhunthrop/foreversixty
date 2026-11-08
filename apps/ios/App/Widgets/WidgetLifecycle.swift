@@ -32,6 +32,12 @@ struct WidgetRefreshTriggers: ViewModifier {
                 if scenePhase == .active { await refresh() } else if scenePhase == .background { WidgetRefresher.schedule() }
             }
             .task(id: environment.session.phase.isSignedIn) { await refresh() }
+            // Flows F2: raid.starting starts the activity by push; the push-to-start token follows
+            // the account, re-checked on each foreground (notifications may have been allowed since).
+            .task(id: RemoteStartTrigger(signedIn: environment.session.phase.isSignedIn, active: scenePhase == .active)) {
+                guard scenePhase == .active else { return }
+                await environment.liveActivities.followRemoteStarts(signedIn: environment.session.phase.isSignedIn)
+            }
             .task(id: environment.session.currentCharacter?.key) { await refresh() }
             .onReceive(NotificationCenter.default.publisher(for: .raidSignupSaved)) { _ in
                 Task { await refresh() }
@@ -51,6 +57,11 @@ struct WidgetRefreshTriggers: ViewModifier {
             signedIn: session.phase.isSignedIn, me: session.phase.me, current: session.currentCharacter?.key
         )
     }
+}
+
+private struct RemoteStartTrigger: Hashable {
+    let signedIn: Bool
+    let active: Bool
 }
 
 extension View {

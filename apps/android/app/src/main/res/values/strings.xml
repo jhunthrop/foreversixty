@@ -1182,7 +1182,6 @@
     <string name="widget_as">%1$s, as %2$s, %3$s</string>
     <string name="widget_notAnswered">Not answered</string>
     <string name="widget_firstRaids">First raids</string>
-    <string name="widget_firstRaids_zones">Barrow Deeps, Hyjal Summit, Onyxia\'s Lair</string>
     <string name="widget_raidsOpen">Raids open now</string>
     <string name="widget_open">Open</string>
     <string name="widget_noRaidYet">No raid planned yet</string>

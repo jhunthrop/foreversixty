@@ -94,11 +94,12 @@ extension Widget {
         let updated = WidgetNextRaid(
             raidId: raid.raidId, guildId: raid.guildId, guildName: raid.guildName, zone: raid.zone, zoneName: raid.zoneName,
             startsAt: raid.startsAt, inviteAt: raid.inviteAt, pullAt: raid.pullAt, endsAt: raid.endsAt, size: raid.size,
-            signedUp: raid.signedUp, status: raid.status, my: my, canSignUp: raid.canSignUp
+            signedUp: raid.signedUp, status: raid.status, my: my, canSignUp: raid.canSignUp,
+            zoneIcon: raid.zoneIcon, inCount: raid.inCount, late: raid.late, tanks: raid.tanks, healers: raid.healers
         )
         return Widget(
-            generatedAt: generatedAt, character: character, guild: guild, nextRaid: updated, lastRaid: lastRaid,
-            upgrades: upgrades, live: live
+            generatedAt: generatedAt, firstRaidsAt: firstRaidsAt, firstRaidsZones: firstRaidsZones, character: character,
+            guild: guild, nextRaid: updated, lastRaid: lastRaid, upgrades: upgrades, live: live
         )
     }
 }

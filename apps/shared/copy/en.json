@@ -1133,7 +1133,6 @@
     "widget.as": "{answer}, as {name}, {role}",
     "widget.notAnswered": "Not answered",
     "widget.firstRaids": "First raids",
-    "widget.firstRaids.zones": "Barrow Deeps, Hyjal Summit, Onyxia's Lair",
     "widget.raidsOpen": "Raids open now",
     "widget.open": "Open",
     "widget.noRaidYet": "No raid planned yet",

@@ -113,8 +113,12 @@ struct WidgetSnapshotTests {
         let attributes = WidgetMockData.attributes
         var cancelled = WidgetMockData.live
         cancelled.status = "cancelled"
+        // A raid whose counts the server has not sent: `21 of 40 signed up`.
         var plain = RaidActivityAttributes.ContentState(WidgetMockData.raid, myState: nil)
-        plain.size = 40
+        plain.inCount = nil
+        plain.late = nil
+        plain.tanks = nil
+        plain.healers = nil
         for (state, name) in [(cancelled, "cancelled"), (plain, "unanswered")] {
             snap(RaidLiveLockView(attributes: attributes, state: state, icons: icons, fixedNow: WidgetMockData.liveNow, zone: zone)
                 .frame(width: size.width).background(FSColor.raised, in: .rect(cornerRadius: LiveMetrics.radius)),

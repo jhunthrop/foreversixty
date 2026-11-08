@@ -18,7 +18,12 @@ struct UpgradeGlanceColumn: View {
             if let gain = glance.gain {
                 Text(gain).type(WidgetType.big).foregroundStyle(FSColor.gold).lineLimit(1).minimumScaleFactor(0.6)
                 Text(Copy.widgetNextUpgradeLine).type(WidgetType.sub).foregroundStyle(FSColor.muted).lineLimit(1)
-                if showsItem, let item = glance.item { WidgetItemLine(item: item, icons: icons) }
+                if showsItem, let item = glance.item {
+                    WidgetItemLine(item: item, icons: icons)
+                    if let source = glance.source {
+                        Text(source).type(WidgetType.sub).foregroundStyle(FSColor.muted).lineLimit(1).minimumScaleFactor(0.8)
+                    }
+                }
             } else {
                 Text(glance.sentence ?? "").type(WidgetType.sub).foregroundStyle(FSColor.text).lineLimit(4)
             }

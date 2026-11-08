@@ -4,18 +4,20 @@ import Models
 import Networking
 
 /// The server side of a Live Activity: its push token kept by `POST /v1/me/live-activities` and
-/// dropped by `DELETE` when the activity ends.
+/// dropped by `DELETE` when the activity ends, and the install's push-to-start token kept by
+/// `POST /v1/me/live-activities/start-token`, so `raid.starting` can start the raid's activity.
 protocol LiveRegistrations: Sendable {
     func register(kind: String, objectID: String, token: Data) async -> Int64?
     func unregister(_ id: Int64) async
+    @discardableResult
+    func storeStartToken(kind: String, token: Data) async -> Bool
 }
 
 struct LiveRegistrationCalls: LiveRegistrations {
     let client: APIClient
 
     func register(kind: String, objectID: String, token: Data) async -> Int64? {
-        let hex = token.map { String(format: "%02x", $0) }.joined()
-        let request = LiveActivityRequest(kind: kind, platform: "ios", pushToken: hex, objectId: objectID)
+        let request = LiveActivityRequest(kind: kind, platform: "ios", pushToken: token.hexString, objectId: objectID)
         guard let endpoint = try? Endpoint<LiveActivityRegistered>.registerLiveActivity(request) else { return nil }
         return try? await client.send(endpoint).id
     }
@@ -23,32 +25,73 @@ struct LiveRegistrationCalls: LiveRegistrations {
     func unregister(_ id: Int64) async {
         _ = try? await client.send(.deleteLiveActivity(id: id))
     }
+
+    func storeStartToken(kind: String, token: Data) async -> Bool {
+        let request = LiveStartTokenRequest(platform: "ios", kind: kind, token: token.hexString)
+        guard let endpoint = try? Endpoint<LiveStartTokenStored>.storeLiveStartToken(request) else { return false }
+        return (try? await client.send(endpoint)) != nil
+    }
+}
+
+extension Data {
+    /// An APNs token as the API takes it: lowercase hex.
+    var hexString: String { map { String(format: "%02x", $0) }.joined() }
 }
 
 /// Starts, updates and ends the raid countdown and the server-sim Live Activities (spec §5.6).
-///
-/// APNs push cannot reach them yet: Apple's push key does not exist, and the API's live.* senders
-/// (lane A2) are not on main. Each activity still asks for a push token and the server keeps it,
-/// so remote updates start working the day the key and senders land. Until then every update
-/// comes from the app while it runs (a foreground, the refresh task, the sims poll), and the
-/// countdown ticks on its own as a system timer.
+/// The server starts the raid's activity by push at `raid.starting` and ends it on the night's
+/// summary; the app starts it too while it runs inside the window, and every update token it sees
+/// goes to the server.
 @MainActor
 final class LiveActivityController {
     private let registrations: any LiveRegistrations
     private let settings: LiveSurfaceSettings
     private let now: @Sendable () -> Date
+    private let notificationsAllowed: @Sendable () async -> Bool
     private var registered: [String: Int64] = [:]
+    /// The activities whose update tokens are being followed (`raid-7`, `sim-…`).
+    private var following: Set<String> = []
     private var lastSimUpdate: [String: Date] = [:]
+    /// The push-to-start and remote-activity follows, while signed in with notifications allowed.
+    private var remoteFollow: Task<Void, Never>?
 
     /// The sim activity updates at most this often (spec §5.6).
     static let simUpdateEvery: TimeInterval = 15
     static let cancelledFor: TimeInterval = 5 * 60
     static let finishedFor: TimeInterval = 60 * 60
 
-    init(registrations: any LiveRegistrations, settings: LiveSurfaceSettings = .shared, now: @escaping @Sendable () -> Date = { Date() }) {
+    init(
+        registrations: any LiveRegistrations, settings: LiveSurfaceSettings = .shared,
+        now: @escaping @Sendable () -> Date = { Date() },
+        notificationsAllowed: @escaping @Sendable () async -> Bool = PushRegistrar.systemAuthorized
+    ) {
         self.registrations = registrations
         self.settings = settings
         self.now = now
+        self.notificationsAllowed = notificationsAllowed
+    }
+
+    // MARK: Remote start (flows F2)
+
+    /// While signed in with notifications allowed: the install's push-to-start tokens go to the API,
+    /// and each activity the server starts has its update tokens registered like one the app started.
+    /// Signed out (or not allowed) stops following.
+    func followRemoteStarts(signedIn: Bool) async {
+        remoteFollow?.cancel()
+        remoteFollow = nil
+        guard signedIn, settings.raidCountdown, await notificationsAllowed() else { return }
+        let registrations = registrations
+        let startTokens = RaidActivities.startTokens()
+        let started = RaidActivities.started()
+        remoteFollow = Task { [weak self] in
+            async let stored: Void = {
+                for await token in startTokens { await registrations.storeStartToken(kind: "raid", token: token) }
+            }()
+            for await (raidID, tokens) in started {
+                self?.follow(tokens, kind: "raid", objectID: raidID)
+            }
+            await stored
+        }
     }
 
     // MARK: Raid
@@ -124,13 +167,18 @@ final class LiveActivityController {
     }
 
     /// Keeps each push token the system hands the activity on the server.
+    /// Keeps each push token the system hands the activity on the server, once per activity: one
+    /// the app started also appears among the remote starts.
     private func follow(_ tokens: AsyncStream<Data>, kind: String, objectID: String) {
+        let key = "\(kind)-\(objectID)"
+        guard following.insert(key).inserted else { return }
         let registrations = registrations
         Task { [weak self] in
             for await token in tokens {
                 let id = await registrations.register(kind: kind, objectID: objectID, token: token)
-                self?.keep(id, for: "\(kind)-\(objectID)")
+                self?.keep(id, for: key)
             }
+            self?.following.remove(key)
         }
     }
 
@@ -155,6 +203,30 @@ enum RaidActivities {
               let activity = try? Activity.request(attributes: attributes, content: ActivityContent(state: state, staleDate: stale), pushType: .token)
         else { return nil }
         return tokens(activity.id)
+    }
+
+    /// The install's push-to-start tokens, as the system hands them out (they rotate).
+    nonisolated static func startTokens() -> AsyncStream<Data> {
+        AsyncStream { continuation in
+            let task = Task {
+                for await token in Activity<RaidActivityAttributes>.pushToStartTokenUpdates { continuation.yield(token) }
+                continuation.finish()
+            }
+            continuation.onTermination = { _ in task.cancel() }
+        }
+    }
+
+    /// Each raid activity as it appears (one a push started included): its raid id and update tokens.
+    nonisolated static func started() -> AsyncStream<(String, AsyncStream<Data>)> {
+        AsyncStream { continuation in
+            let task = Task {
+                for await activity in Activity<RaidActivityAttributes>.activityUpdates {
+                    continuation.yield((activity.attributes.raidID, tokens(activity.id)))
+                }
+                continuation.finish()
+            }
+            continuation.onTermination = { _ in task.cancel() }
+        }
     }
 
     nonisolated static func tokens(_ activityID: String) -> AsyncStream<Data> {

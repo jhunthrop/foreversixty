@@ -49,14 +49,18 @@ struct RaidGlance: Equatable, Sendable {
             return
         }
         let context = widget.guild == nil ? Copy.widgetFindGuild : Copy.widgetNoRaidYet
+        // `Barrow Deeps, Hyjal Summit, Onyxia's Lair` (the API's first_raids_zones).
+        let zones = (widget.firstRaidsZones ?? []).joined(separator: ", ")
         if let opens = Self.firstRaids(widget.firstRaidsAt), opens > now {
             let count = Countdown(from: now, to: opens)
             self.init(
                 kind: .firstRaids, label: Copy.widgetFirstRaids, big: count.compact, name: WidgetClock(zone: .gmt).dayDate(opens),
-                lines: [Copy.widgetFirstRaidsZones]
+                lines: zones.isEmpty ? [] : [zones]
             )
+        } else if zones.isEmpty {
+            self.init(kind: .raidsOpen, label: Copy.widgetRaidsOpen, big: Copy.widgetOpen, name: context, lines: [])
         } else {
-            self.init(kind: .raidsOpen, label: Copy.widgetRaidsOpen, big: Copy.widgetOpen, name: Copy.widgetFirstRaidsZones, lines: [context])
+            self.init(kind: .raidsOpen, label: Copy.widgetRaidsOpen, big: Copy.widgetOpen, name: zones, lines: [context])
         }
     }
 
@@ -138,6 +142,8 @@ struct UpgradeGlance: Equatable, Sendable {
     /// `+14.5 DPS`, or nil when there is no upgrade to show.
     let gain: String?
     let item: Item?
+    /// Where it comes from (`Crafted: Blacksmithing`), the API's `source_line`.
+    let source: String?
     /// The words that stand in when there is no upgrade: the server's sentence, `Open the app`.
     let sentence: String?
 
@@ -146,17 +152,20 @@ struct UpgradeGlance: Equatable, Sendable {
         guard let row = figures.rows.first else {
             gain = nil
             item = nil
+            source = nil
             sentence = figures.sentence
             return
         }
         gain = row.gain
         item = Item(name: row.name, quality: row.quality, icon: row.icon)
+        let line = snapshot?.widget.upgrades?.rows.first?.pick.sourceLine?.trimmingCharacters(in: .whitespaces)
+        source = line?.isEmpty == false ? line : nil
         sentence = nil
     }
 
     var spoken: String {
         guard let gain, let item else { return [Copy.widgetNextUpgrade, sentence].compactMap { $0 }.joined(separator: ", ") }
-        return "\(Copy.widgetNextUpgrade), \(item.name), \(gain)"
+        return [Copy.widgetNextUpgrade, item.name, source, gain].compactMap { $0 }.joined(separator: ", ")
     }
 }
 

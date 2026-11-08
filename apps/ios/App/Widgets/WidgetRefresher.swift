@@ -82,7 +82,7 @@ final class WidgetRefresher {
     /// instance icon (the Live Activity's) go in the container.
     private func saveIcons(_ widget: Widget) async {
         guard let build = iconBuild() else { return }
-        let names = (widget.upgrades?.rows ?? []).map(\.pick.icon) + [widget.nextRaid.flatMap { RaidZoneIcon.of($0.zoneName) }].compactMap { $0 }
+        let names = (widget.upgrades?.rows ?? []).map(\.pick.icon) + [widget.nextRaid?.zoneIcon].compactMap { $0 }
         for name in names {
             let url = store.iconURL(name)
             guard !FileManager.default.fileExists(atPath: url.path),
