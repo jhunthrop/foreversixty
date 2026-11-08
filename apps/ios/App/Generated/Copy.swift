@@ -3381,7 +3381,7 @@ enum Copy {
     /// Attendance
     static var charComponentAttendance: String { text("char.component.attendance") }
 
-    /// Discipline
+    /// Preparation
     static var charComponentDiscipline: String { text("char.component.discipline") }
 
     /// Common
@@ -3445,6 +3445,191 @@ enum Copy {
     /// {component} {value} of {cap}.
     static func charA11yComponent(component: String, value: Int, cap: Int) -> String {
         format("char.a11y.component", component, value, cap)
+    }
+
+    /// Upgrades available
+    static var charPageAnswer: String { text("char.page.answer") }
+
+    /// Open in simulator ›
+    static var charPageOpenSim: String { text("char.page.openSim") }
+
+    /// Talents in planner ›
+    static var charPageOpenPlanner: String { text("char.page.openPlanner") }
+
+    /// Best in slot ›
+    static var charPageBisAction: String { text("char.page.bisAction") }
+
+    /// Level 60 raid
+    static var charPageBand60: String { text("char.page.band60") }
+
+    /// Levels {from} to {to}
+    static func charPageBand(from: Int, to: Int) -> String {
+        format("char.page.band", from, to)
+    }
+
+    /// Item level {n}
+    static func charPageItemLevel(n: Int) -> String {
+        format("char.page.itemLevel", n)
+    }
+
+    /// <{guild}>
+    static func charPageGuild(guild: String) -> String {
+        format("char.page.guild", guild)
+    }
+
+    /// {ruleset} {region}
+    static func charPageChip(ruleset: String, region: String) -> String {
+        format("char.page.chip", ruleset, region)
+    }
+
+    /// Addon · {age}
+    static func charPageSyncAddon(age: String) -> String {
+        format("char.page.syncAddon", age)
+    }
+
+    /// Battle.net · {age}
+    static func charPageSyncBlizzard(age: String) -> String {
+        format("char.page.syncBlizzard", age)
+    }
+
+    /// Next: get {item} from {source}.
+    static func charPageNext(item: String, source: String) -> String {
+        format("char.page.next", item, source)
+    }
+
+    /// {n} talent points
+    static func charPageTalentPoints(n: Int) -> String {
+        format("char.page.talentPoints", n)
+    }
+
+    /// Next: spend your {points}.
+    static func charPageNextTalents(points: String) -> String {
+        format("char.page.nextTalents", points)
+    }
+
+    /// Next: spend your {points}, then get {item}.
+    static func charPageNextTalentsThen(points: String, item: String) -> String {
+        format("char.page.nextTalentsThen", points, item)
+    }
+
+    /// Nothing waiting.
+    static var charPageNothingWaiting: String { text("char.page.nothingWaiting") }
+
+    /// Open best in slot ›
+    static var charPageOpenBis: String { text("char.page.openBis") }
+
+    /// Open the planner ›
+    static var charPageOpenPlannerNext: String { text("char.page.openPlannerNext") }
+
+    /// {line} ›
+    static func charPageStandingLink(line: String) -> String {
+        format("char.page.standingLink", line)
+    }
+
+    /// {band} raid
+    static func charPageBandRaid(band: String) -> String {
+        format("char.page.bandRaid", band)
+    }
+
+    /// {from} to {to}
+    static func charPageBandRange(from: Int, to: Int) -> String {
+        format("char.page.bandRange", from, to)
+    }
+
+    /// Score
+    static var charPageScoreFigure: String { text("char.page.scoreFigure") }
+
+    /// Tier
+    static var charPageTier: String { text("char.page.tier") }
+
+    /// Most to gain: {part}, {gap} points to the top.
+    static func charPageMostToGain(part: String, gap: Int) -> String {
+        format("char.page.mostToGain", part, gap)
+    }
+
+    /// How it is scored ›
+    static var charPageHowScored: String { text("char.page.howScored") }
+
+    /// Score parts
+    static var charPageParts: String { text("char.page.parts") }
+
+    /// {points} of {max}
+    static func charPagePartSub(points: Int, max: Int) -> String {
+        format("char.page.partSub", points, max)
+    }
+
+    /// No logs yet. Upload a log to get a rating.
+    static var charPageNoLogsOwner: String { text("char.page.noLogsOwner") }
+
+    /// No Forever Score yet. It is worked out from the rated fights below.
+    static var charPageNoScoreYet: String { text("char.page.noScoreYet") }
+
+    /// Best per encounter
+    static var charPageBest: String { text("char.page.best") }
+
+    /// All ranked fights ({n}) ›
+    static func charPageAllFights(n: Int) -> String {
+        format("char.page.allFights", n)
+    }
+
+    /// first seen {date}
+    static func charPageFirstSeen(date: String) -> String {
+        format("char.page.firstSeen", date)
+    }
+
+    /// History
+    static var charPageHistory: String { text("char.page.history") }
+
+    /// Score over time, then parse per boss
+    static var charPageHistoryLead: String { text("char.page.historyLead") }
+
+    /// Score over time and parse per boss
+    static var charPageHistoryLockTitle: String { text("char.page.historyLockTitle") }
+
+    /// Premium keeps every rated fight.
+    static var charPageHistoryLockSub: String { text("char.page.historyLockSub") }
+
+    /// See plans ›
+    static var charPageSeePlans: String { text("char.page.seePlans") }
+
+    /// Coach history
+    static var charPageCoach: String { text("char.page.coach") }
+
+    /// Every review the coach wrote for this character
+    static var charPageCoachLead: String { text("char.page.coachLead") }
+
+    /// We could not load this character.
+    static var charPageFailed: String { text("char.page.failed") }
+
+    /// No character named {name} on {region} {ruleset}.
+    static func charPageNotFound(name: String, region: String, ruleset: String) -> String {
+        format("char.page.notFound", name, region, ruleset)
+    }
+
+    /// Look up a character
+    static var charPageLookup: String { text("char.page.lookup") }
+
+    /// Name
+    static var charPageLookupName: String { text("char.page.lookupName") }
+
+    /// Look up
+    static var charPageLookupSubmit: String { text("char.page.lookupSubmit") }
+
+    /// Add this character
+    static var charPageAdd: String { text("char.page.add") }
+
+    /// Sign in to see your characters
+    static var charPageSignIn: String { text("char.page.signIn") }
+
+    /// Battle.net lists every character on your account.
+    static var charPageSignInSub: String { text("char.page.signInSub") }
+
+    /// Export with the addon and the companion to add this character.
+    static var charPageAddonSub: String { text("char.page.addonSub") }
+
+    /// Level {n}
+    static func charPageLevel(n: Int) -> String {
+        format("char.page.level", n)
     }
 
     /// {slot}, {item}, {quality}, item level {level}.

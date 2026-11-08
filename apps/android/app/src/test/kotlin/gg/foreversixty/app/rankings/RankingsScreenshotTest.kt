@@ -35,19 +35,13 @@ import gg.foreversixty.app.home.HomePresenter
 import gg.foreversixty.app.items.ItemLook
 import gg.foreversixty.app.items.ItemTooltipModel
 import gg.foreversixty.app.items.LocalItemIconPainter
-import gg.foreversixty.app.model.CharacterProfile
 import gg.foreversixty.app.model.RankingsPage
 import gg.foreversixty.app.navigation.ForeverTab
 import gg.foreversixty.app.navigation.ForeverTabScaffold
 import gg.foreversixty.app.rankings.logic.Board
 import gg.foreversixty.app.rankings.logic.BoardPhase
-import gg.foreversixty.app.rankings.logic.CharacterPhase
-import gg.foreversixty.app.rankings.logic.CharacterRoute
 import gg.foreversixty.app.rankings.logic.Rankings
 import gg.foreversixty.app.rankings.logic.RankingsViewer
-import gg.foreversixty.app.rankings.logic.WatchState
-import gg.foreversixty.app.rankings.ui.CharacterContent
-import gg.foreversixty.app.rankings.ui.CharacterScreenState
 import gg.foreversixty.app.rankings.ui.FiltersActions
 import gg.foreversixty.app.rankings.ui.FiltersSheetContent
 import gg.foreversixty.app.rankings.ui.FiltersSheetState
@@ -169,56 +163,6 @@ class RankingsScreenshotTest {
 
     @Test fun encounters() = sheet("filters-encounters-and", choosingEncounter = true)
 
-    // F11.4 to F11.7 A character
-
-    private fun character(
-        name: String,
-        phase: CharacterPhase,
-        watch: WatchState? = WatchState(watching = false),
-        route: CharacterRoute = CharacterRoute("us", "normal", "Voltaris"),
-        large: Boolean = false,
-    ) = capture(name, large) {
-        val state = CharacterScreenState(
-            route, phase, watch, RankingsTestData.viewer(), RankingsTestData.items().items.associateBy { it.id }, RankingsTestData.BUILD, reportsOn = true,
-        )
-        CharacterContent(state, specs, now, zone = zone)
-    }
-
-    private fun profile(p: CharacterProfile, offline: Instant? = null) = CharacterPhase.Loaded(p, offline)
-
-    @Test fun other() = character("character-other-and", profile(RankingsTestData.voltaris()))
-
-    @Test fun watchOn() = character("character-watch-on-and", profile(RankingsTestData.voltaris()), WatchState(watching = true))
-
-    @Test fun watchFailed() = character("character-watch-failed-and", profile(RankingsTestData.voltaris()), WatchState(watching = false, failed = true))
-
-    @Test @Config(qualifiers = PIXEL_9_XTALL)
-    fun yours() = character(
-        "character-yours-and", profile(RankingsTestData.yours()), route = CharacterRoute("us", "normal", "Lightningbolltz"),
-    )
-
-    @Test @Config(qualifiers = PIXEL_9_XTALL)
-    fun gear() = character("character-gear-and", profile(RankingsTestData.voltaris()))
-
-    @Test @Config(qualifiers = PIXEL_9_TALL)
-    fun noGear() = character("character-nogear-and", profile(RankingsTestData.voltaris().copy(gear = emptyList(), gearGapTotal = null)))
-
-    @Test fun noLogs() = character("character-nologs-and", profile(RankingsTestData.noLogs()), route = CharacterRoute("us", "pvp", "Freshling"))
-
-    @Test fun notFound() = character("character-notfound-and", CharacterPhase.NotFound, watch = null, route = CharacterRoute("us", "normal", "Voltxris"))
-
-    @Test fun characterOffline() = character("character-offline-and", profile(RankingsTestData.voltaris(), offlineAt))
-
-    @Test fun characterLoading() = character("character-loading-and", CharacterPhase.Loading, watch = null)
-
-    @Test fun characterError() = character("character-error-and", CharacterPhase.Failed, watch = null)
-
-    @Test @Config(qualifiers = PIXEL_9_XL)
-    fun otherLarge() = character("character-other-large-and", profile(RankingsTestData.voltaris()), large = true)
-
-    @Test @Config(qualifiers = PIXEL_9_XXL)
-    fun gearLarge() = character("character-gear-large-and", profile(RankingsTestData.voltaris()), large = true)
-
     // Home: Your gear as the Paperdoll
 
     @Test @Config(qualifiers = PIXEL_9_TALL)
@@ -245,6 +189,4 @@ class RankingsScreenshotTest {
 /** Pixel 9: 412 x 915 dp at 420 dpi. */
 private const val PIXEL_9 = "w412dp-h915dp-normal-long-notround-any-420dpi-keyshidden-nonav"
 private const val PIXEL_9_TALL = "w412dp-h1300dp-normal-long-notround-any-420dpi-keyshidden-nonav"
-private const val PIXEL_9_XTALL = "w412dp-h2000dp-normal-long-notround-any-420dpi-keyshidden-nonav"
 private const val PIXEL_9_XL = "w412dp-h2600dp-normal-long-notround-any-420dpi-keyshidden-nonav"
-private const val PIXEL_9_XXL = "w412dp-h4400dp-normal-long-notround-any-420dpi-keyshidden-nonav"

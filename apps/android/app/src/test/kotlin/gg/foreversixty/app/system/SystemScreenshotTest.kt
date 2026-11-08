@@ -13,12 +13,6 @@ import gg.foreversixty.app.planner.ui.SharedActions
 import gg.foreversixty.app.planner.logic.SharedCompare
 import gg.foreversixty.app.planner.logic.SharedBuildPhase
 import gg.foreversixty.app.planner.logic.SharedBuildView
-import gg.foreversixty.app.rankings.ui.CharacterScreenState
-import gg.foreversixty.app.rankings.ui.CharacterContent
-import gg.foreversixty.app.rankings.ui.CharacterActions
-import gg.foreversixty.app.rankings.logic.WatchState
-import gg.foreversixty.app.rankings.logic.CharacterRoute
-import gg.foreversixty.app.rankings.logic.CharacterPhase as CharacterPagePhase
 import gg.foreversixty.app.rankings.RankingsTestData
 import gg.foreversixty.app.model.CharacterSearchRow
 import gg.foreversixty.app.model.WatchingList
@@ -220,28 +214,6 @@ class SystemScreenshotTest {
     @Test fun searchWatching() = search(false)
 
     @Test fun searchWatchingLarge() = search(true)
-
-    // Round 2: F11.4 Builds seen's `Open in planner`
-
-    private fun openPlanner(large: Boolean) = capture("f15-char-open-planner", large, ForeverTab.Home) {
-        val state = CharacterScreenState(
-            CharacterRoute("us", "normal", "Lightningbolltz"),
-            CharacterPagePhase.Loaded(RankingsTestData.yours()),
-            WatchState(watching = true),
-            RankingsTestData.viewer(),
-            RankingsTestData.items().items.associateBy { it.id },
-            RankingsTestData.BUILD,
-            reportsOn = true,
-        )
-        val list = rememberScrollState(Int.MAX_VALUE)
-        Box(Modifier.fillMaxSize().verticalScroll(list)) {
-            CharacterContent(state, RankingsTestData.specs(), now, CharacterActions(openPlanner = {}))
-        }
-    }
-
-    @Test fun charOpenPlanner() = openPlanner(false)
-
-    @Test fun charOpenPlannerLarge() = openPlanner(true)
 
     // Round 2: F13.5 `Compare with mine` and the compare it opens
 

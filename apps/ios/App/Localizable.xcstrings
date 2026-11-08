@@ -1490,7 +1490,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Discipline"
+            "value": "Preparation"
           }
         }
       }
@@ -1707,6 +1707,576 @@
           "stringUnit": {
             "state": "translated",
             "value": "Open in planner"
+          }
+        }
+      }
+    },
+    "char.page.add": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add this character"
+          }
+        }
+      }
+    },
+    "char.page.addonSub": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Export with the addon and the companion to add this character."
+          }
+        }
+      }
+    },
+    "char.page.allFights": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "All ranked fights (%1$lld) ›"
+          }
+        }
+      }
+    },
+    "char.page.answer": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Upgrades available"
+          }
+        }
+      }
+    },
+    "char.page.band": {
+      "comment": "Arguments: 1 from (int), 2 to (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Levels %1$lld to %2$lld"
+          }
+        }
+      }
+    },
+    "char.page.band60": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Level 60 raid"
+          }
+        }
+      }
+    },
+    "char.page.bandRaid": {
+      "comment": "Arguments: 1 band (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ raid"
+          }
+        }
+      }
+    },
+    "char.page.bandRange": {
+      "comment": "Arguments: 1 from (int), 2 to (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld to %2$lld"
+          }
+        }
+      }
+    },
+    "char.page.best": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Best per encounter"
+          }
+        }
+      }
+    },
+    "char.page.bisAction": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Best in slot ›"
+          }
+        }
+      }
+    },
+    "char.page.chip": {
+      "comment": "Arguments: 1 ruleset (string), 2 region (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ %2$@"
+          }
+        }
+      }
+    },
+    "char.page.coach": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Coach history"
+          }
+        }
+      }
+    },
+    "char.page.coachLead": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Every review the coach wrote for this character"
+          }
+        }
+      }
+    },
+    "char.page.failed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "We could not load this character."
+          }
+        }
+      }
+    },
+    "char.page.firstSeen": {
+      "comment": "Arguments: 1 date (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "first seen %1$@"
+          }
+        }
+      }
+    },
+    "char.page.guild": {
+      "comment": "Arguments: 1 guild (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "<%1$@>"
+          }
+        }
+      }
+    },
+    "char.page.history": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "History"
+          }
+        }
+      }
+    },
+    "char.page.historyLead": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Score over time, then parse per boss"
+          }
+        }
+      }
+    },
+    "char.page.historyLockSub": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Premium keeps every rated fight."
+          }
+        }
+      }
+    },
+    "char.page.historyLockTitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Score over time and parse per boss"
+          }
+        }
+      }
+    },
+    "char.page.howScored": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "How it is scored ›"
+          }
+        }
+      }
+    },
+    "char.page.itemLevel": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Item level %1$lld"
+          }
+        }
+      }
+    },
+    "char.page.level": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Level %1$lld"
+          }
+        }
+      }
+    },
+    "char.page.lookup": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Look up a character"
+          }
+        }
+      }
+    },
+    "char.page.lookupName": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Name"
+          }
+        }
+      }
+    },
+    "char.page.lookupSubmit": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Look up"
+          }
+        }
+      }
+    },
+    "char.page.mostToGain": {
+      "comment": "Arguments: 1 part (string), 2 gap (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Most to gain: %1$@, %2$lld points to the top."
+          }
+        }
+      }
+    },
+    "char.page.next": {
+      "comment": "Arguments: 1 item (string), 2 source (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Next: get %1$@ from %2$@."
+          }
+        }
+      }
+    },
+    "char.page.nextTalents": {
+      "comment": "Arguments: 1 points (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Next: spend your %1$@."
+          }
+        }
+      }
+    },
+    "char.page.nextTalentsThen": {
+      "comment": "Arguments: 1 points (string), 2 item (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Next: spend your %1$@, then get %2$@."
+          }
+        }
+      }
+    },
+    "char.page.noLogsOwner": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No logs yet. Upload a log to get a rating."
+          }
+        }
+      }
+    },
+    "char.page.noScoreYet": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No Forever Score yet. It is worked out from the rated fights below."
+          }
+        }
+      }
+    },
+    "char.page.notFound": {
+      "comment": "Arguments: 1 name (string), 2 region (string), 3 ruleset (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No character named %1$@ on %2$@ %3$@."
+          }
+        }
+      }
+    },
+    "char.page.nothingWaiting": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nothing waiting."
+          }
+        }
+      }
+    },
+    "char.page.openBis": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open best in slot ›"
+          }
+        }
+      }
+    },
+    "char.page.openPlanner": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Talents in planner ›"
+          }
+        }
+      }
+    },
+    "char.page.openPlannerNext": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open the planner ›"
+          }
+        }
+      }
+    },
+    "char.page.openSim": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open in simulator ›"
+          }
+        }
+      }
+    },
+    "char.page.parts": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Score parts"
+          }
+        }
+      }
+    },
+    "char.page.partSub": {
+      "comment": "Arguments: 1 points (int), 2 max (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld of %2$lld"
+          }
+        }
+      }
+    },
+    "char.page.scoreFigure": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Score"
+          }
+        }
+      }
+    },
+    "char.page.seePlans": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "See plans ›"
+          }
+        }
+      }
+    },
+    "char.page.signIn": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sign in to see your characters"
+          }
+        }
+      }
+    },
+    "char.page.signInSub": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Battle.net lists every character on your account."
+          }
+        }
+      }
+    },
+    "char.page.standingLink": {
+      "comment": "Arguments: 1 line (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ ›"
+          }
+        }
+      }
+    },
+    "char.page.syncAddon": {
+      "comment": "Arguments: 1 age (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Addon · %1$@"
+          }
+        }
+      }
+    },
+    "char.page.syncBlizzard": {
+      "comment": "Arguments: 1 age (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Battle.net · %1$@"
+          }
+        }
+      }
+    },
+    "char.page.talentPoints": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "1 talent point"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%1$lld talent points"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "char.page.tier": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tier"
           }
         }
       }
