@@ -4,7 +4,7 @@ import SwiftUI
 /// Gear signed out (flows spec 4.3, mock ios-gear-out): the nine classes with their crests; a
 /// class opens its list with the picker on it, for the spec and the level range.
 struct GearClassesView: View {
-    /// The class slugs in the catalog's order.
+    /// The class slugs in the game's order.
     let classes: [String]
     let name: (String) -> String
     var open: (String) -> Void = { _ in }
@@ -25,13 +25,6 @@ struct GearClassesView: View {
                 }
             }
             .padding(.top, GearListView.sectionGap)
-        }
-    }
-
-    /// The catalog's classes, each once, in its order.
-    static func classes(_ catalog: SpecCatalog) -> [String] {
-        catalog.specs.reduce(into: [String]()) { slugs, spec in
-            if !slugs.contains(spec.classSlug) { slugs.append(spec.classSlug) }
         }
     }
 }

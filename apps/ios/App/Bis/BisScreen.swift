@@ -97,7 +97,7 @@ struct BisScreen: View {
     @ViewBuilder
     private var root: some View {
         if model.context.characterSelection == nil {
-            GearClassesView(classes: GearClassesView.classes(model.catalog), name: model.context.className) { slug in
+            GearClassesView(classes: model.context.classSlugs(model.catalog), name: model.context.className) { slug in
                 listShown = true
                 Task { await model.pickClass(slug) }
             }

@@ -36,6 +36,14 @@ struct BisContext: Equatable, Sendable {
         return (characterName, own)
     }
 
+    /// The classes in the game's order (the CDN's classes file), else the catalog's.
+    func classSlugs(_ catalog: SpecCatalog) -> [String] {
+        if !classes.isEmpty { return classes.map(\.slug) }
+        var seen: [String] = []
+        for spec in catalog.specs where !seen.contains(spec.classSlug) { seen.append(spec.classSlug) }
+        return seen
+    }
+
     func className(_ slug: String) -> String {
         classes.first { $0.slug == slug }?.name ?? slug.capitalized
     }

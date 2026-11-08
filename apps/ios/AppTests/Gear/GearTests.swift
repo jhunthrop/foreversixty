@@ -98,7 +98,7 @@ struct GearParityTests {
 
     @Test("ios-gear-out")
     func signedOut() throws {
-        let view = GearClassesView(classes: GearClassesView.classes(try BisTestData.catalog()), name: { $0.capitalized })
+        let view = GearClassesView(classes: try BisTestData.classes().map(\.slug), name: { $0.capitalized })
         try ParityCheck.assert(view, screen: "gear-out", size: Self.device)
     }
 
