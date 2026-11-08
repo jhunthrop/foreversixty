@@ -1,7 +1,8 @@
 <!-- web/src/components/setup/SetupCompanion.svelte -->
-<!-- /setup's Section "The companion" (setup spec 4, rulings U4, U7, U8): what it is, the signing
-     and first-run line of the visitor's own build (every build's while the system is not known; none
-     on a phone), a quiet download link once row 3 is ticked, the three ranked how-to Rows (`/combatlog` as Code), the
+<!-- /setup's Section "The companion" (setup spec 4, rulings U7, U8): the download right under the
+     heading in every state (owner 2026-11-08; a phone: "runs on your PC or Mac" and Copy link), what
+     it is, the signing and first-run line of the visitor's own build (every build's while the system
+     is not known; none on a phone), the three ranked how-to Rows (`/combatlog` as Code), the
      Status capture with its Example tag and, signed in, the pairing block under a hairline (each
      paired device's status line first). -->
 <script lang="ts">
@@ -9,22 +10,23 @@
   import { addonCopy } from '../../lib/addon/copy';
   import { deviceStatusLine } from '../../lib/reports/device-status';
   import { COMPANION_DOWNLOADS, downloadFor } from '../../lib/setup/downloads';
-  import { downloadHref, type CompanionRelease } from '../../lib/setup/release';
+  import type { CompanionRelease } from '../../lib/setup/release';
   import type { VisitorPlatform } from '../../lib/setup/visitor-platform';
-  import { LINK } from '../../lib/ui/primitives';
   import PairingBlock from '../companion/PairingBlock.svelte';
   import Capture from '../ui/Capture.svelte';
   import Code from '../ui/Code.svelte';
   import Divided from '../ui/Divided.svelte';
   import Row from '../ui/Row.svelte';
   import Section from '../ui/Section.svelte';
+  import CompanionDownload from './CompanionDownload.svelte';
 
   const COMBATLOG = '/combatlog';
 
   let {
     platform,
     release = null,
-    companionDone,
+    copied = false,
+    onCopyLink,
     signedIn,
     devices,
     now,
@@ -33,7 +35,9 @@
   }: {
     platform: VisitorPlatform;
     release?: CompanionRelease | null;
-    companionDone: boolean;
+    /** A phone's Copy link has just copied. */
+    copied?: boolean;
+    onCopyLink?: () => void;
     signedIn: boolean;
     devices: readonly Device[];
     now: Date;
@@ -67,22 +71,20 @@
   testid="setup-companion"
 >
   <div class="setup-body">
+    <CompanionDownload
+      {platform}
+      {release}
+      primary={false}
+      {copied}
+      {onCopyLink}
+      idPrefix="setup-companion"
+    />
     <p data-testid="setup-companion-lead">{lead}</p>
     {#each firstRuns as build (build.asset)}
       <p class="text-small text-muted" data-testid="setup-companion-first-run">
         {firstRuns.length > 1 ? `${build.platform}: ${build.firstRun}` : build.firstRun}
       </p>
     {/each}
-    {#if companionDone && download !== null}
-      <div class="setup-acts">
-        <a
-          class={LINK}
-          href={downloadHref(download.asset, release)}
-          rel="noopener"
-          data-testid="setup-download-another">{addonCopy.setupDownloadAnother} ›</a
-        >
-      </div>
-    {/if}
     <div data-testid="setup-companion-howto">
       {#each howTo as text, index (text)}
         <Row

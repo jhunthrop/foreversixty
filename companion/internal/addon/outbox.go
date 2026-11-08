@@ -33,7 +33,9 @@ type Outbox struct {
 	SavedAt     string
 	RequestedAt string
 	RosterHash  string
-	Body        json.RawMessage
+	// RaidAnswerHash is of raid_answer, "" with none: a new answer is a new outbox.
+	RaidAnswerHash string
+	Body           json.RawMessage
 }
 
 // MaxOutboxBytes bounds the outbox the companion sends. It is the
@@ -46,7 +48,13 @@ const MaxOutboxBytes = 256 << 10
 
 // key is what the sync remembers, across restarts, of the last outbox
 // the site answered for a file.
-func (o *Outbox) key() string { return o.SavedAt + "|" + o.RequestedAt + "|" + o.RosterHash }
+func (o *Outbox) key() string {
+	k := o.SavedAt + "|" + o.RequestedAt + "|" + o.RosterHash
+	if o.RaidAnswerHash != "" {
+		k += "|" + o.RaidAnswerHash
+	}
+	return k
+}
 
 // ScanOutbox reads ForeverSixtyDB.outbox out of one SavedVariables
 // file. It answers nil, with no error, when there is nothing to send:
@@ -90,6 +98,9 @@ func outboxOf(top map[string]any) (*Outbox, error) {
 		}
 		sum := sha256.Sum256(b)
 		ob.RosterHash = hex.EncodeToString(sum[:8])
+	}
+	if ob.RaidAnswerHash, err = raidAnswerHash(t); err != nil {
+		return nil, err
 	}
 	return ob, nil
 }
@@ -156,6 +167,8 @@ type OutboxResult struct {
 	SimRequest     string `json:"sim_request,omitempty"`
 	RosterSnapshot string `json:"roster_snapshot,omitempty"`
 	DroppedMembers int    `json:"dropped_members,omitempty"`
+	// RaidAnswer is the site's answer for each raid answer, in the outbox's order.
+	RaidAnswer []RaidAnswerResult `json:"raid_answer,omitempty"`
 }
 
 // What the API answers for an outbox and its parts.
@@ -221,6 +234,7 @@ const (
 	CopyRosterNotInGuild  = "Roster snapshot not stored, the character is not in that guild"
 	CopyRosterInvalid     = "Roster snapshot invalid, nothing in it could be stored"
 	CopyRosterUnknown     = "Roster snapshot not stored, the site has not seen this character yet"
+	CopyRaidAnswers       = "Raid answers: %d taken, %d refused, %d to send again"
 )
 
 // Lines is the answer in plain words, one line per part the outbox
@@ -260,6 +274,14 @@ func (r OutboxResult) Lines() []string {
 			noun = "member"
 		}
 		out[len(out)-1] += fmt.Sprintf(", %d %s dropped", r.DroppedMembers, noun)
+	}
+	if len(r.RaidAnswer) > 0 {
+		counts := map[string]int{}
+		for _, a := range r.RaidAnswer {
+			counts[a.Status]++
+		}
+		out = append(out, fmt.Sprintf(CopyRaidAnswers, counts[RaidAnswerAccepted], counts[RaidAnswerRefused],
+			len(r.RaidAnswer)-counts[RaidAnswerAccepted]-counts[RaidAnswerRefused]))
 	}
 	return out
 }

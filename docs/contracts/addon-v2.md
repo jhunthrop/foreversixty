@@ -418,6 +418,14 @@ Notes for the reader:
   character per account in or late) as any sign-up does. The addon treats its answer as sent
   once a `raid_signup` for the raid carries an `answered_at` at or after the click.
   `docs/contracts/fixtures/outbox-raid-answer.json` is one outbox with one entry.
+  The site's answer (`POST /v1/addon/exports`, `outbox.raid_answer`) is a list in the
+  outbox's order, one per entry, echoing its `character`, `raid_id` and `answered_at` with a
+  `status`: `accepted` (stored, or already what was stored), `refused` with a `reason`
+  (`stale`: a later answer is stored; `closed`: the raid is locked to the character,
+  cancelled, logged or over; `not_found`; `not_yours`: not the account's verified character in
+  the raid's guild; `unknown_character`; `invalid`), or `deferred` (not applied this time: past
+  the 20 an upload applies). The companion removes the accepted and refused entries and keeps
+  the deferred ones. A failed read on the site fails the whole post, so nothing is removed.
 
 ---
 

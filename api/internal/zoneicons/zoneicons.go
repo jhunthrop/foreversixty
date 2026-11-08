@@ -1,25 +1,48 @@
 // Package zoneicons is the one table of the raid zones' HD icons (the home mock's set, the same
-// names as web/src/lib/first-raids.ts), by zone key and by name. Each is a name under
-// /data/{build}/icons. A zone with no icon of its own reads as Generic.
+// names as web/src/lib/first-raids.ts), by zone key and by name: zones.json, which the data
+// pipeline's loot run reads too (the dungeon and raid sources' icon in loot.json). Each is a
+// name under /data/{build}/icons. A zone with no icon of its own reads as Generic.
 package zoneicons
 
-// Generic is the icon of a zone with none of its own.
+import (
+	_ "embed"
+	"encoding/json"
+	"fmt"
+)
+
+// Generic is the icon of a zone with none of its own; zones.json's generic says the same.
 const Generic = "inv_misc_book_09"
 
-type zone struct{ key, name, icon string }
+//go:embed zones.json
+var tableJSON []byte
 
-// zones are the first raids, in the order web/src/lib/first-raids.ts lists them.
-var zones = []zone{
-	{"raid:barrow-deeps", "Barrow Deeps", "spell_shadow_raisedead"},
-	{"raid:hyjal-summit", "Hyjal Summit", "spell_nature_timestop"},
-	{"raid:onyxias-lair", "Onyxia's Lair", "inv_misc_head_dragon_black"},
+type zone struct{ Key, Name, Icon string }
+
+type table struct {
+	Generic string `json:"generic"`
+	Zones   []zone `json:"zones"`
+}
+
+// zones are the first raids, in zones.json's order.
+var zones = mustLoad(tableJSON)
+
+// mustLoad parses the table, failing at start-up on a broken one.
+func mustLoad(raw []byte) []zone {
+	var t table
+	if err := json.Unmarshal(raw, &t); err != nil {
+		panic(fmt.Sprintf("zoneicons: zones.json: %v", err))
+	}
+	if t.Generic != Generic || len(t.Zones) == 0 {
+		panic("zoneicons: zones.json names another generic icon or no zones")
+	}
+	return t.Zones
 }
 
 // Names is the first raids' names, in that order.
 func Names() []string {
 	out := make([]string, len(zones))
 	for i, z := range zones {
-		out[i] = z.name
+		out[i] = z.Name
 	}
 	return out
 }
@@ -27,8 +50,8 @@ func Names() []string {
 // For is the icon of the zone with this key ("raid:onyxias-lair"), Generic for any other.
 func For(key string) string {
 	for _, z := range zones {
-		if z.key == key {
-			return z.icon
+		if z.Key == key {
+			return z.Icon
 		}
 	}
 	return Generic
@@ -37,8 +60,8 @@ func For(key string) string {
 // ForName is the icon of the zone with this name ("Onyxia's Lair"), Generic for any other.
 func ForName(name string) string {
 	for _, z := range zones {
-		if z.name == name {
-			return z.icon
+		if z.Name == name {
+			return z.Icon
 		}
 	}
 	return Generic

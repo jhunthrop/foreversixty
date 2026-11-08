@@ -79,8 +79,9 @@ for (const size of SIZES) {
       await expect(page.getByRole('link', { name: 'Sign in with Battle.net' })).toBeVisible();
       await expect(page.getByRole('link', { name: 'Install from CurseForge' })).toBeVisible();
       // A phone gets the link to copy (the companion is a desktop app); a desktop gets a download.
-      if (isMobile) await expect(page.getByRole('button', { name: 'Copy link' })).toBeVisible();
-      else await expect(page.getByRole('link', { name: 'Download for Windows' })).toBeVisible();
+      // The plate's row 3 (the head and The companion offer the same, setup-states.spec.ts).
+      if (isMobile) await expect(page.getByTestId('setup-action-copylink')).toHaveText('Copy link');
+      else await expect(page.getByTestId('setup-action-download')).toHaveText('Download for Windows');
       await expect(page.getByTestId('setup-steps-step-1')).not.toContainText('Signed in as');
       await expect(page.getByTestId('addon-paste-box')).toBeVisible();
       await expect(page.getByTestId('setup-hand-install')).toBeVisible();
