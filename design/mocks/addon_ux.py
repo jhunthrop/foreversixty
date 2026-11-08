@@ -614,7 +614,7 @@ def board_panel_leveller():
 
 
 def answer_buttons():
-    return ''.join(f'<span class="btn grey" style="{SMALL_BTN}">{a}</span>' for a in ('In', 'Late', 'Out'))
+    return ''.join(f'<span class="btn grey" style="{SMALL_BTN}">{a}</span>' for a in ('In', 'Late', 'Bench', 'Out'))
 
 
 def tonight(answer_html, buttons, sub='as Ashvale, Damage'):
