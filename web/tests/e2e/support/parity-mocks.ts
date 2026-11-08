@@ -199,3 +199,15 @@ export function renderAppAuthMocks(): string {
   run(PYTHON, [path.join(GENERATORS, 'ws_app_auth.py')], { FS_MOCK_OUT: dir });
   return dir;
 }
+
+/**
+ * The app beta mocks (ws_app_beta.py: /app in each signup state, /admin/testers) from this
+ * checkout's copy modules and QR (app_beta_facts.mjs). Returns the folder that holds them.
+ */
+export function renderAppBetaMocks(): string {
+  const dir = freshDir('app-beta');
+  const facts = path.join(dir, 'app-beta-facts.json');
+  run('node', [path.join(GENERATORS, 'app_beta_facts.mjs'), facts]);
+  run(PYTHON, [path.join(GENERATORS, 'ws_app_beta.py')], { FS_APP_BETA_FACTS: facts, FS_MOCK_OUT: dir });
+  return dir;
+}
