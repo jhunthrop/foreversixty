@@ -72,9 +72,9 @@ func TestSignedInOrders(t *testing.T) {
 		want string
 	}{
 		{"raid day: the next raid leads", View{Level: 60, InGuild: true, Now: wed3pm, Zone: chicago, NextRaid: at(raid8pm)}, Override{},
-			"head:compact next_raid:card upgrades feed guild_sims spec_week movers next"},
+			"head next_raid:card upgrades feed guild_sims spec_week movers next"},
 		{"raid live: the raid and the guild feed", View{Level: 60, InGuild: true, Now: raid8pm.Add(time.Hour), Zone: chicago, NextRaid: at(raid8pm)}, Override{},
-			"head:compact raid_live feed"},
+			"head raid_live feed"},
 		{"the day after: the summary", View{Level: 60, InGuild: true, Now: raid8pm.Add(18 * time.Hour), Zone: chicago, LastRaid: at(raid8pm)}, Override{},
 			"head raid_summary upgrades feed guild_sims spec_week movers next"},
 		{"any other day in a guild", View{Level: 60, InGuild: true, Now: wed3pm}, Override{},

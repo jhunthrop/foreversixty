@@ -35,13 +35,12 @@ const (
 	HowToStartURL = "how_to_start_link"
 )
 
-// Styles: the countdowns full or one line; the next raid a card (raid day) or one line; the head
-// compact (one line) when a raid block leads.
+// Styles: the countdowns full or one line; the next raid a card (raid day) or one line. The head
+// has one form on every Home (flows spec section 4): crest, name and the fact line.
 const (
-	StyleFull    = "full"
-	StyleLine    = "line"
-	StyleCard    = "card"
-	StyleCompact = "compact"
+	StyleFull = "full"
+	StyleLine = "line"
+	StyleCard = "card"
 )
 
 // The feed filters.

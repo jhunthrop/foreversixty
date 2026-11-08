@@ -3534,7 +3534,7 @@ public struct HomeAlreadyBest: Codable, Sendable, Equatable {
     }
 }
 
-/// The signed-in home's own blocks; each is null when it has nothing true to say. sections is the apps' home, its blocks in order for this viewer (design/specs/2026-11-07-mobile-redesign.md section 2.3; the order is design/specs/2026-11-08-app-flows.md section 4, time-aware): raid day (a guild raid today in the guild's zone, before it starts) head compact, next_raid card, upgrades, feed, guild_sims; raid live (start to start + 4 h) head compact, raid_live, feed opened on the guild filter; the day after a raid head, raid_summary, upgrades, feed; any other day in a guild head, upgrades, next_raid line, feed, guild_sims; under 60 head, upgrades, feed, countdowns line (first raids); no guild head, upgrades, feed, spec_week, countdowns line, guild_sims_cta. Secondary blocks (spec_week, movers, next) follow the feed; with no guild the feed drops the guild filter. HOME_SECTIONS switches each rule off, turns blocks off, reorders them and adds a notice. The web keeps its own composition.
+/// The signed-in home's own blocks; each is null when it has nothing true to say. sections is the apps' home, its blocks in order for this viewer (design/specs/2026-11-07-mobile-redesign.md section 2.3; the order is design/specs/2026-11-08-app-flows.md section 4, time-aware): raid day (a guild raid today in the guild's zone, before it starts) head, next_raid card, upgrades, feed, guild_sims; raid live (start to start + 4 h) head, raid_live, feed opened on the guild filter; the day after a raid head, raid_summary, upgrades, feed; any other day in a guild head, upgrades, next_raid line, feed, guild_sims; under 60 head, upgrades, feed, countdowns line (first raids); no guild head, upgrades, feed, spec_week, countdowns line, guild_sims_cta. Secondary blocks (spec_week, movers, next) follow the feed; with no guild the feed drops the guild filter. HOME_SECTIONS switches each rule off, turns blocks off, reorders them and adds a notice. The web keeps its own composition.
 public struct HomeBlocks: Codable, Sendable, Equatable {
     public let sections: [HomeSection]
     public let importSim: HomeImportSim?
@@ -3798,7 +3798,7 @@ public struct HomeSection: Codable, Sendable, Equatable {
     public let type: String
     /// Rows to show (upgrades 3, feed 7, guild_sims 5).
     public let limit: Int?
-    /// countdowns: full (the panels) or line (one row); next_raid: card (the countdown, your sign-up buttons, who is coming) or line; head: compact (one line, when a raid block leads).
+    /// countdowns: full (the panels) or line (one row); next_raid: card (the countdown, your sign-up buttons, who is coming) or line.
     public let style: String?
     /// feed: the filter it opens on (guild on raid night); omitted, the first.
     public let selected: String?

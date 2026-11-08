@@ -82,7 +82,6 @@ func SignedIn(v View, o Override) []Section {
 		ladder = Section{Type: GuildSims, Limit: guildSimsShown}
 	}
 	head := Section{Type: Head}
-	compact := Section{Type: Head, Style: StyleCompact}
 	upgrades := Section{Type: Upgrades, Limit: upgradesShown}
 	feed := Section{Type: Feed, Filters: filters, MoreFilters: []string{FilterLogs}, Limit: feedRows}
 	firstRaids := Section{Type: Countdowns, Style: StyleLine}
@@ -93,9 +92,9 @@ func SignedIn(v View, o Override) []Section {
 	case MomentRaidLive:
 		guildFeed := feed
 		guildFeed.Selected = FilterGuild
-		out = []Section{compact, {Type: RaidLive}, guildFeed}
+		out = []Section{head, {Type: RaidLive}, guildFeed}
 	case MomentRaidDay:
-		out = []Section{compact, {Type: NextRaid, Style: StyleCard}, upgrades, feed, ladder, week, movers, next}
+		out = []Section{head, {Type: NextRaid, Style: StyleCard}, upgrades, feed, ladder, week, movers, next}
 	case MomentDayAfter:
 		out = []Section{head, {Type: RaidSummary}, upgrades, feed, ladder, week, movers, next}
 	case MomentLeveling:

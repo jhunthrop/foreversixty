@@ -152,14 +152,19 @@ def menu(state: str):
 # ------------------------------------------------------------------------------------------------ Home, time-aware
 # Section 4 of the flows spec, over the web home mock: the split's wrappers dissolve so each section is one flex item of
 # <main>, ordered as /v1/home's `sections`. A section a state leaves out is hidden; an injected block carries its order.
-_FLAT = FLOWS_CSS + '''
+# One head on every Home (owner, 2026-11-08): compact, the crest, the name and the fact line, no figures; the crest and the
+# name are the profile menu's trigger, shown by the chevron after the name.
+_HEAD = '''
+[data-region="head-answer"]{display:none!important}
+[data-region="head-title"] .t-title::after{content:"";display:inline-block;width:9px;height:9px;margin:0 0 6px 12px;
+  border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(45deg);vertical-align:middle}
+'''
+_FLAT = FLOWS_CSS + _HEAD + '''
 main{display:flex;flex-direction:column}
 main>.pc:has(>.layout-split),main .layout-split,main .layout-split>.main,main .layout-split>.rail{display:contents}
 main section[data-region^="section-"]{padding-inline:16px;margin-top:32px;order:9}
 main>.pc:has([data-region="countdowns"]){display:none}
 '''
-# "The head drops to one line when a raid card leads" (section 4): the answer figures and the fact line leave.
-_HEAD_LINE = '[data-region="head-answer"],[data-region="head-meta"]{display:none!important}\n'
 _HIDE = '{display:none!important}\n'
 
 
@@ -219,11 +224,11 @@ def _after_raid(order: int) -> str:
 
 HOME_STATES = {
     # in a guild, raid day before the raid: Next raid (card) · Next upgrade · Feed · Guild sims
-    'raid-day': (_FLAT + _HEAD_LINE + _order(UP, 3) + _order(FEED, 4) + _order(GSIMS, 5), lambda: _block(2, _raid_card()), 1, None),
+    'raid-day': (_FLAT + _order(UP, 3) + _order(FEED, 4) + _order(GSIMS, 5), lambda: _block(2, _raid_card()), 1, None),
     # the officer's raid day: the same card with the open count (review S3)
-    'raid-day-officer': (_FLAT + _HEAD_LINE + _order(UP, 3) + _order(FEED, 4) + _order(GSIMS, 5), lambda: _block(2, _raid_card(officer=True)), 6, None),
+    'raid-day-officer': (_FLAT + _order(UP, 3) + _order(FEED, 4) + _order(GSIMS, 5), lambda: _block(2, _raid_card(officer=True)), 6, None),
     # raid in progress: Raid night card · Feed (Your guild); the rest waits
-    'raid-live': (_FLAT + _HEAD_LINE + _order(FEED, 3) + _hide(UP, GSIMS, WEEK, MOVERS), lambda: _raid_live(2), 0, SEG_GUILD),
+    'raid-live': (_FLAT + _order(FEED, 3) + _hide(UP, GSIMS, WEEK, MOVERS), lambda: _raid_live(2), 0, SEG_GUILD),
     # the day after: Raid summary · Next upgrade · Feed
     'after-raid': (_FLAT + _order(UP, 3) + _order(FEED, 4) + _order(GSIMS, 5), lambda: _after_raid(2), 0, None),
     # any other day in a guild: Next upgrade · Next raid (one line, its answers) · Feed · Guild sims
@@ -260,12 +265,17 @@ def home_state(state: str, feed_filters_css: str):
     return b
 
 
+# The leveler's head says how far the next band is, in its fact line (the figures left the head).
+LEVEL_FACT = ('<span class="t-small">Item level 31</span>', '<span class="t-small">Item level 31</span><span class="t-small">6 levels to band 40</span>')
+
+
 def leveling(feed_filters_css: str, base_css: str):
     """Leveling (section 4, review M4 and S10): head with levels to the next band, upgrades, the instance line, the feed on
     Your spec at the band."""
     def b(platform: str) -> str:
-        html = from_web('web-home-34', platform, 'home', extra_css=base_css + feed_filters_css + FLOWS_CSS, who='hunter')
-        assert SEG_SPEC[0] in html, 'web-home-34 changed its feed segments'
+        html = from_web('web-home-34', platform, 'home', extra_css=base_css + feed_filters_css + FLOWS_CSS + _HEAD, who='hunter')
+        assert SEG_SPEC[0] in html and LEVEL_FACT[0] in html, 'web-home-34 changed its feed segments or its facts'
+        html = html.replace(*LEVEL_FACT)
         html = html.replace(*SEG_SPEC)
         return _filter_feed(html, {'Your spec'})
     b.web = True

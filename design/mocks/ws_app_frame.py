@@ -155,8 +155,10 @@ def tab_bar(platform: str, active: str, badge: int = 0) -> str:
 def chrome(platform: str, tab: str | None, back: str = '', title: str = '', share: bool = False, navbar: bool = True,
            who: str | None = 'warrior', badge: int = 0) -> tuple[str, str, str]:
     """(body style vars, top html, bottom html). A tab root (a tab, no back) carries the menu crest of `who` (the selected
-    character's class; None signed out); `badge` is the Guild tab's open count."""
-    top = status_bar(platform) + (nav_bar(platform, back, title, share, who=who, menu=bool(tab)) if navbar else '')
+    character's class; None signed out), except Home with a character: its head's crest and name open the menu, so the
+    crest is not drawn twice (flows spec section 3). `badge` is the Guild tab's open count."""
+    menu = bool(tab) and not (tab == 'home' and who)
+    top = status_bar(platform) + (nav_bar(platform, back, title, share, who=who, menu=menu) if navbar else '')
     bottom = (tab_bar(platform, tab, badge) if tab else '') + '<span class="app-home" aria-hidden="true"></span>'
     return frame_vars(platform, bool(tab), navbar), top, bottom
 
