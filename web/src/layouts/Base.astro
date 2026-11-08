@@ -56,12 +56,15 @@ interface Props {
   title: string;
   description: string;
   path: string;
+  /** The canonical URL's path when it is another page's (a filtered view of a list that is
+   *  already that view: the BiS /60/pre-raid page). Defaults to `path`. */
+  canonicalPath?: string;
   /** Extra JSON-LD nodes for this page; the homepage always carries the WebSite node. */
   jsonLd?: object[];
   /** A page built from the ui/ primitives: from 1760 px its column widens (tokens.css, `data-column`). */
   wide?: boolean;
 }
-const { title, description, path, jsonLd = [], wide = false } = Astro.props;
+const { title, description, path, canonicalPath = path, jsonLd = [], wide = false } = Astro.props;
 const site = SITE_URL;
 const fullTitle = pageTitle(path, title);
 const ldNodes = path === '/' ? [websiteLd(), ...jsonLd] : jsonLd;
@@ -78,7 +81,7 @@ const meStorageKey = storageKey(meKey(API_BASE_URL));
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title data-og="title">{fullTitle}</title>
     <meta name="description" content={description} data-og="description" />
-    <link rel="canonical" href={`${site}${path}`} data-og="canonical" />
+    <link rel="canonical" href={`${site}${canonicalPath}`} data-og="canonical" />
     {noindex && <meta name="robots" content="noindex" />}
     <link rel="preload" href={barlow400Url} as="font" type="font/woff2" crossorigin />
     <link rel="preload" href={barlow600Url} as="font" type="font/woff2" crossorigin />
@@ -89,7 +92,7 @@ const meStorageKey = storageKey(meKey(API_BASE_URL));
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <meta property="og:title" content={fullTitle} data-og="og-title" />
     <meta property="og:description" content={description} data-og="og-description" />
-    <meta property="og:url" content={`${site}${path}`} data-og="og-url" />
+    <meta property="og:url" content={`${site}${canonicalPath}`} data-og="og-url" />
     <meta
       property="og:image"
       content={`${site}/og${path === '/' ? '/index' : path}.png`}

@@ -12,6 +12,7 @@ import { bandModelKey } from './model-key';
 import { modelItemIds, type BisPageData } from './page-model';
 import { presetsOffered } from './page-context';
 import { MAX_BAND } from './band-levels';
+import { listIsPreRaid } from './pre-raid';
 
 const memo = new Map<string, BisServerPage | null>();
 
@@ -37,18 +38,16 @@ function buildFor(spec: string, classSlug: string): BisServerPage | null {
 
 const preRaidMemo = new Map<string, boolean>();
 
-/** Whether the spec's level 60 list holds no raid drop, read off the ranked file itself: then it
- *  is the pre-raid list, and the page's title says so (lib/bis/copy.ts `seoTitle`). Raids opening
- *  put raid drops in the list on the next nightly run, and the next build drops the word. */
+/** Whether the spec's level 60 list holds no raid or PvP pick, read off the ranked file itself
+ *  (pre-raid.ts listIsPreRaid): then it is the pre-raid list, the page's title says so
+ *  (seo-copy.ts) and /60/pre-raid is canonical to /60. Raids opening put raid drops in the list on
+ *  the next nightly run, and the next build drops the word and gives /60/pre-raid its own page. */
 export function bisPreRaid(spec: string): boolean {
   const key = `${activeBuild.build}:${spec}`;
   if (!preRaidMemo.has(key)) {
     const file = loadBisFile(spec, activeBuild.build);
     const sixty = file?.bands.filter((band) => band.band >= MAX_BAND) ?? [];
-    preRaidMemo.set(
-      key,
-      sixty.length > 0 && sixty.every((band) => band.slots.every((slot) => slot.source_kind !== 'raid')),
-    );
+    preRaidMemo.set(key, sixty.length > 0 && listIsPreRaid(sixty.flatMap((band) => band.slots)));
   }
   return preRaidMemo.get(key)!;
 }

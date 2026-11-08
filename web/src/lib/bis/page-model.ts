@@ -26,6 +26,7 @@ import type {
   BisByKindEntry,
   BisFile,
   BisFilteredSetDps,
+  BisFilteredSetKey,
   BisPresetId,
   BisSlot,
   Faction,
@@ -100,7 +101,7 @@ export interface BisAnswerModel {
   /** The set's figure, one decimal, in `unit`. Absent on a tank band (its four figures). */
   figure?: string;
   error?: number;
-  filtered?: Partial<Record<'all' | 'dungeon' | 'leveling_default', BisFilteredSetDps>>;
+  filtered?: Partial<Record<BisFilteredSetKey, BisFilteredSetDps>>;
   tank?: TankHeadline;
   healer?: HealerSetView;
   /** The trust line's facts, in order (§5.10 item 6). */

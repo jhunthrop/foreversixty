@@ -19,6 +19,7 @@ import activeBuild from '../../data/active-build.json';
 import { bisCopy } from '../../lib/bis/copy';
 import { bisSeoCopy } from '../../lib/bis/seo-copy';
 import { bisBandPath, bisSpecPath } from '../../lib/bis/band-path';
+import { PRE_RAID_SLUG } from '../../lib/bis/pre-raid';
 import { readSpecCatalog } from '../../lib/bis/load';
 import { bisPreRaid, bisServerPage, defaultSlice } from '../../lib/bis/page-server';
 import { BIS_PAGE_DATA_ID, bisPageDataJson, registerBisPageData } from '../../lib/bis/page-registry';
@@ -35,9 +36,11 @@ interface Props {
   spec: SpecCatalogEntry;
   /** The band this URL names; the spec's first band when absent (/bis/<class>/<spec>). */
   band?: number;
+  /** The band's pre-raid list, /bis/<class>/<spec>/60/pre-raid (lib/bis/pre-raid.ts). */
+  preRaidPage?: boolean;
 }
 
-const { spec: specEntry, band: pathBand } = Astro.props;
+const { spec: specEntry, band: pathBand, preRaidPage = false } = Astro.props;
 const classSlug = specEntry.class_slug;
 const className = classes.find((c) => c.slug === classSlug)?.name ?? classSlug;
 const specPath = bisSpecPath(classSlug, specEntry.spec_slug);
@@ -49,22 +52,30 @@ const firstBand = server?.data.bands[0];
 const band = pathBand ?? firstBand;
 const subject = { specName: specEntry.name, className, preRaid: bisPreRaid(specEntry.spec) };
 const isBandPage = pathBand !== undefined && pathBand !== firstBand;
-const path =
+const bandPath =
   band === undefined || firstBand === undefined
     ? specPath
     : bisBandPath(classSlug, specEntry.spec_slug, band, firstBand);
+const path = preRaidPage ? `${bandPath}/${PRE_RAID_SLUG}` : bandPath;
+// While the plain level 60 list holds no raid or PvP pick it is the pre-raid list itself, so
+// /60/pre-raid points its canonical at /60; once raid gear enters the data it is its own page.
+const canonicalPath = preRaidPage && subject.preRaid ? bandPath : path;
 const title =
   firstBand === undefined || band === undefined
     ? `${className} ${specEntry.name} leveling BiS`
-    : isBandPage
-      ? bisSeoCopy.bandTitle(subject, band)
-      : bisSeoCopy.specTitle(subject, firstBand);
+    : preRaidPage
+      ? bisSeoCopy.preRaidTitle(subject)
+      : isBandPage
+        ? bisSeoCopy.bandTitle(subject, band)
+        : bisSeoCopy.specTitle(subject, firstBand);
 const description =
   firstBand === undefined || band === undefined
     ? bisCopy.metaDescription(specEntry.name, className)
-    : isBandPage
-      ? bisSeoCopy.bandDescription(subject, band)
-      : bisSeoCopy.specDescription(subject, firstBand);
+    : preRaidPage
+      ? bisSeoCopy.preRaidDescription(subject)
+      : isBandPage
+        ? bisSeoCopy.bandDescription(subject, band)
+        : bisSeoCopy.specDescription(subject, firstBand);
 const jsonLd =
   band === undefined
     ? []
@@ -72,7 +83,16 @@ const jsonLd =
         breadcrumbListLd([
           { name: 'Best in slot', path: '/bis' },
           { name: bisSeoCopy.heading(subject), path: specPath },
-          ...(isBandPage ? [{ name: bisSeoCopy.bandCrumb(subject, band), path }] : []),
+          // Under the pre-raid page the band crumb is the plain level 60 list, named as such.
+          ...(isBandPage
+            ? [
+                {
+                  name: bisSeoCopy.bandCrumb(preRaidPage ? { ...subject, preRaid: false } : subject, band),
+                  path: bandPath,
+                },
+              ]
+            : []),
+          ...(preRaidPage ? [{ name: bisSeoCopy.preRaidCrumb(subject), path }] : []),
         ]),
       ];
 
@@ -105,7 +125,7 @@ const raceOptions: Record<Faction, { value: string; label: string }[]> = {
 };
 ---
 
-<Base title={title} description={description} path={path} jsonLd={jsonLd} wide>
+<Base title={title} description={description} path={path} {canonicalPath} jsonLd={jsonLd} wide>
   <script is:inline set:html={BIS_PENDING_SCRIPT}></script>
   <main id="main" tabindex="-1" class="bis-page">
     {server === undefined || band === undefined ? (
@@ -131,6 +151,7 @@ const raceOptions: Record<Faction, { value: string; label: string }[]> = {
           className={className}
           specName={specEntry.name}
           pathBand={band}
+          pathPreRaid={preRaidPage}
           preRaid={subject.preRaid}
           crestSrc={classCrestSrc(classSlug)}
           crestColor={classColorVar(className)}
