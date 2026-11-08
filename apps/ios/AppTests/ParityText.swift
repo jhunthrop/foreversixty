@@ -12,7 +12,27 @@ enum ParityText {
     @MainActor
     static func lines(of view: some View, size: CGSize) -> [String] {
         AccessibilityAutomation.enable()
-        return ParityHost.render(view, size: size) { host in elements(under: host.view).compactMap(line) }
+        return ParityHost.render(view, size: size) { host in settledLines(under: host.view) }
+    }
+
+    /// How long the tree may take to appear: SwiftUI builds it asynchronously once automation is
+    /// on, and the first screen after the switch (on CI, Activity's) can read before it exists.
+    static let settleTimeout: TimeInterval = 3
+    static let settleStep: TimeInterval = 0.05
+
+    /// The lines once the tree has appeared and two reads in a row agree, so a state never
+    /// records a half-built (or empty) tree.
+    @MainActor
+    private static func settledLines(under root: UIView) -> [String] {
+        let deadline = Date().addingTimeInterval(settleTimeout)
+        var last = elements(under: root).compactMap(line)
+        while Date() < deadline {
+            RunLoop.main.run(until: Date().addingTimeInterval(settleStep))
+            let next = elements(under: root).compactMap(line)
+            if !next.isEmpty, next == last { return next }
+            last = next
+        }
+        return last
     }
 
     /// Asserts the state's words against its text golden (`__Snapshots__/<suite>/<name>.txt`).
