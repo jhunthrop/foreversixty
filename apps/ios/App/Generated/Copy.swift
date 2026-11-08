@@ -1349,6 +1349,385 @@ enum Copy {
     /// Open on foreversixty.gg
     static var raidMenuWeb: String { text("raid.menu.web") }
 
+    /// Calendar
+    static var raidPagesCalendar: String { text("raid.pages.calendar") }
+
+    /// Loot history
+    static var raidPagesLoot: String { text("raid.pages.loot") }
+
+    /// Guild sims
+    static var raidPagesSims: String { text("raid.pages.sims") }
+
+    /// {n} members
+    static func raidPagesMembers(n: Int) -> String {
+        format("raid.pages.members", n)
+    }
+
+    /// {members}, {n} at 60
+    static func raidPagesMembersAtCap(members: String, n: Int) -> String {
+        format("raid.pages.membersAtCap", members, n)
+    }
+
+    /// {zone} {weekday}
+    static func raidPagesCalendarItem(zone: String, weekday: String) -> String {
+        format("raid.pages.calendarItem", zone, weekday)
+    }
+
+    /// Last raid: {n} pieces
+    static func raidPagesLootLast(n: Int) -> String {
+        format("raid.pages.lootLast", n)
+    }
+
+    /// No raid planned yet. Your officers plan raids on the site; a push tells you the moment one is posted.
+    static var raidNoRaid: String { text("raid.noRaid") }
+
+    /// Needs you
+    static var raidNeedsYou: String { text("raid.needsYou") }
+
+    /// {n} open
+    static func raidNeedsYouOpen(n: Int) -> String {
+        format("raid.needsYouOpen", n)
+    }
+
+    /// Raid night
+    static var raidNightTitle: String { text("raid.night.title") }
+
+    /// {role} {n} of {want}
+    static func raidNightRole(role: String, n: Int, want: Int) -> String {
+        format("raid.night.role", role, n, want)
+    }
+
+    /// {name} (Late, {n} min)
+    static func raidNightLateName(name: String, n: Int) -> String {
+        format("raid.night.lateName", name, n)
+    }
+
+    /// {name} (Late)
+    static func raidNightLateNameOnly(name: String) -> String {
+        format("raid.night.lateNameOnly", name)
+    }
+
+    /// {names} · {n} short
+    static func raidNightShort(names: String, n: Int) -> String {
+        format("raid.night.short", names, n)
+    }
+
+    /// {names} and {n} more
+    static func raidNightMore(names: String, n: Int) -> String {
+        format("raid.night.more", names, n)
+    }
+
+    /// {when} · {counts}
+    static func raidNightAside(when: String, counts: String) -> String {
+        format("raid.night.aside", when, counts)
+    }
+
+    /// You are {state}
+    static func raidNightYouAre(state: String) -> String {
+        format("raid.night.youAre", state)
+    }
+
+    /// Before you pull
+    static var raidNightBeforePull: String { text("raid.night.beforePull") }
+
+    /// Roster ›
+    static var raidNightRoster: String { text("raid.night.roster") }
+
+    /// Ready check
+    static var raidReadyTitle: String { text("raid.ready.title") }
+
+    /// From your last log-out, {age}
+    static func raidReadyStamp(age: String) -> String {
+        format("raid.ready.stamp", age)
+    }
+
+    /// Done
+    static var raidReadyOk: String { text("raid.ready.ok") }
+
+    /// To do
+    static var raidReadyWarn: String { text("raid.ready.warn") }
+
+    /// Missing
+    static var raidReadyMiss: String { text("raid.ready.miss") }
+
+    /// Guilds that plan their raids here
+    static var raidRecruitMeta: String { text("raid.recruit.meta") }
+
+    /// Guilds recruiting a {kind}
+    static func raidRecruitHeading(kind: String) -> String {
+        format("raid.recruit.heading", kind)
+    }
+
+    /// Guilds recruiting an {kind}
+    static func raidRecruitHeadingVowel(kind: String) -> String {
+        format("raid.recruit.headingVowel", kind)
+    }
+
+    /// {faction} · {schedule} · needs {needs}
+    static func raidRecruitLine(faction: String, schedule: String, needs: String) -> String {
+        format("raid.recruit.line", faction, schedule, needs)
+    }
+
+    /// Apply
+    static var raidRecruitApply: String { text("raid.recruit.apply") }
+
+    /// No guild here is recruiting your spec right now.
+    static var raidRecruitNone: String { text("raid.recruit.none") }
+
+    /// Your guild is not here?
+    static var raidClaimTitle: String { text("raid.claim.title") }
+
+    /// Claim it: a guild master or an officer confirms with the addon or Battle.net.
+    static var raidClaimLine: String { text("raid.claim.line") }
+
+    /// Claim your guild
+    static var raidClaimButton: String { text("raid.claim.button") }
+
+    /// Raids start at 60
+    static var raidLevelerTitle: String { text("raid.leveler.title") }
+
+    /// {n} levels to go
+    static func raidLevelerToGo(n: Int) -> String {
+        format("raid.leveler.toGo", n)
+    }
+
+    /// Onyxia's Lair, Barrow Deeps and Hyjal Summit open at 60. Join a guild on the way and its raids show here.
+    static var raidLevelerLine: String { text("raid.leveler.line") }
+
+    /// Sign up for your guild's raids from your phone.
+    static var raidOutLine: String { text("raid.out.line") }
+
+    /// Not answered
+    static var raidNaTitle: String { text("raid.na.title") }
+
+    /// All
+    static var raidNaAll: String { text("raid.na.all") }
+
+    /// {label} {n}
+    static func raidNaFilter(label: String, n: Int) -> String {
+        format("raid.na.filter", label, n)
+    }
+
+    /// Mention the {people} in Discord
+    static func raidNaMentionRole(people: String) -> String {
+        format("raid.na.mentionRole", people)
+    }
+
+    /// Mention all {n}
+    static func raidNaMentionAll(n: Int) -> String {
+        format("raid.na.mentionAll", n)
+    }
+
+    /// {names}: {zone} is {when} and we need {role}. Answer In, Late, Bench or Out in the app or on the raid page.
+    static func raidNaPreview(names: String, zone: String, when: String, role: String) -> String {
+        format("raid.na.preview", names, zone, when, role)
+    }
+
+    /// {names}: {zone} is {when}. Answer In, Late, Bench or Out in the app or on the raid page.
+    static func raidNaPreviewAll(names: String, zone: String, when: String) -> String {
+        format("raid.na.previewAll", names, zone, when)
+    }
+
+    /// {n} of {total}, {role} first
+    static func raidNaMeta(n: Int, total: Int, role: String) -> String {
+        format("raid.na.meta", n, total, role)
+    }
+
+    /// {n} of {total}
+    static func raidNaMetaPlain(n: Int, total: Int) -> String {
+        format("raid.na.metaPlain", n, total)
+    }
+
+    /// Mark In
+    static var raidNaMarkIn: String { text("raid.na.markIn") }
+
+    /// Discord DM
+    static var raidNaDiscordDM: String { text("raid.na.discordDM") }
+
+    /// Marked {state}
+    static func raidNaMarked(state: String) -> String {
+        format("raid.na.marked", state)
+    }
+
+    /// Undo
+    static var raidNaUndo: String { text("raid.na.undo") }
+
+    /// was {state} last week
+    static func raidNaLastWeek(state: String) -> String {
+        format("raid.na.lastWeek", state)
+    }
+
+    /// missed last week
+    static var raidNaMissed: String { text("raid.na.missed") }
+
+    /// new this week
+    static var raidNaNew: String { text("raid.na.new") }
+
+    /// {kind} · {line}
+    static func raidNaSub(kind: String, line: String) -> String {
+        format("raid.na.sub", kind, line)
+    }
+
+    /// {role} on the bench
+    static func raidNaBench(role: String) -> String {
+        format("raid.na.bench", role)
+    }
+
+    /// on the bench
+    static var raidNaOnBench: String { text("raid.na.onBench") }
+
+    /// If {names} are In, {role} are full.
+    static func raidNaFills(names: String, role: String) -> String {
+        format("raid.na.fills", names, role)
+    }
+
+    /// Creating and editing raids stays on the site.
+    static var raidNaSite: String { text("raid.na.site") }
+
+    /// Edit on the site ›
+    static var raidNaSiteLink: String { text("raid.na.siteLink") }
+
+    /// Everyone has answered.
+    static var raidNaEmpty: String { text("raid.na.empty") }
+
+    /// {first} and {last}
+    static func raidListAnd(first: String, last: String) -> String {
+        format("raid.list.and", first, last)
+    }
+
+    /// Forever Score
+    static var raidApplicantScore: String { text("raid.applicant.score") }
+
+    /// Sim
+    static var raidApplicantSim: String { text("raid.applicant.sim") }
+
+    /// Item level
+    static var raidApplicantItemLevel: String { text("raid.applicant.itemLevel") }
+
+    /// Raid ready
+    static var raidApplicantReady: String { text("raid.applicant.ready") }
+
+    /// Attuned to {zone}
+    static func raidApplicantAttuned(zone: String) -> String {
+        format("raid.applicant.attuned", zone)
+    }
+
+    /// Not attuned to {zone}
+    static func raidApplicantNotAttuned(zone: String) -> String {
+        format("raid.applicant.notAttuned", zone)
+    }
+
+    /// {zone}: attunement not seen yet
+    static func raidApplicantAttuneUnknown(zone: String) -> String {
+        format("raid.applicant.attuneUnknown", zone)
+    }
+
+    /// Enchants
+    static var raidApplicantEnchants: String { text("raid.applicant.enchants") }
+
+    /// {n} of {slots} slots
+    static func raidApplicantEnchantsLine(n: Int, slots: Int) -> String {
+        format("raid.applicant.enchantsLine", n, slots)
+    }
+
+    /// {line} · {missing} missing
+    static func raidApplicantEnchantsMissing(line: String, missing: String) -> String {
+        format("raid.applicant.enchantsMissing", line, missing)
+    }
+
+    /// cloak
+    static var raidApplicantSlotBack: String { text("raid.applicant.slot.back") }
+
+    /// boots
+    static var raidApplicantSlotFeet: String { text("raid.applicant.slot.feet") }
+
+    /// gloves
+    static var raidApplicantSlotHands: String { text("raid.applicant.slot.hands") }
+
+    /// bracers
+    static var raidApplicantSlotWrist: String { text("raid.applicant.slot.wrist") }
+
+    /// chest
+    static var raidApplicantSlotChest: String { text("raid.applicant.slot.chest") }
+
+    /// legs
+    static var raidApplicantSlotLegs: String { text("raid.applicant.slot.legs") }
+
+    /// shoulders
+    static var raidApplicantSlotShoulder: String { text("raid.applicant.slot.shoulder") }
+
+    /// head
+    static var raidApplicantSlotHead: String { text("raid.applicant.slot.head") }
+
+    /// weapon
+    static var raidApplicantSlotWeapon: String { text("raid.applicant.slot.weapon") }
+
+    /// Best in slot gap
+    static var raidApplicantGap: String { text("raid.applicant.gap") }
+
+    /// {n} pieces
+    static func raidApplicantPieces(n: Int) -> String {
+        format("raid.applicant.pieces", n)
+    }
+
+    /// {pieces} from the {list} list
+    static func raidApplicantGapLine(pieces: String, list: String) -> String {
+        format("raid.applicant.gapLine", pieces, list)
+    }
+
+    /// Guild history
+    static var raidApplicantHistory: String { text("raid.applicant.history") }
+
+    /// {n} raids
+    static func raidApplicantRaids(n: Int) -> String {
+        format("raid.applicant.raids", n)
+    }
+
+    /// {raids} · last raid {date}
+    static func raidApplicantHistoryLine(raids: String, date: String) -> String {
+        format("raid.applicant.historyLine", raids, date)
+    }
+
+    /// Their note
+    static var raidApplicantNote: String { text("raid.applicant.note") }
+
+    /// Accept into guild
+    static var raidApplicantAccept: String { text("raid.applicant.accept") }
+
+    /// Decline
+    static var raidApplicantDecline: String { text("raid.applicant.decline") }
+
+    /// Their raid role comes from their spec when they answer a raid.
+    static var raidApplicantRole: String { text("raid.applicant.role") }
+
+    /// {kind} · {level}
+    static func raidApplicantKind(kind: String, level: Int) -> String {
+        format("raid.applicant.kind", kind, level)
+    }
+
+    /// applied {age}
+    static func raidApplicantApplied(age: String) -> String {
+        format("raid.applicant.applied", age)
+    }
+
+    /// Accepted into {guild}. Invite {name} in game:
+    static func raidApplicantAccepted(guild: String, name: String) -> String {
+        format("raid.applicant.accepted", guild, name)
+    }
+
+    /// /ginvite {name}
+    static func raidApplicantGinvite(name: String) -> String {
+        format("raid.applicant.ginvite", name)
+    }
+
+    /// Copy
+    static var raidApplicantCopy: String { text("raid.applicant.copy") }
+
+    /// {name} shows on the roster once the addon or Battle.net sees the character in the guild.
+    static func raidApplicantAfter(name: String) -> String {
+        format("raid.applicant.after", name)
+    }
+
     /// Officer
     static var officerLabel: String { text("officer.label") }
 

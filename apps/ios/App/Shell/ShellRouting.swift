@@ -97,6 +97,9 @@ extension RootView {
         switch destination {
         case let .link(link): openLink(link)
         case let .tab(tab): shell.selection = tab
+        case let .raid(route):
+            shell.selection = .raid
+            if environment.isAvailable(.raids) { raidsRouter.open(route) }
         case let .character(key): openCharacter(key)
         case .rankingsBoard:
             guard environment.isAvailable(.rankings) else { return }

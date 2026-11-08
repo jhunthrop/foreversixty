@@ -55,14 +55,7 @@ struct LiveApplicantsSource: ApplicantsSource {
 
     func applicants(guild: Int64) async -> [ApplicantLine] {
         guard let page: GuildOfficerApplications = try? await client.send(.listGuildApplications(id: guild)) else { return [] }
-        return page.rows.filter { $0.status == Self.pending }.sorted { $0.createdAt > $1.createdAt }.map { row in
-            ApplicantLine(
-                name: row.character.name,
-                kind: [row.character.specName, row.character.className.map(HomePresenter.words)].compactMap(\.self).joined(separator: " "),
-                level: row.character.level ?? 0,
-                appliedAt: row.createdAt
-            )
-        }
+        return ApplicantLine.pending(page)
     }
 }
 
@@ -91,7 +84,7 @@ final class HomeFlowModel {
     }
 
     /// A raid counts as live from its pull to four hours after (flows spec 4.1).
-    static let liveSpan: TimeInterval = 4 * 3600
+    nonisolated static let liveSpan: TimeInterval = 4 * 3600
 
     private(set) var phase: Phase = .loading
     private(set) var blocks: [HomeBlock] = []
@@ -179,7 +172,7 @@ final class HomeFlowModel {
     }
 
     /// The raid in progress, else the next one.
-    static func current(_ planned: [RaidView], now: Date) -> RaidView? {
+    nonisolated static func current(_ planned: [RaidView], now: Date) -> RaidView? {
         let live = planned.first { $0.startsAt <= now && now.timeIntervalSince($0.startsAt) < liveSpan }
         return live ?? planned.filter { $0.startsAt > now }.min { $0.startsAt < $1.startsAt }
     }

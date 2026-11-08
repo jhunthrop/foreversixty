@@ -10619,6 +10619,429 @@
         }
       }
     },
+    "raid.applicant.accept": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Accept into guild"
+          }
+        }
+      }
+    },
+    "raid.applicant.accepted": {
+      "comment": "Arguments: 1 guild (string), 2 name (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Accepted into %1$@. Invite %2$@ in game:"
+          }
+        }
+      }
+    },
+    "raid.applicant.after": {
+      "comment": "Arguments: 1 name (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ shows on the roster once the addon or Battle.net sees the character in the guild."
+          }
+        }
+      }
+    },
+    "raid.applicant.applied": {
+      "comment": "Arguments: 1 age (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "applied %1$@"
+          }
+        }
+      }
+    },
+    "raid.applicant.attuned": {
+      "comment": "Arguments: 1 zone (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Attuned to %1$@"
+          }
+        }
+      }
+    },
+    "raid.applicant.attuneUnknown": {
+      "comment": "Arguments: 1 zone (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@: attunement not seen yet"
+          }
+        }
+      }
+    },
+    "raid.applicant.copy": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copy"
+          }
+        }
+      }
+    },
+    "raid.applicant.decline": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Decline"
+          }
+        }
+      }
+    },
+    "raid.applicant.enchants": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enchants"
+          }
+        }
+      }
+    },
+    "raid.applicant.enchantsLine": {
+      "comment": "Arguments: 1 n (int), 2 slots (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld of %2$lld slots"
+          }
+        }
+      }
+    },
+    "raid.applicant.enchantsMissing": {
+      "comment": "Arguments: 1 line (string), 2 missing (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$@ missing"
+          }
+        }
+      }
+    },
+    "raid.applicant.gap": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Best in slot gap"
+          }
+        }
+      }
+    },
+    "raid.applicant.gapLine": {
+      "comment": "Arguments: 1 pieces (string), 2 list (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ from the %2$@ list"
+          }
+        }
+      }
+    },
+    "raid.applicant.ginvite": {
+      "comment": "Arguments: 1 name (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "/ginvite %1$@"
+          }
+        }
+      }
+    },
+    "raid.applicant.history": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guild history"
+          }
+        }
+      }
+    },
+    "raid.applicant.historyLine": {
+      "comment": "Arguments: 1 raids (string), 2 date (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · last raid %2$@"
+          }
+        }
+      }
+    },
+    "raid.applicant.itemLevel": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Item level"
+          }
+        }
+      }
+    },
+    "raid.applicant.kind": {
+      "comment": "Arguments: 1 kind (string), 2 level (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$lld"
+          }
+        }
+      }
+    },
+    "raid.applicant.notAttuned": {
+      "comment": "Arguments: 1 zone (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not attuned to %1$@"
+          }
+        }
+      }
+    },
+    "raid.applicant.note": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Their note"
+          }
+        }
+      }
+    },
+    "raid.applicant.pieces": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "1 piece"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%1$lld pieces"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "raid.applicant.raids": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "1 raid"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%1$lld raids"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "raid.applicant.ready": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Raid ready"
+          }
+        }
+      }
+    },
+    "raid.applicant.role": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Their raid role comes from their spec when they answer a raid."
+          }
+        }
+      }
+    },
+    "raid.applicant.score": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Forever Score"
+          }
+        }
+      }
+    },
+    "raid.applicant.sim": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sim"
+          }
+        }
+      }
+    },
+    "raid.applicant.slot.back": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "cloak"
+          }
+        }
+      }
+    },
+    "raid.applicant.slot.chest": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "chest"
+          }
+        }
+      }
+    },
+    "raid.applicant.slot.feet": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "boots"
+          }
+        }
+      }
+    },
+    "raid.applicant.slot.hands": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "gloves"
+          }
+        }
+      }
+    },
+    "raid.applicant.slot.head": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "head"
+          }
+        }
+      }
+    },
+    "raid.applicant.slot.legs": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "legs"
+          }
+        }
+      }
+    },
+    "raid.applicant.slot.shoulder": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "shoulders"
+          }
+        }
+      }
+    },
+    "raid.applicant.slot.weapon": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "weapon"
+          }
+        }
+      }
+    },
+    "raid.applicant.slot.wrist": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "bracers"
+          }
+        }
+      }
+    },
     "raid.back": {
       "extractionState": "manual",
       "localizations": {
@@ -10672,6 +11095,39 @@
           "stringUnit": {
             "state": "translated",
             "value": "Not signed up"
+          }
+        }
+      }
+    },
+    "raid.claim.button": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Claim your guild"
+          }
+        }
+      }
+    },
+    "raid.claim.line": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Claim it: a guild master or an officer confirms with the addon or Battle.net."
+          }
+        }
+      }
+    },
+    "raid.claim.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your guild is not here?"
           }
         }
       }
@@ -10961,6 +11417,64 @@
         }
       }
     },
+    "raid.leveler.line": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Onyxia's Lair, Barrow Deeps and Hyjal Summit open at 60. Join a guild on the way and its raids show here."
+          }
+        }
+      }
+    },
+    "raid.leveler.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Raids start at 60"
+          }
+        }
+      }
+    },
+    "raid.leveler.toGo": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "1 level to go"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%1$lld levels to go"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "raid.list.and": {
+      "comment": "Arguments: 1 first (string), 2 last (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ and %2$@"
+          }
+        }
+      }
+    },
     "raid.locked": {
       "extractionState": "manual",
       "localizations": {
@@ -11013,6 +11527,422 @@
           "stringUnit": {
             "state": "translated",
             "value": "%1$@ moved to Bench."
+          }
+        }
+      }
+    },
+    "raid.na.all": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "All"
+          }
+        }
+      }
+    },
+    "raid.na.bench": {
+      "comment": "Arguments: 1 role (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ on the bench"
+          }
+        }
+      }
+    },
+    "raid.na.discordDM": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Discord DM"
+          }
+        }
+      }
+    },
+    "raid.na.empty": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Everyone has answered."
+          }
+        }
+      }
+    },
+    "raid.na.fills": {
+      "comment": "Arguments: 1 names (string), 2 role (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "If %1$@ are In, %2$@ are full."
+          }
+        }
+      }
+    },
+    "raid.na.filter": {
+      "comment": "Arguments: 1 label (string), 2 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ %2$lld"
+          }
+        }
+      }
+    },
+    "raid.na.lastWeek": {
+      "comment": "Arguments: 1 state (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "was %1$@ last week"
+          }
+        }
+      }
+    },
+    "raid.na.marked": {
+      "comment": "Arguments: 1 state (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Marked %1$@"
+          }
+        }
+      }
+    },
+    "raid.na.markIn": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mark In"
+          }
+        }
+      }
+    },
+    "raid.na.mentionAll": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mention all %1$lld"
+          }
+        }
+      }
+    },
+    "raid.na.mentionRole": {
+      "comment": "Arguments: 1 people (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mention the %1$@ in Discord"
+          }
+        }
+      }
+    },
+    "raid.na.meta": {
+      "comment": "Arguments: 1 n (int), 2 total (int), 3 role (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld of %2$lld, %3$@ first"
+          }
+        }
+      }
+    },
+    "raid.na.metaPlain": {
+      "comment": "Arguments: 1 n (int), 2 total (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld of %2$lld"
+          }
+        }
+      }
+    },
+    "raid.na.missed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "missed last week"
+          }
+        }
+      }
+    },
+    "raid.na.new": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "new this week"
+          }
+        }
+      }
+    },
+    "raid.na.onBench": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "on the bench"
+          }
+        }
+      }
+    },
+    "raid.na.preview": {
+      "comment": "Arguments: 1 names (string), 2 zone (string), 3 when (string), 4 role (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@: %2$@ is %3$@ and we need %4$@. Answer In, Late, Bench or Out in the app or on the raid page."
+          }
+        }
+      }
+    },
+    "raid.na.previewAll": {
+      "comment": "Arguments: 1 names (string), 2 zone (string), 3 when (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@: %2$@ is %3$@. Answer In, Late, Bench or Out in the app or on the raid page."
+          }
+        }
+      }
+    },
+    "raid.na.site": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Creating and editing raids stays on the site."
+          }
+        }
+      }
+    },
+    "raid.na.siteLink": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Edit on the site ›"
+          }
+        }
+      }
+    },
+    "raid.na.sub": {
+      "comment": "Arguments: 1 kind (string), 2 line (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$@"
+          }
+        }
+      }
+    },
+    "raid.na.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not answered"
+          }
+        }
+      }
+    },
+    "raid.na.undo": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Undo"
+          }
+        }
+      }
+    },
+    "raid.needsYou": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Needs you"
+          }
+        }
+      }
+    },
+    "raid.needsYouOpen": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld open"
+          }
+        }
+      }
+    },
+    "raid.night.aside": {
+      "comment": "Arguments: 1 when (string), 2 counts (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$@"
+          }
+        }
+      }
+    },
+    "raid.night.beforePull": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Before you pull"
+          }
+        }
+      }
+    },
+    "raid.night.lateName": {
+      "comment": "Arguments: 1 name (string), 2 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ (Late, %2$lld min)"
+          }
+        }
+      }
+    },
+    "raid.night.lateNameOnly": {
+      "comment": "Arguments: 1 name (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ (Late)"
+          }
+        }
+      }
+    },
+    "raid.night.more": {
+      "comment": "Arguments: 1 names (string), 2 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ and %2$lld more"
+          }
+        }
+      }
+    },
+    "raid.night.role": {
+      "comment": "Arguments: 1 role (string), 2 n (int), 3 want (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ %2$lld of %3$lld"
+          }
+        }
+      }
+    },
+    "raid.night.roster": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Roster ›"
+          }
+        }
+      }
+    },
+    "raid.night.short": {
+      "comment": "Arguments: 1 names (string), 2 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$lld short"
+          }
+        }
+      }
+    },
+    "raid.night.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Raid night"
+          }
+        }
+      }
+    },
+    "raid.night.youAre": {
+      "comment": "Arguments: 1 state (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You are %1$@"
+          }
+        }
+      }
+    },
+    "raid.noRaid": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No raid planned yet. Your officers plan raids on the site; a push tells you the moment one is posted."
           }
         }
       }
@@ -11095,6 +12025,122 @@
         }
       }
     },
+    "raid.out.line": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sign up for your guild's raids from your phone."
+          }
+        }
+      }
+    },
+    "raid.pages.calendar": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Calendar"
+          }
+        }
+      }
+    },
+    "raid.pages.calendarItem": {
+      "comment": "Arguments: 1 zone (string), 2 weekday (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ %2$@"
+          }
+        }
+      }
+    },
+    "raid.pages.loot": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Loot history"
+          }
+        }
+      }
+    },
+    "raid.pages.lootLast": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Last raid: 1 piece"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Last raid: %1$lld pieces"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "raid.pages.members": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "1 member"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%1$lld members"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "raid.pages.membersAtCap": {
+      "comment": "Arguments: 1 members (string), 2 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, %2$lld at 60"
+          }
+        }
+      }
+    },
+    "raid.pages.sims": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guild sims"
+          }
+        }
+      }
+    },
     "raid.pull": {
       "comment": "Arguments: 1 clock (string)",
       "extractionState": "manual",
@@ -11147,6 +12193,131 @@
           "stringUnit": {
             "state": "translated",
             "value": "Too many sign-up changes. Wait a minute, then try again."
+          }
+        }
+      }
+    },
+    "raid.ready.miss": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Missing"
+          }
+        }
+      }
+    },
+    "raid.ready.ok": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Done"
+          }
+        }
+      }
+    },
+    "raid.ready.stamp": {
+      "comment": "Arguments: 1 age (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "From your last log-out, %1$@"
+          }
+        }
+      }
+    },
+    "raid.ready.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ready check"
+          }
+        }
+      }
+    },
+    "raid.ready.warn": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "To do"
+          }
+        }
+      }
+    },
+    "raid.recruit.apply": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apply"
+          }
+        }
+      }
+    },
+    "raid.recruit.heading": {
+      "comment": "Arguments: 1 kind (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guilds recruiting a %1$@"
+          }
+        }
+      }
+    },
+    "raid.recruit.headingVowel": {
+      "comment": "Arguments: 1 kind (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guilds recruiting an %1$@"
+          }
+        }
+      }
+    },
+    "raid.recruit.line": {
+      "comment": "Arguments: 1 faction (string), 2 schedule (string), 3 needs (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$@ · needs %3$@"
+          }
+        }
+      }
+    },
+    "raid.recruit.meta": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guilds that plan their raids here"
+          }
+        }
+      }
+    },
+    "raid.recruit.none": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No guild here is recruiting your spec right now."
           }
         }
       }

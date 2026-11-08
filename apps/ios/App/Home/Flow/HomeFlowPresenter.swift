@@ -12,6 +12,8 @@ extension ReadyCheck {
 
 /// A pending guild applicant (F3), from `GET /v1/guilds/{id}/applications`.
 struct ApplicantLine: Equatable, Sendable {
+    /// The application's id (the applicant screen opens it).
+    let id: Int64
     let name: String
     /// `Holy Priest`.
     let kind: String
@@ -168,9 +170,9 @@ struct HomeFlowPresenter {
     }
 
     /// The officer's open items (F3): who has not answered with the short role, and the applicants.
-    func officer(_ inputs: HomeFlowInputs, raid: RaidView) -> OfficerContent? {
+    func officer(_ inputs: HomeFlowInputs, raid: RaidView?) -> OfficerContent? {
         guard let badge = inputs.badge, badge.officer else { return nil }
-        let unanswered: HomeLine? = badge.unanswered > 0 ? unansweredLine(badge.unanswered, raid: raid) : nil
+        let unanswered: HomeLine? = if let raid, badge.unanswered > 0 { unansweredLine(badge.unanswered, raid: raid) } else { nil }
         let applicants: HomeLine? = badge.applicants > 0 ? HomeLine(
             title: Copy.homeOfficerApplicants(n: badge.applicants),
             sub: inputs.applicants.first.map { applicant in

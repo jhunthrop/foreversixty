@@ -402,6 +402,118 @@
     <string name="raid_menu_calendar">Add to calendar</string>
     <string name="raid_menu_share">Share the raid</string>
     <string name="raid_menu_web">Open on foreversixty.gg</string>
+    <string name="raid_pages_calendar">Calendar</string>
+    <string name="raid_pages_loot">Loot history</string>
+    <string name="raid_pages_sims">Guild sims</string>
+    <plurals name="raid_pages_members">
+        <item quantity="one">1 member</item>
+        <item quantity="other">%1$d members</item>
+    </plurals>
+    <string name="raid_pages_membersAtCap" tools:ignore="PluralsCandidate">%1$s, %2$d at 60</string>
+    <string name="raid_pages_calendarItem">%1$s %2$s</string>
+    <plurals name="raid_pages_lootLast">
+        <item quantity="one">Last raid: 1 piece</item>
+        <item quantity="other">Last raid: %1$d pieces</item>
+    </plurals>
+    <string name="raid_noRaid">No raid planned yet. Your officers plan raids on the site; a push tells you the moment one is posted.</string>
+    <string name="raid_needsYou">Needs you</string>
+    <string name="raid_needsYouOpen" tools:ignore="PluralsCandidate">%1$d open</string>
+    <string name="raid_night_title">Raid night</string>
+    <string name="raid_night_role" tools:ignore="PluralsCandidate">%1$s %2$d of %3$d</string>
+    <string name="raid_night_lateName" tools:ignore="PluralsCandidate">%1$s (Late, %2$d min)</string>
+    <string name="raid_night_lateNameOnly">%1$s (Late)</string>
+    <string name="raid_night_short" tools:ignore="PluralsCandidate">%1$s · %2$d short</string>
+    <string name="raid_night_more" tools:ignore="PluralsCandidate">%1$s and %2$d more</string>
+    <string name="raid_night_aside">%1$s · %2$s</string>
+    <string name="raid_night_youAre">You are %1$s</string>
+    <string name="raid_night_beforePull">Before you pull</string>
+    <string name="raid_night_roster">Roster ›</string>
+    <string name="raid_ready_title">Ready check</string>
+    <string name="raid_ready_stamp">From your last log-out, %1$s</string>
+    <string name="raid_ready_ok">Done</string>
+    <string name="raid_ready_warn">To do</string>
+    <string name="raid_ready_miss">Missing</string>
+    <string name="raid_recruit_meta">Guilds that plan their raids here</string>
+    <string name="raid_recruit_heading">Guilds recruiting a %1$s</string>
+    <string name="raid_recruit_headingVowel">Guilds recruiting an %1$s</string>
+    <string name="raid_recruit_line">%1$s · %2$s · needs %3$s</string>
+    <string name="raid_recruit_apply">Apply</string>
+    <string name="raid_recruit_none">No guild here is recruiting your spec right now.</string>
+    <string name="raid_claim_title">Your guild is not here?</string>
+    <string name="raid_claim_line">Claim it: a guild master or an officer confirms with the addon or Battle.net.</string>
+    <string name="raid_claim_button">Claim your guild</string>
+    <string name="raid_leveler_title">Raids start at 60</string>
+    <plurals name="raid_leveler_toGo">
+        <item quantity="one">1 level to go</item>
+        <item quantity="other">%1$d levels to go</item>
+    </plurals>
+    <string name="raid_leveler_line">Onyxia\'s Lair, Barrow Deeps and Hyjal Summit open at 60. Join a guild on the way and its raids show here.</string>
+    <string name="raid_out_line">Sign up for your guild\'s raids from your phone.</string>
+    <string name="raid_na_title">Not answered</string>
+    <string name="raid_na_all">All</string>
+    <string name="raid_na_filter" tools:ignore="PluralsCandidate">%1$s %2$d</string>
+    <string name="raid_na_mentionRole">Mention the %1$s in Discord</string>
+    <string name="raid_na_mentionAll" tools:ignore="PluralsCandidate">Mention all %1$d</string>
+    <string name="raid_na_preview">%1$s: %2$s is %3$s and we need %4$s. Answer In, Late, Bench or Out in the app or on the raid page.</string>
+    <string name="raid_na_previewAll">%1$s: %2$s is %3$s. Answer In, Late, Bench or Out in the app or on the raid page.</string>
+    <string name="raid_na_meta" tools:ignore="PluralsCandidate">%1$d of %2$d, %3$s first</string>
+    <string name="raid_na_metaPlain" tools:ignore="PluralsCandidate">%1$d of %2$d</string>
+    <string name="raid_na_markIn">Mark In</string>
+    <string name="raid_na_discordDM">Discord DM</string>
+    <string name="raid_na_marked">Marked %1$s</string>
+    <string name="raid_na_undo">Undo</string>
+    <string name="raid_na_lastWeek">was %1$s last week</string>
+    <string name="raid_na_missed">missed last week</string>
+    <string name="raid_na_new">new this week</string>
+    <string name="raid_na_sub">%1$s · %2$s</string>
+    <string name="raid_na_bench">%1$s on the bench</string>
+    <string name="raid_na_onBench">on the bench</string>
+    <string name="raid_na_fills">If %1$s are In, %2$s are full.</string>
+    <string name="raid_na_site">Creating and editing raids stays on the site.</string>
+    <string name="raid_na_siteLink">Edit on the site ›</string>
+    <string name="raid_na_empty">Everyone has answered.</string>
+    <string name="raid_list_and">%1$s and %2$s</string>
+    <string name="raid_applicant_score">Forever Score</string>
+    <string name="raid_applicant_sim">Sim</string>
+    <string name="raid_applicant_itemLevel">Item level</string>
+    <string name="raid_applicant_ready">Raid ready</string>
+    <string name="raid_applicant_attuned">Attuned to %1$s</string>
+    <string name="raid_applicant_notAttuned">Not attuned to %1$s</string>
+    <string name="raid_applicant_attuneUnknown">%1$s: attunement not seen yet</string>
+    <string name="raid_applicant_enchants">Enchants</string>
+    <string name="raid_applicant_enchantsLine" tools:ignore="PluralsCandidate">%1$d of %2$d slots</string>
+    <string name="raid_applicant_enchantsMissing">%1$s · %2$s missing</string>
+    <string name="raid_applicant_slot_back">cloak</string>
+    <string name="raid_applicant_slot_feet">boots</string>
+    <string name="raid_applicant_slot_hands">gloves</string>
+    <string name="raid_applicant_slot_wrist">bracers</string>
+    <string name="raid_applicant_slot_chest">chest</string>
+    <string name="raid_applicant_slot_legs">legs</string>
+    <string name="raid_applicant_slot_shoulder">shoulders</string>
+    <string name="raid_applicant_slot_head">head</string>
+    <string name="raid_applicant_slot_weapon">weapon</string>
+    <string name="raid_applicant_gap">Best in slot gap</string>
+    <plurals name="raid_applicant_pieces">
+        <item quantity="one">1 piece</item>
+        <item quantity="other">%1$d pieces</item>
+    </plurals>
+    <string name="raid_applicant_gapLine">%1$s from the %2$s list</string>
+    <string name="raid_applicant_history">Guild history</string>
+    <plurals name="raid_applicant_raids">
+        <item quantity="one">1 raid</item>
+        <item quantity="other">%1$d raids</item>
+    </plurals>
+    <string name="raid_applicant_historyLine">%1$s · last raid %2$s</string>
+    <string name="raid_applicant_note">Their note</string>
+    <string name="raid_applicant_accept">Accept into guild</string>
+    <string name="raid_applicant_decline">Decline</string>
+    <string name="raid_applicant_role">Their raid role comes from their spec when they answer a raid.</string>
+    <string name="raid_applicant_kind" tools:ignore="PluralsCandidate">%1$s · %2$d</string>
+    <string name="raid_applicant_applied">applied %1$s</string>
+    <string name="raid_applicant_accepted">Accepted into %1$s. Invite %2$s in game:</string>
+    <string name="raid_applicant_ginvite">/ginvite %1$s</string>
+    <string name="raid_applicant_copy">Copy</string>
+    <string name="raid_applicant_after">%1$s shows on the roster once the addon or Battle.net sees the character in the guild.</string>
     <string name="officer_label">Officer</string>
     <string name="officer_lock">Lock sign-ups</string>
     <string name="officer_unlock">Unlock sign-ups</string>
