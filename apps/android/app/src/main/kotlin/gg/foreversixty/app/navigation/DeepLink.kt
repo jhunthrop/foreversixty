@@ -115,6 +115,62 @@ sealed interface DeepLink {
         override fun url(): String = link("/b/${enc(id)}")
     }
 
+    /** Gear, that spec's list (class and spec are slugs; ?band= when the page carries one). A real site page (spec 2026-11-08-app-flows F6): the link opens the app when it is installed and the web page when it is not. /bis/{class}/{spec} */
+    data class BisPage(val className: String, val spec: String) : DeepLink {
+        override val screen: String get() = "bisPage"
+
+        override fun url(): String = link("/bis/${enc(className)}/${enc(spec)}")
+    }
+
+    /** Guides, that class's specs (a slug), pushed under Home. A real site page (spec 2026-11-08-app-flows F6): the link opens the app when it is installed and the web page when it is not. /guides/{class} */
+    data class GuidesClassPage(val className: String) : DeepLink {
+        override val screen: String get() = "guidesClassPage"
+
+        override fun url(): String = link("/guides/${enc(className)}")
+    }
+
+    /** That spec's guide (class and spec are slugs), pushed under Home. A real site page (spec 2026-11-08-app-flows F6): the link opens the app when it is installed and the web page when it is not. /guides/{class}/{spec} */
+    data class GuidePage(val className: String, val spec: String) : DeepLink {
+        override val screen: String get() = "guidePage"
+
+        override fun url(): String = link("/guides/${enc(className)}/${enc(spec)}")
+    }
+
+    /** The sim result, pushed under Home. The sim tool pages (/sim/specs, gear, drops, talents, weights) stay on the site. A real site page (spec 2026-11-08-app-flows F6): the link opens the app when it is installed and the web page when it is not. /sim/{id} */
+    data class SimPage(val id: String) : DeepLink {
+        override val screen: String get() = "simPage"
+
+        override fun url(): String = link("/sim/${enc(id)}")
+    }
+
+    /** The report, pushed under Home (read only when it is not yours); /reports/sample stays on the site. A real site page (spec 2026-11-08-app-flows F6): the link opens the app when it is installed and the web page when it is not. /reports/{id} */
+    data class ReportPage(val id: String) : DeepLink {
+        override val screen: String get() = "reportPage"
+
+        override fun url(): String = link("/reports/${enc(id)}")
+    }
+
+    /** That character's page, pushed under Home; the current character does not change. A real site page (spec 2026-11-08-app-flows F6): the link opens the app when it is installed and the web page when it is not. /character/{region}/{ruleset}/{name} */
+    data class CharacterPage(val region: String, val ruleset: String, val name: String) : DeepLink {
+        override val screen: String get() = "characterPage"
+
+        override fun url(): String = link("/character/${enc(region)}/${enc(ruleset)}/${enc(name)}")
+    }
+
+    /** The raid page, pushed under Raid (the guild by its region, ruleset and name slug). A real site page (spec 2026-11-08-app-flows F6): the link opens the app when it is installed and the web page when it is not. /guild/{region}/{ruleset}/{guildName}/raids/{raid} */
+    data class GuildRaidPage(val region: String, val ruleset: String, val guildName: String, val raid: Long) : DeepLink {
+        override val screen: String get() = "guildRaidPage"
+
+        override fun url(): String = link("/guild/${enc(region)}/${enc(ruleset)}/${enc(guildName)}/raids/$raid")
+    }
+
+    /** Tiers, your spec marked, pushed under Home. A real site page (spec 2026-11-08-app-flows F6): the link opens the app when it is installed and the web page when it is not. /tiers */
+    data object TiersPage : DeepLink {
+        override val screen: String get() = "tiersPage"
+
+        override fun url(): String = link("/tiers")
+    }
+
     /** You, Notifications. /app/you/notifications */
     data object Notifications : DeepLink {
         override val screen: String get() = "notifications"
@@ -159,6 +215,14 @@ sealed interface DeepLink {
                 ?: matchPlanner(s, q)
                 ?: matchBuilds(s)
                 ?: matchSharedBuild(s)
+                ?: matchBisPage(s)
+                ?: matchGuidesClassPage(s)
+                ?: matchGuidePage(s)
+                ?: matchSimPage(s)
+                ?: matchReportPage(s)
+                ?: matchCharacterPage(s)
+                ?: matchGuildRaidPage(s)
+                ?: matchTiersPage(s)
                 ?: matchNotifications(s)
                 ?: matchPlan(s)
                 ?: matchSignIn(s, q)
@@ -237,6 +301,47 @@ sealed interface DeepLink {
         private fun matchSharedBuild(s: List<String>): DeepLink? {
             if (s.size != 2 || s[0] != "b") return null
             return SharedBuild(s[1])
+        }
+
+        private fun matchBisPage(s: List<String>): DeepLink? {
+            if (s.size != 3 || s[0] != "bis") return null
+            return BisPage(s[1], s[2])
+        }
+
+        private fun matchGuidesClassPage(s: List<String>): DeepLink? {
+            if (s.size != 2 || s[0] != "guides") return null
+            return GuidesClassPage(s[1])
+        }
+
+        private fun matchGuidePage(s: List<String>): DeepLink? {
+            if (s.size != 3 || s[0] != "guides") return null
+            return GuidePage(s[1], s[2])
+        }
+
+        private fun matchSimPage(s: List<String>): DeepLink? {
+            if (s.size != 2 || s[0] != "sim") return null
+            return SimPage(s[1])
+        }
+
+        private fun matchReportPage(s: List<String>): DeepLink? {
+            if (s.size != 2 || s[0] != "reports") return null
+            return ReportPage(s[1])
+        }
+
+        private fun matchCharacterPage(s: List<String>): DeepLink? {
+            if (s.size != 4 || s[0] != "character") return null
+            return CharacterPage(s[1], s[2], s[3])
+        }
+
+        private fun matchGuildRaidPage(s: List<String>): DeepLink? {
+            if (s.size != 6 || s[0] != "guild" || s[4] != "raids") return null
+            val raid = s[5].toLongOrNull() ?: return null
+            return GuildRaidPage(s[1], s[2], s[3], raid)
+        }
+
+        private fun matchTiersPage(s: List<String>): DeepLink? {
+            if (s.size != 1 || s[0] != "tiers") return null
+            return TiersPage
         }
 
         private fun matchNotifications(s: List<String>): DeepLink? {

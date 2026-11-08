@@ -15,11 +15,27 @@
     "/app/planner/*",
     "/app/builds",
     "/b/*",
+    "/bis/*/*",
+    "/guides/*",
+    "/guides/*/*",
+    "/sim/*",
+    "/reports/*",
+    "/character/*/*/*",
+    "/guild/*/*/*/raids/*",
+    "/tiers",
     "/app/you/notifications",
     "/app/you/plan",
     "/app/auth"
   ],
   "site_pages": [
-    "/b/*"
+    "/b/*",
+    "/bis/*/*",
+    "/guides/*",
+    "/guides/*/*",
+    "/sim/*",
+    "/reports/*",
+    "/character/*/*/*",
+    "/guild/*/*/*/raids/*",
+    "/tiers"
   ]
 }

@@ -93,6 +93,63 @@
       "example": "/b/k7q2m9xa"
     },
     {
+      "path": "/bis/{class}/{spec}",
+      "site": true,
+      "screen": "bisPage",
+      "opens": "Gear, that spec's list (class and spec are slugs; ?band= when the page carries one). A real site page (spec 2026-11-08-app-flows F6): the link opens the app when it is installed and the web page when it is not.",
+      "example": "/bis/warrior/fury"
+    },
+    {
+      "path": "/guides/{class}",
+      "site": true,
+      "screen": "guidesClassPage",
+      "opens": "Guides, that class's specs (a slug), pushed under Home. A real site page (spec 2026-11-08-app-flows F6): the link opens the app when it is installed and the web page when it is not.",
+      "example": "/guides/shaman"
+    },
+    {
+      "path": "/guides/{class}/{spec}",
+      "site": true,
+      "screen": "guidePage",
+      "opens": "That spec's guide (class and spec are slugs), pushed under Home. A real site page (spec 2026-11-08-app-flows F6): the link opens the app when it is installed and the web page when it is not.",
+      "example": "/guides/shaman/elemental"
+    },
+    {
+      "path": "/sim/{id}",
+      "site": true,
+      "screen": "simPage",
+      "opens": "The sim result, pushed under Home. The sim tool pages (/sim/specs, gear, drops, talents, weights) stay on the site. A real site page (spec 2026-11-08-app-flows F6): the link opens the app when it is installed and the web page when it is not.",
+      "example": "/sim/t4pm8k2xv9ca"
+    },
+    {
+      "path": "/reports/{id}",
+      "site": true,
+      "screen": "reportPage",
+      "opens": "The report, pushed under Home (read only when it is not yours); /reports/sample stays on the site. A real site page (spec 2026-11-08-app-flows F6): the link opens the app when it is installed and the web page when it is not.",
+      "example": "/reports/ewlrx3enxbeb"
+    },
+    {
+      "path": "/character/{region}/{ruleset}/{name}",
+      "site": true,
+      "screen": "characterPage",
+      "opens": "That character's page, pushed under Home; the current character does not change. A real site page (spec 2026-11-08-app-flows F6): the link opens the app when it is installed and the web page when it is not.",
+      "example": "/character/us/normal/voltaris"
+    },
+    {
+      "path": "/guild/{region}/{ruleset}/{guildName}/raids/{raid}",
+      "params": { "raid": "int" },
+      "site": true,
+      "screen": "guildRaidPage",
+      "opens": "The raid page, pushed under Raid (the guild by its region, ruleset and name slug). A real site page (spec 2026-11-08-app-flows F6): the link opens the app when it is installed and the web page when it is not.",
+      "example": "/guild/us/pvp/olympus-xxvii/raids/41"
+    },
+    {
+      "path": "/tiers",
+      "site": true,
+      "screen": "tiersPage",
+      "opens": "Tiers, your spec marked, pushed under Home. A real site page (spec 2026-11-08-app-flows F6): the link opens the app when it is installed and the web page when it is not.",
+      "example": "/tiers"
+    },
+    {
       "path": "/app/you/notifications",
       "screen": "notifications",
       "opens": "You, Notifications.",

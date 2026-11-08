@@ -33,7 +33,17 @@ describe('mobile deep-link codegen', () => {
     expect(paths).toContain('/app/auth');
     expect(paths).toContain('/app/raid/*/*');
     expect(paths).toContain('/app/planner/*');
-    expect(sitePagePaths(model)).toEqual(['/b/*']);
+    expect(sitePagePaths(model)).toEqual([
+      '/b/*',
+      '/bis/*/*',
+      '/guides/*',
+      '/guides/*/*',
+      '/sim/*',
+      '/reports/*',
+      '/character/*/*/*',
+      '/guild/*/*/*/raids/*',
+      '/tiers',
+    ]);
     const outside = paths.filter((p) => !p.startsWith('/app/'));
     expect(outside).toEqual(sitePagePaths(model));
   });

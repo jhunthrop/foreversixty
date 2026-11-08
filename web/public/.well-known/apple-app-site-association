@@ -7,10 +7,58 @@
         ],
         "components": [
           {
+            "/": "/sim/specs",
+            "exclude": true
+          },
+          {
+            "/": "/sim/gear",
+            "exclude": true
+          },
+          {
+            "/": "/sim/drops",
+            "exclude": true
+          },
+          {
+            "/": "/sim/talents",
+            "exclude": true
+          },
+          {
+            "/": "/sim/weights",
+            "exclude": true
+          },
+          {
+            "/": "/reports/sample",
+            "exclude": true
+          },
+          {
             "/": "/app/*"
           },
           {
             "/": "/b/*"
+          },
+          {
+            "/": "/bis/*/*"
+          },
+          {
+            "/": "/guides/*"
+          },
+          {
+            "/": "/guides/*/*"
+          },
+          {
+            "/": "/sim/*"
+          },
+          {
+            "/": "/reports/*"
+          },
+          {
+            "/": "/character/*/*/*"
+          },
+          {
+            "/": "/guild/*/*/*/raids/*"
+          },
+          {
+            "/": "/tiers"
           }
         ]
       }

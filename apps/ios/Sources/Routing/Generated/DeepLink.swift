@@ -34,6 +34,22 @@ public enum DeepLink: Equatable, Sendable {
     case builds
     /// The shared build viewer (read only; Edit a copy opens the planner). A real site page, so a pasted link opens the app when it is installed and the web page when it is not. /b/{id}
     case sharedBuild(id: String)
+    /// Gear, that spec's list (class and spec are slugs; ?band= when the page carries one). A real site page (spec 2026-11-08-app-flows F6): the link opens the app when it is installed and the web page when it is not. /bis/{class}/{spec}
+    case bisPage(className: String, spec: String)
+    /// Guides, that class's specs (a slug), pushed under Home. A real site page (spec 2026-11-08-app-flows F6): the link opens the app when it is installed and the web page when it is not. /guides/{class}
+    case guidesClassPage(className: String)
+    /// That spec's guide (class and spec are slugs), pushed under Home. A real site page (spec 2026-11-08-app-flows F6): the link opens the app when it is installed and the web page when it is not. /guides/{class}/{spec}
+    case guidePage(className: String, spec: String)
+    /// The sim result, pushed under Home. The sim tool pages (/sim/specs, gear, drops, talents, weights) stay on the site. A real site page (spec 2026-11-08-app-flows F6): the link opens the app when it is installed and the web page when it is not. /sim/{id}
+    case simPage(id: String)
+    /// The report, pushed under Home (read only when it is not yours); /reports/sample stays on the site. A real site page (spec 2026-11-08-app-flows F6): the link opens the app when it is installed and the web page when it is not. /reports/{id}
+    case reportPage(id: String)
+    /// That character's page, pushed under Home; the current character does not change. A real site page (spec 2026-11-08-app-flows F6): the link opens the app when it is installed and the web page when it is not. /character/{region}/{ruleset}/{name}
+    case characterPage(region: String, ruleset: String, name: String)
+    /// The raid page, pushed under Raid (the guild by its region, ruleset and name slug). A real site page (spec 2026-11-08-app-flows F6): the link opens the app when it is installed and the web page when it is not. /guild/{region}/{ruleset}/{guildName}/raids/{raid}
+    case guildRaidPage(region: String, ruleset: String, guildName: String, raid: Int64)
+    /// Tiers, your spec marked, pushed under Home. A real site page (spec 2026-11-08-app-flows F6): the link opens the app when it is installed and the web page when it is not. /tiers
+    case tiersPage
     /// You, Notifications. /app/you/notifications
     case notifications
     /// You, Plan. /app/you/plan
@@ -64,6 +80,14 @@ public enum DeepLink: Equatable, Sendable {
             Self.matchPlanner,
             Self.matchBuilds,
             Self.matchSharedBuild,
+            Self.matchBisPage,
+            Self.matchGuidesClassPage,
+            Self.matchGuidePage,
+            Self.matchSimPage,
+            Self.matchReportPage,
+            Self.matchCharacterPage,
+            Self.matchGuildRaidPage,
+            Self.matchTiersPage,
             Self.matchNotifications,
             Self.matchPlan,
             Self.matchSignIn,
@@ -89,6 +113,14 @@ public enum DeepLink: Equatable, Sendable {
         case .planner: "planner"
         case .builds: "builds"
         case .sharedBuild: "sharedBuild"
+        case .bisPage: "bisPage"
+        case .guidesClassPage: "guidesClassPage"
+        case .guidePage: "guidePage"
+        case .simPage: "simPage"
+        case .reportPage: "reportPage"
+        case .characterPage: "characterPage"
+        case .guildRaidPage: "guildRaidPage"
+        case .tiersPage: "tiersPage"
         case .notifications: "notifications"
         case .plan: "plan"
         case .signIn: "signIn"
@@ -112,6 +144,14 @@ public enum DeepLink: Equatable, Sendable {
         case let .planner(className, code, race): Self.link("/app/planner/\(className)", [("code", code), ("race", race)])
         case .builds: Self.link("/app/builds", [])
         case let .sharedBuild(id): Self.link("/b/\(id)", [])
+        case let .bisPage(className, spec): Self.link("/bis/\(className)/\(spec)", [])
+        case let .guidesClassPage(className): Self.link("/guides/\(className)", [])
+        case let .guidePage(className, spec): Self.link("/guides/\(className)/\(spec)", [])
+        case let .simPage(id): Self.link("/sim/\(id)", [])
+        case let .reportPage(id): Self.link("/reports/\(id)", [])
+        case let .characterPage(region, ruleset, name): Self.link("/character/\(region)/\(ruleset)/\(name)", [])
+        case let .guildRaidPage(region, ruleset, guildName, raid): Self.link("/guild/\(region)/\(ruleset)/\(guildName)/raids/\(raid)", [])
+        case .tiersPage: Self.link("/tiers", [])
         case .notifications: Self.link("/app/you/notifications", [])
         case .plan: Self.link("/app/you/plan", [])
         case let .signIn(code, state, error): Self.link("/app/auth", [("code", code), ("state", state), ("error", error)])
@@ -186,6 +226,46 @@ public enum DeepLink: Equatable, Sendable {
     private static func matchSharedBuild(_ s: [String], _ q: [String: String]) -> DeepLink? {
         guard s.count == 2, s[0] == "b" else { return nil }
         return .sharedBuild(id: s[1])
+    }
+
+    private static func matchBisPage(_ s: [String], _ q: [String: String]) -> DeepLink? {
+        guard s.count == 3, s[0] == "bis" else { return nil }
+        return .bisPage(className: s[1], spec: s[2])
+    }
+
+    private static func matchGuidesClassPage(_ s: [String], _ q: [String: String]) -> DeepLink? {
+        guard s.count == 2, s[0] == "guides" else { return nil }
+        return .guidesClassPage(className: s[1])
+    }
+
+    private static func matchGuidePage(_ s: [String], _ q: [String: String]) -> DeepLink? {
+        guard s.count == 3, s[0] == "guides" else { return nil }
+        return .guidePage(className: s[1], spec: s[2])
+    }
+
+    private static func matchSimPage(_ s: [String], _ q: [String: String]) -> DeepLink? {
+        guard s.count == 2, s[0] == "sim" else { return nil }
+        return .simPage(id: s[1])
+    }
+
+    private static func matchReportPage(_ s: [String], _ q: [String: String]) -> DeepLink? {
+        guard s.count == 2, s[0] == "reports" else { return nil }
+        return .reportPage(id: s[1])
+    }
+
+    private static func matchCharacterPage(_ s: [String], _ q: [String: String]) -> DeepLink? {
+        guard s.count == 4, s[0] == "character" else { return nil }
+        return .characterPage(region: s[1], ruleset: s[2], name: s[3])
+    }
+
+    private static func matchGuildRaidPage(_ s: [String], _ q: [String: String]) -> DeepLink? {
+        guard s.count == 6, s[0] == "guild", s[4] == "raids", let raid = Int64(s[5]) else { return nil }
+        return .guildRaidPage(region: s[1], ruleset: s[2], guildName: s[3], raid: raid)
+    }
+
+    private static func matchTiersPage(_ s: [String], _ q: [String: String]) -> DeepLink? {
+        guard s.count == 1, s[0] == "tiers" else { return nil }
+        return .tiersPage
     }
 
     private static func matchNotifications(_ s: [String], _ q: [String: String]) -> DeepLink? {
