@@ -24,7 +24,7 @@ from ws_app_frame import DEVICES, app_page, from_web, glyph, write_app
 import ws_app_flows as flows
 from ws_home import NOW, RAIDS, clock_to, day_text, raids_open
 from ws_prims import (Button, Checklist, Countdown, Figure, Notice, PageHeader, Rows, Row, Section, Switch, Tag, Meter, build_page,
-                      crest_img, icon)
+                      crest_img, icon, QCOL)
 
 FIX = ROOT / 'web/tests/e2e/fixtures/home'
 
@@ -95,6 +95,8 @@ APP_CSS2 = '''
 .wd .nm{font:700 15px/20px var(--font-body);color:var(--strong)}
 .wd .s{font-size:13px;line-height:18px;color:var(--muted)}
 .wd .g{color:var(--gold)}
+.wd .it{display:flex;align-items:center;gap:6px;font:700 13px/18px var(--font-body)}
+.wd .ans{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;align-content:center}.wd .ans .btn{height:44px;padding:0}
 .lock{background:linear-gradient(180deg,#17202f,#07090d);border-radius:24px;padding:20px 16px;display:flex;flex-direction:column;gap:14px}
 .lock .tm{font:600 64px/1 var(--font-body);text-align:center;color:var(--strong)}
 .lock .row3{display:flex;gap:10px;justify-content:center}
@@ -226,28 +228,38 @@ def raid_night(state: str):
 
 
 def widgets(state: str):
-    """R13. guild: Thandrel in Olympus XXVII before its first raid; noguild: Felsnap at 34 (first raids); open: raids are open."""
+    """R13 and flows F1, F5, E7. guild: Thandrel in Olympus XXVII before its first raid; noguild: Felsnap at 34 (first raids);
+    open: raids are open. The upgrade side is the next upgrade, never a total (flows appendix C); the item carries its icon and
+    quality colour. The answering medium (guild only) is F1's widget: In, Late, Bench, Out, the current answer selected."""
     def b(platform: str) -> str:
         at = raids_open()
         if state == 'guild':
-            k, big, nm, s = "Olympus XXVII", '33d 8h', "Onyxia's Lair", 'Wed 9 Dec, 8:00 pm CST &middot; You are In'
-            up = ('+14.5 DPS', 'next upgrade', 'Lionheart Helm, Blacksmithing')
+            k, big, nm, s = "Olympus XXVII", '33d 8h', "Onyxia's Lair", 'Wed 9 Dec, 8:00 pm CST<br>In, as Thandrel, Damage'
+            up = ('+14.5 DPS', 'next upgrade', ('Lionheart Helm', 4, 'inv_helmet_36'), 'Blacksmithing')
         elif state == 'noguild':
             d = clock_to(at)
             k, big, nm, s = 'First raids', f'{int(d[0][0])}d {int(d[1][0])}h', day_text(at), 'Barrow Deeps, Hyjal Summit, Onyxia&rsquo;s Lair'
-            up = ('+1.3 DPS', 'next upgrade', 'Felbough Arm, Ashenvale')
+            up = ('+1.3 DPS', 'next upgrade', ('Felbough Arm', 3, 'inv_spear_08'), 'Ashenvale')
         else:
             k, big, nm, s = 'Raids open now', 'Open', "Barrow Deeps, Hyjal Summit, Onyxia's Lair", 'No raid planned yet'
-            up = ('+14.5 DPS', 'next upgrade', 'Lionheart Helm, Blacksmithing')
-        small = f'<div class="wd"><span class="k">{k}</span><span class="big">{big}</span><span class="nm">{nm}</span><span class="s">{s}</span></div>'
-        small_up = f'<div class="wd"><span class="k">Upgrades</span><span class="big g">{up[0]}</span><span class="s">{up[1]}</span></div>'
-        medium = (f'<div class="wd m"><div><span class="k">{k}</span><span class="big">{big}</span><span class="nm">{nm}</span><span class="s">{s}</span></div>'
-                  f'<div><span class="k">Upgrades</span><span class="big g">{up[0]}</span><span class="s">{up[1]}</span><span class="s">{up[2]}</span></div></div>')
+            up = ('+14.5 DPS', 'next upgrade', ('Lionheart Helm', 4, 'inv_helmet_36'), 'Blacksmithing')
+        raid_col = f'<span class="k">{k}</span><span class="big">{big}</span><span class="nm">{nm}</span><span class="s">{s}</span>'
+        item = up[2]
+        item_line = f'<span class="it">{icon(item[2], 20, f"q{item[1]}")}<span style="color:{QCOL[item[1]]}">{item[0]}</span></span>'
+        small = f'<div class="wd" data-region="widget-raid-small">{raid_col}</div>'
+        small_up = f'<div class="wd" data-region="widget-upgrade-small"><span class="k">Upgrades</span><span class="big g">{up[0]}</span><span class="s">{up[1]}</span></div>'
+        medium = (f'<div class="wd m" data-region="widget-medium"><div>{raid_col}</div>'
+                  f'<div><span class="k">Upgrades</span><span class="big g">{up[0]}</span><span class="s">{up[1]}</span>{item_line}<span class="s">{up[3]}</span></div></div>')
+        answer = ''
+        if state == 'guild':
+            answers = ''.join(Button(x, primary=(x == 'In'), small=True) for x in ('In', 'Late', 'Bench', 'Out'))
+            answer = (f'<p class="lbl">Medium, answer the raid</p><div class="wgrid"><div class="wd m" data-region="widget-answer"><div>{raid_col}</div>'
+                      f'<div class="ans">{answers}</div></div></div>')
         lock = (f'<div class="lock"><span class="tm">9:41</span><div class="row3"><span class="lw">{glyph("guild", 18)}{big} &middot; {nm}</span>'
                 f'<span class="lw">{glyph("bis", 18)}{up[0]}</span></div></div>')
         label = 'Home screen widgets' if platform == 'ios' else 'Widgets'
         body = (title('Widgets') + f'<p class="lbl">{label}: small</p><div class="wgrid">{small}{small_up}</div>'
-                + f'<p class="lbl">Medium</p><div class="wgrid">{medium}</div><p class="lbl">Lock screen</p>{lock}')
+                + f'<p class="lbl">Medium</p><div class="wgrid">{medium}</div>{answer}<p class="lbl">Lock screen</p>{lock}')
         return app_page(platform, page(body, 'Widgets'), None, navbar=False)
     return b
 
@@ -257,15 +269,16 @@ def live_activity(platform: str) -> str:
     buttons = ''.join(Button(x, primary=(x == 'In'), small=True) for x in ('In', 'Late', 'Bench', 'Out'))
     ony = icon('inv_misc_head_dragon_black', 36)
     if platform == 'ios':
+        # Flows F2 and E7: the answer names its character; the end state is the night's summary. Deathbringer is epic.
         body = (title('Live Activity') + '<p class="lbl">Lock screen</p>'
-                + f'<div class="la"><div class="top">{ony}<span><span class="nm">Onyxia&rsquo;s Lair</span><br><span class="t-small">Olympus XXVII &middot; You are In</span></span><span class="clk">42:00</span></div>'
+                + f'<div class="la" data-region="live-lock"><div class="top">{ony}<span><span class="nm">Onyxia&rsquo;s Lair</span><br><span class="t-small">In, as Thandrel, Damage</span></span><span class="clk">42:00</span></div>'
                 + '<span class="t-small">Starts 8:00 pm CST &middot; 18 in, 3 late &middot; 2 tanks, 5 heals</span></div>'
-                + '<p class="lbl">Raid done</p><div class="la"><div class="top">' + ony + '<span><span class="nm">Onyxia&rsquo;s Lair done</span><br>'
-                + '<span class="t-small">1 kill &middot; you got Deathbringer &middot; report ready</span></span></div></div>'
-                + '<p class="lbl">Dynamic Island, compact</p><div class="island"><span>Ony</span><span class="g">42:00</span></div>'
-                + f'<p class="lbl">Dynamic Island, expanded</p><div class="island x"><div class="top" style="display:flex;gap:10px;align-items:center">{ony}<span>Onyxia&rsquo;s Lair</span><span class="g" style="margin-left:auto">42:00</span></div>'
+                + '<p class="lbl">Raid done</p><div class="la" data-region="live-done"><div class="top">' + ony + '<span><span class="nm">Onyxia&rsquo;s Lair done</span><br>'
+                + f'<span class="t-small">1 kill &middot; you got <span style="color:{QCOL[4]}">Deathbringer</span> &middot; report ready</span></span></div></div>'
+                + '<p class="lbl">Dynamic Island, compact</p><div class="island" data-region="island-compact"><span>Ony</span><span class="g">42:00</span></div>'
+                + f'<p class="lbl">Dynamic Island, expanded</p><div class="island x" data-region="island-expanded"><div class="top" style="display:flex;gap:10px;align-items:center">{ony}<span>Onyxia&rsquo;s Lair</span><span class="g" style="margin-left:auto">42:00</span></div>'
                 + f'<div class="la bare"><div class="btns">{buttons}</div></div></div>'
-                + '<p class="lbl">Sim running</p><div class="la"><div class="top"><span class="nm">Sim: Fury Warrior, 60 raid</span><span class="clk" style="font-size:16px">64%</span></div>'
+                + '<p class="lbl">Sim running</p><div class="la" data-region="live-sim"><div class="top"><span class="nm">Sim: Fury Warrior, 60 raid</span><span class="clk" style="font-size:16px">64%</span></div>'
                 + Meter(0.64) + '</div>')
     else:
         body = (title('Ongoing notifications') + '<p class="lbl">Raid night</p>'
