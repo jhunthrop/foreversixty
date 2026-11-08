@@ -229,10 +229,20 @@ jobs:
       # sources and every region file checked against a fresh render (the repo's fonts, so the
       # render is the same here and on a lane's Mac). A mock change without its region files fails
       # here, naming each file and the command.
+      # On a failure the step writes the files this runner renders and uploads them as
+      # app-regions: commit those (a Mac's Chromium lays some mocks out differently).
       - name: the app mocks' region files are current
         if: success() || failure()
         working-directory: ${{ github.workspace }}
-        run: python3 design/mocks/ws_app.py && node design/mocks/app_regions.mjs --check
+        run: |
+          python3 design/mocks/ws_app.py
+          node design/mocks/app_regions.mjs --check || { node design/mocks/app_regions.mjs; exit 1; }
+      - if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-regions
+          path: design/mocks/app/regions/
+          retention-days: 7
       # The committed reference mocks against the ones the specs just rendered: a warning and the
       # regen commands in the job summary, never a red job (design/parity.md, "The reference
       # mocks"): the gate above compared against the test-time mocks, so a data refresh lands
