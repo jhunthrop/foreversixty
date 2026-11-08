@@ -100,6 +100,7 @@ private enum AccessibilityAutomation {
     private typealias SetEnabled = @convention(c) (Int32) -> Void
 
     @MainActor private static var enabled = false
+    private static let warmUp: TimeInterval = 1
 
     @MainActor
     static func enable() {
@@ -111,5 +112,9 @@ private enum AccessibilityAutomation {
         }
         unsafeBitCast(symbol, to: SetEnabled.self)(1)
         enabled = true
+        // UIKit hears the switch through a notification on a later run-loop turn; a hosting view
+        // made before then never builds its tree (on a fresh CI simulator the first parity screen,
+        // Activity's, read as empty). Let it arrive before any screen is made.
+        RunLoop.main.run(until: Date().addingTimeInterval(warmUp))
     }
 }
