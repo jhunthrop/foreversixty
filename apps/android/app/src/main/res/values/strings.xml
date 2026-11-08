@@ -1779,6 +1779,44 @@
     <string name="raid_applicant_after">%1$s shows on the roster once the addon or Battle.net sees the character in the guild.</string>
     <string name="raid_applicant_line" tools:ignore="PluralsCandidate">%1$s, %2$s %3$d, %4$s</string>
     <string name="raid_applicant_failed">We could not load this application</string>
+    <string name="rank_flows_lineOut">How characters rank on each encounter, kill by kill.</string>
+    <string name="rank_flows_lineIn">Where your character stands among characters like it.</string>
+    <string name="rank_flows_tierQuestion">Comparing specs, not characters?</string>
+    <string name="rank_flows_tierLink">Tier list ›</string>
+    <string name="rank_flows_choose">Choose an encounter</string>
+    <plurals name="rank_flows_ranked">
+        <item quantity="one">1 encounter ranked</item>
+        <item quantity="other">%1$d encounters ranked</item>
+    </plurals>
+    <string name="rank_flows_encounterLine">Characters and guilds, every class and spec</string>
+    <string name="rank_flows_openBoard">Open the board ›</string>
+    <string name="rank_flows_noneYet">No encounters have been ranked yet.</string>
+    <string name="rank_flows_tryGuilds">The Guilds board ranks guild progress across every encounter and needs none.</string>
+    <string name="rank_flows_openGuilds">Open the Guilds board ›</string>
+    <string name="rank_flows_legend">Rank colour is the percentile:</string>
+    <string name="rank_flows_under">under 25</string>
+    <string name="rank_flows_facts">Rankings · %1$s · %2$s</string>
+    <string name="rank_flows_rulesetScope">%1$s ruleset</string>
+    <string name="rank_flows_allRulesets">All rulesets</string>
+    <string name="rank_flows_updated">Updated %1$s</string>
+    <string name="rank_flows_everyClass">Every class and spec</string>
+    <string name="rank_flows_cohortPlural">%1$ss</string>
+    <string name="rank_flows_answerUnit" tools:ignore="PluralsCandidate">of %1$d %2$ss</string>
+    <string name="rank_flows_answerUnitKills" tools:ignore="PluralsCandidate">of %1$d %2$s kills</string>
+    <string name="rank_flows_answerNote">On %1$s, %2$s</string>
+    <string name="rank_flows_parses">See your parses ›</string>
+    <string name="rank_flows_jump">Jump to your row ›</string>
+    <string name="rank_flows_everyClassField">Every class</string>
+    <string name="rank_flows_everySpec">Every spec</string>
+    <string name="rank_flows_characters">Characters</string>
+    <string name="rank_flows_guilds">Guilds</string>
+    <string name="rank_flows_sectionMeta" tools:ignore="PluralsCandidate">%1$d ranked, each character’s best kill</string>
+    <string name="rank_flows_sectionMetaKills" tools:ignore="PluralsCandidate">%1$d ranked kills</string>
+    <string name="rank_flows_size" tools:ignore="PluralsCandidate">%1$d-man</string>
+    <string name="rank_flows_executed">Executed</string>
+    <string name="rank_flows_length">Length</string>
+    <string name="rank_flows_report">Report</string>
+    <string name="rank_flows_build">Build</string>
     <string name="shared_cta_getAddonAndCompanion">Get the addon and companion</string>
     <string name="shared_cta_installAddonAndCompanion">Install the addon and the companion</string>
     <string name="shared_cta_installAddonAndCompanionInline">install the addon and the companion</string>

@@ -119,6 +119,9 @@ class RankingsFeature(
             connectivity = connectivity,
         )
 
+        /** The site's Guilds board: guild progress across every encounter (the app has no board of its own). */
+        const val GUILDS_BOARD = "https://foreversixty.gg/rankings?board=guild"
+
         /** The system share sheet with a web link. */
         fun share(context: Context, url: String) {
             val send = Intent(Intent.ACTION_SEND).setType("text/plain").putExtra(Intent.EXTRA_TEXT, url)

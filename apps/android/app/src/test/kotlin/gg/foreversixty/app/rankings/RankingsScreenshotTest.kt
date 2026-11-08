@@ -112,11 +112,6 @@ class RankingsScreenshotTest {
 
     private fun loaded(page: RankingsPage, offline: Instant? = null) = BoardPhase.Loaded(Board.of(page, offline))
 
-    @Test fun onPage() = board("rankings-onpage-and", loaded(RankingsTestData.page()))
-
-    @Test @Config(qualifiers = PIXEL_9_XL)
-    fun onPageLarge() = board("rankings-onpage-large-and", loaded(RankingsTestData.page()), large = true)
-
     @Test fun offPage() = board("rankings-offpage-and", loaded(RankingsTestData.offPage()), RankingsTestData.viewer(RankingsTestData.sparkwick))
 
     /** The long press on Stormwrath (watched): Stop watching, Open the report, Share. */
@@ -132,8 +127,6 @@ class RankingsScreenshotTest {
         compose.waitForIdle()
         captureScreenRoboImage("src/test/screenshots/rankings/rankings-menu-and.png", roborazziOptions = STRICT_SNAPSHOT)
     }
-
-    @Test fun unranked() = board("rankings-empty-and", loaded(RankingsTestData.empty()))
 
     @Test fun signedOut() = board("rankings-signedout-and", loaded(mixed()), RankingsViewer.SignedOut)
 

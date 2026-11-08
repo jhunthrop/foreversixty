@@ -166,13 +166,12 @@ object Rankings {
     private fun start(phase: PhaseBoundary): Instant? = runCatching { Instant.parse(phase.start) }.getOrNull()
 
     /**
-     * The encounter a board opens on: the one the character most recently killed, else the first
-     * the API lists, else none. Only a listed encounter is named (web defaults.ts pickDefaultEncounter).
+     * The encounter a board opens on: the one the character most recently killed, else none (the
+     * board then asks Choose an encounter). Only a listed encounter is named (web defaults.ts).
      */
     fun defaultEncounter(history: List<CharacterFight>, encounters: List<RankedEncounter>): String? {
         val killed = history.filter { it.kill != false }.sortedByDescending { it.foughtAt }
         return killed.firstNotNullOfOrNull { fight -> encounters.firstOrNull { it.id == fight.encounterId.toLong() }?.slug }
-            ?: encounters.firstOrNull()?.slug
     }
 
     /** The character's own cohort: its class and its spec's catalogue name. */

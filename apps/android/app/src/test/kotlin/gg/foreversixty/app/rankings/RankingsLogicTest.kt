@@ -1,6 +1,7 @@
 package gg.foreversixty.app.rankings
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import gg.foreversixty.app.model.RankedEncounters
 import gg.foreversixty.app.network.ApiError
 import gg.foreversixty.app.raids.MemoryRaidCache
 import gg.foreversixty.app.raids.fail
@@ -116,12 +117,12 @@ class RankingsLogicTest {
         assertEquals(listOf("raids-1", "launch", "beta", "pre-beta"), Rankings.phaseChoices(phases, now))
     }
 
-    @Test fun `the default encounter is the one most recently killed, else the first listed`() {
+    @Test fun `the default encounter is the one most recently killed, else none`() {
         val history = RankingsTestData.voltaris().history
         assertEquals("onyxia", Rankings.defaultEncounter(history, encounters))
         val wipeFirst = listOf(history[1].copy(encounterId = 227), history[2])
         assertEquals("emperor-dagran-thaurissan", Rankings.defaultEncounter(wipeFirst, encounters))
-        assertEquals("onyxia", Rankings.defaultEncounter(emptyList(), encounters))
+        assertNull(Rankings.defaultEncounter(emptyList(), encounters))
         assertNull(Rankings.defaultEncounter(emptyList(), emptyList()))
     }
 
@@ -195,46 +196,35 @@ class RankingsLogicTest {
 
     // Words
 
-    @Test fun `the filter line names every filter, all regions and every ruleset in words`() {
-        val names = mapOf("onyxia" to "Onyxia")
-        assertEquals("Onyxia · Normal · All regions · Phase 1 · Damage", copy().filterLine(filters(), names))
-        val wide = filters().copy(ruleset = "", region = "eu", phase = "launch", measure = Measure.Execution)
-        assertEquals("Onyxia · Every ruleset · EU · Launch · Execution", copy().filterLine(wide, names))
-        val narrowed = filters().copy(faction = "horde", todayOnly = true)
-        assertEquals("Onyxia · Normal · All regions · Phase 1 · Damage · Horde · Today only", copy().filterLine(narrowed, names))
+    @Test fun `the head names the cohort, the ruleset and when the board was ranked`() {
+        val fury = filters().copy(cohort = Cohort("warrior", "Fury"))
+        assertEquals(listOf("Rankings · Fury Warriors · Normal ruleset", "Updated 13 Dec"), copy().facts(fury, "2026-12-13T18:00:00Z"))
+        val every = fury.copy(cohort = null, ruleset = "")
+        assertEquals(listOf("Rankings · Every class and spec · All rulesets"), copy().facts(every, ""))
     }
 
-    @Test fun `the answer card's unit says characters when deduped, else kills`() {
-        val cohort = Cohort("shaman", "Elemental")
-        assertEquals("of 212 Elemental Shaman characters", copy().answerUnit(212, cohort, deduped = true))
-        assertEquals("of 212 Elemental Shaman kills", copy().answerUnit(212, cohort, deduped = false))
+    @Test fun `the answer's unit says the cohort when deduped, else kills`() {
+        val cohort = Cohort("warrior", "Fury")
+        assertEquals("of 212 Fury Warriors", copy().answerUnit(212, cohort, deduped = true))
+        assertEquals("of 212 Fury Warrior kills", copy().answerUnit(212, cohort, deduped = false))
+        assertEquals("On Onyxia, Normal ruleset", copy().answerNote(filters(), mapOf("onyxia" to "Onyxia")))
     }
 
-    @Test fun `the meta names the character on the page and off it`() {
-        val names = mapOf("onyxia" to "Onyxia")
-        val on = copy().answerMeta(RankingsTestData.page().characterRank!!.row, filters(), names)
-        assertEquals("Lightningbolltz · best kill on Onyxia, Normal, Phase 1.", on.text)
-        assertEquals("Lightningbolltz", on.name)
-        val off = copy().answerMeta(RankingsTestData.offPage().characterRank!!.row, filters(), names)
-        assertEquals("Sparkwick · best kill on Onyxia, Normal, Phase 1.", off.text)
-    }
-
-    @Test fun `a row's age and each separator never start a line`() {
-        val meta = copy().rowMeta(RankingsTestData.page().rows.first(), now)
-        assertTrue(meta.contains("2\u00A0d\u00A0ago"))
-        assertFalse(meta.contains(" · "))
-        assertTrue(meta.contains("\u00A0· "))
-        assertTrue(meta.contains("40\u00A0players"))
-    }
-
-    @Test fun `a row's meta, value and unit`() {
+    @Test fun `a row's line, value, executed and length`() {
         val row = RankingsTestData.page().rows.first()
-        assertEquals("Hordebreakers\u00A0· 40\u00A0players\u00A0· 3:13\u00A0· 2\u00A0d\u00A0ago", copy().rowMeta(row, now))
+        assertEquals("Hordebreakers · Elemental Shaman · 40-man", copy().rowSub(row))
+        assertEquals("Elemental Shaman · 40-man", copy().rowSub(row.copy(guild = null)))
         assertEquals("462", Rankings.valueText(row, Measure.Damage))
         assertEquals("97%", Rankings.valueText(row.copy(value = 0.968), Measure.Execution))
         assertEquals("DPS", copy().unit(Measure.Damage))
-        assertEquals("Executed", copy().unit(Measure.Execution))
-        assertEquals("40\u00A0players\u00A0· 3:13\u00A0· 2\u00A0d\u00A0ago", copy().rowMeta(row.copy(guild = null), now))
+        assertEquals("90%", copy().executed(row.copy(executionScore = 0.9)))
+        assertNull(copy().executed(row.copy(executionScore = null)))
+        assertEquals("3:13", copy().length(row))
+    }
+
+    @Test fun `the board's meta says each character's best kill when deduped`() {
+        assertEquals("212 ranked, each character\u2019s best kill", copy().sectionMeta(212, deduped = true))
+        assertEquals("212 ranked kills", copy().sectionMeta(212, deduped = false))
     }
 
     @Test fun `a row reads as one sentence`() {
@@ -243,10 +233,6 @@ class RankingsLogicTest {
             "Rank 14 of 212, Lightningbolltz, 398 damage per second, Hordebreakers, your character",
             copy().rowLabel(row, 212, Measure.Damage, yours = true),
         )
-    }
-
-    @Test fun `a jump link reads the ordinal`() {
-        assertEquals("Jump to your row, 14th", copy().jump(14))
     }
 
     // The store
@@ -343,6 +329,28 @@ class RankingsLogicTest {
         assertTrue(nav.open(requireNotNull(DeepLink.parse(DeepLink.Player("us", "normal", "Voltaris").url()))))
         assertEquals(CharacterRoute("us", "normal", "Voltaris"), nav.character)
         assertFalse(nav.open(DeepLink.Report("x")))
+    }
+
+    @Test fun `with no kill to open on the board asks for an encounter, then opens the one chosen`() = runTest {
+        val service = FakeRankingsService().apply { characterAnswer = { ok(RankingsTestData.noLogs()) } }
+        val s = store(service)
+        s.load()
+        assertEquals(BoardPhase.Choose(encounters), s.phase)
+        assertTrue(service.queries.isEmpty())
+        s.choose("onyxia")
+        assertEquals("onyxia", service.queries.single().encounter)
+        assertTrue(s.phase is BoardPhase.Loaded)
+    }
+
+    @Test fun `no ranked encounter is Choose an encounter from none, unread encounters are the error`() = runTest {
+        val none = FakeRankingsService().apply { encountersAnswer = { ok(RankedEncounters()) } }
+        val s = store(none)
+        s.load()
+        assertEquals(BoardPhase.Choose(emptyList()), s.phase)
+        val down = FakeRankingsService().apply { encountersAnswer = { fail(offline) } }
+        val failed = store(down)
+        failed.load()
+        assertEquals(BoardPhase.Failed, failed.phase)
     }
 
     @Test fun `a link's encounter aims the board`() = runTest {

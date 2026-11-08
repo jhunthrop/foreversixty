@@ -24,6 +24,7 @@ import gg.foreversixty.app.network.ApiResult
 import gg.foreversixty.app.raids.logic.RaidCache
 import java.time.Instant
 import kotlinx.serialization.KSerializer
+import kotlinx.serialization.builtins.serializer
 
 /** The calls F11 makes. Live goes through [ApiClient]; tests pass a fake. */
 interface RankingsService {
@@ -64,17 +65,22 @@ data class Board(
     /** False once a page read adds no row (fixture mode answers the same page). */
     val exhausted: Boolean = false,
     val stale: Boolean = false,
+    /** When the API last ranked the board (`Updated 13 Dec`). */
+    val updatedAt: String = "",
 ) {
     val hasMore: Boolean get() = !exhausted && offlineSince == null && rows.size < total
 
     companion object {
         fun of(page: RankingsPage, offlineSince: Instant?) =
-            Board(page.rows, page.total, page.page, page.deduped, page.characterRank, offlineSince)
+            Board(page.rows, page.total, page.page, page.deduped, page.characterRank, offlineSince, updatedAt = page.updatedAt)
     }
 }
 
 sealed interface BoardPhase {
     data object Loading : BoardPhase
+
+    /** No encounter to open on (no link, no kill of the character's): Choose an encounter, maybe from none. */
+    data class Choose(val encounters: List<RankedEncounter>) : BoardPhase
     data class Loaded(val board: Board) : BoardPhase
     data object Failed : BoardPhase
 }
@@ -118,20 +124,33 @@ class RankingsStore(
 
     private val board: Board? get() = (phase as? BoardPhase.Loaded)?.board
 
-    /** Reads the defaults once (aimed at [encounter] when a link names one), then page one. */
+    /**
+     * Reads the defaults once (aimed at [encounter] when a link names one), then page one; with no
+     * encounter to aim at, the board waits on [choose].
+     */
     suspend fun load(encounter: String? = null) {
         if (filters == null) {
-            val start = start(encounter) ?: run {
+            val listed = readEncounters() ?: run {
                 phase = BoardPhase.Failed
                 return
             }
-            defaults = start
-            filters = start
+            val slug = encounter?.let(::encounterSlug) ?: defaultEncounter()
+            if (slug == null) {
+                phase = BoardPhase.Choose(listed)
+                return
+            }
+            start(slug)
         }
         readBoard(keepOnFailure = true)
         if (viewer.signedIn) {
             (service.watching() as? ApiResult.Success)?.data?.let { list -> watched = list.rows.map { it.key }.toSet() }
         }
+    }
+
+    /** An encounter picked on Choose an encounter: its board, page one. */
+    suspend fun choose(slug: String) {
+        start(slug)
+        readBoard(keepOnFailure = false)
     }
 
     /** A row's long-press `Watch` or `Stop watching`; the list changes only when the write lands. */
@@ -170,23 +189,32 @@ class RankingsStore(
 
     private val characterKey: String? get() = viewer.current?.key
 
-    private suspend fun start(encounter: String?): RankingsFilters? {
+    /** The phases and the ranked encounters; null when the encounters neither load nor were saved. */
+    private suspend fun readEncounters(): List<RankedEncounter>? {
         phases = cached(PHASES_KEY, Phases.serializer()) { service.phases() }?.phases.orEmpty()
-        encounters = cached(ENCOUNTERS_KEY, RankedEncounters.serializer()) { service.encounters() }?.encounters.orEmpty()
-        val slug = encounter?.let(::encounterSlug) ?: defaultEncounter() ?: return null
-        return Rankings.defaults(viewer, specs, phases, now(), slug)
+        val listed = cached(ENCOUNTERS_KEY, RankedEncounters.serializer()) { service.encounters() }?.encounters ?: return null
+        encounters = listed
+        return listed
+    }
+
+    private fun start(slug: String) {
+        val start = Rankings.defaults(viewer, specs, phases, now(), slug)
+        defaults = start
+        filters = start
     }
 
     /** A link's encounter, by slug or id; one the API does not list is used as written. */
     private fun encounterSlug(link: String): String = encounters.firstOrNull { it.slug == link || it.id.toString() == link }?.slug ?: link
 
-    /** The one the current character most recently killed, from its character card; else the first listed. */
+    /**
+     * The one the current character most recently killed, from its character card; while the card
+     * cannot be read, the board last opened (offline it opens where it was); else none.
+     */
     private suspend fun defaultEncounter(): String? {
-        val character = viewer.current
-        val history = character?.let { c ->
-            (service.character(c.region, c.ruleset, c.key.substringAfterLast('/')) as? ApiResult.Success)?.data?.history
-        }.orEmpty()
-        return Rankings.defaultEncounter(history, encounters)
+        val character = viewer.current ?: return null
+        val card = service.character(character.region, character.ruleset, character.key.substringAfterLast('/'))
+        if (card !is ApiResult.Success) return cache.read(LAST_KEY, String.serializer())?.value
+        return Rankings.defaultEncounter(card.data.history, encounters)
     }
 
     private suspend fun readBoard(keepOnFailure: Boolean) {
@@ -195,6 +223,7 @@ class RankingsStore(
         when (val answer = service.rankings(Rankings.query(f, characterKey, 1))) {
             is ApiResult.Success -> {
                 cache.write(key, RankingsPage.serializer(), answer.data, now())
+                cache.write(LAST_KEY, String.serializer(), f.encounter, now())
                 pageFailed = false
                 phase = BoardPhase.Loaded(Board.of(answer.data, null))
             }
@@ -223,6 +252,7 @@ class RankingsStore(
         private const val PHASES_KEY = "rankings-phases"
         private const val ENCOUNTERS_KEY = "rankings-encounters"
         private const val BOARD_KEY = "rankings-board-"
+        private const val LAST_KEY = "rankings-last-encounter"
         private const val HEX = 16
     }
 }
