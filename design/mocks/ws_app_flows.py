@@ -533,7 +533,7 @@ def item_sheet(platform: str) -> str:
                'Requires Level 60</div><div style="height:8px"></div>')
     # the guild's next raid to that zone (needs.next_raid, only when its zone is the drop's), in the device's locale; it opens that raid
     where = Rows([Row('Onyxia, Onyxia&rsquo;s Lair', '8% drop chance &middot; raid', icon(ONY, 40), link=False),
-                  Row('Next raid: Onyxia&rsquo;s Lair, Wed 8:00 pm')], open_=True)
+                  Row('Next raid: Onyxia&rsquo;s Lair, Wed 8:00 PM')], open_=True)
     runners = Rows([Row('Vis&rsquo;kag the Bloodletter', 'Onyxia &middot; 8% &middot; &minus;1.8 DPS', icon('inv_sword_18', 40, 'q4'),
                         title_color='#b866f5', link=False)], open_=True)
     needs = Rows([Row('Grunvald', 'Protection Warrior &middot; needs it, also on their list', crest_img('warrior', 40), title_color=WARRIOR, link=False),

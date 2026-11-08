@@ -1743,6 +1743,7 @@
     "items.sheet.raid": "raid",
     "items.sheet.dungeon": "dungeon",
     "items.sheet.needsStanding": "needs {standing}",
+    "items.sheet.nextRaid": "Next raid: {zone}, {when}",
     "items.sheet.guildFailed": "Who needs it did not load."
   }
 }

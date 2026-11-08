@@ -1859,6 +1859,7 @@
     <string name="items_sheet_raid">raid</string>
     <string name="items_sheet_dungeon">dungeon</string>
     <string name="items_sheet_needsStanding">needs %1$s</string>
+    <string name="items_sheet_nextRaid">Next raid: %1$s, %2$s</string>
     <string name="items_sheet_guildFailed">Who needs it did not load.</string>
     <string name="shared_cta_getAddonAndCompanion">Get the addon and companion</string>
     <string name="shared_cta_installAddonAndCompanion">Install the addon and the companion</string>

@@ -6433,6 +6433,18 @@
         }
       }
     },
+    "items.sheet.nextRaid": {
+      "comment": "Arguments: 1 zone (string), 2 when (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Next raid: %1$@, %2$@"
+          }
+        }
+      }
+    },
     "items.sheet.raid": {
       "extractionState": "manual",
       "localizations": {

@@ -6194,6 +6194,11 @@ enum Copy {
         format("items.sheet.needsStanding", standing)
     }
 
+    /// Next raid: {zone}, {when}
+    static func itemsSheetNextRaid(zone: String, when: String) -> String {
+        format("items.sheet.nextRaid", zone, when)
+    }
+
     /// Who needs it did not load.
     static var itemsSheetGuildFailed: String { text("items.sheet.guildFailed") }
 

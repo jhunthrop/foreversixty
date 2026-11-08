@@ -3,6 +3,7 @@ import DesignSystem
 import Foundation
 import Models
 import Networking
+import Routing
 import SwiftUI
 import Testing
 
@@ -80,8 +81,36 @@ enum GearTestData {
         guild: .loaded(rows: [
             ItemSheetRow(id: "g", title: "Grunvald", titleClass: "Warrior", sub: Copy.gearSheetNeedsPick(spec: "Protection Warrior"), lead: .crest(className: "warrior")),
             ItemSheetRow(id: "t", title: "Torvak", titleClass: "Shaman", sub: Copy.gearSheetHas(spec: "Enhancement Shaman"), lead: .crest(className: "shaman")),
-        ], note: nil)
+        ], note: nil),
+        raidZone: "Onyxia’s Lair",
+        nextRaid: ItemSheetBuilder.nextRaid(nextOnyxia, guild: 2, zone: "Onyxia’s Lair", locale: Locale(identifier: "en_US"), timeZone: chicago)
     )
+
+    static let chicago = TimeZone(identifier: "America/Chicago")!
+    /// Wednesday 11 November 2026, 8:00 pm in Chicago.
+    static let nextOnyxia = ItemNextRaid(raidId: 31, zoneKey: "raid:onyxias-lair", startsAt: Date(timeIntervalSince1970: 1_794_448_800))
+}
+
+@Suite("Item sheet next raid")
+struct ItemSheetNextRaidTests {
+    @Test("the day and time follow the device: 12-hour in the US, 24-hour in the UK; the line opens that raid")
+    func formats() throws {
+        let us = try #require(ItemSheetBuilder.nextRaid(
+            GearTestData.nextOnyxia, guild: 2, zone: "Onyxia’s Lair", locale: Locale(identifier: "en_US"), timeZone: GearTestData.chicago
+        ))
+        #expect(us.line == "Next raid: Onyxia’s Lair, Wed 8:00 PM")
+        #expect(us.link == .raid(guild: 2, raid: 31))
+        let uk = ItemSheetBuilder.nextRaid(
+            GearTestData.nextOnyxia, guild: 2, zone: "Onyxia’s Lair", locale: Locale(identifier: "en_GB"), timeZone: GearTestData.chicago
+        )
+        #expect(uk?.line == "Next raid: Onyxia’s Lair, Wed 20:00")
+    }
+
+    @Test("no line without a planned raid or a raid source")
+    func absent() {
+        #expect(ItemSheetBuilder.nextRaid(nil, guild: 2, zone: "Onyxia’s Lair") == nil)
+        #expect(ItemSheetBuilder.nextRaid(GearTestData.nextOnyxia, guild: 2, zone: nil) == nil)
+    }
 }
 
 @MainActor

@@ -1,6 +1,7 @@
 import DesignSystem
 import Models
 import Networking
+import Routing
 import SwiftUI
 
 /// The item sheet (flows spec F5, mock ios-item-sheet), loading its files and the guild's answer.
@@ -15,6 +16,9 @@ struct ItemSheetScreen: View {
 
     @State private var phase: Phase = .loading
     @State private var guild: ItemSheetGuild = .none
+    @State private var nextRaid: ItemNextRaid?
+    @Environment(\.openAppLink) private var openAppLink
+    @Environment(\.dismiss) private var dismiss
 
     enum Phase: Equatable {
         case loading
@@ -26,7 +30,13 @@ struct ItemSheetScreen: View {
         Group {
             switch phase {
             case let .loaded(content):
-                ItemSheetView(content: content.with(guild: guild), build: request.tooltip.build, moreAbout: moreAbout)
+                ItemSheetView(
+                    content: content.with(guild: guild, nextRaid: request.guildID.flatMap {
+                        ItemSheetBuilder.nextRaid(nextRaid, guild: $0, zone: content.raidZone)
+                    }),
+                    build: request.tooltip.build, moreAbout: moreAbout,
+                    openRaid: openAppLink.map { open in { link in dismiss(); open(link) } }
+                )
             case .loading, .failed:
                 // The tooltip's own loading and failed states, with Try again.
                 ItemTooltipContent(
@@ -56,7 +66,9 @@ struct ItemSheetScreen: View {
         guard let needs, let id = request.guildID else { return }
         guild = .loading
         do {
-            guild = try await ItemSheetBuilder.guildRows(needs.needs(guild: id, item: request.tooltip.itemID))
+            let answer = try await needs.needs(guild: id, item: request.tooltip.itemID)
+            guild = ItemSheetBuilder.guildRows(answer)
+            nextRaid = answer.nextRaid
         } catch {
             guild = .failed
         }
@@ -69,6 +81,8 @@ struct ItemSheetView: View {
     let content: ItemSheetContent
     let build: String
     var moreAbout: (() -> Void)?
+    /// Opens the next raid's page; nil leaves the line as text.
+    var openRaid: ((DeepLink) -> Void)?
 
     static let grabRoom: CGFloat = 17
 
@@ -82,7 +96,7 @@ struct ItemSheetView: View {
                 )
                 .accessibilityAddTraits(.isHeader)
                 lines
-                if let source = content.source { section(Copy.gearSheetWhere, [source]) }
+                if let source = content.source { whereToGet(source) }
                 if let runnerUp = content.runnerUp { section(Copy.gearSheetRunnerUp, [runnerUp]) }
                 guild
                 if let moreAbout {
@@ -130,6 +144,22 @@ struct ItemSheetView: View {
             }
         case .failed:
             FSSection(Copy.gearSheetNeeds) { SmallText(Copy.itemsSheetGuildFailed).padding(.top, FSSpace.space2) }
+        }
+    }
+
+    /// Where to get it: the source, then the guild's next raid there when one is planned.
+    private func whereToGet(_ source: ItemSheetRow) -> some View {
+        FSSection(Copy.gearSheetWhere) {
+            VStack(alignment: .leading, spacing: 0) {
+                ItemSheetRowView(row: source, build: build)
+                if let next = content.nextRaid {
+                    Button { openRaid?(next.link) } label: {
+                        FSRow(title: next.line, inset: 0) { EmptyView() }
+                    }
+                    .buttonStyle(RowPressStyle())
+                    .disabled(openRaid == nil)
+                }
+            }
         }
     }
 

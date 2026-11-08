@@ -1,6 +1,7 @@
 import Foundation
 import Models
 import Networking
+import Routing
 
 /// Who opened the item sheet (flows spec F5): the tooltip's request, the gain the row showed, and
 /// the guild whose members may need the item (nil outside a guild).
@@ -44,6 +45,12 @@ enum ItemSheetGuild: Equatable {
     case failed
 }
 
+/// The guild's next raid to the zone that drops the item (needs.next_raid), opening that raid.
+struct ItemSheetNextRaid: Equatable {
+    let line: String
+    let link: DeepLink
+}
+
 /// Everything the item sheet draws (mock ios-item-sheet): the item with its gain, the client's
 /// tooltip lines (no item level: the client tooltip does not show it), where to get it with its
 /// chance, the runner-up, who in the guild needs it or has it.
@@ -55,9 +62,15 @@ struct ItemSheetContent: Equatable {
     let source: ItemSheetRow?
     let runnerUp: ItemSheetRow?
     let guild: ItemSheetGuild
+    /// The raid instance the item drops in, by name, for the next raid line; nil for any other source.
+    var raidZone: String?
+    var nextRaid: ItemSheetNextRaid?
 
-    func with(guild: ItemSheetGuild) -> ItemSheetContent {
-        ItemSheetContent(look: look, slotLabel: slotLabel, gain: gain, lines: lines, source: source, runnerUp: runnerUp, guild: guild)
+    func with(guild: ItemSheetGuild, nextRaid: ItemSheetNextRaid? = nil) -> ItemSheetContent {
+        ItemSheetContent(
+            look: look, slotLabel: slotLabel, gain: gain, lines: lines, source: source, runnerUp: runnerUp, guild: guild,
+            raidZone: raidZone, nextRaid: nextRaid
+        )
     }
 }
 
@@ -73,6 +86,7 @@ enum ItemSheetBuilder {
         let listed = band.flatMap { listing(of: itemID, in: $0) }
         let item = sources.items[itemID]
         let slot = listed?.slot.slot ?? item?.slot
+        let place = places?.place(of: itemID, kind: listed?.kind, named: listed?.source)
         return ItemSheetContent(
             look: tooltip.look,
             slotLabel: slot.map { ItemVocabulary.slotLabel($0, classSlug: request.tooltip.classSlug) } ?? tooltip.headerMeta,
@@ -80,7 +94,23 @@ enum ItemSheetBuilder {
             lines: lines(tooltip),
             source: source(itemID, look: tooltip.look, kind: listed?.kind, named: listed?.source, places: places, fallback: tooltip.source),
             runnerUp: runnerUp(listed, band: band, items: sources.items, places: places),
-            guild: guild
+            guild: guild,
+            raidZone: place.flatMap { $0.kind == .instance && $0.sourceKind == ItemPlaces.raidKind ? $0.name : nil }
+        )
+    }
+
+    /// `Next raid: Onyxia's Lair, Wed 8:00 PM`: the API sends next_raid only for the zone that drops
+    /// the item; the day and time read in the device's locale and time zone.
+    static func nextRaid(
+        _ next: ItemNextRaid?, guild: Int64, zone: String?, locale: Locale = .current, timeZone: TimeZone = .current
+    ) -> ItemSheetNextRaid? {
+        guard let next, let zone else { return nil }
+        var style = Date.FormatStyle(date: .omitted, time: .shortened, locale: locale, timeZone: timeZone)
+        style = style.weekday(.abbreviated)
+        return ItemSheetNextRaid(
+            // ICU puts a narrow no-break space before AM/PM; the copy's lines use plain spaces.
+            line: Copy.itemsSheetNextRaid(zone: zone, when: next.startsAt.formatted(style).replacingOccurrences(of: "\u{202F}", with: " ")),
+            link: .raid(guild: guild, raid: next.raidId)
         )
     }
 

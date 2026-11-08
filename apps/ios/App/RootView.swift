@@ -91,6 +91,7 @@ struct RootView: View {
         .environment(environment.session)
         .environment(simsRouter)
         .environment(\.searchNavigator, searchIsOn ? search : nil)
+        .environment(\.openAppLink, OpenAppLinkAction { openLink($0) })
         .fullScreenCover(isPresented: $search.isPresented) {
             SearchScreen(navigator: search).tint(Theme.Palette.accent)
         }
