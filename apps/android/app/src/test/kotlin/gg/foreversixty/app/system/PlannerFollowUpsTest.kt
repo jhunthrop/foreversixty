@@ -34,9 +34,9 @@ class PlannerFollowUpsTest {
         assertEquals("https://foreversixty.gg/app/planner/shaman", CharacterCard.plannerLink(voltaris)?.url())
     }
 
-    @Test fun `no builds seen or no class, no planner row`() {
+    @Test fun `no class, no planner link, and no builds seen still opens the class planner`() {
         val voltaris = RankingsTestData.voltaris()
-        assertNull(CharacterCard.plannerLink(voltaris.copy(buildsSeen = emptyList())))
+        assertEquals(DeepLink.Planner("shaman"), CharacterCard.plannerLink(voltaris.copy(buildsSeen = emptyList())))
         assertNull(CharacterCard.plannerLink(voltaris.copy(character = voltaris.character.copy(className = null))))
     }
 

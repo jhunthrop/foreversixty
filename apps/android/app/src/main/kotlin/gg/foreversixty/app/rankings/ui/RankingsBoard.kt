@@ -263,7 +263,7 @@ private fun BoardView(board: Board, filters: RankingsFilters, state: RankingsScr
 /** The head's answer: `Your rank`, the character, its ordinal of the cohort, where, and its links. */
 @Composable
 private fun Answer(board: Board, filters: RankingsFilters, own: OwnRow, state: RankingsScreenState, copy: RankingsCopy, actions: RankingsActions) {
-    Text(stringResource(R.string.rank_label), style = LABEL, color = FsColor.muted)
+    Text(stringResource(R.string.rank_label), style = BOARD_LABEL, color = FsColor.muted)
     val placed = board.characterRank
     if (placed == null) {
         Text(copy.unranked(filters, state.encounterNames), style = FsType.bodyStrong, color = FsColor.strong, modifier = Modifier.padding(top = FsSpace.space1))
@@ -545,7 +545,7 @@ private val SKELETON_LINE = 16.dp
 private val SKELETON_SMALL = 12.dp
 private const val SKELETON_ROWS = 6
 private val MENU_OFFSET = DpOffset(56.dp, 0.dp)
-private val LABEL = FsType.small.copy(fontSize = 12.sp, lineHeight = 16.sp, fontWeight = FontWeight.Bold)
+private val BOARD_LABEL = FsType.small.copy(fontSize = 12.sp, lineHeight = 16.sp, fontWeight = FontWeight.Bold)
 private val WHO_NAME = FsType.itemLg
 private val NAME = FsType.figureSm
 private val RANK = FsType.item
