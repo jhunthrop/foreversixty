@@ -6,39 +6,35 @@
  "regions": {
   "head": {
    "box": [
-    32,
+    16,
     8,
-    348,
-    120
+    380,
+    94
    ],
-   "inventory": {
-    "image": 1
-   }
+   "inventory": {}
   },
   "head-title": {
    "box": [
-    32,
+    16,
     24,
-    348,
-    90
+    380,
+    64
    ],
-   "inventory": {
-    "image": 1
-   }
+   "inventory": {}
   },
   "head-meta": {
    "box": [
-    104,
+    16,
     68,
-    276,
-    46
+    304,
+    20
    ],
    "inventory": {}
   },
   "section-next-upgrades": {
    "box": [
     16,
-    156,
+    130,
     380,
     277
    ],
@@ -50,7 +46,7 @@
   "section-new-for-you": {
    "box": [
     16,
-    461,
+    435,
     380,
     218
    ],
