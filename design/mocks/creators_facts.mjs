@@ -22,6 +22,7 @@ import creators from ${src("tests/e2e/fixtures/creators/creators.json")};
 import page from ${src("tests/e2e/fixtures/creators/statements.json")};
 const statements = page.statements;
 import me from ${src("tests/e2e/fixtures/creators/me.json")};
+import requests from ${src("tests/e2e/fixtures/creators/requests.json")};
 
 const strip = (o) => JSON.parse(JSON.stringify(o, (k, v) => (typeof v === 'function' ? '[fn]' : v)));
 const a = copy.adminCreatorsCopy, p = copy.payoutsCopy, st = copy.creatorStatsCopy, ob = copy.onboardingCopy;
@@ -51,6 +52,15 @@ export default {
     confirm: { title: p.confirmTitle(first.name, m.money(first.total_cents), m.monthLabel(first.month)), body: p.confirmBody(m.money(first.total_cents)), pay: p.confirmPay(m.money(first.total_cents)), cancel: p.cancel },
   },
   onboarding: { copy: strip(ob), join: ob.inviteJoin(me.name) },
+  requests: {
+    copy: strip(copy.requestsCopy), meta: copy.requestsCopy.meta(requests.length),
+    rows: requests.map((r) => ({ title: m.channelTitle(r.channel_url), sub: m.requestSub(r), about: r.about })),
+  },
+  program: strip(copy.programCopy),
+  apply: {
+    copy: strip(copy.applyCopy), counter: copy.applyCopy.counter(0, m.ABOUT_MAX),
+    pending: copy.applyCopy.pending(m.dayLabel('2026-12-08T16:20:00Z')),
+  },
   stats: {
     copy: strip(st), name: me.name, meta: st.meta(me.slug, me.code), figures: m.statsFigures(me),
     weeks: me.weeks.map(m.weekText), payoutsEmpty: st.payoutsEmpty, dashboard: me.stripe_status === 'ready' ? st.dashboard : '',

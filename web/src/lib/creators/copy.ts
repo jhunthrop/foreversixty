@@ -167,3 +167,107 @@ export const creatorStatsCopy = {
   payoutsEmpty: 'No payouts yet. Each month is paid after it closes and is approved.',
   setup: 'Set up payouts',
 } as const;
+
+/** One section of the public /creators page: a heading and its paragraphs. */
+export interface ProgramSection {
+  id: string;
+  title: string;
+  paragraphs: readonly string[];
+}
+
+/** The public /creators page (spec section 3e). Plain words: what a creator gets and what they owe us. */
+export const programCopy = {
+  pageTitle: 'Creators',
+  pageDescription:
+    'The Forever Sixty creator program: $2 for each player who comes back, half of their Premium for a year, paid monthly through Stripe.',
+  lead: 'If you stream or make videos about World of Warcraft: Forever, you can earn from the players you send us.',
+  apply: 'Apply',
+  footerLabel: 'Creators',
+  sections: [
+    {
+      id: 'what-you-get',
+      title: 'What you get',
+      paragraphs: [
+        '$2 for each player you send who comes back. A player comes back when they sign in with Battle.net, bring in at least one Forever character, and use the site again on a later day within 14 days of signing up.',
+        'Half of the Premium they pay, after Stripe’s fees and any refunds, for 12 months from their first payment. Guild plans count when the officer who pays came through you.',
+        'Premium on your own account and the Raid guild plan for your guild while you are in the program.',
+      ],
+    },
+    {
+      id: 'how-players-count',
+      title: 'How players count',
+      paragraphs: [
+        'You get a link of your own and a promo code that takes a little off a player’s first payment. A player is yours if their first visit came through your link within 30 days before they signed up, or if they use your code.',
+        'Each account counts once, for one creator. Accounts made before you joined, and your own account, never count.',
+      ],
+    },
+    {
+      id: 'payouts',
+      title: 'Payouts',
+      paragraphs: [
+        'We add up each month after it ends and pay it through Stripe, to a payout account you set up with them. We never see your bank details. Each creator has a monthly cap, $500 unless we agree another.',
+        'You can see your players by week, and what you have earned, on your own stats page. We never show you who they are.',
+      ],
+    },
+    {
+      id: 'disclosure',
+      title: 'Saying it is sponsored',
+      paragraphs: [
+        'You earn money when people use your link or code, so you have to say so wherever you share it: say it is an affiliate link or a sponsored mention, in the video or stream and next to the link. The FTC and Twitch both require it.',
+      ],
+    },
+  ] satisfies readonly ProgramSection[],
+  applyTitle: 'Apply',
+  applyLead: 'Tell us about your channel. We read every application.',
+} as const;
+
+export const PLATFORMS = ['twitch', 'youtube'] as const;
+export type Platform = (typeof PLATFORMS)[number];
+
+/** /creators/apply (spec section 3f). */
+export const applyCopy = {
+  pageTitle: 'Apply to the creator program',
+  pageDescription: 'Apply to the Forever Sixty creator program.',
+  formTitle: 'Your channel',
+  signedOut: 'Sign in with Battle.net to apply.',
+  fields: {
+    channel: { label: 'Channel', hint: 'Your Twitch or YouTube address.', placeholder: 'https://twitch.tv/…' },
+    platform: { label: 'Main platform' },
+    audience: { label: 'Viewers or subscribers', hint: 'Roughly. Leave it empty if you would rather not say.', placeholder: 'e.g. 1200' },
+    about: { label: 'What do you make about Forever?', hint: 'Up to 500 characters.' },
+    email: { label: 'Contact email', hint: 'Optional. Only we see it.', placeholder: 'you@example.com' },
+  },
+  platforms: { twitch: 'Twitch', youtube: 'YouTube' } satisfies Record<Platform, string>,
+  consent: 'We review every application; we’ll reply on your Forever Sixty account.',
+  submit: 'Send application',
+  sending: 'Sending',
+  sendFailed: 'That wasn’t sent; try again.',
+  counter: (used: number, max: number): string => `${used} of ${max}`,
+  statusTitle: 'Your application',
+  pending: (date: string): string => `Sent ${date}. We’ll reply here.`,
+  pendingTag: 'Pending',
+  approved: 'You’re in. Set up payouts so we can pay you.',
+  approvedTag: 'Approved',
+  setup: 'Set up payouts',
+  declined: 'Not this time. Thank you for applying.',
+  declinedTag: 'Not this time',
+  alreadyCreator: 'You’re already in the creator program.',
+  statsLink: 'Your stats',
+} as const;
+
+/** The owner's Requests section on /admin/creators (spec section 3a). */
+export const requestsCopy = {
+  title: 'Requests',
+  meta: (count: number): string => `${count} waiting`,
+  empty: 'No requests waiting.',
+  sub: (platform: string, size: string, date: string): string => `${platform} · ${size} · ${date}`,
+  sizeUnknown: 'size not given',
+  size: (n: string): string => `about ${n}`,
+  approve: 'Approve',
+  decline: 'Decline',
+  declined: 'Declined.',
+  approveTitle: (channel: string): string => `Approve ${channel}`,
+  approveJob: 'Their account is already bound; no invite is needed.',
+  /** The owner's account-menu badge while requests wait. */
+  badge: (count: number): string => `${count} creator ${count === 1 ? 'request' : 'requests'}`,
+} as const;

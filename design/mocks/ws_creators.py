@@ -17,13 +17,15 @@ from html import escape
 from pathlib import Path
 
 import ws_prims
-from ws_prims import (Button as _Button, Dialog, Figure, Link, Page, PageForm, PageHeader, Plate, Row, Rows, RowsSlim, Section, Select, Tag,
+from ws_prims import (Button as _Button, Dialog, Figure, Link, Page, PageForm, PageHeader, Plate, Prose, ReadingSection, Row, Rows, RowsSlim, Section,
+                      Select, Tag,
                       assert_no_surface_styles, write)
 from ws_lib import page as _page
 
 HERE = Path(__file__).resolve().parent
 F = json.loads(Path(os.environ.get('FS_CREATORS_FACTS') or HERE / 'data' / 'creators-facts.json').read_text())
 A, P, O, S = F['admin'], F['payouts'], F['onboarding'], F['stats']
+R, G, Y = F['requests'], F['program'], F['apply']
 OWNER = ('Thandrel', 'warrior', 'Level 60')
 CREATOR = ('Grimbrew', 'mage', 'Level 60')
 
@@ -34,7 +36,7 @@ CSS = '''<style>
 .f{display:flex;flex-direction:column;gap:6px;min-width:0}.f .t-small{font-size:12px;line-height:16px}
 .ro{font-family:var(--mono,monospace);font-size:14px}.status{min-height:22px}.page-foot{padding-bottom:48px}
 .trail-end{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.amt{font-variant-numeric:tabular-nums}
-section>.sec-h+*{margin-top:12px}
+section>.sec-h+*{margin-top:12px}fieldset.fs{border:0;padding:0;margin:0}.radio{width:18px;height:18px;accent-color:var(--gold)}
 </style>'''
 
 
@@ -100,9 +102,30 @@ def edit_form() -> str:
     return Section(e(A['editTitle']), body)
 
 
+def requests_section() -> str:
+    """The Requests Section above Your creators: open Rows (no Plate: the page's one Plate is the creators'), the channel as the
+    title, platform, size and day under it, the applicant's own words in the foot, Approve and Decline in the trail."""
+    rc = R['copy']
+    rows = [Row(e(r['title']), e(r['sub']), link=False, foot=f'<span class="t-small">{e(r["about"])}</span>',
+                trail=f'<span class="trail-end">{Btn(e(rc["approve"]), primary=True)}{Btn(e(rc["decline"]))}</span>') for r in R['rows']]
+    return Section(e(rc['title']), Rows(rows, open_=True), meta=e(R['meta']))
+
+
+def approve_form() -> str:
+    """The rail in Approve mode: the add form prefilled from the request; no invite (the account is already bound)."""
+    rc, fs, r = R['copy'], A['fields'], R['rows'][0]
+    values = [r['title'].split('/')[-1], 'https://' + r['title'], r['title'].split('/')[-1], r['title'].split('/')[-1].upper(), '2026-12-09', '500']
+    body = ('<div class="stack">' + f'<p class="t-small">{e(rc["approveJob"])}</p>'
+            + ''.join(f'<label class="f"><span class="t-label">{e(f["label"])}</span><input class="field" type="text" value="{e(v)}">'
+                      f'<span class="t-small">{e(f["hint"])}</span></label>' for f, v in zip(fs, values))
+            + f'<div class="acts">{Btn(e(A["copy"]["add"]), primary=True, small=False)}{Btn(e(A["copy"]["cancelEdit"]), small=False)}</div></div>')
+    return Section(e(f'Approve {r["title"]}'), body)
+
+
 def admin_creators(rail: str) -> str:
     c = A['copy']
-    body = PageHeader(e(c['pageTitle']), lead=e(c['job'])) + f'<div class="page-foot">{Page("split", creators_plate(), rail)}</div>'
+    main = f'<div class="stack" style="gap:32px">{requests_section()}{creators_plate()}</div>'
+    body = PageHeader(e(c['pageTitle']), lead=e(c['job'])) + f'<div class="page-foot">{Page("split", main, rail)}</div>'
     return render('Creators · Forever Sixty', body, OWNER, '/admin/creators mock (the owner); data creators-facts.json (copy.ts, model.ts over fixtures/creators).')
 
 
@@ -152,7 +175,51 @@ def stats() -> str:
     return render('Creator stats · Forever Sixty', body, CREATOR, '/creators/stats mock (the creator); data creators-facts.json.')
 
 
+# ================================================================================================ /creators (public)
+def program() -> str:
+    """The public page: a document (Page reading, no contents rail), its sections from programCopy, Apply in the head and at the end."""
+    secs = ''.join(ReadingSection(e(s['title']), Prose(''.join(f'<p>{e(p)}</p>' for p in s['paragraphs'])), anchor=s['id'])
+                   for s in G['sections'])
+    end = ReadingSection(e(G['applyTitle']), Prose(f'<p>{e(G["applyLead"])}</p>') + f'<div class="acts">{Btn(e(G["apply"]), primary=True, small=False)}</div>',
+                         anchor='apply')
+    head = PageHeader(e(G['pageTitle']), lead=e(G['lead']), actions=Btn(e(G['apply']), primary=True, small=False))
+    body = head + f'<div class="page-foot">{Page("reading", secs + end, "", toc_from=0)}</div>'
+    return render('Creators · Forever Sixty', body, CREATOR, '/creators mock (public, signed in); data creators-facts.json (programCopy).')
+
+
+# ================================================================================================ /creators/apply
+def apply(state: str) -> str:
+    c = Y['copy']
+    f = c['fields']
+    if state == 'form':
+        radios = ''.join(f'<label class="acts"><input class="radio" type="radio" name="p"{" checked" if k == "twitch" else ""}> {e(v)}</label>'
+                         for k, v in c['platforms'].items())
+        inner = ('<div class="stack">'
+                 + field(f['channel'])
+                 + f'<fieldset class="f fs"><legend class="t-label">{e(f["platform"]["label"])}</legend><div class="acts">{radios}</div></fieldset>'
+                 + field(f['audience'])
+                 + f'<label class="f"><span class="t-label">{e(f["about"]["label"])}</span><textarea class="field" rows="5" style="height:auto;padding-top:10px"></textarea>'
+                   f'<span class="t-small">{e(f["about"]["hint"])} · {e(Y["counter"])}</span></label>'
+                 + field(f['email'])
+                 + f'<p class="t-small">{e(c["consent"])}</p>'
+                 + f'<div class="acts">{Btn(e(c["submit"]), primary=True, small=False)}</div></div>')
+        section = Section(e(c['formTitle']), inner)
+    else:
+        tag, tone, line = {'pending': (c['pendingTag'], 'muted', Y['pending']), 'approved': (c['approvedTag'], 'kill', c['approved']),
+                           'declined': (c['declinedTag'], 'muted', c['declined'])}[state]
+        act = f'<div class="acts">{Btn(e(c["setup"]), primary=True, small=False)}</div>' if state == 'approved' else ''
+        section = Section(e(c['statusTitle']), f'<div class="stack"><div>{Tag(e(tag), tone)}</div><p>{e(line)}</p>{act}</div>')
+    body = PageHeader(e(c['pageTitle'])) + f'<div class="page-foot">{PageForm(section)}</div>'
+    return render('Apply · Forever Sixty', body, CREATOR, f'/creators/apply mock ({state}); data creators-facts.json (applyCopy).')
+
+
 PAGES = {
+    'web-admin-creators-approve': lambda: admin_creators(approve_form()),
+    'web-creators': program,
+    'web-creators-apply': lambda: apply('form'),
+    'web-creators-apply-pending': lambda: apply('pending'),
+    'web-creators-apply-approved': lambda: apply('approved'),
+    'web-creators-apply-declined': lambda: apply('declined'),
     'web-admin-creators': lambda: admin_creators(add_form()),
     'web-admin-creators-edit': lambda: admin_creators(edit_form()),
     'web-admin-creators-payouts': lambda: payouts(),

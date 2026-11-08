@@ -4,7 +4,15 @@
 // offers. Every rule that decides money lives in the API (api/internal/creators); this module
 // only formats what the API answered.
 import type { TagTone } from '../../components/ui/Tag.svelte';
-import { adminCreatorsCopy, creatorStatsCopy, payoutsCopy, stripeStatusCopy } from './copy';
+import {
+  adminCreatorsCopy,
+  applyCopy,
+  creatorStatsCopy,
+  payoutsCopy,
+  requestsCopy,
+  stripeStatusCopy,
+  type Platform,
+} from './copy';
 
 export type StripeStatus = keyof typeof stripeStatusCopy;
 
@@ -242,4 +250,47 @@ export function lineText(l: StatementLine): { text: string; amount: string; refu
     amount: (l.kind === 'refund' ? '−' : '') + money(l.amount_cents),
     refund: l.kind === 'refund',
   };
+}
+
+export type ApplicationStatus = 'pending' | 'approved' | 'declined';
+
+/** The applicant's own application (GET /v1/creators/application). */
+export interface MyApplication {
+  status: ApplicationStatus;
+  created_at: string;
+}
+
+/** A request as the owner sees it. The contact email is the owner's alone. */
+export interface CreatorRequest {
+  id: number;
+  channel_url: string;
+  platform: Platform;
+  audience: number | null;
+  about: string;
+  contact_email: string | null;
+  created_at: string;
+  /** Suggestions for the Approve form: the channel's own name, a free slug and code. */
+  suggested: { name: string; slug: string; code: string };
+}
+
+export interface ApplicationInput {
+  channel_url: string;
+  platform: Platform;
+  audience: number | null;
+  about: string;
+  contact_email: string;
+}
+
+/** The API's own limit on "What do you make about Forever?". */
+export const ABOUT_MAX = 500;
+
+/** A request Row's sub line: platform, the size they gave, the day it came. */
+export function requestSub(r: CreatorRequest): string {
+  const size = r.audience === null ? requestsCopy.sizeUnknown : requestsCopy.size(count(r.audience));
+  return requestsCopy.sub(applyCopy.platforms[r.platform], size, dayLabel(r.created_at));
+}
+
+/** The channel as a short title: the address without its scheme. */
+export function channelTitle(url: string): string {
+  return url.replace(/^https:\/\/(www\.)?/, '').replace(/\/$/, '');
 }

@@ -98,6 +98,20 @@ PageHeader `Statements`, lead `Each creator's month. Nothing is paid until you a
 
 PageHeader `{creator name}`, meta `foreversixty.gg/go/{slug} · code {CODE}`. A split Page. Main: the one Plate holding four Figures, each saying what it covers (`Earned so far` in gold with `{Month}, estimated, {cap} cap max`; Players `all time`; Returning `all time`; Paying `paying now`), then Section `Your players` (meta `by week · no names, by design`) as RowsSlim, one row per week, newest first, at most 26: `Week of 23 Nov: 54 signed up · 36 returning · 10 paying`, the running week `Week of 7 Dec: 18 signed up so far`. Rail: Section `Payouts`, one RowsSlim line per approved month, `{Month}` `{amount}`; empty `No payouts yet. Each month is paid after it closes and is approved.` While Stripe is not ready a `Set up payouts` button heads the rail (to `/creators/onboarding`). Once it is ready, a `Payouts and tax forms` button closes the rail: it opens the creator's Stripe Express dashboard (payouts, bank details, the 1099) through a login link the API makes on each press (`POST /v1/creators/me/dashboard`, Stripe's `POST /v1/accounts/{id}/login_links`), never stored and never written into the page. A signed-in creator also gets a `Creator stats` item in the profile and account menu (`/v1/me` carries `creator: true`). Read-only; no names (section 1, Privacy). Not a creator: the onboarding page's not-a-creator line.
 
+### 3e. `/creators` (public, indexable, in the sitemap; the footer's About column links it as `Creators`)
+
+PageHeader `Creators`, lead `If you stream or make videos about World of Warcraft: Forever, you can earn from the players you send us.`, action `Apply` primary. A document (`Page reading`, no contents rail): ReadingSections `What you get` (the $2 rule in plain words, the 50% share for 12 months, Premium and the Raid guild plan while in the program), `How players count` (link within 30 days or the code; one account, one creator; older accounts and your own never count), `Payouts` (monthly, through Stripe, the cap, the stats page by week), `Saying it is sponsored` (FTC and Twitch disclosure), and `Apply` with the button again. Every word is `programCopy`. Apply signed in goes to `/creators/apply`; signed out, to Battle.net sign-in with `next=/creators/apply`. Premium and the Raid guild plan are granted by hand with the `grant` CLI after approval (grants are never an HTTP route, RULING 4).
+
+### 3f. `/creators/apply` (signed in; noindex)
+
+`Page layout="form"`, PageHeader `Apply to the creator program`. Section `Your channel`: Fields Channel (a Twitch or YouTube https address; the API checks the host is twitch.tv or youtube.com), Main platform (two radios), Viewers or subscribers (optional whole number), `What do you make about Forever?` (required, 1 to 500 characters, a counter `{n} of 500`), Contact email (optional, only the owner sees it; never in a URL or a log), the consent line `We review every application; we'll reply on your Forever Sixty account.`, primary `Send application`. One open application per account (409 otherwise), 5 sends an hour per address. States after sending, in a Section `Your application` with a Tag: Pending (`Sent {date}. We'll reply here.`), Approved (`You're in. Set up payouts so we can pay you.` and `Set up payouts` to `/creators/onboarding`), Not this time (`Not this time. Thank you for applying.`; the form comes back so they can apply again later). Already a creator: `You're already in the creator program.` and `Your stats ›`. Signed out: the sign-in prompt.
+
+### 3g. Requests on `/admin/creators`
+
+A Section `Requests` (meta `{n} waiting`) above `Your creators`: open Rows (the page keeps one Plate), title the channel without its scheme, sub `{Platform} · about {n} | size not given · {date}`, foot the applicant's own text, trail `Approve` primary and `Decline`. Empty: the Section is not shown. Approve puts the rail in Approve mode, `Approve {channel}`, the add form prefilled (name and slug from the channel path, the code its capitals, starts today, cap 500), with `Their account is already bound; no invite is needed.`; `Add creator` creates the creator bound to the applicant's account and marks the request approved. Decline marks it declined at once (no reason). The contact email shows under the text for the owner only.
+
+**Owner alert.** There is no owner-only alert path today (the events catalogue is per-player preferences shown in every account's settings), so the owner's account menu shows the count as a badge, `{n} creator requests`, linking `/admin/creators`; `/v1/me` carries `creator_requests` for the admin only.
+
 ## 4. API (all under the envelope; openapi.yaml gains every route)
 
 | Route | Who | What |
@@ -113,8 +127,13 @@ PageHeader `{creator name}`, meta `foreversixty.gg/go/{slug} · code {CODE}`. A 
 | `GET /v1/creators/me` | signed in creator | the stats page |
 | `POST /v1/creators/me/onboarding` | signed in creator | make the Express account if needed, answer an account link URL |
 | `POST /v1/creators/me/dashboard` | signed in creator, Stripe ready | a fresh Express dashboard login link `{url}` |
+| `GET /v1/creators/application` | signed in | the account's latest application and whether it is a creator |
+| `POST /v1/creators/application` | signed in, rate limited | send one (409 while one is open or for a creator) |
+| `GET /v1/admin/creators/requests` | owner | open requests, with suggestions for the Approve form |
+| `POST /v1/admin/creators/requests/{id}/approve` | owner | create the creator from the request, bound to the applicant |
+| `POST /v1/admin/creators/requests/{id}/decline` | owner | decline |
 | `POST /v1/me/arrival` | signed in | gains an optional `at` (the click time, ms) |
 
 The webhook stays `POST /v1/billing/webhook`: `checkout.session.completed` (a creator code -> attribution, then the first invoice's share), `invoice.paid` (shares), `charge.refunded` (refund lines) and `account.updated` from a second, Connect endpoint on the same URL whose secret is `STRIPE_CONNECT_WEBHOOK_SECRET` (the handler accepts either secret). Onboarding status is also re-read on `?done=1` and by the owner's Refresh, so a missed event never strands a creator. Stripe calls run only with the sandbox key in this lane; go-live steps go in `api/README.md`.
 
-Migration `0092_creators`: `creators`, `creator_invites`, `creator_players`, `creator_revenue`, `creator_refunds`, `creator_payouts`. Only the deployed API applies it.
+Migration `0092_creators`: `creators`, `creator_invites`, `creator_players`, `creator_revenue`, `creator_refunds`, `creator_payouts`, `creator_applications`. Only the deployed API applies it.
