@@ -7,72 +7,70 @@
   "head": {
    "box": [
     16,
-    0,
+    8,
     380,
-    259
+    94
    ],
-   "inventory": {
-    "button": 1,
-    "image": 1
-   }
+   "inventory": {}
   },
   "head-title": {
    "box": [
     16,
-    16,
+    24,
     380,
-    84
-   ],
-   "inventory": {
-    "image": 1
-   }
-  },
-  "head-meta": {
-   "box": [
-    96,
-    60,
-    300,
-    40
+    64
    ],
    "inventory": {}
   },
-  "section-waiting-for-approval": {
+  "head-meta": {
    "box": [
     16,
-    376,
+    68,
+    93,
+    20
+   ],
+   "inventory": {}
+  },
+  "summary": {
+   "box": [
+    16,
+    126,
     380,
-    439
+    120
+   ],
+   "inventory": {}
+  },
+  "controls": {
+   "box": [
+    16,
+    246,
+    380,
+    48
    ],
    "inventory": {
-    "row": 3,
-    "button": 7,
-    "image": 3
+    "button": 5
    }
   },
-  "section-roster": {
+  "section-members": {
    "box": [
     16,
-    863,
+    322,
     380,
-    2614
+    924
    ],
    "inventory": {
-    "row": 21,
-    "button": 9,
-    "image": 21
+    "row": 10,
+    "image": 10
    }
   },
-  "plate": {
+  "footer-note": {
    "box": [
     16,
-    1194,
+    1262,
     380,
-    2227
+    40
    ],
-   "inventory": {
-    "row": 21,
-    "image": 21
-   }
+   "inventory": {}
   }
  }
 }

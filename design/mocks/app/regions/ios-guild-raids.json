@@ -7,65 +7,72 @@
   "head": {
    "box": [
     16,
-    0,
+    8,
     361,
-    259
+    94
    ],
-   "inventory": {
-    "button": 1,
-    "image": 1
-   }
+   "inventory": {}
   },
   "head-title": {
    "box": [
     16,
-    16,
+    24,
     361,
-    84
+    64
    ],
-   "inventory": {
-    "image": 1
-   }
+   "inventory": {}
   },
   "head-meta": {
    "box": [
-    96,
-    60,
-    281,
-    40
+    16,
+    68,
+    134,
+    20
    ],
    "inventory": {}
   },
   "section-planned": {
    "box": [
     16,
-    376,
+    130,
     361,
-    202
+    228
    ],
    "inventory": {
-    "button": 1
+    "row": 2
    }
   },
-  "plate": {
+  "section-calendar": {
    "box": [
     16,
-    435,
+    386,
     361,
-    143
+    229
+   ],
+   "inventory": {
+    "row": 3
+   }
+  },
+  "section-share": {
+   "box": [
+    16,
+    643,
+    361,
+    196
+   ],
+   "inventory": {
+    "row": 1,
+    "button": 2
+   }
+  },
+  "footer-note": {
+   "box": [
+    16,
+    855,
+    361,
+    40
    ],
    "inventory": {}
-  },
-  "section-raid-nights": {
-   "box": [
-    16,
-    626,
-    361,
-    353
-   ],
-   "inventory": {
-    "button": 1
-   }
   }
  }
 }

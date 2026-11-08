@@ -7,149 +7,71 @@
   "head": {
    "box": [
     16,
-    44,
+    8,
     361,
-    337
+    94
    ],
    "inventory": {
-    "button": 4
+    "image": 1
    }
   },
   "head-title": {
    "box": [
     16,
-    60,
+    24,
     361,
-    116
+    64
    ],
-   "inventory": {}
+   "inventory": {
+    "image": 1
+   }
   },
   "head-meta": {
    "box": [
-    16,
-    104,
-    361,
-    72
+    88,
+    68,
+    234,
+    20
    ],
    "inventory": {}
   },
-  "controls": {
+  "countdowns": {
    "box": [
-    0,
-    381,
-    393,
-    62
+    16,
+    126,
+    361,
+    182
    ],
-   "inventory": {
-    "segment": 3
-   }
+   "inventory": {}
   },
   "section-your-sign-up": {
    "box": [
     16,
-    471,
+    336,
     361,
-    147
+    111
    ],
    "inventory": {
-    "segment": 4,
-    "field": 2,
-    "image": 1
+    "button": 4
    }
   },
-  "section-sign-ups": {
+  "section-who-is-coming": {
    "box": [
     16,
-    666,
+    475,
     361,
-    2380
+    347
    ],
    "inventory": {
-    "row": 21,
-    "segment": 84,
-    "image": 21
-   }
-  },
-  "plate": {
-   "box": [
-    16,
-    713,
-    361,
-    2333
-   ],
-   "inventory": {
-    "row": 21,
-    "segment": 84,
-    "image": 21
-   }
-  },
-  "section-not-signed-up": {
-   "box": [
-    16,
-    3094,
-    361,
-    361
-   ],
-   "inventory": {
-    "row": 3,
-    "button": 1,
-    "segment": 12,
-    "image": 3
-   }
-  },
-  "section-comp-against-the-target": {
-   "box": [
-    16,
-    3479,
-    361,
-    225
-   ],
-   "inventory": {
-    "button": 1
-   }
-  },
-  "section-bench-and-swaps": {
-   "box": [
-    16,
-    3736,
-    361,
-    236
-   ],
-   "inventory": {
-    "row": 2,
-    "button": 2,
-    "image": 2
-   }
-  },
-  "section-onyxia-assignments": {
-   "box": [
-    16,
-    4004,
-    361,
-    1896
-   ],
-   "inventory": {
-    "row": 12,
-    "button": 14
-   }
-  },
-  "section-buff-and-debuff-cover": {
-   "box": [
-    16,
-    5932,
-    361,
-    1264
-   ],
-   "inventory": {
-    "image": 24
+    "row": 5
    }
   },
   "section-notes": {
    "box": [
     16,
-    7228,
+    850,
     361,
-    69
+    65
    ],
    "inventory": {}
   }

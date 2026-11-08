@@ -7,7 +7,7 @@
   "head": {
    "box": [
     16,
-    0,
+    8,
     361,
     68
    ],
@@ -16,31 +16,21 @@
   "head-title": {
    "box": [
     16,
-    16,
+    24,
     361,
     38
    ],
    "inventory": {}
   },
-  "section-characters": {
+  "section-error": {
    "box": [
     16,
-    96,
+    100,
     361,
-    165
+    102
    ],
    "inventory": {
-    "button": 1
-   }
-  },
-  "plate": {
-   "box": [
-    16,
-    143,
-    361,
-    118
-   ],
-   "inventory": {
+    "row": 1,
     "button": 1
    }
   }

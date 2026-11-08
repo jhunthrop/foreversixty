@@ -7,205 +7,59 @@
   "head": {
    "box": [
     16,
-    0,
+    8,
     380,
-    421
+    94
    ],
-   "inventory": {
-    "button": 1,
-    "image": 1
-   }
+   "inventory": {}
   },
   "head-title": {
    "box": [
     16,
-    16,
+    24,
     380,
-    110
-   ],
-   "inventory": {
-    "image": 1
-   }
-  },
-  "head-meta": {
-   "box": [
-    88,
-    60,
-    308,
-    66
+    64
    ],
    "inventory": {}
   },
-  "head-answer": {
+  "head-meta": {
    "box": [
     16,
-    142,
-    380,
-    172
+    68,
+    122,
+    20
    ],
-   "inventory": {
-    "button": 1
-   }
-  },
-  "controls": {
-   "box": [
-    0,
-    421,
-    412,
-    62
-   ],
-   "inventory": {
-    "button": 2,
-    "segment": 3,
-    "field": 4
-   }
+   "inventory": {}
   },
   "summary": {
    "box": [
     16,
-    483,
+    122,
     380,
-    90
-   ],
-   "inventory": {
-    "image": 1
-   }
-  },
-  "section-damage-by-ability": {
-   "box": [
-    16,
-    601,
-    380,
-    776
-   ],
-   "inventory": {
-    "image": 9
-   }
-  },
-  "plate": {
-   "box": [
-    16,
-    648,
-    380,
-    729
-   ],
-   "inventory": {
-    "image": 9
-   }
-  },
-  "section-timeline": {
-   "box": [
-    16,
-    1850,
-    380,
-    993
-   ],
-   "inventory": {
-    "row": 1,
-    "button": 1,
-    "segment": 4,
-    "image": 23
-   }
-  },
-  "section-gear": {
-   "box": [
-    16,
-    2891,
-    380,
-    1600
-   ],
-   "inventory": {
-    "row": 17,
-    "image": 17
-   }
-  },
-  "slots": {
-   "box": [
-    16,
-    2938,
-    380,
-    1275
-   ],
-   "inventory": {
-    "row": 17,
-    "image": 17
-   }
-  },
-  "section-talents": {
-   "box": [
-    16,
-    4539,
-    380,
-    1109
-   ],
-   "inventory": {
-    "image": 53
-   }
-  },
-  "section-rage": {
-   "box": [
-    16,
-    5696,
-    380,
-    1354
-   ],
-   "inventory": {
-    "image": 13
-   }
-  },
-  "section-buffs-and-debuffs": {
-   "box": [
-    16,
-    7098,
-    380,
-    1526
-   ],
-   "inventory": {
-    "image": 33
-   }
-  },
-  "section-dps-spread": {
-   "box": [
-    16,
-    1425,
-    380,
-    377
+    69
    ],
    "inventory": {}
   },
-  "section-this-run": {
+  "section-the-gear-it-ran": {
    "box": [
     16,
-    8672,
+    219,
     380,
-    1272
+    183
    ],
    "inventory": {
-    "button": 3,
-    "image": 30
+    "image": 17
    }
   },
-  "section-rotation": {
+  "footer-note": {
    "box": [
     16,
-    9992,
+    402,
     380,
-    1814
+    58
    ],
    "inventory": {
-    "row": 14,
-    "image": 14
-   }
-  },
-  "section-your-sims": {
-   "box": [
-    16,
-    11854,
-    380,
-    307
-   ],
-   "inventory": {
-    "row": 3
+    "row": 1
    }
   }
  }

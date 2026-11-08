@@ -7,130 +7,54 @@
   "head": {
    "box": [
     16,
-    0,
+    8,
     380,
-    421
+    68
    ],
-   "inventory": {
-    "image": 1
-   }
+   "inventory": {}
   },
   "head-title": {
    "box": [
     16,
-    16,
+    24,
     380,
-    110
-   ],
-   "inventory": {
-    "image": 1
-   }
-  },
-  "head-meta": {
-   "box": [
-    88,
-    60,
-    308,
-    66
+    38
    ],
    "inventory": {}
   },
-  "head-answer": {
+  "section-server-runs": {
    "box": [
     16,
-    142,
+    104,
     380,
-    172
-   ],
-   "inventory": {}
-  },
-  "controls": {
-   "box": [
-    0,
-    421,
-    412,
-    62
+    319
    ],
    "inventory": {
-    "button": 2,
-    "segment": 3,
-    "field": 4
-   }
-  },
-  "section-damage-by-ability": {
-   "box": [
-    16,
-    511,
-    380,
-    665
-   ],
-   "inventory": {}
-  },
-  "plate": {
-   "box": [
-    16,
-    558,
-    380,
-    618
-   ],
-   "inventory": {}
-  },
-  "section-gear": {
-   "box": [
-    16,
-    1224,
-    380,
-    1382
-   ],
-   "inventory": {
-    "row": 17,
-    "image": 17
-   }
-  },
-  "slots": {
-   "box": [
-    16,
-    1271,
-    380,
-    1275
-   ],
-   "inventory": {
-    "row": 17,
-    "image": 17
-   }
-  },
-  "section-talents": {
-   "box": [
-    16,
-    2654,
-    380,
-    1109
-   ],
-   "inventory": {
-    "image": 53
-   }
-  },
-  "section-rotation": {
-   "box": [
-    16,
-    3811,
-    380,
-    1328
-   ],
-   "inventory": {
-    "row": 14,
-    "image": 13
+    "row": 3,
+    "image": 3
    }
   },
   "section-your-sims": {
    "box": [
     16,
-    5187,
+    451,
     380,
-    310
+    271
    ],
    "inventory": {
-    "row": 3
+    "row": 3,
+    "image": 3
+   }
+  },
+  "footer-note": {
+   "box": [
+    16,
+    738,
+    380,
+    98
+   ],
+   "inventory": {
+    "row": 1
    }
   }
  }

@@ -7,9 +7,9 @@
   "head": {
    "box": [
     16,
-    0,
+    8,
     380,
-    248
+    86
    ],
    "inventory": {
     "image": 1
@@ -18,63 +18,25 @@
   "head-title": {
    "box": [
     16,
-    16,
+    24,
     380,
-    218
+    56
    ],
    "inventory": {
     "image": 1
    }
   },
-  "head-meta": {
-   "box": [
-    88,
-    60,
-    308,
-    20
-   ],
-   "inventory": {}
-  },
-  "plate": {
+  "section-specs": {
    "box": [
     16,
-    268,
+    122,
     380,
-    420
+    301
    ],
    "inventory": {
     "row": 3,
     "image": 3
    }
-  },
-  "section-what-changed-from-1-12": {
-   "box": [
-    16,
-    764,
-    380,
-    743
-   ],
-   "inventory": {}
-  },
-  "section-sources": {
-   "box": [
-    16,
-    1555,
-    380,
-    320
-   ],
-   "inventory": {
-    "row": 6
-   }
-  },
-  "section-races": {
-   "box": [
-    16,
-    1899,
-    380,
-    143
-   ],
-   "inventory": {}
   }
  }
 }

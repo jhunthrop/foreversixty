@@ -7,81 +7,27 @@
   "head": {
    "box": [
     16,
-    0,
+    8,
     380,
-    88
+    68
    ],
    "inventory": {}
   },
   "head-title": {
    "box": [
     16,
-    16,
+    24,
     380,
-    58
+    38
    ],
    "inventory": {}
   },
-  "head-meta": {
+  "section-loading": {
    "box": [
     16,
-    60,
-    220,
-    14
-   ],
-   "inventory": {}
-  },
-  "section-characters": {
-   "box": [
-    16,
-    116,
+    100,
     380,
-    205
-   ],
-   "inventory": {}
-  },
-  "plate": {
-   "box": [
-    16,
-    163,
-    380,
-    158
-   ],
-   "inventory": {}
-  },
-  "section-plan": {
-   "box": [
-    16,
-    345,
-    380,
-    155
-   ],
-   "inventory": {}
-  },
-  "section-guild": {
-   "box": [
-    16,
-    532,
-    380,
-    155
-   ],
-   "inventory": {}
-  },
-  "section-devices": {
-   "box": [
-    16,
-    719,
-    380,
-    155
-   ],
-   "inventory": {}
-  },
-  "section-discord": {
-   "box": [
-    16,
-    906,
-    380,
-    155
+    396
    ],
    "inventory": {}
   }

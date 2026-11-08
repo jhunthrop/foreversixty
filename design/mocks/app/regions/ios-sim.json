@@ -7,77 +7,42 @@
   "head": {
    "box": [
     16,
-    0,
+    8,
     361,
-    207
+    68
    ],
    "inventory": {}
   },
   "head-title": {
    "box": [
     16,
-    16,
+    24,
     361,
-    84
+    38
    ],
    "inventory": {}
   },
-  "head-meta": {
+  "section-your-sims": {
    "box": [
     16,
-    60,
+    104,
     361,
-    40
-   ],
-   "inventory": {}
-  },
-  "section-sim-your-character": {
-   "box": [
-    16,
-    235,
-    361,
-    251
-   ],
-   "inventory": {
-    "button": 1,
-    "field": 1
-   }
-  },
-  "plate": {
-   "box": [
-    16,
-    282,
-    361,
-    204
-   ],
-   "inventory": {
-    "button": 1,
-    "field": 1
-   }
-  },
-  "section-other-ways-in": {
-   "box": [
-    16,
-    534,
-    361,
-    531
+    271
    ],
    "inventory": {
     "row": 3,
-    "button": 3,
-    "field": 2
+    "image": 3
    }
   },
-  "section-sim-a-best-in-slot-set": {
+  "footer-note": {
    "box": [
     16,
-    1113,
+    391,
     361,
-    619
+    78
    ],
    "inventory": {
-    "row": 9,
-    "image": 9
+    "row": 1
    }
   }
  }

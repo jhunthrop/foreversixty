@@ -7,96 +7,49 @@
   "head": {
    "box": [
     16,
-    0,
+    8,
     361,
-    259
+    94
    ],
-   "inventory": {
-    "button": 1,
-    "image": 1
-   }
+   "inventory": {}
   },
   "head-title": {
    "box": [
     16,
-    16,
+    24,
     361,
-    84
-   ],
-   "inventory": {
-    "image": 1
-   }
-  },
-  "head-meta": {
-   "box": [
-    96,
-    60,
-    281,
-    40
+    64
    ],
    "inventory": {}
   },
-  "controls": {
-   "box": [
-    0,
-    356,
-    393,
-    62
-   ],
-   "inventory": {
-    "segment": 2
-   }
-  },
-  "section-onyxia-drops": {
+  "head-meta": {
    "box": [
     16,
-    446,
-    361,
-    680
+    68,
+    174,
+    20
    ],
-   "inventory": {
-    "row": 6,
-    "field": 1,
-    "image": 6
-   }
+   "inventory": {}
   },
-  "plate": {
+  "section-logged-raid-nights": {
    "box": [
     16,
-    517,
+    130,
     361,
-    535
+    756
    ],
    "inventory": {
-    "row": 6,
-    "image": 6
+    "row": 8
    }
   },
-  "section-candidates-for-vis-kag-the-bloodletter": {
+  "footer-note": {
    "box": [
     16,
-    1150,
+    966,
     361,
-    584
+    40
    ],
-   "inventory": {
-    "row": 4,
-    "button": 12,
-    "image": 4
-   }
-  },
-  "section-decision-record": {
-   "box": [
-    16,
-    1766,
-    361,
-    166
-   ],
-   "inventory": {
-    "row": 2,
-    "button": 1,
-    "image": 2
-   }
+   "inventory": {}
   }
  }
 }

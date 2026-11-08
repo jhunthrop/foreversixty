@@ -7,140 +7,51 @@
   "head": {
    "box": [
     16,
-    0,
+    8,
     361,
-    206
+    94
    ],
-   "inventory": {
-    "button": 1,
-    "image": 1
-   }
+   "inventory": {}
   },
   "head-title": {
    "box": [
     16,
-    16,
+    24,
     361,
-    88
+    64
    ],
-   "inventory": {
-    "button": 1
-   }
+   "inventory": {}
   },
   "head-meta": {
    "box": [
     16,
-    60,
-    347,
-    44
-   ],
-   "inventory": {
-    "button": 1
-   }
-  },
-  "head-answer": {
-   "box": [
-    16,
-    120,
-    361,
-    72
-   ],
-   "inventory": {
-    "image": 1
-   }
-  },
-  "section-characters": {
-   "box": [
-    16,
-    234,
-    361,
-    325
-   ],
-   "inventory": {
-    "row": 1,
-    "image": 1
-   }
-  },
-  "plate": {
-   "box": [
-    16,
-    307,
-    361,
-    128
-   ],
-   "inventory": {
-    "row": 1,
-    "image": 1
-   }
-  },
-  "section-plan": {
-   "box": [
-    16,
-    607,
-    361,
-    480
-   ],
-   "inventory": {
-    "row": 4,
-    "button": 1
-   }
-  },
-  "section-guild": {
-   "box": [
-    16,
-    1135,
-    361,
-    331
-   ],
-   "inventory": {
-    "row": 3,
-    "button": 1,
-    "field": 1,
-    "image": 1
-   }
-  },
-  "section-devices": {
-   "box": [
-    16,
-    1490,
-    361,
-    193
-   ],
-   "inventory": {
-    "row": 1,
-    "button": 1
-   }
-  },
-  "section-discord": {
-   "box": [
-    16,
-    1715,
-    361,
-    508
-   ],
-   "inventory": {
-    "row": 2,
-    "button": 3
-   }
-  },
-  "section-you": {
-   "box": [
-    16,
-    2255,
-    361,
-    183
+    68,
+    241,
+    20
    ],
    "inventory": {}
   },
-  "section-delete-account": {
+  "section-account": {
    "box": [
     16,
-    2470,
+    130,
     361,
-    143
+    507
    ],
    "inventory": {
-    "button": 1
+    "row": 7,
+    "image": 1
+   }
+  },
+  "section-about": {
+   "box": [
+    16,
+    665,
+    361,
+    203
+   ],
+   "inventory": {
+    "row": 3
    }
   }
  }

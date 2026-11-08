@@ -7,125 +7,51 @@
   "head": {
    "box": [
     16,
-    0,
+    8,
     361,
-    206
+    94
    ],
-   "inventory": {
-    "button": 1,
-    "image": 1
-   }
+   "inventory": {}
   },
   "head-title": {
    "box": [
     16,
-    16,
+    24,
     361,
-    88
+    64
    ],
-   "inventory": {
-    "button": 1
-   }
+   "inventory": {}
   },
   "head-meta": {
    "box": [
     16,
-    60,
-    347,
-    44
-   ],
-   "inventory": {
-    "button": 1
-   }
-  },
-  "head-answer": {
-   "box": [
-    16,
-    120,
-    361,
-    72
-   ],
-   "inventory": {
-    "image": 1
-   }
-  },
-  "section-characters": {
-   "box": [
-    16,
-    234,
-    361,
-    307
-   ],
-   "inventory": {
-    "row": 1,
-    "image": 1
-   }
-  },
-  "plate": {
-   "box": [
-    16,
-    307,
-    361,
-    110
-   ],
-   "inventory": {
-    "row": 1,
-    "image": 1
-   }
-  },
-  "section-plan": {
-   "box": [
-    16,
-    589,
-    361,
-    382
-   ],
-   "inventory": {
-    "row": 4,
-    "button": 1
-   }
-  },
-  "section-devices": {
-   "box": [
-    16,
-    995,
-    361,
-    177
-   ],
-   "inventory": {
-    "button": 1
-   }
-  },
-  "section-discord": {
-   "box": [
-    16,
-    1204,
-    361,
-    430
-   ],
-   "inventory": {
-    "row": 2,
-    "button": 2
-   }
-  },
-  "section-you": {
-   "box": [
-    16,
-    1666,
-    361,
-    183
+    68,
+    241,
+    20
    ],
    "inventory": {}
   },
-  "section-delete-account": {
+  "section-account": {
    "box": [
     16,
-    1881,
+    130,
     361,
-    143
+    511
    ],
    "inventory": {
-    "button": 1
+    "row": 7,
+    "image": 1
+   }
+  },
+  "section-about": {
+   "box": [
+    16,
+    669,
+    361,
+    203
+   ],
+   "inventory": {
+    "row": 3
    }
   }
  }

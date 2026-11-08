@@ -7,9 +7,9 @@
   "head": {
    "box": [
     16,
-    0,
+    8,
     380,
-    200
+    120
    ],
    "inventory": {
     "image": 1
@@ -18,9 +18,9 @@
   "head-title": {
    "box": [
     16,
-    16,
+    24,
     380,
-    170
+    90
    ],
    "inventory": {
     "image": 1
@@ -29,156 +29,118 @@
   "head-meta": {
    "box": [
     88,
-    60,
+    68,
     308,
-    20
+    46
    ],
    "inventory": {}
   },
   "controls": {
    "box": [
-    0,
-    200,
-    412,
-    50
+    16,
+    128,
+    380,
+    48
    ],
    "inventory": {
-    "row": 9,
-    "segment": 3,
-    "image": 3
+    "button": 6
    }
   },
-  "plate": {
+  "summary": {
    "box": [
     16,
-    270,
+    196,
     380,
-    1077
+    268
    ],
-   "inventory": {
-    "row": 4,
-    "button": 2,
-    "image": 54
-   }
+   "inventory": {}
   },
   "section-overview": {
    "box": [
     16,
-    1395,
+    492,
     380,
-    801
+    537
    ],
    "inventory": {}
   },
-  "section-talents-and-builds": {
+  "section-talents": {
    "box": [
     16,
-    2244,
+    1057,
     380,
-    1656
+    1828
    ],
    "inventory": {
-    "row": 9,
-    "image": 8
-   }
-  },
-  "section-rotation-and-priority": {
-   "box": [
-    16,
-    3948,
-    380,
-    2404
-   ],
-   "inventory": {
-    "row": 14,
+    "row": 15,
     "image": 13
    }
   },
-  "section-stat-priority": {
+  "section-rotation": {
    "box": [
     16,
-    6400,
+    2913,
     380,
-    1261
-   ],
-   "inventory": {}
-  },
-  "section-best-in-slot": {
-   "box": [
-    16,
-    7709,
-    380,
-    1633
+    1192
    ],
    "inventory": {
     "row": 17,
-    "image": 17
+    "image": 12
    }
   },
-  "section-enchants-and-consumables": {
+  "section-stats": {
    "box": [
     16,
-    9390,
+    4133,
     380,
-    1455
+    229
+   ],
+   "inventory": {}
+  },
+  "section-gear": {
+   "box": [
+    16,
+    4390,
+    380,
+    91
    ],
    "inventory": {
-    "row": 16,
-    "image": 16
+    "row": 1
    }
   },
   "section-races": {
    "box": [
     16,
-    10893,
+    4509,
     380,
-    1435
+    842
    ],
    "inventory": {
-    "row": 8,
-    "image": 9
-   }
-  },
-  "section-professions": {
-   "box": [
-    16,
-    12376,
-    380,
-    291
-   ],
-   "inventory": {}
-  },
-  "section-leveling": {
-   "box": [
-    16,
-    12715,
-    380,
-    2883
-   ],
-   "inventory": {
-    "button": 2,
-    "image": 50
+    "row": 10,
+    "image": 10
    }
   },
   "section-sources": {
    "box": [
     16,
-    15646,
+    5375,
     380,
-    496
+    44
    ],
    "inventory": {
-    "row": 10
+    "row": 7
    }
   },
   "footer-note": {
    "box": [
     16,
-    16190,
+    5419,
     380,
-    56
+    76
    ],
-   "inventory": {}
+   "inventory": {
+    "row": 1
+   }
   }
  }
 }

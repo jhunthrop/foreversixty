@@ -7,84 +7,52 @@
   "head": {
    "box": [
     16,
-    0,
+    8,
     361,
-    152
+    68
    ],
    "inventory": {}
   },
   "head-title": {
    "box": [
     16,
-    16,
+    24,
     361,
-    122
+    38
    ],
    "inventory": {}
   },
-  "head-meta": {
+  "section-key-dates": {
    "box": [
     16,
-    60,
+    104,
     361,
-    20
-   ],
-   "inventory": {}
-  },
-  "controls": {
-   "box": [
-    0,
-    152,
-    393,
-    50
-   ],
-   "inventory": {
-    "row": 3,
-    "segment": 3
-   }
-  },
-  "section-coming-up": {
-   "box": [
-    16,
-    250,
-    361,
-    483
+    103
    ],
    "inventory": {
     "row": 1
    }
   },
-  "section-november-2026": {
+  "section-what-changed": {
    "box": [
     16,
-    781,
+    235,
     361,
-    299
+    834
+   ],
+   "inventory": {
+    "row": 8
+   }
+  },
+  "footer-note": {
+   "box": [
+    16,
+    1069,
+    361,
+    58
    ],
    "inventory": {
     "row": 1
-   }
-  },
-  "section-october-2026": {
-   "box": [
-    16,
-    1128,
-    361,
-    141
-   ],
-   "inventory": {
-    "row": 1
-   }
-  },
-  "section-september-2026": {
-   "box": [
-    16,
-    1317,
-    361,
-    2319
-   ],
-   "inventory": {
-    "row": 59
    }
   }
  }
