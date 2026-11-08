@@ -39,17 +39,7 @@ NEXT_RAID = GUILD60['next_raid']
 WARRIOR = CLASS_COLOR['warrior']
 
 # ------------------------------------------------------------------------------------------------ phone deltas (CSS)
-# R0/R2: the home sections in the default server order. In a guild: head, countdowns (the next raid and your sign-up),
-# upgrades, feed, guild sims, spec week, movers. Without one (HOME_34): head, upgrades, feed, countdowns.
-# The split's wrappers dissolve so each section is one flex item of <main>, ordered as /v1/home's `sections` array.
-_FLAT = '''
-main{display:flex;flex-direction:column}
-main>.pc:has(>.layout-split),main .layout-split,main .layout-split>.main,main .layout-split>.rail{display:contents}
-main section[data-region^="section-"]{padding-inline:16px;margin-top:32px;order:6}
-main>.pc:has([data-region="countdowns"]){order:3}
-'''
-# Flows spec section 4, any other day in a guild: Next upgrade · Next raid (one line) · Feed · Guild sims.
-HOME_ORDER = flows.HOME_STATES['normal'][0]
+# The signed-out home (R3) is the web home mock; the signed-in Home states are app-composed in ws_app_flows.py.
 # R5: three filter segments full width under the feed title; Logs moves behind the filter button at the end.
 FEED_FILTERS = '''
 [data-region="section-forever-right-now"] .sec-h{flex-wrap:wrap;row-gap:10px}
@@ -59,13 +49,6 @@ FEED_FILTERS = '''
 [data-region="section-forever-right-now"] .seg a:nth-child(4){display:none}
 [data-region="section-forever-right-now"] .sec-h .act::after{content:"";flex:none;width:44px;height:44px;border:1px solid var(--line);border-radius:4px;
  background:center/20px no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23b9b3a4' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 5h16l-6 8v6l-4-2v-4z'/%3E%3C/svg%3E")}
-'''
-# R4: at 34 the first-raids countdown is one line under the feed; with no guild the ladder is one line.
-HOME_34 = _FLAT + '''
-main section[data-region="section-your-upgrades"]{order:2}
-main section[data-region="section-forever-right-now"]{order:3}
-main>.pc:has([data-region="countdowns"]){order:4}
-.cdn.raid .rw{display:none}.cdn.raid{padding:14px 16px}
 '''
 # R3: signed out, How to start becomes one footer link (the rail section is hidden; the link is the app's footer row).
 HOME_OUT = '''
@@ -82,9 +65,9 @@ def _ptr() -> str:
 
 
 def web_screen(mock: str, tab: str | None, back: str = '', title: str = '', share: bool = False, css: str = '', inject: str = '',
-               ptr: bool = False, who: str | None = 'warrior', badge: int = 0):
+               ptr: bool = False, who: str | None = 'warrior', badges: dict | None = None):
     def build(platform: str) -> str:
-        html = from_web(mock, platform, tab, back, title, share, extra_css=css, who=who, badge=badge)
+        html = from_web(mock, platform, tab, back, title, share, extra_css=css, who=who, badges=badges)
         if inject or ptr:
             html = html.replace('<main>', '<main>' + (_ptr() if ptr else ''), 1).replace('</main>', inject + '</main>', 1)
         return html
@@ -238,7 +221,7 @@ def raid_night(state: str):
                 + Section('Your sign-up', f'<div class="la bare"><div class="btns">{buttons}</div></div>')
                 + Section('Who is coming', counts, 'Roster &rsaquo;')
                 + Section('Before you pull', ready))
-        return app_page(platform, page(body, "Onyxia's Lair"), 'guild', back='Guild', title="Onyxia's Lair", share=True)
+        return app_page(platform, page(body, "Onyxia's Lair"), 'raid', back='Raid', title="Onyxia's Lair", share=True)
     return b
 
 
@@ -315,19 +298,6 @@ def W(mock, tab, **kw):
 SCREENS: dict = {
     # Home (tab Home)
     'home-out': W('web-home-out', 'home', css=HOME_OUT + FEED_FILTERS, inject=_out_footer(), who=None),
-    'home-loading': W('web-home-loading', 'home'),
-    'home-error': W('web-home-error', 'home', css=HOME_ORDER),
-    'home-new': W('web-home-new', 'home', who=None),
-    'home-34': flows.leveling(FEED_FILTERS, HOME_34),
-    'home-60': W('web-home-60', 'home', css=HOME_ORDER + FEED_FILTERS, inject=flows.normal_block(), badge=1),
-    'home-raid-day': flows.home_state('raid-day', FEED_FILTERS),
-    'home-raid-day-officer': flows.home_state('raid-day-officer', FEED_FILTERS),
-    'home-raid-live': flows.home_state('raid-live', FEED_FILTERS),
-    'home-after-raid': flows.home_state('after-raid', FEED_FILTERS),
-    'home-noguild': flows.home_state('noguild', FEED_FILTERS),
-    'home-60-refresh': W('web-home-60', 'home', css=HOME_ORDER + FEED_FILTERS, inject=flows.normal_block(), ptr=True, badge=1),
-    'home-feed-empty': W('web-home-feed-empty', 'home', css=HOME_ORDER + FEED_FILTERS, inject=flows.normal_block(), badge=1),
-    'home-feed-loading': W('web-home-feed-loading', 'home', css=HOME_ORDER + FEED_FILTERS, inject=flows.normal_block(), badge=1),
     'expired': expired,
     'search': search('empty'),
     'search-results': search('results'),
@@ -340,28 +310,20 @@ SCREENS: dict = {
     'character-loading': W('web-character-loading', 'home', back='Home'),
     'character-error': W('web-character-error', 'home', back='Home'),
     # BiS (tab BiS): the landing answers for your character; the spec list is the paperdoll page
-    'bis-out': W('web-bis-landing-out-60', 'bis', who=None),
-    'bis-24': W('web-bis-landing-24', 'bis'),
-    'bis-34': W('web-bis-landing-34', 'bis'),
-    'bis-60': W('web-bis-landing-60', 'bis'),
-    'bis-new': W('web-bis-landing-new', 'bis'),
-    'bis-nogear': W('web-bis-landing-nogear', 'bis'),
-    'bis-loading': W('web-bis-landing-loading', 'bis'),
-    'bis-error': W('web-bis-landing-error', 'bis'),
-    'bis-spec-60': W('web-bis-dps-60', 'bis', back='BiS', title='Marksmanship', share=True),
-    'bis-spec-healer-60': W('web-bis-healer-60', 'bis', back='BiS', title='Holy', share=True),
-    'bis-spec-20': W('web-bis-low-20', 'bis', back='BiS', title='Beast Mastery', share=True),
+    'bis-spec-60': W('web-bis-dps-60', 'gear', back='Gear', title='Marksmanship', share=True),
+    'bis-spec-healer-60': W('web-bis-healer-60', 'gear', back='Gear', title='Holy', share=True),
+    'bis-spec-20': W('web-bis-low-20', 'gear', back='Gear', title='Beast Mastery', share=True),
     # Guides (tab Guides): Guide | Tiers | What changed segments
-    'guides': W('web-guides', 'guides'),
-    'guides-you': W('web-guides-you', 'guides'),
-    'guides-class': W('web-guides-hunter', 'guides', back='Guides', title='Hunter'),
-    'guide': W('web-guides-hunter-survival', 'guides', back='Hunter', title='Survival', share=True),
-    'guide-you': W('web-guides-hunter-survival-you', 'guides', back='Hunter', title='Survival', share=True),
-    'guide-loading': W('web-guides-hunter-survival-loading', 'guides', back='Hunter'),
-    'guide-error': W('web-guides-hunter-survival-error', 'guides', back='Hunter'),
-    'tiers': W('web-tiers', 'guides'),
-    'tiers-you': W('web-tiers-you', 'guides'),
-    'changes': W('web-changelog-game', 'guides'),
+    'guides': W('web-guides', 'home', back='Home', title='Guides'),
+    'guides-you': W('web-guides-you', 'home', back='Home', title='Guides'),
+    'guides-class': W('web-guides-hunter', 'home', back='Guides', title='Hunter'),
+    'guide': W('web-guides-hunter-survival', 'home', back='Hunter', title='Survival', share=True),
+    'guide-you': W('web-guides-hunter-survival-you', 'home', back='Hunter', title='Survival', share=True),
+    'guide-loading': W('web-guides-hunter-survival-loading', 'home', back='Hunter'),
+    'guide-error': W('web-guides-hunter-survival-error', 'home', back='Hunter'),
+    'tiers': W('web-tiers', 'home', back='Home', title='Tiers'),
+    'tiers-you': W('web-tiers-you', 'home', back='Home', title='Tiers'),
+    'changes': W('web-changelog-game', 'home', back='Home', title='What changed'),
     # Sims, talents and the planner (from Home's Next rows)
     'sim': W('web-sim', 'home', back='Home'),
     'sim-you': W('web-sim-you', 'home', back='Home'),
@@ -387,14 +349,10 @@ SCREENS: dict = {
     'rankings-you': W('web-rankings-you', 'home', back='Home'),
     'rankings-empty': W('web-rankings-empty', 'home', back='Home'),
     # Guild (tab Guild) and raids
-    'guild-out': W('web-guild-landing-out', 'guild', who=None),
-    'guild-none': W('web-guild-landing-in', 'guild'),
-    'guild-no-raid': W('web-guild-no-raid', 'guild'),
-    'guild-low-level': W('web-guild-low-level', 'guild'),
-    'guild-raids': W('web-guild-raids', 'guild', back='Guild'),
-    'guild-raid': W('web-guild-raid', 'guild', back='Raids', share=True),
-    'guild-roster': W('web-guild-roster', 'guild', back='Guild'),
-    'guild-loot': W('web-guild-loot', 'guild', back='Guild'),
+    'guild-raids': W('web-guild-raids', 'raid', back='Raid'),
+    'guild-raid': W('web-guild-raid', 'raid', back='Raids', share=True),
+    'guild-roster': W('web-guild-roster', 'raid', back='Raid'),
+    'guild-loot': W('web-guild-loot', 'raid', back='Raid'),
     'raid-night-live': raid_night('live'),
     'raid-night-signup': raid_night('signup'),
     # You, account, premium, system

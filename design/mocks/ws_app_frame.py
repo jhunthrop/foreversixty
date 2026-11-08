@@ -27,8 +27,9 @@ BARS = {
     'android': {'status': 32, 'nav': 64, 'tab': 80, 'home': 16},
 }
 
-# The four tabs (design/specs/2026-11-08-app-flows.md section 3; You moved into the profile menu). id, label, glyph.
-TABS = [('home', 'Home'), ('bis', 'BiS'), ('guides', 'Guides'), ('guild', 'Guild')]
+# The four tabs are the app's jobs (design/specs/2026-11-08-app-flows.md section 3, owner 2026-11-08): the answer, the raid,
+# your gear, what changed. Guides, Tiers and the other tools are in the profile menu. id, label.
+TABS = [('home', 'Home'), ('raid', 'Raid'), ('gear', 'Gear'), ('activity', 'Activity')]
 # The crest that opens the profile menu sits top left on every tab root (flows spec section 3).
 CREST = '../../../web/public/icons/hd/crests/{cls}.webp'
 
@@ -37,6 +38,9 @@ _GLYPH = {
     'bis': '<path d="M12 3 5 6v6c0 4 3 7 7 9 4-2 7-5 7-9V6z"/><path d="m9 12 2 2 4-4"/>',
     'guides': '<path d="M5 4h6a2 2 0 0 1 2 2v14a2 2 0 0 0-2-2H5zM19 4h-6a2 2 0 0 0-2 2v14a2 2 0 0 1 2-2h6z"/>',
     'guild': '<path d="M6 3v18M6 4h12l-3 4 3 4H6"/>',
+    'raid': '<path d="M6 3v18M6 4h12l-3 4 3 4H6"/>',
+    'gear': '<path d="M12 3 5 6v6c0 4 3 7 7 9 4-2 7-5 7-9V6z"/><path d="m9 12 2 2 4-4"/>',
+    'activity': '<path d="M6 16V11a6 6 0 1 1 12 0v5l2 2H4z"/><path d="M10 20a2 2 0 0 0 4 0"/>',
     'you': '<circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/>',
     'back_ios': '<path d="m15 4-8 8 8 8"/>',
     'back_android': '<path d="M20 12H5m6-7-7 7 7 7"/>',
@@ -140,48 +144,51 @@ def nav_bar(platform: str, back: str = '', title: str = '', share: bool = False,
     return f'<nav class="app-nav" aria-label="Navigation">{left}{ttl}{right}</nav>'
 
 
-def tab_bar(platform: str, active: str, badge: int = 0) -> str:
+def tab_bar(platform: str, active: str, badges: dict | None = None) -> str:
+    """badges: the open count per tab (Raid: your unanswered raid or the officer's open items; Activity: unread)."""
+    badges = badges or {}
     items = ''
     for tid, label in TABS:
         on = ' on' if tid == active else ''
         cur = ' aria-current="page"' if on else ''
         g = glyph(tid, 24)
         inner = f'<span class="ind">{g}</span>' if platform == 'android' else g
-        mark = f'<span class="badge" aria-label="{badge} open">{badge}</span>' if tid == 'guild' and badge else ''
+        n = badges.get(tid, 0)
+        mark = f'<span class="badge" aria-label="{n} new">{n}</span>' if n else ''
         items += f'<a href="#" class="{on.strip()}"{cur}>{inner}{mark}<span>{label}</span></a>'
     return f'<nav class="app-tabs" aria-label="Tabs">{items}</nav>'
 
 
 def chrome(platform: str, tab: str | None, back: str = '', title: str = '', share: bool = False, navbar: bool = True,
-           who: str | None = 'warrior', badge: int = 0) -> tuple[str, str, str]:
+           who: str | None = 'warrior', badges: dict | None = None) -> tuple[str, str, str]:
     """(body style vars, top html, bottom html). A tab root (a tab, no back) carries the menu crest of `who` (the selected
     character's class; None signed out), except Home with a character: its head's crest and name open the menu, so the
-    crest is not drawn twice (flows spec section 3). `badge` is the Guild tab's open count."""
+    crest is not drawn twice (flows spec section 3). `badges` are the tabs' counts."""
     menu = bool(tab) and not (tab == 'home' and who)
     top = status_bar(platform) + (nav_bar(platform, back, title, share, who=who, menu=menu) if navbar else '')
-    bottom = (tab_bar(platform, tab, badge) if tab else '') + '<span class="app-home" aria-hidden="true"></span>'
+    bottom = (tab_bar(platform, tab, badges) if tab else '') + '<span class="app-home" aria-hidden="true"></span>'
     return frame_vars(platform, bool(tab), navbar), top, bottom
 
 
 def _inject(html: str, platform: str, tab: str | None, back: str, title: str, share: bool, navbar: bool, extra_css: str = '',
-            who: str | None = 'warrior', badge: int = 0) -> str:
-    style, top, bottom = chrome(platform, tab, back, title, share, navbar, who, badge)
+            who: str | None = 'warrior', badges: dict | None = None) -> str:
+    style, top, bottom = chrome(platform, tab, back, title, share, navbar, who, badges)
     html = html.replace('</head>', f'<style>{APP_CSS}{extra_css}</style></head>', 1)
     html = re.sub(r'<body([^>]*)>', lambda m: f'<body{m.group(1)} data-platform="{platform}" style="{style}">{top}', html, count=1)
     return html.replace('</body>', f'{bottom}</body>', 1)
 
 
 def from_web(mock: str, platform: str, tab: str | None, back: str = '', title: str = '', share: bool = False,
-             navbar: bool = True, extra_css: str = '', who: str | None = 'warrior', badge: int = 0) -> str:
+             navbar: bool = True, extra_css: str = '', who: str | None = 'warrior', badges: dict | None = None) -> str:
     """The committed web mock as an app screen. Relative asset paths still resolve: design/mocks/app is a sibling of web."""
     src = (WEB / f'{mock}.html').read_text()
-    return _inject(src, platform, tab, back, title, share, navbar, extra_css, who, badge)
+    return _inject(src, platform, tab, back, title, share, navbar, extra_css, who, badges)
 
 
 def app_page(platform: str, html: str, tab: str | None, back: str = '', title: str = '', share: bool = False, navbar: bool = True,
-             extra_css: str = '', who: str | None = 'warrior', badge: int = 0) -> str:
+             extra_css: str = '', who: str | None = 'warrior', badges: dict | None = None) -> str:
     """An app-only screen built with ws_prims.build_page (its HTML already carries the system CSS)."""
-    return _inject(html, platform, tab, back, title, share, navbar, extra_css, who, badge)
+    return _inject(html, platform, tab, back, title, share, navbar, extra_css, who, badges)
 
 
 def write_app(name: str, html: str) -> Path:

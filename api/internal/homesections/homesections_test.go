@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"os"
 	"reflect"
-	"slices"
 	"strings"
 	"testing"
 	"time"
@@ -72,22 +71,21 @@ func TestSignedInOrders(t *testing.T) {
 		want string
 	}{
 		{"raid day: the next raid leads", View{Level: 60, InGuild: true, Now: wed3pm, Zone: chicago, NextRaid: at(raid8pm)}, Override{},
-			"head next_raid:card upgrades feed guild_sims spec_week movers next"},
-		{"raid live: the raid and the guild feed", View{Level: 60, InGuild: true, Now: raid8pm.Add(time.Hour), Zone: chicago, NextRaid: at(raid8pm)}, Override{},
-			"head raid_live feed"},
+			"head next_raid:card upgrades activity"},
+		{"raid live: the raid and the raid activity", View{Level: 60, InGuild: true, Now: raid8pm.Add(time.Hour), Zone: chicago, NextRaid: at(raid8pm)}, Override{},
+			"head raid_live activity"},
 		{"the day after: the summary", View{Level: 60, InGuild: true, Now: raid8pm.Add(18 * time.Hour), Zone: chicago, LastRaid: at(raid8pm)}, Override{},
-			"head raid_summary upgrades feed guild_sims spec_week movers next"},
+			"head raid_summary upgrades activity"},
 		{"any other day in a guild", View{Level: 60, InGuild: true, Now: wed3pm}, Override{},
-			"head upgrades next_raid:line feed guild_sims spec_week movers next"},
-		{"no guild", View{Level: 60, Now: wed3pm}, Override{},
-			"head upgrades feed spec_week countdowns:line guild_sims_cta movers next"},
-		{"leveling", View{Level: 34, Now: wed3pm}, Override{},
-			"head upgrades feed countdowns:line guild_sims_cta spec_week movers next"},
+			"head upgrades next_raid:line activity"},
+		{"no guild at 60: find one", View{Level: 60, Now: wed3pm}, Override{}, "head upgrades activity guild_cta"},
+		{"leveling", View{Level: 34, Now: wed3pm}, Override{}, "head upgrades activity"},
+		{"find_a_guild switched off", View{Level: 60, Now: wed3pm}, Override{Rules: map[string]bool{RuleFindAGuild: false}}, "head upgrades activity"},
 		{"raid moments switched off", View{Level: 60, InGuild: true, Now: wed3pm, Zone: chicago, NextRaid: at(raid8pm)},
-			Override{Rules: map[string]bool{RuleRaidMoments: false}}, "head upgrades next_raid:line feed guild_sims spec_week movers next"},
+			Override{Rules: map[string]bool{RuleRaidMoments: false}}, "head upgrades next_raid:line activity"},
 		{"off, order and a notice", View{Level: 60, InGuild: true, Now: wed3pm},
-			Override{Off: []string{Movers}, Order: []string{Feed, Head}, Notice: &NoticeOverride{Text: "Servers restart at 10."}},
-			"feed head notice upgrades next_raid:line guild_sims spec_week next"},
+			Override{Off: []string{Activity}, Order: []string{NextRaid}, Notice: &NoticeOverride{Text: "Servers restart at 10."}},
+			"next_raid:line head notice upgrades"},
 	}
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
@@ -98,23 +96,10 @@ func TestSignedInOrders(t *testing.T) {
 	}
 }
 
-func TestRaidLiveOpensTheGuildFeed(t *testing.T) {
+func TestRaidLivePreviewsTheRaidActivity(t *testing.T) {
 	out := SignedIn(View{Level: 60, InGuild: true, Now: raid8pm.Add(time.Hour), NextRaid: at(raid8pm)}, Override{})
-	if out[2].Type != Feed || out[2].Selected != FilterGuild {
-		t.Errorf("feed = %+v", out[2])
-	}
-}
-
-func TestSignedInFeedAndLimits(t *testing.T) {
-	in := SignedIn(View{Level: 60, InGuild: true, Now: wed3pm}, Override{})
-	feed := in[slices.IndexFunc(in, func(s Section) bool { return s.Type == Feed })]
-	if !reflect.DeepEqual(feed.Filters, []string{"all", "spec", "guild"}) || !reflect.DeepEqual(feed.MoreFilters, []string{"logs"}) || feed.Limit != 7 {
-		t.Errorf("feed = %+v", feed)
-	}
-	out := SignedIn(View{Level: 60, Now: wed3pm}, Override{})
-	feed = out[slices.IndexFunc(out, func(s Section) bool { return s.Type == Feed })]
-	if slices.Contains(feed.Filters, FilterGuild) {
-		t.Errorf("no guild still filters by guild: %v", feed.Filters)
+	if out[2].Type != Activity || out[2].Group != "raids" || out[2].Limit != 3 {
+		t.Errorf("activity = %+v", out[2])
 	}
 }
 
@@ -122,7 +107,7 @@ func TestParseOverride(t *testing.T) {
 	if o, err := ParseOverride(""); err != nil || !reflect.DeepEqual(o, Override{}) {
 		t.Fatalf("empty = %+v, %v", o, err)
 	}
-	o, err := ParseOverride(`{"rules":{"raid_moments":false},"off":["movers"],"notice":{"text":"Hi","href":"/guild"}}`)
+	o, err := ParseOverride(`{"rules":{"raid_moments":false},"off":["activity"],"notice":{"text":"Hi","href":"/guild"}}`)
 	if err != nil || o.ruleOn(RuleRaidMoments) || !o.ruleOn(RuleLeveling) {
 		t.Fatalf("parsed %+v, %v", o, err)
 	}

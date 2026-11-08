@@ -3619,7 +3619,7 @@ public struct HomeAlreadyBest: Codable, Sendable, Equatable {
     }
 }
 
-/// The signed-in home's own blocks; each is null when it has nothing true to say. sections is the apps' home, its blocks in order for this viewer (design/specs/2026-11-07-mobile-redesign.md section 2.3; the order is design/specs/2026-11-08-app-flows.md section 4, time-aware): raid day (a guild raid today in the guild's zone, before it starts) head, next_raid card, upgrades, feed, guild_sims; raid live (start to start + 4 h) head, raid_live, feed opened on the guild filter; the day after a raid head, raid_summary, upgrades, feed; any other day in a guild head, upgrades, next_raid line, feed, guild_sims; under 60 head, upgrades, feed, countdowns line (first raids); no guild head, upgrades, feed, spec_week, countdowns line, guild_sims_cta. Secondary blocks (spec_week, movers, next) follow the feed; with no guild the feed drops the guild filter. HOME_SECTIONS switches each rule off, turns blocks off, reorders them and adds a notice. The web keeps its own composition.
+/// The signed-in home's own blocks; each is null when it has nothing true to say (the web home reads them). sections is the apps' Home, its blocks in order for this viewer and moment (design/specs/2026-11-08-app-flows.md section 4): raid live (a guild raid started under 4 h ago) head, raid_live, activity (the raids group); raid day (a guild raid later today in the guild's raid time zone) head, next_raid card, upgrades, activity; the day after a raid head, raid_summary, upgrades, activity; any other day in a guild head, upgrades, next_raid line, activity; under 60 head, upgrades, activity; no guild at 60 head, upgrades, activity, guild_cta. HOME_SECTIONS switches the rules (raid_moments, leveling, find_a_guild), turns blocks off, reorders them and adds a notice. The web keeps its own composition.
 public struct HomeBlocks: Codable, Sendable, Equatable {
     public let sections: [HomeSection]
     public let importSim: HomeImportSim?
@@ -3879,14 +3879,14 @@ public struct HomePick: Codable, Sendable, Equatable {
 
 /// One block of the apps' home. An app renders the types it knows, in order, and skips any other (logging it once per session); an unknown style falls back to the type's default. Fields a type does not use are omitted.
 public struct HomeSection: Codable, Sendable, Equatable {
-    /// head, upgrades, next_raid, raid_live, raid_summary, countdowns, feed, guild_sims, guild_sims_cta, spec_week, movers, next or notice signed in; head_out, class_picker, countdowns, feed or how_to_start_link signed out. Open: new types may appear.
+    /// head, upgrades, next_raid, raid_live, raid_summary, activity, guild_cta or notice signed in; head_out, class_picker, countdowns, feed or how_to_start_link signed out. Open: new types may appear.
     public let type: String
-    /// Rows to show (upgrades 3, feed 7, guild_sims 5).
+    /// Rows to show (upgrades 3, activity 3, the signed-out feed 7).
     public let limit: Int?
     /// countdowns: full (the panels) or line (one row); next_raid: card (the countdown, your sign-up buttons, who is coming) or line.
     public let style: String?
-    /// feed: the filter it opens on (guild on raid night); omitted, the first.
-    public let selected: String?
+    /// activity: the Activity group the preview shows (raids on raid night); omitted, every group.
+    public let group: String?
     /// feed: the segments; [] for none (signed out, All only).
     public let filters: [String]?
     /// feed: the filters behind the filter button.
@@ -3900,7 +3900,7 @@ public struct HomeSection: Codable, Sendable, Equatable {
         type: String,
         limit: Int? = nil,
         style: String? = nil,
-        selected: String? = nil,
+        group: String? = nil,
         filters: [String]? = nil,
         moreFilters: [String]? = nil,
         text: String? = nil,
@@ -3909,7 +3909,7 @@ public struct HomeSection: Codable, Sendable, Equatable {
         self.type = type
         self.limit = limit
         self.style = style
-        self.selected = selected
+        self.group = group
         self.filters = filters
         self.moreFilters = moreFilters
         self.text = text

@@ -71,38 +71,33 @@ func sameDay(a, b time.Time, loc *time.Location) bool {
 	return a.In(loc).Format(time.DateOnly) == b.In(loc).Format(time.DateOnly)
 }
 
-// SignedIn is the signed-in home for v under o: the order of the viewer's moment (flows spec section
-// 4), the primary blocks first and the secondary ones (spec week, movers) below the feed.
+// SignedIn is the signed-in home for v under o (flows spec section 4): the moment's block, then the
+// next upgrades, then the three newest Activity rows; a player at 60 with no guild also gets Find a
+// guild. Everything else lives on its tab.
 func SignedIn(v View, o Override) []Section {
-	inGuild := v.InGuild || !o.ruleOn(RuleNoGuildCTA)
-	filters := []string{FilterAll, FilterSpec}
-	ladder := Section{Type: GuildSimsCTA}
-	if inGuild {
-		filters = append(filters, FilterGuild)
-		ladder = Section{Type: GuildSims, Limit: guildSimsShown}
-	}
 	head := Section{Type: Head}
 	upgrades := Section{Type: Upgrades, Limit: upgradesShown}
-	feed := Section{Type: Feed, Filters: filters, MoreFilters: []string{FilterLogs}, Limit: feedRows}
-	firstRaids := Section{Type: Countdowns, Style: StyleLine}
-	week, movers, next := Section{Type: SpecWeek}, Section{Type: Movers}, Section{Type: Next}
+	activity := Section{Type: Activity, Limit: activityShown}
 
 	var out []Section
 	switch MomentOf(v, o) {
 	case MomentRaidLive:
-		guildFeed := feed
-		guildFeed.Selected = FilterGuild
-		out = []Section{head, {Type: RaidLive}, guildFeed}
+		raidActivity := activity
+		raidActivity.Group = "raids"
+		out = []Section{head, {Type: RaidLive}, raidActivity}
 	case MomentRaidDay:
-		out = []Section{head, {Type: NextRaid, Style: StyleCard}, upgrades, feed, ladder, week, movers, next}
+		out = []Section{head, {Type: NextRaid, Style: StyleCard}, upgrades, activity}
 	case MomentDayAfter:
-		out = []Section{head, {Type: RaidSummary}, upgrades, feed, ladder, week, movers, next}
-	case MomentLeveling:
-		out = []Section{head, upgrades, feed, firstRaids, ladder, week, movers, next}
+		out = []Section{head, {Type: RaidSummary}, upgrades, activity}
 	case MomentGuild:
-		out = []Section{head, upgrades, {Type: NextRaid, Style: StyleLine}, feed, ladder, week, movers, next}
+		out = []Section{head, upgrades, {Type: NextRaid, Style: StyleLine}, activity}
+	case MomentLeveling:
+		out = []Section{head, upgrades, activity}
 	default:
-		out = []Section{head, upgrades, feed, week, firstRaids, ladder, movers, next}
+		out = []Section{head, upgrades, activity}
+		if o.ruleOn(RuleFindAGuild) {
+			out = append(out, Section{Type: GuildCTA})
+		}
 	}
 	if o.Notice != nil {
 		out = slices.Insert(out, 1, Section{Type: Notice, Text: o.Notice.Text, Href: o.Notice.Href})

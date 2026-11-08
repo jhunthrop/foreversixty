@@ -4,12 +4,7 @@
     "sections": [
       { "type": "head" },
       { "type": "upgrades", "limit": 3 },
-      { "type": "feed", "filters": ["all", "spec"], "more_filters": ["logs"], "limit": 7 },
-      { "type": "countdowns", "style": "line" },
-      { "type": "guild_sims_cta" },
-      { "type": "spec_week" },
-      { "type": "movers" },
-      { "type": "next" }
+      { "type": "activity", "limit": 3 }
     ],
     "import_sim": null, "spec_week": null, "movers": null, "guild_sims": null
   },

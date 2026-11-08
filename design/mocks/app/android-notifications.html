@@ -144,16 +144,28 @@ main{min-height:calc(var(--dev-h) - var(--top) - var(--bottom));flex:1 0 auto}
 .codeline{display:flex;align-items:center;gap:8px;margin-top:8px;padding:10px 12px;border:1px solid var(--line);border-radius:4px;font:500 14px/20px var(--font-mono)}
 .codeline span{flex:1}
 .preview{margin-top:12px;padding:10px 12px;border-left:3px solid var(--line);color:var(--text);font-size:14px;line-height:20px}
-/* the drawer (flows spec section 3): 85% of the width over the dimmed tab, the tab bar covered (round 1, N1) */
+.setrow{display:flex!important;align-items:center;gap:12px}.setrow .b{flex:1;min-width:0}.setrow .swt{flex:none}
+/* the drawer (section 3): 85% of the width over the dimmed tab, the tab bar covered */
 .drawer-wrap{display:grid;grid-template-columns:85% 15%;min-height:var(--dev-h)}
 .drawer{background:var(--raised);border-right:1px solid var(--line);padding:calc(var(--status) + 12px) 16px 24px;min-width:0}
-.drawer .ph{margin-top:0}
 .drawer section{margin-top:24px}.drawer section .sec-h{margin-bottom:4px}
 .drawer .stamp{margin-top:6px}
 .drawer .foot{margin-top:28px;display:flex;flex-direction:column;gap:6px}
 .dim{background:#000000a6}
-.setrow{display:flex!important;align-items:center;gap:12px}.setrow .b{flex:1;min-width:0}.setrow .swt{flex:none}
 .rowbtn{display:flex;align-items:center;min-height:44px;color:var(--gold);font:600 15px/20px var(--font-body)}
+/* Home: one head on every state; its crest and name open the menu (the chevron says so) */
+.home-head [data-region="head-title"] .t-title::after{content:"";display:inline-block;width:9px;height:9px;margin:0 0 6px 12px;
+  border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(45deg);vertical-align:middle}
+.blk{margin-top:24px}
+.blk .btns{margin-top:12px}
+.blk .tally{margin-top:16px;grid-template-columns:repeat(3,minmax(0,1fr))}
+.blk .me{margin-top:8px}
+.blk .rows{margin-top:8px}
+/* Activity: unread rows carry a gold dot and a strong title */
+.act-row{position:relative}.act-row.unread::before{content:"";position:absolute;left:-10px;top:24px;width:6px;height:6px;border-radius:50%;background:var(--gold)}
+.act-row .when{display:block;font-size:12px;line-height:16px;color:var(--muted);margin-top:2px}
+.chiprow{display:flex;gap:8px;overflow-x:auto;padding:4px 0 8px;scrollbar-width:none}
+.chiprow .btn{flex:none}
 /* a notification on the lock screen */
 .lockbg{background:linear-gradient(180deg,#17202f,#07090d);border-radius:24px;padding:16px 12px;display:flex;flex-direction:column;gap:12px}
 .nt{background:#1b2230;border-radius:20px;padding:12px 14px;display:flex;flex-direction:column;gap:8px}
@@ -167,12 +179,8 @@ main{min-height:calc(var(--dev-h) - var(--top) - var(--bottom));flex:1 0 auto}
 .nt .acts a+a{border-left:1px solid #ffffff1f}
 [data-platform=android] .nt .acts{display:flex;gap:16px;border:0;margin:0}
 [data-platform=android] .nt .acts a{min-height:48px;color:var(--gold);justify-content:flex-start}[data-platform=android] .nt .acts a+a{border:0}
-/* the injected Home blocks */
-.fl-blk{padding:24px 16px 0}
-.fl-blk .btns{margin-top:12px}
-.fl-blk .tally{margin-top:16px;grid-template-columns:repeat(3,minmax(0,1fr))}
-.fl-blk .me{margin-top:8px}
-.fl-blk .rows{margin-top:8px}
+.sheetp{background:var(--raised);border-radius:12px 12px 0 0;border-top:1px solid var(--line);padding:0 16px 24px}
+.sheet-grab{display:block;width:36px;height:5px;border-radius:3px;background:var(--line);margin:8px auto 4px}
 </style><style>
 /* ---- Page: one column, four layouts ---- */
 .layout-split{display:grid;gap:var(--gap);grid-template-columns:minmax(0,1fr);align-items:start}

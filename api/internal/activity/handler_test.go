@@ -96,13 +96,13 @@ func TestHomeAnswersTheCharactersBlocks(t *testing.T) {
 	if data["guild_sims"] != nil {
 		t.Fatalf("no guild, no ladder: %v", data["guild_sims"])
 	}
-	// Level 20 with no guild (ruling R4): the countdown is one line after the feed and the
-	// guild ladder is the one-line Join a guild row.
+	// Level 20 with no guild: the leveling Home (flows spec section 4), the head, the next upgrades
+	// and the three newest Activity rows.
 	var order []string
 	for _, sec := range data["sections"].([]any) {
 		order = append(order, sec.(map[string]any)["type"].(string))
 	}
-	if got := strings.Join(order, " "); got != "head upgrades feed countdowns guild_sims_cta spec_week movers next" {
+	if got := strings.Join(order, " "); got != "head upgrades activity" {
 		t.Fatalf("sections: %s", got)
 	}
 	if rec, _ := serve(t, s, nil, stranger, "/v1/home?character=us/normal/gohogs"); rec.Code != 404 {

@@ -129,7 +129,7 @@ main{min-height:calc(var(--dev-h) - var(--top) - var(--bottom));flex:1 0 auto}
 [data-platform=android] .app-home{width:108px;height:4px;opacity:.7}
 /* pull to refresh affordance, drawn only on the states that show it */
 .app-ptr{display:flex;justify-content:center;padding:10px 0 0}.app-ptr span{width:22px;height:22px;border-radius:50%;border:2px solid var(--line);border-top-color:var(--gold)}
-</style></head><body data-platform="android" style="--dev-w:412px;--dev-h:915px;--status:32px;--nav:64px;--home:16px;--top:32px;--bottom:16px"><div class="app-status" aria-hidden="true"><span>9:41</span><span class="sys"><i></i><i></i><i class="b"></i></span></div><!--fs-chrome:{"who": null, "state": "", "nav": ""}--><div class="fs-chrome"><div data-fs-body%BODY_ATTRS%>%HEADER%</div></div><main><div class="drawer-wrap"><div class="drawer" role="dialog" aria-label="Menu"><div class="pc ph-wrap"><div data-region="head"><div class="head"><div class="ph-title" data-region="head-title"><div><h1 class="t-title">Forever Sixty</h1><div class="ph-meta" data-region="head-meta"><span class="t-small">Sign in and your characters arrive with their gear, talents and guild.</span></div></div></div></div></div></div><div class="vstack"><a class="btn primary" href="#">Sign in with Battle.net</a></div><section data-region="section-tools"><div class="sec-h"><h2 class="t-h3">Tools</h2></div><div class="rows open"><a class="row nolead" href="#"><div class="b"><div class="ttl">Talent planner</div><div class="sub">Your builds and the guide builds</div></div><span></span></a><a class="row nolead" href="#"><div class="b"><div class="ttl">Tiers</div><div class="sub">Every spec, this week</div></div><span></span></a><a class="row nolead" href="#"><div class="b"><div class="ttl">What changed</div><div class="sub">The game and the site</div></div><span></span></a></div></section><div class="foot"><span class="t-small">Version 0.1.0 (7) &middot; data 1.60.1.70658</span><span class="t-small"><a class="link" href="#">Help</a> &middot; <a class="link" href="#">Privacy</a></span></div></div><div class="dim" aria-hidden="true"></div></div><style>
+</style></head><body data-platform="android" style="--dev-w:412px;--dev-h:915px;--status:32px;--nav:64px;--home:16px;--top:32px;--bottom:16px"><div class="app-status" aria-hidden="true"><span>9:41</span><span class="sys"><i></i><i></i><i class="b"></i></span></div><!--fs-chrome:{"who": null, "state": "", "nav": ""}--><div class="fs-chrome"><div data-fs-body%BODY_ATTRS%>%HEADER%</div></div><main><div class="drawer-wrap"><div class="drawer" role="dialog" aria-label="Menu"><div class="pc ph-wrap"><div data-region="head"><div class="head"><div class="ph-title" data-region="head-title"><div><h1 class="t-title">Forever Sixty</h1><div class="ph-meta" data-region="head-meta"><span class="t-small">Sign in and your characters arrive with their gear, talents and guild.</span></div></div></div></div></div></div><div class="vstack"><a class="btn primary" href="#">Sign in with Battle.net</a></div><section data-region="section-tools"><div class="sec-h"><h2 class="t-h3">Tools</h2></div><div class="rows open"><a class="row nolead" href="#"><div class="b"><div class="ttl">Guides</div><div class="sub">Your spec&rsquo;s guide, then every class</div></div><span></span></a><a class="row nolead" href="#"><div class="b"><div class="ttl">Tiers</div><div class="sub">Every spec, this week</div></div><span></span></a><a class="row nolead" href="#"><div class="b"><div class="ttl">What changed</div><div class="sub">The game and the site</div></div><span></span></a><a class="row nolead" href="#"><div class="b"><div class="ttl">Planner</div><div class="sub">Your builds and the guide builds</div></div><span></span></a><a class="row nolead" href="#"><div class="b"><div class="ttl">Rankings</div><div class="sub">Your spec and your guild</div></div><span></span></a></div></section><div class="foot"><span class="t-small">Version 0.1.0 (7) &middot; data 1.60.1.70790</span><span class="t-small"><a class="link" href="#">Help</a> &middot; <a class="link" href="#">Privacy</a></span></div></div><div class="dim" aria-hidden="true"></div></div><style>
 .ap{padding:8px 16px 24px}
 .ap .t-title{font-size:32px;line-height:38px}
 .ap section{margin-top:28px}
@@ -144,16 +144,28 @@ main{min-height:calc(var(--dev-h) - var(--top) - var(--bottom));flex:1 0 auto}
 .codeline{display:flex;align-items:center;gap:8px;margin-top:8px;padding:10px 12px;border:1px solid var(--line);border-radius:4px;font:500 14px/20px var(--font-mono)}
 .codeline span{flex:1}
 .preview{margin-top:12px;padding:10px 12px;border-left:3px solid var(--line);color:var(--text);font-size:14px;line-height:20px}
-/* the drawer (flows spec section 3): 85% of the width over the dimmed tab, the tab bar covered (round 1, N1) */
+.setrow{display:flex!important;align-items:center;gap:12px}.setrow .b{flex:1;min-width:0}.setrow .swt{flex:none}
+/* the drawer (section 3): 85% of the width over the dimmed tab, the tab bar covered */
 .drawer-wrap{display:grid;grid-template-columns:85% 15%;min-height:var(--dev-h)}
 .drawer{background:var(--raised);border-right:1px solid var(--line);padding:calc(var(--status) + 12px) 16px 24px;min-width:0}
-.drawer .ph{margin-top:0}
 .drawer section{margin-top:24px}.drawer section .sec-h{margin-bottom:4px}
 .drawer .stamp{margin-top:6px}
 .drawer .foot{margin-top:28px;display:flex;flex-direction:column;gap:6px}
 .dim{background:#000000a6}
-.setrow{display:flex!important;align-items:center;gap:12px}.setrow .b{flex:1;min-width:0}.setrow .swt{flex:none}
 .rowbtn{display:flex;align-items:center;min-height:44px;color:var(--gold);font:600 15px/20px var(--font-body)}
+/* Home: one head on every state; its crest and name open the menu (the chevron says so) */
+.home-head [data-region="head-title"] .t-title::after{content:"";display:inline-block;width:9px;height:9px;margin:0 0 6px 12px;
+  border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(45deg);vertical-align:middle}
+.blk{margin-top:24px}
+.blk .btns{margin-top:12px}
+.blk .tally{margin-top:16px;grid-template-columns:repeat(3,minmax(0,1fr))}
+.blk .me{margin-top:8px}
+.blk .rows{margin-top:8px}
+/* Activity: unread rows carry a gold dot and a strong title */
+.act-row{position:relative}.act-row.unread::before{content:"";position:absolute;left:-10px;top:24px;width:6px;height:6px;border-radius:50%;background:var(--gold)}
+.act-row .when{display:block;font-size:12px;line-height:16px;color:var(--muted);margin-top:2px}
+.chiprow{display:flex;gap:8px;overflow-x:auto;padding:4px 0 8px;scrollbar-width:none}
+.chiprow .btn{flex:none}
 /* a notification on the lock screen */
 .lockbg{background:linear-gradient(180deg,#17202f,#07090d);border-radius:24px;padding:16px 12px;display:flex;flex-direction:column;gap:12px}
 .nt{background:#1b2230;border-radius:20px;padding:12px 14px;display:flex;flex-direction:column;gap:8px}
@@ -167,12 +179,8 @@ main{min-height:calc(var(--dev-h) - var(--top) - var(--bottom));flex:1 0 auto}
 .nt .acts a+a{border-left:1px solid #ffffff1f}
 [data-platform=android] .nt .acts{display:flex;gap:16px;border:0;margin:0}
 [data-platform=android] .nt .acts a{min-height:48px;color:var(--gold);justify-content:flex-start}[data-platform=android] .nt .acts a+a{border:0}
-/* the injected Home blocks */
-.fl-blk{padding:24px 16px 0}
-.fl-blk .btns{margin-top:12px}
-.fl-blk .tally{margin-top:16px;grid-template-columns:repeat(3,minmax(0,1fr))}
-.fl-blk .me{margin-top:8px}
-.fl-blk .rows{margin-top:8px}
+.sheetp{background:var(--raised);border-radius:12px 12px 0 0;border-top:1px solid var(--line);padding:0 16px 24px}
+.sheet-grab{display:block;width:36px;height:5px;border-radius:3px;background:var(--line);margin:8px auto 4px}
 </style><style>
 /* ---- Page: one column, four layouts ---- */
 .layout-split{display:grid;gap:var(--gap);grid-template-columns:minmax(0,1fr);align-items:start}

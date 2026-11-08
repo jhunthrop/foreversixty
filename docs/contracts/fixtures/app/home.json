@@ -5,11 +5,7 @@
       { "type": "head" },
       { "type": "upgrades", "limit": 3 },
       { "type": "next_raid", "style": "line" },
-      { "type": "feed", "filters": ["all", "spec", "guild"], "more_filters": ["logs"], "limit": 7 },
-      { "type": "guild_sims", "limit": 5 },
-      { "type": "spec_week" },
-      { "type": "movers" },
-      { "type": "next" }
+      { "type": "activity", "limit": 3 }
     ],
     "import_sim": { "state": "done", "dps": 26.2, "simmed_at": "2026-11-06T12:00:00Z", "sim_id": "k3m9x2q7w1ab" },
     "spec_week": {

@@ -17,19 +17,17 @@ import (
 // The block types an app may be sent. An app renders the types it knows, in order, and skips
 // any other.
 const (
-	Head          = "head"
-	Upgrades      = "upgrades"
-	NextRaid      = "next_raid"
-	RaidLive      = "raid_live"
-	RaidSummary   = "raid_summary"
+	Head        = "head"
+	Upgrades    = "upgrades"
+	NextRaid    = "next_raid"
+	RaidLive    = "raid_live"
+	RaidSummary = "raid_summary"
+	Activity    = "activity"
+	GuildCTA    = "guild_cta"
+	Notice      = "notice"
+	// The signed-out home's types.
 	Countdowns    = "countdowns"
 	Feed          = "feed"
-	GuildSims     = "guild_sims"
-	GuildSimsCTA  = "guild_sims_cta"
-	SpecWeek      = "spec_week"
-	Movers        = "movers"
-	Next          = "next"
-	Notice        = "notice"
 	HeadOut       = "head_out"
 	ClassPicker   = "class_picker"
 	HowToStartURL = "how_to_start_link"
@@ -43,34 +41,28 @@ const (
 	StyleCard = "card"
 )
 
-// The feed filters.
-const (
-	FilterAll   = "all"
-	FilterSpec  = "spec"
-	FilterGuild = "guild"
-	FilterLogs  = "logs"
-)
+// The signed-out feed's one filter.
+const FilterAll = "all"
 
 // The rules HOME_SECTIONS can switch off, by key (design/specs/2026-11-08-app-flows.md section 4):
 // the three raid moments (raid day, raid live, the day after), the leveling order under 60, and
-// the Join a guild row in place of the ladder.
+// the Find a guild block for a player at 60 with no guild.
 const (
 	RuleRaidMoments = "raid_moments"
 	RuleLeveling    = "leveling"
-	RuleNoGuildCTA  = "no_guild_cta"
+	RuleFindAGuild  = "find_a_guild"
 )
 
 const (
 	maxLevel        = 60
 	upgradesShown   = 3
-	feedRows        = 7
-	guildSimsShown  = 5
+	activityShown   = 3
 	maxNoticeLength = 280
 )
 
-var signedInTypes = []string{Head, Upgrades, NextRaid, RaidLive, RaidSummary, Countdowns, Feed, GuildSims, GuildSimsCTA, SpecWeek, Movers, Next, Notice}
+var signedInTypes = []string{Head, Upgrades, NextRaid, RaidLive, RaidSummary, Activity, GuildCTA, Notice}
 
-var rules = []string{RuleRaidMoments, RuleLeveling, RuleNoGuildCTA}
+var rules = []string{RuleRaidMoments, RuleLeveling, RuleFindAGuild}
 
 //go:embed signed_out.json
 var signedOutJSON []byte
@@ -83,10 +75,10 @@ type Section struct {
 	Style       string   `json:"style,omitempty"`
 	Filters     []string `json:"filters,omitzero"`
 	MoreFilters []string `json:"more_filters,omitzero"`
-	// Selected is the feed filter the block opens on (the guild's on raid night); omitted, the first.
-	Selected string `json:"selected,omitempty"`
-	Text     string `json:"text,omitempty"`
-	Href     string `json:"href,omitempty"`
+	// Group is the Activity group the preview shows (raids on raid night); omitted, every group.
+	Group string `json:"group,omitempty"`
+	Text  string `json:"text,omitempty"`
+	Href  string `json:"href,omitempty"`
 }
 
 // Override is HOME_SECTIONS. The zero value changes nothing.
