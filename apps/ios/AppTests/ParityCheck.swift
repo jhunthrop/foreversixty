@@ -37,7 +37,8 @@ enum ParityCheck {
         testName: String = #function,
         line: UInt = #line,
         column: UInt = #column
-    ) throws {
+    ) async throws {
+        await ParityText.prepare()
         let screenView = view.preferredColorScheme(.dark).environment(\.locale, Locale(identifier: "en_US"))
         let capture = ParityRegions.capture(of: screenView, size: size)
         let diffs = ParityRegions.compare(capture, with: try ParityRegions.reference(screen: screen))
@@ -64,9 +65,7 @@ enum ParityCheck {
             )
         }
         // The words of the whole content, as the regions count it: the text pass renders a window
-        // tall enough that nothing scrolls. It reads after the images: on the CI runner a text read
-        // made before the process's first image snapshot vends no tree (runs 42481050975 to
-        // 42494235867, whichever parity state went first).
+        // tall enough that nothing scrolls.
         ParityText.assertText(
             of: screenView, size: textSize(size, capture: capture), named: "ios-\(screen)",
             fileID: fileID, file: file, testName: testName, line: line, column: column

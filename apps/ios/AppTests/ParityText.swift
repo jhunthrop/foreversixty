@@ -9,6 +9,30 @@ import UIKit
 enum ParityText {
     /// The accessibility labels and values of `view` rendered at `size`, one line per element in
     /// reading order (`label: value` when an element has both).
+    /// How long the main actor is let go after the automation switch, once per process.
+    static let switchDrain: Duration = .seconds(1)
+
+    /// Turns automation on and lets the main queue drain before the first read. UIKit takes the
+    /// switch up in work queued on the main queue, which never runs inside a synchronous test that
+    /// spins the run loop: on the CI runner the first parity state of the process read as treeless
+    /// whatever was tried within it (runs 42481050975 to 42496479635), and every later one read fine.
+    @MainActor
+    static func prepare() async {
+        if let preparation {
+            await preparation.value
+            return
+        }
+        let task = Task { @MainActor in
+            AccessibilityAutomation.enable()
+            try? await Task.sleep(for: switchDrain)
+        }
+        preparation = task
+        await task.value
+    }
+
+    /// The one preparation every parity test waits for, so tests running in parallel all read after it.
+    @MainActor private static var preparation: Task<Void, Never>?
+
     @MainActor
     static func lines(of view: some View, size: CGSize) -> [String] {
         AccessibilityAutomation.enable()
