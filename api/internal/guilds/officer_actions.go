@@ -142,23 +142,12 @@ func (s *Store) pendingApplications(ctx context.Context, guildID int64) (ActionA
 // raid view lists them.
 func (s *Service) nextNotSigned(ctx context.Context, guildID, viewerID int64) (ActionNotSigned, error) {
 	out := ActionNotSigned{Names: []string{}}
-	now := time.Now()
-	raid, found, err := s.Store.NextRaid(ctx, guildID, now)
-	if err == nil && !found {
-		raid, found, err = s.Store.NextPlanned(ctx, guildID, now)
-	}
-	if err != nil || !found {
+	rows, raidID, err := s.nextUnanswered(ctx, guildID, viewerID)
+	if err != nil || raidID == nil {
 		return out, err
 	}
-	view, err := s.raidViewOf(ctx, guildID, viewerID, raid)
-	if err != nil {
-		return out, err
-	}
-	id := raid.ID
-	out.RaidID = &id
-	if view.NotSignedRaiders != nil {
-		out.Names = raiderNames(*view.NotSignedRaiders)
-	}
+	out.RaidID = raidID
+	out.Names = raiderNames(rows)
 	out.Count = len(out.Names)
 	return out, nil
 }

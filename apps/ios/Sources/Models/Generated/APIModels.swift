@@ -5654,6 +5654,37 @@ public struct RaidAttendanceRow: Codable, Sendable, Equatable {
     }
 }
 
+/// GET /v1/guilds/{id}/raid-badge. unanswered and applicants are 0 for a member.
+public struct RaidBadge: Codable, Sendable, Equatable {
+    /// The badge; 0 shows none.
+    public let count: Int
+    /// The raid counted; null with none planned.
+    public let raidId: Int64?
+    /// The viewer's account has not answered that raid.
+    public let youUnanswered: Bool
+    public let officer: Bool
+    /// Officer: the raid's unanswered accounts.
+    public let unanswered: Int
+    /// Officer: the pending applications.
+    public let applicants: Int
+
+    public init(
+        count: Int,
+        raidId: Int64? = nil,
+        youUnanswered: Bool,
+        officer: Bool,
+        unanswered: Int,
+        applicants: Int
+    ) {
+        self.count = count
+        self.raidId = raidId
+        self.youUnanswered = youUnanswered
+        self.officer = officer
+        self.unanswered = unanswered
+        self.applicants = applicants
+    }
+}
+
 public struct RaidBuff: Codable, Sendable, Equatable {
     public let key: String
     /// A short label (MotW, Fort) the apps draw inside the tile while the icon is missing or fails to load.

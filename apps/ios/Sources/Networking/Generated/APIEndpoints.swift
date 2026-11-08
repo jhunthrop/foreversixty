@@ -351,6 +351,13 @@ public extension Endpoint where Response == RaidNightSummary {
     }
 }
 
+public extension Endpoint where Response == RaidBadge {
+    /// GET /v1/guilds/{id}/raid-badge: The Raid tab's badge (verified members)
+    static func getGuildRaidBadge(id: Int64) -> Endpoint {
+        Endpoint(method: .get, path: "/v1/guilds/\(id)/raid-badge")
+    }
+}
+
 public extension Endpoint where Response == GuildLoot {
     /// GET /v1/guilds/{id}/loot: The loot picker (verified members only)
     static func getGuildLoot(id: Int64) -> Endpoint {
@@ -586,6 +593,7 @@ public enum ContractRoutes {
         FixtureRoute(.post, "/v1/guilds/{id}/raids/{raid}/cancel", fixture: "guild.raid.patch", status: 200),
         FixtureRoute(.put, "/v1/guilds/{id}/raids/{raid}/signups/{region}/{ruleset}/{name}", fixture: "guild.signup", status: 200),
         FixtureRoute(.get, "/v1/me/raid-nights/{raid}", fixture: "me.raid-night", status: 200),
+        FixtureRoute(.get, "/v1/guilds/{id}/raid-badge", fixture: "guild.raid-badge", status: 200),
         FixtureRoute(.get, "/v1/guilds/{id}/loot", fixture: "guild.loot", status: 200),
         FixtureRoute(.post, "/v1/auth/app/exchange", fixture: "app.signin.exchange", status: 201),
         FixtureRoute(.post, "/v1/auth/app/logout", fixture: "app.logout", status: 200),

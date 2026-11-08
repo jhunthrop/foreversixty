@@ -50,6 +50,7 @@ import gg.foreversixty.app.model.PushTokenRegistered
 import gg.foreversixty.app.model.PushTokenRequest
 import gg.foreversixty.app.model.RaceClassCombo
 import gg.foreversixty.app.model.RaceInfo
+import gg.foreversixty.app.model.RaidBadge
 import gg.foreversixty.app.model.RaidCancel
 import gg.foreversixty.app.model.RaidNightSummary
 import gg.foreversixty.app.model.RaidPatch
@@ -259,6 +260,10 @@ object ApiEndpoints {
     fun getRaidNight(raid: Long): Endpoint<RaidNightSummary> =
         Endpoint(HttpMethod.Get, "/v1/me/raid-nights/$raid", RaidNightSummary.serializer())
 
+    /** GET /v1/guilds/{id}/raid-badge: The Raid tab's badge (verified members) */
+    fun getGuildRaidBadge(id: Long): Endpoint<RaidBadge> =
+        Endpoint(HttpMethod.Get, "/v1/guilds/$id/raid-badge", RaidBadge.serializer())
+
     /** GET /v1/guilds/{id}/loot: The loot picker (verified members only) */
     fun getGuildLoot(id: Long): Endpoint<GuildLoot> =
         Endpoint(HttpMethod.Get, "/v1/guilds/$id/loot", GuildLoot.serializer())
@@ -433,6 +438,7 @@ object ContractRoutes {
         FixtureRoute(HttpMethod.Post, "/v1/guilds/{id}/raids/{raid}/cancel", "guild.raid.patch", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Put, "/v1/guilds/{id}/raids/{raid}/signups/{region}/{ruleset}/{name}", "guild.signup", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Get, "/v1/me/raid-nights/{raid}", "me.raid-night", HttpStatusCode.fromValue(200)),
+        FixtureRoute(HttpMethod.Get, "/v1/guilds/{id}/raid-badge", "guild.raid-badge", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Get, "/v1/guilds/{id}/loot", "guild.loot", HttpStatusCode.fromValue(200)),
         FixtureRoute(HttpMethod.Post, "/v1/auth/app/exchange", "app.signin.exchange", HttpStatusCode.fromValue(201)),
         FixtureRoute(HttpMethod.Post, "/v1/auth/app/logout", "app.logout", HttpStatusCode.fromValue(200)),

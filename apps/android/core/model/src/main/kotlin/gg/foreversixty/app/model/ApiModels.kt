@@ -2115,6 +2115,22 @@ data class RaidAttendanceRow(
     @SerialName("override") val override: RaidAttendanceOverride? = null,
 )
 
+/** GET /v1/guilds/{id}/raid-badge. unanswered and applicants are 0 for a member. */
+@Serializable
+data class RaidBadge(
+    /** The badge; 0 shows none. */
+    @SerialName("count") val count: Int,
+    /** The raid counted; null with none planned. */
+    @SerialName("raid_id") val raidId: Long? = null,
+    /** The viewer's account has not answered that raid. */
+    @SerialName("you_unanswered") val youUnanswered: Boolean,
+    @SerialName("officer") val officer: Boolean,
+    /** Officer: the raid's unanswered accounts. */
+    @SerialName("unanswered") val unanswered: Int,
+    /** Officer: the pending applications. */
+    @SerialName("applicants") val applicants: Int,
+)
+
 @Serializable
 data class RaidBuff(
     @SerialName("key") val key: String,
