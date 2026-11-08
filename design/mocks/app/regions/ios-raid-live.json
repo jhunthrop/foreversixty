@@ -1,0 +1,50 @@
+{
+ "device": {
+  "width": 393,
+  "height": 852
+ },
+ "regions": {
+  "section-raid-night": {
+   "box": [
+    16,
+    36,
+    361,
+    286
+   ],
+   "inventory": {
+    "row": 2
+   }
+  },
+  "countdowns": {
+   "box": [
+    16,
+    95,
+    361,
+    108
+   ],
+   "inventory": {}
+  },
+  "section-ready-check": {
+   "box": [
+    16,
+    350,
+    361,
+    303
+   ],
+   "inventory": {
+    "row": 3
+   }
+  },
+  "section-olympus-xxvii": {
+   "box": [
+    16,
+    681,
+    361,
+    270
+   ],
+   "inventory": {
+    "row": 4
+   }
+  }
+ }
+}

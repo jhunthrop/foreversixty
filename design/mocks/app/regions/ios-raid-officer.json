@@ -1,0 +1,55 @@
+{
+ "device": {
+  "width": 393,
+  "height": 852
+ },
+ "regions": {
+  "section-next-raid": {
+   "box": [
+    16,
+    36,
+    361,
+    423
+   ],
+   "inventory": {
+    "row": 1,
+    "button": 4
+   }
+  },
+  "countdowns": {
+   "box": [
+    16,
+    95,
+    361,
+    364
+   ],
+   "inventory": {
+    "row": 1,
+    "button": 4
+   }
+  },
+  "section-needs-you": {
+   "box": [
+    16,
+    487,
+    361,
+    196
+   ],
+   "inventory": {
+    "row": 2,
+    "button": 1
+   }
+  },
+  "section-olympus-xxvii": {
+   "box": [
+    16,
+    711,
+    361,
+    270
+   ],
+   "inventory": {
+    "row": 4
+   }
+  }
+ }
+}

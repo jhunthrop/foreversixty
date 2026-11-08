@@ -6,10 +6,10 @@
  "regions": {
   "head": {
    "box": [
-    16,
-    0,
-    361,
-    209
+    32,
+    8,
+    329,
+    94
    ],
    "inventory": {
     "image": 1
@@ -17,10 +17,10 @@
   },
   "head-title": {
    "box": [
-    16,
-    16,
-    361,
-    90
+    32,
+    24,
+    329,
+    64
    ],
    "inventory": {
     "image": 1
@@ -28,67 +28,23 @@
   },
   "head-meta": {
    "box": [
-    88,
-    60,
-    289,
-    46
+    104,
+    68,
+    229,
+    20
    ],
    "inventory": {}
   },
-  "head-answer": {
+  "section-error": {
    "box": [
     16,
-    122,
+    126,
     361,
-    73
-   ],
-   "inventory": {}
-  },
-  "section-forever-right-now": {
-   "box": [
-    0,
-    495,
-    393,
-    129
+    102
    ],
    "inventory": {
-    "button": 1,
-    "segment": 3
-   }
-  },
-  "section-your-upgrades": {
-   "box": [
-    0,
-    241,
-    393,
-    222
-   ],
-   "inventory": {
-    "row": 3,
-    "image": 3
-   }
-  },
-  "section-your-spec-this-week": {
-   "box": [
-    0,
-    656,
-    393,
-    124
-   ],
-   "inventory": {
-    "row": 1
-   }
-  },
-  "section-top-movers": {
-   "box": [
-    0,
-    812,
-    393,
-    266
-   ],
-   "inventory": {
-    "row": 3,
-    "image": 3
+    "row": 1,
+    "button": 1
    }
   }
  }

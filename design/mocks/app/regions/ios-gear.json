@@ -1,0 +1,55 @@
+{
+ "device": {
+  "width": 393,
+  "height": 852
+ },
+ "regions": {
+  "controls": {
+   "box": [
+    16,
+    8,
+    361,
+    90
+   ],
+   "inventory": {
+    "row": 1
+   }
+  },
+  "section-where-to-go-tonight": {
+   "box": [
+    16,
+    126,
+    361,
+    233
+   ],
+   "inventory": {
+    "row": 3,
+    "image": 3
+   }
+  },
+  "section-every-slot": {
+   "box": [
+    16,
+    387,
+    361,
+    1153
+   ],
+   "inventory": {
+    "row": 17,
+    "image": 17
+   }
+  },
+  "slots": {
+   "box": [
+    16,
+    422,
+    361,
+    1118
+   ],
+   "inventory": {
+    "row": 17,
+    "image": 17
+   }
+  }
+ }
+}

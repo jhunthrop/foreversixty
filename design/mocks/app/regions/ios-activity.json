@@ -1,0 +1,73 @@
+{
+ "device": {
+  "width": 393,
+  "height": 852
+ },
+ "regions": {
+  "head": {
+   "box": [
+    32,
+    8,
+    329,
+    68
+   ],
+   "inventory": {}
+  },
+  "head-title": {
+   "box": [
+    32,
+    24,
+    329,
+    38
+   ],
+   "inventory": {}
+  },
+  "controls": {
+   "box": [
+    16,
+    76,
+    361,
+    48
+   ],
+   "inventory": {
+    "button": 6
+   }
+  },
+  "section-today": {
+   "box": [
+    16,
+    152,
+    361,
+    284
+   ],
+   "inventory": {
+    "row": 3,
+    "image": 3
+   }
+  },
+  "section-yesterday": {
+   "box": [
+    16,
+    464,
+    361,
+    265
+   ],
+   "inventory": {
+    "row": 3,
+    "image": 3
+   }
+  },
+  "section-this-week": {
+   "box": [
+    16,
+    757,
+    361,
+    188
+   ],
+   "inventory": {
+    "row": 2,
+    "image": 2
+   }
+  }
+ }
+}

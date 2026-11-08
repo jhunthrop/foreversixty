@@ -6,10 +6,10 @@
  "regions": {
   "head": {
    "box": [
-    16,
-    0,
-    380,
-    209
+    32,
+    8,
+    348,
+    94
    ],
    "inventory": {
     "image": 1
@@ -17,10 +17,10 @@
   },
   "head-title": {
    "box": [
-    16,
-    16,
-    380,
-    90
+    32,
+    24,
+    348,
+    64
    ],
    "inventory": {
     "image": 1
@@ -28,88 +28,43 @@
   },
   "head-meta": {
    "box": [
-    88,
-    60,
-    308,
-    46
+    104,
+    68,
+    229,
+    20
    ],
    "inventory": {}
   },
-  "head-answer": {
+  "section-next-upgrades": {
    "box": [
     16,
-    122,
+    130,
     380,
-    73
-   ],
-   "inventory": {}
-  },
-  "section-forever-right-now": {
-   "box": [
-    0,
-    495,
-    412,
-    652
+    278
    ],
    "inventory": {
-    "row": 7,
-    "segment": 3,
-    "image": 7
+    "row": 4,
+    "image": 3
    }
   },
-  "section-your-upgrades": {
+  "section-new-for-you": {
    "box": [
-    0,
-    241,
-    412,
-    222
+    16,
+    436,
+    380,
+    218
    ],
    "inventory": {
     "row": 3,
     "image": 3
    }
   },
-  "section-your-spec-this-week": {
+  "section-raid-with-a-guild": {
    "box": [
-    0,
-    1179,
-    412,
-    124
-   ],
-   "inventory": {
-    "row": 1
-   }
-  },
-  "section-top-3-for-fury-warrior-60": {
-   "box": [
-    0,
-    1555,
-    412,
-    180
-   ],
-   "inventory": {
-    "row": 3,
-    "image": 3
-   }
-  },
-  "countdowns": {
-   "box": [
-    0,
-    1303,
-    412,
-    92
-   ],
-   "inventory": {
-    "row": 1,
-    "image": 1
-   }
-  },
-  "section-find-a-guild": {
-   "box": [
-    0,
-    1395,
-    412,
-    128
+    16,
+    678,
+    380,
+    104
    ],
    "inventory": {
     "button": 1

@@ -6,63 +6,30 @@
  "regions": {
   "head": {
    "box": [
-    16,
-    0,
-    361,
-    94
+    32,
+    8,
+    329,
+    132
    ],
    "inventory": {}
   },
   "head-title": {
    "box": [
-    16,
-    16,
-    361,
-    64
+    32,
+    24,
+    329,
+    102
    ],
    "inventory": {}
   },
   "head-meta": {
    "box": [
-    16,
-    60,
-    288,
+    32,
+    106,
+    329,
     20
    ],
    "inventory": {}
-  },
-  "summary": {
-   "box": [
-    16,
-    94,
-    361,
-    66
-   ],
-   "inventory": {}
-  },
-  "section-get-your-character-in": {
-   "box": [
-    16,
-    180,
-    361,
-    285
-   ],
-   "inventory": {
-    "row": 3,
-    "button": 1
-   }
-  },
-  "section-pick-your-class": {
-   "box": [
-    16,
-    513,
-    361,
-    632
-   ],
-   "inventory": {
-    "row": 9,
-    "image": 9
-   }
   }
  }
 }

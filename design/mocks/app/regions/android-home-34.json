@@ -6,10 +6,10 @@
  "regions": {
   "head": {
    "box": [
-    16,
-    0,
-    380,
-    209
+    32,
+    8,
+    348,
+    120
    ],
    "inventory": {
     "image": 1
@@ -17,9 +17,9 @@
   },
   "head-title": {
    "box": [
-    16,
-    16,
-    380,
+    32,
+    24,
+    348,
     90
    ],
    "inventory": {
@@ -28,73 +28,31 @@
   },
   "head-meta": {
    "box": [
-    88,
-    60,
-    308,
+    104,
+    68,
+    276,
     46
    ],
    "inventory": {}
   },
-  "head-answer": {
+  "section-next-upgrades": {
    "box": [
     16,
-    122,
+    156,
     380,
-    73
-   ],
-   "inventory": {}
-  },
-  "countdowns": {
-   "box": [
-    16,
-    758,
-    380,
-    210
-   ],
-   "inventory": {}
-  },
-  "section-forever-right-now": {
-   "box": [
-    0,
-    495,
-    412,
-    263
+    277
    ],
    "inventory": {
-    "row": 2,
-    "segment": 3,
-    "image": 2
-   }
-  },
-  "section-your-upgrades": {
-   "box": [
-    0,
-    241,
-    412,
-    222
-   ],
-   "inventory": {
-    "row": 3,
+    "row": 4,
     "image": 3
    }
   },
-  "section-your-spec-this-week": {
+  "section-new-for-you": {
    "box": [
-    0,
-    1000,
-    412,
-    124
-   ],
-   "inventory": {
-    "row": 1
-   }
-  },
-  "section-top-movers": {
-   "box": [
-    0,
-    1156,
-    412,
-    266
+    16,
+    461,
+    380,
+    218
    ],
    "inventory": {
     "row": 3,

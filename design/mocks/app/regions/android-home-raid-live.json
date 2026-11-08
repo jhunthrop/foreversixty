@@ -6,10 +6,10 @@
  "regions": {
   "head": {
    "box": [
-    16,
-    0,
-    380,
-    86
+    32,
+    8,
+    348,
+    94
    ],
    "inventory": {
     "image": 1
@@ -17,36 +17,44 @@
   },
   "head-title": {
    "box": [
-    16,
-    16,
-    380,
-    56
+    32,
+    24,
+    348,
+    64
    ],
    "inventory": {
     "image": 1
    }
   },
-  "section-forever-right-now": {
+  "head-meta": {
    "box": [
-    0,
-    282,
-    412,
-    354
+    104,
+    68,
+    229,
+    20
    ],
-   "inventory": {
-    "row": 3,
-    "segment": 3,
-    "image": 3
-   }
+   "inventory": {}
   },
   "countdowns": {
    "box": [
-    0,
-    86,
-    412,
-    164
+    16,
+    126,
+    380,
+    140
    ],
    "inventory": {}
+  },
+  "section-new-for-you": {
+   "box": [
+    16,
+    294,
+    380,
+    218
+   ],
+   "inventory": {
+    "row": 3,
+    "image": 3
+   }
   }
  }
 }

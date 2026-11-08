@@ -1,0 +1,28 @@
+{
+ "device": {
+  "width": 393,
+  "height": 852
+ },
+ "regions": {
+  "section-next-raid": {
+   "box": [
+    16,
+    36,
+    361,
+    83
+   ],
+   "inventory": {}
+  },
+  "section-olympus-xxvii": {
+   "box": [
+    16,
+    147,
+    361,
+    270
+   ],
+   "inventory": {
+    "row": 4
+   }
+  }
+ }
+}

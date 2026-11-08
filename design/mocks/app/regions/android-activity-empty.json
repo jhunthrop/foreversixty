@@ -1,0 +1,37 @@
+{
+ "device": {
+  "width": 412,
+  "height": 915
+ },
+ "regions": {
+  "head": {
+   "box": [
+    32,
+    8,
+    348,
+    68
+   ],
+   "inventory": {}
+  },
+  "head-title": {
+   "box": [
+    32,
+    24,
+    348,
+    38
+   ],
+   "inventory": {}
+  },
+  "controls": {
+   "box": [
+    16,
+    76,
+    380,
+    48
+   ],
+   "inventory": {
+    "button": 6
+   }
+  }
+ }
+}

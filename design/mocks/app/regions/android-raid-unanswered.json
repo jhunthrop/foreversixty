@@ -1,0 +1,76 @@
+{
+ "device": {
+  "width": 412,
+  "height": 915
+ },
+ "regions": {
+  "head": {
+   "box": [
+    32,
+    8,
+    348,
+    120
+   ],
+   "inventory": {
+    "image": 1
+   }
+  },
+  "head-title": {
+   "box": [
+    32,
+    24,
+    348,
+    90
+   ],
+   "inventory": {
+    "image": 1
+   }
+  },
+  "head-meta": {
+   "box": [
+    104,
+    68,
+    276,
+    46
+   ],
+   "inventory": {}
+  },
+  "controls": {
+   "box": [
+    16,
+    128,
+    380,
+    48
+   ],
+   "inventory": {
+    "button": 6
+   }
+  },
+  "section-not-answered": {
+   "box": [
+    16,
+    416,
+    380,
+    543
+   ],
+   "inventory": {
+    "row": 5,
+    "button": 12,
+    "image": 5
+   }
+  },
+  "section-healers-on-the-bench": {
+   "box": [
+    16,
+    987,
+    380,
+    167
+   ],
+   "inventory": {
+    "row": 1,
+    "button": 1,
+    "image": 1
+   }
+  }
+ }
+}

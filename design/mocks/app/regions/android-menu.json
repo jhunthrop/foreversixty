@@ -35,7 +35,7 @@
    ],
    "inventory": {}
   },
-  "section-your-characters": {
+  "section-switch-character": {
    "box": [
     16,
     214,
@@ -52,16 +52,16 @@
     16,
     625,
     317,
-    392
+    451
    ],
    "inventory": {
-    "row": 6
+    "row": 7
    }
   },
   "section-account": {
    "box": [
     16,
-    1041,
+    1100,
     317,
     333
    ],

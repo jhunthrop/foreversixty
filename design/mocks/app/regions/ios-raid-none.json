@@ -1,0 +1,58 @@
+{
+ "device": {
+  "width": 393,
+  "height": 852
+ },
+ "regions": {
+  "head": {
+   "box": [
+    32,
+    8,
+    329,
+    94
+   ],
+   "inventory": {}
+  },
+  "head-title": {
+   "box": [
+    32,
+    24,
+    329,
+    64
+   ],
+   "inventory": {}
+  },
+  "head-meta": {
+   "box": [
+    32,
+    68,
+    227,
+    20
+   ],
+   "inventory": {}
+  },
+  "section-guilds-recruiting-a-fury-warrior": {
+   "box": [
+    16,
+    130,
+    361,
+    240
+   ],
+   "inventory": {
+    "row": 2,
+    "button": 2
+   }
+  },
+  "section-your-guild-is-not-here": {
+   "box": [
+    16,
+    398,
+    361,
+    147
+   ],
+   "inventory": {
+    "button": 1
+   }
+  }
+ }
+}

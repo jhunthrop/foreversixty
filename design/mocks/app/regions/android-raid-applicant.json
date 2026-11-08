@@ -1,0 +1,70 @@
+{
+ "device": {
+  "width": 412,
+  "height": 915
+ },
+ "regions": {
+  "head": {
+   "box": [
+    32,
+    8,
+    348,
+    120
+   ],
+   "inventory": {
+    "image": 1
+   }
+  },
+  "head-title": {
+   "box": [
+    32,
+    24,
+    348,
+    90
+   ],
+   "inventory": {
+    "image": 1
+   }
+  },
+  "head-meta": {
+   "box": [
+    104,
+    68,
+    276,
+    46
+   ],
+   "inventory": {}
+  },
+  "section-raid-ready": {
+   "box": [
+    16,
+    281,
+    380,
+    187
+   ],
+   "inventory": {
+    "row": 3
+   }
+  },
+  "section-guild-history": {
+   "box": [
+    16,
+    496,
+    380,
+    152
+   ],
+   "inventory": {
+    "row": 2
+   }
+  },
+  "section-their-note": {
+   "box": [
+    16,
+    676,
+    380,
+    95
+   ],
+   "inventory": {}
+  }
+ }
+}

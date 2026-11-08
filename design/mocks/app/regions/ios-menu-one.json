@@ -35,30 +35,21 @@
    ],
    "inventory": {}
   },
-  "section-your-characters": {
+  "section-tools": {
    "box": [
     16,
     256,
     301,
-    87
-   ],
-   "inventory": {}
-  },
-  "section-tools": {
-   "box": [
-    16,
-    367,
-    301,
-    392
+    451
    ],
    "inventory": {
-    "row": 6
+    "row": 7
    }
   },
   "section-account": {
    "box": [
     16,
-    783,
+    731,
     301,
     333
    ],
