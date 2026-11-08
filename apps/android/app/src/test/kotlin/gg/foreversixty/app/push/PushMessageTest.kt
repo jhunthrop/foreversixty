@@ -62,9 +62,9 @@ class PushMessageTest {
     @Test
     fun `a sim and a report land on their result`() {
         val sim = message(mapOf("kind" to "sim.finished", "title" to "Sim done", "link" to "https://foreversixty.gg/sim/abc123"))
-        assertEquals(DeepLink.Sim("abc123").url(), sim?.landing())
+        assertEquals(DeepLink.SimPage("abc123").url(), sim?.landing())
         val report = message(mapOf("kind" to "report.ready", "title" to "Report ready", "link" to "https://foreversixty.gg/reports/r9"))
-        assertEquals(DeepLink.Report("r9").url(), report?.landing())
+        assertEquals(DeepLink.ReportPage("r9").url(), report?.landing())
     }
 
     @Test
@@ -74,8 +74,9 @@ class PushMessageTest {
     }
 
     @Test
-    fun `a site page with no app screen yet opens Home`() {
-        assertNull(message(mapOf("kind" to "bis.changed", "title" to "BiS changed", "link" to "https://foreversixty.gg/bis/warrior-fury/60"))?.landing())
+    fun `a site page lands on its screen, an unknown one opens Home`() {
+        assertEquals(DeepLink.BisPage("warrior", "fury").url(), message(mapOf("kind" to "bis.changed", "title" to "BiS changed", "link" to "https://foreversixty.gg/bis/warrior/fury"))?.landing())
+        assertNull(message(mapOf("kind" to "x.y", "title" to "Odd", "link" to "https://foreversixty.gg/somewhere/else/entirely"))?.landing())
     }
 
     @Test

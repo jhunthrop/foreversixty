@@ -28,6 +28,20 @@ enum Copy {
     /// You
     static var tabYou: String { text("tab.you") }
 
+    /// Raid
+    static var tabRaid: String { text("tab.raid") }
+
+    /// Gear
+    static var tabGear: String { text("tab.gear") }
+
+    /// Activity
+    static var tabActivity: String { text("tab.activity") }
+
+    /// {n} new
+    static func tabBadge(n: Int) -> String {
+        format("tab.badge", n)
+    }
+
     /// Offline. Showing what you had at {time}.
     static func offlineStrip(time: String) -> String {
         format("offline.strip", time)
@@ -44,6 +58,9 @@ enum Copy {
 
     /// Cancel
     static var commonCancel: String { text("common.cancel") }
+
+    /// Back
+    static var commonBack: String { text("common.back") }
 
     /// just now
     static var commonAgeNow: String { text("common.age.now") }
@@ -2065,6 +2082,152 @@ enum Copy {
     static func youVersion(version: String, build: String, data: String) -> String {
         format("you.version", version, build, data)
     }
+
+    /// Activity
+    static var activityTitle: String { text("activity.title") }
+
+    /// All
+    static var activityAll: String { text("activity.all") }
+
+    /// Today
+    static var activityToday: String { text("activity.today") }
+
+    /// Yesterday
+    static var activityYesterday: String { text("activity.yesterday") }
+
+    /// This week
+    static var activityThisWeek: String { text("activity.thisWeek") }
+
+    /// Earlier
+    static var activityEarlier: String { text("activity.earlier") }
+
+    /// Mark all read
+    static var activityMarkAllRead: String { text("activity.markAllRead") }
+
+    /// Unread
+    static var activityUnread: String { text("activity.unread") }
+
+    /// Nothing yet. Loot, sims, reports and your guild's raids arrive here as they happen.
+    static var activityEmpty: String { text("activity.empty") }
+
+    /// What changed for your characters: loot, sims, reports, raids.
+    static var activityOut: String { text("activity.out") }
+
+    /// Your activity did not load.
+    static var activityFailed: String { text("activity.failed") }
+
+    /// Show older
+    static var activityMore: String { text("activity.more") }
+
+    /// Open the menu
+    static var menuA11yOpen: String { text("menu.a11y.open") }
+
+    /// Main
+    static var menuMain: String { text("menu.main") }
+
+    /// Updated {age} from Battle.net
+    static func menuUpdated(age: String) -> String {
+        format("menu.updated", age)
+    }
+
+    /// Refresh
+    static var menuRefresh: String { text("menu.refresh") }
+
+    /// Switch character
+    static var menuSwitch: String { text("menu.switch") }
+
+    /// Show low-level characters ({n})
+    static func menuShowLow(n: Int) -> String {
+        format("menu.showLow", n)
+    }
+
+    /// Hide low-level characters
+    static var menuHideLow: String { text("menu.hideLow") }
+
+    /// Tools
+    static var menuTools: String { text("menu.tools") }
+
+    /// Guides
+    static var menuGuides: String { text("menu.guides") }
+
+    /// Your spec's guide, then every class
+    static var menuGuidesLine: String { text("menu.guides.line") }
+
+    /// Tiers
+    static var menuTiers: String { text("menu.tiers") }
+
+    /// Every spec, this week
+    static var menuTiersLine: String { text("menu.tiers.line") }
+
+    /// Patch notes
+    static var menuPatchNotes: String { text("menu.patchNotes") }
+
+    /// The game and the site
+    static var menuPatchNotesLine: String { text("menu.patchNotes.line") }
+
+    /// Sims
+    static var menuSims: String { text("menu.sims") }
+
+    /// Your server runs and saved sims
+    static var menuSimsLine: String { text("menu.sims.line") }
+
+    /// Logs and reports
+    static var menuLogs: String { text("menu.logs") }
+
+    /// Your reports and the coach
+    static var menuLogsLine: String { text("menu.logs.line") }
+
+    /// Planner
+    static var menuPlanner: String { text("menu.planner") }
+
+    /// Your builds and the guide builds
+    static var menuPlannerLine: String { text("menu.planner.line") }
+
+    /// Rankings
+    static var menuRankings: String { text("menu.rankings") }
+
+    /// Your spec and your guild
+    static var menuRankingsLine: String { text("menu.rankings.line") }
+
+    /// Account
+    static var menuAccount: String { text("menu.account") }
+
+    /// Notifications
+    static var menuNotifications: String { text("menu.notifications") }
+
+    /// Plan
+    static var menuPlan: String { text("menu.plan") }
+
+    /// Devices
+    static var menuDevices: String { text("menu.devices") }
+
+    /// {n} signed in
+    static func menuDevicesLine(n: Int) -> String {
+        format("menu.devices.line", n)
+    }
+
+    /// Offline data
+    static var menuOfflineData: String { text("menu.offlineData") }
+
+    /// {size} on this phone
+    static func menuOfflineDataLine(size: String) -> String {
+        format("menu.offlineData.line", size)
+    }
+
+    /// Settings
+    static var menuSettings: String { text("menu.settings") }
+
+    /// Sign out, delete account
+    static var menuSettingsLine: String { text("menu.settings.line") }
+
+    /// Help
+    static var menuHelp: String { text("menu.help") }
+
+    /// Privacy
+    static var menuPrivacy: String { text("menu.privacy") }
+
+    /// Forever Sixty
+    static var menuOutTitle: String { text("menu.out.title") }
 
     /// Not affiliated with or endorsed by Blizzard Entertainment. World of Warcraft and Warcraft are trademarks of Blizzard Entertainment, Inc.
     static var aboutNotAffiliated: String { text("about.notAffiliated") }

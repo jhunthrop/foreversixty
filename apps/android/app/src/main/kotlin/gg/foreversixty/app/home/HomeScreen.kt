@@ -36,7 +36,7 @@ import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import gg.foreversixty.app.R
 import gg.foreversixty.app.common.Connectivity
-import gg.foreversixty.app.account.CharacterSelectorBar
+import gg.foreversixty.app.menu.ProfileBar
 import gg.foreversixty.app.auth.session.SessionManager
 import gg.foreversixty.app.auth.session.me
 import gg.foreversixty.app.designsystem.BrandButton
@@ -174,12 +174,12 @@ fun HomeRoute(
         if (character != null) {
             val reports = HomeReports(ReportsViewer.of(sessionMe, character.key), signIn, RankingsViewer.of(sessionMe, character.key))
             HomeCharacterScreen(HomeCharacter.from(character), sessionMe.finishedSims, dependencies, openBis, sessionMe.entitlements.serverSims, reports) {
-                RootSearchBar(onSearch) { CharacterSelectorBar(session) }
+                RootSearchBar(onSearch) { ProfileBar(session) }
             }
             return
         }
     }
-    HomeFromMe(dependencies, openBis, signIn) { RootSearchBar(onSearch) { if (session != null) CharacterSelectorBar(session) } }
+    HomeFromMe(dependencies, openBis, signIn) { RootSearchBar(onSearch) { ProfileBar(session) } }
 }
 
 /**

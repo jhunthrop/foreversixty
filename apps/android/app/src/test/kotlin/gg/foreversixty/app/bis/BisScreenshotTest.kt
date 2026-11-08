@@ -106,7 +106,7 @@ class BisScreenshotTest {
         compose.setContent {
             ForeverTheme {
                 CompositionLocalProvider(LocalItemIconPainter provides HomeFixtures.repoIcons) {
-                    if (inShell) ForeverTabScaffold(selected = ForeverTab.Bis, onSelect = {}) { screen() } else screen()
+                    if (inShell) ForeverTabScaffold(selected = ForeverTab.Gear, onSelect = {}) { screen() } else screen()
                 }
             }
         }

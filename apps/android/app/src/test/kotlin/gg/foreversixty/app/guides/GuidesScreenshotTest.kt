@@ -13,7 +13,7 @@ import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.unit.dp
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.takahirom.roborazzi.captureRoboImage
-import gg.foreversixty.app.account.CharacterSelector
+import gg.foreversixty.app.menu.CharacterPortrait
 import gg.foreversixty.app.designsystem.ForeverTheme
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.guides.logic.GuideSection
@@ -76,7 +76,7 @@ class GuidesScreenshotTest {
         compose.setContent {
             ForeverTheme {
                 CompositionLocalProvider(LocalItemIconPainter provides HomeFixtures.repoIcons) {
-                    ForeverTabScaffold(selected = ForeverTab.Guides, onSelect = {}, tabs = ForeverTab.visible(guides = true)) {
+                    ForeverTabScaffold(selected = ForeverTab.Home, onSelect = {}) {
                         Box(Modifier.fillMaxSize().background(FsColor.bg)) { screen() }
                     }
                 }
@@ -102,7 +102,7 @@ class GuidesScreenshotTest {
 
     @Composable
     private fun Selector(character: AccountCharacter?) {
-        if (character != null) Row(Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) { CharacterSelector(character, open = false) {} }
+        if (character != null) Row(Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) { CharacterPortrait(character.avatarUrl, character.faction, 36.dp) }
     }
 
     private fun home(name: String, character: AccountCharacter?, large: Boolean = false, phase: Loadable<gg.foreversixty.app.model.GuideIndex> = Loadable.Loaded(index, null)) =

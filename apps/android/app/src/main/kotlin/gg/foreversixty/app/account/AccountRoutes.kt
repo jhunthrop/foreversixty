@@ -56,6 +56,9 @@ object AccountLinks {
     const val PRIVACY = "$SITE/privacy"
     const val TERMS = "$SITE/terms"
 
+    /** The menu's Help: the Discord server (web/src/data/links.json `discordInvite`). */
+    const val HELP = "https://discord.gg/NZhBtPwvHt"
+
     /** F8's `See plans`, link regions only (decision P). */
     const val PREMIUM = "$SITE/premium"
 
@@ -130,15 +133,20 @@ fun SignedOutPanel(deps: AccountDeps, onPickClass: () -> Unit, variant: SignedOu
     )
 }
 
-private enum class YouPage { Root, Plan, Devices, Delete, About, Calendar, OfflineData }
+/** The account screens the menu's Account rows open (spec 2026-11-08 section 3); Settings is the old You. */
+enum class AccountPage { Settings, Plan, Devices, Delete, About, Calendar, OfflineData }
 
-/** The You tab: the account section when signed in, the sign-in panel when not. */
+/**
+ * An account screen pushed from the menu, starting at [start]; Back from a screen it pushed returns to
+ * [start], Back from [start] calls [onBack]. Signed out it shows the sign-in panel.
+ */
 @Composable
-fun YouRoute(deps: AccountDeps, onPickClass: () -> Unit) {
+fun AccountRoute(deps: AccountDeps, start: AccountPage, onPickClass: () -> Unit, onBack: () -> Unit) {
     val phase by deps.session.phase.collectAsStateWithLifecycle()
     val me = (phase as? SessionPhase.SignedIn)?.me
+    BackHandler(onBack = onBack)
     when {
-        me != null -> SignedInYou(deps)
+        me != null -> SignedInAccount(deps, start, onBack)
         phase is SessionPhase.SignedIn -> Box(Modifier.fillMaxSize().background(FsColor.bg), Alignment.Center) {
             CircularProgressIndicator(color = FsColor.gold)
         }
@@ -147,12 +155,12 @@ fun YouRoute(deps: AccountDeps, onPickClass: () -> Unit) {
 }
 
 @Composable
-private fun SignedInYou(deps: AccountDeps) {
+private fun SignedInAccount(deps: AccountDeps, start: AccountPage, onBack: () -> Unit) {
     val session = deps.session
     val phase by session.phase.collectAsStateWithLifecycle()
     val picked by session.pickedKey.collectAsStateWithLifecycle()
     val me = phase.let { (it as? SessionPhase.SignedIn)?.me } ?: return
-    var page by rememberSaveable { mutableStateOf(YouPage.Root) }
+    var page by rememberSaveable(start) { mutableStateOf(start) }
     var deviceCount by remember { mutableStateOf<Int?>(null) }
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
@@ -160,13 +168,14 @@ private fun SignedInYou(deps: AccountDeps) {
     val mayLink by deps.plansLink.mayLink.collectAsStateWithLifecycle()
     val plan = PlanSummary.of(me, Instant.now())
     val offlineData = remember(deps) { deps.offlineData() }
-    BackHandler(enabled = page != YouPage.Root) { page = YouPage.Root }
+    val back = { if (page == start) onBack() else page = start }
+    BackHandler(enabled = page != start) { page = start }
     LaunchedEffect(Unit) {
         deviceCount = (session.devices() as? ApiResult.Success)?.data?.size
     }
     LaunchedEffect(Unit) { deps.plansLink.resolve() }
     when (page) {
-        YouPage.Root -> YouScreen(
+        AccountPage.Settings -> YouScreen(
             summary = YouSummary(
                 battletag = me.user.battletag.orEmpty(),
                 plan = plan,
@@ -180,26 +189,26 @@ private fun SignedInYou(deps: AccountDeps) {
             ),
             actions = YouActions(
                 onSeePlans = { AccountLinks.open(context, AccountLinks.PREMIUM) },
-                onPlan = { page = YouPage.Plan },
-                onDevices = { page = YouPage.Devices },
+                onPlan = { page = AccountPage.Plan },
+                onDevices = { page = AccountPage.Devices },
                 onPrivacy = { AccountLinks.open(context, AccountLinks.PRIVACY) },
                 onTerms = { AccountLinks.open(context, AccountLinks.TERMS) },
-                onAbout = { page = YouPage.About },
-                onDeleteAccount = { page = YouPage.Delete },
+                onAbout = { page = AccountPage.About },
+                onDeleteAccount = { page = AccountPage.Delete },
                 onSignOut = { scope.launch { session.signOut() } },
-                onCalendar = deps.guildExtras?.let { { page = YouPage.Calendar } },
-                onOfflineData = offlineData?.let { { page = YouPage.OfflineData } },
+                onCalendar = deps.guildExtras?.let { { page = AccountPage.Calendar } },
+                onOfflineData = offlineData?.let { { page = AccountPage.OfflineData } },
             ),
             mayLink = mayLink,
             liveSurfaces = deps.liveSurfaces?.let { settings -> { LiveSurfacesCard(settings) } },
         )
-        YouPage.Plan -> PlanScreen(plan, mayLink) { AccountLinks.open(context, AccountLinks.BILLING) }
-        YouPage.Devices -> DevicesRoute(session) { deviceCount = it }
-        YouPage.Delete -> DeleteRoute(session, me)
-        YouPage.About -> AboutScreen(version)
-        YouPage.OfflineData -> offlineData?.let { model -> OfflineDataRoute(model) { page = YouPage.Root } }
-        YouPage.Calendar -> deps.guildExtras?.let { extras ->
-            CalendarRoute(extras, me.user.id.toString(), session.currentCharacter(phase, picked)?.key) { page = YouPage.Root }
+        AccountPage.Plan -> PlanScreen(plan, mayLink) { AccountLinks.open(context, AccountLinks.BILLING) }
+        AccountPage.Devices -> DevicesRoute(session) { deviceCount = it }
+        AccountPage.Delete -> DeleteRoute(session, me)
+        AccountPage.About -> AboutScreen(version)
+        AccountPage.OfflineData -> offlineData?.let { model -> OfflineDataRoute(model) { back() } }
+        AccountPage.Calendar -> deps.guildExtras?.let { extras ->
+            CalendarRoute(extras, me.user.id.toString(), session.currentCharacter(phase, picked)?.key) { back() }
         }
     }
 }

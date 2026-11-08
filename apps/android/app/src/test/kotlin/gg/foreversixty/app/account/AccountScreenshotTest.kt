@@ -64,21 +64,6 @@ class AccountScreenshotTest {
 
     private fun me(name: String): Me = ApiJson.decodeFromJsonElement(Me.serializer(), data(name))
 
-    /** me.json plus a third character with no guild, as the spec's F1.5 capture asks. */
-    private fun threeCharacters(): Me {
-        val root = data("me.json").jsonObject
-        val extra = JsonObject(
-            mapOf(
-                "key" to JsonPrimitive("us/pvp/sablewhisper"), "region" to JsonPrimitive("us"),
-                "ruleset" to JsonPrimitive("pvp"), "name" to JsonPrimitive("Sablewhisper"),
-                "class" to JsonPrimitive("priest"), "spec" to JsonPrimitive("Shadow"),
-                "race" to JsonPrimitive("undead"), "level" to JsonPrimitive(23), "source" to JsonPrimitive("bnet"),
-            ),
-        )
-        val characters = JsonArray(requireNotNull(root["characters"]).jsonArray + extra)
-        return ApiJson.decodeFromJsonElement(Me.serializer(), JsonObject(root + ("characters" to characters)))
-    }
-
     private fun deviceRows(): List<DeviceRow> {
         val devices = ApiJson.decodeFromJsonElement(ListSerializer(Device.serializer()), data("devices.list.json"))
         return DeviceList.rows(devices, "dvc_8Qk2nXw4", Instant.parse("2026-10-30T21:41:00Z"))
@@ -111,20 +96,13 @@ class AccountScreenshotTest {
         tab("signedout-ax5") { SignedOut(null) }
     }
 
-    @Test fun `switcher`() = capture("switcher-default") { Switcher(threeCharacters()) }
+    @Test fun `you free`() = tab("you-free", ForeverTab.Home) { You(me("me.json")) }
 
-    @Test fun `switcher at font scale 2`() {
-        RuntimeEnvironment.setFontScale(2f)
-        capture("switcher-ax5") { Switcher(threeCharacters()) }
-    }
-
-    @Test fun `you free`() = tab("you-free", ForeverTab.You) { You(me("me.json")) }
-
-    @Test fun `you premium`() = tab("you-premium", ForeverTab.You) { You(me("me.premium.json")) }
+    @Test fun `you premium`() = tab("you-premium", ForeverTab.Home) { You(me("me.premium.json")) }
 
     @Test fun `sign out confirmation`() = screen("you-signout-confirm") { You(me("me.json"), confirming = true) }
 
-    @Test fun `devices`() = tab("devices-default", ForeverTab.You) {
+    @Test fun `devices`() = tab("devices-default", ForeverTab.Home) {
         DevicesScreen(DevicesState.Loaded(deviceRows()), null, {}, {})
     }
 
@@ -135,7 +113,7 @@ class AccountScreenshotTest {
 
     @Test fun `revoke failed`() {
         val rows = deviceRows()
-        tab("devices-revoke-failed", ForeverTab.You) { DevicesScreen(DevicesState.Loaded(rows), rows[1].id, {}, {}) }
+        tab("devices-revoke-failed", ForeverTab.Home) { DevicesScreen(DevicesState.Loaded(rows), rows[1].id, {}, {}) }
     }
 
     @Test fun `delete account, free`() = delete("delete-free", "me.json")
@@ -154,7 +132,7 @@ class AccountScreenshotTest {
 
     @Test fun `delete account, BattleTag typed`() = delete("delete-ready", "me.json", typed = "yell#1604")
 
-    @Test fun `about`() = tab("about-default", ForeverTab.You) { AboutScreen(VERSION) }
+    @Test fun `about`() = tab("about-default", ForeverTab.Home) { AboutScreen(VERSION) }
 
     private fun errorMessage(name: String): String =
         requireNotNull(ApiJson.parseToJsonElement(fixture(name)).jsonObject["error"]?.jsonObject?.get("message")) { "no message in $name" }
@@ -163,7 +141,7 @@ class AccountScreenshotTest {
     private fun delete(name: String, file: String, typed: String = "", outcome: AccountActionOutcome? = null) {
         val me = me(file)
         val consequences = DeletionConsequence.of(me)
-        tab(name, ForeverTab.You) {
+        tab(name, ForeverTab.Home) {
             DeleteAccountScreen(consequences, me.user.battletag, typed, {}, deleting = false, outcome = outcome, onDelete = {})
         }
     }
@@ -187,18 +165,6 @@ class AccountScreenshotTest {
         )
     }
 
-    /** The selector open, and the sheet drawn as it presents. */
-    @Composable
-    private fun Switcher(me: Me) {
-        val current = me.characters.first()
-        Column(Modifier.fillMaxSize().background(FsColor.bg)) {
-            Column(Modifier.padding(16.dp)) { CharacterSelector(current, open = true) {} }
-            Column(Modifier.clip(RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp)).background(FsColor.raised)) {
-                SwitcherSheetContent(me, current.key) {}
-            }
-        }
-    }
-
     private fun tab(name: String, tab: ForeverTab = ForeverTab.Home, screen: @Composable () -> Unit) =
         capture(name) { ForeverTabScaffold(selected = tab, onSelect = {}) { screen() } }
 
@@ -210,7 +176,7 @@ class AccountScreenshotTest {
     /** Dialogs live in their own window, so these capture the whole screen. */
     @OptIn(ExperimentalRoborazziApi::class)
     private fun screen(name: String, content: @Composable () -> Unit) {
-        compose.setContent { ForeverTheme { ForeverTabScaffold(selected = ForeverTab.You, onSelect = {}) { content() } } }
+        compose.setContent { ForeverTheme { ForeverTabScaffold(selected = ForeverTab.Home, onSelect = {}) { content() } } }
         compose.waitForIdle()
         captureScreenRoboImage("src/test/screenshots/account_$name.png", roborazziOptions = STRICT_SNAPSHOT)
     }

@@ -31,6 +31,12 @@ class GuidesNavigator {
         stack = stack.dropLast(1)
     }
 
+    /** `/guides/{class}` on the site: that class's page. */
+    fun openClass(classSlug: String) {
+        stack = listOf(GuidesScreen.ClassPage(classSlug))
+        wantsTab = true
+    }
+
     /** `/app/guides` opens the tab's root; `/app/guides/{class}/{spec}` that guide. */
     fun open(link: DeepLink): Boolean {
         stack = when (link) {

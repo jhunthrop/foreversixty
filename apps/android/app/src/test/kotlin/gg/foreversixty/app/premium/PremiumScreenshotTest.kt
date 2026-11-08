@@ -94,7 +94,7 @@ class PremiumScreenshotTest {
     private fun Plan(file: String, mayLink: Boolean) = PlanScreen(PlanSummary.of(me(file), NOW), mayLink) {}
 
     private fun capture(name: String, screen: @Composable () -> Unit) {
-        compose.setContent { ForeverTheme { ForeverTabScaffold(selected = ForeverTab.You, onSelect = {}) { screen() } } }
+        compose.setContent { ForeverTheme { ForeverTabScaffold(selected = ForeverTab.Home, onSelect = {}) { screen() } } }
         compose.onRoot().captureRoboImage("src/test/screenshots/premium_$name.png", roborazziOptions = STRICT_SNAPSHOT)
     }
 }

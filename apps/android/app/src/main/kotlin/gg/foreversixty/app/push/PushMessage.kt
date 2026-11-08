@@ -1,7 +1,6 @@
 package gg.foreversixty.app.push
 
 import gg.foreversixty.app.navigation.DeepLink
-import java.net.URI
 
 /**
  * One FCM message as the app reads it (app-v1.md "Push payloads"). FCM data values are strings.
@@ -59,26 +58,12 @@ data class PushMessage(
 }
 
 /**
- * Where a tap lands (spec 2026-11-08 F4): the raid page for every raid and officer event, the sim
- * result, the report; an app link the server sent opens as itself. Gear, the item sheet, Tiers and the
- * guild sims ladder land with the tabs that hold them (the app's navigation lanes); until then they open
- * Home.
+ * Where a tap lands (spec 2026-11-08 F4): the raid page for every raid and officer event (its ids are
+ * in the data), else the link the server sent, an app link or a site page MainActivity routes.
  */
 object PushLanding {
     fun of(message: PushMessage): DeepLink? {
-        message.link?.let(DeepLink::parse)?.let { return it }
         message.raid?.let { (guild, raid) -> return DeepLink.Raid(guild, raid) }
-        val path = message.link?.let { runCatching { URI(it).path }.getOrNull() }.orEmpty()
-        return when (message.kind) {
-            "sim.finished" -> lastSegment(path, "sim")?.let(DeepLink::Sim)
-            "report.ready", "coach.ready" -> lastSegment(path, "reports")?.let(DeepLink::Report)
-            else -> null
-        }
-    }
-
-    /** `/sim/abc` with prefix `sim` is `abc`. */
-    private fun lastSegment(path: String, prefix: String): String? {
-        val parts = path.split('/').filter { it.isNotEmpty() }
-        return parts.takeIf { it.size == 2 && it[0] == prefix }?.get(1)
+        return message.link?.let(DeepLink::parse)
     }
 }

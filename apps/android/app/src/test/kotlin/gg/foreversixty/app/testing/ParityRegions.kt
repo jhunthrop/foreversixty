@@ -70,15 +70,19 @@ object ParityRegions {
             val got = capture.regions[name] ?: continue
             if (want.box.size != BOX_FIELDS) continue
             diffs += boxDiffs(name, got, want.box)
-            val counted = inventory(got, capture.items)
+            val counted = inventory(name, got, capture.items)
             if (counted != want.inventory) diffs += "$name: inventory ${describe(counted)}, the mock has ${describe(want.inventory)}"
         }
         return diffs
     }
 
-    /** The items whose centre lies inside [region], counted by kind (kinds with none left out). */
-    fun inventory(region: Rect, items: List<ParityItem>): Map<String, Int> =
-        items.filter { region.contains(it.bounds.center) }.groupingBy { it.kind.key }.eachCount()
+    /**
+     * The items whose centre lies inside [region], plus every item of the scrolling region [name]
+     * wherever its scroll puts it, counted by kind (kinds with none left out).
+     */
+    fun inventory(name: String, region: Rect, items: List<ParityItem>): Map<String, Int> =
+        items.filter { it.scroll == name || (it.scroll == null && region.contains(it.bounds.center)) }
+            .groupingBy { it.kind.key }.eachCount()
 
     private fun boxDiffs(name: String, got: Rect, want: List<Float>): List<String> {
         val checks = listOf(

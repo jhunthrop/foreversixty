@@ -40,7 +40,7 @@ import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.unit.dp
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.takahirom.roborazzi.captureRoboImage
-import gg.foreversixty.app.account.CharacterSelector
+import gg.foreversixty.app.menu.CharacterPortrait
 import gg.foreversixty.app.designsystem.ForeverTheme
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.NewDataStrip
@@ -102,7 +102,7 @@ class SystemScreenshotTest {
     private val saved: Long = now.minusSeconds(SAVED_AGO).toEpochMilli()
     private val build = "1.60.1.70658"
 
-    private fun capture(name: String, large: Boolean, tab: ForeverTab? = ForeverTab.You, screen: @Composable () -> Unit) {
+    private fun capture(name: String, large: Boolean, tab: ForeverTab? = ForeverTab.Home, screen: @Composable () -> Unit) {
         if (large) RuntimeEnvironment.setFontScale(LARGE_SCALE)
         compose.setContent {
             ForeverTheme {
@@ -110,7 +110,7 @@ class SystemScreenshotTest {
                     if (tab == null) {
                         Box(Modifier.fillMaxSize().background(FsColor.bg)) { screen() }
                     } else {
-                        ForeverTabScaffold(selected = tab, onSelect = {}, tabs = ForeverTab.visible(guides = true)) {
+                        ForeverTabScaffold(selected = tab, onSelect = {}) {
                             Box(Modifier.fillMaxSize().background(FsColor.bg)) { screen() }
                         }
                     }
@@ -182,7 +182,7 @@ class SystemScreenshotTest {
 
     @Test fun stripStaleLarge() = home("f15-strip-stale", true, stale = true)
 
-    private fun newData(large: Boolean) = capture("f15-strip-newdata", large, ForeverTab.Guides) {
+    private fun newData(large: Boolean) = capture("f15-strip-newdata", large, ForeverTab.Home) {
         val index = GuidesTestData.index()
         Column {
             NewDataStrip("New game data is ready.", "Update", {})
@@ -198,10 +198,10 @@ class SystemScreenshotTest {
 
     // §3.2 the Guides root bar's search button
 
-    private fun guidesBar(large: Boolean) = capture("f15-guides-search", large, ForeverTab.Guides) {
+    private fun guidesBar(large: Boolean) = capture("f15-guides-search", large, ForeverTab.Home) {
         val index = GuidesTestData.index()
         GuidesRootLayout(GuidesSegment.visible(tiersOn = true), GuidesSegment.Guides, {}, selector = {
-            RootSearchBar({}) { Row(Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) { CharacterSelector(GuidesTestData.lightningbolltz, open = false) {} } }
+            RootSearchBar({}) { Row(Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) { CharacterPortrait(GuidesTestData.lightningbolltz.avatarUrl, GuidesTestData.lightningbolltz.faction, 36.dp) } }
         }) {
             GuidesHome(GuidesHomeState(Loadable.Loaded(index, null), savedGuides, Guides.yourGuide(index, GuidesTestData.lightningbolltz)), GuidesHomeActions())
         }
