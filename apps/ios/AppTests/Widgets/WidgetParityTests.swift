@@ -209,22 +209,22 @@ struct WidgetParityTests {
     static let device = CGSize(width: 393, height: 852)
 
     @Test("ios-widgets-guild")
-    func guild() throws {
-        try ParityCheck.assert(WidgetGallery(state: "guild"), screen: "widgets-guild", size: Self.device)
+    func guild() async throws {
+        try await ParityCheck.assert(WidgetGallery(state: "guild"), screen: "widgets-guild", size: Self.device)
     }
 
     @Test("ios-widgets-noguild")
-    func noGuild() throws {
-        try ParityCheck.assert(WidgetGallery(state: "noguild"), screen: "widgets-noguild", size: Self.device)
+    func noGuild() async throws {
+        try await ParityCheck.assert(WidgetGallery(state: "noguild"), screen: "widgets-noguild", size: Self.device)
     }
 
     @Test("ios-widgets-open")
-    func open() throws {
-        try ParityCheck.assert(WidgetGallery(state: "open"), screen: "widgets-open", size: Self.device)
+    func open() async throws {
+        try await ParityCheck.assert(WidgetGallery(state: "open"), screen: "widgets-open", size: Self.device)
     }
 
     @Test("ios-live-activity")
-    func liveActivity() throws {
-        try ParityCheck.assert(LiveActivityGallery(), screen: "live-activity", size: Self.device)
+    func liveActivity() async throws {
+        try await ParityCheck.assert(LiveActivityGallery(), screen: "live-activity", size: Self.device)
     }
 }
