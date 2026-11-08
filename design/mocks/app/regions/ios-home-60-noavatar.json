@@ -1,0 +1,72 @@
+{
+ "device": {
+  "width": 393,
+  "height": 852
+ },
+ "regions": {
+  "head": {
+   "box": [
+    16,
+    8,
+    361,
+    94
+   ],
+   "inventory": {}
+  },
+  "head-title": {
+   "box": [
+    16,
+    24,
+    361,
+    64
+   ],
+   "inventory": {}
+  },
+  "head-meta": {
+   "box": [
+    16,
+    68,
+    229,
+    20
+   ],
+   "inventory": {}
+  },
+  "section-next-upgrades": {
+   "box": [
+    16,
+    130,
+    361,
+    286
+   ],
+   "inventory": {
+    "row": 4,
+    "image": 3
+   }
+  },
+  "countdowns": {
+   "box": [
+    16,
+    440,
+    361,
+    124
+   ],
+   "inventory": {
+    "row": 1,
+    "button": 4,
+    "image": 1
+   }
+  },
+  "section-new-for-you": {
+   "box": [
+    16,
+    592,
+    361,
+    218
+   ],
+   "inventory": {
+    "row": 3,
+    "image": 3
+   }
+  }
+ }
+}

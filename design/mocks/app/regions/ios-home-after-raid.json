@@ -6,29 +6,25 @@
  "regions": {
   "head": {
    "box": [
-    32,
+    16,
     8,
-    329,
+    361,
     94
    ],
-   "inventory": {
-    "image": 1
-   }
+   "inventory": {}
   },
   "head-title": {
    "box": [
-    32,
+    16,
     24,
-    329,
+    361,
     64
    ],
-   "inventory": {
-    "image": 1
-   }
+   "inventory": {}
   },
   "head-meta": {
    "box": [
-    104,
+    16,
     68,
     229,
     20
