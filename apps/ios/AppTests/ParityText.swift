@@ -32,7 +32,19 @@ enum ParityText {
             if !next.isEmpty, next == last { return next }
             last = next
         }
+        if last.isEmpty { print("ParityText: no accessibility lines; the tree:\n" + dump(root, depth: 0).joined(separator: "\n")) }
         return last
+    }
+
+    /// The accessibility tree as the walk sees it, for a state that reads as empty.
+    @MainActor
+    private static func dump(_ node: NSObject, depth: Int) -> [String] {
+        guard depth < 12 else { return [] }
+        let pad = String(repeating: "  ", count: depth)
+        let head = "\(pad)\(type(of: node)) element=\(node.isAccessibilityElement) count=\(node.accessibilityElementCount()) "
+            + "listed=\((node.accessibilityElements ?? []).count) label=\(node.accessibilityLabel ?? "-")"
+        guard !node.isAccessibilityElement else { return [head] }
+        return [head] + children(of: node).prefix(8).flatMap { dump($0, depth: depth + 1) }
     }
 
     /// Asserts the state's words against its text golden (`__Snapshots__/<suite>/<name>.txt`).
