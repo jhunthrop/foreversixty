@@ -137,6 +137,14 @@ type MessageEntry struct {
 	Purpose   string `json:"purpose,omitempty"`
 	With      string `json:"with,omitempty"`
 
+	// messageRaidSignup (raid_answers.go): the character's answer for one open raid of its guild,
+	// "none" with no sign-up row; Role, LateMinutes and AnsweredAt (RFC 3339 UTC, the row's
+	// updated_at) only with a row, LateMinutes only when a Late answer said.
+	Answer      string `json:"answer,omitempty"`
+	Role        string `json:"role,omitempty"`
+	LateMinutes int    `json:"late_minutes,omitempty"`
+	AnsweredAt  string `json:"answered_at,omitempty"`
+
 	// messageAck: when the site last received the character's export. On a weights message from an
 	// in-game run it is the export that request was made on (the ack's value back then);
 	// absent on a website run and a request recorded before migration 0038.
@@ -463,6 +471,7 @@ func (s *Service) messages(ctx context.Context, userID int64, now time.Time) []M
 	out = append(out, lastRaids...)
 	out = append(out, s.lootValuesMessages(ctx, raids, byKey, weights)...)
 	out = append(out, s.raidAssignmentMessages(ctx, sortedExportKeys(byKey), now)...)
+	out = append(out, s.raidSignupMessages(ctx, sortedExportKeys(byKey), now)...)
 	out = append(out, s.ackMessages(ctx, userID)...)
 	return out
 }

@@ -1992,6 +1992,9 @@ enum Copy {
     /// Characters waiting for approval
     static var notifEventRosterPending: String { text("notif.event.rosterPending") }
 
+    /// Someone applies to the guild
+    static var notifEventApplicant: String { text("notif.event.applicant") }
+
     /// A raid is short a day before
     static var notifEventRaidShort: String { text("notif.event.raidShort") }
 

@@ -38,7 +38,7 @@ func TestGroupsMatchTheAppsSettings(t *testing.T) {
 		GroupLogs:    {ReportReady, RaidSummary, CoachReady, RankingBest},
 		GroupLadder:  {GuildSimPassed},
 		GroupTiers:   {TierMoved},
-		GroupOfficer: {RosterPending, RaidShort, RaidLateChange},
+		GroupOfficer: {RosterPending, RaidShort, RaidLateChange, GuildApplicant},
 		GroupAccount: {CharacterLinked, GuildApproved, PremiumSeat, BillingFailed},
 	}
 	for g, want := range cases {

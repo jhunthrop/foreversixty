@@ -19,14 +19,18 @@ import (
 )
 
 // RaidBadge is the body of GET …/raid-badge. RaidID is the raid it counts, null with none
-// planned. Unanswered and Applicants are an officer's (0 for a member).
+// planned. Unanswered and Applicants are an officer's (0 for a member). SimsRank and
+// LastRaidLoot are the Raid tab's Guild sims and Loot history rows (raid_badge_rows.go), null
+// when there is none.
 type RaidBadge struct {
-	Count         int    `json:"count"`
-	RaidID        *int64 `json:"raid_id"`
-	YouUnanswered bool   `json:"you_unanswered"`
-	Officer       bool   `json:"officer"`
-	Unanswered    int    `json:"unanswered"`
-	Applicants    int    `json:"applicants"`
+	Count         int           `json:"count"`
+	RaidID        *int64        `json:"raid_id"`
+	YouUnanswered bool          `json:"you_unanswered"`
+	Officer       bool          `json:"officer"`
+	Unanswered    int           `json:"unanswered"`
+	Applicants    int           `json:"applicants"`
+	SimsRank      *SimsRank     `json:"sims_rank"`
+	LastRaidLoot  *LastRaidLoot `json:"last_raid_loot"`
 }
 
 func (s *Service) raidBadge(w http.ResponseWriter, r *http.Request) {
@@ -66,6 +70,9 @@ func (s *Service) RaidBadgeOf(ctx context.Context, guildID, viewerID int64, offi
 		return out, err
 	}
 	out.RaidID = raidID
+	if err := s.fillBadgeRows(ctx, guildID, viewerID, &out); err != nil {
+		return out, err
+	}
 	you := accountKeyFor(viewerID)
 	out.YouUnanswered = slices.ContainsFunc(rows, func(r NotSignedRaider) bool { return r.AccountKey == you })
 	if !officer {

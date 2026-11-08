@@ -32,7 +32,12 @@
         "spec": "Protection"
       }
     ],
-    "unknown_gear": 3
+    "unknown_gear": 3,
+    "next_raid": {
+      "raid_id": 31,
+      "zone_key": "raid:onyxias-lair",
+      "starts_at": "2026-12-10T02:00:00Z"
+    }
   },
   "error": null,
   "request_id": "9f2c41d07ab3e655"

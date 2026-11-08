@@ -39,6 +39,7 @@ var kindGroups = map[Kind]Group{
 	RaidShort:       GroupOfficer,
 	RaidLateChange:  GroupOfficer,
 	RosterPending:   GroupOfficer,
+	GuildApplicant:  GroupOfficer,
 	CharacterLinked: GroupAccount,
 	GuildApproved:   GroupAccount,
 	PremiumSeat:     GroupAccount,

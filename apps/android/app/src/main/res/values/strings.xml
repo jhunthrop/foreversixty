@@ -608,6 +608,7 @@
     <string name="notif_event_bisChangedNote">One digest a week</string>
     <string name="notif_event_simFinished">Server run finished</string>
     <string name="notif_event_rosterPending">Characters waiting for approval</string>
+    <string name="notif_event_applicant">Someone applies to the guild</string>
     <string name="notif_event_raidShort">A raid is short a day before</string>
     <string name="notif_event_lateChange">Someone drops to Out inside a day</string>
     <string name="notif_event_premiumSeat">Premium seat from your guild</string>

@@ -51,6 +51,9 @@ type SignupCommand struct {
 	Note                     *string
 	// LateMinutes is a Late answer's minutes, nil for none; any other state stores none.
 	LateMinutes *int16
+	// AnsweredAt, when set, is when the player answered (the addon's click): the write happens
+	// only when the stored row is older (Signup.AnsweredAt).
+	AnsweredAt *time.Time
 }
 
 // SignupCandidate is one of an account's characters in a guild.
@@ -111,7 +114,7 @@ func (s *Service) signUp(ctx context.Context, cmd SignupCommand, skipUnchanged b
 	sg := Signup{
 		RaidID: raid.ID, CharacterKey: char.CharacterKey, Name: char.Name, Class: char.Class, Spec: char.Spec,
 		Role: role, State: cmd.State, SignedBy: char.userID, ActedBy: cmd.ActorID, AsOfficer: asOfficer,
-		KeepNote: cmd.Note == nil,
+		KeepNote: cmd.Note == nil, AnsweredAt: cmd.AnsweredAt,
 	}
 	if cmd.Note != nil {
 		sg.Note = *cmd.Note

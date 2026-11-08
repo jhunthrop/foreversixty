@@ -6,7 +6,15 @@
     "you_unanswered": false,
     "officer": true,
     "unanswered": 5,
-    "applicants": 1
+    "applicants": 1,
+    "sims_rank": {
+      "position": 2,
+      "of": 7
+    },
+    "last_raid_loot": {
+      "count": 14,
+      "raid_id": 30
+    }
   },
   "error": null,
   "request_id": "9f2c41d07ab3e655"
