@@ -11,7 +11,7 @@ states say so); the guild's raid is Onyxia's Lair, Wed 6 Jan, 8:00 pm CST, four 
 from __future__ import annotations
 
 from mocklib import CLASS_COLOR
-from ws_app_frame import app_page, glyph
+from ws_app_frame import AVATAR, DEFAULT, app_page, glyph
 from ws_prims import (Button, Checklist, Countdown, Figures, ItemRow, PageHeader, Row, Rows, Section, Skeleton, Switch,
                       Tag, Tally, build_page, crest_img, icon)
 
@@ -29,6 +29,7 @@ MEMBER, OFFICER, ANSWERED = {'raid': 1, 'activity': 3}, {'raid': 6, 'activity': 
 
 FLOWS_CSS = '''
 .ap{padding:8px 16px 24px}
+.ap .pc{padding-inline:0!important}
 .ap .t-title{font-size:32px;line-height:38px}
 .ap section{margin-top:28px}
 .center{text-align:center}.center .t-small{max-width:300px;margin:8px auto 0}
@@ -51,9 +52,6 @@ FLOWS_CSS = '''
 .drawer .foot{margin-top:28px;display:flex;flex-direction:column;gap:6px}
 .dim{background:#000000a6}
 .rowbtn{display:flex;align-items:center;min-height:44px;color:var(--gold);font:600 15px/20px var(--font-body)}
-/* Home: one head on every state; its crest and name open the menu (the chevron says so) */
-.home-head [data-region="head-title"] .t-title::after{content:"";display:inline-block;width:9px;height:9px;margin:0 0 6px 12px;
-  border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(45deg);vertical-align:middle}
 .blk{margin-top:24px}
 .blk .btns{margin-top:12px}
 .blk .tally{margin-top:16px;grid-template-columns:repeat(3,minmax(0,1fr))}
@@ -121,14 +119,23 @@ def _blk(inner: str, region: str = 'countdowns') -> str:
 
 
 # ------------------------------------------------------------------------------------------------ the profile menu
-CHARACTERS = [
-    ('Thandrel', 'warrior', 'Fury Warrior &middot; 60 &middot; Olympus XXVII', 'Main'),
-    ('Lightvow', 'paladin', 'Holy Paladin &middot; 60 &middot; Olympus XXVII', ''),
-    ('Kaelor', 'mage', 'Frost Mage &middot; 47', ''),
-    ('Felsnap', 'hunter', 'Beast Mastery Hunter &middot; 34', ''),
-    ('Brewmist', 'shaman', 'Enhancement Shaman &middot; 22', ''),
-    ('Ashmantle', 'warlock', 'Affliction Warlock &middot; 18', ''),
+CHARACTERS = [  # name, class, line, tag, Battle.net avatar (None: no avatar_url yet, the crest stands in)
+    ('Thandrel', 'warrior', 'Fury Warrior &middot; 60 &middot; Olympus XXVII', 'Main', 'thandrel'),
+    ('Lightvow', 'paladin', 'Holy Paladin &middot; 60 &middot; Olympus XXVII', '', 'lightvow'),
+    ('Kaelor', 'mage', 'Frost Mage &middot; 47', '', 'kaelor'),
+    ('Felsnap', 'hunter', 'Beast Mastery Hunter &middot; 34', '', 'felsnap'),
+    ('Brewmist', 'shaman', 'Enhancement Shaman &middot; 22', '', 'brewmist'),
+    ('Ashmantle', 'warlock', 'Affliction Warlock &middot; 18', '', None),
 ]
+
+
+def avatar_img(cls: str, avatar: str | None, px: int) -> str:
+    """A character in the profile menu (owner exception to the one crest language, flows spec section 3): its Battle.net
+    avatar in a class-colour ring, or its crest when it has no avatar."""
+    if not avatar:
+        return crest_img(cls, px)
+    return (f'<img class="crest" src="{AVATAR.format(name=avatar)}" alt="" '
+            f'style="width:{px}px;height:{px}px;object-fit:cover;--c:{CLASS_COLOR[cls]}">')
 LOW = [('Pockets', 'rogue', 'Rogue &middot; 6'), ('Bankalt', 'mage', 'Mage &middot; 1')]
 # The tools, in the order the owner ruled (2026-11-08); the ones a signed-out visitor can use carry True.
 TOOLS = [('Guides', 'Your spec&rsquo;s guide, then every class', True), ('Tiers', 'Every spec, this week', True),
@@ -148,10 +155,10 @@ def menu(state: str):
             body = you + Section('Tools', Rows([Row(n, s) for n, s, out in TOOLS if out], open_=True))
         else:
             me = CHARACTERS[0]
-            you = (PageHeader(me[0], WARRIOR, crest_img(me[1], 56), [me[2], Tag('Main')])
+            you = (PageHeader(me[0], WARRIOR, avatar_img(me[1], me[4], 56), [me[2], Tag('Main')])
                    + '<p class="t-small stamp">Updated 2 h ago from Battle.net &middot; <a class="link" href="#">Refresh</a></p>')
             others = CHARACTERS[1:] if state != 'one' else []
-            rows = [Row(n, s, crest_img(c, 40), '', CLASS_COLOR[c]) for n, c, s, _ in others]
+            rows = [Row(n, s, avatar_img(c, av, 40), '', CLASS_COLOR[c]) for n, c, s, _, av in others]
             if state == 'low':
                 rows += [Row(n, s, crest_img(c, 40), '', CLASS_COLOR[c]) for n, c, s in LOW]
             fold = (f'<a class="rowbtn" href="#">{"Hide low-level characters" if state == "low" else "Show low-level characters (2)"}</a>'
@@ -169,11 +176,11 @@ def menu(state: str):
 
 # ------------------------------------------------------------------------------------------------ Home (section 4)
 def _head(leveler: bool = False) -> str:
+    """One head on every Home state: the name in the class colour and the fact line; the class crest is the nav bar's menu
+    trigger, as on every tab root, so it is drawn once (owner, round 5)."""
     if leveler:
-        return ('<div class="home-head">' + PageHeader('Felsnap', HUNTER, crest_img('hunter', 56),
-                                                        ['Level 34 Beast Mastery Hunter', '6 levels to band 40']) + '</div>')
-    return ('<div class="home-head">' + PageHeader('Thandrel', WARRIOR, crest_img('warrior', 56),
-                                                    ['Level 60 Fury Warrior', 'Olympus XXVII']) + '</div>')
+        return PageHeader('Felsnap', HUNTER, '', ['Level 34 Beast Mastery Hunter', '6 levels to band 40'])
+    return PageHeader('Thandrel', WARRIOR, '', ['Level 60 Fury Warrior', 'Olympus XXVII'])
 
 
 def _upgrades(leveler: bool = False, tonight: bool = True) -> str:
@@ -222,9 +229,9 @@ def _changed(kind: str, unread: int = 3) -> str:
     return Section('New for you', Rows([_act_row(i, t, s, u) for i, t, s, u in rows], open_=True), action=link)
 
 
-def _home(blocks: str, title: str, badges: dict, who: str = 'warrior'):
+def _home(blocks: str, title: str, badges: dict, who: str = 'warrior', avatar=DEFAULT):
     def b(platform: str) -> str:
-        return app_page(platform, _page(blocks, title), 'home', badges=badges, who=who)
+        return app_page(platform, _page(blocks, title), 'home', badges=badges, who=who, avatar=avatar)
     return b
 
 
@@ -260,6 +267,8 @@ HOME = {
     'home-raid-live': lambda: _home(_head() + _raid_live() + _changed('live'), 'Home', ANSWERED),
     'home-after-raid': lambda: _home(_head() + _last_night() + _upgrades() + _changed('after'), 'Home', ANSWERED),
     'home-60': lambda: _home(_head() + _upgrades() + _raid_line() + _changed('day'), 'Home', MEMBER),
+    # no avatar_url yet (a new character, a failed media fetch): the crest stands in on the profile button
+    'home-60-noavatar': lambda: _home(_head() + _upgrades() + _raid_line() + _changed('day'), 'Home', MEMBER, avatar=None),
     'home-60-answered': lambda: _home(_head() + _upgrades() + _raid_line('In') + _changed('day'), 'Home', ANSWERED),
     'home-noguild': lambda: _home(_head() + _upgrades() + _changed('day', 2) + _find_guild(), 'Home', {'activity': 2}),
     'home-34': lambda: _home(_head(leveler=True) + _upgrades(leveler=True) + _changed('leveler', 1), 'Home', {'activity': 1}, who='hunter'),
@@ -484,10 +493,10 @@ def applicant(state: str):
 
 # ------------------------------------------------------------------------------------------------ F8: first run
 def pick_main(platform: str) -> str:
-    rows = [Row(n, s, crest_img(c, 40), Tag('Main') if i == 0 else '', CLASS_COLOR[c], selected=(i == 0)) for i, (n, c, s, _) in enumerate(CHARACTERS)]
+    rows = [Row(n, s, crest_img(c, 40), Tag('Main') if i == 0 else '', CLASS_COLOR[c], selected=(i == 0)) for i, (n, c, s, _, av) in enumerate(CHARACTERS)]
     body = (PageHeader('Pick your main', meta=['From Battle.net, level 10 and up.'])
             + '<p class="t-small" style="margin-top:8px">Home answers for your main, and your raid sign-ups are for it. '
-            'Switch any time from your name on Home.</p>'
+            'Switch any time from your portrait, top left.</p>'
             + Section('Your characters', Rows(rows, open_=True)) + '<div class="vstack">' + Button('Continue with Thandrel', primary=True) + '</div>')
     return app_page(platform, _page(body, 'Pick your main'), None, navbar=False)
 

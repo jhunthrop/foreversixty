@@ -118,7 +118,7 @@ main{min-height:calc(var(--dev-h) - var(--top) - var(--bottom));flex:1 0 auto}
   background:var(--wipe);color:#17110a;font:700 12px/18px var(--font-body);text-align:center}
 [data-platform=android] .app-tabs .badge{top:2px;left:calc(50% + 10px)}
 .app-nav .menu-crest{position:relative;width:44px;height:44px}
-.app-nav .menu-crest img,.app-nav .menu-crest .anon{width:32px;height:32px;border-radius:50%;box-shadow:0 0 0 2px var(--ring,#9a9484);background:var(--raised)}
+.app-nav .menu-crest img,.app-nav .menu-crest .anon{width:32px;height:32px;border-radius:50%;object-fit:cover;box-shadow:0 0 0 2px var(--ring,#9a9484);background:var(--raised)}
 .app-nav .menu-crest .anon{display:flex;align-items:center;justify-content:center;color:var(--muted)}
 [data-platform=android] .app-tabs{padding-top:12px;border-top:0;background:var(--raised)}
 [data-platform=android] .app-tabs a{gap:4px;min-height:48px}
@@ -131,6 +131,7 @@ main{min-height:calc(var(--dev-h) - var(--top) - var(--bottom));flex:1 0 auto}
 .app-ptr{display:flex;justify-content:center;padding:10px 0 0}.app-ptr span{width:22px;height:22px;border-radius:50%;border:2px solid var(--line);border-top-color:var(--gold)}
 </style></head><body data-platform="android" style="--dev-w:412px;--dev-h:915px;--status:32px;--nav:64px;--home:16px;--top:96px;--bottom:96px"><div class="app-status" aria-hidden="true"><span>9:41</span><span class="sys"><i></i><i></i><i class="b"></i></span></div><nav class="app-nav" aria-label="Navigation"><a href="#" class="menu-crest" aria-label="Open menu"><span class="anon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/></svg></span></a><span class="ttl hidden"></span><a aria-hidden="true"></a></nav><!--fs-chrome:{"who": null, "state": "", "nav": ""}--><div class="fs-chrome"><div data-fs-body%BODY_ATTRS%>%HEADER%</div></div><main><div class="ap"><div class="pc ph-wrap"><div data-region="head"><div class="head"><div class="ph-title" data-region="head-title"><div><h1 class="t-title">Your characters are on their way</h1><div class="ph-meta" data-region="head-meta"><span class="t-small">Battle.net lists a character after you play it and log out.</span></div></div></div></div></div></div><div class="vstack"><a class="btn primary" href="#">Check again</a></div></div><style>
 .ap{padding:8px 16px 24px}
+.ap .pc{padding-inline:0!important}
 .ap .t-title{font-size:32px;line-height:38px}
 .ap section{margin-top:28px}
 .center{text-align:center}.center .t-small{max-width:300px;margin:8px auto 0}
@@ -153,9 +154,6 @@ main{min-height:calc(var(--dev-h) - var(--top) - var(--bottom));flex:1 0 auto}
 .drawer .foot{margin-top:28px;display:flex;flex-direction:column;gap:6px}
 .dim{background:#000000a6}
 .rowbtn{display:flex;align-items:center;min-height:44px;color:var(--gold);font:600 15px/20px var(--font-body)}
-/* Home: one head on every state; its crest and name open the menu (the chevron says so) */
-.home-head [data-region="head-title"] .t-title::after{content:"";display:inline-block;width:9px;height:9px;margin:0 0 6px 12px;
-  border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(45deg);vertical-align:middle}
 .blk{margin-top:24px}
 .blk .btns{margin-top:12px}
 .blk .tally{margin-top:16px;grid-template-columns:repeat(3,minmax(0,1fr))}

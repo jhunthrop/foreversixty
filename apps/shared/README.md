@@ -54,6 +54,9 @@ placed only. `node web/scripts/build-app-icon.mjs` regenerates it.
 
 Wherever a class or character is pictured, both apps show the circular ringed HD crest, never a
 square class icon, a letter square or a Blizzard avatar (`design/DESIGN-SYSTEM.md`, tenet 2).
+One scoped exception (owner, 2026-11-08): the profile button on the tab roots and the menu's character rows
+show the character's Battle.net avatar (`avatar_url` on `/v1/me` characters) in a ring of the class colour,
+falling back to the crest when there is none; everywhere else, widgets and the Live Activity included, stays the crest.
 All art is served by the site's own origin, `https://foreversixty.gg`, never from the API:
 
 | Art | Path | Notes |
