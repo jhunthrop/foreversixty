@@ -1,49 +1,25 @@
 package gg.foreversixty.app.navigation
 
+import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.List
-import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.graphics.vector.rememberVectorPainter
-import androidx.compose.ui.res.painterResource
 import gg.foreversixty.app.R
 
-/** A tab's glyph: a Material icon, or a bundled vector for one Material core lacks. */
-sealed interface TabIcon {
-    @Composable
-    fun painter(): Painter
-
-    data class Vector(val image: ImageVector) : TabIcon {
-        @Composable
-        override fun painter(): Painter = rememberVectorPainter(image)
-    }
-
-    data class Drawable(val id: Int) : TabIcon {
-        @Composable
-        override fun painter(): Painter = painterResource(id)
-    }
+/**
+ * The app's four jobs (spec 2026-11-08 section 3): Home, Raid, Gear, Activity. Every other screen is
+ * reached from the profile menu, an Activity row or a link, and sits under the tab it was opened on.
+ */
+enum class ForeverTab(@param:StringRes val label: Int, @param:DrawableRes val icon: Int) {
+    Home(R.string.tab_home, R.drawable.ic_tab_home),
+    Raid(R.string.tab_raid, R.drawable.ic_tab_raid),
+    Gear(R.string.tab_gear, R.drawable.ic_tab_gear),
+    Activity(R.string.tab_activity, R.drawable.ic_tab_activity),
 }
 
-/**
- * The app's tabs, in the spec's order (W3 §3.1): Home, Raids, BiS, Guides, You. Guides shows only
- * while its `guides` switch is on ([visible]). Feature lanes plug their root screen into
- * `ForeverAppScaffold`'s `when`, one branch each.
- */
-enum class ForeverTab(@param:StringRes val label: Int, val icon: TabIcon) {
-    Home(R.string.tab_home, TabIcon.Vector(Icons.Filled.Home)),
-    Raids(R.string.tab_raids, TabIcon.Vector(Icons.Filled.DateRange)),
-    Bis(R.string.tab_bis, TabIcon.Vector(Icons.AutoMirrored.Filled.List)),
-    Guides(R.string.tab_guides, TabIcon.Drawable(R.drawable.ic_guides)),
-    You(R.string.tab_you, TabIcon.Vector(Icons.Filled.Person)),
-    ;
-
-    companion object {
-        /** The tabs drawn: the five, or four while the Guides switch is off. */
-        fun visible(guides: Boolean): List<ForeverTab> = if (guides) entries else entries - Guides
+/** The tabs' counts (spec 3): Raid, your unanswered next raid or an officer's open items; Activity, unread. */
+data class TabBadges(val raid: Int = 0, val activity: Int = 0) {
+    fun of(tab: ForeverTab): Int = when (tab) {
+        ForeverTab.Raid -> raid
+        ForeverTab.Activity -> activity
+        ForeverTab.Home, ForeverTab.Gear -> 0
     }
 }

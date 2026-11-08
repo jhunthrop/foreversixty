@@ -1,5 +1,7 @@
 package gg.foreversixty.app.designsystem
 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
@@ -43,8 +45,12 @@ object ParityRegion {
 /** What a region's inventory counts. */
 enum class ParityItemKind(val key: String) { Row("row"), Button("button"), Segment("segment"), Field("field"), Image("image") }
 
-/** One counted element and its bounds in the content root, in px. */
-data class ParityItem(val kind: ParityItemKind, val bounds: Rect)
+/**
+ * One counted element and its bounds in the content root, in px. [scroll] names the scrolling region it
+ * sits in (a filter row): it counts there wherever the scroll has moved it, as the web counts a
+ * scroller's content, not what shows.
+ */
+data class ParityItem(val kind: ParityItemKind, val bounds: Rect, val scroll: String? = null)
 
 /**
  * Collects the regions and items a screen reports while a parity test renders it; absent (null)
@@ -72,6 +78,15 @@ class ParityRecorder {
 
 val LocalParityRecorder = staticCompositionLocalOf<ParityRecorder?> { null }
 
+/** The scrolling region the items below belong to ([ParityScrollRegion]); null outside one. */
+val LocalParityScroll = staticCompositionLocalOf<String?> { null }
+
+/** Marks [content] as the scrolling region [name]'s content: its items count in that region's inventory. */
+@Composable
+fun ParityScrollRegion(name: String, content: @Composable () -> Unit) {
+    CompositionLocalProvider(LocalParityScroll provides name, content = content)
+}
+
 /** Marks the screen's content (under the top app bar) as the space region boxes are measured in. */
 fun Modifier.parityContent(): Modifier = composed {
     val recorder = LocalParityRecorder.current
@@ -91,8 +106,9 @@ fun Modifier.parityItem(kind: ParityItemKind): Modifier = composed {
         Modifier
     } else {
         val element = remember { Any() }
+        val scroll = LocalParityScroll.current
         Modifier.onGloballyPositioned { coordinates ->
-            recorder.item(element, ParityItem(kind, recorder.boundsOf(coordinates)))
+            recorder.item(element, ParityItem(kind, recorder.boundsOf(coordinates), scroll))
         }
     }
 }

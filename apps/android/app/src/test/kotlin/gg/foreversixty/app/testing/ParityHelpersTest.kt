@@ -12,7 +12,9 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.unit.dp
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.compose.ui.geometry.Rect
 import gg.foreversixty.app.designsystem.LocalParityRecorder
+import gg.foreversixty.app.designsystem.ParityItem
 import gg.foreversixty.app.designsystem.ParityItemKind
 import gg.foreversixty.app.designsystem.ParityRecorder
 import gg.foreversixty.app.designsystem.ParityRegion
@@ -91,5 +93,17 @@ class ParityHelpersTest {
     @Test fun regionFilesParse() {
         val parsed = ParityRegions.parse("""{"device":{"width":412,"height":915},"regions":{"head":{"box":[16,0,380,271],"inventory":{"image":1}}}}""")
         assertEquals(ParityRegions.Region(listOf(16f, 0f, 380f, 271f), mapOf("image" to 1)), parsed.regions["head"])
+    }
+
+    @Test fun aScrollRegionCountsItsWholeContent() {
+        val inside = Rect(16f, 0f, 396f, 48f)
+        val items = listOf(
+            ParityItem(ParityItemKind.Button, Rect(20f, 4f, 60f, 44f), scroll = ParityRegion.CONTROLS),
+            // Scrolled past the region's right edge: still the row's chip.
+            ParityItem(ParityItemKind.Button, Rect(420f, 4f, 480f, 44f), scroll = ParityRegion.CONTROLS),
+            // Another region's item under the row's box does not count.
+            ParityItem(ParityItemKind.Button, Rect(100f, 4f, 140f, 44f), scroll = "other"),
+        )
+        assertEquals(mapOf("button" to 2), ParityRegions.inventory(ParityRegion.CONTROLS, inside, items))
     }
 }

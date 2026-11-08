@@ -22,6 +22,10 @@ import androidx.lifecycle.lifecycleScope
 import gg.foreversixty.app.designsystem.ForeverTheme
 import gg.foreversixty.app.navigation.DeepLink
 import gg.foreversixty.app.navigation.ForeverAppScaffold
+import gg.foreversixty.app.navigation.ShellFeatures
+import gg.foreversixty.app.navigation.ForeverTab
+import gg.foreversixty.app.menu.MenuDestination
+import gg.foreversixty.app.bis.BisSelection
 import gg.foreversixty.app.network.Feature
 import gg.foreversixty.app.update.PLAY_STORE_URL
 import gg.foreversixty.app.update.UpdateRequiredScreen
@@ -49,14 +53,18 @@ class MainActivity : ComponentActivity() {
                     // Lane F15: the build-data screens' new-data strip reads the fresh active build.
                     CompositionLocalProvider(LocalLatestBuild provides graph::latestBuild) {
                     ForeverAppScaffold(
-                        home = graph.home,
-                        bis = graph.bisModel,
-                        account = graph.account.takeIf { graph.isAvailable(Feature.SignIn) },
-                        raids = graph.raids.takeIf { it.enabled },
-                        search = graph.search.takeIf { it.enabled },
-                        guides = graph.guides,
-                        system = graph.system.navigator,
-                        planner = graph.planner,
+                        ShellFeatures(
+                            home = graph.home,
+                            bis = graph.bisModel,
+                            account = graph.account.takeIf { graph.isAvailable(Feature.SignIn) },
+                            raids = graph.raids.takeIf { it.enabled },
+                            search = graph.search.takeIf { it.enabled },
+                            guides = graph.guides,
+                            system = graph.system.navigator,
+                            planner = graph.planner,
+                            activity = graph.activity,
+                            openLink = { link -> handleAppLink(Intent(Intent.ACTION_VIEW, link.toUri())) },
+                        ),
                     )
                     }
                 } else {
@@ -81,6 +89,7 @@ class MainActivity : ComponentActivity() {
             graph.session.phase.map { it.isSignedIn }.distinctUntilChanged().filter { it }.collect {
                 FcmToken.request(this@MainActivity)
                 graph.push.register()
+                graph.activity?.refreshUnread()
             }
         }
         // Lane F14: the 30-minute snapshot refresh behind the widgets, tile and countdown.
@@ -95,6 +104,8 @@ class MainActivity : ComponentActivity() {
         graph.guides?.let { guides -> lifecycleScope.launch { guides.sync() } }
         // Lane F14: every foreground rewrites the snapshot the widgets and the tile read.
         graph.widgets?.let { widgets -> lifecycleScope.launch { widgets.refresher.refresh() } }
+        // The Activity badge: whatever arrived while the app was away.
+        graph.activity?.let { activity -> lifecycleScope.launch { activity.refreshUnread() } }
         // Lane F15: the dynamic shortcuts follow the data (and go when signed out or switched off).
         lifecycleScope.launch { graph.system.refreshShortcuts() }
     }
@@ -148,7 +159,8 @@ class MainActivity : ComponentActivity() {
         val link = intent?.dataString ?: return
         when (val parsed = DeepLink.parse(link)) {
             is DeepLink.SignIn -> graph.session.handleRedirect(link)
-            null -> Unit
+            // A captured site link the app has no screen for (or a site-only page, DeepLink.SITE_ONLY) is the web page.
+            null -> if (link.startsWith("https://")) openInBrowser(link)
             // Lane F5: a sim link opens Home, Sims and the result.
             is DeepLink.Sim -> graph.home.sims?.navigator?.open(parsed)
             // Lane F10: a report link opens Home, Your reports and the report.
@@ -160,6 +172,19 @@ class MainActivity : ComponentActivity() {
             // Lane F13: the planner, Your builds and a shared build; with `planner` off a /b/ link is the web page.
             is DeepLink.Planner, DeepLink.Builds -> graph.planner?.open(parsed)
             is DeepLink.SharedBuild -> if (graph.planner?.open(parsed) != true) openInBrowser(link)
+            // The site's own pages (spec 2026-11-08 F6), each pushed under the tab it belongs to.
+            is DeepLink.SimPage -> graph.home.sims?.navigator?.open(DeepLink.Sim(parsed.id))
+            is DeepLink.ReportPage -> graph.home.reports?.navigator?.open(DeepLink.Report(parsed.id))
+            is DeepLink.CharacterPage -> graph.home.rankings?.navigator?.open(DeepLink.Player(parsed.region, parsed.ruleset, parsed.name))
+            is DeepLink.GuidePage -> graph.guides?.navigator?.open(DeepLink.Guide(parsed.className, parsed.spec))
+            is DeepLink.GuidesClassPage -> graph.guides?.navigator?.openClass(parsed.className)
+            is DeepLink.BisPage -> {
+                graph.bisModel?.request(BisSelection.forGuide(parsed.className, parsed.spec, null))
+                graph.system.navigator.wantsTab = ForeverTab.Gear
+            }
+            DeepLink.TiersPage -> graph.system.navigator.wantsMenu = MenuDestination.Tiers
+            // The site names the guild, not its id: the Raid tab answers for the player's own guild.
+            is DeepLink.GuildRaidPage -> graph.system.navigator.wantsTab = ForeverTab.Raid
             // Lane F4: raid, raid-night and guild links (and the raid notifications) open the Raids tab.
             else -> if (graph.raids.enabled) graph.raids.navigator.open(parsed)
         }

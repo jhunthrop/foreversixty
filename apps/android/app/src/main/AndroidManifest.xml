@@ -34,23 +34,26 @@
             <meta-data android:name="android.app.shortcuts" android:resource="@xml/shortcuts" />
 
             <!--
-                TODO(lane F1, owner): App Links for https://foreversixty.gg/app/*. Add the
-                filter below once the site serves /.well-known/assetlinks.json with the Play
-                App Signing SHA-256 (Play Console > App integrity) and the debug key's:
-
-                <intent-filter android:autoVerify="true">
-                    <action android:name="android.intent.action.VIEW" />
-                    <category android:name="android.intent.category.DEFAULT" />
-                    <category android:name="android.intent.category.BROWSABLE" />
-                    <data android:scheme="https" android:host="foreversixty.gg" android:pathPrefix="/app/" />
-                    <data android:scheme="https" android:host="foreversixty.gg" android:pathPrefix="/b/" />
-                </intent-filter>
-
-                The sign-in redirect (SignInContract.REDIRECT_URI) and the notification deep
-                links (F7) both arrive through it; MainActivity already routes them. Lane F13:
-                /b/{id} is the shared build viewer, a real site page, so the same filter opens a
-                pasted link in the app when it is installed and on the web when it is not.
+                App Links (spec 2026-11-08 F6): the site's pages open their screen in the app; the
+                site's /.well-known/assetlinks.json names this app. A path the app has no screen for
+                opens the site (MainActivity.openInBrowser).
             -->
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="https" />
+                <data android:host="foreversixty.gg" />
+                <data android:pathPrefix="/app/" />
+                <data android:pathPrefix="/b/" />
+                <data android:pathPrefix="/bis/" />
+                <data android:pathPrefix="/guides/" />
+                <data android:pathPrefix="/sim/" />
+                <data android:pathPrefix="/reports/" />
+                <data android:pathPrefix="/character/" />
+                <data android:pathPattern="/guild/.*/raids/.*" />
+                <data android:path="/tiers" />
+            </intent-filter>
         </activity>
 
         <!-- Lane F14: the Next raid and Next upgrade widgets, their character setting, the tile. Off in

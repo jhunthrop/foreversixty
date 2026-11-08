@@ -53,6 +53,8 @@ import gg.foreversixty.app.widgets.WidgetsFeature
 import gg.foreversixty.app.auth.session.me
 import gg.foreversixty.app.auth.session.isSignedIn
 import gg.foreversixty.app.push.PushRegistrar
+import gg.foreversixty.app.activity.ActivityFeature
+import gg.foreversixty.app.activity.LiveActivityService
 import gg.foreversixty.app.push.FcmToken
 
 /**
@@ -206,6 +208,13 @@ class AppGraph(context: Context, val config: ApiConfig = ApiConfig.fromBuildConf
         signedIn = { tokens.bearerToken() != null },
         enabled = { isAvailable(Feature.Notifications) },
     )
+
+    /** Activity (spec 2026-11-08 4.4): the push inbox and the tab's unread badge; null while `notifications` is off. */
+    val activity: ActivityFeature? = if (isAvailable(Feature.Notifications)) {
+        ActivityFeature(LiveActivityService(apiClient), signedIn = { tokens.bearerToken() != null }, iconBuild = { appConfig.current?.activeBuild })
+    } else {
+        null
+    }
 
     val signIn = AppSignIn(
         baseUrl = config.baseUrl,

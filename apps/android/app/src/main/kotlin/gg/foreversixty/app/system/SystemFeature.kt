@@ -18,6 +18,7 @@ import gg.foreversixty.app.raids.logic.RaidService
 import gg.foreversixty.app.system.logic.AppShortcut
 import gg.foreversixty.app.system.logic.DynamicShortcuts
 import gg.foreversixty.app.system.logic.ShortcutSignup
+import gg.foreversixty.app.menu.MenuDestination
 import gg.foreversixty.app.system.offline.FolderIconCache
 import gg.foreversixty.app.system.offline.OfflineDataModel
 import gg.foreversixty.app.system.offline.PrefsOfflineSettings
@@ -28,19 +29,24 @@ import gg.foreversixty.app.system.platform.DynamicShortcutPublisher
 class SystemNavigator {
     var wantsTab: ForeverTab? by mutableStateOf(null)
 
+    /** A menu screen a shortcut opens (Guides), pushed under the current tab. */
+    var wantsMenu: MenuDestination? by mutableStateOf(null)
+
     /** The tab a shortcut opens; Search covers the current tab instead (its own navigator opens it). */
     fun open(shortcut: AppShortcut) {
         wantsTab = tabOf(shortcut)
+        wantsMenu = menuOf(shortcut)
     }
 
     companion object {
         fun tabOf(shortcut: AppShortcut): ForeverTab? = when (shortcut) {
-            AppShortcut.NextRaid, AppShortcut.SignupIn -> ForeverTab.Raids
+            AppShortcut.NextRaid, AppShortcut.SignupIn -> ForeverTab.Raid
             AppShortcut.Upgrades -> ForeverTab.Home
-            AppShortcut.Bis -> ForeverTab.Bis
-            AppShortcut.Guides -> ForeverTab.Guides
-            AppShortcut.Search -> null
+            AppShortcut.Bis -> ForeverTab.Gear
+            AppShortcut.Guides, AppShortcut.Search -> null
         }
+
+        fun menuOf(shortcut: AppShortcut): MenuDestination? = if (shortcut == AppShortcut.Guides) MenuDestination.Guides else null
     }
 }
 

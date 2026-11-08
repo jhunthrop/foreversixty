@@ -2,9 +2,9 @@ name: android
 on:
   push:
     branches: [main, 'land/**']
-    paths: ['apps/android/**', 'apps/shared/**', 'web/src/data/specs.json', 'apps/VERSION', 'docs/contracts/**', '.github/workflows/android.yml', '.github/actions/google-services/**']
+    paths: ['apps/android/**', 'apps/shared/**', 'web/src/data/specs.json', 'apps/VERSION', 'docs/contracts/**', '.github/workflows/android.yml', '.github/actions/google-services/**', 'design/mocks/app/regions/android-*.json']
   pull_request:
-    paths: ['apps/android/**', 'apps/shared/**', 'web/src/data/specs.json', 'apps/VERSION', 'docs/contracts/**', '.github/workflows/android.yml', '.github/actions/google-services/**']
+    paths: ['apps/android/**', 'apps/shared/**', 'web/src/data/specs.json', 'apps/VERSION', 'docs/contracts/**', '.github/workflows/android.yml', '.github/actions/google-services/**', 'design/mocks/app/regions/android-*.json']
   # Releases go through apps-release.yml (tools/release-apps.sh), the one release path.
   # record: re-record every screenshot and text golden on this runner and upload them as
   # android-snapshots (the goldens compare exactly, so they are recorded where they are verified):
@@ -31,8 +31,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
-      # The app, apps/shared, docs/contracts and the active build's data (data/builds, from the
-      # cache); the screenshot tests only write under design/reviews (docs/runbooks/landing.md,
+      # The app, apps/shared, docs/contracts, the mocks' region files (the parity tests read them)
+      # and the active build's data (data/builds, from the cache); the screenshot tests only write
+      # under design/reviews (docs/runbooks/landing.md,
       # "Checkout").
       - uses: actions/checkout@v4
         with:
@@ -43,6 +44,7 @@ jobs:
             !/data/diffs/
             !/design/reviews/
             !/design/mocks/
+            /design/mocks/app/regions/
             !/docs/superpowers/reviews/
             !/apps/ios/
       - uses: ./.github/actions/data-builds

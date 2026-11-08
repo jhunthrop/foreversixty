@@ -91,7 +91,7 @@ class GuildScreenshotTest {
     private fun capture(
         name: String,
         large: Boolean = false,
-        tab: ForeverTab = ForeverTab.Raids,
+        tab: ForeverTab = ForeverTab.Raid,
         scrollTo: Int? = null,
         scrollToText: String? = null,
         screen: @Composable () -> Unit,
@@ -215,46 +215,46 @@ class GuildScreenshotTest {
     private fun Calendar(state: CalendarScreenState, confirming: Boolean = false) =
         CalendarContent(state, CalendarActions({}, {}, {}, {}, {}, {}), back = {}, confirmingReset = confirming)
 
-    @Test fun calendar_on() = capture("f16.4-calendar-on", tab = ForeverTab.You) { Calendar(on) }
+    @Test fun calendar_on() = capture("f16.4-calendar-on", tab = ForeverTab.Home) { Calendar(on) }
 
-    @Test fun calendar_on_xl() = capture("f16.4-calendar-on", large = true, tab = ForeverTab.You) { Calendar(on) }
+    @Test fun calendar_on_xl() = capture("f16.4-calendar-on", large = true, tab = ForeverTab.Home) { Calendar(on) }
 
-    @Test fun calendar_off() = capture("f16.4-calendar-off", tab = ForeverTab.You) { Calendar(off) }
+    @Test fun calendar_off() = capture("f16.4-calendar-off", tab = ForeverTab.Home) { Calendar(off) }
 
-    @Test fun calendar_off_xl() = capture("f16.4-calendar-off", large = true, tab = ForeverTab.You) { Calendar(off) }
+    @Test fun calendar_off_xl() = capture("f16.4-calendar-off", large = true, tab = ForeverTab.Home) { Calendar(off) }
 
-    @Test fun calendar_whichMine() = capture("f16.4-which-mine", tab = ForeverTab.You) { Calendar(mine) }
+    @Test fun calendar_whichMine() = capture("f16.4-which-mine", tab = ForeverTab.Home) { Calendar(mine) }
 
-    @Test fun calendar_whichMine_xl() = capture("f16.4-which-mine", large = true, tab = ForeverTab.You) { Calendar(mine) }
+    @Test fun calendar_whichMine_xl() = capture("f16.4-which-mine", large = true, tab = ForeverTab.Home) { Calendar(mine) }
 
     @Test fun calendar_alertDay() =
-        capture("f16.4-alert-day", tab = ForeverTab.You) { Calendar(on.copy(settings = on.settings.copy(alert = CalendarAlert.Day))) }
+        capture("f16.4-alert-day", tab = ForeverTab.Home) { Calendar(on.copy(settings = on.settings.copy(alert = CalendarAlert.Day))) }
 
-    @Test fun calendar_resetAlert() = capture("f16.4-reset-alert", tab = ForeverTab.You) { Calendar(on, confirming = true) }
+    @Test fun calendar_resetAlert() = capture("f16.4-reset-alert", tab = ForeverTab.Home) { Calendar(on, confirming = true) }
 
-    @Test fun calendar_resetAlert_xl() = capture("f16.4-reset-alert", large = true, tab = ForeverTab.You) { Calendar(on, confirming = true) }
+    @Test fun calendar_resetAlert_xl() = capture("f16.4-reset-alert", large = true, tab = ForeverTab.Home) { Calendar(on, confirming = true) }
 
-    @Test fun calendar_copied() = capture("f16.4-link-copied", tab = ForeverTab.You) { Calendar(on.copy(linkNotice = CalendarLinkNotice.Copied)) }
+    @Test fun calendar_copied() = capture("f16.4-link-copied", tab = ForeverTab.Home) { Calendar(on.copy(linkNotice = CalendarLinkNotice.Copied)) }
 
-    @Test fun calendar_elsewhere() = capture("f16.4-link-elsewhere", tab = ForeverTab.You) { Calendar(on.copy(link = CalendarLinkState.Elsewhere)) }
+    @Test fun calendar_elsewhere() = capture("f16.4-link-elsewhere", tab = ForeverTab.Home) { Calendar(on.copy(link = CalendarLinkState.Elsewhere)) }
 
-    @Test fun calendar_offline() = capture("f16.4-link-offline", tab = ForeverTab.You) { Calendar(on.copy(offline = true)) }
+    @Test fun calendar_offline() = capture("f16.4-link-offline", tab = ForeverTab.Home) { Calendar(on.copy(offline = true)) }
 
     @Test fun calendar_linkFailed() =
-        capture("f16.4-link-failed", tab = ForeverTab.You) { Calendar(on.copy(link = CalendarLinkState.Failed, linkNotice = CalendarLinkNotice.LoadFailed)) }
+        capture("f16.4-link-failed", tab = ForeverTab.Home) { Calendar(on.copy(link = CalendarLinkState.Failed, linkNotice = CalendarLinkNotice.LoadFailed)) }
 
     @Test fun calendar_resetFailed() =
-        capture("f16.4-reset-failed", tab = ForeverTab.You) { Calendar(on.copy(linkNotice = CalendarLinkNotice.ResetFailed)) }
+        capture("f16.4-reset-failed", tab = ForeverTab.Home) { Calendar(on.copy(linkNotice = CalendarLinkNotice.ResetFailed)) }
 
     @Test fun calendar_removed() =
-        capture("f16.4-calendar-removed", tab = ForeverTab.You) { Calendar(off.copy(status = CalendarStatus.Removed)) }
+        capture("f16.4-calendar-removed", tab = ForeverTab.Home) { Calendar(off.copy(status = CalendarStatus.Removed)) }
 
-    @Test fun calendar_syncFailed() = capture("f16.4-sync-failed", tab = ForeverTab.You) { Calendar(on.copy(status = CalendarStatus.Failed)) }
+    @Test fun calendar_syncFailed() = capture("f16.4-sync-failed", tab = ForeverTab.Home) { Calendar(on.copy(status = CalendarStatus.Failed)) }
 
-    @Test fun calendar_accessOff() = capture("f16.5-access-off", tab = ForeverTab.You) { Calendar(off.copy(status = CalendarStatus.AccessOff)) }
+    @Test fun calendar_accessOff() = capture("f16.5-access-off", tab = ForeverTab.Home) { Calendar(off.copy(status = CalendarStatus.AccessOff)) }
 
     @Test fun calendar_accessOff_xl() =
-        capture("f16.5-access-off", large = true, tab = ForeverTab.You) { Calendar(off.copy(status = CalendarStatus.AccessOff)) }
+        capture("f16.5-access-off", large = true, tab = ForeverTab.Home) { Calendar(off.copy(status = CalendarStatus.AccessOff)) }
 
     // F16.7 Raids tab rows, and You › Calendar
 
@@ -314,9 +314,9 @@ class GuildScreenshotTest {
         }
     }
 
-    @Test fun youCalendarRow() = capture("you-calendar-row", tab = ForeverTab.You) { You() }
+    @Test fun youCalendarRow() = capture("you-calendar-row", tab = ForeverTab.Home) { You() }
 
-    @Test fun youCalendarRow_xl() = capture("you-calendar-row", large = true, tab = ForeverTab.You) { You() }
+    @Test fun youCalendarRow_xl() = capture("you-calendar-row", large = true, tab = ForeverTab.Home) { You() }
 }
 
 /** Pixel 9: 412 x 915 dp at 420 dpi. */

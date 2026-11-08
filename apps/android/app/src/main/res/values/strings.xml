@@ -9,11 +9,16 @@
     <string name="tab_raids">Raids</string>
     <string name="tab_bis">BiS</string>
     <string name="tab_you">You</string>
+    <string name="tab_raid">Raid</string>
+    <string name="tab_gear">Gear</string>
+    <string name="tab_activity">Activity</string>
+    <string name="tab_badge" tools:ignore="PluralsCandidate">%1$d new</string>
     <string name="offline_strip">Offline. Showing what you had at %1$s.</string>
     <string name="common_tryAgain">Try again</string>
     <string name="common_saved">Saved.</string>
     <string name="common_failed">That did not save. Try again.</string>
     <string name="common_cancel">Cancel</string>
+    <string name="common_back">Back</string>
     <string name="common_age_now">just now</string>
     <string name="common_age_minutes" tools:ignore="PluralsCandidate">%1$d min ago</string>
     <string name="common_age_hours" tools:ignore="PluralsCandidate">%1$d h ago</string>
@@ -668,10 +673,6 @@
     <string name="notifications_reminder">Raid-day reminder</string>
     <string name="notifications_reminderLine">If you have not answered: %1$s your time</string>
     <string name="notifications_change">Change</string>
-    <string name="tab_raid">Raid</string>
-    <string name="tab_gear">Gear</string>
-    <string name="tab_activity">Activity</string>
-    <string name="tab_badge" tools:ignore="PluralsCandidate">%1$d new</string>
     <string name="you_title">You</string>
     <string name="you_signedInWith">Signed in with Battle.net</string>
     <string name="you_plan">Plan</string>
@@ -695,6 +696,33 @@
     <string name="you_signOut">Sign out</string>
     <string name="you_signOut_confirm">Sign out of Forever Sixty on this %1$s?</string>
     <string name="you_version">Version %1$s (%2$s) · data %3$s</string>
+    <string name="activity_title">Activity</string>
+    <string name="activity_all">All</string>
+    <string name="activity_out">What changed for your characters: loot, sims, reports, raids.</string>
+    <string name="activity_failed">Your activity did not load.</string>
+    <string name="activity_more">Show older</string>
+    <string name="menu_a11y_open">Open the menu</string>
+    <string name="menu_main">Main</string>
+    <string name="menu_updated">Updated %1$s from Battle.net</string>
+    <string name="menu_showLow" tools:ignore="PluralsCandidate">Show low-level characters (%1$d)</string>
+    <string name="menu_hideLow">Hide low-level characters</string>
+    <string name="menu_guides">Guides</string>
+    <string name="menu_guides_line">Your spec\'s guide, then every class</string>
+    <string name="menu_tiers">Tiers</string>
+    <string name="menu_tiers_line">Every spec, this week</string>
+    <string name="menu_patchNotes">Patch notes</string>
+    <string name="menu_patchNotes_line">The game and the site</string>
+    <string name="menu_sims">Sims</string>
+    <string name="menu_sims_line">Your server runs and saved sims</string>
+    <string name="menu_logs">Logs and reports</string>
+    <string name="menu_logs_line">Your reports and the coach</string>
+    <string name="menu_planner">Planner</string>
+    <string name="menu_planner_line">Your builds and the guide builds</string>
+    <string name="menu_rankings">Rankings</string>
+    <string name="menu_rankings_line">Your spec and your guild</string>
+    <string name="menu_offlineData">Offline data</string>
+    <string name="menu_offlineData_line">%1$s on this phone</string>
+    <string name="menu_out_title">Forever Sixty</string>
     <string name="about_notAffiliated">Not affiliated with or endorsed by Blizzard Entertainment. World of Warcraft and Warcraft are trademarks of Blizzard Entertainment, Inc.</string>
     <string name="plan_includes">What your plan includes</string>
     <string name="plan_feature_coach">Coach: after every logged raid, what to fix first. It names the casts you missed, the buffs you let drop and the consumables you skipped.</string>

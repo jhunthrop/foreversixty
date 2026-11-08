@@ -27,7 +27,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.takahirom.roborazzi.ExperimentalRoborazziApi
 import com.github.takahirom.roborazzi.captureRoboImage
 import com.github.takahirom.roborazzi.captureScreenRoboImage
-import gg.foreversixty.app.account.CharacterSelector
+import gg.foreversixty.app.menu.CharacterPortrait
 import gg.foreversixty.app.designsystem.ForeverTheme
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.GameColors
@@ -252,9 +252,9 @@ class RankingsScreenshotTest {
         // Lightningbolltz's own Home answer (character.home.yours): the six upgrades behind his six gold dots.
         val home = HomeFixtures.home("character.home.yours")
         Column {
-            // The selector row as CharacterSelectorBar draws it for the session's current character.
+            // The profile portrait as the bar draws it for the session's current character.
             Row(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp).heightIn(min = 48.dp), verticalAlignment = Alignment.CenterVertically) {
-                CharacterSelector(LIGHTNINGBOLLTZ_ACCOUNT, open = false, onClick = {})
+                CharacterPortrait(LIGHTNINGBOLLTZ_ACCOUNT.avatarUrl, LIGHTNINGBOLLTZ_ACCOUNT.faction, 36.dp)
             }
             HomeAnswer(HomePhase.Loaded(home), presenter, home.dataBuild, null)
         }

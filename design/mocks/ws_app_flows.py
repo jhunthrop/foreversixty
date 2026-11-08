@@ -370,7 +370,7 @@ def gear(state: str):
 ACTIVITY = [
     ('Today', [('ability_warrior_innerrage', 'Kaelra passed you in the guild sims', '1,012.3 DPS, you are #7 of 14', 'Guild ladder', '8 h ago', True),
                ('inv_axe_09', 'You got Deathbringer', 'Onyxia &middot; main hand, +12.6 DPS', 'Gear and sims', '9 h ago', True),
-               (ONY, 'Onyxia&rsquo;s Lair report ready', '87th percentile, your best on Onyxia &middot; the coach has 2 notes', 'Logs', '9 h ago', True)]),
+               (ONY, 'Onyxia&rsquo;s Lair report ready', '87th percentile, your best on Onyxia so far &middot; the coach has 2 notes', 'Logs', '9 h ago', True)]),
     ('Yesterday', [(ONY, 'You&rsquo;re In for Onyxia', AS_ME_CAP + ' &middot; 8:00 pm CST', 'Raids', '6:02 pm', False),
                    ('inv_misc_pocketwatch_01', 'Sim done: 948.6 DPS &plusmn;6', '+21 vs your last', 'Gear and sims', '2:40 pm', False),
                    (ONY, 'Healers short for Onyxia tonight', '3 of 8 missing', 'Raids', '1:15 pm', False)]),
