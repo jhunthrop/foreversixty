@@ -77,8 +77,11 @@ type Section struct {
 	MoreFilters []string `json:"more_filters,omitzero"`
 	// Group is the Activity group the preview shows (raids on raid night); omitted, every group.
 	Group string `json:"group,omitempty"`
-	Text  string `json:"text,omitempty"`
-	Href  string `json:"href,omitempty"`
+	// ExcludeKinds are event kinds the preview leaves out because a block above already shows them
+	// (the day after: Last night's loot and report). The app reads past them to fill Limit rows.
+	ExcludeKinds []string `json:"exclude_kinds,omitzero"`
+	Text         string   `json:"text,omitempty"`
+	Href         string   `json:"href,omitempty"`
 }
 
 // Override is HOME_SECTIONS. The zero value changes nothing.

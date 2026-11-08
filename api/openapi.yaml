@@ -3951,6 +3951,7 @@ components:
         limit: { type: integer, minimum: 1, description: "Rows to show (upgrades 3, activity 3, the signed-out feed 7)." }
         style: { type: string, description: "countdowns: full (the panels) or line (one row); next_raid: card (the countdown, your sign-up buttons, who is coming) or line." }
         group: { type: string, description: "activity: the Activity group the preview shows (raids on raid night); omitted, every group." }
+        exclude_kinds: { type: array, items: { type: string }, description: "activity: event kinds the preview leaves out because a block above shows them (the day after: Last night's loot and report); the app reads past them to fill limit rows." }
         filters: { type: array, items: { type: string, enum: [all, spec, guild, logs] }, description: "feed: the segments; [] for none (signed out, All only)." }
         more_filters: { type: array, items: { type: string, enum: [all, spec, guild, logs] }, description: "feed: the filters behind the filter button." }
         text: { type: string, description: "notice: the standing message." }

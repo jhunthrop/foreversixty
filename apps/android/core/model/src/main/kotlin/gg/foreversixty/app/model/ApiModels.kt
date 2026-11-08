@@ -1459,6 +1459,8 @@ data class HomeSection(
     @SerialName("style") val style: String? = null,
     /** activity: the Activity group the preview shows (raids on raid night); omitted, every group. */
     @SerialName("group") val group: String? = null,
+    /** activity: event kinds the preview leaves out because a block above shows them (the day after: Last night's loot and report); the app reads past them to fill limit rows. */
+    @SerialName("exclude_kinds") val excludeKinds: List<String>? = null,
     /** feed: the segments; [] for none (signed out, All only). */
     @SerialName("filters") val filters: List<String>? = null,
     /** feed: the filters behind the filter button. */

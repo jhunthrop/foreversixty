@@ -3887,6 +3887,8 @@ public struct HomeSection: Codable, Sendable, Equatable {
     public let style: String?
     /// activity: the Activity group the preview shows (raids on raid night); omitted, every group.
     public let group: String?
+    /// activity: event kinds the preview leaves out because a block above shows them (the day after: Last night's loot and report); the app reads past them to fill limit rows.
+    public let excludeKinds: [String]?
     /// feed: the segments; [] for none (signed out, All only).
     public let filters: [String]?
     /// feed: the filters behind the filter button.
@@ -3901,6 +3903,7 @@ public struct HomeSection: Codable, Sendable, Equatable {
         limit: Int? = nil,
         style: String? = nil,
         group: String? = nil,
+        excludeKinds: [String]? = nil,
         filters: [String]? = nil,
         moreFilters: [String]? = nil,
         text: String? = nil,
@@ -3910,6 +3913,7 @@ public struct HomeSection: Codable, Sendable, Equatable {
         self.limit = limit
         self.style = style
         self.group = group
+        self.excludeKinds = excludeKinds
         self.filters = filters
         self.moreFilters = moreFilters
         self.text = text

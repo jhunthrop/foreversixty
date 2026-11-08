@@ -3,6 +3,8 @@ package homesections
 import (
 	"slices"
 	"time"
+
+	"github.com/jhunthrop/foreversixty/api/internal/events"
 )
 
 // raidLiveFor is how long after its start a raid counts as in progress (flows spec section 4).
@@ -71,6 +73,11 @@ func sameDay(a, b time.Time, loc *time.Location) bool {
 	return a.In(loc).Format(time.DateOnly) == b.In(loc).Format(time.DateOnly)
 }
 
+// lastNightKinds are the events the day after's Last night block already shows.
+var lastNightKinds = []string{
+	string(events.LootAwarded), string(events.ReportReady), string(events.CoachReady), string(events.RankingBest),
+}
+
 // SignedIn is the signed-in home for v under o (flows spec section 4): the moment's block, then the
 // next upgrades, then the three newest Activity rows; a player at 60 with no guild also gets Find a
 // guild. Everything else lives on its tab.
@@ -88,7 +95,9 @@ func SignedIn(v View, o Override) []Section {
 	case MomentRaidDay:
 		out = []Section{head, {Type: NextRaid, Style: StyleCard}, upgrades, activity}
 	case MomentDayAfter:
-		out = []Section{head, {Type: RaidSummary}, upgrades, activity}
+		afterActivity := activity
+		afterActivity.ExcludeKinds = lastNightKinds
+		out = []Section{head, {Type: RaidSummary}, upgrades, afterActivity}
 	case MomentGuild:
 		out = []Section{head, upgrades, {Type: NextRaid, Style: StyleLine}, activity}
 	case MomentLeveling:

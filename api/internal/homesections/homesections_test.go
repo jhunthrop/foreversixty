@@ -103,6 +103,15 @@ func TestRaidLivePreviewsTheRaidActivity(t *testing.T) {
 	}
 }
 
+func TestDayAfterPreviewLeavesOutWhatLastNightShows(t *testing.T) {
+	out := SignedIn(View{Level: 60, InGuild: true, Now: raid8pm.Add(18 * time.Hour), Zone: chicago, LastRaid: at(raid8pm)}, Override{})
+	got := out[len(out)-1]
+	want := []string{"loot.awarded", "report.ready", "coach.ready", "ranking.best"}
+	if got.Type != Activity || !reflect.DeepEqual(got.ExcludeKinds, want) {
+		t.Errorf("activity = %+v, want exclude_kinds %v", got, want)
+	}
+}
+
 func TestParseOverride(t *testing.T) {
 	if o, err := ParseOverride(""); err != nil || !reflect.DeepEqual(o, Override{}) {
 		t.Fatalf("empty = %+v, %v", o, err)

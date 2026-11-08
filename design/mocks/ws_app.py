@@ -208,7 +208,7 @@ def raid_night(state: str):
     def b(platform: str) -> str:
         clock = [('00', 'hours'), ('42', 'min')]
         you = Tag('You are In', 'kill') if state == 'live' else Tag('Not signed up', 'muted')
-        cd = Countdown("Olympus XXVII &middot; Onyxia's Lair tonight", clock, f'<p class="t-small">Wed 9 Dec, 8:00 pm CST &middot; 18 in, 3 late</p>{you}', 'guild', live=True)
+        cd = Countdown("Olympus XXVII &middot; Onyxia's Lair tonight", clock, f'<p class="t-small">Wed 6 Jan, 8:00 pm CST &middot; 18 in, 3 late</p>{you}', 'guild', live=True)
         buttons = ''.join(Button(x, primary=(x == 'In' and state == 'live'), small=True) for x in ('In', 'Late', 'Bench', 'Out'))
         counts = Rows([Row('Tanks 2 of 2', 'Grunvald, Brakka', link=False, slim=True),
                        Row('Healers 5 of 8', 'Mirethil, Selka, Hollowmend, Aenwyn, Brightwen &middot; 3 short', link=False, slim=True),
@@ -217,10 +217,10 @@ def raid_night(state: str):
                            ('ok', 'Elixir of the Mongoose', '3 in your bags, from the addon&rsquo;s last export', None),
                            ('miss', 'Flask of the Titans', 'None in your bags', 'Auction house'),
                            ('warn', 'Boots not enchanted', 'Enchant Boots: Greater Agility', 'Where to get it')])
-        body = (title("Onyxia's Lair", 'var(--strong)', icon('inv_misc_head_dragon_black', 56), ['Olympus XXVII', 'Wed 9 Dec, 8:00 pm CST']) + cd
+        body = (title("Onyxia's Lair", 'var(--strong)', icon('inv_misc_head_dragon_black', 56), ['Olympus XXVII', 'Wed 6 Jan, 8:00 pm CST']) + cd
                 + Section('Your sign-up', f'<div class="la bare"><div class="btns">{buttons}</div></div>')
                 + Section('Who is coming', counts, 'Roster &rsaquo;')
-                + Section('Before you pull', ready))
+                + Section('Before you pull', ready + '<p class="t-small" style="margin-top:8px">From your last log-out, 9 h ago</p>'))
         return app_page(platform, page(body, "Onyxia's Lair"), 'raid', back='Raid', title="Onyxia's Lair", share=True)
     return b
 
@@ -231,14 +231,14 @@ def widgets(state: str):
         at = raids_open()
         if state == 'guild':
             k, big, nm, s = "Olympus XXVII", '33d 8h', "Onyxia's Lair", 'Wed 9 Dec, 8:00 pm CST &middot; You are In'
-            up = ('+48.1 DPS', 'from 3 upgrades', 'Lionheart Helm, Greenhammer, Don Julio&rsquo;s Band')
+            up = ('+14.5 DPS', 'next upgrade', 'Lionheart Helm, Blacksmithing')
         elif state == 'noguild':
             d = clock_to(at)
             k, big, nm, s = 'First raids', f'{int(d[0][0])}d {int(d[1][0])}h', day_text(at), 'Barrow Deeps, Hyjal Summit, Onyxia&rsquo;s Lair'
-            up = ('+11.4 DPS', 'from 2 upgrades', 'Levels 30 to 39')
+            up = ('+1.3 DPS', 'next upgrade', 'Felbough Arm, Ashenvale')
         else:
             k, big, nm, s = 'Raids open now', 'Open', "Barrow Deeps, Hyjal Summit, Onyxia's Lair", 'No raid planned yet'
-            up = ('+48.1 DPS', 'from 3 upgrades', 'Lionheart Helm, Greenhammer, Don Julio&rsquo;s Band')
+            up = ('+14.5 DPS', 'next upgrade', 'Lionheart Helm, Blacksmithing')
         small = f'<div class="wd"><span class="k">{k}</span><span class="big">{big}</span><span class="nm">{nm}</span><span class="s">{s}</span></div>'
         small_up = f'<div class="wd"><span class="k">Upgrades</span><span class="big g">{up[0]}</span><span class="s">{up[1]}</span></div>'
         medium = (f'<div class="wd m"><div><span class="k">{k}</span><span class="big">{big}</span><span class="nm">{nm}</span><span class="s">{s}</span></div>'
