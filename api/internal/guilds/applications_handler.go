@@ -4,6 +4,7 @@
 package guilds
 
 import (
+	"context"
 	"errors"
 	"net/http"
 
@@ -23,6 +24,10 @@ func (s *Service) officerApplications(w http.ResponseWriter, r *http.Request) {
 		s.fail(w, r, "applications", err, officerAppsFail)
 		return
 	}
+	if err := s.scoreSheets(r.Context(), rows); err != nil {
+		s.fail(w, r, "applications", err, officerAppsFail)
+		return
+	}
 	pending := 0
 	for _, a := range rows {
 		if a.Status == ApplicationPending {
@@ -36,6 +41,24 @@ func (s *Service) officerApplications(w http.ResponseWriter, r *http.Request) {
 	}
 	httpx.CachePrivate(w)
 	httpx.WriteOK(w, r, http.StatusOK, map[string]any{"rows": rows, "pending": pending, "discord_role_id": roleID})
+}
+
+// scoreSheets fills each sheet's Forever Score; without a scorer the scores stay null.
+func (s *Service) scoreSheets(ctx context.Context, rows []OfficerApplication) error {
+	if s.Scores == nil {
+		return nil
+	}
+	for i := range rows {
+		if rows[i].Sheet == nil {
+			continue
+		}
+		score, err := s.Scores.ScoreOf(ctx, rows[i].Character.CharacterKey)
+		if err != nil {
+			return err
+		}
+		rows[i].Sheet.Score = score
+	}
+	return nil
 }
 
 type voteInput struct {

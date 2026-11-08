@@ -2404,6 +2404,14 @@ components:
         class: { type: string, x-name: className }
         account_key: { type: string, description: 'The account handle, "u:42".' }
         discord_linked: { type: boolean, description: True when the account linked Discord, so a ping mentions it. }
+        role: { type: string, enum: [tank, healer, dps], description: "The row's sign-up role, from its roster group. Always sent; optional for older bodies." }
+        last_week:
+          type: [string, "null"]
+          enum: [in, late, bench, out, missed, null]
+          description: >-
+            The account's answer for the guild's raid of the week before (its latest raid that
+            started in the 8 days before this one, cancelled aside; the best answer across its
+            characters), missed when it gave none; null when there was no such raid.
     RaidPingState:
       type: object
       required: [last_pinged_at, next_allowed_at]
@@ -3425,6 +3433,11 @@ components:
         there are none; coach_notes is null without log_coach.
       required: [raid_id, guild_id, guild_name, zone_name, starts_at, report_id, character, kills, wipes, new_bests, loot, bests, coach_notes]
       properties:
+        ready:
+          oneOf:
+            - { $ref: '#/components/schemas/ReadyCheck' }
+            - { type: "null" }
+          description: The character's ready check for this raid, the same items as GET /v1/characters/{region}/{ruleset}/{name}/ready?raid=.
         raid_id: { type: integer, format: int64 }
         guild_id: { type: integer, format: int64 }
         guild_name: { type: string }
@@ -5384,7 +5397,7 @@ components:
       properties:
         character_key: { type: string }
         name: { type: string }
-        class: { type: [string, "null"] }
+        class: { type: [string, "null"], x-name: className }
         spec: { type: [string, "null"] }
         spec_name: { type: [string, "null"] }
         level: { type: [integer, "null"] }
@@ -5455,13 +5468,123 @@ components:
             - { type: "null" }
         role_outcome: { type: [string, "null"] }
         dm_outcome: { type: [string, "null"] }
+        sheet: { $ref: '#/components/schemas/ApplicantSheet' }
+    RecruitingGuilds:
+      type: object
+      required: [rows]
+      properties:
+        rows:
+          type: array
+          items:
+            type: object
+            title: RecruitingGuild
+            required: [guild_id, name, faction, schedule, needs, crest_url]
+            properties:
+              guild_id: { type: integer, format: int64 }
+              name: { type: string }
+              faction: { type: string, enum: [alliance, horde] }
+              schedule: { type: string }
+              needs: { type: string, enum: [damage, healer, tank] }
+              crest_url: { type: [string, "null"] }
+    ReadyCheck:
+      type: object
+      required: [exported_at, items]
+      properties:
+        exported_at: { type: [string, "null"], format: date-time }
+        items: { type: array, items: { $ref: '#/components/schemas/ReadyItem' } }
+    ReadyItem:
+      type: object
+      required: [key, state, title, line, where]
+      properties:
+        key: { type: string, description: 'level, attune.<zone slug>, enchant.<slot>, enchants, flask, food.' }
+        state: { type: string, enum: [ok, miss, warn] }
+        title: { type: string }
+        line: { type: string }
+        where:
+          x-name: whereToGet
+          oneOf:
+            - type: object
+              title: ReadyWhere
+              required: [label, link]
+              properties:
+                label: { type: string }
+                link: { type: [string, "null"] }
+            - { type: "null" }
+    ApplicantSheet:
+      type: object
+      description: >-
+        The applicant sheet (spec 2026-11-08-app-flows F3), read by officers before Accept. score
+        is the character page's Forever Score; sim the newest finished sim (unit dps, hps or tps);
+        attunement the attunement to the guild's next raid (state ok, miss, or unknown when the
+        export cannot say; null with no raid planned or a zone that asks for none); enchants the
+        enchantable slots with an item (main hand, chest, cloak, boots), how many are enchanted
+        and the missing ones; bis_gap the pieces short of the spec's 60 raid list; history the
+        other guilds the character logged raids with in public reports, newest first; exported_at
+        the addon export they read. Applying shares the gear with the guild's officers, never the
+        bags. Each part is null when its source has nothing. Always sent on officer rows;
+        optional so an older body still decodes.
+      required: [score, sim, attunement, enchants, bis_gap, history, exported_at]
+      properties:
+        score: { type: [integer, "null"] }
+        sim:
+          oneOf:
+            - type: object
+              title: ApplicantSim
+              required: [value, unit]
+              properties:
+                value: { type: number }
+                unit: { type: string, enum: [dps, hps, tps] }
+            - { type: "null" }
+        attunement:
+          oneOf:
+            - type: object
+              title: ApplicantAttunement
+              required: [zone_name, state, item]
+              properties:
+                zone_name: { type: string }
+                state: { type: string, enum: [ok, miss, unknown] }
+                item:
+                  oneOf:
+                    - { $ref: '#/components/schemas/ZoneKeyItem' }
+                    - { type: "null" }
+            - { type: "null" }
+        enchants:
+          oneOf:
+            - type: object
+              title: ApplicantEnchants
+              required: [slots, enchanted, missing]
+              properties:
+                slots: { type: integer }
+                enchanted: { type: integer }
+                missing: { type: array, items: { type: string } }
+            - { type: "null" }
+        bis_gap:
+          oneOf:
+            - type: object
+              title: ApplicantBisGap
+              required: [pieces, list]
+              properties:
+                pieces: { type: integer }
+                list: { type: string, description: '"Holy Paladin, 60 raid".' }
+            - { type: "null" }
+        history:
+          type: array
+          items:
+            type: object
+            title: ApplicantGuild
+            required: [guild_name, raids, last_raid_at]
+            properties:
+              guild_name: { type: string }
+              raids: { type: integer }
+              last_raid_at: { type: string, format: date-time }
+        exported_at: { type: [string, "null"], format: date-time }
     GuildCharacterRef:
       type: object
       description: An account named by its character on the guild's roster.
       required: [name, class, character_key]
       properties:
         name: { type: string }
-        class: { type: [string, "null"] }
+        class: { type: [string, "null"], x-name: className }
         character_key: { type: string }
     GuildOfficerApplications:
       type: object
@@ -7553,6 +7676,41 @@ paths:
         '404':
           description: "No such guild: an id that is not a positive number, or a guild gone by the time the home is read"
           content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  /v1/guilds/recruiting:
+    get:
+      summary: Guilds recruiting a spec (public)
+      description: >-
+        The Raid tab with no guild (spec 2026-11-08-app-flows). A guild is listed while it
+        recruits, on the faction asked (and region and ruleset when given), when its wanted list
+        names the spec, its class with no spec, or nothing (open to everyone); newest recruiting
+        edit first, at most 20. schedule is the officers' raid nights, else the weekdays and the
+        first start of its planned raids over the next two weeks in its raid time zone ("Wed and
+        Sat, 8:00 pm CST"), "" with neither; needs is the spec's role (damage, healer, tank).
+        Cached 60 s. 400 bad_request on an unknown spec, faction, region or ruleset.
+      operationId: listRecruitingGuilds
+      tags: [app]
+      x-authenticated: false
+      parameters:
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
+        - { name: spec, in: query, required: true, schema: { type: string }, description: 'A specs.json key, "warrior-fury".' }
+        - { name: faction, in: query, required: true, schema: { type: string, enum: [alliance, horde] } }
+        - { name: region, in: query, schema: { type: string } }
+        - { name: ruleset, in: query, schema: { type: string } }
+      responses:
+        '426': { $ref: '#/components/responses/UpdateRequired' }
+        '200':
+          description: "The guilds"
+          x-fixtures: [guild.recruiting]
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/RecruitingGuilds' } } }
+        '400':
+          description: "bad_request, with the field"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
   /v1/guilds/search:
     get:
       operationId: searchGuilds
@@ -7766,6 +7924,44 @@ paths:
   # Native apps v1 (docs/contracts/app-v1.md). Routes marked dark are unmounted until their
   # flag is on: APP_SIGN_IN (lane A1), APP_NOTIFICATIONS_ENABLED (lane A2), APP_API (lane A3).
   # -----------------------------------------------------------------------------------------
+  /v1/characters/{region}/{ruleset}/{name}/ready:
+    get:
+      summary: Your character's ready check (owner only)
+      description: >-
+        Raid night's Ready check and Home's "2 things before you pull" (spec 2026-11-08-app-flows
+        F2), from the character's last addon export, graded by the D12 checklist's logic. With
+        ?raid= (a raid of a guild the character is verified in) it adds the attunement line for
+        that raid's zone. Items in order: level (only when short), attune.<zone> (ok, miss, or
+        warn when the addon has not seen the keys), enchant.<slot> (warn per unenchanted slot;
+        one enchants ok line when all are), flask and food (ok with the stack, or miss with
+        where). A check the export cannot answer is left out. exported_at null and items [] with
+        no export. 404 for a character not on your account or a raid not of its guilds.
+      operationId: getCharacterReady
+      tags: [app]
+      parameters:
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
+        - { name: region, in: path, required: true, schema: { type: string } }
+        - { name: ruleset, in: path, required: true, schema: { type: string } }
+        - { name: name, in: path, required: true, schema: { type: string } }
+        - { name: raid, in: query, schema: { type: integer, format: int64 } }
+      responses:
+        '426': { $ref: '#/components/responses/UpdateRequired' }
+        '200':
+          description: "The ready check"
+          x-fixtures: [character.ready]
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/ReadyCheck' } } }
+        '401':
+          description: "No session or device token"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '404':
+          description: "Not your character, or a raid not of its guilds"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
   /v1/characters/{region}/{ruleset}/{name}/home:
     get:
       summary: The home answer for a character (dark, APP_API)
@@ -9681,10 +9877,13 @@ paths:
       summary: The officers' application list
       description: A verified officer or the guild master. Pending first (oldest first), then the latest 20 decisions.
       operationId: listGuildApplications
-      tags: [web]
+      tags: [app]
       parameters:
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
         - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
       responses:
+        '426': { $ref: '#/components/responses/UpdateRequired' }
         '200':
           description: "The list"
           x-fixtures: [guild.applications]
@@ -9820,11 +10019,14 @@ paths:
         to the applicant's linked Discord user and, only if the applicant opted in, DMs the
         decision. Neither step can undo the accept; discord_role and discord_dm say what happened.
       operationId: acceptGuildApplication
-      tags: [web]
+      tags: [app]
       parameters:
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
         - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
         - { name: app, in: path, required: true, schema: { type: integer, format: int64 } }
       responses:
+        '426': { $ref: '#/components/responses/UpdateRequired' }
         '200':
           description: "The decision"
           x-fixtures: [guild.application.accept]
@@ -9848,11 +10050,14 @@ paths:
       summary: An officer declines an application
       description: Grants nothing (discord_role reason not_accepted); DMs the decision only if the applicant opted in.
       operationId: declineGuildApplication
-      tags: [web]
+      tags: [app]
       parameters:
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
         - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
         - { name: app, in: path, required: true, schema: { type: integer, format: int64 } }
       responses:
+        '426': { $ref: '#/components/responses/UpdateRequired' }
         '200':
           description: "The decision"
           content:

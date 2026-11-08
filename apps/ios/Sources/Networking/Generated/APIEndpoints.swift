@@ -293,6 +293,27 @@ public extension Endpoint where Response == GuildHome {
     }
 }
 
+public extension Endpoint where Response == RecruitingGuilds {
+    /// GET /v1/guilds/recruiting: Guilds recruiting a spec (public)
+    static func listRecruitingGuilds(spec: String, faction: String, region: String? = nil, ruleset: String? = nil) -> Endpoint {
+        Endpoint(method: .get, path: "/v1/guilds/recruiting", query: [
+            URLQueryItem(name: "spec", value: "\(spec)"),
+            URLQueryItem(name: "faction", value: "\(faction)"),
+            region.map { URLQueryItem(name: "region", value: "\($0)") },
+            ruleset.map { URLQueryItem(name: "ruleset", value: "\($0)") },
+        ].compactMap { $0 }, authenticated: false)
+    }
+}
+
+public extension Endpoint where Response == ReadyCheck {
+    /// GET /v1/characters/{region}/{ruleset}/{name}/ready: Your character's ready check (owner only)
+    static func getCharacterReady(region: String, ruleset: String, name: String, raid: Int64? = nil) -> Endpoint {
+        Endpoint(method: .get, path: "/v1/characters/\(region)/\(ruleset)/\(name)/ready", query: [
+            raid.map { URLQueryItem(name: "raid", value: "\($0)") },
+        ].compactMap { $0 })
+    }
+}
+
 public extension Endpoint where Response == CharacterHome {
     /// GET /v1/characters/{region}/{ruleset}/{name}/home: The home answer for a character (dark, APP_API)
     static func getCharacterHome(region: String, ruleset: String, name: String) -> Endpoint {
@@ -448,6 +469,25 @@ public extension Endpoint where Response == AppConfig {
     static var getAppConfig: Endpoint { Endpoint(method: .get, path: "/v1/app/config", authenticated: false) }
 }
 
+public extension Endpoint where Response == GuildOfficerApplications {
+    /// GET /v1/guilds/{id}/applications: The officers' application list
+    static func listGuildApplications(id: Int64) -> Endpoint {
+        Endpoint(method: .get, path: "/v1/guilds/\(id)/applications")
+    }
+}
+
+public extension Endpoint where Response == GuildApplicationDecision {
+    /// POST /v1/guilds/{id}/applications/{app}/accept: An officer accepts an application
+    static func acceptGuildApplication(id: Int64, app: Int64) -> Endpoint {
+        Endpoint(method: .post, path: "/v1/guilds/\(id)/applications/\(app)/accept")
+    }
+
+    /// POST /v1/guilds/{id}/applications/{app}/decline: An officer declines an application
+    static func declineGuildApplication(id: Int64, app: Int64) -> Endpoint {
+        Endpoint(method: .post, path: "/v1/guilds/\(id)/applications/\(app)/decline")
+    }
+}
+
 public extension StaticResource where Response == ActiveBuild {
     /// /data/active-build.json: The client build the static data serves now
     static var getActiveBuild: StaticResource { StaticResource(path: "/data/active-build.json") }
@@ -591,6 +631,8 @@ public enum ContractRoutes {
         FixtureRoute(.get, "/v1/characters/search", fixture: "character.search", status: 200),
         FixtureRoute(.get, "/v1/characters/{region}/{ruleset}/{name}", fixture: "character.card", status: 200),
         FixtureRoute(.get, "/v1/guilds/{id}/home", fixture: "guild.home", status: 200),
+        FixtureRoute(.get, "/v1/guilds/recruiting", fixture: "guild.recruiting", status: 200),
+        FixtureRoute(.get, "/v1/characters/{region}/{ruleset}/{name}/ready", fixture: "character.ready", status: 200),
         FixtureRoute(.get, "/v1/characters/{region}/{ruleset}/{name}/home", fixture: "character.home", status: 200),
         FixtureRoute(.get, "/v1/guilds/{id}/raids", fixture: "guild.raids", status: 200),
         FixtureRoute(.get, "/v1/guilds/{id}/raids/{raid}", fixture: "guild.raid", status: 200),
@@ -617,6 +659,8 @@ public enum ContractRoutes {
         FixtureRoute(.get, "/v1/me/calendar-feed", fixture: "calendar.feed", status: 200),
         FixtureRoute(.post, "/v1/me/calendar-feed/reset", fixture: "calendar.feed", status: 200),
         FixtureRoute(.get, "/v1/app/config", fixture: "app.config", status: 200),
+        FixtureRoute(.get, "/v1/guilds/{id}/applications", fixture: "guild.applications", status: 200),
+        FixtureRoute(.post, "/v1/guilds/{id}/applications/{app}/accept", fixture: "guild.application.accept", status: 200),
     ]
 
     public static let staticData: [FixtureRoute] = [
