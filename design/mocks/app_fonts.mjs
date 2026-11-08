@@ -17,10 +17,13 @@ const CSS = FACES.map(([family, weight, file]) => {
   return `@font-face{font-family:'${family}';font-weight:${weight};font-style:normal;font-display:block;src:url(data:font/woff2;base64,${data}) format('woff2')}`;
 }).join("\n");
 
-/** Answers the mocks' Google Fonts request with the repo's faces and drops every other network request. */
+/** Answers the mocks' Google Fonts request with the repo's faces and drops every other network request. One handler:
+ *  Playwright runs the route registered last first, so the catch-all abort registered after the fonts route used to
+ *  swallow the stylesheet as well, and the mocks drew in Georgia and Arial. */
 export async function routeFonts(context) {
-  await context.route("https://fonts.googleapis.com/**", (r) => r.fulfill({ contentType: "text/css", body: CSS }));
-  await context.route(/^https?:\/\//, (r) => r.abort());
+  await context.route(/^https?:\/\//, (r) =>
+    r.request().url().startsWith("https://fonts.googleapis.com/") ? r.fulfill({ contentType: "text/css", body: CSS }) : r.abort(),
+  );
 }
 
 /** After `document.fonts.ready`: throws unless every face loaded, so a mock can never be measured or captured in a
