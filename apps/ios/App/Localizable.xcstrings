@@ -8389,6 +8389,39 @@
         }
       }
     },
+    "notifications.discord": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Discord"
+          }
+        }
+      }
+    },
+    "notifications.officerDms": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Let officers DM me on Discord"
+          }
+        }
+      }
+    },
+    "notifications.officerDmsLine": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your guild's officers can message you about a raid you have not answered"
+          }
+        }
+      }
+    },
     "notifications.reminder": {
       "extractionState": "manual",
       "localizations": {
@@ -11647,6 +11680,30 @@
         }
       }
     },
+    "raid.na.mentioned": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Mentioned 1 raider in Discord."
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Mentioned %1$lld raiders in Discord."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "raid.na.mentionRole": {
       "comment": "Arguments: 1 people (string)",
       "extractionState": "manual",
@@ -11701,6 +11758,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "new this week"
+          }
+        }
+      }
+    },
+    "raid.na.noBot": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This guild has no Discord bot yet. Connect it on the raid's page."
           }
         }
       }
@@ -11770,6 +11838,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "%1$@ · %2$@"
+          }
+        }
+      }
+    },
+    "raid.na.throttled": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "They were mentioned a moment ago. Try again later."
           }
         }
       }

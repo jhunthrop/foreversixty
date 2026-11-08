@@ -203,7 +203,7 @@ struct RaidFlowLogicTests {
     @Test("Not answered's mark waits the hold, Undo cancels it, then the answer is sent")
     func markHold() async throws {
         let service = FakeRaidService()
-        let model = NotAnsweredModel(guild: 2, raid: 41, service: service, hold: .milliseconds(50))
+        let model = NotAnsweredModel(guild: 2, raid: 41, service: service, ping: FakeRaidPing(), hold: .milliseconds(50))
         model.mark("us/pvp/mira", .signedIn)
         model.undo("us/pvp/mira")
         #expect(model.marks.isEmpty)
@@ -212,6 +212,24 @@ struct RaidFlowLogicTests {
         try await Task.sleep(for: .milliseconds(400))
         #expect(service.signups.map(\.key) == ["us/pvp/zulmara"])
         #expect(service.signups.first?.request.state == "bench")
+    }
+
+    @Test("Mention says how many it reached; with no Discord bot the raid's page opens")
+    func mention() async {
+        let sent = NotAnsweredModel(guild: 2, raid: 41, service: FakeRaidService(), ping: FakeRaidPing(), hold: .seconds(4))
+        #expect(await sent.mention(role: "healer") == false)
+        #expect(sent.mentionStatus == "Mentioned 2 raiders in Discord.")
+        let noBot = APIError.server(status: 409, body: ErrorBody(code: NotAnsweredModel.noBot, message: ""), requestID: nil)
+        let bare = NotAnsweredModel(guild: 2, raid: 41, service: FakeRaidService(), ping: FakeRaidPing(failure: noBot), hold: .seconds(4))
+        #expect(await bare.mention(role: nil) == true)
+        #expect(bare.mentionStatus == Copy.raidNaNoBot)
+    }
+
+    @Test("Discord DM shows only for a member who lets officers DM them")
+    func directMessage() throws {
+        let content = NotAnsweredPresenter(raid: try shortRaid(), guild: "Olympus XXVII", marks: [:], clock: RaidTime.clock)
+            .content(filter: .notAnswered)
+        #expect(content.rows.allSatisfy { $0.dm == nil })
     }
 
     @Test("the root: under 60 the leveler before any guild; with no character, the recruiting guilds")
@@ -226,5 +244,16 @@ struct RaidFlowLogicTests {
             return
         }
         #expect(composer.content(.signedOut, extras: RaidRootExtras()) == .signedOut)
+    }
+}
+
+/// Mentions as many as asked, or fails with an error.
+struct FakeRaidPing: RaidPingService {
+    var mentioned = 2
+    var failure: APIError?
+
+    func ping(guild: Int64, raid: Int64, role: String?) async throws(APIError) -> Int {
+        if let failure { throw failure }
+        return mentioned
     }
 }

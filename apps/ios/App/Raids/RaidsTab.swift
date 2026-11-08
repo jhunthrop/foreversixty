@@ -24,7 +24,9 @@ struct RaidsDependencies {
     var connectivity: (any Connectivity)?
     /// The flows' calls (flows spec 4.2): the badge, applicants, recruiting guilds, the Ready check.
     var flow: any RaidFlowService
-    /// What the site still does for the app (the mention, a DM, Apply, Claim).
+    /// The officer's Discord mention.
+    var ping: any RaidPingService
+    /// What the site still does for the app (Apply, Claim, connecting the Discord bot).
     var site: any RaidSiteActions = LiveRaidSiteActions()
 
     static func live(_ environment: AppEnvironment) -> RaidsDependencies {
@@ -51,7 +53,8 @@ struct RaidsDependencies {
             iconBuild: { try? await statics.activeBuild().build },
             reports: environment.isAvailable(.reports) ? .live(environment) : nil,
             connectivity: PathConnectivity.shared,
-            flow: LiveRaidFlowService(client: environment.client)
+            flow: LiveRaidFlowService(client: environment.client),
+            ping: LiveRaidPingService(client: environment.client)
         )
     }
 
@@ -294,7 +297,9 @@ struct RaidsTab: View {
             )
         case let .notAnswered(guild, raid):
             NotAnsweredScreen(
-                model: NotAnsweredModel(guild: guild, raid: raid, service: dependencies.service, hold: .seconds(4)),
+                model: NotAnsweredModel(
+                    guild: guild, raid: raid, service: dependencies.service, ping: dependencies.ping, hold: .seconds(4)
+                ),
                 guildName: content?.head.name ?? "", site: dependencies.site, clock: dependencies.clock
             )
         case let .applicant(guild, application):

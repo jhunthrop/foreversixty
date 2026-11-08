@@ -20,17 +20,51 @@ final class NotAnsweredModel {
     private(set) var marks: [String: SignupState] = [:]
     private(set) var error: String?
 
+    /// What the last mention did, or why it did not.
+    private(set) var mentionStatus: String?
+    private(set) var mentioning = false
+
     let guild: Int64
     let raidID: Int64
     private let service: any RaidService
+    private let ping: any RaidPingService
     private let hold: Duration
     private var holds: [String: Task<Void, Never>] = [:]
 
-    init(guild: Int64, raid: Int64, service: any RaidService, hold: Duration) {
+    static let noBot = "discord_not_connected"
+    static let throttled = "ping_throttled"
+
+    init(guild: Int64, raid: Int64, service: any RaidService, ping: any RaidPingService, hold: Duration) {
         self.guild = guild
         raidID = raid
         self.service = service
+        self.ping = ping
         self.hold = hold
+    }
+
+    /// Mentions the role's unanswered (nil: everyone unanswered) in Discord. True when the guild
+    /// has no Discord bot, so the screen opens the raid's page to connect it.
+    func mention(role: String?) async -> Bool {
+        mentioning = true
+        defer { mentioning = false }
+        do {
+            mentionStatus = Copy.raidNaMentioned(n: try await ping.ping(guild: guild, raid: raidID, role: role))
+            return false
+        } catch {
+            if case let .server(_, body, _) = error {
+                switch body.code {
+                case Self.noBot:
+                    mentionStatus = Copy.raidNaNoBot
+                    return true
+                case Self.throttled:
+                    mentionStatus = Copy.raidNaThrottled
+                    return false
+                default: break
+                }
+            }
+            mentionStatus = SignupRefusal.sentence(for: error)
+            return false
+        }
     }
 
     var raid: RaidView? {

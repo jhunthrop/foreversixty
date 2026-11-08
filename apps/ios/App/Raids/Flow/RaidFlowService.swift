@@ -17,17 +17,52 @@ protocol RaidFlowService: Sendable {
     func ready(character: String, raid: Int64) async -> ReadyCheck?
 }
 
-/// What the app cannot do itself yet, so the site does it: the role-scoped Discord mention, a
-/// direct message, applying to a guild and claiming one (the report names the API they need).
+/// The officer's Discord mention (F3): `POST /v1/guilds/{id}/raids/{raid}/ping` with an optional
+/// role (`tank`, `healer`, `dps`; none mentions everyone unanswered). Answers how many it mentioned.
+protocol RaidPingService: Sendable {
+    func ping(guild: Int64, raid: Int64, role: String?) async throws(APIError) -> Int
+}
+
+/// What the app cannot do itself yet, so the site does it: applying to a guild and claiming one
+/// (the report names the API they need), and the raid page when no Discord bot is connected.
 protocol RaidSiteActions: Sendable {
-    /// Where Mention goes: the raid's page on the site, which posts the ping.
-    func mention(guild: Int64, raid: Int64, role: String?) -> URL
-    /// A Discord direct message to a raider.
-    func message(characterKey: String) -> URL
+    /// The raid's page on the site (connect the Discord bot there).
+    func raid(guild: Int64, raid: Int64) -> URL
     /// Applying to a recruiting guild.
     func apply(guild: Int64) -> URL
     /// Claiming a guild that is not here, and finding one.
     var guilds: URL { get }
+}
+
+/// The ping's body and answer. The generated client does not carry the `role` body yet
+/// (land/api-ping-role); `pingGuildRaid` replaces this endpoint once it does.
+struct LiveRaidPingService: RaidPingService {
+    private struct Body: Encodable, Sendable {
+        let role: String?
+    }
+
+    private struct Answer: Decodable, Sendable {
+        let mentioned: Int
+    }
+
+    let client: APIClient
+
+    func ping(guild: Int64, raid: Int64, role: String?) async throws(APIError) -> Int {
+        let endpoint: Endpoint<Answer> = try .json(.post, "/v1/guilds/\(guild)/raids/\(raid)/ping", body: Body(role: role))
+        return try await client.send(endpoint).mentioned
+    }
+}
+
+extension ApplicantCharacter {
+    /// `Alliance Dwarf`. The generated `race` and `faction` replace this once land/api-ping-role
+    /// is in the client.
+    var origin: String? { nil }
+}
+
+extension RaidNotSignedRaider {
+    /// The member's Discord DM link, set only when they let officers DM them (`officer_dms`).
+    /// The generated `discord_dm_url` replaces this once land/api-ping-role is in the client.
+    var discordDM: URL? { nil }
 }
 
 struct LiveRaidFlowService: RaidFlowService {
@@ -59,11 +94,7 @@ struct LiveRaidFlowService: RaidFlowService {
 }
 
 struct LiveRaidSiteActions: RaidSiteActions {
-    static let discord = URL(string: "https://discord.com/channels/@me")!
-
-    func mention(guild: Int64, raid: Int64, role: String?) -> URL { RaidLinks.web(guild: guild, raid: raid) }
-
-    func message(characterKey: String) -> URL { Self.discord }
+    func raid(guild: Int64, raid: Int64) -> URL { RaidLinks.web(guild: guild, raid: raid) }
 
     func apply(guild: Int64) -> URL { StaticSite.url.appending(path: "app/guild/\(guild)") }
 

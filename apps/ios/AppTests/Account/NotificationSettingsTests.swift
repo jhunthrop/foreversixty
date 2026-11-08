@@ -31,6 +31,15 @@ final class FakeNotificationSettingsService: NotificationSettingsService, @unche
     var settings = NotificationTestData.member
     var patches: [NotificationsPatch] = []
     var fails = false
+    var dms = false
+
+    func officerDMs() async throws(APIError) -> Bool { dms }
+
+    func setOfficerDMs(_ on: Bool) async throws(APIError) -> Bool {
+        if fails { throw .transport("offline") }
+        dms = on
+        return on
+    }
 
     func load() async throws(APIError) -> NotificationSettings { settings }
 
@@ -94,6 +103,24 @@ struct NotificationSettingsParityTests {
     func parity() throws {
         let view = NotificationSettingsView(phase: .loaded(NotificationTestData.member))
         try ParityCheck.assert(view, screen: "notification-settings", size: CGSize(width: 393, height: 852))
+    }
+}
+
+@MainActor
+@Suite("Officer DMs")
+struct OfficerDMsTests {
+    @Test("Let officers DM me on Discord: off by default, saved at once, put back when refused")
+    func toggle() async {
+        let service = FakeNotificationSettingsService()
+        let model = NotificationSettingsModel(service: service)
+        await model.load()
+        #expect(model.officerDMs == false)
+        await model.setOfficerDMs(true)
+        #expect(model.officerDMs && service.dms)
+        service.fails = true
+        await model.setOfficerDMs(false)
+        #expect(model.officerDMs)
+        #expect(model.saveFailed)
     }
 }
 

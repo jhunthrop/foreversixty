@@ -1544,6 +1544,17 @@ enum Copy {
     /// Discord DM
     static var raidNaDiscordDM: String { text("raid.na.discordDM") }
 
+    /// Mentioned {n} raiders in Discord.
+    static func raidNaMentioned(n: Int) -> String {
+        format("raid.na.mentioned", n)
+    }
+
+    /// This guild has no Discord bot yet. Connect it on the raid's page.
+    static var raidNaNoBot: String { text("raid.na.noBot") }
+
+    /// They were mentioned a moment ago. Try again later.
+    static var raidNaThrottled: String { text("raid.na.throttled") }
+
     /// Marked {state}
     static func raidNaMarked(state: String) -> String {
         format("raid.na.marked", state)
@@ -2590,6 +2601,15 @@ enum Copy {
 
     /// Change
     static var notificationsChange: String { text("notifications.change") }
+
+    /// Discord
+    static var notificationsDiscord: String { text("notifications.discord") }
+
+    /// Let officers DM me on Discord
+    static var notificationsOfficerDms: String { text("notifications.officerDms") }
+
+    /// Your guild's officers can message you about a raid you have not answered
+    static var notificationsOfficerDmsLine: String { text("notifications.officerDmsLine") }
 
     /// You
     static var youTitle: String { text("you.title") }

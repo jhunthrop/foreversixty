@@ -69,7 +69,11 @@ enum RaidFlowTestData {
     // MARK: Not answered
 
     static func raider(_ key: String, _ name: String, _ className: String, _ sub: String, role: String, marked: SignupState? = nil) -> NotAnsweredRow {
-        NotAnsweredRow(characterKey: "us/normal/\(key)", name: name, className: className, sub: sub, role: role, marked: marked)
+        // Every one of them lets officers DM them (`officer_dms`), so each row offers Discord DM.
+        NotAnsweredRow(
+            characterKey: "us/normal/\(key)", name: name, className: className, sub: sub, role: role, marked: marked,
+            dm: URL(string: "https://discord.com/users/\(key)")
+        )
     }
 
     static let notAnswered = NotAnsweredContent(

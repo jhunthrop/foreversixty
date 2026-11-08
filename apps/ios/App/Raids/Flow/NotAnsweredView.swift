@@ -8,7 +8,7 @@ struct NotAnsweredActions {
     var mentionAll: () -> Void = {}
     var mark: (NotAnsweredRow, SignupState) -> Void = { _, _ in }
     var undo: (NotAnsweredRow) -> Void = { _ in }
-    var message: (NotAnsweredRow) -> Void = { _ in }
+    var message: (URL) -> Void = { _ in }
     var editOnSite: () -> Void = {}
 }
 
@@ -18,6 +18,9 @@ struct NotAnsweredActions {
 struct NotAnsweredView: View {
     let content: NotAnsweredContent
     let build: String
+    /// What the last mention did (`Mentioned 2 raiders in Discord.`), or why it did not.
+    var status: String?
+    var mentioning = false
     var actions = NotAnsweredActions()
 
     /// `.preview`: 3 pt rule, 10 by 12 inside, 12 above.
@@ -66,7 +69,9 @@ struct NotAnsweredView: View {
                 if let role = mention.role { FSButton(role, kind: .primary, action: actions.mentionRole) }
                 FSButton(mention.all, kind: mention.role == nil ? .primary : .secondary, action: actions.mentionAll)
             }
+            .disabled(mentioning)
             .padding(.top, RaidFlowSpacing.buttons)
+            if let status { SmallText(status).padding(.top, RaidFlowSpacing.line) }
             Text(mention.preview)
                 .type(TypeRole(face: FSFont.body, size: 14, lineHeight: 20, scalesWith: .subheadline))
                 .foregroundStyle(FSColor.text)
@@ -118,7 +123,7 @@ struct NotAnsweredView: View {
                     EqualWidthRow(spacing: FSSpace.space2) {
                         Button(Copy.raidNaMarkIn) { actions.mark(row, .signedIn) }
                         Button(SignupState.bench.label) { actions.mark(row, .bench) }
-                        Button(Copy.raidNaDiscordDM) { actions.message(row) }
+                        if let dm = row.dm { Button(Copy.raidNaDiscordDM) { actions.message(dm) } }
                     }
                     .buttonStyle(FSButtonStyle(fullWidth: true, small: true))
                 case .markIn:

@@ -90,7 +90,7 @@ struct NotAnsweredPresenter {
             return NotAnsweredRow(
                 characterKey: raider.characterKey, name: raider.name, className: raider.className,
                 sub: Copy.raidNaSub(kind: RaidFlowPresenter.kind(spec: spec, className: raider.className), line: Self.lastWeek(raider.lastWeek)),
-                role: raider.role, marked: marks[raider.characterKey]
+                role: raider.role, marked: marks[raider.characterKey], dm: raider.discordDM
             )
         }
     }

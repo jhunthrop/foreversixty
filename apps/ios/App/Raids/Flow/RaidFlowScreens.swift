@@ -41,7 +41,10 @@ struct NotAnsweredScreen: View {
             if let raid = model.raid {
                 let presenter = NotAnsweredPresenter(raid: raid, guild: guildName, marks: model.marks, clock: clock)
                 let content = presenter.content(filter: model.filter)
-                NotAnsweredView(content: content, build: build ?? "", actions: actions(raid, short: presenter.shortRole))
+                NotAnsweredView(
+                    content: content, build: build ?? "", status: model.mentionStatus, mentioning: model.mentioning,
+                    actions: actions(raid, short: presenter.shortRole)
+                )
                     .overlay(alignment: .bottom) {
                         if let error = model.error {
                             SmallText(error, color: FSColor.wipe).padding(FSSpace.space3).background(FSColor.raised)
@@ -64,14 +67,19 @@ struct NotAnsweredScreen: View {
         .refreshable { await model.load() }
     }
 
+    /// With no Discord bot, the raid's page on the site connects one.
+    private func mention(role: String?, raid: Int64) {
+        Task { if await model.mention(role: role) { openURL(site.raid(guild: model.guild, raid: raid)) } }
+    }
+
     private func actions(_ raid: RaidView, short: RaidShortRole?) -> NotAnsweredActions {
         NotAnsweredActions(
             select: { model.filter = $0 },
-            mentionRole: { openURL(site.mention(guild: model.guild, raid: raid.id, role: short?.role)) },
-            mentionAll: { openURL(site.mention(guild: model.guild, raid: raid.id, role: nil)) },
+            mentionRole: { mention(role: short?.role, raid: raid.id) },
+            mentionAll: { mention(role: nil, raid: raid.id) },
             mark: { row, state in model.mark(row.characterKey, state) },
             undo: { model.undo($0.characterKey) },
-            message: { openURL(site.message(characterKey: $0.characterKey)) },
+            message: { openURL($0) },
             editOnSite: { openURL(RaidLinks.web(guild: model.guild, raid: raid.id)) }
         )
     }
@@ -94,7 +102,7 @@ struct ApplicantScreen: View {
     var body: some View {
         Group {
             if case let .loaded(application) = model.phase {
-                let content = RaidFlowPresenter(now: now()).applicant(application, guild: guildName, origin: nil, accepted: model.accepted)
+                let content = RaidFlowPresenter(now: now()).applicant(application, guild: guildName, origin: application.character.origin, accepted: model.accepted)
                 ApplicantView(
                     content: content, busy: model.busy, error: model.error,
                     actions: ApplicantActions(

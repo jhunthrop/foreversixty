@@ -460,6 +460,12 @@
     <string name="raid_na_metaPlain" tools:ignore="PluralsCandidate">%1$d of %2$d</string>
     <string name="raid_na_markIn">Mark In</string>
     <string name="raid_na_discordDM">Discord DM</string>
+    <plurals name="raid_na_mentioned">
+        <item quantity="one">Mentioned 1 raider in Discord.</item>
+        <item quantity="other">Mentioned %1$d raiders in Discord.</item>
+    </plurals>
+    <string name="raid_na_noBot">This guild has no Discord bot yet. Connect it on the raid\'s page.</string>
+    <string name="raid_na_throttled">They were mentioned a moment ago. Try again later.</string>
     <string name="raid_na_marked">Marked %1$s</string>
     <string name="raid_na_undo">Undo</string>
     <string name="raid_na_lastWeek">was %1$s last week</string>
@@ -785,6 +791,9 @@
     <string name="notifications_reminder">Raid-day reminder</string>
     <string name="notifications_reminderLine">If you have not answered: %1$s your time</string>
     <string name="notifications_change">Change</string>
+    <string name="notifications_discord">Discord</string>
+    <string name="notifications_officerDms">Let officers DM me on Discord</string>
+    <string name="notifications_officerDmsLine">Your guild\'s officers can message you about a raid you have not answered</string>
     <string name="you_title">You</string>
     <string name="you_signedInWith">Signed in with Battle.net</string>
     <string name="you_plan">Plan</string>

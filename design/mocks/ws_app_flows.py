@@ -514,7 +514,11 @@ def notification_settings(platform: str) -> str:
     rows = ['<div class="row setrow"><div class="b"><div class="ttl">' + n + '</div><div class="sub">' + s + '</div></div>'
             + Switch('', on) + '</div>' for n, s, on in groups]
     nudge = Rows([Row('Raid-day reminder', 'If you have not answered: 3:00 pm your time', trail='<a class="link" href="#">Change</a>', link=False)], open_=True)
-    body = PageHeader('Notifications') + Section('Send me', Rows(rows, open_=True)) + Section('When', nudge)
+    # A guild member's (coordinator, 2026-11-08: officer_dms, off by default): with it off, Not answered offers no Discord DM.
+    dms = Rows(['<div class="row setrow"><div class="b"><div class="ttl">Let officers DM me on Discord</div><div class="sub">'
+                'Your guild&rsquo;s officers can message you about a raid you have not answered</div></div>' + Switch('', False) + '</div>'],
+               open_=True)
+    body = PageHeader('Notifications') + Section('Send me', Rows(rows, open_=True)) + Section('Discord', dms) + Section('When', nudge)
     return app_page(platform, _page(body, 'Notifications'), 'home', back='Home', title='Notifications')
 
 

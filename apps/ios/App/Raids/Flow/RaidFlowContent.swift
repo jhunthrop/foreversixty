@@ -119,6 +119,8 @@ struct NotAnsweredRow: Equatable, Identifiable {
     let role: String?
     /// Marked In or Bench on this page, with Undo while the hold runs.
     var marked: SignupState?
+    /// The Discord DM link, only for a member who lets officers DM them.
+    var dm: URL?
 
     var id: String { characterKey }
 }
