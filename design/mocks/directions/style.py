@@ -126,6 +126,7 @@ border:0;border-radius:var(--r-sm)}
 .titlebar .right{margin-left:auto;color:var(--text);white-space:nowrap}.titlebar .right b{color:#fff;font:600 26px var(--body)}
 .ctl{display:flex;flex-wrap:wrap;gap:2px 28px;border-top:1px solid rgba(255,255,255,.14);padding:2px 0}
 .ctl .g{display:flex;flex-wrap:wrap;gap:0 16px}.ctl a{color:rgba(255,255,255,.72);padding:8px 0}.ctl a.on{color:#fff;box-shadow:inset 0 -3px 0 var(--blue)}
+.ctl.sub{border-top:0;padding:0 0 2px}.ctl.sub a{font-size:14px;padding:4px 0 6px}.ctl.sub a.on{box-shadow:inset 0 -2px 0 var(--cream)}
 @media(max-width:700px){.titlebar .row{gap:10px}.titlebar .medal{width:40px!important;height:40px!important}.titlebar h1{font-size:21px;line-height:25px}
 .titlebar .right b{font-size:21px}.ctl{gap:0 20px}
 /* phone: each control group is one line that scrolls sideways, as the client and every app tab strip do */
@@ -201,7 +202,8 @@ def header(name: str, slug: str, level: int | None, cur: str) -> str:
 
 
 def titlebar(slug: str | None, title: str, meta: str, right: str = '', title_colour: str = '',
-             ctl: list[list[tuple[str, bool]]] | None = None, top: str = '', hero: bool = False, media: str = '') -> str:
+             ctl: list[list[tuple[str, bool]]] | None = None, top: str = '', hero: bool = False, media: str = '',
+             sub: list[tuple[str, bool]] | None = None) -> str:
     """The compact title band under the floating bar (`top`; their bar floats over their band): medallion, title, one meta
     line, one number right, controls under a rule. `hero` puts the owner's camp-road art behind it (home only). `media`
     replaces the class medallion (a guild's faction emblem)."""
@@ -211,6 +213,8 @@ def titlebar(slug: str | None, title: str, meta: str, right: str = '', title_col
     groups = ''.join('<div class="g">' + ''.join(f'<a class="{"on" if on else ""}" href="#">{escape(label)}</a>' for label, on in g) + '</div>'
                      for g in ctl or [])
     nav = f'<nav class="ctl" aria-label="Page controls">{groups}</nav>' if groups else ''
+    if sub:  # a tab's own views, on their own row under the tabs (one item lit per row)
+        nav += ('<nav class="ctl sub" aria-label="Views"><div class="g">' + ''.join(f'<a class="{"on" if on else ""}" href="#">{escape(lb)}</a>' for lb, on in sub) + '</div></nav>')
     return (f'<div class="band titlebar{" hero" if hero else ""}">{top}<div class="w"><div class="row">{med}<div class="txt"><h1{style}>{escape(title)}</h1>{meta_html}</div>'
             f'{f"<div class=right>{right}</div>" if right else ""}</div>{nav}</div></div>')
 

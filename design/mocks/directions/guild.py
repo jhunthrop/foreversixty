@@ -53,8 +53,8 @@ def emb() -> str:
 def band(active: str, viewer: tuple = OFFICER_VIEW, title: str = gd.GUILD, meta: str = '', sub: list[tuple[str, bool]] | None = None) -> str:
     """One band for every tab: the faction emblem, the name, one short line, the tabs (and a sub-view row where a tab has one)."""
     line = meta or f'{gd.REGION.upper()} PvP &middot; {gd.RAIDERS} raiders'
-    ctl = [[(t, t == active) for t in gd.TABS]] + ([sub] if sub else [])
-    return titlebar(None, title, line, media=emb(), ctl=ctl, top=header(*viewer, 'Guild'))
+    ctl = [[(t, t == active) for t in gd.TABS]]
+    return titlebar(None, title, line, media=emb(), ctl=ctl, top=header(*viewer, 'Guild'), sub=sub)
 
 
 def raid_strip(viewer: str) -> str:
@@ -66,6 +66,10 @@ def raid_strip(viewer: str) -> str:
     line = (f'<p><b class="strong">{escape(O.ZONE_NAME)}</b> &middot; {at:%a} {at.day} {at:%b}, {G.clock_label(at)} &middot; '
             f'<span class="num">{n}</span> of {nxt["size"]} signed up</p>')
     return f'<div class="card strip">{line}<span class="end">{answers(SIGNUP, state)}<a href="#">Open the raid &rsaquo;</a></span></div>'
+
+
+def plural(n: int, word: str) -> str:
+    return f'{n} {word}{"" if n == 1 else "s"}'
 
 
 def quiet(label: str) -> str:
@@ -129,7 +133,7 @@ def overview() -> str:
     last = F.recent_attendance()
     main = (panel('Action needed', act, framed=True) + panel('Next raid', raid, action='<a href="#">Open the planner &rsaquo;</a>')
             + panel('Comp against the target', comp_grid(F.raid_view(O.MEMBER, False)['counts'], O.COMP_TARGET), action='<a href="#">Edit target &rsaquo;</a>', flush=True))
-    rail = (panel('Buff and debuff cover', cover_grid(cover_rows), action=f'<a href="#">All {len(cover_rows)} &rsaquo;</a>', flush=True)
+    rail = (panel('Cover: missing or thin', cover_grid(cover_rows), action=f'<a href="#">All {len(cover_rows)} &rsaquo;</a>', flush=True)
             + panel(f'Attendance, last {len(last["raids"])} raids', attendance_grid(last), action='<a href="#">Roster &rsaquo;</a>', flush=True))
     body = band('Overview') + f'<main class="w gd">{twocol(main, rail)}</main>'
     return guild_page('guild', body)
@@ -209,11 +213,11 @@ def progression() -> str:
         kills = sum(1 for nt in nights if nt['killed'])
         first = next((nt for nt in nights if nt['killed']), None)
         rows.append((f'<img class="ai" src="{D.icon_uri(G.RAID_ICON)}" width="36" height="36" alt="">', escape(e['name']),
-                     f'{e["pulls"]} pulls &middot; {e["pulls"] - kills} wipes &middot; {e["deaths_per_pull"]:.1f} deaths a pull'
+                     f'{e["pulls"]} pulls &middot; {plural(e["pulls"] - kills, "wipe")} &middot; {e["deaths_per_pull"]:.1f} deaths a pull'
                      + (f' &middot; first kill {G.day_label(G.guild_time(first["date"] + "T20:00:00Z"))}' if first else ''),
                      tag('Killed', 'kill') if kills else tag('Progress', 'gold')))
     bar = f'<div style="margin:6px 0 4px">{meter(t["down"] / t["named_encounters"], "var(--gain)")}</div>'
-    body = band('Progression') + (f'<main class="w gd">{panel(escape(O.ZONE_NAME), bar + row_list(rows), meta=f"{t["down"]} of {t["named_encounters"]} bosses down", framed=True)}</main>')
+    body = band('Progression') + (f'<main class="w gd">{panel(O.ZONE_NAME, bar + row_list(rows), meta=f"{t["down"]} of {t["named_encounters"]} bosses down", framed=True)}</main>')
     return guild_page('guild progression', body)
 
 
@@ -236,11 +240,12 @@ def readiness() -> str:
     ready = [r for r in rows if not short_of(r)]
     listed = row_list([('', player_cell(r['class'], r['name'], f'{r["spec"]} {r["class"].title()} &middot; item level {r["item_level"]}', 30),
                         '<span class="warn">' + ' &middot; '.join(short_of(r)) + '</span>', '<a class="btn2" href="#">Nudge</a>') for r in short])
-    names = ', '.join(escape(r['name']) for r in ready)
+    names = ', '.join(f'<span style="color:{D.CLASS_COLOR[r["class"]]}">{escape(r["name"])}</span>' for r in ready)
     nxt = G.guild_time(O.NEXT_RAID_AT)
     body = (band('Readiness') + '<main class="w gd">'
             + panel('Short of something', listed or '<p class="empty">Nobody.</p>', meta=f'In or Late for {G.day_label(nxt)}', framed=True)
-            + panel(f'{len(ready)} ready', f'<p style="font-size:14.5px">{names}</p>') + '</main>')
+            + panel(f'{len(ready)} ready', f'<p style="font-size:14.5px">{names}</p>', meta='Best in slot or no upgrades, enchanted, stocked, every point spent')
+            + '</main>')
     return guild_page('guild readiness', body)
 
 
