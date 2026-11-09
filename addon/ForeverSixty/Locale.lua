@@ -443,8 +443,6 @@ local L = {
 	-- The player tooltip's score line when the record is older than a week (spec 2.5):
 	-- "Forever Score 1240 (13 Oct)".
 	scoreDated = "Forever Score %d (%s)",
-	-- The fifth part's label under Shift on the player tooltip: what Preparation measures.
-	scoreDisciplineLong = "Preparation (flasks, food, enchants)",
 	-- The score before a message in chat, in the tier colour, then a muted badgeMark
 	-- (surfaces/ChatBadges.lua): "FS 1240 · testing". Fix round 2: never in square brackets,
 	-- which read as an item link.
