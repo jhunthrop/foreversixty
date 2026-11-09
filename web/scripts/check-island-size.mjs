@@ -135,6 +135,7 @@ const PAGE_ISLAND_BUDGETS = [
   // startup closure (they were the host's lazy chunk only). Measured 78,626 bytes gzipped on the
   // real-data build; lazy-loading the tooltip would paint the centre empty and fill it a beat
   // later. The retired head answer, inspector and weight columns paid for most of it.
+  // The catalogue full name (spec-name-feral-bear, batch A) adds a few bytes on top.
   { component: 'BisSpecPage', limitBytes: 20 * 1024, closureLimitBytes: 79700 },
   // The shared dropdown's lazy chunk (design/specs/2026-10-30-controls-charts.md §A11.2):
   // lib/ui/listbox.ts with its list renderer, the popover core and Floating UI, loaded after
