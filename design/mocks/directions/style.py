@@ -192,10 +192,12 @@ def header(name: str, slug: str, level: int | None, cur: str) -> str:
     level None leaves the level off (a real character whose level the mock does not know)."""
     lv = f'<span class="lv">{level}</span>' if level is not None else ''
     nav = ''.join(f'<a class="{"cur" if n == cur else ""}" href="#">{n}{CHEVRON if menu else ""}</a>' for n, menu in NAV)
+    # no name: the signed-out bar, Sign in where the account sits
+    acct = (f'<a class="acct" href="#">{medallion(slug, 32)}<span class="nm" style="color:{D.CLASS_COLOR[slug]}">{escape(name)}</span>{lv}{CHEVRON}</a>'
+            if name else '<a class="acct" href="#" style="color:#fff">Sign in</a>')
     return (f'<div class="topnav"><header class="bar"><a class="brand" href="#"><img src="{flat_logo_uri(64)}" alt="">Forever Sixty</a>'
             f'<nav class="nav">{nav}</nav><div class="tools"><a class="srch" href="#" aria-label="Search">{SEARCH}</a>'
-            f'<a class="acct" href="#">{medallion(slug, 32)}<span class="nm" style="color:{D.CLASS_COLOR[slug]}">{escape(name)}</span>'
-            f'{lv}{CHEVRON}</a><a class="btn" href="#">Premium</a><span class="menu">Menu</span></div></header></div>')
+            f'{acct}<a class="btn" href="#">Premium</a><span class="menu">Menu</span></div></header></div>')
 
 
 def titlebar(slug: str | None, title: str, meta: str, right: str = '', title_colour: str = '',
