@@ -381,5 +381,14 @@
         "notes": "Sinister Strike before Mutilate only when Backstab cannot be cast, because your main hand is not a dagger or the target is facing you. With a dagger it waits for 60 energy or more, so it never takes the energy Backstab needs."
       }
     ]
+  },
+  "panel_when": {
+    "1": "on cooldown",
+    "2": "when Slice and Dice is down",
+    "3": "at 4 combo points",
+    "4": "at 4 combo points, 5 below level 17",
+    "5": "as your builder",
+    "6": "as your builder, from behind",
+    "7": "when you can't Backstab, at 60 energy"
   }
 }

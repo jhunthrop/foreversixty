@@ -292,5 +292,14 @@
   },
   "engineering_notes": {
     "3": "Added by audit finding druid.md #3: a real, engine-implemented level-20 DoT that was entirely absent from both this rotation and the community guide it was adapted from."
+  },
+  "panel_when": {
+    "1": "when the fight ends before a Wrath finishes",
+    "2": "when the fight ends before a Starfire finishes",
+    "3": "when Moonfire is not ticking on the target",
+    "4": "when Insect Swarm is not ticking on the target",
+    "5": "when you have no Eclipse charge",
+    "6": "when mana % is under boss health % and Innervate is down",
+    "7": "as your filler"
   }
 }

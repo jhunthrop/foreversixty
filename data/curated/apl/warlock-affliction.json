@@ -419,5 +419,19 @@
         "notes": "Shoot only when you are out of mana and cannot Life Tap. A wand shot cannot start during a global cooldown, so it never fits between spells."
       }
     ]
+  },
+  "panel_when": {
+    "1": "below 10% mana",
+    "2": "when Curse of the Elements is not on the target",
+    "3": "when Corruption is not on the target",
+    "4": "when Bane of Doom is not on the target, with 60+ s left",
+    "5": "right before Bane of Agony",
+    "6": "when no Bane is on the target",
+    "7": "when Siphon Life is not on the target",
+    "8": "when Immolate has under 3 s left",
+    "9": "on a Shadow Trance proc",
+    "10": "as your filler, with your DoTs up",
+    "11": "as your filler until Wrack at level 40",
+    "12": "when you are out of mana and cannot Life Tap"
   }
 }

@@ -622,5 +622,17 @@
         "notes": "Sinister Strike before Hemorrhage only when Backstab cannot be cast, because your main hand is not a dagger or the target is facing you. With a dagger it waits for 60 energy or more, so it never takes the energy Backstab needs."
       }
     ]
+  },
+  "panel_when": {
+    "1": "at 3 combo points or fewer, or under 50 energy",
+    "2": "on cooldown at 4 combo points or fewer",
+    "3": "after every Ghostly Strike, at 4 combo points or fewer",
+    "4": "at 4 combo points when Rupture is not ticking",
+    "5": "at 4 combo points while Rupture is ticking",
+    "6": "at 3 combo points while Rupture is ticking",
+    "7": "at 3 combo points when it has under 3 s left",
+    "8": "as your builder, at 4 combo points or fewer",
+    "9": "as your builder, from behind",
+    "10": "when you can't Backstab, at 60 energy"
   }
 }

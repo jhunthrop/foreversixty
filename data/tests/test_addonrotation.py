@@ -8,6 +8,7 @@ from pipeline.addonrotation import (
     CONDITION_MAX_CHARS,
     LEVEL_BANDS,
     AddonRotationError,
+    _cast_lines,
     _one_line,
     apl_cast_spell_ids,
     build_rotation,
@@ -1134,31 +1135,31 @@ def test_a_talent_row_starts_where_the_published_build_takes_the_talent(spec, sp
 # Healing Wave right after Nature's Swiftness printed from 10 (Nature's Swiftness at 44), and
 # Enhancement's five-stack Lightning Bolt from 10 (Maelstrom Weapon's first point at 37).
 @pytest.mark.parametrize(
-    ("spec", "note", "first"),
+    ("spec", "condition", "first"),
     [
-        ("shaman-restoration", "Your highest rank of Healing Wave right after Nature's", 55),
+        ("shaman-restoration", "right after Nature's Swiftness, on the tank below 25%", 55),
         # Round 24 (platform, second pass): the gate names Maelstrom Weapon's rank 5 (tag 5),
         # so the row starts at the fifth point (42 on the leveling order), not the first (37).
-        ("shaman-enhancement", "Lightning Bolt at five Maelstrom Weapon stacks", 39),
+        ("shaman-enhancement", "at 5 Maelstrom Weapon stacks", 39),
         # Round 24 (platform): the gate is on Clearcasting (16246), the aura Elemental Focus
         # (16164) gives; the raid order takes the talent at 52, the leveling build never does.
-        ("shaman-enhancement", "Fire Nova on a Clearcasting proc", 57),
+        ("shaman-enhancement", "on a Clearcasting proc", 57),
         # The mage proc buffs (Missile Barrage 400589, Heating Up 400625) and the Improved
         # Scorch debuff (12873) printed from 10, 20 and 22, before the talents.
-        ("mage-fire", "Pyroblast only on 3 stacks of Heating Up", 30),
-        ("mage-fire", "Scorch to build Improved Scorch to 5 stacks", 27),
-        ("mage-fire", "Arcane Missiles the moment Missile Barrage procs", 55),
-        ("mage-frost", "Arcane Missiles the moment Missile Barrage lights up", 51),
-        ("mage-arcane", "Arcane Missiles the moment Missile Barrage lights up", 21),
+        ("mage-fire", "at 3 Heating Up stacks", 30),
+        ("mage-fire", "to 5 Improved Scorch stacks", 27),
+        ("mage-fire", "while Missile Barrage is up", 55),
+        ("mage-frost", "while Missile Barrage is up", 51),
+        ("mage-arcane", "when Missile Barrage procs", 21),
     ],
 )
-def test_a_row_gated_on_a_talent_starts_where_the_published_build_takes_it(spec, note, first):
+def test_a_row_gated_on_a_talent_starts_where_the_published_build_takes_it(spec, condition, first):
     levels = [
         band.level
         for band in _active_build_bands(spec)
-        if any(line.condition.startswith(note) for line in band.lines)
+        if any(line.condition.startswith(condition) for line in band.lines)
     ]
-    assert levels, f"{note!r} is on no {spec} band"
+    assert levels, f"{condition!r} is on no {spec} band"
     assert min(levels) == first
 
 
@@ -1167,18 +1168,18 @@ def test_a_row_gated_on_a_talent_starts_where_the_published_build_takes_it(spec,
 # "until you have both ranks of Missile Barrage" printed on every band to 60, and
 # Destruction's line for a character without Shadow and Flame kept printing after it.
 @pytest.mark.parametrize(
-    ("spec", "note", "last"),
+    ("spec", "condition", "last"),
     [
-        ("mage-arcane", "Arcane Missiles until you have both ranks of Missile Barrage", 21),
+        ("mage-arcane", "until you have both ranks of Missile Barrage", 21),
     ],
 )
-def test_a_row_gated_on_lacking_a_talent_rank_ends_where_the_build_takes_it(spec, note, last):
+def test_a_row_gated_on_lacking_a_talent_rank_ends_where_the_build_takes_it(spec, condition, last):
     levels = [
         band.level
         for band in _active_build_bands(spec)
-        if any(line.condition.startswith(note) for line in band.lines)
+        if any(line.condition.startswith(condition) for line in band.lines)
     ]
-    assert levels, f"{note!r} is on no {spec} band"
+    assert levels, f"{condition!r} is on no {spec} band"
     assert max(levels) == last
 
 
@@ -1306,3 +1307,90 @@ def test_every_engine_only_spell_id_has_an_icon_source():
         | {int(k) for k in extra["icon_rows"]}
     )
     assert sorted(int(k) for k in names["spells"] if int(k) not in sources) == []
+
+
+def _write_apl_with_panel_when(
+    curated_dir: Path, spec: str, priority_list: list[dict], panel_when: dict
+) -> None:
+    apl_dir = curated_dir / "apl"
+    apl_dir.mkdir(parents=True, exist_ok=True)
+    (apl_dir / f"{spec}.json").write_text(
+        json.dumps(
+            {"spec": spec, "rotation": {"priorityList": priority_list}, "panel_when": panel_when}
+        ),
+        encoding="utf-8",
+    )
+
+
+def test_a_panel_when_line_is_the_condition_verbatim(tmp_path):
+    _write_apl_with_panel_when(
+        tmp_path,
+        "warrior-fury",
+        [_cast(2687, notes="Whenever rage is under 80. More prose for the guide.")],
+        {"0": "under 80 rage"},
+    )
+    assert _bands("warrior-fury", tmp_path)[10][0].condition == "under 80 rage"
+
+
+def test_a_step_without_a_panel_when_line_falls_back_to_its_note(tmp_path):
+    _write_apl_with_panel_when(
+        tmp_path,
+        "warrior-fury",
+        [_cast(2687, notes="Whenever rage is under 80. More."), _cast(6673, notes="Keep it up.")],
+        {"0": "under 80 rage"},
+    )
+    lines = _bands("warrior-fury", tmp_path)[10]
+    assert [line.condition for line in lines] == ["under 80 rage", "Keep it up."]
+
+
+def test_a_sequence_shares_its_steps_panel_when_line(tmp_path):
+    sequence = {
+        "notes": "Both, in order.",
+        "action": {
+            "strictSequence": {
+                "actions": [
+                    {"castSpell": {"spellId": {"spellId": 2687}}},
+                    {"castSpell": {"spellId": {"spellId": 6673}}},
+                ]
+            }
+        },
+    }
+    _write_apl_with_panel_when(tmp_path, "warrior-fury", [sequence], {"0": "on the pull"})
+    lines = _bands("warrior-fury", tmp_path)[10]
+    assert [line.condition for line in lines] == ["on the pull", "on the pull"]
+
+
+@pytest.mark.parametrize(
+    ("panel_when", "match"),
+    [
+        ({"0": ""}, "empty"),
+        ({"0": "   "}, "empty"),
+        ({"0": " under 80 rage"}, "leading or trailing space"),
+        ({"0": "under 80 rage — always"}, "em dash"),
+        ({"0": "x" * 61}, "61 characters"),
+        ({"zero": "under 80 rage"}, "not a priorityList index"),
+        ({"3": "under 80 rage"}, r"step\(s\) \[3\]"),
+    ],
+)
+def test_a_bad_panel_when_line_is_refused(tmp_path, panel_when, match):
+    _write_apl_with_panel_when(tmp_path, "warrior-fury", [_cast(2687, notes="N.")], panel_when)
+    with pytest.raises(AddonRotationError, match=match):
+        build_rotation("warrior-fury", tmp_path, SPELLRANKS)
+
+
+def test_a_sixty_character_panel_when_line_is_accepted(tmp_path):
+    line = "x" * 60
+    _write_apl_with_panel_when(tmp_path, "warrior-fury", [_cast(2687, notes="N.")], {"0": line})
+    assert _bands("warrior-fury", tmp_path)[10][0].condition == line
+
+
+def test_every_spell_casting_step_of_every_curated_rotation_has_a_panel_when_line():
+    """The panel never falls back to a guide note on the real data: every step that casts
+    a spell carries its own short line."""
+    missing = []
+    for path in sorted(Path("curated/apl").glob("*.json")):
+        curated = json.loads(path.read_text(encoding="utf-8"))
+        cast_steps = {cast["line"] for cast in _cast_lines(curated.get("rotation", {}))}
+        lines = curated.get("panel_when", {})
+        missing += [f"{path.stem}[{step}]" for step in sorted(cast_steps) if str(step) not in lines]
+    assert not missing, missing

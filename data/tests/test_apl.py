@@ -378,6 +378,24 @@ def test_a_document_whose_spec_does_not_match_its_filename_is_rejected(tmp_path:
         load_apl(path)
 
 
+def test_a_panel_when_line_over_the_cap_is_rejected_on_load(tmp_path: Path):
+    path = tmp_path / "warrior-fury.json"
+    path.write_text(
+        json.dumps(
+            {
+                "spec": "warrior-fury",
+                "state": "unwritten",
+                "notes": "",
+                "sources": [],
+                "rotation": EMPTY_ROTATION,
+                "panel_when": {"0": "x" * 61},
+            }
+        )
+    )
+    with pytest.raises(ValueError, match="61 characters"):
+        load_apl(path)
+
+
 def test_an_unknown_state_is_rejected(tmp_path: Path):
     path = tmp_path / "warrior-fury.json"
     path.write_text(

@@ -669,5 +669,18 @@
         }
       }
     ]
+  },
+  "panel_when": {
+    "1": "on cooldown",
+    "2": "after the opening Crusader Judgement, with Unsealed Wrath",
+    "3": "after the opening Crusader Judgement, with no Unsealed Wrath",
+    "4": "on cooldown against Undead and Demons",
+    "5": "when the target is below 20%",
+    "6": "at 3 Unsealed Wrath stacks while mana holds",
+    "7": "right after one swing under Righteousness",
+    "8": "in the seal's last second while mana % is over boss health %",
+    "9": "in the seal's last second",
+    "10": "on cooldown",
+    "11": "when mana lasts to the end of the fight"
   }
 }

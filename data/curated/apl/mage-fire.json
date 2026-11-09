@@ -479,5 +479,19 @@
         }
       }
     ]
+  },
+  "panel_when": {
+    "1": "below 5% mana, with over 30 s left",
+    "2": "at 5 Improved Scorch stacks on the target",
+    "3": "to 5 Improved Scorch stacks or under 5 s left",
+    "4": "at 3 Heating Up stacks",
+    "5": "on cooldown",
+    "6": "while Missile Barrage is up",
+    "7": "when you have no Arcane Blast buff",
+    "8": "when Fire Blast is ready before Scorch finishes",
+    "9": "as your filler until you learn Arcane Blast",
+    "10": "as your filler once you have Arcane Blast",
+    "11": "as your filler until you have Heating Up",
+    "12": "when you are out of mana"
   }
 }

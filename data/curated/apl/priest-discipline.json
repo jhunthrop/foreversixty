@@ -2162,5 +2162,43 @@
         }
       }
     ]
+  },
+  "panel_when": {
+    "1": "below 70% mana and above 70% health, Undead only",
+    "2": "on the tank below 95%",
+    "3": "on a party member below 70%",
+    "4": "on a party member below 70%",
+    "5": "on a party member below 70%",
+    "6": "on a party member below 70%",
+    "7": "on the tank below 90% with no Weakened Soul",
+    "8": "when Renew is not on the tank",
+    "9": "on the tank below 35%",
+    "10": "on a party member below 30% while mana holds",
+    "11": "on a party member below 30% while mana holds",
+    "12": "on a party member below 30% while mana holds",
+    "13": "on a party member below 30% while mana holds",
+    "14": "when 3 party members are below 85%",
+    "15": "on the tank below 80% while mana % is over boss health %",
+    "16": "on the tank below 80% until Greater Heal at level 40",
+    "17": "on the tank below 80% while mana % is over boss health %",
+    "18": "on a party member below 65% while mana holds",
+    "19": "on a party member below 65% while mana holds",
+    "20": "on a party member below 65% while mana holds",
+    "21": "on a party member below 65% while mana holds",
+    "22": "on a party member below 65% while mana holds",
+    "23": "on a party member below 65% while mana holds",
+    "24": "on a party member below 65% while mana holds",
+    "25": "on a party member below 65% while mana holds",
+    "26": "on the tank below 50% when mana % is under boss health %",
+    "27": "on the tank below 50% when mana % is under boss health %",
+    "28": "on the tank below 50% when mana % is under boss health %",
+    "29": "on a party member below 35% when mana is low",
+    "30": "on a party member below 35% when mana is low",
+    "31": "on a party member below 35% when mana is low",
+    "32": "on a party member below 35% when mana is low",
+    "33": "on a party member below 35% when mana is low",
+    "34": "on a party member below 35% when mana is low",
+    "35": "on a party member below 35% when mana is low",
+    "36": "on a party member below 35% when mana is low"
   }
 }

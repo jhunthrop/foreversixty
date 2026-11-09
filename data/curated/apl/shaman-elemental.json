@@ -318,5 +318,16 @@
         }
       }
     ]
+  },
+  "panel_when": {
+    "0": "when your Water totem is down",
+    "2": "when Lightning Mastery has ended, Troll only",
+    "3": "when Flame Shock is not on the target",
+    "4": "on one target when Searing Totem is down",
+    "5": "on 2 or more targets when Magma Totem is down",
+    "6": "on 2 or more targets",
+    "7": "on 2 or more targets",
+    "8": "while mana % is over boss health %",
+    "9": "as your filler"
   }
 }

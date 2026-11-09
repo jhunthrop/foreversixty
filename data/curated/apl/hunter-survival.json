@@ -213,5 +213,14 @@
   },
   "engineering_notes": {
     "2": "The same shape warrior-arms.json's own Overpower line uses (that file's step 5): a proc-gated bare cast with no combo-point or resource condition."
+  },
+  "panel_when": {
+    "1": "when Hunter's Mark is not on the target",
+    "2": "on cooldown",
+    "3": "when it lights up, after a dodge or a hit on a marked target",
+    "4": "when Lacerate is not ticking on the target",
+    "5": "on cooldown",
+    "6": "on cooldown",
+    "7": "with Windfury Totem up, when nothing else is ready"
   }
 }

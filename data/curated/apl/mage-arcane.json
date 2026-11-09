@@ -580,5 +580,23 @@
         }
       }
     ]
+  },
+  "panel_when": {
+    "1": "below 5% mana, with over 30 s left",
+    "2": "on cooldown, from 3 s into the fight",
+    "3": "on cooldown, from 3 s into the fight",
+    "4": "while Presence of Mind is up",
+    "5": "while Presence of Mind is up, before Pyroblast at level 54",
+    "6": "while Presence of Mind is up and Arcane Wrath is not ready",
+    "7": "when Missile Barrage procs",
+    "8": "until you have both ranks of Missile Barrage",
+    "9": "at 3 Heating Up stacks",
+    "10": "on cooldown, once you have Heating Up",
+    "11": "at 3 Arcane Blast stacks",
+    "12": "to 3 stacks, then while mana % is over boss health %",
+    "13": "as your filler once you stop blasting",
+    "14": "when too low on mana for a Fireball",
+    "15": "as your filler once you stop blasting",
+    "16": "when you are out of mana"
   }
 }

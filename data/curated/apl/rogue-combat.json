@@ -347,5 +347,13 @@
       "id": 11281,
       "reason": "Backstab needs a dagger in the main hand and the ladder wears the highest item-level one-hander in each slot, which is never a dagger at these levels, so Backstab is uncastable on every rung and Sinister Strike builds instead (the second builder line, by design). The BiS band's gear is daggers, where Backstab builds and Sinister Strike is idle."
     }
-  ]
+  ],
+  "panel_when": {
+    "1": "on cooldown under 80 energy",
+    "2": "at 4 combo points, 5 below level 30",
+    "3": "when Slice and Dice is down",
+    "4": "as your builder, from behind",
+    "5": "on cooldown",
+    "6": "when you can't Backstab, at 60 energy"
+  }
 }

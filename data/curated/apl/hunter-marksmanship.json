@@ -334,5 +334,14 @@
         }
       }
     ]
+  },
+  "panel_when": {
+    "1": "when Hunter's Mark is not on the target",
+    "2": "as Auto Shot fires with Multi-Shot nearly ready",
+    "3": "on cooldown, shared with Multi-Shot",
+    "4": "on cooldown, above 25% mana",
+    "5": "while Aimed Shot is on cooldown",
+    "6": "when Serpent Sting has under 1.5 s left",
+    "7": "when Multi-Shot is 1.5+ s from ready or mana is 25% or less"
   }
 }
