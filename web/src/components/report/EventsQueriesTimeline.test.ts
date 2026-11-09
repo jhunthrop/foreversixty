@@ -90,7 +90,7 @@ describe('TimelinesView', () => {
     expect(plates(body)).toBe(1);
     expect(body).toContain(`data-testid="lane-${summary.roster[0].guid}"`);
     expect(body).toContain('Buff up');
-    expect(body).toContain('grid-cols-[96px_minmax(0,1fr)] md:grid-cols-[180px_minmax(0,1fr)]');
+    expect(body).toContain('grid-cols-[124px_minmax(0,1fr)] md:grid-cols-[180px_minmax(0,1fr)]');
   });
 
   it('reads Nothing in this window. with nobody in it', () => {
