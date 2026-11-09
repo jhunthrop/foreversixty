@@ -32,10 +32,13 @@ ART = {
     'hero': ('art/hero-road-camp-wide.jpeg', (1200, 2400)),
     'cave': ('art/raid-panel-cave.jpeg', (800, 1600)),
 }
-# One logo (owner 2026-11-09): the painted seal everywhere; the flat seal only at favicon size.
-SEALS = {'seal-flat-32': ('logo/lx-seal-flat-64.png', 64),
-         'seal-88': ('logo/lx-seal-256.png', 176), 'seal-128': ('logo/lx-seal-256.png', 256)}
-FAVICONS = {'favicon-32.png': ('logo/lx-seal-flat-32.png', 32), 'apple-touch-icon.png': ('logo/lx-seal-180.png', 180)}
+# One logo (owner 2026-11-09): the seal v3, cut out with real transparency, everywhere: nav, footer,
+# favicons and the link preview (which reads the apple-touch icon). Its bold rim holds at 16 px.
+SEAL_SOURCE = 'logo/lx-seal-v3.png'
+SEALS = {'seal-88': (SEAL_SOURCE, 176), 'seal-128': ('logo/lx-seal-v3-256.png', 256)}
+FAVICONS = {'favicon-32.png': ('logo/lx-seal-v3-32.png', 32), 'apple-touch-icon.png': (SEAL_SOURCE, 180)}
+# favicon.ico carries the owner's sized renders, never a downscale of one size.
+FAVICON_ICO = ('logo/lx-seal-v3-16.png', 'logo/lx-seal-v3-32.png', 'logo/lx-seal-v3-48.png')
 OG_SIZE, OG_BOX = (1200, 630), (1180, 480, 2600, 1225)  # art_crops.py: the glow over the pass, the road's head
 
 
@@ -69,7 +72,10 @@ def build_seals() -> None:
         Image.open(source(rel)).convert('RGBA').resize((px, px), Image.LANCZOS).save(OUT / f'{name}.webp', 'WEBP', quality=88, method=6)
     for name, (rel, px) in FAVICONS.items():
         Image.open(source(rel)).convert('RGBA').resize((px, px), Image.LANCZOS).save(REPO / 'web/public' / name, optimize=True)
-    shutil.copyfile(source('logo/favicon.ico'), REPO / 'web/public/favicon.ico')
+    sized = [Image.open(source(rel)).convert('RGBA') for rel in FAVICON_ICO]
+    largest = sized[-1]
+    largest.save(REPO / 'web/public/favicon.ico', format='ICO', sizes=[im.size for im in sized],
+                 append_images=sized[:-1])
 
 
 def build_paperdoll() -> None:

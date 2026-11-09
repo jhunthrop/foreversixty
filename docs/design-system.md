@@ -66,7 +66,7 @@ One manifest: `web/src/lib/ui/assets.ts`. The files are in `web/public/art/`, wr
 | `GROUND_TILE`, `GROUND_TILE_PX` | The painted earth, periodic, tiled at 1:1 (the body's background) |
 | `BAND_ART`, `HERO_ART`, `CAVE_ART` | The blue band, home's camp road, the raid cave; each `{ phone, desktop }` |
 | `OG_ART` | The link preview's background (`lib/og.ts`) |
-| `SEAL`, `sealFor(size)` | The painted seal at every drawn size (one logo, owner 2026-11-09); the flat seal at favicon size only |
+| `SEAL`, `sealFor(size)` | The seal v3 (`design/assets/logo/lx-seal-v3.png`) at every size, nav, footer and favicons alike: one logo (owner 2026-11-09), no flat seal |
 | `PAPERDOLL_FRAME` | The paperdoll frame at 1x and 2x, with its size |
 | `FAVICON` | The favicon set at the site root |
 | `ART_CSS_VARS`, `artStyle()` | The art as `--art-*` custom properties, set once on `<html>` by `Base.astro` so stylesheets never name a file |
