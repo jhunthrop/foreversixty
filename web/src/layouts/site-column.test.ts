@@ -11,8 +11,8 @@ import Base from './Base.astro';
 const SRC = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
 const SCANNED_DIRS = ['pages', 'layouts', 'components'];
 const SOURCE_EXTENSIONS = /\.(astro|svelte|css)$/;
-/** Layouts a page may render through; each one reaches Base.astro. */
-const LAYOUT_IMPORT = /(layouts\/(Base|Content)|tiers\/TierPage)\.astro/;
+/** Layouts a page may render through; each one reaches Base.astro (the route components import it). */
+const LAYOUT_IMPORT = /(layouts\/(Base|Content)|tiers\/TierPage|bis\/BisSpecRoute|guild\/GuildRoute)\.astro/;
 /** Pages that render no HTML of their own, so they have no column to be in. */
 const PAGES_WITHOUT_LAYOUT = new Set(['pricing.astro']);
 
