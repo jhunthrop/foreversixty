@@ -59,6 +59,15 @@ type blizzardFixture struct {
 	handlers map[string]func(w http.ResponseWriter, r *http.Request)
 }
 
+// whitemaneNormal lists Whitemane, typed NORMAL: a realmed character's
+// ruleset comes from its realm's type, never from a default.
+func whitemaneNormal(f *blizzardFixture) {
+	f.json(http.MethodGet, "/data/wow/realm/index?namespace=dynamic-classic1x-us", http.StatusOK,
+		map[string]any{"realms": []map[string]any{{"id": 1, "name": "Whitemane", "slug": "whitemane"}}})
+	f.json(http.MethodGet, "/data/wow/realm/whitemane?namespace=dynamic-classic1x-us", http.StatusOK,
+		map[string]any{"type": map[string]string{"type": "NORMAL"}, "category": "United States"})
+}
+
 func newBlizzardFixture(t *testing.T) *blizzardFixture {
 	t.Helper()
 	f := &blizzardFixture{handlers: map[string]func(http.ResponseWriter, *http.Request){}}
