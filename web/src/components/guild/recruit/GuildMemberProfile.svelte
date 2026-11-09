@@ -135,11 +135,18 @@
         />
       {/if}
     {/snippet}
-    <Page layout="split" {header} rail={p.notes === null ? undefined : rail} testid="guild-profile-page">
+    <Page
+      layout="split"
+      panels
+      {header}
+      rail={p.notes === null ? undefined : rail}
+      testid="guild-profile-page"
+    >
       {#if member === null}
         <Notice text={copy.noCharacter} tone="neutral" testid="guild-profile-no-character" />
       {/if}
       <Section
+        panel
         title={copy.gearGap}
         meta={copy.gearGapMeta}
         action={member === null
@@ -155,7 +162,7 @@
           {/each}
         {/if}
       </Section>
-      <Section title={copy.attendance} testid="guild-profile-attendance">
+      <Section title={copy.attendance} panel testid="guild-profile-attendance">
         {#if attendance === null}
           <p class="text-muted text-[14px]">{copy.noNights}</p>
         {:else}
@@ -174,7 +181,7 @@
           {/if}
         {/if}
       </Section>
-      <Section title={copy.loot} testid="guild-profile-loot">
+      <Section title={copy.loot} panel testid="guild-profile-loot">
         {#if loot.length === 0}
           <p class="text-muted text-[14px]">{copy.noLoot}</p>
         {:else}

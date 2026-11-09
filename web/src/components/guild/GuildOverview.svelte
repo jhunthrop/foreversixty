@@ -11,11 +11,10 @@
     GuildHomeSummary,
     GuildRaidView,
     GuildRaidsPage,
-    GuildReadinessPage,
     GuildRosterRow,
     NextRaidView,
   } from '../../lib/guild/api';
-  import { fetchGuildProgression, fetchGuildRaids, fetchGuildReadiness } from '../../lib/guild/api';
+  import { fetchGuildProgression, fetchGuildRaids } from '../../lib/guild/api';
   import { guildRaidHref } from '../../lib/characters';
   import { minuteClock } from '../../lib/guild/minute-clock.svelte';
   import {
@@ -34,13 +33,12 @@
     verdictWord,
   } from '../../lib/guild/overview-role-view';
   import {
-    bossesDownCountLine,
-    bossesDownLine,
     downEncounterNames,
+    lastRaidProgressLine,
     raidNightDay,
+    type TierCounts,
   } from '../../lib/guild/overview-view';
   import { fetchGuildRaid } from '../../lib/guild/raids-api';
-  import { raidReadyView } from '../../lib/guild/raid-ready-view';
   import { bossIdsOf, raidTallyParts } from '../../lib/guild/raid-view';
   import { counted } from '../../lib/plural';
   import Notice from '../ui/Notice.svelte';
@@ -51,7 +49,6 @@
   import MemberChecklist from './overview/MemberChecklist.svelte';
   import NextRaidPlate from './overview/NextRaidPlate.svelte';
   import OfficerActions from './overview/OfficerActions.svelte';
-  import RaidReady from './overview/RaidReady.svelte';
   import RecruitLine from './overview/RecruitLine.svelte';
   import RecentAttendance from './overview/RecentAttendance.svelte';
   import YourNumbers from './overview/YourNumbers.svelte';
@@ -73,6 +70,7 @@
     officer = false,
     reports,
     summary,
+    publicCounts = { killed: 0, pulls: 0 },
     showCounts = true,
     nextRaid = null,
     guildPath,
@@ -88,6 +86,8 @@
     officer?: boolean;
     reports: readonly OverviewReport[];
     summary: GuildHomeSummary | undefined;
+    /** The public read's tier counts: the Last raid line for a page with no home or progression read. */
+    publicCounts?: TierCounts;
     /** False for a visitor when the only report is guild-only. */
     showCounts?: boolean;
     nextRaid?: NextRaidView | null;
@@ -115,7 +115,6 @@
   let checklist = $state<GuildChecklist | null>(null);
   let actions = $state<GuildOfficerActions | null>(null);
   let attendance = $state<GuildRecentAttendance | null>(null);
-  let readiness = $state<GuildReadinessPage | null>(null);
 
   $effect(() => {
     if (guildId === null) return;
@@ -145,13 +144,6 @@
   });
 
   $effect(() => {
-    if (guildId === null || !officer || nextRaid === null) return;
-    void fetchGuildReadiness(guildId, nextRaid.id)
-      .then((page) => (readiness = page))
-      .catch(() => (readiness = null));
-  });
-
-  $effect(() => {
     if (guildId === null || !officer) return;
     void fetchOfficerActions(guildId)
       .then((page) => (actions = page))
@@ -164,11 +156,7 @@
   const guildTz = $derived(nextRaid?.guild_timezone ?? viewerTz);
   const day = $derived(nextRaid === null ? null : raidWeekday(nextRaid.starts_at, guildTz));
   const rows = $derived(checklist === null ? [] : checklistRows(checklist));
-  const progressionLine = $derived(
-    progression !== null
-      ? bossesDownLine(progression.names, progression.named)
-      : bossesDownCountLine(summary?.tier?.down ?? 0, summary?.tier?.named_encounters ?? 0),
-  );
+  const progressionLine = $derived(lastRaidProgressLine(progression, summary?.tier, publicCounts));
   const last = $derived(reports[0] ?? null);
   const lastFacts = $derived.by((): string[] => {
     if (last === null) return [];
@@ -182,7 +170,6 @@
   });
   const planHref = $derived(nextRaid === null ? '#raids' : guildRaidHref(guildPath, nextRaid.id));
   const canPing = $derived(raid !== null && pingAllowed(raid, clock.now));
-  const ready = $derived(raid !== null && readiness !== null ? raidReadyView(readiness, raid.signups) : null);
 </script>
 
 {#snippet lastRaid()}
@@ -195,7 +182,15 @@
 
 {#snippet plate()}
   {#if nextRaid !== null}
-    <NextRaidPlate next={nextRaid} {raid} {officer} {planHref} {viewerTz} now={clock.now} {you} />
+    <NextRaidPlate
+      next={nextRaid}
+      {raid}
+      {officer}
+      {planHref}
+      {viewerTz}
+      now={clock.now}
+      you={officer ? undefined : you}
+    />
   {:else if member && lead === undefined}
     <Notice
       text="No raid planned yet."
@@ -208,12 +203,12 @@
 
 <div data-testid="guild-overview-tab">
   {#if role === 'public'}
-    <Page layout="split" testid="guild-overview-page">
-      {#if guildId !== null && guildPath !== ''}<RecruitLine {guildId} {guildPath} officer={false} />{/if}
+    <Page layout="split" panels testid="guild-overview-page">
+      {#if guildId !== null && guildPath !== ''}<RecruitLine {guildId} {guildPath} />{/if}
       {@render lastRaid()}
     </Page>
   {:else if officer}
-    <Page layout="split" testid="guild-overview-page">
+    <Page layout="split" panels testid="guild-overview-page">
       {@render lead?.()}
       {#if actions !== null}
         <OfficerActions {guildId} {actions} {day} {canPing} {onSelectTab} {guildPath} />
@@ -224,12 +219,10 @@
       {/if}
       {#snippet rail()}
         {#if raid?.cover && raid.cover.length > 0}<BuffCover cover={raid.cover} />{/if}
-        {#if ready !== null}<RaidReady {ready} />{/if}
-        {#if attendance !== null && attendance.raids.length > 0}
+        <!-- Attendance needs two nights to show a pattern: after the first, the panel waits. -->
+        {#if attendance !== null && attendance.raids.length > 1}
           <RecentAttendance page={attendance} rosterHref="#roster" timezone={guildTz} />
         {/if}
-        {@render lastRaid()}
-        {#if guildId !== null}<RecruitLine {guildId} {guildPath} officer />{/if}
       {/snippet}
     </Page>
   {:else}
@@ -245,7 +238,7 @@
         />
       </div>
     {/if}
-    <Page layout="split" testid="guild-overview-page">
+    <Page layout="split" panels testid="guild-overview-page">
       {@render lead?.()}
       {@render plate()}
       {#if checklist !== null && rows.length > 0}

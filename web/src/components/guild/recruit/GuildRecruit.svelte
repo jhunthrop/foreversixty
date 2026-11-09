@@ -1,9 +1,9 @@
 <!-- web/src/components/guild/recruit/GuildRecruit.svelte -->
-<!-- /guild/{region}/{ruleset}/{slug}/recruit (web layout spec 2026-11-05 §7.2 Recruitment, "Should I
-     apply?"; mock web-guild-recruit): where a stranger meets the guild. The one Plate is the public
-     card, in its Section; under it what the
-     viewer can do (sign in, apply, their own application, or the line that the guild is closed);
-     the rail holds the officers' pitch and the officers. GuildShell loads this file as its own
+<!-- /guild/{region}/{ruleset}/{slug}/recruit (batch 3, b3-guild-recruit; web layout spec 2026-11-05
+     §7.2 Recruitment, "Should I apply?"): where a stranger meets the guild. The band reads Join and
+     whether they recruit; the framed panel is who they look for, then what the viewer can do (sign
+     in, apply, their own application, or the line that the guild is closed); the rail holds the
+     guild's facts, the officers' pitch and the officers. GuildShell loads this file as its own
      chunk; lib/guild/recruit-page.svelte.ts owns the reads and writes. -->
 <script lang="ts">
   import { untrack } from 'svelte';
@@ -12,16 +12,18 @@
   import { viewerLocale } from '../../../lib/guild/raid-time';
   import { recruitCopy as copy } from '../../../lib/guild/recruit-copy';
   import { RecruitPage } from '../../../lib/guild/recruit-page.svelte';
-  import { officerRows, realmLabel } from '../../../lib/guild/recruit-view';
+  import { officerRows, realmLabel, wantedRows } from '../../../lib/guild/recruit-view';
   import { classTone } from '../../../lib/ui/primitives';
   import ClassCrestRing from '../../character/ClassCrestRing.svelte';
-  import SignInPrompt from '../../SignInPrompt.svelte';
+  import { battlenetStartUrl } from '../../../lib/account/api';
+  import Button from '../../ui/Button.svelte';
   import LoadError from '../../ui/LoadError.svelte';
   import Notice from '../../ui/Notice.svelte';
   import Page from '../../ui/Page.svelte';
   import Row from '../../ui/Row.svelte';
   import Section from '../../ui/Section.svelte';
   import Skeleton from '../../ui/Skeleton.svelte';
+  import Tag from '../../ui/Tag.svelte';
   import ApplyForm from './ApplyForm.svelte';
   import GuildViewHeader from './GuildViewHeader.svelte';
   import MyApplication from './MyApplication.svelte';
@@ -58,13 +60,14 @@
 <div>
   {#snippet rail()}
     {#if p.card !== null}
+      <RecruitCard card={p.card} {viewerTimezone} {locale} />
       {#if p.card.pitch !== ''}
-        <Section title={copy.card.why} testid="guild-recruit-pitch">
+        <Section title={copy.card.why} panel testid="guild-recruit-pitch">
           <p class="text-text text-[14px] leading-[22px] whitespace-pre-line">{p.card.pitch}</p>
         </Section>
       {/if}
       {#if p.card.officers.length > 0}
-        <Section title={copy.card.officers} testid="guild-recruit-officers">
+        <Section title={copy.card.officers} panel testid="guild-recruit-officers">
           {#each officerRows(p.card.officers) as officer (officer.key)}
             <Row title={officer.name} titleTone={classTone(officer.classSlug)} sub={officer.sub} open>
               {#snippet lead()}<ClassCrestRing characterClass={officer.classSlug} size={32} />{/snippet}
@@ -85,20 +88,44 @@
     {@const state = p.state}
     {@const card = p.card}
     {@const context = p.context}
+    {#snippet status()}
+      <Tag tone={card.open ? 'success' : 'muted'} testid="guild-recruit-open"
+        >{card.open ? copy.card.recruiting : copy.card.closed}</Tag
+      >
+    {/snippet}
     {#snippet header()}
       <GuildViewHeader
         guild={context.guild}
         {guildPath}
         title={copy.page.title(card.guild.name)}
-        facts={[copy.card.label]}
+        meta={status}
         {tabRole}
         testid="guild-recruit-head"
       />
     {/snippet}
-    <Page layout="split" {header} {rail} testid="guild-recruit-page">
-      <Section title={copy.card.heading(card.guild.name, card.open)} testid="guild-recruit-card-section">
-        <RecruitCard {card} mark={context.guild.mark} {viewerTimezone} {locale} />
-      </Section>
+    <Page layout="split" panels {header} {rail} testid="guild-recruit-page">
+      {#if card.open}
+        <Section title={copy.card.lookingFor} panel frame="framed" testid="guild-recruit-wanted">
+          {#if card.wanted.length === 0}
+            <p class="text-text text-[14px]">{copy.card.nobodyListed}</p>
+          {:else}
+            <ul>
+              {#each wantedRows(card.wanted) as line (line.key)}
+                <li>
+                  <Row
+                    title={line.title}
+                    titleTone={classTone(line.classSlug)}
+                    sub={line.note || undefined}
+                    open
+                  >
+                    {#snippet lead()}<ClassCrestRing characterClass={line.classSlug} size={30} />{/snippet}
+                  </Row>
+                </li>
+              {/each}
+            </ul>
+          {/if}
+        </Section>
+      {/if}
       {#if state.kind === 'closed'}
         <Notice text={copy.closedLine(card.guild.name)} tone="neutral" testid="guild-recruit-closed" />
       {:else if state.kind === 'member'}
@@ -119,9 +146,11 @@
           onWithdraw={() => void p.withdraw()}
         />
       {:else}
-        <Section title={copy.apply.heading} testid="guild-recruit-apply">
+        <Section title={copy.apply.heading} panel testid="guild-recruit-apply">
           {#if state.kind === 'signed-out'}
-            <SignInPrompt line={copy.apply.signIn(card.guild.name)} {next} testid="guild-recruit-sign-in" />
+            <Button tone="primary" href={battlenetStartUrl(next)} testid="guild-recruit-sign-in"
+              >{copy.apply.signIn}</Button
+            >
           {:else if state.kind === 'no-character'}
             <p class="text-text text-[14px]" data-testid="guild-recruit-no-character">
               {copy.apply.noCharacter(realmLabel(card))}

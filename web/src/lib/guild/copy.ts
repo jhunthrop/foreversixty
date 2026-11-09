@@ -190,9 +190,6 @@ export const guildSettingsCopy = {
   sendThemThisLink: 'Send them this link.',
   defaultVisibility: 'Default report visibility',
   officerThreshold: 'Officer rank threshold',
-  inviteHeading: 'Invite link',
-  inviteHelp: (guildName: string): string =>
-    `Anyone with this link joins ${guildName} as a verified member: no officer has to approve them, and they can sign up for raids and see the roster, loot and readiness at once. A character with an officer rank in game still waits for an officer.`,
   membersHeading: 'Members and access',
   recordsHeading: 'Records and crest',
   recordsOnlyHeading: 'Records',
@@ -230,7 +227,6 @@ export const guildSettingsCopy = {
 // Guild crest round (docs/contracts/2026-10-05-guild-crest-api.md), Settings tab block.
 export const guildCrestCopy = {
   heading: 'Guild crest',
-  defaultCaption: "Default: your faction's logo",
   pickerLabel: 'Choose a crest image',
   /** The styled picker button (P.1): a ghost button, never the browser's own file control. */
   chooseButton: 'Choose an image',
@@ -327,8 +323,6 @@ export const guildRosterAddonCopy = {
   column: 'In game',
   /** Read before each row's cell, for a screen reader: the rows have no table headers. */
   srLabel: 'In game:',
-  notSeen: '—',
-  notSeenHover: 'Not seen by the addon in the last snapshot',
   level: (level: number): string => `Level ${level}`,
   /** "Gear gap 12 DPS": the figure with the word, so it does not read as a bare number. */
   gap: (gap: number): string => `Gear gap ${gap} DPS`,
@@ -338,9 +332,6 @@ export const guildRosterAddonCopy = {
   /** The hover on a row whose member shares nothing but the time the addon saw them. */
   withheldHover: 'Details withheld by the member',
   separator: '·',
-  /** Who sent the newest snapshot and when; the counts live on their own line. */
-  snapshotLine: (by: string, when: string): string => `Roster from the addon · sent by ${by} ${when}`,
-  noSnapshot: 'No roster from the addon yet. Log in with the addon on your guild master and it sends one.',
 } as const;
 
 /** The bare `/guild` landing: the lookup, the top guilds and the officer line. */
@@ -354,7 +345,6 @@ export const guildLandingCopy = {
   lookupHeading: 'Open a guild',
   mineHeading: 'Your guilds',
   namePlaceholder: 'Guild name',
-  lead: "Your guild's progress, roster, raid nights and loot, from the logs and the addon.",
   nameLabel: 'Guild name',
   regionLabel: 'Region',
   rulesetLabel: 'Ruleset',
@@ -380,7 +370,7 @@ export const guildRosterModelCopy = {
     no_account: 'No account yet',
     not_seen: 'Not seen in game yet',
   },
-  ranks: { leader: 'Leader', officer: 'Officer', member: 'Member' },
+  ranks: { leader: 'Guild master', officer: 'Officer', member: 'Member' },
   /** A name only the addon saw: its snapshot carries no guild rank, so none is said. */
   rankNotKnown: 'Rank not known',
   /** "7 on the roster · 2 in game without an account · 1 waiting for approval · 1 not seen in
@@ -399,11 +389,9 @@ export const guildRosterModelCopy = {
     ]
       .filter((part) => part !== '')
       .join(' · '),
-  gearNote: 'Loot and readiness list members with gear on the site.',
   noAccountFilter: 'No account',
-  /** Above the waiting list: what Approve gives the character. */
-  approveExplains:
-    'Approving lets this character see the roster, loot and readiness; officers can also remove members and change settings.',
+  /** The roster's column heads from lg: the units the cells leave out. */
+  heads: { raider: 'Raider', level: 'Item level', raids: 'Raids', best: 'Top output', rating: 'Rating' },
   decline: 'Decline',
   /** Asked before a verified character is taken off the roster. */
   removeQuestion: (name: string): string => `Remove ${name} from the roster?`,

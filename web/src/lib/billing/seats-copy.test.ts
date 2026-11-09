@@ -10,7 +10,6 @@ describe('Seats row', () => {
   it('every string', () => {
     expect(copy.heading).toBe(spec('Seats', 0));
     expect(copy.given(1, 3)).toBe(spec('Seats', 1, { given: '1', total: '3' }));
-    expect(copy.explainer).toBe(spec('Seats', 2));
     expect(copy.givenOn('2026-12-05')).toBe(spec('Seats', 3, { 'd MMM': '5 Dec' }));
     expect(copy.canMoveFrom('2026-12-20')).toBe(spec('Seats', 4, { 'd MMM': '20 Dec' }));
     expect(copy.canMoveNow).toBe(spec('Seats', 5));
@@ -21,7 +20,7 @@ describe('Seats row', () => {
     expect(copy.withdraw).toBe(spec('Seats', 10));
     expect(copy.withdrawing).toBe(spec('Seats', 11));
     expect(copy.accepted('2027-01-09')).toBe(spec('Seats', 12, { 'd MMM': '9 Jan' }));
-    expect(copy.notGiven).toBe(spec('Seats', 13));
+    expect(copy.notGiven).toBe('Open seat');
     expect(copy.give).toBe(spec('Seats', 14));
     expect(copy.giving).toBe(spec('Seats', 15));
     expect(copy.freedSince('2026-12-05', 'Aela')).toBe(spec('Seats', 16, { 'd MMM': '5 Dec', Name: 'Aela' }));
@@ -55,7 +54,6 @@ describe('Who pays and Receiver rows', () => {
   it('who pays', () => {
     const w = copy.whoPays;
     expect(w.heading).toBe(spec('Who pays', 0));
-    expect(w.help).toBe(spec('Who pays', 1));
     expect(w.transfer).toBe(spec('Who pays', 2));
     expect(w.transferTo).toBe(spec('Who pays', 3));
     expect(w.offerNote('Aela', '2027-01-10', 12000, 'yearly')).toBe(

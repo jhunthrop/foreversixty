@@ -1600,6 +1600,65 @@ def Frame(inner: str, ornate: bool = False, region: str = '') -> str:
     return f'<div class="frame{" ornate" if ornate else ""}"{r}>{inner}</div>'
 
 
+# The panel form (web ui/Section `panel`, `frame`, `flush`; ui/Page `panels`): the logs and report mocks' prims.panel, the
+# heading row inside one Plate with the body. `frame` is the Plate's ('plain', 'framed', 'lead'); `flush` runs the body
+# edge to edge (a table that pads its own cells). Page(panels=True) sets them 22 px apart, the columns 28.
+PRIM_CSS += '''
+.plate>.sec-h.pn-h{padding:16px 20px 10px;border-bottom:0}.pn-b{padding:0 20px 16px}.pn-b.flush{padding:0 0 6px}
+.plate.framed{position:relative}.plate.framed::before{content:"";position:absolute;inset:6px;border:1px solid rgba(243,238,226,.42);border-radius:6px;pointer-events:none}
+.layout-split.panels{column-gap:28px}.layout-split.panels>.main,.layout-split.panels>.rail{gap:22px}
+@media(max-width:767px){.plate>.sec-h.pn-h{padding:14px 14px 8px}.pn-b{padding:0 14px 14px}}
+'''
+
+_Section1 = Section
+
+
+def _named(html: str, title: str) -> str:
+    sid = region_slug(title)
+    return html.replace('<section ', f'<section id="{sid}" aria-labelledby="{sid}-title" ', 1).replace('<h2 ', f'<h2 id="{sid}-title" ', 1)
+
+
+def Section(title: str, body: str, action: str = '', meta: str = '', named: bool = False, boxed: bool = False,
+            panel: bool = False, frame: str = 'plain', flush: bool = False) -> str:
+    """panel: the heading row inside one Plate (its frame) with the body, as the built Section's `panel`."""
+    if not panel:
+        if not boxed:
+            return _Section1(title, body, action, meta, named)
+        html = _Section0(title, body, action, meta, boxed=True)
+        return _named(html, title) if named else html
+    a = f'<span class="act">{action}</span>' if action else ''
+    m = f'<span class="t-small">{meta}</span>' if meta else ''
+    cls = {'plain': '', 'framed': ' framed', 'lead': ' framed lead'}[frame]
+    html = (f'<section data-region="{region_slug(title)}"><div class="plate{cls}" data-region="{REGION["plate"]}">'
+            f'<div class="sec-h pn-h"><h2 class="t-h3">{title}</h2>{m}{a}</div>'
+            f'<div class="pn-b{" flush" if flush else ""}">{body}</div></div></section>')
+    return _named(html, title) if named else html
+
+
+_Page1 = Page
+
+
+def Page(layout: str, main: str = '', rail: str = '', sticky_rail: bool = False, panels: bool = False, **kwargs: object) -> str:
+    """panels: main and rail hold Section panels (web ui/Page `panels`); every other keyword goes to the Page before."""
+    html = _Page1(layout, main, rail, sticky_rail, **kwargs)
+    return html.replace('class="layout-split"', 'class="layout-split panels"', 1) if panels else html
+
+
+# ------------------------------------------------ Grid edge (web ui/Grid `edge`): the grid on a flush panel, the label column
+# taking the slack, the outer cells carrying the panel's 20 px inset (14 on a phone), the figure columns tight at the right.
+PRIM_CSS += '''
+table.gridm.edge :is(th,td){padding-inline:10px}table.gridm.edge :is(th,td):first-child{width:100%;padding-left:20px}
+table.gridm.edge :is(th,td):last-child{padding-right:20px}
+@media(max-width:767px){table.gridm.edge :is(th,td):first-child{padding-left:14px}table.gridm.edge :is(th,td):last-child{padding-right:14px}}
+'''
+
+_Grid0 = Grid
+
+
+def Grid(cols: list[str], rows: list[tuple], caption: str = '', label_header: str = '', edge: bool = False) -> str:
+    """edge: on a flush panel (web ui/Grid `edge`)."""
+    html = _Grid0(cols, rows, caption, label_header)
+    return html.replace('<table class="gridm"', '<table class="gridm edge"', 1) if edge else html
 # ------------------------------------------------ the compact ranked list (round 5; web ui RankList `compact`, RankRow `barTone`)
 # The tier list beside its rail (directions mock g-tiers): elastic name and bar tracks, 48 px rows, the letter column at every
 # width (44 px, 64 px from 1280) with the letter alone in the title face, the accent bar and the accent tint on the selected row.

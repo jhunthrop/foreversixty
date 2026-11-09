@@ -26,13 +26,13 @@ import { attendanceView, gearGapLines, lootRows, noteSub, profileFigures, profil
 import {
   applicationLine,
   applyErrorLine,
-  cardFacts,
   eligibleCharacters,
   officerRows,
   progressLine,
+  recruitFacts,
   recruitState,
   upcomingNights,
-  wantedLine,
+  wantedRows,
   wantedSummary,
 } from './recruit-view';
 
@@ -62,17 +62,25 @@ describe('the public card', () => {
   const card = buildMockRecruitCard();
 
   it('states the realm, faction and size, and the next nights in the viewer clock', () => {
-    expect(cardFacts(card)).toEqual(['US', 'PvP', 'Horde', '24 members']);
+    expect(recruitFacts(card, TZ, LOCALE).map((f) => [f.label, f.value])).toEqual([
+      ['Region', 'US PvP'],
+      ['Faction', 'Horde'],
+      ['Members', '24'],
+      ['Raids', card.raid_nights.text],
+      ['Next raid nights', 'Wed 9 Dec, 8 pm, Mon 14 Dec, 8 pm'],
+      ['Progress', "Onyxia's Lair · 1 of 1 boss down"],
+    ]);
     expect(upcomingNights(card, TZ, LOCALE)).toEqual(['Wed 9 Dec, 8 pm', 'Mon 14 Dec, 8 pm']);
-    expect(progressLine(card)).toBe('1 of 1 named bosses down · Tier 1');
+    expect(progressLine(card)).toBe("Onyxia's Lair · 1 of 1 boss down");
     expect(progressLine({ ...card, progress: { ...card.progress, named_encounters: 0 } })).toBe('');
   });
 
   it('names what they look for, a class alone reading any spec', () => {
-    expect(wantedLine(card.wanted)).toBe(
-      'Holy Paladin (Two for the heal rotation); Protection Warrior (Off tank); Mage, any spec',
-    );
-    expect(wantedLine([])).toBe('Every class and spec welcome');
+    expect(wantedRows(card.wanted).map((r) => [r.title, r.note, r.classSlug])).toEqual([
+      ['Holy Paladin', 'Two for the heal rotation', 'paladin'],
+      ['Protection Warrior', 'Off tank', 'warrior'],
+      ['Mage, any spec', '', 'mage'],
+    ]);
     expect(wantedSummary(card.wanted)).toBe('Holy Paladin, Protection Warrior, Mage');
     expect(wantedSummary([])).toBe('Every class and spec welcome');
   });
@@ -148,9 +156,7 @@ describe('the officers list', () => {
   it('says what happened on Discord in plain words', () => {
     const accepted = list.rows[2];
     expect(decisionTitle(accepted)).toBe('Hexmarrow accepted');
-    expect(decisionSub(accepted)).toBe(
-      '3 yes, 0 no of 3 officers · by Kraggor · Discord role granted · No Discord message: they did not ask for one',
-    );
+    expect(decisionSub(accepted)).toBe('3 yes, 0 no of 3 officers · by Kraggor');
     expect(discordLines({ status: 'accepted', role_outcome: 'no_role_set', dm_outcome: 'sent' })).toEqual([
       'No Discord role set, so none was granted',
       'Told them on Discord',

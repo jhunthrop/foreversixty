@@ -71,12 +71,16 @@ export function discordLines(
   return lines;
 }
 
-/** "3 yes, 0 no of 3 officers · by Kraggor · Discord role granted": the decision record's sub line. */
+/** The Discord outcomes that went as asked: the record names only the ones an officer must act on. */
+const QUIET_OUTCOMES: ReadonlySet<string> = new Set([copy.role.granted, copy.dm.sent, copy.dm.not_opted_in]);
+
+/** "3 yes, 0 no of 3 officers · by Kraggor": the decision record's sub line, and a Discord outcome only
+ *  when it needs an officer (a role not granted, a message that did not go out). */
 export function decisionSub(app: OfficerApplication): string {
   const parts: string[] = [];
   if (app.status !== 'withdrawn') parts.push(copy.votes(app.votes.yes, app.votes.no, app.votes.voters));
   if (app.decided_by !== null && app.status !== 'withdrawn') parts.push(copy.by(app.decided_by.name));
-  return [...parts, ...discordLines(app)].join(SEP);
+  return [...parts, ...discordLines(app).filter((line) => !QUIET_OUTCOMES.has(line))].join(SEP);
 }
 
 /** A decision's answer folded into its row: the outcome words the API stores on the row. */

@@ -7,9 +7,9 @@ import GuildLanding from './GuildLanding.svelte';
 describe('GuildLanding', () => {
   const { body } = render(GuildLanding, { props: {} });
 
-  it('has the Guilds heading, the lead and a Top guilds section', () => {
+  it('has the Guilds heading, no lead and a Top guilds section', () => {
     expect(body).toMatch(/<h1[^>]*>Guilds<\/h1>/);
-    expect(body).toContain(guildLandingCopy.lead);
+    expect(body).not.toContain('ui-page-header-lead');
     expect(body).toMatch(/<h2[^>]*>(?:<!--.*?-->|\s)*Top guilds(?:<!--.*?-->|\s)*<\/h2>/);
     expect(body).toContain('home-top-guilds');
   });

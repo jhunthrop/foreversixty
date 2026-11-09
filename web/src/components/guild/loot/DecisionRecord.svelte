@@ -26,7 +26,7 @@
   let exporting = $state(false);
 </script>
 
-<Section title="Decision record" testid="guild-loot-decisions">
+<Section title="Decision record" panel testid="guild-loot-decisions">
   {#snippet head()}
     {#if exportFor !== null}
       <button

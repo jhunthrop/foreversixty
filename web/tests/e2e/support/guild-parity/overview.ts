@@ -89,17 +89,15 @@ export async function routeGuild(
 async function openOverview(page: Page, viewer: Viewer): Promise<void> {
   await routeGuild(page, viewer);
   await page.goto(GUILD_PATH);
-  await expect(page.getByTestId('guild-next-raid-you')).toBeVisible();
-  await expect(page.getByTestId('guild-overview-last-raid')).toBeVisible();
   if (viewer === 'member') {
+    await expect(page.getByTestId('guild-next-raid-you')).toBeVisible();
+    await expect(page.getByTestId('guild-overview-last-raid')).toBeVisible();
     await expect(page.getByTestId('guild-overview-checklist')).toBeVisible();
     await expect(page.getByTestId('guild-overview-numbers')).toBeVisible();
   } else {
     await expect(page.getByTestId('guild-overview-actions')).toBeVisible();
     await expect(page.getByTestId('guild-next-raid-figures')).toBeVisible();
     await expect(page.getByTestId('guild-overview-cover')).toBeVisible();
-    await expect(page.getByTestId('guild-overview-raid-ready')).toBeVisible();
-    await expect(page.getByTestId('guild-overview-attendance')).toBeVisible();
   }
   await page.waitForLoadState('networkidle');
 }

@@ -354,28 +354,28 @@ test.describe('roster: the In game column from the addon snapshot (L8.3)', () =>
       .filter({ has: page.getByTestId('guild-roster-name').getByText(name, { exact: false }) });
   }
 
-  test('the line above the table names the snapshot; matched rows read level, spec, gap, build and seen time', async ({
+  test('matched rows read level, spec, gap, build and seen time; an unmatched row reads nothing', async ({
     page,
   }) => {
     await openRoster(page, true);
-    await expect(page.getByTestId('guild-roster-addon-snapshot')).toHaveText(
-      'Roster from the addon · sent by Zulmara 3 minutes ago',
-    );
+    // No explaining line above the table (batch 3).
+    await expect(page.getByTestId('guild-roster-addon-snapshot')).toHaveCount(0);
     await expect(rowNamed(page, 'Zulmara').getByTestId('guild-roster-ingame')).toHaveText(
       /^Level 60\s+·\s+Gear gap 12 DPS\s+·\s+Gear set: Survival \(raid\)\s+·\s+seen 6 minutes ago\s*$/,
     );
     await expect(rowNamed(page, 'Kraggor').getByTestId('guild-roster-ingame')).toHaveText(
       /^Level 60\s+·\s+Gear gap 4 DPS\s+·\s+Gear set: Protection \(raid\)\s+·\s+seen 8 minutes ago\s*$/,
     );
-    const none = rowNamed(page, 'Windtalon').getByTestId('guild-roster-ingame-none');
-    await expect(none).toHaveText('—');
-    await expect(none).toHaveAttribute('title', 'Not seen by the addon in the last snapshot');
+    await expect(rowNamed(page, 'Windtalon').getByTestId('guild-roster-ingame')).toHaveCount(0);
+    await expect(rowNamed(page, 'Windtalon')).not.toContainText('—');
     // The spec line leads with the addon's spec, and names the site's only where it differs
     // (no "in game" word since d42bf7e65).
     await expect(rowNamed(page, 'Zulmara').getByTestId('guild-roster-spec')).toContainText(
       'Survival Hunter · Marksmanship on the site',
     );
-    await expect(rowNamed(page, 'Kraggor').getByTestId('guild-roster-spec')).toHaveText('Protection Warrior');
+    await expect(rowNamed(page, 'Kraggor').getByTestId('guild-roster-spec')).toHaveText(
+      'Protection Warrior · Guild master',
+    );
   });
 
   test('the roster has a SORT row of chips and no header row at any width; the chips sort', async ({
@@ -406,30 +406,23 @@ test.describe('roster: the In game column from the addon snapshot (L8.3)', () =>
     expect(names[0]).toBe('Zulmara');
     // The In game column's gap is a fact on the row, not a sort the page offers.
     await expect(page.getByTestId('guild-roster-sort-addon_gap')).toHaveCount(0);
-    // Every row's stats start at one left edge at lg.
+    // Every row's figure columns end at one right edge at lg, under the heads.
     if ((page.viewportSize()?.width ?? 0) >= 1024) {
-      const lefts = await page
+      const rights = await page
         .getByTestId('guild-roster-rows')
-        .getByTestId('guild-roster-facts')
-        .evaluateAll((els) =>
-          els.map((e) =>
-            Math.round(
-              e.querySelector('[data-testid="guild-roster-chip"]')?.getBoundingClientRect().left ?? -1,
-            ),
-          ),
-        );
-      expect(new Set(lefts).size).toBe(1);
+        .getByTestId('guild-roster-columns')
+        .evaluateAll((els) => els.map((e) => Math.round(e.getBoundingClientRect().right)));
+      expect(new Set(rights).size).toBe(1);
+      await expect(page.getByTestId('guild-roster-heads')).toContainText('Item level');
     }
   });
 
-  test('with no snapshot: the null line, and every row "—"', async ({ page }) => {
+  test('with no snapshot: no addon line, no In game slot, no dashes', async ({ page }) => {
     await openRoster(page, false);
-    await expect(page.getByTestId('guild-roster-addon-snapshot')).toHaveText(
-      'No roster from the addon yet. Log in with the addon on your guild master and it sends one.',
-    );
+    await expect(page.getByTestId('guild-roster-addon-snapshot')).toHaveCount(0);
     await expect(page.getByTestId('guild-roster-ingame')).toHaveCount(0);
-    const rows = await page.getByTestId('guild-roster-rows').locator('.guild-roster-row').count();
-    await expect(page.getByTestId('guild-roster-ingame-none')).toHaveCount(rows);
+    await expect(page.getByTestId('guild-roster-ingame-slot')).toHaveCount(0);
+    await expect(page.getByTestId('guild-roster-rows')).not.toContainText('—');
   });
 });
 
@@ -438,7 +431,7 @@ test.describe('roster: the In game column from the addon snapshot (L8.3)', () =>
 test.describe('roster: everyone the addon saw, with a word beside each', () => {
   test.use({ timezoneId: 'UTC' });
 
-  test('the count line, the rank word on every row and the names with no account', async ({ page }) => {
+  test('the count line, a rank tag for officers alone, and the names with no account', async ({ page }) => {
     await page.clock.setFixedTime(new Date('2026-12-22T21:46:00Z'));
     await stubCore(page, VIEWER_MEMBER, 'member');
     await page.goto(`${GUILD_URL}#roster`);
@@ -447,15 +440,13 @@ test.describe('roster: everyone the addon saw, with a word beside each', () => {
     await expect(page.getByTestId('guild-roster-counts')).toHaveText(
       `${home.roster.length + 2} on the roster · 1 in game without an account · ${waiting} waiting for approval · 1 not seen in game yet`,
     );
-    await expect(page.getByTestId('guild-roster-gear-note')).toHaveText(
-      'Loot and readiness list members with gear on the site.',
-    );
-    // Member is a word, not a blank: a plain member's row says so.
+    await expect(page.getByTestId('guild-roster-gear-note')).toHaveCount(0);
+    // A plain member carries no rank tag (batch 3): only the guild master and officers are tagged.
     const zulmara = page
       .getByTestId('guild-roster-rows')
       .locator('.guild-roster-row')
       .filter({ has: page.getByTestId('guild-roster-name').getByText('Zulmara') });
-    await expect(zulmara.getByTestId('guild-roster-rank')).toHaveText('Member');
+    await expect(zulmara.getByTestId('guild-roster-rank')).toHaveCount(0);
     // The names with no account row: a state word each, no controls.
     const entries = page.getByTestId('guild-roster-entries').getByTestId('guild-roster-entry');
     await expect(entries).toHaveCount(2);
@@ -487,11 +478,10 @@ test.describe('roster: everyone the addon saw, with a word beside each', () => {
   }) => {
     await stubCore(page, VIEWER_OFFICER, 'leader');
     await page.goto(`${GUILD_URL}#roster`);
-    await expect(page.getByTestId('guild-roster-approve-explains')).toHaveText(
-      'Approving lets this character see the roster, loot and readiness; officers can also remove members and change settings.',
-    );
+    await expect(page.getByTestId('guild-roster-approve-explains')).toHaveCount(0);
     const list = page.getByTestId('guild-roster-unverified-list');
-    await expect(list.getByTestId('guild-roster-pending-rank').first()).toHaveText('Member');
+    // A member waits with no rank tag (batch 3).
+    await expect(list.getByTestId('guild-roster-pending-rank')).toHaveCount(0);
     // The card's head says it; there is no per-row state tag.
     await expect(page.getByTestId('guild-roster-waiting')).toContainText('Waiting for approval');
     await expect(list.getByTestId('guild-roster-state')).toHaveCount(0);
@@ -644,7 +634,7 @@ test.describe('roster: everyone the addon saw, with a word beside each', () => {
       .locator('.guild-roster-row')
       .filter({ has: page.getByTestId('guild-roster-name').getByText(VIEWER_OFFICER) });
     await expect(own).toBeVisible();
-    await expect(own.getByTestId('guild-roster-rank')).toHaveText('Leader');
+    await expect(own.getByTestId('guild-roster-rank')).toHaveText('Guild master');
     await expect(own.getByTestId('guild-roster-remove')).toHaveCount(0);
     await expect(
       page.locator('[data-testid="guild-roster-remove"][aria-label="Remove Zulmara"]'),
@@ -945,7 +935,8 @@ test.describe('a 404 from an undeployed endpoint never crashes the page', () => 
 test.describe('the Overview last raid at 390', () => {
   test('every fact is visible and the page does not scroll sideways', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 900 });
-    await stubCore(page, VIEWER_OFFICER, 'leader');
+    // The last raid is a member's (batch 3: the officer rail is the cover and attendance).
+    await stubCore(page, VIEWER_MEMBER, 'member');
     await stubDepthEndpoints(page);
     await page.goto(GUILD_URL);
     const facts = page.getByTestId('guild-overview-raid-facts');
@@ -1183,7 +1174,7 @@ test.describe('guild crest (Settings tab, officer only)', () => {
     await page.goto(`${GUILD_URL}#settings`);
     await expect(page.getByTestId('guild-crest-settings')).toBeVisible();
     await expect(page.getByTestId('guild-crest-current')).toHaveAttribute('src', /horde-logo-512\.webp$/);
-    await expect(page.getByTestId('guild-crest-default-caption')).toHaveText("Default: your faction's logo");
+    await expect(page.getByTestId('guild-crest-default-caption')).toHaveCount(0);
   });
 
   test('a member never sees the block', async ({ page }) => {
@@ -1325,14 +1316,12 @@ test.describe('guild facts read as sentences (P.1)', () => {
       page,
     }) => {
       await page.setViewportSize({ width, height: 900 });
-      await stubCore(page, VIEWER_OFFICER, 'leader');
+      await stubCore(page, VIEWER_MEMBER, 'member');
       await stubDepthEndpoints(page);
       await page.goto(GUILD_URL);
       const header = page.getByTestId('guild-header-facts');
       await expect(header).toBeVisible();
-      expect(await words(header)).toMatch(
-        /^PvP US · \d+ bosse?s? down · \d+ pulls?( · Updated [^·]+)?( · Next raid: .+)?$/,
-      );
+      expect(await words(header)).toMatch(/^US PvP( · \d+ raiders?)?$/);
       const raidFacts = page.getByTestId('guild-overview-raid-facts').first();
       expect(await words(raidFacts)).toMatch(/ · /);
       for (const line of [header, raidFacts]) {
@@ -1353,16 +1342,22 @@ test.describe('guild facts read as sentences (P.1)', () => {
       await p1Shot(page, `guild-overview-${width}`);
     });
 
-    test(`at ${width} the roster stats are one sentence in the body face`, async ({ page }) => {
+    test(`at ${width} the roster stats read in the body face: a sentence on a phone, columns under heads from lg`, async ({
+      page,
+    }) => {
       await page.setViewportSize({ width, height: 900 });
       await stubCore(page, VIEWER_OFFICER, 'leader');
       await page.goto(`${GUILD_URL}#roster`);
-      const chip = page.getByTestId('guild-roster-chip').first();
-      await expect(chip).toBeVisible();
-      const line = chip;
-      expect(await line.evaluate((el) => getComputedStyle(el).fontFamily)).not.toMatch(/mono/i);
       const stats = page.getByTestId('guild-roster-facts').first();
-      expect(await words(stats)).toMatch(/Item level \d+/);
+      await expect(stats).toBeVisible();
+      expect(await stats.evaluate((el) => getComputedStyle(el).fontFamily)).not.toMatch(/mono/i);
+      if (width >= 1024) {
+        await expect(page.getByTestId('guild-roster-heads')).toContainText('Item level');
+        expect(await words(stats)).toMatch(/\b\d+\b/);
+        expect(await words(stats)).not.toMatch(/Item level/);
+      } else {
+        expect(await words(stats)).toMatch(/Item level \d+/);
+      }
       await p1Shot(page, `guild-roster-${width}`);
     });
   }
@@ -1392,7 +1387,7 @@ test.describe('guild facts read as sentences (P.1)', () => {
   });
 
   test('the Overview prints no "no encounter list yet" line of ours', async ({ page }) => {
-    await stubCore(page, VIEWER_OFFICER, 'leader');
+    await stubCore(page, VIEWER_MEMBER, 'member');
     await stubDepthEndpoints(page);
     await page.goto(GUILD_URL);
     await expect(page.getByTestId('guild-overview-last-raid')).toBeVisible();

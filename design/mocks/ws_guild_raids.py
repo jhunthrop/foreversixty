@@ -13,8 +13,8 @@ from zoneinfo import ZoneInfo
 import guild_overview_data as O
 import guild_raids_fixtures as RF
 from guild_data import NOW, ZONE
-from ws_guild2 import _act, _view, band_line, hdr, raid_planner
-from ws_prims import Button, Plate, Section, Tag, build_page
+from ws_guild2 import _act, _view, hdr, raid_planner
+from ws_prims import Button, Section, Tag, build_page
 
 PRIM = '''<style>
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
@@ -143,13 +143,13 @@ def raid_form() -> str:
 def raids_tab(form: bool = False) -> str:
     page = RF.raids_page()
     planned = ''.join(planned_row(r) for r in page['planned'])
-    body = (raid_form() + '<div style="height:16px"></div>' if form else '') + Plate(planned)
+    body = (raid_form() + '<div style="height:16px"></div>' if form else '') + f'<div>{planned}</div>'
     head = _act('Plan an event', primary=True) if not form else ''
-    main = (Section('Planned', f'<div style="padding-top:12px">{body}</div>', head, meta=str(len(page['planned'])))
-            + Section('Raid nights', f'<div style="padding-top:12px">{night_rows()}</div>'))
-    ledger = f'<div class="pc" style="padding-top:20px"><div style="display:flex;flex-direction:column;gap:var(--section-gap)">{main}</div></div>'
+    main = (Section('Planned', body, head, meta=str(len(page['planned'])), panel=True)
+            + Section('Raid nights', night_rows(), panel=True))
+    ledger = f'<div class="pc" style="padding-top:28px"><div style="display:flex;flex-direction:column;gap:22px">{main}</div></div>'
     title = 'Raids, plan form' if form else 'Raids'
-    return build_page(f'Guild, {title}', _view(hdr(tabs_active='Raids', actions=Button('Invite link', small=True)) + band_line(O.OFFICER) + ledger) + PRIM,
+    return build_page(f'Guild, {title}', _view(hdr(tabs_active='Raids') + ledger) + PRIM,
                       'Guild', ('Dunmaro', 'hunter', 'Beast Mastery Hunter &middot; 60'))
 
 

@@ -71,7 +71,7 @@
 </script>
 
 {#each missing as name (name)}
-  <Section title={assignmentsCopy.title} testid="raid-assignments-missing">
+  <Section title={assignmentsCopy.title} panel testid="raid-assignments-missing">
     {#snippet head()}<Tag tone="muted" testid="raid-assignments-not-in-client"
         >{assignmentsCopy.notInClient}</Tag
       >{/snippet}
@@ -81,6 +81,7 @@
 
 {#each encounters as encounter (encounter.encounter_id)}
   <Section
+    panel
     title={assignmentsCopy.encounterTitle(encounter.name)}
     meta={meta(encounter)}
     id={`raid-assignments-${encounter.encounter_id}`}

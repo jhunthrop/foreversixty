@@ -134,13 +134,7 @@
     <EmptyState message={guildJoinCopy.invalid} testid="guild-join-invalid" />
   {:else}
     {#snippet header()}
-      <PageHeader
-        title={guild.name}
-        tone={guild.faction === 'alliance' || guild.faction === 'horde'
-          ? { faction: guild.faction }
-          : 'strong'}
-        testid="guild-join-head"
-      >
+      <PageHeader title={guild.name} tone="strong" testid="guild-join-head">
         {#snippet crest()}
           <FactionCrest faction={guild.faction} src={guildMarkSrc(guild)} testid="guild-join-crest" />
         {/snippet}
@@ -150,7 +144,7 @@
       </PageHeader>
     {/snippet}
     <Page layout="form" {header} testid="guild-join-card">
-      <Section title={guildJoinCopy.sectionHeading} testid="guild-join-section">
+      <Section title={guildJoinCopy.sectionHeading} panel frame="framed" testid="guild-join-section">
         <div class="flex flex-col items-start gap-4">
           {#if showsInvitedLine(alreadyIn, joined !== null)}
             <GuildJoinInvited guildName={guild.name} inviter={peek?.inviter ?? null} />

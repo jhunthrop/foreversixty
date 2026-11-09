@@ -44,7 +44,7 @@
   }
 </script>
 
-<Section title={copy.notes} meta={copy.notesMeta} testid="guild-profile-notes">
+<Section title={copy.notes} panel meta={copy.notesMeta} testid="guild-profile-notes">
   {#if notes.length === 0}
     <p class="text-muted text-[14px]" data-testid="guild-profile-notes-empty">{copy.noNotes}</p>
   {/if}

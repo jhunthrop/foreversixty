@@ -130,7 +130,7 @@
   {:else if council.status === 'failed' || night === null}
     <LoadError message={LOOT_LOAD_ERROR} testid="guild-loot-error" onRetry={() => void council.load()} />
   {:else}
-    <Page layout="split" testid="guild-loot-page">
+    <Page layout="split" panels testid="guild-loot-page">
       {#snippet bar()}
         <ControlBar
           groups={[nightGroup]}
@@ -153,9 +153,14 @@
         onOpen={council.open}
       />
       {#snippet rail()}
-        <div id="guild-loot-rail" class="flex scroll-mt-[96px] flex-col gap-8">
+        <div id="guild-loot-rail" class="flex scroll-mt-[96px] flex-col gap-[22px]">
           {#if council.selected === null}
-            <Section title={officer ? 'Candidates' : 'Your call'} testid="guild-loot-prompt">
+            <Section
+              title={officer ? 'Candidates' : 'Your call'}
+              panel
+              frame="framed"
+              testid="guild-loot-prompt"
+            >
               <p class="text-muted text-[14px]">{PICK_PROMPT}</p>
             </Section>
           {:else if officer}

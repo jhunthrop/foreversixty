@@ -26,23 +26,3 @@ export function rosterGateState({ signedIn, member }: RosterGateInput): RosterGa
   if (!signedIn) return 'visitor';
   return member ? 'unverified' : 'stranger';
 }
-
-/** What the band says about claiming beyond the claim row, for this viewer: a verified member of a
- *  claimed guild reads who holds it, muted; everyone else nothing (the row, or the settings link). */
-export type ClaimEntry = { kind: 'none' } | { kind: 'claimedBy' };
-
-export interface ClaimEntryInput {
-  signedIn: boolean;
-  /** A verified officer or leader: the Guild settings link in the band is theirs. */
-  canManage: boolean;
-  /** This account's entry in the guild, when it has one. */
-  membership: { rank: string } | null;
-  /** The guild's claim state; null while the viewer cannot read it (no member home). */
-  claimState: 'unclaimed' | 'pending' | 'claimed' | 'contested' | null;
-}
-
-export function claimEntryFor(input: ClaimEntryInput): ClaimEntry {
-  const { signedIn, canManage, membership, claimState } = input;
-  if (!signedIn || canManage || membership === null) return { kind: 'none' };
-  return claimState === 'claimed' || claimState === 'contested' ? { kind: 'claimedBy' } : { kind: 'none' };
-}

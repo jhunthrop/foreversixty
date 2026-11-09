@@ -40,7 +40,7 @@
   } as const;
 </script>
 
-<Section title={copy.mine.heading} testid="guild-recruit-mine">
+<Section title={copy.mine.heading} panel testid="guild-recruit-mine">
   <Row
     title={application.character.name}
     titleTone={classTone(application.character.class ?? '')}

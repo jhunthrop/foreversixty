@@ -1,8 +1,8 @@
 // web/src/lib/guild/cover-view.test.ts
-// The cover grid's view: the two sections in order, each cell's tone, the count and the icon url.
+// The cover grid's view: the gaps first, each cell's tone, the count and the icon url.
 import { describe, expect, it } from 'vitest';
 import type { GuildRaidCoverRow } from './api';
-import { coverCount, coverIconUrl, coverSections, coverSigned, coverTone } from './cover-view';
+import { coverCount, coverIconUrl, coverSigned, coverThinnestFirst, coverTone } from './cover-view';
 
 function row(over: Partial<GuildRaidCoverRow>): GuildRaidCoverRow {
   return {
@@ -22,24 +22,30 @@ function row(over: Partial<GuildRaidCoverRow>): GuildRaidCoverRow {
   };
 }
 
-describe('coverSections', () => {
-  it('puts buffs before debuffs and keeps the API order inside each', () => {
+describe('coverThinnestFirst', () => {
+  it('lists nobody first, then too few, then covered, the fewest signed first within each', () => {
     const rows = [
-      row({ key: 'sunder_armor', kind: 'debuff' }),
-      row({ key: 'windfury_totem' }),
-      row({ key: 'faerie_fire', kind: 'debuff' }),
-      row({ key: 'fortitude' }),
+      row({ key: 'kings', providers_in: 3 }),
+      row({ key: 'motw', providers_in: 1 }),
+      row({ key: 'lotp' }),
+      row({ key: 'trueshot', providers_in: 1, likely: 1 }),
+      row({ key: 'sunder', kind: 'debuff' }),
     ];
-    const sections = coverSections(rows);
-    expect(sections.map((s) => s.kind)).toEqual(['buff', 'debuff']);
-    expect(sections[0].rows.map((r) => r.key)).toEqual(['windfury_totem', 'fortitude']);
-    expect(sections[1].rows.map((r) => r.key)).toEqual(['sunder_armor', 'faerie_fire']);
+    expect(coverThinnestFirst(rows).map((r) => r.key)).toEqual([
+      'lotp',
+      'sunder',
+      'trueshot',
+      'motw',
+      'kings',
+    ]);
   });
 
-  it('has nothing for a dungeon or an older fixture', () => {
-    expect(coverSections(null)).toEqual([]);
-    expect(coverSections(undefined)).toEqual([]);
-    expect(coverSections([row({ kind: 'debuff' })]).map((s) => s.kind)).toEqual(['debuff']);
+  it('reads nothing as an empty list and never reorders its input', () => {
+    expect(coverThinnestFirst(null)).toEqual([]);
+    expect(coverThinnestFirst(undefined)).toEqual([]);
+    const rows = [row({ key: 'a', providers_in: 1 }), row({ key: 'b' })];
+    coverThinnestFirst(rows);
+    expect(rows.map((r) => r.key)).toEqual(['a', 'b']);
   });
 });
 

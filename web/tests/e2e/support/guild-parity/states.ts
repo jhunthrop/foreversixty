@@ -115,7 +115,8 @@ async function openState(page: Page, id: string): Promise<void> {
   });
   await page.route('**/v1/**', (route) => answer(route, s));
   await page.goto(GUILD_PATH);
-  await expect(page.getByTestId('guild-overview-last-raid')).toBeVisible();
+  // An officer's rail is the cover and attendance alone (batch 3); a member and a visitor read the last raid.
+  if (!s.me.startsWith('officer')) await expect(page.getByTestId('guild-overview-last-raid')).toBeVisible();
   if (s.home === null) {
     await expect(page.getByTestId('guild-overview-recruit')).toBeVisible();
     await expect(page.getByTestId('guild-roster-gate')).toBeVisible();
@@ -123,7 +124,6 @@ async function openState(page: Page, id: string): Promise<void> {
     await expect(page.getByTestId('guild-week-one-sentence')).toBeVisible();
     await expect(page.getByTestId('guild-overview-activity-row').first()).toBeVisible();
   }
-  if (id === 'before-raids') await expect(page.getByTestId('guild-overview-recruit')).toBeVisible();
   await page.waitForLoadState('networkidle');
 }
 

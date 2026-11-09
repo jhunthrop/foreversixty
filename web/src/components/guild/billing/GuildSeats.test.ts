@@ -15,7 +15,7 @@ describe('GuildSeats', () => {
     const body = text(html([heldSeat(1), emptySeat(2), emptySeat(3)]));
     expect(body).toContain('Premium seats');
     expect(body).toContain('1 of 3 given');
-    expect(body).toContain('A seat can move once every 30 days.');
+    expect(body).not.toContain('A seat can move once every 30 days.');
   });
 
   it('counts out of the plan seat count, never the rows sent', () => {

@@ -7,10 +7,7 @@ import { utcDayMonthYear } from '../dates';
 
 export const settingsWords = {
   officerRank: 'Officer ranks',
-  officerRankHelp:
-    '0 is the guild master, 1 the rank under it, and so on. This rank and every rank above it can approve members and award loot.',
   releaseOnClaimPage: 'Release on the claim page',
-  visibilityHelp: 'Public, Unlisted (link only) or Guild only. Applies to new reports.',
   guildPlan: 'Guild plan',
   /** The plan row with no date to show (the card's title names the tier). */
   planActive: 'Active',

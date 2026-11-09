@@ -69,7 +69,7 @@
 </script>
 
 <div id="signup" bind:this={stripEl} class="scroll-mt-24" data-testid="raid-signup-strip">
-  <Section title={raidCopy.subheads.yourSignup} id="raid-signup">
+  <Section title={raidCopy.subheads.yourSignup} panel id="raid-signup">
     {#if closedLine !== null}
       <p class="text-muted text-[14px]" data-testid="raid-strip-state">{closedLine}</p>
     {:else}

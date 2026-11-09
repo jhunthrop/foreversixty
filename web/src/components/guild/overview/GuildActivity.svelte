@@ -26,7 +26,7 @@
 </script>
 
 {#if rows.length > 0}
-  <Section title={TITLE} testid="guild-overview-activity">
+  <Section panel title={TITLE} testid="guild-overview-activity">
     <div class="flex flex-col">
       {#each rows as row (row.id)}
         <FeedRowUi

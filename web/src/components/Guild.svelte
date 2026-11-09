@@ -14,6 +14,7 @@
   import { fetchMeFresh, type Me, type MeGuild } from '../lib/account/api';
   import {
     characterSlug,
+    guildApplicationsHref,
     guildClaimHref,
     guildHref,
     guildRaidHref,
@@ -56,9 +57,8 @@
   import { GUILD_BANDLESS_TOP, PLANNED_RESERVE } from '../lib/guild/raid-layout';
   import { guildMarkSrc } from '../lib/guild/mark';
   import { bandFacts } from '../lib/guild/fact-line';
-  import { nextRaidFact } from '../lib/guild/overview-role-view';
-  import { showBandCounts, showsWeekOne, updatedLine } from '../lib/guild/overview-view';
-  import { claimEntryFor, rosterGateState } from '../lib/guild/roster-gate';
+  import { publicTierCounts, showBandCounts, showsWeekOne } from '../lib/guild/overview-view';
+  import { rosterGateState } from '../lib/guild/roster-gate';
   import { claimRowKind } from '../lib/guild/claim-row';
   import { gateFactsFrom } from '../lib/guild/plan-gate';
   import { afterApprove, afterRemove, afterRemoveMember } from '../lib/guild/roster-model';
@@ -82,7 +82,6 @@
   import FactLine from './guild/FactLine.svelte';
   import GuildUnverifiedNote from './guild/GuildUnverifiedNote.svelte';
   import GuildClaimRow from './guild/GuildClaimRow.svelte';
-  import GuildClaimedBy from './guild/GuildClaimedBy.svelte';
   import GuildRosterGate from './guild/GuildRosterGate.svelte';
   import FactionCrest from './character/FactionCrest.svelte';
   import SignInPrompt from './SignInPrompt.svelte';
@@ -94,8 +93,9 @@
   } from './guild/GuildTabs.svelte';
   import GuildStatus from './GuildStatus.svelte';
   import EmptyState from './ui/EmptyState.svelte';
-  import Button from './ui/Button.svelte';
   import PageHeader from './ui/PageHeader.svelte';
+  import Plate from './ui/Plate.svelte';
+  import TabStrip from './ui/TabStrip.svelte';
   import Skeleton from './ui/Skeleton.svelte';
   import { findMyGuild } from '../lib/guild/my-guild';
   import { GUILD_LOADING } from '../lib/guild/layout';
@@ -277,16 +277,6 @@
       (myGuildMembership.rank === 'officer' || myGuildMembership.rank === 'leader'),
   );
 
-  /** What the band says about claiming: the "Run this guild? Claim it." prompt only for an officer
-   *  rank in an unclaimed guild, who holds a claimed guild for its members, nothing for a stranger. */
-  const claimEntry = $derived(
-    claimEntryFor({
-      signedIn,
-      canManage,
-      membership: myGuildMembership,
-      claimState: home?.claim.state ?? null,
-    }),
-  );
   /** The band's claim row (gating spec §3.1): `/v1/me` answers an unverified guild master too. */
   const claimRow = $derived(
     claimRowKind(myGuildMembership?.rank, home?.claim.state ?? myGuildMembership?.claim?.state),
@@ -425,7 +415,7 @@
     home !== null &&
       ((myLevelingLine === null && home.standing != null && standingSentence(home.standing) !== '') ||
         myLevelingLine !== null ||
-        (activeTab !== 'overview' && showsBandLine(myGuildMembership?.verified === true, role)) ||
+        (activeTab === 'roster' && showsBandLine(myGuildMembership?.verified === true, role)) ||
         (activeTab !== 'overview' && role === 'member' && needs !== null) ||
         (myGuildMembership !== null && !myGuildMembership.verified) ||
         home.claim.frozen),
@@ -581,13 +571,6 @@
   /** The band counts what the viewer can open: a visitor whose only report is guild-only is told
    *  nothing about bosses and pulls beside a tab reading "No public reports this week yet". */
   const showCounts = $derived(showBandCounts(role, data?.reports.length ?? 0));
-  const killed = $derived(
-    home?.summary?.tier?.down ?? (data?.progression ?? []).filter((row) => row.kills > 0).length,
-  );
-  const pulls = $derived(
-    home?.summary?.tier?.pulls_total ??
-      (data?.progression ?? []).reduce((total, row) => total + row.pull_count, 0),
-  );
 
   // ---------------------------------------------------------------------------------------
   // Tab routing (spec §4.0): one URL, hash-anchored, never a separate route. A public
@@ -756,9 +739,6 @@
   });
 </script>
 
-{#snippet headInvite()}
-  <Button size="sm" href={`${settingsHref}#invite`} testid="guild-head-invite">Invite link</Button>
-{/snippet}
 {#snippet weekOneLead()}
   {#if weekOneLazy.current}
     <weekOneLazy.current
@@ -870,35 +850,31 @@
         bind:offsetHeight={bandHeaderHeight}
         data-testid="guild-band-header"
       >
-        <PageHeader
-          title={data.guild.name}
-          tone={faction === 'alliance' || faction === 'horde' ? { faction } : 'strong'}
-          testid="guild-page-header"
-          actions={officerView && settingsHref !== '' ? headInvite : undefined}
-        >
+        <PageHeader title={data.guild.name} tone="strong" testid="guild-page-header">
           {#snippet crest()}
             <FactionCrest {faction} src={guildMark} testid="guild-faction-crest" />
           {/snippet}
           {#snippet meta()}
             <span data-testid="guild-header-facts">
               <FactLine
-                facts={[
-                  ...bandFacts(
-                    rulesetLabel(resolved.ruleset),
-                    resolved.region,
-                    showCounts ? { killed, pulls } : null,
-                    home?.summary?.updated_at === undefined ? '' : updatedLine(home.summary.updated_at),
-                  ),
-                  ...(home?.next_raid == null ? [] : [nextRaidFact(home.next_raid)]),
-                ]}
+                facts={bandFacts(rulesetLabel(resolved.ruleset), resolved.region, home?.summary?.raiders)}
               />
             </span>
-            {#if meResolved && claimEntry.kind === 'claimedBy'}
-              <span data-testid="guild-claim-note"><GuildClaimedBy holder={home?.claim.claimed_by} /></span>
-            {/if}
           {/snippet}
           {#snippet tabs()}
             <GuildTabs active={activeTab} {role} onSelect={selectTab} />
+            {#if activeTab === 'roster' && officerView && guildPath !== ''}
+              <!-- The Roster's sub-views (batch 3): its members here, the applications on their own page. -->
+              <TabStrip
+                tabs={[
+                  { id: 'members', label: 'Members', href: '#roster' },
+                  { id: 'applications', label: 'Applications', href: guildApplicationsHref(guildPath) },
+                ]}
+                active="members"
+                label="Roster views"
+                testid="guild-roster-views"
+              />
+            {/if}
           {/snippet}
         </PageHeader>
 
@@ -944,8 +920,8 @@
                      the standing line and the needs line. Its chunk loads alongside /home; the box
                      it fills (the resting caps, 44 desktop, 112 phone) is held until it lands, and
                      a chunk that fails leaves the plain link in its place. -->
-              {#if activeTab !== 'overview' && showsBandLine(myGuildMembership?.verified === true, role)}
-                {@render bandLine()}
+              {#if activeTab === 'roster' && showsBandLine(myGuildMembership?.verified === true, role)}
+                <Plate testid="guild-raid-strip"><div class="px-5 py-2">{@render bandLine()}</div></Plate>
               {/if}
               {#if myLevelingLine !== null}
                 <!-- Week-one spec 3.2: under 60 this is the band's only viewer line, never green. -->
@@ -1003,6 +979,7 @@
           you={showsBandLine(myGuildMembership?.verified === true, role) ? youRow : undefined}
           reports={home?.reports ?? data.reports}
           summary={home?.summary}
+          publicCounts={publicTierCounts(data?.progression ?? [])}
           {showCounts}
           onSelectTab={selectTab}
           lead={showWeekOne ? weekOneLead : undefined}
@@ -1031,7 +1008,6 @@
           onApproveAll={() => void onApproveAll()}
           {rowPath}
           profileHref={(row) => rosterProfileHref(row, { officer: officerView, myCharacterKey, guildPath })}
-          addonSnapshot={home.addon_snapshot ?? null}
           mySiteSpec={myCharacterKey === null ? null : (mySiteSpecs.get(myCharacterKey) ?? null)}
           attendanceSource={attendanceSourceOf(home)}
           {focusApproveAll}
@@ -1109,7 +1085,7 @@
           raid={readinessView.raid}
           nextRaidOnly={readinessNextRaidOnly}
           onToggleNextRaid={() => (readinessNextRaidOnly = !readinessNextRaidOnly)}
-          raidHref={readinessView.raidId === null ? null : guildRaidHref(guildPath, readinessView.raidId)}
+          {guildId}
           guildTimezone={readinessView.guildTimezone}
           officer={officerView}
           {officerTools}

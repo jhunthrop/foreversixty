@@ -59,6 +59,7 @@
 </script>
 
 <Section
+  panel
   title={copy.card.heading}
   action={{ label: copy.card.viewPublic, href: recruitHref }}
   testid="guild-recruit-edit"

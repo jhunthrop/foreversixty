@@ -60,13 +60,17 @@
     />
     <Button
       size="sm"
-      tone="primary"
+      tone="secondary"
       disabled={busy}
       onclick={() => onDecide('accept')}
       testid="guild-application-accept">{copy.accept}</Button
     >
-    <Button size="sm" disabled={busy} onclick={() => onDecide('decline')} testid="guild-application-decline"
-      >{copy.decline}</Button
+    <Button
+      size="sm"
+      tone="ghost"
+      disabled={busy}
+      onclick={() => onDecide('decline')}
+      testid="guild-application-decline">{copy.decline}</Button
     >
   {/snippet}
 </Row>

@@ -124,7 +124,7 @@ test.describe('a member signs up (§9, R3)', () => {
     const stub = await stubGuildRaids(page, { viewer: 'member' });
     await page.clock.install({ time: NOW });
     // The band line rides every tab but the Overview, whose next-raid Plate draws the same control as a row.
-    await gotoHydrated(page, `${GUILD_URL}#raids`, 'guild-raid-line');
+    await gotoHydrated(page, `${GUILD_URL}#roster`, 'guild-raid-line');
     const sentence = page.getByTestId('guild-raid-line-sentence');
     const segments = page.getByTestId('guild-raid-line-segments');
     // The alt is In, so the sentence names it and the segments show and act on it (spec 3.4).
@@ -396,9 +396,10 @@ test.describe('every control is at least 44 px tall at 360', () => {
     });
   }
 
-  test('the Raids tab and the band line', async ({ page }) => {
+  test("the Raids tab and the Roster's raid strip", async ({ page }) => {
     await openRaidsTab(page, { viewer: 'officer', raids: threePlanned() });
     expect(await shortControls(page.getByTestId('guild-raids-tab'))).toEqual([]);
+    await page.getByTestId('guild-tab-roster').click();
     expect(await shortControls(page.getByTestId('guild-raid-line'))).toEqual([]);
   });
 

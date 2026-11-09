@@ -243,7 +243,7 @@
 <!-- The reserve holds the section's height across the bot's states (spec 3.8, Return), so it sits on
      the block the page measures, around the Section. -->
 <div id="discord" class="flex scroll-mt-20 flex-col {held}" data-testid="guild-settings-discord">
-  <Section title={guildDiscordCopy.heading}>
+  <Section title={guildDiscordCopy.heading} panel>
     {#snippet head()}
       {#if stateTag !== null}<Tag tone={stateTag.tone} dot testid="guild-discord-state-tag"
           >{stateTag.text}</Tag

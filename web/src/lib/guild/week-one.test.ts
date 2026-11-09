@@ -1,7 +1,8 @@
 // web/src/lib/guild/week-one.test.ts
 import { describe, expect, it } from 'vitest';
 import type { GuildRosterEntry, NextRaidView } from './api';
-import { firstKillLine, progressionEmpty } from './progression-view';
+import { bossLine, bossesDownMeta, progressionEmpty, progressionZones } from './progression-view';
+import type { GuildProgressionEncounter } from './api';
 import {
   characterSpecKey,
   levelSpread,
@@ -237,14 +238,30 @@ describe('progression view', () => {
     });
   });
 
-  it('a kill line needs both figures: an omitted field never prints NaN', () => {
+  it('a boss line counts pulls, wipes and deaths, and the first kill only when the API sent it', () => {
     const now = new Date(2026, 11, 20);
-    expect(firstKillLine({ first_kill_at: '2026-12-16T19:00:00Z', best_kill_ms: 225_000 }, now)).toBe(
-      'First kill Wed 16 Dec · best kill 3:45',
+    const onyxia = encounter({
+      pulls: 2,
+      kills: 1,
+      deaths_per_pull: 3.5,
+      first_kill_at: '2026-12-16T19:00:00Z',
+    });
+    expect(bossLine(onyxia, now)).toBe('2 pulls · 1 wipe · 3.5 deaths a pull · first kill Wed 16 Dec');
+    expect(bossLine({ ...onyxia, first_kill_at: null, kills: 0, pulls: 1 }, now)).toBe(
+      '1 pull · 1 wipe · 3.5 deaths a pull',
     );
-    expect(firstKillLine({ first_kill_at: '2026-12-16T19:00:00Z' }, now)).toBeNull();
-    expect(firstKillLine({ best_kill_ms: 225_000 }, now)).toBeNull();
-    expect(firstKillLine({ first_kill_at: null, best_kill_ms: null }, now)).toBeNull();
+  });
+
+  it('draws one panel a zone with a boss pulled, its bosses down of its named bosses', () => {
+    const zones = progressionZones([
+      encounter({ name: 'Onyxia', zone: "Onyxia's Lair", pulls: 2, kills: 1 }),
+      encounter({ name: 'Lucifron', zone: 'Molten Core', pulls: 0, kills: 0 }),
+    ]);
+    expect(zones.map((z) => [z.zone, z.down, z.named, z.pulled.map((e) => e.name)])).toEqual([
+      ["Onyxia's Lair", 1, 1, ['Onyxia']],
+    ]);
+    expect(bossesDownMeta(zones[0])).toBe('1 of 1 boss down');
+    expect(bossesDownMeta({ down: 0, named: 3 })).toBe('0 of 3 bosses down');
   });
 
   it('points at the band when it already shows the segments, with no second button (guild round 3)', () => {
@@ -255,3 +272,17 @@ describe('progression view', () => {
     expect(step.action).toBeNull();
   });
 });
+
+function encounter(over: Partial<GuildProgressionEncounter>): GuildProgressionEncounter {
+  return {
+    encounter_id: 1,
+    name: 'Onyxia',
+    zone: "Onyxia's Lair",
+    pulls: 1,
+    kills: 0,
+    pulls_by_night: [],
+    deaths_per_pull: 0,
+    best_by_role: {},
+    ...over,
+  };
+}

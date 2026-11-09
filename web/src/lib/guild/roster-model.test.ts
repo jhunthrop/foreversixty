@@ -92,7 +92,7 @@ describe('words', () => {
     expect(stateWord('waiting')).toBe('Waiting for approval');
     expect(stateWord('no_account')).toBe('No account yet');
     expect(stateWord('not_seen')).toBe('Not seen in game yet');
-    expect(rankWord('leader')).toBe('Leader');
+    expect(rankWord('leader')).toBe('Guild master');
     expect(rankWord('officer')).toBe('Officer');
     expect(rankWord('member')).toBe('Member');
     expect(rankWord(undefined)).toBe('Member');

@@ -13,7 +13,7 @@
   import { cancelActionOf, kindOf, raidCopy } from '../../lib/guild/raid-copy';
   import { signupListText } from '../../lib/guild/raid-comp';
   import type { OfficerLine } from '../../lib/guild/raid-page-types';
-  import { RAID_BUTTON as BUTTON } from '../../lib/guild/raid-buttons';
+  import { RAID_BUTTON as BUTTON, RAID_GHOST_BUTTON } from '../../lib/guild/raid-buttons';
   import type { RaidStatusAction } from '../../lib/guild/raids-api';
   import type { GateFacts } from '../../lib/guild/plan-gate';
   import GuildPlanGate from './GuildPlanGate.svelte';
@@ -143,7 +143,7 @@
         >
         <button
           type="button"
-          class={BUTTON}
+          class={RAID_GHOST_BUTTON}
           bind:this={cancelButton}
           disabled={writesDisabled}
           aria-describedby={describedBy}

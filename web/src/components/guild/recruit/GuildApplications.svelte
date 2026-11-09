@@ -6,7 +6,8 @@
      GuildShell loads this file as its own chunk; lib/guild/applications-page.svelte.ts owns the reads and writes. -->
 <script lang="ts">
   import { untrack } from 'svelte';
-  import { guildHref, guildRecruitHref, type CharacterPath } from '../../../lib/characters';
+  import { guildHref, guildRecruitHref, rulesetLabel, type CharacterPath } from '../../../lib/characters';
+  import { bandFacts } from '../../../lib/guild/fact-line';
   import { decisionTitle, discordLines, splitApplications } from '../../../lib/guild/applications-view';
   import { ApplicationsPage } from '../../../lib/guild/applications-page.svelte';
   import { liveApplicationsDeps } from '../../../lib/guild/guild-view-deps';
@@ -14,7 +15,6 @@
   import LoadError from '../../ui/LoadError.svelte';
   import Notice from '../../ui/Notice.svelte';
   import Page from '../../ui/Page.svelte';
-  import Plate from '../../ui/Plate.svelte';
   import Section from '../../ui/Section.svelte';
   import Skeleton from '../../ui/Skeleton.svelte';
   import ApplicantRow from './ApplicantRow.svelte';
@@ -70,9 +70,9 @@
       <GuildViewHeader
         guild={context.guild}
         {guildPath}
-        title={copy.page.title}
-        facts={[copy.openMeta(list.pending), copy.roleNote]}
+        facts={bandFacts(rulesetLabel(path.ruleset), path.region)}
         tabRole="officer"
+        views="applications"
         testid="guild-applications-head"
       />
     {/snippet}
@@ -85,7 +85,7 @@
         line={p.saveLine}
         onSave={(draft) => void p.saveCard(draft)}
       />
-      <Section title={copy.recent} testid="guild-applications-recent">
+      <Section title={copy.recent} panel testid="guild-applications-recent">
         {#if split.decided.length === 0}
           <p class="text-muted text-[14px]">{copy.noRecent}</p>
         {:else}
@@ -95,7 +95,7 @@
         {/if}
       </Section>
     {/snippet}
-    <Page layout="split" {header} {rail} testid="guild-applications-page">
+    <Page layout="split" panels {header} {rail} testid="guild-applications-page">
       {#if decided !== null}
         <Notice
           text={[decisionTitle(decided), ...discordLines(decided)].join('. ') + '.'}
@@ -103,11 +103,11 @@
           testid="guild-applications-outcome"
         />
       {/if}
-      <Section title={copy.open} meta={copy.openMeta(split.pending.length)} testid="guild-applications-open">
+      <Section title={copy.open} panel frame="framed" testid="guild-applications-open">
         {#if split.pending.length === 0}
           <p class="text-muted text-[14px]" data-testid="guild-applications-none">{copy.none}</p>
         {:else}
-          <Plate label={copy.open} testid="guild-applications-plate">
+          <div role="region" aria-label={copy.open} data-testid="guild-applications-plate">
             {#each split.pending as application (application.id)}
               <ApplicantRow
                 {application}
@@ -117,7 +117,7 @@
                 onDecide={(decision) => void p.decide(application.id, decision)}
               />
             {/each}
-          </Plate>
+          </div>
         {/if}
       </Section>
     </Page>

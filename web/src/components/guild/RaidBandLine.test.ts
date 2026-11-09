@@ -130,7 +130,7 @@ describe('RaidBandLine sentence', () => {
 describe('RaidBandLine controls', () => {
   it('links the zone to the raid page as `{Zone} →`', () => {
     const body = html();
-    expect(text(body, 'guild-raid-line-link')).toBe("Onyxia's Lair →");
+    expect(text(body, 'guild-raid-line-link')).toBe('Open the raid ›');
     expect(body).toContain('href="/guild/us/normal/the-last-watch/raids/7"');
   });
 

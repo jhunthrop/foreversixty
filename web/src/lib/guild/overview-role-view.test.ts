@@ -6,15 +6,12 @@ import {
   attendanceGridRows,
   attendanceTitle,
   checklistRows,
-  compTallyRows,
-  compTargetLine,
+  compGridRows,
   coverGridRows,
-  nextRaidFact,
   raidTimeLine,
   raidWeekday,
   verdictLine,
 } from './overview-role-view';
-import { tallyTone } from '../ui/cells';
 
 const checklist = (
   items: GuildChecklist['items'],
@@ -232,10 +229,10 @@ describe('actionRows', () => {
       'Thursday',
     );
     expect(rows).toEqual([
-      { key: 'approvals', title: '1 raider is waiting for approval', sub: 'Nightlatch' },
+      { key: 'approvals', title: '1 raider waiting for approval', sub: 'Nightlatch' },
       {
         key: 'not_signed',
-        title: '4 have not signed up for Thursday',
+        title: '4 not signed up for Thursday',
         sub: 'Voidcall, Skyarcana, Starnettle and 1 more',
       },
     ]);
@@ -286,24 +283,22 @@ describe('comp against the target', () => {
   };
   const target = { tanks: 2, healers: 8, melee: 10, ranged: 20, source: 'default' as const };
 
-  it('reads In per role against the seats, Late beside it', () => {
-    expect(compTallyRows(counts, target).map((r) => [r.label, r.have, r.late, r.want, r.tone])).toEqual([
-      ['Tanks', 1, 0, 2, 'miss'],
-      ['Healers', 6, 1, 8, 'warn'],
-      ['Melee', 5, 1, 10, 'miss'],
-      ['Ranged', 11, 0, 20, 'miss'],
+  it('reads the seats, who is In and how many short, Late under the role', () => {
+    expect(
+      compGridRows(counts, target).map((r) => [r.label, r.sub, ...r.cells.map((c) => `${c.tone}:${c.text}`)]),
+    ).toEqual([
+      ['Tanks', undefined, 'none:2', 'miss:1', 'miss:1'],
+      ['Healers', '1 late', 'none:8', 'miss:6', 'miss:2'],
+      ['Melee', '1 late', 'none:10', 'miss:5', 'miss:5'],
+      ['Ranged', undefined, 'none:20', 'miss:11', 'miss:9'],
     ]);
   });
 
-  it('tones at, near and short of the target', () => {
-    expect([tallyTone(8, 8), tallyTone(6, 8), tallyTone(5, 8)]).toEqual(['ok', 'warn', 'miss']);
-  });
-
-  it('says where the target came from', () => {
-    expect(compTargetLine("Onyxia's Lair", target)).toBe("Onyxia's Lair default: 40 players");
-    expect(compTargetLine("Onyxia's Lair", { ...target, source: 'raid', ranged: 18 })).toBe(
-      'Set for this raid: 38 players',
-    );
+  it('is warn when Late would fill the seats, and a dash when none are short', () => {
+    const full = { ...counts, tanks: 2, late_groups: { tanks: 0, healers: 2, melee: 0, ranged: 0 } };
+    const [tanks, healers] = compGridRows(full, target);
+    expect(tanks.cells.map((c) => `${c.tone}:${c.text}`)).toEqual(['none:2', 'ok:2', 'none:—']);
+    expect(healers.cells.map((c) => `${c.tone}:${c.text}`)).toEqual(['none:8', 'warn:6', 'warn:2']);
   });
 });
 
@@ -369,22 +364,10 @@ describe('raid time and cover rows', () => {
         state: 'ok',
       },
     ]);
-    expect(row?.sub).toBe('1 on a talent we cannot see · 1 on the bench');
+    expect(row?.sub).toBe('1 talent not confirmed · 1 on the bench');
     expect(row?.cells.map((c) => [c.tone, c.text])).toEqual([
       ['none', '1'],
       ['warn', '1'],
     ]);
-  });
-});
-
-describe('nextRaidFact', () => {
-  it('names the zone and the day on the guild’s calendar', () => {
-    expect(
-      nextRaidFact({
-        zone_name: "Onyxia's Lair",
-        starts_at: '2026-12-11T02:00:00Z',
-        guild_timezone: 'America/Chicago',
-      }),
-    ).toBe("Next raid: Onyxia's Lair, Thu 10 Dec");
   });
 });

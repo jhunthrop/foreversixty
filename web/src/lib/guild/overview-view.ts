@@ -2,7 +2,7 @@
 // The guild page's header band and Overview cards in a player's words (lifecycle review round 4,
 // N8/N9): plurals from the one helper, days as words, and the counts only where the viewer can
 // open what they count. Pure, so every rule is pinned without a page.
-import { dayWord, nightDate, nightDateOnly } from '../dates';
+import { nightDate, nightDateOnly } from '../dates';
 import { counted } from '../plural';
 import type { GuildViewerRole } from './api';
 import type { Fact } from './fact-line';
@@ -21,13 +21,6 @@ export function bandCountsLine(killed: number, pulls: number): string {
 export function showBandCounts(role: GuildViewerRole, publicReportCount: number): boolean {
   return role !== 'public' || publicReportCount > 0;
 }
-
-/** "Updated today": the day in the viewer's own zone. Empty for a stamp it cannot read. */
-export function updatedLine(updatedAt: string, now: Date = new Date()): string {
-  const word = dayWord(new Date(updatedAt), now);
-  return word === '' ? '' : `Updated ${word}`;
-}
-
 /** The date of a report's `created_at` (an instant) for a raid-night row: "Tue 20 Oct", the same words
  *  the account's report row prints for the same night. */
 export function raidNightDay(createdAt: string, now: Date = new Date()): string {
@@ -54,6 +47,32 @@ export function bossesDownLine(names: readonly string[], named: number): string 
 /** The same line before the progression read names the bosses: the home's own count. */
 export function bossesDownCountLine(down: number, named: number): string {
   return down === 0 ? 'No boss down this tier yet.' : `${down} of ${named} named bosses down.`;
+}
+
+export interface TierCounts {
+  killed: number;
+  pulls: number;
+}
+
+/** The tier's bosses down and pulls from the public read's progression rows. */
+export function publicTierCounts(rows: readonly { kills: number; pull_count: number }[]): TierCounts {
+  return {
+    killed: rows.filter((row) => row.kills > 0).length,
+    pulls: rows.reduce((total, row) => total + row.pull_count, 0),
+  };
+}
+
+/** The Last raid line from the best source the page has: the progression read names the bosses,
+ *  then the home's tier count, then the public read's counts. With none, or no pull logged, it says
+ *  nothing rather than "No boss down" beside a guild that has kills. */
+export function lastRaidProgressLine(
+  progression: { named: number; names: readonly string[] } | null,
+  tier: { down: number; named_encounters: number } | undefined,
+  counts: TierCounts,
+): string {
+  if (progression !== null) return bossesDownLine(progression.names, progression.named);
+  if (tier !== undefined) return bossesDownCountLine(tier.down, tier.named_encounters);
+  return counts.pulls > 0 ? bandCountsLine(counts.killed, counts.pulls) : '';
 }
 
 /** The Before raids open card shows while nothing is logged in the tier. */

@@ -11,11 +11,11 @@ export const recruitCopy = {
     backToGuild: (guild: string) => `← ${guild}`,
   },
   card: {
-    label: 'Public guild card',
-    heading: (guild: string, open: boolean) => (open ? `${guild} is recruiting` : guild),
     recruiting: 'Recruiting',
     closed: 'Not recruiting',
-    members: (n: number) => (n === 1 ? '1 member' : `${n} members`),
+    region: 'Region',
+    faction: 'Faction',
+    membersLabel: 'Members',
     raids: 'Raids',
     upcoming: 'Next raid nights',
     noNights: 'Raid nights not posted yet',
@@ -31,7 +31,7 @@ export const recruitCopy = {
   closedLine: (guild: string) => `${guild} is not recruiting right now.`,
   apply: {
     heading: 'Apply',
-    signIn: (guild: string) => `Sign in to apply to ${guild} with one of your characters.`,
+    signIn: 'Sign in with Battle.net to apply',
     character: 'Character',
     pickCharacter: 'Pick a character',
     noCharacter: (realm: string) =>
@@ -77,9 +77,7 @@ export const applicationsCopy = {
     officersOnly: 'Only officers see applications.',
   },
   open: 'Open applications',
-  openMeta: (n: number) => (n === 1 ? '1 waiting' : `${n} waiting`),
   none: 'No applications waiting.',
-  roleNote: 'Accepting grants the Discord role when one is set',
   accept: 'Accept',
   decline: 'Decline',
   deciding: 'Saving',

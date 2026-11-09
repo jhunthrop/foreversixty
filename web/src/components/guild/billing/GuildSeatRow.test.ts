@@ -75,9 +75,9 @@ describe('GuildSeatRow', () => {
     expect(text(body)).toContain('Can move from 2 Dec');
   });
 
-  it('Empty: Not given and Give seat', () => {
+  it('Empty: Open seat and Give seat', () => {
     const body = html(emptySeat(2));
-    expect(text(body)).toContain('Not given');
+    expect(text(body)).toContain('Open seat');
     expect(body).toContain('guild-seat-2-give');
   });
 

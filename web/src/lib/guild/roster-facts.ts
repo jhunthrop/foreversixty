@@ -7,7 +7,7 @@ import { guildRosterAddonCopy } from './copy';
 import type { GuildRosterEntry, GuildRosterRow } from './api';
 import type { AttendanceSource } from './attendance-contract';
 import { rosterChip } from './attendance-copy';
-import { outputFigure, topOutputLabel } from './output-figure';
+import { outputFigure, outputUnit, topOutputLabel } from './output-figure';
 import { addonGapLabel, addonIdentity, addonSeen, addonSpecName } from './roster-addon';
 import { specClassName, specName } from './spec-name';
 import { classDisplayName } from '../sim/spec-label';
@@ -34,6 +34,43 @@ export function rosterStatChips(row: GuildRosterRow, source: AttendanceSource = 
   }
   if (row.rating !== undefined && row.rating !== null) chips.push(`Rating ${row.rating.overall}`);
   return chips;
+}
+
+/** The roster's figure columns from lg, in order; the header names the unit, the cells are bare. */
+export const ROSTER_COLUMNS = ['level', 'raids', 'best', 'rating'] as const;
+export type RosterColumnKey = (typeof ROSTER_COLUMNS)[number];
+
+/** A row's figures for its columns: item level, raid nights attended ("7 of 8", "· 26 of 30" in raid
+ *  mode), top output, rating. A figure the row lacks is an empty cell, so the columns line up. */
+export function rosterColumns(
+  row: GuildRosterRow,
+  source: AttendanceSource = 'reports',
+): { key: RosterColumnKey; text: string }[] {
+  const a = row.attendance;
+  const long = source === 'raids' ? row.attendance_30 : undefined;
+  const raids =
+    a === undefined
+      ? ''
+      : a.nights === 0 && long !== undefined && long.nights > 0
+        ? `${long.present} of ${long.nights}`
+        : a.nights === 0
+          ? ''
+          : `${a.present} of ${a.nights}${long !== undefined && long.nights > a.nights ? ` · ${long.present} of ${long.nights}` : ''}`;
+  return [
+    { key: 'level', text: row.item_level === undefined ? '' : String(row.item_level) },
+    { key: 'raids', text: raids },
+    {
+      key: 'best',
+      text:
+        row.best_parse === undefined || row.best_parse === null
+          ? ''
+          : `${outputFigure(row.best_parse.value)} ${outputUnit(row.best_parse.metric)}`,
+    },
+    {
+      key: 'rating',
+      text: row.rating === undefined || row.rating === null ? '' : String(row.rating.overall),
+    },
+  ];
 }
 
 /** "Protection raid" -> "Gear set: Protection (raid)": a trailing one-word lowercase tag is the
@@ -75,7 +112,7 @@ export function rosterSpecLine(input: {
     // No spec on either side (a character with no talents spent): the class alone, never a bare row.
     return input.className === undefined || input.className === '' ? '' : classDisplayName(input.className);
   }
-  if (game === '') return siteSpecLabel(specClassName(site, input.className));
+  if (game === '') return specClassName(site, input.className);
   const named = specClassName(game, input.className);
   if (site === '' || site.toLowerCase() === game.toLowerCase()) return named;
   return `${named} · ${siteSpecLabel(site)}`;

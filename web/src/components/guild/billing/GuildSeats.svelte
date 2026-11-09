@@ -33,7 +33,6 @@
         {copy.given(Math.min(givenCount(seats), total), total)}
       </span>
     </div>
-    <p class="text-muted text-[13px]">{copy.explainer}</p>
     <ul class="flex flex-col">
       {#each seats as seat (seat.slot)}
         <GuildSeatRow {guildId} {seat} {manage} {now} {onChanged} />

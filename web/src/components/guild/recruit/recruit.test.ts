@@ -91,7 +91,7 @@ describe('the recruit page', () => {
     expect(out).toContain('Holy Paladin');
     expect(out).toContain('Mage, any spec');
     expect(out).toContain('data-testid="guild-recruit-officers"');
-    expect(out).toContain('Sign in to apply to Olympus XXVII');
+    expect(out).toContain('Sign in with Battle.net to apply');
     expect(out).not.toContain('data-testid="guild-recruit-form"');
     // A visitor gets no guild tabs.
     expect(out).not.toContain('guild-tab-roster');
@@ -163,7 +163,7 @@ describe('the applications page', () => {
     expect(out).toContain('of 3 officers');
     expect(out).toContain('data-testid="guild-application-accept"');
     expect(out).toContain('Hexmarrow accepted');
-    expect(out).toContain('Discord role granted');
+    expect(out).not.toContain('Discord role granted');
     expect(out).toContain('data-testid="guild-recruit-edit"');
     // The rail reads the card's fields, each with Edit; the form waits behind it.
     expect(out).toContain('data-testid="guild-recruit-edit-wanted-open"');

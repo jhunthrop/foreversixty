@@ -48,7 +48,7 @@ test('a verified officer sees settings and can rotate the invite link', async ({
 
   await page.goto('/guild/us/hardcore/the-last-watch/settings');
   await expect(page.getByTestId('guild-settings')).toBeVisible();
-  await expect(page.getByText('as a verified member: no officer has to approve them')).toBeVisible();
+  await expect(page.getByText('as a verified member: no officer has to approve them')).toHaveCount(0);
 
   // A first link needs no confirm: nothing breaks.
   await expect(page.getByTestId('guild-invite-none')).toHaveText(

@@ -32,6 +32,7 @@
 </script>
 
 <Section
+  panel
   title="Bench and swaps"
   meta={rows.length === 0 ? undefined : String(rows.length)}
   testid="raid-bench"

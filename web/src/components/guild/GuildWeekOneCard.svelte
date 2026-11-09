@@ -114,7 +114,12 @@
   />
 </div>
 
-<Section title={weekOneTitle(clock.now)} meta={weekOneMeta(clock.now)} testid="guild-overview-card-week-one">
+<Section
+  panel
+  title={weekOneTitle(clock.now)}
+  meta={weekOneMeta(clock.now)}
+  testid="guild-overview-card-week-one"
+>
   {#if status === 'error'}
     <div class="min-h-[180px]">
       <LoadError message={weekOneCopy.error} {onRetry} testid="guild-week-one-error" />

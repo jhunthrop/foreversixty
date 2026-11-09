@@ -46,7 +46,12 @@
   ] as const;
 </script>
 
-<Section title={award === null ? `Your call on ${itemName}` : itemName} testid="guild-loot-member-flag">
+<Section
+  title={award === null ? `Your call on ${itemName}` : itemName}
+  panel
+  frame="framed"
+  testid="guild-loot-member-flag"
+>
   {#if award !== null}
     <DecisionRow decision={award} {build} {shipsIcon} {timeZone} />
   {:else if users.length === 0}

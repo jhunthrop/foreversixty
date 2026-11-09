@@ -72,8 +72,6 @@
   /** This account's /v1/me guild entry: its rank and whether the trial is open, for the gate. */
   let myEntry = $state<MeGuild | null>(null);
   let guildName = $state('');
-  /** The guild's faction: the standalone page's title takes its colour (D8). */
-  let faction = $state<'alliance' | 'horde' | null>(null);
   let settings = $state<GuildSettingsData | null>(null);
   let status = $state<'loading' | 'ready' | 'forbidden' | 'failed'>('loading');
   let notice = $state('');
@@ -93,7 +91,6 @@
       const page = await fetchGuild(path);
       guildId = page.guild.id;
       guildName = page.guild.name;
-      faction = page.guild.faction ?? null;
       settings = await fetchGuildSettings(page.guild.id, undefined, (fresh) => (settings = fresh));
       status = 'ready';
     } catch (thrown) {
@@ -222,12 +219,11 @@
 {/snippet}
 
 {#snippet membersSection(current: GuildSettingsData)}
-  <Section title={guildSettingsCopy.membersHeading} testid="guild-settings-members">
+  <Section title={guildSettingsCopy.membersHeading} panel testid="guild-settings-members">
     {@render notes()}
     {#if guildId !== null}
       <GuildInviteLink
         {guildId}
-        {guildName}
         rotatedAt={current.invite.rotated_at}
         keptUrl={current.invite.url}
         madeBy={current.invite.made_by}
@@ -237,7 +233,7 @@
         }}
       />
     {/if}
-    <SettingsRow open label={settingsWords.officerRank} sub={settingsWords.officerRankHelp} controlBelow>
+    <SettingsRow open label={settingsWords.officerRank} controlBelow>
       {#snippet control(labelId)}
         <div class="flex items-center gap-3">
           <input
@@ -272,12 +268,7 @@
         {/if}
       {/snippet}
     </SettingsRow>
-    <SettingsRow
-      open
-      label={guildSettingsCopy.defaultVisibility}
-      sub={settingsWords.visibilityHelp}
-      controlBelow
-    >
+    <SettingsRow open label={guildSettingsCopy.defaultVisibility} controlBelow>
       {#snippet control()}
         <div class="w-40">
           <Select
@@ -299,6 +290,7 @@
 
 {#snippet recordsSection(id: number)}
   <Section
+    panel
     title={crest === undefined ? guildSettingsCopy.recordsOnlyHeading : guildSettingsCopy.recordsHeading}
     testid="guild-settings-records"
   >
@@ -313,7 +305,7 @@
   {:else}
     <PageHeader
       title={guildName === '' ? guildSettingsCopy.heading : guildName}
-      tone={faction === null ? 'strong' : { faction }}
+      tone="strong"
       testid="guild-settings-header"
     >
       {#snippet meta()}<span>{guildSettingsCopy.heading}</span>{/snippet}
@@ -336,7 +328,7 @@
     <p class="text-[14px]" data-testid="guild-settings-forbidden">{guildSettingsCopy.forbidden}</p>
   {:else if settings !== null}
     {@const current = settings}
-    <Page layout="split" testid="guild-settings-page">
+    <Page layout="split" panels testid="guild-settings-page">
       {#if guildId !== null}
         <GuildBillingSection {guildId} {path} {guildName} />
       {/if}

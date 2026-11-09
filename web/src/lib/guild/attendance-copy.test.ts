@@ -6,8 +6,6 @@ import {
   attendanceSummary,
   cameGuildLine,
   PICKER_WINDOW_DAYS,
-  ROSTER_LONG_WINDOW,
-  ROSTER_SHORT_WINDOW,
   cameAsOutcome,
   durationLabel,
   lateOutcome,
@@ -16,7 +14,6 @@ import {
   matchedElsewhereParts,
   moveDelta,
   nightLine,
-  nextRaidToggle,
   pickerEmpty,
   pickerFigures,
   pickerHelper,
@@ -116,7 +113,6 @@ describe('constants, verbatim from spec 6.1', () => {
     expect([g.noShow, g.late, g.joined, g.present, g.benchOut]).toEqual(cell('Attendance').slice(2, 7));
     expect(c.attendance.notInLog).toBe(str('Attendance', 8));
     expect(c.attendance.excused).toBe(str('Attendance', 11));
-    expect(c.roster.footnote).toBe(str('Roster', 1));
     expect(c.roster.noNights).toBe(str('Roster', 4));
     expect(c.readiness.noExport).toBe(str('Readiness', 3));
     expect(c.readiness.nobodySigned).toBe(str('Readiness', 4));
@@ -201,7 +197,6 @@ describe('outcome words', () => {
   });
 
   it('writes the window constants into prose', () => {
-    expect(c.roster.footnote).toContain(`last ${ROSTER_SHORT_WINDOW} and ${ROSTER_LONG_WINDOW} logged`);
     expect(pickerHelper('Onyxia', true)).toContain(`${PICKER_WINDOW_DAYS} days`);
   });
 });
@@ -245,7 +240,6 @@ describe('attendance, roster and readiness', () => {
   });
 
   it('readiness lines', () => {
-    expect(nextRaidToggle('Thu 10 Dec')).toBe('Next raid · Thu 10 Dec');
     const p = showingParts(23, "Onyxia's Lair", 'Thu 10 Dec, 8:00 pm');
     expect(`${p.lead}${p.title}${p.tail}`).toBe(
       "Showing the 23 signed In or Late for Onyxia's Lair, Thu 10 Dec, 8:00 pm.",

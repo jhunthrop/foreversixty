@@ -1,10 +1,9 @@
 <!-- web/src/components/guild/GuildPlannedRaids.svelte -->
 <!-- The body of the Raids tab's `Planned` Section (raids spec 3.1): the next four rows by start in the
-     tab's one Plate and `Show all {n} planned raids`, which expands in place; the empty line says
+     Planned panel's rows and `Show all {n} planned raids`, which expands in place; the empty line says
      who plans raids (member) or what planning does (officer). The Section (GuildRaids) carries the
      sub-head and its count. -->
 <script lang="ts">
-  import Plate from '../ui/Plate.svelte';
   import type { GuildRaidView } from '../../lib/guild/api';
   import { guildRaidHref } from '../../lib/characters';
   import { sortByStart } from '../../lib/guild/planned-row';
@@ -39,11 +38,11 @@
     {officer ? raidCopy.emptyPlanned.officer : raidCopy.emptyPlanned.member}
   </p>
 {:else}
-  <Plate testid="guild-planned-rows">
+  <div data-testid="guild-planned-rows">
     {#each shown as raid (raid.id)}
       <PlannedRaidRow {raid} href={guildRaidHref(guildPath, raid.id)} {now} {viewerTimezone} />
     {/each}
-  </Plate>
+  </div>
   {#if !expanded && sorted.length > FIRST_ROWS}
     <button
       type="button"

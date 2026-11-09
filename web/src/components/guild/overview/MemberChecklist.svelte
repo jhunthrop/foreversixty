@@ -9,6 +9,6 @@
   let { rows, verdict }: { rows: readonly ChecklistRow[]; verdict: string } = $props();
 </script>
 
-<Section title="Before the raid" meta={`Private to you · ${verdict}`} testid="guild-overview-checklist">
+<Section panel title="Before the raid" meta={`Private to you · ${verdict}`} testid="guild-overview-checklist">
   <Checklist items={rows} testid="guild-checklist" />
 </Section>

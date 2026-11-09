@@ -5,12 +5,11 @@
 import { titleCase } from '../character-profile';
 import { settingsWords } from '../guild/settings-view';
 import { zonedDayMonth, zonedDayMonthYear } from '../dates';
-import { SEAT_MOVE_LOCK_DAYS, formatCents, type Interval } from './plans';
+import { formatCents, type Interval } from './plans';
 
 export const seatsCopy = {
   heading: 'Premium seats',
   given: (given: number, total: number): string => `${given} of ${total} given`,
-  explainer: `A seat gives one verified member Premium while the plan lasts. A seat can move once every ${SEAT_MOVE_LOCK_DAYS} days.`,
   givenOn: (date: string, zone?: string): string => `Given ${zonedDayMonth(date, zone)}`,
   canMoveFrom: (date: string, zone?: string): string => `Can move from ${zonedDayMonth(date, zone)}`,
   canMoveNow: 'Can move now',
@@ -26,7 +25,7 @@ export const seatsCopy = {
   withdrawing: 'Withdrawing…',
   accepted: (starts: string, zone?: string): string =>
     `Accepted · starts ${zonedDayMonth(starts, zone)}, when their own Premium ends`,
-  notGiven: 'Not given',
+  notGiven: 'Open seat',
   give: 'Give seat',
   giving: 'Giving…',
   freedSince: (date: string, name: string, zone?: string): string =>
@@ -53,7 +52,6 @@ export const seatsCopy = {
   },
   whoPays: {
     heading: 'Who pays',
-    help: 'Hand the plan to another officer, for example when the guild leader changes. The founder price goes with it.',
     transfer: 'Transfer the plan',
     transferTo: 'Transfer to',
     offerNote: (name: string, from: string, amountCents: number, interval: Interval, zone?: string): string =>

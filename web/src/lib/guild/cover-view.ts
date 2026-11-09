@@ -1,6 +1,6 @@
 // web/src/lib/guild/cover-view.ts
-// The buff and debuff cover grid's view (owner decision D15): the API's rows (raid order: party
-// buffs, raid buffs, debuffs) split into the two sections, each cell's Grid tone from the need
+// The buff and debuff cover grid's view (owner decision D15): the API's rows, the gaps first (batch 3
+// ruling: "the cover lists its gaps first"), each cell's Grid tone from the need
 // against the players signed In or Late, and the spell's icon through the same build icon path
 // SpellIcon draws everywhere. The counts are the API's, never recomputed here.
 import { isRealIcon } from '../icons/placeholder';
@@ -11,18 +11,16 @@ import type { GuildRaidCoverRow } from './api';
 /** A Grid cell's tone: covered, covered on a talent we cannot see or too few, nobody. */
 export type CoverTone = MarkTone;
 
-export interface CoverSection {
-  kind: GuildRaidCoverRow['kind'];
-  rows: GuildRaidCoverRow[];
-}
+const TONE_ORDER: Readonly<Record<CoverTone, number>> = { miss: 0, warn: 1, ok: 2 };
 
-/** The sections in the order a raid leader reads them, each in the API's order; an empty
- *  section is left out. */
-export function coverSections(rows: readonly GuildRaidCoverRow[] | null | undefined): CoverSection[] {
-  const kinds: GuildRaidCoverRow['kind'][] = ['buff', 'debuff'];
-  return kinds
-    .map((kind) => ({ kind, rows: (rows ?? []).filter((row) => row.kind === kind) }))
-    .filter((section) => section.rows.length > 0);
+/** The cover, thinnest first: nobody, then too few or only on a talent we cannot see, then covered;
+ *  within each the fewest signed first, else the API's order (party buffs, raid buffs, debuffs). */
+export function coverThinnestFirst(
+  rows: readonly GuildRaidCoverRow[] | null | undefined,
+): GuildRaidCoverRow[] {
+  return [...(rows ?? [])].sort(
+    (a, b) => TONE_ORDER[coverTone(a)] - TONE_ORDER[coverTone(b)] || coverSigned(a) - coverSigned(b),
+  );
 }
 
 /** The players signed In or Late who can provide the row. */

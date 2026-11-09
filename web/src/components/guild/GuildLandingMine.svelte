@@ -14,7 +14,7 @@
 </script>
 
 {#if rows.length > 0}
-  <Section title={copy.mineHeading} testid="guild-landing-mine">
+  <Section title={copy.mineHeading} panel testid="guild-landing-mine">
     {#each rows as row (row.key)}
       <Row title={row.name} sub={row.where} href={row.href} open>
         {#snippet trail()}

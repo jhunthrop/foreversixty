@@ -15,7 +15,6 @@ import guild_directory_fixtures as D
 from guild_data import ALLIANCE, C, GUILD
 from ws_prims import (Button, Emblem, Meter, Page, PageForm, PageHeader, Plate, Row, Rows, Section, Tag, build_page, crest_img)
 
-_LEAD = "Your guild's progress, roster, raid nights and loot, from the logs and the addon."
 _OFFICER_LINE = 'Sign in and import your character, then open the guild page and choose Claim this guild.'
 _PROSE = 'style="font-size:14px;line-height:22px"'
 # guildClaimCopy.rules (web/src/lib/guild/copy.ts)
@@ -58,7 +57,7 @@ def lookup(ruleset: str) -> str:
     name = '<label class="f grow"><span class="t-label">Guild name</span><input class="field grow" placeholder="Guild name"></label>'
     form = (f'<form class="formrow" aria-label="Open a guild">{name}{_select("Region", "US", "r")}{_select("Ruleset", ruleset, "s")}'
             f'<span>{_act("Open guild", primary=True, submit=True)}</span></form>')
-    return Section('Open a guild', _body(form))
+    return Section('Open a guild', form, panel=True, frame='framed')
 
 
 def top_guilds() -> str:
@@ -66,7 +65,7 @@ def top_guilds() -> str:
     rows = [Row(n, f'{r.upper()} {D.RULESET_WORD[rs]}', rank=str(i + 1),
                 trail=f'<span class="dir-trail">{Meter(v / lead, "", f"{n}: {v} bosses" if v != 1 else f"{n}: 1 boss")}<b>{v} {"boss" if v == 1 else "bosses"}</b></span>')
             for i, (n, r, rs, v) in enumerate(D.TOP)]
-    return Section('Top guilds', _body(Plate(Rows(rows), 'Top guilds')))
+    return Section('Top guilds', Plate(Rows(rows), 'Top guilds'), boxed=True)
 
 
 def landing(signed_in: bool):
@@ -74,10 +73,10 @@ def landing(signed_in: bool):
     rail = ''
     if signed_in:
         rows = [Row(n, f'{r.upper()} {D.RULESET_WORD[rs]}', trail=Tag(rank.title(), 'muted')) for n, r, rs, rank in D.MINE]
-        rail += Section('Your guilds', _body(Rows(rows, open_=True)))
+        rail += Section('Your guilds', Rows(rows, open_=True), panel=True)
     sign_in = '' if signed_in else Button('Sign in with Battle.net')
-    rail += Section('Run a guild?', _body(f'<div class="dir-col"><p {_PROSE}>{_OFFICER_LINE}</p>{sign_in}</div>'))
-    body = PageHeader('Guilds', lead=_LEAD) + Page('split', lookup('PvP' if signed_in else 'Normal') + top_guilds(), rail)
+    rail += Section('Run a guild?', f'<div class="dir-col"><p {_PROSE}>{_OFFICER_LINE}</p>{sign_in}</div>', panel=True)
+    body = PageHeader('Guilds') + Page('split', lookup('PvP' if signed_in else 'Normal') + top_guilds(), rail, panels=True)
     who = (D.ALT[0], D.ALT[1], f'{D.ALT[1].title()} &middot; {D.ALT[2]}') if signed_in else None
     return build_page('Guilds', _view(body) + _CSS, 'Guild', who)
 
@@ -90,8 +89,8 @@ def join():
     lines = ('<div style="display:flex;flex-direction:column;gap:4px"><p class="t-small">Joining by this link verifies you at once. No officer has to approve you.</p>'
              '<p class="t-small">Joining puts your characters on its roster and shares your gear with its officers; you can change that on your account.</p></div>')
     buttons = f'<div class="dir-btns">{_act(f"Join {GUILD}", primary=True)}{Button("Not now", tone="ghost")}</div>'
-    section = Section('Your invite', _body(f'<div class="dir-col">{inviter}{you}{lines}{buttons}</div>'))
-    head = PageHeader(GUILD, ALLIANCE, Emblem(gd.FACTION, 64), meta=[f'PvP US &middot; {gd.RAIDERS} members on Forever Sixty'])
+    section = Section('Your invite', f'<div class="dir-col">{inviter}{you}{lines}{buttons}</div>', panel=True, frame='framed')
+    head = PageHeader(GUILD, '', Emblem(gd.FACTION, 64), meta=[f'PvP US &middot; {gd.RAIDERS} members on Forever Sixty'])
     return build_page('Join a guild', _view(head + PageForm(section)) + _CSS, 'Guild', (name, cls, f'{cls.title()} &middot; {level}'))
 
 
@@ -102,10 +101,10 @@ def claim():
            f'{Button("Plan an event")}{Button("Add the Discord bot")}</div>'
            '<p class="t-small" style="padding-top:12px">Events and the Discord bot are part of the Guild and Raid guild plans.</p>')
     rules = '<ul class="dir-list">' + ''.join(f'<li>{r}</li>' for r in _CLAIM_RULES) + '</ul>'
-    main = Section('Claim', _body(state)) + Section('Next', _body(nxt))
-    rail = Section('How claiming works', _body(rules))
+    main = Section('Claim', state, panel=True, frame='framed') + Section('Next', nxt, panel=True)
+    rail = Section('How claiming works', rules, panel=True)
     head = f'<div class="pc"><a class="backlink" href="#">&lsaquo; {GUILD}</a></div>' + PageHeader(f'{GUILD} &middot; your claim')
-    return build_page('Claim', _view(head + Page('split', main, rail)) + _CSS, 'Guild', (D.CLAIMANT, 'hunter', 'Beast Mastery Hunter &middot; 60'))
+    return build_page('Claim', _view(head + Page('split', main, rail, panels=True)) + _CSS, 'Guild', (D.CLAIMANT, 'hunter', 'Beast Mastery Hunter &middot; 60'))
 
 
 PAGES: dict = {'web-guild-landing-out': lambda: landing(False), 'web-guild-landing-in': lambda: landing(True),

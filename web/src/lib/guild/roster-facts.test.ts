@@ -5,10 +5,33 @@ import {
   entrySpecLine,
   gearSetLabel,
   inGameFacts,
+  rosterColumns,
   rosterSpecLine,
   rosterStatChips,
 } from './roster-facts';
 import { specClassName } from './spec-name';
+
+describe('rosterColumns', () => {
+  const base = buildMockHome(VIEWER_MEMBER).roster[0];
+  const cells = (row: typeof base, source: 'reports' | 'raids' = 'reports') =>
+    Object.fromEntries(rosterColumns(row, source).map((c) => [c.key, c.text]));
+
+  it('leaves the units to the heads: item level and raids bare', () => {
+    const c = cells({ ...base, item_level: 61, attendance: { present: 1, nights: 1 } });
+    expect(c.level).toBe('61');
+    expect(c.raids).toBe('1 of 1');
+  });
+
+  it('adds the long window in raid mode, and leaves no raid nights blank, never a dash', () => {
+    const raid = {
+      ...base,
+      attendance: { present: 7, nights: 8 },
+      attendance_30: { present: 26, nights: 30 },
+    };
+    expect(cells(raid, 'raids').raids).toBe('7 of 8 · 26 of 30');
+    expect(cells({ ...base, attendance: { present: 0, nights: 0 } }).raids).toBe('');
+  });
+});
 
 const NOW = new Date(2026, 11, 22, 21, 46);
 
@@ -146,11 +169,11 @@ describe('rosterSpecLine', () => {
     );
   });
 
-  it('reads the sites spec, labelled, when the snapshot carries none', () => {
+  it('reads the site’s spec plainly when the snapshot carries none', () => {
     expect(rosterSpecLine({ siteSpec: 'Survival', addonSpec: null, className: 'hunter' })).toBe(
-      'Survival Hunter on the site',
+      'Survival Hunter',
     );
-    expect(rosterSpecLine({ siteSpec: 'Survival', className: 'hunter' })).toBe('Survival Hunter on the site');
+    expect(rosterSpecLine({ siteSpec: 'Survival', className: 'hunter' })).toBe('Survival Hunter');
     // No spec anywhere (no talents spent): the class alone, never a bare row (guild round 3).
     expect(rosterSpecLine({ addonSpec: null, className: 'hunter' })).toBe('Hunter');
     expect(rosterSpecLine({ addonSpec: null })).toBe('');

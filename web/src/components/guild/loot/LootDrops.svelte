@@ -9,7 +9,6 @@
   import type { GuildLootItem, GuildLootRaid } from '../../../lib/guild/api';
   import { pickOptions, type DropRow } from '../../../lib/guild/loot-council-view';
   import ItemRow from '../../ui/ItemRow.svelte';
-  import Plate from '../../ui/Plate.svelte';
   import Section from '../../ui/Section.svelte';
   import Select from '../../ui/Select.svelte';
   import Tag from '../../ui/Tag.svelte';
@@ -43,15 +42,15 @@
   const options = $derived(pickOptions(openable, raids));
 </script>
 
-<Section title={heading} {meta} metaTestid="guild-loot-night-summary" testid="guild-loot-drops">
-  <Plate>
+<Section title={heading} panel {meta} metaTestid="guild-loot-night-summary" testid="guild-loot-drops">
+  <div>
     {#each rows as row (row.itemId)}
       <ItemRow
         item={{
           id: row.itemId,
           name: row.name,
           quality: row.quality,
-          icon: row.kind === 'gear' ? row.icon : undefined,
+          icon: row.icon === '' ? undefined : row.icon,
         }}
         {build}
         source={row.sub}
@@ -64,14 +63,12 @@
         {/snippet}
       </ItemRow>
     {:else}
-      <p class="text-muted px-4 py-5 text-[14px]" data-testid="guild-loot-empty">{emptyText}</p>
+      <p class="text-muted py-3 text-[14px]" data-testid="guild-loot-empty">{emptyText}</p>
     {/each}
-  </Plate>
+  </div>
   {#if openable.length > 0}
     <div class="mt-3 flex max-w-[360px] flex-col gap-[6px]" data-testid="guild-loot-open-drop">
-      <label for="guild-loot-open-drop" class="text-label text-muted font-bold"
-        >Open a drop from the loot table</label
-      >
+      <label for="guild-loot-open-drop" class="sr-only">Open a drop from the loot table</label>
       <Select
         id="guild-loot-open-drop"
         size="compact"

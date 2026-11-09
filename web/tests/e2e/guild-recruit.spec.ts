@@ -25,12 +25,20 @@ test.describe('the recruiting card', () => {
     await gotoHydrated(page, RECRUIT_URL, 'guild-recruit-card');
     await expect(page.getByTestId('guild-recruit-head')).toContainText('Join Olympus XXVII');
     await expect(page.getByTestId('guild-recruit-open')).toHaveText('Recruiting');
-    await expect(page.getByTestId('guild-recruit-nights')).toContainText(
+    await expect(page.getByTestId('guild-recruit-facts')).toContainText(
       'Tue and Thu, 8 to 11 pm server time',
     );
-    await expect(page.getByTestId('guild-recruit-wanted')).toContainText(
-      'Holy Paladin (Two for the heal rotation); Protection Warrior (Off tank); Mage, any spec',
-    );
+    // Looking for (batch 3): each spec in its class colour with the officers' note under it.
+    const wanted = page.getByTestId('guild-recruit-wanted');
+    for (const words of [
+      'Holy Paladin',
+      'Two for the heal rotation',
+      'Protection Warrior',
+      'Off tank',
+      'Mage, any spec',
+    ]) {
+      await expect(wanted).toContainText(words);
+    }
     await expect(page.getByTestId('guild-recruit-officers')).toContainText(
       'Protection Warrior · Guild master',
     );
@@ -95,13 +103,17 @@ test.describe('the recruiting card', () => {
     await expect(page.getByTestId('guild-recruit-wanted')).toHaveCount(0);
   });
 
-  test('at 390 the card leads, the form follows and nothing scrolls sideways', async ({ page }) => {
+  test('at 390 who they look for leads, the form follows, the card after, and nothing scrolls sideways', async ({
+    page,
+  }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await stubRecruit(page, { viewer: 'applicant' });
     await gotoHydrated(page, RECRUIT_URL, 'guild-recruit-form');
-    const card = await page.getByTestId('guild-recruit-card').boundingBox();
+    const wanted = await page.getByTestId('guild-recruit-wanted').boundingBox();
     const form = await page.getByTestId('guild-recruit-form').boundingBox();
-    expect(form!.y).toBeGreaterThan(card!.y);
+    const card = await page.getByTestId('guild-recruit-card').boundingBox();
+    expect(form!.y).toBeGreaterThan(wanted!.y);
+    expect(card!.y).toBeGreaterThan(form!.y);
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
   });
 });
@@ -121,7 +133,8 @@ test.describe('applications, officers', () => {
       'Quillbright accepted. Discord role granted. Told them on Discord.',
     );
     await expect(page.getByTestId('guild-application-42')).toHaveCount(0);
-    await expect(page.getByTestId('guild-application-decided-42')).toContainText('Discord role granted');
+    // The record names a Discord outcome only when an officer must act on it; the notice above said it went.
+    await expect(page.getByTestId('guild-application-decided-42')).not.toContainText('Discord role granted');
     await expect(page.getByTestId('guild-application-decided-39')).toContainText('by Kraggor');
     await expectNoAxeViolations(page, '[data-testid="guild-applications-page"]');
   });

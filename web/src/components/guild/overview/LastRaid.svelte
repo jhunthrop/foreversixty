@@ -17,7 +17,7 @@
   } = $props();
 </script>
 
-<Section title="Last raid" meta={progression} testid="guild-overview-last-raid">
+<Section panel title="Last raid" meta={progression} testid="guild-overview-last-raid">
   {#if report === null}
     <p class="text-muted text-small">No raid logged yet.</p>
   {:else}

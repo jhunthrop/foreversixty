@@ -96,12 +96,13 @@
 
 <div data-testid="guild-landing">
   {#snippet header()}
-    <PageHeader title={copy.heading} lead={copy.lead} testid="guild-landing-head" />
+    <PageHeader title={copy.heading} testid="guild-landing-head" />
   {/snippet}
   {#snippet rail()}
     <GuildLandingMine rows={mine} />
     <Section
       title={held === null ? copy.runHeading : copy.heldHeading}
+      panel
       anchor="claim"
       testid="guild-landing-claim"
     >
@@ -115,8 +116,8 @@
       </div>
     </Section>
   {/snippet}
-  <Page layout="split" {header} {rail} testid="guild-landing-page">
-    <Section title={copy.lookupHeading} testid="guild-lookup-card">
+  <Page layout="split" panels {header} {rail} testid="guild-landing-page">
+    <Section title={copy.lookupHeading} panel frame="framed" testid="guild-lookup-card">
       <FormRow label={copy.lookupHeading} onsubmit={onSubmit} testid="guild-lookup">
         <Field
           id="guild-lookup-name"
@@ -155,7 +156,7 @@
       </FormRow>
       <p class="text-strong min-h-[1lh] pt-2 text-[13px] empty:hidden" role="status">{status}</p>
     </Section>
-    <Section title={copy.topHeading} testid="guild-landing-top">
+    <Section title={copy.topHeading} boxed testid="guild-landing-top">
       <HomeTopGuilds label={copy.topHeading} />
     </Section>
   </Page>

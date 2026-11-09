@@ -705,6 +705,15 @@ box-shadow:0 0 0 1px rgba(130,112,91,.55);--muted:#8b8784}
 .frame::before{content:"";position:absolute;inset:6px;border:1px solid rgba(243,238,226,.42);border-radius:6px;pointer-events:none}
 @media(max-width:767px){.frame{padding:18px 16px}}
 
+.plate>.sec-h.pn-h{padding:16px 20px 10px;border-bottom:0}.pn-b{padding:0 20px 16px}.pn-b.flush{padding:0 0 6px}
+.plate.framed{position:relative}.plate.framed::before{content:"";position:absolute;inset:6px;border:1px solid rgba(243,238,226,.42);border-radius:6px;pointer-events:none}
+.layout-split.panels{column-gap:28px}.layout-split.panels>.main,.layout-split.panels>.rail{gap:22px}
+@media(max-width:767px){.plate>.sec-h.pn-h{padding:14px 14px 8px}.pn-b{padding:0 14px 14px}}
+
+table.gridm.edge :is(th,td){padding-inline:10px}table.gridm.edge :is(th,td):first-child{width:100%;padding-left:20px}
+table.gridm.edge :is(th,td):last-child{padding-right:20px}
+@media(max-width:767px){table.gridm.edge :is(th,td):first-child{padding-left:14px}table.gridm.edge :is(th,td):last-child{padding-right:14px}}
+
 .rl.compact{--rr-name:minmax(170px,1fr);--rr-bar:minmax(48px,160px);--rr-gap:72px;--rr-links:0px}
 .rl.compact.grouped{--grp-w:44px}
 @media(min-width:1280px){.rl.compact.grouped{--grp-w:64px}}

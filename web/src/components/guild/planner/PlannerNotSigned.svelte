@@ -46,7 +46,7 @@
 </script>
 
 {#if rows.length > 0}
-  <Section title="Not signed up" meta={String(rows.length)} testid="raid-not-signed">
+  <Section title="Not signed up" panel meta={String(rows.length)} testid="raid-not-signed">
     {#snippet head()}
       <Button
         size="sm"

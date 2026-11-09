@@ -807,8 +807,8 @@ test('a guild page leads with the pull count and kills, and its Progression tab 
   await page.goto('/guild/us/hardcore/the-last-watch');
 
   await expect(page.locator('main h1')).toHaveText('The Last Watch');
-  // The public read's progression rows (one boss with kills, 14 + 31 pulls) feed the header.
-  await expect(page.getByTestId('guild')).toContainText('1 boss down · 45 pulls');
+  // The public read's progression rows (one boss with kills, 14 + 31 pulls) feed the Last raid line.
+  await expect(page.getByTestId('guild-overview-last-raid')).toContainText('1 boss down · 45 pulls');
   await expect(page.getByTestId('guild')).toContainText('Sanguine Depths, fixture night');
 
   // The per-boss lists moved to the Progression tab, which reads the guild's own progression

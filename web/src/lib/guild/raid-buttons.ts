@@ -6,6 +6,9 @@ import { button } from '../ui/button';
 
 export const RAID_BUTTON = button('secondary', 'md');
 
+/** The quiet officer action beside the buttons (Cancel raid): the ghost, gold text, no fill. */
+export const RAID_GHOST_BUTTON = button('ghost', 'md');
+
 /** The confirm's destructive answer: the danger outline. */
 export const RAID_WIPE_BUTTON = button('danger', 'md');
 
