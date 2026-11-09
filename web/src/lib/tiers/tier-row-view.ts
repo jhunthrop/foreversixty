@@ -98,10 +98,10 @@ export function rankRowProps(row: TierRow, rows: readonly TierRow[]): TierRankRo
  *  less-certain stat weights, joined when a row has both. */
 function noteOf(row: TierRow): Pick<TierRankRowProps, 'note'> {
   const tie = tiersCopy.healerTie(row);
-  const low = row.lowConfidence
-    ? { text: tiersCopy.lowConfidence, title: tiersCopy.lowConfidenceTitle }
-    : null;
-  const notes = [tie, low].filter((note): note is RankNote => note !== null);
+  const notes: { text: string; title: string }[] = [
+    ...(tie === null ? [] : [tie]),
+    ...(row.lowConfidence ? [{ text: tiersCopy.lowConfidence, title: tiersCopy.lowConfidenceTitle }] : []),
+  ];
   if (notes.length === 0) return {};
   return {
     note: { text: notes.map((n) => n.text).join(' · '), title: notes.map((n) => n.title).join('. ') },
