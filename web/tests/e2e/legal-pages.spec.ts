@@ -24,7 +24,8 @@ test.describe('legal pages', () => {
 
   test('/privacy names Stripe as the payment processor and the functional-only cookies', async ({ page }) => {
     await page.goto('/privacy');
-    await expect(page.getByText('Stripe', { exact: false }).first()).toBeVisible();
+    // The phone's On this page list (closed) names the Stripe section too: read the document's own text.
+    await expect(page.getByText('Stripe', { exact: false }).filter({ visible: true }).first()).toBeVisible();
     await expect(page.getByText('fs_session', { exact: false })).toBeVisible();
   });
 

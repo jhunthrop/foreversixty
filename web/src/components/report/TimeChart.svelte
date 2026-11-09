@@ -99,6 +99,30 @@
   };
   const wide = new MediaQuery('min-width: 768px', true);
 
+  /** The phone's open chart is remembered (it was before the report frame, 2026-09-26): a reader
+   *  who opened it once finds it open on the next report. Read after mount, so the server's closed
+   *  Disclosure hydrates as drawn; written only once read. */
+  const CHART_OPEN_KEY = 'fs.report.chartOpen';
+  let chartOpen = $state(false);
+  let chartOpenRead = $state(false);
+  $effect(() => {
+    try {
+      chartOpen = globalThis.localStorage?.getItem(CHART_OPEN_KEY) === 'true';
+    } catch {
+      // No storage (a private window, blocked site data): the chart starts closed.
+    }
+    chartOpenRead = true;
+  });
+  $effect(() => {
+    const open = chartOpen;
+    if (!chartOpenRead) return;
+    try {
+      globalThis.localStorage?.setItem(CHART_OPEN_KEY, String(open));
+    } catch {
+      // Nothing to remember it in: the choice lasts this page.
+    }
+  });
+
   const legend = new LegendState();
   let classMedian = $state<string | null>(null);
   let raidMedianOn = $state(true);
@@ -287,7 +311,7 @@
   {#if wide.current}
     {@render plot()}
   {:else}
-    <Disclosure summary={meta} testid="chart-collapsed">
+    <Disclosure summary={meta} bind:open={chartOpen} testid="chart-collapsed">
       {@render controls()}
       {@render plot()}
     </Disclosure>
