@@ -2,28 +2,26 @@
 <!-- The itinerary under the paperdoll (design/specs/2026-11-09-directions.md, Best in slot): one
      panel, the stops in route order (instances by pieces, then crafted, reputation, quest, vendor,
      world drops), each headed by its name and level range, each piece an ItemRow: the item, the
-     slot and what the source adds to the heading, and its gain when it is one. -->
+     slot and what the source adds to the heading (wrapping only between its facts), and what it
+     is worth: a gain, "Same DPS" as the next pick, Worn, or the row's own state. -->
 <script lang="ts">
   import Plate from '../ui/Plate.svelte';
   import ItemRow from '../ui/ItemRow.svelte';
-  import { isMeasuredGain, type ItineraryStop } from '../../lib/bis/frame-view';
-  import type { GainFigure } from '../../lib/ui/primitives';
+  import { rowFigure, type ItineraryStop } from '../../lib/bis/frame-view';
+  import { factSegments } from '../../lib/ui/primitives';
 
   let {
     stops,
     build,
+    unit,
     label,
   }: {
     stops: readonly ItineraryStop[];
     build: string;
+    /** The band's unit ("DPS"), for a tie's "Same DPS". */
+    unit: string;
     label: string;
   } = $props();
-
-  /** A row's figure: a measured gain; a tie or an only option says nothing here (the centre does). */
-  function rowGain(gain: GainFigure | undefined): GainFigure | undefined {
-    if (gain === undefined || !isMeasuredGain(gain.value)) return undefined;
-    return { value: gain.value, unit: gain.unit, tone: gain.tone === 'wipe' ? 'wipe' : 'gain' };
-  }
 </script>
 
 <Plate {label} flush={false} testid="bis-itinerary">
@@ -36,17 +34,25 @@
         <ItemRow
           item={row.cell.item}
           {build}
-          source={row.line}
-          gain={rowGain(row.cell.gain)}
+          gain={rowFigure(row.cell.gain, unit)}
           badge={row.cell.badge}
           testid={`bis-row-${row.cell.slot}`}
-        />
+        >
+          {#snippet sourceContent()}{#each factSegments(row.line) as fact, index (index)}{index > 0
+                ? ' '
+                : ''}<span class="bis-fact">{fact}</span>{/each}{/snippet}
+        </ItemRow>
       {/each}
     </section>
   {/each}
 </Plate>
 
 <style>
+  /* One fact of the line, kept whole: it wraps between facts (lib/ui/primitives factSegments). */
+  .bis-fact {
+    display: inline-block;
+    max-width: 100%;
+  }
   .bis-stop + .bis-stop {
     margin-top: 18px;
   }

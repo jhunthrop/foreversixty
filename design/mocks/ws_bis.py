@@ -100,12 +100,9 @@ def side(f: dict) -> str:
     return f'<div class="bis-side">{"".join(parts)}</div>'
 
 
-def gain(text: str) -> tuple[str, str, str] | None:
-    """The row's figure as the built Figure reads ("+0.3DPS"): value and unit."""
-    if not text:
-        return None
-    value = text.rstrip('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz ')
-    return (escape(value), escape(text[len(value):].strip()), '')
+def gain(g: dict | None) -> tuple[str, str, str] | None:
+    """The row's figure as the built Figure draws it: its value and unit."""
+    return (escape(g['value']), escape(g['unit']), '') if g else None
 
 
 def itinerary(f: dict) -> str:

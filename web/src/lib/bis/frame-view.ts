@@ -5,6 +5,8 @@
 // pieces, each row saying only what its heading does not). Everything reads the band's model and
 // the doll's cells, so the frame, the side and the itinerary never disagree.
 import type { DollCell } from '../ui/paperdoll';
+import type { GainFigure } from '../ui/primitives';
+import { gearCopy } from '../gear/copy';
 import type { BisBandModel } from './page-model';
 import type { ScaleRow } from './scale-view';
 import { whereGroups } from './doll-view';
@@ -101,4 +103,17 @@ export function simWeightsHref(simHref: string | undefined): string | undefined 
 /** A gain with a figure ("+0.3", "−1.2"), not a tie, an only option or a worn item's word. */
 export function isMeasuredGain(value: string | undefined): boolean {
   return value !== undefined && /^[+−-]\d/.test(value);
+}
+
+/** A row's figure in the itinerary, so no row is a silent blank: a measured gain in the gain
+ *  colour (a re-pick's loss in red); a tie with the next pick as "Same DPS"; a worn pick as Worn;
+ *  an only option or an unscored one by its own words ("Only option", "Not sim-checked"). */
+export function rowFigure(gain: GainFigure | undefined, unit: string): GainFigure | undefined {
+  if (gain === undefined) return undefined;
+  if (isMeasuredGain(gain.value)) {
+    return { value: gain.value, unit: gain.unit, tone: gain.tone === 'wipe' ? 'wipe' : 'gain' };
+  }
+  if (gain.value === gearCopy.paperdoll.same) return { value: gain.value, unit, tone: 'muted' };
+  if (gain.value === gearCopy.paperdoll.worn) return { value: gain.value, tone: gain.tone ?? 'kill' };
+  return { value: gain.basis?.prefix ?? gain.value, tone: 'muted' };
 }

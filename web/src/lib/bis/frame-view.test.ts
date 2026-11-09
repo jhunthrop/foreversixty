@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { placeRange, rowLine, simWeightsHref, stackView } from './frame-view';
+import { placeRange, rowFigure, rowLine, simWeightsHref, stackView } from './frame-view';
 import type { BisBandModel } from './page-model';
 import type { ScaleRow } from './scale-view';
 import type { DollCell } from '../ui/paperdoll';
@@ -74,5 +74,26 @@ describe('simWeightsHref', () => {
   it('opens the same set on the weights page', () => {
     expect(simWeightsHref('/sim?code=abc')).toBe('/sim/weights?code=abc');
     expect(simWeightsHref(undefined)).toBeUndefined();
+  });
+});
+
+describe('rowFigure', () => {
+  it('never leaves a row blank: a gain, a tie, a worn pick or the row state', () => {
+    expect(rowFigure({ value: '+0.3', unit: 'DPS', tone: 'strong' }, 'DPS')).toEqual({
+      value: '+0.3',
+      unit: 'DPS',
+      tone: 'gain',
+    });
+    expect(rowFigure({ value: 'Same', tone: 'muted' }, 'DPS')).toEqual({
+      value: 'Same',
+      unit: 'DPS',
+      tone: 'muted',
+    });
+    expect(rowFigure({ value: 'Worn', tone: 'kill' }, 'DPS')).toEqual({ value: 'Worn', tone: 'kill' });
+    expect(rowFigure({ value: '\u2014', basis: { prefix: 'Only option' }, tone: 'muted' }, 'DPS')).toEqual({
+      value: 'Only option',
+      tone: 'muted',
+    });
+    expect(rowFigure(undefined, 'DPS')).toBeUndefined();
   });
 });

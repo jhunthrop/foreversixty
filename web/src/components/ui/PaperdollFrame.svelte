@@ -211,9 +211,11 @@
   <div class="pdf-list">
     <div class="pdf-strip">
       <span class="pdf-strip-medal">{@render medal()}</span>
-      <svelte:element this={heading} class="pdf-strip-title"
-        >{stripShown}{#if stripRest}<span class="sr-only">{stripRest}</span>{/if}</svelte:element
-      >
+      <!-- The strip repeats the title bar's heading for the phone: one heading element per page in
+           the served HTML, so this one is a heading by role (only one of the two ever shows). -->
+      <div class="pdf-strip-title" role="heading" aria-level={heading === 'h1' ? 1 : 2}>
+        {stripShown}{#if stripRest}<span class="sr-only">{stripRest}</span>{/if}
+      </div>
       {@render figureView()}
     </div>
     <ul class="pdf-items">

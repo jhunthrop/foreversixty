@@ -162,7 +162,6 @@
             testid: 'bis-expertise-cap',
           }
         : undefined,
-      model.weaponNote ? { text: model.weaponNote, testid: 'bis-weapon-note' } : undefined,
     ].filter((note) => note !== undefined),
   );
   const factionWord = $derived(state.faction === 'horde' ? bisCopy.factionHorde : bisCopy.factionAlliance);
@@ -393,7 +392,12 @@
         />
       </div>
       <div class="bis-route">
-        <BisItinerary {stops} build={data.build} label={`${specName} ${className}, where to go`} />
+        <BisItinerary
+          {stops}
+          build={data.build}
+          unit={model.unit}
+          label={`${specName} ${className}, where to go`}
+        />
       </div>
     </div>
   </Page>

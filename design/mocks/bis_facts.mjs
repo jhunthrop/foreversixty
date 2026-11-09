@@ -124,7 +124,7 @@ function readFacts() {
             name: text(name),
             quality: rarity(name),
             line: text(q(".ui-item-row-src", r)),
-            gain: fig ? text(fig) : "",
+            gain: fig ? { value: text(q(".tabular-nums", fig)?.firstChild), unit: text(q(".tabular-nums > span", fig)) } : null,
           };
         }),
       })),
