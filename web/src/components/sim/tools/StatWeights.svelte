@@ -30,9 +30,9 @@
   import { publishedWeights, type PublishedWeights } from '../../../lib/sim/published-weights';
   import { requestPresetFor } from '../../../lib/sim/settings';
   import type { BulkStore } from '../../../lib/sim/bulk-store.svelte';
-  import { bulkCopy, WEIGHTS_STATS_FROM_ENGINE } from '../../../lib/sim/copy';
+  import { bulkCopy } from '../../../lib/sim/copy';
   import { specLabel } from '../../../lib/sim/spec-label';
-  import { hasWeightStats, pickableStatsFor, statLabel, toolScaleView } from '../../../lib/sim/weights';
+  import { pickableStatsFor, statLabel, toolScaleView } from '../../../lib/sim/weights';
   import type { Snippet } from 'svelte';
   import Notice from '../../ui/Notice.svelte';
   import Page from '../../ui/Page.svelte';
@@ -140,11 +140,6 @@
       {#if store.referenceStat}
         <p class="text-small text-muted m-0" data-testid="sim-weights-reference">
           {bulkCopy.weightsReference}: {statLabel(store.referenceStat)}
-        </p>
-      {/if}
-      {#if hasWeightStats(store.weightStats)}
-        <p class="text-small text-muted m-0" data-testid="sim-weights-stats-note">
-          {WEIGHTS_STATS_FROM_ENGINE}
         </p>
       {/if}
       <ul class="m-0 grid list-none grid-cols-2 gap-x-4 p-0">

@@ -184,4 +184,10 @@
     grid-column: 2 / -1;
     padding-top: 6px;
   }
+  /* The bar takes its own line under the name; the primary figure stays on the name's line,
+     rather than wrapping under the icon. */
+  .ui-st[data-open='true'] .ui-st-r .ui-st-f[data-primary='true'] {
+    grid-row: 1;
+    grid-column: 3;
+  }
 }

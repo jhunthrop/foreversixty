@@ -10,6 +10,8 @@
 <script lang="ts">
   import { bisCopy } from '../../lib/bis/copy';
   import type { ScaleRow, ScaleView } from '../../lib/bis/scale-view';
+  import { WEIGHT_ERROR_BELOW_THRESHOLD } from '../../lib/sim/copy';
+  import { formatWeightError } from '../../lib/sim/weights';
   import type { StatColumn, StatFigure } from '../../lib/ui/stat-table';
   import Meter from '../ui/Meter.svelte';
   import StatRow from '../ui/StatRow.svelte';
@@ -20,15 +22,23 @@
   const caption = $derived(
     view.hasteCaption === undefined ? view.noteLine : `${view.noteLine} ${view.hasteCaption}`,
   );
-  /** Two decimals, as the scale; an error that rounds to nothing says so. */
-  const SMALLEST_SHOWN = 0.005;
-  const errorLabel = (error: number): string => (error < SMALLEST_SHOWN ? '< 0.01' : `±${error.toFixed(2)}`);
+  /** Two decimals, as the scale; an error that rounds to nothing says so (formatWeightError). */
+  function errorLabel(error: number): string {
+    const text = formatWeightError(error);
+    return text === WEIGHT_ERROR_BELOW_THRESHOLD ? text : `±${text}`;
+  }
 
   const COLUMNS: readonly StatColumn[] = [
     { id: 'scale', label: 'Scale' },
     { id: 'per-point', label: 'Per point' },
     { id: 'error', label: 'Error' },
   ];
+
+  /** Below 1024 the other columns fold away: the per-point DPS and the error under the scale. */
+  function phoneLine(row: ScaleRow): string | undefined {
+    if (!row.significant || row.dpsPerPoint === undefined) return undefined;
+    return `${row.dpsPerPoint.toFixed(3)} ${row.perPointUnit} · ${errorLabel(row.scaleError)}`;
+  }
 
   function figuresOf(row: ScaleRow): StatFigure[] {
     if (!row.significant) {
@@ -53,7 +63,7 @@
   <p class="text-muted text-[13px]" data-testid="sim-weights-scale-caption">{caption}</p>
   <StatTable columns={COLUMNS} nameHead="Stat" open label="Stat weights">
     {#each view.rows as row (row.stat)}
-      <StatRow figures={figuresOf(row)} testid={`sim-weight-${row.stat}`}>
+      <StatRow figures={figuresOf(row)} phone={phoneLine(row)} testid={`sim-weight-${row.stat}`}>
         {#snippet name()}
           <span class={row.significant ? '' : 'text-muted'}>{row.label}</span>
         {/snippet}

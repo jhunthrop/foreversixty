@@ -227,7 +227,7 @@ def weights() -> str:
     stats = row.get('stats') or list(row['weights'])
     picks = ''.join(f'<li><label class="opt">{check(checked=True, disabled=i == 0)}{s}</label></li>' for i, s in enumerate(stats))
     caution = '<p class="notice">Weights hold near the gear you have on. For a real choice, sim the items. <a class="link" href="#">Open Top Gear &rsaquo;</a></p>'
-    rail = Section('Stats to weigh', f'<div class="wbody"><p class="t-small">Normalised to: {stats[0]}</p><p class="t-small">Only the stats this sim models for the spec.</p><ul class="opts two">{picks}</ul></div>')
+    rail = Section('Stats to weigh', f'<div class="wbody"><p class="t-small">Normalised to: {stats[0]}</p><ul class="opts two">{picks}</ul></div>')
     return finish('Weights', head('weights') + run_bar('weights') + split([character_line(), caution, published_weights()], [rail]))
 
 
@@ -257,7 +257,8 @@ def published_weights() -> str:
         sub = f'{w["rating_factor"]} {label} rating = 1% {label}' if 'rating_factor' in w else ''
         sf = w['scale_factor'] / divisor
         err = w['scale_error'] / divisor
-        trs.append(S.StatRow('', name, sub, [f'{sf:.2f}', f'{w["dps_per_point"]:.3f} DPS', '&lt; 0.01' if err < .005 else f'&plusmn;{err:.2f}'],
+        err_txt = '&lt; 0.01' if err < .005 else f'&plusmn;{err:.2f}'
+        trs.append(S.StatRow('', name, sub, [f'{sf:.2f}', f'{w["dps_per_point"]:.3f} DPS', err_txt], primary_phone=f'{w["dps_per_point"]:.3f} DPS &middot; {err_txt}',
                              meter=S.Meter(min(1, max(.04, sf)))))
     top = STAT_LABEL[next(w for w in rows if reading(w) == 'value')['stat']]
     cap = f'Per point of stat, normalized to {top} = 1.00, with DPS per point and the sim error.'

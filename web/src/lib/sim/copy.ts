@@ -79,15 +79,6 @@ export const MARGIN_BELOW_THRESHOLD = '< 0.1';
  */
 export const WEIGHT_ERROR_BELOW_THRESHOLD = '< 0.01';
 /**
- * Sub-item 4's "and says so": shown under the weights picker only when the spec's own
- * `weight_stats` came back non-empty, since that is the only time the claim is true. An
- * absent list falls back to the full pinned vocabulary (`weights.ts`'s `WEIGHT_STATS`) with
- * no explainer at all -- "the engine did not say" must not be dressed up as "the engine
- * said these are the only ones that matter" (D45's retail-stat-list defect: Expertise,
- * spell haste, armor penetration, MP5, feral attack power offered to a 1.60 spec).
- */
-export const WEIGHTS_STATS_FROM_ENGINE = 'These are the stats the engine weighs for this spec.';
-/**
  * The healer-sim defect (BLOCKER 2): a Restoration Druid string ran on `/sim/weights` for
  * 64 seconds and then said nothing. `bulk-store-request.ts`'s `buildRequest` refuses before
  * the request ever reaches the pool, with this sentence -- never the engine's own words,

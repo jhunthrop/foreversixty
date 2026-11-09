@@ -23,7 +23,6 @@
 import { render } from 'svelte/server';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { createBulkStore } from '../../../lib/sim/bulk-store.svelte';
-import { WEIGHTS_STATS_FROM_ENGINE } from '../../../lib/sim/copy';
 import { specRow } from '../../../lib/sim/spec-label';
 import {
   createSimApi,
@@ -50,7 +49,6 @@ describe('StatWeights: weight_stats resolves through the curated spec list, and 
     expect(store.weightStats).toEqual(curated);
 
     const { body } = render(StatWeights, { props: { store, me: null } });
-    expect(body).toContain(WEIGHTS_STATS_FROM_ENGINE);
     expect(body).toContain('data-testid="sim-weight-pick-melee_haste"');
     // mp5/spell_haste/feral_attack_power are retail-only and never in warrior-fury's own
     // curated list (D45); expertise and armor penetration do not exist on the 1.60 client
@@ -75,7 +73,6 @@ describe('StatWeights: weight_stats resolves through the curated spec list, and 
     expect(store.weightStats).toEqual([]);
 
     const { body } = render(StatWeights, { props: { store, me: null } });
-    expect(body).not.toContain(WEIGHTS_STATS_FROM_ENGINE);
     // The full pinned vocabulary, the same fallback an absent column gets -- an empty list
     // must not be dressed up as a curated one either (D45's own defect, in miniature).
     expect(body).toContain('data-testid="sim-weight-pick-expertise"');
