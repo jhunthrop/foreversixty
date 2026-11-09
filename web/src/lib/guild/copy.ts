@@ -190,7 +190,6 @@ export const guildSettingsCopy = {
   sendThemThisLink: 'Send them this link.',
   defaultVisibility: 'Default report visibility',
   officerThreshold: 'Officer rank threshold',
-  inviteHeading: 'Invite link',
   membersHeading: 'Members and access',
   recordsHeading: 'Records and crest',
   recordsOnlyHeading: 'Records',

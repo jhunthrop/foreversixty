@@ -179,7 +179,7 @@ describe('GuildRosterTable: the In game column (L8.3)', () => {
       expect(actions).toContain('shrink-0');
       // Wide enough for `Open in simulator` on one line beside Remove (guild round 3).
       // The action column takes room only when a row can hold an action.
-      expect(actions).toMatch(/lg:w-(\[216px\]|0)/);
+      expect(actions).toMatch(/lg:w-(\[216px\]|auto)/);
       expect(actions).not.toMatch(/\bxl:/);
       // Nothing of the row sits between the slot and the actions but the slot's own content.
       expect(part.slice(actionsAt)).not.toContain('data-testid="guild-roster-ingame-slot"');
@@ -211,10 +211,10 @@ describe('GuildRosterTable: the In game column (L8.3)', () => {
     expect(kraggor).toContain('Protection Warrior');
   });
 
-  it('gives every row the same fixed name block and rank slot at lg, so the stats line up', () => {
+  it('gives every row the same fixed name block at lg, the rank on its spec line, so the figures line up', () => {
     for (const [name, part] of rows(withSnapshot)) {
       expect(part, name).toContain('lg:w-[240px]');
-      expect(part, name).toContain('lg:w-[104px]');
+      expect(part, name).not.toContain('lg:w-[104px]');
       const at = part.indexOf('data-testid="guild-roster-spec"');
       const subtitle = part.slice(part.lastIndexOf('<span', at), at + 400);
       expect(subtitle, name).toContain('lg:truncate');

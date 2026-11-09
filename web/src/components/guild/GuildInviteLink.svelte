@@ -16,7 +16,6 @@
   import { CONFIRM_BLOCK } from '../../lib/guild/billing-styles';
   import { COPIED_LONG_MS } from '../../lib/ui/copy-feedback';
   import CopyLinkField from '../ui/CopyLinkField.svelte';
-  import SettingsRow from '../ui/SettingsRow.svelte';
   import GuildCharacterName from './GuildCharacterName.svelte';
 
   const TESTID = 'guild-invite';
@@ -94,7 +93,6 @@
 </script>
 
 <div bind:this={root} id="invite" class="flex scroll-mt-20 flex-col" data-testid={`${TESTID}-block`}>
-  <SettingsRow open label={copy.inviteHeading} />
   <div class="flex flex-col items-start gap-3 pb-3">
     {#if confirming}
       <!-- svelte-ignore a11y_no_static_element_interactions -->

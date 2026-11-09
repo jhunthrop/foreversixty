@@ -56,7 +56,6 @@ def roster():
     columns (item level, raids)."""
     home = T.roster_home()
     words = {'leader': 'Guild master', 'officer': 'Officer'}  # copy.ts guildRosterModelCopy.ranks
-    rank = lambda r: Tag(words[r['rank']]) if r['rank'] in words else ''  # noqa: E731
     waiting = [Row(r['name'], _spec(r), lead=crest_img(r['class'], 36), title_color=C[r['class']], link=False,
                    trail=(Tag(words[r['rank']]) if r['rank'] in words else '')
                    + Button('Approve', small=True, act=True) + Button('Decline', small=True, tone='ghost', act=True)) for r in home['pending']]
@@ -65,9 +64,11 @@ def roster():
     cols = lambda r: (f'<span class="rcol" style="width:88px">{r["item_level"]}</span>'  # noqa: E731
                       f'<span class="rcol" style="width:132px">{(str(r["attendance"]["present"]) + " of " + str(r["attendance"]["nights"])) if r["attendance"]["nights"] else ""}</span>')
     # The viewer's own name links to their member profile.
-    rows = [Row(f'<a href="#">{r["name"]} (you)</a>' if r['name'] == O.OFFICER else r['name'], _spec(r), lead=crest_img(r['class'], 36), title_color=C[r['class']], link=False,
+    # The rank rides the spec line ("Beast Mastery Hunter · Officer"), a member's has none.
+    sub = lambda r: _spec(r) + (f' &middot; {words[r["rank"]]}' if r['rank'] in words else '')  # noqa: E731
+    rows = [Row(f'<a href="#">{r["name"]} (you)</a>' if r['name'] == O.OFFICER else r['name'], sub(r), lead=crest_img(r['class'], 36), title_color=C[r['class']], link=False,
                 selected=r['name'] == O.OFFICER,
-                trail=f'<span style="display:flex;gap:12px;align-items:center;min-height:39px">{rank(r)}</span><span style="display:flex">{cols(r)}</span>')
+                trail=f'<span style="display:flex;align-items:center;min-height:39px">{cols(r)}</span>')
             for r in verified]
     controls = (f'<div style="display:flex;flex-wrap:wrap;gap:8px 24px;align-items:center">'
                 f'<div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center"><span class="t-small">Filter</span>'

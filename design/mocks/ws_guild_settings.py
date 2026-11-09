@@ -129,7 +129,7 @@ def members_section() -> str:
     holder = s['claimed_by']
     claimed = (f'<p style="font-size:13px;line-height:20px;margin:0">Claimed by {crest_img(holder["class"], 20).replace("<img ", "<img aria-hidden=\"true\" ", 1)} '
                f'<b style="color:{C[holder["class"]]}">{holder["name"]}</b></p>')
-    invite = (Rows([Row('Invite link', link=False)], open_=True)
+    invite = (''
               + f'<div class="sp-col"><label style="display:flex;flex-direction:column;gap:4px;width:100%"><span class="t-small" style="font-size:13px;font-weight:600">Invite link</span>'
               f'<input class="field sp-in" readonly value="https://foreversixty.gg{S.INVITE_URL}" style="height:40px"></label>{_act("Copy link", small=False)}'
               f'{p(f"Made {day(S.INVITE_MADE)} by <b style=\"color:{C[holder["class"]]}\">{holder["name"]}</b>.")}{_act("Make a new link")}</div>')

@@ -373,7 +373,9 @@ test.describe('roster: the In game column from the addon snapshot (L8.3)', () =>
     await expect(rowNamed(page, 'Zulmara').getByTestId('guild-roster-spec')).toContainText(
       'Survival Hunter · Marksmanship on the site',
     );
-    await expect(rowNamed(page, 'Kraggor').getByTestId('guild-roster-spec')).toHaveText('Protection Warrior');
+    await expect(rowNamed(page, 'Kraggor').getByTestId('guild-roster-spec')).toHaveText(
+      'Protection Warrior · Guild master',
+    );
   });
 
   test('the roster has a SORT row of chips and no header row at any width; the chips sort', async ({

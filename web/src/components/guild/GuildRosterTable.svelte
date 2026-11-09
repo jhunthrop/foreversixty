@@ -197,8 +197,8 @@
   function rowColumns(row: GuildRosterRow): { key: RosterColumnKey; text: string }[] {
     return rosterColumns(row, attendanceSource).filter((cell) => shownColumns.includes(cell.key));
   }
-  /** Any row that can carry an action (Remove, the handoff): only then does the action column take room. */
-  const anyActions = $derived(canRemove || ordered.some((row) => rosterHoldsHandoff(row)));
+  /** Any row that can be removed: only then does the action column take its room (a handoff sizes to itself). */
+  const anyActions = $derived(canRemove && ordered.some((row) => row.may_remove));
   /** Any row the addon carried: only then does the In game slot take room on every row. */
   const anyInGame = $derived(roster.some((row) => inGameFacts(row, now).length > 0));
   const countsView = $derived(counts ?? derivedCounts(allRows));
@@ -617,7 +617,9 @@
                           data-testid="guild-roster-spec"
                           >{#each subtitle.split(' · ') as part, i (i)}<span class="lg:block lg:truncate"
                               >{#if i > 0}<span class="lg:hidden" aria-hidden="true">&#32;·&#32;</span
-                                >{/if}{part}</span
+                                >{/if}{part}{#if i === subtitle.split(' · ').length - 1 && row.rank !== 'member'}&#32;·&#32;<span
+                                  data-testid="guild-roster-rank">{rankWord(row.rank)}</span
+                                >{/if}</span
                             >{/each}</span
                         >
                       </div>
@@ -630,12 +632,6 @@
                         data-testid="guild-roster-facts"
                       >
                         <div class="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1 lg:flex-nowrap">
-                          <!-- A 72 px slot at lg, whatever the word, so the stats after it share one left edge. -->
-                          <span class="empty:hidden lg:w-[104px] lg:shrink-0 lg:empty:block"
-                            >{#if row.rank !== 'member'}<Tag testid="guild-roster-rank"
-                                >{rankWord(row.rank)}</Tag
-                              >{/if}</span
-                          >
                           <!-- At lg the stats wrap inside their own box beside the rank slot, never under it,
                    so a long stat line starts at the same left edge as a short one. Below lg the box
                    is `contents` and the stats wrap with the rank as before. -->
@@ -685,7 +681,7 @@
                       <div
                         class="contents lg:ml-auto lg:flex lg:shrink-0 lg:flex-nowrap lg:items-center lg:justify-end lg:gap-3 {anyActions
                           ? 'lg:w-[216px]'
-                          : 'lg:w-0'}"
+                          : 'lg:w-auto'}"
                         data-testid="guild-roster-actions"
                       >
                         {#if rosterHoldsHandoff(row)}
