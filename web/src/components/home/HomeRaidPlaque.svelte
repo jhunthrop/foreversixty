@@ -7,13 +7,13 @@
   import type { GuildRaidRole, GuildSignupState, NextRaidView } from '../../lib/guild/api';
   import { putSignup } from '../../lib/guild/raids-api';
   import { minuteClock } from '../../lib/guild/minute-clock.svelte';
-  import { raidTimeLine } from '../../lib/guild/overview-role-view';
   import { homeBCopy } from '../../lib/home/home-b-view';
   import {
     PLAQUE_CHOICES,
     choiceOf,
     plaqueClock,
     plaqueClockLabel,
+    raidWhen,
     plaqueCopy,
     roleCounts,
     signupFigures,
@@ -56,7 +56,7 @@
 
   const counts = $derived(savedHere?.counts ?? raid.counts);
   const chosen = $derived(choiceOf(savedHere?.state ?? raid.own?.state ?? null));
-  const when = $derived(raidTimeLine(raid.starts_at, raid.guild_timezone ?? viewerTz, viewerTz));
+  const when = $derived(raidWhen(raid.starts_at, viewerTz));
   const parts = $derived(plaqueClock(new Date(raid.starts_at), clock.now));
   const timer = $derived(parts.length === 0 ? undefined : plaqueClockLabel(parts));
   const locked = $derived(raid.status === 'locked');

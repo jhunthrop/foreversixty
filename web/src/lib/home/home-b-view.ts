@@ -5,14 +5,13 @@
 import classes from '../../data/classes.json';
 import { characterHref } from '../characters';
 import { SPECS } from '../sim/specs';
-import type { GuildSims, ImportSim, SpecWeek } from './home-answer';
+import type { ImportSim, SpecWeek } from './home-answer';
 import { bandWords, shortDate } from './home-view';
 import { fillShared } from '../copy/shared';
 import {
   sharedHomeBisLink,
   sharedHomeFindGuildSub,
   sharedHomeGuildNone,
-  sharedHomeGuildPage,
   sharedHomeGuildSims,
   sharedHomeGuildsLink,
   sharedHomeImportCharacter,
@@ -54,7 +53,6 @@ export const homeBCopy = {
   upgrades: sharedHomeUpgrades,
   bisLink: sharedHomeBisLink,
   guildSims: sharedHomeGuildSims,
-  guildPage: sharedHomeGuildPage,
   youNoSim: sharedHomeYouNoSim,
   runSim: sharedHomeRunSim,
   specWeek: sharedHomeSpecWeek,
@@ -138,12 +136,6 @@ export function specWeekView(week: SpecWeek): { title: string; sub: string } {
         ? `Up from ${week.last_week_grade} last week`
         : `Down from ${week.last_week_grade} last week`;
   return { title, sub: `${move}, ${place}` };
-}
-
-/** `DPS, 60 raid` */
-export function guildSimsMeta(sims: GuildSims): string {
-  const role = sims.role === 'dps' ? 'DPS' : sims.role === 'tank' ? 'Tanks' : 'Healers';
-  return `${role}, ${bandWords(sims.band)} ${sims.preset}`;
 }
 
 export function figureText(value: number): string {

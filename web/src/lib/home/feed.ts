@@ -7,12 +7,6 @@ import { query } from '../data/query';
 import { API_BASE_URL } from '../planner/config';
 import {
   sharedFeedFailed,
-  sharedFeedFilterAll,
-  sharedFeedFilterGuild,
-  sharedFeedFilterLabel,
-  sharedFeedFilterLogs,
-  sharedFeedFilterSpec,
-  sharedFeedGuildEmpty,
   sharedFeedLogsEmpty,
   sharedFeedTagBestInSlot,
   sharedFeedTagGuides,
@@ -92,13 +86,6 @@ const DAY_HOURS = 24;
 
 export const feedCopy = {
   title: sharedFeedTitle,
-  filters: {
-    all: sharedFeedFilterAll,
-    spec: sharedFeedFilterSpec,
-    guild: sharedFeedFilterGuild,
-    logs: sharedFeedFilterLogs,
-  } satisfies Record<FeedFilter, string>,
-  filterLabel: sharedFeedFilterLabel,
   tags: {
     your_spec: sharedFeedTagYourSpec,
     logs: sharedFeedTagLogs,
@@ -109,16 +96,9 @@ export const feedCopy = {
     patch: sharedFeedTagPatch,
   } satisfies Record<FeedTag, string>,
   failed: sharedFeedFailed,
-  guildEmpty: sharedFeedGuildEmpty,
   logsEmpty: sharedFeedLogsEmpty,
   uploadLog: sharedFeedUploadLog,
 } as const;
-
-/** The feed filters a viewer gets: signed out none (All only, no bar); Your guild only in a guild. */
-export function feedFilters(signedIn: boolean, inGuild: boolean): FeedFilter[] {
-  if (!signedIn) return [];
-  return inGuild ? ['all', 'spec', 'guild', 'logs'] : ['all', 'spec', 'logs'];
-}
 
 /** The level band a character reads against: 20 to 60 in tens. */
 export function bandOf(level: number | undefined): number {

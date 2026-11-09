@@ -20,7 +20,7 @@ from pathlib import Path
 
 from mocklib import CLASS_COLOR
 from ws_prims import (Button, FeedRow, FeedSkeleton, Frame, GradeTile, ItemRow, Link, Page, PageHeader, Plate, Row, RowGrid, Rows, Section,
-                      Segmented, Skeleton, build_page, crest_img, icon, write)
+                      Skeleton, build_page, crest_img, icon, write)
 from ws_lib import REGION, QCOL, region_slug
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -152,7 +152,7 @@ def guild_plaque(char: dict, guild_home: dict) -> str:
     r, needs = guild_home['next_raid'], guild_home['standing']['needs_before_next_raid']
     c = r['counts']
     d = iso(r['starts_at']) - timedelta(hours=6)
-    when = f"{d.strftime('%a')} {d.day} {d.strftime('%b')} &middot; 8 pm CST"
+    when = f"{d.strftime('%A')} {d.day} {d.strftime('%B')} &middot; 8 pm"  # web lib/home/plaque.ts raidWhen, the viewer's time
     roles = ''.join(f'<span><b>{c[k]}</b> {k}</span>' for k in ('tanks', 'healers', 'melee', 'ranged'))
     own = r['own']['state'] if r['own'] else None
     buttons = ''.join(f'<button type="button" class="btn{" primary" if k == "in" else ""} sm" aria-pressed="{str(own == k).lower()}">{label}</button>'
@@ -235,8 +235,8 @@ def floor_rows() -> list[dict]:
     return rows + events
 
 
-def feed_section(rows: list[dict] | None, filters: list[str] | None, state: str = 'ready') -> str:
-    head = Segmented([(f, i == 0) for i, f in enumerate(filters)], small=True) if filters else ''
+def feed_section(rows: list[dict] | None, state: str = 'ready') -> str:
+    """Latest on Forever, with no filters (round 5)."""
     if state == 'loading':
         body = FeedSkeleton(FLOOR_MIN)
     elif state == 'error':
@@ -245,7 +245,7 @@ def feed_section(rows: list[dict] | None, filters: list[str] | None, state: str 
     else:
         shown = rows[:FEED_ROWS] if len(rows) >= FLOOR_MIN else rows + floor_rows()[:FLOOR_MIN - len(rows)]
         body = feed_lines(shown)
-    return sec('Latest on Forever', body, head=head)
+    return sec('Latest on Forever', body)
 
 
 def frame_section(title: str, body: str, action: str = '') -> str:
@@ -276,7 +276,7 @@ def how_to_start() -> str:
 def state_out() -> str:
     head = PageHeader('Pick your class', actions=Button('Sign in with Battle.net', True))
     rows = home_rows(J('feed-out.json')['rows'], False)
-    return head + grid(class_picker(headless=True), feed_section(rows, None), how_to_start() + first_raids_plaque())
+    return head + grid(class_picker(headless=True), feed_section(rows), how_to_start() + first_raids_plaque())
 
 
 # ------------------------------------------------------------------------------------------------ signed in
@@ -339,10 +339,9 @@ def guild_sims_section(g: dict, week: dict | None) -> str:
     rows = [ladder_row(r, g['unit']) for r in g['rows'][:GUILD_SHOWN]]
     if g['you'] is not None and not any(r['you'] for r in g['rows'][:GUILD_SHOWN]):
         rows.append(ladder_row(g['you'], g['unit']))
-    role = {'dps': 'DPS', 'tank': 'Tanks', 'healer': 'Healers'}[g['role']]
     tier = (f'<p class="simline">Tier {week["grade"]} &middot; #{week["place"]} of {week["of"]} &middot; '
             f'<a class="link" href="#">Tier list &rsaquo;</a></p>') if week and week.get('grade') else ''
-    return sec('Guild sims', f'<div class="lad">{"".join(rows)}</div>{tier}', 'Guild page', f"{role}, {band_words(g['band'])} {g['preset']}")
+    return sec('Guild sims', f'<div class="lad">{"".join(rows)}</div>{tier}')
 
 
 def spec_week_section(w: dict) -> str:
@@ -364,11 +363,10 @@ def state_in(level: str, feed: str = 'ready', feed_file: str = '') -> str:
     home = J(f'home-{level}.json')
     ups, items = upgrades_of(char)
     guild_home = J('guild-home-60.json') if 'guild' in char else None
-    filters = ['All', 'Your spec', 'Your guild', 'Logs'] if 'guild' in char else ['All', 'Your spec', 'Logs']
     rows = home_rows(J(feed_file or f'feed-{level}.json')['rows'], guild_home is not None) if feed == 'ready' else None
     foot = (guild_sims_section(home['guild_sims'], home['spec_week']) if home['guild_sims']
             else spec_week_section(home['spec_week']) if home['spec_week'] else '')
-    return head_in(char, home) + grid(plaque_in(char, guild_home), feed_section(rows, filters, feed), upgrades_section(ups, items), foot)
+    return head_in(char, home) + grid(plaque_in(char, guild_home), feed_section(rows, feed), upgrades_section(ups, items), foot)
 
 
 def state_new() -> str:

@@ -4,9 +4,12 @@
 import { expect, test } from './support/test';
 import { homeEnvelope, openHome } from './support/home-page';
 
+// The fixtures' raid starts at 8 pm in the guild's own zone; read it as a player there would.
+test.use({ timezoneId: 'America/Chicago' });
+
 const SIXTY = { me: 'me-60.json', feed: 'feed-60.json', home: 'home-60.json', guild: 'guild-home-60.json' };
 
-test('signed out: the title, Sign in, the first raids plaque, the feed, how to start and the nine classes', async ({
+test('signed out: Pick your class with Sign in, the nine classes, the feed, how to start and the first raids', async ({
   page,
 }) => {
   await openHome(page, { feed: 'feed-out.json' });
@@ -39,33 +42,26 @@ test('signed in at 34: the sim, the first raids with Find a guild, the feed, upg
   await expect(page.getByTestId('home-figure-sim')).toHaveText(/58\.4\s*DPS/);
   const plaque = page.getByTestId('home-signed-in-root').getByTestId('home-raids-countdown');
   await expect(plaque.getByRole('link', { name: /Guilds/ })).toHaveAttribute('href', '/guild');
-  const filters = page.getByTestId('home-feed-filter').getByRole('radio');
-  await expect(filters).toHaveText(['All', 'Your spec', 'Logs']);
+  await expect(page.getByTestId('home-feed').getByRole('radiogroup')).toHaveCount(0);
   await expect(page.getByTestId('home-upgrade')).toHaveCount(5);
   await expect(page.getByTestId('home-spec-week')).toContainText(
     'Up from B last week, #4 of 23 damage specs',
   );
   await expect(page.getByTestId('home-guild-sims')).toHaveCount(0);
-
-  const asked = page.waitForRequest((request) => request.url().includes('filter=spec'));
-  await filters.nth(1).click();
-  const url = new URL((await asked).url());
-  expect(url.searchParams.get('spec')).toBe('hunter-beast-mastery');
-  expect(url.searchParams.get('band')).toBe('30');
 });
 
-test('signed in at 60 in a guild: the raid plaque, the sims ladder with its tier line, the Your guild filter', async ({
+test('signed in at 60 in a guild: the raid plaque, the feed, the sims ladder with its tier line', async ({
   page,
 }) => {
   await openHome(page, SIXTY);
   const plaque = page.getByTestId('home-raid');
   await expect(plaque.getByRole('heading', { level: 2 })).toHaveText("Onyxia's Lair");
+  await expect(plaque).toContainText('Olympus XXVII · Wednesday 9 December · 8 pm');
   await expect(plaque.getByRole('timer')).toHaveAccessibleName('33 days, 8 hours');
   await expect(plaque).toContainText('3 tanks');
   await expect(page.getByTestId('home-raid-late')).toHaveAttribute('aria-pressed', 'true');
   await expect(page.getByTestId('home-raid-in')).toHaveAttribute('aria-pressed', 'false');
   await expect(page.getByTestId('home-raid-prep').getByRole('listitem')).toHaveCount(2);
-  await expect(page.getByTestId('home-feed-filter').getByRole('radio')).toHaveCount(4);
   const feed = page.getByTestId('home-signed-in-root').getByTestId('home-feed');
   await expect(feed).not.toContainText('posted Onyxia');
   await expect(feed.getByTestId('home-feed-row').first()).toContainText('4 min ago');
@@ -75,6 +71,7 @@ test('signed in at 60 in a guild: the raid plaque, the sims ladder with its tier
   await expect(page.getByTestId('home-guild-sim')).toHaveCount(6);
   await expect(page.getByTestId('home-guild-sim').last()).toContainText('Thandrel');
   await expect(page.getByTestId('home-tier-line')).toContainText('Tier S');
+  await expect(page.getByTestId('home-guild-sims')).not.toContainText('Guild page');
 });
 
 test("the plaque signs up in place: I'm in saves and presses", async ({ page }) => {

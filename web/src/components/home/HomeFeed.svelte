@@ -1,15 +1,14 @@
 <!-- web/src/components/home/HomeFeed.svelte -->
-<!-- "Latest on Forever" (home B spec 2026-11-07 P1 to P11, F1): what is happening on Forever, from
-     GET /v1/feed, with the filters a signed-in player gets (All, Your spec, Your guild, Logs; signed
-     out All only), each line's time updating each minute, and below five lines the floor of real
-     dated site events (lib/home/floor.ts, built at build time). Its own skeleton and its own error. -->
+<!-- "Latest on Forever" (home B spec 2026-11-07 P1 to P11, F1; round 5 draws it with no filters):
+     what is happening on Forever, from GET /v1/feed, newest first, each line's time updating each
+     minute, and below five lines the floor of real dated site events (lib/home/floor.ts, built at
+     build time). Its own skeleton and its own error. -->
 <script lang="ts">
   import { untrack } from 'svelte';
   import { invalidate } from '../../lib/data/query';
   import { minuteClock } from '../../lib/guild/minute-clock.svelte';
   import {
     feedCopy,
-    feedFilters,
     feedPath,
     fetchFeed,
     homeRows,
@@ -25,7 +24,6 @@
   import ItemIcon from '../ui/ItemIcon.svelte';
   import LoadError from '../ui/LoadError.svelte';
   import Section from '../ui/Section.svelte';
-  import Segmented from '../ui/Segmented.svelte';
   import FeedSentence from './FeedSentence.svelte';
   import FeedSkeleton from '../ui/FeedSkeleton.svelte';
 
@@ -33,7 +31,6 @@
     signedIn,
     spec,
     band,
-    inGuild = false,
     raidOnPlaque = false,
     floor,
     build,
@@ -42,7 +39,6 @@
     /** The viewer's spec key (`warrior-fury`) and band: Your spec, and the YOUR SPEC tags. */
     spec?: string;
     band?: number;
-    inGuild?: boolean;
     /** The guild's raid is on the plaque above: its post is left out here. */
     raidOnPlaque?: boolean;
     floor: FeedRow[];
@@ -54,22 +50,20 @@
   /** A line this fresh slides in (when motion is allowed). */
   const FRESH_MS = 5 * 60_000;
   const clock = minuteClock(() => undefined);
-  const filters = $derived(feedFilters(signedIn, inGuild));
-  let filter = $state<FeedFilter>('all');
+  /** Home shows everything; the filters left with round 5 (the mock draws none). */
+  const filter: FeedFilter = 'all';
   let status = $state<'loading' | 'ready' | 'failed'>('loading');
   let rows = $state<FeedRow[]>([]);
 
   function load(): void {
     status = 'loading';
-    const asked = filter;
-    fetchFeed({ filter: asked, spec, band, signedIn })
+    fetchFeed({ filter, spec, band, signedIn })
       .then((page) => {
-        if (asked !== filter) return;
         rows = page.rows;
         status = 'ready';
       })
       .catch(() => {
-        if (asked === filter) status = 'failed';
+        status = 'failed';
       });
   }
 
@@ -79,36 +73,21 @@
   }
 
   $effect(() => {
-    void filter;
     untrack(load);
   });
 
   const shown = $derived(withFloor(homeRows(rows, raidOnPlaque), floor, filter, spec));
   const freshCut = $derived(clock.now.getTime() - FRESH_MS);
-  const options = $derived(filters.map((value) => ({ value, label: feedCopy.filters[value] })));
 </script>
 
 <Section title={feedCopy.title} boxed testid="home-feed">
-  {#snippet head()}
-    {#if options.length > 0}
-      <Segmented
-        {options}
-        value={filter}
-        label={feedCopy.filterLabel}
-        size="sm"
-        onChange={(value) => (filter = value)}
-        testid="home-feed-filter"
-      />
-    {/if}
-  {/snippet}
   {#if status === 'loading'}
     <FeedSkeleton testid="home-feed-loading" />
   {:else if status === 'failed'}
     <LoadError message={feedCopy.failed} onRetry={retry} testid="home-feed-error" />
   {:else if shown.length === 0}
     <p class="text-muted py-3 text-[15px] leading-6" data-testid="home-feed-empty">
-      {#if filter === 'guild'}{feedCopy.guildEmpty}{:else}{feedCopy.logsEmpty}
-        <a class={LINK} href="/logs/upload">{feedCopy.uploadLog} ›</a>{/if}
+      {feedCopy.logsEmpty} <a class={LINK} href="/logs/upload">{feedCopy.uploadLog} ›</a>
     </p>
   {:else}
     <div class="flex flex-col" data-testid="home-feed-rows">

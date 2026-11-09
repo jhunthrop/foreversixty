@@ -1,16 +1,6 @@
 // "Latest on Forever" (lib/home/feed.ts, home B spec 2026-11-07 P8, P9, F1).
 import { describe, expect, it } from 'vitest';
-import {
-  agoText,
-  bandOf,
-  dayText,
-  feedFilters,
-  feedPath,
-  homeRows,
-  whenText,
-  withFloor,
-  type FeedRow,
-} from './feed';
+import { agoText, bandOf, dayText, feedPath, homeRows, whenText, withFloor, type FeedRow } from './feed';
 
 function row(id: string, over: Partial<FeedRow> = {}): FeedRow {
   return {
@@ -38,12 +28,6 @@ describe('feed', () => {
     expect(agoText('2026-11-03T18:00:00Z', NOW)).toBe('3 d ago');
     expect(dayText('2026-12-09T00:00:00Z')).toBe('Wed 9 Dec');
     expect(whenText({ at: '2026-12-09T00:00:00Z', date_only: true }, NOW)).toBe('Wed 9 Dec');
-  });
-
-  it('gives signed-out readers no filters and hides Your guild without a guild', () => {
-    expect(feedFilters(false, false)).toEqual([]);
-    expect(feedFilters(true, false)).toEqual(['all', 'spec', 'logs']);
-    expect(feedFilters(true, true)).toEqual(['all', 'spec', 'guild', 'logs']);
   });
 
   it('reads the band in tens from 20 to 60', () => {

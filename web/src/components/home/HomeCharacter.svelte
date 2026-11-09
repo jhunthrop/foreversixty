@@ -149,20 +149,12 @@
     {#snippet rail()}<HomeUpgrades {upgrades} {bis} build={activeBuild.build} />{/snippet}
     {#snippet foot()}
       {#if answer.guild_sims !== null}
-        <HomeGuildSims sims={answer.guild_sims} week={answer.spec_week} guildHref={links.guild} />
+        <HomeGuildSims sims={answer.guild_sims} week={answer.spec_week} />
       {:else if answer.spec_week !== null}
         <HomeSpecWeek week={answer.spec_week} />
       {/if}
     {/snippet}
-    <HomeFeed
-      signedIn
-      spec={specKey}
-      {band}
-      inGuild={character.guild !== undefined}
-      raidOnPlaque={raid !== null}
-      {floor}
-      build={activeBuild.build}
-    />
+    <HomeFeed signedIn spec={specKey} {band} raidOnPlaque={raid !== null} {floor} build={activeBuild.build} />
   </HomeGrid>
 </div>
 

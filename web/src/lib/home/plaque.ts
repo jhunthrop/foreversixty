@@ -95,14 +95,32 @@ export function choiceOf(state: GuildSignupState | null): PlaqueChoice | null {
     : null;
 }
 
+/** The day as the mock writes it, weekday first and the month whole: `Wednesday 9 December`. */
+const DAY_LOCALE = 'en-GB';
+
+function dayIn(at: Date, timeZone: string): string {
+  return at.toLocaleDateString(DAY_LOCALE, { weekday: 'long', day: 'numeric', month: 'long', timeZone });
+}
+
 /** `Wednesday 9 December`, a date-only instant read as that calendar day. */
-export function longDay(iso: string, locale = 'en-GB'): string {
-  return new Date(iso).toLocaleDateString(locale, {
-    weekday: 'long',
-    day: 'numeric',
-    month: 'long',
-    timeZone: 'UTC',
-  });
+export function longDay(iso: string): string {
+  return dayIn(new Date(iso), 'UTC');
+}
+
+/** The raid's start in the viewer's own time, 12-hour as US players read it, with no zone label:
+ *  `Wednesday 9 December · 8 pm`, `· 8:30 pm` off the hour. */
+export function raidWhen(iso: string, timeZone: string): string {
+  const at = new Date(iso);
+  const minutes = Number(at.toLocaleString('en-US', { minute: 'numeric', timeZone }));
+  const time = at
+    .toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: minutes === 0 ? undefined : '2-digit',
+      hour12: true,
+      timeZone,
+    })
+    .replace(/\s?([AP]M)$/, (_, half: string) => ` ${half.toLowerCase()}`);
+  return `${dayIn(at, timeZone)} · ${time}`;
 }
 
 /** The tier line under the guild sims: `Tier A · #2 of 20`; null with no grade. */

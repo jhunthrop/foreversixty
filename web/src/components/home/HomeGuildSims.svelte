@@ -8,7 +8,6 @@
     GUILD_SIMS_SHOWN,
     characterLink,
     figureText,
-    guildSimsMeta,
     homeBCopy,
     homeBHrefs,
   } from '../../lib/home/home-b-view';
@@ -20,8 +19,7 @@
   import Row from '../ui/Row.svelte';
   import Section from '../ui/Section.svelte';
 
-  let { sims, week, guildHref }: { sims: GuildSims; week: SpecWeek | null; guildHref: string | null } =
-    $props();
+  let { sims, week }: { sims: GuildSims; week: SpecWeek | null } = $props();
 
   const CREST_PX = 28;
   const ladder = $derived(sims.rows.slice(0, GUILD_SIMS_SHOWN));
@@ -50,13 +48,7 @@
   </Row>
 {/snippet}
 
-<Section
-  title={homeBCopy.guildSims}
-  meta={guildSimsMeta(sims)}
-  action={guildHref === null ? undefined : { label: homeBCopy.guildPage, href: guildHref }}
-  boxed
-  testid="home-guild-sims"
->
+<Section title={homeBCopy.guildSims} boxed testid="home-guild-sims">
   <div class="home-sims-ladder">
     {#each ladder as row (row.key)}{@render simRow(row)}{/each}
     {#if pinned !== null}{@render simRow(pinned)}{/if}

@@ -5,6 +5,7 @@ import {
   longDay,
   plaqueClock,
   plaqueClockLabel,
+  raidWhen,
   roleCounts,
   signupFigures,
   signupRole,
@@ -62,6 +63,12 @@ describe('the raid plaque', () => {
     expect(choiceOf('late')).toBe('late');
     expect(choiceOf('bench')).toBeNull();
     expect(choiceOf(null)).toBeNull();
+  });
+
+  it("reads the raid's start whole, in the viewer's own 12-hour time with no zone", () => {
+    expect(raidWhen('2026-12-10T02:00:00Z', 'America/Chicago')).toBe('Wednesday 9 December · 8 pm');
+    expect(raidWhen('2026-12-10T02:30:00Z', 'America/Chicago')).toBe('Wednesday 9 December · 8:30 pm');
+    expect(raidWhen('2026-12-10T02:00:00Z', 'Europe/London')).toBe('Thursday 10 December · 2 am');
   });
 
   it('reads the first raids day whole, and the tier line only with a grade', () => {
