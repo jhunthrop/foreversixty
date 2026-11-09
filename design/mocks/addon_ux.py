@@ -265,8 +265,10 @@ def verdict_next(item_id, gain, source):
 def shift_block_bow():
     g = C['grey']
     return [
-        l('+1 Agi, +3.4 weapon DPS', color=g),
-        l(f'Also good: {iname(13136)} +2.2 (needs bullets)', color=g),
+        # Stat changes only: the weapon's own DPS beside the +3.5 headline read as the same number twice
+        # (owner, 2026-11-08); the type in the game's words, never what it implies.
+        l('+1 Agi', color=g),
+        l(f'Also good: {iname(13136)} +2.2 (gun)', color=g),
         l(f'<span style="visibility:hidden">Also good: </span>{iname(285279)} +0.8 (thrown)', color=g),
         l('In your build\'s gear list', color=g),
         l('Forever Sixty · Beast Mastery estimate', color='#8a8a8a'),
@@ -285,7 +287,8 @@ def board_item_after_shift():
     lines = short_ash_bow() + verdict_next(3021, '3.5', 'World drop') + shift_block_bow()
     compare = tooltip(ranger_bow(), tag='Next upgrade', width=262)
     body = (f'<p class="cap"><b>After, Shift held</b> · the client\'s compare and our details arrive together</p>'
-            f'<div class="row" style="padding-top:18px">{tooltip(lines, width=330)}{compare}</div>')
+            # No fixed width: the client's tooltip grows to its widest line, so no line crosses the border.
+            f'<div class="row" style="padding-top:18px">{tooltip(lines)}{compare}</div>')
     return page(body)
 
 

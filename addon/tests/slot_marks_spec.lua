@@ -238,9 +238,10 @@ describe("SlotMarks", function()
 			local model = Chip.model(input)
 			assert.are.equal("upgrade", model.chosen.kind)
 			assert.are.equal(string.format(L.chipEquip, "Bag Chest", string.format(L.chipGainDps, 2)), model.chosen.text)
-			-- The tooltip on the bag item: "Upgrade +2.0 DPS over Worn Chest".
+			-- The tooltip on the bag item: the arrow, "Upgrade +2.0 DPS" (one chest slot: no "over").
 			local lines = ItemTooltip.section(ItemTooltip.contextFor(DATA, BAG_CHEST))
-			assert.are.equal(string.format(L.tooltipVerdictDps, 2, "Worn Chest"), lines[1].text)
+			assert.are.equal(Theme.arrowMarkup() .. string.format(L.tooltipUpgrade, ItemTooltip.figure(2, "dps")),
+				lines[1].text)
 			-- The marks: the chest slot and the bag item that beats it, nothing else.
 			local marks = SlotMarks.compute(DATA)
 			assert.are.same({ chest = true }, marks.arrows)
@@ -262,7 +263,8 @@ describe("SlotMarks", function()
 			local model = Chip.model(Chip.inputs(DATA))
 			assert.are.equal(string.format(L.chipEquip, "Great Axe", string.format(L.chipGainDps, 4.4)), model.chosen.text)
 			local lines = ItemTooltip.section(ItemTooltip.contextFor(DATA, BAG_AXE))
-			assert.are.equal(string.format(L.tooltipVerdictDps, 4.4, "Short Sword"), lines[1].text)
+			assert.are.equal(Theme.arrowMarkup() .. string.format(L.tooltipUpgrade, ItemTooltip.figure(4.4, "dps")),
+				lines[1].text)
 			local marks = SlotMarks.compute(DATA)
 			assert.are.same({ main_hand = true }, marks.arrows)
 			assert.are.same({ [BAG_AXE] = true }, marks.links)
@@ -278,7 +280,7 @@ describe("SlotMarks", function()
 			local model = Chip.model(Chip.inputs(DATA))
 			assert.are_not.equal("upgrade", model.chosen.kind)
 			local lines = ItemTooltip.section(ItemTooltip.contextFor(DATA, PLATE_CHEST))
-			assert.are.equal(string.format(L.tooltipUntil, 40, "plate armor"), lines[1].text)
+			assert.are.equal(string.format(L.tooltipNotUntil, "Plate armor", 40), lines[1].text)
 			local marks = SlotMarks.compute(DATA)
 			assert.are.same({}, marks.arrows)
 			assert.are.same({}, marks.links)
@@ -328,7 +330,7 @@ describe("SlotMarks", function()
 		end)
 
 		it("leaves a worn slot that holds until the next rung (no Next line on its hover)", function()
-			-- The bag chest (15 Str) worn beats the pick (10): "Best until level 30".
+			-- The bag chest (15 Str) worn beats the pick (10): "No upgrade until level 30".
 			start({ chest = BAG_CHEST }, {})
 			assert.is_nil(SlotMarks.compute(DATA).targets.chest)
 		end)
@@ -824,10 +826,10 @@ describe("SlotMarks", function()
 	-- Fix round 3 (hunter-9/10).
 	describe("fix round 3", function()
 		-- 1: the corner means a next target for THIS band, never a later band's At line.
-		it("draws no corner on a slot whose hover says Best until with an At line for a later band", function()
+		it("draws no corner on a slot whose hover says No upgrade until with an At line for a later band", function()
 			start({ chest = BAG_CHEST }, {})
 			local lines = ItemTooltip.sectionFor(BAG_CHEST, ItemTooltip.baseContext(DATA)).lines
-			assert.are.equal(string.format(L.tooltipBestUntil, 30), lines[1].text)
+			assert.are.equal(string.format(L.tooltipNoUpgradeUntil, 30), lines[1].text)
 			assert.are.equal("at", lines[2].kind)
 			local chest = slotButton("CharacterChestSlot")
 			SlotMarks.drawPaperDoll()
@@ -896,8 +898,8 @@ describe("SlotMarks", function()
 			assert.are.equal(string.format(L.chipEquip, "Thin Leggings", string.format(L.chipGainDps, 0.8)),
 				model.chosen.text)
 			local lines = ItemTooltip.section(ItemTooltip.contextFor(DATA, THIN_LEGS))
-			assert.are.same({ text = string.format(L.tooltipFills, 0.8, L.tooltipUnitDps), color = "success" },
-				{ text = lines[1].text, color = lines[1].color })
+			assert.are.same({ text = Theme.arrowMarkup() .. string.format(L.tooltipUpgrade, ItemTooltip.figure(0.8, "dps")),
+				color = "tooltipGreen" }, { text = lines[1].text, color = lines[1].color })
 			local marks = SlotMarks.compute(DATA)
 			assert.is_true(marks.arrows.legs)
 			assert.is_true(marks.links[THIN_LEGS])
@@ -1000,10 +1002,10 @@ describe("SlotMarks", function()
 			for index, line in ipairs(lines) do
 				texts[index] = line.text
 			end
-			assert.are.equal(string.format(L.tooltipBestUntil, 30), texts[1])
+			assert.are.equal(L.tooltipYourBis, texts[1])
 			assert.are.equal("at", lines[2].kind)
+			assert.are.equal("support", lines[2].role)
 			assert.is_truthy(texts[2]:find(NEXT_HANDS_NAME, 1, true))
-			assert.are.equal(string.format(L.tooltipPlanned, "Beast Mastery", 20), texts[3])
 			assert.is_nil(SlotMarks.nextOf(lines))
 			assert.is_nil(SlotMarks.compute(Data).targets.hands)
 			local hands = _G.CreateFrame("Button", "CharacterHandsSlot")
@@ -1173,8 +1175,8 @@ describe("SlotMarks", function()
 			ItemTooltip.onSlotEnter("legs", legs)
 			local lines = addedLines()
 			local upgrade = { name = "Thin Leggings", hex = ItemTooltip.qualityHexOf(410), gain = 0.8, unit = "dps" }
-			assert.are.same({ " ", lines[2], L.tooltipInYourBags, ItemTooltip.bagItemText(upgrade),
-				L.tooltipRightClickEquip }, lines)
+			-- One line, no blank row, no header (spec 2.2 case 15); the attribution waits for Shift.
+			assert.are.same({ ItemTooltip.bagItemText(upgrade) }, lines)
 			assert.are.equal(THIN_LEGS, mock.firstCall(Theme.compareTooltipFrame, "SetHyperlink")[1])
 		end)
 
@@ -1188,8 +1190,7 @@ describe("SlotMarks", function()
 			}
 			ItemTooltip.onTooltip(tooltip, WORN_CHEST)
 			local upgrade = { name = "Bag Chest", hex = ItemTooltip.qualityHexOf(201), gain = 2, unit = "dps" }
-			assert.are.same({ L.tooltipInYourBags, ItemTooltip.bagItemText(upgrade), L.tooltipRightClickEquip },
-				{ calls[#calls - 2], calls[#calls - 1], calls[#calls] })
+			assert.are.equal(ItemTooltip.bagItemText(upgrade), calls[#calls])
 			for _, text in ipairs(calls) do
 				assert.is_nil(text:find("Wailing Caverns", 1, true))
 			end

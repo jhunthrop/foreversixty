@@ -52,6 +52,7 @@
     {"id": 227814, "name": "Radiant Girdle of the Dawn", "gate": "season-of-discovery-vendor-stock"},
     {"id": 274746, "name": "Sea Giant's Toe Ring", "gate": "forever-new-vendors"},
     {"id": 22195, "name": "Light Obsidian Belt", "gate": "ahn-qiraj-crafting"},
+    {"id": 274030, "name": "Malleable Essence of Nature", "gate": "hyjal-barrow-deeps-reagents"},
     {"id": 21278, "name": "Stormshroud Gloves", "gate": "late-recipes"},
     {"id": 22385, "name": "Titanic Leggings", "gate": "late-recipes"},
     {"id": 20579, "name": "Green Dragonskin Cloak", "gate": "world-bosses"}

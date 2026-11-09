@@ -56,9 +56,13 @@ export function fullSourceLine(cell: SourceCell, context: SourceLineContext): st
         ? `Crafted · ${titleCase(cell.name)}`
         : `Crafted · ${titleCase(cell.name)} (skill ${cell.skill})`;
     case 'rep':
-      return cell.standing === undefined
-        ? `${cell.faction} reputation`
-        : `${cell.faction} reputation · ${titleCase(cell.standing)}`;
+      return [
+        `${cell.faction} reputation`,
+        cell.standing === undefined ? undefined : titleCase(cell.standing),
+        cell.place,
+      ]
+        .filter(Boolean)
+        .join(' · ');
     case 'quest':
       return [
         `Quest: ${cell.questName}`,
@@ -67,8 +71,14 @@ export function fullSourceLine(cell: SourceCell, context: SourceLineContext): st
       ]
         .filter(Boolean)
         .join(' · ');
-    case 'vendor':
-      return `Vendor: ${cell.npc}`;
+    case 'vendor': {
+      // "Vendor: Pix Xizzix, Booty Bay · 100 Tarnished Undermine Reals": a player needs the
+      // price when it is not gold (feedback 2026-11-09).
+      const seller = cell.place === undefined ? cell.npc : `${cell.npc}, ${cell.place}`;
+      return cell.cost === undefined
+        ? `Vendor: ${seller}`
+        : `Vendor: ${seller} · ${cell.cost.amount} ${cell.cost.currency}`;
+    }
     case 'world_drop': {
       const range =
         cell.levelMin !== undefined && cell.levelMax !== undefined

@@ -61,6 +61,15 @@ Theme.HEX = {
 	rareBright = "6eaeec",
 	epicBright = "cd92f5",
 	legendaryBright = "ff8f1f",
+	--- The client's own GREEN_FONT_COLOR: an upgrade line and every gain on the item tooltip
+	--- (design/specs/2026-11-08-addon-ux.md G2).
+	tooltipGreen = "1aff1a",
+	--- The item tooltip's last Shift line (the attribution), one step dimmer than tooltipMuted.
+	tooltipDim = "8a8a8a",
+	--- Labels written on the quest frame's parchment, under a reward's name: the client gold and
+	--- grey wash out on it, so a dark gold and a dark brown-grey carry the same meanings.
+	parchmentGold = "7a5a0c",
+	parchmentMuted = "5c4f3c",
 }
 
 Theme.ALPHA = {
@@ -381,6 +390,9 @@ Theme.TEMPLATES = { gameTooltip = "GameTooltipTemplate" }
 
 Theme.MEDIA = {
 	minimapIcon = "Interface\\AddOns\\ForeverSixty\\media\\minimap",
+	--- The green upgrade arrow inlined in tooltip, reward and roll lines (addon/tools/make_arrow.py:
+	--- the slot marks' own glyph; the client's bags-greenarrow atlas draws a dot on 1.60).
+	arrowInline = "Interface\\AddOns\\ForeverSixty\\media\\arrow",
 	--- The character header's own class-colour ring (design section 2's
 	--- own crest bullet): one plain white ring, class-coloured at
 	--- runtime through SetVertexColor (Window.applyHeader), rather than
@@ -1272,6 +1284,13 @@ function Theme.instanceName()
 		return nil
 	end
 	return name, instanceType
+end
+
+--- The green upgrade arrow as an inline texture escape at `size` px (12 by default), then a
+--- space: it leads every green upgrade line (G3).
+function Theme.arrowMarkup(size)
+	size = size or 12
+	return string.format("|T%s:%d:%d|t ", Theme.MEDIA.arrowInline, size, size)
 end
 
 --- Whether Shift is held, for the chip's shift-drag; false where the client cannot say.
