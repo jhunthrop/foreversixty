@@ -43,7 +43,7 @@ import { decodeBuildTrees } from '../../../lib/guides/build-tree';
 import { describedBuildTrees, guideRotation } from '../../../lib/guides/guide-rotation';
 import { rankedBisFile } from '../../../lib/guides/class-dps';
 import { guidesCopy } from '../../../lib/guides/copy';
-import { glanceRotation, markCheapRanks, topRankAt60 } from '../../../lib/guides/glance';
+import { atLevel60, glanceRotation, markCheapRanks, topRankAt60 } from '../../../lib/guides/glance';
 import { buildRaces } from '../../../lib/guides/build-races';
 import { renderGuideMarkdown } from '../../../lib/guides/markdown';
 import { splitSpecSections, slugify, SPEC_SECTIONS, type SpecSection } from '../../../lib/guides/sections';
@@ -169,7 +169,7 @@ const rotation =
   unkeyed === undefined
     ? undefined
     : markCheapRanks(
-        withTipKeys(markRaidBuildRows(unkeyed, raidOnly), tipBundle),
+        atLevel60(withTipKeys(markRaidBuildRows(unkeyed, raidOnly), tipBundle)),
         (name) => topRankAt60(build, classSlug, name),
         proseOnly('Rotation and priority'),
       );

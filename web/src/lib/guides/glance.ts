@@ -117,6 +117,22 @@ export function isCheapRank(item: RotationItem, topRank: number | undefined, pro
   return new RegExp(`\\b${name}\\b[^.]*?\\brank ${item.rank}\\b`, 'i').test(prose);
 }
 
+/** The rotation lane's lists at their level 60 clauses (level60Clause): the rank swaps while
+ *  levelling ("with an older rank on your bar at 26 to 29, ...") stay in the Leveling prose, so
+ *  every priority row reads as one line (P8, 2026-11-09). */
+export function atLevel60<
+  T extends { opener: RotationItem[]; priority: RotationItem[]; cooldowns: RotationItem[] },
+>(lists: T): T {
+  const at60 = (items: RotationItem[]): RotationItem[] =>
+    items.map((item) => ({ ...item, clause: level60Clause(item.clause) }));
+  return {
+    ...lists,
+    opener: at60(lists.opener),
+    priority: at60(lists.priority),
+    cooldowns: at60(lists.cooldowns),
+  };
+}
+
 /** Marks every row the guide casts at a cheap rank on purpose (`cheapRank`). */
 export function markCheapRanks<
   T extends { opener: RotationItem[]; priority: RotationItem[]; cooldowns: RotationItem[] },

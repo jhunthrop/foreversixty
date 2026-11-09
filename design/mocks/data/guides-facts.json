@@ -36,12 +36,11 @@
   "fullListLink": "Full list and alternatives",
   "bisByLevelLabel": "Best in slot by level:",
   "tierListLink": "Where it ranks at 60",
-  "preRaidNote": "These are the best picks before the first raid tier. Raid loot is not itemized in the client yet, and this list updates when it is.",
+  "preRaidNote": "Your best gear before the first raid opens.",
   "notSimChecked": "Ranked by stats only",
   "enchants": "Enchants",
   "consumables": "Consumables",
-  "enchantsNote": "The enchant for each slot that adds the most of your weighted stats. Crit, hit and haste enchants are not included.",
-  "consumablesNote": "What to bring to a raid.",
+  "enchantsNote": "Crit, hit and haste enchants are not listed.",
   "racialsColumn": "Racials",
   "recommendedTag": "Recommended",
   "hitToCap": "[fn]",
@@ -3527,7 +3526,7 @@
        "name": "Hunter's Mark",
        "rank": 4,
        "icon": "ability_hunter_snipershot",
-       "clause": "Whenever the target is not marked, and from 33 Expose Prey needs it",
+       "clause": "Whenever the target is not marked",
        "tipKey": "spell:14325",
        "rankText": "Rank 4"
       },
@@ -3536,7 +3535,7 @@
        "name": "Raptor Strike",
        "rank": 8,
        "icon": "ability_meleedamage",
-       "clause": "On every swing it is ready, with an older rank on your bar at 26 to 29, at 31, and at 46 and 47, and to 49 on most Horde characters",
+       "clause": "On every swing it is ready",
        "tipKey": "spell:14266",
        "rankText": "Rank 8"
       },
@@ -13733,7 +13732,7 @@
        "name": "Fireball",
        "rank": 11,
        "icon": "spell_fire_flamebolt",
-       "clause": "The filler once you have Arcane Blast, which the leveling build takes at 54",
+       "clause": "The filler once you have Arcane Blast",
        "needs": [
         "Arcane Blast"
        ],
@@ -22485,7 +22484,7 @@
        "name": "Heal",
        "rank": 4,
        "icon": "spell_holy_heal02",
-       "clause": "The step down when Greater Heal rank 1 costs more than you can spend, and your filler before Greater Heal at 40",
+       "clause": "The step down when Greater Heal rank 1 costs more than you can spend",
        "tipKey": "spell:6064",
        "rankText": "Rank 4"
       },

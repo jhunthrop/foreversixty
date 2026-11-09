@@ -74,8 +74,8 @@ export const guidesCopy = {
   bisByLevelLabel: 'Best in slot by level:',
   /** The BiS lane's link to the spec's role tier list. */
   tierListLink: 'Where it ranks at 60',
-  preRaidNote:
-    'These are the best picks before the first raid tier. Raid loot is not itemized in the client yet, and this list updates when it is.',
+  /** Under the level 60 list: what it is, in a player's words (no talk about the site). */
+  preRaidNote: 'Your best gear before the first raid opens.',
   notSimChecked: 'Ranked by stats only',
   enchants: 'Enchants',
   consumables: 'Consumables',
