@@ -1541,7 +1541,6 @@ def Split(rows: str, inspector: str) -> str:
     return f'<div class="split-insp">{rows}{inspector}</div>'
 
 
-<<<<<<< HEAD
 # ------------------------------------------------ Frame (round 5; web ui/Frame.svelte): the featured panel, two or three a page
 # The panel (raised ground, black 1 px edge, 10 px radius, the warm outer ring) with the cream line inset 6 px; `ornate` marks the
 # page's one lead panel (the built corners are decoration on the inset line, no box of their own). Padding 22/24, 18/16 below 768.
@@ -1610,7 +1609,8 @@ def RankList(heads: str, body: str, n_figs: int = 1, grouped: bool = False, link
     if fig_px:
         html = html.replace(f'style="--n:{n_figs}"', f'style="--n:{n_figs};--rr-fig:{fig_px}px"', 1)
     return html
-=======
+
+
 # The panel form (web ui/Section `panel`, `frame`, `flush`; ui/Page `panels`): the logs and report mocks' prims.panel, the
 # heading row inside one Plate with the body. `frame` is the Plate's ('plain', 'framed', 'lead'); `flush` runs the body
 # edge to edge (a table that pads its own cells). Page(panels=True) sets them 22 px apart, the columns 28.
@@ -1653,4 +1653,3 @@ def Page(layout: str, main: str = '', rail: str = '', sticky_rail: bool = False,
     """panels: main and rail hold Section panels (web ui/Page `panels`); every other keyword goes to the Page before."""
     html = _Page1(layout, main, rail, sticky_rail, **kwargs)
     return html.replace('class="layout-split"', 'class="layout-split panels"', 1) if panels else html
->>>>>>> origin/shared/section-panel
