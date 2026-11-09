@@ -42,7 +42,7 @@ export function iconsByName(spells, table) {
   return byName;
 }
 
-/** The report fixture files a fixture build serves: the bundled sample and src/fixtures/report. */
+/** The report fixture files a fixture build serves: the bundled sample, src/fixtures/report and the coach's. */
 async function reportFiles(webRoot) {
   const out = [];
   const walk = async (dir) => {
@@ -60,6 +60,7 @@ async function reportFiles(webRoot) {
   };
   await walk(path.join(webRoot, 'public/sample-report'));
   await walk(path.join(webRoot, 'src/fixtures/report'));
+  await walk(path.join(webRoot, 'src/fixtures/coach'));
   return out;
 }
 
@@ -81,7 +82,11 @@ export async function publishSpellIcons({ repoRoot, webRoot, build, publicDir, f
   const fallbacks = await readJson(path.join(webRoot, 'src/data/spell-icon-fallbacks.json'));
   const wanted = reportSpells({});
   for (const file of await reportFiles(webRoot)) reportSpells(await readJson(file), wanted);
-  const stems = new Set([fallbacks.melee, ...Object.values(fallbacks.client), ...Object.values(fallbacks.schools)]);
+  const stems = new Set([
+    fallbacks.melee,
+    ...Object.values(fallbacks.client),
+    ...Object.values(fallbacks.schools),
+  ]);
   for (const id of wanted.ids) if (table[String(id)] !== undefined) stems.add(table[String(id)]);
   for (const name of wanted.names) if (byName[name] !== undefined) stems.add(byName[name]);
 
@@ -90,8 +95,9 @@ export async function publishSpellIcons({ repoRoot, webRoot, build, publicDir, f
   let added = 0;
   for (const stem of stems) {
     const from = path.join(buildDir, 'icons', `${stem}.webp`);
+    // Over the fixture's own file too: its icon set holds 1 px placeholders for some of these stems.
+    if (!(await exists(from))) continue;
     const target = path.join(iconsDir, `${stem}.webp`);
-    if ((await exists(target)) || !(await exists(from))) continue;
     await cp(from, target);
     added += 1;
   }
