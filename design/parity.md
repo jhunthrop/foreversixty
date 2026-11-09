@@ -18,13 +18,15 @@ The mock library (`design/mocks/ws_lib.py` `REGION`, emitted by `ws_lib` and `ws
 | `head-answer` | `PageHeader` (its `answer` slot); `Frame` (`region`) on the tier list | BiS: one figure with its unit, the trust line, the links. Nothing else. The tier list: its spec panel in the split rail (signed out, the sign-in line; signed in, the spec, where it stands and its two buttons) |
 | `controls` | `ControlBar` | The control bar |
 | `countdowns` | the page (home) | The countdown panels under the head: the first raids and the guild's next event |
-| `summary` | the page (BiS: `BisSpecPage`) | The summary line and the view toggle |
-| `notes` | the page (BiS) | One-line standing notes over the Plate (source rule, hit cap, weapon) |
+| `summary` | the page (the BiS landing) | The summary line under the bar |
+| `notes` | the page | One-line standing notes over the Plate |
 | `plate` | `Plate` | The page's one primary object |
-| `slots` | `Paperdoll` | The slot cells |
+| `slots` | `Paperdoll`, `PaperdollFrame` | The slot cells; on the frame, the whole frame (its sockets, title bar and centre) |
+| `paperdoll-medallion` | `PaperdollFrame` | The medallion socket: the Battle.net head render, else the seal |
+| `paperdoll-centre` | `PaperdollFrame` | The frame's centre: the selected slot's client tooltip (BiS: and Open in the sim) |
 | `inspector` / `inspector-inline` | `Inspector` | The slot detail at the side (from 1760) / in place |
 | `section-<slug>` | `Section` | A section; the slug is its title (`section-what-to-stack`) |
-| `footer-note` | the page (BiS) | The closing one-liner (the guide line) |
+| `footer-note` | the page | The closing one-liner |
 | `dialog` | the page's modal confirm (account: `AccountDeleteDialog`; mock `ws_prims.Dialog`) | A dialog open over the page: its title, body and actions. The scrim behind it is outside every region |
 | `intro` | the page (`Prose` before a document's first heading) | A content page's opening prose: About's text, the roadmap's line and table, the build-unavailable paragraph (design/specs/2026-11-08-pages.md) |
 
@@ -41,9 +43,9 @@ Each run writes `web/test-results/parity/<page>-<state>.png`: mock | build at th
 
 ## The BiS states
 
-`design/mocks/web/bis-parity.json`: `dps-60` (marksmanship hunter, raid), `healer-60` (holy priest), `tank-60` (protection warrior), `low-20` (beast mastery hunter, 20 to 29, Where to go). Each band is its own page (`web/src/lib/bis/band-path.ts`): the 60 states open `/bis/<class>/<spec>/60`, `low-20` the spec's own path, so the band pages are held to the same mocks. Mocks `web-bis-<state>.html`, rev 4 of `design/mocks/ws_bis.py` (spec 5 and the 5.13 build decisions).
+`design/mocks/web/bis-parity.json`: `dps-60` (marksmanship hunter, raid), `healer-60` (holy priest), `tank-60` (protection warrior), `low-20` (beast mastery hunter, 20 to 29). Each band is its own page (`web/src/lib/bis/band-path.ts`): the 60 states open `/bis/<class>/<spec>/60`, `low-20` the spec's own path, so the band pages are held to the same mocks. Mocks `web-bis-<state>.html` from `design/mocks/ws_bis.py`: round 5, the paperdoll (design/specs/2026-11-09-directions.md, Paperdoll; the visual reference is `design/mocks/directions/png/g-bis-frame-*.png`). The regions: `controls`, the frame (`slots`, `paperdoll-medallion`, `paperdoll-centre`), the side's sections (`section-this-set` on a tank or healer band, `section-what-to-stack`, `section-where-to-go`) and the itinerary's `plate`.
 
-`design/mocks/bis_facts.mjs` reads names, numbers, sources and group membership from a running build; `design/mocks/ws_bis.py` renders the mocks from those facts. The facts carry no structure, so a block the build grows never reaches the mock.
+`design/mocks/bis_facts.mjs` reads names, numbers, sources and the stops from a running build; `design/mocks/ws_bis.py` renders the mocks from those facts with the `PaperdollFrame` and `ItemTip` mock primitives (`ws_prims.py`). The facts carry no structure, so a block the build grows never reaches the mock.
 
 ## The simulator states
 

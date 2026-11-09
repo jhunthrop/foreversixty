@@ -123,17 +123,17 @@ test.describe('signed out, desktop', () => {
     await expect(band(page, 40)).toHaveAttribute('aria-checked', 'true');
     await expect(page).toHaveURL(/\?band=40$/);
     await expect(specRow(page, 'warrior', 'fury')).toHaveAttribute('href', '/bis/warrior/fury/40-49');
-    await expect(page.locator('[data-band-text]:visible')).toHaveCount(1);
-    await expect(page.locator('[data-band-text="40"]')).toBeVisible();
+    // One range's line is shown at a time (only 60's has words: its raid gear).
+    await expect(page.locator('[data-band-text]:not([hidden])')).toHaveCount(1);
+    await expect(page.locator('[data-band-text="40"]')).not.toHaveAttribute('hidden');
     await page.goto('/bis');
     await expect(band(page, 40)).toHaveAttribute('aria-checked', 'true');
   });
 
-  test('every range has its summary; ?band= opens on it', async ({ page }) => {
+  test('?band= opens on its range', async ({ page }) => {
     for (const value of BANDS) {
       await page.goto(`/bis?band=${value}`);
       await expect(band(page, value)).toHaveAttribute('aria-checked', 'true');
-      await expect(page.locator(`[data-band-text="${value}"]`)).toContainText('Top sources:');
     }
   });
 

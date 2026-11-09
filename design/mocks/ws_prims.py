@@ -1444,9 +1444,9 @@ PRIM_CSS += '''
 _Section0 = Section
 
 
-def Section(title: str, body: str, action: str = '', meta: str = '', named: bool = False) -> str:
-    """named: the built Section with an id, a landmark named by its heading (role region)."""
-    html = _Section0(title, body, action, meta)
+def Section(title: str, body: str, action: str = '', meta: str = '', named: bool = False, boxed: bool = False) -> str:
+    """named: the built Section with an id, a landmark named by its heading (role region). boxed: the body on the panel."""
+    html = _Section0(title, body, action, meta, boxed=boxed)
     if not named:
         return html
     sid = region_slug(title)
@@ -1609,3 +1609,108 @@ def RankList(heads: str, body: str, n_figs: int = 1, grouped: bool = False, link
     if fig_px:
         html = html.replace(f'style="--n:{n_figs}"', f'style="--n:{n_figs};--rr-fig:{fig_px}px"', 1)
     return html
+
+
+# ------------------------------------------------ PaperdollFrame and the in-flow client tooltip (lane P2, 2026-11-09)
+# The shipped ui/PaperdollFrame (web/src/components/ui/PaperdollFrame.svelte) on the owner's frame: every socket, the
+# medallion, the title bar and the centre are boxes in percent of the frame (web/src/lib/ui/paperdoll-slots.json, the
+# file the build reads), so mock and build place them alike. Filled slots are buttons named "<Slot>: <item>"; the title
+# bar is the page's heading; the centre holds the caller's html. Under 423 px it is the strip and the two-column list.
+# `ItemTip` is ItemTooltip with floating={false}: the client tooltip in the flow, a group named by the item, its last
+# lines (`tail`) in the client yellow, its source under the hairline.
+import json as _json
+from mocklib import WEB as _WEB, data_uri as _data_uri
+
+_PD = _json.loads((_WEB / 'src/lib/ui/paperdoll-slots.json').read_text())
+_PD_SLOTS = ['head', 'neck', 'shoulder', 'back', 'chest', 'shirt', 'tabard', 'wrist',
+             'hands', 'waist', 'legs', 'feet', 'finger1', 'finger2', 'trinket1', 'trinket2',
+             'main_hand', 'off_hand', 'ranged']
+_PD_LIST = [s for s in _PD_SLOTS if s not in ('shirt', 'tabard')]
+_PD_SEAL = _data_uri(_WEB / 'public/art/seal-128.webp')
+
+PRIM_CSS += '''
+.pdf{container-type:inline-size;width:100%}.pdf-frame,.pdf-list{display:none}
+@container (min-width:423px){.pdf-frame{position:relative;display:block;width:100%;background:var(--pd-frame) 0 0/100% 100% no-repeat}}
+@container (max-width:422.98px){.pdf-list{display:block}}
+.pdf-slot{position:absolute;display:block;padding:0;border:0;background:none}
+.pdf-icon{position:absolute;inset:6%;width:88%;height:88%;box-sizing:border-box;border:2px solid var(--qb);border-radius:3px;box-shadow:0 0 0 1px #000;background:#100a06}
+.pdf-covered{filter:grayscale(1) brightness(.55)}
+.pdf-slot.pdf-sel::after{content:'';position:absolute;inset:-4%;border:2px solid #f3eee2;border-radius:6px;box-shadow:0 0 0 1px #000}
+.pdf-medal{position:absolute;display:flex;align-items:center;justify-content:center}.pdf-medal img{width:92%;height:92%;border-radius:50%;object-fit:cover}
+.pdf-title{position:absolute;display:flex;align-items:center;gap:2cqw;margin:0;padding:0 2.2cqw;color:#f3eee2;font:400 3.4cqw/1 var(--font-title);
+  letter-spacing:-.015em;text-shadow:0 1px 2px #000;white-space:nowrap}
+.pdf-meta{font:600 2.3cqw var(--font-body);color:#e3dfd9}
+.pdf-figure{margin-left:auto;font:600 3.2cqw var(--font-body);color:#fff;text-shadow:0 1px 2px #000;white-space:nowrap}.pdf-figure small{font-size:.66em;color:#e3dfd9}
+.pdf-centre{position:absolute;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3cqw;padding:4cqw}
+.pdf-strip{display:flex;align-items:center;gap:10px;padding:8px 12px;border:1px solid #000;border-radius:10px 10px 0 0;background:#0b2f3b}
+.pdf-strip img{width:40px;height:40px;border-radius:50%}.pdf-strip h1{min-width:0;margin:0;font:400 19px/1.2 var(--font-title);color:#f3eee2}
+.pdf-strip .pdf-figure{font-size:17px}
+.pdf-items{display:grid;grid-template-columns:1fr 1fr;gap:6px 10px;margin:0;padding:12px;list-style:none;border:1px solid #000;border-top:0;border-radius:0 0 10px 10px;background:#170e09}
+.pdf-item{display:grid;grid-template-columns:44px minmax(0,1fr);gap:8px;align-items:center;width:100%;min-height:44px;padding:0;border:0;background:none;color:inherit;font:inherit;text-align:left}
+.pdf-cell{position:relative;width:44px;height:44px;border-radius:3px;background:#100a06}.pdf-cell .pdf-icon{inset:3px;width:38px;height:38px}
+.pdf-name{display:block;font-size:13px;font-weight:600;line-height:16px;overflow-wrap:anywhere}.pdf-sub{display:block;font-size:12px;line-height:16px;color:#8b8784}
+.pdf-list-centre{margin-top:10px}
+.itip{display:flex;flex-direction:column;width:100%;font-size:13px;color:#fff;border:1px solid #8b8f9c;border-radius:4px;background:#060914;box-shadow:inset 0 0 0 1px #2b3040}
+.itip .bd{display:flex;flex-direction:column;gap:8px;padding:12px 14px}.itip .nm{font-size:15px;font-weight:700}.itip .ln{font-size:12px}
+.itip .tl{font-size:12px;color:#ffd100}.itip .ft{padding:8px 14px 12px;font-size:12px;line-height:16px;color:#8b8784;border-top:1px solid #2b3040}
+'''
+
+
+def _pd_box(name: str) -> str:
+    b = _PD['slots'][name] if name in _PD['slots'] else _PD[name]
+    return f'left:{b["x"]}%;top:{b["y"]}%;width:{b["w"]}%;height:{b["h"]}%'
+
+
+def _pd_icon(cell: dict) -> str:
+    """The item's icon in its quality border, as the built `.pdf-icon` (a socket when the checkout has no icon file)."""
+    q = QCOL.get(cell.get('quality', 1), QCOL[1]) if isinstance(cell.get('quality'), int) else RARITY.get(cell.get('quality'), RARITY['common'])
+    cov = ' pdf-covered' if cell.get('covered') else ''
+    src = _icon_src(cell.get('icon'))
+    if src:
+        return f'<img class="pdf-icon{cov}" src="{src}" alt="" style="--qb:{q}">'
+    return f'<span class="pdf-icon{cov}" style="--qb:{q}"></span>'
+
+
+def _icon_src(name: str | None) -> str:
+    html = icon(name, 40) if name else ''
+    m = re.search(r'src="([^"]+)"', html)
+    return m.group(1) if m else ''
+
+
+def PaperdollFrame(slots: list[dict], title: str, meta: str, figure: tuple[str, str] | None, centre: str, label: str,
+                   list_centre: str = '') -> str:
+    """slots: the filled sockets (slot, label (the button's name), covered, selected, icon, quality). centre: the centre's html."""
+    by = {s['slot']: s for s in slots}
+    fig = f'<b class="pdf-figure">{escape(figure[0])} <small>{escape(figure[1])}</small></b>' if figure else ''
+    buttons = ''.join(
+        f'<button type="button" class="pdf-slot{" pdf-sel" if by[n]["selected"] else ""}" style="{_pd_box(n)}" '
+        f'aria-label="{escape(by[n]["label"])}" aria-pressed="{"true" if by[n]["selected"] else "false"}">{_pd_icon(by[n])}</button>'
+        for n in _PD_SLOTS if n in by)
+    frame_bg = _data_uri(_WEB / 'public/art/paperdoll-frame@1x.webp')
+    w, h = _PD['size']
+    frame = (f'<div class="pdf-frame" style="aspect-ratio:{w}/{h};--pd-frame:url({frame_bg})" data-region="{REGION["slots"]}">{buttons}'
+             f'<span class="pdf-medal" style="{_pd_box("medallion")}" data-region="{REGION["paperdoll_medallion"]}"><img src="{_PD_SEAL}" alt=""></span>'
+             f'<div class="pdf-title" style="{_pd_box("title")}"><h1 style="margin:0;font:inherit">{escape(title)}</h1><small class="pdf-meta">{escape(meta)}</small>{fig}</div>'
+             f'<div class="pdf-centre" style="{_pd_box("centre")}" data-region="{REGION["paperdoll_centre"]}">{centre}</div></div>')
+    items = []
+    for n in _PD_LIST:
+        s = by.get(n)
+        if s is None:
+            items.append('<li><span class="pdf-item"><span class="pdf-cell"></span><span class="pdf-sub"></span></span></li>')
+            continue
+        slot_word, _, item = s['label'].partition(': ')
+        items.append(f'<li><button type="button" class="pdf-item" aria-pressed="{"true" if s["selected"] else "false"}">'
+                     f'<span class="pdf-cell">{_pd_icon(s)}</span><span><span class="pdf-name">{escape(item)}</span>'
+                     f'<span class="pdf-sub">{escape(slot_word)}</span></span></button></li>')
+    lst = (f'<div class="pdf-list"><div class="pdf-strip"><img src="{_PD_SEAL}" alt=""><h1>{escape(title)}</h1>{fig}</div>'
+           f'<ul class="pdf-items">{"".join(items)}</ul>{f"<div class=pdf-list-centre>{list_centre}</div>" if list_centre else ""}</div>')
+    return f'<div class="pdf" role="group" aria-label="{escape(label)}">{frame}{lst}</div>'
+
+
+def ItemTip(name: str, quality: str, lines: list[str], tail: list[str], foot: str) -> str:
+    """The client tooltip in the flow (ItemTooltip floating={false}): its lines, the yellow tail paragraphs, the source."""
+    body = ''.join(f'<span class="ln">{escape(x)}</span>' for x in lines[1:])
+    t = f'<div class="tl">{"".join(f"<p>{escape(x)}</p>" for x in tail)}</div>' if tail else ''
+    f = f'<div class="ft"><div>{escape(foot)}</div></div>' if foot else ''
+    return (f'<div class="itip" role="group" aria-label="{escape(name)}"><div class="bd"><span class="nm" style="color:{RARITY.get(quality, RARITY["common"])}">'
+            f'{escape(name)}</span>{body}{t}</div>{f}</div>')

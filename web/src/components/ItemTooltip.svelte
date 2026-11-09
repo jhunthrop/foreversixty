@@ -16,8 +16,12 @@
      panel's own vertical and horizontal placement -- flip above the anchor, clamp and scroll
      internally when neither side fits, shift left off the viewport's right edge -- is
      `lib/items/tooltip-position.ts`'s job; this component only reads the CSS variables that
-     positions it. -->
+     positions it. `floating={false}` sets it in the flow instead (the paperdoll frame's centre shows the
+     selected slot's tooltip in place), full width of its box and named as a group, not a tooltip.
+     `tail` ends the body in the client's yellow, as the client ends a tooltip with what an item
+     is worth to you (the paperdoll's "+0.3 DPS vs ..."). -->
 <script lang="ts">
+  import type { Snippet } from 'svelte';
   import type { ItemTooltipModel } from '../lib/items/tooltip';
   import { TOOLTIP_PANEL_PLACEMENT } from '../lib/items/tooltip-position';
   import { bisCopy } from '../lib/bis/copy';
@@ -30,10 +34,16 @@
     build,
     id,
     enchant,
+    floating = true,
+    tail,
   }: {
     model: ItemTooltipModel;
     build: string;
-    id: string;
+    id?: string;
+    /** False: in the flow (the paperdoll's centre), not anchored to a trigger. */
+    floating?: boolean;
+    /** The last lines of the body, in the client's yellow (what the item is worth). */
+    tail?: Snippet;
     /** The enchant on the worn item, in the client's own words ("Crusader"): its green line. */
     enchant?: string;
   } = $props();
@@ -54,8 +64,12 @@
   kind="tooltip"
   {id}
   testid="item-tooltip"
-  class="text-strong absolute z-30 flex w-[clamp(280px,calc(100vw_-_32px),360px)] flex-col text-[13px]"
-  style={TOOLTIP_PANEL_PLACEMENT}
+  role={floating ? undefined : 'group'}
+  label={floating ? undefined : model.name}
+  class={floating
+    ? 'text-strong absolute z-30 flex w-[clamp(280px,calc(100vw_-_32px),360px)] flex-col text-[13px]'
+    : 'text-strong flex w-full flex-col text-[13px]'}
+  style={floating ? TOOLTIP_PANEL_PLACEMENT : undefined}
   foot={model.sourceLines.length > 0 ? sources : undefined}
 >
   <div class="flex flex-col gap-2 px-[14px] py-3">
@@ -131,6 +145,7 @@
     {#if model.requiredLevel > 0}
       <span class="text-muted text-[12px]">Requires Level {model.requiredLevel}</span>
     {/if}
+    {#if tail}<div class="text-tooltip-yellow text-[12px]">{@render tail()}</div>{/if}
   </div>
 </Overlay>
 

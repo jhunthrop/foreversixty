@@ -4,7 +4,7 @@
 // band: /bis/<class>/<spec> is its first band, /bis/<class>/<spec>/<band> each other one
 // (lib/bis/band-path.ts), every one its own server-rendered URL with its own title, description,
 // canonical, h1 and breadcrumb, so a crawler reads each band's list without running the page.
-// One island (components/bis/BisSpecPage.svelte) server-rendered at the page's band, so first
+// One island (components/bis/BisSpecPage.svelte, the paperdoll page) server-rendered at the page's band, so first
 // paint needs no script. The page builds the compact per-band view models once
 // (lib/bis/page-data.ts), registers the page band's slice for the server render and inlines it
 // as one JSON script for the island; the raw BiS file never ships. Tooltips stay with
@@ -22,10 +22,15 @@ import { bisBandPath, bisSpecPath } from '../../lib/bis/band-path';
 import { PRE_RAID_SLUG } from '../../lib/bis/pre-raid';
 import { readSpecCatalog } from '../../lib/bis/load';
 import { bisPreRaid, bisServerPage, defaultSlice } from '../../lib/bis/page-server';
-import { BIS_PAGE_DATA_ID, bisPageDataJson, registerBisPageData } from '../../lib/bis/page-registry';
+import {
+  BIS_PAGE_DATA_ID,
+  BIS_TOOLTIP_MODELS_ID,
+  bisPageDataJson,
+  registerBisPageData,
+  registerBisTooltips,
+} from '../../lib/bis/page-registry';
 import { BIS_PENDING_SCRIPT } from '../../lib/bis/page-pending';
 import { publishedIcon } from '../../lib/bis/spec-icon';
-import { classCrestSrc } from '../../lib/class-crest';
 import { classColorVar } from '../../lib/report/format';
 import { classRows, racesForClass } from '../../lib/planner/reference';
 import { breadcrumbListLd } from '../../lib/seo';
@@ -100,6 +105,7 @@ const jsonLd =
 // hydration matches it); the island fetches the rest from the JSON endpoint after mount.
 const inlineData = server === undefined ? undefined : defaultSlice(server.data, band);
 if (inlineData !== undefined) registerBisPageData(inlineData);
+if (server !== undefined) registerBisTooltips(specEntry.spec, server.tooltips);
 const tooltipModelsJson = JSON.stringify(server?.tooltips ?? {}).replace(/</g, '\\u003c');
 
 const specOptions: ControlOption[] = readSpecCatalog()
@@ -153,11 +159,9 @@ const raceOptions: Record<Faction, { value: string; label: string }[]> = {
           pathBand={band}
           pathPreRaid={preRaidPage}
           preRaid={subject.preRaid}
-          crestSrc={classCrestSrc(classSlug)}
           crestColor={classColorVar(className)}
           specOptions={specOptions}
           raceOptions={raceOptions}
-          guideHref={guideHref}
           dataHref={`${specPath}.json`}
         />
         {/* The data the islands read at hydration sits after the markup, so the first paint never
@@ -165,7 +169,7 @@ const raceOptions: Record<Faction, { value: string; label: string }[]> = {
         <script
           is:inline
           type="application/json"
-          id="bis-tooltip-models"
+          id={BIS_TOOLTIP_MODELS_ID}
           set:html={tooltipModelsJson}
         ></script>
         <script

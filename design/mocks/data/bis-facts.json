@@ -1,26 +1,189 @@
 {
  "dps-60": {
   "id": "dps-60",
-  "path": "/bis/hunter/marksmanship?band=60",
+  "path": "/bis/hunter/marksmanship/60",
   "mock": "web-bis-dps-60.html",
   "class": "hunter",
   "spec": "marksmanship",
-  "title": "Marksmanship Hunter",
-  "meta": "Best in slot",
-  "answer": {
-   "figure": {
-    "label": "This set, simmed 7 nov",
-    "value": "1083.6",
-    "unit": "DPS",
-    "caption": ""
+  "title": "Marksmanship Hunter BiS",
+  "meta": "Pre-raid 60 · Alliance",
+  "figure": {
+   "value": "1083.6",
+   "unit": "DPS"
+  },
+  "frameLabel": "Marksmanship Hunter best in slot, 60",
+  "slots": [
+   {
+    "slot": "head",
+    "item": 252605,
+    "label": "Head: Black Dragonscale Helm",
+    "covered": false,
+    "selected": true,
+    "icon": "inv_helmet_09",
+    "quality": 4
    },
-   "tank": [],
-   "tankLine": "",
-   "healer": [],
-   "trust": "Level 60 Night-elf · 51 talent points · level 63 unknown, 180 s · Raid-ready, Phase 1: 14 buffs, 8 debuffs and 6 consumables. · 3,000 runs",
-   "rankingSim": "View ranking sim ›",
-   "simLink": "Open in simulator",
-   "plannerLink": "Talents in planner"
+   {
+    "slot": "neck",
+    "item": 19538,
+    "label": "Neck: Sentinel's Medallion",
+    "covered": false,
+    "selected": false,
+    "icon": "inv_jewelry_necklace_13",
+    "quality": 3
+   },
+   {
+    "slot": "shoulder",
+    "item": 271955,
+    "label": "Shoulder: Theramore Pauldrons",
+    "covered": false,
+    "selected": false,
+    "icon": "inv_shoulder_06",
+    "quality": 4
+   },
+   {
+    "slot": "back",
+    "item": 13340,
+    "label": "Back: Cape of the Black Baron",
+    "covered": false,
+    "selected": false,
+    "icon": "inv_misc_cape_20",
+    "quality": 3
+   },
+   {
+    "slot": "chest",
+    "item": 252483,
+    "label": "Chest: Dawn Armor",
+    "covered": false,
+    "selected": false,
+    "icon": "inv_chest_leather_08",
+    "quality": 4
+   },
+   {
+    "slot": "wrist",
+    "item": 19587,
+    "label": "Wrist: Forest Stalker's Bracers",
+    "covered": false,
+    "selected": false,
+    "icon": "inv_bracer_12",
+    "quality": 4
+   },
+   {
+    "slot": "hands",
+    "item": 271948,
+    "label": "Hands: Theramore Gloves",
+    "covered": false,
+    "selected": false,
+    "icon": "inv_gauntlets_27",
+    "quality": 4
+   },
+   {
+    "slot": "waist",
+    "item": 272397,
+    "label": "Waist: Ranger's Belt",
+    "covered": false,
+    "selected": false,
+    "icon": "inv_belt_25",
+    "quality": 4
+   },
+   {
+    "slot": "legs",
+    "item": 237819,
+    "label": "Legs: Sentinel's Chain Leggings",
+    "covered": false,
+    "selected": false,
+    "icon": "inv_pants_03",
+    "quality": 4
+   },
+   {
+    "slot": "feet",
+    "item": 16675,
+    "label": "Feet: Beaststalker's Boots",
+    "covered": false,
+    "selected": false,
+    "icon": "inv_boots_plate_07",
+    "quality": 3
+   },
+   {
+    "slot": "finger1",
+    "item": 9533,
+    "label": "Ring: Masons Fraternity Ring",
+    "covered": false,
+    "selected": false,
+    "icon": "inv_jewelry_ring_03",
+    "quality": 3
+   },
+   {
+    "slot": "finger2",
+    "item": 19325,
+    "label": "Ring: Don Julio's Band",
+    "covered": false,
+    "selected": false,
+    "icon": "inv_jewelry_ring_35",
+    "quality": 4
+   },
+   {
+    "slot": "trinket1",
+    "item": 19991,
+    "label": "Trinket: Devilsaur Eye",
+    "covered": false,
+    "selected": false,
+    "icon": "inv_misc_eye_01",
+    "quality": 3
+   },
+   {
+    "slot": "trinket2",
+    "item": 249469,
+    "label": "Trinket: Frozen Heart of the Mountain",
+    "covered": false,
+    "selected": false,
+    "icon": "inv_misc_gem_sapphire_01",
+    "quality": 3
+   },
+   {
+    "slot": "main_hand",
+    "item": 250619,
+    "label": "Main hand: Legionite Glaive",
+    "covered": false,
+    "selected": false,
+    "icon": "inv_spear_05",
+    "quality": 3
+   },
+   {
+    "slot": "off_hand",
+    "item": 250619,
+    "label": "Off hand: Legionite Glaive, two-handed",
+    "covered": true,
+    "selected": false,
+    "icon": "inv_spear_05",
+    "quality": 3
+   },
+   {
+    "slot": "ranged",
+    "item": 13023,
+    "label": "Ranged: Eaglehorn Long Bow",
+    "covered": false,
+    "selected": false,
+    "icon": "inv_weapon_bow_11",
+    "quality": 3
+   }
+  ],
+  "centre": {
+   "tip": {
+    "name": "Black Dragonscale Helm",
+    "lines": [
+     "Black Dragonscale Helm Item Level 61 Binds when equipped",
+     "Head Mail",
+     "319 Armor",
+     "+21 Agility+38 Intellect+14 Crit",
+     "Requires Level 56",
+     "Next: −1.8 vs Lieutenant Commander's Chain Helm"
+    ],
+    "tail": [
+     "Next: −1.8 vs Lieutenant Commander's Chain Helm"
+    ],
+    "foot": "Crafted: Leatherworking"
+   },
+   "sim": "Open in the sim ›"
   },
   "controls": {
    "label": "Best in slot controls",
@@ -122,560 +285,461 @@
    ],
    "sources": "All sources"
   },
-  "summary": {
-   "lead": "16 of 17 slots have a pick at this level.",
-   "signIn": "Sign in",
-   "after": "to see them against your gear.",
-   "next": "",
-   "view": [
-    {
-     "label": "By slot",
-     "on": true
-    },
-    {
-     "label": "Where to go",
-     "on": false
-    }
-   ]
-  },
-  "notes": [
-   "Hit to cap: 1.1% for specials, 8.1% for spells",
-   "Legionite Glaive is a two-hander: the off hand stays empty."
-  ],
-  "doll": {
-   "label": "Marksmanship Hunter best in slot, 60",
-   "view": "slot",
-   "groups": [],
-   "left": [
-    {
-     "slot": "head",
-     "state": "item",
-     "label": "Head",
-     "flag": {
-      "text": "Level 56",
-      "tone": "muted"
-     },
-     "item": 252605,
-     "name": "Black Dragonscale Helm",
-     "quality": "epic",
-     "stats": "+21 Agi · +38 Int",
-     "line2": "Crafted · Leatherworking",
-     "gain": {
-      "label": "",
-      "value": "Same",
-      "unit": "",
-      "caption": ""
-     },
-     "basis": {
-      "prefix": "next: −1.8 vs",
-      "item": "Lieutenant Commander's Chain Helm",
-      "quality": "rare"
-     },
-     "icon": "inv_helmet_09"
-    },
-    {
-     "slot": "neck",
-     "state": "item",
-     "label": "Neck",
-     "flag": {
-      "text": "Level 58",
-      "tone": "muted"
-     },
-     "item": 19538,
-     "name": "Sentinel's Medallion",
-     "quality": "rare",
-     "stats": "+15 Agi · +10 Sta",
-     "line2": "Silverwing Sentinels reputation · Honored",
-     "gain": {
-      "label": "",
-      "value": "Same",
-      "unit": "",
-      "caption": ""
-     },
-     "basis": {
-      "prefix": "next: −1.8 vs",
-      "item": "Skibi's Pendant",
-      "quality": "rare"
-     },
-     "icon": "inv_jewelry_necklace_13"
-    },
-    {
-     "slot": "shoulder",
-     "state": "item",
-     "label": "Shoulder",
-     "flag": {
-      "text": "Level 60",
-      "tone": "muted"
-     },
-     "item": 271955,
-     "name": "Theramore Pauldrons",
-     "quality": "epic",
-     "stats": "+27 Agi · +12 Sta",
-     "line2": "Theramore Expeditionary Force reputation · Exalted",
-     "gain": {
-      "label": "",
-      "value": "Same",
-      "unit": "",
-      "caption": ""
-     },
-     "basis": {
-      "prefix": "next: −7.9 vs",
-      "item": "Field Marshal's Chain Spaulders",
-      "quality": "epic"
-     },
-     "icon": "inv_shoulder_06"
-    },
-    {
-     "slot": "back",
-     "state": "item",
-     "label": "Back",
-     "flag": {
-      "text": "Level 58",
-      "tone": "muted"
-     },
-     "item": 13340,
-     "name": "Cape of the Black Baron",
-     "quality": "rare",
-     "stats": "+15 Agi · +20 AP",
-     "line2": "Baron Rivendare · Stratholme (58-60)",
-     "gain": {
-      "label": "",
-      "value": "+4.0",
-      "unit": "DPS",
-      "caption": ""
-     },
-     "basis": {
-      "prefix": "vs",
-      "item": "Shadow Prowler's Cloak",
-      "quality": "rare"
-     },
-     "icon": "inv_misc_cape_20"
-    },
-    {
-     "slot": "chest",
-     "state": "item",
-     "label": "Chest",
-     "flag": {
-      "text": "Level 56",
-      "tone": "muted"
-     },
-     "item": 252483,
-     "name": "Dawn Armor",
-     "quality": "epic",
-     "stats": "+37 Agi · +14 Crit",
-     "line2": "Crafted · Leatherworking",
-     "gain": {
-      "label": "",
-      "value": "Same",
-      "unit": "",
-      "caption": ""
-     },
-     "basis": {
-      "prefix": "next: −26.3 vs",
-      "item": "Savage Gladiator Chain",
-      "quality": "epic"
-     },
-     "icon": "inv_chest_leather_08"
-    },
-    {
-     "slot": "wrist",
-     "state": "item",
-     "label": "Wrist",
-     "flag": {
-      "text": "Level 60",
-      "tone": "muted"
-     },
-     "item": 19587,
-     "name": "Forest Stalker's Bracers",
-     "quality": "epic",
-     "stats": "+19 Agi · +11 Str",
-     "line2": "Silverwing Sentinels reputation · Exalted",
-     "gain": {
-      "label": "",
-      "value": "Same",
-      "unit": "",
-      "caption": ""
-     },
-     "basis": {
-      "prefix": "next: −1.8 vs",
-      "item": "Knight-Captain's Chain Armguards",
-      "quality": "rare"
-     },
-     "icon": "inv_bracer_12"
-    },
-    {
-     "slot": "main_hand",
-     "state": "item",
-     "label": "Main hand",
-     "flag": {
-      "text": "Level 58",
-      "tone": "muted"
-     },
-     "item": 250619,
-     "name": "Legionite Glaive",
-     "quality": "rare",
-     "stats": "+16 Agi · +54 AP",
-     "line2": "Crafted · Blacksmithing",
-     "gain": {
-      "label": "",
-      "value": "Same",
-      "unit": "",
-      "caption": ""
-     },
-     "basis": {
-      "prefix": "next: −1.0 vs",
-      "item": "Grand Marshal's Stave",
-      "quality": "epic"
-     },
-     "icon": "inv_spear_05"
-    },
-    {
-     "slot": "off_hand",
-     "state": "empty",
-     "label": "Off hand",
-     "flag": null,
-     "item": null,
-     "name": "Nothing better yet",
-     "quality": "common",
-     "stats": "",
-     "line2": "Legionite Glaive is a two-hander; the off hand is taken.",
-     "gain": null,
-     "basis": null,
-     "icon": null
-    },
-    {
-     "slot": "ranged",
-     "state": "item",
-     "label": "Ranged",
-     "flag": {
-      "text": "Level 58",
-      "tone": "muted"
-     },
-     "item": 13023,
-     "name": "Eaglehorn Long Bow",
-     "quality": "rare",
-     "stats": "+10 Agi · +4 Sta",
-     "line2": "World drop (59-62) · BoE · on the AH",
-     "gain": {
-      "label": "",
-      "value": "Same",
-      "unit": "",
-      "caption": ""
-     },
-     "basis": {
-      "prefix": "next: −20.0 vs",
-      "item": "Hyper Deluxe Sniper Rifle Mk XVII",
-      "quality": "epic"
-     },
-     "icon": "inv_weapon_bow_11"
-    }
-   ],
-   "right": [
-    {
-     "slot": "hands",
-     "state": "item",
-     "label": "Hands",
-     "flag": {
-      "text": "Level 60",
-      "tone": "muted"
-     },
-     "item": 271948,
-     "name": "Theramore Gloves",
-     "quality": "epic",
-     "stats": "+27 Agi · +11 Str",
-     "line2": "Theramore Expeditionary Force reputation · Exalted",
-     "gain": {
-      "label": "",
-      "value": "Same",
-      "unit": "",
-      "caption": ""
-     },
-     "basis": {
-      "prefix": "next: −0.8 vs",
-      "item": "Mourning Handguards",
-      "quality": "epic"
-     },
-     "icon": "inv_gauntlets_27"
-    },
-    {
-     "slot": "waist",
-     "state": "item",
-     "label": "Waist",
-     "flag": {
-      "text": "Level 60",
-      "tone": "muted"
-     },
-     "item": 272397,
-     "name": "Ranger's Belt",
-     "quality": "epic",
-     "stats": "+24 Agi · +14 Int",
-     "line2": "Vendor: Pix Xizzix",
-     "gain": {
-      "label": "",
-      "value": "+4.1",
-      "unit": "DPS",
-      "caption": ""
-     },
-     "basis": {
-      "prefix": "vs",
-      "item": "Marshal's Chain Girdle",
-      "quality": "epic"
-     },
-     "icon": "inv_belt_25"
-    },
-    {
-     "slot": "legs",
-     "state": "item",
-     "label": "Legs",
-     "flag": {
-      "text": "Level 60",
-      "tone": "muted"
-     },
-     "item": 237819,
-     "name": "Sentinel's Chain Leggings",
-     "quality": "epic",
-     "stats": "+35 Agi · +26 Sta",
-     "line2": "Vendor: Illiyana Moonblaze",
-     "gain": {
-      "label": "",
-      "value": "+7.2",
-      "unit": "DPS",
-      "caption": ""
-     },
-     "basis": {
-      "prefix": "vs",
-      "item": "Marshal's Chain Legguards",
-      "quality": "epic"
-     },
-     "icon": "inv_pants_03"
-    },
-    {
-     "slot": "feet",
-     "state": "item",
-     "label": "Feet",
-     "flag": {
-      "text": "Level 54",
-      "tone": "muted"
-     },
-     "item": 16675,
-     "name": "Beaststalker's Boots",
-     "quality": "rare",
-     "stats": "+21 Agi · +9 Sta",
-     "line2": "Nerub'enkan · Stratholme (58-60)",
-     "gain": {
-      "label": "",
-      "value": "Same",
-      "unit": "",
-      "caption": ""
-     },
-     "basis": {
-      "prefix": "No close alternative",
-      "item": "",
-      "quality": "common"
-     },
-     "icon": "inv_boots_plate_07"
-    },
-    {
-     "slot": "finger1",
-     "state": "item",
-     "label": "Ring",
-     "flag": {
-      "text": "Level 40",
-      "tone": "muted"
-     },
-     "item": 9533,
-     "name": "Masons Fraternity Ring",
-     "quality": "rare",
-     "stats": "+14 Agi · +5 Sta",
-     "line2": "Quest: Divino-matic Rod · requires level 40",
-     "gain": {
-      "label": "",
-      "value": "Same",
-      "unit": "",
-      "caption": ""
-     },
-     "basis": {
-      "prefix": "No close alternative",
-      "item": "",
-      "quality": "common"
-     },
-     "icon": "inv_jewelry_ring_03"
-    },
-    {
-     "slot": "finger2",
-     "state": "item",
-     "label": "Ring",
-     "flag": {
-      "text": "Level 55",
-      "tone": "muted"
-     },
-     "item": 19325,
-     "name": "Don Julio's Band",
-     "quality": "epic",
-     "stats": "+10 Sta · +14 Crit",
-     "line2": "Stormpike Guard reputation · Exalted",
-     "gain": {
-      "label": "",
-      "value": "Same",
-      "unit": "",
-      "caption": ""
-     },
-     "basis": {
-      "prefix": "next: −1.5 vs",
-      "item": "Cutthroat's Signet",
-      "quality": "rare"
-     },
-     "icon": "inv_jewelry_ring_35"
-    },
-    {
-     "slot": "trinket1",
-     "state": "item",
-     "label": "Trinket",
-     "flag": null,
-     "item": 19991,
-     "name": "Devilsaur Eye",
-     "quality": "rare",
-     "stats": "",
-     "line2": "Quest: The Green Drake · requires level 50",
-     "gain": {
-      "label": "",
-      "value": "Same",
-      "unit": "",
-      "caption": ""
-     },
-     "basis": {
-      "prefix": "No close alternative",
-      "item": "",
-      "quality": "common"
-     },
-     "icon": "inv_misc_eye_01"
-    },
-    {
-     "slot": "trinket2",
-     "state": "item",
-     "label": "Trinket",
-     "flag": {
-      "text": "Level 50",
-      "tone": "muted"
-     },
-     "item": 249469,
-     "name": "Frozen Heart of the Mountain",
-     "quality": "rare",
-     "stats": "+7 Fire res · +7 Nature res",
-     "line2": "Crafted · Enchanting",
-     "gain": {
-      "label": "",
-      "value": "Same",
-      "unit": "",
-      "caption": ""
-     },
-     "basis": {
-      "prefix": "next: −6.3 vs",
-      "item": "Heart of Wyrmthalak",
-      "quality": "rare"
-     },
-     "icon": "inv_misc_gem_sapphire_01"
-    }
-   ]
-  },
-  "weights": {
+  "set": null,
+  "stack": {
    "title": "What to stack",
-   "sentence": "Stack agility, then crit rating, then intellect.",
-   "caption": "Normalized to Agility = 1.00. Per point of stat, normalized to Agility = 1.00, with DPS per point and the sim error. Haste: 6.83 per 1%, not in the table because no item at this level range has it",
-   "rows": [
+   "facts": [
     {
-     "name": "Agility",
-     "scale": "1.00",
-     "bar": 1,
-     "line": "0.891 DPS per point",
-     "faint": false
+     "label": "Agility",
+     "value": "1.00"
     },
     {
-     "name": "Crit rating",
-     "scale": "0.82",
-     "bar": 0.8170000000000001,
-     "line": "0.728 DPS per point",
-     "faint": false
+     "label": "Crit rating",
+     "value": "0.82"
     },
     {
-     "name": "Intellect",
-     "scale": "0.36",
-     "bar": 0.36200000000000004,
-     "line": "0.323 DPS per point",
-     "faint": false
+     "label": "Intellect",
+     "value": "0.36"
     },
     {
-     "name": "Ranged attack power",
-     "scale": "0.30",
-     "bar": 0.303,
-     "line": "0.270 DPS per point",
-     "faint": false
-    },
-    {
-     "name": "Hit rating",
-     "scale": "",
-     "bar": 0,
-     "line": "Not significant",
-     "faint": true
-    },
-    {
-     "name": "Spell power",
-     "scale": "",
-     "bar": 0,
-     "line": "Not significant",
-     "faint": true
+     "label": "Ranged attack power",
+     "value": "0.30"
     }
    ],
-   "expertise": "",
-   "addon": "The Forever Sixty addon rates every item in your bags and tooltips with these weights.",
-   "addonLink": "Use these weights in the addon ›"
+   "lines": [
+    "1.00 = 0.891 DPS per point of Agility",
+    "Hit to cap: 1.1% for specials, 8.1% for spells",
+    "Legionite Glaive is a two-hander: the off hand stays empty."
+   ],
+   "link": "All stat weights in the sim ›"
   },
-  "guide": {
-   "lead": "Talents, rotation and stat priority for this spec:",
-   "link": "Marksmanship Hunter guide ›"
+  "where": {
+   "title": "Where to go",
+   "stops": [
+    {
+     "title": "Stratholme",
+     "count": "2"
+    },
+    {
+     "title": "Crafted · Leatherworking",
+     "count": "2"
+    },
+    {
+     "title": "Crafted · Enchanting",
+     "count": "1"
+    },
+    {
+     "title": "Crafted · Blacksmithing",
+     "count": "1"
+    },
+    {
+     "title": "Silverwing Sentinels reputation",
+     "count": "2"
+    },
+    {
+     "title": "Theramore Expeditionary Force reputation",
+     "count": "2"
+    },
+    {
+     "title": "Stormpike Guard reputation",
+     "count": "1"
+    },
+    {
+     "title": "Quest",
+     "count": "2"
+    },
+    {
+     "title": "Vendor",
+     "count": "2"
+    },
+    {
+     "title": "World / BoE",
+     "count": "1"
+    }
+   ],
+   "action": ""
+  },
+  "itinerary": {
+   "label": "Marksmanship Hunter, where to go",
+   "stops": [
+    {
+     "title": "Stratholme",
+     "range": "58 to 60",
+     "rows": [
+      {
+       "item": 13340,
+       "name": "Cape of the Black Baron",
+       "quality": "rare",
+       "line": "Back · Baron Rivendare",
+       "gain": "+4.0DPS",
+       "icon": "inv_misc_cape_20"
+      },
+      {
+       "item": 16675,
+       "name": "Beaststalker's Boots",
+       "quality": "rare",
+       "line": "Feet · Nerub'enkan",
+       "gain": "",
+       "icon": "inv_boots_plate_07"
+      }
+     ]
+    },
+    {
+     "title": "Crafted · Leatherworking",
+     "range": "",
+     "rows": [
+      {
+       "item": 252605,
+       "name": "Black Dragonscale Helm",
+       "quality": "epic",
+       "line": "Head",
+       "gain": "",
+       "icon": "inv_helmet_09"
+      },
+      {
+       "item": 252483,
+       "name": "Dawn Armor",
+       "quality": "epic",
+       "line": "Chest",
+       "gain": "",
+       "icon": "inv_chest_leather_08"
+      }
+     ]
+    },
+    {
+     "title": "Crafted · Enchanting",
+     "range": "",
+     "rows": [
+      {
+       "item": 249469,
+       "name": "Frozen Heart of the Mountain",
+       "quality": "rare",
+       "line": "Trinket",
+       "gain": "",
+       "icon": "inv_misc_gem_sapphire_01"
+      }
+     ]
+    },
+    {
+     "title": "Crafted · Blacksmithing",
+     "range": "",
+     "rows": [
+      {
+       "item": 250619,
+       "name": "Legionite Glaive",
+       "quality": "rare",
+       "line": "Main hand",
+       "gain": "",
+       "icon": "inv_spear_05"
+      }
+     ]
+    },
+    {
+     "title": "Silverwing Sentinels reputation",
+     "range": "",
+     "rows": [
+      {
+       "item": 19538,
+       "name": "Sentinel's Medallion",
+       "quality": "rare",
+       "line": "Neck · Honored",
+       "gain": "",
+       "icon": "inv_jewelry_necklace_13"
+      },
+      {
+       "item": 19587,
+       "name": "Forest Stalker's Bracers",
+       "quality": "epic",
+       "line": "Wrist · Exalted",
+       "gain": "",
+       "icon": "inv_bracer_12"
+      }
+     ]
+    },
+    {
+     "title": "Theramore Expeditionary Force reputation",
+     "range": "",
+     "rows": [
+      {
+       "item": 271955,
+       "name": "Theramore Pauldrons",
+       "quality": "epic",
+       "line": "Shoulder · Exalted",
+       "gain": "",
+       "icon": "inv_shoulder_06"
+      },
+      {
+       "item": 271948,
+       "name": "Theramore Gloves",
+       "quality": "epic",
+       "line": "Hands · Exalted",
+       "gain": "",
+       "icon": "inv_gauntlets_27"
+      }
+     ]
+    },
+    {
+     "title": "Stormpike Guard reputation",
+     "range": "",
+     "rows": [
+      {
+       "item": 19325,
+       "name": "Don Julio's Band",
+       "quality": "epic",
+       "line": "Ring · Exalted",
+       "gain": "",
+       "icon": "inv_jewelry_ring_35"
+      }
+     ]
+    },
+    {
+     "title": "Quest",
+     "range": "",
+     "rows": [
+      {
+       "item": 9533,
+       "name": "Masons Fraternity Ring",
+       "quality": "rare",
+       "line": "Ring · Quest: Divino-matic Rod · requires level 40",
+       "gain": "",
+       "icon": "inv_jewelry_ring_03"
+      },
+      {
+       "item": 19991,
+       "name": "Devilsaur Eye",
+       "quality": "rare",
+       "line": "Trinket · Quest: The Green Drake · requires level 50",
+       "gain": "",
+       "icon": "inv_misc_eye_01"
+      }
+     ]
+    },
+    {
+     "title": "Vendor",
+     "range": "",
+     "rows": [
+      {
+       "item": 272397,
+       "name": "Ranger's Belt",
+       "quality": "epic",
+       "line": "Waist · Vendor: Pix Xizzix",
+       "gain": "+4.1DPS",
+       "icon": "inv_belt_25"
+      },
+      {
+       "item": 237819,
+       "name": "Sentinel's Chain Leggings",
+       "quality": "epic",
+       "line": "Legs · Vendor: Illiyana Moonblaze",
+       "gain": "+7.2DPS",
+       "icon": "inv_pants_03"
+      }
+     ]
+    },
+    {
+     "title": "World / BoE",
+     "range": "",
+     "rows": [
+      {
+       "item": 13023,
+       "name": "Eaglehorn Long Bow",
+       "quality": "rare",
+       "line": "Ranged · World drop (59-62) · BoE · on the AH",
+       "gain": "",
+       "icon": "inv_weapon_bow_11"
+      }
+     ]
+    }
+   ]
   }
  },
  "healer-60": {
   "id": "healer-60",
-  "path": "/bis/priest/holy?band=60",
+  "path": "/bis/priest/holy/60",
   "mock": "web-bis-healer-60.html",
   "class": "priest",
   "spec": "holy",
-  "title": "Holy Priest",
-  "meta": "Best in slot",
-  "answer": {
-   "figure": {
-    "label": "This set, simmed 7 nov",
-    "value": "867.3",
-    "unit": "HPS",
-    "caption": ""
+  "title": "Holy Priest BiS",
+  "meta": "Pre-raid 60 · Alliance",
+  "figure": {
+   "value": "867.3",
+   "unit": "HPS"
+  },
+  "frameLabel": "Holy Priest best in slot, 60",
+  "slots": [
+   {
+    "slot": "head",
+    "item": 16693,
+    "label": "Head: Devout Crown",
+    "covered": false,
+    "selected": true,
+    "icon": "inv_crown_01",
+    "quality": 3
    },
-   "tank": [],
-   "tankLine": "",
-   "healer": [
-    {
-     "key": "overheal",
-     "label": "Overheal",
-     "value": "6%",
-     "line": "6% overheal"
-    },
-    {
-     "key": "mana",
-     "label": "Mana lasts",
-     "value": "2:00",
-     "line": "Out of mana at 2:00"
-    },
-    {
-     "key": "hpm",
-     "label": "Healing per mana",
-     "value": "6.6",
-     "line": "6.6 healing per mana"
-    }
-   ],
-   "trust": "Level 60 Human · 51 talent points · level 63 unknown, 180 s · Raid-ready, Phase 1: 14 buffs, 8 debuffs and 10 consumables. · 3,003 runs",
-   "rankingSim": "",
-   "simLink": "",
-   "plannerLink": "Talents in planner"
+   {
+    "slot": "neck",
+    "item": 10769,
+    "label": "Neck: Glowing Eye of Mordresh",
+    "covered": false,
+    "selected": false,
+    "icon": "inv_misc_orb_03",
+    "quality": 3
+   },
+   {
+    "slot": "shoulder",
+    "item": 14139,
+    "label": "Shoulder: Mooncloth Shoulders",
+    "covered": false,
+    "selected": false,
+    "icon": "inv_shoulder_02",
+    "quality": 3
+   },
+   {
+    "slot": "back",
+    "item": 272413,
+    "label": "Back: Drape of Recovery",
+    "covered": false,
+    "selected": false,
+    "icon": "inv_misc_cape_06",
+    "quality": 3
+   },
+   {
+    "slot": "chest",
+    "item": 14154,
+    "label": "Chest: Truefaith Vestments",
+    "covered": false,
+    "selected": false,
+    "icon": "inv_chest_cloth_31",
+    "quality": 4
+   },
+   {
+    "slot": "wrist",
+    "item": 16697,
+    "label": "Wrist: Devout Bracers",
+    "covered": false,
+    "selected": false,
+    "icon": "inv_belt_31",
+    "quality": 3
+   },
+   {
+    "slot": "hands",
+    "item": 16692,
+    "label": "Hands: Devout Gloves",
+    "covered": false,
+    "selected": false,
+    "icon": "inv_gauntlets_14",
+    "quality": 3
+   },
+   {
+    "slot": "waist",
+    "item": 19047,
+    "label": "Waist: Wisdom of the Timbermaw",
+    "covered": false,
+    "selected": false,
+    "icon": "inv_belt_09",
+    "quality": 3
+   },
+   {
+    "slot": "legs",
+    "item": 16694,
+    "label": "Legs: Devout Skirt",
+    "covered": false,
+    "selected": false,
+    "icon": "inv_pants_08",
+    "quality": 3
+   },
+   {
+    "slot": "feet",
+    "item": 16691,
+    "label": "Feet: Devout Sandals",
+    "covered": false,
+    "selected": false,
+    "icon": "inv_boots_05",
+    "quality": 3
+   },
+   {
+    "slot": "finger1",
+    "item": 272407,
+    "label": "Ring: Blessed Band of Light",
+    "covered": false,
+    "selected": false,
+    "icon": "inv_jewelry_ring_60",
+    "quality": 3
+   },
+   {
+    "slot": "finger2",
+    "item": 22334,
+    "label": "Ring: Band of Mending",
+    "covered": false,
+    "selected": false,
+    "icon": "inv_jewelry_ring_05",
+    "quality": 3
+   },
+   {
+    "slot": "trinket1",
+    "item": 272439,
+    "label": "Trinket: Serenity Field",
+    "covered": false,
+    "selected": false,
+    "icon": "inv_misc_enggizmos_36",
+    "quality": 3
+   },
+   {
+    "slot": "trinket2",
+    "item": 249473,
+    "label": "Trinket: Dormant Heart of the Mountain",
+    "covered": false,
+    "selected": false,
+    "icon": "inv_misc_gem_diamond_01",
+    "quality": 3
+   },
+   {
+    "slot": "main_hand",
+    "item": 812,
+    "label": "Main hand: Glowing Brightwood Staff",
+    "covered": false,
+    "selected": false,
+    "icon": "inv_staff_29",
+    "quality": 4
+   },
+   {
+    "slot": "off_hand",
+    "item": 812,
+    "label": "Off hand: Glowing Brightwood Staff, two-handed",
+    "covered": true,
+    "selected": false,
+    "icon": "inv_staff_29",
+    "quality": 4
+   },
+   {
+    "slot": "ranged",
+    "item": 279246,
+    "label": "Ranged: Torch of Light",
+    "covered": false,
+    "selected": false,
+    "icon": "inv_torch_lit",
+    "quality": 4
+   }
+  ],
+  "centre": {
+   "tip": {
+    "name": "Devout Crown",
+    "lines": [
+     "Devout Crown Item Level 62 Binds when picked up",
+     "Head Cloth",
+     "71 Armor",
+     "+13 Stamina+24 Intellect+15 Spirit",
+     "Equip: Increases damage and healing done by magical spells and effects by up to 7.Equip: Increases healing done by spells and effects by up to 13.",
+     "Vestments of the Devout",
+     "Requires Level 57",
+     "Next: −18.4 vs Mooncloth Circlet"
+    ],
+    "tail": [
+     "Next: −18.4 vs Mooncloth Circlet"
+    ],
+    "foot": "Scholomance — Darkmaster Gandling"
+   },
+   "sim": ""
   },
   "controls": {
    "label": "Best in slot controls",
@@ -777,552 +841,442 @@
    ],
    "sources": "All sources"
   },
-  "summary": {
-   "lead": "16 of 17 slots have a pick at this level.",
-   "signIn": "Sign in",
-   "after": "to see them against your gear.",
-   "next": "",
-   "view": [
+  "set": {
+   "title": "This set",
+   "facts": [
     {
-     "label": "By slot",
-     "on": true
+     "label": "Overheal",
+     "value": "6%"
     },
     {
-     "label": "Where to go",
-     "on": false
-    }
-   ]
-  },
-  "notes": [
-   "Glowing Brightwood Staff is a two-hander: the off hand stays empty."
-  ],
-  "doll": {
-   "label": "Holy Priest best in slot, 60",
-   "view": "slot",
-   "groups": [],
-   "left": [
-    {
-     "slot": "head",
-     "state": "item",
-     "label": "Head",
-     "flag": {
-      "text": "Level 57",
-      "tone": "muted"
-     },
-     "item": 16693,
-     "name": "Devout Crown",
-     "quality": "rare",
-     "stats": "+24 Int · +15 Spi",
-     "line2": "Darkmaster Gandling · Scholomance (58-60)",
-     "gain": {
-      "label": "",
-      "value": "Same",
-      "unit": "",
-      "caption": ""
-     },
-     "basis": {
-      "prefix": "next: −18.4 vs",
-      "item": "Mooncloth Circlet",
-      "quality": "rare"
-     },
-     "icon": "inv_crown_01"
+     "label": "Mana lasts",
+     "value": "2:00"
     },
     {
-     "slot": "neck",
-     "state": "item",
-     "label": "Neck",
-     "flag": {
-      "text": "Level 36",
-      "tone": "muted"
-     },
-     "item": 10769,
-     "name": "Glowing Eye of Mordresh",
-     "quality": "rare",
-     "stats": "+20 Healing · +8 Int",
-     "line2": "Mordresh Fire Eye · Razorfen Downs (37-46)",
-     "gain": {
-      "label": "",
-      "value": "Same",
-      "unit": "",
-      "caption": ""
-     },
-     "basis": {
-      "prefix": "next: −2.9 vs",
-      "item": "Lady Maye's Pendant",
-      "quality": "epic"
-     },
-     "icon": "inv_misc_orb_03"
-    },
-    {
-     "slot": "shoulder",
-     "state": "item",
-     "label": "Shoulder",
-     "flag": {
-      "text": "Level 56",
-      "tone": "muted"
-     },
-     "item": 14139,
-     "name": "Mooncloth Shoulders",
-     "quality": "rare",
-     "stats": "+37 Healing · +13 SP",
-     "line2": "Crafted · Tailoring",
-     "gain": {
-      "label": "",
-      "value": "Same",
-      "unit": "",
-      "caption": ""
-     },
-     "basis": {
-      "prefix": "next: −5.5 vs",
-      "item": "Earthenweave Mantle",
-      "quality": "uncommon"
-     },
-     "icon": "inv_shoulder_02"
-    },
-    {
-     "slot": "back",
-     "state": "item",
-     "label": "Back",
-     "flag": {
-      "text": "Level 60",
-      "tone": "muted"
-     },
-     "item": 272413,
-     "name": "Drape of Recovery",
-     "quality": "rare",
-     "stats": "+31 Healing · +10 SP",
-     "line2": "Vendor: Pix Xizzix",
-     "gain": {
-      "label": "",
-      "value": "+3.9",
-      "unit": "HPS",
-      "caption": ""
-     },
-     "basis": {
-      "prefix": "vs",
-      "item": "Caretaker's Cape",
-      "quality": "rare"
-     },
-     "icon": "inv_misc_cape_06"
-    },
-    {
-     "slot": "chest",
-     "state": "item",
-     "label": "Chest",
-     "flag": {
-      "text": "Level 57",
-      "tone": "muted"
-     },
-     "item": 14154,
-     "name": "Truefaith Vestments",
-     "quality": "epic",
-     "stats": "+14 Sta · +73 Healing",
-     "line2": "Crafted · Tailoring",
-     "gain": {
-      "label": "",
-      "value": "+0.8",
-      "unit": "HPS",
-      "caption": ""
-     },
-     "basis": {
-      "prefix": "vs",
-      "item": "Field Marshal's Satin Tunic",
-      "quality": "epic"
-     },
-     "icon": "inv_chest_cloth_31"
-    },
-    {
-     "slot": "wrist",
-     "state": "item",
-     "label": "Wrist",
-     "flag": {
-      "text": "Level 52",
-      "tone": "muted"
-     },
-     "item": 16697,
-     "name": "Devout Bracers",
-     "quality": "rare",
-     "stats": "+8 Int · +10 Spi",
-     "line2": "Thuzadin Shadowcaster · Stratholme (58-60) · 1%",
-     "gain": {
-      "label": "",
-      "value": "Same",
-      "unit": "",
-      "caption": ""
-     },
-     "basis": {
-      "prefix": "No close alternative",
-      "item": "",
-      "quality": "common"
-     },
-     "icon": "inv_belt_31"
-    },
-    {
-     "slot": "main_hand",
-     "state": "item",
-     "label": "Main hand",
-     "flag": {
-      "text": "Level 49",
-      "tone": "muted"
-     },
-     "item": 812,
-     "name": "Glowing Brightwood Staff",
-     "quality": "epic",
-     "stats": "+29 Int · +15 Sta",
-     "line2": "World drop (50-57) · BoE · on the AH",
-     "gain": {
-      "label": "",
-      "value": "+21.1",
-      "unit": "HPS",
-      "caption": ""
-     },
-     "basis": {
-      "prefix": "vs",
-      "item": "Resurgence Rod",
-      "quality": "rare"
-     },
-     "icon": "inv_staff_29"
-    },
-    {
-     "slot": "off_hand",
-     "state": "empty",
-     "label": "Off hand",
-     "flag": null,
-     "item": null,
-     "name": "Nothing better yet",
-     "quality": "common",
-     "stats": "",
-     "line2": "Glowing Brightwood Staff is a two-hander; the off hand is taken.",
-     "gain": null,
-     "basis": null,
-     "icon": null
-    },
-    {
-     "slot": "ranged",
-     "state": "item",
-     "label": "Ranged",
-     "flag": {
-      "text": "Level 60",
-      "tone": "muted"
-     },
-     "item": 279246,
-     "name": "Torch of Light",
-     "quality": "epic",
-     "stats": "+17 Healing · +6 SP",
-     "line2": "Crafted · Enchanting",
-     "gain": {
-      "label": "",
-      "value": "+5.3",
-      "unit": "HPS",
-      "caption": ""
-     },
-     "basis": {
-      "prefix": "vs",
-      "item": "Brilliant Wand",
-      "quality": "rare"
-     },
-     "icon": "inv_torch_lit"
+     "label": "Healing per mana",
+     "value": "6.6"
     }
    ],
-   "right": [
-    {
-     "slot": "hands",
-     "state": "item",
-     "label": "Hands",
-     "flag": {
-      "text": "Level 54",
-      "tone": "muted"
-     },
-     "item": 16692,
-     "name": "Devout Gloves",
-     "quality": "rare",
-     "stats": "+17 Spi · +10 Int",
-     "line2": "Archivist Galford · Stratholme (58-60)",
-     "gain": {
-      "label": "",
-      "value": "Same",
-      "unit": "",
-      "caption": ""
-     },
-     "basis": {
-      "prefix": "next: −15.7 vs",
-      "item": "Hands of the Exalted Herald",
-      "quality": "rare"
-     },
-     "icon": "inv_gauntlets_14"
-    },
-    {
-     "slot": "waist",
-     "state": "item",
-     "label": "Waist",
-     "flag": {
-      "text": "Level 53",
-      "tone": "muted"
-     },
-     "item": 19047,
-     "name": "Wisdom of the Timbermaw",
-     "quality": "rare",
-     "stats": "+14 Int · +31 Healing",
-     "line2": "Crafted · Tailoring",
-     "gain": {
-      "label": "",
-      "value": "+3.4",
-      "unit": "HPS",
-      "caption": ""
-     },
-     "basis": {
-      "prefix": "vs",
-      "item": "Penitent's Cinch",
-      "quality": "epic"
-     },
-     "icon": "inv_belt_09"
-    },
-    {
-     "slot": "legs",
-     "state": "item",
-     "label": "Legs",
-     "flag": {
-      "text": "Level 56",
-      "tone": "muted"
-     },
-     "item": 16694,
-     "name": "Devout Skirt",
-     "quality": "rare",
-     "stats": "+23 Spi · +15 Int",
-     "line2": "Baron Rivendare · Stratholme (58-60)",
-     "gain": {
-      "label": "",
-      "value": "Same",
-      "unit": "",
-      "caption": ""
-     },
-     "basis": {
-      "prefix": "next: −25.7 vs",
-      "item": "Earthenweave Leggings",
-      "quality": "uncommon"
-     },
-     "icon": "inv_pants_08"
-    },
-    {
-     "slot": "feet",
-     "state": "item",
-     "label": "Feet",
-     "flag": {
-      "text": "Level 54",
-      "tone": "muted"
-     },
-     "item": 16691,
-     "name": "Devout Sandals",
-     "quality": "rare",
-     "stats": "+17 Spi · +10 Int",
-     "line2": "Maleki the Pallid · Stratholme (58-60)",
-     "gain": {
-      "label": "",
-      "value": "Same",
-      "unit": "",
-      "caption": ""
-     },
-     "basis": {
-      "prefix": "next: −16.1 vs",
-      "item": "Faith Healer's Boots",
-      "quality": "rare"
-     },
-     "icon": "inv_boots_05"
-    },
-    {
-     "slot": "finger1",
-     "state": "item",
-     "label": "Ring",
-     "flag": {
-      "text": "Level 60",
-      "tone": "muted"
-     },
-     "item": 272407,
-     "name": "Blessed Band of Light",
-     "quality": "rare",
-     "stats": "+31 Healing · +10 SP",
-     "line2": "Vendor: Pix Xizzix",
-     "gain": {
-      "label": "",
-      "value": "Same",
-      "unit": "",
-      "caption": ""
-     },
-     "basis": {
-      "prefix": "next: −0.5 vs",
-      "item": "Rosewine Circle",
-      "quality": "rare"
-     },
-     "icon": "inv_jewelry_ring_60"
-    },
-    {
-     "slot": "finger2",
-     "state": "item",
-     "label": "Ring",
-     "flag": {
-      "text": "Level 57",
-      "tone": "muted"
-     },
-     "item": 22334,
-     "name": "Band of Mending",
-     "quality": "rare",
-     "stats": "+7 Sta · +7 Int",
-     "line2": "Balnazzar · Stratholme (58-60)",
-     "gain": {
-      "label": "",
-      "value": "Same",
-      "unit": "",
-      "caption": ""
-     },
-     "basis": {
-      "prefix": "next: −1.4 vs",
-      "item": "Rosewine Circle",
-      "quality": "rare"
-     },
-     "icon": "inv_jewelry_ring_05"
-    },
-    {
-     "slot": "trinket1",
-     "state": "item",
-     "label": "Trinket",
-     "flag": {
-      "text": "Level 60",
-      "tone": "muted"
-     },
-     "item": 272439,
-     "name": "Serenity Field",
-     "quality": "rare",
-     "stats": "+42 Healing · +14 SP",
-     "line2": "Vendor: Pix Xizzix",
-     "gain": {
-      "label": "",
-      "value": "+8.3",
-      "unit": "HPS",
-      "caption": ""
-     },
-     "basis": {
-      "prefix": "vs",
-      "item": "Weakness Analyzer",
-      "quality": "rare"
-     },
-     "icon": "inv_misc_enggizmos_36"
-    },
-    {
-     "slot": "trinket2",
-     "state": "item",
-     "label": "Trinket",
-     "flag": {
-      "text": "Level 50",
-      "tone": "muted"
-     },
-     "item": 249473,
-     "name": "Dormant Heart of the Mountain",
-     "quality": "rare",
-     "stats": "+7 Fire res · +7 Nature res",
-     "line2": "Crafted · Enchanting",
-     "gain": {
-      "label": "",
-      "value": "Same",
-      "unit": "",
-      "caption": ""
-     },
-     "basis": {
-      "prefix": "No close alternative",
-      "item": "",
-      "quality": "common"
-     },
-     "icon": "inv_misc_gem_diamond_01"
-    }
-   ]
+   "line": ""
   },
-  "weights": {
+  "stack": {
    "title": "What to stack",
-   "sentence": "Stack mp5, then healing power, then spirit.",
-   "caption": "Normalized to MP5 = 1.00. Per point of stat, normalized to MP5 = 1.00, with HPS per point and the sim error. Haste: not significant",
-   "rows": [
+   "facts": [
     {
-     "name": "MP5",
-     "scale": "1.00",
-     "bar": 1,
-     "line": "0.569 HPS per point",
-     "faint": false
+     "label": "MP5",
+     "value": "1.00"
     },
     {
-     "name": "Healing power",
-     "scale": "0.73",
-     "bar": 0.732,
-     "line": "0.417 HPS per point",
-     "faint": false
+     "label": "Healing power",
+     "value": "0.73"
     },
     {
-     "name": "Spirit",
-     "scale": "0.55",
-     "bar": 0.5479999999999999,
-     "line": "0.312 HPS per point",
-     "faint": false
+     "label": "Spirit",
+     "value": "0.55"
     },
     {
-     "name": "Intellect",
-     "scale": "0.38",
-     "bar": 0.376,
-     "line": "0.214 HPS per point",
-     "faint": false
-    },
-    {
-     "name": "Crit rating",
-     "scale": "0.30",
-     "bar": 0.3,
-     "line": "0.171 HPS per point",
-     "faint": false
+     "label": "Intellect",
+     "value": "0.38"
     }
    ],
-   "expertise": "",
-   "addon": "The Forever Sixty addon rates every item in your bags and tooltips with these weights.",
-   "addonLink": "Use these weights in the addon ›"
+   "lines": [
+    "1.00 = 0.569 HPS per point of MP5",
+    "Glowing Brightwood Staff is a two-hander: the off hand stays empty."
+   ],
+   "link": ""
   },
-  "guide": {
-   "lead": "Talents, rotation and stat priority for this spec:",
-   "link": "Holy Priest guide ›"
+  "where": {
+   "title": "Where to go",
+   "stops": [
+    {
+     "title": "Stratholme",
+     "count": "5"
+    },
+    {
+     "title": "Scholomance",
+     "count": "1"
+    },
+    {
+     "title": "Razorfen Downs",
+     "count": "1"
+    },
+    {
+     "title": "Crafted · Tailoring",
+     "count": "3"
+    },
+    {
+     "title": "Crafted · Enchanting",
+     "count": "2"
+    },
+    {
+     "title": "Vendor",
+     "count": "3"
+    },
+    {
+     "title": "World / BoE",
+     "count": "1"
+    }
+   ],
+   "action": ""
+  },
+  "itinerary": {
+   "label": "Holy Priest, where to go",
+   "stops": [
+    {
+     "title": "Stratholme",
+     "range": "58 to 60",
+     "rows": [
+      {
+       "item": 16697,
+       "name": "Devout Bracers",
+       "quality": "rare",
+       "line": "Wrist · Thuzadin Shadowcaster · 1%",
+       "gain": "",
+       "icon": "inv_belt_31"
+      },
+      {
+       "item": 16692,
+       "name": "Devout Gloves",
+       "quality": "rare",
+       "line": "Hands · Archivist Galford",
+       "gain": "",
+       "icon": "inv_gauntlets_14"
+      },
+      {
+       "item": 16694,
+       "name": "Devout Skirt",
+       "quality": "rare",
+       "line": "Legs · Baron Rivendare",
+       "gain": "",
+       "icon": "inv_pants_08"
+      },
+      {
+       "item": 16691,
+       "name": "Devout Sandals",
+       "quality": "rare",
+       "line": "Feet · Maleki the Pallid",
+       "gain": "",
+       "icon": "inv_boots_05"
+      },
+      {
+       "item": 22334,
+       "name": "Band of Mending",
+       "quality": "rare",
+       "line": "Ring · Balnazzar",
+       "gain": "",
+       "icon": "inv_jewelry_ring_05"
+      }
+     ]
+    },
+    {
+     "title": "Scholomance",
+     "range": "58 to 60",
+     "rows": [
+      {
+       "item": 16693,
+       "name": "Devout Crown",
+       "quality": "rare",
+       "line": "Head · Darkmaster Gandling",
+       "gain": "",
+       "icon": "inv_crown_01"
+      }
+     ]
+    },
+    {
+     "title": "Razorfen Downs",
+     "range": "37 to 46",
+     "rows": [
+      {
+       "item": 10769,
+       "name": "Glowing Eye of Mordresh",
+       "quality": "rare",
+       "line": "Neck · Mordresh Fire Eye",
+       "gain": "",
+       "icon": "inv_misc_orb_03"
+      }
+     ]
+    },
+    {
+     "title": "Crafted · Tailoring",
+     "range": "",
+     "rows": [
+      {
+       "item": 14139,
+       "name": "Mooncloth Shoulders",
+       "quality": "rare",
+       "line": "Shoulder",
+       "gain": "",
+       "icon": "inv_shoulder_02"
+      },
+      {
+       "item": 14154,
+       "name": "Truefaith Vestments",
+       "quality": "epic",
+       "line": "Chest",
+       "gain": "+0.8HPS",
+       "icon": "inv_chest_cloth_31"
+      },
+      {
+       "item": 19047,
+       "name": "Wisdom of the Timbermaw",
+       "quality": "rare",
+       "line": "Waist",
+       "gain": "+3.4HPS",
+       "icon": "inv_belt_09"
+      }
+     ]
+    },
+    {
+     "title": "Crafted · Enchanting",
+     "range": "",
+     "rows": [
+      {
+       "item": 249473,
+       "name": "Dormant Heart of the Mountain",
+       "quality": "rare",
+       "line": "Trinket",
+       "gain": "",
+       "icon": "inv_misc_gem_diamond_01"
+      },
+      {
+       "item": 279246,
+       "name": "Torch of Light",
+       "quality": "epic",
+       "line": "Ranged",
+       "gain": "+5.3HPS",
+       "icon": "inv_torch_lit"
+      }
+     ]
+    },
+    {
+     "title": "Vendor",
+     "range": "",
+     "rows": [
+      {
+       "item": 272413,
+       "name": "Drape of Recovery",
+       "quality": "rare",
+       "line": "Back · Vendor: Pix Xizzix",
+       "gain": "+3.9HPS",
+       "icon": "inv_misc_cape_06"
+      },
+      {
+       "item": 272407,
+       "name": "Blessed Band of Light",
+       "quality": "rare",
+       "line": "Ring · Vendor: Pix Xizzix",
+       "gain": "",
+       "icon": "inv_jewelry_ring_60"
+      },
+      {
+       "item": 272439,
+       "name": "Serenity Field",
+       "quality": "rare",
+       "line": "Trinket · Vendor: Pix Xizzix",
+       "gain": "+8.3HPS",
+       "icon": "inv_misc_enggizmos_36"
+      }
+     ]
+    },
+    {
+     "title": "World / BoE",
+     "range": "",
+     "rows": [
+      {
+       "item": 812,
+       "name": "Glowing Brightwood Staff",
+       "quality": "epic",
+       "line": "Main hand · World drop (50-57) · BoE · on the AH",
+       "gain": "+21.1HPS",
+       "icon": "inv_staff_29"
+      }
+     ]
+    }
+   ]
   }
  },
  "tank-60": {
   "id": "tank-60",
-  "path": "/bis/warrior/protection?band=60",
+  "path": "/bis/warrior/protection/60",
   "mock": "web-bis-tank-60.html",
   "class": "warrior",
   "spec": "protection",
-  "title": "Protection Warrior",
-  "meta": "Best in slot",
-  "answer": {
-   "figure": null,
-   "tank": [
-    {
-     "id": "effective-health",
-     "label": "Effective health",
-     "value": "45,441"
-    },
-    {
-     "id": "dtps",
-     "label": "Damage taken per second",
-     "value": "240.5"
-    },
-    {
-     "id": "chance-of-death",
-     "label": "Chance of death",
-     "value": "0.0%"
-    },
-    {
-     "id": "tps",
-     "label": "Threat per second",
-     "value": "1,777.7"
-    }
-   ],
-   "tankLine": "TMI 23 · own damage 455.4 DPS",
-   "healer": [],
-   "trust": "Level 60 Night-elf · 51 talent points · level 63 unknown, 180 s · Raid-ready, Phase 1: 14 buffs, 8 debuffs and 12 consumables. · 3,000 runs",
-   "rankingSim": "",
-   "simLink": "Open in simulator",
-   "plannerLink": "Talents in planner"
+  "title": "Protection Warrior BiS",
+  "meta": "Pre-raid 60 · Alliance",
+  "figure": null,
+  "frameLabel": "Protection Warrior best in slot, 60",
+  "slots": [
+   {
+    "slot": "head",
+    "item": 12620,
+    "label": "Head: Enchanted Thorium Helm",
+    "covered": false,
+    "selected": true,
+    "icon": "inv_helmet_02",
+    "quality": 3
+   },
+   {
+    "slot": "neck",
+    "item": 19538,
+    "label": "Neck: Sentinel's Medallion",
+    "covered": false,
+    "selected": false,
+    "icon": "inv_jewelry_necklace_13",
+    "quality": 3
+   },
+   {
+    "slot": "shoulder",
+    "item": 20057,
+    "label": "Shoulder: Highlander's Plate Spaulders",
+    "covered": false,
+    "selected": false,
+    "icon": "inv_shoulder_01",
+    "quality": 4
+   },
+   {
+    "slot": "back",
+    "item": 279269,
+    "label": "Back: Fel Cape",
+    "covered": false,
+    "selected": false,
+    "icon": "inv_misc_cape_01",
+    "quality": 4
+   },
+   {
+    "slot": "chest",
+    "item": 15413,
+    "label": "Chest: Ornate Adamantium Breastplate",
+    "covered": false,
+    "selected": false,
+    "icon": "inv_chest_plate09",
+    "quality": 3
+   },
+   {
+    "slot": "wrist",
+    "item": 19578,
+    "label": "Wrist: Berserker Bracers",
+    "covered": false,
+    "selected": false,
+    "icon": "inv_bracer_06",
+    "quality": 4
+   },
+   {
+    "slot": "hands",
+    "item": 279264,
+    "label": "Hands: Heavy Thorium Gauntlets",
+    "covered": false,
+    "selected": false,
+    "icon": "inv_gauntlets_28",
+    "quality": 4
+   },
+   {
+    "slot": "waist",
+    "item": 272403,
+    "label": "Waist: Valiant's Waistguard",
+    "covered": false,
+    "selected": false,
+    "icon": "inv_belt_33",
+    "quality": 4
+   },
+   {
+    "slot": "legs",
+    "item": 237825,
+    "label": "Legs: Sentinel's Plate Legguards",
+    "covered": false,
+    "selected": false,
+    "icon": "inv_pants_plate_20",
+    "quality": 4
+   },
+   {
+    "slot": "feet",
+    "item": 16734,
+    "label": "Feet: Boots of Valor",
+    "covered": false,
+    "selected": false,
+    "icon": "inv_boots_plate_03",
+    "quality": 3
+   },
+   {
+    "slot": "finger1",
+    "item": 272409,
+    "label": "Ring: Ring of Awareness",
+    "covered": false,
+    "selected": false,
+    "icon": "inv_jewelry_ring_01",
+    "quality": 3
+   },
+   {
+    "slot": "finger2",
+    "item": 272408,
+    "label": "Ring: Cutthroat's Signet",
+    "covered": false,
+    "selected": false,
+    "icon": "inv_jewelry_ring_01",
+    "quality": 3
+   },
+   {
+    "slot": "trinket1",
+    "item": 272437,
+    "label": "Trinket: Adaptive Combat Assistant",
+    "covered": false,
+    "selected": false,
+    "icon": "inv_engineering_90_lightningbox",
+    "quality": 3
+   },
+   {
+    "slot": "trinket2",
+    "item": 17904,
+    "label": "Trinket: Stormpike Insignia Rank 6",
+    "covered": false,
+    "selected": false,
+    "icon": "inv_jewelry_stormpiketrinket_05",
+    "quality": 4
+   },
+   {
+    "slot": "main_hand",
+    "item": 279261,
+    "label": "Main hand: Greenhammer",
+    "covered": false,
+    "selected": false,
+    "icon": "inv_mace_1h_raidhyjalc60_d_01",
+    "quality": 4
+   },
+   {
+    "slot": "off_hand",
+    "item": 19321,
+    "label": "Off hand: The Immovable Object",
+    "covered": false,
+    "selected": false,
+    "icon": "spell_frost_chillingarmor",
+    "quality": 4
+   },
+   {
+    "slot": "ranged",
+    "item": 19562,
+    "label": "Ranged: Outrunner's Bow",
+    "covered": false,
+    "selected": false,
+    "icon": "inv_weapon_bow_02",
+    "quality": 3
+   }
+  ],
+  "centre": {
+   "tip": {
+    "name": "Enchanted Thorium Helm",
+    "lines": [
+     "Enchanted Thorium Helm Item Level 62 Binds when equipped",
+     "Head Plate",
+     "526 Armor",
+     "+12 Strength+25 Stamina+9 Defense",
+     "Requires Level 57",
+     "No close alternative"
+    ],
+    "tail": [
+     "No close alternative"
+    ],
+    "foot": "Crafted: Blacksmithing"
+   },
+   "sim": "Open in the sim ›"
   },
   "controls": {
    "label": "Best in slot controls",
@@ -1424,597 +1378,450 @@
    ],
    "sources": "All sources"
   },
-  "summary": {
-   "lead": "17 of 17 slots have a pick at this level.",
-   "signIn": "Sign in",
-   "after": "to see them against your gear.",
-   "next": "",
-   "view": [
+  "set": {
+   "title": "This set",
+   "facts": [
     {
-     "label": "By slot",
-     "on": true
+     "label": "Effective health",
+     "value": "45,441"
     },
     {
-     "label": "Where to go",
-     "on": false
-    }
-   ]
-  },
-  "notes": [
-   "Hit to cap: 6% for specials"
-  ],
-  "doll": {
-   "label": "Protection Warrior best in slot, 60",
-   "view": "slot",
-   "groups": [],
-   "left": [
-    {
-     "slot": "head",
-     "state": "item",
-     "label": "Head",
-     "flag": {
-      "text": "Level 57",
-      "tone": "muted"
-     },
-     "item": 12620,
-     "name": "Enchanted Thorium Helm",
-     "quality": "rare",
-     "stats": "+25 Sta · +12 Str",
-     "line2": "Crafted · Blacksmithing",
-     "gain": {
-      "label": "",
-      "value": "Same",
-      "unit": "",
-      "caption": ""
-     },
-     "basis": {
-      "prefix": "No close alternative",
-      "item": "",
-      "quality": "common"
-     },
-     "icon": "inv_helmet_02"
+     "label": "Damage taken per second",
+     "value": "240.5"
     },
     {
-     "slot": "neck",
-     "state": "item",
-     "label": "Neck",
-     "flag": {
-      "text": "Level 58",
-      "tone": "muted"
-     },
-     "item": 19538,
-     "name": "Sentinel's Medallion",
-     "quality": "rare",
-     "stats": "+15 Agi · +10 Sta",
-     "line2": "Silverwing Sentinels reputation · Honored",
-     "gain": {
-      "label": "",
-      "value": "+125.9",
-      "unit": "score",
-      "caption": ""
-     },
-     "basis": {
-      "prefix": "vs",
-      "item": "Medallion of Grand Marshal Morris",
-      "quality": "rare"
-     },
-     "icon": "inv_jewelry_necklace_13"
+     "label": "Chance of death",
+     "value": "0.0%"
     },
     {
-     "slot": "shoulder",
-     "state": "item",
-     "label": "Shoulder",
-     "flag": {
-      "text": "Level 60",
-      "tone": "muted"
-     },
-     "item": 20057,
-     "name": "Highlander's Plate Spaulders",
-     "quality": "epic",
-     "stats": "+18 Str · +20 Sta",
-     "line2": "The League of Arathor reputation · Revered",
-     "gain": {
-      "label": "",
-      "value": "Same",
-      "unit": "",
-      "caption": ""
-     },
-     "basis": {
-      "prefix": "next: −641.4 vs",
-      "item": "Lieutenant Commander's Plate Shoulders",
-      "quality": "rare"
-     },
-     "icon": "inv_shoulder_01"
-    },
-    {
-     "slot": "back",
-     "state": "item",
-     "label": "Back",
-     "flag": {
-      "text": "Level 60",
-      "tone": "muted"
-     },
-     "item": 279269,
-     "name": "Fel Cape",
-     "quality": "epic",
-     "stats": "+16 Sta · +15 Shadow power",
-     "line2": "Crafted · Tailoring",
-     "gain": {
-      "label": "",
-      "value": "Same",
-      "unit": "",
-      "caption": ""
-     },
-     "basis": {
-      "prefix": "next: −63.3 vs",
-      "item": "Sergeant's Cape",
-      "quality": "rare"
-     },
-     "icon": "inv_misc_cape_01"
-    },
-    {
-     "slot": "chest",
-     "state": "item",
-     "label": "Chest",
-     "flag": {
-      "text": "Level 52",
-      "tone": "muted"
-     },
-     "item": 15413,
-     "name": "Ornate Adamantium Breastplate",
-     "quality": "rare",
-     "stats": "+10 Def · +22 Sta",
-     "line2": "Quest: In Dreams · requires level 52",
-     "gain": {
-      "label": "",
-      "value": "Same",
-      "unit": "",
-      "caption": ""
-     },
-     "basis": {
-      "prefix": "next: −303.0 vs",
-      "item": "Breastplate of the Chromatic Flight",
-      "quality": "epic"
-     },
-     "icon": "inv_chest_plate09"
-    },
-    {
-     "slot": "wrist",
-     "state": "item",
-     "label": "Wrist",
-     "flag": {
-      "text": "Level 60",
-      "tone": "muted"
-     },
-     "item": 19578,
-     "name": "Berserker Bracers",
-     "quality": "epic",
-     "stats": "+19 Str · +8 Agi",
-     "line2": "Silverwing Sentinels reputation · Exalted",
-     "gain": {
-      "label": "",
-      "value": "Same",
-      "unit": "",
-      "caption": ""
-     },
-     "basis": {
-      "prefix": "next: −298.8 vs",
-      "item": "Sentinel's Wristguards",
-      "quality": "rare"
-     },
-     "icon": "inv_bracer_06"
-    },
-    {
-     "slot": "main_hand",
-     "state": "item",
-     "label": "Main hand",
-     "flag": {
-      "text": "Level 60",
-      "tone": "muted"
-     },
-     "item": 279261,
-     "name": "Greenhammer",
-     "quality": "epic",
-     "stats": "+8 Agi · +12 Sta",
-     "line2": "Crafted · Blacksmithing",
-     "gain": {
-      "label": "",
-      "value": "Same",
-      "unit": "",
-      "caption": ""
-     },
-     "basis": {
-      "prefix": "No close alternative",
-      "item": "",
-      "quality": "common"
-     },
-     "icon": "inv_mace_1h_raidhyjalc60_d_01"
-    },
-    {
-     "slot": "off_hand",
-     "state": "item",
-     "label": "Off hand",
-     "flag": {
-      "text": "Level 60",
-      "tone": "muted"
-     },
-     "item": 19321,
-     "name": "The Immovable Object",
-     "quality": "epic",
-     "stats": "+14 Sta · +25 Block value",
-     "line2": "Stormpike Guard reputation · Exalted",
-     "gain": {
-      "label": "",
-      "value": "Same",
-      "unit": "",
-      "caption": ""
-     },
-     "basis": {
-      "prefix": "next: −1095.6 vs",
-      "item": "Evergreen Shield",
-      "quality": "epic"
-     },
-     "icon": "spell_frost_chillingarmor"
-    },
-    {
-     "slot": "ranged",
-     "state": "item",
-     "label": "Ranged",
-     "flag": {
-      "text": "Level 58",
-      "tone": "muted"
-     },
-     "item": 19562,
-     "name": "Outrunner's Bow",
-     "quality": "rare",
-     "stats": "+10 Sta · +4 Agi",
-     "line2": "Silverwing Sentinels reputation · Revered",
-     "gain": {
-      "label": "",
-      "value": "+137.7",
-      "unit": "score",
-      "caption": ""
-     },
-     "basis": {
-      "prefix": "vs",
-      "item": "Carapace Spine Crossbow",
-      "quality": "rare"
-     },
-     "icon": "inv_weapon_bow_02"
+     "label": "Threat per second",
+     "value": "1,777.7"
     }
    ],
-   "right": [
-    {
-     "slot": "hands",
-     "state": "item",
-     "label": "Hands",
-     "flag": {
-      "text": "Level 60",
-      "tone": "muted"
-     },
-     "item": 279264,
-     "name": "Heavy Thorium Gauntlets",
-     "quality": "epic",
-     "stats": "+14 Sta · +21 Str",
-     "line2": "Crafted · Blacksmithing",
-     "gain": {
-      "label": "",
-      "value": "Same",
-      "unit": "",
-      "caption": ""
-     },
-     "basis": {
-      "prefix": "next: −592.7 vs",
-      "item": "Stronghold Gauntlets",
-      "quality": "epic"
-     },
-     "icon": "inv_gauntlets_28"
-    },
-    {
-     "slot": "waist",
-     "state": "item",
-     "label": "Waist",
-     "flag": {
-      "text": "Level 60",
-      "tone": "muted"
-     },
-     "item": 272403,
-     "name": "Valiant's Waistguard",
-     "quality": "epic",
-     "stats": "+24 Agi · +14 Str",
-     "line2": "Vendor: Pix Xizzix",
-     "gain": {
-      "label": "",
-      "value": "+259.3",
-      "unit": "score",
-      "caption": ""
-     },
-     "basis": {
-      "prefix": "vs",
-      "item": "Marshal's Plate Girdle",
-      "quality": "epic"
-     },
-     "icon": "inv_belt_33"
-    },
-    {
-     "slot": "legs",
-     "state": "item",
-     "label": "Legs",
-     "flag": {
-      "text": "Level 60",
-      "tone": "muted"
-     },
-     "item": 237825,
-     "name": "Sentinel's Plate Legguards",
-     "quality": "epic",
-     "stats": "+27 Str · +39 Sta",
-     "line2": "Vendor: Illiyana Moonblaze",
-     "gain": {
-      "label": "",
-      "value": "+213.2",
-      "unit": "score",
-      "caption": ""
-     },
-     "basis": {
-      "prefix": "vs",
-      "item": "Marshal's Plate Legguards",
-      "quality": "epic"
-     },
-     "icon": "inv_pants_plate_20"
-    },
-    {
-     "slot": "feet",
-     "state": "item",
-     "label": "Feet",
-     "flag": {
-      "text": "Level 54",
-      "tone": "muted"
-     },
-     "item": 16734,
-     "name": "Boots of Valor",
-     "quality": "rare",
-     "stats": "+20 Sta · +9 Str",
-     "line2": "Kirtonos the Herald · Scholomance (58-60)",
-     "gain": {
-      "label": "",
-      "value": "Same",
-      "unit": "",
-      "caption": ""
-     },
-     "basis": {
-      "prefix": "No close alternative",
-      "item": "",
-      "quality": "common"
-     },
-     "icon": "inv_boots_plate_03"
-    },
-    {
-     "slot": "finger1",
-     "state": "item",
-     "label": "Ring",
-     "flag": {
-      "text": "Level 60",
-      "tone": "muted"
-     },
-     "item": 272409,
-     "name": "Ring of Awareness",
-     "quality": "rare",
-     "stats": "+9 Def · +10 Sta",
-     "line2": "Vendor: Pix Xizzix",
-     "gain": {
-      "label": "",
-      "value": "Same",
-      "unit": "",
-      "caption": ""
-     },
-     "basis": {
-      "prefix": "next: −377.2 vs",
-      "item": "Innervating Band",
-      "quality": "rare"
-     },
-     "icon": "inv_jewelry_ring_01"
-    },
-    {
-     "slot": "finger2",
-     "state": "item",
-     "label": "Ring",
-     "flag": {
-      "text": "Level 60",
-      "tone": "muted"
-     },
-     "item": 272408,
-     "name": "Cutthroat's Signet",
-     "quality": "rare",
-     "stats": "+14 Agi · +10 Hit",
-     "line2": "Vendor: Pix Xizzix",
-     "gain": {
-      "label": "",
-      "value": "Same",
-      "unit": "",
-      "caption": ""
-     },
-     "basis": {
-      "prefix": "next: −87.4 vs",
-      "item": "Innervating Band",
-      "quality": "rare"
-     },
-     "icon": "inv_jewelry_ring_01"
-    },
-    {
-     "slot": "trinket1",
-     "state": "item",
-     "label": "Trinket",
-     "flag": {
-      "text": "Level 60",
-      "tone": "muted"
-     },
-     "item": 272437,
-     "name": "Adaptive Combat Assistant",
-     "quality": "rare",
-     "stats": "+20 Expertise",
-     "line2": "Vendor: Pix Xizzix",
-     "gain": {
-      "label": "",
-      "value": "+118.1",
-      "unit": "score",
-      "caption": ""
-     },
-     "basis": {
-      "prefix": "vs",
-      "item": "Defender's Grip Stabilizer",
-      "quality": "rare"
-     },
-     "icon": "inv_engineering_90_lightningbox"
-    },
-    {
-     "slot": "trinket2",
-     "state": "item",
-     "label": "Trinket",
-     "flag": {
-      "text": "Level 51",
-      "tone": "muted"
-     },
-     "item": 17904,
-     "name": "Stormpike Insignia Rank 6",
-     "quality": "epic",
-     "stats": "+10 Frost res · +24 Dodge",
-     "line2": "Quest: The Eye of Command · requires level 51",
-     "gain": {
-      "label": "",
-      "value": "+1127.1",
-      "unit": "score",
-      "caption": ""
-     },
-     "basis": {
-      "prefix": "vs",
-      "item": "Talisman of Arathor",
-      "quality": "rare"
-     },
-     "icon": "inv_jewelry_stormpiketrinket_05"
-    }
-   ]
+   "line": "TMI 23 · own damage 455.4 DPS"
   },
-  "weights": {
+  "stack": {
    "title": "What to stack",
-   "sentence": "Stack defense rating, then stamina, then block value.",
-   "caption": "Normalized to Defense rating = 1.00. Per point of stat, normalized to Defense = 1.00, with score per point and the sim error. Expertise: 6.82 per 1%",
-   "rows": [
+   "facts": [
     {
-     "name": "Defense rating",
-     "scale": "1.00",
-     "bar": 1,
-     "line": "182.498 score per point",
-     "faint": false
+     "label": "Defense rating",
+     "value": "1.00"
     },
     {
-     "name": "Stamina",
-     "scale": "0.75",
-     "bar": 0.755,
-     "line": "137.730 score per point",
-     "faint": false
+     "label": "Stamina",
+     "value": "0.75"
     },
     {
-     "name": "Block value",
-     "scale": "0.64",
-     "bar": 0.64,
-     "line": "116.711 score per point",
-     "faint": false
+     "label": "Block value",
+     "value": "0.64"
     },
     {
-     "name": "Dodge rating",
-     "scale": "0.63",
-     "bar": 0.635,
-     "line": "115.829 score per point",
-     "faint": false
-    },
-    {
-     "name": "Agility",
-     "scale": "0.56",
-     "bar": 0.562,
-     "line": "102.513 score per point",
-     "faint": false
-    },
-    {
-     "name": "Parry rating",
-     "scale": "0.51",
-     "bar": 0.509,
-     "line": "92.966 score per point",
-     "faint": false
-    },
-    {
-     "name": "Hit rating",
-     "scale": "0.18",
-     "bar": 0.18,
-     "line": "32.759 score per point",
-     "faint": false
-    },
-    {
-     "name": "Strength",
-     "scale": "0.09",
-     "bar": 0.092,
-     "line": "16.836 score per point",
-     "faint": false
-    },
-    {
-     "name": "Crit rating",
-     "scale": "0.06",
-     "bar": 0.063,
-     "line": "11.565 score per point",
-     "faint": false
-    },
-    {
-     "name": "Armor",
-     "scale": "0.04",
-     "bar": 0.043,
-     "line": "7.824 score per point",
-     "faint": false
-    },
-    {
-     "name": "Attack power",
-     "scale": "0.03",
-     "bar": 0.04,
-     "line": "4.931 score per point",
-     "faint": false
-    },
-    {
-     "name": "Block rating",
-     "scale": "",
-     "bar": 0,
-     "line": "Not significant",
-     "faint": true
+     "label": "Dodge rating",
+     "value": "0.63"
     }
    ],
-   "expertise": "Expertise to cap: 2.5% for dodge, 10% for parry",
-   "addon": "Expertise to cap: 2.5% for dodge, 10% for parry",
-   "addonLink": "Use these weights in the addon ›"
+   "lines": [
+    "1.00 = 182.498 score per point of Defense rating",
+    "Hit to cap: 6% for specials",
+    "Expertise to cap: 2.5% for dodge, 10% for parry"
+   ],
+   "link": "All stat weights in the sim ›"
   },
-  "guide": {
-   "lead": "Talents, rotation and stat priority for this spec:",
-   "link": "Protection Warrior guide ›"
+  "where": {
+   "title": "Where to go",
+   "stops": [
+    {
+     "title": "Scholomance",
+     "count": "1"
+    },
+    {
+     "title": "Crafted · Blacksmithing",
+     "count": "3"
+    },
+    {
+     "title": "Crafted · Tailoring",
+     "count": "1"
+    },
+    {
+     "title": "Silverwing Sentinels reputation",
+     "count": "3"
+    },
+    {
+     "title": "The League of Arathor reputation",
+     "count": "1"
+    },
+    {
+     "title": "Stormpike Guard reputation",
+     "count": "1"
+    },
+    {
+     "title": "Quest",
+     "count": "2"
+    },
+    {
+     "title": "Vendor",
+     "count": "5"
+    }
+   ],
+   "action": ""
+  },
+  "itinerary": {
+   "label": "Protection Warrior, where to go",
+   "stops": [
+    {
+     "title": "Scholomance",
+     "range": "58 to 60",
+     "rows": [
+      {
+       "item": 16734,
+       "name": "Boots of Valor",
+       "quality": "rare",
+       "line": "Feet · Kirtonos the Herald",
+       "gain": "",
+       "icon": "inv_boots_plate_03"
+      }
+     ]
+    },
+    {
+     "title": "Crafted · Blacksmithing",
+     "range": "",
+     "rows": [
+      {
+       "item": 12620,
+       "name": "Enchanted Thorium Helm",
+       "quality": "rare",
+       "line": "Head",
+       "gain": "",
+       "icon": "inv_helmet_02"
+      },
+      {
+       "item": 279264,
+       "name": "Heavy Thorium Gauntlets",
+       "quality": "epic",
+       "line": "Hands",
+       "gain": "",
+       "icon": "inv_gauntlets_28"
+      },
+      {
+       "item": 279261,
+       "name": "Greenhammer",
+       "quality": "epic",
+       "line": "Main hand",
+       "gain": "",
+       "icon": "inv_mace_1h_raidhyjalc60_d_01"
+      }
+     ]
+    },
+    {
+     "title": "Crafted · Tailoring",
+     "range": "",
+     "rows": [
+      {
+       "item": 279269,
+       "name": "Fel Cape",
+       "quality": "epic",
+       "line": "Back",
+       "gain": "",
+       "icon": "inv_misc_cape_01"
+      }
+     ]
+    },
+    {
+     "title": "Silverwing Sentinels reputation",
+     "range": "",
+     "rows": [
+      {
+       "item": 19538,
+       "name": "Sentinel's Medallion",
+       "quality": "rare",
+       "line": "Neck · Honored",
+       "gain": "+125.9score",
+       "icon": "inv_jewelry_necklace_13"
+      },
+      {
+       "item": 19578,
+       "name": "Berserker Bracers",
+       "quality": "epic",
+       "line": "Wrist · Exalted",
+       "gain": "",
+       "icon": "inv_bracer_06"
+      },
+      {
+       "item": 19562,
+       "name": "Outrunner's Bow",
+       "quality": "rare",
+       "line": "Ranged · Revered",
+       "gain": "+137.7score",
+       "icon": "inv_weapon_bow_02"
+      }
+     ]
+    },
+    {
+     "title": "The League of Arathor reputation",
+     "range": "",
+     "rows": [
+      {
+       "item": 20057,
+       "name": "Highlander's Plate Spaulders",
+       "quality": "epic",
+       "line": "Shoulder · Revered",
+       "gain": "",
+       "icon": "inv_shoulder_01"
+      }
+     ]
+    },
+    {
+     "title": "Stormpike Guard reputation",
+     "range": "",
+     "rows": [
+      {
+       "item": 19321,
+       "name": "The Immovable Object",
+       "quality": "epic",
+       "line": "Off hand · Exalted",
+       "gain": "",
+       "icon": "spell_frost_chillingarmor"
+      }
+     ]
+    },
+    {
+     "title": "Quest",
+     "range": "",
+     "rows": [
+      {
+       "item": 15413,
+       "name": "Ornate Adamantium Breastplate",
+       "quality": "rare",
+       "line": "Chest · Quest: In Dreams · requires level 52",
+       "gain": "",
+       "icon": "inv_chest_plate09"
+      },
+      {
+       "item": 17904,
+       "name": "Stormpike Insignia Rank 6",
+       "quality": "epic",
+       "line": "Trinket · Quest: The Eye of Command · requires level 51",
+       "gain": "+1127.1score",
+       "icon": "inv_jewelry_stormpiketrinket_05"
+      }
+     ]
+    },
+    {
+     "title": "Vendor",
+     "range": "",
+     "rows": [
+      {
+       "item": 272403,
+       "name": "Valiant's Waistguard",
+       "quality": "epic",
+       "line": "Waist · Vendor: Pix Xizzix",
+       "gain": "+259.3score",
+       "icon": "inv_belt_33"
+      },
+      {
+       "item": 237825,
+       "name": "Sentinel's Plate Legguards",
+       "quality": "epic",
+       "line": "Legs · Vendor: Illiyana Moonblaze",
+       "gain": "+213.2score",
+       "icon": "inv_pants_plate_20"
+      },
+      {
+       "item": 272409,
+       "name": "Ring of Awareness",
+       "quality": "rare",
+       "line": "Ring · Vendor: Pix Xizzix",
+       "gain": "",
+       "icon": "inv_jewelry_ring_01"
+      },
+      {
+       "item": 272408,
+       "name": "Cutthroat's Signet",
+       "quality": "rare",
+       "line": "Ring · Vendor: Pix Xizzix",
+       "gain": "",
+       "icon": "inv_jewelry_ring_01"
+      },
+      {
+       "item": 272437,
+       "name": "Adaptive Combat Assistant",
+       "quality": "rare",
+       "line": "Trinket · Vendor: Pix Xizzix",
+       "gain": "+118.1score",
+       "icon": "inv_engineering_90_lightningbox"
+      }
+     ]
+    }
+   ]
   }
  },
  "low-20": {
   "id": "low-20",
-  "path": "/bis/hunter/beast-mastery?band=20",
+  "path": "/bis/hunter/beast-mastery",
   "mock": "web-bis-low-20.html",
   "class": "hunter",
   "spec": "beast-mastery",
-  "title": "Beast Mastery Hunter",
-  "meta": "Best in slot",
-  "answer": {
-   "figure": {
-    "label": "This set, simmed 7 nov",
-    "value": "91.0",
-    "unit": "DPS",
-    "caption": ""
+  "title": "Beast Mastery Hunter BiS",
+  "meta": "20 to 29 · Alliance",
+  "figure": {
+   "value": "91.0",
+   "unit": "DPS"
+  },
+  "frameLabel": "Beast Mastery Hunter best in slot, 20 to 29",
+  "slots": [
+   {
+    "slot": "head",
+    "item": 252504,
+    "label": "Head: Brawler's Leather Hood",
+    "covered": false,
+    "selected": true,
+    "icon": "inv_helmet_31",
+    "quality": 3
    },
-   "tank": [],
-   "tankLine": "",
-   "healer": [],
-   "trust": "Level 29 Night-elf · 11 talent points · level 23 unknown, 180 s · Bare character: no raid buffs, debuffs or consumables. · 3,000 runs",
-   "rankingSim": "",
-   "simLink": "Open in simulator",
-   "plannerLink": "Talents in planner"
+   {
+    "slot": "neck",
+    "item": 20444,
+    "label": "Neck: Sentinel's Medallion",
+    "covered": false,
+    "selected": false,
+    "icon": "inv_jewelry_necklace_13",
+    "quality": 3
+   },
+   {
+    "slot": "shoulder",
+    "item": 5404,
+    "label": "Shoulder: Serpent's Shoulders",
+    "covered": false,
+    "selected": false,
+    "icon": "inv_shoulder_08",
+    "quality": 3
+   },
+   {
+    "slot": "back",
+    "item": 6449,
+    "label": "Back: Glowing Lizardscale Cloak",
+    "covered": false,
+    "selected": false,
+    "icon": "inv_chest_cloth_15",
+    "quality": 3
+   },
+   {
+    "slot": "chest",
+    "item": 2041,
+    "label": "Chest: Tunic of Westfall",
+    "covered": false,
+    "selected": false,
+    "icon": "inv_chest_leather_07",
+    "quality": 3
+   },
+   {
+    "slot": "wrist",
+    "item": 3202,
+    "label": "Wrist: Forest Leather Bracers",
+    "covered": false,
+    "selected": false,
+    "icon": "inv_bracer_06",
+    "quality": 2
+   },
+   {
+    "slot": "hands",
+    "item": 10413,
+    "label": "Hands: Gloves of the Fang",
+    "covered": false,
+    "selected": false,
+    "icon": "inv_gauntlets_18",
+    "quality": 3
+   },
+   {
+    "slot": "waist",
+    "item": 10403,
+    "label": "Waist: Blackened Defias Belt",
+    "covered": false,
+    "selected": false,
+    "icon": "inv_belt_26",
+    "quality": 3
+   },
+   {
+    "slot": "legs",
+    "item": 10410,
+    "label": "Legs: Leggings of the Fang",
+    "covered": false,
+    "selected": false,
+    "icon": "inv_pants_11",
+    "quality": 3
+   },
+   {
+    "slot": "feet",
+    "item": 1121,
+    "label": "Feet: Feet of the Lynx",
+    "covered": false,
+    "selected": false,
+    "icon": "inv_boots_wolf",
+    "quality": 3
+   },
+   {
+    "slot": "finger1",
+    "item": 1156,
+    "label": "Ring: Lavishly Jeweled Ring",
+    "covered": false,
+    "selected": false,
+    "icon": "inv_jewelry_ring_09",
+    "quality": 3
+   },
+   {
+    "slot": "finger2",
+    "item": 20439,
+    "label": "Ring: Protector's Band",
+    "covered": false,
+    "selected": false,
+    "icon": "inv_jewelry_ring_10",
+    "quality": 3
+   },
+   {
+    "slot": "main_hand",
+    "item": 5200,
+    "label": "Main hand: Impaling Harpoon",
+    "covered": false,
+    "selected": false,
+    "icon": "inv_spear_07",
+    "quality": 3
+   },
+   {
+    "slot": "off_hand",
+    "item": 5200,
+    "label": "Off hand: Impaling Harpoon, two-handed",
+    "covered": true,
+    "selected": false,
+    "icon": "inv_spear_07",
+    "quality": 3
+   },
+   {
+    "slot": "ranged",
+    "item": 3021,
+    "label": "Ranged: Ranger Bow",
+    "covered": false,
+    "selected": false,
+    "icon": "inv_weapon_bow_11",
+    "quality": 3
+   }
+  ],
+  "centre": {
+   "tip": {
+    "name": "Brawler's Leather Hood",
+    "lines": [
+     "Brawler's Leather Hood Item Level 25 Binds when picked up",
+     "Head Leather",
+     "76 Armor",
+     "+8 Agility+10 Stamina",
+     "Requires Level 20",
+     "+1.0 DPS vs Trapper's Leather Hood"
+    ],
+    "tail": [
+     "+1.0 DPS vs Trapper's Leather Hood"
+    ],
+    "foot": "Crafted: Leatherworking"
+   },
+   "sim": "Open in the sim ›"
   },
   "controls": {
    "label": "Best in slot controls",
@@ -2099,490 +1906,216 @@
    ],
    "sources": "Sources (7)"
   },
-  "summary": {
-   "lead": "14 of 17 slots have a pick at this level.",
-   "signIn": "Sign in",
-   "after": "to see them against your gear.",
-   "next": "Changes from 20 to 29: see 30 to 39 ›",
-   "view": [
+  "set": null,
+  "stack": {
+   "title": "What to stack",
+   "facts": [
     {
-     "label": "By slot",
-     "on": false
+     "label": "Agility",
+     "value": "1.00"
     },
     {
-     "label": "Where to go",
-     "on": true
+     "label": "Intellect",
+     "value": "0.51"
+    },
+    {
+     "label": "Ranged attack power",
+     "value": "0.32"
+    },
+    {
+     "label": "Hit rating",
+     "value": "0.31"
     }
-   ]
+   ],
+   "lines": [
+    "1.00 = 0.316 DPS per point of Agility",
+    "Hit to cap: 9% for specials, 16% for spells",
+    "Impaling Harpoon is a two-hander: the off hand stays empty."
+   ],
+   "link": "All stat weights in the sim ›"
   },
-  "notes": [
-   "Reputation above Friendly is off below level 60, so those slots are re-picked without it. Turn it on in Sources to include it.",
-   "Hit to cap: 9% for specials, 16% for spells",
-   "Impaling Harpoon is a two-hander: the off hand stays empty."
-  ],
-  "doll": {
-   "label": "Beast Mastery Hunter best in slot, 20 to 29",
-   "view": "where",
-   "groups": [
+  "where": {
+   "title": "Where to go",
+   "stops": [
     {
      "title": "Wailing Caverns",
-     "count": "4 pieces",
-     "cells": [
+     "count": "4"
+    },
+    {
+     "title": "The Deadmines",
+     "count": "3"
+    },
+    {
+     "title": "Crafted · Leatherworking",
+     "count": "1"
+    },
+    {
+     "title": "Silverwing Sentinels reputation",
+     "count": "2"
+    },
+    {
+     "title": "Quest",
+     "count": "1"
+    },
+    {
+     "title": "World / BoE",
+     "count": "3"
+    }
+   ],
+   "action": ""
+  },
+  "itinerary": {
+   "label": "Beast Mastery Hunter, where to go",
+   "stops": [
+    {
+     "title": "Wailing Caverns",
+     "range": "15 to 24",
+     "rows": [
       {
-       "slot": "shoulder",
-       "state": "item",
-       "label": "Shoulder",
-       "flag": {
-        "text": "Level 18",
-        "tone": "muted"
-       },
        "item": 5404,
        "name": "Serpent's Shoulders",
        "quality": "rare",
-       "stats": "+7 Spi · +5 Agi",
-       "line2": "Lady Anacondra · Wailing Caverns (15-24) · 40%",
-       "gain": {
-        "label": "",
-        "value": "+0.1",
-        "unit": "DPS",
-        "caption": ""
-       },
-       "basis": {
-        "prefix": "vs",
-        "item": "Magician's Mantle",
-        "quality": "rare"
-       },
+       "line": "Shoulder · Lady Anacondra · 40%",
+       "gain": "+0.1DPS",
        "icon": "inv_shoulder_08"
       },
       {
-       "slot": "back",
-       "state": "item",
-       "label": "Back",
-       "flag": {
-        "text": "Level 18",
-        "tone": "muted"
-       },
        "item": 6449,
        "name": "Glowing Lizardscale Cloak",
        "quality": "rare",
-       "stats": "+6 Agi · +2 Nature res",
-       "line2": "Skum · Wailing Caverns (15-24) · 50%",
-       "gain": {
-        "label": "",
-        "value": "+0.3",
-        "unit": "DPS",
-        "caption": ""
-       },
-       "basis": {
-        "prefix": "vs",
-        "item": "Cape of the Brotherhood",
-        "quality": "rare"
-       },
+       "line": "Back · Skum · 50%",
+       "gain": "+0.3DPS",
        "icon": "inv_chest_cloth_15"
       },
       {
-       "slot": "hands",
-       "state": "item",
-       "label": "Hands",
-       "flag": {
-        "text": "Level 14",
-        "tone": "muted"
-       },
        "item": 10413,
        "name": "Gloves of the Fang",
        "quality": "rare",
-       "stats": "+6 Agi · +4 Str",
-       "line2": "Druid of the Fang · Wailing Caverns (15-24) · 2%",
-       "gain": {
-        "label": "",
-        "value": "Same",
-        "unit": "",
-        "caption": ""
-       },
-       "basis": {
-        "prefix": "next: −0.1 vs",
-        "item": "Trapper's Leather Gloves",
-        "quality": "rare"
-       },
+       "line": "Hands · Druid of the Fang · 2%",
+       "gain": "",
        "icon": "inv_gauntlets_18"
       },
       {
-       "slot": "legs",
-       "state": "item",
-       "label": "Legs",
-       "flag": {
-        "text": "Level 17",
-        "tone": "muted"
-       },
        "item": 10410,
        "name": "Leggings of the Fang",
        "quality": "rare",
-       "stats": "+5 Str · +4 Sta",
-       "line2": "Lord Cobrahn · Wailing Caverns (15-24) · 20%",
-       "gain": {
-        "label": "",
-        "value": "Same",
-        "unit": "",
-        "caption": ""
-       },
-       "basis": {
-        "prefix": "next: −0.3 vs",
-        "item": "Duty Bound Leggings",
-        "quality": "uncommon"
-       },
+       "line": "Legs · Lord Cobrahn · 20%",
+       "gain": "",
        "icon": "inv_pants_11"
       }
      ]
     },
     {
      "title": "The Deadmines",
-     "count": "3 pieces",
-     "cells": [
+     "range": "17 to 26",
+     "rows": [
       {
-       "slot": "waist",
-       "state": "item",
-       "label": "Waist",
-       "flag": {
-        "text": "Level 17",
-        "tone": "muted"
-       },
        "item": 10403,
        "name": "Blackened Defias Belt",
        "quality": "rare",
-       "stats": "+18 AP",
-       "line2": "Captain Greenskin · The Deadmines (17-26) · 30%",
-       "gain": {
-        "label": "",
-        "value": "+0.1",
-        "unit": "DPS",
-        "caption": ""
-       },
-       "basis": {
-        "prefix": "vs",
-        "item": "Trapper's Leather Belt",
-        "quality": "rare"
-       },
+       "line": "Waist · Captain Greenskin · 30%",
+       "gain": "+0.1DPS",
        "icon": "inv_belt_26"
       },
       {
-       "slot": "finger1",
-       "state": "item",
-       "label": "Ring",
-       "flag": {
-        "text": "Level 17",
-        "tone": "muted"
-       },
        "item": 1156,
        "name": "Lavishly Jeweled Ring",
        "quality": "rare",
-       "stats": "+2 Agi · +6 Int",
-       "line2": "Gilnid · The Deadmines (17-26) · 45%",
-       "gain": {
-        "label": "",
-        "value": "+1.1",
-        "unit": "DPS",
-        "caption": ""
-       },
-       "basis": {
-        "prefix": "vs",
-        "item": "Volcanic Rock Ring",
-        "quality": "uncommon"
-       },
+       "line": "Ring · Gilnid · 45%",
+       "gain": "+1.1DPS",
        "icon": "inv_jewelry_ring_09"
       },
       {
-       "slot": "main_hand",
-       "state": "item",
-       "label": "Main hand",
-       "flag": {
-        "text": "Level 17",
-        "tone": "muted"
-       },
        "item": 5200,
        "name": "Impaling Harpoon",
        "quality": "rare",
-       "stats": "+9 Agi · +5 Int",
-       "line2": "Captain Greenskin · The Deadmines (17-26) · 30%",
-       "gain": {
-        "label": "",
-        "value": "+0.4",
-        "unit": "DPS",
-        "caption": ""
-       },
-       "basis": {
-        "prefix": "vs",
-        "item": "Bronze Dory",
-        "quality": "uncommon"
-       },
+       "line": "Main hand · Captain Greenskin · 30%",
+       "gain": "+0.4DPS",
        "icon": "inv_spear_07"
       }
      ]
     },
     {
      "title": "Crafted · Leatherworking",
-     "count": "1 piece",
-     "cells": [
+     "range": "",
+     "rows": [
       {
-       "slot": "head",
-       "state": "item",
-       "label": "Head",
-       "flag": {
-        "text": "Level 20",
-        "tone": "muted"
-       },
        "item": 252504,
        "name": "Brawler's Leather Hood",
        "quality": "rare",
-       "stats": "+10 Sta · +8 Agi",
-       "line2": "Crafted · Leatherworking",
-       "gain": {
-        "label": "",
-        "value": "+1.0",
-        "unit": "DPS",
-        "caption": ""
-       },
-       "basis": {
-        "prefix": "vs",
-        "item": "Trapper's Leather Hood",
-        "quality": "rare"
-       },
+       "line": "Head",
+       "gain": "+1.0DPS",
        "icon": "inv_helmet_31"
       }
      ]
     },
     {
      "title": "Silverwing Sentinels reputation",
-     "count": "2 pieces",
-     "cells": [
+     "range": "",
+     "rows": [
       {
-       "slot": "neck",
-       "state": "item",
-       "label": "Neck",
-       "flag": {
-        "text": "Level 18",
-        "tone": "muted"
-       },
        "item": 20444,
        "name": "Sentinel's Medallion",
        "quality": "rare",
-       "stats": "+6 Agi · +2 Sta",
-       "line2": "Silverwing Sentinels reputation · Honored",
-       "gain": {
-        "label": "",
-        "value": "+1.2",
-        "unit": "DPS",
-        "caption": ""
-       },
-       "basis": {
-        "prefix": "vs",
-        "item": "Erudite's Amulet",
-        "quality": "uncommon"
-       },
+       "line": "Neck · Honored",
+       "gain": "+1.2DPS",
        "icon": "inv_jewelry_necklace_13"
       },
       {
-       "slot": "finger2",
-       "state": "item",
-       "label": "Ring",
-       "flag": {
-        "text": "Level 18",
-        "tone": "muted"
-       },
        "item": 20439,
        "name": "Protector's Band",
        "quality": "rare",
-       "stats": "+4 Str · +4 Agi",
-       "line2": "Silverwing Sentinels reputation · Honored",
-       "gain": {
-        "label": "",
-        "value": "+0.8",
-        "unit": "DPS",
-        "caption": ""
-       },
-       "basis": {
-        "prefix": "vs",
-        "item": "Volcanic Rock Ring",
-        "quality": "uncommon"
-       },
+       "line": "Ring · Honored",
+       "gain": "+0.8DPS",
        "icon": "inv_jewelry_ring_10"
       }
      ]
     },
     {
      "title": "Quest",
-     "count": "1 piece",
-     "cells": [
+     "range": "",
+     "rows": [
       {
-       "slot": "chest",
-       "state": "item",
-       "label": "Chest",
-       "flag": {
-        "text": "Level 14",
-        "tone": "muted"
-       },
        "item": 2041,
        "name": "Tunic of Westfall",
        "quality": "rare",
-       "stats": "+5 Sta · +11 Agi",
-       "line2": "Quest: The Defias Brotherhood · requires level 14",
-       "gain": {
-        "label": "",
-        "value": "+0.3",
-        "unit": "DPS",
-        "caption": ""
-       },
-       "basis": {
-        "prefix": "vs",
-        "item": "Trapper's Leather Armor",
-        "quality": "rare"
-       },
+       "line": "Chest · Quest: The Defias Brotherhood · requires level 14",
+       "gain": "+0.3DPS",
        "icon": "inv_chest_leather_07"
       }
      ]
     },
     {
      "title": "World / BoE",
-     "count": "3 pieces",
-     "cells": [
+     "range": "",
+     "rows": [
       {
-       "slot": "wrist",
-       "state": "item",
-       "label": "Wrist",
-       "flag": {
-        "text": "Level 19",
-        "tone": "muted"
-       },
        "item": 3202,
        "name": "Forest Leather Bracers",
        "quality": "uncommon",
-       "stats": "+5 Agi",
-       "line2": "World drop (20-26) · BoE · on the AH",
-       "gain": {
-        "label": "",
-        "value": "+0.3",
-        "unit": "DPS",
-        "caption": ""
-       },
-       "basis": {
-        "prefix": "vs",
-        "item": "Wolf Bracers",
-        "quality": "uncommon"
-       },
+       "line": "Wrist · World drop (20-26) · BoE · on the AH",
+       "gain": "+0.3DPS",
        "icon": "inv_bracer_06"
       },
       {
-       "slot": "feet",
-       "state": "item",
-       "label": "Feet",
-       "flag": {
-        "text": "Level 19",
-        "tone": "muted"
-       },
        "item": 1121,
        "name": "Feet of the Lynx",
        "quality": "rare",
-       "stats": "+8 Agi · +3 Str",
-       "line2": "World drop (20-27) · BoE · on the AH",
-       "gain": {
-        "label": "",
-        "value": "+0.3",
-        "unit": "DPS",
-        "caption": ""
-       },
-       "basis": {
-        "prefix": "vs",
-        "item": "Trapper's Leather Boots",
-        "quality": "rare"
-       },
+       "line": "Feet · World drop (20-27) · BoE · on the AH",
+       "gain": "+0.3DPS",
        "icon": "inv_boots_wolf"
       },
       {
-       "slot": "ranged",
-       "state": "item",
-       "label": "Ranged",
-       "flag": {
-        "text": "Level 20",
-        "tone": "muted"
-       },
        "item": 3021,
        "name": "Ranger Bow",
        "quality": "rare",
-       "stats": "+1 Agi",
-       "line2": "World drop (21-28) · BoE · on the AH",
-       "gain": {
-        "label": "",
-        "value": "+0.3",
-        "unit": "DPS",
-        "caption": ""
-       },
-       "basis": {
-        "prefix": "vs",
-        "item": "Venomstrike",
-        "quality": "rare"
-       },
+       "line": "Ranged · World drop (21-28) · BoE · on the AH",
+       "gain": "+0.3DPS",
        "icon": "inv_weapon_bow_11"
       }
      ]
     }
-   ],
-   "left": [],
-   "right": []
-  },
-  "weights": {
-   "title": "What to stack",
-   "sentence": "Stack agility, then intellect, then ranged attack power.",
-   "caption": "Normalized to Agility = 1.00. Per point of stat, normalized to Agility = 1.00, with DPS per point and the sim error. Haste: 1.40 per 1%, not in the table because no item at this level range has it",
-   "rows": [
-    {
-     "name": "Agility",
-     "scale": "1.00",
-     "bar": 1,
-     "line": "0.316 DPS per point",
-     "faint": false
-    },
-    {
-     "name": "Intellect",
-     "scale": "0.51",
-     "bar": 0.512,
-     "line": "0.162 DPS per point",
-     "faint": false
-    },
-    {
-     "name": "Ranged attack power",
-     "scale": "0.32",
-     "bar": 0.317,
-     "line": "0.100 DPS per point",
-     "faint": false
-    },
-    {
-     "name": "Hit rating",
-     "scale": "0.31",
-     "bar": 0.308,
-     "line": "0.097 DPS per point",
-     "faint": false
-    },
-    {
-     "name": "Crit rating",
-     "scale": "0.21",
-     "bar": 0.21,
-     "line": "0.066 DPS per point",
-     "faint": false
-    },
-    {
-     "name": "Spell power",
-     "scale": "",
-     "bar": 0,
-     "line": "Not significant",
-     "faint": true
-    }
-   ],
-   "expertise": "",
-   "addon": "The Forever Sixty addon rates every item in your bags and tooltips with these weights.",
-   "addonLink": "Use these weights in the addon ›"
-  },
-  "guide": {
-   "lead": "Talents, rotation and stat priority for this spec:",
-   "link": "Beast Mastery Hunter guide ›"
+   ]
   }
  }
 }

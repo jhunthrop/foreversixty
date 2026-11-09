@@ -25,9 +25,6 @@ export const landingCopy = {
   title: 'Best in slot',
   description:
     'The best gear you can wear at every level range, from the simulator: one list per class and spec, built once and never per character.',
-  /** The head's meta line, before the Updated stamp. */
-  levels: 'Levels 20 to 60',
-  lead: 'The best gear you can wear at your level, for every spec. Open yours.',
   tierQuestion: 'Which spec is strongest?',
   tierLink: 'Tier list',
   tierHref: '/tiers',
@@ -60,11 +57,10 @@ export const landingCopy = {
 
   /** The ControlBar's one group. */
   bandGroupLabel: 'Level range',
-  /** The line under the bar: the selected range's sources, then what a range is. */
-  bandSummary: (caption: string): string =>
-    `${caption} Each list is the best you can wear inside one level range; gear changes about every ten levels.`,
-  /** The top band's addition to its line, when a raid preset names itself. */
-  raidNote: (raidLabel: string): string => `60: full ${raidLabel} gear.`,
+  /** The line under the bar: the top range names its raid gear when a raid preset names itself;
+   *  every other range says nothing (the picker is the page). */
+  bandSummary: (isTopBand: boolean, raidLabel: string): string =>
+    isTopBand && raidLabel !== '' ? `60: full ${raidLabel} gear.` : '',
   /** The link to the character's own range while another is selected: `Your range: 30 to 39`. */
   yourRange: (rangeLabel: string): string => `Your range: ${rangeLabel}`,
   plateLabel: 'Classes and specs',

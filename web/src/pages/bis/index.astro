@@ -1,7 +1,7 @@
 ---
 // web/src/pages/bis/index.astro
 // /bis in the flat system (design/specs/2026-11-07-bis-landing.md, mocks web-bis-landing*): the
-// PageHeader (Best in slot, the levels and the Updated stamp, the lead, the signed-in answer: the
+// PageHeader (Best in slot, the Updated stamp, the signed-in answer: the
 // header selector's character, how many of its range's pieces it wears, one button to its own
 // spec at its own range), the finished server sim line when one waits, the ControlBar's level
 // range (the character's own range by default, owner 2026-11-07) with the tier list link, the
@@ -17,7 +17,6 @@ import Page from '../../components/ui/Page.svelte';
 import PageHeader from '../../components/ui/PageHeader.svelte';
 import Plate from '../../components/ui/Plate.svelte';
 import Row from '../../components/ui/Row.svelte';
-import RowGrid from '../../components/ui/RowGrid.svelte';
 import activeBuild from '../../data/active-build.json';
 import { landingCopy } from '../../lib/bis/landing-copy';
 import { loadLandingData } from '../../lib/bis/landing-build';
@@ -42,20 +41,17 @@ const groups: ControlGroup[] = [
 ];
 const summaries = captions.map((caption) => ({
   band: caption.band,
-  text:
-    landingCopy.bandSummary(caption.text) +
-    (caption.band === LANDING_BANDS.at(-1) && raidLabel !== '' ? ` ${landingCopy.raidNote(raidLabel)}` : ''),
+  text: landingCopy.bandSummary(caption.band === LANDING_BANDS.at(-1), raidLabel),
 }));
 const roleWord = (role: string): string | undefined =>
   role === 'tank' || role === 'healer' ? landingCopy.roleWords[role] : undefined;
 ---
 
 <Base title={searchCopy.bisIndex.title} description={searchCopy.bisIndex.description} path="/bis" wide>
-  <main id="main" tabindex="-1" data-testid="bis-landing">
+  <main id="main" tabindex="-1" class="bis-landing" data-testid="bis-landing">
     <Page layout="ledger">
-      <PageHeader slot="header" title={landingCopy.title} tone="strong" lead={landingCopy.lead}>
+      <PageHeader slot="header" title={landingCopy.title} tone="strong">
         <Fragment slot="meta">
-          <span>{landingCopy.levels}</span>
           {updated !== null && <span data-testid="bis-landing-updated">Updated {dayMonth(updated)}</span>}
         </Fragment>
         <BisLandingAnswer slot="answer" />
@@ -91,9 +87,14 @@ const roleWord = (role: string): string | undefined =>
           ></a>
         </p>
         <div id="bis-classes">
-          <Plate label={landingCopy.plateLabel} testid="bis-class-grid">
-            <RowGrid cols={3}>
-              {cards.map((card) => (
+          <div
+            class="bis-class-grid"
+            role="region"
+            aria-label={landingCopy.plateLabel}
+            data-testid="bis-class-grid"
+          >
+            {cards.map((card) => (
+              <Plate>
                 <div class="bis-class" data-testid={`bis-class-${card.slug}`}>
                   <Row title={card.name} titleTone={{ classSlug: card.slug as ClassSlug }}>
                     <ClassCrest slot="lead" slug={card.slug} size={40} />
@@ -117,9 +118,9 @@ const roleWord = (role: string): string | undefined =>
                     ))}
                   </div>
                 </div>
-              ))}
-            </RowGrid>
-          </Plate>
+              </Plate>
+            ))}
+          </div>
         </div>
       </div>
     </Page>
@@ -135,6 +136,10 @@ const roleWord = (role: string): string | undefined =>
 </Base>
 
 <style>
+  /* The page's own bottom space above the site footer, as the spec pages keep it. */
+  .bis-landing {
+    padding-bottom: 40px;
+  }
   .bis-tier {
     display: flex;
     flex-wrap: wrap;
@@ -148,11 +153,27 @@ const roleWord = (role: string): string | undefined =>
   .bis-summary [hidden] {
     display: none;
   }
+  /* The class and spec picker (the guides index's): one panel per class, three across from 1024. */
+  .bis-class-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 18px;
+  }
+  @media (min-width: 768px) {
+    .bis-class-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 1024px) {
+    .bis-class-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
   .bis-class {
     display: flex;
     flex-direction: column;
     min-width: 0;
-    padding-bottom: 20px;
+    padding-bottom: 8px;
   }
   .bis-class-specs {
     display: flex;

@@ -1,7 +1,7 @@
 // web/tests/e2e/seo-pages.spec.ts
 // What a crawler gets (SEO lane 2026-11-08, design/marketing/2026-11-08-marketing-plan.md): every
 // BiS band is its own server-rendered URL with its own title, canonical and h1, its list in the
-// HTML before any script; the band control and the next-band line are real links; the bare /guild
+// HTML before any script; the band controls are real links; the bare /guild
 // page is the Find a guild landing, not a loading shell; personal pages carry noindex.
 import { test, expect } from './support/test';
 import { chooseControl, openBis } from './support/bis-page';
@@ -17,16 +17,12 @@ test.describe('without JavaScript, as a crawler fetches', () => {
       'https://foreversixty.gg/bis/warrior/fury/40-49',
     );
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Fury Warrior BiS');
-    await expect(page.getByTestId('bis-page-sub')).toHaveText('Best in slot · Levels 40 to 49');
+    await expect(page.locator('.pdf-frame .pdf-meta')).toHaveText('40 to 49 · Alliance');
     await expect(page.getByTestId('bis-band-alliance-40')).toBeVisible();
     await expect(page.getByTestId('bis-doll')).toContainText(/\S/);
     // Every band is a real link to its own page; the first band is the spec's own path.
     await expect(page.getByTestId('control-band-20')).toHaveAttribute('href', '/bis/warrior/fury');
     await expect(page.getByTestId('control-band-60')).toHaveAttribute('href', '/bis/warrior/fury/60');
-    await expect(page.getByTestId('bis-summary').locator('a.bis-link')).toHaveAttribute(
-      'href',
-      '/bis/warrior/fury/50-59',
-    );
     const crumbs = await page.locator('script[type="application/ld+json"]').first().textContent();
     expect(JSON.parse(crumbs ?? '{}')['@type']).toBe('BreadcrumbList');
   });
@@ -38,7 +34,7 @@ test.describe('without JavaScript, as a crawler fetches', () => {
       'https://foreversixty.gg/bis/warrior/fury',
     );
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Fury Warrior BiS');
-    await expect(page.getByTestId('bis-page-sub')).toHaveText('Best in slot · Levels 20 to 29');
+    await expect(page.locator('.pdf-frame .pdf-meta')).toHaveText('20 to 29 · Alliance');
   });
 
   test('/guild is the Find a guild landing, not a loading shell', async ({ page }) => {
