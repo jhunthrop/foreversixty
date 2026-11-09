@@ -107,6 +107,12 @@ export interface DollCharacter {
   gains: Readonly<Record<string, number | null | undefined>>;
   /** The worn items' own data, for names, item levels and stat deltas. */
   items?: Readonly<Record<number, BisItem>>;
+  /** "Night Elf Hunter": the line under the name in the paperdoll's centre. */
+  raceClass?: string;
+  /** Battle.net media (referenced by URL, never copied): the head render for the medallion and
+   *  the full render the centre stands the model on. */
+  avatar?: string;
+  render?: string;
 }
 
 /** The source choice a band is resolved under. */
@@ -438,6 +444,8 @@ export function dollSummary(
   }
   const worn = filled.filter((cell) => cell.badge === 'worn').length;
   const upgrades = filled.filter((cell) => cell.badge === 'upgrade');
+  // No slot compared means no worn gear read for this character, not a full set.
+  if (worn === 0 && upgrades.length === 0) return `${character.name}'s gear isn't imported.`;
   if (upgrades.length === 0) return `${character.name} wears every pick for this level.`;
   // Only sim-checked gains add up; an upgrade with no measured gain is counted, never priced at 0.
   const measured = upgrades.filter((cell) => typeof character.gains[cell.slot] === 'number');

@@ -29,6 +29,19 @@ function outcomeNoun(unit: RateUnit): string {
 }
 
 export const bisCopy = {
+  /** The paperdoll page (design/specs/2026-11-09-directions.md, Paperdoll). */
+  stackTitle: 'What to stack',
+  whereTitle: 'Where to go',
+  setTitle: 'This set',
+  openInSim: 'Open in the sim',
+  allWeightsLink: 'All stat weights in the sim',
+  asLastLoggedOut: 'As last logged out',
+  whoLine: (level: number, raceClass: string | undefined): string =>
+    `Level ${level}${raceClass ? ` ${raceClass}` : ''}`,
+  offHandCovered: (twoHander: string): string => `${twoHander} is a two-hander: the off hand stays empty.`,
+  /** The title bar's meta: "20 to 29 · Alliance", "Pre-raid 60 · Horde". */
+  frameMeta: (bandLabel: string, faction: string, preRaid = false): string =>
+    `${preRaid ? 'Pre-raid ' : ''}${bandLabel} · ${faction}`,
   noDataYet: 'No leveling BiS list yet for this spec.',
   noDataYetBody:
     'The simulator has not ranked this spec’s gear across the level ranges yet. Check back once the nightly ranking run covers it.',

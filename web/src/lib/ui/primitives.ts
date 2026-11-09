@@ -50,7 +50,7 @@ export function titleColor(tone: TitleTone): string {
 }
 
 /** The outcome tones a Figure, Meter or Notice reads. */
-export type FigureTone = 'strong' | 'gold' | 'kill' | 'wipe' | 'muted';
+export type FigureTone = 'strong' | 'gold' | 'kill' | 'wipe' | 'muted' | 'gain';
 
 export const TONE_TEXT: Readonly<Record<FigureTone, string>> = {
   strong: 'text-strong',
@@ -58,6 +58,8 @@ export const TONE_TEXT: Readonly<Record<FigureTone, string>> = {
   kill: 'text-kill',
   wipe: 'text-wipe',
   muted: 'text-muted',
+  /** A DPS gain on a list row (round 5 `--color-gain`). */
+  gain: 'text-gain',
 };
 
 /** The Page primitive's compositions (spec 3.7; `form`: setup spec 2026-11-07 section 3A;

@@ -214,6 +214,11 @@ describe('dollCellFor, signed in', () => {
     expect(worn.gain?.basis).toEqual({ prefix: 'You have this' });
   });
 
+  it('never says a character wears every pick when none of its gear is known', () => {
+    const bare = dollCellFor(ROW, { ...OUT, character: { ...character, worn: {} } });
+    expect(dollSummary([bare], { ...character, worn: {} }, 'DPS')).toBe("Felsnap's gear isn't imported.");
+  });
+
   it('counts the upgrades and their sum in the summary line', () => {
     expect(dollSummary([cell], character, 'DPS')).toBe(
       'Felsnap (level 19) has 0 of 1 picks. 1 upgrade, +0.8 DPS available.',

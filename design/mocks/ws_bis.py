@@ -1,17 +1,14 @@
-"""Web-layout mock 1 (rev 4, 2026-11-06): Best in slot as approved and shipped, the parity gate's source of truth.
+"""Web-layout mock: Best in slot on the in-game paperdoll (round 5, lane P2, 2026-11-09), the parity gate's source of truth.
 
-Spec: design/specs/2026-11-05-web-layout.md section 5 and the build decisions in 5.13 (option C rows: line 1 slot,
-level, icon, name and two short stats, the gain figure; line 2 the full source alone; the gain column 144 px with
-what the figure is against on one line; Sources a compact button; group labels from 1920; 360 px inspector from 1760).
-Rev 3 (persona fixes, three-line rows, the inline next best) is superseded by 5.13; its renders stay in design/reviews.
+Spec: design/specs/2026-11-09-directions.md, Paperdoll and Best in slot; the visual reference is the directions mock
+(design/mocks/directions/pages.py `bis_frame`, png/g-bis-frame-*.png). The band holds the nav and the one control bar;
+the frame's title bar is the page's h1 (the spec, the band and faction, the set's figure); its centre the selected
+slot's client tooltip, ending in what it is worth, then Open in the sim. Beside the frame: a tank's or a healer's set
+figures, What to stack (the top weights, what 1.00 is worth, the band's standing notes, the sim's weights page) and
+Where to go (the stops). Below: the itinerary on one panel, the stops in route order, a row per piece.
 
-The head answer is the set's figure with its unit, the trust line and the links; no disclosure, no explanatory note.
-A healer adds its three metrics under the figure (Overheal, Mana lasts, Healing per mana); a tank shows four figures
-(effective health, DTPS, chance of death, TPS) and the TMI line in place of the one figure (spec 5.13, 2026-11-06:
-both shipped and kept, in the build's blocks, order and words).
-
-States: design/mocks/web/bis-parity.json. Data: design/mocks/data/bis-facts.json (names, numbers and sources read
-from the built page by bis_facts.mjs; the mock decides every block and where it sits). Regions: design/parity.md.
+States: design/mocks/web/bis-parity.json. Data: design/mocks/data/bis-facts.json (names, numbers and words read from the
+built page by bis_facts.mjs; the mock decides every block and where it sits). Regions: design/parity.md.
     node design/mocks/bis_facts.mjs http://localhost:<port>   (a running `npm run preview -- --port <port>` in web/)
     python3 design/mocks/ws_bis.py  -> design/mocks/web/web-bis-<state>.html
 FS_BIS_FACTS and FS_MOCK_OUT point both elsewhere: the parity spec renders its mocks at test time (design/parity.md).
@@ -21,76 +18,41 @@ import os
 from html import escape
 from pathlib import Path
 
-from mocklib import CLASS_COLOR
-from ws_lib import REGION, control_bar, crest_img, sel, seg
-from ws_prims import Meter, PageHeader, Paperdoll, Plate, Section, build_page, write
+from ws_lib import control_bar, sel, seg
+from ws_prims import Facts, ItemRow, ItemTip, PaperdollFrame, Plate, Section, build_page, icon, write
 
 HERE = Path(__file__).resolve().parent
 CONFIG = json.loads((HERE / 'web/bis-parity.json').read_text())
 # The facts: the committed data/bis-facts.json, or FS_BIS_FACTS (the parity spec's own, read from the build it serves).
 FACTS = json.loads(Path(os.environ.get('FS_BIS_FACTS') or HERE / 'data/bis-facts.json').read_text())
+QUALITY = {'poor': 0, 'common': 1, 'uncommon': 2, 'rare': 3, 'epic': 4, 'legendary': 5}
 
-# The page's own rules (the built BisAnswer, BisWeights and summary measure the same; the Paperdoll's are ws_prims').
+# The page's own layout (BisSpecPage, BisSide, BisItinerary measure the same); no surfaces: the primitives draw those.
 BIS_CSS = '''
 main{padding-bottom:40px}  /* the page's own bottom space ([spec].astro .bis-page), above the site footer */
-/* The BiS head keeps a fixed floor from 1024 so the title and the controls hold their y across specs
-   (one figure, a healer's metrics, a tank's four): BisSpecPage HEAD_ROW_MIN_HEIGHT, b66cf09b8. */
-@media(min-width:1024px){.head{min-height:calc(165px + 30px)}} /* row floor plus the head padding 16/14 (round 5); the mock .head is the row and is border-box */
 .bis-pg{padding-top:20px}
-.ans .bis-ans{display:flex;flex-direction:column;align-items:flex-end;gap:4px;text-align:right;max-width:640px}
-.bis-ans .fig .v{font-size:36px;line-height:40px}.bis-ans .fig small{font-size:13px}
-.bis-ans .cap{font-size:12px;line-height:16px;color:var(--muted)}
-.bis-ans dl{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:4px 20px}
-.bis-ans dt{font:700 12px/18px var(--font-body);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
-.bis-hm dd{font-size:16px;line-height:24px;font-variant-numeric:tabular-nums}
-.bis-tf .tv{font:700 24px/36px var(--font-body);font-variant-numeric:tabular-nums}
-.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
-.bis-line{font-size:13px;line-height:18px;color:var(--muted)}.bis-links{font-size:14px;font-weight:600}
 .cbar[data-labels-from="1920"] .pc{column-gap:12px}
-.cbar .seg a{height:40px}.cbar .seg a .sp{width:22px;height:22px;border-radius:4px;background:#10141d;border:1px solid var(--line)}
+.cbar .seg a{height:40px}.cbar .seg a .sp{width:22px;height:22px;border-radius:4px;background:#10141d}
 .src-btn{height:36px;padding:0 10px;font-size:13px;background:none;cursor:pointer}
-.bis-sum{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 16px;padding:10px 0}
-.bis-sum p{font-size:15px;line-height:24px;min-width:0}.bis-sum p a{color:var(--gold);font-weight:600}
-.bis-sum p a.link{margin-left:6px}
-.bis-sum .seg a{height:44px}
-.bis-note{color:var(--muted);font-size:13px;line-height:20px;margin-bottom:8px}
-.bis-stack{margin-top:32px}
-.wt-s{font-size:15px;line-height:24px}
-.wt-cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:16px;margin-top:12px}
-.wt{display:flex;flex-direction:column;gap:6px;min-width:0;font-size:14px;line-height:1.5}.wt.faint{opacity:.6}.wt-n{font-size:15px;font-weight:600}.wt .fig.sm .v{font-size:16px;line-height:20px}
-.wt-l{font-size:13px;line-height:20px;margin-top:8px;color:var(--muted)}.wt-l a{font-weight:600}
-.bis-guide{color:var(--muted);font-size:13px;line-height:20px;margin:var(--section-gap) 0 8px}.bis-guide a{font-weight:600}
-.sec-h+.sec-b{padding-top:12px}
+.bis-top{display:grid;grid-template-columns:minmax(0,1fr);gap:28px;align-items:start}
+.bis-doll{width:100%;max-width:640px;justify-self:center}
+@media(min-width:1100px){.bis-top{grid-template-columns:minmax(0,640px) minmax(0,1fr);gap:36px}.bis-doll{justify-self:start}}
+@media(min-width:1760px){.bis-top{grid-template-columns:minmax(0,760px) minmax(0,560px);justify-content:center;column-gap:64px}.bis-doll{max-width:760px}}
+.bis-side{display:flex;flex-direction:column;gap:28px;min-width:0}
+.bis-side .sbox{padding:8px 20px}
+.bis-side-body{display:flex;flex-direction:column;padding-bottom:8px}
+.bis-side-line{margin-top:10px;color:var(--muted);font-size:13px;line-height:20px}
+.bis-side-link{margin-top:12px;font-size:14px;font-weight:600}
+.bis-stop-link{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:44px;padding:0;font-size:14px;line-height:20px;border-bottom:1px solid var(--line-soft)}
+.bis-stop-link a{display:inline-flex;align-items:center;min-height:44px;font-weight:600}.bis-stop-link span{color:var(--muted)}
+.bis-sim-link{font-size:14px;font-weight:600;white-space:nowrap}
+.bis-route{margin-top:var(--section-gap)}
+.bis-route .plate{padding:16px}
+.bis-stop+.bis-stop{margin-top:18px}
+.bis-stop h2{display:flex;align-items:baseline;gap:10px;padding:4px 0 8px;font:400 22px/28px var(--font-title);letter-spacing:-.015em;color:#f3eee2}
+.bis-stop h2 span{font:600 14px/1 var(--font-body);color:var(--text)}
+.irow .tr .g .v{color:#32ae88}
 '''
-
-
-def healer_metrics(a: dict) -> str:
-    """BisAnswer's healer cells: label, value, and the value's sentence for a screen reader."""
-    if not a['healer']:
-        return ''
-    cells = ''.join(f'<div><dt>{escape(m["label"])}</dt><dd>{escape(m["value"])}</dd><dd class="sr-only">{escape(m["line"])}</dd></div>'
-                    for m in a['healer'])
-    return f'<dl class="bis-hm">{cells}</dl>'
-
-
-def tank_figures(a: dict) -> str:
-    """BisAnswer's tank head: the four figures, then the TMI line."""
-    cells = ''.join(f'<div><dt>{escape(t["label"])}</dt><dd class="tv">{escape(t["value"])}</dd></div>' for t in a['tank'])
-    return f'<dl class="bis-tf">{cells}</dl><p class="bis-line">{escape(a["tankLine"])}</p>'
-
-
-def answer(f: dict) -> str:
-    a = f['answer']
-    if a['figure']:
-        fig = a['figure']
-        cap = f'<span class="cap">{escape(fig["caption"])}</span>' if fig['caption'] else ''
-        lead = (f'<div class="fig"><span class="t-label">{escape(fig["label"])}</span>'
-                f'<span class="v">{escape(fig["value"])}<small>{escape(fig["unit"])}</small></span>{cap}</div>{healer_metrics(a)}')
-    else:
-        lead = tank_figures(a)
-    ranking = f' &middot; <a href="#">{escape(a["rankingSim"])}</a>' if a['rankingSim'] else ''
-    links = ' &middot; '.join(f'<a href="#">{escape(t)}</a>' for t in (a['simLink'], a['plannerLink']) if t)
-    return f'<div class="bis-ans">{lead}<p class="bis-line">{escape(a["trust"])}{ranking}</p><p class="bis-links">{links}</p></div>'
 
 
 def controls(f: dict) -> str:
@@ -107,50 +69,62 @@ def controls(f: dict) -> str:
     return control_bar(groups, summary, label=c['label'], labels_from=1920)
 
 
-def summary(f: dict) -> str:
-    s = f['summary']
-    nxt = f'<a href="#" class="link">{escape(s["next"])}</a>' if s['next'] else ''
-    view = seg([(escape(o['label']), o['on'], None, '') for o in s['view']], label='View')
-    return (f'<div class="bis-sum" data-region="{REGION["summary"]}"><p>{escape(s["lead"])} <a href="#">{escape(s["signIn"])}</a> '
-            f'{escape(s["after"])}{nxt}</p>{view}</div>')
+def centre(f: dict) -> str:
+    """The selected slot's client tooltip, ending in what it is worth, then Open in the sim."""
+    c = f['centre']
+    tip = c['tip']
+    selected = next((s for s in f['slots'] if s['selected']), None)
+    quality = next((r['quality'] for st in f['itinerary']['stops'] for r in st['rows'] if selected and r['item'] == selected['item']), 'common')
+    html = ItemTip(tip['name'], quality, tip['lines'][:-len(tip['tail'])] if tip['tail'] else tip['lines'], tip['tail'], tip['foot']) if tip else ''
+    if c['sim']:
+        html += f'<a class="bis-sim-link" href="#">{escape(c["sim"])}</a>'
+    return html
 
 
-def notes(f: dict) -> str:
-    if not f['notes']:
-        return ''
-    return f'<div data-region="{REGION["notes"]}">' + ''.join(f'<p class="bis-note">{escape(n)}</p>' for n in f['notes']) + '</div>'
+def side(f: dict) -> str:
+    parts = []
+    if f['set']:
+        s = f['set']
+        line = f'<p class="bis-side-line">{escape(s["line"])}</p>' if s['line'] else ''
+        parts.append(Section(escape(s['title']), f'<div class="bis-side-body">{Facts([(escape(x["label"]), escape(x["value"])) for x in s["facts"]])}{line}</div>', boxed=True))
+    st = f['stack']
+    lines = ''.join(f'<p class="bis-side-line">{escape(x)}</p>' for x in st['lines'])
+    link = f'<a class="bis-side-link" href="#">{escape(st["link"])}</a>' if st['link'] else ''
+    facts = Facts([(escape(x['label']), escape(x['value'])) for x in st['facts']]) if st['facts'] else ''
+    parts.append(Section(escape(st['title']), f'<div class="bis-side-body">{facts}{lines}{link}</div>', boxed=True))
+    w = f['where']
+    if w:
+        stops = ''.join(f'<p class="bis-stop-link"><a href="#">{escape(s["title"])}</a><span>{escape(s["count"])}</span></p>' for s in w['stops'])
+        action = f'<p style="margin-top:10px"><a class="bis-side-link" href="#">{escape(w["action"])}</a></p>' if w['action'] else ''
+        parts.append(Section(escape(w['title']), f'<div class="bis-side-body"><div>{stops}</div></div>{action}', boxed=True))
+    return f'<div class="bis-side">{"".join(parts)}</div>'
 
 
-def doll(f: dict) -> str:
-    d = f['doll']
-    return Paperdoll(d['label'], d['view'], columns=(d['left'], d['right']), groups=d['groups'])
+def gain(text: str) -> tuple[str, str, str] | None:
+    """The row's figure as the built Figure reads ("+0.3DPS"): value and unit."""
+    if not text:
+        return None
+    value = text.rstrip('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz ')
+    return (escape(value), escape(text[len(value):].strip()), '')
 
 
-def weight(r: dict) -> str:
-    if r['faint']:
-        return f'<li class="wt faint"><span class="wt-n">{escape(r["name"])}</span><span class="muted">{escape(r["line"])}</span></li>'
-    return (f'<li class="wt"><span class="wt-n">{escape(r["name"])}</span><span class="fig sm"><span class="v">{escape(r["scale"])}</span></span>'
-            f'{Meter(r["bar"])}<span class="muted">{escape(r["line"])}</span></li>')
-
-
-def weights(f: dict) -> str:
-    """Always open, one column per stat (spec 5.3 item 6; the 5.10 fold retired on main 2026-11-06)."""
-    w = f['weights']
-    cols = f'<p class="wt-l">{escape(w["caption"])}</p><ul class="wt-cols" aria-label="Stat weights">{"".join(weight(r) for r in w["rows"])}</ul>' if w['rows'] else ''
-    exp = f'<p class="wt-l">{escape(w["expertise"])}</p>' if w['expertise'] else ''
-    body = (f'<div class="sec-b"><p class="wt-s">{escape(w["sentence"])}</p>{cols}{exp}'
-            f'<p class="wt-l">{escape(w["addon"])} <a href="#">{escape(w["addonLink"])}</a></p></div>')
-    return f'<div class="bis-stack">{Section(w["title"], body)}</div>'
+def itinerary(f: dict) -> str:
+    it = f['itinerary']
+    stops = ''.join(
+        f'<section class="bis-stop"><h2>{escape(s["title"])}{f"<span>{escape(s["range"])}</span>" if s["range"] else ""}</h2>'
+        + ''.join(ItemRow(escape(r['name']), QUALITY.get(r['quality'], 1), icon(r['icon'], 40) if r['icon'] else '<span class="ic"></span>',
+                          escape(r['line']), gain=gain(r['gain'])) for r in s['rows'])
+        + '</section>' for s in it['stops'])
+    return f'<div class="bis-route">{Plate(stops, label=escape(it["label"]))}</div>'
 
 
 def render(f: dict) -> str:
-    color = CLASS_COLOR[f['class']]
-    head = PageHeader(escape(f['title']), title_color=color, crest=crest_img(f['class'], 56), meta=[escape(f['meta'])], answer=answer(f))
-    guide = f'<p class="bis-guide" data-region="{REGION["footer_note"]}">{escape(f["guide"]["lead"])} <a href="#">{escape(f["guide"]["link"])}</a></p>'
-    body = (head + controls(f) + f'<div class="pc bis-pg">{summary(f)}{notes(f)}{Plate(doll(f), label='Gear')}{weights(f)}{guide}</div>'
+    figure = (f['figure']['value'], f['figure']['unit']) if f['figure'] else None
+    doll = PaperdollFrame(f['slots'], f['title'], f['meta'], figure, centre(f), f['frameLabel'], list_centre=centre(f))
+    body = (controls(f) + f'<div class="pc bis-pg"><div class="bis-top"><div class="bis-doll">{doll}</div>{side(f)}</div>{itinerary(f)}</div>'
             + f'<style>{BIS_CSS}</style>')
-    return build_page(f'{f["title"]} best in slot (mock, {f["id"]})', body, nav='Tools',
-                      note='Parity mock (rev 4). Data from design/mocks/data/bis-facts.json; layout from spec 5 and 5.13.')
+    return build_page(f'{f["title"]} (mock, {f["id"]})', body, nav='Tools',
+                      note='Parity mock (round 5, the paperdoll). Data from design/mocks/data/bis-facts.json; layout from the 2026-11-09 directions spec.')
 
 
 if __name__ == '__main__':
