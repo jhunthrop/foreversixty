@@ -45,19 +45,12 @@ def hdr(tabs_active='Overview', officer=True, tabs=None, raiders: int | None = g
     (hash tabs on one URL); `sub` is the Roster's sub-view row (Members, Applications: link tabs), its current view."""
     shown = tabs or (TABS if officer else [t for t in TABS if t != 'Settings'])
     views = TabStrip(['Members', 'Applications'], sub).replace('strip-tabs ph-tabs', 'strip-tabs', 1) if sub else ''
-    return PageHeader(GUILD, ALLIANCE, Emblem('alliance', 64), meta=[band_facts(raiders)], tabs=TabStrip(shown, tabs_active, tablist=True) + views)
+    return PageHeader(GUILD, '', Emblem('alliance', 64), meta=[band_facts(raiders)], tabs=TabStrip(shown, tabs_active, tablist=True) + views)
 
 
 def pad(html: str) -> str:
     """A Section body's 12 px under the head's hairline (the built Section body's padding)."""
     return f'<div style="padding-top:12px">{html}</div>'
-
-
-def hdr_view(tabs_active='Overview'):
-    """The head a guild view off the guild page draws (lane D's GuildViewHeader): its tabs are links to the guild page, a nav."""
-    nxt = day_label(guild_time(O.NEXT_RAID_AT))
-    return PageHeader(GUILD, ALLIANCE, Emblem('alliance', 56), meta=['<b class="strong">US</b> &middot; PvP', f'{gd.RAIDERS} raiders', f'Next raid: Onyxia&rsquo;s Lair, {nxt}'],
-                      tabs=TabStrip(TABS, tabs_active))
 
 
 def guild_time(iso: str) -> datetime:
@@ -501,7 +494,7 @@ def recruitment():
     main = Section('Looking for', wanted, panel=True, frame='framed') + Section('Apply', sign_in, panel=True)
     rail = (Section(GUILD, card, panel=True) + Section('Why this guild', f'<p {_PROSE}>{gd.RECRUIT_PITCH}</p>', panel=True)
             + Section('Officers', officers, panel=True))
-    head = PageHeader(f'Join {GUILD}', ALLIANCE, Emblem(gd.FACTION, 56), meta=[Tag('Recruiting', 'kill')])
+    head = PageHeader(f'Join {GUILD}', '', Emblem(gd.FACTION, 56), meta=[Tag('Recruiting', 'kill')])
     return build_page('Recruitment', _view(head + Page('split', main, rail, panels=True)) + _FACTS_CSS, 'Guild', None)
 
 
@@ -525,7 +518,7 @@ def applications():
                     for _i, name, _c, _s, y, by, _r, _d in gd.DECIDED], open_=True)
     rail = Section('Your public card', card, Link('See it as a visitor'), panel=True) + Section('Recent decisions', decided, panel=True)
     views = TabStrip(['Members', 'Applications'], 'Applications').replace('strip-tabs ph-tabs', 'strip-tabs', 1)
-    head = PageHeader(GUILD, ALLIANCE, Emblem('alliance', 56), meta=[band_facts(None)], tabs=TabStrip(TABS, 'Roster') + views)
+    head = PageHeader(GUILD, '', Emblem('alliance', 56), meta=[band_facts(None)], tabs=TabStrip(TABS, 'Roster') + views)
     return build_page('Applications', _view(head + Page('split', main, rail, panels=True)) + _ROLE_CSS, 'Guild', (gd.VIEWER, 'hunter', 'Beast Mastery Hunter &middot; 60'))
 
 

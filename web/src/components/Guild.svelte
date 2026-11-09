@@ -850,11 +850,7 @@
         bind:offsetHeight={bandHeaderHeight}
         data-testid="guild-band-header"
       >
-        <PageHeader
-          title={data.guild.name}
-          tone={faction === 'alliance' || faction === 'horde' ? { faction } : 'strong'}
-          testid="guild-page-header"
-        >
+        <PageHeader title={data.guild.name} tone="strong" testid="guild-page-header">
           {#snippet crest()}
             <FactionCrest {faction} src={guildMark} testid="guild-faction-crest" />
           {/snippet}

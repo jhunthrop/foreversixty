@@ -134,13 +134,7 @@
     <EmptyState message={guildJoinCopy.invalid} testid="guild-join-invalid" />
   {:else}
     {#snippet header()}
-      <PageHeader
-        title={guild.name}
-        tone={guild.faction === 'alliance' || guild.faction === 'horde'
-          ? { faction: guild.faction }
-          : 'strong'}
-        testid="guild-join-head"
-      >
+      <PageHeader title={guild.name} tone="strong" testid="guild-join-head">
         {#snippet crest()}
           <FactionCrest faction={guild.faction} src={guildMarkSrc(guild)} testid="guild-join-crest" />
         {/snippet}

@@ -173,7 +173,7 @@ def settings_tab(bot: bool = False):
 def settings_page():
     main = chooser_section() + discord_section()
     rail = members_section() + records_section(crest=False)
-    head = f'<div style="padding-top:28px">{PageHeader(GUILD, ALLIANCE, meta=["Guild settings"])}</div>'
+    head = f'<div style="padding-top:28px">{PageHeader(GUILD, '', meta=["Guild settings"])}</div>'
     return build_page('Guild settings page', _view(head + Page('split', main, rail, panels=True) + NOTICE_LINE + _CSS), 'Guild', ('Dunmaro', 'hunter', 'Beast Mastery Hunter &middot; 60'))
 
 

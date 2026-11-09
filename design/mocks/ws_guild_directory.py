@@ -90,7 +90,7 @@ def join():
              '<p class="t-small">Joining puts your characters on its roster and shares your gear with its officers; you can change that on your account.</p></div>')
     buttons = f'<div class="dir-btns">{_act(f"Join {GUILD}", primary=True)}{Button("Not now", tone="ghost")}</div>'
     section = Section('Your invite', f'<div class="dir-col">{inviter}{you}{lines}{buttons}</div>', panel=True, frame='framed')
-    head = PageHeader(GUILD, ALLIANCE, Emblem(gd.FACTION, 64), meta=[f'PvP US &middot; {gd.RAIDERS} members on Forever Sixty'])
+    head = PageHeader(GUILD, '', Emblem(gd.FACTION, 64), meta=[f'PvP US &middot; {gd.RAIDERS} members on Forever Sixty'])
     return build_page('Join a guild', _view(head + PageForm(section)) + _CSS, 'Guild', (name, cls, f'{cls.title()} &middot; {level}'))
 
 

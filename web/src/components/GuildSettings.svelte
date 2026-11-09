@@ -72,8 +72,6 @@
   /** This account's /v1/me guild entry: its rank and whether the trial is open, for the gate. */
   let myEntry = $state<MeGuild | null>(null);
   let guildName = $state('');
-  /** The guild's faction: the standalone page's title takes its colour (D8). */
-  let faction = $state<'alliance' | 'horde' | null>(null);
   let settings = $state<GuildSettingsData | null>(null);
   let status = $state<'loading' | 'ready' | 'forbidden' | 'failed'>('loading');
   let notice = $state('');
@@ -93,7 +91,6 @@
       const page = await fetchGuild(path);
       guildId = page.guild.id;
       guildName = page.guild.name;
-      faction = page.guild.faction ?? null;
       settings = await fetchGuildSettings(page.guild.id, undefined, (fresh) => (settings = fresh));
       status = 'ready';
     } catch (thrown) {
@@ -314,7 +311,7 @@
   {:else}
     <PageHeader
       title={guildName === '' ? guildSettingsCopy.heading : guildName}
-      tone={faction === null ? 'strong' : { faction }}
+      tone="strong"
       testid="guild-settings-header"
     >
       {#snippet meta()}<span>{guildSettingsCopy.heading}</span>{/snippet}
