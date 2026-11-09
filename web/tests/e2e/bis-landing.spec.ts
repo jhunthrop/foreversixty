@@ -137,12 +137,9 @@ test.describe('signed out, desktop', () => {
     }
   });
 
-  test('tanks and healers carry their role tag; every class has a crest and every spec an icon', async ({
-    page,
-  }) => {
-    await expect(specRow(page, 'warrior', 'protection')).toContainText('Tank');
-    await expect(specRow(page, 'priest', 'holy')).toContainText('Healer');
-    await expect(specRow(page, 'warrior', 'fury')).not.toContainText(/Tank|Healer/);
+  test('no spec row carries a role tag; every class has a crest and every spec an icon', async ({ page }) => {
+    await expect(specRow(page, 'warrior', 'protection')).not.toContainText(/Tank|Healer/);
+    await expect(specRow(page, 'priest', 'holy')).not.toContainText(/Tank|Healer/);
     await expect(
       page.locator('[data-testid^="bis-class-"] img.crest, [data-testid^="bis-class-"] img[src*="crests"]'),
     ).toHaveCount(9);

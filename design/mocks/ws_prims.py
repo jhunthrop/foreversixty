@@ -1714,3 +1714,57 @@ def ItemTip(name: str, quality: str, lines: list[str], tail: list[str], foot: st
     f = f'<div class="ft"><div>{escape(foot)}</div></div>' if foot else ''
     return (f'<div class="itip" role="group" aria-label="{escape(name)}"><div class="bd"><span class="nm" style="color:{RARITY.get(quality, RARITY["common"])}">'
             f'{escape(name)}</span>{body}{t}</div>{f}</div>')
+
+
+
+# ------------------------------------------------ ReadingPanel (lane P8, 2026-11-09; web ui/ReadingPanel.svelte)
+# A reading page's ReadingSections on one panel (directions mock b2-guide-spec): no head hairline, a hairline between sections,
+# each padded 22/24 (18/16 below 768), the heading in Marcellus 24/30 cream; from 1280 the prose takes the room and the lane is a
+# 380 px column behind a hairline. `PlateColumns(frame='framed')` is the built PlateColumns' `frame` (the cream inset line).
+PRIM_CSS += """
+.rpanel{min-width:0;background:var(--raised);border:1px solid #000;border-radius:10px;box-shadow:0 0 0 1px rgba(130,112,91,.55);--muted:#8b8784}
+.rpanel>.rsec{padding:22px 24px}.rpanel>.rsec+.rsec{border-top:1px solid var(--line-soft)}
+.rpanel>.rsec>.sec-h{padding-bottom:0;border-bottom:0}
+.rpanel .rsec>.sec-h h2{font:400 24px/30px var(--font-title);letter-spacing:-.015em;color:var(--cream)}
+.rpanel .rd{padding-top:12px}
+@media(max-width:767px){.rpanel>.rsec{padding:18px 16px}}
+@media(min-width:1280px){.rpanel .rd:not(.solo){grid-template-columns:minmax(0,1fr) minmax(0,380px);column-gap:28px}
+.rpanel .rd:not(.solo)>.rd-lane{padding-left:18px;border-left:1px solid var(--line-soft)}}
+.plate.framed{position:relative}
+.plate.framed::before{content:"";position:absolute;inset:6px;border:1px solid rgba(243,238,226,.42);border-radius:6px;pointer-events:none}
+"""
+
+
+def ReadingPanel(sections: str) -> str:
+    return f'<div class="rpanel">{sections}</div>'
+
+
+_PlateColumns0 = PlateColumns
+
+
+def PlateColumns(cols: list[tuple[str, str, str, str]], label: str = '', frame: str = 'plain') -> str:
+    html = _PlateColumns0(cols, label)
+    return html.replace('<div class="plate"', '<div class="plate framed"', 1) if frame == 'framed' else html
+
+
+
+# ------------------------------------------------ ClassSpecPicker (lane P8, 2026-11-09; web components/guides/ClassSpecPicker.astro)
+# The class and spec picker /guides and /bis share (directions b2-guides): one panel per class, three across from 1024 and two
+# from 768: the class crest and name in the class colour (a link on /guides), then its specs as slim link rows, no role tag.
+# classes: (slug, name, colour, [(key, name, icon_html)]); `yours` marks the header character's spec with `yours_label`.
+PRIM_CSS += """
+.cspick{display:grid;grid-template-columns:minmax(0,1fr);gap:18px}
+@media(min-width:768px){.cspick{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(min-width:1024px){.cspick{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.cspick-c{padding-bottom:8px;min-width:0}
+"""
+
+
+def ClassSpecPicker(classes: list[tuple[str, str, str, list[tuple[str, str, str]]]], label: str, class_links: bool = False,
+                    yours: str = '', yours_label: str = '') -> str:
+    groups = []
+    for slug, name, colour, specs in classes:
+        rows = [Row(n, lead=ic, trail=Tag(yours_label) if key == yours else '', selected=key == yours) for key, n, ic in specs]
+        head = Row(name, lead=crest_img(slug, 40), title_color=colour, link=class_links)
+        groups.append(Plate(f'<div class="cspick-c">{head}{RowsSlim(rows, open_=False)}</div>'))
+    return f'<div class="cspick" role="region" aria-label="{label}">{"".join(groups)}</div>'

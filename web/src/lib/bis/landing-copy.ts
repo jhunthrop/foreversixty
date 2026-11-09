@@ -65,5 +65,4 @@ export const landingCopy = {
   yourRange: (rangeLabel: string): string => `Your range: ${rangeLabel}`,
   plateLabel: 'Classes and specs',
   yours: 'Yours',
-  roleWords: { tank: 'Tank', healer: 'Healer' } as const,
 } as const;

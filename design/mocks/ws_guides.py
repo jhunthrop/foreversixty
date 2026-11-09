@@ -20,8 +20,8 @@ from html import escape
 from pathlib import Path
 
 from mocklib import CLASS_COLOR
-from ws_prims import (Button, Facts, ItemRow, LaneBlock, LevelSlider, Link, Menu, Page, PageHeader, Plate, PlateColumns, Prose,
-                      ReadingSection, Row, RowGrid, Rows, RowsSlim, Section, Skeleton, StatRow, StatTable, Tag, TalentTrees, Toc,
+from ws_prims import (Button, ClassSpecPicker, Facts, ItemRow, LaneBlock, LevelSlider, Link, Menu, Page, PageHeader, Plate, PlateColumns,
+                      Prose, ReadingPanel, ReadingSection, Row, RowGrid, Rows, RowsSlim, Section, Skeleton, StatRow, StatTable, Tag, TalentTrees, Toc,
                       build_page, control_bar, crest_img, icon, seg, sel, write, REGION, Meter, QCOL)
 
 HERE = Path(__file__).resolve().parent
@@ -30,7 +30,6 @@ C = F['copy']
 SEC = {s['id']: s['title'] for s in F['sections']}   # SPEC_SECTIONS (lib/guides/sections.ts)
 TA = F['tier_answer']
 FACTION = {'alliance': '#6fb1ff', 'horde': '#ff6b5c'}
-TAG = C['specRowTag']   # guidesCopy.specRowTag: a healer, a tank, the melee spec of a ranged class (glance.ts specRowTag)
 QUAL = {2: 'q2', 3: 'q3', 4: 'q4', 5: 'q5'}
 
 # The strings this round proposed (spec 6.2) now live in lib/guides/copy.ts; read from there.
@@ -119,7 +118,7 @@ def band(g: dict) -> str:
         lines += f'<p class="t-small">{e(b["unitLine"])}</p>' if b.get('unitLine') else ''   # MUST 4
         cols.append((e(C['statPriorityRailLabel']), e(g['stats']['table']['weightHead']),
                      StatTable([('', False), ('', False), ('', False), ('', True)], stat_rows(b['stats'], True, False), 1, open_=True) + lines, ''))
-    return f'<div class="pc glance">{PlateColumns(cols, PROPOSED["glance"])}</div>'
+    return PlateColumns(cols, PROPOSED['glance'], frame='framed')
 
 
 def overview(g: dict) -> str:
@@ -250,7 +249,19 @@ def sources(g: dict) -> str:
             continue
         seen.add(s['url'])
         rows.append(Row(f'<span class="gold link">{e(s["label"])}</span>', lead=Tag(e(F['source_labels'][s['kind']]), 'muted')))
-    return Section(PROPOSED['sources'], RowsSlim(rows))
+    return Section(PROPOSED['sources'], RowsSlim(rows), boxed=True)
+
+
+def lede(text: str) -> str:
+    """components/guides/GuideLede: the page's one sentence on the ground under the band."""
+    return f'<p class="g-lede">{e(text)}</p>' if text else ''
+
+
+def reading_page(top: str, toc: str, body: str) -> str:
+    """ui/Page layout 'reading' with tocFrom 1024: the full-width top (the lede and the plate), the contents rail at the left
+    from 1024, the body beside it."""
+    return (f'<div class="pc g-read"><div class="layout-reading toc-lg"><div class="g-top">{top}</div>'
+            f'<nav class="toc" aria-label="{e(C["tocBarLabel"])}">{toc}</nav><div class="body">{body}</div></div></div>')
 
 
 def spec_bar(g: dict, open_m: bool = False) -> str:
@@ -267,18 +278,19 @@ def spec_page(gid: str, kind: str = 'out', me_key: str = '', level: int = 60, op
     g = F['guides'][gid]
     me = F['me'].get(me_key) if me_key else None
     ans = '' if kind == 'out' else answer(kind, me, g)
-    head = PageHeader(e(g['title']), CLASS_COLOR[g['classSlug']], crest_img(g['classSlug'], 56), [e(g['meta'])], ans, lead=e(g['summary']))
+    head = PageHeader(e(g['title']), CLASS_COLOR[g['classSlug']], crest_img(g['classSlug'], 56), [e(g['meta'])], ans)
     gp = dict(g)
     if partial:   # FORCED (spec 5.3): no rotation entry, no weights, no ranked BiS file, no extras, no ladder (none occurs at 70790)
         gp = {**g, 'band': {**g['band'], 'rotation': [], 'stats': []}}
     band_no = 60 if level >= 60 else max(20, level // 10 * 10)
     faction = me['faction'] if me and kind == 'same' else 'alliance'
-    body = [overview(gp), talents(gp), rotation(gp, {} if partial else None), stats(gp, [] if partial else None),
-            gear(gp, band_no, faction, not partial), extras(gp, not partial), races(gp),
-            ReadingSection(SEC['professions'], Prose(g['professions']), '', 'professions'), leveling(gp, level if kind == 'same' else 60, not partial),
-            sources(g) + f'<p class="t-small foot-note" data-region="{REGION["footer_note"]}">{e(F["fns"]["dataSourceLine"])}</p>']
+    sections = [overview(gp), talents(gp), rotation(gp, {} if partial else None), stats(gp, [] if partial else None),
+                gear(gp, band_no, faction, not partial), extras(gp, not partial), races(gp),
+                ReadingSection(SEC['professions'], Prose(g['professions']), '', 'professions'), leveling(gp, level if kind == 'same' else 60, not partial)]
+    body = (ReadingPanel(''.join(sections)) + sources(g)
+            + f'<p class="t-small foot-note" data-region="{REGION["footer_note"]}">{e(F["fns"]["dataSourceLine"])}</p>')
     toc = Toc(e(C['tocBarLabel']), [(e(s['title']), s['id']) for s in F['sections']], 'overview')
-    html = head + spec_bar(g, open_m) + band(gp) + Page('reading', ''.join(body), toc) + PAGE_CSS
+    html = head + spec_bar(g, open_m) + reading_page(lede(g['summary']) + band(gp), toc, body) + PAGE_CSS
     who = (me['name'], me['class'].lower(), f"Level {me['level']}") if me else None
     note = (f'Guide mock (design/specs/2026-11-08-guides.md), built only from ws_prims, read from guides-facts.json (build {F["build"]}). '
             + ('Partial-data state: rotation, weights, BiS and extras removed (FORCED; no spec lacks them at this build). ' if partial else '')
@@ -291,19 +303,21 @@ def class_page(cls: str, kind: str = 'out', me_key: str = '') -> str:
     L = F['landings'][cls]
     me = F['me'].get(me_key) if me_key else None
     mine = me and me['class'].lower() == cls
-    rows = []
+    cards = []
     for c in L['cards']:
         you = bool(mine and me['spec'] == c['name'])
-        tags = (' ' + Tag(e(TAG[c['tag']]), 'muted') if c['tag'] else '') + (' ' + Tag(e(C['yourSpecPill'])) if you else '')
-        rows.append(Row(e(c['name']) + tags, e(c['line']), lead=icon(c['icon'], 40), title_color=CLASS_COLOR[cls], selected=you,
-                        foot=f'<span class="link">{rsaquo(C["readTheGuide"])}</span>'))
-    plate = f'<div class="specs">{Plate(RowGrid(rows, len(rows)), e(C["classLandingSpecsHeading"]))}</div>'
-    main = ''.join(Section(e(s['heading']), Prose(s['html'], 'ruled', 'cols')) for s in L['sections'] if not s['panel'])
-    rail = ''.join(Section(e(s['heading']), Prose(s['html'], 'lane')) for s in L['sections'] if s['panel'])
-    srcs = Section(PROPOSED['sources'], RowsSlim([Row(f'<span class="gold link">{e(s["label"])}</span>', lead=Tag(e(F['source_labels'][s['kind']]), 'muted')) for s in L['sources']]))
+        title = e(c['name']) + (' ' + Tag(e(C['yourSpecPill'])) if you else '')
+        cards.append(Plate(Row(title, e(c['line']), lead=icon(c['icon'], 40), title_color=CLASS_COLOR[cls], selected=you,
+                               foot=f'<span class="link">{rsaquo(C["readTheGuide"])}</span>')))
+    specs = (f'<div class="g-specs" role="region" aria-label="{e(C["classLandingSpecsHeading"])}" style="--specs:{len(cards)}">'
+             f'{"".join(cards)}</div>')
+    main = ''.join(Section(e(s['heading']), Prose(s['html']), boxed=True) for s in L['sections'] if not s['panel'])
+    rail = ''.join(Section(e(s['heading']), Prose(s['html'], 'lane'), boxed=True) for s in L['sections'] if s['panel'])
+    srcs = Section(PROPOSED['sources'], RowsSlim([Row(f'<span class="gold link">{e(s["label"])}</span>', lead=Tag(e(F['source_labels'][s['kind']]), 'muted')) for s in L['sources']]),
+                   boxed=True)
     ans = '' if kind == 'out' else answer(kind, me)
-    head = PageHeader(e(L['title']), CLASS_COLOR[cls], crest_img(cls, 56), [f'Updated {e(L["updated"])}'], ans, lead=e(L['identity']))
-    html = head + Page('ledger', plate) + Page('split', main + srcs, rail) + PAGE_CSS
+    head = PageHeader(e(L['title']), CLASS_COLOR[cls], crest_img(cls, 56), [f'Updated {e(L["updated"])}'], ans)
+    html = head + Page('ledger', f'<div class="g-ledger">{lede(L["identity"])}{specs}</div>') + Page('split', main + srcs, rail) + PAGE_CSS
     who = (me['name'], me['class'].lower(), f"Level {me['level']}") if me else None
     return build_page(f'{L["title"]} guides', html, 'Guides', who, f'Class landing mock (design/specs/2026-11-08-guides.md); data guides-facts.json, build {F["build"]}.')
 
@@ -311,19 +325,14 @@ def class_page(cls: str, kind: str = 'out', me_key: str = '') -> str:
 # ------------------------------------------------------------------------------------------------ /guides
 def index_page(kind: str = 'out', me_key: str = '') -> str:
     me = F['me'].get(me_key) if me_key else None
-    groups = []
-    for c in F['index']['classes']:
-        specs = []
-        for s in c['specs']:
-            you = bool(me and me['class'].lower() == c['slug'] and me['spec'] == s['name'])
-            trail = (Tag(e(C['yourSpecPill'])) + ' ' if you else '') + (Tag(e(TAG[s['tag']]), 'muted') if s['tag'] else '')
-            specs.append(Row(e(s['name']), lead=icon(s['icon'], 28), trail=trail, selected=you))
-        groups.append(f'<div class="cgrp">{Row(e(c["name"]), lead=crest_img(c["slug"], 40), title_color=c["color"])}{RowsSlim(specs, open_=False)}</div>')
-    plate = Plate(RowGrid(groups, 3), F['markup']['indexTitle'])
+    yours = f"{me['class'].lower()}/{me['spec'].lower().replace(' ', '-')}" if me else ''
+    picks = [(c['slug'], e(c['name']), c['color'], [(f"{c['slug']}/{s['slug']}", e(s['name']), icon(s['icon'], 28)) for s in c['specs']])
+             for c in F['index']['classes']]
+    picker = ClassSpecPicker(picks, F['markup']['indexTitle'], class_links=True, yours=yours, yours_label=e(C['yourSpecPill']))
     ans = '' if kind == 'out' else answer(kind, me)
-    head = PageHeader(e(F['markup']['indexTitle']), '', '', [f'Updated {e(F["index"]["updated"])}'], ans, lead=e(C['indexLine']))
+    head = PageHeader(e(F['markup']['indexTitle']), '', '', None, ans)
     who = (me['name'], me['class'].lower(), f"Level {me['level']}") if me else None
-    return build_page('Guides', head + Page('ledger', plate) + PAGE_CSS, 'Guides', who, f'Guides index mock (design/specs/2026-11-08-guides.md); data guides-facts.json, build {F["build"]}.')
+    return build_page('Guides', head + Page('ledger', picker) + PAGE_CSS, 'Guides', who, f'Guides index mock (design/specs/2026-11-08-guides.md); data guides-facts.json, build {F["build"]}.')
 
 
 # ------------------------------------------------------------------------------------------------ every element state
@@ -367,19 +376,25 @@ PAGE_CSS = '''<style>
 .ans-links{display:flex;gap:4px 16px;flex-wrap:wrap}
 .gbands{display:flex;flex-wrap:wrap;gap:4px 12px;margin-top:-16px}.gtier{margin-top:-16px}
 @media(min-width:900px){.ans-row{flex-direction:row-reverse}.ans-who{align-items:flex-end}.ans-links{justify-content:flex-end}}
-.glance{padding-top:20px}.specs{padding-bottom:var(--section-gap)}
+.g-read{padding-top:28px}.layout-reading{row-gap:var(--section-gap)}.g-top{grid-column:1/-1;display:flex;flex-direction:column;gap:22px;min-width:0}
+.g-lede{margin:0;max-width:var(--measure-reading);font-size:16px;line-height:25px;color:var(--text)}
+.g-ledger{display:flex;flex-direction:column}
+.g-specs{display:grid;grid-template-columns:minmax(0,1fr);gap:18px;margin-top:22px}
+@media(min-width:1024px){.g-specs{grid-template-columns:repeat(var(--specs),minmax(0,1fr))}}
+main{padding-bottom:40px}
 .sw{display:grid;gap:20px var(--gap);grid-template-columns:minmax(0,1fr)}@media(min-width:768px){.sw{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .sw-h{padding-bottom:8px}
 .lvl-l{display:flex;flex-direction:column}
 .racial{display:flex;gap:8px;align-items:flex-start;font-size:13px;line-height:18px;color:var(--muted);width:100%}.racial b{color:var(--text);font-weight:600}
 .sub-h{padding:12px 0 2px;margin:0}
+.lane-blk .st{--st-name:minmax(max-content,2fr)}   /* GuideStatLane: a stat's name on one line */
 .items{display:flex;flex-direction:column}
 .foot-note{padding-top:16px}
 section>.sec-h+.rows,section>.sec-h+.rprose{margin-top:12px}.gl-fill{padding-top:8px}.ans-next{align-self:center}
 @media(min-width:900px){.ans-next{flex-basis:100%;text-align:right}}.ic-spacer{display:inline-block;flex:none}
 .cgrp{padding-bottom:20px;min-width:0}
 @media(max-width:767px){.cbar .pc{padding-block:0;min-height:0}}   /* the phone bar is its 48 px line, as the built ControlBar */
-.toc-sel{display:inline-flex}@media(min-width:1760px){.toc-sel{display:none}}
+.toc-sel{display:inline-flex}@media(min-width:1024px){.toc-sel{display:none}}
 .statesheet{display:grid;gap:40px}.st-b>h2{margin-bottom:12px}.st-pair{display:flex;gap:48px;flex-wrap:wrap;align-items:flex-start}.st-menu{position:relative;width:360px;height:440px}.st-menu .menu{position:static}
 .st-toc{display:block;width:200px}.st-lv{max-width:480px;padding-bottom:12px}
 .row.fv{outline:2px solid var(--gold);outline-offset:-2px}

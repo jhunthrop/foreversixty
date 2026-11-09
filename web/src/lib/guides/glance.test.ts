@@ -9,7 +9,6 @@ import {
   markCheapRanks,
   nextTalentPoint,
   racesByFaction,
-  specRowTag,
 } from './glance';
 import type { RotationItem } from './rotation-lists';
 import type { RailStatRow } from './rail-stats';
@@ -89,16 +88,6 @@ describe('nextTalentPoint', () => {
     ];
     expect(nextTalentPoint(steps, 34)).toEqual({ level: 36, name: 'Expose Prey' });
     expect(nextTalentPoint(steps, 36)).toBeUndefined();
-  });
-});
-
-describe('specRowTag', () => {
-  it('tags healers, tanks and the melee spec of a ranged class only', () => {
-    expect(specRowTag('priest', 'priest-holy', 'healer')).toBe('healer');
-    expect(specRowTag('warrior', 'warrior-protection', 'tank')).toBe('tank');
-    expect(specRowTag('hunter', 'hunter-survival', 'dps')).toBe('melee');
-    expect(specRowTag('hunter', 'hunter-marksmanship', 'dps')).toBeUndefined();
-    expect(specRowTag('druid', 'druid-feral', 'dps')).toBeUndefined();
   });
 });
 

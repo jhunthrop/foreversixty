@@ -1,12 +1,13 @@
 ---
 // web/src/pages/guides/[class]/[spec].astro
-// A spec guide in the flat system (design/specs/2026-11-08-guides.md §4.3): the PageHeader (the
-// spec and class in the class colour, the role and Updated stamp, the Overview's one sentence,
-// the signed-in answer), the ControlBar (the class's specs, On this page below 1760), the one
-// Plate (At a glance), then the nine sections of SPEC_SECTIONS as ReadingSections: the guide's
-// own prose beside the lane its data builds (lib/guides/*, W.18), never a word of the guide
-// changed. Sources, the data line, and from 1760 the contents rail. No markdown component is
-// embedded: splitSpecSections renders each section on its own, so every heading keeps its id.
+// A spec guide (directions mock b2-guide-spec, round 5): the title band (the spec and class in
+// the class colour, the role and Updated stamp, the signed-in answer), the ControlBar on the band
+// (the class's specs, On this page below 1024), the Overview's one sentence on the ground, the
+// framed At a glance plate, then the nine sections of SPEC_SECTIONS as ReadingSections on one
+// ReadingPanel: the guide's own prose beside the lane its data builds (lib/guides/*, W.18), never
+// a word of the guide changed. Sources, the data line, and from 1024 the contents rail. No
+// markdown component is embedded: splitSpecSections renders each section on its own, so every
+// heading keeps its id.
 import { getCollection } from 'astro:content';
 import Base from '../../../layouts/Base.astro';
 import ClassCrest from '../../../components/ClassCrest.astro';
@@ -15,6 +16,7 @@ import GuideBisLane from '../../../components/guides/GuideBisLane.astro';
 import GuideBuildsLane from '../../../components/guides/GuideBuildsLane.astro';
 import GuideExtrasLane from '../../../components/guides/GuideExtrasLane.astro';
 import GuideGlance from '../../../components/guides/GuideGlance.astro';
+import GuideLede from '../../../components/guides/GuideLede.astro';
 import GuideLevelingTree from '../../../components/guides/GuideLevelingTree.svelte';
 import GuideRacesLane from '../../../components/guides/GuideRacesLane.astro';
 import GuideRotationLane from '../../../components/guides/GuideRotationLane.astro';
@@ -27,6 +29,7 @@ import LaneBlock from '../../../components/ui/LaneBlock.svelte';
 import Page from '../../../components/ui/Page.svelte';
 import PageHeader from '../../../components/ui/PageHeader.svelte';
 import Prose from '../../../components/ui/Prose.svelte';
+import ReadingPanel from '../../../components/ui/ReadingPanel.svelte';
 import ReadingSection from '../../../components/ui/ReadingSection.svelte';
 import Toc from '../../../components/ui/Toc.svelte';
 import classes from '../../../data/classes.json';
@@ -231,13 +234,8 @@ const jsonLd = [
 <Base title={searchCopy.specGuideTitle(specName, className)} {description} {path} {jsonLd} wide>
   <meta slot="head" property="article:modified_time" content={entry.data.updated.toISOString()} />
   <main id="main" tabindex="-1" class="guide-page" data-testid="guide-page">
-    <Page layout="reading" testid="guide-body">
-      <PageHeader
-        slot="header"
-        title={title}
-        tone={{ classSlug: classSlug as ClassSlug }}
-        lead={overview.summary !== '' ? overview.summary : entry.data.description}
-      >
+    <Page layout="reading" tocFrom={1024} testid="guide-body">
+      <PageHeader slot="header" title={title} tone={{ classSlug: classSlug as ClassSlug }}>
         <ClassCrest slot="crest" slug={classSlug} size={56} priority />
         <span slot="meta">{guidesCopy.headerMeta(role, dayMonth(updated))}</span>
         <GuideAnswer
@@ -258,17 +256,24 @@ const jsonLd = [
         specs={catalogEntries}
         sections={tocItems}
       />
-      <GuideGlance
-        slot="top"
-        spec={fullSpecId}
-        build={build}
-        code={describedCode}
-        trees={talentTreesOf(describedTrees, tipBundle)}
-        isRaidBuild={raidTrees !== undefined}
-        rotation={glance}
-        rotationTitle={role === 'healer' ? guidesCopy.healingPriorityRailTitle : guidesCopy.rotationRailTitle}
-        stats={statLane}
-      />
+      <div slot="top" class="guide-top">
+        <GuideLede
+          text={overview.summary !== '' ? overview.summary : (entry.data.description ?? '')}
+          testid="guide-summary"
+        />
+        <GuideGlance
+          spec={fullSpecId}
+          build={build}
+          code={describedCode}
+          trees={talentTreesOf(describedTrees, tipBundle)}
+          isRaidBuild={raidTrees !== undefined}
+          rotation={glance}
+          rotationTitle={
+            role === 'healer' ? guidesCopy.healingPriorityRailTitle : guidesCopy.rotationRailTitle
+          }
+          stats={statLane}
+        />
+      </div>
       <Toc
         slot="toc"
         label={guidesCopy.tocBarLabel}
@@ -277,112 +282,113 @@ const jsonLd = [
         testid="guide-toc"
       />
 
-      <ReadingSection title="Overview" anchor="overview">
-        <LaneBlock slot="lane" label={guidesCopy.inARaid} testid="guide-overview-raid">
-          <Prose html={overviewHtml.raid} mods={['lane']} />
-        </LaneBlock>
-        {hasOverviewBlocks ? (
-          <div class="guide-sw">
-            <div>
-              <h3 class="text-label text-muted guide-sw-head font-bold">{guidesCopy.strengths}</h3>
-              <Prose html={overviewHtml.strengths} mods={['plus']} testid="guide-strengths" />
-            </div>
-            <div>
-              <h3 class="text-label text-muted guide-sw-head font-bold">{guidesCopy.weaknesses}</h3>
-              <Prose html={overviewHtml.weaknesses} mods={['minus']} testid="guide-weaknesses" />
-            </div>
-          </div>
-        ) : (
-          <Prose html={overviewHtml.fallback} />
-        )}
-      </ReadingSection>
-
-      <ReadingSection title="Talents and builds" anchor="talents-and-builds">
-        <Fragment slot="lane">
-          <GuideBuildsLane
-            spec={fullSpecId}
-            build={build}
-            blocks={buildBlocks}
-            raidDiffLine={raidDiffLine}
-            keyTalents={keyTalents}
-          />
-        </Fragment>
-        <Prose html={await prose(withoutTalentBullets(proseOnly('Talents and builds')))} />
-      </ReadingSection>
-
-      {rotation !== undefined ? (
-        <ReadingSection title="Rotation and priority" anchor="rotation-and-priority">
-          <Fragment slot="lane">
-            <GuideRotationLane build={build} lists={rotation} forRaidBuild={raidTrees !== undefined} />
-          </Fragment>
-          <Prose html={rotationHtml} />
-        </ReadingSection>
-      ) : (
-        <ReadingSection title="Rotation and priority" anchor="rotation-and-priority">
-          <Prose html={rotationHtml} />
-        </ReadingSection>
-      )}
-
-      <ReadingSection title="Stat priority" anchor="stat-priority">
-        <Fragment slot="lane">
-          <GuideStatLane stats={statLane} fallback={entry.data.statPriority} />
-        </Fragment>
-        <Prose html={await prose(proseOnly('Stat priority'))} />
-      </ReadingSection>
-
-      <ReadingSection title="Best in slot" anchor="best-in-slot">
-        <Fragment slot="lane">
-          <GlyphSheet />
-          <GuideBisLane build={build} classSlug={classSlug} bis={guideBis} specSlug={specSlug} {role} />
-        </Fragment>
-        <Prose html={await prose(proseOnly('Best in slot'))} />
-      </ReadingSection>
-
-      {gearExtras !== undefined ? (
-        <ReadingSection title="Enchants and consumables" anchor="enchants-and-consumables">
-          <Fragment slot="lane">
-            <GuideExtrasLane build={build} extras={gearExtras} tips={tipBundle} />
-          </Fragment>
-          <Prose html={extrasHtml} />
-        </ReadingSection>
-      ) : (
-        <ReadingSection title="Enchants and consumables" anchor="enchants-and-consumables">
-          <Prose html={extrasHtml} />
-        </ReadingSection>
-      )}
-
-      <ReadingSection title="Races" anchor="races">
-        <Fragment slot="lane">
-          <GuideRacesLane build={build} rows={raceRows} lines={raceLines} tips={tipBundle} />
-        </Fragment>
-        <Prose html={await prose(racesProse)} />
-      </ReadingSection>
-
-      <ReadingSection title="Professions" anchor="professions">
-        <Prose html={await prose(proseOnly('Professions'))} />
-      </ReadingSection>
-
-      {ladderSteps.length > 0 ? (
-        <ReadingSection title="Leveling" anchor="leveling">
-          <LaneBlock slot="lane" label={guidesCopy.talentsByLevel} testid="guide-talents-by-level">
-            <GuideLevelingTree
-              client:visible
-              build={build}
-              spec={fullSpecId}
-              classSlug={classSlug}
-              specSlug={specSlug}
-              trees={talentTreesOf(buildTrees, tipBundle)}
-              steps={ladderSteps}
-            />
+      <ReadingPanel testid="guide-sections">
+        <ReadingSection title="Overview" anchor="overview">
+          <LaneBlock slot="lane" label={guidesCopy.inARaid} testid="guide-overview-raid">
+            <Prose html={overviewHtml.raid} mods={['lane']} />
           </LaneBlock>
-          <Prose html={levelingHtml} />
+          {hasOverviewBlocks ? (
+            <div class="guide-sw">
+              <div>
+                <h3 class="text-label text-muted guide-sw-head font-bold">{guidesCopy.strengths}</h3>
+                <Prose html={overviewHtml.strengths} mods={['plus']} testid="guide-strengths" />
+              </div>
+              <div>
+                <h3 class="text-label text-muted guide-sw-head font-bold">{guidesCopy.weaknesses}</h3>
+                <Prose html={overviewHtml.weaknesses} mods={['minus']} testid="guide-weaknesses" />
+              </div>
+            </div>
+          ) : (
+            <Prose html={overviewHtml.fallback} />
+          )}
         </ReadingSection>
-      ) : (
-        <ReadingSection title="Leveling" anchor="leveling">
-          <Prose html={levelingHtml} />
-        </ReadingSection>
-      )}
 
+        <ReadingSection title="Talents and builds" anchor="talents-and-builds">
+          <Fragment slot="lane">
+            <GuideBuildsLane
+              spec={fullSpecId}
+              build={build}
+              blocks={buildBlocks}
+              raidDiffLine={raidDiffLine}
+              keyTalents={keyTalents}
+            />
+          </Fragment>
+          <Prose html={await prose(withoutTalentBullets(proseOnly('Talents and builds')))} />
+        </ReadingSection>
+
+        {rotation !== undefined ? (
+          <ReadingSection title="Rotation and priority" anchor="rotation-and-priority">
+            <Fragment slot="lane">
+              <GuideRotationLane build={build} lists={rotation} forRaidBuild={raidTrees !== undefined} />
+            </Fragment>
+            <Prose html={rotationHtml} />
+          </ReadingSection>
+        ) : (
+          <ReadingSection title="Rotation and priority" anchor="rotation-and-priority">
+            <Prose html={rotationHtml} />
+          </ReadingSection>
+        )}
+
+        <ReadingSection title="Stat priority" anchor="stat-priority">
+          <Fragment slot="lane">
+            <GuideStatLane stats={statLane} fallback={entry.data.statPriority} />
+          </Fragment>
+          <Prose html={await prose(proseOnly('Stat priority'))} />
+        </ReadingSection>
+
+        <ReadingSection title="Best in slot" anchor="best-in-slot">
+          <Fragment slot="lane">
+            <GlyphSheet />
+            <GuideBisLane build={build} classSlug={classSlug} bis={guideBis} specSlug={specSlug} {role} />
+          </Fragment>
+          <Prose html={await prose(proseOnly('Best in slot'))} />
+        </ReadingSection>
+
+        {gearExtras !== undefined ? (
+          <ReadingSection title="Enchants and consumables" anchor="enchants-and-consumables">
+            <Fragment slot="lane">
+              <GuideExtrasLane build={build} extras={gearExtras} tips={tipBundle} />
+            </Fragment>
+            <Prose html={extrasHtml} />
+          </ReadingSection>
+        ) : (
+          <ReadingSection title="Enchants and consumables" anchor="enchants-and-consumables">
+            <Prose html={extrasHtml} />
+          </ReadingSection>
+        )}
+
+        <ReadingSection title="Races" anchor="races">
+          <Fragment slot="lane">
+            <GuideRacesLane build={build} rows={raceRows} lines={raceLines} tips={tipBundle} />
+          </Fragment>
+          <Prose html={await prose(racesProse)} />
+        </ReadingSection>
+
+        <ReadingSection title="Professions" anchor="professions">
+          <Prose html={await prose(proseOnly('Professions'))} />
+        </ReadingSection>
+
+        {ladderSteps.length > 0 ? (
+          <ReadingSection title="Leveling" anchor="leveling">
+            <LaneBlock slot="lane" label={guidesCopy.talentsByLevel} testid="guide-talents-by-level">
+              <GuideLevelingTree
+                client:visible
+                build={build}
+                spec={fullSpecId}
+                classSlug={classSlug}
+                specSlug={specSlug}
+                trees={talentTreesOf(buildTrees, tipBundle)}
+                steps={ladderSteps}
+              />
+            </LaneBlock>
+            <Prose html={levelingHtml} />
+          </ReadingSection>
+        ) : (
+          <ReadingSection title="Leveling" anchor="leveling">
+            <Prose html={levelingHtml} />
+          </ReadingSection>
+        )}
+      </ReadingPanel>
       <GuideSources sources={entry.data.sources} />
       <p
         class="text-small text-muted guide-foot-note"
@@ -398,6 +404,23 @@ const jsonLd = [
 </Base>
 
 <style>
+  .guide-page {
+    padding-bottom: 40px;
+  }
+  /* The contents rail from 1024 (tocFrom) without a document's top gap: the lede sits 28 px
+     under the band, as the split pages' bodies do. */
+  .guide-page :global(.ui-page[data-toc-from]) {
+    padding-top: 28px;
+  }
+  /* A jump lands its heading under the guide's bar, which a document has none of. */
+  .guide-page :global(.ui-page[data-toc-from] .ui-rsec) {
+    scroll-margin-top: calc(var(--bar-h) + 12px);
+  }
+  .guide-top {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
   .guide-foot-note {
     margin: 0;
     padding-top: 16px;

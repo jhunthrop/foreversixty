@@ -9,14 +9,11 @@
 // that open at the selected range. Everything is prerendered; lib/bis/landing-client.ts follows
 // the bar and the header selector in place after paint.
 import Base from '../../layouts/Base.astro';
-import ClassCrest from '../../components/ClassCrest.astro';
-import GuideSpecRow from '../../components/guides/GuideSpecRow.astro';
+import ClassSpecPicker, { type PickerClass } from '../../components/guides/ClassSpecPicker.astro';
 import BisLandingAnswer from '../../components/bis/BisLandingAnswer.astro';
 import ControlBar from '../../components/ui/ControlBar.astro';
 import Page from '../../components/ui/Page.svelte';
 import PageHeader from '../../components/ui/PageHeader.svelte';
-import Plate from '../../components/ui/Plate.svelte';
-import Row from '../../components/ui/Row.svelte';
 import activeBuild from '../../data/active-build.json';
 import { landingCopy } from '../../lib/bis/landing-copy';
 import { loadLandingData } from '../../lib/bis/landing-build';
@@ -26,7 +23,7 @@ import { specLinkHref } from '../../lib/bis/landing-links';
 import { dayMonth } from '../../lib/guides/guide-header';
 import { REGION } from '../../lib/ui/regions';
 import { searchCopy } from '../../lib/search-copy';
-import { LINK, type ClassSlug, type ControlGroup } from '../../lib/ui/primitives';
+import { LINK, type ControlGroup } from '../../lib/ui/primitives';
 
 const { cards, captions, raidLabel, updated, config } = loadLandingData(activeBuild.build);
 const configJson = JSON.stringify(config).replace(/</g, '\\u003c');
@@ -43,8 +40,16 @@ const summaries = captions.map((caption) => ({
   band: caption.band,
   text: landingCopy.bandSummary(caption.band === LANDING_BANDS.at(-1), raidLabel),
 }));
-const roleWord = (role: string): string | undefined =>
-  role === 'tank' || role === 'healer' ? landingCopy.roleWords[role] : undefined;
+const pickerClasses: PickerClass[] = cards.map((card) => ({
+  slug: card.slug,
+  name: card.name,
+  specs: card.specs.map((spec) => ({
+    key: `${spec.classSlug}/${spec.specSlug}`,
+    name: spec.name,
+    href: specLinkHref({ classSlug: spec.classSlug, specSlug: spec.specSlug, band: DEFAULT_LANDING_BAND }),
+    icon: spec.iconSrc,
+  })),
+}));
 ---
 
 <Base title={searchCopy.bisIndex.title} description={searchCopy.bisIndex.description} path="/bis" wide>
@@ -87,40 +92,14 @@ const roleWord = (role: string): string | undefined =>
           ></a>
         </p>
         <div id="bis-classes">
-          <div
-            class="bis-class-grid"
-            role="region"
-            aria-label={landingCopy.plateLabel}
-            data-testid="bis-class-grid"
-          >
-            {cards.map((card) => (
-              <Plate>
-                <div class="bis-class" data-testid={`bis-class-${card.slug}`}>
-                  <Row title={card.name} titleTone={{ classSlug: card.slug as ClassSlug }}>
-                    <ClassCrest slot="lead" slug={card.slug} size={40} />
-                  </Row>
-                  <div class="bis-class-specs">
-                    {card.specs.map((spec) => (
-                      <GuideSpecRow
-                        specKey={`${spec.classSlug}/${spec.specSlug}`}
-                        name={spec.name}
-                        href={specLinkHref({
-                          classSlug: spec.classSlug,
-                          specSlug: spec.specSlug,
-                          band: DEFAULT_LANDING_BAND,
-                        })}
-                        icon={spec.iconSrc}
-                        iconSize={28}
-                        tag={roleWord(spec.role)}
-                        testidPrefix={SPEC_ROW_PREFIX}
-                        yoursLabel={landingCopy.yours}
-                      />
-                    ))}
-                  </div>
-                </div>
-              </Plate>
-            ))}
-          </div>
+          <ClassSpecPicker
+            classes={pickerClasses}
+            label={landingCopy.plateLabel}
+            testid="bis-class-grid"
+            classTestidPrefix="bis-class-"
+            rowTestidPrefix={SPEC_ROW_PREFIX}
+            yoursLabel={landingCopy.yours}
+          />
         </div>
       </div>
     </Page>
@@ -152,32 +131,6 @@ const roleWord = (role: string): string | undefined =>
   }
   .bis-summary [hidden] {
     display: none;
-  }
-  /* The class and spec picker (the guides index's): one panel per class, three across from 1024. */
-  .bis-class-grid {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    gap: 18px;
-  }
-  @media (min-width: 768px) {
-    .bis-class-grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-  }
-  @media (min-width: 1024px) {
-    .bis-class-grid {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-  }
-  .bis-class {
-    display: flex;
-    flex-direction: column;
-    min-width: 0;
-    padding-bottom: 8px;
-  }
-  .bis-class-specs {
-    display: flex;
-    flex-direction: column;
   }
   .bis-finished {
     --ch-foot-h: 44px;

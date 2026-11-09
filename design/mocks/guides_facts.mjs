@@ -81,7 +81,7 @@ import { guideStatLane } from ${src("src/lib/guides/stat-lane.ts")};
 import { bandTalentHits } from ${src("src/lib/guides/talent-hit.ts")};
 import { CLASS_LANDING_PANELS, cardLineFor, splitClassLanding } from ${src("src/lib/guides/class-landing.ts")};
 import { litTalentsOf, markRaidBuildRows, raidBuildOnlyTalents, talentNamesOf } from ${src("src/lib/guides/rotation-lists.ts")};
-import { glanceRotation, glanceStatRows, markCheapRanks, nextTalentPoint, racesByFaction, specRowTag, topRankAt60 } from ${src("src/lib/guides/glance.ts")};
+import { glanceRotation, glanceStatRows, markCheapRanks, nextTalentPoint, racesByFaction, topRankAt60 } from ${src("src/lib/guides/glance.ts")};
 import { buildRaces } from ${src("src/lib/guides/build-races.ts")};
 
 const build = activeBuild.build;
@@ -95,7 +95,7 @@ export async function run(entries, SPECS, CLASSES) {
     return pageUpdatedAt(g.data.updated, spec === undefined ? undefined : rankedBisFile(build, spec)?.generated_at); }));
   const index = { updated: dayMonth(updated), classes: classes.map((c) => ({ slug: c.slug, name: c.name, color: c.color,
     specs: specsOf(c.slug).map((s) => { const role = ['dps', 'healer', 'tank'].includes(s.role) ? s.role : 'dps';
-      return { slug: s.spec_slug, name: s.name, icon: s.icon, role, tag: specRowTag(c.slug, c.slug + '-' + s.spec_slug, role) ?? null }; }) })) };
+      return { slug: s.spec_slug, name: s.name, icon: s.icon, role }; }) })) };
 
   // ---- /guides/<class> ([class]/index.astro)
   const landings = {};
@@ -107,7 +107,7 @@ export async function run(entries, SPECS, CLASSES) {
       html: (await renderGuideMarkdown(s.markdown)).replace(/<p><strong>([^<]+)<\\/strong><\\/p>/g, '<p class="glabel">$1</p>') });
     const specGuides = entries.filter((g) => g.data.classSlug === cls && g.data.spec !== undefined);
     const cards = specsOf(cls).flatMap((s) => { const g = specGuides.find((x) => x.data.spec === s.spec_slug); if (!g || !g.data.role) return [];
-      return [{ slug: s.spec_slug, name: s.name, role: g.data.role, tag: specRowTag(cls, cls + '-' + s.spec_slug, g.data.role) ?? null, icon: s.icon, line: cardLineFor(g.body, 'guides/' + g.id + '.md') }]; });
+      return [{ slug: s.spec_slug, name: s.name, role: g.data.role, icon: s.icon, line: cardLineFor(g.body, 'guides/' + g.id + '.md') }]; });
     landings[cls] = { title: classes.find((c) => c.slug === cls).name, identity: landing.identity, sections, cards, sources: e.data.sources,
       updated: dayMonth(e.data.updated) };
   }

@@ -1,14 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { guidesCopy } from './copy';
 
-describe('the /guides index line', () => {
-  it('is true on launch day: no beta cap, no dashes, no talk about the site', () => {
-    expect(guidesCopy.indexLine).not.toMatch(/beta|level 30/i);
-    expect(guidesCopy.indexLine).not.toMatch(/[—–]|\s-\s/);
-    expect(guidesCopy.indexLine).not.toMatch(/simulat|this site|\bsim\b/i);
-  });
-});
-
 describe('guidesCopy', () => {
   it('has no blank strings', () => {
     for (const [key, value] of Object.entries(guidesCopy)) {

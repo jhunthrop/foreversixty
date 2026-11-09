@@ -78,7 +78,7 @@ export async function run() {
                 open: serverRunsCopy.bandOpen, dismiss: serverRunsCopy.dismissLabel(label), more: runs.length - 1 },
     copy: { title: landingCopy.title, tierQuestion: landingCopy.tierQuestion,
             tierLink: landingCopy.tierLink, answerLabel: landingCopy.answerLabel, bandGroupLabel: landingCopy.bandGroupLabel,
-            plateLabel: landingCopy.plateLabel, yours: landingCopy.yours, roleWords: landingCopy.roleWords,
+            plateLabel: landingCopy.plateLabel, yours: landingCopy.yours,
             yourRange: Object.fromEntries(data.captions.map((c) => [c.band, landingCopy.yourRange(c.label)])),
             retry: answerCopy.retry },
   };

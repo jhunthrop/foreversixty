@@ -805,10 +805,6 @@
   "bandGroupLabel": "Level range",
   "plateLabel": "Classes and specs",
   "yours": "Yours",
-  "roleWords": {
-   "tank": "Tank",
-   "healer": "Healer"
-  },
   "yourRange": {
    "20": "Your range: 20 to 29",
    "30": "Your range: 30 to 39",

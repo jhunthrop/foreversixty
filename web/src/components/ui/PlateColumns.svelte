@@ -1,13 +1,16 @@
 <!-- web/src/components/ui/PlateColumns.svelte -->
 <!-- The one Plate split into labelled columns by hairlines (guides spec 2026-11-08 §3A): the
-     PlateColumns side by side from 1024, stacked below. Each child is a PlateColumn. -->
+     PlateColumns side by side from 1024, stacked below. Each child is a PlateColumn. `frame` is
+     the Plate's (a featured plate: the guide's At a glance is `framed`). -->
 <script lang="ts">
   import type { Snippet } from 'svelte';
   import Plate from './Plate.svelte';
+  import type { PanelFrame } from '../../lib/ui/primitives';
 
   let {
     count,
     label,
+    frame = 'plain',
     testid,
     children,
   }: {
@@ -15,12 +18,14 @@
     count: number;
     /** The plate's accessible name. */
     label: string;
+    /** The Plate's frame (ui/Plate). */
+    frame?: PanelFrame;
     testid?: string;
     children: Snippet;
   } = $props();
 </script>
 
-<Plate {label} {testid}>
+<Plate {label} {frame} {testid}>
   <div class="ui-pcols" style:--pcols={count}>{@render children()}</div>
 </Plate>
 

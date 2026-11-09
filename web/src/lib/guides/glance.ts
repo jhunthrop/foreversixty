@@ -5,7 +5,7 @@
 // the leveller's next talent point; the role or kind Tag a spec row carries; the Racials lane in
 // faction groups. Pure over the page's own models, so the page and the mock draw one truth.
 import { readBuildJson } from './build-files';
-import { specKindOf, type GuideRaceRow } from './race-table';
+import type { GuideRaceRow } from './race-table';
 import type { RotationItem } from './rotation-lists';
 import type { RailStatRow } from './rail-stats';
 import type { LadderStep } from './leveling-builds';
@@ -71,20 +71,6 @@ export function nextTalentPoint(
 ): { level: number; name: string } | undefined {
   const next = steps.find((step) => step.level > level && step.name !== null);
   return next === undefined || next.name === null ? undefined : { level: next.level, name: next.name };
-}
-
-/** Classes whose DPS specs fight at range: a melee spec among them is tagged (Q8). */
-const RANGED_CLASSES: ReadonlySet<string> = new Set(['hunter']);
-
-/** The muted Tag a spec row carries: its role for a healer or tank; `melee` for the melee spec
- *  of a ranged class (Survival); nothing for any other DPS spec. */
-export function specRowTag(
-  classSlug: string,
-  spec: string,
-  role: 'dps' | 'healer' | 'tank',
-): 'healer' | 'tank' | 'melee' | undefined {
-  if (role !== 'dps') return role;
-  return RANGED_CLASSES.has(classSlug) && specKindOf(classSlug, spec, role) === 'melee' ? 'melee' : undefined;
 }
 
 /** The Racials lane: Alliance then Horde, the recommended races first in each, otherwise in
