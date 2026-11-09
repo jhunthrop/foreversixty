@@ -11,8 +11,8 @@
 // The PNGs are gone from public/ entirely -- this is the only path any caller reads.
 export type Faction = 'alliance' | 'horde';
 
-/** The row-descriptor size of the emblem (design/DESIGN-SYSTEM.md: 16px in a row descriptor). */
-export const FACTION_MARK_SIZE = 20;
+/** The row-descriptor size of the emblem: the selector's character rows draw it at 18 px. */
+export const FACTION_MARK_SIZE = 18;
 
 export function factionName(faction: Faction): string {
   return faction === 'alliance' ? 'Alliance' : 'Horde';
@@ -20,15 +20,6 @@ export function factionName(faction: Faction): string {
 
 export function factionMarkSrc(faction: Faction): string {
   return `/icons/hd/faction/${faction}.webp`;
-}
-
-/** The same flat logo at 64px, for the 16px marks (the character header's faction line, the
- *  selector's character rows). The 512px file is 34-40KB, and the character header's
- *  server-rendered faction line fetches it on every BiS and planner page before first paint,
- *  where it counted against the Lighthouse LCP budget; a 16px mark at 4x density needs 64px
- *  (about 2KB). Resampled from the 512px file with Lanczos, WebP lossy quality 90, alpha kept. */
-export function factionLogoSmallSrc(faction: Faction): string {
-  return `/icons/hd/faction/${faction}-logo-64.webp`;
 }
 
 // Guild header art round (design/specs/2026-10-04-guild-page.md §12.2, owner's final build

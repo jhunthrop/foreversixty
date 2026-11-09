@@ -1101,8 +1101,8 @@
   .csel-faction {
     display: inline-block;
     flex-shrink: 0;
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
     object-fit: contain;
   }
   .csel-check {
@@ -1432,7 +1432,10 @@
       left: 0;
       width: auto;
       max-height: 88dvh;
-      overflow: hidden;
+      /* The whole sheet scrolls, so on a short phone every row stays reachable; the character
+         list keeps its own scroll under 45 % of the screen, so a row below it always peeks. */
+      overflow-y: auto;
+      overscroll-behavior: contain;
       display: flex;
       flex-direction: column;
       border-bottom: 0;
@@ -1468,19 +1471,13 @@
       color: var(--color-text);
     }
     .csel-list-wrap {
-      display: flex;
-      flex: 1;
-      flex-direction: column;
-      min-height: 0;
+      flex: none;
     }
     .csel-list,
     .csel-list.is-scroll {
-      flex: 1;
-      max-height: none;
+      max-height: 45dvh;
       overflow-y: auto;
-    }
-    .csel-list:not(.is-scroll) {
-      overflow: hidden;
+      overscroll-behavior: contain;
     }
   }
 }

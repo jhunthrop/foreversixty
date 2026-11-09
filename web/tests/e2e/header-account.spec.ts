@@ -5,7 +5,7 @@
 // the sheet fitting 360 px and the bar not moving when the panel opens.
 import type { Page } from '@playwright/test';
 import { expect, test } from './support/test';
-import { OBNOXIOUS, armoryPointer, signInWith, signedOut, storePointer } from './support/selector';
+import { OBNOXIOUS, armoryPointer, keyOf, signInWith, signedOut, storePointer } from './support/selector';
 
 const FOUNDER_BILLING = {
   plan: 'premium',
@@ -307,7 +307,9 @@ test.describe('the account sheet on a phone', () => {
     expect(scroll).toBe(true);
   });
 
-  test('a 360 x 640 sheet scrolls its list and keeps Sign out on screen', async ({ page }) => {
+  test('a 360 x 640 sheet shows several characters, scrolls its list, and scrolls to Sign out', async ({
+    page,
+  }) => {
     await page.setViewportSize({ width: 360, height: 640 });
     const many = Array.from({ length: 8 }, (_, index) => ({
       ...OBNOXIOUS,
@@ -317,13 +319,18 @@ test.describe('the account sheet on a phone', () => {
     await storePointer(page, armoryPointer(many[0]));
     await page.goto('/guides');
     await control(page).click();
-    const signOut = rows(page).getByTestId('selector-row-sign-out');
-    await expect(signOut).toBeInViewport({ ratio: 1 });
     const sheet = (await panel(page).boundingBox())!;
     expect(sheet.y).toBeGreaterThanOrEqual(0);
     expect(sheet.y + sheet.height).toBeLessThanOrEqual(640);
+    // Switching is the menu's job: at least three characters show whole before any scroll.
+    for (const hero of many.slice(0, 3)) {
+      await expect(panel(page).getByTestId(`selector-row-${keyOf(hero)}`)).toBeInViewport({ ratio: 1 });
+    }
     const list = panel(page).getByTestId('selector-list');
     expect(await list.evaluate((el) => el.scrollHeight > el.clientHeight)).toBe(true);
+    const signOut = rows(page).getByTestId('selector-row-sign-out');
+    await signOut.scrollIntoViewIfNeeded();
+    await expect(signOut).toBeInViewport({ ratio: 1 });
   });
 
   test('signed out, the bar button is the gold person glyph named Sign in, and the sheet leads with the buttons', async ({
