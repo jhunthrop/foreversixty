@@ -849,7 +849,7 @@ def finish(title: str, body: str, who) -> str:
 def landing_out() -> str:
     head = PageHeader('Simulator', meta=['Damage specs only. Nothing is uploaded until you save.'], tabs=TabStrip(TOOLS, 'Quick sim'))
     paste = (Form('Addon export or build code', [('', Input('FS1:&hellip;', 'Addon export or build code', grow=True), True)], Button('Run', primary=True))
-             + '<p class="t-small paste-hint">In game: /fs copy, then paste here.</p>')
+             + f'<p class="t-small paste-hint">In game: /fs copy, then paste here. {Link("Get set up &rsaquo;")}</p>')
     # ui/Row `fillTrail`: a 180 px label column, the control filling the rest (the field grows, Load beside it)
     ways = '<div class="ways-fill">' + Rows([Row('Your characters', trail=Button('Sign in with Battle.net'), link=False),
                  Row('A planner build', trail=Form('A planner build', [('', Input('foreversixty.gg/b/&hellip;', 'A planner build', grow=True), True)], Button('Load')), link=False),

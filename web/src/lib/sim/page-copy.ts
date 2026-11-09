@@ -18,6 +18,8 @@ export const simPageCopy = {
     placeholder: 'FS1:…',
     run: 'Run',
     hint: 'In game: /fs copy, then paste here.',
+    setUp: 'Get set up ›',
+    setUpHref: '/setup#paste',
     invalid: 'That does not look like an addon export or a build code.',
   },
   ways: {

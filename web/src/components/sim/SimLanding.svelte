@@ -94,7 +94,11 @@
           >
         {/snippet}
       </FormRow>
-      <p class="text-small text-muted m-0">{copy.paste.hint}</p>
+      <p class="text-small text-muted m-0">
+        {copy.paste.hint}
+        <a class="text-gold font-semibold whitespace-nowrap" href={copy.paste.setUpHref}>{copy.paste.setUp}</a
+        >
+      </p>
     </div>
   </Section>
   <Section title={copy.sections.otherWaysIn} panel testid="sim-sources">
