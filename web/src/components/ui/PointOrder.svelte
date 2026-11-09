@@ -112,7 +112,12 @@
               {#if slot.rank !== undefined}<b>{slot.rank}</b>{/if}
               {#if slot.tip && tip?.key === key}
                 <span class="po-tip" class:beside={tip.beside} style:left={`${tip.left}px`}>
-                  <TalentTip name={slot.tip.name} rankLine={slot.tip.rankLine} now={slot.tip.now} />
+                  <TalentTip
+                    name={slot.tip.name}
+                    rankLine={slot.tip.rankLine}
+                    now={slot.tip.now}
+                    nextLabel=""
+                  />
                 </span>
               {/if}
             </span>
