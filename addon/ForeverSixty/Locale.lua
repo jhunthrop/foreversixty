@@ -311,15 +311,13 @@ local L = {
 	-- is not current repeated under the title). ASCII ">" only: this client's font has no
 	-- angle quote (fix round 2, item 1).
 	settingsChipShown = "Show the Forever Sixty line",
-	settingsChipShownHint = "Your next step beside the minimap. Click it to open Forever Sixty. Shift-drag moves it.",
+	settingsChipShownHint = "Beside the minimap. Shift-drag moves it.",
 	-- First on the page (design/specs/2026-11-08-addon-ux.md 3.3): one switch for the player who wants
 	-- only the tooltip lines.
 	settingsTooltipsOnly = "Tooltips only",
-	settingsTooltipsOnlyHint = "Keeps the gear and score lines on tooltips and turns off the line by the minimap, "
-		.. "the marks and the welcome.",
+	settingsTooltipsOnlyHint = "Turns off everything but the tooltip lines.",
 	settingsSlotMarks = "Marks on your bags and character pane",
-	settingsSlotMarksHint = "A green arrow on gear that beats what you wear, and a gold corner on a slot with an "
-		.. "upgrade to chase.",
+	settingsSlotMarksHint = "A green arrow on gear that beats yours, a gold corner on a slot with an upgrade to chase.",
 	settingsCombatHide = "Hide the Forever Sixty line in combat",
 	settingsCombatHideHint = "On: the line hides when combat starts. Off: it stays, faded to 25%.",
 	settingsTalentMarks = "Marks on the talent window",
@@ -329,8 +327,7 @@ local L = {
 		.. "Off: type /fs options or use Options > AddOns.",
 	settingsTooltip = "Gear tips on item tooltips",
 	-- L4.4 fix round 2, item 2: the switch also governs the player tooltip's score.
-	settingsTooltipHint = "One line on gear saying what it means for you; hold Shift for the details. "
-		.. "Off: hides player scores and the quest reward and loot roll marks too.",
+	settingsTooltipHint = "Hold Shift for the details. Off also hides player scores and the quest and roll marks.",
 	-- L4.4: the eighth switch (spec section 4.11). The badge leads the message, after the
 	-- name: a chat filter cannot touch the name without breaking its link and the reply.
 	settingsBadges = "Score badges in chat",

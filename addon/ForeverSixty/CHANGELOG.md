@@ -2,7 +2,7 @@
 
 ## 2.0.37
 
-- The line beside the minimap is easier to find: it always has words ("Next talent at 25", or "Forever Sixty" when there is nothing to do) and never fades. On your first logins a gold ring breathes around it a few times until you hover or click it.
+- The line beside the minimap is easier to find: it always has words ("Next talent at 25", or "Forever Sixty" when there is nothing to do) and never fades. On your first logins a gold edge flashes around it a few times until you hover or click it.
 - Raid day: from the evening before, the line leads with your raid, "Tonight 8:00 pm: Onyxia's Lair". Click it for your raid jobs.
 - Its hover is two short lines: what a click does and how to hide it.
 - Settings: "Tooltips only" turns off everything but the tooltip lines in one step. The bag and character pane marks have their own switch. The minimap button is off on a new install (your choice is kept if you set it).
