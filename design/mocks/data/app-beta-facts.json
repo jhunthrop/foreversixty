@@ -1,0 +1,115 @@
+{
+ "app": {
+  "copy": {
+   "pageTitle": "Apps for iPhone and Android",
+   "pageDescription": "The Forever Sixty apps for iPhone and Android are coming soon: raid sign-ups from the notification, raid night on your lock screen, loot and sim pushes. Sign up to test them.",
+   "heading": "Forever Sixty for iPhone and Android",
+   "soon": "Coming soon",
+   "lead": "Your raid, your loot and your next upgrade, in your pocket.",
+   "featuresTitle": "What the apps do",
+   "features": [
+    "Answer a raid sign-up straight from the notification: In, Late, Bench or Out.",
+    "Raid night on your lock screen.",
+    "A push when you get loot, or when your sim or report is ready.",
+    "Your next upgrade, and where it drops."
+   ],
+   "formTitle": "Test the apps",
+   "formJob": "The beta opens before the stores do. Leave your email and pick your phone.",
+   "emailLabel": "Email",
+   "emailPlaceholder": "you@example.com",
+   "platformLabel": "Your phone",
+   "submit": "Sign up to test",
+   "submitting": "Signing up",
+   "consent": "We'll only email you about the app beta.",
+   "invalidEmail": "Enter one email address, like you@example.com.",
+   "failed": "That didn't go through. Try again in a moment.",
+   "tooMany": "Too many sign-ups from here. Try again in an hour.",
+   "received": "[fn]",
+   "qrTitle": "On your phone",
+   "qrLine": "Scan with your phone to open this page.",
+   "qrAlt": "QR code for foreversixty.gg/app",
+   "storesTitle": "Get the apps",
+   "stores": {
+    "ios": "Download on the App Store",
+    "android": "Get it on Google Play"
+   }
+  },
+  "platforms": {
+   "ios": "iPhone",
+   "android": "Android"
+  },
+  "done": "You're on the list for iPhone. We'll email you when the beta opens.",
+  "qr": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 37 37\" shape-rendering=\"crispEdges\"><path fill=\"#f2eee4\" d=\"M0 0h37v37H0z\"/><path stroke=\"#07090d\" d=\"M4 4.5h7m4 0h2m2 0h2m1 0h3m1 0h7M4 5.5h1m5 0h1m3 0h1m6 0h1m2 0h1m1 0h1m5 0h1M4 6.5h1m1 0h3m1 0h1m1 0h2m1 0h2m1 0h1m1 0h1m2 0h2m1 0h1m1 0h3m1 0h1M4 7.5h1m1 0h3m1 0h1m1 0h1m1 0h2m4 0h3m3 0h1m1 0h3m1 0h1M4 8.5h1m1 0h3m1 0h1m1 0h1m1 0h2m1 0h3m1 0h4m1 0h1m1 0h3m1 0h1M4 9.5h1m5 0h1m1 0h2m1 0h1m1 0h5m4 0h1m5 0h1M4 10.5h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7M12 11.5h2m3 0h1m1 0h1m3 0h2M4 12.5h1m1 0h5m2 0h3m2 0h2m1 0h1m1 0h1m2 0h5M5 13.5h1m2 0h2m2 0h5m2 0h2m1 0h2m2 0h3m3 0h1M4 14.5h3m1 0h1m1 0h3m2 0h2m5 0h1m1 0h1m2 0h2M5 15.5h5m2 0h1m2 0h2m1 0h1m1 0h1m4 0h5m1 0h1M4 16.5h2m1 0h4m1 0h1m7 0h2m1 0h2m4 0h2M4 17.5h2m1 0h2m7 0h4m3 0h6m3 0h1M4 18.5h4m2 0h2m1 0h3m1 0h4m1 0h1m6 0h2M4 19.5h3m1 0h2m1 0h2m2 0h3m1 0h1m2 0h1m1 0h1m3 0h1m2 0h1M5 20.5h2m1 0h3m1 0h2m1 0h1m2 0h2m1 0h1m2 0h1m2 0h1m1 0h2M4 21.5h1m1 0h1m2 0h1m1 0h2m3 0h1m2 0h2m2 0h2m1 0h3m1 0h1m1 0h1M4 22.5h1m1 0h2m1 0h3m2 0h2m6 0h1m2 0h1m1 0h1m2 0h1M4 23.5h1m2 0h2m6 0h2m1 0h1m1 0h1m1 0h1m2 0h3m3 0h1M4 24.5h1m1 0h9m5 0h1m1 0h7m1 0h3M12 25.5h1m1 0h6m1 0h4m3 0h5M4 26.5h7m2 0h1m3 0h5m1 0h2m1 0h1m1 0h3M4 27.5h1m5 0h1m1 0h2m1 0h1m1 0h1m1 0h1m1 0h4m3 0h1m3 0h1M4 28.5h1m1 0h3m1 0h1m1 0h1m3 0h1m1 0h2m4 0h5m1 0h3M4 29.5h1m1 0h3m1 0h1m1 0h1m2 0h1m1 0h1m1 0h2m1 0h2m5 0h2M4 30.5h1m1 0h3m1 0h1m1 0h5m1 0h1m3 0h1m1 0h1m1 0h6M4 31.5h1m5 0h1m4 0h3m2 0h1m3 0h2m3 0h1m1 0h1M4 32.5h7m1 0h7m1 0h1m1 0h2m2 0h3m1 0h1\"/></svg>\n"
+ },
+ "admin": {
+  "copy": {
+   "pageTitle": "App testers",
+   "job": "Who asked to test the phone apps, newest first. Copy a platform’s addresses into TestFlight or the Play Console.",
+   "pageDescription": "The owner’s list of phone app beta sign-ups.",
+   "signedOut": "Sign in with the owner’s account to see the testers.",
+   "notOwner": "This page is for the site’s owner. Your account can’t see the testers.",
+   "loadFailed": "The testers didn’t load.",
+   "tableTitle": "Sign-ups",
+   "tableMeta": "[fn]",
+   "caption": "App beta sign-ups",
+   "emailHeader": "Email",
+   "columns": [
+    "Phone",
+    "Signed up"
+   ],
+   "empty": "No sign-ups yet. foreversixty.gg/app is where they come from.",
+   "copyEmails": "[fn]",
+   "copied": "Copied",
+   "copyFailed": "Couldn’t copy; select the addresses by hand."
+  },
+  "meta": "3 sign-ups · newest first",
+  "buttons": [
+   "Copy 2 iPhone emails",
+   "Copy 1 Android email"
+  ],
+  "rows": [
+   {
+    "key": "new@example.com ios",
+    "label": "new@example.com",
+    "cells": [
+     {
+      "tone": "none",
+      "text": "iPhone"
+     },
+     {
+      "tone": "none",
+      "text": "8 Nov 2026"
+     }
+    ]
+   },
+   {
+    "key": "droid@example.com android",
+    "label": "droid@example.com",
+    "cells": [
+     {
+      "tone": "none",
+      "text": "Android"
+     },
+     {
+      "tone": "none",
+      "text": "7 Nov 2026"
+     }
+    ]
+   },
+   {
+    "key": "old@example.com ios",
+    "label": "old@example.com",
+    "cells": [
+     {
+      "tone": "none",
+      "text": "iPhone"
+     },
+     {
+      "tone": "none",
+      "text": "1 Nov 2026"
+     }
+    ]
+   }
+  ]
+ }
+}

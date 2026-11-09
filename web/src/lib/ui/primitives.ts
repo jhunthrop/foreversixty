@@ -75,6 +75,9 @@ export interface ControlOption {
   disabledReason?: string;
   /** The option navigates (a path segment such as the spec) instead of writing a query param. */
   href?: string;
+  /** `href` is the option's own URL (a BiS band page), but the island applies the choice in place
+   *  and moves the address itself: the link is for crawlers, a new tab and a script-less visit. */
+  inPlace?: boolean;
   /** A ring colour (CSS): `icon` renders as the round ringed class crest (ruling P10). */
   ring?: string;
 }

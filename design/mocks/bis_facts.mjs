@@ -126,8 +126,8 @@ function readFacts() {
     summary: {
       lead: text(summary?.firstChild),
       signIn: text(q('a[href="/login"]', summary)),
-      after: (text(summary).split(text(q('a[href="/login"]', summary)))[1] ?? "").replace(text(q("button", summary)), "").trim(),
-      next: text(q("button", summary)),
+      after: (text(summary).split(text(q('a[href="/login"]', summary)))[1] ?? "").replace(text(q("a.bis-link", summary)), "").trim(),
+      next: text(q("a.bis-link", summary)),
       view: qa('[data-testid="control-view"] [role="radio"]').map((r) => ({ label: text(r), on: r.getAttribute("aria-checked") === "true" })),
     },
     notes: qa('[data-region="notes"] p').map(text),

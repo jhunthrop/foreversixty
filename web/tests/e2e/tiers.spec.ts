@@ -316,7 +316,7 @@ test('signed in on a DPS spec: the callout ranks it and its row is marked', asyn
     rank === 1 ? 'Level with the top spec.' : '% behind',
   );
   await expect(page.getByTestId('tier-answer-detail')).toContainText(rank === 1 ? '' : 'Tier ');
-  await expect(page.getByTestId('tier-answer-bis')).toHaveAttribute('href', '/bis/warrior/fury');
+  await expect(page.getByTestId('tier-answer-bis')).toHaveAttribute('href', '/bis/warrior/fury/60');
   await expect(page.getByTestId('tier-answer-sim')).toHaveAttribute('href', '/sim');
   await expect(page.getByTestId('tier-row-warrior-fury').first()).toHaveAttribute('aria-current', 'true');
   await expect(page.getByTestId('tier-row-warrior-fury').first().getByTestId('tier-you-tag')).toBeVisible();

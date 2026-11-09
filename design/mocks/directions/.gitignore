@@ -1,0 +1,6 @@
+# Blizzard page captures and sheets built from them are reference only (their pixels); never commit them.
+blizzard/*.png
+blizzard/fonts.html
+# The signed-in BiS capture shows the owner's Battle.net render (Blizzard's pixels); the HTML references it by URL.
+png/g-bis-frame-signed-*.png
+__pycache__/

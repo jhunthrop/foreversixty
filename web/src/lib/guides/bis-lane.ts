@@ -67,7 +67,7 @@ export function mountBisLane(root: HTMLElement): void {
   });
 }
 
-/** The full-list link follows the shown band: `/bis/<class>/<spec>?faction=<f>#band-<f>-<band>`. */
+/** The full-list link follows the shown band: its band page, `/bis/<class>/<spec>/<band>?faction=<f>`. */
 export function retargetFullList(root: HTMLElement, classSlug: string, key: string): void {
   const link = root.querySelector<HTMLAnchorElement>('[data-testid="guide-bis-full-list"]');
   const specSlug = root.dataset.specSlug;

@@ -50,8 +50,8 @@ main{padding-bottom:40px}  /* the page's own bottom space ([spec].astro .bis-pag
 .cbar .seg a{height:40px}.cbar .seg a .sp{width:22px;height:22px;border-radius:4px;background:#10141d;border:1px solid var(--line)}
 .src-btn{height:36px;padding:0 10px;font-size:13px;background:none;cursor:pointer}
 .bis-sum{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 16px;padding:10px 0}
-.bis-sum p{font-size:15px;line-height:24px;min-width:0}.bis-sum p a,.bis-sum p button{color:var(--gold);font-weight:600}
-.bis-sum p button{background:none;border:0;padding:0;margin-left:6px;font:inherit;font-weight:600;cursor:pointer}
+.bis-sum p{font-size:15px;line-height:24px;min-width:0}.bis-sum p a{color:var(--gold);font-weight:600}
+.bis-sum p a.link{margin-left:6px}
 .bis-sum .seg a{height:44px}
 .bis-note{color:var(--muted);font-size:13px;line-height:20px;margin-bottom:8px}
 .bis-stack{margin-top:32px}
@@ -109,7 +109,7 @@ def controls(f: dict) -> str:
 
 def summary(f: dict) -> str:
     s = f['summary']
-    nxt = f'<button type="button">{escape(s["next"])}</button>' if s['next'] else ''
+    nxt = f'<a href="#" class="link">{escape(s["next"])}</a>' if s['next'] else ''
     view = seg([(escape(o['label']), o['on'], None, '') for o in s['view']], label='View')
     return (f'<div class="bis-sum" data-region="{REGION["summary"]}"><p>{escape(s["lead"])} <a href="#">{escape(s["signIn"])}</a> '
             f'{escape(s["after"])}{nxt}</p>{view}</div>')

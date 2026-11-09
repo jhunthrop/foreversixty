@@ -5,6 +5,7 @@
 import { bisCopy } from './copy';
 import { bandModelKey } from './model-key';
 import type { BisPageData } from './page-model';
+import { MAX_BAND } from './band-levels';
 import type { BisStateContext } from './page-state';
 import type { BisPresetId, Faction } from './types';
 
@@ -13,11 +14,14 @@ const PRESETS: readonly BisPresetId[] = ['raid', 'bare'];
 export function bisContext(
   data: Pick<BisPageData, 'bands' | 'models'>,
   raceOptions: Readonly<Record<Faction, readonly { value: string }[]>>,
+  /** The band the page's path names; the first band when the path names none. */
+  pathBand: number = data.bands[0] ?? MAX_BAND,
 ): BisStateContext {
   const presetsFor = (faction: Faction, band: number) => presetsOffered(data, faction, band);
   const racesFor = (faction: Faction) => raceOptions[faction].map((option) => option.value);
   return {
     bands: data.bands,
+    pathBand,
     presetsFor,
     racesFor,
     simRaceFor: (faction, band, preset) =>

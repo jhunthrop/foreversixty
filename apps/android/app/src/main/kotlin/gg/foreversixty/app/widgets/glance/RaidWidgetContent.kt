@@ -20,7 +20,7 @@ import androidx.glance.layout.Box
 import androidx.glance.layout.Column
 import androidx.glance.layout.Row
 import androidx.glance.layout.Spacer
-import androidx.glance.layout.fillMaxWidth
+import androidx.glance.layout.fillMaxHeight
 import androidx.glance.layout.fillMaxSize
 import androidx.glance.layout.height
 import androidx.glance.layout.padding
@@ -34,8 +34,9 @@ import gg.foreversixty.app.R
 import gg.foreversixty.app.navigation.DeepLink
 import gg.foreversixty.app.raids.logic.SignupState
 import gg.foreversixty.app.widgets.logic.RaidFigures
+import gg.foreversixty.app.designsystem.FsColor
+import gg.foreversixty.app.widgets.logic.RaidCard
 import gg.foreversixty.app.widgets.logic.RaidSurfaceState
-import gg.foreversixty.app.widgets.logic.TagKind
 
 /** A widget tap opens the app on the right screen (spec §5.6); null opens the app where it was. */
 internal fun openApp(context: Context, url: String? = null): Action {
@@ -45,64 +46,63 @@ internal fun openApp(context: Context, url: String? = null): Action {
 }
 
 /**
- * Next raid at 2 x 2 ([medium] false) and 4 x 2 (spec §5.6, boards F14.1, F14.2). Every state has
- * words: no spinner, no empty box. The whole widget is one TalkBack element; each button its own.
+ * Next raid at 2 x 2 ([medium] false) and 4 x 2 (mocks `widgets-guild`, `-noguild`, `-open`): the
+ * card's label, big figure, name and line. The 4 x 2 keeps In, Late and Out beside the card, so the
+ * answer stays one tap from the home screen (E1). Signed out and with no character it says what to
+ * do. The card is one TalkBack element; each button its own.
  */
 @Composable
 fun RaidWidgetContent(figures: RaidFigures, medium: Boolean, characterKey: String?) {
     val context = LocalContext.current
     val raidLink = figures.guildId?.let { g -> figures.raidId?.let { r -> DeepLink.Raid(g, r).url() } }
+    val card = figures.card
     Box(
         GlanceModifier.fillMaxSize().background(ImageProvider(R.drawable.widget_card)).padding(WidgetDesign.padding)
             .clickable(openApp(context, raidLink)),
     ) {
-        if (figures.state != RaidSurfaceState.Raid) {
-            WordyRaid(figures)
-        } else if (medium) {
-            MediumRaid(figures, characterKey)
-        } else {
-            Column(GlanceModifier.fillMaxSize().semantics { contentDescription = figures.description }) {
-                RaidHead(figures)
-                Spacer(GlanceModifier.defaultWeight())
-                Foot(figures)
+        when {
+            card == null -> WordyRaid(figures)
+            medium -> Row(GlanceModifier.fillMaxSize()) {
+                Box(GlanceModifier.defaultWeight().fillMaxHeight()) { CardLines(card, figures, medium = true) }
+                Spacer(GlanceModifier.width(12.dp))
+                CardSide(figures, card, characterKey)
             }
+            else -> CardLines(card, figures, medium = false)
         }
     }
 }
 
 /**
- * The 4 x 2: the count beside the label, the zone, the time and countdown on one line, then the
- * foot (tag or `Updated`) and In, Late, Out. Every line has the full width, so the zone and the
- * countdown stay whole up to the widget's type cap.
+ * Label, big figure, name and line, with `Updated 14 h ago` at the foot on old data. Beside the
+ * 4 x 2's buttons the name keeps one line and the line two, so large text never pushes them out.
  */
 @Composable
-private fun MediumRaid(figures: RaidFigures, characterKey: String?) {
-    val context = LocalContext.current
-    Column(GlanceModifier.fillMaxSize()) {
-        Column(GlanceModifier.fillMaxWidth().semantics { contentDescription = figures.description }) {
-            Row(GlanceModifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                Label(context.getString(R.string.widget_nextRaid), GlanceModifier.defaultWeight())
-                figures.signedUp?.let { Text(it, style = widgetStyles().count, maxLines = 1) }
-                Spacer(GlanceModifier.width(4.dp))
-                Text(context.getString(R.string.widget_signedUpLabel), style = widgetStyles().muted, maxLines = 1)
-            }
-            Spacer(GlanceModifier.height(6.dp))
-            Text(figures.title.uppercase(), style = widgetStyles().zone, maxLines = 1)
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                figures.time?.let { Text(it, style = widgetStyles().muted, maxLines = 1) }
-                figures.countdown?.let {
-                    Spacer(GlanceModifier.width(8.dp))
-                    Text(it, style = widgetStyles().countdown, maxLines = 1)
-                }
-            }
+private fun CardLines(card: RaidCard, figures: RaidFigures, medium: Boolean) {
+    val styles = widgetStyles()
+    Column(GlanceModifier.fillMaxSize().semantics { contentDescription = figures.description }) {
+        Text(card.key, style = styles.cardKey, maxLines = 1)
+        Spacer(GlanceModifier.height(WidgetDesign.cardGap))
+        Text(card.big, style = styles.cardBig(if (card.cancelled) FsColor.wipe else FsColor.strong), maxLines = 1)
+        Spacer(GlanceModifier.height(WidgetDesign.cardGap))
+        Text(card.name, style = styles.cardName, maxLines = if (medium) 1 else 2)
+        card.line?.let {
+            Spacer(GlanceModifier.height(WidgetDesign.cardGap))
+            Text(it, style = styles.cardLine, maxLines = if (medium) 2 else 3)
         }
+        figures.stale?.let {
+            Spacer(GlanceModifier.defaultWeight())
+            Text(it, style = styles.muted, maxLines = 1)
+        }
+    }
+}
+
+/** The 4 x 2's side: who is coming at the top, In, Late and Out at the foot while answers are open. */
+@Composable
+private fun CardSide(figures: RaidFigures, card: RaidCard, characterKey: String?) {
+    Column(GlanceModifier.fillMaxHeight(), horizontalAlignment = Alignment.End) {
+        card.counts?.let { Text(it, style = widgetStyles().muted, maxLines = 1) }
         Spacer(GlanceModifier.defaultWeight())
-        Row(GlanceModifier.fillMaxWidth(), verticalAlignment = Alignment.Bottom) {
-            // The answer in words whenever no button says it: locked, cancelled, not signed up, choose a spec.
-            val unanswered = figures.tagKind == TagKind.NotSignedUp || figures.tagKind == TagKind.ChooseSpec
-            Box(GlanceModifier.defaultWeight()) { Foot(figures, showsTag = !figures.buttons || unanswered) }
-            if (figures.buttons) Answers(figures, characterKey)
-        }
+        if (figures.buttons) Answers(figures, characterKey)
     }
 }
 
@@ -112,35 +112,6 @@ private fun Label(text: String, modifier: GlanceModifier = GlanceModifier) {
         Image(ImageProvider(R.drawable.brand_seal), contentDescription = null, modifier = GlanceModifier.size(WidgetDesign.sealSize))
         Spacer(GlanceModifier.width(6.dp))
         Text(WidgetDesign.tracked(text), style = widgetStyles().micro, maxLines = 1)
-    }
-}
-
-@Composable
-private fun RaidHead(figures: RaidFigures) {
-    val context = LocalContext.current
-    Label(context.getString(R.string.widget_nextRaid))
-    Spacer(GlanceModifier.height(6.dp))
-    // One line: the time and the countdown below it never give way to a wrapped zone.
-    Text(figures.title.uppercase(), style = widgetStyles().zone, maxLines = 1)
-    figures.time?.let { Text(it, style = widgetStyles().muted, maxLines = 1) }
-    figures.countdown?.let { Text(it, style = widgetStyles().countdown, maxLines = 1) }
-}
-
-/** The foot: the answer tag, and on old data `Updated 14 h ago` under it (the widget stays whole). */
-@Composable
-private fun Foot(figures: RaidFigures, showsTag: Boolean = true) {
-    Column {
-        val tag = figures.tag
-        val kind = figures.tagKind
-        if (showsTag && tag != null && kind != null) {
-            Box(GlanceModifier.background(ImageProvider(WidgetDesign.tagBackground(kind))).padding(horizontal = 8.dp, vertical = 3.dp)) {
-                Text(WidgetDesign.tracked(tag), style = widgetStyles().tag(kind), maxLines = 1)
-            }
-        }
-        figures.stale?.let {
-            if (showsTag && tag != null) Spacer(GlanceModifier.height(4.dp))
-            Text(it, style = widgetStyles().muted, maxLines = 1)
-        }
     }
 }
 
@@ -194,7 +165,7 @@ private fun WordyRaid(figures: RaidFigures) {
         Spacer(GlanceModifier.height(10.dp))
         Text(figures.title, style = widgetStyles().title, maxLines = 3)
         figures.subtitle?.let {
-            Spacer(GlanceModifier.height(4.dp))
+            Spacer(GlanceModifier.height(WidgetDesign.cardGap))
             Text(it, style = widgetStyles().muted, maxLines = 3)
         }
         Spacer(GlanceModifier.defaultWeight())

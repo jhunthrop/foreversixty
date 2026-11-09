@@ -345,6 +345,10 @@ export const guildRosterAddonCopy = {
 
 /** The bare `/guild` landing: the lookup, the top guilds and the officer line. */
 export const guildLandingCopy = {
+  /** The bare /guild page's <title> and meta description, written for search. */
+  docTitle: 'Find a WoW Forever Guild: Progress, Roster and Raids',
+  docDescription:
+    'Look up any World of Warcraft: Forever guild by name and realm: progression per boss, kill dates, the roster and its raid nights, from logs and the Forever Sixty addon.',
   eyebrow: 'Guild',
   heading: 'Guilds',
   lookupHeading: 'Open a guild',

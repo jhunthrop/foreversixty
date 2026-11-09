@@ -40,7 +40,7 @@ function slug(text: string): string {
  * Gear" lands on that section now, and comes here only for an API that sends no `gear`; L8.4 fix
  * round 4 item 2 first pointed it here):
  * the spec's best-in-slot page at this character's band, and its faction when the race gives
- * one -- `/bis/priest/holy?faction=alliance#band-alliance-60`, the route and anchor the /bis
+ * one -- `/bis/priest/holy/60`, the band page the /bis
  * landing's spec links open (bis/landing-links.ts). With no level, the spec's page as it opens
  * (`/bis/priest/holy`). Null when the class or spec is unknown.
  */

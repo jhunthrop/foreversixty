@@ -9,6 +9,7 @@ import tailwindcss from '@tailwindcss/vite';
 import links from './src/data/links.json';
 import { assertLinksAreReal } from './src/lib/links';
 import { LOCAL_GUILD_SHELL_PATH } from './src/lib/report/shell-paths';
+import { isNoindexPath } from './src/lib/noindex-paths.mjs';
 import { DUCKDB_WASM_VERSION, RUNTIME_MODULES, stagingDir } from './scripts/duckdb-runtime.mjs';
 
 // The two DuckDB engine modules are over Cloudflare's static-asset limit, so they are not
@@ -159,11 +160,14 @@ export default defineConfig({
     // report pages people actually link to are /reports/<id>, which cannot be enumerated
     // at build time. /reports, the signed-in "Your reports" list, has nothing to index either.
     // /app/auth is the phone apps' sign-in handoff, plumbing too.
+    // /guild-shell is the guild pages' shell (the Worker serves it for /guild/<...>). The personal
+    // and flow pages (src/lib/noindex-paths.mjs) carry noindex and stay out too.
     sitemap({
       filter: (page) =>
+        !isNoindexPath(new URL(page).pathname) &&
         !page.endsWith('/b-unavailable') &&
         !page.endsWith('/report-shell') &&
-        !page.endsWith('/reports') &&
+        !page.endsWith('/guild-shell') &&
         !page.endsWith('/design-sheet') &&
         // The character page's shell: it only answers with a name after /character/.
         !page.endsWith('/character') &&

@@ -325,7 +325,7 @@ func (s *Service) adoptProfileRuleset(ctx context.Context, tx pgx.Tx, ref *chara
 		return nil
 	}
 	newKey := character.Key(ref.Region, profileRuleset, ref.Name)
-	moved, err := s.moveKey(ctx, tx, ref.Key, newKey, profileRuleset)
+	_, moved, err := s.moveKey(ctx, tx, ref.Key, newKey, profileRuleset)
 	if err != nil || !moved {
 		return err
 	}
