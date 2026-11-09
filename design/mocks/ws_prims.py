@@ -1596,9 +1596,9 @@ def Section(title: str, body: str, action: str = '', meta: str = '', named: bool
 _Page1 = Page
 
 
-def Page(layout: str, main: str = '', rail: str = '', sticky_rail: bool = False, panels: bool = False) -> str:
-    """panels: main and rail hold Section panels (web ui/Page `panels`)."""
-    html = _Page1(layout, main, rail, sticky_rail)
+def Page(layout: str, main: str = '', rail: str = '', sticky_rail: bool = False, panels: bool = False, **kwargs: object) -> str:
+    """panels: main and rail hold Section panels (web ui/Page `panels`); every other keyword goes to the Page before."""
+    html = _Page1(layout, main, rail, sticky_rail, **kwargs)
     return html.replace('class="layout-split"', 'class="layout-split panels"', 1) if panels else html
 
 
