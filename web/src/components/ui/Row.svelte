@@ -108,7 +108,7 @@
   </span>
   <span
     class={[
-      'ui-row-trail flex items-center gap-3',
+      'flex items-center gap-3 ui-row-trail',
       wrapTrail ? 'max-md:col-span-full max-md:mt-2 md:justify-self-end' : 'justify-self-end',
       !trail && 'max-[600px]:hidden',
     ]}
