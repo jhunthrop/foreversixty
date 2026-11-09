@@ -15,8 +15,7 @@
 
 <Section title={addonCopy.surfacesTitle} testid="setup-surfaces">
   <details class="setup-surf-fold">
-    <summary class="text-label tracking-label text-gold font-bold uppercase">{addonCopy.surfacesShow}</summary
-    >
+    <summary class="text-label text-gold font-bold">{addonCopy.surfacesShow}</summary>
   </details>
   <div class="setup-surf">
     <RowGrid cols={3}>

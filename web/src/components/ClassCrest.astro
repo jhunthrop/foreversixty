@@ -62,7 +62,7 @@ interface Props {
 }
 
 const { slug, size, class: cls = '', priority = false } = Astro.props;
-const color = classes.find((c) => c.slug === slug)?.color ?? '#ffffff';
+const color = classes.find((c) => c.slug === slug)?.color ?? 'var(--color-strong)';
 const name = classes.find((c) => c.slug === slug)?.name ?? slug;
 ---
 
@@ -82,7 +82,7 @@ const name = classes.find((c) => c.slug === slug)?.name ?? slug;
 
 <style>
   /* design/DESIGN-SYSTEM.md tenet 7 / home spec §6: the exact mock CSS --
-     border-radius:999px; box-shadow:0 0 0 2px var(--c); background:#0d111a -- so a
+     border-radius:999px; box-shadow:0 0 0 2px var(--c); background:var(--color-bg) -- so a
      slow-loading crest image never flashes transparent before it paints. Review round 1
      item 8: the ring sits at reduced opacity by default and brightens to the class colour
      at full opacity on hover/focus-visible of the crest's own link -- the mock's flat
@@ -97,7 +97,7 @@ const name = classes.find((c) => c.slug === slug)?.name ?? slug;
     object-fit: cover;
     border-radius: 999px;
     box-shadow: 0 0 0 2px color-mix(in srgb, var(--c) 55%, transparent);
-    background: var(--color-raised, #0d111a);
+    background: var(--color-bg);
     transition: box-shadow 120ms ease-out;
   }
   :global(a:hover) > .crest,

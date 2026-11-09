@@ -32,7 +32,7 @@ describe('ClaimConfirmBlock', () => {
   it('draws the sentence in a selected Row, the commit as the primary fill, and a 44 px Cancel', () => {
     const body = block('claim');
     expect(body).toContain('Claim OLYMPUS XXVII? You may attempt one claim every 30 days');
-    expect(body).toMatch(/linear-gradient[^>]*>\s*Yes, claim it/);
+    expect(body).toMatch(/bg-teal [^>]*>\s*Yes, claim it/);
     expect(body).toContain('ui-row');
     expect(body).toMatch(/h-11[^>]*claim-cancel/);
     expect(body).toContain('Cancel');

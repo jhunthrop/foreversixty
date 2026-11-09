@@ -75,7 +75,7 @@
 </script>
 
 <div class="flex flex-col items-start gap-3" data-testid="logs-companion-pair">
-  <span class="text-label tracking-label text-muted font-bold uppercase">{label}</span>
+  <span class="text-label text-muted font-bold">{label}</span>
   {#if paired !== null}
     <p class="text-[14px]" data-testid="pairing-success">{pairingCopy.success(paired.name)}</p>
   {:else if pairing !== null}

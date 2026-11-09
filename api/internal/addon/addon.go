@@ -515,6 +515,9 @@ type Service struct {
 	// RaidAnswers produces the raid_signup messages and applies the outbox's raid_answer
 	// entries (raid_answers.go). Nil sends none and defers every answer.
 	RaidAnswers RaidAnswerSource
+	// OwnScores produces the own_score messages (own_score.go): each of the account's
+	// characters' own Forever Score. Nil sends none.
+	OwnScores OwnScoreSource
 	// SimRequests turns an outbox's sim_request into a server run.
 	// sims.Service satisfies it. Nil answers every request
 	// "unavailable"; the export it rode in with is still stored.

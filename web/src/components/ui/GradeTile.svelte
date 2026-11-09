@@ -28,6 +28,6 @@
     font-weight: 700;
     font-size: 32px;
     line-height: 1;
-    color: #17110a;
+    color: var(--color-bg);
   }
 </style>

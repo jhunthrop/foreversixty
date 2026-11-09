@@ -37,7 +37,7 @@
     <div class="flex flex-col gap-4">
       {#each groups as group (group.key)}
         <div data-testid="raid-output-kill">
-          {#if groups.length > 1}<h3 class="text-label tracking-label text-muted font-bold uppercase">
+          {#if groups.length > 1}<h3 class="text-label text-muted font-bold">
               {group.boss}
             </h3>{/if}
           <div>

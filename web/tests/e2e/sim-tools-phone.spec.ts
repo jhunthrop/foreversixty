@@ -42,7 +42,11 @@ for (const route of ROUTES) {
     expect(overflow).toBeLessThanOrEqual(1);
   });
 
-  test(`${route} gives every control a 44px hit target`, async ({ page }) => {
+  test(`${route} gives every control a 44px hit target`, async ({ page, hasTouch }) => {
+    // A touch target: the site sizes its text links to 44 px for a coarse pointer
+    // (`[@media(pointer:coarse)]:py-3`, as ui/Section's action link), so this runs where the
+    // pointer is a finger, the phone project; a mouse at 360 px wide keeps the link's own height.
+    test.skip(!hasTouch, 'a 44 px target is a touch rule');
     await load(page, route);
     // Two exceptions are borrowed from sim-phone.spec.ts's own targetsAreBigEnough, which
     // already audits this exact shared chrome (Base.astro's skip link, CharacterStrip,

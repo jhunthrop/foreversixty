@@ -102,6 +102,19 @@ test('a character with ranked fights and no score yet says so and draws no Figur
   await expect(page.getByTestId('character-score')).not.toContainText(/\b0\b/);
 });
 
+test('a score its owner hid is no score block at all: no figure, no "no logs", no label', async ({
+  page,
+}) => {
+  await stub(page, { ...CHARACTER.data, ...UNSCORED, score_history: [], score_hidden: true });
+  await page.goto(CHARACTER_PATH);
+
+  await expect(page.getByTestId('character')).toBeVisible();
+  await expect(page.getByTestId('character-score')).toHaveCount(0);
+  await expect(page.getByTestId('character-no-logs')).toHaveCount(0);
+  await expect(page.getByTestId('character-score-figure')).toHaveCount(0);
+  await expect(page.getByTestId('character')).not.toContainText(/hidden/i);
+});
+
 test('the owner with no logs is told how to get a rating, and fights stay hidden (C11)', async ({ page }) => {
   await routeOwner(page);
   await stub(page, { ...CHARACTER.data, ...UNSCORED, best: [], history: [] });

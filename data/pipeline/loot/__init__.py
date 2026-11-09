@@ -46,6 +46,12 @@ from pipeline.classic_sources import load_classic_sources, load_npc_ranks, load_
 from pipeline.classicdb_crafted import load_extract as load_classic_crafted_recipes
 from pipeline.classicdb_items import classic_unranked_ids, honor_ranks
 from pipeline.classicdb_items import load_extract as load_classic_item_template
+from pipeline.client_crafted import (
+    load_client_crafted,
+    merge_recipes,
+    recipes_from_raw,
+    write_client_crafted,
+)
 from pipeline.csvio import read_csv
 from pipeline.forkdb import ForkDatabase, load_fork_database
 from pipeline.item_sources import load_item_sources
@@ -101,10 +107,12 @@ from pipeline.loot.sources import (
 )
 from pipeline.loot.supersede import apply_supersession, mark_superseded_items, superseded_pairs
 from pipeline.loot.vendor_cost import apply_vendor_cost_gate
+from pipeline.loot.vendor_terms import apply_vendor_terms, load_vendor_terms
 from pipeline.loot.weapons import apply_fork_weapon_damage, fork_weapon_damage
 from pipeline.manifest import refresh_manifest
 from pipeline.models import LootFile
 from pipeline.normalize import write_document, write_records
+from pipeline.normalize.gear import SLOT_BY_INVENTORY_TYPE
 from pipeline.normalize.sockets import check_no_sockets
 from pipeline.quest_levels import load_quest_levels
 
@@ -183,7 +191,11 @@ def _build_and_write_loot(
     # (`fetch-classic-sources`).
     item_sources = load_item_sources(build_dir)
     classic_sources = load_classic_sources(build_dir)
-    classic_crafted = load_classic_crafted_recipes(build_dir)
+    # classic-db's recipe chains, plus the client's for every Forever-new
+    # craft classic-db does not know (pipeline.client_crafted).
+    crafted_recipes = merge_recipes(
+        load_classic_crafted_recipes(build_dir), load_client_crafted(build_dir)
+    )
 
     # Contract 10.4's build filter and its pruning sweep happen inside
     # build_loot, BEFORE the overlay, so a curated source with a
@@ -226,19 +238,21 @@ def _build_and_write_loot(
     # Round 9: a client reputation reward no rep source names (Theramore
     # Expeditionary Force's Darkspear Islands set) gets its rep source and its
     # side, before the overlay and the content phases gate it.
-    document, client_rep_items = apply_client_reputations(
-        document, load_item_reputations(build_dir), build_items
-    )
+    item_reputations = load_item_reputations(build_dir)
+    document, client_rep_items = apply_client_reputations(document, item_reputations, build_items)
     logger.info("loot: %d client reputation rewards gained a rep source", client_rep_items)
     document = apply_overlays(document, load_overlays(overlay_dir))
     # Content phases after the overlay and before the quest turn-in gate, so
     # a quest whose turn-in item is gated is gated too.
-    document, _ = apply_content_phases(document, load_content_phases(curated_dir))
+    content_phases = load_content_phases(curated_dir)
+    document, _ = apply_content_phases(document, content_phases)
     # The quest gate needs the overlay's raid `opens`; the crafted gate needs
     # the quest gate's; the vendor-cost gate reads whatever both left open.
     document = apply_quest_opens_gate(document, classic_sources)
-    document = apply_crafted_opens_gate(document, classic_crafted)
-    document = apply_crafted_skill(document, classic_crafted)
+    document = apply_crafted_opens_gate(
+        document, crafted_recipes, content_phases.closed_reagent_gates()
+    )
+    document = apply_crafted_skill(document, crafted_recipes)
     item_levels = {int(row["id"]): int(row.get("item_level") or 0) for row in item_rows}
     item_qualities = {int(row["id"]): int(row.get("quality") or 0) for row in item_rows}
     document, vendor_cost_gated = apply_vendor_cost_gate(
@@ -255,6 +269,17 @@ def _build_and_write_loot(
     # The dungeon and raid level ranges last, once every source (overlay
     # additions included) is final; a source with none fails the run.
     document = apply_instance_levels(document, load_instance_levels(curated_dir))
+    # Where a vendor or quartermaster stands and a vendor's non-gold prices.
+    document = apply_vendor_terms(
+        document,
+        load_vendor_terms(curated_dir),
+        {
+            item_id: SLOT_BY_INVENTORY_TYPE[inventory_type]
+            for item_id, inventory_type in item_inventory_types.items()
+            if inventory_type in SLOT_BY_INVENTORY_TYPE
+        },
+        item_reputations,
+    )
     write_document(document, build_dir / LOOT)
     return _LootRun(
         document=document,
@@ -337,6 +362,7 @@ def write_loot_files(
     zone_rows = json.loads((build_dir / "zones.json").read_text(encoding="utf-8"))
     classification = classification_from_raw(raw, zone_rows)
     classification_path = write_classification(build_dir, classification)
+    client_crafted_path = write_client_crafted(build_dir, recipes_from_raw(raw))
 
     run = _build_and_write_loot(build_dir, fork, classification, overlay_dir, curated_dir)
 
@@ -379,6 +405,7 @@ def write_loot_files(
     refresh_manifest(build_dir)
     return [
         classification_path,
+        client_crafted_path,
         build_dir / LOOT,
         build_dir / ENCHANTS,
         build_dir / SUFFIXES,

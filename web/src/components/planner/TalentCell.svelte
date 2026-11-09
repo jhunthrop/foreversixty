@@ -223,7 +223,7 @@
         {/if}
         {#if rank < talent.max_rank}
           <p class="text-muted text-[13px] leading-snug">
-            <span class="text-label tracking-label text-muted font-bold uppercase">Next rank</span>
+            <span class="text-label text-muted font-bold">Next rank</span>
             {talent.ranks[rank].description}
           </p>
         {/if}

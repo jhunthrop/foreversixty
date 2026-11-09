@@ -37,7 +37,10 @@ test.describe('the header of a signed-in account with no characters', () => {
     await expect(panel).toContainText(
       'Your Forever characters are on their way from Battle.net, or arrive once the addon has seen them.',
     );
-    await expect(panel.getByRole('link', { name: 'Get set up' })).toHaveAttribute('href', '/setup');
+    await expect(panel.getByRole('link', { name: 'Get set up', exact: true })).toHaveAttribute(
+      'href',
+      '/setup',
+    );
     await expect(panel.getByRole('link', { name: 'Your account' })).toHaveAttribute('href', '/account');
   });
 });

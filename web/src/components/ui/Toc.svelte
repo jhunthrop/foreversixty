@@ -17,7 +17,7 @@
 </script>
 
 <div class="ui-toc" data-testid={testid}>
-  <span class="text-label tracking-label text-muted block pb-[10px] font-bold uppercase">{label}</span>
+  <span class="text-label text-muted block pb-[10px] font-bold">{label}</span>
   <ol>
     {#each items as item (item.id)}
       <li>

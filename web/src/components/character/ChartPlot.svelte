@@ -8,6 +8,7 @@
   import type { ChartSize } from '../../lib/character/history-scales';
   import { nearestIndex, type Step } from '../../lib/character/history-select';
   import { tierLabel, tierTextColor } from '../../lib/score/score';
+  import { CHART_ACCENT, CHART_INK, inkCss } from '../../lib/chart/theme';
 
   /** The viewport width below which the chart uses its phone aspect, margins and labels. */
   const PHONE_BELOW_PX = 640;
@@ -159,7 +160,7 @@
             x2={plot.left + plot.width}
             y1={tick.y}
             y2={tick.y}
-            stroke="var(--color-line-soft)"
+            stroke={inkCss(CHART_INK.grid)}
           />
         {/if}
         <text
@@ -167,9 +168,9 @@
           y={tick.y}
           dy="0.32em"
           text-anchor="end"
-          font-size="11"
+          font-size="12"
           class="numeric"
-          fill="var(--color-muted)">{tick.value}</text
+          fill={inkCss(CHART_INK.label)}>{tick.value}</text
         >
       {/each}
 
@@ -224,7 +225,7 @@
         <path
           d={run}
           fill="none"
-          stroke="var(--color-gold)"
+          stroke={CHART_ACCENT}
           stroke-width="2"
           stroke-linejoin="round"
           stroke-linecap="round"
@@ -249,13 +250,13 @@
             cx={dot.x}
             cy={dot.y}
             r="3.5"
-            fill="var(--color-raised)"
-            stroke="var(--color-gold)"
+            fill={inkCss(CHART_INK.surface)}
+            stroke={CHART_ACCENT}
             stroke-width="1.5"
             data-testid="history-ring"
           />
         {:else}
-          <circle cx={dot.x} cy={dot.y} r="3" fill="var(--color-gold)" />
+          <circle cx={dot.x} cy={dot.y} r="3" fill={CHART_ACCENT} />
         {/if}
       {/each}
 

@@ -84,7 +84,7 @@
     16,
     2348,
     380,
-    1656
+    1682
    ],
    "inventory": {
     "row": 9,
@@ -94,19 +94,19 @@
   "section-rotation-and-priority": {
    "box": [
     16,
-    4052,
+    4078,
     380,
-    2404
+    2223
    ],
    "inventory": {
-    "row": 14,
-    "image": 13
+    "row": 12,
+    "image": 11
    }
   },
   "section-stat-priority": {
    "box": [
     16,
-    6504,
+    6349,
     380,
     1261
    ],
@@ -115,9 +115,9 @@
   "section-best-in-slot": {
    "box": [
     16,
-    7813,
+    7658,
     380,
-    1633
+    1701
    ],
    "inventory": {
     "row": 17,
@@ -127,7 +127,7 @@
   "section-enchants-and-consumables": {
    "box": [
     16,
-    9494,
+    9407,
     380,
     1455
    ],
@@ -139,7 +139,7 @@
   "section-races": {
    "box": [
     16,
-    10997,
+    10910,
     380,
     1435
    ],
@@ -151,7 +151,7 @@
   "section-professions": {
    "box": [
     16,
-    12480,
+    12393,
     380,
     291
    ],
@@ -160,7 +160,7 @@
   "section-leveling": {
    "box": [
     16,
-    12819,
+    12732,
     380,
     2883
    ],
@@ -172,7 +172,7 @@
   "section-sources": {
    "box": [
     16,
-    15750,
+    15663,
     380,
     496
    ],
@@ -183,7 +183,7 @@
   "footer-note": {
    "box": [
     16,
-    16294,
+    16207,
     380,
     56
    ],

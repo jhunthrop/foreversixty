@@ -172,13 +172,13 @@
       <BuffPanel {settings} {build} {classSlug} {names} {disabled} {onchange} />
     </div>
   {:else if consumables.length > 0}
-    <h3 class="text-label tracking-label text-muted mt-4 font-bold uppercase">
+    <h3 class="text-label text-muted mt-4 font-bold">
       Consumables · {consumables.length}
     </h3>
     <p class="text-text mt-2 text-[14px] leading-5" data-testid="sim-consumables">{consumables.join(', ')}</p>
   {/if}
 
-  <h3 class="text-label tracking-label text-muted mt-5 font-bold uppercase">{copy.more.request}</h3>
+  <h3 class="text-label text-muted mt-5 font-bold">{copy.more.request}</h3>
   <p class="text-small text-muted mt-1">
     {copy.more.requestLine}
     <button

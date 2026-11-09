@@ -62,6 +62,8 @@ elif [ "\$1 \$2" = "run view" ]; then
   cat "$dir/clone/gh/run.\$3.json"
 elif [ "\$1 \$2" = "workflow run" ]; then
   [ ! -e "$dir/clone/gh/dispatch-fails" ]
+elif [ "\$1 \$2" = "workflow list" ]; then
+  cat "$dir/clone/gh/workflows.json" 2>/dev/null || echo "[]"
 else
   exit 1
 fi

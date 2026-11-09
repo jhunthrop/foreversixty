@@ -4,7 +4,7 @@
 <script lang="ts">
   import { DEFAULT_LOCALE } from '../../../lib/guild/raid-time';
   import type { GuildRecentAttendance } from '../../../lib/guild/overview-api';
-  import { attendanceGridRows } from '../../../lib/guild/overview-role-view';
+  import { attendanceGridRows, attendanceTitle } from '../../../lib/guild/overview-role-view';
   import Grid from '../../ui/Grid.svelte';
   import Section from '../../ui/Section.svelte';
 
@@ -17,7 +17,7 @@
 </script>
 
 <Section
-  title={`Attendance, last ${page.raids.length} raids`}
+  title={attendanceTitle(page.raids.length)}
   action={{ label: 'Roster', href: rosterHref }}
   testid="guild-overview-attendance"
 >

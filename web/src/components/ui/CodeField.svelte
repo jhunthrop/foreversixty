@@ -64,7 +64,7 @@
     padding: 10px 12px;
     border: 1px solid var(--color-line);
     border-radius: var(--radius-field);
-    background: #0a0d14;
+    background: var(--color-bg);
     color: var(--color-strong);
     font: 500 13px/20px var(--font-mono);
     overflow-wrap: anywhere;

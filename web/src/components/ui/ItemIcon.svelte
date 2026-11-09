@@ -74,7 +74,7 @@
       height={size}
       loading={eager ? 'eager' : 'lazy'}
       decoding="async"
-      class="h-full w-full rounded-[5px] border object-cover"
+      class="rounded-icon h-full w-full border object-cover"
       style:border-color={rarityBorderColorFor(quality)}
       data-icon={icon}
       onerror={() => (failedIcon = icon)}
@@ -82,8 +82,8 @@
   {:else}
     <span
       class={[
-        'h-full w-full rounded-[5px] border',
-        unknown ? 'border-wipe/50 bg-wipe/10' : 'border-line-soft border-dashed',
+        'rounded-icon h-full w-full border',
+        unknown ? 'border-wipe/50 bg-wipe/10' : 'bg-bg border-black ring-1 ring-white/10',
       ]}
       aria-hidden="true"
       data-icon-socket

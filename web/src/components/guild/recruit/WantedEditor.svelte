@@ -25,7 +25,7 @@
 </script>
 
 <fieldset class="flex flex-col gap-3" data-testid="guild-recruit-edit-wanted">
-  <legend class="text-label tracking-label text-muted mb-2 font-bold uppercase">{copy.card.wanted}</legend>
+  <legend class="text-label text-muted mb-2 font-bold">{copy.card.wanted}</legend>
   {#each lines as line, i (i)}
     <div class="flex flex-wrap items-end gap-2" data-testid="guild-recruit-edit-wanted-line">
       <Select

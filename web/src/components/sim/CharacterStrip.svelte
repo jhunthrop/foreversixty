@@ -284,9 +284,7 @@
 
       {#if !unread}
         <div class="flex flex-wrap items-baseline gap-3 text-[13px]">
-          {#if levelNote === ''}<span class="text-muted text-label tracking-label font-bold uppercase"
-              >Talents</span
-            >{/if}
+          {#if levelNote === ''}<span class="text-muted text-label font-bold">Talents</span>{/if}
           <!-- A saved sim's stored request carries the engine's talent *string*, not the
          planner's point order (Task 17), so its `point_order` is always empty --
          `talentPoints` (the caller's own digit-sum of that string, SavedSim.svelte) is what

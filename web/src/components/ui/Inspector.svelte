@@ -48,7 +48,7 @@
   {#if head}<div class="ui-inspector-head">{@render head()}</div>{/if}
   {#each sections as section (section.label)}
     <section class="ui-inspector-section" data-testid={section.testid}>
-      <h3 class="text-label tracking-label text-muted font-bold uppercase">{section.label}</h3>
+      <h3 class="text-label text-muted font-bold">{section.label}</h3>
       <div class="mt-1 text-[14px] leading-[22px]">{@render section.body()}</div>
     </section>
   {/each}

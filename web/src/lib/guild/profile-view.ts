@@ -131,7 +131,7 @@ export function attendanceView(
   if (nights.length === 0) return { columns: [], rows: [], line: line === '' ? copy.noNights : line };
   return {
     columns: nights.map((night) => dateLabel(new Date(night.starts_at), viewerTz, locale)),
-    rows: [{ key: profile.account_key, label: copy.lastFour, cells: nights.map(nightCell) }],
+    rows: [{ key: profile.account_key, label: copy.lastNights(nights.length), cells: nights.map(nightCell) }],
     line,
   };
 }

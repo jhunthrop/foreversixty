@@ -72,6 +72,10 @@ export const guidesCopy = {
   bisCaption: (race: string, faction: string): string =>
     `Picks for ${/^[AEIOU]/i.test(race) ? 'an' : 'a'} ${race} (${faction}).`,
   fullListLink: 'Full list and alternatives',
+  /** Before the BiS lane's band links, each the band's own BiS page (lib/bis/band-path.ts). */
+  bisByLevelLabel: 'Best in slot by level:',
+  /** The BiS lane's link to the spec's role tier list. */
+  tierListLink: 'Where it ranks at 60',
   preRaidNote:
     'These are the best picks before the first raid tier. Raid loot is not itemized in the client yet, and this list updates when it is.',
   notSimChecked: 'Ranked by stats only',

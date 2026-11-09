@@ -812,6 +812,7 @@ def _parse_object_drops(
     reward_chest_ids: frozenset[int],
     into: dict[int, list[ClassicDbSourceRecord]],
     excluded_refs: frozenset[int],
+    fishing_loot_ids: frozenset[int] = frozenset(),
 ) -> None:
     """`gameobject_loot_template`'s own rows, one `ClassicDbSourceRecord`
     per (loot-table entry, item) pair -- keyed by the OWNING gameobject,
@@ -841,10 +842,25 @@ def _parse_object_drops(
     entry with a nonzero `data1`) is threaded onto the record itself as
     `is_reward_chest` -- `ClassicDbSourceRecord.is_reward_chest`'s own doc
     for why `classicdb_additions` needs it kept, not recomputed.
+
+    `fishing_loot_ids` (`fishing_hole_loot_ids`) are the loot keys a
+    fishing pool's `data1` names. Those rows are fishing catches, recorded
+    as `fishing`, whatever object shares the key's number: loot key 17280
+    is the School of Tastyfish pool's (180248), and the Wooden Chair
+    (gameobject 17280, a type-7 chair) only shares the number, which had
+    published Rockhide Strongfish (19808) as a "Wooden Chair" drop.
     """
     rows_by_entry = _rows_by_entry(list(iter_table_records(sql_text, "gameobject_loot_template")))
     reference_rows = _rows_by_entry(list(iter_table_records(sql_text, "reference_loot_template")))
     for loot_key in rows_by_entry:
+        if loot_key in fishing_loot_ids:
+            for item_id, chance in _expand_loot_template(
+                loot_key, rows_by_entry, reference_rows, excluded_refs
+            ):
+                into[item_id].append(
+                    ClassicDbSourceRecord(kind="fishing", name="Fishing", chance=chance)
+                )
+            continue
         object_id = loot_key if loot_key in object_names else chest_owner.get(loot_key, loot_key)
         name = object_names.get(object_id, "")
         map_id = object_map.get(object_id)
@@ -864,6 +880,23 @@ def _parse_object_drops(
 #: `gameobject_chest_loot`'s own doc for why this is the ONE type this
 #: reads `data1` for.
 _GAMEOBJECT_TYPE_CHEST = 3
+#: cmangos' `gameobject_template.type` for a fishing pool (a school of
+#: fish); like a chest, its `data1` is its `gameobject_loot_template` key.
+_GAMEOBJECT_TYPE_FISHINGHOLE = 25
+
+
+def fishing_hole_loot_ids(sql_text: str) -> frozenset[int]:
+    """Every loot key a fishing pool's `data1` names, less any a chest also
+    owns (by `data1` or as its own entry), which stays chest loot."""
+    fishing: set[int] = set()
+    chest_keys: set[int] = set()
+    for row in iter_table_records(sql_text, "gameobject_template"):
+        kind, data1 = int(row.get("type", "0")), int(row.get("data1", "0"))
+        if kind == _GAMEOBJECT_TYPE_FISHINGHOLE and data1:
+            fishing.add(data1)
+        elif kind == _GAMEOBJECT_TYPE_CHEST:
+            chest_keys.add(data1 or int(row["entry"]))
+    return frozenset(fishing - chest_keys)
 
 
 def _chest_loot_ids(sql_text: str) -> dict[int, int]:
@@ -1294,8 +1327,9 @@ def parse_classic_db_sources(sql_text: str) -> dict[int, list[ClassicDbSourceRec
     chest_owner = chest_owner_by_loot_id(sql_text)
     reward_chest_ids = frozenset(_chest_loot_ids(sql_text))
     _parse_object_drops(
-        sql_text, object_names, object_map, chest_owner, reward_chest_ids, into, excluded_refs
-    )
+        sql_text, object_names, object_map, chest_owner, reward_chest_ids, into, excluded_refs,
+        fishing_hole_loot_ids(sql_text),
+    )  # fmt: skip
     conditions = _parse_conditions(sql_text)
     _parse_vendors(sql_text, creature_names, vendor_template_id, conditions, npc_map, into)
     _parse_quest_rewards(sql_text, into)

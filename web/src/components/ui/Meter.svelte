@@ -1,13 +1,13 @@
 <!-- web/src/components/ui/Meter.svelte -->
-<!-- A bar (web layout spec 2026-11-05 §3A.2): an 8 px --color-line-soft track and a fill in gold,
-     kill or muted, for weights, tier bars, progression and readiness; `class` fills it in the
+<!-- A bar: an 8 px --color-line-soft track and a fill in the cyan accent (round 5: the tier list's
+     relative bar), gold, kill or muted, for weights, tier bars, progression and readiness; `class` fills it in the
      colour a ranked row passes (tiers spec 2026-11-06 §4.4, the Details! bar). `segments` draws that many
      equal cells with 2 px gaps (a role mix). Decorative by default: the figure beside it carries the
      number; pass `label` to make it a meter for assistive tech. -->
 <script lang="ts">
   let {
     value,
-    tone = 'gold',
+    tone = 'accent',
     color,
     segments,
     label,
@@ -15,7 +15,7 @@
   }: {
     /** 0 to 1; clamped. */
     value: number;
-    tone?: 'gold' | 'kill' | 'muted' | 'class';
+    tone?: 'accent' | 'gold' | 'kill' | 'muted' | 'class';
     /** `class` tone only: the fill colour (a class colour token). */
     color?: string;
     segments?: number;
@@ -24,7 +24,13 @@
   } = $props();
 
   const fraction = $derived(Math.min(1, Math.max(0, Number.isFinite(value) ? value : 0)));
-  const FILL = { gold: 'bg-gold', kill: 'bg-kill', muted: 'bg-muted/50', class: '' } as const;
+  const FILL = {
+    accent: 'bg-accent',
+    gold: 'bg-gold',
+    kill: 'bg-kill',
+    muted: 'bg-muted/50',
+    class: '',
+  } as const;
   const fill = $derived.by(() => {
     if (tone !== 'class') return undefined;
     if (color === undefined) throw new Error('Meter: the class tone needs a color');

@@ -108,6 +108,71 @@ func TestImportAccountImportsForeverCharactersByNameSurname(t *testing.T) {
 	}
 }
 
+// Since 2026-11-05 Blizzard answers 404 for Forever's realm index, so the
+// realm id resolves nothing; the character profile's own ruleset is the
+// truth. Production keyed such a PvP character us/normal and made its guild
+// a us/normal twin of the real us/pvp one.
+func TestImportAccountKeysByTheProfilesRulesetWhenRealmsAreGone(t *testing.T) {
+	f := foreverFixture(t)
+	f.json(http.MethodGet, "/data/wow/realm/index?namespace=dynamic-forever-us", http.StatusNotFound, nil)
+	f.rawJSON("/profile/wow/character/elyra-duskvale?namespace=profile-forever-us",
+		[]byte(`{"name":"Elyra","surname":"Duskvale","level":60,"faction":{"type":"ALLIANCE"},
+			"character_class":{"name":"Mage"},"race":{"name":"Human"},
+			"ruleset":{"id":1,"name":"PvP"},
+			"guild":{"name":"Quiet Hours","id":3},"last_login_timestamp":1762200000000}`))
+	svc := foreverService(t, f)
+	uid := seedUser(t, svc.Pool)
+
+	if _, err := svc.ImportAccount(context.Background(), uid, "user-oauth-token"); err != nil {
+		t.Fatal(err)
+	}
+	var ruleset, guildRuleset string
+	if err := svc.Pool.QueryRow(context.Background(),
+		`select c.ruleset, g.ruleset from characters c
+		   join guild_characters gc on gc.character_key = c.key join guilds g on g.id = gc.guild_id
+		  where c.user_id = $1 and c.name = 'Elyra Duskvale'`, uid).Scan(&ruleset, &guildRuleset); err != nil {
+		t.Fatal(err)
+	}
+	if ruleset != "pvp" || guildRuleset != "pvp" {
+		t.Fatalf("character ruleset %q, guild ruleset %q; want both pvp, from the profile", ruleset, guildRuleset)
+	}
+	var stale int
+	if err := svc.Pool.QueryRow(context.Background(),
+		`select count(*) from characters where user_id = $1 and key = 'us/normal/elyra-duskvale'`, uid).Scan(&stale); err != nil {
+		t.Fatal(err)
+	}
+	if stale != 0 {
+		t.Fatal("the normal-keyed row was left behind")
+	}
+}
+
+// With the realm index gone and the profile not yet public, nothing names
+// the ruleset: the character is skipped and counted, never keyed as normal.
+func TestImportAccountSkipsACharacterNoSourceNamesARulesetFor(t *testing.T) {
+	f := foreverFixture(t)
+	f.json(http.MethodGet, "/data/wow/realm/index?namespace=dynamic-forever-us", http.StatusNotFound, nil)
+	svc := foreverService(t, f)
+	uid := seedUser(t, svc.Pool)
+
+	summary, err := svc.ImportAccount(context.Background(), uid, "user-oauth-token")
+	if err != nil {
+		t.Fatal(err)
+	}
+	// Elyra's profile is public and says nothing of a ruleset in this
+	// fixture; Tor and Bank answer 404. None may be written.
+	if summary.Characters != 0 || summary.Skipped != 3 {
+		t.Fatalf("summary = %+v, want all three skipped", summary)
+	}
+	var n int
+	if err := svc.Pool.QueryRow(context.Background(),
+		`select count(*) from characters where user_id = $1`, uid).Scan(&n); err != nil {
+		t.Fatal(err)
+	}
+	if n != 0 {
+		t.Fatalf("characters = %d, want none keyed by a guessed ruleset", n)
+	}
+}
+
 func TestImportAccountListsEveryCharacterBeforeTheBudgetRunsOut(t *testing.T) {
 	f := foreverFixture(t)
 	slow := f.handlers[http.MethodGet+" /profile/wow/character/elyra-duskvale?namespace=profile-forever-us"]

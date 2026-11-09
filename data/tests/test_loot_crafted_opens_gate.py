@@ -284,3 +284,57 @@ def test_item_effective_gate_reads_the_final_document_not_a_fixed_point_loop():
     assert item_effective_gate(document, 2) is None  # only ever world-dropped
     assert item_effective_gate(document, 3) == "raids-1"
     assert item_effective_gate(document, 999) is None  # no source at all
+
+
+# Feedback 2026-11-09: Forever-new crafts whose reagent only comes from
+# disenchanting Hyjal Summit and Barrow Deeps loot (client ids).
+GREENHAMMER = 279261
+PLANS_GREENHAMMER = 279310
+MALLEABLE_ESSENCE = 274030  # no loot.json source; a content-phase reagent gate
+LEGIONITE_BAR = 251290
+
+
+def _greenhammer_document(*extra: LootSource) -> LootFile:
+    return LootFile(
+        sources=[
+            LootSource(
+                id="crafted:blacksmithing", kind="crafted", name="Blacksmithing",
+                profession="blacksmithing", items=[GREENHAMMER, LIONHEART_HELM],
+            ),
+            *extra,
+        ],
+    )  # fmt: skip
+
+
+def _greenhammer_recipes() -> dict[int, ClassicDbCraftedRecipe]:
+    return {
+        GREENHAMMER: ClassicDbCraftedRecipe(
+            recipe_item_ids=[PLANS_GREENHAMMER],
+            reagent_item_ids=[LEGIONITE_BAR, MALLEABLE_ESSENCE],
+            required_skill=300,
+        ),
+        LIONHEART_HELM: ClassicDbCraftedRecipe(reagent_item_ids=[LEGIONITE_BAR]),
+    }
+
+
+def test_a_reagent_gate_closes_every_craft_that_consumes_it():
+    out = apply_crafted_opens_gate(
+        _greenhammer_document(), _greenhammer_recipes(), {MALLEABLE_ESSENCE: "raids-1"}
+    )
+    by_id = {source.id: source for source in out.sources}
+    assert by_id["crafted:blacksmithing:raids-1"].items == [GREENHAMMER]
+    assert by_id["crafted:blacksmithing:raids-1"].opens == "raids-1"
+    assert by_id["crafted:blacksmithing"].items == [LIONHEART_HELM]
+    assert by_id["crafted:blacksmithing"].opens is None
+
+
+def test_without_a_reagent_gate_a_sourceless_reagent_still_never_gates():
+    out = apply_crafted_opens_gate(_greenhammer_document(), _greenhammer_recipes())
+    assert [source.id for source in out.sources] == ["crafted:blacksmithing"]
+
+
+def test_a_reagent_with_an_open_source_ignores_its_reagent_gate():
+    document = _greenhammer_document(
+        LootSource(id="world:x", kind="world", name="X", items=[MALLEABLE_ESSENCE])
+    )
+    assert item_effective_gate(document, MALLEABLE_ESSENCE, {MALLEABLE_ESSENCE: "raids-1"}) is None

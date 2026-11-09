@@ -98,9 +98,7 @@
   {#if answer !== null}
     <!-- The answer column holds 360 px from 900, as the mock's. -->
     <span class="hidden min-[900px]:block min-[900px]:w-[360px]" aria-hidden="true"></span>
-    <span class="text-label tracking-label text-muted font-bold uppercase" data-testid="report-answer-label"
-      >{answer.label}</span
-    >
+    <span class="text-label text-muted font-bold" data-testid="report-answer-label">{answer.label}</span>
     <Figure value={answer.value} unit={answer.unit} size="big" tone={answer.tone} testid="report-answer" />
     <span class="text-small text-muted" data-testid="report-answer-caption">{answer.caption}</span>
   {/if}

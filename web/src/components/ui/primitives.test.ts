@@ -84,18 +84,26 @@ describe('PageHeader', () => {
 });
 
 describe('Plate', () => {
-  it('is the one framed surface: raised ground, line edge, plate radius', () => {
+  it('is the panel surface (ui/panel.css), plain unless framed', () => {
     const body = html(Plate, { label: 'Gear', children: text('<p>x</p>') });
-    expect(body).toContain('bg-raised');
-    expect(body).toContain('border-line');
-    expect(body).toContain('rounded-plate');
+    expect(body).toContain('ui-surface');
     expect(body).toContain('role="region"');
+    expect(body).not.toContain('ui-framed');
     expect(body).not.toContain('card-surface');
+  });
+
+  it('frames a featured panel, with corner flourishes only on the lead', () => {
+    const framed = html(Plate, { frame: 'framed', children: text('<p>x</p>') });
+    const lead = html(Plate, { frame: 'lead', children: text('<p>x</p>') });
+    expect(framed).toContain('ui-framed');
+    expect(framed).not.toContain('ui-frame-corner');
+    expect(lead).toContain('ui-framed ui-lead');
+    expect(lead.match(/ui-frame-corner/g)).toHaveLength(4);
   });
 });
 
 describe('Section', () => {
-  it('is an open heading over a hairline with no box, and a link action', () => {
+  it('is a Marcellus heading over a hairline with an open body by default, and a link action', () => {
     const body = html(Section, {
       title: 'Stat weights',
       level: 3,
@@ -105,12 +113,19 @@ describe('Section', () => {
       children: text('<p>rows</p>'),
     });
     expect(body).toMatch(/<h3[^>]*id="weights-title"[^>]*>Stat weights<\/h3>/);
-    expect(body).toContain('border-b');
+    expect(body).toContain('ui-section-title');
+    expect(body).toContain('ui-section-rule');
+    expect(body).not.toContain('ui-surface');
     expect(body).toContain('href="/setup"');
-    expect(body).not.toContain('bg-raised');
     expect(body).not.toContain('uppercase');
     // A sticky control bar or section nav never covers a section it scrolls to.
     expect(body).toContain('scroll-mt-[calc(var(--bar-h)+12px)]');
+  });
+
+  it('puts a boxed body on the panel, with no hairline', () => {
+    const body = html(Section, { title: 'Guild sims', boxed: true, children: text('<ul><li>x</li></ul>') });
+    expect(body).toContain('ui-surface ui-section-box');
+    expect(body).not.toContain('ui-section-rule');
   });
 });
 
@@ -151,7 +166,8 @@ describe('ItemIcon', () => {
   it('draws the dark socket with no icon, never a broken image', () => {
     const body = html(ItemIcon, { build: BUILD });
     expect(body).not.toContain('<img');
-    expect(body).toContain('border-dashed');
+    expect(body).toContain('data-icon-socket');
+    expect(body).not.toContain('border-dashed');
   });
 
   it('carries the upgrade and worn badges', () => {

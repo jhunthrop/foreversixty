@@ -21,7 +21,7 @@
   {#if answer.finding_count === 0}
     <p class="text-text text-[15px] leading-[22px]">{coachCopy.rulesNothing}</p>
   {:else}
-    <h3 class="text-label tracking-label text-gold font-bold uppercase" data-testid="coach-teaser-count">
+    <h3 class="text-label text-gold font-bold" data-testid="coach-teaser-count">
       {count}
     </h3>
     {#if answer.fix_first !== null}
@@ -34,7 +34,7 @@
     {/if}
     <a
       href={PREMIUM_LINKS.coach}
-      class="rounded-control border-gold text-gold hover:border-gold-hover hover:text-gold-hover focus-visible:outline-gold mt-5 inline-flex h-11 items-center border px-4 text-[14px] font-semibold hover:bg-[#e5b95514] focus-visible:outline-2 focus-visible:outline-offset-2 active:bg-[#e5b95524]"
+      class="rounded-control border-gold text-gold hover:border-gold-hover hover:text-gold-hover focus-visible:outline-gold hover:bg-gold/8 active:bg-gold/14 mt-5 inline-flex h-11 items-center border px-4 text-[14px] font-semibold focus-visible:outline-2 focus-visible:outline-offset-2"
       data-testid="coach-upgrade">{coachCopy.upgrade}</a
     >
   {/if}

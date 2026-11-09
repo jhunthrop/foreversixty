@@ -108,9 +108,9 @@ async function goldSteps(page: Page): Promise<string[]> {
   for (const n of ['1', '2', '3']) {
     const action = plate.getByTestId(`setup-steps-step-${n}`).locator('a, button');
     if ((await action.count()) === 0) continue;
-    // The primary Button is the gold gradient; a secondary is a flat ground.
-    const image = await action.first().evaluate((el) => getComputedStyle(el).backgroundImage);
-    if (image.includes('linear-gradient')) found.push(n);
+    // The primary Button is the teal fill (lib/ui/button.ts); a secondary is the blue.
+    const primary = await action.first().evaluate((el) => el.classList.contains('bg-teal'));
+    if (primary) found.push(n);
   }
   return found;
 }

@@ -1445,6 +1445,23 @@ components:
             sign_ins: { type: integer, format: int64 }
             linked: { type: integer, format: int64 }
             premium: { type: integer, format: int64 }
+    AppTesterInput:
+      type: object
+      required: [email, platform]
+      properties:
+        email:
+          type: string
+          maxLength: 254
+          description: One plain address; stored trimmed and lowercased.
+        platform: { type: string, enum: [ios, android] }
+    AppTester:
+      type: object
+      description: One phone-app beta signup, as the owner's list shows it.
+      required: [email, platform, created_at]
+      properties:
+        email: { type: string }
+        platform: { type: string, enum: [ios, android] }
+        created_at: { type: string, format: date-time }
     # ---------------------------------------------------------------------------------------
     # Native apps v1 (docs/contracts/app-v1.md). The iOS and Android models are generated from
     # these schemas (web/scripts/gen-mobile-api.mjs); api/internal/contract/openapi_test.go
@@ -1737,9 +1754,14 @@ components:
       type: object
       description: >-
         GET /v1/characters/{region}/{ruleset}/{name}: the public character card. Every score
-        field is null for a character with no rated fight: render "no logs yet", never 0.
+        field is null for a character with no rated fight: render "no logs yet", never 0. When
+        score_hidden is true the owner hid the Forever Score from everyone else: every score
+        field is null, score_history is [], and the page shows no score block at all (no "no logs
+        yet", no label, no blank row). The owner's own view carries the score as usual, and a
+        hidden character's page is never shared-cached.
       required: [character, best, history, builds_seen, score_history, gear, gear_gap_total, gear_spec, gear_spec_source, supporter, score, tier, as_of, components, component_caps, experience]
       properties:
+        score_hidden: { type: boolean, description: "True when the owner hid the Forever Score and the viewer is someone else; absent otherwise. Show no score block." }
         character:
           type: object
           title: CharacterProfileHeader
@@ -4891,10 +4913,20 @@ components:
         level_max: { type: integer }
         icon: { type: string, description: "dungeon and raid: the instance's icon, a name under /data/{build}/icons (the API's zoneicons table: inv_misc_head_dragon_black for Onyxia's Lair, inv_misc_book_09 for an instance with none of its own). Written by the nightly loot run; absent on a build generated before it." }
         required_skill: { type: object, additionalProperties: { type: integer }, description: "crafted only: item id -> the profession skill its recipe needs; an item with no known skill is absent." }
+        place: { type: string, description: "vendor and rep: where the seller stands (Booty Bay, The Barrens), curated; absent when unknown." }
+        item_costs: { type: object, additionalProperties: { $ref: '#/components/schemas/VendorCost' }, description: "vendor only: item id -> its price when it is not gold; an item with no known price is absent." }
+        reputation: { type: string, description: "vendor only: the faction a quartermaster sells for, when every item it sells needs that faction's standing (faction_id beside it)." }
+        item_standings: { type: object, additionalProperties: { type: string }, description: "vendor only, beside reputation: item id -> the standing the client requires." }
         rare_spawn: { type: boolean }
         source_origin: { type: string }
         source_note: { type: string }
         reitemised_from: { type: object, additionalProperties: { type: integer } }
+    VendorCost:
+      type: object
+      required: [amount, currency]
+      properties:
+        amount: { type: integer }
+        currency: { type: string, description: "The currency's plural name: Tarnished Undermine Reals." }
     LootBoss:
       type: object
       required: [id, name, items]
@@ -7810,7 +7842,7 @@ paths:
         '426': { $ref: '#/components/responses/UpdateRequired' }
         '200':
           description: "The character card"
-          x-fixtures: [character.card, character.card.empty, character.card.ranked, character.card.yours]
+          x-fixtures: [character.card, character.card.empty, character.card.ranked, character.card.yours, character.card.hidden]
           content:
             application/json:
               schema:
@@ -10084,6 +10116,65 @@ paths:
           content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
         '409':
           description: A link already has that slug
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+
+  /v1/app-testers:
+    post:
+      summary: Sign up to test the phone apps (foreversixty.gg/app)
+      operationId: signupAppTester
+      description: >-
+        No auth. A signed-in browser still sends X-CSRF-Token like any write; the site's form
+        sends no cookie. 5 an hour per IP on top of the router's budget. One row per address and
+        platform (unique), a repeat stores nothing. A new address and one already on the list get
+        the same 201, so the route cannot tell who signed up; the answer never carries a row.
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: '#/components/schemas/AppTesterInput' } } }
+      responses:
+        '201':
+          description: Received (a new signup or one already on the list, told apart by nothing)
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data: { type: object, required: [status], properties: { status: { type: string, enum: [received] } } }
+        '400':
+          description: The body is not JSON
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '422':
+          description: The email or the platform is refused; error.fields names which
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '429':
+          description: This address's hour budget is spent
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  /v1/admin/app-testers:
+    get:
+      summary: Every phone-app beta signup (the owner's /admin/testers page)
+      operationId: listAppTesters
+      description: Admin session only. private, no-store. Newest first.
+      responses:
+        '200':
+          description: The signups
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        required: [testers]
+                        properties:
+                          testers: { type: array, items: { $ref: '#/components/schemas/AppTester' } }
+        '401':
+          description: Not signed in
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '403':
+          description: Signed in, not the admin
           content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
 
   /v1/guilds/{id}/recruit:

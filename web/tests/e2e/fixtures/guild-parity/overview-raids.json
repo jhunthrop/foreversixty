@@ -1,15 +1,15 @@
 {
   "rows": [
     {
-      "id": "olympusony1207",
+      "id": "olympusony1209",
       "title": "Onyxia's Lair \u00b7 raid night",
       "zone": "Onyxia's Lair",
-      "created_at": "2026-12-08T02:00:00Z",
+      "created_at": "2026-12-10T02:00:00Z",
       "fight_count": 4,
       "kill_count": 1,
       "duration_ms": 580000,
       "wipe_count": 1,
-      "raiders": 22,
+      "raiders": 19,
       "deaths": 7,
       "top_hps": null,
       "top_dps": null,
@@ -21,7 +21,7 @@
           "kill": true,
           "duration_ms": 60000,
           "deaths": 0,
-          "players": 22
+          "players": 19
         },
         {
           "index": 1,
@@ -30,7 +30,7 @@
           "kill": false,
           "duration_ms": 240000,
           "deaths": 6,
-          "players": 22
+          "players": 19
         },
         {
           "index": 2,
@@ -39,7 +39,7 @@
           "kill": true,
           "duration_ms": 55000,
           "deaths": 0,
-          "players": 22
+          "players": 19
         },
         {
           "index": 3,
@@ -48,11 +48,11 @@
           "kill": true,
           "duration_ms": 225000,
           "deaths": 1,
-          "players": 22
+          "players": 19
         }
       ],
       "present": [],
-      "raid_id": 38
+      "raid_id": 40
     }
   ],
   "next_cursor": null

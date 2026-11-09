@@ -137,8 +137,6 @@ describe('retargetFullList', () => {
     root.dataset.specSlug = 'survival';
     root.innerHTML = '<a data-testid="guide-bis-full-list" href="/bis/hunter/survival">Full list</a>';
     retargetFullList(root, 'hunter', '30-horde');
-    expect(root.querySelector('a')?.getAttribute('href')).toBe(
-      '/bis/hunter/survival?faction=horde#band-horde-30',
-    );
+    expect(root.querySelector('a')?.getAttribute('href')).toBe('/bis/hunter/survival/30-39?faction=horde');
   });
 });

@@ -78,7 +78,7 @@ const text = (body: string): string => body.replace(/<[^>]+>/g, ' ').replace(/\s
 const tag = (body: string, testid: string): string =>
   new RegExp(`<[a-z]+[^>]*data-testid="${testid}"[^>]*>`).exec(body)?.[0] ?? '';
 const filled = (body: string): number =>
-  (body.match(/<(?:button|a)[^>]*(?:bg-gold|bg-\[linear-gradient)[^>]*>/g) ?? []).length;
+  (body.match(/<(?:button|a)[^>]*(?:bg-gold|bg-teal )[^>]*>/g) ?? []).length;
 
 describe('GuildDiscordSection', () => {
   it('is the #discord block, an open Section with the Discord heading, in every state', () => {
@@ -137,7 +137,7 @@ describe('GuildDiscordSection', () => {
     expect(text(body)).toContain('Last error from Discord: Unknown Webhook.');
     expect(text(body)).toContain(notificationsCopy.switchedOffFix);
     expect(filled(body)).toBe(1);
-    expect(tag(body, 'discord-test')).toContain('bg-[linear-gradient');
+    expect(tag(body, 'discord-test')).toContain('bg-teal ');
     expect(text(body)).toContain(notificationsCopy.testAndSwitchOn);
     expect(body.indexOf('discord-replace')).toBeLessThan(body.indexOf('discord-test'));
   });

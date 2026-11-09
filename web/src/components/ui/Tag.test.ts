@@ -21,7 +21,7 @@ describe('Tag', () => {
 
   it.each([
     ['gold', 'text-gold'],
-    ['success', 'text-kill'],
+    ['success', 'text-gain'],
     ['muted', 'text-muted'],
     ['danger', 'text-wipe'],
     ['warn', 'text-ember'],

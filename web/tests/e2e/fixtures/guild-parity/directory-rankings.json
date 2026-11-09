@@ -7,9 +7,9 @@
         "region": "us",
         "ruleset": "pvp"
       },
-      "value": 3,
-      "fought_at": "2026-12-03T04:00:00Z",
-      "report_id": "parity0"
+      "value": 1,
+      "fought_at": "2026-12-10T03:45:00Z",
+      "report_id": "olympusony1209"
     },
     {
       "rank": 2,
@@ -18,8 +18,8 @@
         "region": "us",
         "ruleset": "hardcore"
       },
-      "value": 3,
-      "fought_at": "2026-12-03T04:00:00Z",
+      "value": 1,
+      "fought_at": "2026-12-10T04:20:00Z",
       "report_id": "parity1"
     },
     {
@@ -29,8 +29,8 @@
         "region": "us",
         "ruleset": "hardcore"
       },
-      "value": 2,
-      "fought_at": "2026-12-03T04:00:00Z",
+      "value": 1,
+      "fought_at": "2026-12-11T03:10:00Z",
       "report_id": "parity2"
     },
     {
@@ -41,7 +41,7 @@
         "ruleset": "normal"
       },
       "value": 1,
-      "fought_at": "2026-12-03T04:00:00Z",
+      "fought_at": "2026-12-11T21:40:00Z",
       "report_id": "parity3"
     },
     {
@@ -52,7 +52,7 @@
         "ruleset": "normal"
       },
       "value": 1,
-      "fought_at": "2026-12-03T04:00:00Z",
+      "fought_at": "2026-12-12T03:30:00Z",
       "report_id": "parity4"
     }
   ]

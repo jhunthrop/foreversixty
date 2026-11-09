@@ -162,11 +162,11 @@
 
   onMount(() => {
     code = normalizeCode(new URLSearchParams(window.location.search).get('code'));
-    // The buttons are Barlow 700, the one face the layout does not preload, and nothing on this
-    // page asks for it while it says "Checking". Without this the first state with a button
-    // (expired, above all, which needs no request) paints it in the fallback face. Ask now and
-    // wait for it, but never longer than a moment.
-    const bold = document.fonts?.load('700 12px Barlow').catch(() => []) ?? Promise.resolve([]);
+    // The buttons are Open Sans 600 (preloaded), and nothing on this page asks for it while it
+    // says "Checking". Without this the first state with a button (expired, above all, which
+    // needs no request) could paint it in the fallback face. Ask now and wait for it, but never
+    // longer than a moment.
+    const bold = document.fonts?.load('600 15px "Open Sans"').catch(() => []) ?? Promise.resolve([]);
     void Promise.race([bold, new Promise((resolve) => setTimeout(resolve, 1500))]).then(load);
   });
 </script>

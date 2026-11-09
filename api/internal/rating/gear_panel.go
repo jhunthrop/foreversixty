@@ -46,7 +46,8 @@ import (
 
 // ScoreAndGear is the character page's Forever Score and gear panel, from one read of the
 // character's rated fights and one of its export (characterInputs). An anonymised account has
-// neither. A panel that cannot be read is logged and left empty; the error is the score's.
+// neither; a score its owner hid from this request's viewer is no score beside the panel. A
+// panel that cannot be read is logged and left empty; the error is the score's.
 func (s *Service) ScoreAndGear(ctx context.Context, key string) (rankings.ForeverScore, rankings.CharacterGear, error) {
 	empty := rankings.CharacterGear{Slots: []rankings.GearSlot{}}
 	anon, err := s.Store.anonymized(ctx, key)
@@ -64,6 +65,9 @@ func (s *Service) ScoreAndGear(ctx context.Context, key string) (rankings.Foreve
 	if err != nil {
 		s.logger().Error("rating", "op", "gear_panel", "character", key, "err", err)
 		gear = empty
+	}
+	if hidden, err := s.Store.hiddenFromViewer(ctx, key); err != nil || hidden {
+		return rankings.ForeverScore{}, gear, err
 	}
 	sc, err := s.Store.scoreV2(ctx, key, in)
 	if errors.Is(err, ErrNoLogs) {

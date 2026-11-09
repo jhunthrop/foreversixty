@@ -145,6 +145,18 @@ type MessageEntry struct {
 	LateMinutes int    `json:"late_minutes,omitempty"`
 	AnsweredAt  string `json:"answered_at,omitempty"`
 
+	// messageOwnScore (own_score.go): the character's own Forever Score record. ScoreAsOf is the
+	// record's as_of (YYYY-MM-DD); each part is absent when the record lacks it.
+	Score      *int   `json:"score,omitempty"`
+	Tier       string `json:"tier,omitempty"`
+	ScoreAsOf  string `json:"as_of,omitempty"`
+	Fights     *int   `json:"fights,omitempty"`
+	Gear       *int   `json:"gear,omitempty"`
+	Experience *int   `json:"experience,omitempty"`
+	Parses     *int   `json:"parses,omitempty"`
+	Attendance *int   `json:"attendance,omitempty"`
+	Discipline *int   `json:"discipline,omitempty"`
+
 	// messageAck: when the site last received the character's export. On a weights message from an
 	// in-game run it is the export that request was made on (the ack's value back then);
 	// absent on a website run and a request recorded before migration 0038.
@@ -472,6 +484,7 @@ func (s *Service) messages(ctx context.Context, userID int64, now time.Time) []M
 	out = append(out, s.lootValuesMessages(ctx, raids, byKey, weights)...)
 	out = append(out, s.raidAssignmentMessages(ctx, sortedExportKeys(byKey), now)...)
 	out = append(out, s.raidSignupMessages(ctx, sortedExportKeys(byKey), now)...)
+	out = append(out, s.ownScoreMessages(ctx, sortedExportKeys(byKey))...)
 	out = append(out, s.ackMessages(ctx, userID)...)
 	return out
 }

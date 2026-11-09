@@ -184,6 +184,9 @@ export interface BisRankingEntry {
   dps_delta: number;
 }
 
+/** The `filtered_set_dps` keys the ranker publishes (sim/cmd/leveling-bis/filtered_sets.go). */
+export type BisFilteredSetKey = 'all' | 'dungeon' | 'leveling_default' | 'pre_raid';
+
 /** One `BisBand.filtered_set_dps` entry. */
 export interface BisFilteredSetDps {
   dps: number;
@@ -465,7 +468,7 @@ export interface BisBand {
   target_level?: number;
   /** The set's DPS under the default filters: keys `all`, `dungeon`, `leveling_default`
    *  (below 60; no rep above Friendly; crafts not skill-gated). Absent: not measured. */
-  filtered_set_dps?: Partial<Record<'all' | 'dungeon' | 'leveling_default', BisFilteredSetDps>>;
+  filtered_set_dps?: Partial<Record<BisFilteredSetKey, BisFilteredSetDps>>;
   no_source_count: number;
   /** Slots where a confirmed-stats item kept the pick over one whose stats the client has not confirmed (within sim error). Absent means none. */
   unconfirmed_within_error_held?: number;

@@ -115,6 +115,9 @@ func Report(ctx context.Context, d Deps, reportID string) error {
 	if err := stream(readCtx, s, src, onClosed); err != nil {
 		return d.failed(ctx, rep, s.Health(), err)
 	}
+	if err := d.creditLogger(ctx, &rep, s); err != nil {
+		return err
+	}
 
 	health, err := json.Marshal(s.Health())
 	if err != nil {

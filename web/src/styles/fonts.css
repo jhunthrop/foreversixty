@@ -3,61 +3,48 @@
    routes: src/layouts/Base.astro for every page of the static site, and
    src/planner-island.ts for the standalone bundle the Go API links from its server-rendered
    /b/{id}. That page links planner-island.css and nothing else, so without this the header,
-   footer and planner it renders fall back to Georgia and Arial on the very domain every
-   share link points at. One module rather than two import lists: two would drift the moment
-   someone adds a weight.
+   footer and planner it renders fall back to the system faces on the very domain every share
+   link points at.
 
-   Marcellus 400 (the page title, ui/PageHeader), Barlow 400/600/700 (body, labels and
-   headings) and JetBrains Mono 500 (literal code only) are the faces the site loads; there is
-   no condensed face anywhere, and the wordmark is an SVG path (components/Wordmark.astro), so
-   the logo loads no face (fonts lane 2026-11-06). src/styles/font-families.test.ts holds this
-   file to exactly these families. All carry `font-display: swap`, so first paint always uses
-   the fallback stack in tokens.css and the real face swaps in once it downloads, rather than
-   blocking render or being skipped entirely.
+   Round 5 (design/specs/2026-11-09-directions.md section 4): Open Sans 400/600/700 for body,
+   labels and figures (Blizzard's Forever page exactly), Archivo 600 for the navigation bar
+   (theirs exactly), Marcellus 400 for every heading (the stand-in for their BlizQuadrata,
+   owner 2026-11-08), JetBrains Mono 500 for literal code only.
+   src/styles/font-families.test.ts holds this file to exactly these families. All carry
+   `font-display: swap`, so first paint uses the fallback stack in tokens.css and the real face
+   swaps in without blocking render.
 
-   Each face below is declared against web/src/assets/fonts/<family>-<weight>-subset.woff2,
-   a custom subset of the same @fontsource file, rather than against Fontsource's `latin-*.css`
-   entry point (which this file imported until the web-font-subsets lane). The five latin
-   subsets Fontsource ships cover far more than this English-only site ever renders --
-   combining diacritics, the Euro and trademark signs, guillemets, OE/dotless-i -- and still
-   charge for every one of them on every page load, since every face is loaded by both routes
-   above. web/fonts/glyphs.txt is the explicit inventory of every character the site
-   can render (printable ASCII, the full Latin-1 Supplement block, and the handful of
-   typographic punctuation/arrows/dagger/angle-quote actually used in copy, found by
-   web/scripts/check-glyph-coverage.mjs scanning a fixture build's HTML and JS bundles plus
-   the markdown and game-data content). web/fonts/README.md has the exact `pyftsubset`
-   command, and web/src/assets/fonts/fonts.generated.test.ts pins each subset's cmap against
-   that inventory so a glyph the site needs is never silently missing from the subset. All
-   five subsets keep hinting and every OpenType layout feature (kerning, mark positioning)
-   exactly as Fontsource's source file has them -- subsetting only drops unused glyphs, cmap
-   entries and the table bytes that existed solely to serve them; hhea/OS2 vertical metrics
-   (ascent, descent, lineGap) are verified byte-identical to the source in that same test, so
-   the fallback faces below still match exactly.
-
-   No font is preloaded here; src/layouts/Base.astro preloads the faces every page paints
-   with first (Barlow 400/600/700, plus Marcellus on the pages whose title uses it) -- see
-   that file for why those and not the others. The preloaded URLs point at the subset files,
-   at the same hashed-URL mechanism Vite gives every other asset import. */
+   Each face is a subset of the @fontsource latin file to web/fonts/glyphs.txt
+   (web/fonts/README.md has the command; src/assets/fonts/fonts.generated.test.ts pins each
+   subset's cmap to that inventory). Base.astro preloads Open Sans 400/600 and Marcellus, the
+   faces every page paints first. */
 @font-face {
-  font-family: 'Barlow';
+  font-family: 'Open Sans';
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: url('../assets/fonts/barlow-400-subset.woff2') format('woff2');
+  src: url('../assets/fonts/open-sans-400-subset.woff2') format('woff2');
 }
 @font-face {
-  font-family: 'Barlow';
+  font-family: 'Open Sans';
   font-style: normal;
   font-weight: 600;
   font-display: swap;
-  src: url('../assets/fonts/barlow-600-subset.woff2') format('woff2');
+  src: url('../assets/fonts/open-sans-600-subset.woff2') format('woff2');
 }
 @font-face {
-  font-family: 'Barlow';
+  font-family: 'Open Sans';
   font-style: normal;
   font-weight: 700;
   font-display: swap;
-  src: url('../assets/fonts/barlow-700-subset.woff2') format('woff2');
+  src: url('../assets/fonts/open-sans-700-subset.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Archivo';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('../assets/fonts/archivo-600-subset.woff2') format('woff2');
 }
 @font-face {
   font-family: 'JetBrains Mono';
@@ -74,32 +61,24 @@
   src: url('../assets/fonts/marcellus-400-subset.woff2') format('woff2');
 }
 
-/* Barlow needs a size-adjusted fallback face: it is the family behind the LCP-candidate text
-   on every audited page (the homepage's hero label, a dungeon page's lead paragraph), and a
-   naive swap reflows that text once Barlow loads -- different fallback vs. Barlow glyph
-   metrics change the line's width and height -- which fails the CLS budget in
-   lighthouserc.json. `Barlow Fallback` is Helvetica Neue/Arial with `size-adjust` and the
-   three `*-override` descriptors tuned so its em-box matches Barlow's, computed with
-   @capsizecss/unpack against the actual Barlow woff2 and the system Helvetica Neue/Arial.
-   Barlow's ascent/descent/lineGap are identical across its 400/600/700 weights, so one
-   fallback face covers all three. With this in place `font-display: swap` never triggers a
-   visible reflow, so the real faces need neither preloading nor blocking: text paints in the
-   fallback immediately (which is what the simulated-mobile LCP snapshot measures) and swaps
-   in place once Barlow arrives. tokens.css names it in --font-body, right after 'Barlow'. */
+/* Open Sans's size-adjusted fallback: Arial with the em-box and average advance of Open Sans,
+   so the swap moves no line (the CLS budget in lighthouserc.json, tenet 13). Computed with
+   `node scripts/fallback-metrics.mjs src/assets/fonts/open-sans-400-subset.woff2
+   /System/Library/Fonts/Supplemental/Arial.ttf`, 2026-11-09. Open Sans's vertical metrics are
+   the same at 400, 600 and 700, so one fallback covers all three. */
 @font-face {
-  font-family: 'Barlow Fallback';
-  src: local('Helvetica Neue'), local('Arial');
-  size-adjust: 95.78%;
-  ascent-override: 104.41%;
-  descent-override: 20.88%;
+  font-family: 'Open Sans Fallback';
+  src: local('Arial'), local('ArialMT');
+  size-adjust: 105.15%;
+  ascent-override: 101.65%;
+  descent-override: 27.86%;
   line-gap-override: 0%;
 }
 
-/* Marcellus's size-adjusted fallbacks, the page title's face (web layout spec 2026-11-05 section 3.3):
-   Georgia, then Times New Roman where Georgia is not installed, so the title does not shift when
-   the real face swaps in (tenet 13). Computed with `node scripts/fallback-metrics.mjs` against
-   src/assets/fonts/marcellus-400-subset.woff2 and macOS's Supplemental/Georgia.ttf and
-   Times New Roman.ttf, 2026-11-05. */
+/* Marcellus's size-adjusted fallbacks: Georgia, then Times New Roman where Georgia is not
+   installed, so a heading does not shift when the real face swaps in (tenet 13). Computed with
+   `node scripts/fallback-metrics.mjs` against src/assets/fonts/marcellus-400-subset.woff2 and
+   macOS's Supplemental/Georgia.ttf and Times New Roman.ttf, 2026-11-05. */
 @font-face {
   font-family: 'Marcellus Fallback';
   src: local('Georgia');

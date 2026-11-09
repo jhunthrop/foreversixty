@@ -28,6 +28,7 @@ type need struct {
 type provider struct {
 	Class  string `json:"class"`
 	Spec   string `json:"spec"`
+	Group  string `json:"group"`
 	Talent string `json:"talent"`
 	Spell  int    `json:"spell"`
 }
@@ -62,7 +63,7 @@ func goSource(build string, entries []entry, ix iconIndex) ([]byte, error) {
 		fmt.Fprintf(&b, "\t{Key: %q, Name: %q, Kind: %q, SpellID: %d, Icon: %q, Need: coverNeed{Count: %d, Per: %q}, Pool: %q, Providers: []coverProvider{",
 			e.Key, e.Name, e.Kind, e.SpellID, stem, e.Need.Count, e.Need.Per, e.Pool)
 		for _, p := range e.Providers {
-			fmt.Fprintf(&b, "{Class: %q, Spec: %q, Talent: %q, Spell: %d},", p.Class, p.Spec, p.Talent, p.Spell)
+			fmt.Fprintf(&b, "{Class: %q, Spec: %q, Group: %q, Talent: %q, Spell: %d},", p.Class, p.Spec, p.Group, p.Talent, p.Spell)
 		}
 		b.WriteString("}},\n")
 	}
