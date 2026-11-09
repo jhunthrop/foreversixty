@@ -247,7 +247,7 @@ export const addonCopy = {
     {
       section: '4.3',
       title: 'Item tooltip',
-      body: 'Every item tooltip gains one line that says whether the item is an upgrade and by how much, or, on what you wear, the next upgrade for that slot and where it drops. Hold Shift for the details: what the number is made of and two alternatives.',
+      body: 'Every item tooltip gains one line saying whether the item is an upgrade and by how much, or on what you wear, the next upgrade and where it drops, with the details under Shift.',
       images: [
         {
           src: '/addon/item-tooltip-ranged.jpg',

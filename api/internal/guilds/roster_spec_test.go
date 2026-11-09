@@ -21,7 +21,7 @@ func TestResolveSpecTable(t *testing.T) {
 	}{
 		{"a specs.json key", nil, strp("paladin-holy"), "", "Holy Paladin", "healer", true},
 		{"a log name within its class", strp("warrior"), strp("Protection"), "", "Protection Warrior", "tank", true},
-		{"a logged Feral tank is Feral Bear", strp("druid"), strp("Feral"), "tank", "Feral Bear Druid", "tank", true},
+		{"a logged Feral tank is Feral Bear", strp("druid"), strp("Feral"), "tank", "Feral Druid (Bear)", "tank", true},
 		{"a logged Feral cat", strp("druid"), strp("Feral"), "dps", "Feral Druid", "dps", true},
 		{"a log name with no class", nil, strp("Holy"), "", "", "", false},
 		{"no spec", strp("priest"), nil, "", "", "", false},

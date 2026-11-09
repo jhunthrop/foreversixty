@@ -294,7 +294,7 @@ func rosterLine(r RosterLine, marks Marks) string {
 func textLine(name, class string, sp raidspec.Spec, ok bool) string {
 	switch {
 	case ok:
-		return name + rosterCopy.Sep + sp.Name + " " + classWord(sp.Class)
+		return name + rosterCopy.Sep + sp.FullName
 	case class != "":
 		return name + rosterCopy.Sep + classWord(class)
 	}

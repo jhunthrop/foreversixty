@@ -18,15 +18,9 @@ type specFacts struct {
 	Role, Name, Icon string
 }
 
-// fullSpecName is the spec as a player says it: the catalogue name, then the class ("Holy
-// Paladin", "Feral Bear Druid").
-func fullSpecName(s raidspec.Spec) string {
-	class := s.Class
-	if class != "" {
-		class = strings.ToUpper(class[:1]) + class[1:]
-	}
-	return strings.TrimSpace(s.Name + " " + class)
-}
+// fullSpecName is the spec as a player says it, the catalogue's full name ("Holy Paladin",
+// "Feral Druid (Bear)").
+func fullSpecName(s raidspec.Spec) string { return s.FullName }
 
 // resolveSpec finds the catalogue spec of a row's spec word: a specs.json key ("paladin-holy",
 // the addon snapshot's form) first, else a spec name within the class ("Holy", the logs' form),

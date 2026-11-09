@@ -51,6 +51,7 @@ describe('groupByClass', () => {
         reference_stat: 'spell_power',
         weight_stats: [],
         icon: 'inv_misc_questionmark',
+        full_name: 'Balance Druid',
       },
       {
         spec: 'hunter-marksmanship',
@@ -62,6 +63,7 @@ describe('groupByClass', () => {
         reference_stat: 'attack_power',
         weight_stats: [],
         icon: 'inv_misc_questionmark',
+        full_name: 'Marksmanship Hunter',
       },
       {
         spec: 'druid-feral',
@@ -73,6 +75,7 @@ describe('groupByClass', () => {
         reference_stat: 'attack_power',
         weight_stats: [],
         icon: 'inv_misc_questionmark',
+        full_name: 'Feral Druid',
       },
     ];
     const grouped = groupByClass(catalog);

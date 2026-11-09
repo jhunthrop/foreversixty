@@ -55,7 +55,7 @@ export function catalogueSpec(classSlug: string, specKey: string | null | undefi
 /** `Holy Paladin`, `Beast Mastery Hunter`; the class alone when the spec does not resolve. */
 export function specClassLine(classSlug: string, specKey: string | null | undefined): string {
   const spec = catalogueSpec(classSlug, specKey);
-  return spec === null ? classWord(classSlug) : `${spec.name} ${classWord(classSlug)}`;
+  return spec === null ? classWord(classSlug) : spec.full_name;
 }
 
 /** Whether a row tanks on a spec whose own role is not tank: the Fury warrior off-tank. */

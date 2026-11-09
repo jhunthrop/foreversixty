@@ -46,9 +46,9 @@ export const searchCopy = {
     description: `Class and spec guides for ${GAME_LONG}: talents for leveling and raids, rotation, stat priority and best in slot for every spec.`,
   },
   /** "Beast Mastery Hunter Guide, WoW Forever". */
-  specGuideTitle: (specName: string, className: string): string => `${specName} ${className} Guide, ${GAME}`,
+  specGuideTitle: (fullName: string): string => `${fullName} Guide, ${GAME}`,
   /** "Hunter Class Guide, WoW Forever". */
   classGuideTitle: (className: string): string => `${className} Class Guide, ${GAME}`,
   /** The breadcrumb's name for a spec guide: "Beast Mastery Hunter guide". */
-  specGuideCrumb: (specName: string, className: string): string => `${specName} ${className} guide`,
+  specGuideCrumb: (fullName: string): string => `${fullName} guide`,
 } as const;

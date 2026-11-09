@@ -6,6 +6,7 @@
 import { adoptHeldCharacter } from '../account/adopt-held';
 import {
   announcePageLoadedCharacter,
+  readCurrent,
   writeCurrent,
   type CurrentCharacter,
   type CurrentCharacterSource,
@@ -19,6 +20,11 @@ export function recordCurrentCharacter(
   ref: string,
   storage?: Storage,
 ): void {
+  // Already the pointer (a restore of it): write nothing. A write reaches every other open tab as
+  // a storage change, which would load the same character there and write it back, so two tabs
+  // passed the pointer to and fro, and a Forget made in one between their writes was undone.
+  const held = readCurrent(storage);
+  if (held !== null && held.source === source && held.ref === ref) return;
   const pointer: CurrentCharacter = {
     source,
     ref,
