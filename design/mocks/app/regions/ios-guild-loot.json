@@ -39,18 +39,18 @@
   "controls": {
    "box": [
     0,
-    356,
+    376,
     393,
     62
    ],
    "inventory": {
-    "segment": 2
+    "segment": 1
    }
   },
   "section-onyxia-drops": {
    "box": [
     16,
-    446,
+    466,
     361,
     680
    ],
@@ -63,7 +63,7 @@
   "plate": {
    "box": [
     16,
-    517,
+    537,
     361,
     535
    ],
@@ -75,27 +75,27 @@
   "section-candidates-for-vis-kag-the-bloodletter": {
    "box": [
     16,
-    1150,
+    1170,
     361,
-    584
+    463
    ],
    "inventory": {
-    "row": 4,
-    "button": 12,
-    "image": 4
+    "row": 3,
+    "button": 9,
+    "image": 3
    }
   },
   "section-decision-record": {
    "box": [
     16,
-    1766,
+    1665,
     361,
-    166
+    225
    ],
    "inventory": {
-    "row": 2,
+    "row": 3,
     "button": 1,
-    "image": 2
+    "image": 3
    }
   }
  }
