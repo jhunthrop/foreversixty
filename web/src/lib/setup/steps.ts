@@ -26,6 +26,8 @@ export interface StepLineOut {
   code?: string;
   /** A reserved line while the reads are in flight. */
   skeleton?: boolean;
+  /** Drawn on a phone only (below md): the second line an answer wraps to there. */
+  phoneOnly?: boolean;
 }
 
 export type StepActionId = 'signin' | 'retry' | 'refresh' | 'curseforge' | 'download' | 'paste' | 'copylink';
@@ -83,6 +85,9 @@ const line = (text: string, tone: StepTone = 'muted', extra: Partial<StepLineOut
   ...extra,
 });
 const SKELETON: StepLineOut = { text: '', tone: 'muted', skeleton: true };
+/** The second line a signed-in answer wraps to on a phone (rows 1 and 3: who and when, the PC and
+ *  when it was seen), reserved there so the plate does not move when the reads answer. */
+const SKELETON_PHONE: StepLineOut = { ...SKELETON, phoneOnly: true };
 
 function act(id: StepActionId, label: string, kind: StepAction['kind'] = 'link-button'): StepAction {
   return { id, label, kind, primary: false };
@@ -135,9 +140,9 @@ function anonymousRows(input: SetupInputs): StepRow[] {
   const companion = companionTodo(input.platform, addonCopy.setupCompanionNote);
   if (input.session === 'loading') {
     return [
-      row(1, 'ok', [SKELETON], null),
+      row(1, 'ok', [SKELETON, SKELETON_PHONE], null),
       row(2, 'todo', [SKELETON], null),
-      row(3, 'todo', [SKELETON], null),
+      row(3, 'todo', [SKELETON, SKELETON_PHONE], null),
     ];
   }
   if (input.session === 'error') {

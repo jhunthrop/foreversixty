@@ -57,6 +57,7 @@ def img(src: str) -> str:
 
 
 CSS = '''<style>
+.ph-only{display:block}@media(min-width:768px){.ph-only{display:none}}
 section>.sec-h+*{margin-top:12px}
 .acts{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
 .body{display:flex;flex-direction:column;gap:14px}.body p{font-size:15px;line-height:24px;max-width:72ch}
@@ -92,7 +93,8 @@ def render(title: str, body: str, nav: str, who, chrome_state: str, note: str) -
 # ------------------------------------------------------------------------------------------------ /setup: the plate
 def _line(l: dict) -> str:
     if l.get('skeleton'):
-        return Skeleton(240, 14)
+        # phoneOnly (web lib/setup/steps.ts): the second line an answer wraps to on a phone, reserved below md
+        return f'<span class="ph-only">{Skeleton(240, 14)}</span>' if l.get('phoneOnly') else Skeleton(240, 14)
     tone = {'muted': '', 'text': ' class="tx"', 'ok': ' class="ok"', 'warn': ' class="warn"', 'miss': ' class="miss"'}[l['tone']]
     role = ' role="alert"' if l.get('alert') else ''
     code = (' ' + Code(l['code'])) if l.get('code') else ''
