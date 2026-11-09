@@ -37,7 +37,11 @@ export const adminCreatorsCopy = {
     name: { label: 'Name', hint: 'What the creator goes by on stream.', placeholder: 'e.g. Grimbrew' },
     channel: { label: 'Channel', hint: 'Their Twitch or YouTube address.', placeholder: 'https://twitch.tv/…' },
     slug: { label: 'Link', hint: 'Becomes foreversixty.gg/go/your-slug.', placeholder: 'e.g. grimbrew' },
-    code: { label: 'Promo code', hint: 'Capitals and digits, 4 to 20. Players get the creator discount on a first payment.', placeholder: 'e.g. GRIMBREW' },
+    code: {
+      label: 'Creator code',
+      hint: 'Capitals and digits, 4 to 20. It gets viewers a free month of Premium, or a free month for their guild.',
+      placeholder: 'e.g. GRIMBREW',
+    },
     startsOn: { label: 'Starts on', hint: 'Players who signed up before this day never count.', placeholder: '2026-11-08' },
     cap: { label: 'Monthly cap', hint: 'Dollars a month at most, like 500.', placeholder: '500' },
   },
@@ -197,7 +201,7 @@ export const programCopy = {
       id: 'how-players-count',
       title: 'How players count',
       paragraphs: [
-        'You get a link of your own and a promo code that takes a little off a player’s first payment. A player is yours if their first visit came through your link within 30 days before they signed up, or if they use your code.',
+        'You get a link of your own and a code. Your code gets viewers a free month of Premium, or a free month for their guild; they enter it when they subscribe, and a card is still needed. A player is yours if their first visit came through your link within 30 days before they signed up, or if they use your code.',
         'Each account counts once, for one creator. Accounts made before you joined, and your own account, never count.',
       ],
     },

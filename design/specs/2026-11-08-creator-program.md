@@ -22,7 +22,7 @@ Memory rules applied: stripe-billing (Commish LLC's account, Managed Payments; k
 - `/creators/stats` lists one row per week, not per player.
 - No `Settle $0.00`: a month that owes nothing shows `Nothing owed` and no button.
 - Payouts sit behind `CREATOR_PAYOUTS`, off by default, with the admin notice (new mock `web-admin-creators-payouts-off`).
-- The discount (`CREATOR_COUPON_PERCENT_OFF`) and the privacy sentence wait for the owner (section 2).
+- A code gives a free month (owner ruling, section 2); the privacy sentence waits for the owner (section 2).
 - The migration takes the next free number on main at landing (0092 is taken by app-beta's `0092_app_testers`).
 
 ## 0. Files
@@ -41,7 +41,7 @@ Memory rules applied: stripe-billing (Commish LLC's account, Managed Payments; k
 
 **A creator's player** is an account that is either
 1. **Link:** the account's first tracked link (`users.first_touch_slug`, first touch: the first `/go/` link the browser carried, kept up to 30 days on the device and sent with the first signed-in page, recorded only while the account is under an hour old, exactly as today) is the creator's link, and the click was at most **30 days** before the account was made; or
-2. **Code:** the account redeemed the creator's Stripe promotion code at checkout and had no creator yet.
+2. **Code:** the account redeemed the creator's code at checkout (a free month, section 2) and had no creator yet.
 
 and in both cases: the account was made **on or after the creator's start date**, and it is **not the creator's own account**. One account belongs to one creator only, for good: the first rule that fires wins (a link player who later types another creator's code stays the link creator's).
 
@@ -62,9 +62,9 @@ The creator earns **$2.00 once** per returning player, in the month the player q
 
 **Privacy:** the creator sees counts only: totals, and one row per week of sign-ups (a Monday, UTC: `Week of 23 Nov: 54 signed up · 36 returning · 10 paying`; the week still running shows only `18 signed up so far`, so "I subbed today" on stream cannot be matched to a change), never a name, a BattleTag, a character or an email. Nothing about a player is in a URL or a log line: logs carry ids only, as the rest of the API does. The owner's statement lists players by their account number.
 
-## 2. Promo codes and Managed Payments
+## 2. Creator codes: a free month, as a Stripe trial
 
-Each creator gets one Stripe promotion code (the code the creator says on stream, `GRIMBREW`), on one shared coupon `fs_creator`: **10% off the first payment** of any plan (`duration: once`). Checkout already sets `allow_promotion_codes` under Managed Payments (`stripe_gateway.go`), so no checkout change is needed. Verified in the Connect sandbox on 2026-11-08: a coupon, a promotion code and a subscription redeeming it (invoice $5.00 -> $4.50, fee $0.43, net $4.07, a $2.00 partial refund books -$2.00 with no fee back). Not verified: a live redemption under Managed Payments (the sandbox has no tax head office, so it runs without Managed Payments). **For the owner (pending):** the discount is a server setting, `CREATOR_COUPON_PERCENT_OFF` (default 10, once; 0 makes codes attribution-only by creating none, and the form then hides the code's discount line); the first live statement should be checked against the Dashboard before its first approval. **Draft privacy sentence (pending the owner, privacy.md unchanged):** "If you arrive through a creator's link or use their code, we tell that creator how many players they brought and how many keep playing or subscribe, never who you are, and we pay them for it."
+Owner ruling 2026-11-08: a creator's code (`GRIMBREW`, the one the creator says on stream) gives **one month free** on whichever plan the viewer picks: Premium, or a guild plan (Guild or Raid guild), where it turns the guild's standard trial (`catalog.GuildTrialDays`, 7) into 30 days. It is the site's own code, not a Stripe promotion code: the buyer types it at checkout, `POST /v1/billing/checkout` takes `creator_code`, the API checks it is a live creator's code and puts `trial_period_days: 30` on the Checkout Session (`subscription_data`, the same mechanism the guild trial already uses under Managed Payments), with the code in the subscription metadata. A card is still required. One trial per account for Premium (`premium_trials`, written when a trialing subscription lands) and one per guild (`guild_trials`): a code on an account or guild that already had its trial is refused (409 `trial_used`) and the checkout is not made; an unknown code is a 400. On `checkout.session.completed` the program attributes the buyer by the metadata code (the officer, for a guild plan) and records the session's first invoice. Stripe's own Checkout page shows the trial. The revenue share starts at the first paid invoice, after the trial ($0 trial invoices are skipped). Verified in the Connect sandbox on 2026-11-08: a subscription's invoice, payment, charge and balance transaction read for the net (invoice $4.50, fee $0.43, net $4.07; a $2.00 partial refund books -$2.00 with no fee back). Not verified: a live charge under Managed Payments (the sandbox has no tax head office); the first live statement should be checked against the Dashboard before its first approval. The code field on the checkout chooser, with the trial's real dates, is built in the land/premium-trial landing that follows this one (design/specs/2026-11-08-premium-trial.md); until it lands, the API accepts the code but no page sends one. **Draft privacy sentence (pending the owner, privacy.md unchanged):** "If you arrive through a creator's link or use their code, we tell that creator how many players they brought and how many keep playing or subscribe, never who you are, and we pay them for it."
 
 ## 3. Surfaces
 
@@ -117,7 +117,7 @@ A Section `Requests` (meta `{n} waiting`) above `Your creators`: open Rows (the 
 | Route | Who | What |
 |---|---|---|
 | `GET /v1/admin/creators` | owner | creators with this month's figures and Stripe status |
-| `POST /v1/admin/creators` | owner | add: makes the go link and the promotion code |
+| `POST /v1/admin/creators` | owner | add: makes the go link and reserves the code |
 | `PATCH /v1/admin/creators/{id}` | owner | name, channel, cap, start date |
 | `POST /v1/admin/creators/{id}/invite` | owner | a fresh one-time invite URL (token hashed at rest, 14 days) |
 | `POST /v1/admin/creators/{id}/stripe-status` | owner | re-read the Express account |
