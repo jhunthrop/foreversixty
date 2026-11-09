@@ -242,10 +242,13 @@
 </script>
 
 {#snippet totalName()}Total, {actors.length} {actors.length === 1 ? 'player' : 'players'}{/snippet}
-{#snippet absentSub()}{#if mitigatedLine !== ''}<span class="block" data-testid="actor-mitigated"
-      >{mitigatedLine}</span
-    >{/if}{#if absentLine !== ''}<span class="block" data-testid="actor-absent">{absentLine}</span
-    >{/if}{/snippet}
+<!-- Divs, not spans: the sub line keeps each span's "Label value" pair on one line, and these are
+     sentences that must wrap at 390. -->
+{#snippet absentSub()}{#if mitigatedLine !== ''}<div data-testid="actor-mitigated">
+      {mitigatedLine}
+    </div>{/if}{#if absentLine !== ''}<div data-testid="actor-absent">
+      {absentLine}
+    </div>{/if}{/snippet}
 
 <Section title={TITLE[tab]} testid="report-table-card" panel flush>
   {#snippet head()}{#if actors.length > 0}<CopyCsv lines={csvLines} inHead />{/if}{/snippet}

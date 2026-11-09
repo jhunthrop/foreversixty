@@ -229,11 +229,11 @@
   /** A tick this close to the right edge ends there instead of centring past it. */
   const END_LABEL_PCT = 97;
   /** Every aura on its own band, in name order, so each reads as one line and can be pointed at. */
-  function bandAuras(tracks: AuraTrack[]): AuraBand[] {
+  function bandAuras(tracks: AuraTrack[], order: readonly string[] = auraOrder): AuraBand[] {
     // By name, not by uptime: an aura keeps its row when the window moves.
     const ordered = [...tracks].sort((a, b) => a.name.localeCompare(b.name));
     // eslint-disable-next-line svelte/prefer-svelte-reactivity
-    const bands = new Map<string, number>(auraOrder.map((name, index) => [name, index]));
+    const bands = new Map<string, number>(order.map((name, index) => [name, index]));
     return ordered.flatMap((track) => {
       const band = bands.get(track.name) ?? bands.size;
       bands.set(track.name, band);
@@ -244,6 +244,25 @@
   const laneHeight = (auras: AuraBand[]): number =>
     Math.max(18, (auras.reduce((top, aura) => Math.max(top, aura.band), -1) + 1) * BAND_PX + CASTS_PX);
   const rowHeight = (plot: number): number => Math.max(ROW_MIN_PX, plot + ROW_PAD_PX);
+  /**
+   * The enemy lanes with the group's debuffs on them (Sunder Armor, Thunder Clap on the boss),
+   * each lane's own bands in name order, every enemy lane at the tallest one's height.
+   */
+  const enemyRows = $derived(
+    enemyLanes.map((lane) => {
+      const auras = bandAuras(
+        summary.auras.filter(
+          (track) =>
+            track.type === 'DEBUFF' &&
+            !players.has(track.target_guid) &&
+            splitUnitName(track.target_name).name === lane.name,
+        ),
+        [],
+      );
+      return { ...lane, auras, height: Math.max(ENEMY_LANE_PX, laneHeight(auras)) };
+    }),
+  );
+  const enemyRow = $derived(Math.max(ENEMY_LANE_PX, ...enemyRows.map((lane) => lane.height)));
 
   const lanes = $derived(
     [...summary.roster]
@@ -312,10 +331,11 @@
         <div class="grid grid-cols-[96px_minmax(0,1fr)] md:grid-cols-[180px_minmax(0,1fr)]">
           <!-- The labels stay put; only the plot scrolls sideways on a phone. -->
           <ul class="flex flex-col pr-3">
-            {#each enemyLanes as lane (lane.name)}
+            {#each enemyRows as lane (lane.name)}
+              <!-- Every label sits on its lane's cast line, the bands rising above it. -->
               <li
-                class="flex items-center gap-2 overflow-hidden"
-                style:height="{rowHeight(ENEMY_LANE_PX)}px"
+                class="flex items-end gap-2 overflow-hidden pb-[3px]"
+                style:height="{rowHeight(enemyRow)}px"
                 title={lane.name}
               >
                 <ClassCrestRing characterClass="" size={20} />
@@ -324,7 +344,7 @@
             {/each}
             {#each lanes as lane (lane.guid)}
               <li
-                class="flex items-center gap-2 overflow-hidden"
+                class="flex items-end gap-2 overflow-hidden pb-[3px]"
                 style:height="{rowHeight(laneRow)}px"
                 title={lane.name}
               >
@@ -345,30 +365,38 @@
                 ></span>
               {/each}
               <ul class="flex flex-col">
-                {#each enemyLanes as lane (lane.name)}
-                  <li class="flex items-center" style:height="{rowHeight(ENEMY_LANE_PX)}px">
+                {#each enemyRows as lane (lane.name)}
+                  <li class="flex items-end pb-2" style:height="{rowHeight(enemyRow)}px">
                     <!-- svelte-ignore a11y_no_static_element_interactions (the plot is decorative, aria-hidden: the pointer readout is a sighted aid) -->
                     <span
                       class="relative block w-full touch-none"
-                      style:height="{ENEMY_LANE_PX}px"
+                      style:height="{lane.height}px"
                       data-lane
                       data-testid={lane.name === bossName ? 'lane-boss' : `lane-enemy-${lane.name}`}
-                      onpointerdown={(event) => pickNearest(event, lane.casts, [], lane.taunts)}
-                      onpointermove={(event) => pickNearest(event, lane.casts, [], lane.taunts)}
+                      onpointerdown={(event) => pickNearest(event, lane.casts, lane.auras, lane.taunts)}
+                      onpointermove={(event) => pickNearest(event, lane.casts, lane.auras, lane.taunts)}
                       onpointerleave={clearPick}
                     >
-                      <span class="bg-line-soft absolute inset-x-0 top-1/2 block h-[2px] -translate-y-1/2"
-                      ></span>
+                      <span class="bg-line-soft absolute inset-x-0 bottom-[4px] block h-[2px]"></span>
+                      {#each lane.auras as segment, i (`${segment.start_ms}-${i}`)}
+                        <span
+                          class="bg-wipe/60 absolute h-[3px] rounded-[1px]"
+                          style:top="{segment.band * BAND_PX}px"
+                          style:left="{pct(segment.start_ms)}%"
+                          style:width="{Math.max(pct(segment.end_ms) - pct(segment.start_ms), 0.4)}%"
+                          title={`${segment.name} · ${formatDuration(segment.start_ms)} to ${formatDuration(segment.end_ms)}`}
+                        ></span>
+                      {/each}
                       {#each lane.casts as cast, i (`${cast.at}-${i}`)}
                         <span
-                          class="bg-gold absolute bottom-0 h-[14px] w-[2px]"
+                          class="bg-gold absolute bottom-0 h-[10px] w-[2px]"
                           style:left="{pct(cast.at)}%"
                           title={`${cast.name} · ${formatDuration(cast.at)}`}
                         ></span>
                       {/each}
                       {#each lane.taunts as taunt (tauntKey(taunt))}
                         <span
-                          class="bg-gold absolute top-0 h-full w-[3px]"
+                          class="bg-gold absolute -top-[4px] h-[calc(100%+8px)] w-[3px]"
                           style:left="{pct(taunt.at_ms)}%"
                           data-testid="taunt-mark"
                           title={`Taunt · ${formatDuration(taunt.at_ms)} · by ${splitUnitName(taunt.source_name).name}`}
@@ -385,7 +413,7 @@
                   made Svelte throw on the duplicate and leave the whole view blank.
                 -->
                 {#each lanes as lane (lane.guid)}
-                  <li class="flex items-center" style:height="{rowHeight(laneRow)}px">
+                  <li class="flex items-end pb-2" style:height="{rowHeight(laneRow)}px">
                     <!-- svelte-ignore a11y_no_static_element_interactions (the plot is decorative, aria-hidden: the pointer readout is a sighted aid) -->
                     <span
                       class="relative block w-full touch-none"

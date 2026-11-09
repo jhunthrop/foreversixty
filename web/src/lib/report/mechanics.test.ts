@@ -11,6 +11,7 @@ import {
   nightBossGroups,
   playerMechanics,
   unclassifiedAbilities,
+  abilityHitsByPlayer,
   meleeBucket,
   unjudgedDeaths,
 } from './mechanics';
@@ -272,6 +273,19 @@ describe('unclassifiedAbilities', () => {
       damage_done: [actor('B', [ability({ spell_id: 116, name: 'Frostbolt', effective: 500 })])],
     });
     expect(result.map((entry) => entry.spell_id)).toEqual([999]);
+  });
+
+  it('splits an enemy ability by the players it landed on, hits and ticks counted, most damage first', () => {
+    const summary = summaryOf([
+      actor('A', [ability({ spell_id: 999, name: 'Gloom Rot', effective: 40, hits: 1, ticks: 2 })]),
+      actor('B', [ability({ spell_id: 999, name: 'Gloom Rot', effective: 300, hits: 2 })]),
+      actor('Creature-1', [ability({ spell_id: 999, name: 'Gloom Rot', effective: 9_000 })]),
+    ]);
+    expect(abilityHitsByPlayer(summary, 999)).toEqual([
+      { guid: 'B', name: 'B', hits: 2, damage: 300 },
+      { guid: 'A', name: 'A', hits: 3, damage: 40 },
+    ]);
+    expect(abilityHitsByPlayer(summary, 1)).toEqual([]);
   });
 
   it('buckets the enemies’ melee swings on players, naming who took most', () => {

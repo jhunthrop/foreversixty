@@ -17,6 +17,7 @@
     nightBossGroups,
     playerMechanics,
     unclassifiedAbilities,
+    abilityHitsByPlayer,
     meleeBucket,
     unjudgedDeaths,
     rolePlacements,
@@ -386,6 +387,43 @@
       </p>
     {/if}
   </Section>
+
+  {#if !beforeMechanics && !block.table_found && !trash && !nightMode && unclassified.length > 0}
+    <!-- A boss no table covers yet: what it did to whom, ability by ability, from damage taken. -->
+    <Section title="Boss abilities" testid="mechanics-boss-abilities" panel>
+      {#each unclassified as ability (ability.spell_id)}
+        <Row
+          title={unclassifiedNameShared(ability) ? `${ability.name} #${ability.spell_id}` : ability.name}
+          open
+          testid={`mechanics-ability-${ability.spell_id}`}
+        >
+          {#snippet lead()}<SpellIcon
+              url={icons.of(ability.spell_id, ability.name)}
+              size={24}
+              tip
+            />{/snippet}
+          {#snippet subContent()}{#each abilityHitsByPlayer(summary, ability.spell_id) as one, i (one.guid)}{i >
+              0
+                ? ' · '
+                : ''}<span class="whitespace-nowrap"
+                ><span style:color={classColorVar(classOf.get(one.guid))}>{splitUnitName(one.name).name}</span
+                >
+                <span class="tabular-nums">{one.hits}</span>
+                {one.hits === 1 ? 'hit' : 'hits'}</span
+              >{/each}{/snippet}
+          {#snippet trail()}
+            {@render figure(formatAmount(ability.damage), 'Damage')}
+            <a
+              href={hrefFor(damageTakenPatch(ability.spell_id))}
+              class={linkClass}
+              aria-label={`Damage Taken for ${ability.name}`}
+              onclick={(event) => follow(event, damageTakenPatch(ability.spell_id))}>Damage taken</a
+            >
+          {/snippet}
+        </Row>
+      {/each}
+    </Section>
+  {/if}
 
   {#if !beforeMechanics && block.table_found}
     <Section title="Problems" meta="Deaths first, then most costly" testid="mechanics-problems" panel>

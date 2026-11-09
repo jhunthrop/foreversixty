@@ -183,7 +183,17 @@ describe('scopeSource', () => {
   it('cuts enemies out of the unit tables under the default scope, and leaves the roster alone', () => {
     const scoped = scopeSource(summary(), 'friendlies', players);
     expect(scoped.roster.map((row) => row.guid)).toEqual(['Player-1', 'Player-2']);
-    expect(scoped.auras.map((track) => track.target_guid)).toEqual(['Player-1']);
+    expect(scoped.damage_done.map((actor) => actor.guid)).not.toContain('Creature-9');
+  });
+
+  it('keeps the group’s debuffs on enemies under the default scope, and cuts an enemy’s own', () => {
+    const input = summary();
+    const enemyOwn = { ...input.auras[1], spell_id: 3, name: 'C', appliers: ['Creature-9'] };
+    const scoped = scopeSource({ ...input, auras: [...input.auras, enemyOwn] }, 'friendlies', players);
+    expect(scoped.auras.map((track) => `${track.target_guid}:${track.name}`)).toEqual([
+      'Player-1:A',
+      'Creature-9:B',
+    ]);
   });
 
   it('returns the same summary when the player list is unknown', () => {

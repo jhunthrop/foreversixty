@@ -4,7 +4,9 @@
      with; `metric="taken"` Damage taken by ability, every ability that hit them; `metric="healing"`
      Healing by ability, every heal they cast (effective healing, overheal left out). Each a
      StatTable (spell icon, name, a Meter, the share of the scope's total, Per sec, Amount), the
-     top eight, with the full tab's link in the head. The amount tabs show their own under the chart. -->
+     top eight, with the full tab's link in the head. The amount tabs show their own under the chart,
+     every ability and the log site's columns beside the amount: Hits, Crit, Avg and Max (density
+     pass 2026-11-09), Overheal on Healing, no Crit on Damage taken. -->
 <script lang="ts">
   import EmptyLine from './EmptyLine.svelte';
   import { formatAmount } from '../../lib/report/format';
@@ -67,7 +69,15 @@
     spellId: number;
     school?: number;
     total: number;
+    /** Hits and ticks: what landed. */
+    landed: number;
+    crits: number;
+    max: number;
+    overheal: number;
   }
+
+  /** The tab's own panel (no link to a tab): every ability, with the detail columns. */
+  const detail = $derived(tabHref === undefined);
 
   /** Every ability in `table` for the scope's players, summed by name, largest first. */
   function abilityTotals(table: readonly Actor[]): AbilityTotal[] {
@@ -78,14 +88,27 @@
       for (const ability of actor.abilities) {
         const key = ability.name === '' ? 'Melee' : ability.name;
         const found = totals.get(key);
+        const landed = ability.hits + ability.ticks;
         if (found === undefined)
           totals.set(key, {
             name: key,
             spellId: ability.spell_id,
             school: ability.school,
             total: ability.effective,
+            landed,
+            crits: ability.crits,
+            max: ability.max,
+            overheal: ability.overheal ?? 0,
           });
-        else found.total += ability.effective;
+        else
+          totals.set(key, {
+            ...found,
+            total: found.total + ability.effective,
+            landed: found.landed + landed,
+            crits: found.crits + ability.crits,
+            max: Math.max(found.max, ability.max),
+            overheal: found.overheal + (ability.overheal ?? 0),
+          });
       }
     }
     return [...totals.values()].filter((row) => row.total > 0).sort((a, b) => b.total - a.total);
@@ -96,14 +119,38 @@
   const byAbility = $derived.by(() => {
     const rows = abilityTotals(source(metric));
     const total = rows.reduce((sum, row) => sum + row.total, 0);
-    return rows.slice(0, ROWS).map((row) => ({ ...row, share: total === 0 ? 0 : row.total / total }));
+    return (detail ? rows : rows.slice(0, ROWS)).map((row) => ({
+      ...row,
+      share: total === 0 ? 0 : row.total / total,
+    }));
   });
   const seconds = $derived(Math.max(durationMs, 1) / 1000);
-  const COLUMNS = [
+  const BASE_COLUMNS = [
     { id: 'share', label: 'Share' },
     { id: 'rate', label: 'Per sec' },
     { id: 'amount', label: 'Amount' },
   ] as const;
+  /** The detail columns each metric reads, after the base three. */
+  const DETAIL: Readonly<Record<Metric, readonly ('overheal' | 'hits' | 'crit' | 'avg' | 'max')[]>> = {
+    done: ['hits', 'crit', 'avg', 'max'],
+    taken: ['hits', 'avg', 'max'],
+    healing: ['overheal', 'hits', 'crit', 'max'],
+  };
+  const DETAIL_LABEL = { overheal: 'Overheal', hits: 'Hits', crit: 'Crit', avg: 'Avg', max: 'Max' } as const;
+  const columns = $derived([
+    ...BASE_COLUMNS,
+    ...(detail ? DETAIL[metric].map((id) => ({ id, label: DETAIL_LABEL[id] })) : []),
+  ]);
+  /** One detail figure; a prorated window marks the amounts it scales, as the Amount column does. */
+  function detailValue(row: AbilityTotal, id: (typeof DETAIL)[Metric][number]): string {
+    const mark = approximate ? '~' : '';
+    if (id === 'hits') return `${mark}${row.landed.toLocaleString('en-US')}`;
+    if (id === 'crit') return row.landed === 0 ? '0%' : `${Math.round((row.crits / row.landed) * 100)}%`;
+    if (id === 'avg') return row.landed === 0 ? '0' : formatAmount(Math.round(row.total / row.landed));
+    if (id === 'max') return formatAmount(row.max);
+    const raw = row.total + row.overheal;
+    return raw === 0 ? '0%' : `${Math.round((row.overheal / raw) * 100)}%`;
+  }
 </script>
 
 <Section
@@ -116,20 +163,32 @@
   {#if byAbility.length === 0}
     <EmptyLine text={EMPTY[metric]} />
   {:else}
-    <StatTable columns={COLUMNS} nameHead="Ability" label={TITLE[metric]}>
+    <StatTable {columns} nameHead="Ability" label={TITLE[metric]}>
       {#each byAbility as row (row.name)}
-        <StatRow
-          figures={[
-            { value: `${(row.share * 100).toFixed(1)}%` },
-            { value: formatRate(row.total / seconds) },
-            { value: `${approximate ? '~' : ''}${formatAmount(row.total)}` },
-          ]}
-          phone={`${formatAmount(row.total)} ${NOUN[metric]}`}
-        >
-          {#snippet icon()}<SpellIcon url={spellIcon(row.spellId, row.name, row.school)} />{/snippet}
-          {#snippet name()}<b class="text-strong">{row.name}</b>{/snippet}
-          {#snippet meter()}<Meter value={row.share} tone={TONE[metric]} />{/snippet}
-        </StatRow>
+        {@const figures = [
+          { value: `${(row.share * 100).toFixed(1)}%` },
+          { value: formatRate(row.total / seconds) },
+          { value: `${approximate ? '~' : ''}${formatAmount(row.total)}` },
+          ...(detail ? DETAIL[metric].map((id) => ({ value: detailValue(row, id) })) : []),
+        ]}
+        {@const phone = `${formatAmount(row.total)} ${NOUN[metric]}`}
+        {#if detail}
+          <!-- On a phone the detail columns fold into the sub line under the name. -->
+          <StatRow {figures} {phone}>
+            {#snippet icon()}<SpellIcon url={spellIcon(row.spellId, row.name, row.school)} />{/snippet}
+            {#snippet name()}<b class="text-strong">{row.name}</b>{/snippet}
+            {#snippet sub()}{#each DETAIL[metric] as id, i (id)}<span class="ui-st-phone"
+                  >{i > 0 ? ' · ' : ''}{detailValue(row, id)} {DETAIL_LABEL[id].toLowerCase()}</span
+                >{/each}{/snippet}
+            {#snippet meter()}<Meter value={row.share} tone={TONE[metric]} />{/snippet}
+          </StatRow>
+        {:else}
+          <StatRow {figures} {phone}>
+            {#snippet icon()}<SpellIcon url={spellIcon(row.spellId, row.name, row.school)} />{/snippet}
+            {#snippet name()}<b class="text-strong">{row.name}</b>{/snippet}
+            {#snippet meter()}<Meter value={row.share} tone={TONE[metric]} />{/snippet}
+          </StatRow>
+        {/if}
       {/each}
     </StatTable>
   {/if}

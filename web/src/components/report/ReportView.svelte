@@ -86,6 +86,8 @@
   import KeyMechanics from './KeyMechanics.svelte';
   import GroupBuffs from './GroupBuffs.svelte';
   import TargetsRail from './TargetsRail.svelte';
+  import CastsRail from './CastsRail.svelte';
+  import DispelsRail from './DispelsRail.svelte';
   import Glossary from './Glossary.svelte';
   import EventsRail from './EventsRail.svelte';
   import MechanicsRail from './MechanicsRail.svelte';
@@ -2049,6 +2051,16 @@
               durationMs={summary?.duration_ms ?? scoped.duration_ms}
               onWindow={setWindow}
             />
+          {:else if state.tab === 'casts'}
+            <CastsRail
+              casts={scoped.casts}
+              players={scopePlayers}
+              names={unitNames}
+              {classOf}
+              durationMs={scoped.duration_ms}
+            />
+          {:else if state.tab === 'debuffs'}
+            <DispelsRail dispels={scoped.dispels} {spellIcon} tabHref={hrefWith({ tab: 'dispels' })} />
           {:else if state.tab === 'events'}
             <EventsRail off={state.eventsOff} onPatch={patch} />
           {:else if state.tab === 'queries'}
@@ -2219,6 +2231,7 @@
                 kind: state.tab === 'buffs' ? 'BUFF' : 'DEBUFF',
                 names: unitNames,
                 bossNames: bossUnitNames,
+                friendly: friendlySet,
                 windowed: !windowIsWhole,
               }}
               cooldowns={state.tab === 'buffs'

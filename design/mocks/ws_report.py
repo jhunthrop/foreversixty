@@ -102,25 +102,60 @@ ABILITY_TAB = {'done': 'Damage done', 'taken': 'Damage taken', 'healing': 'Heali
 ABILITY_TONE = {'done': 'accent', 'taken': 'muted', 'healing': 'kill'}
 
 
+# The amount tab's own panel (density pass 2026-11-09): every ability, then the log site's columns after the amount.
+ABILITY_DETAIL = {'done': ('hits', 'crit', 'avg', 'max'), 'taken': ('hits', 'avg', 'max'), 'healing': ('overheal', 'hits', 'crit', 'max')}
+DETAIL_LABEL = {'overheal': 'Overheal', 'hits': 'Hits', 'crit': 'Crit', 'avg': 'Avg', 'max': 'Max'}
+
+
+def ability_detail(v: dict, key: str) -> str:
+    """One detail figure (report/SummaryPanels.svelte detailValue): hits and ticks landed, crits over landed, the
+    average landed, the biggest hit, overheal over the raw healing."""
+    landed = v['landed']
+    if key == 'hits':
+        return f'{landed:,}'
+    if key == 'crit':
+        return f'{round(v["crits"] / landed * 100) if landed else 0}%'
+    if key == 'avg':
+        return n0(round(v['total'] / landed)) if landed else '0'
+    if key == 'max':
+        return n0(v['max'])
+    raw = v['total'] + v['overheal']
+    return f'{round(v["overheal"] / raw * 100) if raw else 0}%'
+
+
 def abilities_panel(R, fi, source, metric: str, link: bool = True) -> str:
-    """report/SummaryPanels.svelte: every ability of the scope's players summed by name, the top eight, the share of the
-    scope's total, Per sec and Amount; the tab's link in the head on the Summary."""
+    """report/SummaryPanels.svelte: every ability of the scope's players summed by name, the share of the scope's total,
+    Per sec and Amount; on the Summary the top eight with the tab's link in the head, on the tab every ability with the
+    detail columns (ABILITY_DETAIL), folded into the sub line on a phone."""
     s = R.summary(fi)
     fr = friendlies(R, s, source)
-    totals: dict[str, list] = {}
+    totals: dict[str, dict] = {}
     for a in s[ABILITY_SOURCE[metric]]:
         if a['guid'] in fr:
             for ab in a['abilities']:
                 k = ab['name'] or 'Melee'
-                totals.setdefault(k, [ab.get('spell_id', 0), ab.get('school'), 0])[2] += ab.get('effective', ab['total'])
-    ranked = sorted(((k, v) for k, v in totals.items() if v[2] > 0), key=lambda kv: -kv[1][2])
-    tot = sum(v[2] for _, v in ranked) or 1
+                v = totals.setdefault(k, {'sid': ab.get('spell_id', 0), 'school': ab.get('school'), 'total': 0, 'landed': 0,
+                                          'crits': 0, 'max': 0, 'overheal': 0})
+                v['total'] += ab.get('effective', ab['total'])
+                v['landed'] += ab['hits'] + ab['ticks']
+                v['crits'] += ab['crits']
+                v['max'] = max(v['max'], ab['max'])
+                v['overheal'] += ab.get('overheal', 0)
+    ranked = sorted(((k, v) for k, v in totals.items() if v['total'] > 0), key=lambda kv: -kv[1]['total'])
+    tot = sum(v['total'] for _, v in ranked) or 1
     dur = max(s['duration_ms'], 1) / 1000
-    rows = [StatRow(sicon(sid, 24, k, school), f'<b>{escape(k)}</b>', '', [f'{v / tot * 100:.1f}%', rate(v / dur), n0(v)],
-                    Meter(v / tot, ABILITY_TONE[metric]), primary_phone=f'{n0(v)} {"healing" if metric == "healing" else "damage"}')
-            for k, (sid, school, v) in ranked[:8]]
-    body = (StatTable([('', False), ('Ability', False), ('', False), ('Share', True), ('Per sec', True), ('Amount', True)], rows, 3)
-            if rows else '<p class="empty">Nothing in this window.</p>')
+    detail = ABILITY_DETAIL[metric] if not link else ()
+    shown = ranked if detail else ranked[:8]
+
+    def sub(v: dict) -> str:
+        return ''.join(f'<span class="m">{" &middot; " if i else ""}{ability_detail(v, d)} {DETAIL_LABEL[d].lower()}</span>'
+                       for i, d in enumerate(detail))
+    rows = [StatRow(sicon(v['sid'], 24, k, v['school']), f'<b>{escape(k)}</b>', sub(v),
+                    [f'{v["total"] / tot * 100:.1f}%', rate(v['total'] / dur), n0(v['total'])] + [ability_detail(v, d) for d in detail],
+                    Meter(v['total'] / tot, ABILITY_TONE[metric]), primary_phone=f'{n0(v["total"])} {"healing" if metric == "healing" else "damage"}')
+            for k, v in shown]
+    heads = [('', False), ('Ability', False), ('', False), ('Share', True), ('Per sec', True), ('Amount', True)] + [(DETAIL_LABEL[d], True) for d in detail]
+    body = StatTable(heads, rows, 3 + len(detail)) if rows else '<p class="empty">Nothing in this window.</p>'
     return Section(ABILITY_TITLE[metric], body, action=Link(f'{ABILITY_TAB[metric]} &rsaquo;') if link else '', panel=True, flush=True)
 
 

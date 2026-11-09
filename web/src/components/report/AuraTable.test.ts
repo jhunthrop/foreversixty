@@ -96,6 +96,38 @@ describe('AuraTable', () => {
     for (const guid of ['p1', 'p2', 'p3']) expect(body).toContain(`id="aura-${guid}-17157"`);
   });
 
+  it('puts the group’s debuffs on the enemies in their own table, each enemy with its own uptime', () => {
+    const debuff = (target: string, name: string, spell: string, id: number, uptime_ms: number): AuraTrack =>
+      track({
+        type: 'DEBUFF',
+        spell_id: id,
+        name: spell,
+        target_guid: target,
+        target_name: name,
+        uptime_ms,
+        appliers: ['p1'],
+      });
+    const { body } = render(AuraTable, {
+      props: {
+        tracks: [
+          debuff('p2', 'Kell', 'Tendon Rip', 3604, 30_000),
+          debuff('boss', 'Saltspine', 'Thunder Clap', 8204, 90_000),
+          debuff('add', 'Elder Crocolisk', 'Thunder Clap', 8204, 60_000),
+        ],
+        durationMs: 100_000,
+        kind: 'DEBUFF',
+        friendly: new Set(['p1', 'p2']),
+        names: new Map([['p1', 'Kell Quickwater']]),
+      },
+    });
+    const [group, enemies] = body.split('data-testid="aura-section-enemies"');
+    expect(group).toContain('Tendon Rip');
+    expect(group).not.toContain('Thunder Clap');
+    expect(enemies).toContain('on 2 enemies');
+    expect(enemies).toMatch(/id="aura-boss-8204"[^>]*>Saltspine\s*<b[^>]*>90\.0%</);
+    expect(enemies).toMatch(/id="aura-add-8204"[^>]*>Elder Crocolisk\s*<b[^>]*>60\.0%</);
+  });
+
   it('every row carries an aura-<guid>-<spellId> anchor id for a rating moment to jump to', () => {
     // src/lib/rating/moments.ts already builds hrefs against this exact convention
     // (aura-<targetGuid>-<spellId>); this row-side id is what those links land on.

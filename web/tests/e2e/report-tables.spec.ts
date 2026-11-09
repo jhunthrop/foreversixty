@@ -150,6 +150,49 @@ test('a debuff reads once by spell, on how many players it landed', async ({ pag
   await expect(storm).toContainText('on 5 players');
 });
 
+test('the group’s debuffs on the enemies read in their own table, each enemy with its uptime', async ({
+  page,
+}) => {
+  // The sample's Saltspine kill: Kell Quickwater's Sunder Armor, 80.5% on Saltspine.
+  await page.goto('/reports/sample?tab=debuffs');
+  const sunder = page.getByTestId('aura-table-enemies').getByRole('row').filter({ hasText: 'Sunder Armor' });
+  await expect(sunder).toContainText('from Kell Quickwater');
+  await expect(sunder.getByTestId('aura-each')).toContainText('Saltspine 80.5%');
+  await expect(page.getByTestId('aura-table')).not.toContainText('Sunder Armor');
+  // Beside it, what was dispelled: Kell Stonebrook's Cure Disease took Muculent Rot off Hollis.
+  await expect(page.getByTestId('dispels-rail')).toContainText('Muculent Rot');
+});
+
+test('the amount tab’s ability panel carries hits, crit, average and biggest hit', async ({
+  page,
+  isMobile,
+}) => {
+  test.skip(isMobile, 'a phone folds the columns into the sub line');
+  await page.goto('/reports/sample?tab=damage-done');
+  const panel = page.getByTestId('panel-done');
+  await expect(panel.getByRole('columnheader', { name: 'Crit' })).toBeVisible();
+  // Consecration: 85 hits, 9 crits, 948 damage, 20 the biggest.
+  await expect(panel.getByRole('row').filter({ hasText: 'Consecration' })).toContainText('85');
+  await expect(panel.getByRole('row').filter({ hasText: 'Consecration' })).toContainText('11%');
+});
+
+test('Casts ranks the players by casts per minute beside the table', async ({ page }) => {
+  // Kell Quickwater: 27 casts over 39.0 s.
+  await page.goto('/reports/sample?tab=casts');
+  await expect(page.getByTestId('casts-rail-Player-4184-00000040')).toContainText('41.6');
+});
+
+test('a boss no table covers lists its abilities player by player on Mechanics', async ({ page }) => {
+  // Saltspine's Dust Storm hit all five; Kell Quickwater once, the others twice.
+  await page.goto('/reports/sample?tab=mechanics');
+  const storm = page
+    .getByTestId('mechanics-boss-abilities')
+    .getByTestId(/^mechanics-ability-/)
+    .first();
+  await expect(storm).toContainText('Dust Storm');
+  await expect(storm).toContainText('Kell Quickwater 1 hit');
+});
+
 test('a brushed window reads the uptime over the window, inside the page', async ({ page }) => {
   // A window starting at 20 s: the uptime is the window's own share, and nothing in the
   // row stretches the page sideways.
