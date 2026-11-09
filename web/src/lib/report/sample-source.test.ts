@@ -12,8 +12,8 @@ describe('the sample, one source', () => {
   const facts = reportFacts(meta);
   const row = sampleRowFromMeta(meta);
 
-  it('says the same date: 17 Sept 2026', () => {
-    expect(facts.date).toBe('17 Sept 2026');
+  it('says the same date: 8 Nov 2026', () => {
+    expect(facts.date).toBe('8 Nov 2026');
     expect(row.dateLabel).toBe(facts.date);
   });
 
@@ -23,23 +23,22 @@ describe('the sample, one source', () => {
     expect(facts.fights).toBe(`${meta.fights.length} fights`);
   });
 
-  it('leaves the bosses out when none died, on both', () => {
-    expect(facts.bosses).toBe('');
-    expect(row.summary).not.toMatch(/boss/i);
-    expect(row.summary).toBe(`${facts.zone} · ${facts.fights}`);
+  it('says the bosses the same way on both: the night killed six', () => {
+    expect(facts.bosses).toBe('6 bosses');
+    expect(row.summary).toContain(facts.bosses);
   });
 
-  it('says "N bosses" the same way on both when some did', () => {
-    const withKills = {
+  it('leaves the bosses out when none died, on both', () => {
+    const trashOnly = {
       ...meta,
-      fights: [{ ...meta.fights[0], kind: 'encounter', kill: true }, ...meta.fights.slice(1)],
+      fights: meta.fights.filter((fight) => fight.kind !== 'encounter'),
     } as ReportMeta;
-    expect(reportFacts(withKills).bosses).toBe('1 boss');
-    expect(sampleRowFromMeta(withKills).summary).toContain('1 boss');
+    expect(reportFacts(trashOnly).bosses).toBe('');
+    expect(sampleRowFromMeta(trashOnly).summary).not.toMatch(/boss/i);
   });
 
   it('is titled without "sample log"; the pill says it is a sample', () => {
-    expect(meta.title).toBe('Sample raid night, 17 Sept 2026');
+    expect(meta.title).toBe('Sample dungeon night, 8 Nov 2026');
     expect(row.title).toBe(meta.title);
   });
 });

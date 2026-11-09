@@ -82,9 +82,11 @@ describe('pullNumbers', () => {
 });
 
 describe('defaultFightIndex', () => {
-  it('opens on the first boss pull, or the first fight when there is no boss', () => {
+  it('opens on the last boss kill, else the last boss pull, else the first fight', () => {
     const trash = { ...fight(1), kind: 'trash' };
-    expect(defaultFightIndex([trash, fight(2), fight(3)])).toBe(2);
+    expect(defaultFightIndex([trash, fight(2), fight(3)])).toBe(3);
+    expect(defaultFightIndex([trash, fight(2), { ...fight(3), kill: false }])).toBe(2);
+    expect(defaultFightIndex([trash, { ...fight(2), kill: false }, { ...fight(3), kill: false }])).toBe(3);
     expect(defaultFightIndex([trash, { ...fight(5), kind: 'trash' }])).toBe(1);
     expect(defaultFightIndex([])).toBe(1);
   });

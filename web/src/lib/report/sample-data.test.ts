@@ -8,7 +8,9 @@ import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 
 const ROOT = path.resolve(__dirname, '../../../public/sample-report/sample');
-const MAX_BYTES = 8 * 1024 * 1024;
+// 12 MiB: the open-world night (2,741 units seen) carries more summaries than the first cut; a
+// page loads one pull's files at a time.
+const MAX_BYTES = 12 * 1024 * 1024;
 const PLAYER_GUID = /^Player-4184-[0-9A-F]{8}$/;
 const PLAYER_NAME = /^[A-Z][a-z]+-[A-Z][a-z]+-ClassicBetaPvP-$/;
 
@@ -45,9 +47,9 @@ describe('the bundled sample report data', () => {
   }>('meta.json');
   const report = read<{ units: Unit[]; fights: { index: number }[] }>('report.json');
 
-  it('is the beta night, dated from its own log, with no owner or guild', () => {
-    expect(meta.title).toBe('Sample raid night, 17 Sept 2026');
-    expect(meta.created_at.startsWith('2026-09-17')).toBe(true);
+  it('is the dungeon night, dated from its own log, with no owner or guild', () => {
+    expect(meta.title).toBe('Sample dungeon night, 8 Nov 2026');
+    expect(meta.created_at.startsWith('2026-11-08')).toBe(true);
     expect(meta.owner).toBeNull();
     expect(meta.guild).toBeUndefined();
     expect(meta.fights.length).toBeGreaterThan(30);
@@ -96,12 +98,13 @@ describe('the sample classes, read from the log', () => {
     expect(new Set(classed.map((unit) => unit.class)).size).toBeGreaterThanOrEqual(5);
   });
 
-  it('has no spec to show, so the Spec column hides (no talent spell was cast)', () => {
-    expect(players.some((unit) => unit.spec)).toBe(false);
+  it('gives a spec only where a talent spell was cast', () => {
+    expect(players.some((unit) => unit.spec)).toBe(true);
+    expect(players.filter((unit) => unit.spec).every((unit) => unit.class)).toBe(true);
   });
 
   it('shows a class on the opening fight roster rows', () => {
-    const summary = read<{ roster: { class?: string }[] }>('fights/6/summary.json');
+    const summary = read<{ roster: { class?: string }[] }>('fights/11/summary.json');
     expect(summary.roster.filter((row) => row.class).length / summary.roster.length).toBeGreaterThan(0.85);
   });
 });

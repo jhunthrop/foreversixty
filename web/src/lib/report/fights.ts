@@ -54,13 +54,14 @@ export function pullNumbers(fights: readonly FightEntry[]): Map<number, PullNumb
 }
 
 /**
- * The fight a report opens on when the url names none: the first boss pull. A night's
- * first fight is nearly always a trash pull, often a few seconds long with one player in
- * it, and landing there reads as a broken report rather than as a choice.
+ * The fight a report opens on when the url names none (owner, 2026-11-09): the night's last boss
+ * kill, else its last boss attempt, else its first fight. A night's first fight is nearly always a
+ * short trash pull, and the last kill is the pull a raider opens a log to read.
  */
 export function defaultFightIndex(fights: readonly FightEntry[]): number {
-  const encounter = fights.find((fight) => fight.kind === 'encounter');
-  return encounter?.index ?? fights[0]?.index ?? 1;
+  const bosses = fights.filter((fight) => fight.kind === 'encounter');
+  const chosen = bosses.findLast((fight) => fight.kill) ?? bosses.at(-1) ?? fights[0];
+  return chosen?.index ?? 1;
 }
 
 /** The longest of `fights`, the first of equals; undefined for none. */

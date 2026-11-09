@@ -16,12 +16,14 @@ import {
   reportMeta,
   thisPullFacts,
 } from './frame';
+import { formatClock } from './format';
 import type { FightEntry } from './types';
 
 const FIGHTS = sample.fights as FightEntry[];
-const PULL_6 = FIGHTS.find((fight) => fight.index === 6) as FightEntry;
+const PULL_9 = FIGHTS.find((fight) => fight.index === 9) as FightEntry;
+const TRASH_ONLY = FIGHTS.filter((fight) => fight.kind !== 'encounter');
 const BOSS: FightEntry = {
-  ...PULL_6,
+  ...PULL_9,
   index: 90,
   kind: 'encounter',
   name: 'Warden Kelthas',
@@ -45,12 +47,12 @@ describe('the report tabs (decision R3)', () => {
 
 describe('the Fight list (decision R2)', () => {
   it('says a report with no boss pull has none, and numbers trash by length', () => {
-    const options = fightOptions(FIGHTS, 6, false);
+    const options = fightOptions(TRASH_ONLY, 9, false);
     expect(options[0]).toMatchObject({ label: NO_BOSS_PULLS, disabled: true, group: 'Boss pulls' });
-    expect(options.find((option) => option.value === '6')).toMatchObject({
-      label: 'Trash · 12:43',
-      description: '21:07:51 · 177 mobs died',
-    });
+    expect(options.find((option) => option.value === '9')).toMatchObject({ label: 'Trash · 1:47' });
+    expect(options.find((option) => option.value === '9')?.description).toMatch(
+      /^\d\d:\d\d:\d\d · 12 mobs died$/,
+    );
   });
 
   it('hides the pulls that killed nothing until asked, and says how many', () => {
@@ -64,7 +66,7 @@ describe('the Fight list (decision R2)', () => {
   });
 
   it('reads one mob died, never one mobs', () => {
-    const one = { ...PULL_6, index: 99, mob_deaths: 1 };
+    const one = { ...PULL_9, index: 99, mob_deaths: 1 };
     expect(fightOptions([one], 99, false)[1].description).toMatch(/· 1 mob died$/);
   });
 
@@ -80,8 +82,8 @@ describe('the Fight list (decision R2)', () => {
 
 describe('the band’s meta line (directions b1)', () => {
   it('reads a trash pull as zone, pull, length and mobs died', () => {
-    expect(reportMeta('Zephras Isle', PULL_6, undefined, 5)).toBe(
-      'Zephras Isle · Pull 6, Trash · 12:43 · 177 mobs died',
+    expect(reportMeta('Excavation Site: Wetlands', PULL_9, undefined, 5)).toBe(
+      'Excavation Site: Wetlands · Pull 9, Trash · 1:47 · 12 mobs died',
     );
   });
 
@@ -142,9 +144,9 @@ describe('the band’s figure follows the tab (directions b1)', () => {
 
 describe('This pull (directions b1)', () => {
   it('says only what the band does not: the start, the scope’s count and its deaths', () => {
-    const facts = thisPullFacts({ fight: PULL_6, scope: 'Your group', players: 5, deaths: 0, phases: [] });
+    const facts = thisPullFacts({ fight: PULL_9, scope: 'Your group', players: 5, deaths: 0, phases: [] });
     expect(facts.map((fact) => [fact.label, fact.value])).toEqual([
-      ['Started', '21:07:51'],
+      ['Started', formatClock(PULL_9.start)],
       ['In your group', '5'],
       ['Deaths', '0'],
     ]);
@@ -163,7 +165,7 @@ describe('This pull (directions b1)', () => {
 
   it('reads everyone the logger saw as In range', () => {
     const facts = thisPullFacts({
-      fight: PULL_6,
+      fight: PULL_9,
       scope: 'Everyone in range',
       players: 265,
       deaths: 2,
