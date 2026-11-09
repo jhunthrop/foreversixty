@@ -8,7 +8,7 @@ import { apiUnreachable, expect, test } from './support/test';
 import { barToggle, openFilters } from './support/rankings-filters';
 
 // Reads this spec does not answer go unanswered, as the API out of reach (support/test.ts).
-test.beforeEach(({ page }) => apiUnreachable(page, '**/v1/encounters*'));
+test.beforeEach(({ page }) => apiUnreachable(page, '**/v1/rankings/encounters*'));
 
 test.use({ viewport: { width: 360, height: 800 } });
 test.skip(() => test.info().project.name !== 'mobile', 'phone layout only');

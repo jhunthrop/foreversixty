@@ -1,7 +1,7 @@
 // web/tests/e2e/rankings.spec.ts
 // The Rankings page (design/specs/2026-11-07-logs-reports.md section 7; the rules are
-// 2026-10-11-rankings.md's): signed in, the PageHeader's answer says where the character stands
-// and the board marks its row in place (or pins it on top when it is off the page); a header
+// 2026-10-11-rankings.md's; the look is the directions mock b1-rankings*): signed in, the rail's
+// Your rank panel says where the character stands and the board marks its row in place (or pins it on top when it is off the page); a header
 // switch re-aims the board without a reload; signed out, a board has no answer and every class and
 // spec; the ControlBar carries the filters (Region, Phase, Faction and Today only behind Filters),
 // and on a phone collapses to one summary line. The older checks (rows, filters in the URL, guild
@@ -17,7 +17,7 @@ import type { FixtureCharacter } from './support/selector';
 import { choose, fieldBox } from './support/select';
 
 // Reads this spec does not answer go unanswered, as the API out of reach (support/test.ts).
-test.beforeEach(({ page }) => apiUnreachable(page, '**/v1/encounters*'));
+test.beforeEach(({ page }) => apiUnreachable(page, '**/v1/rankings/encounters*'));
 
 const DESKTOP = { width: 1440, height: 900 };
 const PHONE = { width: 390, height: 844 };
@@ -32,6 +32,7 @@ const FROSTBYTE: FixtureCharacter = {
 
 const selector = (page: Page) => page.getByTestId('character-selector');
 const answer = (page: Page) => page.getByTestId('rankings-answer');
+const yourRank = (page: Page) => page.getByTestId('rankings-your-rank');
 const heading = (page: Page) => page.getByTestId('rankings-heading').locator('h2');
 /** The board's own rows, marked as the viewer's (selected: the gold ground and rail). */
 const ownRows = (page: Page) => page.locator('#rankings li[aria-current="true"]');
@@ -55,11 +56,11 @@ test.describe('signed in, desktop', () => {
   }) => {
     const api = await openSignedIn(page);
 
-    // The encounter is the title; the meta names the board and the ruleset.
-    await expect(page.locator('main h1')).toHaveText('Onyxia');
-    await expect(page.locator('#rankings header')).toContainText('Rankings · Fury Warriors · Normal ruleset');
-    await expect(answer(page)).toContainText('Your rank');
-    await expect(answer(page)).toContainText('Obnoxious Yell');
+    // The title band is Rankings; the encounter, class, spec and ruleset are the bar's choices.
+    await expect(page.locator('main h1')).toHaveText('Rankings');
+    await expect(page.getByTestId('control-encounter')).toHaveValue('onyxia');
+    await expect(page.getByTestId('control-ruleset')).toHaveValue('normal');
+    await expect(yourRank(page).locator('h2')).toHaveText('Your rank');
     await expect(page.getByTestId('rankings-answer-rank')).toHaveText(/^\s*14th\s*of 212 Fury Warriors\s*$/);
     await expect(answer(page)).toContainText('On Onyxia, Normal ruleset');
     await expect(page.getByTestId('rankings-answer-parses')).toHaveText('See your parses ›');
@@ -71,9 +72,7 @@ test.describe('signed in, desktop', () => {
     // The board opened on the encounter the character most recently killed, in its own cohort.
     await expect(page).toHaveURL(/\/rankings\/onyxia$/);
     await expect(heading(page)).toHaveText('Fury Warriors');
-    await expect(page.getByTestId('rankings-heading')).toContainText(
-      '212 ranked, each character’s best kill',
-    );
+    await expect(page.getByTestId('rankings-heading')).toContainText('212 ranked on Onyxia');
     const board = api.asked.find(
       (url) => url.searchParams.get('character') === OWN_KEY && url.searchParams.get('page') === null,
     );
@@ -83,6 +82,10 @@ test.describe('signed in, desktop', () => {
     expect(board?.searchParams.get('ruleset')).toBe('normal');
     expect(board?.searchParams.get('metric')).toBe('dps');
     expect(board?.searchParams.get('distinct')).toBe('character');
+
+    // The rail lists the best kill the board placed.
+    await expect(page.getByTestId('rankings-answer-best')).toContainText('DPS');
+    await expect(page.getByTestId('rankings-answer-best')).toContainText('Executed');
 
     // The own row is marked where it is, never pinned, with the You tag; the others are not marked.
     const own = page.getByTestId('ranking-14');
@@ -95,7 +98,7 @@ test.describe('signed in, desktop', () => {
     await expect(own.getByTestId('rank-rank')).toHaveText('14');
   });
 
-  test('the page is the spec: one stamp, no pills, no spine bar, a legend, plain Build and gold Report', async ({
+  test('the page is the spec: one stamp, no pills, no spine bar, the legend, crests, the value opens the report', async ({
     page,
   }) => {
     await openSignedIn(page);
@@ -108,7 +111,7 @@ test.describe('signed in, desktop', () => {
     await expect(page.getByText(/^Updated /)).toHaveCount(1);
     await expect(page.locator('#rankings a[href="/tiers"]')).toHaveText('Tier list ›');
     await expect(page.locator('#rankings')).toContainText('Comparing specs, not characters?');
-    await expect(page.getByTestId('rankings-legend')).toContainText('Rank colour is the percentile:');
+    await expect(page.getByTestId('rankings-legend')).toContainText('Percentile');
     await expect(page.getByTestId('rankings-legend').locator('b')).toHaveText([
       '100',
       '99+',
@@ -124,15 +127,14 @@ test.describe('signed in, desktop', () => {
       /--color-parse-gold/,
     );
 
-    // A single-class board draws no crest in its rows (the header carries it once).
-    await expect(page.getByTestId('ranking-board').locator('img')).toHaveCount(0);
+    // Every row carries its ringed crest (one crest language), even on a one-class board.
+    await expect(page.getByTestId('ranking-1').locator('img')).toHaveAttribute('src', /crests\//);
 
+    // The row reads value, percentile, Executed and length; the value opens the kill in its report.
     const row = page.getByTestId('ranking-1');
-    const colour = (testid: string) =>
-      row.getByTestId(testid).evaluate((node) => getComputedStyle(node).color);
-    expect(await colour('ranking-build')).not.toBe(await colour('ranking-report'));
-    await expect(row.getByTestId('ranking-build')).toHaveAttribute('href', '/b/b1');
-    await expect(row.getByTestId('ranking-report')).toHaveAttribute('href', '/reports/report1?fight=1');
+    await expect(row.getByTestId('ranking-value')).toHaveAttribute('href', '/reports/report1?fight=1');
+    await expect(row.getByTestId('ranking-percentile')).toHaveText('100');
+    await expect(row).toContainText('31/20/0');
 
     // No sign-in prose or button of the page's own.
     await expect(page.locator('#rankings').getByText(/sign in/i)).toHaveCount(0);
@@ -167,16 +169,13 @@ test.describe('signed in, desktop', () => {
       .first()
       .click();
 
-    await expect(answer(page)).toContainText('Frostbyte');
     await expect(heading(page)).toHaveText('Frost Mages');
     await expect(page).toHaveURL(/\/rankings\/warden-kelthas$/);
-    await expect(page.locator('main h1')).toHaveText('Warden Kelthas');
+    await expect(page.getByTestId('control-encounter')).toHaveValue('warden-kelthas');
     await expect(page.getByTestId('rankings-answer-rank')).toHaveText(/^\s*3rd\s*of 3 Frost Mages\s*$/);
     await expect(answer(page)).toContainText('On Warden Kelthas, Normal ruleset');
     await expect(page.getByTestId('ranking-3')).toHaveAttribute('aria-current', 'true');
     await expect(ownRows(page)).toHaveCount(1);
-    // A mage board is one class too: still no crest.
-    await expect(page.getByTestId('ranking-board').locator('img')).toHaveCount(0);
     expect(await page.evaluate(() => (window as unknown as { __kept?: boolean }).__kept)).toBe(true);
 
     const mage = api.asked.filter((url) => url.searchParams.get('class') === 'mage');
@@ -281,7 +280,7 @@ test.describe('signed out, desktop', () => {
     await expect(page.getByTestId('ranking-1')).toBeVisible();
 
     await expect(page.getByTestId('rankings-answer')).toHaveCount(0);
-    await expect(page.locator('main h1')).toHaveText('Warden Kelthas');
+    await expect(page.locator('main h1')).toHaveText('Rankings');
     await expect(heading(page)).toHaveText('Every class and spec');
     await expect(page.getByTestId('rankings-showing-note')).toHaveCount(0);
     // No button of the page's own: the nav selector is the only sign-in control.
@@ -364,9 +363,9 @@ test.describe('phone', () => {
     await choose(page.getByTestId('rankings-stack-region'), 'eu');
     await expect(page).toHaveURL(/region=eu/);
 
-    // A row is a name over a muted line, the figure and Report; the own row is still marked.
+    // A row is a name over its guild and talent split, then the figure; the own row is still marked.
     await expect(page.getByTestId('ranking-14')).toHaveAttribute('aria-current', 'true');
-    await expect(page.getByTestId('ranking-14')).toContainText('40-man');
+    await expect(page.getByTestId('ranking-14')).toContainText('Olympus XXVII · 31/20/0');
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
   });
 });
@@ -438,18 +437,13 @@ test('the board lists ranked kills with guilds, splits, reports and moderation s
 
   await gotoHydrated(page, '/rankings/warden-kelthas', 'rankings-heading');
 
-  await expect(page.locator('main h1')).toHaveText('Warden Kelthas');
   await openFilters(page);
   await expect(page.getByTestId('control-encounter')).toHaveValue('warden-kelthas');
   await expect(page.getByTestId('ranking-1').getByTestId('rank-name')).toHaveText('Elyra Duskvale');
-  // The sub line: guild, spec and class, raid size.
-  await expect(page.getByTestId('ranking-1')).toContainText('The Last Watch · Shadow Priest · 40-man');
+  // The sub line on a board of several classes: guild, spec and class, the talent split.
+  await expect(page.getByTestId('ranking-1')).toContainText('The Last Watch · Shadow Priest · 0/31/20');
   await expect(page.getByTestId('ranking-1').getByTestId('ranking-value')).toHaveText('1,840');
-  await expect(page.getByTestId('ranking-1').getByTestId('ranking-build')).toHaveAttribute(
-    'href',
-    '/b/k7x2qm4a',
-  );
-  await expect(page.getByTestId('ranking-1').getByTestId('ranking-report')).toHaveAttribute(
+  await expect(page.getByTestId('ranking-1').getByTestId('ranking-value')).toHaveAttribute(
     'href',
     '/reports/fixture2abcd?fight=3',
   );
@@ -499,7 +493,6 @@ test('the encounter is a filter: choosing another one moves the board and the pa
 
   await choose(page.getByTestId('control-encounter'), 'onyxia');
   await expect(page).toHaveURL(/\/rankings\/onyxia$/);
-  await expect(page.locator('main h1')).toHaveText('Onyxia');
   await expect(page.getByTestId('control-encounter')).toHaveValue('onyxia');
   // In place: the path moved without a page load.
   expect(await page.evaluate(() => performance.getEntriesByType('navigation').length)).toBe(before);
@@ -568,9 +561,8 @@ test('the character board with no ranked fights says so and links to Upload a lo
   await gotoHydrated(page, '/rankings/warden-kelthas', 'rankings-heading');
 
   const empty = page.getByTestId('rankings-empty');
-  await expect(empty).toContainText(
-    'No ranked fights yet for this filter. Rankings fill in as reports are uploaded.',
-  );
+  await expect(empty).toContainText('No ranked kills on Warden Kelthas yet.');
+  await expect(empty).toContainText('Upload a log with the kill and it ranks here.');
   await expect(empty.getByRole('link', { name: 'Upload a log' })).toHaveAttribute('href', '/logs');
 });
 
@@ -591,9 +583,7 @@ test('the guild board with no ranked guilds says so and links to Upload a log', 
   await page.getByTestId('control-board-guild').click();
 
   const empty = page.getByTestId('rankings-empty');
-  await expect(empty).toContainText(
-    'No ranked fights yet for this filter. Rankings fill in as reports are uploaded.',
-  );
+  await expect(empty).toContainText('A guild ranks once a member uploads a log of the kill.');
   await expect(empty.getByRole('link', { name: 'Upload a log' })).toHaveAttribute('href', '/logs');
 });
 

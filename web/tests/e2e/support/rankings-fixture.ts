@@ -11,8 +11,30 @@ const envelope = (data: unknown) => ({
   body: JSON.stringify({ ok: true, data, error: null, request_id: 'r' }),
 });
 
-export const ONYXIA = { id: 9001, name: 'Onyxia', slug: 'onyxia' };
-export const KELTHAS = { id: 9002, name: 'Warden Kelthas', slug: 'warden-kelthas' };
+export const ONYXIA = {
+  id: 9001,
+  name: 'Onyxia',
+  slug: 'onyxia',
+  zone: "Onyxia's Lair",
+  size: 40,
+  kills: 212,
+};
+export const KELTHAS = {
+  id: 9002,
+  name: 'Warden Kelthas',
+  slug: 'warden-kelthas',
+  zone: null,
+  size: 5,
+  kills: 3,
+};
+
+/** GET /v1/rankings/encounters: the ranked encounters, most kills first. */
+export const RANKED_ENCOUNTERS = '**/v1/rankings/encounters';
+
+/** Answers the ranked encounter list with `rows`. */
+export async function stubRankedEncounters(page: Page, rows: readonly unknown[]): Promise<void> {
+  await page.route(RANKED_ENCOUNTERS, (route) => route.fulfill(envelope({ encounters: rows })));
+}
 
 export const OWN_KEY = 'us/normal/obnoxious-yell';
 export const FROST_KEY = 'us/normal/frostbyte';
@@ -152,6 +174,34 @@ export function characterPage(name: string, cls: string, encounterId: number): R
   };
 }
 
+/** GET /v1/rankings/guilds?kind=speed: four guilds at their fastest kill. */
+export function guildSpeedRows(): Record<string, unknown>[] {
+  const guilds: [string, string, string, number, number][] = [
+    ['The Last Watch', 'us', 'normal', 125_000, 1],
+    ['Stonehearth Vanguard', 'eu', 'normal', 131_000, 2],
+    ['Olympus XXVII', 'us', 'normal', 138_000, 3],
+    ['Ember Court', 'us', 'hardcore', 151_000, 2],
+  ];
+  return guilds.map(([name, region, ruleset, value, daysAgo], index) => ({
+    rank: index + 1,
+    guild: { name, region, ruleset },
+    value,
+    fought_at: new Date(Date.now() - daysAgo * 86_400_000).toISOString(),
+    report_id: `guildreport${index + 1}`,
+    fight_index: 2,
+  }));
+}
+
+/** A board with no rows: nothing ranked yet for the filter. */
+export const EMPTY_BOARD = {
+  rows: [],
+  total: 0,
+  page: 1,
+  per_page: 100,
+  updated_at: '2026-12-13T09:00:00Z',
+  deduped: true,
+};
+
 export interface RankingsApi {
   /** Every GET /v1/rankings the page made, in order. */
   asked: URL[];
@@ -160,7 +210,7 @@ export interface RankingsApi {
 /** Stubs the encounter list, the character pages and the board; returns what the board was asked. */
 export async function stubRankingsApi(page: Page, options: BoardOptions = {}): Promise<RankingsApi> {
   const asked: URL[] = [];
-  await page.route('**/v1/encounters', (route) => route.fulfill(envelope({ rows: [ONYXIA, KELTHAS] })));
+  await stubRankedEncounters(page, [ONYXIA, KELTHAS]);
   await page.route('**/v1/characters/us/normal/obnoxious-yell', (route) =>
     route.fulfill(envelope(characterPage('Obnoxious Yell', 'Warrior', ONYXIA.id))),
   );

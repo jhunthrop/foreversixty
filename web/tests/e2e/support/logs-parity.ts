@@ -9,8 +9,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { Page } from '@playwright/test';
 import { expect } from './test';
-import { stubRankingsApi } from './rankings-fixture';
-import { OBNOXIOUS, armoryPointer, signInWith, signedOut, storePointer } from './selector';
+import { signedOut } from './selector';
 
 const FIXTURES = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../src/fixtures/reports');
 
@@ -39,20 +38,7 @@ const envelope = (data: unknown, status = 200) => ({
 });
 
 export type LogsParityState =
-  | 'logs'
-  | 'logs-empty'
-  | 'logs-you'
-  | 'reports'
-  | 'reports-empty'
-  | 'reports-list'
-  | 'reports-failed'
-  | 'rankings'
-  | 'rankings-empty'
-  | 'rankings-board'
-  | 'rankings-you'
-  | 'rankings-off'
-  | 'rankings-unranked'
-  | 'ratings';
+  'logs' | 'logs-empty' | 'logs-you' | 'reports' | 'reports-empty' | 'reports-list' | 'reports-failed';
 
 /** The fixture's signed-in account (no characters), its list and the public feed. */
 async function stubReports(page: Page, list: 'none' | 'some' | 'fail' | 'out'): Promise<void> {
@@ -98,44 +84,9 @@ async function openReports(page: Page, id: LogsParityState): Promise<void> {
   await expect(page.getByTestId(ready[id as keyof typeof ready]).first()).toBeVisible();
 }
 
-async function openRankings(page: Page, id: LogsParityState): Promise<void> {
-  if (id === 'rankings' || id === 'rankings-empty' || id === 'rankings-board') {
-    await signedOut(page);
-    if (id === 'rankings-empty') {
-      await page.route('**/v1/encounters', (route) => route.fulfill(envelope({ rows: [] })));
-    } else {
-      await stubRankingsApi(page);
-    }
-    await page.goto(id === 'rankings-board' ? '/rankings/warden-kelthas' : '/rankings');
-    await expect(
-      page.getByTestId(
-        {
-          rankings: 'rankings-encounters',
-          'rankings-empty': 'rankings-no-encounters',
-          'rankings-board': 'ranking-1',
-        }[id],
-      ),
-    ).toBeVisible();
-    return;
-  }
-  await signInWith(page, [OBNOXIOUS]);
-  await storePointer(page, armoryPointer(OBNOXIOUS));
-  await stubRankingsApi(page, {
-    ownOffPage: id === 'rankings-off',
-    unranked: id === 'rankings-unranked',
-  });
-  // Signed in, /rankings opens the encounter the character last killed (Onyxia).
-  await page.goto('/rankings');
-  await expect(page.getByTestId('ranking-1')).toBeVisible();
-  await expect(page.getByTestId('rankings-answer')).toBeVisible();
-}
-
 /** Opens one state, every read answered from the fixtures, the clock on the fixture's day. */
 export async function openLogsState(page: Page, id: LogsParityState): Promise<void> {
   await page.clock.setFixedTime(new Date(MINE.now));
   if (id.startsWith('logs')) return openLogs(page, id);
-  if (id.startsWith('reports')) return openReports(page, id);
-  if (id.startsWith('rankings')) return openRankings(page, id);
-  await page.goto('/ratings');
-  await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+  return openReports(page, id);
 }

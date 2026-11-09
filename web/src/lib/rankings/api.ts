@@ -84,7 +84,9 @@ export interface GuildRankingRow {
   guild: { name: string; ruleset: string; region: string };
   value: number;
   fought_at: string;
-  report_id: string;
+  /** Omitted on a Progress row, which spans every encounter. */
+  report_id?: string;
+  fight_index?: number;
 }
 
 /** One ranked fight, in `best[]` and in `history[]` alike: the API returns the same row shape for both. */
@@ -225,6 +227,14 @@ export interface EncounterOption {
   slug: string;
 }
 
+/** An encounter with ranked kills: the zone its newest log named and its usual raid size (null
+ *  when no log says), and how many kills its boards rank. */
+export interface RankedEncounter extends EncounterOption {
+  zone: string | null;
+  size: number | null;
+  kills: number;
+}
+
 export interface RankingsQuery {
   /** The numeric encounter id or the `/rankings/<encounter-slug>` slug -- the API accepts either. */
   encounter: string;
@@ -306,10 +316,8 @@ export async function get<T>(path: string, apiBase: string, signal?: AbortSignal
 /** All reads below are public (a ranking, character page, guild page, report card and
  *  encounter list are not tied to a signed-in visitor), so each goes through query.ts's
  *  shared cache with `scope: 'public'`. `fetchRankings`/`fetchGuildRankings`/character/guild/
- *  ratings reads share one 60-second TTL; `fetchEncounters` is a reference list that changes
- *  only when a new fight type is ever ranked for the first time, so it gets a 1-hour TTL. */
+ *  ratings reads share one 60-second TTL. */
 const RANKINGS_TTL_MS = 60_000;
-const REFERENCE_TTL_MS = 60 * 60 * 1000;
 
 export function fetchRankings(query_: RankingsQuery, apiBase: string = API_BASE_URL): Promise<RankingsPage> {
   const path = `/v1/rankings${search({ ...query_ })}`;
@@ -331,19 +339,20 @@ export function fetchGuildRankings(
 }
 
 /**
- * Every encounter any report has ever ranked, for the /rankings picker: a visitor who
- * has not been handed an `/rankings/<encounter-slug>` link has no way to name one for
- * GET /v1/rankings, so the picker reads this first and offers what exists.
+ * The encounters with ranked kills, most kills first (GET /v1/rankings/encounters): the /rankings
+ * picker and the Encounter filter offer only bosses a board has rows for, each with its zone, its
+ * usual raid size and its kill count. A count moves with every upload, so it shares the boards' TTL.
  */
-export function fetchEncounters(apiBase: string = API_BASE_URL): Promise<{ rows: EncounterOption[] }> {
-  return query<{ rows: EncounterOption[] }>(
-    `${apiBase}/v1/encounters`,
-    () => get('/v1/encounters', apiBase),
-    {
-      scope: 'public',
-      ttlMs: REFERENCE_TTL_MS,
-    },
+export async function fetchRankedEncounters(
+  apiBase: string = API_BASE_URL,
+): Promise<{ rows: RankedEncounter[] }> {
+  const path = '/v1/rankings/encounters';
+  const { encounters } = await query<{ encounters: RankedEncounter[] }>(
+    `${apiBase}${path}`,
+    () => get(path, apiBase),
+    { scope: 'public', ttlMs: RANKINGS_TTL_MS },
   );
+  return { rows: encounters };
 }
 
 export function fetchCharacter(path: CharacterPath, apiBase: string = API_BASE_URL): Promise<CharacterPage> {

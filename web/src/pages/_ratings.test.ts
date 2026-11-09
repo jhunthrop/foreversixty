@@ -73,8 +73,8 @@ describe('/ratings', () => {
     expect(score).toContain(scoreCopy.explainerLaunch);
   });
 
-  it('lists the five parts as the one Plate, with the addon’s labels in its order, each with what moves it', () => {
-    expect(html.split('data-region="plate"').length - 1).toBe(1);
+  it('sets every section on its panel and lists the five parts in the addon’s order, each with what moves it', () => {
+    expect(html.split('data-region="plate"').length - 1).toBe(8);
     let last = -1;
     for (const component of labels.components) {
       const at = html.indexOf(`data-testid="ratings-forever-score-${component.key}"`);
@@ -126,7 +126,7 @@ describe('/ratings', () => {
 
   it('shows the rating sample as three figures: 65 of 100, the last six fights, the weakest part', () => {
     const sample = text(
-      /data-testid="ratings-rating-sample"[\s\S]*?<\/svg>[\s\S]*?Weakest part of a fight[^<]*/.exec(
+      /data-testid="ratings-rating-sample"[\s\S]*?<\/svg>[\s\S]*?Weakest part<\/span>[\s\S]*?<\/span>/.exec(
         html,
       )?.[0] ?? '',
     );
@@ -134,7 +134,7 @@ describe('/ratings', () => {
     expect(sample).toContain(ratingCopy.outOf100);
     expect(sample).toContain('Last 6 fights');
     expect(sample).toContain('Up 25 since the first');
-    expect(sample).toContain('Weakest part of a fight: Activity.');
+    expect(sample).toMatch(/Weakest part\s*Activity/);
   });
 
   it('says "ranked against players of your spec", never "percentile", in the rating copy', () => {

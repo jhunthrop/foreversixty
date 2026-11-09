@@ -149,6 +149,31 @@ export function renderPagesMocks(mocks: readonly string[]): string {
 }
 
 /**
+ * The rankings mocks (ws_rankings.py) from the files the spec serves (support/rankings-parity.ts):
+ * rankings_facts.mjs bundles the rankings stubs and reads them through the page's own view helpers.
+ * Returns the folder that holds web-rankings*.html.
+ */
+export function renderRankingsMocks(): string {
+  const dir = freshDir('rankings');
+  const facts = path.join(dir, 'rankings-facts.json');
+  run('node', [path.join(GENERATORS, 'rankings_facts.mjs'), facts]);
+  run(PYTHON, [path.join(GENERATORS, 'ws_rankings.py')], { FS_RANKINGS_FACTS: facts, FS_MOCK_OUT: dir });
+  return dir;
+}
+
+/**
+ * The /ratings mock (ws_ratings.py) from the score and rating copy modules, through
+ * rankings_facts.mjs. Returns the folder that holds web-ratings.html.
+ */
+export function renderRatingsMocks(): string {
+  const dir = freshDir('ratings');
+  const facts = path.join(dir, 'rankings-facts.json');
+  run('node', [path.join(GENERATORS, 'rankings_facts.mjs'), facts]);
+  run(PYTHON, [path.join(GENERATORS, 'ws_ratings.py')], { FS_RANKINGS_FACTS: facts, FS_MOCK_OUT: dir });
+  return dir;
+}
+
+/**
  * The tier list mocks (ws_tiers.py) from this checkout's data/builds/<active build>/bis, the files
  * the fixture build prerenders /tiers from. Returns the folder that holds web-tiers*.html.
  */

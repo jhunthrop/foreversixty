@@ -1,11 +1,11 @@
 <!-- web/src/components/score/RatingsPage.svelte -->
 <!-- /ratings (logs spec 2026-11-07 section 8, decision T1), rendered once at build time with no
      client script: the PageHeader with the sample Forever Score as its answer (in its tier's
-     colour) and the two-anchor jump row, then a split Page. Main: the Forever Score Section (the
-     five parts as the page's one Plate), the Performance Rating Section (three Figures), and the
-     reference Sections (each component, weights by role, ranked or absolute, the cap). Rail: the
-     tiers in the game's item quality colours, the sample's tinted in its own colour (MUST 6), and
-     how logs get here. Words and numbers: lib/score/copy.ts, lib/rating/copy.ts and
+     colour) and the two-anchor jump row, then a split Page of panels (round 5, the logs lane's
+     panel form). Main: the Forever Score (the page's lead panel: the five parts as a table), the
+     Performance Rating (framed: three Figures), and the reference panels (each component, weights
+     by role, ranked or absolute, the cap). Rail: the tiers in the game's item quality colours on
+     their panel, the sample's tinted in its own colour (MUST 6), and how logs get here. Words and numbers: lib/score/copy.ts, lib/rating/copy.ts and
      lib/score/ratings-page.ts. -->
 <script lang="ts">
   import { ratingCopy } from '../../lib/rating/copy';
@@ -23,7 +23,6 @@
   import Meter from '../ui/Meter.svelte';
   import Page from '../ui/Page.svelte';
   import PageHeader from '../ui/PageHeader.svelte';
-  import Plate from '../ui/Plate.svelte';
   import Row from '../ui/Row.svelte';
   import Section from '../ui/Section.svelte';
   import Spark from '../ui/Spark.svelte';
@@ -74,7 +73,7 @@
   </div>
 {/snippet}
 
-<Page layout="split" testid="ratings-page">
+<Page layout="split" panels testid="ratings-page">
   {#snippet header()}
     <PageHeader title={scoreCopy.explainerPageTitle}>
       {#snippet meta()}
@@ -114,39 +113,39 @@
     meta={scoreCopy.explainerScoreCaption}
     anchor="forever-score"
     testid="ratings-forever-score"
+    panel
+    frame="lead"
   >
     <p class="max-w-[62ch] text-[17px] leading-[26px]" data-testid="ratings-forever-lead">
       {scoreCopy.explainerLead}
     </p>
     <div class="mt-4">
-      <Plate label={scoreCopy.explainerPartsHeading}>
-        <StatTable
-          nameHead="Part"
-          barHead="Of its top"
-          columns={[
-            { id: 'points', label: 'Points' },
-            { id: 'top', label: 'Top' },
-          ]}
-          label={scoreCopy.explainerPartsHeading}
-        >
-          {#each parts as part (part.key)}
-            <StatRow
-              figures={[
-                { value: count(SAMPLE_SCORE.components[part.key]) },
-                { value: scoreCopy.upTo(COMPONENT_MAX[part.key]) },
-              ]}
-              phone={`${SAMPLE_SCORE.components[part.key]} ${scoreCopy.upTo(COMPONENT_MAX[part.key])}`}
-              testid={`ratings-forever-score-${part.key}`}
-            >
-              {#snippet name()}<b>{part.label}</b>{/snippet}
-              {#snippet sub()}{part.moves}{/snippet}
-              {#snippet meter()}<Meter
-                  value={SAMPLE_SCORE.components[part.key] / COMPONENT_MAX[part.key]}
-                />{/snippet}
-            </StatRow>
-          {/each}
-        </StatTable>
-      </Plate>
+      <StatTable
+        nameHead="Part"
+        barHead="Of its top"
+        columns={[
+          { id: 'points', label: 'Points' },
+          { id: 'top', label: 'Top' },
+        ]}
+        label={scoreCopy.explainerPartsHeading}
+      >
+        {#each parts as part (part.key)}
+          <StatRow
+            figures={[
+              { value: count(SAMPLE_SCORE.components[part.key]) },
+              { value: scoreCopy.upTo(COMPONENT_MAX[part.key]) },
+            ]}
+            phone={`${SAMPLE_SCORE.components[part.key]} ${scoreCopy.upTo(COMPONENT_MAX[part.key])}`}
+            testid={`ratings-forever-score-${part.key}`}
+          >
+            {#snippet name()}<b>{part.label}</b>{/snippet}
+            {#snippet sub()}{part.moves}{/snippet}
+            {#snippet meter()}<Meter
+                value={SAMPLE_SCORE.components[part.key] / COMPONENT_MAX[part.key]}
+              />{/snippet}
+          </StatRow>
+        {/each}
+      </StatTable>
     </div>
     {@render prose([scoreCopy.explainerWhat, scoreCopy.explainerLaunch], [false, true])}
   </Section>
@@ -156,6 +155,8 @@
     meta={scoreCopy.explainerRatingCaption}
     anchor="performance-rating"
     testid="ratings-performance-rating"
+    panel
+    frame="framed"
   >
     <p class="max-w-[62ch] text-[17px] leading-[26px]" data-testid="ratings-rating-bridge">
       {`${scoreCopy.explainerRatingBridge} ${scoreCopy.explainerPreparationShared}`}
@@ -169,7 +170,7 @@
       </div>
       <div class="flex min-w-0 flex-col gap-[2px]">
         <span class="text-label text-muted font-bold">Weakest part</span>
-        <span class="text-[15px] leading-5">Weakest part of a fight: {SAMPLE_WEAKEST}.</span>
+        <span class="text-strong text-[15px] leading-5 font-semibold">{SAMPLE_WEAKEST}</span>
       </div>
     </div>
     {@render prose(
@@ -179,13 +180,13 @@
     )}
   </Section>
 
-  <Section title="What each component measures" testid="ratings-components">
+  <Section title="What each component measures" testid="ratings-components" panel>
     {#each ratingsPageCopy.components as item (item.part)}
       <Row title={item.part} sub={item.body} open />
     {/each}
   </Section>
 
-  <Section title="Weights, by role">
+  <Section title="Weights, by role" panel>
     <StatTable
       nameHead="Component"
       bar={false}
@@ -215,7 +216,7 @@
     )}
   </Section>
 
-  <Section title="Ranked against your spec, or absolute" testid="ratings-basis">
+  <Section title="Ranked against your spec, or absolute" testid="ratings-basis" panel>
     {@render prose(
       ratingsPageCopy.rankedOrAbsolute,
       [],
@@ -223,12 +224,12 @@
     )}
   </Section>
 
-  <Section title="The cap">
+  <Section title="The cap" panel>
     {@render prose([ratingCopy.cappedRule])}
   </Section>
 
   {#snippet rail()}
-    <Section title={`${scoreCopy.tierColumn}s`} testid="ratings-forever-tiers">
+    <Section title={`${scoreCopy.tierColumn}s`} testid="ratings-forever-tiers" panel frame="framed">
       {#each tierRanges() as { tier: each, range } (each)}
         <div
           class="ratings-tier"
@@ -248,7 +249,7 @@
         {scoreCopy.tiersNote}
       </p>
     </Section>
-    <Section title={scoreCopy.explainerLogsHeading}>
+    <Section title={scoreCopy.explainerLogsHeading} panel>
       <p class="text-small text-muted" data-testid="ratings-forever-logs">
         {scoreCopy.explainerLogsBody}
       </p>

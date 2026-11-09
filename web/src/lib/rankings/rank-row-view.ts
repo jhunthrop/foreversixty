@@ -1,20 +1,20 @@
 // web/src/lib/rankings/rank-row-view.ts
 // A ranking row as the shared RankRow draws it (logs spec 2026-11-07 section 7): the rank in its
 // percentile colour (the WCL scale, floored: rankColor), the character's name and link in its
-// class colour, `{guild} · {spec} {class} · {size}-man` under it, the bar of its value over the
-// board's top, the figures (the value, Item level, Executed, Length), the date and the links
-// (Report gold, Build). An item level the row does not carry yet reads a dash (G12).
+// class colour, the guild and the talent split under it (and the spec on a board of several
+// classes), the bar of its value over the board's top, the figures (the value, which opens the
+// kill in its report, the percentile, Executed, Length) and the date. The row carries no link strip:
+// a compact list beside the rail has no room for one, and the value is the way into the report.
 import { characterHref, parseCharacterKey, splitUnitName } from '../characters';
 import { formatAmount } from '../report/format';
 import { executionHref, executionLabel, executionTitle } from '../sim/execution';
 import type { RankFigure, RankGap, RankLink, RankNote } from '../ui/rank-list';
 import type { RankingRow } from './api';
 import { rankingsCopy } from './copy';
-import { moderationLine, rankColor, rankingDate } from './row-view';
+import { moderationLine, rankColor, rankPercentile, rankingDate } from './row-view';
 
 const SECONDS_PER_MINUTE = 60;
 const MS_PER_SECOND = 1000;
-const UNKNOWN = '–';
 
 export interface RankRowView {
   rank: string;
@@ -36,10 +36,21 @@ export function killLength(durationMs: number): string {
   return `${Math.floor(seconds / SECONDS_PER_MINUTE)}:${String(seconds % SECONDS_PER_MINUTE).padStart(2, '0')}`;
 }
 
-export function rankRowView(
-  row: RankingRow & { item_level?: number | null },
-  board: { total: number; top: number; unit: string; now: Date },
-): RankRowView {
+/** The board a row is read on: its size, its top value and the value's unit. `multiClass`
+ *  puts the spec and class under the name, where the crest alone would not say the spec. */
+export interface RankBoardView {
+  total: number;
+  top: number;
+  unit: string;
+  multiClass?: boolean;
+}
+
+/** A rank's percentile on its board, floored to a whole number as the colour reads it: 100, 99, 95. */
+export function percentileLabel(rank: number, total: number): string {
+  return String(Math.max(0, Math.floor(rankPercentile(rank, total))));
+}
+
+export function rankRowView(row: RankingRow, board: RankBoardView): RankRowView {
   const name = splitUnitName(row.player.name).name;
   const key = parseCharacterKey(row.player.key);
   const moderation = moderationLine(row.state);
@@ -47,30 +58,31 @@ export function rankRowView(
     rank: String(row.rank),
     rankColor: rankColor(row.rank, board.total),
     name,
-    href:
-      key === null
-        ? `/reports/${row.report_id}?fight=${row.fight_index}`
-        : characterHref(key.region, key.ruleset, row.player.name),
+    href: key === null ? reportHref(row) : characterHref(key.region, key.ruleset, row.player.name),
     classSlug: row.player.class.toLowerCase(),
-    sub: [row.guild?.name, `${row.player.spec} ${row.player.class}`, rankingsCopy.sizeMan(row.size)]
+    sub: [
+      row.guild?.name,
+      board.multiClass === true ? `${row.player.spec} ${row.player.class}` : undefined,
+      row.talent_split,
+    ]
       .filter((part): part is string => part !== undefined && part !== '')
       .join(' · '),
     fraction: board.top > 0 ? row.value / board.top : 0,
     figures: [
       {
         value: formatAmount(Math.round(row.value)),
-        unit: board.unit,
         label: board.unit,
+        href: reportHref(row),
+        title: rankingsCopy.openReport,
         testid: 'ranking-value',
       },
       {
-        value: row.item_level === undefined || row.item_level === null ? UNKNOWN : String(row.item_level),
-        unit: '',
-        label: 'Item level',
+        value: percentileLabel(row.rank, board.total),
+        label: rankingsCopy.percentileLabel,
+        testid: 'ranking-percentile',
       },
       {
         value: executionLabel(row.execution_score ?? null),
-        unit: '',
         label: 'Executed',
         title: executionTitle(row.execution_score ?? null),
         // A scored kill opens compare mode on that fight; an unscored one says why on hover.
@@ -79,20 +91,15 @@ export function rankRowView(
           : { href: executionHref(row.report_id, row.fight_index) }),
         testid: 'ranking-execution',
       },
-      { value: killLength(row.duration_ms), unit: '', label: 'Length' },
+      { value: killLength(row.duration_ms), label: 'Length' },
     ],
-    gap: { text: rankingDate(row.fought_at, board.now), label: 'Date' },
-    links: [
-      {
-        label: 'Report',
-        href: `/reports/${row.report_id}?fight=${row.fight_index}`,
-        primary: true,
-        testid: 'ranking-report',
-      },
-      ...(row.build_id === undefined
-        ? []
-        : [{ label: 'Build', href: `/b/${row.build_id}`, testid: 'ranking-build' }]),
-    ],
+    gap: { text: rankingDate(row.fought_at), label: 'Date' },
+    links: [],
     ...(moderation === null ? {} : { note: { text: moderation } }),
   };
+}
+
+/** The kill in its report. */
+export function reportHref(row: Pick<RankingRow, 'report_id' | 'fight_index'>): string {
+  return `/reports/${row.report_id}?fight=${row.fight_index}`;
 }

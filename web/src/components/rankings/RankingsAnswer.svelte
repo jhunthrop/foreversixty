@@ -1,21 +1,30 @@
 <!-- web/src/components/rankings/RankingsAnswer.svelte -->
-<!-- The board's signed-in answer in the PageHeader (logs spec 2026-11-07 section 7, the tier list's
-     slot): `Your rank`, the character's crest and name in its class colour, the ordinal as a big
-     gold Figure with `of {total} {Spec} {Class}s`, the scope line and `See your parses ›`.
-     Unranked: the sentence and `Upload a log ›`. Failed: `Your rank did not load.` The answer is
-     read by the board's own spec (lib/rankings/own-rank.ts); a newer spec drops an older read. -->
+<!-- The body of the board's Your rank panel in the rail (logs spec 2026-11-07 section 7; directions
+     mock b1-rankings-board): the rank as a big Figure in its percentile colour with
+     `of {total} {Spec} {Class}s`, the scope line, the best kill's facts when the board holds it, and
+     `See your parses ›`. Unranked: the sentence and `Upload a log ›`. Failed: `Your rank did not
+     load.` The answer is read by the board's own spec (lib/rankings/own-rank.ts); a newer spec
+     drops an older read. The block keeps its loading height so the rail never moves. -->
 <script lang="ts">
   import type { MeCharacter } from '../../lib/account/api';
   import type { AnswerSpec, HeaderAnswer } from '../../lib/character-header/types';
-  import { classCrestSrc } from '../../lib/class-crest';
   import { ownParsesAction } from '../../lib/rankings/own-rank';
   import { rankingsCopy, rankingsEmptyCopy } from '../../lib/rankings/copy';
-  import { titleColor, isClassSlug, LINK } from '../../lib/ui/primitives';
+  import type { Fact } from '../../lib/ui/facts';
+  import { LINK } from '../../lib/ui/primitives';
+  import Facts from '../ui/Facts.svelte';
   import Figure from '../ui/Figure.svelte';
 
-  let { spec, character }: { spec: AnswerSpec; character: MeCharacter } = $props();
-
-  const CREST_PX = 40;
+  let {
+    spec,
+    character,
+    best = [],
+  }: {
+    spec: AnswerSpec;
+    character: MeCharacter;
+    /** The best kill's facts (DPS, Executed, Length, Killed) when the board holds the row. */
+    best?: readonly Fact[];
+  } = $props();
 
   let answer = $state<HeaderAnswer | null>(null);
   let failed = $state(false);
@@ -39,37 +48,31 @@
     };
   });
 
-  const slug = $derived(character.class.toLowerCase());
-  const color = $derived(isClassSlug(slug) ? titleColor({ classSlug: slug }) : undefined);
   const parses = $derived(ownParsesAction(character));
   const figure = $derived(answer?.kind === 'figures' ? answer.figures[0] : undefined);
+  const note = $derived(answer?.kind === 'figures' ? answer.note?.text : undefined);
 </script>
 
-<div
-  class="flex flex-col gap-1 min-[900px]:min-w-[360px] min-[900px]:items-end"
-  data-testid="rankings-answer"
->
-  <span class="text-label text-muted font-bold">{rankingsCopy.answerLabel}</span>
-  <span class="flex flex-wrap items-center gap-x-3 gap-y-2 min-[900px]:justify-end">
-    <img src={classCrestSrc(slug)} alt="" width={CREST_PX} height={CREST_PX} class="rounded-full" />
-    <b class="text-[18px] leading-[22px] font-bold" style:color>{character.name}</b>
-    {#if figure !== undefined}
-      <Figure value={figure.value} unit={figure.unit} tone="gold" size="big" testid="rankings-answer-rank" />
-    {/if}
-  </span>
+<div class="flex min-h-[88px] flex-col gap-1" data-testid="rankings-answer">
   {#if failed}
-    <span class="text-small text-muted">{rankingsCopy.answerFailed}</span>
+    <p class="text-small text-muted">{rankingsCopy.answerFailed}</p>
   {:else if answer?.kind === 'sentence'}
-    <span class="text-small text-muted" data-testid="rankings-answer-unranked">{answer.text}</span>
-    <span><a class={LINK} href={rankingsEmptyCopy.href}>{rankingsEmptyCopy.action} ›</a></span>
-  {:else if answer?.kind === 'figures'}
-    <span class="text-small text-muted">{answer.note?.text}</span>
-    <span
-      ><a class={LINK} href={parses.href} data-testid="rankings-answer-parses">{rankingsCopy.parsesLink} ›</a
-      ></span
-    >
-  {:else}
-    <span class="text-small text-muted" aria-hidden="true">&nbsp;</span>
-    <span aria-hidden="true">&nbsp;</span>
+    <p data-testid="rankings-answer-unranked">{answer.text}</p>
+    <p class="mt-2">
+      <a class={LINK} href={rankingsEmptyCopy.href}>{rankingsEmptyCopy.action} ›</a>
+    </p>
+  {:else if figure !== undefined}
+    <Figure
+      value={figure.value}
+      unit={figure.unit}
+      color={figure.color}
+      size="big"
+      testid="rankings-answer-rank"
+    />
+    <p class="text-small text-muted">{note}</p>
+    {#if best.length > 0}<div class="mt-3"><Facts items={best} testid="rankings-answer-best" /></div>{/if}
+    <p class="mt-3">
+      <a class={LINK} href={parses.href} data-testid="rankings-answer-parses">{rankingsCopy.parsesLink} ›</a>
+    </p>
   {/if}
 </div>
