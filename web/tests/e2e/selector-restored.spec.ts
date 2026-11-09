@@ -16,7 +16,7 @@ import {
 } from './support/selector';
 
 // Reads this spec does not answer go unanswered, as the API out of reach (support/test.ts).
-test.beforeEach(({ page }) => apiUnreachable(page, '**/v1/characters/*/*/*', '**/v1/encounters*'));
+test.beforeEach(({ page }) => apiUnreachable(page, '**/v1/characters/*/*/*', '**/v1/rankings/encounters*'));
 
 const FURY = `FS1:${ACTIVE_BUILD}:warrior:orc:0/5530515/0:head=12640,main_hand=11726`;
 

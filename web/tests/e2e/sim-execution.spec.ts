@@ -5,7 +5,7 @@ import { simCopy } from '../../src/lib/sim/copy';
 import { choose } from './support/select';
 
 // Reads this spec does not answer go unanswered, as the API out of reach (support/test.ts).
-test.beforeEach(({ page }) => apiUnreachable(page, '**/v1/encounters*'));
+test.beforeEach(({ page }) => apiUnreachable(page, '**/v1/rankings/encounters*'));
 
 /** The rankings page reads GET /v1/rankings; the suite stubs it, the way rankings.spec.ts does. */
 function page1(rows: unknown[]) {

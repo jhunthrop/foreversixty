@@ -26,41 +26,63 @@
    "box": [
     16,
     60,
-    291,
+    129,
     20
    ],
    "inventory": {}
   },
-  "summary": {
+  "controls": {
    "box": [
     0,
     94,
     412,
-    42
-   ],
-   "inventory": {}
-  },
-  "section-choose-an-encounter": {
-   "box": [
-    16,
-    156,
-    380,
-    230
+    62
    ],
    "inventory": {
-    "row": 2
+    "segment": 2
+   }
+  },
+  "section-encounters": {
+   "box": [
+    16,
+    184,
+    380,
+    743
+   ],
+   "inventory": {
+    "row": 8,
+    "image": 6
    }
   },
   "plate": {
    "box": [
     16,
-    203,
+    2027,
     380,
-    183
+    58
+   ],
+   "inventory": {}
+  },
+  "section-leaders-by-spec": {
+   "box": [
+    16,
+    949,
+    380,
+    1054
    ],
    "inventory": {
-    "row": 2
+    "row": 12,
+    "image": 12
    }
+  },
+  "summary": {
+   "box": [
+    16,
+    2027,
+    380,
+    58
+   ],
+   "inventory": {}
   }
  }
 }

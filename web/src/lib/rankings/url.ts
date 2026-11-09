@@ -12,6 +12,9 @@ export const RANKING_METRICS = [
   { id: 'execution', label: 'Execution' },
 ] as const;
 
+/** A Guilds board kind's id. */
+export type GuildKind = (typeof GUILD_KINDS)[number]['id'];
+
 export const GUILD_KINDS = [
   { id: 'progress', label: 'Progress' },
   { id: 'speed', label: 'Speed' },

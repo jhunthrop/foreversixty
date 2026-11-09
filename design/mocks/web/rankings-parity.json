@@ -1,0 +1,25 @@
+{
+  "comment": "The /rankings states the parity gate checks (web/tests/e2e/parity-rankings.spec.ts) at 1440 x 1000. ws_rankings.py renders each mock from the rankings stubs (tests/e2e/support/rankings-fixture.ts) read through the page's own view helpers (rankings_facts.mjs); tests/e2e/support/rankings-parity.ts serves the build the same stubs.",
+  "viewport": {
+    "width": 1440,
+    "height": 1000
+  },
+  "states": [
+    { "id": "rankings", "path": "/rankings", "mock": "web-rankings.html" },
+    { "id": "rankings-empty", "path": "/rankings", "mock": "web-rankings-empty.html" },
+    { "id": "rankings-board", "path": "/rankings/warden-kelthas", "mock": "web-rankings-board.html" },
+    {
+      "id": "rankings-board-empty",
+      "path": "/rankings/warden-kelthas?class=warrior&spec=Fury",
+      "mock": "web-rankings-board-empty.html"
+    },
+    {
+      "id": "rankings-guilds",
+      "path": "/rankings/warden-kelthas?board=guild&kind=speed",
+      "mock": "web-rankings-guilds.html"
+    },
+    { "id": "rankings-you", "path": "/rankings", "mock": "web-rankings-you.html" },
+    { "id": "rankings-off", "path": "/rankings", "mock": "web-rankings-off.html" },
+    { "id": "rankings-unranked", "path": "/rankings", "mock": "web-rankings-unranked.html" }
+  ]
+}

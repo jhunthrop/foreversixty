@@ -1,5 +1,5 @@
 // web/tests/e2e/parity-pages.spec.ts
-// The changelog, a legal page, the 404 and sign in against their mocks (design/parity.md,
+// The changelog, a legal page, the 404, sign in and /ratings against their mocks (design/parity.md,
 // design/specs/2026-11-08-pages.md section 10): the changelog (All and Game), privacy, the 404
 // signed out and as Felsnap, /login signed out and the /characters lookup, at 1440 and 390, each region (head, head-title, head-meta,
 // head-answer signed in, controls, plate, every section and month) compared for its blocks and
@@ -19,7 +19,7 @@ import {
   writeSideBySide,
 } from './support/parity';
 import { openPagesState, type PagesState } from './support/pages-page';
-import { renderPagesMocks } from './support/parity-mocks';
+import { renderPagesMocks, renderRatingsMocks } from './support/parity-mocks';
 
 const STATES: readonly { id: string; path: string; state: PagesState; mock: string }[] = [
   { id: 'changelog', path: '/changelog', state: 'out', mock: 'web-changelog' },
@@ -113,4 +113,41 @@ test.describe('changelog, legal and 404 mock parity', () => {
       });
     }
   }
+});
+
+// /ratings (lane P5): the score and rating explainer as panels, at 1440 (ws_ratings.py).
+test.describe('ratings mock parity', () => {
+  test.skip(({ isMobile }) => isMobile, 'the parity mocks are desktop captures');
+
+  let mocks = '';
+  // eslint-disable-next-line no-empty-pattern -- Playwright reads a hook's fixtures from its pattern
+  test.beforeAll(({}, testInfo) => {
+    test.skip(testInfo.project.name !== 'desktop', 'the parity mocks are desktop captures');
+    mocks = renderRatingsMocks();
+  });
+
+  test('ratings at 1440 matches web-ratings', async ({ page, browser }) => {
+    test.slow();
+    const viewport = { width: 1440, height: HEIGHT };
+    await page.setViewportSize(viewport);
+    const mockPage = await browser.newPage({ viewport });
+    await openMock(mockPage, mocks, 'web-ratings.html');
+    const mock = await captureRegions(mockPage);
+
+    await prepareParityPage(page);
+    await openPagesState(page, '/ratings', 'out');
+    await settleParityPage(page);
+    const built = await captureRegions(page);
+
+    await writeSideBySide(
+      browser,
+      'pages-ratings-1440',
+      await captureOutlined(mockPage, mock),
+      await captureOutlined(page, built),
+    );
+    await mockPage.close();
+
+    const failures = compareRegions(mock, built);
+    expect(failures, `ratings differs from web-ratings:\n${formatFailures(failures)}`).toEqual([]);
+  });
 });

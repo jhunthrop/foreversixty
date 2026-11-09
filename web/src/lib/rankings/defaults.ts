@@ -8,7 +8,7 @@ import { parseCharacterKey, type CharacterPath } from '../characters';
 import { withRuleSpec } from '../character-spec';
 import { classSlugFromName } from '../report/tree-sizes';
 import type { SpecRole } from '../sim/specs';
-import type { CharacterFight, CharacterPage, EncounterOption } from './api';
+import type { CharacterFight, CharacterPage, EncounterOption, RankedEncounter } from './api';
 import { phaseAt } from './phases';
 import { specFor } from './scope';
 import { AIMED_KEYS, type RankingsDefaults, type RankingsState } from './url';
@@ -58,7 +58,7 @@ export function reaim(state: RankingsState, defaults: RankingsDefaults): Ranking
 
 /** The reads the default encounter is chosen from, injectable so a test needs no network. */
 export interface EncounterReads {
-  encounters(): Promise<{ rows: EncounterOption[] }>;
+  encounters(): Promise<{ rows: RankedEncounter[] }>;
   character(path: CharacterPath): Promise<Pick<CharacterPage, 'history'>>;
 }
 
@@ -77,7 +77,7 @@ export function characterPathOf(character: MeCharacter): CharacterPath | null {
 export async function resolveDefaultEncounter(
   character: MeCharacter | null,
   reads: EncounterReads,
-): Promise<{ slug: string; encounters: EncounterOption[] }> {
+): Promise<{ slug: string; encounters: RankedEncounter[] }> {
   const path = character === null ? null : characterPathOf(character);
   const [listed, page] = await Promise.all([
     reads.encounters().then((result) => result.rows),
@@ -88,7 +88,7 @@ export async function resolveDefaultEncounter(
 
 /**
  * The encounter a board opens on: the one the character most recently killed and so is ranked
- * on, else the first encounter the API lists (until it orders by ranked kills), else none. Only
+ * on, else the encounter with the most ranked kills (the API lists them most first), else none. Only
  * an encounter the API lists is named, so the slug is always one it accepts.
  */
 export function pickDefaultEncounter(

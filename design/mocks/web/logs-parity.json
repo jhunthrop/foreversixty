@@ -1,5 +1,5 @@
 {
-  "comment": "The logs, reports list, rankings and ratings states the parity gate checks (web/tests/e2e/parity-logs.spec.ts) at 1440 x 1000. ws_logs.py renders each mock from web/src/fixtures/reports (the signed-in list and the public feed), the bundled sample's meta, the rankings stubs (tests/e2e/support/rankings-fixture.ts, through logs_facts.mjs) and the copy modules; tests/e2e/support/logs-parity.ts serves the build the same files.",
+  "comment": "The logs and reports list states the parity gate checks (web/tests/e2e/parity-logs.spec.ts) at 1440 x 1000. ws_logs.py renders each mock from web/src/fixtures/reports (the signed-in list and the public feed), the bundled sample's meta and the copy modules; tests/e2e/support/logs-parity.ts serves the build the same files.",
   "viewport": {
     "width": 1440,
     "height": 1000
@@ -39,41 +39,6 @@
       "id": "reports-failed",
       "path": "/reports",
       "mock": "web-reports-failed.html"
-    },
-    {
-      "id": "rankings",
-      "path": "/rankings",
-      "mock": "web-rankings.html"
-    },
-    {
-      "id": "rankings-empty",
-      "path": "/rankings",
-      "mock": "web-rankings-empty.html"
-    },
-    {
-      "id": "rankings-board",
-      "path": "/rankings/warden-kelthas",
-      "mock": "web-rankings-board.html"
-    },
-    {
-      "id": "rankings-you",
-      "path": "/rankings",
-      "mock": "web-rankings-you.html"
-    },
-    {
-      "id": "rankings-off",
-      "path": "/rankings",
-      "mock": "web-rankings-off.html"
-    },
-    {
-      "id": "rankings-unranked",
-      "path": "/rankings",
-      "mock": "web-rankings-unranked.html"
-    },
-    {
-      "id": "ratings",
-      "path": "/ratings",
-      "mock": "web-ratings.html"
     }
   ]
 }

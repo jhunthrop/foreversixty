@@ -99,7 +99,10 @@ const BUDGETS = [
 // duplicated data module) still trips it well before it could threaten a Lighthouse score
 // no test here measures directly.
 const PAGE_ISLAND_BUDGETS = [
-  { component: 'Rankings', limitBytes: 16 * 1024, closureLimitBytes: 113611 },
+  // 2026-11-09 (lane P5): the rankings landing (top parses per boss, the spec leaders), the guild
+  // boards on the ranked list and the designed empty states measured 113,999 on CI; 114,300 keeps
+  // the trip wire. Loading the landing on its own did not help: its modules are shared.
+  { component: 'Rankings', limitBytes: 16 * 1024, closureLimitBytes: 114300 },
   // Raised 16 -> 18 KB (paperdoll lane, 2026-10-31): the character page's Gear section became
   // the shared Paperdoll (design/specs/2026-10-31-paperdoll.md), which statically carries the
   // frame, its model and ItemHover. The spec's own §8 budget lets that frame add up to 4 KB

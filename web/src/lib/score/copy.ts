@@ -201,9 +201,6 @@ export const scoreCopy = {
   explainerRatingHeading: 'Performance Rating',
   explainerScoreCaption: 'Forever Score: your whole record, 0 to 2100.',
   explainerRatingCaption: 'Performance Rating: one fight, 0 to 100.',
-  explainerLead: 'Use it to see how your character compares and which part to work on.',
-  explainerWhat:
-    'The Forever Score is one number for a character, made of five parts that add up to it. It comes only from the logs the site has: fights in public reports, and the gear those logs show. The addon shows the same number on the character’s tooltip in game, dated with the day of the newest fight it counts. A character with no logs here has no score, not a score of zero.',
   explainerLaunch: 'Parses, attendance and raid bosses count once raids open.',
   samplePill: 'Sample',
   explainerPartsHeading: 'What moves each part',
@@ -216,15 +213,9 @@ export const scoreCopy = {
   tierFrom: (from: number): string => `${from} and up`,
   /** The strip's short range: "0–499", ..., "2000+". */
   tierShort: (from: number, to: number | null): string => (to === null ? `${from}+` : `${from}–${to}`),
-  tiersNote:
-    'The tiers take the colours of item quality in game. The ranges may change as more players are logged.',
+  tiersNote: 'The tiers take the colours of item quality.',
   explainerLogsHeading: 'How to get your logs here',
-  explainerLogsBody:
-    'The companion uploads your fights automatically. The companion is a small desktop app that runs beside the game and sends the site your combat log and what the addon saved.',
+  explainerLogsBody: 'The companion uploads your combat log as you play.',
   explainerLogsButton: 'Get the companion',
   explainerLogsHref: '/setup',
-  /** Under "Performance Rating" (fix round 2 items 5 and 11). */
-  explainerRatingBridge: 'A rating scores one fight. The Forever Score counts all of them.',
-  explainerPreparationShared:
-    'Both use the word Preparation for the same thing: the flask, food and enchants you bring to a pull.',
 } as const;

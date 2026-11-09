@@ -10,7 +10,7 @@ test.use({ viewport: { width: 360, height: 640 } });
 
 test('a board whose read fails shifts nothing', async ({ page }) => {
   await signedOut(page);
-  await apiUnreachable(page, '**/v1/encounters*', '**/v1/rankings?**');
+  await apiUnreachable(page, '**/v1/rankings/encounters*', '**/v1/rankings?**');
   await trackLayoutShift(page);
   await page.goto('/rankings/warden-kelthas');
   await expect(page.getByTestId('rankings-error')).toBeVisible();

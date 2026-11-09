@@ -19,7 +19,7 @@ import {
 import { ctaCopy } from '../../src/lib/addon/cta-copy';
 
 // Reads this spec does not answer go unanswered, as the API out of reach (support/test.ts).
-test.beforeEach(({ page }) => apiUnreachable(page, '**/v1/characters/*/*/*', '**/v1/encounters*'));
+test.beforeEach(({ page }) => apiUnreachable(page, '**/v1/characters/*/*/*', '**/v1/rankings/encounters*'));
 
 /** The doors with sub-pages: headed sections in the phone Menu. */
 const GROUPS = ['Guides', 'Logs', 'Guild'];

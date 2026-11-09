@@ -2,14 +2,10 @@
 // How a board's rows read, as plain functions: the rank's parse colour and the legend that
 // explains it, whether rows carry a crest, how a row's date prints, and where the viewer's own
 // row goes (marked in place, or pinned on top when it is off the visible page).
-import { formatDate, relativeTime } from '../dates';
+import { formatDate } from '../dates';
 import { percentileToken } from '../report/format';
 import { rankingsCopy } from './copy';
 import type { RankingRow, RankingsPage } from './api';
-
-const DAY_MS = 86_400_000;
-/** Inside this many days a date reads "3 days ago"; past it, "Nov 25" (the Logs rule). */
-export const RELATIVE_DATE_DAYS = 14;
 
 /** A rank's percentile within its board: first is 100, last is just above 0. */
 export function rankPercentile(rank: number, total: number): number {
@@ -50,11 +46,10 @@ export function showRowCrests(rows: readonly Pick<RankingRow, 'player'>[]): bool
   return new Set(rows.map((row) => row.player.class)).size > 1;
 }
 
-/** "3 days ago" inside two weeks, "Nov 25" after. */
-export function rankingDate(iso: string, now: Date = new Date()): string {
-  const at = new Date(iso);
-  if (now.getTime() - at.getTime() < RELATIVE_DATE_DAYS * DAY_MS) return relativeTime(at, now);
-  return formatDate(at);
+/** The kill's day, "12 Dec": short enough for the board's date column at every width, and a
+ *  board is read against the raid nights, not against today. */
+export function rankingDate(iso: string): string {
+  return formatDate(new Date(iso));
 }
 
 /** Where the viewer's own row goes: in the list where it already is, on top, or nowhere. */

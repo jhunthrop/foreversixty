@@ -174,6 +174,22 @@ describe('RankRow', () => {
   });
 });
 
+describe('phoneFigures (the log rankings, round 5)', () => {
+  it('marks a compact list that keeps its first extra figures beside the sub line on a phone', () => {
+    const kept = html(RankList, { compact: true, phoneFigures: 1, children: text('<li>r</li>') });
+    expect(kept).toContain('data-phone-figures="1"');
+  });
+
+  it('leaves every list without it, and every list that is not compact, as it was', () => {
+    expect(html(RankList, { compact: true, children: text('<li>r</li>') })).not.toContain(
+      'data-phone-figures',
+    );
+    expect(html(RankList, { phoneFigures: 1, children: text('<li>r</li>') })).not.toContain(
+      'data-phone-figures',
+    );
+  });
+});
+
 describe('the compact ranked list (round 5)', () => {
   it('marks a compact list, and leaves every other list as it was', () => {
     const compact = html(RankList, { compact: true, grouped: true, children: text('<li>r</li>') });

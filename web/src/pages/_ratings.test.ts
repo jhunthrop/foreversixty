@@ -50,10 +50,9 @@ describe('/ratings', () => {
     expect(html).toContain('id="performance-rating"');
   });
 
-  it('bridges the two systems with one caption each, in the head', () => {
-    expect(html).toContain(scoreCopy.explainerScoreCaption);
-    expect(html).toContain(scoreCopy.explainerRatingCaption);
-    expect(text(html).split('0 to 2100').length - 1).toBeGreaterThanOrEqual(1);
+  it('bridges the two systems with one caption each, in the head, said once', () => {
+    expect(text(html).split(scoreCopy.explainerScoreCaption).length - 1).toBe(1);
+    expect(text(html).split(scoreCopy.explainerRatingCaption).length - 1).toBe(1);
   });
 
   it('answers with the sample score in its tier colour, out of the five ceilings', () => {
@@ -65,23 +64,20 @@ describe('/ratings', () => {
     expect(text(answer)).toContain(scoreCopy.mostToGainLead);
   });
 
-  it('opens the Forever Score with what to use it for, then what it is, and when raid parts count', () => {
+  it('opens the Forever Score on its parts, then says when raid parts count', () => {
     const score = text(section('forever-score'));
-    const lead = score.indexOf(scoreCopy.explainerLead);
-    expect(lead).toBeGreaterThan(-1);
-    expect(score.indexOf(scoreCopy.explainerWhat)).toBeGreaterThan(lead);
     expect(score).toContain(scoreCopy.explainerLaunch);
   });
 
-  it('lists the five parts as the one Plate, with the addon’s labels in its order, each with what moves it', () => {
-    expect(html.split('data-region="plate"').length - 1).toBe(1);
+  it('sets every section on its panel and lists the five parts in the addon’s order, each with what moves it', () => {
+    expect(html.split('data-region="plate"').length - 1).toBe(4);
     let last = -1;
     for (const component of labels.components) {
       const at = html.indexOf(`data-testid="ratings-forever-score-${component.key}"`);
       expect(at, component.key).toBeGreaterThan(last);
       last = at;
       expect(html).toContain(`>${component.label}<`);
-      expect(html).toContain(scoreCopy.upTo(COMPONENT_MAX[component.key as keyof typeof COMPONENT_MAX]));
+      expect(html).toContain(`>${COMPONENT_MAX[component.key as keyof typeof COMPONENT_MAX]}<`);
     }
     for (const component of scoreCopy.components) expect(html).toContain(component.moves);
   });
@@ -118,15 +114,9 @@ describe('/ratings', () => {
     expect(text(logs)).toContain('Get the companion');
   });
 
-  it('bridges to the rating as running text: "them. Both", and the two Preparations are one thing', () => {
-    const bridge = /<p[^>]*data-testid="ratings-rating-bridge"[^>]*>([\s\S]*?)<\/p>/.exec(html)?.[1] ?? '';
-    expect(text(bridge)).toContain('A rating scores one fight. The Forever Score counts all of them. Both');
-    expect(text(bridge)).toContain(scoreCopy.explainerPreparationShared);
-  });
-
   it('shows the rating sample as three figures: 65 of 100, the last six fights, the weakest part', () => {
     const sample = text(
-      /data-testid="ratings-rating-sample"[\s\S]*?<\/svg>[\s\S]*?Weakest part of a fight[^<]*/.exec(
+      /data-testid="ratings-rating-sample"[\s\S]*?<\/svg>[\s\S]*?Weakest part<\/span>[\s\S]*?<\/span>/.exec(
         html,
       )?.[0] ?? '',
     );
@@ -134,7 +124,7 @@ describe('/ratings', () => {
     expect(sample).toContain(ratingCopy.outOf100);
     expect(sample).toContain('Last 6 fights');
     expect(sample).toContain('Up 25 since the first');
-    expect(sample).toContain('Weakest part of a fight: Activity.');
+    expect(sample).toMatch(/Weakest part\s*Activity/);
   });
 
   it('says "ranked against players of your spec", never "percentile", in the rating copy', () => {
@@ -166,7 +156,7 @@ describe('/ratings', () => {
     expect(section('the-cap')).toContain(ratingCopy.cappedRule);
   });
 
-  it('draws no card: one Plate, open Sections', () => {
+  it('draws no card: the two systems on panels, the reference open', () => {
     expect(html).not.toMatch(/card-surface|rounded-panel/);
     expect(SAMPLE_SCORE.tier).toBe('epic');
   });
@@ -175,7 +165,7 @@ describe('/ratings', () => {
     for (const component of labels.components.filter((c) => c.key !== 'discipline')) {
       expect(source).not.toContain(`'${component.label}'`);
     }
-    expect(source).not.toContain(scoreCopy.explainerWhat);
-    expect(source).not.toContain(scoreCopy.explainerLead);
+    expect(source).not.toContain(scoreCopy.explainerLaunch);
+    expect(source).not.toContain(scoreCopy.tiersNote);
   });
 });

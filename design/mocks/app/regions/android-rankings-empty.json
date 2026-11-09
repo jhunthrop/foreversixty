@@ -26,35 +26,59 @@
    "box": [
     16,
     60,
-    291,
+    129,
     20
    ],
    "inventory": {}
   },
-  "summary": {
+  "controls": {
    "box": [
     0,
     94,
     412,
-    42
+    62
    ],
-   "inventory": {}
+   "inventory": {
+    "segment": 2
+   }
   },
-  "section-choose-an-encounter": {
+  "section-encounters": {
    "box": [
     16,
-    156,
+    184,
     380,
-    173
+    206
    ],
-   "inventory": {}
+   "inventory": {
+    "button": 1
+   }
   },
   "plate": {
    "box": [
     16,
-    203,
+    574,
     380,
-    126
+    58
+   ],
+   "inventory": {}
+  },
+  "section-how-to-get-your-logs-here": {
+   "box": [
+    16,
+    414,
+    380,
+    138
+   ],
+   "inventory": {
+    "button": 1
+   }
+  },
+  "summary": {
+   "box": [
+    16,
+    574,
+    380,
+    58
    ],
    "inventory": {}
   }

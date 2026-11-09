@@ -49,7 +49,7 @@ test('explains the percentile-vs-absolute rule, small samples, and role-specific
   await page.goto('/ratings');
   await expect(page.getByTestId('ratings-basis')).toContainText('20');
   await expect(page.getByTestId('ratings-small-samples')).toBeVisible();
-  await expect(page.getByTestId('ratings-roles')).toContainText('tanks and healers');
+  await expect(page.getByTestId('ratings-roles')).toContainText('healer');
 });
 
 test('says a wipe scores differently than a kill', async ({ page }) => {

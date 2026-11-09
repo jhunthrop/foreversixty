@@ -2,13 +2,26 @@
 // Every visible string the /rankings encounter picker uses, in the site's own honest-copy
 // voice: never demands a choice the visitor cannot make.
 export const encounterPickerCopy = {
-  heading: 'Choose an encounter',
-  failed: 'Encounters did not load.',
-  noneYet: 'No encounters have been ranked yet.',
-  tryGuildsProgress: 'The Guilds board ranks guild progress across every encounter and needs none.',
-  openGuildsBoard: 'Open the Guilds board',
-  openProgressBoard: 'Open the Progress board',
-  noEncountersOption: 'No encounters yet',
+  heading: 'Encounters',
+  noneYet: 'No boss kills are ranked yet.',
+  /** What fills it: the line under the empty sentence. */
+  fill: 'A boss gets its board when the first log of its kill is uploaded.',
+  /** "Onyxia's Lair · 40-player"; either half left out when no log named it. */
+  where: (zone: string | null, size: number | null): string =>
+    [zone, size === null ? null : `${size}-player`]
+      .filter((part) => part !== null && part !== '')
+      .join(' · '),
+  /** "212 ranked": the encounter's ranked kills. */
+  ranked: (kills: number): string => `${kills.toLocaleString('en-US')} ranked`,
+  /** One line in place of an encounter's top parses, or of the spec leaders. */
+  topFailed: 'Top parses did not load.',
+  topNone: 'No ranked kill on this board yet.',
+  leadersHeading: 'Leaders by spec',
+  /** The leaders' two lists, by what each spec is ranked on. */
+  damageHead: 'Damage',
+  healingHead: 'Healing',
+  /** Over the encounters past the busiest few. */
+  more: 'More encounters',
 } as const;
 
 /** The home page's Rankings panel (spec 2026-09-23 §2 item 3): the top five guilds by
@@ -25,11 +38,20 @@ export const homeTopGuildsCopy = {
   bosses: (count: number): string => `${count} ${count === 1 ? 'boss' : 'bosses'}`,
 } as const;
 
-/** Spec 2026-09-25 §6: every ranking board's own empty state, character or guild. */
+/** Spec 2026-09-25 §6: every ranking board's own empty state, character or guild: what is
+ *  missing, then what fills it, then the one action (and, on a narrowed board, the wider one). */
 export const rankingsEmptyCopy = {
-  message: 'No ranked fights yet for this filter. Rankings fill in as reports are uploaded.',
+  /** "No Fury Warrior kills on Onyxia yet." */
+  board: (cohort: string, encounter: string): string => `No ${cohort} kills on ${encounter} yet.`,
+  boardFill: 'Upload a log with the kill and it ranks here.',
+  guilds: (encounter: string): string => `No guild has a ranked kill on ${encounter} yet.`,
+  guildsAnywhere: 'No guild has a ranked boss kill yet.',
+  guildsFill: 'A guild ranks once a member uploads a log of the kill.',
   action: 'Upload a log',
   href: '/logs',
+  widen: 'Every class and spec',
+  /** Under an empty board: the bosses that do have ranked kills. */
+  elsewhere: 'Bosses with ranked kills',
 } as const;
 
 /**
@@ -40,8 +62,6 @@ export const rankingsEmptyCopy = {
 export const rankingsCopy = {
   eyebrow: 'Characters',
   h1: 'Rankings',
-  jobSignedIn: 'Where your character stands among characters like it.',
-  jobSignedOut: 'How characters rank on each encounter, kill by kill.',
   tierQuestion: 'Comparing specs, not characters?',
   tierLink: 'Tier list',
   tierHref: '/tiers',
@@ -61,11 +81,12 @@ export const rankingsCopy = {
     `Not ranked yet on ${encounter}. Upload a log of a kill to get on the board.`,
 
   everyClassAndSpec: 'Every class and spec',
-  anotherBoard: 'Another class or spec',
+  /** The board panel's action on a narrowed board: back to every class and spec. */
+  widen: 'Every class and spec',
   showingNote: (shown: string, own: string) => `Showing ${shown}. Your rank is on the ${own} board.`,
   backTo: (own: string) => `Back to ${own}`,
 
-  legendLead: 'Rank colour is the percentile:',
+  legendLead: 'Percentile',
   legendUnderLast: 'under 25',
 
   ownBest: 'Your best kill',
@@ -89,8 +110,16 @@ export const rankingsCopy = {
   allRegions: 'All regions',
   allPhases: 'All phases',
   everyClass: 'Every class',
+  /** The Guilds Progress board's encounter choice: every boss at once. */
+  everyEncounter: 'Every encounter',
   everySpec: 'Every spec',
   bothFactions: 'Both',
   todayOnly: 'Today only',
-  sizeMan: (size: number) => `${size}-man`,
+  percentileLabel: 'Percentile',
+  /** The value's hover line: it opens the kill in its report. */
+  openReport: 'Open the kill in its report',
+  /** The guild board's panel titles, by kind. */
+  guildTitle: { progress: 'Most bosses killed', speed: 'Fastest kills', execution: 'Fewest deaths' },
+  /** An execution guild row's figure (a progress row's is homeTopGuildsCopy.bosses). */
+  deaths: (count: number): string => `${count} ${count === 1 ? 'death' : 'deaths'}`,
 } as const;

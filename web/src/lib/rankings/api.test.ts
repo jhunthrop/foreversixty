@@ -7,8 +7,8 @@ import {
   encounterSlug,
   fetchCharacter,
   fetchCharacterRating,
-  fetchEncounters,
   fetchGuild,
+  fetchRankedEncounters,
   fetchRankings,
   fetchReportRatings,
 } from './api';
@@ -51,7 +51,7 @@ function envelope(data: unknown, status = 200): Response {
 afterEach(() => {
   // Every read in this file now caches through query.ts's shared, module-level store
   // (scope: 'public'), so a later test that reuses a prior test's exact apiBase/path -- the
-  // fetchEncounters failure test reads the same URL as the fetchEncounters success test right
+  // fetchRankedEncounters failure test reads the same URL as its success test right
   // above it -- would otherwise see a still-fresh entry and never call `fetch` at all.
   invalidate('');
   vi.unstubAllGlobals();
@@ -120,17 +120,17 @@ describe('character and guild', () => {
   });
 });
 
-describe('fetchEncounters', () => {
-  it('reads the encounter list the /rankings picker offers', async () => {
-    const upstream = vi.fn<GlobalFetch>(async () =>
-      envelope({ rows: [{ id: 9001, name: 'Warden Kelthas', slug: 'warden-kelthas' }] }),
-    );
+describe('fetchRankedEncounters', () => {
+  const RANKED = { id: 9001, name: 'Warden Kelthas', slug: 'warden-kelthas', zone: null, size: 5, kills: 2 };
+
+  it('reads the ranked encounters the /rankings picker offers', async () => {
+    const upstream = vi.fn<GlobalFetch>(async () => envelope({ encounters: [RANKED] }));
     vi.stubGlobal('fetch', upstream);
 
-    const { rows } = await fetchEncounters(API);
+    const { rows } = await fetchRankedEncounters(API);
 
-    expect(rows).toEqual([{ id: 9001, name: 'Warden Kelthas', slug: 'warden-kelthas' }]);
-    expect((upstream.mock.calls[0][0] as Request).url).toBe(`${API}/v1/encounters`);
+    expect(rows).toEqual([RANKED]);
+    expect((upstream.mock.calls[0][0] as Request).url).toBe(`${API}/v1/rankings/encounters`);
   });
 
   it('turns a failure into a RankingsError, like every other read here', async () => {
@@ -140,7 +140,7 @@ describe('fetchEncounters', () => {
         throw new TypeError('offline');
       }),
     );
-    await expect(fetchEncounters(API)).rejects.toBeInstanceOf(RankingsError);
+    await expect(fetchRankedEncounters(API)).rejects.toBeInstanceOf(RankingsError);
   });
 });
 
@@ -303,11 +303,11 @@ describe('caching through query.ts', () => {
     expect(fetchSpy).toHaveBeenCalledTimes(1);
   });
 
-  it('fetchEncounters caches for the reference TTL', async () => {
-    const fetchSpy = vi.fn<GlobalFetch>(async () => envelope({ rows: [] }));
+  it('fetchRankedEncounters caches for the board TTL', async () => {
+    const fetchSpy = vi.fn<GlobalFetch>(async () => envelope({ encounters: [] }));
     vi.stubGlobal('fetch', fetchSpy);
-    await fetchEncounters(API);
-    await fetchEncounters(API);
+    await fetchRankedEncounters(API);
+    await fetchRankedEncounters(API);
     expect(fetchSpy).toHaveBeenCalledTimes(1);
   });
 });

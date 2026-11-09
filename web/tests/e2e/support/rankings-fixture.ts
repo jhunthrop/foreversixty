@@ -11,8 +11,30 @@ const envelope = (data: unknown) => ({
   body: JSON.stringify({ ok: true, data, error: null, request_id: 'r' }),
 });
 
-export const ONYXIA = { id: 9001, name: 'Onyxia', slug: 'onyxia' };
-export const KELTHAS = { id: 9002, name: 'Warden Kelthas', slug: 'warden-kelthas' };
+export const ONYXIA = {
+  id: 9001,
+  name: 'Onyxia',
+  slug: 'onyxia',
+  zone: "Onyxia's Lair",
+  size: 40,
+  kills: 212,
+};
+export const KELTHAS = {
+  id: 9002,
+  name: 'Warden Kelthas',
+  slug: 'warden-kelthas',
+  zone: null,
+  size: 5,
+  kills: 3,
+};
+
+/** GET /v1/rankings/encounters: the ranked encounters, most kills first. */
+export const RANKED_ENCOUNTERS = '**/v1/rankings/encounters';
+
+/** Answers the ranked encounter list with `rows`. */
+export async function stubRankedEncounters(page: Page, rows: readonly unknown[]): Promise<void> {
+  await page.route(RANKED_ENCOUNTERS, (route) => route.fulfill(envelope({ encounters: rows })));
+}
 
 export const OWN_KEY = 'us/normal/obnoxious-yell';
 export const FROST_KEY = 'us/normal/frostbyte';
@@ -51,6 +73,8 @@ const WARRIORS: Seed[] = [
   { name: 'Obnoxious Yell', cls: 'Warrior', spec: 'Fury', key: OWN_KEY },
   { name: 'Bladewick', cls: 'Warrior', spec: 'Fury', key: 'us/normal/bladewick' },
 ];
+/** Who holds rank 14 when the viewer's best kill is elsewhere. */
+const STAND_IN: Seed = { name: 'Grimhollow', cls: 'Warrior', spec: 'Fury', key: 'us/normal/grimhollow' };
 const MAGES: Seed[] = [
   { name: 'Emberlyn', cls: 'Mage', spec: 'Frost', key: 'us/normal/emberlyn' },
   { name: 'Quillfeather', cls: 'Mage', spec: 'Frost', key: 'us/normal/quillfeather' },
@@ -62,15 +86,37 @@ const MIXED: Seed[] = [
   MAGES[0]!,
 ];
 
+/** Every class on Onyxia's DPS board (the landing's top three and the spec leaders). */
+const ONYXIA_DAMAGE: Seed[] = [
+  { name: 'Vashrel', cls: 'Rogue', spec: 'Combat', key: 'us/normal/vashrel' },
+  WARRIORS[0]!,
+  { name: 'Ysolde', cls: 'Mage', spec: 'Fire', key: 'us/normal/ysolde' },
+  { name: 'Corvane', cls: 'Warlock', spec: 'Destruction', key: 'us/normal/corvane' },
+  { name: 'Haldrik', cls: 'Hunter', spec: 'Marksmanship', key: 'us/normal/haldrik' },
+  MAGES[0]!,
+  { name: 'Tamsin Reed', cls: 'Druid', spec: 'Feral', key: 'us/normal/tamsin-reed' },
+  { name: 'Grenna', cls: 'Shaman', spec: 'Enhancement', key: 'us/normal/grenna' },
+];
+/** Onyxia's HPS board: its healers. */
+const ONYXIA_HEALING: Seed[] = [
+  { name: 'Lumen Ashby', cls: 'Priest', spec: 'Holy', key: 'us/normal/lumen-ashby' },
+  { name: 'Brannagh', cls: 'Shaman', spec: 'Restoration', key: 'us/normal/brannagh' },
+  { name: 'Oswin Hale', cls: 'Paladin', spec: 'Holy', key: 'us/normal/oswin-hale' },
+  { name: 'Mirethil', cls: 'Druid', spec: 'Restoration', key: 'us/normal/mirethil' },
+];
+/** Onyxia's every-class board counts this many characters. */
+const ONYXIA_ALL = 640;
+
 function row(seed: Seed, rank: number): Record<string, unknown> {
   return {
     rank,
     player: { key: seed.key, name: seed.name, class: seed.cls, spec: seed.spec },
     guild: rank % 2 === 0 ? { name: 'Olympus XXVII', ruleset: 'normal', region: 'us' } : undefined,
-    value: 900 - rank * 12,
+    // A far rank still reads as a real kill: a floor on the value, a cap on the length and the age.
+    value: Math.max(300, 900 - rank * 12),
     size: 40,
-    fought_at: new Date(Date.now() - rank * 86_400_000).toISOString(),
-    duration_ms: 160_000 + rank * 1000,
+    fought_at: new Date(Date.now() - Math.min(rank, 30) * 86_400_000).toISOString(),
+    duration_ms: 160_000 + Math.min(rank, 40) * 1000,
     talent_split: '31/20/0',
     build_id: `b${rank}`,
     trinkets: [],
@@ -97,11 +143,22 @@ export interface BoardOptions {
 export function boardFor(url: URL, options: BoardOptions = {}): Record<string, unknown> {
   const cls = (url.searchParams.get('class') ?? '').toLowerCase();
   const character = url.searchParams.get('character');
-  const seeds = cls === 'warrior' ? WARRIORS : cls === 'mage' ? MAGES : MIXED;
+  const onyxiaAll = cls === '' && url.searchParams.get('encounter') === ONYXIA.slug;
+  const healing = url.searchParams.get('metric') === 'hps';
+  const seeds =
+    cls === 'warrior'
+      ? WARRIORS
+      : cls === 'mage'
+        ? MAGES
+        : onyxiaAll
+          ? healing
+            ? ONYXIA_HEALING
+            : ONYXIA_DAMAGE
+          : MIXED;
   const rows = rowsOf(seeds);
   const base = {
     rows,
-    total: cls === 'warrior' ? TOTAL : rows.length,
+    total: cls === 'warrior' ? TOTAL : onyxiaAll ? ONYXIA_ALL : rows.length,
     page: 1,
     per_page: 100,
     updated_at: '2026-12-13T09:00:00Z',
@@ -118,9 +175,12 @@ export function boardFor(url: URL, options: BoardOptions = {}): Record<string, u
     const index = seeds.findIndex((seed) => seed.key === character);
     return index < 0 ? null : { rank: index + 1, row: rows[index] };
   })();
+  // Off the page or unranked, the viewer's row is another warrior's: the page still runs 1 to 15.
   const rowsShown =
     (options.ownOffPage === true || options.unranked === true) && cls === 'warrior'
-      ? rows.filter((entry) => (entry.player as { key: string }).key !== OWN_KEY)
+      ? rows.map((entry, index) =>
+          (entry.player as { key: string }).key === OWN_KEY ? row(STAND_IN, index + 1) : entry,
+        )
       : rows;
   return {
     ...base,
@@ -152,6 +212,34 @@ export function characterPage(name: string, cls: string, encounterId: number): R
   };
 }
 
+/** GET /v1/rankings/guilds?kind=speed: four guilds at their fastest kill. */
+export function guildSpeedRows(): Record<string, unknown>[] {
+  const guilds: [string, string, string, number, number][] = [
+    ['The Last Watch', 'us', 'normal', 125_000, 1],
+    ['Stonehearth Vanguard', 'eu', 'normal', 131_000, 2],
+    ['Olympus XXVII', 'us', 'normal', 138_000, 3],
+    ['Ember Court', 'us', 'hardcore', 151_000, 2],
+  ];
+  return guilds.map(([name, region, ruleset, value, daysAgo], index) => ({
+    rank: index + 1,
+    guild: { name, region, ruleset },
+    value,
+    fought_at: new Date(Date.now() - daysAgo * 86_400_000).toISOString(),
+    report_id: `guildreport${index + 1}`,
+    fight_index: 2,
+  }));
+}
+
+/** A board with no rows: nothing ranked yet for the filter. */
+export const EMPTY_BOARD = {
+  rows: [],
+  total: 0,
+  page: 1,
+  per_page: 100,
+  updated_at: '2026-12-13T09:00:00Z',
+  deduped: true,
+};
+
 export interface RankingsApi {
   /** Every GET /v1/rankings the page made, in order. */
   asked: URL[];
@@ -160,7 +248,7 @@ export interface RankingsApi {
 /** Stubs the encounter list, the character pages and the board; returns what the board was asked. */
 export async function stubRankingsApi(page: Page, options: BoardOptions = {}): Promise<RankingsApi> {
   const asked: URL[] = [];
-  await page.route('**/v1/encounters', (route) => route.fulfill(envelope({ rows: [ONYXIA, KELTHAS] })));
+  await stubRankedEncounters(page, [ONYXIA, KELTHAS]);
   await page.route('**/v1/characters/us/normal/obnoxious-yell', (route) =>
     route.fulfill(envelope(characterPage('Obnoxious Yell', 'Warrior', ONYXIA.id))),
   );

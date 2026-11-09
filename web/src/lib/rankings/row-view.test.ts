@@ -85,15 +85,9 @@ describe('the colour legend', () => {
 });
 
 describe('the row date', () => {
-  const now = new Date('2026-12-13T12:00:00Z');
-
-  it('reads relative inside two weeks', () => {
-    expect(rankingDate('2026-12-10T12:00:00Z', now)).toBe('3 days ago');
-    expect(rankingDate('2026-12-13T09:00:00Z', now)).toBe('3 hours ago');
-  });
-
-  it('prints the date from two weeks on', () => {
-    expect(rankingDate('2026-11-25T12:00:00Z', now)).toBe('25 Nov');
+  it('prints the kill day', () => {
+    expect(rankingDate('2026-12-10T12:00:00Z')).toBe('10 Dec');
+    expect(rankingDate('2026-11-25T12:00:00Z')).toBe('25 Nov');
   });
 });
 

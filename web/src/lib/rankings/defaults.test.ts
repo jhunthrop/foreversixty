@@ -93,8 +93,8 @@ describe('reaim', () => {
 
 describe('resolveDefaultEncounter', () => {
   const listed = [
-    { id: 9001, name: 'Warden Kelthas', slug: 'warden-kelthas' },
-    { id: 9002, name: 'Onyxia', slug: 'onyxia' },
+    { id: 9001, name: 'Warden Kelthas', slug: 'warden-kelthas', zone: null, size: 5, kills: 3 },
+    { id: 9002, name: 'Onyxia', slug: 'onyxia', zone: "Onyxia's Lair", size: 40, kills: 212 },
   ];
   const reads = (history: { encounter_id: number }[] | Error) => ({
     encounters: () => Promise.resolve({ rows: listed }),
