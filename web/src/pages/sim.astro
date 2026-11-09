@@ -11,10 +11,14 @@ import Base from '../layouts/Base.astro';
 import IslandScript from '../components/IslandScript.astro';
 import SimLandingPage from '../components/sim/SimLandingPage.svelte';
 import { loadBisSetRail } from '../lib/sim/bis-set-rail';
+import { loadBisBenchmarks } from '../lib/sim/bis-benchmark-load';
 import { searchCopy } from '../lib/search-copy';
 import { webApplicationLd } from '../lib/seo';
 
 const bisSets = loadBisSetRail(activeBuild.build);
+// The published sets a run is read against (lib/sim/bis-benchmark.ts); sim.html is also every
+// saved run's shell (src/worker.ts), so the table rides on it.
+const bisBenchmarks = loadBisBenchmarks(activeBuild.build);
 const jsonLd = [
   webApplicationLd({
     name: searchCopy.sim.appName,
@@ -28,7 +32,12 @@ const jsonLd = [
 <Base title={searchCopy.sim.title} description={searchCopy.sim.description} path="/sim" {jsonLd} wide>
   <link rel="stylesheet" href="/sim-island.css" slot="head" />
   <main id="main" tabindex="-1" class="sim-page">
-    <div id="sim" data-sim-mount data-bis-sets={JSON.stringify(bisSets)}>
+    <div
+      id="sim"
+      data-sim-mount
+      data-bis-sets={JSON.stringify(bisSets)}
+      data-bis-benchmarks={JSON.stringify(bisBenchmarks)}
+    >
       <SimLandingPage bisSets={bisSets} />
       <noscript>
         <p class="text-muted px-[18px] text-[14px] md:px-0">

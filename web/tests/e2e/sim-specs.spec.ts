@@ -106,11 +106,11 @@ test.describe('/sim/specs', () => {
 
     const protectionWarrior = page.getByTestId('spec-unsimulated-warrior-protection');
     await expect(protectionWarrior).toContainText('Protection Warrior');
-    await expect(protectionWarrior).toContainText(simCopy.specsUnsimulatedBody);
+    await expect(protectionWarrior).toHaveAttribute('href', '/guides/warrior/protection');
 
     const restorationDruid = page.getByTestId('spec-unsimulated-druid-restoration');
     await expect(restorationDruid).toContainText('Restoration Druid');
-    await expect(restorationDruid).toContainText(simCopy.specsUnsimulatedBody);
+    await expect(restorationDruid).toHaveAttribute('href', '/guides/druid/restoration');
 
     // No fidelity pill, no engine stamp, no "Not yet" badge link -- SpecCard's own testids
     // never appear inside this group.

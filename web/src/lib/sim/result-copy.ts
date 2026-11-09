@@ -131,6 +131,8 @@ export const spreadCopy = {
     highest: 'Highest',
     runs: 'Runs',
   },
+  /** The published set the run is read against (lib/sim/bis-benchmark.ts). */
+  benchmark: 'Best-in-slot set',
 } as const;
 
 export const pageErrorCopy = {

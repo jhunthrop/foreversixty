@@ -653,9 +653,6 @@ export const simCopy = {
   /** `/sim/specs`: heading over the 8 healer/tank cards, grouped below rather than
    *  interleaved, so the page reads as "these 20 work, these 8 do not". */
   specsUnsimulatedHeading: 'Healers and tanks',
-  /** Exact body text task-2-brief.md specifies, verbatim, for every card in that second
-   *  group -- no fidelity pill, no engine stamp, no "Not yet" badge link. */
-  specsUnsimulatedBody: 'Not simulated yet: damage specs first; healers and tanks come later',
   /**
    * Fix round 1, Finding B: the `<Base description="...">` strings are what a healer or
    * tank reads in a search result or a link preview -- the first place the DPS-only claim
@@ -913,6 +910,8 @@ export const bulkCopy = {
 
   // --- talents and sets ---
   talentsOwn: 'Your current build',
+  /** The published set's own talents at the character's band (talent-loadouts.ts guideLoadout). */
+  talentsGuide: (band: number): string => `Guide build, level ${band}`,
   /** The /sim/talents candidates block's title. */
   talentBuildsTitle: 'Talent builds',
   talentsSaved: 'Your saved builds',
@@ -1042,6 +1041,10 @@ export const bulkCopy = {
   weightsPick: 'Stats to weigh',
   /** The weights page's results section (mock design/mocks/ws_simtools.py). */
   weightsResultsTitle: 'Scale factors',
+  /** Before a run: the band's published weights (lib/sim/published-weights.ts). */
+  weightsPublishedTitle: 'Published weights',
+  weightsPublishedBand: (level: number, preset: 'raid' | 'bare'): string =>
+    `Level ${level} ${preset === 'raid' ? 'raid' : 'bare'} set`,
   /**
    * Task 8, sub-item 1: contract 10.9 documents `StatWeight.Error` as a standard error that
    * is a lower bound, not the true uncertainty -- an 8-seed check found the real run-to-run

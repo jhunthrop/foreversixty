@@ -7,6 +7,8 @@
      ReportView.svelte already use for their own non-default views/modes. -->
 <script lang="ts">
   import { onMount } from 'svelte';
+  import activeBuild from '../../../data/active-build.json';
+  import { fetchBisFile } from '../../../lib/bis/hover';
   import { decodeFS1, orderFromRanks } from '../../../lib/planner/fs1';
   import { loadTalents } from '../../../lib/planner/load';
   import { indexTalents } from '../../../lib/planner/rules';
@@ -18,7 +20,12 @@
   import { bulkCopy, simCopy } from '../../../lib/sim/copy';
   import { dedupeByName } from '../../../lib/sim/dedupe';
   import { poolQualityCopy } from '../../../lib/sim/pool-quality-copy';
-  import { customLoadouts, hasUnaddedBuild, savedBuildsMessage } from '../../../lib/sim/talent-loadouts';
+  import {
+    customLoadouts,
+    guideLoadout,
+    hasUnaddedBuild,
+    savedBuildsMessage,
+  } from '../../../lib/sim/talent-loadouts';
   import Button from '../../ui/Button.svelte';
   import ToolSection from './ToolSection.svelte';
 
@@ -48,12 +55,19 @@
   let savedFailed = $state(false);
   /** dps D31: a 401/403 (signed out) reads as guidance, not an error -- `savedBuildsMessage`. */
   let savedSignedOut = $state(false);
+  /** The spec's guide build at the character's band, once its published file loads. */
+  let guide = $state<TalentLoadout | null>(null);
   let plannerOpen = $state(false);
   let customCode = $state('');
 
   const plannerLazy = createLazyComponent(() => import('../../planner/Planner.svelte'));
 
   onMount(() => {
+    fetchBisFile(activeBuild.build, character.spec)
+      .then(
+        (file) => (guide = file === null ? null : guideLoadout(file, character.level, character.race_slug)),
+      )
+      .catch((error: unknown) => console.error('sim talents: the guide build did not load', error));
     void loadTalents(character.tree_version, character.class_slug)
       .then((file) => (talents = file))
       .catch(() => (talents = null));
@@ -126,7 +140,9 @@
 
   /** dps D31/E2: a picked loadout none of the three named lists above claims -- ADD A
    *  BUILD's own paste or hand-built tree, otherwise invisible once accepted. */
-  const custom = $derived(customLoadouts(picked, own, [savedLoadouts, exported]));
+  const custom = $derived(
+    customLoadouts(picked, own, [savedLoadouts, exported, guide === null ? [] : [guide]]),
+  );
 
   /** newcomer round 4: true whenever `addCustom` could accept `customCode` right now but
    *  has not -- the trap's own precondition, reported to the RUN button's own gate. */
@@ -191,6 +207,9 @@
   <div class="flex flex-col">
     {#if own !== null}
       {@render loadoutRow(own, 'sim-loadout-current')}
+    {/if}
+    {#if guide !== null}
+      {@render loadoutRow(guide, 'sim-loadout-guide')}
     {/if}
 
     <h3 class="text-strong pt-3 text-[15px] leading-5 font-bold">{bulkCopy.talentsSaved}</h3>

@@ -5,8 +5,32 @@ import { indexTalents } from '../planner/rules';
 import type { TalentFile } from '../planner/types';
 import { bulkCopy } from './copy';
 import { poolQualityCopy } from './pool-quality-copy';
-import { customLoadouts, hasUnaddedBuild, savedBuildsMessage } from './talent-loadouts';
+import type { BisFile } from '../bis/types';
+import { customLoadouts, guideLoadout, hasUnaddedBuild, savedBuildsMessage } from './talent-loadouts';
 import type { TalentLoadout } from './types';
+
+describe('guideLoadout', () => {
+  const band = (level: number, faction: string, talents: string) => ({
+    band: level,
+    faction,
+    preset: 'raid',
+    talents,
+  });
+  const file = {
+    spec: 'warrior-fury',
+    bands: [band(50, 'horde', '1-2-3'), band(60, 'horde', '343-051-2'), band(60, 'alliance', 'a-b-c')],
+  } as unknown as BisFile;
+
+  it('is the band’s own talents at the character’s level band and faction', () => {
+    expect(guideLoadout(file, 60, 'orc')).toEqual({ name: bulkCopy.talentsGuide(60), talents: '343-051-2' });
+    expect(guideLoadout(file, 57, 'troll')).toEqual({ name: bulkCopy.talentsGuide(50), talents: '1-2-3' });
+  });
+
+  it('is null for a race with no faction or a band the file lacks', () => {
+    expect(guideLoadout(file, 60, 'murloc')).toBeNull();
+    expect(guideLoadout(file, 40, 'orc')).toBeNull();
+  });
+});
 
 const index = indexTalents(talentsFixture as unknown as TalentFile);
 

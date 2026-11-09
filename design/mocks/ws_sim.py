@@ -303,7 +303,27 @@ def spread_section() -> str:
                      (f'{d["min"]:,.0f}', 'DPS per run', f'{d["max"]:,.0f}'))
     figs = Figures([(fnum(MEAN), 'Mean', '', '', 'sm'), (f'&plusmn; {BAND:.1f}', 'Error', '', '', 'sm'), (f'{d["stddev"]:.1f}', 'Std dev', '', '', 'sm'),
                     (f'{d["min"]:,.0f}', 'Lowest', '', '', 'sm'), (f'{d["max"]:,.0f}', 'Highest', '', '', 'sm'), (f'{RES["iterations_run"]:,}', 'Runs', '', '', 'sm')])
-    return Section('DPS spread', f'<div class="rail-body">{hist}{figs}</div>')
+    return Section('DPS spread', f'<div class="rail-body">{hist}{figs}{benchmark_row()}</div>')
+
+
+# The run beside its spec's published best-in-slot set (web lib/sim/bis-benchmark.ts): the band at the run's level, faction and
+# preset in data/builds/<build>/bis/<spec>.json, drawn only when the run fought the file's own `run` block. The gap carries both
+# runs' 95% band combined; at 10 or more it is whole (lib/sim/combos.ts gainLabel).
+FACTION = {'troll': 'horde', 'orc': 'horde', 'tauren': 'horde', 'undead': 'horde', 'human': 'alliance', 'dwarf': 'alliance',
+           'gnome': 'alliance', 'night-elf': 'alliance'}
+
+
+def benchmark_row() -> str:
+    f = json.loads((B / 'bis' / f'{SPEC}.json').read_text())
+    run, enc = f['run'], REQ['encounter']
+    if (enc['duration_sec'], enc['variation'], enc['targets'], enc['execute_ratio']) != (run['duration_sec'], run['variation'], run['targets'], run['execute_ratio']):
+        return ''
+    band_row = next(b for b in f['bands'] if b['band'] == CHAR['level'] and b['faction'] == FACTION[CHAR['race']] and b.get('preset', 'bare') == REQ['preset'])
+    dps, err = round(band_row['set_dps'], 2), round(band_row.get('set_dps_error', 0), 2)
+    gap, margin = MEAN - dps, Z95 * (ERR ** 2 + err ** 2) ** .5
+    mag = round(abs(gap), 1)
+    gap_txt = ('&minus;' if gap < 0 else '+') + (f'{round(mag):,}' if mag >= 10 or mag == 0 else f'{mag:.1f}')
+    return Rows([Row('Best-in-slot set', f'{gap_txt} &plusmn; {margin:.1f}', trail=Figure(fnum(dps), unit='DPS', size='sm'))], open_=True)
 
 
 # "No effect on your damage": the shipped rule, lib/sim/buff-effect.ts hasNoDamageEffect, read from the data (ruling M4).

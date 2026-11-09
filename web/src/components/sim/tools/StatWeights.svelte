@@ -19,9 +19,16 @@
      caption, no Pawn string. A row the engine flagged `insignificant` greys there. The
      picker above them offers only
      `store.weightStats` when the spec sent one (sub-item 4): a stat this 1.60 sim does not
-     model for this spec is never on screen to tick in the first place. -->
+     model for this spec is never on screen to tick in the first place.
+
+     Before a run, the main column holds the weights the ranker published for the character's
+     own band (lib/sim/published-weights.ts), read through the same table, linking to that set. -->
 <script lang="ts">
+  import activeBuild from '../../../data/active-build.json';
   import type { Me } from '../../../lib/account/api';
+  import { fetchBisFile } from '../../../lib/bis/hover';
+  import { publishedWeights, type PublishedWeights } from '../../../lib/sim/published-weights';
+  import { requestPresetFor } from '../../../lib/sim/settings';
   import type { BulkStore } from '../../../lib/sim/bulk-store.svelte';
   import { bulkCopy, WEIGHTS_STATS_FROM_ENGINE } from '../../../lib/sim/copy';
   import { specLabel } from '../../../lib/sim/spec-label';
@@ -48,6 +55,34 @@
    * two-part title SavedSim.svelte gives a saved weights page's own <h1>.
    */
   const saveTitleFor = $derived(`${bulkCopy.weightsTitle} · ${specLabel(store.character?.spec ?? '')}`);
+
+  let published = $state<PublishedWeights | null>(null);
+  $effect(() => {
+    const character = store.character;
+    const preset = requestPresetFor(store.settings);
+    if (character === null) {
+      published = null;
+      return;
+    }
+    let live = true;
+    fetchBisFile(activeBuild.build, character.spec)
+      .then((file) => {
+        if (!live) return;
+        published =
+          file === null
+            ? null
+            : publishedWeights(file, {
+                spec: character.spec,
+                race: character.race_slug,
+                level: character.level,
+                preset,
+              });
+      })
+      .catch((error: unknown) => console.error('sim weights: the published weights did not load', error));
+    return () => {
+      live = false;
+    };
+  });
 
   /** A stopped run has nothing finished worth naming and saving. */
   const canSave = $derived(store.result?.aborted !== true);
@@ -88,6 +123,16 @@
       <div class="pt-4">
         <SaveSimForm onsave={(title) => store.save(title)} titleFor={saveTitleFor} {canSave} />
       </div>
+    </Section>
+  {:else if published !== null}
+    <Section
+      panel
+      frame="framed"
+      title={bulkCopy.weightsPublishedTitle}
+      action={{ label: published.label, href: published.href }}
+      testid="sim-weights-published"
+    >
+      <WeightsScaleTable view={published.view} />
     </Section>
   {/if}
   {#snippet rail()}

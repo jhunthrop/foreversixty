@@ -41,6 +41,7 @@
   import { settingsCopy } from '../../lib/sim/settings-copy';
   import { NO_SPELL_INFO, loadSpellInfo, type SpellInfo } from '../../lib/sim/spell-info';
   import { timelineCopy } from '../../lib/sim/timeline-copy';
+  import { benchmarkFor, type BisBenchmarks } from '../../lib/sim/bis-benchmark';
   import type { SimResult } from '../../lib/sim/types';
   import type { PrerenderedNote } from '../../lib/sim/prerender-notes';
   import { simWarnings } from '../../lib/sim/warnings';
@@ -61,6 +62,7 @@
     onrerun,
     simId = '',
     initialNotes,
+    bisBenchmarks = {},
   }: {
     result: SimResult;
     /** A finished run on /sim rather than a saved one. */
@@ -74,6 +76,8 @@
     /** Worth knowing computed at build time for a prerendered run (lib/sim/prerender-notes.ts):
      *  drawn until the names and spell facts load here, so the lines never arrive late. */
     initialNotes?: readonly PrerenderedNote[];
+    /** The published sets a run is read against (lib/sim/bis-benchmark.ts). */
+    bisBenchmarks?: BisBenchmarks;
   } = $props();
 
   const build = activeBuild.build;
@@ -232,6 +236,8 @@
       estimate={result.dps}
       iterationsRun={result.iterations_run}
       histogram={result.dps_histogram}
+      spec={request.spec}
+      benchmark={benchmarkFor(result, bisBenchmarks)}
     />
   </Section>
   <!-- Your sims under the spread, so a reader compares the number before the inputs and the

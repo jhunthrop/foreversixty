@@ -25,6 +25,7 @@
   } from '../../lib/sim/result-band';
   import { durationLabel } from '../../lib/sim/settings';
   import type { PrerenderedNote } from '../../lib/sim/prerender-notes';
+  import type { BisBenchmarks } from '../../lib/sim/bis-benchmark';
   import type { SimResult, SpecFidelity } from '../../lib/sim/types';
   import { createCopyFeedback, type CopyFeedbackState } from '../../lib/ui/copy-feedback';
   import Button from '../ui/Button.svelte';
@@ -39,6 +40,7 @@
     simId = '',
     fidelity = null,
     initialNotes,
+    bisBenchmarks = {},
   }: {
     result: SimResult;
     onrerun: () => void;
@@ -47,6 +49,8 @@
     fidelity?: SpecFidelity | null;
     /** Worth knowing read at build time for a prerendered run (RunReport `initialNotes`). */
     initialNotes?: readonly PrerenderedNote[];
+    /** The published sets a run is read against (lib/sim/bis-benchmark.ts). */
+    bisBenchmarks?: BisBenchmarks;
   } = $props();
 
   onMount(() => {
@@ -134,7 +138,7 @@
         </SimAnswer>
       {/snippet}
     </SimCharacterHead>
-    <RunReport {result} onrerun={openInSim} {initialNotes} />
+    <RunReport {result} onrerun={openInSim} {initialNotes} {bisBenchmarks} />
   </div>
 {:else}
   <div class="flex flex-col gap-[22px] pt-[22px] md:gap-8 md:pt-8">
