@@ -1,14 +1,15 @@
 <!-- web/src/components/nav/SelectorRow.svelte -->
 <!-- One character in the selector's list (spec 3.C): crest, name in class colour with a
-     faction mark, `{Spec} {Class} · {level} · {Realm}`, then source and age. Gold marks the
-     current row only; stale and failed use text colour. The row button is one roving tab
+     faction mark, `{Spec} {Class} · {level} · {Ruleset}`, then source and age. The accent tint, rail and check mark
+     the current row only; stale and failed use text colour. The row button is one roving tab
      stop; Retry on a failed row is its own sibling button, never nested. -->
 <script lang="ts">
-  import { FACTION_MARK_SIZE, factionLogoSmallSrc, factionName } from '../../lib/faction-mark';
+  import { FACTION_MARK_SIZE, factionMarkSrc, factionName } from '../../lib/faction-mark';
   import { selectorCopy } from '../../lib/character-selector/copy';
   import { rowLineThree, rowLineTwo, type SelectorRow } from '../../lib/character-selector/rows';
   import { classColorVar } from '../../lib/report/format';
   import { button } from '../../lib/ui/button';
+  import Glyph from '../ui/Glyph.svelte';
   import SelectorCrest from './SelectorCrest.svelte';
 
   let {
@@ -49,7 +50,7 @@
         <span>{row.name}</span>
         {#if row.faction !== undefined}<img
             class="csel-faction"
-            src={factionLogoSmallSrc(row.faction)}
+            src={factionMarkSrc(row.faction)}
             alt={factionName(row.faction)}
             title={factionName(row.faction)}
             width={FACTION_MARK_SIZE}
@@ -70,22 +71,7 @@
         </span>
       {/if}
     </span>
-    {#if row.current}
-      <svg
-        class="csel-check"
-        width="18"
-        height="18"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2.6"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        aria-hidden="true"
-      >
-        <path d="M5 12.5l4.5 4.5L19 7.5"></path>
-      </svg>
-    {/if}
+    {#if row.current}<Glyph name="check" size={18} class="csel-check" />{/if}
   </button>
   {#if row.status === 'failed'}
     <button

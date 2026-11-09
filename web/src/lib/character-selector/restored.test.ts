@@ -11,9 +11,11 @@ import {
 } from '../current-character';
 import {
   forgetPointer,
+  isFreshBrowserSession,
   isRestoredPointer,
   pointerIdentity,
   readSessionStartPointer,
+  SESSION_IDLE_MS,
   SESSION_START_POINTER_KEY,
 } from './restored';
 
@@ -100,5 +102,20 @@ describe('forgetPointer', () => {
     expect(readCurrent(storage)).toBeNull();
     expect(dispatch).toHaveBeenCalledTimes(1);
     expect((dispatch.mock.calls[0][0] as Event).type).toBe(CURRENT_CHARACTER_CHANGED);
+  });
+});
+
+describe('isFreshBrowserSession', () => {
+  const NOW = 1_800_000_000_000;
+
+  it('is fresh with nothing recorded or a broken record', () => {
+    expect(isFreshBrowserSession(null, NOW)).toBe(true);
+    expect(isFreshBrowserSession(Number.NaN, NOW)).toBe(true);
+  });
+
+  it('is fresh after the idle gap and not inside it', () => {
+    expect(isFreshBrowserSession(NOW - SESSION_IDLE_MS, NOW)).toBe(true);
+    expect(isFreshBrowserSession(NOW - SESSION_IDLE_MS + 1, NOW)).toBe(false);
+    expect(isFreshBrowserSession(NOW - 60_000, NOW)).toBe(false);
   });
 });

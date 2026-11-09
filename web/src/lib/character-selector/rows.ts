@@ -29,8 +29,8 @@ export interface SelectorRow {
   className: string;
   spec?: string;
   level?: number;
-  realm?: string;
-  /** Omitted for the normal ruleset. */
+  /** "Normal", "PvP": a Forever character is its name and ruleset (there are no realms); absent
+   *  on a pasted export, which names none. */
   ruleset?: string;
   faction?: Faction;
   /** "Addon", "Battle.net" or "Pasted export"; empty when nothing says where it came from. */
@@ -96,8 +96,7 @@ function rowFromCharacter(character: MeCharacter, current: boolean, now: Date): 
     className: capitalise(classSlug),
     spec: characterSpecName(character),
     level: character.level,
-    realm: character.realm,
-    ruleset: character.ruleset === 'normal' ? undefined : rulesetLabel(character.ruleset),
+    ruleset: rulesetLabel(character.ruleset),
     faction: character.faction,
     sourceWord: sourceWordOf(character),
     age: captured === undefined ? '' : relativeTime(new Date(captured), now),
@@ -262,11 +261,10 @@ export function closedFaceLine(row: SelectorRow): string {
     .join(' · ');
 }
 
-/** List line 2: `{Spec} {Class} · {level} · {Realm}`, with `· {Ruleset}` unless Normal. */
+/** List line 2: `{Spec} {Class} · {level} · {Ruleset}`. */
 export function rowLineTwo(row: SelectorRow): string {
   const specClass = [row.spec, row.className].filter((part) => part !== undefined && part !== '').join(' ');
-  const where = [row.realm, row.ruleset].filter((part) => part !== undefined).join(' · ');
-  return [specClass, row.level === undefined ? '' : String(row.level), where]
+  return [specClass, row.level === undefined ? '' : String(row.level), row.ruleset ?? '']
     .filter((part) => part !== '')
     .join(' · ');
 }

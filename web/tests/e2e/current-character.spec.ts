@@ -67,7 +67,8 @@ test.describe('current character', () => {
     await expect(page.getByTestId('selector-panel')).toBeVisible();
     await expect(page.getByTestId('selector-restored')).toHaveCount(0);
 
-    // A later visit (a new tab: a new session, the same stored pointer) restores it.
+    // A later visit (the browser idle past the session gap, the same stored pointer) restores it.
+    await page.evaluate(() => window.localStorage.removeItem('fs.lastActiveAt'));
     const later = await context.newPage();
     await later.goto('/sim');
     await expect(simCharacter(later)).toBeVisible();

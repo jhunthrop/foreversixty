@@ -347,10 +347,10 @@ describe('row copy', () => {
       nowMs: NOW.getTime(),
     }).rows[0];
 
-  it('writes line 2 as spec class, level and realm, with the ruleset unless normal', () => {
-    expect(rowLineTwo(row())).toBe('Fury Warrior · 60 · Living Flame');
-    expect(rowLineTwo(row({ ruleset: 'hardcore' }))).toBe('Fury Warrior · 60 · Living Flame · Hardcore');
-    expect(rowLineTwo(row({ realm: undefined, level: undefined, spec: undefined }))).toBe('Warrior');
+  it('writes line 2 as spec class, level and ruleset; Forever has no realms', () => {
+    expect(rowLineTwo(row())).toBe('Fury Warrior · 60 · Normal');
+    expect(rowLineTwo(row({ ruleset: 'pvp' }))).toBe('Fury Warrior · 60 · PvP');
+    expect(rowLineTwo(row({ level: undefined, spec: undefined }))).toBe('Warrior · Normal');
   });
 
   it('writes the closed second line with and without the class', () => {

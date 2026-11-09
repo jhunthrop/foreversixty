@@ -114,14 +114,17 @@ export function createSelectorState(): SelectorState {
 
   const sessionGuild = $derived(loadStatus === 'ready' ? currentGuildOf(session.data, pointer) : null);
 
+  // Only once `/v1/me` answered: until then the session rule may still move a restored pointer
+  // (account/session-pointer.ts), and the line claims a restore only when the pointer stands.
   const restored = $derived(
-    isRestoredPointer(
-      pointer,
-      sessionStartPointer,
-      loadStatus === 'ready' && session.data
-        ? (mainCharacter(session.data.characters, session.data.main_character_key)?.key ?? null)
-        : null,
-    ),
+    loadStatus === 'ready' &&
+      isRestoredPointer(
+        pointer,
+        sessionStartPointer,
+        session.data
+          ? (mainCharacter(session.data.characters, session.data.main_character_key)?.key ?? null)
+          : null,
+      ),
   );
 
   // Until the browser has been read, and while a signed-in visitor's character is still

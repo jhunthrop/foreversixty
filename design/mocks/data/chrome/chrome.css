@@ -130,6 +130,10 @@ html[data-pointer-class="druid"]{--pointer-crest:url(/icons/hd/crests/druid.webp
 @media (width >= 1760px){.fs-chrome [data-fs-body][data-column="wide"] .csel-btn:not(.is-signed-out){width: 264px;}}
 @media (width <= 1279px){.fs-chrome .site-search-button{padding: 0px;}}
 @media (width <= 1023px){.fs-chrome .site-search{display: none;}}
+@media (width >= 1024px){.fs-chrome .csel-btn:not(.is-signed-out){width: auto; min-width: 220px;}.fs-chrome .site-right{flex-shrink: 1; min-width: 0px;}.fs-chrome .csel-btn:not(.is-signed-out){flex-shrink: 1; height: auto; min-height: 44px;}.fs-chrome .csel-btn .csel-text{flex-shrink: 1;}.fs-chrome .csel-btn .csel-name{text-overflow: clip; white-space: normal; overflow-wrap: anywhere; flex-shrink: 1; max-width: none; line-height: 1.15; overflow: visible;}}
+@media (width >= 1024px) and (width <= 1279px){.fs-chrome .csel-btn:not(.is-signed-out){min-width: 184px;}}
+@media (width >= 1760px){.fs-chrome [data-fs-body][data-column="wide"] .csel-btn:not(.is-signed-out){width: auto; min-width: 264px;}}
+@media (width >= 1280px) and (width <= 1759px){.fs-chrome .site-header{gap: 16px;}}
 .fs-chrome .typeahead{z-index: 60; position: absolute; top: calc(100% + 4px); left: 0px; right: 0px;}
 .fs-chrome .typeahead-list{margin: 0px; padding: 0px; list-style: none; overflow: hidden;}
 .fs-chrome .typeahead-list[hidden]{display: none;}
@@ -150,6 +154,7 @@ html[data-pointer-class="druid"]{--pointer-crest:url(/icons/hd/crests/druid.webp
 .fs-chrome .min-h-11{min-height: calc(var(--spacing) * 11);}
 .fs-chrome .w-full{width: 100%;}
 .fs-chrome .min-w-0{min-width: 0px;}
+.fs-chrome .min-w-11{min-width: calc(var(--spacing) * 11);}
 .fs-chrome .flex-1{flex: 1 1 0%;}
 .fs-chrome .shrink-0{flex-shrink: 0;}
 .fs-chrome .basis-full{flex-basis: 100%;}
@@ -205,7 +210,7 @@ html[data-pointer-class="druid"]{--pointer-crest:url(/icons/hd/crests/druid.webp
 .fs-chrome .active\:brightness-\[\.92\]:active{--tw-brightness: brightness(.92); filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,) var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,) var(--tw-saturate,) var(--tw-sepia,) var(--tw-drop-shadow,);}
 .fs-chrome .disabled\:cursor-not-allowed:disabled{cursor: not-allowed;}
 .fs-chrome .disabled\:not-aria-busy\:opacity-45:disabled:not([aria-busy="true"]){opacity: 0.45;}
-@media (width >= 64rem){.fs-chrome .lg\:ml-auto{margin-left: auto;}.fs-chrome .lg\:size-\[88px\]{width: 88px; height: 88px;}.fs-chrome .lg\:min-h-8{min-height: calc(var(--spacing) * 8);}.fs-chrome .lg\:basis-auto{flex-basis: auto;}.fs-chrome .lg\:flex-nowrap{flex-wrap: nowrap;}.fs-chrome .lg\:gap-x-6{column-gap: calc(var(--spacing) * 6);}.fs-chrome .lg\:py-8{padding-block: calc(var(--spacing) * 8);}.fs-chrome .lg\:text-right{text-align: right;}}
+@media (width >= 64rem){.fs-chrome .lg\:ml-auto{margin-left: auto;}.fs-chrome .lg\:size-\[88px\]{width: 88px; height: 88px;}.fs-chrome .lg\:min-h-8{min-height: calc(var(--spacing) * 8);}.fs-chrome .lg\:min-w-0{min-width: 0px;}.fs-chrome .lg\:basis-auto{flex-basis: auto;}.fs-chrome .lg\:flex-nowrap{flex-wrap: nowrap;}.fs-chrome .lg\:justify-start{justify-content: flex-start;}.fs-chrome .lg\:gap-x-6{column-gap: calc(var(--spacing) * 6);}.fs-chrome .lg\:py-8{padding-block: calc(var(--spacing) * 8);}.fs-chrome .lg\:text-right{text-align: right;}}
 @media (hover: hover) and (pointer: fine){@media (hover: hover){.fs-chrome .\[\@media\(hover\:hover\)_and_\(pointer\:fine\)\]\:hover\:brightness-\[1\.15\]:hover{--tw-brightness: brightness(1.15); filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,) var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,) var(--tw-saturate,) var(--tw-sepia,) var(--tw-drop-shadow,);}}}
 .fs-chrome .ui-overlay,.fs-chrome .bg-bg,.fs-chrome .bg-foot{--color-muted: var(--color-muted-card);}
 @media (prefers-reduced-motion: no-preference){.fs-chrome .site-door-toggle svg,.fs-chrome .csel-chev{transition: transform 0.12s ease-out;}}
@@ -303,6 +308,7 @@ html[data-discord-link="linked"]{--account-link-floor:326px}
 .fs-chrome body:not([data-column="wide"]) .csel-btn .csel-sub-short{display: none;}
 @media (width <= 1759px){.fs-chrome .csel-btn .csel-sub-short{display: none;}}
 @media (width >= 1760px){.fs-chrome [data-fs-body][data-column="wide"] .csel-btn:not(.is-signed-out){width: 264px;}.fs-chrome [data-fs-body][data-column="wide"] .csel-btn .csel-level{display: none;}}
+@media (width >= 1024px){.fs-chrome .csel-btn .csel-sub-short{flex-shrink: 100;}}
 .fs-chrome .csel-skeleton-ring{border-radius: 999px; flex-shrink: 0; width: 32px; height: 32px;}
 .fs-chrome .csel-skeleton{border-radius: var(--radius-icon); background: rgba(255, 255, 255, 0.08);}
 html:not([data-pointer-class]) .fs-chrome .csel-pre .csel-pre-char,html:not([data-pointer-class]):not([data-session]) .fs-chrome .csel-pre .csel-pre-skel,html:not([data-pointer-class])[data-session] .fs-chrome .csel-pre .csel-pre-out{display: none;}

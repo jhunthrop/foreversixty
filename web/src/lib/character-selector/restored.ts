@@ -11,6 +11,26 @@ import { CURRENT_CHARACTER_CHANGED, clearCurrent, type CurrentCharacter } from '
 /** The sessionStorage key of the pointer identity this tab session started with. */
 export const SESSION_START_POINTER_KEY = 'fs.sessionStartPointer';
 
+/** sessionStorage: '1' when this tab's page load began a fresh browser session (consumed by
+ *  account/session-pointer.ts). */
+export const SESSION_FRESH_KEY = 'fs.sessionFresh';
+
+/** localStorage: the last page load of this browser, in epoch ms. */
+export const LAST_ACTIVE_KEY = 'fs.lastActiveAt';
+
+/** A browser session ends after this long with no page of the site opened. */
+export const SESSION_IDLE_MS = 30 * 60_000;
+
+/**
+ * Whether a page load begins a fresh browser session: nothing recorded, or the last page load
+ * was SESSION_IDLE_MS or more ago. Base.astro's pre-paint script runs the same rule (an inline
+ * script cannot import). A tab opened mid-session is not fresh, so a choice made in another tab
+ * of the same visit stands.
+ */
+export function isFreshBrowserSession(lastActiveMs: number | null, nowMs: number): boolean {
+  return lastActiveMs === null || !(lastActiveMs > 0) || nowMs - lastActiveMs >= SESSION_IDLE_MS;
+}
+
 /** `source:ref`, the identity Base.astro's pre-paint script writes in the same shape. */
 export function pointerIdentity(pointer: Pick<CurrentCharacter, 'source' | 'ref'>): string {
   return `${pointer.source}:${pointer.ref}`;

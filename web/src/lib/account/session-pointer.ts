@@ -5,6 +5,11 @@
 // current character -- whichever way the player signed in (the Battle.net return, the email link
 // and the dev sign-in all end the same). After that the pointer changes only when the player
 // chooses; signing out clears it.
+//
+// In a fresh browser session (restored.ts: the first page after a long idle gap), a pointer
+// restored from the earlier visit gives way to the character played most recently
+// (last-played.ts): the player logged another character in since. A pointer changed in this
+// session is the player's own choice and always stands.
 import {
   announceSessionHeal,
   clearCurrent,
@@ -12,11 +17,14 @@ import {
   writeCurrent,
   type CurrentCharacter,
 } from '../current-character';
+import { pointerIdentity, readSessionStartPointer, SESSION_FRESH_KEY } from '../character-selector/restored';
 import type { Me } from './api';
-import { pointerNameOf } from './hero-character';
+import { heroCharacter, pointerNameOf } from './hero-character';
+import { lastPlayedCharacter } from './last-played';
 import { mainCharacter, pointerForCharacter } from './main-character';
 
-const HEALED_KEY = 'fs.pointerHealed';
+/** sessionStorage: '1' once the rule has run in this tab's session (Base.astro clears it when a fresh one begins). */
+export const POINTER_HEALED_KEY = 'fs.pointerHealed';
 
 /** The pointer to write for this answer, or null when the stored one stands. */
 export function pointerToHeal(pointer: CurrentCharacter | null, me: Me): CurrentCharacter | null {
@@ -37,9 +45,31 @@ export function pointerToHeal(pointer: CurrentCharacter | null, me: Me): Current
   return null;
 }
 
+/**
+ * The pointer a fresh session writes over a restored one, or null when it stands: the character
+ * played last when it is another one (a tie keeps the restored character), else the heal rule.
+ */
+export function pointerForFreshSession(restored: CurrentCharacter, me: Me): CurrentCharacter | null {
+  const named = heroCharacter(restored, me.characters);
+  const latest = lastPlayedCharacter(me.characters, [named?.key, me.main_character_key]);
+  if (latest === null || latest.key === named?.key) return pointerToHeal(restored, me);
+  return pointerForCharacter(latest);
+}
+
+/** Reads and clears the fresh-session mark Base.astro's pre-paint script set for this tab. */
+function takeFreshSession(): boolean {
+  try {
+    const fresh = globalThis.sessionStorage?.getItem(SESSION_FRESH_KEY) === '1';
+    globalThis.sessionStorage?.removeItem(SESSION_FRESH_KEY);
+    return fresh;
+  } catch {
+    return false;
+  }
+}
+
 function healedThisSession(): boolean {
   try {
-    return globalThis.sessionStorage?.getItem(HEALED_KEY) === '1';
+    return globalThis.sessionStorage?.getItem(POINTER_HEALED_KEY) === '1';
   } catch {
     return false;
   }
@@ -47,8 +77,8 @@ function healedThisSession(): boolean {
 
 function markHealed(on: boolean): void {
   try {
-    if (on) globalThis.sessionStorage?.setItem(HEALED_KEY, '1');
-    else globalThis.sessionStorage?.removeItem(HEALED_KEY);
+    if (on) globalThis.sessionStorage?.setItem(POINTER_HEALED_KEY, '1');
+    else globalThis.sessionStorage?.removeItem(POINTER_HEALED_KEY);
   } catch {
     // A private window: the rule simply runs again on the next page.
   }
@@ -58,7 +88,10 @@ function markHealed(on: boolean): void {
 export function settlePointerForSession(me: Me | null, storage?: Storage): void {
   if (me === null || healedThisSession()) return;
   markHealed(true);
-  const next = pointerToHeal(readCurrent(storage), me);
+  const pointer = readCurrent(storage);
+  const restored =
+    takeFreshSession() && pointer !== null && pointerIdentity(pointer) === readSessionStartPointer();
+  const next = restored ? pointerForFreshSession(pointer, me) : pointerToHeal(pointer, me);
   if (next === null) return;
   writeCurrent(next, storage);
   // Tagged: the pages move to the main as for a choice, but not over the visitor's own work.
