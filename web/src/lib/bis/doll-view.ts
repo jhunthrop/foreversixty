@@ -352,9 +352,17 @@ function aboveCap(standing: string | undefined, cap: 'friendly'): boolean {
   return (STANDING_RANK[standing ?? ''] ?? Number.POSITIVE_INFINITY) > STANDING_RANK[cap]!;
 }
 
-function cappedEntry(entry: BisByKindEntry | undefined, cap: 'friendly'): BisByKindEntry | undefined {
+/** The first of an entry and its next that the cap allows. A rep entry with no standing reads
+ *  as above the cap; any other kind's entry is capped only by a standing it names. */
+function cappedEntry(
+  entry: BisByKindEntry | undefined,
+  cap: 'friendly',
+  rep: boolean,
+): BisByKindEntry | undefined {
   for (let node = entry; node !== undefined; node = node.next) {
-    if (!aboveCap(node.standing, cap)) return node;
+    if (rep ? !aboveCap(node.standing, cap) : node.standing === undefined || !aboveCap(node.standing, cap)) {
+      return node;
+    }
   }
   return undefined;
 }
@@ -363,13 +371,20 @@ function cappedEntry(entry: BisByKindEntry | undefined, cap: 'friendly'): BisByK
 function cappedSlot(row: BisRowModel, cap: 'friendly'): BisRowModel['filter'] {
   const filter = row.filter;
   const kinds = pickKinds(filter);
-  const pickCapped = kinds.includes('rep') && aboveCap(filter.standing, cap);
-  const rest = kinds.filter((kind) => kind !== 'rep');
+  // Every own kind a standing above the cap gates leaves: a rep item its quartermaster also
+  // sells is Honored through its vendor kind too (P2 review, 2026-11-09). A file without
+  // kind_standings knows only the rep kind's standing.
+  const capped = (kind: SourceFilterKind): boolean => {
+    const standing = filter.kind_standings?.[kind] ?? (kind === 'rep' ? filter.standing : undefined);
+    return kind === 'rep' ? aboveCap(standing, cap) : standing !== undefined && aboveCap(standing, cap);
+  };
+  const pickCapped = kinds.some(capped);
+  const rest = kinds.filter((kind) => !capped(kind));
   const byKind = { ...filter.by_kind };
-  if (byKind.rep !== undefined) {
-    const kept = cappedEntry(byKind.rep, cap);
-    if (kept === undefined) delete byKind.rep;
-    else byKind.rep = kept;
+  for (const kind of Object.keys(byKind) as SourceFilterKind[]) {
+    const kept = cappedEntry(byKind[kind], cap, kind === 'rep');
+    if (kept === undefined) delete byKind[kind];
+    else byKind[kind] = kept;
   }
   if (!pickCapped) return { ...filter, by_kind: byKind };
   return rest.length > 0

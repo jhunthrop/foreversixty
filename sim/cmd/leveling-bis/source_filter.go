@@ -144,6 +144,7 @@ func sourceKindRow(row slotRow, pk slotPick, list []scored, isSecond bool, mateC
 		}
 		row.TwoHand = row.Slot == "main_hand" && pk.Item.TwoHand
 		row.Standing = pk.Item.Source.Standing
+		row.KindStandings = kindStandings(pickKinds)
 		if isSecond {
 			row.NotWith = clashingIDs(pk.Item.candidate, mateChoices)
 		}
@@ -276,6 +277,22 @@ type filteredSlot struct {
 	// Source/SourceKind are what the row shows; empty for the pick itself.
 	Source     string
 	SourceKind string
+}
+
+// kindStandings is the standing each filter kind's source needs, for the
+// kinds a standing gates; nil when none is.
+func kindStandings(sources map[string]itemSource) map[string]string {
+	var out map[string]string
+	for kind, s := range sources {
+		if s.Standing == "" {
+			continue
+		}
+		if out == nil {
+			out = make(map[string]string, len(sources))
+		}
+		out[kind] = s.Standing
+	}
+	return out
 }
 
 // pickFilterKinds is a row's pick's filter kinds: kinds, else its one

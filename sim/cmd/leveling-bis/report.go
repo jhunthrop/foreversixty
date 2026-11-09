@@ -193,6 +193,13 @@ type slotRow struct {
 	TwoHand bool `json:"two_hand,omitempty"`
 	// Standing is the reputation standing the pick's source needs.
 	Standing string `json:"standing,omitempty"`
+	// KindStandings is the standing each of the pick's own filter kinds
+	// needs, for the kinds a standing gates: a rep item its quartermaster
+	// also sells is {"rep": "honored", "vendor": "honored"}. The page's
+	// leveling default caps reputation at Friendly across every kind with
+	// it (P2 review, 2026-11-09: a vendor kind kept Protector's Band past
+	// the cap). Omitted when no standing gates the pick.
+	KindStandings map[string]string `json:"kind_standings,omitempty"`
 	// NotWith (second slot of a pair) is the first slot's possible
 	// filtered items this pick cannot be worn beside.
 	NotWith []int `json:"not_with,omitempty"`
